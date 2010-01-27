@@ -4,366 +4,33 @@
 # Christian Neumair <chris@gnome-de.org>, 2003, 2004.
 # Hendrik Richter <hendrikr@gnome.org>, 2006.
 # Philipp Kerling <k.philipp@gmail.com>, 2008.
-# Christian Kirbach <Christian.Kirbach@googlemail.com>, 2008, 2009.
 # Stefan Horning <stefan@hornings.de>, 2009.
-# Mario Blättermann <mariobl@gnome.org>, 2009.
-# Christian Kirbach <Christian.Kirbach@googlemail.com>, 2009.
+# Mario Blättermann <mariobl@gnome.org>, 2009, 2010.
+# Christian Kirbach <Christian.Kirbach@googlemail.com>, 2008, 2009, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-08-30 02:03+0000\n"
-"PO-Revision-Date: 2009-08-30 10:50+0200\n"
-"Last-Translator: Christian Kirbach <Christian.Kirbach@googlemail.com>\n"
+"POT-Creation-Date: 2010-01-21 14:50+0000\n"
+"PO-Revision-Date: 2010-01-24 15:55+0100\n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, auf das Passwort für »<object prop='name'/>« "
-"im Standardschlüsselbund zuzugreifen."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, auf das Passwort für »<object prop='name'/>« "
-"in %s zuzugreifen."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Die Anwendung »%s« versucht, auf das Passwort für »<object prop='name'/>« im "
-"Standardschlüsselbund zuzugreifen."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Die Anwendung »%s« versucht, auf das Passwort für »<object prop='name'/>« in %"
-"s zuzugreifen."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Eine unbekannte Anwendung versucht, auf das Passwort für »<object "
-"prop='name'/>« im Standardschlüsselbund zuzugreifen."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Eine unbekannte Anwendung versucht, auf das Passwort für »<object "
-"prop='name'/>« in %s zuzugreifen."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "Zugriff gewähren"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "Der Anwendung Zugriff auf den Schlüsselbund gewähren?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, auf den Standardschlüsselbund zuzugreifen, "
-"dieser ist jedoch gesperrt."
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, auf den Schlüsselbund »%s« zuzugreifen, "
-"dieser ist jedoch gesperrt."
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Die Anwendung »%s« versucht, auf den Standardschlüsselbund zuzugreifen, "
-"dieser ist jedoch gesperrt."
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Die Anwendung »%s« versucht, auf den Schlüsselbund »%s« zuzugreifen, dieser "
-"ist jedoch gesperrt."
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"Eine unbekannte Anwendung versucht, auf den Standardschlüsselbund "
-"zuzugreifen, dieser ist jedoch gesperrt."
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Eine unbekannte Anwendung versucht, auf den Schlüsselbund »%s« zuzugreifen, "
-"dieser ist jedoch gesperrt."
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr ""
-"Geben Sie das Passwort für den Standardschlüsselbund ein, um diesen zu "
-"entsperren."
-
-#: ../daemon/gkr-daemon-ops.c:360
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr ""
-"Geben Sie das Passwort für den Schlüsselbund »%s« ein, um diesen zu "
-"entsperren."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "Schlüsselbund entsperren"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr "Diesen Schlüsselbund beim Anmelden automatisch entsperren."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, den neuen Schlüsselbund »%s« anzulegen. Sie "
-"müssen ein Passwort festlegen, das für diesen verwendet werden soll."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, einen neuen Standardschlüsselbund "
-"anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
-"werden soll."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« versucht, den neuen Schlüsselbund »%s« anzulegen. Sie "
-"müssen ein Passwort festlegen, das für diesen verwendet werden soll."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« versucht, einen neuen Standardschlüsselbund anzulegen. Sie "
-"müssen ein Passwort festlegen, das für diesen verwendet werden soll."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"Eine unbekannte Anwendung versucht, den neuen Schlüsselbund »%s« anzulegen. "
-"Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Eine unbekannte Anwendung versucht, einen neuen Standardschlüsselbund "
-"anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
-"werden soll."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "Passwort für neuen Schlüsselbund"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "Legen Sie ein Passwort für den neuen Schlüsselbund fest"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, das Passwort für den Schlüsselbund »%s« zu "
-"ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet werden "
-"soll."
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, das Passwort für den Standardschlüsselbund "
-"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
-"werden soll."
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« versucht, das Passwort für den Schlüsselbund »%s« zu "
-"ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet werden "
-"soll."
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Die Anwendung »%s« versucht, das Passwort für den Standardschlüsselbund zu "
-"ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet werden "
-"soll."
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Eine unbekannte Anwendung versucht, das Passwort für den Schlüsselbund »%s« "
-"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
-"werden soll."
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Eine unbekannte Anwendung versucht, das Passwort für den "
-"Standardschlüsselbund zu ändern. Sie müssen ein Passwort festlegen, das für "
-"diesen verwendet werden soll."
-
-#: ../daemon/gkr-daemon-ops.c:552
-#, c-format
-msgid "Choose a new password for the '%s' keyring."
-msgstr "Wählen Sie ein neues Passwort für den Schlüsselbund »%s«."
-
-#: ../daemon/gkr-daemon-ops.c:554
-#, c-format
-msgid "Choose a new password for the default keyring."
-msgstr "Wählen Sie ein neues Passwort für den Standardschlüsselbund."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
-msgid "Change Keyring Password"
-msgstr "Passwort für Schlüsselbund ändern"
-
-#: ../daemon/gkr-daemon-ops.c:631
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Die Anwendung »%s« (%s) versucht, ein Passwort zu speichern. Es existiert "
-"jedoch kein Standardschlüsselbund. Um einen anzulegen, müssen Sie ein "
-"Passwort festlegen, das für diesen verwendet werden soll."
-
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Die Anwendung »%s« versucht, ein Passwort zu speichern. Es existiert jedoch "
-"kein Standardschlüsselbund. Um einen anzulegen, müssen Sie ein Passwort "
-"festlegen, das für diesen verwendet werden soll."
-
-#: ../daemon/gkr-daemon-ops.c:643
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Eine unbekannte Anwendung versucht, ein Passwort zu speichern. Es existiert "
-"jedoch kein Standardschlüsselbund. Um einen anzulegen, müssen Sie ein "
-"Passwort festlegen, das für diesen verwendet werden soll."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "Standardschlüsselbund anlegen"
-
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "Legen Sie ein Passwort für den Standardschlüsselbund fest"
-
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
 "Diese Option aktiviert die PKCS #11-Komponente im GNOME-Schlüsselbunddienst. "
-"Sie tritt nur in Kraft, wenn der Schlüsselbunddienst gestartet wird (also "
-"der Benutzer sich anmeldet). Diese Einstellung kann von bestimmten "
+"Sie tritt nur in Kraft, wenn die GNOME-Sitzung (gnome-session) gestartet "
+"wird, also der Benutzer sich anmeldet. Diese Einstellung kann von bestimmten "
 "Befehlszeilenargumenten überschrieben werden, die dem Dienst übergeben "
 "werden."
 
@@ -380,172 +47,137 @@ msgstr ""
 "Befehlszeilenargumenten überschrieben werden, die dem Dienst übergeben "
 "werden."
 
+#  Secret Service is a DBus-API for accessing passwords and secrets
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
+msgid ""
+"This option enables the secret service component in the gnome-keyring "
+"daemon. It only takes effect during startup with gnome-session, (ie: when "
+"the user logs in). This setting may be overridden when certain command line "
+"arguments are passed to the daemon."
+msgstr ""
+"Diese Option aktiviert die Komponente des Sicherheitsdienstes im GNOME-"
+"Schlüsselbunddienst. Sie tritt nur in Kraft, wenn der Schlüsselbunddienst "
+"gestartet wird (also der Benutzer sich anmeldet). Diese Einstellung kann von "
+"bestimmten Befehlszeilenargumenten überschrieben werden, die dem Dienst "
+"übergeben werden."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr ""
 "Legt fest, ob die PKCS #11-Komponente des GNOME-Schlüsselbunddienstes "
 "aktiviert ist."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr ""
 "Legt fest, ob der SSH-Agent des GNOME-Schlüsselbunddienstes aktiviert ist."
 
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "GNOME-Schlüsselbunddienst"
-
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Unlock Login Keyring"
-msgstr "Anmeldeschlüsselbund entsperren"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
-msgstr "Geben Sie das Passwort zum Entsperren des Schlüsselbundes ein"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:101
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
+msgid "Whether the gnome-keyring secret service is enabled."
 msgstr ""
-"Ihr Anmeldeschlüsselbund wurde nicht automatisch entsperrt, als Sie sich an "
-"diesem Rechner angemeldet haben."
+"Legt fest, ob der Sicherheitsdienst des GNOME-Schlüsselbunddienstes "
+"aktiviert ist."
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "Anmeldeschlüsselbund erstellen"
+#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
+#: ../daemon/dbus/gkd-secret-unlock.c:105
+msgid "Unnamed"
+msgstr "Unbenannt"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "Geben Sie Ihr Anmeldepasswort ein"
+#: ../daemon/dbus/gkd-secret-change.c:84
+msgid "Change Keyring Password"
+msgstr "Passwort für Schlüsselbund ändern"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:127
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-"Ihr Anmeldeschlüsselbund wurde nicht automatisch erstellt, als Sie sich an "
-"diesem Rechner angemeldet haben. Er wird nun erstellt."
-
-#: ../daemon/keyrings/gkr-keyring.c:587
+#: ../daemon/dbus/gkd-secret-change.c:86
 #, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Passwort zum Entsperren des Schlüsselbundes %s"
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Wählen Sie ein neues Passwort für den Schlüsselbund »%s«."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
-msgid "Unlock private key"
-msgstr "Privaten Schlüssel entsperren"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
-msgid "Unlock certificate"
-msgstr "Zertifikat entsperren"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
-msgid "Unlock public key"
-msgstr "Öffentlichen Schlüssel entsperren"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
-msgid "Unlock"
-msgstr "Entsperren"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Geben Sie das Passwort zum Entsperren des privaten Schlüssels ein"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Geben Sie das Passwort zum Entsperren des Zertifikats ein"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
-msgid "Enter password to unlock the public key"
-msgstr "Geben Sie das Passwort zum Entsperren des öffentlichen Schlüssels ein"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Geben Sie das Passwort zum Entsperren ein"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Eine Anwendung versucht, auf den privaten Schlüssel »%s« zuzugreifen, dieser "
-"ist jedoch gesperrt"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"Eine Anwendung versucht, auf das Zertifikat »%s« zuzugreifen, dieses ist "
-"jedoch gesperrt"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Eine Anwendung versucht, auf den öffentlichen Schlüssel »%s« zuzugreifen, "
-"dieser ist jedoch gesperrt"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr ""
-"Eine Anwendung versucht, auf »%s« zuzugreifen, dieses ist jedoch gesperrt"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "Diesen privaten Schlüssel beim Anmelden automatisch entsperren."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Dieses Zertifikat beim Anmelden automatisch entsperren."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "Diesen öffentlichen Schlüssel beim Anmelden automatisch entsperren."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "Dies beim Anmelden automatisch entsperren."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
-msgid "Unlock certificate/key storage"
-msgstr "Zertifikat-/Schlüsselverwahrung entsperren"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Geben Sie das Passwort zum Entsperren der Zertifikat-/Schlüsselverwahrung ein"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
+#: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
 msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
 msgstr ""
-"Eine Anwendung versucht, auf die Zertifikat-/Schlüsselverwahrung »%s« "
-"zuzugreifen, diese ist jedoch gesperrt"
+"Eine unbekannte Anwendung versucht, das Passwort für den Schlüsselbund »%s« "
+"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr "Sicherheitsverwahrung beim Anmelden automatisch entsperren."
+#: ../daemon/dbus/gkd-secret-change.c:109
+msgid "The original password was incorrect"
+msgstr "Das ursprüngliche Passwort war nicht korrekt"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/dbus/gkd-secret-create.c:77
+msgid "New Keyring Password"
+msgstr "Passwort für neuen Schlüsselbund"
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "Choose password for new keyring"
+msgstr "Legen Sie ein Passwort für den neuen Schlüsselbund fest"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Eine unbekannte Anwendung versucht, den neuen Schlüsselbund »%s« anzulegen. "
+"Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:112
+msgid "Unlock Keyring"
+msgstr "Schlüsselbund entsperren"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:114
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr ""
+"Geben Sie das Passwort für den Schlüsselbund »%s« ein, um diesen zu "
+"entsperren."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:118
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Eine Anwendung versucht, auf den Schlüsselbund »%s« zuzugreifen, dieser ist "
+"jedoch gesperrt."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:134
+msgid "The unlock password was incorrect"
+msgstr "Das Passwort zum Entsperren war nicht korrekt"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Zertifikat-/Schlüsselverwahrung"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME-Schlüsselbunddienst: PKCS#11-Komponente"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME-Schlüsselbunddienst: Sicherheitsdienst"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "Sicherheitsdienst"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME-Schlüsselbunddienst: SSH-Agent"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "SSH-Schlüsselagent"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
 msgstr "Neues Passwort ist erforderlich"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
 msgid "New password required for secure storage"
-msgstr "Neues Passwort ist für die Sicherheitsverwahrung erforderlich"
+msgstr "Neues Passwort ist für den Sicherheitsdienst erforderlich"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -554,43 +186,98 @@ msgstr ""
 "Ein Passwort ist zur Vorbereitung von »%s« zur Hinterlegung von Zertifikaten "
 "oder Schlüsseln erforderlich"
 
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Der Mauszeiger kann nicht übernommen werden.</big></b>\n"
-"\n"
-"Ein bösartiger Client könnte Ihre Sitzung belauschen, oder Sie haben soeben "
-"ein Menü geöffnet oder eine Anwendung will gerade den Fokus erhalten.\n"
-"\n"
-"Versuchen Sie es erneut."
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:303
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:606
+msgid "Automatically unlock secure storage when I log in."
+msgstr "Sicherheitsdienst beim Anmelden automatisch entsperren."
 
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Die Tastatur kann nicht abgefragt werden.</big></b>\n"
-"\n"
-"Ein bösartiger Client könnte Ihre Sitzung belauschen, oder Sie haben soeben "
-"ein Menü geöffnet oder eine Anwendung will gerade den Fokus erhalten.\n"
-"\n"
-"Versuchen Sie es erneut."
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:361
+msgid "Unlock private key"
+msgstr "Privaten Schlüssel entsperren"
 
-#: ../daemon/ui/gkr-ask-tool.c:276
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:363
+msgid "Unlock certificate"
+msgstr "Zertifikat entsperren"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:365
+msgid "Unlock public key"
+msgstr "Öffentlichen Schlüssel entsperren"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:367
+msgid "Unlock"
+msgstr "Entsperren"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:376 ../gcr/gcr-importer.c:436
+msgid "Enter password to unlock the private key"
+msgstr "Geben Sie das Passwort zum Entsperren des privaten Schlüssels ein"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:378 ../gcr/gcr-importer.c:438
+msgid "Enter password to unlock the certificate"
+msgstr "Geben Sie das Passwort zum Entsperren des Zertifikats ein"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:380
+msgid "Enter password to unlock the public key"
+msgstr "Geben Sie das Passwort zum Entsperren des öffentlichen Schlüssels ein"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:382 ../gcr/gcr-importer.c:440
+msgid "Enter password to unlock"
+msgstr "Geben Sie das Passwort zum Entsperren ein"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:392
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Eine Anwendung versucht, auf den privaten Schlüssel »%s« zuzugreifen, dieser "
+"ist jedoch gesperrt"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:395
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"Eine Anwendung versucht, auf das Zertifikat »%s« zuzugreifen, dieses ist "
+"jedoch gesperrt"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:398
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Eine Anwendung versucht, auf den öffentlichen Schlüssel »%s« zuzugreifen, "
+"dieser ist jedoch gesperrt"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:401
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr ""
+"Eine Anwendung versucht, auf »%s« zuzugreifen, dieses ist jedoch gesperrt"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
+msgid "Unlock certificate/key storage"
+msgstr "Zertifikat-/Schlüsselverwahrung entsperren"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:597
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Geben Sie das Passwort zum Entsperren der Zertifikat-/Schlüsselverwahrung ein"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:600
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Eine Anwendung versucht, auf die Zertifikat-/Schlüsselverwahrung »%s« "
+"zuzugreifen, diese ist jedoch gesperrt"
+
+#: ../daemon/prompt/gkd-prompt-tool.c:382
 msgid "Store passwords unencrypted?"
 msgstr "Passwörter unverschlüsselt speichern?"
 
-#: ../daemon/ui/gkr-ask-tool.c:277
+#: ../daemon/prompt/gkd-prompt-tool.c:383
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -600,87 +287,85 @@ msgstr ""
 "nicht sicher verschlüsselt werden. Sie werden für jeden mit Zugriff auf Ihre "
 "Dateien zugänglich sein."
 
-#: ../daemon/ui/gkr-ask-tool.c:284
+#: ../daemon/prompt/gkd-prompt-tool.c:390
 msgid "Use Unsafe Storage"
 msgstr "Unsichere Speicherung verwenden"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "_Ort:"
-
-# CHECK
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "_Altes Passwort:"
-
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "_Passwort:"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "Passwort _bestätigen:"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "Neue Passwortstärke"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
+#: ../daemon/prompt/gkd-prompt-tool.c:420
 msgid "Passwords do not match."
 msgstr "Die Passwörter stimmen nicht überein."
 
-#: ../daemon/ui/gkr-ask-tool.c:661
+#: ../daemon/prompt/gkd-prompt-tool.c:430
 msgid "Password cannot be blank"
 msgstr "Das Passwort darf nicht leer sein"
 
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "_Verweigern"
-
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "E_rstellen"
-
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "_Ändern"
-
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "_Einmal gewähren"
-
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "_Immer gewähren"
-
-#: ../daemon/util/gkr-location.c:238
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Wechseldatenträger: %s"
-
-#: ../daemon/util/gkr-location.c:240
-msgid "Removable Disk"
-msgstr "Wechseldatenträger"
-
-#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
-msgid "Home"
-msgstr "Persönlicher Ordner"
-
-#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
-msgid "The disk or drive this file is located on is not present"
+#: ../daemon/prompt/gkd-prompt.ui.h:1
+msgid ""
+"<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to "
+"unlock</span>\n"
+"\n"
+"An application wants access to the keyring 'xxx', but it is locked."
 msgstr ""
-"Das Medium oder Laufwerk, auf dem diese Datei gespeichert ist, ist nicht "
-"präsent."
+"<span size=\"large\" weight=\"bold\">Geben Sie das Passwort zum Entsperren "
+"des Schlüsselbundes »login« ein</span>\n"
+"\n"
+"Eine unbekannte Anwendung versucht, auf den Schlüsselbund »xxx« zuzugreifen, "
+"dieser ist jedoch gesperrt."
 
-#: ../daemon/util/gkr-location.c:918
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Ordner konnte nicht erstellt werden: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:4
+msgid "Automatically unlock this keyring whenever I'm logged in."
+msgstr "Diesen Schlüsselbund beim Anmelden automatisch entsperren."
 
-#: ../daemon/util/gkr-location.c:952
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Datei konnte nicht gelöscht werden. %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:5
+msgid "Lock this keyring after"
+msgstr "Diesen Schlüsselbund sperren nach"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:6
+msgid "Lock this keyring if idle for"
+msgstr "Diesen Schlüsselbund bei Untätigkeit sperren nach"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:7
+msgid "Lock this keyring when I log out."
+msgstr "Diesen Schlüsselbund beim Abmelden automatisch sperren."
+
+#: ../daemon/prompt/gkd-prompt.ui.h:8
+msgid "New password strength"
+msgstr "Neue Passwortstärke"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:9
+msgid "Prompt me for each application that accesses this keyring."
+msgstr ""
+"Jedes mal nachfragen, wenn einer Anwendung Zugriff auf den Schlüsselbund "
+"gewährt werden soll."
+
+#: ../daemon/prompt/gkd-prompt.ui.h:10
+msgid "_Application:"
+msgstr "_Anwendung:"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:11
+msgid "_Confirm:"
+msgstr "_Bestätigen:"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:12
+msgid "_Details:"
+msgstr "_Details:"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:13
+msgid "_Name:"
+msgstr "_Name:"
+
+# CHECK
+#: ../daemon/prompt/gkd-prompt.ui.h:14
+msgid "_Old Password:"
+msgstr "_Altes Passwort:"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:15
+msgid "_Password:"
+msgstr "_Passwort:"
+
+#: ../daemon/prompt/gkd-prompt.ui.h:16
+msgid "minutes."
+msgstr "Minuten."
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -749,7 +434,7 @@ msgstr "Organisation"
 
 #: ../egg/egg-oid.c:81
 msgid "Organizational Unit"
-msgstr "Organisations-Einheit"
+msgstr "Organisationseinheit"
 
 #: ../egg/egg-oid.c:83
 msgid "Title"
@@ -802,6 +487,17 @@ msgstr "DSA"
 #: ../egg/egg-oid.c:109
 msgid "SHA1 with DSA"
 msgstr "SHA1 mit DSA"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr ""
+"Unerwarteter Fehler im select()-Datenlesevorgang aus einem Kindprozess (%s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Unerwarteter Fehler in waitpid() (%s)"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -1379,42 +1075,338 @@ msgstr "Die Signaturanfrage ist vom Benutzer abgelehnt worden"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "Zugriff verweigert"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "Der GNOME-Schlüsselbunddienst ist nicht aktiv."
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "Fehler bei der Kommunikation mit dem GNOME-Schlüsselbunddienst"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "Ein gleichnamiger Schlüsselbund ist bereits vorhanden"
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "Programmierfehler: Die Anwendung sendet ungültige Daten."
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "Keine passenden Ergebnisse"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "Ein Schlüsselbund mit diesem Namen existiert nicht."
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "Der Schlüsselbund wurde bereits entsperrt."
-
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../pkcs11/gck/gck-certificate.c:739
 msgid "Unnamed Certificate"
 msgstr "Unbenanntes Zertifikat"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:337
 msgid "Couldn't parse public SSH key"
 msgstr "Öffentlicher SSH-Schlüssel konnte nicht verarbeitet werden"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, auf das Passwort für »<object "
+#~ "prop='name'/>« im Standardschlüsselbund zuzugreifen."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, auf das Passwort für »<object "
+#~ "prop='name'/>« in %s zuzugreifen."
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, auf das Passwort für »<object prop='name'/>« "
+#~ "im Standardschlüsselbund zuzugreifen."
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, auf das Passwort für »<object prop='name'/>« "
+#~ "in %s zuzugreifen."
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "Eine unbekannte Anwendung versucht, auf das Passwort für »<object "
+#~ "prop='name'/>« im Standardschlüsselbund zuzugreifen."
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "Eine unbekannte Anwendung versucht, auf das Passwort für »<object "
+#~ "prop='name'/>« in %s zuzugreifen."
+
+#~ msgid "Allow access"
+#~ msgstr "Zugriff gewähren"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, auf den Standardschlüsselbund "
+#~ "zuzugreifen, dieser ist jedoch gesperrt."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, auf den Schlüsselbund »%s« zuzugreifen, "
+#~ "dieser ist jedoch gesperrt."
+
+#~ msgid ""
+#~ "The application '%s' wants access to the default keyring, but it is locked"
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, auf den Standardschlüsselbund zuzugreifen, "
+#~ "dieser ist jedoch gesperrt."
+
+#~ msgid ""
+#~ "The application '%s' wants access to the keyring '%s', but it is locked"
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, auf den Schlüsselbund »%s« zuzugreifen, dieser "
+#~ "ist jedoch gesperrt."
+
+#~ msgid ""
+#~ "An unknown application wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Eine unbekannte Anwendung versucht, auf den Standardschlüsselbund "
+#~ "zuzugreifen, dieser ist jedoch gesperrt."
+
+#~ msgid "Enter password for default keyring to unlock"
+#~ msgstr ""
+#~ "Geben Sie das Passwort für den Standardschlüsselbund ein, um diesen zu "
+#~ "entsperren."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
+#~ "have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, den neuen Schlüsselbund »%s« anzulegen. "
+#~ "Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new default keyring. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, einen neuen Standardschlüsselbund "
+#~ "anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+#~ "werden soll."
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new keyring called '%s'. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, den neuen Schlüsselbund »%s« anzulegen. Sie "
+#~ "müssen ein Passwort festlegen, das für diesen verwendet werden soll."
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, einen neuen Standardschlüsselbund anzulegen. "
+#~ "Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
+
+#~ msgid ""
+#~ "An unknown application wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "Eine unbekannte Anwendung versucht, einen neuen Standardschlüsselbund "
+#~ "anzulegen. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+#~ "werden soll."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the '%s' "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, das Passwort für den Schlüsselbund »%s« "
+#~ "zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+#~ "werden soll."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, das Passwort für den "
+#~ "Standardschlüsselbund zu ändern. Sie müssen ein Passwort festlegen, das "
+#~ "für diesen verwendet werden soll."
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, das Passwort für den Schlüsselbund »%s« zu "
+#~ "ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+#~ "werden soll."
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, das Passwort für den Standardschlüsselbund zu "
+#~ "ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+#~ "werden soll."
+
+#~ msgid ""
+#~ "An unknown application wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Eine unbekannte Anwendung versucht, das Passwort für den "
+#~ "Standardschlüsselbund zu ändern. Sie müssen ein Passwort festlegen, das "
+#~ "für diesen verwendet werden soll."
+
+#~ msgid "Choose a new password for the default keyring."
+#~ msgstr "Wählen Sie ein neues Passwort für den Standardschlüsselbund."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to store a password, but there is no "
+#~ "default keyring. To create one, you need to choose the password you wish "
+#~ "to use for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« (%s) versucht, ein Passwort zu speichern. Es existiert "
+#~ "jedoch kein Standardschlüsselbund. Um einen anzulegen, müssen Sie ein "
+#~ "Passwort festlegen, das für diesen verwendet werden soll."
+
+#~ msgid ""
+#~ "The application '%s' wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "Die Anwendung »%s« versucht, ein Passwort zu speichern. Es existiert "
+#~ "jedoch kein Standardschlüsselbund. Um einen anzulegen, müssen Sie ein "
+#~ "Passwort festlegen, das für diesen verwendet werden soll."
+
+#~ msgid ""
+#~ "An unknown application wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "Eine unbekannte Anwendung versucht, ein Passwort zu speichern. Es "
+#~ "existiert jedoch kein Standardschlüsselbund. Um einen anzulegen, müssen "
+#~ "Sie ein Passwort festlegen, das für diesen verwendet werden soll."
+
+#~ msgid "Create Default Keyring"
+#~ msgstr "Standardschlüsselbund anlegen"
+
+#~ msgid "Choose password for default keyring"
+#~ msgstr "Legen Sie ein Passwort für den Standardschlüsselbund fest"
+
+#~ msgid "Unlock Login Keyring"
+#~ msgstr "Anmeldeschlüsselbund entsperren"
+
+#~ msgid "Enter login password to unlock keyring"
+#~ msgstr "Geben Sie das Passwort zum Entsperren des Schlüsselbundes ein"
+
+#~ msgid ""
+#~ "Your login keyring was not automatically unlocked when you logged into "
+#~ "this computer."
+#~ msgstr ""
+#~ "Ihr Anmeldeschlüsselbund wurde nicht automatisch entsperrt, als Sie sich "
+#~ "an diesem Rechner angemeldet haben."
+
+#~ msgid "Create Login Keyring"
+#~ msgstr "Anmeldeschlüsselbund erstellen"
+
+#~ msgid "Enter your login password"
+#~ msgstr "Geben Sie Ihr Anmeldepasswort ein"
+
+#~ msgid ""
+#~ "Your login keyring was not automatically created when you logged into "
+#~ "this computer. It will now be created."
+#~ msgstr ""
+#~ "Ihr Anmeldeschlüsselbund wurde nicht automatisch erstellt, als Sie sich "
+#~ "an diesem Rechner angemeldet haben. Er wird nun erstellt."
+
+#~ msgid "Unlock password for %s keyring"
+#~ msgstr "Passwort zum Entsperren des Schlüsselbundes %s"
+
+#~ msgid "Automatically unlock this private key when I log in."
+#~ msgstr "Diesen privaten Schlüssel beim Anmelden automatisch entsperren."
+
+#~ msgid "Automatically unlock this certificate when I log in."
+#~ msgstr "Dieses Zertifikat beim Anmelden automatisch entsperren."
+
+#~ msgid "Automatically unlock this public key when I log in."
+#~ msgstr "Diesen öffentlichen Schlüssel beim Anmelden automatisch entsperren."
+
+#~ msgid "Automatically unlock this when I log in"
+#~ msgstr "Dies beim Anmelden automatisch entsperren."
+
+#~ msgid ""
+#~ "<b><big>Could not grab your mouse.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>Der Mauszeiger kann nicht übernommen werden.</big></b>\n"
+#~ "\n"
+#~ "Ein bösartiger Client könnte Ihre Sitzung belauschen, oder Sie haben "
+#~ "soeben ein Menü geöffnet oder eine Anwendung will gerade den Fokus "
+#~ "erhalten.\n"
+#~ "\n"
+#~ "Versuchen Sie es erneut."
+
+#~ msgid ""
+#~ "<b><big>Could not grab your keyboard.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>Die Tastatur kann nicht abgefragt werden.</big></b>\n"
+#~ "\n"
+#~ "Ein bösartiger Client könnte Ihre Sitzung belauschen, oder Sie haben "
+#~ "soeben ein Menü geöffnet oder eine Anwendung will gerade den Fokus "
+#~ "erhalten.\n"
+#~ "\n"
+#~ "Versuchen Sie es erneut."
+
+#~ msgid "_Deny"
+#~ msgstr "_Verweigern"
+
+#~ msgid "C_reate"
+#~ msgstr "E_rstellen"
+
+#~ msgid "C_hange"
+#~ msgstr "_Ändern"
+
+#~ msgid "Allow _Once"
+#~ msgstr "_Einmal gewähren"
+
+#~ msgid "_Always Allow"
+#~ msgstr "_Immer gewähren"
+
+#~ msgid "Removable Disk: %s"
+#~ msgstr "Wechseldatenträger: %s"
+
+#~ msgid "Removable Disk"
+#~ msgstr "Wechseldatenträger"
+
+#~ msgid "Home"
+#~ msgstr "Persönlicher Ordner"
+
+#~ msgid "The disk or drive this file is located on is not present"
+#~ msgstr ""
+#~ "Das Medium oder Laufwerk, auf dem diese Datei gespeichert ist, ist nicht "
+#~ "präsent."
+
+#~ msgid "Couldn't create directory: %s"
+#~ msgstr "Ordner konnte nicht erstellt werden: %s"
+
+#~ msgid "Couldn't delete the file: %s"
+#~ msgstr "Datei konnte nicht gelöscht werden. %s"
+
+#~ msgid "Access Denied"
+#~ msgstr "Zugriff verweigert"
+
+#~ msgid "The gnome-keyring-daemon application is not running."
+#~ msgstr "Der GNOME-Schlüsselbunddienst ist nicht aktiv."
+
+#~ msgid "Error communicating with gnome-keyring-daemon"
+#~ msgstr "Fehler bei der Kommunikation mit dem GNOME-Schlüsselbunddienst"
+
+#~ msgid "A keyring with that name already exists"
+#~ msgstr "Ein gleichnamiger Schlüsselbund ist bereits vorhanden"
+
+#~ msgid "Programmer error: The application sent invalid data."
+#~ msgstr "Programmierfehler: Die Anwendung sendet ungültige Daten."
+
+#~ msgid "No matching results"
+#~ msgstr "Keine passenden Ergebnisse"
+
+#~ msgid "A keyring with that name does not exist."
+#~ msgstr "Ein Schlüsselbund mit diesem Namen existiert nicht."
+
+#~ msgid "The keyring has already been unlocked."
+#~ msgstr "Der Schlüsselbund wurde bereits entsperrt."
