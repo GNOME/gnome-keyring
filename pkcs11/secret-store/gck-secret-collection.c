@@ -464,7 +464,7 @@ static gboolean
 gck_secret_collection_real_is_locked (GckSecretObject *obj, GckSession *session)
 {
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (obj);
-	return gck_secret_collection_unlocked_have (self, session);
+	return !gck_secret_collection_unlocked_have (self, session);
 }
 
 static void
