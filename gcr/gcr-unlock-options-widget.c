@@ -25,14 +25,12 @@
 
 enum {
 	PROP_0,
-	PROP_UNLOCK_AUTO,
 	PROP_UNLOCK_TIMEOUT,
 	PROP_UNLOCK_IDLE
 };
 
 struct _GcrUnlockOptionsWidgetPrivate {
 	GtkBuilder *builder;
-	GtkToggleButton *auto_unlock;
 	GtkToggleButton *lock_logout;
 	GtkToggleButton *lock_after;
 	GtkToggleButton *lock_idle;
@@ -59,13 +57,6 @@ builder_get_spin_button (GtkBuilder *builder, const gchar *name)
 	GObject *object = gtk_builder_get_object (builder, name);
 	g_return_val_if_fail (GTK_IS_SPIN_BUTTON (object), NULL);
 	return GTK_SPIN_BUTTON (object);
-}
-
-static void
-on_auto_check_unlock_toggled (GtkToggleButton *check, GtkBuilder *builder)
-{
-	GtkWidget *area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
-	gtk_widget_set_sensitive (area, !gtk_toggle_button_get_active (check));
 }
 
 static void
@@ -105,10 +96,6 @@ gcr_unlock_options_widget_constructor (GType type, guint n_props, GObjectConstru
 		g_return_val_if_fail (GTK_IS_WIDGET (widget), obj);
 		gtk_container_add (GTK_CONTAINER (self), widget);
 		gtk_widget_show (widget);
-
-		button = builder_get_toggle_button (self->pv->builder, "auto_unlock_check");
-		g_signal_connect (button, "toggled", G_CALLBACK (on_auto_check_unlock_toggled), self->pv->builder);
-		on_auto_check_unlock_toggled (button, self->pv->builder);
 
 		button = builder_get_toggle_button (self->pv->builder, "lock_logout_choice");
 		g_signal_connect (button, "toggled", G_CALLBACK (on_timeout_choices_toggled), self->pv->builder);
@@ -163,10 +150,6 @@ gcr_unlock_options_widget_set_property (GObject *obj, guint prop_id, const GValu
 	spin = builder_get_spin_button (self->pv->builder, "lock_minutes_spin");
 
 	switch (prop_id) {
-	case PROP_UNLOCK_AUTO:
-		button = builder_get_toggle_button (self->pv->builder, "auto_unlock_check");
-		gtk_toggle_button_set_active (button, g_value_get_boolean (value));
-		break;
 	case PROP_UNLOCK_TIMEOUT:
 		button = builder_get_toggle_button (self->pv->builder, "lock_after_choice");
 		seconds = g_value_get_int (value);
@@ -202,40 +185,25 @@ gcr_unlock_options_widget_get_property (GObject *obj, guint prop_id, GValue *val
 	GcrUnlockOptionsWidget *self = GCR_UNLOCK_OPTIONS_WIDGET (obj);
 	GtkToggleButton *button;
 	GtkSpinButton *spin;
-	gboolean auto_unlock;
 	gint minutes;
-
-	button = builder_get_toggle_button (self->pv->builder, "auto_unlock_check");
-	auto_unlock = gtk_toggle_button_get_active (button);
 
 	spin = builder_get_spin_button (self->pv->builder, "lock_minutes_spin");
 	minutes = gtk_spin_button_get_value_as_int (spin);
 
 	switch (prop_id) {
-	case PROP_UNLOCK_AUTO:
-		g_value_set_boolean (value, auto_unlock);
-		break;
 	case PROP_UNLOCK_TIMEOUT:
-		if (auto_unlock) {
+		button = builder_get_toggle_button (self->pv->builder, "lock_after_choice");
+		if (!gtk_toggle_button_get_active (button))
 			g_value_set_int (value, 0);
-		} else {
-			button = builder_get_toggle_button (self->pv->builder, "lock_after_choice");
-			if (!gtk_toggle_button_get_active (button))
-				g_value_set_int (value, 0);
-			else
-				g_value_set_int (value, minutes * 60);
-		}
+		else
+			g_value_set_int (value, minutes * 60);
 		break;
 	case PROP_UNLOCK_IDLE:
-		if (auto_unlock) {
+		button = builder_get_toggle_button (self->pv->builder, "lock_idle_choice");
+		if (!gtk_toggle_button_get_active (button))
 			g_value_set_int (value, 0);
-		} else {
-			button = builder_get_toggle_button (self->pv->builder, "lock_idle_choice");
-			if (!gtk_toggle_button_get_active (button))
-				g_value_set_int (value, 0);
-			else
-				g_value_set_int (value, minutes * 60);
-		}
+		else
+			g_value_set_int (value, minutes * 60);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -256,10 +224,6 @@ gcr_unlock_options_widget_class_init (GcrUnlockOptionsWidgetClass *klass)
 	gobject_class->finalize = gcr_unlock_options_widget_finalize;
 	gobject_class->set_property = gcr_unlock_options_widget_set_property;
 	gobject_class->get_property = gcr_unlock_options_widget_get_property;
-
-	g_object_class_install_property (gobject_class, PROP_UNLOCK_AUTO,
-	               g_param_spec_boolean ("unlock-auto", "Unlock Auto", "Unlock Automatically",
-	                                     FALSE, G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_UNLOCK_TIMEOUT,
 	               g_param_spec_int ("unlock-timeout", "Unlock Timeout", "Unlock Timeout",
