@@ -6,7 +6,8 @@ uidir = $(datadir)/gcr/ui/
 
 ui_DATA = \
 	gcr-certificate-basics-widget.ui \
-	gcr-import-dialog.ui
+	gcr-import-dialog.ui \
+	gcr-unlock-options-widget.ui
 
 # ------------------------------------------------------------------
 # HEADERS
@@ -20,7 +21,8 @@ inc_HEADERS = \
 	gcr-certificate-details-widget.h \
 	gcr-importer.h \
 	gcr-parser.h \
-	gcr-types.h
+	gcr-types.h \
+	gcr-unlock-options-widget.h
 
 # ------------------------------------------------------------------
 # LIBRARY
@@ -50,6 +52,7 @@ libgcr_la_SOURCES = \
 	gcr-parser.c gcr-parser.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-types.h \
+	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
 	$(BUILT_SOURCES)
 
 libgcr_la_CFLAGS = \
