@@ -132,6 +132,7 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 	gkd_prompt_show_widget (prompt, "details_area");
 	gkd_prompt_show_widget (prompt, "password_area");
 	gkd_prompt_show_widget (prompt, "lock_area");
+	gkd_prompt_show_widget (prompt, "options_area");
 
 	g_free (label);
 
