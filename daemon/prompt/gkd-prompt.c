@@ -847,10 +847,10 @@ gkd_prompt_set_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
 		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-auto", !bval);
 
 	if (gp11_attributes_find_ulong (attrs, CKA_G_DESTRUCT_IDLE, &uval))
-		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-idle", (int)uval);
+		g_key_file_set_integer (self->pv->input, "unlock-options", "unlock-idle", (int)uval);
 
 	if (gp11_attributes_find_ulong (attrs, CKA_G_DESTRUCT_AFTER, &uval))
-		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-timeout", (int)uval);
+		g_key_file_set_integer (self->pv->input, "unlock-options", "unlock-timeout", (int)uval);
 }
 
 /* ----------------------------------------------------------------------------------
