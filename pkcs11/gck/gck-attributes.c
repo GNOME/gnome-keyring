@@ -162,6 +162,25 @@ gck_attribute_get_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t *value)
 	return CKR_OK;
 }
 
+CK_RV
+gck_attribute_get_template (CK_ATTRIBUTE_PTR attr, GArray **template)
+{
+	CK_ULONG n_attrs;
+
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+
+	/* Validate everything first */
+	if (attr->ulValueLen % sizeof (CK_ATTRIBUTE) != 0)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	n_attrs = attr->ulValueLen / sizeof (CK_ATTRIBUTE);
+	if (n_attrs != 0 && !attr->pValue)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	*template = gck_template_new (attr->pValue, n_attrs);
+	return CKR_OK;
+}
 
 CK_RV
 gck_attribute_set_empty (CK_ATTRIBUTE_PTR attr)
@@ -288,10 +307,10 @@ gck_attribute_set_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi)
 }
 
 CK_RV
-gck_attribute_set_template (CK_ATTRIBUTE_PTR attr, CK_ATTRIBUTE_PTR template,
-                            CK_ULONG n_template)
+gck_attribute_set_template (CK_ATTRIBUTE_PTR attr, GArray *template)
 {
 	CK_ATTRIBUTE_PTR array;
+	CK_ATTRIBUTE_PTR at;
 	CK_RV rv;
 	gulong len;
 	gulong i;
@@ -299,7 +318,7 @@ gck_attribute_set_template (CK_ATTRIBUTE_PTR attr, CK_ATTRIBUTE_PTR template,
 	g_assert (attr);
 	g_warn_if_fail ((attr->type & CKF_ARRAY_ATTRIBUTE) != 0);
 
-	len = sizeof (CK_ATTRIBUTE) * n_template;
+	len = sizeof (CK_ATTRIBUTE) * template->len;
 	if (!attr->pValue) {
 		attr->ulValueLen = len;
 		return CKR_OK;
@@ -313,20 +332,21 @@ gck_attribute_set_template (CK_ATTRIBUTE_PTR attr, CK_ATTRIBUTE_PTR template,
 	rv = CKR_OK;
 
 	/* Start working with individual elements */
-	for (i = 0; i < n_template; ++i) {
-		array[i].type = template[i].type;
+	for (i = 0; i < template->len; ++i) {
+		at = &g_array_index (template, CK_ATTRIBUTE, i);
+		array[i].type = at->type;
 		if (!array[i].pValue) {
-			array[i].ulValueLen = template[i].ulValueLen;
-		} else if (array[i].ulValueLen < template[i].ulValueLen) {
+			array[i].ulValueLen = at->ulValueLen;
+		} else if (array[i].ulValueLen < at->ulValueLen) {
 			array[i].ulValueLen = (CK_ULONG)-1;
 			rv = CKR_BUFFER_TOO_SMALL;
 		} else {
-			memcpy(array[i].pValue, template[i].pValue, template[i].ulValueLen);
-			array[i].ulValueLen = template[i].ulValueLen;
+			memcpy(array[i].pValue, at->pValue, at->ulValueLen);
+			array[i].ulValueLen = at->ulValueLen;
 		}
 	}
 
-	return CKR_OK;
+	return rv;
 }
 
 gboolean
@@ -518,4 +538,78 @@ gck_attributes_find_string (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
 		return FALSE;
 
 	return gck_attribute_get_string (attr, value) == CKR_OK;
+}
+
+GArray*
+gck_template_new (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+{
+	GArray *template = g_array_new (FALSE, FALSE, sizeof (CK_ATTRIBUTE));
+	CK_ATTRIBUTE_PTR pat;
+	gulong i;
+
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
+
+	g_array_append_vals (template, attrs, n_attrs);
+	for (i = 0; i < n_attrs; ++i) {
+		pat = &g_array_index (template, CK_ATTRIBUTE, i);
+		if (pat->pValue)
+			pat->pValue = g_memdup (pat->pValue, pat->ulValueLen);
+	}
+
+	return template;
+}
+
+void
+gck_template_set (GArray *template, CK_ATTRIBUTE_PTR attr)
+{
+	CK_ATTRIBUTE_PTR pat;
+	CK_ATTRIBUTE at;
+	guint i;
+
+	g_return_if_fail (template);
+	g_return_if_fail (attr);
+
+	pat = gck_attributes_find ((CK_ATTRIBUTE_PTR)template->data, template->len, attr->type);
+
+	/* Remove any previous value */
+	for (i = 0; i < template->len; ++i) {
+		if (g_array_index (template, CK_ATTRIBUTE, i).type == attr->type) {
+			g_free (g_array_index (template, CK_ATTRIBUTE, i).pValue);
+			g_array_remove_index_fast (template, i);
+			break;
+		}
+	}
+
+	/* Add a new attribute */
+	memcpy (&at, attr, sizeof (at));
+	if (at.pValue)
+		at.pValue = g_memdup (at.pValue, at.ulValueLen);
+	g_array_append_vals (template, &at, 1);
+}
+
+void
+gck_template_free (GArray *template)
+{
+	guint i;
+
+	if (!template)
+		return;
+
+	for (i = 0; i < template->len; ++i)
+		g_free (g_array_index (template, CK_ATTRIBUTE, i).pValue);
+	g_array_free (template, TRUE);
+}
+
+gboolean
+gck_template_find_boolean (GArray *template, CK_ATTRIBUTE_TYPE type, gboolean *value)
+{
+	g_return_val_if_fail (template, FALSE);
+	return gck_attributes_find_boolean ((CK_ATTRIBUTE_PTR)template->data, template->len, type, value);
+}
+
+gboolean
+gck_template_find_ulong (GArray *template, CK_ATTRIBUTE_TYPE type, gulong *value)
+{
+	g_return_val_if_fail (template, FALSE);
+	return gck_attributes_find_ulong ((CK_ATTRIBUTE_PTR)template->data, template->len, type, value);
 }

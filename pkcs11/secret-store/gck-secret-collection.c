@@ -48,11 +48,7 @@ struct _GckSecretCollection {
 	GHashTable *items;
 	gchar *filename;
 	guint32 watermark;
-
-	/* Template for credential */
-	CK_ATTRIBUTE tp_attrs[2];
-	CK_ULONG tp_idle;
-	CK_BBOOL tp_token;
+	GArray *template;
 };
 
 G_DEFINE_TYPE (GckSecretCollection, gck_secret_collection, GCK_TYPE_SECRET_OBJECT);
@@ -358,7 +354,7 @@ gck_secret_collection_get_attribute (GckObject *base, GckSession *session, CK_AT
 	case CKA_CLASS:
 		return gck_attribute_set_ulong (attr, CKO_G_COLLECTION);
 	case CKA_G_CREDENTIAL_TEMPLATE:
-		return gck_attribute_set_template (attr, self->tp_attrs, G_N_ELEMENTS (self->tp_attrs));
+		return gck_attribute_set_template (attr, self->template);
 	}
 	return GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->get_attribute (base, session, attr);
 }
@@ -370,6 +366,7 @@ gck_secret_collection_set_attribute (GckObject *object, GckSession *session,
 	GckSecretCollection *self = GCK_SECRET_COLLECTION (object);
 	CK_OBJECT_HANDLE handle = 0;
 	GckCredential *cred;
+	GArray *template;
 	CK_RV rv;
 
 	switch (attr->type) {
@@ -385,6 +382,13 @@ gck_secret_collection_set_attribute (GckObject *object, GckSession *session,
 		if (cred == NULL)
 			return gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
 		change_master_password (self, transaction, cred);
+		return;
+	case CKA_G_CREDENTIAL_TEMPLATE:
+		rv = gck_attribute_get_template (attr, &template);
+		if (rv != CKR_OK)
+			return gck_transaction_fail (transaction, rv);
+		gck_template_free (self->template);
+		self->template = template;
 		return;
 	};
 
@@ -470,17 +474,17 @@ gck_secret_collection_real_is_locked (GckSecretObject *obj, GckSession *session)
 static void
 gck_secret_collection_init (GckSecretCollection *self)
 {
+	CK_ULONG idle = 0;
+	CK_ULONG after = 0;
+	CK_BBOOL token = CK_TRUE;
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_TOKEN, &token, sizeof (token) },
+		{ CKA_G_DESTRUCT_IDLE, &idle, sizeof (idle) },
+		{ CKA_G_DESTRUCT_AFTER, &after, sizeof (after) },
+	};
+
 	self->items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-
-	self->tp_token = CK_FALSE;
-	self->tp_attrs[0].type = CKA_TOKEN;
-	self->tp_attrs[0].pValue = &self->tp_token;
-	self->tp_attrs[0].ulValueLen = sizeof (self->tp_token);
-
-	self->tp_idle = 0;
-	self->tp_attrs[1].type = CKA_G_DESTRUCT_IDLE;
-	self->tp_attrs[1].pValue = &self->tp_idle;
-	self->tp_attrs[1].ulValueLen = sizeof (self->tp_idle);
+	self->template = gck_template_new (attrs, G_N_ELEMENTS (attrs));
 }
 
 static void
@@ -538,6 +542,9 @@ gck_secret_collection_finalize (GObject *obj)
 
 	g_free (self->filename);
 	self->filename = NULL;
+
+	gck_template_free (self->template);
+	self->template = NULL;
 
 	G_OBJECT_CLASS (gck_secret_collection_parent_class)->finalize (obj);
 }
@@ -864,15 +871,37 @@ gck_secret_collection_destroy (GckSecretCollection *self, GckTransaction *transa
 gint
 gck_secret_collection_get_lock_idle (GckSecretCollection *self)
 {
+	gulong value;
 	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), 0);
-	return (gint)self->tp_idle;
+	if (!gck_template_find_ulong (self->template, CKA_G_DESTRUCT_IDLE, &value))
+		value = 0;
+	return (gint)value;
 }
 
 void
 gck_secret_collection_set_lock_idle (GckSecretCollection *self, gint lock_timeout)
 {
+	CK_ULONG value = (lock_timeout < 0) ? 0 : lock_timeout;
+	CK_ATTRIBUTE attr = { CKA_G_DESTRUCT_IDLE, &value, sizeof (value) };
 	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
-	if (lock_timeout < 0)
-		lock_timeout = 0;
-	self->tp_idle = (CK_ULONG)lock_timeout;
+	gck_template_set (self->template, &attr);
+}
+
+gint
+gck_secret_collection_get_lock_after (GckSecretCollection *self)
+{
+	gulong value;
+	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (self), 0);
+	if (!gck_template_find_ulong (self->template, CKA_G_DESTRUCT_AFTER, &value))
+		value = 0;
+	return (gint)value;
+}
+
+void
+gck_secret_collection_set_lock_after (GckSecretCollection *self, gint lock_timeout)
+{
+	CK_ULONG value = (lock_timeout < 0) ? 0 : lock_timeout;
+	CK_ATTRIBUTE attr = { CKA_G_DESTRUCT_AFTER, &value, sizeof (value) };
+	g_return_if_fail (GCK_IS_SECRET_COLLECTION (self));
+	gck_template_set (self->template, &attr);
 }

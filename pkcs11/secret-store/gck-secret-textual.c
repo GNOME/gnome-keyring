@@ -406,11 +406,14 @@ gck_secret_textual_write (GckSecretCollection *collection, GckSecretData *sdata,
 	key_file_set_uint64 (file, "keyring", "ctime", gck_secret_object_get_created (obj));
 	key_file_set_uint64 (file, "keyring", "mtime", gck_secret_object_get_modified (obj));
 
-	/* Not currently used :( */
 	idle_timeout = gck_secret_collection_get_lock_idle (collection);
 	g_key_file_set_boolean (file, "keyring", "lock-on-idle", idle_timeout > 0);
-	idle_timeout = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (collection), "lock-timeout"));
-	g_key_file_set_integer (file, "keyring", "lock-timeout", idle_timeout);
+	if (idle_timeout)
+		g_key_file_set_integer (file, "keyring", "lock-timeout", idle_timeout);
+	idle_timeout = gck_secret_collection_get_lock_after (collection);
+	g_key_file_set_boolean (file, "keyring", "lock-after", idle_timeout > 0);
+	if (idle_timeout)
+		g_key_file_set_integer (file, "keyring", "lock-timeout", idle_timeout);
 
 	items = gck_secret_collection_get_items (collection);
 	for (l = items; l; l = g_list_next (l)) 
@@ -457,7 +460,6 @@ gck_secret_textual_read (GckSecretCollection *collection, GckSecretData *sdata,
 	gchar *start = NULL;
 	const gchar *identifier;
 	GHashTable *checks = NULL;
-	gboolean lock_idle;
 	gint lock_timeout;
 	gchar *value;
 	guint64 num;
@@ -499,9 +501,12 @@ gck_secret_textual_read (GckSecretCollection *collection, GckSecretData *sdata,
 	gck_secret_object_set_modified (obj, num);
 	
 	/* Not currently used :( */
-	lock_idle = g_key_file_get_boolean (file, "keyring", "lock-on-idle", NULL);
-	g_object_set_data (G_OBJECT (collection), "lock-on-idle", GINT_TO_POINTER (lock_idle));
 	lock_timeout = g_key_file_get_integer (file, "keyring", "lock-timeout", NULL);
+	if (g_key_file_get_boolean (file, "keyring", "lock-after", NULL))
+		gck_secret_collection_set_lock_idle (collection, lock_timeout);
+	else if (g_key_file_get_boolean (file, "keyring", "lock-on-idle", NULL))
+		gck_secret_collection_set_lock_idle (collection, lock_timeout);
+
 	g_object_set_data (G_OBJECT (collection), "lock-timeout", GINT_TO_POINTER (lock_timeout));
 	
 	/* Build a Hash table where we can track ids we haven't yet seen */

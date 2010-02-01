@@ -96,4 +96,9 @@ gint                 gck_secret_collection_get_lock_idle   (GckSecretCollection 
 void                 gck_secret_collection_set_lock_idle   (GckSecretCollection *self,
                                                             gint lock_timeout);
 
+gint                 gck_secret_collection_get_lock_after  (GckSecretCollection *self);
+
+void                 gck_secret_collection_set_lock_after  (GckSecretCollection *self,
+                                                            gint lock_timeout);
+
 #endif /* __GCK_SECRET_COLLECTION_H__ */

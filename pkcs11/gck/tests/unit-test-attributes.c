@@ -728,3 +728,52 @@ DEFINE_TEST(attributes_consume)
 
 	g_free (attrs);
 }
+
+DEFINE_TEST(template_new_free)
+{
+	GArray *template = gck_template_new (attr_template, G_N_ELEMENTS (attr_template));
+	g_assert (template);
+	gck_template_free (template);
+}
+
+DEFINE_TEST(template_find)
+{
+	GArray *template = gck_template_new (attr_template, G_N_ELEMENTS (attr_template));
+	gulong uvalue;
+	gboolean ret, bvalue;
+
+	ret = gck_template_find_ulong (template, CKA_CLASS, &uvalue);
+	g_assert (ret);
+	g_assert (uvalue == attr_template_klass);
+
+	ret = gck_template_find_boolean (template, CKA_TOKEN, &bvalue);
+	g_assert (ret);
+	g_assert (bvalue == attr_template_token);
+
+	/* An invalid attribute */
+	ret = gck_template_find_boolean (template, CKA_AC_ISSUER, &bvalue);
+	g_assert (!ret);
+
+	gck_template_free (template);
+}
+
+DEFINE_TEST(template_set_replace)
+{
+	GArray *template = gck_template_new (attr_template, G_N_ELEMENTS (attr_template));
+	CK_OBJECT_CLASS klass = CKO_HW_FEATURE;
+	CK_ATTRIBUTE attr = { CKA_CLASS, &klass, sizeof (klass) };
+	gulong uvalue;
+
+	if (!gck_template_find_ulong (template, CKA_CLASS, &uvalue))
+		g_assert_not_reached ();
+	g_assert (uvalue == attr_template_klass);
+
+	/* Replace a previous attribute */
+	gck_template_set (template, &attr);
+
+	if (!gck_template_find_ulong (template, CKA_CLASS, &uvalue))
+		g_assert_not_reached ();
+	g_assert (uvalue == CKO_HW_FEATURE);
+
+	gck_template_free (template);
+}

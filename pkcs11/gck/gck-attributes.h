@@ -43,6 +43,9 @@ CK_RV                 gck_attribute_get_string                         (CK_ATTRI
 CK_RV                 gck_attribute_get_mpi                            (CK_ATTRIBUTE_PTR attr,
                                                                         gcry_mpi_t *value);
 
+CK_RV                 gck_attribute_get_template                       (CK_ATTRIBUTE_PTR attr,
+                                                                        GArray **template);
+
 CK_RV                 gck_attribute_set_empty                          (CK_ATTRIBUTE_PTR attr);
 
 CK_RV                 gck_attribute_set_bool                           (CK_ATTRIBUTE_PTR attr,
@@ -68,8 +71,7 @@ CK_RV                 gck_attribute_set_mpi                            (CK_ATTRI
                                                                         gcry_mpi_t mpi);
 
 CK_RV                 gck_attribute_set_template                       (CK_ATTRIBUTE_PTR attr,
-                                                                        CK_ATTRIBUTE_PTR template,
-                                                                        CK_ULONG n_template);
+                                                                        GArray *template);
 
 guint                 gck_attribute_hash                               (gconstpointer v);
 
@@ -112,5 +114,21 @@ gboolean              gck_attributes_find_string                       (CK_ATTRI
                                                                         CK_ULONG n_attrs,
                                                                         CK_ATTRIBUTE_TYPE type,
                                                                         gchar **value);
+
+GArray*               gck_template_new                                 (CK_ATTRIBUTE_PTR attrs,
+                                                                        CK_ULONG n_attrs);
+
+void                  gck_template_set                                 (GArray *template,
+                                                                        CK_ATTRIBUTE_PTR attr);
+
+void                  gck_template_free                                (GArray *template);
+
+gboolean              gck_template_find_boolean                        (GArray *template,
+                                                                        CK_ATTRIBUTE_TYPE type,
+                                                                        gboolean *value);
+
+gboolean              gck_template_find_ulong                          (GArray *template,
+                                                                        CK_ATTRIBUTE_TYPE type,
+                                                                        gulong *value);
 
 #endif /* GCK_ATTRIBUTE_H_ */

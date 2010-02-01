@@ -56,7 +56,10 @@
  * DECLARATIONS
  */
 
-#define LOCK_ON_IDLE_FLAG (1<<0)
+enum {
+	LOCK_ON_IDLE_FLAG = 1 << 0,
+	LOCK_AFTER_FLAG = 1 << 1
+};
 
 typedef struct {
 	/* unencrypted: */
@@ -568,7 +571,7 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecretData *sdata,
         gint hash_iterations;
         gint lock_timeout;
         guchar salt[8];
-	guint flags;
+	guint flags = 0;
 	int i;
 
 	g_return_val_if_fail (GCK_IS_SECRET_COLLECTION (collection), GCK_DATA_FAILURE);
@@ -594,10 +597,15 @@ gck_secret_binary_write (GckSecretCollection *collection, GckSecretData *sdata,
 	buffer_add_time (&buffer, gck_secret_object_get_modified (obj));
 	buffer_add_time (&buffer, gck_secret_object_get_created (obj));
 
-	flags = 0;
 	lock_timeout = gck_secret_collection_get_lock_idle (collection);
-	if (lock_timeout)
+	if (lock_timeout) {
 		flags |= LOCK_ON_IDLE_FLAG;
+	} else {
+		lock_timeout = gck_secret_collection_get_lock_after (collection);
+		if (lock_timeout)
+			flags |= LOCK_AFTER_FLAG;
+	}
+
 	egg_buffer_add_uint32 (&buffer, flags);
 
 	egg_buffer_add_uint32 (&buffer, lock_timeout);
@@ -939,9 +947,10 @@ gck_secret_binary_read (GckSecretCollection *collection, GckSecretData *sdata,
 	gck_secret_object_set_label (obj, display_name);
 	gck_secret_object_set_modified (obj, mtime);
 	gck_secret_object_set_created (obj, ctime);
-	if (!(flags & LOCK_ON_IDLE_FLAG))
-		lock_timeout = 0;
-	gck_secret_collection_set_lock_idle (collection, lock_timeout);
+	if (flags & LOCK_ON_IDLE_FLAG)
+		gck_secret_collection_set_lock_idle (collection, lock_timeout);
+	else if (flags & LOCK_AFTER_FLAG)
+		gck_secret_collection_set_lock_after (collection, lock_timeout);
 
 	/* Build a Hash table where we can track ids we haven't yet seen */
 	checks = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
