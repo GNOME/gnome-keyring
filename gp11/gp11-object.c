@@ -1348,7 +1348,7 @@ gp11_object_set_template_full (GP11Object *self, gulong attr_type, GP11Attribute
 
 	session = require_session_sync (self, CKF_RW_SESSION, err);
 	if (session)
-		ret = _gp11_call_sync (session, perform_set_attributes, NULL, &args, cancellable, err);
+		ret = _gp11_call_sync (session, perform_set_template, NULL, &args, cancellable, err);
 
 	_gp11_attributes_unlock (attrs);
 	g_object_unref (session);
@@ -1458,6 +1458,7 @@ perform_get_template (get_template_args *args)
 		gp11_attributes_add_empty (args->attrs, 0);
 
 	/* Prepare all the attributes */
+	_gp11_attributes_lock (args->attrs);
 	attr.pValue = _gp11_attributes_prepare_in (args->attrs, &n_attrs);
 
 	/* Get the size of each value */
@@ -1539,6 +1540,8 @@ gp11_object_get_template_full (GP11Object *self, gulong attr_type,
 	ret = _gp11_call_sync (session, perform_get_template, NULL, &args, cancellable, err);
 	g_object_unref (session);
 
+	_gp11_attributes_unlock (args.attrs);
+
 	/* Free any value if failed */
 	if (!ret) {
 		gp11_attributes_unref (args.attrs);
@@ -1607,5 +1610,6 @@ gp11_object_get_template_finish (GP11Object *self, GAsyncResult *result,
 		return NULL;
 
 	args = _gp11_call_arguments (result, get_template_args);
+	_gp11_attributes_unlock (args->attrs);
 	return gp11_attributes_ref (args->attrs);
 }
