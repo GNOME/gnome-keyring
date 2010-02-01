@@ -68,10 +68,12 @@ gnome_keyring_prompt_SOURCES = \
 gnome_keyring_prompt_LDADD = \
 	$(top_builddir)/egg/libegg-prompt.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
+	$(top_builddir)/gcr/libgcr.la \
 	$(LIBGCRYPT_LIBS) \
 	$(GTK_LIBS)
 
 gnome_keyring_prompt_CFLAGS = \
 	-DUIDIR=\""$(uidir)"\" \
+	-DGCR_API_SUBJECT_TO_CHANGE \
 	$(LIBGCRYPT_CFLAGS) \
 	$(GTK_CFLAGS)

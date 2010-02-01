@@ -80,13 +80,31 @@ location_string_for_collection (GP11Object *collection)
 	return location;
 }
 
+static gchar*
+label_string_for_collection (GP11Object *collection)
+{
+	GError *error = NULL;
+	gpointer data;
+	gsize n_data;
+
+	data = gp11_object_get_data (collection, CKA_LABEL, &n_data, &error);
+	if (!data) {
+		g_warning ("couldn't get label for collection: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	if (!data || !n_data)
+		return g_strdup (_("Unnamed"));
+	else /* gp11_object_get_data returns null terminated */
+		return data;
+}
+
 static void
 prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 {
+	GP11Attributes *template;
 	GError *error = NULL;
 	GkdPrompt *prompt;
-	gpointer data;
-	gsize n_data;
 	gchar *label;
 	gchar *text;
 
@@ -95,17 +113,7 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 
 	prompt = GKD_PROMPT (self);
 
-	data = gp11_object_get_data (coll, CKA_LABEL, &n_data, &error);
-	if (!data) {
-		g_warning ("couldn't get label for collection: %s", error->message);
-		g_clear_error (&error);
-	}
-
-	if (!data || !n_data)
-		label = g_strdup (_("Unnamed"));
-	else
-		label = g_strndup (data, n_data);
-	g_free (data);
+	label = label_string_for_collection (coll);
 
 	gkd_prompt_reset (prompt);
 
@@ -121,10 +129,21 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 
 	gkd_prompt_hide_widget (prompt, "name_area");
 	gkd_prompt_hide_widget (prompt, "confirm_area");
-	gkd_prompt_hide_widget (prompt, "details_area");
+	gkd_prompt_show_widget (prompt, "details_area");
 	gkd_prompt_show_widget (prompt, "password_area");
+	gkd_prompt_show_widget (prompt, "lock_area");
 
 	g_free (label);
+
+	/* Setup the unlock options */
+	template = gp11_object_get_template (coll, CKA_G_CREDENTIAL_TEMPLATE, &error);
+	if (template) {
+		gkd_prompt_set_unlock_options (prompt, template);
+		gp11_attributes_unref (template);
+	} else {
+		g_warning ("couldn't get credential template for collection: %s", error->message);
+		g_clear_error (&error);
+	}
 }
 
 static void
@@ -154,21 +173,70 @@ check_locked_collection (GP11Object *collection, gboolean *locked)
 	return TRUE;
 }
 
+static void
+attach_credential_to_login (GP11Object *collection, GP11Object *cred)
+{
+	GError *error = NULL;
+	gpointer value;
+	gsize n_value;
+	gchar *location;
+	gchar *label;
+	gchar *display;
+
+	g_assert (GP11_IS_OBJECT (collection));
+	g_assert (GP11_IS_OBJECT (cred));
+
+	location = location_string_for_collection (collection);
+	label = label_string_for_collection (collection);
+	display = g_strdup_printf (_("Unlock password for %s keyring"), label);
+	g_free (label);
+
+	value = gp11_object_get_data_full (cred, CKA_VALUE, egg_secure_realloc, NULL, &n_value, &error);
+	if (value) {
+		if (g_utf8_validate (value, n_value, NULL))
+			gkd_login_attach_secret (display, value, "keyring", location, NULL);
+		else
+			g_warning ("couldn't save non utf-8 unlock credentials in login keyring");
+		egg_secure_clear (value, n_value);
+		egg_secure_free (value);
+
+	} else {
+		g_warning ("couldn't read unlock credentials to save in login keyring: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_free (location);
+	g_free (display);
+}
+
+static void
+common_unlock_attributes (GP11Attributes *attrs, GP11Object *collection)
+{
+	g_assert (attrs);
+	g_assert (GP11_IS_OBJECT (collection));
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
+	gp11_attributes_add_ulong (attrs, CKA_G_OBJECT, gp11_object_get_handle (collection));
+}
+
 static gboolean
 authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean *locked)
 {
 	DBusError derr = DBUS_ERROR_INIT;
 	GkdSecretSecret *master;
-	gboolean result;
+	GP11Attributes *template;
+	GP11Object *cred;
+	gboolean transient;
 
 	g_assert (GKD_SECRET_IS_UNLOCK (self));
 	g_assert (GP11_IS_OBJECT (collection));
 	g_assert (locked);
 
-	/* Bail out early, just checking locked status */
-	if (!gkd_prompt_has_response (GKD_PROMPT (self))) {
-		return check_locked_collection (collection, locked);
-	}
+	if (!check_locked_collection (collection, locked))
+		return FALSE;
+
+	/* Shortcut if already unlocked, or just checking locked status */
+	if (!*locked || !gkd_prompt_has_response (GKD_PROMPT (self)))
+		return TRUE;
 
 	master = gkd_secret_prompt_get_secret (GKD_SECRET_PROMPT (self), "password");
 	if (master == NULL) {
@@ -176,14 +244,33 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 		return FALSE;
 	}
 
-	result = gkd_secret_unlock_with_secret (collection, master, &derr);
+	/* The various unlock options */
+	template = gp11_attributes_new ();
+	common_unlock_attributes (template, collection);
+	gkd_prompt_get_unlock_options (GKD_PROMPT (self), template);
+
+	/* If it's supposed to save non-transient, then we override that */
+	if (!gp11_attributes_find_boolean (template, CKA_GNOME_TRANSIENT, &transient))
+		transient = TRUE;
+
+	cred = gkd_secret_session_create_credential (master->session, NULL, template, master, &derr);
 	gkd_secret_secret_free (master);
 
-	if (result) {
+	if (cred) {
+		/* Save it to the login keyring */
+		if (!transient)
+			attach_credential_to_login (collection, cred);
+		g_object_unref (cred);
+
+		/* Save away the unlock options for next time */
+		gp11_object_set_template (collection, CKA_G_CREDENTIAL_TEMPLATE, template, NULL);
+		gp11_attributes_unref (template);
+
 		*locked = FALSE;
 		return TRUE; /* Operation succeeded, and unlocked */
 
 	} else {
+		gp11_attributes_unref (template);
 		if (dbus_error_has_name (&derr, INTERNAL_ERROR_DENIED)) {
 			dbus_error_free (&derr);
 			*locked = TRUE;
@@ -434,11 +521,10 @@ gkd_secret_unlock_with_secret (GP11Object *collection, GkdSecretSecret *master,
 	if (check_locked_collection (collection, &locked) && !locked)
 		return TRUE;
 
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                              CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (collection),
-	                              CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
-	                              CKA_TOKEN, GP11_BOOLEAN, TRUE,
-	                              GP11_INVALID);
+	attrs = gp11_attributes_new ();
+	common_unlock_attributes (attrs, collection);
+	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
 	cred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, derr);
 
@@ -453,6 +539,7 @@ gboolean
 gkd_secret_unlock_with_password (GP11Object *collection, const guchar *password,
                                  gsize n_password, DBusError *derr)
 {
+	GP11Attributes *attrs;
 	GError *error = NULL;
 	GP11Session *session;
 	GP11Object *cred;
@@ -467,13 +554,13 @@ gkd_secret_unlock_with_password (GP11Object *collection, const guchar *password,
 	session = gp11_object_get_session (collection);
 	g_return_val_if_fail (session, FALSE);
 
-	cred = gp11_session_create_object (session, &error, CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                                   CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (collection),
-	                                   CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
-	                                   CKA_TOKEN, GP11_BOOLEAN, TRUE,
-	                                   CKA_VALUE, n_password, password,
-	                                   GP11_INVALID);
+	attrs = gp11_attributes_new_full (egg_secure_realloc);
+	common_unlock_attributes (attrs, collection);
+	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gp11_attributes_add_data (attrs, CKA_VALUE, password, n_password);
 
+	cred = gp11_session_create_object_full (session, attrs, NULL, &error);
 	if (cred == NULL) {
 		if (error->code == CKR_PIN_INCORRECT) {
 			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");

@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include <gp11/gp11.h>
+
 typedef enum {
 	GKD_RESPONSE_FAILURE      = -1,
 	GKD_RESPONSE_NONE         = 0,
@@ -108,6 +110,12 @@ gboolean            gkd_prompt_get_transport_password (GkdPrompt *self,
                                                        gsize *n_parameter,
                                                        gpointer *value,
                                                        gsize *n_value);
+
+void                gkd_prompt_get_unlock_options     (GkdPrompt *self,
+                                                       GP11Attributes *attrs);
+
+void                gkd_prompt_set_unlock_options     (GkdPrompt *self,
+                                                       GP11Attributes *attrs);
 
 gboolean            gkd_prompt_is_widget_selected     (GkdPrompt *prompt,
                                                        const gchar *widget);

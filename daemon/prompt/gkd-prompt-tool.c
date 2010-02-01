@@ -29,6 +29,8 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
+#include "gcr/gcr-unlock-options-widget.h"
+
 #include <gcrypt.h>
 
 #include <glib/gi18n.h>
@@ -305,41 +307,35 @@ prepare_security (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 static void
-on_auto_check_unlock_toggled (GtkToggleButton *check, GtkBuilder *builder)
-{
-	GtkWidget *area;
-
-	area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
-	gtk_widget_set_sensitive (area, !gtk_toggle_button_get_active (check));
-}
-
-static void
-on_timeout_choices_toggled (GtkToggleButton *unused, GtkBuilder *builder)
-{
-	GtkWidget *spin, *after, *idle;
-
-	spin = GTK_WIDGET (gtk_builder_get_object (builder, "lock_minutes_spin"));
-	after = GTK_WIDGET (gtk_builder_get_object (builder, "lock_after_choice"));
-	idle = GTK_WIDGET (gtk_builder_get_object (builder, "lock_idle_choice"));
-	gtk_widget_set_sensitive (spin, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (after)) ||
-	                                gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(idle)));
-
-}
-
-static void
 prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
 {
-	GtkWidget *check;
+	GtkWidget *unlock, *area;
+	gboolean unlock_auto, unlock_global;
+	gint unlock_idle, unlock_timeout;
 
-	check = GTK_WIDGET (gtk_builder_get_object (builder, "auto_unlock_check"));
-	g_signal_connect (check, "toggled", G_CALLBACK (on_auto_check_unlock_toggled), builder);
-	on_auto_check_unlock_toggled (GTK_TOGGLE_BUTTON (check), builder);
+	unlock = gcr_unlock_options_widget_new ();
+	area = GTK_WIDGET (gtk_builder_get_object (builder, "lock_area"));
+	g_object_set_data (G_OBJECT (dialog), "unlock-options-widget", unlock);
+	gtk_container_add (GTK_CONTAINER (area), unlock);
+	gtk_widget_show (unlock);
 
-	check = GTK_WIDGET (gtk_builder_get_object (builder, "lock_after_choice"));
-	g_signal_connect (check, "toggled", G_CALLBACK (on_timeout_choices_toggled), builder);
-	check = GTK_WIDGET (gtk_builder_get_object (builder, "lock_idle_choice"));
-	g_signal_connect (check, "toggled", G_CALLBACK (on_timeout_choices_toggled), builder);
-	on_timeout_choices_toggled (GTK_TOGGLE_BUTTON (check), builder);
+	unlock_auto = g_key_file_get_boolean (input_data, "unlock-options", "unlock-auto", NULL);
+
+	/* Defaults to TRUE */
+	if (!g_key_file_has_key (input_data, "unlock-options", "unlock-global", NULL))
+		unlock_global = TRUE;
+	else
+		unlock_global = g_key_file_get_boolean (input_data, "unlock-options", "unlock-global", NULL);
+
+	unlock_idle = g_key_file_get_integer (input_data, "unlock-options", "unlock-idle", NULL);
+	unlock_timeout = g_key_file_get_integer (input_data, "unlock-options", "unlock-timeout", NULL);
+
+	g_object_set (unlock,
+	              "unlock-auto", unlock_auto,
+	              "unlock-global", unlock_global,
+	              "unlock-idle", unlock_idle,
+	              "unlock-timeout", unlock_timeout,
+	              NULL);
 }
 
 static GtkDialog*
@@ -554,11 +550,33 @@ gather_response (gint response)
 }
 
 static void
+gather_unlock_options (GtkBuilder *builder, GtkDialog *dialog)
+{
+	gboolean unlock_auto, unlock_global;
+	gint unlock_timeout, unlock_idle;
+
+	GtkWidget *unlock = g_object_get_data (G_OBJECT (dialog), "unlock-options-widget");
+
+	g_object_get (unlock,
+	              "unlock-auto", &unlock_auto,
+	              "unlock-global", &unlock_global,
+	              "unlock-timeout", &unlock_timeout,
+	              "unlock-idle", &unlock_idle,
+	              NULL);
+
+	g_key_file_set_boolean (output_data, "unlock-options", "unlock-auto", unlock_auto);
+	g_key_file_set_boolean (output_data, "unlock-options", "unlock-global", unlock_global);
+	g_key_file_set_integer (output_data, "unlock-options", "unlock-timeout", unlock_timeout);
+	g_key_file_set_integer (output_data, "unlock-options", "unlock-idle", unlock_idle);
+}
+
+static void
 gather_dialog (GtkBuilder *builder, GtkDialog *dialog)
 {
 	gather_password (builder, "password");
 	gather_password (builder, "confirm");
 	gather_password (builder, "original");
+	gather_unlock_options (builder, dialog);
 }
 
 static void

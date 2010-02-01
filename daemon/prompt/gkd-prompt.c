@@ -31,6 +31,8 @@
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-spawn.h"
 
+#include "pkcs11/pkcs11i.h"
+
 #include <gcrypt.h>
 
 #define DEBUG_PROMPT 1
@@ -809,6 +811,54 @@ gkd_prompt_get_transport_password (GkdPrompt *self, const gchar *password_type,
 		*n_value = 0;
 
 	return TRUE;
+}
+
+void
+gkd_prompt_get_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
+{
+	gboolean bval;
+	gint ival;
+
+	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (attrs);
+	g_return_if_fail (self->pv->output);
+
+	bval = g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-auto", NULL);
+	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, !bval);
+
+	bval = TRUE;
+	if (g_key_file_has_key (self->pv->output, "unlock-options", "unlock-global", NULL))
+		bval = g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-global", NULL);
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, bval);
+
+	ival = g_key_file_get_integer (self->pv->output, "unlock-options", "unlock-idle", NULL);
+	gp11_attributes_add_ulong (attrs, CKA_G_DESTRUCT_IDLE, ival <= 0 ? 0 : ival);
+
+	ival = g_key_file_get_integer (self->pv->output, "unlock-options", "unlock-timeout", NULL);
+	gp11_attributes_add_ulong (attrs, CKA_G_DESTRUCT_AFTER, ival <= 0 ? 0 : ival);
+}
+
+void
+gkd_prompt_set_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
+{
+	gboolean bval;
+	gulong uval;
+
+	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (attrs);
+	g_return_if_fail (self->pv->input);
+
+	if (gp11_attributes_find_boolean (attrs, CKA_GNOME_TRANSIENT, &bval))
+		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-auto", !bval);
+
+	if (gp11_attributes_find_boolean (attrs, CKA_TOKEN, &bval))
+		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-global", bval);
+
+	if (gp11_attributes_find_ulong (attrs, CKA_G_DESTRUCT_IDLE, &uval))
+		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-idle", (int)uval);
+
+	if (gp11_attributes_find_ulong (attrs, CKA_G_DESTRUCT_AFTER, &uval))
+		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-timeout", (int)uval);
 }
 
 /* ----------------------------------------------------------------------------------
