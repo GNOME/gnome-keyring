@@ -826,11 +826,6 @@ gkd_prompt_get_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
 	bval = g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-auto", NULL);
 	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, !bval);
 
-	bval = TRUE;
-	if (g_key_file_has_key (self->pv->output, "unlock-options", "unlock-global", NULL))
-		bval = g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-global", NULL);
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, bval);
-
 	ival = g_key_file_get_integer (self->pv->output, "unlock-options", "unlock-idle", NULL);
 	gp11_attributes_add_ulong (attrs, CKA_G_DESTRUCT_IDLE, ival <= 0 ? 0 : ival);
 
@@ -850,9 +845,6 @@ gkd_prompt_set_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
 
 	if (gp11_attributes_find_boolean (attrs, CKA_GNOME_TRANSIENT, &bval))
 		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-auto", !bval);
-
-	if (gp11_attributes_find_boolean (attrs, CKA_TOKEN, &bval))
-		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-global", bval);
 
 	if (gp11_attributes_find_ulong (attrs, CKA_G_DESTRUCT_IDLE, &uval))
 		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-idle", (int)uval);

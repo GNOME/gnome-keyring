@@ -101,18 +101,6 @@
                 <property name="position">1</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkCheckButton" id="per_application_check">
-                <property name="label" translatable="yes">Prompt me for each application that accesses this keyring.</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="draw_indicator">True</property>
-              </object>
-              <packing>
-                <property name="position">2</property>
-              </packing>
-            </child>
           </object>
         </child>
       </object>

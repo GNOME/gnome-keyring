@@ -310,7 +310,7 @@ static void
 prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
 {
 	GtkWidget *unlock, *area;
-	gboolean unlock_auto, unlock_global;
+	gboolean unlock_auto;
 	gint unlock_idle, unlock_timeout;
 
 	unlock = gcr_unlock_options_widget_new ();
@@ -320,19 +320,11 @@ prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
 	gtk_widget_show (unlock);
 
 	unlock_auto = g_key_file_get_boolean (input_data, "unlock-options", "unlock-auto", NULL);
-
-	/* Defaults to TRUE */
-	if (!g_key_file_has_key (input_data, "unlock-options", "unlock-global", NULL))
-		unlock_global = TRUE;
-	else
-		unlock_global = g_key_file_get_boolean (input_data, "unlock-options", "unlock-global", NULL);
-
 	unlock_idle = g_key_file_get_integer (input_data, "unlock-options", "unlock-idle", NULL);
 	unlock_timeout = g_key_file_get_integer (input_data, "unlock-options", "unlock-timeout", NULL);
 
 	g_object_set (unlock,
 	              "unlock-auto", unlock_auto,
-	              "unlock-global", unlock_global,
 	              "unlock-idle", unlock_idle,
 	              "unlock-timeout", unlock_timeout,
 	              NULL);
@@ -552,20 +544,18 @@ gather_response (gint response)
 static void
 gather_unlock_options (GtkBuilder *builder, GtkDialog *dialog)
 {
-	gboolean unlock_auto, unlock_global;
+	gboolean unlock_auto;
 	gint unlock_timeout, unlock_idle;
 
 	GtkWidget *unlock = g_object_get_data (G_OBJECT (dialog), "unlock-options-widget");
 
 	g_object_get (unlock,
 	              "unlock-auto", &unlock_auto,
-	              "unlock-global", &unlock_global,
 	              "unlock-timeout", &unlock_timeout,
 	              "unlock-idle", &unlock_idle,
 	              NULL);
 
 	g_key_file_set_boolean (output_data, "unlock-options", "unlock-auto", unlock_auto);
-	g_key_file_set_boolean (output_data, "unlock-options", "unlock-global", unlock_global);
 	g_key_file_set_integer (output_data, "unlock-options", "unlock-timeout", unlock_timeout);
 	g_key_file_set_integer (output_data, "unlock-options", "unlock-idle", unlock_idle);
 }

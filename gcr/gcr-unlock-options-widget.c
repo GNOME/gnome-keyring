@@ -26,7 +26,6 @@
 enum {
 	PROP_0,
 	PROP_UNLOCK_AUTO,
-	PROP_UNLOCK_GLOBAL,
 	PROP_UNLOCK_TIMEOUT,
 	PROP_UNLOCK_IDLE
 };
@@ -34,7 +33,6 @@ enum {
 struct _GcrUnlockOptionsWidgetPrivate {
 	GtkBuilder *builder;
 	GtkToggleButton *auto_unlock;
-	GtkToggleButton *per_application;
 	GtkToggleButton *lock_logout;
 	GtkToggleButton *lock_after;
 	GtkToggleButton *lock_idle;
@@ -169,10 +167,6 @@ gcr_unlock_options_widget_set_property (GObject *obj, guint prop_id, const GValu
 		button = builder_get_toggle_button (self->pv->builder, "auto_unlock_check");
 		gtk_toggle_button_set_active (button, g_value_get_boolean (value));
 		break;
-	case PROP_UNLOCK_GLOBAL:
-		button = builder_get_toggle_button (self->pv->builder, "per_application_check");
-		gtk_toggle_button_set_active (button, !g_value_get_boolean (value));
-		break;
 	case PROP_UNLOCK_TIMEOUT:
 		button = builder_get_toggle_button (self->pv->builder, "lock_after_choice");
 		seconds = g_value_get_int (value);
@@ -221,14 +215,6 @@ gcr_unlock_options_widget_get_property (GObject *obj, guint prop_id, GValue *val
 	case PROP_UNLOCK_AUTO:
 		g_value_set_boolean (value, auto_unlock);
 		break;
-	case PROP_UNLOCK_GLOBAL:
-		if (auto_unlock) {
-			g_value_set_boolean (value, TRUE);
-		} else {
-			button = builder_get_toggle_button (self->pv->builder, "per_application_check");
-			g_value_set_boolean (value, !gtk_toggle_button_get_active (button));
-		}
-		break;
 	case PROP_UNLOCK_TIMEOUT:
 		if (auto_unlock) {
 			g_value_set_int (value, 0);
@@ -274,10 +260,6 @@ gcr_unlock_options_widget_class_init (GcrUnlockOptionsWidgetClass *klass)
 	g_object_class_install_property (gobject_class, PROP_UNLOCK_AUTO,
 	               g_param_spec_boolean ("unlock-auto", "Unlock Auto", "Unlock Automatically",
 	                                     FALSE, G_PARAM_READWRITE));
-
-	g_object_class_install_property (gobject_class, PROP_UNLOCK_GLOBAL,
-	               g_param_spec_boolean ("unlock-global", "Unlock Global", "Unlock Globally",
-	                                     TRUE, G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_UNLOCK_TIMEOUT,
 	               g_param_spec_int ("unlock-timeout", "Unlock Timeout", "Unlock Timeout",
