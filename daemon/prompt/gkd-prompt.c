@@ -823,6 +823,8 @@ gkd_prompt_get_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
 	g_return_if_fail (attrs);
 	g_return_if_fail (self->pv->output);
 
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+
 	bval = g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-auto", NULL);
 	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, !bval);
 

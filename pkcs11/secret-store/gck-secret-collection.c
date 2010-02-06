@@ -479,6 +479,7 @@ gck_secret_collection_init (GckSecretCollection *self)
 	CK_BBOOL token = CK_TRUE;
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_TOKEN, &token, sizeof (token) },
+		{ CKA_GNOME_TRANSIENT, &token, sizeof (token) },
 		{ CKA_G_DESTRUCT_IDLE, &idle, sizeof (idle) },
 		{ CKA_G_DESTRUCT_AFTER, &after, sizeof (after) },
 	};
