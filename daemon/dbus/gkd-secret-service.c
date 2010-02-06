@@ -56,7 +56,6 @@ struct _GkdSecretService {
 	GHashTable *clients;
 	gchar *match_rule;
 	GkdSecretObjects *objects;
-	gchar *default_collection;
 };
 
 typedef struct _ServiceClient {
@@ -88,9 +87,11 @@ static void
 update_default (GkdSecretService *self, gboolean force)
 {
 	gchar *contents = NULL;
+	const gchar *identifier;
 	gchar *path;
 
-	if (!force && self->default_collection)
+	identifier = gkd_secret_objects_get_alias (self->objects, "default");
+	if (!force && identifier)
 		return;
 
 	path = default_path ();
@@ -103,21 +104,23 @@ update_default (GkdSecretService *self, gboolean force)
 	}
 	g_free (path);
 
-	g_free (self->default_collection);
-	self->default_collection = contents;
+	gkd_secret_objects_set_alias (self->objects, "default", contents);
+	g_free (contents);
 }
 
 static void
 store_default (GkdSecretService *self)
 {
 	GError *error = NULL;
+	const gchar *identifier;
 	gchar *path;
 
-	if (!self->default_collection)
+	identifier = gkd_secret_objects_get_alias (self->objects, "default");
+	if (!identifier)
 		return;
 
 	path = default_path ();
-	if (!g_file_set_contents (path, self->default_collection, -1, &error)) {
+	if (!g_file_set_contents (path, identifier, -1, &error)) {
 		g_message ("couldn't store default keyring: %s",
 		           error->message ? error->message : "");
 	}
