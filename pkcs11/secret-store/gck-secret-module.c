@@ -110,15 +110,15 @@ complete_add (GckTransaction *transaction, GObject *obj, gpointer user_data)
 static void
 add_collection (GckSecretModule *self, GckTransaction *transaction, GckSecretCollection  *collection)
 {
-	const gchar *identifier;
+	const gchar *filename;
 
 	g_assert (GCK_IS_SECRET_MODULE(self));
 	g_assert (GCK_IS_SECRET_COLLECTION (collection));
 
-	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
-	g_return_if_fail (identifier);
+	filename = gck_secret_collection_get_filename (collection);
+	g_return_if_fail (filename);
 
-	g_hash_table_replace (self->collections, g_strdup (identifier), g_object_ref (collection));
+	g_hash_table_replace (self->collections, g_strdup (filename), g_object_ref (collection));
 
 	gck_object_expose_full (GCK_OBJECT (collection), transaction, TRUE);
 	if (transaction)
@@ -138,15 +138,15 @@ complete_remove (GckTransaction *transaction, GObject *obj, gpointer user_data)
 static void
 remove_collection (GckSecretModule *self, GckTransaction *transaction, GckSecretCollection *collection)
 {
-	const gchar *identifier;
+	const gchar *filename;
 
 	g_assert (GCK_IS_SECRET_MODULE (self));
 	g_assert (GCK_IS_SECRET_COLLECTION (collection));
 
-	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
-	g_return_if_fail (identifier);
+	filename = gck_secret_collection_get_filename (collection);
+	g_return_if_fail (filename);
 
-	g_hash_table_remove (self->collections, identifier);
+	g_hash_table_remove (self->collections, filename);
 
 	gck_object_expose_full (GCK_OBJECT (collection), transaction, FALSE);
 	if (transaction)
@@ -222,6 +222,9 @@ on_file_load (GckFileTracker *tracker, const gchar *path, GckSecretModule *self)
 		                           "filename", path,
 		                           "manager", manager,
 		                           NULL);
+	} else {
+		created = FALSE;
+		g_object_ref (collection);
 	}
 
 	res = gck_secret_collection_load (collection);
