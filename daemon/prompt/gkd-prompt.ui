@@ -44,7 +44,7 @@
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
-                        <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Enter password for keyring 'login' to unlock&lt;/span&gt;
+                        <property name="label">&lt;span size="large" weight="bold"&gt;Enter password for keyring 'login' to unlock&lt;/span&gt;
 
 An application wants access to the keyring 'xxx', but it is locked.</property>
                         <property name="use_markup">True</property>
@@ -269,7 +269,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkCheckButton" id="auto_unlock_check">
-                                <property name="label" translatable="yes">Automatically unlock this keyring whenever I'm logged in.</property>
+                                <property name="label" translatable="yes">Automatically unlock this keyring whenever I'm logged in</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -375,11 +375,11 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
   </object>
   <object class="GtkSizeGroup" id="prompt_label_sizegroup">
     <widgets>
-      <widget name="strength_label"/>
-      <widget name="confirm_label"/>
-      <widget name="password_label"/>
-      <widget name="original_label"/>
       <widget name="name_label"/>
+      <widget name="original_label"/>
+      <widget name="password_label"/>
+      <widget name="confirm_label"/>
+      <widget name="strength_label"/>
     </widgets>
   </object>
 </interface>

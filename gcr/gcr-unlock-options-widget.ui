@@ -14,7 +14,7 @@
     <property name="spacing">6</property>
     <child>
       <object class="GtkRadioButton" id="lock_logout_choice">
-        <property name="label" translatable="yes">Lock this keyring when I log out.</property>
+        <property name="label" translatable="yes">Lock this keyring when I log out</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
@@ -86,7 +86,7 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">minutes.</property>
+            <property name="label" translatable="yes">minutes</property>
           </object>
           <packing>
             <property name="position">2</property>
