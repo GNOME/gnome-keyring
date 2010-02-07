@@ -130,6 +130,10 @@ signal_filter (DBusConnection *conn, DBusMessage *msg, void *user_data)
 		unregister_daemon_in_session (conn);
 		gkd_main_quit ();
 		return DBUS_HANDLER_RESULT_HANDLED;
+	} else if (dbus_message_is_signal (msg, DBUS_INTERFACE_LOCAL, "Disconnected")) {
+		unregister_daemon_in_session (conn);
+		gkd_main_quit ();
+		return DBUS_HANDLER_RESULT_HANDLED;
 	}
 
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
