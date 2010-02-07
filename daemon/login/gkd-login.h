@@ -35,7 +35,7 @@ gboolean          gkd_login_did_unlock_fail          (void);
 
 gboolean          gkd_login_is_usable                (void);
 
-void              gkd_login_attach_secret            (const gchar *display_name,
+void              gkd_login_attach_secret            (const gchar *label,
                                                       const gchar *secret,
                                                       const gchar *first,
                                                       ...);

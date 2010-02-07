@@ -248,7 +248,6 @@ attach_credential_to_login (GP11Object *collection, GP11Object *cred)
 	gsize n_value;
 	gchar *location;
 	gchar *label;
-	gchar *display;
 
 	g_assert (GP11_IS_OBJECT (collection));
 	g_assert (GP11_IS_OBJECT (cred));
@@ -260,13 +259,10 @@ attach_credential_to_login (GP11Object *collection, GP11Object *cred)
 	label = label_string_for_attributes (attrs);
 	gp11_attributes_unref (attrs);
 
-	display = g_strdup_printf (_("Unlock password for %s keyring"), label);
-	g_free (label);
-
 	value = gp11_object_get_data_full (cred, CKA_VALUE, egg_secure_realloc, NULL, &n_value, &error);
 	if (value) {
 		if (g_utf8_validate (value, n_value, NULL))
-			gkd_login_attach_secret (display, value, "keyring", location, NULL);
+			gkd_login_attach_secret (label, value, "keyring", location, NULL);
 		else
 			g_warning ("couldn't save non utf-8 unlock credentials in login keyring");
 		egg_secure_clear (value, n_value);
@@ -278,7 +274,7 @@ attach_credential_to_login (GP11Object *collection, GP11Object *cred)
 	}
 
 	g_free (location);
-	g_free (display);
+	g_free (label);
 }
 
 static void

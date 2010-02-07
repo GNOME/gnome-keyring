@@ -881,6 +881,14 @@ gkd_prompt_set_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
 		g_key_file_set_integer (self->pv->input, "unlock-options", "unlock-timeout", (int)uval);
 }
 
+gboolean
+gkd_prompt_get_unlock_auto (GkdPrompt *self)
+{
+	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (self->pv->output, FALSE);
+	return g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-auto", NULL);
+}
+
 /* ----------------------------------------------------------------------------------
  * ATTENTION QUEUES
  */

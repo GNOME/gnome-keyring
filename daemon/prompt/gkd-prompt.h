@@ -118,6 +118,8 @@ void                gkd_prompt_get_unlock_options     (GkdPrompt *self,
 void                gkd_prompt_set_unlock_options     (GkdPrompt *self,
                                                        GP11Attributes *attrs);
 
+gboolean            gkd_prompt_get_unlock_auto        (GkdPrompt *self);
+
 gboolean            gkd_prompt_is_widget_selected     (GkdPrompt *prompt,
                                                        const gchar *widget);
 

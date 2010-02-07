@@ -28,6 +28,8 @@
 #include "pkcs11/gkd-pkcs11.h"
 #include "pkcs11/pkcs11i.h"
 
+#include <glib/gi18n.h>
+
 #include <string.h>
 
 static gint unlock_failures = 0;
@@ -562,18 +564,19 @@ find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
 }
 
 void
-gkd_login_attach_secret (const gchar *display_name, const gchar *secret,
+gkd_login_attach_secret (const gchar *label, const gchar *secret,
                          const gchar *first, ...)
 {
 	GError *error = NULL;
 	GP11Attribute fields;
 	GP11Session *session;
 	GP11Module *module;
+	gchar *display_name;
 	GP11Object* item;
 	va_list va;
 
-	if (display_name == NULL)
-		display_name = "";
+	if (label == NULL)
+		label = _("Unnamed");
 	if (secret == NULL)
 		secret = "";
 
@@ -585,6 +588,8 @@ gkd_login_attach_secret (const gchar *display_name, const gchar *secret,
 	string_attribute_list_va (va, first, &fields);
 	va_end(va);
 
+	display_name = g_strdup_printf (_("Unlock password for: %s"), label);
+
 	item = find_login_keyring_item (session, &fields);
 	if (item) {
 		gp11_object_set (item, &error,
@@ -593,6 +598,7 @@ gkd_login_attach_secret (const gchar *display_name, const gchar *secret,
 		                 GP11_INVALID);
 	} else {
 		item = gp11_session_create_object (session, &error,
+		                                   CKA_TOKEN, GP11_BOOLEAN, TRUE,
 		                                   CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
 		                                   CKA_LABEL, strlen (display_name), display_name,
 		                                   CKA_VALUE, strlen (secret), secret,
@@ -608,6 +614,8 @@ gkd_login_attach_secret (const gchar *display_name, const gchar *secret,
 
 	if (item)
 		g_object_unref (item);
+	g_free (display_name);
+	gp11_attribute_clear (&fields);
 	g_object_unref (session);
 	g_object_unref (module);
 }

@@ -298,10 +298,11 @@ init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	gkd_prompt_set_secondary_text (prompt, secondary);
 	g_free (secondary);
 
-#if 0
-	if (gkd_login_is_usable ())
-		gkd_ask_request_set_check_option (ask, _("Automatically unlock secure storage when I log in."));
-#endif
+	if (gkd_login_is_usable ()) {
+		gkd_prompt_show_widget (prompt, "details_area");
+		gkd_prompt_show_widget (prompt, "lock_area");
+		gkd_prompt_hide_widget (prompt, "options_area");
+	}
 
 	/* Prompt the user */
 	gkd_prompt_request_attention_async (NULL, on_prompt_attention, prompt, NULL);
@@ -315,17 +316,15 @@ init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	/* Successful response */
 	} else {
 		password = gkd_prompt_get_password (prompt, "password");
-		password_to_pin (password, pin, pin_len);
 
-#if 0
-		if (ask->checked) {
-			gkd_login_attach_secret (label, ask->typed_password,
+		if (gkd_prompt_get_unlock_auto (prompt)) {
+			gkd_login_attach_secret (label, password,
 			                         "manufacturer", manufacturer,
 			                         "serial-number", serial,
 			                         NULL);
 		}
-#endif
 
+		password_to_pin (password, pin, pin_len);
 		ret = TRUE;
 	}
 
@@ -465,10 +464,11 @@ login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
 	gkd_prompt_set_secondary_text (prompt, secondary);
 	g_free (secondary);
 
-#if 0
-	if (object->unique && gkd_login_is_usable ())
-		gkd_ask_request_set_check_option (ask, prepare_specific_check (object->klass));
-#endif
+	if (object->unique && gkd_login_is_usable ()) {
+		gkd_prompt_show_widget (prompt, "details_area");
+		gkd_prompt_show_widget (prompt, "lock_area");
+		gkd_prompt_hide_widget (prompt, "options_area");
+	}
 
 	/* Prompt the user */
 	gkd_prompt_request_attention_sync (NULL, on_prompt_attention, prompt, NULL);
@@ -479,16 +479,15 @@ login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
 	/* Successful response */
 	else if (gkd_prompt_get_response (prompt) == GKD_RESPONSE_OK) {
 		password = gkd_prompt_get_password (prompt, "password");
-		password_to_pin (password, pin, pin_len);
-		ret = TRUE;
 
-#if 0
 		/* Store forever */
-		if (ask->checked && object->unique && object->token) {
-			gkd_login_attach_secret (object->label, ask->typed_password,
+		if (gkd_prompt_get_unlock_auto (prompt) && object->unique && object->token) {
+			gkd_login_attach_secret (object->label, password,
 			                         "unique", object->unique, NULL);
 		}
-#endif
+
+		password_to_pin (password, pin, pin_len);
+		ret = TRUE;
 
 	/* Other failures etc... */
 	} else {
@@ -601,10 +600,11 @@ login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	gkd_prompt_set_secondary_text (prompt, secondary);
 	g_free (secondary);
 
-#if 0
-	if (gkd_login_is_usable ())
-		gkd_ask_request_set_check_option (ask, _("Automatically unlock secure storage when I log in."));
-#endif
+	if (gkd_login_is_usable ()) {
+		gkd_prompt_show_widget (prompt, "details_area");
+		gkd_prompt_show_widget (prompt, "lock_area");
+		gkd_prompt_hide_widget (prompt, "options_area");
+	}
 
 	/* Prompt the user */
 	gkd_prompt_request_attention_sync (NULL, on_prompt_attention, prompt, NULL);
@@ -619,17 +619,17 @@ login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	/* Successful response */
 	} else {
 		password = gkd_prompt_get_password (prompt, "password");
-		password_to_pin (password, pin, pin_len);
-		ret = TRUE;
-#if 0
+
 		/* Store forever */
-		if (ask->checked) {
-			gkd_login_attach_secret (label, ask->typed_password,
+		if (gkd_prompt_get_unlock_auto (prompt)) {
+			gkd_login_attach_secret (label, password,
 			                         "manufacturer", manufacturer,
 			                         "serial-number", serial,
 			                         NULL);
 		}
-#endif
+
+		password_to_pin (password, pin, pin_len);
+		ret = TRUE;
 	}
 
 	g_free (manufacturer);
