@@ -55,19 +55,47 @@ G_DEFINE_TYPE (GkdSecretUnlock, gkd_secret_unlock, GKD_SECRET_TYPE_PROMPT);
  * INTERNAL
  */
 
-static gchar*
-location_string_for_collection (GP11Object *collection)
+static GP11Attributes*
+attributes_for_collection (GP11Object *collection)
 {
-	gpointer identifier;
-	gsize n_identifier;
-	gchar *location;
+	GP11Attributes *attrs;
+	GError *error = NULL;
 
-	/* Figure out the identifier */
-	identifier = gp11_object_get_data (collection, CKA_ID, &n_identifier, NULL);
-	if (!identifier || !g_utf8_validate (identifier, n_identifier, NULL)) {
+	attrs = gp11_object_get (collection, &error, CKA_LABEL, CKA_ID, GP11_INVALID);
+	if (attrs == NULL) {
+		g_warning ("couldn't get attributes for collection: %s", error->message);
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	return attrs;
+}
+
+static gchar*
+identifier_string_for_attributes (GP11Attributes *attrs)
+{
+	gchar *identifier;
+
+	g_assert (attrs);
+
+	if (!gp11_attributes_find_string (attrs, CKA_ID, &identifier))
+		return NULL;
+	if (!g_utf8_validate (identifier, -1, NULL)) {
 		g_free (identifier);
 		return NULL;
 	}
+	return identifier;
+}
+
+static gchar*
+location_string_for_attributes (GP11Attributes *attrs)
+{
+	gchar *identifier;
+	gchar *location;
+
+	identifier = identifier_string_for_attributes (attrs);
+	if (identifier == NULL)
+		return NULL;
 
 	/*
 	 * COMPAT: Format it into a string. This is done this way for compatibility
@@ -81,30 +109,54 @@ location_string_for_collection (GP11Object *collection)
 }
 
 static gchar*
-label_string_for_collection (GP11Object *collection)
+label_string_for_attributes (GP11Attributes *attrs)
 {
-	GError *error = NULL;
-	gpointer data;
-	gsize n_data;
+	gchar *label;
 
-	data = gp11_object_get_data (collection, CKA_LABEL, &n_data, &error);
-	if (!data) {
-		g_warning ("couldn't get label for collection: %s", error->message);
-		g_clear_error (&error);
-	}
-
-	if (!data || !n_data)
+	if (!gp11_attributes_find_string (attrs, CKA_LABEL, &label))
+		label = NULL;
+	if (!label)
 		return g_strdup (_("Unnamed"));
-	else /* gp11_object_get_data returns null terminated */
-		return data;
+	else
+		return label;
+}
+
+static void
+prepare_unlock_login (GkdSecretUnlock *self)
+{
+	GkdPrompt *prompt;
+	const gchar *text;
+
+	g_assert (GKD_SECRET_IS_UNLOCK (self));
+
+	prompt = GKD_PROMPT (self);
+
+	gkd_prompt_reset (prompt);
+
+	gkd_prompt_set_title (prompt, _("Unlock Login Keyring"));
+
+	text = _("Enter password for to unlock your login keyring");
+	gkd_prompt_set_primary_text (prompt, text);
+
+	if (gkd_login_did_unlock_fail ())
+		text = _("The password you use to log into your computer no longer matches that of your login keyring.");
+	else
+		text = _("The login keyring did not get unlocked when you logged into your computer.");
+	gkd_prompt_set_secondary_text (prompt, text);
+
+	gkd_prompt_hide_widget (prompt, "name_area");
+	gkd_prompt_hide_widget (prompt, "confirm_area");
+	gkd_prompt_show_widget (prompt, "password_area");
 }
 
 static void
 prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 {
 	GP11Attributes *template;
+	GP11Attributes *attrs;
 	GError *error = NULL;
 	GkdPrompt *prompt;
+	gchar *identifier;
 	gchar *label;
 	gchar *text;
 
@@ -113,7 +165,19 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 
 	prompt = GKD_PROMPT (self);
 
-	label = label_string_for_collection (coll);
+	attrs = attributes_for_collection (coll);
+	g_return_if_fail (attrs);
+
+	/* Login keyring is handled specially */
+	identifier = identifier_string_for_attributes (attrs);
+	if (identifier && g_str_equal (identifier, "login")) {
+		prepare_unlock_login (self);
+		g_free (identifier);
+		return;
+	}
+
+	g_free (identifier);
+	label = label_string_for_attributes (attrs);
 
 	gkd_prompt_reset (prompt);
 
@@ -178,6 +242,7 @@ static void
 attach_credential_to_login (GP11Object *collection, GP11Object *cred)
 {
 	GError *error = NULL;
+	GP11Attributes *attrs;
 	gpointer value;
 	gsize n_value;
 	gchar *location;
@@ -187,8 +252,13 @@ attach_credential_to_login (GP11Object *collection, GP11Object *cred)
 	g_assert (GP11_IS_OBJECT (collection));
 	g_assert (GP11_IS_OBJECT (cred));
 
-	location = location_string_for_collection (collection);
-	label = label_string_for_collection (collection);
+	attrs = attributes_for_collection (collection);
+	g_return_if_fail (attrs);
+
+	location = location_string_for_attributes (attrs);
+	label = label_string_for_attributes (attrs);
+	gp11_attributes_unref (attrs);
+
 	display = g_strdup_printf (_("Unlock password for %s keyring"), label);
 	g_free (label);
 
@@ -439,6 +509,7 @@ void
 gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 {
 	gboolean locked = TRUE;
+	GP11Attributes *attrs;
 	GP11Object *coll;
 	gchar *password;
 	gchar *location;
@@ -457,7 +528,10 @@ gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 
 	/* Or try to use login keyring's passwords */
 	} else {
-		location = location_string_for_collection (coll);
+		attrs = attributes_for_collection (coll);
+		location = location_string_for_attributes (attrs);
+		gp11_attributes_unref (attrs);
+
 		if (location) {
 			password = gkd_login_lookup_secret ("keyring", location, NULL);
 			g_free (location);

@@ -38,6 +38,18 @@ note_that_unlock_failed (void)
 	g_atomic_int_inc (&unlock_failures);
 }
 
+static void
+note_that_unlock_succeeded (void)
+{
+	g_atomic_int_set (&unlock_failures, 0);
+}
+
+gboolean
+gkd_login_did_unlock_fail (void)
+{
+	return g_atomic_int_get (&unlock_failures) ? TRUE : FALSE;
+}
+
 static GP11Module*
 module_instance (void)
 {
@@ -232,6 +244,10 @@ unlock_or_create_login (GP11Module *module, const gchar *master)
 			g_warning ("couldn't create login keyring: %s", error->message);
 			g_clear_error (&error);
 		}
+
+	/* The unlock succeeded yay */
+	} else {
+		note_that_unlock_succeeded ();
 	}
 
 	if (cred)
