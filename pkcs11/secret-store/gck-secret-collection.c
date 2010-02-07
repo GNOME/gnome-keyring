@@ -327,8 +327,10 @@ change_master_password (GckSecretCollection *self, GckTransaction *transaction,
 	g_assert (GCK_IS_TRANSACTION (transaction));
 	g_assert (GCK_IS_CREDENTIAL (cred));
 
-	if (!self->sdata)
-		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+	if (!self->sdata) {
+		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+		return;
+	}
 
 	previous = gck_secret_data_get_master (self->sdata);
 	if (previous != NULL)
@@ -373,20 +375,28 @@ gck_secret_collection_set_attribute (GckObject *object, GckSession *session,
 	case CKA_G_CREDENTIAL:
 		gck_credential_for_each (session, GCK_OBJECT (self),
 		                         find_unlocked_credential, &handle);
-		if (handle == 0)
-			return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+		if (handle == 0) {
+			gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+			return;
+		}
 		rv = gck_attribute_get_ulong (attr, &handle);
-		if (rv != CKR_OK)
-			return gck_transaction_fail (transaction, rv);
+		if (rv != CKR_OK) {
+			gck_transaction_fail (transaction, rv);
+			return;
+		}
 		cred = lookup_unassociated_credential (session, handle);
-		if (cred == NULL)
-			return gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+		if (cred == NULL) {
+			gck_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+			return;
+		}
 		change_master_password (self, transaction, cred);
 		return;
 	case CKA_G_CREDENTIAL_TEMPLATE:
 		rv = gck_attribute_get_template (attr, &template);
-		if (rv != CKR_OK)
-			return gck_transaction_fail (transaction, rv);
+		if (rv != CKR_OK) {
+			gck_transaction_fail (transaction, rv);
+			return;
+		}
 		gck_template_free (self->template);
 		self->template = template;
 		return;
@@ -825,8 +835,10 @@ gck_secret_collection_save (GckSecretCollection *self, GckTransaction *transacti
 	g_return_if_fail (!gck_transaction_get_failed (transaction));
 
 	/* HACK: We can't save unless the secret data was loaded */
-	if (!self->sdata)
-		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+	if (!self->sdata) {
+		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+		return;
+	}
 
 	/* Don't save ourselves if no filename */
 	if (!self->filename)

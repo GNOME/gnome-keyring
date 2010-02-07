@@ -852,17 +852,22 @@ gck_session_complete_object_creation (GckSession *self, GckTransaction *transact
 	/* See if we can create due to read-only */
 	if (gck_object_is_token (object)) {
 		if (!gck_object_is_transient (object) &&
-		    gck_module_get_write_protected (self->pv->module))
-			return gck_transaction_fail (transaction, CKR_TOKEN_WRITE_PROTECTED);
-		else if (self->pv->read_only)
-			return gck_transaction_fail (transaction, CKR_SESSION_READ_ONLY);
+		    gck_module_get_write_protected (self->pv->module)) {
+			gck_transaction_fail (transaction, CKR_TOKEN_WRITE_PROTECTED);
+			return;
+		}
+		else if (self->pv->read_only) {
+			gck_transaction_fail (transaction, CKR_SESSION_READ_ONLY);
+			return;
+		}
 	}
 
 	/* Can only create public objects unless logged in */
 	if (gck_session_get_logged_in (self) != CKU_USER &&
 	    gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private) &&
 	    is_private == TRUE) {
-		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+		gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+		return;
 	}
 
 	/* Next go through and set all attributes that weren't used initially */
