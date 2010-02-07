@@ -324,12 +324,13 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 	}
 
 	/* Parse the auto destruct attribute */
-	if (gck_attributes_find_ulong (attrs, n_attrs, CKA_G_DESTRUCT_AFTER, &after) ||
-	    gck_attributes_find_ulong (attrs, n_attrs, CKA_G_DESTRUCT_IDLE, &idle)) {
-		/* Default for the transient attribute */
-		if (!transient_attr)
-			transient = TRUE;
-	}
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_G_DESTRUCT_AFTER, &after))
+		after = 0;
+	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_G_DESTRUCT_IDLE, &idle))
+		idle = 0;
+	/* Default for the transient attribute */
+	if (!transient_attr && (idle || after))
+		transient = TRUE;
 
 	/* Used up these attributes */
 	gck_attributes_consume (attrs, n_attrs, CKA_G_DESTRUCT_AFTER,
