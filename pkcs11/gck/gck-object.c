@@ -317,7 +317,6 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 	transient_attr = gck_attributes_find (attrs, n_attrs, CKA_GNOME_TRANSIENT);
 	if (transient_attr) {
 		rv = gck_attribute_get_bool (transient_attr, &transient);
-		gck_attribute_consume (transient_attr);
 		if (rv != CKR_OK) {
 			gck_transaction_fail (transaction, rv);
 			return;
@@ -331,6 +330,10 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 		if (!transient_attr)
 			transient = TRUE;
 	}
+
+	/* Used up these attributes */
+	gck_attributes_consume (attrs, n_attrs, CKA_G_DESTRUCT_AFTER,
+	                        CKA_G_DESTRUCT_IDLE, CKA_GNOME_TRANSIENT, G_MAXULONG);
 
 	if (transient) {
 		self->pv->transient = g_slice_new0 (GckObjectTransient);
