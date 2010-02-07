@@ -4,28 +4,23 @@
 # Copyright (C) 2006 The Free Software Foundation.
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-12-28 22:59+0000\n"
-"PO-Revision-Date: 2009-12-29 19:33+0100\n"
+"POT-Creation-Date: 2010-02-07 15:57+0000\n"
+"PO-Revision-Date: 2010-02-07 17:12+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-#| msgid ""
-#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-#| "in). This setting may be overridden when certain command line arguments "
-#| "are passed to the daemon."
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 "only takes effect during startup with gnome-session, (ie: when the user logs "
@@ -50,11 +45,6 @@ msgstr ""
 "parámetros al demonio a traes de la línea de comandos."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
-#| msgid ""
-#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-#| "in). This setting may be overridden when certain command line arguments "
-#| "are passed to the daemon."
 msgid ""
 "This option enables the secret service component in the gnome-keyring "
 "daemon. It only takes effect during startup with gnome-session, (ie: when "
@@ -76,13 +66,12 @@ msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Indica si el agente SSH del depósito de claves está activado."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:6
-#| msgid "Whether the gnome-keyring SSH agent is enabled."
 msgid "Whether the gnome-keyring secret service is enabled."
 msgstr ""
 "Indica si el servicio de secretos del depósito de claves está activado."
 
 #: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:78
+#: ../daemon/dbus/gkd-secret-unlock.c:119
 msgid "Unnamed"
 msgstr "Sin nombre"
 
@@ -90,16 +79,13 @@ msgstr "Sin nombre"
 msgid "Change Keyring Password"
 msgstr "Cambia la contraseña del depósito"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Elegir una contraseña nueva para el depósito «%s»."
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
-#| msgid ""
-#| "An unknown application wants to change the password for the '%s' keyring. "
-#| "You have to choose the password you want to use for it."
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
@@ -107,7 +93,7 @@ msgstr ""
 "Una aplicación quiere cambiar la contraseña para el depósito de claves «%s»."
 "Elija la nueva contraseña que quiere usar para él."
 
-#: ../daemon/dbus/gkd-secret-change.c:105
+#: ../daemon/dbus/gkd-secret-change.c:109
 msgid "The original password was incorrect"
 msgstr "La contraseña original era incorrecta"
 
@@ -121,9 +107,6 @@ msgstr "Elija la contraseña para el depósito"
 
 #: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
-#| msgid ""
-#| "An unknown application wants to create a new keyring called '%s'. You "
-#| "have to choose the password you want to use for it."
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
@@ -131,29 +114,58 @@ msgstr ""
 "Una aplicación quiere crear un depósito de claves nuevo llamado «%s». Elija "
 "la contraseña que quiere usar para él."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:85
+#: ../daemon/dbus/gkd-secret-unlock.c:136
+msgid "Unlock Login Keyring"
+msgstr "Desbloquear el depósito de inicio"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:138
+#| msgid "Enter login password to unlock keyring"
+msgid "Enter password for to unlock your login keyring"
+msgstr "Introducir la contraseña para desbloquear el depósito"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:142
+msgid ""
+"The password you use to log into your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"La contraseña que usa para iniciar sesión en su equipo ya no coincide con la "
+"contraseña de inicio de su depósito."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:144
+#| msgid ""
+#| "Your login keyring was not automatically unlocked when you logged into "
+#| "this computer."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"El depósito de inicio de sesión no se desbloqueó cuando inició sesión en su "
+"equipo."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:184
 msgid "Unlock Keyring"
 msgstr "Desbloquear depósito"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:87
+#: ../daemon/dbus/gkd-secret-unlock.c:186
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Introduzca la contraseña para desbloquear el depósito «%s»"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:91
+#: ../daemon/dbus/gkd-secret-unlock.c:190
 #, c-format
-#| msgid ""
-#| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Una aplicación quiere acceder al depósito de claves «%s», pero está bloqueado"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:106
+#: ../daemon/dbus/gkd-secret-unlock.c:218
 msgid "The unlock password was incorrect"
 msgstr "La contraseña de desbloqueo era incorrecta"
 
+#: ../daemon/dbus/gkd-secret-unlock.c:262
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Contraseña de desbloqueo para el depósito de claves %s"
+
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-#| msgid "Unlock certificate/key storage"
 msgid "Certificate and Key Storage"
 msgstr "Certificados y almacenamiento de claves"
 
@@ -195,7 +207,7 @@ msgstr ""
 "certificados o claves"
 
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:303
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:606
 msgid "Automatically unlock secure storage when I log in."
 msgstr "Desbloquear automáticamente el depósito seguro al iniciar sesión."
 
@@ -257,17 +269,17 @@ msgstr ""
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Una aplicación quiere acceder «%s», pero está bloqueado"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:589
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
 msgid "Unlock certificate/key storage"
 msgstr "Desbloquear el depósito de certificados/claves"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:590
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:597
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "Introducir la contraseña para desbloquear el depósito de certificados/claves"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:593
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:600
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -276,11 +288,11 @@ msgstr ""
 "Una aplicación quiere acceder al depósito de certificados/claves «%s», pero "
 "está bloqueado"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:343
+#: ../daemon/prompt/gkd-prompt-tool.c:381
 msgid "Store passwords unencrypted?"
 msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:344
+#: ../daemon/prompt/gkd-prompt-tool.c:382
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -290,21 +302,19 @@ msgstr ""
 "estarán cifradas de forma segura. Serán accesibles por cualquiera que tenga "
 "acceso a sus archivos."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:351
+#: ../daemon/prompt/gkd-prompt-tool.c:389
 msgid "Use Unsafe Storage"
 msgstr "Usar depósito inseguro"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:381
+#: ../daemon/prompt/gkd-prompt-tool.c:419
 msgid "Passwords do not match."
 msgstr "Las contraseñas no coinciden."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:391
+#: ../daemon/prompt/gkd-prompt-tool.c:429
 msgid "Password cannot be blank"
 msgstr "La contraseña no puede estar vacía"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:1
-#| msgid ""
-#| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid ""
 "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to "
 "unlock</span>\n"
@@ -317,58 +327,36 @@ msgstr ""
 "Una aplicación quiere acceder al depósito de claves «xxx», pero está bloqueado"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:4
-#| msgid "Automatically unlock this keyring when I log in."
 msgid "Automatically unlock this keyring whenever I'm logged in."
 msgstr "Desbloquear este depósito de claves automáticamente al iniciar sesión."
 
 #: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "Lock this keyring after"
-msgstr "Bloquear después este depósito"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "Lock this keyring if idle for"
-msgstr "Bloquear este depósito si está inactivo durante"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "Lock this keyring when I log out."
-msgstr "Bloquear este depósito al cerrar la sesión."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
 msgid "New password strength"
 msgstr "Fortaleza de la nueva contraseña"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:9
-#| msgid "Allow application access to keyring?"
-msgid "Prompt me for each application that accesses this keyring."
-msgstr "Preguntarme para cada aplicación que acceda a este depósito de claves."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:10
+#: ../daemon/prompt/gkd-prompt.ui.h:6
 msgid "_Application:"
 msgstr "_Aplicación:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:11
+#: ../daemon/prompt/gkd-prompt.ui.h:7
 msgid "_Confirm:"
 msgstr "_Confirmar:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:12
+#: ../daemon/prompt/gkd-prompt.ui.h:8
 msgid "_Details:"
 msgstr "_Detalles:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:13
+#: ../daemon/prompt/gkd-prompt.ui.h:9
 msgid "_Name:"
 msgstr "_Nombre:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:14
+#: ../daemon/prompt/gkd-prompt.ui.h:10
 msgid "_Old Password:"
 msgstr "Contraseña _antigua:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:15
+#: ../daemon/prompt/gkd-prompt.ui.h:11
 msgid "_Password:"
 msgstr "_Contraseña:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:16
-msgid "minutes."
-msgstr "minutos."
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -1079,6 +1067,23 @@ msgstr "Certificado sin nombre"
 msgid "Couldn't parse public SSH key"
 msgstr "No se pudo analizar la clave SSH pública"
 
+#~ msgid "Lock this keyring after"
+#~ msgstr "Bloquear después este depósito"
+
+#~ msgid "Lock this keyring if idle for"
+#~ msgstr "Bloquear este depósito si está inactivo durante"
+
+#~ msgid "Lock this keyring when I log out."
+#~ msgstr "Bloquear este depósito al cerrar la sesión."
+
+#~| msgid "Allow application access to keyring?"
+#~ msgid "Prompt me for each application that accesses this keyring."
+#~ msgstr ""
+#~ "Preguntarme para cada aplicación que acceda a este depósito de claves."
+
+#~ msgid "minutes."
+#~ msgstr "minutos."
+
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
@@ -1271,19 +1276,6 @@ msgstr "No se pudo analizar la clave SSH pública"
 #~ msgid "Choose password for default keyring"
 #~ msgstr "Elija una contraseña para el depósito de claves predeterminado"
 
-#~ msgid "Unlock Login Keyring"
-#~ msgstr "Desbloquear el depósito de inicio"
-
-#~ msgid "Enter login password to unlock keyring"
-#~ msgstr "Introduzca la contraseña de inicio para desbloquear el depósito"
-
-#~ msgid ""
-#~ "Your login keyring was not automatically unlocked when you logged into "
-#~ "this computer."
-#~ msgstr ""
-#~ "Al iniciar sesión en este equipo no se creó automáticamente su depósito "
-#~ "de inicio."
-
 #~ msgid "Create Login Keyring"
 #~ msgstr "Crear depósito de inicio"
 
@@ -1296,9 +1288,6 @@ msgstr "No se pudo analizar la clave SSH pública"
 #~ msgstr ""
 #~ "Al iniciar sesión en este equipo no se creó automáticamente su depósito "
 #~ "de inicio. Se creará ahora."
-
-#~ msgid "Unlock password for %s keyring"
-#~ msgstr "Contraseña de desbloqueo para el depósito de claves %s"
 
 #~ msgid "Automatically unlock this private key when I log in."
 #~ msgstr "Desbloquear esta clave privada automáticamente al iniciar sesión."
