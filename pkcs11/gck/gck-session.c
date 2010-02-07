@@ -770,7 +770,6 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 {
 	GckTransaction *owned = NULL;
 	GckObject  *object;
-	gulong i;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
 	g_return_val_if_fail (factory && factory->func, NULL);
@@ -795,13 +794,6 @@ gck_session_create_object_for_factory (GckSession *self, GckFactory *factory,
 	if (object == NULL && !gck_transaction_get_failed (transaction)) {
 		g_warn_if_reached ();
 		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
-	}
-
-	/* Next go through and set all attributes that weren't used initially */
-	gck_attributes_consume (template, count, CKA_TOKEN, G_MAXULONG);
-	for (i = 0; i < count && !gck_transaction_get_failed (transaction); ++i) {
-		if (!gck_attribute_consumed (&template[i]))
-			gck_object_set_attribute (object, self, transaction, &template[i]);
 	}
 
 	g_free (template);
@@ -846,6 +838,7 @@ gck_session_complete_object_creation (GckSession *self, GckTransaction *transact
                                       GckObject *object, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	gboolean is_private;
+	gulong i;
 
 	g_return_if_fail (GCK_IS_SESSION (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
@@ -870,6 +863,13 @@ gck_session_complete_object_creation (GckSession *self, GckTransaction *transact
 	    gck_object_get_attribute_boolean (object, self, CKA_PRIVATE, &is_private) &&
 	    is_private == TRUE) {
 		return gck_transaction_fail (transaction, CKR_USER_NOT_LOGGED_IN);
+	}
+
+	/* Next go through and set all attributes that weren't used initially */
+	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
+	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
+		if (!gck_attribute_consumed (&attrs[i]))
+			gck_object_set_attribute (object, self, transaction, &attrs[i]);
 	}
 
 	/* Find somewhere to store the object */
