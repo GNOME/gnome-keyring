@@ -59,7 +59,7 @@ static int pkcs11_initialized = 0;
 static pid_t pkcs11_initialized_pid = 0;
 
 /* The socket to connect to */
-static char pkcs11_socket_path[MAXPATHLEN] = { 0, };
+static char *pkcs11_socket_path = NULL;
 
 /* The error used by us when parsing of rpc message fails */
 #define PARSE_ERROR   CKR_DEVICE_ERROR
@@ -100,10 +100,12 @@ parse_argument (char *arg)
 		*(value++) = 0;
 
 	/* Setup the socket path from the arguments */
-	if (strcmp (arg, "socket") == 0)
-		snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s", value);
-	else
+	if (strcmp (arg, "socket") == 0) {
+		free (pkcs11_socket_path);
+		pkcs11_socket_path = strdup (value);
+	} else {
 		warning (("unrecognized argument: %s", arg));
+	}
 }
 
 static void
@@ -225,7 +227,12 @@ call_connect (CallState *cs)
 	assert (cs);
 	assert (cs->socket == -1);
 	assert (cs->call_status == CALL_INVALID);
-	
+
+	if (!pkcs11_socket_path) {
+		warning (("no socket to connect to"));
+		return CKR_DEVICE_REMOVED;
+	}
+
 	debug (("connecting to: %s", pkcs11_socket_path));
 		
 	addr.sun_family = AF_UNIX;
@@ -1177,11 +1184,16 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 		}
 		
 		/* Lookup the socket path, append '/pkcs11' */
-		if (pkcs11_socket_path[0] == 0) {
-			pkcs11_socket_path[0] = 0;
+		if (pkcs11_socket_path == NULL) {
 			path = getenv ("GNOME_KEYRING_CONTROL");
 			if (path && path[0]) {
-				snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), "%s/pkcs11", path);
+				pkcs11_socket_path = malloc (strlen (path) + strlen ("/pkcs11") + 1);
+				if (pkcs11_socket_path == NULL) {
+					warning (("can't malloc memory"));
+					ret = CKR_HOST_MEMORY;
+					goto done;
+				}
+				sprintf (pkcs11_socket_path, "%s/pkcs11", path);
 				pkcs11_socket_path[sizeof (pkcs11_socket_path) - 1] = 0;
 			}
 		}
@@ -1206,7 +1218,8 @@ done:
 		} else if (ret != CKR_CRYPTOKI_ALREADY_INITIALIZED) {
 			pkcs11_initialized = 0;
 			pkcs11_initialized_pid = 0;
-			pkcs11_socket_path[0] = 0;
+			free (pkcs11_socket_path);
+			pkcs11_socket_path = NULL;
 		}
 			
 	pthread_mutex_unlock (&init_mutex);
@@ -1242,8 +1255,9 @@ rpc_C_Finalize (CK_VOID_PTR reserved)
 		/* This should stop all other calls in */
 		pkcs11_initialized = 0;
 		pkcs11_initialized_pid = 0;
-		pkcs11_socket_path[0] = 0;
-		
+		free (pkcs11_socket_path);
+		pkcs11_socket_path = NULL;
+
 	pthread_mutex_unlock (&init_mutex);
 	
 	debug (("C_Finalize: %d", CKR_OK));

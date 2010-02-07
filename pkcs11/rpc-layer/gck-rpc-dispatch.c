@@ -2178,7 +2178,7 @@ typedef struct _DispatchState {
 static int pkcs11_socket = -1;
 
 /* The unix socket path, that we listen on */
-static char pkcs11_socket_path[MAXPATHLEN] = { 0, };
+static char *pkcs11_socket_path = NULL;
 
 /* A linked list of dispatcher threads */
 static DispatchState *pkcs11_dispatchers = NULL;
@@ -2258,9 +2258,11 @@ gck_rpc_layer_uninitialize (void)
 	pkcs11_socket = -1;
 
 	/* Delete our unix socket */
-	if(pkcs11_socket_path[0])
+	if(pkcs11_socket_path) {
 		unlink (pkcs11_socket_path);
-	pkcs11_socket_path[0] = 0;
+		free (pkcs11_socket_path);
+		pkcs11_socket_path = NULL;
+	}
 
 	/* Stop all of the dispatch threads */
 	for (ds = pkcs11_dispatchers; ds; ds = next) {
@@ -2295,8 +2297,13 @@ gck_rpc_layer_startup (const char *prefix)
 	assert (pkcs11_socket == -1);
 	assert (pkcs11_dispatchers == NULL);
 
-	snprintf (pkcs11_socket_path, sizeof (pkcs11_socket_path), 
-	          "%s/pkcs11", prefix);
+	free (pkcs11_socket_path);
+	pkcs11_socket_path = malloc (strlen (prefix) + strlen ("/pkcs11") + 1);
+	if (pkcs11_socket_path == NULL) {
+		gck_rpc_warn ("couldn't allocate memory");
+		return -1;
+	}
+	sprintf (pkcs11_socket_path, "%s/pkcs11", prefix);
 
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -2337,9 +2344,11 @@ gck_rpc_layer_shutdown (void)
 	pkcs11_socket = -1;
 
 	/* Delete our unix socket */
-	if(pkcs11_socket_path[0])
+	if(pkcs11_socket_path) {
 		unlink (pkcs11_socket_path);
-	pkcs11_socket_path[0] = 0;
+		free (pkcs11_socket_path);
+		pkcs11_socket_path = NULL;
+	}
 
 	/* Stop all of the dispatch threads */
 	for (ds = pkcs11_dispatchers; ds; ds = next) {
