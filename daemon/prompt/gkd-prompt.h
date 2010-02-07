@@ -62,7 +62,8 @@ GType               gkd_prompt_get_type               (void);
 
 GkdPrompt*          gkd_prompt_new                    (void);
 
-void                gkd_prompt_reset                  (GkdPrompt *prompt);
+void                gkd_prompt_reset                  (GkdPrompt *prompt,
+                                                       gboolean hard);
 
 void                gkd_prompt_set_title              (GkdPrompt *prompt,
                                                        const gchar *title);

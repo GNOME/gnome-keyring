@@ -56,7 +56,7 @@ G_DEFINE_TYPE (GkdSecretChange, gkd_secret_change, GKD_SECRET_TYPE_PROMPT);
  */
 
 static void
-prepare_change_prompt (GkdSecretChange *self, GP11Object *collection)
+prepare_change_prompt (GkdSecretChange *self, GP11Object *collection, gboolean first)
 {
 	GError *error = NULL;
 	GkdPrompt *prompt;
@@ -79,7 +79,8 @@ prepare_change_prompt (GkdSecretChange *self, GP11Object *collection)
 		label = g_strndup (data, n_data);
 	g_free (data);
 
-	gkd_prompt_reset (prompt);
+	/* Hard reset on first prompt, soft thereafter */
+	gkd_prompt_reset (prompt, first);
 
 	gkd_prompt_set_title (prompt, _("Change Keyring Password"));
 
@@ -131,7 +132,7 @@ gkd_secret_change_prompt_ready (GkdSecretPrompt *prompt)
 	}
 
 	if (!gkd_prompt_has_response (GKD_PROMPT (prompt))) {
-		prepare_change_prompt (self, collection);
+		prepare_change_prompt (self, collection, TRUE);
 		return;
 	}
 
@@ -149,7 +150,7 @@ gkd_secret_change_prompt_ready (GkdSecretPrompt *prompt)
 
 	/* The original password was incorrect */
 	} else if (dbus_error_has_name (&derr, INTERNAL_ERROR_DENIED)) {
-		prepare_change_prompt (self, collection);
+		prepare_change_prompt (self, collection, FALSE);
 		set_warning_wrong (self);
 
 	/* Other failures */

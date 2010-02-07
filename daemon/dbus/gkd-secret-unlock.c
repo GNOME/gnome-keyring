@@ -131,8 +131,6 @@ prepare_unlock_login (GkdSecretUnlock *self)
 
 	prompt = GKD_PROMPT (self);
 
-	gkd_prompt_reset (prompt);
-
 	gkd_prompt_set_title (prompt, _("Unlock Login Keyring"));
 
 	text = _("Enter password for to unlock your login keyring");
@@ -150,7 +148,7 @@ prepare_unlock_login (GkdSecretUnlock *self)
 }
 
 static void
-prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
+prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
 {
 	GP11Attributes *template;
 	GP11Attributes *attrs;
@@ -165,6 +163,9 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 
 	prompt = GKD_PROMPT (self);
 
+	/* Hard reset on first prompt, soft on later */
+	gkd_prompt_reset (GKD_PROMPT (prompt), first);
+
 	attrs = attributes_for_collection (coll);
 	g_return_if_fail (attrs);
 
@@ -178,8 +179,6 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 
 	g_free (identifier);
 	label = label_string_for_attributes (attrs);
-
-	gkd_prompt_reset (prompt);
 
 	gkd_prompt_set_title (prompt, _("Unlock Keyring"));
 
@@ -201,13 +200,15 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll)
 	g_free (label);
 
 	/* Setup the unlock options */
-	template = gp11_object_get_template (coll, CKA_G_CREDENTIAL_TEMPLATE, &error);
-	if (template) {
-		gkd_prompt_set_unlock_options (prompt, template);
-		gp11_attributes_unref (template);
-	} else {
-		g_warning ("couldn't get credential template for collection: %s", error->message);
-		g_clear_error (&error);
+	if (first) {
+		template = gp11_object_get_template (coll, CKA_G_CREDENTIAL_TEMPLATE, &error);
+		if (template) {
+			gkd_prompt_set_unlock_options (prompt, template);
+			gp11_attributes_unref (template);
+		} else {
+			g_warning ("couldn't get credential template for collection: %s", error->message);
+			g_clear_error (&error);
+		}
 	}
 }
 
@@ -385,7 +386,7 @@ gkd_secret_unlock_prompt_ready (GkdSecretPrompt *prompt)
 
 			/* Collection still locked, prompt again */
 			} else if (locked) {
-				prepare_unlock_prompt (self, coll);
+				prepare_unlock_prompt (self, coll, FALSE);
 				set_warning_wrong (self);
 
 			/* Collection not locked, done with this one */
@@ -426,7 +427,7 @@ gkd_secret_unlock_prompt_ready (GkdSecretPrompt *prompt)
 			continue;
 		}
 
-		prepare_unlock_prompt (self, coll);
+		prepare_unlock_prompt (self, coll, TRUE);
 		g_object_unref (coll);
 		self->current = objpath;
 	}

@@ -80,6 +80,14 @@ G_DEFINE_TYPE (GkdPrompt, gkd_prompt, G_TYPE_OBJECT);
 /* Forward declaration*/
 static void display_async_prompt (GkdPrompt *);
 
+/* User choices we transfer over during a soft prompt reset */
+const struct { const gchar *section; const gchar *name; } SOFT_RESET[] = {
+	{ "unlock-options", "unlock-auto"},
+	{ "unlock-options", "unlock-idle"},
+	{ "unlock-options", "unlock-timeout"},
+	{ "details", "expanded" },
+};
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
@@ -516,7 +524,7 @@ static void
 gkd_prompt_init (GkdPrompt *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKD_TYPE_PROMPT, GkdPromptPrivate);
-	gkd_prompt_reset (self);
+	gkd_prompt_reset (self, TRUE);
 }
 
 static void
@@ -743,15 +751,33 @@ gkd_prompt_set_warning (GkdPrompt *self, const gchar *warning)
 }
 
 void
-gkd_prompt_reset (GkdPrompt *self)
+gkd_prompt_reset (GkdPrompt *self, gboolean hard)
 {
+	GKeyFile *input;
+	gchar *value;
+	gint i;
+
 	g_return_if_fail (GKD_IS_PROMPT (self));
 
 	kill_process (self);
 	self->pv->pid = 0;
 
+	input = g_key_file_new ();
+
+	/* If not a hard reset, copy over some user data */
+	if (!hard && self->pv->output) {
+		for (i = 0; i < G_N_ELEMENTS (SOFT_RESET); ++i) {
+			value = g_key_file_get_value (self->pv->output, SOFT_RESET[i].section,
+			                              SOFT_RESET[i].name, NULL);
+			if (value != NULL)
+				g_key_file_set_value (input, SOFT_RESET[i].section,
+				                      SOFT_RESET[i].name, value);
+			g_free (value);
+		}
+	}
+
 	clear_prompt_data (self);
-	self->pv->input = g_key_file_new ();
+	self->pv->input = input;
 }
 
 

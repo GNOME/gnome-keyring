@@ -72,7 +72,7 @@ prepare_create_prompt (GkdSecretCreate *self)
 	if (!gp11_attributes_find_string (self->pkcs11_attrs, CKA_LABEL, &label))
 		label = g_strdup (_("Unnamed"));
 
-	gkd_prompt_reset (prompt);
+	gkd_prompt_reset (prompt, TRUE);
 
 	gkd_prompt_set_title (prompt, _("New Keyring Password"));
 	gkd_prompt_set_primary_text (prompt, _("Choose password for new keyring"));

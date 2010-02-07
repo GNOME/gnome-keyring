@@ -341,6 +341,17 @@ prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
 	              NULL);
 }
 
+static void
+prepare_details (GtkBuilder *builder, GtkDialog *dialog)
+{
+	GtkExpander *expander;
+	gboolean expanded;
+
+	expander = GTK_EXPANDER (gtk_builder_get_object (builder, "details_area"));
+	expanded = g_key_file_get_boolean (input_data, "details", "expanded", NULL);
+	gtk_expander_set_expanded (expander, expanded);
+}
+
 static GtkDialog*
 prepare_dialog (GtkBuilder *builder)
 {
@@ -364,6 +375,7 @@ prepare_dialog (GtkBuilder *builder)
 	prepare_passwords (builder, dialog);
 	prepare_security (builder, dialog);
 	prepare_lock (builder, dialog);
+	prepare_details (builder, dialog);
 
 	return dialog;
 }
@@ -574,12 +586,24 @@ gather_unlock_options (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 static void
+gather_details (GtkBuilder *builder, GtkDialog *dialog)
+{
+	GtkExpander *expander;
+
+	expander = GTK_EXPANDER (gtk_builder_get_object (builder, "details_area"));
+	g_key_file_set_boolean (output_data, "details", "expanded",
+	                        gtk_expander_get_expanded (expander));
+}
+
+
+static void
 gather_dialog (GtkBuilder *builder, GtkDialog *dialog)
 {
 	gather_password (builder, "password");
 	gather_password (builder, "confirm");
 	gather_password (builder, "original");
 	gather_unlock_options (builder, dialog);
+	gather_details (builder, dialog);
 }
 
 static void
