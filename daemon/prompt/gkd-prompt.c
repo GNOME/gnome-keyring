@@ -35,6 +35,8 @@
 
 #include <gcrypt.h>
 
+#include <sys/wait.h>
+
 #define DEBUG_PROMPT 1
 #define DEBUG_STDERR 0
 
