@@ -72,7 +72,7 @@ login_session (GP11Session *session)
 	/* Log in the session if necessary */
 	if (info->state == CKS_RO_PUBLIC_SESSION || info->state == CKS_RW_PUBLIC_SESSION) {
 		if (!gp11_session_login (session, CKU_USER, NULL, 0, &error)) {
-			g_message ("couldn't log into session: %s", error->message);
+			g_message ("couldn't log in to session: %s", error->message);
 			ret = FALSE;
 		}
 	}

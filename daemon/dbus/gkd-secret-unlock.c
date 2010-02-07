@@ -137,7 +137,7 @@ prepare_unlock_login (GkdSecretUnlock *self)
 	gkd_prompt_set_primary_text (prompt, text);
 
 	if (gkd_login_did_unlock_fail ())
-		text = _("The password you use to log into your computer no longer matches that of your login keyring.");
+		text = _("The password you use to log in to your computer no longer matches that of your login keyring.");
 	else
 		text = _("The login keyring did not get unlocked when you logged into your computer.");
 	gkd_prompt_set_secondary_text (prompt, text);

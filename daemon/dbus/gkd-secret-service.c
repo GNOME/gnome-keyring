@@ -1234,7 +1234,7 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 		login = info && (info->flags & CKF_LOGIN_REQUIRED);
 		gp11_token_info_free (info);
 		if (login && !gp11_session_login (client->pkcs11_session, CKU_USER, NULL, 0, &error)) {
-			g_warning ("couldn't log into pkcs11 session for secret service: %s",
+			g_warning ("couldn't log in to pkcs11 session for secret service: %s",
 			           error->message);
 			g_clear_error (&error);
 			g_object_unref (client->pkcs11_session);

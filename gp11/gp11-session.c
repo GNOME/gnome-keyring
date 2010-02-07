@@ -737,7 +737,7 @@ perform_login (Login *args)
 
 /**
  * gp11_session_login:
- * @self: Log into this session.
+ * @self: Log in to this session.
  * @user_type: The type of login user.
  * @pin: The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
@@ -757,7 +757,7 @@ gp11_session_login (GP11Session *self, gulong user_type, const guchar *pin,
 
 /**
  * gp11_session_login_full:
- * @self: Log into this session.
+ * @self: Log in to this session.
  * @user_type: The type of login user.
  * @pin: The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
@@ -780,7 +780,7 @@ gp11_session_login_full (GP11Session *self, gulong user_type, const guchar *pin,
 
 /**
  * gp11_session_login_async:
- * @self: Log into this session.
+ * @self: Log in to this session.
  * @user_type: The type of login user.
  * @pin: The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
