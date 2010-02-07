@@ -332,8 +332,10 @@ gck_ssh_private_key_parse (GckSshPrivateKey *self, const gchar *public_path,
 	/* Parse it */
 	res = gck_ssh_openssh_parse_public_key (public_data, n_public_data, &sexp, &comment);
 	g_free (public_data);
-	
-	if (res != GCK_DATA_SUCCESS) {
+
+	if (res == GCK_DATA_UNRECOGNIZED) {
+		return FALSE;
+	} else if (res != GCK_DATA_SUCCESS) {
 		g_set_error_literal (error, GCK_DATA_ERROR, res, _("Couldn't parse public SSH key"));
 		return FALSE;
 	}

@@ -129,11 +129,13 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 	
 	/* Parse the data into the key */
 	if (!gck_ssh_private_key_parse (key, path, private_path, &error)) {
-		g_message ("couldn't parse data: %s: %s", path,
-		           error && error->message ? error->message : "");
-		g_clear_error (&error);
+		if (error) {
+			g_message ("couldn't parse data: %s: %s", path,
+			           error->message ? error->message : "");
+			g_clear_error (&error);
+		}
 		gck_object_expose (GCK_OBJECT (key), FALSE);
-		
+
 	/* When successful register with the object manager */
 	} else {
 		gck_object_expose (GCK_OBJECT (key), TRUE);

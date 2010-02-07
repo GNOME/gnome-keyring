@@ -306,8 +306,11 @@ gck_ssh_openssh_parse_public_key (const guchar *data, gsize n_data,
 	/* Parse the key type */
 	val = g_strndup ((gchar*)data, at - data);
 	algo = keytype_to_algo (val);
-	if (!algo) 
-		g_message ("Unsupported or unknown SSH key algorithm: %s", val);
+	if (!algo) {
+		/* A number usually means an SSH1 key, just quietly ignore */
+		if (atoi (val) == 0)
+			g_message ("Unsupported or unknown SSH key algorithm: %s", val);
+	}
 	g_free (val);
 	if (!algo)
 		return GCK_DATA_UNRECOGNIZED;
