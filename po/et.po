@@ -2,10 +2,10 @@
 # Estonian translation of GNOME-keyring.
 #
 # Copyright (C) 2005, 2006 Free Software Foundation, Inc.
-# Copyright (C) 2007-2009 The GNOME Project.
+# Copyright (C) 2007-2010 The GNOME Project.
 # This file is distributed under the same license as the gnome-keyring package.
 #
-# Ivar Smolin <okul linux ee>, 2005-2009.
+# Ivar Smolin <okul linux ee>, 2005-2010.
 # Priit Laes <plaes plaes org>, 2005, 2006, 2009
 #
 msgid ""
@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-12-19 19:13+0000\n"
-"PO-Revision-Date: 2009-12-21 08:32+0200\n"
+"POT-Creation-Date: 2010-02-06 04:42+0000\n"
+"PO-Revision-Date: 2010-02-07 15:01+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -24,14 +24,14 @@ msgstr ""
 
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemonis "
-"PKCS#11 komponenti. See mõjub ainult gnome-keyring-daemon'i käivitamisel, "
-"(ehk siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede "
-"deemonile antud käsureaargumentidega eirata."
+"Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemoni "
+"PKCS#11 komponenti. See mõjub ainult gnome-sessioni käivitamisel, (ehk siis, "
+"kui kasutaja sisse logib). Seda sätet on võimalik mõnede deemonile antud "
+"käsureaargumentidega asendada."
 
 msgid ""
 "This option enables the SSH agent in the gnome-keyring daemon. It only takes "
@@ -39,16 +39,30 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemonis "
-"SSH komponenti. See mõjub ainult gnome-keyring-daemon'i käivitamisel, (ehk "
-"siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede deemonile "
-"antud käsureaargumentidega eirata."
+"Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemoniSSH "
+"komponenti. See mõjub ainult gnome-keyring-daemon'i käivitamisel, (ehk siis, "
+"kui kasutaja sisse logib). Seda sätet on võimalik mõnede deemonile antud "
+"käsureaargumentidega asendada."
+
+msgid ""
+"This option enables the secret service component in the gnome-keyring "
+"daemon. It only takes effect during startup with gnome-session, (ie: when "
+"the user logs in). This setting may be overridden when certain command line "
+"arguments are passed to the daemon."
+msgstr ""
+"Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemoni "
+"saladuste teenuse komponenti. See mõjub ainult gnome-sessioni käivitamisel, "
+"(ehk siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede "
+"deemonile antud käsureaargumentidega asendada."
 
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Kas gnome võtmerõnga PKCS#11 komponent on lubatud või mitte."
 
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Kas gnome võtmerõnga SSH komponent on lubatud või mitte."
+
+msgid "Whether the gnome-keyring secret service is enabled."
+msgstr "Kas gnome võtmerõnga saladuste teenus on lubatud või mitte."
 
 msgid "Unnamed"
 msgstr "Nimetu"
@@ -99,8 +113,27 @@ msgstr "Rakendus tahab kasutada võtmerõngast '%s', kuid see on lukus"
 msgid "The unlock password was incorrect"
 msgstr "Lukust lahtivõtmise parool ei ole korrektne"
 
-msgid "GNOME Keyring Daemon"
-msgstr "GNOME võtmerõnga deemon"
+#, c-format
+msgid "Unlock password for %s keyring"
+msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
+
+msgid "Certificate and Key Storage"
+msgstr "Sertifikaadid ja võtmehoidla"
+
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME võtmerõngas: PKCS#11 komponent"
+
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME võtmerõngas: saladuste teenus"
+
+msgid "Secret Storage Service"
+msgstr "Saladuste hoidmise teenus"
+
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME võtmerõngas: SSH-agent"
+
+msgid "SSH Key Agent"
+msgstr "SSH-võtmete agent"
 
 msgid "New Password Required"
 msgstr "Vajalik uus parool"
@@ -212,22 +245,8 @@ msgid "Automatically unlock this keyring whenever I'm logged in."
 msgstr ""
 "See võtmerõngas võetakse minu sisselogimisel automaatselt lukust lahti."
 
-msgid "Lock this keyring after"
-msgstr "See võtmerõngas lukustatakse pärast"
-
-msgid "Lock this keyring if idle for"
-msgstr "See võtmerõngas lukustatakse pärast jõudeolekut"
-
-msgid "Lock this keyring when I log out."
-msgstr "See võtmerõngas pannakse minu väljalogimisel lukku."
-
 msgid "New password strength"
 msgstr "Uue parooli tugevus"
-
-msgid "Prompt me for each application that accesses this keyring."
-msgstr ""
-"Kinnituse küsimine iga rakenduse korral, mis soovib sellele võtmerõngale "
-"ligi pääseda."
 
 msgid "_Application:"
 msgstr "_Rakendus:"
@@ -246,9 +265,6 @@ msgstr "_Vana parool:"
 
 msgid "_Password:"
 msgstr "_Parool:"
-
-msgid "minutes."
-msgstr "minutit."
 
 msgid "Domain Component"
 msgstr "Domeeni osa"
@@ -786,6 +802,23 @@ msgstr "Nimetu sertifikaat"
 msgid "Couldn't parse public SSH key"
 msgstr "Avalikku SSH võtit pole võimalik analüüsida"
 
+#~ msgid "Lock this keyring after"
+#~ msgstr "See võtmerõngas lukustatakse pärast"
+
+#~ msgid "Lock this keyring if idle for"
+#~ msgstr "See võtmerõngas lukustatakse pärast jõudeolekut"
+
+#~ msgid "Lock this keyring when I log out."
+#~ msgstr "See võtmerõngas pannakse minu väljalogimisel lukku."
+
+#~ msgid "Prompt me for each application that accesses this keyring."
+#~ msgstr ""
+#~ "Kinnituse küsimine iga rakenduse korral, mis soovib sellele võtmerõngale "
+#~ "ligi pääseda."
+
+#~ msgid "minutes."
+#~ msgstr "minutit."
+
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
@@ -990,9 +1023,6 @@ msgstr "Avalikku SSH võtit pole võimalik analüüsida"
 #~ msgstr ""
 #~ "Sinu sisselogimise võtmerõngast ei loodud, kui sa sellesse arvutisse "
 #~ "sisse logisid. See luuakse nüüd."
-
-#~ msgid "Unlock password for %s keyring"
-#~ msgstr "Võtmerõnga %s lukust lahtivõtmise parool"
 
 #~ msgid "Automatically unlock this private key when I log in."
 #~ msgstr ""
