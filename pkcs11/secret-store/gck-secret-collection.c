@@ -296,6 +296,7 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	track_secret_data (collection, sdata);
 	g_object_unref (sdata);
 
+	gck_attributes_consume (attrs, n_attrs, CKA_G_CREDENTIAL, G_MAXULONG);
 	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (collection), attrs, n_attrs);
 	return GCK_OBJECT (collection);
 }
