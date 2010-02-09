@@ -1,3 +1,21 @@
+Changes in version 2.29.90 are:
+ * Quit daemon when the dbus session is disconnected.
+ * GNU Hurd build fixes.
+ * Solaris build fixes.
+ * Translation fixes.
+ * Don't print out warnings on SSH v1 keys.
+ * Remove erroneous egg-dbus dependency.
+ * Allow saving password for encryption keys.
+ * Fix problems storing secrets in keyrings.
+ * Expose idle and timeout lock options for keyrings in the
+   prompt dialog. Fix remaining issues to get this to work.
+ * Display a different message when unlocking the login keyring.
+ * Fix problem with phantom 'xxx_1' keyrings appearing.
+ * Load and use the default keyring properly.
+ * Support accessing template style pkcs11 attributes.
+ * Fix endless loop when looking for encryption key password
+   in login keyring.
+
 Changes in version 2.29.5 are:
  * Implement lookup collection passwords in login keyring.
  * Various prompting fixes.
