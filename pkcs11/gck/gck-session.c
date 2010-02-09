@@ -125,8 +125,9 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 	CK_ULONG n_mechanisms, i;
 	gsize n_data;
 	gboolean have;
+	gulong key_type;
 	CK_RV rv;
-	
+
 	g_assert (GCK_IS_SESSION (self));
 
 	/* Cancel any current operation */
@@ -142,7 +143,8 @@ prepare_crypto (GckSession *self, CK_MECHANISM_PTR mech,
 	if (rv != CKR_OK)
 		return rv;
 
-	if (!GCK_IS_OBJECT (object))
+	/* Make sure it's a key */
+	if (!gck_object_get_attribute_ulong (object, self, CKA_KEY_TYPE, &key_type))
 		return CKR_KEY_HANDLE_INVALID;
 
 	/* Lookup the mechanisms this object can do */
@@ -870,6 +872,14 @@ gck_session_complete_object_creation (GckSession *self, GckTransaction *transact
 		return;
 	}
 
+	/* Add the object to session or token */
+	if (!gck_transaction_get_failed (transaction)) {
+		if (gck_object_is_token (object))
+			gck_module_add_token_object (self->pv->module, transaction, object);
+		else
+			add_object (self, transaction, object);
+	}
+
 	/* Next go through and set all attributes that weren't used initially */
 	gck_attributes_consume (attrs, n_attrs, CKA_TOKEN, G_MAXULONG);
 	for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
@@ -877,11 +887,11 @@ gck_session_complete_object_creation (GckSession *self, GckTransaction *transact
 			gck_object_set_attribute (object, self, transaction, &attrs[i]);
 	}
 
-	/* Find somewhere to store the object */
-	if (gck_object_is_token (object))
-		gck_module_store_token_object (self->pv->module, transaction, object);
-	else
-		add_object (self, transaction, object);
+	/* Store the object */
+	if (!gck_transaction_get_failed (transaction)) {
+		if (gck_object_is_token (object))
+			gck_module_store_token_object (self->pv->module, transaction, object);
+	}
 }
 
 /* -----------------------------------------------------------------------------

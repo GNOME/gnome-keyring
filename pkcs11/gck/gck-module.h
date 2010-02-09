@@ -57,9 +57,11 @@ struct _GckModuleClass {
 	const CK_TOKEN_INFO* (*get_token_info) (GckModule *self);
 
 	CK_RV (*refresh_token) (GckModule *self);
-	
+
+	void (*add_token_object) (GckModule *self, GckTransaction *transaction, GckObject *object);
+
 	void (*store_token_object) (GckModule *self, GckTransaction *transaction, GckObject *object);
-	
+
 	void (*remove_token_object) (GckModule *self, GckTransaction *transaction, GckObject *object);
 
 	CK_RV (*login_change) (GckModule *self, CK_SLOT_ID slot_id, 
@@ -133,6 +135,10 @@ CK_RV                  gck_module_logout_so                       (GckModule *se
                                                                    CK_SLOT_ID slot_id);
 
 CK_RV                  gck_module_refresh_token                   (GckModule *self);
+
+void                   gck_module_add_token_object                (GckModule *self,
+                                                                   GckTransaction *transaction,
+                                                                   GckObject *object);
 
 void                   gck_module_store_token_object              (GckModule *self,
                                                                    GckTransaction *transaction,

@@ -128,23 +128,20 @@ gck_user_module_real_refresh_token (GckModule *base)
 	return CKR_OK;
 }
 
-static void 
-gck_user_module_real_store_token_object (GckModule *base, GckTransaction *transaction, GckObject *object)
+static void
+gck_user_module_real_add_token_object (GckModule *base, GckTransaction *transaction, GckObject *object)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
-	GckStore *store = NULL;
-
-	/* TODO: Need to support storing changes better */
-	g_object_get (object, "store", &store, NULL);
-	if (store != NULL) {
-		g_object_unref (store);
-		return;
-	}
-
 	gck_user_storage_create (self->storage, transaction, object);
 }
 
 static void 
+gck_user_module_real_store_token_object (GckModule *base, GckTransaction *transaction, GckObject *object)
+{
+	/* Not necessary */
+}
+
+static void
 gck_user_module_real_remove_token_object (GckModule *base, GckTransaction *transaction, GckObject *object)
 {
 	GckUserModule *self = GCK_USER_MODULE (base);
@@ -332,6 +329,7 @@ gck_user_module_class_init (GckUserModuleClass *klass)
 	module_class->get_token_info = gck_user_module_real_get_token_info;
 	module_class->parse_argument = gck_user_module_real_parse_argument;
 	module_class->refresh_token = gck_user_module_real_refresh_token;
+	module_class->add_token_object = gck_user_module_real_add_token_object;
 	module_class->store_token_object = gck_user_module_real_store_token_object;
 	module_class->remove_token_object = gck_user_module_real_remove_token_object;
 	module_class->login_user = gck_user_module_real_login_user;

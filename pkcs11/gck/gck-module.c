@@ -496,6 +496,12 @@ gck_module_real_refresh_token (GckModule *self)
 }
 
 static void
+gck_module_real_add_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	/* Derived class should override, default does nothing */
+}
+
+static void
 gck_module_real_store_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
 {
 	/* Derived classes should do something interesting */
@@ -707,6 +713,7 @@ gck_module_class_init (GckModuleClass *klass)
 	klass->get_token_info = gck_module_real_get_token_info;
 	klass->parse_argument = gck_module_real_parse_argument;
 	klass->refresh_token = gck_module_real_refresh_token;
+	klass->add_token_object = gck_module_real_add_token_object;
 	klass->store_token_object = gck_module_real_store_token_object;
 	klass->remove_token_object = gck_module_real_remove_token_object;
 	klass->login_change = gck_module_real_login_change;
@@ -834,18 +841,29 @@ gck_module_refresh_token (GckModule *self)
 }
 
 void
+gck_module_add_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
+{
+	g_return_if_fail (GCK_IS_MODULE (self));
+	g_return_if_fail (GCK_IS_OBJECT (object));
+	g_assert (GCK_MODULE_GET_CLASS (self)->add_token_object);
+
+	if (gck_object_is_transient (object)) {
+		if (g_hash_table_lookup (self->pv->transient_objects, object) == NULL)
+			add_transient_object (self, transaction, object);
+	} else {
+		GCK_MODULE_GET_CLASS (self)->add_token_object (self, transaction, object);
+	}
+}
+
+void
 gck_module_store_token_object (GckModule *self, GckTransaction *transaction, GckObject *object)
 {
 	g_return_if_fail (GCK_IS_MODULE (self));
 	g_return_if_fail (GCK_IS_OBJECT (object));
 	g_assert (GCK_MODULE_GET_CLASS (self)->store_token_object);
 
-	if (gck_object_is_transient (object)) {
-		if (g_hash_table_lookup (self->pv->transient_objects, object) == NULL)
-			add_transient_object (self, transaction, object);
-	} else {
+	if (!gck_object_is_transient (object))
 		GCK_MODULE_GET_CLASS (self)->store_token_object (self, transaction, object);
-	}
 }
 
 void
