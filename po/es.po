@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-02-07 18:22+0000\n"
-"PO-Revision-Date: 2010-02-07 19:28+0100\n"
+"POT-Creation-Date: 2010-02-09 04:08+0000\n"
+"PO-Revision-Date: 2010-02-09 07:19+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr ""
 "Indica si el servicio de secretos del depósito de claves está activado."
 
 #: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119
+#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:579
 msgid "Unnamed"
 msgstr "Sin nombre"
 
@@ -123,9 +123,6 @@ msgid "Enter password for to unlock your login keyring"
 msgstr "Introducir la contraseña para desbloquear el depósito"
 
 #: ../daemon/dbus/gkd-secret-unlock.c:140
-#| msgid ""
-#| "The password you use to log into your computer no longer matches that of "
-#| "your login keyring."
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -182,6 +179,12 @@ msgstr "Depósito de claves de GNOME: agente SSH"
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "SSH Key Agent"
 msgstr "Agente de claves SSH"
+
+#: ../daemon/login/gkd-login.c:591
+#, c-format
+#| msgid "Unlock password for %s keyring"
+msgid "Unlock password for: %s"
+msgstr "Contraseña de desbloqueo para %s"
 
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
@@ -304,7 +307,6 @@ msgid "Password cannot be blank"
 msgstr "La contraseña no puede estar vacía"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:1
-#| msgid "Automatically unlock this keyring whenever I'm logged in."
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "Desbloquear este depósito de claves siempre que haya iniciado sesión"
 
@@ -645,6 +647,24 @@ msgstr "Importar en:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Contraseña:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "Bloquear después este depósito"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "Bloquear este depósito si está inactivo durante"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#| msgid "Lock this keyring when I log out."
+msgid "Lock this keyring when I log out"
+msgstr "Bloquear este depósito al cerrar la sesión"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#| msgid "minutes."
+msgid "minutes"
+msgstr "minutos"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1045,9 +1065,6 @@ msgstr "Certificado sin nombre"
 msgid "Couldn't parse public SSH key"
 msgstr "No se pudo analizar la clave SSH pública"
 
-#~ msgid "Unlock password for %s keyring"
-#~ msgstr "Contraseña de desbloqueo para el depósito de claves %s"
-
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr "Desbloquear automáticamente el depósito seguro al iniciar sesión."
 
@@ -1063,22 +1080,10 @@ msgstr "No se pudo analizar la clave SSH pública"
 #~ "Una aplicación quiere acceder al depósito de claves «xxx», pero está "
 #~ "bloqueado"
 
-#~ msgid "Lock this keyring after"
-#~ msgstr "Bloquear después este depósito"
-
-#~ msgid "Lock this keyring if idle for"
-#~ msgstr "Bloquear este depósito si está inactivo durante"
-
-#~ msgid "Lock this keyring when I log out."
-#~ msgstr "Bloquear este depósito al cerrar la sesión."
-
 #~| msgid "Allow application access to keyring?"
 #~ msgid "Prompt me for each application that accesses this keyring."
 #~ msgstr ""
 #~ "Preguntarme para cada aplicación que acceda a este depósito de claves."
-
-#~ msgid "minutes."
-#~ msgstr "minutos."
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
