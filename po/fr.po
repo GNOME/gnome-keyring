@@ -1,5 +1,5 @@
 # French translation of gnome-keyring.
-# Copyright (C) 2004-2009 Free Software Foundation, Inc.
+# Copyright (C) 2004-2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Sébastien Bacher <seb128@debian.org>, 2004.
@@ -7,357 +7,33 @@
 # Laurent Richard <laurent.richard@ael.be>, 2006.
 # Jonathan Ernst <jonathan@ernstfamily.ch>, 2006.
 # Yann Simon <yann.simon.fr@gmail.com>, 2007.
-# Claude Paroz <claude@2xlibre.net>, 2007-2009.
+# Claude Paroz <claude@2xlibre.net>, 2007-2010.
 # Robert-André Mauchin <zebob.m@pengzone.org>, 2008.
 # Bruno Brouard <annoa.b@gmail.com>, 2008.
-# Laurent Coudeur <laurentc@iol.ie>, 2009
+# Laurent Coudeur <laurentc@iol.ie>, 2009-2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 21:49+0200\n"
-"PO-Revision-Date: 2009-08-26 21:52+0200\n"
+"POT-Creation-Date: 2010-02-10 20:01+0100\n"
+"PO-Revision-Date: 2010-02-10 20:08+0100\n"
 "Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"L'application « %s » (%s) veut accéder au mot de passe de « <object "
-"prop='name'/> » dans le trousseau de clés par défaut."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"L'application « %s » (%s) veut accéder au mot de passe de « <object "
-"prop='name'/> » dans %s."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"L'application « %s » veut accéder au mot de passe de « <object prop='name'/> » "
-"dans le trousseau de clés par défaut."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"L'application « %s » veut accéder au mot de passe de « <object prop='name'/> » "
-"dans %s."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Une application inconnue veut accéder au mot de passe de « <object "
-"prop='name'/> » dans le trousseau de clés par défaut."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Une application inconnue veut accéder au mot de passe de « <object "
-"prop='name'/> » dans %s."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "Autoriser l'accès"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "Autoriser l'application à accéder au trousseau de clés ?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"L'application « %s » (%s) veut accéder au trousseau de clés par défaut, mais "
-"il est verrouillé"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"L'application « %s » (%s) veut accéder au trousseau de clés « %s », mais il "
-"est verrouillé"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"L'application « %s » veut accéder au trousseau de clés par défaut, mais il "
-"est verrouillé"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-"L'application « %s » veut accéder au trousseau de clés « %s », mais il est "
-"verrouillé"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"Une application inconnue veut accéder au trousseau de clés par défaut, mais "
-"il est verrouillé"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Une application inconnue veut accéder au trousseau de clés « %s », mais il "
-"est verrouillé"
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr ""
-"Saisissez le mot de passe du trousseau de clés par défaut pour le "
-"déverrouiller"
-
-#: ../daemon/gkr-daemon-ops.c:360
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr ""
-"Saisissez le mot de passe du trousseau de clés « %s » pour le déverrouiller"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "Déverrouiller le trousseau de clés"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr ""
-"Déverrouiller automatiquement ce trousseau de clés quand je me connecte."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"L'application « %s » (%s) veut créer un nouveau trousseau de clés nommé « %"
-"s ». Choisissez le mot de passe que vous voulez lui associer."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"L'application « %s » (%s) veut créer un nouveau trousseau de clés. Choisissez "
-"le mot de passe que vous voulez lui associer."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"L'application « %s » veut créer un nouveau trousseau de clés nommé « %s ». "
-"Choisissez le mot de passe que vous voulez lui associer."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"L'application « %s » veut créer un nouveau trousseau de clés par défaut. "
-"Choisissez le mot de passe que vous voulez lui associer."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"Une application inconnue veut créer un nouveau trousseau de clés nommé « %"
-"s ». Choisissez le mot de passe que vous voulez lui associer."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Une application inconnue veut créer un nouveau trousseau de clés par défaut. "
-"Choisissez le mot de passe que vous voulez lui associer."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "Mot de passe du nouveau trousseau de clés"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "Choisissez le mot de passe du nouveau trousseau de clés"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"L'application « %s » (%s) veut modifier le mot de passe du trousseau de clés "
-"« %s ». Choisissez le mot de passe que vous voulez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"L'application « %s » (%s) veut modifier le mot de passe du trousseau de clés "
-"par défaut. Choisissez le mot de passe que vous voulez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"L'application « %s » veut modifier le mot de passe du trousseau de clés « %"
-"s ». Choisissez le mot de passe que vous voulez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"L'application « %s » veut modifier le mot de passe du trousseau de clés par "
-"défaut. Choisissez le mot de passe que vous voulez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Une application inconnue veut modifier le mot de passe du trousseau de clés "
-"« %s ». Choisissez le mot de passe que vous voulez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Une application inconnue veut modifier le mot de passe du trousseau de clés "
-"par défaut. Choisissez le mot de passe que vous voulez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:552
-#, c-format
-msgid "Choose a new password for the '%s' keyring."
-msgstr "Choisissez un nouveau mot de passe pour le trousseau de clés « %s »."
-
-#: ../daemon/gkr-daemon-ops.c:554
-#, c-format
-msgid "Choose a new password for the default keyring."
-msgstr ""
-"Choisissez un nouveau mot de passe pour le trousseau de clés par défaut."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
-msgid "Change Keyring Password"
-msgstr "Modifier le mot de passe du trousseau de clés"
-
-#: ../daemon/gkr-daemon-ops.c:631
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"L'application « %s » (%s) veut enregistrer un mot de passe, mais il n'y a pas "
-"de trousseau de clés par défaut. Pour en créer un, vous avez besoin de "
-"choisir le mot de passe que vous désirez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"L'application « %s » veut enregistrer un mot de passe, mais il n'y a pas de "
-"trousseau de clés par défaut. Pour en créer un, vous avez besoin de choisir "
-"le mot de passe que vous désirez lui associer."
-
-#: ../daemon/gkr-daemon-ops.c:643
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Une application inconnue veut enregistrer un mot de passe, mais il n'y a pas "
-"de trousseau de clés par défaut. Pour en créer un, vous avez besoin de "
-"choisir le mot de passe que vous désirez lui associer."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "Créer le trousseau de clés par défaut"
-
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "Choisissez un mot de passe pour le trousseau de clés par défaut"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"Cette option active le composant PKCS#11 du démon gnome-keyring. Il prend "
-"effet dès que gnome-keyring-daemon démarre (c-à-d quand l'utilisateur "
+"Cette option active le composant PKCS#11 du démon gnome-keyring. Il ne prend "
+"effet qu'au démarrage de gnome-session (c-à-d quand l'utilisateur "
 "s'identifie). Ce réglage peut être remplacé quand certains paramètres sont "
 "fournis au démon en ligne de commande."
 
@@ -374,169 +50,157 @@ msgstr ""
 "en ligne de commande."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
+msgid ""
+"This option enables the secret service component in the gnome-keyring "
+"daemon. It only takes effect during startup with gnome-session, (ie: when "
+"the user logs in). This setting may be overridden when certain command line "
+"arguments are passed to the daemon."
+msgstr ""
+"Cette option active le composant de service secret du démon gnome-keyring. "
+"Il ne prend effet qu'au démarrage de gnome-session (c-à-d quand "
+"l'utilisateur s'identifie). Ce réglage peut être remplacé quand certains "
+"paramètres sont fournis au démon en ligne de commande."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Indique si le composant PKCS#11 de gnome-keyring est activé."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Indique si l'agent SSH de gnome-keyring est activé."
 
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "Service gestionnaire de mot de passe GNOME"
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
+msgid "Whether the gnome-keyring secret service is enabled."
+msgstr "Indique si l'agent de service secret de gnome-keyring est activé."
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
+#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
+#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:579
+msgid "Unnamed"
+msgstr "Sans nom"
+
+#: ../daemon/dbus/gkd-secret-change.c:85
+msgid "Change Keyring Password"
+msgstr "Modifier le mot de passe du trousseau de clés"
+
+#: ../daemon/dbus/gkd-secret-change.c:87
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Choisissez un nouveau mot de passe pour le trousseau de clés « %s »"
+
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Une application veut modifier le mot de passe du trousseau de clés « %s ». "
+"Choisissez le nouveau mot de passe que vous voulez lui associer."
+
+#: ../daemon/dbus/gkd-secret-change.c:110
+msgid "The original password was incorrect"
+msgstr "Le mot de passe original n'est pas correct"
+
+#: ../daemon/dbus/gkd-secret-create.c:77
+msgid "New Keyring Password"
+msgstr "Mot de passe du nouveau trousseau de clés"
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "Choose password for new keyring"
+msgstr "Choisissez le mot de passe du nouveau trousseau de clés"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Une application veut créer un nouveau trousseau de clés nommé « %s ». "
+"Choisissez le mot de passe que vous voulez lui associer."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:134
 msgid "Unlock Login Keyring"
 msgstr "Déverrouiller le trousseau de connexion"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
+#: ../daemon/dbus/gkd-secret-unlock.c:136
+msgid "Enter password for to unlock your login keyring"
 msgstr ""
-"Saisissez votre mot de passe de connexion pour déverrouiller le trousseau"
+"Saisissez votre mot de passe pour déverrouiller le trousseau de connexion"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:101
+#: ../daemon/dbus/gkd-secret-unlock.c:140
 msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
 msgstr ""
-"Votre trousseau de connexion n'a pas été déverrouillé automatiquement quand "
-"vous vous êtes connecté à cet ordinateur."
+"Le mot de passe que vous utilisez pour ouvrir une session sur cet ordinateur "
+"ne correspond plus à celui de votre trousseau de connexion."
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "Créer le trousseau de connexion"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "Saisissez votre mot de passe de connexion"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:127
+#: ../daemon/dbus/gkd-secret-unlock.c:142
 msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"Votre trousseau de connexion n'a pas été automatiquement créé quand vous "
-"vous êtes connecté sur cet ordinateur. Il va maintenant être créé."
+"Le trousseau de connexion n'a pas été déverrouillé lors de votre connexion à "
+"cet ordinateur."
 
-#: ../daemon/keyrings/gkr-keyring.c:587
+#: ../daemon/dbus/gkd-secret-unlock.c:183
+msgid "Unlock Keyring"
+msgstr "Déverrouiller le trousseau de clés"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:185
 #, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Mot de passe pour déverrouiller le trousseau de clés %s"
+msgid "Enter password for keyring '%s' to unlock"
+msgstr ""
+"Saisissez le mot de passe du trousseau de clés « %s » pour le déverrouiller"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
-msgid "Unlock private key"
-msgstr "Déverrouiller une clé privée"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
-msgid "Unlock certificate"
-msgstr "Déverrouiller un certificat"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
-msgid "Unlock public key"
-msgstr "Déverrouiller une clé publique"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
-msgid "Unlock"
-msgstr "Déverrouiller"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Saisissez le mot de passe pour déverrouiller la clé privée"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Saisissez le mot de passe pour déverrouiller le certificat"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
-msgid "Enter password to unlock the public key"
-msgstr "Saisissez le mot de passe pour déverrouiller la clé publique"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Saisissez le mot de passe pour déverrouiller"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#: ../daemon/dbus/gkd-secret-unlock.c:189
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
+msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Une application veut accéder à la clé privée « %s », mais elle est verrouillée"
+"Une application veut accéder au trousseau de clés « %s », mais il est "
+"verrouillé"
 
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
+#: ../daemon/dbus/gkd-secret-unlock.c:219
+msgid "The unlock password was incorrect"
+msgstr "Le mot de passe de déverrouillage n'est pas correct"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Stockage de certificats et de clés"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "Trousseau de clés GNOME : composant PKCS#11"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "Trousseau de clés GNOME : service secret"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "Service de stockage secret"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Trousseau de clés GNOME : agent SSH"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "Agent de clés SSH"
+
+#: ../daemon/login/gkd-login.c:591
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"Une application veut accéder au certificat « %s », mais il est verrouillé"
+msgid "Unlock password for: %s"
+msgstr "Mot de passe de déverrouillage pour : %s"
 
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Une application veut accéder à la clé publique « %s », mais elle est "
-"verrouillée"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Une application veut accéder à « %s », mais il est verrouillé"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "Déverrouiller automatiquement cette clé privée quand je me connecte"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Déverrouiller automatiquement ce certificat quand je me connecte"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "Déverrouiller automatiquement cette clé publique quand je me connecte"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "Déverrouiller automatiquement cet objet quand je me connecte"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
-msgid "Unlock certificate/key storage"
-msgstr "Déverrouiller le stockage de certificats/clés"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Saisissez le mot de passe pour déverrouiller l'espace de stockage de "
-"certificats/clés"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Une application veut accéder au stockage de certificats/clés « %s », mais il "
-"est verrouillé"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr ""
-"Déverrouiller automatiquement le stockage sécurisé quand je me connecte."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
 msgstr "Nouveau mot de passe nécessaire"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
 msgid "New password required for secure storage"
 msgstr ""
 "Un nouveau mot de passe est nécessaire pour l'espace de stockage sécurisé"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -545,43 +209,91 @@ msgstr ""
 "Un mot de passe est nécessaire pour préparer « %s » au stockage de "
 "certificats ou de clés"
 
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Impossible de capturer la souris.</big></b>\n"
-"\n"
-"Il se peut qu'un client hostile espionne votre session ou vous venez de "
-"cliquer sur un menu ou une application s'est placée au premier plan.\n"
-"\n"
-"Veuillez essayer à nouveau."
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
+msgid "Unlock private key"
+msgstr "Déverrouiller une clé privée"
 
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Impossible de capturer le clavier.</big></b>\n"
-"\n"
-"Il se peut qu'un client hostile espionne votre session ou vous venez de "
-"cliquer sur un menu ou une application s'est placée au premier plan.\n"
-"\n"
-"Veuillez essayer à nouveau."
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
+msgid "Unlock certificate"
+msgstr "Déverrouiller un certificat"
 
-#: ../daemon/ui/gkr-ask-tool.c:276
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
+msgid "Unlock public key"
+msgstr "Déverrouiller une clé publique"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
+msgid "Unlock"
+msgstr "Déverrouiller"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
+msgid "Enter password to unlock the private key"
+msgstr "Saisissez le mot de passe pour déverrouiller la clé privée"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
+msgid "Enter password to unlock the certificate"
+msgstr "Saisissez le mot de passe pour déverrouiller le certificat"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
+msgid "Enter password to unlock the public key"
+msgstr "Saisissez le mot de passe pour déverrouiller la clé publique"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
+msgid "Enter password to unlock"
+msgstr "Saisissez le mot de passe pour déverrouiller"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Une application veut accéder à la clé privée « %s », mais elle est verrouillée"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"Une application veut accéder au certificat « %s », mais il est verrouillé"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Une application veut accéder à la clé publique « %s », mais elle est "
+"verrouillée"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Une application veut accéder à « %s », mais il est verrouillé"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
+msgid "Unlock certificate/key storage"
+msgstr "Déverrouiller le stockage de certificats/clés"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Saisissez le mot de passe pour déverrouiller l'espace de stockage de "
+"certificats/clés"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Une application veut accéder au stockage de certificats/clés « %s », mais il "
+"est verrouillé"
+
+#: ../daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "Stocker les mots de passe de manière non chiffrée ?"
 
-#: ../daemon/ui/gkr-ask-tool.c:277
+#: ../daemon/prompt/gkd-prompt-tool.c:394
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -591,84 +303,50 @@ msgstr ""
 "seront pas chiffrés de manière sûre. Ils seront accessibles par n'importe "
 "qui ayant un accès à vos fichiers."
 
-#: ../daemon/ui/gkr-ask-tool.c:284
+#: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "Utiliser un stockage non sûr"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "_Emplacement :"
-
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "_Ancien mot de passe :"
-
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "_Mot de passe :"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "_Confirmation du mot de passe :"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "Robustesse du nouveau mot de passe"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
+#: ../daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "Les mots de passe ne sont pas identiques."
 
-#: ../daemon/ui/gkr-ask-tool.c:661
+#: ../daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "Le mot de passe ne peut pas être vide"
 
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "_Interdire"
+#: ../daemon/prompt/gkd-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr ""
+"Déverrouiller automatiquement ce trousseau de clés quand je suis connecté"
 
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "C_réer"
+#: ../daemon/prompt/gkd-prompt.ui.h:2
+msgid "New password strength"
+msgstr "Robustesse du nouveau mot de passe"
 
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "C_hanger"
+#: ../daemon/prompt/gkd-prompt.ui.h:3
+msgid "_Application:"
+msgstr "Appl_ication :"
 
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "Autoriser _une seule fois"
+#: ../daemon/prompt/gkd-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "_Confirmation :"
 
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "_Toujours autoriser"
+#: ../daemon/prompt/gkd-prompt.ui.h:5
+msgid "_Details:"
+msgstr "_Détails :"
 
-#: ../daemon/util/gkr-location.c:234
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Disque amovible : %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Nom :"
 
-#: ../daemon/util/gkr-location.c:236
-msgid "Removable Disk"
-msgstr "Disque amovible"
+#: ../daemon/prompt/gkd-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "_Ancien mot de passe :"
 
-#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
-msgid "Home"
-msgstr "Dossier personnel"
-
-#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
-msgid "The disk or drive this file is located on is not present"
-msgstr "Le disque ou le lecteur où ce fichier est situé n'est pas présent"
-
-#: ../daemon/util/gkr-location.c:914
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Impossible de créer le répertoire : %s"
-
-#: ../daemon/util/gkr-location.c:948
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Impossible de supprimer le fichier : %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Mot de passe :"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -790,6 +468,18 @@ msgstr "DSA"
 #: ../egg/egg-oid.c:109
 msgid "SHA1 with DSA"
 msgstr "SHA1 avec DSA"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr ""
+"Erreur inattendue dans select() lors de la lecture de données provenant du "
+"processus fils (%s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Erreur inattendue dans waitpid() (%s)"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -970,6 +660,22 @@ msgstr "Importer vers :"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Mot de passe :"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "Verrouiller ce trousseau de clés après"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "Verrouiller ce trousseau de clés s'il est inactif pendant"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring when I log out"
+msgstr "Verrouiller ce trousseau de clés quand je me déconnecte"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "minutes"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1363,42 +1069,10 @@ msgstr "La requête de signature a été rejetée par l'utilisateur"
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "Accès refusé"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "L'application gnome-keyring-daemon n'est pas lancée."
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "Erreur lors de la communication avec gnome-keyring-daemon"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "Un trousseau de clés portant ce nom existe déjà"
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "Erreur programmeur : l'application a envoyé des données non valides."
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "Aucun résultat correspondant"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "Aucun trousseau de clés ne correspond à ce nom."
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "Le trousseau de clés a déjà été déverrouillé."
-
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../pkcs11/gck/gck-certificate.c:739
 msgid "Unnamed Certificate"
 msgstr "Certificat sans nom"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Impossible d'analyser la clé publique SSH"
