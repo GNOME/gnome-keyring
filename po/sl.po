@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-01-11 16:02+0000\n"
-"PO-Revision-Date: 2010-01-13 10:52+0100\n"
+"POT-Creation-Date: 2010-02-10 20:16+0000\n"
+"PO-Revision-Date: 2010-02-12 10:37+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -47,25 +47,26 @@ msgstr "Ali je gnome-keyring skrite storitve omogočen."
 
 #: ../daemon/dbus/gkd-secret-change.c:77
 #: ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:105
+#: ../daemon/dbus/gkd-secret-unlock.c:119
+#: ../daemon/login/gkd-login.c:579
 msgid "Unnamed"
 msgstr "Neimenovano"
 
-#: ../daemon/dbus/gkd-secret-change.c:84
+#: ../daemon/dbus/gkd-secret-change.c:85
 msgid "Change Keyring Password"
 msgstr "Spremeni geslo zbirke ključev"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:87
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Izberite novo geslo za zbirko ključev '%s'"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:91
 #, c-format
 msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
 msgstr "Program želi spremeniti geslo za zbirko ključev '%s'. Izbrati morate novo geslo za to zbirko."
 
-#: ../daemon/dbus/gkd-secret-change.c:109
+#: ../daemon/dbus/gkd-secret-change.c:110
 msgid "The original password was incorrect"
 msgstr "Prvotno geslo je napačno."
 
@@ -82,21 +83,37 @@ msgstr "Izberite geslo za novo zbirko ključev"
 msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
 msgstr "Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za novo zbirko."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:112
+#: ../daemon/dbus/gkd-secret-unlock.c:134
+msgid "Unlock Login Keyring"
+msgstr "Odklenite prijavno zbirko ključev"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:136
+msgid "Enter password for to unlock your login keyring"
+msgstr "Vnesite geslo za odklepanje zbirke ključev"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:140
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "Geslo, ki  se uporabi ob prijavi v sistem, se ne sklada z geslom zbirke ključev."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:142
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "Prijavna zbirka ključev ni bila samodejno odklenjena ob prijavi."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:183
 msgid "Unlock Keyring"
 msgstr "Odklenite zbirko ključev"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:114
+#: ../daemon/dbus/gkd-secret-unlock.c:185
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Vnesite geslo za dostop do '%s' zbirke ključev"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:118
+#: ../daemon/dbus/gkd-secret-unlock.c:189
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Program želi dostopiti do zbirke ključev '%s', vendar je ta zaklenjena."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:219
 msgid "The unlock password was incorrect"
 msgstr "Geslo za odklepanje je napačno."
 
@@ -124,6 +141,11 @@ msgstr "GNOME zbirka ključev: SSH agent"
 msgid "SSH Key Agent"
 msgstr "SSH Agent ključev"
 
+#: ../daemon/login/gkd-login.c:591
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Geslo odklepanja za: %s"
+
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
 msgstr "Zahtevano novo geslo"
@@ -137,165 +159,130 @@ msgstr "Zahtevano novo geslo za varno shranjevanje"
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "Za pripravo '%s' za shranjevanje potrdil in ključev, mora biti določeno geslo"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:303
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-msgid "Automatically unlock secure storage when I log in."
-msgstr "Samodejno odkleni zbirko ključev ob prijavi."
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:361
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
 msgid "Unlock private key"
 msgstr "Odkleni osebni ključ"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:363
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
 msgid "Unlock certificate"
 msgstr "Odkleni potrdilo"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:365
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
 msgid "Unlock public key"
 msgstr "Odkleni javni ključ"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:367
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
 msgid "Unlock"
 msgstr "Odkleni"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:376
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375
 #: ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Vnesite geslo za odklepanje osebnega ključa"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:378
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377
 #: ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Vnesite geslo za odklepanje potrdila"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:380
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
 msgid "Enter password to unlock the public key"
 msgstr "Vnesite geslo za odklepanje javnega ključa"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:382
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381
 #: ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Vnesite geslo za odklepanje"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:392
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Program želi dostop do osebnega ključa '%s', vendar je ta zaklenjen"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:395
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Program želi dostop do potrdila '%s', vendar je ta zaklenjen"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:398
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Program želi dostop do javnega ključa '%s', vendar je ta zaklenjen"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:401
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Program želi dostop do '%s', vendar je ta zaklenjen"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:589
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
 msgid "Unlock certificate/key storage"
 msgstr "Odkleni potrdila in ključe"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:590
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:593
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
 #, c-format
 msgid "An application wants access to the certificate/key storage '%s', but it is locked"
 msgstr "Program želi dostop do potrdila ali ključa '%s', vendar je ta zaklenjen."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:382
+#: ../daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "Ali naj bodo shranjena gesla nešifrirana?"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:383
+#: ../daemon/prompt/gkd-prompt-tool.c:394
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop to takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:390
+#: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "Uporabi nevarno shranjevanje"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:420
+#: ../daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "Gesli se ne skladata."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:430
+#: ../daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "Geslo ne sme biti prazno."
 
 #: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid ""
-"<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to unlock</span>\n"
-"\n"
-"An application wants access to the keyring 'xxx', but it is locked."
-msgstr ""
-"<span size=\"large\" weight=\"bold\">Vnesite geslo za zbirko ključev 'login' za odklepanje</span>\n"
-"\n"
-"Program želi dostopiti do zbirke ključev 'xxx', vendar je ta zaklenjena."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "Automatically unlock this keyring whenever I'm logged in."
+msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "Samodejno odkleni zbirko ključev ob prijavi."
 
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "Lock this keyring after"
-msgstr "Zakleni zbirko ključev po"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "Lock this keyring if idle for"
-msgstr "Zakleni zbirko ključev ob nedejavnosti"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "Lock this keyring when I log out."
-msgstr "Samodejno zakleni zbirko ključev ob odjavi."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
+#: ../daemon/prompt/gkd-prompt.ui.h:2
 msgid "New password strength"
 msgstr "Varnost novega gesla"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:9
-msgid "Prompt me for each application that accesses this keyring."
-msgstr "Pokaži obvestilo vsakič, ko zahteva katerikoli program dostop do zbirke ključev.-"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:10
+#: ../daemon/prompt/gkd-prompt.ui.h:3
 msgid "_Application:"
 msgstr "_Program:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:11
+#: ../daemon/prompt/gkd-prompt.ui.h:4
 msgid "_Confirm:"
 msgstr "_Potrdi:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:12
+#: ../daemon/prompt/gkd-prompt.ui.h:5
 msgid "_Details:"
 msgstr "_Podrobnosti:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:13
+#: ../daemon/prompt/gkd-prompt.ui.h:6
 msgid "_Name:"
 msgstr "_Ime:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:14
+#: ../daemon/prompt/gkd-prompt.ui.h:7
 msgid "_Old Password:"
 msgstr "_Staro geslo:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:15
+#: ../daemon/prompt/gkd-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_Geslo:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:16
-msgid "minutes."
-msgstr "minut."
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -608,6 +595,22 @@ msgstr "Uvozi v:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Geslo:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "Zakleni zbirko ključev po"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "Zakleni zbirko ključev ob nedejavnosti"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring when I log out"
+msgstr "Samodejno zakleni zbirko ključev ob odjavi."
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "minut"
 
 #: ../gcr/gcr-importer.c:163
 #: ../gcr/gcr-parser.c:1573
@@ -1005,10 +1008,26 @@ msgstr "Neznana napaka"
 msgid "Unnamed Certificate"
 msgstr "Neimenovano potrdilo"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:337
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Ni mogoče razčleniti SSH ključa."
 
+#~ msgid "Automatically unlock secure storage when I log in."
+#~ msgstr "Samodejno odkleni zbirko ključev ob prijavi."
+#~ msgid ""
+#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
+#~ "to unlock</span>\n"
+#~ "\n"
+#~ "An application wants access to the keyring 'xxx', but it is locked."
+#~ msgstr ""
+#~ "<span size=\"large\" weight=\"bold\">Vnesite geslo za zbirko ključev "
+#~ "'login' za odklepanje</span>\n"
+#~ "\n"
+#~ "Program želi dostopiti do zbirke ključev 'xxx', vendar je ta zaklenjena."
+#~ msgid "Prompt me for each application that accesses this keyring."
+#~ msgstr ""
+#~ "Pokaži obvestilo vsakič, ko zahteva katerikoli program dostop do zbirke "
+#~ "ključev.-"
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
@@ -1157,16 +1176,6 @@ msgstr "Ni mogoče razčleniti SSH ključa."
 #~ msgstr "Ustvari privzeto zbirko ključev"
 #~ msgid "Choose password for default keyring"
 #~ msgstr "Izberite geslo za privzeto zbirko ključev"
-#~ msgid "Unlock Login Keyring"
-#~ msgstr "Odklenite prijavno zbirko ključev"
-#~ msgid "Enter login password to unlock keyring"
-#~ msgstr "Vnesite prijavno geslo za odklepanje zbirke ključev"
-#~ msgid ""
-#~ "Your login keyring was not automatically unlocked when you logged into "
-#~ "this computer."
-#~ msgstr ""
-#~ "Prijavna zbirka ključev ni bila samodejno odklenjena ob prijavi na ta "
-#~ "računalnik."
 #~ msgid "Create Login Keyring"
 #~ msgstr "Ustvari zbirko ključev prijave"
 #~ msgid "Enter your login password"
@@ -1320,6 +1329,4 @@ msgstr "Ni mogoče razčleniti SSH ključa."
 #~ msgstr "Ni mogoče šifrirati SSH ključa in ga shraniti."
 #~ msgid "Couldn't encode the SSH key to store it."
 #~ msgstr "Ni mogoče kodirati SSH ključa in ga shraniti."
-#~ msgid "Unlock password for '%s'"
-#~ msgstr "Geslo za odklepanje '%s'"
 
