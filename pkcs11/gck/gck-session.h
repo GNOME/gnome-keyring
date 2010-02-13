@@ -117,6 +117,7 @@ GckObject*               gck_session_create_object_for_attributes       (GckSess
 void                     gck_session_complete_object_creation           (GckSession *self,
                                                                          GckTransaction *transaction,
                                                                          GckObject *object,
+                                                                         gboolean add,
                                                                          CK_ATTRIBUTE_PTR attrs,
                                                                          CK_ULONG n_attrs);
 

@@ -836,8 +836,8 @@ gck_session_create_object_for_attributes (GckSession *self, GckTransaction *tran
 }
 
 void
-gck_session_complete_object_creation (GckSession *self, GckTransaction *transaction,
-                                      GckObject *object, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+gck_session_complete_object_creation (GckSession *self, GckTransaction *transaction, GckObject *object,
+                                      gboolean add, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	gboolean is_private;
 	gulong i;
@@ -873,7 +873,7 @@ gck_session_complete_object_creation (GckSession *self, GckTransaction *transact
 	}
 
 	/* Add the object to session or token */
-	if (!gck_transaction_get_failed (transaction)) {
+	if (add && !gck_transaction_get_failed (transaction)) {
 		if (gck_object_is_token (object))
 			gck_module_add_token_object (self->pv->module, transaction, object);
 		else

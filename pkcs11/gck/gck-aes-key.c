@@ -129,7 +129,8 @@ factory_create_aes_key (GckSession *session, GckTransaction *transaction,
 
 	gck_attribute_consume (value);
 
-	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key), attrs, n_attrs);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key),
+	                                      TRUE, attrs, n_attrs);
 	return GCK_OBJECT (key);
 }
 

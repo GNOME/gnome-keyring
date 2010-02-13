@@ -163,7 +163,8 @@ factory_create_private_xsa_key (GckSession *session, GckTransaction *transaction
 	                    NULL);
 	key->pv->sexp = sexp;
 
-	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key), attrs, n_attrs);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (key),
+	                                      TRUE, attrs, n_attrs);
 	return GCK_OBJECT (key);
 }
 

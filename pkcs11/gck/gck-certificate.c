@@ -275,7 +275,8 @@ factory_create_certificate (GckSession *session, GckTransaction *transaction,
 	/* Note that we ignore the subject */
  	gck_attributes_consume (attrs, n_attrs, CKA_VALUE, CKA_SUBJECT, G_MAXULONG);
 
-	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (cert), attrs, n_attrs);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (cert),
+	                                      TRUE, attrs, n_attrs);
 	return GCK_OBJECT (cert);
 }
 

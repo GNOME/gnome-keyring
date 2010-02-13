@@ -93,7 +93,8 @@ factory_create_credential (GckSession *session, GckTransaction *transaction,
 	                            attr ? attr->ulValueLen : 0, &cred);
 
 	if (rv == CKR_OK) {
-		gck_session_complete_object_creation (session, transaction, GCK_OBJECT (cred), attrs, n_attrs);
+		gck_session_complete_object_creation (session, transaction, GCK_OBJECT (cred),
+		                                      TRUE, attrs, n_attrs);
 		return GCK_OBJECT (cred);
 	} else {
 		gck_transaction_fail (transaction, rv);

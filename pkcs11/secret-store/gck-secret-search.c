@@ -240,7 +240,8 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 	populate_search_from_manager (search, s_manager);
 	populate_search_from_manager (search, m_manager);
 
-	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (search), attrs, n_attrs);
+	gck_session_complete_object_creation (session, transaction, GCK_OBJECT (search),
+	                                      TRUE, attrs, n_attrs);
 	return GCK_OBJECT (search);
 }
 

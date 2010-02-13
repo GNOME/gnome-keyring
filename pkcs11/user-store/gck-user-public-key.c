@@ -62,7 +62,8 @@ factory_create_public_key (GckSession *session, GckTransaction *transaction,
 		                       "manager", gck_manager_for_template (attrs, n_attrs, session),
 		                       NULL);
 		gck_sexp_unref (sexp);
-		gck_session_complete_object_creation (session, transaction, object, attrs, n_attrs);
+		gck_session_complete_object_creation (session, transaction, object,
+		                                      TRUE, attrs, n_attrs);
 	}
 
 	return object;

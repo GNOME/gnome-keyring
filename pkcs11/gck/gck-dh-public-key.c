@@ -72,7 +72,8 @@ factory_create_dh_public_key (GckSession *session, GckTransaction *transaction,
 	                                            idattr ? idattr->ulValueLen : 0));
 	gck_attributes_consume (attrs, n_attrs, CKA_PRIME, CKA_BASE, CKA_VALUE, G_MAXULONG);
 
-	gck_session_complete_object_creation (session, transaction, object, attrs, n_attrs);
+	gck_session_complete_object_creation (session, transaction, object,
+	                                      TRUE, attrs, n_attrs);
 	return object;
 }
 
