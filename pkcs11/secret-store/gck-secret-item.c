@@ -141,6 +141,7 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 	CK_ATTRIBUTE *attr;
 	gboolean is_token;
 	gchar *identifier;
+	CK_ULONG i;
 
 	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
@@ -175,7 +176,11 @@ factory_create_item (GckSession *session, GckTransaction *transaction,
 			gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
 			return NULL;
 		} else {
-			gck_attributes_consume (attrs, n_attrs, CKA_ID, G_MAXULONG);
+			gck_attributes_consume (attrs, n_attrs, CKA_ID, CKA_TOKEN, G_MAXULONG);
+			for (i = 0; i < n_attrs && !gck_transaction_get_failed (transaction); ++i) {
+				if (!gck_attribute_consumed (&attrs[i]))
+					gck_object_set_attribute (GCK_OBJECT (item), session, transaction, &attrs[i]);
+			}
 			return g_object_ref (item);
 		}
 	}
