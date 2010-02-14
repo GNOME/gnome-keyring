@@ -250,9 +250,7 @@ main (int argc, char* argv[])
 	g_thread_init (NULL);
 
 	test_path = getenv ("GNOME_KEYRING_TEST_PATH");
-	if (test_path) {
-		setenv ("GNOME_KEYRING_OUTSIDE_TEST", "TRUE", 1);
-	} else {
+	if (!test_path) {
 		test_path = "/tmp/test-gnome-keyring";
 		setenv ("GNOME_KEYRING_TEST_PATH", test_path, 1);
 		g_mkdir_with_parents (test_path, 0777);

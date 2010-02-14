@@ -64,15 +64,6 @@ gkd_dbus_setup (void)
 	if (dbus_conn)
 		return;
 
-#ifdef WITH_TESTS
-	{
-		/* If running as a test, don't do certain DBUS stuff */
-		const gchar *env = g_getenv ("GNOME_KEYRING_TEST_PATH");
-		if (env && env[0])
-			dbus_do_session = FALSE;
-	}
-#endif
-
 	dbus_error_init (&derr);
 
 	/* Get the dbus bus and hook up */

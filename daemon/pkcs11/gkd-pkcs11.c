@@ -36,6 +36,8 @@
 
 #include "ssh-agent/gkd-ssh-agent.h"
 
+#include <string.h>
+
 /* The top level of our internal PKCS#11 module stack */
 static CK_FUNCTION_LIST_PTR pkcs11_roof = NULL;
 static CK_FUNCTION_LIST_PTR pkcs11_base = NULL;
@@ -64,6 +66,7 @@ gkd_pkcs11_initialize (void)
 	CK_FUNCTION_LIST_PTR secret_store;
 	CK_FUNCTION_LIST_PTR ssh_store;
 	CK_FUNCTION_LIST_PTR user_store;
+	CK_C_INITIALIZE_ARGS init_args;
 	gboolean ret;
 	CK_RV rv;
 
@@ -93,8 +96,20 @@ gkd_pkcs11_initialize (void)
 	gkd_pkcs11_auth_chain_functions (pkcs11_base);
 	pkcs11_roof = gkd_pkcs11_auth_get_functions ();
 
+	memset (&init_args, 0, sizeof (init_args));
+	init_args.flags = CKF_OS_LOCKING_OK;
+
+#if WITH_TESTS
+	{
+		const gchar *path = g_getenv ("GNOME_KEYRING_TEST_PATH");
+		if (path && path[0])
+			init_args.pReserved = g_strdup_printf ("directory=\"%s\"", path);
+	}
+#endif
+
 	/* Initialize the whole caboodle */
-	rv = (pkcs11_roof->C_Initialize) (NULL);
+	rv = (pkcs11_roof->C_Initialize) (&init_args);
+	g_free (init_args.pReserved);
 
 	if (rv != CKR_OK) {
 		g_warning ("couldn't initialize internal PKCS#11 stack (code: %d)", (gint)rv);

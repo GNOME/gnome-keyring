@@ -71,19 +71,29 @@ gkd_dbus_secrets_startup (void)
 {
 	DBusError error = DBUS_ERROR_INIT;
 	dbus_uint32_t result = 0;
+	const gchar *service = NULL;
+	unsigned int flags = 0;
 	GP11Slot *slot;
 
 	g_return_val_if_fail (dbus_conn, FALSE);
+
+#ifdef WITH_TESTS
+	service = g_getenv ("GNOME_KEYRING_TEST_SERVICE");
+	if (service && service[0])
+		flags = DBUS_NAME_FLAG_ALLOW_REPLACEMENT | DBUS_NAME_FLAG_REPLACE_EXISTING;
+	else
+#endif
+		service = SECRET_SERVICE;
 
 	/* Figure out which slot to use */
 	slot = calculate_secrets_slot ();
 	g_return_val_if_fail (slot, FALSE);
 
 	/* Try and grab our name */
-	result = dbus_bus_request_name (dbus_conn, SECRET_SERVICE, 0, &error);
+	result = dbus_bus_request_name (dbus_conn, service, flags, &error);
 	if (dbus_error_is_set (&error)) {
 		g_message ("couldn't request name '%s' on session bus: %s",
-		           SECRET_SERVICE, error.message);
+		           service, error.message);
 		dbus_error_free (&error);
 
 	} else {
@@ -93,9 +103,8 @@ gkd_dbus_secrets_startup (void)
 		case DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
 			break;
 
-		/* We already acquired the service name. Odd */
+		/* We already acquired the service name. */
 		case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
-			g_return_val_if_reached (FALSE);
 			break;
 
 		/* Another daemon is running */

@@ -100,13 +100,23 @@ gkd_dbus_service_init (DBusConnection *conn)
 {
 	dbus_uint32_t res = 0;
 	DBusError derr = { 0 };
+	const gchar *service = NULL;
+	unsigned int flags;
 
 	dbus_error_init (&derr);
 
+#ifdef WITH_TESTS
+	service = g_getenv ("GNOME_KEYRING_TEST_SERVICE");
+	if (service && service[0])
+		flags = DBUS_NAME_FLAG_ALLOW_REPLACEMENT | DBUS_NAME_FLAG_REPLACE_EXISTING;
+	else
+#endif
+		service = GNOME_KEYRING_DAEMON_SERVICE;
+
 	/* Try and grab our name */
-	res = dbus_bus_request_name (conn, GNOME_KEYRING_DAEMON_SERVICE, 0, &derr);
+	res = dbus_bus_request_name (conn, service, flags, &derr);
 	if (dbus_error_is_set (&derr)) {
-		g_message ("couldn't request name on session bus: %s", derr.message);
+		g_message ("couldn't request name '%s' on session bus: %s", service, derr.message);
 		dbus_error_free (&derr);
 		return;
 	}
@@ -115,9 +125,8 @@ gkd_dbus_service_init (DBusConnection *conn)
 	/* We acquired the service name */
 	case DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
 		break;
-	/* We already acquired the service name. Odd */
+	/* We already acquired the service name. */
 	case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
-		g_return_if_reached ();
 		break;
 	/* Another daemon is running */
 	case DBUS_REQUEST_NAME_REPLY_IN_QUEUE:

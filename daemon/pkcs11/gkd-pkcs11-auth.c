@@ -688,7 +688,7 @@ auth_C_Initialize (CK_VOID_PTR init_args)
 			return CKR_ARGUMENTS_BAD;
 		}
 
-		if (!(args->flags & CKF_LIBRARY_CANT_CREATE_OS_THREADS)) {
+		if (args->flags & CKF_LIBRARY_CANT_CREATE_OS_THREADS) {
 			g_message ("must be able to create our own threads");
 			return CKR_NEED_TO_CREATE_THREADS;
 		}
