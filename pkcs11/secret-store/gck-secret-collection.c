@@ -145,7 +145,7 @@ track_secret_data (GckSecretCollection *self, GckSecretData *data)
 	self->sdata = data;
 	if (self->sdata)
 		g_object_add_weak_pointer (G_OBJECT (self->sdata),
-		                           (gpointer*)&self->sdata);
+		                           (gpointer*)&(self->sdata));
 }
 
 static void
