@@ -1328,6 +1328,5 @@ gkd_secret_objects_set_alias (GkdSecretObjects *self, const gchar *alias,
 {
 	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
 	g_return_if_fail (alias);
-	g_return_if_fail (identifier);
 	g_hash_table_replace (self->aliases, g_strdup (alias), g_strdup (identifier));
 }
