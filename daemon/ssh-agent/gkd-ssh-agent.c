@@ -85,8 +85,9 @@ write_all (int fd, const guchar *buf, int len)
 		if (res <= 0) {
 			if (errno == EAGAIN && errno == EINTR)
 				continue;
-			g_warning ("couldn't write %u bytes to client: %s", all,
-			           res < 0 ? g_strerror (errno) : "");
+			if (errno != EPIPE)
+				g_warning ("couldn't write %u bytes to client: %s", all,
+				           res < 0 ? g_strerror (errno) : "");
 			return FALSE;
 		} else  {
 			len -= res;
