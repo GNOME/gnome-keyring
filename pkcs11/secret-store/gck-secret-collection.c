@@ -404,7 +404,7 @@ gck_secret_collection_set_attribute (GckObject *object, GckSession *session,
 		return;
 	};
 
-	return GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->set_attribute (object, session, transaction, attr);
+	GCK_OBJECT_CLASS (gck_secret_collection_parent_class)->set_attribute (object, session, transaction, attr);
 }
 
 static CK_RV
