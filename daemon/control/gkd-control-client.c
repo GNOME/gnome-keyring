@@ -208,10 +208,8 @@ gkd_control_initialize (const gchar *directory, const gchar *components,
 
 	egg_buffer_uninit (&buffer);
 
-	if (!ret || res != GKD_CONTROL_RESULT_OK) {
-		g_message ("couldn't initialize running daemon");
+	if (!ret || res != GKD_CONTROL_RESULT_OK)
 		return NULL;
-	}
 
 	return env;
 }

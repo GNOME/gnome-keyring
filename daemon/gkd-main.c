@@ -453,14 +453,10 @@ print_environment (pid_t pid)
 		printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 }
 
-
 static gboolean
-start_or_initialize_daemon (const gchar *directory)
+initialize_daemon_at (const gchar *directory)
 {
 	gchar **ourenv, **daemonenv, **e;
-
-	if (!directory)
-		return FALSE;
 
 	/* Exchange environment variables, and try to initialize daemon */
 	ourenv = gkd_util_build_environment (GKD_UTIL_IN_ENVIRONMENT);
@@ -477,19 +473,47 @@ start_or_initialize_daemon (const gchar *directory)
 		gkd_util_push_environment_full (*e);
 	g_strfreev (daemonenv);
 
-	/*
-	 * Now we've initialized the daemon, we need to print out
-	 * the daemon's environment for any callers, and possibly
-	 * block if we've been asked to remain in the foreground.
-	 */
-	print_environment (0);
+	return TRUE;
+}
 
-	/* TODO: Better way to sleep forever? */
-	if (run_foreground) {
-		while (sleep(0x08000000) == 0);
+static gboolean
+initialize_daemon (const gchar *directory)
+{
+	gchar *control = NULL;
+	gboolean acquired, ret;
+
+	/* A pre-specified directory to control at */
+	if (directory) {
+		if (initialize_daemon_at (directory))
+			return TRUE;
 	}
 
-	return TRUE;
+	/* An environment variable from an already running daemon */
+	directory = g_getenv (GKD_UTIL_ENV_CONTROL);
+	if (directory && directory[0]) {
+		if (initialize_daemon_at (directory))
+			return TRUE;
+	}
+
+	/* See if we can contact a daemon running, that didn't set an env variable */
+	if (!gkd_dbus_singleton_acquire (&acquired))
+		return FALSE;
+
+	/* We're the main daemon */
+	if (acquired)
+		return FALSE;
+
+	/* Figure out the path to the other daemon's control directory */
+	directory = control = gkd_dbus_singleton_control ();
+	if (directory) {
+		ret = initialize_daemon_at (directory);
+		g_free (control);
+		if (ret == TRUE)
+			return TRUE;
+	}
+
+	g_message ("couldn't initialize running daemon");
+	return FALSE;
 }
 
 static void
@@ -720,10 +744,16 @@ main (int argc, char *argv[])
 
 	/* The --start option */
 	if (run_for_start) {
-		if (!control_directory)
-			control_directory = g_getenv (GKD_UTIL_ENV_CONTROL);
-		if (start_or_initialize_daemon (control_directory))
+		if (initialize_daemon (control_directory)) {
+			/*
+			 * Another daemon was initialized, print out environment
+			 * for any callers, and quit or go comatose.
+			 */
+			print_environment (0);
+			if (run_foreground)
+				while (sleep(0x08000000) == 0);
 			cleanup_and_exit (0);
+		}
 	}
 
 	/* Initialize the main directory */

@@ -30,4 +30,8 @@ void      gkd_dbus_setup            (void);
 
 gboolean  gkd_dbus_secrets_startup  (void);
 
+gboolean      gkd_dbus_singleton_acquire        (gboolean *acquired);
+
+gchar*        gkd_dbus_singleton_control        (void);
+
 #endif /* GKD_DBUS_H */
