@@ -49,6 +49,6 @@ GckFactory*          gck_secret_search_get_factory     (void) G_GNUC_CONST;
 
 GHashTable*          gck_secret_search_get_fields      (GckSecretSearch *self);
 
-GckSecretCollection* gck_secret_search_get_collection  (GckSecretSearch *self);
+const gchar*      gck_secret_search_get_collection_id  (GckSecretSearch *self);
 
 #endif /* __GCK_SECRET_SEARCH_H__ */

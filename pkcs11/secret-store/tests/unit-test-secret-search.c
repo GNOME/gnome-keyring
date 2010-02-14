@@ -114,7 +114,7 @@ DEFINE_TEST(create_search)
 	        { CKA_G_FIELDS, "test\0value\0two\0value2", 22 },
 	};
 
-	GckSecretCollection *collection;
+	const gchar *identifier;
 	GckObject *object = NULL;
 	GHashTable *fields;
 	gpointer vdata;
@@ -156,8 +156,8 @@ DEFINE_TEST(create_search)
 	g_assert_cmpstr (gck_secret_fields_get (fields, "test"), ==, "value");
 
 	/* No collection */
-	collection = gck_secret_search_get_collection (GCK_SECRET_SEARCH (object));
-	g_assert (collection == NULL);
+	identifier = gck_secret_search_get_collection_id (GCK_SECRET_SEARCH (object));
+	g_assert (identifier == NULL);
 
 	g_object_unref (object);
 }
@@ -274,7 +274,9 @@ DEFINE_TEST(create_search_for_bad_collection)
 	GckTransaction *transaction = gck_transaction_new ();
 
 	object = gck_session_create_object_for_factory (session, factory, transaction, attrs, 2);
-	g_assert (gck_transaction_complete_and_unref (transaction) == CKR_TEMPLATE_INCONSISTENT);
+	g_assert (gck_transaction_complete_and_unref (transaction) == CKR_OK);
+
+	g_object_unref (object);
 }
 
 DEFINE_TEST(create_search_for_collection)

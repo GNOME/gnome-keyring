@@ -39,13 +39,13 @@
 
 enum {
 	PROP_0,
-	PROP_COLLECTION,
+	PROP_COLLECTION_ID,
 	PROP_FIELDS
 };
 
 struct _GckSecretSearch {
 	GckObject parent;
-	GckSecretCollection *collection;
+	gchar *collection_id;
 	GHashTable *fields;
 	GList *managers;
 	GHashTable *handles;
@@ -63,6 +63,7 @@ match_object_against_criteria (GckSecretSearch *self, GckObject *object)
 	GckSecretCollection *collection;
 	GckSecretItem *item;
 	GHashTable *fields;
+	const gchar *identifier;
 
 	if (!GCK_IS_SECRET_ITEM (object))
 		return FALSE;
@@ -70,9 +71,14 @@ match_object_against_criteria (GckSecretSearch *self, GckObject *object)
 	item = GCK_SECRET_ITEM (object);
 
 	/* Collection should match unless any collection allowed */
-	collection = gck_secret_item_get_collection (item);
-	if (self->collection && collection != self->collection)
-		return FALSE;
+	if (self->collection_id) {
+		collection = gck_secret_item_get_collection (item);
+		g_return_val_if_fail (collection, FALSE);
+		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
+		g_return_val_if_fail (identifier, FALSE);
+		if (!g_str_equal (identifier, self->collection_id))
+			return FALSE;
+	}
 
 	/* Fields should match using our special algorithm */
 	fields = gck_secret_item_get_fields (item);
@@ -185,9 +191,9 @@ static GckObject*
 factory_create_search (GckSession *session, GckTransaction *transaction,
                        CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
-	GckSecretCollection *collection = NULL;
 	GckManager *s_manager, *m_manager;
 	GckSecretSearch *search;
+	gchar *identifier = NULL;
 	CK_ATTRIBUTE *attr;
 	GHashTable *fields;
 	GckModule *module;
@@ -218,11 +224,10 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 	/* See if a collection attribute was specified, not present means all collections */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_G_COLLECTION);
 	if (attr) {
-		collection = gck_secret_collection_find (attr, s_manager, m_manager, NULL);
-		gck_attribute_consume (attr);
-		if (!collection) {
+		rv = gck_attribute_get_string (attr, &identifier);
+		if (rv != CKR_OK) {
 			g_hash_table_unref (fields);
-			gck_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+			gck_transaction_fail (transaction, rv);
 			return NULL;
 		}
 	}
@@ -231,7 +236,7 @@ factory_create_search (GckSession *session, GckTransaction *transaction,
 	                       "module", module,
 	                       "manager", s_manager,
 	                       "fields", fields,
-	                       "collection", collection,
+	                       "collection-id", identifier,
 	                       NULL);
 
 	/* Load any new items or collections */
@@ -284,7 +289,6 @@ static CK_RV
 gck_secret_search_get_attribute (GckObject *base, GckSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GckSecretSearch *self = GCK_SECRET_SEARCH (base);
-	const gchar *identifier;
 
 	switch (attr->type) {
 	case CKA_CLASS:
@@ -292,10 +296,9 @@ gck_secret_search_get_attribute (GckObject *base, GckSession *session, CK_ATTRIB
 	case CKA_MODIFIABLE:
 		return gck_attribute_set_bool (attr, CK_TRUE); /* TODO: This is needed for deleting? */
 	case CKA_G_COLLECTION:
-		if (!self->collection)
+		if (!self->collection_id)
 			return gck_attribute_set_empty (attr);
-		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (self->collection));
-		return gck_attribute_set_string (attr, identifier);
+		return gck_attribute_set_string (attr, self->collection_id);
 	case CKA_G_FIELDS:
 		return gck_secret_fields_serialize (attr, self->fields);
 	case CKA_G_MATCHED:
@@ -329,9 +332,9 @@ gck_secret_search_set_property (GObject *obj, guint prop_id, const GValue *value
 {
 	GckSecretSearch *self = GCK_SECRET_SEARCH (obj);
 	switch (prop_id) {
-	case PROP_COLLECTION:
-		g_return_if_fail (!self->collection);
-		self->collection = g_value_dup_object (value);
+	case PROP_COLLECTION_ID:
+		g_return_if_fail (!self->collection_id);
+		self->collection_id = g_value_dup_string (value);
 		break;
 	case PROP_FIELDS:
 		g_return_if_fail (!self->fields);
@@ -350,8 +353,8 @@ gck_secret_search_get_property (GObject *obj, guint prop_id, GValue *value,
 {
 	GckSecretSearch *self = GCK_SECRET_SEARCH (obj);
 	switch (prop_id) {
-	case PROP_COLLECTION:
-		g_value_set_object (value, gck_secret_search_get_collection (self));
+	case PROP_COLLECTION_ID:
+		g_value_set_string (value, self->collection_id);
 		break;
 	case PROP_FIELDS:
 		g_return_if_fail (self->fields);
@@ -378,9 +381,8 @@ gck_secret_search_dispose (GObject *obj)
 	g_list_free (self->managers);
 	self->managers = NULL;
 
-	if (self->collection)
-		g_object_unref (self->collection);
-	self->collection = NULL;
+	g_free (self->collection_id);
+	self->collection_id = NULL;
 
 	G_OBJECT_CLASS (gck_secret_search_parent_class)->dispose (obj);
 }
@@ -415,9 +417,9 @@ gck_secret_search_class_init (GckSecretSearchClass *klass)
 
 	gck_class->get_attribute = gck_secret_search_get_attribute;
 
-	g_object_class_install_property (gobject_class, PROP_COLLECTION,
-	           g_param_spec_object ("collection", "Collection", "Item's Collection",
-	                                GCK_TYPE_SECRET_COLLECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (gobject_class, PROP_COLLECTION_ID,
+	           g_param_spec_string ("collection-id", "Collection ID", "Item's Collection's Identifier",
+	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_FIELDS,
 	           g_param_spec_boxed ("fields", "Fields", "Item's fields",
@@ -455,9 +457,9 @@ gck_secret_search_get_fields (GckSecretSearch *self)
 	return self->fields;
 }
 
-GckSecretCollection*
-gck_secret_search_get_collection (GckSecretSearch *self)
+const gchar*
+gck_secret_search_get_collection_id (GckSecretSearch *self)
 {
 	g_return_val_if_fail (GCK_IS_SECRET_SEARCH (self), NULL);
-	return self->collection;
+	return self->collection_id;
 }
