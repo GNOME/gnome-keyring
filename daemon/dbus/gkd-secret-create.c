@@ -82,9 +82,8 @@ prepare_create_prompt (GkdSecretCreate *self)
 	gkd_prompt_set_secondary_text (prompt, text);
 	g_free (text);
 
-	gkd_prompt_hide_widget (prompt, "name_area");
-	gkd_prompt_hide_widget (prompt, "confirm_area");
-	gkd_prompt_hide_widget (prompt, "details_area");
+	gkd_prompt_show_widget (prompt, "password_area");
+	gkd_prompt_show_widget (prompt, "confirm_area");
 
 	g_free (label);
 }
