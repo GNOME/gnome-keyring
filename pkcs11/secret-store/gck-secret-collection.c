@@ -306,7 +306,6 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 			identifier = g_utf8_strdown (label, -1);
 	}
 
-	g_strdelimit (identifier, ":/\\<>|\t\n\r\v ", '_');
 	if (!identifier || !identifier[0]) {
 		g_free (identifier);
 		identifier = g_strdup ("unnamed");
@@ -322,6 +321,7 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 		}
 	}
 
+	g_strdelimit (identifier, ":/\\<>|\t\n\r\v ", '_');
 	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
 	                           "module", gck_session_get_module (session),
 	                           "identifier", identifier,

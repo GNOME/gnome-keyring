@@ -25,3 +25,4 @@ gcr/gcr-parser.c
 gp11/gp11-misc.c
 pkcs11/gck/gck-certificate.c
 pkcs11/ssh-store/gck-ssh-private-key.c
+pkcs11/secret-store/gck-secret-collection.c
