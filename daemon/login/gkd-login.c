@@ -165,13 +165,18 @@ static GP11Object*
 create_login_keyring (GP11Session *session, GP11Object *cred, GError **error)
 {
 	GP11Object *login;
+	const gchar *label;
 
 	g_return_val_if_fail (GP11_IS_SESSION (session), NULL);
 	g_return_val_if_fail (GP11_IS_OBJECT (cred), NULL);
 
+	/* TRANSLATORS: This is the display label for the login keyring */
+	label = _("Login");
+
 	login = gp11_session_create_object (session, error,
 	                                    CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
 	                                    CKA_ID, (gsize)5, "login",
+	                                    CKA_LABEL, strlen (label), label,
 	                                    CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (cred),
 	                                    CKA_TOKEN, GP11_BOOLEAN, TRUE,
 	                                    GP11_INVALID);
