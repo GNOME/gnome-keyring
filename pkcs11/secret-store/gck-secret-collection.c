@@ -238,16 +238,19 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 	CK_OBJECT_HANDLE handle;
 	CK_ATTRIBUTE *attr;
 	GckManager *manager;
+	GckModule *module;
 	gchar *identifier = NULL;
 	GckSecretData *sdata;
 	gchar *label = NULL;
 	GckCredential *cred;
+	gboolean is_token;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_TRANSACTION (transaction), NULL);
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
 	manager = gck_manager_for_template (attrs, n_attrs, session);
+	module = gck_session_get_module (session);
 
 	/* Must have a credential, which is not associated with an object yet */
 	if (!gck_attributes_find_ulong (attrs, n_attrs, CKA_G_CREDENTIAL, &handle)) {
@@ -261,22 +264,62 @@ factory_create_collection (GckSession *session, GckTransaction *transaction,
 		return NULL;
 	}
 
-	/* See if a collection attribute was specified, not present means all collections */
+	/* The identifier */
+	attr = gck_attributes_find (attrs, n_attrs, CKA_ID);
+	if (attr != NULL) {
+		gck_attribute_consume (attr);
+		rv = gck_attribute_get_string (attr, &identifier);
+		if (rv != CKR_OK) {
+			gck_transaction_fail (transaction, rv);
+			return NULL;
+		}
+
+		/* Try to find the collection with that identifier */
+		if (!gck_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
+			collection = gck_secret_collection_find (attr, gck_module_get_manager (module),
+			                                         gck_session_get_manager (session), NULL);
+		else if (is_token)
+			collection = gck_secret_collection_find (attr, gck_module_get_manager (module), NULL);
+		else
+			collection = gck_secret_collection_find (attr, gck_session_get_manager (session), NULL);
+
+		/* Already have one with this identifier? Just return that */
+		if (collection != NULL) {
+			gck_session_complete_object_creation (session, transaction, GCK_OBJECT (collection),
+			                                      FALSE, attrs, n_attrs);
+			return g_object_ref (collection);
+		}
+	}
+
+	/* The label  */
 	attr = gck_attributes_find (attrs, n_attrs, CKA_LABEL);
 	if (attr != NULL) {
+		gck_attribute_consume (attr);
 		rv = gck_attribute_get_string (attr, &label);
 		if (rv != CKR_OK) {
 			gck_transaction_fail (transaction, rv);
 			return NULL;
 		}
-		identifier = g_utf8_strdown (label, -1);
-		g_strdelimit (identifier, ":/\\<>|\t\n\r\v ", '_');
-		gck_attribute_consume (attr);
+
+		/* No identifier? Try to use label */
+		if (identifier == NULL)
+			identifier = g_utf8_strdown (label, -1);
 	}
 
+	g_strdelimit (identifier, ":/\\<>|\t\n\r\v ", '_');
 	if (!identifier || !identifier[0]) {
 		g_free (identifier);
 		identifier = g_strdup ("unnamed");
+	}
+
+	if (!label || !label[0]) {
+		g_free (label);
+		if (identifier) {
+			label = g_strdup (identifier);
+		} else {
+			/* TRANSLATORS: This is the label for an keyring created without a label */
+			label = g_strdup (_("Unnamed"));
+		}
 	}
 
 	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
