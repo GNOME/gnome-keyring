@@ -69,15 +69,29 @@ parse_object_path (GkdSecretObjects *self, const gchar *path, gchar **collection
 
 	if (g_str_has_prefix (path, SECRET_ALIAS_PREFIX)) {
 		replace = g_hash_table_lookup (self->aliases, *collection);
-		g_free (*collection);
 		if (!replace) {
-			*collection = NULL;
-			if (item) {
-				g_free (*item);
-				*item = NULL;
+
+			/*
+			 * TODO: As a special case, always treat login keyring as
+			 * default. This logic should be moved, once we have better
+			 * support for aliases.
+			 */
+
+			if (g_str_equal (*collection, "default")) {
+				replace = "login";
+
+			/* No such alias, return nothing */
+			} else {
+				g_free (*collection);
+				*collection = NULL;
+				if (item) {
+					g_free (*item);
+					*item = NULL;
+				}
+				return FALSE;
 			}
-			return FALSE;
 		}
+		g_free (*collection);
 		*collection = g_strdup (replace);
 	}
 
