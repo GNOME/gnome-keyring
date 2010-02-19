@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-02-10 20:16+0000\n"
-"PO-Revision-Date: 2010-02-12 10:37+0100\n"
+"POT-Creation-Date: 2010-02-18 18:25+0000\n"
+"PO-Revision-Date: 2010-02-19 08:22+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -45,10 +45,12 @@ msgstr "Ali je gnome-keyring SSH agent omogočen."
 msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "Ali je gnome-keyring skrite storitve omogočen."
 
+#. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:77
 #: ../daemon/dbus/gkd-secret-create.c:73
 #: ../daemon/dbus/gkd-secret-unlock.c:119
-#: ../daemon/login/gkd-login.c:579
+#: ../daemon/login/gkd-login.c:584
+#: ../pkcs11/secret-store/gck-secret-collection.c:320
 msgid "Unnamed"
 msgstr "Neimenovano"
 
@@ -141,7 +143,12 @@ msgstr "GNOME zbirka ključev: SSH agent"
 msgid "SSH Key Agent"
 msgstr "SSH Agent ključev"
 
-#: ../daemon/login/gkd-login.c:591
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:174
+msgid "Login"
+msgstr "Prijava"
+
+#: ../daemon/login/gkd-login.c:596
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Geslo odklepanja za: %s"
@@ -1004,7 +1011,7 @@ msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
 msgid "Unknown error"
 msgstr "Neznana napaka"
 
-#: ../pkcs11/gck/gck-certificate.c:739
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Neimenovano potrdilo"
 
