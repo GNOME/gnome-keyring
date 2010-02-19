@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2009-12-21 21:10+0000\n"
-"PO-Revision-Date: 2010-01-04 16:17+0700\n"
+"POT-Creation-Date: 2010-02-09 04:08+0000\n"
+"PO-Revision-Date: 2010-02-19 13:56+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -63,27 +63,27 @@ msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "จะเปิดใช้บริการเก็บข้อมูลลับของ gnome-keyring หรือไม่"
 
 #: daemon/dbus/gkd-secret-change.c:77 daemon/dbus/gkd-secret-create.c:73
-#: daemon/dbus/gkd-secret-unlock.c:78
+#: daemon/dbus/gkd-secret-unlock.c:119 daemon/login/gkd-login.c:579
 msgid "Unnamed"
 msgstr "ไม่มีชื่อ"
 
-#: daemon/dbus/gkd-secret-change.c:84
+#: daemon/dbus/gkd-secret-change.c:85
 msgid "Change Keyring Password"
 msgstr "เปลี่ยนรหัสผ่านพวงกุญแจ"
 
-#: daemon/dbus/gkd-secret-change.c:85
+#: daemon/dbus/gkd-secret-change.c:87
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "ตั้งรหัสผ่านใหม่สำหรับพวงกุญแจ '%s'"
 
-#: daemon/dbus/gkd-secret-change.c:87
+#: daemon/dbus/gkd-secret-change.c:91
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr "มีโปรแกรมต้องการเปลี่ยนรหัสผ่านสำหรับพวงกุญแจ '%s' กรุณาตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/dbus/gkd-secret-change.c:105
+#: daemon/dbus/gkd-secret-change.c:110
 msgid "The original password was incorrect"
 msgstr "รหัสผ่านเดิมไม่ถูกต้อง"
 
@@ -102,21 +102,40 @@ msgid ""
 "password you want to use for it."
 msgstr "มีโปรแกรมต้องการสร้างพวงกุญแจใหม่ชื่อ '%s' กรุณาตั้งรหัสผ่านสำหรับพวงกุญแจนี้"
 
-#: daemon/dbus/gkd-secret-unlock.c:85
+#: daemon/dbus/gkd-secret-unlock.c:134
+msgid "Unlock Login Keyring"
+msgstr "ปลดล็อคพวงกุญแจเข้าระบบ"
+
+#: daemon/dbus/gkd-secret-unlock.c:136
+msgid "Enter password for to unlock your login keyring"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคพวงกุญแจเข้าระบบของคุณ"
+
+#: daemon/dbus/gkd-secret-unlock.c:140
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr "รหัสผ่านที่คุณใช้เข้าระบบไม่ได้ตรงกับรหัสผ่านของพวงกุญแจเข้าระบบอีกต่อไป"
+
+#: daemon/dbus/gkd-secret-unlock.c:142
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr "พวงกุญแจเข้าระบบไม่ได้ถูกปลดล็อคเมื่อคุณเข้าระบบ"
+
+#: daemon/dbus/gkd-secret-unlock.c:183
 msgid "Unlock Keyring"
 msgstr "ปลดล็อคพวงกุญแจ"
 
-#: daemon/dbus/gkd-secret-unlock.c:87
+#: daemon/dbus/gkd-secret-unlock.c:185
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "ป้อนรหัสผ่านสำหรับปลดล็อคพวงกุญแจ '%s'"
 
-#: daemon/dbus/gkd-secret-unlock.c:91
+#: daemon/dbus/gkd-secret-unlock.c:189
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการใช้พวงกุญแจ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/dbus/gkd-secret-unlock.c:106
+#: daemon/dbus/gkd-secret-unlock.c:219
 msgid "The unlock password was incorrect"
 msgstr "รหัสผ่านสำหรับปลดล็อคไม่ถูกต้อง"
 
@@ -144,6 +163,11 @@ msgstr "พวงกุญแจของ GNOME: เอเจนต์ SSH"
 msgid "SSH Key Agent"
 msgstr "เอเจนต์กุญแจ SSH"
 
+#: daemon/login/gkd-login.c:591
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "รหัสผ่านสำหรับปลดล็อค: %s"
+
 #: daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
 msgstr "ต้องตั้งรหัสผ่าน"
@@ -159,87 +183,83 @@ msgid ""
 "required"
 msgstr "ในการเตรียม '%s' ให้เป็นแหล่งเก็บใบรับรองหรือกุญแจต่างๆ จะต้องตั้งรหัสผ่านด้วย"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:303 daemon/pkcs11/gkd-pkcs11-auth.c:599
-msgid "Automatically unlock secure storage when I log in."
-msgstr "ปลดล็อคแหล่งข้อมูลนิรภัยโดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
-
-#: daemon/pkcs11/gkd-pkcs11-auth.c:361
+#: daemon/pkcs11/gkd-pkcs11-auth.c:360
 msgid "Unlock private key"
 msgstr "ปลดล็อคกุญแจส่วนตัว"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:363
+#: daemon/pkcs11/gkd-pkcs11-auth.c:362
 msgid "Unlock certificate"
 msgstr "ปลดล็อคใบรับรอง"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:365
+#: daemon/pkcs11/gkd-pkcs11-auth.c:364
 msgid "Unlock public key"
 msgstr "ปลดล็อคกุญแจสาธารณะ"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:367
+#: daemon/pkcs11/gkd-pkcs11-auth.c:366
 msgid "Unlock"
 msgstr "ปลดล็อค"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:376 gcr/gcr-importer.c:436
+#: daemon/pkcs11/gkd-pkcs11-auth.c:375 gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจส่วนตัว"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:378 gcr/gcr-importer.c:438
+#: daemon/pkcs11/gkd-pkcs11-auth.c:377 gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคใบรับรอง"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:380
+#: daemon/pkcs11/gkd-pkcs11-auth.c:379
 msgid "Enter password to unlock the public key"
 msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจสาธารณะ"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:382 gcr/gcr-importer.c:440
+#: daemon/pkcs11/gkd-pkcs11-auth.c:381 gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค"
 
 #. TRANSLATORS: The private key is locked
-#: daemon/pkcs11/gkd-pkcs11-auth.c:392
+#: daemon/pkcs11/gkd-pkcs11-auth.c:391
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้กุญแจส่วนตัว '%s' ซึ่งถูกล็อคอยู่"
 
 #. TRANSLATORS: The certificate is locked
-#: daemon/pkcs11/gkd-pkcs11-auth.c:395
+#: daemon/pkcs11/gkd-pkcs11-auth.c:394
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้ใบรับรอง '%s' ซึ่งถูกล็อคอยู่"
 
 #. TRANSLATORS: The public key is locked
-#: daemon/pkcs11/gkd-pkcs11-auth.c:398
+#: daemon/pkcs11/gkd-pkcs11-auth.c:397
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้กุญแจสาธารณะ '%s' ซึ่งถูกล็อคอยู่"
 
 #. TRANSLATORS: The object '%s' is locked
-#: daemon/pkcs11/gkd-pkcs11-auth.c:401
+#: daemon/pkcs11/gkd-pkcs11-auth.c:400
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "มีโปรแกรมต้องการจะใช้ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:589
+#: daemon/pkcs11/gkd-pkcs11-auth.c:595
 msgid "Unlock certificate/key storage"
 msgstr "ปลดล็อคแหล่งใบรับรอง/กุญแจ"
 
-#: daemon/pkcs11/gkd-pkcs11-auth.c:590
+#: daemon/pkcs11/gkd-pkcs11-auth.c:596
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคแหล่งใบรับรอง/กุญแจ"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: daemon/pkcs11/gkd-pkcs11-auth.c:593
+#: daemon/pkcs11/gkd-pkcs11-auth.c:599
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr "มีโปรแกรมต้องการจะใช้แหล่งใบรับรอง/กุญแจ '%s' ซึ่งถูกล็อคอยู่"
 
-#: daemon/prompt/gkd-prompt-tool.c:343
+#: daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "จะเก็บรหัสผ่านโดยไม่เข้ารหัสลับจริงหรือ?"
 
-#: daemon/prompt/gkd-prompt-tool.c:344
+#: daemon/prompt/gkd-prompt-tool.c:394
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -248,81 +268,49 @@ msgstr ""
 "การใช้รหัสผ่านว่างเปล่า จะทำให้รหัสผ่านไม่มีการเข้ารหัสลับอย่างปลอดภัย "
 "และใครก็ตามที่เข้าถึงแฟ้มของคุณได้ก็จะได้รหัสผ่านของคุณไป"
 
-#: daemon/prompt/gkd-prompt-tool.c:351
+#: daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "เก็บแบบไม่ปลอดภัย"
 
-#: daemon/prompt/gkd-prompt-tool.c:381
+#: daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "รหัสผ่านไม่ตรงกัน"
 
-#: daemon/prompt/gkd-prompt-tool.c:391
+#: daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "รหัสผ่านเป็นค่าว่างเปล่าไม่ได้"
 
 #: daemon/prompt/gkd-prompt.ui.h:1
-msgid ""
-"<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to "
-"unlock</span>\n"
-"\n"
-"An application wants access to the keyring 'xxx', but it is locked."
-msgstr ""
-"<span size=\"large\" weight=\"bold\">กรุณาป้อนรหัสผ่านสำหรับพวงกุญแจ 'login' "
-"เพื่อปลดล็อค</span>\n"
-"\n"
-"มีโปรแกรมต้องการใช้พวงกุญแจ 'xxx' ซึ่งถูกล็อคอยู่"
-
-#: daemon/prompt/gkd-prompt.ui.h:4
-msgid "Automatically unlock this keyring whenever I'm logged in."
+msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "ปลดล็อคพวงกุญแจนี้โดยอัตโนมัติทุกครั้งที่ข้าพเจ้าเข้าระบบ"
 
-#: daemon/prompt/gkd-prompt.ui.h:5
-msgid "Lock this keyring after"
-msgstr "ล็อคพวงกุญแจนี้เมื่อเวลาผ่านไป"
-
-#: daemon/prompt/gkd-prompt.ui.h:6
-msgid "Lock this keyring if idle for"
-msgstr "ล็อคพวงกุญแจนี้ถ้าเครื่องไม่มีการใช้งานเป็นเวลา"
-
-#: daemon/prompt/gkd-prompt.ui.h:7
-msgid "Lock this keyring when I log out."
-msgstr "ล็อคพวงกุญแจนี้เมื่อข้าพเจ้าออกจากระบบ"
-
-#: daemon/prompt/gkd-prompt.ui.h:8
+#: daemon/prompt/gkd-prompt.ui.h:2
 msgid "New password strength"
 msgstr "ความแน่นหนาของรหัสผ่าน"
 
-#: daemon/prompt/gkd-prompt.ui.h:9
-msgid "Prompt me for each application that accesses this keyring."
-msgstr "ถามข้าพเจ้าทุกครั้งที่มีโปรแกรมใหม่เข้าใช้พวงกุญแจนี้"
-
-#: daemon/prompt/gkd-prompt.ui.h:10
+#: daemon/prompt/gkd-prompt.ui.h:3
 msgid "_Application:"
 msgstr "โ_ปรแกรม:"
 
-#: daemon/prompt/gkd-prompt.ui.h:11
+#: daemon/prompt/gkd-prompt.ui.h:4
 msgid "_Confirm:"
 msgstr "_ยืนยัน:"
 
-#: daemon/prompt/gkd-prompt.ui.h:12
+#: daemon/prompt/gkd-prompt.ui.h:5
 msgid "_Details:"
 msgstr "_รายละเอียด:"
 
-#: daemon/prompt/gkd-prompt.ui.h:13
+#: daemon/prompt/gkd-prompt.ui.h:6
 msgid "_Name:"
 msgstr "_ชื่อ:"
 
-#: daemon/prompt/gkd-prompt.ui.h:14
+#: daemon/prompt/gkd-prompt.ui.h:7
 msgid "_Old Password:"
 msgstr "รหัสผ่านเ_ดิม:"
 
-#: daemon/prompt/gkd-prompt.ui.h:15
+#: daemon/prompt/gkd-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_รหัสผ่าน:"
-
-#: daemon/prompt/gkd-prompt.ui.h:16
-msgid "minutes."
-msgstr "นาที"
 
 #: egg/egg-oid.c:41
 msgid "Domain Component"
@@ -633,6 +621,22 @@ msgstr "นำเข้าสู่:"
 #: gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "รหัสผ่าน:"
+
+#: gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "ล็อคพวงกุญแจนี้เมื่อเวลาผ่านไป"
+
+#: gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "ล็อคพวงกุญแจนี้ถ้าเครื่องไม่มีการใช้งานเป็นเวลา"
+
+#: gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring when I log out"
+msgstr "ล็อคพวงกุญแจนี้เมื่อข้าพเจ้าออกจากระบบ"
+
+#: gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "นาที"
 
 #: gcr/gcr-importer.c:163 gcr/gcr-parser.c:1573 gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1028,9 +1032,26 @@ msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 msgid "Unnamed Certificate"
 msgstr "ใบรับรองไม่มีชื่อ"
 
-#: pkcs11/ssh-store/gck-ssh-private-key.c:337
+#: pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "ไม่สามารถแจงกุญแจสาธารณะสำหรับ SSH"
+
+#~ msgid "Automatically unlock secure storage when I log in."
+#~ msgstr "ปลดล็อคแหล่งข้อมูลนิรภัยโดยอัตโนมัติเมื่อข้าพเจ้าเข้าระบบ"
+
+#~ msgid ""
+#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
+#~ "to unlock</span>\n"
+#~ "\n"
+#~ "An application wants access to the keyring 'xxx', but it is locked."
+#~ msgstr ""
+#~ "<span size=\"large\" weight=\"bold\">กรุณาป้อนรหัสผ่านสำหรับพวงกุญแจ 'login' "
+#~ "เพื่อปลดล็อค</span>\n"
+#~ "\n"
+#~ "มีโปรแกรมต้องการใช้พวงกุญแจ 'xxx' ซึ่งถูกล็อคอยู่"
+
+#~ msgid "Prompt me for each application that accesses this keyring."
+#~ msgstr "ถามข้าพเจ้าทุกครั้งที่มีโปรแกรมใหม่เข้าใช้พวงกุญแจนี้"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
@@ -1193,17 +1214,6 @@ msgstr "ไม่สามารถแจงกุญแจสาธารณะ
 
 #~ msgid "Choose password for default keyring"
 #~ msgstr "ตั้งรหัสผ่านสำหรับพวงกุญแจปริยาย"
-
-#~ msgid "Unlock Login Keyring"
-#~ msgstr "ปลดล็อคพวงกุญแจเข้าระบบ"
-
-#~ msgid "Enter login password to unlock keyring"
-#~ msgstr "ป้อนรหัสผ่านเข้าระบบเพื่อปลดล็อคพวงกุญแจ"
-
-#~ msgid ""
-#~ "Your login keyring was not automatically unlocked when you logged into "
-#~ "this computer."
-#~ msgstr "พวงกุญแจเข้าระบบของคุณไม่ได้ถูกปลดล็อคโดยอัตโนมัติเมื่อคุณเข้าระบบ"
 
 #~ msgid "Create Login Keyring"
 #~ msgstr "สร้างพวงกุญแจเข้าระบบ"
@@ -1405,9 +1415,6 @@ msgstr "ไม่สามารถแจงกุญแจสาธารณะ
 
 #~ msgid "Cannot set a random seed"
 #~ msgstr "ไม่สามารถตั้งค่าสุ่มเริ่มต้น"
-
-#~ msgid "Unlock password for '%s'"
-#~ msgstr "รหัสผ่านสำหรับปลดล็อค '%s'"
 
 #~ msgid "Unlock %s"
 #~ msgstr "ปลดล็อค %s"
