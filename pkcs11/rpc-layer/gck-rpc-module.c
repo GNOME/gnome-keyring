@@ -1128,7 +1128,7 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 	const char *path;
 	CallState *cs;
 	pid_t pid;
-	
+
 	debug (("C_Initialize: enter"));
 
 #ifdef _DEBUG 
@@ -1194,7 +1194,6 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 					goto done;
 				}
 				sprintf (pkcs11_socket_path, "%s/pkcs11", path);
-				pkcs11_socket_path[sizeof (pkcs11_socket_path) - 1] = 0;
 			}
 		}
 
