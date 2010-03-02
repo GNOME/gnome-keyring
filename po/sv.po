@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-09 17:04+0100\n"
-"PO-Revision-Date: 2010-01-09 17:09+0100\n"
+"POT-Creation-Date: 2010-03-02 13:15+0100\n"
+"PO-Revision-Date: 2010-03-02 13:21+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -16,18 +16,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
-#, fuzzy
 msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Detta alternativ aktiverar PKCS#11-komponenten i gnome-keyring-demonen. Den blir endast aktiverad när gnome-keyring-daemon startar, (alltså när användaren loggar in). Denna inställning kan åsidosättas när vissa kommandoradsflaggor skickas till demonen."
+msgstr "Detta alternativ aktiverar PKCS#11-komponenten i gnome-keyring-demonen. Den blir endast aktiverad vid uppstart med gnome-session (alltså när användaren loggar in). Denna inställning kan åsidosättas när vissa kommandoradsflaggor skickas till demonen."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
 msgstr "Detta alternativ aktiverar SSH-agenten i gnome-keyring-demonen. Den blir endast aktiverad när gnome-keyring-daemon startar, (alltså när användaren loggar in). Denna inställning kan åsidosättas när vissa kommandoradsflaggor skickas till demonen."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
-#, fuzzy
 msgid "This option enables the secret service component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Detta alternativ aktiverar PKCS#11-komponenten i gnome-keyring-demonen. Den blir endast aktiverad när gnome-keyring-daemon startar, (alltså när användaren loggar in). Denna inställning kan åsidosättas när vissa kommandoradsflaggor skickas till demonen."
+msgstr "Detta alternativ aktiverar tjänstekomponenten för hemligheter i gnome-keyring-demonen. Den blir endast aktiverad vid uppstart med gnome-session (alltså när användaren loggar in). Denna inställning kan åsidosättas när vissa kommandoradsflaggor skickas till demonen."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -38,34 +36,35 @@ msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Huruvida SSH-agenten i gnome-keyring är aktiverad."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:6
-#, fuzzy
 msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Huruvida SSH-agenten i gnome-keyring är aktiverad."
+msgstr "Huruvida hemlighetstjänsten i gnome-keyring är aktiverad."
 
+#. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:77
 #: ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:105
+#: ../daemon/dbus/gkd-secret-unlock.c:119
+#: ../daemon/login/gkd-login.c:584
+#: ../pkcs11/secret-store/gck-secret-collection.c:320
 msgid "Unnamed"
 msgstr "Namnlös"
 
-#: ../daemon/dbus/gkd-secret-change.c:84
+#: ../daemon/dbus/gkd-secret-change.c:85
 msgid "Change Keyring Password"
 msgstr "Ändra lösenord för nyckelring"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:87
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Välj ett nytt lösenord för nyckelringen \"%s\""
 
-#: ../daemon/dbus/gkd-secret-change.c:90
-#, fuzzy, c-format
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
 msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "Ett okänt program vill ändra lösenordet för nyckelringen \"%s\". Du måste välja det lösenord som du vill använda för den nyckelringen."
+msgstr "Ett okänt program vill ändra lösenordet för nyckelringen \"%s\". Välj ett nytt lösenord som du vill använda för den."
 
-#: ../daemon/dbus/gkd-secret-change.c:109
-#, fuzzy
+#: ../daemon/dbus/gkd-secret-change.c:110
 msgid "The original password was incorrect"
-msgstr "Lösenordet eller PIN-koden är felaktig"
+msgstr "Det ursprungliga lösenordet var felaktigt"
 
 #: ../daemon/dbus/gkd-secret-create.c:77
 msgid "New Keyring Password"
@@ -76,45 +75,59 @@ msgid "Choose password for new keyring"
 msgstr "Välj lösenord för den nya nyckelringen"
 
 #: ../daemon/dbus/gkd-secret-create.c:80
-#, fuzzy, c-format
+#, c-format
 msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "Ett okänt program vill skapa en ny nyckelring med namnet \"%s\". Du måste välja det lösenord som du vill använda för den nyckelringen."
+msgstr "Ett okänt program vill skapa en ny nyckelring med namnet \"%s\". Välj ett lösenord som du vill använda för den."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:112
+#: ../daemon/dbus/gkd-secret-unlock.c:134
+msgid "Unlock Login Keyring"
+msgstr "Lås upp inloggningsnyckelring"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:136
+msgid "Enter password for to unlock your login keyring"
+msgstr "Ange lösenordet för att låsa upp din inloggningsnyckelring"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:140
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "Lösenordet som du använde för att logga in i din dator matchar inte längre det i din inloggningsnyckelring."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:142
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "Din inloggningsnyckelring låstes inte upp när du loggade in på din dator."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:183
 msgid "Unlock Keyring"
 msgstr "Lås upp nyckelringen"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:114
+#: ../daemon/dbus/gkd-secret-unlock.c:185
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Ange lösenord för att låsa upp nyckelringen \"%s\""
 
-#: ../daemon/dbus/gkd-secret-unlock.c:118
-#, fuzzy, c-format
+#: ../daemon/dbus/gkd-secret-unlock.c:189
+#, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Ett okänt program vill komma åt nyckelringen \"%s\", men den är låst"
+msgstr "Ett program vill komma åt nyckelringen \"%s\", men den är låst"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:219
 msgid "The unlock password was incorrect"
 msgstr "Upplåsningslösenordet var felaktigt"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-#, fuzzy
 msgid "Certificate and Key Storage"
-msgstr "Lås upp certifikat/nyckellager"
+msgstr "Certifikat och nyckellagring"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME-nyckelring: PKCS#11-komponent"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-#, fuzzy
 msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME-nyckelringsdemon"
+msgstr "GNOME-nyckelring: Hemlighetstjänst"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
-msgstr ""
+msgstr "Lagringstjänst för hemligheter"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "GNOME Keyring: SSH Agent"
@@ -123,6 +136,16 @@ msgstr "GNOME-nyckelring: SSH-agent"
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "SSH Key Agent"
 msgstr "SSH-nyckelagent"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:174
+msgid "Login"
+msgstr "Inloggning"
+
+#: ../daemon/login/gkd-login.c:596
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Lås upp lösenordet för: %s"
 
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
@@ -137,165 +160,130 @@ msgstr "Nytt lösenord krävs för säker lagring"
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "Ett lösenord krävs för att förbereda \"%s\" för lagring av certifikat eller nycklar"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:303
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-msgid "Automatically unlock secure storage when I log in."
-msgstr "Lås automatiskt upp säkerhetslagret när jag loggar in."
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:361
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
 msgid "Unlock private key"
 msgstr "Lås upp privat nyckel"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:363
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
 msgid "Unlock certificate"
 msgstr "Lås upp certifikat"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:365
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
 msgid "Unlock public key"
 msgstr "Lås upp publik nyckel"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:367
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
 msgid "Unlock"
 msgstr "Lås upp"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:376
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375
 #: ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Ange lösenordet för att låsa upp privata nyckeln"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:378
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377
 #: ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Ange lösenordet för att låsa upp certifikatet"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:380
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
 msgid "Enter password to unlock the public key"
 msgstr "Ange lösenordet för att låsa upp publika nyckeln"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:382
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381
 #: ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Ange lösenordet för att låsa upp"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:392
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Ett program vill komma åt privata nyckeln \"%s\", men den är låst"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:395
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Ett program vill komma åt certifikatet \"%s\", men det är låst"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:398
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Ett program vill komma åt den publika nyckeln \"%s\", men den är låst"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:401
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Ett program vill komma åt \"%s\", men den är låst"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:589
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
 msgid "Unlock certificate/key storage"
 msgstr "Lås upp certifikat/nyckellager"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:590
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Ange lösenordet för att låsa upp certifikatet/nyckellagret"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:593
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
 #, c-format
 msgid "An application wants access to the certificate/key storage '%s', but it is locked"
 msgstr "Ett program vill komma åt certifikatet/nyckellagret \"%s\", men det är låst"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:343
+#: ../daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "Lagra lösenord okrypterade?"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:344
+#: ../daemon/prompt/gkd-prompt-tool.c:394
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga för alla som har tillgång till dina filer."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:351
+#: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "Använd osäker lagring"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:381
+#: ../daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "Lösenorden stämde inte överens."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:391
+#: ../daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "Lösenord får inte vara blanka"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:1
-#, fuzzy
-msgid ""
-"<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to unlock</span>\n"
-"\n"
-"An application wants access to the keyring 'xxx', but it is locked."
-msgstr "Ett okänt program vill komma åt nyckelringen \"%s\", men den är låst."
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Lås automatiskt upp den här nyckelringen när jag är inloggad"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-#, fuzzy
-msgid "Automatically unlock this keyring whenever I'm logged in."
-msgstr "Lås automatiskt upp den här nyckelringen när jag loggar in."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "Lock this keyring after"
-msgstr "Lås denna nyckelring efter"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "Lock this keyring if idle for"
-msgstr "Lås denna nyckelring om inaktiv i"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "Lock this keyring when I log out."
-msgstr "Lås denna nyckelring när jag loggar ut."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
+#: ../daemon/prompt/gkd-prompt.ui.h:2
 msgid "New password strength"
 msgstr "Styrka för nytt lösenord"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:9
-#, fuzzy
-msgid "Prompt me for each application that accesses this keyring."
-msgstr "Tillåt åtkomst till nyckelringen för programmet"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:10
+#: ../daemon/prompt/gkd-prompt.ui.h:3
 msgid "_Application:"
 msgstr "P_rogram:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:11
+#: ../daemon/prompt/gkd-prompt.ui.h:4
 msgid "_Confirm:"
 msgstr "_Bekräfta:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:12
+#: ../daemon/prompt/gkd-prompt.ui.h:5
 msgid "_Details:"
 msgstr "_Detaljer:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:13
+#: ../daemon/prompt/gkd-prompt.ui.h:6
 msgid "_Name:"
 msgstr "_Namn:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:14
+#: ../daemon/prompt/gkd-prompt.ui.h:7
 msgid "_Old Password:"
 msgstr "_Gammalt lösenord:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:15
+#: ../daemon/prompt/gkd-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_Lösenord:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:16
-msgid "minutes."
-msgstr "minuter."
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -422,7 +410,7 @@ msgstr "SHA1 med DSA"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
+msgstr "Oväntat fel i select() vid läsning av data från en barnprocess (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
@@ -608,6 +596,22 @@ msgstr "Importera till:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Lösenord:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "Lås denna nyckelring efter"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "Lås denna nyckelring om inaktiv i"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring when I log out"
+msgstr "Lås denna nyckelring när jag loggar ut"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "minuter"
 
 #: ../gcr/gcr-importer.c:163
 #: ../gcr/gcr-parser.c:1573
@@ -1001,14 +1005,29 @@ msgstr "Signaturbegäran avvisades av användaren"
 msgid "Unknown error"
 msgstr "Okänt fel"
 
-#: ../pkcs11/gck/gck-certificate.c:739
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Namnlöst certifikat"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:337
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Kunde inte tolka publik SSH-nyckel"
 
+#~ msgid "Automatically unlock secure storage when I log in."
+#~ msgstr "Lås automatiskt upp säkerhetslagret när jag loggar in."
+
+#, fuzzy
+#~ msgid ""
+#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
+#~ "to unlock</span>\n"
+#~ "\n"
+#~ "An application wants access to the keyring 'xxx', but it is locked."
+#~ msgstr ""
+#~ "Ett okänt program vill komma åt nyckelringen \"%s\", men den är låst."
+
+#, fuzzy
+#~ msgid "Prompt me for each application that accesses this keyring."
+#~ msgstr "Tillåt åtkomst till nyckelringen för programmet"
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
@@ -1164,16 +1183,6 @@ msgstr "Kunde inte tolka publik SSH-nyckel"
 #~ msgstr "Skapa standardnyckelring"
 #~ msgid "Choose password for default keyring"
 #~ msgstr "Välj lösenord för standardnyckelringen"
-#~ msgid "Unlock Login Keyring"
-#~ msgstr "Lås upp inloggningsnyckelring"
-#~ msgid "Enter login password to unlock keyring"
-#~ msgstr "Ange inloggningslösenordet för att låsa upp nyckelringen"
-#~ msgid ""
-#~ "Your login keyring was not automatically unlocked when you logged into "
-#~ "this computer."
-#~ msgstr ""
-#~ "Din inloggningsnyckelring låstes inte upp automatiskt när du loggade in "
-#~ "på denna dator."
 #~ msgid "Create Login Keyring"
 #~ msgstr "Skapa nyckelring för inloggning"
 #~ msgid "Enter your login password"
@@ -1347,8 +1356,6 @@ msgstr "Kunde inte tolka publik SSH-nyckel"
 #~ msgstr "Kunde inte kryptera SSH-nyckeln för att lagra den."
 #~ msgid "Couldn't encode the SSH key to store it."
 #~ msgstr "Kunde inte koda SSH-nyckeln för att lagra den."
-#~ msgid "Unlock password for '%s'"
-#~ msgstr "Lösenord för att låsa upp \"%s\""
 #~ msgid "Unlock %s"
 #~ msgstr "Lås upp %s"
 #~ msgid "key"
