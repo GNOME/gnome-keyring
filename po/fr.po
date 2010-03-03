@@ -15,9 +15,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-10 20:01+0100\n"
-"PO-Revision-Date: 2010-02-10 20:08+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&component=general\n"
+"POT-Creation-Date: 2010-02-18 18:02+0000\n"
+"PO-Revision-Date: 2010-03-03 20:28+0100\n"
 "Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -73,8 +74,10 @@ msgstr "Indique si l'agent SSH de gnome-keyring est activé."
 msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "Indique si l'agent de service secret de gnome-keyring est activé."
 
+#. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:579
+#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
+#: ../pkcs11/secret-store/gck-secret-collection.c:320
 msgid "Unnamed"
 msgstr "Sans nom"
 
@@ -186,7 +189,12 @@ msgstr "Trousseau de clés GNOME : agent SSH"
 msgid "SSH Key Agent"
 msgstr "Agent de clés SSH"
 
-#: ../daemon/login/gkd-login.c:591
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:174
+msgid "Login"
+msgstr "Connexion"
+
+#: ../daemon/login/gkd-login.c:596
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Mot de passe de déverrouillage pour : %s"
@@ -1069,7 +1077,7 @@ msgstr "La requête de signature a été rejetée par l'utilisateur"
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
-#: ../pkcs11/gck/gck-certificate.c:739
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Certificat sans nom"
 
