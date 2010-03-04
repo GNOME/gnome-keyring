@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.29.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-09 15:25+0100\n"
-"PO-Revision-Date: 2010-02-09 15:26+0100\n"
+"POT-Creation-Date: 2010-03-04 22:57+0100\n"
+"PO-Revision-Date: 2010-03-04 22:58+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -67,8 +67,10 @@ msgstr "Om SSH-agenten for gnome-keyring er aktivert."
 msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "Om SSH-agenten for gnome-keyring er aktivert."
 
+#. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:579
+#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
+#: ../pkcs11/secret-store/gck-secret-collection.c:320
 msgid "Unnamed"
 msgstr "Uten navn"
 
@@ -123,12 +125,12 @@ msgstr "Oppgi passord for å låse opp nøkkelring for innlogging"
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
-msgstr ""
+msgstr "Passordet du bruker for å logge på din datamaskin er ikke lenger det samme som passordet for din nøkkelring for pålogging."
 
 #: ../daemon/dbus/gkd-secret-unlock.c:142
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
+msgstr "Nøkkelring for pålogging ble ikke låst opp når du logget på din datamaskin."
 
 #: ../daemon/dbus/gkd-secret-unlock.c:183
 msgid "Unlock Keyring"
@@ -172,7 +174,12 @@ msgstr "GNOME nøkkelring: SSH-agent"
 msgid "SSH Key Agent"
 msgstr "SSH-nøkkelagent"
 
-#: ../daemon/login/gkd-login.c:591
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:174
+msgid "Login"
+msgstr "Pålogging"
+
+#: ../daemon/login/gkd-login.c:596
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Passord for å låse opp: %s"
@@ -1043,7 +1050,7 @@ msgstr "Signaturforespørselen ble avvist av bruker"
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: ../pkcs11/gck/gck-certificate.c:739
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Sertifikat uten navn"
 
