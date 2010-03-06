@@ -1,345 +1,38 @@
-# translation of gnome-keyring to Russian
-# Copyright (C) 2004-2009 Free Software Foundation, Inc.
+# Copyright (C) 2004-2009, 2010 Free Software Foundation, Inc.
 #
 # Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2004.
 # Leonid Kanter <leon@asplinux.ru>, 2006.
 # Nickolay V. Shmyrev <nshmyrev@yandex.ru>, 2006.
 # Yuri Kozlov <kozlov.y@gmail.com>, 2008.
 # Lebedev Roman <roman@lebedev.com>, 2008.
-#
+# der_FeniX <kofenix@gmail.com>, 2010.
+# Yuri Kozlov <yuray@komyakino.ru>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-20 12:58+0300\n"
-"PO-Revision-Date: 2009-10-13 20:33+0300\n"
-"Last-Translator: Dmitry Yacenko <d.yacenko@gmail.com>\n"
-"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"POT-Creation-Date: 2010-03-06 19:15+0200\n"
+"PO-Revision-Date: 2010-02-25 19:55+0300\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
+"Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"Приложение «%s» (%s) хочет получить доступ к паролю для '<object prop='name'/"
-">' в основном брелоке."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"Приложение «%s» (%s) хочет получить доступ к паролю для '<object prop='name'/"
-">' в брелоке %s."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Приложение «%s» хочет получить доступ к паролю для '<object prop='name'/>' в "
-"основном брелоке."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Приложение «%s» хочет получить доступ к паролю для '<object prop='name'/>' в "
-"брелоке %s."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Приложение хочет получить доступ к паролю для '<object prop='name'/>' в "
-"основном брелоке."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr "Приложение хочет получить доступ к '<object prop='name'/>' в %s."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "Разрешить доступ"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "Разрешать приложениям доступ к брелоку?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"Приложение «%s» (%s) хочет получить доступ к основному брелоку, но он "
-"заблокирован"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Приложение «%s» (%s) хочет получить доступ к брелоку «%s», но он заблокирован"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Приложение «%s» хочет получить доступ к основному брелоку, но он заблокирован"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Приложение «%s» хочет получить доступ к брелоку «%s», но он заблокирован"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"Приложение хочет получить доступ к основному брелоку, но он заблокирован"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к брелоку «%s», но он заблокирован"
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr "Введите пароль для разблокирования основного брелока"
-
-#: ../daemon/gkr-daemon-ops.c:360
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Введите пароль для разблокирования брелока «%s»"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "Разблокирование брелока"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr "Автоматически разблокировать брелок после входа в систему."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» (%s) хочет создать новый брелок с именем «%s». Необходимо "
-"выбрать пароль для этого брелока."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» (%s) хочет создать новый основной брелок. Необходимо выбрать "
-"пароль для этого брелока."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» хочет создать новый брелок с именем «%s». Необходимо выбрать "
-"пароль для этого брелока."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» хочет создать новый основной брелок. Необходимо выбрать "
-"пароль для этого брелока."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"Приложение хочет создать новый брелок с именем «%s». Необходимо выбрать "
-"пароль для брелока."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Неизвестное приложение хочет создать новый брелок по умолчанию. Необходимо "
-"выбрать пароль для этого брелока."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "Пароль для нового брелока"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "Выберите пароль для нового брелока"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» (%s) хочет изменить пароль брелока «%s». Необходимо выбрать "
-"пароль для этого брелока."
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» (%s) хочет изменить пароль для основного брелока. Необходимо "
-"выбрать пароль для этого брелока."
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» хочет изменить пароль для брелока «%s». Необходимо выбрать "
-"пароль для этого брелока."
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Приложение «%s» хочет изменить пароль для основного брелока. Необходимо "
-"выбрать пароль для этого брелока."
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Неизвестное приложение хочет изменить пароль для брелока «%s». Необходимо "
-"выбрать пароль для этого брелока."
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Неизвестное приложение хочет изменить пароль для основного брелока. "
-"Необходимо выбрать пароль для этого брелока."
-
-#: ../daemon/gkr-daemon-ops.c:552
-#, c-format
-msgid "Choose a new password for the '%s' keyring."
-msgstr "Выберите новый пароль для брелока «%s»."
-
-#: ../daemon/gkr-daemon-ops.c:554
-#, c-format
-msgid "Choose a new password for the default keyring."
-msgstr "Выберите пароль для основного брелока."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
-msgid "Change Keyring Password"
-msgstr "Смена пароля брелока"
-
-#: ../daemon/gkr-daemon-ops.c:631
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Приложение «%s» (%s) хочет сохранить пароль, но основной брелок отсутствует. "
-"Для создания брелока необходимо выбрать пароль."
-
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Приложение «%s» хочет сохранить пароль, но основной брелок отсутствует. Для "
-"создания брелока необходимо выбрать пароль."
-
-#: ../daemon/gkr-daemon-ops.c:643
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Приложение хочет сохранить пароль, но основной брелок отсутствует. Для "
-"создания брелока необходимо выбрать пароль."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "Создание основного брелока"
-
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "Выберите пароль для основного брелока"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"Этот параметр активирует компонент PKCS#11 в сервисе брелоков GNOME. Он "
-"обрабатывается только при запуске gnome-keyring-daemon, (то есть когда "
-"пользователь входит в систему). Данный параметр может быть изменён с помощью "
-"аргументов командной строки, передаваемых сервису."
+"Этот параметр активирует компонент PKCS#11 в службе gnome-keyring. Он "
+"обрабатывается только при запуске gnome-session, (то есть когда пользователь "
+"входит в систему). Данный параметр может быть изменён с помощью аргументов "
+"командной строки, передаваемых службе."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -348,168 +41,166 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Этот параметр активирует SSH-агент в сервисе брелоков GNOME. Он "
-"обрабатывается только при запуске gnome-keyring-daemon, (то есть когда "
-"пользователь входит в систему). Данный параметр может быть изменён с помощью "
-"аргументов командной строки, передаваемых сервису."
+"Этот параметр активирует SSH-агент в службе gnome-keyring. Он обрабатывается "
+"только при запуске gnome-keyring-daemon, (то есть когда пользователь входит "
+"в систему). Данный параметр может быть изменён с помощью аргументов "
+"командной строки, передаваемых службе."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Будет ли активирован компонент сервиса брелоков GNOME PKCS#11."
+msgid ""
+"This option enables the secret service component in the gnome-keyring "
+"daemon. It only takes effect during startup with gnome-session, (ie: when "
+"the user logs in). This setting may be overridden when certain command line "
+"arguments are passed to the daemon."
+msgstr ""
+"Этот параметр активирует компонент PKCS#11 в службе gnome-keyring. Он "
+"обрабатывается только при запуске gnome-session, (то есть когда пользователь "
+"входит в систему). Данный параметр может быть изменён с помощью аргументов "
+"командной строки, передаваемых службе."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
+msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+msgstr "Будет ли активирован компонент службы gnome-keyring PKCS#11."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Будет ли активирован SSH-агент сервиса брелоков GNOME."
+msgstr "Будет ли активирован SSH-агент службы gnome-keyring."
 
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "Демон брелоков GNOME"
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
+msgid "Whether the gnome-keyring secret service is enabled."
+msgstr "Будет ли активирована служба безопасности gnome-keyring."
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
+#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
+#: ../pkcs11/secret-store/gck-secret-collection.c:320
+msgid "Unnamed"
+msgstr "Безымянный"
+
+#: ../daemon/dbus/gkd-secret-change.c:85
+msgid "Change Keyring Password"
+msgstr "Смена пароля связки ключей"
+
+#: ../daemon/dbus/gkd-secret-change.c:87
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Выберите новый пароль для связки ключей «%s»."
+
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Приложение хочет изменить пароль для связки ключей «%s». Укажите новый "
+"пароль, который хотите использовать."
+
+#: ../daemon/dbus/gkd-secret-change.c:110
+msgid "The original password was incorrect"
+msgstr "Неверный исходный пароль"
+
+#: ../daemon/dbus/gkd-secret-create.c:77
+msgid "New Keyring Password"
+msgstr "Пароль для новой связки ключей"
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "Choose password for new keyring"
+msgstr "Выберите пароль для новой связки ключей"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Приложение хочет создать новую связку ключей с именем «%s». Необходимо "
+"выбрать пароль для этой связки ключей."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:134
 msgid "Unlock Login Keyring"
-msgstr "Разблокирование брелока входа в систему"
+msgstr "Разблокирование связки ключей для входа в систему"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
-msgstr "Пароль разблокирования брелока входа в систему"
+#: ../daemon/dbus/gkd-secret-unlock.c:136
+msgid "Enter password for to unlock your login keyring"
+msgstr "Введите пароль для разблокировки связки ключей для входа в систему"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:101
+#: ../daemon/dbus/gkd-secret-unlock.c:140
 msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
 msgstr ""
-"Ваш брелок входа в систему не был автоматически разблокирован, когда вы "
-"вошли в компьютер."
+"Пароль, который вы используете для входа, больше не соответствует паролю "
+"связки ключей для входа в систему"
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "Создание брелока входа в систему"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "Смена пароля брелока входа в систему"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:127
+#: ../daemon/dbus/gkd-secret-unlock.c:142
 msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"Ваш брелок входа в систему не был автоматически создан, когда вы вошли в "
-"компьютер. Он будет создан прямо сейчас."
+"Ваша связка ключей для входа в систему не была автоматически разблокирована, "
+"когда вы зарегистрировались в компьютере."
 
-#: ../daemon/keyrings/gkr-keyring.c:587
+#: ../daemon/dbus/gkd-secret-unlock.c:183
+msgid "Unlock Keyring"
+msgstr "Разблокирование связки ключей"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:185
 #, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Пароль разблокирования брелока %s"
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Введите пароль для разблокирования связки ключей «%s»"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
-msgid "Unlock private key"
-msgstr "Разблокирование секретного ключа"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
-msgid "Unlock certificate"
-msgstr "Разблокирование сертификата"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
-msgid "Unlock public key"
-msgstr "Разблокирование открытого ключа"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
-msgid "Unlock"
-msgstr "Разблокирование"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Введите пароль для разблокирования секретного ключа"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Введите пароль для разблокирования сертификата"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
-msgid "Enter password to unlock the public key"
-msgstr "Введите пароль для разблокирования открытого ключа"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Введите пароль для разблокирования"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#: ../daemon/dbus/gkd-secret-unlock.c:189
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
+msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Приложение хочет получить доступ к секретному ключу «%s», но он заблокирован"
+"Приложение хочет получить доступ к связке ключей «%s», но она заблокирован"
 
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
+#: ../daemon/dbus/gkd-secret-unlock.c:219
+msgid "The unlock password was incorrect"
+msgstr "Неверный пароль разблокировки"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Хранилище сертификатов и ключей"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "Связка ключей GNOME: компонент PKCS#11"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "Связка ключей GNOME: служба безопасности"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "Служба безопасного хранения"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Связка ключей GNOME: SSH-агент"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "Агент ключей SSH"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:174
+msgid "Login"
+msgstr "Вход"
+
+#: ../daemon/login/gkd-login.c:596
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к сертификату «%s», но он заблокирован"
+msgid "Unlock password for: %s"
+msgstr "Пароль для разблокирования: %s"
 
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Приложение хочет получить доступ к открытому ключу «%s», но он заблокирован"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к «%s», но он заблокирован"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "Автоматически разблокировать секретный ключ после входа в систему."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Автоматически разблокировать сертификат после входа в систему."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "Автоматически разблокировать открытый ключ после входа в систему."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "Автоматически разблокировать после входа в систему"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
-msgid "Unlock certificate/key storage"
-msgstr "Разблокировать сертификат/хранилище ключей"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Введите пароль для разблокирования сертификата/хранилища ключей"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Приложение хочет получить доступ к сертификату/хранилищу ключей «%s», но "
-"доступ заблокирован"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr "Автоматически разблокировать хранилище после входа в систему."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
 msgstr "Требуется задать новый пароль"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
 msgid "New password required for secure storage"
 msgstr "Для хранилища нужно задать новый пароль"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -518,43 +209,87 @@ msgstr ""
 "Чтобы подготовить «%s» для хранения сертификатов и ключей необходимо задать "
 "пароль"
 
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Не удалось захватить управление мышью.</big></b>\n"
-"\n"
-"Возможно, фокус захвачен другим приложением, например, после щелчка по меню, "
-"но это может быть и последствием внешнего доступа в систему.\n"
-"\n"
-"Попробуйте ещё раз."
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
+msgid "Unlock private key"
+msgstr "Разблокирование секретного ключа"
 
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Не удалось захватить управление клавиатурой.</big></b>\n"
-"\n"
-"Возможно, фокус захвачен другим приложением, например, после щелчка по меню, "
-"но это может быть и последствием внешнего доступа в систему.\n"
-"\n"
-"Попробуйте ещё раз."
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
+msgid "Unlock certificate"
+msgstr "Разблокирование сертификата"
 
-#: ../daemon/ui/gkr-ask-tool.c:276
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
+msgid "Unlock public key"
+msgstr "Разблокирование открытого ключа"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
+msgid "Unlock"
+msgstr "Разблокирование"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
+msgid "Enter password to unlock the private key"
+msgstr "Введите пароль для разблокирования секретного ключа"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
+msgid "Enter password to unlock the certificate"
+msgstr "Введите пароль для разблокирования сертификата"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
+msgid "Enter password to unlock the public key"
+msgstr "Введите пароль для разблокирования открытого ключа"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
+msgid "Enter password to unlock"
+msgstr "Введите пароль для разблокирования"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Приложение хочет получить доступ к секретному ключу «%s», но он заблокирован"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Приложение хочет получить доступ к сертификату «%s», но он заблокирован"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Приложение хочет получить доступ к открытому ключу «%s», но он заблокирован"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Приложение хочет получить доступ к «%s», но он заблокирован"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
+msgid "Unlock certificate/key storage"
+msgstr "Разблокировать сертификат/хранилище ключей"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Введите пароль для разблокирования сертификата/хранилища ключей"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Приложение хочет получить доступ к сертификату/хранилищу ключей «%s», но "
+"доступ заблокирован"
+
+#: ../daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "Хранить пароли нешифрованными?"
 
-#: ../daemon/ui/gkr-ask-tool.c:277
+#: ../daemon/prompt/gkd-prompt-tool.c:394
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -563,84 +298,49 @@ msgstr ""
 "Если ввести пустой пароль, то ваши хранимые пароли не будут надёжно "
 "зашифрованы. Они будут доступны любому, кто имеет доступ к вашим файлам."
 
-#: ../daemon/ui/gkr-ask-tool.c:284
+#: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "Использовать небезопасное хранилище"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "_Расположение:"
-
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "_Старый пароль:"
-
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "_Пароль:"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "По_дтвердите пароль:"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "Стойкость нового пароля"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
+#: ../daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "Пароли не совпадают."
 
-#: ../daemon/ui/gkr-ask-tool.c:661
+#: ../daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "Пароль не может быть пустым"
 
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "_Запретить"
+#: ../daemon/prompt/gkd-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Автоматически разблокировать эту связку ключей после входа в систему"
 
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "С_оздать"
+#: ../daemon/prompt/gkd-prompt.ui.h:2
+msgid "New password strength"
+msgstr "Стойкость нового пароля"
 
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "_Изменить"
+#: ../daemon/prompt/gkd-prompt.ui.h:3
+msgid "_Application:"
+msgstr "П_риложение:"
 
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "Разрешить _однократно"
+#: ../daemon/prompt/gkd-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "По_дтвердите пароль:"
 
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "Разрешить _навсегда"
+#: ../daemon/prompt/gkd-prompt.ui.h:5
+msgid "_Details:"
+msgstr "_Подробности:"
 
-#: ../daemon/util/gkr-location.c:238
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Отключаемый диск: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Имя"
 
-#: ../daemon/util/gkr-location.c:240
-msgid "Removable Disk"
-msgstr "Отключаемый диск"
+#: ../daemon/prompt/gkd-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "_Старый пароль:"
 
-#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
-msgid "Home"
-msgstr "Домашний каталог"
-
-#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
-msgid "The disk or drive this file is located on is not present"
-msgstr "Диск или устройство, на котором расположен этот файл, отсутствует"
-
-#: ../daemon/util/gkr-location.c:918
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Не удалось создать каталог: %s"
-
-#: ../daemon/util/gkr-location.c:952
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Не удалось удалить файл: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Пароль:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -763,9 +463,20 @@ msgstr "DSA"
 msgid "SHA1 with DSA"
 msgstr "SHA1 с ключом DSA"
 
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr ""
+"Неизвестная ошибка в select() при чтении данных из дочернего процесса (%s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Неизвестная ошибка в waitpid() (%s)"
+
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
-msgstr "<i>не часть сертификата</i>"
+msgstr "<i>Не часть сертификата</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
@@ -773,7 +484,7 @@ msgstr "<i>неизвестно</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:1
 msgid "<Not Part of Certificate>"
-msgstr "<не часть сертификата>"
+msgstr "<Не часть сертификата>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:2
 msgid "<b>Fingerprints</b>"
@@ -942,6 +653,22 @@ msgstr "Импортировать в:"
 msgid "Password:"
 msgstr "Пароль:"
 
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "Блокировать данную связку ключей после"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "Блокировать данную связку ключей, если простаивает в течении"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring when I log out"
+msgstr "Автоматически блокировать связку ключей после выхода из системы"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "мин"
+
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Операция была отменена"
@@ -957,7 +684,7 @@ msgstr "Импортировать ключи/сертификаты"
 
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
-msgstr "Выберете хранилище для ключей и сертификатов."
+msgstr "Выберите место для хранения импортированных ключей и сертификатов."
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -994,7 +721,7 @@ msgstr "Чтобы импортировать «%s», нужно разблок�
 
 #: ../gcr/gcr-parser.c:196
 msgid "Private Key"
-msgstr "Личный ключ"
+msgstr "Секретный ключ"
 
 #: ../gcr/gcr-parser.c:199
 msgid "Certificate"
@@ -1026,7 +753,7 @@ msgstr "Внутренняя ошибка"
 
 #: ../gp11/gp11-misc.c:107
 msgid "The operation failed"
-msgstr "Операция неудалась"
+msgstr "Не удалось выполнить операцию"
 
 #: ../gp11/gp11-misc.c:109
 msgid "Invalid arguments"
@@ -1042,7 +769,7 @@ msgstr "Модуль не может блокировать данные дол�
 
 #: ../gp11/gp11-misc.c:115
 msgid "The field is read-only"
-msgstr "Поле только для чтения"
+msgstr "Поле доступно только для чтения"
 
 #: ../gp11/gp11-misc.c:117
 msgid "The field is sensitive and cannot be revealed"
@@ -1138,11 +865,11 @@ msgstr "Механизм шифрования имеет неверный пар
 
 #: ../gp11/gp11-misc.c:163
 msgid "The object is missing or invalid"
-msgstr "Обьект отсутствует или неверен"
+msgstr "Объект отсутствует или неверен"
 
 #: ../gp11/gp11-misc.c:165
 msgid "Another operation is already taking place"
-msgstr "В этот момент проводятся другие действия"
+msgstr "В данный момент выполняется другое действие"
 
 #: ../gp11/gp11-misc.c:167
 msgid "No operation is taking place"
@@ -1174,7 +901,7 @@ msgstr "Сеанс закрыт"
 
 #: ../gp11/gp11-misc.c:181
 msgid "Too many sessions are active"
-msgstr "Слишком много сеансов активно"
+msgstr "Слишком много активных сеансов"
 
 #: ../gp11/gp11-misc.c:183
 msgid "The session is invalid"
@@ -1182,7 +909,7 @@ msgstr "Сеанс некорректен"
 
 #: ../gp11/gp11-misc.c:185
 msgid "The session is read-only"
-msgstr "Сеанс только для чтения"
+msgstr "Сеанс доступен только для чтения"
 
 #: ../gp11/gp11-misc.c:187
 msgid "An open session exists"
@@ -1218,7 +945,7 @@ msgstr "Устройство отсутствует или отключено"
 
 #: ../gp11/gp11-misc.c:203
 msgid "The device is invalid or unrecognizable"
-msgstr "Устройство неверно или не опознаваемо"
+msgstr "Устройство неверно или неопознаваемо"
 
 #: ../gp11/gp11-misc.c:205
 msgid "The device is write protected"
@@ -1230,7 +957,7 @@ msgstr "Не удалось импортировать, поскольку кл�
 
 #: ../gp11/gp11-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
-msgstr "Не удалось импортировать, поскольку ключ неправильной длинны"
+msgstr "Не удалось импортировать, поскольку ключ неправильной длины"
 
 #: ../gp11/gp11-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
@@ -1254,7 +981,7 @@ msgstr "Пользователь неверного типа"
 
 #: ../gp11/gp11-misc.c:221
 msgid "Another user is already logged in"
-msgstr "Другой пользователь уже вошел"
+msgstr "Другой пользователь уже вошёл"
 
 #: ../gp11/gp11-misc.c:223
 msgid "Too many users of different types logged in"
@@ -1266,7 +993,7 @@ msgstr "Не удалось импортировать неверный ключ
 
 #: ../gp11/gp11-misc.c:227
 msgid "Cannot import a key of the wrong size"
-msgstr "Не удалось импортировать ключ неврного размера"
+msgstr "Не удалось импортировать ключ неверного размера"
 
 #: ../gp11/gp11-misc.c:229
 msgid "Cannot export because the key is invalid"
@@ -1298,7 +1025,7 @@ msgstr "Недостаточно места для сохранения резу
 
 #: ../gp11/gp11-misc.c:243
 msgid "The saved state is invalid"
-msgstr "Сохраненный статус неверен"
+msgstr "Сохранённое состояние неверно"
 
 #: ../gp11/gp11-misc.c:245
 msgid "The information is sensitive and cannot be revealed"
@@ -1306,7 +1033,7 @@ msgstr "Информация важна и не может быть раскры
 
 #: ../gp11/gp11-misc.c:247
 msgid "The state cannot be saved"
-msgstr "Статус не может быть сохранён"
+msgstr "Состояние не может быть сохранено"
 
 #: ../gp11/gp11-misc.c:249
 msgid "The module has not been initialized"
@@ -1314,7 +1041,7 @@ msgstr "Модуль не инициализирован"
 
 #: ../gp11/gp11-misc.c:251
 msgid "The module has already been initialized"
-msgstr "Модуль уже инициализировался"
+msgstr "Модуль уже инициализирован"
 
 #: ../gp11/gp11-misc.c:253
 msgid "Cannot lock data"
@@ -1332,42 +1059,10 @@ msgstr "Запрос подписи был отклонён пользовате
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "Доступ запрещён"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "Сервис брелоков GNOME не запущен."
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "Ошибка взаимодействия с сервисом брелоков GNOME"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "Брелок с таким именем уже существует"
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "Программная ошибка: приложение послало некорректные данные."
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "Нет подходящих результатов"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "Брелок с таким именем не существует."
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "Брелок уже разблокирован."
-
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Безымянный сертификат"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Не удалось разобрать открытый ключ SSH"
