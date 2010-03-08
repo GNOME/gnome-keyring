@@ -798,13 +798,15 @@ write_all_output (const gchar *data, gsize len)
 
 	while (len > 0) {
 		res = write (1, data, len);
-		if (res <= 0) {
+		if (res < 0) {
 			if (errno == EAGAIN || errno == EINTR)
 				continue;
 			if (errno != EPIPE)
 				g_warning ("couldn't write dialog response to output: %s",
 				           g_strerror (errno));
 			exit (1);
+		} else if (res == 0) {
+			g_warning ("couldn't write all dialog response to output");
 		} else  {
 			len -= res;
 			data += res;

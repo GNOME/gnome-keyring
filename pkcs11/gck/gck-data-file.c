@@ -132,23 +132,25 @@ read_all_bytes (int fd, guchar *buf, gsize len)
 {
 	gsize all = len;
 	int res;
-	
+
 	while (len > 0) {
-		
 		res = read (fd, buf, len);
-		if (res <= 0) {
+		if (res < 0) {
 			if (errno == EAGAIN || errno == EINTR)
 				continue;
-			if (res < 0 || len != all)
-				g_warning ("couldn't read %u bytes from store file: %s", 
-				           (guint)all, g_strerror (errno));
+			g_warning ("couldn't read %u bytes from store file: %s",
+			           (guint)all, g_strerror (errno));
+			return FALSE;
+		} else if (res == 0) {
+			if (len != all)
+				g_warning ("couldn't read %u bytes from store file", (guint)all);
 			return FALSE;
 		} else  {
 			len -= res;
 			buf += res;
 		}
 	}
-	
+
 	return TRUE;
 }
 
@@ -161,12 +163,14 @@ write_all_bytes (int fd, const guchar *buf, gsize len)
 	while (len > 0) {
 		
 		res = write (fd, buf, len);
-
-		if (res <= 0) {
+		if (res < 0) {
 			if (errno == EAGAIN || errno == EINTR)
 				continue;
 			g_warning ("couldn't write %u bytes to store file: %s", 
-			           (guint)all, res < 0 ? g_strerror (errno) : "");
+			           (guint)all, g_strerror (errno));
+			return FALSE;
+		} else if (res == 0) {
+			g_warning ("couldn't write %u bytes to store file", (guint)all);
 			return FALSE;
 		} else  {
 			len -= res;
@@ -219,7 +223,7 @@ parse_file_blocks (int file, BlockFunc block_func, GckSecret *login, gpointer us
 		if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &length) ||
 		    !egg_buffer_get_uint32 (&buffer, offset, &offset, &block) || 
 		    length < 8) {
-			res = GCK_DATA_SUCCESS;
+			res = GCK_DATA_FAILURE;
 			g_message ("invalid block size or length in store file");
 			break;
 		}

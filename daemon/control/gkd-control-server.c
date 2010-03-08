@@ -169,9 +169,11 @@ control_output (GIOChannel *channel, GIOCondition cond, gpointer user_data)
 
 	if (cond & G_IO_OUT) {
 		res = write (fd, buffer->buf + cdata->position, buffer->len - cdata->position);
-		if (res <= 0) {
+		if (res < 0) {
 			if (errno != EAGAIN && errno != EINTR)
 				cdata->position = buffer->len;
+		} else if (res == 0) {
+			cdata->position = buffer->len;
 		} else {
 			cdata->position += res;
 			g_assert (cdata->position <= buffer->len);
@@ -247,7 +249,7 @@ control_input (GIOChannel *channel, GIOCondition cond, gpointer user_data)
 		/* Time for reading credentials */
 		if (cdata->position == 0) {
 			if (egg_unix_credentials_read (fd, &pid, &uid) < 0) {
-				if (errno != EAGAIN || errno != EINTR)
+				if (errno != EAGAIN && errno != EINTR)
 					finished = TRUE;
 			} else if (getuid () != uid) {
 				g_message ("control request from bad uid: %u, should be %u\n", uid, getuid ());
@@ -260,9 +262,11 @@ control_input (GIOChannel *channel, GIOCondition cond, gpointer user_data)
 		} else if (egg_buffer_length (buffer) < 4) {
 			egg_buffer_reserve (buffer, 4);
 			res = read (fd, buffer->buf + buffer->len, 4 - buffer->len);
-			if (res <= 0) {
-				if (errno != EAGAIN || errno != EINTR)
+			if (res < 0) {
+				if (errno != EAGAIN && errno != EINTR)
 					finished = TRUE;
+			} else if (res == 0) {
+				finished = TRUE;
 			} else {
 				buffer->len += res;
 			}
@@ -276,9 +280,11 @@ control_input (GIOChannel *channel, GIOCondition cond, gpointer user_data)
 				g_assert (buffer->len < packet_size);
 				egg_buffer_reserve (buffer, packet_size);
 				res = read (fd, buffer->buf + buffer->len, packet_size - buffer->len);
-				if (res <= 0) {
+				if (res < 0) {
 					if (errno != EAGAIN && errno != EINTR)
 						finished = TRUE;
+				} else if (res == 0) {
+					finished = TRUE;
 				} else {
 					buffer->len += res;
 					g_assert (buffer->len <= packet_size);

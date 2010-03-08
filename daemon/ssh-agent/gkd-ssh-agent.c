@@ -56,12 +56,13 @@ read_all (int fd, guchar *buf, int len)
 
 		res = read (fd, buf, len);
 
-		if (res <= 0) {
-			if (errno == EAGAIN && errno == EINTR)
+		if (res < 0) {
+			if (errno == EAGAIN || errno == EINTR)
 				continue;
-			if (res < 0)
-				g_warning ("couldn't read %u bytes from client: %s", all,
-				           g_strerror (errno));
+			g_warning ("couldn't read %u bytes from client: %s", all,
+			           g_strerror (errno));
+			return FALSE;
+		} else if (res == 0) {
 			return FALSE;
 		} else  {
 			len -= res;
@@ -81,13 +82,15 @@ write_all (int fd, const guchar *buf, int len)
 	while (len > 0) {
 
 		res = write (fd, buf, len);
-
-		if (res <= 0) {
+		if (res < 0) {
 			if (errno == EAGAIN && errno == EINTR)
 				continue;
 			if (errno != EPIPE)
 				g_warning ("couldn't write %u bytes to client: %s", all,
-				           res < 0 ? g_strerror (errno) : "");
+				           g_strerror (errno));
+			return FALSE;
+		} else if (res == 0) {
+			g_warning ("couldn't write %u bytes to client", all);
 			return FALSE;
 		} else  {
 			len -= res;
