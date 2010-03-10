@@ -1,3 +1,22 @@
+Changes in version 2.29.92 are:
+ * Fix various problems with not storing secret value properly.
+ * Return no results when a search includes a bad collection identifier.
+ * Don't raise error if ssh client disconnects early.
+ * Allow running in a test environment.
+ * Fix error when setting default keyring to NULL.
+ * Autostart gnome-keyring-daemon in LXDE as well.
+ * Rework the startup again, to use a singleton crontrolled via dbus, to help
+   when no process was started by pam.
+ * Display password and confirm prompts when creating keyring.
+ * Allow specifying CKA_ID when creating collection.
+ * Give translatable label to created login keyring.
+ * When no default keyring set, use login keyring.
+ * Fix problem initializing socket path in rpc module.
+ * Fix endless loop in reading data.
+ * Potential fix or sporadic crash.
+ * Solaris build fixes.
+ * Updated translations.
+
 Changes in version 2.29.90 are:
  * Quit daemon when the dbus session is disconnected.
  * GNU Hurd build fixes.
