@@ -28,6 +28,7 @@
 #include "gck/gck-file-tracker.h"
 #include "gck/gck-serializable.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-openssl.h"
 
 #include <string.h>
@@ -187,7 +188,7 @@ file_load (GckFileTracker *tracker, const gchar *path, GckRootsModule *self)
 	/* Read in the public key */
 	if (!g_file_get_contents (path, (gchar**)&data, &n_data, &error)) {
 		g_warning ("couldn't load root certificates: %s: %s",
-		           path, error && error->message ? error->message : "");
+		           path, egg_error_message (error));
 		return;
 	}
 	

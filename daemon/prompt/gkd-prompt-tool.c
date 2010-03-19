@@ -26,6 +26,7 @@
 
 #include "egg/egg-dh.h"
 #include "egg/egg-entry-buffer.h"
+#include "egg/egg-error.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
@@ -359,8 +360,7 @@ prepare_dialog (GtkBuilder *builder)
 	GtkDialog *dialog;
 
 	if (!gtk_builder_add_from_file (builder, UIDIR "gkd-prompt.ui", &error)) {
-		g_warning ("couldn't load prompt ui file: %s",
-		           error && error->message ? error->message : "");
+		g_warning ("couldn't load prompt ui file: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -889,7 +889,7 @@ main (int argc, char *argv[])
 	g_free (data);
 
 	if (!ret)
-		fatal ("couldn't parse auth dialog instructions", err ? err->message : "");
+		fatal ("couldn't parse auth dialog instructions", egg_error_message (err));
 
 	run_dialog ();
 
@@ -906,7 +906,7 @@ main (int argc, char *argv[])
 	g_key_file_free (output_data);
 
 	if (!data)
-		fatal ("couldn't format auth dialog response: %s", err ? err->message : "");
+		fatal ("couldn't format auth dialog response: %s", egg_error_message (err));
 
 	write_all_output (data, length);
 	g_free (data);

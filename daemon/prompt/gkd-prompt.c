@@ -27,6 +27,7 @@
 
 #include "egg/egg-cleanup.h"
 #include "egg/egg-dh.h"
+#include "egg/egg-error.h"
 #include "egg/egg-hex.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-spawn.h"
@@ -256,8 +257,7 @@ on_io_completed (gpointer user_data)
 		if (!g_key_file_load_from_data (self->pv->output, self->pv->out_data->str,
 						self->pv->out_data->len, G_KEY_FILE_NONE, &error)) {
 			g_key_file_free (self->pv->output);
-			g_warning ("couldn't parse output from prompt: %s",
-				   error && error->message ? error->message : "");
+			g_warning ("couldn't parse output from prompt: %s", egg_error_message (error));
 			g_clear_error (&error);
 			mark_failed (self);
 		} else {
@@ -372,8 +372,7 @@ prepare_input_data (GkdPrompt *self)
 
 	self->pv->in_data = g_key_file_to_data (self->pv->input, &self->pv->in_length, &error);
 	if (!self->pv->in_data) {
-		g_warning ("couldn't encode data for prompt: %s",
-		           error && error->message ? error->message : "");
+		g_warning ("couldn't encode data for prompt: %s", egg_error_message (error));
 		g_clear_error (&error);
 		mark_failed (self);
 		return FALSE;
@@ -434,8 +433,7 @@ display_async_prompt (GkdPrompt *self)
 	                                                   &self->pv->pid, &callbacks, g_object_ref (self),
 	                                                   NULL, &error);
 	if (!self->pv->io_tag) {
-		g_warning ("couldn't spawn prompt tool: %s",
-		           error && error->message ? error->message : "");
+		g_warning ("couldn't spawn prompt tool: %s", egg_error_message (error));
 		g_clear_error (&error);
 		self->pv->pid = 0;
 		mark_failed (self);

@@ -29,6 +29,7 @@
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include "pkcs11/pkcs11i.h"
@@ -69,7 +70,7 @@ prepare_change_prompt (GkdSecretChange *self, GP11Object *collection, gboolean f
 
 	data = gp11_object_get_data (collection, CKA_LABEL, &n_data, &error);
 	if (!data) {
-		g_warning ("couldn't get label for collection: %s", error->message);
+		g_warning ("couldn't get label for collection: %s", egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -304,10 +305,10 @@ cleanup:
 		gp11_attributes_unref (attrs);
 
 	if (!result && error) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN)
+		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN))
 			dbus_set_error (derr, INTERNAL_ERROR_DENIED, "The original password was invalid");
 		else
-			g_warning ("failure occurred while changing password: %s", error->message);
+			g_warning ("failure occurred while changing password: %s", egg_error_message (error));
 	}
 
 	if (!result && !dbus_error_is_set (derr))

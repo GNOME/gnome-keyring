@@ -30,6 +30,7 @@
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include "pkcs11/pkcs11i.h"
@@ -303,7 +304,7 @@ gkd_secret_create_with_secret (GP11Attributes *attrs, GkdSecretSecret *master,
 	g_object_unref (cred);
 
 	if (collection == NULL) {
-		g_warning ("couldn't create collection: %s", error->message);
+		g_warning ("couldn't create collection: %s", egg_error_message (error));
 		g_clear_error (&error);
 		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't create new collection");
 		return FALSE;
@@ -314,7 +315,7 @@ gkd_secret_create_with_secret (GP11Attributes *attrs, GkdSecretSecret *master,
 	g_object_unref (collection);
 
 	if (!identifier) {
-		g_warning ("couldn't lookup new collection identifier: %s", error->message);
+		g_warning ("couldn't lookup new collection identifier: %s", egg_error_message (error));
 		g_clear_error (&error);
 		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't find new collection just created");
 		return FALSE;

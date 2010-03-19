@@ -37,6 +37,7 @@
 #include "gkd-ssh-agent-private.h"
 
 #include "egg/egg-buffer.h"
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #ifndef HAVE_SOCKLEN_T
@@ -285,7 +286,7 @@ gkd_ssh_agent_accept (void)
 	client->thread = g_thread_create (run_client_thread, &client->sock, TRUE, &error);
 	if (!client->thread) {
 		g_warning ("couldn't create thread SSH agent connection: %s",
-		           error && error->message ? error->message : "");
+		           egg_error_message (error));
 		g_slice_free (Client, client);
 		return;
 	}
@@ -382,7 +383,7 @@ gkd_ssh_agent_initialize_with_module (GP11Module *module)
 			/* Try and open a session */
 			session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, &error);
 			if (!session) {
-				g_warning ("couldn't create pkcs#11 session: %s", error->message);
+				g_warning ("couldn't create pkcs#11 session: %s", egg_error_message (error));
 				g_clear_error (&error);
 			}
 		}

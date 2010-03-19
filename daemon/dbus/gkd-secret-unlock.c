@@ -30,6 +30,7 @@
 #include "gkd-secret-unlock.h"
 #include "gkd-secret-util.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include "login/gkd-login.h"
@@ -63,7 +64,7 @@ attributes_for_collection (GP11Object *collection)
 
 	attrs = gp11_object_get (collection, &error, CKA_LABEL, CKA_ID, GP11_INVALID);
 	if (attrs == NULL) {
-		g_warning ("couldn't get attributes for collection: %s", error->message);
+		g_warning ("couldn't get attributes for collection: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -206,7 +207,8 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
 			gkd_prompt_set_unlock_options (prompt, template);
 			gp11_attributes_unref (template);
 		} else {
-			g_warning ("couldn't get credential template for collection: %s", error->message);
+			g_warning ("couldn't get credential template for collection: %s",
+			           egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
@@ -228,9 +230,9 @@ check_locked_collection (GP11Object *collection, gboolean *locked)
 
 	value = gp11_object_get_data (collection, CKA_G_LOCKED, &n_value, &error);
 	if (value == NULL) {
-		if (error->code != CKR_OBJECT_HANDLE_INVALID)
+		if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
 			g_warning ("couldn't check locked status of collection: %s",
-			           error->message);
+			           egg_error_message (error));
 		return FALSE;
 	}
 
@@ -269,7 +271,8 @@ attach_credential_to_login (GP11Object *collection, GP11Object *cred)
 		egg_secure_free (value);
 
 	} else {
-		g_warning ("couldn't read unlock credentials to save in login keyring: %s", error->message);
+		g_warning ("couldn't read unlock credentials to save in login keyring: %s",
+		           egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -634,10 +637,10 @@ gkd_secret_unlock_with_password (GP11Object *collection, const guchar *password,
 
 	cred = gp11_session_create_object_full (session, attrs, NULL, &error);
 	if (cred == NULL) {
-		if (error->code == CKR_PIN_INCORRECT) {
+		if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
 			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");
 		} else {
-			g_message ("couldn't create credential: %s", error->message);
+			g_message ("couldn't create credential: %s", egg_error_message (error));
 			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't use credentials");
 		}
 		g_clear_error (&error);

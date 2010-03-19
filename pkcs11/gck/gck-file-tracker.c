@@ -25,6 +25,8 @@
 
 #include "gck-file-tracker.h"
 
+#include "egg/egg-error.h"
+
 #include <glib.h>
 #include <glib/gstdio.h>
 
@@ -155,8 +157,8 @@ update_directory (GckFileTracker *self, gboolean force_all, GHashTable *checks)
 	dir = g_dir_open (self->directory_path, 0, &err);
 	if (dir == NULL) {
 		if (errno != ENOENT && errno != ENOTDIR && errno != EPERM)
-			g_message ("couldn't list keyrings at: %s: %s", self->directory_path, 
-		        	   err && err->message ? err->message : "");
+			g_message ("couldn't list keyrings at: %s: %s", self->directory_path,
+			           egg_error_message (err));
 		g_error_free (err);  
 		return;
 	}

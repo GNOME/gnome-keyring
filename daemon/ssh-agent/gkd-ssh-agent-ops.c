@@ -30,6 +30,7 @@
 #include "pkcs11/pkcs11g.h"
 #include "pkcs11/pkcs11i.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include <glib.h>
@@ -72,7 +73,7 @@ login_session (GP11Session *session)
 	/* Log in the session if necessary */
 	if (info->state == CKS_RO_PUBLIC_SESSION || info->state == CKS_RW_PUBLIC_SESSION) {
 		if (!gp11_session_login (session, CKU_USER, NULL, 0, &error)) {
-			g_message ("couldn't log in to session: %s", error->message);
+			g_message ("couldn't log in to session: %s", egg_error_message (error));
 			ret = FALSE;
 		}
 	}
@@ -134,7 +135,7 @@ search_keys_like_attributes (gpointer session_or_module, GP11Attributes *attrs, 
 	if (GP11_IS_MODULE (session_or_module)) {
 		if (!gp11_module_enumerate_objects_full (session_or_module, search, NULL,
 		                                         func, user_data, &error)) {
-			g_warning ("couldn't enumerate matching keys: %s", error->message);
+			g_warning ("couldn't enumerate matching keys: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 
@@ -143,7 +144,7 @@ search_keys_like_attributes (gpointer session_or_module, GP11Attributes *attrs, 
 		keys = gp11_session_find_objects_full (session_or_module, search, NULL, &error);
 
 		if (error) {
-			g_warning ("couldn't find matching keys: %s", error->message);
+			g_warning ("couldn't find matching keys: %s", egg_error_message (error));
 			g_clear_error (&error);
 
 		} else {
@@ -206,7 +207,7 @@ return_private_matching (GP11Object *object, gpointer user_data)
 	/* Get the key identifier and token */
 	attrs = gp11_object_get (object, &error, CKA_ID, CKA_TOKEN, GP11_INVALID);
 	if (error) {
-		g_warning ("error retrieving attributes for public key: %s", error->message);
+		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return TRUE;
 	}
@@ -264,7 +265,7 @@ load_identity_v1_attributes (GP11Object *object, gpointer user_data)
 	attrs = gp11_object_get (object, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
 	                         CKA_PUBLIC_EXPONENT, CKA_CLASS, CKA_MODULUS_BITS, GP11_INVALID);
 	if (error) {
-		g_warning ("error retrieving attributes for public key: %s", error->message);
+		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return TRUE;
 	}
@@ -295,7 +296,7 @@ load_identity_v2_attributes (GP11Object *object, gpointer user_data)
 	                         CKA_PUBLIC_EXPONENT, CKA_PRIME, CKA_SUBPRIME, CKA_BASE,
 	                         CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN, GP11_INVALID);
 	if (error) {
-		g_warning ("error retrieving attributes for public key: %s", error->message);
+		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return TRUE;
 	}
@@ -339,8 +340,8 @@ remove_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 		gp11_object_destroy (priv, &error);
 
 		if (error) {
-			if (error->code != CKR_OBJECT_HANDLE_INVALID)
-				g_warning ("couldn't remove ssh private key: %s", error->message);
+			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+				g_warning ("couldn't remove ssh private key: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
@@ -350,8 +351,8 @@ remove_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 		gp11_object_destroy (pub, &error);
 
 		if (error) {
-			if (error->code != CKR_OBJECT_HANDLE_INVALID)
-				g_warning ("couldn't remove ssh public key: %s", error->message);
+			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+				g_warning ("couldn't remove ssh public key: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
@@ -377,7 +378,7 @@ lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 	                                     GP11_INVALID);
 
 	if (error) {
-		g_warning ("couldn't search for authenticator objects: %s", error->message);
+		g_warning ("couldn't search for authenticator objects: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return;
 	}
@@ -386,7 +387,7 @@ lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 	for (l = objects; l; l = g_list_next (l)) {
 		gp11_object_destroy (l->data, &error);
 		if (error) {
-			g_warning ("couldn't delete authenticator object: %s", error->message);
+			g_warning ("couldn't delete authenticator object: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
@@ -412,7 +413,7 @@ remove_by_public_key (GP11Session *session, GP11Object *pub, gboolean exclude_v1
 	                         CKA_LABEL, CKA_ID, CKA_TOKEN,
 	                         GP11_INVALID);
 	if (error) {
-		g_warning ("couldn't lookup attributes for key: %s", error->message);
+		g_warning ("couldn't lookup attributes for key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return;
 	}
@@ -436,7 +437,7 @@ remove_by_public_key (GP11Session *session, GP11Object *pub, gboolean exclude_v1
 	gp11_attributes_unref (attrs);
 
 	if (error) {
-		g_warning ("couldn't search for related key: %s", error->message);
+		g_warning ("couldn't search for related key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return;
 	}
@@ -466,14 +467,14 @@ create_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pub
 
 	priv_key = gp11_session_create_object_full (session, priv, NULL, &error);
 	if (error) {
-		g_warning ("couldn't create session private key: %s", error->message);
+		g_warning ("couldn't create session private key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return FALSE;
 	}
 
 	pub_key = gp11_session_create_object_full (session, pub, NULL, &error);
 	if (error) {
-		g_warning ("couldn't create session public key: %s", error->message);
+		g_warning ("couldn't create session public key: %s", egg_error_message (error));
 		g_clear_error (&error);
 
 		/* Failed, so remove private as well */
@@ -501,8 +502,9 @@ destroy_replaced_keys (GP11Session *session, GList *keys)
 	for (l = keys; l; l = g_list_next (l)) {
 		gp11_object_set_session (l->data, session);
 		if (!gp11_object_destroy (l->data, &error)) {
-			if (error->code != CKR_OBJECT_HANDLE_INVALID)
-				g_warning ("couldn't delete a SSH key we replaced: %s", error->message);
+			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+				g_warning ("couldn't delete a SSH key we replaced: %s",
+				           egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
@@ -967,8 +969,8 @@ op_sign_request (GkdSshAgentCall *call)
 	g_free (hash);
 
 	if (error) {
-		if (error->code != CKR_FUNCTION_CANCELED)
-			g_message ("signing of the data failed: %s", error->message);
+		if (!g_error_matches (error, GP11_ERROR, CKR_FUNCTION_CANCELED))
+			g_message ("signing of the data failed: %s", egg_error_message (error));
 		g_clear_error (&error);
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
 		return TRUE;
@@ -1084,8 +1086,8 @@ op_v1_challenge (GkdSshAgentCall *call)
 	g_object_unref (key);
 
 	if (error) {
-		if (error->code != CKR_FUNCTION_CANCELED)
-			g_message ("decryption of the data failed: %s", error->message);
+		if (!g_error_matches (error, GP11_ERROR, CKR_FUNCTION_CANCELED))
+			g_message ("decryption of the data failed: %s", egg_error_message (error));
 		g_clear_error (&error);
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
 		return TRUE;

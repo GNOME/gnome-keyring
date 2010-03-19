@@ -29,6 +29,7 @@
 #include "gkd-dbus-util.h"
 
 #include "egg/egg-dh.h"
+#include "egg/egg-error.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -105,7 +106,7 @@ aes_create_dh_keys (GP11Session *session, const gchar *group,
 	gp11_attributes_unref (attrs);
 
 	if (ret == FALSE) {
-		g_warning ("couldn't generate dh key pair: %s", error->message);
+		g_warning ("couldn't generate dh key pair: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return FALSE;
 	}
@@ -135,7 +136,7 @@ aes_derive_key (GP11Session *session, GP11Object *priv_key,
 	gp11_attributes_unref (attrs);
 
 	if (!*aes_key) {
-		g_warning ("couldn't derive aes key from dh key pair: %s", error->message);
+		g_warning ("couldn't derive aes key from dh key pair: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return FALSE;
 	}
@@ -169,7 +170,7 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 	g_object_unref (pub);
 
 	if (output == NULL) {
-		g_warning ("couldn't get public key DH value: %s", error->message);
+		g_warning ("couldn't get public key DH value: %s", egg_error_message (error));
 		g_clear_error (&error);
 		g_object_unref (priv);
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
@@ -221,7 +222,7 @@ plain_negotiate (GkdSecretSession *self, DBusMessage *message)
 	                                  GP11_INVALID);
 
 	if (key == NULL) {
-		g_warning ("couldn't create null key: %s", error->message);
+		g_warning ("couldn't create null key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                      "Failed to create necessary plain keys.");
@@ -444,7 +445,7 @@ gkd_secret_session_begin (GkdSecretSession *self, const gchar *group,
 	g_object_unref (public);
 
 	if (output == NULL) {
-		g_warning ("couldn't get public key DH value: %s", error->message);
+		g_warning ("couldn't get public key DH value: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -597,11 +598,11 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GP11Object *item,
 	gp11_mechanism_unref (mech);
 
 	if (value == NULL) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN) {
+		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN)) {
 			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
 			                      "Cannot get secret of a locked object");
 		} else {
-			g_message ("couldn't wrap item secret: %s", error->message);
+			g_message ("couldn't wrap item secret: %s", egg_error_message (error));
 			dbus_set_error_const (derr, DBUS_ERROR_FAILED,
 			                      "Couldn't get item secret");
 		}
@@ -636,7 +637,7 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
 
 	attrs = gp11_object_get (item, &error, CKA_ID, CKA_G_COLLECTION, GP11_INVALID);
 	if (attrs == NULL) {
-		g_message ("couldn't get item attributes: %s", error->message);
+		g_message ("couldn't get item attributes: %s", egg_error_message (error));
 		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
 		g_clear_error (&error);
 		return FALSE;
@@ -656,16 +657,16 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
 	gp11_attributes_unref (attrs);
 
 	if (object == NULL) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN) {
+		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN)) {
 			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
 			                      "Cannot set secret of a locked item");
-		} else if (error->code == CKR_WRAPPED_KEY_INVALID ||
-		           error->code == CKR_WRAPPED_KEY_LEN_RANGE ||
-		           error->code == CKR_MECHANISM_PARAM_INVALID) {
+		} else if (g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_INVALID) ||
+		           g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
+		           g_error_matches (error, GP11_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
 			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
 			                      "The secret was transferred or encrypted in an invalid way.");
 		} else {
-			g_message ("couldn't unwrap item secret: %s", error->message);
+			g_message ("couldn't unwrap item secret: %s", egg_error_message (error));
 			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
 		}
 		g_clear_error (&error);
@@ -716,15 +717,15 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GP11Session *sessi
 		gp11_attributes_unref (alloc);
 
 	if (object == NULL) {
-		if (error->code == CKR_PIN_INCORRECT) {
+		if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
 			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");
-		} else if (error->code == CKR_WRAPPED_KEY_INVALID ||
-		    error->code == CKR_WRAPPED_KEY_LEN_RANGE ||
-		    error->code == CKR_MECHANISM_PARAM_INVALID) {
+		} else if (g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_INVALID) ||
+		           g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
+		           g_error_matches (error, GP11_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
 			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
 			                      "The secret was transferred or encrypted in an invalid way.");
 		} else {
-			g_message ("couldn't unwrap credential: %s", error->message);
+			g_message ("couldn't unwrap credential: %s", egg_error_message (error));
 			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't use credentials");
 		}
 		g_clear_error (&error);

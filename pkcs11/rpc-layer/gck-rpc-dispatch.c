@@ -30,6 +30,7 @@
 #include "pkcs11/pkcs11g.h"
 #include "pkcs11/pkcs11i.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-unix-credentials.h"
 
 #include <sys/types.h>
@@ -2223,7 +2224,7 @@ gck_rpc_layer_accept (void)
 	
 	ds->thread = g_thread_create (run_dispatch_thread, &(ds->socket), TRUE, &error);
 	if (!ds->thread) {
-		gck_rpc_warn ("couldn't start thread: %s", error && error->message ? error->message : "");
+		gck_rpc_warn ("couldn't start thread: %s", egg_error_message (error));
 		close (new_fd);
 		free (ds);
 		return;

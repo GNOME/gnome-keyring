@@ -23,6 +23,7 @@
 
 #include "gkd-login.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include "pkcs11/gkd-pkcs11.h"
@@ -117,8 +118,8 @@ lookup_login_session (GP11Module *module)
 	g_return_val_if_fail (slot, NULL);
 
 	session = open_and_login_session (slot, CKU_USER, &error);
-	if (session == NULL) {
-		g_warning ("couldn't open pkcs11 session for login: %s", error->message);
+	if (error) {
+		g_warning ("couldn't open pkcs11 session for login: %s", egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -144,7 +145,7 @@ lookup_login_keyring (GP11Session *session)
 	                                     GP11_INVALID);
 
 	if (error) {
-		g_warning ("couldn't search for login keyring: %s", error->message);
+		g_warning ("couldn't search for login keyring: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -238,17 +239,17 @@ unlock_or_create_login (GP11Module *module, const gchar *master)
 
 	/* Failure, bad password? */
 	if (cred == NULL) {
-		if (login && error->code == CKR_PIN_INCORRECT)
+		if (login && g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT))
 			note_that_unlock_failed ();
 		else
-			g_warning ("couldn't create login credential: %s", error->message);
+			g_warning ("couldn't create login credential: %s", egg_error_message (error));
 		g_clear_error (&error);
 
 	/* Non login keyring, create it */
 	} else if (!login) {
 		login = create_login_keyring (session, cred, &error);
-		if (login == NULL) {
-			g_warning ("couldn't create login keyring: %s", error->message);
+		if (login == NULL && error) {
+			g_warning ("couldn't create login keyring: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 
@@ -293,8 +294,9 @@ init_pin_for_uninitialized_slots (GP11Module *module, const gchar *master)
 					                         "serial-number", info->serial_number,
 					                         NULL);
 				} else {
-					if (error->code != CKR_FUNCTION_NOT_SUPPORTED)
-						g_warning ("couldn't initialize slot with master password: %s", error->message);
+					if (!g_error_matches (error, GP11_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
+						g_warning ("couldn't initialize slot with master password: %s",
+						           egg_error_message (error));
 					g_clear_error (&error);
 				}
 				g_object_unref (session);
@@ -348,19 +350,21 @@ change_or_create_login (GP11Module *module, const gchar *original, const gchar *
 	/* Create the new credential we'll be changing to */
 	mcred = create_credential (session, NULL, master, &error);
 	if (mcred == NULL) {
-		g_warning ("couldn't create new login credential: %s", error->message);
+		g_warning ("couldn't create new login credential: %s", egg_error_message (error));
 		g_clear_error (&error);
 
 	/* Create original credentials */
 	} else if (login) {
 		ocred = create_credential (session, login, original, &error);
 		if (ocred == NULL) {
-			if (error->code == CKR_PIN_INCORRECT) {
+			if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
 				g_message ("couldn't change login master password, "
-				           "original password was wrong: %s", error->message);
+				           "original password was wrong: %s",
+				           egg_error_message (error));
 				note_that_unlock_failed ();
 			} else {
-				g_warning ("couldn't create original login credential: %s", error->message);
+				g_warning ("couldn't create original login credential: %s",
+				           egg_error_message (error));
 			}
 			g_clear_error (&error);
 		}
@@ -370,7 +374,7 @@ change_or_create_login (GP11Module *module, const gchar *original, const gchar *
 	if (!login && mcred) {
 		login = create_login_keyring (session, mcred, &error);
 		if (login == NULL) {
-			g_warning ("couldn't create login keyring: %s", error->message);
+			g_warning ("couldn't create login keyring: %s", egg_error_message (error));
 			g_clear_error (&error);
 		} else {
 			success = TRUE;
@@ -381,7 +385,7 @@ change_or_create_login (GP11Module *module, const gchar *original, const gchar *
 		if (!gp11_object_set (login, &error,
 		                      CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (mcred),
 		                      GP11_INVALID)) {
-			g_warning ("couldn't change login master password: %s", error->message);
+			g_warning ("couldn't change login master password: %s", egg_error_message (error));
 			g_clear_error (&error);
 		} else {
 			success = TRUE;
@@ -432,8 +436,10 @@ set_pin_for_any_slots (GP11Module *module, const gchar *original, const gchar *m
 					                         "serial-number", info->serial_number,
 					                         NULL);
 				} else {
-					if (error->code != CKR_PIN_INCORRECT && error->code != CKR_FUNCTION_NOT_SUPPORTED)
-						g_warning ("couldn't change slot master password: %s", error->message);
+					if (!g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT) &&
+					    !g_error_matches (error, GP11_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
+						g_warning ("couldn't change slot master password: %s",
+						           egg_error_message (error));
 					g_clear_error (&error);
 				}
 				g_object_unref (session);
@@ -537,7 +543,7 @@ find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
 	                                     GP11_INVALID);
 
 	if (!search) {
-		g_warning ("couldn't create search for login keyring: %s", error->message);
+		g_warning ("couldn't create search for login keyring: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -549,7 +555,7 @@ find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
 	g_object_unref (search);
 
 	if (data == NULL) {
-		g_warning ("couldn't read search in login keyring: %s", error->message);
+		g_warning ("couldn't read search in login keyring: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -613,7 +619,7 @@ gkd_login_attach_secret (const gchar *label, const gchar *secret,
 	}
 
 	if (error != NULL) {
-		g_warning ("couldn't store secret in login keyring: %s", error->message);
+		g_warning ("couldn't store secret in login keyring: %s", egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -684,8 +690,9 @@ gkd_login_remove_secret (const gchar *first, ...)
 	item = find_login_keyring_item (session, &fields);
 	if (item != NULL) {
 		if (!gp11_object_destroy (item, &error)) {
-			if (error->code != CKR_OBJECT_HANDLE_INVALID)
-				g_warning ("couldn't remove stored secret from login keyring: %s", error->message);
+			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+				g_warning ("couldn't remove stored secret from login keyring: %s",
+				           egg_error_message (error));
 			g_clear_error (&error);
 		}
 		g_object_unref (item);

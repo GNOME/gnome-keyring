@@ -25,6 +25,7 @@
 #include "gcr-types.h"
 #include "gcr-internal.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
@@ -127,7 +128,7 @@ _gcr_initialize (void)
 			all_modules = g_list_prepend (all_modules, module);
 		} else { 
 			g_message ("couldn't initialize PKCS#11 module: %s",
-			           error && error->message ? error->message : "");
+			           egg_error_message (error));
 		}
 
 		g_once_init_leave (&gcr_initialized, 1);

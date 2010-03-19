@@ -36,6 +36,7 @@
 #include "gkd-secret-unlock.h"
 #include "gkd-secret-util.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-unix-credentials.h"
 
 #include "gp11/gp11.h"
@@ -120,10 +121,8 @@ store_default (GkdSecretService *self)
 		return;
 
 	path = default_path ();
-	if (!g_file_set_contents (path, identifier, -1, &error)) {
-		g_message ("couldn't store default keyring: %s",
-		           error->message ? error->message : "");
-	}
+	if (!g_file_set_contents (path, identifier, -1, &error))
+		g_message ("couldn't store default keyring: %s", egg_error_message (error));
 	g_free (path);
 }
 
@@ -1224,7 +1223,7 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 		                                                      NULL, NULL, &error);
 		if (!client->pkcs11_session) {
 			g_warning ("couldn't open pkcs11 session for secret service: %s",
-			           error->message);
+			           egg_error_message (error));
 			g_clear_error (&error);
 			return NULL;
 		}
@@ -1235,7 +1234,7 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 		gp11_token_info_free (info);
 		if (login && !gp11_session_login (client->pkcs11_session, CKU_USER, NULL, 0, &error)) {
 			g_warning ("couldn't log in to pkcs11 session for secret service: %s",
-			           error->message);
+			           egg_error_message (error));
 			g_clear_error (&error);
 			g_object_unref (client->pkcs11_session);
 			client->pkcs11_session = NULL;

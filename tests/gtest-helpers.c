@@ -35,6 +35,7 @@
 
 #include "gtest-helpers.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include "pkcs11/pkcs11.h"
@@ -150,7 +151,7 @@ test_data_read (const gchar *basename, gsize *n_result)
 	file = test_data_filename (basename);
 	if (!g_file_get_contents (file, &result, n_result, &error)) {
 		g_warning ("could not read test data file: %s: %s", file,
-		           error && error->message ? error->message : "");
+		           egg_error_message (error));
 		g_assert_not_reached ();
 	}
 

@@ -24,6 +24,8 @@
 #include "gkd-secret-lock.h"
 #include "gkd-secret-service.h"
 
+#include "egg/egg-error.h"
+
 #include "pkcs11/pkcs11i.h"
 
 #include <gp11/gp11.h>
@@ -46,7 +48,7 @@ gkd_secret_lock (GP11Object *collection, DBusError *derr)
 
 	if (error != NULL) {
 		g_object_unref (session);
-		g_warning ("couldn't search for credential objects: %s", error->message);
+		g_warning ("couldn't search for credential objects: %s", egg_error_message (error));
 		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't lock collection");
 		g_clear_error (&error);
 		return FALSE;
@@ -56,7 +58,7 @@ gkd_secret_lock (GP11Object *collection, DBusError *derr)
 		cred = GP11_OBJECT (l->data);
 		gp11_object_set_session (cred, session);
 		if (!gp11_object_destroy (cred, &error)) {
-			g_warning ("couldn't destroy credential object: %s", error->message);
+			g_warning ("couldn't destroy credential object: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}

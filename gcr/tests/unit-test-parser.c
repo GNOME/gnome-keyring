@@ -25,6 +25,7 @@
 
 #include "run-auto-test.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include "gcr/gcr-parser.h"
@@ -129,7 +130,7 @@ DEFINE_TEST(parse_all)
 		result = gcr_parser_parse_data (parser, contents, len, &err);
 		if (!result) { 
 			g_warning ("couldn't parse file data: %s: %s", 
-			           filename, err && err->message ? err->message : "");
+			           filename, egg_error_message (err));
 			g_error_free (err);
 			g_assert (FALSE);
 		}

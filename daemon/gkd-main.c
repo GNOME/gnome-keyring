@@ -31,6 +31,7 @@
 #include "dbus/gkd-dbus.h"
 
 #include "egg/egg-cleanup.h"
+#include "egg/egg-error.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
@@ -122,7 +123,7 @@ parse_arguments (int *argc, char** argv[])
 	g_option_context_add_main_entries (context, option_entries, GETTEXT_PACKAGE);
 
 	if (!g_option_context_parse (context, argc, argv, &err)) {
-		g_printerr ("gnome-keyring-daemon: %s", err && err->message ? err->message : "");
+		g_printerr ("gnome-keyring-daemon: %s", egg_error_message (err));
 		g_clear_error (&err);
 	}
 

@@ -25,6 +25,7 @@
 #include "gkd-ssh-agent.h"
 #include "gkd-ssh-agent-private.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
 #include "gp11/gp11.h"
@@ -98,7 +99,7 @@ main(int argc, char *argv[])
 
 	module = gp11_module_initialize (argv[1], argc > 2 ? argv[2] : NULL, &error);
 	if (!module) {
-		g_message ("couldn't load pkcs11 module: %s", error->message);
+		g_message ("couldn't load pkcs11 module: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return 1;
 	}

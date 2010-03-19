@@ -34,6 +34,7 @@
 #include "gck/gck-serializable.h"
 #include "gck/gck-util.h"
 
+#include "egg/egg-error.h"
 #include "egg/egg-hex.h"
 
 #include "pkcs11/pkcs11i.h"
@@ -530,7 +531,7 @@ data_file_entry_added (GckDataFile *store, const gchar *identifier, GckUserStora
 	
 	if (ret == FALSE) {
 		g_warning ("couldn't read file in user store: %s: %s", identifier, 
-		           error && error->message ? error->message : "");
+		           egg_error_message (error));
 		g_clear_error (&error);
 		return;
 	}
@@ -624,7 +625,7 @@ relock_object (GckUserStorage *self, GckTransaction *transaction, const gchar *p
 	/* Read in the data for the object */
 	if (!g_file_get_contents (path, (gchar**)&data, &n_data, &error)) {
 		g_message ("couldn't load file in user store in order to relock: %s: %s", identifier,
-		           error && error->message ? error->message : "");
+		           egg_error_message (error));
 		g_clear_error (&error);
 		g_object_unref (object);
 		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);

@@ -26,6 +26,8 @@
 #include "gkd-dbus-util.h"
 #include "gkd-secret-types.h"
 
+#include "egg/egg-error.h"
+
 #include <string.h>
 
 GType
@@ -71,7 +73,7 @@ gkd_dbus_introspect_handle (DBusMessage *message, const gchar *type)
 
 		if (error != NULL) {
 			g_warning ("couldn't load introspect data file: %s: %s",
-			           filename, error->message ? error->message : "");
+			           filename, egg_error_message (error));
 			g_clear_error (&error);
 			return NULL;
 		}

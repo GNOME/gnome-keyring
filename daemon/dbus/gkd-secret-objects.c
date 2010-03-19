@@ -32,6 +32,8 @@
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
+#include "egg/egg-error.h"
+
 #include "pkcs11/pkcs11i.h"
 
 #include <string.h>
@@ -110,7 +112,7 @@ iter_append_item_path (const gchar *base, GP11Object *object, DBusMessageIter *i
 	if (base == NULL) {
 		identifier = gp11_object_get_data (object, CKA_G_COLLECTION, &n_identifier, &error);
 		if (!identifier) {
-			g_warning ("couldn't get item collection identifier: %s", error->message);
+			g_warning ("couldn't get item collection identifier: %s", egg_error_message (error));
 			g_clear_error (&error);
 			return;
 		}
@@ -121,7 +123,7 @@ iter_append_item_path (const gchar *base, GP11Object *object, DBusMessageIter *i
 
 	identifier = gp11_object_get_data (object, CKA_ID, &n_identifier, &error);
 	if (identifier == NULL) {
-		g_warning ("couldn't get item identifier: %s", error->message);
+		g_warning ("couldn't get item identifier: %s", egg_error_message (error));
 		g_clear_error (&error);
 	} else {
 		path = gkd_secret_util_build_path (base, identifier, n_identifier);
@@ -163,7 +165,7 @@ iter_append_collection_paths (GList *collections, DBusMessageIter *iter)
 
 		identifier = gp11_object_get_data (l->data, CKA_ID, &n_identifier, &error);
 		if (identifier == NULL) {
-			g_warning ("couldn't get collection identifier: %s", error->message);
+			g_warning ("couldn't get collection identifier: %s", egg_error_message (error));
 			g_clear_error (&error);
 			continue;
 		}
@@ -198,7 +200,7 @@ object_property_get (GP11Object *object, DBusMessage *message,
 	if (error != NULL) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't retrieve '%s' property: %s",
-		                                       prop_name, error->message);
+		                                       prop_name, egg_error_message (error));
 		g_clear_error (&error);
 		return reply;
 	}
@@ -244,13 +246,13 @@ object_property_set (GP11Object *object, DBusMessage *message,
 	gp11_attributes_unref (attrs);
 
 	if (error != NULL) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN)
+		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN))
 			reply = dbus_message_new_error (message, SECRET_ERROR_IS_LOCKED,
 			                                "Cannot set property on a locked object");
 		else
 			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 			                                       "Couldn't set '%s' property: %s",
-			                                       prop_name, error->message);
+			                                       prop_name, egg_error_message (error));
 		g_clear_error (&error);
 		return reply;
 	}
@@ -330,7 +332,7 @@ item_property_getall (GP11Object *object, DBusMessage *message)
 	if (error != NULL)
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                      "Couldn't retrieve properties: %s",
-		                                      error->message);
+		                                      egg_error_message (error));
 
 	reply = dbus_message_new_method_return (message);
 
@@ -352,13 +354,13 @@ item_method_delete (GkdSecretObjects *self, GP11Object *object, DBusMessage *mes
 		return NULL;
 
 	if (!gp11_object_destroy (object, &error)) {
-		if (error->code == CKR_USER_NOT_LOGGED_IN)
+		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN))
 			reply = dbus_message_new_error_printf (message, SECRET_ERROR_IS_LOCKED,
 			                                       "Cannot delete a locked item");
 		else
 			reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 			                                       "Couldn't delete collection: %s",
-			                                       error->message);
+			                                       egg_error_message (error));
 		g_clear_error (&error);
 		return reply;
 	}
@@ -474,8 +476,8 @@ item_cleanup_search_results (GP11Session *session, GList *items,
 		gp11_object_set_session (l->data, session);
 		value = gp11_object_get_data (l->data, CKA_G_LOCKED, &n_value, &error);
 		if (value == NULL) {
-			if (error->code != CKR_OBJECT_HANDLE_INVALID)
-				g_warning ("couldn't check if item is locked: %s", error->message);
+			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+				g_warning ("couldn't check if item is locked: %s", egg_error_message (error));
 			g_clear_error (&error);
 
 		/* Is not locked */
@@ -573,7 +575,7 @@ collection_property_getall (GkdSecretObjects *self, GP11Object *object, DBusMess
 	if (error != NULL)
 		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                      "Couldn't retrieve properties: %s",
-		                                      error->message);
+		                                      egg_error_message (error));
 
 	reply = dbus_message_new_method_return (message);
 
@@ -623,7 +625,7 @@ collection_find_matching_item (GkdSecretObjects *self, GP11Session *session,
 	gp11_attributes_unref (attrs);
 
 	if (error != NULL) {
-		g_warning ("couldn't search for matching item: %s", error->message);
+		g_warning ("couldn't search for matching item: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -731,12 +733,12 @@ collection_method_create_item (GkdSecretObjects *self, GP11Object *object, DBusM
 cleanup:
 	if (error) {
 		if (!reply) {
-			if (error->code == CKR_USER_NOT_LOGGED_IN)
+			if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN))
 				reply = dbus_message_new_error_printf (message, SECRET_ERROR_IS_LOCKED,
 				                                       "Cannot create an item in a locked collection");
 			else
 				reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-				                                       "Couldn't create item: %s", error->message);
+				                                       "Couldn't create item: %s", egg_error_message (error));
 		}
 		g_clear_error (&error);
 	}
@@ -771,7 +773,7 @@ collection_method_delete (GkdSecretObjects *self, GP11Object *object, DBusMessag
 	if (!gp11_object_destroy (object, &error)) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't delete collection: %s",
-		                                       error->message);
+		                                       egg_error_message (error));
 		g_clear_error (&error);
 		return reply;
 	}
@@ -987,7 +989,7 @@ gkd_secret_objects_dispatch (GkdSecretObjects *self, DBusMessage *message)
 	g_free (i_ident);
 
 	if (error != NULL) {
-		g_warning ("couldn't lookup object: %s: %s", path, error->message);
+		g_warning ("couldn't lookup object: %s: %s", path, egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -1033,7 +1035,7 @@ gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *calle
 	g_free (identifier);
 
 	if (error != NULL) {
-		g_warning ("couldn't lookup collection: %s: %s", path, error->message);
+		g_warning ("couldn't lookup collection: %s: %s", path, egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -1078,7 +1080,7 @@ gkd_secret_objects_lookup_item (GkdSecretObjects *self, const gchar *caller,
 	g_free (collection);
 
 	if (error != NULL) {
-		g_warning ("couldn't lookup item: %s: %s", path, error->message);
+		g_warning ("couldn't lookup item: %s: %s", path, egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -1123,7 +1125,7 @@ gkd_secret_objects_append_item_paths (GkdSecretObjects *self, const gchar *base,
 		iter_append_item_paths (base, items, &variant);
 		dbus_message_iter_close_container (iter, &variant);
 	} else {
-		g_warning ("couldn't lookup items in '%s' collection: %s", identifier, error->message);
+		g_warning ("couldn't lookup items in '%s' collection: %s", identifier, egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -1152,7 +1154,7 @@ gkd_secret_objects_append_collection_paths (GkdSecretObjects *self, DBusMessageI
 	                                   GP11_INVALID);
 
 	if (error != NULL) {
-		g_warning ("couldn't lookup collections: %s", error->message);
+		g_warning ("couldn't lookup collections: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return;
 	}
@@ -1217,7 +1219,7 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	if (error != NULL) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't search for items: %s",
-		                                       error->message);
+		                                       egg_error_message (error));
 		g_clear_error (&error);
 		return reply;
 	}
@@ -1231,7 +1233,7 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	if (error != NULL) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't retrieve matched items: %s",
-		                                       error->message);
+		                                       egg_error_message (error));
 		g_clear_error (&error);
 		return reply;
 	}

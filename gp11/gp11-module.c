@@ -1172,7 +1172,7 @@ gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs,
 			g_return_val_if_fail (error != NULL, FALSE);
 			
 			/* Ignore these errors when enumerating */
-			if (error->code == CKR_USER_PIN_NOT_INITIALIZED) {
+			if (g_error_matches (error, GP11_ERROR, CKR_USER_PIN_NOT_INITIALIZED)) {
 				g_clear_error (&error);
 				
 			} else {

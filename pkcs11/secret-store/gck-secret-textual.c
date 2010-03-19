@@ -30,8 +30,9 @@
 #include "gck-secret-item.h"
 #include "gck-secret-textual.h"
 
-#include "egg/egg-secure-memory.h"
+#include "egg/egg-error.h"
 #include "egg/egg-hex.h"
+#include "egg/egg-secure-memory.h"
 
 #include "gck/gck-secret.h"
 
@@ -424,7 +425,7 @@ gck_secret_textual_write (GckSecretCollection *collection, GckSecretData *sdata,
 	g_key_file_free (file);
 
 	if (!*data) {
-		g_warning ("couldn't generate textual keyring file: %s", err->message);
+		g_warning ("couldn't generate textual keyring file: %s", egg_error_message (err));
 		return GCK_DATA_FAILURE;
 	}
 

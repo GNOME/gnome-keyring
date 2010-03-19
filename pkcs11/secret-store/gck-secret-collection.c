@@ -27,6 +27,8 @@
 #include "gck-secret-item.h"
 #include "gck-secret-textual.h"
 
+#include "egg/egg-error.h"
+
 #include "gck/gck-attributes.h"
 #include "gck/gck-credential.h"
 #include "gck/gck-secret.h"
@@ -73,7 +75,7 @@ load_collection_and_secret_data (GckSecretCollection *self, GckSecretData *sdata
 	/* Read in the keyring */
 	if (!g_file_get_contents (path, (gchar**)&data, &n_data, &error)) {
 		g_message ("problem reading keyring: %s: %s",
-		           path, error && error->message ? error->message : "");
+		           path, egg_error_message (error));
 		g_clear_error (&error);
 		return GCK_DATA_FAILURE;
 	}

@@ -23,6 +23,8 @@
 
 #include "gck-timer.h"
 
+#include "egg/egg-error.h"
+
 #include <glib.h>
 
 struct _GckTimer {
@@ -116,7 +118,7 @@ gck_timer_initialize (void)
 				timer_cond = g_cond_new ();
 			} else {
 				g_warning ("could not create timer thread: %s", 
-				           error && error->message ? error->message : "");
+				           egg_error_message (error));
 			}
 		}
 

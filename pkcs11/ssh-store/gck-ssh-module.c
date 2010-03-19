@@ -25,6 +25,8 @@
 #include "gck-ssh-private-key.h"
 #include "gck-ssh-public-key.h"
 
+#include "egg/egg-error.h"
+
 #include "gck/gck-file-tracker.h"
 
 #include <string.h>
@@ -130,8 +132,7 @@ file_load (GckFileTracker *tracker, const gchar *path, GckSshModule *self)
 	/* Parse the data into the key */
 	if (!gck_ssh_private_key_parse (key, path, private_path, &error)) {
 		if (error) {
-			g_message ("couldn't parse data: %s: %s", path,
-			           error->message ? error->message : "");
+			g_message ("couldn't parse data: %s: %s", path, egg_error_message (error));
 			g_clear_error (&error);
 		}
 		gck_object_expose (GCK_OBJECT (key), FALSE);
