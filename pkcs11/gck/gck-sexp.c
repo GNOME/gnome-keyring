@@ -249,7 +249,6 @@ gck_sexp_get_childv (gcry_sexp_t sexp, va_list va)
 	const char *name;
 
 	g_assert (sexp);
-	g_assert (va);
 
 	for(;;) {
 		name = va_arg (va, const char*);
