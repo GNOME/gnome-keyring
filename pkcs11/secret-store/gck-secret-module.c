@@ -42,10 +42,7 @@ struct _GckSecretModule {
 	GckFileTracker *tracker;
 	GHashTable *collections;
 	gchar *directory;
-
-	/* Special 'session' keyring */
 	GckCredential *session_credential;
-	GckSecretCollection *session_collection;
 };
 
 static const CK_SLOT_INFO gck_secret_module_slot_info = {
@@ -301,42 +298,52 @@ gck_secret_module_real_refresh_token (GckModule *base)
 }
 
 static void
+gck_secret_module_real_add_object (GckModule *module, GckTransaction *transaction,
+                                   GckObject *object)
+{
+	GckSecretModule *self = GCK_SECRET_MODULE (module);
+	GckSecretCollection *collection;
+	const gchar *identifier;
+	gchar *filename;
+
+	g_return_if_fail (!gck_transaction_get_failed (transaction));
+
+	if (GCK_IS_SECRET_COLLECTION (object)) {
+		collection = GCK_SECRET_COLLECTION (object);
+
+		/* Setup a filename for this collection */
+		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
+		filename = identifier_to_new_filename (self, identifier);
+		gck_secret_collection_set_filename (collection, filename);
+		g_free (filename);
+
+		add_collection (self, transaction, collection);
+	}
+}
+
+static void
 gck_secret_module_real_store_object (GckModule *module, GckTransaction *transaction,
                                      GckObject *object)
 {
 	GckSecretModule *self = GCK_SECRET_MODULE (module);
 	GckSecretCollection *collection = NULL;
-	const gchar *identifier;
-	gchar *filename;
 
-	/* Storing an item */
+	/* Store the item's collection */
 	if (GCK_IS_SECRET_ITEM (object)) {
 		collection = gck_secret_item_get_collection (GCK_SECRET_ITEM (object));
 		g_return_if_fail (GCK_IS_SECRET_COLLECTION (collection));
+		gck_module_store_token_object (GCK_MODULE (self), transaction, GCK_OBJECT (collection));
 
 	/* Storing a collection */
 	} else if (GCK_IS_SECRET_COLLECTION (object)) {
 		collection = GCK_SECRET_COLLECTION (object);
-	}
+		gck_secret_collection_save (collection, transaction);
 
 	/* No other kind of token object */
-	if (collection == NULL) {
+	} else {
 		g_warning ("can't store object of type '%s' on secret token", G_OBJECT_TYPE_NAME (object));
 		gck_transaction_fail (transaction, CKR_GENERAL_ERROR);
-		return;
 	}
-
-	/* Setup a filename for this collection */
-	if (!gck_secret_collection_get_filename (collection)) {
-		identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (collection));
-		filename = identifier_to_new_filename (self, identifier);
-		gck_secret_collection_set_filename (collection, filename);
-		g_free (filename);
-	}
-
-	gck_secret_collection_save (collection, transaction);
-	if (!gck_transaction_get_failed (transaction))
-		add_collection (self, transaction, collection);
 }
 
 static void
@@ -349,11 +356,6 @@ gck_secret_module_real_remove_object (GckModule *module, GckTransaction *transac
 	/* Ignore the session keyring credentials */
 	if (self->session_credential != NULL &&
 	    GCK_OBJECT (self->session_credential) == object)
-		return;
-
-	/* Ignore the session keyring collection */
-	if (self->session_collection != NULL &&
-	    GCK_OBJECT (self->session_collection) == object)
 		return;
 
 	/* Removing an item */
@@ -384,6 +386,7 @@ gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam 
 {
 	GckSecretModule *self = GCK_SECRET_MODULE (G_OBJECT_CLASS (gck_secret_module_parent_class)->constructor(type, n_props, props));
 	GckManager *manager;
+	GckObject *collection;
 	CK_RV rv;
 
 	g_return_val_if_fail (self, NULL);
@@ -401,22 +404,27 @@ gck_secret_module_constructor (GType type, guint n_props, GObjectConstructParam 
 
 	manager = gck_module_get_manager (GCK_MODULE (self));
 
+	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+	                           "module", self,
+	                           "identifier", "session",
+	                           "manager", manager,
+	                           "transient", TRUE,
+	                           NULL);
+
 	/* Create the 'session' keyring, which is not stored to disk */
-	self->session_collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
-	                                         "module", self,
-	                                         "identifier", "session",
-	                                         "manager", manager,
-	                                         NULL);
-	gck_object_expose (GCK_OBJECT (self->session_collection), TRUE);
+	g_return_val_if_fail (gck_object_is_transient (collection), NULL);
+	gck_module_add_token_object (GCK_MODULE (self), NULL, collection);
+	gck_object_expose (collection, TRUE);
 
 	/* Unlock the 'session' keyring */
-	rv = gck_credential_create (GCK_MODULE (self), manager, GCK_OBJECT (self->session_collection),
+	rv = gck_credential_create (GCK_MODULE (self), manager, GCK_OBJECT (collection),
 	                            NULL, 0, &self->session_credential);
 	if (rv == CKR_OK)
 		gck_object_expose (GCK_OBJECT (self->session_credential), TRUE);
 	else
 		g_warning ("couldn't unlock the 'session' keyring");
 
+	g_object_unref (collection);
 	return G_OBJECT (self);
 }
 
@@ -437,10 +445,6 @@ gck_secret_module_dispose (GObject *obj)
 	if (self->tracker)
 		g_object_unref (self->tracker);
 	self->tracker = NULL;
-
-	if (self->session_collection)
-		g_object_unref (self->session_collection);
-	self->session_collection = NULL;
 
 	if (self->session_credential)
 		g_object_unref (self->session_credential);
@@ -465,7 +469,6 @@ gck_secret_module_finalize (GObject *obj)
 	self->directory = NULL;
 
 	g_assert (!self->session_credential);
-	g_assert (!self->session_collection);
 
 	G_OBJECT_CLASS (gck_secret_module_parent_class)->finalize (obj);
 }
@@ -484,8 +487,9 @@ gck_secret_module_class_init (GckSecretModuleClass *klass)
 	module_class->get_token_info = gck_secret_module_real_get_token_info;
 	module_class->parse_argument = gck_secret_module_real_parse_argument;
 	module_class->refresh_token = gck_secret_module_real_refresh_token;
-	module_class->remove_token_object = gck_secret_module_real_remove_object;
+	module_class->add_token_object = gck_secret_module_real_add_object;
 	module_class->store_token_object = gck_secret_module_real_store_object;
+	module_class->remove_token_object = gck_secret_module_real_remove_object;
 }
 
 /* ---------------------------------------------------------------------------------------

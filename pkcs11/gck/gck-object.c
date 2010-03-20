@@ -41,7 +41,8 @@ enum {
 	PROP_MODULE,
 	PROP_MANAGER,
 	PROP_STORE,
-	PROP_UNIQUE
+	PROP_UNIQUE,
+	PROP_TRANSIENT
 };
 
 enum {
@@ -201,6 +202,13 @@ find_credential (GckCredential *cred, GckObject *object, gpointer user_data)
 	return TRUE;
 }
 
+static void
+mark_object_transient (GckObject *self)
+{
+	if (!self->pv->transient)
+		self->pv->transient = g_slice_new0 (GckObjectTransient);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -337,7 +345,7 @@ gck_object_real_create_attributes (GckObject *self, GckSession *session,
 	                        CKA_G_DESTRUCT_IDLE, CKA_GNOME_TRANSIENT, G_MAXULONG);
 
 	if (transient) {
-		self->pv->transient = g_slice_new0 (GckObjectTransient);
+		mark_object_transient (self);
 		self->pv->transient->timed_after = after;
 		self->pv->transient->timed_idle = idle;
 	}
@@ -481,6 +489,11 @@ gck_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!self->pv->unique);
 		self->pv->unique = g_value_dup_string (value);
 		break;
+	case PROP_TRANSIENT:
+		g_return_if_fail (!self->pv->transient);
+		if (g_value_get_boolean (value))
+			mark_object_transient (self);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -509,6 +522,9 @@ gck_object_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	case PROP_UNIQUE:
 		g_value_set_string (value, gck_object_get_unique (self));
+		break;
+	case PROP_TRANSIENT:
+		g_value_set_boolean (value, gck_object_is_transient (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -556,7 +572,11 @@ gck_object_class_init (GckObjectClass *klass)
 	g_object_class_install_property (gobject_class, PROP_UNIQUE,
 	           g_param_spec_string ("unique", "Unique Identifer", "Machine unique identifier", 
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	
+
+	g_object_class_install_property (gobject_class, PROP_TRANSIENT,
+	           g_param_spec_boolean ("transient", "Transient Object", "Transient Object",
+	                                 FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
 	signals[EXPOSE_OBJECT] = g_signal_new ("expose-object", GCK_TYPE_OBJECT,
 	                                       G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GckObjectClass, expose_object),
 		                               NULL, NULL, g_cclosure_marshal_VOID__BOOLEAN, 
