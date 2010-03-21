@@ -271,8 +271,9 @@ attach_credential_to_login (GP11Object *collection, GP11Object *cred)
 		egg_secure_free (value);
 
 	} else {
-		g_warning ("couldn't read unlock credentials to save in login keyring: %s",
-		           egg_error_message (error));
+		if (!g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN))
+			g_warning ("couldn't read unlock credentials to save in login keyring: %s",
+			           egg_error_message (error));
 		g_clear_error (&error);
 	}
 
@@ -295,6 +296,7 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 	DBusError derr = DBUS_ERROR_INIT;
 	GkdSecretSecret *master;
 	GP11Attributes *template;
+	GP11Attribute *attr;
 	GP11Object *cred;
 	gboolean transient;
 
@@ -321,8 +323,12 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 	gkd_prompt_get_unlock_options (GKD_PROMPT (self), template);
 
 	/* If it's supposed to save non-transient, then we override that */
-	if (!gp11_attributes_find_boolean (template, CKA_GNOME_TRANSIENT, &transient))
-		transient = TRUE;
+	attr = gp11_attributes_find (template, CKA_GNOME_TRANSIENT);
+	if (attr != NULL) {
+		transient = gp11_attribute_get_boolean (attr);
+		gp11_attribute_clear (attr);
+		gp11_attribute_init_boolean (attr, CKA_GNOME_TRANSIENT, TRUE);
+	}
 
 	cred = gkd_secret_session_create_credential (master->session, NULL, template, master, &derr);
 	gkd_secret_secret_free (master);
