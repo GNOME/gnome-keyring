@@ -247,43 +247,35 @@ check_locked_collection (GP11Object *collection, gboolean *locked)
 }
 
 static void
-attach_credential_to_login (GP11Object *collection, GP11Object *cred)
+attach_unlock_to_login (GP11Object *collection, GkdSecretSecret *master)
 {
-	GError *error = NULL;
+	DBusError derr = DBUS_ERROR_INIT;
 	GP11Attributes *attrs;
-	gpointer value;
-	gsize n_value;
+	GP11Object *cred;
 	gchar *location;
 	gchar *label;
 
 	g_assert (GP11_IS_OBJECT (collection));
-	g_assert (GP11_IS_OBJECT (cred));
 
+	/* Relevant information for the unlock item */
 	attrs = attributes_for_collection (collection);
 	g_return_if_fail (attrs);
-
 	location = location_string_for_attributes (attrs);
 	label = label_string_for_attributes (attrs);
 	gp11_attributes_unref (attrs);
 
-	value = gp11_object_get_data_full (cred, CKA_VALUE, egg_secure_realloc, NULL, &n_value, &error);
-	if (value) {
-		if (g_utf8_validate (value, n_value, NULL))
-			gkd_login_attach_secret (label, value, "keyring", location, NULL);
-		else
-			g_warning ("couldn't save non utf-8 unlock credentials in login keyring");
-		egg_secure_clear (value, n_value);
-		egg_secure_free (value);
-
-	} else {
-		if (!g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN))
-			g_warning ("couldn't read unlock credentials to save in login keyring: %s",
-			           egg_error_message (error));
-		g_clear_error (&error);
-	}
-
+	attrs = gkd_login_attach_make_attributes (label, "keyring", location, NULL);
 	g_free (location);
 	g_free (label);
+
+	cred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, &derr);
+	gp11_attributes_unref (attrs);
+	g_object_unref (cred);
+
+	if (!cred) {
+		g_warning ("couldn't save unlock password in login collection: %s", derr.message);
+		dbus_error_free (&derr);
+	}
 }
 
 static void
@@ -304,6 +296,7 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 	GP11Attribute *attr;
 	GP11Object *cred;
 	gboolean transient;
+	gboolean result;
 
 	g_assert (GKD_SECRET_IS_UNLOCK (self));
 	g_assert (GP11_IS_OBJECT (collection));
@@ -336,35 +329,37 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 	}
 
 	cred = gkd_secret_session_create_credential (master->session, NULL, template, master, &derr);
-	gkd_secret_secret_free (master);
+	g_object_unref (cred);
 
 	if (cred) {
 		/* Save it to the login keyring */
 		if (!transient)
-			attach_credential_to_login (collection, cred);
-		g_object_unref (cred);
+			attach_unlock_to_login (collection, master);
 
 		/* Save away the unlock options for next time */
 		gp11_object_set_template (collection, CKA_G_CREDENTIAL_TEMPLATE, template, NULL);
 		gp11_attributes_unref (template);
 
 		*locked = FALSE;
-		return TRUE; /* Operation succeeded, and unlocked */
+		result = TRUE; /* Operation succeeded, and unlocked */
 
 	} else {
 		gp11_attributes_unref (template);
 		if (dbus_error_has_name (&derr, INTERNAL_ERROR_DENIED)) {
 			dbus_error_free (&derr);
 			*locked = TRUE;
-			return TRUE; /* Operation succeded, although not unlocked*/
+			result = TRUE; /* Operation succeded, although not unlocked*/
 
 		} else {
 			g_warning ("couldn't create credential for collection: %s",
 			           derr.message);
 			dbus_error_free (&derr);
-			return FALSE; /* Operation failed */
+			result = FALSE; /* Operation failed */
 		}
 	}
+
+	gkd_secret_secret_free (master);
+	return result;
 }
 
 /* -----------------------------------------------------------------------------

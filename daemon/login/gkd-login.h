@@ -40,13 +40,14 @@ void              gkd_login_attach_secret            (const gchar *label,
                                                       const gchar *first,
                                                       ...);
 
+GP11Attributes*   gkd_login_attach_make_attributes   (const gchar *label,
+                                                      const gchar *first,
+                                                      ...);
+
 gchar*            gkd_login_lookup_secret            (const gchar *first,
                                                       ...);
 
 void              gkd_login_remove_secret            (const gchar *first,
-                                                      ...);
-
-GP11Attributes*   gkd_login_attributes_for_secret    (const gchar *first,
                                                       ...);
 
 #endif /* __GKD_LOGIN_H__ */

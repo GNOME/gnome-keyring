@@ -730,6 +730,8 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GP11Session *sessi
 		}
 		g_clear_error (&error);
 		return NULL;
+	} else {
+		gp11_object_set_session (object, session);
 	}
 
 	return object;
