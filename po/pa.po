@@ -2,324 +2,38 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
-# A S Alam <aalam@users.sf.net>,2004,2005, 2006, 2007, 2009.
+# A S Alam <aalam@users.sf.net>,2004,2005, 2006, 2007, 2009, 2010.
 # Amanpreet Singh Alam <aalam@users.sf.net>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-08-26 19:44+0000\n"
-"PO-Revision-Date: 2009-09-11 07:28+0530\n"
+"POT-Creation-Date: 2010-02-18 18:02+0000\n"
+"PO-Revision-Date: 2010-03-21 20:45+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
-"Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 1.0\n"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚ '<object prop='name'/> ਲਈ ਪਾਸਵਰਡ ਵਰਤਣਾ ਚਾਹੁੰਦਾਹੈ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr "ਕਾਰਜ '%s' (%s) %s ਵਿੱਚ ' ਲਈ <object prop='nam'e'/>ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '<object prop='name'/>' ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr "ਕਾਰਜ '%s' %s ਵਿੱਚੋਂ '' <object prop='name'/>ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '<object prop='name'/>' ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ "
-"ਚਾਹੁੰਦਾ ਹੈ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ %s ਵਿੱਚ '' <object prop='name'/>ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "ਪਹੁੰਚ ਮਨਜ਼ੂਰ"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "ਕੀ ਕਾਰਜਾਂ ਨੂੰ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨ ਦੇਣੀ ਹੈ?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "ਕਾਰਜ '%s' (%s) ਕੀਰਿੰਗ '%s'ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "ਕਾਰਜ '%s' ਕੀਰਿੰਗ '%s'ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "ਮੂਲ ਕੀਰਿੰਗ ਨੂੰ ਅਣਜਾਣ ਕਾਰਜ ਵਰਤਣ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਕੀਰਿੰਗ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹਨ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr "ਮੂਲ ਕੀਰਿੰਗ ਦਾ ਤਾਲਾ ਖੋਲਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
-
-#: ../daemon/gkr-daemon-ops.c:360
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "ਕੀਰਿੰਗ '%s' ਦਾ ਤਾਲਾ ਖੋਲਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "ਕੀਰਿੰਗ ਤਾਲਾ ਖੋਲੋ"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr "ਜਦੋਂ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਕੀਰਿੰਗ ਸਵੈ-ਚਾਲਤ ਅਣ-ਲਾਕ ਕਰੋ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' (%s) ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ "
-"ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' (%s) ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ "
-"ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ "
-"ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਗੁਪਤ-"
-"ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
-"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ "
-"ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "ਨਵਾਂ ਕੀਰਿੰਗ ਪਾਸਵਰਡ"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "ਨਵੇਂ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਚੁਣੋ"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' (%s) ਕੀਰਿੰਗ '%s' ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਗੁਪਤ-"
-"ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਪਾਸਵਰਡ "
-"ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' ਕੀਰਿੰਗ '%s' ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਪਾਸਵਰਡ ਦੀ "
-"ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਪਾਸਵਰਡ ਦੀ "
-"ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ"
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਕੀਰਿੰਗ '%s' ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਗੁਪਤ-"
-"ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ"
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਮੂਲ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਪਾਸਵਰਡ "
-"ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ"
-
-#: ../daemon/gkr-daemon-ops.c:552, c-format
-#| msgid "Choose a new password for the '%s' keyring. "
-msgid "Choose a new password for the '%s' keyring."
-msgstr "'%s' ਕੀਰਿੰਗ ਲਈ ਨਵਾਂ ਪਾਸਵਰਡ ਚੁਣੋ। "
-
-#: ../daemon/gkr-daemon-ops.c:554, c-format
-#| msgid "Choose a new password for the default keyring. "
-msgid "Choose a new password for the default keyring."
-msgstr "ਡਿਫਾਲਟ ਕੀਰਿੰਗ ਲਈ ਇੱਕ ਨਵਾਂ ਪਾਸਵਰਡ ਚੁਣੋ।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
-msgid "Change Keyring Password"
-msgstr "ਕੀਰਿੰਗ ਪਾਸਵਰਡ ਬਦਲੋ"
-
-#: ../daemon/gkr-daemon-ops.c:631
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"ਕਾਰਜ '%s' (%s) ਇੱਕ ਪਾਸਵਰਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ ਬਣਾਉਣ ਲਈ "
-"ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
-
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"ਐਪਲੀਕੇਸ਼ਨ '%s' ਇੱਕ ਪਾਸਵਰਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ ਬਣਾਉਣ ਲਈ ਤੁਹਾਨੂੰ "
-"ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
-
-#: ../daemon/gkr-daemon-ops.c:643
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਪਾਸਵਰਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ ਬਣਾਉਣ ਲਈ "
-"ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "ਡਿਫਾਲਟ ਕੀਰਿੰਗ ਬਣਾਓ"
-
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "ਡਿਫਾਲਟ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਚੁਣੋ"
-
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
+#| msgid ""
+#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+#| "in). This setting may be overridden when certain command line arguments "
+#| "are passed to the daemon."
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
 "ਇਹ ਚੋਣ ਚਾਲੂ ਕਰਨ ਨਾਲ PKCS#11 ਏਜੰਟ ਗਨੋਮ-ਕੀਰਿੰਗ ਡੈਮਨ ਵਿੱਚ ਚੱਲੇਗਾ। ਇਹ ਤਾਂ ਹੀ ਚਾਲੂ ਹੋਵੇਗਾ ਜਦੋਂ "
 "ਗਨੋਮ-ਕੀਰਿੰਗ-ਡੈਮਨ ਸ਼ੁਰੂ ਹੋਵੇਗੀ (ਜਿਵੇਂ ਯੂਜ਼ਰ ਲਾਗਇਨ ਕਰੇਗਾ)। ਇਹ ਸੈਟਿੰਗ ਨੂੰ ਡੈਮਨ ਨੂੰ ਕੁਝ ਕਮਾਂਡ ਲਾਈਨ "
-"ਆਰਗੂਮੈਂਟ ਦੇਣ ਦੌਰਾਨ ਅਣਡਿੱਠਾ ਕੀਤਾ ਜਾ ਸਕਗਾ ਹੈ।"
+"ਆਰਗੂਮੈਂਟ ਦੇਣ ਦੌਰਾਨ ਅਣਡਿੱਠਾ ਕੀਤਾ ਜਾ ਸਕੇਗਾ ਹੈ।"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -328,204 +42,270 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"ਇਹ ਚੋਣ ਚਾਲੂ ਕਰਨ ਨਾਲ ਐਸ.ਐਸ.ਐਚ ਏਜੰਟ ਗਨੋਮ-ਕੀਰਿੰਗ ਡੈਮਨ ਵਿੱਚ ਚੱਲੇਗਾ। ਇਹ ਤਾਂ ਹੀ ਚਾਲੂ ਹੋਵੇਗਾ ਜਦੋਂ "
+"ਇਹ ਚੋਣ ਚਾਲੂ ਕਰਨ ਨਾਲ SSH ਏਜੰਟ ਗਨੋਮ-ਕੀਰਿੰਗ ਡੈਮਨ ਵਿੱਚ ਚੱਲੇਗਾ। ਇਹ ਤਾਂ ਹੀ ਚਾਲੂ ਹੋਵੇਗਾ ਜਦੋਂ "
 "ਗਨੋਮ-ਕੀਰਿੰਗ-ਡੈਮਨ ਸ਼ੁਰੂ ਹੋਵੇਗੀ (ਜਿਵੇਂ ਯੂਜ਼ਰ ਲਾਗਇਨ ਕਰੇਗਾ)। ਇਹ ਸੈਟਿੰਗ ਨੂੰ ਡੈਮਨ ਨੂੰ ਕੁਝ ਕਮਾਂਡ ਲਾਈਨ "
 "ਆਰਗੂਮੈਂਟ ਦੇਣ ਦੌਰਾਨ ਅਣਡਿੱਠਾ ਕੀਤਾ ਜਾ ਸਕਗਾ ਹੈ।"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
+#| msgid ""
+#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+#| "in). This setting may be overridden when certain command line arguments "
+#| "are passed to the daemon."
+msgid ""
+"This option enables the secret service component in the gnome-keyring "
+"daemon. It only takes effect during startup with gnome-session, (ie: when "
+"the user logs in). This setting may be overridden when certain command line "
+"arguments are passed to the daemon."
+msgstr ""
+"ਇਹ ਚੋਣ ਚਾਲੂ ਕਰਨ ਨਾਲ ਗਨੋਮ-ਕੀਰਿੰਗ ਡੈਮਨ ਵਿੱਚ ਗੁਪਤ ਸਰਵਿਸ ਭਾਗ ਚੱਲੇਗਾ। ਇਹ ਗਨੋਮ-ਸ਼ੈਸ਼ਨ "
+"ਚਾਲੂ ਹੋਣ ਦੇ ਨਾਲ ਹੀ ਪ੍ਰਭਾਵੀ ਹੋਵੇਗੀ (ਜਿਵੇਂ ਯੂਜ਼ਰ ਲਾਗਇਨ ਕਰੇਗਾ)। ਇਹ ਸੈਟਿੰਗ ਨੂੰ ਡੈਮਨ ਨੂੰ ਕੁਝ ਕਮਾਂਡ "
+"ਲਾਈਨ "
+"ਆਰਗੂਮੈਂਟ ਦੇਣ ਦੌਰਾਨ ਅਣਡਿੱਠਾ ਕੀਤਾ ਜਾ ਸਕਗਾ ਹੈ।"
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "ਕੀ ਗਨੋਮ-ਕੀਰਿੰਗ PKCS#11 ਭਾਗ ਚਾਲੂ ਕਰਨਾ ਹੈ।"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "ਕੀ ਗਨੋਮ-ਕੀਰਿੰਗ ਐਸ.ਐਸ.ਐਚ. ਏਜੰਟ ਯੋਗ ਕਰਨਾ ਹੈ।"
+msgstr "ਕੀ ਗਨੋਮ-ਕੀਰਿੰਗ SSH ਏਜੰਟ ਯੋਗ ਕਰਨਾ ਹੈ।"
 
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "ਗਨੋਮ ਕੀਰਿੰਗ ਡੈਮਨ"
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#| msgid "Whether the gnome-keyring SSH agent is enabled."
+msgid "Whether the gnome-keyring secret service is enabled."
+msgstr "ਕੀ ਗਨੋਮ-ਕੀਰਿੰਗ ਗੁਪਤ ਸਰਵਿਸ ਯੋਗ ਕਰਨੀ ਹੈ।"
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
+#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
+#: ../pkcs11/secret-store/gck-secret-collection.c:320
+msgid "Unnamed"
+msgstr "ਬਿਨ-ਨਾਂ"
+
+#: ../daemon/dbus/gkd-secret-change.c:85
+msgid "Change Keyring Password"
+msgstr "ਕੀਰਿੰਗ ਪਾਸਵਰਡ ਬਦਲੋ"
+
+#: ../daemon/dbus/gkd-secret-change.c:87
+#, c-format
+#| msgid "Choose a new password for the '%s' keyring."
+msgid "Choose a new password for the '%s' keyring"
+msgstr "'%s' ਕੀਰਿੰਗ ਲਈ ਨਵਾਂ ਪਾਸਵਰਡ ਚੁਣੋ। "
+
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
+#| msgid ""
+#| "An unknown application wants to change the password for the '%s' keyring. "
+#| "You have to choose the password you want to use for it."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"ਕਾਰਜ ਕੀਰਿੰਗ '%s' ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ  "
+"ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#: ../daemon/dbus/gkd-secret-change.c:110
+#| msgid "The password or PIN is incorrect"
+msgid "The original password was incorrect"
+msgstr "ਅਸਲੀ ਪਾਸਵਰਡ ਗਲਤ ਹੈ"
+
+#: ../daemon/dbus/gkd-secret-create.c:77
+msgid "New Keyring Password"
+msgstr "ਨਵਾਂ ਕੀਰਿੰਗ ਪਾਸਵਰਡ"
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "Choose password for new keyring"
+msgstr "ਨਵੇਂ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਚੁਣੋ"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+#| msgid ""
+#| "An unknown application wants to create a new keyring called '%s'. You "
+#| "have to choose the password you want to use for it."
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"ਕਾਰਜ ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+"ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:134
 msgid "Unlock Login Keyring"
 msgstr "ਲਾਗਇਨ ਕੀਰਿੰਗ ਅਣ-ਲਾਕ"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
-msgstr "ਕੀਰਿੰਗ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਲਾਗਇਨ ਪਾਸਵਰਡ ਦਿਓ"
+#: ../daemon/dbus/gkd-secret-unlock.c:136
+#| msgid "Enter login password to unlock keyring"
+msgid "Enter password for to unlock your login keyring"
+msgstr "ਆਪਣੇ ਲਾਗਇਨ ਕੀਰਿੰਗ ਨੂੰ ਅਣ-ਲਾਕ ਕਰਨ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:101
+#: ../daemon/dbus/gkd-secret-unlock.c:140
 msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr "ਜਦੋਂ ਤੁਸੀਂ ਕੰਪਿਊਟਰ ਉੱਤੇ ਲਾਗਇਨ ਕੀਤਾ ਤਾਂ ਤੁਹਾਡੀ ਮੂਲ ਕੀਰਿੰਗ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਨਹੀਂ ਹੋਈ ਸੀ।"
-
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "ਲਾਗਇਨ ਕੀਰਿੰਗ ਬਣਾਓ"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "ਆਪਣਾ ਲਾਗਇਨ ਪਾਸਵਰਡ ਦਿਓ"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:127
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
 msgstr ""
-"ਜਦੋਂ ਤੁਸੀਂ ਕੰਪਿਊਟਰ ਉੱਤੇ ਲਾਗਇਨ ਕੀਤਾ ਤਾਂ ਤੁਹਾਡੀ ਲਾਗਇਨ ਕੀਰਿੰਗ ਆਟੋਮੈਟਿਕ ਨਹੀਂ ਬਣਾਈ ਗਈ ਸੀ। ਇਸ ਨੂੰ "
-"ਹੁਣ ਬਣਾਇਆ ਜਾਵੇਗਾ।"
+"ਪਾਸਵਰਡ, ਜੋ ਤੁਸੀਂ ਆਪਣੇ ਕੰਪਿਊਟਰ 'ਚ ਲਾਗਇਨ ਕਰਨ ਲਈ ਵਰਤਿਆ ਸੀ, ਤੁਹਾਡੇ ਲਾਗਇਨ ਕੀਰਿੰਗ "
+"ਨਾਲ ਨਹੀਂ ਮਿਲਦਾ ਹੈ।"
 
-#: ../daemon/keyrings/gkr-keyring.c:587
+#: ../daemon/dbus/gkd-secret-unlock.c:142
+#| msgid ""
+#| "Your login keyring was not automatically unlocked when you logged into "
+#| "this computer."
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "ਜਦੋਂ ਤੁਸੀਂ ਕੰਪਿਊਟਰ ਉੱਤੇ ਲਾਗਇਨ ਕੀਤਾ ਤਾਂ ਤੁਹਾਡੀ ਲਾਗਇਨ ਕੀਰਿੰਗ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਨਹੀਂ ਹੋਈ ਸੀ।"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:183
+msgid "Unlock Keyring"
+msgstr "ਕੀਰਿੰਗ ਲਾਕ ਖੋਲ੍ਹੋ"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:185
 #, c-format
-msgid "Unlock password for %s keyring"
-msgstr "%s ਕੀਰਿੰਗ ਲਈ ਅਣ-ਲਾਕ ਪਾਸਵਰਡ"
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "ਕੀਰਿੰਗ '%s' ਦਾ ਲਾਕ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
-msgid "Unlock private key"
-msgstr "ਅਣ-ਲਾਕ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
-msgid "Unlock certificate"
-msgstr "ਅਣ-ਲਾਕ ਸਰਟੀਫਿਕੇਟ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
-msgid "Unlock public key"
-msgstr "ਅਣ-ਲਾਕ ਪਬਲਿਕ ਕੁੰਜੀ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
-msgid "Unlock"
-msgstr "ਅਣ-ਲਾਕ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "ਸਰਟੀਫਿਕੇਟ ਤਾਲਾ ਖੋਲ੍ਹਣ ਵਾਸਤੇ ਪਾਸਵਰਡ ਦਿਓ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
-msgid "Enter password to unlock the public key"
-msgstr "ਸਰਵਜਨਕ ਕੁੰਜੀ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "ਤਾਲਾ ਖੋਲ੍ਹਣ ਵਾਸਤੇ ਪਾਸਵਰਡ ਦਿਓ"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#: ../daemon/dbus/gkd-secret-unlock.c:189
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "ਇੱਕ ਕਾਰਜ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "ਕਾਰਜ ਕੀਰਿੰਗ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
 
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
+#: ../daemon/dbus/gkd-secret-unlock.c:219
+#| msgid "The password or PIN is incorrect"
+msgid "The unlock password was incorrect"
+msgstr "ਅਣ-ਲਾਕ ਪਾਸਵਰਡ ਗਲਤ ਹੈ"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+#| msgid "Unlock certificate/key storage"
+msgid "Certificate and Key Storage"
+msgstr "ਸਰਟੀਫਿਕੇਟ ਅਤੇ ਕੁੰਜੀ ਸਟੋਰੇਜ਼"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "ਗਨੋਮ ਕੀਰਿੰਗ: PKCS#11 ਭਾਗ"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: Secret Service"
+msgstr "ਗਨੋਮ ਕੀਰਿੰਗ ਡੈਮਨ: ਗੁਪਤ ਸਰਵਿਸ"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "ਗੁਪਤ ਸਟੋਰੇਜ਼ ਸਰਵਿਸ"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: SSH Agent"
+msgstr "ਗਨੋਮ ਕੀਰਿੰਗ: SSH ਏਜੰਟ"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "SSH ਕੁੰਜੀ ਏਜੰਟ"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:174
+msgid "Login"
+msgstr "ਲਾਗਇਨ"
+
+#: ../daemon/login/gkd-login.c:596
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "ਇੱਕ ਕਾਰਜ ਸਰਟੀਫਿਕੇਟ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+#| msgid "Unlock password for %s keyring"
+msgid "Unlock password for: %s"
+msgstr "%s: ਲਈ ਅਣ-ਲਾਕ ਪਾਸਵਰਡ"
 
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "ਇੱਕ ਕਾਰਜ ਸਵਰਜਨਕ ਕੁੰਜੀ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "ਇੱਕ ਕਾਰਜ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹਨ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਸਰਟੀਫਿਕੇਟ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਸਵਰਜਨਕ ਕੁੰਜੀ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
-msgid "Unlock certificate/key storage"
-msgstr "ਅਣ-ਲਾਕ ਸਰਟੀਫਿਕੇਟ/ਕੀ ਸਟੋਰੇਜ਼"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "ਸਰਟੀਫਿਕੇਟ/ਕੁੰਜੀ ਸਟੋਰੇਜ਼ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr "ਇੱਕ ਕਾਰਜ ਸਰਟੀਫਿਕੇਟ/ਕੁੰਜੀ ਸਟੋਰੇਜ਼ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr "ਜਦੋਂ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਆਟੋਮੈਟਿਕ ਹੀ ਸੁਰੱਖਿਅਤ ਸਟੋਰੇਜ਼ ਤਾਲਾ ਖੋਲ੍ਹੋ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
 msgstr "ਨਵਾਂ ਪਾਸਵਰਡ ਲੋੜੀਦਾ"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
 msgid "New password required for secure storage"
 msgstr "ਸੁਰੱਖਿਅਤ ਸਟੋਰੇਜ਼ ਲਈ ਨਵਾਂ ਪਾਸਵਰਡ ਲੋੜੀਦਾ ਹੈ"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr "ਸਰਟੀਫਿਕੇਟ ਜਾਂ ਕੁੰਜੀਆਂ ਨੂੰ ਸੰਭਾਲਣ ਵਾਸਤੇ '%s' ਤਿਆਰ ਕਰਨ ਲਈ, ਇੱਕ ਪਾਸਵਰਡ ਲੋੜੀਦਾ ਹੈ"
 
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>ਤੁਹਾਡਾ ਮਾਊਂਸ ਫੜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।</big></b>\n"
-"\n"
-"ਇੱਕ ਖਰਾਬ ਕਲਾਇਟ ਨੇ ਤੁਹਾਡੇ ਸ਼ੈਸ਼ਨ ਵਿੱਚ ਦਖਲ ਦਿੱਤਾ ਹੈ ਜਾਂ ਤੁਸੀਂ ਇੱਕ ਮੇਨੂ ਜਾਂ ਹੋਰ ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਫੋਕਸ ਦੇਣ "
-"ਲਈ ਕਲਿੱਕ ਕਰ ਦਿੱਤਾ ਹੈ।\n"
-"\n"
-"ਫੇਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
+msgid "Unlock private key"
+msgstr "ਅਣ-ਲਾਕ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ"
 
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>ਤੁਹਾਡਾ ਕੀਬੋਰਡ ਫੜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।</big></b>\n"
-"\n"
-"ਇੱਕ ਖਰਾਬ ਕਲਾਇਟ ਨੇ ਤੁਹਾਡੇ ਸ਼ੈਸ਼ਨ ਵਿੱਚ ਦਖਲ ਦਿੱਤਾ ਹੈ ਜਾਂ ਤੁਸੀਂ ਇੱਕ ਮੇਨੂ ਜਾਂ ਹੋਰ ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਫੋਕਸ ਦੇਣ "
-"ਲਈ ਕਲਿੱਕ ਕਰ ਦਿੱਤਾ ਹੈ।\n"
-"\n"
-"ਫੇਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
+msgid "Unlock certificate"
+msgstr "ਅਣ-ਲਾਕ ਸਰਟੀਫਿਕੇਟ"
 
-#: ../daemon/ui/gkr-ask-tool.c:276
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
+msgid "Unlock public key"
+msgstr "ਅਣ-ਲਾਕ ਪਬਲਿਕ ਕੁੰਜੀ"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
+msgid "Unlock"
+msgstr "ਅਣ-ਲਾਕ"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
+msgid "Enter password to unlock the private key"
+msgstr "ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
+msgid "Enter password to unlock the certificate"
+msgstr "ਸਰਟੀਫਿਕੇਟ ਤਾਲਾ ਖੋਲ੍ਹਣ ਵਾਸਤੇ ਪਾਸਵਰਡ ਦਿਓ"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
+msgid "Enter password to unlock the public key"
+msgstr "ਸਰਵਜਨਕ ਕੁੰਜੀ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
+msgid "Enter password to unlock"
+msgstr "ਤਾਲਾ ਖੋਲ੍ਹਣ ਵਾਸਤੇ ਪਾਸਵਰਡ ਦਿਓ"
+
+#. TRANSLATORS: The private key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "ਇੱਕ ਕਾਰਜ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#. TRANSLATORS: The certificate is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "ਇੱਕ ਕਾਰਜ ਸਰਟੀਫਿਕੇਟ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#. TRANSLATORS: The public key is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "ਇੱਕ ਕਾਰਜ ਸਵਰਜਨਕ ਕੁੰਜੀ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "ਇੱਕ ਕਾਰਜ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹਨ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
+msgid "Unlock certificate/key storage"
+msgstr "ਅਣ-ਲਾਕ ਸਰਟੀਫਿਕੇਟ/ਕੀ ਸਟੋਰੇਜ਼"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "ਸਰਟੀਫਿਕੇਟ/ਕੁੰਜੀ ਸਟੋਰੇਜ਼ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "ਇੱਕ ਕਾਰਜ ਸਰਟੀਫਿਕੇਟ/ਕੁੰਜੀ ਸਟੋਰੇਜ਼ '%s' ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#: ../daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "ਕੀ ਪਾਸਵਰਡ ਅਣ-ਇੰਕ੍ਰਿਪਟਡ ਸੰਭਾਲਣਾ?"
 
-#: ../daemon/ui/gkr-ask-tool.c:277
+#: ../daemon/prompt/gkd-prompt-tool.c:394
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -534,84 +314,53 @@ msgstr ""
 "ਇੱਕ ਖਾਲੀ ਪਾਸਵਰਡ ਚੁਣਨ ਨਾਲ, ਤੁਹਾਡੇ ਸਟੋਰ ਕੀਤੇ ਪਾਸਵਰਡ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਇੰਕ੍ਰਿਪਟ ਨਹੀਂ ਕੀਤੇ "
 "ਜਾਣਗੇ। ਇਹ ਕਿਸੇ ਵੀ ਵਿਅਕਤੀ ਵਲੋਂ ਵਰਤੇ ਜਾ ਸਕਦੇ ਹਨ, ਜੋ ਇਹ ਫਾਇਲ ਤੱਕ ਅੱਪੜ ਸਕਦਾ ਹੈ।"
 
-#: ../daemon/ui/gkr-ask-tool.c:284
+#: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "ਅਸੁਰੱਖਿਅਤ ਸਟੋਰੇਜ਼ ਵਰਤੋਂ"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "ਟਿਕਾਣਾ(_L):"
-
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "ਪੁਰਾਣਾ ਪਾਸਵਰਡ(_O):"
-
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "ਪਾਸਵਰਡ(_P):"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "ਪਾਸਵਰਡ ਪੁਸ਼ਟੀ(_C):"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "ਨਵਾਂ ਪਾਸਵਰਡ ਤਾਕਤ"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
+#: ../daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "ਪਾਸਵਰਡ ਮਿਲਦਾ ਨਹੀਂ ਹੈ।"
 
-#: ../daemon/ui/gkr-ask-tool.c:661
+#: ../daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "ਪਾਸਵਰਡ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ ਹੈ।"
 
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "ਪਾਬੰਦੀ(_D)"
+#: ../daemon/prompt/gkd-prompt.ui.h:1
+#| msgid "Automatically unlock this keyring when I log in."
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "ਜਦੋਂ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਕੀਰਿੰਗ ਆਟੋਮੈਟਿਕ ਹੀ ਅਣ-ਲਾਕ ਕਰੋ।"
 
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "ਬਣਾਓ(_r)"
+#: ../daemon/prompt/gkd-prompt.ui.h:2
+msgid "New password strength"
+msgstr "ਨਵਾਂ ਪਾਸਵਰਡ ਤਾਕਤ"
 
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "ਬਦਲੋ(_h)"
+#: ../daemon/prompt/gkd-prompt.ui.h:3
+#| msgid "_Location:"
+msgid "_Application:"
+msgstr "ਐਪਲੀਕੇਸ਼ਨ(_A):"
 
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "ਇੱਕ ਵਾਰ ਪਹੁੰਚ(_O)"
+#: ../daemon/prompt/gkd-prompt.ui.h:4
+#| msgid "_Confirm password:"
+msgid "_Confirm:"
+msgstr "ਪੁਸ਼ਟੀ(_C):"
 
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "ਹਮੇਸ਼ਾ ਪਹੁੰਚ(_A)"
+#: ../daemon/prompt/gkd-prompt.ui.h:5
+msgid "_Details:"
+msgstr "ਵੇਰਵਾ(_D):"
 
-#: ../daemon/util/gkr-location.c:234
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "ਹਟਾਉਣਯੋਗ ਡਿਸਕ: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:6
+msgid "_Name:"
+msgstr "ਨਾਂ(_N):"
 
-#: ../daemon/util/gkr-location.c:236
-msgid "Removable Disk"
-msgstr "ਹਟਾਉਣਯੋਗ ਡਿਸਕ"
+#: ../daemon/prompt/gkd-prompt.ui.h:7
+#| msgid "_Old password:"
+msgid "_Old Password:"
+msgstr "ਪੁਰਾਣਾ ਪਾਸਵਰਡ(_O):"
 
-#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
-msgid "Home"
-msgstr "ਘਰ"
-
-#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
-msgid "The disk or drive this file is located on is not present"
-msgstr "ਡਿਸਕ ਜਾਂ ਡਰਾਇਵ, ਜਿਸ ਉੱਤੇ ਇਹ ਫਾਇਲ ਸੀ, ਮੌਜੂਦ ਨਹੀਂ ਹੈ"
-
-#: ../daemon/util/gkr-location.c:914
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "ਡਾਇਰੈਕਟਰੀ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕੀ: %s"
-
-#: ../daemon/util/gkr-location.c:948
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "ਫਾਇਲ ਹਟਾਈ ਨਹੀਂ ਜਾ ਸਕੀ: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:8
+msgid "_Password:"
+msgstr "ਪਾਸਵਰਡ(_P):"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -733,6 +482,16 @@ msgstr "DSA"
 #: ../egg/egg-oid.c:109
 msgid "SHA1 with DSA"
 msgstr "DSA ਨਾਲ SHA1"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr "ਚਲਾਈਡ ਪਰੋਸੈਸ (%s) ਤੋਂ ਡਾਟਾ ਪੜ੍ਹਨ ਦੌਰਾਨ select() ਵਿੱਚ ਅਚਾਨਕ ਗਲਤੀ"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr " waitpid() (%s) ਵਿੱਚ ਅਣਜਾਣ ਗਲਤੀ"
 
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
@@ -912,6 +671,23 @@ msgstr "ਆਯਾਤ ਜਾਣਕਾਰੀ:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "ਪਾਸਵਰਡ:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "ਇਸ ਦੇ ਬਾਅਦ ਇਹ ਕੀਰਿੰਗ ਲਾਕ ਕਰੋ"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "ਜੇ ਵੇਹਲਾ ਹੋਵੇ ਤਾਂ ਇਹ ਕੀਰਿੰਗ ਲਾਗ ਕਰੋ"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#| msgid "Automatically unlock this keyring when I log in."
+msgid "Lock this keyring when I log out"
+msgstr "ਜਦੋਂ ਮੈਂ ਲਾਗਆਉਟ ਕਰਾਂ ਤਾਂ ਇਹ ਕੀਰਿੰਗ ਲਾਕ ਕਰੋ"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "ਮਿੰਟ"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1303,43 +1079,301 @@ msgstr "ਯੂਜ਼ਰ ਵਲੋਂ ਦਸਤਖਤਾਂ ਦੀ ਮੰਗ ਰ�
 msgid "Unknown error"
 msgstr "ਅਣਜਾਣ ਗਲਤੀ"
 
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "ਅਸੈੱਸ ਪਾਬੰਦੀ"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "ਗਨੋਮ-ਕੀਰਿੰਗ-ਡੈਮਨ ਕਾਰਜ ਚੱਲਦਾ ਨਹੀਂ ਹੈ।"
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "ਗਨੋਮ-ਕੀਰਿੰਗ-ਡੈਮਨ ਨਾਲ ਸੰਚਾਰ ਗਲਤੀ"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "ਉਸ ਨਾਂ ਨਾਲ ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ"
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "ਪਰੋਗਰਾਮਰ ਗਲਤੀ: ਕਾਰਜ ਨੇ ਅਢੁੱਕਵਾਂ ਡਾਟਾ ਭੇਜਿਆ।"
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "ਕੋਈ ਮਿਲਦਾ ਨਤੀਜਾ ਨਹੀਂ"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "ਉਸ ਨਾਂ ਨਾਲ ਇੱਕ ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਅਣ-ਲਾਕ ਹੈ।"
-
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "ਬਿਨ-ਨਾਂ ਸਰਟੀਫਿਕੇਟ"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "ਪਬਲਿਕ SSH ਕੁੰਜੀ ਪਾਰਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ"
 
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚ '<object prop='name'/> ਲਈ ਪਾਸਵਰਡ ਵਰਤਣਾ ਚਾਹੁੰਦਾਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' (%s) %s ਵਿੱਚ ' ਲਈ <object prop='nam'e'/>ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ "
+#~ "ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '<object prop='name'/>' ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ "
+#~ "ਚਾਹੁੰਦਾ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' %s ਵਿੱਚੋਂ '' <object prop='name'/>ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ।"
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਮੂਲ ਕੀਰਿੰਗ ਵਿੱਚੋਂ '<object prop='name'/>' ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ "
+#~ "ਚਾਹੁੰਦਾ ਹੈ।"
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ %s ਵਿੱਚ '' <object prop='name'/>ਲਈ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ "
+#~ "ਹੈ।"
+
+#~ msgid "Allow access"
+#~ msgstr "ਪਹੁੰਚ ਮਨਜ਼ੂਰ"
+
+#~ msgid "Allow application access to keyring?"
+#~ msgstr "ਕੀ ਕਾਰਜਾਂ ਨੂੰ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨ ਦੇਣੀ ਹੈ?"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
+#~ "locked"
+#~ msgstr "ਕਾਰਜ '%s' (%s) ਕੀਰਿੰਗ '%s'ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' wants access to the default keyring, but it is locked"
+#~ msgstr "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' wants access to the keyring '%s', but it is locked"
+#~ msgstr "ਕਾਰਜ '%s' ਕੀਰਿੰਗ '%s'ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ।"
+
+#~ msgid ""
+#~ "An unknown application wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr "ਮੂਲ ਕੀਰਿੰਗ ਨੂੰ ਅਣਜਾਣ ਕਾਰਜ ਵਰਤਣ ਚਾਹੁੰਦਾ ਹੈ, ਪਰ ਇਹ ਤਾਲਾਬੰਦ ਹੈ"
+
+#~ msgid "Enter password for default keyring to unlock"
+#~ msgstr "ਮੂਲ ਕੀਰਿੰਗ ਦਾ ਤਾਲਾ ਖੋਲਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
+#~ "have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' (%s) ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ "
+#~ "ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new default keyring. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' (%s) ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ "
+#~ "ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new keyring called '%s'. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' ਇੱਕ ਨਵੀਂ ਕੀਰਿੰਗ, ਜਿਸ ਨੂੰ '%s' ਕਿਹਾ ਹੈ, ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ "
+#~ "ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ "
+#~ "ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#~ msgid ""
+#~ "An unknown application wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਨਵੀਂ ਮੂਲ ਕੀਰਿੰਗ ਬਣਾਉਣੀ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ "
+#~ "ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਹੈ।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the '%s' "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' (%s) ਕੀਰਿੰਗ '%s' ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ "
+#~ "ਗੁਪਤ-ਕੋਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' (%s) ਮੂਲ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ "
+#~ "ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' ਕੀਰਿੰਗ '%s' ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਪਾਸਵਰਡ "
+#~ "ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' ਮੂਲ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਪਾਸਵਰਡ "
+#~ "ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ"
+
+#~ msgid ""
+#~ "An unknown application wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਮੂਲ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਬਦਲਣਾ ਚਾਹੁੰਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇਸ ਲਈ ਵਰਤਣ ਵਾਸਤੇ "
+#~ "ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ"
+
+#~| msgid "Choose a new password for the default keyring. "
+#~ msgid "Choose a new password for the default keyring."
+#~ msgstr "ਡਿਫਾਲਟ ਕੀਰਿੰਗ ਲਈ ਇੱਕ ਨਵਾਂ ਪਾਸਵਰਡ ਚੁਣੋ।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to store a password, but there is no "
+#~ "default keyring. To create one, you need to choose the password you wish "
+#~ "to use for it."
+#~ msgstr ""
+#~ "ਕਾਰਜ '%s' (%s) ਇੱਕ ਪਾਸਵਰਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ ਬਣਾਉਣ "
+#~ "ਲਈ ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#~ msgid ""
+#~ "The application '%s' wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "ਐਪਲੀਕੇਸ਼ਨ '%s' ਇੱਕ ਪਾਸਵਰਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ ਬਣਾਉਣ ਲਈ "
+#~ "ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#~ msgid ""
+#~ "An unknown application wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "ਇੱਕ ਅਣਜਾਣ ਕਾਰਜ ਇੱਕ ਪਾਸਵਰਡ ਸੰਭਾਲਣਾ ਚਾਹੁੰਦਾ ਹੈ, ਕੋਈ ਮੂਲ ਕੀਰਿੰਗ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵਾਂ ਬਣਾਉਣ "
+#~ "ਲਈ ਤੁਹਾਨੂੰ ਉਸ ਦੀ ਵਰਤੋਂ ਸਮੇਂ ਇਸਤੇਮਾਲ ਹੋਣ ਵਾਲੇ ਪਾਸਵਰਡ ਦੀ ਚੋਣ ਕਰਨੀ ਪਵੇਗੀ।"
+
+#~ msgid "Create Default Keyring"
+#~ msgstr "ਡਿਫਾਲਟ ਕੀਰਿੰਗ ਬਣਾਓ"
+
+#~ msgid "Choose password for default keyring"
+#~ msgstr "ਡਿਫਾਲਟ ਕੀਰਿੰਗ ਲਈ ਪਾਸਵਰਡ ਚੁਣੋ"
+
+#~ msgid "Create Login Keyring"
+#~ msgstr "ਲਾਗਇਨ ਕੀਰਿੰਗ ਬਣਾਓ"
+
+#~ msgid "Enter your login password"
+#~ msgstr "ਆਪਣਾ ਲਾਗਇਨ ਪਾਸਵਰਡ ਦਿਓ"
+
+#~ msgid ""
+#~ "Your login keyring was not automatically created when you logged into "
+#~ "this computer. It will now be created."
+#~ msgstr ""
+#~ "ਜਦੋਂ ਤੁਸੀਂ ਕੰਪਿਊਟਰ ਉੱਤੇ ਲਾਗਇਨ ਕੀਤਾ ਤਾਂ ਤੁਹਾਡੀ ਲਾਗਇਨ ਕੀਰਿੰਗ ਆਟੋਮੈਟਿਕ ਨਹੀਂ ਬਣਾਈ ਗਈ ਸੀ। "
+#~ "ਇਸ ਨੂੰ ਹੁਣ ਬਣਾਇਆ ਜਾਵੇਗਾ।"
+
+#~ msgid "Automatically unlock this private key when I log in."
+#~ msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
+
+#~ msgid "Automatically unlock this certificate when I log in."
+#~ msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਸਰਟੀਫਿਕੇਟ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
+
+#~ msgid "Automatically unlock this public key when I log in."
+#~ msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਇਹ ਸਵਰਜਨਕ ਕੁੰਜੀ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
+
+#~ msgid "Automatically unlock this when I log in"
+#~ msgstr "ਜਦ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਆਟੋਮੈਟਿਕ ਅਣ-ਲਾਕ ਕਰੋ।"
+
+#~ msgid "Automatically unlock secure storage when I log in."
+#~ msgstr "ਜਦੋਂ ਮੈਂ ਲਾਗਇਨ ਕਰਾਂ ਤਾਂ ਆਟੋਮੈਟਿਕ ਹੀ ਸੁਰੱਖਿਅਤ ਸਟੋਰੇਜ਼ ਤਾਲਾ ਖੋਲ੍ਹੋ।"
+
+#~ msgid ""
+#~ "<b><big>Could not grab your mouse.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>ਤੁਹਾਡਾ ਮਾਊਂਸ ਫੜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।</big></b>\n"
+#~ "\n"
+#~ "ਇੱਕ ਖਰਾਬ ਕਲਾਇਟ ਨੇ ਤੁਹਾਡੇ ਸ਼ੈਸ਼ਨ ਵਿੱਚ ਦਖਲ ਦਿੱਤਾ ਹੈ ਜਾਂ ਤੁਸੀਂ ਇੱਕ ਮੇਨੂ ਜਾਂ ਹੋਰ ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਫੋਕਸ "
+#~ "ਦੇਣ ਲਈ ਕਲਿੱਕ ਕਰ ਦਿੱਤਾ ਹੈ।\n"
+#~ "\n"
+#~ "ਫੇਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+
+#~ msgid ""
+#~ "<b><big>Could not grab your keyboard.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>ਤੁਹਾਡਾ ਕੀਬੋਰਡ ਫੜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।</big></b>\n"
+#~ "\n"
+#~ "ਇੱਕ ਖਰਾਬ ਕਲਾਇਟ ਨੇ ਤੁਹਾਡੇ ਸ਼ੈਸ਼ਨ ਵਿੱਚ ਦਖਲ ਦਿੱਤਾ ਹੈ ਜਾਂ ਤੁਸੀਂ ਇੱਕ ਮੇਨੂ ਜਾਂ ਹੋਰ ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਫੋਕਸ "
+#~ "ਦੇਣ ਲਈ ਕਲਿੱਕ ਕਰ ਦਿੱਤਾ ਹੈ।\n"
+#~ "\n"
+#~ "ਫੇਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+
+#~ msgid "_Deny"
+#~ msgstr "ਪਾਬੰਦੀ(_D)"
+
+#~ msgid "C_reate"
+#~ msgstr "ਬਣਾਓ(_r)"
+
+#~ msgid "C_hange"
+#~ msgstr "ਬਦਲੋ(_h)"
+
+#~ msgid "Allow _Once"
+#~ msgstr "ਇੱਕ ਵਾਰ ਪਹੁੰਚ(_O)"
+
+#~ msgid "_Always Allow"
+#~ msgstr "ਹਮੇਸ਼ਾ ਪਹੁੰਚ(_A)"
+
+#~ msgid "Removable Disk: %s"
+#~ msgstr "ਹਟਾਉਣਯੋਗ ਡਿਸਕ: %s"
+
+#~ msgid "Removable Disk"
+#~ msgstr "ਹਟਾਉਣਯੋਗ ਡਿਸਕ"
+
+#~ msgid "Home"
+#~ msgstr "ਘਰ"
+
+#~ msgid "The disk or drive this file is located on is not present"
+#~ msgstr "ਡਿਸਕ ਜਾਂ ਡਰਾਇਵ, ਜਿਸ ਉੱਤੇ ਇਹ ਫਾਇਲ ਸੀ, ਮੌਜੂਦ ਨਹੀਂ ਹੈ"
+
+#~ msgid "Couldn't create directory: %s"
+#~ msgstr "ਡਾਇਰੈਕਟਰੀ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕੀ: %s"
+
+#~ msgid "Couldn't delete the file: %s"
+#~ msgstr "ਫਾਇਲ ਹਟਾਈ ਨਹੀਂ ਜਾ ਸਕੀ: %s"
+
+#~ msgid "Access Denied"
+#~ msgstr "ਅਸੈੱਸ ਪਾਬੰਦੀ"
+
+#~ msgid "The gnome-keyring-daemon application is not running."
+#~ msgstr "ਗਨੋਮ-ਕੀਰਿੰਗ-ਡੈਮਨ ਕਾਰਜ ਚੱਲਦਾ ਨਹੀਂ ਹੈ।"
+
+#~ msgid "Error communicating with gnome-keyring-daemon"
+#~ msgstr "ਗਨੋਮ-ਕੀਰਿੰਗ-ਡੈਮਨ ਨਾਲ ਸੰਚਾਰ ਗਲਤੀ"
+
+#~ msgid "A keyring with that name already exists"
+#~ msgstr "ਉਸ ਨਾਂ ਨਾਲ ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ"
+
+#~ msgid "Programmer error: The application sent invalid data."
+#~ msgstr "ਪਰੋਗਰਾਮਰ ਗਲਤੀ: ਕਾਰਜ ਨੇ ਅਢੁੱਕਵਾਂ ਡਾਟਾ ਭੇਜਿਆ।"
+
+#~ msgid "No matching results"
+#~ msgstr "ਕੋਈ ਮਿਲਦਾ ਨਤੀਜਾ ਨਹੀਂ"
+
+#~ msgid "A keyring with that name does not exist."
+#~ msgstr "ਉਸ ਨਾਂ ਨਾਲ ਇੱਕ ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
+
+#~ msgid "The keyring has already been unlocked."
+#~ msgstr "ਕੀਰਿੰਗ ਪਹਿਲਾਂ ਹੀ ਅਣ-ਲਾਕ ਹੈ।"
