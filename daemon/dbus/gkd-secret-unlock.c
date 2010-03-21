@@ -200,6 +200,11 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
 
 	g_free (label);
 
+	if (gkd_login_is_usable ())
+		gkd_prompt_show_widget (prompt, "auto_unlock_check");
+	else
+		gkd_prompt_hide_widget (prompt, "auto_unlock_check");
+
 	/* Setup the unlock options */
 	if (first) {
 		template = gp11_object_get_template (coll, CKA_G_CREDENTIAL_TEMPLATE, &error);
