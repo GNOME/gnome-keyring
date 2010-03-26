@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-26 18:12+0200\n"
+"POT-Creation-Date: 2010-03-26 18:16+0200\n"
 "PO-Revision-Date: 2010-03-26 2:34+0200\n"
 "Last-Translator: Maxim Dzumanenko <dziumanenko@gmail.com>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
@@ -63,21 +63,23 @@ msgstr "Чи увімкнено агента SSH служби gnome-keyring."
 msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "Чи увімкнено компонент шифрування служби gnome-keyring."
 
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:105
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:615
+#: ../pkcs11/secret-store/gck-secret-collection.c:322
 msgid "Unnamed"
 msgstr "Без назви"
 
-#: ../daemon/dbus/gkd-secret-change.c:84
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "Зміна паролю в'язки ключів"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Виберіть пароль для в'язки ключів «%s»."
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -86,19 +88,19 @@ msgstr ""
 "Програма бажає змінити пароль в'язки ключів '%s'. Необхідно вибрати пароль "
 "для в'язки."
 
-#: ../daemon/dbus/gkd-secret-change.c:109
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "Неправильний оригінальний пароль"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "Пароль для нової в'язки ключів"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "Виберіть пароль для нової в'язки ключів"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -107,22 +109,45 @@ msgstr ""
 "Невідома програма бажає створити нову в'язку ключів з назвою '%s'. Необхідно "
 "вибрати пароль для в'язки."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:112
+#: ../daemon/dbus/gkd-secret-unlock.c:135
+msgid "Unlock Login Keyring"
+msgstr "Розблокувати в'язку ключів для входу у систему"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:137
+msgid "Enter password for to unlock your login keyring"
+msgstr "Введіть пароль для розблокування зв'язку ключів для входу у систему"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:141
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Пароль, який ви використовуєте для входу, більше не відповідає паролю в'язки "
+"ключій для входу у систему"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:143
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Вашу в'язку ключів для входу у систему не було автоматично розблокована, "
+"коли ви зареєструватися у комп'ютері."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:184
 msgid "Unlock Keyring"
 msgstr "Розблокувати в'язку ключів"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:114
+#: ../daemon/dbus/gkd-secret-unlock.c:186
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Введіть пароль для розблокування в'язки ключів '%s'"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:118
+#: ../daemon/dbus/gkd-secret-unlock.c:190
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Програма бажає отримати доступ до в'язки ключів «%s», але вона заблокована"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:226
 msgid "The unlock password was incorrect"
 msgstr "Некоректний пароль розблокування"
 
@@ -150,6 +175,16 @@ msgstr "Служба в'язки ключів GNOME: агент SSH"
 msgid "SSH Key Agent"
 msgstr "агент ключів SSH"
 
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:177
+msgid "Login"
+msgstr "Вхід"
+
+#: ../daemon/login/gkd-login.c:617
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Пароль для розблокування: %s"
+
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
 msgid "New Password Required"
 msgstr "Потрібно вказати новий пароль"
@@ -167,45 +202,40 @@ msgstr ""
 "Щоб підготувати «%s» для зберігання сертифікатів та ключів треба вказати "
 "пароль"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:303
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-msgid "Automatically unlock secure storage when I log in."
-msgstr "Автоматично розблоковувати цей сертифікат після входу у сеанс"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:361
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
 msgid "Unlock private key"
 msgstr "Розблокувати приватний ключ"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:363
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
 msgid "Unlock certificate"
 msgstr "Розблокувати сертифікат"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:365
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
 msgid "Unlock public key"
 msgstr "Розблокувати публічний ключ"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:367
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
 msgid "Unlock"
 msgstr "Розблокувати"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:376 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Введіть пароль для розблокування приватної в'язки ключів"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:378 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
 msgstr "Введіть пароль для розблокування сертифікату"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:380
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
 msgid "Enter password to unlock the public key"
 msgstr "Введіть пароль для розблокування публічного ключа"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:382 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Введіть пароль для розблокування"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:392
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -213,14 +243,14 @@ msgstr ""
 "заблокована"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:395
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
 "Програма бажає отримати доступ до сертифікату\"%s\", але він заблокований"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:398
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
@@ -228,21 +258,21 @@ msgstr ""
 "заблокована"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:401
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Програма бажає отримати доступ \"%s\", але він заблокований"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:589
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
 msgid "Unlock certificate/key storage"
 msgstr "Розблокувати сертифікат/сховище ключів"
 
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:590
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Введіть пароль для розблокування сертифікату/сховища ключів"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:593
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -251,11 +281,11 @@ msgstr ""
 "Програма бажає отримати доступ до сертифікату/сховище ключів «%s»,, але "
 "доступ заблоковано"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:343
+#: ../daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "Зберігати паролі незашифрованими?"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:344
+#: ../daemon/prompt/gkd-prompt-tool.c:394
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -265,81 +295,49 @@ msgstr ""
 "зашифрувати безпечним чином. Вони будуть доступні будь-кому, хто має доступ "
 "до ваших файлів."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:351
+#: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "Використовувати небезпечне сховище"
 
-#: ../daemon/prompt/gkd-prompt-tool.c:381
+#: ../daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "Паролі не збігаються."
 
-#: ../daemon/prompt/gkd-prompt-tool.c:391
+#: ../daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "Пароль не може бути порожнім"
 
 #: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid ""
-"<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' to "
-"unlock</span>\n"
-"\n"
-"An application wants access to the keyring 'xxx', but it is locked."
-msgstr ""
-"<span size=\"large\" weight=\"bold\">Введіть пароль в'язки ключів 'login' "
-"для розблокування</span>\n"
-"\n"
-"Програма бажає отримати доступ до в'язки ключів 'xxx', але вона заблокована"
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Автоматично розблоковувати цю в'язку ключів після входу у сеанс"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "Automatically unlock this keyring whenever I'm logged in."
-msgstr "Автоматично розблоковувати цю в'язку ключів, коли я входжу у сеанс."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "Lock this keyring after"
-msgstr "Блокувати в'язку ключів після'"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "Lock this keyring if idle for"
-msgstr "Блокувати в'язку, при простої'"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "Lock this keyring when I log out."
-msgstr "Блокувати в'язку ключів при завершенні сеансу"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
+#: ../daemon/prompt/gkd-prompt.ui.h:2
 msgid "New password strength"
 msgstr "Міцність нового паролю"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:9
-msgid "Prompt me for each application that accesses this keyring."
-msgstr "Питати мене, перш ніж надавати програмі доступ до в'язки ключів."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:10
+#: ../daemon/prompt/gkd-prompt.ui.h:3
 msgid "_Application:"
 msgstr "_Програма:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:11
+#: ../daemon/prompt/gkd-prompt.ui.h:4
 msgid "_Confirm:"
 msgstr "П_ідтвердження:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:12
+#: ../daemon/prompt/gkd-prompt.ui.h:5
 msgid "_Details:"
 msgstr "_Подробиці:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:13
+#: ../daemon/prompt/gkd-prompt.ui.h:6
 msgid "_Name:"
 msgstr "_Назва:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:14
+#: ../daemon/prompt/gkd-prompt.ui.h:7
 msgid "_Old Password:"
 msgstr "_Старий пароль:"
 
-#: ../daemon/prompt/gkd-prompt.ui.h:15
+#: ../daemon/prompt/gkd-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_Пароль:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:16
-msgid "minutes."
-msgstr "хвилин."
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -651,6 +649,22 @@ msgstr "Імпортувати у:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Пароль:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "Блокувати в'язку ключів після'"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "Блокувати в'язку, при простої'"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring when I log out"
+msgstr "Автоматично блокувати в'язку ключів при завершенні сеансу"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "хвилин"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1042,12 +1056,28 @@ msgstr "Запит підпису відхилено користувачем"
 msgid "Unknown error"
 msgstr "Невідома помилка"
 
-#: ../pkcs11/gck/gck-certificate.c:739
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Безіменний сертифікат"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:337
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Неможливо розібрати відкритий ключ SSH"
 
+#~ msgid "Automatically unlock secure storage when I log in."
+#~ msgstr "Автоматично розблоковувати цей сертифікат після входу у сеанс"
 
+#~ msgid ""
+#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
+#~ "to unlock</span>\n"
+#~ "\n"
+#~ "An application wants access to the keyring 'xxx', but it is locked."
+#~ msgstr ""
+#~ "<span size=\"large\" weight=\"bold\">Введіть пароль в'язки ключів 'login' "
+#~ "для розблокування</span>\n"
+#~ "\n"
+#~ "Програма бажає отримати доступ до в'язки ключів 'xxx', але вона "
+#~ "заблокована"
+
+#~ msgid "Prompt me for each application that accesses this keyring."
+#~ msgstr "Питати мене, перш ніж надавати програмі доступ до в'язки ключів."
