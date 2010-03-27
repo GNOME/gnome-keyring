@@ -4,10 +4,10 @@
 # Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>, 2008, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.29.91\n"
+"Project-Id-Version: gnome-keyring 2.30.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-16 09:52+0800\n"
-"PO-Revision-Date: 2010-02-16 09:53+0800\n"
+"POT-Creation-Date: 2010-03-27 20:53+0800\n"
+"PO-Revision-Date: 2010-03-27 20:54+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
@@ -53,80 +53,82 @@ msgstr "是否啟用 gnome-keyring SSH 代理程式。"
 msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "是否啟用 gnome-keyring 保密服務。"
 
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:579
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:615
+#: ../pkcs11/secret-store/gck-secret-collection.c:322
 msgid "Unnamed"
 msgstr "未命名的"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "更改密碼匙圈密碼"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "選擇「%s」密碼匙圈的新密碼"
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr "有程式要求更改「%s」密碼匙圈的密碼。請選擇你要給它使用的新密碼。"
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "原始的密碼是錯誤的"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "新增密碼匙圈密碼"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "輸入新密碼匙圈的密碼"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr "有程要求新增一個密碼匙圈，名為：「%s」。請選擇你要給它使用的密碼。"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:135
 msgid "Unlock Login Keyring"
 msgstr "解開登入密碼匙圈"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:136
+#: ../daemon/dbus/gkd-secret-unlock.c:137
 msgid "Enter password for to unlock your login keyring"
 msgstr "請輸入解鎖登入密碼匙圈的密碼"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:140
+#: ../daemon/dbus/gkd-secret-unlock.c:141
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr "你用來登入電腦的密碼已和登入密碼匙圈不符。"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:142
+#: ../daemon/dbus/gkd-secret-unlock.c:143
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr "你的登入密碼匙圈並未在登入你的電腦時自動解鎖。"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:183
+#: ../daemon/dbus/gkd-secret-unlock.c:184
 msgid "Unlock Keyring"
 msgstr "解開密碼匙圈"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:185
+#: ../daemon/dbus/gkd-secret-unlock.c:186
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "輸入密碼匙圈‘%s’的密碼，作為開鎖之用"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:189
+#: ../daemon/dbus/gkd-secret-unlock.c:190
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "有程式要求存取密碼匙圈「%s」，但是它已被鎖定"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:219
+#: ../daemon/dbus/gkd-secret-unlock.c:226
 msgid "The unlock password was incorrect"
 msgstr "解鎖的密碼是錯誤的"
 
@@ -154,7 +156,12 @@ msgstr "GNOME 密碼匙圈：SSH 代理程式"
 msgid "SSH Key Agent"
 msgstr "SSH 密碼匙代理程式"
 
-#: ../daemon/login/gkd-login.c:591
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:177
+msgid "Login"
+msgstr "登入"
+
+#: ../daemon/login/gkd-login.c:617
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "解鎖密碼用於：%s"
