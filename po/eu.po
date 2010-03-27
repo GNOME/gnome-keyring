@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-11 19:54+0100\n"
-"PO-Revision-Date: 2010-03-11 20:04+0100\n"
+"POT-Creation-Date: 2010-03-27 17:31+0100\n"
+"PO-Revision-Date: 2010-03-27 17:32+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,10 +27,10 @@ msgid ""
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
-"Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemonean. gnome-"
+"Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemon-ean. gnome-"
 "session-ekin abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
 "saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu "
-"batzuk daemonari ematean."
+"batzuk daemon-ari ematean."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -39,10 +39,10 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Aukera honek SSH agentea gaitzen du gnome-keyring daemonean. gnome-keyring-"
+"Aukera honek SSH agentea gaitzen du gnome-keyring daemon-ean. gnome-keyring-"
 "daemon abiaraztean soilik hartzen da eragina (adib. erabiltzaileak saioa "
 "hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu batzuk "
-"daemonari ematean."
+"daemon-ari ematean."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid ""
@@ -51,10 +51,10 @@ msgid ""
 "the user logs in). This setting may be overridden when certain command line "
 "arguments are passed to the daemon."
 msgstr ""
-"Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemonean. gnome-"
+"Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemon-ean. gnome-"
 "session-ekin abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
 "saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko argumentu "
-"batzuk daemonari ematean."
+"batzuk daemon-ari ematean."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -69,90 +69,88 @@ msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "'Gnome-keyring'-en ezkutuko zerbitzua gaitu behar den ala ez."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:615
+#: ../pkcs11/secret-store/gck-secret-collection.c:322
 msgid "Unnamed"
 msgstr "Izengabea"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "Aldatu gako-sortaren pasahitza"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Aukeratu '%s' gako-sortaren pasahitz berria"
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Aplikazio batek '%s' gako-sortaren pasahitza aldatzea nahi du. "
-"Aukeratu erabiltzea nahi duzun pasahitz berria."
+"Aplikazio batek '%s' gako-sortaren pasahitza aldatzea nahi du. Aukeratu "
+"erabiltzea nahi duzun pasahitz berria."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "Jatorriko pasahitza ez da zuzena"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "Gako-sorta berriaren pasahitza"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "Aukeratu gako-sorta berriaren pasahitza"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
-"Aplikazio batek '%s' izeneko gako-sorta berria sortu nahi du. "
-"Aukeratu erabiltzea nahi duzun pasahitz berria."
+"Aplikazio batek '%s' izeneko gako-sorta berria sortu nahi du. Aukeratu "
+"erabiltzea nahi duzun pasahitz berria."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:135
 msgid "Unlock Login Keyring"
 msgstr "Desblokeatu saioaren gako-sorta"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:136
+#: ../daemon/dbus/gkd-secret-unlock.c:137
 msgid "Enter password for to unlock your login keyring"
 msgstr "Sartu pasahitza zure saio-hasierako gako-sorta desblokeatzeko"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:140
+#: ../daemon/dbus/gkd-secret-unlock.c:141
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
-"Ordenagailuan saioa hasteko erabiltzen duzun pasahitza ez da gehiago bat etorriko "
-"gako-sortara atzitzekoarekin."
+"Ordenagailuan saioa hasteko erabiltzen duzun pasahitza ez da gehiago bat "
+"etorriko gako-sortara atzitzekoarekin."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:142
+#: ../daemon/dbus/gkd-secret-unlock.c:143
 msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Zure saioaren gako-sorta ez da automatikoki desblokeatu (ordenagailuan saioa "
 "hastean)."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:183
+#: ../daemon/dbus/gkd-secret-unlock.c:184
 msgid "Unlock Keyring"
 msgstr "Desblokeatu gako-sorta"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:185
+#: ../daemon/dbus/gkd-secret-unlock.c:186
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Idatzi pasahitza, '%s' gako-sorta desblokeatzeko"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:189
+#: ../daemon/dbus/gkd-secret-unlock.c:190
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Aplikazio batek '%s' gako-sorta atzitu nahi du, baina blokeatuta "
-"dago"
+msgstr "Aplikazio batek '%s' gako-sorta atzitu nahi du, baina blokeatuta dago"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:219
+#: ../daemon/dbus/gkd-secret-unlock.c:226
 msgid "The unlock password was incorrect"
 msgstr "Desblokeatzeko pasahitza ez da zuzena"
 
@@ -181,11 +179,11 @@ msgid "SSH Key Agent"
 msgstr "SSH gako-agentea"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:177
 msgid "Login"
 msgstr "Saio-hasiera"
 
-#: ../daemon/login/gkd-login.c:596
+#: ../daemon/login/gkd-login.c:617
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Desblokeatu %s(r)en gako-sorta"
@@ -877,7 +875,7 @@ msgstr "Pasahitza edo PINa baliogabea da"
 
 #: ../gp11/gp11-misc.c:173
 msgid "The password or PIN is of an invalid length"
-msgstr "Pasahitza edo PINaren luzeera baliogabekoa da"
+msgstr "Pasahitza edo PINaren luzera baliogabekoa da"
 
 #: ../gp11/gp11-misc.c:175
 msgid "The password or PIN has expired"
