@@ -1,350 +1,42 @@
 # translation of lt.po to Lithuanian
 # Lithuanian translation of gnome-keyring.
 # Copyright (C) 2004-2007, 2008 Free Software Foundation, Inc.
-#
 # Tomas Kuliavas <tokul@users.sourceforge.net>, 2004.
-# Žygimantas Beručka <zygis@gnome.org>, 2004-2007.
+# Žygimantas Beručka <zygis@gnome.org>, 2004-2007, 2010.
 # Gintautas Miliauskas <gintas@akl.lt>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 02:27+0300\n"
-"PO-Revision-Date: 2009-09-15 02:27+0300\n"
-"Last-Translator: Gintautas Miliauskas <gintautas@miliauskas.lt>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&component=general\n"
+"POT-Creation-Date: 2010-02-18 18:02+0000\n"
+"PO-Revision-Date: 2010-03-28 16:31+0300\n"
+"Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
 "100<10 || n%100>=20) ? 1 : 2);\n"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"Programa „%s“ (%s) nori gauti prieigą prie „<object prop='name'/>“ "
-"slaptažodžio numatytoje raktinėje."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"Programa „%s“ (%s) nori gauti prieigą prie „<object prop='name'/>“ "
-"slaptažodžio, esančio %s."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Programa „%s“ nori gauti prieigą prie „<object prop='name'/>“ slaptažodžio "
-"numatytoje raktinėje."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Programa „%s“ nori gauti prieigą prie „<object prop='name'/>“ slaptažodžio, "
-"esančio %s."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"Nežinoma programa nori gauti prieigą prie „<object prop='name'/>“ "
-"slaptažodžio numatytoje raktinėje."
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"Nežinoma programa nori gauti prieigą prie „<object prop='name'/>“ "
-"slaptažodžio, esančio %s."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "Suteikti prieigą"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "Ar suteikti programai prieigą prie raktinės?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"Programa „%s“ (%s) nori gauti prieigą prie numatytosios raktinės, tačiau ji "
-"užrakinta"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Programa „%s“ (%s) nori gauti prieigą prie raktinės „%s“, tačiau ji "
-"užrakinta."
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"Programa „%s“ nori gauti prieigą prie numatytosios raktinės, tačiau ji "
-"užrakinta."
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Programa „%s“ nori gauti prieigą prie raktinės „%s“, tačiau ji yra užrakinta"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"Nežinoma programa nori gauti prieigą prie numatytosios raktinės, tačiau ji "
-"užrakinta"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Nežinoma programa nori gauti prieigą prie raktinės „%s“, tačiau ji užrakinta"
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr "Įveskite numatytosios raktinės atrakinimo slaptažodį"
-
-#: ../daemon/gkr-daemon-ops.c:360
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Įveskite raktinės „%s“ atrakinimo slaptažodį"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "Atrakinti raktinę"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr "Kai prisijungiu, automatiškai atrakinti šią raktinę."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ (%s) nori sukurti naują raktinę pavadinimu „%s“. Turite "
-"pasirinkti jai naudotiną slaptažodį."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ (%s) nori sukurti naują numatytąją raktinę. Turite pasirinkti "
-"jai naudotiną slaptažodį."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ nori sukurti naują raktinę pavadinimu „%s“. Turite pasirinkti "
-"jai naudotiną slaptažodį."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ nori sukurti naują numatytąją raktinę. Turite pasirinkti jai "
-"naudotiną slaptažodį."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"Nežinoma programa nori sukurti naują raktinę pavadinimu „%s“. Turite "
-"pasirinkti jai naudotiną slaptažodį."
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"Nežinoma programa nori sukurti naują numatytąją raktinę. Turite pasirinkti "
-"jai naudotiną slaptažodį."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "Naujas raktinės slaptažodis"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "Pasirinkite naujos raktinės slaptažodį"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ (%s) ketina pakeisti raktinės „%s“ slaptažodį. Turite "
-"pasirinkti jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ (%s) ketina pakeisti numatytosios raktinės slaptažodį. Turite "
-"pasirinkti jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti "
-"jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Programa „%s“ ketina pakeisti numatytosios raktinės slaptažodį. Turite "
-"pasirinkti jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Nežinoma programa ketina pakeisti raktinės „%s“ slaptažodį. Turite "
-"pasirinkti jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Nežinoma programa ketina pakeisti numatytosios raktinės slaptažodį. Turite "
-"pasirinkti jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:552
-#, c-format
-msgid "Choose a new password for the '%s' keyring."
-msgstr "Pasirinkite naują raktinės „%s“ slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:554
-#, c-format
-msgid "Choose a new password for the default keyring."
-msgstr "Pasirinkite naują numatytosios raktinės slaptažodį."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
-msgid "Change Keyring Password"
-msgstr "Pakeiskite raktinės slaptažodį"
-
-#: ../daemon/gkr-daemon-ops.c:631
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Programa „%s“ (%s) nori išsaugoti slaptažodį, tačiau nėra numatytosios "
-"raktinės. Norėdami ją sukurti, turite pasirinkti jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Programa „%s“ nori išsaugoti slaptažodį, tačiau nėra numatytosios raktinės. "
-"Norėdami ją sukurti, turite pasirinkti jai naudotiną slaptažodį."
-
-#: ../daemon/gkr-daemon-ops.c:643
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Nežinoma programa nori išsaugoti slaptažodį, tačiau nėra numatytosios "
-"raktinės. Norėdami ją sukurti, turite pasirinkti jai naudotiną slaptažodį."
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "Sukurti numatytąją raktinę"
-
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "Pasirinkite numatytosios raktinės slaptažodį"
+"X-Generator: Virtaal 0.5.2\n"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
+#| msgid ""
+#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+#| "in). This setting may be overridden when certain command line arguments "
+#| "are passed to the daemon."
 msgid ""
 "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+"only takes effect during startup with gnome-session, (ie: when the user logs "
 "in). This setting may be overridden when certain command line arguments are "
 "passed to the daemon."
 msgstr ""
 "Ši parinktis įjungia PKCS#11 komponentą gnome-keyring tarnyboje. Ji svarbi "
-"tik startuojant gnome-keyring tarnybą, t.y., kai naudotojas prisijungia. Šis "
-"nustatymas gali būti pakeistas komandinės eilutės parametrais."
+"tik paleidžiant gnome-keyring tarnybą, t.y., kai naudotojas prisijungia. Šio "
+"nustatymo gali būti nepaisoma tarnybai nurodžius tam tikrus komandų eilutės "
+"parametrus."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid ""
@@ -353,95 +45,232 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Ši parinktis įjungia SSH agentą gnome-keyring tarnyboje.  Ji svarbi tik "
+"Ši parinktis įjungia SSH agentą gnome-keyring tarnyboje. Ji svarbi tik "
 "startuojant gnome-keyring tarnybą, t.y., kai naudotojas prisijungia. Šis "
 "nustatymas gali būti pakeistas komandinės eilutės parametrais."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
+#| msgid ""
+#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+#| "in). This setting may be overridden when certain command line arguments "
+#| "are passed to the daemon."
+msgid ""
+"This option enables the secret service component in the gnome-keyring "
+"daemon. It only takes effect during startup with gnome-session, (ie: when "
+"the user logs in). This setting may be overridden when certain command line "
+"arguments are passed to the daemon."
+msgstr ""
+"Ši parinktis įjungia slaptosios tarnybos komponentą gnome-keyring tarnyboje. "
+"Ji svarbi tik paleidžiant gnome-keyring tarnybą, t.y., kai naudotojas "
+"prisijungia. Šio nustatymo gali būti nepaisoma tarnybai nurodžius tam tikrus "
+"komandų eilutės parametrus."
+
+#: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 msgstr "Ar gnome-keyring PKCS#11 komponentas įjungtas."
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
+#: ../daemon/data/gnome-keyring.schemas.in.h:5
 msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Ar gnome-keyring SSH agentas įjungtas."
 
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "GNOME raktinės tarnyba"
+#: ../daemon/data/gnome-keyring.schemas.in.h:6
+#| msgid "Whether the gnome-keyring SSH agent is enabled."
+msgid "Whether the gnome-keyring secret service is enabled."
+msgstr "Ar gnome-keyring slaptoji tarnyba įjungta."
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
+#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
+#: ../pkcs11/secret-store/gck-secret-collection.c:320
+msgid "Unnamed"
+msgstr "Nepavadinta"
+
+#: ../daemon/dbus/gkd-secret-change.c:85
+msgid "Change Keyring Password"
+msgstr "Pakeiskite raktinės slaptažodį"
+
+#: ../daemon/dbus/gkd-secret-change.c:87
+#, c-format
+#| msgid "Choose a new password for the '%s' keyring."
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Pasirinkite naują raktinės „%s“ slaptažodį"
+
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
+#| msgid ""
+#| "An unknown application wants to change the password for the '%s' keyring. "
+#| "You have to choose the password you want to use for it."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Programa ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti jai "
+"naudotiną slaptažodį."
+
+#: ../daemon/dbus/gkd-secret-change.c:110
+#| msgid "The password or PIN is incorrect"
+msgid "The original password was incorrect"
+msgstr "Pradinis slaptažodis buvo neteisingas"
+
+#: ../daemon/dbus/gkd-secret-create.c:77
+msgid "New Keyring Password"
+msgstr "Naujas raktinės slaptažodis"
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "Choose password for new keyring"
+msgstr "Pasirinkite naujos raktinės slaptažodį"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+#| msgid ""
+#| "An unknown application wants to create a new keyring called '%s'. You "
+#| "have to choose the password you want to use for it."
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Programa nori sukurti naują raktinę pavadinimu „%s“. Turite pasirinkti jai "
+"naudotiną slaptažodį."
+
+#: ../daemon/dbus/gkd-secret-unlock.c:134
 msgid "Unlock Login Keyring"
 msgstr "Atrakinti prisijungimo raktinę"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
-msgstr "Įveskite prisijungimo slaptažodį, kad atrakintumėte raktinę"
+#: ../daemon/dbus/gkd-secret-unlock.c:136
+#| msgid "Enter login password to unlock keyring"
+msgid "Enter password for to unlock your login keyring"
+msgstr "Įveskite slaptažodį, kad atrakintumėte savo prisijungimo raktinę"
 
-#: ../daemon/keyrings/gkr-keyring-login.c:101
+#: ../daemon/dbus/gkd-secret-unlock.c:140
 msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
 msgstr ""
-"Prisijungimo raktinė nebuvo automatiškai atverta kai pradėjote dirbti prie "
-"šio kompiuterio."
+"Slaptažodis, kurį naudojate prisijungdami prie kompiuterio, nebeatitinka "
+"jūsų prisijungimo raktinės slaptažodžio."
 
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "Sukurti prisijungimo raktinę"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "Pakeiskite prisijungimo slaptažodį"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:127
+#: ../daemon/dbus/gkd-secret-unlock.c:142
+#| msgid ""
+#| "Your login keyring was not automatically unlocked when you logged into "
+#| "this computer."
 msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"Prisijungimo raktinė nebuvo automatiškai sukurta, kai prisijungėte. Ji bus "
-"sukurta dabar."
+"Prisijungimo raktinė nebuvo automatiškai atrakinta, kai prisijungėte prie "
+"savo kompiuterio."
 
-#: ../daemon/keyrings/gkr-keyring.c:587
+#: ../daemon/dbus/gkd-secret-unlock.c:183
+msgid "Unlock Keyring"
+msgstr "Atrakinti raktinę"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:185
 #, c-format
-msgid "Unlock password for %s keyring"
-msgstr "Raktinės %s atrakinimo slaptažodis"
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Įveskite raktinės „%s“ atrakinimo slaptažodį"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
+#: ../daemon/dbus/gkd-secret-unlock.c:189
+#, c-format
+#| msgid ""
+#| "An unknown application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Programa nori gauti prieigą prie raktinės „%s“, tačiau ji užrakinta"
+
+#: ../daemon/dbus/gkd-secret-unlock.c:219
+#| msgid "The password or PIN is incorrect"
+msgid "The unlock password was incorrect"
+msgstr "Atrakinimo slaptažodis neteisingas"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+#| msgid "Unlock certificate/key storage"
+msgid "Certificate and Key Storage"
+msgstr "Liudijimų ir raktų saugykla"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME raktinė: PKCS#11 komponentas"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME raktinė: slaptoji tarnyba"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "Slaptoji saugojimo tarnyba"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+#| msgid "GNOME Keyring Daemon"
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME raktinė: SSH tarnyba"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "SSH raktų tarnyba"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:174
+msgid "Login"
+msgstr "Prisijungimas"
+
+#: ../daemon/login/gkd-login.c:596
+#, c-format
+#| msgid "Unlock password for '%s'"
+msgid "Unlock password for: %s"
+msgstr "„%s“ atrakinimo slaptažodis"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
+msgid "New Password Required"
+msgstr "Įveskite naują slaptažodį"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
+msgid "New password required for secure storage"
+msgstr "Įveskite saugyklos saugos slaptažodį"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Norint paruošti saugyklą „%s“ liudijimų ar raktų saugojimui, reiks "
+"slaptažodžio"
+
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
 msgid "Unlock private key"
 msgstr "Atrakinti privatų raktą"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
 msgid "Unlock certificate"
-msgstr "Atrakinti sertifikatą"
+msgstr "Atrakinti liudijimą"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
 msgid "Unlock public key"
 msgstr "Atrakinti viešąjį raktą"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
 msgid "Unlock"
 msgstr "Atrakinti"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
 msgid "Enter password to unlock the private key"
 msgstr "Įveskite slaptažodį, kad atrakintumėte privatų raktą"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
 msgid "Enter password to unlock the certificate"
-msgstr "Įveskite slaptažodį, kad atrakintumėte sertifikatą"
+msgstr "Įveskite slaptažodį, kad atrakintumėte liudijimą"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
 msgid "Enter password to unlock the public key"
 msgstr "Įveskite slaptažodį, kad atrakintumėte viešajį raktą"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
 msgid "Enter password to unlock"
 msgstr "Įveskite atrakinimo slaptažodį"
 
 #. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -449,15 +278,15 @@ msgstr ""
 "užrakintas"
 
 #. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
-"Nežinoma programa nori gauti prieigą prie sertifikato „%s“, tačiau jis "
+"Nežinoma programa nori gauti prieigą prie liudijimo „%s“, tačiau jis "
 "užrakintas"
 
 #. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
@@ -465,104 +294,34 @@ msgstr ""
 "užrakintas"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Nežinoma programa nori gauti prieigą prie „%s“, tačiau jis užrakintas"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "Kai prisijungiu, automatiškai atrakinti šį privatų raktą."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "Kai prisijungiu, automatiškai atrakinti šį sertifikatą."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "Kai prisijungiu, automatiškai atrakinti šį viešąjį raktą."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "Kai prisijungiu, automatiškai atrakinti."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
 msgid "Unlock certificate/key storage"
-msgstr "Atrakinti sertifikatų/raktų saugyklą"
+msgstr "Atrakinti liudijimų/raktų saugyklą"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "Įveskite slaptažodį sertifikatų/raktų saugyklos atrakinimui"
+msgstr "Įveskite slaptažodį liudijimų/raktų saugyklos atrakinimui"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
+#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"Programa nori gauti prieigą prie sertifikatų/raktų saugyklos „%s“, bet "
+"Programa nori gauti prieigą prie liudijimų/raktų saugyklos „%s“, bet "
 "pastaroji užrakinta"
 
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr "Kai prisijungiu, automatiškai atrakinti šią saugyklą."
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
-msgid "New Password Required"
-msgstr "Įveskite naują slaptažodį"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
-msgid "New password required for secure storage"
-msgstr "Įveskite saugyklos saugos slaptažodį"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Norint paruošti saugyklą „%s“ sertifikatų ar raktų saugojimui, reiks "
-"slaptažodžio"
-
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Nepavyko susekti pelės veiksmų.</big></b>\n"
-"\n"
-"Seansas gali būti sekamas piktavalio naudotojo arba tiesiog spustelėjote "
-"meniu ar kuri nors programa suaktyvino savo langą.\n"
-"\n"
-"Bandykite dar kartą."
-
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>Nepavyko susekti klaviatūros veiksmų.</big></b>\n"
-"\n"
-"Seansas gali būti sekamas piktavalio naudotojo arba tiesiog spustelėjote "
-"meniu ar kuri nors programa suaktyvino savo langą.\n"
-"\n"
-"Bandykite dar kartą."
-
-#: ../daemon/ui/gkr-ask-tool.c:276
+#: ../daemon/prompt/gkd-prompt-tool.c:393
 msgid "Store passwords unencrypted?"
 msgstr "Saugoti nešifruotus slaptažodžius?"
 
-#: ../daemon/ui/gkr-ask-tool.c:277
+#: ../daemon/prompt/gkd-prompt-tool.c:394
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -571,84 +330,53 @@ msgstr ""
 "Jei pasirinksite tuščią slaptažodį, saugomi slaptažodžiai nebus saugiai "
 "užšifruoti. Jie bus prieinami visiems, kas gali skaityti Jūsų failus."
 
-#: ../daemon/ui/gkr-ask-tool.c:284
+#: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
 msgstr "Naudoti nesaugią saugyklą"
 
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "_Vieta:"
-
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "S_enas slaptažodis:"
-
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "_Slaptažodis:"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "_Patvirtinkite slaptažodį:"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "Naujo slaptažodžio stiprumas"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
+#: ../daemon/prompt/gkd-prompt-tool.c:431
 msgid "Passwords do not match."
 msgstr "Slaptažodžiai nesutampa."
 
-#: ../daemon/ui/gkr-ask-tool.c:661
+#: ../daemon/prompt/gkd-prompt-tool.c:441
 msgid "Password cannot be blank"
 msgstr "Slaptažodis negali būti tuščias"
 
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "Už_drausti"
+#: ../daemon/prompt/gkd-prompt.ui.h:1
+#| msgid "Automatically unlock this keyring when I log in."
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Automatiškai atrakinti šią raktinę, kai prisijungiu"
 
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "K_urti"
+#: ../daemon/prompt/gkd-prompt.ui.h:2
+msgid "New password strength"
+msgstr "Naujo slaptažodžio stiprumas"
 
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "_Keisti"
+#: ../daemon/prompt/gkd-prompt.ui.h:3
+#| msgid "_Location:"
+msgid "_Application:"
+msgstr "_Programa:"
 
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "Leisti _tik šį kartą"
+#: ../daemon/prompt/gkd-prompt.ui.h:4
+#| msgid "_Confirm password:"
+msgid "_Confirm:"
+msgstr "_Patvirtinkite:"
 
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "_Visada leisti"
+#: ../daemon/prompt/gkd-prompt.ui.h:5
+msgid "_Details:"
+msgstr "_Išsami informacija:"
 
-#: ../daemon/util/gkr-location.c:238
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "Keičiamasis diskas: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Vardas:"
 
-#: ../daemon/util/gkr-location.c:240
-msgid "Removable Disk"
-msgstr "Keičiamasis diskas"
+#: ../daemon/prompt/gkd-prompt.ui.h:7
+#| msgid "_Old password:"
+msgid "_Old Password:"
+msgstr "_Senas slaptažodis:"
 
-#: ../daemon/util/gkr-location.c:331 ../daemon/util/gkr-location.c:343
-msgid "Home"
-msgstr "Namai"
-
-#: ../daemon/util/gkr-location.c:886 ../daemon/util/gkr-location.c:910
-msgid "The disk or drive this file is located on is not present"
-msgstr "Nerastas diskas, kuriame yra šis failas"
-
-#: ../daemon/util/gkr-location.c:918
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "Nepavyko sukurti aplanko: %s"
-
-#: ../daemon/util/gkr-location.c:952
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "Nepavyko ištrinti failo: %s"
+#: ../daemon/prompt/gkd-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Slaptažodis:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -684,7 +412,7 @@ msgstr "Gyvenamoji šalis"
 
 #: ../egg/egg-oid.c:65
 msgid "Common Name"
-msgstr "Bendras vardas"
+msgstr "Bendrinis vardas"
 
 #: ../egg/egg-oid.c:67
 msgid "Surname"
@@ -693,7 +421,7 @@ msgstr "Pavardė"
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
 #: ../gcr/gcr-certificate-details-widget.c:322
 msgid "Serial Number"
-msgstr "Serijinis numeris"
+msgstr "Serijos numeris"
 
 #: ../egg/egg-oid.c:71
 msgid "Country"
@@ -737,7 +465,7 @@ msgstr "Slapyvardis"
 
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr "Generacijos kvalifikatorius"
+msgstr "Kartos kvalifikatorius"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
@@ -771,9 +499,21 @@ msgstr "DSA"
 msgid "SHA1 with DSA"
 msgstr "SHA1 su DSA"
 
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr ""
+"Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proceso (%"
+"s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Netikėta klaida funkcijoje waitpid() (%s)"
+
 #: ../gcr/gcr-certificate-basics-widget.c:59
 msgid "<i>Not Part of Certificate</i>"
-msgstr "<i>Ne sertifikato dalis</i>"
+msgstr "<i>Ne liudijimo dalis</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
@@ -781,11 +521,11 @@ msgstr "<b>nežinoma</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:1
 msgid "<Not Part of Certificate>"
-msgstr "<Ne sertifikato dalis>"
+msgstr "<Ne liudijimo dalis>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:2
 msgid "<b>Fingerprints</b>"
-msgstr "<b>Antspaudai</b> "
+msgstr "<b>Kontroliniai kodai</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:3
 msgid "<b>Issued By</b>"
@@ -797,7 +537,7 @@ msgstr "<b>Kam išdavė</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:5
 msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>Šis sertifikatas patikrintas šioms panaudojimo sritims:</b>"
+msgstr "<b>Šis liudijimas patikrintas šioms naudojimo galimybėms:</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:6
 msgid "<b>Validity</b>"
@@ -809,11 +549,11 @@ msgstr "Bendrinis vardas (CN)"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:8
 msgid "Email Recipient Certificate"
-msgstr "Pašto gavėjo sertifikatas"
+msgstr "El. laiško gavėjo liudijimas"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:9
 msgid "Email Signer Certificate"
-msgstr "Pašto pasirašytojo sertifikatas"
+msgstr "El. laiško pasirašytojo liudijimas"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:10
 msgid "Expires On"
@@ -841,11 +581,11 @@ msgstr "SHA1 kontrolinis kodas"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:16
 msgid "SSL Client Certificate"
-msgstr "SSL kliento sertifikatas"
+msgstr "SSL kliento liudijimas"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:17
 msgid "SSL Server Certificate"
-msgstr "SSL serverio sertifikatas"
+msgstr "SSL serverio liudijimas"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -884,7 +624,7 @@ msgstr "Kas išdavė"
 #. The Issued Parameters
 #: ../gcr/gcr-certificate-details-widget.c:311
 msgid "Issued Certificate"
-msgstr "Išduotasis sertifikatas"
+msgstr "Išduotasis liudijimas"
 
 #: ../gcr/gcr-certificate-details-widget.c:316
 msgid "Version"
@@ -936,12 +676,11 @@ msgstr "Viešasis raktas"
 #. Fingerprints
 #: ../gcr/gcr-certificate-details-widget.c:386
 msgid "Fingerprints"
-msgstr "Antspaudai"
+msgstr "Kontroliniai kodai"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr ""
-"<span size='large' weight='bold'>Importuoti sertifikatus ir raktus</span>"
+msgstr "<span size='large' weight='bold'>Importuoti liudijimus ir raktus</span>"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
@@ -950,6 +689,23 @@ msgstr "Importuoti į:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Slaptažodis:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr "Užrakinti šią raktinę po"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr "Užrakinti šią raktinę, jei nenaudojama"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#| msgid "Automatically unlock this keyring when I log in."
+msgid "Lock this keyring when I log out"
+msgstr "Užrakinti šią raktinę, kai atsijungiu"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "minučių"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -962,11 +718,11 @@ msgstr "Neprieinama vieta, į kurią importuoti"
 
 #: ../gcr/gcr-importer.c:404
 msgid "Import Certificates/Keys"
-msgstr "Importuoti sertifikatus/raktus"
+msgstr "Importuoti liudijimus/raktus"
 
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
-msgstr "Pasirinkite vietą importuotų sertifikatų/raktų saugojimui."
+msgstr "Pasirinkite vietą importuotų liudijimų/raktų saugojimui."
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -976,7 +732,7 @@ msgstr "Norint importuoti privatųjį raktą „%s“, jį reiks atrakinti"
 #. TRANSLATORS: The certificate is locked.
 #: ../gcr/gcr-importer.c:452
 msgid "In order to import the certificate, it must be unlocked"
-msgstr "Norint importuoti sertifikatą, jį reiks atrakinti"
+msgstr "Norint importuoti liudijimą, jį reiks atrakinti"
 
 #. TRANSLATORS: The data is locked.
 #: ../gcr/gcr-importer.c:455
@@ -993,7 +749,7 @@ msgstr "Norint importuoti privatųjį raktą „%s“, jį reiks atrakinti"
 #: ../gcr/gcr-importer.c:463
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Norint importuoti sertifikatą „%s“, jį reiks atrakinti"
+msgstr "Norint importuoti liudijimą „%s“, jį reiks atrakinti"
 
 #. TRANSLATORS: The object '%s' is locked.
 #: ../gcr/gcr-importer.c:466
@@ -1007,7 +763,7 @@ msgstr "Privatus raktas"
 
 #: ../gcr/gcr-parser.c:199
 msgid "Certificate"
-msgstr "Sertifikatas"
+msgstr "Liudijimas"
 
 #: ../gcr/gcr-parser.c:1576
 msgid "Unrecognized or unsupported data."
@@ -1099,7 +855,7 @@ msgstr "Operacija nepalaikoma"
 
 #: ../gp11/gp11-misc.c:139
 msgid "The key is missing or invalid"
-msgstr "Rakto trūksta arba jis netaisyklingas"
+msgstr "Rakto nėra arba jis netaisyklingas"
 
 #: ../gp11/gp11-misc.c:141
 msgid "The key is the wrong size"
@@ -1139,19 +895,19 @@ msgstr "Rakto negalima eksportuoti"
 
 #: ../gp11/gp11-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Kriptografijos mechanizmas netaisyklingas arba neatpažintas"
+msgstr "Kriptografijos mechanizmas netinkamas arba neatpažintas"
 
 #: ../gp11/gp11-misc.c:161
 msgid "The crypto mechanism has an invalid argument"
-msgstr "Kriptografijos mechanizmas gavo netaisyklingą argumentą"
+msgstr "Kriptografijos mechanizmui pateiktas netinkamas argumentas"
 
 #: ../gp11/gp11-misc.c:163
 msgid "The object is missing or invalid"
-msgstr "Objekto trūksta arba jis netaisyklingas"
+msgstr "Objekto nėra arba jis netinkamas"
 
 #: ../gp11/gp11-misc.c:165
 msgid "Another operation is already taking place"
-msgstr "Kita operacija jau aktyvi"
+msgstr "Jau vyksta kita operacija"
 
 #: ../gp11/gp11-misc.c:167
 msgid "No operation is taking place"
@@ -1267,7 +1023,7 @@ msgstr "Kitas naudotojas jau prisijungęs"
 
 #: ../gp11/gp11-misc.c:223
 msgid "Too many users of different types logged in"
-msgstr "PrisijungępPer daug skirtingų tipų naudotojų"
+msgstr "Prisijungę per daug skirtingų tipų naudotojų"
 
 #: ../gp11/gp11-misc.c:225
 msgid "Cannot import an invalid key"
@@ -1341,45 +1097,318 @@ msgstr "Pasirašymo užklausa atmesta naudotojo"
 msgid "Unknown error"
 msgstr "Nežinoma klaida"
 
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "Prieiga uždrausta"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "Nepaleista gnome-keyring-daemon programa."
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "Ryšio su gnome-keyring-manager klaida"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "Raktinė tokiu pavadinimu jau yra"
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "Programavimo klaida: programa perdavė netinkamus duomenis."
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "Nerasta tinkamų rezultatų"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "Raktinė tokiu pavadinimu neegzistuoja."
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "Raktinė jau buvo atrakinta."
-
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../pkcs11/gck/gck-certificate.c:740
 msgid "Unnamed Certificate"
-msgstr "Bevardis sertifikatas"
+msgstr "Bevardis liudijimas"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
-msgstr "Nepavyko išanalizuoti viešojo SSH rakto"
+msgstr "Nepavyko apdoroti viešojo SSH rakto"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "Programa „%s“ (%s) nori gauti prieigą prie „<object prop='name'/>“ "
+#~ "slaptažodžio numatytoje raktinėje."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "Programa „%s“ (%s) nori gauti prieigą prie „<object prop='name'/>“ "
+#~ "slaptažodžio, esančio %s."
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "Programa „%s“ nori gauti prieigą prie „<object prop='name'/>“ "
+#~ "slaptažodžio numatytoje raktinėje."
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "Programa „%s“ nori gauti prieigą prie „<object prop='name'/>“ "
+#~ "slaptažodžio, esančio %s."
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "Nežinoma programa nori gauti prieigą prie „<object prop='name'/>“ "
+#~ "slaptažodžio numatytoje raktinėje."
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "Nežinoma programa nori gauti prieigą prie „<object prop='name'/>“ "
+#~ "slaptažodžio, esančio %s."
+
+#~ msgid "Allow access"
+#~ msgstr "Suteikti prieigą"
+
+#~ msgid "Allow application access to keyring?"
+#~ msgstr "Ar suteikti programai prieigą prie raktinės?"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Programa „%s“ (%s) nori gauti prieigą prie numatytosios raktinės, tačiau "
+#~ "ji užrakinta"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Programa „%s“ (%s) nori gauti prieigą prie raktinės „%s“, tačiau ji "
+#~ "užrakinta."
+
+#~ msgid ""
+#~ "The application '%s' wants access to the default keyring, but it is locked"
+#~ msgstr ""
+#~ "Programa „%s“ nori gauti prieigą prie numatytosios raktinės, tačiau ji "
+#~ "užrakinta."
+
+#~ msgid ""
+#~ "The application '%s' wants access to the keyring '%s', but it is locked"
+#~ msgstr ""
+#~ "Programa „%s“ nori gauti prieigą prie raktinės „%s“, tačiau ji yra "
+#~ "užrakinta"
+
+#~ msgid ""
+#~ "An unknown application wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Nežinoma programa nori gauti prieigą prie numatytosios raktinės, tačiau "
+#~ "ji užrakinta"
+
+#~ msgid "Enter password for default keyring to unlock"
+#~ msgstr "Įveskite numatytosios raktinės atrakinimo slaptažodį"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
+#~ "have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ (%s) nori sukurti naują raktinę pavadinimu „%s“. Turite "
+#~ "pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new default keyring. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ (%s) nori sukurti naują numatytąją raktinę. Turite "
+#~ "pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new keyring called '%s'. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ nori sukurti naują raktinę pavadinimu „%s“. Turite "
+#~ "pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ nori sukurti naują numatytąją raktinę. Turite pasirinkti "
+#~ "jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "An unknown application wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "Nežinoma programa nori sukurti naują numatytąją raktinę. Turite "
+#~ "pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the '%s' "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ (%s) ketina pakeisti raktinės „%s“ slaptažodį. Turite "
+#~ "pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ (%s) ketina pakeisti numatytosios raktinės slaptažodį. "
+#~ "Turite pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti "
+#~ "jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ ketina pakeisti numatytosios raktinės slaptažodį. Turite "
+#~ "pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "An unknown application wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "Nežinoma programa ketina pakeisti numatytosios raktinės slaptažodį. "
+#~ "Turite pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid "Choose a new password for the default keyring."
+#~ msgstr "Pasirinkite naują numatytosios raktinės slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to store a password, but there is no "
+#~ "default keyring. To create one, you need to choose the password you wish "
+#~ "to use for it."
+#~ msgstr ""
+#~ "Programa „%s“ (%s) nori išsaugoti slaptažodį, tačiau nėra numatytosios "
+#~ "raktinės. Norėdami ją sukurti, turite pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "The application '%s' wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "Programa „%s“ nori išsaugoti slaptažodį, tačiau nėra numatytosios "
+#~ "raktinės. Norėdami ją sukurti, turite pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid ""
+#~ "An unknown application wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "Nežinoma programa nori išsaugoti slaptažodį, tačiau nėra numatytosios "
+#~ "raktinės. Norėdami ją sukurti, turite pasirinkti jai naudotiną slaptažodį."
+
+#~ msgid "Create Default Keyring"
+#~ msgstr "Sukurti numatytąją raktinę"
+
+#~ msgid "Choose password for default keyring"
+#~ msgstr "Pasirinkite numatytosios raktinės slaptažodį"
+
+#~ msgid "Create Login Keyring"
+#~ msgstr "Sukurti prisijungimo raktinę"
+
+#~ msgid "Enter your login password"
+#~ msgstr "Pakeiskite prisijungimo slaptažodį"
+
+#~ msgid ""
+#~ "Your login keyring was not automatically created when you logged into "
+#~ "this computer. It will now be created."
+#~ msgstr ""
+#~ "Prisijungimo raktinė nebuvo automatiškai sukurta, kai prisijungėte. Ji "
+#~ "bus sukurta dabar."
+
+#~ msgid "Unlock password for %s keyring"
+#~ msgstr "Raktinės %s atrakinimo slaptažodis"
+
+#~ msgid "Automatically unlock this private key when I log in."
+#~ msgstr "Kai prisijungiu, automatiškai atrakinti šį privatų raktą."
+
+#~ msgid "Automatically unlock this certificate when I log in."
+#~ msgstr "Kai prisijungiu, automatiškai atrakinti šį sertifikatą."
+
+#~ msgid "Automatically unlock this public key when I log in."
+#~ msgstr "Kai prisijungiu, automatiškai atrakinti šį viešąjį raktą."
+
+#~ msgid "Automatically unlock this when I log in"
+#~ msgstr "Kai prisijungiu, automatiškai atrakinti."
+
+#~ msgid "Automatically unlock secure storage when I log in."
+#~ msgstr "Kai prisijungiu, automatiškai atrakinti šią saugyklą."
+
+#~ msgid ""
+#~ "<b><big>Could not grab your mouse.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>Nepavyko susekti pelės veiksmų.</big></b>\n"
+#~ "\n"
+#~ "Seansas gali būti sekamas piktavalio naudotojo arba tiesiog spustelėjote "
+#~ "meniu ar kuri nors programa suaktyvino savo langą.\n"
+#~ "\n"
+#~ "Bandykite dar kartą."
+
+#~ msgid ""
+#~ "<b><big>Could not grab your keyboard.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>Nepavyko susekti klaviatūros veiksmų.</big></b>\n"
+#~ "\n"
+#~ "Seansas gali būti sekamas piktavalio naudotojo arba tiesiog spustelėjote "
+#~ "meniu ar kuri nors programa suaktyvino savo langą.\n"
+#~ "\n"
+#~ "Bandykite dar kartą."
+
+#~ msgid "_Deny"
+#~ msgstr "Už_drausti"
+
+#~ msgid "C_reate"
+#~ msgstr "K_urti"
+
+#~ msgid "C_hange"
+#~ msgstr "_Keisti"
+
+#~ msgid "Allow _Once"
+#~ msgstr "Leisti _tik šį kartą"
+
+#~ msgid "_Always Allow"
+#~ msgstr "_Visada leisti"
+
+#~ msgid "Removable Disk: %s"
+#~ msgstr "Keičiamasis diskas: %s"
+
+#~ msgid "Removable Disk"
+#~ msgstr "Keičiamasis diskas"
+
+#~ msgid "Home"
+#~ msgstr "Namai"
+
+#~ msgid "The disk or drive this file is located on is not present"
+#~ msgstr "Nerastas diskas, kuriame yra šis failas"
+
+#~ msgid "Couldn't create directory: %s"
+#~ msgstr "Nepavyko sukurti aplanko: %s"
+
+#~ msgid "Couldn't delete the file: %s"
+#~ msgstr "Nepavyko ištrinti failo: %s"
+
+#~ msgid "Access Denied"
+#~ msgstr "Prieiga uždrausta"
+
+#~ msgid "The gnome-keyring-daemon application is not running."
+#~ msgstr "Nepaleista gnome-keyring-daemon programa."
+
+#~ msgid "Error communicating with gnome-keyring-daemon"
+#~ msgstr "Ryšio su gnome-keyring-manager klaida"
+
+#~ msgid "A keyring with that name already exists"
+#~ msgstr "Raktinė tokiu pavadinimu jau yra"
+
+#~ msgid "Programmer error: The application sent invalid data."
+#~ msgstr "Programavimo klaida: programa perdavė netinkamus duomenis."
+
+#~ msgid "No matching results"
+#~ msgstr "Nerasta tinkamų rezultatų"
+
+#~ msgid "A keyring with that name does not exist."
+#~ msgstr "Raktinė tokiu pavadinimu neegzistuoja."
+
+#~ msgid "The keyring has already been unlocked."
+#~ msgstr "Raktinė jau buvo atrakinta."
 
 #~ msgid ""
 #~ "A list of paths to PKCS#11 modules to load. No modules are currently "
@@ -1470,6 +1499,3 @@ msgstr "Nepavyko išanalizuoti viešojo SSH rakto"
 
 #~ msgid "Couldn't encode the SSH key to store it."
 #~ msgstr "Nepavyko užkoduoti SSH rakto, kad jį būtų galima įrašyti."
-
-#~ msgid "Unlock password for '%s'"
-#~ msgstr "„%s“ atrakinimo slaptažodis"
