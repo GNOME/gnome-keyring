@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-01 19:30+0100\n"
-"PO-Revision-Date: 2010-02-25 19:31+0100\n"
+"POT-Creation-Date: 2010-03-28 20:26+0200\n"
+"PO-Revision-Date: 2010-03-28 17:11+0100\n"
 "Last-Translator: Lucas Lommer <llommer@svn.gnome.org>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -71,22 +71,22 @@ msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "Zda je služba utajení dat pro gnome-keyring aktivní."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:615
+#: ../pkcs11/secret-store/gck-secret-collection.c:322
 msgid "Unnamed"
 msgstr "Nepojmenovaná"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "Změnit heslo klíčenky"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Zvolte nové heslo pro klíčenku '%s'"
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -95,19 +95,19 @@ msgstr ""
 "Nějaká aplikace chce změnit heslo klíčenky '%s'. Zvolte heslo, které pro ni "
 "chcete používat."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "Původní heslo není správné"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "Heslo nové klíčenky"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "Zvolte heslo pro novou klíčenku"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -116,15 +116,15 @@ msgstr ""
 "Nějaká aplikace chce vytvořit novou klíčenku nazvanou '%s'. Zvolite heslo, "
 "které pro ni chcete používat."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:135
 msgid "Unlock Login Keyring"
 msgstr "Odemknout přihlašovací klíčenku"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:136
+#: ../daemon/dbus/gkd-secret-unlock.c:137
 msgid "Enter password for to unlock your login keyring"
 msgstr "Zadejte heslo k odemčení přihlašovací klíčenky"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:140
+#: ../daemon/dbus/gkd-secret-unlock.c:141
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -132,28 +132,28 @@ msgstr ""
 "Heslo, které používáte k přihlášení k tomuto počítači, již nadále neodpovídá "
 "tomu, které používáte pro přihlašovací klíčenku."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:142
+#: ../daemon/dbus/gkd-secret-unlock.c:143
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Vaše přihlašovací klíčenka nebyla během vašeho přihlášení k tomuto počítači "
 "odemčena."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:183
+#: ../daemon/dbus/gkd-secret-unlock.c:184
 msgid "Unlock Keyring"
 msgstr "Odemknout klíčenku"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:185
+#: ../daemon/dbus/gkd-secret-unlock.c:186
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Zadejte heslo pro odemčení klíčenky '%s'"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:189
+#: ../daemon/dbus/gkd-secret-unlock.c:190
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Nějaká aplikace chce přístup ke klíčence '%s', která je zamčena"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:219
+#: ../daemon/dbus/gkd-secret-unlock.c:226
 msgid "The unlock password was incorrect"
 msgstr "Heslo k odemčení není správné"
 
@@ -182,11 +182,11 @@ msgid "SSH Key Agent"
 msgstr "Agent klíčů SSH"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:177
 msgid "Login"
 msgstr "Login"
 
-#: ../daemon/login/gkd-login.c:596
+#: ../daemon/login/gkd-login.c:617
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Odemykací heslo pro: %s"
@@ -244,19 +244,19 @@ msgstr "Zadejte heslo k odemknutí"
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Aplikace požaduje přístup k soukromému klíči \"%s\", ale ten je zamčen"
+msgstr "Aplikace požaduje přístup k soukromému klíči „%s“, ale ten je zamčen"
 
 #. TRANSLATORS: The certificate is locked
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Aplikace požaduje přístup k certifikátu \"%s\", ale ten je zamčen"
+msgstr "Aplikace požaduje přístup k certifikátu „%s“, ale ten je zamčen"
 
 #. TRANSLATORS: The public key is locked
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Aplikace požaduje přístup k veřejnému klíči \"%s\", ale ten je zamčen"
+msgstr "Aplikace požaduje přístup k veřejnému klíči „%s“, ale ten je zamčen"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
