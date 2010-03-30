@@ -1,3 +1,12 @@
+Changes in version 2.30.0 are:
+ * More robust error display and handling.
+ * Don't assert on va_list.
+ * Don't save session keyring to disk.
+ * Allow unlocking even when always unlock is not available.
+ * Hide the automatically unlock check when login not usable.
+ * Fix various issues storing and using auto unlock passwords.
+ * Updated translations.
+
 Changes in version 2.29.92 are:
  * Fix various problems with not storing secret value properly.
  * Return no results when a search includes a bad collection identifier.
