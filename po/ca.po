@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-27 20:04+0100\n"
-"PO-Revision-Date: 2010-02-21 23:05+0100\n"
+"PO-Revision-Date: 2010-04-02 17:39+0200\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -862,7 +862,7 @@ msgstr "Falta l'objecte o no és vàlid"
 
 #: ../gp11/gp11-misc.c:165
 msgid "Another operation is already taking place"
-msgstr "Ja s'esta realitzant una altra operació"
+msgstr "Ja s'està realitzant una altra operació"
 
 #: ../gp11/gp11-misc.c:167
 msgid "No operation is taking place"
