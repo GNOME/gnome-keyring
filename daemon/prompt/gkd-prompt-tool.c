@@ -419,7 +419,7 @@ validate_passwords (GtkBuilder *builder, GtkDialog *dialog)
 	g_return_val_if_fail (pentry && centry, FALSE);
 
 	/* No confirm, no password check */
-	if (!GTK_WIDGET_REALIZED (centry))
+	if (!gtk_widget_get_realized (GTK_WIDGET (centry)))
 		return TRUE;
 
 	password = gtk_entry_get_text (GTK_ENTRY (pentry));
@@ -511,7 +511,7 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	g_return_if_fail (GTK_IS_ENTRY (entry));
 	g_free (name);
 
-	if (!GTK_WIDGET_REALIZED (GTK_WIDGET (entry)))
+	if (!gtk_widget_get_realized (GTK_WIDGET (entry)))
 		return;
 
 	/* A non-encrypted password: just send the value back */

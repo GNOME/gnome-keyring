@@ -110,7 +110,7 @@ static void
 gcr_import_dialog_real_realize (GtkWidget *base)
 {
 	GcrImportDialog *self = GCR_IMPORT_DIALOG (base);
-	if (GTK_WIDGET_VISIBLE (self->pv->combo)) 
+	if (gtk_widget_get_visible (GTK_WIDGET (self->pv->combo)))
 		populate_slots (self);	
 	GTK_WIDGET_CLASS (_gcr_import_dialog_parent_class)->realize (base);
 }
@@ -311,7 +311,7 @@ _gcr_import_dialog_get_selected_slot (GcrImportDialog *self)
 	
 	g_return_val_if_fail (GCR_IMPORT_DIALOG (self), NULL);
 	
-	if (GTK_WIDGET_VISIBLE (self->pv->combo))
+	if (gtk_widget_get_visible (GTK_WIDGET (self->pv->combo)))
 		populate_slots (self);
 	else
 		return NULL;
@@ -336,8 +336,8 @@ _gcr_import_dialog_set_selected_slot (GcrImportDialog *self, GP11Slot *slot)
 	gboolean matched;
 
 	g_return_if_fail (GCR_IMPORT_DIALOG (self));
-	
-	if (GTK_WIDGET_VISIBLE (self->pv->combo)) 
+
+	if (gtk_widget_get_visible (GTK_WIDGET (self->pv->combo)))
 		populate_slots (self);
 	else
 		g_return_if_reached ();
