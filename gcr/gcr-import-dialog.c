@@ -131,7 +131,7 @@ gcr_import_dialog_constructor (GType type, guint n_props, GObjectConstructParam 
 	/* Fill in the dialog from builder */
 	widget = GTK_WIDGET (gtk_builder_get_object (self->pv->builder, "import-dialog"));
 	g_return_val_if_fail (widget, FALSE);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (self)->vbox), widget);
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (self))), widget);
 
 	/* Add a secure entry */
 	buffer = egg_entry_buffer_new ();
