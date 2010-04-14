@@ -54,14 +54,16 @@ gnome_keyring_daemon_LDADD = \
 
 EXTRA_DIST = \
 	org.gnome.keyring.service.in \
+	org.freedesktop.secrets.service.in \
 	$(desktop_in_files)
 
 CLEANFILES = \
 	org.gnome.keyring.service \
+	org.freedesktop.service \
 	$(desktop_DATA)
 
 servicedir       = $(DBUS_SERVICES_DIR)
-service_in_files = org.gnome.keyring.service.in
+service_in_files = org.gnome.keyring.service.in org.freedesktop.secrets.service.in
 service_DATA     = $(service_in_files:.service.in=.service)
 service_PATH     = $(VALGRIND_RUN)$(bindir)
 
