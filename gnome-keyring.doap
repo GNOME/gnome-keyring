@@ -16,7 +16,7 @@
 	<maintainer>
 		<foaf:Person>
 			<foaf:name>Stef Walter</foaf:name>
-			<foaf:mbox rdf:resource="stef@memberwebs.com" />
+			<foaf:mbox rdf:resource="mailto:stef@memberwebs.com" />
 			<gnome:userid>stefw</gnome:userid>
 		</foaf:Person>
 	</maintainer>
