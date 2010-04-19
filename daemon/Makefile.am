@@ -68,7 +68,7 @@ service_DATA     = $(service_in_files:.service.in=.service)
 service_PATH     = $(VALGRIND_RUN)$(bindir)
 
 # Rule to make the service file with bindir expanded
-$(service_DATA): $(service_in_files) Makefile
+%.service: %.service.in Makefile
 	@sed -e "s|\@PATH\@|$(service_PATH)|" $< > $@
 
 desktop_in_files = \

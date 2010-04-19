@@ -5,6 +5,7 @@ Makefile.in
 /gnome-keyring-ask
 /gnome-keyring-daemon
 /org.gnome.keyring.service
+/org.freedesktop.secrets.service
 /gnome-keyring-pkcs11.desktop
 /gnome-keyring-pkcs11.desktop.in
 /gnome-keyring-secrets.desktop
