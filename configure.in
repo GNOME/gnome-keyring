@@ -17,6 +17,10 @@ GCR_AGE=0		# Increment for interface that doesn't break anything
 
 dnl ****************************************************************************
 
+version_bits=`echo $VERSION | tr '.' ' '`
+full_version=`printf %03d%03d%03d $version_bits`
+AC_DEFINE_UNQUOTED(GKR_VERSION, $full_version, [The gnome-keyring version as a number])
+
 AM_SANITY_CHECK
 AM_MAINTAINER_MODE
 
@@ -33,9 +37,6 @@ AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
 IT_PROG_INTLTOOL([0.35.0])
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-
-LIB_GNOME_KEYRING_LT_VERSION=1:1:1
-AC_SUBST(LIB_GNOME_KEYRING_LT_VERSION)
 
 AC_TYPE_PID_T
 AC_TYPE_SIGNAL
