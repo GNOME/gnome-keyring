@@ -2265,8 +2265,11 @@ gck_rpc_layer_uninitialize (void)
 		pkcs11_socket_path = NULL;
 	}
 
+	ds = pkcs11_dispatchers;
+	pkcs11_dispatchers = NULL;
+
 	/* Stop all of the dispatch threads */
-	for (ds = pkcs11_dispatchers; ds; ds = next) {
+	for (; ds; ds = next) {
 		next = ds->next;
 
 		/* Forcibly shutdown the connection */
@@ -2351,8 +2354,11 @@ gck_rpc_layer_shutdown (void)
 		pkcs11_socket_path = NULL;
 	}
 
+	ds = pkcs11_dispatchers;
+	pkcs11_dispatchers = NULL;
+
 	/* Stop all of the dispatch threads */
-	for (ds = pkcs11_dispatchers; ds; ds = next) {
+	for (; ds; ds = next) {
 		next = ds->next;
 		
 		/* Forcibly shutdown the connection */
