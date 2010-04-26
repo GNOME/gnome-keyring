@@ -52,7 +52,7 @@ test_details (const gchar *path)
 	
 	details = gcr_certificate_details_widget_new (certificate);
 	gtk_widget_show (GTK_WIDGET (details));
-	gtk_container_add (GTK_CONTAINER (dialog->vbox), GTK_WIDGET (details));
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (details));
 
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 400);
 	gtk_dialog_run (dialog);
