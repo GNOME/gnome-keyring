@@ -291,11 +291,11 @@ static gboolean
 authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean *locked)
 {
 	DBusError derr = DBUS_ERROR_INIT;
+	gboolean transient = TRUE;
 	GkdSecretSecret *master;
 	GP11Attributes *template;
 	GP11Attribute *attr;
 	GP11Object *cred;
-	gboolean transient;
 	gboolean result;
 
 	g_assert (GKD_SECRET_IS_UNLOCK (self));
