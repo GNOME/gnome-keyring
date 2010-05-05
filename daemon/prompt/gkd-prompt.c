@@ -796,7 +796,7 @@ gkd_prompt_get_transport_param (GkdPrompt *self, const gchar *name, gsize *n_val
 {
 	g_return_val_if_fail (GKD_IS_PROMPT (self), NULL);
 	g_return_val_if_fail (name, NULL);
-	g_return_val_if_fail (*n_value, NULL);
+	g_return_val_if_fail (n_value, NULL);
 
 	if (self->pv->failure)
 		return NULL;
