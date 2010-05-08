@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include "gkd-glue.h"
 #include "gkd-main.h"
 #include "gkd-util.h"
 
@@ -77,15 +78,24 @@
 
 /* All the components to run on startup if not specified on command line */
 #ifdef WITH_SSH
-#define DEFAULT_COMPONENTS  "pkcs11,secrets,ssh"
+#	ifdef WITH_GPG
+#		define DEFAULT_COMPONENTS  "pkcs11,secrets,ssh,gpg"
+#	else
+#		define DEFAULT_COMPONENTS  "pkcs11,secrets,ssh"
+#	endif
 #else
-#define DEFAULT_COMPONENTS  "pkcs11,secrets"
+#	ifdef WITH_GPG
+#		define DEFAULT_COMPONENTS  "pkcs11,secrets,gpg"
+#	else
+#		define DEFAULT_COMPONENTS  "pkcs11,secrets"
+#	endif
 #endif
 
 static gchar* run_components = DEFAULT_COMPONENTS;
 static gboolean pkcs11_started = FALSE;
 static gboolean secrets_started = FALSE;
 static gboolean ssh_started = FALSE;
+static gboolean gpg_started = FALSE;
 
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
@@ -605,8 +615,22 @@ gkr_daemon_startup_steps (const gchar *components)
 			g_message ("The SSH agent was already initialized");
 		} else {
 			ssh_started = TRUE;
-			if (!gkd_pkcs11_startup_ssh ()) {
+			if (!gkd_daemon_startup_ssh ()) {
 				ssh_started = FALSE;
+				return FALSE;
+			}
+		}
+	}
+#endif
+
+#ifdef WITH_GPG
+	if (strstr (components, "gpg")) {
+		if (gpg_started) {
+			g_message ("The GPG agent was already initialized");
+		} else {
+			gpg_started = TRUE;
+			if (!gkd_daemon_startup_gpg ()) {
+				gpg_started = FALSE;
 				return FALSE;
 			}
 		}

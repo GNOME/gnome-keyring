@@ -3,6 +3,7 @@ SUBDIRS = \
 	login \
 	control \
 	ssh-agent \
+	gpg-agent \
 	pkcs11 \
 	dbus \
 	data
@@ -25,6 +26,7 @@ INCLUDES=	\
 	$(GLIB_CFLAGS)
 
 gnome_keyring_daemon_SOURCES = \
+	gkd-glue.c gkd-glue.h \
 	gkd-main.c gkd-main.h \
 	gkd-util.c gkd-util.h
 
@@ -35,6 +37,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control.la \
 	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
 	$(top_builddir)/daemon/ssh-agent/libgkd-ssh-agent.la \
+	$(top_builddir)/daemon/gpg-agent/libgkd-gpg-agent.la \
 	$(top_builddir)/pkcs11/plex-layer/libgck-plex-layer.la \
 	$(top_builddir)/pkcs11/roots-store/libgck-roots-store.la \
 	$(top_builddir)/pkcs11/rpc-layer/libgck-rpc-layer.la \
@@ -74,7 +77,8 @@ service_PATH     = $(VALGRIND_RUN)$(bindir)
 desktop_in_files = \
 	gnome-keyring-pkcs11.desktop.in \
 	gnome-keyring-secrets.desktop.in \
-	gnome-keyring-ssh.desktop.in
+	gnome-keyring-ssh.desktop.in \
+	gnome-keyring-gpg.desktop.in
 desktopdir       = $(sysconfdir)/xdg/autostart
 desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
 

@@ -34,6 +34,7 @@
 #include "pkcs11/ssh-store/gck-ssh-store.h"
 #include "pkcs11/user-store/gck-user-store.h"
 
+#include "gpg-agent/gkd-gpg-agent.h"
 #include "ssh-agent/gkd-ssh-agent.h"
 
 #include <string.h>
@@ -118,7 +119,8 @@ gkd_pkcs11_initialize (void)
 
 	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
 
-	ret = gkd_ssh_agent_initialize (pkcs11_roof) &&
+	ret = gkd_gpg_agent_initialize (pkcs11_roof) &&
+	      gkd_ssh_agent_initialize (pkcs11_roof) &&
 	      gck_rpc_layer_initialize (pkcs11_roof);
 
 	return ret;
@@ -158,46 +160,6 @@ gkd_pkcs11_startup_pkcs11 (void)
 	g_io_channel_unref (channel);
 
 	egg_cleanup_register (pkcs11_rpc_cleanup, NULL);
-
-	return TRUE;
-}
-
-static void
-pkcs11_ssh_cleanup (gpointer unused)
-{
-	gkd_ssh_agent_shutdown ();
-}
-
-static gboolean
-accept_ssh_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
-{
-	if (cond == G_IO_IN)
-		gkd_ssh_agent_accept ();
-	return TRUE;
-}
-
-gboolean
-gkd_pkcs11_startup_ssh (void)
-{
-	GIOChannel *channel;
-	const gchar *base_dir;
-	int sock;
-
-	base_dir = gkd_util_get_master_directory ();
-	g_return_val_if_fail (base_dir, FALSE);
-
-	sock = gkd_ssh_agent_startup (base_dir);
-	if (sock == -1)
-		return FALSE;
-
-	channel = g_io_channel_unix_new (sock);
-	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_ssh_client, NULL);
-	g_io_channel_unref (channel);
-
-	/* gck-ssh-agent sets the environment variable */
-	gkd_util_push_environment ("SSH_AUTH_SOCK", g_getenv ("SSH_AUTH_SOCK"));
-
-	egg_cleanup_register (pkcs11_ssh_cleanup, NULL);
 
 	return TRUE;
 }
