@@ -1,22 +1,23 @@
-# translation of gnome-keyring.master.or.po to Oriya
+# translation of gnome-keyring.gnome-2-28.or.po to Oriya
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2006.
-# Manoj Kumar Giri <mgiri@redhat.com>, 2009.
+# Manoj Kumar Giri <mgiri@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.master.or\n"
+"Project-Id-Version: gnome-keyring.gnome-2-28.or\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-09-17 10:03+0000\n"
-"PO-Revision-Date: 2009-09-17 22:47+0530\n"
+"POT-Creation-Date: 2009-12-15 12:42+0000\n"
+"PO-Revision-Date: 2010-05-12 12:42+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
-"Language-Team: Oriya <oriya-it@googlegroups.com>\n"
+"Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -572,7 +573,7 @@ msgstr "ପୁରୁଣା ପ୍ରବଶ ସଙ୍କେତ (_O):"
 
 #: ../daemon/ui/gkr-ask-tool.c:545
 msgid "_Password:"
-msgstr "ପ୍ରବଶ ସଙ୍କେତ (_P):"
+msgstr "ପ୍ରବେଶ ସଂଙ୍କେତ (_P):"
 
 #: ../daemon/ui/gkr-ask-tool.c:567
 msgid "_Confirm password:"
@@ -712,7 +713,7 @@ msgstr "ଶୀର୍ଷକ"
 
 #: ../egg/egg-oid.c:85
 msgid "Telephone Number"
-msgstr "ଟେଲିଫୋନ କ୍ରମିକ ସଂଖ୍ଯା ୤"
+msgstr "ଟେଲିଫୋନ କ୍ରମିକ ସଂଖ୍ଯା"
 
 #: ../egg/egg-oid.c:87
 msgid "Given Name"
@@ -767,12 +768,10 @@ msgid "<i>unknown</i>"
 msgstr "<i>ଅଜଣା</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:1
-#| msgid "<i>Not Part of Certificate</i>"
 msgid "<Not Part of Certificate>"
-msgstr "<ପ୍ରମାଣ ପତ୍ରର କୌଣସି ଅଂଶ ନୁହଁ>"
+msgstr "<ପ୍ରମାଣପତ୍ରର କୌଣସି ଅଂଶ ନାହିଁ>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:2
-#| msgid "Fingerprints"
 msgid "<b>Fingerprints</b>"
 msgstr "<b>ଅଙ୍ଗୁଳି ଚିହ୍ନ</b>"
 
@@ -793,58 +792,48 @@ msgid "<b>Validity</b>"
 msgstr "<b>ବୈଧତା ତାରିଖ</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:7
-#| msgid "Common Name"
 msgid "Common Name (CN)"
 msgstr "ସାଧାରଣ ନାମ (CN)"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:8
-#| msgid "Unnamed Certificate"
 msgid "Email Recipient Certificate"
-msgstr "ଇମେଲ ଗ୍ରହଣକାରୀ ପ୍ରମାଣପତ୍ର"
+msgstr "ଇ-ଡାକ"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:9
-#| msgid "Unnamed Certificate"
 msgid "Email Signer Certificate"
-msgstr "ଇମେଲ ହସ୍ତାକ୍ଷରକାରୀ ପ୍ରମାଣପତ୍ର"
+msgstr "ଇ-ଡାକ"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:10
 msgid "Expires On"
 msgstr "ରେ"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:11
-#| msgid "Issuer Name"
 msgid "Issued On"
-msgstr "ଏହି ତାରିଖରେ ପ୍ରଦତ୍ତ"
+msgstr "ରେ"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:12
-#| msgid "Fingerprints"
 msgid "MD5 Fingerprint"
 msgstr "MD5 ଅଙ୍ଗୁଳି ଚିହ୍ନ"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:13
-#| msgid "Organization"
 msgid "Organization (O)"
-msgstr "ସଙ୍ଗଠନ (O)"
+msgstr "ସଙ୍ଗଠନ O"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:14
-#| msgid "Organizational Unit"
 msgid "Organizational Unit (OU)"
-msgstr "ସଙ୍ଘଠନ ମୂଳକ ଏକକ (OU)"
+msgstr "ଏକକ"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:15
-#| msgid "Fingerprints"
 msgid "SHA1 Fingerprint"
-msgstr "SHA1 ଅଙ୍ଗୁଳି ଚିହ୍ନ"
+msgstr "SHA1 ଅଙ୍ଗୁଳିଛବି "
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:16
-#| msgid "Certificate"
 msgid "SSL Client Certificate"
-msgstr "SSL ଗ୍ରାହକ ପ୍ରମାଣପତ୍ର"
+msgstr "SSL ଗ୍ରାହକ"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:17
-#| msgid "Certificate"
 msgid "SSL Server Certificate"
-msgstr "SSL ସର୍ଭର ପ୍ରମାଣପତ୍ର"
+msgstr "SSL ସେବକ"
 
 #: ../gcr/gcr-certificate-details-widget.c:207
 msgid "Extension"
@@ -946,9 +935,8 @@ msgid "Import Into:"
 msgstr "ଏହା ଭିତରକୁ ଆମଦାନି କରନ୍ତୁ:"
 
 #: ../gcr/gcr-import-dialog.ui.h:3
-#| msgid "_Password:"
 msgid "Password:"
-msgstr "ପ୍ରବଶ ସଙ୍କେତ:"
+msgstr "ପ୍ରବେଶ ସଙ୍କେତ:"
 
 #: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
@@ -1372,7 +1360,7 @@ msgstr "ଏହି ନାମରେ କୌଣସି କି ରିଙ୍ଗ ପୂ�
 msgid "The keyring has already been unlocked."
 msgstr "କି ରିଙ୍ଗ ପୂର୍ବରୁ ଅପରିବର୍ତ୍ତନୀୟ ଅଛି।"
 
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../pkcs11/gck/gck-certificate.c:734
 msgid "Unnamed Certificate"
 msgstr "ବେନାମୀ ପ୍ରମାଣପତ୍ର"
 
