@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-27 20:04+0100\n"
-"PO-Revision-Date: 2010-04-02 17:39+0200\n"
+"POT-Creation-Date: 2010-05-22 23:22+0200\n"
+"PO-Revision-Date: 2010-05-22 23:22+0200\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgid ""
 "setting may be overridden when certain command line arguments are passed to "
 "the daemon."
 msgstr ""
-"Aquesta opció habilita l'agent SSH en el dimoni del gnome-keyring. Només te "
+"Aquesta opció habilita l'agent SSH en el dimoni del gnome-keyring. Només té "
 "efecte quan s'inicia el gnome-keyring-daemon, (per exemple, quan l'usuari "
 "entra a la sessió). Es pot sobreescriure aquest paràmetre si es passa una "
 "opció de línia d'ordres al dimoni."
@@ -65,22 +65,22 @@ msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "Si està habilitat el servei de secrets del gnome-keyring."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:641
+#: ../pkcs11/secret-store/gck-secret-collection.c:322
 msgid "Unnamed"
 msgstr "Sense nom"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "Canvia la contrasenya de l'anell de claus"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Escolliu una contrasenya nova per a l'anell de claus «%s»"
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -89,19 +89,19 @@ msgstr ""
 "Una aplicació vol canviar la contrasenya de l'anell de claus «%s». Trieu la "
 "contrasenya nova que hi vulgueu utilitzar."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "La contrasenya original era incorrecta"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "Contrasenya de l'anell de claus nou"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "Seleccioneu una contrasenya per a l'anell de claus nou"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -110,15 +110,15 @@ msgstr ""
 "Una aplicació vol crear un anell de claus nou anomenat «%s». Trieu la "
 "contrasenya nova que hi vulgueu utilitzar."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:135
 msgid "Unlock Login Keyring"
 msgstr "Desbloca l'anell de claus d'entrada"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:136
+#: ../daemon/dbus/gkd-secret-unlock.c:137
 msgid "Enter password for to unlock your login keyring"
 msgstr "Introduïu la contrasenya per desblocar l'anell de claus d'entrada"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:140
+#: ../daemon/dbus/gkd-secret-unlock.c:141
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -126,27 +126,27 @@ msgstr ""
 "La contrasenya que utilitzeu per entrar a l'ordinador ja no coincideix amb "
 "la contrasenya de l'anell de claus d'entrada."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:142
+#: ../daemon/dbus/gkd-secret-unlock.c:143
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "No s'ha desblocat l'anell de claus d'entrada quan heu entrat a l'ordinador."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:183
+#: ../daemon/dbus/gkd-secret-unlock.c:184
 msgid "Unlock Keyring"
 msgstr "Desbloca l'anell de claus"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:185
+#: ../daemon/dbus/gkd-secret-unlock.c:186
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Introduïu la contrasenya per desblocar l'anell de claus «%s»"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:189
+#: ../daemon/dbus/gkd-secret-unlock.c:190
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Una aplicació vol accedir a l'anell de claus «%s», però està blocat"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:219
+#: ../daemon/dbus/gkd-secret-unlock.c:226
 msgid "The unlock password was incorrect"
 msgstr "La contrasenya per desblocar era incorrecta"
 
@@ -175,11 +175,11 @@ msgid "SSH Key Agent"
 msgstr "Agent de claus SSH"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:207
 msgid "Login"
 msgstr "Entrada"
 
-#: ../daemon/login/gkd-login.c:596
+#: ../daemon/login/gkd-login.c:643
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Desbloca la contrasenya per a: %s"
