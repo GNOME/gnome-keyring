@@ -318,14 +318,11 @@ cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
 }
 
 static void
-setup_child (int inp[2], int outp[2], int errp[2], 
-             pam_handle_t *ph, struct passwd *pwd, const char *password)
+setup_child (int inp[2], int outp[2], int errp[2], pam_handle_t *ph, struct passwd *pwd)
 {
 	const char* display;
 	int i, ret;
 
-	/* The --login argument comes last, because of code below */
-	
 #ifdef VALGRIND 	
 	char *args[] = { VALGRIND, VALGRIND_ARG, GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
 #else
@@ -334,14 +331,6 @@ setup_child (int inp[2], int outp[2], int errp[2],
 	
 	assert (pwd);
 	assert (pwd->pw_dir);
-
-	/* If no password, don't pass in --login */
-	if (password == NULL) {
-		for (i = 0; args[i]; ++i) {
-			if (strcmp ("--login", args[i]) == 0)
-				args[i] = NULL;
-		}
-	}
 
 	/* Fix up our end of the pipes */
 	if (dup2 (inp[READ_END], STDIN) < 0 ||
@@ -499,7 +488,7 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 		
 	/* This is the child */
 	case 0:
-		setup_child (inp, outp, errp, ph, pwd, password);
+		setup_child (inp, outp, errp, ph, pwd);
 		/* Should never be reached */
 		break;
 		
@@ -507,19 +496,23 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 	default:
 		break;
 	};
-	
+
 	/* Close our unneeded ends of the pipes */
 	close (inp[READ_END]);
 	close (outp[WRITE_END]);
 	close (errp[WRITE_END]);
 	inp[READ_END] = outp[WRITE_END] = errp[WRITE_END] = -1; 
 
-	if (password) {
-		/* Write the login keyring password */
+	/*
+	 * We always pass in a --login argument, even when we have a NULL password
+	 * since this controls the startup behavior. When using --login daemon waits
+	 * for a password. Closing input signifies password is done.
+	 */
+
+	if (password)
 		write_string (inp[WRITE_END], password);
-		close (inp[WRITE_END]);
-	}
-	
+	close (inp[WRITE_END]);
+
 	/* 
 	 * Note that we're not using select() or any such. We know how the 
 	 * daemon sends its data.

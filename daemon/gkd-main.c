@@ -396,7 +396,7 @@ read_login_password (int fd)
 	/*
 	 * When --login is specified then the login password is passed
 	 * in on stdin. All data (including newlines) are part of the
-	 * password.
+	 * password. A zero length password is no password.
 	 */
 
 	gchar *buf = egg_secure_alloc (MAX_BLOCK);
@@ -412,17 +412,15 @@ read_login_password (int fd)
 			egg_secure_free (buf);
 			return NULL;
 
-		} else  {
-			char *n = egg_secure_realloc (ret, len + r + 1);
-			memset(n + len, 0, r + 1);
-			ret = n;
-			len = len + r;
+		} else if (r == 0 || len > MAX_LENGTH) {
+			break;
 
+		} else {
+			ret = egg_secure_realloc (ret, len + r + 1);
+			memset (ret + len, 0, r + 1);
+			len = len + r;
 			strncat (ret, buf, r);
 		}
-
-		if (r == 0 || len > MAX_LENGTH)
-			break;
 	}
 
 	egg_secure_free (buf);
