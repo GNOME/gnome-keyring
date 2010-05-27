@@ -26,13 +26,13 @@
 #include "run-auto-test.h"
 #include "test-secret-module.h"
 
-#include "gck-secret-binary.h"
-#include "gck-secret-collection.h"
-#include "gck-secret-data.h"
-#include "gck-secret-fields.h"
-#include "gck-secret-item.h"
+#include "gkm-secret-binary.h"
+#include "gkm-secret-collection.h"
+#include "gkm-secret-data.h"
+#include "gkm-secret-fields.h"
+#include "gkm-secret-item.h"
 
-#include "gck/gck-secret.h"
+#include "gkm/gkm-secret.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -42,31 +42,31 @@
 #include <stdio.h>
 #include <string.h>
 
-static GckModule *module = NULL;
-static GckSession *session = NULL;
-static GckSecretCollection *collection = NULL;
-static GckSecretData *sdata = NULL;
+static GkmModule *module = NULL;
+static GkmSession *session = NULL;
+static GkmSecretCollection *collection = NULL;
+static GkmSecretData *sdata = NULL;
 
 DEFINE_SETUP(binary)
 {
-	GckSecret *master;
+	GkmSecret *master;
 
 	module = test_secret_module_initialize_and_enter ();
 	session = test_secret_module_open_session (TRUE);
 
-	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+	collection = g_object_new (GKM_TYPE_SECRET_COLLECTION,
 	                           "module", module,
 	                           "identifier", "test",
 	                           "label", "brigadooooooooooooon",
 	                           NULL);
-	
-	sdata = g_object_new (GCK_TYPE_SECRET_DATA, NULL);
-	master = gck_secret_new_from_password ("my-keyring-password");
-	gck_secret_data_set_master (sdata, master);
+
+	sdata = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
+	master = gkm_secret_new_from_password ("my-keyring-password");
+	gkm_secret_data_set_master (sdata, master);
 	g_object_unref (master);
 
-	g_assert (GCK_IS_SECRET_COLLECTION (collection));
-	
+	g_assert (GKM_IS_SECRET_COLLECTION (collection));
+
 }
 
 DEFINE_TEARDOWN(binary)
@@ -86,96 +86,96 @@ DEFINE_TEARDOWN(binary)
 
 DEFINE_TEST(binary_read)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	guchar *data;
 	gsize n_data;
 
 	data = test_data_read ("encrypted.keyring", &n_data);
-	res = gck_secret_binary_read (collection, sdata, data, n_data);
+	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
 	test_secret_collection_validate (collection, sdata);
 
-	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (res == GKM_DATA_SUCCESS);
 }
 
 DEFINE_TEST(binary_read_wrong_format)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	guchar *data;
 	gsize n_data;
 
 	data = test_data_read ("plain.keyring", &n_data);
-	res = gck_secret_binary_read (collection, sdata, data, n_data);
+	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
-	g_assert (res == GCK_DATA_UNRECOGNIZED);
+	g_assert (res == GKM_DATA_UNRECOGNIZED);
 }
 
 DEFINE_TEST(binary_read_wrong_master)
 {
-	GckDataResult res;
-	GckSecret *master;
+	GkmDataResult res;
+	GkmSecret *master;
 	guchar *data;
 	gsize n_data;
 
-	master = gck_secret_new_from_password ("wrong");
-	gck_secret_data_set_master (sdata, master);
+	master = gkm_secret_new_from_password ("wrong");
+	gkm_secret_data_set_master (sdata, master);
 	g_object_unref (master);
 
 	data = test_data_read ("encrypted.keyring", &n_data);
-	res = gck_secret_binary_read (collection, sdata, data, n_data);
+	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
-	g_assert (res == GCK_DATA_LOCKED);
+	g_assert (res == GKM_DATA_LOCKED);
 }
 
 DEFINE_TEST(binary_read_sdata_but_no_master)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	guchar *data;
 	gsize n_data;
 
-	gck_secret_data_set_master (sdata, NULL);
+	gkm_secret_data_set_master (sdata, NULL);
 
 	data = test_data_read ("encrypted.keyring", &n_data);
-	res = gck_secret_binary_read (collection, sdata, data, n_data);
+	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
-	g_assert (res == GCK_DATA_LOCKED);
+	g_assert (res == GKM_DATA_LOCKED);
 }
 
 DEFINE_TEST(binary_write)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	guchar *data;
 	gsize n_data;
 
 	test_secret_collection_populate (collection, sdata);
 
-	res = gck_secret_binary_write (collection, sdata, &data, &n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_binary_write (collection, sdata, &data, &n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (data);
 	g_assert (n_data);
 
 	/* Try parsing it again */
-	res = gck_secret_binary_read (collection, sdata, data, n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_binary_read (collection, sdata, data, n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 }
 
 DEFINE_TEST(binary_remove_unavailable)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	GList *items;
 	guchar *data;
 	gsize n_data;
 
 	data = test_data_read ("encrypted.keyring", &n_data);
-	res = gck_secret_binary_read (collection, sdata, data, n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_binary_read (collection, sdata, data, n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Two items from the file */
-	items = gck_secret_collection_get_items (collection);
+	items = gkm_secret_collection_get_items (collection);
 	g_assert_cmpint (g_list_length (items), ==, 2);
 	g_list_free (items);
 
@@ -183,16 +183,16 @@ DEFINE_TEST(binary_remove_unavailable)
 	test_secret_collection_populate (collection, sdata);
 
 	/* Should have added three more */
-	items = gck_secret_collection_get_items (collection);
+	items = gkm_secret_collection_get_items (collection);
 	g_assert_cmpint (g_list_length (items), ==, 5);
 	g_list_free (items);
 
 	/* Re-read the keyring */
-	res = gck_secret_binary_read (collection, sdata, data, n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_binary_read (collection, sdata, data, n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* And we're back to two */
-	items = gck_secret_collection_get_items (collection);
+	items = gkm_secret_collection_get_items (collection);
 	g_assert_cmpint (g_list_length (items), ==, 2);
 	g_list_free (items);
 

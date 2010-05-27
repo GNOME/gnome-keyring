@@ -25,7 +25,7 @@
 
 #include "run-auto-test.h"
 
-#include "gck-secret-fields.h"
+#include "gkm-secret-fields.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -37,33 +37,33 @@
 
 DEFINE_TEST(fields_new)
 {
-	GHashTable *fields = gck_secret_fields_new ();
+	GHashTable *fields = gkm_secret_fields_new ();
 	g_hash_table_unref (fields);
 }
 
 DEFINE_TEST(fields_boxed)
 {
-	GType boxed = gck_secret_fields_boxed_type ();
-	GType check = gck_secret_fields_boxed_type ();
+	GType boxed = gkm_secret_fields_boxed_type ();
+	GType check = gkm_secret_fields_boxed_type ();
 	g_assert (boxed == check);
 }
 
 DEFINE_TEST(fields_add_get_values)
 {
-	GHashTable *fields = gck_secret_fields_new ();
+	GHashTable *fields = gkm_secret_fields_new ();
 	const gchar *value;
 
-	gck_secret_fields_add (fields, "one", "value1");
-	gck_secret_fields_take (fields, g_strdup ("two"), g_strdup ("value2"));
-	gck_secret_fields_add (fields, "three", NULL);
+	gkm_secret_fields_add (fields, "one", "value1");
+	gkm_secret_fields_take (fields, g_strdup ("two"), g_strdup ("value2"));
+	gkm_secret_fields_add (fields, "three", NULL);
 
-	value = gck_secret_fields_get (fields, "one");
+	value = gkm_secret_fields_get (fields, "one");
 	g_assert_cmpstr (value, ==, "value1");
 
-	value = gck_secret_fields_get (fields, "two");
+	value = gkm_secret_fields_get (fields, "two");
 	g_assert_cmpstr (value, ==, "value2");
 
-	value = gck_secret_fields_get (fields, "three");
+	value = gkm_secret_fields_get (fields, "three");
 	g_assert_cmpstr (value, ==, "");
 
 	g_hash_table_unref (fields);
@@ -76,7 +76,7 @@ DEFINE_TEST(fields_parse)
 	const gchar *value;
 	CK_RV rv;
 
-	rv = gck_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields);
 	g_assert (rv == CKR_OK);
 
 	g_assert_cmpuint (g_hash_table_size (fields), ==, 3);
@@ -96,7 +96,7 @@ DEFINE_TEST(fields_parse_empty)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gck_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields);
 	g_assert (rv == CKR_OK);
 
 	g_assert_cmpuint (g_hash_table_size (fields), == , 0);
@@ -110,7 +110,7 @@ DEFINE_TEST(fields_parse_null_invalid)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gck_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -120,7 +120,7 @@ DEFINE_TEST(fields_parse_missing_value)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gck_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -130,7 +130,7 @@ DEFINE_TEST(fields_parse_missing_terminator)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gck_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -140,7 +140,7 @@ DEFINE_TEST(fields_parse_not_utf8)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gck_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -151,10 +151,10 @@ DEFINE_TEST(fields_serialize)
 	GHashTable *fields;
 	CK_RV rv;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add (fields, "one", "value1");
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add (fields, "one", "value1");
 
-	rv = gck_secret_fields_serialize (&attr, fields);
+	rv = gkm_secret_fields_serialize (&attr, fields);
 	g_assert (rv == CKR_OK);
 	g_assert (attr.ulValueLen == 11);
 	g_assert (memcmp (buffer, "one\0value1\0", 11) == 0);
@@ -168,10 +168,10 @@ DEFINE_TEST(fields_serialize_length)
 	GHashTable *fields;
 	CK_RV rv;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add (fields, "one", "value1");
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add (fields, "one", "value1");
 
-	rv = gck_secret_fields_serialize (&attr, fields);
+	rv = gkm_secret_fields_serialize (&attr, fields);
 	g_assert (rv == CKR_OK);
 	g_assert (attr.ulValueLen == 11);
 
@@ -184,10 +184,10 @@ DEFINE_TEST(fields_add_get_compat_uint32)
 	gboolean ret;
 	guint32 value;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add_compat_uint32 (fields, "field", 992);
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add_compat_uint32 (fields, "field", 992);
 
-	ret = gck_secret_fields_get_compat_uint32 (fields, "field", &value);
+	ret = gkm_secret_fields_get_compat_uint32 (fields, "field", &value);
 	g_assert (ret == TRUE);
 	g_assert_cmpuint (value, ==, 992);
 
@@ -200,10 +200,10 @@ DEFINE_TEST(fields_get_compat_uint32_fail)
 	gboolean ret;
 	guint32 value;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add (fields, "test", "value");
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add (fields, "test", "value");
 
-	ret = gck_secret_fields_get_compat_uint32 (fields, "test", &value);
+	ret = gkm_secret_fields_get_compat_uint32 (fields, "test", &value);
 	g_assert (ret == FALSE);
 
 	g_hash_table_unref (fields);
@@ -215,10 +215,10 @@ DEFINE_TEST(fields_get_compat_hashed_string)
 	gboolean ret;
 	gchar *value;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add (fields, "test", "value");
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add (fields, "test", "value");
 
-	ret = gck_secret_fields_get_compat_hashed_string (fields, "test", &value);
+	ret = gkm_secret_fields_get_compat_hashed_string (fields, "test", &value);
 	g_assert (ret == TRUE); /* Must be the same as the old gnome-keyring code */
 	g_assert_cmpstr (value, ==, "2063c1608d6e0baf80249c42e2be5804");
 	g_free (value);
@@ -232,10 +232,10 @@ DEFINE_TEST(fields_get_compat_hashed_already)
 	gboolean ret;
 	gchar *value;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add_compat_hashed_string (fields, "test", "e991664529cd0caeb6e9fce8fac3d611");
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add_compat_hashed_string (fields, "test", "e991664529cd0caeb6e9fce8fac3d611");
 
-	ret = gck_secret_fields_get_compat_hashed_string (fields, "test", &value);
+	ret = gkm_secret_fields_get_compat_hashed_string (fields, "test", &value);
 	g_assert (ret == TRUE); /* What went in comes out */
 	g_assert_cmpstr (value, ==, "e991664529cd0caeb6e9fce8fac3d611");
 	g_free (value);
@@ -250,10 +250,10 @@ DEFINE_TEST(fields_get_compat_hashed_uint32)
 	guint32 value;
 	guint32 val = 992;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add_compat_uint32 (fields, "test", val);
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add_compat_uint32 (fields, "test", val);
 
-	ret = gck_secret_fields_get_compat_hashed_uint32 (fields, "test", &value);
+	ret = gkm_secret_fields_get_compat_hashed_uint32 (fields, "test", &value);
 	g_assert (ret == TRUE); /* Must be the same as the old gnome-keyring code */
 	g_assert_cmpuint (value, ==, 0x18273645 ^ val ^ (val << 16 | val >> 16));
 
@@ -267,10 +267,10 @@ DEFINE_TEST(fields_get_compat_hashed_uint32_already)
 	guint32 value;
 	guint32 val = 0x1bc735a5;
 
-	fields = gck_secret_fields_new ();
-	gck_secret_fields_add_compat_hashed_uint32 (fields, "test", val);
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add_compat_hashed_uint32 (fields, "test", val);
 
-	ret = gck_secret_fields_get_compat_hashed_uint32 (fields, "test", &value);
+	ret = gkm_secret_fields_get_compat_hashed_uint32 (fields, "test", &value);
 	g_assert (ret == TRUE); /* What went in comes out */
 	g_assert_cmpuint (value, ==, val);
 
@@ -282,13 +282,13 @@ DEFINE_TEST(fields_get_names)
 	GHashTable *fields;
 	GList *names, *l;
 
-	fields = gck_secret_fields_new ();
+	fields = gkm_secret_fields_new ();
 
-	gck_secret_fields_add (fields, "one", "11111");
-	gck_secret_fields_add_compat_uint32 (fields, "two", 2);
-	gck_secret_fields_add_compat_hashed_string (fields, "test", "2063c1608d6e0baf80249c42e2be5804");
+	gkm_secret_fields_add (fields, "one", "11111");
+	gkm_secret_fields_add_compat_uint32 (fields, "two", 2);
+	gkm_secret_fields_add_compat_hashed_string (fields, "test", "2063c1608d6e0baf80249c42e2be5804");
 
-	names = gck_secret_fields_get_names (fields);
+	names = gkm_secret_fields_get_names (fields);
 	g_assert_cmpuint (g_list_length (names), ==, 3);
 
 	for (l = names; l; l = g_list_next (l)) {
@@ -309,20 +309,20 @@ DEFINE_TEST(fields_match)
 	GHashTable *needle;
 	gboolean ret;
 
-	haystack = gck_secret_fields_new ();
-	gck_secret_fields_add (haystack, "one", "11111");
-	gck_secret_fields_add_compat_uint32 (haystack, "two", 2);
-	gck_secret_fields_add_compat_hashed_string (haystack, "test", "2063c1608d6e0baf80249c42e2be5804"); /* Hashed 'value' */
-	gck_secret_fields_add_compat_hashed_uint32 (haystack, "number", 0x1bc735a5); /* Hashed 992 */
-	gck_secret_fields_add (haystack, "extra", "an extra value");
+	haystack = gkm_secret_fields_new ();
+	gkm_secret_fields_add (haystack, "one", "11111");
+	gkm_secret_fields_add_compat_uint32 (haystack, "two", 2);
+	gkm_secret_fields_add_compat_hashed_string (haystack, "test", "2063c1608d6e0baf80249c42e2be5804"); /* Hashed 'value' */
+	gkm_secret_fields_add_compat_hashed_uint32 (haystack, "number", 0x1bc735a5); /* Hashed 992 */
+	gkm_secret_fields_add (haystack, "extra", "an extra value");
 
-	needle = gck_secret_fields_new ();
-	gck_secret_fields_add (needle, "one", "11111");
-	gck_secret_fields_add (needle, "two", "2");
-	gck_secret_fields_add (needle, "test", "value");
-	gck_secret_fields_add (needle, "number", "992");
+	needle = gkm_secret_fields_new ();
+	gkm_secret_fields_add (needle, "one", "11111");
+	gkm_secret_fields_add (needle, "two", "2");
+	gkm_secret_fields_add (needle, "test", "value");
+	gkm_secret_fields_add (needle, "number", "992");
 
-	ret = gck_secret_fields_match (haystack, needle);
+	ret = gkm_secret_fields_match (haystack, needle);
 	g_assert (ret == TRUE);
 
 	g_hash_table_unref (haystack);
@@ -335,13 +335,13 @@ DEFINE_TEST(fields_match_mismatch_value)
 	GHashTable *needle;
 	gboolean ret;
 
-	haystack = gck_secret_fields_new ();
-	gck_secret_fields_add (haystack, "field", "value");
+	haystack = gkm_secret_fields_new ();
+	gkm_secret_fields_add (haystack, "field", "value");
 
-	needle = gck_secret_fields_new ();
-	gck_secret_fields_add (needle, "field", "another");
+	needle = gkm_secret_fields_new ();
+	gkm_secret_fields_add (needle, "field", "another");
 
-	ret = gck_secret_fields_match (haystack, needle);
+	ret = gkm_secret_fields_match (haystack, needle);
 	g_assert (ret == FALSE);
 
 	g_hash_table_unref (haystack);
@@ -354,13 +354,13 @@ DEFINE_TEST(fields_match_mismatch_field)
 	GHashTable *needle;
 	gboolean ret;
 
-	haystack = gck_secret_fields_new ();
-	gck_secret_fields_add (haystack, "test", "value");
+	haystack = gkm_secret_fields_new ();
+	gkm_secret_fields_add (haystack, "test", "value");
 
-	needle = gck_secret_fields_new ();
-	gck_secret_fields_add (needle, "field", "value");
+	needle = gkm_secret_fields_new ();
+	gkm_secret_fields_add (needle, "field", "value");
 
-	ret = gck_secret_fields_match (haystack, needle);
+	ret = gkm_secret_fields_match (haystack, needle);
 	g_assert (ret == FALSE);
 
 	g_hash_table_unref (haystack);
@@ -373,13 +373,13 @@ DEFINE_TEST(fields_match_wrong_hashed)
 	GHashTable *needle;
 	gboolean ret;
 
-	haystack = gck_secret_fields_new ();
-	gck_secret_fields_add_compat_hashed_uint32 (haystack, "number", 0x1bc735a5); /* Hashed 992 */
+	haystack = gkm_secret_fields_new ();
+	gkm_secret_fields_add_compat_hashed_uint32 (haystack, "number", 0x1bc735a5); /* Hashed 992 */
 
-	needle = gck_secret_fields_new ();
-	gck_secret_fields_add (needle, "number", "1000");
+	needle = gkm_secret_fields_new ();
+	gkm_secret_fields_add (needle, "number", "1000");
 
-	ret = gck_secret_fields_match (haystack, needle);
+	ret = gkm_secret_fields_match (haystack, needle);
 	g_assert (ret == FALSE);
 
 	g_hash_table_unref (haystack);

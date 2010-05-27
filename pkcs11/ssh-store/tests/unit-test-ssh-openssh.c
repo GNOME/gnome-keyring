@@ -25,9 +25,9 @@
 
 #include "run-auto-test.h"
 
-#include "gck-ssh-openssh.h"
+#include "gkm-ssh-openssh.h"
 
-#include "gck/gck-sexp.h"
+#include "gkm/gkm-sexp.h"
 
 #include <glib.h>
 
@@ -58,26 +58,26 @@ DEFINE_TEST(parse_public)
 	int algorithm;
 	gboolean is_private;
 	guint i;
-	GckDataResult res;
-	
-	
+	GkmDataResult res;
+
+
 	for (i = 0; i < G_N_ELEMENTS (PUBLIC_FILES); ++i) {
-		
+
 		data = test_data_read (PUBLIC_FILES[i], &n_data);
-		
-		res = gck_ssh_openssh_parse_public_key (data, n_data, &sexp, &comment);
-		if (res != GCK_DATA_SUCCESS) {
+
+		res = gkm_ssh_openssh_parse_public_key (data, n_data, &sexp, &comment);
+		if (res != GKM_DATA_SUCCESS) {
 			g_warning ("couldn't parse public key: %s", PUBLIC_FILES[i]);
-			g_assert_cmpint (res, ==, GCK_DATA_SUCCESS);
+			g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
 		}
 
-		if (!gck_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
+		if (!gkm_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
 			g_assert_not_reached ();
-		
+
 		g_assert_cmpstr (comment, ==, COMMENT);
 		g_assert_cmpint (algorithm, !=, 0);
 		g_assert (!is_private);
-		
+
 		g_free (data);
 		g_free (comment);
 		gcry_sexp_release (sexp);
@@ -92,25 +92,25 @@ DEFINE_TEST(parse_private)
 	int algorithm;
 	gboolean is_private;
 	guint i;
-	GckDataResult res;
-	
-	
+	GkmDataResult res;
+
+
 	for (i = 0; i < G_N_ELEMENTS (PRIVATE_FILES); ++i) {
-		
+
 		data = test_data_read (PRIVATE_FILES[i], &n_data);
-		
-		res = gck_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
-		if (res != GCK_DATA_SUCCESS) {
+
+		res = gkm_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
+		if (res != GKM_DATA_SUCCESS) {
 			g_warning ("couldn't parse private key: %s", PRIVATE_FILES[i]);
-			g_assert_cmpint (res, ==, GCK_DATA_SUCCESS);
+			g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
 		}
 
-		if (!gck_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
+		if (!gkm_sexp_parse_key (sexp, &algorithm, &is_private, NULL))
 			g_assert_not_reached ();
-		
+
 		g_assert_cmpint (algorithm, !=, 0);
 		g_assert (is_private);
-		
+
 		g_free (data);
 		gcry_sexp_release (sexp);
 	}

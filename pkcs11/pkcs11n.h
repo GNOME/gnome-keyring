@@ -65,7 +65,7 @@ static const char CKT_CVS_ID[] = "@(#) $RCSfile: pkcs11n.h,v $ $Revision: 1.15 $
 
 /*
  * Netscape-defined object classes
- * 
+ *
  */
 #define CKO_NETSCAPE (CKO_VENDOR_DEFINED|NSSCK_VENDOR_NETSCAPE)
 
@@ -210,7 +210,7 @@ typedef CK_ULONG          CK_TRUST;
 #define CKT_NETSCAPE_MUST_VERIFY        (CKT_NETSCAPE + 4)
 #define CKT_NETSCAPE_TRUST_UNKNOWN      (CKT_NETSCAPE + 5) /* default */
 
-/* 
+/*
  * These may well remain Netscape-specific; I'm only using them
  * to cache resolution data.
  */

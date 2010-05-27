@@ -44,37 +44,37 @@
  */
 
 /*
- * Whether the key or certificate is restricted to a set of 
- * purposes (ie: enhanced usages). 
- * 
+ * Whether the key or certificate is restricted to a set of
+ * purposes (ie: enhanced usages).
+ *
  * CK_BBOOL
- * 
+ *
  *  - When CK_TRUE see CKA_PURPOSE_OIDS for the set of purposes.
- *  - When CK_FALSE then is not restricted to any specific purpose. 
+ *  - When CK_FALSE then is not restricted to any specific purpose.
  */
 #define CKA_GNOME_PURPOSE_RESTRICTED             (CKA_GNOME + 12)
 
 /*
- * The available purposes that a certificate or key can be 
- * used for. 
- * 
- * CK_STRING 
- * 
+ * The available purposes that a certificate or key can be
+ * used for.
+ *
+ * CK_STRING
+ *
  *  - This is only relevant if CKA_PURPOSE_RESTRICTED is CK_TRUE.
  *  - Use CKA_TRUSTED and CKA_CERTIFICATE_CATEGORY to validate whether
- *    usage of the certificate for these purposes is directly or 
+ *    usage of the certificate for these purposes is directly or
  *    indirectly trusted by the user.
- *  - The returned string is a space delemited set of OIDs. 
+ *  - The returned string is a space delemited set of OIDs.
  *  - When an empty string is returned then no purposes are valid.
  */
-#define CKA_GNOME_PURPOSE_OIDS                   (CKA_GNOME + 11) 
+#define CKA_GNOME_PURPOSE_OIDS                   (CKA_GNOME + 11)
 
-/* 
- * The key or certificate can be used for the purpose 
+/*
+ * The key or certificate can be used for the purpose
  * indicated
- * 
- * CK_BBOOL 
- * 
+ *
+ * CK_BBOOL
+ *
  *  - These are shortcuts to using CKA_PURPOSE_OIDS
  *  - Use CKA_TRUSTED and CKA_CERTIFICATE_CATEGORY to validate whether
  *    the certificate is directly or indirectly trusted by the user.

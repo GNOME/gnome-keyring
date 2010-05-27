@@ -23,12 +23,12 @@
 
 #include "config.h"
 
-#include "roots-store/gck-roots-store.h"
+#include "roots-store/gkm-roots-store.h"
 
 #include "run-auto-test.h"
 
 DEFINE_EXTERNAL(roots_module)
 {
-	CK_FUNCTION_LIST_PTR funcs = gck_roots_store_get_functions ();
+	CK_FUNCTION_LIST_PTR funcs = gkm_roots_store_get_functions ();
 	test_p11_module (funcs, "p11-tests.conf");
 }

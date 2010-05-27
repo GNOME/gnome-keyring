@@ -26,7 +26,7 @@
 
 #include <glib.h>
 
-#include "gck/gck-types.h"
+#include "gkm/gkm-types.h"
 
 #include "pkcs11.h"
 
@@ -34,10 +34,10 @@ void                   test_ssh_module_leave                    (void);
 
 void                   test_ssh_module_enter                    (void);
 
-GckModule*             test_ssh_module_initialize_and_enter     (void);
+GkmModule*             test_ssh_module_initialize_and_enter     (void);
 
 void                   test_ssh_module_leave_and_finalize       (void);
 
-GckSession*            test_ssh_module_open_session             (gboolean writable);
+GkmSession*            test_ssh_module_open_session             (gboolean writable);
 
 #endif /* TEST_SSH_MODULE_H_ */

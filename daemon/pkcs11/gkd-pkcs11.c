@@ -27,12 +27,12 @@
 
 #include "egg/egg-cleanup.h"
 
-#include "pkcs11/plex-layer/gck-plex-layer.h"
-#include "pkcs11/roots-store/gck-roots-store.h"
-#include "pkcs11/rpc-layer/gck-rpc-layer.h"
-#include "pkcs11/secret-store/gck-secret-store.h"
-#include "pkcs11/ssh-store/gck-ssh-store.h"
-#include "pkcs11/user-store/gck-user-store.h"
+#include "pkcs11/plex-layer/gkm-plex-layer.h"
+#include "pkcs11/roots-store/gkm-roots-store.h"
+#include "pkcs11/rpc-layer/gkm-rpc-layer.h"
+#include "pkcs11/secret-store/gkm-secret-store.h"
+#include "pkcs11/ssh-store/gkm-ssh-store.h"
+#include "pkcs11/user-store/gkm-user-store.h"
 
 #include "ssh-agent/gkd-ssh-agent.h"
 
@@ -50,7 +50,7 @@ pkcs11_daemon_cleanup (gpointer unused)
 	g_assert (pkcs11_roof);
 
 	gkd_ssh_agent_uninitialize ();
-	gck_rpc_layer_uninitialize ();
+	gkm_rpc_layer_uninitialize ();
 	rv = (pkcs11_roof->C_Finalize) (NULL);
 
 	if (rv != CKR_OK)
@@ -71,26 +71,26 @@ gkd_pkcs11_initialize (void)
 	CK_RV rv;
 
 	/* Secrets */
-	secret_store = gck_secret_store_get_functions ();
+	secret_store = gkm_secret_store_get_functions ();
 
 	/* SSH storage */
-	ssh_store = gck_ssh_store_get_functions ();
+	ssh_store = gkm_ssh_store_get_functions ();
 
 	/* Root certificates */
-	roots_store = gck_roots_store_get_functions ();
+	roots_store = gkm_roots_store_get_functions ();
 
 	/* User certificates */
-	user_store = gck_user_store_get_functions ();
+	user_store = gkm_user_store_get_functions ();
 
 	/* Add all of those into the multiplexing layer */
-	gck_plex_layer_add_module (ssh_store);
+	gkm_plex_layer_add_module (ssh_store);
 #ifdef ROOT_CERTIFICATES
-	gck_plex_layer_add_module (roots_store);
+	gkm_plex_layer_add_module (roots_store);
 #endif
-	gck_plex_layer_add_module (secret_store);
-	gck_plex_layer_add_module (user_store);
+	gkm_plex_layer_add_module (secret_store);
+	gkm_plex_layer_add_module (user_store);
 
-	pkcs11_base = gck_plex_layer_get_functions ();
+	pkcs11_base = gkm_plex_layer_get_functions ();
 
 	/* The auth component is the top component */
 	gkd_pkcs11_auth_chain_functions (pkcs11_base);
@@ -119,7 +119,7 @@ gkd_pkcs11_initialize (void)
 	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
 
 	ret = gkd_ssh_agent_initialize (pkcs11_roof) &&
-	      gck_rpc_layer_initialize (pkcs11_roof);
+	      gkm_rpc_layer_initialize (pkcs11_roof);
 
 	return ret;
 }
@@ -127,14 +127,14 @@ gkd_pkcs11_initialize (void)
 static void
 pkcs11_rpc_cleanup (gpointer unused)
 {
-	gck_rpc_layer_shutdown ();
+	gkm_rpc_layer_shutdown ();
 }
 
 static gboolean
 accept_rpc_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 {
 	if (cond == G_IO_IN)
-		gck_rpc_layer_accept ();
+		gkm_rpc_layer_accept ();
 
 	return TRUE;
 }
@@ -149,7 +149,7 @@ gkd_pkcs11_startup_pkcs11 (void)
 	base_dir = gkd_util_get_master_directory ();
 	g_return_val_if_fail (base_dir, FALSE);
 
-	sock = gck_rpc_layer_startup (base_dir);
+	sock = gkm_rpc_layer_startup (base_dir);
 	if (sock == -1)
 		return FALSE;
 
@@ -194,7 +194,7 @@ gkd_pkcs11_startup_ssh (void)
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_ssh_client, NULL);
 	g_io_channel_unref (channel);
 
-	/* gck-ssh-agent sets the environment variable */
+	/* gkm-ssh-agent sets the environment variable */
 	gkd_util_push_environment ("SSH_AUTH_SOCK", g_getenv ("SSH_AUTH_SOCK"));
 
 	egg_cleanup_register (pkcs11_ssh_cleanup, NULL);

@@ -35,13 +35,13 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control.la \
 	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
 	$(top_builddir)/daemon/ssh-agent/libgkd-ssh-agent.la \
-	$(top_builddir)/pkcs11/plex-layer/libgck-plex-layer.la \
-	$(top_builddir)/pkcs11/roots-store/libgck-roots-store.la \
-	$(top_builddir)/pkcs11/rpc-layer/libgck-rpc-layer.la \
-	$(top_builddir)/pkcs11/secret-store/libgck-secret-store.la \
-	$(top_builddir)/pkcs11/ssh-store/libgck-ssh-store.la \
-	$(top_builddir)/pkcs11/user-store/libgck-user-store.la \
-	$(top_builddir)/pkcs11/gck/libgck.la \
+	$(top_builddir)/pkcs11/plex-layer/libgkm-plex-layer.la \
+	$(top_builddir)/pkcs11/roots-store/libgkm-roots-store.la \
+	$(top_builddir)/pkcs11/rpc-layer/libgkm-rpc-layer.la \
+	$(top_builddir)/pkcs11/secret-store/libgkm-secret-store.la \
+	$(top_builddir)/pkcs11/ssh-store/libgkm-ssh-store.la \
+	$(top_builddir)/pkcs11/user-store/libgkm-user-store.la \
+	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/gp11/libgp11.la \
 	$(top_builddir)/egg/libegg-dbus.la \
 	$(DAEMON_LIBS) \

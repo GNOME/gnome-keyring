@@ -23,12 +23,12 @@
 
 #include "config.h"
 
-#include "user-store/gck-user-store.h"
+#include "user-store/gkm-user-store.h"
 
 #include "run-auto-test.h"
 
 DEFINE_EXTERNAL(user_module)
 {
-	CK_FUNCTION_LIST_PTR funcs = gck_user_store_get_functions ();
+	CK_FUNCTION_LIST_PTR funcs = gkm_user_store_get_functions ();
 	test_p11_module (funcs, "p11-tests.conf");
 }

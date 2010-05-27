@@ -23,6 +23,6 @@ gcr/gcr-certificate-details-widget.c
 gcr/gcr-importer.c
 gcr/gcr-parser.c
 gp11/gp11-misc.c
-pkcs11/gck/gck-certificate.c
-pkcs11/ssh-store/gck-ssh-private-key.c
-pkcs11/secret-store/gck-secret-collection.c
+pkcs11/gkm/gkm-certificate.c
+pkcs11/ssh-store/gkm-ssh-private-key.c
+pkcs11/secret-store/gkm-secret-collection.c
