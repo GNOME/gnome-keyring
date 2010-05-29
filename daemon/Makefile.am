@@ -1,5 +1,4 @@
 SUBDIRS = \
-	prompt \
 	login \
 	control \
 	ssh-agent \
@@ -33,7 +32,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/dbus/libgkd-dbus.la \
 	$(top_builddir)/daemon/login/libgkd-login.la \
 	$(top_builddir)/daemon/control/libgkd-control.la \
-	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
+	$(top_builddir)/ui/libgku-prompt.la \
 	$(top_builddir)/daemon/ssh-agent/libgkd-ssh-agent.la \
 	$(top_builddir)/pkcs11/plex-layer/libgkm-plex-layer.la \
 	$(top_builddir)/pkcs11/roots-store/libgkm-roots-store.la \

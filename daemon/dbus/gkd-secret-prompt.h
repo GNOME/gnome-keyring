@@ -26,7 +26,7 @@
 
 #include "gkd-secret-types.h"
 
-#include "prompt/gkd-prompt.h"
+#include "ui/gku-prompt.h"
 
 #include "gp11/gp11.h"
 
@@ -43,12 +43,12 @@ typedef struct _GkdSecretPromptClass GkdSecretPromptClass;
 typedef struct _GkdSecretPromptPrivate GkdSecretPromptPrivate;
 
 struct _GkdSecretPrompt {
-	GkdPrompt parent;
+	GkuPrompt parent;
 	GkdSecretPromptPrivate *pv;
 };
 
 struct _GkdSecretPromptClass {
-	GkdPromptClass parent_class;
+	GkuPromptClass parent_class;
 
 	/* virtual methods */
 	void (*prompt_ready) (GkdSecretPrompt *self);

@@ -24,34 +24,34 @@ INCLUDES= \
 uidir = $(datadir)/gnome-keyring/ui/
 
 ui_DATA = \
-	gkd-prompt.ui
+	gku-prompt.ui
 
 # ------------------------------------------------------------------
 # DAEMON CODE
 
-noinst_LTLIBRARIES = libgkd-prompt.la
+noinst_LTLIBRARIES = libgku-prompt.la
 
 BUILT_SOURCES = \
-	gkd-prompt-marshal.c gkd-prompt-marshal.h
+	gku-prompt-marshal.c gku-prompt-marshal.h
 
-libgkd_prompt_la_SOURCES = \
-	gkd-prompt.c gkd-prompt.h \
-	gkd-prompt-util.c gkd-prompt-util.h \
+libgku_prompt_la_SOURCES = \
+	gku-prompt.c gku-prompt.h \
+	gku-prompt-util.c gku-prompt-util.h \
 	$(BUILT_SOURCES)
 
-libgkd_prompt_la_LIBADD = \
+libgku_prompt_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 
-gkd-prompt-marshal.h: gkd-prompt-marshal.list $(GLIB_GENMARSHAL)
-	$(GLIB_GENMARSHAL) $< --header --prefix=gkd_prompt_marshal > $@
+gku-prompt-marshal.h: gku-prompt-marshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=gku_prompt_marshal > $@
 
-gkd-prompt-marshal.c: gkd-prompt-marshal.list $(GLIB_GENMARSHAL)
-	echo "#include \"gkd-prompt-marshal.h\"" > $@ && \
-	$(GLIB_GENMARSHAL) $< --body --prefix=gkd_prompt_marshal >> $@
+gku-prompt-marshal.c: gku-prompt-marshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"gku-prompt-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=gku_prompt_marshal >> $@
 
 EXTRA_DIST = \
-	gkd-prompt-marshal.list \
+	gku-prompt-marshal.list \
 	$(ui_DATA)
 
 # ------------------------------------------------------------------
@@ -62,8 +62,8 @@ libexec_PROGRAMS= \
 	gnome-keyring-prompt
 
 gnome_keyring_prompt_SOURCES = \
-	gkd-prompt-tool.c \
-	gkd-prompt-util.c gkd-prompt-util.h
+	gku-prompt-tool.c \
+	gku-prompt-util.c gku-prompt-util.h
 
 gnome_keyring_prompt_LDADD = \
 	$(top_builddir)/egg/libegg-prompt.la \

@@ -30,7 +30,7 @@
 
 #include "pkcs11/pkcs11.h"
 
-#include "prompt/gkd-prompt.h"
+#include "ui/gku-prompt.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>

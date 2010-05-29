@@ -32,7 +32,7 @@
 #include "pkcs11/pkcs11g.h"
 #include "pkcs11/pkcs11i.h"
 
-#include "prompt/gkd-prompt.h"
+#include "ui/gku-prompt.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -221,7 +221,7 @@ convert_upper_case (gchar *str)
 		*str = g_ascii_toupper (*str);
 }
 
-static GkdPrompt*
+static GkuPrompt*
 on_prompt_attention (gpointer user_data)
 {
 	/* We were passed the prompt */
@@ -261,7 +261,7 @@ static gboolean
 init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
                   CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len)
 {
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	gchar *password;
 	gchar *label;
 	gchar *secondary;
@@ -288,36 +288,36 @@ init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	g_strchomp (label);
 
 	/* Build up the prompt */
-	prompt = gkd_prompt_new ();
-	gkd_prompt_show_widget (prompt, "password_area");
-	gkd_prompt_show_widget (prompt, "confirm_area");
-	gkd_prompt_set_title (prompt, _("New Password Required"));
-	gkd_prompt_set_primary_text (prompt, _("New password required for secure storage"));
+	prompt = gku_prompt_new ();
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_show_widget (prompt, "confirm_area");
+	gku_prompt_set_title (prompt, _("New Password Required"));
+	gku_prompt_set_primary_text (prompt, _("New password required for secure storage"));
 
 	secondary = g_strdup_printf (_("In order to prepare '%s' for storage of certificates or keys, a password is required"), label);
-	gkd_prompt_set_secondary_text (prompt, secondary);
+	gku_prompt_set_secondary_text (prompt, secondary);
 	g_free (secondary);
 
 	if (gkd_login_is_usable ()) {
-		gkd_prompt_show_widget (prompt, "details_area");
-		gkd_prompt_show_widget (prompt, "lock_area");
-		gkd_prompt_hide_widget (prompt, "options_area");
+		gku_prompt_show_widget (prompt, "details_area");
+		gku_prompt_show_widget (prompt, "lock_area");
+		gku_prompt_hide_widget (prompt, "options_area");
 	}
 
 	/* Prompt the user */
-	gkd_prompt_request_attention_async (NULL, on_prompt_attention, prompt, NULL);
+	gku_prompt_request_attention_async (NULL, on_prompt_attention, prompt, NULL);
 
-	if (!gkd_prompt_has_response (prompt)) {
+	if (!gku_prompt_has_response (prompt)) {
 		ret = FALSE;
 
-	} else if (gkd_prompt_get_response (prompt) != GKD_RESPONSE_OK) {
+	} else if (gku_prompt_get_response (prompt) != GKU_RESPONSE_OK) {
 		ret = FALSE;
 
 	/* Successful response */
 	} else {
-		password = gkd_prompt_get_password (prompt, "password");
+		password = gku_prompt_get_password (prompt, "password");
 
-		if (gkd_prompt_get_unlock_auto (prompt)) {
+		if (gku_prompt_get_unlock_auto (prompt)) {
 			gkd_login_attach_secret (label, password,
 			                         "manufacturer", manufacturer,
 			                         "serial-number", serial,
@@ -414,7 +414,7 @@ login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
 {
 	AuthObject *object;
 	const gchar *password;
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	gchar *secondary;
 	gboolean ret;
 
@@ -453,35 +453,35 @@ login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
 	}
 
 	/* Build up the prompt */
-	prompt = gkd_prompt_new ();
-	gkd_prompt_show_widget (prompt, "password_area");
-	gkd_prompt_hide_widget (prompt, "confirm_area");
-	gkd_prompt_hide_widget (prompt, "original_area");
-	gkd_prompt_set_title (prompt, prepare_specific_title (object->klass));
-	gkd_prompt_set_primary_text (prompt, prepare_specific_primary (object->klass));
+	prompt = gku_prompt_new ();
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_hide_widget (prompt, "confirm_area");
+	gku_prompt_hide_widget (prompt, "original_area");
+	gku_prompt_set_title (prompt, prepare_specific_title (object->klass));
+	gku_prompt_set_primary_text (prompt, prepare_specific_primary (object->klass));
 
 	secondary = prepare_specific_secondary (object->klass, object->label);
-	gkd_prompt_set_secondary_text (prompt, secondary);
+	gku_prompt_set_secondary_text (prompt, secondary);
 	g_free (secondary);
 
 	if (object->unique && gkd_login_is_usable ()) {
-		gkd_prompt_show_widget (prompt, "details_area");
-		gkd_prompt_show_widget (prompt, "lock_area");
-		gkd_prompt_hide_widget (prompt, "options_area");
+		gku_prompt_show_widget (prompt, "details_area");
+		gku_prompt_show_widget (prompt, "lock_area");
+		gku_prompt_hide_widget (prompt, "options_area");
 	}
 
 	/* Prompt the user */
-	gkd_prompt_request_attention_sync (NULL, on_prompt_attention, prompt, NULL);
+	gku_prompt_request_attention_sync (NULL, on_prompt_attention, prompt, NULL);
 
-	if (!gkd_prompt_has_response (prompt))
+	if (!gku_prompt_has_response (prompt))
 		ret = FALSE;
 
 	/* Successful response */
-	else if (gkd_prompt_get_response (prompt) == GKD_RESPONSE_OK) {
-		password = gkd_prompt_get_password (prompt, "password");
+	else if (gku_prompt_get_response (prompt) == GKU_RESPONSE_OK) {
+		password = gku_prompt_get_password (prompt, "password");
 
 		/* Store forever */
-		if (gkd_prompt_get_unlock_auto (prompt) && object->unique && object->token) {
+		if (gku_prompt_get_unlock_auto (prompt) && object->unique && object->token) {
 			gkd_login_attach_secret (object->label, password,
 			                         "unique", object->unique, NULL);
 		}
@@ -547,7 +547,7 @@ static gboolean
 login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
                    CK_UTF8CHAR_PTR *pin, CK_ULONG *pin_len)
 {
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	gchar *label;
 	gchar *secondary;
 	gchar *manufacturer;
@@ -588,40 +588,40 @@ login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	}
 
 	/* Build up the prompt */
-	prompt = gkd_prompt_new ();
-	gkd_prompt_show_widget (prompt, "password_area");
-	gkd_prompt_hide_widget (prompt, "confirm_area");
-	gkd_prompt_hide_widget (prompt, "original_area");
-	gkd_prompt_set_title (prompt, _("Unlock certificate/key storage"));
-	gkd_prompt_set_primary_text (prompt, _("Enter password to unlock the certificate/key storage"));
+	prompt = gku_prompt_new ();
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_hide_widget (prompt, "confirm_area");
+	gku_prompt_hide_widget (prompt, "original_area");
+	gku_prompt_set_title (prompt, _("Unlock certificate/key storage"));
+	gku_prompt_set_primary_text (prompt, _("Enter password to unlock the certificate/key storage"));
 
 	/* TRANSLATORS: The storage is locked, and needs unlocking before the application can use it. */
 	secondary = g_strdup_printf (_("An application wants access to the certificate/key storage '%s', but it is locked"), label);
-	gkd_prompt_set_secondary_text (prompt, secondary);
+	gku_prompt_set_secondary_text (prompt, secondary);
 	g_free (secondary);
 
 	if (gkd_login_is_usable ()) {
-		gkd_prompt_show_widget (prompt, "details_area");
-		gkd_prompt_show_widget (prompt, "lock_area");
-		gkd_prompt_hide_widget (prompt, "options_area");
+		gku_prompt_show_widget (prompt, "details_area");
+		gku_prompt_show_widget (prompt, "lock_area");
+		gku_prompt_hide_widget (prompt, "options_area");
 	}
 
 	/* Prompt the user */
-	gkd_prompt_request_attention_sync (NULL, on_prompt_attention, prompt, NULL);
+	gku_prompt_request_attention_sync (NULL, on_prompt_attention, prompt, NULL);
 
-	if (!gkd_prompt_has_response (prompt)) {
+	if (!gku_prompt_has_response (prompt)) {
 		ret = FALSE;
 
 	/* User cancelled or failure */
-	} else if (gkd_prompt_get_response (prompt) != GKD_RESPONSE_OK) {
+	} else if (gku_prompt_get_response (prompt) != GKU_RESPONSE_OK) {
 		ret = FALSE;
 
 	/* Successful response */
 	} else {
-		password = gkd_prompt_get_password (prompt, "password");
+		password = gku_prompt_get_password (prompt, "password");
 
 		/* Store forever */
-		if (gkd_prompt_get_unlock_auto (prompt)) {
+		if (gku_prompt_get_unlock_auto (prompt)) {
 			gkd_login_attach_secret (label, password,
 			                         "manufacturer", manufacturer,
 			                         "serial-number", serial,

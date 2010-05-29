@@ -30,7 +30,7 @@
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
-#include "prompt/gkd-prompt.h"
+#include "ui/gku-prompt.h"
 
 #include "egg/egg-dh.h"
 
@@ -46,7 +46,7 @@ enum {
 #define PROMPT_IKE_GROUP  "ietf-ike-grp-modp-1536"
 
 struct _GkdSecretPromptPrivate {
-	GkdPrompt parent;
+	GkuPrompt parent;
 	gchar *object_path;
 	GkdSecretService *service;
 	GkdSecretSession *session;
@@ -58,7 +58,7 @@ struct _GkdSecretPromptPrivate {
 	GList *objects;
 };
 
-G_DEFINE_TYPE (GkdSecretPrompt, gkd_secret_prompt, GKD_TYPE_PROMPT);
+G_DEFINE_TYPE (GkdSecretPrompt, gkd_secret_prompt, GKU_TYPE_PROMPT);
 
 static guint unique_prompt_number = 0;
 
@@ -69,7 +69,7 @@ static guint unique_prompt_number = 0;
 static void
 setup_transport_params (GkdSecretPrompt *self)
 {
-	GkdPrompt *prompt = GKD_PROMPT (self);
+	GkuPrompt *prompt = GKU_PROMPT (self);
 	gsize n_public, n_prime, n_base;
 	gconstpointer prime, base;
 	gpointer public;
@@ -82,21 +82,21 @@ setup_transport_params (GkdSecretPrompt *self)
 	g_return_if_fail (public);
 	self->pv->negotiated = FALSE;
 
-	gkd_prompt_set_transport_param (prompt, "public", public, n_public);
+	gku_prompt_set_transport_param (prompt, "public", public, n_public);
 	g_free (public);
 
 	/* Setup transport crypto */
 	if (!egg_dh_default_params_raw (PROMPT_IKE_GROUP, &prime, &n_prime, &base, &n_base))
 		g_return_if_reached ();
 
-	gkd_prompt_set_transport_param (prompt, "prime", prime, n_prime);
-	gkd_prompt_set_transport_param (prompt, "base", base, n_base);
+	gku_prompt_set_transport_param (prompt, "prime", prime, n_prime);
+	gku_prompt_set_transport_param (prompt, "base", base, n_base);
 }
 
 static gboolean
 complete_transport_params (GkdSecretPrompt *self)
 {
-	GkdPrompt *prompt = GKD_PROMPT (self);
+	GkuPrompt *prompt = GKU_PROMPT (self);
 	gboolean result;
 	gsize n_peer;
 	gpointer peer;
@@ -106,7 +106,7 @@ complete_transport_params (GkdSecretPrompt *self)
 
 	g_return_val_if_fail (self->pv->session, FALSE);
 
-	peer = gkd_prompt_get_transport_param (prompt, "public", &n_peer);
+	peer = gku_prompt_get_transport_param (prompt, "public", &n_peer);
 	if (peer == NULL) {
 		g_warning ("prompt did not return a public dh key");
 		return FALSE;
@@ -123,7 +123,7 @@ complete_transport_params (GkdSecretPrompt *self)
 	return result;
 }
 
-static GkdPrompt*
+static GkuPrompt*
 on_prompt_attention (gpointer user_data)
 {
 	GkdSecretPrompt *self = user_data;
@@ -184,8 +184,8 @@ prompt_method_prompt (GkdSecretPrompt *self, DBusMessage *message)
 		return dbus_message_new_error (message, SECRET_ERROR_ALREADY_EXISTS,
 		                               "This prompt has already been shown.");
 
-	gkd_prompt_set_window_id (GKD_PROMPT (self), window_id);
-	gkd_prompt_request_attention_async (window_id, on_prompt_attention,
+	gku_prompt_set_window_id (GKU_PROMPT (self), window_id);
+	gku_prompt_request_attention_async (window_id, on_prompt_attention,
 	                                    g_object_ref (self), g_object_unref);
 	self->pv->prompted = TRUE;
 
@@ -218,13 +218,13 @@ prompt_method_dismiss (GkdSecretPrompt *self, DBusMessage *message)
  */
 
 static gboolean
-gkd_secret_prompt_responded (GkdPrompt *base)
+gkd_secret_prompt_responded (GkuPrompt *base)
 {
 	GkdSecretPrompt *self = GKD_SECRET_PROMPT (base);
 	gint res;
 
-	res = gkd_prompt_get_response (GKD_PROMPT (self));
-	if (res <= GKD_RESPONSE_NO) {
+	res = gku_prompt_get_response (GKU_PROMPT (self));
+	if (res <= GKU_RESPONSE_NO) {
 		gkd_secret_prompt_dismiss (self);
 		return FALSE;
 	}
@@ -363,7 +363,7 @@ static void
 gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GkdPromptClass *prompt_class = GKD_PROMPT_CLASS (klass);
+	GkuPromptClass *prompt_class = GKU_PROMPT_CLASS (klass);
 
 	gobject_class->constructor = gkd_secret_prompt_constructor;
 	gobject_class->dispose = gkd_secret_prompt_dispose;
@@ -502,7 +502,7 @@ gkd_secret_prompt_get_secret (GkdSecretPrompt *self, const gchar *password_type)
 	if (!complete_transport_params (self))
 		return NULL;
 
-	if (!gkd_prompt_get_transport_password (GKD_PROMPT (self), password_type,
+	if (!gku_prompt_get_transport_password (GKU_PROMPT (self), password_type,
 	                                        &parameter, &n_parameter,
 	                                        &value, &n_value))
 		return NULL;

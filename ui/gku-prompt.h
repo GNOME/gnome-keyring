@@ -19,120 +19,120 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKD_PROMPT_H__
-#define __GKD_PROMPT_H__
+#ifndef __GKU_PROMPT_H__
+#define __GKU_PROMPT_H__
 
 #include <glib-object.h>
 
 #include <gp11/gp11.h>
 
 typedef enum {
-	GKD_RESPONSE_FAILURE      = -1,
-	GKD_RESPONSE_NONE         = 0,
-	GKD_RESPONSE_NO           = 1,
-	GKD_RESPONSE_OK           = 2,
-	GKD_RESPONSE_OTHER        = 3,
-} GkrAskResponse;
+	GKU_RESPONSE_FAILURE      = -1,
+	GKU_RESPONSE_NONE         = 0,
+	GKU_RESPONSE_NO           = 1,
+	GKU_RESPONSE_OK           = 2,
+	GKU_RESPONSE_OTHER        = 3,
+} GkuResponse;
 
-#define GKD_TYPE_PROMPT               (gkd_prompt_get_type ())
-#define GKD_PROMPT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_TYPE_PROMPT, GkdPrompt))
-#define GKD_PROMPT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_TYPE_PROMPT, GkdPromptClass))
-#define GKD_IS_PROMPT(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GKD_TYPE_PROMPT))
-#define GKD_IS_PROMPT_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GKD_TYPE_PROMPT))
-#define GKD_PROMPT_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GKD_TYPE_PROMPT, GkdPromptClass))
+#define GKU_TYPE_PROMPT               (gku_prompt_get_type ())
+#define GKU_PROMPT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKU_TYPE_PROMPT, GkuPrompt))
+#define GKU_PROMPT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKU_TYPE_PROMPT, GkuPromptClass))
+#define GKU_IS_PROMPT(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GKU_TYPE_PROMPT))
+#define GKU_IS_PROMPT_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GKU_TYPE_PROMPT))
+#define GKU_PROMPT_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GKU_TYPE_PROMPT, GkuPromptClass))
 
-typedef struct _GkdPrompt GkdPrompt;
-typedef struct _GkdPromptClass GkdPromptClass;
-typedef struct _GkdPromptPrivate GkdPromptPrivate;
+typedef struct _GkuPrompt GkuPrompt;
+typedef struct _GkuPromptClass GkuPromptClass;
+typedef struct _GkuPromptPrivate GkuPromptPrivate;
 
-struct _GkdPrompt {
+struct _GkuPrompt {
 	GObject parent;
-	GkdPromptPrivate *pv;
+	GkuPromptPrivate *pv;
 };
 
-struct _GkdPromptClass {
+struct _GkuPromptClass {
 	GObjectClass parent_class;
 
 	/* signals */
-	gboolean (*responded) (GkdPrompt *self);
-	void (*completed) (GkdPrompt *self);
+	gboolean (*responded) (GkuPrompt *self);
+	void (*completed) (GkuPrompt *self);
 };
 
-GType               gkd_prompt_get_type               (void);
+GType               gku_prompt_get_type               (void);
 
-GkdPrompt*          gkd_prompt_new                    (void);
+GkuPrompt*          gku_prompt_new                    (void);
 
-void                gkd_prompt_reset                  (GkdPrompt *prompt,
+void                gku_prompt_reset                  (GkuPrompt *prompt,
                                                        gboolean hard);
 
-void                gkd_prompt_set_title              (GkdPrompt *prompt,
+void                gku_prompt_set_title              (GkuPrompt *prompt,
                                                        const gchar *title);
 
-void                gkd_prompt_set_primary_text       (GkdPrompt *prompt,
+void                gku_prompt_set_primary_text       (GkuPrompt *prompt,
                                                        const gchar *primary);
 
-void                gkd_prompt_set_secondary_text     (GkdPrompt *prompt,
+void                gku_prompt_set_secondary_text     (GkuPrompt *prompt,
                                                        const gchar *secondary);
 
-void                gkd_prompt_set_warning            (GkdPrompt *prompt,
+void                gku_prompt_set_warning            (GkuPrompt *prompt,
                                                        const gchar *warning);
 
-void                gkd_prompt_set_window_id          (GkdPrompt *prompt,
+void                gku_prompt_set_window_id          (GkuPrompt *prompt,
                                                        const gchar *window_id);
 
-void                gkd_prompt_show_widget            (GkdPrompt *prompt,
+void                gku_prompt_show_widget            (GkuPrompt *prompt,
                                                        const gchar *widget);
 
-void                gkd_prompt_hide_widget            (GkdPrompt *prompt,
+void                gku_prompt_hide_widget            (GkuPrompt *prompt,
                                                        const gchar *widget);
 
-void                gkd_prompt_select_widget          (GkdPrompt *prompt,
+void                gku_prompt_select_widget          (GkuPrompt *prompt,
                                                        const gchar *widget);
 
-gboolean            gkd_prompt_has_response           (GkdPrompt *prompt);
+gboolean            gku_prompt_has_response           (GkuPrompt *prompt);
 
-gint                gkd_prompt_get_response           (GkdPrompt *prompt);
+gint                gku_prompt_get_response           (GkuPrompt *prompt);
 
-gchar*              gkd_prompt_get_password           (GkdPrompt *prompt,
+gchar*              gku_prompt_get_password           (GkuPrompt *prompt,
                                                        const gchar *password_type);
 
-gpointer            gkd_prompt_get_transport_param    (GkdPrompt *prompt,
+gpointer            gku_prompt_get_transport_param    (GkuPrompt *prompt,
                                                        const gchar *name,
                                                        gsize *n_value);
 
-void                gkd_prompt_set_transport_param    (GkdPrompt *prompt,
+void                gku_prompt_set_transport_param    (GkuPrompt *prompt,
                                                        const gchar *name,
                                                        gconstpointer value,
                                                        gsize n_value);
 
-gboolean            gkd_prompt_get_transport_password (GkdPrompt *self,
+gboolean            gku_prompt_get_transport_password (GkuPrompt *self,
                                                        const gchar *password_type,
                                                        gpointer *parameter,
                                                        gsize *n_parameter,
                                                        gpointer *value,
                                                        gsize *n_value);
 
-void                gkd_prompt_get_unlock_options     (GkdPrompt *self,
+void                gku_prompt_get_unlock_options     (GkuPrompt *self,
                                                        GP11Attributes *attrs);
 
-void                gkd_prompt_set_unlock_options     (GkdPrompt *self,
+void                gku_prompt_set_unlock_options     (GkuPrompt *self,
                                                        GP11Attributes *attrs);
 
-gboolean            gkd_prompt_get_unlock_auto        (GkdPrompt *self);
+gboolean            gku_prompt_get_unlock_auto        (GkuPrompt *self);
 
-gboolean            gkd_prompt_is_widget_selected     (GkdPrompt *prompt,
+gboolean            gku_prompt_is_widget_selected     (GkuPrompt *prompt,
                                                        const gchar *widget);
 
-typedef GkdPrompt*  (*GkdPromptAttentionFunc)             (gpointer user_data);
+typedef GkuPrompt*  (*GkuPromptAttentionFunc)             (gpointer user_data);
 
-void                gkd_prompt_request_attention_async    (const gchar *window_id,
-                                                           GkdPromptAttentionFunc callback,
+void                gku_prompt_request_attention_async    (const gchar *window_id,
+                                                           GkuPromptAttentionFunc callback,
                                                            gpointer user_data,
                                                            GDestroyNotify destroy_notify);
 
-void                gkd_prompt_request_attention_sync     (const gchar *window_id,
-                                                           GkdPromptAttentionFunc callback,
+void                gku_prompt_request_attention_sync     (const gchar *window_id,
+                                                           GkuPromptAttentionFunc callback,
                                                            gpointer user_data,
                                                            GDestroyNotify destroy_notify);
 
-#endif /* __GKD_PROMPT_H__ */
+#endif /* __GKU_PROMPT_H__ */

@@ -19,31 +19,31 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKD_PROMPT_UTIL_H__
-#define __GKD_PROMPT_UTIL_H__
+#ifndef __GKU_PROMPT_UTIL_H__
+#define __GKU_PROMPT_UTIL_H__
 
 #include <gcrypt.h>
 
 #include <glib.h>
 
-void        gkd_prompt_util_encode_mpi                   (GKeyFile *key_file, const gchar *section,
+void        gku_prompt_util_encode_mpi                   (GKeyFile *key_file, const gchar *section,
                                                           const gchar *field, gcry_mpi_t mpi);
 
-void        gkd_prompt_util_encode_hex                   (GKeyFile *key_file, const gchar *section,
+void        gku_prompt_util_encode_hex                   (GKeyFile *key_file, const gchar *section,
                                                           const gchar *field, gconstpointer data, gsize n_data);
 
-gboolean    gkd_prompt_util_decode_mpi                   (GKeyFile *key_file, const gchar *section,
+gboolean    gku_prompt_util_decode_mpi                   (GKeyFile *key_file, const gchar *section,
                                                           const gchar *field, gcry_mpi_t *mpi);
 
-gpointer    gkd_prompt_util_decode_hex                   (GKeyFile *key_file, const gchar *section,
+gpointer    gku_prompt_util_decode_hex                   (GKeyFile *key_file, const gchar *section,
                                                           const gchar *field, gsize *n_result);
 
-gpointer    gkd_prompt_util_encrypt_text                 (gconstpointer key, gsize n_key,
+gpointer    gku_prompt_util_encrypt_text                 (gconstpointer key, gsize n_key,
                                                           gconstpointer iv, gsize n_iv,
                                                           const gchar *text, gsize *n_result);
 
-gchar*      gkd_prompt_util_decrypt_text                 (gconstpointer key, gsize n_key,
+gchar*      gku_prompt_util_decrypt_text                 (gconstpointer key, gsize n_key,
                                                           gconstpointer iv, gsize n_iv,
                                                           gconstpointer data, gsize n_data);
 
-#endif /* __GKD_PROMPT_H__ */
+#endif /* __GKU_PROMPT_H__ */

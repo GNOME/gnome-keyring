@@ -67,3 +67,5 @@ run-prompt-test*
 /junk
 /TODO.tasks
 
+# ui directory
+/ui/gnome-keyring-prompt

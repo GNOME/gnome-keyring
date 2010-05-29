@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkd-prompt-tool.c - Handles gui authentication for the keyring daemon.
+/* gku-prompt-tool.c - Handles gui authentication for the keyring daemon.
 
    Copyright (C) 2009 Stefan Walter
 
@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "gkd-prompt-util.h"
+#include "gku-prompt-util.h"
 
 #include "egg/egg-dh.h"
 #include "egg/egg-hex.h"
@@ -30,7 +30,7 @@
 #include "egg/egg-secure-memory.h"
 
 void
-gkd_prompt_util_encode_mpi (GKeyFile *key_file, const gchar *section,
+gku_prompt_util_encode_mpi (GKeyFile *key_file, const gchar *section,
                             const gchar *field, gcry_mpi_t mpi)
 {
 	gcry_error_t gcry;
@@ -52,12 +52,12 @@ gkd_prompt_util_encode_mpi (GKeyFile *key_file, const gchar *section,
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, data, n_data, &n_data, mpi);
 	g_return_if_fail (gcry == 0);
 
-	gkd_prompt_util_encode_hex (key_file, section, field, data, n_data);
+	gku_prompt_util_encode_hex (key_file, section, field, data, n_data);
 	g_free (data);
 }
 
 void
-gkd_prompt_util_encode_hex (GKeyFile *key_file, const gchar *section,
+gku_prompt_util_encode_hex (GKeyFile *key_file, const gchar *section,
                             const gchar *field, gconstpointer data, gsize n_data)
 {
 	gchar *value;
@@ -72,7 +72,7 @@ gkd_prompt_util_encode_hex (GKeyFile *key_file, const gchar *section,
 }
 
 gpointer
-gkd_prompt_util_decode_hex (GKeyFile *key_file, const gchar *section,
+gku_prompt_util_decode_hex (GKeyFile *key_file, const gchar *section,
                             const gchar *field, gsize *n_result)
 {
 	gpointer result = NULL;
@@ -91,7 +91,7 @@ gkd_prompt_util_decode_hex (GKeyFile *key_file, const gchar *section,
 }
 
 gboolean
-gkd_prompt_util_decode_mpi (GKeyFile *key_file, const gchar *section,
+gku_prompt_util_decode_mpi (GKeyFile *key_file, const gchar *section,
                             const gchar *field, gcry_mpi_t *mpi)
 {
 	gcry_error_t gcry;
@@ -103,7 +103,7 @@ gkd_prompt_util_decode_mpi (GKeyFile *key_file, const gchar *section,
 	g_return_val_if_fail (field, FALSE);
 	g_return_val_if_fail (mpi, FALSE);
 
-	data = gkd_prompt_util_decode_hex (key_file, section, field, &n_data);
+	data = gku_prompt_util_decode_hex (key_file, section, field, &n_data);
 	if (data == NULL)
 		return FALSE;
 
@@ -114,7 +114,7 @@ gkd_prompt_util_decode_mpi (GKeyFile *key_file, const gchar *section,
 }
 
 gpointer
-gkd_prompt_util_encrypt_text (gconstpointer key, gsize n_key,
+gku_prompt_util_encrypt_text (gconstpointer key, gsize n_key,
                               gconstpointer iv, gsize n_iv,
                               const gchar *text, gsize *n_result)
 {
@@ -163,7 +163,7 @@ gkd_prompt_util_encrypt_text (gconstpointer key, gsize n_key,
 }
 
 gchar*
-gkd_prompt_util_decrypt_text (gconstpointer key, gsize n_key, gconstpointer iv, gsize n_iv,
+gku_prompt_util_decrypt_text (gconstpointer key, gsize n_key, gconstpointer iv, gsize n_iv,
                               gconstpointer data, gsize n_data)
 {
 	gcry_cipher_hd_t cih;

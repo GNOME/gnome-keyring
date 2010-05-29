@@ -21,9 +21,9 @@
 
 #include "config.h"
 
-#include "gkd-prompt.h"
-#include "gkd-prompt-marshal.h"
-#include "gkd-prompt-util.h"
+#include "gku-prompt.h"
+#include "gku-prompt-marshal.h"
+#include "gku-prompt-util.h"
 
 #include "egg/egg-cleanup.h"
 #include "egg/egg-dh.h"
@@ -56,7 +56,7 @@ typedef struct _TransportCrypto {
 	gsize n_key;
 } TransportCrypto;
 
-struct _GkdPromptPrivate {
+struct _GkuPromptPrivate {
 	GKeyFile *input;
 	GKeyFile *output;
 	gchar *executable;
@@ -78,10 +78,10 @@ struct _GkdPromptPrivate {
 	guint io_tag;
 };
 
-G_DEFINE_TYPE (GkdPrompt, gkd_prompt, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GkuPrompt, gku_prompt, G_TYPE_OBJECT);
 
 /* Forward declaration*/
-static void display_async_prompt (GkdPrompt *);
+static void display_async_prompt (GkuPrompt *);
 
 /* User choices we transfer over during a soft prompt reset */
 const struct { const gchar *section; const gchar *name; } SOFT_RESET[] = {
@@ -96,25 +96,25 @@ const struct { const gchar *section; const gchar *name; } SOFT_RESET[] = {
  */
 
 static void
-kill_process (GkdPrompt *self)
+kill_process (GkuPrompt *self)
 {
 	if (self->pv->pid)
 		kill (self->pv->pid, SIGHUP);
 }
 
 static void
-mark_completed (GkdPrompt *self)
+mark_completed (GkuPrompt *self)
 {
-	g_assert (GKD_IS_PROMPT (self));
+	g_assert (GKU_IS_PROMPT (self));
 	g_assert (!self->pv->completed);
 	self->pv->completed = TRUE;
 	g_signal_emit (self, signals[COMPLETED], 0);
 }
 
 static void
-mark_failed (GkdPrompt *self)
+mark_failed (GkuPrompt *self)
 {
-	g_assert (GKD_IS_PROMPT (self));
+	g_assert (GKU_IS_PROMPT (self));
 	g_assert (!self->pv->failure);
 	self->pv->failure = TRUE;
 	if (!self->pv->completed)
@@ -122,13 +122,13 @@ mark_failed (GkdPrompt *self)
 }
 
 static void
-mark_responded (GkdPrompt *self)
+mark_responded (GkuPrompt *self)
 {
 	gboolean continu = FALSE;
 
-	g_assert (GKD_IS_PROMPT (self));
+	g_assert (GKU_IS_PROMPT (self));
 	g_signal_emit (self, signals[RESPONDED], 0, &continu);
-	g_assert (GKD_IS_PROMPT (self));
+	g_assert (GKU_IS_PROMPT (self));
 
 	/* The prompt gets displayed again */
 	if (continu) {
@@ -143,10 +143,10 @@ mark_responded (GkdPrompt *self)
 static gboolean
 on_standard_input (int fd, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (user_data);
+	GkuPrompt *self = GKU_PROMPT (user_data);
 	gssize ret;
 
-	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
 
 	if (self->pv->in_offset >= self->pv->in_length)
 		return FALSE;
@@ -168,11 +168,11 @@ on_standard_input (int fd, gpointer user_data)
 static gboolean
 on_standard_output (int fd, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (user_data);
+	GkuPrompt *self = GKU_PROMPT (user_data);
 	gchar buffer[1024];
 	gssize ret;
 
-	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
 
 	ret = egg_spawn_read_output (fd, buffer, sizeof (buffer));
 	if (ret < 0) {
@@ -192,12 +192,12 @@ on_standard_output (int fd, gpointer user_data)
 static gboolean
 on_standard_error (int fd, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (user_data);
+	GkuPrompt *self = GKU_PROMPT (user_data);
 	gchar buffer[1024];
 	gssize ret;
 	gchar *ptr;
 
-	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
 
 	ret = egg_spawn_read_output (fd, buffer, sizeof (buffer));
 	if (ret < 0) {
@@ -225,10 +225,10 @@ on_standard_error (int fd, gpointer user_data)
 static void
 on_io_completed (gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (user_data);
+	GkuPrompt *self = GKU_PROMPT (user_data);
 	GError *error = NULL;
 
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 
 	g_assert (!self->pv->output);
 	g_assert (self->pv->io_tag != 0);
@@ -269,7 +269,7 @@ on_io_completed (gpointer user_data)
 static void
 on_child_exited (GPid pid, gint status, gpointer user_data)
 {
-	GkdPrompt *self = GKD_PROMPT (user_data);
+	GkuPrompt *self = GKU_PROMPT (user_data);
 	gint code;
 
 	if (pid == self->pv->pid) {
@@ -293,7 +293,7 @@ on_child_exited (GPid pid, gint status, gpointer user_data)
 }
 
 static void
-prepare_transport_crypto (GkdPrompt *self)
+prepare_transport_crypto (GkuPrompt *self)
 {
 	TransportCrypto *transport;
 	gcry_mpi_t pub, base;
@@ -308,9 +308,9 @@ prepare_transport_crypto (GkdPrompt *self)
 			g_return_if_reached ();
 
 		/* Send over the prime, base, and public bits */
-		gkd_prompt_util_encode_mpi (self->pv->input, "transport", "prime", transport->prime);
-		gkd_prompt_util_encode_mpi (self->pv->input, "transport", "base", base);
-		gkd_prompt_util_encode_mpi (self->pv->input, "transport", "public", pub);
+		gku_prompt_util_encode_mpi (self->pv->input, "transport", "prime", transport->prime);
+		gku_prompt_util_encode_mpi (self->pv->input, "transport", "base", base);
+		gku_prompt_util_encode_mpi (self->pv->input, "transport", "public", pub);
 
 		gcry_mpi_release (base);
 		gcry_mpi_release (pub);
@@ -326,7 +326,7 @@ prepare_transport_crypto (GkdPrompt *self)
 }
 
 static gconstpointer
-calculate_transport_key (GkdPrompt *self, gsize *n_key)
+calculate_transport_key (GkuPrompt *self, gsize *n_key)
 {
 	gcry_mpi_t peer;
 	gpointer value;
@@ -335,13 +335,13 @@ calculate_transport_key (GkdPrompt *self, gsize *n_key)
 	g_assert (n_key);
 
 	if (!self->pv->transport) {
-		g_warning ("GkdPrompt did not negotiate crypto, but its caller is now asking"
+		g_warning ("GkuPrompt did not negotiate crypto, but its caller is now asking"
 		           " it to do the decryption. This is an error in gnome-keyring");
 		return NULL;
 	}
 
 	if (!self->pv->transport->key) {
-		if (!gkd_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
+		if (!gku_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
 			return NULL;
 
 		value = egg_dh_gen_secret (peer, self->pv->transport->private,
@@ -362,7 +362,7 @@ calculate_transport_key (GkdPrompt *self, gsize *n_key)
 }
 
 static gboolean
-prepare_input_data (GkdPrompt *self)
+prepare_input_data (GkuPrompt *self)
 {
 	GError *error = NULL;
 
@@ -390,7 +390,7 @@ prepare_input_data (GkdPrompt *self)
 }
 
 static void
-display_async_prompt (GkdPrompt *self)
+display_async_prompt (GkuPrompt *self)
 {
 	EggSpawnCallbacks callbacks;
 	GError *error = NULL;
@@ -445,7 +445,7 @@ display_async_prompt (GkdPrompt *self)
 }
 
 static void
-clear_prompt_data (GkdPrompt *self)
+clear_prompt_data (GkuPrompt *self)
 {
 	TransportCrypto *transport;
 
@@ -496,22 +496,22 @@ clear_prompt_data (GkdPrompt *self)
  */
 
 static gboolean
-gkd_prompt_real_responded (GkdPrompt *self)
+gku_prompt_real_responded (GkuPrompt *self)
 {
 	/* The prompt is done, if nobody overrode this signal and returned TRUE */
 	return FALSE;
 }
 
 static void
-gkd_prompt_real_completed (GkdPrompt *self)
+gku_prompt_real_completed (GkuPrompt *self)
 {
 	/* Nothing to do */
 }
 
 static GObject*
-gkd_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
+gku_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
-	GkdPrompt *self = GKD_PROMPT (G_OBJECT_CLASS (gkd_prompt_parent_class)->constructor(type, n_props, props));
+	GkuPrompt *self = GKU_PROMPT (G_OBJECT_CLASS (gku_prompt_parent_class)->constructor(type, n_props, props));
 	g_return_val_if_fail (self, NULL);
 
 	if (!self->pv->executable)
@@ -521,27 +521,27 @@ gkd_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
 }
 
 static void
-gkd_prompt_init (GkdPrompt *self)
+gku_prompt_init (GkuPrompt *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKD_TYPE_PROMPT, GkdPromptPrivate);
-	gkd_prompt_reset (self, TRUE);
+	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKU_TYPE_PROMPT, GkuPromptPrivate);
+	gku_prompt_reset (self, TRUE);
 }
 
 static void
-gkd_prompt_dispose (GObject *obj)
+gku_prompt_dispose (GObject *obj)
 {
-	GkdPrompt *self = GKD_PROMPT (obj);
+	GkuPrompt *self = GKU_PROMPT (obj);
 
 	kill_process (self);
 	clear_prompt_data (self);
 
-	G_OBJECT_CLASS (gkd_prompt_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gku_prompt_parent_class)->dispose (obj);
 }
 
 static void
-gkd_prompt_finalize (GObject *obj)
+gku_prompt_finalize (GObject *obj)
 {
-	GkdPrompt *self = GKD_PROMPT (obj);
+	GkuPrompt *self = GKU_PROMPT (obj);
 
 	g_assert (self->pv->pid == 0);
 	g_assert (!self->pv->input);
@@ -555,31 +555,31 @@ gkd_prompt_finalize (GObject *obj)
 	g_free (self->pv->executable);
 	self->pv->executable = NULL;
 
-	G_OBJECT_CLASS (gkd_prompt_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gku_prompt_parent_class)->finalize (obj);
 }
 
 static void
-gkd_prompt_class_init (GkdPromptClass *klass)
+gku_prompt_class_init (GkuPromptClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->constructor = gkd_prompt_constructor;
-	gobject_class->dispose = gkd_prompt_dispose;
-	gobject_class->finalize = gkd_prompt_finalize;
+	gobject_class->constructor = gku_prompt_constructor;
+	gobject_class->dispose = gku_prompt_dispose;
+	gobject_class->finalize = gku_prompt_finalize;
 
-	klass->responded = gkd_prompt_real_responded;
-	klass->completed = gkd_prompt_real_completed;
+	klass->responded = gku_prompt_real_responded;
+	klass->completed = gku_prompt_real_completed;
 
-	g_type_class_add_private (klass, sizeof (GkdPromptPrivate));
+	g_type_class_add_private (klass, sizeof (GkuPromptPrivate));
 
-	signals[COMPLETED] = g_signal_new ("completed", GKD_TYPE_PROMPT,
-	                                   G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkdPromptClass, completed),
+	signals[COMPLETED] = g_signal_new ("completed", GKU_TYPE_PROMPT,
+	                                   G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkuPromptClass, completed),
 	                                   NULL, NULL, g_cclosure_marshal_VOID__VOID,
 	                                   G_TYPE_NONE, 0);
 
-	signals[RESPONDED] = g_signal_new ("responded", GKD_TYPE_PROMPT,
-	                                   G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkdPromptClass, responded),
-	                                   g_signal_accumulator_true_handled, NULL, gkd_prompt_marshal_BOOLEAN__VOID,
+	signals[RESPONDED] = g_signal_new ("responded", GKU_TYPE_PROMPT,
+	                                   G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkuPromptClass, responded),
+	                                   g_signal_accumulator_true_handled, NULL, gku_prompt_marshal_BOOLEAN__VOID,
 	                                   G_TYPE_BOOLEAN, 0);
 }
 
@@ -587,91 +587,91 @@ gkd_prompt_class_init (GkdPromptClass *klass)
  * PUBLIC
  */
 
-GkdPrompt*
-gkd_prompt_new (void)
+GkuPrompt*
+gku_prompt_new (void)
 {
-	return g_object_new (GKD_TYPE_PROMPT, NULL);
+	return g_object_new (GKU_TYPE_PROMPT, NULL);
 }
 
 void
-gkd_prompt_set_title (GkdPrompt *self, const gchar *title)
+gku_prompt_set_title (GkuPrompt *self, const gchar *title)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	g_key_file_set_value (self->pv->input, "prompt", "title", title);
 }
 
 void
-gkd_prompt_set_primary_text (GkdPrompt *self, const gchar *primary)
+gku_prompt_set_primary_text (GkuPrompt *self, const gchar *primary)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	g_key_file_set_value (self->pv->input, "prompt", "primary", primary);
 }
 
 void
-gkd_prompt_set_secondary_text (GkdPrompt *self, const gchar *secondary)
+gku_prompt_set_secondary_text (GkuPrompt *self, const gchar *secondary)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	g_key_file_set_value (self->pv->input, "prompt", "secondary", secondary);
 }
 
 void
-gkd_prompt_show_widget (GkdPrompt *self, const gchar *widget)
+gku_prompt_show_widget (GkuPrompt *self, const gchar *widget)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	g_key_file_set_boolean (self->pv->input, "visibility", widget, TRUE);
 }
 
 void
-gkd_prompt_hide_widget (GkdPrompt *self, const gchar *widget)
+gku_prompt_hide_widget (GkuPrompt *self, const gchar *widget)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	g_key_file_set_boolean (self->pv->input, "visibility", widget, FALSE);
 }
 
 void
-gkd_prompt_select_widget (GkdPrompt *self, const gchar *widget)
+gku_prompt_select_widget (GkuPrompt *self, const gchar *widget)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	g_key_file_set_boolean (self->pv->input, "selected", widget, TRUE);
 }
 
 gboolean
-gkd_prompt_has_response (GkdPrompt *self)
+gku_prompt_has_response (GkuPrompt *self)
 {
-	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
 	return self->pv->output ? TRUE : FALSE;
 }
 
 gint
-gkd_prompt_get_response (GkdPrompt *self)
+gku_prompt_get_response (GkuPrompt *self)
 {
 	gchar *response;
 	guint ret;
 
-	g_return_val_if_fail (GKD_IS_PROMPT (self), GKD_RESPONSE_FAILURE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), GKU_RESPONSE_FAILURE);
 	if (self->pv->failure)
-		return GKD_RESPONSE_FAILURE;
+		return GKU_RESPONSE_FAILURE;
 
-	g_return_val_if_fail (self->pv->output, GKD_RESPONSE_FAILURE);
+	g_return_val_if_fail (self->pv->output, GKU_RESPONSE_FAILURE);
 
 	response = g_key_file_get_value (self->pv->output, "prompt", "response", NULL);
 	if (!response || g_str_equal (response, "")) {
-		ret = GKD_RESPONSE_NONE;
+		ret = GKU_RESPONSE_NONE;
 	} else if (g_str_equal (response, "ok")) {
-		ret = GKD_RESPONSE_OK;
+		ret = GKU_RESPONSE_OK;
 	} else if (g_str_equal (response, "no")) {
-		ret =  GKD_RESPONSE_NO;
+		ret =  GKU_RESPONSE_NO;
 	} else if (g_str_equal (response, "other")) {
-		ret = GKD_RESPONSE_OTHER;
+		ret = GKU_RESPONSE_OTHER;
 	} else {
 		g_warning ("invalid response field received from prompt: %s", response);
-		ret = GKD_RESPONSE_NONE;
+		ret = GKU_RESPONSE_NONE;
 	}
 
 	g_free (response);
@@ -679,7 +679,7 @@ gkd_prompt_get_response (GkdPrompt *self)
 }
 
 gchar*
-gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
+gku_prompt_get_password (GkuPrompt *self, const gchar *password_type)
 {
 	gchar *result;
 	gpointer data;
@@ -689,9 +689,9 @@ gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
 	gpointer parameter;
 	gsize n_parameter;
 
-	g_return_val_if_fail (GKD_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), NULL);
 
-	if (!gkd_prompt_get_transport_password (self, password_type,
+	if (!gku_prompt_get_transport_password (self, password_type,
 	                                        &parameter, &n_parameter,
 	                                        &data, &n_data))
 		return NULL;
@@ -700,7 +700,7 @@ gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
 	if (n_parameter) {
 		key = calculate_transport_key (self, &n_key);
 		g_return_val_if_fail (key, NULL);
-		result = gkd_prompt_util_decrypt_text (key, n_key,
+		result = gku_prompt_util_decrypt_text (key, n_key,
 		                                       parameter, n_parameter,
 		                                       data, n_data);
 
@@ -716,9 +716,9 @@ gkd_prompt_get_password (GkdPrompt *self, const gchar *password_type)
 }
 
 gboolean
-gkd_prompt_is_widget_selected (GkdPrompt *self, const gchar *widget)
+gku_prompt_is_widget_selected (GkuPrompt *self, const gchar *widget)
 {
-	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
 	g_return_val_if_fail (self->pv->output, FALSE);
 
 	if (!self->pv->failure)
@@ -729,9 +729,9 @@ gkd_prompt_is_widget_selected (GkdPrompt *self, const gchar *widget)
 }
 
 void
-gkd_prompt_set_window_id (GkdPrompt *self, const gchar *window_id)
+gku_prompt_set_window_id (GkuPrompt *self, const gchar *window_id)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	if (!window_id)
 		g_key_file_remove_key (self->pv->input, "prompt", "window-id", NULL);
@@ -740,9 +740,9 @@ gkd_prompt_set_window_id (GkdPrompt *self, const gchar *window_id)
 }
 
 void
-gkd_prompt_set_warning (GkdPrompt *self, const gchar *warning)
+gku_prompt_set_warning (GkuPrompt *self, const gchar *warning)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	if (!warning)
 		g_key_file_remove_key (self->pv->input, "prompt", "warning", NULL);
@@ -751,13 +751,13 @@ gkd_prompt_set_warning (GkdPrompt *self, const gchar *warning)
 }
 
 void
-gkd_prompt_reset (GkdPrompt *self, gboolean hard)
+gku_prompt_reset (GkuPrompt *self, gboolean hard)
 {
 	GKeyFile *input;
 	gchar *value;
 	gint i;
 
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 
 	kill_process (self);
 	self->pv->pid = 0;
@@ -782,19 +782,19 @@ gkd_prompt_reset (GkdPrompt *self, gboolean hard)
 
 
 void
-gkd_prompt_set_transport_param (GkdPrompt *self, const gchar *name,
+gku_prompt_set_transport_param (GkuPrompt *self, const gchar *name,
                                 gconstpointer value, gsize n_value)
 {
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
 	g_return_if_fail (name);
-	gkd_prompt_util_encode_hex (self->pv->input, "transport", name, value, n_value);
+	gku_prompt_util_encode_hex (self->pv->input, "transport", name, value, n_value);
 }
 
 gpointer
-gkd_prompt_get_transport_param (GkdPrompt *self, const gchar *name, gsize *n_value)
+gku_prompt_get_transport_param (GkuPrompt *self, const gchar *name, gsize *n_value)
 {
-	g_return_val_if_fail (GKD_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), NULL);
 	g_return_val_if_fail (name, NULL);
 	g_return_val_if_fail (n_value, NULL);
 
@@ -802,12 +802,12 @@ gkd_prompt_get_transport_param (GkdPrompt *self, const gchar *name, gsize *n_val
 		return NULL;
 
 	g_return_val_if_fail (self->pv->output, NULL);
-	return gkd_prompt_util_decode_hex (self->pv->output, "transport", name, n_value);
+	return gku_prompt_util_decode_hex (self->pv->output, "transport", name, n_value);
 
 }
 
 gboolean
-gkd_prompt_get_transport_password (GkdPrompt *self, const gchar *password_type,
+gku_prompt_get_transport_password (GkuPrompt *self, const gchar *password_type,
                                    gpointer *parameter, gsize *n_parameter,
                                    gpointer *value, gsize *n_value)
 {
@@ -825,13 +825,13 @@ gkd_prompt_get_transport_password (GkdPrompt *self, const gchar *password_type,
 	g_return_val_if_fail (self->pv->output, FALSE);
 
 	/* Parse out an IV */
-	*parameter = gkd_prompt_util_decode_hex (self->pv->output, password_type,
+	*parameter = gku_prompt_util_decode_hex (self->pv->output, password_type,
 	                                         "parameter", n_parameter);
 	if (*parameter == NULL)
 		*n_parameter = 0;
 
 	/* Parse out the password */
-	*value = gkd_prompt_util_decode_hex (self->pv->output, password_type,
+	*value = gku_prompt_util_decode_hex (self->pv->output, password_type,
 	                                     "value", n_value);
 	if (*value == NULL)
 		*n_value = 0;
@@ -840,12 +840,12 @@ gkd_prompt_get_transport_password (GkdPrompt *self, const gchar *password_type,
 }
 
 void
-gkd_prompt_get_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
+gku_prompt_get_unlock_options (GkuPrompt *self, GP11Attributes *attrs)
 {
 	gboolean bval;
 	gint ival;
 
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (attrs);
 	g_return_if_fail (self->pv->output);
 
@@ -862,12 +862,12 @@ gkd_prompt_get_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
 }
 
 void
-gkd_prompt_set_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
+gku_prompt_set_unlock_options (GkuPrompt *self, GP11Attributes *attrs)
 {
 	gboolean bval;
 	gulong uval;
 
-	g_return_if_fail (GKD_IS_PROMPT (self));
+	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (attrs);
 	g_return_if_fail (self->pv->input);
 
@@ -882,9 +882,9 @@ gkd_prompt_set_unlock_options (GkdPrompt *self, GP11Attributes *attrs)
 }
 
 gboolean
-gkd_prompt_get_unlock_auto (GkdPrompt *self)
+gku_prompt_get_unlock_auto (GkuPrompt *self)
 {
-	g_return_val_if_fail (GKD_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
 	g_return_val_if_fail (self->pv->output, FALSE);
 	return g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-auto", NULL);
 }
@@ -898,10 +898,10 @@ static void next_attention_req (const gchar *);
 
 typedef struct _Attention {
 	gchar *window_id;
-	GkdPromptAttentionFunc callback;
+	GkuPromptAttentionFunc callback;
 	GDestroyNotify destroy;
 	gpointer user_data;
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	gboolean active;
 	GCond *cond;
 } AttentionReq;
@@ -910,12 +910,12 @@ static GHashTable *attention_reqs = NULL;
 static GStaticMutex attention_mutex = G_STATIC_MUTEX_INIT;
 
 static void
-done_attention_req (GkdPrompt *prompt, gpointer user_data)
+done_attention_req (GkuPrompt *prompt, gpointer user_data)
 {
 	AttentionReq *att = user_data;
 
 	g_assert (att);
-	g_assert (GKD_IS_PROMPT (att->prompt));
+	g_assert (GKU_IS_PROMPT (att->prompt));
 
 	if (att->active) {
 		att->active = FALSE;
@@ -1039,7 +1039,7 @@ next_attention_req (const gchar *window_id)
 	                       (GClosureNotify)free_attention_req, G_CONNECT_AFTER);
 
 	/* Actually display the prompt, "completed" signal will fire */
-	gkd_prompt_set_window_id (att->prompt, window_id);
+	gku_prompt_set_window_id (att->prompt, window_id);
 	display_async_prompt (att->prompt);
 }
 
@@ -1074,7 +1074,7 @@ service_attention_req (gpointer user_data)
 }
 
 static AttentionReq*
-prepare_attention_req (const gchar *window_id, GkdPromptAttentionFunc callback,
+prepare_attention_req (const gchar *window_id, GkuPromptAttentionFunc callback,
                        gpointer user_data, GDestroyNotify destroy_notify)
 {
 	AttentionReq *att;
@@ -1092,7 +1092,7 @@ prepare_attention_req (const gchar *window_id, GkdPromptAttentionFunc callback,
 }
 
 void
-gkd_prompt_request_attention_async (const gchar *window_id, GkdPromptAttentionFunc callback,
+gku_prompt_request_attention_async (const gchar *window_id, GkuPromptAttentionFunc callback,
                                     gpointer user_data, GDestroyNotify destroy_notify)
 {
 	AttentionReq *att = prepare_attention_req (window_id, callback, user_data, destroy_notify);
@@ -1101,7 +1101,7 @@ gkd_prompt_request_attention_async (const gchar *window_id, GkdPromptAttentionFu
 }
 
 void
-gkd_prompt_request_attention_sync (const gchar *window_id, GkdPromptAttentionFunc callback,
+gku_prompt_request_attention_sync (const gchar *window_id, GkuPromptAttentionFunc callback,
                                    gpointer user_data, GDestroyNotify destroy_notify)
 {
 	AttentionReq *att = prepare_attention_req (window_id, callback, user_data, destroy_notify);

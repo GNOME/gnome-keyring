@@ -556,8 +556,6 @@ daemon/data/Makefile
 daemon/dbus/Makefile
 daemon/login/Makefile
 daemon/pkcs11/Makefile
-daemon/prompt/Makefile
-daemon/prompt/tests/Makefile
 daemon/ssh-agent/Makefile
 docs/Makefile
 docs/reference/Makefile
@@ -589,6 +587,8 @@ pkcs11/user-store/tests/Makefile
 po/Makefile.in
 tests/Makefile
 tool/Makefile
+ui/Makefile
+ui/tests/Makefile
 ])
 
 # ------------------------------------------------------------------------------

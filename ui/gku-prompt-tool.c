@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkd-prompt-tool.c - Handles gui authentication for the keyring daemon.
+/* gku-prompt-tool.c - Handles gui authentication for the keyring daemon.
 
    Copyright (C) 2009 Stefan Walter
 
@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "gkd-prompt-util.h"
+#include "gku-prompt-util.h"
 
 #include "egg/egg-dh.h"
 #include "egg/egg-entry-buffer.h"
@@ -359,7 +359,7 @@ prepare_dialog (GtkBuilder *builder)
 	GError *error = NULL;
 	GtkDialog *dialog;
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "gkd-prompt.ui", &error)) {
+	if (!gtk_builder_add_from_file (builder, UIDIR "gku-prompt.ui", &error)) {
 		g_warning ("couldn't load prompt ui file: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
@@ -471,14 +471,14 @@ negotiate_transport_crypto (void)
 	key = pub = priv = NULL;
 
 	/* The DH stuff coming in from our caller */
-	if (gkd_prompt_util_decode_mpi (input_data, "transport", "prime", &prime) &&
-	    gkd_prompt_util_decode_mpi (input_data, "transport", "base", &base) &&
-	    gkd_prompt_util_decode_mpi (input_data, "transport", "public", &peer)) {
+	if (gku_prompt_util_decode_mpi (input_data, "transport", "prime", &prime) &&
+	    gku_prompt_util_decode_mpi (input_data, "transport", "base", &base) &&
+	    gku_prompt_util_decode_mpi (input_data, "transport", "public", &peer)) {
 
 		/* Generate our own public/priv, and then a key, send it back */
 		if (egg_dh_gen_pair (prime, base, 0, &pub, &priv)) {
 
-			gkd_prompt_util_encode_mpi (output_data, "transport", "public", pub);
+			gku_prompt_util_encode_mpi (output_data, "transport", "public", pub);
 
 			/* Build up a key we can use */
 			n_the_key = 16;
@@ -528,12 +528,12 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	}
 
 	gcry_create_nonce (iv, sizeof (iv));
-	data = gkd_prompt_util_encrypt_text (the_key, n_the_key, iv, sizeof (iv),
+	data = gku_prompt_util_encrypt_text (the_key, n_the_key, iv, sizeof (iv),
 	                                     gtk_entry_get_text (entry), &n_data);
 	g_return_if_fail (data);
 
-	gkd_prompt_util_encode_hex (output_data, password_type, "parameter", iv, sizeof (iv));
-	gkd_prompt_util_encode_hex (output_data, password_type, "value", data, n_data);
+	gku_prompt_util_encode_hex (output_data, password_type, "parameter", iv, sizeof (iv));
+	gku_prompt_util_encode_hex (output_data, password_type, "value", data, n_data);
 
 	g_free (data);
 }

@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-util.c: Test gkd-prompt-util.c
+/* unit-test-util.c: Test gku-prompt-util.c
 
    Copyright (C) 2009 Stefan Walter
 
@@ -23,7 +23,7 @@
 
 #include "run-auto-test.h"
 
-#include "gkd-prompt-util.h"
+#include "gku-prompt-util.h"
 
 #include <egg/egg-dh.h>
 #include <egg/egg-libgcrypt.h>
@@ -52,8 +52,8 @@ DEFINE_TEST(encode_decode_mpi)
 	mpi = gcry_mpi_new (512);
 	gcry_mpi_randomize (mpi, 512, GCRY_WEAK_RANDOM);
 
-	gkd_prompt_util_encode_mpi (key_file, "section", "field", mpi);
-	if (!gkd_prompt_util_decode_mpi (key_file, "section", "field", &check))
+	gku_prompt_util_encode_mpi (key_file, "section", "field", mpi);
+	if (!gku_prompt_util_decode_mpi (key_file, "section", "field", &check))
 		g_assert_not_reached ();
 
 	g_assert (gcry_mpi_cmp (mpi, check) == 0);
@@ -65,7 +65,7 @@ DEFINE_TEST(decode_nonexistant_mpi)
 {
 	gcry_mpi_t mpi;
 
-	if (gkd_prompt_util_decode_mpi (key_file, "nonexist", "nope", &mpi))
+	if (gku_prompt_util_decode_mpi (key_file, "nonexist", "nope", &mpi))
 		g_assert_not_reached ();
 }
 
@@ -76,8 +76,8 @@ DEFINE_TEST(encode_decode_hex)
 	gsize n_check;
 
 	gcry_create_nonce (buffer, 32);
-	gkd_prompt_util_encode_hex (key_file, "section", "field", buffer, 32);
-	check = gkd_prompt_util_decode_hex (key_file, "section", "field", &n_check);
+	gku_prompt_util_encode_hex (key_file, "section", "field", buffer, 32);
+	check = gku_prompt_util_decode_hex (key_file, "section", "field", &n_check);
 	g_assert (check);
 	g_assert (n_check == 32);
 	g_assert (memcmp (buffer, check, 32) == 0);
@@ -89,7 +89,7 @@ DEFINE_TEST(decode_nonexistant_hex)
 {
 	gsize n_data;
 
-	if (gkd_prompt_util_decode_hex (key_file, "nonexist", "nope", &n_data))
+	if (gku_prompt_util_decode_hex (key_file, "nonexist", "nope", &n_data))
 		g_assert_not_reached ();
 }
 
@@ -109,14 +109,14 @@ do_encrypt_decrypt_text (const gchar *text)
 	gcry_randomize (key, n_key, GCRY_WEAK_RANDOM);
 
 	gcry_create_nonce (iv, 16);
-	enc = gkd_prompt_util_encrypt_text (key, n_key, iv, 16, text, &n_enc);
+	enc = gku_prompt_util_encrypt_text (key, n_key, iv, 16, text, &n_enc);
 
 	g_assert (enc);
 	/* Always greater due to null term */
 	g_assert (n_enc > strlen (text));
 	g_assert (n_enc % 16 == 0);
 
-	check = gkd_prompt_util_decrypt_text (key, n_key, iv, 16, enc, n_enc);
+	check = gku_prompt_util_decrypt_text (key, n_key, iv, 16, enc, n_enc);
 	egg_secure_clear (key, n_key);
 	egg_secure_free (key);
 	g_free (enc);

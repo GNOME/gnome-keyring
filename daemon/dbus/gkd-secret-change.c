@@ -60,13 +60,13 @@ static void
 prepare_change_prompt (GkdSecretChange *self, GP11Object *collection, gboolean first)
 {
 	GError *error = NULL;
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	gpointer data;
 	gsize n_data;
 	gchar *label;
 	gchar *text;
 
-	prompt = GKD_PROMPT (self);
+	prompt = GKU_PROMPT (self);
 
 	data = gp11_object_get_data (collection, CKA_LABEL, &n_data, &error);
 	if (!data) {
@@ -81,25 +81,25 @@ prepare_change_prompt (GkdSecretChange *self, GP11Object *collection, gboolean f
 	g_free (data);
 
 	/* Hard reset on first prompt, soft thereafter */
-	gkd_prompt_reset (prompt, first);
+	gku_prompt_reset (prompt, first);
 
-	gkd_prompt_set_title (prompt, _("Change Keyring Password"));
+	gku_prompt_set_title (prompt, _("Change Keyring Password"));
 
 	text = g_markup_printf_escaped (_("Choose a new password for the '%s' keyring"), label);
-	gkd_prompt_set_primary_text (prompt, text);
+	gku_prompt_set_primary_text (prompt, text);
 	g_free (text);
 
 	text = g_markup_printf_escaped (_("An application wants to change the password for the '%s' keyring. "
 	                                  "Choose the new password you want to use for it."), label);
-	gkd_prompt_set_secondary_text (prompt, text);
+	gku_prompt_set_secondary_text (prompt, text);
 	g_free (text);
 
-	gkd_prompt_hide_widget (prompt, "name_area");
-	gkd_prompt_hide_widget (prompt, "details_area");
+	gku_prompt_hide_widget (prompt, "name_area");
+	gku_prompt_hide_widget (prompt, "details_area");
 
-	gkd_prompt_show_widget (prompt, "password_area");
-	gkd_prompt_show_widget (prompt, "original_area");
-	gkd_prompt_show_widget (prompt, "confirm_area");
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_show_widget (prompt, "original_area");
+	gku_prompt_show_widget (prompt, "confirm_area");
 
 	g_free (label);
 }
@@ -108,7 +108,7 @@ static void
 set_warning_wrong (GkdSecretChange *self)
 {
 	g_assert (GKD_SECRET_IS_CHANGE (self));
-	gkd_prompt_set_warning (GKD_PROMPT (self), _("The original password was incorrect"));
+	gku_prompt_set_warning (GKU_PROMPT (self), _("The original password was incorrect"));
 }
 
 /* -----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ gkd_secret_change_prompt_ready (GkdSecretPrompt *prompt)
 		return;
 	}
 
-	if (!gkd_prompt_has_response (GKD_PROMPT (prompt))) {
+	if (!gku_prompt_has_response (GKU_PROMPT (prompt))) {
 		prepare_change_prompt (self, collection, TRUE);
 		return;
 	}

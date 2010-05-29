@@ -125,27 +125,27 @@ label_string_for_attributes (GP11Attributes *attrs)
 static void
 prepare_unlock_login (GkdSecretUnlock *self)
 {
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	const gchar *text;
 
 	g_assert (GKD_SECRET_IS_UNLOCK (self));
 
-	prompt = GKD_PROMPT (self);
+	prompt = GKU_PROMPT (self);
 
-	gkd_prompt_set_title (prompt, _("Unlock Login Keyring"));
+	gku_prompt_set_title (prompt, _("Unlock Login Keyring"));
 
 	text = _("Enter password for to unlock your login keyring");
-	gkd_prompt_set_primary_text (prompt, text);
+	gku_prompt_set_primary_text (prompt, text);
 
 	if (gkd_login_did_unlock_fail ())
 		text = _("The password you use to log in to your computer no longer matches that of your login keyring.");
 	else
 		text = _("The login keyring did not get unlocked when you logged into your computer.");
-	gkd_prompt_set_secondary_text (prompt, text);
+	gku_prompt_set_secondary_text (prompt, text);
 
-	gkd_prompt_hide_widget (prompt, "name_area");
-	gkd_prompt_hide_widget (prompt, "confirm_area");
-	gkd_prompt_show_widget (prompt, "password_area");
+	gku_prompt_hide_widget (prompt, "name_area");
+	gku_prompt_hide_widget (prompt, "confirm_area");
+	gku_prompt_show_widget (prompt, "password_area");
 }
 
 static void
@@ -154,7 +154,7 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
 	GP11Attributes *template;
 	GP11Attributes *attrs;
 	GError *error = NULL;
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	gchar *identifier;
 	gchar *label;
 	gchar *text;
@@ -162,10 +162,10 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
 	g_assert (GKD_SECRET_IS_UNLOCK (self));
 	g_assert (coll);
 
-	prompt = GKD_PROMPT (self);
+	prompt = GKU_PROMPT (self);
 
 	/* Hard reset on first prompt, soft on later */
-	gkd_prompt_reset (GKD_PROMPT (prompt), first);
+	gku_prompt_reset (GKU_PROMPT (prompt), first);
 
 	attrs = attributes_for_collection (coll);
 	g_return_if_fail (attrs);
@@ -181,35 +181,35 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
 	g_free (identifier);
 	label = label_string_for_attributes (attrs);
 
-	gkd_prompt_set_title (prompt, _("Unlock Keyring"));
+	gku_prompt_set_title (prompt, _("Unlock Keyring"));
 
 	text = g_markup_printf_escaped (_("Enter password for keyring '%s' to unlock"), label);
-	gkd_prompt_set_primary_text (prompt, text);
+	gku_prompt_set_primary_text (prompt, text);
 	g_free (text);
 
 	text = g_markup_printf_escaped (_("An application wants access to the keyring '%s', but it is locked"), label);
-	gkd_prompt_set_secondary_text (prompt, text);
+	gku_prompt_set_secondary_text (prompt, text);
 	g_free (text);
 
-	gkd_prompt_hide_widget (prompt, "name_area");
-	gkd_prompt_hide_widget (prompt, "confirm_area");
-	gkd_prompt_show_widget (prompt, "details_area");
-	gkd_prompt_show_widget (prompt, "password_area");
-	gkd_prompt_show_widget (prompt, "lock_area");
-	gkd_prompt_show_widget (prompt, "options_area");
+	gku_prompt_hide_widget (prompt, "name_area");
+	gku_prompt_hide_widget (prompt, "confirm_area");
+	gku_prompt_show_widget (prompt, "details_area");
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_show_widget (prompt, "lock_area");
+	gku_prompt_show_widget (prompt, "options_area");
 
 	g_free (label);
 
 	if (gkd_login_is_usable ())
-		gkd_prompt_show_widget (prompt, "auto_unlock_check");
+		gku_prompt_show_widget (prompt, "auto_unlock_check");
 	else
-		gkd_prompt_hide_widget (prompt, "auto_unlock_check");
+		gku_prompt_hide_widget (prompt, "auto_unlock_check");
 
 	/* Setup the unlock options */
 	if (first) {
 		template = gp11_object_get_template (coll, CKA_G_CREDENTIAL_TEMPLATE, &error);
 		if (template) {
-			gkd_prompt_set_unlock_options (prompt, template);
+			gku_prompt_set_unlock_options (prompt, template);
 			gp11_attributes_unref (template);
 		} else {
 			g_warning ("couldn't get credential template for collection: %s",
@@ -223,7 +223,7 @@ static void
 set_warning_wrong (GkdSecretUnlock *self)
 {
 	g_assert (GKD_SECRET_IS_UNLOCK (self));
-	gkd_prompt_set_warning (GKD_PROMPT (self), _("The unlock password was incorrect"));
+	gku_prompt_set_warning (GKU_PROMPT (self), _("The unlock password was incorrect"));
 }
 
 static gboolean
@@ -306,7 +306,7 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 		return FALSE;
 
 	/* Shortcut if already unlocked, or just checking locked status */
-	if (!*locked || !gkd_prompt_has_response (GKD_PROMPT (self)))
+	if (!*locked || !gku_prompt_has_response (GKU_PROMPT (self)))
 		return TRUE;
 
 	master = gkd_secret_prompt_get_secret (GKD_SECRET_PROMPT (self), "password");
@@ -318,7 +318,7 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 	/* The various unlock options */
 	template = gp11_attributes_new ();
 	common_unlock_attributes (template, collection);
-	gkd_prompt_get_unlock_options (GKD_PROMPT (self), template);
+	gku_prompt_get_unlock_options (GKU_PROMPT (self), template);
 
 	/* If it's supposed to save non-transient, then we override that */
 	attr = gp11_attributes_find (template, CKA_GNOME_TRANSIENT);

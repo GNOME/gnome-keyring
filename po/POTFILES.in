@@ -10,8 +10,6 @@ daemon/gnome-keyring-ssh.desktop.in.in
 daemon/login/gkd-login.c
 daemon/org.gnome.keyring.service.in
 daemon/pkcs11/gkd-pkcs11-auth.c
-daemon/prompt/gkd-prompt-tool.c
-[type: gettext/glade]daemon/prompt/gkd-prompt.ui
 egg/egg-asn1.c
 egg/egg-oid.c
 egg/egg-spawn.c
@@ -26,3 +24,5 @@ gp11/gp11-misc.c
 pkcs11/gkm/gkm-certificate.c
 pkcs11/ssh-store/gkm-ssh-private-key.c
 pkcs11/secret-store/gkm-secret-collection.c
+ui/gku-prompt-tool.c
+[type: gettext/glade]ui/gku-prompt.ui

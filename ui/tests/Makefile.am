@@ -5,7 +5,7 @@ UNIT_AUTO = \
 UNIT_PROMPT =
 
 UNIT_LIBS =  \
-	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
+	$(top_builddir)/ui/libgku-prompt.la \
 	$(top_builddir)/egg/libegg-prompt.la
 
 EXTRA_DIST = \
