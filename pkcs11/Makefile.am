@@ -12,6 +12,7 @@ EXTRA_DIST = \
 
 SUBDIRS = . \
 	gkm \
+	wrap-layer \
 	roots-store \
 	rpc-layer \
 	plex-layer \
