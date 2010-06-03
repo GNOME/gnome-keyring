@@ -59,7 +59,7 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	org.gnome.keyring.service \
-	org.freedesktop.service \
+	org.freedesktop.secrets.service \
 	$(desktop_DATA)
 
 servicedir       = $(DBUS_SERVICES_DIR)
