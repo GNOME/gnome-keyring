@@ -57,9 +57,6 @@ struct _GkdSecretPromptClass {
 
 GType               gkd_secret_prompt_get_type                (void);
 
-DBusMessage*        gkd_secret_prompt_dispatch                (GkdSecretPrompt *self,
-                                                               DBusMessage *message);
-
 const gchar*        gkd_secret_prompt_get_caller              (GkdSecretPrompt *self);
 
 const gchar*        gkd_secret_prompt_get_object_path         (GkdSecretPrompt *self);

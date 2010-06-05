@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gkd-dbus-util.h"
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-objects.h"
@@ -58,7 +59,9 @@ struct _GkdSecretPromptPrivate {
 	GList *objects;
 };
 
-G_DEFINE_TYPE (GkdSecretPrompt, gkd_secret_prompt, GKU_TYPE_PROMPT);
+static void gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface);
+G_DEFINE_TYPE_WITH_CODE (GkdSecretPrompt, gkd_secret_prompt, GKU_TYPE_PROMPT,
+                         G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
 
 static guint unique_prompt_number = 0;
 
@@ -243,18 +246,49 @@ gkd_secret_prompt_responded (GkuPrompt *base)
 }
 
 static void
-gkd_secret_prompt_ready (GkdSecretPrompt *self)
+gkd_secret_prompt_real_ready (GkdSecretPrompt *self)
 {
 	/* Default implementation, unused */
 	g_return_if_reached ();
 }
 
 static void
-gkd_secret_prompt_encode_result (GkdSecretPrompt *self, DBusMessageIter *iter)
+gkd_secret_prompt_real_encode_result (GkdSecretPrompt *self, DBusMessageIter *iter)
 {
 	/* Default implementation, unused */
 	g_return_if_reached ();
 }
+
+static DBusMessage*
+gkd_secret_prompt_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+	GkdSecretPrompt *self;
+	const gchar *caller;
+
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (base), NULL);
+	self = GKD_SECRET_PROMPT (base);
+
+	/* This should already have been caught elsewhere */
+	caller = dbus_message_get_sender (message);
+	if (!caller || !g_str_equal (caller, self->pv->caller))
+		g_return_val_if_reached (NULL);
+
+	/* org.freedesktop.Secrets.Prompt.Prompt() */
+	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Prompt"))
+		reply = prompt_method_prompt (self, message);
+
+	/* org.freedesktop.Secrets.Prompt.Negotiate() */
+	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
+		reply = prompt_method_dismiss (self, message);
+
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "prompt");
+
+	return reply;
+}
+
 
 static GObject*
 gkd_secret_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
@@ -373,8 +407,8 @@ gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 
 	prompt_class->responded = gkd_secret_prompt_responded;
 
-	klass->encode_result = gkd_secret_prompt_encode_result;
-	klass->prompt_ready = gkd_secret_prompt_ready;
+	klass->encode_result = gkd_secret_prompt_real_encode_result;
+	klass->prompt_ready = gkd_secret_prompt_real_ready;
 
 	g_type_class_add_private (klass, sizeof (GkdSecretPromptPrivate));
 
@@ -391,37 +425,15 @@ gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
+static void
+gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface)
+{
+	iface->dispatch_message = gkd_secret_prompt_real_dispatch_message;
+}
+
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
-
-DBusMessage*
-gkd_secret_prompt_dispatch (GkdSecretPrompt *self, DBusMessage *message)
-{
-	DBusMessage *reply = NULL;
-	const gchar *caller;
-
-	g_return_val_if_fail (message, NULL);
-	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
-
-	/* This should already have been caught elsewhere */
-	caller = dbus_message_get_sender (message);
-	if (!caller || !g_str_equal (caller, self->pv->caller))
-		g_return_val_if_reached (NULL);
-
-	/* org.freedesktop.Secrets.Prompt.Prompt() */
-	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Prompt"))
-		reply = prompt_method_prompt (self, message);
-
-	/* org.freedesktop.Secrets.Prompt.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
-		reply = prompt_method_dismiss (self, message);
-
-	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, "prompt");
-
-	return reply;
-}
 
 const gchar*
 gkd_secret_prompt_get_caller (GkdSecretPrompt *self)

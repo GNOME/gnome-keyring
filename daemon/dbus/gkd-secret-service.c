@@ -24,6 +24,7 @@
 #include "gkd-dbus-util.h"
 #include "gkd-secret-change.h"
 #include "gkd-secret-create.h"
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-error.h"
 #include "gkd-secret-lock.h"
 #include "gkd-secret-objects.h"
@@ -911,7 +912,7 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 		if (object == NULL)
 			reply = gkd_secret_error_no_such_object (message);
 		else
-			reply = gkd_secret_session_dispatch (object, message);
+			reply = gkd_secret_dispatch_message (GKD_SECRET_DISPATCH (object), message);
 
 	/* Dispatched to a prompt, find a prompt in this client */
 	} else if (object_path_has_prefix (path, SECRET_PROMPT_PREFIX)) {
@@ -919,7 +920,7 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 		if (object == NULL)
 			reply = gkd_secret_error_no_such_object (message);
 		else
-			reply = gkd_secret_prompt_dispatch (object, message);
+			reply = gkd_secret_dispatch_message (GKD_SECRET_DISPATCH (object), message);
 
 	/* Dispatched to a collection, off it goes */
 	} else if (object_path_has_prefix (path, SECRET_COLLECTION_PREFIX) ||

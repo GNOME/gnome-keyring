@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
@@ -60,7 +61,9 @@ struct _GkdSecretSession {
 	CK_MECHANISM_TYPE mech_type;
 };
 
-G_DEFINE_TYPE (GkdSecretSession, gkd_secret_session, G_TYPE_OBJECT);
+static void gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface);
+G_DEFINE_TYPE_WITH_CODE (GkdSecretSession, gkd_secret_session, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
 
 static guint unique_session_number = 0;
 
@@ -264,6 +267,31 @@ session_method_close (GkdSecretSession *self, DBusMessage *message)
  * OBJECT
  */
 
+static DBusMessage*
+gkd_secret_session_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *message)
+{
+	const gchar *caller;
+	GkdSecretSession *self;
+
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_SESSION (base), NULL);
+	self = GKD_SECRET_SESSION (base);
+
+	/* This should already have been caught elsewhere */
+	caller = dbus_message_get_sender (message);
+	if (!caller || !g_str_equal (caller, self->caller))
+		g_return_val_if_reached (NULL);
+
+	/* org.freedesktop.Secrets.Session.Close() */
+	else if (dbus_message_is_method_call (message, SECRET_SESSION_INTERFACE, "Close"))
+		return session_method_close (self, message);
+
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "session");
+
+	return NULL;
+}
+
 static GObject*
 gkd_secret_session_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
@@ -406,6 +434,12 @@ gkd_secret_session_class_init (GkdSecretSessionClass *klass)
 		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
+static void
+gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface)
+{
+	iface->dispatch_message = gkd_secret_session_real_dispatch_message;
+}
+
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
@@ -470,29 +504,6 @@ gkd_secret_session_complete (GkdSecretSession *self, gconstpointer peer,
 
 	self->mech_type = CKM_AES_CBC_PAD;
 	return TRUE;
-}
-
-DBusMessage*
-gkd_secret_session_dispatch (GkdSecretSession *self, DBusMessage *message)
-{
-	const gchar *caller;
-
-	g_return_val_if_fail (message, NULL);
-	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
-
-	/* This should already have been caught elsewhere */
-	caller = dbus_message_get_sender (message);
-	if (!caller || !g_str_equal (caller, self->caller))
-		g_return_val_if_reached (NULL);
-
-	/* org.freedesktop.Secrets.Session.Close() */
-	else if (dbus_message_is_method_call (message, SECRET_SESSION_INTERFACE, "Close"))
-		return session_method_close (self, message);
-
-	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, "session");
-
-	return NULL;
 }
 
 DBusMessage*

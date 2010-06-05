@@ -21,28 +21,25 @@
 
 #include "config.h"
 
-#include "gkm-zzz.h"
+#include "gkd-secret-dispatch.h"
 
 static void
-gkm_zzz_base_init (gpointer gobject_class)
+gkd_secret_dispatch_base_init (gpointer gobject_class)
 {
-	static gboolean initialized = FALSE;
-	if (!initialized) {
-		/* Add properties and signals to the interface */
-
-
-		initialized = TRUE;
+	static volatile gsize initialized = 0;
+	if (g_once_init_enter (&initialized)) {
+		g_once_init_leave (&initialized, 1);
 	}
 }
 
 GType
-gkm_zzz_get_type (void)
+gkd_secret_dispatch_get_type (void)
 {
 	static GType type = 0;
 	if (!type) {
 		static const GTypeInfo info = {
-			sizeof (GkmZzzIFace),
-			gkm_zzz_base_init,               /* base init */
+			sizeof (GkdSecretDispatchIface),
+			gkd_secret_dispatch_base_init,               /* base init */
 			NULL,             /* base finalize */
 			NULL,             /* class_init */
 			NULL,             /* class finalize */
@@ -51,9 +48,17 @@ gkm_zzz_get_type (void)
 			0,                /* n_preallocs */
 			NULL,             /* instance init */
 		};
-		type = g_type_register_static (G_TYPE_INTERFACE, "GkmZzzIFace", &info, 0);
+		type = g_type_register_static (G_TYPE_INTERFACE, "GkdSecretDispatchIFace", &info, 0);
 		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
 	}
 
 	return type;
+}
+
+DBusMessage*
+gkd_secret_dispatch_message (GkdSecretDispatch *self, DBusMessage *message)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_DISPATCH (self), NULL);
+	g_return_val_if_fail (GKD_SECRET_DISPATCH_GET_INTERFACE (self)->dispatch_message, NULL);
+	return GKD_SECRET_DISPATCH_GET_INTERFACE (self)->dispatch_message (self, message);
 }
