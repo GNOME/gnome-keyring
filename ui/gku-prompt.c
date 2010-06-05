@@ -839,54 +839,33 @@ gku_prompt_get_transport_password (GkuPrompt *self, const gchar *password_type,
 	return TRUE;
 }
 
-void
-gku_prompt_get_unlock_options (GkuPrompt *self, GP11Attributes *attrs)
+gboolean
+gku_prompt_get_unlock_option (GkuPrompt *self, const gchar *option, gint *value)
 {
-	gboolean bval;
-	gint ival;
+	GError *error = NULL;
 
-	g_return_if_fail (GKU_IS_PROMPT (self));
-	g_return_if_fail (attrs);
-	g_return_if_fail (self->pv->output);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
+	g_return_val_if_fail (option, FALSE);
+	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (self->pv->output, FALSE);
 
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	*value = g_key_file_get_integer (self->pv->output, "unlock-options", option, &error);
+	if (error != NULL) {
+		g_clear_error (&error);
+		return FALSE;
+	}
 
-	bval = g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-auto", NULL);
-	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, !bval);
-
-	ival = g_key_file_get_integer (self->pv->output, "unlock-options", "unlock-idle", NULL);
-	gp11_attributes_add_ulong (attrs, CKA_G_DESTRUCT_IDLE, ival <= 0 ? 0 : ival);
-
-	ival = g_key_file_get_integer (self->pv->output, "unlock-options", "unlock-timeout", NULL);
-	gp11_attributes_add_ulong (attrs, CKA_G_DESTRUCT_AFTER, ival <= 0 ? 0 : ival);
+	return TRUE;
 }
 
 void
-gku_prompt_set_unlock_options (GkuPrompt *self, GP11Attributes *attrs)
+gku_prompt_set_unlock_option (GkuPrompt *self, const gchar *option, gint value)
 {
-	gboolean bval;
-	gulong uval;
-
 	g_return_if_fail (GKU_IS_PROMPT (self));
-	g_return_if_fail (attrs);
+	g_return_if_fail (option);
 	g_return_if_fail (self->pv->input);
 
-	if (gp11_attributes_find_boolean (attrs, CKA_GNOME_TRANSIENT, &bval))
-		g_key_file_set_boolean (self->pv->input, "unlock-options", "unlock-auto", !bval);
-
-	if (gp11_attributes_find_ulong (attrs, CKA_G_DESTRUCT_IDLE, &uval))
-		g_key_file_set_integer (self->pv->input, "unlock-options", "unlock-idle", (int)uval);
-
-	if (gp11_attributes_find_ulong (attrs, CKA_G_DESTRUCT_AFTER, &uval))
-		g_key_file_set_integer (self->pv->input, "unlock-options", "unlock-timeout", (int)uval);
-}
-
-gboolean
-gku_prompt_get_unlock_auto (GkuPrompt *self)
-{
-	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
-	g_return_val_if_fail (self->pv->output, FALSE);
-	return g_key_file_get_boolean (self->pv->output, "unlock-options", "unlock-auto", NULL);
+	g_key_file_set_integer (self->pv->input, "unlock-options", option, value);
 }
 
 /* ----------------------------------------------------------------------------------

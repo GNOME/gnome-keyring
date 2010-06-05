@@ -1,7 +1,7 @@
 /*
  * gnome-keyring
  *
- * Copyright (C) 2008 Stefan Walter
+ * Copyright (C) 2010 Stefan Walter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General  License as
@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gkm-wrap-layer.h"
+#include "gkm-wrap-prompt.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -569,17 +570,82 @@ wrap_C_Logout (CK_SESSION_HANDLE handle)
 	return (map.funcs->C_Logout) (handle);
 }
 
+#if 0
 static CK_RV
 wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
-                     CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
+                     CK_ULONG n_template, CK_OBJECT_HANDLE_PTR new_object)
 {
+	CK_ATTRIBUTE_PTR attrs = NULL;
+	CK_ULONG n_attrs;
 	Mapping map;
 	CK_RV rv;
 
 	rv = map_session_to_real (&handle, &map);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_CreateObject) (handle, template, count, new_object);
+
+	while (rv == CKR_OK) {
+		rv = (map.funcs->C_CreateObject) (handle,
+		                                  attrs ? attrs : template,
+		                                  attrs ? n_attrs : n_template,
+		                                  new_object);
+
+		if (attrs != NULL) {
+			if (rv == CKR_OK)
+				gkm_wrap_prompt_done_create_object (map.funcs, handle,
+				                                    attrs, n_attrs);
+			g_free (attrs);
+			attrs = NULL;
+		}
+
+		if (rv != CKR_PIN_INVALID)
+			break;
+
+		/* Only prompting for creating credentials, under certain circumstances */
+		rv = gkm_wrap_prompt_for_create_object (map.funcs, handle, template,
+		                                        n_template, &attrs, &n_attrs);
+	}
+
+	g_assert (attrs == NULL);
+	return rv;
+}
+#endif
+
+static CK_RV
+wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
+                     CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
+{
+	GkmWrapPrompt *prompt = NULL;
+	Mapping map;
+	CK_RV rv;
+
+	rv = map_session_to_real (&handle, &map);
+	if (rv != CKR_OK)
+		return rv;
+
+	for (;;) {
+		rv = (map.funcs->C_CreateObject) (handle, template, count, new_object);
+
+		if (rv != CKR_PIN_INVALID)
+			break;
+
+		if (!prompt) {
+			prompt = gkm_wrap_prompt_for_credential (map.funcs, handle, template, count);
+			if (prompt == NULL)
+				break;
+		}
+
+		if (!gkm_wrap_prompt_do_credential (prompt, &template, &count))
+			break;
+	}
+
+
+	if (prompt) {
+		gkm_wrap_prompt_done_credential (prompt, rv);
+		g_object_unref (prompt);
+	}
+
+	return rv;
 }
 
 static CK_RV

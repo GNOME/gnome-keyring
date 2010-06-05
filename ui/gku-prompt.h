@@ -34,6 +34,10 @@ typedef enum {
 	GKU_RESPONSE_OTHER        = 3,
 } GkuResponse;
 
+#define GKU_UNLOCK_AUTO       "unlock-auto"
+#define GKU_UNLOCK_IDLE       "unlock-idle"
+#define GKU_UNLOCK_TIMEOUT    "unlock-timeout"
+
 #define GKU_TYPE_PROMPT               (gku_prompt_get_type ())
 #define GKU_PROMPT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKU_TYPE_PROMPT, GkuPrompt))
 #define GKU_PROMPT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKU_TYPE_PROMPT, GkuPromptClass))
@@ -112,13 +116,13 @@ gboolean            gku_prompt_get_transport_password (GkuPrompt *self,
                                                        gpointer *value,
                                                        gsize *n_value);
 
-void                gku_prompt_get_unlock_options     (GkuPrompt *self,
-                                                       GP11Attributes *attrs);
+gboolean            gku_prompt_get_unlock_option      (GkuPrompt *self,
+                                                       const gchar *option,
+                                                       gint *value);
 
-void                gku_prompt_set_unlock_options     (GkuPrompt *self,
-                                                       GP11Attributes *attrs);
-
-gboolean            gku_prompt_get_unlock_auto        (GkuPrompt *self);
+void                gku_prompt_set_unlock_option      (GkuPrompt *self,
+                                                       const gchar *option,
+                                                       gint value);
 
 gboolean            gku_prompt_is_widget_selected     (GkuPrompt *prompt,
                                                        const gchar *widget);

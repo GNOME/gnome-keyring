@@ -268,6 +268,7 @@ init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	gchar *manufacturer;
 	gchar *serial;
 	gboolean ret = TRUE;
+	gint value = 0;
 
 	g_assert (info);
 	g_assert (pin);
@@ -317,7 +318,7 @@ init_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	} else {
 		password = gku_prompt_get_password (prompt, "password");
 
-		if (gku_prompt_get_unlock_auto (prompt)) {
+		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value) && value) {
 			gkd_login_attach_secret (label, password,
 			                         "manufacturer", manufacturer,
 			                         "serial-number", serial,
@@ -417,6 +418,7 @@ login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
 	GkuPrompt *prompt;
 	gchar *secondary;
 	gboolean ret;
+	gint value = 0;
 
 	g_assert (info);
 	g_assert (pin);
@@ -481,7 +483,8 @@ login_specific_prompt (CK_SESSION_HANDLE handle, CK_SESSION_INFO *info,
 		password = gku_prompt_get_password (prompt, "password");
 
 		/* Store forever */
-		if (gku_prompt_get_unlock_auto (prompt) && object->unique && object->token) {
+		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value) &&
+		    value && object->unique && object->token) {
 			gkd_login_attach_secret (object->label, password,
 			                         "unique", object->unique, NULL);
 		}
@@ -554,6 +557,7 @@ login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 	gchar *serial;
 	const gchar *password;
 	gboolean ret = TRUE;
+	gint value = 0;
 
 	g_assert (info);
 	g_assert (pin);
@@ -621,7 +625,7 @@ login_user_prompt (CK_SESSION_HANDLE handle, CK_TOKEN_INFO *info,
 		password = gku_prompt_get_password (prompt, "password");
 
 		/* Store forever */
-		if (gku_prompt_get_unlock_auto (prompt)) {
+		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value) && value) {
 			gkd_login_attach_secret (label, password,
 			                         "manufacturer", manufacturer,
 			                         "serial-number", serial,

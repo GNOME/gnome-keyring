@@ -15,8 +15,8 @@ SUBDIRS = \
 	gp11 \
 	egg \
 	gcr \
-	pkcs11 \
 	ui \
+	pkcs11 \
 	daemon \
 	tool \
 	$(TESTS_DIR) \

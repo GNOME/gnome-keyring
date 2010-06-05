@@ -209,7 +209,9 @@ prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
 	if (first) {
 		template = gp11_object_get_template (coll, CKA_G_CREDENTIAL_TEMPLATE, &error);
 		if (template) {
+#if 0
 			gku_prompt_set_unlock_options (prompt, template);
+#endif
 			gp11_attributes_unref (template);
 		} else {
 			g_warning ("couldn't get credential template for collection: %s",
@@ -318,7 +320,9 @@ authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean
 	/* The various unlock options */
 	template = gp11_attributes_new ();
 	common_unlock_attributes (template, collection);
+#if 0
 	gku_prompt_get_unlock_options (GKU_PROMPT (self), template);
+#endif
 
 	/* If it's supposed to save non-transient, then we override that */
 	attr = gp11_attributes_find (template, CKA_GNOME_TRANSIENT);
