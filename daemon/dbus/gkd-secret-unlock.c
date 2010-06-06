@@ -21,11 +21,12 @@
 
 #include "config.h"
 
+#include "gkd-dbus-util.h"
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-objects.h"
-#include "gkd-secret-service.h"
-#include "gkd-secret-prompt.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-session.h"
+#include "gkd-secret-service.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-unlock.h"
 #include "gkd-secret-util.h"
@@ -43,189 +44,45 @@
 
 #include <string.h>
 
+enum {
+	PROP_0,
+	PROP_CALLER,
+	PROP_OBJECT_PATH,
+	PROP_SERVICE
+};
+
 struct _GkdSecretUnlock {
-	GkdSecretPrompt parent;
+	GObject parent;
+	gchar *object_path;
+	GkdSecretService *service;
+	gchar *caller;
+	gchar *window_id;
 	GQueue *queued;
 	gchar *current;
 	GArray *results;
+	gboolean prompted;
+	gboolean completed;
+	GCancellable *cancellable;
 };
 
-G_DEFINE_TYPE (GkdSecretUnlock, gkd_secret_unlock, GKD_SECRET_TYPE_PROMPT);
+/* Forward declarations */
+static void gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface);
+static void perform_next_unlock (GkdSecretUnlock *self);
+
+G_DEFINE_TYPE_WITH_CODE (GkdSecretUnlock, gkd_secret_unlock, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
+
+static guint unique_prompt_number = 0;
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
 
-static GP11Attributes*
-attributes_for_collection (GP11Object *collection)
+static GP11Object*
+lookup_collection (GkdSecretUnlock *self, const gchar *path)
 {
-	GP11Attributes *attrs;
-	GError *error = NULL;
-
-	attrs = gp11_object_get (collection, &error, CKA_LABEL, CKA_ID, GP11_INVALID);
-	if (attrs == NULL) {
-		g_warning ("couldn't get attributes for collection: %s", egg_error_message (error));
-		g_clear_error (&error);
-		return NULL;
-	}
-
-	return attrs;
-}
-
-static gchar*
-identifier_string_for_attributes (GP11Attributes *attrs)
-{
-	gchar *identifier;
-
-	g_assert (attrs);
-
-	if (!gp11_attributes_find_string (attrs, CKA_ID, &identifier))
-		return NULL;
-	if (!g_utf8_validate (identifier, -1, NULL)) {
-		g_free (identifier);
-		return NULL;
-	}
-	return identifier;
-}
-
-static gchar*
-location_string_for_attributes (GP11Attributes *attrs)
-{
-	gchar *identifier;
-	gchar *location;
-
-	identifier = identifier_string_for_attributes (attrs);
-	if (identifier == NULL)
-		return NULL;
-
-	/*
-	 * COMPAT: Format it into a string. This is done this way for compatibility
-	 * with old gnome-keyring releases. In the future this may change.
-	 *
-	 * FYI: gp11_object_get_data() null terminates
-	 */
-	location = g_strdup_printf ("LOCAL:/keyrings/%s.keyring", (gchar*)identifier);
-	g_free (identifier);
-	return location;
-}
-
-static gchar*
-label_string_for_attributes (GP11Attributes *attrs)
-{
-	gchar *label;
-
-	if (!gp11_attributes_find_string (attrs, CKA_LABEL, &label))
-		label = NULL;
-	if (!label)
-		return g_strdup (_("Unnamed"));
-	else
-		return label;
-}
-
-static void
-prepare_unlock_login (GkdSecretUnlock *self)
-{
-	GkuPrompt *prompt;
-	const gchar *text;
-
-	g_assert (GKD_SECRET_IS_UNLOCK (self));
-
-	prompt = GKU_PROMPT (self);
-
-	gku_prompt_set_title (prompt, _("Unlock Login Keyring"));
-
-	text = _("Enter password for to unlock your login keyring");
-	gku_prompt_set_primary_text (prompt, text);
-
-	if (gkd_login_did_unlock_fail ())
-		text = _("The password you use to log in to your computer no longer matches that of your login keyring.");
-	else
-		text = _("The login keyring did not get unlocked when you logged into your computer.");
-	gku_prompt_set_secondary_text (prompt, text);
-
-	gku_prompt_hide_widget (prompt, "name_area");
-	gku_prompt_hide_widget (prompt, "confirm_area");
-	gku_prompt_show_widget (prompt, "password_area");
-}
-
-static void
-prepare_unlock_prompt (GkdSecretUnlock *self, GP11Object *coll, gboolean first)
-{
-	GP11Attributes *template;
-	GP11Attributes *attrs;
-	GError *error = NULL;
-	GkuPrompt *prompt;
-	gchar *identifier;
-	gchar *label;
-	gchar *text;
-
-	g_assert (GKD_SECRET_IS_UNLOCK (self));
-	g_assert (coll);
-
-	prompt = GKU_PROMPT (self);
-
-	/* Hard reset on first prompt, soft on later */
-	gku_prompt_reset (GKU_PROMPT (prompt), first);
-
-	attrs = attributes_for_collection (coll);
-	g_return_if_fail (attrs);
-
-	/* Login keyring is handled specially */
-	identifier = identifier_string_for_attributes (attrs);
-	if (identifier && g_str_equal (identifier, "login")) {
-		prepare_unlock_login (self);
-		g_free (identifier);
-		return;
-	}
-
-	g_free (identifier);
-	label = label_string_for_attributes (attrs);
-
-	gku_prompt_set_title (prompt, _("Unlock Keyring"));
-
-	text = g_markup_printf_escaped (_("Enter password for keyring '%s' to unlock"), label);
-	gku_prompt_set_primary_text (prompt, text);
-	g_free (text);
-
-	text = g_markup_printf_escaped (_("An application wants access to the keyring '%s', but it is locked"), label);
-	gku_prompt_set_secondary_text (prompt, text);
-	g_free (text);
-
-	gku_prompt_hide_widget (prompt, "name_area");
-	gku_prompt_hide_widget (prompt, "confirm_area");
-	gku_prompt_show_widget (prompt, "details_area");
-	gku_prompt_show_widget (prompt, "password_area");
-	gku_prompt_show_widget (prompt, "lock_area");
-	gku_prompt_show_widget (prompt, "options_area");
-
-	g_free (label);
-
-	if (gkd_login_is_usable ())
-		gku_prompt_show_widget (prompt, "auto_unlock_check");
-	else
-		gku_prompt_hide_widget (prompt, "auto_unlock_check");
-
-	/* Setup the unlock options */
-	if (first) {
-		template = gp11_object_get_template (coll, CKA_G_CREDENTIAL_TEMPLATE, &error);
-		if (template) {
-#if 0
-			gku_prompt_set_unlock_options (prompt, template);
-#endif
-			gp11_attributes_unref (template);
-		} else {
-			g_warning ("couldn't get credential template for collection: %s",
-			           egg_error_message (error));
-			g_clear_error (&error);
-		}
-	}
-}
-
-static void
-set_warning_wrong (GkdSecretUnlock *self)
-{
-	g_assert (GKD_SECRET_IS_UNLOCK (self));
-	gku_prompt_set_warning (GKU_PROMPT (self), _("The unlock password was incorrect"));
+	GkdSecretObjects *objects = gkd_secret_service_get_objects (self->service);
+	return gkd_secret_objects_lookup_collection (objects, self->caller, path);
 }
 
 static gboolean
@@ -249,38 +106,6 @@ check_locked_collection (GP11Object *collection, gboolean *locked)
 }
 
 static void
-attach_unlock_to_login (GP11Object *collection, GkdSecretSecret *master)
-{
-	DBusError derr = DBUS_ERROR_INIT;
-	GP11Attributes *attrs;
-	GP11Object *cred;
-	gchar *location;
-	gchar *label;
-
-	g_assert (GP11_IS_OBJECT (collection));
-
-	/* Relevant information for the unlock item */
-	attrs = attributes_for_collection (collection);
-	g_return_if_fail (attrs);
-	location = location_string_for_attributes (attrs);
-	label = label_string_for_attributes (attrs);
-	gp11_attributes_unref (attrs);
-
-	attrs = gkd_login_attach_make_attributes (label, "keyring", location, NULL);
-	g_free (location);
-	g_free (label);
-
-	cred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, &derr);
-	gp11_attributes_unref (attrs);
-	g_object_unref (cred);
-
-	if (!cred) {
-		g_warning ("couldn't save unlock password in login collection: %s", derr.message);
-		dbus_error_free (&derr);
-	}
-}
-
-static void
 common_unlock_attributes (GP11Attributes *attrs, GP11Object *collection)
 {
 	g_assert (attrs);
@@ -290,168 +115,29 @@ common_unlock_attributes (GP11Attributes *attrs, GP11Object *collection)
 }
 
 static gboolean
-authenticate_collection (GkdSecretUnlock *self, GP11Object *collection, gboolean *locked)
+mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 {
-	DBusError derr = DBUS_ERROR_INIT;
-	gboolean transient = TRUE;
-	GkdSecretSecret *master;
-	GP11Attributes *template;
-	GP11Attribute *attr;
-	GP11Object *cred;
-	gboolean result;
-
-	g_assert (GKD_SECRET_IS_UNLOCK (self));
-	g_assert (GP11_IS_OBJECT (collection));
-	g_assert (locked);
-
-	if (!check_locked_collection (collection, locked))
-		return FALSE;
-
-	/* Shortcut if already unlocked, or just checking locked status */
-	if (!*locked || !gku_prompt_has_response (GKU_PROMPT (self)))
-		return TRUE;
-
-	master = gkd_secret_prompt_get_secret (GKD_SECRET_PROMPT (self), "password");
-	if (master == NULL) {
-		g_warning ("couldn't get password from prompt");
-		return FALSE;
-	}
-
-	/* The various unlock options */
-	template = gp11_attributes_new ();
-	common_unlock_attributes (template, collection);
-#if 0
-	gku_prompt_get_unlock_options (GKU_PROMPT (self), template);
-#endif
-
-	/* If it's supposed to save non-transient, then we override that */
-	attr = gp11_attributes_find (template, CKA_GNOME_TRANSIENT);
-	if (attr != NULL) {
-		transient = gp11_attribute_get_boolean (attr);
-		gp11_attribute_clear (attr);
-		gp11_attribute_init_boolean (attr, CKA_GNOME_TRANSIENT, TRUE);
-	}
-
-	cred = gkd_secret_session_create_credential (master->session, NULL, template, master, &derr);
-	g_object_unref (cred);
-
-	if (cred) {
-		/* Save it to the login keyring */
-		if (!transient)
-			attach_unlock_to_login (collection, master);
-
-		/* Save away the unlock options for next time */
-		gp11_object_set_template (collection, CKA_G_CREDENTIAL_TEMPLATE, template, NULL);
-		gp11_attributes_unref (template);
-
-		*locked = FALSE;
-		result = TRUE; /* Operation succeeded, and unlocked */
-
-	} else {
-		gp11_attributes_unref (template);
-		if (dbus_error_has_name (&derr, INTERNAL_ERROR_DENIED)) {
-			dbus_error_free (&derr);
-			*locked = TRUE;
-			result = TRUE; /* Operation succeded, although not unlocked*/
-
-		} else {
-			g_warning ("couldn't create credential for collection: %s",
-			           derr.message);
-			dbus_error_free (&derr);
-			result = FALSE; /* Operation failed */
-		}
-	}
-
-	gkd_secret_secret_free (master);
-	return result;
-}
-
-/* -----------------------------------------------------------------------------
- * OBJECT
- */
-
-static void
-gkd_secret_unlock_prompt_ready (GkdSecretPrompt *prompt)
-{
-	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (prompt);
-	GP11Object *coll;
-	gboolean locked;
-	gchar *objpath;
-
-	/* Already prompted for an item */
-	if (self->current) {
-		coll = gkd_secret_prompt_lookup_collection (prompt, self->current);
-
-		/* If the object or collection is gone, no need to unlock */
-		if (coll == NULL) {
-			g_free (self->current);
-			self->current = NULL;
-
-		} else {
-			/* Try to unlock the collection */
-			if (!authenticate_collection (self, coll, &locked)) {
-				g_free (self->current);
-				self->current = NULL;
-
-			/* Collection still locked, prompt again */
-			} else if (locked) {
-				prepare_unlock_prompt (self, coll, FALSE);
-				set_warning_wrong (self);
-
-			/* Collection not locked, done with this one */
-			} else {
-				g_array_append_val (self->results, self->current);
-				self->current = NULL;
-			}
-
-			g_object_unref (coll);
-		}
-	}
-
-	/* Queue the next item? */
-	while (!self->current) {
-		objpath = g_queue_pop_head (self->queued);
-
-		/* Nothing more to prompt for? */
-		if (!objpath) {
-			gkd_secret_prompt_complete (prompt);
-			break;
-		}
-
-		/* Find the collection, make sure it's still around */
-		coll = gkd_secret_prompt_lookup_collection (prompt, objpath);
-		if (coll == NULL) {
-			g_free (objpath);
-			continue;
-		}
-
-		/* Make sure this collection still needs unlocking */
-		if (!authenticate_collection (self, coll, &locked)) {
-			g_object_unref (coll);
-			g_free (objpath);
-			continue;
-		} else if (!locked) {
-			g_array_append_val (self->results, objpath);
-			g_object_unref (coll);
-			continue;
-		}
-
-		prepare_unlock_prompt (self, coll, TRUE);
-		g_object_unref (coll);
-		self->current = objpath;
-	}
-}
-
-static void
-gkd_secret_unlock_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
-{
-	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (base);
+	DBusMessage *signal;
+	DBusMessageIter iter;
+	dbus_bool_t bval;
 	DBusMessageIter variant;
 	DBusMessageIter array;
 	const char *value;
 	gint i;
 
-	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "ao", &variant);
+	if (self->completed)
+		return FALSE;
+	self->completed = TRUE;
+
+	signal = dbus_message_new_signal (self->object_path, SECRET_PROMPT_INTERFACE,
+	                                  "Completed");
+	dbus_message_set_destination (signal, self->caller);
+	dbus_message_iter_init_append (signal, &iter);
+
+	bval = dismissed;
+	dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &bval);
+
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_VARIANT, "ao", &variant);
 	dbus_message_iter_open_container (&variant, DBUS_TYPE_ARRAY, "o", &array);
 
 	for (i = 0; i < self->results->len; ++i) {
@@ -460,7 +146,185 @@ gkd_secret_unlock_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
 	}
 
 	dbus_message_iter_close_container (&variant, &array);
-	dbus_message_iter_close_container (iter, &variant);
+	dbus_message_iter_close_container (&iter, &variant);
+
+	gkd_secret_service_send (self->service, signal);
+	dbus_message_unref (signal);
+	return TRUE;
+}
+
+static void
+on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
+{
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (user_data);
+	GP11Object *cred;
+	GError *error = NULL;
+
+	cred = gp11_session_create_object_finish (GP11_SESSION (object), res, &error);
+
+	/* Successfully authentication */
+	if (cred) {
+		g_object_unref (cred);
+		g_array_append_val (self->results, self->current);
+		self->current = NULL;
+		perform_next_unlock (self);
+
+	/* The user cancelled the protected auth prompt */
+	} else if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
+		g_free (self->current);
+		self->current = NULL;
+		perform_next_unlock (self);
+
+	/* The operation was cancelled via Dismiss call */
+	} else if (g_error_matches (error, GP11_ERROR, CKR_CANCEL)) {
+		/* Should have been the result of a dismiss */
+		g_return_if_fail (self->completed);
+
+	/* Another error, something's broken */
+	} else {
+		g_warning ("couldn't create credential for collection: %s",
+		           egg_error_message (error));
+	}
+
+	g_clear_error (&error);
+}
+
+static void
+perform_next_unlock (GkdSecretUnlock *self)
+{
+	GP11Object *collection;
+	GP11Attributes *template;
+	GP11Session *session;
+	gboolean locked;
+	gchar *objpath;
+
+	while (!self->current) {
+		objpath = g_queue_pop_head (self->queued);
+
+		/* Nothing more to prompt for? */
+		if (!objpath) {
+			mark_as_complete (self, TRUE);
+			break;
+		}
+
+		/* Find the collection, make sure it's still around */
+		collection = lookup_collection (self, objpath);
+		if (collection == NULL) {
+			g_free (objpath);
+			continue;
+		}
+
+		if (!check_locked_collection (collection, &locked)) {
+			g_object_unref (collection);
+			g_free (objpath);
+			continue;
+
+		} else if (!locked) {
+			g_array_append_val (self->results, objpath);
+			g_object_unref (collection);
+			continue;
+		}
+
+		/* The various unlock options */
+		template = gp11_attributes_new ();
+		common_unlock_attributes (template, collection);
+		gp11_attributes_add_data (template, CKA_VALUE, NULL, 0);
+
+		session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
+		gp11_session_create_object_async (session, template, self->cancellable, on_unlock_complete, self);
+		gp11_attributes_unref (template);
+
+		g_object_unref (collection);
+		self->current = objpath;
+	}
+}
+
+/* -----------------------------------------------------------------------------
+ * DBUS
+ */
+
+static DBusMessage*
+prompt_method_prompt (GkdSecretUnlock *self, DBusMessage *message)
+{
+	DBusMessage *reply;
+	const char *window_id;
+
+	/* Act as if this object no longer exists */
+	if (self->completed)
+		return NULL;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING,
+	                            &window_id, DBUS_TYPE_INVALID))
+		return NULL;
+
+	/* Prompt can only be called once */
+	if (self->prompted)
+		return dbus_message_new_error (message, SECRET_ERROR_ALREADY_EXISTS,
+		                               "This prompt has already been shown.");
+
+	g_free (self->window_id);
+	self->window_id = g_strdup (window_id);
+
+	self->prompted = TRUE;
+	perform_next_unlock (self);
+
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
+	return reply;
+}
+
+static DBusMessage*
+prompt_method_dismiss (GkdSecretUnlock *self, DBusMessage *message)
+{
+	DBusMessage *reply;
+
+	/* Act as if this object no longer exists */
+	if (self->completed)
+		return NULL;
+
+	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
+		return NULL;
+
+	g_cancellable_cancel (self->cancellable);
+	mark_as_complete (self, TRUE);
+
+	reply = dbus_message_new_method_return (message);
+	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
+	return reply;
+}
+
+/* -----------------------------------------------------------------------------
+ * OBJECT
+ */
+
+static DBusMessage*
+gkd_secret_unlock_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+	GkdSecretUnlock *self;
+	const gchar *caller;
+
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_UNLOCK (base), NULL);
+	self = GKD_SECRET_UNLOCK (base);
+
+	/* This should already have been caught elsewhere */
+	caller = dbus_message_get_sender (message);
+	if (!caller || !g_str_equal (caller, self->caller))
+		g_return_val_if_reached (NULL);
+
+	/* org.freedesktop.Secrets.Prompt.Prompt() */
+	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Prompt"))
+		reply = prompt_method_prompt (self, message);
+
+	/* org.freedesktop.Secrets.Prompt.Negotiate() */
+	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
+		reply = prompt_method_dismiss (self, message);
+
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "prompt");
+
+	return reply;
 }
 
 static void
@@ -468,6 +332,39 @@ gkd_secret_unlock_init (GkdSecretUnlock *self)
 {
 	self->queued = g_queue_new ();
 	self->results = g_array_new (TRUE, TRUE, sizeof (gchar*));
+	self->cancellable = g_cancellable_new ();
+}
+
+static GObject*
+gkd_secret_unlock_constructor (GType type, guint n_props, GObjectConstructParam *props)
+{
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (G_OBJECT_CLASS (gkd_secret_unlock_parent_class)->constructor(type, n_props, props));
+
+	g_return_val_if_fail (self, NULL);
+	g_return_val_if_fail (self->caller, NULL);
+	g_return_val_if_fail (self->service, NULL);
+
+	/* Setup the path for the object */
+	self->object_path = g_strdup_printf (SECRET_PROMPT_PREFIX "/u%d", ++unique_prompt_number);
+
+	return G_OBJECT (self);
+}
+
+static void
+gkd_secret_unlock_dispose (GObject *obj)
+{
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
+
+	g_free (self->object_path);
+	self->object_path = NULL;
+
+	if (self->service) {
+		g_object_remove_weak_pointer (G_OBJECT (self->service),
+		                              (gpointer*)&(self->service));
+		self->service = NULL;
+	}
+
+	G_OBJECT_CLASS (gkd_secret_unlock_parent_class)->dispose (obj);
 }
 
 static void
@@ -491,18 +388,96 @@ gkd_secret_unlock_finalize (GObject *obj)
 	g_free (self->current);
 	self->current = NULL;
 
+	g_object_unref (self->cancellable);
+	self->cancellable = NULL;
+
+	g_assert (!self->object_path);
+	g_assert (!self->service);
+
+	g_free (self->caller);
+	self->caller = NULL;
+
+	g_free (self->window_id);
+	self->window_id = NULL;
+
 	G_OBJECT_CLASS (gkd_secret_unlock_parent_class)->finalize (obj);
 }
+
+static void
+gkd_secret_unlock_set_property (GObject *obj, guint prop_id, const GValue *value,
+                                GParamSpec *pspec)
+{
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
+
+	switch (prop_id) {
+	case PROP_CALLER:
+		g_return_if_fail (!self->caller);
+		self->caller = g_value_dup_string (value);
+		break;
+	case PROP_SERVICE:
+		g_return_if_fail (!self->service);
+		self->service = g_value_get_object (value);
+		g_return_if_fail (self->service);
+		g_object_add_weak_pointer (G_OBJECT (self->service),
+		                           (gpointer*)&(self->service));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gkd_secret_unlock_get_property (GObject *obj, guint prop_id, GValue *value,
+                                GParamSpec *pspec)
+{
+	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
+
+	switch (prop_id) {
+	case PROP_CALLER:
+		g_value_set_string (value, self->caller);
+		break;
+	case PROP_OBJECT_PATH:
+		g_value_set_boxed (value, self->object_path);
+		break;
+	case PROP_SERVICE:
+		g_value_set_object (value, self->service);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
 
 static void
 gkd_secret_unlock_class_init (GkdSecretUnlockClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GkdSecretPromptClass *prompt_class = GKD_SECRET_PROMPT_CLASS (klass);
 
+	gobject_class->constructor = gkd_secret_unlock_constructor;
+	gobject_class->get_property = gkd_secret_unlock_get_property;
+	gobject_class->set_property = gkd_secret_unlock_set_property;
+	gobject_class->dispose = gkd_secret_unlock_dispose;
 	gobject_class->finalize = gkd_secret_unlock_finalize;
-	prompt_class->prompt_ready = gkd_secret_unlock_prompt_ready;
-	prompt_class->encode_result = gkd_secret_unlock_encode_result;
+
+	g_object_class_install_property (gobject_class, PROP_CALLER,
+		g_param_spec_string ("caller", "Caller", "DBus caller name",
+		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
+
+	g_object_class_install_property (gobject_class, PROP_OBJECT_PATH,
+	        g_param_spec_string ("object-path", "Object Path", "DBus Object Path",
+		                     NULL, G_PARAM_READABLE));
+
+	g_object_class_install_property (gobject_class, PROP_SERVICE,
+		g_param_spec_object ("service", "Service", "Service which owns this prompt",
+		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+}
+
+static void
+gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface)
+{
+	iface->dispatch_message = gkd_secret_unlock_real_dispatch_message;
 }
 
 /* -----------------------------------------------------------------------------
@@ -519,39 +494,20 @@ void
 gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 {
 	gboolean locked = TRUE;
-	GP11Attributes *attrs;
 	GP11Object *coll;
-	gchar *password;
-	gchar *location;
 	gchar *path;
 
 	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
 	g_return_if_fail (objpath);
 
-	coll = gkd_secret_prompt_lookup_collection (GKD_SECRET_PROMPT (self), objpath);
+	coll = lookup_collection (self, objpath);
 	if (coll == NULL)
 		return;
 
-	/* Try to unlock with an empty password */
-	if (gkd_secret_unlock_with_password (coll, NULL, 0, NULL)) {
+	/* Try to unlock with an empty password, which produces no prompt */
+	if (gkd_secret_unlock_with_password (coll, (const guchar*)"", 0, NULL)) {
 		locked = FALSE;
 
-	/* Or try to use login keyring's passwords */
-	} else {
-		attrs = attributes_for_collection (coll);
-		location = location_string_for_attributes (attrs);
-		gp11_attributes_unref (attrs);
-
-		if (location) {
-			password = gkd_login_lookup_secret ("keyring", location, NULL);
-			g_free (location);
-
-			if (password) {
-				if (gkd_secret_unlock_with_password (coll, (guchar*)password, strlen (password), NULL))
-					locked = FALSE;
-				egg_secure_strfree (password);
-			}
-		}
 	}
 
 	path = g_strdup (objpath);

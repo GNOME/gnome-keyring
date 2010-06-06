@@ -36,7 +36,7 @@
 typedef struct _GkdSecretUnlockClass GkdSecretUnlockClass;
 
 struct _GkdSecretUnlockClass {
-	GkdSecretPromptClass parent_class;
+	GObjectClass parent_class;
 };
 
 GType               gkd_secret_unlock_get_type                (void);
