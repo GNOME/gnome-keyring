@@ -382,7 +382,7 @@ gkd_secret_prompt_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_set_string (value, gkd_secret_prompt_get_caller (self));
 		break;
 	case PROP_OBJECT_PATH:
-		g_value_set_boxed (value, gkd_secret_prompt_get_object_path (self));
+		g_value_set_boxed (value, self->pv->object_path);
 		break;
 	case PROP_SERVICE:
 		g_value_set_object (value, self->pv->service);
@@ -440,13 +440,6 @@ gkd_secret_prompt_get_caller (GkdSecretPrompt *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
 	return self->pv->caller;
-}
-
-const gchar*
-gkd_secret_prompt_get_object_path (GkdSecretPrompt *self)
-{
-	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
-	return self->pv->object_path;
 }
 
 GP11Session*

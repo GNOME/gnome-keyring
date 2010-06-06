@@ -458,6 +458,7 @@ clear_prompt_data (GkuPrompt *self)
 	self->pv->output = NULL;
 
 	self->pv->failure = FALSE;
+	self->pv->completed = FALSE;
 
 	g_free (self->pv->in_data);
 	self->pv->in_data = NULL;

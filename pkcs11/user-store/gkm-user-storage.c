@@ -1221,7 +1221,7 @@ gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
 		return;
 	case GKM_DATA_LOCKED:
-		gkm_transaction_fail (transaction, CKR_PIN_INVALID);
+		gkm_transaction_fail (transaction, CKR_PIN_INCORRECT);
 		return;
 	case GKM_DATA_SUCCESS:
 		break;

@@ -34,7 +34,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control.la \
 	$(top_builddir)/ui/libgku-prompt.la \
 	$(top_builddir)/daemon/ssh-agent/libgkd-ssh-agent.la \
-	$(top_builddir)/pkcs11/plex-layer/libgkm-plex-layer.la \
+	$(top_builddir)/pkcs11/wrap-layer/libgkm-wrap-layer.la \
 	$(top_builddir)/pkcs11/roots-store/libgkm-roots-store.la \
 	$(top_builddir)/pkcs11/rpc-layer/libgkm-rpc-layer.la \
 	$(top_builddir)/pkcs11/secret-store/libgkm-secret-store.la \

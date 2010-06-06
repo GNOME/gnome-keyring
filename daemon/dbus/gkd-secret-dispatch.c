@@ -62,3 +62,12 @@ gkd_secret_dispatch_message (GkdSecretDispatch *self, DBusMessage *message)
 	g_return_val_if_fail (GKD_SECRET_DISPATCH_GET_INTERFACE (self)->dispatch_message, NULL);
 	return GKD_SECRET_DISPATCH_GET_INTERFACE (self)->dispatch_message (self, message);
 }
+
+const gchar*
+gkd_secret_dispatch_get_object_path (GkdSecretDispatch *self)
+{
+	const gchar *path = NULL;
+	/* object-path is boxed, no allocation */
+	g_object_get (self, "object-path", &path, NULL);
+	return path;
+}

@@ -64,6 +64,9 @@ static gint last_handle = 16;
 static CK_RV
 map_slot_unlocked (CK_SLOT_ID slot, Mapping *mapping)
 {
+	if (!wrap_mappings)
+		return CKR_CRYPTOKI_NOT_INITIALIZED;
+
 	if (slot < PLEX_MAPPING_OFFSET)
 		return CKR_SLOT_ID_INVALID;
 	slot -= PLEX_MAPPING_OFFSET;
@@ -101,24 +104,27 @@ map_session_to_real (CK_SESSION_HANDLE_PTR handle, Mapping *mapping)
 {
 	CK_RV rv = CKR_OK;
 	Session *sess;
-	Mapping map;
 
 	g_assert (handle);
 	g_assert (mapping);
 
 	G_LOCK (wrap_layer);
 
-		sess = g_hash_table_lookup (wrap_sessions, GINT_TO_POINTER ((gint)*handle));
-		if (sess) {
-			if (!map_slot_unlocked (sess->wrap_slot, &map))
-				rv = CKR_SLOT_ID_INVALID;
+		if (!wrap_sessions) {
+			rv = CKR_CRYPTOKI_NOT_INITIALIZED;
 		} else {
-			rv = CKR_SESSION_HANDLE_INVALID;
+			sess = g_hash_table_lookup (wrap_sessions, GINT_TO_POINTER ((gint)*handle));
+			if (sess != NULL) {
+				*handle = sess->real_session;
+				rv = map_slot_unlocked (sess->wrap_slot, mapping);
+			} else {
+				rv = CKR_SESSION_HANDLE_INVALID;
+			}
 		}
 
 	G_UNLOCK (wrap_layer);
 
-	return CKR_OK;
+	return rv;
 }
 
 #define MAP_SLOT_UP(slot, map) G_STMT_START { \
@@ -204,6 +210,7 @@ wrap_C_Initialize (CK_VOID_PTR init_args)
 			n_wrap_mappings = mappings->len;
 			wrap_mappings = (Mapping*)g_array_free (mappings, FALSE);
 			mappings = NULL;
+			wrap_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
 		}
 
 	G_UNLOCK (wrap_layer);
@@ -226,6 +233,9 @@ wrap_C_Finalize (CK_VOID_PTR reserved)
 			(wrap_mappings[i].funcs->C_Finalize) (NULL);
 		g_free (wrap_mappings);
 		wrap_mappings = NULL;
+
+		g_hash_table_destroy (wrap_sessions);
+		wrap_sessions = NULL;
 
 	G_UNLOCK (wrap_layer);
 
@@ -312,7 +322,7 @@ wrap_C_GetSlotInfo (CK_SLOT_ID id, CK_SLOT_INFO_PTR info)
 	CK_RV rv;
 
 	rv = map_slot_to_real (&id, &map);
-	if (rv == CKR_OK)
+	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetSlotInfo) (id, info);
 }
@@ -324,7 +334,7 @@ wrap_C_GetTokenInfo (CK_SLOT_ID id, CK_TOKEN_INFO_PTR info)
 	CK_RV rv;
 
 	rv = map_slot_to_real (&id, &map);
-	if (rv == CKR_OK)
+	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetTokenInfo) (id, info);
 }
@@ -336,7 +346,7 @@ wrap_C_GetMechanismList (CK_SLOT_ID id, CK_MECHANISM_TYPE_PTR mechanism_list, CK
 	CK_RV rv;
 
 	rv = map_slot_to_real (&id, &map);
-	if (rv == CKR_OK)
+	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetMechanismList) (id, mechanism_list, count);
 }
@@ -348,7 +358,7 @@ wrap_C_GetMechanismInfo (CK_SLOT_ID id, CK_MECHANISM_TYPE type, CK_MECHANISM_INF
 	CK_RV rv;
 
 	rv = map_slot_to_real (&id, &map);
-	if (rv == CKR_OK)
+	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetMechanismInfo) (id, type, info);
 }
@@ -360,7 +370,7 @@ wrap_C_InitToken (CK_SLOT_ID id, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len, CK_UTF8C
 	CK_RV rv;
 
 	rv = map_slot_to_real (&id, &map);
-	if (rv == CKR_OK)
+	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_InitToken) (id, pin, pin_len, label);
 }
@@ -383,7 +393,7 @@ wrap_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, CK_NOT
 		return CKR_ARGUMENTS_BAD;
 
 	rv = map_slot_to_real (&id, &map);
-	if (rv == CKR_OK)
+	if (rv != CKR_OK)
 		return rv;
 
 	rv = (map.funcs->C_OpenSession) (id, flags, user_data, callback, handle);
@@ -391,7 +401,7 @@ wrap_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, CK_NOT
 	if (rv == CKR_OK) {
 		G_LOCK (wrap_layer);
 
-			sess = g_slice_new (Session);
+			sess = g_new (Session, 1);
 			if (flags & CKF_G_APPLICATION_SESSION)
 				sess->app_id = ((CK_G_APPLICATION_PTR)user_data)->applicationId;
 			sess->wrap_slot = map.wrap_slot;
@@ -410,13 +420,24 @@ wrap_C_OpenSession (CK_SLOT_ID id, CK_FLAGS flags, CK_VOID_PTR user_data, CK_NOT
 static CK_RV
 wrap_C_CloseSession (CK_SESSION_HANDLE handle)
 {
+	gint key = (gint)handle;
 	Mapping map;
 	CK_RV rv;
 
 	rv = map_session_to_real (&handle, &map);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_CloseSession) (handle);
+	rv = (map.funcs->C_CloseSession) (handle);
+
+	if (rv == CKR_OK) {
+		G_LOCK (wrap_layer);
+
+			g_hash_table_remove (wrap_sessions, GINT_TO_POINTER (key));
+
+		G_UNLOCK (wrap_layer);
+	}
+
+	return rv;
 }
 
 static CK_RV
@@ -570,47 +591,6 @@ wrap_C_Logout (CK_SESSION_HANDLE handle)
 	return (map.funcs->C_Logout) (handle);
 }
 
-#if 0
-static CK_RV
-wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
-                     CK_ULONG n_template, CK_OBJECT_HANDLE_PTR new_object)
-{
-	CK_ATTRIBUTE_PTR attrs = NULL;
-	CK_ULONG n_attrs;
-	Mapping map;
-	CK_RV rv;
-
-	rv = map_session_to_real (&handle, &map);
-	if (rv != CKR_OK)
-		return rv;
-
-	while (rv == CKR_OK) {
-		rv = (map.funcs->C_CreateObject) (handle,
-		                                  attrs ? attrs : template,
-		                                  attrs ? n_attrs : n_template,
-		                                  new_object);
-
-		if (attrs != NULL) {
-			if (rv == CKR_OK)
-				gkm_wrap_prompt_done_create_object (map.funcs, handle,
-				                                    attrs, n_attrs);
-			g_free (attrs);
-			attrs = NULL;
-		}
-
-		if (rv != CKR_PIN_INVALID)
-			break;
-
-		/* Only prompting for creating credentials, under certain circumstances */
-		rv = gkm_wrap_prompt_for_create_object (map.funcs, handle, template,
-		                                        n_template, &attrs, &n_attrs);
-	}
-
-	g_assert (attrs == NULL);
-	return rv;
-}
-#endif
-
 static CK_RV
 wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
                      CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
@@ -626,7 +606,7 @@ wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
 	for (;;) {
 		rv = (map.funcs->C_CreateObject) (handle, template, count, new_object);
 
-		if (rv != CKR_PIN_INVALID)
+		if (rv != CKR_PIN_INCORRECT)
 			break;
 
 		if (!prompt) {

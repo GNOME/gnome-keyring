@@ -27,7 +27,7 @@
 
 #include "egg/egg-cleanup.h"
 
-#include "pkcs11/plex-layer/gkm-plex-layer.h"
+#include "pkcs11/wrap-layer/gkm-wrap-layer.h"
 #include "pkcs11/roots-store/gkm-roots-store.h"
 #include "pkcs11/rpc-layer/gkm-rpc-layer.h"
 #include "pkcs11/secret-store/gkm-secret-store.h"
@@ -82,15 +82,15 @@ gkd_pkcs11_initialize (void)
 	/* User certificates */
 	user_store = gkm_user_store_get_functions ();
 
-	/* Add all of those into the multiplexing layer */
-	gkm_plex_layer_add_module (ssh_store);
+	/* Add all of those into the wrapper layer */
+	gkm_wrap_layer_add_module (ssh_store);
 #ifdef ROOT_CERTIFICATES
-	gkm_plex_layer_add_module (roots_store);
+	gkm_wrap_layer_add_module (roots_store);
 #endif
-	gkm_plex_layer_add_module (secret_store);
-	gkm_plex_layer_add_module (user_store);
+	gkm_wrap_layer_add_module (secret_store);
+	gkm_wrap_layer_add_module (user_store);
 
-	pkcs11_base = gkm_plex_layer_get_functions ();
+	pkcs11_base = gkm_wrap_layer_get_functions ();
 
 	/* The auth component is the top component */
 	gkd_pkcs11_auth_chain_functions (pkcs11_base);

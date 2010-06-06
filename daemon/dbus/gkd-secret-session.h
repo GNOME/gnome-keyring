@@ -56,8 +56,6 @@ const gchar*        gkd_secret_session_get_caller              (GkdSecretSession
 
 const gchar*        gkd_secret_session_get_caller_executable   (GkdSecretSession *self);
 
-const gchar*        gkd_secret_session_get_object_path         (GkdSecretSession *self);
-
 GP11Session*        gkd_secret_session_get_pkcs11_session      (GkdSecretSession *self);
 
 GkdSecretSecret*    gkd_secret_session_get_item_secret         (GkdSecretSession *self,

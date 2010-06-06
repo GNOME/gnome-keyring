@@ -47,6 +47,7 @@ struct _GkmWrapPrompt {
 	GArray *template;
 	CK_ULONG n_template;
 
+	guint iteration;
 	gchar *password;
 	GQueue pool;
 };
@@ -195,7 +196,7 @@ get_unlock_options_from_object (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 
 	/* Number of attributes, rounded down */
 	*n_options = (attr.ulValueLen / sizeof (CK_ATTRIBUTE));;
-	options = pool_alloc (self, attr.ulValueLen);
+	attr.pValue = options = pool_alloc (self, attr.ulValueLen);
 
 	/* Get the size of each value */
 	rv = (self->module->C_GetAttributeValue) (self->session, self->object, &attr, 1);
@@ -492,6 +493,9 @@ prepare_unlock_prompt (GkmWrapPrompt *self, gboolean first)
 	} else {
 		prepare_unlock_other_object (self, label);
 	}
+
+	if (!first)
+		gku_prompt_set_warning (GKU_PROMPT (self), _("The unlock password was incorrect"));
 }
 
 /* -----------------------------------------------------------------------------
@@ -599,7 +603,6 @@ gkm_wrap_prompt_for_credential (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE s
 	self->object = object;
 	self->module = module;
 	self->session = session;
-	prepare_unlock_prompt (self, TRUE);
 
 	/* Build up a copy of the template with CKA_VALUE first */
 	self->template = g_array_new (FALSE, FALSE, sizeof (CK_ATTRIBUTE));
@@ -630,6 +633,9 @@ gkm_wrap_prompt_do_credential (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR *template,
 	g_return_val_if_fail (GKM_WRAP_IS_PROMPT (self), FALSE);
 	g_return_val_if_fail (template, FALSE);
 	g_return_val_if_fail (n_template, FALSE);
+
+	prepare_unlock_prompt (self, self->iteration == 0);
+	++(self->iteration);
 
 	gku_prompt_request_attention_sync (NULL, on_prompt_attention,
 	                                   g_object_ref (self), g_object_unref);

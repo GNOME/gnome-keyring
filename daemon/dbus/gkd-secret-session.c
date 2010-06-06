@@ -395,7 +395,7 @@ gkd_secret_session_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_set_string (value, gkd_secret_session_get_caller_executable (self));
 		break;
 	case PROP_OBJECT_PATH:
-		g_value_set_boxed (value, gkd_secret_session_get_object_path (self));
+		g_value_set_pointer (value, self->object_path);
 		break;
 	case PROP_SERVICE:
 		g_value_set_object (value, self->service);
@@ -426,8 +426,8 @@ gkd_secret_session_class_init (GkdSecretSessionClass *klass)
 		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
 
 	g_object_class_install_property (gobject_class, PROP_OBJECT_PATH,
-	        g_param_spec_string ("object-path", "Object Path", "DBus Object Path",
-		                     NULL, G_PARAM_READABLE));
+	        g_param_spec_pointer ("object-path", "Object Path", "DBus Object Path",
+		                      G_PARAM_READABLE));
 
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 		g_param_spec_object ("service", "Service", "Service which owns this session",
@@ -562,13 +562,6 @@ gkd_secret_session_get_caller_executable (GkdSecretSession *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
 	return self->caller_exec;
-}
-
-const gchar*
-gkd_secret_session_get_object_path (GkdSecretSession *self)
-{
-	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
-	return self->object_path;
 }
 
 GP11Session*
