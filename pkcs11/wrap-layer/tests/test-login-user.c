@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include "gkm/gkm-test.h"
 

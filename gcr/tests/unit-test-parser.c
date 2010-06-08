@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"

@@ -24,13 +24,13 @@ LIBS = \
 noinst_PROGRAMS= \
 	run-tests
 
-test-framework.h: $(TESTING_FILES) Makefile.am $(top_srcdir)/testing/testing-build.sh
-	sh $(top_srcdir)/testing/testing-build.sh -b test-framework $(TESTING_FILES)
+test-suite.h: $(TESTING_FILES) Makefile.am $(top_srcdir)/testing/testing-build.sh
+	sh $(top_srcdir)/testing/testing-build.sh -b test-suite $(TESTING_FILES)
 
-test-framework.c: test-framework.h
+test-suite.c: test-suite.h
 
 run_tests_SOURCES = \
-	test-framework.c test-framework.h \
+	test-suite.c test-suite.h \
 	$(TESTING_FILES)
 
 run_tests_LDADD = \
@@ -45,8 +45,8 @@ run_tests_LDFLAGS = \
 	$(GCOV_LDFLAGS)
 
 BUILT_SOURCES = \
-	test-framework.c \
-	test-framework.h
+	test-suite.c \
+	test-suite.h
 
 # ------------------------------------------------------------------------------
 # Run the tests

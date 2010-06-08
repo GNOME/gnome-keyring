@@ -26,7 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "test-framework.h"
+#include "test-suite.h"
 #include "test-module.h"
 
 #include "gkm/gkm-object.h"

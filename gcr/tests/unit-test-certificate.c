@@ -1,6 +1,6 @@
 
 #include "config.h"
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include "gcr-certificate.h"
 #include "gcr-simple-certificate.h"

@@ -23,7 +23,7 @@
 
 #include "config.h"
 #include "test-module.h"
-#include "test-framework.h"
+#include "test-suite.h"
 
 /* Include all the module entry points */
 #include "gkm/gkm-module-ep.h"

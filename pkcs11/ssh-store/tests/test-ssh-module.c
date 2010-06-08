@@ -28,7 +28,7 @@
 
 #include "ssh-store/gkm-ssh-store.h"
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 static GMutex *mutex = NULL;
 

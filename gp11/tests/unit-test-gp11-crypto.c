@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include <glib.h>
 

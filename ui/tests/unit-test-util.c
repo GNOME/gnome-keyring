@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include "gku-prompt-util.h"
 

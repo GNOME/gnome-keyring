@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "test-framework.h"
+#include "test-suite.h"
 #include "test-secret-module.h"
 
 #include "gkm-secret-binary.h"

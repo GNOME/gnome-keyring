@@ -23,7 +23,7 @@
 
 #include "config.h"
 #include "test-secret-module.h"
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include "gkm/gkm-secret.h"
 #include "gkm/gkm-module.h"
@@ -213,10 +213,10 @@ test_secret_collection_validate (GkmSecretCollection *collection, GkmSecretData 
 	/* "Invalid ACL" */
 	g_assert (ac && ac->application);
 	/* "Invalid ACL Path" */
-	g_assert (ac->application->pathname && strstr (ac->application->pathname, "test-framework"));
+	g_assert (ac->application->pathname && strstr (ac->application->pathname, "test-suite"));
 	/* "Invalid ACL Display Name" */
 	g_assert (ac->application->display_name);
-	g_assert_cmpstr (ac->application->display_name, ==, "test-framework");
+	g_assert_cmpstr (ac->application->display_name, ==, "test-suite");
 	/* "Invalid ACL Access Type" */
 	g_assert_cmpint (ac->types_allowed, ==, (GNOME_KEYRING_ACCESS_READ | GNOME_KEYRING_ACCESS_WRITE | GNOME_KEYRING_ACCESS_REMOVE));
 #endif

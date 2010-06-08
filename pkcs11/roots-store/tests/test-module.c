@@ -25,7 +25,7 @@
 
 #include "roots-store/gkm-roots-store.h"
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 DEFINE_EXTERNAL(roots_module)
 {

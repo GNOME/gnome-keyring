@@ -2,7 +2,7 @@
 #include <glib.h>
 #include <string.h>
 
-#include "test-framework.h"
+#include "test-suite.h"
 #include "gp11-test.h"
 
 static GP11Module *module = NULL;

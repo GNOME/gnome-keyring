@@ -25,7 +25,7 @@
 
 #include "user-store/gkm-user-store.h"
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 DEFINE_EXTERNAL(user_module)
 {

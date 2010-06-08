@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include "egg-dh.h"
 #include "egg-secure-memory.h"

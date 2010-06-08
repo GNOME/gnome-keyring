@@ -22,7 +22,7 @@ stamp-*
 Makefile
 Makefile.in
 core
-test-framework.[ch]
+test-suite.[ch]
 run-tests
 *-marshal.[ch]
 .libs

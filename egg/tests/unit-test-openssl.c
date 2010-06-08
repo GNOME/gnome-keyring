@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "test-framework.h"
+#include "test-suite.h"
 
 #include "egg-symkey.h"
 #include "egg-openssl.h"
