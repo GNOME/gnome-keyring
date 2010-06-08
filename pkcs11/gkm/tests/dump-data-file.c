@@ -36,12 +36,7 @@
 #include <string.h>
 #include <unistd.h>
 
-void egg_memory_lock (void)
-	{ }
-void egg_memory_unlock (void)
-	{ }
-void* egg_memory_fallback (void *p, size_t sz)
-	{ return g_realloc (p, sz); }
+EGG_SECURE_GLIB_DEFINITIONS ();
 
 static void G_GNUC_NORETURN
 failure (const gchar* message, ...)

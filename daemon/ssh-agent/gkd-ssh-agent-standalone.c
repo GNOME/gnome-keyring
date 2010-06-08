@@ -37,16 +37,7 @@
 #include <string.h>
 #include <unistd.h>
 
-G_LOCK_DEFINE_STATIC (memory_mutex);
-
-void egg_memory_lock (void)
-	{ G_LOCK (memory_mutex); }
-
-void egg_memory_unlock (void)
-	{ G_UNLOCK (memory_mutex); }
-
-void* egg_memory_fallback (void *p, size_t sz)
-	{ return g_realloc (p, sz); }
+EGG_SECURE_GLIB_DEFINITIONS();
 
 static gboolean
 accept_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
