@@ -570,7 +570,6 @@ gp11/gp11.pc
 gp11/Makefile
 gp11/tests/Makefile
 pam/Makefile
-pam/tests/Makefile
 pkcs11/Makefile
 pkcs11/gkm/Makefile
 pkcs11/gkm/tests/Makefile

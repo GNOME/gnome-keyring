@@ -23,7 +23,6 @@ Makefile
 Makefile.in
 core
 run-auto-test*
-run-prompt-test*
 *-marshal.[ch]
 .libs
 .deps
