@@ -99,8 +99,8 @@ gkm_util_dispose_unref (gpointer object)
 	g_object_unref (object);
 }
 
-const gchar*
-gkm_util_rv_to_string (CK_RV rv)
+static const gchar*
+defined_rv_to_string (CK_RV rv)
 {
 	#define GKM_X(rv) case rv: return #rv;
 	switch (rv) {
@@ -197,4 +197,24 @@ gkm_util_rv_to_string (CK_RV rv)
 	}
 
 	#undef GKM_X
+}
+
+gchar*
+gkm_util_rv_to_string (CK_RV rv)
+{
+	gchar *string = g_strdup (defined_rv_to_string (rv));
+	if (string == NULL)
+		string = g_strdup_printf ("0x%08lx", (gulong)rv);
+	return string;
+}
+
+const gchar*
+gkm_util_rv_stringize (CK_RV rv)
+{
+	const gchar *string = defined_rv_to_string (rv);
+	if (string == NULL) {
+		g_message ("unknown error: %lu", (gulong)rv);
+		string = "CKR_?UNKNOWN?";
+	}
+	return string;
 }

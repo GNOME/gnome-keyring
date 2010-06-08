@@ -123,6 +123,9 @@ void                  gkm_template_set                                 (GArray *
 
 void                  gkm_template_free                                (GArray *template);
 
+CK_ATTRIBUTE_PTR      gkm_template_find                                (GArray *template,
+                                                                        CK_ATTRIBUTE_TYPE type);
+
 gboolean              gkm_template_find_boolean                        (GArray *template,
                                                                         CK_ATTRIBUTE_TYPE type,
                                                                         gboolean *value);

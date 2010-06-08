@@ -600,6 +600,13 @@ gkm_template_free (GArray *template)
 	g_array_free (template, TRUE);
 }
 
+CK_ATTRIBUTE_PTR
+gkm_template_find (GArray *template, CK_ATTRIBUTE_TYPE type)
+{
+	g_return_val_if_fail (template, NULL);
+	return gkm_attributes_find ((CK_ATTRIBUTE_PTR)template->data, template->len, type);
+}
+
 gboolean
 gkm_template_find_boolean (GArray *template, CK_ATTRIBUTE_TYPE type, gboolean *value)
 {

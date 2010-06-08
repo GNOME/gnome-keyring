@@ -909,6 +909,9 @@ login_prompt_do_user (GkmWrapPrompt *self, CK_RV last_result,
 	if (rv != CKR_OK)
 		return FALSE;
 
+	/* Hard reset on first prompt, soft on later */
+	gku_prompt_reset (GKU_PROMPT (self), last_result == CKR_OK);
+
 	prepare_unlock_token (self, &tinfo);
 
 	gku_prompt_request_attention_sync (NULL, on_prompt_attention,

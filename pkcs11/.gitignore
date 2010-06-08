@@ -2,3 +2,5 @@
 /Makefile.in
 /.deps
 /.libs
+
+/wrap-layer/tests/test-create-credential

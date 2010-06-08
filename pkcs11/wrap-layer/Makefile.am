@@ -22,3 +22,13 @@ libgkm_wrap_layer_la_LIBADD = \
 libgkm_wrap_layer_la_CFLAGS = \
 	$(GTHREAD_CFLAGS) \
 	$(GLIB_CFLAGS)
+
+# ------------------------------------------------------------------------------
+
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR =
+endif
+
+SUBDIRS = . $(TESTS_DIR)

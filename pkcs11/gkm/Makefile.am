@@ -52,6 +52,7 @@ libgkm_la_SOURCES = \
 	gkm-sexp.c gkm-sexp.h \
 	gkm-sexp-key.c gkm-sexp-key.h \
 	gkm-store.c gkm-store.h \
+	gkm-test.c gkm-test.h \
 	gkm-timer.c gkm-timer.h \
 	gkm-transaction.c gkm-transaction.h \
 	gkm-types.h \

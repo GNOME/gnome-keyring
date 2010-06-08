@@ -49,6 +49,8 @@ CK_ULONG              gkm_util_next_handle                        (void);
 
 void                  gkm_util_dispose_unref                      (gpointer object);
 
-const gchar*          gkm_util_rv_to_string                       (CK_RV rv);
+const gchar*          gkm_util_rv_stringize                       (CK_RV rv);
+
+gchar*                gkm_util_rv_to_string                       (CK_RV rv);
 
 #endif /* GKM_UTIL_H_ */

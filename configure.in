@@ -585,6 +585,7 @@ pkcs11/ssh-store/tests/Makefile
 pkcs11/user-store/Makefile
 pkcs11/user-store/tests/Makefile
 pkcs11/wrap-layer/Makefile
+pkcs11/wrap-layer/tests/Makefile
 po/Makefile.in
 tests/Makefile
 tool/Makefile
