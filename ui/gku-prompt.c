@@ -445,6 +445,47 @@ display_async_prompt (GkuPrompt *self)
 }
 
 static void
+display_dummy_prompt (GkuPrompt *self, const gchar *response)
+{
+	GError *error = NULL;
+	gchar *title = NULL;
+
+	g_assert (GKU_IS_PROMPT (self));
+
+	if (!response && self->pv->input)
+		title = g_key_file_get_value (self->pv->input, "prompt", "title", NULL);
+
+	/* Fires completed event when fails */
+	if (!prepare_input_data (self)) {
+		g_free (title);
+		return;
+	}
+
+	if (response) {
+	#if DEBUG_PROMPT
+		g_printerr ("PROMPT OUTPUT:\n%s\n", response);
+	#endif
+		self->pv->output = g_key_file_new ();
+		if (!g_key_file_load_from_data (self->pv->output, response, strlen (response),
+						G_KEY_FILE_NONE, &error)) {
+			g_key_file_free (self->pv->output);
+			g_warning ("couldn't parse output from prompt: %s", egg_error_message (error));
+			g_clear_error (&error);
+			mark_failed (self);
+		} else {
+			mark_responded (self);
+		}
+
+	/* No response, problem! */
+	} else {
+		g_warning ("unexpected prompt without response: %s", title ? title : "unknown");
+		mark_failed (self);
+	}
+
+	g_free (title);
+}
+
+static void
 clear_prompt_data (GkuPrompt *self)
 {
 	TransportCrypto *transport;
@@ -886,8 +927,12 @@ typedef struct _Attention {
 	GCond *cond;
 } AttentionReq;
 
-static GHashTable *attention_reqs = NULL;
 static GStaticMutex attention_mutex = G_STATIC_MUTEX_INIT;
+static GHashTable *attention_reqs = NULL;
+
+/* Used for testing, to queue responses without showing prompt */
+static gboolean dummy_responses = FALSE;
+static GQueue queued_responses = G_QUEUE_INIT;
 
 static void
 done_attention_req (GkuPrompt *prompt, gpointer user_data)
@@ -981,6 +1026,7 @@ alloc_attention_queue (void)
 static void
 next_attention_req (const gchar *window_id)
 {
+	gchar *response;
 	AttentionReq *att;
 	GQueue *queue;
 
@@ -1017,10 +1063,20 @@ next_attention_req (const gchar *window_id)
 	att->active = TRUE;
 	g_signal_connect_data (att->prompt, "completed", G_CALLBACK (done_attention_req), att,
 	                       (GClosureNotify)free_attention_req, G_CONNECT_AFTER);
+	gku_prompt_set_window_id (att->prompt, window_id);
+
+	/* Fake display the prompt */
+	if (dummy_responses) {
+		g_static_mutex_lock (&attention_mutex);
+			response = g_queue_pop_head (&queued_responses);
+		g_static_mutex_unlock (&attention_mutex);
+		display_dummy_prompt (att->prompt, response);
+		g_free (response);
 
 	/* Actually display the prompt, "completed" signal will fire */
-	gku_prompt_set_window_id (att->prompt, window_id);
-	display_async_prompt (att->prompt);
+	} else {
+		display_async_prompt (att->prompt);
+	}
 }
 
 static gboolean
@@ -1100,3 +1156,36 @@ gku_prompt_request_attention_sync (const gchar *window_id, GkuPromptAttentionFun
 
 	g_cond_free (cond);
 }
+
+#ifdef WITH_TESTS
+
+static void
+queue_dummy_response (gchar *response)
+{
+	g_assert (response);
+	g_static_mutex_lock (&attention_mutex);
+		dummy_responses = TRUE;
+		g_queue_push_tail (&queued_responses, response);
+	g_static_mutex_unlock (&attention_mutex);
+}
+
+void
+gku_prompt_queue_dummy_response (const gchar *response)
+{
+	g_return_if_fail (response);
+	queue_dummy_response (g_strdup (response));
+}
+
+void
+gku_prompt_queue_dummy_ok_password (const gchar *password)
+{
+	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n";
+	gchar *value;
+
+	g_return_if_fail (password);
+	value = egg_hex_encode ((const guchar*)password, strlen (password));
+	queue_dummy_response (g_strdup_printf (RESPONSE, value));
+	g_free (value);
+}
+
+#endif

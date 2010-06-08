@@ -139,4 +139,12 @@ void                gku_prompt_request_attention_sync     (const gchar *window_i
                                                            gpointer user_data,
                                                            GDestroyNotify destroy_notify);
 
+#ifdef WITH_TESTS
+
+void                gku_prompt_queue_dummy_response        (const gchar *response);
+
+void                gku_prompt_queue_dummy_ok_password     (const gchar *password);
+
+#endif
+
 #endif /* __GKU_PROMPT_H__ */

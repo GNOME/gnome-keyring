@@ -27,6 +27,7 @@
 #include "egg/egg-dh.h"
 #include "egg/egg-entry-buffer.h"
 #include "egg/egg-error.h"
+#include "egg/egg-hex.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
@@ -505,6 +506,8 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	gpointer data;
 	gsize n_data;
 	gchar *name;
+	const gchar *text;
+	gchar *value;
 
 	name = g_strdup_printf ("%s_entry", password_type);
 	entry = GTK_ENTRY (gtk_builder_get_object (builder, name));
@@ -516,9 +519,11 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 
 	/* A non-encrypted password: just send the value back */
 	if (!g_key_file_has_group (input_data, "transport")) {
+		text = gtk_entry_get_text (entry);
+		value = egg_hex_encode ((const guchar*)text, strlen (text));
 		g_key_file_set_value (output_data, password_type, "parameter", "");
-		g_key_file_set_value (output_data, password_type, "value",
-		                      gtk_entry_get_text (entry));
+		g_key_file_set_value (output_data, password_type, "value", value);
+		g_free (value);
 		return;
 	}
 

@@ -31,6 +31,8 @@
 
 #include "wrap-layer/gkm-wrap-layer.h"
 
+#include "ui/gku-prompt.h"
+
 #include <glib-object.h>
 
 CK_FUNCTION_LIST create_credential_functions = {
@@ -115,6 +117,8 @@ test (gpointer loop)
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
 	CK_RV rv;
+
+	gku_prompt_queue_dummy_ok_password ("booo");
 
 	gkm_wrap_layer_add_module (&create_credential_functions);
 	module = gkm_wrap_layer_get_functions ();
