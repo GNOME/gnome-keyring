@@ -38,7 +38,11 @@ run_tests_LDADD = \
 	$(DAEMON_LIBS)
 
 run_tests_CFLAGS = \
-	$(TESTING_FLAGS)
+	$(TESTING_FLAGS) \
+	$(GCOV_CFLAGS)
+
+run_tests_LDFLAGS = \
+	$(GCOV_LDFLAGS)
 
 BUILT_SOURCES = \
 	test-framework.c \
@@ -48,7 +52,6 @@ BUILT_SOURCES = \
 # Run the tests
 
 test: $(noinst_PROGRAMS)
-	gtester --verbose -k -m=slow ./run-tests
+	TEST_DATA=$(srcdir)/test-data  gtester --verbose -k -m=slow ./run-tests
 
-check-am: $(noinst_PROGRAMS)
-	TEST_DATA=$(srcdir)/test-data gtester -m=slow --verbose ./run-tests
+check-am: $(noinst_PROGRAMS) test

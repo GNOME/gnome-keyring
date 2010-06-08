@@ -57,3 +57,14 @@ dist-hook:
 
 install-pam:
 	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"
+
+if WITH_COVERAGE
+check-am:
+	$(LCOV) --directory . --zerocounters
+
+coverage: check
+	mkdir -p testing/coverage
+	$(LCOV) --directory . --capture --output-file testing/coverage.info
+	$(GENHTML) --output-directory testing/coverage testing/coverage.info
+	echo "Coverage info in: testing/coverage/index.html"
+endif

@@ -17,3 +17,7 @@ LIBS = \
 	$(GTHREAD_LIBS)
 
 noinst_PROGRAMS =
+
+CLEANFILES = \
+	coverage \
+	coverage.info

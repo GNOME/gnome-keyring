@@ -28,6 +28,9 @@ run-tests
 .libs
 .deps
 .anjuta*
+*.gcov
+*.gcno
+*.gcda
 
 /compile
 /ABOUT-NLS
