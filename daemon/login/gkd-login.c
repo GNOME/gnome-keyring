@@ -47,36 +47,6 @@ note_that_unlock_succeeded (void)
 	g_atomic_int_set (&unlock_failures, 0);
 }
 
-#if GKR_VERSION >= 002031000
-	#error "This function should be removed in 2.31.x"
-#else
-
-static void
-cleanup_security_issue_in_2_29_x_betas (const gchar *master)
-{
-	gchar *password;
-
-	/*
-	 * Remove the login password from keyring. This was a bug in 2.29.x
-	 * versions, and 2.30.0 (fixed in 2.30.1) which stored the master
-	 * password in tnhe login keyring. Try to cleanup that situation.
-	 */
-
-	password = gkd_login_lookup_secret ("manufacturer", "Gnome Keyring",
-	                                    "serial-number", "1:USER:DEFAULT",
-	                                    NULL);
-
-	if (password && g_str_equal (password, master)) {
-		gkd_login_remove_secret ("manufacturer", "Gnome Keyring",
-		                         "serial-number", "1:USER:DEFAULT",
-		                         NULL);
-	}
-
-	egg_secure_strfree (password);
-}
-
-#endif /* GKR_VERSION */
-
 gboolean
 gkd_login_did_unlock_fail (void)
 {
@@ -287,7 +257,6 @@ unlock_or_create_login (GP11Module *module, const gchar *master)
 
 	/* The unlock succeeded yay */
 	} else {
-		cleanup_security_issue_in_2_29_x_betas (master);
 		note_that_unlock_succeeded ();
 	}
 
