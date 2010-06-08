@@ -21,7 +21,8 @@
 
 #include "config.h"
 
-#include "egg/egg-libgcrypt.h"
+#include "run-auto-test.h"
+
 #include "egg/egg-secure-memory.h"
 
 #include "gkm/gkm-test.h"
@@ -35,7 +36,7 @@
 
 #include <glib-object.h>
 
-CK_FUNCTION_LIST create_credential_functions = {
+CK_FUNCTION_LIST prompt_login_functions = {
 	{ 2, 11 },	/* version */
 	gkm_test_C_Initialize,
 	gkm_test_C_Finalize,
@@ -107,20 +108,17 @@ CK_FUNCTION_LIST create_credential_functions = {
 	gkm_test_C_WaitForSlotEvent
 };
 
-EGG_SECURE_GLIB_DEFINITIONS()
+static CK_FUNCTION_LIST_PTR module = NULL;
+static CK_SESSION_HANDLE session = 0;
 
-static gpointer
-test (gpointer loop)
+DEFINE_SETUP (module)
 {
-	CK_FUNCTION_LIST_PTR module;
-	CK_SESSION_HANDLE session;
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
 	CK_RV rv;
 
-	gku_prompt_queue_dummy_ok_password ("booo");
-
-	gkm_wrap_layer_add_module (&create_credential_functions);
+	gkm_wrap_layer_reset_modules ();
+	gkm_wrap_layer_add_module (&prompt_login_functions);
 	module = gkm_wrap_layer_get_functions ();
 
 	/* Open a session */
@@ -132,43 +130,40 @@ test (gpointer loop)
 
 	rv = (module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
+}
 
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
-	if (rv == CKR_PIN_INCORRECT) {
-		g_message ("pin incorrect");
-	} else {
-		gkm_assert_cmprv (rv, ==, CKR_OK);
-		g_message ("pin correct");
-	}
+DEFINE_TEARDOWN (module)
+{
+	CK_RV rv;
 
 	rv = (module->C_CloseSession) (session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
+	session = 0;
 
 	rv = (module->C_Finalize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-
-	g_main_loop_quit (loop);
-	return NULL;
+	module = NULL;
 }
 
-int
-main(void)
+DEFINE_TEST (login_prompt_ok)
 {
-	GThread *thread;
-	GMainLoop *loop;
+	CK_RV rv;
 
-	g_type_init ();
-	g_thread_init (NULL);
-	egg_libgcrypt_initialize ();
+	gku_prompt_dummy_prepare_response ();
+	gku_prompt_dummy_queue_ok_password ("booo");
 
-	loop = g_main_loop_new (NULL, FALSE);
-	thread = g_thread_create (test, loop, TRUE, NULL);
-	g_assert (thread);
+	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+}
 
-	g_main_loop_run (loop);
+DEFINE_TEST (login_prompt_cancel)
+{
+	CK_RV rv;
 
-	g_thread_join (thread);
-	g_main_loop_unref (loop);
+	gku_prompt_dummy_prepare_response ();
+	gku_prompt_dummy_queue_ok_password ("bad password");
+	gku_prompt_dummy_queue_no ();
 
-	return 0;
+	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }

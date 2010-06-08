@@ -216,6 +216,7 @@ gkm_test_C_Finalize (CK_VOID_PTR pReserved)
 	g_return_val_if_fail (initialized == TRUE, CKR_CRYPTOKI_NOT_INITIALIZED);
 
 	initialized = FALSE;
+	logged_in = FALSE;
 	g_hash_table_destroy (the_objects);
 	the_objects = NULL;
 

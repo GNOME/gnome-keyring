@@ -1393,12 +1393,27 @@ gkm_wrap_layer_get_functions (void)
 }
 
 void
+gkm_wrap_layer_reset_modules (void)
+{
+	G_LOCK (wrap_layer);
+
+		g_assert (!wrap_mappings);
+		g_assert (!wrap_sessions);
+		g_list_free (wrap_modules);
+		wrap_modules = NULL;
+
+	G_UNLOCK (wrap_layer);
+}
+
+void
 gkm_wrap_layer_add_module (CK_FUNCTION_LIST_PTR funcs)
 {
 	g_assert (funcs);
 
 	G_LOCK (wrap_layer);
 
+		g_assert (!wrap_mappings);
+		g_assert (!wrap_sessions);
 		wrap_modules = g_list_append (wrap_modules, funcs);
 
 	G_UNLOCK (wrap_layer);

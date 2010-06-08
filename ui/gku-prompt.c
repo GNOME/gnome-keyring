@@ -29,6 +29,7 @@
 #include "egg/egg-dh.h"
 #include "egg/egg-error.h"
 #include "egg/egg-hex.h"
+#include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-spawn.h"
 
@@ -623,6 +624,8 @@ gku_prompt_class_init (GkuPromptClass *klass)
 	                                   G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GkuPromptClass, responded),
 	                                   g_signal_accumulator_true_handled, NULL, gku_prompt_marshal_BOOLEAN__VOID,
 	                                   G_TYPE_BOOLEAN, 0);
+
+	egg_libgcrypt_initialize ();
 }
 
 /* -----------------------------------------------------------------------------
@@ -1159,6 +1162,16 @@ gku_prompt_request_attention_sync (const gchar *window_id, GkuPromptAttentionFun
 
 #ifdef WITH_TESTS
 
+void
+gku_prompt_dummy_prepare_response (void)
+{
+	g_static_mutex_lock (&attention_mutex);
+		dummy_responses = TRUE;
+		while (!g_queue_is_empty (&queued_responses))
+			g_free (g_queue_pop_head (&queued_responses));
+	g_static_mutex_unlock (&attention_mutex);
+}
+
 static void
 queue_dummy_response (gchar *response)
 {
@@ -1170,14 +1183,14 @@ queue_dummy_response (gchar *response)
 }
 
 void
-gku_prompt_queue_dummy_response (const gchar *response)
+gku_prompt_dummy_queue_response (const gchar *response)
 {
 	g_return_if_fail (response);
 	queue_dummy_response (g_strdup (response));
 }
 
 void
-gku_prompt_queue_dummy_ok_password (const gchar *password)
+gku_prompt_dummy_queue_ok_password (const gchar *password)
 {
 	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n";
 	gchar *value;
@@ -1186,6 +1199,13 @@ gku_prompt_queue_dummy_ok_password (const gchar *password)
 	value = egg_hex_encode ((const guchar*)password, strlen (password));
 	queue_dummy_response (g_strdup_printf (RESPONSE, value));
 	g_free (value);
+}
+
+void
+gku_prompt_dummy_queue_no (void)
+{
+	const static gchar *RESPONSE = "[prompt]\nresponse=no\n";
+	gku_prompt_dummy_queue_response (RESPONSE);
 }
 
 #endif

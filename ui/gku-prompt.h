@@ -141,9 +141,13 @@ void                gku_prompt_request_attention_sync     (const gchar *window_i
 
 #ifdef WITH_TESTS
 
-void                gku_prompt_queue_dummy_response        (const gchar *response);
+void                gku_prompt_dummy_prepare_response      (void);
 
-void                gku_prompt_queue_dummy_ok_password     (const gchar *password);
+void                gku_prompt_dummy_queue_response        (const gchar *response);
+
+void                gku_prompt_dummy_queue_ok_password     (const gchar *password);
+
+void                gku_prompt_dummy_queue_no              (void);
 
 #endif
 
