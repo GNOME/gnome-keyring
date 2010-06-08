@@ -51,40 +51,42 @@ static const gchar *test_path = NULL;
 
 EGG_SECURE_GLIB_DEFINITIONS ();
 
-static GMainLoop *mainloop = NULL;
-
-static gboolean
-quit_loop (gpointer unused)
-{
-	g_main_loop_quit (mainloop);
-	return TRUE;	
-}
+static GCond *wait_condition = NULL;
+static GMutex *wait_mutex = NULL;
+static gboolean wait_waiting = FALSE;
 
 void
-test_mainloop_quit (void)
+test_wait_stop (void)
 {
-	g_main_loop_quit (mainloop);
+	g_assert (wait_mutex);
+	g_assert (wait_condition);
+	g_mutex_lock (wait_mutex);
+		g_assert (wait_waiting);
+		g_cond_broadcast (wait_condition);
+	g_mutex_unlock (wait_mutex);
 }
 
-void
-test_mainloop_run (int timeout)
+gboolean
+test_wait_until (int timeout)
 {
-	guint id = 0;
-	
-	if (timeout)
-		id = g_timeout_add (timeout, quit_loop, NULL);
-	g_main_loop_run (mainloop);
-	if (timeout)
-		g_source_remove (id); 
+	GTimeVal tv;
+	gboolean ret;
+
+	g_get_current_time (&tv);
+	g_time_val_add (&tv, timeout * 1000);
+
+	g_assert (wait_mutex);
+	g_assert (wait_condition);
+	g_mutex_lock (wait_mutex);
+		g_assert (!wait_waiting);
+		wait_waiting = TRUE;
+		ret = g_cond_timed_wait (wait_condition, wait_mutex, &tv);
+		g_assert (wait_waiting);
+		wait_waiting = FALSE;
+	g_mutex_unlock (wait_mutex);
+
+	return ret;
 } 
-
-GMainLoop* 
-test_mainloop_get (void)
-{
-	if (!mainloop)
-		mainloop = g_main_loop_new (NULL, FALSE);
-	return mainloop;
-}
 
 const gchar*
 test_scratch_directory (void)
@@ -229,11 +231,24 @@ chdir_base_dir (char* argv0)
 	g_free (dir);
 }
 
+static gpointer
+testing_thread (gpointer loop)
+{
+	/* Must have been defined by the test including this file */
+	gint ret = run();
+	g_main_loop_quit (loop);
+	return GINT_TO_POINTER (ret);
+}
+
 int
 main (int argc, char* argv[])
 {
 	GLogLevelFlags fatal_mask;
+	GThread *thread;
+	GMainLoop *loop;
+	gpointer ret;
 
+	g_type_init ();
 	g_thread_init (NULL);
 
 	test_path = getenv ("GNOME_KEYRING_TEST_PATH");
@@ -246,12 +261,24 @@ main (int argc, char* argv[])
 	chdir_base_dir (argv[0]);
 	g_test_init (&argc, &argv, NULL);
 	gtk_init (&argc, &argv);
-	mainloop = g_main_loop_new (NULL, FALSE);
+
+	loop = g_main_loop_new (NULL, FALSE);
+	wait_condition = g_cond_new ();
+	wait_mutex = g_mutex_new ();
 
 	fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
 	fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
 	g_log_set_always_fatal (fatal_mask);
 
-	/* Must have been defined by the test including this file */
-	return run();
+	thread = g_thread_create (testing_thread, loop, TRUE, NULL);
+	g_assert (thread);
+
+	g_main_loop_run (loop);
+	ret = g_thread_join (thread);
+	g_main_loop_unref (loop);
+
+	g_cond_free (wait_condition);
+	g_mutex_free (wait_mutex);
+
+	return GPOINTER_TO_INT (ret);
 }

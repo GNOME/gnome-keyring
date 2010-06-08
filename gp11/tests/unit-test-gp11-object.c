@@ -94,6 +94,7 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 {
 	*((GAsyncResult**)user_data) = result;
 	g_object_ref (result);
+	test_wait_stop ();
 }
 
 DEFINE_TEST(create_object)
@@ -138,7 +139,7 @@ DEFINE_TEST(create_object)
 
 	/* Using async */
 	gp11_session_create_object_async (session, attrs, NULL, fetch_async_result, &result);
-	WAIT_UNTIL (result);
+	test_wait_until (500);
 	g_assert (result != NULL);
 	
 	object = gp11_session_create_object_finish (session, result, &err);
@@ -204,7 +205,7 @@ DEFINE_TEST(destroy_object)
 	
 	/* Using async */
 	gp11_object_destroy_async (object, NULL, fetch_async_result, &result);
-	WAIT_UNTIL (result);
+	test_wait_until (500);
 	g_assert (result != NULL);
 
 	ret = gp11_object_destroy_finish (object, result, &err);
@@ -246,7 +247,7 @@ DEFINE_TEST(get_attributes)
 	/* Async */
 	attrs = gp11_attributes_new_empty (CKA_CLASS, CKA_LABEL, GP11_INVALID);
 	gp11_object_get_async (object, attrs, NULL, fetch_async_result, &result);
-	WAIT_UNTIL (result);
+	test_wait_until (500);
 	g_assert (result != NULL);
 
 	attrs_ret = gp11_object_get_finish (object, result, &err);
@@ -288,7 +289,7 @@ DEFINE_TEST(get_data_attribute)
 
 	/* Async */
 	gp11_object_get_data_async (object, CKA_CLASS, NULL, NULL, fetch_async_result, &result);
-	WAIT_UNTIL (result);
+	test_wait_until (500);
 	g_assert (result != NULL);
 
 	klass = gp11_object_get_data_finish (object, result, &n_data, &err);
@@ -347,7 +348,7 @@ DEFINE_TEST(set_attributes)
 
 	/* Async */
 	gp11_object_set_async (object, templ, NULL, fetch_async_result, &result);
-	WAIT_UNTIL (result);
+	test_wait_until (500);
 	g_assert (result != NULL);
 
 	ret = gp11_object_set_finish (object, result, &err);
@@ -398,7 +399,7 @@ DEFINE_TEST(find_objects)
 	/* Async, None */
 	gp11_attributes_add_string (templ, CKA_LABEL, "blah blah");
 	gp11_session_find_objects_async (session, templ, NULL, fetch_async_result, &result);
-	WAIT_UNTIL (result);
+	test_wait_until (500);
 	g_assert (result != NULL);
 
 	objects = gp11_session_find_objects_finish (session, result, &err);
@@ -435,7 +436,7 @@ DEFINE_TEST(explicit_sessions)
 
 	/* Async */
 	gp11_object_get_data_async (object, CKA_CLASS, NULL, NULL, fetch_async_result, &result);
-	WAIT_UNTIL (result);
+	test_wait_until (500);
 	g_assert (result != NULL);
 
 	klass = gp11_object_get_data_finish (object, result, &n_data, &err);

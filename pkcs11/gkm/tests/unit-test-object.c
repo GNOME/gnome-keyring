@@ -191,7 +191,7 @@ DEFINE_TEST(object_create_auto_destruct)
 	g_assert (memcmp (&lifetime, &check, sizeof (lifetime)) == 0);
 
 	test_module_leave ();
-	test_mainloop_run (2200);
+	test_wait_until (2200);
 	test_module_enter ();
 
 	g_assert (!check_object_exists (handle));

@@ -113,7 +113,7 @@ completed_func (gpointer user_data)
 	g_assert (!data->completed);
 	data->completed = TRUE;
 	if (data->is_async)
-		test_mainloop_quit ();
+		test_wait_stop ();
 }
 
 static void
@@ -224,7 +224,7 @@ DEFINE_TEST(test_spawn_async)
 	g_assert (!data.output);
 	g_assert (!data.completed);
 
-	test_mainloop_run (2000);
+	test_wait_until (2000);
 
 	g_assert (data.finalized);
 	g_assert (data.completed);
@@ -252,7 +252,7 @@ DEFINE_TEST(test_spawn_async_none)
 	g_assert (!data.completed);
 	g_assert (!data.output);
 
-	test_mainloop_run (2000);
+	test_wait_until (2000);
 
 	g_assert (data.finalized);
 	g_assert (data.completed);

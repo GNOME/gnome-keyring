@@ -35,9 +35,8 @@
 #include <string.h>
 #include <unistd.h>
 
-void test_mainloop_quit (void);
-void test_mainloop_run (int timeout);
-GMainLoop* test_mainloop_get (void);
+gboolean test_wait_until (gint timeout);
+void test_wait_stop (void);
 
 const gchar* test_data_directory (void);
 const gchar* test_scratch_directory (void);
