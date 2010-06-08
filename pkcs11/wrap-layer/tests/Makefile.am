@@ -1,6 +1,7 @@
 
 TESTING_FILES = \
-	test-prompt-login.c
+	test-login-user.c \
+	test-login-specific.c
 
 UNIT_PROMPT =
 

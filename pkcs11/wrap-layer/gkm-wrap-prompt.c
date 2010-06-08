@@ -822,8 +822,12 @@ login_prompt_for_specific (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE sessio
 
 	g_assert (module);
 
-	if (object == 0)
-		return NULL;
+	/*
+	 * Should have an object at this point, if none exists it's an
+	 * indication of either a buggy PKCS#11 module, or bugs in this
+	 * wrap-layer not stashing away the context specific object.
+	 */
+	g_return_val_if_fail (object != 0, NULL);
 
 	/* Find out if the object is CKA_ALWAYS_AUTHENTICATE */
 	always = CK_FALSE;

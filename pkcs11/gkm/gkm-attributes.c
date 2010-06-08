@@ -588,6 +588,57 @@ gkm_template_set (GArray *template, CK_ATTRIBUTE_PTR attr)
 }
 
 void
+gkm_template_set_value (GArray *template, CK_ATTRIBUTE_TYPE type,
+                        CK_VOID_PTR value, CK_ULONG length)
+{
+	CK_ATTRIBUTE attr;
+	g_return_if_fail (template);
+
+	attr.type = type;
+	attr.pValue = value;
+	attr.ulValueLen = length;
+	gkm_template_set (template, &attr);
+}
+
+void
+gkm_template_set_string (GArray *template, CK_ATTRIBUTE_TYPE type, const gchar *value)
+{
+	CK_ATTRIBUTE attr;
+	g_return_if_fail (template);
+	g_return_if_fail (value);
+
+	attr.type = type;
+	attr.pValue = (CK_VOID_PTR)value;
+	attr.ulValueLen = strlen (value);
+	gkm_template_set (template, &attr);
+
+}
+void
+gkm_template_set_ulong (GArray *template, CK_ATTRIBUTE_TYPE type, CK_ULONG value)
+{
+	CK_ATTRIBUTE attr;
+	g_return_if_fail (template);
+
+	attr.type = type;
+	attr.pValue = &value;
+	attr.ulValueLen = sizeof (value);
+	gkm_template_set (template, &attr);
+
+}
+
+void
+gkm_template_set_boolean (GArray *template, CK_ATTRIBUTE_TYPE type, CK_BBOOL value)
+{
+	CK_ATTRIBUTE attr;
+	g_return_if_fail (template);
+
+	attr.type = type;
+	attr.pValue = &value;
+	attr.ulValueLen = sizeof (value);
+	gkm_template_set (template, &attr);
+}
+
+void
 gkm_template_free (GArray *template)
 {
 	guint i;

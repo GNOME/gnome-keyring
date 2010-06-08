@@ -60,6 +60,9 @@ CK_RV           gkm_test_C_GetSlotInfo             (CK_SLOT_ID slotID,
 CK_RV           gkm_test_C_GetTokenInfo            (CK_SLOT_ID slotID,
                                                     CK_TOKEN_INFO_PTR pInfo);
 
+CK_RV           gkm_fail_C_GetTokenInfo            (CK_SLOT_ID slotID,
+                                                    CK_TOKEN_INFO_PTR pInfo);
+
 CK_RV           gkm_test_C_GetMechanismList        (CK_SLOT_ID slotID,
                                                     CK_MECHANISM_TYPE_PTR pMechanismList,
                                                     CK_ULONG_PTR pulCount);
@@ -92,6 +95,9 @@ CK_RV           gkm_test_C_GetFunctionStatus       (CK_SESSION_HANDLE hSession);
 CK_RV           gkm_test_C_CancelFunction          (CK_SESSION_HANDLE hSession);
 
 CK_RV           gkm_test_C_GetSessionInfo          (CK_SESSION_HANDLE hSession,
+                                                    CK_SESSION_INFO_PTR pInfo);
+
+CK_RV           gkm_fail_C_GetSessionInfo          (CK_SESSION_HANDLE hSession,
                                                     CK_SESSION_INFO_PTR pInfo);
 
 CK_RV           gkm_test_C_InitPIN                 (CK_SESSION_HANDLE hSession,

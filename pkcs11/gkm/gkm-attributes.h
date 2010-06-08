@@ -121,6 +121,23 @@ GArray*               gkm_template_new                                 (CK_ATTRI
 void                  gkm_template_set                                 (GArray *template,
                                                                         CK_ATTRIBUTE_PTR attr);
 
+void                  gkm_template_set_value                           (GArray *template,
+                                                                        CK_ATTRIBUTE_TYPE type,
+                                                                        CK_VOID_PTR value,
+                                                                        CK_ULONG length);
+
+void                  gkm_template_set_string                          (GArray *template,
+                                                                        CK_ATTRIBUTE_TYPE type,
+                                                                        const gchar *value);
+
+void                  gkm_template_set_ulong                           (GArray *template,
+                                                                        CK_ATTRIBUTE_TYPE type,
+                                                                        CK_ULONG value);
+
+void                  gkm_template_set_boolean                         (GArray *template,
+                                                                        CK_ATTRIBUTE_TYPE type,
+                                                                        CK_BBOOL value);
+
 void                  gkm_template_free                                (GArray *template);
 
 CK_ATTRIBUTE_PTR      gkm_template_find                                (GArray *template,

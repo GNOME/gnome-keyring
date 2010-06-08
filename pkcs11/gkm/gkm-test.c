@@ -123,10 +123,8 @@ lookup_object (Session *session, CK_OBJECT_HANDLE hObject)
 CK_RV
 gkm_test_C_Initialize (CK_VOID_PTR pInitArgs)
 {
-#if 0
 	GArray *attrs;
 	CK_ULONG value;
-#endif
 	CK_C_INITIALIZE_ARGS_PTR args;
 
 	g_return_val_if_fail (initialized == FALSE, CKR_CRYPTOKI_ALREADY_INITIALIZED);
@@ -149,61 +147,59 @@ gkm_test_C_Initialize (CK_VOID_PTR pInitArgs)
 	the_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_session);
 	the_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)gkm_template_free);
 
-#if 0
 	/* Our token object */
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_DATA,
-	                              CKA_LABEL, GP11_STRING, "TEST LABEL",
-	                              GP11_INVALID);
+	attrs = gkm_template_new (NULL, 0);
+	gkm_template_set_ulong (attrs, CKA_CLASS, CKO_DATA);
+	gkm_template_set_string (attrs, CKA_LABEL, "TEST LABEL");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (2), attrs);
 
 	/* Private capitalize key */
 	value = CKM_T_CAPITALIZE;
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
-	                              CKA_LABEL, GP11_STRING, "Private Capitalize Key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_DECRYPT, GP11_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
-	                              CKA_WRAP, GP11_BOOLEAN, TRUE,
-	                              CKA_UNWRAP, GP11_BOOLEAN, TRUE,
-	                              CKA_DERIVE, GP11_BOOLEAN, TRUE,
-	                              CKA_VALUE, GP11_STRING, "value",
-	                              GP11_INVALID);
+	attrs = gkm_template_new (NULL, 0);
+	gkm_template_set_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gkm_template_set_string (attrs, CKA_LABEL, "Private Capitalize Key");
+	gkm_template_set_value (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gkm_template_set_boolean (attrs, CKA_DECRYPT, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_WRAP, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_UNWRAP, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_DERIVE, CK_TRUE);
+	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_CAPITALIZE), attrs);
 
 	/* Public capitalize key */
 	value = CKM_T_CAPITALIZE;
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
-	                              CKA_LABEL, GP11_STRING, "Public Capitalize Key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_ENCRYPT, GP11_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
-	                              CKA_VALUE, GP11_STRING, "value",
-	                              GP11_INVALID);
+	attrs = gkm_template_new (NULL, 0);
+	gkm_template_set_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gkm_template_set_string (attrs, CKA_LABEL, "Public Capitalize Key");
+	gkm_template_set_value (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gkm_template_set_boolean (attrs, CKA_ENCRYPT, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_FALSE);
+	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_CAPITALIZE), attrs);
 
 	/* Private prefix key */
 	value = CKM_T_PREFIX;
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
-	                              CKA_LABEL, GP11_STRING, "Private prefix key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_SIGN, GP11_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GP11_BOOLEAN, TRUE,
-	                              CKA_ALWAYS_AUTHENTICATE, GP11_BOOLEAN, TRUE,
-	                              CKA_VALUE, GP11_STRING, "value",
-	                              GP11_INVALID);
+	attrs = gkm_template_new (NULL, 0);
+	gkm_template_set_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gkm_template_set_string (attrs, CKA_LABEL, "Private prefix key");
+	gkm_template_set_value (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gkm_template_set_boolean (attrs, CKA_SIGN, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, CK_TRUE);
+	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_PREFIX), attrs);
 
 	/* Private prefix key */
 	value = CKM_T_PREFIX;
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
-	                              CKA_LABEL, GP11_STRING, "Public prefix key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_VERIFY, GP11_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GP11_BOOLEAN, FALSE,
-	                              CKA_VALUE, GP11_STRING, "value",
-	                              GP11_INVALID);
+	attrs = gkm_template_new (NULL, 0);
+	gkm_template_set_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gkm_template_set_string (attrs, CKA_LABEL, "Public prefix key");
+	gkm_template_set_value (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gkm_template_set_boolean (attrs, CKA_VERIFY, CK_TRUE);
+	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_FALSE);
+	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_PREFIX), attrs);
-#endif
 
 	initialized = TRUE;
 	return CKR_OK;
@@ -343,7 +339,7 @@ static const CK_TOKEN_INFO TEST_TOKEN_ONE = {
 CK_RV
 gkm_test_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
 {
-	g_assert (pInfo != NULL && "Invalid pInfo");
+	g_return_val_if_fail (pInfo != NULL, CKR_ARGUMENTS_BAD);
 
 	if (slotID == GKM_TEST_SLOT_ONE) {
 		memcpy (pInfo, &TEST_TOKEN_ONE, sizeof (*pInfo));
@@ -351,9 +347,14 @@ gkm_test_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
 	} else if (slotID == GKM_TEST_SLOT_TWO) {
 		return CKR_TOKEN_NOT_PRESENT;
 	} else {
-		g_assert_not_reached (); /* "Invalid slot id" */
-		return CKR_SLOT_ID_INVALID;
+		g_return_val_if_reached (CKR_SLOT_ID_INVALID);
 	}
+}
+
+CK_RV
+gkm_fail_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
+{
+	return CKR_GENERAL_ERROR;
 }
 
 /*
@@ -498,7 +499,7 @@ gkm_test_C_GetSessionInfo (CK_SESSION_HANDLE hSession, CK_SESSION_INFO_PTR pInfo
 {
 	Session *session;
 
-	g_assert (pInfo != NULL && "Invalid pInfo");
+	g_return_val_if_fail (pInfo != NULL, CKR_ARGUMENTS_BAD);
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_assert (session != NULL && "No such session found");
@@ -507,6 +508,12 @@ gkm_test_C_GetSessionInfo (CK_SESSION_HANDLE hSession, CK_SESSION_INFO_PTR pInfo
 
 	memcpy (pInfo, &session->info, sizeof (*pInfo));
 	return CKR_OK;
+}
+
+CK_RV
+gkm_fail_C_GetSessionInfo (CK_SESSION_HANDLE hSession, CK_SESSION_INFO_PTR pInfo)
+{
+	return CKR_GENERAL_ERROR;
 }
 
 CK_RV
@@ -587,6 +594,7 @@ gkm_test_C_Login (CK_SESSION_HANDLE hSession, CK_USER_TYPE userType,
 		return CKR_PIN_INCORRECT;
 
 	if (userType == CKU_CONTEXT_SPECIFIC) {
+		g_return_val_if_fail (session->want_context_login == TRUE, CKR_OPERATION_NOT_INITIALIZED);
 		session->want_context_login = CK_FALSE;
 	} else {
 		logged_in = TRUE;
@@ -773,9 +781,7 @@ gkm_test_C_FindObjectsInit (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTempla
 	CK_ULONG i;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	g_assert (session != NULL && "No such session found");
-	if (!session)
-		return CKR_SESSION_HANDLE_INVALID;
+	g_return_val_if_fail (session != NULL, CKR_SESSION_HANDLE_INVALID);
 
 	/* Starting an operation, cancels any previous one */
 	if (session->operation != 0)
