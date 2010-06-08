@@ -29,14 +29,14 @@
 
 #include "ui/gku-prompt.h"
 
-static CK_FUNCTION_LIST prompt_login_functions;
+static CK_FUNCTION_LIST test_functions;
 static CK_FUNCTION_LIST_PTR module = NULL;
 static CK_SESSION_HANDLE session = 0;
+static CK_OBJECT_HANDLE object = 0;
 
-DEFINE_SETUP (login_specific)
+DEFINE_SETUP (create_credential)
 {
 	CK_FUNCTION_LIST_PTR funcs;
-	CK_OBJECT_HANDLE key;
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
 	CK_ULONG count;
@@ -47,15 +47,13 @@ DEFINE_SETUP (login_specific)
 		{ CKA_ALWAYS_AUTHENTICATE, &always, sizeof (always) }
 	};
 
-	CK_MECHANISM mech = { CKM_T_PREFIX, NULL, 0 };
-
 	/* Always start off with test functions */
 	rv = gkm_test_C_GetFunctionList (&funcs);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	memcpy (&prompt_login_functions, funcs, sizeof (prompt_login_functions));
+	memcpy (&test_functions, funcs, sizeof (test_functions));
 
 	gkm_wrap_layer_reset_modules ();
-	gkm_wrap_layer_add_module (&prompt_login_functions);
+	gkm_wrap_layer_add_module (&test_functions);
 	module = gkm_wrap_layer_get_functions ();
 
 	gku_prompt_dummy_prepare_response ();
@@ -74,22 +72,20 @@ DEFINE_SETUP (login_specific)
 	rv = (module->C_FindObjectsInit) (session, attrs, 1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_FindObjects) (session, &key, 1, &count);
+	rv = (module->C_FindObjects) (session, &object, 1, &count);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (count, ==, 1);
-	gkm_assert_cmpulong (key, !=, 0);
+	gkm_assert_cmpulong (object, !=, 0);
 
 	rv = (module->C_FindObjectsFinal) (session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-
-	/* Start a signing operation, that needs to be authenticated */
-	rv = (module->C_SignInit) (session, &mech, key);
-	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEARDOWN (login_specific)
+DEFINE_TEARDOWN (create_credential)
 {
 	CK_RV rv;
+
+	object = 0;
 
 	rv = (module->C_CloseSession) (session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
@@ -100,33 +96,58 @@ DEFINE_TEARDOWN (login_specific)
 	module = NULL;
 }
 
-DEFINE_TEST (login_specific_ok_password)
+DEFINE_TEST (create_credential_ok_password)
 {
+	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_OBJECT, &object, sizeof (object) },
+		{ CKA_VALUE, NULL, 0 }
+	};
+
+	CK_OBJECT_HANDLE cred = 0;
 	CK_RV rv;
 
 	gku_prompt_dummy_queue_ok_password ("booo");
 
-	rv = (module->C_Login) (session, CKU_CONTEXT_SPECIFIC, NULL, 0);
+	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (cred, !=, 0);
 }
 
-DEFINE_TEST (login_specific_bad_password_then_cancel)
+DEFINE_TEST (create_credential_bad_password_then_cancel)
 {
+	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_OBJECT, &object, sizeof (object) },
+		{ CKA_VALUE, NULL, 0 }
+	};
+
+	CK_OBJECT_HANDLE cred = 0;
 	CK_RV rv;
 
 	gku_prompt_dummy_queue_ok_password ("bad password");
 	gku_prompt_dummy_queue_no ();
 
-	rv = (module->C_Login) (session, CKU_CONTEXT_SPECIFIC, NULL, 0);
+	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST (login_specific_cancel_immediately)
+DEFINE_TEST (create_credentiaol_cancel_immediately)
 {
+	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_OBJECT, &object, sizeof (object) },
+		{ CKA_VALUE, NULL, 0 }
+	};
+
+	CK_OBJECT_HANDLE cred = 0;
 	CK_RV rv;
 
 	gku_prompt_dummy_queue_no ();
 
-	rv = (module->C_Login) (session, CKU_CONTEXT_SPECIFIC, NULL, 0);
+	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }

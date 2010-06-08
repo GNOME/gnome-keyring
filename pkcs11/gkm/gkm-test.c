@@ -26,13 +26,14 @@
 #include "gkm-util.h"
 
 #include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11i.h"
 
 #include <glib.h>
 
 #include <string.h>
 
 void
-gkm_assertion_message_cmprv (const gchar *domain, const gchar *file, int line,
+gkm_assertion_message_cmprv (const gchar *domain, const gchar *file, gint line,
                              const gchar *func, const gchar *expr,
                              CK_RV arg1, const gchar *cmp, CK_RV arg2)
 {
@@ -46,12 +47,25 @@ gkm_assertion_message_cmprv (const gchar *domain, const gchar *file, int line,
 	g_free (s);
 }
 
+void
+gkm_assertion_message_cmpulong (const gchar *domain, const gchar *file, gint line,
+                                const gchar *func, const gchar *expr,
+                                CK_ULONG arg1, const gchar *cmp, CK_ULONG arg2)
+{
+	char *s = NULL;
+	s = g_strdup_printf ("assertion failed (%s): (0x%08llx %s 0x%08llx)", expr,
+	                     (long long unsigned)arg1, cmp, (long long unsigned)arg2);
+	g_assertion_message (domain, file, line, func, s);
+	g_free (s);
+}
+
 /* -------------------------------------------------------------------------------
  * TEST MODULE
  */
 
 static gboolean initialized = FALSE;
 static gchar *the_pin = NULL;
+static gulong n_the_pin = 0;
 
 static gboolean logged_in = FALSE;
 static CK_USER_TYPE user_type = 0;
@@ -144,6 +158,7 @@ gkm_test_C_Initialize (CK_VOID_PTR pInitArgs)
 	}
 
 	the_pin = g_strdup ("booo");
+	n_the_pin = strlen (the_pin);
 	the_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_session);
 	the_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)gkm_template_free);
 
@@ -426,6 +441,7 @@ gkm_test_C_InitToken (CK_SLOT_ID slotID, CK_UTF8CHAR_PTR pPin, CK_ULONG ulPinLen
 
 	g_free (the_pin);
 	the_pin = g_strndup ((gchar*)pPin, ulPinLen);
+	n_the_pin = ulPinLen;
 	return CKR_OK;
 }
 
@@ -529,6 +545,7 @@ gkm_test_C_InitPIN (CK_SESSION_HANDLE hSession, CK_UTF8CHAR_PTR pPin,
 
 	g_free (the_pin);
 	the_pin = g_strndup ((gchar*)pPin, ulPinLen);
+	n_the_pin = ulPinLen;
 	return CKR_OK;
 }
 
@@ -550,6 +567,7 @@ gkm_test_C_SetPIN (CK_SESSION_HANDLE hSession, CK_UTF8CHAR_PTR pOldPin,
 
 	g_free (the_pin);
 	the_pin = g_strndup ((gchar*)pNewPin, ulNewLen);
+	n_the_pin = ulNewLen;
 	return CKR_OK;
 }
 
@@ -627,6 +645,9 @@ gkm_test_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 	GArray *attrs;
 	Session *session;
 	gboolean token, priv;
+	CK_OBJECT_CLASS klass;
+	CK_OBJECT_HANDLE object;
+	CK_ATTRIBUTE_PTR attr;
 
 	g_assert (phObject != NULL);
 
@@ -641,6 +662,18 @@ gkm_test_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 		if (!logged_in) {
 			gkm_template_free (attrs);
 			return CKR_USER_NOT_LOGGED_IN;
+		}
+	}
+
+	/* In order to create a credential we must check CK_VALUE */
+	if (gkm_template_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_G_CREDENTIAL) {
+		if (gkm_template_find_ulong (attrs, CKA_G_OBJECT, &object)) {
+			attr = gkm_template_find (attrs, CKA_VALUE);
+			if (!attr || attr->ulValueLen != n_the_pin ||
+			    memcmp (attr->pValue, the_pin, attr->ulValueLen) != 0) {
+				gkm_template_free (attrs);
+				return CKR_PIN_INCORRECT;
+			}
 		}
 	}
 

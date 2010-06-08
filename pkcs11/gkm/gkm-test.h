@@ -22,6 +22,7 @@
 #include <glib.h>
 
 #include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11i.h"
 
 #ifndef TESTMODULE_H_
 #define TESTMODULE_H_
@@ -30,7 +31,14 @@
 		do { CK_RV __v1 = (v1), __v2 = (v2); \
 			if (__v1 cmp __v2) ; else \
 				gkm_assertion_message_cmprv (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
-				                           #v1 " " #cmp " " #v2, __v1, #cmp, __v2); \
+				                             #v1 " " #cmp " " #v2, __v1, #cmp, __v2); \
+		} while (0)
+
+#define         gkm_assert_cmpulong(v1, cmp, v2) \
+		do { CK_RV __v1 = (v1), __v2 = (v2); \
+			if (__v1 cmp __v2) ; else \
+				gkm_assertion_message_cmpulong (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+				                                #v1 " " #cmp " " #v2, __v1, #cmp, __v2); \
 		} while (0)
 
 void            gkm_assertion_message_cmprv        (const gchar *domain,
@@ -41,6 +49,15 @@ void            gkm_assertion_message_cmprv        (const gchar *domain,
                                                     CK_RV arg1,
                                                     const gchar *cmp,
                                                     CK_RV arg2);
+
+void            gkm_assertion_message_cmpulong     (const gchar *domain,
+                                                    const gchar *file,
+                                                    gint line,
+                                                    const gchar *func,
+                                                    const gchar *expr,
+                                                    CK_ULONG arg1,
+                                                    const gchar *cmp,
+                                                    CK_ULONG arg2);
 
 CK_RV           gkm_test_C_Initialize              (CK_VOID_PTR pInitArgs);
 

@@ -1,5 +1,6 @@
 
 TESTING_FILES = \
+	test-create-credential.c \
 	test-login-user.c \
 	test-login-specific.c
 
