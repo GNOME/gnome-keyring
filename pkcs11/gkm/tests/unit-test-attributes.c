@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include "gkm/gkm-attributes.h"
 

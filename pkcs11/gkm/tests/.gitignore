@@ -1,7 +1,5 @@
-/run-auto-test.*
 /asn1-def-test.h
 /.*
 /Makefile
 /Makefile.in
-/run-auto-test
 /dump-data-file

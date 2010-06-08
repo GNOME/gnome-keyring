@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include "gkm/gkm-data-file.h"
 #include "gkm/gkm-object.h"
@@ -42,9 +42,9 @@ static GkmSecret *login = NULL;
 
 DEFINE_SETUP(file_store)
 {
-	public_filename = test_data_filename ("data-file-public.store");
-	private_filename = test_data_filename ("data-file-private.store");
-	write_filename = test_scratch_filename ("unit-test-file.store");
+	public_filename = testing_data_filename ("data-file-public.store");
+	private_filename = testing_data_filename ("data-file-private.store");
+	write_filename = testing_scratch_filename ("unit-test-file.store");
 
 	data_file = gkm_data_file_new ();
 

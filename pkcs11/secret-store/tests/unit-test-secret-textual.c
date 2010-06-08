@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 #include "test-secret-module.h"
 
 #include "gkm-secret-collection.h"
@@ -85,7 +85,7 @@ DEFINE_TEST(textual_read)
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("plain.keyring", &n_data);
+	data = testing_data_read ("plain.keyring", &n_data);
 	res = gkm_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -100,7 +100,7 @@ DEFINE_TEST(textual_read_wrong_format)
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("encrypted.keyring", &n_data);
+	data = testing_data_read ("encrypted.keyring", &n_data);
 	res = gkm_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -115,7 +115,7 @@ DEFINE_TEST(textual_read_bad_number)
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("plain-bad-number.keyring", &n_data);
+	data = testing_data_read ("plain-bad-number.keyring", &n_data);
 	res = gkm_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -154,7 +154,7 @@ DEFINE_TEST(textual_remove_unavailable)
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("plain.keyring", &n_data);
+	data = testing_data_read ("plain.keyring", &n_data);
 	res = gkm_secret_textual_read (collection, sdata, data, n_data);
 	g_assert (res == GKM_DATA_SUCCESS);
 

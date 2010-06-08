@@ -23,7 +23,7 @@
 
 #include "config.h"
 #include "test-module.h"
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 /* Include all the module entry points */
 #include "gkm/gkm-module-ep.h"
@@ -97,7 +97,7 @@ test_module_object_new (GkmSession *session)
 	GkmObject *object;
 
 	gsize n_data;
-	guchar *data = test_data_read ("test-certificate-1.der", &n_data);
+	guchar *data = testing_data_read ("test-certificate-1.der", &n_data);
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_TOKEN, &token, sizeof (token) },

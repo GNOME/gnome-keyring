@@ -198,7 +198,3 @@ GCR_DATA_ERROR
 gcr_data_error_get_domain
 </SECTION>
 
-<SECTION>
-<FILE>run-auto-test</FILE>
-</SECTION>
-

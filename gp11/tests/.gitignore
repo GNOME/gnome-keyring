@@ -1,6 +1,3 @@
-/run-auto-test.h
-/run-auto-test.c
-/run-auto-test
 /Makefile
 /Makefile.in
 /.*

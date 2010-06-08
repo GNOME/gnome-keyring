@@ -22,7 +22,8 @@ stamp-*
 Makefile
 Makefile.in
 core
-run-auto-test*
+test-framework.[ch]
+run-tests
 *-marshal.[ch]
 .libs
 .deps

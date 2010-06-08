@@ -5,7 +5,7 @@ PAM_DIR =
 endif
 
 if WITH_TESTS
-TESTS_DIR = tests
+TESTS_DIR = testing
 else
 TESTS_DIR = 
 endif

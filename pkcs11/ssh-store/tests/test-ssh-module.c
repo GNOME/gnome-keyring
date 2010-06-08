@@ -28,7 +28,7 @@
 
 #include "ssh-store/gkm-ssh-store.h"
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 static GMutex *mutex = NULL;
 
@@ -109,5 +109,5 @@ test_ssh_module_open_session (gboolean writable)
 DEFINE_EXTERNAL(ssh_module)
 {
 	CK_FUNCTION_LIST_PTR funcs = gkm_ssh_store_get_functions ();
-	test_p11_module (funcs, "p11-tests.conf");
+	testing_test_p11_module (funcs, "p11-tests.conf");
 }

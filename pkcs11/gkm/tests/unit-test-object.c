@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 #include "test-module.h"
 
 #include "gkm/gkm-attributes.h"
@@ -41,7 +41,7 @@ DEFINE_SETUP(object_setup)
 {
 	module = test_module_initialize_and_enter ();
 	session = test_module_open_session (TRUE);
-	certificate_data = test_data_read ("test-certificate-1.der", &certificate_n_data);
+	certificate_data = testing_data_read ("test-certificate-1.der", &certificate_n_data);
 }
 
 DEFINE_TEARDOWN(object_teardown)
@@ -191,7 +191,7 @@ DEFINE_TEST(object_create_auto_destruct)
 	g_assert (memcmp (&lifetime, &check, sizeof (lifetime)) == 0);
 
 	test_module_leave ();
-	test_wait_until (2200);
+	testing_wait_until (2200);
 	test_module_enter ();
 
 	g_assert (!check_object_exists (handle));

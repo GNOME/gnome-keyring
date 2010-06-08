@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include "gkm/gkm-transaction.h"
 
@@ -190,7 +190,7 @@ DEFINE_TEST(transaction_dispose_completes)
 DEFINE_TEST(remove_file_success)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = test_scratch_filename ("remove-file");
+	gchar *filename = testing_scratch_filename ("remove-file");
 
 	g_assert (g_file_set_contents (filename, "xxx", 3, NULL));
 	g_assert (g_file_test (filename, G_FILE_TEST_IS_REGULAR));
@@ -210,7 +210,7 @@ DEFINE_TEST(remove_file_success)
 DEFINE_TEST(remove_file_abort)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = test_scratch_filename ("remove-file");
+	gchar *filename = testing_scratch_filename ("remove-file");
 	gchar *data;
 	gsize n_data;
 
@@ -242,7 +242,7 @@ DEFINE_TEST(remove_file_abort)
 DEFINE_TEST(remove_file_non_exist)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = test_scratch_filename ("remove-non-existant");
+	gchar *filename = testing_scratch_filename ("remove-non-existant");
 
 	g_unlink (filename);
 
@@ -258,7 +258,7 @@ DEFINE_TEST(remove_file_non_exist)
 DEFINE_TEST(write_file)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = test_scratch_filename ("write-test");
+	gchar *filename = testing_scratch_filename ("write-test");
 	gchar *data;
 	gsize n_data;
 
@@ -284,7 +284,7 @@ DEFINE_TEST(write_file)
 DEFINE_TEST(write_file_abort_gone)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = test_scratch_filename ("write-test");
+	gchar *filename = testing_scratch_filename ("write-test");
 	gchar *data;
 	gsize n_data;
 
@@ -310,7 +310,7 @@ DEFINE_TEST(write_file_abort_gone)
 DEFINE_TEST(write_file_abort_revert)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = test_scratch_filename ("write-test");
+	gchar *filename = testing_scratch_filename ("write-test");
 	gchar *data;
 
 	g_assert (g_file_set_contents (filename, "my original", -1, NULL));

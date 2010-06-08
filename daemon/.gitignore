@@ -14,7 +14,6 @@ Makefile.in
 /gnome-keyring-ssh.desktop.in
 *-marshal.[ch]
 gnome-keyring-prompt
-run-auto-test*
 
 /control/tests/test-control-change
 /control/tests/test-control-init

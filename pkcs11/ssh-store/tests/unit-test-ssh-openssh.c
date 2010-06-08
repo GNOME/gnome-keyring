@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include "gkm-ssh-openssh.h"
 
@@ -63,7 +63,7 @@ DEFINE_TEST(parse_public)
 
 	for (i = 0; i < G_N_ELEMENTS (PUBLIC_FILES); ++i) {
 
-		data = test_data_read (PUBLIC_FILES[i], &n_data);
+		data = testing_data_read (PUBLIC_FILES[i], &n_data);
 
 		res = gkm_ssh_openssh_parse_public_key (data, n_data, &sexp, &comment);
 		if (res != GKM_DATA_SUCCESS) {
@@ -97,7 +97,7 @@ DEFINE_TEST(parse_private)
 
 	for (i = 0; i < G_N_ELEMENTS (PRIVATE_FILES); ++i) {
 
-		data = test_data_read (PRIVATE_FILES[i], &n_data);
+		data = testing_data_read (PRIVATE_FILES[i], &n_data);
 
 		res = gkm_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
 		if (res != GKM_DATA_SUCCESS) {

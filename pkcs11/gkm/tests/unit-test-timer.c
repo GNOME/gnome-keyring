@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 #include "test-module.h"
 
 #include "gkm/gkm-timer.h"
@@ -60,7 +60,7 @@ DEFINE_TEST(timer_simple)
 	timer = gkm_timer_start (module, 2, timer_callback, &timer);
 
 	test_module_leave ();
-	test_wait_until (2200);
+	testing_wait_until (2200);
 	test_module_enter ();
 
 	g_assert (timer == NULL);
@@ -73,13 +73,13 @@ DEFINE_TEST(timer_cancel)
 	timer = gkm_timer_start (module, 2, timer_callback, &timer);
 
 	test_module_leave ();
-	test_wait_until (500);
+	testing_wait_until (500);
 	test_module_enter ();
 
 	gkm_timer_cancel (timer);
 
 	test_module_leave ();
-	test_wait_until (2000);
+	testing_wait_until (2000);
 	test_module_enter ();
 
 	/* The callback should not have been called */
@@ -97,7 +97,7 @@ DEFINE_TEST(timer_immediate)
 	g_assert (timer != NULL);
 
 	test_module_leave ();
-	test_wait_until (50);
+	testing_wait_until (50);
 	test_module_enter ();
 
 	/* Should have been called now */
@@ -129,7 +129,7 @@ DEFINE_TEST(timer_multiple)
 	gkm_timer_start (module, 0, multiple_callback, GINT_TO_POINTER (0));
 
 	test_module_leave ();
-	test_wait_until (3500);
+	testing_wait_until (3500);
 	test_module_enter ();
 
 	g_assert (timer_check == 4);

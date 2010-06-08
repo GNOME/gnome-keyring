@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 #include "test-secret-module.h"
 
 #include "gkm-secret-binary.h"
@@ -90,7 +90,7 @@ DEFINE_TEST(binary_read)
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("encrypted.keyring", &n_data);
+	data = testing_data_read ("encrypted.keyring", &n_data);
 	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -105,7 +105,7 @@ DEFINE_TEST(binary_read_wrong_format)
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("plain.keyring", &n_data);
+	data = testing_data_read ("plain.keyring", &n_data);
 	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -123,7 +123,7 @@ DEFINE_TEST(binary_read_wrong_master)
 	gkm_secret_data_set_master (sdata, master);
 	g_object_unref (master);
 
-	data = test_data_read ("encrypted.keyring", &n_data);
+	data = testing_data_read ("encrypted.keyring", &n_data);
 	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -138,7 +138,7 @@ DEFINE_TEST(binary_read_sdata_but_no_master)
 
 	gkm_secret_data_set_master (sdata, NULL);
 
-	data = test_data_read ("encrypted.keyring", &n_data);
+	data = testing_data_read ("encrypted.keyring", &n_data);
 	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_free (data);
 
@@ -170,7 +170,7 @@ DEFINE_TEST(binary_remove_unavailable)
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("encrypted.keyring", &n_data);
+	data = testing_data_read ("encrypted.keyring", &n_data);
 	res = gkm_secret_binary_read (collection, sdata, data, n_data);
 	g_assert (res == GKM_DATA_SUCCESS);
 

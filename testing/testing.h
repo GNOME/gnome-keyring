@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gtest-helpers.h: Declarations for common functions called from gtest unit tests
+/* testing.h: Declarations for common functions called from gtest unit tests
 
    Copyright (C) 2008 Stefan Walter
 
@@ -21,8 +21,8 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GTEST_HELPERS_H_
-#define GTEST_HELPERS_H_
+#ifndef TESTING_H_
+#define TESTING_H_
 
 #include "config.h"
 
@@ -35,24 +35,36 @@
 #include <string.h>
 #include <unistd.h>
 
-gboolean test_wait_until (gint timeout);
-void test_wait_stop (void);
+gboolean         testing_wait_until               (gint timeout);
 
-const gchar* test_data_directory (void);
-const gchar* test_scratch_directory (void);
-guchar* test_data_read (const gchar *basename, gsize *n_data);
-gchar* test_scratch_filename (const gchar *basename);
-gchar* test_data_filename (const gchar *basename);
+void             testing_wait_stop                (void);
+
+const gchar*     testing_data_directory           (void);
+
+const gchar*     testing_scratch_directory        (void);
+
+guchar*          testing_data_read                (const gchar *basename,
+                                                   gsize *n_data);
+
+gchar*           testing_scratch_filename         (const gchar *basename);
+
+gchar*           testing_data_filename            (const gchar *basename);
 
 #ifdef CRYPTOKI_VERSION_MAJOR
-void test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config);
+
+void             testing_test_p11_module          (CK_FUNCTION_LIST_PTR module,
+                                                   const gchar *config);
+
 #endif
 
+typedef void     (*TestingExternalFunc)           (void);
 
-typedef void (*TestExternalFunc) (void);
-void test_external_run (const gchar *name, TestExternalFunc func);
-const gchar* test_external_name (void);
-void test_external_fail (void);
+void             testing_external_run             (const gchar *name,
+                                                   TestingExternalFunc func);
+
+const gchar*     testing_external_name            (void);
+
+void             testing_external_fail            (void);
 
 #define DECLARE_SETUP(x) \
 	void setup_##x(int *v, gconstpointer d)
@@ -84,11 +96,9 @@ void test_external_fail (void);
 #define DEFINE_EXTERNAL(x) \
 	void external_##x(void)
 
-/* #define DEFINE_ABORT(x) void abort_x(void *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)' */
-
 #ifndef g_assert_cmpsize
 #define g_assert_cmpsize(a, o, b) \
 	g_assert_cmpuint ((guint)(a), o, (guint)(b))
 #endif
 
-#endif /* GTEST_HELPERS_H_ */
+#endif /* TESTING_H_ */

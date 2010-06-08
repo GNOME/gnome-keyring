@@ -1,6 +1,6 @@
 
 #include "config.h"
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include "gcr-certificate.h"
 #include "gcr-simple-certificate.h"
@@ -16,7 +16,7 @@ DEFINE_SETUP(certificate)
 	guchar *contents;
 	gsize n_contents;
 	
-	contents = test_data_read ("der-certificate.crt", &n_contents);
+	contents = testing_data_read ("der-certificate.crt", &n_contents);
 	certificate = gcr_simple_certificate_new (contents, n_contents);
 	g_assert (certificate);
 	g_free (contents);

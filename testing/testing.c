@@ -33,7 +33,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include "gtest-helpers.h"
+#include "testing.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
@@ -45,7 +45,7 @@
 #endif
 
 /* Forward declaration */
-void test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config);
+void testing_test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config);
 
 static const gchar *test_path = NULL;
 
@@ -56,7 +56,7 @@ static GMutex *wait_mutex = NULL;
 static gboolean wait_waiting = FALSE;
 
 void
-test_wait_stop (void)
+testing_wait_stop (void)
 {
 	g_assert (wait_mutex);
 	g_assert (wait_condition);
@@ -67,7 +67,7 @@ test_wait_stop (void)
 }
 
 gboolean
-test_wait_until (int timeout)
+testing_wait_until (int timeout)
 {
 	GTimeVal tv;
 	gboolean ret;
@@ -86,28 +86,28 @@ test_wait_until (int timeout)
 	g_mutex_unlock (wait_mutex);
 
 	return ret;
-} 
+}
 
 const gchar*
-test_scratch_directory (void)
+testing_scratch_directory (void)
 {
 	return test_path;
 }
 
 gchar*
-test_scratch_filename (const gchar *basename)
+testing_scratch_filename (const gchar *basename)
 {
 	return g_build_filename (test_path, basename, NULL);
 }
 
 gchar*
-test_data_filename (const gchar *basename)
+testing_data_filename (const gchar *basename)
 {
-	return g_build_filename (test_data_directory (), basename, NULL);
+	return g_build_filename (testing_data_directory (), basename, NULL);
 }
 
 const gchar*
-test_data_directory (void)
+testing_data_directory (void)
 {
 	const gchar *dir;
 	gchar *cur, *env;
@@ -129,14 +129,14 @@ test_data_directory (void)
 	return dir;
 }
 
-guchar* 
-test_data_read (const gchar *basename, gsize *n_result)
+guchar*
+testing_data_read (const gchar *basename, gsize *n_result)
 {
 	GError *error = NULL;
 	gchar *result;
 	gchar *file;
 
-	file = test_data_filename (basename);
+	file = testing_data_filename (basename);
 	if (!g_file_get_contents (file, &result, n_result, &error)) {
 		g_warning ("could not read test data file: %s: %s", file,
 		           egg_error_message (error));
@@ -157,13 +157,13 @@ on_p11_tests_log (int level, const char *section, const char *message)
 	} else if (level != P11_TESTS_FAIL) {
 		g_message ("%s: %s", section, message);
 	} else {
-		g_print ("/%s/%s: FAIL: %s\n", test_external_name (), section, message);
-		test_external_fail ();
+		g_print ("/%s/%s: FAIL: %s\n", testing_external_name (), section, message);
+		testing_external_fail ();
 	}
 }
 
 void
-test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
+testing_test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
 {
 	p11_tests_set_log_func (on_p11_tests_log);
 	p11_tests_set_unexpected (1);
@@ -177,7 +177,7 @@ test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
 #else /* !WITH_P11_TESTS */
 
 void
-test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
+testing_test_p11_module (CK_FUNCTION_LIST_PTR module, const gchar *config)
 {
 	g_message ("p11-tests support not built in");
 }
@@ -188,7 +188,7 @@ static const gchar *external_name = NULL;
 static gint external_fails = 0;
 
 void
-test_external_run (const gchar *name, TestExternalFunc func)
+testing_external_run (const gchar *name, TestingExternalFunc func)
 {
 	external_fails = 0;
 	external_name = name;
@@ -200,27 +200,27 @@ test_external_run (const gchar *name, TestExternalFunc func)
 }
 
 const gchar*
-test_external_name (void)
+testing_external_name (void)
 {
 	return external_name;
 }
 
 void
-test_external_fail (void)
+testing_external_fail (void)
 {
 	++external_fails;
 }
 
-static void 
+static void
 chdir_base_dir (char* argv0)
 {
 	gchar *dir, *base;
 
 	dir = g_path_get_dirname (argv0);
 	if (chdir (dir) < 0)
-		g_warning ("couldn't change directory to: %s: %s", 
+		g_warning ("couldn't change directory to: %s: %s",
 		           dir, g_strerror (errno));
-	
+
 	base = g_path_get_basename (dir);
 	if (strcmp (base, ".libs") == 0) {
 		if (chdir ("..") < 0)

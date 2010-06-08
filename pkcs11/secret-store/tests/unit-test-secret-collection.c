@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 #include "test-secret-module.h"
 
 #include "gkm-secret-data.h"
@@ -164,7 +164,7 @@ DEFINE_TEST(secret_collection_load_unlock_plain)
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("plain.keyring");
+	filename = testing_data_filename ("plain.keyring");
 	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
@@ -192,7 +192,7 @@ DEFINE_TEST(secret_collection_load_unlock_encrypted)
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
+	filename = testing_data_filename ("encrypted.keyring");
 	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
@@ -220,7 +220,7 @@ DEFINE_TEST(secret_collection_load_unlock_bad_password)
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
+	filename = testing_data_filename ("encrypted.keyring");
 	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
@@ -241,7 +241,7 @@ DEFINE_TEST(secret_collection_unlock_without_load)
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
+	filename = testing_data_filename ("encrypted.keyring");
 	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
@@ -265,7 +265,7 @@ DEFINE_TEST(secret_collection_twice_unlock)
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
+	filename = testing_data_filename ("encrypted.keyring");
 	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
@@ -296,7 +296,7 @@ DEFINE_TEST(secret_collection_twice_unlock_bad_password)
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
+	filename = testing_data_filename ("encrypted.keyring");
 	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 

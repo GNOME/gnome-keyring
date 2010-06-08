@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 #include "test-ssh-module.h"
 
 #include "gkm/gkm-credential.h"
@@ -57,8 +57,8 @@ DEFINE_TEST(private_key_parse_plain)
 	key = gkm_ssh_private_key_new (module, "my-unique");
 	g_assert (GKM_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = test_data_filename ("id_dsa_plain.pub");
-	priv_path = test_data_filename ("id_dsa_plain");
+	pub_path = testing_data_filename ("id_dsa_plain.pub");
+	priv_path = testing_data_filename ("id_dsa_plain");
 
 	ret = gkm_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);
@@ -80,8 +80,8 @@ DEFINE_TEST(private_key_parse_and_unlock)
 	key = gkm_ssh_private_key_new (module, "my-unique");
 	g_assert (GKM_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = test_data_filename ("id_dsa_encrypted.pub");
-	priv_path = test_data_filename ("id_dsa_encrypted");
+	pub_path = testing_data_filename ("id_dsa_encrypted.pub");
+	priv_path = testing_data_filename ("id_dsa_encrypted");
 
 	ret = gkm_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);

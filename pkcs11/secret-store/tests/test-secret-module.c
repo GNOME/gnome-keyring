@@ -23,7 +23,7 @@
 
 #include "config.h"
 #include "test-secret-module.h"
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include "gkm/gkm-secret.h"
 #include "gkm/gkm-module.h"
@@ -49,14 +49,14 @@ copy_scratch_file (const gchar *basename)
 	gchar *data;
 	gsize n_data;
 
-	filename = test_data_filename (basename);
+	filename = testing_data_filename (basename);
 	if (!g_file_get_contents (filename, &data, &n_data, NULL)) {
 		g_warning ("couldn't read: %s", filename);
 		g_return_if_reached ();
 	}
 	g_free (filename);
 
-	filename = test_scratch_filename (basename);
+	filename = testing_scratch_filename (basename);
 	if (!g_file_set_contents (filename, data, n_data, NULL))
 		g_return_if_reached ();
 	g_free (filename);
@@ -74,7 +74,7 @@ test_secret_module_initialize_and_enter (void)
 
 	/* Setup test directory to work in */
 	memset (&args, 0, sizeof (args));
-	string = g_strdup_printf ("directory='%s'", test_scratch_directory ());
+	string = g_strdup_printf ("directory='%s'", testing_scratch_directory ());
 	args.pReserved = string;
 	args.flags = CKF_OS_LOCKING_OK;
 
@@ -213,10 +213,10 @@ test_secret_collection_validate (GkmSecretCollection *collection, GkmSecretData 
 	/* "Invalid ACL" */
 	g_assert (ac && ac->application);
 	/* "Invalid ACL Path" */
-	g_assert (ac->application->pathname && strstr (ac->application->pathname, "run-auto-test"));
+	g_assert (ac->application->pathname && strstr (ac->application->pathname, "test-framework"));
 	/* "Invalid ACL Display Name" */
 	g_assert (ac->application->display_name);
-	g_assert_cmpstr (ac->application->display_name, ==, "run-auto-test");
+	g_assert_cmpstr (ac->application->display_name, ==, "test-framework");
 	/* "Invalid ACL Access Type" */
 	g_assert_cmpint (ac->types_allowed, ==, (GNOME_KEYRING_ACCESS_READ | GNOME_KEYRING_ACCESS_WRITE | GNOME_KEYRING_ACCESS_REMOVE));
 #endif

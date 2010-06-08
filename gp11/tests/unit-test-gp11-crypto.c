@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include <glib.h>
 
@@ -44,7 +44,7 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 {
 	*((GAsyncResult**)user_data) = result;
 	g_object_ref (result);
-	test_wait_stop ();
+	testing_wait_stop ();
 }
 
 static GP11Object*
@@ -159,7 +159,7 @@ DEFINE_TEST(encrypt)
 	/* Asynchronous one */
 	gp11_session_encrypt_async (session, key, mech, (const guchar*)"second chance", 14, NULL, fetch_async_result, &result);
 
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	
 	/* Get the result */
@@ -206,7 +206,7 @@ DEFINE_TEST(decrypt)
 	/* Asynchronous one */
 	gp11_session_decrypt_async (session, key, mech, (const guchar*)"FAT CHANCE", 11, NULL, fetch_async_result, &result);
 
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 
 	/* Get the result */
@@ -279,7 +279,7 @@ DEFINE_TEST(sign)
 	/* Asynchronous one */
 	gp11_session_sign_async (session, key, mech, (const guchar*)"Conrad", 7, NULL, fetch_async_result, &result);
 
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 
 	/* Get the result */
@@ -330,7 +330,7 @@ DEFINE_TEST(verify)
 	/* Asynchronous one */
 	gp11_session_verify_async (session, key, mech, (const guchar*)"Labarbara", 10,
 	                           (const guchar*)"my-prefix:Labarbara", 20, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	ret = gp11_session_verify_finish (session, result, &error);
 	SUCCESS_RES (ret, error);
@@ -340,7 +340,7 @@ DEFINE_TEST(verify)
 	result = NULL;
 	gp11_session_verify_async (session, key, mech, (const guchar*)"Labarbara", 10,
 	                           (const guchar*)"my-prefix:Labarxoro", 20, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	ret = gp11_session_verify_finish (session, result, &error);
 	FAIL_RES (ret, error);
@@ -385,7 +385,7 @@ DEFINE_TEST(generate_key_pair)
 	/* Asynchronous one */
 	mech->type = CKM_GENERATE;
 	gp11_session_generate_key_pair_async (session, mech, pub_attrs, prv_attrs, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	ret = gp11_session_generate_key_pair_finish (session, result, &pub_key, &prv_key, &error);
 	SUCCESS_RES (ret, error);
@@ -398,7 +398,7 @@ DEFINE_TEST(generate_key_pair)
 	mech->type = 0;
 	pub_key = prv_key = NULL;
 	gp11_session_generate_key_pair_async (session, mech, pub_attrs, prv_attrs, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	ret = gp11_session_generate_key_pair_finish (session, result, &pub_key, &prv_key, &error);
 	FAIL_RES (ret, error);
@@ -449,7 +449,7 @@ DEFINE_TEST(wrap_key)
 	/* Asynchronous one */
 	mech->type = CKM_WRAP;
 	gp11_session_wrap_key_async (session, wrapper, mech, wrapped, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	output = gp11_session_wrap_key_finish (session, result, &n_output, &error);
 	SUCCESS_RES (output, error);
@@ -463,7 +463,7 @@ DEFINE_TEST(wrap_key)
 	mech->type = 0;
 	n_output = 0;
 	gp11_session_wrap_key_async (session, wrapper, mech, wrapped, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	output = gp11_session_wrap_key_finish (session, result, &n_output, &error);
 	FAIL_RES (output, error);
@@ -510,7 +510,7 @@ DEFINE_TEST(unwrap_key)
 	/* Asynchronous one */
 	mech->type = CKM_WRAP;
 	gp11_session_unwrap_key_async (session, wrapper, mech, "special", 7, attrs, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	unwrapped = gp11_session_unwrap_key_finish (session, result, &error);
 	SUCCESS_RES (unwrapped, error);
@@ -523,7 +523,7 @@ DEFINE_TEST(unwrap_key)
 	result = NULL;
 	mech->type = 0;
 	gp11_session_unwrap_key_async (session, wrapper, mech, "special", 6, attrs, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	unwrapped = gp11_session_unwrap_key_finish (session, result, &error);
 	FAIL_RES (unwrapped, error);
@@ -570,7 +570,7 @@ g_printerr ("derived is: %lu", gp11_object_get_handle (derived));
 	/* Asynchronous one */
 	mech->type = CKM_DERIVE;
 	gp11_session_derive_key_async (session, wrapper, mech, attrs, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	derived = gp11_session_derive_key_finish (session, result, &error);
 	SUCCESS_RES (derived, error);
@@ -583,7 +583,7 @@ g_printerr ("derived is: %lu", gp11_object_get_handle (derived));
 	result = NULL;
 	mech->type = 0;
 	gp11_session_derive_key_async (session, wrapper, mech, attrs, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	derived = gp11_session_derive_key_finish (session, result, &error);
 	FAIL_RES (derived, error);

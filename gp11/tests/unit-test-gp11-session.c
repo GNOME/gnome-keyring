@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "run-auto-test.h"
+#include "test-framework.h"
 
 #include <glib.h>
 
@@ -73,7 +73,7 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 {
 	*((GAsyncResult**)user_data) = result;
 	g_object_ref (result);
-	test_wait_stop ();
+	testing_wait_stop ();
 }
 
 DEFINE_TEST(open_close_session)
@@ -90,7 +90,7 @@ DEFINE_TEST(open_close_session)
 	/* Test opening async */
 	gp11_slot_open_session_async (slot, 0, NULL, NULL, NULL, fetch_async_result, &result);
 
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 
 	/* Get the result */
@@ -132,7 +132,7 @@ DEFINE_TEST(open_reused)
 	
 	/* Test opening async */
 	gp11_slot_open_session_async (slot, 0, NULL, NULL, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	sess = gp11_slot_open_session_finish (slot, result, &err);
 	SUCCESS_RES (sess, err);
@@ -177,7 +177,7 @@ DEFINE_TEST(init_set_pin)
 
 	/* init pin async */
 	gp11_session_init_pin_async (session, (guchar*)"booo", 4, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	ret = gp11_session_init_pin_finish (session, result, &err);
 	SUCCESS_RES (ret, err);
@@ -186,7 +186,7 @@ DEFINE_TEST(init_set_pin)
 
 	/* set pin async */
 	gp11_session_set_pin_async (session, (guchar*)"booo", 4, (guchar*)"tooo", 4, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	ret = gp11_session_set_pin_finish (session, result, &err);
 	SUCCESS_RES (ret, err);
@@ -217,7 +217,7 @@ DEFINE_TEST(login_logout)
 
 	/* login async */
 	gp11_session_login_async (session, CKU_USER, (guchar*)"booo", 4, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	
 	ret = gp11_session_login_finish (session, result, &err);
@@ -228,7 +228,7 @@ DEFINE_TEST(login_logout)
 	
 	/* logout async */
 	gp11_session_logout_async (session, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	
 	ret = gp11_session_logout_finish (session, result, &err);
@@ -298,7 +298,7 @@ DEFINE_TEST(auto_login)
 	
 	/* Now try the same thing, but asyncronously */
 	gp11_slot_open_session_async (slot, CKF_RW_SESSION, NULL, NULL, NULL, fetch_async_result, &result);
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	new_session = gp11_slot_open_session_finish (slot, result, &err);
 	SUCCESS_RES (new_session, err);
@@ -307,7 +307,7 @@ DEFINE_TEST(auto_login)
 	
 	result = NULL;
 	gp11_session_create_object_async (session, attrs, NULL, fetch_async_result, &result); 
-	test_wait_until (500);
+	testing_wait_until (500);
 	g_assert (result != NULL);
 	object = gp11_session_create_object_finish (session, result, &err);
 	SUCCESS_RES (object, err);
