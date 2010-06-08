@@ -530,6 +530,7 @@ _gp11_call_async_short (GP11Call *call, CK_RV rv)
 	/* Already complete, so just push it for processing in main loop */
 	g_assert (GP11_CALL_GET_CLASS (call)->completed_queue);
 	g_async_queue_push (GP11_CALL_GET_CLASS (call)->completed_queue, call);
+	g_main_context_wakeup (NULL);
 }
 
 gpointer
