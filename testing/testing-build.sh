@@ -16,32 +16,28 @@ usage()
 
 file_to_name()
 {
-	echo -n $1 | sed -e 's/unit-test-//' -e 's/\.c//'
+	echo -n $1 | sed -E -e 's/^(unit-)?test-//' -e 's/\.c//' | tr -c '[a-z0-9_]' '_'
 }
 
 build_header()
 {
-	local _file
-
-	echo '/* This is auto-generated code. Edit at your own peril. */'
-	echo '#include "testing/testing.h"'
+	echo "/* This is auto-generated code. Edit at your own peril. */"
+	echo "#include \"testing/testing.h\""
 	echo
 
-	for _file in $@; do
-		sed -ne 's/.*DEFINE_SETUP[ 	]*(\([^)]\+\))/DECLARE_SETUP(\1);/p' $_file
-		sed -ne 's/.*DEFINE_TEARDOWN[ 	]*(\([^)]\+\))/DECLARE_TEARDOWN(\1);/p' $_file
-		sed -ne 's/.*DEFINE_TEST[ 	]*(\([^)]\+\))/DECLARE_TEST(\1);/p' $_file
-		sed -ne 's/.*DEFINE_START[ 	]*(\([^)]\+\))/DECLARE_START(\1);/p' $_file
-		sed -ne 's/.*DEFINE_STOP[ 	]*(\([^)]\+\))/DECLARE_STOP(\1);/p' $_file
-		sed -ne 's/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\))/DECLARE_EXTERNAL(\1);/p' $_file
+	for file in $@; do
+		sed -ne "s/.*DEFINE_SETUP[ 	]*(\([^)]\+\))/DECLARE_SETUP (\1);/p" ${file}
+		sed -ne "s/.*DEFINE_TEARDOWN[ 	]*(\([^)]\+\))/DECLARE_TEARDOWN (\1);/p" ${file}
+		sed -ne "s/.*DEFINE_TEST[ 	]*(\([^)]\+\))/DECLARE_TEST (\1);/p" ${file}
+		sed -ne "s/.*DEFINE_START[ 	]*(\([^)]\+\))/DECLARE_START (\1);/p" ${file}
+		sed -ne "s/.*DEFINE_STOP[ 	]*(\([^)]\+\))/DECLARE_STOP (\1);/p" ${file}
+		sed -ne "s/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\))/DECLARE_EXTERNAL (\1);/p" ${file}
 	done
 	echo
 }
 
 build_source()
 {
-	local _tcases _file _name _setup _teardown
-
 	echo '/* This is auto-generated code. Edit at your own peril. */'
 	echo "#include \"testing/testing.h\""
 	echo "#include \"$BASE.h\""
@@ -49,39 +45,41 @@ build_source()
 
 	# Startup function
 	echo "static void start_tests (void) {"
-		for _file in $@; do
-			sed -ne "s/.*DEFINE_START[ 	]*(\([^)]\+\)).*/	start_\1 ();/p" $_file
+		for file in $@; do
+			name=`file_to_name ${file}`
+			sed -ne "s/.*DEFINE_START[ 	]*(\([^)]\+\)).*/	start_\1 ();/p" ${file}
 		done
 	echo "}"
 	echo
 
 	# Shutdown function
 	echo "static void stop_tests (void) {"
-		for _file in $@; do
-			sed -ne "s/.*DEFINE_STOP[ 	]*(\([^)]\+\)).*/	stop_\1 ();/p" $_file
+		for file in $@; do
+			name=`file_to_name ${file}`
+			sed -ne "s/.*DEFINE_STOP[ 	]*(\([^)]\+\)).*/	stop_\1 ();/p" ${file}
 		done
 	echo "}"
 	echo
 
 	echo "static void initialize_tests (void) {"
 	# Include each file, and build a test case for it
-	_tcases=""
-	for _file in $@; do
-		_name=`file_to_name $_file`
+	tcases=""
+	for file in $@; do
+		name=`file_to_name ${file}`
 
 		# Calculate what our setup and teardowns are.
-		_setup=`sed -ne 's/.*DEFINE_SETUP[ 	]*(\([^)]\+\)).*/setup_\1/p' $_file || echo "NULL"`
-		if [ -z "$_setup" ]; then
-			_setup="NULL"
+		setup=`sed -ne "s/.*DEFINE_SETUP[ 	]*(\([^)]\+\)).*/setup_\1/p" ${file} || echo "NULL"`
+		if [ -z "${setup}" ]; then
+			setup="NULL"
 		fi
 
-		_teardown=`sed -ne 's/.*DEFINE_TEARDOWN[ 	]*(\([^)]\+\)).*/teardown_\1/p' $_file`
-		if [ -z "$_teardown" ]; then
-			_teardown="NULL"
+		teardown=`sed -ne "s/.*DEFINE_TEARDOWN[ 	]*(\([^)]\+\)).*/teardown_\1/p" ${file}`
+		if [ -z "${teardown}" ]; then
+			teardown="NULL"
 		fi
 
 		# Add all tests to the test case
-		sed -ne "s/.*DEFINE_TEST[ 	]*(\([^)]\+\)).*/	g_test_add(\"\/$_name\/\1\", int, NULL, $_setup, test_\1, $_teardown);/p" $_file
+		sed -ne "s/.*DEFINE_TEST[ 	]*(\([^)]\+\)).*/	g_test_add(\"\/${name}\/\1\", int, NULL, ${setup}, test_\1, ${teardown});/p" ${file}
 
 	done
 	echo "}"
@@ -89,8 +87,9 @@ build_source()
 
 	# External function
 	echo "static void run_externals (void) {"
-	for _file in $@; do
-		sed -ne "s/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\)).*/	testing_external_run (\"\1\", external_\1);/p" $_file
+	for file in $@; do
+		name=`file_to_name ${file}`
+		sed -ne "s/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\)).*/	testing_external_run (\"\1\", external_\1);/p" ${file}
 	done
 	echo "}"
 	echo
