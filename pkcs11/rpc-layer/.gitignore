@@ -1,5 +1,1 @@
-/Makefile
-/Makefile.in
-/.*
-/p11-rpc-test-daemon
 /gkm-rpc-daemon-standalone

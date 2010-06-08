@@ -28,6 +28,7 @@ run-tests
 .libs
 .deps
 .anjuta*
+
 /compile
 /ABOUT-NLS
 /aclocal.m4
@@ -66,6 +67,3 @@ run-tests
 /depcomp
 /junk
 /TODO.tasks
-
-# ui directory
-/ui/gnome-keyring-prompt
