@@ -43,6 +43,7 @@ typedef struct _Session {
 	CK_SESSION_HANDLE real_session;
 	CK_G_APPLICATION_ID app_id;
 	CK_SLOT_ID wrap_slot;
+	CK_OBJECT_HANDLE specific;
 } Session;
 
 G_LOCK_DEFINE_STATIC (wrap_layer);
@@ -100,7 +101,7 @@ map_slot_to_real (CK_SLOT_ID_PTR slot, Mapping *mapping)
 }
 
 static CK_RV
-map_session_to_real (CK_SESSION_HANDLE_PTR handle, Mapping *mapping)
+map_session_to_real (CK_SESSION_HANDLE_PTR handle, Mapping *mapping, Session *session)
 {
 	CK_RV rv = CKR_OK;
 	Session *sess;
@@ -117,6 +118,8 @@ map_session_to_real (CK_SESSION_HANDLE_PTR handle, Mapping *mapping)
 			if (sess != NULL) {
 				*handle = sess->real_session;
 				rv = map_slot_unlocked (sess->wrap_slot, mapping);
+				if (session != NULL)
+					memcpy (session, sess, sizeof (Session));
 			} else {
 				rv = CKR_SESSION_HANDLE_INVALID;
 			}
@@ -127,21 +130,23 @@ map_session_to_real (CK_SESSION_HANDLE_PTR handle, Mapping *mapping)
 	return rv;
 }
 
-#define MAP_SLOT_UP(slot, map) G_STMT_START { \
+static void
+stash_session_specific_key (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE key)
+{
+	Session *sess;
 
+	G_LOCK (wrap_layer);
 
+		if (wrap_sessions) {
+			sess = g_hash_table_lookup (wrap_sessions, GINT_TO_POINTER ((gint)handle));
+			if (sess == NULL)
+				g_warning ("sessions out of sync with lower layer");
+			else
+				sess->specific = key;
+		}
 
-#define MAP_SLOT_DOWN(slot, map) G_STMT_START { \
-	if (!map_slot_down (&slot, &map)) \
-		return CKR_SLOT_ID_INVALID; \
-	} G_STMT_END
-
-#define MAP_SESSION_DOWN(session, map) G_STMT_START { \
-	CK_SLOT_ID slot = (session >> HANDLE_SLOT_BITS); \
-	if (!map_slot_down (&slot, &map)) \
-		return CKR_SESSION_HANDLE_INVALID; \
-	session &= HANDLE_REAL_MASK; \
-	} G_STMT_END
+	G_UNLOCK (wrap_layer);
+}
 
 static CK_RV
 wrap_C_Initialize (CK_VOID_PTR init_args)
@@ -225,12 +230,15 @@ wrap_C_Initialize (CK_VOID_PTR init_args)
 static CK_RV
 wrap_C_Finalize (CK_VOID_PTR reserved)
 {
-	guint i;
+	CK_FUNCTION_LIST_PTR funcs;
+	GList *l;
 
 	G_LOCK (wrap_layer);
 
-		for (i = 0; i < n_wrap_mappings; ++i)
-			(wrap_mappings[i].funcs->C_Finalize) (NULL);
+		for (l = wrap_modules; l != NULL; l = g_list_next (l)) {
+			funcs = l->data;
+			(funcs->C_Finalize) (NULL);
+		}
 		g_free (wrap_mappings);
 		wrap_mappings = NULL;
 
@@ -336,7 +344,10 @@ wrap_C_GetTokenInfo (CK_SLOT_ID id, CK_TOKEN_INFO_PTR info)
 	rv = map_slot_to_real (&id, &map);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_GetTokenInfo) (id, info);
+	rv = (map.funcs->C_GetTokenInfo) (id, info);
+	if (rv == CKR_OK)
+		info->flags |= CKF_PROTECTED_AUTHENTICATION_PATH;
+	return rv;
 }
 
 static CK_RV
@@ -424,7 +435,7 @@ wrap_C_CloseSession (CK_SESSION_HANDLE handle)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	rv = (map.funcs->C_CloseSession) (handle);
@@ -478,7 +489,7 @@ wrap_C_GetFunctionStatus (CK_SESSION_HANDLE handle)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetFunctionStatus) (handle);
@@ -490,7 +501,7 @@ wrap_C_CancelFunction (CK_SESSION_HANDLE handle)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_CancelFunction) (handle);
@@ -505,7 +516,7 @@ wrap_C_GetSessionInfo (CK_SESSION_HANDLE handle, CK_SESSION_INFO_PTR info)
 	if (info == NULL)
 		return CKR_ARGUMENTS_BAD;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 
@@ -519,25 +530,70 @@ wrap_C_GetSessionInfo (CK_SESSION_HANDLE handle, CK_SESSION_INFO_PTR info)
 static CK_RV
 wrap_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
+#if 0
+	GkmWrapPrompt *prompt;
+#endif
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_InitPIN) (handle, pin, pin_len);
+#if 0
+	prompt = gkm_wrap_prompt_for_init_pin (map.funcs, handle, pin, pin_len);
+
+	for (;;) {
+		if (prompt && !gkm_wrap_prompt_do_init_pin (prompt, rv, &pin, &pin_len))
+			break;
+#endif
+		rv = (map.funcs->C_InitPIN) (handle, pin, pin_len);
+#if 0
+		if (!prompt || rv != CKR_PIN_INVALID || rv != CKR_PIN_LEN_RANGE)
+			break;
+	}
+
+	if (prompt) {
+		gkm_wrap_prompt_done_init_pin (prompt, rv);
+		g_object_unref (prompt);
+	}
+#endif
+	return rv;
 }
 
 static CK_RV
 wrap_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
 {
+#if 0
+	GkmWrapPrompt *prompt;
+#endif
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_SetPIN) (handle, old_pin, old_pin_len, new_pin, new_pin_len);
+#if 0
+	prompt = gkm_wrap_prompt_for_set_pin (map.funcs, handle,
+	                                      old_pin, old_pin_len,
+	                                      new_pin, new_pin_len);
+
+	for (;;) {
+		if (prompt && !gkm_wrap_prompt_do_set_pin (prompt, rv, &old_pin, &old_pin_len,
+		                                           &new_pin, &new_pin_len))
+			break;
+#endif
+		rv = (map.funcs->C_SetPIN) (handle, old_pin, old_pin_len, new_pin, new_pin_len);
+#if 0
+		if (!prompt || rv != CKR_PIN_INVALID || rv != CKR_PIN_LEN_RANGE)
+			break;
+	}
+
+	if (prompt) {
+		gkm_wrap_prompt_done_set_pin (prompt, rv);
+		g_object_unref (prompt);
+	}
+#endif
+	return rv;
 }
 
 static CK_RV
@@ -546,7 +602,7 @@ wrap_C_GetOperationState (CK_SESSION_HANDLE handle, CK_BYTE_PTR operation_state,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetOperationState) (handle, operation_state, operation_state_len);
@@ -560,7 +616,7 @@ wrap_C_SetOperationState (CK_SESSION_HANDLE handle, CK_BYTE_PTR operation_state,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_SetOperationState) (handle, operation_state, operation_state_len, encryption_key, authentication_key);
@@ -570,13 +626,33 @@ static CK_RV
 wrap_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
               CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
+	GkmWrapPrompt *prompt;
+	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, &session);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_Login) (handle, user_type, pin, pin_len);
+
+	prompt = gkm_wrap_prompt_for_login (map.funcs, user_type, handle, session.specific, pin, pin_len);
+
+	for (;;) {
+		rv = (map.funcs->C_Login) (handle, user_type, pin, pin_len);
+
+		if (!prompt || rv != CKR_PIN_INCORRECT)
+			break;
+
+		if (!gkm_wrap_prompt_do_login (prompt, user_type, rv, &pin, &pin_len))
+			break;
+	}
+
+	if (prompt) {
+		gkm_wrap_prompt_done_login (prompt, user_type, rv);
+		g_object_unref (prompt);
+	}
+
+	return rv;
 }
 
 static CK_RV
@@ -585,7 +661,7 @@ wrap_C_Logout (CK_SESSION_HANDLE handle)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_Logout) (handle);
@@ -599,7 +675,7 @@ wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 
@@ -636,7 +712,7 @@ wrap_C_CopyObject (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_CopyObject) (handle, object, template, count, new_object);
@@ -648,7 +724,7 @@ wrap_C_DestroyObject (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DestroyObject) (handle, object);
@@ -661,7 +737,7 @@ wrap_C_GetObjectSize (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetObjectSize) (handle, object, size);
@@ -674,7 +750,7 @@ wrap_C_GetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GetAttributeValue) (handle, object, template, count);
@@ -687,7 +763,7 @@ wrap_C_SetAttributeValue (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE object,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_SetAttributeValue) (handle, object, template, count);
@@ -700,7 +776,7 @@ wrap_C_FindObjectsInit (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_FindObjectsInit) (handle, template, count);
@@ -713,7 +789,7 @@ wrap_C_FindObjects (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE_PTR objects,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_FindObjects) (handle, objects, max_count, count);
@@ -725,7 +801,7 @@ wrap_C_FindObjectsFinal (CK_SESSION_HANDLE handle)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_FindObjectsFinal) (handle);
@@ -735,13 +811,17 @@ static CK_RV
 wrap_C_EncryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_OBJECT_HANDLE key)
 {
+	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, &session);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_EncryptInit) (handle, mechanism, key);
+	rv = (map.funcs->C_EncryptInit) (handle, mechanism, key);
+	if (rv == CKR_OK)
+		stash_session_specific_key (session.wrap_session, key);
+	return rv;
 }
 
 static CK_RV
@@ -751,7 +831,7 @@ wrap_C_Encrypt (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_Encrypt) (handle, data, data_len, encrypted_data, encrypted_data_len);
@@ -765,7 +845,7 @@ wrap_C_EncryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_EncryptUpdate) (handle, part, part_len, encrypted_part, encrypted_part_len);
@@ -778,7 +858,7 @@ wrap_C_EncryptFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR last_part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_EncryptFinal) (handle, last_part, last_part_len);
@@ -788,13 +868,17 @@ static CK_RV
 wrap_C_DecryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_OBJECT_HANDLE key)
 {
+	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, &session);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_DecryptInit) (handle, mechanism, key);
+	rv = (map.funcs->C_DecryptInit) (handle, mechanism, key);
+	if (rv == CKR_OK)
+		stash_session_specific_key (session.wrap_session, key);
+	return rv;
 }
 
 static CK_RV
@@ -804,7 +888,7 @@ wrap_C_Decrypt (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_data,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_Decrypt) (handle, enc_data, enc_data_len, data, data_len);
@@ -817,7 +901,7 @@ wrap_C_DecryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DecryptUpdate) (handle, enc_part, enc_part_len, part, part_len);
@@ -830,7 +914,7 @@ wrap_C_DecryptFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR last_part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DecryptFinal) (handle, last_part, last_part_len);
@@ -842,7 +926,7 @@ wrap_C_DigestInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DigestInit) (handle, mechanism);
@@ -855,7 +939,7 @@ wrap_C_Digest (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_Digest) (handle, data, data_len, digest, digest_len);
@@ -867,7 +951,7 @@ wrap_C_DigestUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part, CK_ULONG part_l
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DigestUpdate) (handle, part, part_len);
@@ -879,7 +963,7 @@ wrap_C_DigestKey (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE key)
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DigestKey) (handle, key);
@@ -892,7 +976,7 @@ wrap_C_DigestFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR digest,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DigestFinal) (handle, digest, digest_len);
@@ -902,13 +986,17 @@ static CK_RV
 wrap_C_SignInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                  CK_OBJECT_HANDLE key)
 {
+	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, &session);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_SignInit) (handle, mechanism, key);
+	rv = (map.funcs->C_SignInit) (handle, mechanism, key);
+	if (rv == CKR_OK)
+		stash_session_specific_key (session.wrap_session, key);
+	return rv;
 }
 
 static CK_RV
@@ -918,7 +1006,7 @@ wrap_C_Sign (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_Sign) (handle, data, data_len, signature, signature_len);
@@ -930,7 +1018,7 @@ wrap_C_SignUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part, CK_ULONG part_len
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_SignUpdate) (handle, part, part_len);
@@ -943,7 +1031,7 @@ wrap_C_SignFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR signature,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_SignFinal) (handle, signature, signature_len);
@@ -953,13 +1041,18 @@ static CK_RV
 wrap_C_SignRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                         CK_OBJECT_HANDLE key)
 {
+	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, &session);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_SignRecoverInit) (handle, mechanism, key);
+	rv = (map.funcs->C_SignRecoverInit) (handle, mechanism, key);
+	if (rv == CKR_OK)
+		stash_session_specific_key (session.wrap_session, key);
+	return rv;
+
 }
 
 static CK_RV
@@ -969,7 +1062,7 @@ wrap_C_SignRecover (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_le
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_SignRecover) (handle, data, data_len, signature, signature_len);
@@ -979,13 +1072,17 @@ static CK_RV
 wrap_C_VerifyInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                    CK_OBJECT_HANDLE key)
 {
+	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, &session);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_VerifyInit) (handle, mechanism, key);
+	rv = (map.funcs->C_VerifyInit) (handle, mechanism, key);
+	if (rv == CKR_OK)
+		stash_session_specific_key (session.wrap_session, key);
+	return rv;
 }
 
 static CK_RV
@@ -995,7 +1092,7 @@ wrap_C_Verify (CK_SESSION_HANDLE handle, CK_BYTE_PTR data, CK_ULONG data_len,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_Verify) (handle, data, data_len, signature, signature_len);
@@ -1007,7 +1104,7 @@ wrap_C_VerifyUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part, CK_ULONG part_l
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_VerifyUpdate) (handle, part, part_len);
@@ -1020,7 +1117,7 @@ wrap_C_VerifyFinal (CK_SESSION_HANDLE handle, CK_BYTE_PTR signature,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_VerifyFinal) (handle, signature, signature_len);
@@ -1030,13 +1127,17 @@ static CK_RV
 wrap_C_VerifyRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                           CK_OBJECT_HANDLE key)
 {
+	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, &session);
 	if (rv != CKR_OK)
 		return rv;
-	return (map.funcs->C_VerifyRecoverInit) (handle, mechanism, key);
+	rv = (map.funcs->C_VerifyRecoverInit) (handle, mechanism, key);
+	if (rv == CKR_OK)
+		stash_session_specific_key (session.wrap_session, key);
+	return rv;
 }
 
 static CK_RV
@@ -1046,7 +1147,7 @@ wrap_C_VerifyRecover (CK_SESSION_HANDLE handle, CK_BYTE_PTR signature,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_VerifyRecover) (handle, signature, signature_len, data, data_len);
@@ -1060,7 +1161,7 @@ wrap_C_DigestEncryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DigestEncryptUpdate) (handle, part, part_len, enc_part, enc_part_len);
@@ -1074,7 +1175,7 @@ wrap_C_DecryptDigestUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DecryptDigestUpdate) (handle, enc_part, enc_part_len, part, part_len);
@@ -1088,7 +1189,7 @@ wrap_C_SignEncryptUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_SignEncryptUpdate) (handle, part, part_len, enc_part, enc_part_len);
@@ -1102,7 +1203,7 @@ wrap_C_DecryptVerifyUpdate (CK_SESSION_HANDLE handle, CK_BYTE_PTR enc_part,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DecryptVerifyUpdate) (handle, enc_part, enc_part_len, part, part_len);
@@ -1116,7 +1217,7 @@ wrap_C_GenerateKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GenerateKey) (handle, mechanism, template, count, key);
@@ -1131,7 +1232,7 @@ wrap_C_GenerateKeyPair (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GenerateKeyPair) (handle, mechanism, pub_template, pub_count, priv_template, priv_count, pub_key, priv_key);
@@ -1145,7 +1246,7 @@ wrap_C_WrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_WrapKey) (handle, mechanism, wrapping_key, key, wrapped_key, wrapped_key_len);
@@ -1160,7 +1261,7 @@ wrap_C_UnwrapKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_UnwrapKey) (handle, mechanism, unwrapping_key, wrapped_key, wrapped_key_len, template, count, key);
@@ -1174,7 +1275,7 @@ wrap_C_DeriveKey (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_DeriveKey) (handle, mechanism, base_key, template, count, key);
@@ -1186,7 +1287,7 @@ wrap_C_SeedRandom (CK_SESSION_HANDLE handle, CK_BYTE_PTR seed, CK_ULONG seed_len
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_SeedRandom) (handle, seed, seed_len);
@@ -1199,7 +1300,7 @@ wrap_C_GenerateRandom (CK_SESSION_HANDLE handle, CK_BYTE_PTR random_data,
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 	return (map.funcs->C_GenerateRandom) (handle, random_data, random_len);

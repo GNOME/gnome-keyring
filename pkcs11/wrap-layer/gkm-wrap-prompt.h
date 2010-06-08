@@ -55,9 +55,52 @@ void                gkm_wrap_prompt_done_credential         (GkmWrapPrompt *self
                                                              CK_RV call_result);
 
 #if 0
-void                gkm_wrap_prompt_complete                (GkmWrapPrompt *self);
+GkmWrapPrompt*      gkm_wrap_prompt_for_init_pin            (CK_FUNCTION_LIST_PTR module,
+                                                             CK_SESSION_HANDLE session,
+                                                             CK_UTF8CHAR_PTR pin,
+                                                             CK_ULONG pin_len);
 
-void                gkm_wrap_prompt_dismiss                 (GkmWrapPrompt *self);
+gboolean            gkm_wrap_prompt_do_init_pin             (GkmWrapPrompt *prompt,
+                                                             CK_RV last_result,
+                                                             CK_UTF8CHAR_PTR *pin,
+                                                             CK_ULONG *n_pin);
+
+void                gkm_wrap_prompt_done_init_pin           (GkmWrapPrompt *prompt,
+                                                             CK_RV call_result);
+
+GkmWrapPrompt*      gkm_wrap_prompt_for_set_pin             (CK_FUNCTION_LIST_PTR module,
+                                                             CK_SESSION_HANDLE session,
+                                                             CK_UTF8CHAR_PTR old_pin,
+                                                             CK_ULONG n_old_pin,
+                                                             CK_UTF8CHAR_PTR new_pin,
+                                                             CK_ULONG n_new_pin);
+
+gboolean            gkm_wrap_prompt_do_set_pin              (GkmWrapPrompt *prompt,
+                                                             CK_RV last_result,
+                                                             CK_UTF8CHAR_PTR *old_pin,
+                                                             CK_ULONG *n_old_pin,
+                                                             CK_UTF8CHAR_PTR *new_pin,
+                                                             CK_ULONG *n_new_pin);
+
+void                gkm_wrap_prompt_done_set_pin            (GkmWrapPrompt *prompt,
+                                                             CK_RV call_result);
 #endif
+
+GkmWrapPrompt*      gkm_wrap_prompt_for_login               (CK_FUNCTION_LIST_PTR module,
+                                                             CK_USER_TYPE user_type,
+                                                             CK_SESSION_HANDLE session,
+                                                             CK_OBJECT_HANDLE object,
+                                                             CK_UTF8CHAR_PTR pin,
+                                                             CK_ULONG n_pin);
+
+gboolean            gkm_wrap_prompt_do_login                (GkmWrapPrompt *prompt,
+                                                             CK_USER_TYPE user_type,
+                                                             CK_RV last_result,
+                                                             CK_UTF8CHAR_PTR *pin,
+                                                             CK_ULONG *n_pin);
+
+void                gkm_wrap_prompt_done_login              (GkmWrapPrompt *prompt,
+                                                             CK_USER_TYPE user_type,
+                                                             CK_RV call_result);
 
 #endif /* __GKM_WRAP_PROMPT_H__ */
