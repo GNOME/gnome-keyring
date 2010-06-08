@@ -160,16 +160,18 @@ static gboolean do_warning = TRUE;
  * locking for memory between threads
  */
 
+G_LOCK_DEFINE_STATIC (memory_mutex);
+
 void
 egg_memory_lock (void)
 {
-	/* The daemon uses cooperative threading, and doesn't need locking */
+	G_LOCK (memory_mutex);
 }
 
 void
 egg_memory_unlock (void)
 {
-	/* The daemon uses cooperative threading, and doesn't need locking */
+	G_LOCK (memory_mutex);
 }
 
 void*
