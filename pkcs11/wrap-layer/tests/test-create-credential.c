@@ -23,6 +23,7 @@
 
 #include "test-suite.h"
 
+#include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
 
 #include "wrap-layer/gkm-wrap-layer.h"
@@ -48,7 +49,7 @@ DEFINE_SETUP (create_credential)
 	};
 
 	/* Always start off with test functions */
-	rv = gkm_test_C_GetFunctionList (&funcs);
+	rv = gkm_mock_C_GetFunctionList (&funcs);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	memcpy (&test_functions, funcs, sizeof (test_functions));
 

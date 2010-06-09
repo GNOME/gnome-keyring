@@ -39,6 +39,7 @@ libgkm_la_SOURCES = \
 	gkm-mechanism-dsa.c gkm-mechanism-dsa.h \
 	gkm-mechanism-rsa.c gkm-mechanism-rsa.h \
 	gkm-memory-store.c gkm-memory-store.h \
+	gkm-mock.c gkm-mock.h \
 	gkm-module.c gkm-module.h gkm-module-ep.h \
 	gkm-null-key.c gkm-null-key.h \
 	gkm-null-mechanism.c gkm-null-mechanism.h \

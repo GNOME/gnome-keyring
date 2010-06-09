@@ -23,6 +23,7 @@
 
 #include "test-suite.h"
 
+#include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
 
 #include "wrap-layer/gkm-wrap-layer.h"
@@ -47,10 +48,10 @@ DEFINE_SETUP (login_specific)
 		{ CKA_ALWAYS_AUTHENTICATE, &always, sizeof (always) }
 	};
 
-	CK_MECHANISM mech = { CKM_T_PREFIX, NULL, 0 };
+	CK_MECHANISM mech = { CKM_MOCK_PREFIX, NULL, 0 };
 
 	/* Always start off with test functions */
-	rv = gkm_test_C_GetFunctionList (&funcs);
+	rv = gkm_mock_C_GetFunctionList (&funcs);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	memcpy (&prompt_login_functions, funcs, sizeof (prompt_login_functions));
 

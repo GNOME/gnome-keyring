@@ -23,6 +23,7 @@
 
 #include "test-suite.h"
 
+#include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
 
 #include "wrap-layer/gkm-wrap-layer.h"
@@ -41,7 +42,7 @@ DEFINE_SETUP (login_user)
 	CK_RV rv;
 
 	/* Always start off with test functions */
-	rv = gkm_test_C_GetFunctionList (&funcs);
+	rv = gkm_mock_C_GetFunctionList (&funcs);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	memcpy (&prompt_login_functions, funcs, sizeof (prompt_login_functions));
 
@@ -126,7 +127,7 @@ DEFINE_TEST (login_user_fail_get_session_info)
 {
 	CK_RV rv;
 
-	prompt_login_functions.C_GetSessionInfo = gkm_fail_C_GetSessionInfo;
+	prompt_login_functions.C_GetSessionInfo = gkm_mock_fail_C_GetSessionInfo;
 	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
@@ -135,7 +136,7 @@ DEFINE_TEST (login_user_fail_get_token_info)
 {
 	CK_RV rv;
 
-	prompt_login_functions.C_GetTokenInfo = gkm_fail_C_GetTokenInfo;
+	prompt_login_functions.C_GetTokenInfo = gkm_mock_fail_C_GetTokenInfo;
 	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
