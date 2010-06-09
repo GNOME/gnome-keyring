@@ -463,7 +463,7 @@ gkm_attributes_find (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, CK_ATTRIBUTE_TYPE
 	g_assert (attrs || !n_attrs);
 
 	for (i = 0; i < n_attrs; ++i) {
-		if(attrs[i].type == type)
+		if(attrs[i].type == type && attrs[i].ulValueLen != (CK_ULONG)-1)
 			return &attrs[i];
 	}
 
@@ -552,8 +552,10 @@ gkm_template_new (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 	g_array_append_vals (template, attrs, n_attrs);
 	for (i = 0; i < n_attrs; ++i) {
 		pat = &g_array_index (template, CK_ATTRIBUTE, i);
-		if (pat->pValue)
-			pat->pValue = g_memdup (pat->pValue, pat->ulValueLen);
+		if (pat->pValue) {
+			g_return_val_if_fail (pat->ulValueLen != (CK_ULONG)-1, NULL);
+			pat->pValue = g_memdup (pat->pValue, pat->ulValueLen ? pat->ulValueLen : 1);
+		}
 	}
 
 	return template;
@@ -568,6 +570,7 @@ gkm_template_set (GArray *template, CK_ATTRIBUTE_PTR attr)
 
 	g_return_if_fail (template);
 	g_return_if_fail (attr);
+	g_return_if_fail (attr->ulValueLen != (CK_ULONG)-1);
 
 	pat = gkm_attributes_find ((CK_ATTRIBUTE_PTR)template->data, template->len, attr->type);
 
@@ -583,7 +586,7 @@ gkm_template_set (GArray *template, CK_ATTRIBUTE_PTR attr)
 	/* Add a new attribute */
 	memcpy (&at, attr, sizeof (at));
 	if (at.pValue)
-		at.pValue = g_memdup (at.pValue, at.ulValueLen);
+		at.pValue = g_memdup (at.pValue, at.ulValueLen ? at.ulValueLen : 1);
 	g_array_append_vals (template, &at, 1);
 }
 
