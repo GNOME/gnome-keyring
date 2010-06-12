@@ -1208,6 +1208,22 @@ gku_prompt_dummy_queue_ok_password (const gchar *password)
 }
 
 void
+gku_prompt_dummy_queue_ok_passwords (const gchar *original, const gchar *password)
+{
+	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n"
+	                               "[original]\nparameter=\nvalue=%s\n"
+	                               "[prompt]\nresponse=ok\n";
+	gchar *value, *ovalue;
+
+	g_return_if_fail (password);
+	value = egg_hex_encode ((const guchar*)password, strlen (password));
+	ovalue = egg_hex_encode ((const guchar*)original, strlen (original));
+	queue_dummy_response (g_strdup_printf (RESPONSE, value, ovalue));
+	g_free (value);
+	g_free (ovalue);
+}
+
+void
 gku_prompt_dummy_queue_auto_password (const gchar *password)
 {
 	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n"

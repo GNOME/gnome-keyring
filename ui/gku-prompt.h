@@ -149,6 +149,9 @@ void                gku_prompt_dummy_queue_response        (const gchar *respons
 
 void                gku_prompt_dummy_queue_ok_password     (const gchar *password);
 
+void                gku_prompt_dummy_queue_ok_passwords    (const gchar *original,
+                                                            const gchar *password);
+
 void                gku_prompt_dummy_queue_auto_password   (const gchar *password);
 
 void                gku_prompt_dummy_queue_no              (void);

@@ -52,12 +52,6 @@ struct _GkmWrapPrompt {
 	GQueue pool;
 };
 
-typedef struct _CredentialPrompt {
-	GArray *template;
-	CK_ULONG n_template;
-	gchar *password;
-} CredentialPrompt;
-
 G_DEFINE_TYPE (GkmWrapPrompt, gkm_wrap_prompt, GKU_TYPE_PROMPT);
 
 /* -----------------------------------------------------------------------------
@@ -128,6 +122,28 @@ auto_unlock_object_unique (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 	return g_strndup (attr->pValue, attr->ulValueLen);
 }
 
+static void
+convert_upper_case (gchar *str)
+{
+	for (; *str; ++str)
+		*str = g_ascii_toupper (*str);
+}
+
+static gchar*
+auto_unlock_object_digest (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+{
+	CK_ATTRIBUTE_PTR attr;
+	gchar *result;
+
+	attr = gkm_attributes_find (attrs, n_attrs, CKA_GNOME_INTERNAL_SHA1);
+	if (attr == NULL)
+		return NULL;
+
+	result = g_strndup (attr->pValue, attr->ulValueLen);
+	convert_upper_case (result);
+	return result;
+}
+
 static gchar*
 auto_unlock_lookup_keyring (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
@@ -148,7 +164,7 @@ static gchar*
 auto_unlock_lookup_object (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	CK_OBJECT_CLASS klass;
-	gchar *unique;
+	gchar *value;
 	gchar *password;
 
 	if (!gkm_attributes_find_ulong (attrs, n_attrs, CKA_CLASS, &klass))
@@ -157,13 +173,24 @@ auto_unlock_lookup_object (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 	if (klass == CKO_G_COLLECTION)
 		return auto_unlock_lookup_keyring (attrs, n_attrs);
 
-	unique = auto_unlock_object_unique (attrs, n_attrs);
-	if (unique == NULL)
-		return NULL;
+	value = auto_unlock_object_unique (attrs, n_attrs);
+	if (value != NULL) {
+		password = gkm_wrap_login_lookup_secret ("unique", value, NULL);
+		g_free (value);
+		if (password)
+			return password;
+	}
 
-	password = gkm_wrap_login_lookup_secret ("unique", unique, NULL);
-	g_free (unique);
-	return password;
+	/* COMPAT: Check old method of storing secrets for objects in login keyring */
+	value = auto_unlock_object_digest (attrs, n_attrs);
+	if (value != NULL) {
+		password = gkm_wrap_login_lookup_secret ("object-digest", value, NULL);
+		g_free (value);
+		if (password)
+			return password;
+	}
+
+	return NULL;
 }
 
 static gchar*
@@ -308,7 +335,7 @@ static void
 auto_unlock_remove_object (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	CK_OBJECT_CLASS klass;
-	gchar *unique;
+	gchar *value;
 
 	if (!gkm_attributes_find_ulong (attrs, n_attrs, CKA_CLASS, &klass))
 		return;
@@ -318,12 +345,19 @@ auto_unlock_remove_object (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 		return;
 	}
 
-	unique = auto_unlock_object_unique (attrs, n_attrs);
-	if (unique == NULL)
-		return;
+	value = auto_unlock_object_unique (attrs, n_attrs);
+	if (value != NULL) {
+		gkm_wrap_login_remove_secret ("unique", value, NULL);
+		g_free (value);
+	}
 
-	gkm_wrap_login_remove_secret ("unique", unique, NULL);
-	g_free (unique);
+	/* COMPAT: Clear old method of storing secrets for objects in login keyring */
+	value = auto_unlock_object_digest (attrs, n_attrs);
+	if (value != NULL) {
+		gkm_wrap_login_remove_secret ("object-digest", value, NULL);
+		g_free (value);
+	}
+
 }
 
 static void
@@ -507,7 +541,7 @@ set_unlock_options_on_prompt (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR options, CK_
 static CK_ATTRIBUTE_PTR
 get_attributes_from_object (GkmWrapPrompt *self, CK_ULONG *n_attrs)
 {
-	CK_ATTRIBUTE attrs[5];
+	CK_ATTRIBUTE attrs[6];
 	CK_ULONG i;
 	CK_RV rv;
 
@@ -521,6 +555,7 @@ get_attributes_from_object (GkmWrapPrompt *self, CK_ULONG *n_attrs)
 	attrs[2].type = CKA_CLASS;
 	attrs[3].type = CKA_G_LOGIN_COLLECTION;
 	attrs[4].type = CKA_GNOME_UNIQUE;
+	attrs[5].type = CKA_GNOME_INTERNAL_SHA1;
 
 	rv = (self->module->C_GetAttributeValue) (self->session, self->object, attrs, G_N_ELEMENTS (attrs));
 	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID) {
@@ -813,6 +848,12 @@ gkm_wrap_prompt_class_init (GkmWrapPromptClass *klass)
  * CREDENTIAL
  */
 
+typedef struct _CredentialPrompt {
+	GArray *template;
+	CK_ULONG n_template;
+	gchar *password;
+} CredentialPrompt;
+
 static void
 credential_prompt_free (gpointer user_data)
 {
@@ -967,25 +1008,168 @@ gkm_wrap_prompt_done_credential (GkmWrapPrompt *self, CK_RV call_result)
 	}
 }
 
-#if 0
+/* ------------------------------------------------------------------------------------
+ * INITPIN
+ */
+
+static void
+prepare_init_token (GkmWrapPrompt *self, CK_TOKEN_INFO_PTR tinfo)
+{
+	GkuPrompt *prompt;
+	gchar *label;
+	gchar *text;
+
+	g_assert (GKM_WRAP_IS_PROMPT (self));
+	g_assert (tinfo);
+
+	prompt = GKU_PROMPT (self);
+
+	label = g_strndup ((gchar*)tinfo->label, sizeof (tinfo->label));
+	g_strchomp (label);
+
+	/* Build up the prompt */
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_show_widget (prompt, "confirm_area");
+	gku_prompt_hide_widget (prompt, "original_area");
+	gku_prompt_set_title (prompt, _("New Password Required"));
+	gku_prompt_set_primary_text (prompt, _("New password required for secure storage"));
+
+	text = g_strdup_printf (_("In order to prepare '%s' for storage of certificates or keys, a password is required"), label);
+	gku_prompt_set_secondary_text (prompt, text);
+	g_free (text);
+
+	if (gkm_wrap_login_is_usable ()) {
+		gku_prompt_show_widget (prompt, "details_area");
+		gku_prompt_show_widget (prompt, "lock_area");
+		gku_prompt_hide_widget (prompt, "options_area");
+	}
+
+	g_free (label);
+}
+
 GkmWrapPrompt*
 gkm_wrap_prompt_for_init_pin (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE session,
                               CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
+	GkmWrapPrompt *self;
 
+	g_assert (module);
+
+	if (pin != NULL || pin_len != 0)
+		return NULL;
+
+	/* Build up the prompt */
+	self = g_object_new (GKM_WRAP_TYPE_PROMPT, NULL);
+	self->module = module;
+	self->session = session;
+	self->destroy_data = (GDestroyNotify)egg_secure_strfree;
+
+	return self;
 }
 
 gboolean
-gkm_wrap_prompt_do_init_pin (GkmWrapPrompt *prompt, CK_RV last_result,
+gkm_wrap_prompt_do_init_pin (GkmWrapPrompt *self, CK_RV last_result,
                              CK_UTF8CHAR_PTR *pin, CK_ULONG *n_pin)
 {
+	CK_TOKEN_INFO tinfo;
 
+	g_assert (GKM_WRAP_IS_PROMPT (self));
+	g_assert (self->module);
+	g_assert (pin);
+	g_assert (n_pin);
+
+	g_assert (self->destroy_data == (GDestroyNotify)egg_secure_strfree);
+	egg_secure_strfree (self->prompt_data);
+	self->prompt_data = NULL;
+
+	if (!get_info_for_token (self, &tinfo))
+		return FALSE;
+
+	/* Hard reset on first prompt, soft on later */
+	gku_prompt_reset (GKU_PROMPT (self), last_result == CKR_OK);
+
+	prepare_init_token (self, &tinfo);
+
+	gku_prompt_request_attention_sync (NULL, on_prompt_attention,
+	                                   g_object_ref (self), g_object_unref);
+
+	if (gku_prompt_get_response (GKU_PROMPT (self)) != GKU_RESPONSE_OK)
+		return FALSE;
+
+	self->prompt_data = gku_prompt_get_password (GKU_PROMPT (self), "password");
+	g_return_val_if_fail (self->prompt_data, FALSE);
+
+	*pin = self->prompt_data;
+	*n_pin = strlen (self->prompt_data);
+	return TRUE;
 }
 
 void
-gkm_wrap_prompt_done_init_pin (GkmWrapPrompt *prompt, CK_RV call_result)
+gkm_wrap_prompt_done_init_pin (GkmWrapPrompt *self, CK_RV call_result)
 {
+	CK_TOKEN_INFO tinfo;
 
+	g_assert (GKM_WRAP_IS_PROMPT (self));
+	g_assert (self->destroy_data == (GDestroyNotify)egg_secure_strfree);
+
+	/* Save auto auto unlock */
+	if (call_result == CKR_OK && auto_unlock_should_attach (self)) {
+		if (get_info_for_token (self, &tinfo))
+			auto_unlock_attach_token (&tinfo, self->prompt_data);
+	}
+}
+
+/* ------------------------------------------------------------------------------------
+ * SETPIN
+ */
+
+typedef struct _SetPinPrompt {
+	gchar *original;
+	gchar *password;
+} SetPinPrompt;
+
+static void
+set_pin_prompt_free (gpointer user_data)
+{
+	SetPinPrompt *data = user_data;
+	egg_secure_strfree (data->original);
+	egg_secure_strfree (data->password);
+	g_slice_free (SetPinPrompt, data);
+}
+
+static void
+prepare_set_token (GkmWrapPrompt *self, CK_TOKEN_INFO_PTR tinfo)
+{
+	GkuPrompt *prompt;
+	gchar *label;
+	gchar *text;
+
+	g_assert (GKM_WRAP_IS_PROMPT (self));
+	g_assert (tinfo);
+
+	prompt = GKU_PROMPT (self);
+
+	label = g_strndup ((gchar*)tinfo->label, sizeof (tinfo->label));
+	g_strchomp (label);
+
+	/* Build up the prompt */
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_show_widget (prompt, "confirm_area");
+	gku_prompt_show_widget (prompt, "original_area");
+	gku_prompt_set_title (prompt, _("Change Password"));
+	gku_prompt_set_primary_text (prompt, _("Change password for secure storage"));
+
+	text = g_strdup_printf (_("To change the password for '%s', the original and new passwords are required"), label);
+	gku_prompt_set_secondary_text (prompt, text);
+	g_free (text);
+
+	if (gkm_wrap_login_is_usable ()) {
+		gku_prompt_show_widget (prompt, "details_area");
+		gku_prompt_show_widget (prompt, "lock_area");
+		gku_prompt_hide_widget (prompt, "options_area");
+	}
+
+	g_free (label);
 }
 
 GkmWrapPrompt*
@@ -993,23 +1177,95 @@ gkm_wrap_prompt_for_set_pin (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE sess
                              CK_UTF8CHAR_PTR old_pin, CK_ULONG n_old_pin,
                              CK_UTF8CHAR_PTR new_pin, CK_ULONG n_new_pin)
 {
+	GkmWrapPrompt *self;
 
+	g_assert (module);
+
+	if (new_pin != NULL || n_new_pin != 0)
+		return NULL;
+
+	/* Build up the prompt */
+	self = g_object_new (GKM_WRAP_TYPE_PROMPT, NULL);
+	self->module = module;
+	self->session = session;
+	self->destroy_data = set_pin_prompt_free;
+	self->prompt_data = g_slice_new0 (SetPinPrompt);
+
+	return self;
 }
 
 gboolean
-gkm_wrap_prompt_do_set_pin (GkmWrapPrompt *prompt, CK_RV last_result,
+gkm_wrap_prompt_do_set_pin (GkmWrapPrompt *self, CK_RV last_result,
                             CK_UTF8CHAR_PTR *old_pin, CK_ULONG *n_old_pin,
                             CK_UTF8CHAR_PTR *new_pin, CK_ULONG *n_new_pin)
 {
+	gboolean initializing = FALSE;
+	CK_TOKEN_INFO tinfo;
+	SetPinPrompt *data;
 
+	g_assert (GKM_WRAP_IS_PROMPT (self));
+	g_assert (self->module);
+	g_assert (old_pin);
+	g_assert (n_old_pin);
+	g_assert (new_pin);
+	g_assert (n_new_pin);
+
+	g_assert (self->destroy_data == set_pin_prompt_free);
+	data = self->prompt_data;
+
+	if (!get_info_for_token (self, &tinfo))
+		return FALSE;
+
+	/* Hard reset on first prompt, soft on later */
+	gku_prompt_reset (GKU_PROMPT (self), last_result == CKR_OK);
+
+	initializing = !(tinfo.flags & CKF_USER_PIN_INITIALIZED);
+	if (initializing)
+		prepare_init_token (self, &tinfo);
+	else
+		prepare_set_token (self, &tinfo);
+
+	gku_prompt_request_attention_sync (NULL, on_prompt_attention,
+	                                   g_object_ref (self), g_object_unref);
+
+	if (gku_prompt_get_response (GKU_PROMPT (self)) != GKU_RESPONSE_OK)
+		return FALSE;
+
+	egg_secure_strfree (data->password);
+	data->password = gku_prompt_get_password (GKU_PROMPT (self), "password");
+	g_return_val_if_fail (data->password, FALSE);
+
+	*new_pin = (guchar*)data->password;
+	*n_new_pin = strlen (data->password);
+
+	if (!initializing) {
+		egg_secure_strfree (data->original);
+		data->original = gku_prompt_get_password (GKU_PROMPT (self), "original");
+		g_return_val_if_fail (data->original, FALSE);
+
+		*old_pin = (guchar*)data->original;
+		*n_old_pin = strlen (data->original);
+	}
+
+	return TRUE;
 }
 
 void
-gkm_wrap_prompt_done_set_pin (GkmWrapPrompt *prompt, CK_RV call_result)
+gkm_wrap_prompt_done_set_pin (GkmWrapPrompt *self, CK_RV call_result)
 {
+	CK_TOKEN_INFO tinfo;
+	SetPinPrompt *data;
 
+	g_assert (GKM_WRAP_IS_PROMPT (self));
+	g_assert (self->destroy_data == set_pin_prompt_free);
+	data = self->prompt_data;
+
+	/* Save auto auto unlock */
+	if (call_result == CKR_OK && auto_unlock_should_attach (self)) {
+		if (get_info_for_token (self, &tinfo))
+			auto_unlock_attach_token (&tinfo, data->password);
+	}
 }
-#endif
 
 /* -----------------------------------------------------------------------------
  * LOGIN

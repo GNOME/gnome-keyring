@@ -54,7 +54,6 @@ gboolean            gkm_wrap_prompt_do_credential           (GkmWrapPrompt *self
 void                gkm_wrap_prompt_done_credential         (GkmWrapPrompt *self,
                                                              CK_RV call_result);
 
-#if 0
 GkmWrapPrompt*      gkm_wrap_prompt_for_init_pin            (CK_FUNCTION_LIST_PTR module,
                                                              CK_SESSION_HANDLE session,
                                                              CK_UTF8CHAR_PTR pin,
@@ -84,7 +83,6 @@ gboolean            gkm_wrap_prompt_do_set_pin              (GkmWrapPrompt *prom
 
 void                gkm_wrap_prompt_done_set_pin            (GkmWrapPrompt *prompt,
                                                              CK_RV call_result);
-#endif
 
 GkmWrapPrompt*      gkm_wrap_prompt_for_login               (CK_FUNCTION_LIST_PTR module,
                                                              CK_USER_TYPE user_type,

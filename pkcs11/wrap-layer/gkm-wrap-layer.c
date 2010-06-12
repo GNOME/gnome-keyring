@@ -530,24 +530,22 @@ wrap_C_GetSessionInfo (CK_SESSION_HANDLE handle, CK_SESSION_INFO_PTR info)
 static CK_RV
 wrap_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
-#if 0
 	GkmWrapPrompt *prompt;
-#endif
 	Mapping map;
 	CK_RV rv;
 
 	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-#if 0
+
 	prompt = gkm_wrap_prompt_for_init_pin (map.funcs, handle, pin, pin_len);
 
 	for (;;) {
 		if (prompt && !gkm_wrap_prompt_do_init_pin (prompt, rv, &pin, &pin_len))
 			break;
-#endif
+
 		rv = (map.funcs->C_InitPIN) (handle, pin, pin_len);
-#if 0
+
 		if (!prompt || rv != CKR_PIN_INVALID || rv != CKR_PIN_LEN_RANGE)
 			break;
 	}
@@ -556,23 +554,21 @@ wrap_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 		gkm_wrap_prompt_done_init_pin (prompt, rv);
 		g_object_unref (prompt);
 	}
-#endif
+
 	return rv;
 }
 
 static CK_RV
 wrap_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
 {
-#if 0
 	GkmWrapPrompt *prompt;
-#endif
 	Mapping map;
 	CK_RV rv;
 
 	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-#if 0
+
 	prompt = gkm_wrap_prompt_for_set_pin (map.funcs, handle,
 	                                      old_pin, old_pin_len,
 	                                      new_pin, new_pin_len);
@@ -581,10 +577,11 @@ wrap_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_p
 		if (prompt && !gkm_wrap_prompt_do_set_pin (prompt, rv, &old_pin, &old_pin_len,
 		                                           &new_pin, &new_pin_len))
 			break;
-#endif
+
 		rv = (map.funcs->C_SetPIN) (handle, old_pin, old_pin_len, new_pin, new_pin_len);
-#if 0
-		if (!prompt || rv != CKR_PIN_INVALID || rv != CKR_PIN_LEN_RANGE)
+
+		if (!prompt || rv != CKR_PIN_INCORRECT ||
+		    rv != CKR_PIN_INVALID || rv != CKR_PIN_LEN_RANGE)
 			break;
 	}
 
@@ -592,7 +589,7 @@ wrap_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_p
 		gkm_wrap_prompt_done_set_pin (prompt, rv);
 		g_object_unref (prompt);
 	}
-#endif
+
 	return rv;
 }
 
