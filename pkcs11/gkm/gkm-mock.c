@@ -107,6 +107,138 @@ lookup_object (Session *session, CK_OBJECT_HANDLE hObject)
 	return attrs;
 }
 
+CK_OBJECT_HANDLE
+gkm_mock_module_take_object (GArray *template)
+{
+	gboolean token;
+	guint handle;
+
+	g_return_val_if_fail (the_objects, 0);
+
+	handle = ++unique_identifier;
+	if (gkm_template_find_boolean (template, CKA_TOKEN, &token))
+		g_return_val_if_fail (token == TRUE, 0);
+	else
+		gkm_template_set_boolean (template, CKA_TOKEN, CK_TRUE);
+	g_hash_table_insert (the_objects, GUINT_TO_POINTER (handle), template);
+	return handle;
+}
+
+void
+gkm_mock_module_enumerate_objects (CK_SESSION_HANDLE handle, GkmMockEnumerator func,
+                                   gpointer user_data)
+{
+	GHashTableIter iter;
+	gpointer key;
+	gpointer value;
+	Session *session;
+
+	g_assert (the_objects);
+	g_assert (func);
+
+	/* Token objects */
+	g_hash_table_iter_init (&iter, the_objects);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		if (!(func) (GPOINTER_TO_UINT (key), value, user_data))
+			return;
+	}
+
+	/* session objects */
+	if (handle) {
+		session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (handle));
+		if (session) {
+			g_hash_table_iter_init (&iter, session->objects);
+			while (g_hash_table_iter_next (&iter, &key, &value)) {
+				if (!(func) (GPOINTER_TO_UINT (key), value, user_data))
+					return;
+			}
+		}
+	}
+}
+
+typedef struct _FindObject {
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG n_attrs;
+	CK_OBJECT_HANDLE object;
+} FindObject;
+
+static gboolean
+enumerate_and_find_object (CK_OBJECT_HANDLE object, GArray *template, gpointer user_data)
+{
+	FindObject *ctx = user_data;
+	CK_ATTRIBUTE_PTR match, attr;
+	CK_ULONG i;
+
+	for (i = 0; i < ctx->n_attrs; ++i) {
+		match = ctx->attrs + i;
+		attr = gkm_template_find (template, match->type);
+		if (!attr)
+			return TRUE; /* Continue */
+
+		if (attr->ulValueLen != match->ulValueLen ||
+		    memcmp (attr->pValue, match->pValue, attr->ulValueLen) != 0)
+			return TRUE; /* Continue */
+	}
+
+	ctx->object = object;
+	return FALSE; /* Stop iteration */
+}
+
+CK_OBJECT_HANDLE
+gkm_mock_module_find_object (CK_SESSION_HANDLE session, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+{
+	FindObject ctx;
+
+	ctx.attrs = attrs;
+	ctx.n_attrs = n_attrs;
+	ctx.object = 0;
+
+	gkm_mock_module_enumerate_objects (session, enumerate_and_find_object, &ctx);
+
+	return ctx.object;
+}
+
+static gboolean
+enumerate_and_count_objects (CK_OBJECT_HANDLE object, GArray *template, gpointer user_data)
+{
+	guint *n_objects = user_data;
+	++(*n_objects);
+	return TRUE; /* Continue */
+}
+
+guint
+gkm_mock_module_count_objects (CK_SESSION_HANDLE session)
+{
+	guint n_objects = 0;
+	gkm_mock_module_enumerate_objects (session, enumerate_and_count_objects, &n_objects);
+	return n_objects;
+}
+
+void
+gkm_mock_module_set_object (CK_OBJECT_HANDLE object, CK_ATTRIBUTE_PTR attrs,
+                            CK_ULONG n_attrs)
+{
+	CK_ULONG i;
+	GArray *template;
+
+	g_return_if_fail (object != 0);
+	g_return_if_fail (the_objects);
+
+	template = g_hash_table_lookup (the_objects, GUINT_TO_POINTER (object));
+	g_return_if_fail (template);
+
+	for (i = 0; i < n_attrs; ++i)
+		gkm_template_set (template, attrs + i);
+}
+
+void
+gkm_mock_module_set_pin (const gchar *password)
+{
+	g_free (the_pin);
+	the_pin = g_strdup (password);
+	n_the_pin = strlen (password);
+}
+
 CK_RV
 gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 {
@@ -153,6 +285,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_UNWRAP, CK_TRUE);
 	gkm_template_set_boolean (attrs, CKA_DERIVE, CK_TRUE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
+	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique1");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_CAPITALIZE), attrs);
 
 	/* Public capitalize key */
@@ -164,6 +297,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_ENCRYPT, CK_TRUE);
 	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_FALSE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
+	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique2");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_CAPITALIZE), attrs);
 
 	/* Private prefix key */
@@ -176,6 +310,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_TRUE);
 	gkm_template_set_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, CK_TRUE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
+	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique3");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_PREFIX), attrs);
 
 	/* Private prefix key */
@@ -187,6 +322,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_VERIFY, CK_TRUE);
 	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_FALSE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
+	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique4");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_PREFIX), attrs);
 
 	initialized = TRUE;
@@ -448,6 +584,13 @@ gkm_mock_C_OpenSession (CK_SLOT_ID slotID, CK_FLAGS flags, CK_VOID_PTR pApplicat
 }
 
 CK_RV
+gkm_mock_fail_C_OpenSession (CK_SLOT_ID slotID, CK_FLAGS flags, CK_VOID_PTR pApplication,
+                             CK_NOTIFY Notify, CK_SESSION_HANDLE_PTR phSession)
+{
+	return CKR_GENERAL_ERROR;
+}
+
+CK_RV
 gkm_mock_C_CloseSession (CK_SESSION_HANDLE hSession)
 {
 	Session *session;
@@ -493,6 +636,18 @@ gkm_mock_C_GetSessionInfo (CK_SESSION_HANDLE hSession, CK_SESSION_INFO_PTR pInfo
 	g_assert (session != NULL && "No such session found");
 	if (!session)
 		return CKR_SESSION_HANDLE_INVALID;
+
+	if (logged_in) {
+		if (session->info.flags & CKF_RW_SESSION)
+			session->info.state = CKS_RW_USER_FUNCTIONS;
+		else
+			session->info.state = CKS_RO_USER_FUNCTIONS;
+	} else {
+		if (session->info.flags & CKF_RW_SESSION)
+			session->info.state = CKS_RW_PUBLIC_SESSION;
+		else
+			session->info.state = CKS_RO_PUBLIC_SESSION;
+	}
 
 	memcpy (pInfo, &session->info, sizeof (*pInfo));
 	return CKR_OK;
@@ -672,20 +827,18 @@ gkm_mock_C_DestroyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject)
 	gboolean priv;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
-	g_assert (session != NULL && "No such session found");
-	if (!session)
-		return CKR_SESSION_HANDLE_INVALID;
+	g_return_val_if_fail (session, CKR_SESSION_HANDLE_INVALID);
 
 	attrs = lookup_object (session, hObject);
-	if (!attrs) {
-		g_assert_not_reached (); /* "no such object found" */
-		return CKR_OBJECT_HANDLE_INVALID;
-	}
+	g_return_val_if_fail (attrs, CKR_OBJECT_HANDLE_INVALID);
 
 	if (gkm_template_find_boolean (attrs, CKA_PRIVATE, &priv) && priv) {
 		if (!logged_in)
 			return CKR_USER_NOT_LOGGED_IN;
 	}
+
+	g_hash_table_remove (the_objects, GUINT_TO_POINTER (hObject));
+	g_hash_table_remove (session->objects, GUINT_TO_POINTER (hObject));
 
 	return CKR_OK;
 }
@@ -770,18 +923,40 @@ gkm_mock_C_SetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObje
 	return CKR_OK;
 }
 
+typedef struct _FindObjects {
+	CK_ATTRIBUTE_PTR template;
+	CK_ULONG count;
+	Session *session;
+} FindObjects;
+
+static gboolean
+enumerate_and_find_objects (CK_OBJECT_HANDLE object, GArray *attrs, gpointer user_data)
+{
+	FindObjects *ctx = user_data;
+	CK_ATTRIBUTE_PTR match, attr;
+	CK_ULONG i;
+
+	for (i = 0; i < ctx->count; ++i) {
+		match = ctx->template + i;
+		attr = gkm_template_find (attrs, match->type);
+		if (!attr)
+			return TRUE; /* Continue */
+
+		if (attr->ulValueLen != match->ulValueLen ||
+		    memcmp (attr->pValue, match->pValue, attr->ulValueLen) != 0)
+			return TRUE; /* Continue */
+	}
+
+	ctx->session->matches = g_list_prepend (ctx->session->matches, GUINT_TO_POINTER (object));
+	return TRUE; /* Continue */
+}
+
 CK_RV
 gkm_mock_C_FindObjectsInit (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
                             CK_ULONG ulCount)
 {
-	GHashTableIter iter;
-	GArray *attrs;
-	CK_ATTRIBUTE_PTR attr;
-	CK_ATTRIBUTE_PTR match;
 	Session *session;
-	gpointer key, value;
-	gboolean matched = TRUE;
-	CK_ULONG i;
+	FindObjects ctx;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
 	g_return_val_if_fail (session != NULL, CKR_SESSION_HANDLE_INVALID);
@@ -792,54 +967,11 @@ gkm_mock_C_FindObjectsInit (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTempla
 
 	session->operation = OP_FIND;
 
-	/* Token objects */
-	g_hash_table_iter_init (&iter, the_objects);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		attrs = (GArray*)value;
-		matched = TRUE;
-		for (i = 0; i < ulCount; ++i) {
-			match = pTemplate + i;
-			attr = gkm_template_find (attrs, match->type);
-			if (!attr) {
-				matched = FALSE;
-				break;
-			}
+	ctx.template = pTemplate;
+	ctx.count = ulCount;
+	ctx.session = session;
 
-			if (attr->ulValueLen != match->ulValueLen ||
-			    memcmp (attr->pValue, match->pValue, attr->ulValueLen) != 0) {
-				matched = FALSE;
-				break;
-			}
-		}
-
-		if (matched)
-			session->matches = g_list_prepend (session->matches, key);
-	}
-
-	/* session objects */
-	g_hash_table_iter_init (&iter, session->objects);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		attrs = (GArray*)value;
-		matched = TRUE;
-		for (i = 0; i < ulCount; ++i) {
-			match = pTemplate + i;
-			attr = gkm_template_find (attrs, match->type);
-			if (!attr) {
-				matched = FALSE;
-				break;
-			}
-
-			if (attr->ulValueLen != match->ulValueLen ||
-			    memcmp (attr->pValue, match->pValue, attr->ulValueLen) != 0) {
-				matched = FALSE;
-				break;
-			}
-		}
-
-		if (matched)
-			session->matches = g_list_prepend (session->matches, key);
-	}
-
+	gkm_mock_module_enumerate_objects (hSession, enumerate_and_find_objects, &ctx);
 	return CKR_OK;
 }
 

@@ -86,6 +86,8 @@ DEFINE_TEARDOWN (create_credential)
 {
 	CK_RV rv;
 
+	g_assert (!gku_prompt_dummy_have_response ());
+
 	object = 0;
 
 	rv = (module->C_CloseSession) (session);

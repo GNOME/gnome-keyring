@@ -86,6 +86,8 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 
 #define CKA_G_SCHEMA                         (CKA_GNOME + 216)
 
+#define CKA_G_LOGIN_COLLECTION               (CKA_GNOME + 218)
+
 /* -------------------------------------------------------------------
  * MECHANISMS
  */

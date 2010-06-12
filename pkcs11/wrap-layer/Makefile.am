@@ -12,6 +12,7 @@ INCLUDES = -I. \
 
 libgkm_wrap_layer_la_SOURCES = \
 	gkm-wrap-layer.c gkm-wrap-layer.h \
+	gkm-wrap-login.c gkm-wrap-login.h \
 	gkm-wrap-prompt.c gkm-wrap-prompt.h
 
 libgkm_wrap_layer_la_LIBADD = \

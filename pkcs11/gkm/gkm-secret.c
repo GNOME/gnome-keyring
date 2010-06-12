@@ -175,3 +175,10 @@ gkm_secret_equals (GkmSecret *self, const guchar* pin, gssize n_pin)
 	/* Compare actual memory */
 	return memcmp (pin, self->memory, n_pin) == 0;
 }
+
+gboolean
+gkm_secret_is_trivially_weak (GkmSecret *self)
+{
+	return gkm_secret_equals (self, NULL, 0) ||
+	       gkm_secret_equals (self, (const guchar*)"", 0);
+}

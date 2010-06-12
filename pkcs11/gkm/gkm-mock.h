@@ -71,6 +71,12 @@ CK_RV               gkm_mock_C_OpenSession                         (CK_SLOT_ID s
                                                                     CK_NOTIFY Notify,
                                                                     CK_SESSION_HANDLE_PTR phSession);
 
+CK_RV               gkm_mock_fail_C_OpenSession                    (CK_SLOT_ID slotID,
+                                                                    CK_FLAGS flags,
+                                                                    CK_VOID_PTR pApplication,
+                                                                    CK_NOTIFY Notify,
+                                                                    CK_SESSION_HANDLE_PTR phSession);
+
 CK_RV               gkm_mock_C_CloseSession                        (CK_SESSION_HANDLE hSession);
 
 CK_RV               gkm_mock_C_CloseAllSessions                    (CK_SLOT_ID slotID);
@@ -337,7 +343,27 @@ CK_RV               gkm_mock_unsupported_C_GenerateRandom          (CK_SESSION_H
                                                                     CK_BYTE_PTR pRandomData,
                                                                     CK_ULONG ulRandomLen);
 
+CK_OBJECT_HANDLE    gkm_mock_module_find_object                    (CK_SESSION_HANDLE session,
+                                                                    CK_ATTRIBUTE_PTR attrs,
+                                                                    CK_ULONG n_attrs);
+
+guint               gkm_mock_module_count_objects                  (CK_SESSION_HANDLE session);
+
+typedef gboolean    (*GkmMockEnumerator)                           (CK_OBJECT_HANDLE handle,
+                                                                    GArray *attrs,
+                                                                    gpointer user_data);
+
+void                gkm_mock_module_enumerate_objects              (CK_SESSION_HANDLE session,
+                                                                    GkmMockEnumerator func,
+                                                                    gpointer user_data);
+
 CK_OBJECT_HANDLE    gkm_mock_module_take_object                    (GArray *template);
+
+void                gkm_mock_module_set_object                     (CK_OBJECT_HANDLE object,
+                                                                    CK_ATTRIBUTE_PTR attrs,
+                                                                    CK_ULONG n_attrs);
+
+void                gkm_mock_module_set_pin                        (const gchar *password);
 
 /*
  * Some dumb crypto mechanisms for simple testing.

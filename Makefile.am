@@ -66,5 +66,5 @@ coverage: check
 	mkdir -p testing/coverage
 	$(LCOV) --directory . --capture --output-file testing/coverage.info
 	$(GENHTML) --output-directory testing/coverage testing/coverage.info
-	echo "Coverage info in: testing/coverage/index.html"
+	@echo "file://$(abs_top_builddir)/testing/coverage/index.html"
 endif

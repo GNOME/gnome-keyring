@@ -67,6 +67,8 @@ DEFINE_TEARDOWN (login_user)
 {
 	CK_RV rv;
 
+	g_assert (!gku_prompt_dummy_have_response ());
+
 	rv = (module->C_CloseSession) (session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	session = 0;

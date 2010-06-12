@@ -398,12 +398,23 @@ static CK_RV
 gkm_secret_collection_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	GkmSecretCollection *self = GKM_SECRET_COLLECTION (base);
+	const gchar *identifier;
+	GkmSecret *master;
 
 	switch (attr->type) {
 	case CKA_CLASS:
 		return gkm_attribute_set_ulong (attr, CKO_G_COLLECTION);
 	case CKA_G_CREDENTIAL_TEMPLATE:
 		return gkm_attribute_set_template (attr, self->template);
+	case CKA_G_LOGIN_COLLECTION:
+		identifier = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (base));
+		g_return_val_if_fail (identifier, CKR_GENERAL_ERROR);
+		return gkm_attribute_set_bool (attr, g_str_equal (identifier, "login"));
+	case CKA_TRUSTED:
+		if (self->sdata)
+			return gkm_attribute_set_bool (attr, CK_FALSE);
+		master = gkm_secret_data_get_master (self->sdata);
+		return gkm_attribute_set_bool (attr, (master && !gkm_secret_is_trivially_weak (master)));
 	}
 	return GKM_OBJECT_CLASS (gkm_secret_collection_parent_class)->get_attribute (base, session, attr);
 }

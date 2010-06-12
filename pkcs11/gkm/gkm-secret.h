@@ -64,4 +64,6 @@ gboolean            gkm_secret_equals                 (GkmSecret *self,
                                                        const guchar *data,
                                                        gssize n_data);
 
+gboolean            gkm_secret_is_trivially_weak      (GkmSecret *self);
+
 #endif /* __GKM_SECRET_H__ */

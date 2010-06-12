@@ -19,19 +19,24 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKM_WRAP_LAYER_H__
-#define __GKM_WRAP_LAYER_H__
+#ifndef __GKM_WRAP_LOGIN_H__
+#define __GKM_WRAP_LOGIN_H__
 
-#include "pkcs11/pkcs11.h"
+#include <glib.h>
 
-CK_FUNCTION_LIST_PTR    gkm_wrap_layer_get_functions               (void);
+gboolean      gkm_wrap_login_is_usable                (void);
 
-void                    gkm_wrap_layer_reset_modules               (void);
+gboolean      gkm_wrap_login_did_unlock_fail          (void);
 
-void                    gkm_wrap_layer_add_module                  (CK_FUNCTION_LIST_PTR funcs);
+void          gkm_wrap_login_attach_secret            (const gchar *label,
+                                                       const gchar *secret,
+                                                       const gchar *first,
+                                                       ...);
 
-void                    gkm_wrap_layer_hint_login_unlock_success   (void);
+gchar*        gkm_wrap_login_lookup_secret            (const gchar *first,
+                                                       ...);
 
-void                    gkm_wrap_layer_hint_login_unlock_failure   (void);
+void          gkm_wrap_login_remove_secret            (const gchar *first,
+                                                       ...);
 
-#endif /* __GKM_WRAP_LAYER_H__ */
+#endif /* __GKM_WRAP_LOGIN_H__ */

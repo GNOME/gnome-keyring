@@ -24,6 +24,7 @@ gp11/gp11-misc.c
 pkcs11/gkm/gkm-certificate.c
 pkcs11/ssh-store/gkm-ssh-private-key.c
 pkcs11/secret-store/gkm-secret-collection.c
+pkcs11/wrap-layer/gkm-wrap-login.c
 pkcs11/wrap-layer/gkm-wrap-prompt.c
 ui/gku-prompt-tool.c
 [type: gettext/glade]ui/gku-prompt.ui

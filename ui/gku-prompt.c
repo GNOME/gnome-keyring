@@ -39,7 +39,7 @@
 
 #include <sys/wait.h>
 
-#define DEBUG_PROMPT 1
+#define DEBUG_PROMPT 0
 #define DEBUG_STDERR 0
 
 enum {
@@ -86,9 +86,9 @@ static void display_async_prompt (GkuPrompt *);
 
 /* User choices we transfer over during a soft prompt reset */
 const struct { const gchar *section; const gchar *name; } SOFT_RESET[] = {
-	{ "unlock-options", "unlock-auto"},
-	{ "unlock-options", "unlock-idle"},
-	{ "unlock-options", "unlock-timeout"},
+	{ "unlock-options", "unlock-auto" },
+	{ "unlock-options", "unlock-idle" },
+	{ "unlock-options", "unlock-timeout" },
 	{ "details", "expanded" },
 };
 
@@ -1172,6 +1172,16 @@ gku_prompt_dummy_prepare_response (void)
 	g_static_mutex_unlock (&attention_mutex);
 }
 
+gboolean
+gku_prompt_dummy_have_response (void)
+{
+	gboolean ret;
+	g_static_mutex_lock (&attention_mutex);
+		ret = !g_queue_is_empty (&queued_responses);
+	g_static_mutex_unlock (&attention_mutex);
+	return ret;
+}
+
 static void
 queue_dummy_response (gchar *response)
 {
@@ -1193,6 +1203,19 @@ void
 gku_prompt_dummy_queue_ok_password (const gchar *password)
 {
 	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n";
+	gchar *value;
+
+	g_return_if_fail (password);
+	value = egg_hex_encode ((const guchar*)password, strlen (password));
+	queue_dummy_response (g_strdup_printf (RESPONSE, value));
+	g_free (value);
+}
+
+void
+gku_prompt_dummy_queue_auto_password (const gchar *password)
+{
+	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n"
+	                               "[unlock-options]\nunlock-auto=1\n";
 	gchar *value;
 
 	g_return_if_fail (password);
