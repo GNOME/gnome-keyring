@@ -919,6 +919,7 @@ gku_prompt_set_unlock_option (GkuPrompt *self, const gchar *option, gint value)
 
 /* Forward declaration */
 static void next_attention_req (const gchar *);
+static void free_attention_req (gpointer data);
 
 typedef struct _Attention {
 	gchar *window_id;
@@ -956,6 +957,8 @@ done_attention_req (GkuPrompt *prompt, gpointer user_data)
 		g_static_mutex_unlock (&attention_mutex);
 		att->cond = NULL;
 	}
+
+	free_attention_req (att);
 }
 
 static void
@@ -981,7 +984,6 @@ static void
 free_attention_req (gpointer data)
 {
 	AttentionReq *att = data;
-	gchar *window_id = NULL;
 
 	if (att) {
 		att->cond = NULL;
@@ -991,17 +993,9 @@ free_attention_req (gpointer data)
 			g_signal_handlers_disconnect_by_func (att->prompt, done_attention_req, att);
 			g_object_unref (att->prompt);
 		}
-		if (att->active) {
-			window_id = att->window_id;
-			att->window_id = NULL;
-		}
 		g_free (att->window_id);
 		g_slice_free (AttentionReq, att);
 	}
-
-	if (window_id)
-		next_attention_req (window_id);
-	g_free (window_id);
 }
 
 static void
@@ -1065,7 +1059,7 @@ next_attention_req (const gchar *window_id)
 
 	att->active = TRUE;
 	g_signal_connect_data (att->prompt, "completed", G_CALLBACK (done_attention_req), att,
-	                       (GClosureNotify)free_attention_req, G_CONNECT_AFTER);
+	                       NULL, G_CONNECT_AFTER);
 	gku_prompt_set_window_id (att->prompt, window_id);
 
 	/* Fake display the prompt */
@@ -1080,6 +1074,8 @@ next_attention_req (const gchar *window_id)
 	} else {
 		display_async_prompt (att->prompt);
 	}
+
+	/* att can be freed here so beware! */
 }
 
 static gboolean
