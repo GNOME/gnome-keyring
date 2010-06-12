@@ -180,7 +180,7 @@ egg_memory_lock (void)
 void
 egg_memory_unlock (void)
 {
-	G_LOCK (memory_mutex);
+	G_UNLOCK (memory_mutex);
 }
 
 void*
