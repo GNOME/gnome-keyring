@@ -587,7 +587,6 @@ daemon/control/tests/Makefile
 daemon/data/Makefile
 daemon/dbus/Makefile
 daemon/login/Makefile
-daemon/pkcs11/Makefile
 daemon/ssh-agent/Makefile
 docs/Makefile
 docs/reference/Makefile

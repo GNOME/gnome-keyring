@@ -22,7 +22,6 @@
 #include "config.h"
 
 #include "gkd-util.h"
-#include "gkd-pkcs11-auth.h"
 #include "gkd-pkcs11.h"
 
 #include "egg/egg-cleanup.h"
@@ -40,7 +39,6 @@
 
 /* The top level of our internal PKCS#11 module stack */
 static CK_FUNCTION_LIST_PTR pkcs11_roof = NULL;
-static CK_FUNCTION_LIST_PTR pkcs11_base = NULL;
 
 static void
 pkcs11_daemon_cleanup (gpointer unused)
@@ -90,11 +88,7 @@ gkd_pkcs11_initialize (void)
 	gkm_wrap_layer_add_module (secret_store);
 	gkm_wrap_layer_add_module (user_store);
 
-	pkcs11_base = gkm_wrap_layer_get_functions ();
-
-	/* The auth component is the top component */
-	gkd_pkcs11_auth_chain_functions (pkcs11_base);
-	pkcs11_roof = gkd_pkcs11_auth_get_functions ();
+	pkcs11_roof = gkm_wrap_layer_get_functions ();
 
 	memset (&init_args, 0, sizeof (init_args));
 	init_args.flags = CKF_OS_LOCKING_OK;
@@ -206,10 +200,4 @@ CK_FUNCTION_LIST_PTR
 gkd_pkcs11_get_functions (void)
 {
 	return pkcs11_roof;
-}
-
-CK_FUNCTION_LIST_PTR
-gkd_pkcs11_get_base_functions (void)
-{
-	return pkcs11_base;
 }

@@ -2,7 +2,6 @@ SUBDIRS = \
 	login \
 	control \
 	ssh-agent \
-	pkcs11 \
 	dbus \
 	data
 
@@ -25,10 +24,10 @@ INCLUDES=	\
 
 gnome_keyring_daemon_SOURCES = \
 	gkd-main.c gkd-main.h \
+	gkd-pkcs11.c gkd-pkcs11.h \
 	gkd-util.c gkd-util.h
 
 gnome_keyring_daemon_LDADD = \
-	$(top_builddir)/daemon/pkcs11/libgkd-pkcs11.la \
 	$(top_builddir)/daemon/dbus/libgkd-dbus.la \
 	$(top_builddir)/daemon/login/libgkd-login.la \
 	$(top_builddir)/daemon/control/libgkd-control.la \

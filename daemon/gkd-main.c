@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "gkd-main.h"
+#include "gkd-pkcs11.h"
 #include "gkd-util.h"
 
 #include "control/gkd-control.h"
@@ -37,8 +38,6 @@
 #include "egg/egg-unix-credentials.h"
 
 #include "login/gkd-login.h"
-
-#include "pkcs11/gkd-pkcs11.h"
 
 #include <errno.h>
 #include <fcntl.h>

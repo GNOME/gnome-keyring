@@ -27,7 +27,7 @@
 #include "gkd-dbus-private.h"
 #include "gkd-secret-service.h"
 
-#include "daemon/pkcs11/gkd-pkcs11.h"
+#include "daemon/gkd-pkcs11.h"
 
 #include "egg/egg-cleanup.h"
 
