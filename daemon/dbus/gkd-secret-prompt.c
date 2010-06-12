@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gkd-dbus-util.h"
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-objects.h"
@@ -30,7 +31,7 @@
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
-#include "prompt/gkd-prompt.h"
+#include "ui/gku-prompt.h"
 
 #include "egg/egg-dh.h"
 
@@ -46,7 +47,7 @@ enum {
 #define PROMPT_IKE_GROUP  "ietf-ike-grp-modp-1536"
 
 struct _GkdSecretPromptPrivate {
-	GkdPrompt parent;
+	GkuPrompt parent;
 	gchar *object_path;
 	GkdSecretService *service;
 	GkdSecretSession *session;
@@ -58,7 +59,9 @@ struct _GkdSecretPromptPrivate {
 	GList *objects;
 };
 
-G_DEFINE_TYPE (GkdSecretPrompt, gkd_secret_prompt, GKD_TYPE_PROMPT);
+static void gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface);
+G_DEFINE_TYPE_WITH_CODE (GkdSecretPrompt, gkd_secret_prompt, GKU_TYPE_PROMPT,
+                         G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
 
 static guint unique_prompt_number = 0;
 
@@ -69,7 +72,7 @@ static guint unique_prompt_number = 0;
 static void
 setup_transport_params (GkdSecretPrompt *self)
 {
-	GkdPrompt *prompt = GKD_PROMPT (self);
+	GkuPrompt *prompt = GKU_PROMPT (self);
 	gsize n_public, n_prime, n_base;
 	gconstpointer prime, base;
 	gpointer public;
@@ -82,21 +85,21 @@ setup_transport_params (GkdSecretPrompt *self)
 	g_return_if_fail (public);
 	self->pv->negotiated = FALSE;
 
-	gkd_prompt_set_transport_param (prompt, "public", public, n_public);
+	gku_prompt_set_transport_param (prompt, "public", public, n_public);
 	g_free (public);
 
 	/* Setup transport crypto */
 	if (!egg_dh_default_params_raw (PROMPT_IKE_GROUP, &prime, &n_prime, &base, &n_base))
 		g_return_if_reached ();
 
-	gkd_prompt_set_transport_param (prompt, "prime", prime, n_prime);
-	gkd_prompt_set_transport_param (prompt, "base", base, n_base);
+	gku_prompt_set_transport_param (prompt, "prime", prime, n_prime);
+	gku_prompt_set_transport_param (prompt, "base", base, n_base);
 }
 
 static gboolean
 complete_transport_params (GkdSecretPrompt *self)
 {
-	GkdPrompt *prompt = GKD_PROMPT (self);
+	GkuPrompt *prompt = GKU_PROMPT (self);
 	gboolean result;
 	gsize n_peer;
 	gpointer peer;
@@ -106,7 +109,7 @@ complete_transport_params (GkdSecretPrompt *self)
 
 	g_return_val_if_fail (self->pv->session, FALSE);
 
-	peer = gkd_prompt_get_transport_param (prompt, "public", &n_peer);
+	peer = gku_prompt_get_transport_param (prompt, "public", &n_peer);
 	if (peer == NULL) {
 		g_warning ("prompt did not return a public dh key");
 		return FALSE;
@@ -123,7 +126,7 @@ complete_transport_params (GkdSecretPrompt *self)
 	return result;
 }
 
-static GkdPrompt*
+static GkuPrompt*
 on_prompt_attention (gpointer user_data)
 {
 	GkdSecretPrompt *self = user_data;
@@ -184,8 +187,8 @@ prompt_method_prompt (GkdSecretPrompt *self, DBusMessage *message)
 		return dbus_message_new_error (message, SECRET_ERROR_ALREADY_EXISTS,
 		                               "This prompt has already been shown.");
 
-	gkd_prompt_set_window_id (GKD_PROMPT (self), window_id);
-	gkd_prompt_request_attention_async (window_id, on_prompt_attention,
+	gku_prompt_set_window_id (GKU_PROMPT (self), window_id);
+	gku_prompt_request_attention_async (window_id, on_prompt_attention,
 	                                    g_object_ref (self), g_object_unref);
 	self->pv->prompted = TRUE;
 
@@ -218,13 +221,13 @@ prompt_method_dismiss (GkdSecretPrompt *self, DBusMessage *message)
  */
 
 static gboolean
-gkd_secret_prompt_responded (GkdPrompt *base)
+gkd_secret_prompt_responded (GkuPrompt *base)
 {
 	GkdSecretPrompt *self = GKD_SECRET_PROMPT (base);
 	gint res;
 
-	res = gkd_prompt_get_response (GKD_PROMPT (self));
-	if (res <= GKD_RESPONSE_NO) {
+	res = gku_prompt_get_response (GKU_PROMPT (self));
+	if (res <= GKU_RESPONSE_NO) {
 		gkd_secret_prompt_dismiss (self);
 		return FALSE;
 	}
@@ -243,18 +246,49 @@ gkd_secret_prompt_responded (GkdPrompt *base)
 }
 
 static void
-gkd_secret_prompt_ready (GkdSecretPrompt *self)
+gkd_secret_prompt_real_ready (GkdSecretPrompt *self)
 {
 	/* Default implementation, unused */
 	g_return_if_reached ();
 }
 
 static void
-gkd_secret_prompt_encode_result (GkdSecretPrompt *self, DBusMessageIter *iter)
+gkd_secret_prompt_real_encode_result (GkdSecretPrompt *self, DBusMessageIter *iter)
 {
 	/* Default implementation, unused */
 	g_return_if_reached ();
 }
+
+static DBusMessage*
+gkd_secret_prompt_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+	GkdSecretPrompt *self;
+	const gchar *caller;
+
+	g_return_val_if_fail (message, NULL);
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (base), NULL);
+	self = GKD_SECRET_PROMPT (base);
+
+	/* This should already have been caught elsewhere */
+	caller = dbus_message_get_sender (message);
+	if (!caller || !g_str_equal (caller, self->pv->caller))
+		g_return_val_if_reached (NULL);
+
+	/* org.freedesktop.Secrets.Prompt.Prompt() */
+	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Prompt"))
+		reply = prompt_method_prompt (self, message);
+
+	/* org.freedesktop.Secrets.Prompt.Negotiate() */
+	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
+		reply = prompt_method_dismiss (self, message);
+
+	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		return gkd_dbus_introspect_handle (message, "prompt");
+
+	return reply;
+}
+
 
 static GObject*
 gkd_secret_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
@@ -348,7 +382,7 @@ gkd_secret_prompt_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_set_string (value, gkd_secret_prompt_get_caller (self));
 		break;
 	case PROP_OBJECT_PATH:
-		g_value_set_boxed (value, gkd_secret_prompt_get_object_path (self));
+		g_value_set_boxed (value, self->pv->object_path);
 		break;
 	case PROP_SERVICE:
 		g_value_set_object (value, self->pv->service);
@@ -363,7 +397,7 @@ static void
 gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GkdPromptClass *prompt_class = GKD_PROMPT_CLASS (klass);
+	GkuPromptClass *prompt_class = GKU_PROMPT_CLASS (klass);
 
 	gobject_class->constructor = gkd_secret_prompt_constructor;
 	gobject_class->dispose = gkd_secret_prompt_dispose;
@@ -373,8 +407,8 @@ gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 
 	prompt_class->responded = gkd_secret_prompt_responded;
 
-	klass->encode_result = gkd_secret_prompt_encode_result;
-	klass->prompt_ready = gkd_secret_prompt_ready;
+	klass->encode_result = gkd_secret_prompt_real_encode_result;
+	klass->prompt_ready = gkd_secret_prompt_real_ready;
 
 	g_type_class_add_private (klass, sizeof (GkdSecretPromptPrivate));
 
@@ -391,50 +425,21 @@ gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
+static void
+gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface)
+{
+	iface->dispatch_message = gkd_secret_prompt_real_dispatch_message;
+}
+
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
-
-DBusMessage*
-gkd_secret_prompt_dispatch (GkdSecretPrompt *self, DBusMessage *message)
-{
-	DBusMessage *reply = NULL;
-	const gchar *caller;
-
-	g_return_val_if_fail (message, NULL);
-	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
-
-	/* This should already have been caught elsewhere */
-	caller = dbus_message_get_sender (message);
-	if (!caller || !g_str_equal (caller, self->pv->caller))
-		g_return_val_if_reached (NULL);
-
-	/* org.freedesktop.Secrets.Prompt.Prompt() */
-	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Prompt"))
-		reply = prompt_method_prompt (self, message);
-
-	/* org.freedesktop.Secrets.Prompt.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
-		reply = prompt_method_dismiss (self, message);
-
-	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, "prompt");
-
-	return reply;
-}
 
 const gchar*
 gkd_secret_prompt_get_caller (GkdSecretPrompt *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
 	return self->pv->caller;
-}
-
-const gchar*
-gkd_secret_prompt_get_object_path (GkdSecretPrompt *self)
-{
-	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
-	return self->pv->object_path;
 }
 
 GP11Session*
@@ -502,7 +507,7 @@ gkd_secret_prompt_get_secret (GkdSecretPrompt *self, const gchar *password_type)
 	if (!complete_transport_params (self))
 		return NULL;
 
-	if (!gkd_prompt_get_transport_password (GKD_PROMPT (self), password_type,
+	if (!gku_prompt_get_transport_password (GKU_PROMPT (self), password_type,
 	                                        &parameter, &n_parameter,
 	                                        &value, &n_value))
 		return NULL;

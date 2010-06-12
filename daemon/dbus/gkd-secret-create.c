@@ -61,30 +61,30 @@ G_DEFINE_TYPE (GkdSecretCreate, gkd_secret_create, GKD_SECRET_TYPE_PROMPT);
 static void
 prepare_create_prompt (GkdSecretCreate *self)
 {
-	GkdPrompt *prompt;
+	GkuPrompt *prompt;
 	gchar *label;
 	gchar *text;
 
 	g_assert (GKD_SECRET_IS_CREATE (self));
 	g_assert (self->pkcs11_attrs);
 
-	prompt = GKD_PROMPT (self);
+	prompt = GKU_PROMPT (self);
 
 	if (!gp11_attributes_find_string (self->pkcs11_attrs, CKA_LABEL, &label))
 		label = g_strdup (_("Unnamed"));
 
-	gkd_prompt_reset (prompt, TRUE);
+	gku_prompt_reset (prompt, TRUE);
 
-	gkd_prompt_set_title (prompt, _("New Keyring Password"));
-	gkd_prompt_set_primary_text (prompt, _("Choose password for new keyring"));
+	gku_prompt_set_title (prompt, _("New Keyring Password"));
+	gku_prompt_set_primary_text (prompt, _("Choose password for new keyring"));
 
 	text = g_markup_printf_escaped (_("An application wants to create a new keyring called '%s'. "
 	                                  "Choose the password you want to use for it."), label);
-	gkd_prompt_set_secondary_text (prompt, text);
+	gku_prompt_set_secondary_text (prompt, text);
 	g_free (text);
 
-	gkd_prompt_show_widget (prompt, "password_area");
-	gkd_prompt_show_widget (prompt, "confirm_area");
+	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_show_widget (prompt, "confirm_area");
 
 	g_free (label);
 }
@@ -119,13 +119,13 @@ gkd_secret_create_prompt_ready (GkdSecretPrompt *prompt)
 	GkdSecretCreate *self = GKD_SECRET_CREATE (prompt);
 	GkdSecretSecret *master;
 
-	if (!gkd_prompt_has_response (GKD_PROMPT (prompt))) {
+	if (!gku_prompt_has_response (GKU_PROMPT (prompt))) {
 		prepare_create_prompt (self);
 		return;
 	}
 
 	/* Already prompted, create collection */
-	g_return_if_fail (gkd_prompt_get_response (GKD_PROMPT (prompt)) == GKD_RESPONSE_OK);
+	g_return_if_fail (gku_prompt_get_response (GKU_PROMPT (prompt)) == GKU_RESPONSE_OK);
 	master = gkd_secret_prompt_get_secret (prompt, "password");
 
 	if (master && create_collection_with_secret (self, master))

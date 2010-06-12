@@ -22,12 +22,16 @@ stamp-*
 Makefile
 Makefile.in
 core
-run-auto-test*
-run-prompt-test*
+test-suite.[ch]
+run-tests
 *-marshal.[ch]
 .libs
 .deps
 .anjuta*
+*.gcov
+*.gcno
+*.gcda
+
 /compile
 /ABOUT-NLS
 /aclocal.m4
@@ -66,4 +70,3 @@ run-prompt-test*
 /depcomp
 /junk
 /TODO.tasks
-

@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 
 #include "egg-spawn.h"
 
@@ -113,7 +113,7 @@ completed_func (gpointer user_data)
 	g_assert (!data->completed);
 	data->completed = TRUE;
 	if (data->is_async)
-		test_mainloop_quit ();
+		testing_wait_stop ();
 }
 
 static void
@@ -172,7 +172,7 @@ DEFINE_TEST(test_spawn_sync)
 	data.parent_pid = getpid();
 	data.index = 80;
 
-	ret = egg_spawn_sync_with_callbacks (test_data_directory (),
+	ret = egg_spawn_sync_with_callbacks (testing_data_directory (),
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     &exit_status, &error);
@@ -192,7 +192,7 @@ DEFINE_TEST(test_spawn_sync_error)
 	GError *error = NULL;
 	gboolean ret;
 
-	ret = egg_spawn_sync_with_callbacks (test_data_directory (),
+	ret = egg_spawn_sync_with_callbacks (testing_data_directory (),
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);
@@ -214,7 +214,7 @@ DEFINE_TEST(test_spawn_async)
 	data.index = 80;
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (test_data_directory (),
+	ret = egg_spawn_async_with_callbacks (testing_data_directory (),
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     NULL, &error);
@@ -224,7 +224,7 @@ DEFINE_TEST(test_spawn_async)
 	g_assert (!data.output);
 	g_assert (!data.completed);
 
-	test_mainloop_run (2000);
+	testing_wait_until (2000);
 
 	g_assert (data.finalized);
 	g_assert (data.completed);
@@ -242,7 +242,7 @@ DEFINE_TEST(test_spawn_async_none)
 	data.parent_pid = getpid();
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (test_data_directory (),
+	ret = egg_spawn_async_with_callbacks (testing_data_directory (),
 	                                     echo_argv, NULL, 0, NULL,
 	                                     &null_callbacks, &data,
 	                                     NULL, &error);
@@ -252,7 +252,7 @@ DEFINE_TEST(test_spawn_async_none)
 	g_assert (!data.completed);
 	g_assert (!data.output);
 
-	test_mainloop_run (2000);
+	testing_wait_until (2000);
 
 	g_assert (data.finalized);
 	g_assert (data.completed);
@@ -264,7 +264,7 @@ DEFINE_TEST(test_spawn_async_error)
 	GError *error = NULL;
 	guint ret;
 
-	ret = egg_spawn_async_with_callbacks (test_data_directory (),
+	ret = egg_spawn_async_with_callbacks (testing_data_directory (),
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);

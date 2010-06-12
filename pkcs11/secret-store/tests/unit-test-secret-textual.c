@@ -23,16 +23,16 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 #include "test-secret-module.h"
 
-#include "gck-secret-collection.h"
-#include "gck-secret-data.h"
-#include "gck-secret-fields.h"
-#include "gck-secret-item.h"
-#include "gck-secret-textual.h"
+#include "gkm-secret-collection.h"
+#include "gkm-secret-data.h"
+#include "gkm-secret-fields.h"
+#include "gkm-secret-item.h"
+#include "gkm-secret-textual.h"
 
-#include "gck/gck-secret.h"
+#include "gkm/gkm-secret.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -42,26 +42,26 @@
 #include <stdio.h>
 #include <string.h>
 
-static GckModule *module = NULL;
-static GckSession *session = NULL;
-static GckSecretCollection *collection = NULL;
-static GckSecretData *sdata = NULL;
+static GkmModule *module = NULL;
+static GkmSession *session = NULL;
+static GkmSecretCollection *collection = NULL;
+static GkmSecretData *sdata = NULL;
 
 DEFINE_SETUP(textual)
 {
 	module = test_secret_module_initialize_and_enter ();
 	session = test_secret_module_open_session (TRUE);
 
-	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+	collection = g_object_new (GKM_TYPE_SECRET_COLLECTION,
 	                           "module", module,
 	                           "identifier", "test",
 	                           "label", "brigadooooooooooooon",
 	                           NULL);
-	
-	sdata = g_object_new (GCK_TYPE_SECRET_DATA, NULL);
 
-	g_assert (GCK_IS_SECRET_COLLECTION (collection));
-	
+	sdata = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
+
+	g_assert (GKM_IS_SECRET_COLLECTION (collection));
+
 }
 
 DEFINE_TEARDOWN(textual)
@@ -81,85 +81,85 @@ DEFINE_TEARDOWN(textual)
 
 DEFINE_TEST(textual_read)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("plain.keyring", &n_data);
-	res = gck_secret_textual_read (collection, sdata, data, n_data);
+	data = testing_data_read ("plain.keyring", &n_data);
+	res = gkm_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
 	test_secret_collection_validate (collection, sdata);
 
-	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (res == GKM_DATA_SUCCESS);
 }
 
 DEFINE_TEST(textual_read_wrong_format)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("encrypted.keyring", &n_data);
-	res = gck_secret_textual_read (collection, sdata, data, n_data);
+	data = testing_data_read ("encrypted.keyring", &n_data);
+	res = gkm_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
-	g_assert (res == GCK_DATA_UNRECOGNIZED);
+	g_assert (res == GKM_DATA_UNRECOGNIZED);
 }
 
 DEFINE_TEST(textual_read_bad_number)
 {
-	GckSecretItem *item;
-	GckDataResult res;
+	GkmSecretItem *item;
+	GkmDataResult res;
 	const gchar *value;
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("plain-bad-number.keyring", &n_data);
-	res = gck_secret_textual_read (collection, sdata, data, n_data);
+	data = testing_data_read ("plain-bad-number.keyring", &n_data);
+	res = gkm_secret_textual_read (collection, sdata, data, n_data);
 	g_free (data);
 
-	g_assert (res == GCK_DATA_SUCCESS);
+	g_assert (res == GKM_DATA_SUCCESS);
 
-	item = gck_secret_collection_get_item (collection, "1");
-	g_assert (GCK_IS_SECRET_ITEM (item));
-	value = gck_secret_fields_get (gck_secret_item_get_fields (item), "bad-number");
+	item = gkm_secret_collection_get_item (collection, "1");
+	g_assert (GKM_IS_SECRET_ITEM (item));
+	value = gkm_secret_fields_get (gkm_secret_item_get_fields (item), "bad-number");
 	g_assert (value == NULL);
-	value = gck_secret_fields_get (gck_secret_item_get_fields (item), "missing-number");
+	value = gkm_secret_fields_get (gkm_secret_item_get_fields (item), "missing-number");
 	g_assert (value == NULL);
 }
 
 DEFINE_TEST(textual_write)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	guchar *data;
 	gsize n_data;
 
 	test_secret_collection_populate (collection, sdata);
 
-	res = gck_secret_textual_write (collection, sdata, &data, &n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_textual_write (collection, sdata, &data, &n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (data);
 	g_assert (n_data);
 
 	/* Try parsing it again */
-	res = gck_secret_textual_read (collection, sdata, data, n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_textual_read (collection, sdata, data, n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 }
 
 DEFINE_TEST(textual_remove_unavailable)
 {
-	GckDataResult res;
+	GkmDataResult res;
 	GList *items;
 	guchar *data;
 	gsize n_data;
 
-	data = test_data_read ("plain.keyring", &n_data);
-	res = gck_secret_textual_read (collection, sdata, data, n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	data = testing_data_read ("plain.keyring", &n_data);
+	res = gkm_secret_textual_read (collection, sdata, data, n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Two items from the file */
-	items = gck_secret_collection_get_items (collection);
+	items = gkm_secret_collection_get_items (collection);
 	g_assert_cmpint (g_list_length (items), ==, 2);
 	g_list_free (items);
 
@@ -167,16 +167,16 @@ DEFINE_TEST(textual_remove_unavailable)
 	test_secret_collection_populate (collection, sdata);
 
 	/* Should have added three more */
-	items = gck_secret_collection_get_items (collection);
+	items = gkm_secret_collection_get_items (collection);
 	g_assert_cmpint (g_list_length (items), ==, 5);
 	g_list_free (items);
 
 	/* Re-read the keyring */
-	res = gck_secret_textual_read (collection, sdata, data, n_data);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_textual_read (collection, sdata, data, n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* And we're back to two */
-	items = gck_secret_collection_get_items (collection);
+	items = gkm_secret_collection_get_items (collection);
 	g_assert_cmpint (g_list_length (items), ==, 2);
 	g_list_free (items);
 

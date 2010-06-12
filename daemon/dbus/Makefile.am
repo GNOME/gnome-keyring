@@ -19,6 +19,7 @@ libgkd_dbus_la_SOURCES = \
 	gkd-dbus-util.c gkd-dbus-util.h \
 	gkd-secret-change.c gkd-secret-change.h \
 	gkd-secret-create.c gkd-secret-create.h \
+	gkd-secret-dispatch.c gkd-secret-dispatch.h \
 	gkd-secret-error.c gkd-secret-error.h \
 	gkd-secret-lock.c gkd-secret-lock.h \
 	gkd-secret-objects.c gkd-secret-objects.h \

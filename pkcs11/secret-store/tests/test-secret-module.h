@@ -26,8 +26,8 @@
 
 #include <glib.h>
 
-#include "gck/gck-types.h"
-#include "gck-secret-types.h"
+#include "gkm/gkm-types.h"
+#include "gkm-secret-types.h"
 
 #include "pkcs11.h"
 
@@ -35,16 +35,16 @@ void                   test_secret_module_leave                    (void);
 
 void                   test_secret_module_enter                    (void);
 
-GckModule*             test_secret_module_initialize_and_enter     (void);
+GkmModule*             test_secret_module_initialize_and_enter     (void);
 
 void                   test_secret_module_leave_and_finalize       (void);
 
-GckSession*            test_secret_module_open_session             (gboolean writable);
+GkmSession*            test_secret_module_open_session             (gboolean writable);
 
-void                   test_secret_collection_validate             (GckSecretCollection *collection,
-                                                                    GckSecretData *sdata);
+void                   test_secret_collection_validate             (GkmSecretCollection *collection,
+                                                                    GkmSecretData *sdata);
 
-void                   test_secret_collection_populate             (GckSecretCollection *collection,
-                                                                    GckSecretData *sdata);
+void                   test_secret_collection_populate             (GkmSecretCollection *collection,
+                                                                    GkmSecretData *sdata);
 
 #endif /* TEST_SECRET_MODULE_H_ */

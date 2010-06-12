@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 
 #include "egg-symkey.h"
 #include "egg-openssl.h"
@@ -76,7 +76,7 @@ DEFINE_TEST(parse_reference)
 	gsize n_input;
 	guint num;
 	
-	input = test_data_read ("pem-rsa-enc.key", &n_input);
+	input = testing_data_read ("pem-rsa-enc.key", &n_input);
 
 	num = egg_openssl_pem_parse (input, n_input, parse_reference, NULL);
 	g_assert ("couldn't PEM block in reference data" && num == 1);

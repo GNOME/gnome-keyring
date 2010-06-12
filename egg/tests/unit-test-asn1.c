@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 
 #include "egg/egg-asn1.h"
 #include "egg/egg-oid.h"
@@ -55,7 +55,7 @@ DEFINE_SETUP(asn1_tree)
 
 	/* -------- */
 	
-	data_cert = test_data_read ("test-certificate-1.der", &n_data_cert);
+	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
 
 	/* We'll be catching this error later */
 	pkix = egg_asn1_get_pkix_asn1type ();

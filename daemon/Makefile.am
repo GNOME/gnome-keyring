@@ -1,10 +1,8 @@
 SUBDIRS = \
-	prompt \
 	login \
 	control \
 	ssh-agent \
 	gpg-agent \
-	pkcs11 \
 	dbus \
 	data
 
@@ -28,23 +26,23 @@ INCLUDES=	\
 gnome_keyring_daemon_SOURCES = \
 	gkd-glue.c gkd-glue.h \
 	gkd-main.c gkd-main.h \
+	gkd-pkcs11.c gkd-pkcs11.h \
 	gkd-util.c gkd-util.h
 
 gnome_keyring_daemon_LDADD = \
-	$(top_builddir)/daemon/pkcs11/libgkd-pkcs11.la \
 	$(top_builddir)/daemon/dbus/libgkd-dbus.la \
 	$(top_builddir)/daemon/login/libgkd-login.la \
 	$(top_builddir)/daemon/control/libgkd-control.la \
-	$(top_builddir)/daemon/prompt/libgkd-prompt.la \
+	$(top_builddir)/ui/libgku-prompt.la \
 	$(top_builddir)/daemon/ssh-agent/libgkd-ssh-agent.la \
 	$(top_builddir)/daemon/gpg-agent/libgkd-gpg-agent.la \
-	$(top_builddir)/pkcs11/plex-layer/libgck-plex-layer.la \
-	$(top_builddir)/pkcs11/roots-store/libgck-roots-store.la \
-	$(top_builddir)/pkcs11/rpc-layer/libgck-rpc-layer.la \
-	$(top_builddir)/pkcs11/secret-store/libgck-secret-store.la \
-	$(top_builddir)/pkcs11/ssh-store/libgck-ssh-store.la \
-	$(top_builddir)/pkcs11/user-store/libgck-user-store.la \
-	$(top_builddir)/pkcs11/gck/libgck.la \
+	$(top_builddir)/pkcs11/wrap-layer/libgkm-wrap-layer.la \
+	$(top_builddir)/pkcs11/roots-store/libgkm-roots-store.la \
+	$(top_builddir)/pkcs11/rpc-layer/libgkm-rpc-layer.la \
+	$(top_builddir)/pkcs11/secret-store/libgkm-secret-store.la \
+	$(top_builddir)/pkcs11/ssh-store/libgkm-ssh-store.la \
+	$(top_builddir)/pkcs11/user-store/libgkm-user-store.la \
+	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/gp11/libgp11.la \
 	$(top_builddir)/egg/libegg-dbus.la \
 	$(DAEMON_LIBS) \
@@ -62,7 +60,7 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	org.gnome.keyring.service \
-	org.freedesktop.service \
+	org.freedesktop.secrets.service \
 	$(desktop_DATA)
 
 servicedir       = $(DBUS_SERVICES_DIR)

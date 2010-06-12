@@ -24,34 +24,34 @@
 #include "config.h"
 #include "test-ssh-module.h"
 
-#include "gck/gck-module.h"
+#include "gkm/gkm-module.h"
 
-#include "ssh-store/gck-ssh-store.h"
+#include "ssh-store/gkm-ssh-store.h"
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 
 static GMutex *mutex = NULL;
 
-GckModule*  _gck_ssh_store_get_module_for_testing (void);
-GMutex* _gck_module_get_scary_mutex_that_you_should_not_touch (GckModule *module);
+GkmModule*  _gkm_ssh_store_get_module_for_testing (void);
+GMutex* _gkm_module_get_scary_mutex_that_you_should_not_touch (GkmModule *module);
 
-GckModule*
+GkmModule*
 test_ssh_module_initialize_and_enter (void)
 {
 	CK_FUNCTION_LIST_PTR funcs;
-	GckModule *module;
+	GkmModule *module;
 	CK_RV rv;
-	
-	funcs = gck_ssh_store_get_functions ();
+
+	funcs = gkm_ssh_store_get_functions ();
 	rv = (funcs->C_Initialize) (NULL);
 	g_return_val_if_fail (rv == CKR_OK, NULL);
-	
-	module = _gck_ssh_store_get_module_for_testing ();
+
+	module = _gkm_ssh_store_get_module_for_testing ();
 	g_return_val_if_fail (module, NULL);
-	
-	mutex = _gck_module_get_scary_mutex_that_you_should_not_touch (module);
+
+	mutex = _gkm_module_get_scary_mutex_that_you_should_not_touch (module);
 	test_ssh_module_enter ();
-	
+
 	return module;
 }
 
@@ -60,10 +60,10 @@ test_ssh_module_leave_and_finalize (void)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_RV rv;
-	
+
 	test_ssh_module_leave ();
-	
-	funcs = gck_ssh_store_get_functions ();
+
+	funcs = gkm_ssh_store_get_functions ();
 	rv = (funcs->C_Finalize) (NULL);
 	g_return_if_fail (rv == CKR_OK);
 }
@@ -72,7 +72,7 @@ void
 test_ssh_module_leave (void)
 {
 	g_assert (mutex);
-	g_mutex_unlock (mutex);	
+	g_mutex_unlock (mutex);
 }
 
 void
@@ -82,25 +82,25 @@ test_ssh_module_enter (void)
 	g_mutex_lock (mutex);
 }
 
-GckSession*
+GkmSession*
 test_ssh_module_open_session (gboolean writable)
 {
 	CK_ULONG flags = CKF_SERIAL_SESSION;
 	CK_SESSION_HANDLE handle;
-	GckModule *module;
-	GckSession *session;
+	GkmModule *module;
+	GkmSession *session;
 	CK_RV rv;
-	
-	module = _gck_ssh_store_get_module_for_testing ();
+
+	module = _gkm_ssh_store_get_module_for_testing ();
 	g_return_val_if_fail (module, NULL);
 
 	if (writable)
 		flags |= CKF_RW_SESSION;
-	
-	rv = gck_module_C_OpenSession (module, 1, flags, NULL, NULL, &handle);
+
+	rv = gkm_module_C_OpenSession (module, 1, flags, NULL, NULL, &handle);
 	g_assert (rv == CKR_OK);
 
-	session = gck_module_lookup_session (module, handle);
+	session = gkm_module_lookup_session (module, handle);
 	g_assert (session);
 
 	return session;
@@ -108,6 +108,6 @@ test_ssh_module_open_session (gboolean writable)
 
 DEFINE_EXTERNAL(ssh_module)
 {
-	CK_FUNCTION_LIST_PTR funcs = gck_ssh_store_get_functions ();
-	test_p11_module (funcs, "p11-tests.conf");
+	CK_FUNCTION_LIST_PTR funcs = gkm_ssh_store_get_functions ();
+	testing_test_p11_module (funcs, "p11-tests.conf");
 }

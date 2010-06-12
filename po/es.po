@@ -5,13 +5,14 @@
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-02-18 18:02+0000\n"
-"PO-Revision-Date: 2010-02-18 19:24+0100\n"
+"POT-Creation-Date: 2010-05-12 22:49+0000\n"
+"PO-Revision-Date: 2010-05-29 12:21+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -71,22 +72,22 @@ msgstr ""
 "Indica si el servicio de secretos del depósito de claves está activado."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:641
+#: ../pkcs11/secret-store/gck-secret-collection.c:322
 msgid "Unnamed"
 msgstr "Sin nombre"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
-msgstr "Cambia la contraseña del depósito"
+msgstr "Cambiar la contraseña del depósito de claves"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "Elegir una contraseña nueva para el depósito «%s»."
+msgstr "Elegir una contraseña nueva para el depósito de claves «%s»."
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -95,19 +96,19 @@ msgstr ""
 "Una aplicación quiere cambiar la contraseña para el depósito de claves «%s»."
 "Elija la nueva contraseña que quiere usar para él."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "La contraseña original era incorrecta"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
-msgid "New Keyring Password"
-msgstr "Contraseña nueva del depósito"
-
 #: ../daemon/dbus/gkd-secret-create.c:78
-msgid "Choose password for new keyring"
-msgstr "Elija la contraseña para el depósito"
+msgid "New Keyring Password"
+msgstr "Contraseña nueva del depósito de claves"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:79
+msgid "Choose password for new keyring"
+msgstr "Elija la contraseña para el depósito de claves"
+
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -116,45 +117,47 @@ msgstr ""
 "Una aplicación quiere crear un depósito de claves nuevo llamado «%s». Elija "
 "la contraseña que quiere usar para él."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:134
+#: ../daemon/dbus/gkd-secret-unlock.c:135
 msgid "Unlock Login Keyring"
-msgstr "Desbloquear el depósito de inicio"
+msgstr "Desbloquear el depósito de claves de inicio"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:136
+#: ../daemon/dbus/gkd-secret-unlock.c:137
 msgid "Enter password for to unlock your login keyring"
-msgstr "Introducir la contraseña para desbloquear el depósito"
+msgstr ""
+"Introducir la contraseña para desbloquear su depósito de claves de inicio de "
+"sesión"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:140
+#: ../daemon/dbus/gkd-secret-unlock.c:141
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
 "La contraseña que usa para iniciar sesión en su equipo ya no coincide con la "
-"contraseña de inicio de su depósito."
+"contraseña de su depósito de claves de inicio de sesión."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:142
+#: ../daemon/dbus/gkd-secret-unlock.c:143
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"El depósito de inicio de sesión no se desbloqueó cuando inició sesión en su "
-"equipo."
+"El depósito de claves de inicio de sesión no se desbloqueó cuando inició "
+"sesión en su equipo."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:183
+#: ../daemon/dbus/gkd-secret-unlock.c:184
 msgid "Unlock Keyring"
 msgstr "Desbloquear depósito"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:185
+#: ../daemon/dbus/gkd-secret-unlock.c:186
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Introduzca la contraseña para desbloquear el depósito «%s»"
+msgstr "Introduzca la contraseña para desbloquear el depósito de claves «%s»"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:189
+#: ../daemon/dbus/gkd-secret-unlock.c:190
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Una aplicación quiere acceder al depósito de claves «%s», pero está bloqueado"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:219
+#: ../daemon/dbus/gkd-secret-unlock.c:226
 msgid "The unlock password was incorrect"
 msgstr "La contraseña de desbloqueo era incorrecta"
 
@@ -183,11 +186,11 @@ msgid "SSH Key Agent"
 msgstr "Agente de claves SSH"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:207
 msgid "Login"
 msgstr "Inicio de sesión"
 
-#: ../daemon/login/gkd-login.c:596
+#: ../daemon/login/gkd-login.c:643
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Contraseña de desbloqueo para %s"
@@ -656,15 +659,15 @@ msgstr "Contraseña:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Lock this keyring after"
-msgstr "Bloquear después este depósito"
+msgstr "Bloquear después este depósito de claves"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring if idle for"
-msgstr "Bloquear este depósito si está inactivo durante"
+msgstr "Bloquear este depósito de claves si está inactivo durante"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring when I log out"
-msgstr "Bloquear este depósito al cerrar la sesión"
+msgstr "Bloquear este depósito de claves al cerrar la sesión"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "minutes"

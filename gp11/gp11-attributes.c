@@ -59,8 +59,8 @@ attribute_init (GP11Attribute *attr, gulong attr_type,
 	memset (attr, 0, sizeof (GP11Attribute));
 	attr->type = attr_type;
 	attr->length = length;
-	if (value && length) {
-		attr->value = (allocator) (NULL, length);
+	if (value) {
+		attr->value = (allocator) (NULL, length ? length : 1);
 		g_assert (attr->value);
 		memcpy (attr->value, value, length);
 	}

@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
@@ -136,7 +137,7 @@ gkd_secret_secret_append (GkdSecretSecret *secret, DBusMessageIter *iter)
 	const gchar *path;
 	int length;
 
-	path = gkd_secret_session_get_object_path (secret->session);
+	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (secret->session));
 	g_return_if_fail (path);
 
 	dbus_message_iter_open_container (iter, DBUS_TYPE_STRUCT, NULL, &struc);

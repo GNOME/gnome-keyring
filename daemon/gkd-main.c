@@ -25,6 +25,7 @@
 
 #include "gkd-glue.h"
 #include "gkd-main.h"
+#include "gkd-pkcs11.h"
 #include "gkd-util.h"
 
 #include "control/gkd-control.h"
@@ -38,8 +39,6 @@
 #include "egg/egg-unix-credentials.h"
 
 #include "login/gkd-login.h"
-
-#include "pkcs11/gkd-pkcs11.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -170,16 +169,18 @@ static gboolean do_warning = TRUE;
  * locking for memory between threads
  */
 
+G_LOCK_DEFINE_STATIC (memory_mutex);
+
 void
 egg_memory_lock (void)
 {
-	/* The daemon uses cooperative threading, and doesn't need locking */
+	G_LOCK (memory_mutex);
 }
 
 void
 egg_memory_unlock (void)
 {
-	/* The daemon uses cooperative threading, and doesn't need locking */
+	G_LOCK (memory_mutex);
 }
 
 void*
@@ -406,7 +407,7 @@ read_login_password (int fd)
 	/*
 	 * When --login is specified then the login password is passed
 	 * in on stdin. All data (including newlines) are part of the
-	 * password.
+	 * password. A zero length password is no password.
 	 */
 
 	gchar *buf = egg_secure_alloc (MAX_BLOCK);
@@ -422,17 +423,15 @@ read_login_password (int fd)
 			egg_secure_free (buf);
 			return NULL;
 
-		} else  {
-			char *n = egg_secure_realloc (ret, len + r + 1);
-			memset(n + len, 0, r + 1);
-			ret = n;
-			len = len + r;
+		} else if (r == 0 || len > MAX_LENGTH) {
+			break;
 
+		} else {
+			ret = egg_secure_realloc (ret, len + r + 1);
+			memset (ret + len, 0, r + 1);
+			len = len + r;
 			strncat (ret, buf, r);
 		}
-
-		if (r == 0 || len > MAX_LENGTH)
-			break;
 	}
 
 	egg_secure_free (buf);

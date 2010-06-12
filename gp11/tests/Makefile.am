@@ -1,6 +1,6 @@
 
 # Keep these in the order they should be tested
-UNIT_AUTO = \
+TESTING_FILES = \
 	unit-test-gp11-attributes.c \
 	test-gp11-mechanism.c \
 	unit-test-gp11-module.c \
@@ -9,13 +9,11 @@ UNIT_AUTO = \
 	unit-test-gp11-object.c \
 	unit-test-gp11-crypto.c
 
-UNIT_FLAGS = \
+TESTING_FLAGS = \
 	-I$(top_srcdir)/gp11/ \
 	-DEXTERNAL_TEST
-	
-UNIT_PROMPT = 
 
-UNIT_LIBS = \
+TESTING_LIBS = \
 	$(GIO_LIBS) \
 	$(top_builddir)/gp11/libgp11.la \
 	libgp11-test-module.la 
@@ -23,7 +21,7 @@ UNIT_LIBS = \
 EXTRA_DIST = \
 	gp11-test.h
 	
-include $(top_srcdir)/tests/gtest.make
+include $(top_srcdir)/testing/testing.make
 
 # ------------------------------------------------------------------------
 

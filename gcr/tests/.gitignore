@@ -1,10 +1,1 @@
-/Makefile
-/Makefile.in
-/run-auto-test
-/run-auto-test.c
-/run-auto-test.h
-/.deps
-/.libs
 /ui-test-details
-run-prompt-test*
-

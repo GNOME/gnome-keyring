@@ -2,7 +2,7 @@ asn1-def-test.h: test.asn
 	$(ASN1PARSER) -o asn1-def-test.h $(srcdir)/test.asn 
 
 # Test files should be listed in order they need to run
-UNIT_AUTO = \
+TESTING_FILES = \
 	unit-test-asn1.c \
 	unit-test-cleanup.c \
 	unit-test-hex.c \
@@ -17,14 +17,14 @@ UNIT_AUTO = \
 
 UNIT_PROMPT = 
 
-UNIT_LIBS =  \
+TESTING_LIBS =  \
 	$(top_builddir)/egg/libegg.la
 
 EXTRA_DIST = \
 	test.asn \
 	test-data
 
-include $(top_srcdir)/tests/gtest.make
+include $(top_srcdir)/testing/testing.make
 
 BUILT_SOURCES += \
 	asn1-def-test.h

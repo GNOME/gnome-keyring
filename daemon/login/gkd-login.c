@@ -23,70 +23,22 @@
 
 #include "gkd-login.h"
 
+#include "daemon/gkd-pkcs11.h"
+
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
-#include "pkcs11/gkd-pkcs11.h"
 #include "pkcs11/pkcs11i.h"
+#include "pkcs11/wrap-layer/gkm-wrap-layer.h"
 
 #include <glib/gi18n.h>
 
 #include <string.h>
 
-static gint unlock_failures = 0;
-
-static void
-note_that_unlock_failed (void)
-{
-	g_atomic_int_inc (&unlock_failures);
-}
-
-static void
-note_that_unlock_succeeded (void)
-{
-	g_atomic_int_set (&unlock_failures, 0);
-}
-
-#if GKR_VERSION >= 002031000
-	#error "This function should be removed in 2.31.x"
-#else
-
-static void
-cleanup_security_issue_in_2_29_x_betas (const gchar *master)
-{
-	gchar *password;
-
-	/*
-	 * Remove the login password from keyring. This was a bug in 2.29.x
-	 * versions, and 2.30.0 (fixed in 2.30.1) which stored the master
-	 * password in tnhe login keyring. Try to cleanup that situation.
-	 */
-
-	password = gkd_login_lookup_secret ("manufacturer", "Gnome Keyring",
-	                                    "serial-number", "1:USER:DEFAULT",
-	                                    NULL);
-
-	if (password && g_str_equal (password, master)) {
-		gkd_login_remove_secret ("manufacturer", "Gnome Keyring",
-		                         "serial-number", "1:USER:DEFAULT",
-		                         NULL);
-	}
-
-	egg_secure_strfree (password);
-}
-
-#endif /* GKR_VERSION */
-
-gboolean
-gkd_login_did_unlock_fail (void)
-{
-	return g_atomic_int_get (&unlock_failures) ? TRUE : FALSE;
-}
-
 static GP11Module*
 module_instance (void)
 {
-	GP11Module *module = gp11_module_new (gkd_pkcs11_get_base_functions ());
+	GP11Module *module = gp11_module_new (gkd_pkcs11_get_functions ());
 	gp11_module_set_pool_sessions (module, FALSE);
 	gp11_module_set_auto_authenticate (module, FALSE);
 	g_return_val_if_fail (module, NULL);
@@ -272,7 +224,7 @@ unlock_or_create_login (GP11Module *module, const gchar *master)
 	/* Failure, bad password? */
 	if (cred == NULL) {
 		if (login && g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT))
-			note_that_unlock_failed ();
+			gkm_wrap_layer_hint_login_unlock_failure ();
 		else
 			g_warning ("couldn't create login credential: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -287,8 +239,7 @@ unlock_or_create_login (GP11Module *module, const gchar *master)
 
 	/* The unlock succeeded yay */
 	} else {
-		cleanup_security_issue_in_2_29_x_betas (master);
-		note_that_unlock_succeeded ();
+		gkm_wrap_layer_hint_login_unlock_success ();
 	}
 
 	if (cred)
@@ -389,7 +340,7 @@ change_or_create_login (GP11Module *module, const gchar *original, const gchar *
 				g_message ("couldn't change login master password, "
 				           "original password was wrong: %s",
 				           egg_error_message (error));
-				note_that_unlock_failed ();
+				gkm_wrap_layer_hint_login_unlock_failure ();
 			} else {
 				g_warning ("couldn't create original login credential: %s",
 				           egg_error_message (error));
@@ -457,13 +408,8 @@ set_pin_for_any_slots (GP11Module *module, const gchar *original, const gchar *m
 		if (initialize) {
 			session = open_and_login_session (l->data, CKU_USER, NULL);
 			if (session != NULL) {
-				if (gp11_session_set_pin (session, (const guchar*)original, strlen (original),
-				                          (const guchar*)master, strlen (master), &error)) {
-					gkd_login_attach_secret (info->label, master,
-					                         "manufacturer", info->manufacturer_id,
-					                         "serial-number", info->serial_number,
-					                         NULL);
-				} else {
+				if (!gp11_session_set_pin (session, (const guchar*)original, strlen (original),
+				                           (const guchar*)master, strlen (master), &error)) {
 					if (!g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT) &&
 					    !g_error_matches (error, GP11_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
 						g_warning ("couldn't change slot master password: %s",
@@ -500,282 +446,4 @@ gkd_login_change_lock (const gchar *original, const gchar *master)
 
 	g_object_unref (module);
 	return result;
-}
-
-gboolean
-gkd_login_is_usable (void)
-{
-	GP11Module *module;
-	GP11Session *session;
-	GP11Object *login;
-	gboolean usable = FALSE;
-	gpointer data;
-	gsize n_data;
-
-	module = module_instance ();
-	if (!module)
-		return FALSE;
-
-	session = lookup_login_session (module);
-	if (session) {
-		login = lookup_login_keyring (session);
-		if (login) {
-			data = gp11_object_get_data (login, CKA_G_LOCKED, &n_data, NULL);
-			usable = (data && n_data == sizeof (CK_BBOOL) && !*((CK_BBOOL*)data));
-			g_free (data);
-			g_object_unref (login);
-		}
-		g_object_unref (session);
-	}
-
-	g_object_unref (module);
-	return usable;
-}
-
-static void
-string_attribute_list_va (va_list args, const gchar *name, GP11Attribute *attr)
-{
-	GString *fields = g_string_sized_new(128);
-	gsize length;
-
-	while (name != NULL) {
-		g_string_append (fields, name);
-		g_string_append_c (fields, '\0');
-		g_string_append (fields, va_arg (args, const gchar*));
-		g_string_append_c (fields, '\0');
-		name = va_arg (args, const gchar*);
-	}
-
-	length = fields->len;
-	gp11_attribute_init (attr, CKA_G_FIELDS, g_string_free (fields, FALSE), length);
-}
-
-static GP11Object*
-find_login_keyring_item (GP11Session *session, GP11Attribute *fields)
-{
-	GP11Object *search;
-	GP11Object *item = NULL;
-	GList *objects;
-	GError *error = NULL;
-	gpointer data;
-	gsize n_data;
-
-	g_return_val_if_fail (GP11_IS_SESSION (session), FALSE);
-
-	/* Create a search object */
-	search = gp11_session_create_object (session, &error,
-	                                     CKA_CLASS, GP11_ULONG, CKO_G_SEARCH,
-	                                     CKA_G_COLLECTION, (gsize)5, "login",
-	                                     CKA_TOKEN, GP11_BOOLEAN, FALSE,
-	                                     CKA_G_FIELDS, fields->length, fields->value,
-	                                     GP11_INVALID);
-
-	if (!search) {
-		g_warning ("couldn't create search for login keyring: %s", egg_error_message (error));
-		g_clear_error (&error);
-		return NULL;
-	}
-
-	/* Get the data from the search */
-	gp11_object_set_session (search, session);
-	data = gp11_object_get_data (search, CKA_G_MATCHED, &n_data, &error);
-	gp11_object_destroy (search, NULL);
-	g_object_unref (search);
-
-	if (data == NULL) {
-		g_warning ("couldn't read search in login keyring: %s", egg_error_message (error));
-		g_clear_error (&error);
-		return NULL;
-	}
-
-	n_data /= sizeof (CK_OBJECT_HANDLE);
-	objects = gp11_objects_from_handle_array (gp11_session_get_slot (session), data,
-	                                          MIN (sizeof (CK_OBJECT_HANDLE), n_data));
-	g_free (data);
-
-	if (objects) {
-		item = g_object_ref (objects->data);
-		gp11_object_set_session (item, session);
-	}
-
-	gp11_list_unref_free (objects);
-	return item;
-}
-
-static GP11Attributes*
-attach_make_attributes_va (GP11Session *session, const gchar *label,
-                           const gchar *first, va_list va)
-{
-	GP11Attributes *attrs;
-	GP11Attribute fields;
-	gchar *display_name;
-	GP11Object* item;
-	GError *error = NULL;
-	gpointer value;
-	gsize n_value;
-
-	attrs = gp11_attributes_new ();
-
-	gp11_attribute_init_empty (&fields, CKA_G_FIELDS);
-	string_attribute_list_va (va, first, &fields);
-
-	/*
-	 * If there already is such an item, then include its identifier.
-	 * What this does is overwrite that item, rather than creating new.
-	 */
-	item = find_login_keyring_item (session, &fields);
-	if (item) {
-		value = gp11_object_get_data (item, CKA_ID, &n_value, &error);
-		if (value != NULL) {
-			gp11_attributes_add_data (attrs, CKA_ID, value, n_value);
-			g_free (value);
-		} else {
-			g_warning ("couldn't retrieve id for previous login item: %s",
-			           egg_error_message (error));
-			g_clear_error (&error);
-		}
-		g_object_unref (item);
-	}
-
-	if (label == NULL)
-		label = _("Unnamed");
-
-	display_name = g_strdup_printf (_("Unlock password for: %s"), label);
-	gp11_attributes_add_string (attrs, CKA_LABEL, display_name);
-
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
-	gp11_attributes_add_data (attrs, CKA_G_COLLECTION, "login", (gsize)5);
-	gp11_attributes_add (attrs, &fields);
-
-	gp11_attribute_clear (&fields);
-	return attrs;
-}
-
-GP11Attributes*
-gkd_login_attach_make_attributes (const gchar *label, const gchar *first, ...)
-{
-	GP11Attributes *attrs;
-	GP11Session *session;
-	GP11Module *module;
-	va_list va;
-
-	module = module_instance ();
-	session = lookup_login_session (module);
-
-	va_start (va, first);
-	attrs = attach_make_attributes_va (session, label, first, va);
-	va_end (va);
-
-	g_object_unref (session);
-	g_object_unref (module);
-
-	return attrs;
-}
-
-void
-gkd_login_attach_secret (const gchar *label, const gchar *secret,
-                         const gchar *first, ...)
-{
-	GError *error = NULL;
-	GP11Session *session;
-	GP11Module *module;
-	GP11Attributes *attrs;
-	GP11Object *item;
-	va_list va;
-
-	if (secret == NULL)
-		secret = "";
-
-	module = module_instance ();
-	session = lookup_login_session (module);
-
-	va_start(va, first);
-	attrs = attach_make_attributes_va (session, label, first, va);
-	va_end(va);
-
-	gp11_attributes_add_string (attrs, CKA_VALUE, secret);
-	item = gp11_session_create_object_full (session, attrs, NULL, &error);
-	if (error != NULL) {
-		g_warning ("couldn't store secret in login keyring: %s", egg_error_message (error));
-		g_clear_error (&error);
-	}
-
-	if (item)
-		g_object_unref (item);
-
-	gp11_attributes_unref (attrs);
-	g_object_unref (session);
-	g_object_unref (module);
-}
-
-gchar*
-gkd_login_lookup_secret (const gchar *first, ...)
-{
-	GP11Attribute fields;
-	GP11Session *session;
-	GP11Module *module;
-	GP11Object* item;
-	gpointer data = NULL;
-	gsize n_data;
-	va_list va;
-
-	module = module_instance ();
-	session = lookup_login_session (module);
-
-	va_start(va, first);
-	gp11_attribute_init_empty (&fields, CKA_G_FIELDS);
-	string_attribute_list_va (va, first, &fields);
-	va_end(va);
-
-	item = find_login_keyring_item (session, &fields);
-	if (item != NULL) {
-		data = gp11_object_get_data_full (item, CKA_VALUE, egg_secure_realloc, NULL, &n_data, NULL);
-		if (data && !g_utf8_validate (data, n_data, NULL)) {
-			g_warning ("expected string, but found binary secret in login keyring");
-			egg_secure_clear (data, n_data);
-			egg_secure_free (data);
-			data = NULL;
-		}
-		g_object_unref (item);
-	}
-
-	g_object_unref (session);
-	g_object_unref (module);
-
-	/* Memory returned from gp11_object_get_data is null terminated */
-	return data;
-}
-
-void
-gkd_login_remove_secret (const gchar *first, ...)
-{
-	GError *error = NULL;
-	GP11Attribute fields;
-	GP11Session *session;
-	GP11Module *module;
-	GP11Object* item;
-	va_list va;
-
-	module = module_instance ();
-	session = lookup_login_session (module);
-
-	va_start(va, first);
-	gp11_attribute_init_empty (&fields, CKA_G_FIELDS);
-	string_attribute_list_va (va, first, &fields);
-	va_end(va);
-
-	item = find_login_keyring_item (session, &fields);
-	if (item != NULL) {
-		if (!gp11_object_destroy (item, &error)) {
-			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
-				g_warning ("couldn't remove stored secret from login keyring: %s",
-				           egg_error_message (error));
-			g_clear_error (&error);
-		}
-		g_object_unref (item);
-	}
-
-	g_object_unref (session);
-	g_object_unref (module);
 }

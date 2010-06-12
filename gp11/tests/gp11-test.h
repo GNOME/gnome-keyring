@@ -15,10 +15,6 @@
 	g_clear_error (&err); \
 	} while(0)
 
-
-#define WAIT_UNTIL(cond) \
-	while(!cond) g_main_context_iteration (NULL, TRUE);
-
 /* 
  * Some dumb crypto mechanisms for simple testing.
  * 

@@ -1,6 +1,6 @@
 
 #include "control/gkd-control.h"
-#include "tests/gtest-helpers.h"
+#include "testing/testing.h"
 
 #include <pwd.h>
 #include <unistd.h>
@@ -21,4 +21,4 @@ run (void)
 	return 0;
 }
 
-#include "tests/gtest-helpers.c"
+#include "testing/testing.c"

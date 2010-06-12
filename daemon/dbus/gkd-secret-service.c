@@ -24,6 +24,7 @@
 #include "gkd-dbus-util.h"
 #include "gkd-secret-change.h"
 #include "gkd-secret-create.h"
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-error.h"
 #include "gkd-secret-lock.h"
 #include "gkd-secret-objects.h"
@@ -387,7 +388,7 @@ service_method_open_session (GkdSecretService *self, DBusMessage *message)
 		/* Take ownership of the session */
 		client = g_hash_table_lookup (self->clients, caller);
 		g_return_val_if_fail (client, NULL);
-		path = gkd_secret_session_get_object_path (session);
+		path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (session));
 		g_return_val_if_fail (!g_hash_table_lookup (client->sessions, path), NULL);
 		g_hash_table_replace (client->sessions, (gpointer)path, session);
 
@@ -430,7 +431,7 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 	create = gkd_secret_create_new (self, caller, attrs);
 	gp11_attributes_unref (attrs);
 
-	path = gkd_secret_prompt_get_object_path (GKD_SECRET_PROMPT (create));
+	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (create));
 	client = g_hash_table_lookup (self->clients, caller);
 	g_return_val_if_fail (client, NULL);
 	g_hash_table_replace (client->prompts, (gpointer)path, create);
@@ -481,7 +482,7 @@ service_method_unlock (GkdSecretService *self, DBusMessage *message)
 	if (gkd_secret_unlock_have_queued (unlock)) {
 		client = g_hash_table_lookup (self->clients, caller);
 		g_return_val_if_fail (client, NULL);
-		path = gkd_secret_prompt_get_object_path (GKD_SECRET_PROMPT (unlock));
+		path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (unlock));
 		g_hash_table_replace (client->prompts, (gpointer)path, g_object_ref (unlock));
 
 	/* No need to prompt */
@@ -564,7 +565,7 @@ service_method_change_lock (GkdSecretService *self, DBusMessage *message)
 	change = gkd_secret_change_new (self, caller, path);
 	client = g_hash_table_lookup (self->clients, caller);
 	g_return_val_if_fail (client, NULL);
-	path = gkd_secret_prompt_get_object_path (GKD_SECRET_PROMPT (change));
+	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (change));
 	g_hash_table_replace (client->prompts, (gpointer)path, g_object_ref (change));
 
 	reply = dbus_message_new_method_return (message);
@@ -911,7 +912,7 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 		if (object == NULL)
 			reply = gkd_secret_error_no_such_object (message);
 		else
-			reply = gkd_secret_session_dispatch (object, message);
+			reply = gkd_secret_dispatch_message (GKD_SECRET_DISPATCH (object), message);
 
 	/* Dispatched to a prompt, find a prompt in this client */
 	} else if (object_path_has_prefix (path, SECRET_PROMPT_PREFIX)) {
@@ -919,7 +920,7 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 		if (object == NULL)
 			reply = gkd_secret_error_no_such_object (message);
 		else
-			reply = gkd_secret_prompt_dispatch (object, message);
+			reply = gkd_secret_dispatch_message (GKD_SECRET_DISPATCH (object), message);
 
 	/* Dispatched to a collection, off it goes */
 	} else if (object_path_has_prefix (path, SECRET_COLLECTION_PREFIX) ||
@@ -1275,6 +1276,6 @@ gkd_secret_service_close_session (GkdSecretService *self, GkdSecretSession *sess
 	client = g_hash_table_lookup (self->clients, caller);
 	g_return_if_fail (client);
 
-	path = gkd_secret_session_get_object_path (session);
+	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (session));
 	g_hash_table_remove (client->sessions, path);
 }

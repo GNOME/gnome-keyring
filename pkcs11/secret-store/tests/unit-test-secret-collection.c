@@ -23,16 +23,16 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 #include "test-secret-module.h"
 
-#include "gck-secret-data.h"
-#include "gck-secret-collection.h"
-#include "gck-secret-item.h"
+#include "gkm-secret-data.h"
+#include "gkm-secret-collection.h"
+#include "gkm-secret-item.h"
 
-#include "gck/gck-credential.h"
-#include "gck/gck-session.h"
-#include "gck/gck-transaction.h"
+#include "gkm/gkm-credential.h"
+#include "gkm/gkm-session.h"
+#include "gkm/gkm-transaction.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -42,16 +42,16 @@
 #include <stdio.h>
 #include <string.h>
 
-static GckModule *module = NULL;
-static GckSession *session = NULL;
+static GkmModule *module = NULL;
+static GkmSession *session = NULL;
 static CK_OBJECT_HANDLE credential = 0;
 static CK_OBJECT_HANDLE credential2 = 0;
-static GckSecretCollection *collection = NULL;
+static GkmSecretCollection *collection = NULL;
 
 DEFINE_SETUP(secret_collection)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
-	GckObject *cred;
+	GkmObject *cred;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -61,23 +61,23 @@ DEFINE_SETUP(secret_collection)
 	module = test_secret_module_initialize_and_enter ();
 	session = test_secret_module_open_session (TRUE);
 
-	collection = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+	collection = g_object_new (GKM_TYPE_SECRET_COLLECTION,
 	                           "module", module,
 	                           "identifier", "test",
 	                           NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (collection));
+	g_assert (GKM_IS_SECRET_COLLECTION (collection));
 
 	/* Make two credentials */
-	cred = gck_session_create_object_for_factory (session, GCK_FACTORY_CREDENTIAL, NULL,
+	cred = gkm_session_create_object_for_factory (session, GKM_FACTORY_CREDENTIAL, NULL,
 	                                            attrs, G_N_ELEMENTS (attrs));
 	g_assert (cred != NULL);
-	credential = gck_object_get_handle (GCK_OBJECT (cred));
+	credential = gkm_object_get_handle (GKM_OBJECT (cred));
 	g_object_unref (cred);
 
-	cred = gck_session_create_object_for_factory (session, GCK_FACTORY_CREDENTIAL, NULL,
+	cred = gkm_session_create_object_for_factory (session, GKM_FACTORY_CREDENTIAL, NULL,
 	                                            attrs, G_N_ELEMENTS (attrs));
 	g_assert (cred != NULL);
-	credential2 = gck_object_get_handle (GCK_OBJECT (cred));
+	credential2 = gkm_object_get_handle (GKM_OBJECT (cred));
 	g_object_unref (cred);
 }
 
@@ -98,41 +98,41 @@ DEFINE_TEST(secret_collection_is_locked)
 	gboolean locked;
 
 	/* By default is locked */
-	locked = gck_secret_object_is_locked (GCK_SECRET_OBJECT (collection), session);
+	locked = gkm_secret_object_is_locked (GKM_SECRET_OBJECT (collection), session);
 	g_assert (locked == TRUE);
 }
 
 DEFINE_TEST(secret_collection_unlocked_data)
 {
-	GckCredential *cred;
-	GckSecretData *sdata;
+	GkmCredential *cred;
+	GkmSecretData *sdata;
 	CK_RV rv;
 
 	/* Create credential, which unlocks collection */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection), NULL, 0, &cred);
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection), NULL, 0, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 
 	/* Collection should now be unlocked */
-	sdata = gck_secret_collection_unlocked_use (collection, session);
-	g_assert (GCK_IS_SECRET_DATA (sdata));
-	g_assert (!gck_secret_object_is_locked (GCK_SECRET_OBJECT (collection), session));
+	sdata = gkm_secret_collection_unlocked_use (collection, session);
+	g_assert (GKM_IS_SECRET_DATA (sdata));
+	g_assert (!gkm_secret_object_is_locked (GKM_SECRET_OBJECT (collection), session));
 	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_get_filename)
 {
-	GckSecretCollection *other;
+	GkmSecretCollection *other;
 	const gchar *filename;
 
-	other = g_object_new (GCK_TYPE_SECRET_COLLECTION,
+	other = g_object_new (GKM_TYPE_SECRET_COLLECTION,
 	                      "module", module,
 	                      "identifier", "test",
 	                      "filename", "/tmp/filename.keyring",
 	                      NULL);
 
-	filename = gck_secret_collection_get_filename (other);
+	filename = gkm_secret_collection_get_filename (other);
 	g_assert_cmpstr (filename, ==, "/tmp/filename.keyring");
 
 	g_object_unref (other);
@@ -142,212 +142,212 @@ DEFINE_TEST(secret_collection_set_filename)
 {
 	const gchar *filename;
 
-	gck_secret_collection_set_filename (collection, "/tmp/filename.keyring");
+	gkm_secret_collection_set_filename (collection, "/tmp/filename.keyring");
 
-	filename = gck_secret_collection_get_filename (collection);
+	filename = gkm_secret_collection_get_filename (collection);
 	g_assert_cmpstr (filename, ==, "/tmp/filename.keyring");
 }
 
 DEFINE_TEST(secret_collection_has_item)
 {
-	GckSecretItem *item;
+	GkmSecretItem *item;
 
-	item = gck_secret_collection_new_item (collection, "testo");
-	g_assert (gck_secret_collection_has_item (collection, item));
+	item = gkm_secret_collection_new_item (collection, "testo");
+	g_assert (gkm_secret_collection_has_item (collection, item));
 }
 
 DEFINE_TEST(secret_collection_load_unlock_plain)
 {
-	GckCredential *cred;
-	GckSecretData *sdata;
-	GckDataResult res;
+	GkmCredential *cred;
+	GkmSecretData *sdata;
+	GkmDataResult res;
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("plain.keyring");
-	gck_secret_collection_set_filename (collection, filename);
+	filename = testing_data_filename ("plain.keyring");
+	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
 	/* Load the data in the file */
-	res = gck_secret_collection_load (collection);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_collection_load (collection);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection), NULL, 0, &cred);
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection), NULL, 0, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_use (collection, session);
-	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
+	sdata = gkm_secret_collection_unlocked_use (collection, session);
+	g_assert (sdata != NULL && GKM_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
 	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_load_unlock_encrypted)
 {
-	GckCredential *cred;
-	GckSecretData *sdata;
-	GckDataResult res;
+	GkmCredential *cred;
+	GkmSecretData *sdata;
+	GkmDataResult res;
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
-	gck_secret_collection_set_filename (collection, filename);
+	filename = testing_data_filename ("encrypted.keyring");
+	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
 	/* Load the data in the file */
-	res = gck_secret_collection_load (collection);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_collection_load (collection);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            (guchar*)"my-keyring-password", 19, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_use (collection, session);
-	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
+	sdata = gkm_secret_collection_unlocked_use (collection, session);
+	g_assert (sdata != NULL && GKM_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
 	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_load_unlock_bad_password)
 {
-	GckCredential *cred;
-	GckDataResult res;
+	GkmCredential *cred;
+	GkmDataResult res;
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
-	gck_secret_collection_set_filename (collection, filename);
+	filename = testing_data_filename ("encrypted.keyring");
+	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
 	/* Load the data in the file */
-	res = gck_secret_collection_load (collection);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_collection_load (collection);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            (guchar*)"wrong", 5, &cred);
 	g_assert (rv == CKR_PIN_INCORRECT);
 }
 
 DEFINE_TEST(secret_collection_unlock_without_load)
 {
-	GckCredential *cred;
-	GckSecretData *sdata;
+	GkmCredential *cred;
+	GkmSecretData *sdata;
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
-	gck_secret_collection_set_filename (collection, filename);
+	filename = testing_data_filename ("encrypted.keyring");
+	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
 	/* Unlock the keyring, which should load it */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            (guchar*)"my-keyring-password", 19, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_use (collection, session);
-	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
+	sdata = gkm_secret_collection_unlocked_use (collection, session);
+	g_assert (sdata != NULL && GKM_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
 	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_twice_unlock)
 {
-	GckCredential *cred;
-	GckSecretData *sdata;
+	GkmCredential *cred;
+	GkmSecretData *sdata;
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
-	gck_secret_collection_set_filename (collection, filename);
+	filename = testing_data_filename ("encrypted.keyring");
+	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
 	/* Unlock the keyring, which should load */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            (guchar*)"my-keyring-password", 19, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 
 	/* Unlock the keyring again, which should not reload */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            (guchar*)"my-keyring-password", 19, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 
-	sdata = gck_secret_collection_unlocked_use (collection, session);
-	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
+	sdata = gkm_secret_collection_unlocked_use (collection, session);
+	g_assert (sdata != NULL && GKM_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
 	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_twice_unlock_bad_password)
 {
-	GckCredential *cred;
-	GckSecretData *sdata;
+	GkmCredential *cred;
+	GkmSecretData *sdata;
 	gchar *filename;
 	CK_RV rv;
 
-	filename = test_data_filename ("encrypted.keyring");
-	gck_secret_collection_set_filename (collection, filename);
+	filename = testing_data_filename ("encrypted.keyring");
+	gkm_secret_collection_set_filename (collection, filename);
 	g_free (filename);
 
 	/* Unlock the keyring, which should load */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                               (guchar*)"my-keyring-password", 19, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 
 	/* Unlock the keyring again, wrong password */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            (guchar*)"wrong", 5, &cred);
 	g_assert (rv == CKR_PIN_INCORRECT);
 
-	sdata = gck_secret_collection_unlocked_use (collection, session);
-	g_assert (sdata != NULL && GCK_IS_SECRET_DATA (sdata));
+	sdata = gkm_secret_collection_unlocked_use (collection, session);
+	g_assert (sdata != NULL && GKM_IS_SECRET_DATA (sdata));
 	test_secret_collection_validate (collection, sdata);
 	g_object_unref (sdata);
 }
 
 DEFINE_TEST(secret_collection_memory_unlock)
 {
-	GckCredential *cred;
-	GckDataResult res;
+	GkmCredential *cred;
+	GkmDataResult res;
 	CK_RV rv;
 
 	/* Load the data in the file */
-	res = gck_secret_collection_load (collection);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_collection_load (collection);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            NULL, 0, &cred);
 	g_assert (rv == CKR_OK);
-	gck_session_add_session_object (session, NULL, GCK_OBJECT (cred));
+	gkm_session_add_session_object (session, NULL, GKM_OBJECT (cred));
 	g_object_unref (cred);
 }
 
 DEFINE_TEST(secret_collection_memory_unlock_bad_password)
 {
-	GckCredential *cred;
-	GckDataResult res;
+	GkmCredential *cred;
+	GkmDataResult res;
 	CK_RV rv;
 
 	/* Load the data in the file */
-	res = gck_secret_collection_load (collection);
-	g_assert (res == GCK_DATA_SUCCESS);
+	res = gkm_secret_collection_load (collection);
+	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Unlock the keyring, which should load again */
-	rv = gck_credential_create (module, gck_session_get_manager (session), GCK_OBJECT (collection),
+	rv = gkm_credential_create (module, gkm_session_get_manager (session), GKM_OBJECT (collection),
 	                            (guchar*)"wrong", 5, &cred);
 	g_assert (rv == CKR_PIN_INCORRECT);
 }
@@ -355,7 +355,7 @@ DEFINE_TEST(secret_collection_memory_unlock_bad_password)
 DEFINE_TEST(secret_collection_factory)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
-	GckObject *object;
+	GkmObject *object;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -363,12 +363,12 @@ DEFINE_TEST(secret_collection_factory)
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                attrs, G_N_ELEMENTS (attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
 
-	g_assert_cmpstr (gck_secret_object_get_label (GCK_SECRET_OBJECT (object)), ==, "blah");
+	g_assert_cmpstr (gkm_secret_object_get_label (GKM_SECRET_OBJECT (object)), ==, "blah");
 	g_object_unref (object);
 }
 
@@ -376,19 +376,19 @@ DEFINE_TEST(secret_collection_factory_unnamed)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier;
-	GckObject *object;
+	GkmObject *object;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                attrs, G_N_ELEMENTS (attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
 
-	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	identifier = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (object));
 	g_assert_cmpstr (identifier, !=, "");
 	g_object_unref (object);
 }
@@ -397,7 +397,7 @@ DEFINE_TEST(secret_collection_factory_token)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier;
-	GckObject *object;
+	GkmObject *object;
 	CK_BBOOL token = CK_TRUE;
 
 	CK_ATTRIBUTE attrs[] = {
@@ -407,12 +407,12 @@ DEFINE_TEST(secret_collection_factory_token)
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                attrs, G_N_ELEMENTS (attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
 
-	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	identifier = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (object));
 	g_assert (strstr (identifier, "blah"));
 	g_object_unref (object);
 }
@@ -421,7 +421,7 @@ DEFINE_TEST(secret_collection_factory_duplicate)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier1, *identifier2;
-	GckObject *object;
+	GkmObject *object;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
@@ -429,23 +429,23 @@ DEFINE_TEST(secret_collection_factory_duplicate)
 		{ CKA_LABEL, "blah", 4 },
 	};
 
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                attrs, G_N_ELEMENTS (attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
 
-	identifier1 = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	identifier1 = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (object));
 	g_assert (strstr (identifier1, "blah"));
 	g_object_unref (object);
 
 	/* Use second credential for second object */
 	attrs[0].pValue = &credential2;
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                attrs, G_N_ELEMENTS (attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
 
-	identifier2 = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	identifier2 = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (object));
 	g_assert (strstr (identifier2, "blah"));
 	g_object_unref (object);
 
@@ -457,7 +457,7 @@ DEFINE_TEST(secret_collection_factory_item)
 	CK_OBJECT_CLASS c_klass = CKO_G_COLLECTION;
 	CK_OBJECT_CLASS i_klass = CKO_SECRET_KEY;
 	const gchar *identifier;
-	GckObject *object;
+	GkmObject *object;
 	CK_BBOOL token = CK_TRUE;
 
 	CK_ATTRIBUTE c_attrs[] = {
@@ -474,27 +474,27 @@ DEFINE_TEST(secret_collection_factory_item)
 		{ CKA_LABEL, "Item", 4 },
 	};
 
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                c_attrs, G_N_ELEMENTS (c_attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
-	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
+	identifier = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (object));
 	g_object_unref (object);
 
 	i_attrs[0].pValue = (gpointer)identifier;
 	i_attrs[0].ulValueLen = strlen (identifier);
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_ITEM, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_ITEM, NULL,
 	                                                i_attrs, G_N_ELEMENTS (i_attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_ITEM (object));
+	g_assert (GKM_IS_SECRET_ITEM (object));
 	g_object_unref (object);
 }
 
 DEFINE_TEST(secret_collection_token_remove)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
-	GckTransaction *transaction;
-	GckObject *object;
+	GkmTransaction *transaction;
+	GkmObject *object;
 	CK_BBOOL token = CK_TRUE;
 
 	CK_ATTRIBUTE attrs[] = {
@@ -504,15 +504,15 @@ DEFINE_TEST(secret_collection_token_remove)
 		{ CKA_G_CREDENTIAL, &credential, sizeof (credential) },
 	};
 
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                attrs, G_N_ELEMENTS (attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
 
-	transaction = gck_transaction_new ();
-	gck_module_remove_token_object (module, transaction, object);
-	g_assert (!gck_transaction_get_failed (transaction));
-	gck_transaction_complete (transaction);
+	transaction = gkm_transaction_new ();
+	gkm_module_remove_token_object (module, transaction, object);
+	g_assert (!gkm_transaction_get_failed (transaction));
+	gkm_transaction_complete (transaction);
 	g_object_unref (transaction);
 	g_object_unref (object);
 }
@@ -521,9 +521,9 @@ DEFINE_TEST(secret_collection_token_item_remove)
 {
 	CK_OBJECT_CLASS c_klass = CKO_G_COLLECTION;
 	CK_OBJECT_CLASS i_klass = CKO_SECRET_KEY;
-	GckTransaction *transaction;
+	GkmTransaction *transaction;
 	const gchar *identifier;
-	GckObject *object;
+	GkmObject *object;
 	CK_BBOOL token = CK_TRUE;
 
 	CK_ATTRIBUTE c_attrs[] = {
@@ -540,24 +540,24 @@ DEFINE_TEST(secret_collection_token_item_remove)
 		{ CKA_LABEL, "Item", 4 },
 	};
 
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_COLLECTION, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_COLLECTION, NULL,
 	                                                c_attrs, G_N_ELEMENTS (c_attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_COLLECTION (object));
-	identifier = gck_secret_object_get_identifier (GCK_SECRET_OBJECT (object));
+	g_assert (GKM_IS_SECRET_COLLECTION (object));
+	identifier = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (object));
 	g_object_unref (object);
 
 	i_attrs[0].pValue = (gpointer)identifier;
 	i_attrs[0].ulValueLen = strlen (identifier);
-	object = gck_session_create_object_for_factory (session, GCK_FACTORY_SECRET_ITEM, NULL,
+	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_SECRET_ITEM, NULL,
 	                                                i_attrs, G_N_ELEMENTS (i_attrs));
 	g_assert (object != NULL);
-	g_assert (GCK_IS_SECRET_ITEM (object));
+	g_assert (GKM_IS_SECRET_ITEM (object));
 
-	transaction = gck_transaction_new ();
-	gck_module_remove_token_object (module, transaction, object);
-	g_assert (!gck_transaction_get_failed (transaction));
-	gck_transaction_complete (transaction);
+	transaction = gkm_transaction_new ();
+	gkm_module_remove_token_object (module, transaction, object);
+	g_assert (!gkm_transaction_get_failed (transaction));
+	gkm_transaction_complete (transaction);
 	g_object_unref (transaction);
 	g_object_unref (object);
 }

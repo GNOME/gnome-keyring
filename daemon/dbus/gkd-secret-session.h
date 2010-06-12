@@ -52,14 +52,9 @@ gboolean            gkd_secret_session_complete                (GkdSecretSession
                                                                 gconstpointer peer,
                                                                 gsize n_peer);
 
-DBusMessage*        gkd_secret_session_dispatch                (GkdSecretSession *self,
-                                                                DBusMessage *message);
-
 const gchar*        gkd_secret_session_get_caller              (GkdSecretSession *self);
 
 const gchar*        gkd_secret_session_get_caller_executable   (GkdSecretSession *self);
-
-const gchar*        gkd_secret_session_get_object_path         (GkdSecretSession *self);
 
 GP11Session*        gkd_secret_session_get_pkcs11_session      (GkdSecretSession *self);
 

@@ -5,7 +5,7 @@ PAM_DIR =
 endif
 
 if WITH_TESTS
-TESTS_DIR = tests
+TESTS_DIR = testing
 else
 TESTS_DIR = 
 endif
@@ -15,6 +15,7 @@ SUBDIRS = \
 	gp11 \
 	egg \
 	gcr \
+	ui \
 	pkcs11 \
 	daemon \
 	tool \
@@ -56,3 +57,14 @@ dist-hook:
 
 install-pam:
 	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"
+
+if WITH_COVERAGE
+check-am:
+	$(LCOV) --directory . --zerocounters
+
+coverage: check
+	mkdir -p testing/coverage
+	$(LCOV) --directory . --capture --output-file testing/coverage.info
+	$(GENHTML) --output-directory testing/coverage testing/coverage.info
+	@echo "file://$(abs_top_builddir)/testing/coverage/index.html"
+endif

@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 
 #include "egg/egg-oid.h"
 

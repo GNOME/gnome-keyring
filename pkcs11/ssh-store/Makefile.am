@@ -6,39 +6,39 @@ INCLUDES = \
     	$(GOBJECT_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS) \
 	$(GLIB_CFLAGS)
-	
-			
+
+
 # ------------------------------------------------------------------------------
 # The ssh-store component code
 
 noinst_LTLIBRARIES = \
-	libgck-ssh-store.la
+	libgkm-ssh-store.la
 
-libgck_ssh_store_la_SOURCES = \
-	gck-ssh-store.h \
-	gck-ssh-module.c gck-ssh-module.h \
-	gck-ssh-openssh.c gck-ssh-openssh.h \
-	gck-ssh-private-key.c gck-ssh-private-key.h \
-	gck-ssh-public-key.c gck-ssh-public-key.h
+libgkm_ssh_store_la_SOURCES = \
+	gkm-ssh-store.h \
+	gkm-ssh-module.c gkm-ssh-module.h \
+	gkm-ssh-openssh.c gkm-ssh-openssh.h \
+	gkm-ssh-private-key.c gkm-ssh-private-key.h \
+	gkm-ssh-public-key.c gkm-ssh-public-key.h
 
 # ------------------------------------------------------------------------------
-# The standalone module 
+# The standalone module
 
 moduledir = $(libdir)/gnome-keyring/devel/
 
 module_LTLIBRARIES = \
-	gck-ssh-store-standalone.la
+	gkm-ssh-store-standalone.la
 
-gck_ssh_store_standalone_la_LDFLAGS = \
+gkm_ssh_store_standalone_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
-gck_ssh_store_standalone_la_SOURCES = \
-	gck-ssh-standalone.c
+gkm_ssh_store_standalone_la_SOURCES = \
+	gkm-ssh-standalone.c
 
-gck_ssh_store_standalone_la_LIBADD = \
-	libgck-ssh-store.la \
-	$(top_builddir)/pkcs11/gck/libgck.la \
+gkm_ssh_store_standalone_la_LIBADD = \
+	libgkm-ssh-store.la \
+	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \
@@ -51,7 +51,7 @@ gck_ssh_store_standalone_la_LIBADD = \
 if WITH_TESTS
 TESTS_DIR = tests
 else
-TESTS_DIR = 
+TESTS_DIR =
 endif
 
 SUBDIRS = . $(TESTS_DIR)

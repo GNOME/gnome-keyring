@@ -2,7 +2,7 @@
 #include <glib.h>
 #include <string.h>
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 #include "gp11-test.h"
 
 #define MECH_TYPE 55

@@ -21,19 +21,19 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 #include "test-ssh-module.h"
 
-#include "gck/gck-credential.h"
-#include "gck/gck-session.h"
-#include "gck/gck-module.h"
+#include "gkm/gkm-credential.h"
+#include "gkm/gkm-session.h"
+#include "gkm/gkm-module.h"
 
-#include "ssh-store/gck-ssh-private-key.h"
+#include "ssh-store/gkm-ssh-private-key.h"
 
 #include "pkcs11g.h"
 
-static GckModule *module = NULL;
-static GckSession *session = NULL;
+static GkmModule *module = NULL;
+static GkmSession *session = NULL;
 
 DEFINE_SETUP(private_key_setup)
 {
@@ -50,19 +50,19 @@ DEFINE_TEARDOWN(private_key_teardown)
 
 DEFINE_TEST(private_key_parse_plain)
 {
-	GckSshPrivateKey *key;
+	GkmSshPrivateKey *key;
 	gchar *pub_path, *priv_path;
 	gboolean ret;
-	
-	key = gck_ssh_private_key_new (module, "my-unique");
-	g_assert (GCK_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = test_data_filename ("id_dsa_plain.pub");
-	priv_path = test_data_filename ("id_dsa_plain");
-	
-	ret = gck_ssh_private_key_parse (key, pub_path, priv_path, NULL);
+	key = gkm_ssh_private_key_new (module, "my-unique");
+	g_assert (GKM_IS_SSH_PRIVATE_KEY (key));
+
+	pub_path = testing_data_filename ("id_dsa_plain.pub");
+	priv_path = testing_data_filename ("id_dsa_plain");
+
+	ret = gkm_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);
-	
+
 	g_object_unref (key);
 	g_free (pub_path);
 	g_free (priv_path);
@@ -71,25 +71,25 @@ DEFINE_TEST(private_key_parse_plain)
 
 DEFINE_TEST(private_key_parse_and_unlock)
 {
-	GckSshPrivateKey *key;
-	GckCredential *cred;
+	GkmSshPrivateKey *key;
+	GkmCredential *cred;
 	gchar *pub_path, *priv_path;
 	gboolean ret;
 	CK_RV rv;
-	
-	key = gck_ssh_private_key_new (module, "my-unique");
-	g_assert (GCK_IS_SSH_PRIVATE_KEY (key));
 
-	pub_path = test_data_filename ("id_dsa_encrypted.pub");
-	priv_path = test_data_filename ("id_dsa_encrypted");
-	
-	ret = gck_ssh_private_key_parse (key, pub_path, priv_path, NULL);
+	key = gkm_ssh_private_key_new (module, "my-unique");
+	g_assert (GKM_IS_SSH_PRIVATE_KEY (key));
+
+	pub_path = testing_data_filename ("id_dsa_encrypted.pub");
+	priv_path = testing_data_filename ("id_dsa_encrypted");
+
+	ret = gkm_ssh_private_key_parse (key, pub_path, priv_path, NULL);
 	g_assert (ret == TRUE);
 
 	g_free (pub_path);
 	g_free (priv_path);
 
-	rv = gck_credential_create (module, NULL, GCK_OBJECT (key), (guchar*)"password", 8, &cred);
+	rv = gkm_credential_create (module, NULL, GKM_OBJECT (key), (guchar*)"password", 8, &cred);
 	g_assert (rv == CKR_OK);
 
 	g_object_unref (cred);

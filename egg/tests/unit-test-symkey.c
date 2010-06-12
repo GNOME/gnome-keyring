@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "run-auto-test.h"
+#include "test-suite.h"
 
 #include "egg-libgcrypt.h"
 #include "egg-secure-memory.h"
