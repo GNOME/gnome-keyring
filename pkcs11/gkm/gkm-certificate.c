@@ -313,7 +313,7 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 		return gkm_attribute_set_bool (attr, FALSE);
 
 	case CKA_CERTIFICATE_CATEGORY:
-		if (!gkm_certificate_calc_category (self, &category))
+		if (!gkm_certificate_calc_category (self, session, &category))
 			return CKR_FUNCTION_FAILED;
 		return gkm_attribute_set_ulong (attr, category);
 
@@ -624,7 +624,7 @@ gkm_certificate_serializable (GkmSerializableIface *iface)
  */
 
 gboolean
-gkm_certificate_calc_category (GkmCertificate *self, CK_ULONG* category)
+gkm_certificate_calc_category (GkmCertificate *self, GkmSession *session, CK_ULONG* category)
 {
 	const guchar *extension;
 	GkmManager *manager;
@@ -639,7 +639,7 @@ gkm_certificate_calc_category (GkmCertificate *self, CK_ULONG* category)
 	/* First see if we have a private key for this certificate */
 	manager = gkm_object_get_manager (GKM_OBJECT (self));
 	if (manager != NULL) {
-		object = gkm_manager_find_related (manager, CKO_PRIVATE_KEY, GKM_OBJECT (self));
+		object = gkm_manager_find_related (manager, session, CKO_PRIVATE_KEY, GKM_OBJECT (self));
 		if (object != NULL) {
 			*category = 1; /* token user */
 			return TRUE;

@@ -1142,11 +1142,11 @@ gkm_session_C_FindObjectsInit (GkmSession* self, CK_ATTRIBUTE_PTR template,
 		rv = gkm_module_refresh_token (self->pv->module);
 		if (rv == CKR_OK)
 			rv = gkm_manager_find_handles (gkm_module_get_manager (self->pv->module),
-			                               also_private, template, count, found);
+			                               self, also_private, template, count, found);
 	}
 
 	if (rv == CKR_OK && (all || !token)) {
-		rv = gkm_manager_find_handles (self->pv->manager, also_private,
+		rv = gkm_manager_find_handles (self->pv->manager, self, also_private,
 		                               template, count, found);
 	}
 

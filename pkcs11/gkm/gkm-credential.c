@@ -492,7 +492,7 @@ gkm_credential_for_each (GkmSession *session, GkmObject *object,
 
 	/* Find any on the session */
 	results = gkm_manager_find_by_attributes (gkm_session_get_manager (session),
-	                                          attrs, G_N_ELEMENTS (attrs));
+	                                          session, attrs, G_N_ELEMENTS (attrs));
 
 	for (l = results; l; l = g_list_next (l)) {
 		g_object_ref (l->data);
@@ -509,7 +509,7 @@ gkm_credential_for_each (GkmSession *session, GkmObject *object,
 
 	/* Find any in the token */
 	results = gkm_manager_find_by_attributes (gkm_module_get_manager (gkm_session_get_module (session)),
-	                                          attrs, G_N_ELEMENTS (attrs));
+	                                          session, attrs, G_N_ELEMENTS (attrs));
 
 	for (l = results; l; l = g_list_next (l)) {
 		g_object_ref (l->data);

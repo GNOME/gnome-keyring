@@ -117,21 +117,26 @@ GkmObject*              gkm_manager_find_one_by_string_property (GkmManager *sel
                                                                  const gchar *value);
 
 GList*                  gkm_manager_find_by_attributes          (GkmManager *self,
+                                                                 GkmSession *session,
                                                                  CK_ATTRIBUTE_PTR template,
                                                                  CK_ULONG n_attrs);
 
 GList*                  gkm_manager_find_by_class               (GkmManager *self,
+                                                                 GkmSession *session,
                                                                  CK_OBJECT_CLASS klass);
 
 GkmObject*              gkm_manager_find_one_by_attributes      (GkmManager *self,
+                                                                 GkmSession *session,
                                                                  CK_ATTRIBUTE_PTR template,
                                                                  CK_ULONG n_attrs);
 
 GkmObject*              gkm_manager_find_related                (GkmManager *self,
+                                                                 GkmSession *session,
                                                                  CK_OBJECT_CLASS klass,
                                                                  GkmObject *related_to);
 
 CK_RV                   gkm_manager_find_handles                (GkmManager *self,
+                                                                 GkmSession *session,
                                                                  gboolean include_private,
                                                                  CK_ATTRIBUTE_PTR template,
                                                                  CK_ULONG count,

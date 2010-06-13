@@ -67,7 +67,7 @@ gkm_roots_certificate_get_attribute (GkmObject *base, GkmSession *session, CK_AT
 		return gkm_attribute_set_bool (attr, TRUE);
 
 	case CKA_CERTIFICATE_CATEGORY:
-		if (!gkm_certificate_calc_category (GKM_CERTIFICATE (self), &category))
+		if (!gkm_certificate_calc_category (GKM_CERTIFICATE (self), session, &category))
 			return CKR_FUNCTION_FAILED;
 		/* Unknown category, is CA by default in this slot */
 		if (category == 0)

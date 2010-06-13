@@ -278,12 +278,15 @@ factory_create_collection (GkmSession *session, GkmTransaction *transaction,
 
 		/* Try to find the collection with that identifier */
 		if (!gkm_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
-			collection = gkm_secret_collection_find (attr, gkm_module_get_manager (module),
+			collection = gkm_secret_collection_find (session, attr,
+			                                         gkm_module_get_manager (module),
 			                                         gkm_session_get_manager (session), NULL);
 		else if (is_token)
-			collection = gkm_secret_collection_find (attr, gkm_module_get_manager (module), NULL);
+			collection = gkm_secret_collection_find (session, attr,
+			                                         gkm_module_get_manager (module), NULL);
 		else
-			collection = gkm_secret_collection_find (attr, gkm_session_get_manager (session), NULL);
+			collection = gkm_secret_collection_find (session, attr,
+			                                         gkm_session_get_manager (session), NULL);
 
 		/* Already have one with this identifier? Just return that */
 		if (collection != NULL) {
@@ -717,7 +720,7 @@ gkm_secret_collection_has_item (GkmSecretCollection *self, GkmSecretItem *item)
 }
 
 GkmSecretCollection*
-gkm_secret_collection_find (CK_ATTRIBUTE_PTR attr, ...)
+gkm_secret_collection_find (GkmSession *session, CK_ATTRIBUTE_PTR attr, ...)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	GkmSecretCollection *result = NULL;
@@ -737,7 +740,7 @@ gkm_secret_collection_find (CK_ATTRIBUTE_PTR attr, ...)
 
 	va_start (va, attr);
 	while (!result && (manager = va_arg (va, GkmManager*)) != NULL) {
-		objects = gkm_manager_find_by_attributes (manager, attrs, 2);
+		objects = gkm_manager_find_by_attributes (manager, session, attrs, 2);
 		if (objects && GKM_IS_SECRET_COLLECTION (objects->data))
 			result = objects->data;
 		g_list_free (objects);

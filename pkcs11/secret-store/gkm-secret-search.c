@@ -166,14 +166,14 @@ on_manager_gone_away (gpointer user_data, GObject *where_the_object_was)
 }
 
 static void
-populate_search_from_manager (GkmSecretSearch *self, GkmManager *manager)
+populate_search_from_manager (GkmSecretSearch *self, GkmSession *session, GkmManager *manager)
 {
 	GList *objects, *o;
 
 	self->managers = g_list_append (self->managers, manager);
 
 	/* Add in all the objects */
-	objects = gkm_manager_find_by_class (manager, CKO_SECRET_KEY);
+	objects = gkm_manager_find_by_class (manager, session, CKO_SECRET_KEY);
 	for (o = objects; o; o = g_list_next (o))
 		on_manager_added_object (manager, o->data, self);
 	g_list_free (objects);
@@ -242,8 +242,8 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	/* Load any new items or collections */
 	gkm_module_refresh_token (module);
 
-	populate_search_from_manager (search, s_manager);
-	populate_search_from_manager (search, m_manager);
+	populate_search_from_manager (search, session, s_manager);
+	populate_search_from_manager (search, session, m_manager);
 
 	gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (search),
 	                                      TRUE, attrs, n_attrs);
