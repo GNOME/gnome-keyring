@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.29.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 21:28+0200\n"
-"PO-Revision-Date: 2010-06-01 21:29+0200\n"
+"POT-Creation-Date: 2010-06-14 00:56+0200\n"
+"PO-Revision-Date: 2010-06-14 00:57+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -68,8 +68,9 @@ msgstr "Om SSH-agenten for gnome-keyring er aktivert."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:641
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
 msgid "Unnamed"
 msgstr "Uten navn"
 
@@ -112,46 +113,6 @@ msgstr ""
 "Et program ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "Lås opp nøkkelring for innlogging"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-msgid "Enter password for to unlock your login keyring"
-msgstr "Oppgi passord for å låse opp nøkkelring for innlogging"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Passordet du bruker for å logge på din datamaskin er ikke lenger det samme "
-"som passordet for din nøkkelring for pålogging."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Nøkkelring for pålogging ble ikke låst opp når du logget på din datamaskin."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "Lås opp nøkkelring"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Oppgi passord for nøkkelring «%s» for å låse opp"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Et program ønsker tilgang til nøkkelring «%s», men den er låst"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:226
-msgid "The unlock password was incorrect"
-msgstr "Passord for å låse opp var feil"
-
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Lager for sertifikat/nøkkel"
@@ -177,163 +138,9 @@ msgid "SSH Key Agent"
 msgstr "SSH-nøkkelagent"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:207
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Pålogging"
-
-#: ../daemon/login/gkd-login.c:643
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Passord for å låse opp: %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Nytt passord kreves"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Nytt passord kreves for sikkerhetslager"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Et passord kreves for å forberede «%s» for lagring av sertifikater eller "
-"nøkler."
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Lås opp privat nøkkel"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Lås opp sertifikat"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Lås opp offentlig nøkkel"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Lås opp"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Oppgi passord for å låse opp privat nøkkel"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Oppgi passord for å låse opp sertifikat"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Oppgi passord for å låse opp offentlig nøkkel"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Oppgi passord for å låse opp"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Et program ønsker tilgang til privat nøkkel «%s», men den er låst"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Et program ønsker tilgang til sertifikat «%s», men den er låst"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Et program ønsker tilgang til offentlignøkkel «%s», men den er låst"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Et program ønsker tilgang til «%s», men den er låst"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Lås opp lager for sertifikat/nøkkel"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Oppgi passord for å låse opp lager for sertifikat/nøkkel"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er "
-"låst"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "Lagre passord ukryptert?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Hvis du velger å bruke et tomt passord kan ikke dine lagrede passord "
-"krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
-"tilgang til dine filer."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Bruk utrygg lagring"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Passordene er ikke like."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "Passordet kan ikke være tomt"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Lås opp denne nøkkelringen automatisk når jeg er logget inn"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Styrke for nytt passord"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Program:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_Bekreft:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Detaljer:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Navn:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "Gammelt pass_ord:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Passord:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -678,6 +485,18 @@ msgstr "Importer sertifikater/nøkler"
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Velg en lokasjon for å lagre importerte sertifikater og nøkler."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+msgid "Enter password to unlock the private key"
+msgstr "Oppgi passord for å låse opp privat nøkkel"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:677
+msgid "Enter password to unlock the certificate"
+msgstr "Oppgi passord for å låse opp sertifikat"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:681
+msgid "Enter password to unlock"
+msgstr "Oppgi passord for å låse opp"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -1052,10 +871,208 @@ msgstr "Signaturforespørselen ble avvist av bruker"
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Sertifikat uten navn"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Kunne ikke lese offentlig nøkkel for SSH"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Passord for å låse opp: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:774
+msgid "The unlock password was incorrect"
+msgstr "Passord for å låse opp var feil"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:605
+msgid "Unlock Login Keyring"
+msgstr "Lås opp nøkkelring for innlogging"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:607
+msgid "Enter password for to unlock your login keyring"
+msgstr "Oppgi passord for å låse opp nøkkelring for innlogging"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:611
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Passordet du bruker for å logge på din datamaskin er ikke lenger det samme "
+"som passordet for din nøkkelring for pålogging."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:613
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Nøkkelring for pålogging ble ikke låst opp når du logget på din datamaskin."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+msgid "Unlock Keyring"
+msgstr "Lås opp nøkkelring"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:633
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Oppgi passord for nøkkelring «%s» for å låse opp"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Et program ønsker tilgang til nøkkelring «%s», men den er låst"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Unlock private key"
+msgstr "Lås opp privat nøkkel"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+msgid "Unlock certificate"
+msgstr "Lås opp sertifikat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:664
+msgid "Unlock public key"
+msgstr "Lås opp offentlig nøkkel"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+msgid "Unlock"
+msgstr "Lås opp"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:679
+msgid "Enter password to unlock the public key"
+msgstr "Oppgi passord for å låse opp offentlig nøkkel"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Et program ønsker tilgang til privat nøkkel «%s», men den er låst"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Et program ønsker tilgang til sertifikat «%s», men den er låst"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Et program ønsker tilgang til offentlignøkkel «%s», men den er låst"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:700
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Et program ønsker tilgang til «%s», men den er låst"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+msgid "Unlock certificate/key storage"
+msgstr "Lås opp lager for sertifikat/nøkkel"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Oppgi passord for å låse opp lager for sertifikat/nøkkel"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er "
+"låst"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1034
+msgid "New Password Required"
+msgstr "Nytt passord kreves"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+msgid "New password required for secure storage"
+msgstr "Nytt passord kreves for sikkerhetslager"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1037
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Et passord kreves for å forberede «%s» for lagring av sertifikater eller "
+"nøkler."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+msgid "Change Password"
+msgstr "Bytt passord"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+msgid "Change password for secure storage"
+msgstr "Bytt passord sikkerhetslager"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "Du må oppgi opprinnelig og nytt passord for å bytte passord for «%s»"
+
+#: ../ui/gku-prompt-tool.c:394
+msgid "Store passwords unencrypted?"
+msgstr "Lagre passord ukryptert?"
+
+#: ../ui/gku-prompt-tool.c:395
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Hvis du velger å bruke et tomt passord kan ikke dine lagrede passord "
+"krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
+"tilgang til dine filer."
+
+#: ../ui/gku-prompt-tool.c:402
+msgid "Use Unsafe Storage"
+msgstr "Bruk utrygg lagring"
+
+#: ../ui/gku-prompt-tool.c:432
+msgid "Passwords do not match."
+msgstr "Passordene er ikke like."
+
+#: ../ui/gku-prompt-tool.c:442
+msgid "Password cannot be blank"
+msgstr "Passordet kan ikke være tomt"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Lås opp denne nøkkelringen automatisk når jeg er logget inn"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "New password strength"
+msgstr "Styrke for nytt passord"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Application:"
+msgstr "_Program:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "_Bekreft:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Details:"
+msgstr "_Detaljer:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Navn:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "Gammelt pass_ord:"
+
+#: ../ui/gku-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Passord:"
