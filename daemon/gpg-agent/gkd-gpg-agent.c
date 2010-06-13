@@ -161,7 +161,7 @@ static gpointer
 run_client_thread (gpointer data)
 {
 	gint *socket = data;
-	GError *error;
+	GError *error = NULL;
 	GkdGpgAgentCall call;
 	gboolean ret;
 	gchar *line;
@@ -174,6 +174,9 @@ run_client_thread (gpointer data)
 	g_io_channel_set_encoding (call.channel, NULL, NULL);
 	g_io_channel_set_close_on_unref (call.channel, FALSE);
 	call.module = g_object_ref (pkcs11_module);
+
+	/* Initial response on the connection */
+	gkd_gpg_agent_send_reply (&call, TRUE, "your orders please");
 
 	for (;;) {
 
@@ -297,7 +300,7 @@ gkd_gpg_agent_accept (void)
 
 	addrlen = sizeof (addr);
 	new_fd = accept (socket_fd, (struct sockaddr*) &addr, &addrlen);
-	if (socket_fd < 0) {
+	if (new_fd < 0) {
 		g_warning ("cannot accept GPG agent connection: %s", strerror (errno));
 		return;
 	}
@@ -408,7 +411,7 @@ gkd_gpg_agent_initialize_with_module (GP11Module *module)
 		if (g_ascii_strcasecmp ("Secret Store", info->slot_description) == 0) {
 
 			/* Try and open a session */
-			session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, &error);
+			session = gp11_slot_open_session (l->data, CKF_RW_SESSION | CKF_SERIAL_SESSION, &error);
 			if (!session) {
 				g_warning ("couldn't create pkcs#11 session: %s", error->message);
 				g_clear_error (&error);
@@ -473,7 +476,7 @@ gkd_gpg_agent_startup (const gchar *prefix)
 	 * Need to figure out a way to get the PID in there.
 	 */
 	agent_info = g_strdup_printf ("%s:0:1", socket_path);
-	g_setenv ("SSH_AUTH_SOCK", agent_info, TRUE);
+	g_setenv ("GPG_AGENT_INFO", agent_info, TRUE);
 	g_free (agent_info);
 
 	socket_fd = sock;

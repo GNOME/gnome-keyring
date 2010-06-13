@@ -50,6 +50,7 @@ pkcs11_daemon_cleanup (gpointer unused)
 
 	gkd_ssh_agent_uninitialize ();
 	gkm_rpc_layer_uninitialize ();
+	gkd_gpg_agent_uninitialize ();
 	rv = (pkcs11_roof->C_Finalize) (NULL);
 
 	if (rv != CKR_OK)

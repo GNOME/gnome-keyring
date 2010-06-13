@@ -29,6 +29,10 @@
 
 #include "pkcs11/pkcs11i.h"
 
+#include "ui/gku-prompt.h"
+
+#include <glib/gi18n.h>
+
 #include <ctype.h>
 #include <string.h>
 
@@ -47,6 +51,9 @@ keyid_to_field_attribute (const gchar *keyid, GP11Attributes *attrs)
 {
 	GString *fields = g_string_sized_new (128);
 
+	g_assert (keyid);
+	g_assert (attrs);
+
 	/* Remember that attribute names are sorted */
 
 	g_string_append (fields, "keyid");
@@ -63,6 +70,149 @@ keyid_to_field_attribute (const gchar *keyid, GP11Attributes *attrs)
 	g_string_free (fields, TRUE);
 }
 
+static gchar*
+calculate_label_for_key (const gchar *keyid, const gchar *description)
+{
+	gchar *label = NULL;
+	gchar **lines, **l;
+	const gchar *line;
+	gsize len;
+
+	/* Use the line that starts and ends with quotes */
+	if (description) {
+		lines = g_strsplit (description, "\n", -1);
+		for (l = lines, line = *l; !label && line; l++, line = *l) {
+			len = strlen (line);
+			if (len > 2 && line[0] == '\"' && line[len - 1] == '\"')
+				label = g_strndup (line + 1, len - 2);
+		}
+		g_strfreev (lines);
+	}
+
+	/* Use last eight characters of keyid */
+	if (!label && keyid) {
+		len = strlen (keyid);
+		if (len > 8)
+			label = g_strdup (keyid + (len - 8));
+		else
+			label = g_strdup (keyid);
+	}
+
+	if (!label)
+		label = g_strdup (_("Unknown"));
+
+	return label;
+}
+
+static GList*
+find_saved_items (GP11Session *session, GP11Attributes *attrs)
+{
+	GP11Attributes *template;
+	GError *error = NULL;
+	GP11Attribute *attr;
+	GP11Object *search;
+	GList *results;
+	gpointer data;
+	gsize n_data;
+
+	template = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_SEARCH,
+	                                 CKA_TOKEN, GP11_BOOLEAN, FALSE,
+	                                 GP11_INVALID);
+
+	attr = gp11_attributes_find (attrs, CKA_G_COLLECTION);
+	if (attr != NULL)
+		gp11_attributes_add (template, attr);
+
+	attr = gp11_attributes_find (attrs, CKA_G_FIELDS);
+	g_return_val_if_fail (attr != NULL, NULL);
+	gp11_attributes_add (template, attr);
+
+	search = gp11_session_create_object_full (session, template, NULL, &error);
+	gp11_attributes_unref (template);
+
+	if (search == NULL) {
+		g_warning ("couldn't perform search for gpg agent stored passphrases: %s",
+		           egg_error_message (error));
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	gp11_object_set_session (search, session);
+	data = gp11_object_get_data (search, CKA_G_MATCHED, &n_data, &error);
+	gp11_object_destroy (search, NULL);
+	g_object_unref (search);
+
+	if (data == NULL) {
+		g_warning ("couldn't retrieve list of gpg agent stored passphrases: %s",
+		           egg_error_message (error));
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	results = gp11_objects_from_handle_array (gp11_session_get_slot (session),
+	                                          data, n_data / sizeof (CK_ULONG));
+
+	g_free (data);
+	return results;
+}
+
+static void
+do_save_password (GP11Session *session, const gchar *keyid, const gchar *description,
+                  const gchar *password, const gchar *collection_id)
+{
+	GP11Attributes *attrs;
+	gpointer identifier;
+	gsize n_identifier;
+	GList *previous;
+	GError *error = NULL;
+	GP11Object *item;
+	gchar *text;
+	gchar *label;
+
+	g_assert (collection_id);
+	g_assert (password);
+	g_assert (keyid);
+
+	/* Sending a password, needs to be secure */
+	attrs = gp11_attributes_new_full (egg_secure_realloc);
+
+	/* Build up basic set of attributes */
+	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+	gp11_attributes_add_string (attrs, CKA_G_COLLECTION, collection_id);
+	keyid_to_field_attribute (keyid, attrs);
+
+	/* Find a previously stored object like this, and replace if so */
+	previous = find_saved_items (session, attrs);
+	if (previous) {
+		gp11_object_set_session (previous->data, session);
+		identifier = gp11_object_get_data (previous->data, CKA_ID, &n_identifier, NULL);
+		if (identifier != NULL)
+			gp11_attributes_add_data (attrs, CKA_ID, identifier, n_identifier);
+		g_free (identifier);
+		gp11_list_unref_free (previous);
+	}
+
+	text = calculate_label_for_key (keyid, description);
+	label = g_strdup_printf (_("PGP Key: %s"), text);
+	g_free (text);
+
+	/* Put in the remainder of the attributes */
+	gp11_attributes_add_string (attrs, CKA_VALUE, password);
+	gp11_attributes_add_string (attrs, CKA_LABEL, label);
+	g_free (label);
+
+	item = gp11_session_create_object_full (session, attrs, NULL, &error);
+	if (item == NULL) {
+		g_warning ("couldn't store gpg agent password: %s", egg_error_message (error));
+		g_clear_error (&error);
+	}
+
+	if (item != NULL)
+		g_object_unref (item);
+	gp11_attributes_unref (attrs);
+}
+
 static gboolean
 do_clear_password (GP11Session *session, const gchar *keyid)
 {
@@ -74,15 +224,8 @@ do_clear_password (GP11Session *session, const gchar *keyid)
 	                              GP11_INVALID);
 	keyid_to_field_attribute (keyid, attrs);
 
-	objects = gp11_session_find_objects_full (session, attrs, NULL, &error);
+	objects = find_saved_items (session, attrs);
 	gp11_attributes_unref (attrs);
-
-	if (error) {
-		g_warning ("couldn't search for gpg agent passwords to clear: %s",
-		           egg_error_message (error));
-		g_clear_error (&error);
-		return FALSE;
-	}
 
 	if (!objects)
 		return TRUE;
@@ -116,15 +259,8 @@ do_lookup_password (GP11Session *session, const gchar *keyid)
 	                              GP11_INVALID);
 	keyid_to_field_attribute (keyid, attrs);
 
-	objects = gp11_session_find_objects_full (session, attrs, NULL, &error);
+	objects = find_saved_items (session, attrs);
 	gp11_attributes_unref (attrs);
-
-	if (error) {
-		g_warning ("couldn't search for gpg agent passwords to clear: %s",
-		           egg_error_message (error));
-		g_clear_error (&error);
-		return NULL;
-	}
 
 	if (!objects)
 		return NULL;
@@ -148,23 +284,92 @@ do_lookup_password (GP11Session *session, const gchar *keyid)
 	return data;
 }
 
+static GkuPrompt*
+prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar *prompt_text,
+                         const gchar *description, gboolean confirm)
+{
+	GkuPrompt *prompt;
+	GError *error = NULL;
+	GList *objects;
+
+	g_assert (GP11_IS_SESSION (session));
+
+	prompt = gku_prompt_new ();
+
+	gku_prompt_set_title (prompt, _("Enter Passphrase"));
+	gku_prompt_set_primary_text (prompt, prompt_text ? prompt_text : _("Enter Passphrase"));
+	gku_prompt_set_secondary_text (prompt, description);
+
+	gku_prompt_hide_widget (prompt, "name_area");
+	if (confirm)
+		gku_prompt_show_widget (prompt, "confirm_area");
+	else
+		gku_prompt_hide_widget (prompt, "confirm_area");
+	gku_prompt_show_widget (prompt, "password_area");
+
+	/* Check if the login keyring is usable */
+	objects = gp11_session_find_objects (session, &error,
+	                                     CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
+	                                     CKA_ID, 5, "login",
+	                                     CKA_G_LOCKED, GP11_BOOLEAN, FALSE,
+	                                     GP11_INVALID);
+
+	if (errmsg)
+		gku_prompt_set_warning (prompt, errmsg);
+
+	if (error) {
+		g_warning ("gpg agent couldn't lookup for login keyring: %s", egg_error_message (error));
+		g_clear_error (&error);
+	} else if (objects) {
+		gku_prompt_show_widget (prompt, "details_area");
+		gku_prompt_show_widget (prompt, "lock_area");
+		gku_prompt_hide_widget (prompt, "options_area");
+	}
+
+	gp11_list_unref_free (objects);
+
+	return prompt;
+}
+
+static GkuPrompt*
+on_prompt_attention (gpointer user_data)
+{
+	/* We passed the prompt as the argument */
+	return g_object_ref (user_data);
+}
+
 static gchar*
 do_get_password (GP11Session *session, const gchar *keyid, const gchar *errmsg,
-                 const gchar *prompt, const gchar *description, gboolean confirm)
+                 const gchar *prompt_text, const gchar *description, gboolean confirm)
 {
-	gchar *password;
+	gchar *password = NULL;
+	gint value = 0;
+	GkuPrompt *prompt;
+
+	g_assert (GP11_IS_SESSION (session));
+	g_assert (keyid);
 
 	password = do_lookup_password (session, keyid);
 	if (password != NULL)
 		return password;
 
-	/*
-	 * Need the following to continue:
-	 * - Ability to detect or use default keyring.
-	 * - Ability to prompt to unlock keyring.
-	 */
-	g_assert (FALSE && "Not yet impelmented");
-	return NULL;
+	/* Do we have the keyid? */
+	prompt = prepare_password_prompt (session, errmsg, prompt_text, description, confirm);
+
+	gku_prompt_request_attention_sync (NULL, on_prompt_attention,
+	                                   g_object_ref (prompt), g_object_unref);
+
+	if (gku_prompt_get_response (prompt) == GKU_RESPONSE_OK) {
+		password = gku_prompt_get_password (prompt, "password");
+		g_return_val_if_fail (password, NULL);
+
+		/* Save away the password appropriately */
+		gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value);
+		do_save_password (session, keyid, description, password, value == 0 ? "session" : "login");
+	}
+
+	g_object_unref (prompt);
+	return password;
 }
 
 /* ----------------------------------------------------------------------------------

@@ -28,8 +28,9 @@ gkd_gpg_agent_standalone_SOURCES = \
 
 gkd_gpg_agent_standalone_LDADD = \
 	libgkd-gpg-agent.la \
+	$(top_builddir)/ui/libgku-prompt.la \
 	$(top_builddir)/gp11/libgp11.la \
-	$(top_builddir)/egg/libegg-secure.la \
+	$(top_builddir)/egg/libegg.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(LIBGCRYPT_LIBS) \
