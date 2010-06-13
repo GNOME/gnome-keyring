@@ -198,7 +198,7 @@ prepare_titlebar (GtkBuilder *builder, GtkDialog *dialog)
 {
 	gchar *title;
 
-	title = g_key_file_get_value (input_data, "prompt", "title", NULL);
+	title = g_key_file_get_string (input_data, "prompt", "title", NULL);
 	if (title)
 		gtk_window_set_title (GTK_WINDOW (dialog), title);
 	gtk_window_set_icon_name(GTK_WINDOW(dialog), "stock_lock");
@@ -231,9 +231,9 @@ prepare_prompt (GtkBuilder *builder, GtkDialog *dialog)
 	gchar *primary, *secondary, *markup, *warning;
 	GtkLabel *label;
 
-	primary = g_key_file_get_value (input_data, "prompt", "primary", NULL);
+	primary = g_key_file_get_string (input_data, "prompt", "primary", NULL);
 	g_return_if_fail (primary);
-	secondary = g_key_file_get_value (input_data, "prompt", "secondary", NULL);
+	secondary = g_key_file_get_string (input_data, "prompt", "secondary", NULL);
 
 	markup = create_markup (primary, secondary);
 	g_free (primary);
@@ -245,7 +245,7 @@ prepare_prompt (GtkBuilder *builder, GtkDialog *dialog)
 	gtk_label_set_markup (label, markup);
 	g_free (markup);
 
-	warning = g_key_file_get_value (input_data, "prompt", "warning", NULL);
+	warning = g_key_file_get_string (input_data, "prompt", "warning", NULL);
 	if (warning != NULL)
 		prepare_warning (builder, warning);
 	g_free (warning);
@@ -258,9 +258,9 @@ prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
 	gchar *cancel_text;
 	gchar *other_text;
 
-	ok_text = g_key_file_get_value (input_data, "buttons", "ok", NULL);
-	cancel_text = g_key_file_get_value (input_data, "buttons", "cancel", NULL);
-	other_text = g_key_file_get_value (input_data, "buttons", "other", NULL);
+	ok_text = g_key_file_get_string (input_data, "buttons", "ok", NULL);
+	cancel_text = g_key_file_get_string (input_data, "buttons", "cancel", NULL);
+	other_text = g_key_file_get_string (input_data, "buttons", "other", NULL);
 
 	if (other_text)
 		gtk_dialog_add_button (dialog, other_text, GTK_RESPONSE_APPLY);
@@ -521,8 +521,8 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	if (!g_key_file_has_group (input_data, "transport")) {
 		text = gtk_entry_get_text (entry);
 		value = egg_hex_encode ((const guchar*)text, strlen (text));
-		g_key_file_set_value (output_data, password_type, "parameter", "");
-		g_key_file_set_value (output_data, password_type, "value", value);
+		g_key_file_set_string (output_data, password_type, "parameter", "");
+		g_key_file_set_string (output_data, password_type, "value", value);
 		g_free (value);
 		return;
 	}
@@ -566,7 +566,7 @@ gather_response (gint response)
 		break;
 	}
 
-	g_key_file_set_value (output_data, "prompt", "response", value);
+	g_key_file_set_string (output_data, "prompt", "response", value);
 }
 
 static void
