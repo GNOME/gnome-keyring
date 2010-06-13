@@ -9,13 +9,11 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
             <property name="border_width">6</property>
-            <property name="orientation">vertical</property>
             <property name="spacing">12</property>
             <child>
               <object class="GtkHBox" id="hbox1">
@@ -37,7 +35,6 @@
                 <child>
                   <object class="GtkVBox" id="vbox3">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <property name="spacing">12</property>
                     <child>
                       <object class="GtkLabel" id="prompt_label">
@@ -66,7 +63,6 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                     <child>
                       <object class="GtkVBox" id="prompt_area">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkHBox" id="name_area">
@@ -166,7 +162,6 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                         </child>
                         <child>
                           <object class="GtkVBox" id="confirm_area">
-                            <property name="orientation">vertical</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkHBox" id="confirm_box">
@@ -261,19 +256,22 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                     <child>
                       <object class="GtkVBox" id="vbox2">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkVBox" id="lock_area">
-                            <property name="orientation">vertical</property>
                             <property name="spacing">6</property>
                             <child>
-                              <object class="GtkCheckButton" id="auto_unlock_check">
-                                <property name="label" translatable="yes">Automatically unlock this keyring whenever I'm logged in</property>
+                              <object class="GtkAlignment" id="auto_area">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="draw_indicator">True</property>
+                                <child>
+                                  <object class="GtkCheckButton" id="auto_unlock_check">
+                                    <property name="label" translatable="yes">Automatically unlock this keyring whenever I'm logged in</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                </child>
                               </object>
                               <packing>
                                 <property name="position">0</property>
@@ -375,11 +373,11 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
   </object>
   <object class="GtkSizeGroup" id="prompt_label_sizegroup">
     <widgets>
-      <widget name="name_label"/>
-      <widget name="original_label"/>
-      <widget name="password_label"/>
-      <widget name="confirm_label"/>
       <widget name="strength_label"/>
+      <widget name="confirm_label"/>
+      <widget name="password_label"/>
+      <widget name="original_label"/>
+      <widget name="name_label"/>
     </widgets>
   </object>
 </interface>

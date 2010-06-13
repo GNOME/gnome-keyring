@@ -158,7 +158,7 @@ find_saved_items (GP11Session *session, GP11Attributes *attrs)
 
 static void
 do_save_password (GP11Session *session, const gchar *keyid, const gchar *description,
-                  const gchar *password, const gchar *collection_id)
+                  const gchar *password, GP11Attributes *options)
 {
 	GP11Attributes *attrs;
 	gpointer identifier;
@@ -168,8 +168,8 @@ do_save_password (GP11Session *session, const gchar *keyid, const gchar *descrip
 	GP11Object *item;
 	gchar *text;
 	gchar *label;
+	gint i;
 
-	g_assert (collection_id);
 	g_assert (password);
 	g_assert (keyid);
 
@@ -179,8 +179,11 @@ do_save_password (GP11Session *session, const gchar *keyid, const gchar *descrip
 	/* Build up basic set of attributes */
 	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
-	gp11_attributes_add_string (attrs, CKA_G_COLLECTION, collection_id);
 	keyid_to_field_attribute (keyid, attrs);
+
+	/* Bring in all the unlock options */
+	for (i = 0; options && i < gp11_attributes_count (options); ++i)
+		gp11_attributes_add (attrs, gp11_attributes_at (options, i));
 
 	/* Find a previously stored object like this, and replace if so */
 	previous = find_saved_items (session, attrs);
@@ -290,6 +293,7 @@ prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar 
 {
 	GkuPrompt *prompt;
 	GError *error = NULL;
+	gboolean auto_unlock;
 	GList *objects;
 
 	g_assert (GP11_IS_SESSION (session));
@@ -306,6 +310,11 @@ prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar 
 	else
 		gku_prompt_hide_widget (prompt, "confirm_area");
 	gku_prompt_show_widget (prompt, "password_area");
+	gku_prompt_show_widget (prompt, "details_area");
+	gku_prompt_show_widget (prompt, "options_area");
+	gku_prompt_show_widget (prompt, "lock_area");
+
+	auto_unlock = FALSE;
 
 	/* Check if the login keyring is usable */
 	objects = gp11_session_find_objects (session, &error,
@@ -321,10 +330,13 @@ prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar 
 		g_warning ("gpg agent couldn't lookup for login keyring: %s", egg_error_message (error));
 		g_clear_error (&error);
 	} else if (objects) {
-		gku_prompt_show_widget (prompt, "details_area");
-		gku_prompt_show_widget (prompt, "lock_area");
-		gku_prompt_hide_widget (prompt, "options_area");
+		auto_unlock = TRUE;
 	}
+
+	if (auto_unlock)
+		gku_prompt_show_widget (prompt, "auto_area");
+	else
+		gku_prompt_hide_widget (prompt, "auto_area");
 
 	gp11_list_unref_free (objects);
 
@@ -342,6 +354,7 @@ static gchar*
 do_get_password (GP11Session *session, const gchar *keyid, const gchar *errmsg,
                  const gchar *prompt_text, const gchar *description, gboolean confirm)
 {
+	GP11Attributes *attrs;
 	gchar *password = NULL;
 	gint value = 0;
 	GkuPrompt *prompt;
@@ -363,9 +376,23 @@ do_get_password (GP11Session *session, const gchar *keyid, const gchar *errmsg,
 		password = gku_prompt_get_password (prompt, "password");
 		g_return_val_if_fail (password, NULL);
 
-		/* Save away the password appropriately */
-		gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value);
-		do_save_password (session, keyid, description, password, value == 0 ? "session" : "login");
+		/* Load up the save options */
+		attrs = gp11_attributes_new ();
+
+		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value))
+			gp11_attributes_add_string (attrs, CKA_G_COLLECTION, "login");
+		else
+			gp11_attributes_add_string (attrs, CKA_G_COLLECTION, "session");
+
+		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_IDLE, &value) && value > 0)
+			gp11_attributes_add_ulong (attrs, CKA_G_DESTRUCT_IDLE, value);
+
+		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_TIMEOUT, &value) && value > 0)
+			gp11_attributes_add_ulong (attrs, CKA_G_DESTRUCT_AFTER, value);
+
+		/* Now actually save the password */
+		do_save_password (session, keyid, description, password, attrs);
+		gp11_attributes_unref (attrs);
 	}
 
 	g_object_unref (prompt);
