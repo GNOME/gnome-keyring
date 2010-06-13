@@ -157,11 +157,11 @@ factory_create_item (GkmSession *session, GkmTransaction *transaction,
 
 	gkm_attribute_consume (attr);
 	if (!gkm_attributes_find_boolean (attrs, n_attrs, CKA_TOKEN, &is_token))
-		collection = gkm_secret_collection_find (attr, m_manager, s_manager, NULL);
+		collection = gkm_secret_collection_find (session, attr, m_manager, s_manager, NULL);
 	else if (is_token)
-		collection = gkm_secret_collection_find (attr, m_manager, NULL);
+		collection = gkm_secret_collection_find (session, attr, m_manager, NULL);
 	else
-		collection = gkm_secret_collection_find (attr, s_manager, NULL);
+		collection = gkm_secret_collection_find (session, attr, s_manager, NULL);
 
 	if (!collection) {
 		gkm_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);

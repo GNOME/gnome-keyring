@@ -53,6 +53,7 @@ GType                      gkm_certificate_get_type               (void);
 GkmFactory*                gkm_certificate_get_factory            (void);
 
 gboolean                   gkm_certificate_calc_category          (GkmCertificate *self,
+                                                                   GkmSession *session,
                                                                    CK_ULONG* category);
 
 GkmCertificateKey*         gkm_certificate_get_public_key         (GkmCertificate *self);

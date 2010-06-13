@@ -68,6 +68,7 @@ typedef struct _Finder {
 	gpointer results;
 	CK_ATTRIBUTE_PTR attrs;
 	CK_ULONG n_attrs;
+	GkmSession *session;
 } Finder;
 
 G_DEFINE_TYPE(GkmManager, gkm_manager, G_TYPE_OBJECT);
@@ -488,7 +489,7 @@ find_each_object (gpointer unused, gpointer object, gpointer user_data)
 			if (!index_contains (index, object, attr))
 				return;
 		} else {
-			if (!gkm_object_match (object, NULL, attr))
+			if (!gkm_object_match (object, finder->session, attr))
 				return;
 		}
 	}
@@ -878,9 +879,10 @@ gkm_manager_find_one_by_string_property (GkmManager *self, const gchar *property
 }
 
 GkmObject*
-gkm_manager_find_one_by_attributes (GkmManager *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+gkm_manager_find_one_by_attributes (GkmManager *self, GkmSession *session,
+                                    CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
-	Finder finder;
+	Finder finder = { 0, };
 
 	g_return_val_if_fail (GKM_IS_MANAGER (self), NULL);
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
@@ -890,6 +892,7 @@ gkm_manager_find_one_by_attributes (GkmManager *self, CK_ATTRIBUTE_PTR attrs, CK
 	finder.manager = self;
 	finder.attrs = attrs;
 	finder.n_attrs = n_attrs;
+	finder.session = session;
 
 	find_for_attributes (&finder);
 
@@ -897,9 +900,10 @@ gkm_manager_find_one_by_attributes (GkmManager *self, CK_ATTRIBUTE_PTR attrs, CK
 }
 
 GList*
-gkm_manager_find_by_attributes (GkmManager *self, CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+gkm_manager_find_by_attributes (GkmManager *self, GkmSession *session,
+                                CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
-	Finder finder;
+	Finder finder = { 0, };
 
 	g_return_val_if_fail (GKM_IS_MANAGER (self), NULL);
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
@@ -909,6 +913,7 @@ gkm_manager_find_by_attributes (GkmManager *self, CK_ATTRIBUTE_PTR attrs, CK_ULO
 	finder.manager = self;
 	finder.attrs = attrs;
 	finder.n_attrs = n_attrs;
+	finder.session = session;
 
 	find_for_attributes (&finder);
 
@@ -916,7 +921,7 @@ gkm_manager_find_by_attributes (GkmManager *self, CK_ATTRIBUTE_PTR attrs, CK_ULO
 }
 
 GList*
-gkm_manager_find_by_class (GkmManager *self, CK_OBJECT_CLASS klass)
+gkm_manager_find_by_class (GkmManager *self, GkmSession *session, CK_OBJECT_CLASS klass)
 {
 	CK_ATTRIBUTE attr;
 
@@ -926,11 +931,12 @@ gkm_manager_find_by_class (GkmManager *self, CK_OBJECT_CLASS klass)
 	attr.ulValueLen = sizeof (klass);
 	attr.pValue = &klass;
 
-	return gkm_manager_find_by_attributes (self, &attr, 1);
+	return gkm_manager_find_by_attributes (self, session, &attr, 1);
 }
 
 GkmObject*
-gkm_manager_find_related (GkmManager *self, CK_OBJECT_CLASS klass, GkmObject *related_to)
+gkm_manager_find_related (GkmManager *self, GkmSession *session,
+                          CK_OBJECT_CLASS klass, GkmObject *related_to)
 {
 	CK_ATTRIBUTE attrs[2];
 	GkmObject *object;
@@ -952,18 +958,18 @@ gkm_manager_find_related (GkmManager *self, CK_OBJECT_CLASS klass, GkmObject *re
 	attrs[1].pValue = &klass;
 	attrs[1].ulValueLen = sizeof (klass);
 
-	object = gkm_manager_find_one_by_attributes (self, attrs, 2);
+	object = gkm_manager_find_one_by_attributes (self, session, attrs, 2);
 	g_free (id);
 
 	return object;
 }
 
 CK_RV
-gkm_manager_find_handles (GkmManager *self, gboolean also_private,
-                          CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
-                          GArray *found)
+gkm_manager_find_handles (GkmManager *self, GkmSession *session,
+                          gboolean also_private, CK_ATTRIBUTE_PTR attrs,
+                          CK_ULONG n_attrs, GArray *found)
 {
-	Finder finder;
+	Finder finder = { 0, };
 
 	g_return_val_if_fail (GKM_IS_MANAGER (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (attrs || !n_attrs, CKR_GENERAL_ERROR);
@@ -973,6 +979,7 @@ gkm_manager_find_handles (GkmManager *self, gboolean also_private,
 	finder.manager = self;
 	finder.attrs = attrs;
 	finder.n_attrs = n_attrs;
+	finder.session = session;
 
 	find_for_attributes (&finder);
 

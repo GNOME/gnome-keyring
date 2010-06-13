@@ -46,7 +46,8 @@ GType                gkm_secret_collection_get_type        (void);
 
 GkmFactory*          gkm_secret_collection_get_factory     (void) G_GNUC_CONST;
 
-GkmSecretCollection* gkm_secret_collection_find            (CK_ATTRIBUTE_PTR attr,
+GkmSecretCollection* gkm_secret_collection_find            (GkmSession *session,
+                                                            CK_ATTRIBUTE_PTR attr,
                                                             ...) G_GNUC_NULL_TERMINATED;
 
 GkmDataResult        gkm_secret_collection_load            (GkmSecretCollection *self);

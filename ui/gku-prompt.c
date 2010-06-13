@@ -454,7 +454,7 @@ display_dummy_prompt (GkuPrompt *self, const gchar *response)
 	g_assert (GKU_IS_PROMPT (self));
 
 	if (!response && self->pv->input)
-		title = g_key_file_get_value (self->pv->input, "prompt", "title", NULL);
+		title = g_key_file_get_string (self->pv->input, "prompt", "title", NULL);
 
 	/* Fires completed event when fails */
 	if (!prepare_input_data (self)) {
@@ -643,7 +643,7 @@ gku_prompt_set_title (GkuPrompt *self, const gchar *title)
 {
 	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
-	g_key_file_set_value (self->pv->input, "prompt", "title", title);
+	g_key_file_set_string (self->pv->input, "prompt", "title", title);
 }
 
 void
@@ -651,7 +651,7 @@ gku_prompt_set_primary_text (GkuPrompt *self, const gchar *primary)
 {
 	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
-	g_key_file_set_value (self->pv->input, "prompt", "primary", primary);
+	g_key_file_set_string (self->pv->input, "prompt", "primary", primary);
 }
 
 void
@@ -659,7 +659,7 @@ gku_prompt_set_secondary_text (GkuPrompt *self, const gchar *secondary)
 {
 	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (self->pv->input);
-	g_key_file_set_value (self->pv->input, "prompt", "secondary", secondary);
+	g_key_file_set_string (self->pv->input, "prompt", "secondary", secondary);
 }
 
 void
@@ -705,7 +705,7 @@ gku_prompt_get_response (GkuPrompt *self)
 
 	g_return_val_if_fail (self->pv->output, GKU_RESPONSE_FAILURE);
 
-	response = g_key_file_get_value (self->pv->output, "prompt", "response", NULL);
+	response = g_key_file_get_string (self->pv->output, "prompt", "response", NULL);
 	if (!response || g_str_equal (response, "")) {
 		ret = GKU_RESPONSE_NONE;
 	} else if (g_str_equal (response, "ok")) {
@@ -781,7 +781,7 @@ gku_prompt_set_window_id (GkuPrompt *self, const gchar *window_id)
 	if (!window_id)
 		g_key_file_remove_key (self->pv->input, "prompt", "window-id", NULL);
 	else
-		g_key_file_set_value (self->pv->input, "prompt", "window-id", window_id);
+		g_key_file_set_string (self->pv->input, "prompt", "window-id", window_id);
 }
 
 void
@@ -792,7 +792,7 @@ gku_prompt_set_warning (GkuPrompt *self, const gchar *warning)
 	if (!warning)
 		g_key_file_remove_key (self->pv->input, "prompt", "warning", NULL);
 	else
-		g_key_file_set_value (self->pv->input, "prompt", "warning", warning);
+		g_key_file_set_string (self->pv->input, "prompt", "warning", warning);
 }
 
 void
