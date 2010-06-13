@@ -7,19 +7,20 @@
 # Mancomún - Centro de Referencia e Servizos de Software Libre <g11n@mancomun.org>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-20 22:29+0100\n"
-"PO-Revision-Date: 2010-02-19 13:29+0100\n"
+"PO-Revision-Date: 2010-06-13 19:03+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
-"Language-Team: Galician <proxecto@trasno.net>\n"
+"Language-Team: Galician <gnome@g11.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: gl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\\\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
@@ -295,9 +296,9 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
-"Ao escoller usar un contrasinal en branco, os contrasinais gardados non "
-"serán codificados de modo seguro. Os contrasinais estarán accesíbeis a "
-"calquera que teña acceso aos seus ficheiros."
+"Ao escoller usar un contrasinal en branco, os seus contrasinais almacenados "
+"non serán cifrados de modo seguro. Polo que serán accesíbeis por calquera "
+"que acceda aos seus ficheiros."
 
 #: ../daemon/prompt/gkd-prompt-tool.c:401
 msgid "Use Unsafe Storage"
