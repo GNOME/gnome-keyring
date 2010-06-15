@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-05-12 22:49+0000\n"
-"PO-Revision-Date: 2010-05-29 12:21+0200\n"
+"POT-Creation-Date: 2010-06-13 22:58+0000\n"
+"PO-Revision-Date: 2010-06-15 19:27+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -73,8 +73,9 @@ msgstr ""
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:641
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
 msgid "Unnamed"
 msgstr "Sin nombre"
 
@@ -117,50 +118,6 @@ msgstr ""
 "Una aplicación quiere crear un depósito de claves nuevo llamado «%s». Elija "
 "la contraseña que quiere usar para él."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "Desbloquear el depósito de claves de inicio"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-msgid "Enter password for to unlock your login keyring"
-msgstr ""
-"Introducir la contraseña para desbloquear su depósito de claves de inicio de "
-"sesión"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"La contraseña que usa para iniciar sesión en su equipo ya no coincide con la "
-"contraseña de su depósito de claves de inicio de sesión."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"El depósito de claves de inicio de sesión no se desbloqueó cuando inició "
-"sesión en su equipo."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "Desbloquear depósito"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Introduzca la contraseña para desbloquear el depósito de claves «%s»"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Una aplicación quiere acceder al depósito de claves «%s», pero está bloqueado"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:226
-msgid "The unlock password was incorrect"
-msgstr "La contraseña de desbloqueo era incorrecta"
-
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Certificados y almacenamiento de claves"
@@ -186,166 +143,9 @@ msgid "SSH Key Agent"
 msgstr "Agente de claves SSH"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:207
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Inicio de sesión"
-
-#: ../daemon/login/gkd-login.c:643
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Contraseña de desbloqueo para %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Se requiere una contraseña nueva"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Se requiere una contraseña nueva para el almacén seguro"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Se requiere una contraseña para poder preparar «%s» para almacenar "
-"certificados o claves"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Desbloquear la clave privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Desbloquear el certificado"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Desbloquear la clave pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Desbloquear"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Introduzca la contraseña para desbloquear la clave privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Introduzca la contraseña para desbloquear el certificado"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Introduzca la contraseña para desbloquear la clave pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Introduzca la contraseña para desbloquearlo"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Una aplicación quiere acceder a la clave privada «%s», pero está bloqueada"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Una aplicación quiere acceder al certificado «%s», pero está bloqueado"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Una aplicación quiere acceder a la clave pública «%s», pero está bloqueada"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Una aplicación quiere acceder «%s», pero está bloqueado"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Desbloquear el depósito de certificados/claves"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Introducir la contraseña para desbloquear el depósito de certificados/claves"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Una aplicación quiere acceder al depósito de certificados/claves «%s», pero "
-"está bloqueado"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Al elegir usar una contraseña en blanco, sus contraseñas almacenadas no "
-"estarán cifradas de forma segura. Serán accesibles por cualquiera que tenga "
-"acceso a sus archivos."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Usar depósito inseguro"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Las contraseñas no coinciden."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "La contraseña no puede estar vacía"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Desbloquear este depósito de claves siempre que haya iniciado sesión"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Fortaleza de la nueva contraseña"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Aplicación:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_Confirmar:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Detalles:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Nombre:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "Contraseña _antigua:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Contraseña:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -690,6 +490,18 @@ msgstr "Importar certificados/claves"
 msgid "Choose a location to store the imported certificates/keys."
 msgstr ""
 "Elija una ubicación donde almacenar los certificados/claves importados."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+msgid "Enter password to unlock the private key"
+msgstr "Introduzca la contraseña para desbloquear la clave privada"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:677
+msgid "Enter password to unlock the certificate"
+msgstr "Introduzca la contraseña para desbloquear el certificado"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:681
+msgid "Enter password to unlock"
+msgstr "Introduzca la contraseña para desbloquearlo"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -1064,13 +876,222 @@ msgstr "El usuario rechazó la petición de firma"
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:740
 msgid "Unnamed Certificate"
 msgstr "Certificado sin nombre"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "No se pudo analizar la clave SSH pública"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Contraseña de desbloqueo para %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:774
+msgid "The unlock password was incorrect"
+msgstr "La contraseña de desbloqueo era incorrecta"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:605
+msgid "Unlock Login Keyring"
+msgstr "Desbloquear el depósito de claves de inicio"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:607
+msgid "Enter password for to unlock your login keyring"
+msgstr ""
+"Introducir la contraseña para desbloquear su depósito de claves de inicio de "
+"sesión"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:611
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"La contraseña que usa para iniciar sesión en su equipo ya no coincide con la "
+"contraseña de su depósito de claves de inicio de sesión."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:613
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"El depósito de claves de inicio de sesión no se desbloqueó cuando inició "
+"sesión en su equipo."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+msgid "Unlock Keyring"
+msgstr "Desbloquear depósito"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:633
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduzca la contraseña para desbloquear el depósito de claves «%s»"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Una aplicación quiere acceder al depósito de claves «%s», pero está bloqueado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Unlock private key"
+msgstr "Desbloquear la clave privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+msgid "Unlock certificate"
+msgstr "Desbloquear el certificado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:664
+msgid "Unlock public key"
+msgstr "Desbloquear la clave pública"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+msgid "Unlock"
+msgstr "Desbloquear"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:679
+msgid "Enter password to unlock the public key"
+msgstr "Introduzca la contraseña para desbloquear la clave pública"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Una aplicación quiere acceder a la clave privada «%s», pero está bloqueada"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Una aplicación quiere acceder al certificado «%s», pero está bloqueado"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Una aplicación quiere acceder a la clave pública «%s», pero está bloqueada"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:700
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Una aplicación quiere acceder «%s», pero está bloqueado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+msgid "Unlock certificate/key storage"
+msgstr "Desbloquear el depósito de certificados/claves"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Introducir la contraseña para desbloquear el depósito de certificados/claves"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Una aplicación quiere acceder al depósito de certificados/claves «%s», pero "
+"está bloqueado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1034
+msgid "New Password Required"
+msgstr "Se requiere una contraseña nueva"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+msgid "New password required for secure storage"
+msgstr "Se requiere una contraseña nueva para el almacén seguro"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1037
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Se requiere una contraseña para poder preparar «%s» para almacenar "
+"certificados o claves"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#| msgid "Change Keyring Password"
+msgid "Change Password"
+msgstr "Cambiar la contraseña"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#| msgid "New password required for secure storage"
+msgid "Change password for secure storage"
+msgstr "Cambiar la contraseña para el almacén seguro"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr ""
+"Se necesitan la contraseña original y la nueva para cambiar la contraseña de "
+"«%s»"
+
+#: ../ui/gku-prompt-tool.c:394
+msgid "Store passwords unencrypted?"
+msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
+
+#: ../ui/gku-prompt-tool.c:395
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Al elegir usar una contraseña en blanco, sus contraseñas almacenadas no "
+"estarán cifradas de forma segura. Serán accesibles por cualquiera que tenga "
+"acceso a sus archivos."
+
+#: ../ui/gku-prompt-tool.c:402
+msgid "Use Unsafe Storage"
+msgstr "Usar depósito inseguro"
+
+#: ../ui/gku-prompt-tool.c:432
+msgid "Passwords do not match."
+msgstr "Las contraseñas no coinciden."
+
+#: ../ui/gku-prompt-tool.c:442
+msgid "Password cannot be blank"
+msgstr "La contraseña no puede estar vacía"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Desbloquear este depósito de claves siempre que haya iniciado sesión"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "New password strength"
+msgstr "Fortaleza de la nueva contraseña"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Application:"
+msgstr "_Aplicación:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "_Confirmar:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Details:"
+msgstr "_Detalles:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Nombre:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "Contraseña _antigua:"
+
+#: ../ui/gku-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Contraseña:"
 
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr "Desbloquear automáticamente el depósito seguro al iniciar sesión."
