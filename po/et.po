@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-03-12 23:47+0000\n"
+"POT-Creation-Date: 2010-06-13 22:58+0000\n"
 "PO-Revision-Date: 2010-06-01 18:10+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -100,39 +100,6 @@ msgstr ""
 "Rakendus tahab luua uut võtmerõngast nimega '%s'. Määra selle võtmerõnga "
 "jaoks parool."
 
-msgid "Unlock Login Keyring"
-msgstr "Sisselogimise võtmerõnga lukust lahtivõtmine"
-
-msgid "Enter password for to unlock your login keyring"
-msgstr "Sisselogimise võtmerõnga lukust lahtivõtmiseks parool"
-
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Sinu arvutisse sisselogimiseks kasutatud parool ei ühti enam sinu "
-"sisselogimise võtmerõnga parooliga."
-
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Sisselogimise võtmerõngast ei võetud automaatselt lukust lahti, kui sa "
-"sellesse arvutisse sisse logisid."
-
-msgid "Unlock Keyring"
-msgstr "Võtmerõnga avamine"
-
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Sisesta parool võtmerõnga '%s' avamiseks"
-
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Rakendus tahab kasutada võtmerõngast '%s', kuid see on lukus"
-
-msgid "The unlock password was incorrect"
-msgstr "Lukust lahtivõtmise parool ei ole korrektne"
-
 msgid "Certificate and Key Storage"
 msgstr "Sertifikaadid ja võtmehoidla"
 
@@ -155,125 +122,6 @@ msgstr "SSH-võtmete agent"
 #. TRANSLATORS: This is the display label for the login keyring
 msgid "Login"
 msgstr "Sisselogimine"
-
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Luku avamise parool võtmerõngale: %s"
-
-msgid "New Password Required"
-msgstr "Vajalik uus parool"
-
-msgid "New password required for secure storage"
-msgstr "Turvahoidla jaoks on vaja uut parooli"
-
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"'%s' sertide ja võtmete hoidmise jaoks ettevalmistamiseks on vaja parooli"
-
-msgid "Unlock private key"
-msgstr "Võta salajane võti lukust lahti"
-
-msgid "Unlock certificate"
-msgstr "Võta sertifikaat lukust lahti"
-
-msgid "Unlock public key"
-msgstr "Võta avalik võti lukust lahti"
-
-msgid "Unlock"
-msgstr "Võta lukust lahti"
-
-msgid "Enter password to unlock the private key"
-msgstr "Sisesta salajase võtme lukust lahtivõtmise parool"
-
-msgid "Enter password to unlock the certificate"
-msgstr "Sisesta sertifikaadi lukust lahtivõtmise parool"
-
-msgid "Enter password to unlock the public key"
-msgstr "Sisesta avaliku võtme lukust lahtivõtmise parool"
-
-msgid "Enter password to unlock"
-msgstr "Sisesta lukust lahtivõtmise parool"
-
-#. TRANSLATORS: The private key is locked
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Rakendus tahab kasutada salajast võtit '%s', kuid see on lukus"
-
-#. TRANSLATORS: The certificate is locked
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Rakendus tahab kasutada sertifikaati '%s', kuid see on lukus"
-
-#. TRANSLATORS: The public key is locked
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Rakendus tahab kasutada avalikku võtit '%s', kuid see on lukus"
-
-#. TRANSLATORS: The object '%s' is locked
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Rakendus tahab kasutada '%s', kuid see on lukus"
-
-msgid "Unlock certificate/key storage"
-msgstr "Võta sertifikaatide--/võtmehoidla lukust lahti"
-
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Sisesta sertifikaatide-/võtmehoidla lukust lahtivõtmise parool"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Rakendus tahab kasutada sertifikaatide-/võtmehoidlat '%s', kuid see on lukus"
-
-msgid "Store passwords unencrypted?"
-msgstr "Kas salvestada paroolid krüptimata kujul?"
-
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Tühja parooli valimise korral pole sul võimalik salvestatud paroole ohtult "
-"kaitsta. Need jäävad avatuks igaühele, kel on sinu failidele ligipääs."
-
-msgid "Use Unsafe Storage"
-msgstr "Kasuta ebaturvalist hoidlat"
-
-msgid "Passwords do not match."
-msgstr "Paroolid pole vastavuses."
-
-msgid "Password cannot be blank"
-msgstr "Parool ei tohi olla tühi"
-
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "See võtmerõngas võetakse minu sisselogimisel automaatselt lukust lahti"
-
-msgid "New password strength"
-msgstr "Uue parooli tugevus"
-
-msgid "_Application:"
-msgstr "_Rakendus:"
-
-msgid "_Confirm:"
-msgstr "_Kinnitus:"
-
-msgid "_Details:"
-msgstr "_Üksikasjad:"
-
-msgid "_Name:"
-msgstr "_Nimi:"
-
-msgid "_Old Password:"
-msgstr "_Vana parool:"
-
-msgid "_Password:"
-msgstr "_Parool:"
 
 msgid "Domain Component"
 msgstr "Domeeni osa"
@@ -534,6 +382,15 @@ msgstr "Sertifikaadi/võtmete importimine"
 
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Vali asukoht imporditud sertifikaatide/võtmete säilitamiseks."
+
+msgid "Enter password to unlock the private key"
+msgstr "Sisesta salajase võtme lukust lahtivõtmise parool"
+
+msgid "Enter password to unlock the certificate"
+msgstr "Sisesta sertifikaadi lukust lahtivõtmise parool"
+
+msgid "Enter password to unlock"
+msgstr "Sisesta lukust lahtivõtmise parool"
 
 #. TRANSLATORS: The key is locked.
 msgid "In order to import the private key, it must be unlocked"
@@ -823,6 +680,161 @@ msgstr "Nimetu sertifikaat"
 msgid "Couldn't parse public SSH key"
 msgstr "Avalikku SSH võtit pole võimalik analüüsida"
 
+#. Get the label ready
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Luku avamise parool võtmerõngale: %s"
+
+msgid "The unlock password was incorrect"
+msgstr "Lukust lahtivõtmise parool ei ole korrektne"
+
+msgid "Unlock Login Keyring"
+msgstr "Sisselogimise võtmerõnga lukust lahtivõtmine"
+
+msgid "Enter password for to unlock your login keyring"
+msgstr "Sisselogimise võtmerõnga lukust lahtivõtmiseks parool"
+
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Sinu arvutisse sisselogimiseks kasutatud parool ei ühti enam sinu "
+"sisselogimise võtmerõnga parooliga."
+
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Sisselogimise võtmerõngast ei võetud automaatselt lukust lahti, kui sa "
+"sellesse arvutisse sisse logisid."
+
+msgid "Unlock Keyring"
+msgstr "Võtmerõnga avamine"
+
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Sisesta parool võtmerõnga '%s' avamiseks"
+
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Rakendus tahab kasutada võtmerõngast '%s', kuid see on lukus"
+
+msgid "Unlock private key"
+msgstr "Võta salajane võti lukust lahti"
+
+msgid "Unlock certificate"
+msgstr "Võta sertifikaat lukust lahti"
+
+msgid "Unlock public key"
+msgstr "Võta avalik võti lukust lahti"
+
+msgid "Unlock"
+msgstr "Võta lukust lahti"
+
+msgid "Enter password to unlock the public key"
+msgstr "Sisesta avaliku võtme lukust lahtivõtmise parool"
+
+#. TRANSLATORS: The private key is locked
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Rakendus tahab kasutada salajast võtit '%s', kuid see on lukus"
+
+#. TRANSLATORS: The certificate is locked
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Rakendus tahab kasutada sertifikaati '%s', kuid see on lukus"
+
+#. TRANSLATORS: The public key is locked
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Rakendus tahab kasutada avalikku võtit '%s', kuid see on lukus"
+
+#. TRANSLATORS: The object '%s' is locked
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Rakendus tahab kasutada '%s', kuid see on lukus"
+
+msgid "Unlock certificate/key storage"
+msgstr "Võta sertifikaatide--/võtmehoidla lukust lahti"
+
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Sisesta sertifikaatide-/võtmehoidla lukust lahtivõtmise parool"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Rakendus tahab kasutada sertifikaatide-/võtmehoidlat '%s', kuid see on lukus"
+
+msgid "New Password Required"
+msgstr "Vajalik uus parool"
+
+msgid "New password required for secure storage"
+msgstr "Turvahoidla jaoks on vaja uut parooli"
+
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"'%s' sertide ja võtmete hoidmise jaoks ettevalmistamiseks on vaja parooli"
+
+msgid "Change Password"
+msgstr "Parooli vahetamine"
+
+msgid "Change password for secure storage"
+msgstr "Turvalise hoidla parooli vahetamine"
+
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "'%s' parooli muutmiseks on vaja nii endist kui uut parooli"
+
+msgid "Store passwords unencrypted?"
+msgstr "Kas salvestada paroolid krüptimata kujul?"
+
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Tühja parooli valimise korral pole sul võimalik salvestatud paroole ohtult "
+"kaitsta. Need jäävad avatuks igaühele, kel on sinu failidele ligipääs."
+
+msgid "Use Unsafe Storage"
+msgstr "Kasuta ebaturvalist hoidlat"
+
+msgid "Passwords do not match."
+msgstr "Paroolid pole vastavuses."
+
+msgid "Password cannot be blank"
+msgstr "Parool ei tohi olla tühi"
+
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "See võtmerõngas võetakse minu sisselogimisel automaatselt lukust lahti"
+
+msgid "New password strength"
+msgstr "Uue parooli tugevus"
+
+msgid "_Application:"
+msgstr "_Rakendus:"
+
+msgid "_Confirm:"
+msgstr "_Kinnitus:"
+
+msgid "_Details:"
+msgstr "_Üksikasjad:"
+
+msgid "_Name:"
+msgstr "_Nimi:"
+
+msgid "_Old Password:"
+msgstr "_Vana parool:"
+
+msgid "_Password:"
+msgstr "_Parool:"
+
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr ""
 #~ "See turvahoidla võetakse minu sisselogimisel automaatselt lukust lahti."
@@ -868,8 +880,8 @@ msgstr "Avalikku SSH võtit pole võimalik analüüsida"
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
 #~ msgstr ""
-#~ "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada võtmerõngas %"
-#~ "s asuvat parooli."
+#~ "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada võtmerõngas "
+#~ "%s asuvat parooli."
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '<object "
