@@ -50,24 +50,13 @@ gnome_keyring_daemon_LDADD = \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)
 
-EXTRA_DIST = \
+service_in_files = \
 	org.gnome.keyring.service.in \
-	org.freedesktop.secrets.service.in \
-	$(desktop_in_files)
-
-CLEANFILES = \
-	org.gnome.keyring.service \
-	org.freedesktop.secrets.service \
-	$(desktop_DATA)
+	org.freedesktop.secrets.service.in
 
 servicedir       = $(DBUS_SERVICES_DIR)
-service_in_files = org.gnome.keyring.service.in org.freedesktop.secrets.service.in
 service_DATA     = $(service_in_files:.service.in=.service)
 service_PATH     = $(VALGRIND_RUN)$(bindir)
-
-# Rule to make the service file with bindir expanded
-%.service: %.service.in Makefile
-	@sed -e "s|\@PATH\@|$(service_PATH)|" $< > $@
 
 desktop_in_files = \
 	gnome-keyring-pkcs11.desktop.in \
@@ -75,5 +64,13 @@ desktop_in_files = \
 	gnome-keyring-ssh.desktop.in
 desktopdir       = $(sysconfdir)/xdg/autostart
 desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
+
+EXTRA_DIST = \
+	$(service_in_files) \
+	$(desktop_in_files)
+
+CLEANFILES = \
+	$(service_DATA) \
+	$(desktop_DATA)
 
 @INTLTOOL_DESKTOP_RULE@
