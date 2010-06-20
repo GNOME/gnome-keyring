@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.29.x\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-14 00:56+0200\n"
-"PO-Revision-Date: 2010-06-14 00:57+0200\n"
+"Project-Id-Version: gnome-keyring 2.31.x\n"
+"Report-Msgid-Bugs-To:\n"
+"POT-Creation-Date: 2010-06-20 13:00+0200\n"
+"PO-Revision-Date: 2010-06-20 13:01+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -41,17 +41,12 @@ msgstr ""
 "kommandolinjeargumenter gis til tjenesten."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
-#, fuzzy
 msgid ""
 "This option enables the secret service component in the gnome-keyring "
 "daemon. It only takes effect during startup with gnome-session, (ie: when "
 "the user logs in). This setting may be overridden when certain command line "
 "arguments are passed to the daemon."
-msgstr ""
-"Dette alternativet aktiverer PKCS#11-komponenten for gnome-keyring-"
-"tjenesten. Dette trer kun i kraft når gnome-keyring-daemon starter. Altså "
-"når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke "
-"kommandolinjeargumenter gis til tjenesten."
+msgstr "Dette alternativet sikkerhetstjenestekomponenten for gnome-keyring-tjenesten. Dette trer kun i kraft når gnome-keyring-daemon starter. Altså når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke kommandolinjeargumenter gis til tjenesten."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -62,9 +57,8 @@ msgid "Whether the gnome-keyring SSH agent is enabled."
 msgstr "Om SSH-agenten for gnome-keyring er aktivert."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:6
-#, fuzzy
 msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Om SSH-agenten for gnome-keyring er aktivert."
+msgstr "Om sikkerhetstjenesten for gnome-keyring er aktivert."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
