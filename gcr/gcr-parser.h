@@ -23,6 +23,7 @@
 #define __GCR_PARSER_H__
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include "gcr-types.h"
 
@@ -73,6 +74,21 @@ gboolean                 gcr_parser_parse_data             (GcrParser *self,
                                                             const guchar *data, 
                                                             gsize n_data, 
                                                             GError **err);
+
+gboolean                 gcr_parser_parse_stream           (GcrParser *self,
+                                                            GInputStream *input,
+                                                            GCancellable *cancel,
+                                                            GError **error);
+
+void                     gcr_parser_parse_stream_async     (GcrParser *self,
+                                                            GInputStream *input,
+                                                            GCancellable *cancel,
+                                                            GAsyncReadyCallback callback,
+                                                            gpointer user_data);
+
+gboolean                 gcr_parser_parse_stream_finish    (GcrParser *self,
+                                                            GAsyncResult *res,
+                                                            GError **error);
 
 void                     gcr_parser_add_password           (GcrParser *self,
                                                             const gchar *password);

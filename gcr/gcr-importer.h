@@ -53,20 +53,15 @@ struct _GcrImporter {
 
 struct _GcrImporterClass {
 	GObjectClass parent_class;
-	
+
 	/* signals */
-	
+	void (*queued) (GcrImporter *self, const gchar *label, struct _GP11Attributes *attrs);
 	void (*imported) (GcrImporter *self, struct _GP11Object *object);
 };
 
 GType                     gcr_importer_get_type               (void);
 
 GcrImporter*              gcr_importer_new                    (void);
-
-GcrParser*                gcr_importer_get_parser             (GcrImporter *self);
-
-void                      gcr_importer_set_parser             (GcrImporter *self,
-                                                               GcrParser *parser);
 
 struct _GP11Slot*         gcr_importer_get_slot               (GcrImporter *self);
 
@@ -78,13 +73,18 @@ GcrImporterPromptBehavior gcr_importer_get_prompt_behavior    (GcrImporter *self
 void                      gcr_importer_set_prompt_behavior    (GcrImporter *self,
                                                                GcrImporterPromptBehavior behavior);
 
+void                      gcr_importer_queue                  (GcrImporter *self,
+                                                               const gchar *label,
+                                                               struct _GP11Attributes *attrs);
+
+void                      gcr_importer_listen                 (GcrImporter *self,
+                                                               GcrParser *parser);
+
 gboolean                  gcr_importer_import                 (GcrImporter *self,
-                                                               GInputStream *input,
                                                                GCancellable *cancel,
                                                                GError **error);
 
 void                      gcr_importer_import_async           (GcrImporter *self,
-                                                               GInputStream *input,
                                                                GCancellable *cancel,
                                                                GAsyncReadyCallback callback,
                                                                gpointer user_data);
