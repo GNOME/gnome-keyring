@@ -2,7 +2,7 @@
 Type=Application
 _Name=Certificate and Key Storage
 _Comment=GNOME Keyring: PKCS#11 Component
-Exec=@VALGRIND_RUN@ gnome-keyring-daemon --start --components=pkcs11
+Exec=@VALGRIND_RUN@@BINDIR@/gnome-keyring-daemon --start --components=pkcs11
 OnlyShowIn=GNOME;LXDE;
 AutostartCondition=GNOME /apps/gnome-keyring/daemon-components/pkcs11
 X-GNOME-Autostart-Phase=Initialization
