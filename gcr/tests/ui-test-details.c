@@ -1,7 +1,7 @@
 
 #include "config.h"
 
-#include "gcr-certificate-details-widget.h"
+#include "gcr-certificate-widget.h"
 #include "gcr-simple-certificate.h"
 
 #include <gtk/gtk.h>
@@ -34,7 +34,7 @@ chdir_base_dir (char* argv0)
 static void
 test_details (const gchar *path)
 {
-	GcrCertificateDetailsWidget *details;
+	GcrCertificateWidget *details;
 	GcrCertificate *certificate;
 	GtkDialog *dialog;
 	guchar *data;
@@ -50,7 +50,7 @@ test_details (const gchar *path)
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	g_object_ref_sink (dialog);
 	
-	details = gcr_certificate_details_widget_new (certificate);
+	details = gcr_certificate_widget_new (certificate);
 	gtk_widget_show (GTK_WIDGET (details));
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (details));
 

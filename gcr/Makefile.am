@@ -19,6 +19,7 @@ inc_HEADERS = \
 	gcr-certificate.h \
 	gcr-certificate-basics-widget.h \
 	gcr-certificate-details-widget.h \
+	gcr-certificate-widget.h \
 	gcr-importer.h \
 	gcr-parser.h \
 	gcr-types.h \
@@ -43,8 +44,10 @@ lib_LTLIBRARIES = libgcr.la
 
 libgcr_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
+	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-certificate-basics-widget.c gcr-certificate-basics-widget.h \
 	gcr-certificate-details-widget.c gcr-certificate-details-widget.h \
+	gcr-display-view.c gcr-display-view.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \
 	gcr-internal.h \
