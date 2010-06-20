@@ -48,6 +48,7 @@ libgcr_la_SOURCES = \
 	gcr-certificate-basics-widget.c gcr-certificate-basics-widget.h \
 	gcr-certificate-details-widget.c gcr-certificate-details-widget.h \
 	gcr-display-view.c gcr-display-view.h \
+	gcr-icons.c gcr-icons.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \
 	gcr-internal.h \

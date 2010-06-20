@@ -22,6 +22,7 @@
 #include "gcr-certificate.h"
 #include "gcr-certificate-widget.h"
 #include "gcr-display-view.h"
+#include "gcr-icons.h"
 
 #include "egg/egg-asn1.h"
 #include "egg/egg-oid.h"
@@ -170,16 +171,8 @@ refresh_display (GcrCertificateWidget *self)
 	/* TODO: Calculate name properly */
 	_gcr_display_view_append_title (self->pv->view, "Certificate Name");
 
-#if 0
-	_gcr_display_view_append_table ()
-
-	Issued To:
-	Issued By:
-	Expires:
-#endif
-
 	display = egg_asn1_read_dn_part (asn, "tbsCertificate.subject.rdnSequence", "CN");
-	_gcr_display_view_append_content (self->pv->view, _("Identifies"), display);
+	_gcr_display_view_append_content (self->pv->view, _("Identity"), display);
 	g_free (display);
 
 	display = egg_asn1_read_dn_part (asn, "tbsCertificate.issuer.rdnSequence", "CN");
@@ -310,7 +303,7 @@ gcr_certificate_widget_constructor (GType type, guint n_props, GObjectConstructP
 	self = GCR_CERTIFICATE_WIDGET (obj);
 
 	self->pv->view = _gcr_display_view_new ();
-	_gcr_display_view_set_stock_image (self->pv->view, GTK_STOCK_DIALOG_AUTHENTICATION);
+	_gcr_display_view_set_stock_image (self->pv->view, GCR_ICON_CERTIFICATE);
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -399,6 +392,8 @@ gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
 	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
 	           g_param_spec_object("certificate", "Certificate", "Certificate to display.",
 	                               GCR_TYPE_CERTIFICATE, G_PARAM_READWRITE));
+
+	_gcr_icons_register ();
 }
 
 /* -----------------------------------------------------------------------------

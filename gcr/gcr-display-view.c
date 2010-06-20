@@ -127,7 +127,6 @@ static void
 on_expander_realize (GtkWidget *widget, gpointer user_data)
 {
 	GdkCursor *cursor = gdk_cursor_new (GDK_ARROW);
-	g_printerr ("realize cursor\n");
 	gdk_window_set_cursor (gtk_widget_get_window (widget), cursor);
 	gdk_cursor_unref (cursor);
 }
@@ -230,7 +229,6 @@ _gcr_display_view_realize (GtkWidget *widget)
 	if (GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->realize)
 		GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->realize (widget);
 
-	g_printerr ("setting color\n");
 	style = gtk_widget_get_style (widget);
 	gtk_widget_modify_bg (self->pv->details_widget, GTK_STATE_NORMAL, &style->base[GTK_STATE_NORMAL]);
 }
