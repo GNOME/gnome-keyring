@@ -54,7 +54,7 @@ test_details (const gchar *path)
 	gtk_widget_show (GTK_WIDGET (details));
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (details));
 
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 400);
+	gtk_window_set_default_size (GTK_WINDOW (dialog), 550, 400);
 	gtk_dialog_run (dialog);
 	
 	g_object_unref (dialog);

@@ -25,9 +25,6 @@
 #include "egg/egg-hex.h"
 
 #include <gdk/gdk.h>
-#if 0
-#include <glib/gi18n-lib.h>
-#endif
 
 G_DEFINE_TYPE (GcrDisplayView, _gcr_display_view, GTK_TYPE_TEXT_VIEW);
 
@@ -115,7 +112,6 @@ create_tag_table (GcrDisplayView *self)
 	g_assert (!self->pv->details_tag);
 	self->pv->details_tag = g_object_new (GTK_TYPE_TEXT_TAG,
 	                                      "name", "details",
-	                                      "foreground", "red",
 	                                      NULL);
 	gtk_text_tag_table_add (tags, self->pv->details_tag);
 
@@ -152,8 +148,7 @@ _gcr_display_view_constructor (GType type, guint n_props, GObjectConstructParam 
 	GcrDisplayView *self = NULL;
 	GtkTextView *view = NULL;
 	GtkTextTagTable *tags;
-	GdkColor color;
-	GtkWidget *widget;
+	GtkWidget *widget, *alignment, *label;
 
 	g_return_val_if_fail (obj, NULL);
 
@@ -170,22 +165,25 @@ _gcr_display_view_constructor (GType type, guint n_props, GObjectConstructParam 
 	gtk_text_view_set_right_margin (view, NORMAL_MARGIN);
 	gtk_text_view_set_cursor_visible (view, FALSE);
 
-	widget = gtk_expander_new_with_mnemonic ("_Details");
+	widget = gtk_expander_new_with_mnemonic ("");
+	label = gtk_expander_get_label_widget (GTK_EXPANDER (widget));
+	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), "<b>_Details</b>");
 	g_signal_connect_object (widget, "notify::expanded",
 	                         G_CALLBACK (on_expander_expanded), self, 0);
 	g_signal_connect_object (widget, "realize",
 	                         G_CALLBACK (on_expander_realize), self, 0);
 	on_expander_expanded (G_OBJECT (widget), NULL, self);
-	/* TODO: We need to retrieve the background color of the text view */
-	gdk_color_parse ("white", &color);
-	gtk_widget_modify_bg (widget, GTK_STATE_NORMAL, &color);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 0.5, 0.5);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 0, 0, 0);
+	gtk_container_add (GTK_CONTAINER (alignment), widget);
+	gtk_widget_show_all (alignment);
 
 	self->pv->details_widget = gtk_event_box_new ();
-	gtk_container_add (GTK_CONTAINER (self->pv->details_widget), widget);
+	gtk_container_add (GTK_CONTAINER (self->pv->details_widget), alignment);
 	g_signal_connect_object (self->pv->details_widget, "realize",
 	                         G_CALLBACK (on_expander_realize), self, 0);
 	g_object_ref (self->pv->details_widget);
-	gtk_widget_show (widget);
 
 	return obj;
 }
