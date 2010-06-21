@@ -23,8 +23,12 @@
 #include "gcr-certificate-widget.h"
 #include "gcr-display-view.h"
 #include "gcr-icons.h"
+#include "gcr-simple-certificate.h"
+#include "gcr-view.h"
 
-#include "egg/egg-asn1.h"
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
+#include "egg/egg-dn.h"
 #include "egg/egg-oid.h"
 #include "egg/egg-hex.h"
 
@@ -33,48 +37,70 @@
 
 enum {
 	PROP_0,
-	PROP_CERTIFICATE
+	PROP_CERTIFICATE,
+	PROP_LABEL,
+	PROP_ATTRIBUTES
 };
 
 struct _GcrCertificateWidgetPrivate {
 	GcrCertificate *certificate;
 	GcrDisplayView *view;
 	guint key_size;
+	gchar *label;
+	GP11Attributes *attributes;
 };
 
-G_DEFINE_TYPE (GcrCertificateWidget, gcr_certificate_widget, GTK_TYPE_ALIGNMENT);
+static void gcr_view_iface_init (GcrViewIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (GcrCertificateWidget, gcr_certificate_widget, GTK_TYPE_ALIGNMENT,
+                         G_IMPLEMENT_INTERFACE (GCR_TYPE_VIEW, gcr_view_iface_init));
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
 
+static gchar*
+calculate_label (GcrCertificateWidget *self, GNode *asn)
+{
+	gchar *label;
+
+	if (self->pv->label)
+		return g_strdup (self->pv->label);
+
+	if (self->pv->attributes) {
+		if (gp11_attributes_find_string (self->pv->attributes, CKA_LABEL, &label))
+			return label;
+	}
+
+	if (asn != NULL) {
+		label = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), "CN");
+		if (label != NULL)
+			return label;
+	}
+
+	return g_strdup (_("Certificate"));
+}
+
 static gboolean
-append_extension (GcrCertificateWidget *self, ASN1_TYPE asn,
+append_extension (GcrCertificateWidget *self, GNode *asn,
                   const guchar *data, gsize n_data, gint index)
 {
+	GNode *node;
 	GQuark oid;
-	gchar *name, *display;
+	gchar *display;
 	gsize n_value;
 	const guchar *value;
 	const gchar *text;
 	gboolean critical;
-	int len, res;
 
 	/* Make sure it is present */
-	len = 0;
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u", index);
-	res = asn1_read_value (asn, name, NULL, &len);
-	g_free (name);
-
-	if (res == ASN1_ELEMENT_NOT_FOUND)
+	node = egg_asn1x_node (asn, "tbsCertificate", "extensions", index, NULL);
+	if (node == NULL)
 		return FALSE;
 
 	/* Dig out the OID */
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
-	oid = egg_asn1_read_oid (asn, name);
-	g_free (name);
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (node, "extnID", NULL));
 	g_return_val_if_fail (oid, FALSE);
-
 
 	_gcr_display_view_append_heading (self->pv->view, _("Extension"));
 
@@ -85,9 +111,7 @@ append_extension (GcrCertificateWidget *self, ASN1_TYPE asn,
 
 
 	/* Extension value */
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
-	value = egg_asn1_read_content (asn, data, n_data, name, &n_value);
-	g_free (name);
+	value = egg_asn1x_get_raw_value (egg_asn1x_node (node, "extnValue", NULL), &n_value);
 
 	/* TODO: Parsing of extensions that we understand */
 	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
@@ -96,10 +120,8 @@ append_extension (GcrCertificateWidget *self, ASN1_TYPE asn,
 
 
 	/* Critical */
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", index);
-	if (egg_asn1_read_boolean (asn, name, &critical))
+	if (egg_asn1x_get_boolean (egg_asn1x_node (node, "critical", NULL), &critical))
 		_gcr_display_view_append_value (self->pv->view, _("Critical"), critical ? _("Yes") : _("No"), FALSE);
-	g_free (name);
 
 	return TRUE;
 }
@@ -135,7 +157,7 @@ on_parsed_dn_part (guint index, GQuark oid, const guchar *value,
 		g_assert_not_reached ();
 	}
 
-	display = egg_asn1_dn_print_value (oid, value, n_value);
+	display = egg_dn_print_value (oid, value, n_value);
 	if (display == NULL)
 		display = g_strdup ("");
 
@@ -148,12 +170,13 @@ static void
 refresh_display (GcrCertificateWidget *self)
 {
 	const guchar *data, *value;
-	gsize n_data, n_value;
+	gsize n_data, n_value, n_raw;
 	const gchar *text;
-	guint version, size;
-	guint index;
+	gpointer raw;
+	gulong version;
+	guint bits, index;
 	gchar *display;
-	ASN1_TYPE asn;
+	GNode *asn;
 	GQuark oid;
 	GDate date;
 
@@ -165,21 +188,22 @@ refresh_display (GcrCertificateWidget *self)
 	data = gcr_certificate_get_der_data (self->pv->certificate, &n_data);
 	g_return_if_fail (data);
 
-	asn = egg_asn1_decode ("PKIX1.Certificate", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	g_return_if_fail (asn);
 
-	/* TODO: Calculate name properly */
-	_gcr_display_view_append_title (self->pv->view, "Certificate Name");
+	display = calculate_label (self, asn);
+	_gcr_display_view_append_title (self->pv->view, display);
+	g_free (display);
 
-	display = egg_asn1_read_dn_part (asn, "tbsCertificate.subject.rdnSequence", "CN");
+	display = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), "CN");
 	_gcr_display_view_append_content (self->pv->view, _("Identity"), display);
 	g_free (display);
 
-	display = egg_asn1_read_dn_part (asn, "tbsCertificate.issuer.rdnSequence", "CN");
+	display = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "issuer", "rdnSequence", NULL), "CN");
 	_gcr_display_view_append_content (self->pv->view, _("Verified by"), display);
 	g_free (display);
 
-	if (egg_asn1_read_date (asn, "tbsCertificate.validity.notAfter", &date)) {
+	if (egg_asn1x_get_time_as_date (egg_asn1x_node (asn, "tbsCertificate", "validity", "notAfter", NULL), &date)) {
 		display = g_malloc0 (128);
 		if (!g_date_strftime (display, 128, "%x", &date))
 			g_return_if_reached ();
@@ -191,34 +215,35 @@ refresh_display (GcrCertificateWidget *self)
 
 	/* The subject */
 	_gcr_display_view_append_heading (self->pv->view, _("Subject Name"));
-	egg_asn1_dn_parse (asn, "tbsCertificate.subject.rdnSequence", on_parsed_dn_part, self);
+	egg_dn_parse (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), on_parsed_dn_part, self);
 
 	/* The Issuer */
 	_gcr_display_view_append_heading (self->pv->view, _("Issuer Name"));
-	egg_asn1_dn_parse (asn, "tbsCertificate.issuer.rdnSequence", on_parsed_dn_part, self);
+	egg_dn_parse (egg_asn1x_node (asn, "tbsCertificate", "issuer", "rdnSequence", NULL), on_parsed_dn_part, self);
 
 	/* The Issued Parameters */
 	_gcr_display_view_append_heading (self->pv->view, _("Issued Certificate"));
 
-	if (!egg_asn1_read_uint (asn, "tbsCertificate.version", &version))
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "tbsCertificate", "version", NULL), &version))
 		g_return_if_reached ();
-	display = g_strdup_printf ("%u", version + 1);
+	display = g_strdup_printf ("%lu", version + 1);
 	_gcr_display_view_append_value (self->pv->view, _("Version"), display, FALSE);
 	g_free (display);
 
-	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.serialNumber", &n_value);
-	g_return_if_fail (value);
-	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+	raw = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "tbsCertificate", "serialNumber", NULL), NULL, &n_raw);
+	g_return_if_fail (raw);
+	display = egg_hex_encode_full (raw, n_raw, TRUE, ' ', 1);
 	_gcr_display_view_append_value (self->pv->view, _("Serial Number"), display, TRUE);
 	g_free (display);
+	g_free (raw);
 
 	display = g_malloc0 (128);
-	if (egg_asn1_read_date (asn, "tbsCertificate.validity.notBefore", &date)) {
+	if (egg_asn1x_get_time_as_date (egg_asn1x_node (asn, "tbsCertificate", "validity", "notBefore", NULL), &date)) {
 		if (!g_date_strftime (display, 128, "%Y-%m-%d", &date))
 			g_return_if_reached ();
 		_gcr_display_view_append_value (self->pv->view, _("Not Valid Before"), display, FALSE);
 	}
-	if (egg_asn1_read_date (asn, "tbsCertificate.validity.notAfter", &date)) {
+	if (egg_asn1x_get_time_as_date (egg_asn1x_node (asn, "tbsCertificate", "validity", "notAfter", NULL), &date)) {
 		if (!g_date_strftime (display, 128, "%Y-%m-%d", &date))
 			g_return_if_reached ();
 		_gcr_display_view_append_value (self->pv->view, _("Not Valid After"), display, FALSE);
@@ -228,49 +253,54 @@ refresh_display (GcrCertificateWidget *self)
 	/* Signature */
 	_gcr_display_view_append_heading (self->pv->view, _("Signature"));
 
-	oid = egg_asn1_read_oid (asn, "signatureAlgorithm.algorithm");
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "signatureAlgorithm", "algorithm", NULL));
 	text = egg_oid_get_description (oid);
 	_gcr_display_view_append_value (self->pv->view, _("Signature Algorithm"), text, FALSE);
 
-	value = egg_asn1_read_content (asn, data, n_data, "signatureAlgorithm.parameters", &n_value);
+	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "signatureAlgorithm", "parameters", NULL), &n_value);
 	if (value && n_value) {
 		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 		_gcr_display_view_append_value (self->pv->view, _("Signature Parameters"), display, TRUE);
 		g_free (display);
 	}
 
-	value = egg_asn1_read_content (asn, data, n_data, "signature", &n_value);
-	g_return_if_fail (value);
-	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+	raw = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "signature", NULL), NULL, &bits);
+	g_return_if_fail (raw);
+	display = egg_hex_encode_full (raw, bits / 8, TRUE, ' ', 1);
 	_gcr_display_view_append_value (self->pv->view, _("Signature"), display, TRUE);
 	g_free (display);
+	g_free (raw);
 
 	/* Public Key Info */
 	_gcr_display_view_append_heading (self->pv->view, _("Public Key Info"));
 
-	oid = egg_asn1_read_oid (asn, "tbsCertificate.subjectPublicKeyInfo.algorithm.algorithm");
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo",
+	                                                  "algorithm", "algorithm", NULL));
 	text = egg_oid_get_description (oid);
 	_gcr_display_view_append_value (self->pv->view, _("Key Algorithm"), text, FALSE);
 
-	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.algorithm.parameters", &n_value);
+	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo",
+	                                                   "algorithm", "parameters", NULL), &n_value);
 	if (value && n_value) {
 		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 		_gcr_display_view_append_value (self->pv->view, _("Key Parameters"), display, TRUE);
 		g_free (display);
 	}
 
-	size = gcr_certificate_get_key_size (self->pv->certificate);
-	if (size > 0) {
-		display = g_strdup_printf ("%u", size);
+	bits = gcr_certificate_get_key_size (self->pv->certificate);
+	if (bits > 0) {
+		display = g_strdup_printf ("%u", bits);
 		_gcr_display_view_append_value (self->pv->view, _("Key Size"), display, FALSE);
 		g_free (display);
 	}
 
-	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.subjectPublicKey", &n_value);
-	g_return_if_fail (value);
-	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+	raw = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo",
+	                                                 "subjectPublicKey", NULL), NULL, &bits);
+	g_return_if_fail (raw);
+	display = egg_hex_encode_full (raw, bits / 8, TRUE, ' ', 1);
 	_gcr_display_view_append_value (self->pv->view, _("Public Key"), display, TRUE);
 	g_free (display);
+	g_free (raw);
 
 	/* Fingerprints */
 	_gcr_display_view_append_heading (self->pv->view, _("Fingerprints"));
@@ -284,7 +314,7 @@ refresh_display (GcrCertificateWidget *self)
 			break;
 	}
 
-	asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 }
 
 /* -----------------------------------------------------------------------------
@@ -340,18 +370,48 @@ gcr_certificate_widget_finalize (GObject *obj)
 
 	g_assert (!self->pv->certificate);
 
+	if (self->pv->attributes)
+		gp11_attributes_unref (self->pv->attributes);
+	self->pv->attributes = NULL;
+
+	g_free (self->pv->label);
+	self->pv->label = NULL;
+
 	G_OBJECT_CLASS (gcr_certificate_widget_parent_class)->finalize (obj);
 }
 
 static void
 gcr_certificate_widget_set_property (GObject *obj, guint prop_id, const GValue *value,
-                                             GParamSpec *pspec)
+                                     GParamSpec *pspec)
 {
 	GcrCertificateWidget *self = GCR_CERTIFICATE_WIDGET (obj);
+	GcrCertificate *cert;
+	GP11Attribute *attr;
 
 	switch (prop_id) {
 	case PROP_CERTIFICATE:
 		gcr_certificate_widget_set_certificate (self, g_value_get_object (value));
+		break;
+	case PROP_LABEL:
+		g_free (self->pv->label);
+		self->pv->label = g_value_dup_string (value);
+		g_object_notify (obj, "label");
+		break;
+	case PROP_ATTRIBUTES:
+		g_return_if_fail (!self->pv->attributes);
+		self->pv->attributes = g_value_dup_boxed (value);
+		if (self->pv->attributes) {
+			attr = gp11_attributes_find (self->pv->attributes, CKA_VALUE);
+			if (attr) {
+				/* Create a new certificate object refferring to same memory */
+				cert = gcr_simple_certificate_new_static (attr->value, attr->length);
+				g_object_set_data_full (G_OBJECT (cert), "attributes",
+				                        gp11_attributes_ref (self->pv->attributes),
+				                        (GDestroyNotify)gp11_attributes_unref);
+				gcr_certificate_widget_set_certificate (self, cert);
+				g_object_unref (cert);
+			}
+		}
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -361,13 +421,19 @@ gcr_certificate_widget_set_property (GObject *obj, guint prop_id, const GValue *
 
 static void
 gcr_certificate_widget_get_property (GObject *obj, guint prop_id, GValue *value,
-                                             GParamSpec *pspec)
+                                     GParamSpec *pspec)
 {
 	GcrCertificateWidget *self = GCR_CERTIFICATE_WIDGET (obj);
 
 	switch (prop_id) {
 	case PROP_CERTIFICATE:
 		g_value_set_object (value, self->pv->certificate);
+		break;
+	case PROP_LABEL:
+		g_value_take_string (value, calculate_label (self, NULL));
+		break;
+	case PROP_ATTRIBUTES:
+		g_value_set_boxed (value, self->pv->attributes);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -379,6 +445,7 @@ static void
 gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GP11Attributes *registered;
 
 	gcr_certificate_widget_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrCertificateWidgetPrivate));
@@ -393,7 +460,22 @@ gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
 	           g_param_spec_object("certificate", "Certificate", "Certificate to display.",
 	                               GCR_TYPE_CERTIFICATE, G_PARAM_READWRITE));
 
+	g_object_class_override_property (gobject_class, PROP_LABEL, "label");
+	g_object_class_override_property (gobject_class, PROP_ATTRIBUTES, "attributes");
+
 	_gcr_icons_register ();
+
+	/* Register this as a view which can be loaded */
+	registered = gp11_attributes_new ();
+	gp11_attributes_add_ulong (registered, CKA_CLASS, CKO_CERTIFICATE);
+	gcr_view_register (GCR_TYPE_CERTIFICATE_WIDGET, registered);
+	gp11_attributes_unref (registered);
+}
+
+static void
+gcr_view_iface_init (GcrViewIface *iface)
+{
+	/* Nothing to do */
 }
 
 /* -----------------------------------------------------------------------------

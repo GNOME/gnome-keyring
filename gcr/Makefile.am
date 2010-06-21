@@ -23,7 +23,8 @@ inc_HEADERS = \
 	gcr-importer.h \
 	gcr-parser.h \
 	gcr-types.h \
-	gcr-unlock-options-widget.h
+	gcr-unlock-options-widget.h \
+	gcr-view.h
 
 # ------------------------------------------------------------------
 # LIBRARY
@@ -57,6 +58,7 @@ libgcr_la_SOURCES = \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-types.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
+	gcr-view.c gcr-view.h \
 	$(BUILT_SOURCES)
 
 libgcr_la_CFLAGS = \
