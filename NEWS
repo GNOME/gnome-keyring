@@ -1,3 +1,6 @@
+Changes in version 2.30.3 are:
+ * Fix deadlock that we inadvertently created in 2.30.2
+
 Changes in version 2.30.2 are:
  * Fix possible race condition in gp11 library.
  * Use proper locking for secure memory in daemon.
