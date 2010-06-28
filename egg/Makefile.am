@@ -1,6 +1,7 @@
 
 noinst_LTLIBRARIES = \
 	libegg.la \
+	libegg-asn1x.la \
 	libegg-buffer.la \
 	libegg-creds.la \
 	libegg-dbus.la \
@@ -21,9 +22,11 @@ libegg_la_CFLAGS = \
 
 libegg_la_SOURCES = \
 	egg-asn1.c egg-asn1.h \
+	egg-asn1x.c egg-asn1x.h \
 	egg-buffer.c egg-buffer.h \
 	egg-cleanup.c egg-cleanup.h \
 	egg-dh.c egg-dh.h \
+	egg-dn.c egg-dn.h \
 	egg-error.h \
 	egg-hex.c egg-hex.h \
 	egg-libgcrypt.c egg-libgcrypt.h \
@@ -52,7 +55,14 @@ DISTCLEANFILES = \
 	
 # --------------------------------------------------------------------
 # COMMON STUFF COMPILED INTO SMALLER COMPONENTS
- 
+
+libegg_asn1x_la_SOURCES = \
+	egg-asn1x.c egg-asn1x.h
+
+libegg_asn1x_la_CFLAGS = \
+	$(LIBTASN1_CFLAGS) \
+	$(GLIB_CFLAGS)
+
 libegg_secure_la_SOURCES = \
 	egg-secure-memory.c egg-secure-memory.h
 

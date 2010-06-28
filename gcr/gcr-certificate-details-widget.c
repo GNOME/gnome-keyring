@@ -23,6 +23,7 @@
 #include "gcr-certificate-details-widget.h"
 
 #include "egg/egg-asn1.h"
+#include "egg/egg-dn.h"
 #include "egg/egg-oid.h"
 #include "egg/egg-hex.h"
 
@@ -263,7 +264,7 @@ on_parsed_dn_part (guint index, GQuark oid, const guchar *value,
 		g_assert_not_reached ();
 	}
 	
-	display = egg_asn1_dn_print_value (oid, value, n_value);
+	display = egg_dn_print_value (oid, value, n_value);
 	if (display == NULL)
 		display = g_strdup ("");
 	
@@ -301,11 +302,11 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	
 	/* The subject */
 	append_heading (self, _("Subject Name"));
-	egg_asn1_dn_parse (asn, "tbsCertificate.subject.rdnSequence", on_parsed_dn_part, self);
+	egg_dn_parse (asn, "tbsCertificate.subject.rdnSequence", on_parsed_dn_part, self);
 	
 	/* The Issuer */
 	append_heading (self, _("Issuer Name"));
-	egg_asn1_dn_parse (asn, "tbsCertificate.issuer.rdnSequence", on_parsed_dn_part, self);
+	egg_dn_parse (asn, "tbsCertificate.issuer.rdnSequence", on_parsed_dn_part, self);
 	
 	/* The Issued Parameters */
 	append_heading (self, _("Issued Certificate"));
