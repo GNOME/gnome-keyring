@@ -19,8 +19,8 @@
  * 02111-1307, USA.
  */
 
-#ifndef GKM_MECHANISM_RSA_H_
-#define GKM_MECHANISM_RSA_H_
+#ifndef GKM_RSA_MECHANISM_H_
+#define GKM_RSA_MECHANISM_H_
 
 #include "gkm-crypto.h"
 #include "gkm-types.h"
@@ -31,37 +31,37 @@
 
 #include <gcrypt.h>
 
-static const CK_MECHANISM_TYPE GKM_CRYPTO_RSA_MECHANISMS[] = {
+static const CK_MECHANISM_TYPE GKM_RSA_MECHANISMS[] = {
 	CKM_RSA_PKCS,
 	CKM_RSA_X_509
 };
 
-CK_RV                    gkm_mechanism_rsa_encrypt                     (gcry_sexp_t sexp,
+CK_RV                    gkm_rsa_mechanism_encrypt                     (gcry_sexp_t sexp,
                                                                         EggPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         CK_BYTE_PTR encrypted,
                                                                         CK_ULONG_PTR n_encrypted);
 
-CK_RV                    gkm_mechanism_rsa_decrypt                     (gcry_sexp_t sexp,
+CK_RV                    gkm_rsa_mechanism_decrypt                     (gcry_sexp_t sexp,
                                                                         EggPadding padding,
                                                                         CK_BYTE_PTR encrypted,
                                                                         CK_ULONG n_encrypted,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG_PTR n_data);
 
-CK_RV                    gkm_mechanism_rsa_sign                        (gcry_sexp_t sexp,
+CK_RV                    gkm_rsa_mechanism_sign                        (gcry_sexp_t sexp,
                                                                         EggPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         CK_BYTE_PTR signature,
                                                                         CK_ULONG_PTR n_signature);
 
-CK_RV                    gkm_mechanism_rsa_verify                      (gcry_sexp_t sexp,
+CK_RV                    gkm_rsa_mechanism_verify                      (gcry_sexp_t sexp,
                                                                         EggPadding padding,
                                                                         CK_BYTE_PTR data,
                                                                         CK_ULONG n_data,
                                                                         CK_BYTE_PTR signature,
                                                                         CK_ULONG n_signature);
 
-#endif /* GKM_MECHANISM_RSA_H_ */
+#endif /* GKM_RSA_MECHANISM_H_ */

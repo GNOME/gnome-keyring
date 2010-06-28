@@ -24,8 +24,8 @@
 #include "pkcs11/pkcs11.h"
 
 #include "gkm-attributes.h"
-#include "gkm-mechanism-dsa.h"
-#include "gkm-mechanism-rsa.h"
+#include "gkm-dsa-mechanism.h"
+#include "gkm-rsa-mechanism.h"
 #include "gkm-sexp-key.h"
 #include "gkm-util.h"
 
@@ -94,11 +94,11 @@ gkm_sexp_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 	case CKA_ALLOWED_MECHANISMS:
 		switch (gkm_sexp_key_get_algorithm (self)) {
 		case GCRY_PK_RSA:
-			return gkm_attribute_set_data (attr, (CK_VOID_PTR)GKM_CRYPTO_RSA_MECHANISMS,
-			                               sizeof (GKM_CRYPTO_RSA_MECHANISMS));
+			return gkm_attribute_set_data (attr, (CK_VOID_PTR)GKM_RSA_MECHANISMS,
+			                               sizeof (GKM_RSA_MECHANISMS));
 		case GCRY_PK_DSA:
-			return gkm_attribute_set_data (attr, (CK_VOID_PTR)GKM_CRYPTO_DSA_MECHANISMS,
-			                               sizeof (GKM_CRYPTO_DSA_MECHANISMS));
+			return gkm_attribute_set_data (attr, (CK_VOID_PTR)GKM_DSA_MECHANISMS,
+			                               sizeof (GKM_DSA_MECHANISMS));
 		default:
 			g_return_val_if_reached (CKR_GENERAL_ERROR);
 		};

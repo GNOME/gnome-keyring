@@ -22,7 +22,7 @@
 #include "config.h"
 
 #include "gkm-crypto.h"
-#include "gkm-mechanism-dsa.h"
+#include "gkm-dsa-mechanism.h"
 #include "gkm-session.h"
 #include "gkm-sexp.h"
 #include "gkm-sexp-key.h"
@@ -35,7 +35,7 @@
  */
 
 CK_RV
-gkm_mechanism_dsa_sign (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
+gkm_dsa_mechanism_sign (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
                         CK_BYTE_PTR signature, CK_ULONG_PTR n_signature)
 {
 	gcry_sexp_t ssig, splain;
@@ -95,7 +95,7 @@ gkm_mechanism_dsa_sign (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
 }
 
 CK_RV
-gkm_mechanism_dsa_verify (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
+gkm_dsa_mechanism_verify (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
                           CK_BYTE_PTR signature, CK_ULONG n_signature)
 {
 	gcry_sexp_t ssig, splain;

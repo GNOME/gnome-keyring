@@ -33,11 +33,10 @@ libgkm_la_SOURCES = \
 	gkm-dh-mechanism.c gkm-dh-mechanism.h \
 	gkm-dh-private-key.c gkm-dh-private-key.h \
 	gkm-dh-public-key.c gkm-dh-public-key.h \
+	gkm-dsa-mechanism.c gkm-dsa-mechanism.h \
 	gkm-factory.c gkm-factory.h \
 	gkm-file-tracker.c gkm-file-tracker.h \
 	gkm-manager.c gkm-manager.h \
-	gkm-mechanism-dsa.c gkm-mechanism-dsa.h \
-	gkm-mechanism-rsa.c gkm-mechanism-rsa.h \
 	gkm-memory-store.c gkm-memory-store.h \
 	gkm-mock.c gkm-mock.h \
 	gkm-module.c gkm-module.h gkm-module-ep.h \
@@ -46,6 +45,7 @@ libgkm_la_SOURCES = \
 	gkm-object.c gkm-object.h \
 	gkm-private-xsa-key.c gkm-private-xsa-key.h \
 	gkm-public-xsa-key.c gkm-public-xsa-key.h \
+	gkm-rsa-mechanism.c gkm-rsa-mechanism.h \
 	gkm-secret.c gkm-secret.h \
 	gkm-secret-key.c gkm-secret-key.h \
 	gkm-serializable.c gkm-serializable.h \
