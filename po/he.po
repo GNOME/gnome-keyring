@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-20 19:20+0300\n"
-"PO-Revision-Date: 2010-06-20 20:19+0200\n"
+"POT-Creation-Date: 2010-06-28 17:31+0300\n"
+"PO-Revision-Date: 2010-06-28 17:32+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -135,6 +135,28 @@ msgstr "קבוצת מפתחות של GNOME: סוכן SSH"
 msgid "SSH Key Agent"
 msgstr "סוכן מפתחות SSH"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "קבוצת מפתחות GNOME: סוכן GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "סוכן ססמאות ה־PGP"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+msgid "Unknown"
+msgstr "לא ידוע"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
+#, c-format
+msgid "PGP Key: %s"
+msgstr "מפתח PGP:‏ %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+msgid "Enter Passphrase"
+msgstr "יש להזין מילת צופן"
+
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
 msgid "Login"
@@ -181,7 +203,7 @@ msgid "Surname"
 msgstr "שם משפחה"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:323
 msgid "Serial Number"
 msgstr "מספר סידורי"
 
@@ -347,94 +369,94 @@ msgstr "תעודת לקוח SSL"
 msgid "SSL Server Certificate"
 msgstr "תעודת שרת SSL"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Extension"
 msgstr "הרחבה"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:213
 msgid "Identifier"
 msgstr "מזהה"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:223
 msgid "Value"
 msgstr "ערך"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:230
 msgid "Critical"
 msgstr "קריטי"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:230
 msgid "Yes"
 msgstr "כן"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:230
 msgid "No"
 msgstr "לא"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:304
 msgid "Subject Name"
 msgstr "שם מקבל התעודה"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:308
 msgid "Issuer Name"
 msgstr "שם החותם"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Issued Certificate"
 msgstr "תעודה שהונפקה"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:317
 msgid "Version"
 msgstr "גרסה"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid Before"
 msgstr "לא תקף לפני"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:335
 msgid "Not Valid After"
 msgstr "לא תקף לאחר"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:340
+#: ../gcr/gcr-certificate-details-widget.c:356
 msgid "Signature"
 msgstr "חתימה"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Algorithm"
 msgstr "אלגוריתם החתימה"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:349
 msgid "Signature Parameters"
 msgstr "הפרמטרים של החתימה"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:360
 msgid "Public Key Info"
 msgstr "נתוני מפתח ציבואי"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Algorithm"
 msgstr "אלגוריתם המפתח"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:369
 msgid "Key Parameters"
 msgstr "הפרמטרים של המפתח"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:376
 msgid "Key Size"
 msgstr "גודל המפתח"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:383 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "מפתח ציבורי"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:387
 msgid "Fingerprints"
 msgstr "טביעות אצבע"
 
@@ -466,7 +488,7 @@ msgstr "יש לנעול קבוצת מפתחות זו בעת הניתוק"
 msgid "minutes"
 msgstr "דקות"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1574 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "הפעולה בוטלה"
 
@@ -530,23 +552,23 @@ msgstr "כדי לייבא את התעודה '%s', יש לשחררה"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "כדי לייבא את '%s', יש לבצע שחרור"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "מפתח פרטי"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "תעודה"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1577
 msgid "Unrecognized or unsupported data."
 msgstr "הנתונים אינם מוכרים או שאינם נתמכים."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1580
 msgid "Could not parse invalid or corrupted data."
 msgstr "לא ניתן לנתח נתונים שגויים או פגומים."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1583
 msgid "The data is locked"
 msgstr "הנתונים נעולים"
 
@@ -870,7 +892,7 @@ msgstr "בקשת החתימה נדחתה על ידי המשתמש"
 msgid "Unknown error"
 msgstr "שגיאה לא ידועה"
 
-#: ../pkcs11/gkm/gkm-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:742
 msgid "Unnamed Certificate"
 msgstr "תעודה ללא שם"
 
