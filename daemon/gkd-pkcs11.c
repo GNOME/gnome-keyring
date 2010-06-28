@@ -33,6 +33,7 @@
 #include "pkcs11/ssh-store/gkm-ssh-store.h"
 #include "pkcs11/user-store/gkm-user-store.h"
 
+#include "gpg-agent/gkd-gpg-agent.h"
 #include "ssh-agent/gkd-ssh-agent.h"
 
 #include <string.h>
@@ -49,6 +50,7 @@ pkcs11_daemon_cleanup (gpointer unused)
 
 	gkd_ssh_agent_uninitialize ();
 	gkm_rpc_layer_uninitialize ();
+	gkd_gpg_agent_uninitialize ();
 	rv = (pkcs11_roof->C_Finalize) (NULL);
 
 	if (rv != CKR_OK)
@@ -112,7 +114,8 @@ gkd_pkcs11_initialize (void)
 
 	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
 
-	ret = gkd_ssh_agent_initialize (pkcs11_roof) &&
+	ret = gkd_gpg_agent_initialize (pkcs11_roof) &&
+	      gkd_ssh_agent_initialize (pkcs11_roof) &&
 	      gkm_rpc_layer_initialize (pkcs11_roof);
 
 	return ret;

@@ -7,6 +7,8 @@ daemon/dbus/gkd-secret-unlock.c
 daemon/gnome-keyring-pkcs11.desktop.in.in
 daemon/gnome-keyring-secrets.desktop.in.in
 daemon/gnome-keyring-ssh.desktop.in.in
+daemon/gnome-keyring-gpg.desktop.in.in
+daemon/gpg-agent/gkd-gpg-agent-ops.c
 daemon/login/gkd-login.c
 daemon/org.gnome.keyring.service.in
 egg/egg-asn1.c

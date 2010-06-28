@@ -1082,4 +1082,3 @@ msgstr "𐑩𐑯𐑯𐑱𐑥𐑛 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
 #: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "𐑒𐑫𐑛𐑯𐑑 𐑐𐑸𐑕 𐑐𐑳𐑚𐑤𐑦𐑒 SSH 𐑒𐑰"
-
