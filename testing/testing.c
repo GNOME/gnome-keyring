@@ -188,14 +188,17 @@ static const gchar *external_name = NULL;
 static gint external_fails = 0;
 
 void
-testing_external_run (const gchar *name, TestingExternalFunc func)
+testing_external_run (const gchar *name, TestingExternalFunc func, int *result)
 {
+	if (result != 0)
+		return;
+
 	external_fails = 0;
 	external_name = name;
 	func ();
 	if (external_fails) {
 		g_printerr ("/%s: FAIL: %d failures", name, external_fails);
-		abort();
+		*result = external_fails;
 	}
 }
 

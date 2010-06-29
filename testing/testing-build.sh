@@ -86,10 +86,10 @@ build_source()
 	echo
 
 	# External function
-	echo "static void run_externals (void) {"
+	echo "static void run_externals (int *ret) {"
 	for file in $@; do
 		name=`file_to_name ${file}`
-		sed -ne "s/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\)).*/	testing_external_run (\"\1\", external_\1);/p" ${file}
+		sed -ne "s/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\)).*/	testing_external_run (\"\1\", external_\1, ret);/p" ${file}
 	done
 	echo "}"
 	echo
@@ -99,7 +99,8 @@ build_source()
 	echo "	initialize_tests ();"
 	echo "	start_tests ();"
 	echo "	ret = g_test_run ();"
-	echo "	run_externals ();"
+	echo "	if (ret == 0)"
+	echo "		run_externals (&ret);"
 	echo "	stop_tests();"
 	echo "	return ret;"
 	echo "}"

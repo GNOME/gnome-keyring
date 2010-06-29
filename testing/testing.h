@@ -60,7 +60,8 @@ void             testing_test_p11_module          (CK_FUNCTION_LIST_PTR module,
 typedef void     (*TestingExternalFunc)           (void);
 
 void             testing_external_run             (const gchar *name,
-                                                   TestingExternalFunc func);
+                                                   TestingExternalFunc func,
+                                                   int *result);
 
 const gchar*     testing_external_name            (void);
 
