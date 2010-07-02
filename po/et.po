@@ -13,9 +13,9 @@ msgstr ""
 "Project-Id-Version: gnome-keyring MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-06-13 22:58+0000\n"
-"PO-Revision-Date: 2010-06-01 18:10+0300\n"
-"Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
+"POT-Creation-Date: 2010-06-28 14:29+0000\n"
+"PO-Revision-Date: 2010-07-02 10:42+0300\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -117,6 +117,22 @@ msgstr "GNOME võtmerõngas: SSH-agent"
 
 msgid "SSH Key Agent"
 msgstr "SSH-võtmete agent"
+
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME võtmerõngas: GPG-agent"
+
+msgid "GPG Password Agent"
+msgstr "GPG-võtmete agent"
+
+msgid "Unknown"
+msgstr "Tundmatu"
+
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP-võti: %s"
+
+msgid "Enter Passphrase"
+msgstr "Sisesta parool"
 
 # Kas see peaks olema "Sisselogimisel"?
 #. TRANSLATORS: This is the display label for the login keyring
