@@ -10,7 +10,7 @@ noinst_LTLIBRARIES = \
 	libegg-entry-buffer.la
 
 BUILT_SOURCES = \
-	asn1-def-pk.h asn1-def-pkix.h
+	asn1-def-pk.c asn1-def-pkix.c
 
 INCLUDES = \
 	-I$(top_srcdir) 
@@ -21,7 +21,6 @@ libegg_la_CFLAGS = \
 	$(GLIB_CFLAGS)
 
 libegg_la_SOURCES = \
-	egg-asn1.c egg-asn1.h \
 	egg-asn1x.c egg-asn1x.h \
 	egg-buffer.c egg-buffer.h \
 	egg-cleanup.c egg-cleanup.h \
@@ -38,13 +37,14 @@ libegg_la_SOURCES = \
 	egg-secure-memory.c egg-secure-memory.h \
 	egg-spawn.c egg-spawn.h \
 	egg-symkey.c egg-symkey.h \
+	egg-asn1-defs.h \
 	$(BUILT_SOURCES)
-	
-asn1-def-pk.h: pk.asn
-	$(ASN1PARSER) -o asn1-def-pk.h $(srcdir)/pk.asn 
-	
-asn1-def-pkix.h: pkix.asn
-	$(ASN1PARSER) -o asn1-def-pkix.h $(srcdir)/pkix.asn 
+
+asn1-def-pk.c: pk.asn
+	$(ASN1PARSER) -o asn1-def-pk.c $(srcdir)/pk.asn
+
+asn1-def-pkix.c: pkix.asn
+	$(ASN1PARSER) -o asn1-def-pkix.c $(srcdir)/pkix.asn
 
 EXTRA_DIST = \
 	pkix.asn \
@@ -57,7 +57,8 @@ DISTCLEANFILES = \
 # COMMON STUFF COMPILED INTO SMALLER COMPONENTS
 
 libegg_asn1x_la_SOURCES = \
-	egg-asn1x.c egg-asn1x.h
+	egg-asn1x.c egg-asn1x.h \
+	$(BUILT_SOURCES)
 
 libegg_asn1x_la_CFLAGS = \
 	$(LIBTASN1_CFLAGS) \

@@ -28,7 +28,8 @@
 #include "gcr-parser.h"
 #include "gcr-types.h"
 
-#include "egg/egg-asn1.h"
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
 #include "egg/egg-dn.h"
 #include "egg/egg-openssl.h"
 #include "egg/egg-secure-memory.h"
@@ -158,7 +159,7 @@ init_quarks (void)
  */
 
 static gboolean
-parsed_asn1_attribute (GcrParser *self, ASN1_TYPE asn, const guchar *data, gsize n_data, 
+parsed_asn1_attribute (GcrParser *self, GNode *asn, const guchar *data, gsize n_data,
                        const gchar *part, CK_ATTRIBUTE_TYPE type)
 {
 	const guchar *value;
@@ -167,13 +168,13 @@ parsed_asn1_attribute (GcrParser *self, ASN1_TYPE asn, const guchar *data, gsize
 	g_assert (GCR_IS_PARSER (self));
 	g_assert (asn);
 	g_assert (data);
-	g_assert (part);
 	g_assert (self->pv->parsed_attrs);
-	
-	value = egg_asn1_read_content (asn, data, n_data, part, &n_value);
+
+	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, part, NULL), &n_value);
 	if (value == NULL)
 		return FALSE;
-	
+
+	/* TODO: Convert to USG FROM STD */
 	gp11_attributes_add_data (self->pv->parsed_attrs, type, value, n_value);
 	return TRUE;
 }
@@ -295,27 +296,27 @@ static gint
 parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 {
 	gint res = GCR_ERROR_UNRECOGNIZED;
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
-	guint version;
-	
-	asn = egg_asn1_decode ("PK.RSAPrivateKey", data, n_data);
+	GNode *asn = NULL;
+	gulong version;
+
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "RSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
-	
+
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_RSA);
 	res = GCR_ERROR_FAILURE;
 
-	if (!egg_asn1_read_uint (asn, "version", &version))
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), &version))
 		goto done;
-	
+
 	/* We only support simple version */
 	if (version != 0) {
 		res = GCR_ERROR_UNRECOGNIZED;
-		g_message ("unsupported version of RSA key: %u", version);
+		g_message ("unsupported version of RSA key: %lu", version);
 		goto done;
 	}
-	
+
 	if (!parsed_asn1_attribute (self, asn, data, n_data, "modulus", CKA_MODULUS) || 
 	    !parsed_asn1_attribute (self, asn, data, n_data, "publicExponent", CKA_PUBLIC_EXPONENT) ||
 	    !parsed_asn1_attribute (self, asn, data, n_data, "privateExponent", CKA_PRIVATE_EXPONENT) ||
@@ -328,9 +329,7 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 	res = SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-
+	egg_asn1x_destroy (asn);
 	if (res == GCR_ERROR_FAILURE)
 		g_message ("invalid RSA key");
 	
@@ -345,16 +344,15 @@ static gint
 parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 {
 	gint ret = GCR_ERROR_UNRECOGNIZED;
-	int res;
-	ASN1_TYPE asn;
+	GNode *asn = NULL;
 
-	asn = egg_asn1_decode ("PK.DSAPrivateKey", data, n_data);
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
-	
+
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
-	res = GCR_ERROR_FAILURE;
+	ret = GCR_ERROR_FAILURE;
 
 	if (!parsed_asn1_attribute (self, asn, data, n_data, "p", CKA_PRIME) ||
 	    !parsed_asn1_attribute (self, asn, data, n_data, "q", CKA_SUBPRIME) ||
@@ -366,9 +364,7 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 	ret = SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-	
+	egg_asn1x_destroy (asn);
 	if (ret == GCR_ERROR_FAILURE) 
 		g_message ("invalid DSA key");
 		
@@ -380,34 +376,30 @@ parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n
                                  const guchar *params, gsize n_params)
 {
 	gint ret = GCR_ERROR_UNRECOGNIZED;
-	int res;
-	ASN1_TYPE asn_params = ASN1_TYPE_EMPTY;
-	ASN1_TYPE asn_key = ASN1_TYPE_EMPTY;
+	GNode *asn_params = NULL;
+	GNode *asn_key = NULL;
 
-	asn_params = egg_asn1_decode ("PK.DSAParameters", params, n_params);
-	asn_key = egg_asn1_decode ("PK.DSAPrivatePart", keydata, n_keydata);
+	asn_params = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAParameters", params, n_params);
+	asn_key = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivatePart", keydata, n_keydata);
 	if (!asn_params || !asn_key)
 		goto done;
-	
+
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
-	res = GCR_ERROR_FAILURE;
-    
+	ret = GCR_ERROR_FAILURE;
+
 	if (!parsed_asn1_attribute (self, asn_params, params, n_params, "p", CKA_PRIME) ||
 	    !parsed_asn1_attribute (self, asn_params, params, n_params, "q", CKA_SUBPRIME) ||
 	    !parsed_asn1_attribute (self, asn_params, params, n_params, "g", CKA_BASE) ||
-	    !parsed_asn1_attribute (self, asn_key, keydata, n_keydata, "", CKA_VALUE))
+	    !parsed_asn1_attribute (self, asn_key, keydata, n_keydata, NULL, CKA_VALUE))
 		goto done;
 
 	parsed_fire (self);
 	ret = SUCCESS;
 	
 done:
-	if (asn_key)
-		asn1_delete_structure (&asn_key);
-	if (asn_params)
-		asn1_delete_structure (&asn_params);
-	
+	egg_asn1x_destroy (asn_key);
+	egg_asn1x_destroy (asn_params);
 	if (ret == GCR_ERROR_FAILURE) 
 		g_message ("invalid DSA key");
 		
@@ -437,7 +429,6 @@ parse_der_private_key (GcrParser *self, const guchar *data, gsize n_data)
 static gint
 parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 	gint ret;
 	CK_KEY_TYPE key_type;
 	GQuark key_algo;
@@ -445,17 +436,18 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 	gsize n_keydata;
 	const guchar *params;
 	gsize n_params;
-	
+	GNode *asn = NULL;
+
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-8-PrivateKeyInfo", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-PrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GCR_ERROR_FAILURE;
 	key_type = GP11_INVALID;
-		
-	key_algo = egg_asn1_read_oid (asn, "privateKeyAlgorithm.algorithm");
+
+	key_algo = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "privateKeyAlgorithm", "algorithm", NULL));
   	if (!key_algo)
   		goto done;
   	else if (key_algo == OID_PKIX1_RSA)
@@ -468,13 +460,12 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
   		goto done;
   	}
 
-	keydata = egg_asn1_read_content (asn, data, n_data, "privateKey", &n_keydata);
+	keydata = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "privateKey", NULL), &n_keydata);
 	if (!keydata)
 		goto done;
-		
-	params = egg_asn1_read_element (asn, data, n_data, "privateKeyAlgorithm.parameters", 
-	                                     &n_params);
-		
+
+	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "privateKeyAlgorithm", "parameters", NULL), &n_params);
+
 	ret = SUCCESS;
 	
 done:
@@ -501,9 +492,8 @@ done:
 	} else if (ret == GCR_ERROR_FAILURE) {
 		g_message ("invalid PKCS#8 key");
 	}
-	
-	if (asn)
-		asn1_delete_structure (&asn);
+
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -511,7 +501,7 @@ static gint
 parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 {
 	PasswordState pstate = PASSWORD_STATE_INIT;
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_cipher_hd_t cih = NULL;
 	gcry_error_t gcry;
 	gint ret, r;
@@ -523,20 +513,20 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 	gint l;
 
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GCR_ERROR_FAILURE;
 
 	/* Figure out the type of encryption */
-	scheme = egg_asn1_read_oid (asn, "encryptionAlgorithm.algorithm");
+	scheme = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "encryptionAlgorithm", "algorithm", NULL));
 	if (!scheme)
 		goto done;
-		
-	params = egg_asn1_read_element (asn, data, n_data, "encryptionAlgorithm.parameters", &n_params);
-	
+
+	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL), &n_params);
+
 	parsed_clear (self, CKO_PRIVATE_KEY);
 
 	/* Loop to try different passwords */                       
@@ -553,11 +543,11 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 		/* Parse the encryption stuff into a cipher. */
 		if (!egg_symkey_read_cipher (scheme, password, -1, params, n_params, &cih))
 			break;
-			
-		crypted = egg_asn1_read_value (asn, "encryptedData", &n_crypted, (EggAllocator)egg_secure_realloc);
+
+		crypted = egg_asn1x_get_string_as_raw (egg_asn1x_node (asn, "encryptedData", NULL), egg_secure_realloc, &n_crypted);
 		if (!crypted)
 			break;
-	
+
 		gcry = gcry_cipher_decrypt (cih, crypted, n_crypted, NULL, 0);
 		gcry_cipher_close (cih);
 		cih = NULL;
@@ -568,13 +558,12 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 		}
 		
 		/* Unpad the DER data */
-		l = egg_asn1_element_length (crypted, n_crypted);
+		l = egg_asn1x_element_length (crypted, n_crypted);
 		if (l > 0)
 			n_crypted = l;
 		
 		/* Try to parse the resulting key */
 		r = parse_der_pkcs8_plain (self, crypted, n_crypted);
-		egg_secure_free (crypted);
 		crypted = NULL;
 		
 		if (r != GCR_ERROR_UNRECOGNIZED) {
@@ -588,10 +577,9 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 done:
 	if (cih)
 		gcry_cipher_close (cih);
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	egg_secure_free (crypted);
-		
+
 	return ret;
 }
 
@@ -614,19 +602,19 @@ parse_der_pkcs8 (GcrParser *self, const guchar *data, gsize n_data)
 static gint
 parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn;
+	GNode *asn;
 	gchar *name;
-	
-	asn = egg_asn1_decode ("PKIX1.Certificate", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	if (asn == NULL)
 		return GCR_ERROR_UNRECOGNIZED;
 
 	parsed_clear (self, CKO_CERTIFICATE);
 	parsed_ulong (self, CKA_CERTIFICATE_TYPE, CKC_X_509);
 
-	name = egg_dn_read_part (asn, "tbsCertificate.subject.rdnSequence", "CN");
-	asn1_delete_structure (&asn);
-		
+	name = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), "CN");
+	egg_asn1x_destroy (asn);
+
 	if (name != NULL) {
 		parsed_label (self, name);
 		g_free (name);
@@ -645,30 +633,30 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 static gint
 handle_pkcs7_signed_data (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
+	GNode *node;
 	gint ret;
-	gchar *part;
 	const guchar *certificate;
 	gsize n_certificate;
 	int i;
-	
+
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-7-SignedData", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-SignedData", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GCR_ERROR_FAILURE;
 	
 	for (i = 0; TRUE; ++i) {
-			
-		part = g_strdup_printf ("certificates.?%u", i + 1);
-		certificate = egg_asn1_read_element (asn, data, n_data, part, &n_certificate);
-		g_free (part);
-		
+
+		node = egg_asn1x_node (asn, "certificates", i + 1, NULL);
+
 		/* No more certificates? */
-		if (!certificate)
+		if (node == NULL)
 			break;
+
+		certificate = egg_asn1x_get_raw_element (node, &n_certificate);
 	
 		ret = parse_der_certificate (self, certificate, n_certificate);
 		if (ret != SUCCESS)
@@ -678,50 +666,51 @@ handle_pkcs7_signed_data (GcrParser *self, const guchar *data, gsize n_data)
 	/* TODO: Parse out all the CRLs */
 	
 	ret = SUCCESS;
-	
+
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-	
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
 static gint
 parse_der_pkcs7 (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
+	GNode *node;
 	gint ret;
 	const guchar* content = NULL;
 	gsize n_content;
 	GQuark oid;
-	
+
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-7-ContentInfo", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-ContentInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GCR_ERROR_FAILURE;
 
-	oid = egg_asn1_read_oid (asn, "contentType");
-	if (!oid)
+	node = egg_asn1x_node (asn, "contentType", NULL);
+	if (!node)
 		goto done;
+
+	oid = egg_asn1x_get_oid_as_quark (node);
+	g_return_val_if_fail (oid, GCR_ERROR_FAILURE);
 
 	/* Outer most one must just be plain data */
 	if (oid != OID_PKCS7_SIGNED_DATA) {
 		g_message ("unsupported outer content type in pkcs7: %s", g_quark_to_string (oid));
 		goto done;
 	}
-	
-	content = egg_asn1_read_content (asn, data, n_data, "content", &n_content);
+
+	content = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "content", NULL), &n_content);
 	if (!content) 
 		goto done;
-		
+
 	ret = handle_pkcs7_signed_data (self, content, n_content);
-			
+
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -732,63 +721,62 @@ done:
 static gint
 handle_pkcs12_cert_bag (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
-	const guchar *certificate;
-	gsize n_certificate;
+	GNode *asn = NULL;
+	GNode *asn_content = NULL;
+	guchar *certificate;
+	const guchar *element;
+	gsize n_certificate, n_element;
 	gint ret;
 
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-12-CertBag", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-CertBag", data, n_data);
 	if (!asn)
 		goto done;
-		
+
 	ret = GCR_ERROR_FAILURE;
-	
-	certificate = egg_asn1_read_content (asn, data, n_data, "certValue", &n_certificate);
+
+	element = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "certValue", NULL), &n_element);
+	if (!element)
+		goto done;
+
+	asn_content = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-Data", element, n_element);
+	if (!asn_content)
+		goto done;
+
+	certificate = egg_asn1x_get_string_as_raw (asn_content, NULL, &n_certificate);
 	if (!certificate)
 		goto done;
 
-	/* 
-	 * Wrapped in an OCTET STRING, so unwrap here, rather than allocating 
-	 * a whole bunch more memory for a full ASN.1 parsing context.
-	 */ 
-	certificate = egg_asn1_element_content (certificate, n_certificate, &n_certificate);
-	if (!certificate)
-		goto done;
-	
 	ret = parse_der_certificate (self, certificate, n_certificate);
-		
+
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-		
+	egg_asn1x_destroy (asn_content);
+	egg_asn1x_destroy (asn);
+	g_free (certificate);
 	return ret;
 }
 
 static gint
 handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gint ret, r;
-	int res, count = 0;
+	guint count = 0;
 	GQuark oid;
 	const guchar *element;
 	gsize n_element;
-	
+
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-12-SafeContents", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-SafeContents", data, n_data);
 	if (!asn)
 		goto done;
-		
+
 	ret = GCR_ERROR_FAILURE;
-	
+
 	/* Get the number of elements in this bag */
-	res = asn1_number_of_elements (asn, "", &count);
-	if (res != ASN1_SUCCESS)
-		goto done;	
-	
+	count = egg_asn1x_count (asn);
+
 	/* 
 	 * Now inside each bag are multiple elements. Who comes up 
 	 * with this stuff?
@@ -801,11 +789,11 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 	 */
 	if (count >= 1) {
 
-		oid = egg_asn1_read_oid (asn, "?1.bagId");
+		oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, 1, "bagId", NULL));
 		if (!oid)
 			goto done;
-		
-		element = egg_asn1_read_content (asn, data, n_data, "?1.bagValue", &n_element); 	
+
+		element = egg_asn1x_get_raw_element (egg_asn1x_node (asn, 1, "bagValue", NULL), &n_element);
 		if (!element)
 			goto done;
 
@@ -835,9 +823,7 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 	ret = SUCCESS;	
 		
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-		
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -845,7 +831,7 @@ static gint
 handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 {
 	PasswordState pstate = PASSWORD_STATE_INIT;
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_cipher_hd_t cih = NULL;
 	gcry_error_t gcry;
 	guchar *crypted = NULL;
@@ -855,24 +841,24 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 	GQuark scheme;
 	gint ret, r;
 	gint l;
-	
+
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-7-EncryptedData", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-EncryptedData", data, n_data);
 	if (!asn)
 		goto done;
-	
-	ret = GCR_ERROR_FAILURE;
-		
-	/* Check the encryption schema OID */
-	scheme = egg_asn1_read_oid (asn, "encryptedContentInfo.contentEncryptionAlgorithm.algorithm");
-	if (!scheme) 
-		goto done;	
 
-	params = egg_asn1_read_element (asn, data, n_data, "encryptedContentInfo.contentEncryptionAlgorithm.parameters", &n_params);
+	ret = GCR_ERROR_FAILURE;
+
+	/* Check the encryption schema OID */
+	scheme = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "encryptedContentInfo", "contentEncryptionAlgorithm", "algorithm", NULL));
+	if (!scheme) 
+		goto done;
+
+	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "encryptedContentInfo", "contentEncryptionAlgorithm", "parameters", NULL), &n_params);
 	if (!params)
 		goto done;
-	
+
 	parsed_clear (self, 0);
 
 	/* Loop to try different passwords */
@@ -891,9 +877,9 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 			ret = GCR_ERROR_FAILURE;
 			goto done;
 		}
-			
-		crypted = egg_asn1_read_value (asn, "encryptedContentInfo.encryptedContent", 
-		                               &n_crypted, (EggAllocator)egg_secure_realloc);
+
+		crypted = egg_asn1x_get_string_as_raw (egg_asn1x_node (asn, "encryptedContentInfo", "encryptedContent", NULL),
+		                                       egg_secure_realloc, &n_crypted);
 		if (!crypted)
 			goto done;
 	
@@ -905,9 +891,9 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 			g_warning ("couldn't decrypt pkcs7 data: %s", gcry_strerror (gcry));
 			goto done;
 		}
-		
+
 		/* Unpad the DER data */
-		l = egg_asn1_element_length (crypted, n_crypted);
+		l = egg_asn1x_element_length (crypted, n_crypted);
 		if (l > 0)
 			n_crypted = l;
 
@@ -927,64 +913,65 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 done:
 	if (cih)
 		gcry_cipher_close (cih);
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	egg_secure_free (crypted);
-	
 	return ret;
 }
 
 static gint
 handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
+	GNode *asn_content = NULL;
 	gint ret, r;
 	const guchar *bag;
-	gsize n_bag;
-	gchar *part;
+	guchar *content = NULL;
+	gsize n_bag, n_content;
 	GQuark oid;
 	guint i;
-	
+	GNode *node;
+
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-12-AuthenticatedSafe", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-AuthenticatedSafe", data, n_data);
 	if (!asn)
 		goto done;
-		
+
 	ret = GCR_ERROR_FAILURE;
 	
 	/*
 	 * Inside each PKCS12 safe there are multiple bags. 
 	 */
 	for (i = 0; TRUE; ++i) {
-		
-		part = g_strdup_printf ("?%u.contentType", i + 1);
-		oid = egg_asn1_read_oid (asn, part);
-		g_free (part);
-		
+		node = egg_asn1x_node (asn, i + 1, "contentType", NULL);
+
 		/* All done? no more bags */
-		if (!oid) 
+		if (!node)
 			break;
-		
-		part = g_strdup_printf ("?%u.content", i + 1);
-		bag = egg_asn1_read_content (asn, data, n_data, part, &n_bag);
-		g_free (part);
-		
-		if (!bag) /* A parse error */
+
+		oid = egg_asn1x_get_oid_as_quark (node);
+
+		node = egg_asn1x_node (asn, i + 1, "content", NULL);
+		if (!node)
 			goto done;
-			
+
+		bag = egg_asn1x_get_raw_element (node, &n_bag);
+		g_return_val_if_fail (bag, ret);
+
 		/* A non encrypted bag, just parse */
 		if (oid == OID_PKCS7_DATA) {
-			
-			/* 
-		 	 * Wrapped in an OCTET STRING, so unwrap here, rather than allocating 
-		 	 * a whole bunch more memory for a full ASN.1 parsing context.
-		 	 */ 
-			bag = egg_asn1_element_content (bag, n_bag, &n_bag);
-			if (!bag)
-				goto done;	
-			
-			r = handle_pkcs12_bag (self, bag, n_bag);
+
+			egg_asn1x_destroy (asn_content);
+			asn_content = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-Data", bag, n_bag);
+			if (!asn_content)
+				goto done;
+
+			g_free (content);
+			content = egg_asn1x_get_string_as_raw (asn_content, NULL, &n_content);
+			if (!content)
+				goto done;
+
+			r = handle_pkcs12_bag (self, content, n_content);
 
 		/* Encrypted data first needs decryption */
 		} else if (oid == OID_PKCS7_ENCRYPTED_DATA) {
@@ -1005,54 +992,59 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 	ret = SUCCESS;
 	
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-		
+	egg_asn1x_destroy (asn);
+	egg_asn1x_destroy (asn_content);
+	g_free (content);
 	return ret;
 }
 
 static gint
 parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
+	GNode *asn_content = NULL;
 	gint ret;
-	const guchar* content = NULL;
-	gsize n_content;
+	const guchar* element = NULL;
+	guchar *content = NULL;
+	gsize n_element, n_content;
 	GQuark oid;
-	
+
 	ret = GCR_ERROR_UNRECOGNIZED;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-12-PFX", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-PFX", data, n_data);
 	if (!asn)
 		goto done;
 
-	oid = egg_asn1_read_oid (asn, "authSafe.contentType");
+	ret = GCR_ERROR_FAILURE;
+
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "authSafe", "contentType", NULL));
 	if (!oid)
 		goto done;
-		
+
 	/* Outer most one must just be plain data */
 	if (oid != OID_PKCS7_DATA) {
 		g_message ("unsupported safe content type in pkcs12: %s", g_quark_to_string (oid));
 		goto done;
 	}
-	
-	content = egg_asn1_read_content (asn, data, n_data, "authSafe.content", &n_content);
+
+	element = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "authSafe", "content", NULL), &n_element);
+	if (!element)
+		goto done;
+
+	asn_content = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-Data", element, n_element);
+	if (!asn_content)
+		goto done;
+
+	content = egg_asn1x_get_string_as_raw (asn_content, g_realloc, &n_content);
 	if (!content)
 		goto done;
-		
-	/* 
-	 * Wrapped in an OCTET STRING, so unwrap here, rather than allocating 
-	 * a whole bunch more memory for a full ASN.1 parsing context.
-	 */ 
-	content = egg_asn1_element_content (content, n_content, &n_content);
-	if (!content)
-		goto done;
-				
+
 	ret = handle_pkcs12_safe (self, content, n_content);
-	
+
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	g_free (content);
+	egg_asn1x_destroy (asn_content);
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -1168,7 +1160,7 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 		g_assert (decrypted);
 		
 		/* Unpad the DER data */
-		l = egg_asn1_element_length (decrypted, n_decrypted);
+		l = egg_asn1x_element_length (decrypted, n_decrypted);
 		if (l > 0)
 			n_decrypted = l;
 	

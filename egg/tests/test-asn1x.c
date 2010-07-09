@@ -6,10 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define extern
-#include "egg/asn1-def-pkix.h"
-#include "egg/asn1-def-pk.h"
-#undef extern
+#include "egg/egg-asn1-defs.h"
 
 #if 0
 static void
@@ -86,6 +83,7 @@ run (void)
 	test_some_asn1_stuff (pk_asn1_tab, "test-rsakey-1.der", "RSAPrivateKey");
 	test_some_asn1_stuff (pkix_asn1_tab, "test-personalname-1.der", "PersonalName");
 	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs7-1.der", "pkcs-7-ContentInfo");
+	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs7-2.der", "pkcs-7-ContentInfo");
 	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs12-1.der", "pkcs-12-PFX");
 
 	return 0;

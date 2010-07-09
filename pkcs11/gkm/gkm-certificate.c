@@ -37,6 +37,7 @@
 #include "gkm-util.h"
 
 #include "egg/egg-dn.h"
+#include "egg/egg-asn1x.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -53,7 +54,7 @@ enum {
 
 struct _GkmCertificatePrivate {
 	GkmCertificateKey *key;
-	ASN1_TYPE asn1;
+	GNode *asn1;
 	guchar *data;
 	gsize n_data;
 	gchar *label;
@@ -215,9 +216,8 @@ static gint
 find_certificate_extension (GkmCertificate *self, GQuark oid)
 {
 	GQuark exoid;
-	gchar *name;
+	GNode *node;
 	guint index;
-	int res, len;
 
 	g_assert (oid);
 	g_assert (GKM_IS_CERTIFICATE (self));
@@ -226,17 +226,12 @@ find_certificate_extension (GkmCertificate *self, GQuark oid)
 	for (index = 1; TRUE; ++index) {
 
 		/* Make sure it is present */
-		len = 0;
-		name = g_strdup_printf ("tbsCertificate.extensions.?%u", index);
-		res = asn1_read_value (self->pv->asn1, name, NULL, &len);
-		g_free (name);
-		if (res == ASN1_ELEMENT_NOT_FOUND)
+		node = egg_asn1x_node (self->pv->asn1, "tbsCertificate", "extensions", index, NULL);
+		if (node == NULL)
 			break;
 
 		/* See if it's the same */
-		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
-		exoid = egg_asn1_read_oid (self->pv->asn1, name);
-		g_free (name);
+		exoid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (self->pv->asn1, "extnID", NULL));
 
 		if(exoid == oid)
 			return index;
@@ -332,18 +327,18 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 	case CKA_START_DATE:
 	case CKA_END_DATE:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		if (!egg_asn1_read_time (self->pv->asn1,
-		                              attr->type == CKA_START_DATE ?
-		                                       "tbsCertificate.validity.notBefore" :
-		                                       "tbsCertificate.validity.notAfter",
-		                              &when))
+		when = egg_asn1x_get_time_as_long (egg_asn1x_node (self->pv->asn1,
+		                                                 attr->type == CKA_START_DATE ?
+		                                                       "tbsCertificate.validity.notBefore" :
+		                                                       "tbsCertificate.validity.notAfter",
+		                                                 NULL));
+		if (when < 0)
 			return CKR_FUNCTION_FAILED;
 		return gkm_attribute_set_date (attr, when);
 
 	case CKA_SUBJECT:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = egg_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data,
-		                                    "tbsCertificate.subject", &n_data);
+		cdata = egg_asn1x_get_raw_element (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "subject", NULL), &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
 		return gkm_attribute_set_data (attr, cdata, n_data);
 
@@ -354,15 +349,13 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 
 	case CKA_ISSUER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = egg_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data,
-		                                    "tbsCertificate.issuer", &n_data);
+		cdata = egg_asn1x_get_raw_element (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "issuer", NULL), &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
 		return gkm_attribute_set_data (attr, cdata, n_data);
 
 	case CKA_SERIAL_NUMBER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = egg_asn1_read_element (self->pv->asn1, self->pv->data, self->pv->n_data,
-		                                    "tbsCertificate.serialNumber", &n_data);
+		cdata = egg_asn1x_get_raw_element (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "serialNumber", NULL), &n_data);
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
 		return gkm_attribute_set_data (attr, cdata, n_data);
 
@@ -455,7 +448,7 @@ gkm_certificate_finalize (GObject *obj)
 	g_assert (!self->pv->key);
 	g_free (self->pv->data);
 	g_free (self->pv->label);
-	asn1_delete_structure (&self->pv->asn1);
+	egg_asn1x_destroy (self->pv->asn1);
 
 	G_OBJECT_CLASS (gkm_certificate_parent_class)->finalize (obj);
 }
@@ -527,7 +520,7 @@ static gboolean
 gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
-	ASN1_TYPE asn1 = ASN1_TYPE_EMPTY;
+	GNode *asn1 = NULL;
 	GkmDataResult res;
 	guchar *copy, *keydata;
 	gsize n_keydata;
@@ -549,7 +542,7 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar
 	}
 
 	/* Generate a raw public key from our certificate */
-	keydata = egg_asn1_encode (asn1, "tbsCertificate.subjectPublicKeyInfo", &n_keydata, NULL);
+	keydata = egg_asn1x_encode (egg_asn1x_node (asn1, "tbsCertificate", "subjectPublicKeyInfo", NULL), NULL, &n_keydata);
 	g_return_val_if_fail (keydata, FALSE);
 
 	/* Now create us a nice public key with that identifier */
@@ -581,7 +574,7 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar
 	case GKM_DATA_LOCKED:
 		g_warning ("couldn't parse certificate key data");
 		g_free (copy);
-		asn1_delete_structure (&asn1);
+		egg_asn1x_destroy (asn1);
 		return FALSE;
 
 	default:
@@ -593,7 +586,7 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar
 	self->pv->data = copy;
 	self->pv->n_data = n_data;
 
-	asn1_delete_structure (&self->pv->asn1);
+	egg_asn1x_destroy (self->pv->asn1);
 	self->pv->asn1 = asn1;
 
 	return TRUE;
@@ -679,8 +672,6 @@ const guchar*
 gkm_certificate_get_extension (GkmCertificate *self, GQuark oid,
                                gsize *n_extension, gboolean *critical)
 {
-	const guchar *result;
-	gchar *name;
 	guchar *val;
 	gsize n_val;
 	gint index;
@@ -696,9 +687,8 @@ gkm_certificate_get_extension (GkmCertificate *self, GQuark oid,
 
 	/* Read the critical status */
 	if (critical) {
-		name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", index);
-		val = egg_asn1_read_value (self->pv->asn1, name, &n_val, NULL);
-		g_free (name);
+		val = egg_asn1x_get_string_as_raw (egg_asn1x_node (self->pv->asn1, "tbsCertificate",
+		                                   "extensions", index, "critical", NULL), NULL, &n_val);
 
 		/*
 		 * We're pretty liberal in what we accept as critical. The goal
@@ -713,12 +703,8 @@ gkm_certificate_get_extension (GkmCertificate *self, GQuark oid,
 	}
 
 	/* And the extension value */
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
-	result = egg_asn1_read_content (self->pv->asn1, self->pv->data, self->pv->n_data,
-	                                     name, n_extension);
-	g_free (name);
-
-	return result;
+	return egg_asn1x_get_raw_value (egg_asn1x_node (self->pv->asn1, "tbsCertificate",
+	                                "extensions", index, "extnValue", NULL), n_extension);
 }
 
 const gchar*
@@ -732,11 +718,11 @@ gkm_certificate_get_label (GkmCertificate *self)
 		g_return_val_if_fail (self->pv->asn1, "");
 
 		/* Look for the CN in the certificate */
-		label = egg_dn_read_part (self->pv->asn1, "tbsCertificate.subject.rdnSequence", "cn");
+		label = egg_dn_read_part (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "subject", "rdnSequence", NULL), "cn");
 
 		/* Otherwise use the full DN */
 		if (!label)
-			label = egg_dn_read (self->pv->asn1, "tbsCertificate.subject.rdnSequence");
+			label = egg_dn_read (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "subject", "rdnSequence", NULL));
 
 		if (!label)
 			label = g_strdup (_("Unnamed Certificate"));

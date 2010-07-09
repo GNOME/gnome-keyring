@@ -5,6 +5,7 @@
 #include "gkm/gkm-data-der.h"
 #include "gkm/gkm-data-types.h"
 
+#include "egg/egg-asn1x.h"
 #include "egg/egg-buffer.h"
 #include "egg/egg-openssl.h"
 #include "egg/egg-secure-memory.h"
@@ -171,7 +172,7 @@ load_encrypted_key (const guchar *data, gsize n_data, const gchar *dekinfo,
 	g_assert (decrypted);
 
 	/* Unpad the DER data */
-	length = egg_asn1_element_length (decrypted, n_decrypted);
+	length = egg_asn1x_element_length (decrypted, n_decrypted);
 	if (length > 0)
 		n_decrypted = length;
 

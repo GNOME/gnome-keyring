@@ -30,7 +30,10 @@
 #include "gkm/gkm-data-der.h"
 #include "gkm/gkm-sexp.h"
 
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
 #include "egg/egg-openssl.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -39,11 +42,11 @@
 #include <stdio.h>
 #include <string.h>
 
-static ASN1_TYPE certificate = NULL;
+static GNode *certificate = NULL;
 static guchar *certificate_data = NULL;
 static gsize n_certificate_data = 0;
 
-static ASN1_TYPE certificate2 = NULL;
+static GNode *certificate2 = NULL;
 static guchar *certificate2_data = NULL;
 static gsize n_certificate2_data = 0;
 
@@ -112,21 +115,21 @@ test_der_public (gcry_sexp_t key)
 DEFINE_SETUP(preload)
 {
 	certificate_data = testing_data_read ("test-certificate-1.der", &n_certificate_data);
-	certificate = egg_asn1_decode ("PKIX1.Certificate", certificate_data, n_certificate_data);
+	certificate = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", certificate_data, n_certificate_data);
 	g_assert (certificate);
 
 	certificate2_data = testing_data_read ("test-certificate-2.der", &n_certificate2_data);
-	certificate2 = egg_asn1_decode ("PKIX1.Certificate", certificate2_data, n_certificate2_data);
+	certificate2 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", certificate2_data, n_certificate2_data);
 	g_assert (certificate2);
 }
 
 DEFINE_TEARDOWN(preload)
 {
-	asn1_delete_structure (&certificate);
+	egg_asn1x_destroy (certificate);
 	g_free (certificate_data);
 	certificate_data = NULL;
 
-	asn1_delete_structure (&certificate2);
+	egg_asn1x_destroy (certificate2);
 	g_free (certificate2_data);
 	certificate2_data = NULL;
 }
@@ -173,6 +176,8 @@ test_der_private (gcry_sexp_t key)
 
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (key, sexp));
+
+	egg_secure_free (data);
 }
 
 DEFINE_TEST(der_rsa_private)
@@ -221,6 +226,9 @@ DEFINE_TEST(der_dsa_private_parts)
 
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (skey, pkey));
+
+	egg_secure_free (params);
+	egg_secure_free (key);
 }
 
 const gchar *certpub = "(public-key (rsa " \
@@ -236,7 +244,7 @@ DEFINE_TEST(read_public_key_info)
 	gcry_sexp_t sexp, match;
 	gcry_error_t gcry;
 
-	data = egg_asn1_read_element (certificate, certificate_data, n_certificate_data, "tbsCertificate.subjectPublicKeyInfo", &n_data);
+	data = egg_asn1x_get_raw_element (egg_asn1x_node (certificate, "tbsCertificate", "subjectPublicKeyInfo", NULL), &n_data);
 	g_assert (data);
 
 	res = gkm_data_der_read_public_key_info (data, n_data, &sexp);
@@ -257,14 +265,14 @@ DEFINE_TEST(read_public_key_info)
 
 DEFINE_TEST(read_certificate)
 {
-	ASN1_TYPE asn = NULL;
+	GNode *asn = NULL;
 	GkmDataResult res;
 
 	res = gkm_data_der_read_certificate (certificate_data, n_certificate_data, &asn);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (asn != NULL);
 
-	asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 }
 
 DEFINE_TEST(write_certificate)
@@ -283,7 +291,7 @@ static void
 on_ca_certificate_public_key_info (GQuark type, const guchar *data, gsize n_data,
                                    GHashTable *headers, gpointer user_data)
 {
-	ASN1_TYPE asn1 = ASN1_TYPE_EMPTY;
+	GNode *asn1 = NULL;
 	GkmDataResult res;
 	gpointer keydata;
 	gsize n_keydata;
@@ -296,7 +304,7 @@ on_ca_certificate_public_key_info (GQuark type, const guchar *data, gsize n_data
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Generate a raw public key from our certificate */
-	keydata = egg_asn1_encode (asn1, "tbsCertificate.subjectPublicKeyInfo", &n_keydata, NULL);
+	keydata = egg_asn1x_encode (egg_asn1x_node (asn1, "tbsCertificate", "subjectPublicKeyInfo", NULL), NULL, &n_keydata);
 	g_assert (keydata);
 
 	/* Now create us a nice public key with that identifier */
@@ -319,12 +327,11 @@ DEFINE_TEST(read_ca_certificates_public_key_info)
 }
 
 static const guchar*
-find_extension (ASN1_TYPE asn, const guchar *data, gsize n_data, const gchar *oid, gsize *n_extension)
+find_extension (GNode *asn, const guchar *data, gsize n_data, const gchar *oid, gsize *n_extension)
 {
 	const guchar *value;
-	gsize n_exoid;
-	guchar *exoid;
-	gchar *name;
+	GNode *node = NULL;
+	gchar *exoid;
 	guint index;
 	int len;
 
@@ -333,19 +340,18 @@ find_extension (ASN1_TYPE asn, const guchar *data, gsize n_data, const gchar *oi
 	for (index = 1; TRUE; ++index) {
 
 		/* Make sure it is present */
-		name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
-		exoid = egg_asn1_read_value (asn, name, &n_exoid, NULL);
-		g_free (name);
-
-		if (!exoid)
+		node = egg_asn1x_node (asn, "tbsCertificate", "extensions", index, "extnID", NULL);
+		if (node == NULL)
 			return NULL;
 
-		if (n_exoid - 1 == strlen (oid) && strcmp ((gchar*)exoid, oid) == 0) {
+		exoid = egg_asn1x_get_oid_as_string (node);
+		g_assert (exoid);
+
+		if (strcmp (exoid, oid) == 0) {
 			g_free (exoid);
-			name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
-			value = egg_asn1_read_content (asn, data, n_data, name, n_extension);
+			node = egg_asn1x_node (asn, "tbsCertificate", "extensions", index, "extnValue", NULL);
+			value = egg_asn1x_get_raw_value (node, n_extension);
 			g_assert (value);
-			g_free (name);
 			return value;
 		}
 
@@ -363,7 +369,8 @@ DEFINE_TEST(read_basic_constraints)
 	gint path_len;
 	GkmDataResult res;
 
-	extension = egg_asn1_read_content (certificate, certificate_data, n_certificate_data, "tbsCertificate.extensions.?1.extnValue", &n_extension);
+	extension = egg_asn1x_get_raw_value (egg_asn1x_node (certificate, "tbsCertificate", "extensions", 1, "extnValue", NULL),
+	                                       &n_extension);
 	g_assert (extension);
 
 	res = gkm_data_der_read_basic_constraints (extension, n_extension, &is_ca, &path_len);
@@ -376,7 +383,7 @@ DEFINE_TEST(read_key_usage)
 {
 	const guchar *extension;
 	gsize n_extension;
-	guint key_usage;
+	gulong key_usage;
 	GkmDataResult res;
 
 	extension = find_extension (certificate2, certificate2_data, n_certificate2_data, "2.5.29.15", &n_extension);
@@ -384,7 +391,7 @@ DEFINE_TEST(read_key_usage)
 
 	res = gkm_data_der_read_key_usage (extension, n_extension, &key_usage);
 	g_assert (res == GKM_DATA_SUCCESS);
-	g_assert_cmpuint (key_usage, ==, 0x80);
+	g_assert_cmpuint (key_usage, ==, 0x01);
 }
 
 DEFINE_TEST(read_enhanced_usage)
@@ -467,7 +474,7 @@ DEFINE_TEST(write_pkcs8_plain)
 	g_assert (n_data);
 
 	res = gkm_data_der_read_private_pkcs8_plain (data, n_data, &check);
-	g_free (data);
+	egg_secure_free (data);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (check);
 
@@ -486,7 +493,7 @@ DEFINE_TEST(write_pkcs8_plain)
 	g_assert (n_data);
 
 	res = gkm_data_der_read_private_pkcs8_plain (data, n_data, &check);
-	g_free (data);
+	egg_secure_free (data);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (check);
 

@@ -25,7 +25,8 @@
 
 #include "test-suite.h"
 
-#include "egg/egg-asn1.h"
+#include "egg/egg-asn1-defs.h"
+#include "egg/egg-asn1x.h"
 #include "egg/egg-dn.h"
 #include "egg/egg-oid.h"
 
@@ -37,31 +38,24 @@
 #include <stdio.h>
 #include <string.h>
 
-static ASN1_TYPE asn1_cert = NULL;
+static GNode* asn1_cert = NULL;
 static guchar *data_cert = NULL;
 static gsize n_data_cert = 0;
 
 DEFINE_SETUP(dn_cert)
 {
-	ASN1_TYPE pkix;
-	int res;
-
 	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
 
-	/* We'll be catching this error later */
-	pkix = egg_asn1_get_pkix_asn1type ();
-	if (!pkix) return;
+	asn1_cert = egg_asn1x_create (pkix_asn1_tab, "Certificate");
+	g_assert (asn1_cert != NULL);
 
-	res = asn1_create_element (pkix, "PKIX1.Certificate", &asn1_cert);
-	g_assert (res == ASN1_SUCCESS);
-
-	res = asn1_der_decoding (&asn1_cert, data_cert, n_data_cert, NULL);
-	g_assert (res == ASN1_SUCCESS);
+	if (!egg_asn1x_decode (asn1_cert, data_cert, n_data_cert))
+		g_assert_not_reached ();
 }
 
 DEFINE_TEARDOWN(dn_cert)
 {
-	asn1_delete_structure (&asn1_cert);
+	egg_asn1x_destroy (asn1_cert);
 	g_free (data_cert);
 	data_cert = NULL;
 }
@@ -70,14 +64,11 @@ DEFINE_TEST(read_dn)
 {
 	gchar *dn;
 
-	dn = egg_dn_read (asn1_cert, "tbsCertificate.issuer.rdnSequence");
+	dn = egg_dn_read (egg_asn1x_node (asn1_cert, "tbsCertificate", "issuer", "rdnSequence", NULL));
 	g_assert (dn != NULL);
 	g_assert_cmpstr (dn, ==, "C=ZA, ST=Western Cape, L=Cape Town, O=Thawte Consulting, OU=Certification Services Division, CN=Thawte Personal Premium CA, EMAIL=personal-premium@thawte.com");
 
 	g_free (dn);
-
-	dn = egg_dn_read (asn1_cert, "tbsCertificate.nonExistant");
-	g_assert (dn == NULL);
 }
 
 DEFINE_TEST(dn_value)
@@ -132,7 +123,7 @@ DEFINE_TEST(parse_dn)
 	GString *dn = g_string_new ("");
 	last_index = 1;
 
-	if (!egg_dn_parse (asn1_cert, "tbsCertificate.issuer.rdnSequence", concatenate_dn, dn))
+	if (!egg_dn_parse (egg_asn1x_node (asn1_cert, "tbsCertificate", "issuer", "rdnSequence", NULL), concatenate_dn, dn))
 		g_assert_not_reached ();
 
 	g_assert_cmpstr (dn->str, ==, "C=ZA, ST=Western Cape, L=Cape Town, O=Thawte Consulting, OU=Certification Services Division, CN=Thawte Personal Premium CA, EMAIL=personal-premium@thawte.com");
@@ -141,27 +132,27 @@ DEFINE_TEST(parse_dn)
 
 DEFINE_TEST(read_dn_part)
 {
+	GNode *node;
 	gchar *value;
 
-	value = egg_dn_read_part (asn1_cert, "tbsCertificate.issuer.rdnSequence", "CN");
+	node = egg_asn1x_node (asn1_cert, "tbsCertificate", "issuer", "rdnSequence", NULL);
+
+	value = egg_dn_read_part (node, "CN");
 	g_assert (value != NULL);
 	g_assert_cmpstr (value, ==, "Thawte Personal Premium CA");
 	g_free (value);
 
-	value = egg_dn_read_part (asn1_cert, "tbsCertificate.issuer.rdnSequence", "2.5.4.8");
+	value = egg_dn_read_part (node, "2.5.4.8");
 	g_assert (value != NULL);
 	g_assert_cmpstr (value, ==, "Western Cape");
 	g_free (value);
 
-	value = egg_dn_read_part (asn1_cert, "tbsCertificate.nonExistant", "CN");
+	value = egg_dn_read_part (node, "DC");
 	g_assert (value == NULL);
 
-	value = egg_dn_read_part (asn1_cert, "tbsCertificate.issuer.rdnSequence", "DC");
+	value = egg_dn_read_part (node, "0.0.0.0");
 	g_assert (value == NULL);
 
-	value = egg_dn_read_part (asn1_cert, "tbsCertificate.issuer.rdnSequence", "0.0.0.0");
-	g_assert (value == NULL);
-
-	value = egg_dn_read_part (asn1_cert, "tbsCertificate.issuer.rdnSequence", "2.5.4.9");
+	value = egg_dn_read_part (node, "2.5.4.9");
 	g_assert (value == NULL);
 }

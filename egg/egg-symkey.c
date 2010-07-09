@@ -21,7 +21,8 @@
 
 #include "config.h"
 
-#include "egg-asn1.h"
+#include "egg-asn1-defs.h"
+#include "egg-asn1x.h"
 #include "egg-secure-memory.h"
 #include "egg-symkey.h"
 
@@ -613,12 +614,12 @@ read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode, int hash_algo,
                        const gchar *password, gsize n_password, const guchar *data, 
                        gsize n_data, gcry_cipher_hd_t *cih)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_error_t gcry;
-	const guchar *salt;
+	gconstpointer salt;
 	gsize n_salt;
 	gsize n_block, n_key;
-	guint iterations;
+	gulong iterations;
 	guchar *key = NULL;
 	guchar *iv = NULL;
 	gboolean ret;
@@ -634,17 +635,19 @@ read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode, int hash_algo,
 	if (gcry_cipher_algo_info (cipher_algo, GCRYCTL_TEST_ALGO, NULL, 0) != 0 ||
 	    gcry_md_test_algo (hash_algo) != 0)
 		goto done;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-5-PBE-params", data, n_data);
-	if (!asn) 
+
+	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-5-PBE-params");
+	g_return_val_if_fail (asn, FALSE);
+
+	if (!egg_asn1x_decode (asn, data, n_data))
 		goto done;
-		
-	salt = egg_asn1_read_content (asn, data, n_data, "salt", &n_salt);
+
+	salt = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "salt", NULL), &n_salt);
 	if (!salt)
 		goto done;
-	if (!egg_asn1_read_uint (asn, "iterationCount", &iterations))
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "iterationCount", NULL), &iterations))
 		iterations = 1;
-		
+
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
 	g_return_val_if_fail (n_key > 0, FALSE);
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
@@ -668,65 +671,67 @@ read_cipher_pkcs5_pbe (int cipher_algo, int cipher_mode, int hash_algo,
 done:
 	g_free (iv);
 	egg_secure_free (key);
-	
-	if (asn)
-		asn1_delete_structure (&asn);
-		
+	egg_asn1x_destroy (asn);
+
 	return ret;
 }
 
 static gboolean
 setup_pkcs5_rc2_params (const guchar *data, guchar n_data, gcry_cipher_hd_t cih)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_error_t gcry;
 	const guchar *iv;
 	gsize n_iv;
-	guint version;
-	
+	gulong version;
+	gboolean ret = FALSE;
+
 	g_assert (data);
 
-	asn = egg_asn1_decode ("PKIX1.pkcs-5-rc2-CBC-params", data, n_data);
-	if (!asn) 
-		return FALSE;
-		
-	if (!egg_asn1_read_uint (asn, "rc2ParameterVersion", &version))
-		return FALSE;
-	
-	iv = egg_asn1_read_content (asn, data, n_data, "iv", &n_iv);
-	asn1_delete_structure (&asn);
+	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-5-rc2-CBC-params");
+	g_return_val_if_fail (asn, FALSE);
 
+	if (!egg_asn1x_decode (asn, data, n_data))
+		goto done;
+
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "rc2ParameterVersion", NULL), &version))
+		goto done;
+
+	iv = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "iv", NULL), &n_iv);
 	if (!iv)
-		return FALSE;
-		
+		goto done;
+
 	gcry = gcry_cipher_setiv (cih, iv, n_iv);
-			
 	if (gcry != 0) {
 		g_message ("couldn't set %lu byte iv on cipher", (gulong)n_iv);
-		return FALSE;
+		goto done;
 	}
-	
-	return TRUE;
+
+	ret = TRUE;
+
+done:
+	egg_asn1x_destroy (asn);
+	return ret;
 }
 
 static gboolean
 setup_pkcs5_des_params (const guchar *data, guchar n_data, gcry_cipher_hd_t cih)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_error_t gcry;
-	const guchar *iv;
+	gconstpointer iv;
 	gsize n_iv;
-	
+
 	g_assert (data);
 
-	asn = egg_asn1_decode ("PKIX1.pkcs-5-des-EDE3-CBC-params", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-5-des-EDE3-CBC-params", data, n_data);
 	if (!asn)
-		asn = egg_asn1_decode ("PKIX1.pkcs-5-des-CBC-params", data, n_data);
+		asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-5-des-CBC-params", data, n_data);
 	if (!asn) 
 		return FALSE;
-	
-	iv = egg_asn1_read_content (asn, data, n_data, "", &n_iv);
-	asn1_delete_structure (&asn);
+
+	iv = egg_asn1x_get_raw_value (asn, &n_iv);
+	egg_asn1x_destroy (asn);
 
 	if (!iv)
 		return FALSE;
@@ -745,29 +750,29 @@ static gboolean
 setup_pkcs5_pbkdf2_params (const gchar *password, gsize n_password, const guchar *data, 
                            gsize n_data, int cipher_algo, gcry_cipher_hd_t cih)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gboolean ret;
 	gcry_error_t gcry;
 	guchar *key = NULL; 
 	const guchar *salt;
 	gsize n_salt, n_key;
-	guint iterations;
-	
+	gulong iterations;
+
 	g_assert (cipher_algo);
 	g_assert (data);
 	
 	ret = FALSE;
 
-	asn = egg_asn1_decode ("PKIX1.pkcs-5-PBKDF2-params", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-5-PBKDF2-params", data, n_data);
 	if (!asn)
 		goto done;
-		
-	if (!egg_asn1_read_uint (asn, "iterationCount", &iterations))
+
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "iterationCount", NULL), &iterations))
 		iterations = 1;
-	salt = egg_asn1_read_content (asn, data, n_data, "salt.specified", &n_salt);
+	salt = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "salt", "specified", NULL), &n_salt);
 	if (!salt)
 		goto done;
-				
+
 	if (!egg_symkey_generate_pbkdf2 (cipher_algo, GCRY_MD_SHA1, password, n_password, 
 	                                 salt, n_salt, iterations, &key, NULL))
 		goto done;
@@ -785,8 +790,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password, gsize n_password, const guchar
 	                                         
 done:
 	egg_secure_free (key);
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -794,12 +798,13 @@ static gboolean
 read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, const guchar *data, 
                          gsize n_data, gcry_cipher_hd_t *cih)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gboolean r, ret;
 	GQuark key_deriv_algo, enc_oid;
 	gcry_error_t gcry;
 	int algo, mode;
-	int beg, end;
+	gconstpointer params;
+	gsize n_params;
 
 	g_return_val_if_fail (cih != NULL, FALSE);
 	g_return_val_if_fail (data != NULL && n_data != 0, FALSE);
@@ -808,17 +813,17 @@ read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, const guchar *
 	
 	*cih = NULL;
 	ret = FALSE;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-5-PBES2-params", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-5-PBES2-params", data, n_data);
 	if (!asn)
 		goto done;
-		
+
 	algo = mode = 0;
 	
 	/* Read in all the encryption type */
-	enc_oid = egg_asn1_read_oid (asn, "encryptionScheme.algorithm");
+	enc_oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "encryptionScheme", "algorithm", NULL));
 	if (!enc_oid)
-		goto done;	
+		goto done;
 	if (enc_oid == OID_DES_EDE3_CBC)
 		algo = GCRY_CIPHER_3DES;
 	else if (enc_oid == OID_DES_CBC)
@@ -840,17 +845,17 @@ read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, const guchar *
 	}
 		
 	/* Read out the parameters */
-	if (asn1_der_decoding_startEnd (asn, data, n_data, "encryptionScheme.parameters",
-	                                &beg, &end) != ASN1_SUCCESS)
+	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "encryptionScheme", "parameters", NULL), &n_params);
+	if (!params)
 		goto done;
-		
+
 	switch (algo) {
 	case GCRY_CIPHER_3DES:
 	case GCRY_CIPHER_DES:
-		r = setup_pkcs5_des_params (data + beg, end - beg + 1, *cih);
+		r = setup_pkcs5_des_params (params, n_params, *cih);
 		break;
 	case GCRY_CIPHER_RFC2268_128:
-		r = setup_pkcs5_rc2_params (data + beg, end - beg + 1, *cih);
+		r = setup_pkcs5_rc2_params (params, n_params, *cih);
 		break;
 	default:
 		/* Should have been caught on the oid check above */
@@ -863,7 +868,7 @@ read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, const guchar *
 		goto done;
 
 	/* Read out the key creation paramaters */
-	key_deriv_algo = egg_asn1_read_oid (asn, "keyDerivationFunc.algorithm");
+	key_deriv_algo = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "keyDerivationFunc", "algorithm", NULL));
 	if (!key_deriv_algo)
 		goto done;
 	if (key_deriv_algo != OID_PBKDF2) {
@@ -871,21 +876,19 @@ read_cipher_pkcs5_pbes2 (const gchar *password, gsize n_password, const guchar *
 		goto done;
 	}
 
-	if (asn1_der_decoding_startEnd (asn, data, n_data, "keyDerivationFunc.parameters",
-	                                &beg, &end) != ASN1_SUCCESS)
+	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "keyDerivationFunc", "parameters", NULL), &n_params);
+	if (!params)
 		goto done;
-	
-	ret = setup_pkcs5_pbkdf2_params (password, n_password, data + beg, end - beg + 1, algo, *cih);
+
+	ret = setup_pkcs5_pbkdf2_params (password, n_password, params, n_params, algo, *cih);
 
 done:
 	if (ret != TRUE && *cih) {
 		gcry_cipher_close (*cih);
 		*cih = NULL;
 	}
-	
-	if (asn)
-		asn1_delete_structure (&asn);
-	
+
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -894,16 +897,16 @@ read_cipher_pkcs12_pbe (int cipher_algo, int cipher_mode, const gchar *password,
                         gsize n_password, const guchar *data, gsize n_data, 
                         gcry_cipher_hd_t *cih)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_error_t gcry;
 	gboolean ret;
 	const guchar *salt;
 	gsize n_salt;
 	gsize n_block, n_key;
-	guint iterations;
+	gulong iterations;
 	guchar *key = NULL;
 	guchar *iv = NULL;
-	
+
 	g_return_val_if_fail (cipher_algo != 0 && cipher_mode != 0, FALSE);
 	g_return_val_if_fail (cih != NULL, FALSE);
 	g_return_val_if_fail (data != NULL && n_data != 0, FALSE);
@@ -914,15 +917,15 @@ read_cipher_pkcs12_pbe (int cipher_algo, int cipher_mode, const gchar *password,
 	/* Check if we can use this algorithm */
 	if (gcry_cipher_algo_info (cipher_algo, GCRYCTL_TEST_ALGO, NULL, 0) != 0)
 		goto done;
-	
-	asn = egg_asn1_decode ("PKIX1.pkcs-12-PbeParams", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-PbeParams", data, n_data);
 	if (!asn)
 		goto done;
 
-	salt = egg_asn1_read_content (asn, data, n_data, "salt", &n_salt);
+	salt = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "salt", NULL), &n_salt);
 	if (!salt)
 		goto done;
-	if (!egg_asn1_read_uint (asn, "iterations", &iterations))
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "iterations", NULL), &iterations))
 		goto done;
 	
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
@@ -954,10 +957,7 @@ done:
 	
 	g_free (iv);
 	egg_secure_free (key);
-	
-	if (asn)
-		asn1_delete_structure (&asn);
-	
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 

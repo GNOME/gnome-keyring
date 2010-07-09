@@ -25,7 +25,8 @@
 
 #include "test-suite.h"
 
-#include "egg/egg-asn1.h"
+#include "egg/egg-asn1-defs.h"
+#include "egg/egg-asn1x.h"
 #include "egg/egg-oid.h"
 
 #include <glib.h>
@@ -36,260 +37,249 @@
 #include <stdio.h>
 #include <string.h>
 
-#define extern 
-#include "asn1-def-test.h"
-#undef extern
+extern const ASN1_ARRAY_TYPE test_asn1_tab[];
 
-static ASN1_TYPE asn1_test = NULL;
-
-static ASN1_TYPE asn1_cert = NULL;
+static GNode *asn1_cert = NULL;
 static guchar *data_cert = NULL;
 static gsize n_data_cert = 0;
 
 DEFINE_SETUP(asn1_tree)
 {
-	ASN1_TYPE pkix;
-	
-	int res = asn1_array2tree (test_asn1_tab, &asn1_test, NULL);
-	g_assert (res == ASN1_SUCCESS);
-
-	/* -------- */
-	
 	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
 
-	/* We'll be catching this error later */
-	pkix = egg_asn1_get_pkix_asn1type ();
-	if (!pkix) return;
-	
-	res = asn1_create_element (pkix, "PKIX1.Certificate", &asn1_cert); 
-	g_assert (res == ASN1_SUCCESS);
-	
-	res = asn1_der_decoding (&asn1_cert, data_cert, n_data_cert, NULL);
-	g_assert (res == ASN1_SUCCESS);
+	asn1_cert = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data_cert, n_data_cert);
+	g_assert (asn1_cert != NULL);
 }
 
 DEFINE_TEARDOWN(asn1_tree)
 {
-	asn1_delete_structure (&asn1_test);
-	asn1_delete_structure (&asn1_cert);
+	egg_asn1x_destroy (asn1_cert);
 	g_free (data_cert);
 	data_cert = NULL;
 }
 
-DEFINE_TEST(asn1_types)
+DEFINE_TEST(node_name)
 {
-	ASN1_TYPE asn;
-	
-	asn = egg_asn1_get_pk_asn1type ();
-	g_assert ("pk asn type is null" && asn != NULL);
-
-	asn = egg_asn1_get_pkix_asn1type ();
-	g_assert ("pkix asn type is null" && asn != NULL);
+	g_assert_cmpstr (egg_asn1x_name (asn1_cert), ==, "Certificate");
 }
 
 DEFINE_TEST(asn1_integers)
 {
-	ASN1_TYPE asn;
+	GNode *asn;
 	guchar *data;
 	gsize n_data;
 	gboolean ret;
-	guint val;
-	int res;
-	
-	res = asn1_create_element (asn1_test, "TEST.TestIntegers", &asn);
+	gulong val;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestIntegers");
 	g_assert ("asn test structure is null" && asn != NULL);
 
-	ret = egg_asn1_write_uint (asn, "uint1", 35);
+	ret = egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "uint1", NULL), 35);
 	g_assert ("couldn't write integer" && ret);
-	
-	ret = egg_asn1_write_uint (asn, "uint2", 23456);
+
+	ret = egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "uint2", NULL), 23456);
 	g_assert ("couldn't write integer" && ret);
-	
-	ret = egg_asn1_write_uint (asn, "uint3", 209384022);
+
+	ret = egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "uint3", NULL), 209384022);
 	g_assert ("couldn't write integer" && ret);
 	
 	/* Now encode the whole caboodle */
-	data = egg_asn1_encode (asn, "", &n_data, NULL);
+	data = egg_asn1x_encode (asn, NULL, &n_data);
 	g_assert ("encoding asn1 didn't work" && data != NULL);
-	
-	asn1_delete_structure (&asn);
-	
+
+	egg_asn1x_destroy (asn);
+
 	/* Now decode it all nicely */
-	res = asn1_create_element (asn1_test, "TEST.TestIntegers", &asn); 
-	g_return_if_fail (res == ASN1_SUCCESS);
-	
-	res = asn1_der_decoding (&asn, data, n_data, NULL);
-	g_assert ("decoding asn didn't work" && res == ASN1_SUCCESS);
-	
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestIntegers", data, n_data);
+	g_return_if_fail (asn != NULL);
+
 	/* And get out the values */
-	ret = egg_asn1_read_uint (asn, "uint1", &val);
+	ret = egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "uint1", NULL), &val);
 	g_assert ("couldn't read integer from asn1" && ret);
 	g_assert_cmpuint (val, ==, 35);
-	
-	ret = egg_asn1_read_uint (asn, "uint2", &val);
+
+	ret = egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "uint2", NULL), &val);
 	g_assert ("couldn't read integer from asn1" && ret);
 	g_assert_cmpuint (val, ==, 23456);
 
-	ret = egg_asn1_read_uint (asn, "uint3", &val);
+	ret = egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "uint3", NULL), &val);
 	g_assert ("couldn't read integer from asn1" && ret);
 	g_assert_cmpuint (val, ==, 209384022);
+
+	g_free (data);
 }
 
 DEFINE_TEST(boolean)
 {
-	ASN1_TYPE asn = NULL;
+	GNode *asn = NULL;
 	gboolean value, ret;
-	int res;
-	
-	res = asn1_create_element (asn1_test, "TEST.TestData", &asn);
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBooleanSeq");
 	g_assert ("asn test structure is null" && asn != NULL);
-	
-	res = asn1_write_value (asn, "boolean", "TRUE", 4);
-	g_assert (res == ASN1_SUCCESS);
-	
-	ret = egg_asn1_read_boolean (asn, "boolean", &value);
+
+	/* Get the default value */
+	value = TRUE;
+	ret = egg_asn1x_get_boolean (egg_asn1x_node (asn, "boolean", NULL), &value);
+	g_assert (ret == TRUE);
+	g_assert (value == FALSE);
+
+	ret = egg_asn1x_set_boolean (egg_asn1x_node (asn, "boolean", NULL), TRUE);
+	g_assert (ret == TRUE);
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	ret = egg_asn1x_get_boolean (egg_asn1x_node (asn, "boolean", NULL), &value);
 	g_assert (ret);
 	g_assert (value == TRUE);
-	
-	res = asn1_write_value (asn, "boolean", "FALSE", 5);
-	g_assert (res == ASN1_SUCCESS);
 
-	ret = egg_asn1_read_boolean (asn, "boolean", &value);
+	ret = egg_asn1x_set_boolean (egg_asn1x_node (asn, "boolean", NULL), FALSE);
+	g_assert (ret == TRUE);
+
+	g_free (data);
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	ret = egg_asn1x_get_boolean (egg_asn1x_node (asn, "boolean", NULL), &value);
 	g_assert (ret);
 	g_assert (value == FALSE);
-	
-	ret = egg_asn1_read_boolean (asn, "nonExistant", &value);
-	g_assert (!ret);
-	
-	asn1_delete_structure (&asn);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
 }
 
 DEFINE_TEST(write_value)
 {
-	ASN1_TYPE asn = NULL;
+	GNode *asn = NULL;
 	guchar *data;
 	gsize n_data;
-	int res;
-		
-	res = asn1_create_element (asn1_test, "TEST.TestData", &asn);
+	guchar *encoded;
+	gsize n_encoded;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestData");
 	g_assert ("asn test structure is null" && asn != NULL);
-		
-	if (!egg_asn1_write_value (asn, "data", (const guchar*)"SOME DATA", 9))
+
+	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "data", NULL), (guchar*)"SOME DATA", 9, NULL))
 		g_assert_not_reached ();
 
-	data = egg_asn1_read_value (asn, "data", &n_data, NULL);
+	encoded = egg_asn1x_encode (asn, NULL, &n_encoded);
+	g_assert (encoded);
+
+	data = egg_asn1x_get_string_as_raw (egg_asn1x_node (asn, "data", NULL), NULL, &n_data);
 	g_assert (data != NULL);
 	g_assert_cmpuint (n_data, ==, 9);
 	g_assert (memcmp (data, "SOME DATA", 9) == 0);
 	g_free (data);
-	
-	asn1_delete_structure (&asn); 
+
+	g_free (encoded);
+	egg_asn1x_destroy (asn);
 }
 
 DEFINE_TEST(element_length_content)
 {
-	ASN1_TYPE asn = NULL;
-	guchar buffer[1024];
+	GNode *asn = NULL;
+	gchar *buffer;
 	const guchar *content;
 	gsize n_content;
-	gint length;
-	int res;
-	
-	res = asn1_create_element (asn1_test, "TEST.TestData", &asn);
+	gsize n_buffer;
+	gssize length;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestData");
 	g_assert ("asn test structure is null" && asn != NULL);
-	
-	res = asn1_write_value (asn, "data", "SOME DATA", 9);
-	g_assert (res == ASN1_SUCCESS);
-	
-	length = 1024;
-	res = asn1_der_coding (asn, "", buffer, &length, NULL);
-	g_assert (res == ASN1_SUCCESS);
-	
+
+	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "data", NULL), (guchar*)"SOME DATA", 9, NULL))
+		g_assert_not_reached ();
+
+	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	g_assert (buffer != NULL);
+
 	/* Now the real test */
-	length = egg_asn1_element_length (buffer, 1024);
+	length = egg_asn1x_element_length (buffer, n_buffer + 1024);
 	g_assert_cmpint (length, ==, 13);
-	
-	content = egg_asn1_element_content (buffer, length, &n_content);
+
+	content = egg_asn1x_element_content (buffer, length, &n_content);
 	g_assert (content);
 	g_assert_cmpuint (n_content, ==, 11);
 	
-	content = egg_asn1_element_content (content, n_content, &n_content);
+	content = egg_asn1x_element_content (content, n_content, &n_content);
 	g_assert (content);
 	g_assert_cmpuint (n_content, ==, 9);	
 	g_assert (memcmp (content, "SOME DATA", 9) == 0);
-	
-	asn1_delete_structure (&asn);
+
+	egg_asn1x_destroy (asn);
+	g_free (buffer);
 }
 
 DEFINE_TEST(read_element)
 {
-	ASN1_TYPE asn = NULL;
-	guchar buffer[1024];
-	const guchar *data;
+	GNode *asn = NULL;
+	guchar *buffer;
+	gconstpointer data;
 	gsize n_data;
-	gint length;
-	int res;
-	
-	res = asn1_create_element (asn1_test, "TEST.TestData", &asn);
+	gsize n_buffer;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestData");
 	g_assert ("asn test structure is null" && asn != NULL);
-	
-	res = asn1_write_value (asn, "data", "SOME DATA", 9);
-	g_assert (res == ASN1_SUCCESS);
-	
-	length = 1024;
-	res = asn1_der_coding (asn, "", buffer, &length, NULL);
-	g_assert (res == ASN1_SUCCESS);
-	
+
+	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "data", NULL), (guchar*)"SOME DATA", 9, NULL))
+		g_assert_not_reached ();
+
+	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	g_assert (buffer != NULL);
+
 	/* Now the real test */
-	data = egg_asn1_read_element (asn, buffer, length, "data", &n_data);
+	data = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "data", NULL), &n_data);
 	g_assert (data != NULL);
 	g_assert_cmpint (n_data, ==, 11);
 
-	data = egg_asn1_read_content (asn, buffer, length, "data", &n_data);
+	data = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "data", NULL), &n_data);
 	g_assert (data);
-	g_assert_cmpuint (n_data, ==, 9);	
+	g_assert_cmpuint (n_data, ==, 9);
 	g_assert (memcmp (data, "SOME DATA", 9) == 0);
-	
-	/* Invalid should return null for both those */
-	data = egg_asn1_read_element (asn, buffer, length, "nonExistant", &n_data);
-	g_assert (data == NULL);
-	data = egg_asn1_read_content (asn, buffer, length, "nonExistant", &n_data);
-	g_assert (data == NULL);
-	
-	asn1_delete_structure (&asn);
+
+	egg_asn1x_destroy (asn);
+	g_free (buffer);
 }
 
 DEFINE_TEST(oid)
 {
-	ASN1_TYPE asn = NULL;
+	GNode *asn = NULL;
 	GQuark oid, check;
-	int res;
-	
-	res = asn1_create_element (asn1_test, "TEST.TestData", &asn);
-	g_assert ("asn test structure is null" && asn != NULL);
-	
-	res = asn1_write_value (asn, "data", "SOME DATA", 9);
-	g_assert (res == ASN1_SUCCESS);
+	guchar *buffer;
+	gsize n_buffer;
 
-	/* No such element, should return 0 */
-	oid = egg_asn1_read_oid (asn, "nonExistant");
-	g_assert (oid == 0);
+	asn = egg_asn1x_create (test_asn1_tab, "TestOid");
+	g_assert ("asn test structure is null" && asn != NULL);
+
+	if (!egg_asn1x_set_oid_as_string (egg_asn1x_node (asn, "oid", NULL), "1.2.34567.89"))
+		g_assert_not_reached ();
+
+	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	g_assert (buffer != NULL);
 
 	/* Now a quark has been defined */
-	check = g_quark_from_static_string ("SOME DATA");
-	oid = egg_asn1_read_oid (asn, "data");
-	g_assert (check == oid);
-	g_assert_cmpstr (g_quark_to_string (oid), ==, "SOME DATA");
-	
-	/* Write a different OID */ 
-	if (!egg_asn1_write_oid (asn, "data", g_quark_from_static_string ("ANOTHER")))
-		g_assert_not_reached ();
-	
-	oid = egg_asn1_read_oid (asn, "data");
+	check = g_quark_from_static_string ("1.2.34567.89");
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "oid", NULL));
 	g_assert (oid);
-	g_assert_cmpstr (g_quark_to_string (oid), ==, "ANOTHER");
-	
-	asn1_delete_structure (&asn);
+	g_assert (check == oid);
+	g_assert_cmpstr (g_quark_to_string (oid), ==, "1.2.34567.89");
+
+	/* Write a different OID */ 
+	if (!egg_asn1x_set_oid_as_quark (egg_asn1x_node (asn, "oid", NULL), g_quark_from_static_string ("5.4.3.2.1678")))
+		g_assert_not_reached ();
+
+	g_free (buffer);
+	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	g_assert (buffer != NULL);
+
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "oid", NULL));
+	g_assert (oid);
+	g_assert_cmpstr (g_quark_to_string (oid), ==, "5.4.3.2.1678");
+
+	g_free (buffer);
+	egg_asn1x_destroy (asn);
 }
 
 typedef struct _TimeTestData {
@@ -332,7 +322,7 @@ DEFINE_TEST(general_time)
 	const TimeTestData *data;
 	
 	for (data = generalized_time_test_data; data->value; ++data) {
-		when = egg_asn1_time_parse_general (data->value, -1);
+		when = egg_asn1x_parse_time_general (data->value, -1);
 		if (data->ref != when) {
 			printf ("%s", data->value);
 			printf ("%s != ", ctime (&when));
@@ -350,7 +340,7 @@ DEFINE_TEST(utc_time)
 	const TimeTestData *data;
 	
 	for (data = utc_time_test_data; data->value; ++data) {
-		when = egg_asn1_time_parse_utc (data->value, -1);
+		when = egg_asn1x_parse_time_utc (data->value, -1);
 		if (data->ref != when) {
 			printf ("%s", data->value);
 			printf ("%s != ", ctime (&when));
@@ -364,19 +354,56 @@ DEFINE_TEST(utc_time)
 
 DEFINE_TEST(read_time)
 {
-	time_t time;
-	
-	if (!egg_asn1_read_time (asn1_cert, "tbsCertificate.validity.notBefore", &time))
-		g_assert_not_reached ();
+	glong time;
+
+	time = egg_asn1x_get_time_as_long (egg_asn1x_node (asn1_cert, "tbsCertificate", "validity", "notBefore", NULL));
 	g_assert_cmpint (time, ==, 820454400);
 }
 
 DEFINE_TEST(read_date)
 {
 	GDate date;
-	if (!egg_asn1_read_date (asn1_cert, "tbsCertificate.validity.notAfter", &date))
+	if (!egg_asn1x_get_time_as_date (egg_asn1x_node (asn1_cert, "tbsCertificate", "validity", "notAfter", NULL), &date))
 		g_assert_not_reached ();
 	g_assert_cmpint (date.day, ==, 31);
 	g_assert_cmpint (date.month, ==, 12);
 	g_assert_cmpint (date.year, ==, 2020);
+}
+
+DEFINE_TEST(create_by_oid)
+{
+	/* id-at-initials = X520initials */
+	GNode *node = egg_asn1x_create (pkix_asn1_tab, "2.5.4.43");
+	g_assert (node != NULL);
+	g_assert_cmpstr (egg_asn1x_name (node), ==, "X520initials");
+	egg_asn1x_destroy (node);
+}
+
+DEFINE_TEST(create_by_oid_invalid)
+{
+	GNode *node = egg_asn1x_create (pkix_asn1_tab, "23.23.23.23");
+	g_assert (node == NULL);
+}
+
+DEFINE_TEST(create_by_bad_order)
+{
+	/*
+	 * In pkix.asn the definition for parts of this oid
+	 * come in the wrong order. However this should still work.
+	 */
+
+	/* id-pe-authorityInfoAccess = AuthorityInfoAccessSyntax */
+	GNode *node = egg_asn1x_create (pkix_asn1_tab, "1.3.6.1.5.5.7.1.1");
+	g_assert (node != NULL);
+	g_assert_cmpstr (egg_asn1x_name (node), ==, "AuthorityInfoAccessSyntax");
+	egg_asn1x_destroy (node);
+}
+
+DEFINE_TEST(count)
+{
+	GNode *node;
+
+	node = egg_asn1x_node (asn1_cert, "tbsCertificate", "issuer", "rdnSequence", NULL);
+	g_assert (node);
+	g_assert_cmpuint (egg_asn1x_count (node), ==, 7);
 }

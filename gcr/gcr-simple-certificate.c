@@ -25,7 +25,6 @@
 #include "gcr-internal.h"
 #include "gcr-simple-certificate.h"
 
-#include "egg/egg-asn1.h"
 #include "egg/egg-hex.h"
 
 #include <string.h>

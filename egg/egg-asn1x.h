@@ -26,9 +26,6 @@
 
 #include <glib.h>
 
-#include <libtasn1.h>
-
-
 #ifndef HAVE_EGG_ALLOCATOR
 typedef void* (*EggAllocator) (void* p, gsize);
 #define HAVE_EGG_ALLOCATOR
@@ -36,8 +33,18 @@ typedef void* (*EggAllocator) (void* p, gsize);
 
 typedef gboolean (*EggAsn1xEncoder) (gpointer data, guchar *buf, gsize n_buf);
 
-GNode*              egg_asn1x_create                 (const ASN1_ARRAY_TYPE *defs,
+struct static_struct_asn;
+
+GNode*              egg_asn1x_create                 (const struct static_struct_asn *defs,
                                                       const gchar *type);
+
+GNode*              egg_asn1x_create_quark           (const struct static_struct_asn *defs,
+                                                      GQuark type);
+
+GNode*              egg_asn1x_create_and_decode      (const struct static_struct_asn *defs,
+                                                      const gchar *type,
+                                                      gconstpointer data,
+                                                      gsize n_data);
 
 void                egg_asn1x_dump                   (GNode *asn);
 
@@ -58,6 +65,14 @@ const gchar*        egg_asn1x_message                (GNode *asn);
 GNode*              egg_asn1x_node                   (GNode *asn,
                                                       ...) G_GNUC_NULL_TERMINATED;
 
+const gchar*        egg_asn1x_name                   (GNode *asn);
+
+guint               egg_asn1x_count                  (GNode *node);
+
+gboolean            egg_asn1x_have                   (GNode *node);
+
+GNode*              egg_asn1x_get_choice             (GNode *node);
+
 gboolean            egg_asn1x_get_boolean            (GNode *node,
                                                       gboolean *value);
 
@@ -70,6 +85,15 @@ gboolean            egg_asn1x_get_integer_as_ulong   (GNode *node,
 gboolean            egg_asn1x_set_integer_as_ulong   (GNode *node,
                                                       gulong value);
 
+gpointer            egg_asn1x_get_integer_as_raw     (GNode *node,
+                                                      EggAllocator allocator,
+                                                      gsize *n_data);
+
+gboolean            egg_asn1x_set_integer_as_raw     (GNode *node,
+                                                      gpointer data,
+                                                      gsize n_data,
+                                                      GDestroyNotify destroy);
+
 gconstpointer       egg_asn1x_get_raw_value          (GNode *node,
                                                       gsize *n_content);
 
@@ -77,6 +101,14 @@ gboolean            egg_asn1x_set_raw_value          (GNode *node,
                                                       gsize length,
                                                       EggAsn1xEncoder encoder,
                                                       gpointer user_data,
+                                                      GDestroyNotify destroy);
+
+gconstpointer       egg_asn1x_get_raw_element        (GNode *node,
+                                                      gsize *n_data);
+
+gboolean            egg_asn1x_set_raw_element        (GNode *node,
+                                                      gpointer user_data,
+                                                      gsize n_data,
                                                       GDestroyNotify destroy);
 
 guchar*             egg_asn1x_get_string_as_raw      (GNode *node,
@@ -88,6 +120,23 @@ gboolean            egg_asn1x_set_string_as_raw      (GNode *node,
                                                       gsize n_data,
                                                       GDestroyNotify destroy);
 
+guchar*             egg_asn1x_get_bits_as_raw        (GNode *node,
+                                                      EggAllocator allocator,
+                                                      guint *n_bits);
+
+gboolean            egg_asn1x_set_bits_as_raw        (GNode *node,
+                                                      guchar *data,
+                                                      guint n_bits,
+                                                      GDestroyNotify destroy);
+
+gboolean            egg_asn1x_get_bits_as_ulong      (GNode *node,
+                                                      gulong *value,
+                                                      guint *n_bits);
+
+gboolean            egg_asn1x_set_bits_as_ulong      (GNode *node,
+                                                      gulong value,
+                                                      guint n_bits);
+
 gchar*              egg_asn1x_get_string_as_utf8     (GNode *node,
                                                       EggAllocator allocator);
 
@@ -97,7 +146,14 @@ gboolean            egg_asn1x_set_string_as_utf8     (GNode *node,
 
 glong               egg_asn1x_get_time_as_long       (GNode *node);
 
-glong               egg_asn1x_set_time_as_long       (GNode *node);
+gboolean            egg_asn1x_set_time_as_long       (GNode *node,
+                                                      glong time);
+
+gboolean            egg_asn1x_get_time_as_date       (GNode *node,
+                                                      GDate *date);
+
+gboolean            egg_asn1x_set_time_as_date       (GNode *node,
+                                                      GDate *date);
 
 GQuark              egg_asn1x_get_oid_as_quark       (GNode *node);
 
@@ -110,5 +166,18 @@ gboolean            egg_asn1x_set_oid_as_string      (GNode *node,
                                                       const gchar *oid);
 
 void                egg_asn1x_destroy                (gpointer asn);
+
+glong               egg_asn1x_parse_time_general     (const gchar *time,
+                                                      gssize n_time);
+
+glong               egg_asn1x_parse_time_utc         (const gchar *time,
+                                                      gssize n_time);
+
+gssize              egg_asn1x_element_length         (gconstpointer data,
+                                                      gsize n_data);
+
+gconstpointer       egg_asn1x_element_content        (gconstpointer data,
+                                                      gsize n_data,
+                                                      gsize *n_content);
 
 #endif /*EGG_ASN1X_H_*/

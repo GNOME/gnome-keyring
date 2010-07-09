@@ -22,7 +22,8 @@
 #include "gcr-certificate.h"
 #include "gcr-certificate-details-widget.h"
 
-#include "egg/egg-asn1.h"
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
 #include "egg/egg-dn.h"
 #include "egg/egg-oid.h"
 #include "egg/egg-hex.h"
@@ -178,58 +179,51 @@ append_fingerprint (GcrCertificateDetailsWidget *self, const guchar *data,
 }
 
 static gboolean
-append_extension (GcrCertificateDetailsWidget *self, ASN1_TYPE asn, 
+append_extension (GcrCertificateDetailsWidget *self, GNode *asn,
                   const guchar *data, gsize n_data, gint index)
 {
 	GQuark oid;
-	gchar *name, *display;
+	gchar *display;
 	gsize n_value;
 	const guchar *value;
 	const gchar *text;
 	gboolean critical;
-	int len, res;
-	
+	GNode *node;
+
 	/* Make sure it is present */
-	len = 0;
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u", index);
-	res = asn1_read_value (asn, name, NULL, &len);
-	g_free (name);
-	
-	if (res == ASN1_ELEMENT_NOT_FOUND)
+	asn = egg_asn1x_node (asn, "tbsCertificate", "extensions", index, NULL);
+	if (asn == NULL)
 		return FALSE;
 
 	/* Dig out the OID */
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnID", index);
-	oid = egg_asn1_read_oid (asn, name);
-	g_free (name);
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "extnID", NULL));
 	g_return_val_if_fail (oid, FALSE);
-	
-	
+
+
 	append_heading (self, _("Extension"));
-	
-	
+
+
 	/* Extension type */
 	text = egg_oid_get_description (oid);
 	append_field_and_value (self, _("Identifier"), text, FALSE);
-	
-	
+
+
 	/* Extension value */
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u.extnValue", index);
-	value = egg_asn1_read_content (asn, data, n_data, name, &n_value);
-	g_free (name);
+	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "extnValue", NULL), &n_value);
 
 	/* TODO: Parsing of extensions that we understand */
 	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 	append_field_and_value (self, _("Value"), display, TRUE);
 	g_free (display);
 
-	
+
 	/* Critical */
-	name = g_strdup_printf ("tbsCertificate.extensions.?%u.critical", index);
-	if (egg_asn1_read_boolean (asn, name, &critical))
-		append_field_and_value (self, _("Critical"), critical ? _("Yes") : _("No"), FALSE);
-	g_free (name);
-	
+	node = egg_asn1x_node (asn, "critical", NULL);
+	if (node != NULL) {
+		if (egg_asn1x_get_boolean (node, &critical))
+			append_field_and_value (self, _("Critical"), critical ? _("Yes") : _("No"), FALSE);
+	}
+
 	return TRUE;
 }
 
@@ -280,13 +274,14 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	const guchar *data, *value;
 	gsize n_data, n_value;
 	const gchar *text;
-	guint version, size;
-	guint index;
+	gulong version;
+	guint index, size, n_bits;
 	gchar *display;
-	ASN1_TYPE asn;
+	guchar *bits;
+	GNode *asn;
 	GQuark oid;
 	GDate date;
-	
+
 	gtk_text_buffer_get_start_iter (self->pv->buffer, &start);
 	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
 	gtk_text_buffer_delete (self->pv->buffer, &start, &iter);
@@ -296,40 +291,40 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	
 	data = gcr_certificate_get_der_data (self->pv->certificate, &n_data);
 	g_return_if_fail (data);
-	
-	asn = egg_asn1_decode ("PKIX1.Certificate", data, n_data);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	g_return_if_fail (asn);
-	
+
 	/* The subject */
 	append_heading (self, _("Subject Name"));
-	egg_dn_parse (asn, "tbsCertificate.subject.rdnSequence", on_parsed_dn_part, self);
-	
+	egg_dn_parse (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), on_parsed_dn_part, self);
+
 	/* The Issuer */
 	append_heading (self, _("Issuer Name"));
-	egg_dn_parse (asn, "tbsCertificate.issuer.rdnSequence", on_parsed_dn_part, self);
-	
+	egg_dn_parse (egg_asn1x_node (asn, "tbsCertificate", "issuer", "rdnSequence", NULL), on_parsed_dn_part, self);
+
 	/* The Issued Parameters */
 	append_heading (self, _("Issued Certificate"));
-	
-	if (!egg_asn1_read_uint (asn, "tbsCertificate.version", &version))
+
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "tbsCertificate", "version", NULL), &version))
 		g_return_if_reached ();
-	display = g_strdup_printf ("%u", version + 1);
+	display = g_strdup_printf ("%lu", version + 1);
 	append_field_and_value (self, _("Version"), display, FALSE);
 	g_free (display);
-	
-	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.serialNumber", &n_value);
+
+	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "tbsCertificate", "serialNumber", NULL), &n_value);
 	g_return_if_fail (value);
 	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 	append_field_and_value (self, _("Serial Number"), display, TRUE);
 	g_free (display);
 	
 	display = g_malloc0 (128);
-	if (egg_asn1_read_date (asn, "tbsCertificate.validity.notBefore", &date)) {
+	if (egg_asn1x_get_time_as_date (egg_asn1x_node (asn, "tbsCertificate", "validity", "notBefore", NULL), &date)) {
 		if (!g_date_strftime (display, 128, "%Y-%m-%d", &date))
 			g_return_if_reached ();
 		append_field_and_value (self, _("Not Valid Before"), display, FALSE);
 	}
-	if (egg_asn1_read_date (asn, "tbsCertificate.validity.notAfter", &date)) {
+	if (egg_asn1x_get_time_as_date (egg_asn1x_node (asn, "tbsCertificate", "validity", "notAfter", NULL), &date)) {
 		if (!g_date_strftime (display, 128, "%Y-%m-%d", &date))
 			g_return_if_reached ();
 		append_field_and_value (self, _("Not Valid After"), display, FALSE);
@@ -338,19 +333,19 @@ refresh_display (GcrCertificateDetailsWidget *self)
 	
 	/* Signature */
 	append_heading (self, _("Signature"));
-	
-	oid = egg_asn1_read_oid (asn, "signatureAlgorithm.algorithm");
+
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "signatureAlgorithm", "algorithm", NULL));
 	text = egg_oid_get_description (oid);
 	append_field_and_value (self, _("Signature Algorithm"), text, FALSE);
-	
-	value = egg_asn1_read_content (asn, data, n_data, "signatureAlgorithm.parameters", &n_value);
+
+	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "signatureAlgorithm", "parameters", NULL), &n_value);
 	if (value && n_value) {
 		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 		append_field_and_value (self, _("Signature Parameters"), display, TRUE);
 		g_free (display);
 	}
 	
-	value = egg_asn1_read_content (asn, data, n_data, "signature", &n_value);
+	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "signature", NULL), &n_value);
 	g_return_if_fail (value);
 	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 	append_field_and_value (self, _("Signature"), display, TRUE);
@@ -358,12 +353,12 @@ refresh_display (GcrCertificateDetailsWidget *self)
 
 	/* Public Key Info */
 	append_heading (self, _("Public Key Info"));
-	
-	oid = egg_asn1_read_oid (asn, "tbsCertificate.subjectPublicKeyInfo.algorithm.algorithm");
+
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo", "algorithm", "algorithm", NULL));
 	text = egg_oid_get_description (oid);
 	append_field_and_value (self, _("Key Algorithm"), text, FALSE);
-	
-	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.algorithm.parameters", &n_value);
+
+	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo", "algorithm", "parameters", NULL), &n_value);
 	if (value && n_value) {
 		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
 		append_field_and_value (self, _("Key Parameters"), display, TRUE);
@@ -376,13 +371,14 @@ refresh_display (GcrCertificateDetailsWidget *self)
 		append_field_and_value (self, _("Key Size"), display, FALSE);
 		g_free (display);
 	}
-	
-	value = egg_asn1_read_content (asn, data, n_data, "tbsCertificate.subjectPublicKeyInfo.subjectPublicKey", &n_value);
-	g_return_if_fail (value);
-	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+
+	bits = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo", "subjectPublicKey", NULL), NULL, &n_bits);
+	g_return_if_fail (bits);
+	display = egg_hex_encode_full (bits, n_bits / 8, TRUE, ' ', 1);
 	append_field_and_value (self, _("Public Key"), display, TRUE);
 	g_free (display);
-	
+	g_free (bits);
+
 	/* Fingerprints */
 	append_heading (self, _("Fingerprints"));
 	
@@ -394,8 +390,8 @@ refresh_display (GcrCertificateDetailsWidget *self)
 		if (!append_extension (self, asn, data, n_data, index))
 			break;
 	}
-	
-	asn1_delete_structure (&asn);
+
+	egg_asn1x_destroy (asn);
 }
 
 /* -----------------------------------------------------------------------------

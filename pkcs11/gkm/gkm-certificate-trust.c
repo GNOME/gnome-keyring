@@ -83,7 +83,7 @@ has_key_usage (GkmCertificateTrust *self, guint check, CK_ULONG *val)
 	GkmDataResult res;
 	const guchar *extension;
 	gsize n_extension;
-	guint usage;
+	gulong usage;
 
 	g_return_val_if_fail (self->pv->certificate, CKR_GENERAL_ERROR);
 	*val = CKT_NETSCAPE_TRUST_UNKNOWN;

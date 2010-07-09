@@ -30,6 +30,8 @@
 
 #include "gkm-data-types.h"
 
+#include "egg/egg-asn1x.h"
+
 /* -----------------------------------------------------------------------------
  * PRIVATE KEYS
  */
@@ -105,17 +107,18 @@ guchar*            gkm_data_der_write_public_key           (gcry_sexp_t s_key, g
  */
 
 GkmDataResult      gkm_data_der_read_certificate           (const guchar *data, gsize n_data,
-                                                            ASN1_TYPE *asn1);
+                                                            GNode **asn1);
 
 GkmDataResult      gkm_data_der_read_basic_constraints     (const guchar *data, gsize n_data,
                                                             gboolean *is_ca, gint *path_len);
 
-GkmDataResult      gkm_data_der_read_key_usage             (const guchar *data, gsize n_data,
-                                                            guint *key_usage);
+GkmDataResult      gkm_data_der_read_key_usage             (const guchar *data,
+                                                            gsize n_data,
+                                                            gulong *key_usage);
 
 GkmDataResult      gkm_data_der_read_enhanced_usage        (const guchar *data, gsize n_data,
                                                             GQuark **oids);
 
-guchar*            gkm_data_der_write_certificate          (ASN1_TYPE asn1, gsize *n_data);
+guchar*            gkm_data_der_write_certificate          (GNode *asn1, gsize *n_data);
 
 #endif /*GKRPKIXDER_H_*/

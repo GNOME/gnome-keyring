@@ -86,11 +86,11 @@ typedef struct _Aenc Aenc;
 typedef struct _Atlv Atlv;
 typedef struct _Anode Anode;
 typedef struct _Abuf Abuf;
+typedef struct _Abits Abits;
 
 struct _Aenc {
 	EggAsn1xEncoder encoder;
-	gpointer user_data;
-	GDestroyNotify destroy;
+	gpointer data;
 };
 
 struct _Atlv {
@@ -109,6 +109,8 @@ struct _Anode {
 	GList *opts;
 	Atlv *tlv;
 	Aenc *enc;
+	gpointer user_data;
+	GDestroyNotify destroy;
 	gchar* failure;
 };
 
@@ -116,6 +118,12 @@ struct _Abuf {
 	guchar* data;
 	gsize n_data;
 	gpointer user_data;
+};
+
+struct _Abits {
+	guint n_bits;
+	guchar *bits;
+	GDestroyNotify destroy;
 };
 
 /* Forward Declarations */
@@ -229,7 +237,7 @@ anode_def_value (GNode *node)
 }
 
 static gulong
-anode_def_value_as_ulong (ASN1_ARRAY_TYPE *def)
+anode_def_value_as_ulong (const ASN1_ARRAY_TYPE *def)
 {
 	gchar *end = NULL;
 	gulong lval;
@@ -342,23 +350,31 @@ anode_clr_enc_data (GNode *node)
 {
 	Anode *an = node->data;
 	if (an->enc) {
-		if (an->enc->destroy)
-			(an->enc->destroy) (an->enc->user_data);
 		g_slice_free (Aenc, an->enc);
 		an->enc = NULL;
 	}
 }
 
 static void
-anode_set_enc_data (GNode *node, EggAsn1xEncoder encoder,
-                    gpointer user_data, GDestroyNotify destroy)
+anode_set_enc_data (GNode *node, EggAsn1xEncoder encoder, gpointer enc_data)
 {
 	Anode *an = node->data;
 	g_assert (!an->enc);
 	an->enc = g_slice_new0 (Aenc);
 	an->enc->encoder = encoder;
-	an->enc->user_data = user_data;
-	an->enc->destroy = destroy;
+	an->enc->data = enc_data;
+}
+
+static void
+anode_set_user_data (GNode *node, gpointer user_data, GDestroyNotify destroy)
+{
+	Anode *an;
+	g_assert (node && node->data);
+	an = node->data;
+	if (an->destroy)
+		(an->destroy) (an->user_data);
+	an->user_data = user_data;
+	an->destroy = destroy;
 }
 
 static Aenc*
@@ -384,7 +400,7 @@ anode_failure (GNode *node, const gchar *failure)
 
 	g_free (an->failure);
 	an->failure = g_strdup_printf ("%s: %s", prefix, failure);
-	return FALSE; /* So this can be changed */
+	return FALSE; /* So this can be chained */
 }
 
 static const gchar*
@@ -400,6 +416,7 @@ anode_clear (GNode *node)
 	Anode *an = node->data;
 	anode_clr_tlv_data (node);
 	anode_clr_enc_data (node);
+	anode_set_user_data (node, NULL, NULL);
 	g_free (an->failure);
 	an->failure = NULL;
 }
@@ -412,6 +429,16 @@ anode_free_func (GNode *node, gpointer unused)
 	g_list_free (an->opts);
 	g_slice_free (Anode, an);
 	return FALSE;
+}
+
+static void
+abits_destroy (gpointer data)
+{
+	Abits *ab = data;
+	g_assert (ab);
+	if (ab->destroy)
+		(ab->destroy) (ab->bits);
+	g_slice_free (Abits, ab);
 }
 
 static void
@@ -492,6 +519,25 @@ static gulong
 anode_calc_tag (GNode *node)
 {
 	return anode_calc_tag_for_flags (node, anode_def_flags (node));
+}
+
+static gboolean
+anode_calc_explicit_for_flags (GNode *node, gint flags)
+{
+	const ASN1_ARRAY_TYPE *opt;
+	if ((flags & FLAG_TAG) != FLAG_TAG)
+		return FALSE;
+	opt = anode_opt_lookup (node, TYPE_TAG, NULL);
+	g_return_val_if_fail (opt, FALSE);
+	if ((opt->type & FLAG_IMPLICIT) == FLAG_IMPLICIT)
+		return FALSE;
+	return TRUE;
+}
+
+static gboolean
+anode_calc_explicit (GNode *node)
+{
+	return anode_calc_explicit_for_flags (node, anode_def_flags (node));
 }
 
 /* -------------------------------------------------------------------------
@@ -801,7 +847,7 @@ anode_decode_structured (GNode *node, Atlv *tlv, gint flags)
 	end = tlv->end;
 
 	/* An explicit, wrapped tag */
-	if (flags & FLAG_TAG && !(flags & FLAG_IMPLICIT)) {
+	if (anode_calc_explicit_for_flags (node, flags)) {
 		if ((tlv->cls & ASN1_CLASS_CONTEXT_SPECIFIC) == 0)
 			return anode_failure (node, "missing context specific tag");
 		if (!anode_decode_tlv_for_contents (tlv, TRUE, &ctlv))
@@ -820,8 +866,6 @@ anode_decode_structured (GNode *node, Atlv *tlv, gint flags)
 
 	/* Other structured types */
 	} else {
-		if ((tlv->cls & ASN1_CLASS_CONTEXT_SPECIFIC) != 0)
-			return anode_failure (node, "invalid context specific tag");
 		switch (anode_def_type (node)) {
 		case TYPE_ANY:
 			if (!anode_decode_struct_any (node, tlv))
@@ -886,16 +930,8 @@ anode_decode_anything_for_flags (GNode *node, Atlv *tlv, gint flags)
 		tag = tlv->tag;
 
 	/* Tag does not match, what do we do? */
-	if (tlv->off == 0 || tag != tlv->tag) {
-		if (flags & FLAG_OPTION || flags & FLAG_DEFAULT) {
-			tlv->len = 0;
-			tlv->end = tlv->buf;
-			tlv->off = 0;
-			return TRUE;
-		} else {
-			return FALSE;
-		}
-	}
+	if (tlv->off == 0 || tag != tlv->tag)
+		return FALSE;
 
 	/* Structured value */
 	if (tlv->cls & ASN1_CLASS_STRUCTURED)
@@ -911,7 +947,21 @@ anode_decode_anything_for_flags (GNode *node, Atlv *tlv, gint flags)
 static gboolean
 anode_decode_anything (GNode *node, Atlv *tlv)
 {
-	return anode_decode_anything_for_flags (node, tlv, anode_def_flags (node));
+	gint flags = anode_def_flags (node);
+
+	if (!anode_decode_anything_for_flags (node, tlv, flags)) {
+		if (flags & FLAG_OPTION || flags & FLAG_DEFAULT) {
+			tlv->len = 0;
+			tlv->end = tlv->buf;
+			tlv->off = 0;
+			anode_clr_tlv_data (node);
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 gboolean
@@ -1031,7 +1081,7 @@ anode_encode_tlv_and_enc (GNode *node, gsize n_data, EggAsn1xEncoder encoder,
 	/* Build up the class */
 	flags = anode_def_flags (node);
 	if (flags & FLAG_TAG) {
-		explicit = !(flags & FLAG_IMPLICIT);
+		explicit = anode_calc_explicit_for_flags (node, flags);
 		if (explicit)
 			flags &= ~FLAG_TAG;
 		else
@@ -1053,11 +1103,12 @@ anode_encode_tlv_and_enc (GNode *node, gsize n_data, EggAsn1xEncoder encoder,
 	}
 
 	/* Not completely filled in */
-	tlv.buf = tlv.end = 0;
+	tlv.buf = tlv.end = NULL;
 
 	anode_clear (node);
 	anode_set_tlv_data (node, &tlv);
-	anode_set_enc_data (node, encoder, user_data, destroy);
+	anode_set_enc_data (node, encoder, user_data);
+	anode_set_user_data (node, user_data, destroy);
 }
 
 static gboolean
@@ -1081,7 +1132,7 @@ anode_encode_build (GNode *node, guchar *data, gsize n_data)
 
 	/* Encode any explicit tag */
 	flags = anode_def_flags (node);
-	if (flags & FLAG_TAG && !(flags & FLAG_IMPLICIT)) {
+	if (anode_calc_explicit_for_flags (node, flags)) {
 		tag = anode_calc_tag (node);
 		g_return_val_if_fail (tag != G_MAXULONG, FALSE);
 		cls = (ASN1_CLASS_STRUCTURED | ASN1_CLASS_CONTEXT_SPECIFIC);
@@ -1100,7 +1151,7 @@ anode_encode_build (GNode *node, guchar *data, gsize n_data)
 	tlv->end = data + n_data;
 
 	/* Encode in the data */
-	if (!(enc->encoder) (enc->user_data, data + tlv->off, tlv->len))
+	if (!(enc->encoder) (enc->data, data + tlv->off, tlv->len))
 		return FALSE;
 
 	return TRUE;
@@ -1158,6 +1209,8 @@ traverse_and_sort_set_of (GNode *node, gpointer user_data)
 	gsize n_data;
 	Atlv *tlv;
 	GNode *child;
+
+	g_assert (allocator);
 
 	/* We have to sort any SET OF :( */
 	if (anode_def_type (node) != TYPE_SET_OF)
@@ -1248,7 +1301,7 @@ anode_encoder_choice (gpointer user_data, guchar *data, gsize n_data)
 		if (ctlv) {
 			enc = anode_get_enc_data (child);
 			g_return_val_if_fail (enc, FALSE);
-			if (!(enc->encoder) (enc->user_data, data, n_data))
+			if (!(enc->encoder) (enc->data, data, n_data))
 				return FALSE;
 
 			/* Child's buffer matches ours */
@@ -1262,19 +1315,49 @@ anode_encoder_choice (gpointer user_data, guchar *data, gsize n_data)
 }
 
 static gboolean
+anode_encoder_bit_string (gpointer user_data, guchar *data, gsize n_data)
+{
+	Abits *ab = user_data;
+	guchar empty, mask;
+	gsize len;
+
+	empty = ab->n_bits % 8;
+	if (empty > 0)
+		empty = 8 - empty;
+	len = (ab->n_bits / 8) + (empty ? 1 : 0);
+	g_assert (n_data == len + 1);
+
+	/* Fill in the amount of empty */
+	data[0] = empty;
+	data += 1;
+
+	/* Fill in the actual data */
+	memcpy (data, ab->bits, len);
+
+	/* Set the extra bits to zero */
+	if (len && empty) {
+		mask = 0xFF >> (8 - empty);
+		data[len - 1] &= ~mask;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 anode_encode_prepare_simple (GNode *node)
 {
 	Aenc *enc;
 	Atlv *tlv;
 
-	enc = anode_get_enc_data (node);
 	tlv = anode_get_tlv_data (node);
-	if (enc != NULL || tlv == NULL)
+	if (tlv == NULL)
 		return FALSE;
 
 	/* Transfer the tlv data over to enc */
-	anode_set_enc_data (node, anode_encoder_simple,
-	                    (guchar*)tlv->buf + tlv->off, NULL);
+	enc = anode_get_enc_data (node);
+	if (enc == NULL)
+		anode_set_enc_data (node, anode_encoder_simple, (guchar*)tlv->buf + tlv->off);
+
 	tlv->buf = tlv->end = NULL;
 	return TRUE;
 }
@@ -1314,7 +1397,7 @@ anode_encode_prepare_structured (GNode *node)
 			g_return_val_if_fail (tlv, had);
 			anode_clr_tlv_data (node);
 			anode_set_tlv_data (node, tlv);
-			anode_set_enc_data (node, anode_encoder_choice, node, NULL);
+			anode_set_enc_data (node, anode_encoder_choice, node);
 		}
 
 	/* Other container types */
@@ -1366,7 +1449,8 @@ egg_asn1x_encode (GNode *asn, EggAllocator allocator, gsize *n_data)
 	if (!allocator)
 		allocator = g_realloc;
 
-	anode_encode_prepare (asn);
+	if (!anode_encode_prepare (asn))
+		return NULL;
 
 	/* We must sort all the nasty SET OF nodes */
 	g_node_traverse (asn, G_POST_ORDER, G_TRAVERSE_ALL, -1,
@@ -1865,7 +1949,7 @@ anode_read_object_id (GNode *node, Atlv *tlv, gchar **oid)
 	val = p[0] - pval * 40;
 
 	if (result)
-		g_string_append_printf (result, "%u.%u.", pval, val);
+		g_string_append_printf (result, "%u.%u", pval, val);
 
 	/* TODO: Validate first byte? */
 	for (k = 1, lead = 1, val = 0, pval = 0; k < tlv->len; ++k) {
@@ -1884,7 +1968,7 @@ anode_read_object_id (GNode *node, Atlv *tlv, gchar **oid)
 		pval = val;
 		if (!(p[k] & 0x80)) {
 			if (result)
-				g_string_append_printf (result, "%u.", val);
+				g_string_append_printf (result, ".%u", val);
 			pval = val = 0;
 			lead = 1;
 		}
@@ -1904,7 +1988,7 @@ anode_read_object_id (GNode *node, Atlv *tlv, gchar **oid)
 static gboolean
 anode_write_oid (const gchar *oid, guchar *data, gsize *n_data)
 {
-	const gchar *p;
+	const gchar *p, *next;
 	gint num, num1;
 	guchar bit7;
 	gboolean had;
@@ -1913,10 +1997,12 @@ anode_write_oid (const gchar *oid, guchar *data, gsize *n_data)
 	p = oid;
 	at = 0;
 
-	for (i = 0; oid[0]; ++i, oid = p) {
+	for (i = 0; oid[0]; ++i, oid = next) {
 		p = strchr (oid, '.');
 		if (p == NULL)
-			p = oid + strlen (oid);
+			next = p = oid + strlen (oid);
+		else
+			next = p + 1;
 		if (p == oid)
 			return FALSE;
 		num = atoin (oid, p - oid);
@@ -1975,7 +2061,18 @@ egg_asn1x_node (GNode *asn, ...)
 			index = va_arg (va, gint);
 			if (index == 0)
 				return node;
-			node = g_node_nth_child (node, index);
+
+			/* Only consider nodes that have data */
+			node = g_node_nth_child (node, 0);
+			while (node) {
+				if (egg_asn1x_have (node)) {
+					--index;
+					if (index == 0)
+						break;
+				}
+				node = g_node_next_sibling (node);
+			}
+
 			if (node == NULL)
 				return NULL;
 
@@ -1996,9 +2093,46 @@ egg_asn1x_node (GNode *asn, ...)
 	}
 }
 
+const gchar*
+egg_asn1x_name (GNode *node)
+{
+	g_return_val_if_fail (node, NULL);
+	return anode_def_name (node);
+}
+
+guint
+egg_asn1x_count (GNode *node)
+{
+	gint type;
+
+	g_return_val_if_fail (node, 0);
+
+	type = anode_def_type (node);
+	if (type != TYPE_SEQUENCE_OF && type != TYPE_SET_OF) {
+		g_warning ("node passed to egg_asn1x_count was not a sequence of or set of");
+		return 0;
+	}
+
+	return g_node_n_children (node);
+}
+
+gboolean
+egg_asn1x_have (GNode *node)
+{
+	Atlv *tlv;
+
+	g_return_val_if_fail (node, FALSE);
+
+	/* TODO: Handle default values */
+
+	tlv = anode_get_tlv_data (node);
+	return tlv != NULL && tlv->buf != NULL;
+}
+
 gboolean
 egg_asn1x_get_boolean (GNode *node, gboolean *value)
 {
+	ASN1_ARRAY_TYPE *opt;
 	Atlv *tlv;
 
 	g_return_val_if_fail (node, FALSE);
@@ -2006,8 +2140,24 @@ egg_asn1x_get_boolean (GNode *node, gboolean *value)
 	g_return_val_if_fail (anode_def_type (node) == TYPE_BOOLEAN, FALSE);
 
 	tlv = anode_get_tlv_data (node);
-	if (tlv == NULL)
-		return FALSE;
+	if (tlv == NULL || tlv->buf == NULL) {
+
+		if ((anode_def_flags (node) & FLAG_DEFAULT) == 0)
+			return FALSE;
+
+		/* Try to get a default */
+		opt = anode_opt_lookup (node, TYPE_DEFAULT, NULL);
+		g_return_val_if_fail (opt, FALSE);
+
+		/* Parse out the default value */
+		if ((opt->type & FLAG_TRUE) == FLAG_TRUE)
+			*value = TRUE;
+		else if ((opt->type & FLAG_FALSE) == FLAG_FALSE)
+			*value = FALSE;
+		else
+			g_return_val_if_reached (FALSE);
+		return TRUE;
+	}
 
 	return anode_read_boolean (node, tlv, value);
 }
@@ -2021,6 +2171,8 @@ egg_asn1x_set_boolean (GNode *node, gboolean value)
 	g_return_val_if_fail (node, FALSE);
 	g_return_val_if_fail (anode_def_type (node) == TYPE_BOOLEAN, FALSE);
 
+	/* TODO: Handle default values */
+
 	n_data = 1;
 	data = g_malloc0 (1);
 	if (!anode_write_boolean (value, data, &n_data))
@@ -2032,15 +2184,43 @@ egg_asn1x_set_boolean (GNode *node, gboolean value)
 gboolean
 egg_asn1x_get_integer_as_ulong (GNode *node, gulong *value)
 {
+	const ASN1_ARRAY_TYPE *opt;
+	const gchar *defval;
 	Atlv *tlv;
+	gchar *end;
 
 	g_return_val_if_fail (node, FALSE);
 	g_return_val_if_fail (value, FALSE);
 	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
 
 	tlv = anode_get_tlv_data (node);
-	if (tlv == NULL)
+	if (tlv == NULL || tlv->buf == NULL) {
+
+		if ((anode_def_flags (node) & FLAG_DEFAULT) == 0)
+			return FALSE;
+
+		/* Try to get a default */
+		opt = anode_opt_lookup (node, TYPE_DEFAULT, NULL);
+		g_return_val_if_fail (opt, FALSE);
+		g_return_val_if_fail (opt->value, FALSE);
+		defval = opt->value;
+
+		opt = anode_opt_lookup (node, TYPE_CONSTANT, defval);
+		if (opt != NULL) {
+			g_return_val_if_fail (opt->value, FALSE);
+			defval = opt->value;
+		}
+
+		/* Parse out the default value */
+		*value = strtoul (defval, &end, 10);
+		g_return_val_if_fail (end && !end[0], FALSE);
+		return TRUE;
+	}
+
+	if (tlv == NULL || tlv->buf == NULL)
 		return FALSE;
+
+	/* TODO: Default integer values */
 
 	return anode_read_integer_as_ulong(node, tlv, value);
 }
@@ -2052,13 +2232,124 @@ egg_asn1x_set_integer_as_ulong (GNode *node, gulong value)
 	gsize n_data;
 
 	g_return_val_if_fail (node, FALSE);
-	g_return_val_if_fail (anode_def_type (node) == TYPE_BOOLEAN, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
+
+	/* TODO: Handle default values */
 
 	n_data = 8;
 	data = g_malloc0 (8);
 	if (!anode_write_integer_ulong (value, data, &n_data))
 		return FALSE;
 	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, data, g_free);
+	return TRUE;
+}
+
+gpointer
+egg_asn1x_get_integer_as_raw (GNode *node, EggAllocator allocator, gsize *n_data)
+{
+	Atlv *tlv;
+	gpointer data;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (n_data, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
+
+	if (!allocator)
+		allocator = g_realloc;
+
+	tlv = anode_get_tlv_data (node);
+	if (tlv == NULL || tlv->buf == NULL)
+		return NULL;
+
+	data = (allocator) (NULL, tlv->len);
+	if (data == NULL)
+		return NULL;
+
+	memcpy (data, tlv->buf + tlv->off, tlv->len);
+	*n_data = tlv->len;
+	return data;
+}
+
+gboolean
+egg_asn1x_set_integer_as_raw (GNode *node, gpointer data, gsize n_data, GDestroyNotify destroy)
+{
+	gboolean sign;
+	guchar *p;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (data, FALSE);
+	g_return_val_if_fail (n_data > 0, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
+
+	/* Make sure the integer is properly encoded in twos complement*/
+	p = (guchar*)data;
+	sign = !!(p[0] & 0x80);
+	if (sign) {
+		g_warning ("integer in egg_asn1x_set_integer_as_raw is not two's complement");
+		return FALSE;
+	}
+
+	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, data, destroy);
+	return TRUE;
+}
+
+gconstpointer
+egg_asn1x_get_raw_element (GNode *node, gsize *n_element)
+{
+	Atlv *tlv;
+
+	g_return_val_if_fail (node, NULL);
+	g_return_val_if_fail (n_element, NULL);
+
+	tlv = anode_get_tlv_data (node);
+	if (tlv == NULL || tlv->buf == NULL)
+		return NULL;
+
+	if (anode_calc_explicit (node)) {
+		*n_element = (tlv->len + tlv->off) - tlv->oft;
+		return tlv->buf + tlv->oft;
+	} else {
+		*n_element = tlv->len + tlv->off;
+		return tlv->buf;
+	}
+}
+
+gboolean
+egg_asn1x_set_raw_element (GNode *node, gpointer data,
+                           gsize n_data, GDestroyNotify destroy)
+{
+	Atlv tlv;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (data, FALSE);
+	g_return_val_if_fail (n_data, FALSE);
+
+	anode_clear (node);
+	memset (&tlv, 0, sizeof (tlv));
+
+	/* TODO: This needs implementation */
+	if (anode_calc_explicit (node)) {
+		g_warning ("egg_asn1x_set_raw_element does not yet work with explicit tagging");
+		return FALSE;
+	}
+
+	/* Decode the beginning TLV */
+	if (!anode_decode_tlv_for_data (data, (const guchar*)data + n_data, &tlv))
+		return FALSE;
+
+	/* Decode the data into place properly */
+	if (!anode_decode_anything (node, &tlv))
+		return FALSE;
+
+	/* There was extra data */
+	if (tlv.end - tlv.buf != n_data)
+		return FALSE;
+
+	/* Should have been set above */
+	g_assert (anode_get_tlv_data (node) != NULL);
+
+	/* We set this so the data is properly destroyed */
+	anode_set_user_data (node, data, destroy);
 	return TRUE;
 }
 
@@ -2071,8 +2362,8 @@ egg_asn1x_get_raw_value (GNode *node, gsize *n_content)
 	g_return_val_if_fail (n_content, NULL);
 
 	tlv = anode_get_tlv_data (node);
-	if (tlv == NULL)
-		return FALSE;
+	if (tlv == NULL || tlv->buf == NULL)
+		return NULL;
 	g_return_val_if_fail (!(tlv->cls & ASN1_CLASS_STRUCTURED), NULL);
 
 	*n_content = tlv->len;
@@ -2101,11 +2392,14 @@ egg_asn1x_get_string_as_raw (GNode *node, EggAllocator allocator, gsize *n_strin
 	g_return_val_if_fail (node, NULL);
 	g_return_val_if_fail (n_string, NULL);
 
+	if (!allocator)
+		allocator = g_realloc;
+
 	type = anode_def_type (node);
 	g_return_val_if_fail (type == TYPE_OCTET_STRING || type == TYPE_GENERALSTRING, NULL);
 
 	tlv = anode_get_tlv_data (node);
-	if (tlv == NULL)
+	if (tlv == NULL || tlv->buf == NULL)
 		return NULL;
 
 	if (!anode_read_string (node, tlv, NULL, &length))
@@ -2179,22 +2473,182 @@ egg_asn1x_set_string_as_utf8 (GNode *node, gchar *data, GDestroyNotify destroy)
 	return egg_asn1x_set_string_as_raw (node, (guchar*)data, n_data, destroy);
 }
 
+guchar*
+egg_asn1x_get_bits_as_raw (GNode *node, EggAllocator allocator, guint *n_bits)
+{
+	Atlv *tlv;
+	gpointer bits;
+	guchar padded;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (n_bits, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_BIT_STRING, FALSE);
+
+	if (!allocator)
+		allocator = g_realloc;
+
+	tlv = anode_get_tlv_data (node);
+	if (tlv == NULL || tlv->buf == NULL)
+		return NULL;
+
+	padded = *(tlv->buf + tlv->off);
+	g_return_val_if_fail (padded < 8, NULL);
+	g_return_val_if_fail (tlv->len > 1, NULL);
+
+	bits = (allocator) (NULL, tlv->len);
+	if (bits == NULL)
+		return NULL;
+
+	memcpy (bits, tlv->buf + tlv->off + 1, tlv->len - 1);
+	*n_bits = ((tlv->len - 1) * 8) - padded;
+	return bits;
+}
+
+gboolean
+egg_asn1x_set_bits_as_raw (GNode *node, guchar *bits, guint n_bits, GDestroyNotify destroy)
+{
+	gint type;
+	gsize length;
+	Abits *ab;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (bits, FALSE);
+
+	type = anode_def_type (node);
+	g_return_val_if_fail (type == TYPE_BIT_STRING, FALSE);
+
+	length = (n_bits / 8);
+	if (n_bits % 8)
+		length += 1;
+
+	ab = g_slice_new0 (Abits);
+	ab->bits = bits;
+	ab->n_bits = n_bits;
+	ab->destroy = destroy;
+
+	anode_encode_tlv_and_enc (node, length + 1, anode_encoder_bit_string, ab, abits_destroy);
+	return TRUE;
+}
+
+gboolean
+egg_asn1x_get_bits_as_ulong (GNode *node, gulong *bits, guint *n_bits)
+{
+	Atlv *tlv;
+	guint i, length;
+	guchar empty;
+	const guchar *p;
+	gulong value;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (bits, FALSE);
+	g_return_val_if_fail (n_bits, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_BIT_STRING, FALSE);
+
+	tlv = anode_get_tlv_data (node);
+	if (tlv == NULL || tlv->buf == NULL)
+		return FALSE;
+
+	empty = *(tlv->buf + tlv->off);
+	g_return_val_if_fail (empty < 8, FALSE);
+	g_return_val_if_fail (tlv->len > 1, FALSE);
+
+	length = ((tlv->len - 1) * 8) - empty;
+	if (length > sizeof (gulong) * 8)
+		return FALSE;
+
+	value = 0;
+	p = tlv->buf + tlv->off + 1;
+
+	for (i = 0; i < tlv->len - 1; ++i)
+		value = value << 8 | p[i];
+
+	*bits = value >> empty;
+	*n_bits = length;
+	return TRUE;
+}
+
+gboolean
+egg_asn1x_set_bits_as_ulong (GNode *node, gulong bits, guint n_bits)
+{
+	guchar *data;
+	gulong value;
+	gint type;
+	gsize i, length;
+	guchar empty;
+	Abits *ab;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (bits, FALSE);
+	g_return_val_if_fail (n_bits <= sizeof (gulong) * 8, FALSE);
+
+	type = anode_def_type (node);
+	g_return_val_if_fail (type == TYPE_BIT_STRING, FALSE);
+
+	empty = n_bits % 8;
+	if (empty > 0)
+		empty = 8 - empty;
+	length = (n_bits / 8) + (empty ? 1 : 0);
+
+	data = g_malloc0 (sizeof (gulong));
+	value = bits << empty;
+
+	for (i = 0; i < length; ++i)
+		data[(length - i) - 1] = (value >> i * 8) & 0xFF;
+
+	ab = g_slice_new0 (Abits);
+	ab->bits = data;
+	ab->n_bits = n_bits;
+	ab->destroy = g_free;
+
+	anode_encode_tlv_and_enc (node, length + 1, anode_encoder_bit_string, ab, abits_destroy);
+	return TRUE;
+}
+
 glong
 egg_asn1x_get_time_as_long (GNode *node)
 {
 	Atlv *tlv;
 	glong time;
+	gint type;
 
 	g_return_val_if_fail (node, -1);
-	g_return_val_if_fail (anode_def_type (node) == TYPE_TIME, -1);
+	type = anode_def_type (node);
+
+	/* Time is often represented as a choice, so work than in here */
+	if (type == TYPE_CHOICE) {
+		node = egg_asn1x_get_choice (node);
+		if (node == NULL)
+			return -1;
+		g_return_val_if_fail (anode_def_type (node) == TYPE_TIME, -1);
+		return egg_asn1x_get_time_as_long (node);
+	}
+
+	g_return_val_if_fail (type == TYPE_TIME, -1);
 
 	tlv = anode_get_tlv_data (node);
-	if (tlv == NULL)
+	if (tlv == NULL || tlv->buf == NULL)
 		return -1;
 
 	if (!anode_read_time (node, tlv, &time))
 		return -1;
 	return time;
+}
+
+gboolean
+egg_asn1x_get_time_as_date (GNode *node, GDate *date)
+{
+	GTimeVal tv;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (date, FALSE);
+
+	tv.tv_sec = egg_asn1x_get_time_as_long (node);
+	if (tv.tv_sec < 0)
+		return FALSE;
+	tv.tv_usec = 0;
+
+	g_date_set_time_val (date, &tv);
+	return TRUE;
 }
 
 gchar*
@@ -2207,7 +2661,7 @@ egg_asn1x_get_oid_as_string (GNode *node)
 	g_return_val_if_fail (anode_def_type (node) == TYPE_OBJECT_ID, NULL);
 
 	tlv = anode_get_tlv_data (node);
-	if (tlv == NULL)
+	if (tlv == NULL || tlv->buf == NULL)
 		return NULL;
 
 	if (!anode_read_object_id (node, tlv, &oid))
@@ -2265,6 +2719,22 @@ egg_asn1x_set_oid_as_quark (GNode *node, GQuark oid)
 	return egg_asn1x_set_oid_as_string (node, str);
 }
 
+GNode*
+egg_asn1x_get_choice (GNode *node)
+{
+	GNode *child;
+
+	g_return_val_if_fail (node, NULL);
+
+	/* One and only one of the children must be set */
+	for (child = node->children; child; child = child->next) {
+		if (anode_get_tlv_data (child))
+			return child;
+	}
+
+	return NULL;
+}
+
 /* -----------------------------------------------------------------------------------
  * VALIDATION
  */
@@ -2302,9 +2772,6 @@ anode_validate_size (GNode *node, gulong length)
 
 	if (anode_def_flags (node) & FLAG_SIZE) {
 		size = anode_opt_lookup (node, TYPE_SIZE, NULL);
-		if (size == NULL) {
-			egg_asn1x_dump (g_node_get_root (node));
-		}
 		g_return_val_if_fail (size, FALSE);
 		if (!anode_parse_size (node, size->value, &value1))
 			g_return_val_if_reached (FALSE);
@@ -2396,7 +2863,7 @@ anode_validate_bit_string (GNode *node, Atlv *tlv)
 	g_assert (tlv);
 
 	/* At least two bytes in length */
-	if (tlv->len < 2)
+	if (tlv->len < 1)
 		return anode_failure (node, "invalid length bit string");
 	/* First byte is the number of free bits at end */
 	empty = tlv->buf[tlv->off];
@@ -2404,7 +2871,7 @@ anode_validate_bit_string (GNode *node, Atlv *tlv)
 		return anode_failure (node, "bit string has invalid header");
 	/* Free bits at end must be zero */
 	mask = 0xFF >> (8 - empty);
-	if (tlv->buf[tlv->off + tlv->len - 1] & mask)
+	if (tlv->len > 1 && tlv->buf[tlv->off + tlv->len - 1] & mask)
 		return anode_failure (node, "bit string has invalid trailing bits");
 	return TRUE;
 }
@@ -2507,11 +2974,11 @@ anode_validate_sequence_or_set_of (GNode *node)
 
 	/* All the children must validate properly */
 	for (child = node->children; child; child = child->next) {
-		if (!anode_validate_anything (child))
-			return FALSE;
-
 		tlv = anode_get_tlv_data (child);
 		if (tlv) {
+			if (!anode_validate_anything (child))
+				return FALSE;
+
 			/* Tag must have same tag as top */
 			if (count == 0)
 				tag = anode_calc_tag (child);
@@ -2540,6 +3007,8 @@ anode_validate_anything (GNode *node)
 
 	if (!tlv) {
 		if (anode_def_flags (node) & FLAG_OPTION)
+			return TRUE;
+		if (anode_def_flags (node) & FLAG_DEFAULT)
 			return TRUE;
 		return anode_failure (node, "missing value");
 	}
@@ -2629,14 +3098,58 @@ join_each_child (GNode *child, gpointer data)
 }
 
 static const ASN1_ARRAY_TYPE*
-lookup_def (const ASN1_ARRAY_TYPE *defs, const gchar *identifier, gint type)
+adef_next_sibling (const ASN1_ARRAY_TYPE *def)
 {
-	/* Find the one we're interested in */
-	while (defs && (defs->value || defs->type || defs->name)) {
-		if ((defs->type & 0xFF) == type &&
-		    defs->name && g_str_equal (identifier, defs->name))
-			return defs;
-		++defs;
+	int depth = 0;
+
+	g_assert (def);
+	g_assert (def->value || def->type || def->name);
+
+	if ((def->type & FLAG_RIGHT) == 0)
+		return NULL;
+
+	/* Skip past any children */
+	if ((def->type & FLAG_DOWN) == FLAG_DOWN) {
+		depth += 1;
+		while (depth > 0) {
+			++def;
+			if ((def->type & FLAG_DOWN) == FLAG_DOWN)
+				depth += 1;
+			if ((def->type & FLAG_RIGHT) == 0)
+				depth -= 1;
+		}
+	}
+
+	++def;
+	g_return_val_if_fail (def->value || def->type || def->name, NULL);
+	return def;
+}
+
+static const ASN1_ARRAY_TYPE*
+adef_first_child (const ASN1_ARRAY_TYPE *def)
+{
+	g_assert (def);
+	g_assert (def->value || def->type || def->name);
+
+	if ((def->type & FLAG_DOWN) == 0)
+		return NULL;
+
+	++def;
+	g_return_val_if_fail (def->value || def->type || def->name, NULL);
+	return def;
+}
+
+static const ASN1_ARRAY_TYPE*
+lookup_def_of_type (const ASN1_ARRAY_TYPE *defs, const gchar *name, gint type)
+{
+	const ASN1_ARRAY_TYPE *def;
+
+	g_assert (defs);
+	g_assert (defs->value || defs->type || defs->name);
+
+	for (def = adef_first_child (defs); def; def = adef_next_sibling (def)) {
+		if ((def->type & 0xFF) == type && def->name && g_str_equal (name, def->name))
+			return def;
 	}
 
 	return NULL;
@@ -2673,7 +3186,7 @@ traverse_and_prepare (GNode *node, gpointer data)
 		identifier = anode_def_name (node);
 		if (identifier && !g_str_equal (identifier, "MAX") &&
 		    g_ascii_isalpha (identifier[0])) {
-			def = lookup_def (defs, identifier, TYPE_INTEGER);
+			def = lookup_def_of_type (defs, identifier, TYPE_INTEGER);
 			g_return_val_if_fail (def, TRUE);
 			anode_opt_add (node, def);
 		}
@@ -2719,26 +3232,123 @@ traverse_and_prepare (GNode *node, gpointer data)
 	return FALSE;
 }
 
+static const ASN1_ARRAY_TYPE*
+match_oid_in_definition (const ASN1_ARRAY_TYPE *def, GHashTable *names,
+                          const gchar *match, const gchar **problem)
+{
+	const ASN1_ARRAY_TYPE *result = NULL;
+	const ASN1_ARRAY_TYPE *odef;
+	const gchar *value;
+	GString *oid = NULL;
+
+	g_assert (match);
+	g_assert (problem);
+	g_assert (names);
+
+	for (odef = adef_first_child (def); odef; odef = adef_next_sibling (odef)) {
+		if ((odef->type & 0xFF) != TYPE_CONSTANT)
+			continue;
+
+		g_return_val_if_fail (odef->value, NULL);
+		if (strspn (odef->value, "01234567890") == strlen (odef->value)) {
+			value = odef->value;
+
+		} else {
+			value = g_hash_table_lookup (names, odef->value);
+
+			/* A name resolution problem */
+			if (!value) {
+				if (oid)
+					g_string_free (oid, TRUE);
+				*problem = odef->value;
+				return NULL;
+			}
+		}
+
+		if (oid) {
+			g_string_append_c (oid, '.');
+			g_string_append (oid, value);
+		} else {
+			oid = g_string_new (value);
+		}
+	}
+
+	if (oid != NULL) {
+		if (g_str_equal (oid->str, match))
+			result = adef_next_sibling (def);
+		g_assert (def->name);
+		g_hash_table_insert (names, (gchar*)def->name, g_string_free (oid, FALSE));
+	}
+
+	return result;
+}
+
+static const ASN1_ARRAY_TYPE*
+match_oid_in_definitions (const ASN1_ARRAY_TYPE *defs, const gchar *match)
+{
+	const ASN1_ARRAY_TYPE *def;
+	const ASN1_ARRAY_TYPE *result;
+	GHashTable *names;
+	gboolean progress;
+	const gchar *problem;
+
+	names = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
+
+	for (;;) {
+		progress = FALSE;
+		problem = NULL;
+
+		for (def = adef_first_child (defs); def; def = adef_next_sibling (def)) {
+
+			/* Only work with object ids, and ones with names */
+			if ((def->type & 0xFF) != TYPE_OBJECT_ID || !def->name)
+				continue;
+
+			/* If we've already seen this one, skip */
+			if (g_hash_table_lookup (names, def->name))
+				continue;
+
+			progress = TRUE;
+			result = match_oid_in_definition (def, names, match, &problem);
+			if (result != NULL)
+				break;
+		}
+
+		if (!problem || result) {
+			break;
+		} else if (problem && !progress) {
+			g_warning ("couldn't find oid definition in ASN.1 for: %s", problem);
+			g_return_val_if_reached (NULL);
+		}
+	}
+
+	g_hash_table_destroy (names);
+	return result;
+}
+
 GNode*
-egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
+egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *type)
 {
 	const ASN1_ARRAY_TYPE *def;
 	GNode *root, *parent, *node;
 	int flags;
 
 	g_return_val_if_fail (defs, NULL);
-	g_return_val_if_fail (identifier, NULL);
+	g_return_val_if_fail (type, NULL);
 
-	def = defs;
+	/* An OID */
+	if (strspn (type, "0123456789.") == strlen (type)) {
+		def = match_oid_in_definitions (defs, type);
 
-	/* Find the one we're interested in */
-	while (def && (def->value || def->type || def->name)) {
-		if (def->name && g_str_equal (identifier, def->name))
-			break;
-		++def;
+	/* An Identifier */
+	} else {
+		for (def = adef_first_child (defs); def; def = adef_next_sibling (def)) {
+			if (def->name && g_str_equal (type, def->name))
+				break;
+		}
 	}
 
-	if (!def->name || !def->type)
+	if (def == NULL || !def->name || !def->type)
 		return NULL;
 
 	/* The node for this item */
@@ -2779,6 +3389,33 @@ egg_asn1x_create (const ASN1_ARRAY_TYPE *defs, const gchar *identifier)
 	return root;
 }
 
+GNode*
+egg_asn1x_create_quark (const ASN1_ARRAY_TYPE *defs, GQuark type)
+{
+	g_return_val_if_fail (type, NULL);
+	return egg_asn1x_create (defs, g_quark_to_string (type));
+}
+
+GNode*
+egg_asn1x_create_and_decode (const ASN1_ARRAY_TYPE *defs, const gchar *identifier,
+                             gconstpointer data, gsize n_data)
+{
+	GNode *asn;
+
+	g_return_val_if_fail (defs, NULL);
+	g_return_val_if_fail (identifier, NULL);
+
+	asn = egg_asn1x_create (defs, identifier);
+	g_return_val_if_fail (asn, NULL);
+
+	if (!egg_asn1x_decode (asn, data, n_data)) {
+		egg_asn1x_destroy (asn);
+		return NULL;
+	}
+
+	return asn;
+}
+
 /* -----------------------------------------------------------------------------------
  * DUMPING and MESSAGES
  */
@@ -2814,6 +3451,7 @@ traverse_and_dump (GNode *node, gpointer unused)
 	guint i, depth;
 	GString *output;
 	gchar *string;
+	Atlv *tlv;
 	Anode *an;
 	GList *l;
 
@@ -2821,12 +3459,14 @@ traverse_and_dump (GNode *node, gpointer unused)
 	for (i = 0; i < depth - 1; ++i)
 		g_printerr ("    ");
 
+	tlv = anode_get_tlv_data (node);
 	output = g_string_new ("");
 	dump_append_type (output, anode_def_type (node));
 	dump_append_flags (output, anode_def_flags (node));
 	string = g_utf8_casefold (output->str, output->len - 1);
 	g_string_free (output, TRUE);
-	g_printerr ("+ %s: %s [%s]\n", anode_def_name (node), anode_def_value (node), string);
+	g_printerr ("+ %s: %s [%s]%s\n", anode_def_name (node), anode_def_value (node),
+	            string, tlv && tlv->buf ? " *" : "");
 	g_free (string);
 
 	/* Print out all the options */
@@ -2915,6 +3555,127 @@ egg_asn1x_clear (GNode *asn)
 void
 egg_asn1x_destroy (gpointer data)
 {
-	if (data)
-		anode_destroy (data);
+	GNode *node = data;
+
+	if (node != NULL) {
+		g_return_if_fail (G_NODE_IS_ROOT (node));
+		anode_destroy (node);
+	}
+}
+
+/* --------------------------------------------------------------------------------
+ * TIME PARSING
+ */
+
+glong
+egg_asn1x_parse_time_general (const gchar *time, gssize n_time)
+{
+	gboolean ret;
+	glong value;
+	struct tm when;
+	gint offset = 0;
+
+	g_return_val_if_fail (time, -1);
+
+	if (n_time < 0)
+		n_time = strlen (time);
+
+	ret = parse_general_time (time, n_time, &when, &offset);
+	if (!ret)
+		return -1;
+
+	/* In order to work with 32 bit time_t. */
+	if (sizeof (time_t) <= 4 && when.tm_year >= 2038) {
+		value = (time_t)2145914603;  /* 2037-12-31 23:23:23 */
+
+	/* Convert to seconds since epoch */
+	} else {
+		value = timegm (&when);
+		g_return_val_if_fail (*time >= 0, FALSE);
+		value += offset;
+	}
+
+	return value;
+}
+
+glong
+egg_asn1x_parse_time_utc (const gchar *time, gssize n_time)
+{
+	gboolean ret;
+	glong value;
+	struct tm when;
+	gint offset = 0;
+
+	g_return_val_if_fail (time, -1);
+
+	if (n_time < 0)
+		n_time = strlen (time);
+
+	ret = parse_utc_time (time, n_time, &when, &offset);
+	if (!ret)
+		return -1;
+
+	/* In order to work with 32 bit time_t. */
+	if (sizeof (time_t) <= 4 && when.tm_year >= 2038) {
+		value = (time_t)2145914603;  /* 2037-12-31 23:23:23 */
+
+	/* Convert to seconds since epoch */
+	} else {
+		value = timegm (&when);
+		g_return_val_if_fail (*time >= 0, FALSE);
+		value += offset;
+	}
+
+	return value;
+}
+
+/* --------------------------------------------------------------------------------
+ * BASIC RAW ELEMENT INFO
+ */
+
+gssize
+egg_asn1x_element_length (gconstpointer data, gsize n_data)
+{
+	guchar cls;
+	int counter = 0;
+	int cb, len;
+	gulong tag;
+
+	if (asn1_get_tag_der (data, n_data, &cls, &cb, &tag) == ASN1_SUCCESS) {
+		counter += cb;
+		len = asn1_get_length_der ((const guchar*)data + cb, n_data - cb, &cb);
+		counter += cb;
+		if (len >= 0) {
+			len += counter;
+			if (n_data >= len)
+				return len;
+		}
+	}
+
+	return -1;
+}
+
+gconstpointer
+egg_asn1x_element_content (gconstpointer data, gsize n_data, gsize *n_content)
+{
+	int counter = 0;
+	guchar cls;
+	gulong tag;
+	int cb, len;
+
+	g_return_val_if_fail (data != NULL, NULL);
+	g_return_val_if_fail (n_content != NULL, NULL);
+
+	/* Now get the data out of this element */
+	if (asn1_get_tag_der (data, n_data, &cls, &cb, &tag) != ASN1_SUCCESS)
+		return NULL;
+
+	counter += cb;
+	len = asn1_get_length_der ((const guchar*)data + cb, n_data - cb, &cb);
+	if (len < 0)
+		return NULL;
+	counter += cb;
+
+	*n_content = len;
+	return (const guchar*)data + counter;
 }

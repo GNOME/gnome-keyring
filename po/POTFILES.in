@@ -11,7 +11,6 @@ daemon/gnome-keyring-gpg.desktop.in.in
 daemon/gpg-agent/gkd-gpg-agent-ops.c
 daemon/login/gkd-login.c
 daemon/org.gnome.keyring.service.in
-egg/egg-asn1.c
 egg/egg-oid.c
 egg/egg-spawn.c
 gcr/gcr-certificate-basics-widget.c

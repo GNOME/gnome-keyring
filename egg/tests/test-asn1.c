@@ -28,12 +28,13 @@
 #include "egg/egg-asn1x.h"
 
 #include <glib.h>
+#include <libtasn1.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "asn1-def-tests.h"
+extern const ASN1_ARRAY_TYPE test_asn1_tab[];
 
 const gchar I33[] =           "\x02\x01\x2A";
 const gchar BFALSE[] =        "\x01\x01\x00";
@@ -42,6 +43,9 @@ const gchar SFARNSWORTH[] =   "\x04\x0A""farnsworth";
 const gchar SIMPLICIT[] =     "\x85\x08""implicit";
 const gchar SEXPLICIT[] =     "\xE5\x0A\x04\x08""explicit";
 const gchar TGENERALIZED[] =  "\x18\x0F""20070725130528Z";
+const gchar BITS_TEST[] =  "\x03\x04\x06\x6e\x5d\xc0";
+const gchar BITS_BAD[] =  "\x03\x04\x06\x6e\x5d\xc1";
+const gchar BITS_ZERO[] =  "\x03\x01\x00";
 
 #define XL(x) G_N_ELEMENTS (x) - 1
 
@@ -50,7 +54,7 @@ DEFINE_TEST(asn1_boolean)
 	GNode *asn;
 	gboolean value;
 
-	asn = egg_asn1x_create (tests_asn1_tab, "TestBoolean");
+	asn = egg_asn1x_create (test_asn1_tab, "TestBoolean");
 	g_assert (asn);
 
 	/* Shouldn't succeed */
@@ -87,7 +91,7 @@ DEFINE_TEST(asn1_integer)
 	GNode *asn;
 	gulong value;
 
-	asn = egg_asn1x_create (tests_asn1_tab, "TestInteger");
+	asn = egg_asn1x_create (test_asn1_tab, "TestInteger");
 	g_assert (asn);
 
 	/* Shouldn't succeed */
@@ -115,7 +119,7 @@ DEFINE_TEST(asn1_octet_string)
 	GNode *asn;
 	gchar *value;
 
-	asn = egg_asn1x_create (tests_asn1_tab, "TestOctetString");
+	asn = egg_asn1x_create (test_asn1_tab, "TestOctetString");
 	g_assert (asn);
 
 	/* Shouldn't succeed */
@@ -143,7 +147,7 @@ DEFINE_TEST(asn1_generalized_time)
 	GNode *asn;
 	glong value;
 
-	asn = egg_asn1x_create (tests_asn1_tab, "TestGeneralized");
+	asn = egg_asn1x_create (test_asn1_tab, "TestGeneralized");
 	g_assert (asn);
 
 	/* Shouldn't succeed */
@@ -170,7 +174,7 @@ DEFINE_TEST(asn1_implicit)
 	GNode *asn;
 	gchar *value;
 
-	asn = egg_asn1x_create (tests_asn1_tab, "TestImplicit");
+	asn = egg_asn1x_create (test_asn1_tab, "TestImplicit");
 	g_assert (asn);
 
 	/* Should work */
@@ -188,7 +192,7 @@ DEFINE_TEST(asn1_explicit)
 	GNode *asn;
 	gchar *value;
 
-	asn = egg_asn1x_create (tests_asn1_tab, "TestExplicit");
+	asn = egg_asn1x_create (test_asn1_tab, "TestExplicit");
 	g_assert (asn);
 
 	/* Should work */
@@ -199,4 +203,215 @@ DEFINE_TEST(asn1_explicit)
 	g_free (value);
 
 	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_bit_string_decode)
+{
+	GNode *asn;
+	guchar *bits;
+	guint n_bits;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
+	g_assert (asn);
+
+	/* Should work */
+	if (!egg_asn1x_decode (asn, BITS_TEST, XL (BITS_TEST)))
+		g_assert_not_reached ();
+
+	bits = egg_asn1x_get_bits_as_raw (asn, NULL, &n_bits);
+	g_assert (bits);
+	g_assert_cmpuint (n_bits, ==, 18);
+	g_assert_cmpint (bits[0], ==, 0x6e);
+	g_assert_cmpint (bits[1], ==, 0x5d);
+	g_assert_cmpint (bits[2], ==, 0xc0);
+
+	g_free (bits);
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_bit_string_decode_bad)
+{
+	GNode *asn;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
+	g_assert (asn);
+
+	/* Should not work */
+	if (egg_asn1x_decode (asn, BITS_BAD, XL (BITS_BAD)))
+		g_assert_not_reached ();
+
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_bit_string_decode_ulong)
+{
+	GNode *asn;
+	gulong bits;
+	guint n_bits;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
+	g_assert (asn);
+
+	/* Should work */
+	if (!egg_asn1x_decode (asn, BITS_TEST, XL (BITS_TEST)))
+		g_assert_not_reached ();
+
+	if (!egg_asn1x_get_bits_as_ulong (asn, &bits, &n_bits))
+		g_assert_not_reached ();
+
+	g_assert_cmpuint (n_bits, ==, 18);
+	g_assert_cmphex (bits, ==, 0x1b977);
+
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_bit_string_encode_decode)
+{
+	GNode *asn;
+	guchar bits[] = { 0x5d, 0x6e, 0x83 };
+	guchar *check;
+	guint n_check, n_bits = 17;
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
+	g_assert (asn);
+
+	if (!egg_asn1x_set_bits_as_raw (asn, bits, n_bits, NULL))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	if (!egg_asn1x_decode (asn, data, n_data))
+		g_assert_not_reached ();
+
+	check = egg_asn1x_get_bits_as_raw (asn, NULL, &n_check);
+	g_assert (check);
+	g_assert_cmpuint (n_check, ==, 17);
+	g_assert_cmpint (check[0], ==, 0x5d);
+	g_assert_cmpint (check[1], ==, 0x6e);
+	g_assert_cmpint (check[2], ==, 0x80);
+
+	g_free (check);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_bit_string_encode_decode_ulong)
+{
+	GNode *asn;
+	gulong check, bits = 0x0101b977;
+	guint n_check, n_bits = 18;
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
+	g_assert (asn);
+
+	if (!egg_asn1x_set_bits_as_ulong (asn, bits, n_bits))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	if (!egg_asn1x_decode (asn, data, n_data))
+		g_assert_not_reached ();
+
+	if (!egg_asn1x_get_bits_as_ulong (asn, &check, &n_check))
+		g_assert_not_reached ();
+
+	g_assert_cmpuint (n_check, ==, 18);
+	g_assert_cmphex (check, ==, 0x1b977);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_bit_string_encode_decode_zero)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
+	g_assert (asn);
+
+	if (!egg_asn1x_set_bits_as_raw (asn, (guchar*)"", 0, NULL))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert_cmpsize (n_data, ==, XL (BITS_ZERO));
+	g_assert (memcmp (data, BITS_ZERO, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_have)
+{
+	GNode *asn;
+	guchar *data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestBoolean");
+	g_assert (asn);
+
+	g_assert (!egg_asn1x_have (asn));
+
+	if (!egg_asn1x_set_boolean (asn, TRUE))
+		g_assert_not_reached ();
+
+	g_assert (!egg_asn1x_have (asn));
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert (egg_asn1x_have (asn));
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+static gboolean is_freed = FALSE;
+
+static void
+test_is_freed (gpointer unused)
+{
+	g_assert (!is_freed);
+	is_freed = TRUE;
+}
+
+DEFINE_TEST(asn1_any_set_raw)
+{
+	GNode *asn, *node;
+	guchar *data;
+	const guchar *check;
+	gsize n_data, n_check;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestAnySeq");
+	g_assert (asn);
+
+	is_freed = FALSE;
+	node = egg_asn1x_node (asn, "contents", NULL);
+	g_assert (node);
+
+	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	check = egg_asn1x_get_raw_element (node, &n_check);
+	g_assert (check);
+
+	g_assert (n_check == XL (SFARNSWORTH));
+	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+	g_assert (is_freed);
 }

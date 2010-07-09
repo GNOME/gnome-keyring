@@ -25,20 +25,24 @@
 
 #include "gkm-data-asn1.h"
 
+#include "egg/egg-asn1x.h"
+
 gboolean
-gkm_data_asn1_read_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)
+gkm_data_asn1_read_mpi (GNode *asn, gcry_mpi_t *mpi)
 {
 	gcry_error_t gcry;
 	gsize sz;
-	guchar *buf;
+	const guchar *buf;
 
-	buf = egg_asn1_read_value (asn, part, &sz, (EggAllocator)g_realloc);
+	g_return_val_if_fail (asn, FALSE);
+	g_return_val_if_fail (mpi, FALSE);
+
+	buf = egg_asn1x_get_raw_value (asn, &sz);
 	if (!buf)
 		return FALSE;
 
+	/* Automatically stores in secure memory if DER data is secure */
 	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, buf, sz, &sz);
-	g_free (buf);
-
 	if (gcry != 0)
 		return FALSE;
 
@@ -46,36 +50,14 @@ gkm_data_asn1_read_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)
 }
 
 gboolean
-gkm_data_asn1_read_secure_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t *mpi)
-{
-	gcry_error_t gcry;
-	gsize sz;
-	guchar *buf;
-
-	buf = egg_asn1_read_value (asn, part, &sz, (EggAllocator)gcry_realloc);
-	if (!buf)
-		return FALSE;
-
-	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, buf, sz, &sz);
-	gcry_free (buf);
-
-	if (gcry != 0)
-		return FALSE;
-
-	return TRUE;
-}
-
-gboolean
-gkm_data_asn1_write_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t mpi)
+gkm_data_asn1_write_mpi (GNode *asn, gcry_mpi_t mpi)
 {
 	gcry_error_t gcry;
 	gsize len;
 	guchar *buf;
-	int res;
 
-	g_assert (asn);
-	g_assert (part);
-	g_assert (mpi);
+	g_return_val_if_fail (asn, FALSE);
+	g_return_val_if_fail (mpi, FALSE);
 
 	/* Get the size */
 	gcry = gcry_mpi_print (GCRYMPI_FMT_STD, NULL, 0, &len, mpi);
@@ -87,11 +69,5 @@ gkm_data_asn1_write_mpi (ASN1_TYPE asn, const gchar *part, gcry_mpi_t mpi)
 	gcry = gcry_mpi_print (GCRYMPI_FMT_STD, buf, len, &len, mpi);
 	g_return_val_if_fail (gcry == 0, FALSE);
 
-	res = asn1_write_value (asn, part, buf, len);
-	gcry_free (buf);
-
-	if (res != ASN1_SUCCESS)
-		return FALSE;
-
-	return TRUE;
+	return egg_asn1x_set_integer_as_raw (asn, buf, len, gcry_free);
 }

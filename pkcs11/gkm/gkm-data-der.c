@@ -28,6 +28,8 @@
 #include "gkm-data-types.h"
 #include "gkm-sexp.h"
 
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-symkey.h"
 
@@ -77,20 +79,20 @@ GkmDataResult
 gkm_data_der_read_public_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t n, e;
 	int res;
 
 	n = e = NULL;
 
-	asn = egg_asn1_decode ("PK.RSAPublicKey", data, n_data);
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "RSAPublicKey", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
-	if (!gkm_data_asn1_read_mpi (asn, "modulus", &n) ||
-	    !gkm_data_asn1_read_mpi (asn, "publicExponent", &e))
+	if (!gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "modulus", NULL), &n) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "publicExponent", NULL), &e))
 		goto done;
 
 	res = gcry_sexp_build (s_key, NULL, SEXP_PUBLIC_RSA, n, e);
@@ -101,8 +103,7 @@ gkm_data_der_read_public_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t 
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (n);
 	gcry_mpi_release (e);
 
@@ -128,34 +129,34 @@ gkm_data_der_read_private_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	gcry_mpi_t n, e, d, p, q, u;
 	gcry_mpi_t tmp;
-	guint version;
+	gulong version;
+	GNode *asn = NULL;
 	int res;
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
 
 	n = e = d = p = q = u = NULL;
 
-	asn = egg_asn1_decode ("PK.RSAPrivateKey", data, n_data);
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "RSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
-	if (!egg_asn1_read_uint (asn, "version", &version))
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), &version))
 		goto done;
 
 	/* We only support simple version */
 	if (version != 0) {
 		ret = GKM_DATA_UNRECOGNIZED;
-		g_message ("unsupported version of RSA key: %u", version);
+		g_message ("unsupported version of RSA key: %lu", version);
 		goto done;
 	}
 
-	if (!gkm_data_asn1_read_secure_mpi (asn, "modulus", &n) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "publicExponent", &e) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "privateExponent", &d) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "prime1", &p) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "prime2", &q) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "coefficient", &u))
+	if (!gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "modulus", NULL), &n) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "publicExponent", NULL), &e) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "privateExponent", NULL), &d) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "prime1", NULL), &p) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "prime2", NULL), &q) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "coefficient", NULL), &u))
 		goto done;
 
 	/* Fix up the incoming key so gcrypt likes it */
@@ -177,8 +178,7 @@ gkm_data_der_read_private_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (n);
 	gcry_mpi_release (e);
 	gcry_mpi_release (d);
@@ -204,22 +204,22 @@ GkmDataResult
 gkm_data_der_read_public_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t p, q, g, y;
 	int res;
 
 	p = q = g = y = NULL;
 
-	asn = egg_asn1_decode ("PK.DSAPublicKey", data, n_data);
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPublicKey", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
-	if (!gkm_data_asn1_read_mpi (asn, "p", &p) ||
-	    !gkm_data_asn1_read_mpi (asn, "q", &q) ||
-	    !gkm_data_asn1_read_mpi (asn, "g", &g) ||
-	    !gkm_data_asn1_read_mpi (asn, "Y", &y))
+	if (!gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "p", NULL), &p) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "q", NULL), &q) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "g", NULL), &g) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "Y", NULL), &y))
 		goto done;
 
 	res = gcry_sexp_build (s_key, NULL, SEXP_PUBLIC_DSA, p, q, g, y);
@@ -230,8 +230,7 @@ gkm_data_der_read_public_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t 
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (p);
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
@@ -250,25 +249,25 @@ gkm_data_der_read_public_key_dsa_parts (const guchar *keydata, gsize n_keydata,
 {
 	gcry_mpi_t p, q, g, y;
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
-	ASN1_TYPE asn_params = ASN1_TYPE_EMPTY;
-	ASN1_TYPE asn_key = ASN1_TYPE_EMPTY;
+	GNode *asn_params = NULL;
+	GNode *asn_key = NULL;
 	int res;
 
 	p = q = g = y = NULL;
 
-	asn_params = egg_asn1_decode ("PK.DSAParameters", params, n_params);
-	asn_key = egg_asn1_decode ("PK.DSAPublicPart", keydata, n_keydata);
+	asn_params = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAParameters", params, n_params);
+	asn_key = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPublicPart", keydata, n_keydata);
 	if (!asn_params || !asn_key)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
-	if (!gkm_data_asn1_read_mpi (asn_params, "p", &p) ||
-	    !gkm_data_asn1_read_mpi (asn_params, "q", &q) ||
-	    !gkm_data_asn1_read_mpi (asn_params, "g", &g))
+	if (!gkm_data_asn1_read_mpi (egg_asn1x_node (asn_params, "p", NULL), &p) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn_params, "q", NULL), &q) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn_params, "g", NULL), &g))
 		goto done;
 
-	if (!gkm_data_asn1_read_mpi (asn_key, "", &y))
+	if (!gkm_data_asn1_read_mpi (asn_key, &y))
 		goto done;
 
 	res = gcry_sexp_build (s_key, NULL, SEXP_PUBLIC_DSA, p, q, g, y);
@@ -279,10 +278,8 @@ gkm_data_der_read_public_key_dsa_parts (const guchar *keydata, gsize n_keydata,
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn_key)
-		asn1_delete_structure (&asn_key);
-	if (asn_params)
-		asn1_delete_structure (&asn_params);
+	egg_asn1x_destroy (asn_key);
+	egg_asn1x_destroy (asn_params);
 	gcry_mpi_release (p);
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
@@ -309,21 +306,21 @@ gkm_data_der_read_private_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t
 	gcry_mpi_t p, q, g, y, x;
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	int res;
-	ASN1_TYPE asn;
+	GNode *asn = NULL;
 
 	p = q = g = y = x = NULL;
 
-	asn = egg_asn1_decode ("PK.DSAPrivateKey", data, n_data);
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
-	if (!gkm_data_asn1_read_secure_mpi (asn, "p", &p) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "q", &q) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "g", &g) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "Y", &y) ||
-	    !gkm_data_asn1_read_secure_mpi (asn, "priv", &x))
+	if (!gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "p", NULL), &p) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "q", NULL), &q) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "g", NULL), &g) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "Y", NULL), &y) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "priv", NULL), &x))
 		goto done;
 
 	res = gcry_sexp_build (s_key, NULL, SEXP_PRIVATE_DSA, p, q, g, y, x);
@@ -334,8 +331,7 @@ gkm_data_der_read_private_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (p);
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
@@ -356,24 +352,24 @@ gkm_data_der_read_private_key_dsa_parts (const guchar *keydata, gsize n_keydata,
 	gcry_mpi_t p, q, g, y, x;
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	int res;
-	ASN1_TYPE asn_params = ASN1_TYPE_EMPTY;
-	ASN1_TYPE asn_key = ASN1_TYPE_EMPTY;
+	GNode *asn_params = NULL;
+	GNode *asn_key = NULL;
 
 	p = q = g = y = x = NULL;
 
-	asn_params = egg_asn1_decode ("PK.DSAParameters", params, n_params);
-	asn_key = egg_asn1_decode ("PK.DSAPrivatePart", keydata, n_keydata);
+	asn_params = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAParameters", params, n_params);
+	asn_key = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivatePart", keydata, n_keydata);
 	if (!asn_params || !asn_key)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
-	if (!gkm_data_asn1_read_secure_mpi (asn_params, "p", &p) ||
-	    !gkm_data_asn1_read_secure_mpi (asn_params, "q", &q) ||
-	    !gkm_data_asn1_read_secure_mpi (asn_params, "g", &g))
+	if (!gkm_data_asn1_read_mpi (egg_asn1x_node (asn_params, "p", NULL), &p) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn_params, "q", NULL), &q) ||
+	    !gkm_data_asn1_read_mpi (egg_asn1x_node (asn_params, "g", NULL), &g))
 		goto done;
 
-	if (!gkm_data_asn1_read_secure_mpi (asn_key, "", &x))
+	if (!gkm_data_asn1_read_mpi (asn_key, &x))
 		goto done;
 
 	/* Now we calculate y */
@@ -388,10 +384,8 @@ gkm_data_der_read_private_key_dsa_parts (const guchar *keydata, gsize n_keydata,
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn_key)
-		asn1_delete_structure (&asn_key);
-	if (asn_params)
-		asn1_delete_structure (&asn_params);
+	egg_asn1x_destroy (asn_key);
+	egg_asn1x_destroy (asn_params);
 	gcry_mpi_release (p);
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
@@ -421,40 +415,40 @@ gkm_data_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	GQuark oid;
-	ASN1_TYPE asn;
-	gsize n_key, n_params;
+	GNode *asn = NULL;
+	gsize n_params;
+	guint n_bits;
 	const guchar *params;
 	guchar *key = NULL;
 
 	init_quarks ();
 
-	asn = egg_asn1_decode ("PKIX1.SubjectPublicKeyInfo", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "SubjectPublicKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
 	/* Figure out the algorithm */
-	oid = egg_asn1_read_oid (asn, "algorithm.algorithm");
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "algorithm", "algorithm", NULL));
 	if (!oid)
 		goto done;
 
 	/* A bit string so we cannot process in place */
-	key = egg_asn1_read_value (asn, "subjectPublicKey", &n_key, NULL);
+	key = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "subjectPublicKey", NULL), NULL, &n_bits);
 	if (!key)
 		goto done;
-	n_key /= 8;
 
 	/* An RSA key is simple */
 	if (oid == OID_PKIX1_RSA) {
-		ret = gkm_data_der_read_public_key_rsa (key, n_key, s_key);
+		ret = gkm_data_der_read_public_key_rsa (key, n_bits / 8, s_key);
 
 	/* A DSA key paramaters are stored separately */
 	} else if (oid == OID_PKIX1_DSA) {
-		params = egg_asn1_read_element (asn, data, n_data, "algorithm.parameters", &n_params);
+		params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "algorithm", "parameters", NULL), &n_params);
 		if (!params)
 			goto done;
-		ret = gkm_data_der_read_public_key_dsa_parts (key, n_key, params, n_params, s_key);
+		ret = gkm_data_der_read_public_key_dsa_parts (key, n_bits / 8, params, n_params, s_key);
 
 	} else {
 		g_message ("unsupported key algorithm in certificate: %s", g_quark_to_string (oid));
@@ -463,9 +457,7 @@ gkm_data_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t
 	}
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-
+	egg_asn1x_destroy (asn);
 	g_free (key);
 
 	if (ret == GKM_DATA_FAILURE)
@@ -489,7 +481,7 @@ gkm_data_der_read_private_key (const guchar *data, gsize n_data, gcry_sexp_t *s_
 GkmDataResult
 gkm_data_der_read_private_pkcs8_plain (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	GkmDataResult ret;
 	int algorithm;
 	GQuark key_algo;
@@ -502,14 +494,14 @@ gkm_data_der_read_private_pkcs8_plain (const guchar *data, gsize n_data, gcry_se
 
 	init_quarks ();
 
-	asn = egg_asn1_decode ("PKIX1.pkcs-8-PrivateKeyInfo", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-PrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 	algorithm = 0;
 
-	key_algo = egg_asn1_read_oid (asn, "privateKeyAlgorithm.algorithm");
+	key_algo = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "privateKeyAlgorithm", "algorithm", NULL));
 	if (!key_algo)
 		goto done;
 	else if (key_algo == OID_PKIX1_RSA)
@@ -522,12 +514,12 @@ gkm_data_der_read_private_pkcs8_plain (const guchar *data, gsize n_data, gcry_se
 		goto done;
 	}
 
-	keydata = egg_asn1_read_content (asn, data, n_data, "privateKey", &n_keydata);
+	keydata = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "privateKey", NULL), &n_keydata);
 	if (!keydata)
 		goto done;
 
-	params = egg_asn1_read_element (asn, data, n_data, "privateKeyAlgorithm.parameters",
-	                                     &n_params);
+	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "privateKeyAlgorithm", "parameters", NULL),
+	                                    &n_params);
 
 	ret = GKM_DATA_SUCCESS;
 
@@ -556,9 +548,7 @@ done:
 		g_message ("invalid PKCS#8 key");
 	}
 
-	if (asn)
-		asn1_delete_structure (&asn);
-
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -566,7 +556,7 @@ GkmDataResult
 gkm_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const gchar *password,
                                          gsize n_password, gcry_sexp_t *s_key)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_cipher_hd_t cih = NULL;
 	gcry_error_t gcry;
 	GkmDataResult ret, r;
@@ -580,18 +570,18 @@ gkm_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 
 	ret = GKM_DATA_UNRECOGNIZED;
 
-	asn = egg_asn1_decode ("PKIX1.pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
 	/* Figure out the type of encryption */
-	scheme = egg_asn1_read_oid (asn, "encryptionAlgorithm.algorithm");
+	scheme = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "encryptionAlgorithm", "algorithm", NULL));
 	if (!scheme)
 		goto done;
 
-	params = egg_asn1_read_element (asn, data, n_data, "encryptionAlgorithm.parameters", &n_params);
+	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL), &n_params);
 	if (!params)
 		goto done;
 
@@ -607,7 +597,8 @@ gkm_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 		goto done;
 	}
 
-	crypted = egg_asn1_read_value (asn, "encryptedData", &n_crypted, (EggAllocator)egg_secure_realloc);
+	crypted = egg_asn1x_get_string_as_raw (egg_asn1x_node (asn, "encryptedData", NULL),
+	                                       egg_secure_realloc, &n_crypted);
 	if (!crypted)
 		goto done;
 
@@ -621,7 +612,7 @@ gkm_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 	}
 
 	/* Unpad the DER data */
-	l = egg_asn1_element_length (crypted, n_crypted);
+	l = egg_asn1x_element_length (crypted, n_crypted);
 	if (l <= 0 || l > n_crypted) {
 		ret = GKM_DATA_LOCKED;
 		goto done;
@@ -640,8 +631,7 @@ gkm_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const
 done:
 	if (cih)
 		gcry_cipher_close (cih);
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	egg_secure_free (crypted);
 
 	return ret;
@@ -663,30 +653,27 @@ gkm_data_der_read_private_pkcs8 (const guchar *data, gsize n_data, const gchar *
 guchar*
 gkm_data_der_write_public_key_rsa (gcry_sexp_t s_key, gsize *len)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t n, e;
 	guchar *result = NULL;
-	int res;
 
 	n = e = NULL;
 
-	res = asn1_create_element (egg_asn1_get_pk_asn1type (),
-	                           "PK.RSAPublicKey", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pk_asn1_tab, "RSAPublicKey");
+	g_return_val_if_fail (asn, NULL);
 
 	if (!gkm_sexp_extract_mpi (s_key, &n, "rsa", "n", NULL) ||
 	    !gkm_sexp_extract_mpi (s_key, &e, "rsa", "e", NULL))
 		goto done;
 
-	if (!gkm_data_asn1_write_mpi (asn, "modulus", n) ||
-	    !gkm_data_asn1_write_mpi (asn, "publicExponent", e))
+	if (!gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "modulus", NULL), n) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "publicExponent", NULL), e))
 		goto done;
 
-	result = egg_asn1_encode (asn, "", len, NULL);
+	result = egg_asn1x_encode (asn, NULL, len);
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (n);
 	gcry_mpi_release (e);
 
@@ -696,16 +683,14 @@ done:
 guchar*
 gkm_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t n, e, d, p, q, u, e1, e2, tmp;
 	guchar *result = NULL;
-	int res;
 
 	n = e = d = p = q = u = e1 = e2 = tmp = NULL;
 
-	res = asn1_create_element (egg_asn1_get_pk_asn1type (),
-	                           "PK.RSAPrivateKey", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pk_asn1_tab, "RSAPrivateKey");
+	g_return_val_if_fail (asn, NULL);
 
 	if (!gkm_sexp_extract_mpi (s_key, &n, "rsa", "n", NULL) ||
 	    !gkm_sexp_extract_mpi (s_key, &e, "rsa", "e", NULL) ||
@@ -715,16 +700,12 @@ gkm_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 	    !gkm_sexp_extract_mpi (s_key, &u, "rsa", "u", NULL))
 		goto done;
 
-	if (!gkm_data_asn1_write_mpi (asn, "modulus", n) ||
-	    !gkm_data_asn1_write_mpi (asn, "publicExponent", e) ||
-	    !gkm_data_asn1_write_mpi (asn, "privateExponent", d) ||
-	    !gkm_data_asn1_write_mpi (asn, "prime1", p) ||
-	    !gkm_data_asn1_write_mpi (asn, "prime2", q) ||
-	    !gkm_data_asn1_write_mpi (asn, "coefficient", u))
-		goto done;
-
-	/* Have to write out a null to delete OPTIONAL */
-	if (!egg_asn1_write_value (asn, "otherPrimeInfos", NULL, 0))
+	if (!gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "modulus", NULL), n) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "publicExponent", NULL), e) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "privateExponent", NULL), d) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "prime1", NULL), p) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "prime2", NULL), q) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "coefficient", NULL), u))
 		goto done;
 
 	/* Calculate e1 and e2 */
@@ -737,19 +718,18 @@ gkm_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 	gcry_mpi_mod (e2, d, tmp);
 
 	/* Write out calculated */
-	if (!gkm_data_asn1_write_mpi (asn, "exponent1", e1) ||
-	    !gkm_data_asn1_write_mpi (asn, "exponent2", e2))
+	if (!gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "exponent1", NULL), e1) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "exponent2", NULL), e2))
 		goto done;
 
 	/* Write out the version */
-	if (!egg_asn1_write_uint (asn, "version", 0))
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
 		goto done;
 
-	result = egg_asn1_encode (asn, "", n_key, NULL);
+	result = egg_asn1x_encode (asn, egg_secure_realloc, n_key);
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (n);
 	gcry_mpi_release (e);
 	gcry_mpi_release (d);
@@ -767,16 +747,14 @@ done:
 guchar*
 gkm_data_der_write_public_key_dsa (gcry_sexp_t s_key, gsize *len)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t p, q, g, y;
 	guchar *result = NULL;
-	int res;
 
 	p = q = g = y = NULL;
 
-	res = asn1_create_element (egg_asn1_get_pk_asn1type (),
-	                           "PK.DSAPublicKey", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pk_asn1_tab, "DSAPublicKey");
+	g_return_val_if_fail (asn, NULL);
 
 	if (!gkm_sexp_extract_mpi (s_key, &p, "dsa", "p", NULL) ||
 	    !gkm_sexp_extract_mpi (s_key, &q, "dsa", "q", NULL) ||
@@ -784,20 +762,19 @@ gkm_data_der_write_public_key_dsa (gcry_sexp_t s_key, gsize *len)
 	    !gkm_sexp_extract_mpi (s_key, &y, "dsa", "y", NULL))
 		goto done;
 
-	if (!gkm_data_asn1_write_mpi (asn, "p", p) ||
-	    !gkm_data_asn1_write_mpi (asn, "q", q) ||
-	    !gkm_data_asn1_write_mpi (asn, "g", g) ||
-	    !gkm_data_asn1_write_mpi (asn, "Y", y))
+	if (!gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "p", NULL), p) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "q", NULL), q) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "g", NULL), g) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "Y", NULL), y))
 		goto done;
 
-	if (!egg_asn1_write_uint (asn, "version", 0))
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
 		goto done;
 
-	result = egg_asn1_encode (asn, "", len, NULL);
+	result = egg_asn1x_encode (asn, NULL, len);
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (p);
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
@@ -809,28 +786,25 @@ done:
 guchar*
 gkm_data_der_write_private_key_dsa_part (gcry_sexp_t skey, gsize *n_key)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t x;
 	guchar *result = NULL;
-	int res;
 
 	x = NULL;
 
-	res = asn1_create_element (egg_asn1_get_pk_asn1type (),
-	                           "PK.DSAPrivatePart", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pk_asn1_tab, "DSAPrivatePart");
+	g_return_val_if_fail (asn, NULL);
 
 	if (!gkm_sexp_extract_mpi (skey, &x, "dsa", "x", NULL))
 		goto done;
 
-	if (!gkm_data_asn1_write_mpi (asn, "", x))
+	if (!gkm_data_asn1_write_mpi (asn, x))
 		goto done;
 
-	result = egg_asn1_encode (asn, "", n_key, NULL);
+	result = egg_asn1x_encode (asn, egg_secure_realloc, n_key);
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (x);
 
 	return result;
@@ -839,32 +813,29 @@ done:
 guchar*
 gkm_data_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t p, q, g;
 	guchar *result = NULL;
-	int res;
 
 	p = q = g = NULL;
 
-	res = asn1_create_element (egg_asn1_get_pk_asn1type (),
-	                           "PK.DSAParameters", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pk_asn1_tab, "DSAParameters");
+	g_return_val_if_fail (asn, NULL);
 
 	if (!gkm_sexp_extract_mpi (skey, &p, "dsa", "p", NULL) ||
 	    !gkm_sexp_extract_mpi (skey, &q, "dsa", "q", NULL) ||
 	    !gkm_sexp_extract_mpi (skey, &g, "dsa", "g", NULL))
 		goto done;
 
-	if (!gkm_data_asn1_write_mpi (asn, "p", p) ||
-	    !gkm_data_asn1_write_mpi (asn, "q", q) ||
-	    !gkm_data_asn1_write_mpi (asn, "g", g))
+	if (!gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "p", NULL), p) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "q", NULL), q) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "g", NULL), g))
 		goto done;
 
-	result = egg_asn1_encode (asn, "", n_params, NULL);
+	result = egg_asn1x_encode (asn, egg_secure_realloc, n_params);
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (p);
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
@@ -875,16 +846,14 @@ done:
 guchar*
 gkm_data_der_write_private_key_dsa (gcry_sexp_t s_key, gsize *len)
 {
-	ASN1_TYPE asn = ASN1_TYPE_EMPTY;
+	GNode *asn = NULL;
 	gcry_mpi_t p, q, g, y, x;
 	guchar *result = NULL;
-	int res;
 
 	p = q = g = y = x = NULL;
 
-	res = asn1_create_element (egg_asn1_get_pk_asn1type (),
-	                           "PK.DSAPrivateKey", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pk_asn1_tab, "DSAPrivateKey");
+	g_return_val_if_fail (asn, NULL);
 
 	if (!gkm_sexp_extract_mpi (s_key, &p, "dsa", "p", NULL) ||
 	    !gkm_sexp_extract_mpi (s_key, &q, "dsa", "q", NULL) ||
@@ -893,21 +862,20 @@ gkm_data_der_write_private_key_dsa (gcry_sexp_t s_key, gsize *len)
 	    !gkm_sexp_extract_mpi (s_key, &x, "dsa", "x", NULL))
 		goto done;
 
-	if (!gkm_data_asn1_write_mpi (asn, "p", p) ||
-	    !gkm_data_asn1_write_mpi (asn, "q", q) ||
-	    !gkm_data_asn1_write_mpi (asn, "g", g) ||
-	    !gkm_data_asn1_write_mpi (asn, "Y", y) ||
-	    !gkm_data_asn1_write_mpi (asn, "priv", x))
+	if (!gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "p", NULL), p) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "q", NULL), q) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "g", NULL), g) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "Y", NULL), y) ||
+	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "priv", NULL), x))
 		goto done;
 
-	if (!egg_asn1_write_uint (asn, "version", 0))
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
 		goto done;
 
-	result = egg_asn1_encode (asn, "", len, NULL);
+	result = egg_asn1x_encode (asn, egg_secure_realloc, len);
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	gcry_mpi_release (p);
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
@@ -964,16 +932,16 @@ gkm_data_der_write_private_key (gcry_sexp_t s_key, gsize *len)
 }
 
 static gcry_cipher_hd_t
-prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
+prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
                                  gsize n_password, gsize *n_block)
 {
-	ASN1_TYPE asn1_params;
+	GNode *asn1_params = NULL;
 	gcry_cipher_hd_t cih;
 	guchar salt[8];
 	gcry_error_t gcry;
 	guchar *key, *iv, *portion;
 	gsize n_key, n_portion;
-	int iterations, res;
+	int iterations;
 
 	init_quarks ();
 
@@ -982,8 +950,8 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
 	                                             GCRYCTL_TEST_ALGO, NULL, 0), NULL);
 
 	/* The encryption algorithm */
-	if(!egg_asn1_write_oid (asn, "encryptionAlgorithm.algorithm",
-	                             OID_PKCS12_PBE_3DES_SHA1))
+	if(!egg_asn1x_set_oid_as_quark (egg_asn1x_node (asn, "encryptionAlgorithm", "algorithm", NULL),
+	                                OID_PKCS12_PBE_3DES_SHA1))
 		g_return_val_if_reached (NULL);
 
 	/* Randomize some input for the password based secret */
@@ -1001,19 +969,18 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
 		g_return_val_if_reached (NULL);
 
 	/* Now write out the parameters */
-	res = asn1_create_element (egg_asn1_get_pkix_asn1type (),
-	                           "PKIX1.pkcs-12-PbeParams", &asn1_params);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
-	if (!egg_asn1_write_value (asn1_params, "salt", salt, sizeof (salt)))
+	asn1_params = egg_asn1x_create (pkix_asn1_tab, "pkcs-12-PbeParams");
+	g_return_val_if_fail (asn1_params, NULL);
+	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn1_params, "salt", NULL), salt, sizeof (salt), NULL))
 		g_return_val_if_reached (NULL);
-	if (!egg_asn1_write_uint (asn1_params, "iterations", iterations))
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn1_params, "iterations", NULL), iterations))
 		g_return_val_if_reached (NULL);
-	portion = egg_asn1_encode (asn1_params, "", &n_portion, NULL);
+	portion = egg_asn1x_encode (asn1_params, NULL, &n_portion);
 	g_return_val_if_fail (portion, NULL);
 
-	if (!egg_asn1_write_value (asn, "encryptionAlgorithm.parameters", portion, n_portion))
+	if (!egg_asn1x_set_raw_element (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL),
+	                                portion, n_portion, g_free))
 		g_return_val_if_reached (NULL);
-	g_free (portion);
 
 	/* Now make a cipher that matches what we wrote out */
 	gcry = gcry_cipher_open (&cih, GCRY_CIPHER_3DES, GCRY_CIPHER_MODE_CBC, 0);
@@ -1025,7 +992,7 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
 
 	g_free (iv);
 	egg_secure_free (key);
-	asn1_delete_structure (&asn1_params);
+	egg_asn1x_destroy (asn1_params);
 
 	return cih;
 }
@@ -1033,8 +1000,8 @@ prepare_and_encode_pkcs8_cipher (ASN1_TYPE asn, const gchar *password,
 guchar*
 gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 {
-	ASN1_TYPE asn;
-	int res, algorithm;
+	GNode *asn = NULL;
+	int algorithm;
 	gboolean is_priv;
 	GQuark oid;
 	guchar *params, *key, *data;
@@ -1047,12 +1014,11 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 		g_return_val_if_reached (NULL);
 	g_return_val_if_fail (is_priv == TRUE, NULL);
 
-	res = asn1_create_element (egg_asn1_get_pkix_asn1type (),
-	                           "PKIX1.pkcs-8-PrivateKeyInfo", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-8-PrivateKeyInfo");
+	g_return_val_if_fail (asn, NULL);
 
 	/* Write out the version */
-	if (!egg_asn1_write_uint (asn, "version", 0))
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
 		g_return_val_if_reached (NULL);
 
 	/* Per algorithm differences */
@@ -1079,28 +1045,25 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 	};
 
 	/* Write out the algorithm */
-	if (!egg_asn1_write_oid (asn, "privateKeyAlgorithm.algorithm", oid))
+	if (!egg_asn1x_set_oid_as_quark (egg_asn1x_node (asn, "privateKeyAlgorithm", "algorithm", NULL), oid))
 		g_return_val_if_reached (NULL);
 
 	/* Write out the parameters */
-	if (!egg_asn1_write_value (asn, "privateKeyAlgorithm.parameters", params, n_params))
-		g_return_val_if_reached (NULL);
-	egg_secure_free (params);
+	if (params) {
+		if (!egg_asn1x_set_raw_element (egg_asn1x_node (asn, "privateKeyAlgorithm", "parameters", NULL),
+		                                params, n_params, egg_secure_free))
+			g_return_val_if_reached (NULL);
+	}
 
 	/* Write out the key portion */
-	if (!egg_asn1_write_value (asn, "privateKey", key, n_key))
-		g_return_val_if_reached (NULL);
-	egg_secure_free (key);
-
-	/* Add an empty attributes field */
-	if (!egg_asn1_write_value (asn, "attributes", NULL, 0))
+	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "privateKey", NULL),
+	                                  key, n_key, egg_secure_free))
 		g_return_val_if_reached (NULL);
 
-	data = egg_asn1_encode (asn, "", n_data, NULL);
+	data = egg_asn1x_encode (asn, egg_secure_realloc, n_data);
 	g_return_val_if_fail (data, NULL);
 
-	asn1_delete_structure (&asn);
-
+	egg_asn1x_destroy (asn);
 	return data;
 }
 
@@ -1110,17 +1073,17 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
 {
 	gcry_error_t gcry;
 	gcry_cipher_hd_t cih;
-	ASN1_TYPE asn;
-	int res;
+	GNode *asn = NULL;
 	guchar *key, *data;
 	gsize n_key, block = 0;
 
 	/* Encode the key in normal pkcs8 fashion */
 	key = gkm_data_der_write_private_pkcs8_plain (skey, &n_key);
+	if (key == NULL)
+		return NULL;
 
-	res = asn1_create_element (egg_asn1_get_pkix_asn1type (),
-	                           "PKIX1.pkcs-8-EncryptedPrivateKeyInfo", &asn);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-8-EncryptedPrivateKeyInfo");
+	g_return_val_if_fail (asn, NULL);
 
 	/* Create a and write out a cipher used for encryption */
 	cih = prepare_and_encode_pkcs8_cipher (asn, password, n_password, &block);
@@ -1134,7 +1097,7 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
 		pad = block - (n_key % block);
 		if (pad == 0)
 			pad = block;
-		padded = g_realloc (key, n_key + pad);
+		padded = egg_secure_realloc (key, n_key + pad);
 		memset (padded + n_key, pad, pad);
 		key = padded;
 		n_key += pad;
@@ -1145,14 +1108,14 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
 
 	gcry_cipher_close (cih);
 
-	res = asn1_write_value (asn, "encryptedData", key, n_key);
-	g_return_val_if_fail (res == ASN1_SUCCESS, NULL);
+	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "encryptedData", NULL),
+	                                  key, n_key, egg_secure_free))
+		g_return_val_if_reached (NULL);
 
-	data = egg_asn1_encode (asn, "", n_data, NULL);
+	data = egg_asn1x_encode (asn, NULL, n_data);
 	g_return_val_if_fail (data, NULL);
 
-	asn1_delete_structure (&asn);
-
+	egg_asn1x_destroy (asn);
 	return data;
 }
 
@@ -1161,9 +1124,9 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
  */
 
 GkmDataResult
-gkm_data_der_read_certificate (const guchar *data, gsize n_data, ASN1_TYPE *asn1)
+gkm_data_der_read_certificate (const guchar *data, gsize n_data, GNode **asn1)
 {
-	*asn1 = egg_asn1_decode ("PKIX1.Certificate", data, n_data);
+	*asn1 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	if (!*asn1)
 		return GKM_DATA_UNRECOGNIZED;
 
@@ -1175,33 +1138,38 @@ gkm_data_der_read_basic_constraints (const guchar *data, gsize n_data,
                                      gboolean *is_ca, gint *path_len)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
-	ASN1_TYPE asn;
-	guint value;
+	GNode *asn = NULL;
+	GNode *node;
+	gulong value;
 
-	asn = egg_asn1_decode ("PKIX1.BasicConstraints", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "BasicConstraints", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
 	if (path_len) {
-		if (!egg_asn1_read_uint (asn, "pathLenConstraint", &value))
+		node = egg_asn1x_node (asn, "pathLenConstraint", NULL);
+		if (!egg_asn1x_have (node))
 			*path_len = -1;
+		else if (!egg_asn1x_get_integer_as_ulong (node, &value))
+			goto done;
 		else
 			*path_len = value;
 	}
 
 	if (is_ca) {
-		if (!egg_asn1_read_boolean (asn, "cA", is_ca))
+		node = egg_asn1x_node (asn, "cA", NULL);
+		if (!egg_asn1x_have (node))
 			*is_ca = FALSE;
+		else if (!egg_asn1x_get_boolean (node, is_ca))
+			goto done;
 	}
 
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
-
+	egg_asn1x_destroy (asn);
 	if (ret == GKM_DATA_FAILURE)
 		g_message ("invalid basic constraints");
 
@@ -1209,31 +1177,25 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_key_usage (const guchar *data, gsize n_data, guint *key_usage)
+gkm_data_der_read_key_usage (const guchar *data, gsize n_data, gulong *key_usage)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
-	ASN1_TYPE asn;
-	guchar buf[4];
-	int res, len;
+	GNode *asn = NULL;
+	guint n_bits;
 
-	asn = egg_asn1_decode ("PKIX1.KeyUsage", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "KeyUsage", data, n_data);
 	if (!asn)
 		goto done;
 
 	ret = GKM_DATA_FAILURE;
 
-	memset (buf, 0, sizeof (buf));
-	len = sizeof (buf);
-	res = asn1_read_value (asn, "", buf, &len);
-	if (res != ASN1_SUCCESS || len < 1 || len > 2)
+	if (!egg_asn1x_get_bits_as_ulong (asn, key_usage, &n_bits))
 		goto done;
 
-	*key_usage = buf[0] | (buf[1] << 8);
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
@@ -1241,13 +1203,13 @@ GkmDataResult
 gkm_data_der_read_enhanced_usage (const guchar *data, gsize n_data, GQuark **usage_oids)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
-	ASN1_TYPE asn;
-	gchar *part;
+	GNode *asn = NULL;
+	GNode *node;
 	GArray *array;
 	GQuark oid;
 	int i;
 
-	asn = egg_asn1_decode ("PKIX1.ExtKeyUsageSyntax", data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "ExtKeyUsageSyntax", data, n_data);
 	if (!asn)
 		goto done;
 
@@ -1255,13 +1217,11 @@ gkm_data_der_read_enhanced_usage (const guchar *data, gsize n_data, GQuark **usa
 
 	array = g_array_new (TRUE, TRUE, sizeof (GQuark));
 	for (i = 0; TRUE; ++i) {
-		part = g_strdup_printf ("?%d", i + 1);
-		oid = egg_asn1_read_oid (asn, part);
-		g_free (part);
-
-		if (!oid)
+		node = egg_asn1x_node (asn, i + 1, NULL);
+		if (node == NULL)
 			break;
 
+		oid = egg_asn1x_get_oid_as_quark (node);
 		g_array_append_val (array, oid);
 	}
 
@@ -1269,17 +1229,16 @@ gkm_data_der_read_enhanced_usage (const guchar *data, gsize n_data, GQuark **usa
 	ret = GKM_DATA_SUCCESS;
 
 done:
-	if (asn)
-		asn1_delete_structure (&asn);
+	egg_asn1x_destroy (asn);
 	return ret;
 }
 
 
 guchar*
-gkm_data_der_write_certificate (ASN1_TYPE asn1, gsize *n_data)
+gkm_data_der_write_certificate (GNode *asn1, gsize *n_data)
 {
 	g_return_val_if_fail (asn1, NULL);
 	g_return_val_if_fail (n_data, NULL);
 
-	return egg_asn1_encode (asn1, "", n_data, NULL);
+	return egg_asn1x_encode (asn1, NULL, n_data);
 }

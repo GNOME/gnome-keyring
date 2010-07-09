@@ -35,6 +35,8 @@
 #include "gkm/gkm-sexp.h"
 #include "gkm/gkm-util.h"
 
+#include "egg/egg-secure-memory.h"
+
 #include <glib/gi18n.h>
 
 enum {
@@ -294,6 +296,7 @@ gkm_user_private_key_real_save (GkmSerializable *base, GkmSecret *login, guchar 
 	const gchar *password;
 	gsize n_password;
 	GkmSexp *sexp;
+	guchar *key;
 
 	g_return_val_if_fail (GKM_IS_USER_PRIVATE_KEY (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
@@ -303,11 +306,19 @@ gkm_user_private_key_real_save (GkmSerializable *base, GkmSecret *login, guchar 
 	g_return_val_if_fail (sexp, FALSE);
 
 	password = gkm_secret_get_password (login, &n_password);
-	if (password == NULL)
-		*data = gkm_data_der_write_private_pkcs8_plain (gkm_sexp_get (sexp), n_data);
-	else
+	if (password == NULL) {
+		key = gkm_data_der_write_private_pkcs8_plain (gkm_sexp_get (sexp), n_data);
+
+		/*
+		 * Caller is expecting normal memory buffer, which makes sense since
+		 * this is being written to disk, and won't be 'secure' anyway.
+		 */
+		*data = g_memdup (key, *n_data);
+		egg_secure_free (key);
+	} else {
 		*data = gkm_data_der_write_private_pkcs8_crypted (gkm_sexp_get (sexp), password,
 		                                                  n_password, n_data);
+	}
 
 	gkm_sexp_unref (sexp);
 	return *data != NULL;

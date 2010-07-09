@@ -34,6 +34,8 @@
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-util.h"
 
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
 #include "egg/egg-dn.h"
 #include "egg/egg-error.h"
 #include "egg/egg-hex.h"
@@ -133,17 +135,17 @@ static int flock(int fd, int operation)
 static gchar*
 name_for_subject (const guchar *subject, gsize n_subject)
 {
-	ASN1_TYPE asn;
+	GNode *asn;
 	gchar *name;
 
 	g_assert (subject);
 	g_assert (n_subject);
 
-	asn = egg_asn1_decode ("PKIX1.Name", subject, n_subject);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Name", subject, n_subject);
 	g_return_val_if_fail (asn, NULL);
 
-	name = egg_dn_read_part (asn, "rdnSequence", "CN");
-	asn1_delete_structure (&asn);
+	name = egg_dn_read_part (egg_asn1x_node (asn, "rdnSequence", NULL), "CN");
+	egg_asn1x_destroy (asn);
 
 	return name;
 }

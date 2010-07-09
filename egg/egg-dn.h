@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* egg-asn1.h - ASN.1 helper routines
+/* egg-dn.h - ASN.1 helper routines
 
-   Copyright (C) 2007 Stefan Walter
+   Copyright (C) 2010 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -26,18 +26,23 @@
 
 #include <glib.h>
 
-#include <libtasn1.h>
+gchar*             egg_dn_read                            (GNode *node);
 
-gchar*             egg_dn_read                            (ASN1_TYPE asn, const gchar *part);
+gchar*             egg_dn_read_part                       (GNode *node,
+                                                           const gchar *match);
 
-gchar*             egg_dn_read_part                       (ASN1_TYPE asn, const gchar *part, const gchar *match);
+typedef void       (*EggDnCallback)                       (guint index,
+                                                           GQuark oid,
+                                                           const guchar *value,
+                                                           gsize n_value,
+                                                           gpointer user_data);
 
-typedef void       (*EggDnCallback)                       (guint index, GQuark oid, const guchar *value,
-                                                           gsize n_value, gpointer user_data);
+gboolean           egg_dn_parse                           (GNode *node,
+                                                           EggDnCallback callback,
+                                                           gpointer user_data);
 
-gboolean           egg_dn_parse                           (ASN1_TYPE asn, const gchar *part,
-                                                           EggDnCallback callback, gpointer user_data);
+gchar*             egg_dn_print_value                     (GQuark oid,
+                                                           const guchar *value,
+                                                           gsize n_value);
 
-gchar*             egg_dn_print_value                     (GQuark oid, const guchar *value, gsize n_value);
-
-#endif /*EGG_DN_H_*/
+#endif /* EGG_DN_H_ */

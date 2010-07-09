@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkm-data-asn1.h - ASN.1 helper routines
+/* egg-asn1-defs.h - ASN.1 definitions
 
-   Copyright (C) 2007 Stefan Walter
+   Copyright (C) 2010 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -21,16 +21,12 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKM_DATA_ASN_H_
-#define GKM_DATA_ASN_H_
+#ifndef EGG_ASN1_DEFS_H_
+#define EGG_ASN1_DEFS_H_
 
-#include <glib.h>
-#include <gcrypt.h>
+#include <libtasn1.h>
 
-gboolean           gkm_data_asn1_read_mpi                      (GNode *asn,
-                                                                gcry_mpi_t *mpi);
+extern const ASN1_ARRAY_TYPE pkix_asn1_tab[];
+extern const ASN1_ARRAY_TYPE pk_asn1_tab[];
 
-gboolean           gkm_data_asn1_write_mpi                     (GNode *asn,
-                                                                gcry_mpi_t mpi);
-
-#endif /*GKM_DATA_ASN_H_*/
+#endif /*EGG_ASN1_DEFS_H_*/
