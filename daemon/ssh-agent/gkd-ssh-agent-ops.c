@@ -892,6 +892,42 @@ make_raw_sign_hash (GChecksumType algo, const guchar *data, gsize n_data,
 	return hash;
 }
 
+static guchar*
+unlock_and_sign (GP11Session *session, GP11Object *key, gulong mech_type, const guchar *input,
+                 gsize n_input, gsize *n_result, GError **err)
+{
+	GP11Attributes *attrs;
+	GP11Object *cred;
+	gboolean always;
+
+	/* First check if we should authenticate the key */
+	attrs = gp11_object_get (key, err, CKA_ALWAYS_AUTHENTICATE, GP11_INVALID);
+	if (!attrs)
+		return NULL;
+
+	/* Authenticate the key if necessary, this allows long term */
+	if (!gp11_attributes_find_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, &always))
+		g_return_val_if_reached (NULL);
+
+	gp11_attributes_unref (attrs);
+
+	if (always == TRUE) {
+		cred = gp11_session_create_object (session, err,
+		                                   CKA_TOKEN, GP11_BOOLEAN, FALSE,
+		                                   CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
+		                                   CKA_VALUE, 0, NULL,
+		                                   CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (key),
+		                                   GP11_INVALID);
+		if (cred == NULL)
+			return NULL;
+
+		g_object_unref (cred);
+	}
+
+	/* Do the magic */
+	return gp11_session_sign (session, key, mech_type, input, n_input, n_result, err);
+}
+
 static gboolean
 op_sign_request (GkdSshAgentCall *call)
 {
@@ -961,8 +997,7 @@ op_sign_request (GkdSshAgentCall *call)
 	session = gp11_object_get_session (key);
 	g_return_val_if_fail (session, FALSE);
 
-	/* Do the magic */
-	result = gp11_session_sign (session, key, mech, hash, n_hash, &n_result, &error);
+	result = unlock_and_sign (session, key, mech, hash, n_hash, &n_result, &error);
 
 	g_object_unref (session);
 	g_object_unref (key);
