@@ -466,8 +466,9 @@ set_unlock_options_on_object (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR options, CK_
 
 	rv = (self->module->C_SetAttributeValue) (self->session, self->object, &attr, 1);
 	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID) {
-		g_warning ("Couldn't set credential template for prompt: %s",
-		           gkm_util_rv_to_string (rv));
+		if (rv != CKR_TOKEN_WRITE_PROTECTED)
+			g_warning ("Couldn't set credential template for prompt: %s",
+			           gkm_util_rv_to_string (rv));
 	}
 }
 
