@@ -1167,7 +1167,9 @@ gp11_module_enumerate_objects_full (GP11Module *self, GP11Attributes *attrs,
 	slots = gp11_module_get_slots (self, TRUE);
 	
 	for (l = slots; ret && !stop && l; l = g_list_next (l)) {
-		session = gp11_slot_open_session (l->data, CKF_SERIAL_SESSION, &error);
+
+		/* TODO: We really should allow the caller to specify the flags, at least read-write */
+		session = gp11_slot_open_session (l->data, CKF_RW_SESSION | CKF_SERIAL_SESSION, &error);
 		if (!session) {
 			g_return_val_if_fail (error != NULL, FALSE);
 			
