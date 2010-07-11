@@ -2118,7 +2118,7 @@ authenticate_perform (Authenticate *args, GP11Arguments *base)
 		pin_len = args->password ? strlen (args->password) : 0; 
 		rv = (base->pkcs11->C_Login) (base->handle, CKU_CONTEXT_SPECIFIC, 
 		                              (CK_UTF8CHAR_PTR)args->password, pin_len);
-		if (rv == CKR_PIN_INCORRECT) 
+		if (rv == CKR_PIN_INCORRECT && !args->protected_auth)
 			args->state = AUTHENTICATE_WANT;
 		else
 			args->state = AUTHENTICATE_NONE;
