@@ -131,7 +131,28 @@ map_session_to_real (CK_SESSION_HANDLE_PTR handle, Mapping *mapping, Session *se
 }
 
 static void
-stash_session_specific_key (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE key)
+lookup_session_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE_PTR key)
+{
+	Session *sess;
+
+	g_assert (key);
+	*key = 0;
+
+	G_LOCK (wrap_layer);
+
+		if (wrap_sessions) {
+			sess = g_hash_table_lookup (wrap_sessions, GINT_TO_POINTER ((gint)handle));
+			if (sess == NULL)
+				g_warning ("sessions out of sync with lower layer");
+			else
+				*key = sess->specific;
+		}
+
+	G_UNLOCK (wrap_layer);
+}
+
+static void
+store_session_specific (CK_SESSION_HANDLE handle, CK_OBJECT_HANDLE key)
 {
 	Session *sess;
 
@@ -271,6 +292,15 @@ wrap_C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 {
 	if (!list)
 		return CKR_ARGUMENTS_BAD;
+	*list = gkm_wrap_layer_get_functions_no_prompts ();
+	return CKR_OK;
+}
+
+static CK_RV
+auth_C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
+{
+	if (!list)
+		return CKR_ARGUMENTS_BAD;
 	*list = gkm_wrap_layer_get_functions ();
 	return CKR_OK;
 }
@@ -344,7 +374,13 @@ wrap_C_GetTokenInfo (CK_SLOT_ID id, CK_TOKEN_INFO_PTR info)
 	rv = map_slot_to_real (&id, &map);
 	if (rv != CKR_OK)
 		return rv;
-	rv = (map.funcs->C_GetTokenInfo) (id, info);
+	return (map.funcs->C_GetTokenInfo) (id, info);
+}
+
+static CK_RV
+auth_C_GetTokenInfo (CK_SLOT_ID id, CK_TOKEN_INFO_PTR info)
+{
+	CK_RV rv = wrap_C_GetTokenInfo (id, info);
 	if (rv == CKR_OK)
 		info->flags |= CKF_PROTECTED_AUTHENTICATION_PATH;
 	return rv;
@@ -530,7 +566,6 @@ wrap_C_GetSessionInfo (CK_SESSION_HANDLE handle, CK_SESSION_INFO_PTR info)
 static CK_RV
 wrap_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
-	GkmWrapPrompt *prompt;
 	Mapping map;
 	CK_RV rv;
 
@@ -538,13 +573,23 @@ wrap_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 	if (rv != CKR_OK)
 		return rv;
 
-	prompt = gkm_wrap_prompt_for_init_pin (map.funcs, handle, pin, pin_len);
+	return (map.funcs->C_InitPIN) (handle, pin, pin_len);
+}
+
+static CK_RV
+auth_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
+{
+	GkmWrapPrompt *prompt;
+	CK_RV rv;
+
+	prompt = gkm_wrap_prompt_for_init_pin (gkm_wrap_layer_get_functions_no_prompts(),
+	                                       handle, pin, pin_len);
 
 	for (;;) {
 		if (prompt && !gkm_wrap_prompt_do_init_pin (prompt, rv, &pin, &pin_len))
 			break;
 
-		rv = (map.funcs->C_InitPIN) (handle, pin, pin_len);
+		rv = wrap_C_InitPIN (handle, pin, pin_len);
 
 		if (!prompt || rv != CKR_PIN_INVALID || rv != CKR_PIN_LEN_RANGE)
 			break;
@@ -559,9 +604,9 @@ wrap_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 }
 
 static CK_RV
-wrap_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len, CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
+wrap_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len,
+               CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
 {
-	GkmWrapPrompt *prompt;
 	Mapping map;
 	CK_RV rv;
 
@@ -569,16 +614,25 @@ wrap_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_p
 	if (rv != CKR_OK)
 		return rv;
 
-	prompt = gkm_wrap_prompt_for_set_pin (map.funcs, handle,
-	                                      old_pin, old_pin_len,
-	                                      new_pin, new_pin_len);
+	return (map.funcs->C_SetPIN) (handle, old_pin, old_pin_len, new_pin, new_pin_len);
+}
+
+static CK_RV
+auth_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_pin_len,
+               CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
+{
+	GkmWrapPrompt *prompt;
+	CK_RV rv;
+
+	prompt = gkm_wrap_prompt_for_set_pin (gkm_wrap_layer_get_functions_no_prompts(),
+	                                      handle, old_pin, old_pin_len, new_pin, new_pin_len);
 
 	for (;;) {
 		if (prompt && !gkm_wrap_prompt_do_set_pin (prompt, rv, &old_pin, &old_pin_len,
 		                                           &new_pin, &new_pin_len))
 			break;
 
-		rv = (map.funcs->C_SetPIN) (handle, old_pin, old_pin_len, new_pin, new_pin_len);
+		rv = wrap_C_SetPIN (handle, old_pin, old_pin_len, new_pin, new_pin_len);
 
 		if (!prompt || rv != CKR_PIN_INCORRECT ||
 		    rv != CKR_PIN_INVALID || rv != CKR_PIN_LEN_RANGE)
@@ -623,19 +677,30 @@ static CK_RV
 wrap_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
               CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
-	GkmWrapPrompt *prompt;
-	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map, &session);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
 
-	prompt = gkm_wrap_prompt_for_login (map.funcs, user_type, handle, session.specific, pin, pin_len);
+	return (map.funcs->C_Login) (handle, user_type, pin, pin_len);
+}
+
+static CK_RV
+auth_C_Login (CK_SESSION_HANDLE handle, CK_USER_TYPE user_type,
+              CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
+{
+	GkmWrapPrompt *prompt;
+	CK_OBJECT_HANDLE specific;
+	CK_RV rv;
+
+	lookup_session_specific (handle, &specific);
+	prompt = gkm_wrap_prompt_for_login (gkm_wrap_layer_get_functions_no_prompts(),
+	                                    user_type, handle, specific, pin, pin_len);
 
 	for (;;) {
-		rv = (map.funcs->C_Login) (handle, user_type, pin, pin_len);
+		rv = wrap_C_Login (handle, user_type, pin, pin_len);
 
 		if (!prompt || rv != CKR_PIN_INCORRECT)
 			break;
@@ -668,7 +733,6 @@ static CK_RV
 wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
                      CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
-	GkmWrapPrompt *prompt = NULL;
 	Mapping map;
 	CK_RV rv;
 
@@ -676,14 +740,25 @@ wrap_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
 	if (rv != CKR_OK)
 		return rv;
 
+	return (map.funcs->C_CreateObject) (handle, template, count, new_object);
+}
+
+static CK_RV
+auth_C_CreateObject (CK_SESSION_HANDLE handle, CK_ATTRIBUTE_PTR template,
+                     CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
+{
+	GkmWrapPrompt *prompt = NULL;
+	CK_RV rv;
+
 	for (;;) {
-		rv = (map.funcs->C_CreateObject) (handle, template, count, new_object);
+		rv = wrap_C_CreateObject (handle, template, count, new_object);
 
 		if (rv != CKR_PIN_INCORRECT)
 			break;
 
 		if (!prompt) {
-			prompt = gkm_wrap_prompt_for_credential (map.funcs, handle, template, count);
+			prompt = gkm_wrap_prompt_for_credential (gkm_wrap_layer_get_functions_no_prompts(),
+			                                         handle, template, count);
 			if (prompt == NULL)
 				break;
 		}
@@ -808,16 +883,22 @@ static CK_RV
 wrap_C_EncryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_OBJECT_HANDLE key)
 {
-	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map, &session);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	rv = (map.funcs->C_EncryptInit) (handle, mechanism, key);
+	return (map.funcs->C_EncryptInit) (handle, mechanism, key);
+}
+
+static CK_RV
+auth_C_EncryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
+                    CK_OBJECT_HANDLE key)
+{
+	CK_RV rv = wrap_C_EncryptInit (handle, mechanism, key);
 	if (rv == CKR_OK)
-		stash_session_specific_key (session.wrap_session, key);
+		store_session_specific (handle, key);
 	return rv;
 }
 
@@ -865,16 +946,22 @@ static CK_RV
 wrap_C_DecryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                     CK_OBJECT_HANDLE key)
 {
-	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map, &session);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	rv = (map.funcs->C_DecryptInit) (handle, mechanism, key);
+	return (map.funcs->C_DecryptInit) (handle, mechanism, key);
+}
+
+static CK_RV
+auth_C_DecryptInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
+                    CK_OBJECT_HANDLE key)
+{
+	CK_RV rv = wrap_C_DecryptInit (handle, mechanism, key);
 	if (rv == CKR_OK)
-		stash_session_specific_key (session.wrap_session, key);
+		store_session_specific (handle, key);
 	return rv;
 }
 
@@ -983,16 +1070,22 @@ static CK_RV
 wrap_C_SignInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                  CK_OBJECT_HANDLE key)
 {
-	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map, &session);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	rv = (map.funcs->C_SignInit) (handle, mechanism, key);
+	return (map.funcs->C_SignInit) (handle, mechanism, key);
+}
+
+static CK_RV
+auth_C_SignInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
+                 CK_OBJECT_HANDLE key)
+{
+	CK_RV rv = wrap_C_SignInit (handle, mechanism, key);
 	if (rv == CKR_OK)
-		stash_session_specific_key (session.wrap_session, key);
+		store_session_specific (handle, key);
 	return rv;
 }
 
@@ -1038,18 +1131,23 @@ static CK_RV
 wrap_C_SignRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                         CK_OBJECT_HANDLE key)
 {
-	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map, &session);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	rv = (map.funcs->C_SignRecoverInit) (handle, mechanism, key);
-	if (rv == CKR_OK)
-		stash_session_specific_key (session.wrap_session, key);
-	return rv;
+	return (map.funcs->C_SignRecoverInit) (handle, mechanism, key);
+}
 
+static CK_RV
+auth_C_SignRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
+                        CK_OBJECT_HANDLE key)
+{
+	CK_RV rv = wrap_C_SignRecoverInit (handle, mechanism, key);
+	if (rv == CKR_OK)
+		store_session_specific (handle, key);
+	return rv;
 }
 
 static CK_RV
@@ -1069,16 +1167,22 @@ static CK_RV
 wrap_C_VerifyInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                    CK_OBJECT_HANDLE key)
 {
-	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map, &session);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	rv = (map.funcs->C_VerifyInit) (handle, mechanism, key);
+	return (map.funcs->C_VerifyInit) (handle, mechanism, key);
+}
+
+static CK_RV
+auth_C_VerifyInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
+                   CK_OBJECT_HANDLE key)
+{
+	CK_RV rv = wrap_C_VerifyInit (handle, mechanism, key);
 	if (rv == CKR_OK)
-		stash_session_specific_key (session.wrap_session, key);
+		store_session_specific (handle, key);
 	return rv;
 }
 
@@ -1124,16 +1228,22 @@ static CK_RV
 wrap_C_VerifyRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
                           CK_OBJECT_HANDLE key)
 {
-	Session session;
 	Mapping map;
 	CK_RV rv;
 
-	rv = map_session_to_real (&handle, &map, &session);
+	rv = map_session_to_real (&handle, &map, NULL);
 	if (rv != CKR_OK)
 		return rv;
-	rv = (map.funcs->C_VerifyRecoverInit) (handle, mechanism, key);
+	return (map.funcs->C_VerifyRecoverInit) (handle, mechanism, key);
+}
+
+static CK_RV
+auth_C_VerifyRecoverInit (CK_SESSION_HANDLE handle, CK_MECHANISM_PTR mechanism,
+                          CK_OBJECT_HANDLE key)
+{
+	CK_RV rv = wrap_C_VerifyInit (handle, mechanism, key);
 	if (rv == CKR_OK)
-		stash_session_specific_key (session.wrap_session, key);
+		store_session_specific (handle, key);
 	return rv;
 }
 
@@ -1379,12 +1489,90 @@ static CK_FUNCTION_LIST wrap_function_list = {
 	wrap_C_WaitForSlotEvent
 };
 
+static CK_FUNCTION_LIST auth_function_list = {
+	{ CRYPTOKI_VERSION_MAJOR, CRYPTOKI_VERSION_MINOR },  /* version */
+	wrap_C_Initialize,
+	wrap_C_Finalize,
+	wrap_C_GetInfo,
+	auth_C_GetFunctionList,
+	wrap_C_GetSlotList,
+	wrap_C_GetSlotInfo,
+	auth_C_GetTokenInfo,
+	wrap_C_GetMechanismList,
+	wrap_C_GetMechanismInfo,
+	wrap_C_InitToken,
+	auth_C_InitPIN,
+	auth_C_SetPIN,
+	wrap_C_OpenSession,
+	wrap_C_CloseSession,
+	wrap_C_CloseAllSessions,
+	wrap_C_GetSessionInfo,
+	wrap_C_GetOperationState,
+	wrap_C_SetOperationState,
+	auth_C_Login,
+	wrap_C_Logout,
+	auth_C_CreateObject,
+	wrap_C_CopyObject,
+	wrap_C_DestroyObject,
+	wrap_C_GetObjectSize,
+	wrap_C_GetAttributeValue,
+	wrap_C_SetAttributeValue,
+	wrap_C_FindObjectsInit,
+	wrap_C_FindObjects,
+	wrap_C_FindObjectsFinal,
+	auth_C_EncryptInit,
+	wrap_C_Encrypt,
+	wrap_C_EncryptUpdate,
+	wrap_C_EncryptFinal,
+	auth_C_DecryptInit,
+	wrap_C_Decrypt,
+	wrap_C_DecryptUpdate,
+	wrap_C_DecryptFinal,
+	wrap_C_DigestInit,
+	wrap_C_Digest,
+	wrap_C_DigestUpdate,
+	wrap_C_DigestKey,
+	wrap_C_DigestFinal,
+	auth_C_SignInit,
+	wrap_C_Sign,
+	wrap_C_SignUpdate,
+	wrap_C_SignFinal,
+	auth_C_SignRecoverInit,
+	wrap_C_SignRecover,
+	auth_C_VerifyInit,
+	wrap_C_Verify,
+	wrap_C_VerifyUpdate,
+	wrap_C_VerifyFinal,
+	auth_C_VerifyRecoverInit,
+	wrap_C_VerifyRecover,
+	wrap_C_DigestEncryptUpdate,
+	wrap_C_DecryptDigestUpdate,
+	wrap_C_SignEncryptUpdate,
+	wrap_C_DecryptVerifyUpdate,
+	wrap_C_GenerateKey,
+	wrap_C_GenerateKeyPair,
+	wrap_C_WrapKey,
+	wrap_C_UnwrapKey,
+	wrap_C_DeriveKey,
+	wrap_C_SeedRandom,
+	wrap_C_GenerateRandom,
+	wrap_C_GetFunctionStatus,
+	wrap_C_CancelFunction,
+	wrap_C_WaitForSlotEvent
+};
+
 /* -----------------------------------------------------------------------------------------
  * PUBLIC FUNCTIONS
  */
 
 CK_FUNCTION_LIST_PTR
 gkm_wrap_layer_get_functions (void)
+{
+	return &auth_function_list;
+}
+
+CK_FUNCTION_LIST_PTR
+gkm_wrap_layer_get_functions_no_prompts (void)
 {
 	return &wrap_function_list;
 }

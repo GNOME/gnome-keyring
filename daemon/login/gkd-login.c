@@ -38,7 +38,7 @@
 static GP11Module*
 module_instance (void)
 {
-	GP11Module *module = gp11_module_new (gkd_pkcs11_get_functions ());
+	GP11Module *module = gp11_module_new (gkd_pkcs11_get_base_functions ());
 	gp11_module_set_pool_sessions (module, FALSE);
 	gp11_module_set_auto_authenticate (module, FALSE);
 	g_return_val_if_fail (module, NULL);

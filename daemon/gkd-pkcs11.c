@@ -41,6 +41,9 @@
 /* The top level of our internal PKCS#11 module stack */
 static CK_FUNCTION_LIST_PTR pkcs11_roof = NULL;
 
+/* The top level of our internal PKCS#11 module stack, but below prompting */
+static CK_FUNCTION_LIST_PTR pkcs11_base = NULL;
+
 static void
 pkcs11_daemon_cleanup (gpointer unused)
 {
@@ -203,4 +206,10 @@ CK_FUNCTION_LIST_PTR
 gkd_pkcs11_get_functions (void)
 {
 	return pkcs11_roof;
+}
+
+CK_FUNCTION_LIST_PTR
+gkd_pkcs11_get_base_functions (void)
+{
+	return pkcs11_base;
 }

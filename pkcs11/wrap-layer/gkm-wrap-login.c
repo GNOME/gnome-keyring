@@ -120,7 +120,7 @@ prepare_module_session_and_collection (CK_FUNCTION_LIST_PTR_PTR module,
 	g_assert (module);
 	g_assert (session);
 
-	funcs = gkm_wrap_layer_get_functions ();
+	funcs = gkm_wrap_layer_get_functions_no_prompts ();
 	g_return_val_if_fail (funcs, FALSE);
 
 	rv = (funcs->C_GetSlotList) (CK_TRUE, NULL, &n_slots);

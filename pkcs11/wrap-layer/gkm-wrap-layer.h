@@ -26,6 +26,8 @@
 
 CK_FUNCTION_LIST_PTR    gkm_wrap_layer_get_functions               (void);
 
+CK_FUNCTION_LIST_PTR    gkm_wrap_layer_get_functions_no_prompts    (void);
+
 void                    gkm_wrap_layer_reset_modules               (void);
 
 void                    gkm_wrap_layer_add_module                  (CK_FUNCTION_LIST_PTR funcs);
