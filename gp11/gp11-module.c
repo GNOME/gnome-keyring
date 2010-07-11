@@ -771,6 +771,7 @@ gp11_module_initialize (const gchar *path, gpointer reserved, GError **err)
 GP11Module*
 gp11_module_new (CK_FUNCTION_LIST_PTR funcs)
 {
+	g_return_val_if_fail (funcs, NULL);
 	return g_object_new (GP11_TYPE_MODULE, "functions", funcs, NULL);
 }
 

@@ -94,6 +94,7 @@ gkd_pkcs11_initialize (void)
 	gkm_wrap_layer_add_module (user_store);
 
 	pkcs11_roof = gkm_wrap_layer_get_functions ();
+	pkcs11_base = gkm_wrap_layer_get_functions_no_prompts ();
 
 	memset (&init_args, 0, sizeof (init_args));
 	init_args.flags = CKF_OS_LOCKING_OK;
