@@ -44,8 +44,6 @@
 
 #include <glib/gi18n.h>
 
-#include <libtasn1.h>
-
 enum {
 	PROP_0,
 	PROP_LABEL,

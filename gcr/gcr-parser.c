@@ -39,7 +39,6 @@
 
 #include <stdlib.h>
 #include <gcrypt.h>
-#include <libtasn1.h>
 
 enum {
 	PROP_0,

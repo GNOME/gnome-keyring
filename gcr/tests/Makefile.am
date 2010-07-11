@@ -30,8 +30,7 @@ ui_test_details_CFLAGS = \
 ui_test_details_LDADD = \
 	$(top_builddir)/gcr/libgcr.la \
 	$(GTK_LIBS) \
-	$(LIBGCRYPT_LIBS) \
-	$(LIBTASN1_LIBS)
-	
+	$(LIBGCRYPT_LIBS)
+
 EXTRA_DIST = \
 	test-data

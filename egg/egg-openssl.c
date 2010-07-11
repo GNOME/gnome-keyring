@@ -29,7 +29,6 @@
 #include "egg-symkey.h"
 
 #include <gcrypt.h>
-#include <libtasn1.h>
 
 #include <glib.h>
 

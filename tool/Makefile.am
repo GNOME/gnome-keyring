@@ -23,5 +23,4 @@ gnome_keyring_LDADD = \
 	$(GTHREAD_LIBS) \
 	$(GTK_LIBS) \
 	$(GCRYPT_LIBS) \
-	$(LIBTASN1_LIBS) \
 	$(DAEMON_LIBS)

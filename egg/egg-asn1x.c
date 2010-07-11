@@ -21,6 +21,30 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
+/*
+ * Some portions are:
+ *
+ *      Copyright (C) 2004, 2006, 2008, 2009 Free Software Foundation
+ *      Copyright (C) 2002 Fabio Fiorina
+ *
+ * This file is part of LIBTASN1.
+ *
+ * The LIBTASN1 library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA
+ */
+
 #include "config.h"
 
 #include "egg-asn1x.h"
@@ -545,16 +569,125 @@ anode_calc_explicit (GNode *node)
  */
 
 static gboolean
+anode_decode_cls_tag (const guchar *data, const guchar *end,
+                      guchar *cls, gulong *tag, gint *cb)
+{
+	gint punt, ris, last;
+	gint n_data;
+
+	g_assert (end >= data);
+	g_assert (cls);
+	g_assert (cb);
+
+	n_data = end - data;
+
+	if (n_data < 2)
+		return FALSE;
+
+	*cls = data[0] & 0xE0;
+
+	/* short form */
+	if ((data[0] & 0x1F) != 0x1F) {
+		*cb = 1;
+		ris = data[0] & 0x1F;
+
+	/* Long form */
+	} else {
+		punt = 1;
+		ris = 0;
+		while (punt <= n_data && data[punt] & 128) {
+			int last = ris;
+			ris = ris * 128 + (data[punt++] & 0x7F);
+
+			/* wrapper around, and no bignums... */
+			if (ris < last)
+				return FALSE;
+		}
+
+		if (punt >= n_data)
+			return FALSE;
+
+		last = ris;
+		ris = ris * 128 + (data[punt++] & 0x7F);
+
+		/* wrapper around, and no bignums... */
+		if (ris < last)
+			return FALSE;
+
+		*cb = punt;
+	}
+
+	if (tag)
+		*tag = ris;
+
+	return TRUE;
+}
+
+static gint
+anode_decode_length (const guchar *data, const guchar *end, gint *cb)
+{
+	gint ans, last;
+	gint k, punt;
+	gint n_data;
+
+	g_assert (data);
+	g_assert (end);
+	g_assert (end >= data);
+	g_assert (cb);
+
+	*cb = 0;
+	n_data = end - data;
+
+	if (n_data == 0)
+		return 0;
+
+	/* short form */
+	if (!(data[0] & 128)) {
+		*cb = 1;
+		return data[0];
+
+	/* Long form */
+	} else {
+		k = data[0] & 0x7F;
+		punt = 1;
+
+		/* definite length method */
+		if (k) {
+			ans = 0;
+			while (punt <= k && punt < n_data) {
+				last = ans;
+				ans = ans * 256 + data[punt++];
+
+				/* we wrapped around, no bignum support... */
+				if (ans < last)
+					return -2;
+			}
+
+		/* indefinite length method */
+		} else {
+			ans = -1;
+		}
+
+		*cb = punt;
+		return ans;
+	}
+}
+
+static gboolean
 anode_decode_cls_tag_len (const guchar *data, const guchar *end,
                           guchar *cls, gulong *tag, gint *off, gint *len)
 {
 	gint cb1, cb2;
-	gint der_len;
+
+	g_assert (data);
+	g_assert (end);
 	g_assert (end >= data);
-	der_len = end - data;
-	if (asn1_get_tag_der (data, der_len, cls, &cb1, tag) != ASN1_SUCCESS)
+	g_assert (off);
+	g_assert (len);
+
+	if (!anode_decode_cls_tag (data, end, cls, tag, &cb1))
 		return FALSE;
-	*len = asn1_get_length_der (data + cb1, der_len - cb1, &cb2);
+	*len = anode_decode_length (data + cb1, end, &cb2);
 	if (*len < -1)
 		return FALSE;
 	*off = cb1 + cb2;
@@ -991,12 +1124,42 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
  * ENCODING
  */
 
+static void
+anode_encode_length (gulong len, guchar *ans, gint *cb)
+{
+	guchar temp[sizeof (gulong)];
+	gint k;
+
+	g_assert (cb);
+
+	/* short form */
+	if (len < 128) {
+		if (ans != NULL)
+			ans[0] = (unsigned char)len;
+		*cb = 1;
+
+	/* Long form */
+	} else {
+		k = 0;
+		while (len) {
+			temp[k++] = len & 0xFF;
+			len = len >> 8;
+		}
+		*cb = k + 1;
+		if (ans != NULL) {
+			ans[0] = ((unsigned char) k & 0x7F) + 128;
+			while (k--)
+				ans[*cb - 1 - k] = temp[k];
+		}
+	}
+}
+
 static gint
 anode_encode_cls_tag_len (guchar *data, gsize n_data, guchar cls,
                           gulong tag, gint len)
 {
 	guchar temp[sizeof(gulong)];
-	gint length;
+	gint cb;
 	gint off = 0;
 	gint k;
 
@@ -1025,9 +1188,9 @@ anode_encode_cls_tag_len (guchar *data, gsize n_data, guchar cls,
 	}
 
 	/* And now the length */
-	length = n_data - off;
-	asn1_length_der (len, data ? data + off : NULL, &length);
-	off += length;
+	cb = n_data - off;
+	anode_encode_length (len, data ? data + off : NULL, &cb);
+	off += cb;
 
 	g_assert (!data || n_data >= off);
 	return off;
@@ -3641,9 +3804,9 @@ egg_asn1x_element_length (gconstpointer data, gsize n_data)
 	int cb, len;
 	gulong tag;
 
-	if (asn1_get_tag_der (data, n_data, &cls, &cb, &tag) == ASN1_SUCCESS) {
+	if (anode_decode_cls_tag (data, (const guchar*)data + n_data, &cls, &tag, &cb)) {
 		counter += cb;
-		len = asn1_get_length_der ((const guchar*)data + cb, n_data - cb, &cb);
+		len = anode_decode_length ((const guchar*)data + cb, (const guchar*)data + n_data, &cb);
 		counter += cb;
 		if (len >= 0) {
 			len += counter;
@@ -3667,11 +3830,11 @@ egg_asn1x_element_content (gconstpointer data, gsize n_data, gsize *n_content)
 	g_return_val_if_fail (n_content != NULL, NULL);
 
 	/* Now get the data out of this element */
-	if (asn1_get_tag_der (data, n_data, &cls, &cb, &tag) != ASN1_SUCCESS)
+	if (!anode_decode_cls_tag (data, (const guchar*)data + n_data, &cls, &tag, &cb))
 		return NULL;
 
 	counter += cb;
-	len = asn1_get_length_der ((const guchar*)data + cb, n_data - cb, &cb);
+	len = anode_decode_length ((const guchar*)data + cb, (const guchar*)data + n_data, &cb);
 	if (len < 0)
 		return NULL;
 	counter += cb;

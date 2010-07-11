@@ -35,7 +35,6 @@
 
 #include <glib.h>
 #include <gcrypt.h>
-#include <libtasn1.h>
 
 /* -----------------------------------------------------------------------------
  * QUARKS

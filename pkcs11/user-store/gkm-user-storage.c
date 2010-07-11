@@ -44,8 +44,6 @@
 
 #include <glib/gstdio.h>
 
-#include <libtasn1.h>
-
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <errno.h>

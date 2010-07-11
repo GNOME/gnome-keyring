@@ -42,7 +42,6 @@ gkm_ssh_store_standalone_la_LIBADD = \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \
-	$(LIBTASN1_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
 

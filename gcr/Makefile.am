@@ -71,7 +71,6 @@ libgcr_la_LIBADD = \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS) \
 	$(LIBGCRYPT_LIBS) \
-	$(LIBTASN1_LIBS) \
 	$(GTK_LIBS)
 
 gcr-marshal.h: gcr-marshal.list $(GLIB_GENMARSHAL)
