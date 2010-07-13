@@ -15,7 +15,6 @@ SUBDIRS = . \
 	wrap-layer \
 	roots-store \
 	rpc-layer \
-	plex-layer \
 	secret-store \
 	ssh-store \
 	user-store
