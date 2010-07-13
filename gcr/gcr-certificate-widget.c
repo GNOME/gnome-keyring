@@ -507,6 +507,5 @@ gcr_certificate_widget_set_certificate (GcrCertificateWidget *self, GcrCertifica
 		g_object_ref (self->pv->certificate);
 
 	refresh_display (self);
-	refresh_display (self);
 	g_object_notify (G_OBJECT (self), "certificate");
 }
