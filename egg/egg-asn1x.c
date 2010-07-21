@@ -1983,29 +1983,25 @@ anode_read_integer_as_ulong (GNode *node, Atlv *tlv, gulong *value)
 static gboolean
 anode_write_integer_ulong (gulong value, guchar *data, gsize *n_data)
 {
-	guchar buf[8];
-	gint bytes;
+	guchar buf[sizeof (gulong)];
+	gint bytes, i, off;
 
-	buf[0] = (value >> 56) & 0xFF;
-	buf[1] = (value >> 48) & 0xFF;
-	buf[2] = (value >> 40) & 0xFF;
-	buf[3] = (value >> 32) & 0xFF;
-	buf[4] = (value >> 24) & 0xFF;
-	buf[5] = (value >> 16) & 0xFF;
-	buf[6] = (value >> 8) & 0xFF;
-	buf[7] = (value >> 0) & 0xFF;
+	for (i = 0; i < sizeof (ulong); ++i) {
+		off = sizeof (ulong) - (i + 1);
+		buf[i] = (value >> (off * 8)) & 0xFF;
+	}
 
-	for (bytes = 7; bytes >= 0; --bytes)
+	for (bytes = sizeof (gulong) - 1; bytes >= 0; --bytes)
 		if (!buf[bytes])
 			break;
 
-	bytes = 8 - (bytes + 1);
+	bytes = sizeof (gulong) - (bytes + 1);
 	if (bytes == 0)
 		bytes = 1;
 
 	if (data) {
 		g_assert (*n_data >= bytes);
-		memcpy (data, buf + (8 - bytes), bytes);
+		memcpy (data, buf + (sizeof (gulong) - bytes), bytes);
 	}
 	*n_data = bytes;
 	return TRUE;
