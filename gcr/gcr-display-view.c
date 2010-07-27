@@ -28,7 +28,7 @@
 
 G_DEFINE_TYPE (GcrDisplayView, _gcr_display_view, GTK_TYPE_TEXT_VIEW);
 
-#define NORMAL_MARGIN 5
+#define NORMAL_MARGIN 10
 #define FIELD_MARGIN 17
 #define COLUMN_MARGIN 6
 #define ICON_MARGIN 8
@@ -175,7 +175,7 @@ _gcr_display_view_constructor (GType type, guint n_props, GObjectConstructParam 
 	on_expander_expanded (G_OBJECT (widget), NULL, self);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 0.5, 0.5);
-	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 0, 0, 0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 9, 0, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), widget);
 	gtk_widget_show_all (alignment);
 

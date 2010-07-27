@@ -180,6 +180,9 @@ refresh_display (GcrCertificateWidget *self)
 	GQuark oid;
 	GDate date;
 
+	if (!self->pv->view)
+		return;
+
 	_gcr_display_view_clear (self->pv->view);
 
 	if (!self->pv->certificate)
@@ -336,6 +339,7 @@ gcr_certificate_widget_constructor (GType type, guint n_props, GObjectConstructP
 	_gcr_display_view_set_stock_image (self->pv->view, GCR_ICON_CERTIFICATE);
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scroll), GTK_WIDGET (self->pv->view));
 
@@ -396,6 +400,7 @@ gcr_certificate_widget_set_property (GObject *obj, guint prop_id, const GValue *
 		g_free (self->pv->label);
 		self->pv->label = g_value_dup_string (value);
 		g_object_notify (obj, "label");
+		refresh_display (self);
 		break;
 	case PROP_ATTRIBUTES:
 		g_return_if_fail (!self->pv->attributes);
@@ -410,6 +415,7 @@ gcr_certificate_widget_set_property (GObject *obj, guint prop_id, const GValue *
 				                        (GDestroyNotify)gp11_attributes_unref);
 				gcr_certificate_widget_set_certificate (self, cert);
 				g_object_unref (cert);
+				refresh_display (self);
 			}
 		}
 		break;

@@ -127,6 +127,9 @@ refresh_display (GcrKeyWidget *self)
 	gulong key_type;
 	gint size;
 
+	if (!self->pv->view)
+		return;
+
 	_gcr_display_view_clear (self->pv->view);
 
 	if (!self->pv->attributes)
@@ -159,6 +162,13 @@ refresh_display (GcrKeyWidget *self)
 	}
 
 	_gcr_display_view_append_content (self->pv->view, text, NULL);
+
+	size = calculate_key_size (self->pv->attributes, key_type);
+	if (size >= 0) {
+		display = g_strdup_printf (_("%d bits"), size);
+		_gcr_display_view_append_content (self->pv->view, _("Strength"), display);
+		g_free (display);
+	}
 
 	_gcr_display_view_start_details (self->pv->view);
 
@@ -203,6 +213,7 @@ gcr_key_widget_constructor (GType type, guint n_props, GObjectConstructParam *pr
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll), GTK_SHADOW_ETCHED_IN);
 	gtk_container_add (GTK_CONTAINER (scroll), GTK_WIDGET (self->pv->view));
 
 	gtk_container_add (GTK_CONTAINER (self), scroll);
@@ -251,6 +262,7 @@ gcr_key_widget_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_free (self->pv->label);
 		self->pv->label = g_value_dup_string (value);
 		g_object_notify (obj, "label");
+		refresh_display (self);
 		break;
 	case PROP_ATTRIBUTES:
 		g_return_if_fail (!self->pv->attributes);

@@ -32,34 +32,48 @@ chdir_base_dir (char* argv0)
 }
 
 static void
-test_details (const gchar *path)
+on_parser_parsed (GcrParser *parser, gpointer unused)
 {
 	GcrCertificateWidget *details;
-	GcrCertificate *certificate;
 	GtkDialog *dialog;
+
+	dialog = GTK_DIALOG (gtk_dialog_new ());
+	g_object_ref_sink (dialog);
+
+	details = g_object_new (GCR_TYPE_CERTIFICATE_WIDGET,
+	                        "label", "Google's Certificate",
+	                        "attributes", gcr_parser_get_parsed_attributes (parser),
+	                        NULL);
+
+	gtk_widget_show (GTK_WIDGET (details));
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (details));
+
+	gtk_window_set_default_size (GTK_WINDOW (dialog), 550, 400);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 20);
+	gtk_dialog_run (dialog);
+
+	g_object_unref (dialog);
+	g_object_unref (details);
+}
+
+static void
+test_certificate (const gchar *path)
+{
+	GcrParser *parser;
+	GError *err = NULL;
 	guchar *data;
 	gsize n_data;
 
 	if (!g_file_get_contents (path, (gchar**)&data, &n_data, NULL))
 		g_error ("couldn't read file: %s", path);
 
-	certificate = gcr_simple_certificate_new (data, n_data);
-	g_assert (certificate);
+	parser = gcr_parser_new ();
+	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), NULL);
+	if (!gcr_parser_parse_data (parser, data, n_data, &err))
+		g_error ("couldn't parse data: %s", err->message);
+
+	g_object_unref (parser);
 	g_free (data);
-
-	dialog = GTK_DIALOG (gtk_dialog_new ());
-	g_object_ref_sink (dialog);
-
-	details = gcr_certificate_widget_new (certificate);
-	gtk_widget_show (GTK_WIDGET (details));
-	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (details));
-
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 550, 400);
-	gtk_dialog_run (dialog);
-
-	g_object_unref (dialog);
-	g_object_unref (certificate);
-	g_object_unref (details);
 }
 
 int
@@ -68,10 +82,10 @@ main(int argc, char *argv[])
 	gtk_init (&argc, &argv);
 
 	if (argc > 1) {
-		test_details (argv[1]);
+		test_certificate (argv[1]);
 	} else {
 		chdir_base_dir (argv[0]);
-		test_details ("test-data/der-certificate.crt");
+		test_certificate ("test-data/der-certificate.crt");
 	}
 
 	return 0;
