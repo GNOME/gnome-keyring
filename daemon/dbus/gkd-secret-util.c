@@ -56,7 +56,7 @@ decode_object_identifier (const gchar* enc, gssize length)
 			length -= 2;
 		}
 
-		g_string_append_c_inline (result, ch);
+		g_string_append_c (result, ch);
 	}
 
 	return g_string_free (result, FALSE);
@@ -137,7 +137,7 @@ gkd_secret_util_build_path (const gchar *base, gconstpointer identifier, gssize 
 		if (G_LIKELY ((ch >= 'A' && ch <= 'Z') ||
 		              (ch >= 'a' && ch <= 'z') ||
 		              (ch >= '0' && ch <= '9'))) {
-			g_string_append_c_inline (result, ch);
+			g_string_append_c (result, ch);
 
 		/* Special characters are encoded with a _ */
 		} else {
