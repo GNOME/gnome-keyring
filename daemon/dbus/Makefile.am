@@ -36,3 +36,12 @@ libgkd_dbus_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 
+# -------------------------------------------------------------------
+
+if WITH_TESTS
+TESTS_DIR = tests
+else
+TESTS_DIR =
+endif
+
+SUBDIRS = . $(TESTS_DIR)

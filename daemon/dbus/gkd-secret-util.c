@@ -141,7 +141,7 @@ gkd_secret_util_build_path (const gchar *base, gconstpointer identifier, gssize 
 
 		/* Special characters are encoded with a _ */
 		} else {
-			g_string_append_printf (result, "_%02x", (unsigned int)ch);
+			g_string_append_printf (result, "_%02x", (unsigned int)(unsigned char)ch);
 		}
 	}
 

@@ -614,6 +614,7 @@ daemon/control/Makefile
 daemon/control/tests/Makefile
 daemon/data/Makefile
 daemon/dbus/Makefile
+daemon/dbus/tests/Makefile
 daemon/gpg-agent/Makefile
 daemon/login/Makefile
 daemon/ssh-agent/Makefile
