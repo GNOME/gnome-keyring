@@ -33,7 +33,7 @@ DEFINE_SETUP(prep_object)
 	SUCCESS_RES(session, err);
 
 	/* Our module always exports a token object with this */
-	object = gck_object_from_handle (slot, 2);
+	object = gck_object_from_handle (session, 2);
 	g_assert (object != NULL);
 }
 
@@ -47,12 +47,12 @@ DEFINE_TEARDOWN(prep_object)
 
 DEFINE_TEST(object_props)
 {
-	GckSlot *sl;
+	GckSession *sess;
 	GckModule *mod;
 	CK_OBJECT_HANDLE handle;
-	g_object_get (object, "slot", &sl, "module", &mod, "handle", &handle, NULL);
-	g_assert (slot == sl);
-	g_object_unref (sl);
+	g_object_get (object, "session", &sess, "module", &mod, "handle", &handle, NULL);
+	g_assert (session == sess);
+	g_object_unref (sess);
 	g_assert (module == mod);
 	g_object_unref (mod);
 	g_assert (handle == 2);
@@ -61,8 +61,10 @@ DEFINE_TEST(object_props)
 DEFINE_TEST(object_equals_hash)
 {
 	GckSlot *other_slot;
+	GckSession *other_session;
 	GckObject *other_object;
 	GObject *obj;
+	GError *err = NULL;
 	guint hash;
 
 	hash = gck_object_hash (object);
@@ -70,21 +72,24 @@ DEFINE_TEST(object_equals_hash)
 
 	g_assert (gck_object_equal (object, object));
 
-	other_slot = g_object_new (GCK_TYPE_SLOT, "module", module, "handle", 5895, NULL);
-	other_object = gck_object_from_handle (other_slot, gck_object_get_handle (object));
+	other_slot = g_object_new (GCK_TYPE_SLOT, "module", module, "handle", GCK_TEST_SLOT_TWO, NULL);
+	other_session = gck_slot_open_session (other_slot, 0, &err);
+	SUCCESS_RES (other_session, err);
+	other_object = gck_object_from_handle (other_session, gck_object_get_handle (object));
 	g_assert (!gck_object_equal (object, other_object));
 	g_object_unref (other_slot);
+	g_object_unref (other_session);
 	g_object_unref (other_object);
 
 	obj = g_object_new (G_TYPE_OBJECT, NULL);
 	g_assert (!gck_object_equal (object, obj));
 	g_object_unref (obj);
 
-	other_object = gck_object_from_handle (slot, 383838);
+	other_object = gck_object_from_handle (session, 383838);
 	g_assert (!gck_object_equal (object, other_object));
 	g_object_unref (other_object);
 
-	other_object = gck_object_from_handle (slot, gck_object_get_handle (object));
+	other_object = gck_object_from_handle (session, gck_object_get_handle (object));
 	g_assert (gck_object_equal (object, other_object));
 	g_object_unref (other_object);
 }
@@ -406,58 +411,4 @@ DEFINE_TEST(find_objects)
 	g_object_unref (result);
 	g_assert (objects == NULL);
 	gck_list_unref_free (objects);
-}
-
-DEFINE_TEST(explicit_sessions)
-{
-	GckSession *sess;
-	GAsyncResult *result = NULL;
-	CK_OBJECT_CLASS_PTR klass;
-	GError *err = NULL;
-	gsize n_data;
-
-	/* Set an explicit session */
-	gck_object_set_session (object, session);
-	sess = gck_object_get_session (object);
-	g_assert (sess == session);
-	g_object_unref (sess);
-	g_object_get (object, "session", &sess, NULL);
-	g_assert (sess == session);
-	g_object_unref (sess);
-
-	/* Simple */
-	klass = gck_object_get_data (object, CKA_CLASS, &n_data, &err);
-	SUCCESS_RES (klass, err);
-	if (klass != NULL) {
-		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
-		g_assert (*klass == CKO_DATA);
-		g_free (klass);
-	}
-
-	/* Async */
-	gck_object_get_data_async (object, CKA_CLASS, NULL, NULL, fetch_async_result, &result);
-	testing_wait_until (500);
-	g_assert (result != NULL);
-
-	klass = gck_object_get_data_finish (object, result, &n_data, &err);
-	g_object_unref (result);
-	SUCCESS_RES (klass, err);
-	if (klass != NULL) {
-		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
-		g_assert (*klass == CKO_DATA);
-		g_free (klass);
-	}
-
-	/* Set it to null and make sure taht works */
-	gck_object_set_session (object, NULL);
-	g_assert (gck_object_get_session (object) == NULL);
-	g_object_get (object, "session", &sess, NULL);
-	g_assert (sess == NULL);
-
-	/* Test property settor */
-	g_object_set (object, "session", session, NULL);
-	sess = gck_object_get_session (object);
-	g_assert (sess == session);
-	gck_object_set_session (object, NULL);
-	g_object_unref (sess);
 }

@@ -412,6 +412,7 @@ _gck_module_fire_authenticate_object (GckModule *self, GckObject *object,
                                       gchar *label, gchar **password)
 {
 	GckTokenInfo *info;
+	GckSession *session;
 	GckSlot *slot;
 	gboolean ret;
 
@@ -419,7 +420,10 @@ _gck_module_fire_authenticate_object (GckModule *self, GckObject *object,
 	g_assert (GCK_IS_OBJECT (object));
 	g_assert (password);
 
-	slot = gck_object_get_slot (object);
+	session = gck_object_get_session (object);
+	slot = gck_session_get_slot (session);
+	g_object_unref (session);
+
 	info = gck_slot_get_token_info (slot);
 	g_object_unref (slot);
 
@@ -1196,7 +1200,6 @@ gck_module_enumerate_objects_full (GckModule *self, GckAttributes *attrs,
 		}
 
 		for (o = objects; !stop && o; o = g_list_next (o)) {
-			gck_object_set_session (o->data, session);
 			if (!(func)(o->data, user_data)) {
 				stop = TRUE;
 				break;

@@ -59,7 +59,6 @@ find_key (GckSession *session, CK_ATTRIBUTE_TYPE method, CK_MECHANISM_TYPE mech)
 	g_assert (objects);
 
 	for (l = objects; l; l = g_list_next (l)) {
-		gck_object_set_session (l->data, session);
 		if (mech) {
 			mechs = gck_object_get_data (l->data, CKA_ALLOWED_MECHANISMS, &n_mechs, NULL);
 			g_assert (mechs);
@@ -98,7 +97,6 @@ check_key_with_value (GckSession *session, GckObject *key, CK_OBJECT_CLASS klass
 	GckAttribute *attr;
 	gulong check;
 
-	gck_object_set_session (key, session);
 	attrs = gck_object_get (key, NULL, CKA_CLASS, CKA_VALUE, GCK_INVALID);
 	g_assert (attrs);
 

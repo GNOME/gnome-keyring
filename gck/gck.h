@@ -1108,10 +1108,10 @@ struct _GckObjectClass {
 
 GType               gck_object_get_type                     (void) G_GNUC_CONST;
 
-GckObject*          gck_object_from_handle                  (GckSlot *slot,
+GckObject*          gck_object_from_handle                  (GckSession *session,
                                                              CK_OBJECT_HANDLE handle);
 
-GList*              gck_objects_from_handle_array           (GckSlot *slot,
+GList*              gck_objects_from_handle_array           (GckSession *session,
                                                              CK_OBJECT_HANDLE_PTR handles,
                                                              CK_ULONG n_handles);
 
@@ -1122,15 +1122,9 @@ guint               gck_object_hash                         (gconstpointer objec
 
 GckModule*          gck_object_get_module                   (GckObject *self);
 
-GckSlot*            gck_object_get_slot                     (GckObject *self);
-
 CK_OBJECT_HANDLE    gck_object_get_handle                   (GckObject *self);
 
 GckSession*         gck_object_get_session                  (GckObject *self);
-
-void                gck_object_set_session                  (GckObject *self,
-                                                             GckSession *session);
-
 
 #ifdef UNIMPLEMENTED
 

@@ -231,15 +231,6 @@ test_C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 	return C_GetFunctionList (list);
 }
 
-#define TEST_SLOT_ONE  52
-#define TEST_SLOT_TWO  134
-
-/*
- * Two slots
- *  ONE: token present
- *  TWO: token not present
- */
-
 static CK_RV
 test_C_GetSlotList (CK_BBOOL tokenPresent, CK_SLOT_ID_PTR pSlotList, CK_ULONG_PTR pulCount)
 {
@@ -261,9 +252,9 @@ test_C_GetSlotList (CK_BBOOL tokenPresent, CK_SLOT_ID_PTR pSlotList, CK_ULONG_PT
 	}
 
 	*pulCount = count;
-	pSlotList[0] = TEST_SLOT_ONE;
+	pSlotList[0] = GCK_TEST_SLOT_ONE;
 	if (!tokenPresent)
-		pSlotList[1] = TEST_SLOT_TWO;
+		pSlotList[1] = GCK_TEST_SLOT_TWO;
 
 	return CKR_OK;
 }
@@ -289,10 +280,10 @@ test_C_GetSlotInfo (CK_SLOT_ID slotID, CK_SLOT_INFO_PTR pInfo)
 {
 	g_assert (pInfo != NULL && "Invalid pInfo");
 
-	if (slotID == TEST_SLOT_ONE) {
+	if (slotID == GCK_TEST_SLOT_ONE) {
 		memcpy (pInfo, &TEST_INFO_ONE, sizeof (*pInfo));
 		return CKR_OK;
-	} else if (slotID == TEST_SLOT_TWO) {
+	} else if (slotID == GCK_TEST_SLOT_TWO) {
 		memcpy (pInfo, &TEST_INFO_TWO, sizeof (*pInfo));
 		return CKR_OK;
 	} else {
@@ -327,10 +318,10 @@ test_C_GetTokenInfo (CK_SLOT_ID slotID, CK_TOKEN_INFO_PTR pInfo)
 {
 	g_assert (pInfo != NULL && "Invalid pInfo");
 
-	if (slotID == TEST_SLOT_ONE) {
+	if (slotID == GCK_TEST_SLOT_ONE) {
 		memcpy (pInfo, &TEST_TOKEN_ONE, sizeof (*pInfo));
 		return CKR_OK;
-	} else if (slotID == TEST_SLOT_TWO) {
+	} else if (slotID == GCK_TEST_SLOT_TWO) {
 		return CKR_TOKEN_NOT_PRESENT;
 	} else {
 		g_assert_not_reached (); /* "Invalid slot id" */
@@ -348,7 +339,7 @@ static CK_RV
 test_C_GetMechanismList (CK_SLOT_ID slotID, CK_MECHANISM_TYPE_PTR pMechanismList,
                          CK_ULONG_PTR pulCount)
 {
-	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (slotID == GCK_TEST_SLOT_ONE && "Invalid slotID");
 	g_assert (pulCount != NULL && "Invalid pulCount");
 
 	/* Application only wants to know the number of slots. */
@@ -379,7 +370,7 @@ static CK_RV
 test_C_GetMechanismInfo (CK_SLOT_ID slotID, CK_MECHANISM_TYPE type,
                          CK_MECHANISM_INFO_PTR pInfo)
 {
-	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (slotID == GCK_TEST_SLOT_ONE && "Invalid slotID");
 	g_assert (pInfo != NULL && "Invalid pInfo");
 
 	if (type == CKM_CAPITALIZE) {
@@ -398,7 +389,7 @@ static CK_RV
 test_C_InitToken (CK_SLOT_ID slotID, CK_UTF8CHAR_PTR pPin, CK_ULONG ulPinLen,
                   CK_UTF8CHAR_PTR pLabel)
 {
-	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (slotID == GCK_TEST_SLOT_ONE && "Invalid slotID");
 	g_assert (pPin != NULL && "Invalid pPin");
 	g_assert (strlen ("TEST PIN") && "Invalid ulPinLen");
 	g_assert (strncmp ((gchar*)pPin, "TEST PIN", ulPinLen) == 0 && "Invalid pPin string");
@@ -423,7 +414,7 @@ test_C_OpenSession (CK_SLOT_ID slotID, CK_FLAGS flags, CK_VOID_PTR pApplication,
 {
 	Session *sess;
 
-	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert ((slotID == GCK_TEST_SLOT_ONE || slotID == GCK_TEST_SLOT_TWO) && "Invalid slotID");
 	g_assert (pApplication == NULL && "pApplication should be null");
 	g_assert (Notify == NULL && "Notify should be null");
 	g_assert (phSession != NULL && "Invalid phSession");
@@ -459,7 +450,7 @@ test_C_CloseSession (CK_SESSION_HANDLE hSession)
 static CK_RV
 test_C_CloseAllSessions (CK_SLOT_ID slotID)
 {
-	g_assert (slotID == TEST_SLOT_ONE && "Invalid slotID");
+	g_assert (slotID == GCK_TEST_SLOT_ONE && "Invalid slotID");
 
 	g_hash_table_remove_all (the_sessions);
 	return CKR_OK;

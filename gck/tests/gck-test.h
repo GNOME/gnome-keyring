@@ -43,4 +43,13 @@
 #define CKM_WRAP          (CKM_VENDOR_DEFINED | 4)
 #define CKM_DERIVE        (CKM_VENDOR_DEFINED | 5)
 
+/*
+ * Two slots
+ *  ONE: token present
+ *  TWO: token not present
+ */
+
+#define GCK_TEST_SLOT_ONE  52
+#define GCK_TEST_SLOT_TWO  134
+
 #endif /* GCK_TEST_H_ */
