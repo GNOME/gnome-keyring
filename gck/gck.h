@@ -49,7 +49,7 @@ const gchar*        gck_message_from_rv                     (CK_RV rv);
 
 gchar*              gck_string_from_chars                   (const guchar *data, gsize max);
 
-typedef gpointer    (*GckAllocator)                        (gpointer data, gsize length);
+typedef gpointer    (*GckAllocator)                         (gpointer data, gsize length);
 
 typedef struct GckMechanism {
 	gulong type;
@@ -716,38 +716,6 @@ gboolean            gck_session_generate_key_pair_finish    (GckSession *self,
                                                              GckObject **private_key,
                                                              GError **err);
 
-#ifdef UNIMPLEMENTED
-
-gboolean            gck_session_seed_random                 (GckSession *self,
-                                                             const guchar *seed,
-                                                             gsize n_seed,
-                                                             GError **err);
-
-void                gck_session_seed_random_async           (GckSession *self,
-                                                             const guchar *seed,
-                                                             gsize n_seed,
-                                                             GAsyncReadyCallback callback,
-                                                             gpointer user_data);
-
-gboolean            gck_session_seed_random_finish          (GckSession *self,
-                                                             GAsyncResult *result,
-                                                             GError **err);
-
-guchar*             gck_session_generate_random             (GckSession *self,
-                                                             gsize n_random,
-                                                             GError **err);
-
-void                gck_session_generate_random_async       (GckSession *self,
-                                                             gsize n_random,
-                                                             GAsyncReadyCallback callback,
-                                                             gpointer user_data);
-
-guchar*             gck_session_generate_random_finish      (GckSession *self,
-                                                             GAsyncResult *result,
-                                                             GError **err);
-
-#endif /* UNIMPLEMENTED */
-
 guchar*             gck_session_encrypt                      (GckSession *self,
                                                               GckObject *key,
                                                               gulong mech_type,
@@ -943,28 +911,6 @@ gboolean            gck_session_verify_finish                (GckSession *self,
                                                               GError **err);
 
 #if UNIMPLEMENTED
-
-GkrProcessor*       gck_session_batch_verify                 (GckSession *self,
-                                                              GckObject *key,
-                                                              GckMechanism *mech_type,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              gsize *n_result,
-                                                              GCancellable *cancellable,
-                                                              GError **err);
-
-void                gck_session_batch_verify_async           (GckSession *self,
-                                                              GckObject *key,
-                                                              GckMechanism *mechanism,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              GCancellable *cancellable,
-                                                              GAsyncReadyCallback callback,
-                                                              gpointer user_data);
-
-GkrProcessor*       gck_session_batch_verify_finish          (GckSession *self,
-                                                              GAsyncResult *result,
-                                                              GError **err);
 
 guchar*             gck_session_verify_recover               (GckSession *self,
                                                               GckObject *key,
