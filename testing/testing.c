@@ -52,15 +52,23 @@ static const gchar *test_path = NULL;
 EGG_SECURE_GLIB_DEFINITIONS ();
 
 static GCond *wait_condition = NULL;
+static GCond *wait_start = NULL;
 static GMutex *wait_mutex = NULL;
 static gboolean wait_waiting = FALSE;
 
 void
 testing_wait_stop (void)
 {
+	GTimeVal tv;
+
+	g_get_current_time (&tv);
+	g_time_val_add (&tv, 1000);
+
 	g_assert (wait_mutex);
 	g_assert (wait_condition);
 	g_mutex_lock (wait_mutex);
+		if (!wait_waiting)
+			g_cond_timed_wait (wait_start, wait_mutex, &tv);
 		g_assert (wait_waiting);
 		g_cond_broadcast (wait_condition);
 	g_mutex_unlock (wait_mutex);
@@ -80,6 +88,7 @@ testing_wait_until (int timeout)
 	g_mutex_lock (wait_mutex);
 		g_assert (!wait_waiting);
 		wait_waiting = TRUE;
+		g_cond_broadcast (wait_start);
 		ret = g_cond_timed_wait (wait_condition, wait_mutex, &tv);
 		g_assert (wait_waiting);
 		wait_waiting = FALSE;
@@ -267,6 +276,7 @@ main (int argc, char* argv[])
 
 	loop = g_main_loop_new (NULL, FALSE);
 	wait_condition = g_cond_new ();
+	wait_start = g_cond_new ();
 	wait_mutex = g_mutex_new ();
 
 	fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
