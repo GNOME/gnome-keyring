@@ -282,20 +282,20 @@ struct _GckModuleClass {
 	gpointer reserved[8];
 };
 
-GType                 gck_module_get_type                    (void) G_GNUC_CONST;
+GType                 gck_module_get_type                     (void) G_GNUC_CONST;
 
-GckModule*           gck_module_new                         (CK_FUNCTION_LIST_PTR funcs);
+GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs);
 
-GckModule*           gck_module_initialize                  (const gchar *path,
+GckModule*            gck_module_initialize                   (const gchar *path,
                                                                gpointer reserved,
                                                                GError **err);
 
-gboolean              gck_module_equal                       (gconstpointer module1,
+gboolean              gck_module_equal                        (gconstpointer module1,
                                                                gconstpointer module2);
 
-guint                 gck_module_hash                        (gconstpointer module);
+guint                 gck_module_hash                         (gconstpointer module);
 
-const gchar*          gck_module_get_path                    (GckModule *self);
+const gchar*          gck_module_get_path                     (GckModule *self);
 
 CK_FUNCTION_LIST_PTR  gck_module_get_functions                (GckModule *self);
 
