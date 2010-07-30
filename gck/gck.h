@@ -304,40 +304,44 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-gboolean              gck_module_get_pool_sessions            (GckModule *self);
+guint                 gck_module_get_options                  (GckModule *self);
 
-void                  gck_module_set_pool_sessions            (GckModule *self,
-                                                               gboolean pool);
+void                  gck_module_set_options                  (GckModule *self,
+                                                               guint options);
 
-gint                  gck_module_get_auto_authenticate        (GckModule *self);
+void                  gck_module_add_options                  (GckModule *self,
+                                                               guint options);
 
-void                  gck_module_set_auto_authenticate        (GckModule *self,
-                                                               gint auto_authenticate);
+GList*                gck_modules_get_slots                   (GList *modules,
+                                                               gboolean token_present);
 
-gboolean              gck_module_enumerate_objects            (GckModule *self,
+gboolean              gck_modules_enumerate_objects           (GList *modules,
                                                                GckObjectForeachFunc func,
                                                                gpointer user_data,
                                                                ...);
 
-gboolean              gck_module_enumerate_objects_full       (GckModule *self,
+gboolean              gck_modules_enumerate_objects_full      (GList *modules,
                                                                GckAttributes *attrs,
+                                                               guint session_flags,
                                                                GCancellable *cancellable,
                                                                GckObjectForeachFunc func,
                                                                gpointer user_data,
                                                                GError **error);
 
 #ifdef UNIMPLEMENTED
-void                  gck_module_enumerate_objects_async      (GckModule *self,
+void                  gck_modules_enumerate_objects_async     (GList *modules,
                                                                GckAttributes *attrs,
+                                                               guint session_flags,
+                                                               GckObjectForeachFunc func,
                                                                GCancellable *cancellable,
                                                                GAsyncReadyCallback callback,
                                                                gpointer user_data);
 
-GckObject*            gck_module_enumerate_objects_next       (GckModule *self,
+GckObject*            gck_modules_enumerate_objects_next      (GList *modules,
                                                                GAsyncResult *res,
                                                                GError **error);
 
-void                  gck_module_enumerate_objects_finish     (GckModule *self,
+void                  gck_modules_enumerate_objects_finish    (GList *modules,
                                                                GAsyncResult *res,
                                                                GError **error);
 #endif

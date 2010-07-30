@@ -21,6 +21,7 @@ libgck_la_SOURCES = \
 	gck-call.c \
 	gck-misc.c \
 	gck-module.c \
+	gck-modules.c \
 	gck-object.c \
 	gck-session.c \
 	gck-slot.c \

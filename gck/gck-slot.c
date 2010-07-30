@@ -113,10 +113,6 @@ make_session_object (GckSlot *self, gulong flags, CK_SESSION_HANDLE handle)
 	session = gck_session_from_handle (self, handle);
 	g_return_val_if_fail (session != NULL, NULL);
 
-	/* Session keeps a reference to module so this is safe */
-	g_signal_connect (session, "discard-handle",
-	                  G_CALLBACK (_gck_module_pool_session_handle), module);
-
 	g_object_unref (module);
 
 	return session;
@@ -937,9 +933,9 @@ GckSession*
 gck_slot_open_session_full (GckSlot *self, gulong flags, gpointer app_data,
                              CK_NOTIFY notify, GCancellable *cancellable, GError **err)
 {
+	OpenSession args = { GCK_ARGUMENTS_INIT, 0,  };
 	GckSession *session = NULL;
 	GckModule *module = NULL;
-	CK_SESSION_HANDLE handle;
 	CK_SLOT_ID slot_id;
 
 	flags |= CKF_SERIAL_SESSION;
@@ -949,25 +945,18 @@ gck_slot_open_session_full (GckSlot *self, gulong flags, gpointer app_data,
 	/* Try to use a cached session */
 	module = gck_slot_get_module (self);
 	slot_id = gck_slot_get_handle (self);
-	handle = _gck_module_pooled_session_handle (module, slot_id, flags);
-	if (handle != 0)
-		session = make_session_object (self, flags, handle);
 
 	/* Open a new session */
-	if (session == NULL) {
-		OpenSession args = { GCK_ARGUMENTS_INIT, 0,  };
+	args.slot = self;
+	args.flags = flags;
+	args.app_data = app_data;
+	args.notify = notify;
+	args.password = NULL;
+	args.auto_login = (gck_module_get_options (module) & GCK_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
+	args.session = 0;
 
-		args.slot = self;
-		args.flags = flags;
-		args.app_data = app_data;
-		args.notify = notify;
-		args.password = NULL;
-		args.auto_login = (gck_module_get_auto_authenticate (module) & GCK_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
-		args.session = 0;
-
-		if (_gck_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, err))
-			session = make_session_object (self, flags, args.session);
-	}
+	if (_gck_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, err))
+		session = make_session_object (self, flags, args.session);
 
 	g_object_unref (module);
 	g_object_unref (self);
@@ -996,7 +985,6 @@ gck_slot_open_session_async (GckSlot *self, gulong flags, gpointer app_data,
                               GAsyncReadyCallback callback, gpointer user_data)
 {
 	GckModule *module = NULL;
-	GckCall *call;
 	OpenSession *args;
 	CK_SLOT_ID slot_id;
 
@@ -1015,16 +1003,10 @@ gck_slot_open_session_async (GckSlot *self, gulong flags, gpointer app_data,
 	/* Try to use a cached session */
 	module = gck_slot_get_module (self);
 	slot_id = gck_slot_get_handle (self);
-	args->session = _gck_module_pooled_session_handle (module, slot_id, flags);
-	args->auto_login = (gck_module_get_auto_authenticate (module) & GCK_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
+	args->auto_login = (gck_module_get_options (module) & GCK_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
 	g_object_unref (module);
 
-	call = _gck_call_async_ready (args, cancellable, callback, user_data);
-	if (args->session)
-		_gck_call_async_short (call, CKR_OK);
-	else
-		_gck_call_async_go (call);
-
+	_gck_call_async_ready_go (args, cancellable, callback, user_data);
 	g_object_unref (self);
 }
 

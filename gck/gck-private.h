@@ -72,14 +72,6 @@ gboolean            _gck_module_fire_authenticate_object   (GckModule *module,
                                                              gchar *label,
                                                              gchar **password);
 
-gboolean            _gck_module_pool_session_handle        (GckSession *session,
-                                                             CK_SESSION_HANDLE handle,
-                                                             GckModule *self);
-
-CK_SESSION_HANDLE   _gck_module_pooled_session_handle      (GckModule *module,
-                                                             CK_SLOT_ID slot,
-                                                             gulong flags);
-
 /* ----------------------------------------------------------------------------
  * SLOT
  */

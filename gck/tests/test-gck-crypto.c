@@ -253,7 +253,7 @@ DEFINE_TEST(sign)
 	mech = gck_mechanism_new_with_param (CKM_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, see previous test */
-	gck_module_set_auto_authenticate (module, TRUE);
+	gck_module_set_options (module, GCK_AUTHENTICATE_OBJECTS);
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
@@ -303,7 +303,7 @@ DEFINE_TEST(verify)
 	mech = gck_mechanism_new_with_param (CKM_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, shouldn't be needed */
-	gck_module_set_auto_authenticate (module, TRUE);
+	gck_module_set_options (module, GCK_AUTHENTICATE_OBJECTS);
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */

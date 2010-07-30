@@ -101,66 +101,6 @@ DEFINE_TEST(open_close_session)
 	g_object_unref (sess);
 }
 
-DEFINE_TEST(open_reused)
-{
-	CK_OBJECT_HANDLE handle;
-	GckSession *sess, *sess2;
-	GAsyncResult *result = NULL;
-	GError *err = NULL;
-	gboolean value;
-
-	g_assert (gck_module_get_pool_sessions (module) == FALSE);
-	gck_module_set_pool_sessions (module, TRUE);
-	g_assert (gck_module_get_pool_sessions (module) == TRUE);
-	g_object_get (module, "pool-sessions", &value, NULL);
-	g_assert (value == TRUE);
-
-	sess = gck_slot_open_session (slot, 0, &err);
-	SUCCESS_RES (sess, err);
-	if (!sess) return;
-
-	/* Make note of the handle we saw */
-	handle = gck_session_get_handle (sess);
-	g_object_unref (sess);
-
-	/* Open again, and see if the same handle */
-	sess = gck_slot_open_session (slot, 0, &err);
-	SUCCESS_RES (sess, err);
-	if (!sess) return;
-	g_assert (handle == gck_session_get_handle (sess));
-	g_object_unref (sess);
-
-	/* Test opening async */
-	gck_slot_open_session_async (slot, 0, NULL, NULL, NULL, fetch_async_result, &result);
-	testing_wait_until (500);
-	g_assert (result != NULL);
-	sess = gck_slot_open_session_finish (slot, result, &err);
-	SUCCESS_RES (sess, err);
-	if (!sess) return;
-	g_assert (handle == gck_session_get_handle (sess));
-	g_object_unref (result);
-	g_object_unref (sess);
-
-	/* Test opening with different flags, a different session should be returned */
-	sess = gck_slot_open_session (slot, CKF_RW_SESSION, &err);
-	SUCCESS_RES (sess, err);
-	if (!sess) return;
-	g_assert (handle != gck_session_get_handle (sess));
-
-	/* Now open a second session, with same flags, shouldn't return the same */
-	sess2 = gck_slot_open_session (slot, CKF_RW_SESSION, &err);
-	SUCCESS_RES (sess2, err);
-	if (!sess2) return;
-	g_assert (gck_session_get_handle (sess) != gck_session_get_handle (sess2));
-
-	g_object_set (module, "pool-sessions", FALSE, NULL);
-	g_assert (gck_module_get_pool_sessions (module) == FALSE);
-
-	g_object_unref (sess);
-	g_object_unref (sess2);
-}
-
-
 DEFINE_TEST(init_set_pin)
 {
 	GAsyncResult *result = NULL;
@@ -274,10 +214,10 @@ DEFINE_TEST(auto_login)
 	g_clear_error (&err);
 
 	/* Setup for auto login */
-	g_assert (gck_module_get_auto_authenticate (module) == 0);
-	gck_module_set_auto_authenticate (module, TRUE);
-	g_assert (gck_module_get_auto_authenticate (module) == (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
-	g_object_get (module, "auto-authenticate", &value, NULL);
+	g_assert (gck_module_get_options (module) == 0);
+	gck_module_set_options (module, GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS);
+	g_assert (gck_module_get_options (module) == (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
+	g_object_get (module, "options", &value, NULL);
 	g_assert (value == (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
 
 	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
@@ -318,6 +258,6 @@ DEFINE_TEST(auto_login)
 	ret = gck_session_logout (session, &err);
 	SUCCESS_RES (ret, err);
 
-	g_object_set (module, "auto-authenticate", FALSE, NULL);
-	g_assert (gck_module_get_auto_authenticate (module) == FALSE);
+	g_object_set (module, "options", 0, NULL);
+	g_assert_cmpuint (gck_module_get_options (module), ==, 0);
 }

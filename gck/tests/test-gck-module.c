@@ -126,9 +126,12 @@ DEFINE_TEST(module_enumerate)
 	GckSession *session;
 	GckAttributes *attrs;
 	gboolean ret;
+	GList *modules;
+
+	modules = g_list_prepend (NULL, g_object_ref (module));
 
 	attrs = gck_attributes_new ();
-	ret = gck_module_enumerate_objects_full (module, attrs, NULL, for_first_object, "first", NULL);
+	ret = gck_modules_enumerate_objects_full (modules, attrs, 0, NULL, for_first_object, "first", NULL);
 	g_assert (ret);
 	g_assert_cmpint (n_objects, ==, 1);
 	g_assert (GCK_IS_OBJECT (last_object));
@@ -142,7 +145,7 @@ DEFINE_TEST(module_enumerate)
 	last_object = NULL;
 	n_objects = 0;
 
-	ret = gck_module_enumerate_objects (module, for_each_object, "blah",
+	ret = gck_modules_enumerate_objects (modules, for_each_object, "blah",
 	                                     CKA_CLASS, GCK_ULONG, CKO_PRIVATE_KEY,
 	                                     GCK_INVALID);
 	g_assert (ret);
@@ -156,4 +159,6 @@ DEFINE_TEST(module_enumerate)
 	g_object_unref (last_object);
 	last_object = NULL;
 	n_objects = 0;
+
+	gck_list_unref_free (modules);
 }

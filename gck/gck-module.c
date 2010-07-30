@@ -77,8 +77,7 @@ enum {
 	PROP_0,
 	PROP_PATH,
 	PROP_FUNCTIONS,
-	PROP_POOL_SESSIONS,
-	PROP_AUTO_AUTHENTICATE
+	PROP_OPTIONS
 };
 
 enum {
@@ -99,8 +98,7 @@ typedef struct _GckModulePrivate {
 	GckModuleData data;
 	GStaticMutex mutex;
 	gboolean finalized;
-	GHashTable *open_sessions;
-	gint auto_authenticate;
+	guint options;
 } GckModulePrivate;
 
 #define gck_module_GET_DATA(o) \
@@ -109,13 +107,6 @@ typedef struct _GckModulePrivate {
 G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 
 static guint signals[LAST_SIGNAL] = { 0 };
-
-typedef struct _SessionPool {
-	CK_SLOT_ID slot;
-	CK_FUNCTION_LIST_PTR funcs;
-	GArray *ro_sessions; /* array of CK_SESSION_HANDLE */
-	GArray *rw_sessions; /* array of CK_SESSION_HANDLE */
-} SessionPool;
 
 /* ----------------------------------------------------------------------------
  * HELPERS
@@ -164,20 +155,6 @@ unlock_mutex (void *mutex)
 	return CKR_OK;
 }
 
-static void
-close_session (CK_FUNCTION_LIST_PTR funcs, CK_SESSION_HANDLE handle)
-{
-	CK_RV rv;
-
-	g_return_if_fail (funcs);
-
-	rv = (funcs->C_CloseSession) (handle);
-	if (rv != CKR_OK) {
-		g_warning ("couldn't close session properly: %s",
-		           gck_message_from_rv (rv));
-	}
-}
-
 /* ----------------------------------------------------------------------------
  * INTERNAL
  */
@@ -213,166 +190,6 @@ unlock_private (gpointer obj, GckModulePrivate *pv)
 
 	g_static_mutex_unlock (&pv->mutex);
 	g_object_unref (self);
-}
-
-static void
-free_session_pool (gpointer p)
-{
-	SessionPool *pool = p;
-	guint i;
-
-	if (pool->ro_sessions) {
-		for(i = 0; i < pool->ro_sessions->len; ++i)
-			close_session (pool->funcs, g_array_index (pool->ro_sessions, CK_SESSION_HANDLE, i));
-		g_array_free (pool->ro_sessions, TRUE);
-	}
-
-	if (pool->rw_sessions) {
-		for(i = 0; i < pool->rw_sessions->len; ++i)
-			close_session (pool->funcs, g_array_index (pool->rw_sessions, CK_SESSION_HANDLE, i));
-		g_array_free (pool->rw_sessions, TRUE);
-	}
-
-	g_free (pool);
-}
-
-static gboolean
-push_session_table (GckModulePrivate *pv, CK_SLOT_ID slot, gulong flags, CK_SESSION_HANDLE handle)
-{
-	SessionPool *pool;
-	GArray *array;
-
-	g_assert (handle);
-
-	if (pv->open_sessions == NULL)
-		return FALSE;
-
-	pool = g_hash_table_lookup (pv->open_sessions, &slot);
-	if (!pool) {
-		pool = g_new0 (SessionPool, 1);
-		pool->funcs = pv->data.funcs;
-		g_hash_table_insert (pv->open_sessions, g_memdup (&slot, sizeof (slot)), pool);
-	}
-
-	if (flags & CKF_RW_SESSION) {
-		if (!pool->rw_sessions)
-			pool->rw_sessions = g_array_new (FALSE, TRUE, sizeof (CK_SESSION_HANDLE));
-		array = pool->rw_sessions;
-	} else {
-		if (!pool->ro_sessions)
-			pool->ro_sessions = g_array_new (FALSE, TRUE, sizeof (CK_SESSION_HANDLE));
-		array = pool->ro_sessions;
-	}
-
-	g_array_append_val (array, handle);
-	return TRUE;
-}
-
-static CK_SESSION_HANDLE
-pop_session_table (GckModulePrivate *pv, CK_SLOT_ID slot, gulong flags)
-{
-	CK_SESSION_HANDLE result = 0;
-	SessionPool *pool;
-	GArray **array;
-
-	g_return_val_if_fail (pv, 0);
-
-	if (!pv->open_sessions)
-		return 0;
-
-	pool = g_hash_table_lookup (pv->open_sessions, &slot);
-	if (pool == NULL)
-		return 0;
-
-	if (flags & CKF_RW_SESSION)
-		array = &pool->rw_sessions;
-	else
-		array = &pool->ro_sessions;
-
-	if (*array == NULL)
-		return 0;
-
-	g_assert ((*array)->len > 0);
-	result = g_array_index (*array, CK_SESSION_HANDLE, (*array)->len - 1);
-	g_assert (result != 0);
-	g_array_remove_index_fast (*array, (*array)->len - 1);
-
-	if (!(*array)->len) {
-		g_array_free (*array, TRUE);
-		*array = NULL;
-		if (!pool->rw_sessions && !pool->ro_sessions)
-			g_hash_table_remove (pv->open_sessions, &slot);
-	}
-
-	return result;
-}
-
-static void
-destroy_session_table (GckModulePrivate *pv)
-{
-	if (pv->open_sessions)
-		g_hash_table_unref (pv->open_sessions);
-	pv->open_sessions = NULL;
-}
-
-static void
-create_session_table (GckModulePrivate *pv)
-{
-	if (!pv->open_sessions)
-		pv->open_sessions = g_hash_table_new_full (_gck_ulong_hash, _gck_ulong_equal, g_free, free_session_pool);
-}
-
-CK_SESSION_HANDLE
-_gck_module_pooled_session_handle (GckModule *self, CK_SLOT_ID slot, gulong flags)
-{
-	GckModulePrivate *pv = lock_private (self);
-	CK_SESSION_HANDLE handle;
-
-	g_return_val_if_fail (GCK_IS_MODULE (self), 0);
-
-	{
-		handle = pop_session_table (pv, slot, flags);
-	}
-
-	unlock_private (self, pv);
-
-	return handle;
-}
-
-gboolean
-_gck_module_pool_session_handle (GckSession *session, CK_SESSION_HANDLE handle, GckModule *self)
-{
-	GckModuleData *data = gck_module_GET_DATA (self);
-	GckModulePrivate *pv;
-	CK_SESSION_INFO info;
-	gboolean handled = FALSE;
-	CK_RV rv;
-
-	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
-	g_return_val_if_fail (GCK_IS_MODULE (self), FALSE);
-
-	/* Get the session info so we know where to categorize this */
-	rv = (data->funcs->C_GetSessionInfo) (handle, &info);
-
-	if (rv == CKR_OK) {
-
-		pv = lock_private (self);
-
-		{
-			/* Keep this one around for later use */
-			handled = push_session_table (pv, info.slotID, info.flags, handle);
-		}
-
-		unlock_private (self, pv);
-
-	} else {
-
-		/* An already closed session, we don't want to bother with */
-		if (rv == CKR_SESSION_CLOSED || rv == CKR_SESSION_HANDLE_INVALID)
-			handled = TRUE;
-	}
-
-	return handled;
 }
 
 gboolean
@@ -477,11 +294,8 @@ gck_module_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_FUNCTIONS:
 		g_value_set_pointer (value, gck_module_get_functions (self));
 		break;
-	case PROP_AUTO_AUTHENTICATE:
-		g_value_set_int (value, gck_module_get_auto_authenticate (self));
-		break;
-	case PROP_POOL_SESSIONS:
-		g_value_set_boolean (value, gck_module_get_pool_sessions (self));
+	case PROP_OPTIONS:
+		g_value_set_uint (value, gck_module_get_options (self));
 		break;
 	}
 }
@@ -503,11 +317,8 @@ gck_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!data->funcs);
 		data->funcs = g_value_get_pointer (value);
 		break;
-	case PROP_AUTO_AUTHENTICATE:
-		gck_module_set_auto_authenticate (self, g_value_get_int (value));
-		break;
-	case PROP_POOL_SESSIONS:
-		gck_module_set_pool_sessions (self, g_value_get_boolean (value));
+	case PROP_OPTIONS:
+		gck_module_set_options (self, g_value_get_uint (value));
 		break;
 	}
 }
@@ -521,8 +332,6 @@ gck_module_dispose (GObject *obj)
 	CK_RV rv;
 
 	{
-		destroy_session_table (pv);
-
 		if (!pv->finalized && data->initialized && data->funcs) {
 			finalize = TRUE;
 			pv->finalized = TRUE;
@@ -548,8 +357,6 @@ gck_module_finalize (GObject *obj)
 {
 	GckModulePrivate *pv = G_TYPE_INSTANCE_GET_PRIVATE (obj, GCK_TYPE_MODULE, GckModulePrivate);
 	GckModuleData *data = gck_module_GET_DATA (obj);
-
-	g_assert (!pv->open_sessions);
 
 	data->funcs = NULL;
 
@@ -607,28 +414,16 @@ gck_module_class_init (GckModuleClass *klass)
 		                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * GckModule:auto-authenticate:
+	 * GckModule:options:
 	 *
-	 * Whether or not to automatically authenticate token objects that need
-	 * a C_Login call before they can be used.
+	 * Various option flags related to authentication etc.
 	 *
 	 * The #GckModule::authenticate-object signal will be fired when an
 	 * object needs to be authenticated.
 	 */
-	g_object_class_install_property (gobject_class, PROP_AUTO_AUTHENTICATE,
-		g_param_spec_int ("auto-authenticate", "Auto Authenticate", "Auto Login to Token when necessary",
-		                  0, G_MAXINT, 0, G_PARAM_READWRITE));
-
-	/**
-	 * GckModule:pool-sessions:
-	 *
-	 * Whether or not to pool PKCS&num;11 sessions. When this is set, sessions
-	 * will be pooled and reused if their flags match when gck_slot_open_session()
-	 * is called.
-	 */
-	g_object_class_install_property (gobject_class, PROP_POOL_SESSIONS,
-		g_param_spec_boolean ("pool-sessions", "Pool Sessions", "Pool sessions?",
-		                      FALSE, G_PARAM_READWRITE));
+	g_object_class_install_property (gobject_class, PROP_OPTIONS,
+		g_param_spec_uint ("options", "Options", "Module options",
+		                  0, G_MAXUINT, 0, G_PARAM_READWRITE));
 
 	/**
 	 * GckModule::authenticate-slot:
@@ -952,25 +747,23 @@ gck_module_get_functions (GckModule *self)
 
 
 /**
- * gck_module_get_pool_sessions:
+ * gck_module_get_options:
  * @self: The module to get setting from.
  *
- * Get the reuse sessions setting. When this is set, sessions
- * will be pooled and reused if their flags match when
- * gck_slot_open_session() is called.
+ * Get the various module options, such as auto authenticate etc.
  *
- * Return value: Whether reusing sessions or not.
+ * Return value: The module options.
  **/
-gboolean
-gck_module_get_pool_sessions (GckModule *self)
+guint
+gck_module_get_options (GckModule *self)
 {
 	GckModulePrivate *pv = lock_private (self);
-	gboolean ret;
+	guint ret;
 
 	g_return_val_if_fail (pv, FALSE);
 
 	{
-		ret = pv->open_sessions != NULL;
+		ret = pv->options;
 	}
 
 	unlock_private (self, pv);
@@ -979,253 +772,41 @@ gck_module_get_pool_sessions (GckModule *self)
 }
 
 /**
- * gck_module_set_pool_sessions:
+ * gck_module_set_options:
  * @self: The module to set the setting on.
- * @pool: Whether to reuse sessions or not.
- *
- * When this is set, sessions will be pooled and reused
- * if their flags match when gck_slot_open_session() is called.
+ * @options: Authentication and other options..
  **/
 void
-gck_module_set_pool_sessions (GckModule *self, gboolean pool)
+gck_module_set_options (GckModule *self, guint options)
 {
 	GckModulePrivate *pv = lock_private (self);
 
 	g_return_if_fail (pv);
 
 	{
-		if (pool)
-			create_session_table (pv);
-		else
-			destroy_session_table (pv);
+		pv->options = options;
 	}
 
 	unlock_private (self, pv);
-	g_object_notify (G_OBJECT (self), "pool-sessions");
+	g_object_notify (G_OBJECT (self), "options");
 }
 
 /**
- * gck_module_get_auto_authenticate:
- * @self: The module to get setting from.
- *
- * Get the auto login setting. When this is set, this slot
- * will emit the 'authenticate-slot' signal when a session
- * requires authentication, and the 'authenticate-object'
- * signal when an object requires authintication.
- *
- * Return value: Whether auto login or not.
- **/
-gint
-gck_module_get_auto_authenticate (GckModule *self)
-{
-	GckModulePrivate *pv = lock_private (self);
-	gint ret;
-
-	g_return_val_if_fail (pv, FALSE);
-
-	{
-		ret = pv->auto_authenticate;
-	}
-
-	unlock_private (self, pv);
-
-	return ret;
-}
-
-/**
- * gck_module_set_auto_authenticate:
- * @self: The module to set the setting on.
- * @auto_authenticate: Whether auto login or not.
- *
- * When this is set, this slot
- * will emit the 'authenticate-slot' signal when a session
- * requires authentication, and the 'authenticate-object'
- * signal when an object requires authintication.
+ * gck_module_add_options:
+ * @self: The module to add the option on.
+ * @options: Authentication and other options..
  **/
 void
-gck_module_set_auto_authenticate (GckModule *self, gint auto_authenticate)
+gck_module_add_options (GckModule *self, guint options)
 {
 	GckModulePrivate *pv = lock_private (self);
-
-	/* HACK: Get needed fix around API freeze. */
-	if (auto_authenticate == 1)
-		auto_authenticate = GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS;
 
 	g_return_if_fail (pv);
 
 	{
-		pv->auto_authenticate = auto_authenticate;
+		pv->options |= options;
 	}
 
 	unlock_private (self, pv);
-	g_object_notify (G_OBJECT (self), "auto-authenticate");
+	g_object_notify (G_OBJECT (self), "options");
 }
-
-/**
- * gck_module_enumerate_objects:
- * @self: The module to enumerate objects.
- * @func: Function to call for each object.
- * @user_data: Data to pass to the function.
- * @...: The arguments must be triples of: attribute type, data type, value.
- *
- * Call a function for every matching object on the module. This call may
- * block for an indefinite period.
- *
- *
- * <para>The variable argument list should contain:
- * 	<variablelist>
- *		<varlistentry>
- * 			<term>a)</term>
- * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>b)</term>
- * 			<listitem><para>The attribute data type (one of GCK_BOOLEAN, GCK_ULONG,
- * 				GCK_STRING, GCK_DATE) orthe raw attribute value length.</para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>c)</term>
- * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
- * 				a pointer to a raw attribute value.</para></listitem>
- * 		</varlistentry>
- * 	</variablelist>
- * The variable argument list should be terminated with GCK_INVALID.</para>
- *
- * This function will open a session per slot. It's recommended that you
- * set the 'reuse-sessions' property on each slot if you'll be calling
- * it a lot.
- *
- * You can access the session in which the object was found, by using the
- * gck_object_get_session() function on the resulting objects.
- *
- * This function skips tokens that are not initialize, and makes a best effort to
- * find objects on valid tokens.
- *
- * The function can return FALSE to stop the enumeration.
- *
- * Return value: If FALSE then an error prevented all matching objects from being enumerated.
- **/
-gboolean
-gck_module_enumerate_objects (GckModule *self, GckObjectForeachFunc func,
-                               gpointer user_data, ...)
-{
-	GckAttributes *attrs;
-	GError *error = NULL;
-	va_list va;
-
-	va_start (va, user_data);
-	attrs = gck_attributes_new_valist (g_realloc, va);
-	va_end (va);
-
-	gck_module_enumerate_objects_full (self, attrs, NULL, func, user_data, &error);
-	gck_attributes_unref (attrs);
-
-	if (error != NULL) {
-		g_warning ("enumerating objects failed: %s", error->message);
-		g_clear_error (&error);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/**
- * gck_module_enumerate_objects_full:
- * @self: The module to enumerate objects.
- * @attrs: Attributes that the objects must have, or empty for all objects.
- * @cancellable: Optional cancellation object, or NULL.
- * @func: Function to call for each object.
- * @user_data: Data to pass to the function.
- * @error: Location to return error information.
- *
- * Call a function for every matching object on the module. This call may
- * block for an indefinite period.
- *
- * This function will open a session per slot. It's recommended that you
- * set the 'reuse-sessions' property on each slot if you'll be calling
- * it a lot.
- *
- * You can access the session in which the object was found, by using the
- * gck_object_get_session() function on the resulting objects.
- *
- * The function can return FALSE to stop the enumeration.
- *
- * Return value: If FALSE then an error prevented all matching objects from being enumerated.
- **/
-gboolean
-gck_module_enumerate_objects_full (GckModule *self, GckAttributes *attrs,
-                                    GCancellable *cancellable, GckObjectForeachFunc func,
-                                    gpointer user_data, GError **err)
-{
-	gboolean stop = FALSE;
-	gboolean ret = TRUE;
-	GList *objects, *o;
-	GList *slots, *l;
-	GError *error = NULL;
-	GckSession *session;
-
-	g_return_val_if_fail (GCK_IS_MODULE (self), FALSE);
-	g_return_val_if_fail (attrs, FALSE);
-	g_return_val_if_fail (func, FALSE);
-
-	gck_attributes_ref (attrs);
-	slots = gck_module_get_slots (self, TRUE);
-
-	for (l = slots; ret && !stop && l; l = g_list_next (l)) {
-
-		/* TODO: We really should allow the caller to specify the flags, at least read-write */
-		session = gck_slot_open_session (l->data, CKF_RW_SESSION | CKF_SERIAL_SESSION, &error);
-		if (!session) {
-			g_return_val_if_fail (error != NULL, FALSE);
-
-			/* Ignore these errors when enumerating */
-			if (g_error_matches (error, GCK_ERROR, CKR_USER_PIN_NOT_INITIALIZED)) {
-				g_clear_error (&error);
-
-			} else {
-				ret = FALSE;
-				g_propagate_error (err, error);
-				error = NULL;
-			}
-			continue;
-		}
-
-		objects = gck_session_find_objects_full (session, attrs, cancellable, &error);
-		if (error) {
-			ret = FALSE;
-			g_object_unref (session);
-			g_propagate_error (err, error);
-			error = NULL;
-			continue;
-		}
-
-		for (o = objects; !stop && o; o = g_list_next (o)) {
-			if (!(func)(o->data, user_data)) {
-				stop = TRUE;
-				break;
-			}
-		}
-
-		g_object_unref (session);
-		gck_list_unref_free (objects);
-	}
-
-	gck_list_unref_free (slots);
-	gck_attributes_unref (attrs);
-
-	return ret;
-}
-
-/**
- * GckObjectForeachFunc:
- * @object: The enumerated object.
- * @user_data: Data passed to enumerate function.
- *
- * This function is passed to gck_module_enumerate_objects() or a similar function.
- * It is called once for each object matched.
- *
- * The GckSession through which the object is accessible can be retrieved by calling
- * gck_object_get_session() on object.
- *
- * Returns: TRUE to continue enumerating, FALSE to stop.
- */

@@ -2163,7 +2163,7 @@ authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object)
 	g_assert (GCK_IS_OBJECT (object));
 
 	module = gck_slot_get_module (slot);
-	if (gck_module_get_auto_authenticate (module) & GCK_AUTHENTICATE_OBJECTS) {
+	if (gck_module_get_options (module) & GCK_AUTHENTICATE_OBJECTS) {
 		auth->state = AUTHENTICATE_CAN;
 		auth->protected_auth = gck_slot_has_flags (slot, CKF_PROTECTED_AUTHENTICATION_PATH);
 		auth->module = module;
