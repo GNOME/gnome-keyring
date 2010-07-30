@@ -14,7 +14,8 @@ LIBS = \
 noinst_PROGRAMS= \
 	test-control-change \
 	test-control-init \
-	test-control-unlock
+	test-control-unlock \
+	test-control-quit
 
 # ------------------------------------------------------------------------------
 # Test unlocking the login keyring
@@ -32,6 +33,15 @@ test_control_init_SOURCES = \
 	test-control-init.c
 
 test_control_init_LDADD = \
+	$(top_builddir)/daemon/control/libgkd-control-client.la \
+	$(top_builddir)/egg/libegg-buffer.la \
+	$(top_builddir)/egg/libegg-creds.la \
+	$(top_builddir)/egg/libegg-secure.la
+
+test_control_quit_SOURCES = \
+	test-control-quit.c
+
+test_control_quit_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control-client.la \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-creds.la \

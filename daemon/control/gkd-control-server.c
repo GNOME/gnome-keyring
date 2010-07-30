@@ -114,6 +114,13 @@ control_change_login (EggBuffer *buffer)
 }
 
 static guint32
+control_quit (EggBuffer *buffer)
+{
+	gkd_main_quit ();
+	return GKD_CONTROL_RESULT_OK;
+}
+
+static guint32
 control_initialize_components (EggBuffer *buffer)
 {
 	gchar *components;
@@ -217,6 +224,12 @@ control_process (EggBuffer *req, GIOChannel *channel)
 		egg_buffer_add_uint32 (&cdata->buffer, 0);
 		egg_buffer_add_uint32 (&cdata->buffer, res);
 		egg_buffer_add_stringv (&cdata->buffer, gkd_util_get_environment ());
+		break;
+	case GKD_CONTROL_OP_QUIT:
+		res = control_quit (req);
+		cdata = control_data_new ();
+		egg_buffer_add_uint32 (&cdata->buffer, 0);
+		egg_buffer_add_uint32 (&cdata->buffer, res);
 		break;
 	default:
 		g_message ("received unsupported request operation on control socket: %d", (int)op);
