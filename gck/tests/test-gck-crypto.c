@@ -549,7 +549,6 @@ DEFINE_TEST(derive_key)
 	                                   CKA_CLASS, GCK_ULONG, CKO_SECRET_KEY, GCK_INVALID);
 	SUCCESS_RES (derived, error);
 	g_assert (GCK_IS_OBJECT (derived));
-g_printerr ("derived is: %lu", gck_object_get_handle (derived));
 	check_key_with_value (session, derived, CKO_SECRET_KEY, "derived");
 	g_object_unref (derived);
 
