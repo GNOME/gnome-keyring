@@ -73,11 +73,6 @@ typedef struct GckAttribute {
 	gulong length;
 } GckAttribute;
 
-#define GCK_BOOLEAN  ((gssize)-1)
-#define GCK_ULONG    ((gssize)-2)
-#define GCK_STRING   ((gssize)-3)
-#define GCK_DATE     ((gssize)-4)
-
 #define GCK_INVALID G_MAXULONG
 
 enum {
@@ -165,12 +160,6 @@ GckAttributes*      gck_attributes_new_empty                (gulong attr_type,
                                                              ...);
 
 GckAttributes*      gck_attributes_new_full                 (GckAllocator allocator);
-
-GckAttributes*      gck_attributes_newv                     (gulong attr_type,
-                                                             ...);
-
-GckAttributes*      gck_attributes_new_valist               (GckAllocator allocator,
-                                                             va_list va);
 
 GckAttribute*       gck_attributes_at                       (GckAttributes *attrs,
                                                              guint index);
@@ -316,11 +305,6 @@ GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);
 
 gboolean              gck_modules_enumerate_objects           (GList *modules,
-                                                               GckObjectForeachFunc func,
-                                                               gpointer user_data,
-                                                               ...);
-
-gboolean              gck_modules_enumerate_objects_full      (GList *modules,
                                                                GckAttributes *attrs,
                                                                guint session_flags,
                                                                GCancellable *cancellable,
@@ -345,13 +329,6 @@ void                  gck_modules_enumerate_objects_finish    (GList *modules,
                                                                GAsyncResult *res,
                                                                GError **error);
 #endif
-
-enum {
-	GCK_IS_STRING = -1,
-	GCK_IS_BOOLEAN = -2,
-	GCK_IS_DATE = -3,
-	GCK_IS_ULONG = -4
-};
 
 /* ------------------------------------------------------------------------
  * SLOT
@@ -640,10 +617,6 @@ gboolean            gck_session_logout_finish               (GckSession *self,
                                                              GError **err);
 
 GckObject*          gck_session_create_object               (GckSession *self,
-                                                             GError **err,
-                                                             ...);
-
-GckObject*          gck_session_create_object_full          (GckSession *self,
                                                              GckAttributes *attrs,
                                                              GCancellable *cancellable,
                                                              GError **err);
@@ -659,10 +632,6 @@ GckObject*          gck_session_create_object_finish        (GckSession *self,
                                                              GError **err);
 
 GList*              gck_session_find_objects                (GckSession *self,
-                                                             GError **err,
-                                                             ...);
-
-GList*              gck_session_find_objects_full           (GckSession *self,
                                                              GckAttributes *attrs,
                                                              GCancellable *cancellable,
                                                              GError **err);
@@ -979,14 +948,6 @@ gpointer            gck_session_wrap_key_finish              (GckSession *self,
 
 GckObject*          gck_session_unwrap_key                   (GckSession *self,
                                                               GckObject *wrapper,
-                                                              gulong mech_type,
-                                                              gconstpointer input,
-                                                              gsize n_input,
-                                                              GError **err,
-                                                              ...);
-
-GckObject*          gck_session_unwrap_key_full              (GckSession *self,
-                                                              GckObject *wrapper,
                                                               GckMechanism *mechanism,
                                                               gconstpointer input,
                                                               gsize n_input,
@@ -1009,12 +970,6 @@ GckObject*          gck_session_unwrap_key_finish            (GckSession *self,
                                                               GError **err);
 
 GckObject*          gck_session_derive_key                   (GckSession *self,
-                                                              GckObject *base,
-                                                              gulong mech_type,
-                                                              GError **err,
-                                                              ...);
-
-GckObject*          gck_session_derive_key_full              (GckSession *self,
                                                               GckObject *base,
                                                               GckMechanism *mechanism,
                                                               GckAttributes *attrs,
@@ -1134,10 +1089,6 @@ gssize              gck_object_get_size_finish              (GckObject *self,
 #endif /* UNIMPLEMENTED */
 
 gboolean            gck_object_set                          (GckObject *self,
-                                                             GError **err,
-                                                             ...);
-
-gboolean            gck_object_set_full                     (GckObject *self,
                                                              GckAttributes *attrs,
                                                              GCancellable *cancellable,
                                                              GError **err);

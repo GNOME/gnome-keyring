@@ -51,11 +51,15 @@ static GckObject*
 find_key (GckSession *session, CK_ATTRIBUTE_TYPE method, CK_MECHANISM_TYPE mech)
 {
 	GList *objects, *l;
+	GckAttributes *attrs;
 	GckObject *object = NULL;
 	CK_MECHANISM_TYPE_PTR mechs;
 	gsize n_mechs;
 
-	objects = gck_session_find_objects (session, NULL, method, GCK_BOOLEAN, TRUE, GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_boolean (attrs, method, TRUE);
+	objects = gck_session_find_objects (session, attrs, NULL, NULL);
+	gck_attributes_unref (attrs);
 	g_assert (objects);
 
 	for (l = objects; l; l = g_list_next (l)) {
@@ -80,9 +84,13 @@ static GckObject*
 find_key_with_value (GckSession *session, const gchar *value)
 {
 	GList *objects;
+	GckAttributes *attrs;
 	GckObject *object;
 
-	objects = gck_session_find_objects (session, NULL, CKA_VALUE, GCK_STRING, value, GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_string (attrs, CKA_VALUE, value);
+	objects = gck_session_find_objects (session, attrs, NULL, NULL);
+	gck_attributes_unref (attrs);
 	g_assert (objects);
 
 	object = g_object_ref (objects->data);
@@ -483,18 +491,11 @@ DEFINE_TEST(unwrap_key)
 
 	mech = gck_mechanism_new_with_param (CKM_WRAP, "wrap", 4);
 	wrapper = find_key (session, CKA_UNWRAP, 0);
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_SECRET_KEY, GCK_INVALID);
-
-	/* Simple One */
-	unwrapped = gck_session_unwrap_key (session, wrapper, CKM_WRAP, "special", 7, &error,
-	                                     CKA_CLASS, GCK_ULONG, CKO_SECRET_KEY, GCK_INVALID);
-	SUCCESS_RES (unwrapped, error);
-	g_assert (GCK_IS_OBJECT (unwrapped));
-	check_key_with_value (session, unwrapped, CKO_SECRET_KEY, "special");
-	g_object_unref (unwrapped);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 
 	/* Full One*/
-	unwrapped = gck_session_unwrap_key_full (session, wrapper, mech, "special", 7, attrs, NULL, &error);
+	unwrapped = gck_session_unwrap_key (session, wrapper, mech, "special", 7, attrs, NULL, &error);
 	SUCCESS_RES (unwrapped, error);
 	g_assert (GCK_IS_OBJECT (unwrapped));
 	check_key_with_value (session, unwrapped, CKO_SECRET_KEY, "special");
@@ -502,7 +503,7 @@ DEFINE_TEST(unwrap_key)
 
 	/* Failure one */
 	mech->type = 0;
-	unwrapped = gck_session_unwrap_key_full (session, wrapper, mech, "special", 7, attrs, NULL, &error);
+	unwrapped = gck_session_unwrap_key (session, wrapper, mech, "special", 7, attrs, NULL, &error);
 	FAIL_RES (unwrapped, error);
 
 	/* Asynchronous one */
@@ -542,18 +543,11 @@ DEFINE_TEST(derive_key)
 
 	mech = gck_mechanism_new_with_param (CKM_DERIVE, "derive", 6);
 	wrapper = find_key (session, CKA_DERIVE, 0);
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_SECRET_KEY, GCK_INVALID);
-
-	/* Simple One */
-	derived = gck_session_derive_key (session, wrapper, CKM_DERIVE, &error,
-	                                   CKA_CLASS, GCK_ULONG, CKO_SECRET_KEY, GCK_INVALID);
-	SUCCESS_RES (derived, error);
-	g_assert (GCK_IS_OBJECT (derived));
-	check_key_with_value (session, derived, CKO_SECRET_KEY, "derived");
-	g_object_unref (derived);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 
 	/* Full One*/
-	derived = gck_session_derive_key_full (session, wrapper, mech, attrs, NULL, &error);
+	derived = gck_session_derive_key (session, wrapper, mech, attrs, NULL, &error);
 	SUCCESS_RES (derived, error);
 	g_assert (GCK_IS_OBJECT (derived));
 	check_key_with_value (session, derived, CKO_SECRET_KEY, "derived");
@@ -561,7 +555,7 @@ DEFINE_TEST(derive_key)
 
 	/* Failure one */
 	mech->type = 0;
-	derived = gck_session_derive_key_full (session, wrapper, mech, attrs, NULL, &error);
+	derived = gck_session_derive_key (session, wrapper, mech, attrs, NULL, &error);
 	FAIL_RES (derived, error);
 
 	/* Asynchronous one */

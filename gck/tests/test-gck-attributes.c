@@ -346,26 +346,6 @@ test_attributes_contents (GckAttributes *attrs, gboolean extras)
 	g_assert (attr->value == NULL);
 }
 
-DEFINE_TEST(newv_attributes)
-{
-	GDate *date = g_date_new_dmy (11, 12, 2008);
-	GckAttributes *attrs;
-	attrs = gck_attributes_newv (0UL, GCK_BOOLEAN, TRUE,
-	                              101UL, GCK_ULONG, 888UL,
-	                              202UL, GCK_STRING, "string",
-	                              303UL, GCK_DATE, date,
-	                              404UL, N_ATTR_DATA, ATTR_DATA,
-	                              GCK_INVALID);
-	g_date_free (date);
-
-	test_attributes_contents (attrs, FALSE);
-	gck_attributes_unref (attrs);
-
-	/* An empty one */
-	attrs = gck_attributes_newv (GCK_INVALID);
-	gck_attributes_unref (attrs);
-}
-
 DEFINE_TEST(new_empty_attributes)
 {
 	GckAttributes *attrs = gck_attributes_new_empty (101UL, 202UL, 303UL, 404UL, GCK_INVALID);
@@ -380,50 +360,6 @@ DEFINE_TEST(new_empty_attributes)
 		g_assert (attr->length == 0);
 	}
 }
-
-static GckAttributes*
-help_attributes_valist (int dummy, ...)
-{
-	GckAttributes *attrs;
-	va_list va;
-
-	va_start (va, dummy);
-	attrs = gck_attributes_new_valist (NULL, va);
-	va_end (va);
-
-	return attrs;
-}
-
-DEFINE_TEST(new_valist_attributes)
-{
-	GckAttributes *attrs;
-	GDate *date = g_date_new_dmy (11, 12, 2008);
-
-	attrs = help_attributes_valist (232434243, /* Not used */
-	                                0UL, GCK_BOOLEAN, TRUE,
-	                                101UL, GCK_ULONG, 888UL,
-	                                202UL, GCK_STRING, "string",
-	                                303UL, GCK_DATE, date,
-	                                404UL, N_ATTR_DATA, ATTR_DATA,
-	                                GCK_INVALID);
-
-	g_date_free (date);
-	test_attributes_contents (attrs, FALSE);
-	gck_attributes_unref (attrs);
-}
-
-#if 0
-DEFINE_ABORT(bad_length)
-{
-	GckAttributes *attrs;
-
-	/* We should catch this with a warning */
-	attrs = gck_attributes_newv (1UL, G_MAXSSIZE + 500U, GCK_ULONG, "invalid data",
-	                              GCK_INVALID);
-
-	gck_attributes_unref (attrs);
-}
-#endif
 
 DEFINE_TEST(add_data_attributes)
 {
@@ -457,7 +393,6 @@ DEFINE_TEST(add_attributes)
 	gck_attribute_init_ulong (&attr, 101UL, 888);
 	gck_attributes_add (attrs, &attr);
 	gck_attribute_clear (&attr);
-
 	gck_attribute_init_string (&attr, 202UL, "string");
 	gck_attributes_add (attrs, &attr);
 	gck_attribute_clear (&attr);
@@ -492,13 +427,12 @@ DEFINE_TEST(find_attributes)
 	gulong uvalue;
 	gchar *svalue;
 
-	GckAttributes *attrs;
-	attrs = gck_attributes_newv (0UL, GCK_BOOLEAN, TRUE,
-	                              101UL, GCK_ULONG, 888UL,
-	                              202UL, GCK_STRING, "string",
-	                              303UL, GCK_DATE, date,
-	                              404UL, N_ATTR_DATA, ATTR_DATA,
-	                              GCK_INVALID);
+	GckAttributes *attrs = gck_attributes_new ();
+	gck_attributes_add_boolean (attrs, 0UL, TRUE);
+	gck_attributes_add_ulong (attrs, 101UL, 888UL);
+	gck_attributes_add_string (attrs, 202UL, "string");
+	gck_attributes_add_date (attrs, 303UL, date);
+	gck_attributes_add_data (attrs, 404UL, ATTR_DATA, N_ATTR_DATA);
 
 	attr = gck_attributes_find (attrs, 404);
 	g_assert (attr != NULL);

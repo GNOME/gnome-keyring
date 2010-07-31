@@ -51,76 +51,10 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
 }
 
 /**
- * gck_modules_enumerate_objects:
- * @modules: The modules on which to enumerate objects.
- * @func: Function to call for each object.
- * @user_data: Data to pass to the function.
- * @...: The arguments must be triples of: attribute type, data type, value.
- *
- * Call a function for every matching object on the module. This call may
- * block for an indefinite period.
- *
- * <para>The variable argument list should contain:
- * 	<variablelist>
- *		<varlistentry>
- * 			<term>a)</term>
- * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>b)</term>
- * 			<listitem><para>The attribute data type (one of GCK_BOOLEAN, GCK_ULONG,
- * 				GCK_STRING, GCK_DATE) orthe raw attribute value length.</para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>c)</term>
- * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
- * 				a pointer to a raw attribute value.</para></listitem>
- * 		</varlistentry>
- * 	</variablelist>
- * The variable argument list should be terminated with GCK_INVALID.</para>
- *
- * This function will open a session per slot. It's recommended that you
- * set the 'reuse-sessions' property on each slot if you'll be calling
- * it a lot.
- *
- * You can access the session in which the object was found, by using the
- * gck_object_get_session() function on the resulting objects.
- *
- * This function skips tokens that are not initialize, and makes a best effort to
- * find objects on valid tokens.
- *
- * The function can return FALSE to stop the enumeration.
- *
- * Return value: If FALSE then an error prevented all matching objects from being enumerated.
- **/
-gboolean
-gck_modules_enumerate_objects (GList *modules, GckObjectForeachFunc func,
-                               gpointer user_data, ...)
-{
-	GckAttributes *attrs;
-	GError *error = NULL;
-	va_list va;
-
-	va_start (va, user_data);
-	attrs = gck_attributes_new_valist (g_realloc, va);
-	va_end (va);
-
-	gck_modules_enumerate_objects_full (modules, attrs, CKF_RW_SESSION, NULL, func, user_data, &error);
-	gck_attributes_unref (attrs);
-
-	if (error != NULL) {
-		g_warning ("enumerating objects failed: %s", error->message);
-		g_clear_error (&error);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/**
  * gck_module_enumerate_objects_full:
  * @self: The module to enumerate objects.
  * @attrs: Attributes that the objects must have, or empty for all objects.
+ * @session_flags: PKCS#11 flags for opening a session.
  * @cancellable: Optional cancellation object, or NULL.
  * @func: Function to call for each object.
  * @user_data: Data to pass to the function.
@@ -141,9 +75,9 @@ gck_modules_enumerate_objects (GList *modules, GckObjectForeachFunc func,
  * Return value: If FALSE then an error prevented all matching objects from being enumerated.
  **/
 gboolean
-gck_modules_enumerate_objects_full (GList *modules, GckAttributes *attrs, guint session_flags,
-                                    GCancellable *cancellable, GckObjectForeachFunc func,
-                                    gpointer user_data, GError **err)
+gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_flags,
+                               GCancellable *cancellable, GckObjectForeachFunc func,
+                               gpointer user_data, GError **err)
 {
 	gboolean stop = FALSE;
 	gboolean ret = TRUE;
@@ -178,7 +112,7 @@ gck_modules_enumerate_objects_full (GList *modules, GckAttributes *attrs, guint 
 				continue;
 			}
 
-			objects = gck_session_find_objects_full (session, attrs, cancellable, &error);
+			objects = gck_session_find_objects (session, attrs, cancellable, &error);
 			if (error) {
 				ret = FALSE;
 				g_object_unref (session);

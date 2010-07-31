@@ -110,37 +110,18 @@ DEFINE_TEST(create_object)
 	CK_OBJECT_HANDLE last_handle;
 	GError *err = NULL;
 
-	/* Using simple */
-	object = gck_session_create_object (session, &err,
-	                                     CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                                     CKA_LABEL, GCK_STRING, "TEST LABEL",
-	                                     CKA_TOKEN, GCK_BOOLEAN, CK_FALSE,
-	                                     CKA_VALUE, 4UL, "BLAH",
-	                                     GCK_INVALID);
-	SUCCESS_RES (object, err);
-	g_assert (GCK_IS_OBJECT (object));
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
+	gck_attributes_add_string (attrs, CKA_LABEL, "TEST LABEL");
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, CK_FALSE);
+	gck_attributes_add_data (attrs, CKA_VALUE, "BLAH", 4);
 
-	if (object) {
-		last_handle = gck_object_get_handle (object);
-		g_object_unref (object);
-	}
-
-	/* Using full */
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                              CKA_LABEL, GCK_STRING, "TEST LABEL",
-	                              CKA_TOKEN, GCK_BOOLEAN, CK_FALSE,
-	                              CKA_VALUE, 4UL, "BLAH",
-	                              GCK_INVALID);
-
-	object = gck_session_create_object_full (session, attrs, NULL, &err);
+	object = gck_session_create_object (session, attrs, NULL, &err);
 	g_assert (GCK_IS_OBJECT (object));
 	SUCCESS_RES (object, err);
 
-	if (object) {
-		g_assert (last_handle != gck_object_get_handle (object));
-		last_handle = gck_object_get_handle (object);
-		g_object_unref (object);
-	}
+	last_handle = gck_object_get_handle (object);
+	g_object_unref (object);
 
 	/* Using async */
 	gck_session_create_object_async (session, attrs, NULL, fetch_async_result, &result);
@@ -152,61 +133,47 @@ DEFINE_TEST(create_object)
 	SUCCESS_RES (object, err);
 	g_assert (GCK_IS_OBJECT (object));
 
-	if (object)
-		g_object_unref (object);
+	g_assert (last_handle != gck_object_get_handle (object));
+	g_object_unref (object);
+
 	gck_attributes_unref (attrs);
 }
 
 DEFINE_TEST(destroy_object)
 {
 	GAsyncResult *result = NULL;
+	GckAttributes *attrs;
 	GckObject *object;
 	GError *err = NULL;
 	gboolean ret;
 
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
+	gck_attributes_add_string (attrs, CKA_LABEL, "TEST OBJECT");
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, CK_TRUE);
+
 	/* Using simple */
-	object = gck_session_create_object (session, &err,
-	                                     CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                                     CKA_LABEL, GCK_STRING, "TEST OBJECT",
-	                                     CKA_TOKEN, GCK_BOOLEAN, CK_TRUE,
-	                                     GCK_INVALID);
+	object = gck_session_create_object (session, attrs, NULL, &err);
 	SUCCESS_RES (object, err);
 	g_assert (GCK_IS_OBJECT (object));
-
-	if (!object)
-		return;
 
 	ret = gck_object_destroy (object, &err);
 	SUCCESS_RES (ret, err);
 	g_object_unref (object);
 
 	/* Using full */
-	object = gck_session_create_object (session, &err,
-	                                     CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                                     CKA_LABEL, GCK_STRING, "TEST OBJECT",
-	                                     CKA_TOKEN, GCK_BOOLEAN, CK_TRUE,
-	                                     GCK_INVALID);
+	object = gck_session_create_object (session, attrs, NULL, &err);
 	SUCCESS_RES (object, err);
 	g_assert (GCK_IS_OBJECT (object));
-
-	if (!object)
-		return;
 
 	ret = gck_object_destroy_full (object, NULL, &err);
 	SUCCESS_RES (ret, err);
 	g_object_unref (object);
 
 	/* Using async */
-	object = gck_session_create_object (session, &err,
-	                                     CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                                     CKA_LABEL, GCK_STRING, "TEST OBJECT",
-	                                     CKA_TOKEN, GCK_BOOLEAN, CK_TRUE,
-	                                     GCK_INVALID);
+	object = gck_session_create_object (session, attrs, NULL, &err);
 	SUCCESS_RES (object, err);
 	g_assert (GCK_IS_OBJECT (object));
-
-	if (!object)
-		return;
 
 	/* Using async */
 	gck_object_destroy_async (object, NULL, fetch_async_result, &result);
@@ -317,26 +284,12 @@ DEFINE_TEST(set_attributes)
 	gchar *value = NULL;
 	gboolean ret;
 
-	/* Simple */
-	ret = gck_object_set (object, &err,
-	                       CKA_CLASS, GCK_ULONG, 5,
-	                       CKA_LABEL, GCK_STRING, "CHANGE ONE",
-	                       GCK_INVALID);
-	SUCCESS_RES (ret, err);
-	if (ret) {
-		attrs = gck_object_get (object, &err, CKA_CLASS, CKA_LABEL, GCK_INVALID);
-		g_assert (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == 5);
-		g_assert (gck_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "CHANGE ONE") == 0);
-		g_free (value); value = NULL;
-		gck_attributes_unref (attrs);
-	}
-
-	templ = gck_attributes_newv (CKA_CLASS, GCK_ULONG, 6,
-	                              CKA_LABEL, GCK_STRING, "CHANGE TWO",
-	                              GCK_INVALID);
+	templ = gck_attributes_new ();
+	gck_attributes_add_ulong (templ, CKA_CLASS, 6);
+	gck_attributes_add_string (templ, CKA_LABEL, "CHANGE TWO");
 
 	/* Full */
-	ret = gck_object_set_full (object, templ, NULL, &err);
+	ret = gck_object_set (object, templ, NULL, &err);
 	gck_attributes_unref (templ);
 	SUCCESS_RES (ret, err);
 	if (ret) {
@@ -347,9 +300,9 @@ DEFINE_TEST(set_attributes)
 		gck_attributes_unref (attrs);
 	}
 
-	templ = gck_attributes_newv (CKA_CLASS, GCK_ULONG, 7,
-	                              CKA_LABEL, GCK_STRING, "CHANGE THREE",
-	                              GCK_INVALID);
+	templ = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, 7);
+	gck_attributes_add_string (attrs, CKA_LABEL, "CHANGE THREE");
 
 	/* Async */
 	gck_object_set_async (object, templ, NULL, fetch_async_result, &result);
@@ -371,32 +324,36 @@ DEFINE_TEST(set_attributes)
 DEFINE_TEST(find_objects)
 {
 	GAsyncResult *result = NULL;
-	GckAttributes *templ;
+	GckAttributes *templ, *attrs;
 	GList *objects;
 	GckObject *testobj;
 	GError *err = NULL;
 
-	testobj = gck_session_create_object (session, &err,
-	                                      CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                                      CKA_LABEL, GCK_STRING, "UNIQUE LABEL",
-	                                      GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
+	gck_attributes_add_string (attrs, CKA_LABEL, "UNIQUE LABEL");
+	testobj = gck_session_create_object (session, attrs, NULL, &err);
+	gck_attributes_unref (attrs);
 	g_object_unref (testobj);
 
-	testobj = gck_session_create_object (session, &err,
-	                                      CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                                      CKA_LABEL, GCK_STRING, "OTHER LABEL",
-	                                      GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
+	gck_attributes_add_string (attrs, CKA_LABEL, "OTHER LABEL");
+	gck_attributes_unref (attrs);
 	g_object_unref (testobj);
 
 	/* Simple, "TEST LABEL" */
-	objects = gck_session_find_objects (session, &err, CKA_LABEL, GCK_STRING, "UNIQUE LABEL", GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_string (attrs, CKA_LABEL, "UNIQUE LABEL");
+	objects = gck_session_find_objects (session, attrs, NULL, &err);
 	SUCCESS_RES (objects, err);
 	g_assert (g_list_length (objects) == 1);
 	gck_list_unref_free (objects);
+	gck_attributes_unref (attrs);
 
 	/* Full, All */
 	templ = gck_attributes_new ();
-	objects = gck_session_find_objects_full (session, templ, NULL, &err);
+	objects = gck_session_find_objects (session, templ, NULL, &err);
 	SUCCESS_RES (objects, err);
 	g_assert (g_list_length (objects) > 1);
 	gck_list_unref_free (objects);

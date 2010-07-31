@@ -933,55 +933,6 @@ perform_create_object (CreateObject *args)
 /**
  * gck_session_create_object:
  * @self: The session to create the object on.
- * @err: A location to store an error.
- * @...: The attributes to create the new object with.
- *
- * Create a new PKCS#11 object. This call may block
- * for an indefinite period.
- *
- * The arguments must be triples of: attribute type, data type, value
- *
- * <para>The variable argument list should contain:
- * 	<variablelist>
- *		<varlistentry>
- * 			<term>a)</term>
- * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>b)</term>
- * 			<listitem><para>The attribute data type (one of GCK_BOOLEAN, GCK_ULONG,
- * 				GCK_STRING, GCK_DATE) orthe raw attribute value length.</para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>c)</term>
- * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
- * 				a pointer to a raw attribute value.</para></listitem>
- * 		</varlistentry>
- * 	</variablelist>
- *
- * The variable argument list should be terminated with GCK_INVALID.</para>
- *
- * Return value: The newly created object, or NULL if an error occurred.
- **/
-GckObject*
-gck_session_create_object (GckSession *self, GError **err, ...)
-{
-	GckAttributes *attrs;
-	GckObject *object;
-	va_list va;
-
-	va_start (va, err);
-	attrs = gck_attributes_new_valist (g_realloc, va);
-	va_end (va);
-
-	object = gck_session_create_object_full (self, attrs, NULL, err);
-	gck_attributes_unref (attrs);
-	return object;
-}
-
-/**
- * gck_session_create_object_full:
- * @self: The session to create the object on.
  * @attrs: The attributes to create the object with.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error, or NULL.
@@ -992,8 +943,8 @@ gck_session_create_object (GckSession *self, GError **err, ...)
  * Return value: The newly created object or NULL if an error occurred.
  **/
 GckObject*
-gck_session_create_object_full (GckSession *self, GckAttributes *attrs,
-                                 GCancellable *cancellable, GError **err)
+gck_session_create_object (GckSession *self, GckAttributes *attrs,
+                           GCancellable *cancellable, GError **err)
 {
 	CreateObject args = { GCK_ARGUMENTS_INIT, attrs, 0 };
 	gboolean ret;
@@ -1153,54 +1104,6 @@ objlist_from_handles (GckSession *self, CK_OBJECT_HANDLE_PTR objects,
 /**
  * gck_session_find_objects:
  * @self: The session to find objects on.
- * @err: A location to return an error or NULL.
- * @...: The attributes to match.
- *
- * Find objects matching the passed attributes. This call may
- * block for an indefinite period.
- *
- * The arguments must be triples of: attribute type, data type, value
- *
- * <para>The variable argument list should contain:
- * 	<variablelist>
- *		<varlistentry>
- * 			<term>a)</term>
- * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>b)</term>
- * 			<listitem><para>The attribute data type (one of GCK_BOOLEAN, GCK_ULONG,
- * 				GCK_STRING, GCK_DATE) orthe raw attribute value length.</para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>c)</term>
- * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
- * 				a pointer to a raw attribute value.</para></listitem>
- * 		</varlistentry>
- * 	</variablelist>
- * The variable argument list should be terminated with GCK_INVALID.</para>
- *
- * Return value: A list of the matching objects, which may be empty.
- **/
-GList*
-gck_session_find_objects (GckSession *self, GError **err, ...)
-{
-	GckAttributes *attrs;
-	GList *results;
-	va_list va;
-
-	va_start (va, err);
-	attrs = gck_attributes_new_valist (g_realloc, va);
-	va_end (va);
-
-	results = gck_session_find_objects_full (self, attrs, NULL, err);
-	gck_attributes_unref (attrs);
-	return results;
-}
-
-/**
- * gck_session_find_objects_full:
- * @self: The session to find objects on.
  * @attrs: The attributes to match.
  * @cancellable: Optional cancellation object or NULL.
  * @err: A location to return an error or NULL.
@@ -1211,8 +1114,8 @@ gck_session_find_objects (GckSession *self, GError **err, ...)
  * Return value: A list of the matching objects, which may be empty.
  **/
 GList*
-gck_session_find_objects_full (GckSession *self, GckAttributes *attrs,
-                                GCancellable *cancellable, GError **err)
+gck_session_find_objects (GckSession *self, GckAttributes *attrs,
+                          GCancellable *cancellable, GError **err)
 {
 	FindObjects args = { GCK_ARGUMENTS_INIT, attrs, NULL, 0 };
 	GList *results = NULL;
@@ -1657,60 +1560,6 @@ perform_unwrap_key (UnwrapKey *args)
  * gck_session_unwrap_key:
  * @self: The session to use.
  * @wrapper: The key to use for unwrapping.
- * @mech_type: The mechanism type to use for derivation.
- * @input: The wrapped data as a byte stream.
- * @n_input: The length of the wrapped data.
- * @err: A location to return an error, or NULL.
- * @...: Additional attributes for the unwrapped key.
- *
- * Unwrap a key from a byte stream. This call may block for an
- * indefinite period.
- *
- * The arguments must be triples of: attribute type, data type, value
- *
- * <para>The variable argument list should contain:
- * 	<variablelist>
- *		<varlistentry>
- * 			<term>a)</term>
- * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>b)</term>
- * 			<listitem><para>The attribute data type (one of GCK_BOOLEAN, GCK_ULONG,
- * 				GCK_STRING, GCK_DATE) orthe raw attribute value length.</para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>c)</term>
- * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
- * 				a pointer to a raw attribute value.</para></listitem>
- * 		</varlistentry>
- * 	</variablelist>
- * The variable argument list should be terminated with GCK_INVALID.</para>
- *
- * Return value: The new unwrapped key or NULL if the operation failed.
- **/
-GckObject*
-gck_session_unwrap_key (GckSession *self, GckObject *key, gulong mech_type,
-                         gconstpointer input, gsize n_input, GError **err, ...)
-{
-	GckMechanism mech = { mech_type, NULL, 0 };
-	GckAttributes *attrs;
-	GckObject *object;
-	va_list va;
-
-	va_start (va, err);
-	attrs = gck_attributes_new_valist (g_realloc, va);
-	va_end (va);
-
-	object = gck_session_unwrap_key_full (self, key, &mech, input, n_input, attrs, NULL, err);
-	gck_attributes_unref (attrs);
-	return object;
-}
-
-/**
- * gck_session_unwrap_key_full:
- * @self: The session to use.
- * @wrapper: The key to use for unwrapping.
  * @mechanism: The mechanism to use for unwrapping.
  * @input: The wrapped data as a byte stream.
  * @n_input: The length of the wrapped data.
@@ -1724,9 +1573,9 @@ gck_session_unwrap_key (GckSession *self, GckObject *key, gulong mech_type,
  * Return value: The new unwrapped key or NULL if the operation failed.
  **/
 GckObject*
-gck_session_unwrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
-                              gconstpointer input, gsize n_input, GckAttributes *attrs,
-                              GCancellable *cancellable, GError **err)
+gck_session_unwrap_key (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
+                        gconstpointer input, gsize n_input, GckAttributes *attrs,
+                        GCancellable *cancellable, GError **err)
 {
 	UnwrapKey args = { GCK_ARGUMENTS_INIT, mechanism, attrs, 0, input, n_input, 0 };
 	gboolean ret;
@@ -1851,59 +1700,7 @@ perform_derive_key (DeriveKey *args)
 }
 
 /**
- * gck_session_derive_key_full:
- * @self: The session to use.
- * @base: The key to derive from.
- * @mech_type: The mechanism type to use for derivation.
- * @err: A location to return an error, or NULL.
- * @...: Additional attributes for the derived key.
- *
- * Derive a key from another key. This call may block for an
- * indefinite period.
- *
- * The arguments must be triples of: attribute type, data type, value
- *
- * <para>The variable argument list should contain:
- * 	<variablelist>
- *		<varlistentry>
- * 			<term>a)</term>
- * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>b)</term>
- * 			<listitem><para>The attribute data type (one of GCK_BOOLEAN, GCK_ULONG,
- * 				GCK_STRING, GCK_DATE) orthe raw attribute value length.</para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>c)</term>
- * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
- * 				a pointer to a raw attribute value.</para></listitem>
- * 		</varlistentry>
- * 	</variablelist>
- * The variable argument list should be terminated with GCK_INVALID.</para>
- *
- * Return value: The new derived key or NULL if the operation failed.
- **/
-GckObject*
-gck_session_derive_key (GckSession *self, GckObject *key, gulong mech_type,
-                         GError **err, ...)
-{
-	GckMechanism mech = { mech_type, NULL, 0 };
-	GckAttributes *attrs;
-	GckObject *object;
-	va_list va;
-
-	va_start (va, err);
-	attrs = gck_attributes_new_valist (g_realloc, va);
-	va_end (va);
-
-	object = gck_session_derive_key_full (self, key, &mech, attrs, NULL, err);
-	gck_attributes_unref (attrs);
-	return object;
-}
-
-/**
- * gck_session_derive_key_full:
+ * gck_session_derive_key:
  * @self: The session to use.
  * @base: The key to derive from.
  * @mechanism: The mechanism to use for derivation.
@@ -1917,8 +1714,8 @@ gck_session_derive_key (GckSession *self, GckObject *key, gulong mech_type,
  * Return value: The new derived key or NULL if the operation failed.
  **/
 GckObject*
-gck_session_derive_key_full (GckSession *self, GckObject *base, GckMechanism *mechanism,
-                              GckAttributes *attrs, GCancellable *cancellable, GError **err)
+gck_session_derive_key (GckSession *self, GckObject *base, GckMechanism *mechanism,
+                        GckAttributes *attrs, GCancellable *cancellable, GError **err)
 {
 	DeriveKey args = { GCK_ARGUMENTS_INIT, mechanism, attrs, 0, 0 };
 	gboolean ret;

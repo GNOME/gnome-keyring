@@ -202,13 +202,13 @@ DEFINE_TEST(auto_login)
 	gboolean ret;
 	gint value;
 
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                              CKA_LABEL, GCK_STRING, "TEST OBJECT",
-	                              CKA_PRIVATE, GCK_BOOLEAN, CK_TRUE,
-	                              GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
+	gck_attributes_add_string (attrs, CKA_LABEL, "TEST OBJECT");
+	gck_attributes_add_boolean (attrs, CKA_PRIVATE, CK_TRUE);
 
 	/* Try to do something that requires a login */
-	object = gck_session_create_object_full (session, attrs, NULL, &err);
+	object = gck_session_create_object (session, attrs, NULL, &err);
 	g_assert (!object);
 	g_assert (err && err->code == CKR_USER_NOT_LOGGED_IN);
 	g_clear_error (&err);
@@ -228,7 +228,7 @@ DEFINE_TEST(auto_login)
 	g_object_unref (new_session);
 
 	/* Try again to do something that requires a login */
-	object = gck_session_create_object_full (session, attrs, NULL, &err);
+	object = gck_session_create_object (session, attrs, NULL, &err);
 	SUCCESS_RES (object, err);
 	g_object_unref (object);
 

@@ -509,58 +509,6 @@ free_set_attributes (SetAttributes *args)
 /**
  * gck_object_set:
  * @self: The object to set attributes on.
- * @err: A location to return an error.
- * @...: The attributes to set.
- *
- * Set PKCS#11 attributes on an object.
- * This call may block for an indefinite period.
- *
- * The arguments must be triples of: attribute type, data type, value
- *
- * <para>The variable argument list should contain:
- * 	<variablelist>
- *		<varlistentry>
- * 			<term>a)</term>
- * 			<listitem><para>The gulong attribute type (ie: CKA_LABEL). </para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>b)</term>
- * 			<listitem><para>The attribute data type (one of GCK_BOOLEAN, GCK_ULONG,
- * 				GCK_STRING, GCK_DATE) orthe raw attribute value length.</para></listitem>
- * 		</varlistentry>
- * 		<varlistentry>
- * 			<term>c)</term>
- * 			<listitem><para>The attribute value, either a gboolean, gulong, gchar*, GDate* or
- * 				a pointer to a raw attribute value.</para></listitem>
- * 		</varlistentry>
- * 	</variablelist>
- * The variable argument list should be terminated with GCK_INVALID.</para>
- *
- * Return value: Whether the call was successful or not.
- **/
-gboolean
-gck_object_set (GckObject *self, GError **err, ...)
-{
-	GckAttributes *attrs;
-	va_list va;
-	CK_RV rv;
-
-	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
-	g_return_val_if_fail (!err || !*err, FALSE);
-
-	va_start (va, err);
-	attrs = gck_attributes_new_valist (g_realloc, va);
-	va_end (va);
-
-	rv = gck_object_set_full (self, attrs, NULL, err);
-
-	gck_attributes_unref (attrs);
-	return rv;
-}
-
-/**
- * gck_object_set_full:
- * @self: The object to set attributes on.
  * @attrs: The attributes to set on the object.
  * @cancellable: Optional cancellable object, or NULL to ignore.
  * @err: A location to return an error.
@@ -570,8 +518,8 @@ gck_object_set (GckObject *self, GError **err, ...)
  * Return value: Whether the call was successful or not.
  **/
 gboolean
-gck_object_set_full (GckObject *self, GckAttributes *attrs,
-                     GCancellable *cancellable, GError **err)
+gck_object_set (GckObject *self, GckAttributes *attrs,
+                GCancellable *cancellable, GError **err)
 {
 	GckObjectData *data = GCK_OBJECT_GET_DATA (self);
 	SetAttributes args;

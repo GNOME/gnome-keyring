@@ -134,57 +134,57 @@ test_C_Initialize (CK_VOID_PTR pInitArgs)
 	the_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)gck_attributes_unref);
 
 	/* Our token object */
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_DATA,
-	                              CKA_LABEL, GCK_STRING, "TEST LABEL",
-	                              GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
+	gck_attributes_add_string (attrs, CKA_LABEL, "TEST LABEL");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (2), attrs);
 
 	/* Private capitalize key */
 	value = CKM_CAPITALIZE;
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_PRIVATE_KEY,
-	                              CKA_LABEL, GCK_STRING, "Private Capitalize Key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_DECRYPT, GCK_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GCK_BOOLEAN, TRUE,
-	                              CKA_WRAP, GCK_BOOLEAN, TRUE,
-	                              CKA_UNWRAP, GCK_BOOLEAN, TRUE,
-	                              CKA_DERIVE, GCK_BOOLEAN, TRUE,
-	                              CKA_VALUE, GCK_STRING, "value",
-	                              GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gck_attributes_add_string (attrs, CKA_LABEL, "Private Capitalize Key");
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_boolean (attrs, CKA_DECRYPT, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_PRIVATE, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_WRAP, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_UNWRAP, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_DERIVE, TRUE);
+	gck_attributes_add_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_CAPITALIZE), attrs);
 
 	/* Public capitalize key */
 	value = CKM_CAPITALIZE;
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_PUBLIC_KEY,
-	                              CKA_LABEL, GCK_STRING, "Public Capitalize Key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_ENCRYPT, GCK_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GCK_BOOLEAN, FALSE,
-	                              CKA_VALUE, GCK_STRING, "value",
-	                              GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_attributes_add_string (attrs, CKA_LABEL, "Public Capitalize Key");
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_boolean (attrs, CKA_ENCRYPT, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_PRIVATE, FALSE);
+	gck_attributes_add_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_CAPITALIZE), attrs);
 
 	/* Private prefix key */
 	value = CKM_PREFIX;
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_PRIVATE_KEY,
-	                              CKA_LABEL, GCK_STRING, "Private prefix key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_SIGN, GCK_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GCK_BOOLEAN, TRUE,
-	                              CKA_ALWAYS_AUTHENTICATE, GCK_BOOLEAN, TRUE,
-	                              CKA_VALUE, GCK_STRING, "value",
-	                              GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gck_attributes_add_string (attrs, CKA_LABEL, "Private prefix key");
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_boolean (attrs, CKA_SIGN, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_PRIVATE, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, TRUE);
+	gck_attributes_add_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_PREFIX), attrs);
 
 	/* Private prefix key */
 	value = CKM_PREFIX;
-	attrs = gck_attributes_newv (CKA_CLASS, GCK_ULONG, CKO_PUBLIC_KEY,
-	                              CKA_LABEL, GCK_STRING, "Public prefix key",
-	                              CKA_ALLOWED_MECHANISMS, sizeof (value), &value,
-	                              CKA_VERIFY, GCK_BOOLEAN, TRUE,
-	                              CKA_PRIVATE, GCK_BOOLEAN, FALSE,
-	                              CKA_VALUE, GCK_STRING, "value",
-	                              GCK_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_attributes_add_string (attrs, CKA_LABEL, "Public prefix key");
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_boolean (attrs, CKA_VERIFY, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_PRIVATE, FALSE);
+	gck_attributes_add_string (attrs, CKA_VALUE, "value");
 	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_PREFIX), attrs);
 
 	initialized = TRUE;
