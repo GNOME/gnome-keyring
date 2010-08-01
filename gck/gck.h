@@ -299,6 +299,10 @@ GList*                gck_module_get_slots                    (GckModule *self,
 
 guint                 gck_module_get_options                  (GckModule *self);
 
+gchar**               gck_modules_list_registered_paths       (GError **err);
+
+GList*                gck_modules_initialize_registered       (guint options);
+
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);
 

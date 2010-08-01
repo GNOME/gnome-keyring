@@ -8,7 +8,8 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	$(GOBJECT_CFLAGS) \
 	$(GTHREAD_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	-DPKCS11_REGISTRY_DIR=\"$(libdir)/pkcs11\"
 
 BUILT_SOURCES = \
 	gck-marshal.c gck-marshal.h

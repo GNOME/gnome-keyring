@@ -37,6 +37,71 @@
  * Xxxxx
  */
 
+gchar**
+gck_modules_list_registered_paths (GError **err)
+{
+	const gchar *name;
+	gchar *path;
+	GDir *dir;
+	GArray *paths;
+
+	g_return_val_if_fail (!err || !*err, NULL);
+
+	dir = g_dir_open (PKCS11_REGISTRY_DIR, 0, err);
+	if (dir == NULL)
+		return NULL;
+
+	paths = g_array_new (TRUE, TRUE, sizeof (gchar*));
+
+	for (;;) {
+		name = g_dir_read_name (dir);
+		if (!name)
+			break;
+
+		path = g_build_filename (PKCS11_REGISTRY_DIR, name, NULL);
+		if (g_file_test (path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
+			g_array_append_val (paths, path);
+		else
+			g_free (path);
+	}
+
+	g_dir_close (dir);
+
+	return (gchar**)g_array_free (paths, FALSE);
+}
+
+GList*
+gck_modules_initialize_registered (guint options)
+{
+	GError *err = NULL;
+	gchar **paths, **p;
+	GckModule *module;
+	GList *results = NULL;
+
+	paths = gck_modules_list_registered_paths (&err);
+	if (!paths && err) {
+		g_warning ("couldn't list registered PKCS#11 module paths: %s",
+		           err && err->message ? err->message : "");
+		g_clear_error (&err);
+		return NULL;
+	}
+
+	for (p = paths; *p; ++p) {
+		module = gck_module_initialize (*p, NULL, 0, &err);
+		if (module) {
+			results = g_list_prepend (results, module);
+
+		} else {
+			g_warning ("couldn't load PKCS#11 module: %s: %s",
+			           *p, err && err->message ? err->message : "");
+			g_clear_error (&err);
+		}
+	}
+
+	g_strfreev (paths);
+	return results;
+}
+
 GList*
 gck_modules_get_slots (GList *modules, gboolean token_present)
 {
