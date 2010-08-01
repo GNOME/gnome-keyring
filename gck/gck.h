@@ -255,9 +255,11 @@ void                gck_module_info_free                   (GckModuleInfo *modul
 #define GCK_MODULE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), GCK_TYPE_MODULE, GckModuleClass))
 
 typedef struct _GckModuleClass GckModuleClass;
+typedef struct _GckModulePrivate GckModulePrivate;
 
 struct _GckModule {
 	GObject parent;
+	GckModulePrivate *pv;
 	gpointer reserved[4];
 };
 
@@ -273,10 +275,12 @@ struct _GckModuleClass {
 
 GType                 gck_module_get_type                     (void) G_GNUC_CONST;
 
-GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs);
+GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs,
+                                                               guint options);
 
 GckModule*            gck_module_initialize                   (const gchar *path,
                                                                gpointer reserved,
+                                                               guint options,
                                                                GError **err);
 
 gboolean              gck_module_equal                        (gconstpointer module1,
@@ -294,12 +298,6 @@ GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
 guint                 gck_module_get_options                  (GckModule *self);
-
-void                  gck_module_set_options                  (GckModule *self,
-                                                               guint options);
-
-void                  gck_module_add_options                  (GckModule *self,
-                                                               guint options);
 
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);
@@ -398,9 +396,11 @@ gboolean            gck_mechanisms_check                    (GckMechanisms *mech
 #define GCK_SLOT_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), GCK_TYPE_SLOT, GckSlotClass))
 
 typedef struct _GckSlotClass GckSlotClass;
+typedef struct _GckSlotPrivate GckSlotPrivate;
 
 struct _GckSlot {
 	GObject parent;
+	GckSlotPrivate *pv;
 	gpointer reserved[4];
 };
 
@@ -416,13 +416,16 @@ gboolean            gck_slot_equal                          (gconstpointer slot1
 
 guint               gck_slot_hash                           (gconstpointer slot);
 
+GckSlot*            gck_slot_from_handle                    (GckModule *module,
+                                                             CK_SLOT_ID slot_id);
+
 GckModule*          gck_slot_get_module                     (GckSlot *self);
 
 CK_SLOT_ID          gck_slot_get_handle                     (GckSlot *self);
 
 GckSlotInfo*        gck_slot_get_info                       (GckSlot *self);
 
-GckTokenInfo*       gck_slot_get_token_info                  (GckSlot *self);
+GckTokenInfo*       gck_slot_get_token_info                 (GckSlot *self);
 
 GckMechanisms*      gck_slot_get_mechanisms                 (GckSlot *self);
 
@@ -498,9 +501,11 @@ void                gck_session_info_free                  (GckSessionInfo *sess
 #define GCK_SESSION_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), GCK_TYPE_SESSION, GckSessionClass))
 
 typedef struct _GckSessionClass GckSessionClass;
+typedef struct _GckSessionPrivate GckSessionPrivate;
 
 struct _GckSession {
 	GObject parent;
+	GckSessionPrivate *pv;
 	gpointer reserved[4];
 };
 
@@ -1000,9 +1005,11 @@ GckObject*          gck_session_derive_key_finish            (GckSession *self,
 #define GCK_OBJECT_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), GCK_TYPE_OBJECT, GckObjectClass))
 
 typedef struct _GckObjectClass GckObjectClass;
+typedef struct _GckObjectPrivate GckObjectPrivate;
 
 struct _GckObject {
 	GObject parent;
+	GckObjectPrivate *pv;
 	gpointer reserved[4];
 };
 

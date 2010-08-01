@@ -12,7 +12,7 @@ DEFINE_SETUP(load_module)
 	GError *err = NULL;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, &err);
+	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 }
 
@@ -27,11 +27,11 @@ DEFINE_TEST(invalid_modules)
 	GError *err = NULL;
 
 	/* Shouldn't be able to load modules */
-	invalid = gck_module_initialize ("blah-blah-non-existant", NULL, &err);
+	invalid = gck_module_initialize ("blah-blah-non-existant", NULL, 0, &err);
 	FAIL_RES (invalid, err);
 
 	/* Shouldn't be able to load any file successfully */
-	invalid = gck_module_initialize ("/usr/lib/libm.so", NULL, &err);
+	invalid = gck_module_initialize ("/usr/lib/libm.so", NULL, 0, &err);
 	FAIL_RES (invalid, err);
 }
 
@@ -46,7 +46,7 @@ DEFINE_TEST(module_equals_hash)
 
 	g_assert (gck_module_equal (module, module));
 
-	other = gck_module_new (gck_module_get_functions (module));
+	other = gck_module_new (gck_module_get_functions (module), 0);
 	obj = g_object_new (G_TYPE_OBJECT, NULL);
 
 	g_assert (gck_module_equal (module, other));

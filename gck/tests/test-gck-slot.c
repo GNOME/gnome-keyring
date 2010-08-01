@@ -14,7 +14,7 @@ DEFINE_SETUP(load_slots)
 	GList *slots;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, &err);
+	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
 	slots = gck_module_get_slots (module, TRUE);
@@ -111,7 +111,7 @@ DEFINE_TEST(slot_equals_hash)
 
 	g_assert (gck_slot_equal (slot, slot));
 
-	other_mod = gck_module_new (gck_module_get_functions (module));
+	other_mod = gck_module_new (gck_module_get_functions (module), 0);
 	other_slot = g_object_new (GCK_TYPE_SLOT, "module", other_mod, "handle", gck_slot_get_handle (slot), NULL);
 	g_assert (gck_slot_equal (slot, other_slot));
 	g_object_unref (other_mod);

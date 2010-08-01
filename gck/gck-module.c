@@ -86,23 +86,17 @@ enum {
 	LAST_SIGNAL
 };
 
-typedef struct _GckModuleData {
+struct _GckModulePrivate {
 	GModule *module;
 	gchar *path;
 	gboolean initialized;
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_C_INITIALIZE_ARGS init_args;
-} GckModuleData;
-
-typedef struct _GckModulePrivate {
-	GckModuleData data;
-	GStaticMutex mutex;
-	gboolean finalized;
 	guint options;
-} GckModulePrivate;
 
-#define gck_module_GET_DATA(o) \
-      (G_TYPE_INSTANCE_GET_PRIVATE((o), GCK_TYPE_MODULE, GckModuleData))
+	/* Modified atomically */
+	gint finalized;
+};
 
 G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 
@@ -158,39 +152,6 @@ unlock_mutex (void *mutex)
 /* ----------------------------------------------------------------------------
  * INTERNAL
  */
-
-static GckModulePrivate*
-lock_private (gpointer obj)
-{
-	GckModulePrivate *pv;
-	GckModule *self;
-
-	g_assert (GCK_IS_MODULE (obj));
-	self = GCK_MODULE (obj);
-
-	g_object_ref (self);
-
-	pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate);
-	g_static_mutex_lock (&pv->mutex);
-
-	return pv;
-}
-
-static void
-unlock_private (gpointer obj, GckModulePrivate *pv)
-{
-	GckModule *self;
-
-	g_assert (pv);
-	g_assert (GCK_IS_MODULE (obj));
-
-	self = GCK_MODULE (obj);
-
-	g_assert (G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate) == pv);
-
-	g_static_mutex_unlock (&pv->mutex);
-	g_object_unref (self);
-}
 
 gboolean
 _gck_module_fire_authenticate_slot (GckModule *self, GckSlot *slot, gchar *label, gchar **password)
@@ -277,8 +238,7 @@ gck_module_real_authenticate_object (GckModule *module, GckObject *object, gchar
 static void
 gck_module_init (GckModule *self)
 {
-	GckModulePrivate *pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate);
-	g_static_mutex_init (&pv->mutex);
+	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_MODULE, GckModulePrivate);
 }
 
 static void
@@ -305,20 +265,20 @@ gck_module_set_property (GObject *obj, guint prop_id, const GValue *value,
                           GParamSpec *pspec)
 {
 	GckModule *self = GCK_MODULE (obj);
-	GckModuleData *data = gck_module_GET_DATA (obj);
 
 	/* Only allowed during initialization */
 	switch (prop_id) {
 	case PROP_PATH:
-		g_return_if_fail (!data->path);
-		data->path = g_value_dup_string (value);
+		g_return_if_fail (!self->pv->path);
+		self->pv->path = g_value_dup_string (value);
 		break;
 	case PROP_FUNCTIONS:
-		g_return_if_fail (!data->funcs);
-		data->funcs = g_value_get_pointer (value);
+		g_return_if_fail (!self->pv->funcs);
+		self->pv->funcs = g_value_get_pointer (value);
 		break;
 	case PROP_OPTIONS:
-		gck_module_set_options (self, g_value_get_uint (value));
+		g_return_if_fail (!self->pv->options);
+		self->pv->options = g_value_get_uint (value);
 		break;
 	}
 }
@@ -326,26 +286,21 @@ gck_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 static void
 gck_module_dispose (GObject *obj)
 {
-	GckModuleData *data = gck_module_GET_DATA (obj);
-	GckModulePrivate *pv = lock_private (obj);
+	GckModule *self = GCK_MODULE (obj);
 	gboolean finalize = FALSE;
 	CK_RV rv;
 
-	{
-		if (!pv->finalized && data->initialized && data->funcs) {
+	if (self->pv->initialized && self->pv->funcs) {
+		if (g_atomic_int_compare_and_exchange (&self->pv->finalized, 0, 1))
 			finalize = TRUE;
-			pv->finalized = TRUE;
-		}
 	}
-
-	unlock_private (obj, pv);
 
 	/* Must be careful when accessing funcs */
 	if (finalize) {
-		rv = (data->funcs->C_Finalize) (NULL);
+		rv = (self->pv->funcs->C_Finalize) (NULL);
 		if (rv != CKR_OK) {
 			g_warning ("C_Finalize on module '%s' failed: %s",
-			           data->path, gck_message_from_rv (rv));
+			           self->pv->path, gck_message_from_rv (rv));
 		}
 	}
 
@@ -355,22 +310,19 @@ gck_module_dispose (GObject *obj)
 static void
 gck_module_finalize (GObject *obj)
 {
-	GckModulePrivate *pv = G_TYPE_INSTANCE_GET_PRIVATE (obj, GCK_TYPE_MODULE, GckModulePrivate);
-	GckModuleData *data = gck_module_GET_DATA (obj);
+	GckModule *self = GCK_MODULE (obj);
 
-	data->funcs = NULL;
+	self->pv->funcs = NULL;
 
-	if (data->module) {
-		if (!g_module_close (data->module))
+	if (self->pv->module) {
+		if (!g_module_close (self->pv->module))
 			g_warning ("failed to close the pkcs11 module: %s",
 			           g_module_error ());
-		data->module = NULL;
+		self->pv->module = NULL;
 	}
 
-	g_free (data->path);
-	data->path = NULL;
-
-	g_static_mutex_free (&pv->mutex);
+	g_free (self->pv->path);
+	self->pv->path = NULL;
 
 	G_OBJECT_CLASS (gck_module_parent_class)->finalize (obj);
 }
@@ -423,7 +375,7 @@ gck_module_class_init (GckModuleClass *klass)
 	 */
 	g_object_class_install_property (gobject_class, PROP_OPTIONS,
 		g_param_spec_uint ("options", "Options", "Module options",
-		                  0, G_MAXUINT, 0, G_PARAM_READWRITE));
+		                  0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
 	 * GckModule::authenticate-slot:
@@ -488,6 +440,7 @@ gck_module_info_free (GckModuleInfo *module_info)
  * gck_module_initialize:
  * @path: The file system path to the PKCS#11 module to load.
  * @reserved: Extra arguments for the PKCS#11 module, should usually be NULL.
+ * @options: Options which control the authentication behavior etc.
  * @err: A location to store an error resulting from a failed load.
  *
  * Load and initialize a PKCS#11 module represented by a GckModule object.
@@ -495,13 +448,12 @@ gck_module_info_free (GckModuleInfo *module_info)
  * Return value: The loaded PKCS#11 module or NULL if failed.
  **/
 GckModule*
-gck_module_initialize (const gchar *path, gpointer reserved, GError **err)
+gck_module_initialize (const gchar *path, gpointer reserved, guint options, GError **err)
 {
 	CK_C_GetFunctionList get_function_list;
 	CK_FUNCTION_LIST_PTR funcs;
-	GckModuleData *data;
 	GModule *module;
-	GckModule *mod;
+	GckModule *self;
 	CK_RV rv;
 
 	g_return_val_if_fail (path != NULL, NULL);
@@ -532,29 +484,28 @@ gck_module_initialize (const gchar *path, gpointer reserved, GError **err)
 		return NULL;
 	}
 
-	mod = g_object_new (GCK_TYPE_MODULE, "functions", funcs, "path", path, NULL);
-	data = gck_module_GET_DATA (mod);
-	data->module = module;
+	self = g_object_new (GCK_TYPE_MODULE, "functions", funcs, "path", path, "options", options, NULL);
+	self->pv->module = module;
 
-	memset (&data->init_args, 0, sizeof (data->init_args));
-	data->init_args.flags = CKF_OS_LOCKING_OK;
-	data->init_args.CreateMutex = create_mutex;
-	data->init_args.DestroyMutex = destroy_mutex;
-	data->init_args.LockMutex = lock_mutex;
-	data->init_args.UnlockMutex = unlock_mutex;
-	data->init_args.pReserved = reserved;
+	memset (&self->pv->init_args, 0, sizeof (self->pv->init_args));
+	self->pv->init_args.flags = CKF_OS_LOCKING_OK;
+	self->pv->init_args.CreateMutex = create_mutex;
+	self->pv->init_args.DestroyMutex = destroy_mutex;
+	self->pv->init_args.LockMutex = lock_mutex;
+	self->pv->init_args.UnlockMutex = unlock_mutex;
+	self->pv->init_args.pReserved = reserved;
 
 	/* Now initialize the module */
-	rv = (data->funcs->C_Initialize) (&data->init_args);
+	rv = (self->pv->funcs->C_Initialize) (&self->pv->init_args);
 	if (rv != CKR_OK) {
 		g_set_error (err, GCK_ERROR, rv, "Couldn't initialize module: %s",
 		             gck_message_from_rv (rv));
-		g_object_unref (mod);
+		g_object_unref (self);
 		return NULL;
 	}
 
-	data->initialized = TRUE;
-	return mod;
+	self->pv->initialized = TRUE;
+	return self;
 }
 
 /**
@@ -568,10 +519,10 @@ gck_module_initialize (const gchar *path, gpointer reserved, GError **err)
  * Return value: The new PKCS#11 module.
  **/
 GckModule*
-gck_module_new (CK_FUNCTION_LIST_PTR funcs)
+gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint options)
 {
 	g_return_val_if_fail (funcs, NULL);
-	return g_object_new (GCK_TYPE_MODULE, "functions", funcs, NULL);
+	return g_object_new (GCK_TYPE_MODULE, "functions", funcs, "options", options, NULL);
 }
 
 /**
@@ -587,17 +538,17 @@ gck_module_new (CK_FUNCTION_LIST_PTR funcs)
 gboolean
 gck_module_equal (gconstpointer module1, gconstpointer module2)
 {
-	GckModuleData *data1, *data2;
+	GckModule *mod1, *mod2;
 
 	if (module1 == module2)
 		return TRUE;
 	if (!GCK_IS_MODULE (module1) || !GCK_IS_MODULE (module2))
 		return FALSE;
 
-	data1 = gck_module_GET_DATA (module1);
-	data2 = gck_module_GET_DATA (module2);
+	mod1 = GCK_MODULE (module1);
+	mod2 = GCK_MODULE (module2);
 
-	return data1->funcs == data2->funcs;
+	return mod1->pv->funcs == mod2->pv->funcs;
 }
 
 /**
@@ -614,13 +565,11 @@ gck_module_equal (gconstpointer module1, gconstpointer module2)
 guint
 gck_module_hash (gconstpointer module)
 {
-	GckModuleData *data;
+	GckModule *self;
 
 	g_return_val_if_fail (GCK_IS_MODULE (module), 0);
-
-	data = gck_module_GET_DATA (module);
-
-	return g_direct_hash (data->funcs);
+	self = GCK_MODULE (module);
+	return g_direct_hash (self->pv->funcs);
 }
 
 /**
@@ -634,16 +583,15 @@ gck_module_hash (gconstpointer module)
 GckModuleInfo*
 gck_module_get_info (GckModule *self)
 {
-	GckModuleData *data = gck_module_GET_DATA (self);
 	GckModuleInfo *modinfo;
 	CK_INFO info;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
-	g_return_val_if_fail (data->funcs, NULL);
+	g_return_val_if_fail (self->pv->funcs, NULL);
 
 	memset (&info, 0, sizeof (info));
-	rv = (data->funcs->C_GetInfo (&info));
+	rv = (self->pv->funcs->C_GetInfo (&info));
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get module info: %s", gck_message_from_rv (rv));
 		return NULL;
@@ -675,16 +623,15 @@ gck_module_get_info (GckModule *self)
 GList*
 gck_module_get_slots (GckModule *self, gboolean token_present)
 {
-	GckModuleData *data = gck_module_GET_DATA (self);
 	CK_SLOT_ID_PTR slot_list;
 	CK_ULONG count, i;
 	GList *result;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
-	g_return_val_if_fail (data->funcs, NULL);
+	g_return_val_if_fail (self->pv->funcs, NULL);
 
-	rv = (data->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, NULL, &count);
+	rv = (self->pv->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, NULL, &count);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get slot count: %s", gck_message_from_rv (rv));
 		return NULL;
@@ -694,7 +641,7 @@ gck_module_get_slots (GckModule *self, gboolean token_present)
 		return NULL;
 
 	slot_list = g_new (CK_SLOT_ID, count);
-	rv = (data->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, slot_list, &count);
+	rv = (self->pv->funcs->C_GetSlotList) (token_present ? CK_TRUE : CK_FALSE, slot_list, &count);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get slot list: %s", gck_message_from_rv (rv));
 		g_free (slot_list);
@@ -724,9 +671,8 @@ gck_module_get_slots (GckModule *self, gboolean token_present)
 const gchar*
 gck_module_get_path (GckModule *self)
 {
-	GckModuleData *data = gck_module_GET_DATA (self);
 	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
-	return data->path;
+	return self->pv->path;
 }
 
 /**
@@ -740,9 +686,8 @@ gck_module_get_path (GckModule *self)
 CK_FUNCTION_LIST_PTR
 gck_module_get_functions (GckModule *self)
 {
-	GckModuleData *data = gck_module_GET_DATA (self);
 	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
-	return data->funcs;
+	return self->pv->funcs;
 }
 
 
@@ -757,56 +702,6 @@ gck_module_get_functions (GckModule *self)
 guint
 gck_module_get_options (GckModule *self)
 {
-	GckModulePrivate *pv = lock_private (self);
-	guint ret;
-
-	g_return_val_if_fail (pv, FALSE);
-
-	{
-		ret = pv->options;
-	}
-
-	unlock_private (self, pv);
-
-	return ret;
-}
-
-/**
- * gck_module_set_options:
- * @self: The module to set the setting on.
- * @options: Authentication and other options..
- **/
-void
-gck_module_set_options (GckModule *self, guint options)
-{
-	GckModulePrivate *pv = lock_private (self);
-
-	g_return_if_fail (pv);
-
-	{
-		pv->options = options;
-	}
-
-	unlock_private (self, pv);
-	g_object_notify (G_OBJECT (self), "options");
-}
-
-/**
- * gck_module_add_options:
- * @self: The module to add the option on.
- * @options: Authentication and other options..
- **/
-void
-gck_module_add_options (GckModule *self, guint options)
-{
-	GckModulePrivate *pv = lock_private (self);
-
-	g_return_if_fail (pv);
-
-	{
-		pv->options |= options;
-	}
-
-	unlock_private (self, pv);
-	g_object_notify (G_OBJECT (self), "options");
+	g_return_val_if_fail (GCK_IS_MODULE (self), 0);
+	return self->pv->options;
 }

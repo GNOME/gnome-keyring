@@ -18,7 +18,7 @@ DEFINE_SETUP(load_session)
 	GList *slots;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, &err);
+	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
 	slots = gck_module_get_slots (module, TRUE);
@@ -195,6 +195,8 @@ authenticate_token (GckModule *module, GckSlot *slot, gchar *label, gchar **pass
 DEFINE_TEST(auto_login)
 {
 	GckObject *object;
+	GckModule *module_with_auth;
+	GckSlot *slot_with_auth;
 	GckSession *new_session;
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
@@ -208,56 +210,57 @@ DEFINE_TEST(auto_login)
 	gck_attributes_add_boolean (attrs, CKA_PRIVATE, CK_TRUE);
 
 	/* Try to do something that requires a login */
+	g_assert_cmpuint (gck_module_get_options (module), ==, 0);
 	object = gck_session_create_object (session, attrs, NULL, &err);
 	g_assert (!object);
 	g_assert (err && err->code == CKR_USER_NOT_LOGGED_IN);
 	g_clear_error (&err);
 
 	/* Setup for auto login */
-	g_assert (gck_module_get_options (module) == 0);
-	gck_module_set_options (module, GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS);
-	g_assert (gck_module_get_options (module) == (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
-	g_object_get (module, "options", &value, NULL);
-	g_assert (value == (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
+	module_with_auth = gck_module_new (gck_module_get_functions (module), GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS);
+	g_assert (gck_module_get_options (module_with_auth) == (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
+	g_object_get (module_with_auth, "options", &value, NULL);
+	g_assert_cmpuint (value, ==, (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
 
-	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
+	g_signal_connect (module_with_auth, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
 
 	/* Create a new session */
-	new_session = gck_slot_open_session (slot, CKF_RW_SESSION, &err);
+	slot_with_auth = g_object_new (GCK_TYPE_SLOT, "module", module_with_auth, "handle", gck_slot_get_handle (slot), NULL);
+	new_session = gck_slot_open_session (slot_with_auth, CKF_RW_SESSION, &err);
 	SUCCESS_RES (new_session, err);
 	g_object_unref (new_session);
 
 	/* Try again to do something that requires a login */
-	object = gck_session_create_object (session, attrs, NULL, &err);
+	object = gck_session_create_object (new_session, attrs, NULL, &err);
 	SUCCESS_RES (object, err);
 	g_object_unref (object);
 
 	/* We should now be logged in, try to log out */
-	ret = gck_session_logout (session, &err);
+	ret = gck_session_logout (new_session, &err);
 	SUCCESS_RES (ret, err);
 
 	/* Now try the same thing, but asyncronously */
-	gck_slot_open_session_async (slot, CKF_RW_SESSION, NULL, NULL, NULL, fetch_async_result, &result);
+	gck_slot_open_session_async (slot_with_auth, CKF_RW_SESSION, NULL, NULL, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
-	new_session = gck_slot_open_session_finish (slot, result, &err);
+	new_session = gck_slot_open_session_finish (slot_with_auth, result, &err);
 	SUCCESS_RES (new_session, err);
 	g_object_unref (result);
 	g_object_unref (new_session);
 
 	result = NULL;
-	gck_session_create_object_async (session, attrs, NULL, fetch_async_result, &result);
+	gck_session_create_object_async (new_session, attrs, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
-	object = gck_session_create_object_finish (session, result, &err);
+	object = gck_session_create_object_finish (new_session, result, &err);
 	SUCCESS_RES (object, err);
 	g_object_unref (result);
 	g_object_unref (object);
 
 	/* We should now be logged in, try to log out */
-	ret = gck_session_logout (session, &err);
+	ret = gck_session_logout (new_session, &err);
 	SUCCESS_RES (ret, err);
 
-	g_object_set (module, "options", 0, NULL);
-	g_assert_cmpuint (gck_module_get_options (module), ==, 0);
+	g_object_unref (slot_with_auth);
+	g_object_unref (module_with_auth);
 }

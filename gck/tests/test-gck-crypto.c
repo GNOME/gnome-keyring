@@ -9,33 +9,42 @@
 #include "gck-test.h"
 
 static GckModule *module = NULL;
-static GckSlot *slot = NULL;
+static GckModule *module_with_auth = NULL;
 static GckSession *session = NULL;
+static GckSession *session_with_auth = NULL;
 
 DEFINE_SETUP(crypto_session)
 {
 	GError *err = NULL;
 	GList *slots;
+	GckSlot *slot;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, &err);
+	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
 	slots = gck_module_get_slots (module, TRUE);
 	g_assert (slots != NULL);
 
-	slot = GCK_SLOT (slots->data);
-	g_object_ref (slot);
-	gck_list_unref_free (slots);
-
-	session = gck_slot_open_session (slot, 0, &err);
+	session = gck_slot_open_session (slots->data, 0, &err);
 	SUCCESS_RES(session, err);
+
+	module_with_auth = gck_module_new (gck_module_get_functions (module), GCK_AUTHENTICATE_OBJECTS);
+	g_assert (module_with_auth);
+
+	slot = gck_slot_from_handle (module_with_auth, gck_slot_get_handle (slots->data));
+	g_assert (slot);
+
+	session_with_auth = gck_session_from_handle (slot, gck_session_get_handle (session));
+	g_assert (session_with_auth);
+
+	g_object_unref (slot);
+	gck_list_unref_free (slots);
 }
 
 DEFINE_TEARDOWN(crypto_session)
 {
 	g_object_unref (session);
-	g_object_unref (slot);
 	g_object_unref (module);
 }
 
@@ -261,7 +270,6 @@ DEFINE_TEST(sign)
 	mech = gck_mechanism_new_with_param (CKM_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, see previous test */
-	gck_module_set_options (module, GCK_AUTHENTICATE_OBJECTS);
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
@@ -311,7 +319,6 @@ DEFINE_TEST(verify)
 	mech = gck_mechanism_new_with_param (CKM_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, shouldn't be needed */
-	gck_module_set_options (module, GCK_AUTHENTICATE_OBJECTS);
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */

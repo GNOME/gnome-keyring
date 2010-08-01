@@ -67,66 +67,18 @@ enum {
 	PROP_SLOT
 };
 
-typedef struct _GckSessionData {
+struct _GckSessionPrivate {
 	GckSlot *slot;
 	GckModule *module;
 	CK_SESSION_HANDLE handle;
-} GckSessionData;
-
-typedef struct _GckSessionPrivate {
-
-	/* Remain same from init to finalize */
-	GckSessionData data;
 
 	/* Modified atomically */
 	gint discarded;
-	gint auto_login;
-
-} GckSessionPrivate;
-
-#define GCK_SESSION_GET_DATA(o) \
-      (G_TYPE_INSTANCE_GET_PRIVATE((o), GCK_TYPE_SESSION, GckSessionData))
+};
 
 G_DEFINE_TYPE (GckSession, gck_session, G_TYPE_OBJECT);
 
 static guint signals[LAST_SIGNAL] = { 0 };
-
-/* ----------------------------------------------------------------------------
- * HELPERS
- */
-
-static GckSessionPrivate*
-lock_private (gpointer obj)
-{
-	GckSessionPrivate *pv;
-	GckSession *self;
-
-	g_return_val_if_fail (GCK_IS_SESSION (obj), NULL);
-	self = GCK_SESSION (obj);
-
-	g_object_ref (self);
-
-	pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_SESSION, GckSessionPrivate);
-	/* g_static_mutex_lock (&pv->mutex); */
-
-	return pv;
-}
-
-static void
-unlock_private (gpointer obj, GckSessionPrivate *pv)
-{
-	GckSession *self;
-
-	g_assert (pv);
-	g_assert (GCK_IS_SESSION (obj));
-
-	self = GCK_SESSION (obj);
-
-	g_assert (G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_SESSION, GckSessionPrivate) == pv);
-
-	/* g_static_mutex_unlock (&pv->mutex); */
-	g_object_unref (self);
-}
 
 /* ----------------------------------------------------------------------------
  * OBJECT
@@ -135,16 +87,15 @@ unlock_private (gpointer obj, GckSessionPrivate *pv)
 static gboolean
 gck_session_real_discard_handle (GckSession *self, CK_OBJECT_HANDLE handle)
 {
-	GckSessionData *data = GCK_SESSION_GET_DATA (self);
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_RV rv;
 
 	/* The default functionality, close the handle */
 
-	g_return_val_if_fail (data->module, FALSE);
-	g_object_ref (data->module);
+	g_return_val_if_fail (self->pv->module, FALSE);
+	g_object_ref (self->pv->module);
 
-	funcs = gck_module_get_functions (data->module);
+	funcs = gck_module_get_functions (self->pv->module);
 	g_return_val_if_fail (funcs, FALSE);
 
 	rv = (funcs->C_CloseSession) (handle);
@@ -153,14 +104,14 @@ gck_session_real_discard_handle (GckSession *self, CK_OBJECT_HANDLE handle)
 		           gck_message_from_rv (rv));
 	}
 
-	g_object_unref (data->module);
+	g_object_unref (self->pv->module);
 	return TRUE;
 }
 
 static void
 gck_session_init (GckSession *self)
 {
-
+	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_SESSION, GckSessionPrivate);
 }
 
 static void
@@ -186,24 +137,24 @@ static void
 gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
                            GParamSpec *pspec)
 {
-	GckSessionData *data = GCK_SESSION_GET_DATA (obj);
+	GckSession *self = GCK_SESSION (obj);
 
 	/* Only valid calls are from constructor */
 
 	switch (prop_id) {
 	case PROP_MODULE:
-		g_return_if_fail (!data->module);
-		data->module = g_value_dup_object (value);
-		g_return_if_fail (data->module);
+		g_return_if_fail (!self->pv->module);
+		self->pv->module = g_value_dup_object (value);
+		g_return_if_fail (self->pv->module);
 		break;
 	case PROP_HANDLE:
-		g_return_if_fail (!data->handle);
-		data->handle = g_value_get_ulong (value);
+		g_return_if_fail (!self->pv->handle);
+		self->pv->handle = g_value_get_ulong (value);
 		break;
 	case PROP_SLOT:
-		g_return_if_fail (!data->slot);
-		data->slot = g_value_dup_object (value);
-		g_return_if_fail (data->slot);
+		g_return_if_fail (!self->pv->slot);
+		self->pv->slot = g_value_dup_object (value);
+		g_return_if_fail (self->pv->slot);
 		break;
 	}
 }
@@ -211,31 +162,21 @@ gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 static void
 gck_session_dispose (GObject *obj)
 {
-	GckSessionPrivate *pv;
 	GckSession *self = GCK_SESSION (obj);
 	gboolean handled;
-	gint discarded;
 
 	g_return_if_fail (GCK_IS_SESSION (self));
 
-	pv = lock_private (obj);
+	if (g_atomic_int_compare_and_exchange (&self->pv->discarded, 0, 1)) {
 
-	{
-		discarded = g_atomic_int_get (&pv->discarded);
-		if (!discarded && g_atomic_int_compare_and_exchange (&pv->discarded, discarded, 1)) {
+		/*
+		 * Let the world know that we're discarding the session
+		 * handle. This allows any necessary session reuse to work.
+		 */
 
-			/*
-			 * Let the world know that we're discarding the session
-			 * handle. This allows session reuse to work.
-			 */
-
-			g_signal_emit_by_name (self, "discard-handle", pv->data.handle, &handled);
-			g_return_if_fail (handled);
-		}
-
+		g_signal_emit_by_name (self, "discard-handle", self->pv->handle, &handled);
+		g_return_if_fail (handled);
 	}
-
-	unlock_private (obj, pv);
 
 	G_OBJECT_CLASS (gck_session_parent_class)->dispose (obj);
 }
@@ -243,18 +184,17 @@ gck_session_dispose (GObject *obj)
 static void
 gck_session_finalize (GObject *obj)
 {
-	GckSessionPrivate *pv = G_TYPE_INSTANCE_GET_PRIVATE (obj, GCK_TYPE_SESSION, GckSessionPrivate);
-	GckSessionData *data = GCK_SESSION_GET_DATA (obj);
+	GckSession *self = GCK_SESSION (obj);
 
-	g_assert (pv->discarded != 0);
+	g_assert (g_atomic_int_get (&self->pv->discarded) != 0);
 
-	if (data->slot)
-		g_object_unref (data->slot);
-	data->slot = NULL;
+	if (self->pv->slot)
+		g_object_unref (self->pv->slot);
+	self->pv->slot = NULL;
 
-	if (data->module)
-		g_object_unref (data->module);
-	data->module = NULL;
+	if (self->pv->module)
+		g_object_unref (self->pv->module);
+	self->pv->module = NULL;
 
 	G_OBJECT_CLASS (gck_session_parent_class)->finalize (obj);
 }
@@ -388,9 +328,8 @@ gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle)
 CK_SESSION_HANDLE
 gck_session_get_handle (GckSession *self)
 {
-	GckSessionData *data = GCK_SESSION_GET_DATA (self);
 	g_return_val_if_fail (GCK_IS_SESSION (self), (CK_SESSION_HANDLE)-1);
-	return data->handle;
+	return self->pv->handle;
 }
 
 /**
@@ -404,10 +343,9 @@ gck_session_get_handle (GckSession *self)
 GckModule*
 gck_session_get_module (GckSession *self)
 {
-	GckSessionData *data = GCK_SESSION_GET_DATA (self);
 	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
-	g_return_val_if_fail (GCK_IS_MODULE (data->module), NULL);
-	return g_object_ref (data->module);
+	g_return_val_if_fail (GCK_IS_MODULE (self->pv->module), NULL);
+	return g_object_ref (self->pv->module);
 }
 
 /**
@@ -421,10 +359,9 @@ gck_session_get_module (GckSession *self)
 GckSlot*
 gck_session_get_slot (GckSession *self)
 {
-	GckSessionData *data = GCK_SESSION_GET_DATA (self);
 	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
-	g_return_val_if_fail (GCK_IS_SLOT (data->slot), NULL);
-	return g_object_ref (data->slot);
+	g_return_val_if_fail (GCK_IS_SLOT (self->pv->slot), NULL);
+	return g_object_ref (self->pv->slot);
 }
 
 /**
@@ -439,24 +376,23 @@ gck_session_get_slot (GckSession *self)
 GckSessionInfo*
 gck_session_get_info (GckSession *self)
 {
-	GckSessionData *data = GCK_SESSION_GET_DATA (self);
 	GckSessionInfo *sessioninfo;
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SESSION_INFO info;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
-	g_return_val_if_fail (GCK_IS_MODULE (data->module), NULL);
+	g_return_val_if_fail (GCK_IS_MODULE (self->pv->module), NULL);
 
-	g_object_ref (data->module);
+	g_object_ref (self->pv->module);
 
-	funcs = gck_module_get_functions (data->module);
+	funcs = gck_module_get_functions (self->pv->module);
 	g_return_val_if_fail (funcs, NULL);
 
 	memset (&info, 0, sizeof (info));
-	rv = (funcs->C_GetSessionInfo) (data->handle, &info);
+	rv = (funcs->C_GetSessionInfo) (self->pv->handle, &info);
 
-	g_object_unref (data->module);
+	g_object_unref (self->pv->module);
 
 	if (rv != CKR_OK) {
 		g_warning ("couldn't get session info: %s", gck_message_from_rv (rv));

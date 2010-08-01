@@ -49,19 +49,12 @@ enum {
 	PROP_HANDLE
 };
 
-typedef struct _GckSlotData {
+struct _GckSlotPrivate {
 	GckModule *module;
 	CK_SLOT_ID handle;
-} GckSlotData;
-
-typedef struct _GckSlotPrivate {
-	GckSlotData data;
-} GckSlotPrivate;
+};
 
 G_DEFINE_TYPE (GckSlot, gck_slot, G_TYPE_OBJECT);
-
-#define GCK_SLOT_GET_DATA(o) \
-      (G_TYPE_INSTANCE_GET_PRIVATE((o), GCK_TYPE_SLOT, GckSlotData))
 
 #ifndef HAVE_TIMEGM
 
@@ -125,12 +118,12 @@ make_session_object (GckSlot *self, gulong flags, CK_SESSION_HANDLE handle)
 static void
 gck_slot_init (GckSlot *self)
 {
-
+	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_SLOT, GckSlotPrivate);
 }
 
 static void
 gck_slot_get_property (GObject *obj, guint prop_id, GValue *value,
-                        GParamSpec *pspec)
+                       GParamSpec *pspec)
 {
 	GckSlot *self = GCK_SLOT (obj);
 
@@ -148,20 +141,20 @@ static void
 gck_slot_set_property (GObject *obj, guint prop_id, const GValue *value,
                         GParamSpec *pspec)
 {
-	GckSlotData *data = GCK_SLOT_GET_DATA (obj);
+	GckSlot *self = GCK_SLOT (obj);
 
 	/* All writes to data members below, happen only during construct phase */
 
 	switch (prop_id) {
 	case PROP_MODULE:
-		g_assert (!data->module);
-		data->module = g_value_get_object (value);
-		g_assert (data->module);
-		g_object_ref (data->module);
+		g_assert (!self->pv->module);
+		self->pv->module = g_value_get_object (value);
+		g_assert (self->pv->module);
+		g_object_ref (self->pv->module);
 		break;
 	case PROP_HANDLE:
-		g_assert (!data->handle);
-		data->handle = g_value_get_ulong (value);
+		g_assert (!self->pv->handle);
+		self->pv->handle = g_value_get_ulong (value);
 		break;
 	}
 }
@@ -175,13 +168,12 @@ gck_slot_dispose (GObject *obj)
 static void
 gck_slot_finalize (GObject *obj)
 {
-	GckSlotData *data = GCK_SLOT_GET_DATA (obj);
+	GckSlot *self = GCK_SLOT (obj);
+	self->pv->handle = 0;
 
-	data->handle = 0;
-
-	if (data->module)
-		g_object_unref (data->module);
-	data->module = NULL;
+	if (self->pv->module)
+		g_object_unref (self->pv->module);
+	self->pv->module = NULL;
 
 	G_OBJECT_CLASS (gck_slot_parent_class)->finalize (obj);
 }
@@ -426,18 +418,18 @@ gck_mechanisms_check (GckMechanisms *mechanisms, ...)
 gboolean
 gck_slot_equal (gconstpointer slot1, gconstpointer slot2)
 {
-	GckSlotData *data1, *data2;
+	GckSlot *s1, *s2;
 
 	if (slot1 == slot2)
 		return TRUE;
 	if (!GCK_IS_SLOT (slot1) || !GCK_IS_SLOT (slot2))
 		return FALSE;
 
-	data1 = GCK_SLOT_GET_DATA (slot1);
-	data2 = GCK_SLOT_GET_DATA (slot2);
+	s1 = GCK_SLOT (slot1);
+	s2 = GCK_SLOT (slot2);
 
-	return data1->handle == data2->handle &&
-	       gck_module_equal (data1->module, data2->module);
+	return s1->pv->handle == s2->pv->handle &&
+	       gck_module_equal (s1->pv->module, s2->pv->module);
 }
 
 /**
@@ -454,14 +446,29 @@ gck_slot_equal (gconstpointer slot1, gconstpointer slot2)
 guint
 gck_slot_hash (gconstpointer slot)
 {
-	GckSlotData *data;
+	GckSlot *self;
 
 	g_return_val_if_fail (GCK_IS_SLOT (slot), 0);
 
-	data = GCK_SLOT_GET_DATA (slot);
+	self = GCK_SLOT (slot);
 
-	return _gck_ulong_hash (&data->handle) ^
-	       gck_module_hash (data->module);
+	return _gck_ulong_hash (&self->pv->handle) ^
+	       gck_module_hash (self->pv->module);
+}
+
+/**
+ * gck_slot_from_handle:
+ * @module: The module that this slot is on.
+ * @slot_id: The raw PKCS#11 handle or slot id of this slot.
+ *
+ * Create a new GckSlot object for a raw PKCS#11 handle.
+ *
+ * Return value: The new GckSlot object.
+ **/
+GckSlot*
+gck_slot_from_handle (GckModule *module, CK_SLOT_ID slot_id)
+{
+	return g_object_new (GCK_TYPE_SLOT, "module", module, "handle", slot_id, NULL);
 }
 
 /**
@@ -475,9 +482,8 @@ gck_slot_hash (gconstpointer slot)
 CK_SLOT_ID
 gck_slot_get_handle (GckSlot *self)
 {
-	GckSlotData *data = GCK_SLOT_GET_DATA (self);
 	g_return_val_if_fail (GCK_IS_SLOT (self), (CK_SLOT_ID)-1);
-	return data->handle;
+	return self->pv->handle;
 }
 
 /**
@@ -491,10 +497,9 @@ gck_slot_get_handle (GckSlot *self)
 GckModule*
 gck_slot_get_module (GckSlot *self)
 {
-	GckSlotData *data = GCK_SLOT_GET_DATA (self);
 	g_return_val_if_fail (GCK_IS_SLOT (self), NULL);
-	g_return_val_if_fail (GCK_IS_MODULE (data->module), NULL);
-	return g_object_ref (data->module);
+	g_return_val_if_fail (GCK_IS_MODULE (self->pv->module), NULL);
+	return g_object_ref (self->pv->module);
 }
 
 /**
