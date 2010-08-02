@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-06-28 14:29+0000\n"
-"PO-Revision-Date: 2010-07-02 10:42+0300\n"
+"POT-Creation-Date: 2010-07-29 07:55+0000\n"
+"PO-Revision-Date: 2010-08-01 21:58+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -400,13 +400,13 @@ msgid "Choose a location to store the imported certificates/keys."
 msgstr "Vali asukoht imporditud sertifikaatide/võtmete säilitamiseks."
 
 msgid "Enter password to unlock the private key"
-msgstr "Sisesta salajase võtme lukust lahtivõtmise parool"
+msgstr "Sisesta salajase võtme luku avamise parool"
 
 msgid "Enter password to unlock the certificate"
-msgstr "Sisesta sertifikaadi lukust lahtivõtmise parool"
+msgstr "Sisesta sertifikaadi luku avamise parool"
 
 msgid "Enter password to unlock"
-msgstr "Sisesta lukust lahtivõtmise parool"
+msgstr "Sisesta luku avamise parool"
 
 #. TRANSLATORS: The key is locked.
 msgid "In order to import the private key, it must be unlocked"
@@ -707,8 +707,8 @@ msgstr "Lukust lahtivõtmise parool ei ole korrektne"
 msgid "Unlock Login Keyring"
 msgstr "Sisselogimise võtmerõnga lukust lahtivõtmine"
 
-msgid "Enter password for to unlock your login keyring"
-msgstr "Sisselogimise võtmerõnga lukust lahtivõtmiseks parool"
+msgid "Enter password to unlock your login keyring"
+msgstr "Sisesta sisselogimise võtmerõnga luku avamise parool"
 
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
@@ -747,7 +747,7 @@ msgid "Unlock"
 msgstr "Võta lukust lahti"
 
 msgid "Enter password to unlock the public key"
-msgstr "Sisesta avaliku võtme lukust lahtivõtmise parool"
+msgstr "Sisesta avaliku võtme luku avamise parool"
 
 #. TRANSLATORS: The private key is locked
 #, c-format
@@ -773,7 +773,7 @@ msgid "Unlock certificate/key storage"
 msgstr "Võta sertifikaatide--/võtmehoidla lukust lahti"
 
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "Sisesta sertifikaatide-/võtmehoidla lukust lahtivõtmise parool"
+msgstr "Sisesta sertifikaatide-/võtmehoidla luku avamise parool"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #, c-format
@@ -861,8 +861,8 @@ msgstr "_Parool:"
 #~ "\n"
 #~ "An application wants access to the keyring 'xxx', but it is locked."
 #~ msgstr ""
-#~ "<span size=\"large\" weight=\"bold\">Sisesta võtmerõnga 'login' lukust "
-#~ "lahtivõtmise parool</span>\n"
+#~ "<span size=\"large\" weight=\"bold\">Sisesta võtmerõnga 'login' luku "
+#~ "avamise parool</span>\n"
 #~ "\n"
 #~ "Rakendus tahab kasutada võtmerõngast 'xxx', kuid see on lukus"
 
@@ -896,8 +896,8 @@ msgstr "_Parool:"
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
 #~ msgstr ""
-#~ "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada võtmerõngas "
-#~ "%s asuvat parooli."
+#~ "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada võtmerõngas %"
+#~ "s asuvat parooli."
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '<object "
