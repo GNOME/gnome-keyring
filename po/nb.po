@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.31.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-13 15:04+0200\n"
-"PO-Revision-Date: 2010-07-13 15:04+0200\n"
+"POT-Creation-Date: 2010-08-04 14:26+0200\n"
+"PO-Revision-Date: 2010-08-04 14:27+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -916,8 +916,8 @@ msgid "Unlock Login Keyring"
 msgstr "Lås opp nøkkelring for innlogging"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
-msgid "Enter password for to unlock your login keyring"
-msgstr "Oppgi passord for å låse opp nøkkelring for innlogging"
+msgid "Enter password to unlock your login keyring"
+msgstr "Oppgi passord for å låse opp din nøkkelring for innlogging"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
 msgid ""

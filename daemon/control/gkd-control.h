@@ -37,4 +37,6 @@ gboolean          gkd_control_change_lock   (const gchar *directory,
                                              const gchar *original,
                                              const gchar *password);
 
+gboolean          gkd_control_quit          (const gchar *directory);
+
 #endif /* __GKD_CONTROL_H__ */

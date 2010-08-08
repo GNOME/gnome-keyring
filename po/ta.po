@@ -4,17 +4,17 @@
 #
 # Jayaradha N <jaya@pune.redhat.com>, 2004.
 # Felix <ifelix@redhat.com>, 2006.
-# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007, 2008, 2009.
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007, 2008, 2009, 2010.
 # I. Felix <ifelix@redhat.com>, 2009.
 # Dr,T,Vasudevan <agnihot3@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-21 14:19+0530\n"
-"PO-Revision-Date: 2010-02-21 14:20+0530\n"
-"Last-Translator: Dr,T,Vasudevan <agnihot3@gmail.com>\n"
-"Language-Team: Tamil <Ubuntu-l10n-tam@lists.ubuntu.com>>\n"
+"POT-Creation-Date: 2010-08-02 17:01+0530\n"
+"PO-Revision-Date: 2010-08-02 17:04+0530\n"
+"Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
+"Language-Team: Tamil <<Ubuntu-l10n-tam@lists.ubuntu.com>>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +22,7 @@ msgstr ""
 "\n"
 "\n"
 "\n"
-"X-Generator: Lokalize 0.3\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid ""
@@ -70,22 +70,23 @@ msgid "Whether the gnome-keyring secret service is enabled."
 msgstr "க்னோம் விசை வளைய  ரகசிய சேவைசெயற்படுத்தி உள்ளதா"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
 msgid "Unnamed"
 msgstr "பெயரில்லாதது"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "விசை வளைய கடவுச்சொல்லை மாற்றவும்"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "'%s' விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -94,19 +95,19 @@ msgstr ""
 "ஒரு பயன்பாடு '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
 "கடவுச்சொல்லை நீங்கள் தேர்ந்தெடுக்க வேண்டும்."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "அசல் கடவுச்சொல் தவறானது."
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "புதிய விசை வளைய கடவுச்சொல்"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "புதிய விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -114,48 +115,6 @@ msgid ""
 msgstr ""
 "ஒருபயன்பாடு புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. அதற்கு நீங்கள் பயன்படுத்த "
 "விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:134
-msgid "Unlock Login Keyring"
-msgstr "விசை வளையத்தின் பூட்டை திற"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:136
-msgid "Enter password for to unlock your login keyring"
-msgstr "உங்கள் விசை வளையத்தை திறக்க உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:140
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"உங்கள் கணினியில்   உள்நுழைய நீங்கள் பயன்படுத்தும் கடவுச்சொல் உங்கள் விசை வளையத்துடன் "
-"பொருந்தவில்லை."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:142
-msgid "The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"நீங்கள் உங்கள் கணினியில் உள்நுழைந்த போது உள்நுழைவு விசை வளையம் தானியங்கியாக பூட்டு "
-"நீக்கப்படவில்லை."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:183
-msgid "Unlock Keyring"
-msgstr "விசை வளையத்தின் பூட்டை திற"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:185
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "பூட்டைத்திறக்க '%s' விசை வளையத்தின் கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:189
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"ஒரு பயன்பாடு இயல்பான விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது ஆனால் அது "
-"பூட்டப்பட்டுள்ளது."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:219
-msgid "The unlock password was incorrect"
-msgstr "திறவு கடவுச்சொல் தவறானது."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -181,165 +140,32 @@ msgstr "GNOME கீரிங்: SSH முகவர்"
 msgid "SSH Key Agent"
 msgstr "SSH முகவர்"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME கீரிங்: ஜிபிஜி முகவர்"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "ஜிபிஜி கடவுச்சொல்லின் பலம்"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+msgid "Unknown"
+msgstr "தெரியாத"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP விசை: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+msgid "Enter Passphrase"
+msgstr "கடவுச்சொற்களை உள்ளிடவும்"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "உள்நுழை"
-
-#: ../daemon/login/gkd-login.c:596
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "இவருக்கு விசை வளையத்தை திறக்க கடவுச்சொல்: %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "புதிய கடவுச்சொல் தேவைப்படுகிறது"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "சேமிப்பை பாதுகாக்க புதிய கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr "'%s'ஐ சான்றிதழ்கள் அல்லது விசைகளுக்கு சேமிப்பகமாக்க ஒரு கடவுச்சொல் தேவைப்படுகிறது"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "அந்தரங்க விசையின் பூட்டை திற"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "சான்றிதழின் பூட்டை திற"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "பொது விசையின் பூட்டை திற"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "பூட்டை திற"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "பொது விசையின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"ஒரு பயன்பாடு உங்கள் அந்தரங்க விசை '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
-"பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"ஒரு பயன்பாடு உங்கள் சான்றிதழ் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"ஒரு பயன்பாடு உங்கள் பொது விசை '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "ஒரு பயன்பாடு '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "பூட்டப்படாத சான்றிதழ்/விசை சேமிப்பகம்"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "சான்றிதழ்/விசை சேமிப்பக பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"ஒரு பயன்பாடு உங்கள் சான்றிதழ்/விசை சேமிப்பக'%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
-"பூட்டப்பட்டுள்ளது."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "கடவுச்சொற்களை சுருக்க குறியாக்கம் செய்யாமலே சேமிக்கவா? "
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"ஒரு வெற்று கடவுச்சொல்லை தேர்ந்தெடுப்பதால் உங்கள் சேமிக்கப்பட்ட கடவுச்சொறகள் மறையாக்கம் "
-"செய்யப்படவில்லை. உங்கள் கோப்பை யாரால் அணூக முடியுமோ அவர் இதை பார்க்கலாம்."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "பாதுகாப்பு இல்லாத கிடங்கை பயன்படுத்து."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "கடவுச்சொற்கள் பொருந்தவில்லை"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசை வளையத்தை பூட்டு திறக்கவும்."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "புதிய கடவுச்சொல்லின் பலம்"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "பயன்பாடு (_A):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_C உறுதிபடுத்துக:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "விவரங்கள் (_D):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "(_N) பெயர்:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "பழைய கடவுச்சொல் (_O):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "கடவுச்சொல் (_P):"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -382,7 +208,7 @@ msgid "Surname"
 msgstr "புனைப்பெயர்"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "வரிசை எண்"
 
@@ -548,94 +374,94 @@ msgstr "SSL கிளையன்ட் சான்றிதழ்"
 msgid "SSL Server Certificate"
 msgstr "SSL  சேவையகத்தின் சான்றிதழ்"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "தொடர்ச்சி"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "அடையாளம் காட்டுபவர்"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "மதிப்பு"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "அவசரம்"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "ஆம்"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "இல்லை"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "பொருளின் பெயர்"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "வழங்குபவரின் பெயர்"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "தரப்பட்ட சான்றிதழ்"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "பதிப்பு"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "இதற்கு முன் செல்லுபடியாகாது"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "அதற்கு பின் செல்லுபடியாகாது"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "கையொப்பம்"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "கையொப்ப கணிமுறை"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "கையொப்ப பாராமீட்டர்கள்"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "பொது விசை தகவல்"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "விசை கணிமுறை"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "விசை பாராமீட்டர்கள்"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "விசை அளவு"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "பொது விசை"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "கைரேகைகள்"
 
@@ -667,7 +493,7 @@ msgstr "நான் வெளி செல்லும்போது இந்
 msgid "minutes"
 msgstr "நிமிடங்கள்"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "செயல் ரத்து செய்யப்பட்டது."
 
@@ -683,6 +509,18 @@ msgstr "சான்றிதழைகளை இறக்குமதி செ�
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "இறக்குமதி செய்யப்பட்ட சான்றிதழ்களையும்/விசைகளையும் சேமிக்க ஒரு இடத்தை தேர்ந்தெடு."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
+msgid "Enter password to unlock the private key"
+msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Enter password to unlock the certificate"
+msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Enter password to unlock"
+msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -717,23 +555,23 @@ msgstr "சான்றிதழ்  '%s' ஐ இறக்க, அது பூ�
 msgid "In order to import '%s', it must be unlocked"
 msgstr "'%s'யை இறக்க, அது பூட்டு நீக்கப்பட வேண்டும்."
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "அந்தரங்க விசை"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "சான்றிதழ்"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "இனம் காணாத அல்லது ஆதரவு இல்லா தரவு."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "பகுக்க செல்லுபடியாகாத அல்லது சிதைந்த தரவு."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "தரவு பூட்டப்பட்டுள்ளது"
 
@@ -1057,13 +895,213 @@ msgstr "பயனர் கையெழுத்து வேண்டுதல�
 msgid "Unknown error"
 msgstr "தெரியாத பிழை "
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:726
 msgid "Unnamed Certificate"
 msgstr "பெயரிடப்படாத சான்றிதழ்"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "பொது SSH விசையை பகுக்க முடியாது"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "இவருக்கு விசை வளையத்தை திறக்க கடவுச்சொல்: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
+msgid "The unlock password was incorrect"
+msgstr "திறவு கடவுச்சொல் தவறானது."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
+msgid "Unlock Login Keyring"
+msgstr "விசை வளையத்தின் பூட்டை திற"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+msgid "Enter password to unlock your login keyring"
+msgstr "உங்கள் விசை வளையத்தை திறக்க உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"உங்கள் கணினியில்   உள்நுழைய நீங்கள் பயன்படுத்தும் கடவுச்சொல் உங்கள் விசை வளையத்துடன் "
+"பொருந்தவில்லை."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"நீங்கள் உங்கள் கணினியில் உள்நுழைந்த போது உள்நுழைவு விசை வளையம் தானியங்கியாக பூட்டு "
+"நீக்கப்படவில்லை."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid "Unlock Keyring"
+msgstr "விசை வளையத்தின் பூட்டை திற"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "பூட்டைத்திறக்க '%s' விசை வளையத்தின் கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"ஒரு பயன்பாடு இயல்பான விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது ஆனால் அது "
+"பூட்டப்பட்டுள்ளது."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+msgid "Unlock private key"
+msgstr "அந்தரங்க விசையின் பூட்டை திற"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
+msgid "Unlock certificate"
+msgstr "சான்றிதழின் பூட்டை திற"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+msgid "Unlock public key"
+msgstr "பொது விசையின் பூட்டை திற"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
+msgid "Unlock"
+msgstr "பூட்டை திற"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Enter password to unlock the public key"
+msgstr "பொது விசையின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"ஒரு பயன்பாடு உங்கள் அந்தரங்க விசை '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
+"பூட்டப்பட்டுள்ளது."
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"ஒரு பயன்பாடு உங்கள் சான்றிதழ் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"ஒரு பயன்பாடு உங்கள் பொது விசை '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "ஒரு பயன்பாடு '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+msgid "Unlock certificate/key storage"
+msgstr "பூட்டப்படாத சான்றிதழ்/விசை சேமிப்பகம்"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "சான்றிதழ்/விசை சேமிப்பக பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"ஒரு பயன்பாடு உங்கள் சான்றிதழ்/விசை சேமிப்பக'%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
+"பூட்டப்பட்டுள்ளது."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+msgid "New Password Required"
+msgstr "புதிய கடவுச்சொல் தேவைப்படுகிறது"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
+msgid "New password required for secure storage"
+msgstr "சேமிப்பை பாதுகாக்க புதிய கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "'%s'ஐ சான்றிதழ்கள் அல்லது விசைகளுக்கு சேமிப்பகமாக்க ஒரு கடவுச்சொல் தேவைப்படுகிறது"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+msgid "Change Password"
+msgstr "கடவுச்சொல்லை மாற்றவும்"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
+msgid "Change password for secure storage"
+msgstr "சேமிப்பை பாதுகாக்க கடவுச்சொல்லை மாற்றுக"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#, c-format
+msgid "To change the password for '%s', the original and new passwords are required"
+msgstr "'%s' க்கு கடவுச்சொல் மாற்ற பழைய கடவுச்சொல்லும் புதிய கடவுச்சொல்லும் தேவை"
+
+#: ../ui/gku-prompt-tool.c:394
+msgid "Store passwords unencrypted?"
+msgstr "கடவுச்சொற்களை சுருக்க குறியாக்கம் செய்யாமலே சேமிக்கவா? "
+
+#: ../ui/gku-prompt-tool.c:395
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"ஒரு வெற்று கடவுச்சொல்லை தேர்ந்தெடுப்பதால் உங்கள் சேமிக்கப்பட்ட கடவுச்சொறகள் மறையாக்கம் "
+"செய்யப்படவில்லை. உங்கள் கோப்பை யாரால் அணூக முடியுமோ அவர் இதை பார்க்கலாம்."
+
+#: ../ui/gku-prompt-tool.c:402
+msgid "Use Unsafe Storage"
+msgstr "பாதுகாப்பு இல்லாத கிடங்கை பயன்படுத்து."
+
+#: ../ui/gku-prompt-tool.c:432
+msgid "Passwords do not match."
+msgstr "கடவுச்சொற்கள் பொருந்தவில்லை"
+
+#: ../ui/gku-prompt-tool.c:442
+msgid "Password cannot be blank"
+msgstr "கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசை வளையத்தை பூட்டு திறக்கவும்."
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "New password strength"
+msgstr "புதிய கடவுச்சொல்லின் பலம்"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Application:"
+msgstr "பயன்பாடு (_A):"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "_C உறுதிபடுத்துக:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Details:"
+msgstr "விவரங்கள் (_D):"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Name:"
+msgstr "(_N) பெயர்:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "பழைய கடவுச்சொல் (_O):"
+
+#: ../ui/gku-prompt.ui.h:8
+msgid "_Password:"
+msgstr "கடவுச்சொல் (_P):"
 
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr "நான் உள்நுழையும்போது தானாக பாதுகாப்பு சேமிப்பகம் பூட்டு நீக்கப்பட வேண்டும்."

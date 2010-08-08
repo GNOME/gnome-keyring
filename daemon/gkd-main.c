@@ -100,21 +100,24 @@ static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
 static gboolean run_for_login = FALSE;
 static gboolean run_for_start = FALSE;
+static gboolean run_for_replace = FALSE;
 static gchar* login_password = NULL;
-static const gchar* control_directory = NULL;
+static gchar* control_directory = NULL;
 static gboolean initialization_completed = FALSE;
 static gboolean sig_thread_valid = FALSE;
 static pthread_t sig_thread;
 
 static GOptionEntry option_entries[] = {
+	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
+	  "Start a dameon or initialize an already running daemon." },
+	{ "replace", 'r', 0, G_OPTION_ARG_NONE, &run_for_replace,
+	  "Replace the daemon for this desktop login environment." },
 	{ "foreground", 'f', 0, G_OPTION_ARG_NONE, &run_foreground,
 	  "Run in the foreground", NULL },
 	{ "daemonize", 'd', 0, G_OPTION_ARG_NONE, &run_daemonized,
 	  "Run as a daemon", NULL },
 	{ "login", 'l', 0, G_OPTION_ARG_NONE, &run_for_login,
 	  "Run for a user login. Read login password from stdin", NULL },
-	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
-	  "Start a dameon or initialize an already running daemon." },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
 	  "The optional components to run", DEFAULT_COMPONENTS },
 	{ "control-directory", 'l', 0, G_OPTION_ARG_FILENAME, &control_directory,
@@ -147,6 +150,16 @@ parse_arguments (int *argc, char** argv[])
 	if (run_for_login && run_for_start) {
 		g_printerr ("gnome-keyring-daemon: The --start option is incompatible with --login");
 		run_for_login = FALSE;
+	}
+
+	if (run_for_login && run_for_replace) {
+		g_printerr ("gnome-keyring-daemon: The --replace option is incompatible with --login");
+		run_for_login = FALSE;
+	}
+
+	if (run_for_start && run_for_replace) {
+		g_printerr ("gnome-keyring-daemon: The --replace option is incompatible with --start");
+		run_for_start = FALSE;
 	}
 
 	g_option_context_free (context);
@@ -487,42 +500,50 @@ initialize_daemon_at (const gchar *directory)
 }
 
 static gboolean
-initialize_daemon (const gchar *directory)
+replace_daemon_at (const gchar *directory)
 {
-	gchar *control = NULL;
-	gboolean acquired, ret;
+	g_free (control_directory);
+	control_directory = g_strdup (directory);
+	return gkd_control_quit (directory);
+}
 
-	/* A pre-specified directory to control at */
-	if (directory) {
-		if (initialize_daemon_at (directory))
-			return TRUE;
-	}
+typedef gboolean (*DiscoverFunc) (const gchar *control_directory);
+
+static gboolean
+discover_other_daemon (DiscoverFunc callback, gboolean acquire)
+{
+	const gchar *control_env;
+	gchar *control = NULL;
+	gboolean acquired = FALSE;
+	gboolean ret;
+
+	/* A pre-specified directory to control at, don't try anything else */
+	if (control_directory)
+		return (callback) (control_directory);
 
 	/* An environment variable from an already running daemon */
-	directory = g_getenv (GKD_UTIL_ENV_CONTROL);
-	if (directory && directory[0]) {
-		if (initialize_daemon_at (directory))
+	control_env = g_getenv (GKD_UTIL_ENV_CONTROL);
+	if (control_env && control_env[0]) {
+		if ((callback)(control_env))
 			return TRUE;
 	}
 
 	/* See if we can contact a daemon running, that didn't set an env variable */
-	if (!gkd_dbus_singleton_acquire (&acquired))
+	if (acquire && !gkd_dbus_singleton_acquire (&acquired))
 		return FALSE;
 
 	/* We're the main daemon */
 	if (acquired)
 		return FALSE;
 
-	/* Figure out the path to the other daemon's control directory */
-	directory = control = gkd_dbus_singleton_control ();
-	if (directory) {
-		ret = initialize_daemon_at (directory);
+	control = gkd_dbus_singleton_control ();
+	if (control) {
+		ret = (callback) (control);
 		g_free (control);
 		if (ret == TRUE)
 			return TRUE;
 	}
 
-	g_message ("couldn't initialize running daemon");
 	return FALSE;
 }
 
@@ -768,7 +789,7 @@ main (int argc, char *argv[])
 
 	/* The --start option */
 	if (run_for_start) {
-		if (initialize_daemon (control_directory)) {
+		if (discover_other_daemon (initialize_daemon_at, TRUE)) {
 			/*
 			 * Another daemon was initialized, print out environment
 			 * for any callers, and quit or go comatose.
@@ -778,6 +799,12 @@ main (int argc, char *argv[])
 				while (sleep(0x08000000) == 0);
 			cleanup_and_exit (0);
 		}
+
+	/* The --replace option */
+	} else if (run_for_replace) {
+		discover_other_daemon (replace_daemon_at, FALSE);
+		if (control_directory)
+			g_message ("replacing daemon at: %s", control_directory);
 	}
 
 	/* Initialize the main directory */
@@ -823,6 +850,8 @@ main (int argc, char *argv[])
 
 	/* Wrap up signal handling here */
 	cleanup_signal_handling ();
+
+	g_free (control_directory);
 
 	return 0;
 }

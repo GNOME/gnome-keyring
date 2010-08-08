@@ -13,7 +13,8 @@
 .anjuta*
 *.tar.gz
 .*project
-.*settings
+.settings
+.csettings
 *.orig
 *.stamp
 .deps

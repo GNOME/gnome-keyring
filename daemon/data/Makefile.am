@@ -1,23 +1,4 @@
 
-@INTLTOOL_SCHEMAS_RULE@
-
-schemasdir = $(GCONF_SCHEMA_FILE_DIR)
-schemas_in_files = gnome-keyring.schemas.in
-schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
-
-if GCONF_SCHEMAS_INSTALL
-install-data-local:
-	@GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) gconftool-2 \
-		--makefile-install-rule $(schemas_DATA) || \
-		(echo ;\
-		echo "*****************************************************"; \
-		echo "Installation of schemas failed, install them manually"; \
-		echo "*****************************************************";)
-	@true
-else
-install-data-local:
-endif
-
 introspectdir = $(datadir)/gnome-keyring/introspect
 
 introspect_DATA = \
@@ -27,8 +8,5 @@ introspect_DATA = \
 	introspect-service.xml \
 	introspect-session.xml
 
-EXTRA_DIST = \
-	$(schemas_in_files) \
+EXTRA_DIST =
 	$(introspect_DATA)
-
-CLEANFILES = $(schemas_DATA)
