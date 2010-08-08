@@ -1318,8 +1318,10 @@ gkm_module_C_Login (GkmModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 	apt = lookup_apartment (self, apt_id);
 	g_return_val_if_fail (apt, CKR_GENERAL_ERROR);
 
-	if (apt->logged_in != CKU_NONE)
+	if (apt->logged_in == user_type)
 		return CKR_USER_ALREADY_LOGGED_IN;
+	if (apt->logged_in != CKU_NONE)
+		return CKR_USER_ANOTHER_ALREADY_LOGGED_IN;
 
 	if (user_type == CKU_SO) {
 
