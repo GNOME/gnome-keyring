@@ -270,34 +270,34 @@ DEFINE_TEST(sign)
 	mech = gck_mechanism_new_with_param (CKM_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, see previous test */
-	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
+	g_signal_connect (module_with_auth, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
-	key = find_key (session, CKA_SIGN, CKM_PREFIX);
+	key = find_key (session_with_auth, CKA_SIGN, CKM_PREFIX);
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_sign (session, key, CKM_PREFIX, (const guchar*)"Labarbara", 10, &n_output, &error);
+	output = gck_session_sign (session_with_auth, key, CKM_PREFIX, (const guchar*)"Labarbara", 10, &n_output, &error);
 	SUCCESS_RES (output, error);
 	g_assert_cmpuint (n_output, ==, 24);
 	g_assert_cmpstr ((gchar*)output, ==, "signed-prefix:Labarbara");
 	g_free (output);
 
 	/* Full one */
-	output = gck_session_sign_full (session, key, mech, (const guchar*)"Labarbara", 10, &n_output, NULL, &error);
+	output = gck_session_sign_full (session_with_auth, key, mech, (const guchar*)"Labarbara", 10, &n_output, NULL, &error);
 	SUCCESS_RES (output, error);
 	g_assert_cmpuint (n_output, ==, 20);
 	g_assert_cmpstr ((gchar*)output, ==, "my-prefix:Labarbara");
 	g_free (output);
 
 	/* Asynchronous one */
-	gck_session_sign_async (session, key, mech, (const guchar*)"Conrad", 7, NULL, fetch_async_result, &result);
+	gck_session_sign_async (session_with_auth, key, mech, (const guchar*)"Conrad", 7, NULL, fetch_async_result, &result);
 
 	testing_wait_until (500);
 	g_assert (result != NULL);
 
 	/* Get the result */
-	output = gck_session_sign_finish (session, result, &n_output, &error);
+	output = gck_session_sign_finish (session_with_auth, result, &n_output, &error);
 	SUCCESS_RES (output, error);
 	g_assert_cmpuint (n_output, ==, 17);
 	g_assert_cmpstr ((gchar*)output, ==, "my-prefix:Conrad");

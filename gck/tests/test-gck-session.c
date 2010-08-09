@@ -228,7 +228,6 @@ DEFINE_TEST(auto_login)
 	slot_with_auth = g_object_new (GCK_TYPE_SLOT, "module", module_with_auth, "handle", gck_slot_get_handle (slot), NULL);
 	new_session = gck_slot_open_session (slot_with_auth, CKF_RW_SESSION, &err);
 	SUCCESS_RES (new_session, err);
-	g_object_unref (new_session);
 
 	/* Try again to do something that requires a login */
 	object = gck_session_create_object (new_session, attrs, NULL, &err);
@@ -246,7 +245,6 @@ DEFINE_TEST(auto_login)
 	new_session = gck_slot_open_session_finish (slot_with_auth, result, &err);
 	SUCCESS_RES (new_session, err);
 	g_object_unref (result);
-	g_object_unref (new_session);
 
 	result = NULL;
 	gck_session_create_object_async (new_session, attrs, NULL, fetch_async_result, &result);
@@ -260,6 +258,8 @@ DEFINE_TEST(auto_login)
 	/* We should now be logged in, try to log out */
 	ret = gck_session_logout (new_session, &err);
 	SUCCESS_RES (ret, err);
+
+	g_object_unref (new_session);
 
 	g_object_unref (slot_with_auth);
 	g_object_unref (module_with_auth);

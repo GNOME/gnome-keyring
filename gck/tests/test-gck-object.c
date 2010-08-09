@@ -301,8 +301,8 @@ DEFINE_TEST(set_attributes)
 	}
 
 	templ = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, 7);
-	gck_attributes_add_string (attrs, CKA_LABEL, "CHANGE THREE");
+	gck_attributes_add_ulong (templ, CKA_CLASS, 7);
+	gck_attributes_add_string (templ, CKA_LABEL, "CHANGE THREE");
 
 	/* Async */
 	gck_object_set_async (object, templ, NULL, fetch_async_result, &result);
@@ -339,6 +339,7 @@ DEFINE_TEST(find_objects)
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
 	gck_attributes_add_string (attrs, CKA_LABEL, "OTHER LABEL");
+	testobj = gck_session_create_object (session, attrs, NULL, &err);
 	gck_attributes_unref (attrs);
 	g_object_unref (testobj);
 
