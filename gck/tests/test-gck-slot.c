@@ -4,6 +4,7 @@
 
 #include "test-suite.h"
 #include "gck-test.h"
+#include "gck-private.h"
 
 static GckModule *module = NULL;
 static GckSlot *slot = NULL;
@@ -144,4 +145,59 @@ DEFINE_TEST(slot_mechanisms)
 	}
 
 	gck_mechanisms_free (mechs);
+}
+
+DEFINE_TEST(token_info_match_null)
+{
+	GckTokenInfo *match;
+	GckTokenInfo *token;
+	gboolean ret;
+
+	token = gck_slot_get_token_info (slot);
+	match = g_new0 (GckTokenInfo, 1);
+
+	/* Should match, since no fields are set */
+	ret = _gck_token_info_match (match, token);
+	g_assert (ret);
+
+	gck_token_info_free (match);
+	gck_token_info_free (token);
+}
+
+DEFINE_TEST(token_info_match_label)
+{
+	GckTokenInfo *match;
+	GckTokenInfo *token;
+	gboolean ret;
+
+	token = gck_slot_get_token_info (slot);
+	match = g_new0 (GckTokenInfo, 1);
+
+	/* Should match since the label and serial are matching */
+	match->label = g_strdup (token->label);
+	match->serial_number = g_strdup (token->serial_number);
+	ret = _gck_token_info_match (match, token);
+	g_assert (ret);
+
+	gck_token_info_free (match);
+	gck_token_info_free (token);
+}
+
+DEFINE_TEST(token_info_match_different)
+{
+	GckTokenInfo *match;
+	GckTokenInfo *token;
+	gboolean ret;
+
+	token = gck_slot_get_token_info (slot);
+	match = g_new0 (GckTokenInfo, 1);
+
+	/* Should not match since serial is different */
+	match->label = g_strdup (token->label);
+	match->serial_number = g_strdup ("393939393939393");
+	ret = _gck_token_info_match (match, token);
+	g_assert (!ret);
+
+	gck_token_info_free (match);
+	gck_token_info_free (token);
 }

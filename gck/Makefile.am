@@ -20,12 +20,14 @@ libgck_la_SOURCES = \
 	gck.h gck-private.h pkcs11.h \
 	gck-attributes.c \
 	gck-call.c \
+	gck-enumerator.c \
 	gck-misc.c \
 	gck-module.c \
 	gck-modules.c \
 	gck-object.c \
 	gck-session.c \
 	gck-slot.c \
+	gck-uri.c \
 	$(BUILT_SOURCES)
 
 libgck_la_LDFLAGS = \
@@ -33,6 +35,7 @@ libgck_la_LDFLAGS = \
 	-no-undefined -export-symbols-regex 'gck_*'
 
 libgck_la_LIBADD = \
+	$(top_builddir)/egg/libegg.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GIO_LIBS) \

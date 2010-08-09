@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gck-modules.c - the GObject PKCS#11 wrapper library
 
-   Copyright (C) 2008, Stefan Walter
+   Copyright (C) 2010, Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Stef Walter <nielsen@memberwebs.com>
+   Author: Stef Walter <stef@memberwebs.com>
 */
 
 #include "config.h"
@@ -120,101 +120,101 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
  * @self: The module to enumerate objects.
  * @attrs: Attributes that the objects must have, or empty for all objects.
  * @session_flags: PKCS#11 flags for opening a session.
- * @cancellable: Optional cancellation object, or NULL.
- * @func: Function to call for each object.
- * @user_data: Data to pass to the function.
- * @error: Location to return error information.
  *
- * Call a function for every matching object on the module. This call may
- * block for an indefinite period.
+ * Setup an enumerator for listing matching objects on the modules.
  *
- * This function will open a session per slot. It's recommended that you
- * set the 'reuse-sessions' property on each slot if you'll be calling
- * it a lot.
+ * This call will not block but will return an enumerator immediately.
  *
- * You can access the session in which the object was found, by using the
- * gck_object_get_session() function on the resulting objects.
+ * XXX
  *
- * The function can return FALSE to stop the enumeration.
- *
- * Return value: If FALSE then an error prevented all matching objects from being enumerated.
+ * Return value: A new enumerator
  **/
-gboolean
-gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_flags,
-                               GCancellable *cancellable, GckObjectForeachFunc func,
-                               gpointer user_data, GError **err)
+GckEnumerator*
+gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_flags)
 {
-	gboolean stop = FALSE;
-	gboolean ret = TRUE;
-	GList *objects, *o;
-	GList *slots, *l, *m;
-	GError *error = NULL;
-	GckSession *session;
+	return _gck_enumerator_new (modules, session_flags, NULL, attrs);
+}
 
-	g_return_val_if_fail (attrs, FALSE);
-	g_return_val_if_fail (func, FALSE);
+GckSlot*
+gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
+{
+	GckTokenInfo *match, *token;
+	GckSlot *result = NULL;
+	GList *slots;
+	GList *m, *s;
 
-	gck_attributes_ref (attrs);
+	if (!gck_uri_parse (uri, &match, NULL, error))
+		return NULL;
 
-	for (m = modules; ret && !stop && m; m = g_list_next (m)) {
+	for (m = modules; result == NULL && m != NULL; m = g_list_next (m)) {
 		slots = gck_module_get_slots (m->data, TRUE);
-
-		for (l = slots; ret && !stop && l; l = g_list_next (l)) {
-
-			session = gck_slot_open_session (l->data, session_flags, &error);
-			if (!session) {
-				g_return_val_if_fail (error != NULL, FALSE);
-
-				/* Ignore these errors when enumerating */
-				if (g_error_matches (error, GCK_ERROR, CKR_USER_PIN_NOT_INITIALIZED)) {
-					g_clear_error (&error);
-
-				} else {
-					ret = FALSE;
-					g_propagate_error (err, error);
-					error = NULL;
-				}
-				continue;
-			}
-
-			objects = gck_session_find_objects (session, attrs, cancellable, &error);
-			if (error) {
-				ret = FALSE;
-				g_object_unref (session);
-				g_propagate_error (err, error);
-				error = NULL;
-				continue;
-			}
-
-			for (o = objects; !stop && o; o = g_list_next (o)) {
-				if (!(func)(o->data, user_data)) {
-					stop = TRUE;
-					break;
-				}
-			}
-
-			g_object_unref (session);
-			gck_list_unref_free (objects);
+		for (s = slots; result == NULL && s != NULL; s = g_list_next (s)) {
+			token = gck_slot_get_token_info (s->data);
+			if (token && _gck_token_info_match (match, token))
+				result = g_object_ref (s->data);
+			gck_token_info_free (token);
 		}
-
 		gck_list_unref_free (slots);
 	}
 
-	gck_attributes_unref (attrs);
-
-	return ret;
+	gck_token_info_free (match);
+	return result;
 }
 
-/**
- * GckObjectForeachFunc:
- * @object: The enumerated object.
- * @user_data: Data passed to enumerate function.
- *
- * This function is passed to gck_module_enumerate_objects() or a similar function.
- * It is called once for each object matched.
- *
- * The GckSession through which the object is accessible can be retrieved by calling
- * gck_object_get_session() on object.
- *
- * Returns: TRUE to continue enumerating, FALSE to stop.
- */
+GckObject*
+gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_flags,
+                            GError **error)
+{
+	GckEnumerator *en;
+	GckObject *result;
+
+	g_return_val_if_fail (uri, NULL);
+	g_return_val_if_fail (!error || !*error, NULL);
+
+	en = gck_modules_enumerate_uri (modules, uri, session_flags, error);
+	if (en == NULL)
+		return NULL;
+
+	result = gck_enumerator_next (en, NULL, error);
+	g_object_unref (en);
+
+	return result;
+}
+
+GList*
+gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_flags,
+                             GError **error)
+{
+	GckEnumerator *en;
+	GList *results;
+
+	g_return_val_if_fail (uri, NULL);
+	g_return_val_if_fail (!error || !*error, NULL);
+
+	en = gck_modules_enumerate_uri (modules, uri, session_flags, error);
+	if (en == NULL)
+		return NULL;
+
+	results = gck_enumerator_next_n (en, -1, NULL, error);
+	g_object_unref (en);
+
+	return results;
+}
+
+GckEnumerator*
+gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_flags,
+                           GError **error)
+{
+	GckTokenInfo *token;
+	GckAttributes *attrs;
+	GckEnumerator *en;
+
+	if (!gck_uri_parse (uri, &token, &attrs, error))
+		return NULL;
+
+	/* Takes ownership of token info */
+	en = _gck_enumerator_new (modules, session_flags, token, attrs);
+	gck_attributes_unref (attrs);
+
+	return en;
+}

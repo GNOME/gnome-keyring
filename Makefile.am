@@ -12,9 +12,9 @@ endif
 
 SUBDIRS = \
 	. \
+	egg \
 	gck \
 	gp11 \
-	egg \
 	gcr \
 	ui \
 	pkcs11 \

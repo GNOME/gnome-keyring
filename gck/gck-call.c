@@ -385,16 +385,18 @@ _gck_call_sync (gpointer object, gpointer perform, gpointer complete,
 	GckModule *module = NULL;
 	CK_RV rv;
 
-	g_assert (G_IS_OBJECT (object));
+	g_assert (!object || G_IS_OBJECT (object));
 	g_assert (perform);
 	g_assert (args);
 
-	g_object_get (object, "module", &module, "handle", &args->handle, NULL);
-	g_assert (GCK_IS_MODULE (module));
+	if (object) {
+		g_object_get (object, "module", &module, "handle", &args->handle, NULL);
+		g_assert (GCK_IS_MODULE (module));
 
-	/* We now hold a reference to module until below */
-	args->pkcs11 = gck_module_get_functions (module);
-	g_assert (args->pkcs11);
+		/* We now hold a reference to module until below */
+		args->pkcs11 = gck_module_get_functions (module);
+		g_assert (args->pkcs11);
+	}
 
 	do {
 		rv = perform_call (perform, cancellable, args);
@@ -403,7 +405,8 @@ _gck_call_sync (gpointer object, gpointer perform, gpointer complete,
 
 	} while (!complete_call (complete, args, rv));
 
-	g_object_unref (module);
+	if (module)
+		g_object_unref (module);
 
 	if (rv == CKR_OK)
 		return TRUE;
@@ -488,7 +491,6 @@ void
 _gck_call_async_go (GckCall *call)
 {
 	g_assert (GCK_IS_CALL (call));
-	g_assert (call->args->pkcs11);
 
 	/* To keep things balanced, process at one completed event */
 	process_completed(GCK_CALL_GET_CLASS (call));

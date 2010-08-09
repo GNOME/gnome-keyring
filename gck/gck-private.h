@@ -72,12 +72,21 @@ gboolean            _gck_module_fire_authenticate_object   (GckModule *module,
                                                              gchar *label,
                                                              gchar **password);
 
+/* -----------------------------------------------------------------------------
+ * ENUMERATOR
+ */
+
+GckEnumerator*      _gck_enumerator_new                     (GList *modules,
+                                                             guint session_flags,
+                                                             GckTokenInfo *match_token,
+                                                             GckAttributes *match_attrs);
+
 /* ----------------------------------------------------------------------------
  * SLOT
  */
 
-GckObject*         _gck_slot_object_from_handle           (GckSlot *slot,
-                                                             CK_OBJECT_HANDLE handle);
+gboolean           _gck_token_info_match                    (GckTokenInfo *match,
+                                                             GckTokenInfo *info);
 
 /* ----------------------------------------------------------------------------
  * CALL

@@ -300,6 +300,33 @@ gck_token_info_free (GckTokenInfo *token_info)
 	g_free (token_info);
 }
 
+static gboolean
+match_token_string (const gchar *match, const gchar *string)
+{
+	/* NULL matches anything */
+	if (match == NULL)
+		return TRUE;
+
+	if (string == NULL)
+		return FALSE;
+
+	return g_str_equal (match, string);
+}
+
+gboolean
+_gck_token_info_match (GckTokenInfo *match, GckTokenInfo *info)
+{
+	/* Matches two GckTokenInfo for use in PKCS#11 URI's */
+
+	g_return_val_if_fail (match, FALSE);
+	g_return_val_if_fail (info, FALSE);
+
+	return (match_token_string (match->label, info->label) &&
+	        match_token_string (match->manufacturer_id, info->manufacturer_id) &&
+	        match_token_string (match->model, info->model) &&
+	        match_token_string (match->serial_number, info->serial_number));
+}
+
 /**
  * GckMechanismInfo:
  * @min_key_size: The minimum key size that can be used with this mechanism.

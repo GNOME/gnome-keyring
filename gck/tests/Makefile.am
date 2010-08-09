@@ -7,7 +7,10 @@ TESTING_FILES = \
 	test-gck-slot.c \
 	test-gck-session.c \
 	test-gck-object.c \
-	test-gck-crypto.c
+	test-gck-crypto.c \
+	test-gck-uri.c \
+	test-gck-enumerator.c \
+	test-gck-modules.c
 
 TESTING_FLAGS = \
 	-I$(top_srcdir)/gck/ \

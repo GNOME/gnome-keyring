@@ -86,6 +86,7 @@ DEFINE_TEST(module_info)
 	gck_module_info_free (info);
 }
 
+#if 0
 static int n_objects = 0;
 static GckObject *last_object = NULL;
 
@@ -120,9 +121,11 @@ for_first_object (GckObject *object, gpointer user_data)
 
 	return FALSE;
 }
+#endif
 
 DEFINE_TEST(module_enumerate)
 {
+#if 0
 	GckSession *session;
 	GckAttributes *attrs;
 	gboolean ret;
@@ -162,4 +165,5 @@ DEFINE_TEST(module_enumerate)
 	n_objects = 0;
 
 	gck_list_unref_free (modules);
+#endif
 }

@@ -226,8 +226,7 @@ typedef struct _GckSlot GckSlot;
 typedef struct _GckModule GckModule;
 typedef struct _GckSession GckSession;
 typedef struct _GckObject GckObject;
-
-typedef gboolean    (*GckObjectForeachFunc)                (GckObject *object, gpointer user_data);
+typedef struct _GckEnumerator GckEnumerator;
 
 /* -------------------------------------------------------------------------
  * MODULE
@@ -306,31 +305,75 @@ GList*                gck_modules_initialize_registered       (guint options);
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);
 
-gboolean              gck_modules_enumerate_objects           (GList *modules,
+GckEnumerator*        gck_modules_enumerate_objects           (GList *modules,
                                                                GckAttributes *attrs,
-                                                               guint session_flags,
-                                                               GCancellable *cancellable,
-                                                               GckObjectForeachFunc func,
-                                                               gpointer user_data,
+                                                               guint session_flags);
+
+GckSlot*              gck_modules_token_for_uri               (GList *modules,
+                                                               const gchar *uri,
                                                                GError **error);
 
-#ifdef UNIMPLEMENTED
-void                  gck_modules_enumerate_objects_async     (GList *modules,
-                                                               GckAttributes *attrs,
+GckObject*            gck_modules_object_for_uri              (GList *modules,
+                                                               const gchar *uri,
                                                                guint session_flags,
-                                                               GckObjectForeachFunc func,
+                                                               GError **error);
+
+GList*                gck_modules_objects_for_uri             (GList *modules,
+                                                               const gchar *uri,
+                                                               guint session_flags,
+                                                               GError **error);
+
+GckEnumerator*        gck_modules_enumerate_uri               (GList *modules,
+                                                               const gchar *uri,
+                                                               guint session_flags,
+                                                               GError **error);
+
+
+/* ------------------------------------------------------------------------
+ * ENUMERATOR
+ */
+
+#define GCK_TYPE_ENUMERATOR             (gck_enumerator_get_type())
+#define GCK_ENUMERATOR(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), GCK_TYPE_ENUMERATOR, GckEnumerator))
+#define GCK_ENUMERATOR_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST((klass), GCK_TYPE_ENUMERATOR, GckEnumerator))
+#define GCK_IS_ENUMERATOR(obj)          (G_TYPE_CHECK_INSTANCE_TYPE((obj), GCK_TYPE_ENUMERATOR))
+#define GCK_IS_ENUMERATOR_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE((klass), GCK_TYPE_ENUMERATOR))
+#define GCK_ENUMERATOR_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), GCK_TYPE_ENUMERATOR, GckEnumeratorClass))
+
+typedef struct _GckEnumeratorClass GckEnumeratorClass;
+typedef struct _GckEnumeratorPrivate GckEnumeratorPrivate;
+
+struct _GckEnumerator {
+	GObject parent;
+	GckEnumeratorPrivate *pv;
+	gpointer reserved[2];
+};
+
+struct _GckEnumeratorClass {
+	GObjectClass parent;
+	gpointer reserved[2];
+};
+
+GType                 gck_enumerator_get_type                 (void) G_GNUC_CONST;
+
+GckObject*            gck_enumerator_next                     (GckEnumerator *self,
+                                                               GCancellable *cancellable,
+                                                               GError **err);
+
+GList*                gck_enumerator_next_n                   (GckEnumerator *self,
+                                                               gint max_objects,
+                                                               GCancellable *cancellable,
+                                                               GError **err);
+
+void                  gck_enumerator_next_async               (GckEnumerator *self,
+                                                               gint max_objects,
                                                                GCancellable *cancellable,
                                                                GAsyncReadyCallback callback,
                                                                gpointer user_data);
 
-GckObject*            gck_modules_enumerate_objects_next      (GList *modules,
+GList*                gck_enumerator_next_finish              (GckEnumerator *self,
                                                                GAsyncResult *res,
-                                                               GError **error);
-
-void                  gck_modules_enumerate_objects_finish    (GList *modules,
-                                                               GAsyncResult *res,
-                                                               GError **error);
-#endif
+                                                               GError **err);
 
 /* ------------------------------------------------------------------------
  * SLOT
@@ -1042,6 +1085,20 @@ CK_OBJECT_HANDLE    gck_object_get_handle                   (GckObject *self);
 
 GckSession*         gck_object_get_session                  (GckObject *self);
 
+gchar*              gck_object_build_uri                    (GckObject *self,
+                                                             guint options,
+                                                             GCancellable *cancellable,
+                                                             GError **err);
+
+void                gck_object_build_uri_async              (GckObject *self,
+                                                             guint options,
+                                                             GCancellable *cancellable,
+                                                             GError **err);
+
+gchar*              gck_object_build_uri_finish             (GckObject *self,
+                                                             GAsyncResult *result,
+                                                             GError **err);
+
 #ifdef UNIMPLEMENTED
 
 GckObject*          gck_object_copy                         (GckObject *self,
@@ -1196,6 +1253,28 @@ void                gck_object_get_template_async           (GckObject *self,
 
 GckAttributes*      gck_object_get_template_finish          (GckObject *self,
                                                              GAsyncResult *result,
+                                                             GError **err);
+
+/* ----------------------------------------------------------------------------
+ * URI
+ */
+
+enum {
+	GCK_URI_BAD_PREFIX = 1,
+	GCK_URI_BAD_ENCODING = 2,
+	GCK_URI_BAD_SYNTAX = 3
+};
+
+#define             GCK_URI_ERROR                           (gck_uri_get_error_quark ())
+
+GQuark              gck_uri_get_error_quark                 (void);
+
+gchar*              gck_uri_build                           (GckTokenInfo *token,
+                                                             GckAttributes *attrs);
+
+gboolean            gck_uri_parse                           (const gchar *uri,
+                                                             GckTokenInfo **token,
+                                                             GckAttributes **attrs,
                                                              GError **err);
 
 G_END_DECLS
