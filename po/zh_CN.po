@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
 "POT-Creation-Date: 2010-08-08 07:33+0000\n"
-"PO-Revision-Date: 2010-08-09 14:07+0800\n"
+"PO-Revision-Date: 2010-08-09 14:09+0800\n"
 "Last-Translator: Tao Wang <dancefire@gmail.com>\n"
 "Language-Team: Aron Xu <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -475,7 +475,7 @@ msgstr "之后锁住此钥匙环"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring if idle for"
-msgstr "锁定该密钥环于空闲"
+msgstr "锁定该钥匙环于空闲"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring when I log out"
