@@ -1,6 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-daemon/data/gnome-keyring.schemas.in
 daemon/dbus/gkd-secret-change.c
 daemon/dbus/gkd-secret-create.c
 daemon/dbus/gkd-secret-unlock.c
