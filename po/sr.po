@@ -7,82 +7,27 @@
 # Reviewed on 2005-08-08 by: Игор Несторовић <igor@prevod.org>
 # Translated on 2009-05-09 by: Бранко Кокановић <branko.kokanovic@gmail.com>
 # Милош Поповић <gpopac@gmail.com>, 2010.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-03-21 18:08+0000\n"
-"PO-Revision-Date: 2010-03-26 21:45+0100\n"
+"POT-Creation-Date: 2010-08-18 20:54+0000\n"
+"PO-Revision-Date: 2010-08-23 21:30+0200\n"
 "Last-Translator: Милош Поповић <gpopac@gmail.com>\n"
-"Language-Team: Serbian <gnome@prevod.org>\n"
+"Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-#| msgid ""
-#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-#| "in). This setting may be overridden when certain command line arguments "
-#| "are passed to the daemon."
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Ова опција омогућава ПКЦС#11 компоненту у управљачком програму за Гномове "
-"привеске. Она има ефекта само када се покреће са Гномовом сесијом (тј. када "
-"се корисник пријави). Ово подешавање се може преписати ако се одређени "
-"аргументи команде линије проследе управљачком програму."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Ова опција омогућава SSH агента у управљачком програму за Гномове привеске. "
-"Има ефекта само када је управљачки програм за Гномове привеске покренут (тј. "
-"када се корисник пријави). Ово подешавање се може потиснути када се одређени "
-"аргументи команде линије проследе програму."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-#| msgid ""
-#| "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#| "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-#| "in). This setting may be overridden when certain command line arguments "
-#| "are passed to the daemon."
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Ова опција омогућава компоненту за тајност у управљачком програму за Гномове "
-"привеске. Она има ефекта само када се покреће са Гномовом сесијом(тј. када "
-"се корисник пријави). Ово подешавање се може преписати ако се одређени "
-"аргументи команде линије проследе управљачком програму."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Да ли је PKCS#11 компонента укљученa."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Да ли је SSH агент укључен."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-#| msgid "Whether the gnome-keyring SSH agent is enabled."
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Да ли је сервис за тајност Гномових привезака укључен."
+"Plural-Forms: nplurals=4;    plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 :    n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:615
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
 msgid "Unnamed"
 msgstr "Неимановани"
 
@@ -92,15 +37,11 @@ msgstr "Промени лозинку привеска"
 
 #: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
-#| msgid "Choose a new password for the '%s' keyring. "
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Унесите лозинку за привезак „%s“"
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
-#| msgid ""
-#| "An unknown application wants to change the password for the '%s' keyring. "
-#| "You have to choose the password you want to use for it."
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
@@ -109,7 +50,6 @@ msgstr ""
 "коју желите да користите за њега."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
-#| msgid "The password or PIN is incorrect"
 msgid "The original password was incorrect"
 msgstr "Постојећа лозинка није тачна"
 
@@ -123,9 +63,6 @@ msgstr "Унесите лозинку за нови привезак"
 
 #: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
-#| msgid ""
-#| "An unknown application wants to create a new keyring called '%s'. You "
-#| "have to choose the password you want to use for it."
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
@@ -133,66 +70,15 @@ msgstr ""
 "Програм жели да направи нови привезак „%s“. Изаберите лозинку коју желите да "
 "користите за њега."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "Откључај привезак за пријаву"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-#| msgid "Enter login password to unlock keyring"
-msgid "Enter password for to unlock your login keyring"
-msgstr "Унесите лозинку да откључате привезак за пријаву"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Лозинка којом се пријављујете на рачунар се више не поклапа са лозинком у "
-"привеску за пријаву."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-#| msgid ""
-#| "Your login keyring was not automatically unlocked when you logged into "
-#| "this computer."
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Привезак за пријаву се није аутоматски откључао када сте се пријавили на "
-"рачунар."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "Откључај привезак"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Унесите лозинку за привезак „%s“ ради откључавања"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-#| msgid ""
-#| "An unknown application wants access to the keyring '%s', but it is locked"
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Програм жели да приступи привеску „%s“, али је он закључан"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:226
-#| msgid "The password or PIN is incorrect"
-msgid "The unlock password was incorrect"
-msgstr "Није исправна лозинка за откључавање"
-
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-#| msgid "Unlock certificate/key storage"
 msgid "Certificate and Key Storage"
 msgstr "Складиште сертификата и кључева"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
-#| msgid "GNOME Keyring Daemon"
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "Гномови привесци: ПКЦС#11 компонента"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-#| msgid "GNOME Keyring Daemon"
 msgid "GNOME Keyring: Secret Service"
 msgstr "Гномови привесци: сервис за тајност"
 
@@ -201,176 +87,42 @@ msgid "Secret Storage Service"
 msgstr "Сервис са тајно складиштење"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-#| msgid "GNOME Keyring Daemon"
 msgid "GNOME Keyring: SSH Agent"
-msgstr "Гномови привесци: SSH агент"
+msgstr "Гномови привесци: ССХ агент"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "SSH Key Agent"
 msgstr "Агент за SSH кључеве"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+#| msgid "GNOME Keyring: SSH Agent"
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Гномови привесци: ГПГ агент"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+#| msgid "New password strength"
+msgid "GPG Password Agent"
+msgstr "Агент за ГПГ лозинке"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+#| msgid "Unknown error"
+msgid "Unknown"
+msgstr "Непознато"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
+#, c-format
+msgid "PGP Key: %s"
+msgstr "ПГП кључ: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+msgid "Enter Passphrase"
+msgstr "Унесите лозинку"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:177
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Пријава"
-
-#: ../daemon/login/gkd-login.c:617
-#, c-format
-#| msgid "Unlock password for %s keyring"
-msgid "Unlock password for: %s"
-msgstr "Откључај лозинку за %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Нова лозинка је обавезна"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Нова лозинка је обавезна за сигурно складиште"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Лозинка је обавезна да би се „%s“ припремио за складиште сертификата или "
-"кључева"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Откључај тајни кључ"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Откључај сертификат"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Откључај јавни кључ"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Откључај"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Унесите лозинку за откључавање тајног кључа"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Унесите лозинку за откључавање сертификата"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Унесите лозинку за откључавање јавног кључа"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Унесите лозинку за откључавање"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Програм жели да приступи јавном кључу „%s“, али је он закључан"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Програм жели да приступи сертификату „%s“, али је он закључан"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Програм жели да приступи јавном кључу „%s“, али је он закључан"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Програм жели да приступи „%s“, али је он закључан"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Откључај складиште сертификата/кључева"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Унесите лозинку за откључавање складишта сертификата/кључева"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Програм жели да приступи складишту сертификата/кључева „%s“, али је оно "
-"закључано"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "Да ли да памтим нешифроване лозинке?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Уколико изаберете празну лозинку, запамћене лозинке неће бити безбедне, па "
-"ће моћи да их користи свако ко приступи вашим датотекама."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Користи небезбедно складиште"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Лозинке се не подударају."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "Лозинка не може бити празна"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-#| msgid "Automatically unlock this keyring when I log in."
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Сам откључај овај привезак када се пријавим."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Тежина нове лозинке"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-#| msgid "_Location:"
-msgid "_Application:"
-msgstr "_Програм:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-#| msgid "_Confirm password:"
-msgid "_Confirm:"
-msgstr "_Потврди:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Детаљи:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Име:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-#| msgid "_Old password:"
-msgid "_Old Password:"
-msgstr "С_тара лозинка:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Лозинка:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -413,7 +165,7 @@ msgid "Surname"
 msgstr "Презиме"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "Серијски број"
 
@@ -581,94 +333,94 @@ msgstr "SSL сертификат клијента"
 msgid "SSL Server Certificate"
 msgstr "SSL сертификат сервера"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "Проширење"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "Идентификатор"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "Вредност"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "Критично"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "Да"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "Не"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "Име предмета"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "Име издаваоца"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "Издати сертификат"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "Издање"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "Не важи пре"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "Не важи после"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "Потпис"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "Алгоритам потписа"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "Параметри потписа"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "Подаци о јавном кључу"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "Алгоритам кључа"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "Параметри кључа"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "Величина кључа"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "Јавни кључ"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "Отисци"
 
@@ -693,7 +445,6 @@ msgid "Lock this keyring if idle for"
 msgstr "Закључај овај привезак ако је неактиван"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:3
-#| msgid "Automatically unlock this keyring when I log in."
 msgid "Lock this keyring when I log out"
 msgstr "Закључај овај привезак када се одјавим"
 
@@ -701,7 +452,7 @@ msgstr "Закључај овај привезак када се одјавим"
 msgid "minutes"
 msgstr "минута"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Радња је поништена"
 
@@ -717,6 +468,18 @@ msgstr "Увези сертификате/кључеве"
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Изаберите место за складиштење увезених сертификата/кључева."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
+msgid "Enter password to unlock the private key"
+msgstr "Унесите лозинку за откључавање тајног кључа"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Enter password to unlock the certificate"
+msgstr "Унесите лозинку за откључавање сертификата"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Enter password to unlock"
+msgstr "Унесите лозинку за откључавање"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -751,23 +514,23 @@ msgstr "Да бисте увезли сертификат „%s“, он мор�
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Да бисте увезли „%s“, он мора бити откључан"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "Тајни кључ"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "Сертификат"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "Непрепознати или неподржани подаци."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "Не могу да обрадим неисправне или оштећене податке."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "Подаци су закључани"
 
@@ -1091,13 +854,267 @@ msgstr "Захтев за потписом је одбачен од стране
 msgid "Unknown error"
 msgstr "Непозната грешка"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:726
 msgid "Unnamed Certificate"
 msgstr "Неименовани сертификат"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Не могу да обрадим јавни SSH кључ"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Откључај лозинку за %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
+msgid "The unlock password was incorrect"
+msgstr "Није исправна лозинка за откључавање"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
+msgid "Unlock Login Keyring"
+msgstr "Откључај привезак за пријаву"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+#| msgid "Enter password for to unlock your login keyring"
+msgid "Enter password to unlock your login keyring"
+msgstr "Унесите лозинку да откључате привезак за пријаву"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Лозинка којом се пријављујете на рачунар се више не поклапа са лозинком у "
+"привеску за пријаву."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Привезак за пријаву се није аутоматски откључао када сте се пријавили на "
+"рачунар."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid "Unlock Keyring"
+msgstr "Откључај привезак"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Унесите лозинку за привезак „%s“ ради откључавања"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Програм жели да приступи привеску „%s“, али је он закључан"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+msgid "Unlock private key"
+msgstr "Откључај тајни кључ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
+msgid "Unlock certificate"
+msgstr "Откључај сертификат"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+msgid "Unlock public key"
+msgstr "Откључај јавни кључ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
+msgid "Unlock"
+msgstr "Откључај"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Enter password to unlock the public key"
+msgstr "Унесите лозинку за откључавање јавног кључа"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Програм жели да приступи јавном кључу „%s“, али је он закључан"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Програм жели да приступи сертификату „%s“, али је он закључан"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Програм жели да приступи јавном кључу „%s“, али је он закључан"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Програм жели да приступи „%s“, али је он закључан"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+msgid "Unlock certificate/key storage"
+msgstr "Откључај складиште сертификата/кључева"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Унесите лозинку за откључавање складишта сертификата/кључева"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Програм жели да приступи складишту сертификата/кључева „%s“, али је оно "
+"закључано"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+msgid "New Password Required"
+msgstr "Нова лозинка је обавезна"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
+msgid "New password required for secure storage"
+msgstr "Нова лозинка је обавезна за сигурно складиште"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Лозинка је обавезна да би се „%s“ припремио за складиште сертификата или "
+"кључева"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#| msgid "Change Keyring Password"
+msgid "Change Password"
+msgstr "Промени лозинку"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
+#| msgid "New password required for secure storage"
+msgid "Change password for secure storage"
+msgstr "Мења лозинку за сигурно складиште"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "За промену лозинке на „%s“, морате унети стару и нову лозинку"
+
+#: ../ui/gku-prompt-tool.c:394
+msgid "Store passwords unencrypted?"
+msgstr "Да ли да памтим нешифроване лозинке?"
+
+#: ../ui/gku-prompt-tool.c:395
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Уколико изаберете празну лозинку, запамћене лозинке неће бити безбедне, па "
+"ће моћи да их користи свако ко приступи вашим датотекама."
+
+#: ../ui/gku-prompt-tool.c:402
+msgid "Use Unsafe Storage"
+msgstr "Користи небезбедно складиште"
+
+#: ../ui/gku-prompt-tool.c:432
+msgid "Passwords do not match."
+msgstr "Лозинке се не подударају."
+
+#: ../ui/gku-prompt-tool.c:442
+msgid "Password cannot be blank"
+msgstr "Лозинка не може бити празна"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Сам откључај овај привезак када се пријавим."
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "New password strength"
+msgstr "Тежина нове лозинке"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Application:"
+msgstr "_Програм:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "_Потврди:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Details:"
+msgstr "_Детаљи:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Име:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "С_тара лозинка:"
+
+#: ../ui/gku-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Лозинка:"
+
+#~| msgid ""
+#~| "This option enables the PKCS#11 component in the gnome-keyring daemon. "
+#~| "It only takes effect as gnome-keyring-daemon starts, (ie: when the user "
+#~| "logs in). This setting may be overridden when certain command line "
+#~| "arguments are passed to the daemon."
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Ова опција омогућава ПКЦС#11 компоненту у управљачком програму за Гномове "
+#~ "привеске. Она има ефекта само када се покреће са Гномовом сесијом (тј. "
+#~ "када се корисник пријави). Ово подешавање се може преписати ако се "
+#~ "одређени аргументи команде линије проследе управљачком програму."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Ова опција омогућава SSH агента у управљачком програму за Гномове "
+#~ "привеске. Има ефекта само када је управљачки програм за Гномове привеске "
+#~ "покренут (тј. када се корисник пријави). Ово подешавање се може потиснути "
+#~ "када се одређени аргументи команде линије проследе програму."
+
+#~| msgid ""
+#~| "This option enables the PKCS#11 component in the gnome-keyring daemon. "
+#~| "It only takes effect as gnome-keyring-daemon starts, (ie: when the user "
+#~| "logs in). This setting may be overridden when certain command line "
+#~| "arguments are passed to the daemon."
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Ова опција омогућава компоненту за тајност у управљачком програму за "
+#~ "Гномове привеске. Она има ефекта само када се покреће са Гномовом сесијом"
+#~ "(тј. када се корисник пријави). Ово подешавање се може преписати ако се "
+#~ "одређени аргументи команде линије проследе управљачком програму."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Да ли је PKCS#11 компонента укљученa."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Да ли је SSH агент укључен."
+
+#~| msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Да ли је сервис за тајност Гномових привезака укључен."
 
 #~ msgid "Removable Disk: %s"
 #~ msgstr "Уклоњиви диск: %s"
