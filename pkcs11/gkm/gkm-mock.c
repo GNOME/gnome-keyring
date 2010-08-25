@@ -83,11 +83,6 @@ enum {
 
 #define SIGNED_PREFIX "signed-prefix:"
 
-/*
- * This is not a generic test module, it works in concert with the
- * unit-test-gp11-module.c
- */
-
 static void
 free_session (gpointer data)
 {

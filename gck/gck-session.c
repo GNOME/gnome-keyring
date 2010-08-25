@@ -408,6 +408,34 @@ gck_session_get_info (GckSession *self)
 	return sessioninfo;
 }
 
+gulong
+gck_session_get_state (GckSession *self)
+{
+	CK_FUNCTION_LIST_PTR funcs;
+	CK_SESSION_INFO info;
+	CK_RV rv;
+
+	g_return_val_if_fail (GCK_IS_SESSION (self), 0);
+	g_return_val_if_fail (GCK_IS_MODULE (self->pv->module), 0);
+
+	g_object_ref (self->pv->module);
+
+	funcs = gck_module_get_functions (self->pv->module);
+	g_return_val_if_fail (funcs, 0);
+
+	memset (&info, 0, sizeof (info));
+	rv = (funcs->C_GetSessionInfo) (self->pv->handle, &info);
+
+	g_object_unref (self->pv->module);
+
+	if (rv != CKR_OK) {
+		g_warning ("couldn't get session info: %s", gck_message_from_rv (rv));
+		return 0;
+	}
+
+	return info.state;
+}
+
 /* ---------------------------------------------------------------------------------------------
  * INIT PIN
  */

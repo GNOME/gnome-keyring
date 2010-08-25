@@ -40,6 +40,7 @@
 gchar**
 gck_modules_list_registered_paths (GError **err)
 {
+	GError *error = NULL;
 	const gchar *name;
 	gchar *path;
 	GDir *dir;
@@ -47,11 +48,25 @@ gck_modules_list_registered_paths (GError **err)
 
 	g_return_val_if_fail (!err || !*err, NULL);
 
-	dir = g_dir_open (PKCS11_REGISTRY_DIR, 0, err);
-	if (dir == NULL)
-		return NULL;
+	/* We use this below */
+	if (!err)
+		err = &error;
 
 	paths = g_array_new (TRUE, TRUE, sizeof (gchar*));
+
+	dir = g_dir_open (PKCS11_REGISTRY_DIR, 0, err);
+
+	if (dir == NULL) {
+		if (g_error_matches (*err, G_FILE_ERROR, G_FILE_ERROR_NOENT) ||
+		    g_error_matches (*err, G_FILE_ERROR, G_FILE_ERROR_NOTDIR)) {
+			g_clear_error (err);
+			return (gchar**)g_array_free (paths, FALSE);
+		} else {
+			g_array_free (paths, TRUE);
+			g_clear_error (&error);
+			return NULL;
+		}
+	}
 
 	for (;;) {
 		name = g_dir_read_name (dir);

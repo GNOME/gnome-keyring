@@ -26,6 +26,8 @@
 
 #include "ui/gku-prompt.h"
 
+#include "pkcs11/pkcs11.h"
+
 #define GKM_WRAP_TYPE_PROMPT               (gkm_wrap_prompt_get_type ())
 #define GKM_WRAP_PROMPT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKM_WRAP_TYPE_PROMPT, GkmWrapPrompt))
 #define GKM_WRAP_PROMPT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKM_WRAP_TYPE_PROMPT, GkmWrapPromptClass))

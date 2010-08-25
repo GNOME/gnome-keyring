@@ -35,7 +35,7 @@ libgck_la_LDFLAGS = \
 	-no-undefined -export-symbols-regex 'gck_*'
 
 libgck_la_LIBADD = \
-	$(top_builddir)/egg/libegg.la \
+	$(top_builddir)/egg/libegg-hex.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GIO_LIBS) \

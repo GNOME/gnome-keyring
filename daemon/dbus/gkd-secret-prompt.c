@@ -442,7 +442,7 @@ gkd_secret_prompt_get_caller (GkdSecretPrompt *self)
 	return self->pv->caller;
 }
 
-GP11Session*
+GckSession*
 gkd_secret_prompt_get_pkcs11_session (GkdSecretPrompt *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
@@ -484,7 +484,7 @@ gkd_secret_prompt_get_session (GkdSecretPrompt *self)
 	return self->pv->session;
 }
 
-GP11Object*
+GckObject*
 gkd_secret_prompt_lookup_collection (GkdSecretPrompt *self, const gchar *path)
 {
 	GkdSecretObjects *objects;

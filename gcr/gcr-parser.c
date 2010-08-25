@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include "gcr-internal.h"
 #include "gcr-marshal.h"
@@ -62,7 +62,7 @@ struct _GcrParserPrivate {
 	gboolean normal_formats;
 	GPtrArray *passwords;
 	
-	GP11Attributes *parsed_attrs;
+	GckAttributes *parsed_attrs;
 	const gchar *parsed_desc;
 	gchar *parsed_label;
 };
@@ -174,7 +174,7 @@ parsed_asn1_attribute (GcrParser *self, GNode *asn, const guchar *data, gsize n_
 		return FALSE;
 
 	/* TODO: Convert to USG FROM STD */
-	gp11_attributes_add_data (self->pv->parsed_attrs, type, value, n_value);
+	gck_attributes_add_data (self->pv->parsed_attrs, type, value, n_value);
 	return TRUE;
 }
 
@@ -182,12 +182,12 @@ static void
 parsed_clear (GcrParser *self, CK_OBJECT_CLASS klass)
 {
 	if (self->pv->parsed_attrs)
-		gp11_attributes_unref (self->pv->parsed_attrs);
+		gck_attributes_unref (self->pv->parsed_attrs);
 	if (klass == CKO_PRIVATE_KEY)
-		self->pv->parsed_attrs = gp11_attributes_new_full ((GP11Allocator)egg_secure_realloc);
+		self->pv->parsed_attrs = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
 	else 
-		self->pv->parsed_attrs = gp11_attributes_new ();
-	gp11_attributes_add_ulong (self->pv->parsed_attrs, CKA_CLASS, klass);
+		self->pv->parsed_attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (self->pv->parsed_attrs, CKA_CLASS, klass);
 	
 	g_free (self->pv->parsed_label);
 	self->pv->parsed_label = NULL;
@@ -220,7 +220,7 @@ parsed_attribute (GcrParser *self, CK_ATTRIBUTE_TYPE type, gconstpointer data, g
 {
 	g_assert (GCR_IS_PARSER (self));
 	g_assert (self->pv->parsed_attrs);
-	gp11_attributes_add_data (self->pv->parsed_attrs, type, data, n_data);
+	gck_attributes_add_data (self->pv->parsed_attrs, type, data, n_data);
 }
 
 static void
@@ -228,7 +228,7 @@ parsed_ulong (GcrParser *self, CK_ATTRIBUTE_TYPE type, gulong value)
 {
 	g_assert (GCR_IS_PARSER (self));
 	g_assert (self->pv->parsed_attrs);
-	gp11_attributes_add_ulong (self->pv->parsed_attrs, type, value);
+	gck_attributes_add_ulong (self->pv->parsed_attrs, type, value);
 }
 
 static gint
@@ -444,7 +444,7 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 		goto done;
 
 	ret = GCR_ERROR_FAILURE;
-	key_type = GP11_INVALID;
+	key_type = GCK_INVALID;
 
 	key_algo = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "privateKeyAlgorithm", "algorithm", NULL));
   	if (!key_algo)
@@ -453,8 +453,8 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
   		key_type = CKK_RSA;
   	else if (key_algo == OID_PKIX1_DSA)
   		key_type = CKK_DSA;
-  		
-  	if (key_type == GP11_INVALID) {
+
+	if (key_type == GCK_INVALID) {
   		ret = GCR_ERROR_UNRECOGNIZED;
   		goto done;
   	}
@@ -1409,7 +1409,7 @@ gcr_parser_dispose (GObject *obj)
 	gsize i;
 	
 	if (self->pv->parsed_attrs)
-		gp11_attributes_unref (self->pv->parsed_attrs);
+		gck_attributes_unref (self->pv->parsed_attrs);
 	self->pv->parsed_attrs = NULL;
 	
 	g_free (self->pv->parsed_label);
@@ -1488,7 +1488,7 @@ gcr_parser_class_init (GcrParserClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_PARSED_ATTRIBUTES,
 	           g_param_spec_boxed ("parsed-attributes", "Parsed Attributes", "Parsed PKCS#11 attributes", 
-	                               GP11_TYPE_ATTRIBUTES, G_PARAM_READABLE));
+	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READABLE));
 
 	g_object_class_install_property (gobject_class, PROP_PARSED_LABEL,
 	           g_param_spec_string ("parsed-label", "Parsed Label", "Parsed item label", 
@@ -1652,7 +1652,7 @@ gcr_parser_get_parsed_description (GcrParser *self)
 	return self->pv->parsed_desc;
 }
 
-GP11Attributes*
+GckAttributes*
 gcr_parser_get_parsed_attributes (GcrParser *self)
 {
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);

@@ -577,6 +577,8 @@ CK_SESSION_HANDLE   gck_session_get_handle                  (GckSession *self);
 
 GckSessionInfo*     gck_session_get_info                    (GckSession *self);
 
+gulong              gck_session_get_state                   (GckSession *self);
+
 gboolean            gck_session_init_pin                    (GckSession *self,
                                                              const guchar *pin,
                                                              gsize n_pin,

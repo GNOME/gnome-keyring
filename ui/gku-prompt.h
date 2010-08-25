@@ -24,8 +24,6 @@
 
 #include <glib-object.h>
 
-#include <gp11/gp11.h>
-
 typedef enum {
 	GKU_RESPONSE_FAILURE      = -1,
 	GKU_RESPONSE_NONE         = 0,

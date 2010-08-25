@@ -24,7 +24,7 @@
 
 #include <glib.h>
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 gboolean          gkd_login_unlock                   (const gchar *master);
 

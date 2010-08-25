@@ -23,8 +23,8 @@
 
 /*
  * This file is not installed. The one pkcs11/pkcs11.h is installed with the
- * gp11.h header. However while building we included it here, so that relative
- * includes work from within gp11.h
+ * gck.h header. However while building we included it here, so that relative
+ * includes work from within gck.h
  */
 
 #include "pkcs11/pkcs11.h"

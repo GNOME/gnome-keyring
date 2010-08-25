@@ -252,6 +252,7 @@ state_slots (GckEnumeratorState *args, gboolean forward)
 	} else {
 
 		gck_list_unref_free (args->slots);
+		args->slots = NULL;
 		return state_module;
 	}
 }
@@ -414,10 +415,25 @@ state_authenticated (GckEnumeratorState *args, gboolean forward)
 	return state_results;
 }
 
+static GckObject*
+extract_result (GckEnumeratorState *args)
+{
+	CK_OBJECT_HANDLE handle;
+
+	if (!args->objects || !args->objects->len)
+		return NULL;
+
+	g_assert (args->session);
+
+	handle = g_array_index (args->objects, CK_OBJECT_HANDLE, 0);
+	g_array_remove_index_fast (args->objects, 0);
+
+	return gck_object_from_handle (args->session, handle);
+}
+
 static gpointer
 state_results (GckEnumeratorState *args, gboolean forward)
 {
-	CK_OBJECT_HANDLE handle;
 	GckObject *object;
 	guint have;
 
@@ -432,14 +448,10 @@ state_results (GckEnumeratorState *args, gboolean forward)
 
 	while (have < args->want_objects) {
 
-		/* Need more objects! */
-		if (!args->objects || args->objects->len == 0)
+		object = extract_result (args);
+		if (!object)
 			return rewind_state (args, state_slots);
 
-		handle = g_array_index (args->objects, CK_OBJECT_HANDLE, 0);
-		g_array_remove_index_fast (args->objects, 0);
-
-		object = gck_object_from_handle (args->session, handle);
 		args->results = g_list_append (args->results, object);
 		++have;
 	}
@@ -581,18 +593,40 @@ free_enumerate_next (EnumerateNext *args)
 GckObject*
 gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **error)
 {
+	EnumerateNext args = { GCK_ARGUMENTS_INIT, NULL, };
 	GckObject *result = NULL;
-	GList *results;
 
 	g_return_val_if_fail (GCK_IS_ENUMERATOR (self), NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
-	results = gck_enumerator_next_n (self, 1, cancellable, error);
-	if (results) {
-		g_assert (GCK_IS_OBJECT (results->data));
-		result = g_object_ref (results->data);
-		gck_list_unref_free (results);
+	/* Remove the state and own it ourselves */
+	args.state = g_atomic_pointer_get (&self->pv->state);
+	if (!args.state || !g_atomic_pointer_compare_and_exchange (&self->pv->state, args.state, NULL)) {
+		g_warning ("this enumerator is already running a next operation");
+		return NULL;
 	}
+
+	/* A result from a previous run? */
+	result = extract_result (args.state);
+	if (!result) {
+		args.state->want_objects = 1;
+
+		/* Run the operation and steal away the results */
+		if (_gck_call_sync (NULL, perform_enumerate_next, complete_enumerate_next, &args, cancellable, error)) {
+			if (args.state->results) {
+				g_assert (g_list_length (args.state->results) == 1);
+				result = g_object_ref (args.state->results->data);
+				gck_list_unref_free (args.state->results);
+				args.state->results = NULL;
+			}
+		}
+
+		args.state->want_objects = 0;
+	}
+
+	/* Put the state back */
+	if (!g_atomic_pointer_compare_and_exchange (&self->pv->state, NULL, args.state))
+		g_assert_not_reached ();
 
 	return result;
 }

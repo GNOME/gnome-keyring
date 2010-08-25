@@ -7,7 +7,8 @@ noinst_LTLIBRARIES = \
 	libegg-dbus.la \
 	libegg-secure.la \
 	libegg-prompt.la \
-	libegg-entry-buffer.la
+	libegg-entry-buffer.la \
+	libegg-hex.la
 
 BUILT_SOURCES = \
 	asn1-def-pk.c asn1-def-pkix.c
@@ -106,6 +107,15 @@ libegg_prompt_la_CFLAGS = \
 
 libegg_prompt_la_LIBS = \
 	$(LIBGCRYPT_LIBS) \
+	$(GLIB_LIBS)
+
+libegg_hex_la_SOURCES = \
+	egg-hex.c egg-hex.h
+
+libegg_hex_la_CFLAGS = \
+	$(GLIB_CFLAGS)
+
+libegg_hex_la_LIBS = \
 	$(GLIB_LIBS)
 
 # -------------------------------------------------------------------

@@ -54,11 +54,11 @@ gchar**             gkd_secret_unlock_get_results             (GkdSecretUnlock *
 
 void                gkd_secret_unlock_reset_results           (GkdSecretUnlock *self);
 
-gboolean            gkd_secret_unlock_with_secret             (GP11Object *collection,
+gboolean            gkd_secret_unlock_with_secret             (GckObject *collection,
                                                                GkdSecretSecret *master,
                                                                DBusError *derr);
 
-gboolean            gkd_secret_unlock_with_password           (GP11Object *collection,
+gboolean            gkd_secret_unlock_with_password           (GckObject *collection,
                                                                const guchar *password,
                                                                gsize n_password,
                                                                DBusError *derr);

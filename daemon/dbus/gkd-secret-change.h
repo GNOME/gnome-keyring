@@ -27,7 +27,7 @@
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-types.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #define GKD_SECRET_TYPE_CHANGE               (gkd_secret_change_get_type ())
 #define GKD_SECRET_CHANGE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRET_TYPE_CHANGE, GkdSecretChange))
@@ -48,7 +48,7 @@ GkdSecretChange*    gkd_secret_change_new                     (GkdSecretService 
                                                                const gchar *caller,
                                                                const gchar *path);
 
-gboolean            gkd_secret_change_with_secrets            (GP11Object *collection,
+gboolean            gkd_secret_change_with_secrets            (GckObject *collection,
                                                                GkdSecretSecret *original,
                                                                GkdSecretSecret *master,
                                                                DBusError *derr);
