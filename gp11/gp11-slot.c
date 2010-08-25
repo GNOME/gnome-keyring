@@ -771,7 +771,7 @@ gp11_slot_has_flags (GP11Slot *self, gulong flags)
 	return (info.flags & flags) != 0;
 }
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 typedef struct InitToken {
 	GP11Arguments base;
