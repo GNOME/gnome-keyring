@@ -28,7 +28,7 @@ ui_test_details_CFLAGS = \
 	$(GTK_CFLAGS)
 	
 ui_test_details_LDADD = \
-	$(top_builddir)/gcr/libgcr.la \
+	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
 	$(GTK_LIBS) \
 	$(LIBGCRYPT_LIBS)
 

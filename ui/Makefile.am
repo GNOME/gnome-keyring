@@ -21,7 +21,7 @@ INCLUDES= \
 # UI BUILDER
 #
 
-uidir = $(datadir)/gnome-keyring/ui/
+uidir = $(datadir)/gnome-keyring@GCR_VERSION_SUFFIX@/ui/
 
 ui_DATA = \
 	gku-prompt.ui
@@ -59,21 +59,27 @@ EXTRA_DIST = \
 #
 
 libexec_PROGRAMS= \
-	gnome-keyring-prompt
+	gnome-keyring-prompt@GCR_VERSION_SUFFIX@
 
-gnome_keyring_prompt_SOURCES = \
+gnome_keyring_prompt@GCR_VERSION_SUFFIX@_SOURCES = \
 	gku-prompt-tool.c \
 	gku-prompt-util.c gku-prompt-util.h
 
-gnome_keyring_prompt_LDADD = \
+gnome_keyring_prompt@GCR_VERSION_SUFFIX@_LDADD = \
 	$(top_builddir)/egg/libegg-prompt.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
-	$(top_builddir)/gcr/libgcr.la \
+	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
 	$(LIBGCRYPT_LIBS) \
 	$(GTK_LIBS)
 
-gnome_keyring_prompt_CFLAGS = \
+gnome_keyring_prompt@GCR_VERSION_SUFFIX@_CFLAGS = \
 	-DUIDIR=\""$(uidir)"\" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	$(LIBGCRYPT_CFLAGS) \
 	$(GTK_CFLAGS)
+
+# Install a link from gnome-keyring-prompt → gnome-keyring-prompt@GCR_VERSION_SUFFIX@ to maintain compatibility
+if HAVE_GTK3
+install-exec-hook:
+	@test -e "$(DESTDIR)$(libexecdir)/gnome-keyring-prompt" || (cd $(DESTDIR)$(libexecdir) && $(LN_S) gnome-keyring-prompt@GCR_VERSION_SUFFIX@ gnome-keyring-prompt)
+endif
