@@ -5,15 +5,33 @@ AM_CONFIG_HEADER(config.h)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
 
 dnl ****************************************************************************
-dnl Library libtool versioning
+dnl Library package and libtool versioning
+dnl
+dnl Updating the libtool versions, follow these instructions sequentially:
+dnl  1. If the library source code has changed at all since the last update, then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
+dnl  2. If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
+dnl  3. If any interfaces have been added since the last public release, then increment age.
+dnl  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 
-GP11_MAJOR=0		# Increment for major version number, breaks old apps.
-GP11_REVISION=0		# Increment for internal changes, nothing affected.
-GP11_AGE=0		# Increment for interface that doesn't break anything
+# GP11 package versioning
+GP11_MAJOR=0
+GP11_MINOR=0
+GP11_MICRO=0
 
-GCR_MAJOR=0		# Increment for major version number, breaks old apps.
-GCR_REVISION=0		# Increment for internal changes, nothing affected.
-GCR_AGE=0		# Increment for interface that doesn't break anything
+# GP11 libtool versioning
+GP11_CURRENT=0
+GP11_REVISION=0
+GP11_AGE=0
+
+# GCR package versioning
+GCR_MAJOR=0
+GCR_MINOR=0
+GCR_MICRO=0
+
+# GCR libtool versioning
+GCR_CURRENT=0
+GCR_REVISION=0
+GCR_AGE=0
 
 dnl ****************************************************************************
 
@@ -571,11 +589,11 @@ fi
 
 # ----------------------------------------------------------------------
 
-GP11_LT_RELEASE=$GP11_MAJOR:$GP11_REVISION:$GP11_AGE
+GP11_LT_RELEASE=$GP11_CURRENT:$GP11_REVISION:$GP11_AGE
 AC_SUBST(GP11_LT_RELEASE)
 AC_SUBST(GP11_MAJOR)
 
-GCR_LT_RELEASE=$GCR_MAJOR:$GCR_REVISION:$GCR_AGE
+GCR_LT_RELEASE=$GCR_CURRENT:$GCR_REVISION:$GCR_AGE
 AC_SUBST(GCR_LT_RELEASE)
 AC_SUBST(GCR_MAJOR)
 
