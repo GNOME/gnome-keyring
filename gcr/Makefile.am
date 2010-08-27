@@ -21,6 +21,7 @@ inc_HEADERS = \
 	gcr-certificate-details-widget.h \
 	gcr-importer.h \
 	gcr-parser.h \
+	gcr-simple-certificate.h \
 	gcr-types.h \
 	gcr-unlock-options-widget.h
 
