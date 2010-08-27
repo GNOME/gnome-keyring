@@ -124,6 +124,10 @@ void                gku_prompt_set_unlock_option      (GkuPrompt *self,
                                                        const gchar *option,
                                                        gint value);
 
+void                gku_prompt_set_unlock_label       (GkuPrompt *self,
+                                                       const gchar *option,
+                                                       const gchar *label);
+
 gboolean            gku_prompt_is_widget_selected     (GkuPrompt *prompt,
                                                        const gchar *widget);
 

@@ -338,6 +338,10 @@ prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar 
 	else
 		gku_prompt_hide_widget (prompt, "auto_area");
 
+	gku_prompt_set_unlock_label (prompt, "label-idle", _("Forget this password if idle for"));
+	gku_prompt_set_unlock_label (prompt, "label-timeout", _("Forget this password after"));
+	gku_prompt_set_unlock_label (prompt, "label-session", _("Forget this password when I log out"));
+
 	gp11_list_unref_free (objects);
 
 	return prompt;

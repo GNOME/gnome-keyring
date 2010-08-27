@@ -913,6 +913,17 @@ gku_prompt_set_unlock_option (GkuPrompt *self, const gchar *option, gint value)
 	g_key_file_set_integer (self->pv->input, "unlock-options", option, value);
 }
 
+void
+gku_prompt_set_unlock_label (GkuPrompt *self, const gchar *option, const gchar *label)
+{
+	g_return_if_fail (GKU_IS_PROMPT (self));
+	g_return_if_fail (option);
+	g_return_if_fail (label);
+	g_return_if_fail (self->pv->input);
+
+	g_key_file_set_string (self->pv->input, "unlock-options", option, label);
+}
+
 /* ----------------------------------------------------------------------------------
  * ATTENTION QUEUES
  */

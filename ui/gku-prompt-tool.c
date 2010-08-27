@@ -424,6 +424,17 @@ prepare_security (GtkBuilder *builder, GtkDialog *dialog)
 	g_signal_connect (dialog, "window-state-event", G_CALLBACK (window_state_changed), NULL);
 }
 
+static void
+prepare_lock_label (GtkWidget *unlock, guint option, const gchar *field)
+{
+	gchar *label;
+
+	label = g_key_file_get_string (input_data, "unlock-options", field, NULL);
+	if (label)
+		gcr_unlock_options_widget_set_label (GCR_UNLOCK_OPTIONS_WIDGET (unlock), option, label);
+	g_free (label);
+}
+
 /**
 * builder: GtkBuilderobject to read widgets from
 * dialog: the prompt dialog
@@ -458,6 +469,10 @@ prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
 	              "unlock-idle", unlock_idle,
 	              "unlock-timeout", unlock_timeout,
 	              NULL);
+
+	prepare_lock_label (unlock, GCR_UNLOCK_OPTION_IDLE, "label-idle");
+	prepare_lock_label (unlock, GCR_UNLOCK_OPTION_TIMEOUT, "label-timeout");
+	prepare_lock_label (unlock, GCR_UNLOCK_OPTION_SESSION, "label-session");
 }
 
 /**

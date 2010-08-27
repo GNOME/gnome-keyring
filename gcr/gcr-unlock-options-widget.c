@@ -73,6 +73,21 @@ on_timeout_choices_toggled (GtkToggleButton *unused, GtkBuilder *builder)
 
 }
 
+static const gchar*
+widget_name_for_option (guint option)
+{
+	switch (option) {
+	case GCR_UNLOCK_OPTION_SESSION:
+		return "lock_logout_choice";
+	case GCR_UNLOCK_OPTION_TIMEOUT:
+		return "lock_after_choice";
+	case GCR_UNLOCK_OPTION_IDLE:
+		return "lock_idle_choice";
+	default:
+		return NULL;
+	}
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -242,4 +257,40 @@ GtkWidget*
 gcr_unlock_options_widget_new (void)
 {
 	return g_object_new (GCR_TYPE_UNLOCK_OPTIONS_WIDGET, NULL);
+}
+
+const gchar*
+gcr_unlock_options_widget_get_label (GcrUnlockOptionsWidget *self, guint option)
+{
+	GtkToggleButton *button;
+	const gchar *name;
+
+	g_return_val_if_fail (GCR_IS_UNLOCK_OPTIONS_WIDGET (self), NULL);
+
+	name = widget_name_for_option (option);
+	g_return_val_if_fail (name, NULL);
+
+	button = builder_get_toggle_button (self->pv->builder, name);
+	g_return_val_if_fail (button, NULL);
+
+	return gtk_button_get_label (GTK_BUTTON (button));
+}
+
+void
+gcr_unlock_options_widget_set_label (GcrUnlockOptionsWidget *self, guint option,
+                                     const gchar *text)
+{
+	GtkToggleButton *button;
+	const gchar *name;
+
+	g_return_if_fail (GCR_IS_UNLOCK_OPTIONS_WIDGET (self));
+	g_return_if_fail (text);
+
+	name = widget_name_for_option (option);
+	g_return_if_fail (name);
+
+	button = builder_get_toggle_button (self->pv->builder, name);
+	g_return_if_fail (button);
+
+	gtk_button_set_label (GTK_BUTTON (button), text);
 }

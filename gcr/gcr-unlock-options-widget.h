@@ -47,9 +47,22 @@ struct _GcrUnlockOptionsWidgetClass {
 	GtkAlignmentClass parent_class;
 };
 
+enum {
+	GCR_UNLOCK_OPTION_SESSION = 0x01,
+	GCR_UNLOCK_OPTION_TIMEOUT = 0x02,
+	GCR_UNLOCK_OPTION_IDLE = 0x04,
+};
+
 GType                         gcr_unlock_options_widget_get_type               (void);
 
 GtkWidget*                    gcr_unlock_options_widget_new                    (void);
+
+const gchar*                  gcr_unlock_options_widget_get_label              (GcrUnlockOptionsWidget *self,
+                                                                                guint option);
+
+void                          gcr_unlock_options_widget_set_label              (GcrUnlockOptionsWidget *self,
+                                                                                guint option,
+                                                                                const gchar *text);
 
 G_END_DECLS
 
