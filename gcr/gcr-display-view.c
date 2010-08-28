@@ -239,7 +239,7 @@ _gcr_display_view_expose_event (GtkWidget *widget, GdkEventExpose *event)
 	gboolean handled = FALSE;
 	GdkRectangle visible;
 	GdkRectangle position;
-	GdkGC *gc;
+	cairo_t *cr;
 
 	/* Have GtkTextView draw the text first. */
 	if (GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->expose_event)
@@ -260,11 +260,11 @@ _gcr_display_view_expose_event (GtkWidget *widget, GdkEventExpose *event)
 		                                       visible.width - position.width - ICON_MARGIN, ICON_MARGIN,
 		                                       &position.x, &position.y);
 
-		gc = gdk_gc_new (event->window);
-		gdk_draw_pixbuf (event->window, gc, self->pv->pixbuf,
-		                 0, 0, position.x, position.y, position.width, position.height,
-		                 GDK_RGB_DITHER_NORMAL, 0, 0);
-		g_object_unref (gc);
+		cr = gdk_cairo_create (event->window);
+		gdk_cairo_set_source_pixbuf (cr, self->pv->pixbuf, 0, 0);
+		cairo_rectangle (cr, position.x, position.y, position.width, position.height);
+		cairo_fill (cr);
+		cairo_destroy (cr);
 	}
 
 	return handled;
