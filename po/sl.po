@@ -1,4 +1,4 @@
-# Slovenian translation for gnome-keyring.
+# Slovenian translations for gnome-keyring.
 # Copyright (C) 2009 gnome-keyring COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-keyring package.
 #
@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring\n"
+"Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-07-02 08:48+0000\n"
-"PO-Revision-Date: 2010-07-05 07:03+0100\n"
+"POT-Creation-Date: 2010-07-29 07:55+0000\n"
+"PO-Revision-Date: 2010-07-29 13:35+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -23,15 +23,15 @@ msgstr ""
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:1
 msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Možnost omogoča zagon PKCS#11 enote v gnome-keyring ozadnjem programu. Uporablja se le med zagonom programa gnome-session, (primer: ko se uporabnik prijavi). Možnost lahko s posebnimi argumenti med zagonom prekličete."
+msgstr "Možnost omogoča zagon PKCS#11 enote v gnome-keyring ozadnjem programu. Uporablja se le med zagonom programa gnome-session, (primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom preklicati."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:2
 msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Možnost omogoča podporo SSH agenta v ozadnjem programu gnome-keyring. Uporablja se le ob zagonu ozadnjega programa gnome-keyring-daemon, (primer: ko se uporabnik prijavi). Možnost lahko s posebnimi argumenti med zagonom prekličete."
+msgstr "Možnost omogoča podporo SSH agenta v ozadnjem programu gnome-keyring. Uporablja se le ob zagonu ozadnjega programa gnome-keyring-daemon, (primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom preklicati."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:3
 msgid "This option enables the secret service component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Možnost omogoča zagon skritih storitev v gnome-keyring ozadnjem programu. Uporablja se le med zagonom programa gnome-session, (primer: ko se uporabnik prijavi). Možnost lahko s posebnimi argumenti med zagonom prekličete."
+msgstr "Možnost omogoča zagon skritih storitev v gnome-keyring ozadnjem programu. Uporablja se le med zagonom programa gnome-session, (primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom preklicati."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:4
 msgid "Whether the gnome-keyring PKCS#11 component is enabled."
@@ -43,14 +43,14 @@ msgstr "Ali je gnome-keyring SSH agent omogočen."
 
 #: ../daemon/data/gnome-keyring.schemas.in.h:6
 msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Ali je gnome-keyring skrite storitve omogočen."
+msgstr "Ali je skrita storitev gnome-keyring omogočena."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78
 #: ../daemon/dbus/gkd-secret-create.c:74
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
 msgid "Unnamed"
 msgstr "Neimenovano"
 
@@ -66,11 +66,11 @@ msgstr "Izberite novo geslo za zbirko ključev '%s'"
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "Program želi spremeniti geslo za zbirko ključev '%s'. Izbrati morate novo geslo za to zbirko."
+msgstr "Program želi spremeniti geslo za zbirko ključev '%s'. Izbrati je treba novo geslo za to zbirko."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
-msgstr "Prvotno geslo je napačno."
+msgstr "Izvorno geslo je napačno."
 
 #: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
@@ -83,11 +83,11 @@ msgstr "Izberite geslo za novo zbirko ključev"
 #: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati morate geslo za novo zbirko."
+msgstr "Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati je treba geslo za novo zbirko."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
-msgstr "Shranjenje potrdil in ključev"
+msgstr "Hranjenje potrdil in ključev"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
 msgid "GNOME Keyring: PKCS#11 Component"
@@ -146,7 +146,7 @@ msgstr "Uporabnikov ID"
 
 #: ../egg/egg-oid.c:46
 msgid "Email"
-msgstr "e-Pošta"
+msgstr "Elektronski naslov"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -178,9 +178,9 @@ msgstr "Priimek"
 
 #: ../egg/egg-oid.c:69
 #: ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:323
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
-msgstr "Serijska številka"
+msgstr "Zaporedna številka"
 
 #: ../egg/egg-oid.c:71
 msgid "Country"
@@ -224,11 +224,11 @@ msgstr "Začetnici"
 
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr "Določilo ustvarjanja"
+msgstr "Red potomstva"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr "DN Določilo"
+msgstr "DN določilo"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
@@ -306,11 +306,11 @@ msgstr "Splošno ime (CN)"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:8
 msgid "Email Recipient Certificate"
-msgstr "Potrdilo prejemnika e-pošte"
+msgstr "Potrdilo prejemnika elektronske pošte"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:9
 msgid "Email Signer Certificate"
-msgstr "Potrdilo podpisnika e-pošte"
+msgstr "Potrdilo podpisnika elektronske pošte"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:10
 msgid "Expires On"
@@ -344,95 +344,95 @@ msgstr "Potrdilo odjemalca SSL"
 msgid "SSL Server Certificate"
 msgstr "Potrdilo strežnika SSL"
 
-#: ../gcr/gcr-certificate-details-widget.c:208
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "Pripona"
 
-#: ../gcr/gcr-certificate-details-widget.c:213
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "Določilo"
 
-#: ../gcr/gcr-certificate-details-widget.c:223
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "Vrednost"
 
-#: ../gcr/gcr-certificate-details-widget.c:230
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "Kritično"
 
-#: ../gcr/gcr-certificate-details-widget.c:230
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "Da"
 
-#: ../gcr/gcr-certificate-details-widget.c:230
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "Ne"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:304
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "Ime predmeta"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:308
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "Ime izdajatelja"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:312
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "Izdano potrdilo"
 
-#: ../gcr/gcr-certificate-details-widget.c:317
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "Različica"
 
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "Neveljaven pred"
 
-#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "Neveljaven po"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:340
-#: ../gcr/gcr-certificate-details-widget.c:356
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "Podpis"
 
-#: ../gcr/gcr-certificate-details-widget.c:344
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "Algoritem podpisa"
 
-#: ../gcr/gcr-certificate-details-widget.c:349
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "Določila podpisa"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:360
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "Podrobnosti javnega ključa"
 
-#: ../gcr/gcr-certificate-details-widget.c:364
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "Algoritem ključa"
 
-#: ../gcr/gcr-certificate-details-widget.c:369
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "Določila ključa"
 
-#: ../gcr/gcr-certificate-details-widget.c:376
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "Velikost ključa"
 
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-details-widget.c:378
 #: ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "Javni ključ"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:387
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "Prstni odtisi"
 
@@ -465,10 +465,10 @@ msgid "minutes"
 msgstr "minut"
 
 #: ../gcr/gcr-importer.c:163
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1565
 #: ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
-msgstr "Dejanje je bilo preklicano."
+msgstr "Dejanje je preklicano."
 
 #: ../gcr/gcr-importer.c:255
 #, c-format
@@ -484,17 +484,17 @@ msgid "Choose a location to store the imported certificates/keys."
 msgstr "Izbor mesta za shranjevanje uvoženih potrdil in ključev"
 
 #: ../gcr/gcr-importer.c:436
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
 msgid "Enter password to unlock the private key"
 msgstr "Vnesite geslo za odklepanje osebnega ključa"
 
 #: ../gcr/gcr-importer.c:438
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:677
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
 msgid "Enter password to unlock the certificate"
 msgstr "Vnesite geslo za odklepanje potrdila"
 
 #: ../gcr/gcr-importer.c:440
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:681
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
 msgid "Enter password to unlock"
 msgstr "Vnesite geslo za odklepanje"
 
@@ -539,15 +539,15 @@ msgstr "Osebni ključ"
 msgid "Certificate"
 msgstr "Potrdilo"
 
-#: ../gcr/gcr-parser.c:1577
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "Neznani ali nepodprti podatki."
 
-#: ../gcr/gcr-parser.c:1580
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "Ni mogoče razčleniti neveljavnih ali pokvarjenih podatkov."
 
-#: ../gcr/gcr-parser.c:1583
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "Podatki so zaklenjeni"
 
@@ -577,7 +577,7 @@ msgstr "Z modulom ni mogoče ustvariti zahtevanih niti"
 
 #: ../gp11/gp11-misc.c:113
 msgid "The module cannot lock data properly"
-msgstr "z modulom ni mogoče primerno zakleniti podatkov"
+msgstr "Z modulom ni mogoče ustrezno zakleniti podatkov"
 
 #: ../gp11/gp11-misc.c:115
 msgid "The field is read-only"
@@ -593,7 +593,7 @@ msgstr "Polje ni veljavno ali pa ne obstaja"
 
 #: ../gp11/gp11-misc.c:121
 msgid "Invalid value for field"
-msgstr "neveljavna vrednost polja"
+msgstr "Neveljavna vrednost polja"
 
 #: ../gp11/gp11-misc.c:123
 msgid "The data is not valid or unrecognized"
@@ -605,7 +605,7 @@ msgstr "Podatki so predolgi"
 
 #: ../gp11/gp11-misc.c:127
 msgid "An error occurred on the device"
-msgstr "Na napravi je prišlo napake"
+msgstr "Prišlo je do napake na napravi"
 
 #: ../gp11/gp11-misc.c:129
 msgid "Insufficient memory available on device"
@@ -761,7 +761,7 @@ msgstr "Naprava je neveljavna ali pa je ni mogoče prepoznati"
 
 #: ../gp11/gp11-misc.c:205
 msgid "The device is write protected"
-msgstr "Naprava je  zaščitena pred pisanjem"
+msgstr "Naprava je zaščitena pred pisanjem"
 
 #: ../gp11/gp11-misc.c:207
 msgid "Cannot import because the key is invalid"
@@ -789,7 +789,7 @@ msgstr "Podatek uporabniškega gesla ali PIN kode ni nastavljen."
 
 #: ../gp11/gp11-misc.c:219
 msgid "The user is of an invalid type"
-msgstr "Vrsta uporabnik ni veljavna"
+msgstr "Vrsta uporabnika ni veljavna"
 
 #: ../gp11/gp11-misc.c:221
 msgid "Another user is already logged in"
@@ -871,7 +871,7 @@ msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
 msgid "Unknown error"
 msgstr "Neznana napaka"
 
-#: ../pkcs11/gkm/gkm-certificate.c:742
+#: ../pkcs11/gkm/gkm-certificate.c:726
 msgid "Unnamed Certificate"
 msgstr "Neimenovano potrdilo"
 
@@ -886,120 +886,120 @@ msgid "Unlock password for: %s"
 msgstr "Geslo odklepanja za: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:774
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
 msgid "The unlock password was incorrect"
 msgstr "Geslo za odklepanje je napačno."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:605
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
 msgid "Unlock Login Keyring"
 msgstr "Odklenite prijavno zbirko ključev"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:607
-msgid "Enter password for to unlock your login keyring"
-msgstr "Vnesite geslo za odklepanje zbirke ključev"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+msgid "Enter password to unlock your login keyring"
+msgstr "Vnesite geslo za odklepanje prijavnih ključev"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:611
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
 msgid "The password you use to log in to your computer no longer matches that of your login keyring."
 msgstr "Geslo, ki  se uporabi ob prijavi v sistem, se ne sklada z geslom zbirke ključev."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:613
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr "Prijavna zbirka ključev ni bila samodejno odklenjena ob prijavi."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
 msgid "Unlock Keyring"
 msgstr "Odklenite zbirko ključev"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:633
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Vnesite geslo za dostop do '%s' zbirke ključev"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Program želi dostopiti do zbirke ključev '%s', vendar je ta zaklenjena."
+msgstr "Program zahteva dostop do zbirke ključev '%s', vendar je ta zaklenjena."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Unlock private key"
 msgstr "Odkleni osebni ključ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
 msgid "Unlock certificate"
 msgstr "Odkleni potrdilo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:664
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
 msgid "Unlock public key"
 msgstr "Odkleni javni ključ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
 msgid "Unlock"
 msgstr "Odkleni"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:679
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
 msgid "Enter password to unlock the public key"
 msgstr "Vnesite geslo za odklepanje javnega ključa"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Program želi dostop do osebnega ključa '%s', vendar je ta zaklenjen"
+msgstr "Program zahteva dostop do osebnega ključa '%s', vendar je ta zaklenjen"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Program želi dostop do potrdila '%s', vendar je ta zaklenjen"
+msgstr "Program zahteva dostop do potrdila '%s', vendar je to zaklenjeno"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Program želi dostop do javnega ključa '%s', vendar je ta zaklenjen"
+msgstr "Program zahteva dostop do javnega ključa '%s', vendar je ta zaklenjen"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:700
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Program želi dostop do '%s', vendar je ta zaklenjen"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
 msgid "Unlock certificate/key storage"
 msgstr "Odkleni potrdila in ključe"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
 #, c-format
 msgid "An application wants access to the certificate/key storage '%s', but it is locked"
-msgstr "Program želi dostop do potrdila ali ključa '%s', vendar je ta zaklenjen."
+msgstr "Program zahteva dostop do potrdila ali ključa '%s', vendar je ta zaklenjen."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1034
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
 msgid "New Password Required"
 msgstr "Zahtevano novo geslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
 msgid "New password required for secure storage"
 msgstr "Zahtevano novo geslo za varno shranjevanje"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1037
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
 #, c-format
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "Za pripravo '%s' za shranjevanje potrdil in ključev, mora biti določeno geslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
 msgid "Change Password"
 msgstr "Spremeni geslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
 msgid "Change password for secure storage"
 msgstr "Spremeni geslo varno shranjevanje"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
 #, c-format
 msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "Za spreminjanje gesla za uporabnika '%s', je zahtevano prvotno in novo geslo"
@@ -1055,404 +1055,3 @@ msgstr "_Staro geslo:"
 #: ../ui/gku-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_Geslo:"
-
-#~ msgid "Automatically unlock secure storage when I log in."
-#~ msgstr "Samodejno odkleni zbirko ključev ob prijavi."
-
-#~ msgid ""
-#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
-#~ "to unlock</span>\n"
-#~ "\n"
-#~ "An application wants access to the keyring 'xxx', but it is locked."
-#~ msgstr ""
-#~ "<span size=\"large\" weight=\"bold\">Vnesite geslo za zbirko ključev "
-#~ "'login' za odklepanje</span>\n"
-#~ "\n"
-#~ "Program želi dostopiti do zbirke ključev 'xxx', vendar je ta zaklenjena."
-
-#~ msgid "Prompt me for each application that accesses this keyring."
-#~ msgstr ""
-#~ "Pokaži obvestilo vsakič, ko zahteva katerikoli program dostop do zbirke "
-#~ "ključev.-"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Program '%s' (%s) želi dostop do gesla za'<object prop='name'/>'' v "
-#~ "privzeti zbirki ključev."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Program '%s' (%s) želi dostop do gesla za '<object prop='name'/>' v %s."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Program '%s' želi dostop do gesla za '<object prop='name'/>' v privzeti "
-#~ "zbirki ključev."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr "Program '%s' želi dostop do gesla za '<object prop='name'/>' v %s."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Neznan program želi dostop do gesla za '<object prop='name'/>' v privzeti "
-#~ "zbirki ključev."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Neznan program želi dostop do gesla za '<object prop='name'/>' v %s."
-
-#~ msgid "Allow access"
-#~ msgstr "Dovoli dostop"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Program '%s' (%s) želi dostop do privzete zbirke ključev, vendar je "
-#~ "zaklenjena"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Program '%s' (%s) želi dostop do zbirke ključev '%s', vendar je zaklenjena"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the default keyring, but it is locked"
-#~ msgstr ""
-#~ "Program '%s' želi dostop do privzete zbirke ključev, vendar je zaklenjena"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the keyring '%s', but it is locked"
-#~ msgstr ""
-#~ "Program '%s' želi dostop do zbirke ključev '%s', vendar je zaklenjena"
-
-#~ msgid ""
-#~ "An unknown application wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Neznani program želi dostop do privzete zbirke ključev, vendar je "
-#~ "zaklenjena"
-
-#~ msgid "Enter password for default keyring to unlock"
-#~ msgstr "Vnesite geslo za dostop do privzete zbirke ključev"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
-#~ "have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' (%s) želi ustvariti novo zbirko ključev z imenom '%s'. "
-#~ "Izbrati morate geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new default keyring. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' (%s) želi ustvariti novo privzeto zbirko ključev. Izbrati "
-#~ "morate geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new keyring called '%s'. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati "
-#~ "morate geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' želi ustvariti novo privzeto zbirko ključev. Izbrati morate "
-#~ "geslo za to zbirko."
-
-#~ msgid ""
-#~ "An unknown application wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "Neznan program želi ustvariti novo privzeto zbirko ključev. Izbrati "
-#~ "morate geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the '%s' "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' (%s) želi spremeniti geslo za zbirko ključev '%s'. Izbrati "
-#~ "morate geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' (%s) želi spremeniti geslo za privzeto zbirko ključev. "
-#~ "Izbrati morate geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the '%s' keyring. "
-#~ "You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' želi spremeniti geslo za zbirko ključev '%s'. Izbrati morate "
-#~ "geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Program '%s' želi spremeniti geslo za privzeto zbirko ključev. Izbrati "
-#~ "morate geslo za to zbirko."
-
-#~ msgid ""
-#~ "An unknown application wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Neznan program želi spremeniti geslo za privzeto zbirko ključev. Izbrati "
-#~ "morate geslo za to zbirko."
-
-#~ msgid "Choose a new password for the default keyring."
-#~ msgstr "Izberite novo geslo za privzeto zbirko ključev."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to store a password, but there is no "
-#~ "default keyring. To create one, you need to choose the password you wish "
-#~ "to use for it."
-#~ msgstr ""
-#~ "Program '%s' (%s) želi shraniti geslo, vendar ni privzete zbirke ključev. "
-#~ "Da jo ustvarite, morate izbrati geslo za to zbirko."
-
-#~ msgid ""
-#~ "The application '%s' wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "Program '%s' želi shraniti geslo, vendar ni privzete zbirke ključev. Da "
-#~ "jo ustvarite, morate izbrati geslo za to zbirko."
-
-#~ msgid ""
-#~ "An unknown application wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "Neznan program želi shraniti geslo, vendar ni privzete zbirke ključev. Da "
-#~ "jo ustvarite, morate izbrati geslo za to zbirko."
-
-#~ msgid "Create Default Keyring"
-#~ msgstr "Ustvari privzeto zbirko ključev"
-
-#~ msgid "Choose password for default keyring"
-#~ msgstr "Izberite geslo za privzeto zbirko ključev"
-
-#~ msgid "Create Login Keyring"
-#~ msgstr "Ustvari zbirko ključev prijave"
-
-#~ msgid "Enter your login password"
-#~ msgstr "Vnesite geslo za prijavo"
-
-#~ msgid ""
-#~ "Your login keyring was not automatically created when you logged into "
-#~ "this computer. It will now be created."
-#~ msgstr ""
-#~ "Prijavna zbirka ključev ni bila samodejno ustvarjena ob prijavi na ta "
-#~ "računalnik. Sedaj bo ustvarjena."
-
-#~ msgid "Unlock password for %s keyring"
-#~ msgstr "Izberite geslo za zbirko ključev %s"
-
-#~ msgid "Automatically unlock this private key when I log in."
-#~ msgstr "Samodejno odkleni osebni ključ ob prijavi."
-
-#~ msgid "Automatically unlock this certificate when I log in."
-#~ msgstr "Samodejno odkleni potrdilo ob prijavi."
-
-#~ msgid "Automatically unlock this public key when I log in."
-#~ msgstr "Samodejno odkleni javni ključ ob prijavi."
-
-#~ msgid "Automatically unlock this when I log in"
-#~ msgstr "Samodejno odkleni prijavi."
-
-#~ msgid ""
-#~ "<b><big>Could not grab your mouse.</big></b>\n"
-#~ "\n"
-#~ "A malicious client may be eavesdropping on your session or you may have "
-#~ "just clicked a menu or some application just decided to get focus.\n"
-#~ "\n"
-#~ "Try again."
-#~ msgstr ""
-#~ "<b><big>Ni mogoče nadzirati miške.</big></b>\n"
-#~ "\n"
-#~ "Mogoče je, da nepooblaščena oseba prisluškuje seji ali pa ste ravnokar "
-#~ "kliknili na meni oziroma je nek program prišel v žarišče delovanja.\n"
-#~ "\n"
-#~ "Poskusite znova."
-
-#~ msgid ""
-#~ "<b><big>Could not grab your keyboard.</big></b>\n"
-#~ "\n"
-#~ "A malicious client may be eavesdropping on your session or you may have "
-#~ "just clicked a menu or some application just decided to get focus.\n"
-#~ "\n"
-#~ "Try again."
-#~ msgstr ""
-#~ "<b><big>Ni mogoče nadzirati tipkovnice.</big></b>\n"
-#~ "\n"
-#~ "Mogoče je, da nepooblaščena oseba prisluškuje seji ali pa ste ravnokar "
-#~ "kliknili na meni oziroma je nek program prišel v žarišče delovanja.\n"
-#~ "\n"
-#~ "Poskusite znova."
-
-#~ msgid "_Deny"
-#~ msgstr "_Zavrni"
-
-#~ msgid "C_reate"
-#~ msgstr "Ustva_ri"
-
-#~ msgid "C_hange"
-#~ msgstr "S_premeni"
-
-#~ msgid "Allow _Once"
-#~ msgstr "Dovoli enkrat"
-
-#~ msgid "_Always Allow"
-#~ msgstr "Vedno dovoli"
-
-#~ msgid "Removable Disk: %s"
-#~ msgstr "Odstranljiva naprava: %s"
-
-#~ msgid "Removable Disk"
-#~ msgstr "Odstranljiva naprava"
-
-#~ msgid "Home"
-#~ msgstr "Domov"
-
-#~ msgid "The disk or drive this file is located on is not present"
-#~ msgstr "Disk ali pogon na katerem je ta datoteka, ni na voljo"
-
-#~ msgid "Couldn't create directory: %s"
-#~ msgstr "Ni mogoče ustvariti imenika: %s"
-
-#~ msgid "Couldn't delete the file: %s"
-#~ msgstr "Ni mogoče izbrisati datoteke: %s"
-
-#~ msgid "Access Denied"
-#~ msgstr "Dostop zavrnjen"
-
-#~ msgid "The gnome-keyring-daemon application is not running."
-#~ msgstr "Demn zbirke ključev ne teče."
-
-#~ msgid "Error communicating with gnome-keyring-daemon"
-#~ msgstr "Napaka med povezovanjem z ozadnjim programom zbirke ključev"
-
-#~ msgid "A keyring with that name already exists"
-#~ msgstr "Zbirka ključev s tem imenom že obstaja"
-
-#~ msgid "Programmer error: The application sent invalid data."
-#~ msgstr "Programska napaka: Program je poslal neveljavne podatke."
-
-#~ msgid "No matching results"
-#~ msgstr "Ni zadetkov iskanja"
-
-#~ msgid "A keyring with that name does not exist."
-#~ msgstr "Zbirka ključev s tem imenom ne obstaja."
-
-#~ msgid "The keyring has already been unlocked."
-#~ msgstr "Zbirka ključev je že odklenjena."
-
-#~ msgid ""
-#~ "A list of paths to PKCS#11 modules to load. No modules are currently "
-#~ "listed by default, as this is still an experimental feature. This is used "
-#~ "by seahorse and other PKCS#11 aware applications."
-#~ msgstr ""
-#~ "Seznam poti do PKCS#11 modulov. Trenutno v seznamu ni modulov, saj je to "
-#~ "še vedno nova možnost programa. Seznam uporabljajo programi seahorse in "
-#~ "pa drugi programi, ki upravljajo s PKCS#11 potrdili."
-
-#~ msgid "PKCS#11 Modules"
-#~ msgstr "PKCS#11 Moduli"
-
-#~ msgid "Import private key"
-#~ msgstr "Uvozi osebni ključ"
-
-#~ msgid "Import public key"
-#~ msgstr "Uvozi javni ključ"
-
-#~ msgid "The system wants to import the public key '%s', but it is locked"
-#~ msgstr "Sistem želi uvoziti javni ključ '%s', vendar je ta zaklenjen"
-
-#~ msgid "Create Storage for Key Information"
-#~ msgstr "Ustvari shrnjevalnik za podrobnosti ključa."
-
-#~ msgid "Choose password to protect storage"
-#~ msgstr "Izberite geslo za varovanje zbirke"
-
-#~ msgid ""
-#~ "The system wants to store information about your keys and certificates. "
-#~ "In order to protect this information, choose a password with which it "
-#~ "will be locked."
-#~ msgstr ""
-#~ "Program poskuša shraniti podrobnosti ključa in potrdil. Za varovanje "
-#~ "podrobnosti, izberite geslo s katerim boste podatke zaklenili."
-
-#~ msgid "Unlock Storage for Key Information"
-#~ msgstr "Odkleni shranjeno za izpis podrobnosti ključa"
-
-#~ msgid "Enter password to unlock storage"
-#~ msgstr "Vnesite geslo za odklepanje potrdila"
-
-#~ msgid ""
-#~ "The system wants to access information about your keys and certificates, "
-#~ "but it is locked."
-#~ msgstr ""
-#~ "Sistem zahteva dostop do podrobnosti vašega ključa in potrdil, vendar so "
-#~ "ti podatki zaklenjeni."
-
-#~ msgid "Trust Association"
-#~ msgstr "Določila zaupnosti"
-
-#~ msgid "Cannot delete '%s' because it is tied to other objects."
-#~ msgstr "Ni mogoče izbrisati '%s', saj je vezan na druge predmete."
-
-#~ msgid "Lock private key"
-#~ msgstr "Zakleni osebni ključ"
-
-#~ msgid "Lock"
-#~ msgstr "Zakleni"
-
-#~ msgid "Enter password to protect the private key"
-#~ msgstr "Vnesite geslo za zaščito osebnega ključa"
-
-#~ msgid ""
-#~ "The system wants to store the private key '%s' on your disk. Please enter "
-#~ "a password to lock it with."
-#~ msgstr ""
-#~ "Sistem želi shraniti osebni ključ '%s' na disk. Vnesite geslo za "
-#~ "zaklepanje."
-
-#~ msgid ""
-#~ "The system wants to store '%s' on your disk. Please enter a password to "
-#~ "lock it with."
-#~ msgstr "Program poskuša shraniti '%s' na disk. Vnesite geslo za zaklepanje."
-
-#~ msgid "Couldn't encode secure shell public key."
-#~ msgstr "Ni mogoče kodirati varnega lupinskega osebnega ključa."
-
-#~ msgid "Couldn't read secure shell private key: %s"
-#~ msgstr "Ni mogoče prebrati varnega lupinskega osebnega ključa: %s"
-
-#~ msgid "Invalid secure shell private key at: %s"
-#~ msgstr "Neveljavni varni lupinski osebni ključ na: %s"
-
-#~ msgid "Couldn't encrypt the SSH key to store it."
-#~ msgstr "Ni mogoče šifrirati SSH ključa in ga shraniti."
-
-#~ msgid "Couldn't encode the SSH key to store it."
-#~ msgstr "Ni mogoče kodirati SSH ključa in ga shraniti."

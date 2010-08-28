@@ -230,11 +230,10 @@ gkd_dbus_singleton_control (void)
 	gchar *control = NULL;
 	const char *path;
 
-	/* Must have tried to aquire the service, and failed */
-	g_return_val_if_fail (acquired_asked, NULL);
+	/* If tried to aquire the service must have failed */
 	g_return_val_if_fail (!acquired_service, NULL);
 
-	if (!connect_to_session_bus())
+	if (!connect_to_session_bus ())
 		return NULL;
 
 	msg = dbus_message_new_method_call (GNOME_KEYRING_DAEMON_SERVICE,
@@ -242,13 +241,15 @@ gkd_dbus_singleton_control (void)
 	                                    GNOME_KEYRING_DAEMON_INTERFACE,
 	                                    "GetControlDirectory");
 	g_return_val_if_fail (msg, NULL);
+	dbus_message_set_auto_start (msg, FALSE);
 
 	/* Send message and get a handle for a reply */
 	reply = dbus_connection_send_with_reply_and_block (dbus_conn, msg, 1000, &derr);
 	dbus_message_unref (msg);
 
 	if (!reply) {
-		g_message ("couldn't communicate with already running daemon: %s", derr.message);
+		if (!dbus_error_has_name (&derr, "org.freedesktop.DBus.Error.NameHasNoOwner"))
+			g_message ("couldn't communicate with already running daemon: %s", derr.message);
 		dbus_error_free (&derr);
 		return NULL;
 	}

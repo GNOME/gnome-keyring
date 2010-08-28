@@ -25,7 +25,7 @@
 
 #include "gkr-tool.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include "gcr/gcr-importer.h"
 
@@ -40,26 +40,26 @@ static GOptionEntry import_entries[] = {
 };
 
 static void
-on_imported (GcrImporter *importer, GP11Object *object)
+on_imported (GcrImporter *importer, GckObject *object)
 {
-	GP11Attributes *attrs;
-	GP11Attribute *id;
+	GckAttributes *attrs;
+	GckAttribute *id;
 	CK_OBJECT_CLASS klass;
 	const gchar *message;
 	GError *err = NULL;
 	gchar *label, *hex;
 	
-	attrs = gp11_attributes_new_empty (CKA_LABEL, CKA_CLASS, CKA_ID, GP11_INVALID);
-	if (!gp11_object_get_full (object, attrs, NULL, &err)) {
+	attrs = gck_attributes_new_empty (CKA_LABEL, CKA_CLASS, CKA_ID, GCK_INVALID);
+	if (!gck_object_get_full (object, attrs, NULL, &err)) {
 		gkr_tool_handle_error (&err, "couldn't get imported object info");
 		return;
 	}
 
-	if (!gp11_attributes_find_string (attrs, CKA_LABEL, &label))
+	if (!gck_attributes_find_string (attrs, CKA_LABEL, &label))
 		label = g_strdup ("unknown");
-	if (!gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass))
+	if (!gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
 		klass = CKO_DATA;
-	id = gp11_attributes_find (attrs, CKA_ID);
+	id = gck_attributes_find (attrs, CKA_ID);
 	
 	switch (klass) {
 	case CKO_CERTIFICATE:
@@ -89,8 +89,8 @@ on_imported (GcrImporter *importer, GP11Object *object)
 		g_print ("\tID: %s\n", hex);
 		g_free (hex);
 	}
-	
-	gp11_attributes_unref (attrs);
+
+	gck_attributes_unref (attrs);
 	g_free (label);
 }
 

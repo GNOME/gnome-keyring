@@ -28,7 +28,7 @@
 
 #include "ui/gku-prompt.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <dbus/dbus.h>
 
@@ -59,7 +59,7 @@ GType               gkd_secret_prompt_get_type                (void);
 
 const gchar*        gkd_secret_prompt_get_caller              (GkdSecretPrompt *self);
 
-GP11Session*        gkd_secret_prompt_get_pkcs11_session      (GkdSecretPrompt *self);
+GckSession*         gkd_secret_prompt_get_pkcs11_session      (GkdSecretPrompt *self);
 
 GkdSecretService*   gkd_secret_prompt_get_service             (GkdSecretPrompt *self);
 
@@ -70,7 +70,7 @@ GkdSecretSession*   gkd_secret_prompt_get_session             (GkdSecretPrompt *
 GkdSecretSecret*    gkd_secret_prompt_get_secret              (GkdSecretPrompt *self,
                                                                const gchar *password_type);
 
-GP11Object*         gkd_secret_prompt_lookup_collection       (GkdSecretPrompt *self,
+GckObject*          gkd_secret_prompt_lookup_collection       (GkdSecretPrompt *self,
                                                                const gchar *path);
 
 void                gkd_secret_prompt_complete                (GkdSecretPrompt *self);

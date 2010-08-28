@@ -136,11 +136,11 @@ attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, Dat
 	return TRUE;
 }
 
-typedef void (*IterAppendFunc) (DBusMessageIter*, GP11Attribute*);
-typedef gboolean (*IterGetFunc) (DBusMessageIter*, GP11Attribute*);
+typedef void (*IterAppendFunc) (DBusMessageIter*, GckAttribute*);
+typedef gboolean (*IterGetFunc) (DBusMessageIter*, GckAttribute*);
 
 static void
-iter_append_string (DBusMessageIter *iter, GP11Attribute *attr)
+iter_append_string (DBusMessageIter *iter, GckAttribute *attr)
 {
 	gchar *value;
 
@@ -158,7 +158,7 @@ iter_append_string (DBusMessageIter *iter, GP11Attribute *attr)
 }
 
 static gboolean
-iter_get_string (DBusMessageIter *iter, GP11Attribute* attr)
+iter_get_string (DBusMessageIter *iter, GckAttribute* attr)
 {
 	const char *value;
 
@@ -169,24 +169,24 @@ iter_get_string (DBusMessageIter *iter, GP11Attribute* attr)
 	dbus_message_iter_get_basic (iter, &value);
 	if (value == NULL)
 		value = "";
-	gp11_attribute_init_string (attr, attr->type, value);
+	gck_attribute_init_string (attr, attr->type, value);
 	return TRUE;
 }
 
 static void
-iter_append_bool (DBusMessageIter *iter, GP11Attribute *attr)
+iter_append_bool (DBusMessageIter *iter, GckAttribute *attr)
 {
 	dbus_bool_t value;
 
 	g_assert (iter);
 	g_assert (attr);
 
-	value = gp11_attribute_get_boolean (attr) ? TRUE : FALSE;
+	value = gck_attribute_get_boolean (attr) ? TRUE : FALSE;
 	dbus_message_iter_append_basic (iter, DBUS_TYPE_BOOLEAN, &value);
 }
 
 static gboolean
-iter_get_bool (DBusMessageIter *iter, GP11Attribute* attr)
+iter_get_bool (DBusMessageIter *iter, GckAttribute* attr)
 {
 	dbus_bool_t value;
 
@@ -195,12 +195,12 @@ iter_get_bool (DBusMessageIter *iter, GP11Attribute* attr)
 
 	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_BOOLEAN, FALSE);
 	dbus_message_iter_get_basic (iter, &value);
-	gp11_attribute_init_boolean (attr, attr->type, value ? TRUE : FALSE);
+	gck_attribute_init_boolean (attr, attr->type, value ? TRUE : FALSE);
 	return TRUE;
 }
 
 static void
-iter_append_time (DBusMessageIter *iter, GP11Attribute *attr)
+iter_append_time (DBusMessageIter *iter, GckAttribute *attr)
 {
 	gint64 value;
 	struct tm tm;
@@ -238,7 +238,7 @@ iter_append_time (DBusMessageIter *iter, GP11Attribute *attr)
 }
 
 static gboolean
-iter_get_time (DBusMessageIter *iter, GP11Attribute* attr)
+iter_get_time (DBusMessageIter *iter, GckAttribute* attr)
 {
 	time_t time;
 	struct tm tm;
@@ -251,7 +251,7 @@ iter_get_time (DBusMessageIter *iter, GP11Attribute* attr)
 	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_INT64, FALSE);
 	dbus_message_iter_get_basic (iter, &value);
 	if (value < 0) {
-		gp11_attribute_init_empty (attr, attr->type);
+		gck_attribute_init_empty (attr, attr->type);
 		return TRUE;
 	}
 
@@ -262,12 +262,12 @@ iter_get_time (DBusMessageIter *iter, GP11Attribute* attr)
 	if (!strftime (buf, sizeof (buf), "%Y%m%d%H%M%S00", &tm))
 		g_return_val_if_reached (FALSE);
 
-	gp11_attribute_init (attr, attr->type, buf, 16);
+	gck_attribute_init (attr, attr->type, buf, 16);
 	return TRUE;
 }
 
 static void
-iter_append_fields (DBusMessageIter *iter, GP11Attribute *attr)
+iter_append_fields (DBusMessageIter *iter, GckAttribute *attr)
 {
 	DBusMessageIter array;
 	DBusMessageIter dict;
@@ -322,7 +322,7 @@ iter_append_fields (DBusMessageIter *iter, GP11Attribute *attr)
 }
 
 static gboolean
-iter_get_fields (DBusMessageIter *iter, GP11Attribute* attr)
+iter_get_fields (DBusMessageIter *iter, GckAttribute* attr)
 {
 	DBusMessageIter array;
 	DBusMessageIter dict;
@@ -356,13 +356,13 @@ iter_get_fields (DBusMessageIter *iter, GP11Attribute* attr)
 		dbus_message_iter_next (&array);
 	}
 
-	gp11_attribute_init (attr, attr->type, result->str, result->len);
+	gck_attribute_init (attr, attr->type, result->str, result->len);
 	g_string_free (result, TRUE);
 	return TRUE;
 }
 
 static void
-iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *attr)
+iter_append_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
 {
 	DBusMessageIter sub;
 	IterAppendFunc func;
@@ -399,7 +399,7 @@ iter_append_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *a
 }
 
 static gboolean
-iter_get_variant (DBusMessageIter *iter, DataType data_type, GP11Attribute *attr)
+iter_get_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
 {
 	DBusMessageIter variant;
 	IterGetFunc func;
@@ -462,11 +462,11 @@ gkd_secret_property_get_type (const gchar *property, CK_ATTRIBUTE_TYPE *type)
 }
 
 gboolean
-gkd_secret_property_parse_all (DBusMessageIter *array, GP11Attributes *attrs)
+gkd_secret_property_parse_all (DBusMessageIter *array, GckAttributes *attrs)
 {
 	DBusMessageIter dict;
 	CK_ATTRIBUTE_TYPE attr_type;
-	GP11Attribute *attr;
+	GckAttribute *attr;
 	const char *name;
 	DataType data_type;
 
@@ -486,7 +486,7 @@ gkd_secret_property_parse_all (DBusMessageIter *array, GP11Attributes *attrs)
 
 		/* Property value */
 		g_return_val_if_fail (dbus_message_iter_get_arg_type (&dict) == DBUS_TYPE_VARIANT, FALSE);
-		attr = gp11_attributes_add_empty (attrs, attr_type);
+		attr = gck_attributes_add_empty (attrs, attr_type);
 		if (!iter_get_variant (&dict, data_type, attr))
 			return FALSE;
 
@@ -497,10 +497,10 @@ gkd_secret_property_parse_all (DBusMessageIter *array, GP11Attributes *attrs)
 }
 
 gboolean
-gkd_secret_property_append_all (DBusMessageIter *array, GP11Attributes *attrs)
+gkd_secret_property_append_all (DBusMessageIter *array, GckAttributes *attrs)
 {
 	DBusMessageIter dict;
-	GP11Attribute *attr;
+	GckAttribute *attr;
 	DataType data_type;
 	const gchar *name;
 	gulong num, i;
@@ -508,9 +508,9 @@ gkd_secret_property_append_all (DBusMessageIter *array, GP11Attributes *attrs)
 	g_return_val_if_fail (array, FALSE);
 	g_return_val_if_fail (attrs, FALSE);
 
-	num = gp11_attributes_count (attrs);
+	num = gck_attributes_count (attrs);
 	for (i = 0; i < num; ++i) {
-		attr = gp11_attributes_at (attrs, i);
+		attr = gck_attributes_at (attrs, i);
 		if (!attribute_to_property (attr->type, &name, &data_type))
 			g_return_val_if_reached (FALSE);
 
@@ -524,7 +524,7 @@ gkd_secret_property_append_all (DBusMessageIter *array, GP11Attributes *attrs)
 }
 
 gboolean
-gkd_secret_property_append_variant (DBusMessageIter *iter, GP11Attribute *attr)
+gkd_secret_property_append_variant (DBusMessageIter *iter, GckAttribute *attr)
 {
 	const gchar *property;
 	DataType data_type;
@@ -540,7 +540,7 @@ gkd_secret_property_append_variant (DBusMessageIter *iter, GP11Attribute *attr)
 
 gboolean
 gkd_secret_property_parse_variant (DBusMessageIter *iter, const gchar *property,
-                                   GP11Attribute *attr)
+                                   GckAttribute *attr)
 {
 	CK_ATTRIBUTE_TYPE attr_type;
 	DataType data_type;
@@ -557,7 +557,7 @@ gkd_secret_property_parse_variant (DBusMessageIter *iter, const gchar *property,
 }
 
 gboolean
-gkd_secret_property_parse_fields (DBusMessageIter *iter, GP11Attribute *attr)
+gkd_secret_property_parse_fields (DBusMessageIter *iter, GckAttribute *attr)
 {
 	g_return_val_if_fail (attr, FALSE);
 	g_return_val_if_fail (iter, FALSE);

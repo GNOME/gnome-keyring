@@ -50,7 +50,7 @@ struct _GcrKeyWidgetClass {
 GType                   gcr_key_widget_get_type               (void);
 
 GcrKeyWidget*           gcr_key_widget_new                    (const gchar *label,
-                                                               struct _GP11Attributes *attrs);
+                                                               struct _GckAttributes *attrs);
 
 G_END_DECLS
 

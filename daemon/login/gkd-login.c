@@ -35,31 +35,29 @@
 
 #include <string.h>
 
-static GP11Module*
-module_instance (void)
+static GList*
+module_instances (void)
 {
-	GP11Module *module = gp11_module_new (gkd_pkcs11_get_base_functions ());
-	gp11_module_set_pool_sessions (module, FALSE);
-	gp11_module_set_auto_authenticate (module, FALSE);
+	GckModule *module = gck_module_new (gkd_pkcs11_get_base_functions (), 0);
 	g_return_val_if_fail (module, NULL);
-	return module;
+	return g_list_append (NULL, module);
 }
 
-static GP11Session*
-open_and_login_session (GP11Slot *slot, CK_USER_TYPE user_type, GError **error)
+static GckSession*
+open_and_login_session (GckSlot *slot, CK_USER_TYPE user_type, GError **error)
 {
-	GP11Session *session;
+	GckSession *session;
 	GError *err = NULL;
 
-	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
+	g_return_val_if_fail (GCK_IS_SLOT (slot), NULL);
 
 	if (!error)
 		error = &err;
 
-	session = gp11_slot_open_session (slot, CKF_RW_SESSION, error);
+	session = gck_slot_open_session (slot, CKF_RW_SESSION, error);
 	if (session != NULL) {
-		if (!gp11_session_login (session, user_type, NULL, 0, error)) {
-			if (g_error_matches (*error, GP11_ERROR, CKR_USER_ALREADY_LOGGED_IN)) {
+		if (!gck_session_login (session, user_type, NULL, 0, error)) {
+			if (g_error_matches (*error, GCK_ERROR, CKR_USER_ALREADY_LOGGED_IN)) {
 				g_clear_error (error);
 			} else {
 				g_object_unref (session);
@@ -71,35 +69,18 @@ open_and_login_session (GP11Slot *slot, CK_USER_TYPE user_type, GError **error)
 	return session;
 }
 
-static GP11Session*
-lookup_login_session (GP11Module *module)
+static GckSession*
+lookup_login_session (GList *modules)
 {
-	GP11Slot *slot = NULL;
+	GckSlot *slot = NULL;
 	GError *error = NULL;
-	GP11Session *session;
-	GP11SlotInfo *info;
-	GList *slots;
-	GList *l;
+	GckSession *session;
 
-	g_assert (GP11_IS_MODULE (module));
-
-	/*
-	 * Find the right slot.
-	 *
-	 * TODO: This isn't necessarily the best way to do this.
-	 * A good function could be added to gp11 library.
-	 * But needs more thought on how to do this.
-	 */
-	slots = gp11_module_get_slots (module, TRUE);
-	for (l = slots; !slot && l; l = g_list_next (l)) {
-		info = gp11_slot_get_info (l->data);
-		if (g_ascii_strcasecmp ("Secret Store", info->slot_description) == 0)
-			slot = g_object_ref (l->data);
-		gp11_slot_info_free (info);
+	slot = gck_modules_token_for_uri (modules, "pkcs11:token=Secret%20Store", &error);
+	if (!slot) {
+		g_warning ("couldn't find secret store module: %s", egg_error_message (error));
+		return NULL;
 	}
-	gp11_list_unref_free (slots);
-
-	g_return_val_if_fail (slot, NULL);
 
 	session = open_and_login_session (slot, CKU_USER, &error);
 	if (error) {
@@ -112,21 +93,24 @@ lookup_login_session (GP11Module *module)
 	return session;
 }
 
-static GP11Object*
-lookup_login_keyring (GP11Session *session)
+static GckObject*
+lookup_login_keyring (GckSession *session)
 {
+	GckAttributes *atts;
 	GError *error = NULL;
-	GP11Object *login = NULL;
+	GckObject *login = NULL;
 	GList *objects;
 	guint length;
 
-	g_return_val_if_fail (GP11_IS_SESSION (session), NULL);
+	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 
-	objects = gp11_session_find_objects (session, &error,
-	                                     CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
-	                                     CKA_TOKEN, GP11_BOOLEAN, TRUE,
-	                                     CKA_ID, (gsize)5, "login",
-	                                     GP11_INVALID);
+	atts = gck_attributes_new ();
+	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_COLLECTION);
+	gck_attributes_add_boolean (atts, CKA_TOKEN, TRUE);
+	gck_attributes_add_string (atts, CKA_ID, "login");
+
+	objects = gck_session_find_objects (session, atts, NULL, &error);
+	gck_attributes_unref (atts);
 
 	if (error) {
 		g_warning ("couldn't search for login keyring: %s", egg_error_message (error));
@@ -135,87 +119,80 @@ lookup_login_keyring (GP11Session *session)
 	}
 
 	length = g_list_length (objects);
-	if (length == 1) {
+	if (length == 1)
 		login = g_object_ref (objects->data);
-		gp11_object_set_session (login, session);
-	} else if (length > 1) {
+	else if (length > 1)
 		g_warning ("more than one login keyring exists");
-	}
 
-	gp11_list_unref_free (objects);
+	gck_list_unref_free (objects);
 	return login;
 }
 
-static GP11Object*
-create_login_keyring (GP11Session *session, GP11Object *cred, GError **error)
+static GckObject*
+create_login_keyring (GckSession *session, GckObject *cred, GError **error)
 {
-	GP11Object *login;
-	const gchar *label;
+	GckObject *login;
+	GckAttributes *atts;
 
-	g_return_val_if_fail (GP11_IS_SESSION (session), NULL);
-	g_return_val_if_fail (GP11_IS_OBJECT (cred), NULL);
+	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
+	g_return_val_if_fail (GCK_IS_OBJECT (cred), NULL);
+
+	atts = gck_attributes_new ();
+	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_COLLECTION);
+	gck_attributes_add_string (atts, CKA_ID, "login");
+	gck_attributes_add_ulong (atts, CKA_G_CREDENTIAL, gck_object_get_handle (cred));
+	gck_attributes_add_boolean (atts, CKA_TOKEN, TRUE);
 
 	/* TRANSLATORS: This is the display label for the login keyring */
-	label = _("Login");
+	gck_attributes_add_string (atts, CKA_LABEL, _("Login"));
 
-	login = gp11_session_create_object (session, error,
-	                                    CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
-	                                    CKA_ID, (gsize)5, "login",
-	                                    CKA_LABEL, strlen (label), label,
-	                                    CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (cred),
-	                                    CKA_TOKEN, GP11_BOOLEAN, TRUE,
-	                                    GP11_INVALID);
+	login = gck_session_create_object (session, atts, NULL, error);
+	gck_attributes_unref (atts);
 
-	if (login != NULL)
-		gp11_object_set_session (login, session);
 	return login;
 }
 
-static GP11Object*
-create_credential (GP11Session *session, GP11Object *object,
+static GckObject*
+create_credential (GckSession *session, GckObject *object,
                    const gchar *secret, GError **error)
 {
-	GP11Attributes *attrs;
-	GP11Object *cred;
+	GckAttributes *attrs;
+	GckObject *cred;
 
-	g_return_val_if_fail (GP11_IS_SESSION (session), NULL);
-	g_return_val_if_fail (!object || GP11_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
+	g_return_val_if_fail (!object || GCK_IS_OBJECT (object), NULL);
 
 	if (!secret)
 		secret = "";
 
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                              CKA_VALUE, strlen (secret), secret,
-	                              CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
-	                              CKA_TOKEN, GP11_BOOLEAN, TRUE,
-	                              GP11_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_attributes_add_string (attrs, CKA_VALUE, secret);
+	gck_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
 	if (object)
-		gp11_attributes_add_ulong (attrs, CKA_G_OBJECT,
-		                           gp11_object_get_handle (object));
+		gck_attributes_add_ulong (attrs, CKA_G_OBJECT,
+		                          gck_object_get_handle (object));
 
-	cred = gp11_session_create_object_full (session, attrs, NULL, error);
-	gp11_attributes_unref (attrs);
-
-	if (cred != NULL)
-		gp11_object_set_session (cred, session);
+	cred = gck_session_create_object (session, attrs, NULL, error);
+	gck_attributes_unref (attrs);
 
 	return cred;
 }
 
 static gboolean
-unlock_or_create_login (GP11Module *module, const gchar *master)
+unlock_or_create_login (GList *modules, const gchar *master)
 {
 	GError *error = NULL;
-	GP11Session *session;
-	GP11Object *login;
-	GP11Object *cred;
+	GckSession *session;
+	GckObject *login;
+	GckObject *cred;
 
-	g_return_val_if_fail (GP11_IS_MODULE (module), FALSE);
 	g_return_val_if_fail (master, FALSE);
 
 	/* Find the login object */
-	session = lookup_login_session (module);
+	session = lookup_login_session (modules);
 	login = lookup_login_keyring (session);
 
 	/* Create credentials for login object */
@@ -223,7 +200,7 @@ unlock_or_create_login (GP11Module *module, const gchar *master)
 
 	/* Failure, bad password? */
 	if (cred == NULL) {
-		if (login && g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT))
+		if (login && g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT))
 			gkm_wrap_layer_hint_login_unlock_failure ();
 		else
 			g_warning ("couldn't create login credential: %s", egg_error_message (error));
@@ -253,27 +230,26 @@ unlock_or_create_login (GP11Module *module, const gchar *master)
 }
 
 static gboolean
-init_pin_for_uninitialized_slots (GP11Module *module, const gchar *master)
+init_pin_for_uninitialized_slots (GList *modules, const gchar *master)
 {
 	GError *error = NULL;
 	GList *slots, *l;
 	gboolean initialize;
-	GP11TokenInfo *info;
-	GP11Session *session;
+	GckTokenInfo *info;
+	GckSession *session;
 
-	g_return_val_if_fail (GP11_IS_MODULE (module), FALSE);
 	g_return_val_if_fail (master, FALSE);
 
-	slots = gp11_module_get_slots (module, TRUE);
+	slots = gck_modules_get_slots (modules, TRUE);
 	for (l = slots; l; l = g_list_next (l)) {
-		info = gp11_slot_get_token_info (l->data);
+		info = gck_slot_get_token_info (l->data);
 		initialize = (info && !(info->flags & CKF_USER_PIN_INITIALIZED));
 
 		if (initialize) {
 			session = open_and_login_session (l->data, CKU_SO, NULL);
 			if (session != NULL) {
-				if (!gp11_session_init_pin (session, (const guchar*)master, strlen (master), &error)) {
-					if (!g_error_matches (error, GP11_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
+				if (!gck_session_init_pin (session, (const guchar*)master, strlen (master), &error)) {
+					if (!g_error_matches (error, GCK_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
 						g_warning ("couldn't initialize slot with master password: %s",
 						           egg_error_message (error));
 					g_clear_error (&error);
@@ -282,48 +258,48 @@ init_pin_for_uninitialized_slots (GP11Module *module, const gchar *master)
 			}
 		}
 
-		gp11_token_info_free (info);
+		gck_token_info_free (info);
 	}
-	gp11_list_unref_free (slots);
+	gck_list_unref_free (slots);
 	return TRUE;
 }
 
 gboolean
 gkd_login_unlock (const gchar *master)
 {
-	GP11Module *module;
+	GList *modules;
 	gboolean result;
 
 	/* We don't support null or empty master passwords */
 	if (!master || !master[0])
 		return FALSE;
 
-	module = module_instance ();
+	modules = module_instances ();
 
-	result = unlock_or_create_login (module, master);
+	result = unlock_or_create_login (modules, master);
 	if (result == TRUE)
-		init_pin_for_uninitialized_slots (module, master);
+		init_pin_for_uninitialized_slots (modules, master);
 
-	g_object_unref (module);
+	gck_list_unref_free (modules);
 	return result;
 }
 
 static gboolean
-change_or_create_login (GP11Module *module, const gchar *original, const gchar *master)
+change_or_create_login (GList *modules, const gchar *original, const gchar *master)
 {
 	GError *error = NULL;
-	GP11Session *session;
-	GP11Object *login = NULL;
-	GP11Object *ocred = NULL;
-	GP11Object *mcred = NULL;
+	GckSession *session;
+	GckObject *login = NULL;
+	GckObject *ocred = NULL;
+	GckObject *mcred = NULL;
 	gboolean success = FALSE;
+	GckAttributes *atts;
 
-	g_return_val_if_fail (GP11_IS_MODULE (module), FALSE);
 	g_return_val_if_fail (original, FALSE);
 	g_return_val_if_fail (master, FALSE);
 
 	/* Find the login object */
-	session = lookup_login_session (module);
+	session = lookup_login_session (modules);
 	login = lookup_login_keyring (session);
 
 	/* Create the new credential we'll be changing to */
@@ -336,7 +312,7 @@ change_or_create_login (GP11Module *module, const gchar *original, const gchar *
 	} else if (login) {
 		ocred = create_credential (session, login, original, &error);
 		if (ocred == NULL) {
-			if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
+			if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 				g_message ("couldn't change login master password, "
 				           "original password was wrong: %s",
 				           egg_error_message (error));
@@ -361,18 +337,19 @@ change_or_create_login (GP11Module *module, const gchar *original, const gchar *
 
 	/* Change the master password */
 	} else if (login && ocred && mcred) {
-		if (!gp11_object_set (login, &error,
-		                      CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (mcred),
-		                      GP11_INVALID)) {
+		atts = gck_attributes_new ();
+		gck_attributes_add_ulong (atts, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
+		if (!gck_object_set (login, atts, NULL, &error)) {
 			g_warning ("couldn't change login master password: %s", egg_error_message (error));
 			g_clear_error (&error);
 		} else {
 			success = TRUE;
 		}
+		gck_attributes_unref (atts);
 	}
 
 	if (ocred) {
-		gp11_object_destroy (ocred, NULL);
+		gck_object_destroy (ocred, NULL);
 		g_object_unref (ocred);
 	}
 	if (mcred)
@@ -386,32 +363,31 @@ change_or_create_login (GP11Module *module, const gchar *original, const gchar *
 }
 
 static gboolean
-set_pin_for_any_slots (GP11Module *module, const gchar *original, const gchar *master)
+set_pin_for_any_slots (GList *modules, const gchar *original, const gchar *master)
 {
 	GError *error = NULL;
 	GList *slots, *l;
 	gboolean initialize;
-	GP11TokenInfo *info;
-	GP11Session *session;
+	GckTokenInfo *info;
+	GckSession *session;
 
-	g_return_val_if_fail (GP11_IS_MODULE (module), FALSE);
 	g_return_val_if_fail (original, FALSE);
 	g_return_val_if_fail (master, FALSE);
 
-	slots = gp11_module_get_slots (module, TRUE);
+	slots = gck_modules_get_slots (modules, TRUE);
 	for (l = slots; l; l = g_list_next (l)) {
 
 		/* Set pin for any that are initialized, and not pap */
-		info = gp11_slot_get_token_info (l->data);
+		info = gck_slot_get_token_info (l->data);
 		initialize = (info && (info->flags & CKF_USER_PIN_INITIALIZED));
 
 		if (initialize) {
 			session = open_and_login_session (l->data, CKU_USER, NULL);
 			if (session != NULL) {
-				if (!gp11_session_set_pin (session, (const guchar*)original, strlen (original),
-				                           (const guchar*)master, strlen (master), &error)) {
-					if (!g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT) &&
-					    !g_error_matches (error, GP11_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
+				if (!gck_session_set_pin (session, (const guchar*)original, strlen (original),
+				                          (const guchar*)master, strlen (master), &error)) {
+					if (!g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT) &&
+					    !g_error_matches (error, GCK_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
 						g_warning ("couldn't change slot master password: %s",
 						           egg_error_message (error));
 					g_clear_error (&error);
@@ -420,16 +396,16 @@ set_pin_for_any_slots (GP11Module *module, const gchar *original, const gchar *m
 			}
 		}
 
-		gp11_token_info_free (info);
+		gck_token_info_free (info);
 	}
-	gp11_list_unref_free (slots);
+	gck_list_unref_free (slots);
 	return TRUE;
 }
 
 gboolean
 gkd_login_change_lock (const gchar *original, const gchar *master)
 {
-	GP11Module *module;
+	GList *modules;
 	gboolean result;
 
 	/* We don't support null or empty master passwords */
@@ -438,12 +414,12 @@ gkd_login_change_lock (const gchar *original, const gchar *master)
 	if (original == NULL)
 		original = "";
 
-	module = module_instance ();
+	modules = module_instances ();
 
-	result = change_or_create_login (module, original, master);
+	result = change_or_create_login (modules, original, master);
 	if (result == TRUE)
-		set_pin_for_any_slots (module, original, master);
+		set_pin_for_any_slots (modules, original, master);
 
-	g_object_unref (module);
+	gck_list_unref_free (modules);
 	return result;
 }

@@ -11,6 +11,10 @@ GP11_MAJOR=0		# Increment for major version number, breaks old apps.
 GP11_REVISION=0		# Increment for internal changes, nothing affected.
 GP11_AGE=0		# Increment for interface that doesn't break anything
 
+GCK_MAJOR=0		# Increment for major version number, breaks old apps.
+GCK_REVISION=0		# Increment for internal changes, nothing affected.
+GCK_AGE=0		# Increment for interface that doesn't break anything
+
 GCR_MAJOR=0		# Increment for major version number, breaks old apps.
 GCR_REVISION=0		# Increment for internal changes, nothing affected.
 GCR_AGE=0		# Increment for interface that doesn't break anything
@@ -66,8 +70,6 @@ AC_SUBST(GIO_LIBS)
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.20.0)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
-
-AM_GCONF_SOURCE_2
 
 GETTEXT_PACKAGE=gnome-keyring
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [The gettext domain name])
@@ -577,6 +579,10 @@ GP11_LT_RELEASE=$GP11_MAJOR:$GP11_REVISION:$GP11_AGE
 AC_SUBST(GP11_LT_RELEASE)
 AC_SUBST(GP11_MAJOR)
 
+GCK_LT_RELEASE=$GCK_MAJOR:$GCK_REVISION:$GCK_AGE
+AC_SUBST(GCK_LT_RELEASE)
+AC_SUBST(GCK_MAJOR)
+
 GCR_LT_RELEASE=$GCR_MAJOR:$GCR_REVISION:$GCR_AGE
 AC_SUBST(GCR_LT_RELEASE)
 AC_SUBST(GCR_MAJOR)
@@ -614,6 +620,7 @@ daemon/control/Makefile
 daemon/control/tests/Makefile
 daemon/data/Makefile
 daemon/dbus/Makefile
+daemon/dbus/tests/Makefile
 daemon/gpg-agent/Makefile
 daemon/login/Makefile
 daemon/ssh-agent/Makefile
@@ -623,6 +630,9 @@ docs/reference/gcr/Makefile
 docs/reference/gp11/Makefile
 egg/Makefile
 egg/tests/Makefile
+gck/gck.pc
+gck/Makefile
+gck/tests/Makefile
 gcr/gcr.pc
 gcr/Makefile
 gcr/tests/Makefile

@@ -4,10 +4,10 @@
 # Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>, 2008, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.30.2\n"
+"Project-Id-Version: gnome-keyring 2.31.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-08 19:04+0800\n"
-"PO-Revision-Date: 2010-05-08 19:05+0800\n"
+"POT-Creation-Date: 2010-07-20 16:03+0800\n"
+"PO-Revision-Date: 2010-07-20 16:03+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
@@ -55,8 +55,9 @@ msgstr "是否啟用 gnome-keyring 保密服務。"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:641
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
 msgid "Unnamed"
 msgstr "未命名的"
 
@@ -95,43 +96,6 @@ msgid ""
 "password you want to use for it."
 msgstr "有程式要求新增一個密碼匙圈，名為：「%s」。請選擇你要給它使用的密碼。"
 
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "解開登入密碼匙圈"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-msgid "Enter password for to unlock your login keyring"
-msgstr "請輸入解鎖登入密碼匙圈的密碼"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr "你用來登入電腦的密碼已和登入密碼匙圈不符。"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr "你的登入密碼匙圈並未在登入你的電腦時自動解鎖。"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "解開密碼匙圈"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "輸入密碼匙圈‘%s’的密碼，作為開鎖之用"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "有程式要求存取密碼匙圈「%s」，但是它已被鎖定"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:226
-msgid "The unlock password was incorrect"
-msgstr "解鎖的密碼是錯誤的"
-
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "證書與密碼匙儲存區"
@@ -156,157 +120,32 @@ msgstr "GNOME 密碼匙圈：SSH 代理程式"
 msgid "SSH Key Agent"
 msgstr "SSH 密碼匙代理程式"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME 密碼匙圈：GPG 代理程式"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG 密碼代理程式"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+msgid "Unknown"
+msgstr "不明"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP 密碼匙：%s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+msgid "Enter Passphrase"
+msgstr "輸入密語"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:207
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "登入"
-
-#: ../daemon/login/gkd-login.c:643
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "解鎖密碼用於：%s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "要求新的密碼"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "安全儲存區要求新的密碼"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr "為了準備用來儲存證書或密碼匙的「%s」，密碼是必要的"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "解鎖私密密碼匙"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "解鎖證書"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "解鎖公開密碼匙"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "解鎖"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "輸入解鎖私密密碼匙的密碼"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "輸入解鎖證書的密碼"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "輸入解鎖公開密碼匙的密碼"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "輸入解鎖的密碼"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "一個程式要求存取私密密碼匙‘%s’，但它已被鎖上"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "一個程式要求存取證書‘%s’，但它已被鎖上"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "一個程式要求存取公開密碼匙‘%s’，但它已被鎖上"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "一個不明的程式要求存取‘%s’，但它已被鎖上"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "解鎖證書/密碼匙儲存區"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "輸入解鎖證書/密碼匙儲存區的密碼"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr "一個程式要求存取證書/密碼匙儲存區「%s」，但它已被鎖上"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "是否儲存不加密的密碼？"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr "若選擇使用空白密碼，你所儲存的密碼將不會被安全的加密。任何能存取你的檔案的人都將能看到這些密碼。"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "使用不安全的儲存"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "密碼不相符。"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "密碼不能空白"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "當我登入時自動解鎖密碼匙圈"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "新密碼的強度"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "應用程式(_A):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "確認(_C):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "詳細資料(_D):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "名稱(_N):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "舊密碼(_O):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "密碼(_P):"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -349,7 +188,7 @@ msgid "Surname"
 msgstr "姓"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "序號"
 
@@ -515,94 +354,94 @@ msgstr "SSL 客戶端證書"
 msgid "SSL Server Certificate"
 msgstr "SSL 伺服器證書"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "延伸"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "識別碼"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "數值"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "重要"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "是"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "否"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "主旨名稱"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "發照者名稱"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "已簽發的證書"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "版本"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "在此之前無效"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "在此之後無效"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "簽署"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "證書簽署演算法"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "簽署參數"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "公開密碼匙資訊"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "密碼匙演算法"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "密碼匙參數"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "密碼匙大小"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "公開密碼匙"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "數碼指紋"
 
@@ -634,7 +473,7 @@ msgstr "當我登出時自動鎖定密碼匙圈"
 msgid "minutes"
 msgstr "分鐘"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "該操作已取消"
 
@@ -650,6 +489,18 @@ msgstr "匯入證書/密碼匙"
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "選擇一個用來儲存匯入的證書/密碼匙的位置。"
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
+msgid "Enter password to unlock the private key"
+msgstr "輸入解鎖私密密碼匙的密碼"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Enter password to unlock the certificate"
+msgstr "輸入解鎖證書的密碼"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Enter password to unlock"
+msgstr "輸入解鎖的密碼"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -684,23 +535,23 @@ msgstr "為了匯入證書「%s」，必須先把它解鎖"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "為了匯入「%s」，必須先把它解鎖"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "私密密碼匙"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "證書"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "無法辨識或不支援的資料。"
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "無法解析無效或損毀的資料。"
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "資料已被鎖定"
 
@@ -1024,13 +875,201 @@ msgstr "簽署的要求被使用者拒絕"
 msgid "Unknown error"
 msgstr "不明的錯誤"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:726
 msgid "Unnamed Certificate"
 msgstr "未命名的證書"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "無法解析 SSH 公開密碼匙。"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "解鎖密碼用於：%s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
+msgid "The unlock password was incorrect"
+msgstr "解鎖的密碼是錯誤的"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
+msgid "Unlock Login Keyring"
+msgstr "解開登入密碼匙圈"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+msgid "Enter password for to unlock your login keyring"
+msgstr "請輸入解鎖登入密碼匙圈的密碼"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr "你用來登入電腦的密碼已和登入密碼匙圈不符。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr "你的登入密碼匙圈並未在登入你的電腦時自動解鎖。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid "Unlock Keyring"
+msgstr "解開密碼匙圈"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "輸入密碼匙圈‘%s’的密碼，作為開鎖之用"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "有程式要求存取密碼匙圈「%s」，但是它已被鎖定"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+msgid "Unlock private key"
+msgstr "解鎖私密密碼匙"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
+msgid "Unlock certificate"
+msgstr "解鎖證書"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+msgid "Unlock public key"
+msgstr "解鎖公開密碼匙"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
+msgid "Unlock"
+msgstr "解鎖"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Enter password to unlock the public key"
+msgstr "輸入解鎖公開密碼匙的密碼"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "一個程式要求存取私密密碼匙‘%s’，但它已被鎖上"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "一個程式要求存取證書‘%s’，但它已被鎖上"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "一個程式要求存取公開密碼匙‘%s’，但它已被鎖上"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "一個不明的程式要求存取‘%s’，但它已被鎖上"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+msgid "Unlock certificate/key storage"
+msgstr "解鎖證書/密碼匙儲存區"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "輸入解鎖證書/密碼匙儲存區的密碼"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "一個程式要求存取證書/密碼匙儲存區「%s」，但它已被鎖上"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+msgid "New Password Required"
+msgstr "要求新的密碼"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
+msgid "New password required for secure storage"
+msgstr "安全儲存區要求新的密碼"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "為了準備用來儲存證書或密碼匙的「%s」，密碼是必要的"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+msgid "Change Password"
+msgstr "更改密碼"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
+msgid "Change password for secure storage"
+msgstr "改變安全儲存區的密碼"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "要改變「%s」的密碼，需要原來的密碼和新的密碼"
+
+#: ../ui/gku-prompt-tool.c:394
+msgid "Store passwords unencrypted?"
+msgstr "是否儲存不加密的密碼？"
+
+#: ../ui/gku-prompt-tool.c:395
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr "若選擇使用空白密碼，你所儲存的密碼將不會被安全的加密。任何能存取你的檔案的人都將能看到這些密碼。"
+
+#: ../ui/gku-prompt-tool.c:402
+msgid "Use Unsafe Storage"
+msgstr "使用不安全的儲存"
+
+#: ../ui/gku-prompt-tool.c:432
+msgid "Passwords do not match."
+msgstr "密碼不相符。"
+
+#: ../ui/gku-prompt-tool.c:442
+msgid "Password cannot be blank"
+msgstr "密碼不能空白"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "當我登入時自動解鎖密碼匙圈"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "New password strength"
+msgstr "新密碼的強度"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Application:"
+msgstr "應用程式(_A):"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "確認(_C):"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Details:"
+msgstr "詳細資料(_D):"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Name:"
+msgstr "名稱(_N):"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "舊密碼(_O):"
+
+#: ../ui/gku-prompt.ui.h:8
+msgid "_Password:"
+msgstr "密碼(_P):"
 
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr "當我登入時自動解鎖安全儲存區。"

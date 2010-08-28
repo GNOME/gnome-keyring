@@ -23,12 +23,12 @@
 
 #include "gcr-view.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <gtk/gtk.h>
 
 typedef struct _GcrRegisteredView {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	GType view_type;
 } GcrRegisteredView;
 
@@ -47,7 +47,7 @@ gcr_view_base_init (gpointer gobject_iface)
 
 		g_object_interface_install_property (gobject_iface,
 		         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the view",
-		                             GP11_TYPE_ATTRIBUTES, G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE));
+		                             GCK_TYPE_ATTRIBUTES, G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE));
 
 		initialized = TRUE;
 	}
@@ -80,8 +80,8 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 	g_assert (a);
 	g_assert (b);
 
-	na = gp11_attributes_count (ra->attrs);
-	nb = gp11_attributes_count (rb->attrs);
+	na = gck_attributes_count (ra->attrs);
+	nb = gck_attributes_count (rb->attrs);
 
 	/* Note we're sorting in reverse order */
 	if (na < nb)
@@ -90,7 +90,7 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 }
 
 GcrView*
-gcr_view_create (const gchar *label, GP11Attributes *attrs)
+gcr_view_create (const gchar *label, GckAttributes *attrs)
 {
 	GcrRegisteredView *registered;
 	gboolean matched;
@@ -110,12 +110,12 @@ gcr_view_create (const gchar *label, GP11Attributes *attrs)
 
 	for (i = 0; i < registered_views->len; ++i) {
 		registered = &(g_array_index (registered_views, GcrRegisteredView, i));
-		n_attrs = gp11_attributes_count (registered->attrs);
+		n_attrs = gck_attributes_count (registered->attrs);
 
 		matched = TRUE;
 
 		for (j = 0; j < n_attrs; ++j) {
-			if (!gp11_attributes_contains (attrs, gp11_attributes_at (registered->attrs, j))) {
+			if (!gck_attributes_contains (attrs, gck_attributes_at (registered->attrs, j))) {
 				matched = FALSE;
 				break;
 			}
@@ -130,7 +130,7 @@ gcr_view_create (const gchar *label, GP11Attributes *attrs)
 }
 
 void
-gcr_view_register (GType view_type, GP11Attributes *attrs)
+gcr_view_register (GType view_type, GckAttributes *attrs)
 {
 	GcrRegisteredView registered;
 
@@ -138,7 +138,7 @@ gcr_view_register (GType view_type, GP11Attributes *attrs)
 		registered_views = g_array_new (FALSE, FALSE, sizeof (GcrRegisteredView));
 
 	registered.view_type = view_type;
-	registered.attrs = gp11_attributes_ref (attrs);
+	registered.attrs = gck_attributes_ref (attrs);
 	g_array_append_val (registered_views, registered);
 	registered_sorted = FALSE;
 }

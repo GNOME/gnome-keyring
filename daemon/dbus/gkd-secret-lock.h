@@ -24,11 +24,11 @@
 
 #include "gkd-secret-types.h"
 
-#include <gp11/gp11.h>
+#include <gck/gck.h>
 
 #include <dbus/dbus.h>
 
-gboolean            gkd_secret_lock                (GP11Object *collection,
+gboolean            gkd_secret_lock                (GckObject *collection,
                                                     DBusError *derr);
 
 #endif /* __GKD_SECRET_LOCK_H__ */

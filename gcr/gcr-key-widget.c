@@ -28,7 +28,7 @@
 #include "egg/egg-oid.h"
 #include "egg/egg-hex.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <gdk/gdk.h>
 #include <glib/gi18n-lib.h>
@@ -43,7 +43,7 @@ struct _GcrKeyWidgetPrivate {
 	GcrDisplayView *view;
 	guint key_size;
 	gchar *label;
-	GP11Attributes *attributes;
+	GckAttributes *attributes;
 };
 
 static void gcr_view_iface_init (GcrViewIface *iface);
@@ -64,7 +64,7 @@ calculate_label (GcrKeyWidget *self)
 		return g_strdup (self->pv->label);
 
 	if (self->pv->attributes) {
-		if (gp11_attributes_find_string (self->pv->attributes, CKA_LABEL, &label))
+		if (gck_attributes_find_string (self->pv->attributes, CKA_LABEL, &label))
 			return label;
 	}
 
@@ -72,43 +72,43 @@ calculate_label (GcrKeyWidget *self)
 }
 
 static gint
-calculate_rsa_key_size (GP11Attributes *attrs)
+calculate_rsa_key_size (GckAttributes *attrs)
 {
-	GP11Attribute *attr;
+	GckAttribute *attr;
 	gulong bits;
 
-	attr = gp11_attributes_find (attrs, CKA_MODULUS);
+	attr = gck_attributes_find (attrs, CKA_MODULUS);
 
 	/* Calculate the bit length, and remove the complement */
 	if (attr != NULL)
 		return (attr->length / 2) * 2 * 8;
 
-	if (gp11_attributes_find_ulong (attrs, CKA_MODULUS_BITS, &bits))
+	if (gck_attributes_find_ulong (attrs, CKA_MODULUS_BITS, &bits))
 		return (gint)bits;
 
 	return -1;
 }
 
 static guint
-calculate_dsa_key_size (GP11Attributes *attrs)
+calculate_dsa_key_size (GckAttributes *attrs)
 {
-	GP11Attribute *attr;
+	GckAttribute *attr;
 	gulong bits;
 
-	attr = gp11_attributes_find (attrs, CKA_PRIME);
+	attr = gck_attributes_find (attrs, CKA_PRIME);
 
 	/* Calculate the bit length, and remove the complement */
 	if (attr != NULL)
 		return (attr->length / 2) * 2 * 8;
 
-	if (gp11_attributes_find_ulong (attrs, CKA_PRIME_BITS, &bits))
+	if (gck_attributes_find_ulong (attrs, CKA_PRIME_BITS, &bits))
 		return (gint)bits;
 
 	return -1;
 }
 
 static gint
-calculate_key_size (GP11Attributes *attrs, gulong key_type)
+calculate_key_size (GckAttributes *attrs, gulong key_type)
 {
 	if (key_type == CKK_RSA)
 		return calculate_rsa_key_size (attrs);
@@ -135,8 +135,8 @@ refresh_display (GcrKeyWidget *self)
 	if (!self->pv->attributes)
 		return;
 
-	if (!gp11_attributes_find_ulong (self->pv->attributes, CKA_CLASS, &klass) ||
-	    !gp11_attributes_find_ulong (self->pv->attributes, CKA_KEY_TYPE, &key_type)) {
+	if (!gck_attributes_find_ulong (self->pv->attributes, CKA_CLASS, &klass) ||
+	    !gck_attributes_find_ulong (self->pv->attributes, CKA_KEY_TYPE, &key_type)) {
 		g_warning ("private key does not have the CKA_CLASS and CKA_KEY_TYPE attributes");
 		return;
 	}
@@ -242,7 +242,7 @@ gcr_key_widget_finalize (GObject *obj)
 	GcrKeyWidget *self = GCR_KEY_WIDGET (obj);
 
 	if (self->pv->attributes)
-		gp11_attributes_unref (self->pv->attributes);
+		gck_attributes_unref (self->pv->attributes);
 	self->pv->attributes = NULL;
 
 	g_free (self->pv->label);
@@ -297,7 +297,7 @@ static void
 gcr_key_widget_class_init (GcrKeyWidgetClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GP11Attributes *registered;
+	GckAttributes *registered;
 
 	gcr_key_widget_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrKeyWidgetPrivate));
@@ -314,10 +314,10 @@ gcr_key_widget_class_init (GcrKeyWidgetClass *klass)
 	_gcr_icons_register ();
 
 	/* Register this as a view which can be loaded */
-	registered = gp11_attributes_new ();
-	gp11_attributes_add_ulong (registered, CKA_CLASS, CKO_PRIVATE_KEY);
+	registered = gck_attributes_new ();
+	gck_attributes_add_ulong (registered, CKA_CLASS, CKO_PRIVATE_KEY);
 	gcr_view_register (GCR_TYPE_KEY_WIDGET, registered);
-	gp11_attributes_unref (registered);
+	gck_attributes_unref (registered);
 }
 
 static void
@@ -331,7 +331,7 @@ gcr_view_iface_init (GcrViewIface *iface)
  */
 
 GcrKeyWidget*
-gcr_key_widget_new (const gchar *label, GP11Attributes *attrs)
+gcr_key_widget_new (const gchar *label, GckAttributes *attrs)
 {
 	return g_object_new (GCR_TYPE_KEY_WIDGET, "label", label, "attributes", attrs, NULL);
 }

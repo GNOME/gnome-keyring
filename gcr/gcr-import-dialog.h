@@ -24,7 +24,7 @@
 
 #include "gcr.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <gtk/gtk.h>
 
@@ -57,10 +57,10 @@ GcrImportDialog*    _gcr_import_dialog_new                    (void);
 gboolean            _gcr_import_dialog_run                    (GcrImportDialog *self,
                                                                GtkWindow *parent);
 
-GP11Slot*           _gcr_import_dialog_get_selected_slot      (GcrImportDialog *self);
+GckSlot*            _gcr_import_dialog_get_selected_slot      (GcrImportDialog *self);
 
 void                _gcr_import_dialog_set_selected_slot      (GcrImportDialog *self,
-                                                               GP11Slot *slot);
+                                                               GckSlot *slot);
 
 void                _gcr_import_dialog_show_selected_slot     (GcrImportDialog *self);
 

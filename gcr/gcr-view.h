@@ -43,10 +43,10 @@ struct _GcrViewIface {
 GType                  gcr_view_get_type                          (void) G_GNUC_CONST;
 
 GcrView*               gcr_view_create                            (const gchar *label,
-                                                                   struct _GP11Attributes *attrs);
+                                                                   struct _GckAttributes *attrs);
 
 void                   gcr_view_register                          (GType view_type,
-                                                                   struct _GP11Attributes *attrs);
+                                                                   struct _GckAttributes *attrs);
 
 G_END_DECLS
 

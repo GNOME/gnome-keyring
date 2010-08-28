@@ -1928,21 +1928,23 @@ parse_general_time (const gchar *time, gsize n_time,
 }
 
 static gboolean
-anode_read_time (GNode *node, Atlv *tlv, glong *value)
+anode_read_time (GNode *node, Atlv *tlv, struct tm *when, glong *value)
 {
 	const gchar *data;
 	gboolean ret;
-	struct tm when;
 	gint offset = 0;
 	gint flags;
+
+	g_assert (when);
+	g_assert (value);
 
 	flags = anode_def_flags (node);
 	data = (gchar*)(tlv->buf + tlv->off);
 
 	if (flags & FLAG_GENERALIZED)
-		ret = parse_general_time (data, tlv->len, &when, &offset);
+		ret = parse_general_time (data, tlv->len, when, &offset);
 	else if (flags & FLAG_UTC)
-		ret = parse_utc_time (data, tlv->len, &when, &offset);
+		ret = parse_utc_time (data, tlv->len, when, &offset);
 	else
 		g_return_val_if_reached (FALSE);
 
@@ -1950,12 +1952,12 @@ anode_read_time (GNode *node, Atlv *tlv, glong *value)
 		return anode_failure (node, "invalid time content");
 
 	/* In order to work with 32 bit time_t. */
-	if (sizeof (time_t) <= 4 && when.tm_year >= 2038) {
+	if (sizeof (time_t) <= 4 && when->tm_year >= 2038) {
 		*value = (time_t)2145914603;  /* 2037-12-31 23:23:23 */
 
 	/* Convert to seconds since epoch */
 	} else {
-		*value = timegm (&when);
+		*value = timegm (when);
 		g_return_val_if_fail (*time >= 0, FALSE);
 		*value += offset;
 	}
@@ -1983,29 +1985,25 @@ anode_read_integer_as_ulong (GNode *node, Atlv *tlv, gulong *value)
 static gboolean
 anode_write_integer_ulong (gulong value, guchar *data, gsize *n_data)
 {
-	guchar buf[8];
-	gint bytes;
+	guchar buf[sizeof (gulong)];
+	gint bytes, i, off;
 
-	buf[0] = (value >> 56) & 0xFF;
-	buf[1] = (value >> 48) & 0xFF;
-	buf[2] = (value >> 40) & 0xFF;
-	buf[3] = (value >> 32) & 0xFF;
-	buf[4] = (value >> 24) & 0xFF;
-	buf[5] = (value >> 16) & 0xFF;
-	buf[6] = (value >> 8) & 0xFF;
-	buf[7] = (value >> 0) & 0xFF;
+	for (i = 0; i < sizeof (ulong); ++i) {
+		off = sizeof (ulong) - (i + 1);
+		buf[i] = (value >> (off * 8)) & 0xFF;
+	}
 
-	for (bytes = 7; bytes >= 0; --bytes)
+	for (bytes = sizeof (gulong) - 1; bytes >= 0; --bytes)
 		if (!buf[bytes])
 			break;
 
-	bytes = 8 - (bytes + 1);
+	bytes = sizeof (gulong) - (bytes + 1);
 	if (bytes == 0)
 		bytes = 1;
 
 	if (data) {
 		g_assert (*n_data >= bytes);
-		memcpy (data, buf + (8 - bytes), bytes);
+		memcpy (data, buf + (sizeof (gulong) - bytes), bytes);
 	}
 	*n_data = bytes;
 	return TRUE;
@@ -2770,6 +2768,7 @@ egg_asn1x_set_bits_as_ulong (GNode *node, gulong bits, guint n_bits)
 glong
 egg_asn1x_get_time_as_long (GNode *node)
 {
+	struct tm when;
 	Atlv *tlv;
 	glong time;
 	gint type;
@@ -2792,7 +2791,7 @@ egg_asn1x_get_time_as_long (GNode *node)
 	if (tlv == NULL || tlv->buf == NULL)
 		return -1;
 
-	if (!anode_read_time (node, tlv, &time))
+	if (!anode_read_time (node, tlv, &when, &time))
 		return -1;
 	return time;
 }
@@ -2800,17 +2799,33 @@ egg_asn1x_get_time_as_long (GNode *node)
 gboolean
 egg_asn1x_get_time_as_date (GNode *node, GDate *date)
 {
-	GTimeVal tv;
+	struct tm when;
+	Atlv *tlv;
+	glong time;
+	gint type;
 
 	g_return_val_if_fail (node, FALSE);
-	g_return_val_if_fail (date, FALSE);
+	type = anode_def_type (node);
 
-	tv.tv_sec = egg_asn1x_get_time_as_long (node);
-	if (tv.tv_sec < 0)
+	/* Time is often represented as a choice, so work than in here */
+	if (type == TYPE_CHOICE) {
+		node = egg_asn1x_get_choice (node);
+		if (node == NULL)
+			return FALSE;
+		g_return_val_if_fail (anode_def_type (node) == TYPE_TIME, FALSE);
+		return egg_asn1x_get_time_as_date (node, date);
+	}
+
+	g_return_val_if_fail (type == TYPE_TIME, FALSE);
+
+	tlv = anode_get_tlv_data (node);
+	if (tlv == NULL || tlv->buf == NULL)
 		return FALSE;
-	tv.tv_usec = 0;
 
-	g_date_set_time_val (date, &tv);
+	if (!anode_read_time (node, tlv, &when, &time))
+		return FALSE;
+
+	g_date_set_dmy (date, when.tm_mday, when.tm_mon + 1, when.tm_year + 1900);
 	return TRUE;
 }
 
@@ -3067,7 +3082,8 @@ static gboolean
 anode_validate_time (GNode *node, Atlv *tlv)
 {
 	glong time;
-	return anode_read_time (node, tlv, &time);
+	struct tm when;
+	return anode_read_time (node, tlv, &when, &time);
 }
 
 static gboolean

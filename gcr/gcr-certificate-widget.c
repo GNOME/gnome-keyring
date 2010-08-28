@@ -32,6 +32,8 @@
 #include "egg/egg-oid.h"
 #include "egg/egg-hex.h"
 
+#include "gck/gck.h"
+
 #include <gdk/gdk.h>
 #include <glib/gi18n-lib.h>
 
@@ -47,7 +49,7 @@ struct _GcrCertificateWidgetPrivate {
 	GcrDisplayView *view;
 	guint key_size;
 	gchar *label;
-	GP11Attributes *attributes;
+	GckAttributes *attributes;
 };
 
 static void gcr_view_iface_init (GcrViewIface *iface);
@@ -68,7 +70,7 @@ calculate_label (GcrCertificateWidget *self, GNode *asn)
 		return g_strdup (self->pv->label);
 
 	if (self->pv->attributes) {
-		if (gp11_attributes_find_string (self->pv->attributes, CKA_LABEL, &label))
+		if (gck_attributes_find_string (self->pv->attributes, CKA_LABEL, &label))
 			return label;
 	}
 
@@ -375,7 +377,7 @@ gcr_certificate_widget_finalize (GObject *obj)
 	g_assert (!self->pv->certificate);
 
 	if (self->pv->attributes)
-		gp11_attributes_unref (self->pv->attributes);
+		gck_attributes_unref (self->pv->attributes);
 	self->pv->attributes = NULL;
 
 	g_free (self->pv->label);
@@ -390,7 +392,7 @@ gcr_certificate_widget_set_property (GObject *obj, guint prop_id, const GValue *
 {
 	GcrCertificateWidget *self = GCR_CERTIFICATE_WIDGET (obj);
 	GcrCertificate *cert;
-	GP11Attribute *attr;
+	GckAttribute *attr;
 
 	switch (prop_id) {
 	case PROP_CERTIFICATE:
@@ -406,13 +408,13 @@ gcr_certificate_widget_set_property (GObject *obj, guint prop_id, const GValue *
 		g_return_if_fail (!self->pv->attributes);
 		self->pv->attributes = g_value_dup_boxed (value);
 		if (self->pv->attributes) {
-			attr = gp11_attributes_find (self->pv->attributes, CKA_VALUE);
+			attr = gck_attributes_find (self->pv->attributes, CKA_VALUE);
 			if (attr) {
 				/* Create a new certificate object refferring to same memory */
 				cert = gcr_simple_certificate_new_static (attr->value, attr->length);
 				g_object_set_data_full (G_OBJECT (cert), "attributes",
-				                        gp11_attributes_ref (self->pv->attributes),
-				                        (GDestroyNotify)gp11_attributes_unref);
+				                        gck_attributes_ref (self->pv->attributes),
+				                        (GDestroyNotify)gck_attributes_unref);
 				gcr_certificate_widget_set_certificate (self, cert);
 				g_object_unref (cert);
 				refresh_display (self);
@@ -451,7 +453,7 @@ static void
 gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GP11Attributes *registered;
+	GckAttributes *registered;
 
 	gcr_certificate_widget_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrCertificateWidgetPrivate));
@@ -472,10 +474,10 @@ gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
 	_gcr_icons_register ();
 
 	/* Register this as a view which can be loaded */
-	registered = gp11_attributes_new ();
-	gp11_attributes_add_ulong (registered, CKA_CLASS, CKO_CERTIFICATE);
+	registered = gck_attributes_new ();
+	gck_attributes_add_ulong (registered, CKA_CLASS, CKO_CERTIFICATE);
 	gcr_view_register (GCR_TYPE_CERTIFICATE_WIDGET, registered);
-	gp11_attributes_unref (registered);
+	gck_attributes_unref (registered);
 }
 
 static void

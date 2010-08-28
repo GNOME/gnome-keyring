@@ -605,7 +605,7 @@ prepare_unlock_keyring_login (GkmWrapPrompt *self)
 
 	gku_prompt_set_title (prompt, _("Unlock Login Keyring"));
 
-	text = _("Enter password for to unlock your login keyring");
+	text = _("Enter password to unlock your login keyring");
 	gku_prompt_set_primary_text (prompt, text);
 
 	if (gkm_wrap_login_did_unlock_fail ())

@@ -47,10 +47,10 @@ enum {
 	GCR_FORMAT_PEM_PKCS12
 };
 
-/* Forward declare some of the GP11 objects */
-struct _GP11Attributes;
-struct _GP11Object;
-struct _GP11Slot;
+/* Forward declare some of the Gck objects */
+struct _GckAttributes;
+struct _GckObject;
+struct _GckSlot;
 
 G_END_DECLS
 

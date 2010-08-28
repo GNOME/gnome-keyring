@@ -17,7 +17,7 @@ gnome_keyring_CFLAGS = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
 
 gnome_keyring_LDADD = \
-	$(top_builddir)/gp11/libgp11.la \
+	$(top_builddir)/gck/libgck.la \
 	$(top_builddir)/gcr/libgcr.la \
 	$(top_builddir)/egg/libegg.la \
 	$(GTHREAD_LIBS) \

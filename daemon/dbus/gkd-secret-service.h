@@ -24,7 +24,7 @@
 
 #include "gkd-secret-types.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <dbus/dbus.h>
 
@@ -47,9 +47,9 @@ GType                   gkd_secret_service_get_type                (void);
 
 DBusConnection*         gkd_secret_service_get_connection          (GkdSecretService *self);
 
-GP11Slot*               gkd_secret_service_get_pkcs11_slot         (GkdSecretService *self);
+GckSlot*                gkd_secret_service_get_pkcs11_slot         (GkdSecretService *self);
 
-GP11Session*            gkd_secret_service_get_pkcs11_session      (GkdSecretService *self,
+GckSession*             gkd_secret_service_get_pkcs11_session      (GkdSecretService *self,
                                                                     const gchar *caller);
 
 GkdSecretObjects*       gkd_secret_service_get_objects             (GkdSecretService *self);

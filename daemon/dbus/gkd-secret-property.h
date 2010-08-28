@@ -24,7 +24,7 @@
 
 #include "gkd-secret-types.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <dbus/dbus.h>
 
@@ -32,19 +32,19 @@ gboolean               gkd_secret_property_get_type               (const gchar *
                                                                    CK_ATTRIBUTE_TYPE *type);
 
 gboolean               gkd_secret_property_append_variant         (DBusMessageIter *iter,
-                                                                   GP11Attribute *attr);
+                                                                   GckAttribute *attr);
 
 gboolean               gkd_secret_property_append_all             (DBusMessageIter *array,
-                                                                   GP11Attributes *attrs);
+                                                                   GckAttributes *attrs);
 
 gboolean               gkd_secret_property_parse_variant          (DBusMessageIter *iter,
                                                                    const gchar *property,
-                                                                   GP11Attribute *attr);
+                                                                   GckAttribute *attr);
 
 gboolean               gkd_secret_property_parse_fields           (DBusMessageIter *iter,
-                                                                   GP11Attribute *attr);
+                                                                   GckAttribute *attr);
 
 gboolean               gkd_secret_property_parse_all              (DBusMessageIter *array,
-                                                                   GP11Attributes *attrs);
+                                                                   GckAttributes *attrs);
 
 #endif /* __GKD_SECRET_PROPERTY_H__ */

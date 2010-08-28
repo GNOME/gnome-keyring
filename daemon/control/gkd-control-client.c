@@ -277,3 +277,33 @@ gkd_control_change_lock (const gchar *directory, const gchar *original,
 
 	return TRUE;
 }
+
+gboolean
+gkd_control_quit (const gchar *directory)
+{
+	EggBuffer buffer;
+	gsize offset = 4;
+	gboolean ret;
+	guint32 res;
+
+	egg_buffer_init_full (&buffer, 128, egg_secure_realloc);
+	egg_buffer_add_uint32 (&buffer, 0);
+	egg_buffer_add_uint32 (&buffer, GKD_CONTROL_OP_QUIT);
+	egg_buffer_set_uint32 (&buffer, 0, buffer.len);
+
+	g_return_val_if_fail (!egg_buffer_has_error (&buffer), FALSE);
+
+	ret = control_chat (directory, &buffer);
+
+	if (ret)
+		ret = egg_buffer_get_uint32 (&buffer, offset, &offset, &res);
+
+	egg_buffer_uninit (&buffer);
+
+	if (!ret || res != GKD_CONTROL_RESULT_OK) {
+		g_message ("couldn't quit running keyring daemon");
+		return FALSE;
+	}
+
+	return TRUE;
+}

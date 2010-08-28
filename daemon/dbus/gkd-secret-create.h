@@ -27,7 +27,7 @@
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-types.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #define GKD_SECRET_TYPE_CREATE               (gkd_secret_create_get_type ())
 #define GKD_SECRET_CREATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRET_TYPE_CREATE, GkdSecretCreate))
@@ -46,14 +46,14 @@ GType               gkd_secret_create_get_type                (void);
 
 GkdSecretCreate*    gkd_secret_create_new                     (GkdSecretService *service,
                                                                const gchar *caller,
-                                                               GP11Attributes *attrs);
+                                                               GckAttributes *attrs);
 
-GP11Object*         gkd_secret_create_with_credential         (GP11Session *session,
-                                                               GP11Attributes *attrs,
-                                                               GP11Object *cred,
+GckObject*          gkd_secret_create_with_credential         (GckSession *session,
+                                                               GckAttributes *attrs,
+                                                               GckObject *cred,
                                                                GError **error);
 
-gchar*              gkd_secret_create_with_secret             (GP11Attributes *attrs,
+gchar*              gkd_secret_create_with_secret             (GckAttributes *attrs,
                                                                GkdSecretSecret *master,
                                                                DBusError *derr);
 
