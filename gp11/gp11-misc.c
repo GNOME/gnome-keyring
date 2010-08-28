@@ -144,7 +144,7 @@ gp11_message_from_rv (CK_RV rv)
 	case CKR_KEY_NOT_NEEDED:
 		return _("No key is needed");
 	case CKR_KEY_CHANGED:
-		return _("The key is different than before");
+		return _("The key is different from before");
 	case CKR_KEY_NEEDED:
 		return _("A key is needed");
 	case CKR_KEY_INDIGESTIBLE:
