@@ -25,8 +25,7 @@
 #include <glib.h>
 
 #include "gcr-certificate.h"
-#include "gcr-certificate-basics-widget.h"
-#include "gcr-certificate-details-widget.h"
+#include "gcr-certificate-widget.h"
 #include "gcr-importer.h"
 #include "gcr-parser.h"
 #include "gcr-types.h"
