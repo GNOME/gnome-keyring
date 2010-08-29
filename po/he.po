@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-29 16:08+0300\n"
-"PO-Revision-Date: 2010-07-29 16:09+0200\n"
+"POT-Creation-Date: 2010-08-29 15:48+0300\n"
+"PO-Revision-Date: 2010-08-29 15:49+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,54 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2007-11-27 11:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Whether the gnome-keyring PKCS#11 component is enabled."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Whether the gnome-keyring SSH agent is enabled."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Whether the gnome-keyring secret service is enabled."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
@@ -156,6 +108,18 @@ msgstr "מפתח PGP:‏ %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "יש להזין מילת צופן"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr "מחיקת ססמה זו אם אין פעילות במשך"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "מחיקת ססמה זו לאחר"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr "מחיקת ססמה זו בעת היציאה"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -1034,11 +998,11 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "כדי לשנות את הססמה עבור  '%s', נדרשות הססמאות המקורית והחדשה"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1047,15 +1011,15 @@ msgstr ""
 "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל "
 "בעל גישה לקבצים שלך."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "שימוש באחסון בלתי מאובטח"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "הססמאות אינן תואמות."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "הססמה אינה יכולה להיות ריקה"
 
@@ -1090,6 +1054,48 @@ msgstr "הססמה ה_קודמת:"
 #: ../ui/gku-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_ססמה:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Whether the gnome-keyring PKCS#11 component is enabled."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Whether the gnome-keyring SSH agent is enabled."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Whether the gnome-keyring secret service is enabled."
 
 #~ msgid "Removable Disk: %s"
 #~ msgstr "דיסק נייד: %s"
