@@ -1,4 +1,4 @@
-# translation of gnome-keyring.HEAD.po to Español
+# translation of gnome-keyring.master.po to Español
 # Translation of gnome-keyring to Spanish.
 # This file is distributed under the same license as the gnome-keyring package.
 # Copyright (C) 2006 The Free Software Foundation.
@@ -8,11 +8,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring.HEAD\n"
+"Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-07-29 07:55+0000\n"
-"PO-Revision-Date: 2010-07-30 08:27+0200\n"
+"POT-Creation-Date: 2010-08-29 01:33+0000\n"
+"PO-Revision-Date: 2010-08-29 11:21+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,56 +20,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Esta opción activa el componente PKCS#11 en el demonio del Depósito de "
-"claves. Sólo toma efecto cuando se inicia gnome-session, (ej: cuando el "
-"usuario entra en el sistema). Este ajuste se puede sobreescribir al pasar "
-"ciertos parámetros al demonio a través de la línea de comandos."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Esta opción activa el agente SSH en el demonio del Depósito de claves. Sólo "
-"toma efecto cuando se inicia gnome-keyring-daemon, (ej: cuando el usuario "
-"entra en el sistema). Este ajuste se puede sobreescribir al pasar ciertos "
-"parámetros al demonio a traes de la línea de comandos."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Esta opción activa el componente de servicio de secretos en el demonio del "
-"Depósito de claves. Sólo toma efecto cuando se inicia con gnome-session, "
-"(ej: cuando el usuario entra en el sistema). Este ajuste se puede "
-"sobreescribir al pasar ciertos parámetros al demonio a través de la línea de "
-"comandos."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Indica si el componente PKCS#11 del depósito de claves está activado."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Indica si el agente SSH del depósito de claves está activado."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr ""
-"Indica si el servicio de secretos del depósito de claves está activado."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
@@ -163,6 +113,20 @@ msgstr "Clave GPG: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "Introducir la contraseña"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+#| msgid "Lock this keyring if idle for"
+msgid "Forget this password if idle for"
+msgstr "Olvidar esta contraseña si se está inactivo durante"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "Olvidar esta contraseña después de"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+#| msgid "Lock this keyring when I log out"
+msgid "Forget this password when I log out"
+msgstr "Olvidar esta contraseña al salir de la sesión"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -922,7 +886,6 @@ msgid "Unlock Login Keyring"
 msgstr "Desbloquear el depósito de claves de inicio"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
-#| msgid "Enter password for to unlock your login keyring"
 msgid "Enter password to unlock your login keyring"
 msgstr ""
 "Introducir la contraseña para desbloquear su depósito de claves de inicio de "
@@ -1056,11 +1019,11 @@ msgstr ""
 "Se necesitan la contraseña original y la nueva para cambiar la contraseña de "
 "«%s»"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1070,15 +1033,15 @@ msgstr ""
 "estarán cifradas de forma segura. Serán accesibles por cualquiera que tenga "
 "acceso a sus archivos."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "Usar depósito inseguro"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "Las contraseñas no coinciden."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "La contraseña no puede estar vacía"
 
@@ -1113,6 +1076,51 @@ msgstr "Contraseña _antigua:"
 #: ../ui/gku-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_Contraseña:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Esta opción activa el componente PKCS#11 en el demonio del Depósito de "
+#~ "claves. Sólo toma efecto cuando se inicia gnome-session, (ej: cuando el "
+#~ "usuario entra en el sistema). Este ajuste se puede sobreescribir al pasar "
+#~ "ciertos parámetros al demonio a través de la línea de comandos."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Esta opción activa el agente SSH en el demonio del Depósito de claves. "
+#~ "Sólo toma efecto cuando se inicia gnome-keyring-daemon, (ej: cuando el "
+#~ "usuario entra en el sistema). Este ajuste se puede sobreescribir al pasar "
+#~ "ciertos parámetros al demonio a traes de la línea de comandos."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Esta opción activa el componente de servicio de secretos en el demonio "
+#~ "del Depósito de claves. Sólo toma efecto cuando se inicia con gnome-"
+#~ "session, (ej: cuando el usuario entra en el sistema). Este ajuste se "
+#~ "puede sobreescribir al pasar ciertos parámetros al demonio a través de la "
+#~ "línea de comandos."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr ""
+#~ "Indica si el componente PKCS#11 del depósito de claves está activado."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Indica si el agente SSH del depósito de claves está activado."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr ""
+#~ "Indica si el servicio de secretos del depósito de claves está activado."
 
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr "Desbloquear automáticamente el depósito seguro al iniciar sesión."
