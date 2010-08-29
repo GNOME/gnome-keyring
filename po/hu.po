@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-29 11:59+0200\n"
-"PO-Revision-Date: 2010-08-29 11:58+0200\n"
+"POT-Creation-Date: 2010-08-29 14:44+0200\n"
+"PO-Revision-Date: 2010-08-29 14:43+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome at fsf dot hu>\n"
 "MIME-Version: 1.0\n"
@@ -112,6 +112,18 @@ msgstr "PGP kulcs: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "Adja meg a jelmondatot"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr "Jelszó elfelejtése üresjáratban töltött:"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "Jelszó elfelejtése:"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr "Jelszó elfelejtése kijelentkezéskor"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -1002,11 +1014,11 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "„%s” jelszavának módosításához az eredeti és új jelszavak szükségesek"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "A jelszavak tárolása titkosítás nélkül?"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1015,15 +1027,15 @@ msgstr ""
 "Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan "
 "titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "Nem biztonságos tárolás használata"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "Nem egyeznek a megadott jelszavak."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "A jelszó nem lehet üres"
 
