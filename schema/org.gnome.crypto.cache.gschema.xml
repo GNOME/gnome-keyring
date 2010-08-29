@@ -1,0 +1,14 @@
+<schemalist>
+	<schema id="org.gnome.crypto.cache" path="/desktop/gnome/crypto/cache/">
+		<key name="gpg-cache-method" type="s">
+			<default>session</default>
+			<summary>Cache Method</summary>
+			<description>The method to use for caching passphrases typed into the GPG agent.</description>
+		</key>
+		<key name="gpg-cache-authorize" type="b">
+			<default>FALSE</default>
+			<summary>Authorize Cache Access</summary>
+			<description>Not yet implemented.</description>
+		</key>
+	</schema>
+</schemalist>
