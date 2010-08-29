@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-06 20:54+0100\n"
-"PO-Revision-Date: 2010-03-06 20:54+0100\n"
+"POT-Creation-Date: 2010-08-29 11:59+0200\n"
+"PO-Revision-Date: 2010-08-29 11:58+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome at fsf dot hu>\n"
 "MIME-Version: 1.0\n"
@@ -20,71 +20,24 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Ez a lehetőség engedélyezi a PKCS#11 összetevőt a gnome-keyring démonban. "
-"Csak a gnome-session démon indulásakor lép életbe (azaz amikor a felhasználó "
-"bejelentkezik). Ezt a beállítást felülbírálhatják a démonnak átadott "
-"bizonyos parancssori argumentumok."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Ez a lehetőség engedélyezi az SSH ügynököt a gnome-keyring démonban. Csak a "
-"gnome-keyring démonnal együtt indul el, például ha a felhasználó "
-"bejelentkezik. Ezt a beállítást felülbírálhatják a démonnak átadott bizonyos "
-"parancssori argumentumok."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Ez a lehetőség engedélyezi a PKCS#11 összetevőt a gnome-keyring démonban. "
-"Csak a gnome-session démon indulásakor lép életbe (azaz amikor a felhasználó "
-"bejelentkezik). Ezt a beállítást felülbírálhatják a démonnak átadott "
-"bizonyos parancssori argumentumok."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "A gnome-keyring PKCS#11 összetevője engedélyezve van-e?"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "A gnome-keyring SSH ügynöke engedélyezve van-e."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "A gnome-keyring titokszolgáltatása engedélyezve van-e."
-
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
 msgid "Unnamed"
 msgstr "Névtelen"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "Kulcstartó jelszavának módosítása"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Válasszon új jelszót a(z) „%s” kulcstartóhoz"
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -93,19 +46,19 @@ msgstr ""
 "Egy alkalmazás módosítani akarja a(z) „%s” kulcstartó jelszavát. Válassza ki "
 "az ehhez használandó új jelszót."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "Az eredeti jelszó helytelen"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "Új kulcstartójelszó"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "Jelszó az új kulcstartóhoz"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -113,48 +66,6 @@ msgid ""
 msgstr ""
 "Egy alkalmazás új kulcstartót akar létrehozni „%s” néven. Válassza ki az "
 "ehhez használandó jelszót."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:134
-msgid "Unlock Login Keyring"
-msgstr "Bejelentkezési kulcstartó nyitása"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:136
-msgid "Enter password for to unlock your login keyring"
-msgstr "Adja meg jelszavát a bejelentkezési kulcstartó feloldásához"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:140
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"A számítógépbe bejelentkezéshez használt jelszó már nem egyezik a "
-"bejelentkezési kulcstartóéval."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:142
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"A bejelentkezési kulcstartó nem lett feloldva a számítógépére történt "
-"bejelentkezésekor."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:183
-msgid "Unlock Keyring"
-msgstr "Kulcstartó nyitása"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:185
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Adja meg a jelszót a(z) „%s” kulcstartó nyitásához"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:189
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Egy alkalmazás hozzá akar férni a(z) „%s” kulcstartóhoz, de az zárolva van"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:219
-msgid "The unlock password was incorrect"
-msgstr "A feloldási jelszó helytelen"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -180,167 +91,32 @@ msgstr "GNOME kulcstartó – SSH-ügynök"
 msgid "SSH Key Agent"
 msgstr "SSH-kulcs ügynök"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME kulcstartó: GPG-ügynök"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG jelszóügynök"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP kulcs: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+msgid "Enter Passphrase"
+msgstr "Adja meg a jelmondatot"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Bejelentkezési"
-
-#: ../daemon/login/gkd-login.c:596
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "%s kulcstartó jelszavának feloldása"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Új jelszó szükséges"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Új jelszó szükséges a biztonságos tárolóhoz"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"„%s” felkészítéséhez tanúsítványok vagy kulcsok tárolásához egy jelszó "
-"szükséges"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Magánkulcs feloldása"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Tanúsítvány feloldása"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Nyilvános kulcs feloldása"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Feloldás"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Adja meg a jelszót a magánkulcs feloldásához"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Adja meg a jelszót a tanúsítvány feloldásához"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Adja meg a jelszót a nyilvános kulcs feloldásához"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Adja meg a jelszót a feloldáshoz"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Egy alkalmazás hozzá kíván férni a(z) „%s” magánkulcshoz, de az zárolva van"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz, de az zárolva van"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Egy alkalmazás hozzá kíván férni a(z) „%s” nyilvános kulcshoz, de az zárolva "
-"van"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” elemhez, de az zárolva van"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Tanúsítvány/kulcstároló feloldása"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Adja meg a jelszót a tanúsítvány/kulcstároló feloldásához"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz/kulcstárolóhoz, de "
-"az zárolva van"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "A jelszavak tárolása titkosítás nélkül?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan "
-"titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Nem biztonságos tárolás használata"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Nem egyeznek a megadott jelszavak."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "A jelszó nem lehet üres"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Ezen kulcstartó automatikus feloldása, ha bejelentkeztem"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Új jelszó erőssége"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Alkalmazás:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_Megerősítés:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "Rés_zletek:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Név:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "_Régi jelszó:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Jelszó:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -383,7 +159,7 @@ msgid "Surname"
 msgstr "Vezetéknév"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "Sorozatszám"
 
@@ -550,94 +326,94 @@ msgstr "SSL kliens tanúsítványa"
 msgid "SSL Server Certificate"
 msgstr "SSL kiszolgáló tanúsítványa"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "Kiterjesztés"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "Azonosító"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "Érték"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "Kritikus"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "Igen"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "Nem"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "Alany neve"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "Kibocsátó neve"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "Kibocsátott tanúsítvány"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "Verzió"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "Nem érvényes eddig"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "Nem érvényes ezután"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "Aláírás"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "Aláírási algoritmus"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "Aláírás paraméterei"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "Nyilvános kulcs információi"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "Kulcsalgoritmus"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "Kulcs paraméterei"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "Kulcsméret"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "Nyilvános kulcs"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "Ujjlenyomatok"
 
@@ -670,7 +446,7 @@ msgstr "Ezen kulcstartó zárolása kijelentkezéskor"
 msgid "minutes"
 msgstr "perc után"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "A művelet megszakítva"
 
@@ -686,6 +462,18 @@ msgstr "Tanúsítványok/kulcsok importálása"
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Válassza ki az importált tanúsítványok/kulcsok tárolási helyét."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
+msgid "Enter password to unlock the private key"
+msgstr "Adja meg a jelszót a magánkulcs feloldásához"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Enter password to unlock the certificate"
+msgstr "Adja meg a jelszót a tanúsítvány feloldásához"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Enter password to unlock"
+msgstr "Adja meg a jelszót a feloldáshoz"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -720,23 +508,23 @@ msgstr "A(z) „%s” tanúsítvány importálásához fel kell azt oldani"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "A(z) „%s” elem importálásához fel kell azt oldani"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "Magánkulcs"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "Tanúsítvány"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "Ismeretlen vagy nem támogatott adatok."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "Nem sikerült feldolgozni az érvénytelen vagy hibás adatokat."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "Az adatok zárolva vannak"
 
@@ -1060,10 +848,213 @@ msgstr "A felhasználó elutasította az aláíráskérést"
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:726
 msgid "Unnamed Certificate"
 msgstr "Névtelen tanúsítvány"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "A nyilvános SSH kulcs nem dolgozható fel"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "%s kulcstartó jelszavának feloldása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
+msgid "The unlock password was incorrect"
+msgstr "A feloldási jelszó helytelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
+msgid "Unlock Login Keyring"
+msgstr "Bejelentkezési kulcstartó nyitása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+msgid "Enter password to unlock your login keyring"
+msgstr "Adja meg jelszavát a bejelentkezési kulcstartó feloldásához"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"A számítógépbe bejelentkezéshez használt jelszó már nem egyezik a "
+"bejelentkezési kulcstartóéval."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"A bejelentkezési kulcstartó nem lett feloldva a számítógépére történt "
+"bejelentkezésekor."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid "Unlock Keyring"
+msgstr "Kulcstartó nyitása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Adja meg a jelszót a(z) „%s” kulcstartó nyitásához"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Egy alkalmazás hozzá akar férni a(z) „%s” kulcstartóhoz, de az zárolva van"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+msgid "Unlock private key"
+msgstr "Magánkulcs feloldása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
+msgid "Unlock certificate"
+msgstr "Tanúsítvány feloldása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+msgid "Unlock public key"
+msgstr "Nyilvános kulcs feloldása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
+msgid "Unlock"
+msgstr "Feloldás"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Enter password to unlock the public key"
+msgstr "Adja meg a jelszót a nyilvános kulcs feloldásához"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Egy alkalmazás hozzá kíván férni a(z) „%s” magánkulcshoz, de az zárolva van"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz, de az zárolva van"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Egy alkalmazás hozzá kíván férni a(z) „%s” nyilvános kulcshoz, de az zárolva "
+"van"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” elemhez, de az zárolva van"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+msgid "Unlock certificate/key storage"
+msgstr "Tanúsítvány/kulcstároló feloldása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Adja meg a jelszót a tanúsítvány/kulcstároló feloldásához"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz/kulcstárolóhoz, de "
+"az zárolva van"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+msgid "New Password Required"
+msgstr "Új jelszó szükséges"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
+msgid "New password required for secure storage"
+msgstr "Új jelszó szükséges a biztonságos tárolóhoz"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"„%s” felkészítéséhez tanúsítványok vagy kulcsok tárolásához egy jelszó "
+"szükséges"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+msgid "Change Password"
+msgstr "Jelszó megváltoztatása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
+msgid "Change password for secure storage"
+msgstr "Jelszó módosítása a biztonságos tárolóhoz"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "„%s” jelszavának módosításához az eredeti és új jelszavak szükségesek"
+
+#: ../ui/gku-prompt-tool.c:394
+msgid "Store passwords unencrypted?"
+msgstr "A jelszavak tárolása titkosítás nélkül?"
+
+#: ../ui/gku-prompt-tool.c:395
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan "
+"titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
+
+#: ../ui/gku-prompt-tool.c:402
+msgid "Use Unsafe Storage"
+msgstr "Nem biztonságos tárolás használata"
+
+#: ../ui/gku-prompt-tool.c:432
+msgid "Passwords do not match."
+msgstr "Nem egyeznek a megadott jelszavak."
+
+#: ../ui/gku-prompt-tool.c:442
+msgid "Password cannot be blank"
+msgstr "A jelszó nem lehet üres"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Ezen kulcstartó automatikus feloldása, ha bejelentkeztem"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "New password strength"
+msgstr "Új jelszó erőssége"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Application:"
+msgstr "_Alkalmazás:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "_Megerősítés:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Details:"
+msgstr "Rés_zletek:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Név:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "_Régi jelszó:"
+
+#: ../ui/gku-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Jelszó:"
