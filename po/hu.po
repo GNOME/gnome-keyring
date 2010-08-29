@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-29 14:44+0200\n"
-"PO-Revision-Date: 2010-08-29 14:43+0200\n"
+"POT-Creation-Date: 2010-08-29 16:09+0200\n"
+"PO-Revision-Date: 2010-08-29 16:08+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome at fsf dot hu>\n"
 "MIME-Version: 1.0\n"
@@ -633,7 +633,7 @@ msgid "No key is needed"
 msgstr "Nem szükséges kulcs"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "A kulcs megváltozott"
 
 #: ../gp11/gp11-misc.c:149
