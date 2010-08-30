@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-08-29 09:24+0000\n"
-"PO-Revision-Date: 2010-08-30 18:37+0100\n"
+"POT-Creation-Date: 2010-08-30 16:39+0000\n"
+"PO-Revision-Date: 2010-08-30 19:00+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -632,7 +632,7 @@ msgid "No key is needed"
 msgstr "Ključ ni zahtevan"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "Ključ je drugačen, kot je bil prej"
 
 #: ../gp11/gp11-misc.c:149
