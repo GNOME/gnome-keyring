@@ -8,5 +8,5 @@ introspect_DATA = \
 	introspect-service.xml \
 	introspect-session.xml
 
-EXTRA_DIST =
+EXTRA_DIST = \
 	$(introspect_DATA)
