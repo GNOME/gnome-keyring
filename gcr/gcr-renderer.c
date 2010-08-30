@@ -21,60 +21,85 @@
 
 #include "config.h"
 
-#include "gcr-view.h"
+#include "gcr-renderer.h"
 
 #include "gck/gck.h"
 
 #include <gtk/gtk.h>
 
-typedef struct _GcrRegisteredView {
-	GckAttributes *attrs;
-	GType view_type;
-} GcrRegisteredView;
+enum {
+	DATA_CHANGED,
+	LAST_SIGNAL
+};
 
-static GArray *registered_views = NULL;
+static guint signals[LAST_SIGNAL] = { 0 };
+
+typedef struct _GcrRegistered {
+	GckAttributes *attrs;
+	GType renderer_type;
+} GcrRegistered;
+
+static GArray *registered_renderers = NULL;
 static gboolean registered_sorted = FALSE;
 
 static void
-gcr_view_base_init (gpointer gobject_iface)
+gcr_renderer_base_init (gpointer gobject_iface)
 {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 
 		g_object_interface_install_property (gobject_iface,
-		         g_param_spec_string ("label", "Label", "The label for the view",
+		         g_param_spec_string ("label", "Label", "The label for the renderer",
 		                              "", G_PARAM_READWRITE));
 
 		g_object_interface_install_property (gobject_iface,
-		         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the view",
-		                             GCK_TYPE_ATTRIBUTES, G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE));
+		         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the renderer",
+		                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
+
+		signals[DATA_CHANGED] = g_signal_new ("data-changed", GCR_TYPE_RENDERER, G_SIGNAL_RUN_LAST,
+		                                      G_STRUCT_OFFSET (GcrRendererIface, data_changed),
+		                                      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 
 		initialized = TRUE;
 	}
 }
 
 GType
-gcr_view_get_type (void)
+gcr_renderer_get_type (void)
 {
 	static GType type = 0;
 	if (!type) {
 		static const GTypeInfo info = {
-			sizeof (GcrViewIface),
-			gcr_view_base_init,  /* base init */
-			NULL,                /* base finalize */
+			sizeof (GcrRendererIface),
+			gcr_renderer_base_init,  /* base init */
+			NULL,                    /* base finalize */
 		};
-		type = g_type_register_static (G_TYPE_INTERFACE, "GcrViewIface", &info, 0);
-		g_type_interface_add_prerequisite (type, GTK_TYPE_WIDGET);
+		type = g_type_register_static (G_TYPE_INTERFACE, "GcrRendererIface", &info, 0);
 	}
 
 	return type;
 }
 
+void
+gcr_renderer_render (GcrRenderer *self, GcrViewer *viewer)
+{
+	g_return_if_fail (GCR_IS_RENDERER (self));
+	g_return_if_fail (GCR_RENDERER_GET_INTERFACE (self)->render);
+	GCR_RENDERER_GET_INTERFACE (self)->render (self, viewer);
+}
+
+void
+gcr_renderer_emit_data_changed (GcrRenderer *self)
+{
+	g_return_if_fail (GCR_IS_RENDERER (self));
+	g_signal_emit (self, signals[DATA_CHANGED], 0);
+}
+
 static gint
 sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 {
-	const GcrRegisteredView *ra = a;
-	const GcrRegisteredView *rb = b;
+	const GcrRegistered *ra = a;
+	const GcrRegistered *rb = b;
 	gulong na, nb;
 
 	g_assert (a);
@@ -89,10 +114,10 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 	return (na == nb) ? 0 : -1;
 }
 
-GcrView*
-gcr_view_create (const gchar *label, GckAttributes *attrs)
+GcrRenderer*
+gcr_renderer_create (const gchar *label, GckAttributes *attrs)
 {
-	GcrRegisteredView *registered;
+	GcrRegistered *registered;
 	gboolean matched;
 	gulong n_attrs;
 	gulong j;
@@ -100,16 +125,16 @@ gcr_view_create (const gchar *label, GckAttributes *attrs)
 
 	g_return_val_if_fail (attrs, NULL);
 
-	if (!registered_views)
+	if (!registered_renderers)
 		return NULL;
 
 	if (!registered_sorted) {
-		g_array_sort (registered_views, sort_registered_by_n_attrs);
+		g_array_sort (registered_renderers, sort_registered_by_n_attrs);
 		registered_sorted = TRUE;
 	}
 
-	for (i = 0; i < registered_views->len; ++i) {
-		registered = &(g_array_index (registered_views, GcrRegisteredView, i));
+	for (i = 0; i < registered_renderers->len; ++i) {
+		registered = &(g_array_index (registered_renderers, GcrRegistered, i));
 		n_attrs = gck_attributes_count (registered->attrs);
 
 		matched = TRUE;
@@ -122,7 +147,7 @@ gcr_view_create (const gchar *label, GckAttributes *attrs)
 		}
 
 		if (matched)
-			return g_object_new (registered->view_type, "label", label,
+			return g_object_new (registered->renderer_type, "label", label,
 			                     "attributes", attrs, NULL);
 	}
 
@@ -130,15 +155,15 @@ gcr_view_create (const gchar *label, GckAttributes *attrs)
 }
 
 void
-gcr_view_register (GType view_type, GckAttributes *attrs)
+gcr_renderer_register (GType renderer_type, GckAttributes *attrs)
 {
-	GcrRegisteredView registered;
+	GcrRegistered registered;
 
-	if (!registered_views)
-		registered_views = g_array_new (FALSE, FALSE, sizeof (GcrRegisteredView));
+	if (!registered_renderers)
+		registered_renderers = g_array_new (FALSE, FALSE, sizeof (GcrRegistered));
 
-	registered.view_type = view_type;
+	registered.renderer_type = renderer_type;
 	registered.attrs = gck_attributes_ref (attrs);
-	g_array_append_val (registered_views, registered);
+	g_array_append_val (registered_renderers, registered);
 	registered_sorted = FALSE;
 }

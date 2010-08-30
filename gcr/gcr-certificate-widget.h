@@ -52,10 +52,15 @@ GType                   gcr_certificate_widget_get_type               (void);
 
 GcrCertificateWidget*   gcr_certificate_widget_new                    (GcrCertificate *cert);
 
-GcrCertificate*         gcr_certificate_widget_get_certificate        (GcrCertificateWidget *details);
+GcrCertificate*         gcr_certificate_widget_get_certificate        (GcrCertificateWidget *self);
 
-void                    gcr_certificate_widget_set_certificate        (GcrCertificateWidget *details,
+void                    gcr_certificate_widget_set_certificate        (GcrCertificateWidget *self,
                                                                        GcrCertificate *cert);
+
+struct _GckAttributes*  gcr_certificate_widget_get_attributes         (GcrCertificateWidget *self);
+
+void                    gcr_certificate_widget_set_attributes         (GcrCertificateWidget *self,
+                                                                       struct _GckAttributes* attrs);
 
 G_END_DECLS
 

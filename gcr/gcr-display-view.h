@@ -25,6 +25,7 @@
 
 #include "gcr-certificate.h"
 #include "gcr-types.h"
+#include "gcr-viewer.h"
 
 G_BEGIN_DECLS
 
@@ -52,32 +53,40 @@ GType            _gcr_display_view_get_type                    (void);
 
 GcrDisplayView*  _gcr_display_view_new                         (void);
 
-void             _gcr_display_view_clear                       (GcrDisplayView *self);
+void             _gcr_display_view_clear                       (GcrDisplayView *self,
+                                                                GcrRenderer *renderer);
 
 void             _gcr_display_view_append_value                (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
                                                                 const gchar *field,
                                                                 const gchar *value,
                                                                 gboolean monospace);
 
 void             _gcr_display_view_append_title                (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
                                                                 const gchar *title);
 
 void             _gcr_display_view_append_content              (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
                                                                 const gchar *content,
                                                                 const gchar *details);
 
-void             _gcr_display_view_start_details               (GcrDisplayView *self);
+void             _gcr_display_view_start_details               (GcrDisplayView *self,
+                                                                GcrRenderer *renderer);
 
 void             _gcr_display_view_append_heading              (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
                                                                 const gchar *heading);
 
 void             _gcr_display_view_append_fingerprint          (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
                                                                 const guchar *data,
                                                                 gsize n_data,
                                                                 const gchar *name,
                                                                 GChecksumType type);
 
 void             _gcr_display_view_set_stock_image             (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
                                                                 const gchar *stock_id);
 
 G_END_DECLS

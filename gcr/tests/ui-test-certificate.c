@@ -41,7 +41,6 @@ on_parser_parsed (GcrParser *parser, gpointer unused)
 	g_object_ref_sink (dialog);
 
 	details = g_object_new (GCR_TYPE_CERTIFICATE_WIDGET,
-	                        "label", "Google's Certificate",
 	                        "attributes", gcr_parser_get_parsed_attributes (parser),
 	                        NULL);
 

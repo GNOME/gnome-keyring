@@ -17,13 +17,16 @@ incdir = $(includedir)/gcr
 inc_HEADERS = \
 	gcr.h \
 	gcr-certificate.h \
+	gcr-certificate-renderer.h \
 	gcr-certificate-widget.h \
+	gcr-key-renderer.h \
 	gcr-key-widget.h \
 	gcr-importer.h \
 	gcr-parser.h \
+	gcr-renderer.h \
 	gcr-types.h \
 	gcr-unlock-options-widget.h \
-	gcr-view.h
+	gcr-viewer.h
 
 # ------------------------------------------------------------------
 # LIBRARY
@@ -44,19 +47,22 @@ lib_LTLIBRARIES = libgcr.la
 
 libgcr_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
+	gcr-certificate-renderer.c gcr-certificate-renderer.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
-	gcr-key-widget.c gcr-key-widget.h \
 	gcr-display-view.c gcr-display-view.h \
 	gcr-icons.c gcr-icons.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \
 	gcr-internal.h \
+	gcr-key-renderer.c gcr-key-renderer.h \
+	gcr-key-widget.c gcr-key-widget.h \
 	gcr-library.c \
 	gcr-parser.c gcr-parser.h \
+	gcr-renderer.c gcr-renderer.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-types.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
-	gcr-view.c gcr-view.h \
+	gcr-viewer.c gcr-viewer.h \
 	$(BUILT_SOURCES)
 
 libgcr_la_CFLAGS = \

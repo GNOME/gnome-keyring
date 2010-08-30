@@ -40,8 +40,7 @@ on_parser_parsed (GcrParser *parser, gpointer unused)
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	g_object_ref_sink (dialog);
 
-	details = gcr_key_widget_new ("My Private Key",
-	                              gcr_parser_get_parsed_attributes (parser));
+	details = gcr_key_widget_new (gcr_parser_get_parsed_attributes (parser));
 	gtk_widget_show (GTK_WIDGET (details));
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (details));
 
