@@ -530,9 +530,12 @@ _gcr_display_view_clear (GcrDisplayView *self, GcrRenderer *renderer)
 
 	if (gtk_widget_get_parent (item->details_widget))
 		gtk_container_remove (GTK_CONTAINER (self), item->details_widget);
-	gtk_text_buffer_get_start_iter (self->pv->buffer, &start);
-	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &start, item->beginning);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
 	gtk_text_buffer_delete (self->pv->buffer, &start, &iter);
+
+	g_return_if_fail (!gtk_text_mark_get_deleted (item->beginning));
+	g_return_if_fail (!gtk_text_mark_get_deleted (item->ending));
 
 	item->extra_tag = NULL;
 	item->field_width = 0;
@@ -559,7 +562,7 @@ _gcr_display_view_start_details (GcrDisplayView *self, GcrRenderer *renderer)
 	item->extra_tag = item->details_tag;
 	item->details = TRUE;
 
-	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
 	anchor = gtk_text_buffer_create_child_anchor (self->pv->buffer, &iter);
 	gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (self), item->details_widget, anchor);
 	gtk_widget_show_all (item->details_widget);
