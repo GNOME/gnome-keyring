@@ -40,6 +40,9 @@ G_DEFINE_TYPE_WITH_CODE (GcrDisplayView, _gcr_display_view, GTK_TYPE_TEXT_VIEW,
 
 typedef struct _GcrDisplayItem {
 	GcrDisplayView *display_view;
+	GcrRenderer *renderer;
+	gboolean expanded;
+	gboolean details;
 	GtkTextMark *beginning;
 	GtkTextMark *ending;
 	GtkWidget *details_widget;
@@ -126,9 +129,8 @@ on_expander_expanded (GObject *object, GParamSpec *param_spec, gpointer user_dat
 {
 	GtkExpander *expander = GTK_EXPANDER (object);
 	GcrDisplayItem *item = user_data;
-	g_object_set (item->details_tag,
-	              "invisible", gtk_expander_get_expanded (expander) ? FALSE : TRUE,
-	              NULL);
+	item->expanded = gtk_expander_get_expanded (expander);
+	gcr_renderer_render (item->renderer, GCR_VIEWER (item->display_view));
 }
 
 static void
@@ -139,7 +141,7 @@ style_display_item (GtkWidget *widget, GcrDisplayItem *item)
 }
 
 static GcrDisplayItem*
-create_display_item (GcrDisplayView *self)
+create_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 {
 	GcrDisplayItem *item;
 	GtkTextTagTable *tags;
@@ -150,6 +152,7 @@ create_display_item (GcrDisplayView *self)
 
 	item = g_new0 (GcrDisplayItem, 1);
 	item->display_view = self;
+	item->renderer = renderer;
 
 	tags = gtk_text_buffer_get_tag_table (self->pv->buffer);
 
@@ -182,7 +185,7 @@ create_display_item (GcrDisplayView *self)
 	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), "<b>_Details</b>");
 	g_signal_connect (widget, "notify::expanded", G_CALLBACK (on_expander_expanded), item);
 	g_signal_connect (widget, "realize", G_CALLBACK (on_expander_realize), NULL);
-	on_expander_expanded (G_OBJECT (widget), NULL, item);
+	item->expanded = gtk_expander_get_expanded (GTK_EXPANDER (widget));
 
 	alignment = gtk_alignment_new (0.5, 0.5, 0.5, 0.5);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 9, 0, 0);
@@ -451,7 +454,7 @@ _gcr_display_view_real_add_renderer (GcrViewer *viewer, GcrRenderer *renderer)
 	GcrDisplayView *self = GCR_DISPLAY_VIEW (viewer);
 	GcrDisplayItem *item;
 
-	item = create_display_item (self);
+	item = create_display_item (self, renderer);
 	g_ptr_array_add (self->pv->renderers, g_object_ref (renderer));
 	g_hash_table_insert (self->pv->items, renderer, item);
 
@@ -530,8 +533,10 @@ _gcr_display_view_clear (GcrDisplayView *self, GcrRenderer *renderer)
 	gtk_text_buffer_get_start_iter (self->pv->buffer, &start);
 	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
 	gtk_text_buffer_delete (self->pv->buffer, &start, &iter);
+
 	item->extra_tag = NULL;
 	item->field_width = 0;
+	item->details = FALSE;
 }
 
 void
@@ -545,7 +550,14 @@ _gcr_display_view_start_details (GcrDisplayView *self, GcrRenderer *renderer)
 	item = lookup_display_item (self, renderer);
 	g_return_if_fail (item);
 
+	if (item->details) {
+		g_warning ("A GcrRenderer implementation has called %s twice in one render",
+		           G_STRFUNC);
+		return;
+	}
+
 	item->extra_tag = item->details_tag;
+	item->details = TRUE;
 
 	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
 	anchor = gtk_text_buffer_create_child_anchor (self->pv->buffer, &iter);
@@ -567,6 +579,9 @@ _gcr_display_view_append_content (GcrDisplayView *self, GcrRenderer *renderer,
 
 	item = lookup_display_item (self, renderer);
 	g_return_if_fail (item);
+
+	if (item->details && !item->expanded)
+		return;
 
 	if (details)
 		content = memory = g_strdup_printf ("%s: %s", content, details);
@@ -596,6 +611,9 @@ _gcr_display_view_append_value (GcrDisplayView *self, GcrRenderer *renderer, con
 
 	item = lookup_display_item (self, renderer);
 	g_return_if_fail (item);
+
+	if (item->details && !item->expanded)
+		return;
 
 	text = g_strdup_printf ("%s:", field);
 	if (value == NULL)
@@ -646,8 +664,8 @@ _gcr_display_view_append_title (GcrDisplayView *self, GcrRenderer *renderer, con
 	item = lookup_display_item (self, renderer);
 	g_return_if_fail (item);
 
-	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
-	g_return_if_fail (item && item->display_view == self);
+	if (item->details && !item->expanded)
+		return;
 
 	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
 	gtk_text_buffer_insert_with_tags (self->pv->buffer, &iter, title, -1,
@@ -667,6 +685,9 @@ _gcr_display_view_append_heading (GcrDisplayView *self, GcrRenderer *renderer, c
 
 	item = lookup_display_item (self, renderer);
 	g_return_if_fail (item);
+
+	if (item->details && !item->expanded)
+		return;
 
 	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
 	gtk_text_buffer_insert_with_tags (self->pv->buffer, &iter, heading, -1,
