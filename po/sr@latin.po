@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-08-18 20:54+0000\n"
-"PO-Revision-Date: 2010-08-23 21:30+0200\n"
+"POT-Creation-Date: 2010-08-29 13:20+0000\n"
+"PO-Revision-Date: 2010-08-30 22:22+0200\n"
 "Last-Translator: Miloš Popović <gpopac@gmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -95,17 +95,14 @@ msgid "SSH Key Agent"
 msgstr "Agent za SSH ključeve"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-#| msgid "GNOME Keyring: SSH Agent"
 msgid "GNOME Keyring: GPG Agent"
 msgstr "Gnomovi privesci: GPG agent"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#| msgid "New password strength"
 msgid "GPG Password Agent"
 msgstr "Agent za GPG lozinke"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
-#| msgid "Unknown error"
 msgid "Unknown"
 msgstr "Nepoznato"
 
@@ -118,6 +115,20 @@ msgstr "PGP ključ: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "Unesite lozinku"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+#| msgid "Lock this keyring if idle for"
+msgid "Forget this password if idle for"
+msgstr "Zaboravi lozinku ako sam odsutan više od"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "Zaboravi lozinku nakon"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+#| msgid "Lock this keyring when I log out"
+msgid "Forget this password when I log out"
+msgstr "Zaboravi lozinku kada se odjavim"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -627,7 +638,8 @@ msgid "No key is needed"
 msgstr "Nije potreban ključ"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+#| msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "Ključ je sada drugačiji nego pre"
 
 #: ../gp11/gp11-misc.c:149
@@ -878,7 +890,6 @@ msgid "Unlock Login Keyring"
 msgstr "Otključaj privezak za prijavu"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
-#| msgid "Enter password for to unlock your login keyring"
 msgid "Enter password to unlock your login keyring"
 msgstr "Unesite lozinku da otključate privezak za prijavu"
 
@@ -991,12 +1002,10 @@ msgstr ""
 "ključeva"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
-#| msgid "Change Keyring Password"
 msgid "Change Password"
 msgstr "Promeni lozinku"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
-#| msgid "New password required for secure storage"
 msgid "Change password for secure storage"
 msgstr "Menja lozinku za sigurno skladište"
 
@@ -1006,11 +1015,11 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "Za promenu lozinke na „%s“, morate uneti staru i novu lozinku"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "Da li da pamtim nešifrovane lozinke?"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1019,15 +1028,15 @@ msgstr ""
 "Ukoliko izaberete praznu lozinku, zapamćene lozinke neće biti bezbedne, pa "
 "će moći da ih koristi svako ko pristupi vašim datotekama."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "Koristi nebezbedno skladište"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "Lozinke se ne podudaraju."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "Lozinka ne može biti prazna"
 
