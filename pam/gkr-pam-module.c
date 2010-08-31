@@ -33,15 +33,8 @@
 
 #include "daemon/control/gkd-control-codes.h"
 
-#ifdef HAVE_SECURITY_PAM_MODULES_H
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
-#else
-#ifdef HAVE_PAM_PAM_MODULES_H
-#include <pam/pam_appl.h>
-#include <pam/pam_modules.h>
-#endif
-#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
