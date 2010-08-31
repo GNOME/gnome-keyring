@@ -1,401 +1,1051 @@
-# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Ahmad Riza H Nst <ari@160c.afraid.org> 20040519
 #
+# Dirgita <dirgitadevina@yahoo.co.id>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring gnome-2-6\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2004-05-19 18:46+0700\n"
-"Last-Translator: Ahmad Riza H Nst <ari@160c.afraid.org>\n"
-"Language-Team: Indonesia <sukarelawan@gnome.linux.or.id>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&component=general\n"
+"POT-Creation-Date: 2010-08-30 23:48+0000\n"
+"PO-Revision-Date: 2010-07-17 21:23+0700\n"
+"Last-Translator: Dirgita <dirgitadevina@yahoo.co.id>\n"
+"Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
+msgid "Unnamed"
 msgstr ""
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
+#: ../daemon/dbus/gkd-secret-change.c:86
+msgid "Change Keyring Password"
+msgstr "Ubah Sandi Ring Kunci"
+
+#: ../daemon/dbus/gkd-secret-change.c:88
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
 msgstr ""
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr ""
-
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
-
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr ""
-
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr ""
-
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr ""
-
-#: ../gnome-keyring-ask.c:407
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
 msgstr ""
-"Aplikasi '%s' (%s) menginginkan akses ke keyring default, tetapi keyring "
-"tersebut terkunci"
 
-#: ../gnome-keyring-ask.c:411
+#: ../daemon/dbus/gkd-secret-change.c:111
+msgid "The original password was incorrect"
+msgstr ""
+
+#: ../daemon/dbus/gkd-secret-create.c:78
+msgid "New Keyring Password"
+msgstr "Password Keyring yang Baru"
+
+#: ../daemon/dbus/gkd-secret-create.c:79
+msgid "Choose password for new keyring"
+msgstr "Pilih password untuk keyring baru"
+
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "Aplikasi '%s' (%s) menginginkan akses ke keyring '%s', tetapi terkunci"
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr ""
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr ""
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr ""
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr ""
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Ring Kunci GNOME: Agen SSH"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "Agen Kunci SSH"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Ring Kunci GNOME: Agen GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "Agen Sandi GPG"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+msgid "Unknown"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
 #, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"Aplikasi '%s' (%s) menginginkan akses ke keyring tidak dikenal, tetapi "
-"keyring tersebut terkunci"
+msgid "PGP Key: %s"
+msgstr "Kunci PGP: %s"
 
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+msgid "Enter Passphrase"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr ""
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:159
+msgid "Login"
+msgstr ""
+
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "Komponen Domain"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "ID Pengguna"
+
+#: ../egg/egg-oid.c:46
+msgid "Email"
+msgstr "Surel"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "Tanggal Lahir"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "Tempat Lahir"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "Gender"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "Kewarganegaraan"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "Negara Tempat Tinggal"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr ""
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr ""
+
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
+#: ../gcr/gcr-certificate-details-widget.c:318
+msgid "Serial Number"
+msgstr "Nomor Seri"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "Negara"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr ""
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr ""
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "Jalan"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "Organisasi"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "Unit Organisasi"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr ""
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "Nomor Telepon"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr ""
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "Inisial"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr ""
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr ""
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "Pseudonim"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD2 with RSA"
+msgstr "MD2 dengan RSA"
+
+#: ../egg/egg-oid.c:102
+msgid "MD5 with RSA"
+msgstr "MD5 dengan RSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with RSA"
+msgstr "SHA1 dengan RSA"
+
+#: ../egg/egg-oid.c:107
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:109
+msgid "SHA1 with DSA"
+msgstr "SHA1 dengan DSA"
+
+#: ../egg/egg-spawn.c:273
 #, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
+msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
-"Aplikasi '%s' menginginkan akses ke keyring default, tetapi keyring tersebut "
-"terkunci"
 
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#: ../egg/egg-spawn.c:320
 #, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgid "Unexpected error in waitpid() (%s)"
 msgstr ""
-"Aplikasi '%s' menginginkan akses ke keyring '%s', tetapi keyring tersebut "
-"terkunci"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
+#: ../gcr/gcr-certificate-basics-widget.c:59
+msgid "<i>Not Part of Certificate</i>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.c:80
+msgid "<i>unknown</i>"
+msgstr "<i>tak dikenal</i>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:1
+msgid "<Not Part of Certificate>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:2
+msgid "<b>Fingerprints</b>"
+msgstr "<b>Sidik Jari</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:3
+msgid "<b>Issued By</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:4
+msgid "<b>Issued To</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:5
+msgid "<b>This certificate has been verified for the following uses:</b>"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:6
+msgid "<b>Validity</b>"
+msgstr "<b>Validitas</b>"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:7
+msgid "Common Name (CN)"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:8
+msgid "Email Recipient Certificate"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:9
+msgid "Email Signer Certificate"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:10
+msgid "Expires On"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:11
+msgid "Issued On"
+msgstr ""
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:12
+msgid "MD5 Fingerprint"
+msgstr "Sidik Jari MD5"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:13
+msgid "Organization (O)"
+msgstr "Organisasi (O)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:14
+msgid "Organizational Unit (OU)"
+msgstr "Unit Organisasi (OU)"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:15
+msgid "SHA1 Fingerprint"
+msgstr "Sidik Jari SHA1"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:16
+msgid "SSL Client Certificate"
+msgstr "Sertifikat Klien SSL"
+
+#: ../gcr/gcr-certificate-basics-widget.ui.h:17
+msgid "SSL Server Certificate"
+msgstr "Sertifikat Server SSL"
+
+#: ../gcr/gcr-certificate-details-widget.c:203
+msgid "Extension"
+msgstr "Ekstensi"
+
+#: ../gcr/gcr-certificate-details-widget.c:208
+msgid "Identifier"
+msgstr "Identifair"
+
+#: ../gcr/gcr-certificate-details-widget.c:216
+msgid "Value"
+msgstr "Nilai"
+
+#: ../gcr/gcr-certificate-details-widget.c:224
+msgid "Critical"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:224
+msgid "Yes"
+msgstr "Ya"
+
+#: ../gcr/gcr-certificate-details-widget.c:224
+msgid "No"
+msgstr "Tidak"
+
+#. The subject
+#: ../gcr/gcr-certificate-details-widget.c:299
+msgid "Subject Name"
+msgstr ""
+
+#. The Issuer
+#: ../gcr/gcr-certificate-details-widget.c:303
+msgid "Issuer Name"
+msgstr ""
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-details-widget.c:307
+msgid "Issued Certificate"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:312
+msgid "Version"
+msgstr "Versi"
+
+#: ../gcr/gcr-certificate-details-widget.c:325
+msgid "Not Valid Before"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:330
+msgid "Not Valid After"
+msgstr ""
+
+#. Signature
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
+msgid "Signature"
+msgstr "Tanda Tangan"
+
+#: ../gcr/gcr-certificate-details-widget.c:339
+msgid "Signature Algorithm"
+msgstr "Algoritma Tanda Tangan"
+
+#: ../gcr/gcr-certificate-details-widget.c:344
+msgid "Signature Parameters"
+msgstr "Parameter Tanda Tangan"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-details-widget.c:355
+msgid "Public Key Info"
+msgstr ""
+
+#: ../gcr/gcr-certificate-details-widget.c:359
+msgid "Key Algorithm"
+msgstr "Algoritma Kunci"
+
+#: ../gcr/gcr-certificate-details-widget.c:364
+msgid "Key Parameters"
+msgstr "Parameter Kunci"
+
+#: ../gcr/gcr-certificate-details-widget.c:371
+msgid "Key Size"
+msgstr "Ukuran Kunci"
+
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
+msgid "Public Key"
+msgstr "Kunci Publik"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-details-widget.c:383
+msgid "Fingerprints"
+msgstr "Sidik Jari"
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+msgstr "<span size='large' weight='bold'>Impor Sertifikat dan Kunci</span>"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr ""
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "Sandi:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Lock this keyring after"
+msgstr ""
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring if idle for"
+msgstr ""
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring when I log out"
+msgstr ""
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "minutes"
+msgstr "menit"
+
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
+msgid "The operation was cancelled"
+msgstr "Operasi dibatalkan"
+
+#: ../gcr/gcr-importer.c:255
 #, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
+msgid "No location available to import to"
 msgstr ""
-"Aplikasi '%s' menginginkan akses ke keyring tidak dikenal, tetapi keyring "
-"tersebut terkunci"
 
-#: ../gnome-keyring-ask.c:452
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
+#: ../gcr/gcr-importer.c:404
+msgid "Import Certificates/Keys"
+msgstr "Impor Sertifikat/Kunci"
+
+#: ../gcr/gcr-importer.c:411
+msgid "Choose a location to store the imported certificates/keys."
 msgstr ""
-"Aplikasi tidak dikenal menginginkan akses ke keyring default, tetapi keyring "
-"tersebut terkunci"
 
-#: ../gnome-keyring-ask.c:456
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
+msgid "Enter password to unlock the private key"
+msgstr ""
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Enter password to unlock the certificate"
+msgstr ""
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Enter password to unlock"
+msgstr "Masukkan sandi untuk membuka kunci"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:449
+msgid "In order to import the private key, it must be unlocked"
+msgstr ""
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:452
+msgid "In order to import the certificate, it must be unlocked"
+msgstr ""
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:455
+msgid "In order to import the data, it must be unlocked"
+msgstr ""
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:460
 #, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
+msgid "In order to import the private key '%s', it must be unlocked"
 msgstr ""
-"Aplikasi tidak dikenal menginginkan akse ke keyring '%s', tetapi keyring "
-"tersebut terkunci"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:463
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr ""
-"Aplikasi tidak dikenal menginginkan akse ke keyring tidak dikenal, tetapi "
-"keyring tersebut terkunci"
 
-#: ../gnome-keyring-ask.c:468
-msgid "Enter password for default keyring to unlock"
-msgstr "Masukkan password untuk keyring default untuk membukanya"
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:466
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr ""
 
-#: ../gnome-keyring-ask.c:470
+#: ../gcr/gcr-parser.c:197
+msgid "Private Key"
+msgstr "Kunci Pribadi"
+
+#: ../gcr/gcr-parser.c:200
+msgid "Certificate"
+msgstr "Sertifikat"
+
+#: ../gcr/gcr-parser.c:1568
+msgid "Unrecognized or unsupported data."
+msgstr ""
+
+#: ../gcr/gcr-parser.c:1571
+msgid "Could not parse invalid or corrupted data."
+msgstr ""
+
+#: ../gcr/gcr-parser.c:1574
+msgid "The data is locked"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:101
+msgid "Insufficient memory available"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:103
+msgid "The specified slot ID is not valid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:105
+msgid "Internal error"
+msgstr "Galat internal"
+
+#: ../gp11/gp11-misc.c:107
+msgid "The operation failed"
+msgstr "Operasi gagal"
+
+#: ../gp11/gp11-misc.c:109
+msgid "Invalid arguments"
+msgstr "Argumen tidak sah"
+
+#: ../gp11/gp11-misc.c:111
+msgid "The module cannot create needed threads"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:113
+msgid "The module cannot lock data properly"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:115
+msgid "The field is read-only"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:117
+msgid "The field is sensitive and cannot be revealed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:119
+msgid "The field is invalid or does not exist"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:121
+msgid "Invalid value for field"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:123
+msgid "The data is not valid or unrecognized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:125
+msgid "The data is too long"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:127
+msgid "An error occurred on the device"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:129
+msgid "Insufficient memory available on device"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:131
+msgid "The device was removed or unplugged"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:133
+msgid "The encrypted data is not valid or unrecognized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:135
+msgid "The encrypted data is too long"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:137
+msgid "This operation is not supported"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:139
+msgid "The key is missing or invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:141
+msgid "The key is the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:143
+msgid "The key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:145
+msgid "No key is needed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:147
+msgid "The key is different from before"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:149
+msgid "A key is needed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:151
+msgid "Cannot include the key in digest"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:153
+msgid "This operation cannot be done with this key"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:155
+msgid "The key cannot be wrapped"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:157
+msgid "Cannot export this key"
+msgstr "Tidak dapat mengekspor kunci ini"
+
+#: ../gp11/gp11-misc.c:159
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:161
+msgid "The crypto mechanism has an invalid argument"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:163
+msgid "The object is missing or invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:165
+msgid "Another operation is already taking place"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:167
+msgid "No operation is taking place"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:169
+msgid "The password or PIN is incorrect"
+msgstr "Sandi atau PIN salah"
+
+#: ../gp11/gp11-misc.c:171
+msgid "The password or PIN is invalid"
+msgstr "Sandi atau PIN tidak sah"
+
+#: ../gp11/gp11-misc.c:173
+msgid "The password or PIN is of an invalid length"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:175
+msgid "The password or PIN has expired"
+msgstr "Sandi atau PIN telah kedaluwarsa"
+
+#: ../gp11/gp11-misc.c:177
+msgid "The password or PIN is locked"
+msgstr "Sandi atau PIN dalam kondisi terkunci"
+
+#: ../gp11/gp11-misc.c:179
+msgid "The session is closed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:181
+msgid "Too many sessions are active"
+msgstr "Terlalu banyak sesi yang aktif"
+
+#: ../gp11/gp11-misc.c:183
+msgid "The session is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:185
+msgid "The session is read-only"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:187
+msgid "An open session exists"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:189
+msgid "A read-only session exists"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:191
+msgid "An administrator session exists"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:193
+msgid "The signature is bad or corrupted"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:195
+msgid "The signature is unrecognized or corrupted"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:197
+msgid "Certain required fields are missing"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:199
+msgid "Certain fields have invalid values"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:201
+msgid "The device is not present or unplugged"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:203
+msgid "The device is invalid or unrecognizable"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:205
+msgid "The device is write protected"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:207
+msgid "Cannot import because the key is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:209
+msgid "Cannot import because the key is of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:211
+msgid "Cannot import because the key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:213
+msgid "You are already logged in"
+msgstr "Anda sudah masuk"
+
+#: ../gp11/gp11-misc.c:215
+msgid "No user has logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:217
+msgid "The user's password or PIN is not set"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:219
+msgid "The user is of an invalid type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:221
+msgid "Another user is already logged in"
+msgstr "Pengguna lainnya sudah masuk"
+
+#: ../gp11/gp11-misc.c:223
+msgid "Too many users of different types logged in"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:225
+msgid "Cannot import an invalid key"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:227
+msgid "Cannot import a key of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:229
+msgid "Cannot export because the key is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:231
+msgid "Cannot export because the key is of the wrong size"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:233
+msgid "Cannot export because the key is of the wrong type"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:235
+msgid "Unable to initialize the random number generator"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:237
+msgid "No random number generator available"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:239
+msgid "The crypto mechanism has an invalid parameter"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:241
+msgid "Not enough space to store the result"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:243
+msgid "The saved state is invalid"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:245
+msgid "The information is sensitive and cannot be revealed"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:247
+msgid "The state cannot be saved"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:249
+msgid "The module has not been initialized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:251
+msgid "The module has already been initialized"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:253
+msgid "Cannot lock data"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:255
+msgid "The data cannot be locked"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:257
+msgid "The signature request was rejected by the user"
+msgstr ""
+
+#: ../gp11/gp11-misc.c:261
+msgid "Unknown error"
+msgstr ""
+
+#: ../pkcs11/gkm/gkm-certificate.c:726
+msgid "Unnamed Certificate"
+msgstr ""
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+msgid "Couldn't parse public SSH key"
+msgstr ""
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
+msgid "The unlock password was incorrect"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
+msgid "Unlock Login Keyring"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+#, fuzzy
+#| msgid "Enter password to unlock"
+msgid "Enter password to unlock your login keyring"
+msgstr "Masukkan sandi untuk membuka kunci"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid "Unlock Keyring"
+msgstr "Buka Keyring"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Masukkan password untuk keyring '%s' untuk membukanya"
 
-#: ../gnome-keyring-ask.c:474
-msgid "Unlock Keyring"
-msgstr "Buka Keyring"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
 
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "_Tolak"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+msgid "Unlock private key"
+msgstr ""
 
-#: ../gnome-keyring-ask.c:517
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
+msgid "Unlock certificate"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+msgid "Unlock public key"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
+msgid "Unlock"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Enter password to unlock the public key"
+msgstr ""
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+msgid "Unlock certificate/key storage"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
 msgstr ""
-"Aplikasi '%s' (%s) ingin membuat keyring baru yang disebut '%s'. Anda harus "
-"memilih password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:521
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+msgid "New Password Required"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
+msgid "New password required for secure storage"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
 msgstr ""
-"Aplikasi '%s' (%s) ingin membuat keyring default baru. Anda harus memilih "
-"password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+msgid "Change Password"
+msgstr "Ubah Sandi"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
+msgid "Change password for secure storage"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
 #, c-format
 msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
+"To change the password for '%s', the original and new passwords are required"
 msgstr ""
-"Aplikasi '%s' ingin membuat keyring baru yang disebut '%s'. Anda harus "
-"memilih password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
-#, c-format
+#: ../ui/gku-prompt-tool.c:547
+msgid "Store passwords unencrypted?"
+msgstr ""
+
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
 msgstr ""
-"Aplikasi '%s' ingin membuat keyring default baru. Anda harus memilih "
-"password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:547
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
+#: ../ui/gku-prompt-tool.c:555
+msgid "Use Unsafe Storage"
 msgstr ""
-"Aplikasi tidak dikenal ingin membuat keyring baru yang disebut '%s'. Anda "
-"harus memilih password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:551
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
+#: ../ui/gku-prompt-tool.c:593
+msgid "Passwords do not match."
 msgstr ""
-"Aplikasi tidak dikenal ingin membuat keyring default baru . Anda harus "
-"memilih password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:558
-msgid "New Keyring Password"
-msgstr "Password Keyring yang Baru"
-
-#: ../gnome-keyring-ask.c:559
-msgid "Choose password for new keyring"
-msgstr "Pilih password untuk keyring baru"
-
-#: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
+#: ../ui/gku-prompt-tool.c:603
+msgid "Password cannot be blank"
 msgstr ""
-"Aplikasi '%s' (%s) ingin membuat keyring default baru. Anda harus memilih "
-"password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
+#: ../ui/gku-prompt.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr ""
-"Aplikasi '%s' (%s) ingin membuat keyring default baru. Anda harus memilih "
-"password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
+#: ../ui/gku-prompt.ui.h:2
+msgid "New password strength"
 msgstr ""
-"Aplikasi '%s' ingin membuat keyring default baru. Anda harus memilih "
-"password yang ingin anda gunakan untuk keyring tersebut."
 
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Aplikasi '%s' ingin membuat keyring default baru. Anda harus memilih "
-"password yang ingin anda gunakan untuk keyring tersebut."
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Application:"
+msgstr "_Aplikasi:"
 
-#: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Aplikasi tidak dikenal ingin membuat keyring default baru . Anda harus "
-"memilih password yang ingin anda gunakan untuk keyring tersebut."
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Confirm:"
+msgstr "_Konfirmasi:"
 
-#: ../gnome-keyring-ask.c:636
-#, fuzzy
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"Aplikasi tidak dikenal ingin membuat keyring default baru . Anda harus "
-"memilih password yang ingin anda gunakan untuk keyring tersebut."
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Details:"
+msgstr "_Detail:"
 
-#: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "Pilih password untuk keyring baru"
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Name:"
+msgstr "_Nama:"
 
-#: ../gnome-keyring-ask.c:645
-#, fuzzy
-msgid "Choose a new password for the default keyring. "
-msgstr "Pilih password untuk keyring default"
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Old Password:"
+msgstr "Sandi _Lama:"
 
-#: ../gnome-keyring-ask.c:650
-#, fuzzy
-msgid "Change Keyring Password"
-msgstr "Password Keyring yang Baru"
-
-#: ../gnome-keyring-ask.c:689
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Aplikasi '%s' ('%s') ingin menyimpan sebuah password, tetapi tidak ada "
-"keyring default. Untuk membuat sebuah, anda harus memilih password yang "
-"ingin digunakan untuk nya"
-
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Aplikasi '%s' ingin menyimpan sebuah password, tetapi tidak ada keyring "
-"default. Untuk membuat sebuah, anda harus memilih password yang ingin "
-"digunakan untuk nya"
-
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"Aplikasi tidak dikenal ingin menyimpan sebuah password, tetapi tidak ada "
-"keyring default. Untuk membuat sebuah, anda harus memilih password yang "
-"ingin digunakan untuk nya"
-
-#: ../gnome-keyring-ask.c:706
-msgid "Create Default Keyring"
-msgstr "Buat Keyring Default"
-
-#: ../gnome-keyring-ask.c:707
-msgid "Choose password for default keyring"
-msgstr "Pilih password untuk keyring default"
-
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Bolehkan aplikasi akses ke keyring?"
-
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Aplikasi '%s' (%s) ingin mengakses password untuk '%s' dalam %s."
-
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"Aplikasi '%s' (%s) ingin mengakses password untuk '%s' di dalam keyring "
-"default"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"Aplikasi '%s' (%s) ingin mengakses password untuk '%s' di dalam keyring "
-"tidak dikenal"
-
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Aplikasi '%s' ingin mengakses password untuk '%s' dalam %s."
-
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Aplikasi '%s' ingin mengakses password untuk '%s' dalam keyring default"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Aplikasi '%s' ingin mengakses password untuk '%s' dalam keyring tidak dikenal"
-
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Aplikasi tidak dikenal ingin mengakses password untuk '%s' dalam %s."
-
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"Aplikasi tidak dikenal ingin mengakses password untuk '%s' dalam keyring "
-"default."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"Aplikasi tidak dikenal ingin mengakses password untuk '%s' dalam keyring "
-"tidak dikenal."
-
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Bolehkan akses"
-
-#: ../gnome-keyring-ask.c:799
-msgid "Allow _Once"
-msgstr "Bolehkan _sekali"
-
-#: ../gnome-keyring-ask.c:800
-msgid "_Always Allow"
-msgstr "Sel_alu Bolehkan"
-
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "Anda harus menjelaskan tipe permintaan untuk dijalankan\n"
-
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Type permintaan tidak dikenal\n"
+#: ../ui/gku-prompt.ui.h:8
+msgid "_Password:"
+msgstr "_Sandi:"
