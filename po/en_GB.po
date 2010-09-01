@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-28 10:37+0100\n"
+"POT-Creation-Date: 2010-09-01 09:28+0100\n"
 "PO-Revision-Date: 2010-02-24 14:30+0100\n"
 "Last-Translator: Philip Withnall <philip@tecnocode.co.uk>\n"
 "Language-Team: British English <en@li.org>\n"
@@ -111,6 +111,18 @@ msgstr "PGP Key: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "Enter Passphrase"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr "Forget this password if idle for"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "Forget this password after"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr "Forget this password when I log out"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -618,7 +630,7 @@ msgid "No key is needed"
 msgstr "No key is needed"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "The key is different from before"
 
 #: ../gp11/gp11-misc.c:149
@@ -994,11 +1006,11 @@ msgid ""
 msgstr ""
 "To change the password for '%s', the original and new passwords are required"
 
-#: ../ui/gku-prompt-tool.c:532
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "Store passwords unencrypted?"
 
-#: ../ui/gku-prompt-tool.c:533
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1008,15 +1020,15 @@ msgstr ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 
-#: ../ui/gku-prompt-tool.c:540
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "Use Unsafe Storage"
 
-#: ../ui/gku-prompt-tool.c:578
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "Passwords do not match."
 
-#: ../ui/gku-prompt-tool.c:588
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "Password cannot be blank"
 
