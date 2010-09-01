@@ -26,7 +26,7 @@ gnome_keyring@GCR_VERSION_SUFFIX@_LDADD = \
 	$(DAEMON_LIBS)
 
 # Install a link from gnome-keyring → gnome-keyring@GCR_VERSION_SUFFIX@ to maintain compatibility
-if HAVE_GTK3
+if WITH_GTK3
 install-exec-hook:
 	@test -e "$(DESTDIR)$(bindir)/gnome-keyring" || (cd $(DESTDIR)$(bindir) && $(LN_S) gnome-keyring@GCR_VERSION_SUFFIX@ gnome-keyring)
 endif

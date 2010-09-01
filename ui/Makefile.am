@@ -79,7 +79,7 @@ gnome_keyring_prompt@GCR_VERSION_SUFFIX@_CFLAGS = \
 	$(GTK_CFLAGS)
 
 # Install a link from gnome-keyring-prompt → gnome-keyring-prompt@GCR_VERSION_SUFFIX@ to maintain compatibility
-if HAVE_GTK3
+if WITH_GTK3
 install-exec-hook:
 	@test -e "$(DESTDIR)$(libexecdir)/gnome-keyring-prompt" || (cd $(DESTDIR)$(libexecdir) && $(LN_S) gnome-keyring-prompt@GCR_VERSION_SUFFIX@ gnome-keyring-prompt)
 endif
