@@ -1,5 +1,5 @@
 bin_PROGRAMS= \
-	gnome-keyring
+	gnome-keyring@GCR_VERSION_SUFFIX@
 
 INCLUDES=	\
 	-I$(top_srcdir) \
@@ -8,19 +8,25 @@ INCLUDES=	\
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS)
 	
-gnome_keyring_SOURCES = \
+gnome_keyring@GCR_VERSION_SUFFIX@_SOURCES = \
 	gkr-tool.c gkr-tool.h \
 	gkr-tool-import.c
 	
-gnome_keyring_CFLAGS = \
+gnome_keyring@GCR_VERSION_SUFFIX@_CFLAGS = \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
 
-gnome_keyring_LDADD = \
+gnome_keyring@GCR_VERSION_SUFFIX@_LDADD = \
 	$(top_builddir)/gp11/libgp11.la \
-	$(top_builddir)/gcr/libgcr.la \
+	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
 	$(top_builddir)/egg/libegg.la \
 	$(GTHREAD_LIBS) \
 	$(GTK_LIBS) \
 	$(GCRYPT_LIBS) \
 	$(DAEMON_LIBS)
+
+# Install a link from gnome-keyring → gnome-keyring@GCR_VERSION_SUFFIX@ to maintain compatibility
+if WITH_GTK3
+install-exec-hook:
+	@test -e "$(DESTDIR)$(bindir)/gnome-keyring" || (cd $(DESTDIR)$(bindir) && $(LN_S) gnome-keyring@GCR_VERSION_SUFFIX@ gnome-keyring)
+endif
