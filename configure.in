@@ -251,7 +251,7 @@ AC_ARG_ENABLE(pam,
 
 pam_status="no"
 if test "$enable_pam" != "no"; then
-	AC_CHECK_HEADER(security/pam_modules.h, have_pam=yes, have_pam=no)
+	AC_CHECK_HEADERS(security/pam_modules.h pam/pam_modules.h, [have_pam=yes; break], have_pam=no)
 	if test "$enable_pam" = "yes" -a "$have_pam" = "no"; then
 		AC_MSG_ERROR(The PAM headers are missing)
 	elif test "$have_pam" = "yes"; then
