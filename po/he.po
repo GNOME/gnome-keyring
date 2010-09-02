@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-09-02 17:50+0300\n"
-"PO-Revision-Date: 2010-08-29 15:49+0200\n"
+"PO-Revision-Date: 2010-09-02 17:52+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -629,7 +629,6 @@ msgid "No key is needed"
 msgstr "אין צורך במפתח"
 
 #: ../gp11/gp11-misc.c:147
-#, fuzzy
 msgid "The key is different from before"
 msgstr "המפתח שונה מבעבר"
 
