@@ -446,14 +446,14 @@ static void
 prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
 {
 	GtkWidget *unlock, *area;
-	gboolean unlock_auto;
+	gint unlock_auto;
 	GtkToggleButton *button;
 	gint unlock_idle, unlock_timeout;
 
 	button = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "auto_unlock_check"));
 	g_signal_connect (button, "toggled", G_CALLBACK (on_auto_check_unlock_toggled), builder);
-	unlock_auto = g_key_file_get_boolean (input_data, "unlock-options", "unlock-auto", NULL);
-	gtk_toggle_button_set_active (button, unlock_auto);
+	unlock_auto = g_key_file_get_integer (input_data, "unlock-options", "unlock-auto", NULL);
+	gtk_toggle_button_set_active (button, unlock_auto == 0 ? FALSE : TRUE);
 	on_auto_check_unlock_toggled (button, builder);
 
 	unlock = gcr_unlock_options_widget_new ();
@@ -777,8 +777,8 @@ gather_unlock_options (GtkBuilder *builder, GtkDialog *dialog)
 	GtkWidget *unlock;
 
 	button = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "auto_unlock_check"));
-	g_key_file_set_boolean (output_data, "unlock-options", "unlock-auto",
-	                        gtk_toggle_button_get_active (button));
+	g_key_file_set_integer (output_data, "unlock-options", "unlock-auto",
+	                        gtk_toggle_button_get_active (button) ? 1 : 0);
 
 	unlock = g_object_get_data (G_OBJECT (dialog), "unlock-options-widget");
 	g_object_get (unlock,
