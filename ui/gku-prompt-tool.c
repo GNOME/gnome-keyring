@@ -210,20 +210,6 @@ on_password_changed (GtkEditable *editable, gpointer user_data)
 }
 
 /**
-* check: A toggle button that defines the state of the options_area
-* builder: The GTKBuilder data to extract "options_area" from
-*
-* Toggles the sensitivity of the "options_area" based on the Toggle Button check
-*
-**/
-static void
-on_auto_check_unlock_toggled (GtkToggleButton *check, GtkBuilder *builder)
-{
-	GtkWidget *area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
-	gtk_widget_set_sensitive (area, !gtk_toggle_button_get_active (check));
-}
-
-/**
 * builder: The builder object to look for visibility keys in
 * dialog: ignored
 *
@@ -425,14 +411,25 @@ prepare_security (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 static void
-prepare_lock_label (GtkWidget *unlock, guint option, const gchar *field)
+prepare_unlock_option (GcrUnlockOptionsWidget *unlock, const gchar *option)
 {
-	gchar *label;
+	GError *error = NULL;
+	gboolean sensitive;
+	gchar *text;
 
-	label = g_key_file_get_string (input_data, "unlock-options", field, NULL);
-	if (label)
-		gcr_unlock_options_widget_set_label (GCR_UNLOCK_OPTIONS_WIDGET (unlock), option, label);
-	g_free (label);
+	text = g_key_file_get_string (input_data, option, "label", NULL);
+	if (text)
+		gcr_unlock_options_widget_set_label (unlock, option, text);
+	g_free (text);
+
+	sensitive = g_key_file_get_boolean (input_data, option, "sensitive", &error);
+	if (error == NULL) {
+		text = g_key_file_get_string (input_data, option, "reason", NULL);
+		gcr_unlock_options_widget_set_sensitive (unlock, option, sensitive, text);
+		g_free (text);
+	}
+
+	g_clear_error (&error);
 }
 
 /**
@@ -445,34 +442,28 @@ prepare_lock_label (GtkWidget *unlock, guint option, const gchar *field)
 static void
 prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
 {
-	GtkWidget *unlock, *area;
-	gint unlock_auto;
-	GtkToggleButton *button;
-	gint unlock_idle, unlock_timeout;
+	GcrUnlockOptionsWidget *unlock;
+	GtkWidget *area;
+	gchar *option;
+	guint ttl;
 
-	button = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "auto_unlock_check"));
-	g_signal_connect (button, "toggled", G_CALLBACK (on_auto_check_unlock_toggled), builder);
-	unlock_auto = g_key_file_get_integer (input_data, "unlock-options", "unlock-auto", NULL);
-	gtk_toggle_button_set_active (button, unlock_auto == 0 ? FALSE : TRUE);
-	on_auto_check_unlock_toggled (button, builder);
-
-	unlock = gcr_unlock_options_widget_new ();
+	unlock = GCR_UNLOCK_OPTIONS_WIDGET (gcr_unlock_options_widget_new ());
 	area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
 	g_object_set_data (G_OBJECT (dialog), "unlock-options-widget", unlock);
-	gtk_container_add (GTK_CONTAINER (area), unlock);
-	gtk_widget_show (unlock);
+	gtk_container_add (GTK_CONTAINER (area), GTK_WIDGET (unlock));
+	gtk_widget_show (GTK_WIDGET (unlock));
 
-	unlock_idle = g_key_file_get_integer (input_data, "unlock-options", "unlock-idle", NULL);
-	unlock_timeout = g_key_file_get_integer (input_data, "unlock-options", "unlock-timeout", NULL);
+	ttl = g_key_file_get_integer (input_data, "unlock-options", "ttl", NULL);
+	gcr_unlock_options_widget_set_ttl (unlock, ttl);
 
-	g_object_set (unlock,
-	              "unlock-idle", unlock_idle,
-	              "unlock-timeout", unlock_timeout,
-	              NULL);
+	option = g_key_file_get_string (input_data, "unlock-options", "choice", NULL);
+	gcr_unlock_options_widget_set_choice (unlock, option ? option : GCR_UNLOCK_OPTION_SESSION);
+	g_free (option);
 
-	prepare_lock_label (unlock, GCR_UNLOCK_OPTION_IDLE, "label-idle");
-	prepare_lock_label (unlock, GCR_UNLOCK_OPTION_TIMEOUT, "label-timeout");
-	prepare_lock_label (unlock, GCR_UNLOCK_OPTION_SESSION, "label-session");
+	prepare_unlock_option (unlock, "always");
+	prepare_unlock_option (unlock, "idle");
+	prepare_unlock_option (unlock, "timeout");
+	prepare_unlock_option (unlock, "session");
 }
 
 /**
@@ -772,22 +763,18 @@ gather_response (gint response)
 static void
 gather_unlock_options (GtkBuilder *builder, GtkDialog *dialog)
 {
-	gint unlock_timeout, unlock_idle;
-	GtkToggleButton *button;
-	GtkWidget *unlock;
-
-	button = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "auto_unlock_check"));
-	g_key_file_set_integer (output_data, "unlock-options", "unlock-auto",
-	                        gtk_toggle_button_get_active (button) ? 1 : 0);
+	GcrUnlockOptionsWidget *unlock;
+	const gchar *choice;
 
 	unlock = g_object_get_data (G_OBJECT (dialog), "unlock-options-widget");
-	g_object_get (unlock,
-	              "unlock-timeout", &unlock_timeout,
-	              "unlock-idle", &unlock_idle,
-	              NULL);
 
-	g_key_file_set_integer (output_data, "unlock-options", "unlock-timeout", unlock_timeout);
-	g_key_file_set_integer (output_data, "unlock-options", "unlock-idle", unlock_idle);
+	choice = gcr_unlock_options_widget_get_choice (unlock);
+	if (choice) {
+		g_key_file_set_integer (output_data, "unlock-options", "ttl",
+		                        gcr_unlock_options_widget_get_ttl (unlock));
+
+		g_key_file_set_string (output_data, "unlock-options", "choice", choice);
+	}
 }
 
 /**

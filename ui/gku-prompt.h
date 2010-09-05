@@ -34,10 +34,6 @@ typedef enum {
 	GKU_RESPONSE_OTHER        = 3,
 } GkuResponse;
 
-#define GKU_UNLOCK_AUTO       "unlock-auto"
-#define GKU_UNLOCK_IDLE       "unlock-idle"
-#define GKU_UNLOCK_TIMEOUT    "unlock-timeout"
-
 #define GKU_TYPE_PROMPT               (gku_prompt_get_type ())
 #define GKU_PROMPT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKU_TYPE_PROMPT, GkuPrompt))
 #define GKU_PROMPT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKU_TYPE_PROMPT, GkuPromptClass))
@@ -116,13 +112,20 @@ gboolean            gku_prompt_get_transport_password (GkuPrompt *self,
                                                        gpointer *value,
                                                        gsize *n_value);
 
-gboolean            gku_prompt_get_unlock_option      (GkuPrompt *self,
-                                                       const gchar *option,
-                                                       gint *value);
+const gchar*        gku_prompt_get_unlock_choice      (GkuPrompt *self);
 
-void                gku_prompt_set_unlock_option      (GkuPrompt *self,
+void                gku_prompt_set_unlock_choice      (GkuPrompt *self,
+                                                       const gchar *option);
+
+void                gku_prompt_set_unlock_sensitive   (GkuPrompt *self,
                                                        const gchar *option,
-                                                       gint value);
+                                                       gboolean sensitive,
+                                                       const gchar *reason);
+
+guint               gku_prompt_get_unlock_ttl         (GkuPrompt *self);
+
+void                gku_prompt_set_unlock_ttl         (GkuPrompt *self,
+                                                       guint ttl);
 
 void                gku_prompt_set_unlock_label       (GkuPrompt *self,
                                                        const gchar *option,

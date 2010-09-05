@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
@@ -10,10 +10,24 @@
   </object>
   <object class="GtkVBox" id="unlock-options-widget">
     <property name="visible">True</property>
-    <property name="orientation">vertical</property>
     <property name="spacing">6</property>
     <child>
-      <object class="GtkRadioButton" id="lock_logout_choice">
+      <object class="GtkRadioButton" id="lock_always_choice">
+        <property name="label" translatable="yes">Automatically unlock this keyring whenever I'm logged in</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="active">True</property>
+        <property name="draw_indicator">True</property>
+        <property name="group">lock_session_choice</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkRadioButton" id="lock_session_choice">
         <property name="label" translatable="yes">Lock this keyring when I log out</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
@@ -22,7 +36,8 @@
         <property name="draw_indicator">True</property>
       </object>
       <packing>
-        <property name="position">0</property>
+        <property name="expand">False</property>
+        <property name="position">1</property>
       </packing>
     </child>
     <child>
@@ -32,16 +47,15 @@
         <child>
           <object class="GtkVBox" id="vbox5">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkRadioButton" id="lock_after_choice">
+              <object class="GtkRadioButton" id="lock_timeout_choice">
                 <property name="label" translatable="yes">Lock this keyring after</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="draw_indicator">True</property>
-                <property name="group">lock_logout_choice</property>
+                <property name="group">lock_session_choice</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -55,7 +69,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="draw_indicator">True</property>
-                <property name="group">lock_logout_choice</property>
+                <property name="group">lock_session_choice</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -72,7 +86,7 @@
           <object class="GtkSpinButton" id="lock_minutes_spin">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="invisible_char">&#x2022;</property>
+            <property name="invisible_char">•</property>
             <property name="adjustment">spin_adjustment</property>
             <property name="climb_rate">1</property>
             <property name="numeric">True</property>
@@ -89,12 +103,14 @@
             <property name="label" translatable="yes">minutes</property>
           </object>
           <packing>
+            <property name="expand">False</property>
             <property name="position">2</property>
           </packing>
         </child>
       </object>
       <packing>
-        <property name="position">1</property>
+        <property name="expand">False</property>
+        <property name="position">2</property>
       </packing>
     </child>
   </object>

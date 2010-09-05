@@ -1,6 +1,7 @@
 
 [prompt]
 title = Test Prompt
+primary = Test Prompt
 
 [visibility]
 name_area = FALSE

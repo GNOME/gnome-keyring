@@ -23,6 +23,7 @@ inc_HEADERS = \
 	gcr-parser.h \
 	gcr-simple-certificate.h \
 	gcr-types.h \
+	gcr-unlock-options.h \
 	gcr-unlock-options-widget.h
 
 # ------------------------------------------------------------------
@@ -53,6 +54,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-parser.c gcr-parser.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-types.h \
+	gcr-unlock-options.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
 	$(BUILT_SOURCES)
 

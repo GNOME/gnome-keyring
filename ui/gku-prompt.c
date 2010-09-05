@@ -86,9 +86,8 @@ static void display_async_prompt (GkuPrompt *);
 
 /* User choices we transfer over during a soft prompt reset */
 const struct { const gchar *section; const gchar *name; } SOFT_RESET[] = {
-	{ "unlock-options", "unlock-auto" },
-	{ "unlock-options", "unlock-idle" },
-	{ "unlock-options", "unlock-timeout" },
+	{ "unlock-options", "choice" },
+	{ "unlock-options", "ttl" },
 	{ "details", "expanded" },
 };
 
@@ -884,33 +883,63 @@ gku_prompt_get_transport_password (GkuPrompt *self, const gchar *password_type,
 	return TRUE;
 }
 
-gboolean
-gku_prompt_get_unlock_option (GkuPrompt *self, const gchar *option, gint *value)
+const gchar*
+gku_prompt_get_unlock_choice (GkuPrompt *self)
 {
-	GError *error = NULL;
+	const gchar *result;
+	gchar *value;
 
-	g_return_val_if_fail (GKU_IS_PROMPT (self), FALSE);
-	g_return_val_if_fail (option, FALSE);
-	g_return_val_if_fail (value, FALSE);
-	g_return_val_if_fail (self->pv->output, FALSE);
+	g_return_val_if_fail (GKU_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (self->pv->output, NULL);
 
-	*value = g_key_file_get_integer (self->pv->output, "unlock-options", option, &error);
-	if (error != NULL) {
-		g_clear_error (&error);
-		return FALSE;
-	}
+	value = g_key_file_get_string (self->pv->output, "unlock-options", "choice", NULL);
+	if (value == NULL)
+		return "";
 
-	return TRUE;
+	result = g_intern_string (value);
+	g_free (value);
+
+	return result;
 }
 
 void
-gku_prompt_set_unlock_option (GkuPrompt *self, const gchar *option, gint value)
+gku_prompt_set_unlock_choice (GkuPrompt *self, const gchar *option)
 {
 	g_return_if_fail (GKU_IS_PROMPT (self));
 	g_return_if_fail (option);
 	g_return_if_fail (self->pv->input);
 
-	g_key_file_set_integer (self->pv->input, "unlock-options", option, value);
+	g_key_file_set_string (self->pv->input, "unlock-options", "choice", option);
+}
+
+guint
+gku_prompt_get_unlock_ttl (GkuPrompt *self)
+{
+	g_return_val_if_fail (GKU_IS_PROMPT (self), 0);
+	g_return_val_if_fail (self->pv->output, 0);
+
+	return g_key_file_get_integer (self->pv->output, "unlock-options", "ttl", NULL);
+}
+
+void
+gku_prompt_set_unlock_ttl (GkuPrompt *self, guint ttl)
+{
+	g_return_if_fail (GKU_IS_PROMPT (self));
+	g_return_if_fail (self->pv->input);
+
+	g_key_file_set_integer (self->pv->input, "unlock-options", "ttl", ttl);
+}
+
+void
+gku_prompt_set_unlock_sensitive (GkuPrompt *self, const gchar *option,
+                                 gboolean sensitive, const gchar *reason)
+{
+	g_return_if_fail (GKU_IS_PROMPT (self));
+	g_return_if_fail (self->pv->input);
+
+	g_key_file_set_boolean (self->pv->input, option, "sensitive", sensitive);
+	if (reason)
+		g_key_file_set_string (self->pv->input, option, "reason", reason);
 }
 
 void
@@ -921,7 +950,7 @@ gku_prompt_set_unlock_label (GkuPrompt *self, const gchar *option, const gchar *
 	g_return_if_fail (label);
 	g_return_if_fail (self->pv->input);
 
-	g_key_file_set_string (self->pv->input, "unlock-options", option, label);
+	g_key_file_set_string (self->pv->input, option, "label", label);
 }
 
 /* ----------------------------------------------------------------------------------
@@ -1238,7 +1267,7 @@ void
 gku_prompt_dummy_queue_auto_password (const gchar *password)
 {
 	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n"
-	                               "[unlock-options]\nunlock-auto=1\n";
+	                               "[unlock-options]\nchoice=always\n";
 	gchar *value;
 
 	g_return_if_fail (password);
