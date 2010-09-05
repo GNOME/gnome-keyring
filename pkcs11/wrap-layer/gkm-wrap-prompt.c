@@ -725,7 +725,11 @@ prepare_unlock_object (GkmWrapPrompt *self, const gchar *label, CK_OBJECT_CLASS 
 	gku_prompt_show_widget (prompt, "password_area");
 	gku_prompt_show_widget (prompt, "lock_area");
 	gku_prompt_show_widget (prompt, "options_area");
-	gku_prompt_hide_widget (prompt, "auto_unlock_check");
+
+	if (gkm_wrap_login_is_usable ())
+		gku_prompt_show_widget (prompt, "auto_unlock_check");
+	else
+		gku_prompt_hide_widget (prompt, "auto_unlock_check");
 }
 
 static void
