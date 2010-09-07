@@ -85,6 +85,8 @@ gboolean              gkd_gpg_agent_send_reply                      (GkdGpgAgent
 gboolean              gkd_gpg_agent_send_data                       (GkdGpgAgentCall *call,
                                                                      const gchar *data);
 
+GSettings*            gkd_gpg_agent_settings                        (void);
+
 /* -----------------------------------------------------------------------------
  * gkd-gpg-agent-ops
  */

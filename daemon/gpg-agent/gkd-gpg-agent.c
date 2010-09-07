@@ -256,6 +256,20 @@ gkd_gpg_agent_checkin_main_session (GP11Session *session)
 }
 
 /* --------------------------------------------------------------------------------------
+ * SETTINGS
+ */
+
+/* The cache settings */
+static GSettings *cache_settings = NULL;
+
+GSettings*
+gkd_gpg_agent_settings (void)
+{
+	g_return_val_if_fail (cache_settings, NULL);
+	return cache_settings;
+}
+
+/* --------------------------------------------------------------------------------------
  * MAIN THREAD
  */
 
@@ -370,6 +384,11 @@ gkd_gpg_agent_uninitialize (void)
 
 	g_assert (pkcs11_module);
 	g_object_unref (pkcs11_module);
+	pkcs11_module = NULL;
+
+	g_assert (cache_settings);
+	g_object_unref (cache_settings);
+	cache_settings = NULL;
 }
 
 int
@@ -434,6 +453,8 @@ gkd_gpg_agent_initialize_with_module (GP11Module *module)
 	pkcs11_main_cond = g_cond_new ();
 	pkcs11_main_checked = FALSE;
 	pkcs11_main_session = session;
+
+	cache_settings = g_settings_new ("org.gnome.crypto.cache");
 
 	return TRUE;
 }

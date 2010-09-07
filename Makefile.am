@@ -17,6 +17,7 @@ SUBDIRS = \
 	gcr \
 	ui \
 	pkcs11 \
+	schema \
 	daemon \
 	tool \
 	$(TESTS_DIR) \
