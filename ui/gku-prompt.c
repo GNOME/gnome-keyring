@@ -33,6 +33,8 @@
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-spawn.h"
 
+#include "gcr/gcr-unlock-options.h"
+
 #include "pkcs11/pkcs11i.h"
 
 #include <gcrypt.h>
@@ -910,6 +912,11 @@ gku_prompt_set_unlock_choice (GkuPrompt *self, const gchar *option)
 	g_return_if_fail (self->pv->input);
 
 	g_key_file_set_string (self->pv->input, "unlock-options", "choice", option);
+
+	/* Expand if anything but session unlock is chosen */
+	if (!g_str_equal (option, GCR_UNLOCK_OPTION_SESSION) &&
+	    !g_key_file_has_key (self->pv->input, "details", "expanded", NULL))
+		g_key_file_set_boolean (self->pv->input, "details", "expanded", TRUE);
 }
 
 guint
