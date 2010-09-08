@@ -12,7 +12,7 @@ ui_DATA = \
 # ------------------------------------------------------------------
 # HEADERS
 
-incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@
+incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
 
 inc_HEADERS = \
 	gcr.h \
