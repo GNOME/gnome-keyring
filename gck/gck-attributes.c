@@ -558,8 +558,8 @@ attribute_init_copy (GckAttribute *dest, const GckAttribute *src, GckAllocator a
 	 */
 
 	memcpy (dest, src, sizeof (GckAttribute));
-	if (src->value && src->length) {
-		dest->value = (allocator) (NULL, src->length);
+	if (src->value) {
+		dest->value = (allocator) (NULL, src->length ? src->length : 1);
 		g_assert (dest->value);
 		memcpy (dest->value, src->value, src->length);
 	}
