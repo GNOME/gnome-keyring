@@ -163,7 +163,8 @@ run_client_thread (gpointer data)
 	gint *socket = data;
 	GError *error = NULL;
 	GkdGpgAgentCall call;
-	gboolean ret;
+	GIOStatus status;
+	gboolean cont = TRUE;
 	gchar *line;
 	gsize n_line;
 
@@ -178,27 +179,32 @@ run_client_thread (gpointer data)
 	/* Initial response on the connection */
 	gkd_gpg_agent_send_reply (&call, TRUE, "your orders please");
 
-	for (;;) {
+	while (cont) {
+		line = NULL;
+		n_line = 0;
 
 		/* Read in a line */
-		g_io_channel_read_line (call.channel, &line, &n_line, NULL, &error);
-		if (error != NULL) {
+		status = g_io_channel_read_line (call.channel, &line, &n_line, NULL, &error);
+		switch (status) {
+		case G_IO_STATUS_ERROR:
 			g_critical ("gpg agent couldn't read from socket: %s",
 			            egg_error_message (error));
 			g_clear_error (&error);
+			cont = FALSE;
 			break;
-		}
-
-		/* Process that line */
-		if (line && n_line > 0)
-			ret = process_line (&call, line);
-		else
-			ret = TRUE;
-
-		g_free (line);
-
-		if (!ret)
+		case G_IO_STATUS_NORMAL:
+			cont = process_line (&call, line);
+			g_free (line);
 			break;
+		case G_IO_STATUS_EOF:
+			cont = FALSE;
+			break;
+		case G_IO_STATUS_AGAIN:
+			break;
+		default:
+			g_return_val_if_reached (NULL);
+			break;
+		};
 	}
 
 	g_io_channel_shutdown (call.channel, FALSE, NULL);
