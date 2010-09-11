@@ -5,7 +5,6 @@ srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
 PKG_NAME="gnome-keyring"
-REQUIRED_AUTOMAKE_VERSION=1.6
 
 (test -f $srcdir/configure.in \
   && test -f $srcdir/daemon/gkd-main.c) || {
