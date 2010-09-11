@@ -235,11 +235,12 @@ pool_free (void* item)
 			break;
 		}
 	}
-	
+
 	/* Otherwise invalid meta */
-	ASSERT (pool && *at);
+	ASSERT (at);
+	ASSERT (pool);
 	ASSERT (pool->used > 0);
-	
+
 	/* No more meta cells used in this block, remove from list, destroy */
 	if (pool->used == 1) {
 		*at = pool->next;
