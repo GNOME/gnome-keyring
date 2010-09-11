@@ -145,29 +145,30 @@ write_credentials_byte (int sock)
 static int
 connect_to_daemon (const char *control)
 {
-	char path[MAXPATHLEN];
 	struct sockaddr_un addr;
 	struct stat st;
 	int sock;
 
-	/* Build up the directory name */
-	if (strlen (control) + strlen ("/control") + 1 >= MAXPATHLEN) {
-		syslog (GKR_LOG_ERR, "The gnome keyring socket directory is too long");
+	addr.sun_family = AF_UNIX;
+	if (strlen (control) + strlen ("/control") + 1 > sizeof (addr.sun_path)) {
+		syslog (GKR_LOG_ERR, "gkr-pam: address is too long for unix socket path: %s/control",
+		        control);
 		return -1;
 	}
-	strcpy (path, control);
-	strcat (path, "/control");
+
+	strcpy (addr.sun_path, control);
+	strcat (addr.sun_path, "/control");
 
 	/* A bunch of checks to make sure nothing funny is going on */
-	if (lstat (path, &st) < 0) {
+	if (lstat (addr.sun_path, &st) < 0) {
 		syslog (GKR_LOG_ERR, "Couldn't access gnome keyring socket: %s: %s",
-		        path, strerror (errno));
+		        addr.sun_path, strerror (errno));
 		return -1;
 	}
 	
 	if (st.st_uid != geteuid ()) {
 		syslog (GKR_LOG_ERR, "The gnome keyring socket is not owned with the same "
-		        "credentials as the user login: %s", path);
+		        "credentials as the user login: %s", addr.sun_path);
 		return -1;
 	}
 	
@@ -175,13 +176,9 @@ connect_to_daemon (const char *control)
 		syslog (GKR_LOG_ERR, "The gnome keyring socket is not a valid simple "
 		        "non-linked socket");
 		return -1;
-	}	
-	
-	/* Now we connect */
+	}
 
-	addr.sun_family = AF_UNIX;
-	strncpy (addr.sun_path, path, sizeof (addr.sun_path));
-	
+	/* Now we connect */
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
 		syslog (GKR_LOG_ERR, "couldn't create control socket: %s", strerror (errno));
@@ -193,11 +190,11 @@ connect_to_daemon (const char *control)
 
 	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
 		syslog (GKR_LOG_ERR, "couldn't connect to gnome-keyring-daemon socket at: %s: %s",
-		        path, strerror (errno));
+		        addr.sun_path, strerror (errno));
 		close (sock);
 		return -1;
 	}
-	
+
 	/* Verify the server is running as the right user */
 	
 	if (check_peer_same_uid (sock) <= 0) {
