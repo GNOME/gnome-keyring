@@ -2,7 +2,7 @@
 # UI BUILDER
 # 
 
-uidir = $(datadir)/gcr/ui/
+uidir = $(datadir)/gcr@GCR_VERSION_SUFFIX@/ui/
 
 ui_DATA = \
 	gcr-certificate-basics-widget.ui \
@@ -12,7 +12,7 @@ ui_DATA = \
 # ------------------------------------------------------------------
 # HEADERS
 
-incdir = $(includedir)/gcr
+incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
 
 inc_HEADERS = \
 	gcr.h \
@@ -21,7 +21,9 @@ inc_HEADERS = \
 	gcr-certificate-details-widget.h \
 	gcr-importer.h \
 	gcr-parser.h \
+	gcr-simple-certificate.h \
 	gcr-types.h \
+	gcr-unlock-options.h \
 	gcr-unlock-options-widget.h
 
 # ------------------------------------------------------------------
@@ -39,9 +41,9 @@ INCLUDES = \
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h
 
-lib_LTLIBRARIES = libgcr.la
+lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
 
-libgcr_la_SOURCES = \
+libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
 	gcr-certificate-basics-widget.c gcr-certificate-basics-widget.h \
 	gcr-certificate-details-widget.c gcr-certificate-details-widget.h \
@@ -52,19 +54,20 @@ libgcr_la_SOURCES = \
 	gcr-parser.c gcr-parser.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-types.h \
+	gcr-unlock-options.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
 	$(BUILT_SOURCES)
 
-libgcr_la_CFLAGS = \
+libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 	-DPKCS11_MODULE_PATH=\""$(libdir)/gnome-keyring/gnome-keyring-pkcs11.so"\" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DUIDIR=\""$(uidir)"\"
     
-libgcr_la_LDFLAGS = \
+libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
     	-version-info $(GCR_LT_RELEASE) \
 	-no-undefined -export-symbols-regex 'gcr_*'
     
-libgcr_la_LIBADD = \
+libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gck/libgck.la \

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.31.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-04 14:26+0200\n"
-"PO-Revision-Date: 2010-08-04 14:27+0200\n"
+"POT-Creation-Date: 2010-09-02 20:23+0200\n"
+"PO-Revision-Date: 2010-09-02 20:26+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -16,54 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Dette alternativet aktiverer PKCS#11-komponenten for gnome-keyring-"
-"tjenesten. Dette trer kun i kraft under oppstart med gnome-session. Altså "
-"når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke "
-"kommandolinjeargumenter gis til tjenesten."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Dette alternativet aktiverer SSH-komponenten for gnome-keyring-tjenesten. "
-"Dette trer kun i kraft når gnome-keyring-daemon starter. Altså når brukeren "
-"logger inn. Denne innstillingen kan overstyres med spesifikke "
-"kommandolinjeargumenter gis til tjenesten."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Dette alternativet sikkerhetstjenestekomponenten for gnome-keyring-"
-"tjenesten. Dette trer kun i kraft når gnome-keyring-daemon starter. Altså "
-"når brukeren logger inn. Denne innstillingen kan overstyres med spesifikke "
-"kommandolinjeargumenter gis til tjenesten."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Om PKCS#11-komponenten for gnome-keyring er aktivert."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Om SSH-agenten for gnome-keyring er aktivert."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Om sikkerhetstjenesten for gnome-keyring er aktivert."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
@@ -157,6 +109,18 @@ msgstr "PGP-nøkkel: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "Oppgi passord"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr "Lås denne nøkkelringen hvis inaktiv i"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "Glem dette passordet etter"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr "Glem dette passordet når jeg logger ut"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -665,7 +629,7 @@ msgid "No key is needed"
 msgstr "Ingen nøkkel kreves"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "Nøkkelen er forskjellig fra tidligere"
 
 #: ../gp11/gp11-misc.c:149
@@ -1040,11 +1004,11 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "Du må oppgi opprinnelig og nytt passord for å bytte passord for «%s»"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1054,15 +1018,15 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 

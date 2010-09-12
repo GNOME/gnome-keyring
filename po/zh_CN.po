@@ -1,5 +1,6 @@
-# gnome-keyring的简体中文翻译
-# Copyright (C) 2003 Free Software Foundation, Inc.
+# Chinese (China) translation of gnome-keyring
+# gnome-keyring 的简体中文翻译
+# Copyright (C) 2003, 2004, 2005, 2008, 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 # Neo Willis <willis@linux.net>, 2003.
 # QA and Edited by Funda Wang <fundawang@linux.net.cn>, 2004
@@ -8,14 +9,15 @@
 # 甘露(Gan Lu) <rhythm.gan@gmail.com>, 2009
 # Eleanor Chen <chenyueg@gmail.com>, 2010
 # Tao Wang <dancefire@gmail.com>, 2010
+# Aron Xu <aronxu@gnome.org>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-07-13 13:05+0000\n"
-"PO-Revision-Date: 2010-07-15 13:47+0800\n"
+"POT-Creation-Date: 2010-08-08 07:33+0000\n"
+"PO-Revision-Date: 2010-08-13 17:32+0800\n"
 "Last-Translator: Tao Wang <dancefire@gmail.com>\n"
 "Language-Team: Aron Xu <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -75,19 +77,19 @@ msgstr "未命名"
 
 #: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
-msgstr "更改钥匙环密码"
+msgstr "更改密钥环密码"
 
 #: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "为“%s”钥匙环选择新密码"
+msgstr "为 %s 密钥环选择新密码"
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
-msgstr "未知应用程序想要更改“%s”钥匙环的密码。您必须为该钥匙环选择一个密码。"
+msgstr "未知应用程序想要更改 %s 密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -95,18 +97,18 @@ msgstr "原密码不正确"
 
 #: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
-msgstr "新钥匙环的密码"
+msgstr "新密钥环的密码"
 
 #: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
-msgstr "选择新钥匙环的密码"
+msgstr "选择新密钥环的密码"
 
 #: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
-msgstr "未知应用程序想要创建名为“%s”的新钥匙环。您必须为该钥匙环选择一个密码。"
+msgstr "未知应用程序想要创建名为 %s 的新密钥环。您必须为该密钥环选择一个密码。"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -114,11 +116,11 @@ msgstr "证书和密钥存储"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
 msgid "GNOME Keyring: PKCS#11 Component"
-msgstr "GNOME 钥匙环：PKCS#11 组件"
+msgstr "GNOME 密钥环：PKCS#11 组件"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
 msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME 钥匙环：保密服务"
+msgstr "GNOME 密钥环：保密服务"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
@@ -126,7 +128,7 @@ msgstr "保密存储服务"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME 钥匙环：SSH 助手"
+msgstr "GNOME 密钥环：SSH 助手"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "SSH Key Agent"
@@ -134,7 +136,7 @@ msgstr "SSH 密钥助手"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
 msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME 钥匙环：GPG 助手"
+msgstr "GNOME 密钥环：GPG 助手"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
 msgid "GPG Password Agent"
@@ -161,7 +163,7 @@ msgstr "登录"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
-msgstr "域组成"
+msgstr "域组件"
 
 #: ../egg/egg-oid.c:43
 msgid "User ID"
@@ -214,7 +216,7 @@ msgstr "位置"
 
 #: ../egg/egg-oid.c:75
 msgid "State"
-msgstr "省"
+msgstr "州/省"
 
 #: ../egg/egg-oid.c:77
 msgid "Street"
@@ -258,27 +260,27 @@ msgstr "笔名"
 
 #: ../egg/egg-oid.c:98
 msgid "RSA"
-msgstr "RSA 算法加密"
+msgstr "RSA"
 
 #: ../egg/egg-oid.c:100
 msgid "MD2 with RSA"
-msgstr "使用 RSA 算法的 MD2 值"
+msgstr "使用 MD2 算法的 RSA 密钥对"
 
 #: ../egg/egg-oid.c:102
 msgid "MD5 with RSA"
-msgstr "使用 RSA 算法的 MD5 值"
+msgstr "使用 MD5 算法的 RSA 密钥对"
 
 #: ../egg/egg-oid.c:104
 msgid "SHA1 with RSA"
-msgstr "使用 RSA 算法的 SHA1 值"
+msgstr "使用 SHA1 算法的 RSA 密钥对"
 
 #: ../egg/egg-oid.c:107
 msgid "DSA"
-msgstr "DSA 算法加密"
+msgstr "DSA"
 
 #: ../egg/egg-oid.c:109
 msgid "SHA1 with DSA"
-msgstr "使用 DSA 算法的 SHA1 值"
+msgstr "使用 SHA1 算法的 DSA 密钥对"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -296,7 +298,7 @@ msgstr "<i>非证书部分</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.c:80
 msgid "<i>unknown</i>"
-msgstr "<i>未知的</i>"
+msgstr "<i>未知</i>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:1
 msgid "<Not Part of Certificate>"
@@ -308,7 +310,7 @@ msgstr "<b>指纹</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:3
 msgid "<b>Issued By</b>"
-msgstr "<b>发布者</b>"
+msgstr "<b>颁发者</b>"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:4
 msgid "<b>Issued To</b>"
@@ -336,11 +338,11 @@ msgstr "电子邮件签发者证书"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:10
 msgid "Expires On"
-msgstr "截止于"
+msgstr "过期于"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:11
 msgid "Issued On"
-msgstr "发布于"
+msgstr "颁发于"
 
 #: ../gcr/gcr-certificate-basics-widget.ui.h:12
 msgid "MD5 Fingerprint"
@@ -393,17 +395,17 @@ msgstr "否"
 #. The subject
 #: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
-msgstr "学科名"
+msgstr "题名"
 
 #. The Issuer
 #: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
-msgstr "发布者名称"
+msgstr "颁发者名称"
 
 #. The Issued Parameters
 #: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
-msgstr "发布的证书"
+msgstr "颁发的证书"
 
 #: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
@@ -438,19 +440,19 @@ msgstr "公共密钥信息"
 
 #: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
-msgstr "密匙算法"
+msgstr "密钥算法"
 
 #: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
-msgstr "密匙参数"
+msgstr "密钥参数"
 
 #: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
-msgstr "密匙大小"
+msgstr "密钥大小"
 
 #: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
-msgstr "公共密钥"
+msgstr "公钥"
 
 #. Fingerprints
 #: ../gcr/gcr-certificate-details-widget.c:383
@@ -459,7 +461,7 @@ msgstr "指纹"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>导入证书和密匙</span>"
+msgstr "<span size='large' weight='bold'>导入证书和密钥</span>"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
@@ -471,7 +473,7 @@ msgstr "密码："
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Lock this keyring after"
-msgstr "之后锁住此钥匙环"
+msgstr "之后锁住此密钥环"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring if idle for"
@@ -479,7 +481,7 @@ msgstr "锁定该密钥环于空闲"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring when I log out"
-msgstr "在我注销时锁住此钥匙环"
+msgstr "在我注销时锁住此密钥环"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "minutes"
@@ -496,11 +498,11 @@ msgstr "没有可用的导入位置"
 
 #: ../gcr/gcr-importer.c:404
 msgid "Import Certificates/Keys"
-msgstr "导入证书/密匙"
+msgstr "导入证书/密钥"
 
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
-msgstr "选择某个位置来保存导入的证书及密匙。"
+msgstr "选择某个位置来保存导入的证书及密钥。"
 
 #: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
 msgid "Enter password to unlock the private key"
@@ -517,35 +519,35 @@ msgstr "输入密锁以解锁"
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
 msgid "In order to import the private key, it must be unlocked"
-msgstr "要导入私钥，它必须已解除锁定"
+msgstr "要导入私钥，必须将其解密"
 
 #. TRANSLATORS: The certificate is locked.
 #: ../gcr/gcr-importer.c:452
 msgid "In order to import the certificate, it must be unlocked"
-msgstr "要导入证书，它必须已解除锁定"
+msgstr "要导入证书，必须将其解密"
 
 #. TRANSLATORS: The data is locked.
 #: ../gcr/gcr-importer.c:455
 msgid "In order to import the data, it must be unlocked"
-msgstr "要导入数据，它必须已解除锁定"
+msgstr "要导入数据，必须将其解密"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:460
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "要导入私钥 '%s'，它必须已解除锁定"
+msgstr "要导入私钥 %s，必须将其解密"
 
 #. TRANSLATORS: The certificate is locked.
 #: ../gcr/gcr-importer.c:463
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "要导入证书 '%s'，它必须已解除锁定"
+msgstr "要导入证书 %s，必须将其解密"
 
 #. TRANSLATORS: The object '%s' is locked.
 #: ../gcr/gcr-importer.c:466
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
-msgstr "要导入‘%s’，它必须已解除锁定"
+msgstr "要导入 %s，必须将其解密"
 
 #: ../gcr/gcr-parser.c:197
 msgid "Private Key"
@@ -645,43 +647,43 @@ msgstr "不支持该操作"
 
 #: ../gp11/gp11-misc.c:139
 msgid "The key is missing or invalid"
-msgstr "该密匙丢失或无效"
+msgstr "该密钥丢失或无效"
 
 #: ../gp11/gp11-misc.c:141
 msgid "The key is the wrong size"
-msgstr "该密匙大小错误"
+msgstr "该密钥大小错误"
 
 #: ../gp11/gp11-misc.c:143
 msgid "The key is of the wrong type"
-msgstr "该密匙类型错误"
+msgstr "该密钥类型错误"
 
 #: ../gp11/gp11-misc.c:145
 msgid "No key is needed"
-msgstr "不需要密匙"
+msgstr "不需要密钥"
 
 #: ../gp11/gp11-misc.c:147
 msgid "The key is different than before"
-msgstr "该密匙与之前的不同"
+msgstr "该密钥与之前的不同"
 
 #: ../gp11/gp11-misc.c:149
 msgid "A key is needed"
-msgstr "需要一个密匙"
+msgstr "需要一个密钥"
 
 #: ../gp11/gp11-misc.c:151
 msgid "Cannot include the key in digest"
-msgstr "无法在摘要中包括该密匙"
+msgstr "无法在摘要中包括该密钥"
 
 #: ../gp11/gp11-misc.c:153
 msgid "This operation cannot be done with this key"
-msgstr "无法用这个密匙完成这次操作"
+msgstr "无法用这个密钥完成这次操作"
 
 #: ../gp11/gp11-misc.c:155
 msgid "The key cannot be wrapped"
-msgstr "该密匙无法包裹"
+msgstr "该密钥无法封装"
 
 #: ../gp11/gp11-misc.c:157
 msgid "Cannot export this key"
-msgstr "无法导出该密匙"
+msgstr "无法导出该密钥"
 
 #: ../gp11/gp11-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
@@ -741,7 +743,7 @@ msgstr "本会话只读"
 
 #: ../gp11/gp11-misc.c:187
 msgid "An open session exists"
-msgstr "一个开放的会话已存在"
+msgstr "存在一个打开的会话"
 
 #: ../gp11/gp11-misc.c:189
 msgid "A read-only session exists"
@@ -781,19 +783,19 @@ msgstr "该设备处于写保护中"
 
 #: ../gp11/gp11-misc.c:207
 msgid "Cannot import because the key is invalid"
-msgstr "无法导入因为密匙无效"
+msgstr "无法导入因为密钥无效"
 
 #: ../gp11/gp11-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
-msgstr "无法导入因为密匙大小错误"
+msgstr "无法导入因为密钥大小错误"
 
 #: ../gp11/gp11-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
-msgstr "无法导入因为密匙类型错误"
+msgstr "无法导入因为密钥类型错误"
 
 #: ../gp11/gp11-misc.c:213
 msgid "You are already logged in"
-msgstr "你已登录"
+msgstr "您已登录"
 
 #: ../gp11/gp11-misc.c:215
 msgid "No user has logged in"
@@ -817,23 +819,23 @@ msgstr "太多不同类型的用户登录"
 
 #: ../gp11/gp11-misc.c:225
 msgid "Cannot import an invalid key"
-msgstr "无法导入无效的密匙"
+msgstr "无法导入无效的密钥"
 
 #: ../gp11/gp11-misc.c:227
 msgid "Cannot import a key of the wrong size"
-msgstr "无法导入错误大小的密匙"
+msgstr "无法导入错误大小的密钥"
 
 #: ../gp11/gp11-misc.c:229
 msgid "Cannot export because the key is invalid"
-msgstr "无法导出因为密匙无效"
+msgstr "无法导出因为密钥无效"
 
 #: ../gp11/gp11-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
-msgstr "无法导出因为密匙大小错误"
+msgstr "无法导出因为密钥大小错误"
 
 #: ../gp11/gp11-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
-msgstr "无法导出因为密匙类型错误"
+msgstr "无法导出因为密钥类型错误"
 
 #: ../gp11/gp11-misc.c:235
 msgid "Unable to initialize the random number generator"
@@ -849,7 +851,7 @@ msgstr "加密机制有一个无效的参数"
 
 #: ../gp11/gp11-misc.c:241
 msgid "Not enough space to store the result"
-msgstr "没有粗够空间来储存结果"
+msgstr "没有足够的空间来储存结果"
 
 #: ../gp11/gp11-misc.c:243
 msgid "The saved state is invalid"
@@ -899,7 +901,7 @@ msgstr "无法处理 SSH 公匙"
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
 #, c-format
 msgid "Unlock password for: %s"
-msgstr "‘%s’的解锁密码"
+msgstr " %s 的解锁密码"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
@@ -908,36 +910,36 @@ msgstr "解锁密码错误"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
 msgid "Unlock Login Keyring"
-msgstr "解锁登录钥匙环"
+msgstr "解锁登录密钥环"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
-msgid "Enter password for to unlock your login keyring"
-msgstr "输入密码以解锁钥匙环"
+msgid "Enter password to unlock your login keyring"
+msgstr "输入密码以解锁密钥环"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
-msgstr "您用来登录您的电脑的密码与您登录钥匙环里的密码不再匹配。"
+msgstr "您用来登录您的电脑的密码与您登录密钥环里的密码不再匹配。"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
-msgstr "您登录到您的计算机时，您的登录钥匙环未被解锁。"
+msgstr "您登录到您的计算机时，您的登录密钥环未被解锁。"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
 msgid "Unlock Keyring"
-msgstr "解锁钥匙环"
+msgstr "解锁密钥环"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "要解除锁定，请输入钥匙环“%s”的密码"
+msgstr "要解除锁定，请输入密钥环 %s 的密码"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "未知应用程序想要访问钥匙环“%s”，但该钥匙环已上锁"
+msgstr "未知应用程序想要访问密钥环 %s ，但该密钥环已上锁"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Unlock private key"
@@ -963,33 +965,33 @@ msgstr "输入密码以解锁公钥"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "一个应用程序想要访问私钥‘%s’，但它已被锁定"
+msgstr "一个应用程序想要访问私钥 %s ，但它已被锁定"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "一个应用程序想要访问证书‘%s’，但它已被锁定"
+msgstr "一个应用程序想要访问证书 %s ，但它已被锁定"
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "一个应用程序想要访问公钥‘%s’，但它已被锁定"
+msgstr "一个应用程序想要访问公钥 %s ，但它已被锁定"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "一个应用程序获取对‘%s’的访问，但它已被锁定"
+msgstr "一个应用程序获取对 %s 的访问，但它已被锁定"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
 msgid "Unlock certificate/key storage"
-msgstr "解锁证书/密匙存储器"
+msgstr "解锁证书/密钥存储器"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "输入密码以解锁证书/密匙存储器"
+msgstr "输入密码以解锁证书/密钥存储器"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
@@ -997,7 +999,7 @@ msgstr "输入密码以解锁证书/密匙存储器"
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
-msgstr "一个应用程序想要访问证书/密匙存储器 '%s，但它已被锁定"
+msgstr "一个应用程序想要访问证书/密钥存储器 %s，但它已被锁定"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
 msgid "New Password Required"
@@ -1012,7 +1014,7 @@ msgstr "需要新密码以保护安全存储器"
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr "要准备为 '%s' 保存证书或密匙，必须要一个密码"
+msgstr "要准备为 %s 保存证书或密钥，必须要一个密码"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
 msgid "Change Password"
@@ -1026,7 +1028,7 @@ msgstr "需要更改密码以保护安全存储器"
 #, c-format
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
-msgstr "要修改“%s”的密码，需要远密码和新密码"
+msgstr "要修改 %s 的密码，需要远密码和新密码"
 
 #: ../ui/gku-prompt-tool.c:394
 msgid "Store passwords unencrypted?"
@@ -1055,7 +1057,7 @@ msgstr "密码不能为空"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "当我登录时自动解锁此钥匙环。"
+msgstr "当我登录时自动解锁此密钥环。"
 
 #: ../ui/gku-prompt.ui.h:2
 msgid "New password strength"
@@ -1107,132 +1109,132 @@ msgstr "密码(_P)："
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
 #~ msgstr ""
-#~ "应用程序“%s”(%s)想要访问默认钥匙环中的“<object prop='name'/>”的密码。"
+#~ "应用程序 %s (%s)想要访问默认密钥环中的 <object prop='name'/> 的密码。"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
-#~ msgstr "应用程序“%s”(%s)想要访问 %s 中“<object prop='name'/>”的密码。"
+#~ msgstr "应用程序 %s (%s)想要访问 %s 中 <object prop='name'/> 的密码。"
 
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
-#~ msgstr "应用程序“%s”想要访问默认钥匙环中“<object prop='name'/>”的密码。"
+#~ msgstr "应用程序 %s 想要访问默认密钥环中 <object prop='name'/> 的密码。"
 
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
-#~ msgstr "应用程序“%s”想要访问 %s 中“<object prop='name'/>”的密码。"
+#~ msgstr "应用程序 %s 想要访问 %s 中 <object prop='name'/> 的密码。"
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
-#~ msgstr "一个未知程序想要访问默认钥匙环中“<object prop='name'/>”的密码。"
+#~ msgstr "一个未知程序想要访问默认密钥环中 <object prop='name'/> 的密码。"
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
-#~ msgstr "一个未知程序想要访问 %s 中“<object prop='name'/>”的密码。"
+#~ msgstr "一个未知程序想要访问 %s 中 <object prop='name'/> 的密码。"
 
 #~ msgid "Allow access"
 #~ msgstr "允许访问"
 
 #~ msgid "Allow application access to keyring?"
-#~ msgstr "允许应用程序访问钥匙环吗？"
+#~ msgstr "允许应用程序访问密钥环吗？"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to the default keyring, but it is "
 #~ "locked"
-#~ msgstr "应用程序“%s”(%s)想要访问默认钥匙环，但该钥匙环已上锁"
+#~ msgstr "应用程序 %s (%s)想要访问默认密钥环，但该密钥环已上锁"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
 #~ "locked"
-#~ msgstr "应用程序“%s”(%s)想要访问钥匙环“%s”，但该钥匙环已上锁"
+#~ msgstr "应用程序 %s (%s)想要访问密钥环 %s ，但该密钥环已上锁"
 
 #~ msgid ""
 #~ "The application '%s' wants access to the default keyring, but it is locked"
-#~ msgstr "应用程序“%s”想要访问默认钥匙环，但该钥匙环已上锁"
+#~ msgstr "应用程序 %s 想要访问默认密钥环，但该密钥环已上锁"
 
 #~ msgid ""
 #~ "The application '%s' wants access to the keyring '%s', but it is locked"
-#~ msgstr "应用程序“%s”想要访问钥匙环“%s”，但该钥匙环已上锁"
+#~ msgstr "应用程序 %s 想要访问密钥环 %s ，但该密钥环已上锁"
 
 #~ msgid ""
 #~ "An unknown application wants access to the default keyring, but it is "
 #~ "locked"
-#~ msgstr "未知应用程序想要访问默认钥匙环，但该钥匙环已上锁"
+#~ msgstr "未知应用程序想要访问默认密钥环，但该密钥环已上锁"
 
 #~ msgid "Enter password for default keyring to unlock"
-#~ msgstr "要解除锁定，请输入默认钥匙环的密码"
+#~ msgstr "要解除锁定，请输入默认密钥环的密码"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 #~ "have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”(%s)想要创建名为“%s”的新钥匙环。您必须为该钥匙环选择一个密码。"
+#~ "应用程序 %s (%s)想要创建名为 %s 的新密钥环。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to create a new default keyring. You have "
 #~ "to choose the password you want to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”(%s)想要创建新的默认钥匙环。您必须为该钥匙环选择一个密码。"
+#~ "应用程序 %s (%s)想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "The application '%s' wants to create a new keyring called '%s'. You have "
 #~ "to choose the password you want to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”想要创建名为“%s”的新钥匙环。您必须为该钥匙环选择一个密码。"
+#~ "应用程序 %s 想要创建名为 %s 的新密钥环。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "The application '%s' wants to create a new default keyring. You have to "
 #~ "choose the password you want to use for it."
-#~ msgstr "应用程序“%s”想要创建新的默认钥匙环。您必须为该钥匙环选择一个密码。"
+#~ msgstr "应用程序 %s 想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "An unknown application wants to create a new default keyring. You have to "
 #~ "choose the password you want to use for it."
-#~ msgstr "未知应用程序想要创建新的默认钥匙环。您必须为该钥匙环选择一个密码。"
+#~ msgstr "未知应用程序想要创建新的默认密钥环。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to change the password for the '%s' "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”(%s)想要更改“%s”钥匙环的密码。您必须为该钥匙环选择一个密码。"
+#~ "应用程序 %s (%s)想要更改 %s 密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”(%s)想要更改默认钥匙环的密码。您必须为该钥匙环选择一个密码。"
+#~ "应用程序 %s (%s)想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "The application '%s' wants to change the password for the '%s' keyring. "
 #~ "You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”想要更改“%s”钥匙环的密码。您必须为该钥匙环选择一个密码。"
+#~ "应用程序 %s 想要更改 %s 密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "The application '%s' wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”想要更改默认钥匙环的密码。您必须为该钥匙环选择一个密码。"
+#~ "应用程序 %s 想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #~ msgid ""
 #~ "An unknown application wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "未知应用程序想要更改默认钥匙环的密码。您必须为该钥匙环选择一个密码。"
+#~ "未知应用程序想要更改默认密钥环的密码。您必须为该密钥环选择一个密码。"
 
 #~ msgid "Choose a new password for the default keyring. "
-#~ msgstr "为默认钥匙环选择新密码。"
+#~ msgstr "为默认密钥环选择新密码。"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to store a password, but there is no "
 #~ "default keyring. To create one, you need to choose the password you wish "
 #~ "to use for it."
 #~ msgstr ""
-#~ "应用程序“%s”(%s)想要存储密码，但尚没有默认的钥匙环。若要创建默认的钥匙环，"
+#~ "应用程序 %s (%s)想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，"
 #~ "请为其输入密码。"
 
 #~ msgid ""
@@ -1240,7 +1242,7 @@ msgstr "密码(_P)："
 #~ "keyring. To create one, you need to choose the password you wish to use "
 #~ "for it."
 #~ msgstr ""
-#~ "应用程序“%s”想要存储密码，但尚没有默认的钥匙环。若要创建默认的钥匙环，请为"
+#~ "应用程序 %s 想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请为"
 #~ "其输入密码。"
 
 #~ msgid ""
@@ -1248,17 +1250,17 @@ msgstr "密码(_P)："
 #~ "keyring. To create one, you need to choose the password you wish to use "
 #~ "for it."
 #~ msgstr ""
-#~ "未知应用程序想要存储密码，但尚没有默认的钥匙环。若要创建默认的钥匙环，请为"
+#~ "未知应用程序想要存储密码，但尚没有默认的密钥环。若要创建默认的密钥环，请为"
 #~ "其输入密码。"
 
 #~ msgid "Create Default Keyring"
-#~ msgstr "创建默认钥匙环"
+#~ msgstr "创建默认密钥环"
 
 #~ msgid "Choose password for default keyring"
-#~ msgstr "选择默认钥匙环的密码"
+#~ msgstr "选择默认密钥环的密码"
 
 #~ msgid "Create Login Keyring"
-#~ msgstr "创建登录钥匙环"
+#~ msgstr "创建登录密钥环"
 
 #~ msgid "Enter your login password"
 #~ msgstr "输入您的登录密码"
@@ -1266,10 +1268,10 @@ msgstr "密码(_P)："
 #~ msgid ""
 #~ "Your login keyring was not automatically created when you logged into "
 #~ "this computer. It will now be created."
-#~ msgstr "您登录到此计算机时，您的登录钥匙环未被自动创建。现在创建它。"
+#~ msgstr "您登录到此计算机时，您的登录密钥环未被自动创建。现在创建它。"
 
 #~ msgid "Unlock password for %s keyring"
-#~ msgstr "%s 钥匙环的解锁密码"
+#~ msgstr "%s 密钥环的解锁密码"
 
 #~ msgid "Automatically unlock this private key when I log in."
 #~ msgstr "当我登录时自动解锁此私钥。"
@@ -1294,9 +1296,9 @@ msgstr "密码(_P)："
 #~ "\n"
 #~ "Try again."
 #~ msgstr ""
-#~ "<b><big>无法抓取你的鼠标</big></b>\n"
+#~ "<b><big>无法抓取您的鼠标</big></b>\n"
 #~ "\n"
-#~ "某个恶意客户端也许正在窃听你的进程，或你正好点击了某个菜单或某些程序刚好需"
+#~ "某个恶意客户端也许正在窃听您的进程，或您正好点击了某个菜单或某些程序刚好需"
 #~ "要得到焦点\n"
 #~ "\n"
 #~ "请重试。"
@@ -1309,9 +1311,9 @@ msgstr "密码(_P)："
 #~ "\n"
 #~ "Try again."
 #~ msgstr ""
-#~ "<b><big>无法抓取你的键盘</big></b>\n"
+#~ "<b><big>无法抓取您的键盘</big></b>\n"
 #~ "\n"
-#~ "某个恶意客户端也许正在窃听你的进程，或你正好点击了某个菜单或某些程序刚好需"
+#~ "某个恶意客户端也许正在窃听您的进程，或您正好点击了某个菜单或某些程序刚好需"
 #~ "要得到焦点\n"
 #~ "\n"
 #~ "请重试。"
@@ -1341,7 +1343,7 @@ msgstr "密码(_P)："
 #~ msgstr "与 gnome-keyring-daemon 通信出错"
 
 #~ msgid "A keyring with that name already exists"
-#~ msgstr "已存在一个同名的钥匙环"
+#~ msgstr "已存在一个同名的密钥环"
 
 #~ msgid "Programmer error: The application sent invalid data."
 #~ msgstr "程序员错误：应用程序发送了非法数据。"
@@ -1350,10 +1352,10 @@ msgstr "密码(_P)："
 #~ msgstr "无匹配结果"
 
 #~ msgid "A keyring with that name does not exist."
-#~ msgstr "不存在此名称对应的钥匙环"
+#~ msgstr "不存在此名称对应的密钥环"
 
 #~ msgid "The keyring has already been unlocked."
-#~ msgstr "钥匙环已被解锁。"
+#~ msgstr "密钥环已被解锁。"
 
 #~ msgid ""
 #~ "A list of paths to PKCS#11 modules to load. No modules are currently "
@@ -1379,19 +1381,19 @@ msgstr "密码(_P)："
 #~ msgstr "导入"
 
 #~ msgid "The system wants to import the private key '%s', but it is locked"
-#~ msgstr "系统想要导入私钥‘%s’，但它已上锁"
+#~ msgstr "系统想要导入私钥 %s ，但它已上锁"
 
 #~ msgid "The system wants to import the certificate '%s', but it is locked"
-#~ msgstr "系统想要导入证书‘%s’，但它已上锁"
+#~ msgstr "系统想要导入证书 %s ，但它已上锁"
 
 #~ msgid "The system wants to import the public key '%s', but it is locked"
-#~ msgstr "系统想要导入公钥‘%s’，但它已上锁"
+#~ msgstr "系统想要导入公钥 %s ，但它已上锁"
 
 #~ msgid "The system wants to import '%s', but it is locked"
-#~ msgstr "系统想要导入‘%s’，但它已上锁"
+#~ msgstr "系统想要导入 %s ，但它已上锁"
 
 #~ msgid "Create Storage for Key Information"
-#~ msgstr "为密匙信息创建储存器"
+#~ msgstr "为密钥信息创建储存器"
 
 #~ msgid "Choose password to protect storage"
 #~ msgstr "选择保护存储器的密码"
@@ -1401,11 +1403,11 @@ msgstr "密码(_P)："
 #~ "In order to protect this information, choose a password with which it "
 #~ "will be locked."
 #~ msgstr ""
-#~ "系统想要保存关于你密匙和证书的信息。为了保护该信息，请选择一个密码以用于锁"
+#~ "系统想要保存关于您密钥和证书的信息。为了保护该信息，请选择一个密码以用于锁"
 #~ "定。"
 
 #~ msgid "Unlock Storage for Key Information"
-#~ msgstr "为密匙信息解除储存器锁定"
+#~ msgstr "为密钥信息解除储存器锁定"
 
 #~ msgid "Enter password to unlock storage"
 #~ msgstr "输入密锁以解除存储器锁定"
@@ -1413,7 +1415,7 @@ msgstr "密码(_P)："
 #~ msgid ""
 #~ "The system wants to access information about your keys and certificates, "
 #~ "but it is locked."
-#~ msgstr "系统想要访问关于你密匙和证书的信息，但它已被锁定"
+#~ msgstr "系统想要访问关于您密钥和证书的信息，但它已被锁定"
 
 #~ msgid "Trust Association"
 #~ msgstr "信任联盟"
@@ -1436,12 +1438,12 @@ msgstr "密码(_P)："
 #~ msgid ""
 #~ "The system wants to store the private key '%s' on your disk. Please enter "
 #~ "a password to lock it with."
-#~ msgstr "系统想要在你的磁盘上保存私钥‘%s’。请输入一个密码以锁定。"
+#~ msgstr "系统想要在您的磁盘上保存私钥 %s 。请输入一个密码以锁定。"
 
 #~ msgid ""
 #~ "The system wants to store '%s' on your disk. Please enter a password to "
 #~ "lock it with."
-#~ msgstr "系统想要在你的磁盘上储存 '%s' 。请输入一个密码以将其锁定。"
+#~ msgstr "系统想要在您的磁盘上储存 '%s' 。请输入一个密码以将其锁定。"
 
 #~ msgid "Unrecognized or unsupported file."
 #~ msgstr "未识别的或不被支持的文件。"
@@ -1456,10 +1458,10 @@ msgstr "密码(_P)："
 #~ msgstr "无效的安全外壳私匙在：%s"
 
 #~ msgid "Couldn't encrypt the SSH key to store it."
-#~ msgstr "无法加密该 SSH 密匙以保存。"
+#~ msgstr "无法加密该 SSH 密钥以保存。"
 
 #~ msgid "Couldn't encode the SSH key to store it."
-#~ msgstr "无法编码该 SSH 密匙以保存。"
+#~ msgstr "无法编码该 SSH 密钥以保存。"
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "旧密码不能为空。"
@@ -1470,31 +1472,31 @@ msgstr "密码(_P)："
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
 #~ "locked"
-#~ msgstr "应用程序“%s”(%s)想要访问未知钥匙环，但该钥匙环已上锁"
+#~ msgstr "应用程序 %s (%s)想要访问未知密钥环，但该密钥环已上锁"
 
 #~ msgid ""
 #~ "The application '%s' wants access to an unknown keyring, but it is locked"
-#~ msgstr "应用程序“%s”想要访问未知钥匙环，但该钥匙环已上锁"
+#~ msgstr "应用程序 %s 想要访问未知密钥环，但该密钥环已上锁"
 
 #~ msgid ""
 #~ "An unknown application wants access to an unknown keyring, but it is "
 #~ "locked"
-#~ msgstr "未知应用程序想要访问未知钥匙环，但该钥匙环已上锁"
+#~ msgstr "未知应用程序想要访问未知密钥环，但该密钥环已上锁"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '%s' in an "
 #~ "unknown keyring."
-#~ msgstr "应用程序“%s”(%s)想要访问未知钥匙环中“%s”的密码。"
+#~ msgstr "应用程序 %s (%s)想要访问未知密钥环中 %s 的密码。"
 
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '%s' in an unknown "
 #~ "keyring."
-#~ msgstr "应用程序“%s”想要访问未知钥匙环中“%s”的密码。"
+#~ msgstr "应用程序 %s 想要访问未知密钥环中 %s 的密码。"
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '%s' in an "
 #~ "unknown keyring."
-#~ msgstr "一个未知程序想要访问未知钥匙环中“%s”的密码。"
+#~ msgstr "一个未知程序想要访问未知密钥环中 %s 的密码。"
 
 #~ msgid "You must specify the type of request to run\n"
 #~ msgstr "您必须指定要执行的请求类型\n"

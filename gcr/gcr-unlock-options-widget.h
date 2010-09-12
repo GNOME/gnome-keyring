@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 
 #include "gcr-types.h"
+#include "gcr-unlock-options.h"
 
 G_BEGIN_DECLS
 
@@ -50,6 +51,31 @@ struct _GcrUnlockOptionsWidgetClass {
 GType                         gcr_unlock_options_widget_get_type               (void);
 
 GtkWidget*                    gcr_unlock_options_widget_new                    (void);
+
+const gchar*                  gcr_unlock_options_widget_get_choice             (GcrUnlockOptionsWidget *self);
+
+void                          gcr_unlock_options_widget_set_choice             (GcrUnlockOptionsWidget *self,
+                                                                                const gchar *option);
+
+guint                         gcr_unlock_options_widget_get_ttl                (GcrUnlockOptionsWidget *self);
+
+void                          gcr_unlock_options_widget_set_ttl                (GcrUnlockOptionsWidget *self,
+                                                                                guint ttl);
+
+const gchar*                  gcr_unlock_options_widget_get_label              (GcrUnlockOptionsWidget *self,
+                                                                                const gchar *option);
+
+void                          gcr_unlock_options_widget_set_label              (GcrUnlockOptionsWidget *self,
+                                                                                const gchar *option,
+                                                                                const gchar *text);
+
+gboolean                      gcr_unlock_options_widget_get_sensitive          (GcrUnlockOptionsWidget *self,
+                                                                                const gchar *option);
+
+void                          gcr_unlock_options_widget_set_sensitive          (GcrUnlockOptionsWidget *self,
+                                                                                const gchar *option,
+                                                                                gboolean sensitive,
+                                                                                const gchar *reason);
 
 G_END_DECLS
 

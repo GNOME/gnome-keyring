@@ -461,7 +461,7 @@ GP11MechanismInfo*  gp11_slot_get_mechanism_info            (GP11Slot *self,
 gboolean            gp11_slot_has_flags                     (GP11Slot *self,
                                                              gulong flags);
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 gboolean            gp11_slot_init_token                    (GP11Slot *self, 
                                                              const guchar *pin,
@@ -603,7 +603,7 @@ gboolean            gp11_session_set_pin_finish             (GP11Session *self,
                                                              GAsyncResult *result,
                                                              GError **err);
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 guchar*             gp11_session_get_operation_state        (GP11Session *self,
                                                              gsize *n_result,
@@ -715,7 +715,7 @@ GList*              gp11_session_find_objects_finish        (GP11Session *self,
                                                              GAsyncResult *result,
                                                              GError **err); 
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 GP11Object*         gp11_session_generate_key               (GP11Session *self,
                                                              GP11Mechanism *mechanism,
@@ -821,7 +821,7 @@ guchar*             gp11_session_encrypt_finish              (GP11Session *self,
                                                               gsize *n_result,
                                                               GError **err);
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 GP11Processor*      gp11_session_batch_encrypt               (GP11Session *self,
                                                               GP11Object *key,
@@ -874,7 +874,7 @@ guchar*             gp11_session_decrypt_finish              (GP11Session *self,
                                                               gsize *n_result,
                                                               GError **err);
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 GP11Processor*      gp11_session_batch_decrypt               (GP11Session *self,
                                                               GP11Object *key,
@@ -1026,7 +1026,7 @@ guchar*             gp11_session_sign_finish                 (GP11Session *self,
                                                               gsize *n_result,
                                                               GError **err);
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 GP11Processor*      gp11_session_batch_sign                  (GP11Session *self,
                                                               GP11Object *key,
@@ -1131,7 +1131,7 @@ gboolean            gp11_session_verify_finish               (GP11Session *self,
                                                               GAsyncResult *result,
                                                               GError **err);
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 GkrProcessor*       gp11_session_batch_verify                (GP11Session *self,
                                                               GP11Object *key,
@@ -1358,7 +1358,7 @@ gboolean            gp11_object_destroy_finish              (GP11Object *self,
                                                              GAsyncResult *result,
                                                              GError **err);
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 gssize              gp11_object_get_size                    (GP11Object *self,
                                                              GError **err);
@@ -1484,7 +1484,7 @@ GP11Attributes*     gp11_object_get_template_finish         (GP11Object *self,
  * PROCESSOR
  */
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 guchar*             gp11_processor_step                    (GP11Processor *processor,
                                                             const guchar *input,

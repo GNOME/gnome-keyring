@@ -27,6 +27,8 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
+#include "gcr/gcr-unlock-options.h"
+
 #include "pkcs11/pkcs11i.h"
 
 #include "ui/gku-prompt.h"
@@ -282,6 +284,53 @@ do_lookup_password (GckSession *session, const gchar *keyid)
 	return data;
 }
 
+static void
+load_unlock_options (GkuPrompt *prompt)
+{
+	GSettings *settings;
+	gchar *method;
+	gint ttl;
+
+	settings = gkd_gpg_agent_settings ();
+
+	method = g_settings_get_string (settings, "gpg-cache-method");
+	if (!method) {
+		method = g_strdup (GCR_UNLOCK_OPTION_SESSION);
+
+	/* COMPAT: with old seahorse-agent settings that were migrated */
+	} else if (g_str_equal (method, "gnome")) {
+		g_free (method);
+		method = g_strdup (GCR_UNLOCK_OPTION_ALWAYS);
+	} else if (g_str_equal (method, "internal")) {
+		g_free (method);
+		method = g_strdup (GCR_UNLOCK_OPTION_SESSION);
+	}
+
+	gku_prompt_set_unlock_choice (prompt, method);
+	g_free (method);
+
+	ttl = g_settings_get_int (settings, "gpg-cache-ttl");
+	gku_prompt_set_unlock_ttl (prompt, ttl <= 0 ? 1 : (guint)ttl);
+}
+
+static void
+save_unlock_options (GkuPrompt *prompt)
+{
+	GSettings *settings;
+	const gchar *method;
+	gint ttl;
+
+	settings = gkd_gpg_agent_settings ();
+
+	method = gku_prompt_get_unlock_choice (prompt);
+	if (method)
+		g_settings_set_string (settings, "gpg-cache-method", method);
+
+	ttl = gku_prompt_get_unlock_ttl (prompt);
+	if (ttl >= 0)
+		g_settings_set_int (settings, "gpg-cache-ttl", (gint)ttl);
+}
+
 static GkuPrompt*
 prepare_password_prompt (GckSession *session, const gchar *errmsg, const gchar *prompt_text,
                          const gchar *description, gboolean confirm)
@@ -308,7 +357,6 @@ prepare_password_prompt (GckSession *session, const gchar *errmsg, const gchar *
 	gku_prompt_show_widget (prompt, "password_area");
 	gku_prompt_show_widget (prompt, "details_area");
 	gku_prompt_show_widget (prompt, "options_area");
-	gku_prompt_show_widget (prompt, "lock_area");
 
 	auto_unlock = FALSE;
 
@@ -331,10 +379,12 @@ prepare_password_prompt (GckSession *session, const gchar *errmsg, const gchar *
 		auto_unlock = TRUE;
 	}
 
-	if (auto_unlock)
-		gku_prompt_show_widget (prompt, "auto_area");
-	else
-		gku_prompt_hide_widget (prompt, "auto_area");
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS, auto_unlock, NULL);
+	gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_IDLE, _("Forget this password if idle for"));
+	gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_TIMEOUT, _("Forget this password after"));
+	gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_SESSION, _("Forget this password when I log out"));
+
+	load_unlock_options (prompt);
 
 	gck_list_unref_free (objects);
 
@@ -354,8 +404,9 @@ do_get_password (GckSession *session, const gchar *keyid, const gchar *errmsg,
 {
 	GckAttributes *attrs;
 	gchar *password = NULL;
-	gint value = 0;
 	GkuPrompt *prompt;
+	const gchar *choice;
+	guint ttl;
 
 	g_assert (GCK_IS_SESSION (session));
 	g_assert (keyid);
@@ -377,20 +428,25 @@ do_get_password (GckSession *session, const gchar *keyid, const gchar *errmsg,
 		/* Load up the save options */
 		attrs = gck_attributes_new ();
 
-		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value))
+		choice = gku_prompt_get_unlock_choice (prompt);
+		ttl = gku_prompt_get_unlock_ttl (prompt);
+
+		if (g_str_equal (choice, GCR_UNLOCK_OPTION_ALWAYS))
 			gck_attributes_add_string (attrs, CKA_G_COLLECTION, "login");
 		else
 			gck_attributes_add_string (attrs, CKA_G_COLLECTION, "session");
 
-		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_IDLE, &value) && value > 0)
-			gck_attributes_add_ulong (attrs, CKA_G_DESTRUCT_IDLE, value);
+		if (g_str_equal (choice, GCR_UNLOCK_OPTION_IDLE))
+			gck_attributes_add_ulong (attrs, CKA_G_DESTRUCT_IDLE, ttl);
 
-		if (gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_TIMEOUT, &value) && value > 0)
-			gck_attributes_add_ulong (attrs, CKA_G_DESTRUCT_AFTER, value);
+		else if (g_str_equal (choice, GCR_UNLOCK_OPTION_TIMEOUT))
+			gck_attributes_add_ulong (attrs, CKA_G_DESTRUCT_AFTER, ttl);
 
 		/* Now actually save the password */
 		do_save_password (session, keyid, description, password, attrs);
 		gck_attributes_unref (attrs);
+
+		save_unlock_options (prompt);
 	}
 
 	g_object_unref (prompt);

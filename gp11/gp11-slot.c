@@ -145,6 +145,9 @@ gp11_slot_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_HANDLE:
 		g_value_set_ulong (value, gp11_slot_get_handle (self));
 		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
 	}
 }
 
@@ -166,6 +169,9 @@ gp11_slot_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_HANDLE:
 		g_assert (!data->handle);
 		data->handle = g_value_get_ulong (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
 	}
 }
@@ -771,7 +777,7 @@ gp11_slot_has_flags (GP11Slot *self, gulong flags)
 	return (info.flags & flags) != 0;
 }
 
-#if UNIMPLEMENTED
+#ifdef UNIMPLEMENTED
 
 typedef struct InitToken {
 	GP11Arguments base;

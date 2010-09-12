@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-02 17:01+0530\n"
-"PO-Revision-Date: 2010-08-02 17:04+0530\n"
+"POT-Creation-Date: 2010-09-03 17:22+0530\n"
+"PO-Revision-Date: 2010-09-03 17:25+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: Tamil <<Ubuntu-l10n-tam@lists.ubuntu.com>>\n"
 "MIME-Version: 1.0\n"
@@ -23,51 +23,6 @@ msgstr ""
 "\n"
 "\n"
 "X-Generator: Lokalize 1.0\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் PKCS#11 கூறால் பயன்படுத்தப்படுகிறது. இது  க்னோம் "
-"துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு "
-"கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"இந்த தேர்வு க்னோம் ரிங் SSH முகவரால் பயன்படுத்தப்படுகிறது. இது அந்த கிங்கரன் துவங்கும்போது "
-"மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு கிங்கரனுக்கு "
-"தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் ரகசிய சேவை கூறால் பயன்படுத்தப்படுகிறது. இது "
-"க்னோம்துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த "
-"அமைப்பு கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "க்னோம் விசை வளைய அடக்கம் PKCS#11 செயற்படுத்தப் பட வேண்டுமா"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "க்னோம் விசை வளைய SSH முகவர் செயற்படுத்தி உள்ளதா"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "க்னோம் விசை வளைய  ரகசிய சேவைசெயற்படுத்தி உள்ளதா"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
@@ -161,6 +116,18 @@ msgstr "PGP விசை: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "கடவுச்சொற்களை உள்ளிடவும்"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr "இவ்வளவு நேரம் சும்மாயிருப்பின் விசை கடவுச்சொல்லை மறக்கவும்"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "இவ்வளவு நேரம் கடந்தபின் கடவுச்சொல்லை மறக்கவும்"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr "நான் வெளி செல்லும்போது இந்த கடவுச்சொல்லை மறக்கவும்"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -668,7 +635,7 @@ msgid "No key is needed"
 msgstr "விசை தேவை இல்லை"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "விசை முன்னை விட மாறானது"
 
 #: ../gp11/gp11-misc.c:149
@@ -1046,11 +1013,11 @@ msgstr "சேமிப்பை பாதுகாக்க கடவுச்�
 msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "'%s' க்கு கடவுச்சொல் மாற்ற பழைய கடவுச்சொல்லும் புதிய கடவுச்சொல்லும் தேவை"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "கடவுச்சொற்களை சுருக்க குறியாக்கம் செய்யாமலே சேமிக்கவா? "
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1059,15 +1026,15 @@ msgstr ""
 "ஒரு வெற்று கடவுச்சொல்லை தேர்ந்தெடுப்பதால் உங்கள் சேமிக்கப்பட்ட கடவுச்சொறகள் மறையாக்கம் "
 "செய்யப்படவில்லை. உங்கள் கோப்பை யாரால் அணூக முடியுமோ அவர் இதை பார்க்கலாம்."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "பாதுகாப்பு இல்லாத கிடங்கை பயன்படுத்து."
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "கடவுச்சொற்கள் பொருந்தவில்லை"
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
 
@@ -1102,6 +1069,45 @@ msgstr "பழைய கடவுச்சொல் (_O):"
 #: ../ui/gku-prompt.ui.h:8
 msgid "_Password:"
 msgstr "கடவுச்சொல் (_P):"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் PKCS#11 கூறால் பயன்படுத்தப்படுகிறது. இது  க்னோம் "
+#~ "துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு "
+#~ "கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "இந்த தேர்வு க்னோம் ரிங் SSH முகவரால் பயன்படுத்தப்படுகிறது. இது அந்த கிங்கரன் "
+#~ "துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு "
+#~ "கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் ரகசிய சேவை கூறால் பயன்படுத்தப்படுகிறது. இது "
+#~ "க்னோம்துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த "
+#~ "அமைப்பு கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "க்னோம் விசை வளைய அடக்கம் PKCS#11 செயற்படுத்தப் பட வேண்டுமா"
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "க்னோம் விசை வளைய SSH முகவர் செயற்படுத்தி உள்ளதா"
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "க்னோம் விசை வளைய  ரகசிய சேவைசெயற்படுத்தி உள்ளதா"
 
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr "நான் உள்நுழையும்போது தானாக பாதுகாப்பு சேமிப்பகம் பூட்டு நீக்கப்பட வேண்டும்."

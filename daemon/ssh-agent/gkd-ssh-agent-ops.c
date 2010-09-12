@@ -1047,7 +1047,8 @@ op_sign_request (GkdSshAgentCall *call)
 	g_free (hash);
 
 	if (error) {
-		if (!g_error_matches (error, GCK_ERROR, CKR_FUNCTION_CANCELED))
+		if (!g_error_matches (error, GCK_ERROR, CKR_FUNCTION_CANCELED) &&
+		    !g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT))
 			g_message ("signing of the data failed: %s", egg_error_message (error));
 		g_clear_error (&error);
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);

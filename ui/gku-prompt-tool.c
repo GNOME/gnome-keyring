@@ -58,8 +58,21 @@ static gsize n_the_key = 0;
 #define LOG_ERRORS 1
 #define GRAB_KEYBOARD 1
 
+/**
+* SECTION: gku-prompt-tool.c
+* @short_description: Displays a propmt for 3rd party programs (ssh, gnupg)
+**/
+
 /* ------------------------------------------------------------------------------ */
 
+/**
+* primary: The part that will be bold
+* secondary: The normal part of the text or NULL
+*
+*
+*
+* Returns The text encased in markup
+**/
 static gchar*
 create_markup (const gchar *primary, const gchar *secondary)
 {
@@ -68,6 +81,15 @@ create_markup (const gchar *primary, const gchar *secondary)
 
 }
 
+/**
+* win: The GTK which's window should get the focus
+* event: The event that triggered grabbing
+* data: ignored
+*
+* Will grab the keyboard to the widget's window
+*
+* Returns TRUE if grabbed, FALSE else
+**/
 static gboolean
 grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 {
@@ -83,6 +105,15 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 	return FALSE;
 }
 
+/**
+* win: ignored
+* event: the event that triggered ungrabbing
+* data: ignored
+*
+* Will ungrab the keyboard
+*
+* Returns FALSE
+**/
 static gboolean
 ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 {
@@ -92,6 +123,15 @@ ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 	return FALSE;
 }
 
+/**
+* win: The window that changed state
+* event: The event that triggered it
+* data: ignored
+*
+* Depending on the state it will grab the keyboard or ungrab it.
+*
+* Returns FALSE
+**/
 static gboolean
 window_state_changed (GtkWidget *win, GdkEventWindowState *event, gpointer data)
 {
@@ -109,6 +149,13 @@ window_state_changed (GtkWidget *win, GdkEventWindowState *event, gpointer data)
 }
 
 
+/**
+* editable: The GTK_ENTRY that changed
+* user_data: the progress bar to update
+*
+* Will update the password quality displayed in the progress bar.
+*
+**/
 static void
 on_password_changed (GtkEditable *editable, gpointer user_data)
 {
@@ -162,13 +209,14 @@ on_password_changed (GtkEditable *editable, gpointer user_data)
 	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (user_data), pwstrength);
 }
 
-static void
-on_auto_check_unlock_toggled (GtkToggleButton *check, GtkBuilder *builder)
-{
-	GtkWidget *area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
-	gtk_widget_set_sensitive (area, !gtk_toggle_button_get_active (check));
-}
-
+/**
+* builder: The builder object to look for visibility keys in
+* dialog: ignored
+*
+* Depending on the input_data and the keys in the group "visibility"
+* this toggles the visibility of displayed widgets
+*
+**/
 static void
 prepare_visibility (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -193,6 +241,13 @@ prepare_visibility (GtkBuilder *builder, GtkDialog *dialog)
 	g_strfreev (keys);
 }
 
+/**
+* builder: ignored
+* dialog: The dialog to set the title for
+*
+* Sets a new title to the dialog. The title is extracted from the input_data
+*
+**/
 static void
 prepare_titlebar (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -209,6 +264,13 @@ prepare_titlebar (GtkBuilder *builder, GtkDialog *dialog)
 	gtk_window_set_type_hint (GTK_WINDOW (dialog), GDK_WINDOW_TYPE_HINT_NORMAL);
 }
 
+/**
+* builder: The GtkBuilder to extract the warning label from
+* text: The text to display in the warning label
+*
+* Displays a text in the warning_label
+*
+**/
 static void
 prepare_warning (GtkBuilder *builder, const gchar *text)
 {
@@ -225,6 +287,13 @@ prepare_warning (GtkBuilder *builder, const gchar *text)
 	gtk_widget_show (GTK_WIDGET (label));
 }
 
+/**
+* builder: The GTKBuilder to look for widgets in
+* dialog: ignored
+*
+* Reads data from the input_data and prepares a prompt dialog
+*
+**/
 static void
 prepare_prompt (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -251,6 +320,13 @@ prepare_prompt (GtkBuilder *builder, GtkDialog *dialog)
 	g_free (warning);
 }
 
+/**
+* builder: The GTK builder to use
+* dialog: the dialog to add buttons to
+*
+* Adds buttons to the dialog. Which buttons to add is defined in input_data
+*
+**/
 static void
 prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -274,6 +350,12 @@ prepare_buttons (GtkBuilder *builder, GtkDialog *dialog)
 	g_free (other_text);
 }
 
+/**
+* entry: the entry to set the buffer for
+*
+* Adds the secure egg_entry_buffer to the entry
+*
+**/
 static void
 prepare_password_entry (GtkEntry *entry)
 {
@@ -283,6 +365,13 @@ prepare_password_entry (GtkEntry *entry)
 	g_object_unref (buffer);
 }
 
+/**
+* builder: The GTKBuilder
+* dialog: The Dialog to prepare
+*
+* Password entries use a secure buffer. Set this up here.
+*
+**/
 static void
 prepare_passwords (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -302,6 +391,13 @@ prepare_passwords (GtkBuilder *builder, GtkDialog *dialog)
 	prepare_password_entry (entry);
 }
 
+/**
+* builder: The GTKBuilder
+* dialog: the dialog to connect signals for
+*
+* Registers the signal handlers for keyboard grab
+*
+**/
 static void
 prepare_security (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -315,34 +411,68 @@ prepare_security (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 static void
-prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
+prepare_unlock_option (GcrUnlockOptionsWidget *unlock, const gchar *option)
 {
-	GtkWidget *unlock, *area;
-	gboolean unlock_auto;
-	GtkToggleButton *button;
-	gint unlock_idle, unlock_timeout;
+	GError *error = NULL;
+	gboolean sensitive;
+	gchar *text;
 
-	button = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "auto_unlock_check"));
-	g_signal_connect (button, "toggled", G_CALLBACK (on_auto_check_unlock_toggled), builder);
-	unlock_auto = g_key_file_get_boolean (input_data, "unlock-options", "unlock-auto", NULL);
-	gtk_toggle_button_set_active (button, unlock_auto);
-	on_auto_check_unlock_toggled (button, builder);
+	text = g_key_file_get_string (input_data, option, "label", NULL);
+	if (text)
+		gcr_unlock_options_widget_set_label (unlock, option, text);
+	g_free (text);
 
-	unlock = gcr_unlock_options_widget_new ();
-	area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
-	g_object_set_data (G_OBJECT (dialog), "unlock-options-widget", unlock);
-	gtk_container_add (GTK_CONTAINER (area), unlock);
-	gtk_widget_show (unlock);
+	sensitive = g_key_file_get_boolean (input_data, option, "sensitive", &error);
+	if (error == NULL) {
+		text = g_key_file_get_string (input_data, option, "reason", NULL);
+		gcr_unlock_options_widget_set_sensitive (unlock, option, sensitive, text);
+		g_free (text);
+	}
 
-	unlock_idle = g_key_file_get_integer (input_data, "unlock-options", "unlock-idle", NULL);
-	unlock_timeout = g_key_file_get_integer (input_data, "unlock-options", "unlock-timeout", NULL);
-
-	g_object_set (unlock,
-	              "unlock-idle", unlock_idle,
-	              "unlock-timeout", unlock_timeout,
-	              NULL);
+	g_clear_error (&error);
 }
 
+/**
+* builder: GtkBuilderobject to read widgets from
+* dialog: the prompt dialog
+*
+* Set default value depending on input_data
+*
+**/
+static void
+prepare_lock (GtkBuilder *builder, GtkDialog *dialog)
+{
+	GcrUnlockOptionsWidget *unlock;
+	GtkWidget *area;
+	gchar *option;
+	guint ttl;
+
+	unlock = GCR_UNLOCK_OPTIONS_WIDGET (gcr_unlock_options_widget_new ());
+	area = GTK_WIDGET (gtk_builder_get_object (builder, "options_area"));
+	g_object_set_data (G_OBJECT (dialog), "unlock-options-widget", unlock);
+	gtk_container_add (GTK_CONTAINER (area), GTK_WIDGET (unlock));
+	gtk_widget_show (GTK_WIDGET (unlock));
+
+	ttl = g_key_file_get_integer (input_data, "unlock-options", "ttl", NULL);
+	gcr_unlock_options_widget_set_ttl (unlock, ttl);
+
+	option = g_key_file_get_string (input_data, "unlock-options", "choice", NULL);
+	gcr_unlock_options_widget_set_choice (unlock, option ? option : GCR_UNLOCK_OPTION_SESSION);
+	g_free (option);
+
+	prepare_unlock_option (unlock, "always");
+	prepare_unlock_option (unlock, "idle");
+	prepare_unlock_option (unlock, "timeout");
+	prepare_unlock_option (unlock, "session");
+}
+
+/**
+* builder: The GTKBuilder
+* dialog: ignored
+*
+* Reads the input_data expands the details area depending on "details"-"expanded"
+*
+**/
 static void
 prepare_details (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -354,6 +484,13 @@ prepare_details (GtkBuilder *builder, GtkDialog *dialog)
 	gtk_expander_set_expanded (expander, expanded);
 }
 
+/**
+* builder: The gtk builder to add the gku-prompt.ui to
+*
+* Create and set up the dialog
+*
+* Returns the new dialog
+**/
 static GtkDialog*
 prepare_dialog (GtkBuilder *builder)
 {
@@ -381,6 +518,13 @@ prepare_dialog (GtkBuilder *builder)
 	return dialog;
 }
 
+/**
+* parent: The parent dialog
+*
+* Displays a verification dialog if the user wants to use empty passwords
+*
+* Returns TRUE if the user wants to store data unencrypted
+**/
 static gboolean
 validate_blank_password (GtkWindow *parent)
 {
@@ -408,6 +552,14 @@ validate_blank_password (GtkWindow *parent)
 	return ret == GTK_RESPONSE_ACCEPT;
 }
 
+/**
+* builder: The GTK builder being used
+* dialog: The displayed password dialog
+*
+* Checks if the passwords are identical (password and confirm)
+*
+* Returns TRUE if the passwords match, FALSE else
+**/
 static gboolean
 validate_passwords (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -451,6 +603,15 @@ validate_passwords (GtkBuilder *builder, GtkDialog *dialog)
 	return TRUE;
 }
 
+/**
+* builder: GTKBuilder data
+* dialog: The password dialog
+* response: ignored
+*
+* Validates if passwords are identical or valid otherwise
+*
+* Returns TRUE if passwords are ok
+**/
 static gboolean
 validate_dialog (GtkBuilder *builder, GtkDialog *dialog, gint response)
 {
@@ -460,6 +621,14 @@ validate_dialog (GtkBuilder *builder, GtkDialog *dialog, gint response)
 	return TRUE;
 }
 
+/**
+* Negotiates crypto between the calling programm and the prompt
+*
+* Reads data from the transport section of input_data and sends the public key back
+* in the transport section of the output_data.
+*
+* Returns TRUE on success
+**/
 static gboolean
 negotiate_transport_crypto (void)
 {
@@ -498,6 +667,14 @@ negotiate_transport_crypto (void)
 	return ret;
 }
 
+/**
+* builder: The GTKBuilder
+* password_type: password type description
+*
+* Reads the encrypted data from the prompt and transfers it using output_data.
+* If crypto is available, it uses crypto.
+*
+**/
 static void
 gather_password (GtkBuilder *builder, const gchar *password_type)
 {
@@ -543,6 +720,13 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	g_free (data);
 }
 
+/**
+* response: The response value from the dialog
+*
+* Sets "prompt""response" of output_data to a string corresponding to
+* the response value
+*
+**/
 static void
 gather_response (gint response)
 {
@@ -569,27 +753,38 @@ gather_response (gint response)
 	g_key_file_set_string (output_data, "prompt", "response", value);
 }
 
+/**
+* builder: the gtk builder object
+* dialog: The dialog to extract the data from
+*
+* Gets the unlocking settings and stores them in output_data
+*
+**/
 static void
 gather_unlock_options (GtkBuilder *builder, GtkDialog *dialog)
 {
-	gint unlock_timeout, unlock_idle;
-	GtkToggleButton *button;
-	GtkWidget *unlock;
-
-	button = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "auto_unlock_check"));
-	g_key_file_set_boolean (output_data, "unlock-options", "unlock-auto",
-	                        gtk_toggle_button_get_active (button));
+	GcrUnlockOptionsWidget *unlock;
+	const gchar *choice;
 
 	unlock = g_object_get_data (G_OBJECT (dialog), "unlock-options-widget");
-	g_object_get (unlock,
-	              "unlock-timeout", &unlock_timeout,
-	              "unlock-idle", &unlock_idle,
-	              NULL);
 
-	g_key_file_set_integer (output_data, "unlock-options", "unlock-timeout", unlock_timeout);
-	g_key_file_set_integer (output_data, "unlock-options", "unlock-idle", unlock_idle);
+	choice = gcr_unlock_options_widget_get_choice (unlock);
+	if (choice) {
+		g_key_file_set_integer (output_data, "unlock-options", "ttl",
+		                        gcr_unlock_options_widget_get_ttl (unlock));
+
+		g_key_file_set_string (output_data, "unlock-options", "choice", choice);
+	}
 }
 
+/**
+* builder: The builder
+* dialog: ignored
+*
+* Extracts the status of the details expander and stores it in "details""expanded"
+* of the output data
+*
+**/
 static void
 gather_details (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -601,6 +796,13 @@ gather_details (GtkBuilder *builder, GtkDialog *dialog)
 }
 
 
+/**
+* builder: The GTKBuilder object
+* dialog: the prompt dialog
+*
+* Called on "ok" or "apply" user choice.
+*
+**/
 static void
 gather_dialog (GtkBuilder *builder, GtkDialog *dialog)
 {
@@ -611,6 +813,11 @@ gather_dialog (GtkBuilder *builder, GtkDialog *dialog)
 	gather_details (builder, dialog);
 }
 
+/**
+* Sets up the dialog, shows it and waits for response
+*
+*
+**/
 static void
 run_dialog (void)
 {
@@ -667,18 +874,42 @@ static gboolean do_warning = TRUE;
  * locking for memory between threads
  */
 
+/**
+ * egg_memory_lock:
+ *
+ * Memory locking for threads
+ *
+ */
 void
 egg_memory_lock (void)
 {
 	/* No threads used in prompt tool, doesn't need locking */
 }
 
+/**
+ * egg_memory_unlock:
+ *
+ * Memory locking for threads
+ *
+ */
 void
 egg_memory_unlock (void)
+
 {
 	/* No threads used in prompt tool, doesn't need locking */
 }
 
+/**
+ * egg_memory_fallback:
+ * @p: Memory pointer. Can be NULL to create memory
+ * @sz: Size of the pointer. 0 for freeing, everything else is resize or allocate
+ *
+ * An allround fallback function for
+ * freeing, allocating and resizing memory
+ * Behavior also depends on GNOME_KEYRING_PARANOID environment var.
+ *
+ * Returns:
+ */
 void*
 egg_memory_fallback (void *p, size_t sz)
 {
@@ -718,7 +949,14 @@ egg_memory_fallback (void *p, size_t sz)
  * HELPERS
  */
 
-/* Because Solaris doesn't have err() :( */
+/**
+* msg1: optional first message
+* msg2: optional second message
+*
+* Because Solaris doesn't have err() :(
+* prints an error, exits the program. Depending on LOG_ERRORS it will also write logs
+*
+**/
 static void
 fatal (const char *msg1, const char *msg2)
 {
@@ -736,6 +974,15 @@ fatal (const char *msg1, const char *msg2)
 	exit (1);
 }
 
+/**
+* log_domain: Optional domain for the log
+* log_level: Flags for the log level
+* message: Message for the log
+* user_data: used for the default log handler
+*
+* Does logging
+*
+**/
 static void
 log_handler (const gchar *log_domain, GLogLevelFlags log_level,
              const gchar *message, gpointer user_data)
@@ -780,6 +1027,11 @@ log_handler (const gchar *log_domain, GLogLevelFlags log_level,
 	g_log_default_handler (log_domain, log_level, message, user_data);
 }
 
+/**
+*
+* Sets up logging. Identity is "gnome-keyring-prompt"
+*
+**/
 static void
 prepare_logging ()
 {
@@ -796,6 +1048,13 @@ prepare_logging ()
 	g_log_set_default_handler (log_handler, NULL);
 }
 
+/**
+* data: data to write to stdout
+* len: size of this data
+*
+* Writes data to stdout
+*
+**/
 static void
 write_all_output (const gchar *data, gsize len)
 {
@@ -819,6 +1078,12 @@ write_all_output (const gchar *data, gsize len)
 	}
 }
 
+/**
+* Reads input from stdin. This is a key-value "file" containing control
+* data for this prompt.
+*
+* Returns the input as gchar*
+**/
 static gchar*
 read_all_input (void)
 {
@@ -843,6 +1108,12 @@ read_all_input (void)
 	return g_string_free (data, FALSE);
 }
 
+/**
+* sig: not used
+*
+* Exits
+*
+**/
 static void
 hup_handler (int sig)
 {
@@ -853,6 +1124,16 @@ hup_handler (int sig)
 	_exit (0);
 }
 
+/**
+ * main:
+ * @argc:
+ * @argv[]: Sent to gtk_init
+ *
+ * Prompt for GnuPG and SSH. Communicates using stdin/stdout. Communication data
+ * is in ini-file structures
+ *
+ * Returns: 0
+ */
 int
 main (int argc, char *argv[])
 {

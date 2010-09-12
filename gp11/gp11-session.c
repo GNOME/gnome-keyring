@@ -179,6 +179,9 @@ gp11_session_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_SLOT:
 		g_value_take_object (value, gp11_session_get_slot (self));
 		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
 	}
 }
 
@@ -204,6 +207,9 @@ gp11_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!data->slot);
 		data->slot = g_value_dup_object (value);
 		g_return_if_fail (data->slot);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
 	}
 }
