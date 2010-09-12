@@ -1,3 +1,22 @@
+Changes in version 2.31.92 are:
+ * Require glib 2.25 or later.
+ * Require automake 1.7 or later.
+ * Fix assertion in secure memory code.
+ * Don't go into endless loop when GPG Agent client disconnects.
+ * Fix double free in gp11 library.
+ * Fix crash during keyring unlock operation.
+ * Expand prompt details when a non-default unlock option is chosen.
+ * Migrate to gsettings.
+ * Use gsettings for GPG agent unlock options.
+ * Fix library header installation directory for libgcr.
+ * Fix some errors parsing certificates.
+ * Rework how unlock options are loaded and handled.
+ * Fix saving of auto-unlock passwords.
+ * Support building with GTK+ 3.0
+ * No warning message when SSH unlock prompt is cancelled.
+ * Build fix finding PAM headers.
+ * Build fix of PAM module for Hurd.
+
 Changes in version 2.31.91 are:
  * Fix problem with keyring names that contain foreign charaters.
  * Build fixes and warning fixes.

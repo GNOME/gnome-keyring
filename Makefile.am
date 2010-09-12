@@ -32,7 +32,10 @@ EXTRA_DIST = \
 	ChangeLog.old \
 	HACKING
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-tests
+DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-gtk-doc \
+	--enable-tests \
+	--disable-debug
 
 DISTCLEANFILES = \
 	intltool-extract \

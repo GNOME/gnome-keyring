@@ -8,4 +8,5 @@ while read line; do
 	echo "$count" >&2
 done
 echo $output
+sleep 1
 exit 3
