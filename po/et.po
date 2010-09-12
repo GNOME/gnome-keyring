@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
 "POT-Creation-Date: 2010-08-30 06:19+0000\n"
-"PO-Revision-Date: 2010-08-30 11:45+0300\n"
+"PO-Revision-Date: 2010-09-11 10:30+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,7 @@ msgstr ""
 "jaoks parool."
 
 msgid "Certificate and Key Storage"
-msgstr "Sertifikaadid ja võtmehoidla"
+msgstr "Sertifikaadi- ja võtmehoidla"
 
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME võtmerõngas: PKCS#11 komponent"
@@ -278,7 +278,7 @@ msgid "Yes"
 msgstr "Jah"
 
 msgid "No"
-msgstr "ei"
+msgstr "Ei"
 
 #. The subject
 msgid "Subject Name"
@@ -354,7 +354,7 @@ msgid "minutes"
 msgstr "minutit"
 
 msgid "The operation was cancelled"
-msgstr "Operatsioon katkestati"
+msgstr "Toiming katkestati"
 
 #, c-format
 msgid "No location available to import to"
@@ -427,7 +427,7 @@ msgid "Internal error"
 msgstr "Sisemine viga"
 
 msgid "The operation failed"
-msgstr "Operatsioon nurjus"
+msgstr "Toiming nurjus"
 
 msgid "Invalid arguments"
 msgstr "Vigased argumendid"
@@ -496,7 +496,7 @@ msgid "Cannot include the key in digest"
 msgstr "Võtit pole võimalik sõnumilühendisse kaasata"
 
 msgid "This operation cannot be done with this key"
-msgstr "Selle võtmega pole seda operatsiooni võimalik lõpetada"
+msgstr "Selle võtmega pole seda toimingut võimalik lõpetada"
 
 msgid "The key cannot be wrapped"
 msgstr "Seda võtit pole võimalik mähkida"
@@ -514,10 +514,10 @@ msgid "The object is missing or invalid"
 msgstr "Objekt puudub või on vigane"
 
 msgid "Another operation is already taking place"
-msgstr "Samal ajal toimub muu tegevus"
+msgstr "Üks toiming on juba käimas"
 
 msgid "No operation is taking place"
-msgstr "Operatsioon on töös"
+msgstr "Hetkel ei viida ühtegi toimingut läbi"
 
 msgid "The password or PIN is incorrect"
 msgstr "Parool või PIN ei ole korrektne"
@@ -737,10 +737,10 @@ msgid "An application wants access to '%s', but it is locked"
 msgstr "Rakendus tahab kasutada '%s', kuid see on lukus"
 
 msgid "Unlock certificate/key storage"
-msgstr "Võta sertifikaatide--/võtmehoidla lukust lahti"
+msgstr "Võta sertifikaadi-/võtmehoidla lukust lahti"
 
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "Sisesta sertifikaatide-/võtmehoidla luku avamise parool"
+msgstr "Sisesta sertifikaadi-/võtmehoidla luku avamise parool"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #, c-format
@@ -748,7 +748,7 @@ msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"Rakendus tahab kasutada sertifikaatide-/võtmehoidlat '%s', kuid see on lukus"
+"Rakendus tahab kasutada sertifikaadi-/võtmehoidlat '%s', kuid see on lukus"
 
 msgid "New Password Required"
 msgstr "Vajalik uus parool"
@@ -817,281 +817,3 @@ msgstr "_Vana parool:"
 
 msgid "_Password:"
 msgstr "_Parool:"
-
-#~ msgid ""
-#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#~ "only takes effect during startup with gnome-session, (ie: when the user "
-#~ "logs in). This setting may be overridden when certain command line "
-#~ "arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemoni "
-#~ "PKCS#11 komponenti. See mõjub ainult gnome-sessioni käivitamisel, (ehk "
-#~ "siis, kui kasutaja sisse logib). Seda sätet on võimalik mõnede deemonile "
-#~ "antud käsureaargumentidega asendada."
-
-#~ msgid ""
-#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
-#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
-#~ "This setting may be overridden when certain command line arguments are "
-#~ "passed to the daemon."
-#~ msgstr ""
-#~ "Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga "
-#~ "deemoniSSH komponenti. See mõjub ainult gnome-keyring-daemon'i "
-#~ "käivitamisel, (ehk siis, kui kasutaja sisse logib). Seda sätet on "
-#~ "võimalik mõnede deemonile antud käsureaargumentidega asendada."
-
-#~ msgid ""
-#~ "This option enables the secret service component in the gnome-keyring "
-#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
-#~ "the user logs in). This setting may be overridden when certain command "
-#~ "line arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Selle võtme abil on võimalik lubada või keelata GNOME võtmerõnga deemoni "
-#~ "saladuste teenuse komponenti. See mõjub ainult gnome-sessioni "
-#~ "käivitamisel, (ehk siis, kui kasutaja sisse logib). Seda sätet on "
-#~ "võimalik mõnede deemonile antud käsureaargumentidega asendada."
-
-#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-#~ msgstr "Kas gnome võtmerõnga PKCS#11 komponent on lubatud või mitte."
-
-#~ msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgstr "Kas gnome võtmerõnga SSH komponent on lubatud või mitte."
-
-#~ msgid "Whether the gnome-keyring secret service is enabled."
-#~ msgstr "Kas gnome võtmerõnga saladuste teenus on lubatud või mitte."
-
-#~ msgid "Automatically unlock secure storage when I log in."
-#~ msgstr ""
-#~ "See turvahoidla võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#~ msgid ""
-#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
-#~ "to unlock</span>\n"
-#~ "\n"
-#~ "An application wants access to the keyring 'xxx', but it is locked."
-#~ msgstr ""
-#~ "<span size=\"large\" weight=\"bold\">Sisesta võtmerõnga 'login' luku "
-#~ "avamise parool</span>\n"
-#~ "\n"
-#~ "Rakendus tahab kasutada võtmerõngast 'xxx', kuid see on lukus"
-
-#~ msgid "Prompt me for each application that accesses this keyring."
-#~ msgstr ""
-#~ "Kinnituse küsimine iga rakenduse korral, mis soovib sellele võtmerõngale "
-#~ "ligi pääseda."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Rakendus '%s' (%s) soovib '<object prop='name'/>' jaoks kasutada parooli, "
-#~ "mis asub vaikimisi võtmerõngas."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Rakendus '%s' (%s) soovib '<object prop='name'/>' jaoks kasutada parooli, "
-#~ "mis asub võtmerõngas %s."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada vaikimisi "
-#~ "võtmerõngas asuvat parooli."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Rakendus '%s' soovib '<object prop='name'/>' jaoks kasutada võtmerõngas %"
-#~ "s asuvat parooli."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Tundmatu rakendus soovib '<object prop='name'/>' jaoks kasutada vaikimisi "
-#~ "võtmerõngas asuvat parooli."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Tundmatu rakendus soovib '<object prop='name'/>' jaoks kasutada "
-#~ "võtmerõngas %s asuvat parooli."
-
-#~ msgid "Allow access"
-#~ msgstr "Ligipääsu lubamine"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Rakendus '%s' (%s) tahab kasutada vaikimisi võtmerõngast, kuid see on "
-#~ "lukus"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Rakendus '%s' (%s) tahab kasutada võtmerõngast '%s', kuid see on lukus"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the default keyring, but it is locked"
-#~ msgstr ""
-#~ "Rakendus '%s' tahab kasutada vaikimisi võtmerõngast, kuid see on lukus"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the keyring '%s', but it is locked"
-#~ msgstr "Rakendus '%s' tahab kasutada võtmerõngast '%s', kuid see on lukus"
-
-#~ msgid ""
-#~ "An unknown application wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Tundmatu rakendus tahab kasutada vaikimisi võtmerõngast, kuid see on lukus"
-
-#~ msgid "Enter password for default keyring to unlock"
-#~ msgstr "Sisesta parool vaikimisi võtmerõnga avamiseks"
-
-#~ msgid "Create Default Keyring"
-#~ msgstr "Vaikimisi võtmerõnga loomine"
-
-#~ msgid "Choose password for default keyring"
-#~ msgstr "Sisesta vaikimisi võtmerõnga parool"
-
-#~ msgid "Create Login Keyring"
-#~ msgstr "Sisselogimise võtmerõnga loomine"
-
-#~ msgid "Enter your login password"
-#~ msgstr "Sisesta oma sisselogimise parool"
-
-#~ msgid ""
-#~ "Your login keyring was not automatically created when you logged into "
-#~ "this computer. It will now be created."
-#~ msgstr ""
-#~ "Sinu sisselogimise võtmerõngast ei loodud, kui sa sellesse arvutisse "
-#~ "sisse logisid. See luuakse nüüd."
-
-#~ msgid "Automatically unlock this private key when I log in."
-#~ msgstr ""
-#~ "See salajane võti võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#~ msgid "Automatically unlock this certificate when I log in."
-#~ msgstr ""
-#~ "See sertifikaat võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#~ msgid "Automatically unlock this public key when I log in."
-#~ msgstr ""
-#~ "See avalik võti võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#~ msgid "Automatically unlock this when I log in"
-#~ msgstr "See võetakse minu sisselogimisel automaatselt lukust lahti."
-
-#~ msgid ""
-#~ "<b><big>Could not grab your mouse.</big></b>\n"
-#~ "\n"
-#~ "A malicious client may be eavesdropping on your session or you may have "
-#~ "just clicked a menu or some application just decided to get focus.\n"
-#~ "\n"
-#~ "Try again."
-#~ msgstr ""
-#~ "<b><big>Hiirt polnud võimalik haarata.</big></b>\n"
-#~ "\n"
-#~ "Pahatahtlik programm võib sinu seanssi pealt kuulata, või klõpsasid sa "
-#~ "just menüül või muul rakendusel, mis haaras fookuse.\n"
-#~ "\n"
-#~ "Proovi uuesti."
-
-#~ msgid ""
-#~ "<b><big>Could not grab your keyboard.</big></b>\n"
-#~ "\n"
-#~ "A malicious client may be eavesdropping on your session or you may have "
-#~ "just clicked a menu or some application just decided to get focus.\n"
-#~ "\n"
-#~ "Try again."
-#~ msgstr ""
-#~ "<b><big>Klaviatuuri polnud võimalik haarata.</big></b>\n"
-#~ "\n"
-#~ "Pahatahtlik programm võib sinu seanssi pealt kuulata, või klõpsasid sa "
-#~ "just menüül või muul rakendusel, mis haaras fookuse.\n"
-#~ "\n"
-#~ "Proovi uuesti."
-
-#~ msgid "_Deny"
-#~ msgstr "_Keela"
-
-#~ msgid "C_reate"
-#~ msgstr "_Loo"
-
-#~ msgid "C_hange"
-#~ msgstr "_Muuda"
-
-#~ msgid "Allow _Once"
-#~ msgstr "Luba ainult _seekord"
-
-#~ msgid "_Always Allow"
-#~ msgstr "Luba _alati"
-
-#~ msgid "Removable Disk: %s"
-#~ msgstr "Eemaldatav ketas: %s"
-
-#~ msgid "Removable Disk"
-#~ msgstr "Eemaldatav ketas"
-
-#~ msgid "Home"
-#~ msgstr "Kodu"
-
-#~ msgid "The disk or drive this file is located on is not present"
-#~ msgstr "Selle faili asukohaks määratud ketas või seade pole kättesaadav"
-
-#~ msgid "Couldn't create directory: %s"
-#~ msgstr "Kataloogi pole võimalik luua: %s"
-
-#~ msgid "Couldn't delete the file: %s"
-#~ msgstr "Faili pole võimalik kustutada: %s"
-
-#~ msgid "Access Denied"
-#~ msgstr "Ligipääs keelatud"
-
-#~ msgid "The gnome-keyring-daemon application is not running."
-#~ msgstr "Rakendus gnome-keyring-daemon ei tööta."
-
-#~ msgid "Error communicating with gnome-keyring-daemon"
-#~ msgstr "Viga rakenduseg gnome-keyring-daemon suhtlemisel"
-
-#~ msgid "A keyring with that name already exists"
-#~ msgstr "Selle nimega võtmerõngas on juba olemas"
-
-#~ msgid "Programmer error: The application sent invalid data."
-#~ msgstr "Programmeerija viga: Rakendus saatis vigased andmed."
-
-#~ msgid "No matching results"
-#~ msgstr "Vastavusi pole"
-
-#~ msgid "A keyring with that name does not exist."
-#~ msgstr "Selle nimega võtmerõngast pole olemas."
-
-#~ msgid "The keyring has already been unlocked."
-#~ msgstr "Võtmerõngas on juba lukust lahti võetud."
-
-#~ msgid "Import private key"
-#~ msgstr "Salajase võtme importimine"
-
-#~ msgid "Import public key"
-#~ msgstr "Avaliku võtme importimine"
-
-#~ msgid "The system wants to import the public key '%s', but it is locked"
-#~ msgstr "Süsteem tahab importida avalikku võtit '%s', kuid see on lukus"
-
-#~ msgid "Enter password to protect the private key"
-#~ msgstr "Sisesta salajase võtme kaitsmiseks parool"
-
-#~ msgid ""
-#~ "The system wants to store the private key '%s' on your disk. Please enter "
-#~ "a password to lock it with."
-#~ msgstr ""
-#~ "Süsteem tahab salajast võtit '%s' kettale salvestada. Palun sisesta "
-#~ "salajase võtme lukustamiseks parool."
