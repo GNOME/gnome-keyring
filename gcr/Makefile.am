@@ -2,17 +2,16 @@
 # UI BUILDER
 # 
 
-uidir = $(datadir)/gcr/ui/
+uidir = $(datadir)/gcr@GCR_VERSION_SUFFIX@/ui/
 
 ui_DATA = \
-	gcr-certificate-basics-widget.ui \
 	gcr-import-dialog.ui \
 	gcr-unlock-options-widget.ui
 
 # ------------------------------------------------------------------
 # HEADERS
 
-incdir = $(includedir)/gcr
+incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
 
 inc_HEADERS = \
 	gcr.h \
@@ -24,7 +23,9 @@ inc_HEADERS = \
 	gcr-importer.h \
 	gcr-parser.h \
 	gcr-renderer.h \
+	gcr-simple-certificate.h \
 	gcr-types.h \
+	gcr-unlock-options.h \
 	gcr-unlock-options-widget.h \
 	gcr-viewer.h
 
@@ -33,9 +34,9 @@ inc_HEADERS = \
 
 INCLUDES = \
 	-I$(top_builddir) \
-    	-I$(top_srcdir) \
-    	$(GTK_CFLAGS) \
-    	$(GOBJECT_CFLAGS) \
+	-I$(top_srcdir) \
+	$(GTK_CFLAGS) \
+	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS) \
 	$(LIBTASN1_CFLAGS)
@@ -43,9 +44,9 @@ INCLUDES = \
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h
 
-lib_LTLIBRARIES = libgcr.la
+lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
 
-libgcr_la_SOURCES = \
+libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
@@ -61,20 +62,21 @@ libgcr_la_SOURCES = \
 	gcr-renderer.c gcr-renderer.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-types.h \
+	gcr-unlock-options.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
 	gcr-viewer.c gcr-viewer.h \
 	$(BUILT_SOURCES)
 
-libgcr_la_CFLAGS = \
+libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 	-DPKCS11_MODULE_PATH=\""$(libdir)/gnome-keyring/gnome-keyring-pkcs11.so"\" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DUIDIR=\""$(uidir)"\"
-    
-libgcr_la_LDFLAGS = \
-    	-version-info $(GCR_LT_RELEASE) \
+
+libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
+	-version-info $(GCR_LT_RELEASE) \
 	-no-undefined -export-symbols-regex 'gcr_*'
-    
-libgcr_la_LIBADD = \
+
+libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gck/libgck.la \
@@ -102,14 +104,14 @@ EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
 	$(ui_DATA)
-    
+
 CLEANFILES = \
 	$(BUILT_SOURCES) \
-    	$(pkgconfig_DATA)
-    	
+	$(pkgconfig_DATA)
+
 DISTCLEANFILES = \
 	$(pkgconfig_DATA)
-    
+
 if WITH_TESTS
 TESTS_DIR = tests
 else

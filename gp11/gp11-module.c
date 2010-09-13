@@ -479,6 +479,9 @@ gp11_module_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_POOL_SESSIONS:
 		g_value_set_boolean (value, gp11_module_get_pool_sessions (self));
 		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
 	}
 }
 
@@ -504,6 +507,9 @@ gp11_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 		break;
 	case PROP_POOL_SESSIONS:
 		gp11_module_set_pool_sessions (self, g_value_get_boolean (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
 	}
 }

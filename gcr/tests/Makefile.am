@@ -22,7 +22,8 @@ EXTRA_DIST = \
 
 noinst_PROGRAMS += \
 	ui-test-certificate \
-	ui-test-key
+	ui-test-key \
+	ui-test-unlock-options
 
 ui_test_certificate_SOURCES = \
 	ui-test-certificate.c
@@ -33,6 +34,18 @@ ui_test_certificate_CFLAGS = \
 
 ui_test_certificate_LDADD = \
 	$(top_builddir)/gcr/libgcr.la \
+	$(GTK_LIBS) \
+	$(LIBGCRYPT_LIBS)
+
+ui_test_unlock_options_SOURCES = \
+	ui-test-unlock-options.c
+
+ui_test_unlock_options_CFLAGS = \
+	-DGCR_API_SUBJECT_TO_CHANGE \
+	$(GTK_CFLAGS)
+
+ui_test_unlock_options_LDADD = \
+	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
 	$(GTK_LIBS) \
 	$(LIBGCRYPT_LIBS)
 

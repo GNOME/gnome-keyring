@@ -131,7 +131,7 @@ prepare_module_session_and_collection (CK_FUNCTION_LIST_PTR_PTR module,
 
 	for (i = 0; !ret && i < n_slots; ++i) {
 		/* Open a session with this module */
-		rv = (funcs->C_OpenSession) (slots[i], CKF_SERIAL_SESSION, NULL, NULL, session);
+		rv = (funcs->C_OpenSession) (slots[i], CKF_RW_SESSION | CKF_SERIAL_SESSION, NULL, NULL, session);
 		if (rv != CKR_OK)
 			continue;
 

@@ -14,67 +14,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-20 17:16+0100\n"
-"PO-Revision-Date: 2010-03-20 17:08+0100\n"
+"POT-Creation-Date: 2010-09-12 15:02+0200\n"
+"PO-Revision-Date: 2010-09-12 15:02+0200\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Deze optie schakelt de PKCS#11-component van gnome-keyring daemon in. Dit "
-"heeft alleen effect tijdens het opstarten via gnome-session (wanneer de "
-"gebruiker zich aanmeldt). Deze instelling kan worden overschreven door "
-"parameters op de opdrachtregel mee te geven aan de daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Deze optie schakelt de SSH-agent van gnome-keyring daemon in. Dit heeft "
-"alleen effect als gnome-keyring-daemon start, bijvoorbeeld als de gebruiker "
-"zich aanmeldt. Deze instelling kan worden overschreven door parameters op de "
-"opdrachtregel mee te geven aan de daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Deze optie schakelt de ‘secret service’-component van gnome-keyring daemon "
-"in. Dit heeft alleen effect tijdens het opstarten via gnome-session (wanneer "
-"de gebruiker zich aanmeldt). Deze instelling kan worden overschreven door "
-"parameters op de opdrachtregel mee te geven aan de daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Of de PKCS#11-component van gnome-keyring ingeschakeld is."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Of de SSH-agent van gnome-keyring ingeschakeld is."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Of de ‘secret service’ van gnome-keyring ingeschakeld is."
-
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:590
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Unnamed"
 msgstr "Naamloos"
 
@@ -117,48 +71,6 @@ msgstr ""
 "Een programma wil een nieuwe sleutelbos met de naam ‘%s’ aanmaken. U kunt "
 "het te gebruiken wachtwoord kiezen."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "Aanmeldsleutelbos ontgrendelen"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-msgid "Enter password for to unlock your login keyring"
-msgstr "Voer uw aanmeldwachtwoord in om de aanmeldsleutelbos te ontgrendelen"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Het wachtwoord dat u gebruikt om u aan te melden bij deze computer komt niet "
-"overeen met het wachtwoord van uw aanmeldsleutelbos."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Uw aanmeldsleutelbos was niet automatisch ontgrendeld bij het aanmelden op "
-"deze computer."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "Sleutelbos ontgrendelen"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Voer wachtwoord in voor het ontgrendelen van sleutelbos ‘%s’"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Een programma wil toegang tot de sleutelbos ‘%s’, maar deze is vergrendeld."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:221
-msgid "The unlock password was incorrect"
-msgstr "Het wachtwoord was onjuist"
-
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Certificaat- en sleutelopslag"
@@ -184,171 +96,45 @@ msgstr "Sleutelbos-service: SSH-agent"
 msgid "SSH Key Agent"
 msgstr "SSH-sleutelagent"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Gnome-sleutelbos: GPG-agent"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG-wachtwoordagent"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP-sleutel: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
+msgid "Enter Passphrase"
+msgstr "Voer wachtwoordzin in"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+msgid "Forget this password if idle for"
+msgstr "Dit wachtwoord vergeen na inactiviteit van"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+msgid "Forget this password after"
+msgstr "Dit wachtwoord vergeten na"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+msgid "Forget this password when I log out"
+msgstr "Dit wachtwoord vergeten bij afmelden"
+
 # Onvertaald gelaten (Wouter Bolsterlee)
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:175
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Login"
-
-#: ../daemon/login/gkd-login.c:602
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Wachtwoord voor ontgrendelen van ‘%s’"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Nieuw wachtwoord vereist"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Nieuw wachtwoord vereist voor beveiligde opslag"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Om ‘%s’ voor te bereiden voro de opslag van certificaten of sleutels, is een "
-"wachtwoord nodig."
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Privé-sleutel ontgrendelen"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Certificaat ontgrendelen"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Publieke sleutel ontgrendelen"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Ontgrendelen"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Voer uw wachtwoord in voor ontgrendeling van de privé-sleutel"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Voer uw wachtwoord in voor ontgrendeling van het certificaat"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Voer uw wachtwoord in voor ontgrendeling van de publieke sleutel"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Voer wachtwoord in voor ontgrendeling"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Een programma wil toegang tot de sleutelbos ‘%s’, maar deze is gesloten"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"Een programma wil toegang tot het certificaat ‘%s’, maar dit certificaat is "
-"gesloten"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Een programma wil toegang tot de publieke sleutel ‘%s’, maar deze is gesloten"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Een programma wil toegang tot ‘%s’, maar deze is gesloten"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Certificaat/sleutelopslag ontgrendelen"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Voer uw wachtwoord in voor ontgrendeling van het certificaat of de "
-"sleutelopslag"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Een toepassing wil toegang tot het certificaat of de sleutelopslag ‘%s’, "
-"maar deze is gesloten"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "Wachtwoorden zonder versleuteling opslaan?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Door een leeg wachtwoord te gebruiken worden de opgeslagen wachtwoorden niet "
-"veilig bewaard. Iedereen met toegang tot uw bestanden kan deze wachtwoorden "
-"acherhalen."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Onveilige opslag gebruiken"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Wachtwoorden komen niet overeen."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "Wachtwoord mag niet leeg zijn"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Deze sleutelbos automatisch ontgrendelen bij aanmelden"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Veiligheid wachtwoord"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Toepassing:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_Bevestigen:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Details:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Naam:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "_Oud wachtwoord:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Wachtwoord:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -391,7 +177,7 @@ msgid "Surname"
 msgstr "Achternaam"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "Serienummber"
 
@@ -559,94 +345,94 @@ msgstr "SSL-client-certificaat"
 msgid "SSL Server Certificate"
 msgstr "SSL-server-certificaat"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "Extensie"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "Identifier"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "Waarde"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "Kritiek"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "Ja"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "Nee"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "Subject Name"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "Naam uitgever"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "Uitgegeven certificaat"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "Versie"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "Niet geldig voor"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "Niet geldig na"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "Ondertekening"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "Ondertekeningsalgoritme"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "Ondertekeningsparameters"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "Pulieke-sleutelinformatie"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "Sleutelalgoritme"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "Sleutelparameters"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "Sleutelgrootte"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "Pulieke sleutel"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "Vingeradrukken"
 
@@ -664,22 +450,26 @@ msgid "Password:"
 msgstr "Wachtwoord:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Deze sleutelbos automatisch ontgrendelen bij aanmelden"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
 msgstr "Deze sleutelbos vergrendelen na"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
 msgstr "Deze sleutelbos vergrendelen na inactiviteit van"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
 msgstr "Deze sleutelbos automatisch vergrendelen bij afmelden"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#: ../gcr/gcr-unlock-options-widget.ui.h:5
 msgid "minutes"
 msgstr "minuten"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "De bewerking werd geannuleerd."
 
@@ -696,6 +486,18 @@ msgstr "Certificaten of sleutels importeren"
 msgid "Choose a location to store the imported certificates/keys."
 msgstr ""
 "Kies een locatie om de geïmporteerde certificaten of sleutels op te slaan"
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+msgid "Enter password to unlock the private key"
+msgstr "Voer uw wachtwoord in voor ontgrendeling van de privé-sleutel"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+msgid "Enter password to unlock the certificate"
+msgstr "Voer uw wachtwoord in voor ontgrendeling van het certificaat"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+msgid "Enter password to unlock"
+msgstr "Voer wachtwoord in voor ontgrendeling"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -730,23 +532,23 @@ msgstr "Om het certificaat ‘%s’ te importeren, moet deze ontgrendeld worden"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Om de ‘%s’ te importeren, moet deze ontgrendeld worden"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "Privé-sleutel"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "Certificaat"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "Onherkenbare of niet ondersteunde gegevens."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "Kon ongeldige of kapotte gegevens niet verwerken."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "De gegevens zijn vergrendeld"
 
@@ -843,7 +645,7 @@ msgid "No key is needed"
 msgstr "Er is geen sleutel nodig"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "De sleutel is anders dan voorheen"
 
 #: ../gp11/gp11-misc.c:149
@@ -1070,13 +872,260 @@ msgstr "De ondertekening is door de gebruiker geweigerd"
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "Onbenoemd certificaat"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Kon de publieke sleutel voor Secure Shell niet verwerken"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Wachtwoord voor ontgrendelen van ‘%s’"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+msgid "The unlock password was incorrect"
+msgstr "Het wachtwoord was onjuist"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+msgid "Unlock Login Keyring"
+msgstr "Aanmeldsleutelbos ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Enter password to unlock your login keyring"
+msgstr "Voer wachtwoord in om de aanmeldsleutelbos te ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Het wachtwoord dat u gebruikt om u aan te melden bij deze computer komt niet "
+"overeen met het wachtwoord van uw aanmeldsleutelbos."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Uw aanmeldsleutelbos was niet automatisch ontgrendeld bij het aanmelden op "
+"deze computer."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+msgid "Unlock Keyring"
+msgstr "Sleutelbos ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Voer wachtwoord in voor het ontgrendelen van sleutelbos ‘%s’"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Een programma wil toegang tot de sleutelbos ‘%s’, maar deze is vergrendeld."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Unlock private key"
+msgstr "Privé-sleutel ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Unlock certificate"
+msgstr "Certificaat ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Unlock public key"
+msgstr "Publieke sleutel ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "Unlock"
+msgstr "Ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+msgid "Enter password to unlock the public key"
+msgstr "Voer uw wachtwoord in voor ontgrendeling van de publieke sleutel"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Een programma wil toegang tot de sleutelbos ‘%s’, maar deze is gesloten"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"Een programma wil toegang tot het certificaat ‘%s’, maar dit certificaat is "
+"gesloten"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Een programma wil toegang tot de publieke sleutel ‘%s’, maar deze is gesloten"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Een programma wil toegang tot ‘%s’, maar deze is gesloten"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+msgid "Unlock certificate/key storage"
+msgstr "Certificaat/sleutelopslag ontgrendelen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Voer uw wachtwoord in voor ontgrendeling van het certificaat of de "
+"sleutelopslag"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Een toepassing wil toegang tot het certificaat of de sleutelopslag ‘%s’, "
+"maar deze is gesloten"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+msgid "New Password Required"
+msgstr "Nieuw wachtwoord vereist"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+msgid "New password required for secure storage"
+msgstr "Nieuw wachtwoord vereist voor beveiligde opslag"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Om ‘%s’ voor te bereiden voro de opslag van certificaten of sleutels, is een "
+"wachtwoord nodig."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+msgid "Change Password"
+msgstr "Wachtwoord wijzigen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+msgid "Change password for secure storage"
+msgstr "Wachtwoord voor beveiligde opslag wijzigen"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr ""
+"Om het wachtwoord voor ‘%s’ te wijzingen is zowel het oude als het nieuwe "
+"wachtwoord nodig."
+
+#: ../ui/gku-prompt-tool.c:538
+msgid "Store passwords unencrypted?"
+msgstr "Wachtwoorden zonder versleuteling opslaan?"
+
+#: ../ui/gku-prompt-tool.c:539
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Door een leeg wachtwoord te gebruiken worden de opgeslagen wachtwoorden niet "
+"veilig bewaard. Iedereen met toegang tot uw bestanden kan deze wachtwoorden "
+"acherhalen."
+
+#: ../ui/gku-prompt-tool.c:546
+msgid "Use Unsafe Storage"
+msgstr "Onveilige opslag gebruiken"
+
+#: ../ui/gku-prompt-tool.c:584
+msgid "Passwords do not match."
+msgstr "Wachtwoorden komen niet overeen."
+
+#: ../ui/gku-prompt-tool.c:594
+msgid "Password cannot be blank"
+msgstr "Wachtwoord mag niet leeg zijn"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "Veiligheid wachtwoord"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "_Toepassing:"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "_Bevestigen:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "_Details:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "_Naam:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "_Oud wachtwoord:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "_Wachtwoord:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Deze optie schakelt de PKCS#11-component van gnome-keyring daemon in. Dit "
+#~ "heeft alleen effect tijdens het opstarten via gnome-session (wanneer de "
+#~ "gebruiker zich aanmeldt). Deze instelling kan worden overschreven door "
+#~ "parameters op de opdrachtregel mee te geven aan de daemon."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Deze optie schakelt de SSH-agent van gnome-keyring daemon in. Dit heeft "
+#~ "alleen effect als gnome-keyring-daemon start, bijvoorbeeld als de "
+#~ "gebruiker zich aanmeldt. Deze instelling kan worden overschreven door "
+#~ "parameters op de opdrachtregel mee te geven aan de daemon."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Deze optie schakelt de ‘secret service’-component van gnome-keyring "
+#~ "daemon in. Dit heeft alleen effect tijdens het opstarten via gnome-"
+#~ "session (wanneer de gebruiker zich aanmeldt). Deze instelling kan worden "
+#~ "overschreven door parameters op de opdrachtregel mee te geven aan de "
+#~ "daemon."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Of de PKCS#11-component van gnome-keyring ingeschakeld is."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Of de SSH-agent van gnome-keyring ingeschakeld is."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Of de ‘secret service’ van gnome-keyring ingeschakeld is."
 
 #~ msgid "Removable Disk: %s"
 #~ msgstr "Loskoppelbare schijf: %s"

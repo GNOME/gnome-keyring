@@ -26,6 +26,8 @@
 
 #include "egg/egg-secure-memory.h"
 
+#include "gcr/gcr-unlock-options.h"
+
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-util.h"
 
@@ -223,10 +225,13 @@ static gboolean
 auto_unlock_should_attach (GkmWrapPrompt *self)
 {
 	GkuPrompt *prompt = GKU_PROMPT (self);
-	gint value = 0;
-	return gku_prompt_has_response (prompt) &&
-	       gku_prompt_get_unlock_option (prompt, GKU_UNLOCK_AUTO, &value) &&
-	       value != 0;
+	const gchar *choice;
+
+	if (!gku_prompt_has_response (prompt))
+		return FALSE;
+
+	choice = gku_prompt_get_unlock_choice (prompt);
+	return (choice && g_str_equal (choice, GCR_UNLOCK_OPTION_ALWAYS));
 }
 
 static void
@@ -476,15 +481,20 @@ static CK_ATTRIBUTE_PTR
 get_unlock_options_from_prompt (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 {
 	CK_ATTRIBUTE_PTR options;
+	const gchar *choice;
 	CK_BBOOL bval;
 	CK_ULONG uval;
-	gint value;
+	guint ttl;
 
 	g_assert (GKM_WRAP_IS_PROMPT (self));
 	g_assert (n_options);
 
 	if (!gku_prompt_has_response (GKU_PROMPT (self)))
 		return NULL;
+
+	ttl = gku_prompt_get_unlock_ttl (GKU_PROMPT (self));
+	choice = gku_prompt_get_unlock_choice (GKU_PROMPT (self));
+	g_return_val_if_fail (choice, NULL);
 
 	*n_options = 4;
 	options = pool_alloc (self, sizeof (CK_ATTRIBUTE) * (*n_options));
@@ -502,17 +512,13 @@ get_unlock_options_from_prompt (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 	options[1].ulValueLen = sizeof (bval);
 
 	/* CKA_G_DESTRUCT_IDLE */
-	value = 0;
-	gku_prompt_get_unlock_option (GKU_PROMPT (self), GKU_UNLOCK_IDLE, &value);
-	uval = value < 0 ? 0 : value;
+	uval = g_str_equal (choice, GCR_UNLOCK_OPTION_IDLE) ? ttl : 0;
 	options[2].type = CKA_G_DESTRUCT_IDLE;
 	options[2].pValue = pool_dup (self, &uval, sizeof (uval));
 	options[2].ulValueLen = sizeof (uval);
 
 	/* CKA_G_DESTRUCT_AFTER */
-	value = 0;
-	gku_prompt_get_unlock_option (GKU_PROMPT (self), GKU_UNLOCK_TIMEOUT, &value);
-	uval = value < 0 ? 0 : value;
+	uval = g_str_equal (choice, GCR_UNLOCK_OPTION_TIMEOUT) ? ttl : 0;
 	options[3].type = CKA_G_DESTRUCT_AFTER;
 	options[3].pValue = pool_dup (self, &uval, sizeof (uval));
 	options[3].ulValueLen = sizeof (uval);
@@ -523,20 +529,34 @@ get_unlock_options_from_prompt (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 static void
 set_unlock_options_on_prompt (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR options, CK_ULONG n_options)
 {
+	const gchar *choice;
+	gboolean have_ttl = FALSE;
 	gboolean bval;
 	gulong uval;
+	guint ttl = 0;
 
 	g_assert (GKM_WRAP_IS_PROMPT (self));
 	g_assert (options || !n_options);
 
-	if (gkm_attributes_find_boolean (options, n_options, CKA_GNOME_TRANSIENT, &bval))
-		gku_prompt_set_unlock_option (GKU_PROMPT (self), GKU_UNLOCK_AUTO, bval ? 0 : 1);
+	if (gkm_attributes_find_boolean (options, n_options, CKA_GNOME_TRANSIENT, &bval)) {
+		choice = bval ? GCR_UNLOCK_OPTION_SESSION : GCR_UNLOCK_OPTION_ALWAYS;
+	}
 
-	if (gkm_attributes_find_ulong (options, n_options, CKA_G_DESTRUCT_IDLE, &uval))
-		gku_prompt_set_unlock_option (GKU_PROMPT (self), GKU_UNLOCK_IDLE, (int)uval);
+	if (gkm_attributes_find_ulong (options, n_options, CKA_G_DESTRUCT_IDLE, &uval) && uval) {
+		choice = GCR_UNLOCK_OPTION_IDLE;
+		have_ttl = TRUE;
+		ttl = uval;
+	}
 
-	if (gkm_attributes_find_ulong (options, n_options, CKA_G_DESTRUCT_AFTER, &uval))
-		gku_prompt_set_unlock_option (GKU_PROMPT (self), GKU_UNLOCK_TIMEOUT, (int)uval);
+	if (gkm_attributes_find_ulong (options, n_options, CKA_G_DESTRUCT_AFTER, &uval) && uval) {
+		choice = GCR_UNLOCK_OPTION_TIMEOUT;
+		have_ttl = TRUE;
+		ttl = uval;
+	}
+
+	gku_prompt_set_unlock_choice (GKU_PROMPT (self), choice);
+	if (have_ttl)
+		gku_prompt_set_unlock_ttl (GKU_PROMPT (self), ttl);
 }
 
 static CK_ATTRIBUTE_PTR
@@ -643,13 +663,10 @@ prepare_unlock_keyring_other (GkmWrapPrompt *self, const gchar *label)
 	gku_prompt_hide_widget (prompt, "confirm_area");
 	gku_prompt_show_widget (prompt, "details_area");
 	gku_prompt_show_widget (prompt, "password_area");
-	gku_prompt_show_widget (prompt, "lock_area");
 	gku_prompt_show_widget (prompt, "options_area");
 
 	if (gkm_wrap_login_is_usable ())
-		gku_prompt_show_widget (prompt, "auto_unlock_check");
-	else
-		gku_prompt_hide_widget (prompt, "auto_unlock_check");
+		gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS, FALSE, NULL);
 }
 
 
@@ -723,9 +740,11 @@ prepare_unlock_object (GkmWrapPrompt *self, const gchar *label, CK_OBJECT_CLASS 
 	gku_prompt_hide_widget (prompt, "confirm_area");
 	gku_prompt_show_widget (prompt, "details_area");
 	gku_prompt_show_widget (prompt, "password_area");
-	gku_prompt_show_widget (prompt, "lock_area");
 	gku_prompt_show_widget (prompt, "options_area");
-	gku_prompt_hide_widget (prompt, "auto_unlock_check");
+
+	/* TODO: After string freeze need to add a reason */
+	if (!gkm_wrap_login_is_usable ())
+		gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS, FALSE, NULL);
 }
 
 static void
@@ -801,11 +820,12 @@ prepare_unlock_token (GkmWrapPrompt *self, CK_TOKEN_INFO_PTR tinfo)
 	gku_prompt_set_secondary_text (prompt, text);
 	g_free (text);
 
-	if (gkm_wrap_login_is_usable ()) {
-		gku_prompt_show_widget (prompt, "details_area");
-		gku_prompt_show_widget (prompt, "lock_area");
-		gku_prompt_hide_widget (prompt, "options_area");
-	}
+	gku_prompt_show_widget (prompt, "details_area");
+	gku_prompt_show_widget (prompt, "options_area");
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_IDLE, FALSE, NULL);
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_TIMEOUT, FALSE, NULL);
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS,
+	                                 gkm_wrap_login_is_usable (), NULL);
 
 	g_free (label);
 }
@@ -870,8 +890,7 @@ gkm_wrap_prompt_for_credential (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE s
 {
 	CredentialPrompt *data;
 	CK_ATTRIBUTE_PTR attr;
-	CK_ATTRIBUTE_PTR options;
-	CK_ULONG n_options, i;
+	CK_ULONG i;
 	CK_OBJECT_CLASS klass;
 	CK_OBJECT_HANDLE object;
 	GkmWrapPrompt *self;
@@ -909,11 +928,6 @@ gkm_wrap_prompt_for_credential (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE s
 
 	data->n_template = n_template;
 
-	/* Now load up the unlock options into the prompt*/
-	options = get_unlock_options_from_object (self, &n_options);
-	if (options != NULL)
-		set_unlock_options_on_prompt (self, options, n_options);
-
 	return self;
 }
 
@@ -950,6 +964,14 @@ gkm_wrap_prompt_do_credential (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR *template,
 
 	if (!data->password) {
 		prepare_unlock_prompt (self, attrs, n_attrs, self->iteration == 1);
+
+		/* Now load up the unlock options into the prompt*/
+		if (self->iteration == 1) {
+			options = get_unlock_options_from_object (self, &n_options);
+			if (options != NULL)
+				set_unlock_options_on_prompt (self, options, n_options);
+		}
+
 		++(self->iteration);
 
 		gku_prompt_request_attention_sync (NULL, on_prompt_attention,
@@ -1039,11 +1061,12 @@ prepare_init_token (GkmWrapPrompt *self, CK_TOKEN_INFO_PTR tinfo)
 	gku_prompt_set_secondary_text (prompt, text);
 	g_free (text);
 
-	if (gkm_wrap_login_is_usable ()) {
-		gku_prompt_show_widget (prompt, "details_area");
-		gku_prompt_show_widget (prompt, "lock_area");
-		gku_prompt_hide_widget (prompt, "options_area");
-	}
+	gku_prompt_show_widget (prompt, "details_area");
+	gku_prompt_show_widget (prompt, "options_area");
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_IDLE, FALSE, NULL);
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_TIMEOUT, FALSE, NULL);
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS,
+	                                 gkm_wrap_login_is_usable (), NULL);
 
 	g_free (label);
 }
@@ -1164,11 +1187,12 @@ prepare_set_token (GkmWrapPrompt *self, CK_TOKEN_INFO_PTR tinfo)
 	gku_prompt_set_secondary_text (prompt, text);
 	g_free (text);
 
-	if (gkm_wrap_login_is_usable ()) {
-		gku_prompt_show_widget (prompt, "details_area");
-		gku_prompt_show_widget (prompt, "lock_area");
-		gku_prompt_hide_widget (prompt, "options_area");
-	}
+	gku_prompt_show_widget (prompt, "details_area");
+	gku_prompt_show_widget (prompt, "options_area");
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_IDLE, FALSE, NULL);
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_TIMEOUT, FALSE, NULL);
+	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS,
+	                                 gkm_wrap_login_is_usable (), NULL);
 
 	g_free (label);
 }

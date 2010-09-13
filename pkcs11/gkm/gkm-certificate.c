@@ -229,7 +229,7 @@ find_certificate_extension (GkmCertificate *self, GQuark oid)
 			break;
 
 		/* See if it's the same */
-		exoid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (self->pv->asn1, "extnID", NULL));
+		exoid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (node, "extnID", NULL));
 
 		if(exoid == oid)
 			return index;
@@ -326,10 +326,9 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 	case CKA_END_DATE:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
 		when = egg_asn1x_get_time_as_long (egg_asn1x_node (self->pv->asn1,
-		                                                 attr->type == CKA_START_DATE ?
-		                                                       "tbsCertificate.validity.notBefore" :
-		                                                       "tbsCertificate.validity.notAfter",
-		                                                 NULL));
+		                                                   "tbsCertificate", "validity",
+		                                                   attr->type == CKA_START_DATE ? "notBefore" : "notAfter",
+		                                                   NULL));
 		if (when < 0)
 			return CKR_FUNCTION_FAILED;
 		return gkm_attribute_set_date (attr, when);

@@ -187,6 +187,9 @@ on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 	}
 
 	g_clear_error (&error);
+
+	/* refed for async call */
+	g_object_unref (self);
 }
 
 static void
@@ -231,7 +234,8 @@ perform_next_unlock (GkdSecretUnlock *self)
 		gck_attributes_add_data (template, CKA_VALUE, NULL, 0);
 
 		session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
-		gck_session_create_object_async (session, template, self->cancellable, on_unlock_complete, self);
+		gck_session_create_object_async (session, template, self->cancellable, on_unlock_complete,
+		                                 g_object_ref (self));
 		gck_attributes_unref (template);
 
 		g_object_unref (collection);

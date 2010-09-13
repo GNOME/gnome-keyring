@@ -558,8 +558,8 @@ attribute_init_copy (GP11Attribute *dest, const GP11Attribute *src, GP11Allocato
 	 */
 
 	memcpy (dest, src, sizeof (GP11Attribute));
-	if (src->value && src->length) {
-		dest->value = (allocator) (NULL, src->length);
+	if (src->value) {
+		dest->value = (allocator) (NULL, src->length ? src->length : 1);
 		g_assert (dest->value);
 		memcpy (dest->value, src->value, src->length);
 	}
@@ -949,7 +949,7 @@ gp11_attributes_new_valist (GP11Allocator allocator, va_list va)
 /**
  * gp11_attributes_at:
  * @attrs: The attributes array.
- * @index: The attribute index to retrieve.
+ * @_index: The attribute index to retrieve.
  * 
  * Get attribute at the specified index in the attribute array.
  * 
@@ -959,12 +959,12 @@ gp11_attributes_new_valist (GP11Allocator allocator, va_list va)
  * Return value: The specified attribute.
  **/
 GP11Attribute*
-gp11_attributes_at (GP11Attributes *attrs, guint index)
+gp11_attributes_at (GP11Attributes *attrs, guint _index)
 {
 	g_return_val_if_fail (attrs && attrs->array, NULL);
-	g_return_val_if_fail (index < attrs->array->len, NULL);
+	g_return_val_if_fail (_index < attrs->array->len, NULL);
 	g_return_val_if_fail (!attrs->locked, NULL);
-	return &g_array_index (attrs->array, GP11Attribute, index);
+	return &g_array_index (attrs->array, GP11Attribute, _index);
 }
 
 static GP11Attribute*

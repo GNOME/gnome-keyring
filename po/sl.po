@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-07-29 07:55+0000\n"
-"PO-Revision-Date: 2010-07-29 13:35+0100\n"
+"POT-Creation-Date: 2010-08-30 16:39+0000\n"
+"PO-Revision-Date: 2010-08-30 19:00+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,30 +20,6 @@ msgstr ""
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid "This option enables the PKCS#11 component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Možnost omogoča zagon PKCS#11 enote v gnome-keyring ozadnjem programu. Uporablja se le med zagonom programa gnome-session, (primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom preklicati."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid "This option enables the SSH agent in the gnome-keyring daemon. It only takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Možnost omogoča podporo SSH agenta v ozadnjem programu gnome-keyring. Uporablja se le ob zagonu ozadnjega programa gnome-keyring-daemon, (primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom preklicati."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid "This option enables the secret service component in the gnome-keyring daemon. It only takes effect during startup with gnome-session, (ie: when the user logs in). This setting may be overridden when certain command line arguments are passed to the daemon."
-msgstr "Možnost omogoča zagon skritih storitev v gnome-keyring ozadnjem programu. Uporablja se le med zagonom programa gnome-session, (primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom preklicati."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Ali je gnome-keyring PKCS#11 enota omogočena."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Ali je gnome-keyring SSH agent omogočen."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Ali je skrita storitev gnome-keyring omogočena."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78
@@ -130,6 +106,18 @@ msgstr "PGP ključ: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "Vnesite šifrirno geslo"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr "Pozabi geslo ob nedejavnosti"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "Pozabi geslo po"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr "Pozabi geslo ob odjavi"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -644,7 +632,7 @@ msgid "No key is needed"
 msgstr "Ključ ni zahtevan"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "Ključ je drugačen, kot je bil prej"
 
 #: ../gp11/gp11-misc.c:149
@@ -1004,23 +992,23 @@ msgstr "Spremeni geslo varno shranjevanje"
 msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "Za spreminjanje gesla za uporabnika '%s', je zahtevano prvotno in novo geslo"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "Ali naj bodo shranjena gesla nešifrirana?"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop to takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "Uporabi nevarno shranjevanje"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "Gesli se ne skladata."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "Geslo ne sme biti prazno."
 
@@ -1055,3 +1043,40 @@ msgstr "_Staro geslo:"
 #: ../ui/gku-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_Geslo:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Možnost omogoča zagon PKCS#11 enote v gnome-keyring ozadnjem programu. "
+#~ "Uporablja se le med zagonom programa gnome-session, (primer: ko se "
+#~ "uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom "
+#~ "preklicati."
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Možnost omogoča podporo SSH agenta v ozadnjem programu gnome-keyring. "
+#~ "Uporablja se le ob zagonu ozadnjega programa gnome-keyring-daemon, "
+#~ "(primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi "
+#~ "argumenti med zagonom preklicati."
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Možnost omogoča zagon skritih storitev v gnome-keyring ozadnjem programu. "
+#~ "Uporablja se le med zagonom programa gnome-session, (primer: ko se "
+#~ "uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom "
+#~ "preklicati."
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Ali je gnome-keyring PKCS#11 enota omogočena."
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Ali je gnome-keyring SSH agent omogočen."
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Ali je skrita storitev gnome-keyring omogočena."

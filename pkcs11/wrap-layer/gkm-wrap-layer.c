@@ -580,7 +580,7 @@ static CK_RV
 auth_C_InitPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR pin, CK_ULONG pin_len)
 {
 	GkmWrapPrompt *prompt;
-	CK_RV rv;
+	CK_RV rv = CKR_OK;
 
 	prompt = gkm_wrap_prompt_for_init_pin (gkm_wrap_layer_get_functions_no_prompts(),
 	                                       handle, pin, pin_len);
@@ -622,7 +622,7 @@ auth_C_SetPIN (CK_SESSION_HANDLE handle, CK_UTF8CHAR_PTR old_pin, CK_ULONG old_p
                CK_UTF8CHAR_PTR new_pin, CK_ULONG new_pin_len)
 {
 	GkmWrapPrompt *prompt;
-	CK_RV rv;
+	CK_RV rv = CKR_OK;
 
 	prompt = gkm_wrap_prompt_for_set_pin (gkm_wrap_layer_get_functions_no_prompts(),
 	                                      handle, old_pin, old_pin_len, new_pin, new_pin_len);

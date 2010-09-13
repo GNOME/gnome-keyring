@@ -1,11 +1,12 @@
 #!/bin/sh
 # Run this to generate all the initial makefiles, etc.
 
+PKG_NAME="gnome-keyring"
+USE_GNOME2_MACROS=1
+REQUIRED_AUTOMAKE_VERSION=1.7
+
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
-
-PKG_NAME="gnome-keyring"
-REQUIRED_AUTOMAKE_VERSION=1.6
 
 (test -f $srcdir/configure.in \
   && test -f $srcdir/daemon/gkd-main.c) || {
@@ -19,4 +20,4 @@ which gnome-autogen.sh || {
     exit 1
 }
 
-USE_GNOME2_MACROS=1 . gnome-autogen.sh
+. gnome-autogen.sh

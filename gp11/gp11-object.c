@@ -180,6 +180,9 @@ gp11_object_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_HANDLE:
 		g_value_set_ulong (value, gp11_object_get_handle (self));
 		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
 	}
 }
 
@@ -211,6 +214,9 @@ gp11_object_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_HANDLE:
 		g_return_if_fail (!data->handle);
 		data->handle = g_value_get_ulong (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
 	}
 }

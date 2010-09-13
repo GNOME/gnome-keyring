@@ -414,7 +414,7 @@ gkm_secret_collection_get_attribute (GkmObject *base, GkmSession *session, CK_AT
 		g_return_val_if_fail (identifier, CKR_GENERAL_ERROR);
 		return gkm_attribute_set_bool (attr, g_str_equal (identifier, "login"));
 	case CKA_TRUSTED:
-		if (self->sdata)
+		if (!self->sdata)
 			return gkm_attribute_set_bool (attr, CK_FALSE);
 		master = gkm_secret_data_get_master (self->sdata);
 		return gkm_attribute_set_bool (attr, (master && !gkm_secret_is_trivially_weak (master)));

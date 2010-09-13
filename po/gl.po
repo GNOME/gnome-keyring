@@ -7,15 +7,15 @@
 # Mancomún - Centro de Referencia e Servizos de Software Libre <g11n@mancomun.org>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
-# Fran Dieguez <frandieguez@mabishu.com>, 2010.
+# Fran Dieguez <frandieguez@ubuntu.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-01 23:43+0200\n"
-"PO-Revision-Date: 2010-08-01 23:43+0200\n"
-"Last-Translator: Fran Dieguez <frandieguez@mabishu.com>\n"
+"POT-Creation-Date: 2010-08-29 16:17+0200\n"
+"PO-Revision-Date: 2010-08-29 16:18+0200\n"
+"Last-Translator: Fran Dieguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,54 +23,6 @@ msgstr ""
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Esta opción activa o compoñente PKCS#11 no deamon gnome-keyring. Só será "
-"efectivo durante o inicio deste daemon, (p.ex. cando un usuario inicia a "
-"sesión). Esta configuración pode ser sobrescrita cando se pasan determinados "
-"argumentos da liña de ordes ao daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Esta opción activa o axente SSH no daemon gnome-keyring. Só será efectivo "
-"cando este daemon se inicie, por exemplo cando un usuario inicia a sesión. "
-"Esta configuración pode ser ignorada cando se pasan determinados argumentos "
-"da liña de ordes ao daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Esta opción activa o compoñente do servizo segredo no daemon de gnome-"
-"keyring. Só será efectivo durante o inicio do daemon, por exemplo cando un "
-"usuario inicie a sesión. Esta configuración pode ser sobrescrita cando se "
-"pasan determinados argumentos da liña de ordes ao daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Indica se o compoñente PKCS#11 do gnome-keyring está activado."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Indica se o axente SSH do gnome-keyring está activado."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Indica se o servizo segredo de gnome-keyring está activado."
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
@@ -164,6 +116,18 @@ msgstr "Chave GPG: %s"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
 msgid "Enter Passphrase"
 msgstr "Introducir o contrasinal"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+msgid "Forget this password if idle for"
+msgstr "Esquecer este contrasinal se está inactivo durante"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+msgid "Forget this password after"
+msgstr "Esquecer este contrasinal despois de"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+msgid "Forget this password when I log out"
+msgstr "Esquecer este contrasinal ao saír da sesión"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -673,7 +637,7 @@ msgid "No key is needed"
 msgstr "Non é necesaria unha chave"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "A chave é diferente da anterior"
 
 #: ../gp11/gp11-misc.c:149
@@ -1054,11 +1018,11 @@ msgstr ""
 "Para cambiar o contrasinal de «%s», requírense o orixinal e os novos "
 "contrasinais"
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:547
 msgid "Store passwords unencrypted?"
 msgstr "Quere gardar os contrasinais sen codificar?"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:548
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1068,15 +1032,15 @@ msgstr ""
 "non serán cifrados de modo seguro. Polo que serán accesíbeis por calquera "
 "que acceda aos seus ficheiros."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:555
 msgid "Use Unsafe Storage"
 msgstr "Usar o almacenamento non seguro"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:593
 msgid "Passwords do not match."
 msgstr "Os contrasinais non coinciden."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:603
 msgid "Password cannot be blank"
 msgstr "O contrasinal non pode estar en branco"
 
@@ -1112,3 +1076,45 @@ msgstr "_Contrasinal antigo:"
 #: ../ui/gku-prompt.ui.h:8
 msgid "_Password:"
 msgstr "_Contrasinal:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Esta opción activa o compoñente PKCS#11 no deamon gnome-keyring. Só será "
+#~ "efectivo durante o inicio deste daemon, (p.ex. cando un usuario inicia a "
+#~ "sesión). Esta configuración pode ser sobrescrita cando se pasan "
+#~ "determinados argumentos da liña de ordes ao daemon."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Esta opción activa o axente SSH no daemon gnome-keyring. Só será efectivo "
+#~ "cando este daemon se inicie, por exemplo cando un usuario inicia a "
+#~ "sesión. Esta configuración pode ser ignorada cando se pasan determinados "
+#~ "argumentos da liña de ordes ao daemon."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Esta opción activa o compoñente do servizo segredo no daemon de gnome-"
+#~ "keyring. Só será efectivo durante o inicio do daemon, por exemplo cando "
+#~ "un usuario inicie a sesión. Esta configuración pode ser sobrescrita cando "
+#~ "se pasan determinados argumentos da liña de ordes ao daemon."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Indica se o compoñente PKCS#11 do gnome-keyring está activado."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Indica se o axente SSH do gnome-keyring está activado."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Indica se o servizo segredo de gnome-keyring está activado."
