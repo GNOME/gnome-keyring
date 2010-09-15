@@ -204,7 +204,7 @@ gkm_gnome2_private_key_class_init (GkmGnome2PrivateKeyClass *klass)
 }
 
 static gboolean
-gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
+gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer data, gsize n_data)
 {
 	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	GkmDataResult res;
@@ -290,7 +290,7 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, const
 }
 
 static gboolean
-gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login, guchar **data, gsize *n_data)
+gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
 {
 	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	const gchar *password;

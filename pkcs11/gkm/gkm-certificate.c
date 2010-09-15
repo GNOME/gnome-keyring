@@ -514,7 +514,7 @@ gkm_certificate_class_init (GkmCertificateClass *klass)
 }
 
 static gboolean
-gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
+gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer data, gsize n_data)
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
 	GNode *asn1 = NULL;
@@ -590,7 +590,7 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar
 }
 
 static gboolean
-gkm_certificate_real_save (GkmSerializable *base, GkmSecret *login, guchar **data, gsize *n_data)
+gkm_certificate_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
 

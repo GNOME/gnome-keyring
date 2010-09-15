@@ -596,7 +596,7 @@ relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar 
 {
 	GError *error = NULL;
 	GkmObject *object;
-	guchar *data;
+	gpointer data;
 	gsize n_data;
 	GType type;
 
@@ -1045,7 +1045,7 @@ gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, 
 	gboolean is_private;
 	GkmDataResult res;
 	gchar *identifier;
-	guchar *data;
+	gpointer data;
 	gsize n_data;
 	gchar *path;
 

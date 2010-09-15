@@ -41,21 +41,21 @@ struct _GkmSerializableIface {
 
 	const gchar *extension;
 
-	gboolean (*load) (GkmSerializable *self, GkmSecret *login, const guchar *data, gsize n_data);
+	gboolean (*load) (GkmSerializable *self, GkmSecret *login, gconstpointer data, gsize n_data);
 
-	gboolean (*save) (GkmSerializable *self, GkmSecret *login, guchar **data, gsize *n_data);
+	gboolean (*save) (GkmSerializable *self, GkmSecret *login, gpointer *data, gsize *n_data);
 };
 
 GType                  gkm_serializable_get_type                          (void) G_GNUC_CONST;
 
 gboolean               gkm_serializable_load                              (GkmSerializable *self,
                                                                            GkmSecret *login,
-                                                                           const guchar *data,
+                                                                           gconstpointer data,
                                                                            gsize n_data);
 
 gboolean                gkm_serializable_save                             (GkmSerializable *self,
                                                                            GkmSecret *login,
-                                                                           guchar** data,
+                                                                           gpointer *data,
                                                                            gsize *n_data);
 
 G_END_DECLS
