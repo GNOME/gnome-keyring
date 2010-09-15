@@ -16,6 +16,7 @@ noinst_LTLIBRARIES = \
 
 libgkm_user_store_la_SOURCES = \
 	gkm-user-store.h \
+	gkm-user-file.c gkm-user-file.h \
 	gkm-user-module.c gkm-user-module.h \
 	gkm-user-private-key.c gkm-user-private-key.h \
 	gkm-user-public-key.c gkm-user-public-key.h \

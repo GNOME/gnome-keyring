@@ -21,13 +21,13 @@
 
 #include "config.h"
 
-#include "gkm-user-storage.h"
+#include "gkm-user-file.h"
 #include "gkm-user-private-key.h"
 #include "gkm-user-public-key.h"
+#include "gkm-user-storage.h"
 
 #include "gkm/gkm-certificate.h"
 #include "gkm/gkm-data-asn1.h"
-#include "gkm/gkm-data-file.h"
 #include "gkm/gkm-manager.h"
 #include "gkm/gkm-module.h"
 #include "gkm/gkm-secret.h"
@@ -67,7 +67,7 @@ struct _GkmUserStorage {
 	/* Information about file data */
 	gchar *directory;
 	gchar *filename;
-	GkmDataFile *file;
+	GkmUserFile *file;
 	time_t last_mtime;
 	GkmSecret *login;
 
@@ -363,7 +363,7 @@ complete_modification_state (GkmTransaction *transaction, GObject *object, gpoin
 	GkmDataResult res;
 
 	if (!gkm_transaction_get_failed (transaction)) {
-		res = gkm_data_file_write_fd (self->file, self->write_fd, self->login);
+		res = gkm_user_file_write_fd (self->file, self->write_fd, self->login);
 		switch(res) {
 		case GKM_DATA_FAILURE:
 		case GKM_DATA_UNRECOGNIZED:
@@ -395,7 +395,7 @@ begin_modification_state (GkmUserStorage *self, GkmTransaction *transaction)
 	/* See if file needs updating */
 	if (fstat (self->read_fd, &sb) >= 0 && sb.st_mtime != self->last_mtime) {
 
-		res = gkm_data_file_read_fd (self->file, self->read_fd, self->login);
+		res = gkm_user_file_read_fd (self->file, self->read_fd, self->login);
 		switch (res) {
 		case GKM_DATA_FAILURE:
 			g_message ("failure updating user store file: %s", self->filename);
@@ -465,7 +465,7 @@ check_object_hash (GkmUserStorage *self, const gchar *identifier, const guchar *
 	digest = g_compute_checksum_for_data (G_CHECKSUM_SHA1, data, n_data);
 	g_return_val_if_fail (digest, FALSE);
 
-	res = gkm_data_file_read_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, &value, &n_value);
+	res = gkm_user_file_read_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, &value, &n_value);
 	g_return_val_if_fail (res == GKM_DATA_SUCCESS, FALSE);
 
 	result = (strlen (digest) == n_value && memcmp (digest, value, n_value) == 0);
@@ -492,7 +492,7 @@ store_object_hash (GkmUserStorage *self, GkmTransaction *transaction, const gcha
 		g_return_if_reached ();
 	}
 
-	res = gkm_data_file_write_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, digest, strlen (digest));
+	res = gkm_user_file_write_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, digest, strlen (digest));
 	g_free (digest);
 
 	if (res != GKM_DATA_SUCCESS)
@@ -500,7 +500,7 @@ store_object_hash (GkmUserStorage *self, GkmTransaction *transaction, const gcha
 }
 
 static void
-data_file_entry_added (GkmDataFile *store, const gchar *identifier, GkmUserStorage *self)
+data_file_entry_added (GkmUserFile *store, const gchar *identifier, GkmUserStorage *self)
 {
 	GError *error = NULL;
 	GkmObject *object;
@@ -560,7 +560,7 @@ data_file_entry_added (GkmDataFile *store, const gchar *identifier, GkmUserStora
 }
 
 static void
-data_file_entry_changed (GkmDataFile *store, const gchar *identifier, CK_ATTRIBUTE_TYPE type, GkmUserStorage *self)
+data_file_entry_changed (GkmUserFile *store, const gchar *identifier, CK_ATTRIBUTE_TYPE type, GkmUserStorage *self)
 {
 	GkmObject *object;
 
@@ -573,7 +573,7 @@ data_file_entry_changed (GkmDataFile *store, const gchar *identifier, CK_ATTRIBU
 }
 
 static void
-data_file_entry_removed (GkmDataFile *store, const gchar *identifier, GkmUserStorage *self)
+data_file_entry_removed (GkmUserFile *store, const gchar *identifier, GkmUserStorage *self)
 {
 	GkmObject *object;
 
@@ -682,7 +682,7 @@ typedef struct _RelockArgs {
 } RelockArgs;
 
 static void
-relock_each_object (GkmDataFile *file, const gchar *identifier, gpointer data)
+relock_each_object (GkmUserFile *file, const gchar *identifier, gpointer data)
 {
 	RelockArgs *args = data;
 	gchar *path;
@@ -692,11 +692,11 @@ relock_each_object (GkmDataFile *file, const gchar *identifier, gpointer data)
 	if (gkm_transaction_get_failed (args->transaction))
 		return;
 
-	if (!gkm_data_file_lookup_entry (file, identifier, &section))
+	if (!gkm_user_file_lookup_entry (file, identifier, &section))
 		g_return_if_reached ();
 
 	/* Only operate on private files */
-	if (section != GKM_DATA_FILE_SECTION_PRIVATE)
+	if (section != GKM_USER_FILE_SECTION_PRIVATE)
 		return;
 
 	path = g_build_filename (args->self->directory, identifier, NULL);
@@ -728,7 +728,7 @@ refresh_with_login (GkmUserStorage *self, GkmSecret *login)
 	if (fstat (fd, &sb) >= 0)
 		self->last_mtime = sb.st_mtime;
 
-	res = gkm_data_file_read_fd (self->file, fd, login);
+	res = gkm_user_file_read_fd (self->file, fd, login);
 	switch (res) {
 	case GKM_DATA_FAILURE:
 		g_message ("failure reading from file: %s", self->filename);
@@ -785,7 +785,7 @@ gkm_user_storage_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIBUT
 			return rv;
 	}
 
-	res = gkm_data_file_read_value (self->file, identifier, attr->type, &value, &n_value);
+	res = gkm_user_file_read_value (self->file, identifier, attr->type, &value, &n_value);
 	switch (res) {
 	case GKM_DATA_FAILURE:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
@@ -831,7 +831,7 @@ gkm_user_storage_real_write_value (GkmStore *base, GkmTransaction *transaction, 
 		}
 	}
 
-	res = gkm_data_file_write_value (self->file, identifier, attr->type, attr->pValue, attr->ulValueLen);
+	res = gkm_user_file_write_value (self->file, identifier, attr->type, attr->pValue, attr->ulValueLen);
 	switch (res) {
 	case GKM_DATA_FAILURE:
 		rv = CKR_FUNCTION_FAILED;
@@ -871,7 +871,7 @@ gkm_user_storage_constructor (GType type, guint n_props, GObjectConstructParam *
 static void
 gkm_user_storage_init (GkmUserStorage *self)
 {
-	self->file = gkm_data_file_new ();
+	self->file = gkm_user_file_new ();
 	g_signal_connect (self->file, "entry-added", G_CALLBACK (data_file_entry_added), self);
 	g_signal_connect (self->file, "entry-changed", G_CALLBACK (data_file_entry_changed), self);
 	g_signal_connect (self->file, "entry-removed", G_CALLBACK (data_file_entry_removed), self);
@@ -1081,7 +1081,7 @@ gkm_user_storage_create (GkmUserStorage *self, GkmTransaction *transaction, GkmO
 
 	/* Create an identifier guaranteed unique by this transaction */
 	identifier = identifier_for_object (object);
-	if (gkm_data_file_unique_entry (self->file, &identifier) != GKM_DATA_SUCCESS) {
+	if (gkm_user_file_unique_entry (self->file, &identifier) != GKM_DATA_SUCCESS) {
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
 		g_return_if_reached ();
 	}
@@ -1090,8 +1090,8 @@ gkm_user_storage_create (GkmUserStorage *self, GkmTransaction *transaction, GkmO
 	g_signal_handlers_block_by_func (self->file, data_file_entry_added, self);
 	g_signal_handlers_block_by_func (self->file, data_file_entry_changed, self);
 
-	res = gkm_data_file_create_entry (self->file, identifier,
-	                                  is_private ? GKM_DATA_FILE_SECTION_PRIVATE : GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (self->file, identifier,
+	                                  is_private ? GKM_USER_FILE_SECTION_PRIVATE : GKM_USER_FILE_SECTION_PUBLIC);
 
 	g_signal_handlers_unblock_by_func (self->file, data_file_entry_added, self);
 	g_signal_handlers_unblock_by_func (self->file, data_file_entry_changed, self);
@@ -1162,7 +1162,7 @@ gkm_user_storage_destroy (GkmUserStorage *self, GkmTransaction *transaction, Gkm
 		return;
 
 	/* Now delete the entry from our store */
-	res = gkm_data_file_destroy_entry (self->file, identifier);
+	res = gkm_user_file_destroy_entry (self->file, identifier);
 	switch(res) {
 	case GKM_DATA_FAILURE:
 	case GKM_DATA_UNRECOGNIZED:
@@ -1185,7 +1185,7 @@ void
 gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
                          GkmSecret *old_login, GkmSecret *new_login)
 {
-	GkmDataFile *file;
+	GkmUserFile *file;
 	GkmDataResult res;
 	RelockArgs args;
 
@@ -1196,10 +1196,10 @@ gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
 	if (!begin_write_state (self, transaction))
 		return;
 
-	file = gkm_data_file_new ();
+	file = gkm_user_file_new ();
 
 	/* Read in from the old file */
-	res = gkm_data_file_read_fd (file, self->read_fd, old_login);
+	res = gkm_user_file_read_fd (file, self->read_fd, old_login);
 	switch(res) {
 	case GKM_DATA_FAILURE:
 	case GKM_DATA_UNRECOGNIZED:
@@ -1215,7 +1215,7 @@ gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
 	}
 
 	/* Write out to new path as new file */
-	res = gkm_data_file_write_fd (file, self->write_fd, new_login);
+	res = gkm_user_file_write_fd (file, self->write_fd, new_login);
 	switch(res) {
 	case GKM_DATA_FAILURE:
 	case GKM_DATA_UNRECOGNIZED:
@@ -1234,7 +1234,7 @@ gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
 	args.transaction = transaction;
 	args.old_login = old_login;
 	args.new_login = new_login;
-	gkm_data_file_foreach_entry (file, relock_each_object, &args);
+	gkm_user_file_foreach_entry (file, relock_each_object, &args);
 
 	if (!gkm_transaction_get_failed (transaction) && self->login) {
 		if (new_login)
@@ -1351,7 +1351,7 @@ gkm_user_storage_token_flags (GkmUserStorage *self)
 	}
 
 	/* No private stuff in the file? */
-	if (gkm_data_file_have_section (self->file, GKM_DATA_FILE_SECTION_PRIVATE))
+	if (gkm_user_file_have_section (self->file, GKM_USER_FILE_SECTION_PRIVATE))
 		flags |= CKF_USER_PIN_INITIALIZED;
 
 	return flags;

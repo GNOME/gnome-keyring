@@ -21,8 +21,9 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "gkm-crypto.h"
-#include "gkm-data-file.h"
+#include "gkm-user-file.h"
+
+#include "gkm/gkm-crypto.h"
 
 #include "egg/egg-secure-memory.h"
 
@@ -54,7 +55,7 @@ main(int argc, char* argv[])
 {
 	const gchar *password;
 	GkmDataResult res;
-	GkmDataFile *file;
+	GkmUserFile *file;
 	GkmSecret *login;
 	int fd;
 
@@ -71,8 +72,8 @@ main(int argc, char* argv[])
 	password = getpass ("Password: ");
 	login = gkm_secret_new ((guchar*)password, strlen (password));
 
-	file = gkm_data_file_new ();
-	res = gkm_data_file_read_fd (file, fd, login);
+	file = gkm_user_file_new ();
+	res = gkm_user_file_read_fd (file, fd, login);
 	g_object_unref (login);
 
 	switch(res) {
@@ -88,7 +89,7 @@ main(int argc, char* argv[])
 		g_assert_not_reached ();
 	}
 
-	gkm_data_file_dump (file);
+	gkm_user_file_dump (file);
 	g_object_unref (file);
 
 	return 0;

@@ -15,9 +15,8 @@ TESTING_FILES = \
 	unit-test-store.c \
 	unit-test-memory-store.c \
 	unit-test-secret.c \
-	unit-test-data-file.c \
-	unit-test-file-tracker.c \
 	mock-locked-object.c mock-locked-object.h \
+	unit-test-file-tracker.c \
 	test-module.c test-module.h \
 	asn1-def-test.h
 
@@ -32,16 +31,3 @@ EXTRA_DIST = \
 	test-data
 
 include $(top_srcdir)/testing/testing.make
-
-# ---------------------------------------------------------------------
-
-noinst_PROGRAMS += \
-	dump-data-file
-
-dump_data_file_SOURCES = \
-	dump-data-file.c
-
-dump_data_file_LDADD = \
-	$(top_builddir)/pkcs11/gkm/libgkm.la \
-	$(top_builddir)/egg/libegg.la \
-	$(DAEMON_LIBS)

@@ -23,15 +23,18 @@
 
 #include "test-suite.h"
 
-#include "gkm/gkm-data-file.h"
+#include "egg/egg-libgcrypt.h"
+
 #include "gkm/gkm-object.h"
+
+#include "gkm-user-file.h"
 
 #include <glib/gstdio.h>
 
 #include <fcntl.h>
 
 /* Both point to the same thing */
-static GkmDataFile *data_file = NULL;
+static GkmUserFile *data_file = NULL;
 static gchar *public_filename = NULL;
 static gchar *private_filename = NULL;
 static gchar *write_filename = NULL;
@@ -42,11 +45,13 @@ static GkmSecret *login = NULL;
 
 DEFINE_SETUP(file_store)
 {
+	egg_libgcrypt_initialize ();
+
 	public_filename = testing_data_filename ("data-file-public.store");
 	private_filename = testing_data_filename ("data-file-private.store");
 	write_filename = testing_scratch_filename ("unit-test-file.store");
 
-	data_file = gkm_data_file_new ();
+	data_file = gkm_user_file_new ();
 
 	public_fd = g_open (public_filename, O_RDONLY, 0);
 	g_assert (public_fd != -1);
@@ -84,11 +89,11 @@ DEFINE_TEST(test_file_create)
 {
 	GkmDataResult res;
 
-	res = gkm_data_file_create_entry (data_file, "identifier-public", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "identifier-public", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Should be able to create private in a new file */
-	res = gkm_data_file_create_entry (data_file, "identifier-public", GKM_DATA_FILE_SECTION_PRIVATE);
+	res = gkm_user_file_create_entry (data_file, "identifier-public", GKM_USER_FILE_SECTION_PRIVATE);
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
@@ -97,14 +102,14 @@ DEFINE_TEST(test_file_write_value)
 	GkmDataResult res;
 
 	/* Can't write when no identifier present */
-	res = gkm_data_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
+	res = gkm_user_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 
-	res = gkm_data_file_create_entry (data_file, "identifier-public", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "identifier-public", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Should be able to write now */
-	res = gkm_data_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
+	res = gkm_user_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
@@ -116,30 +121,30 @@ DEFINE_TEST(test_file_read_value)
 	guint number = 7778;
 
 	/* Write some stuff in */
-	res = gkm_data_file_create_entry (data_file, "ident", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "ident", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
-	res = gkm_data_file_write_value (data_file, "ident", CKA_LABEL, "TWO-label", 10);
+	res = gkm_user_file_write_value (data_file, "ident", CKA_LABEL, "TWO-label", 10);
 	g_assert (res == GKM_DATA_SUCCESS);
-	res = gkm_data_file_write_value (data_file, "ident", CKA_VALUE, &number, sizeof (number));
+	res = gkm_user_file_write_value (data_file, "ident", CKA_VALUE, &number, sizeof (number));
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Read for an invalid item */
-	res = gkm_data_file_read_value (data_file, "non-existant", CKA_LABEL, &value, &n_value);
+	res = gkm_user_file_read_value (data_file, "non-existant", CKA_LABEL, &value, &n_value);
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 
 	/* Read for an invalid attribute */
-	res = gkm_data_file_read_value (data_file, "ident", CKA_ID, &value, &n_value);
+	res = gkm_user_file_read_value (data_file, "ident", CKA_ID, &value, &n_value);
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 
 	/* Read out a valid number */
-	res = gkm_data_file_read_value (data_file, "ident", CKA_VALUE, &value, &n_value);
+	res = gkm_user_file_read_value (data_file, "ident", CKA_VALUE, &value, &n_value);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (value);
 	g_assert (n_value == sizeof (number));
 	g_assert_cmpuint (*((guint*)value), ==, number);
 
 	/* Read out the valid string */
-	res = gkm_data_file_read_value (data_file, "ident", CKA_LABEL, &value, &n_value);
+	res = gkm_user_file_read_value (data_file, "ident", CKA_LABEL, &value, &n_value);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (value);
 	g_assert (n_value == 10);
@@ -150,7 +155,7 @@ DEFINE_TEST(test_file_read)
 {
 	GkmDataResult res;
 
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
@@ -161,19 +166,19 @@ DEFINE_TEST(test_file_lookup)
 	gboolean ret;
 
 	/* Invalid shouldn't succeed */
-	ret = gkm_data_file_lookup_entry (data_file, "non-existant", &section);
+	ret = gkm_user_file_lookup_entry (data_file, "non-existant", &section);
 	g_assert (ret == FALSE);
 
 	/* Create a test item */
-	res = gkm_data_file_create_entry (data_file, "test-ident", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "test-ident", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	ret = gkm_data_file_lookup_entry (data_file, "test-ident", &section);
+	ret = gkm_user_file_lookup_entry (data_file, "test-ident", &section);
 	g_assert (ret == TRUE);
-	g_assert (section == GKM_DATA_FILE_SECTION_PUBLIC);
+	g_assert (section == GKM_USER_FILE_SECTION_PUBLIC);
 
 	/* Should be able to call without asking for section */
-	ret = gkm_data_file_lookup_entry (data_file, "test-ident", NULL);
+	ret = gkm_user_file_lookup_entry (data_file, "test-ident", NULL);
 	g_assert (ret == TRUE);
 }
 
@@ -185,32 +190,32 @@ DEFINE_TEST(file_read_private_without_login)
 	gsize n_value;
 	gboolean ret;
 
-	res = gkm_data_file_read_fd (data_file, private_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, private_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Items from the private section should exist */
-	ret = gkm_data_file_lookup_entry (data_file, "identifier-private", &section);
+	ret = gkm_user_file_lookup_entry (data_file, "identifier-private", &section);
 	g_assert (ret);
-	g_assert (section == GKM_DATA_FILE_SECTION_PRIVATE);
+	g_assert (section == GKM_USER_FILE_SECTION_PRIVATE);
 
 	/* But we shouldn't be able to read values from those private items */
-	ret = gkm_data_file_read_value (data_file, "identifier-private", CKA_LABEL, &value, &n_value);
+	ret = gkm_user_file_read_value (data_file, "identifier-private", CKA_LABEL, &value, &n_value);
 	g_assert (ret == GKM_DATA_LOCKED);
 
 	/* Shouldn't be able to create private items */
-	res = gkm_data_file_create_entry (data_file, "dummy-private", GKM_DATA_FILE_SECTION_PRIVATE);
+	res = gkm_user_file_create_entry (data_file, "dummy-private", GKM_USER_FILE_SECTION_PRIVATE);
 	g_assert (res == GKM_DATA_LOCKED);
 
 	/* Shouldn't be able to write with another login */
-	res = gkm_data_file_write_fd (data_file, write_fd, login);
+	res = gkm_user_file_write_fd (data_file, write_fd, login);
 	g_assert (res == GKM_DATA_LOCKED);
 
 	/* Now load a public file without private bits*/
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Now we should be able to load private stuff */
-	res = gkm_data_file_create_entry (data_file, "dummy-private", GKM_DATA_FILE_SECTION_PRIVATE);
+	res = gkm_user_file_create_entry (data_file, "dummy-private", GKM_USER_FILE_SECTION_PRIVATE);
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
@@ -218,16 +223,16 @@ DEFINE_TEST(test_file_write)
 {
 	GkmDataResult res;
 
-	res = gkm_data_file_create_entry (data_file, "identifier-public", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "identifier-public", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	res = gkm_data_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
+	res = gkm_user_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	res = gkm_data_file_create_entry (data_file, "identifier-two", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "identifier-two", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	res = gkm_data_file_write_fd (data_file, write_fd, NULL);
+	res = gkm_user_file_write_fd (data_file, write_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
@@ -235,10 +240,10 @@ DEFINE_TEST(cant_write_private_without_login)
 {
 	GkmDataResult res;
 
-	res = gkm_data_file_create_entry (data_file, "identifier_private", GKM_DATA_FILE_SECTION_PRIVATE);
+	res = gkm_user_file_create_entry (data_file, "identifier_private", GKM_USER_FILE_SECTION_PRIVATE);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	res = gkm_data_file_write_fd (data_file, write_fd, NULL);
+	res = gkm_user_file_write_fd (data_file, write_fd, NULL);
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
@@ -247,25 +252,25 @@ DEFINE_TEST(write_private_with_login)
 	GkmDataResult res;
 	gulong value;
 
-	res = gkm_data_file_create_entry (data_file, "identifier-public", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "identifier-public", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
-	res = gkm_data_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
+	res = gkm_user_file_write_value (data_file, "identifier-public", CKA_LABEL, "public-label", 12);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	res = gkm_data_file_create_entry (data_file, "identifier-two", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "identifier-two", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
-	res = gkm_data_file_write_value (data_file, "identifier-two", CKA_LABEL, "TWO-label", 9);
+	res = gkm_user_file_write_value (data_file, "identifier-two", CKA_LABEL, "TWO-label", 9);
 	g_assert (res == GKM_DATA_SUCCESS);
 	value = 555;
-	res = gkm_data_file_write_value (data_file, "identifier-two", CKA_VALUE, &value, sizeof (value));
+	res = gkm_user_file_write_value (data_file, "identifier-two", CKA_VALUE, &value, sizeof (value));
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	res = gkm_data_file_create_entry (data_file, "identifier-private", GKM_DATA_FILE_SECTION_PRIVATE);
+	res = gkm_user_file_create_entry (data_file, "identifier-private", GKM_USER_FILE_SECTION_PRIVATE);
 	g_assert (res == GKM_DATA_SUCCESS);
-	res = gkm_data_file_write_value (data_file, "identifier-private", CKA_LABEL, "private-label", 13);
+	res = gkm_user_file_write_value (data_file, "identifier-private", CKA_LABEL, "private-label", 13);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	res = gkm_data_file_write_fd (data_file, write_fd, login);
+	res = gkm_user_file_write_fd (data_file, write_fd, login);
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
@@ -275,11 +280,11 @@ DEFINE_TEST(read_private_with_login)
 	gconstpointer value;
 	gsize n_value;
 
-	res = gkm_data_file_read_fd (data_file, private_fd, login);
+	res = gkm_user_file_read_fd (data_file, private_fd, login);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Should be able to read private items */
-	res = gkm_data_file_read_value (data_file, "identifier-private", CKA_LABEL, &value, &n_value);
+	res = gkm_user_file_read_value (data_file, "identifier-private", CKA_LABEL, &value, &n_value);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert_cmpuint (n_value, ==, 13);
 	g_assert (memcmp (value, "private-label", 13) == 0);
@@ -289,20 +294,20 @@ DEFINE_TEST(destroy_entry)
 {
 	GkmDataResult res;
 
-	res = gkm_data_file_destroy_entry (data_file, "non-existant");
+	res = gkm_user_file_destroy_entry (data_file, "non-existant");
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Make sure it's here */
-	g_assert (gkm_data_file_lookup_entry (data_file, "identifier-public", NULL));
+	g_assert (gkm_user_file_lookup_entry (data_file, "identifier-public", NULL));
 
-	res = gkm_data_file_destroy_entry (data_file, "identifier-public");
+	res = gkm_user_file_destroy_entry (data_file, "identifier-public");
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Make sure it's gone */
-	g_assert (!gkm_data_file_lookup_entry (data_file, "identifier-public", NULL));
+	g_assert (!gkm_user_file_lookup_entry (data_file, "identifier-public", NULL));
 }
 
 DEFINE_TEST(destroy_entry_by_loading)
@@ -310,18 +315,18 @@ DEFINE_TEST(destroy_entry_by_loading)
 	GkmDataResult res;
 
 	/* Create some extra idenifiers */
-	res = gkm_data_file_create_entry (data_file, "my-public", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "my-public", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
-	res = gkm_data_file_create_entry (data_file, "my-private", GKM_DATA_FILE_SECTION_PRIVATE);
+	res = gkm_user_file_create_entry (data_file, "my-private", GKM_USER_FILE_SECTION_PRIVATE);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Now read from the file */
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Both should be gone */
-	g_assert (!gkm_data_file_lookup_entry (data_file, "my-public", NULL));
-	g_assert (!gkm_data_file_lookup_entry (data_file, "my-private", NULL));
+	g_assert (!gkm_user_file_lookup_entry (data_file, "my-public", NULL));
+	g_assert (!gkm_user_file_lookup_entry (data_file, "my-private", NULL));
 }
 
 
@@ -329,24 +334,24 @@ DEFINE_TEST(destroy_private_without_login)
 {
 	GkmDataResult res;
 
-	res = gkm_data_file_read_fd (data_file, private_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, private_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Make sure it's here */
-	g_assert (gkm_data_file_lookup_entry (data_file, "identifier-private", NULL));
+	g_assert (gkm_user_file_lookup_entry (data_file, "identifier-private", NULL));
 
 	/* Shouldn't be able to destroy */
-	res = gkm_data_file_destroy_entry (data_file, "identifier-private");
+	res = gkm_user_file_destroy_entry (data_file, "identifier-private");
 	g_assert (res == GKM_DATA_LOCKED);
 
 	/* Make sure it's still here */
-	g_assert (gkm_data_file_lookup_entry (data_file, "identifier-private", NULL));
+	g_assert (gkm_user_file_lookup_entry (data_file, "identifier-private", NULL));
 }
 
 static void
-entry_added_one (GkmDataFile *df, const gchar *identifier, gboolean *added)
+entry_added_one (GkmUserFile *df, const gchar *identifier, gboolean *added)
 {
-	g_assert (GKM_IS_DATA_FILE (df));
+	g_assert (GKM_IS_USER_FILE (df));
 	g_assert (df == data_file);
 	g_assert (identifier);
 	g_assert (added);
@@ -365,21 +370,21 @@ DEFINE_TEST(entry_added_signal)
 
 	/* Should fire the signal */
 	added = FALSE;
-	res = gkm_data_file_create_entry (data_file, "identifier-public", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "identifier-public", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (added == TRUE);
 
 	/* Another one should be added when we load */
 	added = FALSE;
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (added == TRUE);
 }
 
 static void
-entry_changed_one (GkmDataFile *df, const gchar *identifier, gulong type, gboolean *changed)
+entry_changed_one (GkmUserFile *df, const gchar *identifier, gulong type, gboolean *changed)
 {
-	g_assert (GKM_IS_DATA_FILE (df));
+	g_assert (GKM_IS_USER_FILE (df));
 	g_assert (df == data_file);
 	g_assert (identifier);
 	g_assert (changed);
@@ -399,40 +404,40 @@ DEFINE_TEST(entry_changed_signal)
 
 	/* Loading shouldn't fire the signal */
 	changed = FALSE;
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (changed == FALSE);
 
 	/* Shouldn't fire the signal on nonexistant */
 	changed = FALSE;
-	res = gkm_data_file_write_value (data_file, "non-existant", CKA_LABEL, "new-value", 10);
+	res = gkm_user_file_write_value (data_file, "non-existant", CKA_LABEL, "new-value", 10);
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 	g_assert (changed == FALSE);
 
 	/* Should fire the signal */
 	changed = FALSE;
-	res = gkm_data_file_write_value (data_file, "identifier-public", CKA_LABEL, "new-value", 10);
+	res = gkm_user_file_write_value (data_file, "identifier-public", CKA_LABEL, "new-value", 10);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (changed == TRUE);
 
 	/* Shouldn't fire the signal, same value again */
 	changed = FALSE;
-	res = gkm_data_file_write_value (data_file, "identifier-public", CKA_LABEL, "new-value", 10);
+	res = gkm_user_file_write_value (data_file, "identifier-public", CKA_LABEL, "new-value", 10);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (changed == FALSE);
 
 	/* Reload file, should revert, fire signal */
 	changed = FALSE;
 	g_assert (lseek (public_fd, 0, SEEK_SET) != -1);
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (changed == TRUE);
 }
 
 static void
-entry_removed_one (GkmDataFile *df, const gchar *identifier, gboolean *removed)
+entry_removed_one (GkmUserFile *df, const gchar *identifier, gboolean *removed)
 {
-	g_assert (GKM_IS_DATA_FILE (df));
+	g_assert (GKM_IS_USER_FILE (df));
 	g_assert (df == data_file);
 	g_assert (identifier);
 	g_assert (removed);
@@ -451,36 +456,36 @@ DEFINE_TEST(entry_removed_signal)
 
 	/* Loading shouldn't fire the signal */
 	removed = FALSE;
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (removed == FALSE);
 
 	/* Shouldn't fire the signal on removing nonexistant */
 	removed = FALSE;
-	res = gkm_data_file_destroy_entry (data_file, "non-existant");
+	res = gkm_user_file_destroy_entry (data_file, "non-existant");
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 	g_assert (removed == FALSE);
 
 	/* Remove a real entry */
 	removed = FALSE;
-	res = gkm_data_file_destroy_entry (data_file, "identifier-public");
+	res = gkm_user_file_destroy_entry (data_file, "identifier-public");
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (removed == TRUE);
 
 	/* Add a dummy entry */
-	res = gkm_data_file_create_entry (data_file, "extra-dummy", GKM_DATA_FILE_SECTION_PUBLIC);
+	res = gkm_user_file_create_entry (data_file, "extra-dummy", GKM_USER_FILE_SECTION_PUBLIC);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* That one should go away when we reload, fire signal */
 	removed = FALSE;
 	g_assert (lseek (public_fd, 0, SEEK_SET) != -1);
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (removed == TRUE);
 }
 
 static void
-foreach_entry (GkmDataFile *df, const gchar *identifier, gpointer data)
+foreach_entry (GkmUserFile *df, const gchar *identifier, gpointer data)
 {
 	GPtrArray *array = data;
 	const gchar *ident;
@@ -488,7 +493,7 @@ foreach_entry (GkmDataFile *df, const gchar *identifier, gpointer data)
 
 	g_assert (data);
 	g_assert (identifier);
-	g_assert (GKM_IS_DATA_FILE (df));
+	g_assert (GKM_IS_USER_FILE (df));
 
 	/* Check that this is unique */
 	for (i = 0; i < array->len; ++i) {
@@ -506,11 +511,11 @@ DEFINE_TEST(data_file_foreach)
 	GkmDataResult res;
 	GPtrArray *array;
 
-	res = gkm_data_file_read_fd (data_file, private_fd, login);
+	res = gkm_user_file_read_fd (data_file, private_fd, login);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	array = g_ptr_array_new ();
-	gkm_data_file_foreach_entry (data_file, foreach_entry, array);
+	gkm_user_file_foreach_entry (data_file, foreach_entry, array);
 	g_assert (array->len == 4);
 
 	g_ptr_array_add (array, NULL);
@@ -522,26 +527,26 @@ DEFINE_TEST(unique_entry)
 	GkmDataResult res;
 	gchar *identifier;
 
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Should change an identifier that conflicts */
 	identifier = g_strdup ("identifier-public");
-	res = gkm_data_file_unique_entry (data_file, &identifier);
+	res = gkm_user_file_unique_entry (data_file, &identifier);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert_cmpstr (identifier, !=, "identifier-public");
 	g_free (identifier);
 
 	/* Shouldn't change a unique identifier */
 	identifier = g_strdup ("identifier-unique");
-	res = gkm_data_file_unique_entry (data_file, &identifier);
+	res = gkm_user_file_unique_entry (data_file, &identifier);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert_cmpstr (identifier, ==, "identifier-unique");
 	g_free (identifier);
 
 	/* Should be able to get from NULL */
 	identifier = NULL;
-	res = gkm_data_file_unique_entry (data_file, &identifier);
+	res = gkm_user_file_unique_entry (data_file, &identifier);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (identifier != NULL);
 	g_assert (identifier[0] != 0);
@@ -552,36 +557,36 @@ DEFINE_TEST(have_sections)
 {
 	GkmDataResult res;
 
-	res = gkm_data_file_read_fd (data_file, public_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, public_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* No private section */
-	g_assert (gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PUBLIC));
-	g_assert (!gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PRIVATE));
+	g_assert (gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PUBLIC));
+	g_assert (!gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PRIVATE));
 
 	/* Read private stuff into file, without login */
-	res = gkm_data_file_read_fd (data_file, private_fd, NULL);
+	res = gkm_user_file_read_fd (data_file, private_fd, NULL);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Should have a private section even without login */
-	g_assert (gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PUBLIC));
-	g_assert (gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PRIVATE));
+	g_assert (gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PUBLIC));
+	g_assert (gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PRIVATE));
 
 	/* Read private stuff into file, with login */
 	g_assert (lseek (private_fd, 0, SEEK_SET) == 0);
-	res = gkm_data_file_read_fd (data_file, private_fd, login);
+	res = gkm_user_file_read_fd (data_file, private_fd, login);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Should have a private section now with login */
-	g_assert (gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PUBLIC));
-	g_assert (gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PRIVATE));
+	g_assert (gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PUBLIC));
+	g_assert (gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PRIVATE));
 
 	/* Read public stuff back into file*/
 	g_assert (lseek (public_fd, 0, SEEK_SET) == 0);
-	res = gkm_data_file_read_fd (data_file, public_fd, login);
+	res = gkm_user_file_read_fd (data_file, public_fd, login);
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	/* Shouldn't have a private section now  */
-	g_assert (gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PUBLIC));
-	g_assert (!gkm_data_file_have_section (data_file, GKM_DATA_FILE_SECTION_PRIVATE));
+	g_assert (gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PUBLIC));
+	g_assert (!gkm_user_file_have_section (data_file, GKM_USER_FILE_SECTION_PRIVATE));
 }

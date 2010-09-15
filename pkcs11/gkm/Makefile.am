@@ -27,7 +27,6 @@ libgkm_la_SOURCES = \
 	gkm-crypto.c gkm-crypto.h \
 	gkm-data-asn1.c gkm-data-asn1.h \
 	gkm-data-der.c gkm-data-der.h \
-	gkm-data-file.c gkm-data-file.h \
 	gkm-data-types.h \
 	gkm-dh-key.c gkm-dh-key.h \
 	gkm-dh-mechanism.c gkm-dh-mechanism.h \
