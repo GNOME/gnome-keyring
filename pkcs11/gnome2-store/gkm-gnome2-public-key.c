@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "gkm-user-public-key.h"
+#include "gkm-gnome2-public-key.h"
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-data-der.h"
@@ -33,14 +33,14 @@
 
 #include <glib/gi18n.h>
 
-struct _GkmUserPublicKey {
+struct _GkmGnome2PublicKey {
 	GkmPublicXsaKey parent;
 };
 
-static void gkm_user_public_key_serializable (GkmSerializableIface *iface);
+static void gkm_gnome2_public_key_serializable (GkmSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GkmUserPublicKey, gkm_user_public_key, GKM_TYPE_PUBLIC_XSA_KEY, 0,
-               G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_user_public_key_serializable));
+G_DEFINE_TYPE_EXTENDED (GkmGnome2PublicKey, gkm_gnome2_public_key, GKM_TYPE_PUBLIC_XSA_KEY, 0,
+               G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_gnome2_public_key_serializable));
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -57,7 +57,7 @@ factory_create_public_key (GkmSession *session, GkmTransaction *transaction,
 
 	sexp = gkm_public_xsa_key_create_sexp (session, transaction, attrs, n_attrs);
 	if (sexp != NULL) {
-		object = g_object_new (GKM_TYPE_USER_PUBLIC_KEY, "base-sexp", sexp,
+		object = g_object_new (GKM_TYPE_GNOME2_PUBLIC_KEY, "base-sexp", sexp,
 		                       "module", gkm_session_get_module (session),
 		                       "manager", gkm_manager_for_template (attrs, n_attrs, session),
 		                       NULL);
@@ -74,20 +74,20 @@ factory_create_public_key (GkmSession *session, GkmTransaction *transaction,
  */
 
 static void
-gkm_user_public_key_init (GkmUserPublicKey *self)
+gkm_gnome2_public_key_init (GkmGnome2PublicKey *self)
 {
 
 }
 
 static void
-gkm_user_public_key_finalize (GObject *obj)
+gkm_gnome2_public_key_finalize (GObject *obj)
 {
-	/* GkmUserPublicKey *self = GKM_USER_PUBLIC_KEY (obj); */
-	G_OBJECT_CLASS (gkm_user_public_key_parent_class)->finalize (obj);
+	/* GkmGnome2PublicKey *self = GKM_GNOME2_PUBLIC_KEY (obj); */
+	G_OBJECT_CLASS (gkm_gnome2_public_key_parent_class)->finalize (obj);
 }
 
 static void
-gkm_user_public_key_set_property (GObject *obj, guint prop_id, const GValue *value,
+gkm_gnome2_public_key_set_property (GObject *obj, guint prop_id, const GValue *value,
                                   GParamSpec *pspec)
 {
 	switch (prop_id) {
@@ -98,7 +98,7 @@ gkm_user_public_key_set_property (GObject *obj, guint prop_id, const GValue *val
 }
 
 static void
-gkm_user_public_key_get_property (GObject *obj, guint prop_id, GValue *value,
+gkm_gnome2_public_key_get_property (GObject *obj, guint prop_id, GValue *value,
                                   GParamSpec *pspec)
 {
 	switch (prop_id) {
@@ -109,25 +109,25 @@ gkm_user_public_key_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gkm_user_public_key_class_init (GkmUserPublicKeyClass *klass)
+gkm_gnome2_public_key_class_init (GkmGnome2PublicKeyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->finalize = gkm_user_public_key_finalize;
-	gobject_class->set_property = gkm_user_public_key_set_property;
-	gobject_class->get_property = gkm_user_public_key_get_property;
+	gobject_class->finalize = gkm_gnome2_public_key_finalize;
+	gobject_class->set_property = gkm_gnome2_public_key_set_property;
+	gobject_class->get_property = gkm_gnome2_public_key_get_property;
 }
 
 
 static gboolean
-gkm_user_public_key_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
+gkm_gnome2_public_key_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
 {
-	GkmUserPublicKey *self = GKM_USER_PUBLIC_KEY (base);
+	GkmGnome2PublicKey *self = GKM_GNOME2_PUBLIC_KEY (base);
 	GkmDataResult res;
 	GkmSexp *wrapper;
 	gcry_sexp_t sexp;
 
-	g_return_val_if_fail (GKM_IS_USER_PUBLIC_KEY (self), FALSE);
+	g_return_val_if_fail (GKM_IS_GNOME2_PUBLIC_KEY (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
 
 	res = gkm_data_der_read_public_key (data, n_data, &sexp);
@@ -156,12 +156,12 @@ gkm_user_public_key_real_load (GkmSerializable *base, GkmSecret *login, const gu
 }
 
 static gboolean
-gkm_user_public_key_real_save (GkmSerializable *base, GkmSecret *login, guchar **data, gsize *n_data)
+gkm_gnome2_public_key_real_save (GkmSerializable *base, GkmSecret *login, guchar **data, gsize *n_data)
 {
-	GkmUserPublicKey *self = GKM_USER_PUBLIC_KEY (base);
+	GkmGnome2PublicKey *self = GKM_GNOME2_PUBLIC_KEY (base);
 	GkmSexp *wrapper;
 
-	g_return_val_if_fail (GKM_IS_USER_PUBLIC_KEY (self), FALSE);
+	g_return_val_if_fail (GKM_IS_GNOME2_PUBLIC_KEY (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
@@ -173,11 +173,11 @@ gkm_user_public_key_real_save (GkmSerializable *base, GkmSecret *login, guchar *
 }
 
 static void
-gkm_user_public_key_serializable (GkmSerializableIface *iface)
+gkm_gnome2_public_key_serializable (GkmSerializableIface *iface)
 {
 	iface->extension = ".pub";
-	iface->load = gkm_user_public_key_real_load;
-	iface->save = gkm_user_public_key_real_save;
+	iface->load = gkm_gnome2_public_key_real_load;
+	iface->save = gkm_gnome2_public_key_real_save;
 }
 
 /* -----------------------------------------------------------------------------
@@ -185,7 +185,7 @@ gkm_user_public_key_serializable (GkmSerializableIface *iface)
  */
 
 GkmFactory*
-gkm_user_public_key_get_factory (void)
+gkm_gnome2_public_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PUBLIC_KEY;
 	static CK_BBOOL token = CK_TRUE;

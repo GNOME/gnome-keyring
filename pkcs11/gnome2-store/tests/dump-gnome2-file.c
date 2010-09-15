@@ -21,7 +21,7 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "gkm-user-file.h"
+#include "gkm-gnome2-file.h"
 
 #include "gkm/gkm-crypto.h"
 
@@ -55,7 +55,7 @@ main(int argc, char* argv[])
 {
 	const gchar *password;
 	GkmDataResult res;
-	GkmUserFile *file;
+	GkmGnome2File *file;
 	GkmSecret *login;
 	int fd;
 
@@ -72,8 +72,8 @@ main(int argc, char* argv[])
 	password = getpass ("Password: ");
 	login = gkm_secret_new ((guchar*)password, strlen (password));
 
-	file = gkm_user_file_new ();
-	res = gkm_user_file_read_fd (file, fd, login);
+	file = gkm_gnome2_file_new ();
+	res = gkm_gnome2_file_read_fd (file, fd, login);
 	g_object_unref (login);
 
 	switch(res) {
@@ -89,7 +89,7 @@ main(int argc, char* argv[])
 		g_assert_not_reached ();
 	}
 
-	gkm_user_file_dump (file);
+	gkm_gnome2_file_dump (file);
 	g_object_unref (file);
 
 	return 0;

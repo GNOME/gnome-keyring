@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "gkm-user-file.h"
+#include "gkm-gnome2-file.h"
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-crypto.h"
@@ -52,7 +52,7 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-struct _GkmUserFile {
+struct _GkmGnome2File {
 	GObject parent;
 
 	/* The data itself */
@@ -74,7 +74,7 @@ typedef struct _UnknownBlock {
 	EggBuffer buffer;
 } UnknownBlock;
 
-G_DEFINE_TYPE (GkmUserFile, gkm_user_file, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GkmGnome2File, gkm_gnome2_file, G_TYPE_OBJECT);
 
 #define PUBLIC_ALLOC (EggBufferAllocator)g_realloc
 #define PRIVATE_ALLOC (EggBufferAllocator)egg_secure_realloc
@@ -534,7 +534,7 @@ decrypt_buffer (EggBuffer *input, gsize *offset, GkmSecret *login, EggBuffer *ou
  */
 
 static GkmDataResult
-update_entries_from_block (GkmUserFile *self, guint section, GHashTable *entries,
+update_entries_from_block (GkmGnome2File *self, guint section, GHashTable *entries,
                            EggBuffer *buffer, gsize *offset)
 {
 	GHashTable *attributes;
@@ -551,7 +551,7 @@ update_entries_from_block (GkmUserFile *self, guint section, GHashTable *entries
 	gsize n_data;
 	guint64 type;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (entries);
 	g_assert (buffer);
 	g_assert (offset);
@@ -621,25 +621,25 @@ update_entries_from_block (GkmUserFile *self, guint section, GHashTable *entries
 }
 
 static GkmDataResult
-update_from_public_block (GkmUserFile *self, EggBuffer *buffer)
+update_from_public_block (GkmGnome2File *self, EggBuffer *buffer)
 {
 	gsize offset = 0;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (buffer);
 
-	self->sections |= GKM_USER_FILE_SECTION_PUBLIC;
+	self->sections |= GKM_GNOME2_FILE_SECTION_PUBLIC;
 
 	/* Validate the buffer hash, failure in this case is corruption */
 	if (!validate_buffer (buffer, &offset))
 		return GKM_DATA_FAILURE;
 
-	return update_entries_from_block (self, GKM_USER_FILE_SECTION_PUBLIC,
+	return update_entries_from_block (self, GKM_GNOME2_FILE_SECTION_PUBLIC,
 	                                  self->publics, buffer, &offset);
 }
 
 static GkmDataResult
-update_from_private_block (GkmUserFile *self, EggBuffer *buffer, GkmSecret *login)
+update_from_private_block (GkmGnome2File *self, EggBuffer *buffer, GkmSecret *login)
 {
 	EggBuffer custom;
 	GkmDataResult res;
@@ -647,10 +647,10 @@ update_from_private_block (GkmUserFile *self, EggBuffer *buffer, GkmSecret *logi
 	gsize n_password;
 	gsize offset;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (buffer);
 
-	self->sections |= GKM_USER_FILE_SECTION_PRIVATE;
+	self->sections |= GKM_GNOME2_FILE_SECTION_PRIVATE;
 
 	/* Skip private blocks when not unlocked */
 	if (login == NULL) {
@@ -682,7 +682,7 @@ update_from_private_block (GkmUserFile *self, EggBuffer *buffer, GkmSecret *logi
 	if (!self->privates)
 		self->privates = entries_new ();
 
-	res = update_entries_from_block (self, GKM_USER_FILE_SECTION_PRIVATE,
+	res = update_entries_from_block (self, GKM_GNOME2_FILE_SECTION_PRIVATE,
 	                                 self->privates, &custom, &offset);
 	egg_buffer_uninit (&custom);
 	return res;
@@ -697,17 +697,17 @@ copy_each_identifier (gpointer key, gpointer value, gpointer data)
 static void
 remove_each_identifier (gpointer key, gpointer value, gpointer data)
 {
-	GkmUserFile *self = GKM_USER_FILE (data);
+	GkmGnome2File *self = GKM_GNOME2_FILE (data);
 	GHashTable *entries;
 	guint section;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (key);
 
-	if (!gkm_user_file_lookup_entry (self, key, &section))
+	if (!gkm_gnome2_file_lookup_entry (self, key, &section))
 		g_assert_not_reached ();
 
-	if (section == GKM_USER_FILE_SECTION_PRIVATE)
+	if (section == GKM_GNOME2_FILE_SECTION_PRIVATE)
 		entries = self->privates;
 	else
 		entries = self->publics;
@@ -729,7 +729,7 @@ remove_each_identifier (gpointer key, gpointer value, gpointer data)
 }
 
 static GkmDataResult
-update_from_index_block (GkmUserFile *self, EggBuffer *buffer)
+update_from_index_block (GkmGnome2File *self, EggBuffer *buffer)
 {
 	gchar *identifier;
 	gsize offset;
@@ -737,7 +737,7 @@ update_from_index_block (GkmUserFile *self, EggBuffer *buffer)
 	guint count, i;
 	guint value;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (buffer);
 
 	offset = 0;
@@ -777,11 +777,11 @@ static GkmDataResult
 update_from_any_block (guint block, EggBuffer *buffer, GkmSecret *login, gpointer user_data)
 {
 	UnknownBlock *unknown;
-	GkmUserFile *self;
+	GkmGnome2File *self;
 	GkmDataResult res;
 
-	g_assert (GKM_IS_USER_FILE (user_data));
-	self = GKM_USER_FILE (user_data);
+	g_assert (GKM_IS_GNOME2_FILE (user_data));
+	self = GKM_GNOME2_FILE (user_data);
 
 	switch (block) {
 	case FILE_BLOCK_INDEX:
@@ -834,11 +834,11 @@ write_each_entry (gpointer key, gpointer value, gpointer data)
 }
 
 static GkmDataResult
-write_entries_to_block (GkmUserFile *self, GHashTable *entries, EggBuffer *buffer)
+write_entries_to_block (GkmGnome2File *self, GHashTable *entries, EggBuffer *buffer)
 {
 	gsize offset;
 
-	g_assert (GKM_USER_FILE (self));
+	g_assert (GKM_GNOME2_FILE (self));
 	g_assert (entries);
 	g_assert (buffer);
 
@@ -865,12 +865,12 @@ write_entries_to_block (GkmUserFile *self, GHashTable *entries, EggBuffer *buffe
 }
 
 static GkmDataResult
-write_private_to_block (GkmUserFile *self, EggBuffer *buffer, GkmSecret *login)
+write_private_to_block (GkmGnome2File *self, EggBuffer *buffer, GkmSecret *login)
 {
 	EggBuffer secure;
 	GkmDataResult res;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (buffer);
 
 	if (login == NULL) {
@@ -898,9 +898,9 @@ write_private_to_block (GkmUserFile *self, EggBuffer *buffer, GkmSecret *login)
 }
 
 static GkmDataResult
-write_public_to_block (GkmUserFile *self, EggBuffer *buffer)
+write_public_to_block (GkmGnome2File *self, EggBuffer *buffer)
 {
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (buffer);
 
 	return write_entries_to_block (self, self->publics, buffer);
@@ -914,9 +914,9 @@ write_each_index_identifier (gpointer key, gpointer value, gpointer data)
 }
 
 static GkmDataResult
-write_index_to_block (GkmUserFile *self, EggBuffer *buffer)
+write_index_to_block (GkmGnome2File *self, EggBuffer *buffer)
 {
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (buffer);
 
 	/* The number of entries */
@@ -929,13 +929,13 @@ write_index_to_block (GkmUserFile *self, EggBuffer *buffer)
 }
 
 static GkmDataResult
-identifier_to_attributes (GkmUserFile *self, const gchar *identifier, GHashTable **attributes)
+identifier_to_attributes (GkmGnome2File *self, const gchar *identifier, GHashTable **attributes)
 {
 	GHashTable *entries;
 	gpointer value;
 	guint section;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 	g_assert (identifier);
 	g_assert (attributes);
 
@@ -943,7 +943,7 @@ identifier_to_attributes (GkmUserFile *self, const gchar *identifier, GHashTable
 		return GKM_DATA_UNRECOGNIZED;
 
 	section = GPOINTER_TO_UINT (value);
-	if (section == GKM_USER_FILE_SECTION_PRIVATE)
+	if (section == GKM_GNOME2_FILE_SECTION_PRIVATE)
 		entries = self->privates;
 	else
 		entries = self->publics;
@@ -989,8 +989,8 @@ sort_unknowns_by_type (gconstpointer a, gconstpointer b)
 }
 
 typedef struct _ForeachArgs {
-	GkmUserFile *self;
-	GkmUserFileFunc func;
+	GkmGnome2File *self;
+	GkmGnome2FileFunc func;
 	gpointer user_data;
 } ForeachArgs;
 
@@ -998,7 +998,7 @@ static void
 foreach_identifier (gpointer key, gpointer value, gpointer data)
 {
 	ForeachArgs *args = data;
-	g_assert (GKM_IS_USER_FILE (args->self));
+	g_assert (GKM_IS_GNOME2_FILE (args->self));
 	(args->func) (args->self, key, args->user_data);
 }
 
@@ -1022,14 +1022,14 @@ dump_attributes (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-dump_identifier_and_attributes (GkmUserFile *self, const gchar *identifier, gpointer user_data)
+dump_identifier_and_attributes (GkmGnome2File *self, const gchar *identifier, gpointer user_data)
 {
 	GHashTable *attributes;
 	guint section;
 
-	g_assert (GKM_IS_USER_FILE (self));
+	g_assert (GKM_IS_GNOME2_FILE (self));
 
-	if (!gkm_user_file_lookup_entry (self, identifier, &section))
+	if (!gkm_gnome2_file_lookup_entry (self, identifier, &section))
 		g_assert_not_reached ();
 
 	if (GPOINTER_TO_UINT (user_data) == section) {
@@ -1047,7 +1047,7 @@ dump_identifier_and_attributes (GkmUserFile *self, const gchar *identifier, gpoi
  */
 
 static void
-gkm_user_file_init (GkmUserFile *self)
+gkm_gnome2_file_init (GkmGnome2File *self)
 {
 	self->identifiers = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	self->publics = entries_new ();
@@ -1059,9 +1059,9 @@ gkm_user_file_init (GkmUserFile *self)
 }
 
 static void
-gkm_user_file_finalize (GObject *obj)
+gkm_gnome2_file_finalize (GObject *obj)
 {
-	GkmUserFile *self = GKM_USER_FILE (obj);
+	GkmGnome2File *self = GKM_GNOME2_FILE (obj);
 
 	g_assert (self->identifiers);
 	g_hash_table_destroy (self->identifiers);
@@ -1080,11 +1080,11 @@ gkm_user_file_finalize (GObject *obj)
 	free_unknown_block_list (self->unknowns);
 	self->unknowns = NULL;
 
-	G_OBJECT_CLASS (gkm_user_file_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkm_gnome2_file_parent_class)->finalize (obj);
 }
 
 static void
-gkm_user_file_set_property (GObject *obj, guint prop_id, const GValue *value,
+gkm_gnome2_file_set_property (GObject *obj, guint prop_id, const GValue *value,
                                 GParamSpec *pspec)
 {
 	switch (prop_id) {
@@ -1095,7 +1095,7 @@ gkm_user_file_set_property (GObject *obj, guint prop_id, const GValue *value,
 }
 
 static void
-gkm_user_file_get_property (GObject *obj, guint prop_id, GValue *value,
+gkm_gnome2_file_get_property (GObject *obj, guint prop_id, GValue *value,
                                 GParamSpec *pspec)
 {
 	switch (prop_id) {
@@ -1106,26 +1106,26 @@ gkm_user_file_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gkm_user_file_class_init (GkmUserFileClass *klass)
+gkm_gnome2_file_class_init (GkmGnome2FileClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->finalize = gkm_user_file_finalize;
-	gobject_class->set_property = gkm_user_file_set_property;
-	gobject_class->get_property = gkm_user_file_get_property;
+	gobject_class->finalize = gkm_gnome2_file_finalize;
+	gobject_class->set_property = gkm_gnome2_file_set_property;
+	gobject_class->get_property = gkm_gnome2_file_get_property;
 
-	signals[ENTRY_ADDED] = g_signal_new ("entry-added", GKM_TYPE_USER_FILE,
-	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmUserFileClass, entry_added),
+	signals[ENTRY_ADDED] = g_signal_new ("entry-added", GKM_TYPE_GNOME2_FILE,
+	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmGnome2FileClass, entry_added),
 	                                NULL, NULL, g_cclosure_marshal_VOID__STRING,
 	                                G_TYPE_NONE, 1, G_TYPE_STRING);
 
-	signals[ENTRY_CHANGED] = g_signal_new ("entry-changed", GKM_TYPE_USER_FILE,
-	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmUserFileClass, entry_changed),
+	signals[ENTRY_CHANGED] = g_signal_new ("entry-changed", GKM_TYPE_GNOME2_FILE,
+	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmGnome2FileClass, entry_changed),
 	                                NULL, NULL, gkm_marshal_VOID__STRING_ULONG,
 	                                G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_ULONG);
 
-	signals[ENTRY_REMOVED] = g_signal_new ("entry-removed", GKM_TYPE_USER_FILE,
-	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmUserFileClass, entry_removed),
+	signals[ENTRY_REMOVED] = g_signal_new ("entry-removed", GKM_TYPE_GNOME2_FILE,
+	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmGnome2FileClass, entry_removed),
 	                                NULL, NULL, g_cclosure_marshal_VOID__STRING,
 	                                G_TYPE_NONE, 1, G_TYPE_STRING);
 }
@@ -1134,18 +1134,18 @@ gkm_user_file_class_init (GkmUserFileClass *klass)
  * PUBLIC
  */
 
-GkmUserFile*
-gkm_user_file_new (void)
+GkmGnome2File*
+gkm_gnome2_file_new (void)
 {
-	return g_object_new (GKM_TYPE_USER_FILE, NULL);
+	return g_object_new (GKM_TYPE_GNOME2_FILE, NULL);
 }
 
 GkmDataResult
-gkm_user_file_read_fd (GkmUserFile *self, int fd, GkmSecret *login)
+gkm_gnome2_file_read_fd (GkmGnome2File *self, int fd, GkmSecret *login)
 {
 	GkmDataResult res;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), GKM_DATA_FAILURE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), GKM_DATA_FAILURE);
 
 	/* Reads are not reentrant for a single data file */
 	g_return_val_if_fail (self->checks == NULL, GKM_DATA_FAILURE);
@@ -1175,7 +1175,7 @@ gkm_user_file_read_fd (GkmUserFile *self, int fd, GkmSecret *login)
 		 * time around).
 		 */
 
-		if (self->privates == NULL && !(self->sections & GKM_USER_FILE_SECTION_PRIVATE))
+		if (self->privates == NULL && !(self->sections & GKM_GNOME2_FILE_SECTION_PRIVATE))
 			self->privates = entries_new ();
 
 	/* Note that our last read failed */
@@ -1190,7 +1190,7 @@ gkm_user_file_read_fd (GkmUserFile *self, int fd, GkmSecret *login)
 }
 
 GkmDataResult
-gkm_user_file_write_fd (GkmUserFile *self, int fd, GkmSecret *login)
+gkm_gnome2_file_write_fd (GkmGnome2File *self, int fd, GkmSecret *login)
 {
 	guint types[3] = { FILE_BLOCK_INDEX, FILE_BLOCK_PRIVATE, FILE_BLOCK_PUBLIC };
 	GList *unknowns, *unk;
@@ -1200,7 +1200,7 @@ gkm_user_file_write_fd (GkmUserFile *self, int fd, GkmSecret *login)
 	guint type;
 	gint i;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), GKM_DATA_FAILURE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), GKM_DATA_FAILURE);
 	g_return_val_if_fail (!self->incomplete, GKM_DATA_FAILURE);
 
 	/* Write out the header */
@@ -1271,11 +1271,11 @@ gkm_user_file_write_fd (GkmUserFile *self, int fd, GkmSecret *login)
 }
 
 gboolean
-gkm_user_file_lookup_entry (GkmUserFile *self, const gchar *identifier, guint *section)
+gkm_gnome2_file_lookup_entry (GkmGnome2File *self, const gchar *identifier, guint *section)
 {
 	gpointer value;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), FALSE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), FALSE);
 	g_return_val_if_fail (identifier, FALSE);
 
 	if (!g_hash_table_lookup_extended (self->identifiers, identifier, NULL, &value))
@@ -1288,28 +1288,28 @@ gkm_user_file_lookup_entry (GkmUserFile *self, const gchar *identifier, guint *s
 }
 
 void
-gkm_user_file_foreach_entry (GkmUserFile *self, GkmUserFileFunc func, gpointer user_data)
+gkm_gnome2_file_foreach_entry (GkmGnome2File *self, GkmGnome2FileFunc func, gpointer user_data)
 {
 	ForeachArgs args = { self, func, user_data };
 
-	g_return_if_fail (GKM_IS_USER_FILE (self));
+	g_return_if_fail (GKM_IS_GNOME2_FILE (self));
 	g_return_if_fail (func);
 
 	g_hash_table_foreach (self->identifiers, foreach_identifier, &args);
 }
 
 GkmDataResult
-gkm_user_file_unique_entry (GkmUserFile *self, gchar **identifier)
+gkm_gnome2_file_unique_entry (GkmGnome2File *self, gchar **identifier)
 {
 	gchar *base, *ext;
 	guint seed = 1;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), GKM_DATA_FAILURE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), GKM_DATA_FAILURE);
 	g_return_val_if_fail (identifier, GKM_DATA_FAILURE);
 
 	/* Check if original is unique */
 	if (*identifier != NULL) {
-		if (!gkm_user_file_lookup_entry (self, *identifier, NULL))
+		if (!gkm_gnome2_file_lookup_entry (self, *identifier, NULL))
 			return GKM_DATA_SUCCESS;
 	}
 
@@ -1325,7 +1325,7 @@ gkm_user_file_unique_entry (GkmUserFile *self, gchar **identifier)
 
 	for (seed = 0; TRUE; ++seed) {
 		*identifier = g_strdup_printf ("%s-%d%s%s", base, seed, ext ? "." : "", ext ? ext : "");
-		if (!gkm_user_file_lookup_entry (self, *identifier, NULL))
+		if (!gkm_gnome2_file_lookup_entry (self, *identifier, NULL))
 			break;
 
 		if (seed < 1000000) {
@@ -1343,15 +1343,15 @@ gkm_user_file_unique_entry (GkmUserFile *self, gchar **identifier)
 }
 
 GkmDataResult
-gkm_user_file_create_entry (GkmUserFile *self, const gchar *identifier, guint section)
+gkm_gnome2_file_create_entry (GkmGnome2File *self, const gchar *identifier, guint section)
 {
 	GHashTable *attributes;
 	GHashTable *entries;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), GKM_DATA_FAILURE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), GKM_DATA_FAILURE);
 	g_return_val_if_fail (identifier, GKM_DATA_FAILURE);
 
-	if (section == GKM_USER_FILE_SECTION_PRIVATE) {
+	if (section == GKM_GNOME2_FILE_SECTION_PRIVATE) {
 		if (!self->privates)
 			return GKM_DATA_LOCKED;
 		entries = self->privates;
@@ -1372,18 +1372,18 @@ gkm_user_file_create_entry (GkmUserFile *self, const gchar *identifier, guint se
 }
 
 GkmDataResult
-gkm_user_file_destroy_entry (GkmUserFile *self, const gchar *identifier)
+gkm_gnome2_file_destroy_entry (GkmGnome2File *self, const gchar *identifier)
 {
 	GHashTable *entries;
 	guint section;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), GKM_DATA_FAILURE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), GKM_DATA_FAILURE);
 	g_return_val_if_fail (identifier, GKM_DATA_FAILURE);
 
-	if (!gkm_user_file_lookup_entry (self, identifier, &section))
+	if (!gkm_gnome2_file_lookup_entry (self, identifier, &section))
 		return GKM_DATA_UNRECOGNIZED;
 
-	if (section == GKM_USER_FILE_SECTION_PRIVATE) {
+	if (section == GKM_GNOME2_FILE_SECTION_PRIVATE) {
 		if (!self->privates)
 			return GKM_DATA_LOCKED;
 		entries = self->privates;
@@ -1401,7 +1401,7 @@ gkm_user_file_destroy_entry (GkmUserFile *self, const gchar *identifier)
 }
 
 GkmDataResult
-gkm_user_file_write_value (GkmUserFile *self, const gchar *identifier,
+gkm_gnome2_file_write_value (GkmGnome2File *self, const gchar *identifier,
                            gulong type, gconstpointer value, gsize n_value)
 {
 	GHashTable *attributes;
@@ -1409,7 +1409,7 @@ gkm_user_file_write_value (GkmUserFile *self, const gchar *identifier,
 	CK_ATTRIBUTE attr;
 	GkmDataResult res;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), GKM_DATA_FAILURE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), GKM_DATA_FAILURE);
 	g_return_val_if_fail (identifier, GKM_DATA_FAILURE);
 	g_return_val_if_fail (value || !n_value, GKM_DATA_FAILURE);
 
@@ -1434,14 +1434,14 @@ gkm_user_file_write_value (GkmUserFile *self, const gchar *identifier,
 }
 
 GkmDataResult
-gkm_user_file_read_value (GkmUserFile *self, const gchar *identifier,
+gkm_gnome2_file_read_value (GkmGnome2File *self, const gchar *identifier,
                           gulong type, gconstpointer *value, gsize *n_value)
 {
 	CK_ATTRIBUTE_PTR attr;
 	GHashTable *attributes;
 	GkmDataResult res;
 
-	g_return_val_if_fail (GKM_IS_USER_FILE (self), GKM_DATA_FAILURE);
+	g_return_val_if_fail (GKM_IS_GNOME2_FILE (self), GKM_DATA_FAILURE);
 	g_return_val_if_fail (identifier, GKM_DATA_FAILURE);
 	g_return_val_if_fail (value, GKM_DATA_FAILURE);
 	g_return_val_if_fail (n_value, GKM_DATA_FAILURE);
@@ -1462,18 +1462,18 @@ gkm_user_file_read_value (GkmUserFile *self, const gchar *identifier,
 }
 
 gboolean
-gkm_user_file_have_section (GkmUserFile *self, guint section)
+gkm_gnome2_file_have_section (GkmGnome2File *self, guint section)
 {
 	return (self->sections & section) ? TRUE : FALSE;
 }
 
 void
-gkm_user_file_dump (GkmUserFile *self)
+gkm_gnome2_file_dump (GkmGnome2File *self)
 {
 	g_print ("PUBLIC:\n\n");
-	gkm_user_file_foreach_entry (self, dump_identifier_and_attributes,
-	                             GUINT_TO_POINTER (GKM_USER_FILE_SECTION_PUBLIC));
+	gkm_gnome2_file_foreach_entry (self, dump_identifier_and_attributes,
+	                             GUINT_TO_POINTER (GKM_GNOME2_FILE_SECTION_PUBLIC));
 	g_print ("PRIVATE:\n\n");
-	gkm_user_file_foreach_entry (self, dump_identifier_and_attributes,
-	                             GUINT_TO_POINTER (GKM_USER_FILE_SECTION_PRIVATE));
+	gkm_gnome2_file_foreach_entry (self, dump_identifier_and_attributes,
+	                             GUINT_TO_POINTER (GKM_GNOME2_FILE_SECTION_PRIVATE));
 }

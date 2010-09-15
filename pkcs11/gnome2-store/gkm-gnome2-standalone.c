@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkm-user-standalone.h - The user-store PKCS#11 code as a standalone module
+/* gkm-gnome2-standalone.h - The user-store PKCS#11 code as a standalone module
 
    Copyright (C) 2008, Stef Walter
 
@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gkm-user-store.h"
+#include "gkm-gnome2-store.h"
 
 #include "gkm/gkm-crypto.h"
 
@@ -46,6 +46,6 @@ C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
 
-	*list = gkm_user_store_get_functions ();
+	*list = gkm_gnome2_store_get_functions ();
 	return CKR_OK;
 }

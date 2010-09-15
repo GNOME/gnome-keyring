@@ -31,7 +31,7 @@
 #include "pkcs11/rpc-layer/gkm-rpc-layer.h"
 #include "pkcs11/secret-store/gkm-secret-store.h"
 #include "pkcs11/ssh-store/gkm-ssh-store.h"
-#include "pkcs11/user-store/gkm-user-store.h"
+#include "pkcs11/gnome2-store/gkm-gnome2-store.h"
 
 #include "gpg-agent/gkd-gpg-agent.h"
 #include "ssh-agent/gkd-ssh-agent.h"
@@ -68,7 +68,7 @@ gkd_pkcs11_initialize (void)
 	CK_FUNCTION_LIST_PTR roots_store;
 	CK_FUNCTION_LIST_PTR secret_store;
 	CK_FUNCTION_LIST_PTR ssh_store;
-	CK_FUNCTION_LIST_PTR user_store;
+	CK_FUNCTION_LIST_PTR gnome2_store;
 	CK_C_INITIALIZE_ARGS init_args;
 	gboolean ret;
 	CK_RV rv;
@@ -83,7 +83,7 @@ gkd_pkcs11_initialize (void)
 	roots_store = gkm_roots_store_get_functions ();
 
 	/* User certificates */
-	user_store = gkm_user_store_get_functions ();
+	gnome2_store = gkm_gnome2_store_get_functions ();
 
 	/* Add all of those into the wrapper layer */
 	gkm_wrap_layer_add_module (ssh_store);
@@ -91,7 +91,7 @@ gkd_pkcs11_initialize (void)
 	gkm_wrap_layer_add_module (roots_store);
 #endif
 	gkm_wrap_layer_add_module (secret_store);
-	gkm_wrap_layer_add_module (user_store);
+	gkm_wrap_layer_add_module (gnome2_store);
 
 	pkcs11_roof = gkm_wrap_layer_get_functions ();
 	pkcs11_base = gkm_wrap_layer_get_functions_no_prompts ();

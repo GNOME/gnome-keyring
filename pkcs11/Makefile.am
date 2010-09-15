@@ -17,4 +17,4 @@ SUBDIRS = . \
 	rpc-layer \
 	secret-store \
 	ssh-store \
-	user-store
+	gnome2-store

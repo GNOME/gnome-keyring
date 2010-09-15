@@ -19,11 +19,11 @@
  * 02111-1307, USA.
  */
 
-#ifndef __GKM_USER_STORE_H__
-#define __GKM_USER_STORE_H__
+#ifndef __GKM_GNOME2_STORE_H__
+#define __GKM_GNOME2_STORE_H__
 
 #include "pkcs11/pkcs11.h"
 
-CK_FUNCTION_LIST_PTR  gkm_user_store_get_functions  (void);
+CK_FUNCTION_LIST_PTR  gkm_gnome2_store_get_functions  (void);
 
-#endif /* __GKM_USER_STORE_H__ */
+#endif /* __GKM_GNOME2_STORE_H__ */

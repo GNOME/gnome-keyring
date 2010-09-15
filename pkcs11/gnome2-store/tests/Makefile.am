@@ -1,10 +1,10 @@
 
 TESTING_FILES = \
 	test-module.c \
-	unit-test-user-file.c
+	unit-test-gnome2-file.c
 
 TESTING_LIBS = \
-	$(top_builddir)/pkcs11/user-store/libgkm-user-store.la \
+	$(top_builddir)/pkcs11/gnome2-store/libgkm-gnome2-store.la \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/egg/libegg.la
 
@@ -17,13 +17,13 @@ EXTRA_DIST = \
 # ---------------------------------------------------------------------
 
 noinst_PROGRAMS += \
-	dump-data-file
+	dump-gnome2-file
 
-dump_data_file_SOURCES = \
-	dump-data-file.c
+dump_gnome2_file_SOURCES = \
+	dump-gnome2-file.c
 
-dump_data_file_LDADD = \
+dump_gnome2_file_LDADD = \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
-	$(top_builddir)/pkcs11/user-store/libgkm-user-store.la \
+	$(top_builddir)/pkcs11/gnome2-store/libgkm-gnome2-store.la \
 	$(top_builddir)/egg/libegg.la \
 	$(DAEMON_LIBS)

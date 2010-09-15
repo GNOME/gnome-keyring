@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "gkm-user-private-key.h"
+#include "gkm-gnome2-private-key.h"
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-crypto.h"
@@ -43,7 +43,7 @@ enum {
 	PROP_0,
 };
 
-struct _GkmUserPrivateKey {
+struct _GkmGnome2PrivateKey {
 	GkmPrivateXsaKey parent;
 
 	guchar *private_data;
@@ -54,10 +54,10 @@ struct _GkmUserPrivateKey {
 	GkmSecret *login;
 };
 
-static void gkm_user_private_key_serializable (GkmSerializableIface *iface);
+static void gkm_gnome2_private_key_serializable (GkmSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GkmUserPrivateKey, gkm_user_private_key, GKM_TYPE_PRIVATE_XSA_KEY, 0,
-               G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_user_private_key_serializable));
+G_DEFINE_TYPE_EXTENDED (GkmGnome2PrivateKey, gkm_gnome2_private_key, GKM_TYPE_PRIVATE_XSA_KEY, 0,
+               G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_gnome2_private_key_serializable));
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -67,7 +67,7 @@ static GkmObject*
 factory_create_private_key (GkmSession *session, GkmTransaction *transaction,
                             CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
-	GkmUserPrivateKey *key;
+	GkmGnome2PrivateKey *key;
 	GkmSexp *sexp;
 
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
@@ -76,7 +76,7 @@ factory_create_private_key (GkmSession *session, GkmTransaction *transaction,
 	if (sexp == NULL)
 		return NULL;
 
-	key = g_object_new (GKM_TYPE_USER_PRIVATE_KEY, "base-sexp", sexp,
+	key = g_object_new (GKM_TYPE_GNOME2_PRIVATE_KEY, "base-sexp", sexp,
 	                    "module", gkm_session_get_module (session),
 	                    "manager", gkm_manager_for_template (attrs, n_attrs, session),
 	                    NULL);
@@ -95,20 +95,20 @@ factory_create_private_key (GkmSession *session, GkmTransaction *transaction,
  */
 
 static CK_RV
-gkm_user_private_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_PTR attr)
+gkm_gnome2_private_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_PTR attr)
 {
 	switch (attr->type) {
 	case CKA_ALWAYS_AUTHENTICATE:
 		return gkm_attribute_set_bool (attr, FALSE);
 	}
 
-	return GKM_OBJECT_CLASS (gkm_user_private_key_parent_class)->get_attribute (base, session, attr);
+	return GKM_OBJECT_CLASS (gkm_gnome2_private_key_parent_class)->get_attribute (base, session, attr);
 }
 
 static GkmSexp*
-gkm_user_private_key_real_acquire_crypto_sexp (GkmSexpKey *base, GkmSession *unused)
+gkm_gnome2_private_key_real_acquire_crypto_sexp (GkmSexpKey *base, GkmSession *unused)
 {
-	GkmUserPrivateKey *self = GKM_USER_PRIVATE_KEY (base);
+	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	gcry_sexp_t sexp;
 	GkmDataResult res;
 	const gchar *password;
@@ -130,27 +130,27 @@ gkm_user_private_key_real_acquire_crypto_sexp (GkmSexpKey *base, GkmSession *unu
 }
 
 static void
-gkm_user_private_key_init (GkmUserPrivateKey *self)
+gkm_gnome2_private_key_init (GkmGnome2PrivateKey *self)
 {
 
 }
 
 static void
-gkm_user_private_key_dispose (GObject *obj)
+gkm_gnome2_private_key_dispose (GObject *obj)
 {
-	GkmUserPrivateKey *self = GKM_USER_PRIVATE_KEY (obj);
+	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (obj);
 
 	if (self->login)
 		g_object_unref (self->login);
 	self->login = NULL;
 
-	G_OBJECT_CLASS (gkm_user_private_key_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gkm_gnome2_private_key_parent_class)->dispose (obj);
 }
 
 static void
-gkm_user_private_key_finalize (GObject *obj)
+gkm_gnome2_private_key_finalize (GObject *obj)
 {
-	GkmUserPrivateKey *self = GKM_USER_PRIVATE_KEY (obj);
+	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (obj);
 
 	g_assert (self->login == NULL);
 
@@ -161,11 +161,11 @@ gkm_user_private_key_finalize (GObject *obj)
 		gkm_sexp_unref (self->private_sexp);
 	self->private_sexp = NULL;
 
-	G_OBJECT_CLASS (gkm_user_private_key_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkm_gnome2_private_key_parent_class)->finalize (obj);
 }
 
 static void
-gkm_user_private_key_set_property (GObject *obj, guint prop_id, const GValue *value,
+gkm_gnome2_private_key_set_property (GObject *obj, guint prop_id, const GValue *value,
                            GParamSpec *pspec)
 {
 	switch (prop_id) {
@@ -176,7 +176,7 @@ gkm_user_private_key_set_property (GObject *obj, guint prop_id, const GValue *va
 }
 
 static void
-gkm_user_private_key_get_property (GObject *obj, guint prop_id, GValue *value,
+gkm_gnome2_private_key_get_property (GObject *obj, guint prop_id, GValue *value,
                            GParamSpec *pspec)
 {
 	switch (prop_id) {
@@ -187,33 +187,33 @@ gkm_user_private_key_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gkm_user_private_key_class_init (GkmUserPrivateKeyClass *klass)
+gkm_gnome2_private_key_class_init (GkmGnome2PrivateKeyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 	GkmSexpKeyClass *key_class = GKM_SEXP_KEY_CLASS (klass);
 
-	gobject_class->dispose = gkm_user_private_key_dispose;
-	gobject_class->finalize = gkm_user_private_key_finalize;
-	gobject_class->set_property = gkm_user_private_key_set_property;
-	gobject_class->get_property = gkm_user_private_key_get_property;
+	gobject_class->dispose = gkm_gnome2_private_key_dispose;
+	gobject_class->finalize = gkm_gnome2_private_key_finalize;
+	gobject_class->set_property = gkm_gnome2_private_key_set_property;
+	gobject_class->get_property = gkm_gnome2_private_key_get_property;
 
-	gkm_class->get_attribute = gkm_user_private_key_real_get_attribute;
+	gkm_class->get_attribute = gkm_gnome2_private_key_real_get_attribute;
 
-	key_class->acquire_crypto_sexp = gkm_user_private_key_real_acquire_crypto_sexp;
+	key_class->acquire_crypto_sexp = gkm_gnome2_private_key_real_acquire_crypto_sexp;
 }
 
 static gboolean
-gkm_user_private_key_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
+gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
 {
-	GkmUserPrivateKey *self = GKM_USER_PRIVATE_KEY (base);
+	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	GkmDataResult res;
 	gcry_sexp_t sexp, pub;
 	GkmSexp *wrapper;
 	const gchar *password;
 	gsize n_password;
 
-	g_return_val_if_fail (GKM_IS_USER_PRIVATE_KEY (self), FALSE);
+	g_return_val_if_fail (GKM_IS_GNOME2_PRIVATE_KEY (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
 
 	res = gkm_data_der_read_private_pkcs8 (data, n_data, NULL, 0, &sexp);
@@ -290,19 +290,19 @@ gkm_user_private_key_real_load (GkmSerializable *base, GkmSecret *login, const g
 }
 
 static gboolean
-gkm_user_private_key_real_save (GkmSerializable *base, GkmSecret *login, guchar **data, gsize *n_data)
+gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login, guchar **data, gsize *n_data)
 {
-	GkmUserPrivateKey *self = GKM_USER_PRIVATE_KEY (base);
+	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	const gchar *password;
 	gsize n_password;
 	GkmSexp *sexp;
 	guchar *key;
 
-	g_return_val_if_fail (GKM_IS_USER_PRIVATE_KEY (self), FALSE);
+	g_return_val_if_fail (GKM_IS_GNOME2_PRIVATE_KEY (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
-	sexp = gkm_user_private_key_real_acquire_crypto_sexp (GKM_SEXP_KEY (self), NULL);
+	sexp = gkm_gnome2_private_key_real_acquire_crypto_sexp (GKM_SEXP_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
 
 	password = gkm_secret_get_password (login, &n_password);
@@ -325,11 +325,11 @@ gkm_user_private_key_real_save (GkmSerializable *base, GkmSecret *login, guchar 
 }
 
 static void
-gkm_user_private_key_serializable (GkmSerializableIface *iface)
+gkm_gnome2_private_key_serializable (GkmSerializableIface *iface)
 {
 	iface->extension = ".pkcs8";
-	iface->load = gkm_user_private_key_real_load;
-	iface->save = gkm_user_private_key_real_save;
+	iface->load = gkm_gnome2_private_key_real_load;
+	iface->save = gkm_gnome2_private_key_real_save;
 }
 
 /* -----------------------------------------------------------------------------
@@ -337,7 +337,7 @@ gkm_user_private_key_serializable (GkmSerializableIface *iface)
  */
 
 GkmFactory*
-gkm_user_private_key_get_factory (void)
+gkm_gnome2_private_key_get_factory (void)
 {
 	static CK_OBJECT_CLASS klass = CKO_PRIVATE_KEY;
 	static CK_BBOOL token = CK_TRUE;

@@ -21,10 +21,10 @@
 
 #include "config.h"
 
-#include "gkm-user-file.h"
-#include "gkm-user-private-key.h"
-#include "gkm-user-public-key.h"
-#include "gkm-user-storage.h"
+#include "gkm-gnome2-file.h"
+#include "gkm-gnome2-private-key.h"
+#include "gkm-gnome2-public-key.h"
+#include "gkm-gnome2-storage.h"
 
 #include "gkm/gkm-certificate.h"
 #include "gkm/gkm-data-asn1.h"
@@ -58,7 +58,7 @@ enum {
 	PROP_LOGIN
 };
 
-struct _GkmUserStorage {
+struct _GkmGnome2Storage {
 	GkmStore parent;
 
 	GkmModule *module;
@@ -67,7 +67,7 @@ struct _GkmUserStorage {
 	/* Information about file data */
 	gchar *directory;
 	gchar *filename;
-	GkmUserFile *file;
+	GkmGnome2File *file;
 	time_t last_mtime;
 	GkmSecret *login;
 
@@ -82,7 +82,7 @@ struct _GkmUserStorage {
 	gint read_fd;
 };
 
-G_DEFINE_TYPE (GkmUserStorage, gkm_user_storage, GKM_TYPE_STORE);
+G_DEFINE_TYPE (GkmGnome2Storage, gkm_gnome2_storage, GKM_TYPE_STORE);
 
 #define MAX_LOCK_TRIES 20
 
@@ -194,9 +194,9 @@ type_from_extension (const gchar *extension)
 	g_assert (extension);
 
 	if (strcmp (extension, ".pkcs8") == 0)
-		return GKM_TYPE_USER_PRIVATE_KEY;
+		return GKM_TYPE_GNOME2_PRIVATE_KEY;
 	else if (strcmp (extension, ".pub") == 0)
-		return GKM_TYPE_USER_PUBLIC_KEY;
+		return GKM_TYPE_GNOME2_PUBLIC_KEY;
 	else if (strcmp (extension, ".cer") == 0)
 		return GKM_TYPE_CERTIFICATE;
 
@@ -231,7 +231,7 @@ complete_lock_file (GkmTransaction *transaction, GObject *object, gpointer data)
 }
 
 static gint
-begin_lock_file (GkmUserStorage *self, GkmTransaction *transaction)
+begin_lock_file (GkmGnome2Storage *self, GkmTransaction *transaction)
 {
 	guint tries = 0;
 	gint fd = -1;
@@ -241,7 +241,7 @@ begin_lock_file (GkmUserStorage *self, GkmTransaction *transaction)
 	 * that's the callers job if necessary.
 	 */
 
-	g_assert (GKM_IS_USER_STORAGE (self));
+	g_assert (GKM_IS_GNOME2_STORAGE (self));
 	g_assert (GKM_IS_TRANSACTION (transaction));
 
 	g_return_val_if_fail (!gkm_transaction_get_failed (transaction), -1);
@@ -286,11 +286,11 @@ begin_lock_file (GkmUserStorage *self, GkmTransaction *transaction)
 static gboolean
 complete_write_state (GkmTransaction *transaction, GObject *object, gpointer unused)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (object);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (object);
 	gboolean ret = TRUE;
 	struct stat sb;
 
-	g_return_val_if_fail (GKM_IS_USER_STORAGE (object), FALSE);
+	g_return_val_if_fail (GKM_IS_GNOME2_STORAGE (object), FALSE);
 	g_return_val_if_fail (GKM_IS_TRANSACTION (transaction), FALSE);
 	g_return_val_if_fail (self->transaction == transaction, FALSE);
 
@@ -322,9 +322,9 @@ complete_write_state (GkmTransaction *transaction, GObject *object, gpointer unu
 }
 
 static gboolean
-begin_write_state (GkmUserStorage *self, GkmTransaction *transaction)
+begin_write_state (GkmGnome2Storage *self, GkmTransaction *transaction)
 {
-	g_assert (GKM_IS_USER_STORAGE (self));
+	g_assert (GKM_IS_GNOME2_STORAGE (self));
 	g_assert (GKM_IS_TRANSACTION (transaction));
 
 	g_return_val_if_fail (!gkm_transaction_get_failed (transaction), FALSE);
@@ -359,11 +359,11 @@ begin_write_state (GkmUserStorage *self, GkmTransaction *transaction)
 static gboolean
 complete_modification_state (GkmTransaction *transaction, GObject *object, gpointer unused)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (object);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (object);
 	GkmDataResult res;
 
 	if (!gkm_transaction_get_failed (transaction)) {
-		res = gkm_user_file_write_fd (self->file, self->write_fd, self->login);
+		res = gkm_gnome2_file_write_fd (self->file, self->write_fd, self->login);
 		switch(res) {
 		case GKM_DATA_FAILURE:
 		case GKM_DATA_UNRECOGNIZED:
@@ -383,7 +383,7 @@ complete_modification_state (GkmTransaction *transaction, GObject *object, gpoin
 }
 
 static gboolean
-begin_modification_state (GkmUserStorage *self, GkmTransaction *transaction)
+begin_modification_state (GkmGnome2Storage *self, GkmTransaction *transaction)
 {
 	GkmDataResult res;
 	struct stat sb;
@@ -395,7 +395,7 @@ begin_modification_state (GkmUserStorage *self, GkmTransaction *transaction)
 	/* See if file needs updating */
 	if (fstat (self->read_fd, &sb) >= 0 && sb.st_mtime != self->last_mtime) {
 
-		res = gkm_user_file_read_fd (self->file, self->read_fd, self->login);
+		res = gkm_gnome2_file_read_fd (self->file, self->read_fd, self->login);
 		switch (res) {
 		case GKM_DATA_FAILURE:
 			g_message ("failure updating user store file: %s", self->filename);
@@ -429,11 +429,11 @@ begin_modification_state (GkmUserStorage *self, GkmTransaction *transaction)
 }
 
 static void
-take_object_ownership (GkmUserStorage *self, const gchar *identifier, GkmObject *object)
+take_object_ownership (GkmGnome2Storage *self, const gchar *identifier, GkmObject *object)
 {
 	gchar *str;
 
-	g_assert (GKM_IS_USER_STORAGE (self));
+	g_assert (GKM_IS_GNOME2_STORAGE (self));
 	g_assert (GKM_IS_OBJECT (object));
 
 	g_assert (g_hash_table_lookup (self->identifier_to_object, identifier) == NULL);
@@ -450,7 +450,7 @@ take_object_ownership (GkmUserStorage *self, const gchar *identifier, GkmObject 
 }
 
 static gboolean
-check_object_hash (GkmUserStorage *self, const gchar *identifier, const guchar *data, gsize n_data)
+check_object_hash (GkmGnome2Storage *self, const gchar *identifier, const guchar *data, gsize n_data)
 {
 	gconstpointer value;
 	GkmDataResult res;
@@ -458,14 +458,14 @@ check_object_hash (GkmUserStorage *self, const gchar *identifier, const guchar *
 	gsize n_value;
 	gchar *digest;
 
-	g_assert (GKM_IS_USER_STORAGE (self));
+	g_assert (GKM_IS_GNOME2_STORAGE (self));
 	g_assert (identifier);
 	g_assert (data);
 
 	digest = g_compute_checksum_for_data (G_CHECKSUM_SHA1, data, n_data);
 	g_return_val_if_fail (digest, FALSE);
 
-	res = gkm_user_file_read_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, &value, &n_value);
+	res = gkm_gnome2_file_read_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, &value, &n_value);
 	g_return_val_if_fail (res == GKM_DATA_SUCCESS, FALSE);
 
 	result = (strlen (digest) == n_value && memcmp (digest, value, n_value) == 0);
@@ -475,13 +475,13 @@ check_object_hash (GkmUserStorage *self, const gchar *identifier, const guchar *
 }
 
 static void
-store_object_hash (GkmUserStorage *self, GkmTransaction *transaction, const gchar *identifier,
+store_object_hash (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar *identifier,
                    const guchar *data, gsize n_data)
 {
 	GkmDataResult res;
 	gchar *digest;
 
-	g_assert (GKM_IS_USER_STORAGE (self));
+	g_assert (GKM_IS_GNOME2_STORAGE (self));
 	g_assert (GKM_IS_TRANSACTION (transaction));
 	g_assert (identifier);
 	g_assert (data);
@@ -492,7 +492,7 @@ store_object_hash (GkmUserStorage *self, GkmTransaction *transaction, const gcha
 		g_return_if_reached ();
 	}
 
-	res = gkm_user_file_write_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, digest, strlen (digest));
+	res = gkm_gnome2_file_write_value (self->file, identifier, CKA_GNOME_INTERNAL_SHA1, digest, strlen (digest));
 	g_free (digest);
 
 	if (res != GKM_DATA_SUCCESS)
@@ -500,7 +500,7 @@ store_object_hash (GkmUserStorage *self, GkmTransaction *transaction, const gcha
 }
 
 static void
-data_file_entry_added (GkmUserFile *store, const gchar *identifier, GkmUserStorage *self)
+data_file_entry_added (GkmGnome2File *store, const gchar *identifier, GkmGnome2Storage *self)
 {
 	GError *error = NULL;
 	GkmObject *object;
@@ -510,7 +510,7 @@ data_file_entry_added (GkmUserFile *store, const gchar *identifier, GkmUserStora
 	GType type;
 	gchar *path;
 
-	g_return_if_fail (GKM_IS_USER_STORAGE (self));
+	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
 	g_return_if_fail (identifier);
 
 	/* Already have this object? */
@@ -560,11 +560,11 @@ data_file_entry_added (GkmUserFile *store, const gchar *identifier, GkmUserStora
 }
 
 static void
-data_file_entry_changed (GkmUserFile *store, const gchar *identifier, CK_ATTRIBUTE_TYPE type, GkmUserStorage *self)
+data_file_entry_changed (GkmGnome2File *store, const gchar *identifier, CK_ATTRIBUTE_TYPE type, GkmGnome2Storage *self)
 {
 	GkmObject *object;
 
-	g_return_if_fail (GKM_IS_USER_STORAGE (self));
+	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
 	g_return_if_fail (identifier);
 
 	object = g_hash_table_lookup (self->identifier_to_object, identifier);
@@ -573,11 +573,11 @@ data_file_entry_changed (GkmUserFile *store, const gchar *identifier, CK_ATTRIBU
 }
 
 static void
-data_file_entry_removed (GkmUserFile *store, const gchar *identifier, GkmUserStorage *self)
+data_file_entry_removed (GkmGnome2File *store, const gchar *identifier, GkmGnome2Storage *self)
 {
 	GkmObject *object;
 
-	g_return_if_fail (GKM_IS_USER_STORAGE (self));
+	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
 	g_return_if_fail (identifier);
 
 	object = g_hash_table_lookup (self->identifier_to_object, identifier);
@@ -591,7 +591,7 @@ data_file_entry_removed (GkmUserFile *store, const gchar *identifier, GkmUserSto
 }
 
 static void
-relock_object (GkmUserStorage *self, GkmTransaction *transaction, const gchar *path,
+relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar *path,
                const gchar *identifier, GkmSecret *old_login, GkmSecret *new_login)
 {
 	GError *error = NULL;
@@ -600,7 +600,7 @@ relock_object (GkmUserStorage *self, GkmTransaction *transaction, const gchar *p
 	gsize n_data;
 	GType type;
 
-	g_assert (GKM_IS_USER_STORAGE (self));
+	g_assert (GKM_IS_GNOME2_STORAGE (self));
 	g_assert (GKM_IS_TRANSACTION (transaction));
 	g_assert (identifier);
 	g_assert (path);
@@ -675,28 +675,28 @@ relock_object (GkmUserStorage *self, GkmTransaction *transaction, const gchar *p
 }
 
 typedef struct _RelockArgs {
-	GkmUserStorage *self;
+	GkmGnome2Storage *self;
 	GkmTransaction *transaction;
 	GkmSecret *old_login;
 	GkmSecret *new_login;
 } RelockArgs;
 
 static void
-relock_each_object (GkmUserFile *file, const gchar *identifier, gpointer data)
+relock_each_object (GkmGnome2File *file, const gchar *identifier, gpointer data)
 {
 	RelockArgs *args = data;
 	gchar *path;
 	guint section;
 
-	g_assert (GKM_IS_USER_STORAGE (args->self));
+	g_assert (GKM_IS_GNOME2_STORAGE (args->self));
 	if (gkm_transaction_get_failed (args->transaction))
 		return;
 
-	if (!gkm_user_file_lookup_entry (file, identifier, &section))
+	if (!gkm_gnome2_file_lookup_entry (file, identifier, &section))
 		g_return_if_reached ();
 
 	/* Only operate on private files */
-	if (section != GKM_USER_FILE_SECTION_PRIVATE)
+	if (section != GKM_GNOME2_FILE_SECTION_PRIVATE)
 		return;
 
 	path = g_build_filename (args->self->directory, identifier, NULL);
@@ -705,14 +705,14 @@ relock_each_object (GkmUserFile *file, const gchar *identifier, gpointer data)
 }
 
 static CK_RV
-refresh_with_login (GkmUserStorage *self, GkmSecret *login)
+refresh_with_login (GkmGnome2Storage *self, GkmSecret *login)
 {
 	GkmDataResult res;
 	struct stat sb;
 	CK_RV rv;
 	int fd;
 
-	g_assert (GKM_USER_STORAGE (self));
+	g_assert (GKM_GNOME2_STORAGE (self));
 
 	/* Open the file for reading */
 	fd = open (self->filename, O_RDONLY, 0);
@@ -728,7 +728,7 @@ refresh_with_login (GkmUserStorage *self, GkmSecret *login)
 	if (fstat (fd, &sb) >= 0)
 		self->last_mtime = sb.st_mtime;
 
-	res = gkm_user_file_read_fd (self->file, fd, login);
+	res = gkm_gnome2_file_read_fd (self->file, fd, login);
 	switch (res) {
 	case GKM_DATA_FAILURE:
 		g_message ("failure reading from file: %s", self->filename);
@@ -762,16 +762,16 @@ refresh_with_login (GkmUserStorage *self, GkmSecret *login)
  */
 
 static CK_RV
-gkm_user_storage_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIBUTE_PTR attr)
+gkm_gnome2_storage_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIBUTE_PTR attr)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (base);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (base);
 	const gchar *identifier;
 	GkmDataResult res;
 	gconstpointer value;
 	gsize n_value;
 	CK_RV rv;
 
-	g_return_val_if_fail (GKM_IS_USER_STORAGE (self), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GKM_IS_GNOME2_STORAGE (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (GKM_IS_OBJECT (object), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
 
@@ -780,12 +780,12 @@ gkm_user_storage_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIBUT
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
 	if (self->last_mtime == 0) {
-		rv = gkm_user_storage_refresh (self);
+		rv = gkm_gnome2_storage_refresh (self);
 		if (rv != CKR_OK)
 			return rv;
 	}
 
-	res = gkm_user_file_read_value (self->file, identifier, attr->type, &value, &n_value);
+	res = gkm_gnome2_file_read_value (self->file, identifier, attr->type, &value, &n_value);
 	switch (res) {
 	case GKM_DATA_FAILURE:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
@@ -804,14 +804,14 @@ gkm_user_storage_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIBUT
 }
 
 static void
-gkm_user_storage_real_write_value (GkmStore *base, GkmTransaction *transaction, GkmObject *object, CK_ATTRIBUTE_PTR attr)
+gkm_gnome2_storage_real_write_value (GkmStore *base, GkmTransaction *transaction, GkmObject *object, CK_ATTRIBUTE_PTR attr)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (base);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (base);
 	const gchar *identifier;
 	GkmDataResult res;
 	CK_RV rv;
 
-	g_return_if_fail (GKM_IS_USER_STORAGE (self));
+	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
 	g_return_if_fail (GKM_IS_OBJECT (object));
 	g_return_if_fail (GKM_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gkm_transaction_get_failed (transaction));
@@ -824,14 +824,14 @@ gkm_user_storage_real_write_value (GkmStore *base, GkmTransaction *transaction, 
 	}
 
 	if (self->last_mtime == 0) {
-		rv = gkm_user_storage_refresh (self);
+		rv = gkm_gnome2_storage_refresh (self);
 		if (rv != CKR_OK) {
 			gkm_transaction_fail (transaction, rv);
 			return;
 		}
 	}
 
-	res = gkm_user_file_write_value (self->file, identifier, attr->type, attr->pValue, attr->ulValueLen);
+	res = gkm_gnome2_file_write_value (self->file, identifier, attr->type, attr->pValue, attr->ulValueLen);
 	switch (res) {
 	case GKM_DATA_FAILURE:
 		rv = CKR_FUNCTION_FAILED;
@@ -854,9 +854,9 @@ gkm_user_storage_real_write_value (GkmStore *base, GkmTransaction *transaction, 
 }
 
 static GObject*
-gkm_user_storage_constructor (GType type, guint n_props, GObjectConstructParam *props)
+gkm_gnome2_storage_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (G_OBJECT_CLASS (gkm_user_storage_parent_class)->constructor(type, n_props, props));
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (G_OBJECT_CLASS (gkm_gnome2_storage_parent_class)->constructor(type, n_props, props));
 	g_return_val_if_fail (self, NULL);
 
 	g_return_val_if_fail (self->directory, NULL);
@@ -869,9 +869,9 @@ gkm_user_storage_constructor (GType type, guint n_props, GObjectConstructParam *
 }
 
 static void
-gkm_user_storage_init (GkmUserStorage *self)
+gkm_gnome2_storage_init (GkmGnome2Storage *self)
 {
-	self->file = gkm_user_file_new ();
+	self->file = gkm_gnome2_file_new ();
 	g_signal_connect (self->file, "entry-added", G_CALLBACK (data_file_entry_added), self);
 	g_signal_connect (self->file, "entry-changed", G_CALLBACK (data_file_entry_changed), self);
 	g_signal_connect (self->file, "entry-removed", G_CALLBACK (data_file_entry_removed), self);
@@ -885,9 +885,9 @@ gkm_user_storage_init (GkmUserStorage *self)
 }
 
 static void
-gkm_user_storage_dispose (GObject *obj)
+gkm_gnome2_storage_dispose (GObject *obj)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (obj);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (obj);
 
 	if (self->manager)
 		g_object_unref (self->manager);
@@ -900,13 +900,13 @@ gkm_user_storage_dispose (GObject *obj)
 	g_hash_table_remove_all (self->object_to_identifier);
 	g_hash_table_remove_all (self->identifier_to_object);
 
-	G_OBJECT_CLASS (gkm_user_storage_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gkm_gnome2_storage_parent_class)->dispose (obj);
 }
 
 static void
-gkm_user_storage_finalize (GObject *obj)
+gkm_gnome2_storage_finalize (GObject *obj)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (obj);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (obj);
 
 	g_assert (self->file);
 	g_object_unref (self->file);
@@ -923,14 +923,14 @@ gkm_user_storage_finalize (GObject *obj)
 	g_hash_table_destroy (self->object_to_identifier);
 	g_hash_table_destroy (self->identifier_to_object);
 
-	G_OBJECT_CLASS (gkm_user_storage_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gkm_gnome2_storage_parent_class)->finalize (obj);
 }
 
 static void
-gkm_user_storage_set_property (GObject *obj, guint prop_id, const GValue *value,
+gkm_gnome2_storage_set_property (GObject *obj, guint prop_id, const GValue *value,
                            GParamSpec *pspec)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (obj);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (obj);
 
 	switch (prop_id) {
 	case PROP_DIRECTORY:
@@ -954,23 +954,23 @@ gkm_user_storage_set_property (GObject *obj, guint prop_id, const GValue *value,
 }
 
 static void
-gkm_user_storage_get_property (GObject *obj, guint prop_id, GValue *value,
+gkm_gnome2_storage_get_property (GObject *obj, guint prop_id, GValue *value,
                                GParamSpec *pspec)
 {
-	GkmUserStorage *self = GKM_USER_STORAGE (obj);
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (obj);
 
 	switch (prop_id) {
 	case PROP_DIRECTORY:
-		g_value_set_string (value, gkm_user_storage_get_directory (self));
+		g_value_set_string (value, gkm_gnome2_storage_get_directory (self));
 		break;
 	case PROP_MODULE:
 		g_value_set_object (value, self->module);
 		break;
 	case PROP_MANAGER:
-		g_value_set_object (value, gkm_user_storage_get_manager (self));
+		g_value_set_object (value, gkm_gnome2_storage_get_manager (self));
 		break;
 	case PROP_LOGIN:
-		g_value_set_object (value, gkm_user_storage_get_login (self));
+		g_value_set_object (value, gkm_gnome2_storage_get_login (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -979,19 +979,19 @@ gkm_user_storage_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gkm_user_storage_class_init (GkmUserStorageClass *klass)
+gkm_gnome2_storage_class_init (GkmGnome2StorageClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmStoreClass *store_class = GKM_STORE_CLASS (klass);
 
-	gobject_class->constructor = gkm_user_storage_constructor;
-	gobject_class->dispose = gkm_user_storage_dispose;
-	gobject_class->finalize = gkm_user_storage_finalize;
-	gobject_class->set_property = gkm_user_storage_set_property;
-	gobject_class->get_property = gkm_user_storage_get_property;
+	gobject_class->constructor = gkm_gnome2_storage_constructor;
+	gobject_class->dispose = gkm_gnome2_storage_dispose;
+	gobject_class->finalize = gkm_gnome2_storage_finalize;
+	gobject_class->set_property = gkm_gnome2_storage_set_property;
+	gobject_class->get_property = gkm_gnome2_storage_get_property;
 
-	store_class->read_value = gkm_user_storage_real_read_value;
-	store_class->write_value = gkm_user_storage_real_write_value;
+	store_class->read_value = gkm_gnome2_storage_real_read_value;
+	store_class->write_value = gkm_gnome2_storage_real_write_value;
 
 	g_object_class_install_property (gobject_class, PROP_DIRECTORY,
 	           g_param_spec_string ("directory", "Storage Directory", "Directory for storage",
@@ -1014,8 +1014,8 @@ gkm_user_storage_class_init (GkmUserStorageClass *klass)
  * PUBLIC
  */
 
-GkmUserStorage*
-gkm_user_storage_new (GkmModule *module, const gchar *directory)
+GkmGnome2Storage*
+gkm_gnome2_storage_new (GkmModule *module, const gchar *directory)
 {
 	GkmManager *manager;
 
@@ -1025,7 +1025,7 @@ gkm_user_storage_new (GkmModule *module, const gchar *directory)
 	manager = gkm_module_get_manager (module);
 	g_return_val_if_fail (GKM_IS_MANAGER (manager), NULL);
 
-	return g_object_new (GKM_TYPE_USER_STORAGE,
+	return g_object_new (GKM_TYPE_GNOME2_STORAGE,
 	                     "module", module,
 	                     "manager", manager,
 	                     "directory", directory,
@@ -1033,14 +1033,14 @@ gkm_user_storage_new (GkmModule *module, const gchar *directory)
 }
 
 CK_RV
-gkm_user_storage_refresh (GkmUserStorage *self)
+gkm_gnome2_storage_refresh (GkmGnome2Storage *self)
 {
-	g_return_val_if_fail (GKM_USER_STORAGE (self), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GKM_GNOME2_STORAGE (self), CKR_GENERAL_ERROR);
 	return refresh_with_login (self, self->login);
 }
 
 void
-gkm_user_storage_create (GkmUserStorage *self, GkmTransaction *transaction, GkmObject *object)
+gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, GkmObject *object)
 {
 	gboolean is_private;
 	GkmDataResult res;
@@ -1049,7 +1049,7 @@ gkm_user_storage_create (GkmUserStorage *self, GkmTransaction *transaction, GkmO
 	gsize n_data;
 	gchar *path;
 
-	g_return_if_fail (GKM_IS_USER_STORAGE (self));
+	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
 	g_return_if_fail (GKM_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gkm_transaction_get_failed (transaction));
 	g_return_if_fail (GKM_IS_OBJECT (object));
@@ -1081,7 +1081,7 @@ gkm_user_storage_create (GkmUserStorage *self, GkmTransaction *transaction, GkmO
 
 	/* Create an identifier guaranteed unique by this transaction */
 	identifier = identifier_for_object (object);
-	if (gkm_user_file_unique_entry (self->file, &identifier) != GKM_DATA_SUCCESS) {
+	if (gkm_gnome2_file_unique_entry (self->file, &identifier) != GKM_DATA_SUCCESS) {
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
 		g_return_if_reached ();
 	}
@@ -1090,8 +1090,8 @@ gkm_user_storage_create (GkmUserStorage *self, GkmTransaction *transaction, GkmO
 	g_signal_handlers_block_by_func (self->file, data_file_entry_added, self);
 	g_signal_handlers_block_by_func (self->file, data_file_entry_changed, self);
 
-	res = gkm_user_file_create_entry (self->file, identifier,
-	                                  is_private ? GKM_USER_FILE_SECTION_PRIVATE : GKM_USER_FILE_SECTION_PUBLIC);
+	res = gkm_gnome2_file_create_entry (self->file, identifier,
+	                                  is_private ? GKM_GNOME2_FILE_SECTION_PRIVATE : GKM_GNOME2_FILE_SECTION_PUBLIC);
 
 	g_signal_handlers_unblock_by_func (self->file, data_file_entry_added, self);
 	g_signal_handlers_unblock_by_func (self->file, data_file_entry_changed, self);
@@ -1135,13 +1135,13 @@ gkm_user_storage_create (GkmUserStorage *self, GkmTransaction *transaction, GkmO
 }
 
 void
-gkm_user_storage_destroy (GkmUserStorage *self, GkmTransaction *transaction, GkmObject *object)
+gkm_gnome2_storage_destroy (GkmGnome2Storage *self, GkmTransaction *transaction, GkmObject *object)
 {
 	GkmDataResult res;
 	gchar *identifier;
 	gchar *path;
 
-	g_return_if_fail (GKM_IS_USER_STORAGE (self));
+	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
 	g_return_if_fail (GKM_IS_TRANSACTION (transaction));
 	g_return_if_fail (!gkm_transaction_get_failed (transaction));
 	g_return_if_fail (object);
@@ -1162,7 +1162,7 @@ gkm_user_storage_destroy (GkmUserStorage *self, GkmTransaction *transaction, Gkm
 		return;
 
 	/* Now delete the entry from our store */
-	res = gkm_user_file_destroy_entry (self->file, identifier);
+	res = gkm_gnome2_file_destroy_entry (self->file, identifier);
 	switch(res) {
 	case GKM_DATA_FAILURE:
 	case GKM_DATA_UNRECOGNIZED:
@@ -1182,24 +1182,24 @@ gkm_user_storage_destroy (GkmUserStorage *self, GkmTransaction *transaction, Gkm
 }
 
 void
-gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
+gkm_gnome2_storage_relock (GkmGnome2Storage *self, GkmTransaction *transaction,
                          GkmSecret *old_login, GkmSecret *new_login)
 {
-	GkmUserFile *file;
+	GkmGnome2File *file;
 	GkmDataResult res;
 	RelockArgs args;
 
-	g_return_if_fail (GKM_IS_USER_STORAGE (self));
+	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
 	g_return_if_fail (GKM_IS_TRANSACTION (transaction));
 
 	/* Reload the file with the old password and start transaction */
 	if (!begin_write_state (self, transaction))
 		return;
 
-	file = gkm_user_file_new ();
+	file = gkm_gnome2_file_new ();
 
 	/* Read in from the old file */
-	res = gkm_user_file_read_fd (file, self->read_fd, old_login);
+	res = gkm_gnome2_file_read_fd (file, self->read_fd, old_login);
 	switch(res) {
 	case GKM_DATA_FAILURE:
 	case GKM_DATA_UNRECOGNIZED:
@@ -1215,7 +1215,7 @@ gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
 	}
 
 	/* Write out to new path as new file */
-	res = gkm_user_file_write_fd (file, self->write_fd, new_login);
+	res = gkm_gnome2_file_write_fd (file, self->write_fd, new_login);
 	switch(res) {
 	case GKM_DATA_FAILURE:
 	case GKM_DATA_UNRECOGNIZED:
@@ -1234,7 +1234,7 @@ gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
 	args.transaction = transaction;
 	args.old_login = old_login;
 	args.new_login = new_login;
-	gkm_user_file_foreach_entry (file, relock_each_object, &args);
+	gkm_gnome2_file_foreach_entry (file, relock_each_object, &args);
 
 	if (!gkm_transaction_get_failed (transaction) && self->login) {
 		if (new_login)
@@ -1248,11 +1248,11 @@ gkm_user_storage_relock (GkmUserStorage *self, GkmTransaction *transaction,
 }
 
 CK_RV
-gkm_user_storage_unlock (GkmUserStorage *self, GkmSecret *login)
+gkm_gnome2_storage_unlock (GkmGnome2Storage *self, GkmSecret *login)
 {
 	CK_RV rv;
 
-	g_return_val_if_fail (GKM_IS_USER_STORAGE (self), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GKM_IS_GNOME2_STORAGE (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (!self->transaction, CKR_GENERAL_ERROR);
 
 	if (self->login)
@@ -1280,12 +1280,12 @@ gkm_user_storage_unlock (GkmUserStorage *self, GkmSecret *login)
 }
 
 CK_RV
-gkm_user_storage_lock (GkmUserStorage *self)
+gkm_gnome2_storage_lock (GkmGnome2Storage *self)
 {
 	GkmSecret *prev;
 	CK_RV rv;
 
-	g_return_val_if_fail (GKM_IS_USER_STORAGE (self), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (GKM_IS_GNOME2_STORAGE (self), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (!self->transaction, CKR_GENERAL_ERROR);
 
 	if (!self->login)
@@ -1312,28 +1312,28 @@ gkm_user_storage_lock (GkmUserStorage *self)
 }
 
 GkmManager*
-gkm_user_storage_get_manager (GkmUserStorage *self)
+gkm_gnome2_storage_get_manager (GkmGnome2Storage *self)
 {
-	g_return_val_if_fail (GKM_IS_USER_STORAGE (self), NULL);
+	g_return_val_if_fail (GKM_IS_GNOME2_STORAGE (self), NULL);
 	return self->manager;
 }
 
 const gchar*
-gkm_user_storage_get_directory (GkmUserStorage *self)
+gkm_gnome2_storage_get_directory (GkmGnome2Storage *self)
 {
-	g_return_val_if_fail (GKM_IS_USER_STORAGE (self), NULL);
+	g_return_val_if_fail (GKM_IS_GNOME2_STORAGE (self), NULL);
 	return self->directory;
 }
 
 GkmSecret*
-gkm_user_storage_get_login (GkmUserStorage *self)
+gkm_gnome2_storage_get_login (GkmGnome2Storage *self)
 {
-	g_return_val_if_fail (GKM_IS_USER_STORAGE (self), NULL);
+	g_return_val_if_fail (GKM_IS_GNOME2_STORAGE (self), NULL);
 	return self->login;
 }
 
 gulong
-gkm_user_storage_token_flags (GkmUserStorage *self)
+gkm_gnome2_storage_token_flags (GkmGnome2Storage *self)
 {
 	gulong flags = 0;
 	CK_RV rv;
@@ -1343,7 +1343,7 @@ gkm_user_storage_token_flags (GkmUserStorage *self)
 
 	/* No file has been loaded yet? */
 	if (self->last_mtime == 0) {
-		rv = gkm_user_storage_refresh (self);
+		rv = gkm_gnome2_storage_refresh (self);
 		if (rv == CKR_USER_PIN_NOT_INITIALIZED)
 			flags |= CKF_USER_PIN_TO_BE_CHANGED;
 		else if (rv != CKR_OK)
@@ -1351,7 +1351,7 @@ gkm_user_storage_token_flags (GkmUserStorage *self)
 	}
 
 	/* No private stuff in the file? */
-	if (gkm_user_file_have_section (self->file, GKM_USER_FILE_SECTION_PRIVATE))
+	if (gkm_gnome2_file_have_section (self->file, GKM_GNOME2_FILE_SECTION_PRIVATE))
 		flags |= CKF_USER_PIN_INITIALIZED;
 
 	return flags;
