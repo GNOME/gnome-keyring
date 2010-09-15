@@ -47,6 +47,12 @@ const gchar BITS_TEST[] =  "\x03\x04\x06\x6e\x5d\xc0";
 const gchar BITS_BAD[] =  "\x03\x04\x06\x6e\x5d\xc1";
 const gchar BITS_ZERO[] =  "\x03\x01\x00";
 
+/* SEQUENCE OF with one INTEGER = 1 */
+const gchar SEQOF_ONE[] =  "\x30\x03\x02\x01\x01";
+
+/* SEQUENCE OF with two INTEGER = 1, 2 */
+const gchar SEQOF_TWO[] =  "\x30\x06\x02\x01\x01\x02\x01\x02";
+
 #define XL(x) G_N_ELEMENTS (x) - 1
 
 DEFINE_TEST(asn1_boolean)
@@ -414,4 +420,31 @@ DEFINE_TEST(asn1_any_set_raw)
 	g_free (data);
 	egg_asn1x_destroy (asn);
 	g_assert (is_freed);
+}
+
+DEFINE_TEST(asn1_append)
+{
+	GNode *asn;
+	GNode *child;
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSeqOf", SEQOF_ONE, XL (SEQOF_ONE));
+	g_assert (asn);
+
+	child = egg_asn1x_append (asn);
+	g_assert (child);
+
+	/* Second integer is 2 */
+	if (!egg_asn1x_set_integer_as_ulong (child, 2))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert (n_data == XL (SEQOF_TWO));
+	g_assert (memcmp (data, SEQOF_TWO, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
 }

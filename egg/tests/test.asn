@@ -40,4 +40,6 @@ TestAnySeq ::= SEQUENCE {
 	contents                ANY
 }
 
+TestSeqOf ::= SEQUENCE OF INTEGER
+
 END

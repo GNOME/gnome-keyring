@@ -2277,6 +2277,31 @@ egg_asn1x_count (GNode *node)
 	return g_node_n_children (node);
 }
 
+GNode*
+egg_asn1x_append (GNode *node)
+{
+	GNode *child;
+	gint type;
+
+	g_return_val_if_fail (node, NULL);
+
+	type = anode_def_type (node);
+	if (type != TYPE_SEQUENCE_OF && type != TYPE_SET_OF) {
+		g_warning ("node passed to egg_asn1x_append was not a sequence of or set of");
+		return NULL;
+	}
+
+	/* There must be at least one child */
+	child = node->children;
+	g_return_val_if_fail (child, NULL);
+
+	child = anode_clone (child);
+	anode_clear (child);
+	g_node_append (node, child);
+
+	return child;
+}
+
 gboolean
 egg_asn1x_have (GNode *node)
 {

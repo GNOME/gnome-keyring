@@ -69,6 +69,8 @@ const gchar*        egg_asn1x_name                   (GNode *asn);
 
 guint               egg_asn1x_count                  (GNode *node);
 
+GNode*              egg_asn1x_append                 (GNode *node);
+
 gboolean            egg_asn1x_have                   (GNode *node);
 
 GNode*              egg_asn1x_get_choice             (GNode *node);
