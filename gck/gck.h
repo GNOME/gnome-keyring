@@ -175,6 +175,9 @@ GckAttribute*       gck_attributes_at                       (GckAttributes *attr
 GckAttribute*       gck_attributes_add                      (GckAttributes *attrs,
                                                              GckAttribute *attr);
 
+void                gck_attributes_add_all                  (GckAttributes *attrs,
+                                                             GckAttributes *from);
+
 GckAttribute*       gck_attributes_add_data                 (GckAttributes *attrs,
                                                              gulong attr_type,
                                                              gconstpointer value,

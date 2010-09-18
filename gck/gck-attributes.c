@@ -1003,6 +1003,22 @@ gck_attributes_add_ulong (GckAttributes *attrs, gulong attr_type, gulong value)
 	return added;
 }
 
+void
+gck_attributes_add_all (GckAttributes *attrs, GckAttributes *from)
+{
+	GckAttribute *attr;
+	guint i;
+
+	g_return_if_fail (attrs && attrs->array);
+	g_return_if_fail (from && from->array);
+	g_return_if_fail (!attrs->locked);
+
+	for (i = 0; i < from->array->len; ++i) {
+		attr = &g_array_index (from->array, GckAttribute, i);
+		gck_attributes_add (attrs, attr);
+	}
+}
+
 /**
  * gck_attributes_count:
  * @attrs: The attributes array to count.

@@ -462,6 +462,29 @@ DEFINE_TEST(add_attributes)
 	gck_attributes_unref (attrs);
 }
 
+DEFINE_TEST(add_all_attributes)
+{
+	GckAttributes *attrs;
+	GckAttributes *copy;
+	GDate *date = g_date_new_dmy (11, 12, 2008);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_boolean (attrs, 0UL, TRUE);
+	gck_attributes_add_ulong (attrs, 101UL, 888);
+	gck_attributes_add_string (attrs, 202UL, "string");
+	gck_attributes_add_date (attrs, 303UL, date);
+	g_date_free (date);
+	gck_attributes_add_data (attrs, 404UL, ATTR_DATA, N_ATTR_DATA);
+	gck_attributes_add_invalid (attrs, 505UL);
+	gck_attributes_add_empty (attrs, 606UL);
+
+	copy = gck_attributes_new ();
+	gck_attributes_add_all (copy, attrs);
+	test_attributes_contents (copy, TRUE);
+
+	gck_attributes_unref (attrs);
+	gck_attributes_unref (copy);
+}
+
 
 DEFINE_TEST(find_attributes)
 {
