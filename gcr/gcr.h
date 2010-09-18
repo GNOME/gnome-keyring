@@ -29,6 +29,8 @@
 #include "gcr-certificate-details-widget.h"
 #include "gcr-importer.h"
 #include "gcr-parser.h"
+#include "gcr-simple-certificate.h"
+#include "gcr-trust.h"
 #include "gcr-types.h"
 
 #endif /* __GCR_H__ */

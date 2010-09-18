@@ -2,6 +2,7 @@
 # Test files should be listed in order they need to run
 TESTING_FILES = \
 	unit-test-certificate.c \
+	test-trust.c \
 	unit-test-parser.c
 
 TESTING_LIBS =  \

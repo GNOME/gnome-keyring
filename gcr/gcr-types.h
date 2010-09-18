@@ -20,6 +20,10 @@ enum {
 	GCR_ERROR_LOCKED = 3
 };
 
+#define             GCR_ERROR                    (gcr_error_get_domain ())
+
+GQuark 	            gcr_error_get_domain         (void) G_GNUC_CONST;
+
 enum {
 	GCR_FORMAT_INVALID = 0,
 	

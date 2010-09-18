@@ -18,6 +18,7 @@ gcr/gcr-certificate-details-widget.c
 [type: gettext/glade]gcr/gcr-import-dialog.ui
 [type: gettext/glade]gcr/gcr-unlock-options-widget.ui
 gcr/gcr-importer.c
+gcr/gcr-library.c
 gcr/gcr-parser.c
 gp11/gp11-misc.c
 gck/gck-uri.c

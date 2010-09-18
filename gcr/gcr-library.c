@@ -33,7 +33,10 @@
 
 #include <gcrypt.h>
 
+#include <glib/gi18n-lib.h>
+
 static GList *all_modules = NULL;
+static const gchar *trust_slot_uri = "pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT";
 
 GQuark
 gcr_data_error_get_domain (void)
@@ -41,6 +44,15 @@ gcr_data_error_get_domain (void)
 	static GQuark domain = 0;
 	if (domain == 0)
 		domain = g_quark_from_static_string ("gcr-parser-error");
+	return domain;
+}
+
+GQuark
+gcr_error_get_domain (void)
+{
+	static GQuark domain = 0;
+	if (domain == 0)
+		domain = g_quark_from_static_string ("gcr-error");
 	return domain;
 }
 
@@ -129,3 +141,46 @@ _gcr_get_pkcs11_modules (void)
 {
 	return all_modules;
 }
+
+GckSlot*
+_gcr_slot_for_storing_trust (GError **error)
+{
+	GList *modules;
+	GckSlot *slot;
+
+	modules = _gcr_get_pkcs11_modules ();
+
+	/*
+	 * TODO: We need a better way to figure this out as far as
+	 * being able to store trust. But for now just hard code in
+	 * gnome-keyring.
+	 */
+
+	slot = gck_modules_token_for_uri (modules, trust_slot_uri, error);
+	if (!slot) {
+		if (error && !*error) {
+			g_set_error (error, GCR_ERROR, /* TODO: */ 0,
+			             _("Unable to find a place to store trust choices."));
+		}
+	}
+
+	return slot;
+}
+
+#ifdef WITH_TESTS
+
+void
+_gcr_set_test_pkcs11_modules (GList *modules)
+{
+	modules = gck_list_ref_copy (modules);
+	gck_list_unref_free (all_modules);
+	all_modules = modules;
+}
+
+void
+_gcr_set_test_trust_slot (const gchar *uri)
+{
+	trust_slot_uri = uri;
+}
+
+#endif /* WITH_TESTS */
