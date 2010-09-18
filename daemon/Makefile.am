@@ -42,6 +42,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/pkcs11/secret-store/libgkm-secret-store.la \
 	$(top_builddir)/pkcs11/ssh-store/libgkm-ssh-store.la \
 	$(top_builddir)/pkcs11/gnome2-store/libgkm-gnome2-store.la \
+	$(top_builddir)/pkcs11/xdg-store/libgkm-xdg-store.la \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/gck/libgck.la \
 	$(top_builddir)/egg/libegg-dbus.la \
