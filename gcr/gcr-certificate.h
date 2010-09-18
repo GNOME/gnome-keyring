@@ -62,12 +62,18 @@ gchar*              gcr_certificate_get_issuer_dn          (GcrCertificate *self
 gchar*              gcr_certificate_get_issuer_part        (GcrCertificate *self, 
                                                             const gchar *part);
 
+gpointer            gcr_certificate_get_issuer_raw         (GcrCertificate *self,
+                                                            gsize *n_data);
+
 gchar*              gcr_certificate_get_subject_cn         (GcrCertificate *self);
 
 gchar*              gcr_certificate_get_subject_dn         (GcrCertificate *self);
 
 gchar*              gcr_certificate_get_subject_part       (GcrCertificate *self, 
                                                             const gchar *part);
+
+gpointer            gcr_certificate_get_subject_raw        (GcrCertificate *self,
+                                                            gsize *n_data);
 
 GDate*              gcr_certificate_get_issued_date        (GcrCertificate *self);
 

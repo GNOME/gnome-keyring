@@ -324,6 +324,22 @@ gcr_certificate_get_issuer_part (GcrCertificate *self, const char *part)
 	return egg_dn_read_part (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL), part);
 }
 
+gpointer
+gcr_certificate_get_issuer_raw (GcrCertificate *self, gsize *n_data)
+{
+	GcrCertificateInfo *info;
+	gconstpointer data;
+
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (n_data, NULL);
+
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
+
+	data = egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", NULL), n_data);
+	return g_memdup (data, data ? *n_data : 0);
+}
+
 /**
  * gcr_certificate_get_issuer_dn:
  * @self: a #GcrCertificate
@@ -418,6 +434,22 @@ gcr_certificate_get_subject_dn (GcrCertificate *self)
 	g_return_val_if_fail (info, NULL);
 
 	return egg_dn_read (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL));
+}
+
+gpointer
+gcr_certificate_get_subject_raw (GcrCertificate *self, gsize *n_data)
+{
+	GcrCertificateInfo *info;
+	gconstpointer data;
+
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (n_data, NULL);
+
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
+
+	data = egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "subject", NULL), n_data);
+	return g_memdup (data, data ? *n_data : 0);
 }
 
 /**
@@ -601,7 +633,6 @@ guchar*
 gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 {
 	GcrCertificateInfo *info;
-	gconstpointer serial;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	g_return_val_if_fail (n_length, NULL);
@@ -609,8 +640,7 @@ gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 
-	serial = egg_asn1x_get_raw_value (egg_asn1x_node (info->asn1, "tbsCertificate", "serialNumber", NULL), n_length);
-	return g_memdup (serial, *n_length);
+	return egg_asn1x_get_integer_as_raw (egg_asn1x_node (info->asn1, "tbsCertificate", "serialNumber", NULL), NULL, n_length);
 }
 
 /**

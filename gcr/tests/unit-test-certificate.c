@@ -53,6 +53,17 @@ DEFINE_TEST(issuer_part)
 	g_free (part);
 }
 
+DEFINE_TEST(issuer_raw)
+{
+	gpointer der;
+	gsize n_der;
+
+	der = gcr_certificate_get_issuer_raw (certificate, &n_der);
+	g_assert (der);
+	g_assert_cmpsize (n_der, ==, 190);
+	g_free (der);
+}
+
 DEFINE_TEST(subject_cn)
 {
 	gchar *cn = gcr_certificate_get_subject_cn (certificate);
@@ -75,6 +86,17 @@ DEFINE_TEST(subject_part)
 	g_assert (part);
 	g_assert_cmpstr (part, ==, "ValiCert Class 3 Policy Validation Authority");
 	g_free (part);
+}
+
+DEFINE_TEST(subject_raw)
+{
+	gpointer der;
+	gsize n_der;
+
+	der = gcr_certificate_get_subject_raw (certificate, &n_der);
+	g_assert (der);
+	g_assert_cmpsize (n_der, ==, 190);
+	g_free (der);
 }
 
 DEFINE_TEST(issued_date)
