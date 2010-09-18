@@ -50,7 +50,7 @@ struct _GcrSimpleCertificateClass {
 
 GType               gcr_simple_certificate_get_type               (void);
 
-GcrCertificate*     gcr_simple_certificate_new                    (const guchar *data,
+GcrCertificate*     gcr_simple_certificate_new                    (gconstpointer data,
                                                                    gsize n_data);
 
 G_END_DECLS
