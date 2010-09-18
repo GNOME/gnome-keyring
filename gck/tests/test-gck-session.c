@@ -18,7 +18,7 @@ DEFINE_SETUP(load_session)
 	GList *slots;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
+	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
 	slots = gck_module_get_slots (module, TRUE);

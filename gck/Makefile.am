@@ -1,3 +1,15 @@
+
+if WITH_TESTS
+TESTS_DIR = tests
+TESTS_SOURCES = gck-mock.c gck-mock.h gck-test.c gck-test.h
+else
+TESTS_DIR =
+TESTS_SOURCES
+endif
+
+SUBDIRS = . \
+	$(TESTS_DIR)
+
 incdir = $(includedir)/gck
 
 inc_HEADERS = \
@@ -28,6 +40,7 @@ libgck_la_SOURCES = \
 	gck-session.c \
 	gck-slot.c \
 	gck-uri.c \
+	$(TESTS_SOURCES) \
 	$(BUILT_SOURCES)
 
 libgck_la_LDFLAGS = \
@@ -60,12 +73,3 @@ DISTCLEANFILES = \
 
 gck-$(GCK_MAJOR).pc: gck.pc
 	cp gck.pc gck-$(GCK_MAJOR).pc
-
-if WITH_TESTS
-TESTS_DIR = tests
-else
-TESTS_DIR =
-endif
-
-SUBDIRS = . \
-	$(TESTS_DIR)

@@ -19,7 +19,7 @@ TESTING_FLAGS = \
 TESTING_LIBS = \
 	$(GIO_LIBS) \
 	$(top_builddir)/gck/libgck.la \
-	libgck-test-module.la
+	libmock-test-module.la
 
 EXTRA_DIST = \
 	gck-test.h
@@ -28,18 +28,18 @@ include $(top_srcdir)/testing/testing.make
 
 # ------------------------------------------------------------------------
 
-lib_LTLIBRARIES = libgck-test-module.la
+lib_LTLIBRARIES = libmock-test-module.la
 
-libgck_test_module_la_LDFLAGS = \
+libmock_test_module_la_LDFLAGS = \
 	-avoid-version
 
-libgck_test_module_la_CFLAGS = \
+libmock_test_module_la_CFLAGS = \
 	-I$(top_srcdir)/gck \
 	-I$(top_srcdir) \
 	$(GLIB_CFLAGS)
 
-libgck_test_module_la_SOURCES = \
-	gck-test-module.c
+libmock_test_module_la_SOURCES = \
+	mock-test-module.c
 
-libgck_test_module_la_LIBADD = \
+libmock_test_module_la_LIBADD = \
 	$(top_builddir)/gck/libgck.la

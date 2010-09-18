@@ -14,7 +14,7 @@ DEFINE_SETUP(enumerator)
 	GError *err = NULL;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
+	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
 	modules = g_list_append (NULL, module);

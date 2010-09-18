@@ -19,7 +19,7 @@ DEFINE_SETUP(prep_object)
 	GList *slots;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
+	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
 	slots = gck_module_get_slots (module, TRUE);
@@ -72,7 +72,7 @@ DEFINE_TEST(object_equals_hash)
 
 	g_assert (gck_object_equal (object, object));
 
-	other_slot = g_object_new (GCK_TYPE_SLOT, "module", module, "handle", GCK_TEST_SLOT_TWO, NULL);
+	other_slot = g_object_new (GCK_TYPE_SLOT, "module", module, "handle", GCK_MOCK_SLOT_TWO_ID, NULL);
 	other_session = gck_slot_open_session (other_slot, 0, &err);
 	SUCCESS_RES (other_session, err);
 	other_object = gck_object_from_handle (other_session, gck_object_get_handle (object));

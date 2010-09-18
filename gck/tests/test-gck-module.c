@@ -12,7 +12,7 @@ DEFINE_SETUP(load_module)
 	GError *err = NULL;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
+	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 }
 
@@ -64,7 +64,7 @@ DEFINE_TEST(module_props)
 
 	g_object_get (module, "path", &path, NULL);
 	g_assert (path != NULL && "no module-path");
-	g_assert (strcmp (".libs/libgck-test-module.so", path) == 0 && "module path wrong");
+	g_assert (strcmp (".libs/libmock-test-module.so", path) == 0 && "module path wrong");
 	g_free (path);
 }
 

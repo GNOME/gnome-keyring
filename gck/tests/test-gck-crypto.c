@@ -20,7 +20,7 @@ DEFINE_SETUP(crypto_session)
 	GckSlot *slot;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libgck-test-module.so", NULL, 0, &err);
+	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
 	slots = gck_module_get_slots (module, TRUE);
@@ -151,14 +151,14 @@ DEFINE_TEST(encrypt)
 	guchar *output;
 	gsize n_output;
 
-	mech = gck_mechanism_new (CKM_CAPITALIZE);
+	mech = gck_mechanism_new (CKM_MOCK_CAPITALIZE);
 
 	/* Find the right key */
-	key = find_key (session, CKA_ENCRYPT, CKM_CAPITALIZE);
+	key = find_key (session, CKA_ENCRYPT, CKM_MOCK_CAPITALIZE);
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_encrypt (session, key, CKM_CAPITALIZE, (const guchar*)"blah blah", 10, &n_output, &error);
+	output = gck_session_encrypt (session, key, CKM_MOCK_CAPITALIZE, (const guchar*)"blah blah", 10, &n_output, &error);
 	SUCCESS_RES (output, error);
 	g_assert (n_output == 10);
 	g_assert_cmpstr ((gchar*)output, ==, "BLAH BLAH");
@@ -198,14 +198,14 @@ DEFINE_TEST(decrypt)
 	guchar *output;
 	gsize n_output;
 
-	mech = gck_mechanism_new (CKM_CAPITALIZE);
+	mech = gck_mechanism_new (CKM_MOCK_CAPITALIZE);
 
 	/* Find the right key */
-	key = find_key (session, CKA_DECRYPT, CKM_CAPITALIZE);
+	key = find_key (session, CKA_DECRYPT, CKM_MOCK_CAPITALIZE);
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_decrypt (session, key, CKM_CAPITALIZE, (const guchar*)"FRY???", 7, &n_output, &error);
+	output = gck_session_decrypt (session, key, CKM_MOCK_CAPITALIZE, (const guchar*)"FRY???", 7, &n_output, &error);
 	SUCCESS_RES (output, error);
 	g_assert (n_output == 7);
 	g_assert_cmpstr ((gchar*)output, ==, "fry???");
@@ -246,11 +246,11 @@ DEFINE_TEST(login_context_specific)
 	gsize n_output;
 
 	/* Find the right key */
-	key = find_key (session, CKA_SIGN, CKM_PREFIX);
+	key = find_key (session, CKA_SIGN, CKM_MOCK_PREFIX);
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_sign (session, key, CKM_PREFIX, (const guchar*)"TV Monster", 11, &n_output, &error);
+	output = gck_session_sign (session, key, CKM_MOCK_PREFIX, (const guchar*)"TV Monster", 11, &n_output, &error);
 	g_assert (error && error->code == CKR_USER_NOT_LOGGED_IN);
 	FAIL_RES (output, error);
 	g_assert (output == NULL);
@@ -267,17 +267,17 @@ DEFINE_TEST(sign)
 	guchar *output;
 	gsize n_output;
 
-	mech = gck_mechanism_new_with_param (CKM_PREFIX, "my-prefix:", 10);
+	mech = gck_mechanism_new_with_param (CKM_MOCK_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, see previous test */
 	g_signal_connect (module_with_auth, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
-	key = find_key (session_with_auth, CKA_SIGN, CKM_PREFIX);
+	key = find_key (session_with_auth, CKA_SIGN, CKM_MOCK_PREFIX);
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_sign (session_with_auth, key, CKM_PREFIX, (const guchar*)"Labarbara", 10, &n_output, &error);
+	output = gck_session_sign (session_with_auth, key, CKM_MOCK_PREFIX, (const guchar*)"Labarbara", 10, &n_output, &error);
 	SUCCESS_RES (output, error);
 	g_assert_cmpuint (n_output, ==, 24);
 	g_assert_cmpstr ((gchar*)output, ==, "signed-prefix:Labarbara");
@@ -316,17 +316,17 @@ DEFINE_TEST(verify)
 	GckObject *key;
 	gboolean ret;
 
-	mech = gck_mechanism_new_with_param (CKM_PREFIX, "my-prefix:", 10);
+	mech = gck_mechanism_new_with_param (CKM_MOCK_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, shouldn't be needed */
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
-	key = find_key (session, CKA_VERIFY, CKM_PREFIX);
+	key = find_key (session, CKA_VERIFY, CKM_MOCK_PREFIX);
 	g_assert (key);
 
 	/* Simple one */
-	ret = gck_session_verify (session, key, CKM_PREFIX, (const guchar*)"Labarbara", 10,
+	ret = gck_session_verify (session, key, CKM_MOCK_PREFIX, (const guchar*)"Labarbara", 10,
 	                           (const guchar*)"signed-prefix:Labarbara", 24, &error);
 	SUCCESS_RES (ret, error);
 
@@ -372,7 +372,7 @@ DEFINE_TEST(generate_key_pair)
 	GckObject *pub_key, *prv_key;
 	gboolean ret;
 
-	mech = gck_mechanism_new_with_param (CKM_GENERATE, "generate", 9);
+	mech = gck_mechanism_new_with_param (CKM_MOCK_GENERATE, "generate", 9);
 
 	pub_attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
@@ -396,7 +396,7 @@ DEFINE_TEST(generate_key_pair)
 	g_assert (prv_key == NULL);
 
 	/* Asynchronous one */
-	mech->type = CKM_GENERATE;
+	mech->type = CKM_MOCK_GENERATE;
 	gck_session_generate_key_pair_async (session, mech, pub_attrs, prv_attrs, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
@@ -433,12 +433,12 @@ DEFINE_TEST(wrap_key)
 	gpointer output;
 	gsize n_output;
 
-	mech = gck_mechanism_new_with_param (CKM_WRAP, "wrap", 4);
+	mech = gck_mechanism_new_with_param (CKM_MOCK_WRAP, "wrap", 4);
 	wrapper = find_key (session, CKA_WRAP, 0);
 	wrapped = find_key_with_value (session, "value");
 
 	/* Simple One */
-	output = gck_session_wrap_key (session, wrapper, CKM_WRAP, wrapped, &n_output, &error);
+	output = gck_session_wrap_key (session, wrapper, CKM_MOCK_WRAP, wrapped, &n_output, &error);
 	SUCCESS_RES (output, error);
 	g_assert (output);
 	g_assert_cmpsize (n_output, ==, 5);
@@ -460,7 +460,7 @@ DEFINE_TEST(wrap_key)
 	g_assert_cmpsize (n_output, ==, 0);
 
 	/* Asynchronous one */
-	mech->type = CKM_WRAP;
+	mech->type = CKM_MOCK_WRAP;
 	gck_session_wrap_key_async (session, wrapper, mech, wrapped, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
@@ -496,7 +496,7 @@ DEFINE_TEST(unwrap_key)
 	GckObject *wrapper, *unwrapped;
 	GckAttributes *attrs;
 
-	mech = gck_mechanism_new_with_param (CKM_WRAP, "wrap", 4);
+	mech = gck_mechanism_new_with_param (CKM_MOCK_WRAP, "wrap", 4);
 	wrapper = find_key (session, CKA_UNWRAP, 0);
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
@@ -514,7 +514,7 @@ DEFINE_TEST(unwrap_key)
 	FAIL_RES (unwrapped, error);
 
 	/* Asynchronous one */
-	mech->type = CKM_WRAP;
+	mech->type = CKM_MOCK_WRAP;
 	gck_session_unwrap_key_async (session, wrapper, mech, "special", 7, attrs, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
@@ -548,7 +548,7 @@ DEFINE_TEST(derive_key)
 	GckObject *wrapper, *derived;
 	GckAttributes *attrs;
 
-	mech = gck_mechanism_new_with_param (CKM_DERIVE, "derive", 6);
+	mech = gck_mechanism_new_with_param (CKM_MOCK_DERIVE, "derive", 6);
 	wrapper = find_key (session, CKA_DERIVE, 0);
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
@@ -566,7 +566,7 @@ DEFINE_TEST(derive_key)
 	FAIL_RES (derived, error);
 
 	/* Asynchronous one */
-	mech->type = CKM_DERIVE;
+	mech->type = CKM_MOCK_DERIVE;
 	gck_session_derive_key_async (session, wrapper, mech, attrs, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
