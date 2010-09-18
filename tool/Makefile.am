@@ -10,8 +10,9 @@ INCLUDES=	\
 	
 gnome_keyring@GCR_VERSION_SUFFIX@_SOURCES = \
 	gkr-tool.c gkr-tool.h \
-	gkr-tool-import.c
-	
+	gkr-tool-import.c \
+	gkr-tool-trust.c
+
 gnome_keyring@GCR_VERSION_SUFFIX@_CFLAGS = \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
