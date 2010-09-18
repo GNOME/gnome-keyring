@@ -17,4 +17,5 @@ SUBDIRS = . \
 	rpc-layer \
 	secret-store \
 	ssh-store \
+	xdg-store \
 	gnome2-store

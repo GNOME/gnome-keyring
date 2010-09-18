@@ -700,6 +700,8 @@ pkcs11/ssh-store/Makefile
 pkcs11/ssh-store/tests/Makefile
 pkcs11/wrap-layer/Makefile
 pkcs11/wrap-layer/tests/Makefile
+pkcs11/xdg-store/Makefile
+pkcs11/xdg-store/tests/Makefile
 po/Makefile.in
 schema/Makefile
 testing/Makefile

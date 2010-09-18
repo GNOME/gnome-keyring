@@ -1,0 +1,47 @@
+XDG { }
+
+DEFINITIONS EXPLICIT TAGS ::=
+
+BEGIN
+
+-- This file contains definitions for keyring
+
+TrustDigest ::= SEQUENCE {
+	algorithm               OBJECT IDENTIFIER,
+	digest                  OCTET STRING
+}
+
+TrustDigests ::= SEQUENCE OF TrustDigest
+
+TrustLevel ::= ENUMERATED {
+	trustUnknown         (0),
+	untrustedUsage       (1),
+	mustVerify           (2),
+	trustedUsage         (3),
+	trustedDelegator     (4)
+}
+
+TrustPair ::= SEQUENCE {
+	purpose                 OBJECT IDENTIFIER,
+	level                   TrustLevel
+}
+
+TrustPairs ::= SEQUENCE OF TrustPair
+
+CertReference ::= SEQUENCE {
+	serialNumber            INTEGER,
+	issuer                  ANY,
+	subject                 ANY OPTIONAL,
+	digests                 TrustDigests
+}
+
+TrustReference ::= CHOICE {
+	certReference CertReference
+}
+
+trust-1 ::= SEQUENCE {
+	reference               TrustReference,
+	trusts                  TrustPairs
+}
+
+END
