@@ -435,3 +435,23 @@ gck_mechanism_unref (GckMechanism* mech)
 		g_slice_free (GckMechanism, mech);
 	}
 }
+
+gboolean
+gck_value_to_ulong (gconstpointer value, gsize length, gulong *result)
+{
+	if (!value || length != sizeof (CK_ULONG))
+		return FALSE;
+	if (result)
+		*result = *((CK_ULONG*)value);
+	return TRUE;
+}
+
+gboolean
+gck_value_to_boolean (gconstpointer value, gsize length, gboolean *result)
+{
+	if (!value || length != sizeof (CK_BBOOL))
+		return FALSE;
+	if (result)
+		*result = *((CK_BBOOL*)value) ? TRUE : FALSE;
+	return TRUE;
+}

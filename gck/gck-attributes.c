@@ -420,12 +420,14 @@ gck_attribute_is_invalid (GckAttribute *attr)
 gboolean
 gck_attribute_get_boolean (GckAttribute *attr)
 {
+	gboolean value;
+
 	g_return_val_if_fail (attr, FALSE);
 	if (gck_attribute_is_invalid (attr))
 		return FALSE;
-	g_return_val_if_fail (attr->length == sizeof (CK_BBOOL), FALSE);
-	g_return_val_if_fail (attr->value, FALSE);
-	return *((CK_BBOOL*)attr->value) == CK_TRUE ? TRUE : FALSE;
+	if (!gck_value_to_boolean (attr->value, attr->length, &value))
+		g_return_val_if_reached (FALSE);
+	return value;
 }
 
 /**
@@ -442,12 +444,14 @@ gck_attribute_get_boolean (GckAttribute *attr)
 gulong
 gck_attribute_get_ulong (GckAttribute *attr)
 {
+	gulong value;
+
 	g_return_val_if_fail (attr, FALSE);
 	if (gck_attribute_is_invalid (attr))
 		return 0;
-	g_return_val_if_fail (attr->length == sizeof (CK_ULONG), (gulong)-1);
-	g_return_val_if_fail (attr->value, (gulong)-1);
-	return *((CK_ULONG*)attr->value);
+	if (!gck_value_to_ulong (attr->value, attr->length, &value))
+		g_return_val_if_reached ((gulong)-1);
+	return value;
 }
 
 /**

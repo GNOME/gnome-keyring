@@ -80,6 +80,14 @@ enum {
 	GCK_AUTHENTICATE_OBJECTS = 4
 };
 
+gboolean            gck_value_to_ulong                      (gconstpointer value,
+                                                             gsize length,
+                                                             gulong *result);
+
+gboolean            gck_value_to_boolean                    (gconstpointer value,
+                                                             gsize length,
+                                                             gboolean *result);
+
 void                gck_attribute_init                      (GckAttribute *attr,
                                                              gulong attr_type,
                                                              gconstpointer value,

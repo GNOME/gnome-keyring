@@ -23,6 +23,50 @@ DEFINE_TEST(init_memory)
 	gck_attribute_clear (&attr);
 }
 
+DEFINE_TEST(value_to_boolean)
+{
+	CK_BBOOL data = CK_TRUE;
+	gboolean result = FALSE;
+
+	if (!gck_value_to_boolean (&data, sizeof (data), &result))
+		g_assert_not_reached ();
+
+	g_assert (result == TRUE);
+
+	if (!gck_value_to_boolean (&data, sizeof (data), NULL))
+		g_assert_not_reached ();
+
+	/* Should fail */
+	if (gck_value_to_boolean (&data, 0, NULL))
+		g_assert_not_reached ();
+	if (gck_value_to_boolean (&data, 2, NULL))
+		g_assert_not_reached ();
+	if (gck_value_to_boolean (&data, (CK_ULONG)-1, NULL))
+		g_assert_not_reached ();
+}
+
+DEFINE_TEST(value_to_ulong)
+{
+	CK_ULONG data = 34343;
+	gulong result = 0;
+
+	if (!gck_value_to_ulong (&data, sizeof (data), &result))
+		g_assert_not_reached ();
+
+	g_assert (result == 34343);
+
+	if (!gck_value_to_ulong (&data, sizeof (data), NULL))
+		g_assert_not_reached ();
+
+	/* Should fail */
+	if (gck_value_to_ulong (&data, 0, NULL))
+		g_assert_not_reached ();
+	if (gck_value_to_ulong (&data, 2, NULL))
+		g_assert_not_reached ();
+	if (gck_value_to_ulong (&data, (CK_ULONG)-1, NULL))
+		g_assert_not_reached ();
+}
+
 DEFINE_TEST(init_boolean)
 {
 	GckAttribute attr;
