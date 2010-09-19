@@ -25,10 +25,15 @@
 #include "gkm-xdg-store.h"
 #include "gkm-xdg-trust.h"
 
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
+#include "egg/egg-dn.h"
 #include "egg/egg-error.h"
+#include "egg/egg-hex.h"
 
 #include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-serializable.h"
+#include "gkm/gkm-transaction.h"
 #include "gkm/gkm-util.h"
 
 #include <string.h>
@@ -72,6 +77,8 @@ static const CK_TOKEN_INFO user_module_token_info = {
 
 #define UNUSED_VALUE (GUINT_TO_POINTER (1))
 
+#define UNWANTED_FILENAME_CHARS  ":/\\<>|\t\n\r\v "
+
 G_DEFINE_TYPE (GkmXdgModule, gkm_xdg_module, GKM_TYPE_MODULE);
 
 /* -----------------------------------------------------------------------------
@@ -108,6 +115,23 @@ type_from_path (const gchar *path)
 #endif
 
 	return 0;
+}
+
+static const gchar*
+lookup_filename_for_object (GkmObject *object)
+{
+	return g_object_get_data (G_OBJECT (object), "xdg-module-filename");
+}
+
+static void
+add_object_to_module (GkmXdgModule *self, GkmObject *object, const gchar *filename)
+{
+	g_assert (!g_hash_table_lookup (self->objects_by_path, filename));
+	g_hash_table_insert (self->objects_by_path, g_strdup (filename), g_object_ref (object));
+
+	g_assert (!lookup_filename_for_object (object));
+	g_object_set_data_full (G_OBJECT (object), "xdg-module-filename",
+	                        g_strdup (filename), g_free);
 }
 
 static void
@@ -161,7 +185,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 	/* And load the data into it */
 	} else if (gkm_serializable_load (GKM_SERIALIZABLE (object), NULL, data, n_data)) {
 		if (added)
-			g_hash_table_insert (self->objects_by_path, g_strdup (path), g_object_ref (object));
+			add_object_to_module (self, object, path);
 		gkm_object_expose (object, TRUE);
 
 	} else {
@@ -179,6 +203,67 @@ file_remove (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 	g_return_if_fail (path);
 	g_return_if_fail (GKM_IS_XDG_MODULE (self));
 	g_hash_table_remove (self->objects_by_path, path);
+}
+
+static gchar*
+name_for_subject (gconstpointer subject, gsize n_subject)
+{
+	GNode *asn;
+	gchar *name;
+
+	g_assert (subject);
+	g_assert (n_subject);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Name", subject, n_subject);
+	g_return_val_if_fail (asn, NULL);
+
+	name = egg_dn_read_part (egg_asn1x_node (asn, "rdnSequence", NULL), "CN");
+	egg_asn1x_destroy (asn);
+
+	return name;
+}
+
+static gchar*
+guess_basename_for_object (GkmObject *object)
+{
+	GkmSerializableIface *serial;
+	const gchar *ext;
+	gchar *filename;
+	gchar *name = NULL;
+	guchar *data;
+	gsize n_data;
+
+	g_assert (GKM_IS_OBJECT (object));
+	g_assert (GKM_IS_SERIALIZABLE (object));
+
+	/* Figure out the extension and prefix */
+	serial = GKM_SERIALIZABLE_GET_INTERFACE (object);
+	ext = serial->extension;
+	g_return_val_if_fail (ext, NULL);
+
+	/* First we try to use the CN of a subject */
+	data = gkm_object_get_attribute_data (object, NULL, CKA_SUBJECT, &n_data);
+	if (data && n_data)
+		name = name_for_subject (data, n_data);
+	g_free (data);
+
+	/* Next we try hex encoding the ID */
+	if (name == NULL) {
+		data = gkm_object_get_attribute_data (object, NULL, CKA_ID, &n_data);
+		if (data && n_data)
+			name = egg_hex_encode (data, n_data);
+		g_free (data);
+	}
+
+	if (name == NULL)
+		name = g_strdup_printf ("object-%08x", ABS (g_random_int ()));
+
+	/* Build up the identifier */
+	filename = g_strconcat (name, ext, NULL);
+	g_strdelimit (filename, UNWANTED_FILENAME_CHARS, '_');
+
+	g_free (name);
+	return filename;
 }
 
 /* -----------------------------------------------------------------------------
@@ -216,6 +301,85 @@ gkm_xdg_module_real_refresh_token (GkmModule *base)
 	GkmXdgModule *self = GKM_XDG_MODULE (base);
 	gkm_file_tracker_refresh (self->tracker, FALSE);
 	return CKR_OK;
+}
+
+static void
+gkm_xdg_module_real_add_token_object (GkmModule *module, GkmTransaction *transaction,
+                                      GkmObject *object)
+{
+	GkmXdgModule *self;
+	gchar *basename;
+	gchar *actual;
+	gchar *filename;
+
+	self = GKM_XDG_MODULE (module);
+
+	/* Double check that the object is in fact serializable */
+	if (!GKM_IS_SERIALIZABLE (object)) {
+		g_message ("can't store object of type '%s' on token", G_OBJECT_TYPE_NAME (object));
+		gkm_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+		return;
+	}
+
+	g_return_if_fail (lookup_filename_for_object (object) == NULL);
+
+	basename = guess_basename_for_object (object);
+	g_return_if_fail (basename);
+
+	actual = gkm_transaction_unique_file (transaction, self->directory, basename);
+	if (!gkm_transaction_get_failed (transaction)) {
+		filename = g_build_filename (self->directory, actual, NULL);
+		add_object_to_module (self, object, filename);
+		g_free (filename);
+	}
+
+	g_free (actual);
+	g_free (basename);
+}
+
+static void
+gkm_xdg_module_real_store_token_object (GkmModule *module, GkmTransaction *transaction,
+                                        GkmObject *object)
+{
+	GkmXdgModule *self = GKM_XDG_MODULE (module);
+	const gchar *filename;
+	gpointer data;
+	gsize n_data;
+
+	/* Double check that the object is in fact serializable */
+	if (!GKM_IS_SERIALIZABLE (object)) {
+		g_message ("can't store object of type '%s' on token", G_OBJECT_TYPE_NAME (object));
+		gkm_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+		return;
+	}
+
+	/* Serialize the object in question */
+	if (!gkm_serializable_save (GKM_SERIALIZABLE (object), NULL, &data, &n_data)) {
+		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
+		g_return_if_reached ();
+	}
+
+	filename = lookup_filename_for_object (object);
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (g_hash_table_lookup (self->objects_by_path, filename) == object);
+
+	gkm_transaction_write_file (transaction, filename, data, n_data);
+	g_free (data);
+}
+
+static void
+gkm_xdg_module_real_remove_token_object (GkmModule *module, GkmTransaction *transaction,
+                                         GkmObject *object)
+{
+	GkmXdgModule *self = GKM_XDG_MODULE (module);
+	const gchar *filename;
+
+	filename = lookup_filename_for_object (object);
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (g_hash_table_lookup (self->objects_by_path, filename) == object);
+
+	gkm_transaction_remove_file (transaction, filename);
+	g_hash_table_remove (self->objects_by_path, filename);
 }
 
 static GObject*
@@ -291,6 +455,9 @@ gkm_xdg_module_class_init (GkmXdgModuleClass *klass)
 	module_class->get_token_info = gkm_xdg_module_real_get_token_info;
 	module_class->parse_argument = gkm_xdg_module_real_parse_argument;
 	module_class->refresh_token = gkm_xdg_module_real_refresh_token;
+	module_class->add_token_object = gkm_xdg_module_real_add_token_object;
+	module_class->store_token_object = gkm_xdg_module_real_store_token_object;
+	module_class->remove_token_object = gkm_xdg_module_real_remove_token_object;
 }
 
 /* ----------------------------------------------------------------------------

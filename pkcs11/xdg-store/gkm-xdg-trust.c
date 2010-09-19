@@ -51,7 +51,7 @@ extern const ASN1_ARRAY_TYPE xdg_asn1_tab[];
 
 static void gkm_xdg_trust_serializable (GkmSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GkmXdgTrust, gkm_xdg_trust, GKM_XDG_TYPE_TRUST, 0,
+G_DEFINE_TYPE_EXTENDED (GkmXdgTrust, gkm_xdg_trust, GKM_TYPE_OBJECT, 0,
                         G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_xdg_trust_serializable));
 
 enum {
@@ -163,7 +163,7 @@ trust_get_der (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", NULL);
 	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
 
-	node = egg_asn1x_node (self->pv->asn, part, NULL);
+	node = egg_asn1x_node (node, part, NULL);
 	if (node == NULL)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
@@ -349,7 +349,7 @@ factory_create_trust (GkmSession *session, GkmTransaction *transaction,
 	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
 	g_return_val_if_fail (asn, NULL);
 
-	egg_asn1x_set_integer_as_raw (egg_asn1x_node (asn, "reference", "certReference", "serial", NULL),
+	egg_asn1x_set_integer_as_raw (egg_asn1x_node (asn, "reference", "certReference", "serialNumber", NULL),
 	                              g_memdup (serial->pValue, serial->ulValueLen),
 	                              serial->ulValueLen, g_free);
 
@@ -358,7 +358,7 @@ factory_create_trust (GkmSession *session, GkmTransaction *transaction,
 	                           issuer->ulValueLen, g_free);
 
 	if (subject)
-		egg_asn1x_set_raw_element (egg_asn1x_node (asn, "reference", "certReference", "issuer", NULL),
+		egg_asn1x_set_raw_element (egg_asn1x_node (asn, "reference", "certReference", "subject", NULL),
 		                           g_memdup (subject->pValue, issuer->ulValueLen),
 		                           issuer->ulValueLen, g_free);
 
@@ -468,6 +468,8 @@ gkm_xdg_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 		return gkm_attribute_set_bool (attr, CK_FALSE);
 	case CKA_CLASS:
 		return gkm_attribute_set_ulong (attr, CKO_NETSCAPE_TRUST);
+	case CKA_MODIFIABLE:
+		return gkm_attribute_set_bool (attr, CK_TRUE);
 
 	/* Key restrictions */
 	case CKA_TRUST_DIGITAL_SIGNATURE:
@@ -736,5 +738,6 @@ gkm_xdg_trust_get_factory (void)
 		factory_create_trust
 	};
 
+	init_quarks ();
 	return &factory;
 }
