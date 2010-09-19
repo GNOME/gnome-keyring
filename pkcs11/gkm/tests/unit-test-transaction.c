@@ -25,6 +25,31 @@
 
 #include "gkm/gkm-transaction.h"
 
+DEFINE_SETUP (transaction_setup)
+{
+	GDir *dir;
+	const gchar *directory;
+	const gchar *basename;
+	gchar *filename;
+
+	directory = testing_scratch_directory ();
+	dir = g_dir_open (directory, 0, NULL);
+	g_assert (dir);
+
+	for (;;) {
+		basename = g_dir_read_name (dir);
+		if (basename == NULL)
+			break;
+		if (g_str_has_prefix (basename, "transaction-")) {
+			filename = g_build_filename (directory, basename, NULL);
+			g_unlink (filename);
+			g_free (filename);
+		}
+	}
+
+	g_dir_close (dir);
+}
+
 DEFINE_TEST(transaction_empty)
 {
 	GkmTransaction *transaction;
@@ -190,7 +215,7 @@ DEFINE_TEST(transaction_dispose_completes)
 DEFINE_TEST(remove_file_success)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("remove-file");
+	gchar *filename = testing_scratch_filename ("transaction-remove");
 
 	g_assert (g_file_set_contents (filename, "xxx", 3, NULL));
 	g_assert (g_file_test (filename, G_FILE_TEST_IS_REGULAR));
@@ -210,7 +235,7 @@ DEFINE_TEST(remove_file_success)
 DEFINE_TEST(remove_file_abort)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("remove-file");
+	gchar *filename = testing_scratch_filename ("transaction-remove");
 	gchar *data;
 	gsize n_data;
 
@@ -242,7 +267,7 @@ DEFINE_TEST(remove_file_abort)
 DEFINE_TEST(remove_file_non_exist)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("remove-non-existant");
+	gchar *filename = testing_scratch_filename ("transaction-non-existant");
 
 	g_unlink (filename);
 
@@ -258,7 +283,7 @@ DEFINE_TEST(remove_file_non_exist)
 DEFINE_TEST(write_file)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("write-test");
+	gchar *filename = testing_scratch_filename ("transaction-test");
 	gchar *data;
 	gsize n_data;
 
@@ -284,7 +309,7 @@ DEFINE_TEST(write_file)
 DEFINE_TEST(write_file_abort_gone)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("write-test");
+	gchar *filename = testing_scratch_filename ("transaction-test");
 	gchar *data;
 	gsize n_data;
 
@@ -310,7 +335,7 @@ DEFINE_TEST(write_file_abort_gone)
 DEFINE_TEST(write_file_abort_revert)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("write-test");
+	gchar *filename = testing_scratch_filename ("transaction-test");
 	gchar *data;
 
 	g_assert (g_file_set_contents (filename, "my original", -1, NULL));
@@ -331,4 +356,77 @@ DEFINE_TEST(write_file_abort_revert)
 
 	g_object_unref (transaction);
 	g_free (filename);
+}
+
+DEFINE_TEST (unique_file_conflict)
+{
+	GkmTransaction *transaction = gkm_transaction_new ();
+	gchar *filename = testing_scratch_filename ("transaction-test");
+	gchar *dirname;
+	gchar *basename;
+	gchar *result;
+
+	dirname = g_path_get_dirname (filename);
+	basename = g_path_get_basename (filename);
+
+	g_assert (g_file_set_contents (filename, "data", -1, NULL));
+
+	result = gkm_transaction_unique_file (transaction, dirname, basename);
+	g_assert (!gkm_transaction_get_failed (transaction));
+
+	g_assert (result);
+	g_assert_cmpstr (result, !=, basename);
+	g_assert_cmpstr (result, ==, "transaction-test_1");
+
+	g_free (dirname);
+	g_free (basename);
+	g_free (result);
+
+	g_object_unref (transaction);
+	g_free (filename);
+}
+
+DEFINE_TEST (unique_file_conflict_with_ext)
+{
+	GkmTransaction *transaction = gkm_transaction_new ();
+	gchar *filename = testing_scratch_filename ("transaction-test.ext");
+	gchar *dirname;
+	gchar *basename;
+	gchar *result;
+
+	dirname = g_path_get_dirname (filename);
+	basename = g_path_get_basename (filename);
+
+	g_assert (g_file_set_contents (filename, "data", -1, NULL));
+
+	result = gkm_transaction_unique_file (transaction, dirname, basename);
+	g_assert (!gkm_transaction_get_failed (transaction));
+
+	g_assert (result);
+	g_assert_cmpstr (result, !=, basename);
+	g_assert_cmpstr (result, ==, "transaction-test_1.ext");
+
+	g_free (dirname);
+	g_free (basename);
+	g_free (result);
+
+	g_object_unref (transaction);
+	g_free (filename);
+}
+
+DEFINE_TEST (unique_file_no_conflict)
+{
+	GkmTransaction *transaction = gkm_transaction_new ();
+	const gchar *dirname = testing_scratch_directory ();
+	gchar *result;
+
+	result = gkm_transaction_unique_file (transaction, dirname, "transaction-another");
+	g_assert (!gkm_transaction_get_failed (transaction));
+
+	g_assert (result);
+	g_assert_cmpstr (result, ==, "transaction-another");
+
+	g_free (result);
+
+	g_object_unref (transaction);
 }

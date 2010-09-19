@@ -61,6 +61,8 @@ typedef struct _Complete {
 
 G_DEFINE_TYPE (GkmTransaction, gkm_transaction, G_TYPE_OBJECT);
 
+#define MAX_TRIES 100000
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
@@ -167,15 +169,20 @@ complete_link_temporary (GkmTransaction *self, GObject *unused, gpointer user_da
 }
 
 static gboolean
-begin_link_temporary (GkmTransaction *self, const gchar *filename)
+begin_link_temporary_if_exists (GkmTransaction *self, const gchar *filename, gboolean *exists)
 {
 	gchar *result;
+	guint i = 0;
 
 	g_assert (GKM_IS_TRANSACTION (self));
 	g_assert (!gkm_transaction_get_failed (self));
 	g_assert (filename);
+	g_assert (exists);
 
-	for (;;) {
+	for (i = 0; i < MAX_TRIES; ++i) {
+
+		*exists = TRUE;
+
 		/* Try to link to random temporary file names */
 		result = g_strdup_printf ("%s.temp-%d", filename, g_random_int_range (0, G_MAXINT));
 		if (link (filename, result) == 0) {
@@ -185,6 +192,13 @@ begin_link_temporary (GkmTransaction *self, const gchar *filename)
 
 		g_free (result);
 
+		/* The original file does not exist */
+		if (errno == ENOENT || errno == ENOTDIR) {
+			*exists = FALSE;
+			return TRUE;
+		}
+
+		/* If exists, try again, otherwise fail */
 		if (errno != EEXIST) {
 			g_warning ("couldn't create temporary file for: %s: %s", filename, g_strerror (errno));
 			gkm_transaction_fail (self, CKR_DEVICE_ERROR);
@@ -451,19 +465,20 @@ gkm_transaction_get_result (GkmTransaction *self)
 
 void
 gkm_transaction_write_file (GkmTransaction *self, const gchar *filename,
-                            const guchar *data, gsize n_data)
+                            gconstpointer data, gsize n_data)
 {
+	gboolean exists;
+
 	g_return_if_fail (GKM_IS_TRANSACTION (self));
 	g_return_if_fail (filename);
 	g_return_if_fail (data);
 	g_return_if_fail (!gkm_transaction_get_failed (self));
 
-	/* Prepare file to be reverted */
-	if (!g_file_test (filename, G_FILE_TEST_EXISTS)) {
+	if (!begin_link_temporary_if_exists (self, filename, &exists))
+		return;
+
+	if (!exists) {
 		if (!begin_new_file (self, filename))
-			return;
-	} else {
-		if (!begin_link_temporary (self, filename))
 			return;
 	}
 
@@ -474,18 +489,85 @@ gkm_transaction_write_file (GkmTransaction *self, const gchar *filename,
 	}
 }
 
+gchar*
+gkm_transaction_unique_file (GkmTransaction *self, const gchar *directory,
+                             const gchar *basename)
+{
+	gchar *ext;
+	gchar *filename = NULL;
+	gchar *base = NULL;
+	gchar *result = NULL;
+	gint seed = 1;
+	int fd;
+
+	g_return_val_if_fail (GKM_IS_TRANSACTION (self), NULL);
+	g_return_val_if_fail (directory, NULL);
+	g_return_val_if_fail (basename, NULL);
+	g_return_val_if_fail (!gkm_transaction_get_failed (self), NULL);
+
+	filename = g_build_filename (directory, basename, NULL);
+
+	/* Write a zero byte file */
+	fd = g_open (filename, O_RDONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+	if (fd != -1) {
+		result = g_strdup (basename);
+
+	/* Try to find a unique filename */
+	} else if (errno == EEXIST) {
+		base = g_strdup (basename);
+		ext = strrchr (base, '.');
+		if (ext != NULL)
+			*(ext++) = '\0';
+
+		do {
+			g_free (result);
+			result = g_strdup_printf ("%s_%d%s%s", base, seed++,
+			                          ext ? "." : "", ext ? ext : "");
+
+			g_free (filename);
+			filename = g_build_filename (directory, result, NULL);
+			fd = g_open (filename, O_RDONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+
+		} while (seed < MAX_TRIES && fd == -1 && errno == EEXIST);
+	}
+
+	/* Something failed */
+	if (fd == -1){
+		g_warning ("couldn't open file: %s: %s", filename, g_strerror (errno));
+		gkm_transaction_fail (self, CKR_DEVICE_ERROR);
+
+	/* Success, just leave our zero byte file */
+	} else {
+		gkm_transaction_add (self, NULL, complete_new_file, filename);
+		filename = NULL;
+		close (fd);
+	}
+
+	g_free (filename);
+	g_free (base);
+
+	if (gkm_transaction_get_failed (self)) {
+		g_free (result);
+		result = NULL;
+	}
+
+	return result;
+}
+
 void
 gkm_transaction_remove_file (GkmTransaction *self, const gchar *filename)
 {
+	gboolean exists;
+
 	g_return_if_fail (GKM_IS_TRANSACTION (self));
 	g_return_if_fail (filename);
 	g_return_if_fail (!gkm_transaction_get_failed (self));
 
-	/* Already gone? Job accomplished */
-	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
+	if (!begin_link_temporary_if_exists (self, filename, &exists))
 		return;
 
-	if (!begin_link_temporary (self, filename))
+	/* Already gone? Job accomplished */
+	if (!exists)
 		return;
 
 	/* If failure, temporary will automatically be removed */
