@@ -294,6 +294,8 @@ prepare_set_certificate_exception (GcrCertificate *cert, GcrPurpose purpose, Gcr
 	GckAttributes *attrs;
 	GckEnumerator *en;
 	GList *modules;
+	gpointer data;
+	gsize n_data;
 
 	modules = _gcr_get_pkcs11_modules ();
 
@@ -302,6 +304,16 @@ prepare_set_certificate_exception (GcrCertificate *cert, GcrPurpose purpose, Gcr
 
 	gck_attributes_add_boolean (attrs, CKA_MODIFIABLE, TRUE);
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+
+	data = gcr_certificate_get_subject_raw (cert, &n_data);
+	g_return_val_if_fail (data, NULL);
+	gck_attributes_add_data (attrs, CKA_SUBJECT, data, n_data);
+	g_free (data);
+
+	data = gcr_certificate_get_fingerprint (cert, G_CHECKSUM_MD5, &n_data);
+	g_return_val_if_fail (data, NULL);
+	gck_attributes_add_data (attrs, CKA_CERT_MD5_HASH, data, n_data);
+	g_free (data);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -380,9 +392,8 @@ perform_set_certificate_exception (GckEnumerator *en, GCancellable *cancel, GErr
 				g_object_unref (session);
 			}
 
+			g_object_unref (slot);
 		}
-
-		g_object_unref (slot);
 	}
 
 	gck_attributes_unref (attrs);
