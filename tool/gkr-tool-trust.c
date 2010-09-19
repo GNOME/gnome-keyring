@@ -50,19 +50,49 @@ struct {
 	{ "ipsec-ike-intermediate", GCR_PURPOSE_IKE_INTERMEDIATE },
 };
 
-static GcrPurpose
-purpose_for_string (const gchar *string)
+struct {
+	const gchar *name;
+	GcrPurpose trust;
+} trust_names[] = {
+	{ "trusted", GCR_TRUST_TRUSTED },
+	{ "untrusted", GCR_TRUST_UNTRUSTED },
+	{ "unknown", GCR_TRUST_UNKNOWN },
+};
+
+static gboolean
+purpose_for_string (const gchar *string, GcrPurpose *purpose)
 {
 	guint i;
 
 	g_assert (string);
+	g_assert (purpose);
 
 	for (i = 0; i < G_N_ELEMENTS (purpose_names); ++i) {
-		if (g_str_equal (purpose_names[i].name, string))
-			return purpose_names[i].purpose;
+		if (g_str_equal (purpose_names[i].name, string)) {
+			*purpose = purpose_names[i].purpose;
+			return TRUE;
+		}
 	}
 
-	return 0;
+	return FALSE;
+}
+
+static gboolean
+trust_for_string (const gchar *string, GcrTrust *trust)
+{
+	guint i;
+
+	g_assert (string);
+	g_assert (trust);
+
+	for (i = 0; i < G_N_ELEMENTS (trust_names); ++i) {
+		if (g_str_equal (trust_names[i].name, string)) {
+			*trust = trust_names[i].trust;
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 static const gchar*
@@ -78,13 +108,8 @@ purpose_to_string (GcrPurpose purpose)
 	return NULL;
 }
 
-static GOptionEntry trust_entries[] = {
-	GKR_TOOL_BASIC_OPTIONS
-	{ NULL }
-};
-
 static int
-get_certificate_exceptions (GcrCertificate *certificate, GcrPurpose purpose)
+get_certificate_exception (GcrCertificate *certificate, GcrPurpose purpose)
 {
 	GError *error = NULL;
 	const gchar *string;
@@ -107,6 +132,38 @@ get_certificate_exceptions (GcrCertificate *certificate, GcrPurpose purpose)
 	return 0;
 }
 
+static int
+set_certificate_exception (GcrCertificate *certificate, GcrPurpose purpose, GcrTrust trust)
+{
+	GError *error = NULL;
+	const gchar *string;
+
+	if (!gcr_trust_set_certificate_exception (certificate, purpose, trust, NULL, &error)) {
+		gkr_tool_handle_error (&error, "setting trust exception failed");
+		return 1;
+	}
+
+	if (!gkr_tool_mode_quiet) {
+		string = purpose_to_string (purpose);
+		if (trust == GCR_TRUST_UNKNOWN)
+			g_print ("%s: no trust exception\n", string);
+		else if (trust == GCR_TRUST_TRUSTED)
+			g_print ("%s: certificate is explicitly trusted\n", string);
+		else if (trust == GCR_TRUST_UNTRUSTED)
+			g_print ("%s: certificate is explicitly untrusted\n", string);
+	}
+
+	return 0;
+}
+
+static gchar *set_trust = NULL;
+
+static GOptionEntry trust_entries[] = {
+	GKR_TOOL_BASIC_OPTIONS
+	{ "set", 0, 0, G_OPTION_ARG_STRING, &set_trust, "Set trust exception", "trust" },
+	{ NULL }
+};
+
 int
 gkr_tool_trust (int argc, char *argv[])
 {
@@ -117,6 +174,7 @@ gkr_tool_trust (int argc, char *argv[])
 	GFile *file = NULL;
 	gchar *contents;
 	gsize length;
+	GcrTrust trust;
 	int ret = 2;
 	guint i;
 
@@ -131,12 +189,18 @@ gkr_tool_trust (int argc, char *argv[])
 
 	purposes = g_array_new (FALSE, TRUE, sizeof (GcrPurpose));
 	for (i = 2; i < argc; ++i) {
-		purpose = purpose_for_string (argv[i]);
-		if (purpose == 0) {
+		if (!purpose_for_string (argv[i], &purpose)) {
 			gkr_tool_handle_error (NULL, "invalid purpose: %s", argv[i]);
 			goto done;
 		}
 		g_array_append_val (purposes, purpose);
+	}
+
+	if (set_trust) {
+		if (!trust_for_string (set_trust, &trust)) {
+			gkr_tool_handle_error (NULL, "invalid trust string: %s", set_trust);
+			goto done;
+		}
 	}
 
 	ret = 1;
@@ -151,7 +215,11 @@ gkr_tool_trust (int argc, char *argv[])
 	g_free (contents);
 
 	for (i = 0; i < purposes->len; ++i) {
-		ret = get_certificate_exceptions (certificate, g_array_index (purposes, GcrPurpose, i));
+		purpose = g_array_index (purposes, GcrPurpose, i);
+		if (set_trust)
+			ret = set_certificate_exception (certificate, purpose, trust);
+		else
+			ret = get_certificate_exception (certificate, purpose);
 		if (ret != 0)
 			break;
 	}
@@ -163,5 +231,6 @@ done:
 		g_array_free (purposes, TRUE);
 	if (certificate != NULL)
 		g_object_unref (certificate);
+	g_free (set_trust);
 	return ret;
 }
