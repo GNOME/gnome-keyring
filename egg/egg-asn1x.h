@@ -81,6 +81,11 @@ gboolean            egg_asn1x_get_boolean            (GNode *node,
 gboolean            egg_asn1x_set_boolean            (GNode *node,
                                                       gboolean value);
 
+GQuark              egg_asn1x_get_enumerated         (GNode *node);
+
+gboolean            egg_asn1x_set_enumerated         (GNode *node,
+                                                      GQuark value);
+
 gboolean            egg_asn1x_get_integer_as_ulong   (GNode *node,
                                                       gulong *value);
 

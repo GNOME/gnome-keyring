@@ -47,6 +47,12 @@ const gchar BITS_TEST[] =  "\x03\x04\x06\x6e\x5d\xc0";
 const gchar BITS_BAD[] =  "\x03\x04\x06\x6e\x5d\xc1";
 const gchar BITS_ZERO[] =  "\x03\x01\x00";
 
+/* ENUM with value = 2 */
+const gchar ENUM_TWO[] =           "\x0A\x01\x02";
+
+/* ENUM with value = 3 */
+const gchar ENUM_THREE[] =           "\x0A\x01\x03";
+
 /* SEQUENCE OF with one INTEGER = 1 */
 const gchar SEQOF_ONE[] =  "\x30\x03\x02\x01\x01";
 
@@ -444,6 +450,33 @@ DEFINE_TEST(asn1_append)
 
 	g_assert (n_data == XL (SEQOF_TWO));
 	g_assert (memcmp (data, SEQOF_TWO, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST (asn1_enumerated)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+	GQuark value;
+
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestEnumerated", ENUM_TWO, XL (ENUM_TWO));
+	g_assert (asn);
+
+	value = egg_asn1x_get_enumerated (asn);
+	g_assert (value);
+	g_assert_cmpstr (g_quark_to_string (value), ==, "valueTwo");
+
+	if (!egg_asn1x_set_enumerated (asn, g_quark_from_static_string ("valueThree")))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert (n_data == XL (ENUM_THREE));
+	g_assert (memcmp (data, ENUM_THREE, n_data) == 0);
 
 	g_free (data);
 	egg_asn1x_destroy (asn);

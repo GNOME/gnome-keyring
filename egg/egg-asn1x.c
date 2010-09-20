@@ -310,6 +310,24 @@ anode_opt_lookup (GNode *node, gint type, const gchar *name)
 	return NULL;
 }
 
+static ASN1_ARRAY_TYPE*
+anode_opt_lookup_value (GNode *node, gint type, const gchar *value)
+{
+	Anode *an = node->data;
+	ASN1_ARRAY_TYPE* def;
+	GList *l;
+
+	for (l = an->opts; l; l = g_list_next (l)) {
+		def = l->data;
+		if (value && def->value && !g_str_equal (value, def->value))
+			continue;
+		if ((def->type & 0xFF) == type)
+			return def;
+	}
+
+	return NULL;
+}
+
 static GList*
 anode_opts_lookup (GNode *node, gint type, const gchar *name)
 {
@@ -2367,6 +2385,76 @@ egg_asn1x_set_boolean (GNode *node, gboolean value)
 	return TRUE;
 }
 
+GQuark
+egg_asn1x_get_enumerated (GNode *node)
+{
+	gchar buf[sizeof (gulong) * 3];
+	ASN1_ARRAY_TYPE *opt;
+	gulong val;
+	Atlv *tlv;
+
+	g_return_val_if_fail (node, 0);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_ENUMERATED, 0);
+
+	tlv = anode_get_tlv_data (node);
+
+	/* TODO: Defaults */
+
+	if (tlv == NULL || tlv->buf == NULL)
+		return 0;
+
+	/* TODO: Signed values */
+
+	if (!anode_read_integer_as_ulong (node, tlv, &val))
+		return 0;
+
+	/* Format that as a string */
+	if (g_snprintf (buf, sizeof (buf), "%lu", val) < 0)
+		g_return_val_if_reached (0);
+
+	/* Lookup that value in our table */
+	opt = anode_opt_lookup_value (node, TYPE_CONSTANT, buf);
+	if (opt == NULL || opt->name == NULL)
+		return 0;
+
+	return g_quark_from_static_string (opt->name);
+}
+
+gboolean
+egg_asn1x_set_enumerated (GNode *node, GQuark value)
+{
+	ASN1_ARRAY_TYPE *opt;
+	const gchar *name;
+	gpointer data;
+	gsize n_data;
+	gulong val;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (value, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_ENUMERATED, FALSE);
+
+	/* TODO: Handle default values */
+
+	name = g_quark_to_string (value);
+	g_return_val_if_fail (name, FALSE);
+
+	opt = anode_opt_lookup (node, TYPE_CONSTANT, name);
+	g_return_val_if_fail (opt && opt->value, FALSE);
+
+	/* TODO: Signed values */
+
+	val = anode_def_value_as_ulong (opt);
+	g_return_val_if_fail (val != G_MAXULONG, FALSE);
+
+	n_data = sizeof (gulong);
+	data = g_malloc0 (n_data);
+	if (!anode_write_integer_ulong (val, data, &n_data))
+		return FALSE;
+
+	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, data, g_free);
+	return TRUE;
+}
+
 gboolean
 egg_asn1x_get_integer_as_ulong (GNode *node, gulong *value)
 {
@@ -2403,12 +2491,7 @@ egg_asn1x_get_integer_as_ulong (GNode *node, gulong *value)
 		return TRUE;
 	}
 
-	if (tlv == NULL || tlv->buf == NULL)
-		return FALSE;
-
-	/* TODO: Default integer values */
-
-	return anode_read_integer_as_ulong(node, tlv, value);
+	return anode_read_integer_as_ulong (node, tlv, value);
 }
 
 gboolean
@@ -2422,8 +2505,8 @@ egg_asn1x_set_integer_as_ulong (GNode *node, gulong value)
 
 	/* TODO: Handle default values */
 
-	n_data = 8;
-	data = g_malloc0 (8);
+	n_data = sizeof (gulong);
+	data = g_malloc0 (n_data);
 	if (!anode_write_integer_ulong (value, data, &n_data))
 		return FALSE;
 	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, data, g_free);
