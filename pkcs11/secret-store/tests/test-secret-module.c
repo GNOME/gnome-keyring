@@ -42,27 +42,6 @@ static GMutex *mutex = NULL;
 GkmModule*  _gkm_secret_store_get_module_for_testing (void);
 GMutex* _gkm_module_get_scary_mutex_that_you_should_not_touch (GkmModule *module);
 
-static void
-copy_scratch_file (const gchar *basename)
-{
-	gchar *filename;
-	gchar *data;
-	gsize n_data;
-
-	filename = testing_data_filename (basename);
-	if (!g_file_get_contents (filename, &data, &n_data, NULL)) {
-		g_warning ("couldn't read: %s", filename);
-		g_return_if_reached ();
-	}
-	g_free (filename);
-
-	filename = testing_scratch_filename (basename);
-	if (!g_file_set_contents (filename, data, n_data, NULL))
-		g_return_if_reached ();
-	g_free (filename);
-	g_free (data);
-}
-
 GkmModule*
 test_secret_module_initialize_and_enter (void)
 {
@@ -79,8 +58,8 @@ test_secret_module_initialize_and_enter (void)
 	args.flags = CKF_OS_LOCKING_OK;
 
 	/* Copy files from test-data to scratch */
-	copy_scratch_file ("encrypted.keyring");
-	copy_scratch_file ("plain.keyring");
+	testing_data_to_scratch ("encrypted.keyring", NULL);
+	testing_data_to_scratch ("plain.keyring", NULL);
 
 	funcs = gkm_secret_store_get_functions ();
 	rv = (funcs->C_Initialize) (&args);

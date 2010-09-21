@@ -156,6 +156,25 @@ testing_data_read (const gchar *basename, gsize *n_result)
 	return (guchar*)result;
 }
 
+void
+testing_data_to_scratch (const gchar *basename, const gchar *newname)
+{
+	gchar *filename;
+	gchar *data;
+	gsize n_data;
+
+	filename = testing_data_filename (basename);
+	if (!g_file_get_contents (filename, &data, &n_data, NULL))
+		g_error ("couldn't read: %s", filename);
+	g_free (filename);
+
+	filename = testing_scratch_filename (newname ? newname : basename);
+	if (!g_file_set_contents (filename, data, n_data, NULL))
+		g_error ("couldn't write: %s", filename);
+	g_free (filename);
+	g_free (data);
+}
+
 #if WITH_P11_TESTS
 
 static void

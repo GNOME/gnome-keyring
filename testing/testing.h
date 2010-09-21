@@ -46,6 +46,9 @@ const gchar*     testing_scratch_directory        (void);
 guchar*          testing_data_read                (const gchar *basename,
                                                    gsize *n_data);
 
+void             testing_data_to_scratch          (const gchar *basename,
+                                                   const gchar *newname);
+
 gchar*           testing_scratch_filename         (const gchar *basename);
 
 gchar*           testing_data_filename            (const gchar *basename);
