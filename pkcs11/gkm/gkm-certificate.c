@@ -526,7 +526,6 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointe
 
 	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
 
 	copy = g_memdup (data, n_data);
 
