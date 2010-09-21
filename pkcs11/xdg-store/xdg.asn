@@ -15,9 +15,9 @@ TrustDigests ::= SEQUENCE OF TrustDigest
 
 TrustLevel ::= ENUMERATED {
 	trustUnknown         (0),
-	untrustedUsage       (1),
+	untrusted            (1),
 	mustVerify           (2),
-	trustedUsage         (3),
+	trusted              (3),
 	trustedDelegator     (4)
 }
 
@@ -32,7 +32,7 @@ CertReference ::= SEQUENCE {
 	serialNumber            INTEGER,
 	issuer                  ANY,
 	subject                 ANY OPTIONAL,
-	digests                 TrustDigests
+	digests                 TrustDigests OPTIONAL
 }
 
 TrustReference ::= CHOICE {

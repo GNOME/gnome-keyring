@@ -7,7 +7,6 @@ INCLUDES = \
 	$(LIBGCRYPT_CFLAGS) \
 	$(GLIB_CFLAGS)
 
-
 # ------------------------------------------------------------------------------
 # The xdg-store component code
 

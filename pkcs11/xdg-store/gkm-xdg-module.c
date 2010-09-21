@@ -81,6 +81,8 @@ static const CK_TOKEN_INFO user_module_token_info = {
 
 G_DEFINE_TYPE (GkmXdgModule, gkm_xdg_module, GKM_TYPE_MODULE);
 
+GkmModule*  _gkm_xdg_store_get_module_for_testing (void);
+
 /* -----------------------------------------------------------------------------
  * ACTUAL PKCS#11 Module Implementation
  */
@@ -157,7 +159,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 		/* Figure out what type of object we're dealing with */
 		type = type_from_path (path);
 		if (type == 0) {
-			g_warning ("don't know how to load file in key store: %s", path);
+			g_message ("don't know how to load file in key store: %s", path);
 			return;
 		}
 
@@ -469,4 +471,10 @@ gkm_xdg_store_get_functions (void)
 {
 	gkm_crypto_initialize ();
 	return gkm_xdg_module_function_list;
+}
+
+GkmModule*
+_gkm_xdg_store_get_module_for_testing (void)
+{
+	return pkcs11_module;
 }

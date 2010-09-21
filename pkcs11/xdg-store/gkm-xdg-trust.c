@@ -54,14 +54,6 @@ static void gkm_xdg_trust_serializable (GkmSerializableIface *iface);
 G_DEFINE_TYPE_EXTENDED (GkmXdgTrust, gkm_xdg_trust, GKM_TYPE_OBJECT, 0,
                         G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_xdg_trust_serializable));
 
-enum {
-	TRUST_UNKNOWN = 0,
-	TRUST_UNTRUSTED = 1,
-	TRUST_MUST_VERIFY = 2,
-	TRUST_TRUSTED = 3,
-	TRUST_TRUSTED_DELEGATOR = 4
-};
-
 /* -----------------------------------------------------------------------------
  * QUARKS
  */
@@ -88,6 +80,12 @@ static GQuark OID_PURPOSE_IPSEC_ENDPOINT;
 static GQuark OID_PURPOSE_IPSEC_TUNNEL;
 static GQuark OID_PURPOSE_IPSEC_USER;
 static GQuark OID_PURPOSE_IKE_INTERMEDIATE;
+
+static GQuark TRUST_UNKNOWN;
+static GQuark TRUST_UNTRUSTED;
+static GQuark TRUST_MUST_VERIFY;
+static GQuark TRUST_TRUSTED;
+static GQuark TRUST_TRUSTED_DELEGATOR;
 
 static void
 init_quarks (void)
@@ -121,6 +119,12 @@ init_quarks (void)
 		QUARK (OID_PURPOSE_IPSEC_TUNNEL, "1.3.6.1.5.5.7.3.6");
 		QUARK (OID_PURPOSE_IPSEC_USER, "1.3.6.1.5.5.7.3.7");
 		QUARK (OID_PURPOSE_IKE_INTERMEDIATE, "1.3.6.1.5.5.8.2.2");
+
+		QUARK (TRUST_UNKNOWN, "trustUnknown");
+		QUARK (TRUST_UNTRUSTED, "untrusted");
+		QUARK (TRUST_MUST_VERIFY, "mustVerify");
+		QUARK (TRUST_TRUSTED, "trusted");
+		QUARK (TRUST_TRUSTED_DELEGATOR, "trustedDelegator");
 
 		#undef QUARK
 
@@ -168,6 +172,9 @@ trust_get_der (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
 	element = egg_asn1x_get_raw_element (node, &n_element);
+	if (element == NULL)
+		return CKR_ATTRIBUTE_TYPE_INVALID;
+
 	return gkm_attribute_set_data (attr, element, n_element);
 }
 
@@ -184,7 +191,7 @@ trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", NULL);
 	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
 
-	node = egg_asn1x_node (self->pv->asn, part, NULL);
+	node = egg_asn1x_node (node, part, NULL);
 	if (node == NULL)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
@@ -269,7 +276,7 @@ append_reference_hash (GNode *asn, GQuark oid, CK_ATTRIBUTE_PTR attr)
 	                             attr->ulValueLen, g_free);
 }
 
-static gint
+static GQuark
 trust_ulong_to_level_enum (CK_ULONG trust)
 {
 	switch (trust) {
@@ -289,22 +296,20 @@ trust_ulong_to_level_enum (CK_ULONG trust)
 }
 
 static CK_ULONG
-level_enum_to_trust_ulong (guint level)
+level_enum_to_trust_ulong (GQuark level)
 {
-	switch (level) {
-	case TRUST_UNKNOWN:
+	if (level == TRUST_UNKNOWN)
 		return CKT_NETSCAPE_TRUST_UNKNOWN;
-	case TRUST_UNTRUSTED:
+	else if (level == TRUST_UNTRUSTED)
 		return CKT_NETSCAPE_UNTRUSTED;
-	case TRUST_TRUSTED_DELEGATOR:
+	else if (level == TRUST_TRUSTED_DELEGATOR)
 		return CKT_NETSCAPE_TRUSTED_DELEGATOR;
-	case TRUST_TRUSTED:
+	else if (level == TRUST_TRUSTED)
 		return CKT_NETSCAPE_TRUSTED;
-	case TRUST_MUST_VERIFY:
+	else if (level == TRUST_MUST_VERIFY)
 		return CKT_NETSCAPE_MUST_VERIFY;
-	default:
+	else
 		return (CK_ULONG)-1;
-	};
 }
 
 static GkmObject*
@@ -386,9 +391,9 @@ load_trust_pairs (GHashTable *pairs, GNode *asn)
 {
 	GNode *pair;
 	guint count, i;
-	gulong level;
 	gulong trust;
 	GQuark oid;
+	GQuark level;
 
 	g_assert (pairs);
 	g_assert (asn);
@@ -402,7 +407,8 @@ load_trust_pairs (GHashTable *pairs, GNode *asn)
 		g_return_val_if_fail (pair, FALSE);
 
 		/* Get the usage */
-		if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (pair, "level", NULL), &level))
+		level = egg_asn1x_get_enumerated (egg_asn1x_node (pair, "level", NULL));
+		if (level == 0)
 			g_return_val_if_reached (FALSE);
 
 		trust = level_enum_to_trust_ulong (level);
@@ -428,7 +434,7 @@ save_trust_pairs (GHashTable *pairs, GNode *asn)
 	GHashTableIter iter;
 	GNode *pair, *node;
 	gpointer key, value;
-	gulong level;
+	GQuark level;
 	GQuark oid;
 
 	g_assert (pairs);
@@ -446,7 +452,7 @@ save_trust_pairs (GHashTable *pairs, GNode *asn)
 		g_return_val_if_fail (pair, FALSE);
 
 		egg_asn1x_set_oid_as_quark (egg_asn1x_node (pair, "purpose", NULL), oid);
-		egg_asn1x_set_integer_as_ulong (egg_asn1x_node (pair, "level", NULL), level);
+		egg_asn1x_set_enumerated (egg_asn1x_node (pair, "level", NULL), level);
 	}
 
 	return TRUE;
@@ -509,9 +515,9 @@ gkm_xdg_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 	case CKA_SUBJECT:
 		return trust_get_der (self, "subject", attr);
 	case CKA_SERIAL_NUMBER:
-		return trust_get_der (self, "serialNumber", attr);
+		return trust_get_integer (self, "serialNumber", attr);
 	case CKA_ISSUER:
-		return trust_get_integer (self, "issuer", attr);
+		return trust_get_der (self, "issuer", attr);
 
 	/* Certificate hash values */
 	case CKA_CERT_MD5_HASH:
@@ -653,7 +659,9 @@ gkm_xdg_trust_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer 
 
 	g_return_val_if_fail (GKM_XDG_IS_TRUST (self), FALSE);
 	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
+
+	if (n_data == 0)
+		return FALSE;
 
 	copy = g_memdup (data, n_data);
 
