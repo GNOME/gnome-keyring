@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-19 21:12+0200\n"
-"PO-Revision-Date: 2010-08-19 21:12+0300\n"
+"POT-Creation-Date: 2010-09-23 14:13+0300\n"
+"PO-Revision-Date: 2010-09-23 14:12+0300\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr ""
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Unnamed"
 msgstr "بلا اسم"
 
@@ -102,19 +102,31 @@ msgstr "حلقة مفاتيح جنوم: عميل GPG"
 msgid "GPG Password Agent"
 msgstr "عميل كلمة السر GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
 msgid "Unknown"
 msgstr "غير معروف"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "مفتاح PGP:‏ %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
 msgid "Enter Passphrase"
 msgstr "أدخل عبارة السر"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+msgid "Forget this password if idle for"
+msgstr "انس كلمت السر هذه إذا خملت لمدة"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+msgid "Forget this password after"
+msgstr "انس كلمت السر هذه بعد"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+msgid "Forget this password when I log out"
+msgstr "انس كلمت السر هذه عندما ألج خارجا"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:159
@@ -432,18 +444,22 @@ msgid "Password:"
 msgstr "كلمة السّر:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "افتح تلقائيًا حلقة المفاتيح هذه عندما ألِج"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
 msgstr "أقفل حلقة المفاتيح هذه بعد"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
 msgstr "أقفل حلقة المفاتيح إذا خملت لمدة"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
 msgstr "أقفل حلقة المفاتيح هذه عندما أخرج"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#: ../gcr/gcr-unlock-options-widget.ui.h:5
 msgid "minutes"
 msgstr "دقائق"
 
@@ -464,15 +480,15 @@ msgstr "استورد شهادات/مفاتيح"
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "اختر مكانا لتخزين الشهادات/المفاتيح المستورة."
 
-#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
 msgid "Enter password to unlock the private key"
 msgstr "أدخل كلمة سر لفكّ قفل المفتاح السري"
 
-#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 msgid "Enter password to unlock the certificate"
 msgstr "أدخل كلمة سر لفكّ قفل الشهادة"
 
-#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
 msgid "Enter password to unlock"
 msgstr "أدخل كلمة سر لفكّ القفل"
 
@@ -622,7 +638,7 @@ msgid "No key is needed"
 msgstr "لا حاجة لمفتاح"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "المفتاح مختلف عن ما قبل"
 
 #: ../gp11/gp11-misc.c:149
@@ -849,7 +865,7 @@ msgstr "تم رفض طلب التوقيع من قبل المستخدم"
 msgid "Unknown error"
 msgstr "خطأ غير معروف"
 
-#: ../pkcs11/gkm/gkm-certificate.c:726
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "شهادة بلا اسم"
 
@@ -863,20 +879,20 @@ msgstr "تعذّر تحليل مفتاح SSH العلني"
 msgid "Unlock password for: %s"
 msgstr "كلمة سّر فتح: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
 msgid "The unlock password was incorrect"
 msgstr "كلمة سر الفتح غير صحيحة"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
 msgid "Unlock Login Keyring"
 msgstr "فك قفل حلقة مفتاح الولوج"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Enter password to unlock your login keyring"
 msgstr "أدخل كلمة السر لفتح حلقة مفاتيح الولوج"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -884,119 +900,119 @@ msgstr ""
 "كلمة السر التي تستخدمها للولوج إلى حاسوبك لم تعد تطابق الخاصة بحلقة مفاتيح "
 "الولوج."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr "لم تفتح حلقة مفاتيح الولوج عند ولوجك إلى هذا الحاسوب."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Unlock Keyring"
 msgstr "فك قفل حلقة المفاتيح"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "أدخل كلمة سر حلقة المفاتيح '%s' لفك قفلها"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "يريد تطبيق الوصول إلى حلقة المفاتيح '%s' لكنها مقفلة"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
 msgid "Unlock private key"
 msgstr "فكّ قفل المفتاح السريّ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
 msgid "Unlock certificate"
 msgstr "فكّ قفل الشهادة"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
 msgid "Unlock public key"
 msgstr "فك قفل المفتاح العلني"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
 msgid "Unlock"
 msgstr "فك القفل"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
 msgid "Enter password to unlock the public key"
 msgstr "أدخل كلمة سر لفكّ قفل المفتاح العلني"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "يريد تطبيق مجهول الوصول إلى المفتاح السري '%s' لكنه مقفل."
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "يريد تطبيق مجهول الوصول إلى الشهادة '%s' لكنها مقفلة"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "يريد تطبيق مجهول الوصول إلى المفتاح العلني '%s' لكنه مقفل"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "يريد تطبيق مجهول الوصول إلى '%s'، لكنها مقفلة"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
 msgid "Unlock certificate/key storage"
 msgstr "فكّ قفل شهادة/مخزن المفاتيح"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "أدخل كلمة سر لفكّ قفل الشهادة/مخزن المفاتيح"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr "يريد تطبيق مجهول الوصول إلى الشهادة/مخزن المفاتيح '%s' لكنها مقفلة"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
 msgid "New Password Required"
 msgstr "مطلوب كلمة سر جديدة"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
 msgid "New password required for secure storage"
 msgstr "مطلوب كلمة سر جديدة للمخزن المُؤمّن"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr "تحتاج كلمة سر لتجهيز '%s' لتخزين الشهادات أو المفاتيح"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
 msgid "Change Password"
 msgstr "غيّر كلمة السر"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
 msgid "Change password for secure storage"
 msgstr "غيّر كلمة سر المخزن المُؤمّن"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
 #, c-format
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "لتغيير كلمة سر '%s' يجب إدخال كلمتي السر القديمة والجديدة."
 
-#: ../ui/gku-prompt-tool.c:394
+#: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
 msgstr "احفظ كلمات السر من دون تعمية؟"
 
-#: ../ui/gku-prompt-tool.c:395
+#: ../ui/gku-prompt-tool.c:539
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1005,47 +1021,43 @@ msgstr ""
 "باختيار استخدام كلمة سر فارغة، لن تكون كلمات السر الخاصة بك معمّاة بشكل آمن. "
 "وسيستطيع كل من يملك الوصول إلى ملفاتك الوصول إليها."
 
-#: ../ui/gku-prompt-tool.c:402
+#: ../ui/gku-prompt-tool.c:546
 msgid "Use Unsafe Storage"
 msgstr "استعمل التخزين غير الآمن"
 
-#: ../ui/gku-prompt-tool.c:432
+#: ../ui/gku-prompt-tool.c:584
 msgid "Passwords do not match."
 msgstr "كلمتا السّر غير متطابقتين."
 
-#: ../ui/gku-prompt-tool.c:442
+#: ../ui/gku-prompt-tool.c:594
 msgid "Password cannot be blank"
 msgstr "كلمة السّر لا يمكن أن تكون فارغة"
 
 #: ../ui/gku-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "افتح تلقائيًا حلقة المفاتيح هذه عندما ألِج"
-
-#: ../ui/gku-prompt.ui.h:2
 msgid "New password strength"
 msgstr "قوة كلمة السر الجديدة"
 
-#: ../ui/gku-prompt.ui.h:3
+#: ../ui/gku-prompt.ui.h:2
 msgid "_Application:"
 msgstr "ال_تطبيق:"
 
-#: ../ui/gku-prompt.ui.h:4
+#: ../ui/gku-prompt.ui.h:3
 msgid "_Confirm:"
 msgstr "أ_كّد:"
 
-#: ../ui/gku-prompt.ui.h:5
+#: ../ui/gku-prompt.ui.h:4
 msgid "_Details:"
 msgstr "الت_فاصيل:"
 
-#: ../ui/gku-prompt.ui.h:6
+#: ../ui/gku-prompt.ui.h:5
 msgid "_Name:"
 msgstr "الا_سم:"
 
-#: ../ui/gku-prompt.ui.h:7
+#: ../ui/gku-prompt.ui.h:6
 msgid "_Old Password:"
 msgstr "كلمة السّر الق_ديمة:"
 
-#: ../ui/gku-prompt.ui.h:8
+#: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_كلمة السّر:"
 
