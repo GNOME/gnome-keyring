@@ -77,7 +77,7 @@ gboolean            _gck_module_fire_authenticate_object   (GckModule *module,
  */
 
 GckEnumerator*      _gck_enumerator_new                     (GList *modules,
-                                                             guint session_flags,
+                                                             guint session_options,
                                                              GckTokenInfo *match_token,
                                                              GckAttributes *match_attrs);
 

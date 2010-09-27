@@ -75,11 +75,6 @@ typedef struct GckAttribute {
 
 #define GCK_INVALID G_MAXULONG
 
-enum {
-	GCK_AUTHENTICATE_TOKENS = 2,
-	GCK_AUTHENTICATE_OBJECTS = 4
-};
-
 gboolean            gck_value_to_ulong                      (gconstpointer value,
                                                              gsize length,
                                                              gulong *result);
@@ -286,11 +281,11 @@ struct _GckModuleClass {
 GType                 gck_module_get_type                     (void) G_GNUC_CONST;
 
 GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs,
-                                                               guint options);
+                                                               guint reserved_options);
 
 GckModule*            gck_module_initialize                   (const gchar *path,
                                                                gpointer reserved,
-                                                               guint options,
+                                                               guint reserved_options,
                                                                GError **err);
 
 gboolean              gck_module_equal                        (gconstpointer module1,
@@ -307,18 +302,16 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-guint                 gck_module_get_options                  (GckModule *self);
-
 gchar**               gck_modules_list_registered_paths       (GError **err);
 
-GList*                gck_modules_initialize_registered       (guint options);
+GList*                gck_modules_initialize_registered       (guint reserved_options);
 
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);
 
 GckEnumerator*        gck_modules_enumerate_objects           (GList *modules,
                                                                GckAttributes *attrs,
-                                                               guint session_flags);
+                                                               guint session_options);
 
 GckSlot*              gck_modules_token_for_uri               (GList *modules,
                                                                const gchar *uri,
@@ -326,17 +319,17 @@ GckSlot*              gck_modules_token_for_uri               (GList *modules,
 
 GckObject*            gck_modules_object_for_uri              (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_flags,
+                                                               guint session_options,
                                                                GError **error);
 
 GList*                gck_modules_objects_for_uri             (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_flags,
+                                                               guint session_options,
                                                                GError **error);
 
 GckEnumerator*        gck_modules_enumerate_uri               (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_flags,
+                                                               guint session_options,
                                                                GError **error);
 
 
@@ -516,18 +509,26 @@ gboolean            gck_slot_init_token_finish              (GckSlot *self,
 #endif /* UNIMPLEMENTED */
 
 GckSession*         gck_slot_open_session                   (GckSlot *self,
-                                                             gulong flags,
+                                                             guint options,
                                                              GError **err);
 
 GckSession*         gck_slot_open_session_full              (GckSlot *self,
-                                                             gulong flags,
+                                                             guint options,
+                                                             gulong pkcs11_flags,
                                                              gpointer app_data,
                                                              CK_NOTIFY notify,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gck_slot_open_session_async             (GckSlot *self,
-                                                             gulong flags,
+                                                             guint options,
+                                                             GCancellable *cancellable,
+                                                             GAsyncReadyCallback callback,
+                                                             gpointer user_data);
+
+void                gck_slot_open_session_full_async        (GckSlot *self,
+                                                             guint options,
+                                                             gulong pkcs11_flags,
                                                              gpointer app_data,
                                                              CK_NOTIFY notify,
                                                              GCancellable *cancellable,
@@ -541,6 +542,12 @@ GckSession*         gck_slot_open_session_finish            (GckSlot *self,
 /* ------------------------------------------------------------------------
  * SESSION
  */
+
+typedef enum _GckSessionOptions {
+	GCK_SESSION_READ_WRITE = 1 << 1,
+	GCK_SESSION_LOGIN_USER =  1 << 2,
+	GCK_SESSION_AUTHENTICATE = 1 << 3,
+} GckSessionOptions;
 
 typedef struct _GckSessionInfo {
 	gulong slot_id;
@@ -578,7 +585,8 @@ struct _GckSessionClass {
 GType               gck_session_get_type                    (void) G_GNUC_CONST;
 
 GckSession*         gck_session_from_handle                 (GckSlot *slot,
-                                                             CK_SESSION_HANDLE handle);
+                                                             CK_SESSION_HANDLE handle,
+                                                             guint options);
 
 GckModule*          gck_session_get_module                  (GckSession *self);
 
@@ -589,6 +597,8 @@ CK_SESSION_HANDLE   gck_session_get_handle                  (GckSession *self);
 GckSessionInfo*     gck_session_get_info                    (GckSession *self);
 
 gulong              gck_session_get_state                   (GckSession *self);
+
+guint               gck_session_get_options                 (GckSession *self);
 
 gboolean            gck_session_init_pin                    (GckSession *self,
                                                              const guchar *pin,

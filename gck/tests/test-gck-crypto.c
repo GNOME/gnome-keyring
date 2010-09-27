@@ -9,9 +9,15 @@
 #include "gck-test.h"
 
 static GckModule *module = NULL;
-static GckModule *module_with_auth = NULL;
 static GckSession *session = NULL;
 static GckSession *session_with_auth = NULL;
+
+static gboolean
+on_discard_handle_ignore (GckSession *self, CK_OBJECT_HANDLE handle, gpointer unused)
+{
+	/* Don't close the handle for this session, since it's a duplicate */
+	return TRUE;
+}
 
 DEFINE_SETUP(crypto_session)
 {
@@ -29,13 +35,11 @@ DEFINE_SETUP(crypto_session)
 	session = gck_slot_open_session (slots->data, 0, &err);
 	SUCCESS_RES(session, err);
 
-	module_with_auth = gck_module_new (gck_module_get_functions (module), GCK_AUTHENTICATE_OBJECTS);
-	g_assert (module_with_auth);
-
-	slot = gck_slot_from_handle (module_with_auth, gck_slot_get_handle (slots->data));
+	slot = gck_session_get_slot (session);
 	g_assert (slot);
 
-	session_with_auth = gck_session_from_handle (slot, gck_session_get_handle (session));
+	session_with_auth = gck_session_from_handle (slot, gck_session_get_handle (session), GCK_SESSION_AUTHENTICATE);
+	g_signal_connect (session_with_auth, "discard-handle", G_CALLBACK (on_discard_handle_ignore), NULL);
 	g_assert (session_with_auth);
 
 	g_object_unref (slot);
@@ -46,6 +50,7 @@ DEFINE_TEARDOWN(crypto_session)
 {
 	g_object_unref (session);
 	g_object_unref (module);
+	g_object_unref (session_with_auth);
 }
 
 static void
@@ -270,7 +275,7 @@ DEFINE_TEST(sign)
 	mech = gck_mechanism_new_with_param (CKM_MOCK_PREFIX, "my-prefix:", 10);
 
 	/* Enable auto-login on this session, see previous test */
-	g_signal_connect (module_with_auth, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
+	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
 
 	/* Find the right key */
 	key = find_key (session_with_auth, CKA_SIGN, CKM_MOCK_PREFIX);

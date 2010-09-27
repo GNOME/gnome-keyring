@@ -54,7 +54,7 @@ open_and_login_session (GckSlot *slot, CK_USER_TYPE user_type, GError **error)
 	if (!error)
 		error = &err;
 
-	session = gck_slot_open_session (slot, CKF_RW_SESSION, error);
+	session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE, error);
 	if (session != NULL) {
 		if (!gck_session_login (session, user_type, NULL, 0, error)) {
 			if (g_error_matches (*error, GCK_ERROR, CKR_USER_ALREADY_LOGGED_IN)) {

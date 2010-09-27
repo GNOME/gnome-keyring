@@ -119,7 +119,7 @@ _gcr_initialize (void)
 	egg_libgcrypt_initialize ();
 
 	if (g_once_init_enter (&gcr_initialized)) {
-		all_modules = gck_modules_initialize_registered (GCK_AUTHENTICATE_OBJECTS | GCK_AUTHENTICATE_TOKENS);
+		all_modules = gck_modules_initialize_registered (0);
 		g_once_init_leave (&gcr_initialized, 1);
 	}
 }

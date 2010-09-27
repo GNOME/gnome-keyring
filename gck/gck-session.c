@@ -64,13 +64,15 @@ enum {
 	PROP_0,
 	PROP_MODULE,
 	PROP_HANDLE,
-	PROP_SLOT
+	PROP_SLOT,
+	PROP_OPTIONS,
 };
 
 struct _GckSessionPrivate {
 	GckSlot *slot;
 	GckModule *module;
 	CK_SESSION_HANDLE handle;
+	guint options;
 
 	/* Modified atomically */
 	gint discarded;
@@ -130,6 +132,9 @@ gck_session_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_SLOT:
 		g_value_take_object (value, gck_session_get_slot (self));
 		break;
+	case PROP_OPTIONS:
+		g_value_set_uint (value, gck_session_get_options (self));
+		break;
 	}
 }
 
@@ -155,6 +160,10 @@ gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!self->pv->slot);
 		self->pv->slot = g_value_dup_object (value);
 		g_return_if_fail (self->pv->slot);
+		break;
+	case PROP_OPTIONS:
+		g_return_if_fail (!self->pv->options);
+		self->pv->options = g_value_get_uint (value);
 		break;
 	}
 }
@@ -240,6 +249,15 @@ gck_session_class_init (GckSessionClass *klass)
 		                     GCK_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
+	 * GckSession:options:
+	 *
+	 * The options this session was opened with.
+	 */
+	g_object_class_install_property (gobject_class, PROP_OPTIONS,
+		g_param_spec_uint ("options", "Session Options", "Session Options",
+		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	/**
 	 * GckSession::discard-handle:
 	 * @session: The session.
 	 * @handle: The handle being discarded.
@@ -294,6 +312,7 @@ gck_session_info_free (GckSessionInfo *session_info)
  * gck_session_from_handle:
  * @slot: The slot which the session belongs to.
  * @handle: The raw PKCS#11 handle of the session.
+ * @options: Session options. Those which are used during opening a session have no effect.
  *
  * Initialize a GckSession object from a raw PKCS#11 session handle.
  * Usually one would use the gck_slot_open_session() function to
@@ -302,7 +321,7 @@ gck_session_info_free (GckSessionInfo *session_info)
  * Return value: The new GckSession object.
  **/
 GckSession*
-gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle)
+gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle, guint options)
 {
 	GckModule *module;
 	GckSession *session;
@@ -311,7 +330,8 @@ gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle)
 
 	module = gck_slot_get_module (slot);
 	session = g_object_new (GCK_TYPE_SESSION, "module", module,
-	                        "handle", handle, "slot", slot, NULL);
+	                        "handle", handle, "slot", slot,
+	                        "options", options, NULL);
 	g_object_unref (module);
 
 	return session;
@@ -434,6 +454,21 @@ gck_session_get_state (GckSession *self)
 	}
 
 	return info.state;
+}
+
+/**
+ * gck_session_get_options:
+ * @self: The session to get options from.
+ *
+ * Get the options this session was opened with.
+ *
+ * Return value: The session options.
+ **/
+guint
+gck_session_get_options (GckSession *self)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (self), 0);
+	return self->pv->options;
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -1916,7 +1951,7 @@ authenticate_complete (Authenticate *auth, GckArguments *base, CK_RV result)
 }
 
 static void
-authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object)
+authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object, guint options)
 {
 	GckModule *module;
 
@@ -1924,7 +1959,7 @@ authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object)
 	g_assert (GCK_IS_OBJECT (object));
 
 	module = gck_slot_get_module (slot);
-	if (gck_module_get_options (module) & GCK_AUTHENTICATE_OBJECTS) {
+	if ((options & GCK_SESSION_AUTHENTICATE) == GCK_SESSION_AUTHENTICATE) {
 		auth->state = AUTHENTICATE_CAN;
 		auth->protected_auth = gck_slot_has_flags (slot, CKF_PROTECTED_AUTHENTICATION_PATH);
 		auth->module = module;
@@ -2037,7 +2072,7 @@ crypt_sync (GckSession *self, GckObject *key, GckMechanism *mechanism, const guc
 	args.complete_func = complete_func;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args.auth, slot, key);
+	authenticate_init (&args.auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	if (!_gck_call_sync (self, perform_crypt, complete_crypt, &args, cancellable, err)) {
@@ -2074,7 +2109,7 @@ crypt_async (GckSession *self, GckObject *key, GckMechanism *mechanism, const gu
 	args->complete_func = complete_func;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args->auth, slot, key);
+	authenticate_init (&args->auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
@@ -2570,7 +2605,7 @@ gck_session_verify_full (GckSession *self, GckObject *key, GckMechanism *mechani
 	args.n_signature = n_signature;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args.auth, slot, key);
+	authenticate_init (&args.auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	return _gck_call_sync (self, perform_verify, complete_verify, &args, cancellable, err);
@@ -2615,7 +2650,7 @@ gck_session_verify_async (GckSession *self, GckObject *key, GckMechanism *mechan
 	args->n_signature = n_signature;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args->auth, slot, key);
+	authenticate_init (&args->auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);

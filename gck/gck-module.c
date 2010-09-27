@@ -76,8 +76,7 @@
 enum {
 	PROP_0,
 	PROP_PATH,
-	PROP_FUNCTIONS,
-	PROP_OPTIONS
+	PROP_FUNCTIONS
 };
 
 enum {
@@ -92,7 +91,6 @@ struct _GckModulePrivate {
 	gboolean initialized;
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_C_INITIALIZE_ARGS init_args;
-	guint options;
 
 	/* Modified atomically */
 	gint finalized;
@@ -254,9 +252,6 @@ gck_module_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_FUNCTIONS:
 		g_value_set_pointer (value, gck_module_get_functions (self));
 		break;
-	case PROP_OPTIONS:
-		g_value_set_uint (value, gck_module_get_options (self));
-		break;
 	}
 }
 
@@ -275,10 +270,6 @@ gck_module_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_FUNCTIONS:
 		g_return_if_fail (!self->pv->funcs);
 		self->pv->funcs = g_value_get_pointer (value);
-		break;
-	case PROP_OPTIONS:
-		g_return_if_fail (!self->pv->options);
-		self->pv->options = g_value_get_uint (value);
 		break;
 	}
 }
@@ -366,18 +357,6 @@ gck_module_class_init (GckModuleClass *klass)
 		                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * GckModule:options:
-	 *
-	 * Various option flags related to authentication etc.
-	 *
-	 * The #GckModule::authenticate-object signal will be fired when an
-	 * object needs to be authenticated.
-	 */
-	g_object_class_install_property (gobject_class, PROP_OPTIONS,
-		g_param_spec_uint ("options", "Options", "Module options",
-		                  0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
-	/**
 	 * GckModule::authenticate-slot:
 	 * @module: The module
 	 * @slot: The slot to be authenticated.
@@ -440,7 +419,7 @@ gck_module_info_free (GckModuleInfo *module_info)
  * gck_module_initialize:
  * @path: The file system path to the PKCS#11 module to load.
  * @reserved: Extra arguments for the PKCS#11 module, should usually be NULL.
- * @options: Options which control the authentication behavior etc.
+ * @reserved_options: No options are currently available.
  * @err: A location to store an error resulting from a failed load.
  *
  * Load and initialize a PKCS#11 module represented by a GckModule object.
@@ -448,7 +427,7 @@ gck_module_info_free (GckModuleInfo *module_info)
  * Return value: The loaded PKCS#11 module or NULL if failed.
  **/
 GckModule*
-gck_module_initialize (const gchar *path, gpointer reserved, guint options, GError **err)
+gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_options, GError **err)
 {
 	CK_C_GetFunctionList get_function_list;
 	CK_FUNCTION_LIST_PTR funcs;
@@ -484,7 +463,7 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint options, GErr
 		return NULL;
 	}
 
-	self = g_object_new (GCK_TYPE_MODULE, "functions", funcs, "path", path, "options", options, NULL);
+	self = g_object_new (GCK_TYPE_MODULE, "functions", funcs, "path", path, NULL);
 	self->pv->module = module;
 
 	memset (&self->pv->init_args, 0, sizeof (self->pv->init_args));
@@ -519,10 +498,10 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint options, GErr
  * Return value: The new PKCS#11 module.
  **/
 GckModule*
-gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint options)
+gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint reserved_options)
 {
 	g_return_val_if_fail (funcs, NULL);
-	return g_object_new (GCK_TYPE_MODULE, "functions", funcs, "options", options, NULL);
+	return g_object_new (GCK_TYPE_MODULE, "functions", funcs, NULL);
 }
 
 /**
@@ -688,20 +667,4 @@ gck_module_get_functions (GckModule *self)
 {
 	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
 	return self->pv->funcs;
-}
-
-
-/**
- * gck_module_get_options:
- * @self: The module to get setting from.
- *
- * Get the various module options, such as auto authenticate etc.
- *
- * Return value: The module options.
- **/
-guint
-gck_module_get_options (GckModule *self)
-{
-	g_return_val_if_fail (GCK_IS_MODULE (self), 0);
-	return self->pv->options;
 }

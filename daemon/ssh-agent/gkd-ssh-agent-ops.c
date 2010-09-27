@@ -135,7 +135,7 @@ search_keys_like_attributes (GList *modules, GckSession *session, GckAttributes 
 
 	/* In all slots */
 	if (modules) {
-		en = gck_modules_enumerate_objects (modules, search, CKF_RW_SESSION);
+		en = gck_modules_enumerate_objects (modules, search, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
 
 		for (;;) {
 			object = gck_enumerator_next (en, NULL, &error);
@@ -757,7 +757,7 @@ op_request_identities (GkdSshAgentCall *call)
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
 
 	/* Find all the keys (we filter out v1 later) */
-	en = gck_modules_enumerate_objects (call->modules, attrs, CKF_RW_SESSION);
+	en = gck_modules_enumerate_objects (call->modules, attrs, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
 	gck_attributes_unref (attrs);
 	g_return_val_if_fail (en, FALSE);
 
@@ -824,7 +824,7 @@ op_v1_request_identities (GkdSshAgentCall *call)
 	gck_attributes_add_string (attrs, CKA_LABEL, V1_LABEL);
 
 	/* Find all the keys not on token, and are V1 */
-	en = gck_modules_enumerate_objects (call->modules, attrs, CKF_RW_SESSION);
+	en = gck_modules_enumerate_objects (call->modules, attrs, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
 	gck_attributes_unref (attrs);
 	g_return_val_if_fail (en, FALSE);
 
