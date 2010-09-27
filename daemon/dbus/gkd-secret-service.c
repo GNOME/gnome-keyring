@@ -1232,7 +1232,7 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 		info = gck_slot_get_token_info (slot);
 		login = info && (info->flags & CKF_LOGIN_REQUIRED);
 		gck_token_info_free (info);
-		if (login && !gck_session_login (client->pkcs11_session, CKU_USER, NULL, 0, &error)) {
+		if (login && !gck_session_login (client->pkcs11_session, CKU_USER, NULL, 0, NULL, &error)) {
 			g_warning ("couldn't log in to pkcs11 session for secret service: %s",
 			           egg_error_message (error));
 			g_clear_error (&error);

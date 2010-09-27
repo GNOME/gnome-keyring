@@ -940,9 +940,9 @@ free_open_session (OpenSession *args)
  * Return value: A new session or NULL if an error occurs.
  **/
 GckSession*
-gck_slot_open_session (GckSlot *self, guint options, GError **err)
+gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable, GError **err)
 {
-	return gck_slot_open_session_full (self, options, 0, NULL, NULL, NULL, err);
+	return gck_slot_open_session_full (self, options, 0, NULL, NULL, cancellable, err);
 }
 
 /**

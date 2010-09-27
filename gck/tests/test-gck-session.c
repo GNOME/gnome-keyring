@@ -28,7 +28,7 @@ DEFINE_SETUP(load_session)
 	g_object_ref (slot);
 	gck_list_unref_free (slots);
 
-	session = gck_slot_open_session (slot, 0, &err);
+	session = gck_slot_open_session (slot, 0, NULL, &err);
 	SUCCESS_RES(session, err);
 }
 
@@ -82,7 +82,7 @@ DEFINE_TEST(open_close_session)
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
 
-	sess = gck_slot_open_session (slot, 0, &err);
+	sess = gck_slot_open_session (slot, 0, NULL, &err);
 	SUCCESS_RES (sess, err);
 
 	g_object_unref (sess);
@@ -108,11 +108,11 @@ DEFINE_TEST(init_set_pin)
 	gboolean ret;
 
 	/* init pin */
-	ret = gck_session_init_pin (session, (guchar*)"booo", 4, &err);
+	ret = gck_session_init_pin (session, (guchar*)"booo", 4, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	/* set pin */
-	ret = gck_session_set_pin (session, (guchar*)"booo", 4, (guchar*)"tooo", 4, &err);
+	ret = gck_session_set_pin (session, (guchar*)"booo", 4, (guchar*)"tooo", 4, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	/* init pin async */
@@ -142,17 +142,10 @@ DEFINE_TEST(login_logout)
 	gboolean ret;
 
 	/* login/logout */
-	ret = gck_session_login (session, CKU_USER, (guchar*)"booo", 4, &err);
+	ret = gck_session_login (session, CKU_USER, (guchar*)"booo", 4, NULL, &err);
 	SUCCESS_RES (ret, err);
 
-	ret = gck_session_logout (session, &err);
-	SUCCESS_RES (ret, err);
-
-	/* login/logout full */
-	ret = gck_session_login_full (session, CKU_USER, (guchar*)"booo", 4, NULL, &err);
-	SUCCESS_RES (ret, err);
-
-	ret = gck_session_logout_full (session, NULL, &err);
+	ret = gck_session_logout (session, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	/* login async */
@@ -214,7 +207,7 @@ DEFINE_TEST(auto_login)
 
 	/* Setup for auto login */
 	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
-	new_session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE | GCK_SESSION_LOGIN_USER, &err);
+	new_session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE | GCK_SESSION_LOGIN_USER, NULL, &err);
 	SUCCESS_RES (new_session, err);
 
 	/* Try again to do something that requires a login */
@@ -223,7 +216,7 @@ DEFINE_TEST(auto_login)
 	g_object_unref (object);
 
 	/* We should now be logged in, try to log out */
-	ret = gck_session_logout (new_session, &err);
+	ret = gck_session_logout (new_session, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	g_object_unref (new_session);
@@ -246,7 +239,7 @@ DEFINE_TEST(auto_login)
 	g_object_unref (object);
 
 	/* We should now be logged in, try to log out */
-	ret = gck_session_logout (new_session, &err);
+	ret = gck_session_logout (new_session, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	g_object_unref (new_session);

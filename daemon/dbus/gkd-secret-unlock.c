@@ -92,7 +92,7 @@ check_locked_collection (GckObject *collection, gboolean *locked)
 	gpointer value;
 	gsize n_value;
 
-	value = gck_object_get_data (collection, CKA_G_LOCKED, &n_value, &error);
+	value = gck_object_get_data (collection, CKA_G_LOCKED, NULL, &n_value, &error);
 	if (value == NULL) {
 		if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
 			g_warning ("couldn't check locked status of collection: %s",

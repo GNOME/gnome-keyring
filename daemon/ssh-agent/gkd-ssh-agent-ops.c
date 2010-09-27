@@ -72,7 +72,7 @@ login_session (GckSession *session)
 
 	/* Log in the session if necessary */
 	if (state == CKS_RO_PUBLIC_SESSION || state == CKS_RW_PUBLIC_SESSION) {
-		if (!gck_session_login (session, CKU_USER, NULL, 0, &error)) {
+		if (!gck_session_login (session, CKU_USER, NULL, 0, NULL, &error)) {
 			g_message ("couldn't log in to session: %s", egg_error_message (error));
 			ret = FALSE;
 		}
@@ -218,7 +218,7 @@ return_private_matching (GckObject *object, gpointer user_data)
 	g_return_val_if_fail (*result == NULL, FALSE);
 
 	/* Get the key identifier and token */
-	attrs = gck_object_get (object, &error, CKA_ID, CKA_TOKEN, GCK_INVALID);
+	attrs = gck_object_get (object, NULL, &error, CKA_ID, CKA_TOKEN, GCK_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -275,7 +275,7 @@ load_identity_v1_attributes (GckObject *object, gpointer user_data)
 	 * In addition V1 keys are only RSA.
 	 */
 
-	attrs = gck_object_get (object, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
+	attrs = gck_object_get (object, NULL, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
 	                        CKA_PUBLIC_EXPONENT, CKA_CLASS, CKA_MODULUS_BITS, GCK_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
@@ -305,7 +305,7 @@ load_identity_v2_attributes (GckObject *object, gpointer user_data)
 	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (user_data, FALSE);
 
-	attrs = gck_object_get (object, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
+	attrs = gck_object_get (object, NULL, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
 	                        CKA_PUBLIC_EXPONENT, CKA_PRIME, CKA_SUBPRIME, CKA_BASE,
 	                        CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN, GCK_INVALID);
 	if (error) {
@@ -349,7 +349,7 @@ remove_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 		return;
 
 	if (priv != NULL) {
-		gck_object_destroy (priv, &error);
+		gck_object_destroy (priv, NULL, &error);
 
 		if (error) {
 			if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
@@ -359,7 +359,7 @@ remove_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 	}
 
 	if (pub != NULL) {
-		gck_object_destroy (pub, &error);
+		gck_object_destroy (pub, NULL, &error);
 
 		if (error) {
 			if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
@@ -399,7 +399,7 @@ lock_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 
 	/* Delete them all */
 	for (l = objects; l; l = g_list_next (l)) {
-		gck_object_destroy (l->data, &error);
+		gck_object_destroy (l->data, NULL, &error);
 		if (error) {
 			g_warning ("couldn't delete authenticator object: %s", egg_error_message (error));
 			g_clear_error (&error);
@@ -422,7 +422,7 @@ remove_by_public_key (GckSession *session, GckObject *pub, gboolean exclude_v1)
 	if (!login_session (session))
 		return;
 
-	attrs = gck_object_get (pub, &error, CKA_LABEL, CKA_ID, CKA_TOKEN, GCK_INVALID);
+	attrs = gck_object_get (pub, NULL, &error, CKA_LABEL, CKA_ID, CKA_TOKEN, GCK_INVALID);
 
 	if (error) {
 		g_warning ("couldn't lookup attributes for key: %s", egg_error_message (error));
@@ -490,7 +490,7 @@ create_key_pair (GckSession *session, GckAttributes *priv, GckAttributes *pub)
 		g_clear_error (&error);
 
 		/* Failed, so remove private as well */
-		gck_object_destroy (priv_key, NULL);
+		gck_object_destroy (priv_key, NULL, NULL);
 		g_object_unref (priv_key);
 
 		return FALSE;
@@ -511,7 +511,7 @@ destroy_replaced_keys (GckSession *session, GList *keys)
 	g_assert (GCK_IS_SESSION (session));
 
 	for (l = keys; l; l = g_list_next (l)) {
-		if (!gck_object_destroy (l->data, &error)) {
+		if (!gck_object_destroy (l->data, NULL, &error)) {
 			if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
 				g_warning ("couldn't delete a SSH key we replaced: %s",
 				           egg_error_message (error));
@@ -941,7 +941,7 @@ unlock_and_sign (GckSession *session, GckObject *key, gulong mech_type, const gu
 	gboolean always;
 
 	/* First check if we should authenticate the key */
-	attrs = gck_object_get (key, err, CKA_ALWAYS_AUTHENTICATE, GCK_INVALID);
+	attrs = gck_object_get (key, NULL, err, CKA_ALWAYS_AUTHENTICATE, GCK_INVALID);
 	if (!attrs)
 		return NULL;
 
@@ -968,7 +968,7 @@ unlock_and_sign (GckSession *session, GckObject *key, gulong mech_type, const gu
 	}
 
 	/* Do the magic */
-	return gck_session_sign (session, key, mech_type, input, n_input, n_result, err);
+	return gck_session_sign (session, key, mech_type, input, n_input, n_result, NULL, err);
 }
 
 static gboolean
@@ -1159,7 +1159,7 @@ op_v1_challenge (GkdSshAgentCall *call)
 	session = gck_object_get_session (key);
 	g_return_val_if_fail (session, FALSE);
 
-	result = gck_session_decrypt (session, key, CKM_RSA_PKCS, data, n_data, &n_result, &error);
+	result = gck_session_decrypt (session, key, CKM_RSA_PKCS, data, n_data, &n_result, NULL, &error);
 
 	g_object_unref (session);
 	g_object_unref (key);

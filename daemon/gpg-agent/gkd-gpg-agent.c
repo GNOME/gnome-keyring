@@ -435,7 +435,7 @@ gkd_gpg_agent_initialize_with_module (GckModule *module)
 	}
 
 	/* Try and open a session */
-	session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE | GCK_SESSION_AUTHENTICATE, &error);
+	session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE | GCK_SESSION_AUTHENTICATE, NULL, &error);
 	g_object_unref (slot);
 
 	if (!session) {

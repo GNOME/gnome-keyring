@@ -378,7 +378,7 @@ gkd_ssh_agent_initialize_with_module (GckModule *module)
 		if (gck_mechanisms_check (mechs, CKM_RSA_PKCS, CKM_DSA, GCK_INVALID)) {
 
 			/* Try and open a session */
-			session = gck_slot_open_session (l->data, GCK_SESSION_AUTHENTICATE, &error);
+			session = gck_slot_open_session (l->data, GCK_SESSION_AUTHENTICATE, NULL, &error);
 			if (!session) {
 				g_warning ("couldn't create pkcs#11 session: %s", egg_error_message (error));
 				g_clear_error (&error);

@@ -501,28 +501,6 @@ perform_init_pin (InitPin *args)
  * @self: Initialize PIN for this session's slot.
  * @pin: The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
- * @err: A location to return an error.
- *
- * Initialize the user's pin on this slot that this session is opened on.
- * According to the PKCS#11 standards, the session must be logged in with
- * the CKU_SO user type.
- *
- * This call may block for an indefinite period.
- *
- * Return value: Whether successful or not.
- **/
-gboolean
-gck_session_init_pin (GckSession *self, const guchar *pin, gsize n_pin,
-                       GError **err)
-{
-	return gck_session_init_pin_full (self, pin, n_pin, NULL, err);
-}
-
-/**
- * gck_session_init_pin_full:
- * @self: Initialize PIN for this session's slot.
- * @pin: The user's PIN, or NULL for protected authentication path.
- * @n_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -535,8 +513,8 @@ gck_session_init_pin (GckSession *self, const guchar *pin, gsize n_pin,
  * Return value: Whether successful or not.
  **/
 gboolean
-gck_session_init_pin_full (GckSession *self, const guchar *pin, gsize n_pin,
-                            GCancellable *cancellable, GError **err)
+gck_session_init_pin (GckSession *self, const guchar *pin, gsize n_pin,
+                      GCancellable *cancellable, GError **err)
 {
 	InitPin args = { GCK_ARGUMENTS_INIT, (guchar*)pin, n_pin };
 	return _gck_call_sync (self, perform_init_pin, NULL, &args, cancellable, err);
@@ -622,28 +600,6 @@ perform_set_pin (SetPin *args)
  * @n_old_pin: The length of the PIN.
  * @new_pin: The user's new PIN, or NULL for protected authentication path.
  * @n_new_pin: The length of the PIN.
- * @err: A location to return an error.
- *
- * Change the user's pin on this slot that this session is opened on.
- *
- * This call may block for an indefinite period.
- *
- * Return value: Whether successful or not.
- **/
-gboolean
-gck_session_set_pin (GckSession *self, const guchar *old_pin, gsize n_old_pin,
-                      const guchar *new_pin, gsize n_new_pin, GError **err)
-{
-	return gck_session_set_pin_full (self, old_pin, n_old_pin, new_pin, n_new_pin, NULL, err);
-}
-
-/**
- * gck_session_set_pin_full:
- * @self: Change the PIN for this session's slot.
- * @old_pin: The user's old PIN, or NULL for protected authentication path.
- * @n_old_pin: The length of the PIN.
- * @new_pin: The user's new PIN, or NULL for protected authentication path.
- * @n_new_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -654,9 +610,9 @@ gck_session_set_pin (GckSession *self, const guchar *old_pin, gsize n_old_pin,
  * Return value: Whether successful or not.
  **/
 gboolean
-gck_session_set_pin_full (GckSession *self, const guchar *old_pin, gsize n_old_pin,
-                           const guchar *new_pin, gsize n_new_pin, GCancellable *cancellable,
-                           GError **err)
+gck_session_set_pin (GckSession *self, const guchar *old_pin, gsize n_old_pin,
+                     const guchar *new_pin, gsize n_new_pin, GCancellable *cancellable,
+                     GError **err)
 {
 	SetPin args = { GCK_ARGUMENTS_INIT, (guchar*)old_pin, n_old_pin, (guchar*)new_pin, n_new_pin };
 	return _gck_call_sync (self, perform_set_pin, NULL, &args, cancellable, err);
@@ -740,26 +696,6 @@ perform_login (Login *args)
  * @user_type: The type of login user.
  * @pin: The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
- * @err: A location to return an error.
- *
- * Login the user on the session. This call may block
- * for an indefinite period.
- *
- * Return value: Whether successful or not.
- **/
-gboolean
-gck_session_login (GckSession *self, gulong user_type, const guchar *pin,
-                    gsize n_pin, GError **err)
-{
-	return gck_session_login_full (self, user_type, pin, n_pin, NULL, err);
-}
-
-/**
- * gck_session_login_full:
- * @self: Log in to this session.
- * @user_type: The type of login user.
- * @pin: The user's PIN, or NULL for protected authentication path.
- * @n_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -769,8 +705,8 @@ gck_session_login (GckSession *self, gulong user_type, const guchar *pin,
  * Return value: Whether successful or not.
  **/
 gboolean
-gck_session_login_full (GckSession *self, gulong user_type, const guchar *pin,
-                         gsize n_pin, GCancellable *cancellable, GError **err)
+gck_session_login (GckSession *self, gulong user_type, const guchar *pin,
+                   gsize n_pin, GCancellable *cancellable, GError **err)
 {
 	Login args = { GCK_ARGUMENTS_INIT, user_type, (guchar*)pin, n_pin };
 	return _gck_call_sync (self, perform_login, NULL, &args, cancellable, err);
@@ -835,21 +771,6 @@ perform_logout (GckArguments *args)
 /**
  * gck_session_logout:
  * @self: Logout of this session.
- * @err: A location to return an error.
- *
- * Log out of the session. This call may block for an indefinite period.
- *
- * Return value: Whether the logout was successful or not.
- **/
-gboolean
-gck_session_logout (GckSession *self, GError **err)
-{
-	return gck_session_logout_full (self, NULL, err);
-}
-
-/**
- * gck_session_logout_full:
- * @self: Logout of this session.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -858,7 +779,7 @@ gck_session_logout (GckSession *self, GError **err)
  * Return value: Whether the logout was successful or not.
  **/
 gboolean
-gck_session_logout_full (GckSession *self, GCancellable *cancellable, GError **err)
+gck_session_logout (GckSession *self, GCancellable *cancellable, GError **err)
 {
 	GckArguments args = GCK_ARGUMENTS_INIT;
 	return _gck_call_sync (self, perform_logout, NULL, &args, cancellable, err);
@@ -1398,10 +1319,10 @@ perform_wrap_key (WrapKey *args)
  **/
 gpointer
 gck_session_wrap_key (GckSession *self, GckObject *key, gulong mech_type,
-                       GckObject *wrapped, gsize *n_result, GError **err)
+                      GckObject *wrapped, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mech = { mech_type, NULL, 0 };
-	return gck_session_wrap_key_full (self, key, &mech, wrapped, n_result, NULL, err);
+	return gck_session_wrap_key_full (self, key, &mech, wrapped, n_result, cancellable, err);
 }
 
 /**
@@ -1559,6 +1480,31 @@ perform_unwrap_key (UnwrapKey *args)
  * gck_session_unwrap_key:
  * @self: The session to use.
  * @wrapper: The key to use for unwrapping.
+ * @mech_type: The mechanism to use for unwrapping.
+ * @input: The wrapped data as a byte stream.
+ * @n_input: The length of the wrapped data.
+ * @attrs: Additional attributes for the unwrapped key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Unwrap a key from a byte stream. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The new unwrapped key or NULL if the operation failed.
+ **/
+GckObject*
+gck_session_unwrap_key (GckSession *self, GckObject *wrapper, gulong mech_type,
+                        gconstpointer input, gsize n_input, GckAttributes *attrs,
+                        GCancellable *cancellable, GError **err)
+{
+	GckMechanism mech = { mech_type, NULL, 0 };
+	return gck_session_unwrap_key_full (self, wrapper, &mech, input, n_input, attrs, cancellable, err);
+}
+
+/**
+ * gck_session_unwrap_key_full:
+ * @self: The session to use.
+ * @wrapper: The key to use for unwrapping.
  * @mechanism: The mechanism to use for unwrapping.
  * @input: The wrapped data as a byte stream.
  * @n_input: The length of the wrapped data.
@@ -1572,9 +1518,9 @@ perform_unwrap_key (UnwrapKey *args)
  * Return value: The new unwrapped key or NULL if the operation failed.
  **/
 GckObject*
-gck_session_unwrap_key (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
-                        gconstpointer input, gsize n_input, GckAttributes *attrs,
-                        GCancellable *cancellable, GError **err)
+gck_session_unwrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
+                             gconstpointer input, gsize n_input, GckAttributes *attrs,
+                             GCancellable *cancellable, GError **err)
 {
 	UnwrapKey args = { GCK_ARGUMENTS_INIT, mechanism, attrs, 0, input, n_input, 0 };
 	gboolean ret;
@@ -1713,8 +1659,30 @@ perform_derive_key (DeriveKey *args)
  * Return value: The new derived key or NULL if the operation failed.
  **/
 GckObject*
-gck_session_derive_key (GckSession *self, GckObject *base, GckMechanism *mechanism,
+gck_session_derive_key (GckSession *self, GckObject *base, gulong mech_type,
                         GckAttributes *attrs, GCancellable *cancellable, GError **err)
+{
+	GckMechanism mech = { mech_type, NULL, 0 };
+	return gck_session_derive_key_full (self, base, &mech, attrs, cancellable, err);
+}
+
+/**
+ * gck_session_derive_key_full:
+ * @self: The session to use.
+ * @base: The key to derive from.
+ * @mechanism: The mechanism to use for derivation.
+ * @attrs: Additional attributes for the derived key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Derive a key from another key. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The new derived key or NULL if the operation failed.
+ **/
+GckObject*
+gck_session_derive_key_full (GckSession *self, GckObject *base, GckMechanism *mechanism,
+                             GckAttributes *attrs, GCancellable *cancellable, GError **err)
 {
 	DeriveKey args = { GCK_ARGUMENTS_INIT, mechanism, attrs, 0, 0 };
 	gboolean ret;
@@ -2155,10 +2123,10 @@ crypt_finish (GckSession *self, GAsyncResult *result, gsize *n_result, GError **
  */
 guchar*
 gck_session_encrypt (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                      gsize n_input, gsize *n_result, GError **err)
+                      gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
-	return gck_session_encrypt_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
+	return gck_session_encrypt_full (self, key, &mechanism, input, n_input, n_result, cancellable, err);
 }
 
 /**
@@ -2272,10 +2240,10 @@ gck_session_encrypt_finish (GckSession *self, GAsyncResult *result, gsize *n_res
  */
 guchar*
 gck_session_decrypt (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                      gsize n_input, gsize *n_result, GError **err)
+                      gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
-	return gck_session_decrypt_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
+	return gck_session_decrypt_full (self, key, &mechanism, input, n_input, n_result, cancellable, err);
 }
 
 /**
@@ -2387,7 +2355,7 @@ gck_session_decrypt_finish (GckSession *self, GAsyncResult *result,
  */
 guchar*
 gck_session_sign (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                   gsize n_input, gsize *n_result, GError **err)
+                   gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
 	return gck_session_sign_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
@@ -2557,7 +2525,7 @@ free_verify (Verify *args)
  */
 gboolean
 gck_session_verify (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                     gsize n_input, const guchar *signature, gsize n_signature, GError **err)
+                     gsize n_input, const guchar *signature, gsize n_signature, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
 	return gck_session_verify_full (self, key, &mechanism, input, n_input,

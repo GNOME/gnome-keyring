@@ -131,7 +131,7 @@ aes_derive_key (GckSession *session, GckObject *priv_key,
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_AES);
 
-	*aes_key = gck_session_derive_key (session, priv_key, mech, attrs, NULL, &error);
+	*aes_key = gck_session_derive_key_full (session, priv_key, mech, attrs, NULL, &error);
 
 	gck_mechanism_unref (mech);
 	gck_attributes_unref (attrs);
@@ -165,8 +165,8 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 		                                       "Failed to create necessary crypto keys.");
 
 	/* Get the output data */
-	output = gck_object_get_data (pub, CKA_VALUE, &n_output, &error);
-	gck_object_destroy (pub, NULL);
+	output = gck_object_get_data (pub, CKA_VALUE, NULL, &n_output, &error);
+	gck_object_destroy (pub, NULL, NULL);
 	g_object_unref (pub);
 
 	if (output == NULL) {
@@ -179,7 +179,7 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 
 	ret = aes_derive_key (session, priv, input, n_input, &key);
 
-	gck_object_destroy (priv, NULL);
+	gck_object_destroy (priv, NULL, NULL);
 	g_object_unref (priv);
 
 	if (ret == FALSE) {
@@ -475,8 +475,8 @@ gkd_secret_session_begin (GkdSecretSession *self, const gchar *group,
 		return NULL;
 
 	/* Get the output data */
-	output = gck_object_get_data (public, CKA_VALUE, n_output, &error);
-	gck_object_destroy (public, NULL);
+	output = gck_object_get_data (public, CKA_VALUE, NULL, n_output, &error);
+	gck_object_destroy (public, NULL, NULL);
 	g_object_unref (public);
 
 	if (output == NULL) {
@@ -640,7 +640,7 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
 	 * the unwrap won't generate a new object, but merely set the secret.
 	 */
 
-	attrs = gck_object_get (item, &error, CKA_ID, CKA_G_COLLECTION, GCK_INVALID);
+	attrs = gck_object_get (item, NULL, &error, CKA_ID, CKA_G_COLLECTION, GCK_INVALID);
 	if (attrs == NULL) {
 		g_message ("couldn't get item attributes: %s", egg_error_message (error));
 		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
@@ -655,8 +655,8 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
 	mech = gck_mechanism_new_with_param (self->mech_type, secret->parameter,
 	                                     secret->n_parameter);
 
-	object = gck_session_unwrap_key (session, self->key, mech, secret->value,
-	                                 secret->n_value, attrs, NULL, &error);
+	object = gck_session_unwrap_key_full (session, self->key, mech, secret->value,
+	                                      secret->n_value, attrs, NULL, &error);
 
 	gck_mechanism_unref (mech);
 	gck_attributes_unref (attrs);
@@ -715,8 +715,8 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GckSession *sessio
 	mech = gck_mechanism_new_with_param (self->mech_type, secret->parameter,
 	                                     secret->n_parameter);
 
-	object = gck_session_unwrap_key (session, self->key, mech, secret->value,
-	                                 secret->n_value, attrs, NULL, &error);
+	object = gck_session_unwrap_key_full (session, self->key, mech, secret->value,
+	                                      secret->n_value, attrs, NULL, &error);
 
 	gck_mechanism_unref (mech);
 	gck_attributes_unref (alloc);

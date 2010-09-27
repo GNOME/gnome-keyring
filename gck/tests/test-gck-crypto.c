@@ -32,7 +32,7 @@ DEFINE_SETUP(crypto_session)
 	slots = gck_module_get_slots (module, TRUE);
 	g_assert (slots != NULL);
 
-	session = gck_slot_open_session (slots->data, 0, &err);
+	session = gck_slot_open_session (slots->data, 0, NULL, &err);
 	SUCCESS_RES(session, err);
 
 	slot = gck_session_get_slot (session);
@@ -78,7 +78,7 @@ find_key (GckSession *session, CK_ATTRIBUTE_TYPE method, CK_MECHANISM_TYPE mech)
 
 	for (l = objects; l; l = g_list_next (l)) {
 		if (mech) {
-			mechs = gck_object_get_data (l->data, CKA_ALLOWED_MECHANISMS, &n_mechs, NULL);
+			mechs = gck_object_get_data (l->data, CKA_ALLOWED_MECHANISMS, NULL, &n_mechs, NULL);
 			g_assert (mechs);
 			g_assert (n_mechs == sizeof (CK_MECHANISM_TYPE));
 			/* We know all of them only have one allowed mech */
@@ -119,7 +119,7 @@ check_key_with_value (GckSession *session, GckObject *key, CK_OBJECT_CLASS klass
 	GckAttribute *attr;
 	gulong check;
 
-	attrs = gck_object_get (key, NULL, CKA_CLASS, CKA_VALUE, GCK_INVALID);
+	attrs = gck_object_get (key, NULL, NULL, CKA_CLASS, CKA_VALUE, GCK_INVALID);
 	g_assert (attrs);
 
 	if (!gck_attributes_find_ulong (attrs, CKA_CLASS, &check))
@@ -163,14 +163,7 @@ DEFINE_TEST(encrypt)
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_encrypt (session, key, CKM_MOCK_CAPITALIZE, (const guchar*)"blah blah", 10, &n_output, &error);
-	SUCCESS_RES (output, error);
-	g_assert (n_output == 10);
-	g_assert_cmpstr ((gchar*)output, ==, "BLAH BLAH");
-	g_free (output);
-
-	/* Full one */
-	output = gck_session_encrypt_full (session, key, mech, (const guchar*)"blah blah", 10, &n_output, NULL, &error);
+	output = gck_session_encrypt (session, key, CKM_MOCK_CAPITALIZE, (const guchar*)"blah blah", 10, &n_output, NULL, &error);
 	SUCCESS_RES (output, error);
 	g_assert (n_output == 10);
 	g_assert_cmpstr ((gchar*)output, ==, "BLAH BLAH");
@@ -210,17 +203,10 @@ DEFINE_TEST(decrypt)
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_decrypt (session, key, CKM_MOCK_CAPITALIZE, (const guchar*)"FRY???", 7, &n_output, &error);
+	output = gck_session_decrypt (session, key, CKM_MOCK_CAPITALIZE, (const guchar*)"FRY???", 7, &n_output, NULL, &error);
 	SUCCESS_RES (output, error);
 	g_assert (n_output == 7);
 	g_assert_cmpstr ((gchar*)output, ==, "fry???");
-	g_free (output);
-
-	/* Full one */
-	output = gck_session_decrypt_full (session, key, mech, (const guchar*)"TENNIS instructor", 18, &n_output, NULL, &error);
-	SUCCESS_RES (output, error);
-	g_assert (n_output == 18);
-	g_assert_cmpstr ((gchar*)output, ==, "tennis instructor");
 	g_free (output);
 
 	/* Asynchronous one */
@@ -255,7 +241,7 @@ DEFINE_TEST(login_context_specific)
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_sign (session, key, CKM_MOCK_PREFIX, (const guchar*)"TV Monster", 11, &n_output, &error);
+	output = gck_session_sign (session, key, CKM_MOCK_PREFIX, (const guchar*)"TV Monster", 11, &n_output, NULL, &error);
 	g_assert (error && error->code == CKR_USER_NOT_LOGGED_IN);
 	FAIL_RES (output, error);
 	g_assert (output == NULL);
@@ -282,17 +268,10 @@ DEFINE_TEST(sign)
 	g_assert (key);
 
 	/* Simple one */
-	output = gck_session_sign (session_with_auth, key, CKM_MOCK_PREFIX, (const guchar*)"Labarbara", 10, &n_output, &error);
+	output = gck_session_sign (session_with_auth, key, CKM_MOCK_PREFIX, (const guchar*)"Labarbara", 10, &n_output, NULL, &error);
 	SUCCESS_RES (output, error);
 	g_assert_cmpuint (n_output, ==, 24);
 	g_assert_cmpstr ((gchar*)output, ==, "signed-prefix:Labarbara");
-	g_free (output);
-
-	/* Full one */
-	output = gck_session_sign_full (session_with_auth, key, mech, (const guchar*)"Labarbara", 10, &n_output, NULL, &error);
-	SUCCESS_RES (output, error);
-	g_assert_cmpuint (n_output, ==, 20);
-	g_assert_cmpstr ((gchar*)output, ==, "my-prefix:Labarbara");
 	g_free (output);
 
 	/* Asynchronous one */
@@ -332,12 +311,7 @@ DEFINE_TEST(verify)
 
 	/* Simple one */
 	ret = gck_session_verify (session, key, CKM_MOCK_PREFIX, (const guchar*)"Labarbara", 10,
-	                           (const guchar*)"signed-prefix:Labarbara", 24, &error);
-	SUCCESS_RES (ret, error);
-
-	/* Full one */
-	ret = gck_session_verify_full (session, key, mech, (const guchar*)"Labarbara", 10,
-	                                (const guchar*)"my-prefix:Labarbara", 20, NULL, &error);
+	                           (const guchar*)"signed-prefix:Labarbara", 24, NULL, &error);
 	SUCCESS_RES (ret, error);
 
 	/* Failure one */
@@ -443,7 +417,7 @@ DEFINE_TEST(wrap_key)
 	wrapped = find_key_with_value (session, "value");
 
 	/* Simple One */
-	output = gck_session_wrap_key (session, wrapper, CKM_MOCK_WRAP, wrapped, &n_output, &error);
+	output = gck_session_wrap_key (session, wrapper, CKM_MOCK_WRAP, wrapped, &n_output, NULL, &error);
 	SUCCESS_RES (output, error);
 	g_assert (output);
 	g_assert_cmpsize (n_output, ==, 5);
@@ -507,7 +481,7 @@ DEFINE_TEST(unwrap_key)
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 
 	/* Full One*/
-	unwrapped = gck_session_unwrap_key (session, wrapper, mech, "special", 7, attrs, NULL, &error);
+	unwrapped = gck_session_unwrap_key_full (session, wrapper, mech, "special", 7, attrs, NULL, &error);
 	SUCCESS_RES (unwrapped, error);
 	g_assert (GCK_IS_OBJECT (unwrapped));
 	check_key_with_value (session, unwrapped, CKO_SECRET_KEY, "special");
@@ -515,7 +489,7 @@ DEFINE_TEST(unwrap_key)
 
 	/* Failure one */
 	mech->type = 0;
-	unwrapped = gck_session_unwrap_key (session, wrapper, mech, "special", 7, attrs, NULL, &error);
+	unwrapped = gck_session_unwrap_key_full (session, wrapper, mech, "special", 7, attrs, NULL, &error);
 	FAIL_RES (unwrapped, error);
 
 	/* Asynchronous one */
@@ -559,7 +533,7 @@ DEFINE_TEST(derive_key)
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 
 	/* Full One*/
-	derived = gck_session_derive_key (session, wrapper, mech, attrs, NULL, &error);
+	derived = gck_session_derive_key_full (session, wrapper, mech, attrs, NULL, &error);
 	SUCCESS_RES (derived, error);
 	g_assert (GCK_IS_OBJECT (derived));
 	check_key_with_value (session, derived, CKO_SECRET_KEY, "derived");
@@ -567,7 +541,7 @@ DEFINE_TEST(derive_key)
 
 	/* Failure one */
 	mech->type = 0;
-	derived = gck_session_derive_key (session, wrapper, mech, attrs, NULL, &error);
+	derived = gck_session_derive_key_full (session, wrapper, mech, attrs, NULL, &error);
 	FAIL_RES (derived, error);
 
 	/* Asynchronous one */

@@ -42,15 +42,20 @@ static GOptionEntry import_entries[] = {
 static void
 on_imported (GcrImporter *importer, GckObject *object)
 {
+	gulong attr_types[3];
 	GckAttributes *attrs;
 	GckAttribute *id;
 	CK_OBJECT_CLASS klass;
 	const gchar *message;
 	GError *err = NULL;
 	gchar *label, *hex;
-	
-	attrs = gck_attributes_new_empty (CKA_LABEL, CKA_CLASS, CKA_ID, GCK_INVALID);
-	if (!gck_object_get_full (object, attrs, NULL, &err)) {
+
+	attr_types[0] = CKA_LABEL;
+	attr_types[1] = CKA_CLASS;
+	attr_types[2] = CKA_ID;
+
+	attrs = gck_object_get_full (object, attr_types, G_N_ELEMENTS (attr_types), NULL, &err);
+	if (attrs == NULL) {
 		gkr_tool_handle_error (&err, "couldn't get imported object info");
 		return;
 	}
