@@ -2,7 +2,6 @@
 # Keep these in the order they should be tested
 TESTING_FILES = \
 	test-gck-attributes.c \
-	test-gck-mechanism.c \
 	test-gck-module.c \
 	test-gck-slot.c \
 	test-gck-session.c \

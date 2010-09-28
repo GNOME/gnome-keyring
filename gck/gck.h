@@ -53,19 +53,9 @@ typedef gpointer    (*GckAllocator)                         (gpointer data, gsiz
 
 typedef struct GckMechanism {
 	gulong type;
-	gpointer parameter;
+	gconstpointer parameter;
 	gulong n_parameter;
 } GckMechanism;
-
-GckMechanism*       gck_mechanism_new                       (gulong type);
-
-GckMechanism*       gck_mechanism_new_with_param            (gulong type,
-                                                             gconstpointer parameter,
-                                                             gulong n_parameter);
-
-GckMechanism*       gck_mechanism_ref                       (GckMechanism* mech);
-
-void                gck_mechanism_unref                     (GckMechanism* mech);
 
 typedef struct GckAttribute {
 	gulong type;

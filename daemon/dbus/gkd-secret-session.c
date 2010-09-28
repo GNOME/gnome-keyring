@@ -86,7 +86,6 @@ aes_create_dh_keys (GckSession *session, const gchar *group,
 	GckAttributes *attrs;
 	gconstpointer prime, base;
 	gsize n_prime, n_base;
-	GckMechanism *mech;
 	GError *error = NULL;
 	gboolean ret;
 
@@ -99,13 +98,10 @@ aes_create_dh_keys (GckSession *session, const gchar *group,
 	gck_attributes_add_data (attrs, CKA_PRIME, prime, n_prime);
 	gck_attributes_add_data (attrs, CKA_BASE, base, n_base);
 
-	mech = gck_mechanism_new (CKM_DH_PKCS_KEY_PAIR_GEN);
-
 	/* Perform the DH key generation */
-	ret = gck_session_generate_key_pair_full (session, mech, attrs, attrs,
-	                                          pub_key, priv_key, NULL, &error);
+	ret = gck_session_generate_key_pair (session, CKM_DH_PKCS_KEY_PAIR_GEN, attrs, attrs,
+	                                     pub_key, priv_key, NULL, &error);
 
-	gck_mechanism_unref (mech);
 	gck_attributes_unref (attrs);
 
 	if (ret == FALSE) {
@@ -122,18 +118,16 @@ aes_derive_key (GckSession *session, GckObject *priv_key,
                 gconstpointer input, gsize n_input, GckObject **aes_key)
 {
 	GError *error = NULL;
-	GckMechanism *mech;
+	GckMechanism mech = { CKM_DH_PKCS_DERIVE, input, n_input };
 	GckAttributes *attrs;
 
-	mech = gck_mechanism_new_with_param (CKM_DH_PKCS_DERIVE, input, n_input);
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_VALUE_LEN, 16UL);
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_AES);
 
-	*aes_key = gck_session_derive_key_full (session, priv_key, mech, attrs, NULL, &error);
+	*aes_key = gck_session_derive_key_full (session, priv_key, &mech, attrs, NULL, &error);
 
-	gck_mechanism_unref (mech);
 	gck_attributes_unref (attrs);
 
 	if (!*aes_key) {
@@ -576,7 +570,7 @@ GkdSecretSecret*
 gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
                                     DBusError *derr)
 {
-	GckMechanism *mech;
+	GckMechanism mech = { 0UL, NULL, 0 };
 	GckSession *session;
 	gpointer value, iv;
 	gsize n_value, n_iv;
@@ -591,16 +585,17 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
 		n_iv = 16;
 		iv = g_malloc (n_iv);
 		gcry_create_nonce (iv, n_iv);
-		mech = gck_mechanism_new_with_param (CKM_AES_CBC_PAD, iv, n_iv);
 	} else {
 		n_iv = 0;
 		iv = NULL;
-		mech = gck_mechanism_new (self->mech_type);
 	}
 
-	value = gck_session_wrap_key_full (session, self->key, mech, item, &n_value,
+	mech.type = self->mech_type;
+	mech.parameter = iv;
+	mech.n_parameter = n_iv;
+
+	value = gck_session_wrap_key_full (session, self->key, &mech, item, &n_value,
 	                                   NULL, &error);
-	gck_mechanism_unref (mech);
 
 	if (value == NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
@@ -623,7 +618,7 @@ gboolean
 gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
                                     GkdSecretSecret *secret, DBusError *derr)
 {
-	GckMechanism *mech;
+	GckMechanism mech;
 	GckObject *object;
 	GckSession *session;
 	GError *error = NULL;
@@ -652,13 +647,13 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
 	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
 	g_return_val_if_fail (session, FALSE);
 
-	mech = gck_mechanism_new_with_param (self->mech_type, secret->parameter,
-	                                     secret->n_parameter);
+	mech.type = self->mech_type;
+	mech.parameter = secret->parameter;
+	mech.n_parameter = secret->n_parameter;
 
-	object = gck_session_unwrap_key_full (session, self->key, mech, secret->value,
+	object = gck_session_unwrap_key_full (session, self->key, &mech, secret->value,
 	                                      secret->n_value, attrs, NULL, &error);
 
-	gck_mechanism_unref (mech);
 	gck_attributes_unref (attrs);
 
 	if (object == NULL) {
@@ -695,7 +690,7 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GckSession *sessio
                                       DBusError *derr)
 {
 	GckAttributes *alloc = NULL;
-	GckMechanism *mech;
+	GckMechanism mech;
 	GckObject *object;
 	GError *error = NULL;
 
@@ -712,13 +707,13 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GckSession *sessio
 		gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
 	}
 
-	mech = gck_mechanism_new_with_param (self->mech_type, secret->parameter,
-	                                     secret->n_parameter);
+	mech.type = self->mech_type;
+	mech.parameter = secret->parameter;
+	mech.n_parameter = secret->n_parameter;
 
-	object = gck_session_unwrap_key_full (session, self->key, mech, secret->value,
+	object = gck_session_unwrap_key_full (session, self->key, &mech, secret->value,
 	                                      secret->n_value, attrs, NULL, &error);
 
-	gck_mechanism_unref (mech);
 	gck_attributes_unref (alloc);
 
 	if (object == NULL) {

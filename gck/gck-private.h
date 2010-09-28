@@ -106,6 +106,8 @@ typedef struct _GckArguments {
 
 } GckArguments;
 
+#define GCK_MECHANISM_EMPTY        { 0UL, NULL, 0 }
+
 #define GCK_ARGUMENTS_INIT 	   { NULL, NULL, 0 }
 
 #define GCK_TYPE_CALL             (_gck_call_get_type())
