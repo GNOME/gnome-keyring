@@ -62,7 +62,7 @@ attribute_init (GckAttribute *attr, gulong attr_type,
 	if (value) {
 		attr->value = (allocator) (NULL, length ? length : 1);
 		g_assert (attr->value);
-		memcpy (attr->value, value, length);
+		memcpy ((gpointer)attr->value, value, length);
 	}
 }
 
@@ -565,7 +565,7 @@ attribute_init_copy (GckAttribute *dest, const GckAttribute *src, GckAllocator a
 	if (src->value) {
 		dest->value = (allocator) (NULL, src->length ? src->length : 1);
 		g_assert (dest->value);
-		memcpy (dest->value, src->value, src->length);
+		memcpy ((gpointer)dest->value, src->value, src->length);
 	}
 }
 
@@ -594,7 +594,7 @@ attribute_clear (GckAttribute *attr, GckAllocator allocator)
 	g_assert (attr);
 	g_assert (allocator);
 	if (attr->value)
-		(allocator) (attr->value, 0);
+		(allocator) ((gpointer)attr->value, 0);
 	attr->value = NULL;
 	attr->length = 0;
 }

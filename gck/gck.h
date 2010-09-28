@@ -59,7 +59,7 @@ typedef struct GckMechanism {
 
 typedef struct GckAttribute {
 	gulong type;
-	gpointer value;
+	gconstpointer value;
 	gulong length;
 } GckAttribute;
 

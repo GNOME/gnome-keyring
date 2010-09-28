@@ -189,6 +189,7 @@ object_property_get (GckObject *object, DBusMessage *message,
 	GError *error = NULL;
 	DBusMessage *reply;
 	GckAttribute attr;
+	gpointer value;
 	gsize length;
 
 	if (!gkd_secret_property_get_type (prop_name, &attr.type))
@@ -196,7 +197,7 @@ object_property_get (GckObject *object, DBusMessage *message,
 		                                      "Object does not have the '%s' property", prop_name);
 
 	/* Retrieve the actual attribute */
-	attr.value = gck_object_get_data (object, attr.type, NULL, &length, &error);
+	attr.value = value = gck_object_get_data (object, attr.type, NULL, &length, &error);
 	if (error != NULL) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't retrieve '%s' property: %s",
@@ -210,7 +211,7 @@ object_property_get (GckObject *object, DBusMessage *message,
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	gkd_secret_property_append_variant (&iter, &attr);
-	g_free (attr.value);
+	g_free (value);
 	return reply;
 }
 
