@@ -8,66 +8,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-22 23:22+0200\n"
-"PO-Revision-Date: 2010-05-22 23:22+0200\n"
+"POT-Creation-Date: 2010-09-29 23:41+0200\n"
+"PO-Revision-Date: 2010-09-04 23:05+0200\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Aquesta opció habilita el component PKCS#11 en el dimoni del gnome-keyring. "
-"Només té efecte quan s'inicia amb el gnome-session, (per exemple, quan "
-"l'usuari entra a la sessió). Es pot sobreescriure si es passa una opció de "
-"línia d'ordres al dimoni."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Aquesta opció habilita l'agent SSH en el dimoni del gnome-keyring. Només té "
-"efecte quan s'inicia el gnome-keyring-daemon, (per exemple, quan l'usuari "
-"entra a la sessió). Es pot sobreescriure aquest paràmetre si es passa una "
-"opció de línia d'ordres al dimoni."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Aquesta opció habilita el component de servei de secrets en el dimoni del "
-"gnome-keyring. Només té efecte quan s'inicia amb el gnome-session, (per "
-"exemple, quan l'usuari entra a la sessió). Es pot sobreescriure aquest "
-"paràmetre si es passa una opció de línia d'ordres al dimoni."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Si està habilitat el component PKCS#11 del gnome-keyring."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Si està habilitat l'agent SSH del gnome-keyring."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Si està habilitat el servei de secrets del gnome-keyring."
-
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:641
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Unnamed"
 msgstr "Sense nom"
 
@@ -110,46 +63,6 @@ msgstr ""
 "Una aplicació vol crear un anell de claus nou anomenat «%s». Trieu la "
 "contrasenya nova que hi vulgueu utilitzar."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "Desbloca l'anell de claus d'entrada"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-msgid "Enter password for to unlock your login keyring"
-msgstr "Introduïu la contrasenya per desblocar l'anell de claus d'entrada"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"La contrasenya que utilitzeu per entrar a l'ordinador ja no coincideix amb "
-"la contrasenya de l'anell de claus d'entrada."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"No s'ha desblocat l'anell de claus d'entrada quan heu entrat a l'ordinador."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "Desbloca l'anell de claus"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Introduïu la contrasenya per desblocar l'anell de claus «%s»"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Una aplicació vol accedir a l'anell de claus «%s», però està blocat"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:226
-msgid "The unlock password was incorrect"
-msgstr "La contrasenya per desblocar era incorrecta"
-
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Magatzem de certificats i de claus"
@@ -174,165 +87,44 @@ msgstr "Anell de claus del GNOME: agent SSH"
 msgid "SSH Key Agent"
 msgstr "Agent de claus SSH"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Anell de claus del GNOME: agent GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "Agent de contrasenyes GPG"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#, c-format
+msgid "PGP Key: %s"
+msgstr "Clau PGP: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
+msgid "Enter Passphrase"
+msgstr "Introduïu la contrasenya"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+msgid "Forget this password if idle for"
+msgstr "Oblida aquesta contrasenya si s'està inactiu durant"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+msgid "Forget this password after"
+msgstr "Oblida aquesta contrasenya després de"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+msgid "Forget this password when I log out"
+msgstr "Oblida aquesta contrasenya quan surti"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:207
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Entrada"
-
-#: ../daemon/login/gkd-login.c:643
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Desbloca la contrasenya per a: %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Cal una contrasenya nova"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Cal una contrasenya nova per al magatzem segur"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Es necessita una contrasenya per poder preparar «%s» per al magatzem de "
-"certificats o claus"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Desbloca la clau privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Desbloca l'anell de claus"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Desbloca la clau pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Desbloca"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Introduïu la contrasenya per desblocar la clau privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Introduïu la contrasenya per desblocar el certificat"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Introduïu la contrasenya per desblocar la clau pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Introduïu la contrasenya per desblocar"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Una aplicació vol accedir a la clau privada «%s», però està blocada"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Una aplicació vol accedir al certificat «%s», però està blocat"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Una aplicació vol accedir a la clau pública «%s», però està blocada"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Una aplicació vol accedir a «%s», però està blocat"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Desbloca el magatzem de certificats/claus"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Introduïu la contrasenya per desblocar el magatzem de certificats/claus"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Una aplicació vol accedir al magatzem de certificats/claus «%s», però està "
-"blocat"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "Voleu emmagatzemar les contrasenyes desxifrades?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Si escolliu utilitzar una contrasenya en blanc, les contrasenyes "
-"emmagatzemades no es xifraran amb seguretat. Aquestes seran accessibles per "
-"qualsevol que tingui accés als vostres fitxers."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Utilitza un magatzem no segur"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Les contrasenyes no coincideixen."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "La contrasenya no pot estar en blanc"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Desbloca l'anell de claus automàticament quan estigui en la sessió"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Força de la contrasenya nova"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Aplicació:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_Confirmeu:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Detalls:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Nom:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "C_ontrasenya antiga:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "Contrasen_ya:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -375,7 +167,7 @@ msgid "Surname"
 msgstr "Cognom"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "Número de sèrie"
 
@@ -543,94 +335,94 @@ msgstr "Certificat del client SSL"
 msgid "SSL Server Certificate"
 msgstr "Certificat del servidor SSL"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "Extensió"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "Identificador"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "Valor"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "Crític"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "Sí"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "No"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "Nom de l'assumpte"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "Nom de l'emissor"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "Certificat emès"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "Versió"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "No és vàlid abans de"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "No és vàlid després de"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "Signatura"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "Algorisme de la signatura"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "Paràmetres de la signatura"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "Informació de la clau pública"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "Clau de l'algorisme"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "Paràmetres de la clau"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "Mida de la clau"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "Clau pública"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "Empremtes"
 
@@ -647,22 +439,26 @@ msgid "Password:"
 msgstr "Contrasenya:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Desbloca l'anell de claus automàticament quan estigui en la sessió"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
 msgstr "Bloca aquest anell de claus després de"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
 msgstr "Bloca aquest anell de claus si està inactiu durant"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
 msgstr "Bloca aquest anell de claus quan surti"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#: ../gcr/gcr-unlock-options-widget.ui.h:5
 msgid "minutes"
 msgstr "minuts"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "S'ha cancel·lat l'operació"
 
@@ -678,6 +474,18 @@ msgstr "Importa certificats/claus"
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Trieu una ubicació on emmagatzemar els certificats/claus importats."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+msgid "Enter password to unlock the private key"
+msgstr "Introduïu la contrasenya per desblocar la clau privada"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+msgid "Enter password to unlock the certificate"
+msgstr "Introduïu la contrasenya per desblocar el certificat"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+msgid "Enter password to unlock"
+msgstr "Introduïu la contrasenya per desblocar"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -712,23 +520,23 @@ msgstr "S'ha de desblocar el certificat «%s» per poder-lo importar"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "S'ha de desblocar «%s» per poder-lo importar"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "Clau privada"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "Certificat"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "Dades no reconegudes o no compatibles."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "No s'han pogut analitzar les dades. No són vàlides o està malmeses."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "Les dades estan blocades"
 
@@ -825,7 +633,7 @@ msgid "No key is needed"
 msgstr "No es necessita cap clau"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "La clau és diferent que abans"
 
 #: ../gp11/gp11-misc.c:149
@@ -1052,13 +860,251 @@ msgstr "L'usuari ha rebutjat la sol·licitud de signatura"
 msgid "Unknown error"
 msgstr "Error desconegut"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "Certificat sense nom"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "No s'ha pogut analitzar la clau pública SSH"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Desbloca la contrasenya per a: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+msgid "The unlock password was incorrect"
+msgstr "La contrasenya per desblocar era incorrecta"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+msgid "Unlock Login Keyring"
+msgstr "Desbloca l'anell de claus d'entrada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Enter password to unlock your login keyring"
+msgstr "Introduïu la contrasenya per desblocar l'anell de claus d'entrada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"La contrasenya que utilitzeu per entrar a l'ordinador ja no coincideix amb "
+"la contrasenya de l'anell de claus d'entrada."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"No s'ha desblocat l'anell de claus d'entrada quan heu entrat a l'ordinador."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+msgid "Unlock Keyring"
+msgstr "Desbloca l'anell de claus"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduïu la contrasenya per desblocar l'anell de claus «%s»"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Una aplicació vol accedir a l'anell de claus «%s», però està blocat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Unlock private key"
+msgstr "Desbloca la clau privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Unlock certificate"
+msgstr "Desbloca l'anell de claus"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Unlock public key"
+msgstr "Desbloca la clau pública"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "Unlock"
+msgstr "Desbloca"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+msgid "Enter password to unlock the public key"
+msgstr "Introduïu la contrasenya per desblocar la clau pública"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Una aplicació vol accedir a la clau privada «%s», però està blocada"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Una aplicació vol accedir al certificat «%s», però està blocat"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Una aplicació vol accedir a la clau pública «%s», però està blocada"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Una aplicació vol accedir a «%s», però està blocat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+msgid "Unlock certificate/key storage"
+msgstr "Desbloca el magatzem de certificats/claus"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Introduïu la contrasenya per desblocar el magatzem de certificats/claus"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Una aplicació vol accedir al magatzem de certificats/claus «%s», però està "
+"blocat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+msgid "New Password Required"
+msgstr "Cal una contrasenya nova"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+msgid "New password required for secure storage"
+msgstr "Cal una contrasenya nova per al magatzem segur"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Es necessita una contrasenya per poder preparar «%s» per al magatzem de "
+"certificats o claus"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+msgid "Change Password"
+msgstr "Canvia la contrasenya"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+msgid "Change password for secure storage"
+msgstr "Canvia la contrasenya per al magatzem segur"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr ""
+"Cal la contrasenya original i la nova per canviar la contrasenya de «%s»"
+
+#: ../ui/gku-prompt-tool.c:538
+msgid "Store passwords unencrypted?"
+msgstr "Voleu emmagatzemar les contrasenyes desxifrades?"
+
+#: ../ui/gku-prompt-tool.c:539
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Si escolliu utilitzar una contrasenya en blanc, les contrasenyes "
+"emmagatzemades no es xifraran amb seguretat. Aquestes seran accessibles per "
+"qualsevol que tingui accés als vostres fitxers."
+
+#: ../ui/gku-prompt-tool.c:546
+msgid "Use Unsafe Storage"
+msgstr "Utilitza un magatzem no segur"
+
+#: ../ui/gku-prompt-tool.c:584
+msgid "Passwords do not match."
+msgstr "Les contrasenyes no coincideixen."
+
+#: ../ui/gku-prompt-tool.c:594
+msgid "Password cannot be blank"
+msgstr "La contrasenya no pot estar en blanc"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "Força de la contrasenya nova"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "_Aplicació:"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "_Confirmeu:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "_Detalls:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "_Nom:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "C_ontrasenya antiga:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "Contrasen_ya:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Aquesta opció habilita el component PKCS#11 en el dimoni del gnome-"
+#~ "keyring. Només té efecte quan s'inicia amb el gnome-session, (per "
+#~ "exemple, quan l'usuari entra a la sessió). Es pot sobreescriure si es "
+#~ "passa una opció de línia d'ordres al dimoni."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Aquesta opció habilita l'agent SSH en el dimoni del gnome-keyring. Només "
+#~ "té efecte quan s'inicia el gnome-keyring-daemon, (per exemple, quan "
+#~ "l'usuari entra a la sessió). Es pot sobreescriure aquest paràmetre si es "
+#~ "passa una opció de línia d'ordres al dimoni."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Aquesta opció habilita el component de servei de secrets en el dimoni del "
+#~ "gnome-keyring. Només té efecte quan s'inicia amb el gnome-session, (per "
+#~ "exemple, quan l'usuari entra a la sessió). Es pot sobreescriure aquest "
+#~ "paràmetre si es passa una opció de línia d'ordres al dimoni."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Si està habilitat el component PKCS#11 del gnome-keyring."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Si està habilitat l'agent SSH del gnome-keyring."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Si està habilitat el servei de secrets del gnome-keyring."
 
 #~ msgid "Unlock password for %s keyring"
 #~ msgstr "Contrasenya de desblocatge de l'anell de claus %s"
