@@ -3,8 +3,6 @@
 
 #include "gcr.h"
 
-#include "gp11/gp11.h"
-
 #include <glib.h>
 
 void              _gcr_initialize                  (void);

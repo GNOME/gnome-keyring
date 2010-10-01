@@ -30,39 +30,33 @@
 #include "daemon/gkd-pkcs11.h"
 
 #include "egg/egg-cleanup.h"
+#include "egg/egg-error.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 static DBusConnection *dbus_conn = NULL;
 static GkdSecretService *secrets_service = NULL;
 
-static GP11Slot*
+static GckSlot*
 calculate_secrets_slot (void)
 {
-	GP11Slot *slot = NULL;
-	GP11Module *module;
-	GList *slots, *l;
-	GP11SlotInfo *info;
+	GckSlot *slot = NULL;
+	GckModule *module;
+	GList *modules;
+	GError *err = NULL;
 
-	module = gp11_module_new (gkd_pkcs11_get_functions ());
+	/* TODO: Should we be handling just one module here? */
+	module = gck_module_new (gkd_pkcs11_get_functions (), 0);
 	g_return_val_if_fail (module, NULL);
 
-	/*
-	 * Find the right slot.
-	 *
-	 * TODO: This isn't necessarily the best way to do this.
-	 * A good function could be added to gp11 library.
-	 * But needs more thought on how to do this.
-	 */
-	slots = gp11_module_get_slots (module, TRUE);
-	for (l = slots; !slot && l; l = g_list_next (l)) {
-		info = gp11_slot_get_info (l->data);
-		if (g_ascii_strcasecmp ("Secret Store", info->slot_description) == 0)
-			slot = g_object_ref (l->data);
-		gp11_slot_info_free (info);
+	modules = g_list_prepend (NULL, module);
+	slot = gck_modules_token_for_uri (modules, "pkcs11:token=Secret%20Store", &err);
+	if (!slot && err) {
+		g_warning ("couldn't find secret store: %s", egg_error_message (err));
+		g_clear_error (&err);
 	}
-	gp11_list_unref_free (slots);
 
+	gck_list_unref_free (modules);
 	return slot;
 }
 
@@ -73,7 +67,7 @@ gkd_dbus_secrets_startup (void)
 	dbus_uint32_t result = 0;
 	const gchar *service = NULL;
 	unsigned int flags = 0;
-	GP11Slot *slot;
+	GckSlot *slot;
 
 	g_return_val_if_fail (dbus_conn, FALSE);
 

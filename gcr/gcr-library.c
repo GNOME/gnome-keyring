@@ -29,6 +29,8 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
+#include <gck/gck.h>
+
 #include <gcrypt.h>
 
 static GList *all_modules = NULL;
@@ -112,25 +114,12 @@ void
 _gcr_initialize (void)
 {
 	static volatile gsize gcr_initialized = 0;
-	GP11Module *module;
-	GError *error = NULL;
-	
+
 	/* Initialize the libgcrypt library if needed */
 	egg_libgcrypt_initialize ();
 
 	if (g_once_init_enter (&gcr_initialized)) {
-		
-		/* TODO: This needs reworking for multiple modules */
-		module = gp11_module_initialize (PKCS11_MODULE_PATH, NULL, &error);
-		if (module) {
-			gp11_module_set_pool_sessions (module, TRUE);
-			gp11_module_set_auto_authenticate (module, TRUE);
-			all_modules = g_list_prepend (all_modules, module);
-		} else { 
-			g_message ("couldn't initialize PKCS#11 module: %s",
-			           egg_error_message (error));
-		}
-
+		all_modules = gck_modules_initialize_registered (0);
 		g_once_init_leave (&gcr_initialized, 1);
 	}
 }

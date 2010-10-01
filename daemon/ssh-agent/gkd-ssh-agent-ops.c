@@ -24,7 +24,7 @@
 
 #include "gkd-ssh-agent-private.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11g.h"
@@ -43,60 +43,58 @@
 
 #define V1_LABEL "SSH1 RSA Key"
 
+typedef gboolean (*ObjectForeachFunc) (GckObject *object, gpointer user_data);
+
 /* ---------------------------------------------------------------------------- */
 
 
 static void
-copy_attribute (GP11Attributes *original, CK_ATTRIBUTE_TYPE type, GP11Attributes *dest)
+copy_attribute (GckAttributes *original, CK_ATTRIBUTE_TYPE type, GckAttributes *dest)
 {
-	GP11Attribute *attr;
+	GckAttribute *attr;
 
 	g_assert (original);
 	g_assert (dest);
 
-	attr = gp11_attributes_find (original, type);
+	attr = gck_attributes_find (original, type);
 	if (attr)
-		gp11_attributes_add (dest, attr);
+		gck_attributes_add (dest, attr);
 }
 
 static gboolean
-login_session (GP11Session *session)
+login_session (GckSession *session)
 {
-	GP11SessionInfo *info;
+	gulong state;
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
-	/* TODO: We should have a way to just get the state */
-	info = gp11_session_get_info (session);
-	g_return_val_if_fail (info, FALSE);
+	state = gck_session_get_state (session);
 
 	/* Log in the session if necessary */
-	if (info->state == CKS_RO_PUBLIC_SESSION || info->state == CKS_RW_PUBLIC_SESSION) {
-		if (!gp11_session_login (session, CKU_USER, NULL, 0, &error)) {
+	if (state == CKS_RO_PUBLIC_SESSION || state == CKS_RW_PUBLIC_SESSION) {
+		if (!gck_session_login (session, CKU_USER, NULL, 0, NULL, &error)) {
 			g_message ("couldn't log in to session: %s", egg_error_message (error));
 			ret = FALSE;
 		}
 	}
 
-	gp11_session_info_free (info);
-
 	return ret;
 }
 
-static GP11Attributes*
-build_like_attributes (GP11Attributes *attrs, CK_OBJECT_CLASS klass)
+static GckAttributes*
+build_like_attributes (GckAttributes *attrs, CK_OBJECT_CLASS klass)
 {
-	GP11Attributes *search;
+	GckAttributes *search;
 	gulong key_type;
 
 	g_assert (attrs);
 
 	/* Determine the key type */
-	if (!gp11_attributes_find_ulong (attrs, CKA_KEY_TYPE, &key_type))
+	if (!gck_attributes_find_ulong (attrs, CKA_KEY_TYPE, &key_type))
 		g_return_val_if_reached (NULL);
 
-	search = gp11_attributes_new ();
-	gp11_attributes_add_ulong (search, CKA_CLASS, klass);
+	search = gck_attributes_new ();
+	gck_attributes_add_ulong (search, CKA_CLASS, klass);
 	copy_attribute (attrs, CKA_KEY_TYPE, search);
 	copy_attribute (attrs, CKA_TOKEN, search);
 
@@ -122,26 +120,44 @@ build_like_attributes (GP11Attributes *attrs, CK_OBJECT_CLASS klass)
 }
 
 static void
-search_keys_like_attributes (gpointer session_or_module, GP11Attributes *attrs, CK_OBJECT_CLASS klass,
-                             GP11ObjectForeachFunc func, gpointer user_data)
+search_keys_like_attributes (GList *modules, GckSession *session, GckAttributes *attrs,
+                             CK_OBJECT_CLASS klass, ObjectForeachFunc func, gpointer user_data)
 {
-	GP11Attributes *search;
+	GckAttributes *search;
+	GckEnumerator *en;
 	GError *error = NULL;
 	GList *keys, *l;
+	GckObject *object;
+
+	g_assert (modules || session);
 
 	search = build_like_attributes (attrs, klass);
 
 	/* In all slots */
-	if (GP11_IS_MODULE (session_or_module)) {
-		if (!gp11_module_enumerate_objects_full (session_or_module, search, NULL,
-		                                         func, user_data, &error)) {
-			g_warning ("couldn't enumerate matching keys: %s", egg_error_message (error));
-			g_clear_error (&error);
+	if (modules) {
+		en = gck_modules_enumerate_objects (modules, search, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
+
+		for (;;) {
+			object = gck_enumerator_next (en, NULL, &error);
+			if (!object) {
+				if (error) {
+					g_warning ("couldn't enumerate matching keys: %s", egg_error_message (error));
+					g_clear_error (&error);
+				}
+				break;
+			}
+
+			if (!(func) (object, user_data))
+				break;
 		}
 
-	/* Otherwise search in the session */
-	} else if (GP11_IS_SESSION (session_or_module)){
-		keys = gp11_session_find_objects_full (session_or_module, search, NULL, &error);
+		g_object_unref (en);
+
+	}
+
+	/* Search in the session */
+	if (session){
+		keys = gck_session_find_objects (session, search, NULL, &error);
 
 		if (error) {
 			g_warning ("couldn't find matching keys: %s", egg_error_message (error));
@@ -153,22 +169,18 @@ search_keys_like_attributes (gpointer session_or_module, GP11Attributes *attrs, 
 					break;
 			}
 
-			gp11_list_unref_free (keys);
+			gck_list_unref_free (keys);
 		}
-
-	/* Bad object passed in */
-	} else {
-		g_assert_not_reached ();
 	}
 
-	gp11_attributes_unref (search);
+	gck_attributes_unref (search);
 }
 
 static gboolean
-list_all_matching (GP11Object *object, gpointer user_data)
+list_all_matching (GckObject *object, gpointer user_data)
 {
 	GList** list = (GList**)user_data;
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
 	*list = g_list_prepend (*list, g_object_ref (object));
 
 	/* Keep going */
@@ -176,11 +188,11 @@ list_all_matching (GP11Object *object, gpointer user_data)
 }
 
 static gboolean
-return_first_matching (GP11Object *object, gpointer user_data)
+return_first_matching (GckObject *object, gpointer user_data)
 {
-	GP11Object **result = (GP11Object**)user_data;
+	GckObject **result = (GckObject**)user_data;
 
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (*result == NULL, FALSE);
 	*result = g_object_ref (object);
@@ -190,22 +202,23 @@ return_first_matching (GP11Object *object, gpointer user_data)
 }
 
 static gboolean
-return_private_matching (GP11Object *object, gpointer user_data)
+return_private_matching (GckObject *object, gpointer user_data)
 {
-	GP11Object **result = (GP11Object**)user_data;
-	GP11Session *session;
-	GP11Attributes *attrs;
-	GP11Attribute *attr;
+	GckObject **result = (GckObject**)user_data;
+	GckSession *session;
+	GckAttributes *attrs;
+	GckAttribute *attr;
 	gboolean token;
 	GList *objects;
 	GError *error = NULL;
+	GckAttributes *atts;
 
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (*result == NULL, FALSE);
 
 	/* Get the key identifier and token */
-	attrs = gp11_object_get (object, &error, CKA_ID, CKA_TOKEN, GP11_INVALID);
+	attrs = gck_object_get (object, NULL, &error, CKA_ID, CKA_TOKEN, GCK_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -213,32 +226,32 @@ return_private_matching (GP11Object *object, gpointer user_data)
 	}
 
 	/* Dig out the key identifier and token */
-	attr = gp11_attributes_find (attrs, CKA_ID);
+	attr = gck_attributes_find (attrs, CKA_ID);
 	g_return_val_if_fail (attr, FALSE);
 
-	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
+	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
 
-	session = gp11_object_get_session (object);
-	g_return_val_if_fail (GP11_IS_SESSION (session), FALSE);
+	session = gck_object_get_session (object);
+	g_return_val_if_fail (GCK_IS_SESSION (session), FALSE);
 
 	if (!login_session (session))
 		return FALSE;
 
-	/* Search for the matching private key */
-	objects = gp11_session_find_objects (session, NULL,
-	                                     CKA_ID, attr->length, attr->value,
-	                                     CKA_CLASS, GP11_ULONG, CKO_PRIVATE_KEY,
-	                                     CKA_TOKEN, GP11_BOOLEAN, token,
-	                                     GP11_INVALID);
+	atts = gck_attributes_new ();
+	gck_attributes_add (atts, attr);
+	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_PRIVATE_KEY);
+	gck_attributes_add_boolean (atts, CKA_TOKEN, token);
 
-	gp11_attributes_unref (attrs);
+	/* Search for the matching private key */
+	objects = gck_session_find_objects (session, atts, NULL, NULL);
+	gck_attributes_unref (atts);
+	gck_attributes_unref (attrs);
 
 	/* Keep searching, not found */
 	if (objects) {
 		*result = g_object_ref (objects->data);
-		gp11_object_set_session (*result, session);
-		gp11_list_unref_free (objects);
+		gck_list_unref_free (objects);
 	}
 
 	g_object_unref (session);
@@ -248,13 +261,13 @@ return_private_matching (GP11Object *object, gpointer user_data)
 }
 
 static gboolean
-load_identity_v1_attributes (GP11Object *object, gpointer user_data)
+load_identity_v1_attributes (GckObject *object, gpointer user_data)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	GError *error = NULL;
 	GList **all_attrs;
 
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (user_data, FALSE);
 
 	/*
@@ -262,8 +275,8 @@ load_identity_v1_attributes (GP11Object *object, gpointer user_data)
 	 * In addition V1 keys are only RSA.
 	 */
 
-	attrs = gp11_object_get (object, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
-	                         CKA_PUBLIC_EXPONENT, CKA_CLASS, CKA_MODULUS_BITS, GP11_INVALID);
+	attrs = gck_object_get (object, NULL, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
+	                        CKA_PUBLIC_EXPONENT, CKA_CLASS, CKA_MODULUS_BITS, GCK_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -280,21 +293,21 @@ load_identity_v1_attributes (GP11Object *object, gpointer user_data)
 }
 
 static gboolean
-load_identity_v2_attributes (GP11Object *object, gpointer user_data)
+load_identity_v2_attributes (GckObject *object, gpointer user_data)
 {
-	GP11Attributes *attrs;
-	GP11Attribute *attr;
+	GckAttributes *attrs;
+	GckAttribute *attr;
 	GError *error = NULL;
 	gboolean valid = TRUE;
 	gboolean token;
 	GList **all_attrs;
 
-	g_return_val_if_fail (GP11_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (user_data, FALSE);
 
-	attrs = gp11_object_get (object, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
-	                         CKA_PUBLIC_EXPONENT, CKA_PRIME, CKA_SUBPRIME, CKA_BASE,
-	                         CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN, GP11_INVALID);
+	attrs = gck_object_get (object, NULL, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
+	                        CKA_PUBLIC_EXPONENT, CKA_PRIME, CKA_SUBPRIME, CKA_BASE,
+	                        CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN, GCK_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -302,7 +315,7 @@ load_identity_v2_attributes (GP11Object *object, gpointer user_data)
 	}
 
 	/* Dig out the label, and see if it's not v1, skip if so */
-	attr = gp11_attributes_find (attrs, CKA_LABEL);
+	attr = gck_attributes_find (attrs, CKA_LABEL);
 	if (attr != NULL) {
 		if (attr->length == strlen (V1_LABEL) &&
 		    strncmp ((gchar*)attr->value, V1_LABEL, attr->length) == 0)
@@ -310,14 +323,14 @@ load_identity_v2_attributes (GP11Object *object, gpointer user_data)
 	}
 
 	/* Figure out if it's a token object or not */
-	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
+	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
 
 	all_attrs = (GList**)user_data;
 	if (valid == TRUE)
 		*all_attrs = g_list_prepend (*all_attrs, attrs);
 	else
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 
 	/* Note that we haven't reffed the object or session */
 
@@ -326,32 +339,30 @@ load_identity_v2_attributes (GP11Object *object, gpointer user_data)
 }
 
 static void
-remove_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
+remove_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 {
 	GError *error = NULL;
 
-	g_assert (GP11_IS_SESSION (session));
+	g_assert (GCK_IS_SESSION (session));
 
 	if (!login_session (session))
 		return;
 
 	if (priv != NULL) {
-		gp11_object_set_session (priv, session);
-		gp11_object_destroy (priv, &error);
+		gck_object_destroy (priv, NULL, &error);
 
 		if (error) {
-			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+			if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
 				g_warning ("couldn't remove ssh private key: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
 
 	if (pub != NULL) {
-		gp11_object_set_session (pub, session);
-		gp11_object_destroy (pub, &error);
+		gck_object_destroy (pub, NULL, &error);
 
 		if (error) {
-			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+			if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
 				g_warning ("couldn't remove ssh public key: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
@@ -359,23 +370,26 @@ remove_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 }
 
 static void
-lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
+lock_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 {
+	GckAttributes *atts;
 	GError *error = NULL;
 	GList *objects, *l;
 
-	g_assert (GP11_IS_SESSION (session));
-	g_assert (GP11_IS_OBJECT (priv));
-	g_assert (GP11_IS_OBJECT (pub));
+	g_assert (GCK_IS_SESSION (session));
+	g_assert (GCK_IS_OBJECT (priv));
+	g_assert (GCK_IS_OBJECT (pub));
 
 	if (!login_session (session))
 		return;
 
+	atts = gck_attributes_new ();
+	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_attributes_add_ulong (atts, CKA_G_OBJECT, gck_object_get_handle (priv));
+
 	/* Delete any authenticator objects */
-	objects = gp11_session_find_objects (session, &error,
-	                                     CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                                     CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (priv),
-	                                     GP11_INVALID);
+	objects = gck_session_find_objects (session, atts, NULL, &error);
+	gck_attributes_unref (atts);
 
 	if (error) {
 		g_warning ("couldn't search for authenticator objects: %s", egg_error_message (error));
@@ -385,7 +399,7 @@ lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 
 	/* Delete them all */
 	for (l = objects; l; l = g_list_next (l)) {
-		gp11_object_destroy (l->data, &error);
+		gck_object_destroy (l->data, NULL, &error);
 		if (error) {
 			g_warning ("couldn't delete authenticator object: %s", egg_error_message (error));
 			g_clear_error (&error);
@@ -394,24 +408,22 @@ lock_key_pair (GP11Session *session, GP11Object *priv, GP11Object *pub)
 }
 
 static void
-remove_by_public_key (GP11Session *session, GP11Object *pub, gboolean exclude_v1)
+remove_by_public_key (GckSession *session, GckObject *pub, gboolean exclude_v1)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	GError *error = NULL;
 	GList *objects;
 	gboolean token;
 	gchar *label;
 
-	g_assert (GP11_IS_SESSION (session));
-	g_assert (GP11_IS_OBJECT (pub));
+	g_assert (GCK_IS_SESSION (session));
+	g_assert (GCK_IS_OBJECT (pub));
 
 	if (!login_session (session))
 		return;
 
-	gp11_object_set_session (pub, session);
-	attrs = gp11_object_get (pub, &error,
-	                         CKA_LABEL, CKA_ID, CKA_TOKEN,
-	                         GP11_INVALID);
+	attrs = gck_object_get (pub, NULL, &error, CKA_LABEL, CKA_ID, CKA_TOKEN, GCK_INVALID);
+
 	if (error) {
 		g_warning ("couldn't lookup attributes for key: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -419,22 +431,22 @@ remove_by_public_key (GP11Session *session, GP11Object *pub, gboolean exclude_v1
 	}
 
 	/* Skip over SSH V1 keys */
-	if (exclude_v1 && gp11_attributes_find_string (attrs, CKA_LABEL, &label)) {
+	if (exclude_v1 && gck_attributes_find_string (attrs, CKA_LABEL, &label)) {
 		if (label && strcmp (label, V1_LABEL) == 0) {
-			gp11_attributes_unref (attrs);
+			gck_attributes_unref (attrs);
 			g_free (label);
 			return;
 		}
 	}
 
 	/* Lock token objects, remove session objects */
-	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
+	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
 
 	/* Search for exactly the same attributes but with a private key class */
-	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-	objects = gp11_session_find_objects_full (session, attrs, NULL, &error);
-	gp11_attributes_unref (attrs);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	objects = gck_session_find_objects (session, attrs, NULL, &error);
+	gck_attributes_unref (attrs);
 
 	if (error) {
 		g_warning ("couldn't search for related key: %s", egg_error_message (error));
@@ -449,37 +461,36 @@ remove_by_public_key (GP11Session *session, GP11Object *pub, gboolean exclude_v1
 		remove_key_pair (session, objects->data, pub);
 	}
 
-	gp11_list_unref_free (objects);
+	gck_list_unref_free (objects);
 }
 
 static gboolean
-create_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pub)
+create_key_pair (GckSession *session, GckAttributes *priv, GckAttributes *pub)
 {
-	GP11Object *priv_key, *pub_key;
+	GckObject *priv_key, *pub_key;
 	GError *error = NULL;
 
-	g_assert (GP11_IS_SESSION (session));
+	g_assert (GCK_IS_SESSION (session));
 	g_assert (priv);
 	g_assert (pub);
 
 	if (!login_session (session))
 		return FALSE;
 
-	priv_key = gp11_session_create_object_full (session, priv, NULL, &error);
+	priv_key = gck_session_create_object (session, priv, NULL, &error);
 	if (error) {
 		g_warning ("couldn't create session private key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return FALSE;
 	}
 
-	pub_key = gp11_session_create_object_full (session, pub, NULL, &error);
+	pub_key = gck_session_create_object (session, pub, NULL, &error);
 	if (error) {
 		g_warning ("couldn't create session public key: %s", egg_error_message (error));
 		g_clear_error (&error);
 
 		/* Failed, so remove private as well */
-		gp11_object_set_session (priv_key, session);
-		gp11_object_destroy (priv_key, NULL);
+		gck_object_destroy (priv_key, NULL, NULL);
 		g_object_unref (priv_key);
 
 		return FALSE;
@@ -492,17 +503,16 @@ create_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pub
 }
 
 static void
-destroy_replaced_keys (GP11Session *session, GList *keys)
+destroy_replaced_keys (GckSession *session, GList *keys)
 {
 	GError *error = NULL;
 	GList *l;
 
-	g_assert (GP11_IS_SESSION (session));
+	g_assert (GCK_IS_SESSION (session));
 
 	for (l = keys; l; l = g_list_next (l)) {
-		gp11_object_set_session (l->data, session);
-		if (!gp11_object_destroy (l->data, &error)) {
-			if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+		if (!gck_object_destroy (l->data, NULL, &error)) {
+			if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
 				g_warning ("couldn't delete a SSH key we replaced: %s",
 				           egg_error_message (error));
 			g_clear_error (&error);
@@ -511,24 +521,24 @@ destroy_replaced_keys (GP11Session *session, GList *keys)
 }
 
 static gboolean
-replace_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pub)
+replace_key_pair (GckSession *session, GckAttributes *priv, GckAttributes *pub)
 {
 	GList *priv_prev, *pub_prev;
 
-	g_assert (GP11_IS_SESSION (session));
+	g_assert (GCK_IS_SESSION (session));
 	g_assert (priv);
 	g_assert (pub);
 
 	if (!login_session (session))
 		return FALSE;
 
-	gp11_attributes_add_boolean (priv, CKA_TOKEN, FALSE);
-	gp11_attributes_add_boolean (pub, CKA_TOKEN, FALSE);
+	gck_attributes_add_boolean (priv, CKA_TOKEN, FALSE);
+	gck_attributes_add_boolean (pub, CKA_TOKEN, FALSE);
 
 	/* Find the previous keys that match the same description */
 	priv_prev = pub_prev = NULL;
-	search_keys_like_attributes (session, priv, CKO_PRIVATE_KEY, list_all_matching, &priv_prev);
-	search_keys_like_attributes (session, priv, CKO_PUBLIC_KEY, list_all_matching, &pub_prev);
+	search_keys_like_attributes (NULL, session, priv, CKO_PRIVATE_KEY, list_all_matching, &priv_prev);
+	search_keys_like_attributes (NULL, session, priv, CKO_PUBLIC_KEY, list_all_matching, &pub_prev);
 
 	/* Now try and create the new keys */
 	if (create_key_pair (session, priv, pub)) {
@@ -538,15 +548,15 @@ replace_key_pair (GP11Session *session, GP11Attributes *priv, GP11Attributes *pu
 		destroy_replaced_keys (session, pub_prev);
 	}
 
-	gp11_list_unref_free (priv_prev);
-	gp11_list_unref_free (pub_prev);
+	gck_list_unref_free (priv_prev);
+	gck_list_unref_free (pub_prev);
 
 	return TRUE;
 }
 
 static gboolean
 load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
-                 GP11Attributes *priv, GP11Attributes *pub)
+                 GckAttributes *priv, GckAttributes *pub)
 {
 	guchar constraint;
 	guint32 lifetime;
@@ -565,8 +575,8 @@ load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
 			if (!egg_buffer_get_uint32 (buffer, offset, &offset, &lifetime))
 				return FALSE;
 
-			gp11_attributes_add_ulong (pub, CKA_G_DESTRUCT_AFTER, lifetime);
-			gp11_attributes_add_ulong (priv, CKA_G_DESTRUCT_AFTER, lifetime);
+			gck_attributes_add_ulong (pub, CKA_G_DESTRUCT_AFTER, lifetime);
+			gck_attributes_add_ulong (priv, CKA_G_DESTRUCT_AFTER, lifetime);
 			break;
 
 		case GKD_SSH_FLAG_CONSTRAIN_CONFIRM:
@@ -591,9 +601,9 @@ load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
 static gboolean
 op_add_identity (GkdSshAgentCall *call)
 {
-	GP11Attributes *pub;
-	GP11Attributes *priv;
-	GP11Session *session;
+	GckAttributes *pub;
+	GckAttributes *priv;
+	GckSession *session;
 	gchar *stype = NULL;
 	gchar *comment = NULL;
 	gboolean ret;
@@ -611,8 +621,8 @@ op_add_identity (GkdSshAgentCall *call)
 	}
 
 	g_free (stype);
-	priv = gp11_attributes_new_full ((GP11Allocator)egg_secure_realloc);
-	pub = gp11_attributes_new_full (g_realloc);
+	priv = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
+	pub = gck_attributes_new_full (g_realloc);
 
 	switch (algo) {
 	case CKK_RSA:
@@ -628,26 +638,26 @@ op_add_identity (GkdSshAgentCall *call)
 
 	if (!ret) {
 		g_warning ("couldn't read incoming SSH private key");
-		gp11_attributes_unref (pub);
-		gp11_attributes_unref (priv);
+		gck_attributes_unref (pub);
+		gck_attributes_unref (priv);
 		return FALSE;
 	}
 
 	/* Get the comment */
 	if (!egg_buffer_get_string (call->req, offset, &offset, &comment, (EggBufferAllocator)g_realloc)) {
-		gp11_attributes_unref (pub);
-		gp11_attributes_unref (priv);
+		gck_attributes_unref (pub);
+		gck_attributes_unref (priv);
 		return FALSE;
 	}
 
-	gp11_attributes_add_string (pub, CKA_LABEL, comment);
-	gp11_attributes_add_string (priv, CKA_LABEL, comment);
+	gck_attributes_add_string (pub, CKA_LABEL, comment);
+	gck_attributes_add_string (priv, CKA_LABEL, comment);
 	g_free (comment);
 
 	/* Any constraints on loading the key */
 	if (!load_contraints (call->req, offset, &offset, priv, pub)) {
-		gp11_attributes_unref (pub);
-		gp11_attributes_unref (priv);
+		gck_attributes_unref (pub);
+		gck_attributes_unref (priv);
 		return FALSE;
 	}
 
@@ -663,8 +673,8 @@ op_add_identity (GkdSshAgentCall *call)
 
 	gkd_ssh_agent_checkin_main_session (session);
 
-	gp11_attributes_unref (priv);
-	gp11_attributes_unref (pub);
+	gck_attributes_unref (priv);
+	gck_attributes_unref (pub);
 
 	egg_buffer_add_byte (call->resp, ret ? GKD_SSH_RES_SUCCESS : GKD_SSH_RES_FAILURE);
 	return TRUE;
@@ -673,8 +683,8 @@ op_add_identity (GkdSshAgentCall *call)
 static gboolean
 op_v1_add_identity (GkdSshAgentCall *call)
 {
-	GP11Attributes *pub, *priv;
-	GP11Session *session;
+	GckAttributes *pub, *priv;
+	GckSession *session;
 	gchar *comment = NULL;
 	gboolean ret;
 	gsize offset = 5;
@@ -683,32 +693,32 @@ op_v1_add_identity (GkdSshAgentCall *call)
 	if (!egg_buffer_get_uint32 (call->req, offset, &offset, &unused))
 		return FALSE;
 
-	priv = gp11_attributes_new_full ((GP11Allocator)egg_secure_realloc);
-	pub = gp11_attributes_new_full (g_realloc);
+	priv = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
+	pub = gck_attributes_new_full (g_realloc);
 
 	if (!gkd_ssh_agent_proto_read_pair_v1 (call->req, &offset, priv, pub)) {
 		g_warning ("couldn't read incoming SSH private key");
-		gp11_attributes_unref (pub);
-		gp11_attributes_unref (priv);
+		gck_attributes_unref (pub);
+		gck_attributes_unref (priv);
 		return FALSE;
 	}
 
 	/* Get the comment */
 	if (!egg_buffer_get_string (call->req, offset, &offset, &comment, (EggBufferAllocator)g_realloc)) {
-		gp11_attributes_unref (pub);
-		gp11_attributes_unref (priv);
+		gck_attributes_unref (pub);
+		gck_attributes_unref (priv);
 		return FALSE;
 	}
 
 	g_free (comment);
 
-	gp11_attributes_add_string (priv, CKA_LABEL, V1_LABEL);
-	gp11_attributes_add_string (pub, CKA_LABEL, V1_LABEL);
+	gck_attributes_add_string (priv, CKA_LABEL, V1_LABEL);
+	gck_attributes_add_string (pub, CKA_LABEL, V1_LABEL);
 
 	/* Any constraints on loading the key */
 	if (!load_contraints (call->req, offset, &offset, priv, pub)) {
-		gp11_attributes_unref (pub);
-		gp11_attributes_unref (priv);
+		gck_attributes_unref (pub);
+		gck_attributes_unref (priv);
 		return FALSE;
 	}
 
@@ -724,8 +734,8 @@ op_v1_add_identity (GkdSshAgentCall *call)
 
 	gkd_ssh_agent_checkin_main_session (session);
 
-	gp11_attributes_unref (priv);
-	gp11_attributes_unref (pub);
+	gck_attributes_unref (priv);
+	gck_attributes_unref (pub);
 
 	egg_buffer_add_byte (call->resp, ret ? GKD_SSH_RES_SUCCESS : GKD_SSH_RES_FAILURE);
 	return TRUE;
@@ -734,19 +744,34 @@ op_v1_add_identity (GkdSshAgentCall *call)
 static gboolean
 op_request_identities (GkdSshAgentCall *call)
 {
+	GckEnumerator *en;
+	GckObject *obj;
+	GError *error = NULL;
 	GList *all_attrs, *l;
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	gsize blobpos;
 	gchar *comment;
 
-	/* Find all the keys (we filter out v1 later) */
 	/* TODO: Check SSH purpose */
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+
+	/* Find all the keys (we filter out v1 later) */
+	en = gck_modules_enumerate_objects (call->modules, attrs, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
+	gck_attributes_unref (attrs);
+	g_return_val_if_fail (en, FALSE);
+
 	all_attrs = NULL;
-	if (!gp11_module_enumerate_objects (call->module,
-	                                    load_identity_v2_attributes, &all_attrs,
-	                                    CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
-	                                    GP11_INVALID)) {
+	do {
+		obj = gck_enumerator_next (en, NULL, &error);
+	} while (obj && load_identity_v2_attributes (obj, &all_attrs));
+
+	g_object_unref (en);
+
+	if (error) {
+		g_warning ("couldn't enumerate ssh keys: %s", egg_error_message (error));
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
+		g_clear_error (&error);
 		return TRUE;
 	}
 
@@ -758,7 +783,7 @@ op_request_identities (GkdSshAgentCall *call)
 		attrs = l->data;
 
 		/* Dig out the label */
-		if (!gp11_attributes_find_string (attrs, CKA_LABEL, &comment))
+		if (!gck_attributes_find_string (attrs, CKA_LABEL, &comment))
 			comment = NULL;
 
 		/* Add a space for the key blob length */
@@ -775,7 +800,7 @@ op_request_identities (GkdSshAgentCall *call)
 		egg_buffer_add_string (call->resp, comment ? comment : "");
 
 		g_free (comment);
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 	}
 
 	g_list_free (all_attrs);
@@ -787,18 +812,33 @@ static gboolean
 op_v1_request_identities (GkdSshAgentCall *call)
 {
 	GList *all_attrs, *l;
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
+	GError *error = NULL;
+	GckEnumerator *en;
+	GckObject *obj;
+
+	/* TODO: Check SSH purpose */
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
+	gck_attributes_add_string (attrs, CKA_LABEL, V1_LABEL);
 
 	/* Find all the keys not on token, and are V1 */
-	/* TODO: Check SSH purpose */
+	en = gck_modules_enumerate_objects (call->modules, attrs, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
+	gck_attributes_unref (attrs);
+	g_return_val_if_fail (en, FALSE);
+
 	all_attrs = NULL;
-	if (!gp11_module_enumerate_objects (call->module,
-	                                    load_identity_v1_attributes, &all_attrs,
-	                                    CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
-	                                    CKA_TOKEN, GP11_BOOLEAN, FALSE,
-	                                    CKA_LABEL, GP11_STRING, V1_LABEL,
-	                                    GP11_INVALID)) {
+	do {
+		obj = gck_enumerator_next (en, NULL, &error);
+	} while (obj && load_identity_v1_attributes (obj, &all_attrs));
+
+	g_object_unref (en);
+
+	if (error) {
+		g_warning ("couldn't enumerate ssh keys: %s", egg_error_message (error));
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
+		g_clear_error (&error);
 		return TRUE;
 	}
 
@@ -815,7 +855,7 @@ op_v1_request_identities (GkdSshAgentCall *call)
 		/* And now a per key comment */
 		egg_buffer_add_string (call->resp, "Public Key");
 
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 	}
 
 	g_list_free (all_attrs);
@@ -893,31 +933,34 @@ make_raw_sign_hash (GChecksumType algo, const guchar *data, gsize n_data,
 }
 
 static guchar*
-unlock_and_sign (GP11Session *session, GP11Object *key, gulong mech_type, const guchar *input,
+unlock_and_sign (GckSession *session, GckObject *key, gulong mech_type, const guchar *input,
                  gsize n_input, gsize *n_result, GError **err)
 {
-	GP11Attributes *attrs;
-	GP11Object *cred;
+	GckAttributes *attrs;
+	GckObject *cred;
 	gboolean always;
 
 	/* First check if we should authenticate the key */
-	attrs = gp11_object_get (key, err, CKA_ALWAYS_AUTHENTICATE, GP11_INVALID);
+	attrs = gck_object_get (key, NULL, err, CKA_ALWAYS_AUTHENTICATE, GCK_INVALID);
 	if (!attrs)
 		return NULL;
 
 	/* Authenticate the key if necessary, this allows long term */
-	if (!gp11_attributes_find_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, &always))
+	if (!gck_attributes_find_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, &always))
 		g_return_val_if_reached (NULL);
 
-	gp11_attributes_unref (attrs);
+	gck_attributes_unref (attrs);
 
 	if (always == TRUE) {
-		cred = gp11_session_create_object (session, err,
-		                                   CKA_TOKEN, GP11_BOOLEAN, FALSE,
-		                                   CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-		                                   CKA_VALUE, 0, NULL,
-		                                   CKA_G_OBJECT, GP11_ULONG, gp11_object_get_handle (key),
-		                                   GP11_INVALID);
+		attrs = gck_attributes_new ();
+		gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
+		gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
+		gck_attributes_add_empty (attrs, CKA_VALUE);
+		gck_attributes_add_ulong (attrs, CKA_G_OBJECT, gck_object_get_handle (key));
+
+		cred = gck_session_create_object (session, attrs, NULL, err);
+		gck_attributes_unref (attrs);
+
 		if (cred == NULL)
 			return NULL;
 
@@ -925,18 +968,18 @@ unlock_and_sign (GP11Session *session, GP11Object *key, gulong mech_type, const 
 	}
 
 	/* Do the magic */
-	return gp11_session_sign (session, key, mech_type, input, n_input, n_result, err);
+	return gck_session_sign (session, key, mech_type, input, n_input, n_result, NULL, err);
 }
 
 static gboolean
 op_sign_request (GkdSshAgentCall *call)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	GError *error = NULL;
-	GP11Object *key = NULL;
+	GckObject *key = NULL;
 	const guchar *data;
 	const gchar *salgo;
-	GP11Session *session;
+	GckSession *session;
 	guchar *result;
 	gsize n_data, n_result;
 	guint32 flags;
@@ -955,7 +998,7 @@ op_sign_request (GkdSshAgentCall *call)
 		return FALSE;
 
 	/* The key itself */
-	attrs = gp11_attributes_new ();
+	attrs = gck_attributes_new ();
 	if (!gkd_ssh_agent_proto_read_public (call->req, &offset, attrs, &algo))
 		return FALSE;
 
@@ -969,13 +1012,13 @@ op_sign_request (GkdSshAgentCall *call)
 
 	if (!egg_buffer_get_byte_array (call->req, offset, &offset, &data, &n_data) ||
 	    !egg_buffer_get_uint32 (call->req, offset, &offset, &flags)) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return FALSE;
 	}
 
 	/* Lookup the key */
-	search_keys_like_attributes (call->module, attrs, CKO_PUBLIC_KEY, return_private_matching, &key);
-	gp11_attributes_unref (attrs);
+	search_keys_like_attributes (call->modules, NULL, attrs, CKO_PUBLIC_KEY, return_private_matching, &key);
+	gck_attributes_unref (attrs);
 
 	if (!key) {
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
@@ -994,7 +1037,7 @@ op_sign_request (GkdSshAgentCall *call)
 	else
 		hash = make_raw_sign_hash (halgo, data, n_data, &n_hash);
 
-	session = gp11_object_get_session (key);
+	session = gck_object_get_session (key);
 	g_return_val_if_fail (session, FALSE);
 
 	result = unlock_and_sign (session, key, mech, hash, n_hash, &n_result, &error);
@@ -1004,8 +1047,8 @@ op_sign_request (GkdSshAgentCall *call)
 	g_free (hash);
 
 	if (error) {
-		if (!g_error_matches (error, GP11_ERROR, CKR_FUNCTION_CANCELED) &&
-		    !g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT))
+		if (!g_error_matches (error, GCK_ERROR, CKR_FUNCTION_CANCELED) &&
+		    !g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT))
 			g_message ("signing of the data failed: %s", egg_error_message (error));
 		g_clear_error (&error);
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
@@ -1048,14 +1091,14 @@ static gboolean
 op_v1_challenge (GkdSshAgentCall *call)
 {
 	gsize offset, n_data, n_result, n_hash;
-	GP11Session *session;
-	GP11Attributes *attrs;
+	GckSession *session;
+	GckAttributes *attrs;
 	guchar session_id[16];
 	guint8 hash[16];
 	const guchar *data;
 	guchar *result = NULL;
 	GChecksum *checksum;
-	GP11Object *key = NULL;
+	GckObject *key = NULL;
 	guint32 resp_type;
 	GError *error = NULL;
 	gboolean ret;
@@ -1065,9 +1108,9 @@ op_v1_challenge (GkdSshAgentCall *call)
 	ret = FALSE;
 	offset = 5;
 
-	attrs = gp11_attributes_new ();
+	attrs = gck_attributes_new ();
 	if (!gkd_ssh_agent_proto_read_public_v1 (call->req, &offset, attrs)) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return FALSE;
 	}
 
@@ -1076,7 +1119,7 @@ op_v1_challenge (GkdSshAgentCall *call)
 
 	/* Only protocol 1.1 is supported */
 	if (call->req->len <= offset) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
 		return TRUE;
 	}
@@ -1092,20 +1135,20 @@ op_v1_challenge (GkdSshAgentCall *call)
 
 	/* Did parsing fail? */
 	if (egg_buffer_has_error (call->req) || data == NULL) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return FALSE;
 	}
 
 	/* Not supported request type */
 	if (resp_type != 1) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
 		return TRUE;
 	}
 
 	/* Lookup the key */
-	search_keys_like_attributes (call->module, attrs, CKO_PUBLIC_KEY, return_private_matching, &key);
-	gp11_attributes_unref (attrs);
+	search_keys_like_attributes (call->modules, NULL, attrs, CKO_PUBLIC_KEY, return_private_matching, &key);
+	gck_attributes_unref (attrs);
 
 	/* Didn't find a key? */
 	if (key == NULL) {
@@ -1113,16 +1156,16 @@ op_v1_challenge (GkdSshAgentCall *call)
 		return TRUE;
 	}
 
-	session = gp11_object_get_session (key);
+	session = gck_object_get_session (key);
 	g_return_val_if_fail (session, FALSE);
 
-	result = gp11_session_decrypt (session, key, CKM_RSA_PKCS, data, n_data, &n_result, &error);
+	result = gck_session_decrypt (session, key, CKM_RSA_PKCS, data, n_data, &n_result, NULL, &error);
 
 	g_object_unref (session);
 	g_object_unref (key);
 
 	if (error) {
-		if (!g_error_matches (error, GP11_ERROR, CKR_FUNCTION_CANCELED))
+		if (!g_error_matches (error, GCK_ERROR, CKR_FUNCTION_CANCELED))
 			g_message ("decryption of the data failed: %s", egg_error_message (error));
 		g_clear_error (&error);
 		egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
@@ -1146,9 +1189,9 @@ op_v1_challenge (GkdSshAgentCall *call)
 static gboolean
 op_remove_identity (GkdSshAgentCall *call)
 {
-	GP11Attributes *attrs;
-	GP11Session *session;
-	GP11Object *key = NULL;
+	GckAttributes *attrs;
+	GckSession *session;
+	GckObject *key = NULL;
 	gsize offset;
 	guint sz;
 
@@ -1159,9 +1202,9 @@ op_remove_identity (GkdSshAgentCall *call)
 		return FALSE;
 
 	/* The public key itself */
-	attrs = gp11_attributes_new ();
+	attrs = gck_attributes_new ();
 	if (!gkd_ssh_agent_proto_read_public (call->req, &offset, attrs, NULL)) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return FALSE;
 	}
 
@@ -1173,8 +1216,8 @@ op_remove_identity (GkdSshAgentCall *call)
 	session = gkd_ssh_agent_checkout_main_session ();
 	g_return_val_if_fail (session, FALSE);
 
-	search_keys_like_attributes (session, attrs, CKO_PUBLIC_KEY, return_first_matching, &key);
-	gp11_attributes_unref (attrs);
+	search_keys_like_attributes (NULL, session, attrs, CKO_PUBLIC_KEY, return_first_matching, &key);
+	gck_attributes_unref (attrs);
 
 	if (key != NULL) {
 		remove_by_public_key (session, key, TRUE);
@@ -1191,16 +1234,16 @@ op_remove_identity (GkdSshAgentCall *call)
 static gboolean
 op_v1_remove_identity (GkdSshAgentCall *call)
 {
-	GP11Session *session;
-	GP11Attributes *attrs;
-	GP11Object *key = NULL;
+	GckSession *session;
+	GckAttributes *attrs;
+	GckObject *key = NULL;
 	gsize offset;
 
 	offset = 5;
 
-	attrs = gp11_attributes_new ();
+	attrs = gck_attributes_new ();
 	if (!gkd_ssh_agent_proto_read_public_v1 (call->req, &offset, attrs)) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return FALSE;
 	}
 
@@ -1212,8 +1255,8 @@ op_v1_remove_identity (GkdSshAgentCall *call)
 	session = gkd_ssh_agent_checkout_main_session ();
 	g_return_val_if_fail (session, FALSE);
 
-	search_keys_like_attributes (session, attrs, CKO_PUBLIC_KEY, return_first_matching, &key);
-	gp11_attributes_unref (attrs);
+	search_keys_like_attributes (NULL, session, attrs, CKO_PUBLIC_KEY, return_first_matching, &key);
+	gck_attributes_unref (attrs);
 
 	if (key != NULL) {
 		remove_by_public_key (session, key, FALSE);
@@ -1229,9 +1272,10 @@ op_v1_remove_identity (GkdSshAgentCall *call)
 static gboolean
 op_remove_all_identities (GkdSshAgentCall *call)
 {
-	GP11Session *session;
+	GckSession *session;
 	GList *objects, *l;
 	GError *error = NULL;
+	GckAttributes *attrs;
 
 	/*
 	 * This is the session that owns these objects. Only
@@ -1242,15 +1286,21 @@ op_remove_all_identities (GkdSshAgentCall *call)
 	g_return_val_if_fail (session, FALSE);
 
 	/* Find all session SSH public keys */
-	objects = gp11_session_find_objects (session, &error,
-	                                     CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
-	                                     GP11_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
 
+	objects = gck_session_find_objects (session, attrs, NULL, &error);
+	gck_attributes_unref (attrs);
 
-	for (l = objects; l; l = g_list_next (l))
-		remove_by_public_key (session, l->data, TRUE);
+	if (error) {
+		g_warning ("couldn't search for keys to remove: %s", egg_error_message (error));
+		g_clear_error (&error);
 
-	gp11_list_unref_free (objects);
+	} else {
+		for (l = objects; l; l = g_list_next (l))
+			remove_by_public_key (session, l->data, TRUE);
+		gck_list_unref_free (objects);
+	}
 
 	gkd_ssh_agent_checkin_main_session (session);
 
@@ -1261,9 +1311,10 @@ op_remove_all_identities (GkdSshAgentCall *call)
 static gboolean
 op_v1_remove_all_identities (GkdSshAgentCall *call)
 {
-	GP11Session *session;
+	GckSession *session;
 	GList *objects, *l;
 	GError *error = NULL;
+	GckAttributes *attrs;
 
 	/*
 	 * This is the session that owns these objects. Only
@@ -1274,16 +1325,23 @@ op_v1_remove_all_identities (GkdSshAgentCall *call)
 	g_return_val_if_fail (session, FALSE);
 
 	/* Find all session SSH v1 public keys */
-	objects = gp11_session_find_objects (session, &error,
-	                                     CKA_TOKEN, GP11_BOOLEAN, FALSE,
-	                                     CKA_CLASS, GP11_ULONG, CKO_PUBLIC_KEY,
-	                                     CKA_LABEL, GP11_STRING, V1_LABEL,
-	                                     GP11_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
+	gck_attributes_add_string (attrs, CKA_LABEL, V1_LABEL);
 
-	for (l = objects; l; l = g_list_next (l))
-		remove_by_public_key (session, l->data, FALSE);
+	objects = gck_session_find_objects (session, attrs, NULL, &error);
+	gck_attributes_unref (attrs);
 
-	gp11_list_unref_free (objects);
+	if (error) {
+		g_warning ("couldn't search for keys to remove: %s", egg_error_message (error));
+		g_clear_error (&error);
+
+	} else {
+		for (l = objects; l; l = g_list_next (l))
+			remove_by_public_key (session, l->data, FALSE);
+		gck_list_unref_free (objects);
+	}
 
 	gkd_ssh_agent_checkin_main_session (session);
 

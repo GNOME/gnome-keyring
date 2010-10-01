@@ -1089,4 +1089,3 @@ msgstr "_Ancien mot de passe :"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Mot de passe :"
-

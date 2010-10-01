@@ -30,7 +30,7 @@
 
 #include "gcr/gcr-parser.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -58,7 +58,7 @@ static const gchar* filedesc = NULL;
 static void
 parsed_item (GcrParser *par, gpointer user_data)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	const gchar *description;
 	const gchar *label;
 	

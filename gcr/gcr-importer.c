@@ -43,7 +43,7 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 struct _GcrImporterPrivate {
-	GP11Slot *slot;
+	GckSlot *slot;
 	GcrParser *parser;
 	GcrImporterPromptBehavior behavior;
 	
@@ -58,7 +58,7 @@ struct _GcrImporterPrivate {
 	gboolean prompted;
 	gboolean async;
 	GByteArray *buffer;
-	GP11Session *session;
+	GckSession *session;
 	GQueue queue;
 	
 	/* Extra async stuff */
@@ -88,7 +88,7 @@ G_DEFINE_TYPE_WITH_CODE (GcrImporter, gcr_importer, G_TYPE_OBJECT,
 static void
 cleanup_state_data (GcrImporter *self)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	
 	if (self->pv->buffer)
 		g_byte_array_free (self->pv->buffer, TRUE);
@@ -99,7 +99,7 @@ cleanup_state_data (GcrImporter *self)
 	self->pv->session = NULL;
 	
 	while ((attrs = g_queue_pop_head (&self->pv->queue)) != NULL)
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 	g_assert (g_queue_is_empty (&self->pv->queue));
 	
 	if (self->pv->input)
@@ -169,7 +169,7 @@ state_cancelled (GcrImporter *self, gboolean async)
  */
 
 static void
-complete_create_object (GcrImporter *self, GP11Object *object, GError *error)
+complete_create_object (GcrImporter *self, GckObject *object, GError *error)
 {
 	if (object == NULL) {
 		g_propagate_error (&self->pv->error, error);
@@ -186,15 +186,15 @@ static void
 on_create_object (GObject *obj, GAsyncResult *res, gpointer user_data)
 {
 	GError *error = NULL;
-	GP11Object *object = gp11_session_create_object_finish (GP11_SESSION (obj), res, &error);
+	GckObject *object = gck_session_create_object_finish (GCK_SESSION (obj), res, &error);
 	complete_create_object (GCR_IMPORTER (user_data), object, error);
 }
 
 static void
 state_create_object (GcrImporter *self, gboolean async)
 {
-	GP11Attributes *attrs;
-	GP11Object *object;
+	GckAttributes *attrs;
+	GckObject *object;
 	GError *error = NULL;
 	
 	/* No more objects */
@@ -206,18 +206,18 @@ state_create_object (GcrImporter *self, gboolean async)
 		/* Pop first one off the list */
 		attrs = g_queue_pop_head (&self->pv->queue);
 		g_assert (attrs);
-		
-		gp11_attributes_add_boolean (attrs, CKA_TOKEN, CK_TRUE);
-		
+
+		gck_attributes_add_boolean (attrs, CKA_TOKEN, CK_TRUE);
+
 		if (async) {
-			gp11_session_create_object_async (self->pv->session, attrs, self->pv->cancel, 
+			gck_session_create_object_async (self->pv->session, attrs, self->pv->cancel,
 			                                  on_create_object, self);
 		} else {
-			object = gp11_session_create_object_full (self->pv->session, attrs, self->pv->cancel, &error);
+			object = gck_session_create_object (self->pv->session, attrs, self->pv->cancel, &error);
 			complete_create_object (self, object, error);
 		}
 	
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 	}
 }
 
@@ -226,7 +226,7 @@ state_create_object (GcrImporter *self, gboolean async)
  */
 
 static void
-complete_open_session (GcrImporter *self, GP11Session *session, GError *error)
+complete_open_session (GcrImporter *self, GckSession *session, GError *error)
 {
 	if (!session) {
 		g_propagate_error (&self->pv->error, error);
@@ -241,14 +241,14 @@ static void
 on_open_session (GObject *obj, GAsyncResult *res, gpointer user_data)
 {
 	GError *error = NULL;
-	GP11Session *session = gp11_slot_open_session_finish (GP11_SLOT (obj), res, &error);
+	GckSession *session = gck_slot_open_session_finish (GCK_SLOT (obj), res, &error);
 	complete_open_session (GCR_IMPORTER (user_data), session, error);
 }
 
 static void
 state_open_session (GcrImporter *self, gboolean async)
 {
-	GP11Session *session;
+	GckSession *session;
 	GError *error = NULL;
 	
 	if (!self->pv->slot) {
@@ -258,11 +258,11 @@ state_open_session (GcrImporter *self, gboolean async)
 	} else {
 		
 		if (async) {
-			gp11_slot_open_session_async (self->pv->slot, CKF_RW_SESSION, NULL, NULL,
-			                              self->pv->cancel, on_open_session, self);
+			gck_slot_open_session_async (self->pv->slot, GCK_SESSION_READ_WRITE, self->pv->cancel,
+			                             on_open_session, self);
 		} else {
-			session = gp11_slot_open_session_full (self->pv->slot, CKF_RW_SESSION, NULL, NULL,
-			                                       self->pv->cancel, &error);
+			session = gck_slot_open_session_full (self->pv->slot, GCK_SESSION_READ_WRITE, 0, NULL, NULL,
+			                                      self->pv->cancel, &error);
 			complete_open_session (self, session, error);
 		}
 	}
@@ -276,7 +276,7 @@ state_open_session (GcrImporter *self, gboolean async)
  */
 
 static CK_RV
-hacky_perform_initialize_pin (GP11Slot *slot)
+hacky_perform_initialize_pin (GckSlot *slot)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SESSION_HANDLE session;
@@ -293,9 +293,9 @@ hacky_perform_initialize_pin (GP11Slot *slot)
 	 *  the gnome-keyring tool. 
 	 */
 	
-	funcs = gp11_module_get_functions (gp11_slot_get_module (slot));
+	funcs = gck_module_get_functions (gck_slot_get_module (slot));
 	g_return_val_if_fail (funcs, CKR_GENERAL_ERROR);
-	slot_id = gp11_slot_get_handle (slot);
+	slot_id = gck_slot_get_handle (slot);
 	
 	rv = funcs->C_OpenSession (slot_id, CKF_RW_SESSION | CKF_SERIAL_SESSION, NULL, NULL, &session);
 	if (rv != CKR_OK)
@@ -315,7 +315,7 @@ hacky_perform_initialize_pin (GP11Slot *slot)
 static void
 state_initialize_pin (GcrImporter *self, gboolean async)
 {
-	GP11TokenInfo *info;
+	GckTokenInfo *info;
 	gboolean initialize;
 	CK_RV rv;
 	
@@ -324,16 +324,16 @@ state_initialize_pin (GcrImporter *self, gboolean async)
 	/* HACK: Doesn't function when async */
 	if (!async) {
 		g_return_if_fail (self->pv->slot);
-		info = gp11_slot_get_token_info (self->pv->slot);
+		info = gck_slot_get_token_info (self->pv->slot);
 		g_return_if_fail (info);
 	
 		initialize = !(info->flags & CKF_USER_PIN_INITIALIZED);
-		gp11_token_info_free (info);
-		
+		gck_token_info_free (info);
+
 		if (initialize) {
 			rv = hacky_perform_initialize_pin (self->pv->slot);
 			if (rv != CKR_OK) {
-				g_propagate_error (&self->pv->error, g_error_new (GP11_ERROR, rv, "%s", gp11_message_from_rv (rv)));
+				g_propagate_error (&self->pv->error, g_error_new (GCK_ERROR, rv, "%s", gck_message_from_rv (rv)));
 				next_state (self, state_failure);
 				return;
 			} 
@@ -350,7 +350,7 @@ state_initialize_pin (GcrImporter *self, gboolean async)
 static void
 complete_import_prompt (GcrImporter *self, GcrImportDialog *dialog, gint response)
 {
-	GP11Slot *slot;
+	GckSlot *slot;
 
 	gtk_widget_hide (GTK_WIDGET (dialog));
 	self->pv->prompted = TRUE;
@@ -471,24 +471,24 @@ prepare_auth_secondary (CK_OBJECT_CLASS klass, const gchar *label)
 static void
 on_parser_parsed (GcrParser *parser, GcrImporter *self)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	
 	g_return_if_fail (GCR_IS_PARSER (parser));
 	g_return_if_fail (GCR_IS_IMPORTER (self));
 	
 	attrs = gcr_parser_get_parsed_attributes (parser);
 	g_return_if_fail (attrs);
-	g_queue_push_tail (&self->pv->queue, gp11_attributes_ref (attrs));
+	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
 }
 
 static gboolean
 on_parser_authenticate (GcrParser *parser, gint count, GcrImporter *self)
 {
 	GcrImportDialog *dialog;
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	const gchar *password;
 	gchar *text, *label;
-	GP11Slot *slot;
+	GckSlot *slot;
 	gulong klass;
 	
 	dialog = _gcr_import_dialog_new ();
@@ -499,10 +499,10 @@ on_parser_authenticate (GcrParser *parser, gint count, GcrImporter *self)
 	/* Figure out the text for the dialog */
 	attrs = gcr_parser_get_parsed_attributes (parser);
 	g_return_val_if_fail (attrs, FALSE);
-	
-	if (!gp11_attributes_find_ulong (attrs, CKA_CLASS, &klass))
+
+	if (!gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
 		klass = (gulong)-1;
-	if (!gp11_attributes_find_string (attrs, CKA_LABEL, &label))
+	if (!gck_attributes_find_string (attrs, CKA_LABEL, &label))
 		label = NULL;
 	
 	text = prepare_auth_secondary (klass, label);
@@ -749,8 +749,8 @@ gcr_importer_class_init (GcrImporterClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_PARSER,
 	           g_param_spec_object ("slot", "Slot", "PKCS#11 slot to import data into",
-	                                GP11_TYPE_SLOT, G_PARAM_READWRITE));
-	
+	                                GCK_TYPE_SLOT, G_PARAM_READWRITE));
+
 	g_object_class_install_property (gobject_class, PROP_PROMPT_BEHAVIOR,
 	           g_param_spec_int ("prompt-behavior", "Prompt Behavior", "Import Prompt Behavior",
 	                             0, G_MAXINT, GCR_IMPORTER_PROMPT_NEEDED, G_PARAM_READWRITE));
@@ -758,8 +758,8 @@ gcr_importer_class_init (GcrImporterClass *klass)
 	signals[IMPORTED] = g_signal_new ("imported", GCR_TYPE_IMPORTER, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrImporterClass, imported),
 	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
-	                                G_TYPE_NONE, 1, GP11_TYPE_OBJECT);
-	
+	                                G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
+
 	_gcr_initialize ();
 }
 
@@ -816,7 +816,7 @@ gcr_importer_set_parser (GcrImporter *self, GcrParser *parser)
 	g_object_notify (G_OBJECT (self), "parser");
 }
 
-GP11Slot*
+GckSlot*
 gcr_importer_get_slot (GcrImporter *self)
 {
 	g_return_val_if_fail (GCR_IS_IMPORTER (self), NULL);
@@ -824,7 +824,7 @@ gcr_importer_get_slot (GcrImporter *self)
 }
 
 void 
-gcr_importer_set_slot (GcrImporter *self, GP11Slot *slot)
+gcr_importer_set_slot (GcrImporter *self, GckSlot *slot)
 {
 	g_return_if_fail (GCR_IS_IMPORTER (self));
 	

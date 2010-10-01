@@ -37,7 +37,7 @@
 
 #include <glib/gi18n.h>
 
-#include <gp11/gp11.h>
+#include <gck/gck.h>
 
 #include <string.h>
 
@@ -48,7 +48,7 @@ enum {
 
 struct _GkdSecretCreate {
 	GkdSecretPrompt parent;
-	GP11Attributes *pkcs11_attrs;
+	GckAttributes *pkcs11_attrs;
 	gchar *result_path;
 };
 
@@ -70,7 +70,7 @@ prepare_create_prompt (GkdSecretCreate *self)
 
 	prompt = GKU_PROMPT (self);
 
-	if (!gp11_attributes_find_string (self->pkcs11_attrs, CKA_LABEL, &label))
+	if (!gck_attributes_find_string (self->pkcs11_attrs, CKA_LABEL, &label))
 		label = g_strdup (_("Unnamed"));
 
 	gku_prompt_reset (prompt, TRUE);
@@ -160,8 +160,7 @@ gkd_secret_create_finalize (GObject *obj)
 {
 	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
 
-	if (self->pkcs11_attrs)
-		gp11_attributes_unref (self->pkcs11_attrs);
+	gck_attributes_unref (self->pkcs11_attrs);
 	self->pkcs11_attrs = NULL;
 
 	g_free (self->result_path);
@@ -219,7 +218,7 @@ gkd_secret_create_class_init (GkdSecretCreateClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_PKCS11_ATTRIBUTES,
 		g_param_spec_boxed ("pkcs11-attributes", "PKCS11 Attributes", "PKCS11 Attributes",
-		                     GP11_TYPE_ATTRIBUTES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		                     GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -228,7 +227,7 @@ gkd_secret_create_class_init (GkdSecretCreateClass *klass)
 
 GkdSecretCreate*
 gkd_secret_create_new (GkdSecretService *service, const gchar *caller,
-                       GP11Attributes *attrs)
+                       GckAttributes *attrs)
 {
 	return g_object_new (GKD_SECRET_TYPE_CREATE,
 	                     "service", service,
@@ -237,70 +236,67 @@ gkd_secret_create_new (GkdSecretService *service, const gchar *caller,
 	                     NULL);
 }
 
-GP11Object*
-gkd_secret_create_with_credential (GP11Session *session, GP11Attributes *attrs,
-                                   GP11Object *cred, GError **error)
+GckObject*
+gkd_secret_create_with_credential (GckSession *session, GckAttributes *attrs,
+                                   GckObject *cred, GError **error)
 {
-	GP11Attributes *atts;
-	GP11Attribute *attr;
-	GP11Object *collection;
+	GckAttributes *atts;
+	GckAttribute *attr;
+	GckObject *collection;
 	gboolean token;
 
-	atts = gp11_attributes_newv (CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (cred),
-	                             CKA_CLASS, GP11_ULONG, CKO_G_COLLECTION,
-	                             GP11_INVALID);
+	atts = gck_attributes_new ();
+	gck_attributes_add_ulong (atts, CKA_G_CREDENTIAL, gck_object_get_handle (cred));
+	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_COLLECTION);
 
-	attr = gp11_attributes_find (attrs, CKA_LABEL);
+	attr = gck_attributes_find (attrs, CKA_LABEL);
 	if (attr != NULL)
-		gp11_attributes_add (atts, attr);
-	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
+		gck_attributes_add (atts, attr);
+	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
-	gp11_attributes_add_boolean (atts, CKA_TOKEN, token);
+	gck_attributes_add_boolean (atts, CKA_TOKEN, token);
 
-	collection = gp11_session_create_object_full (session, atts, NULL, error);
-	gp11_attributes_unref (atts);
-
-	if (collection != NULL)
-		gp11_object_set_session (collection, session);
+	collection = gck_session_create_object (session, atts, NULL, error);
+	gck_attributes_unref (atts);
 
 	return collection;
 }
 
 gchar*
-gkd_secret_create_with_secret (GP11Attributes *attrs, GkdSecretSecret *master,
+gkd_secret_create_with_secret (GckAttributes *attrs, GkdSecretSecret *master,
                                DBusError *derr)
 {
-	GP11Attributes *atts;
-	GP11Object *cred;
-	GP11Object *collection;
-	GP11Session *session;
+	GckAttributes *atts;
+	GckObject *cred;
+	GckObject *collection;
+	GckSession *session;
 	GError *error = NULL;
 	gpointer identifier;
 	gsize n_identifier;
 	gboolean token;
 	gchar *path;
 
-	if (!gp11_attributes_find_boolean (attrs, CKA_TOKEN, &token))
+	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
 
-	atts = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                             CKA_GNOME_TRANSIENT, GP11_BOOLEAN, TRUE,
-	                             CKA_TOKEN, GP11_BOOLEAN, token,
-	                             GP11_INVALID);
+	atts = gck_attributes_new ();
+	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_attributes_add_boolean (atts, CKA_GNOME_TRANSIENT, TRUE);
+	gck_attributes_add_boolean (atts, CKA_TOKEN, token);
 
 	session = gkd_secret_session_get_pkcs11_session (master->session);
 	g_return_val_if_fail (session, NULL);
 
 	/* Create ourselves some credentials */
 	cred = gkd_secret_session_create_credential (master->session, session, atts, master, derr);
-	gp11_attributes_unref (atts);
+	gck_attributes_unref (atts);
 
 	if (cred == NULL)
 		return FALSE;
 
 	collection = gkd_secret_create_with_credential (session, attrs, cred, &error);
 
-	gp11_attributes_unref (atts);
+	gck_attributes_unref (atts);
 	g_object_unref (cred);
 
 	if (collection == NULL) {
@@ -310,8 +306,7 @@ gkd_secret_create_with_secret (GP11Attributes *attrs, GkdSecretSecret *master,
 		return FALSE;
 	}
 
-	gp11_object_set_session (collection, session);
-	identifier = gp11_object_get_data (collection, CKA_ID, &n_identifier, &error);
+	identifier = gck_object_get_data (collection, CKA_ID, NULL, &n_identifier, &error);
 	g_object_unref (collection);
 
 	if (!identifier) {

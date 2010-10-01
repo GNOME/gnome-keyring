@@ -26,13 +26,13 @@
 
 #include "pkcs11/pkcs11.h"
 
-#include <gp11/gp11.h>
+#include <gck/gck.h>
 
 #include <glib.h>
 
 typedef struct _GkdGpgAgentCall {
 	int sock;
-	GP11Module *module;
+	GckModule *module;
 	GIOChannel *channel;
 	gboolean terminal_ok;
 } GkdGpgAgentCall;
@@ -72,11 +72,11 @@ typedef struct _GkdGpgAgentCall {
  * gkd-gpg-agent.c
  */
 
-gboolean              gkd_gpg_agent_initialize_with_module          (GP11Module *module);
+gboolean              gkd_gpg_agent_initialize_with_module          (GckModule *module);
 
-GP11Session*          gkd_gpg_agent_checkout_main_session           (void);
+GckSession*          gkd_gpg_agent_checkout_main_session           (void);
 
-void                  gkd_gpg_agent_checkin_main_session            (GP11Session* session);
+void                  gkd_gpg_agent_checkin_main_session            (GckSession* session);
 
 gboolean              gkd_gpg_agent_send_reply                      (GkdGpgAgentCall *call,
                                                                      gboolean ok,

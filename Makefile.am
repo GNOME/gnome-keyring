@@ -12,8 +12,9 @@ endif
 
 SUBDIRS = \
 	. \
-	gp11 \
 	egg \
+	gck \
+	gp11 \
 	gcr \
 	ui \
 	pkcs11 \
@@ -63,10 +64,10 @@ install-pam:
 	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"
 
 if WITH_COVERAGE
-check-am:
+clear:
 	$(LCOV) --directory . --zerocounters
 
-coverage: check
+coverage:
 	mkdir -p testing/coverage
 	$(LCOV) --directory . --capture --output-file testing/coverage.info
 	$(GENHTML) --output-directory testing/coverage testing/coverage.info

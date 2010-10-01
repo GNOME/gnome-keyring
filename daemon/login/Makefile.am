@@ -8,7 +8,8 @@ INCLUDES= \
 	-I$(top_srcdir)/daemon \
 	-I$(top_builddir) \
 	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 # ------------------------------------------------------------------
 # DAEMON CODE
@@ -19,6 +20,6 @@ libgkd_login_la_SOURCES = \
 	gkd-login.c gkd-login.h
 
 libgkd_login_la_LIBADD = \
-	$(top_builddir)/gp11/libgp11.la \
+	$(top_builddir)/gck/libgck.la \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)

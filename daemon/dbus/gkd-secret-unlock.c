@@ -40,7 +40,7 @@
 
 #include <glib/gi18n.h>
 
-#include <gp11/gp11.h>
+#include <gck/gck.h>
 
 #include <string.h>
 
@@ -78,7 +78,7 @@ static guint unique_prompt_number = 0;
  * INTERNAL
  */
 
-static GP11Object*
+static GckObject*
 lookup_collection (GkdSecretUnlock *self, const gchar *path)
 {
 	GkdSecretObjects *objects = gkd_secret_service_get_objects (self->service);
@@ -86,15 +86,15 @@ lookup_collection (GkdSecretUnlock *self, const gchar *path)
 }
 
 static gboolean
-check_locked_collection (GP11Object *collection, gboolean *locked)
+check_locked_collection (GckObject *collection, gboolean *locked)
 {
 	GError *error = NULL;
 	gpointer value;
 	gsize n_value;
 
-	value = gp11_object_get_data (collection, CKA_G_LOCKED, &n_value, &error);
+	value = gck_object_get_data (collection, CKA_G_LOCKED, NULL, &n_value, &error);
 	if (value == NULL) {
-		if (!g_error_matches (error, GP11_ERROR, CKR_OBJECT_HANDLE_INVALID))
+		if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
 			g_warning ("couldn't check locked status of collection: %s",
 			           egg_error_message (error));
 		return FALSE;
@@ -106,12 +106,12 @@ check_locked_collection (GP11Object *collection, gboolean *locked)
 }
 
 static void
-common_unlock_attributes (GP11Attributes *attrs, GP11Object *collection)
+common_unlock_attributes (GckAttributes *attrs, GckObject *collection)
 {
 	g_assert (attrs);
-	g_assert (GP11_IS_OBJECT (collection));
-	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
-	gp11_attributes_add_ulong (attrs, CKA_G_OBJECT, gp11_object_get_handle (collection));
+	g_assert (GCK_IS_OBJECT (collection));
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_attributes_add_ulong (attrs, CKA_G_OBJECT, gck_object_get_handle (collection));
 }
 
 static gboolean
@@ -157,10 +157,10 @@ static void
 on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 {
 	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (user_data);
-	GP11Object *cred;
+	GckObject *cred;
 	GError *error = NULL;
 
-	cred = gp11_session_create_object_finish (GP11_SESSION (object), res, &error);
+	cred = gck_session_create_object_finish (GCK_SESSION (object), res, &error);
 
 	/* Successfully authentication */
 	if (cred) {
@@ -170,13 +170,13 @@ on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 		perform_next_unlock (self);
 
 	/* The user cancelled the protected auth prompt */
-	} else if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
+	} else if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 		g_free (self->current);
 		self->current = NULL;
 		mark_as_complete (self, TRUE);
 
 	/* The operation was cancelled via Dismiss call */
-	} else if (g_error_matches (error, GP11_ERROR, CKR_CANCEL)) {
+	} else if (g_error_matches (error, GCK_ERROR, CKR_CANCEL)) {
 		/* Should have been the result of a dismiss */
 		g_return_if_fail (self->completed);
 
@@ -195,9 +195,9 @@ on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 static void
 perform_next_unlock (GkdSecretUnlock *self)
 {
-	GP11Object *collection;
-	GP11Attributes *template;
-	GP11Session *session;
+	GckObject *collection;
+	GckAttributes *template;
+	GckSession *session;
 	gboolean locked;
 	gchar *objpath;
 
@@ -229,14 +229,14 @@ perform_next_unlock (GkdSecretUnlock *self)
 		}
 
 		/* The various unlock options */
-		template = gp11_attributes_new ();
+		template = gck_attributes_new ();
 		common_unlock_attributes (template, collection);
-		gp11_attributes_add_data (template, CKA_VALUE, NULL, 0);
+		gck_attributes_add_data (template, CKA_VALUE, NULL, 0);
 
 		session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
-		gp11_session_create_object_async (session, template, self->cancellable, on_unlock_complete,
-		                                  g_object_ref (self));
-		gp11_attributes_unref (template);
+		gck_session_create_object_async (session, template, self->cancellable, on_unlock_complete,
+		                                 g_object_ref (self));
+		gck_attributes_unref (template);
 
 		g_object_unref (collection);
 		self->current = objpath;
@@ -498,7 +498,7 @@ void
 gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 {
 	gboolean locked = TRUE;
-	GP11Object *coll;
+	GckObject *coll;
 	gchar *path;
 
 	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
@@ -552,28 +552,28 @@ gkd_secret_unlock_reset_results (GkdSecretUnlock *self)
 }
 
 gboolean
-gkd_secret_unlock_with_secret (GP11Object *collection, GkdSecretSecret *master,
+gkd_secret_unlock_with_secret (GckObject *collection, GkdSecretSecret *master,
                                DBusError *derr)
 {
-	GP11Attributes *attrs;
-	GP11Object *cred;
+	GckAttributes *attrs;
+	GckObject *cred;
 	gboolean locked;
 
-	g_return_val_if_fail (GP11_IS_OBJECT (collection), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (collection), FALSE);
 	g_return_val_if_fail (master, FALSE);
 
 	/* Shortcut if already unlocked */
 	if (check_locked_collection (collection, &locked) && !locked)
 		return TRUE;
 
-	attrs = gp11_attributes_new ();
+	attrs = gck_attributes_new ();
 	common_unlock_attributes (attrs, collection);
-	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
 	cred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, derr);
 
-	gp11_attributes_unref (attrs);
+	gck_attributes_unref (attrs);
 
 	if (cred != NULL)
 		g_object_unref (cred);
@@ -581,33 +581,33 @@ gkd_secret_unlock_with_secret (GP11Object *collection, GkdSecretSecret *master,
 }
 
 gboolean
-gkd_secret_unlock_with_password (GP11Object *collection, const guchar *password,
+gkd_secret_unlock_with_password (GckObject *collection, const guchar *password,
                                  gsize n_password, DBusError *derr)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	GError *error = NULL;
-	GP11Session *session;
-	GP11Object *cred;
+	GckSession *session;
+	GckObject *cred;
 	gboolean locked;
 
-	g_return_val_if_fail (GP11_IS_OBJECT (collection), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (collection), FALSE);
 
 	/* Shortcut if already unlocked */
 	if (check_locked_collection (collection, &locked) && !locked)
 		return TRUE;
 
-	session = gp11_object_get_session (collection);
+	session = gck_object_get_session (collection);
 	g_return_val_if_fail (session, FALSE);
 
-	attrs = gp11_attributes_new_full (egg_secure_realloc);
+	attrs = gck_attributes_new_full (egg_secure_realloc);
 	common_unlock_attributes (attrs, collection);
-	gp11_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-	gp11_attributes_add_data (attrs, CKA_VALUE, password, n_password);
+	gck_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_attributes_add_data (attrs, CKA_VALUE, password, n_password);
 
-	cred = gp11_session_create_object_full (session, attrs, NULL, &error);
+	cred = gck_session_create_object (session, attrs, NULL, &error);
 	if (cred == NULL) {
-		if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
+		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");
 		} else {
 			g_message ("couldn't create credential: %s", egg_error_message (error));

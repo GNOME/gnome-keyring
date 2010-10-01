@@ -21,7 +21,8 @@ INCLUDES=	\
 	$(GOBJECT_CFLAGS)				\
 	$(GTHREAD_CFLAGS)				\
 	$(GIO_CFLAGS)					\
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) 					\
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 gnome_keyring_daemon_SOURCES = \
 	gkd-glue.c gkd-glue.h \
@@ -43,7 +44,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/pkcs11/ssh-store/libgkm-ssh-store.la \
 	$(top_builddir)/pkcs11/user-store/libgkm-user-store.la \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
-	$(top_builddir)/gp11/libgp11.la \
+	$(top_builddir)/gck/libgck.la \
 	$(top_builddir)/egg/libegg-dbus.la \
 	$(DAEMON_LIBS) \
 	$(GOBJECT_LIBS) \

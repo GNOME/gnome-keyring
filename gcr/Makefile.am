@@ -60,6 +60,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 
 libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 	-DPKCS11_MODULE_PATH=\""$(libdir)/gnome-keyring/gnome-keyring-pkcs11.so"\" \
+	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DUIDIR=\""$(uidir)"\"
     
@@ -70,7 +71,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
 libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
-	$(top_builddir)/gp11/libgp11.la \
+	$(top_builddir)/gck/libgck.la \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS) \
 	$(LIBGCRYPT_LIBS) \

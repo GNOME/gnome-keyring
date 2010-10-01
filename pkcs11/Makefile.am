@@ -1,6 +1,6 @@
 
 # TODO: Are we sure this is the best location for these headers?
-incdir = $(includedir)/gp11
+incdir = $(includedir)/gck
 
 inc_HEADERS = \
 	pkcs11.h \

@@ -40,7 +40,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-unix-credentials.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -65,7 +65,7 @@ typedef struct _ServiceClient {
 	gchar *caller_exec;
 	pid_t caller_pid;
 	CK_G_APPLICATION app;
-	GP11Session *pkcs11_session;
+	GckSession *pkcs11_session;
 	GHashTable *sessions;
 	GHashTable *prompts;
 } ServiceClient;
@@ -165,7 +165,7 @@ free_client (gpointer data)
 	/* The session we use for accessing as our client */
 	if (client->pkcs11_session) {
 #if 0
-		gp11_session_close (client->pkcs11_session, NULL);
+		gck_session_close (client->pkcs11_session, NULL);
 #endif
 		g_object_unref (client->pkcs11_session);
 	}
@@ -403,7 +403,7 @@ static DBusMessage*
 service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 {
 	DBusMessageIter iter, array;
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	GkdSecretCreate *create;
 	ServiceClient *client;
 	DBusMessage *reply;
@@ -416,20 +416,20 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
-	attrs = gp11_attributes_new ();
+	attrs = gck_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
 	if (!gkd_secret_property_parse_all (&array, attrs)) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
 		                                      "Invalid properties");
 	}
 
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
 	/* Create the prompt object, for the password */
 	caller = dbus_message_get_sender (message);
 	create = gkd_secret_create_new (self, caller, attrs);
-	gp11_attributes_unref (attrs);
+	gck_attributes_unref (attrs);
 
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (create));
 	client = g_hash_table_lookup (self->clients, caller);
@@ -509,7 +509,7 @@ service_method_lock (GkdSecretService *self, DBusMessage *message)
 	DBusMessage *reply;
 	const char *caller;
 	const gchar *prompt;
-	GP11Object *collection;
+	GckObject *collection;
 	int n_objpaths, i;
 	char **objpaths;
 	GPtrArray *array;
@@ -549,7 +549,7 @@ service_method_change_lock (GkdSecretService *self, DBusMessage *message)
 	DBusMessage *reply;
 	const char *caller;
 	const gchar *path;
-	GP11Object *collection;
+	GckObject *collection;
 
 	caller = dbus_message_get_sender (message);
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
@@ -582,7 +582,7 @@ service_method_read_alias (GkdSecretService *self, DBusMessage *message)
 	const char *alias;
 	gchar *path = NULL;
 	const gchar *identifier;
-	GP11Object  *collection = NULL;
+	GckObject  *collection = NULL;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias, DBUS_TYPE_INVALID))
 		return NULL;
@@ -616,7 +616,7 @@ service_method_read_alias (GkdSecretService *self, DBusMessage *message)
 static DBusMessage*
 service_method_set_alias (GkdSecretService *self, DBusMessage *message)
 {
-	GP11Object *collection;
+	GckObject *collection;
 	gchar *identifier;
 	const char *alias;
 	const char *path;
@@ -661,7 +661,7 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 	DBusMessageIter iter, array;
 	DBusMessage *reply = NULL;
 	GkdSecretSecret *secret = NULL;
-	GP11Attributes *attrs = NULL;
+	GckAttributes *attrs = NULL;
 	gchar *path;
 
 	/* Parse the incoming message */
@@ -669,23 +669,23 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
-	attrs = gp11_attributes_new ();
+	attrs = gck_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
 	if (!gkd_secret_property_parse_all (&array, attrs)) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
 		                               "Invalid properties argument");
 	}
 	dbus_message_iter_next (&iter);
 	secret = gkd_secret_secret_parse (self, message, &iter, &derr);
 	if (secret == NULL) {
-		gp11_attributes_unref (attrs);
+		gck_attributes_unref (attrs);
 		return gkd_secret_error_to_reply (message, &derr);
 	}
 
-	gp11_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 	path = gkd_secret_create_with_secret (attrs, secret, &derr);
-	gp11_attributes_unref (attrs);
+	gck_attributes_unref (attrs);
 	gkd_secret_secret_free (secret);
 
 	if (path == NULL)
@@ -703,7 +703,7 @@ service_method_change_with_master_password (GkdSecretService *self, DBusMessage 
 {
 	DBusError derr = DBUS_ERROR_INIT;
 	GkdSecretSecret *original, *master;
-	GP11Object *collection;
+	GckObject *collection;
 	DBusMessageIter iter;
 	DBusMessage *reply;
 	const gchar *path;
@@ -757,7 +757,7 @@ service_method_unlock_with_master_password (GkdSecretService *self, DBusMessage 
 {
 	DBusError derr = DBUS_ERROR_INIT;
 	GkdSecretSecret *master;
-	GP11Object *collection;
+	GckObject *collection;
 	DBusMessageIter iter;
 	DBusMessage *reply;
 	const gchar *path;
@@ -1025,7 +1025,7 @@ gkd_secret_service_constructor (GType type, guint n_props, GObjectConstructParam
 {
 	GkdSecretService *self = GKD_SECRET_SERVICE (G_OBJECT_CLASS (gkd_secret_service_parent_class)->constructor(type, n_props, props));
 	DBusError error = DBUS_ERROR_INIT;
-	GP11Slot *slot = NULL;
+	GckSlot *slot = NULL;
 	guint i;
 
 	g_return_val_if_fail (self, NULL);
@@ -1038,7 +1038,7 @@ gkd_secret_service_constructor (GType type, guint n_props, GObjectConstructParam
 	}
 
 	/* Create our objects proxy */
-	g_return_val_if_fail (GP11_IS_SLOT (slot), NULL);
+	g_return_val_if_fail (GCK_IS_SLOT (slot), NULL);
 	self->objects = g_object_new (GKD_SECRET_TYPE_OBJECTS,
 	                              "pkcs11-slot", slot, "service", self, NULL);
 
@@ -1165,7 +1165,7 @@ gkd_secret_service_class_init (GkdSecretServiceClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_PKCS11_SLOT,
 	        g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
-	                             GP11_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                             GCK_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -1193,21 +1193,20 @@ gkd_secret_service_get_connection (GkdSecretService *self)
 	return self->connection;
 }
 
-GP11Slot*
+GckSlot*
 gkd_secret_service_get_pkcs11_slot (GkdSecretService *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
 	return gkd_secret_objects_get_pkcs11_slot (self->objects);
 }
 
-GP11Session*
+GckSession*
 gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *caller)
 {
 	ServiceClient *client;
 	GError *error = NULL;
-	GP11TokenInfo *info;
-	GP11Slot *slot;
-	gulong flags;
+	GckTokenInfo *info;
+	GckSlot *slot;
 	gboolean login;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
@@ -1218,10 +1217,10 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 
 	/* Open a new session if necessary */
 	if (!client->pkcs11_session) {
-		flags = CKF_RW_SESSION | CKF_G_APPLICATION_SESSION;
 		slot = gkd_secret_service_get_pkcs11_slot (self);
-		client->pkcs11_session = gp11_slot_open_session_full (slot, flags, &client->app,
-		                                                      NULL, NULL, &error);
+		client->pkcs11_session = gck_slot_open_session_full (slot, GCK_SESSION_READ_WRITE,
+		                                                     CKF_G_APPLICATION_SESSION, &client->app,
+		                                                     NULL, NULL, &error);
 		if (!client->pkcs11_session) {
 			g_warning ("couldn't open pkcs11 session for secret service: %s",
 			           egg_error_message (error));
@@ -1230,10 +1229,10 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 		}
 
 		/* Perform the necessary 'user' login to secrets token. Doesn't unlock anything */
-		info = gp11_slot_get_token_info (slot);
+		info = gck_slot_get_token_info (slot);
 		login = info && (info->flags & CKF_LOGIN_REQUIRED);
-		gp11_token_info_free (info);
-		if (login && !gp11_session_login (client->pkcs11_session, CKU_USER, NULL, 0, &error)) {
+		gck_token_info_free (info);
+		if (login && !gck_session_login (client->pkcs11_session, CKU_USER, NULL, 0, NULL, &error)) {
 			g_warning ("couldn't log in to pkcs11 session for secret service: %s",
 			           egg_error_message (error));
 			g_clear_error (&error);

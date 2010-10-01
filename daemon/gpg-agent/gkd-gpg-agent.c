@@ -43,7 +43,7 @@
 #endif
 
 /* The loaded PKCS#11 module */
-static GP11Module *pkcs11_module = NULL;
+static GckModule *pkcs11_module = NULL;
 
 #ifndef KL
 #define KL(s)               ((sizeof(s) - 1) / sizeof(s[0]))
@@ -168,7 +168,7 @@ run_client_thread (gpointer data)
 	gchar *line;
 	gsize n_line;
 
-	g_assert (GP11_IS_MODULE (pkcs11_module));
+	g_assert (GCK_IS_MODULE (pkcs11_module));
 
 	call.sock = g_atomic_int_get (socket);
 	call.channel = g_io_channel_unix_new (call.sock);
@@ -221,19 +221,19 @@ run_client_thread (gpointer data)
  */
 
 /* The main PKCS#11 session that owns objects, and the mutex/cond for waiting on it */
-static GP11Session *pkcs11_main_session = NULL;
+static GckSession *pkcs11_main_session = NULL;
 static gboolean pkcs11_main_checked = FALSE;
 static GMutex *pkcs11_main_mutex = NULL;
 static GCond *pkcs11_main_cond = NULL;
 
-GP11Session*
+GckSession*
 gkd_gpg_agent_checkout_main_session (void)
 {
-	GP11Session *result;
+	GckSession *result;
 
 	g_mutex_lock (pkcs11_main_mutex);
 
-		g_assert (GP11_IS_SESSION (pkcs11_main_session));
+		g_assert (GCK_IS_SESSION (pkcs11_main_session));
 		while (pkcs11_main_checked)
 			g_cond_wait (pkcs11_main_cond, pkcs11_main_mutex);
 		pkcs11_main_checked = TRUE;
@@ -245,9 +245,9 @@ gkd_gpg_agent_checkout_main_session (void)
 }
 
 void
-gkd_gpg_agent_checkin_main_session (GP11Session *session)
+gkd_gpg_agent_checkin_main_session (GckSession *session)
 {
-	g_assert (GP11_IS_SESSION (session));
+	g_assert (GCK_IS_SESSION (session));
 
 	g_mutex_lock (pkcs11_main_mutex);
 
@@ -379,7 +379,7 @@ gkd_gpg_agent_uninitialize (void)
 	ret = g_mutex_trylock (pkcs11_main_mutex);
 	g_assert (ret);
 
-		g_assert (GP11_IS_SESSION (pkcs11_main_session));
+		g_assert (GCK_IS_SESSION (pkcs11_main_session));
 		g_assert (!pkcs11_main_checked);
 		g_object_unref (pkcs11_main_session);
 		pkcs11_main_session = NULL;
@@ -400,56 +400,47 @@ gkd_gpg_agent_uninitialize (void)
 int
 gkd_gpg_agent_initialize (CK_FUNCTION_LIST_PTR funcs)
 {
-	GP11Module *module;
+	GckModule *module;
 	gboolean ret;
 
 	g_return_val_if_fail (funcs, -1);
 
-	module = gp11_module_new (funcs);
-	gp11_module_set_auto_authenticate (module, GP11_AUTHENTICATE_OBJECTS);
-	gp11_module_set_pool_sessions (module, TRUE);
+	module = gck_module_new (funcs, 0);
 	ret = gkd_gpg_agent_initialize_with_module (module);
 	g_object_unref (module);
 	return ret;
 }
 
 gboolean
-gkd_gpg_agent_initialize_with_module (GP11Module *module)
+gkd_gpg_agent_initialize_with_module (GckModule *module)
 {
-	GP11Session *session = NULL;
-	GList *slots, *l;
+	GckSession *session = NULL;
+	GckSlot *slot;
 	GError *error = NULL;
-	GP11SlotInfo *info;
+	GList *modules;
 
-	g_assert (GP11_IS_MODULE (module));
+	g_assert (GCK_IS_MODULE (module));
 
 	/*
 	 * Find the right slot.
-	 *
-	 * TODO: This isn't necessarily the best way to do this.
-	 * A good function could be added to gp11 library.
-	 * But needs more thought on how to do this.
 	 */
-	slots = gp11_module_get_slots (module, TRUE);
-	for (l = slots; !session && l; l = g_list_next (l)) {
-		info = gp11_slot_get_info (l->data);
-		if (g_ascii_strcasecmp ("Secret Store", info->slot_description) == 0) {
+	modules = g_list_append (NULL, module);
+	slot = gck_modules_token_for_uri (modules, "pkcs11:token=Secret%20Store", &error);
+	g_list_free (modules);
 
-			/* Try and open a session */
-			session = gp11_slot_open_session (l->data, CKF_RW_SESSION | CKF_SERIAL_SESSION, &error);
-			if (!session) {
-				g_warning ("couldn't create pkcs#11 session: %s", error->message);
-				g_clear_error (&error);
-			}
-		}
-
-		gp11_slot_info_free (info);
+	if (!slot) {
+		g_warning ("couldn't find secret store module: %s", egg_error_message (error));
+		g_clear_error (&error);
+		return FALSE;
 	}
 
-	gp11_list_unref_free (slots);
+	/* Try and open a session */
+	session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE | GCK_SESSION_AUTHENTICATE, NULL, &error);
+	g_object_unref (slot);
 
 	if (!session) {
-		g_warning ("couldn't select a usable pkcs#11 slot for the ssh agent to use");
+		g_warning ("couldn't select a usable pkcs#11 slot for the gpg agent to use");
+		g_clear_error (&error);
 		return FALSE;
 	}
 

@@ -56,7 +56,7 @@ struct _GcrImporterClass {
 	
 	/* signals */
 	
-	void (*imported) (GcrImporter *self, struct _GP11Object *object);
+	void (*imported) (GcrImporter *self, struct _GckObject *object);
 };
 
 GType                     gcr_importer_get_type               (void);
@@ -68,10 +68,10 @@ GcrParser*                gcr_importer_get_parser             (GcrImporter *self
 void                      gcr_importer_set_parser             (GcrImporter *self,
                                                                GcrParser *parser);
 
-struct _GP11Slot*         gcr_importer_get_slot               (GcrImporter *self);
+struct _GckSlot*          gcr_importer_get_slot               (GcrImporter *self);
 
 void                      gcr_importer_set_slot               (GcrImporter *self,
-                                                               struct _GP11Slot *slot);
+                                                               struct _GckSlot *slot);
 
 GcrImporterPromptBehavior gcr_importer_get_prompt_behavior    (GcrImporter *self);
 

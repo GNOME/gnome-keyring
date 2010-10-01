@@ -4,7 +4,8 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
 	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 # ------------------------------------------------------------------------------
 # The ssh-agent component code
@@ -29,7 +30,7 @@ gkd_gpg_agent_standalone_SOURCES = \
 gkd_gpg_agent_standalone_LDADD = \
 	libgkd-gpg-agent.la \
 	$(top_builddir)/ui/libgku-prompt.la \
-	$(top_builddir)/gp11/libgp11.la \
+	$(top_builddir)/gck/libgck.la \
 	$(top_builddir)/egg/libegg.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \

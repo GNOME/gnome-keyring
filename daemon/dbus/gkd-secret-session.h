@@ -56,20 +56,20 @@ const gchar*        gkd_secret_session_get_caller              (GkdSecretSession
 
 const gchar*        gkd_secret_session_get_caller_executable   (GkdSecretSession *self);
 
-GP11Session*        gkd_secret_session_get_pkcs11_session      (GkdSecretSession *self);
+GckSession*         gkd_secret_session_get_pkcs11_session      (GkdSecretSession *self);
 
 GkdSecretSecret*    gkd_secret_session_get_item_secret         (GkdSecretSession *self,
-                                                                GP11Object *item,
+                                                                GckObject *item,
                                                                 DBusError *derr);
 
 gboolean            gkd_secret_session_set_item_secret         (GkdSecretSession *self,
-                                                                GP11Object *item,
+                                                                GckObject *item,
                                                                 GkdSecretSecret *secret,
                                                                 DBusError *derr);
 
-GP11Object*         gkd_secret_session_create_credential       (GkdSecretSession *self,
-                                                                GP11Session *session,
-                                                                GP11Attributes *attrs,
+GckObject*          gkd_secret_session_create_credential       (GkdSecretSession *self,
+                                                                GckSession *session,
+                                                                GckAttributes *attrs,
                                                                 GkdSecretSecret *secret,
                                                                 DBusError *derr);
 

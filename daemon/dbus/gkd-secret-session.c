@@ -54,10 +54,10 @@ struct _GkdSecretSession {
 	gchar *caller;
 
 	/* While negotiating with a prompt, set to private key */
-	GP11Object *private;
+	GckObject *private;
 
 	/* Once negotiated set to key and mechanism */
-	GP11Object *key;
+	GckObject *key;
 	CK_MECHANISM_TYPE mech_type;
 };
 
@@ -72,7 +72,7 @@ static guint unique_session_number = 0;
  */
 
 static void
-take_session_key (GkdSecretSession *self, GP11Object *key, CK_MECHANISM_TYPE mech)
+take_session_key (GkdSecretSession *self, GckObject *key, CK_MECHANISM_TYPE mech)
 {
 	g_return_if_fail (!self->key);
 	self->key = key;
@@ -80,13 +80,12 @@ take_session_key (GkdSecretSession *self, GP11Object *key, CK_MECHANISM_TYPE mec
 }
 
 static gboolean
-aes_create_dh_keys (GP11Session *session, const gchar *group,
-                    GP11Object **pub_key, GP11Object **priv_key)
+aes_create_dh_keys (GckSession *session, const gchar *group,
+                    GckObject **pub_key, GckObject **priv_key)
 {
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 	gconstpointer prime, base;
 	gsize n_prime, n_base;
-	GP11Mechanism *mech;
 	GError *error = NULL;
 	gboolean ret;
 
@@ -95,18 +94,15 @@ aes_create_dh_keys (GP11Session *session, const gchar *group,
 		return FALSE;
 	}
 
-	attrs = gp11_attributes_new ();
-	gp11_attributes_add_data (attrs, CKA_PRIME, prime, n_prime);
-	gp11_attributes_add_data (attrs, CKA_BASE, base, n_base);
-
-	mech = gp11_mechanism_new (CKM_DH_PKCS_KEY_PAIR_GEN);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_data (attrs, CKA_PRIME, prime, n_prime);
+	gck_attributes_add_data (attrs, CKA_BASE, base, n_base);
 
 	/* Perform the DH key generation */
-	ret = gp11_session_generate_key_pair_full (session, mech, attrs, attrs,
-	                                           pub_key, priv_key, NULL, &error);
+	ret = gck_session_generate_key_pair (session, CKM_DH_PKCS_KEY_PAIR_GEN, attrs, attrs,
+	                                     pub_key, priv_key, NULL, &error);
 
-	gp11_mechanism_unref (mech);
-	gp11_attributes_unref (attrs);
+	gck_attributes_unref (attrs);
 
 	if (ret == FALSE) {
 		g_warning ("couldn't generate dh key pair: %s", egg_error_message (error));
@@ -114,29 +110,25 @@ aes_create_dh_keys (GP11Session *session, const gchar *group,
 		return FALSE;
 	}
 
-	gp11_object_set_session (*pub_key, session);
-	gp11_object_set_session (*priv_key, session);
 	return TRUE;
 }
 
 static gboolean
-aes_derive_key (GP11Session *session, GP11Object *priv_key,
-                gconstpointer input, gsize n_input, GP11Object **aes_key)
+aes_derive_key (GckSession *session, GckObject *priv_key,
+                gconstpointer input, gsize n_input, GckObject **aes_key)
 {
 	GError *error = NULL;
-	GP11Mechanism *mech;
-	GP11Attributes *attrs;
+	GckMechanism mech = { CKM_DH_PKCS_DERIVE, input, n_input };
+	GckAttributes *attrs;
 
-	mech = gp11_mechanism_new_with_param (CKM_DH_PKCS_DERIVE, input, n_input);
-	attrs = gp11_attributes_newv (CKA_VALUE_LEN, GP11_ULONG, 16UL,
-	                              CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
-	                              CKA_KEY_TYPE, GP11_ULONG, CKK_AES,
-	                              GP11_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_VALUE_LEN, 16UL);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_AES);
 
-	*aes_key = gp11_session_derive_key_full (session, priv_key, mech, attrs, NULL, &error);
+	*aes_key = gck_session_derive_key_full (session, priv_key, &mech, attrs, NULL, &error);
 
-	gp11_mechanism_unref (mech);
-	gp11_attributes_unref (attrs);
+	gck_attributes_unref (attrs);
 
 	if (!*aes_key) {
 		g_warning ("couldn't derive aes key from dh key pair: %s", egg_error_message (error));
@@ -144,7 +136,6 @@ aes_derive_key (GP11Session *session, GP11Object *priv_key,
 		return FALSE;
 	}
 
-	gp11_object_set_session (*aes_key, session);
 	return TRUE;
 }
 
@@ -152,8 +143,8 @@ static DBusMessage*
 aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input, gsize n_input)
 {
 	DBusMessageIter iter, variant, array;
-	GP11Session *session;
-	GP11Object *pub, *priv, *key;
+	GckSession *session;
+	GckObject *pub, *priv, *key;
 	GError *error = NULL;
 	DBusMessage *reply;
 	gpointer output;
@@ -168,8 +159,8 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 		                                       "Failed to create necessary crypto keys.");
 
 	/* Get the output data */
-	output = gp11_object_get_data (pub, CKA_VALUE, &n_output, &error);
-	gp11_object_destroy (pub, NULL);
+	output = gck_object_get_data (pub, CKA_VALUE, NULL, &n_output, &error);
+	gck_object_destroy (pub, NULL, NULL);
 	g_object_unref (pub);
 
 	if (output == NULL) {
@@ -182,7 +173,7 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 
 	ret = aes_derive_key (session, priv, input, n_input, &key);
 
-	gp11_object_destroy (priv, NULL);
+	gck_object_destroy (priv, NULL, NULL);
 	g_object_unref (priv);
 
 	if (ret == FALSE) {
@@ -213,16 +204,20 @@ plain_negotiate (GkdSecretSession *self, DBusMessage *message)
 	GError *error = NULL;
 	const char *output = "";
 	DBusMessage *reply;
-	GP11Object *key;
-	GP11Session *session;
+	GckObject *key;
+	GckSession *session;
+	GckAttributes *attrs;
 
 	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
 	g_return_val_if_fail (session, NULL);
 
-	key = gp11_session_create_object (session, &error,
-	                                  CKA_CLASS, GP11_ULONG, CKO_SECRET_KEY,
-	                                  CKA_KEY_TYPE, GP11_ULONG, CKK_G_NULL,
-	                                  GP11_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_G_NULL);
+
+	key = gck_session_create_object (session, attrs, NULL, &error);
+
+	gck_attributes_unref (attrs);
 
 	if (key == NULL) {
 		g_warning ("couldn't create null key: %s", egg_error_message (error));
@@ -458,8 +453,8 @@ gkd_secret_session_begin (GkdSecretSession *self, const gchar *group,
                           gsize *n_output)
 {
 	GError *error = NULL;
-	GP11Session *session;
-	GP11Object *public;
+	GckSession *session;
+	GckObject *public;
 	gpointer output;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
@@ -474,8 +469,8 @@ gkd_secret_session_begin (GkdSecretSession *self, const gchar *group,
 		return NULL;
 
 	/* Get the output data */
-	output = gp11_object_get_data (public, CKA_VALUE, n_output, &error);
-	gp11_object_destroy (public, NULL);
+	output = gck_object_get_data (public, CKA_VALUE, NULL, n_output, &error);
+	gck_object_destroy (public, NULL, NULL);
 	g_object_unref (public);
 
 	if (output == NULL) {
@@ -491,7 +486,7 @@ gboolean
 gkd_secret_session_complete (GkdSecretSession *self, gconstpointer peer,
                              gsize n_peer)
 {
-	GP11Session *session;
+	GckSession *session;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), FALSE);
 	g_return_val_if_fail (self->key == NULL, FALSE);
@@ -564,7 +559,7 @@ gkd_secret_session_get_caller_executable (GkdSecretSession *self)
 	return self->caller_exec;
 }
 
-GP11Session*
+GckSession*
 gkd_secret_session_get_pkcs11_session (GkdSecretSession *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
@@ -572,37 +567,38 @@ gkd_secret_session_get_pkcs11_session (GkdSecretSession *self)
 }
 
 GkdSecretSecret*
-gkd_secret_session_get_item_secret (GkdSecretSession *self, GP11Object *item,
+gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
                                     DBusError *derr)
 {
-	GP11Mechanism *mech;
-	GP11Session *session;
+	GckMechanism mech = { 0UL, NULL, 0 };
+	GckSession *session;
 	gpointer value, iv;
 	gsize n_value, n_iv;
 	GError *error = NULL;
 
-	g_assert (GP11_IS_OBJECT (self->key));
+	g_assert (GCK_IS_OBJECT (self->key));
 
-	session = gp11_object_get_session (item);
+	session = gck_object_get_session (item);
 	g_return_val_if_fail (session, FALSE);
 
 	if (self->mech_type == CKM_AES_CBC_PAD) {
 		n_iv = 16;
 		iv = g_malloc (n_iv);
 		gcry_create_nonce (iv, n_iv);
-		mech = gp11_mechanism_new_with_param (CKM_AES_CBC_PAD, iv, n_iv);
 	} else {
 		n_iv = 0;
 		iv = NULL;
-		mech = gp11_mechanism_new (self->mech_type);
 	}
 
-	value = gp11_session_wrap_key_full (session, self->key, mech, item, &n_value,
-	                                    NULL, &error);
-	gp11_mechanism_unref (mech);
+	mech.type = self->mech_type;
+	mech.parameter = iv;
+	mech.n_parameter = n_iv;
+
+	value = gck_session_wrap_key_full (session, self->key, &mech, item, &n_value,
+	                                   NULL, &error);
 
 	if (value == NULL) {
-		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN)) {
+		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
 			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
 			                      "Cannot get secret of a locked object");
 		} else {
@@ -619,54 +615,54 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GP11Object *item,
 }
 
 gboolean
-gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
+gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
                                     GkdSecretSecret *secret, DBusError *derr)
 {
-	GP11Mechanism *mech;
-	GP11Object *object;
-	GP11Session *session;
+	GckMechanism mech;
+	GckObject *object;
+	GckSession *session;
 	GError *error = NULL;
-	GP11Attributes *attrs;
+	GckAttributes *attrs;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), FALSE);
-	g_return_val_if_fail (GP11_IS_OBJECT (item), FALSE);
+	g_return_val_if_fail (GCK_IS_OBJECT (item), FALSE);
 	g_return_val_if_fail (secret, FALSE);
 
-	g_assert (GP11_IS_OBJECT (self->key));
+	g_assert (GCK_IS_OBJECT (self->key));
 
 	/*
 	 * By getting these attributes, and then using them in the unwrap,
 	 * the unwrap won't generate a new object, but merely set the secret.
 	 */
 
-	attrs = gp11_object_get (item, &error, CKA_ID, CKA_G_COLLECTION, GP11_INVALID);
+	attrs = gck_object_get (item, NULL, &error, CKA_ID, CKA_G_COLLECTION, GCK_INVALID);
 	if (attrs == NULL) {
 		g_message ("couldn't get item attributes: %s", egg_error_message (error));
 		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
 		g_clear_error (&error);
 		return FALSE;
 	}
-	gp11_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 
 	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
 	g_return_val_if_fail (session, FALSE);
 
-	mech = gp11_mechanism_new_with_param (self->mech_type, secret->parameter,
-	                                      secret->n_parameter);
+	mech.type = self->mech_type;
+	mech.parameter = secret->parameter;
+	mech.n_parameter = secret->n_parameter;
 
-	object = gp11_session_unwrap_key_full (session, self->key, mech, secret->value,
-	                                       secret->n_value, attrs, NULL, &error);
+	object = gck_session_unwrap_key_full (session, self->key, &mech, secret->value,
+	                                      secret->n_value, attrs, NULL, &error);
 
-	gp11_mechanism_unref (mech);
-	gp11_attributes_unref (attrs);
+	gck_attributes_unref (attrs);
 
 	if (object == NULL) {
-		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN)) {
+		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
 			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
 			                      "Cannot set secret of a locked item");
-		} else if (g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_INVALID) ||
-		           g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
-		           g_error_matches (error, GP11_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
+		} else if (g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_INVALID) ||
+		           g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
+		           g_error_matches (error, GCK_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
 			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
 			                      "The secret was transferred or encrypted in an invalid way.");
 		} else {
@@ -677,7 +673,7 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
 		return FALSE;
 	}
 
-	if (!gp11_object_equal (object, item)) {
+	if (!gck_object_equal (object, item)) {
 		g_warning ("unwrapped secret went to new object, instead of item");
 		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
 		g_object_unref (object);
@@ -688,44 +684,44 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GP11Object *item,
 	return TRUE;
 }
 
-GP11Object*
-gkd_secret_session_create_credential (GkdSecretSession *self, GP11Session *session,
-                                      GP11Attributes *attrs, GkdSecretSecret *secret,
+GckObject*
+gkd_secret_session_create_credential (GkdSecretSession *self, GckSession *session,
+                                      GckAttributes *attrs, GkdSecretSecret *secret,
                                       DBusError *derr)
 {
-	GP11Attributes *alloc = NULL;
-	GP11Mechanism *mech;
-	GP11Object *object;
+	GckAttributes *alloc = NULL;
+	GckMechanism mech;
+	GckObject *object;
 	GError *error = NULL;
 
-	g_assert (GP11_IS_OBJECT (self->key));
+	g_assert (GCK_IS_OBJECT (self->key));
 	g_assert (attrs);
 
 	if (session == NULL)
 		session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
 	g_return_val_if_fail (session, NULL);
 
-	if (attrs == NULL)
-		alloc = attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-		                                      CKA_TOKEN, GP11_BOOLEAN, FALSE,
-		                                      GP11_INVALID);
+	if (attrs == NULL) {
+		alloc = attrs = gck_attributes_new ();
+		gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
+		gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
+	}
 
-	mech = gp11_mechanism_new_with_param (self->mech_type, secret->parameter,
-	                                      secret->n_parameter);
+	mech.type = self->mech_type;
+	mech.parameter = secret->parameter;
+	mech.n_parameter = secret->n_parameter;
 
-	object = gp11_session_unwrap_key_full (session, self->key, mech, secret->value,
-	                                       secret->n_value, attrs, NULL, &error);
+	object = gck_session_unwrap_key_full (session, self->key, &mech, secret->value,
+	                                      secret->n_value, attrs, NULL, &error);
 
-	gp11_mechanism_unref (mech);
-	if (alloc != NULL)
-		gp11_attributes_unref (alloc);
+	gck_attributes_unref (alloc);
 
 	if (object == NULL) {
-		if (g_error_matches (error, GP11_ERROR, CKR_PIN_INCORRECT)) {
+		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");
-		} else if (g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_INVALID) ||
-		           g_error_matches (error, GP11_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
-		           g_error_matches (error, GP11_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
+		} else if (g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_INVALID) ||
+		           g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
+		           g_error_matches (error, GCK_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
 			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
 			                      "The secret was transferred or encrypted in an invalid way.");
 		} else {
@@ -734,8 +730,6 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GP11Session *sessi
 		}
 		g_clear_error (&error);
 		return NULL;
-	} else {
-		gp11_object_set_session (object, session);
 	}
 
 	return object;

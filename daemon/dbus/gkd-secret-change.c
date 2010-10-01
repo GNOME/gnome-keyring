@@ -36,7 +36,7 @@
 
 #include <glib/gi18n.h>
 
-#include <gp11/gp11.h>
+#include <gck/gck.h>
 
 #include <string.h>
 
@@ -57,7 +57,7 @@ G_DEFINE_TYPE (GkdSecretChange, gkd_secret_change, GKD_SECRET_TYPE_PROMPT);
  */
 
 static void
-prepare_change_prompt (GkdSecretChange *self, GP11Object *collection, gboolean first)
+prepare_change_prompt (GkdSecretChange *self, GckObject *collection, gboolean first)
 {
 	GError *error = NULL;
 	GkuPrompt *prompt;
@@ -68,7 +68,7 @@ prepare_change_prompt (GkdSecretChange *self, GP11Object *collection, gboolean f
 
 	prompt = GKU_PROMPT (self);
 
-	data = gp11_object_get_data (collection, CKA_LABEL, &n_data, &error);
+	data = gck_object_get_data (collection, CKA_LABEL, NULL, &n_data, &error);
 	if (!data) {
 		g_warning ("couldn't get label for collection: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -121,7 +121,7 @@ gkd_secret_change_prompt_ready (GkdSecretPrompt *prompt)
 	GkdSecretChange *self = GKD_SECRET_CHANGE (prompt);
 	GkdSecretSecret *original, *master;
 	DBusError derr = DBUS_ERROR_INIT;
-	GP11Object *collection;
+	GckObject *collection;
 	gboolean result;
 
 	collection = gkd_secret_prompt_lookup_collection (prompt, self->collection_path);
@@ -262,50 +262,53 @@ gkd_secret_change_new (GkdSecretService *service, const gchar *caller,
 }
 
 gboolean
-gkd_secret_change_with_secrets (GP11Object *collection, GkdSecretSecret *original,
+gkd_secret_change_with_secrets (GckObject *collection, GkdSecretSecret *original,
                                 GkdSecretSecret *master, DBusError *derr)
 {
 	GError *error = NULL;
-	GP11Attributes *attrs = NULL;
+	GckAttributes *attrs = NULL;
 	gboolean result = FALSE;
-	GP11Object *ocred = NULL;
-	GP11Object *mcred = NULL;
+	GckObject *ocred = NULL;
+	GckObject *mcred = NULL;
 
 	/* Create the new credential */
-	attrs = gp11_attributes_newv (CKA_CLASS, GP11_ULONG, CKO_G_CREDENTIAL,
-	                              CKA_TOKEN, GP11_BOOLEAN, FALSE, GP11_INVALID);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
 	mcred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, derr);
 	if (mcred == NULL)
 		goto cleanup;
 
 	/* Create the original credential, in order to make sure we can the collection */
-	gp11_attributes_add_ulong (attrs, CKA_G_OBJECT, gp11_object_get_handle (collection));
+	gck_attributes_add_ulong (attrs, CKA_G_OBJECT, gck_object_get_handle (collection));
 	ocred = gkd_secret_session_create_credential (original->session, NULL, attrs, original, derr);
 	if (ocred == NULL)
 		goto cleanup;
 
+	gck_attributes_unref (attrs);
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
+
 	/* Now set the collection credentials to the first one */
-	result = gp11_object_set (collection, &error,
-	                          CKA_G_CREDENTIAL, GP11_ULONG, gp11_object_get_handle (mcred),
-	                          GP11_INVALID);
+	result = gck_object_set (collection, attrs, NULL, &error);
 
 cleanup:
 	if (ocred) {
 		/* Always destroy the original credential */
-		gp11_object_destroy (ocred, NULL);
+		gck_object_destroy (ocred, NULL, NULL);
 		g_object_unref (ocred);
 	}
 	if (mcred) {
 		/* Destroy the master credential if failed */
 		if (!result)
-			gp11_object_destroy (mcred, NULL);
+			gck_object_destroy (mcred, NULL, NULL);
 		g_object_unref (mcred);
 	}
-	if (attrs)
-		gp11_attributes_unref (attrs);
+
+	gck_attributes_unref (attrs);
 
 	if (!result && error) {
-		if (g_error_matches (error, GP11_ERROR, CKR_USER_NOT_LOGGED_IN))
+		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN))
 			dbus_set_error (derr, INTERNAL_ERROR_DENIED, "The original password was invalid");
 		else
 			g_warning ("failure occurred while changing password: %s", egg_error_message (error));

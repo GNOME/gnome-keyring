@@ -27,7 +27,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -46,7 +46,7 @@ accept_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
 }
 
 static gboolean
-authenticate_slot (GP11Module *module, GP11Slot *slot, gchar *label, gchar **password, gpointer unused)
+authenticate_slot (GckModule *module, GckSlot *slot, gchar *label, gchar **password, gpointer unused)
 {
 	gchar *prompt = g_strdup_printf ("Enter token password (%s): ", label);
 	char *result = getpass (prompt);
@@ -57,7 +57,7 @@ authenticate_slot (GP11Module *module, GP11Slot *slot, gchar *label, gchar **pas
 }
 
 static gboolean
-authenticate_object (GP11Module *module, GP11Object *object, gchar *label, gchar **password)
+authenticate_object (GckModule *module, GckObject *object, gchar *label, gchar **password)
 {
 	gchar *prompt = g_strdup_printf ("Enter object password (%s): ", label);
 	char *result = getpass (prompt);
@@ -70,7 +70,7 @@ authenticate_object (GP11Module *module, GP11Object *object, gchar *label, gchar
 int
 main(int argc, char *argv[])
 {
-	GP11Module *module;
+	GckModule *module;
 	GError *error = NULL;
 	GIOChannel *channel;
 	GMainLoop *loop;
@@ -87,17 +87,15 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
-	module = gp11_module_initialize (argv[1], argc > 2 ? argv[2] : NULL, &error);
+	module = gck_module_initialize (argv[1], argc > 2 ? argv[2] : NULL, 0, &error);
 	if (!module) {
 		g_message ("couldn't load pkcs11 module: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return 1;
 	}
 
-
 	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_slot), NULL);
 	g_signal_connect (module, "authenticate-object", G_CALLBACK (authenticate_object), NULL);
-	gp11_module_set_auto_authenticate (module, GP11_AUTHENTICATE_OBJECTS);
 
 	ret = gkd_gpg_agent_initialize_with_module (module);
 	g_object_unref (module);

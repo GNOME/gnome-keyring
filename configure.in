@@ -13,15 +13,15 @@ dnl  2. If any interfaces have been added, removed, or changed since the last up
 dnl  3. If any interfaces have been added since the last public release, then increment age.
 dnl  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 
-# GP11 package versioning
-GP11_MAJOR=0
-GP11_MINOR=0
-GP11_MICRO=0
+# GCK package versioning
+GCK_MAJOR=0
+GCK_MINOR=0
+GCK_MICRO=0
 
-# GP11 libtool versioning
-GP11_CURRENT=0
-GP11_REVISION=0
-GP11_AGE=0
+# GCK libtool versioning
+GCK_CURRENT=0
+GCK_REVISION=0
+GCK_AGE=0
 
 # GCR package versioning
 GCR_MAJOR_GTK2=0
@@ -619,7 +619,12 @@ fi
 
 # ----------------------------------------------------------------------
 
-GP11_LT_RELEASE=$GP11_CURRENT:$GP11_REVISION:$GP11_AGE
+GCK_LT_RELEASE=$GCK_CURRENT:$GCK_REVISION:$GCK_AGE
+AC_SUBST(GCK_LT_RELEASE)
+AC_SUBST(GCK_MAJOR)
+
+GP11_LT_RELEASE=$GCK_LT_RELEASE
+GP11_MAJOR=$GCK_MAJOR
 AC_SUBST(GP11_LT_RELEASE)
 AC_SUBST(GP11_MAJOR)
 
@@ -668,9 +673,12 @@ daemon/ssh-agent/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/gcr/Makefile
-docs/reference/gp11/Makefile
+docs/reference/gck/Makefile
 egg/Makefile
 egg/tests/Makefile
+gck/gck.pc
+gck/Makefile
+gck/tests/Makefile
 gcr/gcr.pc
 gcr/Makefile
 gcr/tests/Makefile

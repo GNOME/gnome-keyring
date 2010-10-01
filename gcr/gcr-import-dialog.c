@@ -61,7 +61,7 @@ populate_slots (GcrImportDialog *self)
 	GList *modules, *m;
 	GList *slots, *s;
 	GtkTreeIter iter;
-	GP11TokenInfo *info;
+	GckTokenInfo *info;
 	gboolean added;
 	
 	g_assert (GCR_IS_IMPORT_DIALOG (self));
@@ -69,7 +69,7 @@ populate_slots (GcrImportDialog *self)
 	if (self->pv->slots)
 		return;
 
-	self->pv->slots = gtk_list_store_new (N_COLUMNS, GP11_TYPE_SLOT, G_TYPE_STRING, G_TYPE_STRING);
+	self->pv->slots = gtk_list_store_new (N_COLUMNS, GCK_TYPE_SLOT, G_TYPE_STRING, G_TYPE_STRING);
 	gtk_combo_box_set_model (self->pv->combo, GTK_TREE_MODEL (self->pv->slots));
 
 	modules = _gcr_get_pkcs11_modules ();
@@ -79,12 +79,12 @@ populate_slots (GcrImportDialog *self)
 	
 	added = FALSE;
 	for (m = modules; m; m = g_list_next (m)) {
-		
-		g_return_if_fail (GP11_IS_MODULE (m->data));
-		slots = gp11_module_get_slots (m->data, TRUE);
-		
+
+		g_return_if_fail (GCK_IS_MODULE (m->data));
+		slots = gck_module_get_slots (m->data, TRUE);
+
 		for (s = slots; s; s = g_list_next (s)) {
-			info = gp11_slot_get_token_info (s->data);
+			info = gck_slot_get_token_info (s->data);
 			if (!(info->flags & CKF_WRITE_PROTECTED)) {
 				gtk_list_store_append (self->pv->slots, &iter);
 				gtk_list_store_set (self->pv->slots, &iter, 
@@ -94,8 +94,8 @@ populate_slots (GcrImportDialog *self)
 				added = TRUE;
 			}
 		}
-		
-		gp11_list_unref_free (slots);
+
+		gck_list_unref_free (slots);
 	}
 	
 	if (added)
@@ -256,7 +256,7 @@ _gcr_import_dialog_class_init (GcrImportDialogClass *klass)
 	
 	g_object_class_install_property (gobject_class, PROP_SELECTED_SLOT,
 	           g_param_spec_object ("selected-slot", "Selected Slot", "Selected PKCS#11 slot",
-	                                GP11_TYPE_SLOT, G_PARAM_READWRITE));
+	                                GCK_TYPE_SLOT, G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_PASSWORD,
 	           g_param_spec_pointer ("password", "Password", "Pointer to password",
@@ -303,11 +303,11 @@ _gcr_import_dialog_run (GcrImportDialog *self, GtkWindow *parent)
 	return ret;
 }
 
-GP11Slot*
+GckSlot*
 _gcr_import_dialog_get_selected_slot (GcrImportDialog *self)
 {
 	GtkTreeIter iter;
-	GP11Slot *slot;
+	GckSlot *slot;
 	
 	g_return_val_if_fail (GCR_IMPORT_DIALOG (self), NULL);
 	
@@ -329,10 +329,10 @@ _gcr_import_dialog_get_selected_slot (GcrImportDialog *self)
 }
 
 void
-_gcr_import_dialog_set_selected_slot (GcrImportDialog *self, GP11Slot *slot)
+_gcr_import_dialog_set_selected_slot (GcrImportDialog *self, GckSlot *slot)
 {
 	GtkTreeIter iter;
-	GP11Slot *it_slot;
+	GckSlot *it_slot;
 	gboolean matched;
 
 	g_return_if_fail (GCR_IMPORT_DIALOG (self));
@@ -346,14 +346,14 @@ _gcr_import_dialog_set_selected_slot (GcrImportDialog *self, GP11Slot *slot)
 		gtk_combo_box_set_active (self->pv->combo, -1);
 		return;
 	}
-	
-	g_return_if_fail (GP11_IS_SLOT (slot));
-	
+
+	g_return_if_fail (GCK_IS_SLOT (slot));
+
 	matched = FALSE;
 	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (self->pv->slots), &iter)) {
 		do {
 			gtk_tree_model_get (GTK_TREE_MODEL (self->pv->slots), &iter, COLUMN_SLOT, &it_slot, -1);
-			if (gp11_slot_equal (it_slot, slot)) 
+			if (gck_slot_equal (it_slot, slot))
 				matched = TRUE;
 			g_object_unref (it_slot);
 		} while (!matched && gtk_tree_model_iter_next (GTK_TREE_MODEL (self->pv->slots), &iter));

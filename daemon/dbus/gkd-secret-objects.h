@@ -24,7 +24,7 @@
 
 #include "gkd-secret-types.h"
 
-#include "gp11/gp11.h"
+#include "gck/gck.h"
 
 #include <glib-object.h>
 
@@ -64,13 +64,13 @@ void                gkd_secret_objects_append_item_paths         (GkdSecretObjec
                                                                   DBusMessageIter *iter,
                                                                   DBusMessage *message);
 
-GP11Slot*           gkd_secret_objects_get_pkcs11_slot           (GkdSecretObjects *self);
+GckSlot*            gkd_secret_objects_get_pkcs11_slot           (GkdSecretObjects *self);
 
-GP11Object*         gkd_secret_objects_lookup_collection         (GkdSecretObjects *self,
+GckObject*          gkd_secret_objects_lookup_collection         (GkdSecretObjects *self,
                                                                   const gchar *caller,
                                                                   const gchar *path);
 
-GP11Object*         gkd_secret_objects_lookup_item               (GkdSecretObjects *self,
+GckObject*          gkd_secret_objects_lookup_item               (GkdSecretObjects *self,
                                                                   const gchar *caller,
                                                                   const gchar *path);
 
