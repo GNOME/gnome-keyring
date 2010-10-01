@@ -126,7 +126,7 @@ gck_message_from_rv (CK_RV rv)
 	case CKR_DEVICE_ERROR:
 		return _("An error occurred on the device");
 	case CKR_DEVICE_MEMORY:
-		return _("Insufficient memory available on device");
+		return _("Insufficient memory available on the device");
 	case CKR_DEVICE_REMOVED:
 		return _("The device was removed or unplugged");
 	case CKR_ENCRYPTED_DATA_INVALID:
@@ -148,7 +148,7 @@ gck_message_from_rv (CK_RV rv)
 	case CKR_KEY_NEEDED:
 		return _("A key is needed");
 	case CKR_KEY_INDIGESTIBLE:
-		return _("Cannot include the key in digest");
+		return _("Cannot include the key in the digest");
 	case CKR_KEY_FUNCTION_NOT_PERMITTED:
 		return _("This operation cannot be done with this key");
 	case CKR_KEY_NOT_WRAPPABLE:
@@ -220,7 +220,7 @@ gck_message_from_rv (CK_RV rv)
 	case CKR_USER_ANOTHER_ALREADY_LOGGED_IN:
 		return _("Another user is already logged in");
 	case CKR_USER_TOO_MANY_TYPES:
-		return _("Too many users of different types logged in");
+		return _("Too many users of different types are logged in");
 	case CKR_WRAPPED_KEY_INVALID:
 		return _("Cannot import an invalid key");
 	case CKR_WRAPPED_KEY_LEN_RANGE:
