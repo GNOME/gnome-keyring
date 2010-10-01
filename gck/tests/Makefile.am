@@ -13,7 +13,8 @@ TESTING_FILES = \
 
 TESTING_FLAGS = \
 	-I$(top_srcdir)/gck/ \
-	-DEXTERNAL_TEST
+	-DEXTERNAL_TEST \
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 TESTING_LIBS = \
 	$(GIO_LIBS) \
@@ -35,7 +36,8 @@ libmock_test_module_la_LDFLAGS = \
 libmock_test_module_la_CFLAGS = \
 	-I$(top_srcdir)/gck \
 	-I$(top_srcdir) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 libmock_test_module_la_SOURCES = \
 	mock-test-module.c

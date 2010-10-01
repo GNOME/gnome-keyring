@@ -8,7 +8,8 @@ INCLUDES= \
 	-I$(top_srcdir)/daemon \
 	-I$(top_builddir) \
 	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 # ------------------------------------------------------------------
 # DAEMON CODE

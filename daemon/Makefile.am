@@ -21,7 +21,8 @@ INCLUDES=	\
 	$(GOBJECT_CFLAGS)				\
 	$(GTHREAD_CFLAGS)				\
 	$(GIO_CFLAGS)					\
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) 					\
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 gnome_keyring_daemon_SOURCES = \
 	gkd-glue.c gkd-glue.h \

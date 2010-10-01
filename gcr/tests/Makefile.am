@@ -9,9 +9,10 @@ TESTING_LIBS =  \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gp11/libgp11.la
-	
+
 TESTING_FLAGS = \
-	-DGCR_API_SUBJECT_TO_CHANGE
+	-DGCR_API_SUBJECT_TO_CHANGE \
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 include $(top_srcdir)/testing/testing.make
 
@@ -25,6 +26,7 @@ ui_test_details_SOURCES = \
 	ui-test-details.c
 
 ui_test_details_CFLAGS = \
+	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	$(GTK_CFLAGS)
 

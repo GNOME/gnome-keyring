@@ -32,7 +32,16 @@
 
 G_BEGIN_DECLS
 
-#define             GCK_VENDOR_CODE                         0x47503131 /* GP11 */
+/*
+ * To use this API, you need to be prepared for changes to the API,
+ * and add the C flag: -DGCK_API_SUBJECT_TO_CHANGE
+ */
+
+#ifndef GCK_API_SUBJECT_TO_CHANGE
+#error "This API has not yet reached stability."
+#endif
+
+#define             GCK_VENDOR_CODE                         0x47434B00 /* GCK */
 
 /* An error code which results from a failure to load the PKCS11 module */
 #define             CKR_GCK_MODULE_PROBLEM                  (CKR_VENDOR_DEFINED | (GCK_VENDOR_CODE + 1))
