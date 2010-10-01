@@ -673,7 +673,7 @@ daemon/ssh-agent/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/gcr/Makefile
-docs/reference/gp11/Makefile
+docs/reference/gck/Makefile
 egg/Makefile
 egg/tests/Makefile
 gck/gck.pc
