@@ -19,6 +19,7 @@ msgstr ""
 "PO-Revision-Date: 2010-09-27 17:40+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1070,4 +1071,3 @@ msgstr "_Staré heslo:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Heslo:"
-

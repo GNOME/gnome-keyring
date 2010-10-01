@@ -6,7 +6,7 @@
 # Vladimir Melo <vmelo@gnome.org>, 2007.
 # Hugo Doria <hugodoria@gmail.com>, 2007-2008.
 # Enrico Nicoletto <liverig@gmail.com>, 2008.
-# Daniel S. Koda <danielskoda@gmail.com>, 2009.
+# Daniel S. Koda <danielskoda@gmail.com>, 2009, 2010.
 # Michel Recondo <mrecondo@gmail.com>, 2009.
 # Fabrício Godoy <skarllot@gmail.com>, 2009.
 # André Gondim <andregondim@ubuntu.com>, 2009.
@@ -15,10 +15,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-06 08:41-0300\n"
-"PO-Revision-Date: 2010-03-06 08:24-0300\n"
-"Last-Translator: Vladimir Melo <vmelo@gnome.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&component=general\n"
+"POT-Creation-Date: 2010-09-17 07:45+0000\n"
+"PO-Revision-Date: 2010-09-18 14:14-0300\n"
+"Last-Translator: Daniel S. Koda <danielskoda@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,71 +28,24 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Esta opção habilita o componente PKCS#11 no daemon do chaveiro do GNOME. Ela "
-"só tem efeito durante o início da sessão do GNOME (i.e.: quando o usuário "
-"faz o login). Esta configuração pode ser ignorada quando certos argumentos "
-"de linha de comando são passados ao daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Esta opção habilita o agente SSH no daemon do gnome-keyring. Ela só tem "
-"efeito quando o gnome-keyring-daemon inicia, ou seja, quando o usuário "
-"inicia uma sessão. Esta configuração pode ser substituída quando certos "
-"argumentos de linha de comando são passados para o daemon."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Esta opção habilita o componente de serviço secreto no daemon do chaveiro do "
-"GNOME. Ela só tem efeito durante o inicio da sessão do GNOME, (ie: quando o "
-"usuário faz login). Esta configuração pode ser substituída quando certos "
-"argumentos de linha de comando são passados para o daemon. "
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Habilitar o componente PKCS#11 do chaveiro do GNOME."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Habilitar o agente SSH do chaveiro do GNOME."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Habilitar o serviço secreto do chaveiro do GNOME."
-
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Unnamed"
 msgstr "Sem nome"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "Alterar senha do chaveiro"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Escolha uma nova senha para o chaveiro \"%s\"."
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -100,19 +54,19 @@ msgstr ""
 "Um aplicativo quer alterar a senha do chaveiro \"%s\". Escolha uma nova "
 "senha para ele."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "A senha original estava incorreta"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "Senha do novo chaveiro"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "Escolha uma senha para o novo chaveiro"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -120,47 +74,6 @@ msgid ""
 msgstr ""
 "Um aplicativo quer criar um novo chaveiro chamado \"%s\". Escolha uma senha "
 "para ele."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:134
-msgid "Unlock Login Keyring"
-msgstr "Desbloquear chaveiro de sessão"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:136
-msgid "Enter password for to unlock your login keyring"
-msgstr "Digite a senha para desbloquear o seu chaveiro de sessão"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:140
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"A senha que você usa para iniciar a sessão no seu computador não corresponde "
-"mais à de seu chaveiro de sessão."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:142
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Seu chaveiro de sessão não foi desbloqueado automaticamente quando você "
-"iniciou a sessão neste computador."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:183
-msgid "Unlock Keyring"
-msgstr "Desbloquear chaveiro"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:185
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Digite a senha do chaveiro \"%s\" para desbloqueá-lo"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:189
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Um aplicativo quer acesso ao chaveiro \"%s\", mas ele está bloqueado"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:219
-msgid "The unlock password was incorrect"
-msgstr "A senha de desbloqueio está incorreta"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -186,168 +99,44 @@ msgstr "Chaveiro do GNOME: Agente SSH"
 msgid "SSH Key Agent"
 msgstr "Agente de chaves SSH"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Chaveiro do GNOME: Agente GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "Agente de senha GPG"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#, c-format
+msgid "PGP Key: %s"
+msgstr "Chave PGP: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
+msgid "Enter Passphrase"
+msgstr "Insira a palavra-passe"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+msgid "Forget this password if idle for"
+msgstr "Esquecer esta senha se ociosa por"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+msgid "Forget this password after"
+msgstr "Esquecer esta senha após"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+msgid "Forget this password when I log out"
+msgstr "Esquecer esta senha quando eu encerrar minha sessão"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Login"
-
-#: ../daemon/login/gkd-login.c:596
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Senha de desbloqueio para: %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Nova senha requerida"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Nova senha requerida para o armazenamento seguro"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Com o intuito de preparar \"%s\" para o armazenamento de certificados ou "
-"chaves, uma senha é requerida"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Desbloquear chave privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Desbloquear certificado"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Desbloquear chave pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Desbloquear"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Digite a senha para desbloquear a chave privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Digite a senha para desbloquear o certificado"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Digite a senha para desbloquear a chave pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Digite a senha para desbloquear"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Um aplicativo deseja acesso a chave privada \"%s\", mas ela está bloqueada"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"Um aplicativo deseja acesso ao certificado \"%s\", mas ele está bloqueado"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Um aplicativo deseja acesso a chave pública \"%s\", mas ela está bloqueada"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Um aplicativo deseja acesso ao \"%s\", mas ele está bloqueado"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Desbloquear o armazenamento de certificados e chaves"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Digite a senha para desbloquear o armazenamento de certificados e chaves"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Um aplicativo deseja acesso ao armazenamento de certificados e chaves \"%s"
-"\", mas ele está bloqueado"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "Armazenar senhas sem criptografia?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Escolhendo usar uma senha em branco, suas senhas armazenadas não estarão "
-"seguramente criptografadas. Elas estarão acessíveis para qualquer pessoa com "
-"acesso a seus arquivos."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Usar armazenamento não seguro"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "As senhas são diferentes."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "A senha não pode ser vazia"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Desbloquear este chaveiro automaticamente quando eu iniciar a sessão."
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Força da nova senha"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Aplicativo:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "C_onfirmar:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Detalhes:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Nome:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "Senha an_tiga:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Senha:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -390,7 +179,7 @@ msgid "Surname"
 msgstr "Sobrenome"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "Número de série"
 
@@ -556,94 +345,94 @@ msgstr "Certificado de cliente SSL"
 msgid "SSL Server Certificate"
 msgstr "Certificado de servidor SSL"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "Ramal"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "Identificador"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "Valor"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "Crítico"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "Sim"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "Não"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "Nome do portador"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "Nome do emissor"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "Certificado emitido"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "Versão"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "Não é válido antes de"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "Não é válido após"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "Assinatura"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "Algoritmo da assinatura"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "Parâmetros da assinatura"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "Informações da chave pública"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "Algoritmo da chave"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "Parâmetros da chave"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "Tamanho da chave"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "Chave pública"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "Impressões digitais"
 
@@ -660,22 +449,26 @@ msgid "Password:"
 msgstr "Senha:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Desbloquear este chaveiro automaticamente quando eu iniciar a sessão."
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
 msgstr "Bloquear este chaveiro após"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
 msgstr "Bloquear este chaveiro se ocioso por"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
 msgstr "Bloquear este chaveiro quando eu encerrar minha sessão"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#: ../gcr/gcr-unlock-options-widget.ui.h:5
 msgid "minutes"
 msgstr "minutos"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "A operação foi cancelada"
 
@@ -692,6 +485,18 @@ msgstr "Importar certificado e chaves"
 msgid "Choose a location to store the imported certificates/keys."
 msgstr ""
 "Escolha uma localização para armazenar os certificados e chaves importados."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+msgid "Enter password to unlock the private key"
+msgstr "Digite a senha para desbloquear a chave privada"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+msgid "Enter password to unlock the certificate"
+msgstr "Digite a senha para desbloquear o certificado"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+msgid "Enter password to unlock"
+msgstr "Digite a senha para desbloquear"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -730,23 +535,23 @@ msgstr ""
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Com o intuito de importar \"%s\", esse deve estar desbloqueado"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "Chave privada"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "Certificado"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "Dados não reconhecidos ou sem suporte."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "Não possível analisar os dados inválidos ou corrompidos."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "Os dados estão bloqueados"
 
@@ -843,8 +648,8 @@ msgid "No key is needed"
 msgstr "Nenhuma chave é necessária"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
-msgstr "A chave é diferente da anterior"
+msgid "The key is different from before"
+msgstr "A chave é diferente de antes"
 
 #: ../gp11/gp11-misc.c:149
 msgid "A key is needed"
@@ -1070,13 +875,255 @@ msgstr "O pedido de assinatura foi rejeitado pelo usuário"
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "Certificado sem nome"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Não foi possível analisar a chave pública do SSH"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Senha de desbloqueio para: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+msgid "The unlock password was incorrect"
+msgstr "A senha de desbloqueio está incorreta"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+msgid "Unlock Login Keyring"
+msgstr "Desbloquear chaveiro de sessão"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Enter password to unlock your login keyring"
+msgstr "Digite a senha para desbloquear o seu chaveiro de sessão"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"A senha que você usa para iniciar a sessão no seu computador não corresponde "
+"mais à de seu chaveiro de sessão."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Seu chaveiro de sessão não foi desbloqueado automaticamente quando você "
+"iniciou a sessão neste computador."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+msgid "Unlock Keyring"
+msgstr "Desbloquear chaveiro"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Digite a senha do chaveiro \"%s\" para desbloqueá-lo"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Um aplicativo quer acesso ao chaveiro \"%s\", mas ele está bloqueado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Unlock private key"
+msgstr "Desbloquear chave privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Unlock certificate"
+msgstr "Desbloquear certificado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Unlock public key"
+msgstr "Desbloquear chave pública"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "Unlock"
+msgstr "Desbloquear"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+msgid "Enter password to unlock the public key"
+msgstr "Digite a senha para desbloquear a chave pública"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Um aplicativo deseja acesso a chave privada \"%s\", mas ela está bloqueada"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"Um aplicativo deseja acesso ao certificado \"%s\", mas ele está bloqueado"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Um aplicativo deseja acesso a chave pública \"%s\", mas ela está bloqueada"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Um aplicativo deseja acesso ao \"%s\", mas ele está bloqueado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+msgid "Unlock certificate/key storage"
+msgstr "Desbloquear o armazenamento de certificados e chaves"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Digite a senha para desbloquear o armazenamento de certificados e chaves"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Um aplicativo deseja acesso ao armazenamento de certificados e chaves \"%s"
+"\", mas ele está bloqueado"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+msgid "New Password Required"
+msgstr "Nova senha requerida"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+msgid "New password required for secure storage"
+msgstr "Nova senha requerida para o armazenamento seguro"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Com o intuito de preparar \"%s\" para o armazenamento de certificados ou "
+"chaves, uma senha é requerida"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+msgid "Change Password"
+msgstr "Alterar senha"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+msgid "Change password for secure storage"
+msgstr "Altere a senha requerida para o armazenamento seguro"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr ""
+"Para alterar a senha para \"%s\", a senha original e a nova são requeridas"
+
+#: ../ui/gku-prompt-tool.c:538
+msgid "Store passwords unencrypted?"
+msgstr "Armazenar senhas sem criptografia?"
+
+#: ../ui/gku-prompt-tool.c:539
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Escolhendo usar uma senha em branco, suas senhas armazenadas não estarão "
+"seguramente criptografadas. Elas estarão acessíveis para qualquer pessoa com "
+"acesso a seus arquivos."
+
+#: ../ui/gku-prompt-tool.c:546
+msgid "Use Unsafe Storage"
+msgstr "Usar armazenamento não seguro"
+
+#: ../ui/gku-prompt-tool.c:584
+msgid "Passwords do not match."
+msgstr "As senhas são diferentes."
+
+#: ../ui/gku-prompt-tool.c:594
+msgid "Password cannot be blank"
+msgstr "A senha não pode ser vazia"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "Força da nova senha"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "_Aplicativo:"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "C_onfirmar:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "_Detalhes:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "_Nome:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "Senha an_tiga:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "_Senha:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Esta opção habilita o componente PKCS#11 no daemon do chaveiro do GNOME. "
+#~ "Ela só tem efeito durante o início da sessão do GNOME (i.e.: quando o "
+#~ "usuário faz o login). Esta configuração pode ser ignorada quando certos "
+#~ "argumentos de linha de comando são passados ao daemon."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Esta opção habilita o agente SSH no daemon do gnome-keyring. Ela só tem "
+#~ "efeito quando o gnome-keyring-daemon inicia, ou seja, quando o usuário "
+#~ "inicia uma sessão. Esta configuração pode ser substituída quando certos "
+#~ "argumentos de linha de comando são passados para o daemon."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Esta opção habilita o componente de serviço secreto no daemon do chaveiro "
+#~ "do GNOME. Ela só tem efeito durante o inicio da sessão do GNOME, (ie: "
+#~ "quando o usuário faz login). Esta configuração pode ser substituída "
+#~ "quando certos argumentos de linha de comando são passados para o daemon. "
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Habilitar o componente PKCS#11 do chaveiro do GNOME."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Habilitar o agente SSH do chaveiro do GNOME."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Habilitar o serviço secreto do chaveiro do GNOME."
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "

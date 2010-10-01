@@ -10,10 +10,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring MASTER\n"
+"Project-Id-Version: gnome-keyring 2.32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-08-30 06:19+0000\n"
+"POT-Creation-Date: 2010-09-13 06:35+0000\n"
 "PO-Revision-Date: 2010-09-11 10:30+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -340,6 +340,9 @@ msgstr "Impordi kuhu:"
 
 msgid "Password:"
 msgstr "Parool:"
+
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "See võtmerõngas võetakse minu sisselogimisel automaatselt lukust lahti"
 
 msgid "Lock this keyring after"
 msgstr "See võtmerõngas lukustatakse pärast"
@@ -793,9 +796,6 @@ msgstr "Paroolid pole vastavuses."
 
 msgid "Password cannot be blank"
 msgstr "Parool ei tohi olla tühi"
-
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "See võtmerõngas võetakse minu sisselogimisel automaatselt lukust lahti"
 
 msgid "New password strength"
 msgstr "Uue parooli tugevus"
