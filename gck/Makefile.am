@@ -4,7 +4,7 @@ TESTS_DIR = tests
 TESTS_SOURCES = gck-mock.c gck-mock.h gck-test.c gck-test.h
 else
 TESTS_DIR =
-TESTS_SOURCES
+TESTS_SOURCES =
 endif
 
 SUBDIRS = . \
