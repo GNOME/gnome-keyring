@@ -1,3 +1,10 @@
+Changes in version 2.91.0 are:
+ * String and punctuation fixes.
+ * Add libgck library to soon replace libgp11
+ * Migrate everything in gnome-keyring to libgp11
+ * Fix invalid memory access in PKCS#11 rpc-layer
+ * Fix race condition in tests
+
 Changes in version 2.32.0 are:
  * Make bulids silent by default.
 

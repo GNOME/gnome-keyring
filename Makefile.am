@@ -36,7 +36,8 @@ EXTRA_DIST = \
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--enable-tests \
-	--disable-debug
+	--disable-debug \
+	--disable-gcov
 
 DISTCLEANFILES = \
 	intltool-extract \
