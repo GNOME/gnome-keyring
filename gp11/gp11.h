@@ -151,12 +151,14 @@ gchar*              gp11_attribute_get_string               (GP11Attribute *attr
 void                gp11_attribute_get_date                 (GP11Attribute *attr, 
                                                              GDate* value);
 
+gboolean            gp11_attribute_equal                    (gconstpointer a,
+                                                             gconstpointer b);
+
 GP11Attribute*      gp11_attribute_dup                      (GP11Attribute *attr);
 
 void                gp11_attribute_clear                    (GP11Attribute *attr);
 
 void                gp11_attribute_free                     (GP11Attribute *attr);
-
 
 typedef struct _GP11Attributes GP11Attributes;
 
@@ -234,6 +236,9 @@ gulong              gp11_attributes_count                   (GP11Attributes *att
 GP11Attributes*     gp11_attributes_ref                     (GP11Attributes *attrs);
 
 void                gp11_attributes_unref                   (GP11Attributes *attrs);
+
+gboolean            gp11_attributes_contains                (GP11Attributes *attrs,
+                                                             GP11Attribute *match);
 
 /* -------------------------------------------------------------------------
  * FORWARDS

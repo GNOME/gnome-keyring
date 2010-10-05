@@ -1665,3 +1665,305 @@ gcr_parser_get_parsed_label (GcrParser *self)
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
 	return self->pv->parsed_label;		
 }
+
+/* ---------------------------------------------------------------------------------
+ * STREAM PARSING
+ */
+
+#define GCR_TYPE_PARSING        (gcr_parsing_get_type ())
+#define GCR_PARSING(obj)        (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_PARSING, GcrParsing))
+#define GCR_IS_PARSING(obj)     (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_PARSING))
+
+typedef struct _GcrParsing {
+	GObjectClass parent;
+
+	GcrParser *parser;
+	gboolean async;
+	GCancellable *cancel;
+
+	/* Failure information */
+	GError *error;
+	gboolean complete;
+
+	/* Operation state */
+	GInputStream *input;
+	GByteArray *buffer;
+
+	/* Async callback stuff */
+	GAsyncReadyCallback callback;
+	gpointer user_data;
+
+} GcrParsing;
+
+typedef struct _GcrParsingClass {
+	GObjectClass parent_class;
+} GcrParsingClass;
+
+/* State forward declarations */
+static void state_cancelled (GcrParsing *self, gboolean async);
+static void state_failure (GcrParsing *self, gboolean async);
+static void state_complete (GcrParsing *self, gboolean async);
+static void state_parse_buffer (GcrParsing *self, gboolean async);
+static void state_read_buffer (GcrParsing *self, gboolean async);
+
+/* Other forward declarations */
+static GType gcr_parsing_get_type (void) G_GNUC_CONST;
+static void gcr_parsing_async_result_init (GAsyncResultIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (GcrParsing, gcr_parsing, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_RESULT, gcr_parsing_async_result_init));
+
+#define BLOCK 4096
+
+static void
+next_state (GcrParsing *self, void (*state) (GcrParsing*, gboolean))
+{
+	g_assert (GCR_IS_PARSING (self));
+	g_assert (state);
+
+	if (self->cancel && g_cancellable_is_cancelled (self->cancel))
+		state = state_cancelled;
+
+	(state) (self, self->async);
+}
+
+static void
+state_complete (GcrParsing *self, gboolean async)
+{
+	g_assert (GCR_IS_PARSING (self));
+	g_assert (!self->complete);
+	self->complete = TRUE;
+	if (async && self->callback != NULL)
+		(self->callback) (G_OBJECT (self->parser), G_ASYNC_RESULT (self), self->user_data);
+}
+
+static void
+state_failure (GcrParsing *self, gboolean async)
+{
+	g_assert (GCR_IS_PARSING (self));
+	g_assert (self->error);
+	next_state (self, state_complete);
+}
+
+static void
+state_cancelled (GcrParsing *self, gboolean async)
+{
+	g_assert (GCR_IS_PARSING (self));
+	if (self->cancel && g_cancellable_is_cancelled (self->cancel))
+		g_cancellable_cancel (self->cancel);
+	if (self->error)
+		g_error_free (self->error);
+	self->error = g_error_new_literal (GCR_DATA_ERROR, GCR_ERROR_CANCELLED, _("The operation was cancelled"));
+	next_state (self, state_failure);
+}
+
+static void
+state_parse_buffer (GcrParsing *self, gboolean async)
+{
+	GError *error = NULL;
+	gboolean ret;
+
+	g_assert (GCR_IS_PARSING (self));
+	g_assert (self->buffer);
+
+	ret = gcr_parser_parse_data (self->parser, self->buffer->data, self->buffer->len, &error);
+
+	if (ret == TRUE) {
+		next_state (self, state_complete);
+	} else {
+		g_propagate_error (&self->error, error);
+		next_state (self, state_failure);
+	}
+}
+
+static void
+complete_read_buffer (GcrParsing *self, gssize count, GError *error)
+{
+	g_assert (GCR_IS_IMPORTER (self));
+	g_assert (self->buffer);
+
+	/* A failure */
+	if (count == -1) {
+		g_propagate_error (&self->error, error);
+		next_state (self, state_failure);
+	} else {
+
+		g_return_if_fail (count >= 0 && count <= BLOCK);
+		g_byte_array_set_size (self->buffer, self->buffer->len - (BLOCK - count));
+
+		/* Finished reading */
+		if (count == 0)
+			next_state (self, state_parse_buffer);
+
+		/* Read the next block */
+		else
+			next_state (self, state_read_buffer);
+	}
+
+}
+
+static void
+on_read_buffer (GObject *obj, GAsyncResult *res, gpointer user_data)
+{
+	GError *error = NULL;
+	gssize count;
+
+	count = g_input_stream_read_finish (G_INPUT_STREAM (obj), res, &error);
+	complete_read_buffer (user_data, count, error);
+}
+
+static void
+state_read_buffer (GcrParsing *self, gboolean async)
+{
+	GError *error = NULL;
+	gssize count;
+	gsize at;
+
+	g_assert (GCR_IS_IMPORTER (self));
+	g_assert (G_IS_INPUT_STREAM (self->input));
+
+	if (!self->buffer)
+		self->buffer = g_byte_array_sized_new (BLOCK);
+
+	at = self->buffer->len;
+	g_byte_array_set_size (self->buffer, at + BLOCK);
+
+	if (async) {
+		g_input_stream_read_async (self->input, self->buffer->data + at,
+		                           BLOCK, G_PRIORITY_DEFAULT, self->cancel,
+		                           on_read_buffer, self);
+	} else {
+		count = g_input_stream_read (self->input, self->buffer->data + at,
+		                             BLOCK, self->cancel, &error);
+		complete_read_buffer (self, count, error);
+	}
+}
+
+static void
+gcr_parsing_init (GcrParsing *self)
+{
+
+}
+
+static void
+gcr_parsing_finalize (GObject *obj)
+{
+	GcrParsing *self = GCR_PARSING (obj);
+
+	g_object_unref (self->parser);
+	self->parser = NULL;
+
+	g_object_unref (self->input);
+	self->input = NULL;
+
+	if (self->cancel)
+		g_object_unref (self->cancel);
+	self->cancel = NULL;
+
+	g_clear_error (&self->error);
+
+	if (self->buffer)
+		g_byte_array_free (self->buffer, TRUE);
+	self->buffer = NULL;
+
+	G_OBJECT_CLASS (gcr_parsing_parent_class)->finalize (obj);
+}
+
+static void
+gcr_parsing_class_init (GcrParsingClass *klass)
+{
+	G_OBJECT_CLASS (klass)->finalize = gcr_parsing_finalize;
+}
+
+static gpointer
+gcr_parsing_real_get_user_data (GAsyncResult *base)
+{
+	g_return_val_if_fail (GCR_IS_PARSING (base), NULL);
+	return GCR_PARSING (base)->user_data;
+}
+
+static GObject*
+gcr_parsing_real_get_source_object (GAsyncResult *base)
+{
+	g_return_val_if_fail (GCR_IS_PARSING (base), NULL);
+	return G_OBJECT (GCR_PARSING (base)->parser);
+}
+
+static void
+gcr_parsing_async_result_init (GAsyncResultIface *iface)
+{
+	iface->get_source_object = gcr_parsing_real_get_source_object;
+	iface->get_user_data = gcr_parsing_real_get_user_data;
+}
+
+static GcrParsing*
+gcr_parsing_new (GcrParser *parser, GInputStream *input, GCancellable *cancel)
+{
+	GcrParsing *self;
+
+	g_assert (GCR_IS_PARSER (parser));
+	g_assert (G_IS_INPUT_STREAM (input));
+
+	self = g_object_new (GCR_TYPE_PARSING, NULL);
+	self->parser = g_object_ref (parser);
+	self->input = g_object_ref (input);
+	if (cancel)
+		self->cancel = g_object_ref (cancel);
+
+	return self;
+}
+
+gboolean
+gcr_parser_parse_stream (GcrParser *self, GInputStream *input, GCancellable *cancel,
+                         GError **error)
+{
+	GcrParsing *parsing;
+
+	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
+	g_return_val_if_fail (G_IS_INPUT_STREAM (self), FALSE);
+	g_return_val_if_fail (!error || !*error, FALSE);
+
+	parsing = gcr_parsing_new (self, input, cancel);
+	parsing->async = FALSE;
+
+	next_state (parsing, state_read_buffer);
+	g_assert (parsing->complete);
+
+	return gcr_parser_parse_stream_finish (self, G_ASYNC_RESULT (parsing), error);
+}
+
+void
+gcr_parser_parse_stream_async (GcrParser *self, GInputStream *input, GCancellable *cancel,
+                               GAsyncReadyCallback callback, gpointer user_data)
+{
+	GcrParsing *parsing;
+
+	g_return_if_fail (GCR_IS_PARSER (self));
+	g_return_if_fail (G_IS_INPUT_STREAM (self));
+
+	parsing = gcr_parsing_new (self, input, cancel);
+	parsing->async = TRUE;
+	parsing->callback = callback;
+	parsing->user_data = user_data;
+
+	next_state (parsing, state_read_buffer);
+}
+
+gboolean
+gcr_parser_parse_stream_finish (GcrParser *self, GAsyncResult *res, GError **error)
+{
+	GcrParsing *parsing;
+
+	g_return_val_if_fail (GCR_IS_PARSING (res), FALSE);
+	g_return_val_if_fail (!error || !*error, FALSE);
+
+	parsing = GCR_PARSING (res);
+	g_return_val_if_fail (parsing->complete, FALSE);
+
+	if (parsing->error) {
+		g_propagate_error (error, parsing->error);
+		return FALSE;
+	}
+
+	return TRUE;
+}

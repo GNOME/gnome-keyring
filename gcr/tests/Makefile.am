@@ -16,22 +16,25 @@ TESTING_FLAGS = \
 
 include $(top_srcdir)/testing/testing.make
 
+EXTRA_DIST = \
+	test-data
+
 # ------------------------------------------------------------------
 
 noinst_PROGRAMS += \
-	ui-test-details \
+	ui-test-certificate \
+	ui-test-key \
 	ui-test-unlock-options
 
-ui_test_details_SOURCES = \
-	ui-test-details.c
+ui_test_certificate_SOURCES = \
+	ui-test-certificate.c
 
-ui_test_details_CFLAGS = \
-	-DGCK_API_SUBJECT_TO_CHANGE \
+ui_test_certificate_CFLAGS = \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	$(GTK_CFLAGS)
 
-ui_test_details_LDADD = \
-	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
+ui_test_certificate_LDADD = \
+	$(top_builddir)/gcr/libgcr.la \
 	$(GTK_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
@@ -47,5 +50,14 @@ ui_test_unlock_options_LDADD = \
 	$(GTK_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
-EXTRA_DIST = \
-	test-data
+ui_test_key_SOURCES = \
+	ui-test-key.c
+
+ui_test_key_CFLAGS = \
+	-DGCR_API_SUBJECT_TO_CHANGE \
+	$(GTK_CFLAGS)
+
+ui_test_key_LDADD = \
+	$(top_builddir)/gcr/libgcr.la \
+	$(GTK_LIBS) \
+	$(LIBGCRYPT_LIBS)

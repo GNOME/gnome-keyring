@@ -1081,4 +1081,3 @@ msgstr "_Geslo:"
 #~ msgstr "Ali je gnome-keyring SSH agent omogočen."
 #~ msgid "Whether the gnome-keyring secret service is enabled."
 #~ msgstr "Ali je skrita storitev gnome-keyring omogočena."
-

@@ -103,6 +103,7 @@ int
 gkr_tool_import (int argc, char *argv[])
 {
 	GcrImporter *importer;
+	GcrParser *parser;
 	GError *error = NULL;
 	GInputStream *input;
 	gboolean res;
@@ -134,8 +135,15 @@ gkr_tool_import (int argc, char *argv[])
 			gkr_tool_handle_error (&error, "couldn't read file: %s", *imp);
 			ret = 1;
 		} else {
-			res = gcr_importer_import (importer, input, NULL, &error);
+			parser = gcr_parser_new ();
+			gcr_importer_listen (importer, parser);
+			res = gcr_parser_parse_stream (parser, input, NULL, &error);
 			g_object_unref (input);
+			g_object_unref (parser);
+
+			if (res == TRUE)
+				res = gcr_importer_import (importer, NULL, &error);
+
 			if (res == FALSE) {
 				if (!error || error->code != GCR_ERROR_CANCELLED)
 					gkr_tool_handle_error (&error, "couldn't import file: %s", *imp);

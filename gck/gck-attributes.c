@@ -633,6 +633,28 @@ gck_attribute_free (GckAttribute *attr)
 	}
 }
 
+gboolean
+gck_attribute_equal (gconstpointer a, gconstpointer b)
+{
+	const GckAttribute *aa = a;
+	const GckAttribute *ab = b;
+
+	if (!a && !b)
+		return TRUE;
+	if (!a || !b)
+		return FALSE;
+
+	if (aa->type != ab->type)
+		return FALSE;
+	if (aa->length != ab->length)
+		return FALSE;
+	if (!aa->value && !ab->value)
+		return TRUE;
+	if (!aa->value || !ab->value)
+		return FALSE;
+	return memcmp (aa->value, ab->value, aa->length) == 0;
+}
+
 /**
  * SECTION:gck-attributes
  * @title: GckAttributes
@@ -1220,6 +1242,25 @@ gck_attributes_unref (GckAttributes *attrs)
 		g_slice_free (GckAttributes, attrs);
 	}
 }
+
+gboolean
+gck_attributes_contains (GckAttributes *attrs, GckAttribute *match)
+{
+	GckAttribute *attr;
+	guint i;
+
+	g_return_val_if_fail (attrs && attrs->array, FALSE);
+
+	for (i = 0; i < attrs->array->len; ++i) {
+		attr = gck_attributes_at (attrs, i);
+		if (gck_attribute_equal (attr, match))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 
 /* -------------------------------------------------------------------------------------------
  * INTERNAL

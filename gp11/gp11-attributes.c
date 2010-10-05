@@ -629,6 +629,28 @@ gp11_attribute_free (GP11Attribute *attr)
 	}
 }
 
+gboolean
+gp11_attribute_equal (gconstpointer a, gconstpointer b)
+{
+	const GP11Attribute *aa = a;
+	const GP11Attribute *ab = b;
+
+	if (!a && !b)
+		return TRUE;
+	if (!a || !b)
+		return FALSE;
+
+	if (aa->type != ab->type)
+		return FALSE;
+	if (aa->length != ab->length)
+		return FALSE;
+	if (!aa->value && !ab->value)
+		return TRUE;
+	if (!aa->value || !ab->value)
+		return FALSE;
+	return memcmp (aa->value, ab->value, aa->length) == 0;
+}
+
 /**
  * SECTION:gp11-attributes
  * @title: GP11Attributes
@@ -1335,6 +1357,23 @@ gp11_attributes_unref (GP11Attributes *attrs)
 		attrs->array = NULL;
 		g_slice_free (GP11Attributes, attrs);
 	}
+}
+
+gboolean
+gp11_attributes_contains (GP11Attributes *attrs, GP11Attribute *match)
+{
+	GP11Attribute *attr;
+	guint i;
+
+	g_return_val_if_fail (attrs && attrs->array, FALSE);
+
+	for (i = 0; i < attrs->array->len; ++i) {
+		attr = gp11_attributes_at (attrs, i);
+		if (gp11_attribute_equal (attr, match))
+			return TRUE;
+	}
+
+	return FALSE;
 }
 
 /* -------------------------------------------------------------------------------------------

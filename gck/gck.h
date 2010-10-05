@@ -143,6 +143,9 @@ gchar*              gck_attribute_get_string                (GckAttribute *attr)
 void                gck_attribute_get_date                  (GckAttribute *attr,
                                                              GDate* value);
 
+gboolean            gck_attribute_equal                     (gconstpointer a,
+                                                             gconstpointer b);
+
 GckAttribute*       gck_attribute_dup                       (GckAttribute *attr);
 
 void                gck_attribute_clear                     (GckAttribute *attr);
@@ -223,6 +226,9 @@ gulong              gck_attributes_count                    (GckAttributes *attr
 GckAttributes*      gck_attributes_ref                      (GckAttributes *attrs);
 
 void                gck_attributes_unref                    (GckAttributes *attrs);
+
+gboolean            gck_attributes_contains                 (GckAttributes *attrs,
+                                                             GckAttribute *match);
 
 /* -------------------------------------------------------------------------
  * FORWARDS
