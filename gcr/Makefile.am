@@ -33,6 +33,8 @@ inc_HEADERS = \
 	gcr-certificate-details-widget.h \
 	gcr-certificate-renderer.h \
 	gcr-certificate-widget.h \
+	gcr-collection.h \
+	gcr-collection-model.h \
 	gcr-key-renderer.h \
 	gcr-key-widget.h \
 	gcr-importer.h \
@@ -70,6 +72,8 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
 	gcr-certificate-exporter.c gcr-certificate-exporter.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
+	gcr-collection.c gcr-collection.h \
+	gcr-collection-model.c gcr-collection-model.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-display-view.c gcr-display-view.h \
 	gcr-icons.c gcr-icons.h \
