@@ -3,7 +3,7 @@ INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
-	-DGCK_API_SUBJECT_TO_CHANGE
+	-DGCK_API_SUBJECT_TO_CHANGE \
 	$(GOBJECT_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(GLIB_CFLAGS)
