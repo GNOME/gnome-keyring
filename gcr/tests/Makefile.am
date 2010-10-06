@@ -5,10 +5,10 @@ TESTING_FILES = \
 	unit-test-parser.c
 
 TESTING_LIBS =  \
-	$(top_builddir)/gcr/libgcr.la \
+	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
-	$(top_builddir)/gp11/libgp11.la
+	$(top_builddir)/gck/libgck.la
 
 TESTING_FLAGS = \
 	-DGCR_API_SUBJECT_TO_CHANGE \
@@ -34,7 +34,8 @@ ui_test_certificate_CFLAGS = \
 	$(GTK_CFLAGS)
 
 ui_test_certificate_LDADD = \
-	$(top_builddir)/gcr/libgcr.la \
+	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
+	$(top_builddir)/gck/libgck.la \
 	$(GTK_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
@@ -47,6 +48,7 @@ ui_test_unlock_options_CFLAGS = \
 
 ui_test_unlock_options_LDADD = \
 	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
+	$(top_builddir)/gck/libgck.la \
 	$(GTK_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
@@ -58,6 +60,7 @@ ui_test_key_CFLAGS = \
 	$(GTK_CFLAGS)
 
 ui_test_key_LDADD = \
-	$(top_builddir)/gcr/libgcr.la \
+	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
+	$(top_builddir)/gck/libgck.la \
 	$(GTK_LIBS) \
 	$(LIBGCRYPT_LIBS)

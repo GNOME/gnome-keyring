@@ -259,6 +259,49 @@ on_renderer_data_changed (GcrRenderer *renderer, GcrViewer *self)
 	gcr_renderer_render (renderer, self);
 }
 
+static void
+paint_widget_icons (GcrDisplayView *self, cairo_t *cr)
+{
+	GHashTableIter hit;
+	GtkTextView *view;
+	GdkRectangle visible;
+	GdkRectangle location;
+	GcrDisplayItem *item;
+	gpointer value;
+	GtkTextIter iter;
+
+	view = GTK_TEXT_VIEW (self);
+	gtk_text_view_get_visible_rect (view, &visible);
+
+	g_hash_table_iter_init (&hit, self->pv->items);
+	while (g_hash_table_iter_next (&hit, NULL, &value)) {
+
+		item = value;
+		if (item->pixbuf == NULL)
+			continue;
+
+		gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
+		gtk_text_view_get_iter_location (view, &iter, &location);
+
+		location.height = gdk_pixbuf_get_height (item->pixbuf);
+		location.width = gdk_pixbuf_get_width (item->pixbuf);
+		location.x = visible.width - location.width - ICON_MARGIN;
+
+		if (!gdk_rectangle_intersect (&visible, &location, NULL))
+			continue;
+
+		gtk_text_view_buffer_to_window_coords (view, GTK_TEXT_WINDOW_TEXT,
+		                                       location.x, location.y,
+		                                       &location.x, &location.y);
+
+		cairo_save (cr);
+		gdk_cairo_set_source_pixbuf (cr, item->pixbuf, location.x, location.y);
+		cairo_rectangle (cr, location.x, location.y, location.width, location.height);
+		cairo_fill (cr);
+		cairo_restore (cr);
+	}
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -376,18 +419,32 @@ _gcr_display_view_realize (GtkWidget *widget)
 		style_display_item (widget, value);
 }
 
+#if GTK_CHECK_VERSION (2,91,0)
+
+static gboolean
+_gcr_display_view_draw (GtkWidget *widget, cairo_t *cr)
+{
+	GdkWindow *window;
+	gboolean handled;
+
+	/* Have GtkTextView draw the text first. */
+	if (GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->draw)
+		handled = GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->draw (widget, cr);
+
+	window = gtk_text_view_get_window (GTK_TEXT_VIEW (widget), GTK_TEXT_WINDOW_TEXT);
+	if (gtk_cairo_should_draw_window (cr, window))
+		paint_widget_icons (GCR_DISPLAY_VIEW (widget), cr);
+
+	return handled;
+}
+
+#else /* GTK 2.x */
+
 static gboolean
 _gcr_display_view_expose_event (GtkWidget *widget, GdkEventExpose *event)
 {
 	GcrDisplayView *self = GCR_DISPLAY_VIEW (widget);
-	GtkTextView *view = GTK_TEXT_VIEW (widget);
 	gboolean handled = FALSE;
-	GdkRectangle visible;
-	GdkRectangle location;
-	GHashTableIter hit;
-	GcrDisplayItem *item;
-	gpointer value;
-	GtkTextIter iter;
 	cairo_t *cr;
 
 	/* Have GtkTextView draw the text first. */
@@ -395,41 +452,16 @@ _gcr_display_view_expose_event (GtkWidget *widget, GdkEventExpose *event)
 		handled = GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->expose_event (widget, event);
 
 	/* Render the pixbuf if it's available */
-	if (event->window == gtk_text_view_get_window (view, GTK_TEXT_WINDOW_TEXT)) {
-
-		gtk_text_view_get_visible_rect (view, &visible);
-
-		g_hash_table_iter_init (&hit, self->pv->items);
-		while (g_hash_table_iter_next (&hit, NULL, &value)) {
-
-			item = value;
-			if (item->pixbuf == NULL)
-				continue;
-
-			gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
-			gtk_text_view_get_iter_location (view, &iter, &location);
-
-			location.height = gdk_pixbuf_get_height (item->pixbuf);
-			location.width = gdk_pixbuf_get_width (item->pixbuf);
-			location.x = visible.width - location.width - ICON_MARGIN;
-
-			if (!gdk_rectangle_intersect (&visible, &location, NULL))
-				continue;
-
-			gtk_text_view_buffer_to_window_coords (view, GTK_TEXT_WINDOW_TEXT,
-			                                       location.x, location.y,
-			                                       &location.x, &location.y);
-
-			cr = gdk_cairo_create (event->window);
-			gdk_cairo_set_source_pixbuf (cr, item->pixbuf, location.x, location.y);
-			cairo_rectangle (cr, location.x, location.y, location.width, location.height);
-			cairo_fill (cr);
-			cairo_destroy (cr);
-		}
+	if (event->window == gtk_text_view_get_window (GTK_TEXT_VIEW (widget), GTK_TEXT_WINDOW_TEXT)) {
+		cr = gdk_cairo_create (event->window);
+		paint_widget_icons (GCR_DISPLAY_VIEW (self), cr);
+		cairo_destroy (cr);
 	}
 
 	return handled;
 }
+
+#endif /* GTK 2.x */
 
 static void
 _gcr_display_view_class_init (GcrDisplayViewClass *klass)
@@ -445,7 +477,12 @@ _gcr_display_view_class_init (GcrDisplayViewClass *klass)
 	gobject_class->finalize = _gcr_display_view_finalize;
 
 	widget_class->realize = _gcr_display_view_realize;
+
+#if GTK_CHECK_VERSION (2,91,0)
+	widget_class->draw = _gcr_display_view_draw;
+#else
 	widget_class->expose_event = _gcr_display_view_expose_event;
+#endif
 }
 
 static void
