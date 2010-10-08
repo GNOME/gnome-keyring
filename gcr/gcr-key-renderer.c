@@ -221,7 +221,7 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 {
 	GcrKeyRenderer *self;
 	GcrDisplayView *view;
-	const gchar *text;
+	const gchar *text = "";
 	gchar *display;
 	gulong klass;
 	gulong key_type;

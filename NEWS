@@ -1,3 +1,11 @@
+Changes in version 2.91.1 are:
+ * Fix build problem in gpg-agent.
+ * Properly distribute pkgconfig file for gck library.
+ * Better certificate widget in gcr library.
+ * Add extra debug guard around printing of prompt io.
+ * Rework how the gcr parser and importer work together.
+ * More GTK+ 3.0 fixes.
+
 Changes in version 2.91.0 are:
  * String and punctuation fixes.
  * Add libgck library to soon replace libgp11
