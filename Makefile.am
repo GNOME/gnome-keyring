@@ -14,7 +14,6 @@ SUBDIRS = \
 	. \
 	egg \
 	gck \
-	gp11 \
 	gcr \
 	ui \
 	pkcs11 \
