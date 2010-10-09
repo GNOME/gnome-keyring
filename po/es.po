@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-10-05 22:05+0000\n"
-"PO-Revision-Date: 2010-10-07 18:16+0200\n"
+"POT-Creation-Date: 2010-10-08 01:25+0000\n"
+"PO-Revision-Date: 2010-10-09 14:34+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -100,7 +100,8 @@ msgstr "Depósito de claves de GNOME: agente GPG"
 msgid "GPG Password Agent"
 msgstr "Agente de contraseñas GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
+#: ../gcr/gcr-key-renderer.c:296
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -171,7 +172,7 @@ msgstr "Nombre común"
 msgid "Surname"
 msgstr "Apellido"
 
-#: ../egg/egg-oid.c:69
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
 msgid "Serial Number"
 msgstr "Número de serie"
 
@@ -227,7 +228,7 @@ msgstr "Calificador del nombre de dominio"
 msgid "Pseudonym"
 msgstr "Seudónimo"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
 msgid "RSA"
 msgstr "RSA"
 
@@ -243,7 +244,7 @@ msgstr "MD5 con RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 con RSA"
 
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
 msgid "DSA"
 msgstr "DSA"
 
@@ -261,8 +262,115 @@ msgstr "Error inesperado en select() al leer los datos de un proceso hijo (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Error inesperado en waitpid() (%s)"
 
+#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:200
+msgid "Certificate"
+msgstr "Certificado"
+
+#: ../gcr/gcr-certificate-renderer.c:107
+msgid "Extension"
+msgstr "Extensión"
+
+#: ../gcr/gcr-certificate-renderer.c:112
+msgid "Identifier"
+msgstr "Identificador"
+
+#: ../gcr/gcr-certificate-renderer.c:120
+msgid "Value"
+msgstr "Valor"
+
+#: ../gcr/gcr-certificate-renderer.c:126
+msgid "Critical"
+msgstr "Crítico"
+
+#: ../gcr/gcr-certificate-renderer.c:126
+msgid "Yes"
+msgstr "Sí"
+
+#: ../gcr/gcr-certificate-renderer.c:126
+msgid "No"
+msgstr "No"
+
+#: ../gcr/gcr-certificate-renderer.c:339
+#| msgid "Identifier"
+msgid "Identity"
+msgstr "Identidad"
+
+#: ../gcr/gcr-certificate-renderer.c:343
+msgid "Verified by"
+msgstr "Verificado por"
+
+#: ../gcr/gcr-certificate-renderer.c:350
+#| msgid "Expires On"
+msgid "Expires"
+msgstr "Caduca"
+
+#. The subject
+#: ../gcr/gcr-certificate-renderer.c:360
+msgid "Subject Name"
+msgstr "Nombre del asunto"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-renderer.c:364
+msgid "Issuer Name"
+msgstr "Nombre del emisor"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-renderer.c:368
+msgid "Issued Certificate"
+msgstr "Certificado emitido"
+
+#: ../gcr/gcr-certificate-renderer.c:373
+msgid "Version"
+msgstr "Versión"
+
+#: ../gcr/gcr-certificate-renderer.c:387
+msgid "Not Valid Before"
+msgstr "No es válido antes de"
+
+#: ../gcr/gcr-certificate-renderer.c:392
+msgid "Not Valid After"
+msgstr "No es válido después de"
+
+#: ../gcr/gcr-certificate-renderer.c:401
+msgid "Signature Algorithm"
+msgstr "Algoritmo de firma"
+
+#: ../gcr/gcr-certificate-renderer.c:406
+msgid "Signature Parameters"
+msgstr "Parámetros de la firma"
+
+#: ../gcr/gcr-certificate-renderer.c:413
+msgid "Signature"
+msgstr "Firma"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-renderer.c:418
+msgid "Public Key Info"
+msgstr "Información de la clave pública"
+
+#: ../gcr/gcr-certificate-renderer.c:423
+msgid "Key Algorithm"
+msgstr "Clave del algoritmo"
+
+#: ../gcr/gcr-certificate-renderer.c:429
+msgid "Key Parameters"
+msgstr "Parámetros de la clave"
+
+#: ../gcr/gcr-certificate-renderer.c:436
+msgid "Key Size"
+msgstr "Tamaño de la clave"
+
+#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
+#: ../gcr/gcr-parser.c:203
+msgid "Public Key"
+msgstr "Clave privada"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:449
+msgid "Fingerprints"
+msgstr "Huellas"
+
 #: ../gcr/gcr-import-dialog.ui.h:1
-#| msgid "Import Certificates/Keys"
 msgid "Import Certificates and Keys"
 msgstr "Importar certificados y claves"
 
@@ -359,17 +467,54 @@ msgid "Choose a location to store the imported certificates/keys."
 msgstr ""
 "Elija una ubicación donde almacenar los certificados/claves importados."
 
-#: ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-key-renderer.c:69
+msgid "Key"
+msgstr "Clave"
+
+#: ../gcr/gcr-key-renderer.c:260
+#| msgid "Private Key"
+msgid "Private RSA Key"
+msgstr "Clave privada RSA"
+
+#: ../gcr/gcr-key-renderer.c:262
+#| msgid "Private Key"
+msgid "Private DSA Key"
+msgstr "Clave privada DSA"
+
+#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "Clave privada"
 
-#: ../gcr/gcr-parser.c:200
-msgid "Certificate"
-msgstr "Certificado"
+#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
+#| msgid "Public Key"
+msgid "Public DSA Key"
+msgstr "Clave pública DSA"
 
-#: ../gcr/gcr-parser.c:203
-msgid "Public Key"
-msgstr "Clave privada"
+#: ../gcr/gcr-key-renderer.c:278
+#, c-format
+msgid "%d bits"
+msgstr "%d bits"
+
+#: ../gcr/gcr-key-renderer.c:279
+#| msgid "Street"
+msgid "Strength"
+msgstr "Fortaleza"
+
+#: ../gcr/gcr-key-renderer.c:292
+#| msgid "Key Algorithm"
+msgid "Algorithm"
+msgstr "Algoritmo"
+
+#: ../gcr/gcr-key-renderer.c:299
+#| msgid "Key Size"
+msgid "Size"
+msgstr "Tamaño"
+
+#. TODO: We need to have consistent key fingerprints.
+#: ../gcr/gcr-key-renderer.c:303
+#| msgid "Fingerprints"
+msgid "Fingerprint"
+msgstr "Huella"
 
 #: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
@@ -714,22 +859,18 @@ msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "El URI no tiene el esquema «pkcs11»."
 
 #: ../gck/gck-misc.c:129
-#| msgid "Insufficient memory available on device"
 msgid "Insufficient memory available on the device"
 msgstr "No hay memoria suficiente en el dispositivo"
 
 #: ../gck/gck-misc.c:147
-#| msgid "The key is different from before"
 msgid "The key is different than before"
 msgstr "La clave es diferente que anteriormente"
 
 #: ../gck/gck-misc.c:151
-#| msgid "Cannot include the key in digest"
 msgid "Cannot include the key in the digest"
 msgstr "No se puede incluir la clave en el resumen"
 
 #: ../gck/gck-misc.c:223
-#| msgid "Too many users of different types logged in"
 msgid "Too many users of different types are logged in"
 msgstr "Demasiados usuarios de tipos diferentes han iniciado sesión"
 
@@ -981,9 +1122,6 @@ msgstr "_Contraseña:"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "Certificado del firmante del correo-e"
 
-#~ msgid "Expires On"
-#~ msgstr "Caduca el"
-
 #~ msgid "Issued On"
 #~ msgstr "Emitido el"
 
@@ -1004,66 +1142,6 @@ msgstr "_Contraseña:"
 
 #~ msgid "SSL Server Certificate"
 #~ msgstr "Certificado de servidor SSL"
-
-#~ msgid "Extension"
-#~ msgstr "Extensión"
-
-#~ msgid "Identifier"
-#~ msgstr "Identificador"
-
-#~ msgid "Value"
-#~ msgstr "Valor"
-
-#~ msgid "Critical"
-#~ msgstr "Crítico"
-
-#~ msgid "Yes"
-#~ msgstr "Sí"
-
-#~ msgid "No"
-#~ msgstr "No"
-
-#~ msgid "Subject Name"
-#~ msgstr "Nombre del asunto"
-
-#~ msgid "Issuer Name"
-#~ msgstr "Nombre del emisor"
-
-#~ msgid "Issued Certificate"
-#~ msgstr "Certificado emitido"
-
-#~ msgid "Version"
-#~ msgstr "Versión"
-
-#~ msgid "Not Valid Before"
-#~ msgstr "No es válido antes de"
-
-#~ msgid "Not Valid After"
-#~ msgstr "No es válido después de"
-
-#~ msgid "Signature"
-#~ msgstr "Firma"
-
-#~ msgid "Signature Algorithm"
-#~ msgstr "Algoritmo de firma"
-
-#~ msgid "Signature Parameters"
-#~ msgstr "Parámetros de la firma"
-
-#~ msgid "Public Key Info"
-#~ msgstr "Información de la clave pública"
-
-#~ msgid "Key Algorithm"
-#~ msgstr "Clave del algoritmo"
-
-#~ msgid "Key Parameters"
-#~ msgstr "Parámetros de la clave"
-
-#~ msgid "Key Size"
-#~ msgstr "Tamaño de la clave"
-
-#~ msgid "Fingerprints"
-#~ msgstr "Huellas"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr ""
