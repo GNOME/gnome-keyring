@@ -347,10 +347,6 @@ _gcr_display_view_dispose (GObject *obj)
 	GcrRenderer *renderer;
 	GcrDisplayItem *item;
 
-	if (self->pv->buffer)
-		g_object_unref (self->pv->buffer);
-	self->pv->buffer = NULL;
-
 	while (self->pv->renderers->len) {
 		renderer = g_ptr_array_index (self->pv->renderers, 0);
 		item = g_hash_table_lookup (self->pv->items, renderer);
@@ -361,9 +357,13 @@ _gcr_display_view_dispose (GObject *obj)
 		g_ptr_array_remove_index_fast (self->pv->renderers, 0);
 	}
 
+	if (self->pv->buffer)
+		g_object_unref (self->pv->buffer);
+	self->pv->buffer = NULL;
+
 	g_assert (g_hash_table_size (self->pv->items) == 0);
 
-	G_OBJECT_CLASS (_gcr_display_view_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (_gcr_display_view_parent_class)->dispose (obj);
 }
 
 static void

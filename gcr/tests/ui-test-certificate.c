@@ -50,9 +50,9 @@ on_parser_parsed (GcrParser *parser, gpointer unused)
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 550, 400);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 20);
 	gtk_dialog_run (dialog);
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 
 	g_object_unref (dialog);
-	g_object_unref (details);
 }
 
 static void
