@@ -46,16 +46,18 @@ enum {
 };
 
 struct _GcrCertificateRendererPrivate {
-	GcrCertificate *certificate;
-	GckAttributes *attributes;
+	GcrCertificate *opt_cert;
+	GckAttributes *opt_attrs;
 	guint key_size;
 	gchar *label;
 };
 
 static void gcr_renderer_iface_init (GcrRendererIface *iface);
+static void gcr_certificate_iface_init (GcrCertificateIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (GcrCertificateRenderer, gcr_certificate_renderer, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (GCR_TYPE_RENDERER, gcr_renderer_iface_init));
+                         G_IMPLEMENT_INTERFACE (GCR_TYPE_RENDERER, gcr_renderer_iface_init)
+                         G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_certificate_iface_init));
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -69,8 +71,8 @@ calculate_label (GcrCertificateRenderer *self, GNode *asn)
 	if (self->pv->label)
 		return g_strdup (self->pv->label);
 
-	if (self->pv->attributes) {
-		if (gck_attributes_find_string (self->pv->attributes, CKA_LABEL, &label))
+	if (self->pv->opt_attrs) {
+		if (gck_attributes_find_string (self->pv->opt_attrs, CKA_LABEL, &label))
 			return label;
 	}
 
@@ -246,9 +248,9 @@ gcr_certificate_renderer_dispose (GObject *obj)
 {
 	GcrCertificateRenderer *self = GCR_CERTIFICATE_RENDERER (obj);
 
-	if (self->pv->certificate)
-		g_object_unref (self->pv->certificate);
-	self->pv->certificate = NULL;
+	if (self->pv->opt_cert)
+		g_object_unref (self->pv->opt_cert);
+	self->pv->opt_cert = NULL;
 
 	G_OBJECT_CLASS (gcr_certificate_renderer_parent_class)->dispose (obj);
 }
@@ -258,11 +260,11 @@ gcr_certificate_renderer_finalize (GObject *obj)
 {
 	GcrCertificateRenderer *self = GCR_CERTIFICATE_RENDERER (obj);
 
-	g_assert (!self->pv->certificate);
+	g_assert (!self->pv->opt_cert);
 
-	if (self->pv->attributes)
-		gck_attributes_unref (self->pv->attributes);
-	self->pv->attributes = NULL;
+	if (self->pv->opt_attrs)
+		gck_attributes_unref (self->pv->opt_attrs);
+	self->pv->opt_attrs = NULL;
 
 	g_free (self->pv->label);
 	self->pv->label = NULL;
@@ -303,13 +305,13 @@ gcr_certificate_renderer_get_property (GObject *obj, guint prop_id, GValue *valu
 
 	switch (prop_id) {
 	case PROP_CERTIFICATE:
-		g_value_set_object (value, self->pv->certificate);
+		g_value_set_object (value, self->pv->opt_cert);
 		break;
 	case PROP_LABEL:
 		g_value_take_string (value, calculate_label (self, NULL));
 		break;
 	case PROP_ATTRIBUTES:
-		g_value_set_boxed (value, self->pv->attributes);
+		g_value_set_boxed (value, self->pv->opt_attrs);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -356,6 +358,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	GcrDisplayView *view;
 	on_parsed_dn_args args;
 	const gchar *text;
+	GcrCertificate *cert;
 	gpointer raw;
 	gulong version;
 	guint bits, index;
@@ -376,14 +379,13 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	}
 
 	_gcr_display_view_clear (view, renderer);
-
-	if (!self->pv->certificate)
-		return;
+	cert = GCR_CERTIFICATE (self);
 
 	_gcr_display_view_set_stock_image (view, GCR_RENDERER (self), GCR_ICON_CERTIFICATE);
 
-	data = gcr_certificate_get_der_data (self->pv->certificate, &n_data);
-	g_return_if_fail (data);
+	data = gcr_certificate_get_der_data (cert, &n_data);
+	if (!data)
+		return;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	g_return_if_fail (asn);
@@ -487,7 +489,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 		g_free (display);
 	}
 
-	bits = gcr_certificate_get_key_size (self->pv->certificate);
+	bits = gcr_certificate_get_key_size (cert);
 	if (bits > 0) {
 		display = g_strdup_printf ("%u", bits);
 		_gcr_display_view_append_value (view, renderer, _("Key Size"), display, FALSE);
@@ -541,6 +543,34 @@ gcr_renderer_iface_init (GcrRendererIface *iface)
 	iface->populate_popup = gcr_certificate_renderer_populate_popup;
 }
 
+
+static const guchar*
+gcr_certificate_renderer_real_get_der_data (GcrCertificate *cert, gsize *n_data)
+{
+	GcrCertificateRenderer *self = GCR_CERTIFICATE_RENDERER (cert);
+	GckAttribute *attr;
+
+	g_assert (n_data);
+
+	if (self->pv->opt_cert)
+		return gcr_certificate_get_der_data (self->pv->opt_cert, n_data);
+
+	if (self->pv->opt_attrs) {
+		attr = gck_attributes_find (self->pv->opt_attrs, CKA_VALUE);
+		g_return_val_if_fail (attr, NULL);
+		*n_data = attr->length;
+		return attr->value;
+	}
+
+	return NULL;
+}
+
+static void
+gcr_certificate_iface_init (GcrCertificateIface *iface)
+{
+	iface->get_der_data = gcr_certificate_renderer_real_get_der_data;
+}
+
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
@@ -551,11 +581,19 @@ gcr_certificate_renderer_new (GcrCertificate *certificate)
 	return g_object_new (GCR_TYPE_CERTIFICATE_RENDERER, "certificate", certificate, NULL);
 }
 
+GcrCertificateRenderer*
+gcr_certificate_renderer_new_for_attributes (const gchar *label, struct _GckAttributes *attrs)
+{
+	return g_object_new (GCR_TYPE_CERTIFICATE_RENDERER, "label", label, "attributes", attrs, NULL);
+}
+
 GcrCertificate*
 gcr_certificate_renderer_get_certificate (GcrCertificateRenderer *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_RENDERER (self), NULL);
-	return self->pv->certificate;
+	if (self->pv->opt_cert)
+		return self->pv->opt_cert;
+	return GCR_CERTIFICATE (self);
 }
 
 void
@@ -563,11 +601,16 @@ gcr_certificate_renderer_set_certificate (GcrCertificateRenderer *self, GcrCerti
 {
 	g_return_if_fail (GCR_IS_CERTIFICATE_RENDERER (self));
 
-	if (self->pv->certificate)
-		g_object_unref (self->pv->certificate);
-	self->pv->certificate = cert;
-	if (self->pv->certificate)
-		g_object_ref (self->pv->certificate);
+	if (self->pv->opt_cert)
+		g_object_unref (self->pv->opt_cert);
+	self->pv->opt_cert = cert;
+	if (self->pv->opt_cert)
+		g_object_ref (self->pv->opt_cert);
+
+	if (self->pv->opt_attrs) {
+		gck_attributes_unref (self->pv->opt_attrs);
+		self->pv->opt_attrs = NULL;
+	}
 
 	gcr_renderer_emit_data_changed (GCR_RENDERER (self));
 	g_object_notify (G_OBJECT (self), "certificate");
@@ -577,39 +620,27 @@ GckAttributes*
 gcr_certificate_renderer_get_attributes (GcrCertificateRenderer *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_RENDERER (self), NULL);
-	return self->pv->attributes;
+	return self->pv->opt_attrs;
 }
 
 void
 gcr_certificate_renderer_set_attributes (GcrCertificateRenderer *self, GckAttributes *attrs)
 {
-	GcrCertificate *cert;
-	GckAttribute *attr;
-	gboolean emit = TRUE;
-
 	g_return_if_fail (GCR_IS_CERTIFICATE_RENDERER (self));
 
-	gck_attributes_unref (self->pv->attributes);
-	self->pv->attributes = attrs;\
+	gck_attributes_unref (self->pv->opt_attrs);
+	self->pv->opt_attrs = attrs;
 
-	if (self->pv->attributes) {
-		gck_attributes_ref (self->pv->attributes);
-		attr = gck_attributes_find (self->pv->attributes, CKA_VALUE);
-		if (attr) {
-			/* Create a new certificate object refferring to same memory */
-			cert = gcr_simple_certificate_new_static (attr->value, attr->length);
-			g_object_set_data_full (G_OBJECT (cert), "attributes",
-			                        gck_attributes_ref (self->pv->attributes),
-			                        (GDestroyNotify)gck_attributes_unref);
-			gcr_certificate_renderer_set_certificate (self, cert);
-			g_object_unref (cert);
-			emit = FALSE;
-		} else {
-			gcr_certificate_renderer_set_certificate (self, NULL);
-		}
+	if (self->pv->opt_attrs)
+		gck_attributes_ref (self->pv->opt_attrs);
+
+	if (self->pv->opt_cert) {
+		g_object_unref (self->pv->opt_cert);
+		g_object_notify (G_OBJECT (self), "certificate");
+		self->pv->opt_cert = NULL;
 	}
 
-	if (emit)
-		gcr_renderer_emit_data_changed (GCR_RENDERER (self));
+	gcr_renderer_emit_data_changed (GCR_RENDERER (self));
+	g_object_notify (G_OBJECT (self), "attributes");
 
 }

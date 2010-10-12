@@ -56,6 +56,9 @@ GType                     gcr_certificate_renderer_get_type           (void);
 
 GcrCertificateRenderer*   gcr_certificate_renderer_new                (GcrCertificate *cert);
 
+GcrCertificateRenderer*   gcr_certificate_renderer_new_for_attributes (const gchar *label,
+                                                                       struct _GckAttributes *attrs);
+
 GcrCertificate*           gcr_certificate_renderer_get_certificate    (GcrCertificateRenderer *self);
 
 void                      gcr_certificate_renderer_set_certificate    (GcrCertificateRenderer *self,
