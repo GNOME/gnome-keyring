@@ -28,6 +28,8 @@
 
 #include <gcrypt.h>
 
+EGG_SECURE_DECLARE (libgcrypt);
+
 static void
 log_handler (gpointer unused, int unknown, const gchar *msg, va_list va)
 {

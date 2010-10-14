@@ -37,7 +37,9 @@ EGG_SECURE_GLIB_DEFINITIONS ();
 /* Declared in egg-secure-memory.c */
 extern int egg_secure_warnings;
 
-/*
+EGG_SECURE_DECLARE (tests);
+
+/* 
  * Each test looks like (on one line):
  *     void unit_test_xxxxx (CuTest* cu)
  *
@@ -69,7 +71,7 @@ test_alloc_free (void)
 	gpointer p;
 	gboolean ret;
 
-	p = egg_secure_alloc_full (512, 0);
+	p = egg_secure_alloc_full ("tests", 512, 0);
 	g_assert (p != NULL);
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, 512));
 
@@ -87,12 +89,12 @@ test_realloc_across (void)
 	gpointer p, p2;
 
 	/* Tiny allocation */
-	p = egg_secure_realloc_full (NULL, 1088, 0);
+	p = egg_secure_realloc_full ("tests", NULL, 1088, 0);
 	g_assert (p != NULL);
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, 1088));
 
-	/* Reallocate to a large one, will have to have changed blocks */
-	p2 = egg_secure_realloc_full (p, 16200, 0);
+	/* Reallocate to a large one, will have to have changed blocks */	
+	p2 = egg_secure_realloc_full ("tests", p, 16200, 0);
 	g_assert (p2 != NULL);
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p2, 16200));
 }
@@ -103,13 +105,13 @@ test_alloc_two (void)
 	gpointer p, p2;
 	gboolean ret;
 
-	p2 = egg_secure_alloc_full (4, 0);
+	p2 = egg_secure_alloc_full ("tests", 4, 0);
 	g_assert (p2 != NULL);
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p2, 4));
 
 	memset (p2, 0x67, 4);
 
-	p = egg_secure_alloc_full (16200, 0);
+	p = egg_secure_alloc_full ("tests", 16200, 0);
 	g_assert (p != NULL);
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, 16200));
 
@@ -131,19 +133,19 @@ test_realloc (void)
 
 	len = strlen (str) + 1;
 
-	p = egg_secure_realloc_full (NULL, len, 0);
+	p = egg_secure_realloc_full ("tests", NULL, len, 0);
 	g_assert (p != NULL);
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p, len));
 
 	strcpy ((gchar*)p, str);
 
-	p2 = egg_secure_realloc_full (p, 512, 0);
+	p2 = egg_secure_realloc_full ("tests", p, 512, 0);
 	g_assert (p2 != NULL);
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (((gchar*)p2) + len, 512 - len));
 
 	g_assert (strcmp (p2, str) == 0);
 
-	p = egg_secure_realloc_full (p2, 0, 0);
+	p = egg_secure_realloc_full ("tests", p2, 0, 0);
 	g_assert (p == NULL);
 }
 
@@ -220,7 +222,7 @@ test_clear (void)
 {
 	gpointer p;
 
-	p = egg_secure_alloc_full (188, 0);
+	p = egg_secure_alloc_full ("tests", 188, 0);
 	g_assert (p != NULL);
 	memset (p, 0x89, 188);
 	g_assert (memchr (p, 0x89, 188) == p);

@@ -83,6 +83,8 @@ G_DEFINE_TYPE_WITH_CODE (GkdSecretUnlock, gkd_secret_unlock, G_TYPE_OBJECT,
 static guint unique_prompt_number = 0;
 static GQueue unlock_prompt_queue = G_QUEUE_INIT;
 
+EGG_SECURE_DECLARE (secret_unlock);
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */

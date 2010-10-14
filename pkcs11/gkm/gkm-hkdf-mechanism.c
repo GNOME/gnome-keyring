@@ -32,6 +32,8 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
+EGG_SECURE_DECLARE (hkdf_mechanism);
+
 CK_RV
 gkm_hkdf_mechanism_derive (GkmSession *session, const char *algo,
                            CK_MECHANISM_PTR mech, GkmObject *base,

@@ -46,6 +46,8 @@ static const CK_MECHANISM_TYPE GKM_GENERIC_MECHANISMS[] = {
 	CKM_G_HKDF_SHA256_DERIVE
 };
 
+EGG_SECURE_DECLARE (generic_key);
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */

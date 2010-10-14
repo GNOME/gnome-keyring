@@ -31,6 +31,8 @@
 #include "egg/egg-padding.h"
 #include "egg/egg-secure-memory.h"
 
+EGG_SECURE_DECLARE (aes_mechanism);
+
 static CK_RV
 retrieve_length (GkmSession *session, GkmObject *wrapped, gsize *length)
 {

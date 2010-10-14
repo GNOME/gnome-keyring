@@ -52,6 +52,8 @@
 #include <string.h>
 #include <unistd.h>
 
+EGG_SECURE_DECLARE (secret_binary);
+
 /* -----------------------------------------------------------------------------
  * DECLARATIONS
  */

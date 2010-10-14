@@ -36,6 +36,8 @@
 #include <glib.h>
 #include <gcrypt.h>
 
+EGG_SECURE_DECLARE (data_der);
+
 /* -----------------------------------------------------------------------------
  * QUARKS
  */

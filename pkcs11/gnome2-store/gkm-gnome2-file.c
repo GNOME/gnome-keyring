@@ -90,6 +90,8 @@ typedef GkmDataResult (*BlockFunc) (guint block, EggBuffer *buffer, GkmSecret *l
 
 #define UNUSED_VALUE  GUINT_TO_POINTER (1)
 
+EGG_SECURE_DECLARE (data_file);
+
 /* -----------------------------------------------------------------------------
  * HELPERS
  */

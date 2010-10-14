@@ -36,6 +36,8 @@
 #include <sys/un.h>
 #include <sys/stat.h>
 
+EGG_SECURE_DECLARE (control_client);
+
 static int
 control_connect (const gchar *path)
 {

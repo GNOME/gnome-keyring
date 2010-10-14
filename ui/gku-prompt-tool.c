@@ -67,6 +67,8 @@ static gsize n_the_key = 0;
 * @short_description: Displays a propmt for 3rd party programs (ssh, gnupg)
 **/
 
+EGG_SECURE_DECLARE (prompt_tool);
+
 /* ------------------------------------------------------------------------------ */
 
 /**

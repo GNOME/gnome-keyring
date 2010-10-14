@@ -39,10 +39,11 @@
 #include <string.h>
 #include <stdio.h>
 
-
 #define V1_LABEL "SSH1 RSA Key"
 
 typedef gboolean (*ObjectForeachFunc) (GckObject *object, gpointer user_data);
+
+EGG_SECURE_DECLARE (ssh_agent_ops);
 
 /* ---------------------------------------------------------------------------- */
 

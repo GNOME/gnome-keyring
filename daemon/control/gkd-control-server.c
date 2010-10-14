@@ -47,6 +47,8 @@ typedef struct _ControlData {
 	gsize position;
 } ControlData;
 
+EGG_SECURE_DECLARE (control_server);
+
 /* -----------------------------------------------------------------------------------
  * CONTROL SERVER
  */

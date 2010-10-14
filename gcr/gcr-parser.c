@@ -164,6 +164,8 @@ static const ParserFormat parser_normal[];
 static const ParserFormat parser_formats[];
 static ParserFormat* parser_format_lookup (gint format_id);
 
+EGG_SECURE_DECLARE (parser);
+
 /* -----------------------------------------------------------------------------
  * QUARK DEFINITIONS
  */

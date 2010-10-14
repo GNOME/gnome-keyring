@@ -47,6 +47,8 @@ static const CK_MECHANISM_TYPE GKM_AES_MECHANISMS[] = {
 	CKM_G_HKDF_SHA256_DERIVE
 };
 
+EGG_SECURE_DECLARE (aes_key);
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */

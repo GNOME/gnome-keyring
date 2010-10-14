@@ -27,6 +27,8 @@
 /* Enabling this is a complete security compromise */
 #define DEBUG_DH_SECRET 0
 
+EGG_SECURE_DECLARE (dh);
+
 typedef struct _DHGroup {
 	const gchar *name;
 	guint bits;

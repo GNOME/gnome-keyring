@@ -56,6 +56,8 @@
 #define PEM_PREF_END      "-----END "
 #define PEM_PREF_END_L    9
 
+EGG_SECURE_DECLARE (openssl);
+
 static void
 parse_header_lines (const gchar *hbeg, const gchar *hend, GHashTable **result)
 {

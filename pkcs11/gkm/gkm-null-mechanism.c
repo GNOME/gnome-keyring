@@ -30,6 +30,8 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
+EGG_SECURE_DECLARE (null_mechanism);
+
 static CK_RV
 retrieve_length (GkmSession *session, GkmObject *wrapped, gsize *length)
 {
