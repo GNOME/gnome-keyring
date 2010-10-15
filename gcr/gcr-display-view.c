@@ -211,7 +211,7 @@ on_expander_expanded (GObject *object, GParamSpec *param_spec, gpointer user_dat
 	GtkExpander *expander = GTK_EXPANDER (object);
 	GcrDisplayItem *item = user_data;
 	item->expanded = gtk_expander_get_expanded (expander);
-	gcr_renderer_render (item->renderer, GCR_VIEWER (item->display_view));
+	gcr_renderer_render_view (item->renderer, GCR_VIEWER (item->display_view));
 	recalculate_and_resize (item->display_view);
 }
 
@@ -379,7 +379,7 @@ static void
 on_renderer_data_changed (GcrRenderer *renderer, GcrViewer *self)
 {
 	/* Just ask the renderer to render itself on us */
-	gcr_renderer_render (renderer, self);
+	gcr_renderer_render_view (renderer, self);
 }
 
 static void
@@ -691,7 +691,7 @@ _gcr_display_view_real_add_renderer (GcrViewer *viewer, GcrRenderer *renderer)
 	g_ptr_array_add (self->pv->renderers, g_object_ref (renderer));
 	g_hash_table_insert (self->pv->items, renderer, item);
 
-	gcr_renderer_render (renderer, viewer);
+	gcr_renderer_render_view (renderer, viewer);
 	item->data_changed_id = g_signal_connect (renderer, "data-changed",
 	                                          G_CALLBACK (on_renderer_data_changed), self);
 }
@@ -962,10 +962,14 @@ _gcr_display_view_append_fingerprint (GcrDisplayView *self, GcrRenderer *rendere
 }
 
 void
-_gcr_display_view_set_stock_image (GcrDisplayView *self, GcrRenderer *renderer,
-                                   const gchar *stock_id)
+_gcr_display_view_set_icon (GcrDisplayView *self, GcrRenderer *renderer, GIcon *icon)
 {
 	GcrDisplayItem *item;
+	GdkScreen *screen;
+	GtkIconTheme *icon_theme;
+	GtkSettings *settings;
+	gint width, height;
+	GtkIconInfo *info;
 
 	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
 	item = lookup_display_item (self, renderer);
@@ -973,12 +977,28 @@ _gcr_display_view_set_stock_image (GcrDisplayView *self, GcrRenderer *renderer,
 
 	if (item->pixbuf)
 		g_object_unref (item->pixbuf);
-	if (stock_id)
-#if GTK_CHECK_VERSION (2,91,7)
-		item->pixbuf = gtk_widget_render_icon_pixbuf (GTK_WIDGET (self), stock_id, GTK_ICON_SIZE_DIALOG);
+	item->pixbuf = NULL;
+
+	if (!icon)
+		return;
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (self));
+	icon_theme = gtk_icon_theme_get_for_screen (screen);
+	settings = gtk_settings_get_for_screen (screen);
+
+	if (!gtk_icon_size_lookup_for_settings (settings, GTK_ICON_SIZE_DIALOG, &width, &height))
+		g_return_if_reached ();
+
+	info = gtk_icon_theme_lookup_by_gicon (icon_theme, icon, MIN (width, height),
+	                                       GTK_ICON_LOOKUP_USE_BUILTIN);
+
+	if (info) {
+#if GTK_CHECK_VERSION (2,91,0)
+		GtkStyleContext *style = gtk_widget_get_style_context (GTK_WIDGET (self));
+		item->pixbuf = gtk_icon_info_load_symbolic_for_context (info, style, FALSE, NULL);
 #else
-		item->pixbuf = gtk_widget_render_icon (GTK_WIDGET (self), stock_id, GTK_ICON_SIZE_DIALOG, NULL);
+		item->pixbuf = gtk_icon_info_load_icon (info, NULL);
 #endif
-	else
-		item->pixbuf = NULL;
+		gtk_icon_info_free (info);
+	}
 }

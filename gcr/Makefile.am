@@ -43,6 +43,7 @@ inc_HEADERS = \
 	gcr-pkcs11-certificate.h \
 	gcr-renderer.h \
 	gcr-simple-certificate.h \
+	gcr-simple-collection.h \
 	gcr-trust.h \
 	gcr-types.h \
 	gcr-unlock-options.h \
@@ -87,6 +88,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
 	gcr-renderer.c gcr-renderer.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
+	gcr-simple-collection.c gcr-simple-collection.h \
 	gcr-trust.c gcr-trust.h \
 	gcr-types.h \
 	gcr-unlock-options.h \

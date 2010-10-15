@@ -42,6 +42,7 @@ struct _GcrKeyRendererPrivate {
 	guint key_size;
 	gchar *label;
 	GckAttributes *attributes;
+	GIcon *icon;
 };
 
 static void gcr_key_renderer_renderer_iface (GcrRendererIface *iface);
@@ -124,6 +125,7 @@ static void
 gcr_key_renderer_init (GcrKeyRenderer *self)
 {
 	self->pv = (G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_KEY_RENDERER, GcrKeyRendererPrivate));
+	self->pv->icon = g_themed_icon_new (GCR_ICON_FOLDER);
 }
 
 static void
@@ -143,6 +145,10 @@ gcr_key_renderer_finalize (GObject *obj)
 
 	g_free (self->pv->label);
 	self->pv->label = NULL;
+
+	if (self->pv->icon)
+		g_object_unref (self->pv->icon);
+	self->pv->icon = NULL;
 
 	G_OBJECT_CLASS (gcr_key_renderer_parent_class)->finalize (obj);
 }
@@ -243,13 +249,13 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 	if (!self->pv->attributes)
 		return;
 
-	_gcr_display_view_set_stock_image (view, renderer, GTK_STOCK_DIALOG_AUTHENTICATION);
-
 	if (!gck_attributes_find_ulong (self->pv->attributes, CKA_CLASS, &klass) ||
 	    !gck_attributes_find_ulong (self->pv->attributes, CKA_KEY_TYPE, &key_type)) {
 		g_warning ("private key does not have the CKA_CLASS and CKA_KEY_TYPE attributes");
 		return;
 	}
+
+	_gcr_display_view_set_icon (view, renderer, self->pv->icon);
 
 	display = calculate_label (self);
 	_gcr_display_view_append_title (view, renderer, display);
@@ -306,7 +312,7 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 static void
 gcr_key_renderer_renderer_iface (GcrRendererIface *iface)
 {
-	iface->render = gcr_key_renderer_real_render;
+	iface->render_view = gcr_key_renderer_real_render;
 }
 
 /* -----------------------------------------------------------------------------

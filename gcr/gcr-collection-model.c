@@ -64,7 +64,7 @@ index_for_iter (GcrCollectionModel *self, const GtkTreeIter *iter)
 	g_return_val_if_fail (G_IS_OBJECT (iter->user_data), -1);
 
 	index = GPOINTER_TO_INT (iter->user_data2);
-	g_assert (index > 0 && index < self->pv->objects->len);
+	g_assert (index >= 0 && index < self->pv->objects->len);
 	return index;
 }
 
@@ -588,7 +588,7 @@ gcr_collection_model_new (GcrCollection *collection, ...)
 GcrCollectionModel*
 gcr_collection_model_new_full (GcrCollection *collection, const GcrCollectionModelColumn *columns, guint n_columns)
 {
-	GcrCollectionModel *self = g_object_new (GCR_TYPE_COLLECTION, "collection", collection, NULL);
+	GcrCollectionModel *self = g_object_new (GCR_TYPE_COLLECTION_MODEL, "collection", collection, NULL);
 	gcr_collection_model_set_columns (self, columns, n_columns);
 	return self;
 }

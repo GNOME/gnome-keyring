@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 #define GCR_RENDERER_GET_INTERFACE(inst)  (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GCR_TYPE_RENDERER, GcrRendererIface))
 
 typedef struct _GcrRendererIface GcrRendererIface;
+typedef struct _GcrRendererColumn GcrRendererColumn;
 
 struct _GcrRendererIface {
 	GTypeInterface parent;
@@ -43,7 +44,11 @@ struct _GcrRendererIface {
 	void (*data_changed) (GcrRenderer *self);
 
 	/* virtual */
-	void (*render) (GcrRenderer *self, GcrViewer *viewer);
+	void (*render_view) (GcrRenderer *self, GcrViewer *viewer);
+
+	const GcrRendererColumn* (*get_column_info) (GcrRenderer *self, gint *n_columns);
+
+	const void (*get_column_value) (GcrRenderer *self, GQuark column, GValue *value);
 
 	void (*populate_popup) (GcrRenderer *self, GcrViewer *viewer, GtkMenu *menu);
 
@@ -57,14 +62,26 @@ struct _GcrRendererIface {
 
 };
 
+struct _GcrRendererColumn {
+	GQuark column;
+	GType type;
+	const gchar *description;
+};
+
 GType                  gcr_renderer_get_type                      (void) G_GNUC_CONST;
 
-void                   gcr_renderer_render                        (GcrRenderer *self,
+void                   gcr_renderer_render_view                   (GcrRenderer *self,
                                                                    GcrViewer *viewer);
 
 void                   gcr_renderer_popuplate_popup               (GcrRenderer *self,
                                                                    GcrViewer *viewer,
                                                                    GtkMenu *menu);
+
+gchar*                 gcr_renderer_get_markup                    (GcrRenderer *self);
+
+gchar*                 gcr_renderer_get_description               (GcrRenderer *self);
+
+gchar*                 gcr_renderer_get_stock_icon                (GcrRenderer *self);
 
 void                   gcr_renderer_emit_data_changed             (GcrRenderer *self);
 

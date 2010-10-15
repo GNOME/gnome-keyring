@@ -56,6 +56,18 @@ gcr_renderer_base_init (gpointer gobject_iface)
 		         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the renderer",
 		                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
+		g_object_interface_install_property (gobject_iface,
+		         g_param_spec_string ("description", "Description", "Description of object being rendered",
+		                              "", G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		         g_param_spec_string ("markup", "Markup", "Markup which describes object being rendered",
+		                              "", G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		         g_param_spec_object ("icon", "Icon", "Icon for the object being rendered",
+		                              G_TYPE_ICON, G_PARAM_READABLE));
+
 		signals[DATA_CHANGED] = g_signal_new ("data-changed", GCR_TYPE_RENDERER, G_SIGNAL_RUN_LAST,
 		                                      G_STRUCT_OFFSET (GcrRendererIface, data_changed),
 		                                      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
@@ -81,11 +93,11 @@ gcr_renderer_get_type (void)
 }
 
 void
-gcr_renderer_render (GcrRenderer *self, GcrViewer *viewer)
+gcr_renderer_render_view (GcrRenderer *self, GcrViewer *viewer)
 {
 	g_return_if_fail (GCR_IS_RENDERER (self));
-	g_return_if_fail (GCR_RENDERER_GET_INTERFACE (self)->render);
-	GCR_RENDERER_GET_INTERFACE (self)->render (self, viewer);
+	g_return_if_fail (GCR_RENDERER_GET_INTERFACE (self)->render_view);
+	GCR_RENDERER_GET_INTERFACE (self)->render_view (self, viewer);
 }
 
 void

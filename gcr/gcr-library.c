@@ -21,9 +21,12 @@
 
 #include "config.h"
 
-#include "gcr-types.h"
+#include "gcr.h"
+#include "gcr-certificate-renderer.h"
 #include "gcr-internal.h"
 #include "gcr-library.h"
+#include "gcr-key-renderer.h"
+#include "gcr-types.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-libgcrypt.h"
@@ -175,6 +178,9 @@ _gcr_initialize (void)
 		trust_lookup_uris[0] = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:ROOTS:DEFAULT");
 		trust_lookup_uris[1] = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:XDG:DEFAULT");
 		trust_lookup_uris[2] = NULL;
+
+		g_type_class_unref (g_type_class_ref (GCR_TYPE_CERTIFICATE_RENDERER));
+		g_type_class_unref (g_type_class_ref (GCR_TYPE_KEY_RENDERER));
 
 		g_once_init_leave (&gcr_initialized, 1);
 	}

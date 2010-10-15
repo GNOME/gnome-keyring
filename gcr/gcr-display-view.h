@@ -85,9 +85,9 @@ void             _gcr_display_view_append_fingerprint          (GcrDisplayView *
                                                                 const gchar *name,
                                                                 GChecksumType type);
 
-void             _gcr_display_view_set_stock_image             (GcrDisplayView *self,
+void             _gcr_display_view_set_icon                    (GcrDisplayView *self,
                                                                 GcrRenderer *renderer,
-                                                                const gchar *stock_id);
+                                                                GIcon *icon);
 
 G_END_DECLS
 
