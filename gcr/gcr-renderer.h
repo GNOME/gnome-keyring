@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 
+#include "gcr-column.h"
 #include "gcr-types.h"
 #include "gcr-viewer.h"
 
@@ -35,10 +36,12 @@ G_BEGIN_DECLS
 #define GCR_RENDERER_GET_INTERFACE(inst)  (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GCR_TYPE_RENDERER, GcrRendererIface))
 
 typedef struct _GcrRendererIface GcrRendererIface;
-typedef struct _GcrRendererColumn GcrRendererColumn;
 
 struct _GcrRendererIface {
 	GTypeInterface parent;
+
+	/* data */
+	const GcrModelColumn *column_info;
 
 	/* signals */
 	void (*data_changed) (GcrRenderer *self);
@@ -46,13 +49,12 @@ struct _GcrRendererIface {
 	/* virtual */
 	void (*render_view) (GcrRenderer *self, GcrViewer *viewer);
 
-	const GcrRendererColumn* (*get_column_info) (GcrRenderer *self, gint *n_columns);
-
 	const void (*get_column_value) (GcrRenderer *self, GQuark column, GValue *value);
 
 	void (*populate_popup) (GcrRenderer *self, GcrViewer *viewer, GtkMenu *menu);
 
 	gpointer dummy1;
+
 	gpointer dummy2;
 	gpointer dummy3;
 	gpointer dummy4;
@@ -62,33 +64,29 @@ struct _GcrRendererIface {
 
 };
 
-struct _GcrRendererColumn {
-	GQuark column;
-	GType type;
-	const gchar *description;
-};
+GType                     gcr_renderer_get_type                   (void) G_GNUC_CONST;
 
-GType                  gcr_renderer_get_type                      (void) G_GNUC_CONST;
-
-void                   gcr_renderer_render_view                   (GcrRenderer *self,
+void                      gcr_renderer_render_view                (GcrRenderer *self,
                                                                    GcrViewer *viewer);
 
-void                   gcr_renderer_popuplate_popup               (GcrRenderer *self,
+void                      gcr_renderer_popuplate_popup            (GcrRenderer *self,
                                                                    GcrViewer *viewer,
                                                                    GtkMenu *menu);
 
-gchar*                 gcr_renderer_get_markup                    (GcrRenderer *self);
+gchar*                    gcr_renderer_get_markup                 (GcrRenderer *self);
 
-gchar*                 gcr_renderer_get_description               (GcrRenderer *self);
+gchar*                    gcr_renderer_get_description            (GcrRenderer *self);
 
-gchar*                 gcr_renderer_get_stock_icon                (GcrRenderer *self);
+gchar*                    gcr_renderer_get_stock_icon             (GcrRenderer *self);
 
-void                   gcr_renderer_emit_data_changed             (GcrRenderer *self);
+void                      gcr_renderer_emit_data_changed          (GcrRenderer *self);
 
-GcrRenderer*           gcr_renderer_create                        (const gchar *label,
+GcrRenderer*              gcr_renderer_create                     (const gchar *label,
                                                                    GckAttributes *attrs);
 
-void                   gcr_renderer_register                      (GType renderer_type,
+const GcrModelColumn*     gcr_renderer_columns                    (GType renderer_type);
+
+void                      gcr_renderer_register                   (GType renderer_type,
                                                                    GckAttributes *attrs);
 
 G_END_DECLS

@@ -188,3 +188,24 @@ gcr_renderer_register (GType renderer_type, GckAttributes *attrs)
 	g_array_append_val (registered_renderers, registered);
 	registered_sorted = FALSE;
 }
+
+const GcrModelColumn*
+gcr_renderer_columns (GType renderer_type)
+{
+	const GcrModelColumn *columns;
+	GcrRendererIface *renderer;
+	GTypeClass *klass;
+
+	klass = g_type_class_ref (renderer_type);
+	g_return_val_if_fail (klass, NULL);
+
+	renderer = g_type_interface_peek (klass, GCR_TYPE_RENDERER);
+	g_return_val_if_fail (renderer, NULL);
+
+	columns = renderer->column_info;
+	g_return_val_if_fail (columns, NULL);
+
+	g_type_class_unref (klass);
+
+	return columns;
+}

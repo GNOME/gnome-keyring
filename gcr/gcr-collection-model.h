@@ -25,12 +25,7 @@
 #include <gtk/gtk.h>
 
 #include "gcr-collection.h"
-
-typedef struct _GcrCollectionModelColumn {
-	const gchar *property;
-	GType type;
-	gpointer data;
-} GcrCollectionModelColumn;
+#include "gcr-column.h"
 
 #define GCR_TYPE_COLLECTION_MODEL               (gcr_collection_model_get_type ())
 #define GCR_COLLECTION_MODEL(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_COLLECTION_MODEL, GcrCollectionModel))
@@ -59,12 +54,10 @@ GcrCollectionModel*   gcr_collection_model_new                 (GcrCollection *c
                                                                 ...) G_GNUC_NULL_TERMINATED;
 
 GcrCollectionModel*   gcr_collection_model_new_full            (GcrCollection *collection,
-                                                                const GcrCollectionModelColumn *columns,
-                                                                guint n_columns);
+                                                                const GcrModelColumn *columns);
 
 gint                  gcr_collection_model_set_columns         (GcrCollectionModel *self,
-                                                                const GcrCollectionModelColumn *columns,
-                                                                guint n_columns);
+                                                                const GcrModelColumn *columns);
 
 GObject*              gcr_collection_model_object_for_iter     (GcrCollectionModel *self,
                                                                 const GtkTreeIter *iter);

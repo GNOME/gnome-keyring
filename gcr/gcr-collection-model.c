@@ -563,44 +563,50 @@ gcr_collection_model_class_init (GcrCollectionModelClass *klass)
 GcrCollectionModel*
 gcr_collection_model_new (GcrCollection *collection, ...)
 {
-	GcrCollectionModelColumn column;
+	GcrModelColumn column;
 	GcrCollectionModel *self;
 	const gchar *arg;
 	GArray *array;
 	va_list va;
 
-	array = g_array_new (TRUE, TRUE, sizeof (GcrCollectionModelColumn));
+	/* With a null terminator */
+	array = g_array_new (TRUE, TRUE, sizeof (GcrModelColumn));
 
 	va_start (va, collection);
 	while ((arg = va_arg (va, const gchar*)) != NULL) {
 		column.property = arg;
 		column.type = va_arg (va, GType);
-		column.data = NULL;
+		column.reserved = NULL;
+		column.label = NULL;
 		g_array_append_val (array, column);
 	}
 	va_end (va);
 
-	self = gcr_collection_model_new_full (collection, (GcrCollectionModelColumn*)array->data, array->len);
+	self = gcr_collection_model_new_full (collection, (GcrModelColumn*)array->data);
 	g_array_free (array, TRUE);
 	return self;
 }
 
 GcrCollectionModel*
-gcr_collection_model_new_full (GcrCollection *collection, const GcrCollectionModelColumn *columns, guint n_columns)
+gcr_collection_model_new_full (GcrCollection *collection, const GcrModelColumn *columns)
 {
 	GcrCollectionModel *self = g_object_new (GCR_TYPE_COLLECTION_MODEL, "collection", collection, NULL);
-	gcr_collection_model_set_columns (self, columns, n_columns);
+	gcr_collection_model_set_columns (self, columns);
 	return self;
 }
 
 gint
-gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrCollectionModelColumn *columns,
-                                  guint n_columns)
+gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrModelColumn *columns)
 {
-	guint i;
+	const GcrModelColumn *col;
+	guint i, n_columns;
 
 	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), -1);
 	g_return_val_if_fail (self->pv->n_columns == 0, -1);
+
+	/* Count the number of columns */
+	for (col = columns, n_columns = 0; col->property; ++col)
+		++n_columns;
 
 	self->pv->column_names = g_new0 (gchar*, n_columns + 1);
 	self->pv->column_types = g_new0 (GType, n_columns + 1);

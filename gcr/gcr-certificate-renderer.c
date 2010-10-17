@@ -45,7 +45,10 @@ enum {
 	PROP_ATTRIBUTES,
 	PROP_DESCRIPTION,
 	PROP_ICON,
-	PROP_MARKUP
+	PROP_MARKUP,
+	PROP_SUBJECT,
+	PROP_ISSUER,
+	PROP_EXPIRY
 };
 
 struct _GcrCertificateRendererPrivate {
@@ -349,6 +352,15 @@ gcr_certificate_renderer_get_property (GObject *obj, guint prop_id, GValue *valu
 	case PROP_MARKUP:
 		g_value_take_string (value, calculate_markup (self));
 		break;
+	case PROP_SUBJECT:
+		g_value_take_string (value, gcr_certificate_get_subject_cn (GCR_CERTIFICATE (self)));
+		break;
+	case PROP_ISSUER:
+		g_value_take_string (value, gcr_certificate_get_issuer_cn (GCR_CERTIFICATE (self)));
+		break;
+	case PROP_EXPIRY:
+		g_value_take_boxed (value, gcr_certificate_get_expiry_date (GCR_CERTIFICATE (self)));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -370,8 +382,20 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	gobject_class->get_property = gcr_certificate_renderer_get_property;
 
 	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
-	           g_param_spec_object("certificate", "Certificate", "Certificate to display.",
+	           g_param_spec_object ("certificate", "Certificate", "Certificate to display.",
 	                               GCR_TYPE_CERTIFICATE, G_PARAM_READWRITE));
+
+	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
+	           g_param_spec_string ("subject", "Subject", "Common name of subject",
+	                                "", G_PARAM_READABLE));
+
+	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
+	           g_param_spec_string ("issuer", "Issuer", "Common name of issuer",
+	                                "", G_PARAM_READABLE));
+
+	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
+	           g_param_spec_boxed ("expiry", "Expiry", "Certificate expiry",
+	                               G_TYPE_DATE, G_PARAM_READABLE));
 
 	g_object_class_override_property (gobject_class, PROP_LABEL, "label");
 	g_object_class_override_property (gobject_class, PROP_ATTRIBUTES, "attributes");
@@ -578,10 +602,22 @@ gcr_certificate_renderer_populate_popup (GcrRenderer *self, GcrViewer *viewer,
 static void
 gcr_renderer_iface_init (GcrRendererIface *iface)
 {
+	static GcrModelColumn columns[] = {
+		{ "expiry", /* Below */ 0, N_("Expires"), 0 },
+		{ "label", G_TYPE_STRING, N_("Name"), 0 },
+		{ "description", G_TYPE_STRING, N_("Type"), 0 },
+		{ "subject", G_TYPE_STRING, N_("Subject"), 0 },
+		{ "issuer", G_TYPE_STRING, N_("Issued By"), 0 },
+		{ NULL }
+	};
+
+	/* Not constant so fill it in here */
+	columns[0].type = G_TYPE_DATE;
+
 	iface->populate_popup = gcr_certificate_renderer_populate_popup;
 	iface->render_view = gcr_certificate_renderer_render;
+	iface->column_info = columns;
 }
-
 
 static gconstpointer
 gcr_certificate_renderer_real_get_der_data (GcrCertificate *cert, gsize *n_data)

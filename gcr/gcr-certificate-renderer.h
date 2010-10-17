@@ -28,9 +28,12 @@
 #include <gtk/gtk.h>
 
 #include "gcr-certificate.h"
+#include "gcr-renderer.h"
 #include "gcr-types.h"
 
 G_BEGIN_DECLS
+
+#define GCR_TYPE_CERTIFICATE_COLUMNS                (gcr_certificate_renderer_get_columns ())
 
 #define GCR_TYPE_CERTIFICATE_RENDERER               (gcr_certificate_renderer_get_type ())
 #define GCR_CERTIFICATE_RENDERER(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE_RENDERER, GcrCertificateRenderer))
@@ -53,6 +56,8 @@ struct _GcrCertificateRendererClass {
 };
 
 GType                     gcr_certificate_renderer_get_type           (void);
+
+const GcrModelColumn*     gcr_certificate_renderer_get_columns        (void);
 
 GcrCertificateRenderer*   gcr_certificate_renderer_new                (GcrCertificate *cert);
 
