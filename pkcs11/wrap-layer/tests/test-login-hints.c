@@ -23,21 +23,28 @@
 
 #include "test-suite.h"
 
+#include "egg/egg-secure-memory.h"
+
 #include "wrap-layer/gkm-wrap-layer.h"
 #include "wrap-layer/gkm-wrap-login.h"
 
 DEFINE_TEST (login_did_unlock_fail)
 {
+	gchar *password;
 	gboolean ret;
 
-	gkm_wrap_layer_hint_login_unlock_failure ();
+	gkm_wrap_layer_mark_login_unlock_failure ("failure");
 
 	ret = gkm_wrap_login_did_unlock_fail ();
 	g_assert (ret == TRUE);
 
-	gkm_wrap_layer_hint_login_unlock_failure ();
-	gkm_wrap_layer_hint_login_unlock_failure ();
-	gkm_wrap_layer_hint_login_unlock_success ();
+	password = gkm_wrap_login_steal_failed_password ();
+	g_assert_cmpstr (password, ==, "failure");
+	egg_secure_strfree (password);
+
+	gkm_wrap_layer_mark_login_unlock_failure ("failed password");
+	gkm_wrap_layer_mark_login_unlock_failure ("failed password");
+	gkm_wrap_layer_mark_login_unlock_success ();
 
 	ret = gkm_wrap_login_did_unlock_fail ();
 	g_assert (ret == FALSE);

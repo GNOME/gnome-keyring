@@ -684,7 +684,7 @@ gkr_daemon_initialize_steps (const gchar *components)
 		 */
 		if (login_password) {
 			if (!gkd_login_unlock (login_password))
-				g_message ("Failed to unlock login on startup");
+				g_message ("failed to unlock login keyring on startup");
 			egg_secure_strclear (login_password);
 		}
 

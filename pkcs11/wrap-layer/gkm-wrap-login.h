@@ -28,6 +28,8 @@ gboolean      gkm_wrap_login_is_usable                (void);
 
 gboolean      gkm_wrap_login_did_unlock_fail          (void);
 
+gchar*        gkm_wrap_login_steal_failed_password    (void);
+
 void          gkm_wrap_login_attach_secret            (const gchar *label,
                                                        const gchar *secret,
                                                        const gchar *first,

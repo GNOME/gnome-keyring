@@ -201,7 +201,7 @@ unlock_or_create_login (GList *modules, const gchar *master)
 	/* Failure, bad password? */
 	if (cred == NULL) {
 		if (login && g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT))
-			gkm_wrap_layer_hint_login_unlock_failure ();
+			gkm_wrap_layer_mark_login_unlock_failure (master);
 		else
 			g_warning ("couldn't create login credential: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -216,7 +216,7 @@ unlock_or_create_login (GList *modules, const gchar *master)
 
 	/* The unlock succeeded yay */
 	} else {
-		gkm_wrap_layer_hint_login_unlock_success ();
+		gkm_wrap_layer_mark_login_unlock_success ();
 	}
 
 	if (cred)
@@ -316,7 +316,6 @@ change_or_create_login (GList *modules, const gchar *original, const gchar *mast
 				g_message ("couldn't change login master password, "
 				           "original password was wrong: %s",
 				           egg_error_message (error));
-				gkm_wrap_layer_hint_login_unlock_failure ();
 			} else {
 				g_warning ("couldn't create original login credential: %s",
 				           egg_error_message (error));

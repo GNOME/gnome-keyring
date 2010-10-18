@@ -24,6 +24,8 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include <glib.h>
+
 CK_FUNCTION_LIST_PTR    gkm_wrap_layer_get_functions               (void);
 
 CK_FUNCTION_LIST_PTR    gkm_wrap_layer_get_functions_no_prompts    (void);
@@ -32,8 +34,8 @@ void                    gkm_wrap_layer_reset_modules               (void);
 
 void                    gkm_wrap_layer_add_module                  (CK_FUNCTION_LIST_PTR funcs);
 
-void                    gkm_wrap_layer_hint_login_unlock_success   (void);
+void                    gkm_wrap_layer_mark_login_unlock_success   (void);
 
-void                    gkm_wrap_layer_hint_login_unlock_failure   (void);
+void                    gkm_wrap_layer_mark_login_unlock_failure   (const gchar *failed_password);
 
 #endif /* __GKM_WRAP_LAYER_H__ */
