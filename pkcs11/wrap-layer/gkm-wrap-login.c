@@ -36,24 +36,50 @@
 
 #include <string.h>
 
-static gint unlock_failures = 0;
+/* Holds failed unlock password, accessed atomically */
+static gpointer unlock_failure = NULL;
 
 void
-gkm_wrap_layer_hint_login_unlock_success (void)
+gkm_wrap_layer_mark_login_unlock_success (void)
 {
-	g_atomic_int_set (&unlock_failures, 0);
+	gpointer oldval = g_atomic_pointer_get (&unlock_failure);
+	if (g_atomic_pointer_compare_and_exchange (&unlock_failure, oldval, NULL))
+		egg_secure_strfree (oldval);
 }
 
 void
-gkm_wrap_layer_hint_login_unlock_failure (void)
+gkm_wrap_layer_mark_login_unlock_failure (const gchar *failed_password)
 {
-	g_atomic_int_inc (&unlock_failures);
+	gpointer oldval;
+	gpointer newval;
+
+	g_return_if_fail (failed_password);
+
+	oldval = g_atomic_pointer_get (&unlock_failure);
+	newval = egg_secure_strdup (failed_password);
+
+	if (g_atomic_pointer_compare_and_exchange (&unlock_failure, oldval, newval))
+		egg_secure_strfree (oldval);
+	else
+		egg_secure_strfree (newval);
 }
 
 gboolean
 gkm_wrap_login_did_unlock_fail (void)
 {
-	return g_atomic_int_get (&unlock_failures) ? TRUE : FALSE;
+	return g_atomic_pointer_get (&unlock_failure) ? TRUE : FALSE;
+}
+
+gchar*
+gkm_wrap_login_steal_failed_password (void)
+{
+	gpointer oldval;
+
+	oldval = g_atomic_pointer_get (&unlock_failure);
+	if (!g_atomic_pointer_compare_and_exchange (&unlock_failure, oldval, NULL))
+		oldval = NULL;
+
+	return oldval;
 }
 
 static gboolean
