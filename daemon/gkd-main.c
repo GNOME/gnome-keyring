@@ -720,6 +720,12 @@ gkr_daemon_initialize_steps (const gchar *components)
 	return TRUE;
 }
 
+gboolean
+gkd_main_is_initialized (void)
+{
+	return initialization_completed;
+}
+
 void
 gkd_main_complete_initialization (const gchar *components)
 {

@@ -77,10 +77,14 @@ control_unlock_login (EggBuffer *buffer)
 	if (!egg_buffer_get_string (buffer, offset, &offset, &master, egg_secure_realloc))
 		return GKD_CONTROL_RESULT_FAILED;
 
-	if (gkd_login_unlock (master))
+	if (!gkd_main_is_initialized ()) {
+		g_message ("couldn't unlock login keyring: daemon has not yet been initialized");
+		res = GKD_CONTROL_RESULT_FAILED;
+	} else if (gkd_login_unlock (master)) {
 		res = GKD_CONTROL_RESULT_OK;
-	else
+	} else {
 		res = GKD_CONTROL_RESULT_DENIED;
+	}
 
 	egg_secure_strfree (master);
 	return res;
@@ -103,10 +107,14 @@ control_change_login (EggBuffer *buffer)
 		return GKD_CONTROL_RESULT_FAILED;
 	}
 
-	if (gkd_login_change_lock (original, master))
+	if (!gkd_main_is_initialized ()) {
+		g_message ("couldn't change login keyring: daemon has not yet been initialized");
+		res = GKD_CONTROL_RESULT_FAILED;
+	} else if (gkd_login_change_lock (original, master)) {
 		res = GKD_CONTROL_RESULT_OK;
-	else
+	} else {
 		res = GKD_CONTROL_RESULT_DENIED;
+	}
 
 	egg_secure_strfree (master);
 	egg_secure_strfree (original);

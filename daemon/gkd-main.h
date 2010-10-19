@@ -26,6 +26,8 @@
 
 void           gkd_main_quit                    (void);
 
+gboolean       gkd_main_is_initialized          (void);
+
 void           gkd_main_complete_initialization (const gchar *components);
 
 #endif /* GKD_MAIN_H_ */
