@@ -90,6 +90,13 @@
 #	endif
 #endif
 
+/*
+ * If --login is used and then daemon is not initialized within LOGIN_TIMEOUT
+ * seconds, then we exit. See on_login_timeout() below.
+ */
+
+#define LOGIN_TIMEOUT 120
+
 static gchar* run_components = DEFAULT_COMPONENTS;
 static gboolean pkcs11_started = FALSE;
 static gboolean secrets_started = FALSE;
@@ -103,6 +110,7 @@ static gboolean run_for_start = FALSE;
 static gboolean run_for_replace = FALSE;
 static gchar* login_password = NULL;
 static gchar* control_directory = NULL;
+static guint timeout_id = 0;
 static gboolean initialization_completed = FALSE;
 static gboolean sig_thread_valid = FALSE;
 static pthread_t sig_thread;
@@ -673,6 +681,8 @@ gkr_daemon_initialize_steps (const gchar *components)
 
 	if (!initialization_completed) {
 		initialization_completed = TRUE;
+		if (timeout_id)
+			g_source_remove (timeout_id);
 
 		/* Initialize new style PKCS#11 components */
 		if (!gkd_pkcs11_initialize ())
@@ -732,6 +742,14 @@ gkd_main_complete_initialization (const gchar *components)
 
 	gkr_daemon_startup_steps (components);
 	gkr_daemon_initialize_steps (components);
+}
+
+static gboolean
+on_login_timeout (gpointer data)
+{
+	if (!initialization_completed)
+		cleanup_and_exit (0);
+	return FALSE;
 }
 
 int
@@ -822,6 +840,7 @@ main (int argc, char *argv[])
 	if (run_for_login) {
 		login_password = read_login_password (STDIN);
 		atexit (clear_login_password);
+		timeout_id = g_timeout_add_seconds (LOGIN_TIMEOUT, (GSourceFunc) on_login_timeout, NULL);
 
 	/* Not a login daemon. Startup stuff now.*/
 	} else {
