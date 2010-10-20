@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gcr-certificate.h"
+#include "gcr-comparable.h"
 #include "gcr-internal.h"
 #include "gcr-simple-certificate.h"
 
@@ -46,9 +47,13 @@ struct _GcrSimpleCertificatePrivate {
 	guchar *owned;
 };
 
-static void gcr_certificate_iface (GcrCertificateIface *iface); 
-G_DEFINE_TYPE_WITH_CODE (GcrSimpleCertificate, gcr_simple_certificate, G_TYPE_OBJECT, 
-                         G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_certificate_iface));
+/* Forward declarations */
+static void gcr_simple_certificate_iface_init (GcrCertificateIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (GcrSimpleCertificate, gcr_simple_certificate, G_TYPE_OBJECT,
+	GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE ();
+	G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_simple_certificate_iface_init);
+);
 
 /* -----------------------------------------------------------------------------
  * OBJECT 
@@ -61,7 +66,7 @@ gcr_simple_certificate_init (GcrSimpleCertificate *self)
 }
 
 static void
-gcr_simple_certificate_finalize (GObject *obj)
+gcr_simple_certificate_real_finalize (GObject *obj)
 {
 	GcrSimpleCertificate *self = GCR_SIMPLE_CERTIFICATE (obj);
 
@@ -77,16 +82,21 @@ static void
 gcr_simple_certificate_class_init (GcrSimpleCertificateClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	gobject_class->finalize = gcr_simple_certificate_finalize;
+
+	gobject_class->finalize = gcr_simple_certificate_real_finalize;
+	gobject_class->get_property = gcr_certificate_mixin_get_property;
+
 	g_type_class_add_private (gobject_class, sizeof (GcrSimpleCertificatePrivate));
+
+	gcr_certificate_mixin_class_init (gobject_class);
 	_gcr_initialize ();
 }
 
 static gconstpointer
-gcr_simple_certificate_real_get_der_data (GcrCertificate *base, gsize *n_data)
+gcr_simple_certificate_get_der_data (GcrCertificate *cert, gsize *n_data)
 {
-	GcrSimpleCertificate *self = GCR_SIMPLE_CERTIFICATE (base);
-	
+	GcrSimpleCertificate *self = GCR_SIMPLE_CERTIFICATE (cert);
+
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	g_return_val_if_fail (n_data, NULL);
 	g_return_val_if_fail (self->pv->data, NULL);
@@ -96,10 +106,10 @@ gcr_simple_certificate_real_get_der_data (GcrCertificate *base, gsize *n_data)
 	return self->pv->data;
 }
 
-static void 
-gcr_certificate_iface (GcrCertificateIface *iface) 
+static void
+gcr_simple_certificate_iface_init (GcrCertificateIface *iface)
 {
-	iface->get_der_data = (gpointer)gcr_simple_certificate_real_get_der_data;
+	iface->get_der_data = gcr_simple_certificate_get_der_data;
 }
 
 /* -----------------------------------------------------------------------------

@@ -21,8 +21,10 @@
 
 #include "config.h"
 
-#include "gcr-internal.h"
 #include "gcr-certificate.h"
+#include "gcr-comparable.h"
+#include "gcr-icons.h"
+#include "gcr-internal.h"
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
@@ -30,6 +32,7 @@
 #include "egg/egg-hex.h"
 
 #include <string.h>
+#include <glib/gi18n-lib.h>
 
 /**
  * SECTION:gcr-certificate
@@ -46,6 +49,15 @@
  *
  * You can use #GcrSimpleCertificate to simply load a certificate for which
  * you already have the raw certificate data.
+ *
+ * The #GcrCertificate interface has several properties that must be implemented.
+ * You can use a mixin to implement these properties if desired. See the
+ * gcr_certificate_mixin_class_init() and gcr_certificate_mixin_get_property()
+ * functions.
+ *
+ * All certificates are comparable. If implementing a #GcrCertificate, you can
+ * use GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE() to implement the #GcrComparable
+ * interface.
  */
 
 /* 
@@ -70,6 +82,17 @@ typedef struct _GcrCertificateInfo {
 
 static gconstpointer _gcr_certificate_get_subject_const (GcrCertificate *self, gsize *n_data);
 static gconstpointer _gcr_certificate_get_issuer_const (GcrCertificate *self, gsize *n_data);
+
+enum {
+	PROP_FIRST = 0x0007000,
+	PROP_LABEL,
+	PROP_MARKUP,
+	PROP_DESCRIPTION,
+	PROP_ICON,
+	PROP_SUBJECT,
+	PROP_ISSUER,
+	PROP_EXPIRY
+};
 
 /* -----------------------------------------------------------------------------
  * INTERNAL 
@@ -223,12 +246,48 @@ digest_certificate (GcrCertificate *self, GChecksumType type)
 	return digest;
 }
 
+static gchar*
+calculate_markup (GcrCertificate *self)
+{
+	gchar *label = NULL;
+	gchar *issuer;
+	gchar *markup;
+
+	g_object_get (self, "label", &label, NULL);
+	issuer = gcr_certificate_get_issuer_cn (self);
+
+	if (issuer)
+		markup = g_markup_printf_escaped ("%s\n<small>Issued by: %s</small>", label, issuer);
+	else
+		markup = g_markup_printf_escaped ("%s\n<small>Issued by: <i>No name</i></small>", label);
+
+	g_free (label);
+	g_free (issuer);
+	return markup;
+}
+
+static gchar*
+calculate_expiry (GcrCertificate *self)
+{
+	GDate *date;
+	gchar *result;
+
+	date = gcr_certificate_get_expiry_date (self);
+	result = g_malloc0 (256);
+	if (!g_date_strftime (result, 256, "%s", date)) {
+		g_free (result);
+		result = NULL;
+	}
+	g_date_free (date);
+	return result;
+}
+
 /* ---------------------------------------------------------------------------------
  * INTERFACE
  */
 
 static void
-gcr_certificate_base_init (gpointer g_class)
+gcr_certificate_iface_init (gpointer gobject_iface)
 {
 	static volatile gsize initialized = 0;
 
@@ -237,7 +296,33 @@ gcr_certificate_base_init (gpointer g_class)
 		OID_RSA_KEY = g_quark_from_static_string ("1.2.840.113549.1.1.1");
 		OID_DSA_KEY = g_quark_from_static_string ("1.2.840.10040.4.1");
 
-		/* Add properties and signals to the interface */
+		g_object_interface_install_property (gobject_iface,
+		         g_param_spec_string ("label", "Label", "Certificate label",
+		                              "", G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		         g_param_spec_string ("description", "Description", "Description of object being rendered",
+		                              "", G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		         g_param_spec_string ("markup", "Markup", "Markup which describes object being rendered",
+		                              "", G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		         g_param_spec_object ("icon", "Icon", "Icon for the object being rendered",
+		                              G_TYPE_ICON, G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		           g_param_spec_string ("subject", "Subject", "Common name of subject",
+		                                "", G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		           g_param_spec_string ("issuer", "Issuer", "Common name of issuer",
+		                                "", G_PARAM_READABLE));
+
+		g_object_interface_install_property (gobject_iface,
+		           g_param_spec_string ("expiry", "Expiry", "Certificate expiry",
+		                                "", G_PARAM_READABLE));
 
 		g_once_init_leave (&initialized, 1);
 	}
@@ -250,7 +335,7 @@ gcr_certificate_get_type (void)
 	if (!type) {
 		static const GTypeInfo info = {
 			sizeof (GcrCertificateIface),
-			gcr_certificate_base_init,               /* base init */
+			gcr_certificate_iface_init,               /* base init */
 			NULL,             /* base finalize */
 			NULL,             /* class_init */
 			NULL,             /* class finalize */
@@ -260,16 +345,57 @@ gcr_certificate_get_type (void)
 			NULL,             /* instance init */
 		};
 		type = g_type_register_static (G_TYPE_INTERFACE, "GcrCertificateIface", &info, 0);
-		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
+		g_type_interface_add_prerequisite (type, GCR_TYPE_COMPARABLE);
 	}
 	
 	return type;
 }
 
-
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
+
+const GcrColumn*
+gcr_certificate_get_columns (void)
+{
+	static GcrColumn columns[] = {
+		{ "icon", 0, NULL, 0 },
+		{ "label", G_TYPE_STRING, N_("Name"), 0 },
+		{ "description", G_TYPE_STRING, N_("Type"), 0 },
+		{ "subject", G_TYPE_STRING, N_("Subject"), 0 },
+		{ "issuer", G_TYPE_STRING, N_("Issued By"), 0 },
+		{ "expiry", G_TYPE_STRING, N_("Expires"), 0 },
+		{ NULL }
+	};
+
+	columns[0].type = G_TYPE_ICON;
+	return columns;
+}
+
+gint
+gcr_certificate_compare (GcrComparable *first, GcrComparable *other)
+{
+	gconstpointer data1, data2;
+	gsize size1, size2;
+
+	if (!GCR_IS_CERTIFICATE (first))
+		first = NULL;
+	if (!GCR_IS_CERTIFICATE (other))
+		other = NULL;
+
+	if (first == other)
+		return TRUE;
+	if (!first)
+		return 1;
+	if (!other)
+		return -1;
+
+	data1 = gcr_certificate_get_der_data (GCR_CERTIFICATE (first), &size1);
+	data2 = gcr_certificate_get_der_data (GCR_CERTIFICATE (other), &size2);
+
+	return gcr_comparable_memcmp (data1, size1, data2, size2);
+}
+
 
 /**
  * gcr_certificate_get_der_data:
@@ -751,4 +877,149 @@ gcr_certificate_get_serial_number_hex (GcrCertificate *self)
 	hex = egg_hex_encode (serial, n_serial);
 	g_free (serial);
 	return hex;
+}
+
+GIcon*
+gcr_certificate_get_icon (GcrCertificate *self)
+{
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), FALSE);
+	return g_themed_icon_new (GCR_ICON_CERTIFICATE);
+}
+
+/* -----------------------------------------------------------------------------
+ * MIXIN
+ */
+
+/**
+ * GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE:
+ *
+ * Implement the GcrComparable interface. Use this macro like this:
+ *
+ * <informalexample><programlisting>
+ * G_DEFINE_TYPE_WITH_CODE (MyCertificate, my_certificate, G_TYPE_OBJECT,
+ *	GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE ();
+ *	G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, my_certificate_iface_init);
+ * );
+ * </programlisting></informalexample>
+ */
+
+/**
+ * gcr_certificate_mixin_comparable_init:
+ * @iface: The interface
+ *
+ * Initialize a #GcrComparableIface to compare the current certificate.
+ * In general it's easier to use the GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE()
+ * macro instead of this function.
+ */
+void
+gcr_certificate_mixin_comparable_init (GcrComparableIface *iface)
+{
+	iface->compare = gcr_certificate_compare;
+}
+
+/**
+ * gcr_certificate_mixin_class_init:
+ * @object_class: The GObjectClass for this class
+ *
+ * Initialize the certificate mixin for the class. This mixin implements the
+ * various required properties for the certificate.
+ *
+ * Call this function near the end of your derived class_init() function. The
+ * derived class must implement the #GcrCertificate interface.
+ */
+void
+gcr_certificate_mixin_class_init (GObjectClass *object_class)
+{
+	if (!g_object_class_find_property (object_class, "description"))
+		g_object_class_override_property (object_class, PROP_DESCRIPTION, "description");
+	if (!g_object_class_find_property (object_class, "markup"))
+		g_object_class_override_property (object_class, PROP_MARKUP, "markup");
+	if (!g_object_class_find_property (object_class, "label"))
+		g_object_class_override_property (object_class, PROP_LABEL, "label");
+	if (!g_object_class_find_property (object_class, "icon"))
+		g_object_class_override_property (object_class, PROP_ICON, "icon");
+	if (!g_object_class_find_property (object_class, "subject"))
+		g_object_class_override_property (object_class, PROP_SUBJECT, "subject");
+	if (!g_object_class_find_property (object_class, "issuer"))
+		g_object_class_override_property (object_class, PROP_ISSUER, "issuer");
+	if (!g_object_class_find_property (object_class, "expiry"))
+		g_object_class_override_property (object_class, PROP_EXPIRY, "expiry");
+
+	_gcr_initialize ();
+}
+
+/**
+ * gcr_certificate_mixin_get_property:
+ * @obj: The object
+ * @prop_id: The property id
+ * @value: The value to fill in.
+ * @pspec: The param specification.
+ *
+ * Implementation to get various required certificate properties. This should
+ * be called from your derived class get_property function, or used as a
+ * get_property virtual function.
+ *
+ * Example of use as called from derived class get_property function:
+ *
+ * <informalexample><programlisting>
+ * static void
+ * my_get_property (GObject *obj, guint prop_id, GValue *value, GParamSpec *pspec)
+ * {
+ * 	switch (prop_id) {
+ *
+ * 	...
+ *
+ * 	default:
+ * 		gcr_certificate_mixin_get_property (obj, prop_id, value, pspec);
+ * 		break;
+ * 	}
+ *}
+ * </programlisting></informalexample>
+ *
+ * Example of use as get_property function:
+ *
+ * <informalexample><programlisting>
+ * static void
+ * my_class_init (MyClass *klass)
+ * {
+ * 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+ * 	gobject_class->get_property = gcr_certificate_mixin_get_property;
+ *
+ * 	...
+ * }
+ * </programlisting></informalexample>
+
+ */
+void
+gcr_certificate_mixin_get_property (GObject *obj, guint prop_id,
+                                    GValue *value, GParamSpec *pspec)
+{
+	GcrCertificate *cert = GCR_CERTIFICATE (obj);
+
+	switch (prop_id) {
+	case PROP_LABEL:
+		g_value_take_string (value, gcr_certificate_get_subject_cn (cert));
+		break;
+	case PROP_SUBJECT:
+		g_value_take_string (value, gcr_certificate_get_subject_cn (cert));
+		break;
+	case PROP_ICON:
+		g_value_set_object (value, gcr_certificate_get_icon (cert));
+		break;
+	case PROP_DESCRIPTION:
+		g_value_set_string (value, _("Certificate"));
+		break;
+	case PROP_MARKUP:
+		g_value_take_string (value, calculate_markup (cert));
+		break;
+	case PROP_ISSUER:
+		g_value_take_string (value, gcr_certificate_get_issuer_cn (cert));
+		break;
+	case PROP_EXPIRY:
+		g_value_take_string (value, calculate_expiry (cert));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
 }

@@ -28,12 +28,13 @@
 
 G_BEGIN_DECLS
 
-typedef struct _GcrModelColumn {
+typedef struct _GcrColumn {
 	const gchar *property;
 	GType type;
 	const gchar *label;
+	gpointer user_data;
 	gpointer reserved;
-} GcrModelColumn;
+} GcrColumn;
 
 G_END_DECLS
 

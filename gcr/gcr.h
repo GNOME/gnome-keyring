@@ -46,6 +46,7 @@
 #include "gcr-parser.h"
 #include "gcr-renderer.h"
 #include "gcr-pkcs11-certificate.h"
+#include "gcr-selector.h"
 #include "gcr-simple-certificate.h"
 #include "gcr-simple-collection.h"
 #include "gcr-trust.h"

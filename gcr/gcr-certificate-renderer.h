@@ -57,8 +57,6 @@ struct _GcrCertificateRendererClass {
 
 GType                     gcr_certificate_renderer_get_type           (void);
 
-const GcrModelColumn*     gcr_certificate_renderer_get_columns        (void);
-
 GcrCertificateRenderer*   gcr_certificate_renderer_new                (GcrCertificate *cert);
 
 GcrCertificateRenderer*   gcr_certificate_renderer_new_for_attributes (const gchar *label,

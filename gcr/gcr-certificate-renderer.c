@@ -42,13 +42,7 @@ enum {
 	PROP_0,
 	PROP_CERTIFICATE,
 	PROP_LABEL,
-	PROP_ATTRIBUTES,
-	PROP_DESCRIPTION,
-	PROP_ICON,
-	PROP_MARKUP,
-	PROP_SUBJECT,
-	PROP_ISSUER,
-	PROP_EXPIRY
+	PROP_ATTRIBUTES
 };
 
 struct _GcrCertificateRendererPrivate {
@@ -56,15 +50,16 @@ struct _GcrCertificateRendererPrivate {
 	GckAttributes *opt_attrs;
 	guint key_size;
 	gchar *label;
-	GIcon *icon;
 };
 
 static void gcr_renderer_iface_init (GcrRendererIface *iface);
-static void gcr_certificate_iface_init (GcrCertificateIface *iface);
+static void gcr_renderer_certificate_iface_init (GcrCertificateIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (GcrCertificateRenderer, gcr_certificate_renderer, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (GCR_TYPE_RENDERER, gcr_renderer_iface_init)
-                         G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_certificate_iface_init));
+	G_IMPLEMENT_INTERFACE (GCR_TYPE_RENDERER, gcr_renderer_iface_init);
+	GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE ();
+	G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_renderer_certificate_iface_init);
+);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -88,26 +83,6 @@ calculate_label (GcrCertificateRenderer *self)
 		return label;
 
 	return g_strdup (_("Certificate"));
-}
-
-static gchar*
-calculate_markup (GcrCertificateRenderer *self)
-{
-	gchar *label;
-	gchar *issuer;
-	gchar *markup;
-
-	label = calculate_label (self);
-	issuer = gcr_certificate_get_issuer_cn (GCR_CERTIFICATE (self));
-
-	if (issuer)
-		markup = g_markup_printf_escaped ("%s\n<small>Issued by: %s</small>", label, issuer);
-	else
-		markup = g_markup_printf_escaped ("%s\n<small>Issued by: <i>No name</i></small>", label);
-
-	g_free (label);
-	g_free (issuer);
-	return markup;
 }
 
 static gboolean
@@ -266,7 +241,6 @@ static void
 gcr_certificate_renderer_init (GcrCertificateRenderer *self)
 {
 	self->pv = (G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_CERTIFICATE_RENDERER, GcrCertificateRendererPrivate));
-	self->pv->icon = g_themed_icon_new (GCR_ICON_CERTIFICATE);
 }
 
 static void
@@ -294,10 +268,6 @@ gcr_certificate_renderer_finalize (GObject *obj)
 
 	g_free (self->pv->label);
 	self->pv->label = NULL;
-
-	if (self->pv->icon)
-		g_object_unref (self->pv->icon);
-	self->pv->icon = NULL;
 
 	G_OBJECT_CLASS (gcr_certificate_renderer_parent_class)->finalize (obj);
 }
@@ -343,26 +313,8 @@ gcr_certificate_renderer_get_property (GObject *obj, guint prop_id, GValue *valu
 	case PROP_ATTRIBUTES:
 		g_value_set_boxed (value, self->pv->opt_attrs);
 		break;
-	case PROP_ICON:
-		g_value_set_object (value, self->pv->icon);
-		break;
-	case PROP_DESCRIPTION:
-		g_value_set_string (value, _("Certificate"));
-		break;
-	case PROP_MARKUP:
-		g_value_take_string (value, calculate_markup (self));
-		break;
-	case PROP_SUBJECT:
-		g_value_take_string (value, gcr_certificate_get_subject_cn (GCR_CERTIFICATE (self)));
-		break;
-	case PROP_ISSUER:
-		g_value_take_string (value, gcr_certificate_get_issuer_cn (GCR_CERTIFICATE (self)));
-		break;
-	case PROP_EXPIRY:
-		g_value_take_boxed (value, gcr_certificate_get_expiry_date (GCR_CERTIFICATE (self)));
-		break;
 	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		gcr_certificate_mixin_get_property (obj, prop_id, value, pspec);
 		break;
 	}
 }
@@ -383,27 +335,18 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
 	           g_param_spec_object ("certificate", "Certificate", "Certificate to display.",
-	                               GCR_TYPE_CERTIFICATE, G_PARAM_READWRITE));
+	                                GCR_TYPE_CERTIFICATE, G_PARAM_READWRITE));
 
-	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
-	           g_param_spec_string ("subject", "Subject", "Common name of subject",
-	                                "", G_PARAM_READABLE));
+	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
+	           g_param_spec_boxed ("attributes", "Attributes", "Certificate pkcs11 attributes",
+	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
-	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
-	           g_param_spec_string ("issuer", "Issuer", "Common name of issuer",
-	                                "", G_PARAM_READABLE));
-
-	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
-	           g_param_spec_boxed ("expiry", "Expiry", "Certificate expiry",
-	                               G_TYPE_DATE, G_PARAM_READABLE));
-
-	g_object_class_override_property (gobject_class, PROP_LABEL, "label");
-	g_object_class_override_property (gobject_class, PROP_ATTRIBUTES, "attributes");
-	g_object_class_override_property (gobject_class, PROP_DESCRIPTION, "description");
-	g_object_class_override_property (gobject_class, PROP_ICON, "icon");
-	g_object_class_override_property (gobject_class, PROP_MARKUP, "markup");
+	g_object_class_install_property (gobject_class, PROP_LABEL,
+	           g_param_spec_string ("label", "Label", "Certificate Label",
+	                                "", G_PARAM_READWRITE));
 
 	_gcr_icons_register ();
+	gcr_certificate_mixin_class_init (gobject_class);
 
 	/* Register this as a renderer which can be loaded */
 	registered = gck_attributes_new ();
@@ -429,6 +372,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	GNode *asn;
 	GQuark oid;
 	GDate date;
+	GIcon *icon;
 
 	self = GCR_CERTIFICATE_RENDERER (renderer);
 
@@ -448,7 +392,9 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	if (!data)
 		return;
 
-	_gcr_display_view_set_icon (view, GCR_RENDERER (self), self->pv->icon);
+	icon = gcr_certificate_get_icon (cert);
+	_gcr_display_view_set_icon (view, GCR_RENDERER (self), icon);
+	g_object_unref (icon);
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	g_return_if_fail (asn);
@@ -602,25 +548,12 @@ gcr_certificate_renderer_populate_popup (GcrRenderer *self, GcrViewer *viewer,
 static void
 gcr_renderer_iface_init (GcrRendererIface *iface)
 {
-	static GcrModelColumn columns[] = {
-		{ "expiry", /* Below */ 0, N_("Expires"), 0 },
-		{ "label", G_TYPE_STRING, N_("Name"), 0 },
-		{ "description", G_TYPE_STRING, N_("Type"), 0 },
-		{ "subject", G_TYPE_STRING, N_("Subject"), 0 },
-		{ "issuer", G_TYPE_STRING, N_("Issued By"), 0 },
-		{ NULL }
-	};
-
-	/* Not constant so fill it in here */
-	columns[0].type = G_TYPE_DATE;
-
 	iface->populate_popup = gcr_certificate_renderer_populate_popup;
 	iface->render_view = gcr_certificate_renderer_render;
-	iface->column_info = columns;
 }
 
 static gconstpointer
-gcr_certificate_renderer_real_get_der_data (GcrCertificate *cert, gsize *n_data)
+gcr_certificate_renderer_get_der_data (GcrCertificate *cert, gsize *n_data)
 {
 	GcrCertificateRenderer *self = GCR_CERTIFICATE_RENDERER (cert);
 	GckAttribute *attr;
@@ -641,9 +574,9 @@ gcr_certificate_renderer_real_get_der_data (GcrCertificate *cert, gsize *n_data)
 }
 
 static void
-gcr_certificate_iface_init (GcrCertificateIface *iface)
+gcr_renderer_certificate_iface_init (GcrCertificateIface *iface)
 {
-	iface->get_der_data = gcr_certificate_renderer_real_get_der_data;
+	iface->get_der_data = gcr_certificate_renderer_get_der_data;
 }
 
 /* -----------------------------------------------------------------------------

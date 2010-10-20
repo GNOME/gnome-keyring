@@ -33,6 +33,7 @@ enum {
 struct _GcrCollectionModelPrivate {
 	GcrCollection *collection;
 	GHashTable *object_to_index;
+	GHashTable *toggled_active;
 
 	gint cache_stamp;
 	gint last_stamp;
@@ -49,6 +50,8 @@ static void gcr_collection_model_tree_model (GtkTreeModelIface *iface);
 
 G_DEFINE_TYPE_EXTENDED (GcrCollectionModel, gcr_collection_model, G_TYPE_OBJECT, 0,
                         G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, gcr_collection_model_tree_model));
+
+#define UNUSED_VALUE GUINT_TO_POINTER (1)
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -304,6 +307,15 @@ gcr_collection_model_real_get_value (GtkTreeModel *model, GtkTreeIter *iter,
 	g_return_if_fail (G_IS_OBJECT (object));
 	g_return_if_fail (column >= 0 && column < self->pv->n_columns);
 
+	/* The selected column? */
+	if (column == self->pv->n_columns - 1) {
+		g_assert (!self->pv->column_names[column]);
+		g_assert (self->pv->column_types[column] == G_TYPE_BOOLEAN);
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, gcr_collection_model_get_selected (self, iter));
+		return;
+	}
+
 	/* Figure out which property */
 	type = self->pv->column_types[column];
 	property = self->pv->column_names[column];
@@ -494,7 +506,7 @@ gcr_collection_model_dispose (GObject *object)
 	/* Disconnect from all rows */
 	for (i = self->pv->objects->len; i > 0; --i) {
 		obj = g_ptr_array_index (self->pv->objects, i - 1);
-		disconnect_object (self, object);
+		disconnect_object (self, obj);
 	}
 
 	/* Disconnect from the collection */
@@ -504,6 +516,9 @@ gcr_collection_model_dispose (GObject *object)
 		g_object_unref (self->pv->collection);
 		self->pv->collection = NULL;
 	}
+
+	if (self->pv->toggled_active)
+		g_hash_table_remove_all (self->pv->toggled_active);
 
 	G_OBJECT_CLASS (gcr_collection_model_parent_class)->dispose (object);
 }
@@ -523,6 +538,10 @@ gcr_collection_model_finalize (GObject *object)
 	g_assert (self->pv->objects);
 	g_ptr_array_free (self->pv->objects, TRUE);
 	self->pv->objects = NULL;
+
+	if (self->pv->toggled_active)
+		g_hash_table_destroy (self->pv->toggled_active);
+	self->pv->toggled_active = NULL;
 
 	if (self->pv->column_names) {
 		g_strfreev (self->pv->column_names);
@@ -563,14 +582,14 @@ gcr_collection_model_class_init (GcrCollectionModelClass *klass)
 GcrCollectionModel*
 gcr_collection_model_new (GcrCollection *collection, ...)
 {
-	GcrModelColumn column;
+	GcrColumn column;
 	GcrCollectionModel *self;
 	const gchar *arg;
 	GArray *array;
 	va_list va;
 
 	/* With a null terminator */
-	array = g_array_new (TRUE, TRUE, sizeof (GcrModelColumn));
+	array = g_array_new (TRUE, TRUE, sizeof (GcrColumn));
 
 	va_start (va, collection);
 	while ((arg = va_arg (va, const gchar*)) != NULL) {
@@ -582,13 +601,13 @@ gcr_collection_model_new (GcrCollection *collection, ...)
 	}
 	va_end (va);
 
-	self = gcr_collection_model_new_full (collection, (GcrModelColumn*)array->data);
+	self = gcr_collection_model_new_full (collection, (GcrColumn*)array->data);
 	g_array_free (array, TRUE);
 	return self;
 }
 
 GcrCollectionModel*
-gcr_collection_model_new_full (GcrCollection *collection, const GcrModelColumn *columns)
+gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *columns)
 {
 	GcrCollectionModel *self = g_object_new (GCR_TYPE_COLLECTION_MODEL, "collection", collection, NULL);
 	gcr_collection_model_set_columns (self, columns);
@@ -596,26 +615,31 @@ gcr_collection_model_new_full (GcrCollection *collection, const GcrModelColumn *
 }
 
 gint
-gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrModelColumn *columns)
+gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *columns)
 {
-	const GcrModelColumn *col;
+	const GcrColumn *col;
 	guint i, n_columns;
 
 	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), -1);
 	g_return_val_if_fail (self->pv->n_columns == 0, -1);
 
-	/* Count the number of columns */
-	for (col = columns, n_columns = 0; col->property; ++col)
+	/* Count the number of columns, extra column for selected */
+	for (col = columns, n_columns = 1; col->property; ++col)
 		++n_columns;
 
 	self->pv->column_names = g_new0 (gchar*, n_columns + 1);
 	self->pv->column_types = g_new0 (GType, n_columns + 1);
 	self->pv->n_columns = n_columns;
 
-	for (i = 0; i < n_columns; ++i) {
+	/* All the columns, except the selected column */
+	for (i = 0; i < n_columns - 1; ++i) {
 		self->pv->column_names[i] = g_strdup (columns[i].property);
 		self->pv->column_types[i] = columns[i].type;
 	}
+
+	/* The selected column */
+	self->pv->column_names[i] = NULL;
+	self->pv->column_types[i] = G_TYPE_BOOLEAN;
 
 	return n_columns - 1;
 }
@@ -646,4 +670,66 @@ gcr_collection_model_iter_for_object (GcrCollectionModel *self, GObject *object,
 		return FALSE;
 
 	return iter_for_index (self, index, iter);
+}
+
+guint
+gcr_collection_model_column_selected (GcrCollectionModel *self)
+{
+	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), 0);
+	g_assert (self->pv->n_columns > 0);
+	return self->pv->n_columns - 1;
+}
+
+void
+gcr_collection_model_toggle_selected (GcrCollectionModel *self, GtkTreeIter *iter)
+{
+	GObject *object;
+
+	g_return_if_fail (GCR_IS_COLLECTION_MODEL (self));
+
+	object = gcr_collection_model_object_for_iter (self, iter);
+	g_return_if_fail (G_IS_OBJECT (object));
+
+	if (!self->pv->toggled_active)
+		self->pv->toggled_active = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	if (g_hash_table_lookup (self->pv->toggled_active, object))
+		g_hash_table_remove (self->pv->toggled_active, object);
+	else
+		g_hash_table_insert (self->pv->toggled_active, object, UNUSED_VALUE);
+}
+
+void
+gcr_collection_model_set_selected (GcrCollectionModel *self, GtkTreeIter *iter, gboolean selected)
+{
+	GObject *object;
+
+	g_return_if_fail (GCR_IS_COLLECTION_MODEL (self));
+
+	object = gcr_collection_model_object_for_iter (self, iter);
+	g_return_if_fail (G_IS_OBJECT (object));
+
+	if (!self->pv->toggled_active)
+		self->pv->toggled_active = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	if (selected)
+		g_hash_table_insert (self->pv->toggled_active, object, UNUSED_VALUE);
+	else
+		g_hash_table_remove (self->pv->toggled_active, object);
+}
+
+gboolean
+gcr_collection_model_get_selected (GcrCollectionModel *self, GtkTreeIter *iter)
+{
+	GObject *object;
+
+	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), FALSE);
+
+	object = gcr_collection_model_object_for_iter (self, iter);
+	g_return_val_if_fail (G_IS_OBJECT (object), FALSE);
+
+	if (!self->pv->toggled_active)
+		return FALSE;
+
+	return g_hash_table_lookup (self->pv->toggled_active, object) ? TRUE : FALSE;
 }

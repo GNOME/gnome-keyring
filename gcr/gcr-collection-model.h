@@ -54,16 +54,28 @@ GcrCollectionModel*   gcr_collection_model_new                 (GcrCollection *c
                                                                 ...) G_GNUC_NULL_TERMINATED;
 
 GcrCollectionModel*   gcr_collection_model_new_full            (GcrCollection *collection,
-                                                                const GcrModelColumn *columns);
+                                                                const GcrColumn *columns);
 
 gint                  gcr_collection_model_set_columns         (GcrCollectionModel *self,
-                                                                const GcrModelColumn *columns);
+                                                                const GcrColumn *columns);
 
 GObject*              gcr_collection_model_object_for_iter     (GcrCollectionModel *self,
                                                                 const GtkTreeIter *iter);
 
 gboolean              gcr_collection_model_iter_for_object     (GcrCollectionModel *self,
                                                                 GObject *object,
+                                                                GtkTreeIter *iter);
+
+guint                 gcr_collection_model_column_selected     (GcrCollectionModel *self);
+
+void                  gcr_collection_model_toggle_selected     (GcrCollectionModel *self,
+                                                                GtkTreeIter *iter);
+
+void                  gcr_collection_model_set_selected        (GcrCollectionModel *self,
+                                                                GtkTreeIter *iter,
+                                                                gboolean selected);
+
+gboolean              gcr_collection_model_get_selected        (GcrCollectionModel *self,
                                                                 GtkTreeIter *iter);
 
 #endif /* __GCR_COLLECTION_MODEL_H__ */

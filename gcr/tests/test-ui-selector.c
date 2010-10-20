@@ -61,77 +61,11 @@ add_to_selector (GcrParser *parser, const gchar *path)
 	g_free (data);
 }
 
-#if 1
-static void
-build_selector (GtkDialog *dialog, GcrCollection *collection)
-{
-	GcrCollectionModel *model;
-	GtkWidget *combo;
-	GtkCellRenderer *cell;
-
-	model = gcr_collection_model_new (collection,
-	                                  "icon", G_TYPE_ICON,
-	                                  "markup", G_TYPE_STRING,
-	                                  NULL);
-
-	combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (model));
-	cell = gtk_cell_renderer_pixbuf_new ();
-	g_object_set (cell, "stock-size", GTK_ICON_SIZE_DND, NULL);
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, FALSE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo), cell, "gicon", 0);
-
-	cell = gtk_cell_renderer_text_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, TRUE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo), cell, "markup", 1);
-
-	gtk_widget_show (GTK_WIDGET (combo));
-	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), combo);
-
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 550, 400);
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 20);
-
-	g_object_unref (model);
-}
-#endif
-
-#if 0
-static void
-build_selector (GtkDialog *dialog, GcrCollection *collection)
-{
-	GcrCollectionModel *model;
-	const GcrModelColumn *columns;
-	GtkWidget *combo;
-	GtkCellRenderer *cell;
-
-	columns = gcr_renderer_columns (GCR_TYPE_CERTIFICATE_RENDERER);
-	model = gcr_collection_model_new_full (collection, columns);
-
-	gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
-
-	combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (model));
-	cell = gtk_cell_renderer_pixbuf_new ();
-	g_object_set (cell, "stock-size", GTK_ICON_SIZE_DND, NULL);
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, FALSE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo), cell, "gicon", 0);
-
-	cell = gtk_cell_renderer_text_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, TRUE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo), cell, "markup", 1);
-
-	gtk_widget_show (GTK_WIDGET (combo));
-	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), combo);
-
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 550, 400);
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 20);
-
-	g_object_unref (model);
-}
-#endif
-
 int
 main (int argc, char *argv[])
 {
 	GcrCollection *collection;
+	GcrSelector *selector;
 	GtkDialog *dialog;
 	GcrParser *parser;
 	int i;
@@ -142,15 +76,13 @@ main (int argc, char *argv[])
 	g_object_ref_sink (dialog);
 
 	collection = gcr_simple_collection_new ();
-	build_selector (dialog, collection);
+	selector = gcr_selector_new (collection, GCR_CERTIFICATE_COLUMNS, GCR_SELECTOR_MODE_MULTIPLE);
 
-#if 0
-	{
-		GtkWidget *widget = gtk_file_chooser_button_new ("Tester", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
-		gtk_widget_show (widget);
-		gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), widget);
-	}
-#endif
+	gtk_widget_show (GTK_WIDGET (selector));
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (selector));
+
+	gtk_window_set_default_size (GTK_WINDOW (dialog), 550, 400);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 20);
 
 	parser = gcr_parser_new ();
 	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), collection);

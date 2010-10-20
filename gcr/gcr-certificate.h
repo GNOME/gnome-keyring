@@ -27,23 +27,27 @@
 #define __GCR_CERTIFICATE_H__
 
 #include "gcr-types.h"
+#include "gcr-column.h"
+#include "gcr-comparable.h"
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
-#define GCR_TYPE_CERTIFICATE                 (gcr_certificate_get_type())
-#define GCR_CERTIFICATE(obj)                 (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrCertificate))
-#define GCR_IS_CERTIFICATE(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_CERTIFICATE))
-#define GCR_CERTIFICATE_GET_INTERFACE(inst)  (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GCR_TYPE_CERTIFICATE, GcrCertificateIface))
+#define GCR_CERTIFICATE_COLUMNS                 (gcr_certificate_get_columns ())
+#define GCR_TYPE_CERTIFICATE                    (gcr_certificate_get_type ())
+#define GCR_CERTIFICATE(obj)                    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrCertificate))
+#define GCR_IS_CERTIFICATE(obj)                 (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_CERTIFICATE))
+#define GCR_CERTIFICATE_GET_INTERFACE(inst)     (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GCR_TYPE_CERTIFICATE, GcrCertificateIface))
 
-typedef struct _GcrCertificate      GcrCertificate;
-typedef struct _GcrCertificateIface GcrCertificateIface;
+typedef struct _GcrCertificate          GcrCertificate;
+typedef struct _GcrCertificateIface     GcrCertificateIface;
 
 struct _GcrCertificateIface {
 	GTypeInterface parent;
 
-	gconstpointer (*get_der_data)   (GcrCertificate *self, gsize *n_data);
+	gconstpointer (*get_der_data) (GcrCertificate *self, gsize *n_data);
 
 	gpointer dummy1;
 	gpointer dummy2;
@@ -58,6 +62,11 @@ GType               gcr_certificate_get_type               (void);
 
 gconstpointer       gcr_certificate_get_der_data           (GcrCertificate *self,
                                                             gsize *n_data);
+
+const GcrColumn*    gcr_certificate_get_columns            (void);
+
+gint                gcr_certificate_compare                (GcrComparable *self,
+                                                            GcrComparable *other);
 
 gchar*              gcr_certificate_get_issuer_cn          (GcrCertificate *self);
 
@@ -99,6 +108,20 @@ guchar*             gcr_certificate_get_fingerprint        (GcrCertificate *self
 
 gchar*              gcr_certificate_get_fingerprint_hex    (GcrCertificate *self, 
                                                             GChecksumType type);
+
+GIcon*              gcr_certificate_get_icon               (GcrCertificate *self);
+
+#define GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE() \
+	G_IMPLEMENT_INTERFACE (GCR_TYPE_COMPARABLE, gcr_certificate_mixin_comparable_init)
+
+void                gcr_certificate_mixin_comparable_init  (GcrComparableIface *iface);
+
+void                gcr_certificate_mixin_class_init       (GObjectClass *object_class);
+
+void                gcr_certificate_mixin_get_property     (GObject *obj,
+                                                            guint prop_id,
+                                                            GValue *value,
+                                                            GParamSpec *pspec);
 
 G_END_DECLS
 

@@ -56,18 +56,6 @@ gcr_renderer_base_init (gpointer gobject_iface)
 		         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the renderer",
 		                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
-		g_object_interface_install_property (gobject_iface,
-		         g_param_spec_string ("description", "Description", "Description of object being rendered",
-		                              "", G_PARAM_READABLE));
-
-		g_object_interface_install_property (gobject_iface,
-		         g_param_spec_string ("markup", "Markup", "Markup which describes object being rendered",
-		                              "", G_PARAM_READABLE));
-
-		g_object_interface_install_property (gobject_iface,
-		         g_param_spec_object ("icon", "Icon", "Icon for the object being rendered",
-		                              G_TYPE_ICON, G_PARAM_READABLE));
-
 		signals[DATA_CHANGED] = g_signal_new ("data-changed", GCR_TYPE_RENDERER, G_SIGNAL_RUN_LAST,
 		                                      G_STRUCT_OFFSET (GcrRendererIface, data_changed),
 		                                      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
@@ -187,25 +175,4 @@ gcr_renderer_register (GType renderer_type, GckAttributes *attrs)
 	registered.attrs = gck_attributes_ref (attrs);
 	g_array_append_val (registered_renderers, registered);
 	registered_sorted = FALSE;
-}
-
-const GcrModelColumn*
-gcr_renderer_columns (GType renderer_type)
-{
-	const GcrModelColumn *columns;
-	GcrRendererIface *renderer;
-	GTypeClass *klass;
-
-	klass = g_type_class_ref (renderer_type);
-	g_return_val_if_fail (klass, NULL);
-
-	renderer = g_type_interface_peek (klass, GCR_TYPE_RENDERER);
-	g_return_val_if_fail (renderer, NULL);
-
-	columns = renderer->column_info;
-	g_return_val_if_fail (columns, NULL);
-
-	g_type_class_unref (klass);
-
-	return columns;
 }

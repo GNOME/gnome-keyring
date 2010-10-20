@@ -40,9 +40,6 @@ typedef struct _GcrRendererIface GcrRendererIface;
 struct _GcrRendererIface {
 	GTypeInterface parent;
 
-	/* data */
-	const GcrModelColumn *column_info;
-
 	/* signals */
 	void (*data_changed) (GcrRenderer *self);
 
@@ -83,8 +80,6 @@ void                      gcr_renderer_emit_data_changed          (GcrRenderer *
 
 GcrRenderer*              gcr_renderer_create                     (const gchar *label,
                                                                    GckAttributes *attrs);
-
-const GcrModelColumn*     gcr_renderer_columns                    (GType renderer_type);
 
 void                      gcr_renderer_register                   (GType renderer_type,
                                                                    GckAttributes *attrs);

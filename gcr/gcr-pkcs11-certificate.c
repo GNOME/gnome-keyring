@@ -60,7 +60,9 @@ struct _GcrPkcs11CertificatePrivate {
 
 static void gcr_certificate_iface (GcrCertificateIface *iface);
 G_DEFINE_TYPE_WITH_CODE (GcrPkcs11Certificate, gcr_pkcs11_certificate, GCK_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_certificate_iface));
+	GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE ();
+	G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_certificate_iface);
+);
 
 /* ----------------------------------------------------------------------------
  * INTERAL
@@ -235,7 +237,7 @@ gcr_pkcs11_certificate_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_set_boxed (value, gcr_pkcs11_certificate_get_attributes (self));
 		break;
 	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		gcr_certificate_mixin_get_property (obj, prop_id, value, pspec);
 		break;
 	}
 }
@@ -271,13 +273,14 @@ gcr_pkcs11_certificate_class_init (GcrPkcs11CertificateClass *klass)
 
 	g_type_class_add_private (gobject_class, sizeof (GcrPkcs11CertificatePrivate));
 
+	gcr_certificate_mixin_class_init (gobject_class);
 	_gcr_initialize ();
 }
 
 static gconstpointer
-gcr_pkcs11_certificate_real_get_der_data (GcrCertificate *base, gsize *n_data)
+gcr_pkcs11_certificate_get_der_data (GcrCertificate *cert, gsize *n_data)
 {
-	GcrPkcs11Certificate *self = GCR_PKCS11_CERTIFICATE (base);
+	GcrPkcs11Certificate *self = GCR_PKCS11_CERTIFICATE (cert);
 	GckAttribute *attr;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
@@ -293,7 +296,7 @@ gcr_pkcs11_certificate_real_get_der_data (GcrCertificate *base, gsize *n_data)
 static void
 gcr_certificate_iface (GcrCertificateIface *iface)
 {
-	iface->get_der_data = (gpointer)gcr_pkcs11_certificate_real_get_der_data;
+	iface->get_der_data = gcr_pkcs11_certificate_get_der_data;
 }
 
 /* -----------------------------------------------------------------------------
