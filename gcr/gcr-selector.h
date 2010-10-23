@@ -52,15 +52,6 @@ struct _GcrSelector {
 
 struct _GcrSelectorClass {
 	GtkAlignmentClass parent_class;
-
-#if 0
-	/* signals --------------------------------------------------------- */
-
-	/* A callback for each password needed */
-	gboolean (*authenticate) (GcrSelector *self, gint count);
-
-	void     (*parsed) (GcrSelector *self);
-#endif
 };
 
 GType                    gcr_selector_get_type               (void);

@@ -266,20 +266,25 @@ calculate_markup (GcrCertificate *self)
 	return markup;
 }
 
-static gchar*
-calculate_expiry (GcrCertificate *self)
+static void
+on_transform_date_to_string (const GValue *src, GValue *dest)
 {
+	static const gsize len = 256;
 	GDate *date;
 	gchar *result;
 
-	date = gcr_certificate_get_expiry_date (self);
-	result = g_malloc0 (256);
-	if (!g_date_strftime (result, 256, "%s", date)) {
+	g_return_if_fail (G_VALUE_TYPE (src) == G_TYPE_DATE);
+
+	date = g_value_get_boxed (src);
+	g_return_if_fail (date);
+
+	result = g_malloc0 (len);
+	if (!g_date_strftime (result, len, "%x", date)) {
 		g_free (result);
 		result = NULL;
 	}
-	g_date_free (date);
-	return result;
+
+	g_value_take_string (dest, result);
 }
 
 /* ---------------------------------------------------------------------------------
@@ -321,8 +326,8 @@ gcr_certificate_iface_init (gpointer gobject_iface)
 		                                "", G_PARAM_READABLE));
 
 		g_object_interface_install_property (gobject_iface,
-		           g_param_spec_string ("expiry", "Expiry", "Certificate expiry",
-		                                "", G_PARAM_READABLE));
+		           g_param_spec_boxed ("expiry", "Expiry", "Certificate expiry",
+		                               G_TYPE_DATE, G_PARAM_READABLE));
 
 		g_once_init_leave (&initialized, 1);
 	}
@@ -359,16 +364,18 @@ const GcrColumn*
 gcr_certificate_get_columns (void)
 {
 	static GcrColumn columns[] = {
-		{ "icon", 0, NULL, 0 },
-		{ "label", G_TYPE_STRING, N_("Name"), 0 },
-		{ "description", G_TYPE_STRING, N_("Type"), 0 },
-		{ "subject", G_TYPE_STRING, N_("Subject"), 0 },
-		{ "issuer", G_TYPE_STRING, N_("Issued By"), 0 },
-		{ "expiry", G_TYPE_STRING, N_("Expires"), 0 },
+		{ "icon", /* later */ 0, /* later */ 0, NULL, 0 },
+		{ "label", G_TYPE_STRING, G_TYPE_STRING, N_("Name"),
+		  GCR_COLUMN_SORTABLE },
+		{ "issuer", G_TYPE_STRING, G_TYPE_STRING, N_("Issued By"),
+		  GCR_COLUMN_SORTABLE },
+		{ "expiry", /* later */ 0, G_TYPE_STRING, N_("Expires"),
+		  GCR_COLUMN_SORTABLE, on_transform_date_to_string },
 		{ NULL }
 	};
 
-	columns[0].type = G_TYPE_ICON;
+	columns[0].property_type = columns[0].column_type = G_TYPE_ICON;
+	columns[3].property_type = G_TYPE_DATE;
 	return columns;
 }
 
@@ -1016,7 +1023,7 @@ gcr_certificate_mixin_get_property (GObject *obj, guint prop_id,
 		g_value_take_string (value, gcr_certificate_get_issuer_cn (cert));
 		break;
 	case PROP_EXPIRY:
-		g_value_take_string (value, calculate_expiry (cert));
+		g_value_take_boxed (value, gcr_certificate_get_expiry_date (cert));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);

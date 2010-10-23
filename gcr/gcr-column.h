@@ -28,10 +28,21 @@
 
 G_BEGIN_DECLS
 
+enum {
+	GCR_COLUMN_HIDDEN = 0x01,
+	GCR_COLUMN_SORTABLE = 0x02,
+};
+
 typedef struct _GcrColumn {
-	const gchar *property;
-	GType type;
-	const gchar *label;
+	const gchar *property_name;     /* The property to retrieve */
+	GType property_type;            /* The property type */
+	GType column_type;              /* The resulting property type for this column */
+
+	const gchar *label;             /* The label for this column, or NULL */
+	guint flags;                    /* Column flags */
+
+	GValueTransform transformer;    /* The way to transform to this type or NULL */
+
 	gpointer user_data;
 	gpointer reserved;
 } GcrColumn;

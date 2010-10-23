@@ -66,7 +66,13 @@ gboolean              gcr_collection_model_iter_for_object     (GcrCollectionMod
                                                                 GObject *object,
                                                                 GtkTreeIter *iter);
 
-guint                 gcr_collection_model_column_selected     (GcrCollectionModel *self);
+gint                  gcr_collection_model_column_for_property (GcrCollectionModel *self,
+                                                                const gchar *property);
+
+gint                  gcr_collection_model_column_for_sortable (GcrCollectionModel *self,
+                                                                const gchar *property);
+
+gint                  gcr_collection_model_column_for_selected (GcrCollectionModel *self);
 
 void                  gcr_collection_model_toggle_selected     (GcrCollectionModel *self,
                                                                 GtkTreeIter *iter);

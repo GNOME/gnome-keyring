@@ -25,6 +25,8 @@
 #include "gcr-internal.h"
 #include "gcr-selector.h"
 
+#include <string.h>
+
 enum {
 	PROP_0,
 	PROP_COLLECTION,
@@ -32,20 +34,12 @@ enum {
 	PROP_MODE
 };
 
-#if 0
-enum {
-	XXXX,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-#endif
-
 struct _GcrSelectorPrivate {
 	GtkComboBox *combo;
 	GtkTreeView *tree;
 	GcrCollection *collection;
 	const GcrColumn *columns;
+	GtkTreeModel *sort;
 	GcrCollectionModel *model;
 	GcrSelectorMode mode;
 };
@@ -67,38 +61,126 @@ on_check_column_toggled (GtkCellRendererToggle *cell, gchar *path, GcrCollection
 		gcr_collection_model_toggle_selected (model, &iter);
 }
 
+typedef gint (*SortFunc) (GValue *, GValue *);
+
+static gint
+sort_string (GValue *val_a, GValue *val_b)
+{
+	const gchar *str_a = g_value_get_string (val_a);
+	const gchar *str_b = g_value_get_string (val_b);
+
+	if (str_a == str_b)
+		return 0;
+	else if (!str_a)
+		return -1;
+	else if (!str_b)
+		return 1;
+	else
+		return g_utf8_collate (str_a, str_b);
+}
+
+static gint
+sort_date (GValue *val_a, GValue *val_b)
+{
+	GDate *date_a = g_value_get_boxed (val_a);
+	GDate *date_b = g_value_get_boxed (val_b);
+
+	if (date_a == date_b)
+		return 0;
+	else if (!date_a)
+		return -1;
+	else if (!date_b)
+		return 1;
+	else
+		return g_date_compare (date_a, date_b);
+}
+
+static inline SortFunc
+sort_implementation_for_type (GType type)
+{
+	if (type == G_TYPE_STRING)
+		return sort_string;
+	else if (type == G_TYPE_DATE)
+		return sort_date;
+	else
+		return NULL;
+}
+
+static gint
+on_sort_column (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b,
+                gpointer user_data)
+{
+	GcrColumn *column = user_data;
+	SortFunc func;
+	GObject *object_a;
+	GObject *object_b;
+	GValue val_a;
+	GValue val_b;
+	gint ret;
+
+	object_a = gcr_collection_model_object_for_iter (GCR_COLLECTION_MODEL (model), a);
+	g_return_val_if_fail (G_IS_OBJECT (object_a), 0);
+	object_b = gcr_collection_model_object_for_iter (GCR_COLLECTION_MODEL (model), b);
+	g_return_val_if_fail (G_IS_OBJECT (object_b), 0);
+
+	memset (&val_a, 0, sizeof (val_a));
+	memset (&val_b, 0, sizeof (val_b));
+
+	g_value_init (&val_a, column->property_type);
+	g_value_init (&val_b, column->property_type);
+
+	g_object_get_property (object_a, column->property_name, &val_a);
+	g_object_get_property (object_b, column->property_name, &val_b);
+
+	func = sort_implementation_for_type (column->property_type);
+	g_return_val_if_fail (func, 0);
+
+	ret = (func) (&val_a, &val_b);
+
+	g_value_unset (&val_a);
+	g_value_unset (&val_b);
+
+	return ret;
+}
+
 static void
-add_string_column (GcrSelector *self, const GcrColumn *column, guint index)
+add_string_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
 
-	g_assert (column->type == G_TYPE_STRING);
+	g_assert (column->column_type == G_TYPE_STRING);
+	g_assert (!(column->flags & GCR_COLUMN_HIDDEN));
 
 	cell = gtk_cell_renderer_text_new ();
 	g_object_set (G_OBJECT (cell), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-	col = gtk_tree_view_column_new_with_attributes (column->label, cell, "text", index, NULL);
+	col = gtk_tree_view_column_new_with_attributes (column->label, cell, "text", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
+	if (column->flags & GCR_COLUMN_SORTABLE)
+		gtk_tree_view_column_set_sort_column_id (col, column_id);
 	gtk_tree_view_append_column (self->pv->tree, col);
 }
 
 static void
-add_icon_column (GcrSelector *self, const GcrColumn *column, guint index)
+add_icon_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
 
-	g_assert (column->type == G_TYPE_ICON);
+	g_assert (column->column_type == G_TYPE_ICON);
+	g_assert (!(column->flags & GCR_COLUMN_HIDDEN));
 
 	cell = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (cell, "stock-size", GTK_ICON_SIZE_BUTTON, NULL);
-	col = gtk_tree_view_column_new_with_attributes (column->label, cell, "gicon", index, NULL);
+	col = gtk_tree_view_column_new_with_attributes (column->label, cell, "gicon", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
+	if (column->flags & GCR_COLUMN_SORTABLE)
+		gtk_tree_view_column_set_sort_column_id (col, column_id);
 	gtk_tree_view_append_column (self->pv->tree, col);
 }
 
 static void
-add_check_column (GcrSelector *self, guint index)
+add_check_column (GcrSelector *self, guint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
@@ -106,7 +188,7 @@ add_check_column (GcrSelector *self, guint index)
 	cell = gtk_cell_renderer_toggle_new ();
 	g_signal_connect (cell, "toggled", G_CALLBACK (on_check_column_toggled), self->pv->model);
 
-	col = gtk_tree_view_column_new_with_attributes ("", cell, "active", index, NULL);
+	col = gtk_tree_view_column_new_with_attributes ("", cell, "active", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, FALSE);
 	gtk_tree_view_append_column (self->pv->tree, col);
 }
@@ -145,25 +227,41 @@ construct_multiple_selector (GcrSelector *self)
 {
 	const GcrColumn *column;
 	GtkWidget *widget, *scroll;
+	GtkTreeSortable *sortable;
 	guint i;
 
 	self->pv->model = gcr_collection_model_new_full (self->pv->collection,
 	                                                 self->pv->columns);
 
-	widget = gtk_tree_view_new_with_model (GTK_TREE_MODEL (self->pv->model));
+	self->pv->sort = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (self->pv->model));
+	sortable = GTK_TREE_SORTABLE (self->pv->sort);
+
+	widget = gtk_tree_view_new_with_model (GTK_TREE_MODEL (self->pv->sort));
 	self->pv->tree = GTK_TREE_VIEW (widget);
 
 	/* First add the check mark column */
-	add_check_column (self, gcr_collection_model_column_selected (self->pv->model));
+	add_check_column (self, gcr_collection_model_column_for_selected (self->pv->model));
 
-	for (column = self->pv->columns, i = 0; column->property; ++column, ++i) {
-		if (column->type == G_TYPE_STRING)
+	for (column = self->pv->columns, i = 0; column->property_name; ++column, ++i) {
+		if (column->flags & GCR_COLUMN_HIDDEN)
+			continue;
+
+		if (column->column_type == G_TYPE_STRING)
 			add_string_column (self, column, i);
-		else if (column->type == G_TYPE_ICON)
+		else if (column->column_type == G_TYPE_ICON)
 			add_icon_column (self, column, i);
-		else {
+		else
 			g_warning ("skipping unsupported column '%s' of type: %s",
-			           column->label, g_type_name (column->type));
+			           column->property_name, g_type_name (column->column_type));
+
+		/* Setup the column itself */
+		if (column->flags & GCR_COLUMN_SORTABLE) {
+			if (sort_implementation_for_type (column->property_type))
+				gtk_tree_sortable_set_sort_func (sortable, i, on_sort_column,
+				                                 (gpointer)column, NULL);
+			else
+				g_warning ("no sort implementation defined for type '%s' on column '%s'",
+				           g_type_name (column->property_type), column->property_name);
 		}
 	}
 
