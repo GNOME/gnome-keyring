@@ -1,3 +1,12 @@
+Changes in version 2.32.1 are:
+ * Don't offer to save password for symmetric encryption in gpg-agent.
+ * Don't try to cache password when symmetric encryption in gpg-agent.
+ * Check that daemon is initialized before changing password from pam.
+ * Fix login keyring password doesn't match login.
+ * Link correctly to gio.
+ * Add extra debug guard around printing of prompt io.
+ * Fix invalid memory access in rpc-layer.
+
 Changes in version 2.32.0 are:
  * Make bulids silent by default.
 
