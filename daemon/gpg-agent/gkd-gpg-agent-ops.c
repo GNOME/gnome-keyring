@@ -411,11 +411,12 @@ do_get_password (GP11Session *session, const gchar *keyid, const gchar *errmsg,
 	guint ttl;
 
 	g_assert (GP11_IS_SESSION (session));
-	g_assert (keyid);
 
-	password = do_lookup_password (session, keyid);
-	if (password != NULL)
-		return password;
+	if (keyid != NULL) {
+		password = do_lookup_password (session, keyid);
+		if (password != NULL)
+			return password;
+	}
 
 	/* Do we have the keyid? */
 	prompt = prepare_password_prompt (session, errmsg, prompt_text, description, confirm);
@@ -426,6 +427,11 @@ do_get_password (GP11Session *session, const gchar *keyid, const gchar *errmsg,
 	if (gku_prompt_get_response (prompt) == GKU_RESPONSE_OK) {
 		password = gku_prompt_get_password (prompt, "password");
 		g_return_val_if_fail (password, NULL);
+
+		if (keyid == NULL) {
+			g_object_unref (prompt);
+			return password;
+		}
 
 		/* Load up the save options */
 		attrs = gp11_attributes_new ();
