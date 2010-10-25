@@ -338,7 +338,7 @@ save_unlock_options (GkuPrompt *prompt)
 
 static GkuPrompt*
 prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar *prompt_text,
-                         const gchar *description, gboolean confirm)
+                         const gchar *keyid, const gchar *description, gboolean confirm)
 {
 	GkuPrompt *prompt;
 	GError *error = NULL;
@@ -359,8 +359,6 @@ prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar 
 	else
 		gku_prompt_hide_widget (prompt, "confirm_area");
 	gku_prompt_show_widget (prompt, "password_area");
-	gku_prompt_show_widget (prompt, "details_area");
-	gku_prompt_show_widget (prompt, "options_area");
 
 	auto_unlock = FALSE;
 
@@ -381,10 +379,16 @@ prepare_password_prompt (GP11Session *session, const gchar *errmsg, const gchar 
 		auto_unlock = TRUE;
 	}
 
-	gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS, auto_unlock, NULL);
-	gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_IDLE, _("Forget this password if idle for"));
-	gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_TIMEOUT, _("Forget this password after"));
-	gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_SESSION, _("Forget this password when I log out"));
+	if (keyid == NULL) {
+		gku_prompt_hide_widget (prompt, "details_area");
+	} else {
+		gku_prompt_show_widget (prompt, "details_area");
+		gku_prompt_show_widget (prompt, "options_area");
+		gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS, auto_unlock, NULL);
+		gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_IDLE, _("Forget this password if idle for"));
+		gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_TIMEOUT, _("Forget this password after"));
+		gku_prompt_set_unlock_label (prompt, GCR_UNLOCK_OPTION_SESSION, _("Forget this password when I log out"));
+	}
 
 	load_unlock_options (prompt);
 
@@ -419,7 +423,7 @@ do_get_password (GP11Session *session, const gchar *keyid, const gchar *errmsg,
 	}
 
 	/* Do we have the keyid? */
-	prompt = prepare_password_prompt (session, errmsg, prompt_text, description, confirm);
+	prompt = prepare_password_prompt (session, errmsg, prompt_text, keyid, description, confirm);
 
 	gku_prompt_request_attention_sync (NULL, on_prompt_attention,
 	                                   g_object_ref (prompt), g_object_unref);
