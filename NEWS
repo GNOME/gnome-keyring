@@ -1,3 +1,6 @@
+Changes in version 2.32.0 are:
+ * Make bulids silent by default.
+
 Changes in version 2.31.92 are:
  * Require glib 2.25 or later.
  * Require automake 1.7 or later.

@@ -97,14 +97,17 @@ msgstr "Agente della chiave SSH"
 # [NdT] no, più che l'agente Bond, c'è l'agente SSH 
 #       (chissà che numero 00 ha) :-D
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+#| msgid "GNOME Keyring: SSH Agent"
 msgid "GNOME Keyring: GPG Agent"
 msgstr "Portachiavi di GNOME: agente GPG"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+#| msgid "New password strength"
 msgid "GPG Password Agent"
 msgstr "Agente della password GPG"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+#| msgid "Unknown error"
 msgid "Unknown"
 msgstr "Sconosciuto"
 
@@ -119,6 +122,7 @@ msgid "Enter Passphrase"
 msgstr "Inserire passphrase"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#| msgid "Lock this keyring if idle for"
 msgid "Forget this password if idle for"
 msgstr "Dimentica questa password se inattivo per"
 
@@ -127,6 +131,7 @@ msgid "Forget this password after"
 msgstr "Dimentica questa password dopo"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+#| msgid "Lock this keyring when I log out"
 msgid "Forget this password when I log out"
 msgstr "Dimentica questa password al termine della sessione"
 
@@ -653,6 +658,7 @@ msgid "No key is needed"
 msgstr "Nessuna chiave è necessaria"
 
 #: ../gp11/gp11-misc.c:147
+#| msgid "The key is different than before"
 msgid "The key is different from before"
 msgstr "La chiave è differente da prima"
 
@@ -906,6 +912,7 @@ msgid "Unlock Login Keyring"
 msgstr "Sblocca portachiavi di accesso"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#| msgid "Enter password for to unlock your login keyring"
 msgid "Enter password to unlock your login keyring"
 msgstr "Inserire la password per sbloccare il portachiavi di accesso"
 
@@ -1032,10 +1039,12 @@ msgstr ""
 "richiesta una password"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+#| msgid "Change Keyring Password"
 msgid "Change Password"
 msgstr "Cambia password"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+#| msgid "New password required for secure storage"
 msgid "Change password for secure storage"
 msgstr "Cambia la password per l'archivio sicuro"
 
