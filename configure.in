@@ -430,6 +430,21 @@ if test "$ASN1PARSER" = "no" ; then
 	AC_MSG_ERROR([asn1Parser tool is not installed, try libtasn1 or a related package])
 fi
 
+# -------------------------------------------------------------------
+# libcap2
+#
+
+AC_CHECK_LIB([cap], [cap_get_proc], have_libcap="yes", have_libcap="no")
+
+if test $have_libcap = yes; then
+   AC_DEFINE(HAVE_LIBCAP, 1, [Have libcap2 package, libcap library])
+   DAEMON_LIBS="$DAEMON_LIBS -lcap"
+else
+   AC_MSG_WARN([libcap2 (or development headers) is not installed])
+fi
+
+libcap_status=$have_libcap
+
 # --------------------------------------------------------------------
 # Debug mode
 
@@ -705,7 +720,8 @@ ui/tests/Makefile
 
 echo
 echo "OPTIONAL DEPENDENCIES"
-echo "  PAM:           $pam_status"
+echo "  PAM:                  $pam_status"
+echo "  Linux capabilities:   $libcap_status"
 echo
 echo "CONFIGURATION"
 echo "  SSH Agent:            $ssh_status"

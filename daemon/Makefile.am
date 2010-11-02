@@ -27,6 +27,7 @@ INCLUDES=	\
 gnome_keyring_daemon_SOURCES = \
 	gkd-glue.c gkd-glue.h \
 	gkd-main.c gkd-main.h \
+	gkd-capability.c gkd-capability.h \
 	gkd-pkcs11.c gkd-pkcs11.h \
 	gkd-util.c gkd-util.h
 
@@ -77,5 +78,14 @@ EXTRA_DIST = \
 CLEANFILES = \
 	$(service_DATA) \
 	$(desktop_DATA)
+
+# The daemon is installed as setuid so as to obtain specialized
+# capabilities, then immediately drops permissions. In other words,
+# it does *not* run as setuid.
+# If installing as non-root, chown+chmod will not succeed but
+# the build will continue.
+install-exec-hook:
+	chown root $(bindir)/gnome-keyring-daemon || true
+	chmod u+s $(bindir)/gnome-keyring-daemon || true
 
 @INTLTOOL_DESKTOP_RULE@
