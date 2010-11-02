@@ -128,7 +128,7 @@ static GOptionEntry option_entries[] = {
 	  "Run for a user login. Read login password from stdin", NULL },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
 	  "The optional components to run", DEFAULT_COMPONENTS },
-	{ "control-directory", 'l', 0, G_OPTION_ARG_FILENAME, &control_directory,
+	{ "control-directory", 'C', 0, G_OPTION_ARG_FILENAME, &control_directory,
 	  "The directory for sockets and control data", NULL },
 	{ NULL }
 };
@@ -761,7 +761,7 @@ main (int argc, char *argv[])
 	/*
 	 * The gnome-keyring startup is not as simple as I wish it could be.
 	 *
-	 * It's often started in the primidoral stages of a session, where
+	 * It's often started in the primordial stages of a session, where
 	 * there's no DBus, and no proper X display. This is the strange world
 	 * of PAM.
 	 *
