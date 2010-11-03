@@ -1,402 +1,162 @@
-# Persian translation of gnome-keyring.
-# Copyright (C) 2004 Sharif FarsiWeb, Inc.
-# This file is distributed under the same license as the gnome-keyring package.
-# Meelad Zakaria <meelad@bamdad.org>, 2004.
+# Persian translation for pessulus.
+# Copyright (C) 2010 Iranian Free Software Users Group (IFSUG.org)translation team.
+# This file is distributed under the same license as the pessulus package.
+# Mahyar Moghimi <mahyar.moqimi@gmail.com>, 2010.
+# Mostafa Mostafa <lashar@fedoraproject.org> , 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 20:49+0200\n"
-"PO-Revision-Date: 2004-10-11 13:30+0330\n"
-"Last-Translator: Meelad Zakaria <meelad@bamdad.org>\n"
-"Language-Team: Persian <farsi@lists.sahrif.edu>\n"
+"Project-Id-Version: pessulus master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=pessulus&component=general\n"
+"POT-Creation-Date: 2010-10-29 20:45+0000\n"
+"PO-Revision-Date: 2010-10-30 14:35+0330\n"
+"Last-Translator: Mahyar Moghimi <mahyar.moqimi@gmail.com>\n"
+"Language-Team: Persian <translate@ifsug.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Persian\n"
+"X-Poedit-Country: IRAN, ISLAMIC REPUBLIC OF\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr ""
+#: ../data/pessulus.desktop.in.in.h:1
+msgid "Configure the lockdown policy"
+msgstr "پیکربندی سیاست قفل گذاری"
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr ""
+#: ../data/pessulus.desktop.in.in.h:2 ../data/pessulus.ui.h:3
+#: ../Pessulus/main.py:54
+msgid "Lockdown Editor"
+msgstr "قفل کردن _ویرایشگر"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr ""
+#: ../data/pessulus.ui.h:1
+msgid "Disable _unsafe protocols"
+msgstr "غیرفعال کردن _قراداد های ناایمن"
 
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr ""
+#: ../data/pessulus.ui.h:2
+msgid "Disabled Applets"
+msgstr "برنامک‌های غیر فعال شده"
 
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr ""
+#: ../data/pessulus.ui.h:4
+msgid "Safe Protocols"
+msgstr "قراردادهای ایمن"
 
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr ""
+#: ../Pessulus/lockdownbutton.py:100
+msgid "Click to make this setting not mandatory"
+msgstr "برای غیر اجباری کردن این حالت کلیک کنید"
 
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr ""
+#: ../Pessulus/lockdownbutton.py:102
+msgid "Click to make this setting mandatory"
+msgstr "برای اجباری کردن این حالت کلیک"
 
-#: ../gnome-keyring-ask.c:407
-#, c-format
+#: ../Pessulus/maindialog.py:40
+msgid "General"
+msgstr "کلی"
+
+#: ../Pessulus/maindialog.py:41
+msgid "Panel"
+msgstr "تابلو"
+
+#: ../Pessulus/maindialog.py:42
+msgid "Epiphany Web Browser"
+msgstr "مرورگر وب اپیی‌فانی"
+
+#: ../Pessulus/maindialog.py:43
+msgid "GNOME Screensaver"
+msgstr "محافظ صفحه نمایش گنوم"
+
+#: ../Pessulus/maindialog.py:53
+msgid "Disable _command line"
+msgstr "از کار انداختن _خط فرمان"
+
+#: ../Pessulus/maindialog.py:54
+msgid "Disable _printing"
+msgstr "از کار انداختن _چاپ"
+
+#: ../Pessulus/maindialog.py:55
+msgid "Disable print _setup"
+msgstr "از کار انداختن _برپایی چاپ"
+
+#: ../Pessulus/maindialog.py:56
+msgid "Disable save to _disk"
+msgstr "از کار انداختن ذخیره بر روی _دیسک"
+
+#: ../Pessulus/maindialog.py:58
+msgid "_Lock down the panels"
+msgstr "قفل کزدن _تابلو‌ها"
+
+#: ../Pessulus/maindialog.py:59
+msgid "Disable force _quit"
+msgstr "از کار انداختن _تَرک اجباری"
+
+#: ../Pessulus/maindialog.py:60
+msgid "Disable log _out"
+msgstr "از کار انداختن _خروج"
+
+#: ../Pessulus/maindialog.py:62
+msgid "Disable _quit"
+msgstr "از کار انداختن _تَرک"
+
+#: ../Pessulus/maindialog.py:63
+msgid "Disable _arbitrary URL"
+msgstr "از کار انداختن استفاده از _نشانی وبی دلخواه"
+
+#: ../Pessulus/maindialog.py:64
+msgid "Disable _bookmark editing"
+msgstr "از کار انداختن ویرایش چوب الف‌"
+
+#: ../Pessulus/maindialog.py:65
+msgid "Disable _history"
+msgstr "از کار انداختن _تاریخچه"
+
+#: ../Pessulus/maindialog.py:66
+msgid "Disable _javascript chrome"
+msgstr "از کار انداختن کروم دست نوشته _جاوا"
+
+#: ../Pessulus/maindialog.py:67
+msgid "Disable _toolbar editing"
+msgstr "از کار انداختن ویرایش _میله‌ی ابزار"
+
+#: ../Pessulus/maindialog.py:68
+msgid "Force _fullscreen mode"
+msgstr "زور کردنِ نمایش در حالت _تمام صفحه"
+
+#: ../Pessulus/maindialog.py:69
+msgid "Hide _menubar"
+msgstr "مخفی کردن میله _گزینگان"
+
+#: ../Pessulus/maindialog.py:71
+msgid "Disable lock _screen"
+msgstr "از کار انداختن قفل _صفحه نمایش"
+
+#: ../Pessulus/maindialog.py:72
+msgid "_Lock on activation"
+msgstr "_قفل کردن در هنگام فعال سازی"
+
+#: ../Pessulus/maindialog.py:73
+msgid "Allow log _out"
+msgstr "دادن اجازه _خروج"
+
+#: ../Pessulus/maindialog.py:74
+msgid "Allow user _switching"
+msgstr "دادن اجازه‌ی _تعویض کاربر"
+
+#: ../Pessulus/maindialog.py:233
+#, python-format
+msgid "Could not display help document '%s'"
+msgstr "نمی‌توان سند راهنما  «%s» را نمایش داد "
+
+#: ../Pessulus/main.py:49
+msgid "Cannot contact the GConf server"
+msgstr "نمی‌توان با خادم GConf ارتباط برقرار کرد"
+
+#: ../Pessulus/main.py:50
 msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
+"This usually happens when running this application with 'su' instead of 'su "
+"-'.\n"
+"If this is not the case, you can look at the output of the application to "
+"get more details."
 msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد به جاکلیدی پیش‌فرض دسترسی پیدا کند، ولی جاکلیدی "
-"بسته است"
-
-#: ../gnome-keyring-ask.c:411
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد به جاکلیدی '%s' دسترسی پیدا کند، ولی جاکلیدی بسته "
-"است"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد به یک جاکلیدی ناشناخته دسترسی پیدا کند، ولی "
-"جاکلیدی بسته است"
-
-#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد به جاکلیدی پیش‌فرض دسترسی پیدا کند، ولی جاکلیدی بسته است"
-
-#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد به جاکلیدی '%s' دسترسی پیدا کند، ولی جاکلیدی بسته است"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
-#, c-format
-msgid ""
-"The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد به یک جاکلیدی ناشناخته دسترسی پیدا کند، ولی جاکلیدی قفل "
-"است"
-
-#: ../gnome-keyring-ask.c:452
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد به جاکلیدی پیش‌فرض دسترسی پیدا کند، ولی جاکلیدی "
-"پسته است"
-
-#: ../gnome-keyring-ask.c:456
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد به جاکلیدی '%s' دسترسی پیدا کند، ولی جاکلیدی "
-"بسته است"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid ""
-"An unknown application wants access to an unknown keyring, but it is locked"
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد به یک جاکلیدی ناشناخته دسترسی پیدا کند، ولی "
-"جاکلیدی پسته است"
-
-#: ../gnome-keyring-ask.c:468
-msgid "Enter password for default keyring to unlock"
-msgstr "کلمه‌ی عبور جاکلیدی پیش‌فرض را وارد کنید"
-
-#: ../gnome-keyring-ask.c:470
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "کلمه‌ی عبور برای باز کردن جاکلیدی '%s' را وارد کنید"
-
-#: ../gnome-keyring-ask.c:474
-msgid "Unlock Keyring"
-msgstr "باز کردن جاکلیدی"
-
-#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "اـنکار"
-
-#: ../gnome-keyring-ask.c:517
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی %s (%s) می‌خواهد یک جاکلیدی جدید به نام '%s' ایجاد کند. شما باید "
-"کلمه‌ی عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:521
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی "
-"عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد جاکلیدی جدیدی به نام '%s' ایجاد کند. شما باید کلمه‌ی "
-"عبور را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی عبوری "
-"را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:547
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد یک جاکلیدی جدید به منام '%s' ایجاد کند. شما باید "
-"کلمه‌ی عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:551
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی "
-"عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:558
-msgid "New Keyring Password"
-msgstr "کلمه‌ی عبور جاکلیدی جدید"
-
-#: ../gnome-keyring-ask.c:559
-msgid "Choose password for new keyring"
-msgstr "کلمه‌ی عبور جاکلیدی جدید را انتخاب کنید"
-
-#: ../gnome-keyring-ask.c:602
-#, fuzzy, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی "
-"عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:606
-#, fuzzy, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی "
-"عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
-#, fuzzy, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی عبوری "
-"را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
-#, fuzzy, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی عبوری "
-"را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:632
-#, fuzzy, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی "
-"عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:636
-#, fuzzy
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد یک جاکلیدی پیش‌فرض جدید ایجاد کند. شما باید کلمه‌ی "
-"عبوری را که می‌خواهید برای آن به کار برید انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:643
-#, fuzzy, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "کلمه‌ی عبور جاکلیدی جدید را انتخاب کنید"
-
-#: ../gnome-keyring-ask.c:645
-#, fuzzy
-msgid "Choose a new password for the default keyring. "
-msgstr "کلمه‌ی عبوری برای جاکلیدی پیش‌فرض انتخاب کنید"
-
-#: ../gnome-keyring-ask.c:650
-#, fuzzy
-msgid "Change Keyring Password"
-msgstr "کلمه‌ی عبور جاکلیدی جدید"
-
-#: ../gnome-keyring-ask.c:689
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد یک کلمه‌ی عبور را حفظ کند، ولی جاکلیدی پیش‌فرضی وجود "
-"ندارد. برای ایجاد یک جاکلیدی پیش‌فرض، لازم است کلمه‌ی عبوری برای آن انتخاب "
-"کنید."
-
-#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد یک کلمه‌ی عبور را حفظ کند، ولی جاکلیدی پیش‌فرضی وجود "
-"ندارد. برای ایجاد یک جاکلیدی پیش‌فرض، لازم است کلمه‌ی عبوری برای آن انتخاب "
-"کنید."
-
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد یک کلمه‌ی عبور را حفظ کند، ولی جاکلیدی پیش‌فرضی "
-"وجود ندارد. برای ایجاد یک جاکلیدی پیش‌فرض، لازم است کلمه‌ی عبوری برای آن "
-"انتخاب کنید."
-
-#: ../gnome-keyring-ask.c:706
-msgid "Create Default Keyring"
-msgstr "ایجاد جاکلیدی پیش‌فرض"
-
-#: ../gnome-keyring-ask.c:707
-msgid "Choose password for default keyring"
-msgstr "کلمه‌ی عبوری برای جاکلیدی پیش‌فرض انتخاب کنید"
-
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "برنامه‌ها مجاز به دسترسی به جاکلیدی باشند؟"
-
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "برنامه‌ی '%s' (%s) می‌خواهد به کلمه‌ی عبور '%s' در '%s' دسترسی پیدا کند."
-
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد به کلمه‌ی عبور '%s' در جاکلیدی پیش‌فرض دسترسی پیدا "
-"کند."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr ""
-"برنامه‌ی '%s' (%s) می‌خواهد به کلمه‌ی عبور '%s' در یک جاکلیدی ناشناخته دسترسی "
-"پیدا کند."
-
-#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "برنامه‌ی '%s' می‌خواهد به کلمه‌ی عبور '%s' در '%s' دسترسی پیدا کند."
-
-#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"برنامه‌ی '%s'می‌خواهد به کلمه‌ی عبور '%s' در جاکلیدی پیش‌فرض دسترسی پیدا کند."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"برنامه‌ی '%s' می‌خواهد به کلمه‌ی عبور '%s' در یک جاکلیدی ناشناخته دسترسی پیدا "
-"کند."
-
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "یک برنامه‌ی ناشناخته می‌خواهد به کلمه‌ی عبور '%s' در %s دسترسی پیدا کند."
-
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد به کلمه‌ی عبور '%s' در جاکلیدی پیش‌فرض دسترسی پیدا "
-"کند."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr ""
-"یک برنامه‌ی ناشناخته می‌خواهد به کلمه‌ی عبور '%s' در یک جاکلیدی ناشناخته دسترسی "
-"پیدا کند."
-
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "اجازه‌ی دسترسی"
-
-#: ../gnome-keyring-ask.c:799
-msgid "Allow _Once"
-msgstr "اجازه برای یک بار"
-
-#: ../gnome-keyring-ask.c:800
-msgid "_Always Allow"
-msgstr "اجازه برای همیشه"
-
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "باید مشخص کنید چه نوع درخواستی اجرا شود\n"
-
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "نوع درخواست ناشناخته است\n"
+"این معمولا وقتی اتفاق می‌افتد که برنامه را 'su' اجرا کرده باشید به جای 'su "
+"-'.\n"
+"اگر ماجرا این نیست، می‌توانید خروجی برنامه را برای جزئیات بیشتر ببینید."
