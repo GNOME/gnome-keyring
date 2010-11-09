@@ -1,3 +1,10 @@
+Changes in version 2.91.2 are:
+ * Add timeout if PAM startup doesn't complete shortly.
+ * Fix login keyring password when it doesn't match unix login.
+ * Replace gp11-0 with gck in pkgconfig file
+ * Fix broken dispose of GcrCertificateWidget
+ * Remove gp11 library.
+
 Changes in version 2.91.1 are:
  * Fix build problem in gpg-agent.
  * Properly distribute pkgconfig file for gck library.
