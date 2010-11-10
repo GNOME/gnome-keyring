@@ -10,11 +10,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.32\n"
+"Project-Id-Version: gnome-keyring MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-09-13 06:35+0000\n"
-"PO-Revision-Date: 2010-09-11 10:30+0300\n"
+"POT-Creation-Date: 2010-10-16 18:28+0000\n"
+"PO-Revision-Date: 2010-11-09 16:17+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -112,8 +112,8 @@ msgstr "Domeeni osa"
 msgid "User ID"
 msgstr "Kasutaja ID"
 
-msgid "Email"
-msgstr "E-kiri"
+msgid "Email Address"
+msgstr "E-posti aadress"
 
 msgid "Date of Birth"
 msgstr "Sünniaeg"
@@ -131,7 +131,7 @@ msgid "Country of Residence"
 msgstr "Asukohariik"
 
 msgid "Common Name"
-msgstr "Tavanimi"
+msgstr "Üldine nimi"
 
 msgid "Surname"
 msgstr "Perekonnanimi"
@@ -205,62 +205,8 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Ootamatu viga waitpid() funktsioonis (%s)"
 
-msgid "<i>Not Part of Certificate</i>"
-msgstr "<i>Pole sertifikaadi osa</i>"
-
-msgid "<i>unknown</i>"
-msgstr "<i>tundmatu</i>"
-
-msgid "<Not Part of Certificate>"
-msgstr "<pole serdi osa>"
-
-msgid "<b>Fingerprints</b>"
-msgstr "<b>Sõrmejäljed</b>"
-
-msgid "<b>Issued By</b>"
-msgstr "<b>Väljastaja</b>"
-
-msgid "<b>Issued To</b>"
-msgstr "<b>Väljastatud kellele:</b>"
-
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>See sertifikaat on kinnitatud järgmisteks kasutusviisideks:</b>"
-
-msgid "<b>Validity</b>"
-msgstr "<b>Kehtivus</b>"
-
-msgid "Common Name (CN)"
-msgstr "Tavanimi (CN)"
-
-msgid "Email Recipient Certificate"
-msgstr "Meili vastuvõtja sertifikaat"
-
-msgid "Email Signer Certificate"
-msgstr "Meili allkirjastaja sertifikaat"
-
-msgid "Expires On"
-msgstr "Aegub"
-
-msgid "Issued On"
-msgstr "Väljastatud"
-
-msgid "MD5 Fingerprint"
-msgstr "MD5 sõrmejälg"
-
-msgid "Organization (O)"
-msgstr "Organisatsioon (O)"
-
-msgid "Organizational Unit (OU)"
-msgstr "Organisatsiooni üksus (OU)"
-
-msgid "SHA1 Fingerprint"
-msgstr "SHA1 sõrmejälg"
-
-msgid "SSL Client Certificate"
-msgstr "SSL'i kliendisertifikaat"
-
-msgid "SSL Server Certificate"
-msgstr "SSL'i serverisertifikaat"
+msgid "Certificate"
+msgstr "Sertifikaat"
 
 msgid "Extension"
 msgstr "Laiend"
@@ -279,6 +225,15 @@ msgstr "Jah"
 
 msgid "No"
 msgstr "Ei"
+
+msgid "Identity"
+msgstr "Identiteet"
+
+msgid "Verified by"
+msgstr "Verifitseerija"
+
+msgid "Expires"
+msgstr "Aegub"
 
 #. The subject
 msgid "Subject Name"
@@ -301,15 +256,14 @@ msgstr "Pole kehtiv enne"
 msgid "Not Valid After"
 msgstr "Pole kehtiv pärast"
 
-#. Signature
-msgid "Signature"
-msgstr "Allkiri"
-
 msgid "Signature Algorithm"
 msgstr "Allkirja algoritm"
 
 msgid "Signature Parameters"
 msgstr "Allkirja parameetrid"
+
+msgid "Signature"
+msgstr "Allkiri"
 
 #. Public Key Info
 msgid "Public Key Info"
@@ -331,9 +285,8 @@ msgstr "Avalik võti"
 msgid "Fingerprints"
 msgstr "Sõrmejäljed"
 
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr ""
-"<span size='large' weight='bold'>Sertifikaatide ja võtmete importimine</span>"
+msgid "Import Certificates and Keys"
+msgstr "Sertifikaatide ja võtmete importimine"
 
 msgid "Import Into:"
 msgstr "Impordi kuhu:"
@@ -353,21 +306,9 @@ msgstr "See võtmerõngas lukustatakse pärast jõudeolekut"
 msgid "Lock this keyring when I log out"
 msgstr "See võtmerõngas pannakse minu väljalogimisel lukku"
 
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
 msgid "minutes"
 msgstr "minutit"
-
-msgid "The operation was cancelled"
-msgstr "Toiming katkestati"
-
-#, c-format
-msgid "No location available to import to"
-msgstr "Asukohta, kuhu importida, pole saadaval"
-
-msgid "Import Certificates/Keys"
-msgstr "Sertifikaadi/võtmete importimine"
-
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Vali asukoht imporditud sertifikaatide/võtmete säilitamiseks."
 
 msgid "Enter password to unlock the private key"
 msgstr "Sisesta salajase võtme luku avamise parool"
@@ -405,11 +346,50 @@ msgstr "Sertifikaadi '%s' importimiseks ei tohi see olla lukus"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "'%s' importimiseks ei tohi see olla lukus"
 
+msgid "The operation was cancelled"
+msgstr "Toiming katkestati"
+
+#, c-format
+msgid "No location available to import to"
+msgstr "Asukohta, kuhu importida, pole saadaval"
+
+msgid "Import Certificates/Keys"
+msgstr "Sertifikaadi/võtmete importimine"
+
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Vali asukoht imporditud sertifikaatide/võtmete säilitamiseks."
+
+msgid "Key"
+msgstr "Võti"
+
+msgid "Private RSA Key"
+msgstr "Salajane RSA-võti"
+
+msgid "Private DSA Key"
+msgstr "Salajane DSA-võti"
+
 msgid "Private Key"
 msgstr "Salajane võti"
 
-msgid "Certificate"
-msgstr "Sertifikaat"
+msgid "Public DSA Key"
+msgstr "Avalik DSA-võti"
+
+#, c-format
+msgid "%d bits"
+msgstr "%d bitti"
+
+msgid "Strength"
+msgstr "Tugevus"
+
+msgid "Algorithm"
+msgstr "Algoritm"
+
+msgid "Size"
+msgstr "Suurus"
+
+#. TODO: We need to have consistent key fingerprints.
+msgid "Fingerprint"
+msgstr "Sõrmejälg"
 
 msgid "Unrecognized or unsupported data."
 msgstr "Arusaamatud või toetamata andmed."
@@ -419,6 +399,13 @@ msgstr "Vigaseid või rikutud andmeid pole võimalik töödelda."
 
 msgid "The data is locked"
 msgstr "Andmed on lukustatud"
+
+#, c-format
+msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+msgstr "Vigane URI süntaks. Välja '%s' kooditabel on vigane."
+
+msgid "The URI has does not have the 'pkcs11' scheme."
+msgstr "URI-l puudub skeem 'pkcs11'."
 
 msgid "Insufficient memory available"
 msgstr "Vaba mälu pole piisavalt"
@@ -462,8 +449,8 @@ msgstr "Andmed on liiga pikad"
 msgid "An error occurred on the device"
 msgstr "Seadmes esines viga"
 
-msgid "Insufficient memory available on device"
-msgstr "Selles seadmel pole piisavalt mälu saadaval"
+msgid "Insufficient memory available on the device"
+msgstr "Sellel seadmel pole piisavalt mälu saadaval"
 
 msgid "The device was removed or unplugged"
 msgstr "Seade on eemaldatud või lahti ühendatud"
@@ -489,13 +476,13 @@ msgstr "Võti on valet liiki"
 msgid "No key is needed"
 msgstr "Võtit pole vaja"
 
-msgid "The key is different from before"
+msgid "The key is different than before"
 msgstr "Võti erineb varasemast võtmest"
 
 msgid "A key is needed"
 msgstr "Võti on vajalik"
 
-msgid "Cannot include the key in digest"
+msgid "Cannot include the key in the digest"
 msgstr "Võtit pole võimalik sõnumilühendisse kaasata"
 
 msgid "This operation cannot be done with this key"
@@ -603,8 +590,8 @@ msgstr "Kasutaja on vigast liiki"
 msgid "Another user is already logged in"
 msgstr "Teine kasutaja on juba sisse logitud"
 
-msgid "Too many users of different types logged in"
-msgstr "Liiga palju erinevat tüüpi kasutajaid on sisse logitud"
+msgid "Too many users of different types are logged in"
+msgstr "Liiga palju eri liiki kasutajaid on sisse logitud"
 
 msgid "Cannot import an invalid key"
 msgstr "Vigast võtit pole võimalik importida"
