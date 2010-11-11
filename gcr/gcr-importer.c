@@ -24,6 +24,7 @@
 #include "gcr-import-dialog.h"
 #include "gcr-importer.h"
 #include "gcr-internal.h"
+#include "gcr-marshal.h"
 #include "gcr-parser.h"
 
 #include <glib/gi18n-lib.h>
@@ -31,11 +32,11 @@
 enum {
 	PROP_0,
 	PROP_SLOT,
-	PROP_PARSER,
 	PROP_PROMPT_BEHAVIOR
 };
 
 enum {
+	QUEUED,
 	IMPORTED,
 	LAST_SIGNAL
 };
@@ -54,13 +55,12 @@ struct _GcrImporterPrivate {
 	/* State data during import */
 	gboolean processing;
 	GCancellable *cancel;
-	GInputStream *input;
 	gboolean prompted;
 	gboolean async;
 	GByteArray *buffer;
 	GckSession *session;
 	GQueue queue;
-	
+
 	/* Extra async stuff */
 	GAsyncReadyCallback callback;
 	gpointer user_data;
@@ -72,8 +72,6 @@ static void state_complete (GcrImporter *self, gboolean async);
 static void state_create_object (GcrImporter *self, gboolean async);
 static void state_open_session (GcrImporter *self, gboolean async);
 static void state_initialize_pin (GcrImporter *self, gboolean async);
-static void state_parse_buffer (GcrImporter *self, gboolean async);
-static void state_read_buffer (GcrImporter *self, gboolean async);
 
 static void gcr_importer_async_result (GAsyncResultIface *iface);
 G_DEFINE_TYPE_WITH_CODE (GcrImporter, gcr_importer, G_TYPE_OBJECT,
@@ -89,11 +87,11 @@ static void
 cleanup_state_data (GcrImporter *self)
 {
 	GckAttributes *attrs;
-	
+
 	if (self->pv->buffer)
 		g_byte_array_free (self->pv->buffer, TRUE);
 	self->pv->buffer = NULL;
-	
+
 	if (self->pv->session)
 		g_object_unref (self->pv->session);
 	self->pv->session = NULL;
@@ -101,11 +99,7 @@ cleanup_state_data (GcrImporter *self)
 	while ((attrs = g_queue_pop_head (&self->pv->queue)) != NULL)
 		gck_attributes_unref (attrs);
 	g_assert (g_queue_is_empty (&self->pv->queue));
-	
-	if (self->pv->input)
-		g_object_unref (self->pv->input);
-	self->pv->input = NULL;
-	
+
 	if (self->pv->cancel)
 		g_object_unref (self->pv->cancel);
 	self->pv->cancel = NULL;
@@ -130,6 +124,103 @@ next_state (GcrImporter *self, void (*state) (GcrImporter*, gboolean))
 		state = state_cancelled;
 	
 	(state) (self, self->pv->async);
+}
+
+static const gchar*
+prepare_auth_primary (CK_OBJECT_CLASS klass)
+{
+	if (klass == CKO_PRIVATE_KEY)
+		return _("Enter password to unlock the private key");
+	else if (klass == CKO_CERTIFICATE)
+		return _("Enter password to unlock the certificate");
+	else
+		return _("Enter password to unlock");
+}
+
+static gchar*
+prepare_auth_secondary (CK_OBJECT_CLASS klass, const gchar *label)
+{
+	if (label == NULL) {
+		if (klass == CKO_PRIVATE_KEY) {
+			/* TRANSLATORS: The key is locked. */
+			return g_strdup (_("In order to import the private key, it must be unlocked"));
+		} else if (klass == CKO_CERTIFICATE) {
+			/* TRANSLATORS: The certificate is locked. */
+			return g_strdup (_("In order to import the certificate, it must be unlocked"));
+		} else {
+			/* TRANSLATORS: The data is locked. */
+			return g_strdup (_("In order to import the data, it must be unlocked"));
+		}
+	} else {
+		if (klass == CKO_PRIVATE_KEY) {
+			/* TRANSLATORS: The key is locked. */
+			return g_strdup_printf (_("In order to import the private key '%s', it must be unlocked"), label);
+		} else if (klass == CKO_CERTIFICATE) {
+			/* TRANSLATORS: The certificate is locked. */
+			return g_strdup_printf (_("In order to import the certificate '%s', it must be unlocked"), label);
+		} else {
+			/* TRANSLATORS: The object '%s' is locked. */
+			return g_strdup_printf (_("In order to import '%s', it must be unlocked"), label);
+		}
+	}
+}
+
+static void
+on_parser_parsed (GcrParser *parser, GcrImporter *self)
+{
+	GckAttributes *attrs;
+
+	g_return_if_fail (GCR_IS_PARSER (parser));
+	g_return_if_fail (GCR_IS_IMPORTER (self));
+
+	attrs = gcr_parser_get_parsed_attributes (parser);
+	g_return_if_fail (attrs);
+
+	gcr_importer_queue (self, gcr_parser_get_parsed_label (parser), attrs);
+}
+
+static gboolean
+on_parser_authenticate (GcrParser *parser, gint count, GcrImporter *self)
+{
+	GcrImportDialog *dialog;
+	GckAttributes *attrs;
+	const gchar *password;
+	gchar *text, *label;
+	GckSlot *slot;
+	gulong klass;
+
+	dialog = _gcr_import_dialog_new ();
+
+	if (self->pv->slot)
+		_gcr_import_dialog_set_selected_slot (dialog, self->pv->slot);
+
+	/* Figure out the text for the dialog */
+	attrs = gcr_parser_get_parsed_attributes (parser);
+	g_return_val_if_fail (attrs, FALSE);
+
+	if (!gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
+		klass = (gulong)-1;
+	if (!gck_attributes_find_string (attrs, CKA_LABEL, &label))
+		label = NULL;
+
+	text = prepare_auth_secondary (klass, label);
+	_gcr_import_dialog_set_primary_text (dialog, prepare_auth_primary (klass));
+	_gcr_import_dialog_set_secondary_text (dialog, text);
+	g_free (label);
+	g_free (text);
+
+	if (!_gcr_import_dialog_run (dialog, NULL))
+		return FALSE;
+
+	slot = _gcr_import_dialog_get_selected_slot (dialog);
+	gcr_importer_set_slot (self, slot);
+
+	password = _gcr_import_dialog_get_password (dialog);
+	gcr_parser_add_password (parser, password);
+
+	g_object_unref (dialog);
+	self->pv->prompted = TRUE;
+	return TRUE;
 }
 
 /* ---------------------------------------------------------------------------------
@@ -258,11 +349,11 @@ state_open_session (GcrImporter *self, gboolean async)
 	} else {
 		
 		if (async) {
-			gck_slot_open_session_async (self->pv->slot, CKF_RW_SESSION, NULL, NULL,
-			                              self->pv->cancel, on_open_session, self);
+			gck_slot_open_session_async (self->pv->slot, GCK_SESSION_READ_WRITE, self->pv->cancel,
+			                             on_open_session, self);
 		} else {
-			session = gck_slot_open_session_full (self->pv->slot, CKF_RW_SESSION, NULL, NULL,
-			                                       self->pv->cancel, &error);
+			session = gck_slot_open_session_full (self->pv->slot, GCK_SESSION_READ_WRITE, 0, NULL, NULL,
+			                                      self->pv->cancel, &error);
 			complete_open_session (self, session, error);
 		}
 	}
@@ -425,216 +516,6 @@ state_import_prompt (GcrImporter *self, gboolean async)
 	}
 }
 
-/* ---------------------------------------------------------------------------------
- * PARSING
- */
-
-static const gchar*
-prepare_auth_primary (CK_OBJECT_CLASS klass)
-{
-	if (klass == CKO_PRIVATE_KEY)
-		return _("Enter password to unlock the private key");
-	else if (klass == CKO_CERTIFICATE)
-		return _("Enter password to unlock the certificate");
-	else 
-		return _("Enter password to unlock");
-}
-
-static gchar*
-prepare_auth_secondary (CK_OBJECT_CLASS klass, const gchar *label)
-{
-	if (label == NULL) {
-		if (klass == CKO_PRIVATE_KEY) {
-			/* TRANSLATORS: The key is locked. */
-			return g_strdup (_("In order to import the private key, it must be unlocked"));
-		} else if (klass == CKO_CERTIFICATE) {
-			/* TRANSLATORS: The certificate is locked. */
-			return g_strdup (_("In order to import the certificate, it must be unlocked"));
-		} else {
-			/* TRANSLATORS: The data is locked. */
-			return g_strdup (_("In order to import the data, it must be unlocked"));
-		}
-	} else {
-		if (klass == CKO_PRIVATE_KEY) {
-			/* TRANSLATORS: The key is locked. */
-			return g_strdup_printf (_("In order to import the private key '%s', it must be unlocked"), label);
-		} else if (klass == CKO_CERTIFICATE) {
-			/* TRANSLATORS: The certificate is locked. */
-			return g_strdup_printf (_("In order to import the certificate '%s', it must be unlocked"), label);
-		} else {
-			/* TRANSLATORS: The object '%s' is locked. */
-			return g_strdup_printf (_("In order to import '%s', it must be unlocked"), label);
-		}
-	}
-}
-
-static void
-on_parser_parsed (GcrParser *parser, GcrImporter *self)
-{
-	GckAttributes *attrs;
-	
-	g_return_if_fail (GCR_IS_PARSER (parser));
-	g_return_if_fail (GCR_IS_IMPORTER (self));
-	
-	attrs = gcr_parser_get_parsed_attributes (parser);
-	g_return_if_fail (attrs);
-	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
-}
-
-static gboolean
-on_parser_authenticate (GcrParser *parser, gint count, GcrImporter *self)
-{
-	GcrImportDialog *dialog;
-	GckAttributes *attrs;
-	const gchar *password;
-	gchar *text, *label;
-	GckSlot *slot;
-	gulong klass;
-	
-	dialog = _gcr_import_dialog_new ();
-	
-	if (self->pv->slot)
-		_gcr_import_dialog_set_selected_slot (dialog, self->pv->slot);
-	
-	/* Figure out the text for the dialog */
-	attrs = gcr_parser_get_parsed_attributes (parser);
-	g_return_val_if_fail (attrs, FALSE);
-
-	if (!gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
-		klass = (gulong)-1;
-	if (!gck_attributes_find_string (attrs, CKA_LABEL, &label))
-		label = NULL;
-	
-	text = prepare_auth_secondary (klass, label);
-	_gcr_import_dialog_set_primary_text (dialog, prepare_auth_primary (klass));
-	_gcr_import_dialog_set_secondary_text (dialog, text);
-	g_free (label);
-	g_free (text);
-	
-	if (!_gcr_import_dialog_run (dialog, NULL))
-		return FALSE;
-
-	slot = _gcr_import_dialog_get_selected_slot (dialog);
-	gcr_importer_set_slot (self, slot);
-	
-	password = _gcr_import_dialog_get_password (dialog);
-	gcr_parser_add_password (parser, password);
-	
-	g_object_unref (dialog);
-	self->pv->prompted = TRUE;
-	return TRUE;
-}
-
-static void 
-state_parse_buffer (GcrImporter *self, gboolean async)
-{
-	GError *error = NULL;
-	GcrParser *parser;
-	gulong parsed_conn;
-	gulong auth_conn;
-	gboolean ret;
-	
-	g_assert (GCR_IS_IMPORTER (self));
-	g_assert (self->pv->buffer);
-	
-	parser = gcr_importer_get_parser (self);
-	g_object_ref (parser);
-
-	/* Listen in to the parser */
-	parsed_conn = g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), self);
-	auth_conn = g_signal_connect (parser, "authenticate", G_CALLBACK (on_parser_authenticate), self);
-
-	ret = gcr_parser_parse_data (parser, self->pv->buffer->data, self->pv->buffer->len, &error);
-	
-	/* An optimization to free data early as possible */
-	g_byte_array_free (self->pv->buffer, TRUE);
-	self->pv->buffer = NULL;
-	
-	g_signal_handler_disconnect (parser, parsed_conn);
-	g_signal_handler_disconnect (parser, auth_conn);
-	g_object_unref (parser);
-	
-	if (ret == TRUE) {
-		next_state (self, state_import_prompt);
-	} else {
-		g_propagate_error (&self->pv->error, error);
-		next_state (self, state_failure);
-	}
-}
-
-/* ---------------------------------------------------------------------------------
- * BUFFER READING
- */
-
-static void
-complete_read_buffer (GcrImporter *self, gssize count, GError *error)
-{
-	g_assert (GCR_IS_IMPORTER (self));
-	g_assert (self->pv->buffer);
-	
-	/* A failure */
-	if (count == -1) {
-		g_propagate_error (&self->pv->error, error);
-		next_state (self, state_failure);
-	} else {
-	
-		g_return_if_fail (count >= 0 && count <= BLOCK);
-		g_byte_array_set_size (self->pv->buffer, self->pv->buffer->len - (BLOCK - count));
-		
-		/* Finished reading */
-		if (count == 0) {
-			
-			/* Optimization, unref input early */
-			g_object_unref (self->pv->input);
-			self->pv->input = NULL;
-			
-			next_state (self, state_parse_buffer);
-			
-		/* Read the next block */
-		} else {
-			next_state (self, state_read_buffer);
-		}
-	}
-	
-}
-
-static void
-on_read_buffer (GObject *obj, GAsyncResult *res, gpointer user_data)
-{
-	GError *error = NULL;
-	gssize count;
-	
-	count = g_input_stream_read_finish (G_INPUT_STREAM (obj), res, &error);
-	complete_read_buffer (user_data, count, error);
-}
-
-static void 
-state_read_buffer (GcrImporter *self, gboolean async)
-{
-	GError *error = NULL;
-	gssize count;
-	gsize at;
-	
-	g_assert (GCR_IS_IMPORTER (self));
-	g_assert (G_IS_INPUT_STREAM (self->pv->input));
-	
-	if (!self->pv->buffer)
-		self->pv->buffer = g_byte_array_sized_new (BLOCK);
-
-	at = self->pv->buffer->len;
-	g_byte_array_set_size (self->pv->buffer, at + BLOCK);
-	
-	if (async) {
-		g_input_stream_read_async (self->pv->input, self->pv->buffer->data + at, 
-		                           BLOCK, G_PRIORITY_DEFAULT, self->pv->cancel,
-		                           on_read_buffer, self);
-	} else {
-		count = g_input_stream_read (self->pv->input, self->pv->buffer->data + at, 
-		                             BLOCK, self->pv->cancel, &error);
-		complete_read_buffer (self, count, error);
-	}
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT 
  */
@@ -693,9 +574,6 @@ gcr_importer_set_property (GObject *obj, guint prop_id, const GValue *value,
 	GcrImporter *self = GCR_IMPORTER (obj);
 	
 	switch (prop_id) {
-	case PROP_PARSER:
-		gcr_importer_set_parser (self, g_value_get_object (value));
-		break;
 	case PROP_SLOT:
 		gcr_importer_set_slot (self, g_value_get_object (value));
 		break;
@@ -715,9 +593,6 @@ gcr_importer_get_property (GObject *obj, guint prop_id, GValue *value,
 	GcrImporter *self = GCR_IMPORTER (obj);
 	
 	switch (prop_id) {
-	case PROP_PARSER:
-		g_value_set_object (value, gcr_importer_get_parser (self));
-		break;
 	case PROP_SLOT:
 		g_value_set_object (value, gcr_importer_get_slot (self));
 		break;
@@ -742,19 +617,20 @@ gcr_importer_class_init (GcrImporterClass *klass)
 	gobject_class->get_property = gcr_importer_get_property;
     
 	g_type_class_add_private (gobject_class, sizeof (GcrImporterPrivate));
-	
-	g_object_class_install_property (gobject_class, PROP_PARSER,
-	           g_param_spec_object ("parser", "Parser", "Parser used to parse imported data",
-	                                GCR_TYPE_PARSER, G_PARAM_READWRITE));
-	
-	g_object_class_install_property (gobject_class, PROP_PARSER,
+
+	g_object_class_install_property (gobject_class, PROP_SLOT,
 	           g_param_spec_object ("slot", "Slot", "PKCS#11 slot to import data into",
 	                                GCK_TYPE_SLOT, G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_PROMPT_BEHAVIOR,
 	           g_param_spec_int ("prompt-behavior", "Prompt Behavior", "Import Prompt Behavior",
 	                             0, G_MAXINT, GCR_IMPORTER_PROMPT_NEEDED, G_PARAM_READWRITE));
-	
+
+	signals[QUEUED] = g_signal_new ("queued", GCR_TYPE_IMPORTER,
+	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrImporterClass, queued),
+	                                NULL, NULL, _gcr_marshal_VOID__STRING_BOXED,
+	                                G_TYPE_NONE, 1, G_TYPE_STRING, GCK_TYPE_ATTRIBUTES);
+
 	signals[IMPORTED] = g_signal_new ("imported", GCR_TYPE_IMPORTER, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrImporterClass, imported),
 	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
@@ -794,28 +670,6 @@ gcr_importer_new (void)
 	return g_object_new (GCR_TYPE_IMPORTER, NULL);
 }
 
-GcrParser*
-gcr_importer_get_parser (GcrImporter *self)
-{
-	g_return_val_if_fail (GCR_IS_IMPORTER (self), NULL);
-	if (!self->pv->parser) 
-		self->pv->parser = gcr_parser_new ();
-	return self->pv->parser;
-}
-
-void
-gcr_importer_set_parser (GcrImporter *self, GcrParser *parser)
-{
-	g_return_if_fail (GCR_IS_IMPORTER (self));
-	
-	if (parser)
-		g_object_ref (parser);
-	if (self->pv->parser)
-		g_object_unref (self->pv->parser);
-	self->pv->parser = parser;
-	g_object_notify (G_OBJECT (self), "parser");
-}
-
 GckSlot*
 gcr_importer_get_slot (GcrImporter *self)
 {
@@ -852,26 +706,22 @@ gcr_importer_set_prompt_behavior (GcrImporter *self, GcrImporterPromptBehavior b
 }
 
 gboolean
-gcr_importer_import (GcrImporter *self, GInputStream *input,
-                     GCancellable *cancel, GError **error)
+gcr_importer_import (GcrImporter *self, GCancellable *cancel, GError **error)
 {
 	g_return_val_if_fail (GCR_IS_IMPORTER (self), FALSE);
-	g_return_val_if_fail (G_IS_INPUT_STREAM (input), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 	g_return_val_if_fail (!self->pv->processing, FALSE);
-	
+
 	cleanup_import_data (self);
-	
-	self->pv->input = g_object_ref (input);
+
 	if (cancel)
 		self->pv->cancel = g_object_ref (cancel);
 	self->pv->processing = TRUE;
 	self->pv->async = FALSE;
-	
-	next_state (self, state_read_buffer);
-	
+
+	next_state (self, state_import_prompt);
+
 	g_assert (!self->pv->processing);
-	g_assert (!self->pv->input);
 	g_assert (!self->pv->cancel);
 	
 	if (!self->pv->succeeded) {
@@ -884,24 +734,22 @@ gcr_importer_import (GcrImporter *self, GInputStream *input,
 }
 
 void
-gcr_importer_import_async (GcrImporter *self, GInputStream *input, GCancellable *cancel,
+gcr_importer_import_async (GcrImporter *self, GCancellable *cancel,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	g_return_if_fail (GCR_IS_IMPORTER (self));
-	g_return_if_fail (G_IS_INPUT_STREAM (input));
 	g_return_if_fail (!self->pv->processing);
-	
+
 	cleanup_import_data (self);
-	
-	self->pv->input = g_object_ref (input);
+
 	if (cancel)
 		self->pv->cancel = g_object_ref (cancel);
 	self->pv->processing = TRUE;
 	self->pv->async = TRUE;
 	self->pv->callback = callback;
 	self->pv->user_data = user_data;
-	
-	next_state (self, state_read_buffer);
+
+	next_state (self, state_import_prompt);
 	g_assert (self->pv->processing);
 }
 
@@ -913,9 +761,8 @@ gcr_importer_import_finish (GcrImporter *self, GAsyncResult *res, GError **error
 	g_return_val_if_fail (!error || !*error, FALSE);
 	g_return_val_if_fail (!self->pv->processing, FALSE);
 
-	g_assert (!self->pv->input);
 	g_assert (!self->pv->cancel);
-	
+
 	if (!self->pv->succeeded) {
 		g_propagate_error (error, self->pv->error);
 		self->pv->error = NULL;
@@ -923,4 +770,26 @@ gcr_importer_import_finish (GcrImporter *self, GAsyncResult *res, GError **error
 	}
 	
 	return TRUE;
+}
+
+
+void
+gcr_importer_listen (GcrImporter *self, GcrParser *parser)
+{
+	g_return_if_fail (GCR_IS_IMPORTER (self));
+	g_return_if_fail (GCR_IS_PARSER (self));
+
+	/* Listen in to the parser */
+	g_signal_connect_object (parser, "parsed", G_CALLBACK (on_parser_parsed), self, 0);
+	g_signal_connect_object (parser, "authenticate", G_CALLBACK (on_parser_authenticate), self, 0);
+}
+
+void
+gcr_importer_queue (GcrImporter *self, const gchar *label, GckAttributes *attrs)
+{
+	g_return_if_fail (GCR_IS_IMPORTER (self));
+	g_return_if_fail (attrs);
+
+	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
+	g_signal_emit (self, signals[QUEUED], 0, label, attrs);
 }

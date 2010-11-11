@@ -110,7 +110,7 @@ iter_append_item_path (const gchar *base, GckObject *object, DBusMessageIter *it
 	gchar *alloc = NULL;
 
 	if (base == NULL) {
-		identifier = gck_object_get_data (object, CKA_G_COLLECTION, &n_identifier, &error);
+		identifier = gck_object_get_data (object, CKA_G_COLLECTION, NULL, &n_identifier, &error);
 		if (!identifier) {
 			g_warning ("couldn't get item collection identifier: %s", egg_error_message (error));
 			g_clear_error (&error);
@@ -121,7 +121,7 @@ iter_append_item_path (const gchar *base, GckObject *object, DBusMessageIter *it
 		g_free (identifier);
 	}
 
-	identifier = gck_object_get_data (object, CKA_ID, &n_identifier, &error);
+	identifier = gck_object_get_data (object, CKA_ID, NULL, &n_identifier, &error);
 	if (identifier == NULL) {
 		g_warning ("couldn't get item identifier: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -163,7 +163,7 @@ iter_append_collection_paths (GList *collections, DBusMessageIter *iter)
 
 	for (l = collections; l; l = g_list_next (l)) {
 
-		identifier = gck_object_get_data (l->data, CKA_ID, &n_identifier, &error);
+		identifier = gck_object_get_data (l->data, CKA_ID, NULL, &n_identifier, &error);
 		if (identifier == NULL) {
 			g_warning ("couldn't get collection identifier: %s", egg_error_message (error));
 			g_clear_error (&error);
@@ -189,6 +189,7 @@ object_property_get (GckObject *object, DBusMessage *message,
 	GError *error = NULL;
 	DBusMessage *reply;
 	GckAttribute attr;
+	gpointer value;
 	gsize length;
 
 	if (!gkd_secret_property_get_type (prop_name, &attr.type))
@@ -196,7 +197,7 @@ object_property_get (GckObject *object, DBusMessage *message,
 		                                      "Object does not have the '%s' property", prop_name);
 
 	/* Retrieve the actual attribute */
-	attr.value = gck_object_get_data (object, attr.type, &length, &error);
+	attr.value = value = gck_object_get_data (object, attr.type, NULL, &length, &error);
 	if (error != NULL) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't retrieve '%s' property: %s",
@@ -210,7 +211,7 @@ object_property_get (GckObject *object, DBusMessage *message,
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	gkd_secret_property_append_variant (&iter, &attr);
-	g_free (attr.value);
+	g_free (value);
 	return reply;
 }
 
@@ -320,7 +321,7 @@ item_property_getall (GckObject *object, DBusMessage *message)
 		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
 
-	attrs = gck_object_get (object, &error,
+	attrs = gck_object_get (object, NULL, &error,
 	                         CKA_LABEL,
 	                         CKA_G_SCHEMA,
 	                         CKA_G_LOCKED,
@@ -353,7 +354,7 @@ item_method_delete (GkdSecretObjects *self, GckObject *object, DBusMessage *mess
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (!gck_object_destroy (object, &error)) {
+	if (!gck_object_destroy (object, NULL, &error)) {
 		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN))
 			reply = dbus_message_new_error_printf (message, SECRET_ERROR_IS_LOCKED,
 			                                       "Cannot delete a locked item");
@@ -472,7 +473,7 @@ item_cleanup_search_results (GckSession *session, GList *items,
 	*unlocked = NULL;
 
 	for (l = items; l; l = g_list_next (l)) {
-		value = gck_object_get_data (l->data, CKA_G_LOCKED, &n_value, &error);
+		value = gck_object_get_data (l->data, CKA_G_LOCKED, NULL, &n_value, &error);
 		if (value == NULL) {
 			if (!g_error_matches (error, GCK_ERROR, CKR_OBJECT_HANDLE_INVALID))
 				g_warning ("couldn't check if item is locked: %s", egg_error_message (error));
@@ -563,7 +564,7 @@ collection_property_getall (GkdSecretObjects *self, GckObject *object, DBusMessa
 		                                      "Object does not have properties on interface '%s'",
 		                                      interface);
 
-	attrs = gck_object_get (object, &error,
+	attrs = gck_object_get (object, NULL, &error,
 	                        CKA_LABEL,
 	                        CKA_G_LOCKED,
 	                        CKA_G_CREATED,
@@ -629,8 +630,8 @@ collection_find_matching_item (GkdSecretObjects *self, GckSession *session,
 	}
 
 	/* Get the matched item handles, and delete the search object */
-	data = gck_object_get_data (search, CKA_G_MATCHED, &n_data, NULL);
-	gck_object_destroy (search, NULL);
+	data = gck_object_get_data (search, CKA_G_MATCHED, NULL, &n_data, NULL);
+	gck_object_destroy (search, NULL, NULL);
 	g_object_unref (search);
 
 	if (n_data >= sizeof (CK_OBJECT_HANDLE))
@@ -712,7 +713,7 @@ collection_method_create_item (GkdSecretObjects *self, GckObject *object, DBusMe
 	/* Set the secret */
 	if (!gkd_secret_session_set_item_secret (secret->session, item, secret, &derr)) {
 		if (created) /* If we created, then try to destroy on failure */
-			gck_object_destroy (item, NULL);
+			gck_object_destroy (item, NULL, NULL);
 		goto cleanup;
 	}
 
@@ -763,7 +764,7 @@ collection_method_delete (GkdSecretObjects *self, GckObject *object, DBusMessage
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (!gck_object_destroy (object, &error)) {
+	if (!gck_object_destroy (object, NULL, &error)) {
 		reply = dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
 		                                       "Couldn't delete collection: %s",
 		                                       egg_error_message (error));
@@ -1229,8 +1230,8 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	}
 
 	/* Get the matched item handles, and delete the search object */
-	data = gck_object_get_data (search, CKA_G_MATCHED, &n_data, &error);
-	gck_object_destroy (search, NULL);
+	data = gck_object_get_data (search, CKA_G_MATCHED, NULL, &n_data, &error);
+	gck_object_destroy (search, NULL, NULL);
 	g_object_unref (search);
 
 	if (error != NULL) {

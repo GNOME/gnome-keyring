@@ -8,137 +8,62 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-03-06 13:51+0900\n"
-"PO-Revision-Date: 2010-03-06 18:17+0900\n"
+"POT-Creation-Date: 2010-09-26 04:08+0900\n"
+"PO-Revision-Date: 2010-09-26 04:12+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
+"Language: Korean\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"이 옵션은 gnome-keyring 데몬에서 PKCS#11 컴포넌트를 사용합니다. 이 옵션은 "
-"gnome-keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우에만 효"
-"과가 있습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 우선할 수 "
-"있습니다."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"이 옵션은 gnome-keyring 데몬에서 SSH 에이전트를 사용합니다. 이 옵션은 gnome-"
-"keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우에만 효과가 있"
-"습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 우선할 수 있습니"
-"다."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr "이 옵션은 gnome-keyring 데몬에서 비밀 서비스 컴포넌트를 사용합니다. 이 옵션은 gnome-keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우에만 효과가 있습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 우선할 수 있습니다."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "그놈 키 모음의 PKCS#11 컴포넌트를 사용할지 여부."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "그놈 키 모음의 SSH 에이전트를 사용할지 여부."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "그놈 키 모음의 비밀 서비스를 사용할지 여부."
-
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Unnamed"
 msgstr "이름 없음"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "키 모음 암호 바꾸기"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "'%s' 키 모음에 대한 새 암호를 지정하십시오"
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
-msgstr "프로그램에서 '%s' 키 모음의 암호를 바꾸려고 합니다. 여기에 사용할 새 암호를 지정하십시오."
+msgstr ""
+"프로그램에서 '%s' 키 모음의 암호를 바꾸려고 합니다. 여기에 사용할 새 암호를 "
+"지정하십시오."
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "원래 암호가 올바르지 않습니다"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "새 키 모음 암호"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "새 키 모음에 대한 암호를 지정하십시오"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
-msgstr "프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정하십시오."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:134
-msgid "Unlock Login Keyring"
-msgstr "로그인 키 모음 잠금 풀기"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:136
-msgid "Enter password for to unlock your login keyring"
-msgstr "로그인 키 모음의 잠금을 푸는 암호를 입력하십시오"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:140
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr "컴퓨터 로그인에 사용한 암호가 로그인 키 모음의 암호와 다릅니다."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:142
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr "로그인할 때 로그인 키 모음의 잠금을 풀지 않았습니다."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:183
-msgid "Unlock Keyring"
-msgstr "키 모음 잠금 풀기"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:185
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "키 모음 '%s'의 잠금을 풀 암호를 입력하십시오"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:189
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "프로그램에서 '%s' 키 모음에 접근하려 합니다. 하지만 키 모음이 잠겨 있습니다"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:219
-msgid "The unlock password was incorrect"
-msgstr "잠금 풀기 암호가 올바르지 않습니다"
+msgstr ""
+"프로그램에서 '%s' 키 모음을 새로 만드려고 합니다. 여기에 사용할 암호를 지정하"
+"십시오."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -164,161 +89,44 @@ msgstr "그놈 키 모음: SSH 에이전트"
 msgid "SSH Key Agent"
 msgstr "SSH 키 에이전트"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "그놈 키 모음: GPG 에이전트"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG 암호 에이전트"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP 키: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
+msgid "Enter Passphrase"
+msgstr "암호문 입력"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+msgid "Forget this password if idle for"
+msgstr "일정 시간 입력이 없으면 암호 지우기"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+msgid "Forget this password after"
+msgstr "일정 시간 뒤에 암호 지우기"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+msgid "Forget this password when I log out"
+msgstr "로그아웃할 때 암호 지우기"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "로그인"
-
-#: ../daemon/login/gkd-login.c:596
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "다음의 잠금 풀기 암호: %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "새 암호 필요"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "보안 데이터 저장소에 사용할 새 암호가 필요합니다"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr "인증서 혹은 키의 저장소로 '%s' 준비를 하려면 암호가 필요합니다."
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "개인 키 잠금 풀기"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "인증서 잠금 풀기"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "공개 키 잠금 풀기"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "잠금 풀기"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "개인 키의 잠금을 풀 암호를 입력하십시오"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "인증서의 잠금을 풀 암호를 입력하십시오"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "공개 키의 잠금을 풀 암호를 입력하십시오"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "잠금을 풀 암호를 입력하십시오"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "어떤 프로그램에서 개인 키 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "어떤 프로그램에서 인증서 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "어떤 프로그램에서 공개 키 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "어떤 프로그램에서 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "인증서/키 저장소 잠금 풀기"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "인증서/키 저장소의 잠금을 풀 암호를 입력하십시오"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"어떤 프로그램에서 인증서/키 저장소 '%s'에 접근하려 합니다. 하지만 잠겨 있습니"
-"다"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "암호를 암호화하지 않은 상태로 저장하시겠습니까?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"암호를 비워 놓으면 암호화하지 않은 상태로 암호를 저장합니다. 그러면 파일을 "
-"볼 수 있는 사람이면 암호를 알아낼 수 있습니다."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "안전하지 않은 저장소 사용"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "암호가 맞지 않습니다."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "암호는 비워져 있으면 안 됩니다"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "로그인할 때 자동으로 이 키 모음 잠금 풀기"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "새 암호 품질"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "용도(_A):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "확인(_C):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "상세 정보(_D):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "이름(_N):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "과거 암호(_O):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "암호(_P):"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -361,7 +169,7 @@ msgid "Surname"
 msgstr "성"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "일련 번호"
 
@@ -444,7 +252,9 @@ msgstr "SHA1 및 DSA"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "하위 프로세스에서 데이터를 읽는데 select()에서 예상치 못한 오류가 발생했습니다 (%s)"
+msgstr ""
+"하위 프로세스에서 데이터를 읽는데 select()에서 예상치 못한 오류가 발생했습니"
+"다 (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
@@ -527,94 +337,94 @@ msgstr "SSL 클라이언트 인증서"
 msgid "SSL Server Certificate"
 msgstr "SSL 서버 인증서"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "확장"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "식별 이름"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "값"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "중대함"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "예"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "아니오"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "제목"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "발급자 이름"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "발급한 인증서"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "버전"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "유효 기간 시작"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "유효 기간 끝"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "서명"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "서명 알고리듬"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "서명 파라미터"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "공개 키 정보"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "키 알고리듬"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "키 파라미터"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "키 크기"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "공개 키"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "핑거프린트"
 
@@ -631,22 +441,26 @@ msgid "Password:"
 msgstr "암호:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "로그인할 때 자동으로 이 키 모음 잠금 풀기"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
 msgstr "다음 동작 뒤에 키 모음 잠그기"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
 msgstr "일정 시간 입력이 없으면 키 모음 잠그기"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
 msgstr "로그아웃할 때 이 키 모음 잠그기"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#: ../gcr/gcr-unlock-options-widget.ui.h:5
 msgid "minutes"
 msgstr "분"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "작업을 취소했습니다"
 
@@ -662,6 +476,18 @@ msgstr "인증서/키 가져오기"
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "가져온 인증서/키를 저장할 위치를 선택하십시오."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+msgid "Enter password to unlock the private key"
+msgstr "개인 키의 잠금을 풀 암호를 입력하십시오"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+msgid "Enter password to unlock the certificate"
+msgstr "인증서의 잠금을 풀 암호를 입력하십시오"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+msgid "Enter password to unlock"
+msgstr "잠금을 풀 암호를 입력하십시오"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -696,23 +522,23 @@ msgstr "'%s' 인증서를 가져오려면 잠금을 풀어야 합니다"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "'%s'을(를) 가져오려면 잠금을 풀어야 합니다"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "개인 키"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "인증서"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "알지 못하거나 지원하지 않는 데이터."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "잘못되었거나 손상된 데이터를 파싱할 수 없습니다."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "데이터가 잠겨 있습니다"
 
@@ -809,7 +635,7 @@ msgid "No key is needed"
 msgstr "키가 필요하지 않습니다"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "키가 예전의 키와 다릅니다"
 
 #: ../gp11/gp11-misc.c:149
@@ -1036,13 +862,244 @@ msgstr "사용자가 서명 요청을 거부했습니다"
 msgid "Unknown error"
 msgstr "알 수 없는 오류"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "이름 없는 인증서"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "공개 SSH 키를 파싱할 수 없습니다"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "다음의 잠금 풀기 암호: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+msgid "The unlock password was incorrect"
+msgstr "잠금 풀기 암호가 올바르지 않습니다"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+msgid "Unlock Login Keyring"
+msgstr "로그인 키 모음 잠금 풀기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Enter password to unlock your login keyring"
+msgstr "로그인 키 모음의 잠금을 푸는 암호를 입력하십시오"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr "컴퓨터 로그인에 사용한 암호가 로그인 키 모음의 암호와 다릅니다."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr "로그인할 때 로그인 키 모음의 잠금을 풀지 않았습니다."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+msgid "Unlock Keyring"
+msgstr "키 모음 잠금 풀기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "키 모음 '%s'의 잠금을 풀 암호를 입력하십시오"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"프로그램에서 '%s' 키 모음에 접근하려 합니다. 하지만 키 모음이 잠겨 있습니다"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Unlock private key"
+msgstr "개인 키 잠금 풀기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Unlock certificate"
+msgstr "인증서 잠금 풀기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Unlock public key"
+msgstr "공개 키 잠금 풀기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "Unlock"
+msgstr "잠금 풀기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+msgid "Enter password to unlock the public key"
+msgstr "공개 키의 잠금을 풀 암호를 입력하십시오"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "어떤 프로그램에서 개인 키 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "어떤 프로그램에서 인증서 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "어떤 프로그램에서 공개 키 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "어떤 프로그램에서 '%s'에 접근하려 합니다. 하지만 잠겨 있습니다"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+msgid "Unlock certificate/key storage"
+msgstr "인증서/키 저장소 잠금 풀기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "인증서/키 저장소의 잠금을 풀 암호를 입력하십시오"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"어떤 프로그램에서 인증서/키 저장소 '%s'에 접근하려 합니다. 하지만 잠겨 있습니"
+"다"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+msgid "New Password Required"
+msgstr "새 암호 필요"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+msgid "New password required for secure storage"
+msgstr "보안 데이터 저장소에 사용할 새 암호가 필요합니다"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "인증서 혹은 키의 저장소로 '%s' 준비를 하려면 암호가 필요합니다."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+msgid "Change Password"
+msgstr "암호 바꾸기"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+msgid "Change password for secure storage"
+msgstr "보안 데이터 저장소의 암호를 바꿉니다"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "'%s'의 암호를 바꾸려면, 기존 암호와 새 암호를 입력해야 합니다"
+
+#: ../ui/gku-prompt-tool.c:538
+msgid "Store passwords unencrypted?"
+msgstr "암호를 암호화하지 않은 상태로 저장하시겠습니까?"
+
+#: ../ui/gku-prompt-tool.c:539
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"암호를 비워 놓으면 암호화하지 않은 상태로 암호를 저장합니다. 그러면 파일을 "
+"볼 수 있는 사람이면 암호를 알아낼 수 있습니다."
+
+#: ../ui/gku-prompt-tool.c:546
+msgid "Use Unsafe Storage"
+msgstr "안전하지 않은 저장소 사용"
+
+#: ../ui/gku-prompt-tool.c:584
+msgid "Passwords do not match."
+msgstr "암호가 맞지 않습니다."
+
+#: ../ui/gku-prompt-tool.c:594
+msgid "Password cannot be blank"
+msgstr "암호는 비워져 있으면 안 됩니다"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "새 암호 품질"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "용도(_A):"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "확인(_C):"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "상세 정보(_D):"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "이름(_N):"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "과거 암호(_O):"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "암호(_P):"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "이 옵션은 gnome-keyring 데몬에서 PKCS#11 컴포넌트를 사용합니다. 이 옵션은 "
+#~ "gnome-keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우에만 "
+#~ "효과가 있습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 우선"
+#~ "할 수 있습니다."
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "이 옵션은 gnome-keyring 데몬에서 SSH 에이전트를 사용합니다. 이 옵션은 "
+#~ "gnome-keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우에만 "
+#~ "효과가 있습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 우선"
+#~ "할 수 있습니다."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "이 옵션은 gnome-keyring 데몬에서 비밀 서비스 컴포넌트를 사용합니다. 이 옵"
+#~ "션은 gnome-keyring-daemon이 시작했을 경우에만, 즉 사용자가 로그인했을 경우"
+#~ "에만 효과가 있습니다. 데몬에 특정 명령행 인자를 넘겼을 경우에 이 설정보다 "
+#~ "우선할 수 있습니다."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "그놈 키 모음의 PKCS#11 컴포넌트를 사용할지 여부."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "그놈 키 모음의 SSH 에이전트를 사용할지 여부."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "그놈 키 모음의 비밀 서비스를 사용할지 여부."
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "

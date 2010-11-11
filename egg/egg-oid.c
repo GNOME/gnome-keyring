@@ -43,7 +43,7 @@ static OidInfo oid_info[] = {
 	{ 0, "0.9.2342.19200300.100.1.1", "UID", N_("User ID"), 
 		EGG_OID_PRINTABLE | EGG_OID_IS_CHOICE },
 
-	{ 0, "1.2.840.113549.1.9.1", "EMAIL", N_("Email"), 
+	{ 0, "1.2.840.113549.1.9.1", "EMAIL", N_("Email Address"),
 		EGG_OID_PRINTABLE },
 	{ 0, "1.2.840.113549.1.9.7", NULL, NULL, 
 		EGG_OID_PRINTABLE | EGG_OID_IS_CHOICE },

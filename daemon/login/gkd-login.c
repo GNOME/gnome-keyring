@@ -54,9 +54,9 @@ open_and_login_session (GckSlot *slot, CK_USER_TYPE user_type, GError **error)
 	if (!error)
 		error = &err;
 
-	session = gck_slot_open_session (slot, CKF_RW_SESSION, error);
+	session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE, NULL, error);
 	if (session != NULL) {
-		if (!gck_session_login (session, user_type, NULL, 0, error)) {
+		if (!gck_session_login (session, user_type, NULL, 0, NULL, error)) {
 			if (g_error_matches (*error, GCK_ERROR, CKR_USER_ALREADY_LOGGED_IN)) {
 				g_clear_error (error);
 			} else {
@@ -201,7 +201,7 @@ unlock_or_create_login (GList *modules, const gchar *master)
 	/* Failure, bad password? */
 	if (cred == NULL) {
 		if (login && g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT))
-			gkm_wrap_layer_hint_login_unlock_failure ();
+			gkm_wrap_layer_mark_login_unlock_failure (master);
 		else
 			g_warning ("couldn't create login credential: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -216,7 +216,7 @@ unlock_or_create_login (GList *modules, const gchar *master)
 
 	/* The unlock succeeded yay */
 	} else {
-		gkm_wrap_layer_hint_login_unlock_success ();
+		gkm_wrap_layer_mark_login_unlock_success ();
 	}
 
 	if (cred)
@@ -248,7 +248,7 @@ init_pin_for_uninitialized_slots (GList *modules, const gchar *master)
 		if (initialize) {
 			session = open_and_login_session (l->data, CKU_SO, NULL);
 			if (session != NULL) {
-				if (!gck_session_init_pin (session, (const guchar*)master, strlen (master), &error)) {
+				if (!gck_session_init_pin (session, (const guchar*)master, strlen (master), NULL, &error)) {
 					if (!g_error_matches (error, GCK_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
 						g_warning ("couldn't initialize slot with master password: %s",
 						           egg_error_message (error));
@@ -316,7 +316,6 @@ change_or_create_login (GList *modules, const gchar *original, const gchar *mast
 				g_message ("couldn't change login master password, "
 				           "original password was wrong: %s",
 				           egg_error_message (error));
-				gkm_wrap_layer_hint_login_unlock_failure ();
 			} else {
 				g_warning ("couldn't create original login credential: %s",
 				           egg_error_message (error));
@@ -349,7 +348,7 @@ change_or_create_login (GList *modules, const gchar *original, const gchar *mast
 	}
 
 	if (ocred) {
-		gck_object_destroy (ocred, NULL);
+		gck_object_destroy (ocred, NULL, NULL);
 		g_object_unref (ocred);
 	}
 	if (mcred)
@@ -385,7 +384,7 @@ set_pin_for_any_slots (GList *modules, const gchar *original, const gchar *maste
 			session = open_and_login_session (l->data, CKU_USER, NULL);
 			if (session != NULL) {
 				if (!gck_session_set_pin (session, (const guchar*)original, strlen (original),
-				                          (const guchar*)master, strlen (master), &error)) {
+				                          (const guchar*)master, strlen (master), NULL, &error)) {
 					if (!g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT) &&
 					    !g_error_matches (error, GCK_ERROR, CKR_FUNCTION_NOT_SUPPORTED))
 						g_warning ("couldn't change slot master password: %s",

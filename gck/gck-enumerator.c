@@ -58,7 +58,8 @@ struct _GckEnumeratorState {
 	GList *modules;
 	GckTokenInfo *match_token;
 	GckAttributes *match_attrs;
-	CK_FLAGS session_flags;
+	guint session_options;
+	gboolean authenticate;
 	gchar *password;
 
 	/* state_module */
@@ -262,6 +263,7 @@ state_slot (GckEnumeratorState *args, gboolean forward)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SESSION_HANDLE session;
+	CK_FLAGS flags;
 	CK_RV rv;
 
 	g_assert (args->slot);
@@ -273,15 +275,20 @@ state_slot (GckEnumeratorState *args, gboolean forward)
 		funcs = gck_module_get_functions (args->module);
 		g_return_val_if_fail (funcs, NULL);
 
+		flags = CKF_SERIAL_SESSION;
+		if ((args->session_options & GCK_SESSION_READ_WRITE) == GCK_SESSION_READ_WRITE)
+			flags |= CKF_RW_SESSION;
+
 		rv = (funcs->C_OpenSession) (gck_slot_get_handle (args->slot),
-		                                   args->session_flags, NULL, NULL, &session);
+		                             flags, NULL, NULL, &session);
+
 		if (rv != CKR_OK) {
 			g_message ("couldn't open session on module while enumerating objects: %s",
 			           gck_message_from_rv (rv));
 			return rewind_state (args, state_slots);
 		}
 
-		args->session = gck_session_from_handle (args->slot, session);
+		args->session = gck_session_from_handle (args->slot, session, args->session_options);
 		return state_session;
 
 	/* slot to slots state */
@@ -312,6 +319,10 @@ state_session (GckEnumeratorState *args, gboolean forward)
 	/* session to authenticated state */
 	if (forward) {
 
+		/* Don't want to authenticate? */
+		if (!args->authenticate)
+			return state_authenticated;
+
 		/* No login necessary */
 		if ((args->token_info->flags & CKF_LOGIN_REQUIRED) == 0)
 			return state_authenticated;
@@ -341,8 +352,8 @@ state_session (GckEnumeratorState *args, gboolean forward)
 		rv = (funcs->C_Login) (gck_session_get_handle (args->session), CKU_USER,
 		                       (CK_BYTE_PTR)args->password, n_pin);
 
-		/* Authentication failed can we ask for a password? */
-		if (rv == CKR_PIN_INCORRECT && gck_module_get_options (args->module) & GCK_AUTHENTICATE_TOKENS) {
+		/* Authentication failed, ask for a password */
+		if (rv == CKR_PIN_INCORRECT) {
 			args->want_password = TRUE;
 			return NULL;
 
@@ -507,7 +518,7 @@ gck_enumerator_class_init (GckEnumeratorClass *klass)
  */
 
 GckEnumerator*
-_gck_enumerator_new (GList *modules, guint session_flags, GckTokenInfo *match_token, GckAttributes *match_attrs)
+_gck_enumerator_new (GList *modules, guint session_options, GckTokenInfo *match_token, GckAttributes *match_attrs)
 {
 	GckEnumerator *self;
 	GckEnumeratorState *state;
@@ -515,7 +526,7 @@ _gck_enumerator_new (GList *modules, guint session_flags, GckTokenInfo *match_to
 	self = g_object_new (GCK_TYPE_ENUMERATOR, NULL);
 	state = g_atomic_pointer_get (&self->pv->state);
 
-	state->session_flags = session_flags | CKF_SERIAL_SESSION;
+	state->session_options = session_options;
 	state->modules = gck_list_ref_copy (modules);
 
 	if (match_attrs) {

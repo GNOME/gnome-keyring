@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-27 16:19+0100\n"
-"PO-Revision-Date: 2010-03-26 00:02+0100\n"
+"POT-Creation-Date: 2010-09-15 21:37+0200\n"
+"PO-Revision-Date: 2010-09-14 22:40+0200\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -20,59 +20,11 @@ msgstr ""
 "X-Poedit-Country: DENMARK\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Dette aktiverer PKCS#11-komponenten i gnome-keyring-dæmonen. Dette træder "
-"kun i kraft når gnome-keyring-daemon startes (f.eks. når brugeren logger "
-"ind). Denne indstilling bliver måske overskrevet når visse kommandolinje-"
-"tilvalg gives til dæmonen."
-
-# maybe error report for gnome-keyring daemon/gnome-keyring-daemon
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Dette aktiverer SSH-agenten i gnome-keyring-dæmonen. Dette træder kun i "
-"kraft når gnome-keyring-daemon startes (f.eks. når brugeren logger ind). "
-"Denne indstilling bliver måske overskrevet når visse kommandolinje-tilvalg "
-"gives til dæmonen."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Dette aktiverer secret service-komponenten i gnome-keyring-dæmonen. Dette "
-"træder kun i kraft når gnome-keyring-daemon startes (f.eks. når brugeren "
-"logger ind). Denne indstilling bliver måske tilsidesat når visse "
-"kommandolinje-tilvalg gives til dæmonen."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Om PKCS#11-komponenten i gnome-keyring er aktiveret."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Om SSH-agenten i gnome-keyring er aktiveret."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Om secret service til gnome-keyring er aktiveret."
-
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:615
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Unnamed"
 msgstr "Uden navn"
 
@@ -115,46 +67,6 @@ msgstr ""
 "Et ukendt program ønsker at oprette en ny nøglering med navnet \"%s\". Vælg "
 "den adgangskode, du ønsker at bruge til nøgleringen."
 
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "Lås logind-nøglering op"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-msgid "Enter password for to unlock your login keyring"
-msgstr "Indtast logind-adgangskode for at låse nøgleringen op"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Adgangskoden, du brugte til at logge ind på din computer, svarer ikke "
-"længere til den i din logind-nøglering."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Din logind-nøglering blev ikke låst op da du loggede ind på denne computer."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "Lås nøglering op"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Indtast adgangskode for at låse nøgleringen \"%s\" op"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Et program ønsker at tilgå nøgleringen \"%s\", men denne er låst"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:226
-msgid "The unlock password was incorrect"
-msgstr "Adgangskoden til oplåsning var forkert"
-
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Certifikat- og nøglelager"
@@ -179,167 +91,44 @@ msgstr "GNOME-nøgleringsdæmon: SSH-agent"
 msgid "SSH Key Agent"
 msgstr "SSH-nøgleagent"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME-nøglering: GPG-agent"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG-adgangskodeagent"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+msgid "Unknown"
+msgstr "Ukendt"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP-nøgle: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
+msgid "Enter Passphrase"
+msgstr "Indtast adgangsfrase"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+msgid "Forget this password if idle for"
+msgstr "Glem denne adgangskode ved inaktivitet i"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+msgid "Forget this password after"
+msgstr "Glem denne adgangskode efter"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+msgid "Forget this password when I log out"
+msgstr "Glem denne adgangskode når jeg logger ud"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:177
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
 msgstr "Logind"
-
-#: ../daemon/login/gkd-login.c:617
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Lås adgangskode op for: %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Ny adgangskode påkrævet"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Ny adgangskode påkrævet til beskyttet lager"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Der kræves en adgangskode For at kunne klargøre \"%s\" for at lagre "
-"certifikater eller nøgler"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Lås privat nøgle op"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Lås certifikat op"
-
-# ???
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Lås offentlig nøgle op"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Lås op"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Indtast adgangskode for at låse den private nøgle op"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Indtast adgangskode for at låse certifikatet op"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Indtast adgangskode for at låse den offentlige nøgle op"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Indtast adgangskode for at låse op"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Et program ønsker at tilgå den private nøgle \"%s\", men den er låst"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Et program ønsker at tilgå certifikatet \"%s\", men det er låst"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Et program ønsker at tilgå den offentlige nøgle \"%s\", men den er låst"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Et program ønsker at tilgå \"%s\" som er låst"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Lås certifikat-/nøglelager op"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Indtast adgangskode for at låse certifikat/nøglelageret op"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Et program ønsker at tilgå certifikat/nøglelageret \"%s\", men det er låst"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "Opbevar adgangskoder ukrypteret?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Når du vælger en blank adgangskode vil dine adgangskoder ikke blive "
-"krypteret sikkert. De vil være tilgængelige for hvem som helst som har "
-"adgang til dine filer."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Brug usikker opbevaring"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Adgangskoder stemmer ikke overens."
-
-# Måske skal det være
-# Adgangskode kan ikke være blank
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "Adgangskode kan ikke være tom"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Lås automatisk denne nøglering op når jeg logger ind"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Styrke af ny adgangskode"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Program:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_Bekræft:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Detaljer:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "_Navn:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "_Gammel adgangskode:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Adgangskode:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -382,7 +171,7 @@ msgid "Surname"
 msgstr "Efternavn"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -548,94 +337,94 @@ msgstr "SSL-klientcertifikat"
 msgid "SSL Server Certificate"
 msgstr "SSL-servercertifikat"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "Udvidelse"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "Identifikator"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "Værdi"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "Kritisk"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "Ja"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "Nej"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "Subjekts navn"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "Udsteders navn"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "Udstedt certifikat"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "Version"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "Ikke gyldig før"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "Ugyldig efter"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "Underskrift"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "Algoritme til underskrift"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "Parametre til underskrift"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "Offentlig nøgleinformation"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "Algoritme til nøgle"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "Parametre til nøgle"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "Nøglestørrelse"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "Offentlig nøgle"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "Fingeraftryk"
 
@@ -653,22 +442,26 @@ msgid "Password:"
 msgstr "Adgangskode:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Lås automatisk denne nøglering op når jeg logger ind"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
 msgstr "Lås denne nøglering efter"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
 msgstr "Lås denne nøglering hvis inaktiv i"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
 msgstr "Lås denne nøglering når jeg logger ud"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#: ../gcr/gcr-unlock-options-widget.ui.h:5
 msgid "minutes"
 msgstr "minutter"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Operationen blev annulleret"
 
@@ -684,6 +477,18 @@ msgstr "Importér certifikater/nøgler"
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Vælg en placering til at lagre de importerede certifikater/nøgler."
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+msgid "Enter password to unlock the private key"
+msgstr "Indtast adgangskode for at låse den private nøgle op"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+msgid "Enter password to unlock the certificate"
+msgstr "Indtast adgangskode for at låse certifikatet op"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+msgid "Enter password to unlock"
+msgstr "Indtast adgangskode for at låse op"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
@@ -718,23 +523,23 @@ msgstr "For at kunne importere certifikatet \"%s\", skal dette låses op"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "For at kunne importere \"%s\", som skal låses op"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "Privat nøgle"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "Certifikat"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "Ukendt eller ikke understøttetede data."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "Kunne ikke fortolke ugyldige eller ødelagte data."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "Dataene er låst"
 
@@ -831,7 +636,7 @@ msgid "No key is needed"
 msgstr "Ingen nøgle er nødvendig"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "Nøglen er forskellig fra før"
 
 #: ../gp11/gp11-misc.c:149
@@ -1059,13 +864,255 @@ msgstr "Signaturforespørgslen blev afvist af brugeren"
 msgid "Unknown error"
 msgstr "Ukendt fejl"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "Unavngivet certifikat"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Kunne ikke fortolke offentlig SSH-nøgle"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Lås adgangskode op for: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+msgid "The unlock password was incorrect"
+msgstr "Adgangskoden til oplåsning var forkert"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+msgid "Unlock Login Keyring"
+msgstr "Lås logind-nøglering op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Enter password to unlock your login keyring"
+msgstr "Indtast logind-adgangskode for at låse nøgleringen op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Adgangskoden, du brugte til at logge ind på din computer, svarer ikke "
+"længere til den i din logind-nøglering."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Din logind-nøglering blev ikke låst op da du loggede ind på denne computer."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+msgid "Unlock Keyring"
+msgstr "Lås nøglering op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Indtast adgangskode for at låse nøgleringen \"%s\" op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Et program ønsker at tilgå nøgleringen \"%s\", men denne er låst"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Unlock private key"
+msgstr "Lås privat nøgle op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Unlock certificate"
+msgstr "Lås certifikat op"
+
+# ???
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Unlock public key"
+msgstr "Lås offentlig nøgle op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "Unlock"
+msgstr "Lås op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+msgid "Enter password to unlock the public key"
+msgstr "Indtast adgangskode for at låse den offentlige nøgle op"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Et program ønsker at tilgå den private nøgle \"%s\", men den er låst"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Et program ønsker at tilgå certifikatet \"%s\", men det er låst"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Et program ønsker at tilgå den offentlige nøgle \"%s\", men den er låst"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Et program ønsker at tilgå \"%s\" som er låst"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+msgid "Unlock certificate/key storage"
+msgstr "Lås certifikat-/nøglelager op"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Indtast adgangskode for at låse certifikat/nøglelageret op"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Et program ønsker at tilgå certifikat/nøglelageret \"%s\", men det er låst"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+msgid "New Password Required"
+msgstr "Ny adgangskode påkrævet"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+msgid "New password required for secure storage"
+msgstr "Ny adgangskode påkrævet til beskyttet lager"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Der kræves en adgangskode For at kunne klargøre \"%s\" for at lagre "
+"certifikater eller nøgler"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+msgid "Change Password"
+msgstr "Ændre adgangskode"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+msgid "Change password for secure storage"
+msgstr "Ændre adgangskode til beskyttet lager"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr ""
+"For at skifte adgangskode for \"%s\", skal både den oprindelige og den nye "
+"adgangkode bruges"
+
+#: ../ui/gku-prompt-tool.c:538
+msgid "Store passwords unencrypted?"
+msgstr "Opbevar adgangskoder ukrypteret?"
+
+#: ../ui/gku-prompt-tool.c:539
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Når du vælger en blank adgangskode vil dine adgangskoder ikke blive "
+"krypteret sikkert. De vil være tilgængelige for hvem som helst som har "
+"adgang til dine filer."
+
+#: ../ui/gku-prompt-tool.c:546
+msgid "Use Unsafe Storage"
+msgstr "Brug usikker opbevaring"
+
+#: ../ui/gku-prompt-tool.c:584
+msgid "Passwords do not match."
+msgstr "Adgangskoder stemmer ikke overens."
+
+# Måske skal det være
+# Adgangskode kan ikke være blank
+#: ../ui/gku-prompt-tool.c:594
+msgid "Password cannot be blank"
+msgstr "Adgangskode kan ikke være tom"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "Styrke af ny adgangskode"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "_Program:"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "_Bekræft:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "_Detaljer:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "_Navn:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "_Gammel adgangskode:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "_Adgangskode:"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Dette aktiverer PKCS#11-komponenten i gnome-keyring-dæmonen. Dette træder "
+#~ "kun i kraft når gnome-keyring-daemon startes (f.eks. når brugeren logger "
+#~ "ind). Denne indstilling bliver måske overskrevet når visse kommandolinje-"
+#~ "tilvalg gives til dæmonen."
+
+# maybe error report for gnome-keyring daemon/gnome-keyring-daemon
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "Dette aktiverer SSH-agenten i gnome-keyring-dæmonen. Dette træder kun i "
+#~ "kraft når gnome-keyring-daemon startes (f.eks. når brugeren logger ind). "
+#~ "Denne indstilling bliver måske overskrevet når visse kommandolinje-"
+#~ "tilvalg gives til dæmonen."
+
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "Dette aktiverer secret service-komponenten i gnome-keyring-dæmonen. Dette "
+#~ "træder kun i kraft når gnome-keyring-daemon startes (f.eks. når brugeren "
+#~ "logger ind). Denne indstilling bliver måske tilsidesat når visse "
+#~ "kommandolinje-tilvalg gives til dæmonen."
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "Om PKCS#11-komponenten i gnome-keyring er aktiveret."
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "Om SSH-agenten i gnome-keyring er aktiveret."
+
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "Om secret service til gnome-keyring er aktiveret."
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "

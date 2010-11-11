@@ -6,7 +6,8 @@ INCLUDES = \
 	-DINTROSPECTDIR=\"$(datadir)/gnome-keyring/introspect\" \
 	$(DAEMON_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	-DGCK_API_SUBJECT_TO_CHANGE
 
 noinst_LTLIBRARIES = libgkd-dbus.la
 

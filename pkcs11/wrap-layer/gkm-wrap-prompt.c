@@ -91,13 +91,21 @@ set_warning_wrong (GkdSecretUnlock *self)
 }
 #endif
 
+static gboolean
+is_login_keyring (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+{
+	gboolean is_login = FALSE;
+	if (!gkm_attributes_find_boolean (attrs, n_attrs, CKA_G_LOGIN_COLLECTION, &is_login))
+		return FALSE;
+	return is_login;
+}
+
 static gchar*
 auto_unlock_keyring_location (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	CK_ATTRIBUTE_PTR attr;
-	gboolean is_login = FALSE;
 
-	if (gkm_attributes_find_boolean (attrs, n_attrs, CKA_G_LOGIN_COLLECTION, &is_login) && is_login)
+	if (is_login_keyring (attrs, n_attrs))
 		return NULL;
 
 	attr = gkm_attributes_find (attrs, n_attrs, CKA_ID);
@@ -755,7 +763,6 @@ prepare_unlock_prompt (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR attrs,
 	GkuPrompt *prompt;
 	const gchar *label = NULL;
 	CK_OBJECT_CLASS klass;
-	gboolean is_login = FALSE;
 
 	g_assert (GKM_WRAP_IS_PROMPT (self));
 
@@ -782,7 +789,7 @@ prepare_unlock_prompt (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR attrs,
 		label = _("Unnamed");
 
 	if (klass == CKO_G_COLLECTION) {
-		if (gkm_attributes_find_boolean (attrs, n_attrs, CKA_G_LOGIN_COLLECTION, &is_login) && is_login)
+		if (is_login_keyring (attrs, n_attrs))
 			prepare_unlock_keyring_login (self);
 		else
 			prepare_unlock_keyring_other (self, label);
@@ -828,6 +835,65 @@ prepare_unlock_token (GkmWrapPrompt *self, CK_TOKEN_INFO_PTR tinfo)
 	                                 gkm_wrap_login_is_usable (), NULL);
 
 	g_free (label);
+}
+
+static void
+fix_login_keyring_if_unlock_failed (GkmWrapPrompt *self, const gchar *password)
+{
+	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
+	CK_OBJECT_HANDLE cred;
+	CK_BBOOL tval = CK_TRUE;
+	CK_ATTRIBUTE attrs[4];
+	gchar *failed;
+	CK_RV rv;
+
+	failed = gkm_wrap_login_steal_failed_password ();
+
+	/* Do we have a failed unlock password? */
+	if (!failed || !failed[0]) {
+		egg_secure_strfree (failed);
+		return;
+	}
+
+	attrs[0].type = CKA_CLASS;
+	attrs[0].pValue = &klass;
+	attrs[0].ulValueLen = sizeof (klass);
+
+	attrs[1].type = CKA_VALUE;
+	attrs[1].pValue = failed;
+	attrs[1].ulValueLen = strlen (failed);
+
+	attrs[2].type = CKA_GNOME_TRANSIENT;
+	attrs[2].pValue = &tval;
+	attrs[2].ulValueLen = sizeof (tval);
+
+	attrs[3].type = CKA_TOKEN;
+	attrs[3].pValue = &tval;
+	attrs[3].ulValueLen = sizeof (tval);
+
+	/* Create a credential object for the failed password */
+	rv = (self->module->C_CreateObject) (self->session, attrs, G_N_ELEMENTS (attrs), &cred);
+	egg_secure_strfree (failed);
+
+	if (rv != CKR_OK) {
+		g_warning ("couldn't create credential to fix login password: %s",
+		           gkm_util_rv_to_string (rv));
+		return;
+	}
+
+	attrs[0].type = CKA_G_CREDENTIAL;
+	attrs[0].pValue = &cred;
+	attrs[0].ulValueLen = sizeof (cred);
+
+	/* Set the credential on the object */
+	rv = (self->module->C_SetAttributeValue) (self->session, self->object, attrs, 1);
+	if (rv != CKR_OK) {
+		g_warning ("couldn't change credential to fix login keyring password: %s",
+		           gkm_util_rv_to_string (rv));
+		return;
+	}
+
+	g_message ("fixed login keyring password to match login password");
 }
 
 /* -----------------------------------------------------------------------------
@@ -1020,14 +1086,23 @@ gkm_wrap_prompt_done_credential (GkmWrapPrompt *self, CK_RV call_result)
 
 	/* Save the options, and possibly auto unlock */
 	if (call_result == CKR_OK) {
+
+		attrs = get_attributes_from_object (self, &n_attrs);
+
+		/*
+		 * For the login keyring, we check for a previous unlock failure,
+		 * that would have come from PAM, and try to change the password to
+		 * the one that failed earlier.
+		 */
+		if (is_login_keyring (attrs, n_attrs))
+			fix_login_keyring_if_unlock_failed (self, data->password);
+
 		options = get_unlock_options_from_prompt (self, &n_options);
 		if (options != NULL)
 			set_unlock_options_on_object (self, options, n_options);
 
-		if (auto_unlock_should_attach (self)) {
-			attrs = get_attributes_from_object (self, &n_attrs);
+		if (auto_unlock_should_attach (self))
 			auto_unlock_attach_object (attrs, n_attrs, data->password);
-		}
 	}
 }
 

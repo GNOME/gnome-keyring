@@ -62,7 +62,7 @@ attribute_init (GckAttribute *attr, gulong attr_type,
 	if (value) {
 		attr->value = (allocator) (NULL, length ? length : 1);
 		g_assert (attr->value);
-		memcpy (attr->value, value, length);
+		memcpy ((gpointer)attr->value, value, length);
 	}
 }
 
@@ -565,7 +565,7 @@ attribute_init_copy (GckAttribute *dest, const GckAttribute *src, GckAllocator a
 	if (src->value) {
 		dest->value = (allocator) (NULL, src->length ? src->length : 1);
 		g_assert (dest->value);
-		memcpy (dest->value, src->value, src->length);
+		memcpy ((gpointer)dest->value, src->value, src->length);
 	}
 }
 
@@ -594,7 +594,7 @@ attribute_clear (GckAttribute *attr, GckAllocator allocator)
 	g_assert (attr);
 	g_assert (allocator);
 	if (attr->value)
-		(allocator) (attr->value, 0);
+		(allocator) ((gpointer)attr->value, 0);
 	attr->value = NULL;
 	attr->length = 0;
 }
@@ -631,6 +631,28 @@ gck_attribute_free (GckAttribute *attr)
 		attribute_clear (attr, g_realloc);
 		g_slice_free (GckAttribute, attr);
 	}
+}
+
+gboolean
+gck_attribute_equal (gconstpointer a, gconstpointer b)
+{
+	const GckAttribute *aa = a;
+	const GckAttribute *ab = b;
+
+	if (!a && !b)
+		return TRUE;
+	if (!a || !b)
+		return FALSE;
+
+	if (aa->type != ab->type)
+		return FALSE;
+	if (aa->length != ab->length)
+		return FALSE;
+	if (!aa->value && !ab->value)
+		return TRUE;
+	if (!aa->value || !ab->value)
+		return FALSE;
+	return memcmp (aa->value, ab->value, aa->length) == 0;
 }
 
 /**
@@ -1220,6 +1242,25 @@ gck_attributes_unref (GckAttributes *attrs)
 		g_slice_free (GckAttributes, attrs);
 	}
 }
+
+gboolean
+gck_attributes_contains (GckAttributes *attrs, GckAttribute *match)
+{
+	GckAttribute *attr;
+	guint i;
+
+	g_return_val_if_fail (attrs && attrs->array, FALSE);
+
+	for (i = 0; i < attrs->array->len; ++i) {
+		attr = gck_attributes_at (attrs, i);
+		if (gck_attribute_equal (attr, match))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 
 /* -------------------------------------------------------------------------------------------
  * INTERNAL

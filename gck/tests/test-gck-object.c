@@ -29,7 +29,7 @@ DEFINE_SETUP(prep_object)
 	g_object_ref (slot);
 	gck_list_unref_free (slots);
 
-	session = gck_slot_open_session (slot, 0, &err);
+	session = gck_slot_open_session (slot, 0, NULL, &err);
 	SUCCESS_RES(session, err);
 
 	/* Our module always exports a token object with this */
@@ -73,7 +73,7 @@ DEFINE_TEST(object_equals_hash)
 	g_assert (gck_object_equal (object, object));
 
 	other_slot = g_object_new (GCK_TYPE_SLOT, "module", module, "handle", GCK_MOCK_SLOT_TWO_ID, NULL);
-	other_session = gck_slot_open_session (other_slot, 0, &err);
+	other_session = gck_slot_open_session (other_slot, 0, NULL, &err);
 	SUCCESS_RES (other_session, err);
 	other_object = gck_object_from_handle (other_session, gck_object_get_handle (object));
 	g_assert (!gck_object_equal (object, other_object));
@@ -157,16 +157,7 @@ DEFINE_TEST(destroy_object)
 	SUCCESS_RES (object, err);
 	g_assert (GCK_IS_OBJECT (object));
 
-	ret = gck_object_destroy (object, &err);
-	SUCCESS_RES (ret, err);
-	g_object_unref (object);
-
-	/* Using full */
-	object = gck_session_create_object (session, attrs, NULL, &err);
-	SUCCESS_RES (object, err);
-	g_assert (GCK_IS_OBJECT (object));
-
-	ret = gck_object_destroy_full (object, NULL, &err);
+	ret = gck_object_destroy (object, NULL, &err);
 	SUCCESS_RES (ret, err);
 	g_object_unref (object);
 
@@ -189,13 +180,17 @@ DEFINE_TEST(destroy_object)
 DEFINE_TEST(get_attributes)
 {
 	GAsyncResult *result = NULL;
-	GckAttributes *attrs, *attrs_ret;
+	GckAttributes *attrs;
+	gulong attr_types[2];
 	GError *err = NULL;
 	gulong klass;
 	gchar *value = NULL;
 
+	attr_types[0] = CKA_CLASS;
+	attr_types[1] = CKA_LABEL;
+
 	/* Simple */
-	attrs = gck_object_get (object, &err, CKA_CLASS, CKA_LABEL, GCK_INVALID);
+	attrs = gck_object_get (object, NULL, &err, CKA_CLASS, CKA_LABEL, GCK_INVALID);
 	SUCCESS_RES (attrs, err);
 	if (attrs != NULL) {
 		g_assert (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
@@ -205,11 +200,9 @@ DEFINE_TEST(get_attributes)
 	gck_attributes_unref (attrs);
 
 	/* Full */
-	attrs = gck_attributes_new_empty (CKA_CLASS, CKA_LABEL, GCK_INVALID);
-	attrs_ret = gck_object_get_full (object, attrs, NULL, &err);
-	SUCCESS_RES (attrs_ret, err);
-	if (attrs_ret != NULL) {
-		g_assert (attrs_ret == attrs);
+	attrs = gck_object_get_full (object, attr_types, G_N_ELEMENTS (attr_types), NULL, &err);
+	SUCCESS_RES (attrs, err);
+	if (attrs != NULL) {
 		g_assert (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
 		g_assert (gck_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "TEST LABEL") == 0);
 		g_free (value); value = NULL;
@@ -217,16 +210,14 @@ DEFINE_TEST(get_attributes)
 	gck_attributes_unref (attrs);
 
 	/* Async */
-	attrs = gck_attributes_new_empty (CKA_CLASS, CKA_LABEL, GCK_INVALID);
-	gck_object_get_async (object, attrs, NULL, fetch_async_result, &result);
+	gck_object_get_async (object, attr_types, G_N_ELEMENTS (attr_types), NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
 
-	attrs_ret = gck_object_get_finish (object, result, &err);
+	attrs = gck_object_get_finish (object, result, &err);
 	g_object_unref (result);
 	SUCCESS_RES (attrs, err);
 	if (attrs != NULL) {
-		g_assert (attrs_ret == attrs);
 		g_assert (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == CKO_DATA);
 		g_assert (gck_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "TEST LABEL") == 0);
 		g_free (value); value = NULL;
@@ -242,7 +233,7 @@ DEFINE_TEST(get_data_attribute)
 	GError *err = NULL;
 
 	/* Simple */
-	klass = gck_object_get_data (object, CKA_CLASS, &n_data, &err);
+	klass = gck_object_get_data (object, CKA_CLASS, NULL, &n_data, &err);
 	SUCCESS_RES (klass, err);
 	if (klass != NULL) {
 		g_assert (n_data == sizeof (CK_OBJECT_CLASS));
@@ -293,7 +284,7 @@ DEFINE_TEST(set_attributes)
 	gck_attributes_unref (templ);
 	SUCCESS_RES (ret, err);
 	if (ret) {
-		attrs = gck_object_get (object, &err, CKA_CLASS, CKA_LABEL, GCK_INVALID);
+		attrs = gck_object_get (object, NULL, &err, CKA_CLASS, CKA_LABEL, GCK_INVALID);
 		g_assert (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == 6);
 		g_assert (gck_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "CHANGE TWO") == 0);
 		g_free (value); value = NULL;
@@ -313,7 +304,7 @@ DEFINE_TEST(set_attributes)
 	g_object_unref (result);
 	SUCCESS_RES (ret, err);
 	if (ret) {
-		attrs = gck_object_get (object, &err, CKA_CLASS, CKA_LABEL, GCK_INVALID);
+		attrs = gck_object_get (object, NULL, &err, CKA_CLASS, CKA_LABEL, GCK_INVALID);
 		g_assert (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass) && klass == 7);
 		g_assert (gck_attributes_find_string (attrs, CKA_LABEL, &value) && strcmp (value, "CHANGE THREE") == 0);
 		g_free (value); value = NULL;

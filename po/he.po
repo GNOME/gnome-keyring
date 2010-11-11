@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-02 17:50+0300\n"
-"PO-Revision-Date: 2010-09-02 17:52+0200\n"
+"POT-Creation-Date: 2010-10-21 01:00+0200\n"
+"PO-Revision-Date: 2010-10-21 01:02+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:763
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "ללא שם"
 
@@ -95,34 +95,35 @@ msgstr "קבוצת מפתחות GNOME: סוכן GPG"
 msgid "GPG Password Agent"
 msgstr "סוכן ססמאות ה־PGP"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:102
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
+#: ../gcr/gcr-key-renderer.c:296
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:200
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
 #, c-format
 msgid "PGP Key: %s"
 msgstr "מפתח PGP:‏ %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:303
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:304
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
 msgid "Enter Passphrase"
 msgstr "יש להזין מילת צופן"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:341
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
 msgid "Forget this password if idle for"
 msgstr "מחיקת ססמה זו אם אין פעילות במשך"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:342
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Forget this password after"
 msgstr "מחיקת ססמה זו לאחר"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:343
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
 msgid "Forget this password when I log out"
 msgstr "מחיקת ססמה זו בעת היציאה"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:159
+#: ../daemon/login/gkd-login.c:147
 msgid "Login"
 msgstr "כניסה"
 
@@ -135,8 +136,8 @@ msgid "User ID"
 msgstr "מזהה משתמש"
 
 #: ../egg/egg-oid.c:46
-msgid "Email"
-msgstr "דוא\"ל"
+msgid "Email Address"
+msgstr "כתובת דוא״ל"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -166,8 +167,7 @@ msgstr "שם נפוץ"
 msgid "Surname"
 msgstr "שם משפחה"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:318
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
 msgid "Serial Number"
 msgstr "מספר סידורי"
 
@@ -223,7 +223,7 @@ msgstr "בעל שם המתחם"
 msgid "Pseudonym"
 msgstr "כינוי"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
 msgid "RSA"
 msgstr "RSA"
 
@@ -239,7 +239,7 @@ msgstr "MD5 עם RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 עם RSA"
 
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
 msgid "DSA"
 msgstr "DSA"
 
@@ -257,176 +257,115 @@ msgstr "שגיאה בלתי צפויה בעת ש־select()‎ קרא נתוני�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "שגיאה בלתי צפויה ב־waitpid()‎‏ (%s)"
 
-#: ../gcr/gcr-certificate-basics-widget.c:59
-msgid "<i>Not Part of Certificate</i>"
-msgstr "<i>לא חלק מהתעודה</i>"
+#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:200
+msgid "Certificate"
+msgstr "תעודה"
 
-#: ../gcr/gcr-certificate-basics-widget.c:80
-msgid "<i>unknown</i>"
-msgstr "<i>בלתי ידוע</i>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<לא חלק מהתעודה>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>טביעות אצבע</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>ניתנה על ידי</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>ניתנה עבור</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>תעודה זו אושרה לצרכים הבאים:</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>תוקף</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:7
-msgid "Common Name (CN)"
-msgstr "שם נפוץ (CN)"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:8
-msgid "Email Recipient Certificate"
-msgstr "תעודת נמען דוא\"ל"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:9
-msgid "Email Signer Certificate"
-msgstr "תעודת חותם דוא\"ל"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:10
-msgid "Expires On"
-msgstr "תפוג בתאריך"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:11
-msgid "Issued On"
-msgstr "ניתנה בתאריך"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:12
-msgid "MD5 Fingerprint"
-msgstr "טביעת אצבע MD5"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:13
-msgid "Organization (O)"
-msgstr "ארגון (O)"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:14
-msgid "Organizational Unit (OU)"
-msgstr "יחידה ארגונית (OU)"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:15
-msgid "SHA1 Fingerprint"
-msgstr "טביעת אצבע SHA1"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:16
-msgid "SSL Client Certificate"
-msgstr "תעודת לקוח SSL"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:17
-msgid "SSL Server Certificate"
-msgstr "תעודת שרת SSL"
-
-#: ../gcr/gcr-certificate-details-widget.c:203
+#: ../gcr/gcr-certificate-renderer.c:107
 msgid "Extension"
 msgstr "הרחבה"
 
-#: ../gcr/gcr-certificate-details-widget.c:208
+#: ../gcr/gcr-certificate-renderer.c:112
 msgid "Identifier"
 msgstr "מזהה"
 
-#: ../gcr/gcr-certificate-details-widget.c:216
+#: ../gcr/gcr-certificate-renderer.c:120
 msgid "Value"
 msgstr "ערך"
 
-#: ../gcr/gcr-certificate-details-widget.c:224
+#: ../gcr/gcr-certificate-renderer.c:126
 msgid "Critical"
 msgstr "קריטי"
 
-#: ../gcr/gcr-certificate-details-widget.c:224
+#: ../gcr/gcr-certificate-renderer.c:126
 msgid "Yes"
 msgstr "כן"
 
-#: ../gcr/gcr-certificate-details-widget.c:224
+#: ../gcr/gcr-certificate-renderer.c:126
 msgid "No"
 msgstr "לא"
 
+#: ../gcr/gcr-certificate-renderer.c:339
+msgid "Identity"
+msgstr "זהות"
+
+#: ../gcr/gcr-certificate-renderer.c:343
+msgid "Verified by"
+msgstr "אומת על ידי"
+
+#: ../gcr/gcr-certificate-renderer.c:350
+msgid "Expires"
+msgstr "תפוגה"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:299
+#: ../gcr/gcr-certificate-renderer.c:360
 msgid "Subject Name"
 msgstr "שם מקבל התעודה"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-renderer.c:364
 msgid "Issuer Name"
 msgstr "שם החותם"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-renderer.c:368
 msgid "Issued Certificate"
 msgstr "תעודה שהונפקה"
 
-#: ../gcr/gcr-certificate-details-widget.c:312
+#: ../gcr/gcr-certificate-renderer.c:373
 msgid "Version"
 msgstr "גרסה"
 
-#: ../gcr/gcr-certificate-details-widget.c:325
+#: ../gcr/gcr-certificate-renderer.c:387
 msgid "Not Valid Before"
 msgstr "לא תקף לפני"
 
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../gcr/gcr-certificate-renderer.c:392
 msgid "Not Valid After"
 msgstr "לא תקף לאחר"
 
-#. Signature
-#: ../gcr/gcr-certificate-details-widget.c:335
-#: ../gcr/gcr-certificate-details-widget.c:351
-msgid "Signature"
-msgstr "חתימה"
-
-#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-renderer.c:401
 msgid "Signature Algorithm"
 msgstr "אלגוריתם החתימה"
 
-#: ../gcr/gcr-certificate-details-widget.c:344
+#: ../gcr/gcr-certificate-renderer.c:406
 msgid "Signature Parameters"
 msgstr "הפרמטרים של החתימה"
 
+#: ../gcr/gcr-certificate-renderer.c:413
+msgid "Signature"
+msgstr "חתימה"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-renderer.c:418
 msgid "Public Key Info"
 msgstr "נתוני מפתח ציבואי"
 
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-renderer.c:423
 msgid "Key Algorithm"
 msgstr "אלגוריתם המפתח"
 
-#: ../gcr/gcr-certificate-details-widget.c:364
+#: ../gcr/gcr-certificate-renderer.c:429
 msgid "Key Parameters"
 msgstr "הפרמטרים של המפתח"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-renderer.c:436
 msgid "Key Size"
 msgstr "גודל המפתח"
 
-#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
+#: ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "מפתח ציבורי"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-renderer.c:449
 msgid "Fingerprints"
 msgstr "טביעות אצבע"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>ייבוא תעודות ומפתחות</span>"
+msgid "Import Certificates and Keys"
+msgstr "יבוא אישורים ומפתחות"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
@@ -437,92 +376,132 @@ msgid "Password:"
 msgstr "ססמה:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "יש לפתוח קבוצת ססמאות זו באופן אוטומטי בעת הכניסה למערכת"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
 msgstr "נעילת קבוצת ססמאות זו לאחר"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
 msgstr "קבוצת ססמאות זו תנעל אם אינה בשימוש למשך"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
 msgstr "יש לנעול קבוצת מפתחות זו בעת הניתוק"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
+#: ../gcr/gcr-unlock-options-widget.ui.h:6
 msgid "minutes"
 msgstr "דקות"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
-msgid "The operation was cancelled"
-msgstr "הפעולה בוטלה"
-
-#: ../gcr/gcr-importer.c:255
-#, c-format
-msgid "No location available to import to"
-msgstr "אין מקום זמין לייבוא"
-
-#: ../gcr/gcr-importer.c:404
-msgid "Import Certificates/Keys"
-msgstr "ייבוא תעודות/מפתחות"
-
-#: ../gcr/gcr-importer.c:411
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "יש לבחור מיקום לאחסון המפתחות/תעודות המיובאים."
-
-#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:676
+#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "יש להזין ססמה לשחרור המפתח הפרטי"
 
-#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "יש להזין ססמה לשחרור התעודה"
 
-#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "יש להזין ססמה לשחרור"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:449
+#: ../gcr/gcr-importer.c:146
 msgid "In order to import the private key, it must be unlocked"
 msgstr "כדי לייבא את המפתח הפרטי יש לשחררו"
 
 # c-format
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:452
+#: ../gcr/gcr-importer.c:149
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "כדי לייבא את התעודה יש לשחררה"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:455
+#: ../gcr/gcr-importer.c:152
 msgid "In order to import the data, it must be unlocked"
 msgstr "על מנת לייבא את הנתונים יש לשחרר אותם"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:460
+#: ../gcr/gcr-importer.c:157
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "כדי לייבא את המפתח הפרטי '%s', יש לשחררו"
 
 # c-format
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:463
+#: ../gcr/gcr-importer.c:160
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "כדי לייבא את התעודה '%s', יש לשחררה"
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:466
+#: ../gcr/gcr-importer.c:163
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "כדי לייבא את '%s', יש לבצע שחרור"
 
-#: ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1565 ../gcr/gcr-parser.c:1756
+#: ../gck/gck-misc.c:98
+msgid "The operation was cancelled"
+msgstr "הפעולה בוטלה"
+
+#: ../gcr/gcr-importer.c:346
+#, c-format
+msgid "No location available to import to"
+msgstr "אין מקום זמין לייבוא"
+
+#: ../gcr/gcr-importer.c:495
+msgid "Import Certificates/Keys"
+msgstr "ייבוא תעודות/מפתחות"
+
+#: ../gcr/gcr-importer.c:502
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "יש לבחור מיקום לאחסון המפתחות/תעודות המיובאים."
+
+#: ../gcr/gcr-key-renderer.c:69
+msgid "Key"
+msgstr "מפתח"
+
+#: ../gcr/gcr-key-renderer.c:260
+msgid "Private RSA Key"
+msgstr "מפתח RSA פרטי"
+
+#: ../gcr/gcr-key-renderer.c:262
+msgid "Private DSA Key"
+msgstr "מפתח DSA פרטי"
+
+#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "מפתח פרטי"
 
-#: ../gcr/gcr-parser.c:200
-msgid "Certificate"
-msgstr "תעודה"
+#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
+msgid "Public DSA Key"
+msgstr "מפתח DSA ציבורי"
+
+#: ../gcr/gcr-key-renderer.c:278
+#, c-format
+msgid "%d bits"
+msgstr "%d סיביות"
+
+#: ../gcr/gcr-key-renderer.c:279
+msgid "Strength"
+msgstr "חוזק"
+
+#: ../gcr/gcr-key-renderer.c:292
+msgid "Algorithm"
+msgstr "אלגוריתם"
+
+#: ../gcr/gcr-key-renderer.c:299
+msgid "Size"
+msgstr "גודל"
+
+#. TODO: We need to have consistent key fingerprints.
+#: ../gcr/gcr-key-renderer.c:303
+msgid "Fingerprint"
+msgstr "טביעת אצבע"
 
 #: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
@@ -536,327 +515,336 @@ msgstr "לא ניתן לנתח נתונים שגויים או פגומים."
 msgid "The data is locked"
 msgstr "הנתונים נעולים"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#, c-format
+msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+msgstr "תחביר הכתובת שגוי. הקידוד של השדה '%s' אינו תקני."
+
+#: ../gck/gck-uri.c:195
+msgid "The URI has does not have the 'pkcs11' scheme."
+msgstr "הכתובת אינה במבנה 'pkcs11'."
+
+#: ../gck/gck-misc.c:101
 msgid "Insufficient memory available"
 msgstr "אין מספיק זיכרון פנוי"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gck/gck-misc.c:103
 msgid "The specified slot ID is not valid"
 msgstr "מזהה החריץ שצוין אינו תקני"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gck/gck-misc.c:105
 msgid "Internal error"
 msgstr "שגיאה פנימית"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gck/gck-misc.c:107
 msgid "The operation failed"
 msgstr "הפעולה בוטלה"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gck/gck-misc.c:109
 msgid "Invalid arguments"
 msgstr "ארגומנטים שגויים"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gck/gck-misc.c:111
 msgid "The module cannot create needed threads"
 msgstr "המודול לא יכול ליצור את האשכולות הנדרשים"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gck/gck-misc.c:113
 msgid "The module cannot lock data properly"
 msgstr "המודול לא יכו לנעול את הנתונים כראוי"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gck/gck-misc.c:115
 msgid "The field is read-only"
 msgstr "השדה הוא לקריאה בלבד"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gck/gck-misc.c:117
 msgid "The field is sensitive and cannot be revealed"
 msgstr "השדה רגיש ולא ניתן לחשוף אותו"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gck/gck-misc.c:119
 msgid "The field is invalid or does not exist"
 msgstr "השדה פגום או שאינו קיים"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gck/gck-misc.c:121
 msgid "Invalid value for field"
 msgstr "ערך שגוי לשדה"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gck/gck-misc.c:123
 msgid "The data is not valid or unrecognized"
 msgstr "הנתונים אינם תקינים או שאינם מזוהים"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gck/gck-misc.c:125
 msgid "The data is too long"
 msgstr "הנתונים ארוכים מדי"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gck/gck-misc.c:127
 msgid "An error occurred on the device"
 msgstr "ארעה שגיאה בהתקן"
 
-#: ../gp11/gp11-misc.c:129
-msgid "Insufficient memory available on device"
-msgstr "אין די זיכרון זמין בהתקן"
+#: ../gck/gck-misc.c:129
+msgid "Insufficient memory available on the device"
+msgstr "אין די זיכרון פנוי בהתקן"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gck/gck-misc.c:131
 msgid "The device was removed or unplugged"
 msgstr "ההתקן הוסר או נותק"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gck/gck-misc.c:133
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "הנתונים המוצפנים אינם תקינים או שאינם מזוהים"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gck/gck-misc.c:135
 msgid "The encrypted data is too long"
 msgstr "המידע המוצפן ארוך מדי"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gck/gck-misc.c:137
 msgid "This operation is not supported"
 msgstr "פעולה זאת אינה נתמכת"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gck/gck-misc.c:139
 msgid "The key is missing or invalid"
 msgstr "המפתח חסר או שגוי"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gck/gck-misc.c:141
 msgid "The key is the wrong size"
 msgstr "המפתח אינו בגודל הנכון"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gck/gck-misc.c:143
 msgid "The key is of the wrong type"
 msgstr "הפתח אינו מהסוג הנכון"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gck/gck-misc.c:145
 msgid "No key is needed"
 msgstr "אין צורך במפתח"
 
-#: ../gp11/gp11-misc.c:147
-msgid "The key is different from before"
+#: ../gck/gck-misc.c:147
+msgid "The key is different than before"
 msgstr "המפתח שונה מבעבר"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gck/gck-misc.c:149
 msgid "A key is needed"
 msgstr "יש צורך במפתח"
 
-#: ../gp11/gp11-misc.c:151
-msgid "Cannot include the key in digest"
+#: ../gck/gck-misc.c:151
+msgid "Cannot include the key in the digest"
 msgstr "לא ניתן לכלול את המפתח בלקט"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gck/gck-misc.c:153
 msgid "This operation cannot be done with this key"
 msgstr "לא ניתן לבצע פעולה זו עם מפתח זה"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gck/gck-misc.c:155
 msgid "The key cannot be wrapped"
 msgstr "לא ניתן לעטוף את המפתח"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gck/gck-misc.c:157
 msgid "Cannot export this key"
 msgstr "לא ניתן ליצא את מפתח זה"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gck/gck-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "מנגנון ההצפנה שגוי או שאינו מזוהה"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gck/gck-misc.c:161
 msgid "The crypto mechanism has an invalid argument"
 msgstr "למנגנון ההצפנה יש ארגומנט בלתי תקין"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gck/gck-misc.c:163
 msgid "The object is missing or invalid"
 msgstr "הרכיב חסר או פגום"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gck/gck-misc.c:165
 msgid "Another operation is already taking place"
 msgstr "כבר מתבצעת פעולה אחרת"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gck/gck-misc.c:167
 msgid "No operation is taking place"
 msgstr "לא מתבצעת פעולה"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gck/gck-misc.c:169
 msgid "The password or PIN is incorrect"
 msgstr "הססמה או הקוד אינם נכונים"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gck/gck-misc.c:171
 msgid "The password or PIN is invalid"
 msgstr "הססמה או הקוד שגויים"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gck/gck-misc.c:173
 msgid "The password or PIN is of an invalid length"
 msgstr "הססמה או הקוד באורך שגוי"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gck/gck-misc.c:175
 msgid "The password or PIN has expired"
 msgstr "תוקף הססמה או הקוד פג"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gck/gck-misc.c:177
 msgid "The password or PIN is locked"
 msgstr "הססמה או הקוד נעולים"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gck/gck-misc.c:179
 msgid "The session is closed"
 msgstr "ההפעלה סגורה"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gck/gck-misc.c:181
 msgid "Too many sessions are active"
 msgstr "יותר מדי הפעלות פעילות"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gck/gck-misc.c:183
 msgid "The session is invalid"
 msgstr "ההפעלה שגוייה"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gck/gck-misc.c:185
 msgid "The session is read-only"
 msgstr "ההפעלה היא לקריאה בלבד"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gck/gck-misc.c:187
 msgid "An open session exists"
 msgstr "קיימת הפעלה פתוחה"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gck/gck-misc.c:189
 msgid "A read-only session exists"
 msgstr "קיימת הפעלה לקריאה בלבד"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gck/gck-misc.c:191
 msgid "An administrator session exists"
 msgstr "קיימת הפעלת מנהל"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gck/gck-misc.c:193
 msgid "The signature is bad or corrupted"
 msgstr "החתימה שגויה או פגומה"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gck/gck-misc.c:195
 msgid "The signature is unrecognized or corrupted"
 msgstr "החתימה בלתי מזוהה או פגומה"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gck/gck-misc.c:197
 msgid "Certain required fields are missing"
 msgstr "מספר שדות נדרשים חסרים"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gck/gck-misc.c:199
 msgid "Certain fields have invalid values"
 msgstr "לשדות מסוימים יש ערכים שגוים"
 
-#: ../gp11/gp11-misc.c:201
+#: ../gck/gck-misc.c:201
 msgid "The device is not present or unplugged"
 msgstr "ההתקן אינו קיים או שאינו מחובר"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gck/gck-misc.c:203
 msgid "The device is invalid or unrecognizable"
 msgstr "ההתקן אינו תקני או בלתי מזוהה"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gck/gck-misc.c:205
 msgid "The device is write protected"
 msgstr "ההתקן אינו ניתן לכתיבה"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gck/gck-misc.c:207
 msgid "Cannot import because the key is invalid"
 msgstr "לא ניתן לייבא מכיון שהמפתח שגוי"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gck/gck-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
 msgstr "לא ניתן לייבא כיוון שהמפתח הוא בגודל שגוי"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gck/gck-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
 msgstr "לא ניתן לייבא כיוון שהמפתח הוא מסוג שגוי"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gck/gck-misc.c:213
 msgid "You are already logged in"
 msgstr "אתה כבר מחובר"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gck/gck-misc.c:215
 msgid "No user has logged in"
 msgstr "אין אף משתמש מחובר"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gck/gck-misc.c:217
 msgid "The user's password or PIN is not set"
 msgstr "הססמה או קוד המשתמש אינם מוגדרים"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gck/gck-misc.c:219
 msgid "The user is of an invalid type"
 msgstr "המשתמש הוא מסוג בלתי תקני"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gck/gck-misc.c:221
 msgid "Another user is already logged in"
 msgstr "כבר יש משתמש מחובר"
 
-#: ../gp11/gp11-misc.c:223
-msgid "Too many users of different types logged in"
+#: ../gck/gck-misc.c:223
+msgid "Too many users of different types are logged in"
 msgstr "יותר מדי משתמשים מסוגים שונים מחוברים"
 
-#: ../gp11/gp11-misc.c:225
+#: ../gck/gck-misc.c:225
 msgid "Cannot import an invalid key"
 msgstr "לא ניתן ליבא מפתח שגוי"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gck/gck-misc.c:227
 msgid "Cannot import a key of the wrong size"
 msgstr "לא ניתן ליבא מפתח באורך שגוי"
 
-#: ../gp11/gp11-misc.c:229
+#: ../gck/gck-misc.c:229
 msgid "Cannot export because the key is invalid"
 msgstr "לא ניתן ליצא מכיון שהמפתח שגוי"
 
-#: ../gp11/gp11-misc.c:231
+#: ../gck/gck-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
 msgstr "לא ניתן ליצא מכיון שאורך המפתח שגוי"
 
-#: ../gp11/gp11-misc.c:233
+#: ../gck/gck-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
 msgstr "לא ניתן ליצא מכיון שסוג המפתח שגוי"
 
-#: ../gp11/gp11-misc.c:235
+#: ../gck/gck-misc.c:235
 msgid "Unable to initialize the random number generator"
 msgstr "לא ניתן להפעיל את מחולל המספרים האקראיים"
 
-#: ../gp11/gp11-misc.c:237
+#: ../gck/gck-misc.c:237
 msgid "No random number generator available"
 msgstr "אין מחולל מספרים אקראיים זמין"
 
-#: ../gp11/gp11-misc.c:239
+#: ../gck/gck-misc.c:239
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "למנגנון ההצפנה יש פרמטר שגוי"
 
-#: ../gp11/gp11-misc.c:241
+#: ../gck/gck-misc.c:241
 msgid "Not enough space to store the result"
 msgstr "אין די מקום כדי לאחסן את התוצאה"
 
-#: ../gp11/gp11-misc.c:243
+#: ../gck/gck-misc.c:243
 msgid "The saved state is invalid"
 msgstr "המצב שנשמר שגוי"
 
-#: ../gp11/gp11-misc.c:245
+#: ../gck/gck-misc.c:245
 msgid "The information is sensitive and cannot be revealed"
 msgstr "המידע רגיש ולא ניתן לחשוף אותו"
 
-#: ../gp11/gp11-misc.c:247
+#: ../gck/gck-misc.c:247
 msgid "The state cannot be saved"
 msgstr "לא ניתן לשמור את המצב"
 
-#: ../gp11/gp11-misc.c:249
+#: ../gck/gck-misc.c:249
 msgid "The module has not been initialized"
 msgstr "לא ניתן להפעיל את המודול"
 
-#: ../gp11/gp11-misc.c:251
+#: ../gck/gck-misc.c:251
 msgid "The module has already been initialized"
 msgstr "המודול כבר הופעל"
 
-#: ../gp11/gp11-misc.c:253
+#: ../gck/gck-misc.c:253
 msgid "Cannot lock data"
 msgstr "לא ניתן לנעול את המידע"
 
-#: ../gp11/gp11-misc.c:255
+#: ../gck/gck-misc.c:255
 msgid "The data cannot be locked"
 msgstr "לא ניתן לנעול את המידע"
 
-#: ../gp11/gp11-misc.c:257
+#: ../gck/gck-misc.c:257
 msgid "The signature request was rejected by the user"
 msgstr "בקשת החתימה נדחתה על ידי המשתמש"
 
-#: ../gp11/gp11-misc.c:261
+#: ../gck/gck-misc.c:261
 msgid "Unknown error"
 msgstr "שגיאה לא ידועה"
 
-#: ../pkcs11/gkm/gkm-certificate.c:726
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "תעודה ללא שם"
 
@@ -865,144 +853,144 @@ msgid "Couldn't parse public SSH key"
 msgstr "לא ניתן לנתח את מפתח ה־SSH הציבורי"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "ססמת שחרור עבור: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:88
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:775
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
 msgid "The unlock password was incorrect"
 msgstr "ססמת השחרור שגויה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:606
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock Login Keyring"
 msgstr "שחרור קבוצת ססמאות הכניסה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:608
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Enter password to unlock your login keyring"
 msgstr "יש להזין ססמה כדי לשחרר את קבוצת מפתחות הכניסה שלך"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:612
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
 "הססמה המשמשת אותך לכניסה למחשבך אינה תואמת עוד לססמת קבוצת ססמאות הכניסה."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr "קבוצת ססמאות הכניסה לא שוחררה בעת שנכנסת למחשב."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
 msgstr "שחרור קבוצת הססמאות"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "יש להזין ססמה לשחרור קבוצת הססמאות '%s'"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "יישום מנסה לגשת אל קבוצת הססמאות '%s', אך היא נעולה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
 msgstr "פתח מפתח פרטי"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:663
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 msgid "Unlock certificate"
 msgstr "פתח תעודה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "פתח מפתח ציבורי"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:667
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
 msgstr "פתח"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "יש להזין ססמה לפתיחת המפתח הציבורי"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "יישום מנסה לגשת למפתח הפרטי '%s', אך הוא נעול"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "יישום מנסה לגשת לתעודה '%s', אך היא נעולה"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:698
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "יישום מנסה לגשת למפתח הציבורי '%s', אך הוא נעול"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "יישום מנסה ל-'%s', אך הוא נעול"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
 msgid "Unlock certificate/key storage"
 msgstr "שחרור אחסון מפתח/תעודה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "יש להזין ססמה כדי לנעול את אחסון המפתח/תעודה"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr "יישום מנסה לגשת אל אחסון התעודה/מפתח '%s', אך הם נעולים"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1035
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "נדרשת ססמה חדשה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1036
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "נדרשת ססמה חדשה עבור אחסון מאובטח"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1038
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr "כדי להכין את '%s' לאחסון של תעודות או מפתחות נדרשת ססמה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
 msgstr "שינוי ססמה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1161
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
 msgid "Change password for secure storage"
 msgstr "שינוי ססמה עבור אחסון מאובטח"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "כדי לשנות את הססמה עבור  '%s', נדרשות הססמאות המקורית והחדשה"
 
-#: ../ui/gku-prompt-tool.c:547
+#: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
 msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
 
-#: ../ui/gku-prompt-tool.c:548
+#: ../ui/gku-prompt-tool.c:539
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1011,49 +999,117 @@ msgstr ""
 "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל "
 "בעל גישה לקבצים שלך."
 
-#: ../ui/gku-prompt-tool.c:555
+#: ../ui/gku-prompt-tool.c:546
 msgid "Use Unsafe Storage"
 msgstr "שימוש באחסון בלתי מאובטח"
 
-#: ../ui/gku-prompt-tool.c:593
+#: ../ui/gku-prompt-tool.c:584
 msgid "Passwords do not match."
 msgstr "הססמאות אינן תואמות."
 
-#: ../ui/gku-prompt-tool.c:603
+#: ../ui/gku-prompt-tool.c:594
 msgid "Password cannot be blank"
 msgstr "הססמה אינה יכולה להיות ריקה"
 
 #: ../ui/gku-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "יש לפתוח קבוצת ססמאות זו באופן אוטומטי בעת הכניסה למערכת"
-
-#: ../ui/gku-prompt.ui.h:2
 msgid "New password strength"
 msgstr "חוזק הססמה החדשה"
 
-#: ../ui/gku-prompt.ui.h:3
+#: ../ui/gku-prompt.ui.h:2
 msgid "_Application:"
 msgstr "_יישום:"
 
-#: ../ui/gku-prompt.ui.h:4
+#: ../ui/gku-prompt.ui.h:3
 msgid "_Confirm:"
 msgstr "_אימות:"
 
-#: ../ui/gku-prompt.ui.h:5
+#: ../ui/gku-prompt.ui.h:4
 msgid "_Details:"
 msgstr "_פרטים:"
 
-#: ../ui/gku-prompt.ui.h:6
+#: ../ui/gku-prompt.ui.h:5
 msgid "_Name:"
 msgstr "_שםך"
 
-#: ../ui/gku-prompt.ui.h:7
+#: ../ui/gku-prompt.ui.h:6
 msgid "_Old Password:"
 msgstr "הססמה ה_קודמת:"
 
-#: ../ui/gku-prompt.ui.h:8
+#: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_ססמה:"
+
+#~ msgid "Insufficient memory available on device"
+#~ msgstr "אין די זיכרון זמין בהתקן"
+
+#~ msgid "The key is different from before"
+#~ msgstr "המפתח שונה מבעבר"
+
+#~ msgid "Cannot include the key in digest"
+#~ msgstr "לא ניתן לכלול את המפתח בלקט"
+
+#~ msgid "Too many users of different types logged in"
+#~ msgstr "יותר מדי משתמשים מסוגים שונים מחוברים"
+
+#~ msgid "Email"
+#~ msgstr "דוא\"ל"
+
+#~ msgid "<i>Not Part of Certificate</i>"
+#~ msgstr "<i>לא חלק מהתעודה</i>"
+
+#~ msgid "<i>unknown</i>"
+#~ msgstr "<i>בלתי ידוע</i>"
+
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<לא חלק מהתעודה>"
+
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>טביעות אצבע</b>"
+
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>ניתנה על ידי</b>"
+
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>ניתנה עבור</b>"
+
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr "<b>תעודה זו אושרה לצרכים הבאים:</b>"
+
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>תוקף</b>"
+
+#~ msgid "Common Name (CN)"
+#~ msgstr "שם נפוץ (CN)"
+
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "תעודת נמען דוא\"ל"
+
+#~ msgid "Email Signer Certificate"
+#~ msgstr "תעודת חותם דוא\"ל"
+
+#~ msgid "Issued On"
+#~ msgstr "ניתנה בתאריך"
+
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "טביעת אצבע MD5"
+
+#~ msgid "Organization (O)"
+#~ msgstr "ארגון (O)"
+
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "יחידה ארגונית (OU)"
+
+#~ msgid "SHA1 Fingerprint"
+#~ msgstr "טביעת אצבע SHA1"
+
+#~ msgid "SSL Client Certificate"
+#~ msgstr "תעודת לקוח SSL"
+
+#~ msgid "SSL Server Certificate"
+#~ msgstr "תעודת שרת SSL"
+
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgstr "<span size='large' weight='bold'>ייבוא תעודות ומפתחות</span>"
 
 #~ msgid ""
 #~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "

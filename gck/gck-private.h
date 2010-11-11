@@ -77,7 +77,7 @@ gboolean            _gck_module_fire_authenticate_object   (GckModule *module,
  */
 
 GckEnumerator*      _gck_enumerator_new                     (GList *modules,
-                                                             guint session_flags,
+                                                             guint session_options,
                                                              GckTokenInfo *match_token,
                                                              GckAttributes *match_attrs);
 
@@ -105,6 +105,8 @@ typedef struct _GckArguments {
 	CK_ULONG handle;
 
 } GckArguments;
+
+#define GCK_MECHANISM_EMPTY        { 0UL, NULL, 0 }
 
 #define GCK_ARGUMENTS_INIT 	   { NULL, NULL, 0 }
 

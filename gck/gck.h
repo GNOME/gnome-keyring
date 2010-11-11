@@ -32,7 +32,16 @@
 
 G_BEGIN_DECLS
 
-#define             GCK_VENDOR_CODE                         0x47503131 /* GP11 */
+/*
+ * To use this API, you need to be prepared for changes to the API,
+ * and add the C flag: -DGCK_API_SUBJECT_TO_CHANGE
+ */
+
+#ifndef GCK_API_SUBJECT_TO_CHANGE
+#error "This API has not yet reached stability."
+#endif
+
+#define             GCK_VENDOR_CODE                         0x47434B00 /* GCK */
 
 /* An error code which results from a failure to load the PKCS11 module */
 #define             CKR_GCK_MODULE_PROBLEM                  (CKR_VENDOR_DEFINED | (GCK_VENDOR_CODE + 1))
@@ -53,32 +62,17 @@ typedef gpointer    (*GckAllocator)                         (gpointer data, gsiz
 
 typedef struct GckMechanism {
 	gulong type;
-	gpointer parameter;
+	gconstpointer parameter;
 	gulong n_parameter;
 } GckMechanism;
 
-GckMechanism*       gck_mechanism_new                       (gulong type);
-
-GckMechanism*       gck_mechanism_new_with_param            (gulong type,
-                                                             gconstpointer parameter,
-                                                             gulong n_parameter);
-
-GckMechanism*       gck_mechanism_ref                       (GckMechanism* mech);
-
-void                gck_mechanism_unref                     (GckMechanism* mech);
-
 typedef struct GckAttribute {
 	gulong type;
-	gpointer value;
+	gconstpointer value;
 	gulong length;
 } GckAttribute;
 
 #define GCK_INVALID G_MAXULONG
-
-enum {
-	GCK_AUTHENTICATE_TOKENS = 2,
-	GCK_AUTHENTICATE_OBJECTS = 4
-};
 
 gboolean            gck_value_to_ulong                      (gconstpointer value,
                                                              gsize length,
@@ -148,6 +142,9 @@ gchar*              gck_attribute_get_string                (GckAttribute *attr)
 
 void                gck_attribute_get_date                  (GckAttribute *attr,
                                                              GDate* value);
+
+gboolean            gck_attribute_equal                     (gconstpointer a,
+                                                             gconstpointer b);
 
 GckAttribute*       gck_attribute_dup                       (GckAttribute *attr);
 
@@ -230,6 +227,9 @@ GckAttributes*      gck_attributes_ref                      (GckAttributes *attr
 
 void                gck_attributes_unref                    (GckAttributes *attrs);
 
+gboolean            gck_attributes_contains                 (GckAttributes *attrs,
+                                                             GckAttribute *match);
+
 /* -------------------------------------------------------------------------
  * FORWARDS
  */
@@ -286,11 +286,11 @@ struct _GckModuleClass {
 GType                 gck_module_get_type                     (void) G_GNUC_CONST;
 
 GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs,
-                                                               guint options);
+                                                               guint reserved_options);
 
 GckModule*            gck_module_initialize                   (const gchar *path,
                                                                gpointer reserved,
-                                                               guint options,
+                                                               guint reserved_options,
                                                                GError **err);
 
 gboolean              gck_module_equal                        (gconstpointer module1,
@@ -307,18 +307,16 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-guint                 gck_module_get_options                  (GckModule *self);
-
 gchar**               gck_modules_list_registered_paths       (GError **err);
 
-GList*                gck_modules_initialize_registered       (guint options);
+GList*                gck_modules_initialize_registered       (guint reserved_options);
 
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);
 
 GckEnumerator*        gck_modules_enumerate_objects           (GList *modules,
                                                                GckAttributes *attrs,
-                                                               guint session_flags);
+                                                               guint session_options);
 
 GckSlot*              gck_modules_token_for_uri               (GList *modules,
                                                                const gchar *uri,
@@ -326,17 +324,17 @@ GckSlot*              gck_modules_token_for_uri               (GList *modules,
 
 GckObject*            gck_modules_object_for_uri              (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_flags,
+                                                               guint session_options,
                                                                GError **error);
 
 GList*                gck_modules_objects_for_uri             (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_flags,
+                                                               guint session_options,
                                                                GError **error);
 
 GckEnumerator*        gck_modules_enumerate_uri               (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_flags,
+                                                               guint session_options,
                                                                GError **error);
 
 
@@ -516,18 +514,27 @@ gboolean            gck_slot_init_token_finish              (GckSlot *self,
 #endif /* UNIMPLEMENTED */
 
 GckSession*         gck_slot_open_session                   (GckSlot *self,
-                                                             gulong flags,
+                                                             guint options,
+                                                             GCancellable *cancellable,
                                                              GError **err);
 
 GckSession*         gck_slot_open_session_full              (GckSlot *self,
-                                                             gulong flags,
+                                                             guint options,
+                                                             gulong pkcs11_flags,
                                                              gpointer app_data,
                                                              CK_NOTIFY notify,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gck_slot_open_session_async             (GckSlot *self,
-                                                             gulong flags,
+                                                             guint options,
+                                                             GCancellable *cancellable,
+                                                             GAsyncReadyCallback callback,
+                                                             gpointer user_data);
+
+void                gck_slot_open_session_full_async        (GckSlot *self,
+                                                             guint options,
+                                                             gulong pkcs11_flags,
                                                              gpointer app_data,
                                                              CK_NOTIFY notify,
                                                              GCancellable *cancellable,
@@ -541,6 +548,12 @@ GckSession*         gck_slot_open_session_finish            (GckSlot *self,
 /* ------------------------------------------------------------------------
  * SESSION
  */
+
+typedef enum _GckSessionOptions {
+	GCK_SESSION_READ_WRITE = 1 << 1,
+	GCK_SESSION_LOGIN_USER =  1 << 2,
+	GCK_SESSION_AUTHENTICATE = 1 << 3,
+} GckSessionOptions;
 
 typedef struct _GckSessionInfo {
 	gulong slot_id;
@@ -578,7 +591,8 @@ struct _GckSessionClass {
 GType               gck_session_get_type                    (void) G_GNUC_CONST;
 
 GckSession*         gck_session_from_handle                 (GckSlot *slot,
-                                                             CK_SESSION_HANDLE handle);
+                                                             CK_SESSION_HANDLE handle,
+                                                             guint options);
 
 GckModule*          gck_session_get_module                  (GckSession *self);
 
@@ -590,12 +604,9 @@ GckSessionInfo*     gck_session_get_info                    (GckSession *self);
 
 gulong              gck_session_get_state                   (GckSession *self);
 
-gboolean            gck_session_init_pin                    (GckSession *self,
-                                                             const guchar *pin,
-                                                             gsize n_pin,
-                                                             GError **err);
+guint               gck_session_get_options                 (GckSession *self);
 
-gboolean            gck_session_init_pin_full               (GckSession *self,
+gboolean            gck_session_init_pin                    (GckSession *self,
                                                              const guchar *pin,
                                                              gsize n_pin,
                                                              GCancellable *cancellable,
@@ -613,13 +624,6 @@ gboolean            gck_session_init_pin_finish             (GckSession *self,
                                                              GError **err);
 
 gboolean            gck_session_set_pin                     (GckSession *self,
-                                                             const guchar *old_pin,
-                                                             gsize n_old_pin,
-                                                             const guchar *new_pin,
-                                                             gsize n_new_pin,
-                                                             GError **err);
-
-gboolean            gck_session_set_pin_full                (GckSession *self,
                                                              const guchar *old_pin,
                                                              gsize n_old_pin,
                                                              const guchar *new_pin,
@@ -644,12 +648,6 @@ gboolean            gck_session_login                       (GckSession *self,
                                                              gulong user_type,
                                                              const guchar *pin,
                                                              gsize n_pin,
-                                                             GError **err);
-
-gboolean            gck_session_login_full                  (GckSession *self,
-                                                             gulong user_type,
-                                                             const guchar *pin,
-                                                             gsize n_pin,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
@@ -666,9 +664,6 @@ gboolean            gck_session_login_finish                (GckSession *self,
                                                              GError **err);
 
 gboolean            gck_session_logout                      (GckSession *self,
-                                                             GError **err);
-
-gboolean            gck_session_logout_full                 (GckSession *self,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
@@ -731,6 +726,15 @@ GckObject*          gck_session_generate_key_finish         (GckSession *self,
 
 #endif /* UNIMPLEMENTED */
 
+gboolean            gck_session_generate_key_pair           (GckSession *self,
+                                                             gulong mech_type,
+                                                             GckAttributes *public_attrs,
+                                                             GckAttributes *private_attrs,
+                                                             GckObject **public_key,
+                                                             GckObject **private_key,
+                                                             GCancellable *cancellable,
+                                                             GError **err);
+
 gboolean            gck_session_generate_key_pair_full      (GckSession *self,
                                                              GckMechanism *mechanism,
                                                              GckAttributes *public_attrs,
@@ -760,6 +764,7 @@ guchar*             gck_session_encrypt                      (GckSession *self,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
+                                                              GCancellable *cancellable,
                                                               GError **err);
 
 guchar*             gck_session_encrypt_full                 (GckSession *self,
@@ -791,6 +796,7 @@ guchar*             gck_session_decrypt                      (GckSession *self,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
+                                                              GCancellable *cancellable,
                                                               GError **err);
 
 guchar*             gck_session_decrypt_full                 (GckSession *self,
@@ -854,6 +860,7 @@ guchar*             gck_session_sign                         (GckSession *self,
                                                               const guchar *input,
                                                               gsize n_input,
                                                               gsize *n_result,
+                                                              GCancellable *cancellable,
                                                               GError **err);
 
 guchar*             gck_session_sign_full                    (GckSession *self,
@@ -921,6 +928,7 @@ gboolean            gck_session_verify                       (GckSession *self,
                                                               gsize n_input,
                                                               const guchar *signature,
                                                               gsize n_signature,
+                                                              GCancellable *cancellable,
                                                               GError **err);
 
 gboolean            gck_session_verify_full                  (GckSession *self,
@@ -988,6 +996,7 @@ gpointer            gck_session_wrap_key                     (GckSession *self,
                                                               gulong mech_type,
                                                               GckObject *wrapped,
                                                               gsize *n_result,
+                                                              GCancellable *cancellable,
                                                               GError **err);
 
 gpointer            gck_session_wrap_key_full                (GckSession *self,
@@ -1013,6 +1022,15 @@ gpointer            gck_session_wrap_key_finish              (GckSession *self,
 
 GckObject*          gck_session_unwrap_key                   (GckSession *self,
                                                               GckObject *wrapper,
+                                                              gulong mech_type,
+                                                              gconstpointer input,
+                                                              gsize n_input,
+                                                              GckAttributes *attrs,
+                                                              GCancellable *cancellable,
+                                                              GError **err);
+
+GckObject*          gck_session_unwrap_key_full              (GckSession *self,
+                                                              GckObject *wrapper,
                                                               GckMechanism *mechanism,
                                                               gconstpointer input,
                                                               gsize n_input,
@@ -1035,6 +1053,13 @@ GckObject*          gck_session_unwrap_key_finish            (GckSession *self,
                                                               GError **err);
 
 GckObject*          gck_session_derive_key                   (GckSession *self,
+                                                              GckObject *base,
+                                                              gulong mech_type,
+                                                              GckAttributes *attrs,
+                                                              GCancellable *cancellable,
+                                                              GError **err);
+
+GckObject*          gck_session_derive_key_full              (GckSession *self,
                                                               GckObject *base,
                                                               GckMechanism *mechanism,
                                                               GckAttributes *attrs,
@@ -1115,6 +1140,7 @@ gchar*              gck_object_build_uri_finish             (GckObject *self,
 #ifdef UNIMPLEMENTED
 
 GckObject*          gck_object_copy                         (GckObject *self,
+                                                             GCancellable *cancellable,
                                                              GError **err);
 
 GckObject*          gck_object_copy_full                    (GckObject *self,
@@ -1135,9 +1161,6 @@ GckObject*          gck_object_copy_finish                  (GckObject *self,
 #endif /* UNIMPLEMENTED */
 
 gboolean            gck_object_destroy                      (GckObject *self,
-                                                             GError **err);
-
-gboolean            gck_object_destroy_full                 (GckObject *self,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
@@ -1153,9 +1176,6 @@ gboolean            gck_object_destroy_finish               (GckObject *self,
 #if UNIMPLEMENTED
 
 gssize              gck_object_get_size                     (GckObject *self,
-                                                             GError **err);
-
-gssize              gck_object_get_size_full                (GckObject *self,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
@@ -1185,16 +1205,19 @@ gboolean            gck_object_set_finish                   (GckObject *self,
                                                              GError **err);
 
 GckAttributes*      gck_object_get                          (GckObject *self,
+                                                             GCancellable *cancellable,
                                                              GError **err,
                                                              ...);
 
 GckAttributes*      gck_object_get_full                     (GckObject *self,
-                                                             GckAttributes *attrs,
+                                                             gulong *attr_types,
+                                                             guint n_attr_types,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
 void                gck_object_get_async                    (GckObject *self,
-                                                             GckAttributes *attrs,
+                                                             gulong *attr_types,
+                                                             guint n_attr_types,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
@@ -1205,6 +1228,7 @@ GckAttributes*      gck_object_get_finish                   (GckObject *self,
 
 gpointer            gck_object_get_data                     (GckObject *self,
                                                              gulong attr_type,
+                                                             GCancellable *cancellable,
                                                              gsize *n_data,
                                                              GError **err);
 
@@ -1230,11 +1254,6 @@ gpointer            gck_object_get_data_finish              (GckObject *self,
 gboolean            gck_object_set_template                 (GckObject *self,
                                                              gulong attr_type,
                                                              GckAttributes *attrs,
-                                                             GError **err);
-
-gboolean            gck_object_set_template_full            (GckObject *self,
-                                                             gulong attr_type,
-                                                             GckAttributes *attrs,
                                                              GCancellable *cancellable,
                                                              GError **err);
 
@@ -1250,10 +1269,6 @@ gboolean            gck_object_set_template_finish          (GckObject *self,
                                                              GError **err);
 
 GckAttributes*      gck_object_get_template                 (GckObject *self,
-                                                             gulong attr_type,
-                                                             GError **err);
-
-GckAttributes*      gck_object_get_template_full            (GckObject *self,
                                                              gulong attr_type,
                                                              GCancellable *cancellable,
                                                              GError **err);

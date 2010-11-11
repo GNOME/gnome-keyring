@@ -1,3 +1,28 @@
+Changes in version 2.91.2 are:
+ * Add timeout if PAM startup doesn't complete shortly.
+ * Fix login keyring password when it doesn't match unix login.
+ * Replace gp11-0 with gck in pkgconfig file
+ * Fix broken dispose of GcrCertificateWidget
+ * Remove gp11 library.
+
+Changes in version 2.91.1 are:
+ * Fix build problem in gpg-agent.
+ * Properly distribute pkgconfig file for gck library.
+ * Better certificate widget in gcr library.
+ * Add extra debug guard around printing of prompt io.
+ * Rework how the gcr parser and importer work together.
+ * More GTK+ 3.0 fixes.
+
+Changes in version 2.91.0 are:
+ * String and punctuation fixes.
+ * Add libgck library to soon replace libgp11
+ * Migrate everything in gnome-keyring to libgp11
+ * Fix invalid memory access in PKCS#11 rpc-layer
+ * Fix race condition in tests
+
+Changes in version 2.32.0 are:
+ * Make bulids silent by default.
+
 Changes in version 2.31.92 are:
  * Require glib 2.25 or later.
  * Require automake 1.7 or later.

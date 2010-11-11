@@ -94,7 +94,7 @@ timegm(struct tm *t)
  */
 
 static GckSession*
-make_session_object (GckSlot *self, gulong flags, CK_SESSION_HANDLE handle)
+make_session_object (GckSlot *self, guint options, CK_SESSION_HANDLE handle)
 {
 	GckSession *session;
 	GckModule *module;
@@ -103,7 +103,7 @@ make_session_object (GckSlot *self, gulong flags, CK_SESSION_HANDLE handle)
 
 	module = gck_slot_get_module (self);
 
-	session = gck_session_from_handle (self, handle);
+	session = gck_session_from_handle (self, handle, options);
 	g_return_val_if_fail (session != NULL, NULL);
 
 	g_object_unref (module);
@@ -940,15 +940,16 @@ free_open_session (OpenSession *args)
  * Return value: A new session or NULL if an error occurs.
  **/
 GckSession*
-gck_slot_open_session (GckSlot *self, gulong flags, GError **err)
+gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable, GError **err)
 {
-	return gck_slot_open_session_full (self, flags, NULL, NULL, NULL, err);
+	return gck_slot_open_session_full (self, options, 0, NULL, NULL, cancellable, err);
 }
 
 /**
  * gck_slot_open_session_full:
  * @self: The slot to open a session on.
- * @flags: The flags to open a session with.
+ * @options: The options to open the new session with.
+ * @pkcs11_flags: Additional raw PKCS#11 flags.
  * @app_data: Application data for notification callback.
  * @notify: PKCS#11 notification callback.
  * @cancellable: Optional cancellation object, or NULL.
@@ -962,15 +963,13 @@ gck_slot_open_session (GckSlot *self, gulong flags, GError **err)
  * Return value: A new session or NULL if an error occurs.
  **/
 GckSession*
-gck_slot_open_session_full (GckSlot *self, gulong flags, gpointer app_data,
-                             CK_NOTIFY notify, GCancellable *cancellable, GError **err)
+gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, gpointer app_data,
+                            CK_NOTIFY notify, GCancellable *cancellable, GError **err)
 {
 	OpenSession args = { GCK_ARGUMENTS_INIT, 0,  };
 	GckSession *session = NULL;
 	GckModule *module = NULL;
 	CK_SLOT_ID slot_id;
-
-	flags |= CKF_SERIAL_SESSION;
 
 	g_object_ref (self);
 
@@ -980,15 +979,19 @@ gck_slot_open_session_full (GckSlot *self, gulong flags, gpointer app_data,
 
 	/* Open a new session */
 	args.slot = self;
-	args.flags = flags;
 	args.app_data = app_data;
 	args.notify = notify;
 	args.password = NULL;
-	args.auto_login = (gck_module_get_options (module) & GCK_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
 	args.session = 0;
 
+	args.auto_login = ((options & GCK_SESSION_LOGIN_USER) == GCK_SESSION_LOGIN_USER);
+
+	args.flags = pkcs11_flags | CKF_SERIAL_SESSION;
+	if ((options & GCK_SESSION_READ_WRITE) == GCK_SESSION_READ_WRITE)
+		args.flags |= CKF_RW_SESSION;
+
 	if (_gck_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, err))
-		session = make_session_object (self, flags, args.session);
+		session = make_session_object (self, options, args.session);
 
 	g_object_unref (module);
 	g_object_unref (self);
@@ -996,10 +999,18 @@ gck_slot_open_session_full (GckSlot *self, gulong flags, gpointer app_data,
 	return session;
 }
 
+void
+gck_slot_open_session_async (GckSlot *self, guint options, GCancellable *cancellable,
+                             GAsyncReadyCallback callback, gpointer user_data)
+{
+	gck_slot_open_session_full_async (self, options, 0UL, NULL, NULL, cancellable, callback, user_data);
+}
+
 /**
  * gck_slot_open_session_async:
  * @self: The slot to open a session on.
- * @flags: The flags to open a session with.
+ * @options: Options to open the new session with.
+ * @pkcs11_flags: Additional raw PKCS#11 flags.
  * @app_data: Application data for notification callback.
  * @notify: PKCS#11 notification callback.
  * @cancellable: Optional cancellation object, or NULL.
@@ -1012,31 +1023,26 @@ gck_slot_open_session_full (GckSlot *self, gulong flags, gpointer app_data,
  * This call will return immediately and complete asynchronously.
  **/
 void
-gck_slot_open_session_async (GckSlot *self, gulong flags, gpointer app_data,
-                              CK_NOTIFY notify, GCancellable *cancellable,
-                              GAsyncReadyCallback callback, gpointer user_data)
+gck_slot_open_session_full_async (GckSlot *self, guint options, gulong pkcs11_flags, gpointer app_data,
+                                  CK_NOTIFY notify, GCancellable *cancellable,
+                                  GAsyncReadyCallback callback, gpointer user_data)
 {
-	GckModule *module = NULL;
 	OpenSession *args;
-	CK_SLOT_ID slot_id;
-
-	flags |= CKF_SERIAL_SESSION;
 
 	g_object_ref (self);
 
 	args =  _gck_call_async_prep (self, self, perform_open_session, complete_open_session,
-	                               sizeof (*args), free_open_session);
+	                              sizeof (*args), free_open_session);
 
-	args->flags = flags;
 	args->app_data = app_data;
 	args->notify = notify;
 	args->slot = g_object_ref (self);
 
-	/* Try to use a cached session */
-	module = gck_slot_get_module (self);
-	slot_id = gck_slot_get_handle (self);
-	args->auto_login = (gck_module_get_options (module) & GCK_AUTHENTICATE_TOKENS) ? TRUE : FALSE;
-	g_object_unref (module);
+	args->auto_login = ((options & GCK_SESSION_LOGIN_USER) == GCK_SESSION_LOGIN_USER);
+
+	args->flags = pkcs11_flags | CKF_SERIAL_SESSION;
+	if ((options & GCK_SESSION_READ_WRITE) == GCK_SESSION_READ_WRITE)
+		args->flags |= CKF_RW_SESSION;
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
 	g_object_unref (self);

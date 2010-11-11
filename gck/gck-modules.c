@@ -134,7 +134,7 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
  * gck_module_enumerate_objects_full:
  * @self: The module to enumerate objects.
  * @attrs: Attributes that the objects must have, or empty for all objects.
- * @session_flags: PKCS#11 flags for opening a session.
+ * @session_flags: Flags for opening a session.
  *
  * Setup an enumerator for listing matching objects on the modules.
  *
@@ -145,9 +145,9 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
  * Return value: A new enumerator
  **/
 GckEnumerator*
-gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_flags)
+gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_options)
 {
-	return _gck_enumerator_new (modules, session_flags, NULL, attrs);
+	return _gck_enumerator_new (modules, session_options, NULL, attrs);
 }
 
 GckSlot*
@@ -177,7 +177,7 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 }
 
 GckObject*
-gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_flags,
+gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_options,
                             GError **error)
 {
 	GckEnumerator *en;
@@ -186,7 +186,7 @@ gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_flag
 	g_return_val_if_fail (uri, NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
-	en = gck_modules_enumerate_uri (modules, uri, session_flags, error);
+	en = gck_modules_enumerate_uri (modules, uri, session_options, error);
 	if (en == NULL)
 		return NULL;
 
@@ -197,7 +197,7 @@ gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_flag
 }
 
 GList*
-gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_flags,
+gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_options,
                              GError **error)
 {
 	GckEnumerator *en;
@@ -206,7 +206,7 @@ gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_fla
 	g_return_val_if_fail (uri, NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
-	en = gck_modules_enumerate_uri (modules, uri, session_flags, error);
+	en = gck_modules_enumerate_uri (modules, uri, session_options, error);
 	if (en == NULL)
 		return NULL;
 
@@ -217,7 +217,7 @@ gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_fla
 }
 
 GckEnumerator*
-gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_flags,
+gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_options,
                            GError **error)
 {
 	GckTokenInfo *token;
@@ -228,7 +228,7 @@ gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_flags
 		return NULL;
 
 	/* Takes ownership of token info */
-	en = _gck_enumerator_new (modules, session_flags, token, attrs);
+	en = _gck_enumerator_new (modules, session_options, token, attrs);
 	gck_attributes_unref (attrs);
 
 	return en;

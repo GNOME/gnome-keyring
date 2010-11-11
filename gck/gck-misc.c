@@ -126,7 +126,7 @@ gck_message_from_rv (CK_RV rv)
 	case CKR_DEVICE_ERROR:
 		return _("An error occurred on the device");
 	case CKR_DEVICE_MEMORY:
-		return _("Insufficient memory available on device");
+		return _("Insufficient memory available on the device");
 	case CKR_DEVICE_REMOVED:
 		return _("The device was removed or unplugged");
 	case CKR_ENCRYPTED_DATA_INVALID:
@@ -148,7 +148,7 @@ gck_message_from_rv (CK_RV rv)
 	case CKR_KEY_NEEDED:
 		return _("A key is needed");
 	case CKR_KEY_INDIGESTIBLE:
-		return _("Cannot include the key in digest");
+		return _("Cannot include the key in the digest");
 	case CKR_KEY_FUNCTION_NOT_PERMITTED:
 		return _("This operation cannot be done with this key");
 	case CKR_KEY_NOT_WRAPPABLE:
@@ -220,7 +220,7 @@ gck_message_from_rv (CK_RV rv)
 	case CKR_USER_ANOTHER_ALREADY_LOGGED_IN:
 		return _("Another user is already logged in");
 	case CKR_USER_TOO_MANY_TYPES:
-		return _("Too many users of different types logged in");
+		return _("Too many users of different types are logged in");
 	case CKR_WRAPPED_KEY_INVALID:
 		return _("Cannot import an invalid key");
 	case CKR_WRAPPED_KEY_LEN_RANGE:
@@ -351,89 +351,6 @@ gboolean
 _gck_ulong_equal (gconstpointer v1, gconstpointer v2)
 {
 	return *((const gulong*)v1) == *((const gulong*)v2);
-}
-
-static GQuark mechanism_quark = 0;
-
-static void
-free_refs (gpointer data)
-{
-	gint *refs = data;
-	g_assert (refs);
-	g_assert (*refs == 0);
-	g_slice_free (gint, data);
-}
-
-GckMechanism*
-gck_mechanism_new (gulong type)
-{
-	return gck_mechanism_new_with_param (type, NULL, 0);
-}
-
-GckMechanism*
-gck_mechanism_new_with_param (gulong type, gconstpointer parameter,
-                               gulong n_parameter)
-{
-	static volatile gsize inited_quark = 0;
-	GckMechanism *mech;
-	gint *refs;
-
-	/* Initialize first time around */
-	if (g_once_init_enter (&inited_quark)) {
-		mechanism_quark = g_quark_from_static_string ("GckMechanism::refs");
-		g_once_init_leave (&inited_quark, 1);
-	}
-
-	mech = g_slice_new (GckMechanism);
-	mech->type = type;
-	mech->parameter = g_memdup (parameter, n_parameter);
-	mech->n_parameter = n_parameter;
-
-	refs = g_slice_new (gint);
-	*refs = 1;
-	g_dataset_id_set_data_full (mech, mechanism_quark, refs, free_refs);
-
-	return mech;
-}
-
-GckMechanism*
-gck_mechanism_ref (GckMechanism* mech)
-{
-	gint *refs;
-
-	g_return_val_if_fail (mech, NULL);
-
-	refs = g_dataset_id_get_data (mech, mechanism_quark);
-	if (refs == NULL) {
-		g_warning ("Encountered invalid GckMechanism struct. Either it was unreffed or "
-		           "possibly allocated on the stack. Always use gck_mechanism_new () and friends.");
-		return NULL;
-	}
-
-	g_atomic_int_add (refs, 1);
-	return mech;
-}
-
-void
-gck_mechanism_unref (GckMechanism* mech)
-{
-	gint *refs;
-
-	if (!mech)
-		return;
-
-	refs = g_dataset_id_get_data (mech, mechanism_quark);
-	if (refs == NULL) {
-		g_warning ("Encountered invalid GckMechanism struct. Either it was unreffed or "
-		           "possibly allocated on the stack. Always use gck_mechanism_new () and friends.");
-		return;
-	}
-
-	if (g_atomic_int_dec_and_test (refs)) {
-		g_free (mech->parameter);
-		g_dataset_id_remove_data (mech, mechanism_quark);
-		g_slice_free (GckMechanism, mech);
-	}
 }
 
 gboolean

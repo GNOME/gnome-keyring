@@ -3,157 +3,68 @@
 # This file is distributed under the same license as the gnome-keyring package.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2003-2009.
 # Satoru SATOH <ss@gnome.gr.jp>, 2006.
-# Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009.
+# Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2010.
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2010.
 #  	   
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring master\n"
+"Project-Id-Version: gnome-keyring gnome-2-32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-03-19 06:20+0000\n"
-"PO-Revision-Date: 2010-02-06 17:34+0900\n"
-"Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
+"POT-Creation-Date: 2010-09-17 07:45+0000\n"
+"PO-Revision-Date: 2010-09-20 16:01+0900\n"
+"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"このオプションは gnome-keyring デーモンの PKCS#11 コンポーネントを有効にしま"
-"す。gnome-session で起動をした時 (すなわちユーザがログインする際) にのみ効果"
-"があります。ここで設定した内容はコマンドラインから上書きすることができます。"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"このオプションは gnome-keyring デーモンの SSH コンポーネントを有効にします。"
-"gnome-keyring デーモンを起動した時 (すなわちユーザがログインしている場合) に"
-"のみ効果があります。ここで設定した内容はコマンドラインから上書きすることがで"
-"きます。"
-
-# FIXME: secret service = シークレットサービス?
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"このオプションは gnome-keyring デーモンのシークレットサービスコンポーネントを"
-"有効にします。これは、gnome-session で起動をした時 (すなわちユーザがログイン"
-"する際) にのみ効果があります。ここで設定した内容はコマンドラインから上書きす"
-"ることができます。"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "PKCS#11 コンポーネントを有効にするかどうか"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "SSH エージェントを有効にするかどうか"
-
-# FIXME: secret service = シークレットサービス?
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "シークレットサービスを有効にするかどうか"
-
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:77 ../daemon/dbus/gkd-secret-create.c:73
-#: ../daemon/dbus/gkd-secret-unlock.c:119 ../daemon/login/gkd-login.c:584
-#: ../pkcs11/secret-store/gck-secret-collection.c:320
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Unnamed"
-msgstr ""
+msgstr "名前なし"
 
-#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
 msgstr "キーリングのパスワードの変更"
 
-#: ../daemon/dbus/gkd-secret-change.c:87
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "キーリング '%s' の新しいパスワードを入力して下さい"
+msgstr "キーリング '%s' の新しいパスワードを入力してください"
 
-#: ../daemon/dbus/gkd-secret-change.c:91
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
 "アプリケーションが '%s' というキーリングのパスワードを変更しようとしていま"
-"す。このキーリングで使用する新しいパスワードを指定して下さい。"
+"す。このキーリングで使用する新しいパスワードを指定してください。"
 
-#: ../daemon/dbus/gkd-secret-change.c:110
+#: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "元のパスワードが違います"
 
-#: ../daemon/dbus/gkd-secret-create.c:77
+#: ../daemon/dbus/gkd-secret-create.c:78
 msgid "New Keyring Password"
 msgstr "新しいキーリングのパスワード"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 msgid "Choose password for new keyring"
 msgstr "新しいキーリングのパスワード指定"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
 "アプリケーションが '%s' という新しいキーリングを生成しようとしています。この"
-"キーリングで使用するパスワードを指定して下さい。"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:134
-#, fuzzy
-msgid "Unlock Login Keyring"
-msgstr "キーリングのロック解除"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:136
-#, fuzzy
-msgid "Enter password for to unlock your login keyring"
-msgstr "パスワードを入力して公開鍵を解除して下さい"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:140
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-
-#: ../daemon/dbus/gkd-secret-unlock.c:142
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-
-#: ../daemon/dbus/gkd-secret-unlock.c:183
-msgid "Unlock Keyring"
-msgstr "キーリングのロック解除"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:185
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "キーリング '%s' のロックを解除するパスワードを入力して下さい"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:189
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"アプリケーションがキーリング '%s' へアクセスしようとしましたが、ロックがか"
-"かっていました。"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:219
-msgid "The unlock password was incorrect"
-msgstr "解除パスワードが間違っています"
+"キーリングで使用するパスワードを指定してください。"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -169,7 +80,6 @@ msgid "GNOME Keyring: Secret Service"
 msgstr "GNOME キーリング: シークレットサービス"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
-#, fuzzy
 msgid "Secret Storage Service"
 msgstr "シークレットストレージサービス"
 
@@ -181,172 +91,44 @@ msgstr "GNOME キーリング: SSH エージェント"
 msgid "SSH Key Agent"
 msgstr "SSH 鍵エージェント"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME キーリング: GPG エージェント"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG パスワードエージェント"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+msgid "Unknown"
+msgstr "不明"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP 鍵: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
+msgid "Enter Passphrase"
+msgstr "パスフレーズを入力してください"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+msgid "Forget this password if idle for"
+msgstr "このパスワードを以下の時間アイドルだったら忘れる:"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+msgid "Forget this password after"
+msgstr "このパスワードを以下の時間経過したら忘れる:"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+msgid "Forget this password when I log out"
+msgstr "ログアウトしたらこのパスワードを忘れる"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:174
+#: ../daemon/login/gkd-login.c:159
 msgid "Login"
-msgstr ""
-
-#: ../daemon/login/gkd-login.c:596
-#, fuzzy, c-format
-msgid "Unlock password for: %s"
-msgstr "キーリング %s のロックを解除するパスワード"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "新しいパスワードが必要です"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "セキュアなストレージにするには新しいパスワードが必要です"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"'%s' を証明書またはキーを格納するストレージにするにはパスワードが必要です"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "秘密鍵の解除"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "証明書の解除"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "公開鍵の解除"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "ロックの解除"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "パスワードを入力して秘密鍵を解除して下さい"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "パスワードを入力して証明書によるロックを解除して下さい"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "パスワードを入力して公開鍵を解除して下さい"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "パスワードを入力してロックを解除して下さい"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"アプリケーションが秘密鍵の '%s' にアクセスしようとしましたが、ロックがかかっ"
-"ていました。"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"アプリケーションが証明書の '%s' にアクセスしようとしましたが、ロックがかかっ"
-"ていました。"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"アプリケーションが公開鍵の '%s' にアクセスしようとしましたが、ロックがかかっ"
-"ていました。"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr ""
-"アプリケーションが '%s' にアクセスしようとしましたが、ロックがかかっていまし"
-"た。"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "証明書／鍵を格納したストレージのロック解除"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"パスワードを入力して証明書/鍵を格納したストレージのロックを解除して下さい"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"アプリケーションが証明書/鍵を格納したストレージ ('%s') にアクセスしようとしま"
-"したが、ロックがかかっていました。"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "暗号化していないパスワードを保存しますか？"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されま"
-"せん。他の人達がこれらのパスワードを利用する可能性があります。"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "安全ではないストレージを使う"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "パスワードが一致しません。"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "パスワードを空にしないで下さい"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-#, fuzzy
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "ログインしたら、このキーリングのロックを自動的に解除する"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "新しいパスワードの強度"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "アプリケーション(_A):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "確認(_C):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "詳細(_D):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "名前(_N):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "古いパスワード(_O):"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "パスワード(_P):"
+msgstr "ログイン"
 
 # 参考: インターネットX.509 PKI: 証明書と CRL のプロファイル
 # http://www.ipa.go.jp/security/rfc/RFC5280-04JA.html
@@ -391,7 +173,7 @@ msgid "Surname"
 msgstr "あだ名"
 
 #: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../gcr/gcr-certificate-details-widget.c:318
 msgid "Serial Number"
 msgstr "シリアル番号"
 
@@ -557,94 +339,94 @@ msgstr "SSL クライアント証明書"
 msgid "SSL Server Certificate"
 msgstr "SSL サーバ証明書"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-details-widget.c:203
 msgid "Extension"
 msgstr "拡張"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-details-widget.c:208
 msgid "Identifier"
 msgstr "識別子"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-details-widget.c:216
 msgid "Value"
 msgstr "値"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Critical"
 msgstr "重大"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "Yes"
 msgstr "はい"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-details-widget.c:224
 msgid "No"
 msgstr "いいえ"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-details-widget.c:299
 msgid "Subject Name"
 msgstr "サブジェクト名"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-details-widget.c:303
 msgid "Issuer Name"
 msgstr "発行者の名前"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-details-widget.c:307
 msgid "Issued Certificate"
 msgstr "発行済の証明書"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-details-widget.c:312
 msgid "Version"
 msgstr "版"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-details-widget.c:325
 msgid "Not Valid Before"
 msgstr "次より古い日付は妥当ではない"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-details-widget.c:330
 msgid "Not Valid After"
 msgstr "次より新しい日付は妥当ではない"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-details-widget.c:335
+#: ../gcr/gcr-certificate-details-widget.c:351
 msgid "Signature"
 msgstr "署名"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-details-widget.c:339
 msgid "Signature Algorithm"
 msgstr "署名アルゴリズム"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-details-widget.c:344
 msgid "Signature Parameters"
 msgstr "署名のパラメータ"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-details-widget.c:355
 msgid "Public Key Info"
 msgstr "公開鍵の情報"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-details-widget.c:359
 msgid "Key Algorithm"
 msgstr "鍵のアルゴリズム"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-details-widget.c:364
 msgid "Key Parameters"
 msgstr "鍵のパラメータ"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-details-widget.c:371
 msgid "Key Size"
 msgstr "鍵のサイズ"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-details-widget.c:378 ../gcr/gcr-parser.c:203
 msgid "Public Key"
 msgstr "公開鍵"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
+#: ../gcr/gcr-certificate-details-widget.c:383
 msgid "Fingerprints"
 msgstr "指紋"
 
@@ -661,23 +443,26 @@ msgid "Password:"
 msgstr "パスワード:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Lock this keyring after"
-msgstr ""
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring if idle for"
-msgstr ""
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-#, fuzzy
-msgid "Lock this keyring when I log out"
+msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "ログインしたら、このキーリングのロックを自動的に解除する"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "minutes"
-msgstr ""
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring after"
+msgstr "このキーリングを以下の時間経過したらロック:"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring if idle for"
+msgstr "このキーリングを以下の時間アイドルだったらロックする:"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "Lock this keyring when I log out"
+msgstr "ログアウトしたら、このキーリングの自動的にロックする"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:5
+msgid "minutes"
+msgstr "分"
+
+#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1565 ../gp11/gp11-misc.c:98
 msgid "The operation was cancelled"
 msgstr "処理をキャンセルしました"
 
@@ -692,58 +477,70 @@ msgstr "証明書/鍵のインポート"
 
 #: ../gcr/gcr-importer.c:411
 msgid "Choose a location to store the imported certificates/keys."
-msgstr "インポートした証明書/鍵を保存する場所を選択して下さい"
+msgstr "インポートした証明書/鍵を保存する場所を選択してください"
+
+#: ../gcr/gcr-importer.c:436 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+msgid "Enter password to unlock the private key"
+msgstr "パスワードを入力して秘密鍵を解除してください"
+
+#: ../gcr/gcr-importer.c:438 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+msgid "Enter password to unlock the certificate"
+msgstr "パスワードを入力して証明書によるロックを解除してください"
+
+#: ../gcr/gcr-importer.c:440 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+msgid "Enter password to unlock"
+msgstr "パスワードを入力してロックを解除してください"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:449
 msgid "In order to import the private key, it must be unlocked"
-msgstr "秘密鍵をインポートする場合はロックを解除して下さい"
+msgstr "秘密鍵をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The certificate is locked.
 #: ../gcr/gcr-importer.c:452
 msgid "In order to import the certificate, it must be unlocked"
-msgstr "証明書をインポートする場合はロックを解除して下さい"
+msgstr "証明書をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The data is locked.
 #: ../gcr/gcr-importer.c:455
 msgid "In order to import the data, it must be unlocked"
-msgstr "データをインポートする場合はロックを解除して下さい"
+msgstr "データをインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The key is locked.
 #: ../gcr/gcr-importer.c:460
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "秘密鍵の '%s' をインポートする場合はロックを解除して下さい"
+msgstr "秘密鍵の '%s' をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The certificate is locked.
 #: ../gcr/gcr-importer.c:463
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "証明書の '%s' をインポートする場合はロックを解除して下さい"
+msgstr "証明書の '%s' をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The object '%s' is locked.
 #: ../gcr/gcr-importer.c:466
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s' をインポートする場合はロックを解除して下さい"
+msgstr "'%s' をインポートする場合はロックを解除してください"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-parser.c:197
 msgid "Private Key"
 msgstr "秘密鍵"
 
-#: ../gcr/gcr-parser.c:199
+#: ../gcr/gcr-parser.c:200
 msgid "Certificate"
 msgstr "証明書"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-parser.c:1568
 msgid "Unrecognized or unsupported data."
 msgstr "認識できないまたはサポートしていないデータです"
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1571
 msgid "Could not parse invalid or corrupted data."
 msgstr "データが不正または壊れているため解析できませんでした"
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1574
 msgid "The data is locked"
 msgstr "データにはロックがかかっています"
 
@@ -840,7 +637,7 @@ msgid "No key is needed"
 msgstr "鍵は必要ありません"
 
 #: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
+msgid "The key is different from before"
 msgstr "以前の鍵と同じではありません"
 
 #: ../gp11/gp11-misc.c:149
@@ -861,7 +658,7 @@ msgstr "鍵をラップできません"
 
 #: ../gp11/gp11-misc.c:157
 msgid "Cannot export this key"
-msgstr "この鍵をエキスポートできません"
+msgstr "この鍵をエクスポートできません"
 
 #: ../gp11/gp11-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
@@ -1005,15 +802,15 @@ msgstr "間違ったサイズの鍵はインポートできません"
 
 #: ../gp11/gp11-misc.c:229
 msgid "Cannot export because the key is invalid"
-msgstr "無効な鍵はエキスポートできません"
+msgstr "無効な鍵はエクスポートできません"
 
 #: ../gp11/gp11-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
-msgstr "鍵のサイズが間違っているためエキスポートできません"
+msgstr "鍵のサイズが間違っているためエクスポートできません"
 
 #: ../gp11/gp11-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
-msgstr "鍵の種類が間違っているためエキスポートできません"
+msgstr "鍵の種類が間違っているためエクスポートできません"
 
 #: ../gp11/gp11-misc.c:235
 msgid "Unable to initialize the random number generator"
@@ -1067,13 +864,262 @@ msgstr "署名への要求がユーザによって拒否されました"
 msgid "Unknown error"
 msgstr "原因不明のエラー"
 
-#: ../pkcs11/gck/gck-certificate.c:740
+#: ../pkcs11/gkm/gkm-certificate.c:725
 msgid "Unnamed Certificate"
 msgstr "名前なしの証明書"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "SSH の公開鍵を解析できませんでした"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "パスワードのロックを解除: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+msgid "The unlock password was incorrect"
+msgstr "解除パスワードが間違っています"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+msgid "Unlock Login Keyring"
+msgstr "ログインのキーリングのロック解除"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Enter password to unlock your login keyring"
+msgstr "パスワードを入力してログインのキーリングのロックを解除してください"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"コンピュータへのログインに使用するパスワードが、もはやログインキーリングのパ"
+"スワード一致しません。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"コンピュータにログインする時にログインキーリングがロックを解除しませんでし"
+"た。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+msgid "Unlock Keyring"
+msgstr "キーリングのロック解除"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "キーリング '%s' のロックを解除するパスワードを入力してください"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"アプリケーションがキーリング '%s' へアクセスしようとしましたが、ロックがか"
+"かっていました。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+msgid "Unlock private key"
+msgstr "秘密鍵の解除"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+msgid "Unlock certificate"
+msgstr "証明書の解除"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+msgid "Unlock public key"
+msgstr "公開鍵の解除"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "Unlock"
+msgstr "ロックの解除"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+msgid "Enter password to unlock the public key"
+msgstr "パスワードを入力して公開鍵を解除してください"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"アプリケーションが秘密鍵の '%s' にアクセスしようとしましたが、ロックがかかっ"
+"ていました。"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr ""
+"アプリケーションが証明書の '%s' にアクセスしようとしましたが、ロックがかかっ"
+"ていました。"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"アプリケーションが公開鍵の '%s' にアクセスしようとしましたが、ロックがかかっ"
+"ていました。"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr ""
+"アプリケーションが '%s' にアクセスしようとしましたが、ロックがかかっていまし"
+"た。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+msgid "Unlock certificate/key storage"
+msgstr "証明書/鍵を格納したストレージのロック解除"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"パスワードを入力して証明書/鍵を格納したストレージのロックを解除してください"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"アプリケーションが証明書/鍵を格納したストレージ ('%s') にアクセスしようとしま"
+"したが、ロックがかかっていました。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+msgid "New Password Required"
+msgstr "新しいパスワードが必要です"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+msgid "New password required for secure storage"
+msgstr "セキュアなストレージにするには新しいパスワードが必要です"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"'%s' を証明書またはキーを格納するストレージにするにはパスワードが必要です"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+msgid "Change Password"
+msgstr "パスワードの変更"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+msgid "Change password for secure storage"
+msgstr "セキュアストレージのパスワードを変更"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr ""
+"'%s' のパスワードを変更するには、元のパスワードと新しいパスワードが必要です"
+
+#: ../ui/gku-prompt-tool.c:538
+msgid "Store passwords unencrypted?"
+msgstr "暗号化していないパスワードを保存しますか?"
+
+#: ../ui/gku-prompt-tool.c:539
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されま"
+"せん。他の人達がこれらのパスワードを利用する可能性があります。"
+
+#: ../ui/gku-prompt-tool.c:546
+msgid "Use Unsafe Storage"
+msgstr "安全ではないストレージを使う"
+
+#: ../ui/gku-prompt-tool.c:584
+msgid "Passwords do not match."
+msgstr "パスワードが一致しません。"
+
+#: ../ui/gku-prompt-tool.c:594
+msgid "Password cannot be blank"
+msgstr "パスワードを空にしないでください"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "新しいパスワードの強度"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "アプリケーション(_A):"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "確認(_C):"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "詳細(_D):"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "名前(_N):"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "古いパスワード(_O):"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "パスワード(_P):"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect during startup with gnome-session, (ie: when the user "
+#~ "logs in). This setting may be overridden when certain command line "
+#~ "arguments are passed to the daemon."
+#~ msgstr ""
+#~ "このオプションは gnome-keyring デーモンの PKCS#11 コンポーネントを有効にし"
+#~ "ます。gnome-session で起動をした時 (すなわちユーザがログインする際) にのみ"
+#~ "効果があります。ここで設定した内容はコマンドラインから上書きすることができ"
+#~ "ます。"
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "このオプションは gnome-keyring デーモンの SSH コンポーネントを有効にしま"
+#~ "す。gnome-keyring デーモンを起動した時 (すなわちユーザがログインしている場"
+#~ "合) にのみ効果があります。ここで設定した内容はコマンドラインから上書きする"
+#~ "ことができます。"
+
+# FIXME: secret service = シークレットサービス?
+#~ msgid ""
+#~ "This option enables the secret service component in the gnome-keyring "
+#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
+#~ "the user logs in). This setting may be overridden when certain command "
+#~ "line arguments are passed to the daemon."
+#~ msgstr ""
+#~ "このオプションは gnome-keyring デーモンのシークレットサービスコンポーネン"
+#~ "トを有効にします。これは、gnome-session で起動をした時 (すなわちユーザがロ"
+#~ "グインする際) にのみ効果があります。ここで設定した内容はコマンドラインから"
+#~ "上書きすることができます。"
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "PKCS#11 コンポーネントを有効にするかどうか"
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "SSH エージェントを有効にするかどうか"
+
+# FIXME: secret service = シークレットサービス?
+#~ msgid "Whether the gnome-keyring secret service is enabled."
+#~ msgstr "シークレットサービスを有効にするかどうか"
 
 #~ msgid "Automatically unlock secure storage when I log in."
 #~ msgstr "ログインしたら、このストレージのロックを自動的に解除する"

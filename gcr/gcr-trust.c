@@ -193,7 +193,7 @@ perform_get_certificate_exception (GckEnumerator *en, GCancellable *cancel, GErr
 		if (!object)
 			break;
 
-		data = gck_object_get_data (object, type, &n_data, error);
+		data = gck_object_get_data (object, type, NULL, &n_data, error);
 
 		g_object_unref (object);
 
@@ -380,7 +380,7 @@ perform_set_certificate_exception (GckEnumerator *en, GCancellable *cancel, GErr
 		/* Find an appropriate token */
 		slot = _gcr_slot_for_storing_trust (error);
 		if (slot != NULL) {
-			session = gck_slot_open_session (slot, CKF_RW_SESSION, error);
+			session = gck_slot_open_session (slot, CKF_RW_SESSION, NULL, error);
 			if (session != NULL) {
 
 				object = gck_session_create_object (session, attrs, cancel, error);

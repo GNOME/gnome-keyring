@@ -28,7 +28,7 @@ DEFINE_SETUP(load_session)
 	g_object_ref (slot);
 	gck_list_unref_free (slots);
 
-	session = gck_slot_open_session (slot, 0, &err);
+	session = gck_slot_open_session (slot, 0, NULL, &err);
 	SUCCESS_RES(session, err);
 }
 
@@ -82,13 +82,13 @@ DEFINE_TEST(open_close_session)
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
 
-	sess = gck_slot_open_session_full (slot, 0, NULL, NULL, NULL, &err);
+	sess = gck_slot_open_session (slot, 0, NULL, &err);
 	SUCCESS_RES (sess, err);
 
 	g_object_unref (sess);
 
 	/* Test opening async */
-	gck_slot_open_session_async (slot, 0, NULL, NULL, NULL, fetch_async_result, &result);
+	gck_slot_open_session_async (slot, 0, NULL, fetch_async_result, &result);
 
 	testing_wait_until (500);
 	g_assert (result != NULL);
@@ -108,11 +108,11 @@ DEFINE_TEST(init_set_pin)
 	gboolean ret;
 
 	/* init pin */
-	ret = gck_session_init_pin (session, (guchar*)"booo", 4, &err);
+	ret = gck_session_init_pin (session, (guchar*)"booo", 4, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	/* set pin */
-	ret = gck_session_set_pin (session, (guchar*)"booo", 4, (guchar*)"tooo", 4, &err);
+	ret = gck_session_set_pin (session, (guchar*)"booo", 4, (guchar*)"tooo", 4, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	/* init pin async */
@@ -142,17 +142,10 @@ DEFINE_TEST(login_logout)
 	gboolean ret;
 
 	/* login/logout */
-	ret = gck_session_login (session, CKU_USER, (guchar*)"booo", 4, &err);
+	ret = gck_session_login (session, CKU_USER, (guchar*)"booo", 4, NULL, &err);
 	SUCCESS_RES (ret, err);
 
-	ret = gck_session_logout (session, &err);
-	SUCCESS_RES (ret, err);
-
-	/* login/logout full */
-	ret = gck_session_login_full (session, CKU_USER, (guchar*)"booo", 4, NULL, &err);
-	SUCCESS_RES (ret, err);
-
-	ret = gck_session_logout_full (session, NULL, &err);
+	ret = gck_session_logout (session, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	/* login async */
@@ -195,14 +188,11 @@ authenticate_token (GckModule *module, GckSlot *slot, gchar *label, gchar **pass
 DEFINE_TEST(auto_login)
 {
 	GckObject *object;
-	GckModule *module_with_auth;
-	GckSlot *slot_with_auth;
 	GckSession *new_session;
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
 	GckAttributes *attrs;
 	gboolean ret;
-	gint value;
 
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
@@ -210,23 +200,14 @@ DEFINE_TEST(auto_login)
 	gck_attributes_add_boolean (attrs, CKA_PRIVATE, CK_TRUE);
 
 	/* Try to do something that requires a login */
-	g_assert_cmpuint (gck_module_get_options (module), ==, 0);
 	object = gck_session_create_object (session, attrs, NULL, &err);
 	g_assert (!object);
 	g_assert (err && err->code == CKR_USER_NOT_LOGGED_IN);
 	g_clear_error (&err);
 
 	/* Setup for auto login */
-	module_with_auth = gck_module_new (gck_module_get_functions (module), GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS);
-	g_assert (gck_module_get_options (module_with_auth) == (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
-	g_object_get (module_with_auth, "options", &value, NULL);
-	g_assert_cmpuint (value, ==, (GCK_AUTHENTICATE_TOKENS | GCK_AUTHENTICATE_OBJECTS));
-
-	g_signal_connect (module_with_auth, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
-
-	/* Create a new session */
-	slot_with_auth = g_object_new (GCK_TYPE_SLOT, "module", module_with_auth, "handle", gck_slot_get_handle (slot), NULL);
-	new_session = gck_slot_open_session (slot_with_auth, CKF_RW_SESSION, &err);
+	g_signal_connect (module, "authenticate-slot", G_CALLBACK (authenticate_token), GUINT_TO_POINTER (35));
+	new_session = gck_slot_open_session (slot, GCK_SESSION_READ_WRITE | GCK_SESSION_LOGIN_USER, NULL, &err);
 	SUCCESS_RES (new_session, err);
 
 	/* Try again to do something that requires a login */
@@ -235,14 +216,16 @@ DEFINE_TEST(auto_login)
 	g_object_unref (object);
 
 	/* We should now be logged in, try to log out */
-	ret = gck_session_logout (new_session, &err);
+	ret = gck_session_logout (new_session, NULL, &err);
 	SUCCESS_RES (ret, err);
 
+	g_object_unref (new_session);
+
 	/* Now try the same thing, but asyncronously */
-	gck_slot_open_session_async (slot_with_auth, CKF_RW_SESSION, NULL, NULL, NULL, fetch_async_result, &result);
+	gck_slot_open_session_async (slot, GCK_SESSION_READ_WRITE | GCK_SESSION_LOGIN_USER, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result != NULL);
-	new_session = gck_slot_open_session_finish (slot_with_auth, result, &err);
+	new_session = gck_slot_open_session_finish (slot, result, &err);
 	SUCCESS_RES (new_session, err);
 	g_object_unref (result);
 
@@ -256,11 +239,8 @@ DEFINE_TEST(auto_login)
 	g_object_unref (object);
 
 	/* We should now be logged in, try to log out */
-	ret = gck_session_logout (new_session, &err);
+	ret = gck_session_logout (new_session, NULL, &err);
 	SUCCESS_RES (ret, err);
 
 	g_object_unref (new_session);
-
-	g_object_unref (slot_with_auth);
-	g_object_unref (module_with_auth);
 }

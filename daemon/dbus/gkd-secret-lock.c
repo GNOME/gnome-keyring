@@ -58,7 +58,7 @@ gkd_secret_lock (GckObject *collection, DBusError *derr)
 	}
 
 	for (l = objects; l; l = g_list_next (l)) {
-		if (!gck_object_destroy (l->data, &error)) {
+		if (!gck_object_destroy (l->data, NULL, &error)) {
 			g_warning ("couldn't destroy credential object: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}

@@ -6,8 +6,9 @@ INCLUDES=	\
 	-I$(top_builddir) \
 	$(GTK_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
-	
+	$(GLIB_CFLAGS) \
+	-DGCK_API_SUBJECT_TO_CHANGE
+
 gnome_keyring@GCR_VERSION_SUFFIX@_SOURCES = \
 	gkr-tool.c gkr-tool.h \
 	gkr-tool-import.c \
@@ -18,9 +19,9 @@ gnome_keyring@GCR_VERSION_SUFFIX@_CFLAGS = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
 
 gnome_keyring@GCR_VERSION_SUFFIX@_LDADD = \
-	$(top_builddir)/gck/libgck.la \
 	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
 	$(top_builddir)/egg/libegg.la \
+	$(top_builddir)/gck/libgck.la \
 	$(GTHREAD_LIBS) \
 	$(GTK_LIBS) \
 	$(GCRYPT_LIBS) \

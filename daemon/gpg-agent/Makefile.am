@@ -3,7 +3,9 @@ INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
+	-DGCK_API_SUBJECT_TO_CHANGE \
 	$(GOBJECT_CFLAGS) \
+	$(GIO_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 # ------------------------------------------------------------------------------
@@ -33,5 +35,6 @@ gkd_gpg_agent_standalone_LDADD = \
 	$(top_builddir)/egg/libegg.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
+	$(GIO_LIBS) \
 	$(LIBGCRYPT_LIBS) \
 	$(GLIB_LIBS)

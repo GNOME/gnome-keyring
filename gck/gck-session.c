@@ -64,13 +64,15 @@ enum {
 	PROP_0,
 	PROP_MODULE,
 	PROP_HANDLE,
-	PROP_SLOT
+	PROP_SLOT,
+	PROP_OPTIONS,
 };
 
 struct _GckSessionPrivate {
 	GckSlot *slot;
 	GckModule *module;
 	CK_SESSION_HANDLE handle;
+	guint options;
 
 	/* Modified atomically */
 	gint discarded;
@@ -130,6 +132,9 @@ gck_session_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_SLOT:
 		g_value_take_object (value, gck_session_get_slot (self));
 		break;
+	case PROP_OPTIONS:
+		g_value_set_uint (value, gck_session_get_options (self));
+		break;
 	}
 }
 
@@ -155,6 +160,10 @@ gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!self->pv->slot);
 		self->pv->slot = g_value_dup_object (value);
 		g_return_if_fail (self->pv->slot);
+		break;
+	case PROP_OPTIONS:
+		g_return_if_fail (!self->pv->options);
+		self->pv->options = g_value_get_uint (value);
 		break;
 	}
 }
@@ -240,6 +249,15 @@ gck_session_class_init (GckSessionClass *klass)
 		                     GCK_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
+	 * GckSession:options:
+	 *
+	 * The options this session was opened with.
+	 */
+	g_object_class_install_property (gobject_class, PROP_OPTIONS,
+		g_param_spec_uint ("options", "Session Options", "Session Options",
+		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	/**
 	 * GckSession::discard-handle:
 	 * @session: The session.
 	 * @handle: The handle being discarded.
@@ -294,6 +312,7 @@ gck_session_info_free (GckSessionInfo *session_info)
  * gck_session_from_handle:
  * @slot: The slot which the session belongs to.
  * @handle: The raw PKCS#11 handle of the session.
+ * @options: Session options. Those which are used during opening a session have no effect.
  *
  * Initialize a GckSession object from a raw PKCS#11 session handle.
  * Usually one would use the gck_slot_open_session() function to
@@ -302,7 +321,7 @@ gck_session_info_free (GckSessionInfo *session_info)
  * Return value: The new GckSession object.
  **/
 GckSession*
-gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle)
+gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle, guint options)
 {
 	GckModule *module;
 	GckSession *session;
@@ -311,7 +330,8 @@ gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle)
 
 	module = gck_slot_get_module (slot);
 	session = g_object_new (GCK_TYPE_SESSION, "module", module,
-	                        "handle", handle, "slot", slot, NULL);
+	                        "handle", handle, "slot", slot,
+	                        "options", options, NULL);
 	g_object_unref (module);
 
 	return session;
@@ -436,6 +456,21 @@ gck_session_get_state (GckSession *self)
 	return info.state;
 }
 
+/**
+ * gck_session_get_options:
+ * @self: The session to get options from.
+ *
+ * Get the options this session was opened with.
+ *
+ * Return value: The session options.
+ **/
+guint
+gck_session_get_options (GckSession *self)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (self), 0);
+	return self->pv->options;
+}
+
 /* ---------------------------------------------------------------------------------------------
  * INIT PIN
  */
@@ -466,28 +501,6 @@ perform_init_pin (InitPin *args)
  * @self: Initialize PIN for this session's slot.
  * @pin: The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
- * @err: A location to return an error.
- *
- * Initialize the user's pin on this slot that this session is opened on.
- * According to the PKCS#11 standards, the session must be logged in with
- * the CKU_SO user type.
- *
- * This call may block for an indefinite period.
- *
- * Return value: Whether successful or not.
- **/
-gboolean
-gck_session_init_pin (GckSession *self, const guchar *pin, gsize n_pin,
-                       GError **err)
-{
-	return gck_session_init_pin_full (self, pin, n_pin, NULL, err);
-}
-
-/**
- * gck_session_init_pin_full:
- * @self: Initialize PIN for this session's slot.
- * @pin: The user's PIN, or NULL for protected authentication path.
- * @n_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -500,8 +513,8 @@ gck_session_init_pin (GckSession *self, const guchar *pin, gsize n_pin,
  * Return value: Whether successful or not.
  **/
 gboolean
-gck_session_init_pin_full (GckSession *self, const guchar *pin, gsize n_pin,
-                            GCancellable *cancellable, GError **err)
+gck_session_init_pin (GckSession *self, const guchar *pin, gsize n_pin,
+                      GCancellable *cancellable, GError **err)
 {
 	InitPin args = { GCK_ARGUMENTS_INIT, (guchar*)pin, n_pin };
 	return _gck_call_sync (self, perform_init_pin, NULL, &args, cancellable, err);
@@ -587,28 +600,6 @@ perform_set_pin (SetPin *args)
  * @n_old_pin: The length of the PIN.
  * @new_pin: The user's new PIN, or NULL for protected authentication path.
  * @n_new_pin: The length of the PIN.
- * @err: A location to return an error.
- *
- * Change the user's pin on this slot that this session is opened on.
- *
- * This call may block for an indefinite period.
- *
- * Return value: Whether successful or not.
- **/
-gboolean
-gck_session_set_pin (GckSession *self, const guchar *old_pin, gsize n_old_pin,
-                      const guchar *new_pin, gsize n_new_pin, GError **err)
-{
-	return gck_session_set_pin_full (self, old_pin, n_old_pin, new_pin, n_new_pin, NULL, err);
-}
-
-/**
- * gck_session_set_pin_full:
- * @self: Change the PIN for this session's slot.
- * @old_pin: The user's old PIN, or NULL for protected authentication path.
- * @n_old_pin: The length of the PIN.
- * @new_pin: The user's new PIN, or NULL for protected authentication path.
- * @n_new_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -619,9 +610,9 @@ gck_session_set_pin (GckSession *self, const guchar *old_pin, gsize n_old_pin,
  * Return value: Whether successful or not.
  **/
 gboolean
-gck_session_set_pin_full (GckSession *self, const guchar *old_pin, gsize n_old_pin,
-                           const guchar *new_pin, gsize n_new_pin, GCancellable *cancellable,
-                           GError **err)
+gck_session_set_pin (GckSession *self, const guchar *old_pin, gsize n_old_pin,
+                     const guchar *new_pin, gsize n_new_pin, GCancellable *cancellable,
+                     GError **err)
 {
 	SetPin args = { GCK_ARGUMENTS_INIT, (guchar*)old_pin, n_old_pin, (guchar*)new_pin, n_new_pin };
 	return _gck_call_sync (self, perform_set_pin, NULL, &args, cancellable, err);
@@ -705,26 +696,6 @@ perform_login (Login *args)
  * @user_type: The type of login user.
  * @pin: The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
- * @err: A location to return an error.
- *
- * Login the user on the session. This call may block
- * for an indefinite period.
- *
- * Return value: Whether successful or not.
- **/
-gboolean
-gck_session_login (GckSession *self, gulong user_type, const guchar *pin,
-                    gsize n_pin, GError **err)
-{
-	return gck_session_login_full (self, user_type, pin, n_pin, NULL, err);
-}
-
-/**
- * gck_session_login_full:
- * @self: Log in to this session.
- * @user_type: The type of login user.
- * @pin: The user's PIN, or NULL for protected authentication path.
- * @n_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -734,8 +705,8 @@ gck_session_login (GckSession *self, gulong user_type, const guchar *pin,
  * Return value: Whether successful or not.
  **/
 gboolean
-gck_session_login_full (GckSession *self, gulong user_type, const guchar *pin,
-                         gsize n_pin, GCancellable *cancellable, GError **err)
+gck_session_login (GckSession *self, gulong user_type, const guchar *pin,
+                   gsize n_pin, GCancellable *cancellable, GError **err)
 {
 	Login args = { GCK_ARGUMENTS_INIT, user_type, (guchar*)pin, n_pin };
 	return _gck_call_sync (self, perform_login, NULL, &args, cancellable, err);
@@ -800,21 +771,6 @@ perform_logout (GckArguments *args)
 /**
  * gck_session_logout:
  * @self: Logout of this session.
- * @err: A location to return an error.
- *
- * Log out of the session. This call may block for an indefinite period.
- *
- * Return value: Whether the logout was successful or not.
- **/
-gboolean
-gck_session_logout (GckSession *self, GError **err)
-{
-	return gck_session_logout_full (self, NULL, err);
-}
-
-/**
- * gck_session_logout_full:
- * @self: Logout of this session.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to return an error.
  *
@@ -823,7 +779,7 @@ gck_session_logout (GckSession *self, GError **err)
  * Return value: Whether the logout was successful or not.
  **/
 gboolean
-gck_session_logout_full (GckSession *self, GCancellable *cancellable, GError **err)
+gck_session_logout (GckSession *self, GCancellable *cancellable, GError **err)
 {
 	GckArguments args = GCK_ARGUMENTS_INIT;
 	return _gck_call_sync (self, perform_logout, NULL, &args, cancellable, err);
@@ -1147,7 +1103,7 @@ gck_session_find_objects_finish (GckSession *self, GAsyncResult *result, GError 
 
 typedef struct _GenerateKeyPair {
 	GckArguments base;
-	GckMechanism *mechanism;
+	GckMechanism mechanism;
 	GckAttributes *public_attrs;
 	GckAttributes *private_attrs;
 	CK_OBJECT_HANDLE public_key;
@@ -1157,7 +1113,6 @@ typedef struct _GenerateKeyPair {
 static void
 free_generate_key_pair (GenerateKeyPair *args)
 {
-	gck_mechanism_unref (args->mechanism);
 	gck_attributes_unref (args->public_attrs);
 	gck_attributes_unref (args->private_attrs);
 	g_free (args);
@@ -1175,11 +1130,37 @@ perform_generate_key_pair (GenerateKeyPair *args)
 	priv_attrs = _gck_attributes_commit_out (args->private_attrs, &n_priv_attrs);
 
 	return (args->base.pkcs11->C_GenerateKeyPair) (args->base.handle,
-	                                               (CK_MECHANISM_PTR)args->mechanism,
+	                                               (CK_MECHANISM_PTR)&(args->mechanism),
 	                                               pub_attrs, n_pub_attrs,
 	                                               priv_attrs, n_priv_attrs,
 	                                               &args->public_key,
 	                                               &args->private_key);
+}
+
+/**
+ * gck_session_generate_key_pair:
+ * @self: The session to use.
+ * @mech_type: The mechanism type to use for key generation.
+ * @public_attrs: Additional attributes for the generated public key.
+ * @private_attrs: Additional attributes for the generated private key.
+ * @public_key: A location to return the resulting public key.
+ * @private_key: A location to return the resulting private key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Generate a new key pair of public and private keys. This call may block for an
+ * indefinite period.
+ *
+ * Return value: TRUE if the operation succeeded.
+ **/
+gboolean
+gck_session_generate_key_pair (GckSession *self, gulong mech_type,
+                               GckAttributes *public_attrs, GckAttributes *private_attrs,
+                               GckObject **public_key, GckObject **private_key,
+                               GCancellable *cancellable, GError **err)
+{
+	GckMechanism mech = { mech_type, NULL, 0 };
+	return gck_session_generate_key_pair_full (self, &mech, public_attrs, private_attrs, public_key, private_key, cancellable, err);
 }
 
 /**
@@ -1204,7 +1185,7 @@ gck_session_generate_key_pair_full (GckSession *self, GckMechanism *mechanism,
                                      GckObject **public_key, GckObject **private_key,
                                      GCancellable *cancellable, GError **err)
 {
-	GenerateKeyPair args = { GCK_ARGUMENTS_INIT, mechanism, public_attrs, private_attrs, 0, 0 };
+	GenerateKeyPair args = { GCK_ARGUMENTS_INIT, GCK_MECHANISM_EMPTY, public_attrs, private_attrs, 0, 0 };
 	gboolean ret;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
@@ -1213,6 +1194,9 @@ gck_session_generate_key_pair_full (GckSession *self, GckMechanism *mechanism,
 	g_return_val_if_fail (private_attrs, FALSE);
 	g_return_val_if_fail (public_key, FALSE);
 	g_return_val_if_fail (private_key, FALSE);
+
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args.mechanism, mechanism, sizeof (args.mechanism));
 
 	_gck_attributes_lock (public_attrs);
 	if (public_attrs != private_attrs)
@@ -1257,12 +1241,14 @@ gck_session_generate_key_pair_async (GckSession *self, GckMechanism *mechanism,
 	g_return_if_fail (public_attrs);
 	g_return_if_fail (private_attrs);
 
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args->mechanism, mechanism, sizeof (args->mechanism));
+
 	args->public_attrs = gck_attributes_ref (public_attrs);
 	_gck_attributes_lock (public_attrs);
 	args->private_attrs = gck_attributes_ref (private_attrs);
 	if (public_attrs != private_attrs)
 		_gck_attributes_lock (private_attrs);
-	args->mechanism = gck_mechanism_ref (mechanism);
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
 }
@@ -1309,7 +1295,7 @@ gck_session_generate_key_pair_finish (GckSession *self, GAsyncResult *result,
 
 typedef struct _WrapKey {
 	GckArguments base;
-	GckMechanism *mechanism;
+	GckMechanism mechanism;
 	CK_OBJECT_HANDLE wrapper;
 	CK_OBJECT_HANDLE wrapped;
 	gpointer result;
@@ -1319,7 +1305,6 @@ typedef struct _WrapKey {
 static void
 free_wrap_key (WrapKey *args)
 {
-	gck_mechanism_unref (args->mechanism);
 	g_free (args->result);
 	g_free (args);
 }
@@ -1333,7 +1318,7 @@ perform_wrap_key (WrapKey *args)
 
 	/* Get the length of the result */
 	rv = (args->base.pkcs11->C_WrapKey) (args->base.handle,
-	                                     (CK_MECHANISM_PTR)args->mechanism,
+	                                     (CK_MECHANISM_PTR)&(args->mechanism),
 	                                     args->wrapper, args->wrapped,
 	                                     NULL, &args->n_result);
 	if (rv != CKR_OK)
@@ -1342,7 +1327,7 @@ perform_wrap_key (WrapKey *args)
 	/* And try again with a real buffer */
 	args->result = g_malloc0 (args->n_result);
 	return (args->base.pkcs11->C_WrapKey) (args->base.handle,
-	                                       (CK_MECHANISM_PTR)args->mechanism,
+	                                       (CK_MECHANISM_PTR)&(args->mechanism),
 	                                       args->wrapper, args->wrapped,
 	                                       args->result, &args->n_result);
 }
@@ -1363,10 +1348,10 @@ perform_wrap_key (WrapKey *args)
  **/
 gpointer
 gck_session_wrap_key (GckSession *self, GckObject *key, gulong mech_type,
-                       GckObject *wrapped, gsize *n_result, GError **err)
+                      GckObject *wrapped, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mech = { mech_type, NULL, 0 };
-	return gck_session_wrap_key_full (self, key, &mech, wrapped, n_result, NULL, err);
+	return gck_session_wrap_key_full (self, key, &mech, wrapped, n_result, cancellable, err);
 }
 
 /**
@@ -1389,7 +1374,7 @@ gck_session_wrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *m
                             GckObject *wrapped, gsize *n_result, GCancellable *cancellable,
                             GError **err)
 {
-	WrapKey args = { GCK_ARGUMENTS_INIT, mechanism, 0, 0, NULL, 0 };
+	WrapKey args = { GCK_ARGUMENTS_INIT, GCK_MECHANISM_EMPTY, 0, 0, NULL, 0 };
 	gboolean ret;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
@@ -1397,6 +1382,9 @@ gck_session_wrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *m
 	g_return_val_if_fail (GCK_IS_OBJECT (wrapped), FALSE);
 	g_return_val_if_fail (GCK_IS_OBJECT (wrapper), FALSE);
 	g_return_val_if_fail (n_result, FALSE);
+
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args.mechanism, mechanism, sizeof (args.mechanism));
 
 	g_object_get (wrapper, "handle", &args.wrapper, NULL);
 	g_return_val_if_fail (args.wrapper != 0, NULL);
@@ -1438,7 +1426,9 @@ gck_session_wrap_key_async (GckSession *self, GckObject *key, GckMechanism *mech
 	g_return_if_fail (GCK_IS_OBJECT (wrapped));
 	g_return_if_fail (GCK_IS_OBJECT (key));
 
-	args->mechanism = gck_mechanism_ref (mechanism);
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args->mechanism, mechanism, sizeof (args->mechanism));
+
 	g_object_get (key, "handle", &args->wrapper, NULL);
 	g_return_if_fail (args->wrapper != 0);
 	g_object_get (wrapped, "handle", &args->wrapped, NULL);
@@ -1487,7 +1477,7 @@ gck_session_wrap_key_finish (GckSession *self, GAsyncResult *result,
 
 typedef struct _UnwrapKey {
 	GckArguments base;
-	GckMechanism *mechanism;
+	GckMechanism mechanism;
 	GckAttributes *attrs;
 	CK_OBJECT_HANDLE wrapper;
 	gconstpointer input;
@@ -1498,7 +1488,6 @@ typedef struct _UnwrapKey {
 static void
 free_unwrap_key (UnwrapKey *args)
 {
-	gck_mechanism_unref (args->mechanism);
 	gck_attributes_unref (args->attrs);
 	g_free (args);
 }
@@ -1514,7 +1503,7 @@ perform_unwrap_key (UnwrapKey *args)
 	attrs = _gck_attributes_commit_out (args->attrs, &n_attrs);
 
 	return (args->base.pkcs11->C_UnwrapKey) (args->base.handle,
-	                                         (CK_MECHANISM_PTR)args->mechanism,
+	                                         (CK_MECHANISM_PTR)&(args->mechanism),
 	                                         args->wrapper, (CK_BYTE_PTR)args->input,
 	                                         args->n_input, attrs, n_attrs,
 	                                         &args->unwrapped);
@@ -1522,6 +1511,31 @@ perform_unwrap_key (UnwrapKey *args)
 
 /**
  * gck_session_unwrap_key:
+ * @self: The session to use.
+ * @wrapper: The key to use for unwrapping.
+ * @mech_type: The mechanism to use for unwrapping.
+ * @input: The wrapped data as a byte stream.
+ * @n_input: The length of the wrapped data.
+ * @attrs: Additional attributes for the unwrapped key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Unwrap a key from a byte stream. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The new unwrapped key or NULL if the operation failed.
+ **/
+GckObject*
+gck_session_unwrap_key (GckSession *self, GckObject *wrapper, gulong mech_type,
+                        gconstpointer input, gsize n_input, GckAttributes *attrs,
+                        GCancellable *cancellable, GError **err)
+{
+	GckMechanism mech = { mech_type, NULL, 0 };
+	return gck_session_unwrap_key_full (self, wrapper, &mech, input, n_input, attrs, cancellable, err);
+}
+
+/**
+ * gck_session_unwrap_key_full:
  * @self: The session to use.
  * @wrapper: The key to use for unwrapping.
  * @mechanism: The mechanism to use for unwrapping.
@@ -1537,17 +1551,20 @@ perform_unwrap_key (UnwrapKey *args)
  * Return value: The new unwrapped key or NULL if the operation failed.
  **/
 GckObject*
-gck_session_unwrap_key (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
-                        gconstpointer input, gsize n_input, GckAttributes *attrs,
-                        GCancellable *cancellable, GError **err)
+gck_session_unwrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
+                             gconstpointer input, gsize n_input, GckAttributes *attrs,
+                             GCancellable *cancellable, GError **err)
 {
-	UnwrapKey args = { GCK_ARGUMENTS_INIT, mechanism, attrs, 0, input, n_input, 0 };
+	UnwrapKey args = { GCK_ARGUMENTS_INIT, GCK_MECHANISM_EMPTY, attrs, 0, input, n_input, 0 };
 	gboolean ret;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
 	g_return_val_if_fail (GCK_IS_OBJECT (wrapper), FALSE);
 	g_return_val_if_fail (mechanism, FALSE);
 	g_return_val_if_fail (attrs, FALSE);
+
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args.mechanism, mechanism, sizeof (args.mechanism));
 
 	g_object_get (wrapper, "handle", &args.wrapper, NULL);
 	g_return_val_if_fail (args.wrapper != 0, NULL);
@@ -1593,7 +1610,9 @@ gck_session_unwrap_key_async (GckSession *self, GckObject *wrapper, GckMechanism
 	g_object_get (wrapper, "handle", &args->wrapper, NULL);
 	g_return_if_fail (args->wrapper != 0);
 
-	args->mechanism = gck_mechanism_ref (mechanism);
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args->mechanism, mechanism, sizeof (args->mechanism));
+
 	args->attrs = gck_attributes_ref (attrs);
 	args->input = input;
 	args->n_input = n_input;
@@ -1633,7 +1652,7 @@ gck_session_unwrap_key_finish (GckSession *self, GAsyncResult *result, GError **
 
 typedef struct _DeriveKey {
 	GckArguments base;
-	GckMechanism *mechanism;
+	GckMechanism mechanism;
 	GckAttributes *attrs;
 	CK_OBJECT_HANDLE key;
 	CK_OBJECT_HANDLE derived;
@@ -1642,7 +1661,6 @@ typedef struct _DeriveKey {
 static void
 free_derive_key (DeriveKey *args)
 {
-	gck_mechanism_unref (args->mechanism);
 	gck_attributes_unref (args->attrs);
 	g_free (args);
 }
@@ -1658,7 +1676,7 @@ perform_derive_key (DeriveKey *args)
 	attrs = _gck_attributes_commit_out (args->attrs, &n_attrs);
 
 	return (args->base.pkcs11->C_DeriveKey) (args->base.handle,
-	                                         (CK_MECHANISM_PTR)args->mechanism,
+	                                         (CK_MECHANISM_PTR)&(args->mechanism),
 	                                         args->key, attrs, n_attrs,
 	                                         &args->derived);
 }
@@ -1678,16 +1696,41 @@ perform_derive_key (DeriveKey *args)
  * Return value: The new derived key or NULL if the operation failed.
  **/
 GckObject*
-gck_session_derive_key (GckSession *self, GckObject *base, GckMechanism *mechanism,
+gck_session_derive_key (GckSession *self, GckObject *base, gulong mech_type,
                         GckAttributes *attrs, GCancellable *cancellable, GError **err)
 {
-	DeriveKey args = { GCK_ARGUMENTS_INIT, mechanism, attrs, 0, 0 };
+	GckMechanism mech = { mech_type, NULL, 0 };
+	return gck_session_derive_key_full (self, base, &mech, attrs, cancellable, err);
+}
+
+/**
+ * gck_session_derive_key_full:
+ * @self: The session to use.
+ * @base: The key to derive from.
+ * @mechanism: The mechanism to use for derivation.
+ * @attrs: Additional attributes for the derived key.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @err: A location to return an error, or NULL.
+ *
+ * Derive a key from another key. This call may block for an
+ * indefinite period.
+ *
+ * Return value: The new derived key or NULL if the operation failed.
+ **/
+GckObject*
+gck_session_derive_key_full (GckSession *self, GckObject *base, GckMechanism *mechanism,
+                             GckAttributes *attrs, GCancellable *cancellable, GError **err)
+{
+	DeriveKey args = { GCK_ARGUMENTS_INIT, GCK_MECHANISM_EMPTY, attrs, 0, 0 };
 	gboolean ret;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), FALSE);
 	g_return_val_if_fail (GCK_IS_OBJECT (base), FALSE);
 	g_return_val_if_fail (mechanism, FALSE);
 	g_return_val_if_fail (attrs, FALSE);
+
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args.mechanism, mechanism, sizeof (args.mechanism));
 
 	g_object_get (base, "handle", &args.key, NULL);
 	g_return_val_if_fail (args.key != 0, NULL);
@@ -1730,7 +1773,9 @@ gck_session_derive_key_async (GckSession *self, GckObject *base, GckMechanism *m
 	g_object_get (base, "handle", &args->key, NULL);
 	g_return_if_fail (args->key != 0);
 
-	args->mechanism = gck_mechanism_ref (mechanism);
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args->mechanism, mechanism, sizeof (args->mechanism));
+
 	args->attrs = gck_attributes_ref (attrs);
 	_gck_attributes_lock (attrs);
 
@@ -1916,7 +1961,7 @@ authenticate_complete (Authenticate *auth, GckArguments *base, CK_RV result)
 }
 
 static void
-authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object)
+authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object, guint options)
 {
 	GckModule *module;
 
@@ -1924,7 +1969,7 @@ authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object)
 	g_assert (GCK_IS_OBJECT (object));
 
 	module = gck_slot_get_module (slot);
-	if (gck_module_get_options (module) & GCK_AUTHENTICATE_OBJECTS) {
+	if ((options & GCK_SESSION_AUTHENTICATE) == GCK_SESSION_AUTHENTICATE) {
 		auth->state = AUTHENTICATE_CAN;
 		auth->protected_auth = gck_slot_has_flags (slot, CKF_PROTECTED_AUTHENTICATION_PATH);
 		auth->module = module;
@@ -1951,7 +1996,7 @@ typedef struct _Crypt {
 
 	/* Input */
 	CK_OBJECT_HANDLE key;
-	GckMechanism *mech;
+	GckMechanism mechanism;
 	guchar *input;
 	CK_ULONG n_input;
 
@@ -1973,7 +2018,7 @@ perform_crypt (Crypt *args)
 	g_assert (!args->n_result);
 
 	/* Initialize the crypt operation */
-	rv = (args->init_func) (args->base.handle, (CK_MECHANISM_PTR)args->mech, args->key);
+	rv = (args->init_func) (args->base.handle, (CK_MECHANISM_PTR)&(args->mechanism), args->key);
 	if (rv != CKR_OK)
 		return rv;
 
@@ -2005,7 +2050,6 @@ static void
 free_crypt (Crypt *args)
 {
 	g_free (args->input);
-	gck_mechanism_unref (args->mech);
 	g_free (args->result);
 	g_free (args);
 }
@@ -2027,7 +2071,8 @@ crypt_sync (GckSession *self, GckObject *key, GckMechanism *mechanism, const guc
 	g_object_get (key, "handle", &args.key, NULL);
 	g_return_val_if_fail (args.key != 0, NULL);
 
-	args.mech = mechanism;
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args.mechanism, mechanism, sizeof (args.mechanism));
 
 	/* No need to copy in this case */
 	args.input = (guchar*)input;
@@ -2037,7 +2082,7 @@ crypt_sync (GckSession *self, GckObject *key, GckMechanism *mechanism, const guc
 	args.complete_func = complete_func;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args.auth, slot, key);
+	authenticate_init (&args.auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	if (!_gck_call_sync (self, perform_crypt, complete_crypt, &args, cancellable, err)) {
@@ -2065,7 +2110,8 @@ crypt_async (GckSession *self, GckObject *key, GckMechanism *mechanism, const gu
 	g_object_get (key, "handle", &args->key, NULL);
 	g_return_if_fail (args->key != 0);
 
-	args->mech = gck_mechanism_ref (mechanism);
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args->mechanism, mechanism, sizeof (args->mechanism));
 
 	args->input = input && n_input ? g_memdup (input, n_input) : NULL;
 	args->n_input = n_input;
@@ -2074,7 +2120,7 @@ crypt_async (GckSession *self, GckObject *key, GckMechanism *mechanism, const gu
 	args->complete_func = complete_func;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args->auth, slot, key);
+	authenticate_init (&args->auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
@@ -2120,10 +2166,10 @@ crypt_finish (GckSession *self, GAsyncResult *result, gsize *n_result, GError **
  */
 guchar*
 gck_session_encrypt (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                      gsize n_input, gsize *n_result, GError **err)
+                      gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
-	return gck_session_encrypt_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
+	return gck_session_encrypt_full (self, key, &mechanism, input, n_input, n_result, cancellable, err);
 }
 
 /**
@@ -2237,10 +2283,10 @@ gck_session_encrypt_finish (GckSession *self, GAsyncResult *result, gsize *n_res
  */
 guchar*
 gck_session_decrypt (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                      gsize n_input, gsize *n_result, GError **err)
+                      gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
-	return gck_session_decrypt_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
+	return gck_session_decrypt_full (self, key, &mechanism, input, n_input, n_result, cancellable, err);
 }
 
 /**
@@ -2352,7 +2398,7 @@ gck_session_decrypt_finish (GckSession *self, GAsyncResult *result,
  */
 guchar*
 gck_session_sign (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                   gsize n_input, gsize *n_result, GError **err)
+                   gsize n_input, gsize *n_result, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
 	return gck_session_sign_full (self, key, &mechanism, input, n_input, n_result, NULL, err);
@@ -2458,7 +2504,7 @@ typedef struct _Verify {
 
 	/* Input */
 	CK_OBJECT_HANDLE key;
-	GckMechanism *mech;
+	GckMechanism mechanism;
 	guchar *input;
 	CK_ULONG n_input;
 	guchar *signature;
@@ -2472,7 +2518,7 @@ perform_verify (Verify *args)
 	CK_RV rv;
 
 	/* Initialize the crypt operation */
-	rv = (args->base.pkcs11->C_VerifyInit) (args->base.handle, (CK_MECHANISM_PTR)args->mech, args->key);
+	rv = (args->base.pkcs11->C_VerifyInit) (args->base.handle, (CK_MECHANISM_PTR)&(args->mechanism), args->key);
 	if (rv != CKR_OK)
 		return rv;
 
@@ -2500,7 +2546,6 @@ free_verify (Verify *args)
 {
 	g_free (args->input);
 	g_free (args->signature);
-	gck_mechanism_unref (args->mech);
 	g_free (args);
 }
 
@@ -2522,7 +2567,7 @@ free_verify (Verify *args)
  */
 gboolean
 gck_session_verify (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
-                     gsize n_input, const guchar *signature, gsize n_signature, GError **err)
+                     gsize n_input, const guchar *signature, gsize n_signature, GCancellable *cancellable, GError **err)
 {
 	GckMechanism mechanism = { mech_type, NULL, 0 };
 	return gck_session_verify_full (self, key, &mechanism, input, n_input,
@@ -2561,7 +2606,8 @@ gck_session_verify_full (GckSession *self, GckObject *key, GckMechanism *mechani
 	g_object_get (key, "handle", &args.key, NULL);
 	g_return_val_if_fail (args.key != 0, FALSE);
 
-	args.mech = mechanism;
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args.mechanism, mechanism, sizeof (args.mechanism));
 
 	/* No need to copy in this case */
 	args.input = (guchar*)input;
@@ -2570,7 +2616,7 @@ gck_session_verify_full (GckSession *self, GckObject *key, GckMechanism *mechani
 	args.n_signature = n_signature;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args.auth, slot, key);
+	authenticate_init (&args.auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	return _gck_call_sync (self, perform_verify, complete_verify, &args, cancellable, err);
@@ -2607,7 +2653,8 @@ gck_session_verify_async (GckSession *self, GckObject *key, GckMechanism *mechan
 	g_object_get (key, "handle", &args->key, NULL);
 	g_return_if_fail (args->key != 0);
 
-	args->mech = gck_mechanism_ref (mechanism);
+	/* Shallow copy of the mechanism structure */
+	memcpy (&args->mechanism, mechanism, sizeof (args->mechanism));
 
 	args->input = input && n_input ? g_memdup (input, n_input) : NULL;
 	args->n_input = n_input;
@@ -2615,7 +2662,7 @@ gck_session_verify_async (GckSession *self, GckObject *key, GckMechanism *mechan
 	args->n_signature = n_signature;
 
 	slot = gck_session_get_slot (self);
-	authenticate_init (&args->auth, slot, key);
+	authenticate_init (&args->auth, slot, key, self->pv->options);
 	g_object_unref (slot);
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);

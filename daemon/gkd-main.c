@@ -90,6 +90,13 @@
 #	endif
 #endif
 
+/*
+ * If --login is used and then daemon is not initialized within LOGIN_TIMEOUT
+ * seconds, then we exit. See on_login_timeout() below.
+ */
+
+#define LOGIN_TIMEOUT 120
+
 static gchar* run_components = DEFAULT_COMPONENTS;
 static gboolean pkcs11_started = FALSE;
 static gboolean secrets_started = FALSE;
@@ -103,6 +110,7 @@ static gboolean run_for_start = FALSE;
 static gboolean run_for_replace = FALSE;
 static gchar* login_password = NULL;
 static gchar* control_directory = NULL;
+static guint timeout_id = 0;
 static gboolean initialization_completed = FALSE;
 static gboolean sig_thread_valid = FALSE;
 static pthread_t sig_thread;
@@ -120,7 +128,7 @@ static GOptionEntry option_entries[] = {
 	  "Run for a user login. Read login password from stdin", NULL },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
 	  "The optional components to run", DEFAULT_COMPONENTS },
-	{ "control-directory", 'l', 0, G_OPTION_ARG_FILENAME, &control_directory,
+	{ "control-directory", 'C', 0, G_OPTION_ARG_FILENAME, &control_directory,
 	  "The directory for sockets and control data", NULL },
 	{ NULL }
 };
@@ -673,6 +681,8 @@ gkr_daemon_initialize_steps (const gchar *components)
 
 	if (!initialization_completed) {
 		initialization_completed = TRUE;
+		if (timeout_id)
+			g_source_remove (timeout_id);
 
 		/* Initialize new style PKCS#11 components */
 		if (!gkd_pkcs11_initialize ())
@@ -684,7 +694,7 @@ gkr_daemon_initialize_steps (const gchar *components)
 		 */
 		if (login_password) {
 			if (!gkd_login_unlock (login_password))
-				g_message ("Failed to unlock login on startup");
+				g_message ("failed to unlock login keyring on startup");
 			egg_secure_strclear (login_password);
 		}
 
@@ -734,6 +744,14 @@ gkd_main_complete_initialization (const gchar *components)
 	gkr_daemon_initialize_steps (components);
 }
 
+static gboolean
+on_login_timeout (gpointer data)
+{
+	if (!initialization_completed)
+		cleanup_and_exit (0);
+	return FALSE;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -743,7 +761,7 @@ main (int argc, char *argv[])
 	/*
 	 * The gnome-keyring startup is not as simple as I wish it could be.
 	 *
-	 * It's often started in the primidoral stages of a session, where
+	 * It's often started in the primordial stages of a session, where
 	 * there's no DBus, and no proper X display. This is the strange world
 	 * of PAM.
 	 *
@@ -822,6 +840,7 @@ main (int argc, char *argv[])
 	if (run_for_login) {
 		login_password = read_login_password (STDIN);
 		atexit (clear_login_password);
+		timeout_id = g_timeout_add_seconds (LOGIN_TIMEOUT, (GSourceFunc) on_login_timeout, NULL);
 
 	/* Not a login daemon. Startup stuff now.*/
 	} else {

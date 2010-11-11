@@ -68,7 +68,7 @@ prepare_change_prompt (GkdSecretChange *self, GckObject *collection, gboolean fi
 
 	prompt = GKU_PROMPT (self);
 
-	data = gck_object_get_data (collection, CKA_LABEL, &n_data, &error);
+	data = gck_object_get_data (collection, CKA_LABEL, NULL, &n_data, &error);
 	if (!data) {
 		g_warning ("couldn't get label for collection: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -295,13 +295,13 @@ gkd_secret_change_with_secrets (GckObject *collection, GkdSecretSecret *original
 cleanup:
 	if (ocred) {
 		/* Always destroy the original credential */
-		gck_object_destroy (ocred, NULL);
+		gck_object_destroy (ocred, NULL, NULL);
 		g_object_unref (ocred);
 	}
 	if (mcred) {
 		/* Destroy the master credential if failed */
 		if (!result)
-			gck_object_destroy (mcred, NULL);
+			gck_object_destroy (mcred, NULL, NULL);
 		g_object_unref (mcred);
 	}
 

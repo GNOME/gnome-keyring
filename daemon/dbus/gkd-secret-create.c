@@ -306,7 +306,7 @@ gkd_secret_create_with_secret (GckAttributes *attrs, GkdSecretSecret *master,
 		return FALSE;
 	}
 
-	identifier = gck_object_get_data (collection, CKA_ID, &n_identifier, &error);
+	identifier = gck_object_get_data (collection, CKA_ID, NULL, &n_identifier, &error);
 	g_object_unref (collection);
 
 	if (!identifier) {

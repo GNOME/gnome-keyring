@@ -139,8 +139,8 @@ find_saved_items (GckSession *session, GckAttributes *attrs)
 		return NULL;
 	}
 
-	data = gck_object_get_data (search, CKA_G_MATCHED, &n_data, &error);
-	gck_object_destroy (search, NULL);
+	data = gck_object_get_data (search, CKA_G_MATCHED, NULL, &n_data, &error);
+	gck_object_destroy (search, NULL, NULL);
 	g_object_unref (search);
 
 	if (data == NULL) {
@@ -188,7 +188,7 @@ do_save_password (GckSession *session, const gchar *keyid, const gchar *descript
 	/* Find a previously stored object like this, and replace if so */
 	previous = find_saved_items (session, attrs);
 	if (previous) {
-		identifier = gck_object_get_data (previous->data, CKA_ID, &n_identifier, NULL);
+		identifier = gck_object_get_data (previous->data, CKA_ID, NULL, &n_identifier, NULL);
 		if (identifier != NULL)
 			gck_attributes_add_data (attrs, CKA_ID, identifier, n_identifier);
 		g_free (identifier);
@@ -234,7 +234,7 @@ do_clear_password (GckSession *session, const gchar *keyid)
 
 	/* Delete first item */
 	for (l = objects; l; l = g_list_next (l)) {
-		if (gck_object_destroy (l->data, &error)) {
+		if (gck_object_destroy (l->data, NULL, &error)) {
 			break; /* Only delete the first item */
 		} else {
 			g_warning ("couldn't clear gpg agent password: %s",

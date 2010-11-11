@@ -380,24 +380,6 @@ perform_destroy (Destroy *args)
 /**
  * gck_object_destroy:
  * @self: The object to destroy.
- * @err: A location to return an error.
- *
- * Destroy a PKCS#11 object, deleting it from storage or the session.
- * This call may block for an indefinite period.
- *
- * Return value: Whether the call was successful or not.
- **/
-gboolean
-gck_object_destroy (GckObject *self, GError **err)
-{
-	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
-	g_return_val_if_fail (!err || !*err, FALSE);
-	return gck_object_destroy_full (self, NULL, err);
-}
-
-/**
- * gck_object_destroy_full:
- * @self: The object to destroy.
  * @cancellable: Optional cancellable object, or NULL to ignore.
  * @err: A location to return an error.
  *
@@ -407,7 +389,7 @@ gck_object_destroy (GckObject *self, GError **err)
  * Return value: Whether the call was successful or not.
  **/
 gboolean
-gck_object_destroy_full (GckObject *self, GCancellable *cancellable, GError **err)
+gck_object_destroy (GckObject *self, GCancellable *cancellable, GError **err)
 {
 	Destroy args = { GCK_ARGUMENTS_INIT, 0 };
 
@@ -669,29 +651,28 @@ free_get_attributes (GetAttributes *args)
  * The result must be unreffed when you're finished with it.
  **/
 GckAttributes*
-gck_object_get (GckObject *self, GError **err, ...)
+gck_object_get (GckObject *self, GCancellable *cancellable, GError **err, ...)
 {
 	GckAttributes *attrs;
+	GArray *array;
 	va_list va;
 	gulong type;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
 	g_return_val_if_fail (!err || !*err, NULL);
 
-	attrs = gck_attributes_new ();
+	array = g_array_new (FALSE, TRUE, sizeof (gulong));
 	va_start (va, err);
 	for (;;) {
 		type = va_arg (va, gulong);
 		if (type == GCK_INVALID)
 			break;
-		gck_attributes_add_invalid (attrs, type);
+		g_array_append_val (array, type);
 	}
 	va_end (va);
 
-	if (!gck_object_get_full (self, attrs, NULL, err)) {
-		gck_attributes_unref (attrs);
-		return NULL;
-	}
+	attrs = gck_object_get_full (self, (gulong*)array->data, array->len, cancellable, err);
+	g_array_free (array, TRUE);
 
 	return attrs;
 }
@@ -699,7 +680,8 @@ gck_object_get (GckObject *self, GError **err, ...)
 /**
  * gck_object_get_full:
  * @self: The object to get attributes from.
- * @attrs: The attributes to get, with the types filled in.
+ * @attr_types: The types of the attributes to get.
+ * @n_attr_types: The number of attr_types
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to store an error.
  *
@@ -713,15 +695,21 @@ gck_object_get (GckObject *self, GError **err, ...)
  * or NULL if not.
  **/
 GckAttributes*
-gck_object_get_full (GckObject *self, GckAttributes *attrs,
+gck_object_get_full (GckObject *self, gulong *attr_types, guint n_attr_types,
                       GCancellable *cancellable, GError **err)
 {
 	GetAttributes args;
+	GckAttributes *attrs;
 	gboolean ret;
+	guint i;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
-	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (n_attr_types, NULL);
 	g_return_val_if_fail (!err || !*err, NULL);
+
+	attrs = gck_attributes_new ();
+	for (i = 0; i < n_attr_types; ++i)
+		gck_attributes_add_empty (attrs, attr_types[i]);
 
 	_gck_attributes_lock (attrs);
 
@@ -732,13 +720,19 @@ gck_object_get_full (GckObject *self, GckAttributes *attrs,
 	ret = _gck_call_sync (self->pv->session, perform_get_attributes, NULL, &args, cancellable, err);
 	_gck_attributes_unlock (attrs);
 
-	return ret ? attrs : NULL;
+	if (!ret) {
+		gck_attributes_unref (attrs);
+		attrs = NULL;
+	}
+
+	return attrs;
 }
 
 /**
  * gck_object_get_async:
  * @self: The object to get attributes from.
- * @attrs: The attributes to get, initialized with their types.
+ * @attr_types: The types of the attributes to get.
+ * @n_attr_types: The number of attr_types
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: A callback which is called when the operation completes.
  * @user_data: Data to be passed to the callback.
@@ -751,19 +745,25 @@ gck_object_get_full (GckObject *self, GckAttributes *attrs,
  * This call returns immediately and completes asynchronously.
  **/
 void
-gck_object_get_async (GckObject *self, GckAttributes *attrs, GCancellable *cancellable,
-                       GAsyncReadyCallback callback, gpointer user_data)
+gck_object_get_async (GckObject *self, gulong *attr_types, guint n_attr_types, GCancellable *cancellable,
+                      GAsyncReadyCallback callback, gpointer user_data)
 {
+	GckAttributes *attrs;
 	GetAttributes *args;
+	guint i;
 
 	g_return_if_fail (GCK_IS_OBJECT (self));
-	g_return_if_fail (attrs);
+	g_return_if_fail (n_attr_types);
+
+	attrs = gck_attributes_new ();
+	for (i = 0; i < n_attr_types; ++i)
+		gck_attributes_add_empty (attrs, attr_types[i]);
 
 	args = _gck_call_async_prep (self->pv->session, self, perform_get_attributes,
 	                             NULL, sizeof (*args), free_get_attributes);
 
 	_gck_attributes_lock (attrs);
-	args->attrs = gck_attributes_ref (attrs);
+	args->attrs = attrs;
 	args->object = self->pv->handle;
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
@@ -787,6 +787,7 @@ GckAttributes*
 gck_object_get_finish (GckObject *self, GAsyncResult *result, GError **err)
 {
 	GetAttributes *args;
+	GckAttributes *attrs;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
 	g_return_val_if_fail (GCK_IS_CALL (result), NULL);
@@ -794,11 +795,14 @@ gck_object_get_finish (GckObject *self, GAsyncResult *result, GError **err)
 
 	args = _gck_call_arguments (result, GetAttributes);
 	_gck_attributes_unlock (args->attrs);
+	attrs = gck_attributes_ref (args->attrs);
 
-	if (!_gck_call_basic_finish (result, err))
-		return NULL;
+	if (!_gck_call_basic_finish (result, err)) {
+		gck_attributes_unref (attrs);
+		attrs = NULL;
+	}
 
-	return args->attrs;
+	return attrs;
 }
 
 /* ---------------------------------------------------------------------------------
@@ -873,13 +877,14 @@ free_get_attribute_data (GetAttributeData *args)
  * Return value: The resulting PKCS#11 attribute data, or NULL if an error occurred.
  **/
 gpointer
-gck_object_get_data (GckObject *self, gulong attr_type, gsize *n_data, GError **err)
+gck_object_get_data (GckObject *self, gulong attr_type, GCancellable *cancellable,
+                     gsize *n_data, GError **err)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
 	g_return_val_if_fail (n_data, NULL);
 	g_return_val_if_fail (!err || !*err, NULL);
 
-	return gck_object_get_data_full (self, attr_type, g_realloc, NULL, n_data, err);
+	return gck_object_get_data_full (self, attr_type, g_realloc, cancellable, n_data, err);
 }
 
 /**
@@ -1042,29 +1047,6 @@ free_set_template (set_template_args *args)
  * @self: The object to set an attribute template on.
  * @attr_type: The attribute template type.
  * @attrs: The attribute template.
- * @err: A location to store an error.
- *
- * Set an attribute template on the object. The attr_type must be for
- * an attribute which contains a template.
- *
- * This call may block for an indefinite period.
- *
- * Return value: TRUE if the operation succeeded.
- **/
-gboolean
-gck_object_set_template (GckObject *self, gulong attr_type, GckAttributes *attrs,
-                          GError **err)
-{
-	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
-	g_return_val_if_fail (!err || !*err, FALSE);
-	return gck_object_set_template_full (self, attr_type, attrs, NULL, err);
-}
-
-/**
- * gck_object_set_template_full:
- * @self: The object to set an attribute template on.
- * @attr_type: The attribute template type.
- * @attrs: The attribute template.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to store an error.
  *
@@ -1076,8 +1058,8 @@ gck_object_set_template (GckObject *self, gulong attr_type, GckAttributes *attrs
  * Return value: TRUE if the operation succeeded.
  **/
 gboolean
-gck_object_set_template_full (GckObject *self, gulong attr_type, GckAttributes *attrs,
-                               GCancellable *cancellable, GError **err)
+gck_object_set_template (GckObject *self, gulong attr_type, GckAttributes *attrs,
+                         GCancellable *cancellable, GError **err)
 {
 	set_template_args args;
 	gboolean ret = FALSE;
@@ -1225,28 +1207,6 @@ free_get_template (get_template_args *args)
 /**
  * gck_object_get_template:
  * @self: The object to get an attribute template from.
- * @attr_type: The attribute template type.
- * @err: A location to store an error.
- *
- * Get an attribute template from the object. The attr_type must be for
- * an attribute which returns a template.
- *
- * This call may block for an indefinite period.
- *
- * Return value: The resulting PKCS#11 attribute template, or NULL if an error occurred.
- **/
-GckAttributes*
-gck_object_get_template (GckObject *self, gulong attr_type, GError **err)
-{
-	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
-	g_return_val_if_fail (!err || !*err, NULL);
-
-	return gck_object_get_template_full (self, attr_type, NULL, err);
-}
-
-/**
- * gck_object_get_template_full:
- * @self: The object to get an attribute template from.
  * @attr_type: The template attribute type.
  * @cancellable: Optional cancellation object, or NULL.
  * @err: A location to store an error.
@@ -1259,8 +1219,8 @@ gck_object_get_template (GckObject *self, gulong attr_type, GError **err)
  * Return value: The resulting PKCS#11 attribute template, or NULL if an error occurred.
  **/
 GckAttributes*
-gck_object_get_template_full (GckObject *self, gulong attr_type,
-                               GCancellable *cancellable, GError **err)
+gck_object_get_template (GckObject *self, gulong attr_type,
+                         GCancellable *cancellable, GError **err)
 {
 	get_template_args args;
 	gboolean ret;
