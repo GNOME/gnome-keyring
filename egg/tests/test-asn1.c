@@ -53,12 +53,6 @@ const gchar ENUM_TWO[] =           "\x0A\x01\x02";
 /* ENUM with value = 3 */
 const gchar ENUM_THREE[] =           "\x0A\x01\x03";
 
-/* SEQUENCE OF with one INTEGER = 1 */
-const gchar SEQOF_ONE[] =  "\x30\x03\x02\x01\x01";
-
-/* SEQUENCE OF with two INTEGER = 1, 2 */
-const gchar SEQOF_TWO[] =  "\x30\x06\x02\x01\x01\x02\x01\x02";
-
 #define XL(x) G_N_ELEMENTS (x) - 1
 
 DEFINE_TEST(asn1_boolean)
@@ -435,6 +429,12 @@ DEFINE_TEST(asn1_append)
 	gpointer data;
 	gsize n_data;
 
+	/* SEQUENCE OF with one INTEGER = 1 */
+	const gchar SEQOF_ONE[] =  "\x30\x03\x02\x01\x01";
+
+	/* SEQUENCE OF with two INTEGER = 1, 2 */
+	const gchar SEQOF_TWO[] =  "\x30\x06\x02\x01\x01\x02\x01\x02";
+
 	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSeqOf", SEQOF_ONE, XL (SEQOF_ONE));
 	g_assert (asn);
 
@@ -450,6 +450,72 @@ DEFINE_TEST(asn1_append)
 
 	g_assert (n_data == XL (SEQOF_TWO));
 	g_assert (memcmp (data, SEQOF_TWO, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_append_and_clear)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestSeqOf");
+	g_assert (asn);
+
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
+
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 2))
+		g_assert_not_reached ();
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 3))
+		g_assert_not_reached ();
+
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 2);
+
+	egg_asn1x_clear (asn);
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
+
+	egg_asn1x_destroy (asn);
+	g_free (data);
+}
+
+DEFINE_TEST(asn1_setof)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	/* SEQUENCE OF with one INTEGER = 3 */
+	const gchar SETOF_ONE[] =  "\x31\x03\x02\x01\x03";
+
+	/* SET OF with two INTEGER = 1, 3, 8 */
+	const gchar SETOF_THREE[] =  "\x31\x09\x02\x01\x01\x02\x01\x03\x02\x01\x08";
+
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSetOf", SETOF_ONE, XL (SETOF_ONE));
+	g_assert (asn);
+
+	/* Add integer 1, in SET OF DER should sort to front */
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 1))
+		g_assert_not_reached ();
+
+	/* Add integer 8, in SET OF DER should sort to back */
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 8))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	if (!data) {
+		g_printerr ("%s\n", egg_asn1x_message (asn));
+		g_assert_not_reached ();
+	}
+
+	g_assert (n_data == XL (SETOF_THREE));
+	g_assert (memcmp (data, SETOF_THREE, n_data) == 0);
 
 	g_free (data);
 	egg_asn1x_destroy (asn);

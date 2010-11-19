@@ -202,11 +202,19 @@ DEFINE_TEST(element_length_content)
 	content = egg_asn1x_element_content (buffer, length, &n_content);
 	g_assert (content);
 	g_assert_cmpuint (n_content, ==, 11);
-	
+
 	content = egg_asn1x_element_content (content, n_content, &n_content);
 	g_assert (content);
 	g_assert_cmpuint (n_content, ==, 9);	
 	g_assert (memcmp (content, "SOME DATA", 9) == 0);
+
+	const char *BAD_ASN_TAG = "\x00";
+	content = egg_asn1x_element_content (BAD_ASN_TAG, 1, &n_content);
+	g_assert (content == NULL);
+
+	const char *BAD_ASN_LENGTH = "\x30\x80";
+	content = egg_asn1x_element_content (BAD_ASN_LENGTH, 2, &n_content);
+	g_assert (content == NULL);
 
 	egg_asn1x_destroy (asn);
 	g_free (buffer);
@@ -295,6 +303,10 @@ static const TimeTestData generalized_time_test_data[] = {
 	{ "20070725013528+1130", 1185368728 },
 	{ "20070725Z", 1185321600 },
 	{ "20070725+0000", 1185321600 },
+
+	/* Bad ones */
+	{ "200707", -1 },
+
 	{ NULL, 0 }
 };
 
@@ -312,7 +324,10 @@ static const TimeTestData utc_time_test_data[] = {
 	{ "070725013528+1130", 1185368728 },
 	{ "070725Z", 1185321600 },
 	{ "070725+0000", 1185321600 },
-	
+
+	/* Bad ones */
+	{ "0707", -1 },
+
 	{ NULL, 0 }
 };
 

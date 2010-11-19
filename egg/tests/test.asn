@@ -42,6 +42,8 @@ TestAnySeq ::= SEQUENCE {
 
 TestSeqOf ::= SEQUENCE OF INTEGER
 
+TestSetOf ::= SET OF INTEGER
+
 TestEnumerated ::= ENUMERATED {
 	valueZero         (0),
 	valueOne          (1),

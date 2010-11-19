@@ -1390,6 +1390,7 @@ traverse_and_sort_set_of (GNode *node, gpointer user_data)
 	gsize n_data;
 	Atlv *tlv;
 	GNode *child;
+	GNode *next;
 
 	g_assert (allocator);
 
@@ -1398,7 +1399,9 @@ traverse_and_sort_set_of (GNode *node, gpointer user_data)
 		return FALSE;
 
 	bufs = NULL;
-	for (child = node->children; child; child = child->next) {
+	for (child = node->children; child; child = next) {
+		next = child->next;
+
 		tlv = anode_get_tlv_data (child);
 		if (!tlv)
 			continue;
@@ -2282,6 +2285,8 @@ egg_asn1x_name (GNode *node)
 guint
 egg_asn1x_count (GNode *node)
 {
+	guint result = 0;
+	GNode *child;
 	gint type;
 
 	g_return_val_if_fail (node, 0);
@@ -2292,7 +2297,12 @@ egg_asn1x_count (GNode *node)
 		return 0;
 	}
 
-	return g_node_n_children (node);
+	for (child = node->children; child; child = child->next) {
+		if (egg_asn1x_have (child))
+			++result;
+	}
+
+	return result;
 }
 
 GNode*
