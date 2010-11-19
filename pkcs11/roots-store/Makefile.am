@@ -17,7 +17,8 @@ noinst_LTLIBRARIES = \
 libgkm_roots_store_la_SOURCES = \
 	gkm-roots-store.h \
 	gkm-roots-module.c gkm-roots-module.h \
-	gkm-roots-certificate.c gkm-roots-certificate.h
+	gkm-roots-certificate.c gkm-roots-certificate.h \
+	gkm-roots-trust.c gkm-roots-trust.h
 
 # ------------------------------------------------------------------------------
 # The standalone module

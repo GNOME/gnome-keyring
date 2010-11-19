@@ -23,7 +23,7 @@
 
 #include "gkm-xdg-module.h"
 #include "gkm-xdg-store.h"
-#include "gkm-xdg-trust.h"
+#include "gkm-xdg-assertion.h"
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
@@ -31,6 +31,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-hex.h"
 
+#include "gkm/gkm-assertion.h"
 #include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-transaction.h"
@@ -105,7 +106,7 @@ type_from_path (const gchar *path)
 		return 0;
 
 	if (g_str_equal (ext, ".trust"))
-		return GKM_XDG_TYPE_TRUST;
+		return GKM_XDG_TYPE_ASSERTION;
 
 #if 0
 	else if (strcmp (extension, ".pkcs8") == 0)
@@ -310,11 +311,18 @@ gkm_xdg_module_real_add_token_object (GkmModule *module, GkmTransaction *transac
                                       GkmObject *object)
 {
 	GkmXdgModule *self;
+	GkmTrust *trust;
 	gchar *basename;
 	gchar *actual;
 	gchar *filename;
 
 	self = GKM_XDG_MODULE (module);
+
+	/* Always serialize the trust object for each assertion */
+	if (GKM_XDG_IS_ASSERTION (object)) {
+		trust = gkm_assertion_get_trust_object (GKM_ASSERTION (object));
+		object = GKM_OBJECT (trust);
+	}
 
 	/* Double check that the object is in fact serializable */
 	if (!GKM_IS_SERIALIZABLE (object)) {
@@ -344,9 +352,16 @@ gkm_xdg_module_real_store_token_object (GkmModule *module, GkmTransaction *trans
                                         GkmObject *object)
 {
 	GkmXdgModule *self = GKM_XDG_MODULE (module);
+	GkmTrust *trust;
 	const gchar *filename;
 	gpointer data;
 	gsize n_data;
+
+	/* Always serialize the trust object for each assertion */
+	if (GKM_XDG_IS_ASSERTION (object)) {
+		trust = gkm_assertion_get_trust_object (GKM_ASSERTION (object));
+		object = GKM_OBJECT (trust);
+	}
 
 	/* Double check that the object is in fact serializable */
 	if (!GKM_IS_SERIALIZABLE (object)) {
@@ -375,6 +390,9 @@ gkm_xdg_module_real_remove_token_object (GkmModule *module, GkmTransaction *tran
 {
 	GkmXdgModule *self = GKM_XDG_MODULE (module);
 	const gchar *filename;
+
+	/* XXXX; need to implement for assertions */
+	g_assert_not_reached ();
 
 	filename = lookup_filename_for_object (object);
 	g_return_if_fail (filename != NULL);
@@ -409,8 +427,8 @@ gkm_xdg_module_init (GkmXdgModule *self)
 	/* Our default token info, updated as module runs */
 	memcpy (&self->token_info, &user_module_token_info, sizeof (CK_TOKEN_INFO));
 
-	/* For creating stored keys */
-	gkm_module_register_factory (GKM_MODULE (self), GKM_XDG_FACTORY_TRUST);
+	/* For creating stored objects */
+	gkm_module_register_factory (GKM_MODULE (self), GKM_XDG_FACTORY_ASSERTION);
 }
 
 static void

@@ -28,6 +28,21 @@
 
 #include "pkcs11/pkcs11.h"
 
+typedef struct _GkmMemory {
+	gconstpointer data;
+	gsize n_data;
+} GkmMemory;
+
+GkmMemory*            gkm_util_memory_new                         (gconstpointer data,
+                                                                   gsize n_data);
+
+guint                 gkm_util_memory_hash                        (gconstpointer memory);
+
+gboolean              gkm_util_memory_equal                       (gconstpointer memory_1,
+                                                                   gconstpointer memory_2);
+
+void                  gkm_util_memory_free                        (gpointer memory);
+
 guint                 gkm_util_ulong_hash                         (gconstpointer ptr_to_ulong);
 
 gboolean              gkm_util_ulong_equal                        (gconstpointer ptr_to_ulong_1,

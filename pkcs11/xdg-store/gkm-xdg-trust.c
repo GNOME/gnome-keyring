@@ -24,26 +24,42 @@
 #include "gkm-xdg-trust.h"
 
 #include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
 
+#include "gkm/gkm-assertion.h"
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-object.h"
+#include "gkm/gkm-oids.h"
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-session.h"
 #include "gkm/gkm-transaction.h"
 #include "gkm/gkm-util.h"
 
-#include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11i.h"
 #include "pkcs11/pkcs11n.h"
 
 #include <libtasn1.h>
 
 #include <glib/gi18n.h>
 
+/* COMPAT: netscape's usages */
+typedef struct _NetscapeFlags {
+	CK_ULONG server_auth;
+	CK_ULONG client_auth;
+	CK_ULONG code_signing;
+	CK_ULONG email_protection;
+	CK_ULONG ipsec_end_system;
+	CK_ULONG ipsec_tunnel;
+	CK_ULONG ipsec_user;
+	CK_ULONG time_stamping;
+} NetscapeFlags;
+
 struct _GkmXdgTrustPrivate {
 	GNode *asn;
-	GHashTable *pairs;
+	GHashTable *assertions;
 	gpointer data;
 	gsize n_data;
+	NetscapeFlags netscape;
 };
 
 /* From asn1-def-xdg.c */
@@ -51,41 +67,17 @@ extern const ASN1_ARRAY_TYPE xdg_asn1_tab[];
 
 static void gkm_xdg_trust_serializable (GkmSerializableIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (GkmXdgTrust, gkm_xdg_trust, GKM_TYPE_OBJECT, 0,
+G_DEFINE_TYPE_EXTENDED (GkmXdgTrust, gkm_xdg_trust, GKM_TYPE_TRUST, 0,
                         G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_xdg_trust_serializable));
 
 /* -----------------------------------------------------------------------------
  * QUARKS
  */
 
-static GQuark OID_HASH_SHA1;
-static GQuark OID_HASH_MD5;
-
-static GQuark OID_USAGE_DIGITAL_SIGNATURE;
-static GQuark OID_USAGE_NON_REPUDIATION;
-static GQuark OID_USAGE_KEY_ENCIPHERMENT;
-static GQuark OID_USAGE_DATA_ENCIPHERMENT;
-static GQuark OID_USAGE_KEY_AGREEMENT;
-static GQuark OID_USAGE_KEY_CERT_SIGN;
-static GQuark OID_USAGE_CRL_SIGN;
-static GQuark OID_USAGE_ENCIPHER_ONLY;
-
-/* OID's for these purposes */
-static GQuark OID_PURPOSE_SERVER_AUTH;
-static GQuark OID_PURPOSE_CLIENT_AUTH;
-static GQuark OID_PURPOSE_CODE_SIGNING;
-static GQuark OID_PURPOSE_EMAIL;
-static GQuark OID_PURPOSE_TIME_STAMPING;
-static GQuark OID_PURPOSE_IPSEC_ENDPOINT;
-static GQuark OID_PURPOSE_IPSEC_TUNNEL;
-static GQuark OID_PURPOSE_IPSEC_USER;
-static GQuark OID_PURPOSE_IKE_INTERMEDIATE;
-
 static GQuark TRUST_UNKNOWN;
 static GQuark TRUST_UNTRUSTED;
-static GQuark TRUST_MUST_VERIFY;
 static GQuark TRUST_TRUSTED;
-static GQuark TRUST_TRUSTED_DELEGATOR;
+static GQuark TRUST_TRUSTED_ANCHOR;
 
 static void
 init_quarks (void)
@@ -97,34 +89,10 @@ init_quarks (void)
 		#define QUARK(name, value) \
 			name = g_quark_from_static_string(value)
 
-		QUARK (OID_HASH_SHA1, "1.3.14.3.2.26");
-		QUARK (OID_HASH_MD5, "1.2.840.113549.2.5");
-
-		/* These OIDs are in GNOME's space */
-		QUARK (OID_USAGE_DIGITAL_SIGNATURE, "1.3.6.1.4.1.3319.1.6.3.128");
-		QUARK (OID_USAGE_NON_REPUDIATION, "1.3.6.1.4.1.3319.1.6.3.64");
-		QUARK (OID_USAGE_KEY_ENCIPHERMENT, "1.3.6.1.4.1.3319.1.6.3.32");
-		QUARK (OID_USAGE_DATA_ENCIPHERMENT, "1.3.6.1.4.1.3319.1.6.3.16");
-		QUARK (OID_USAGE_KEY_AGREEMENT, "1.3.6.1.4.1.3319.1.6.3.8");
-		QUARK (OID_USAGE_KEY_CERT_SIGN, "1.3.6.1.4.1.3319.1.6.3.4");
-		QUARK (OID_USAGE_CRL_SIGN, "1.3.6.1.4.1.3319.1.6.3.2");
-		QUARK (OID_USAGE_ENCIPHER_ONLY, "1.3.6.1.4.1.3319.1.6.3.1");
-
-		QUARK (OID_PURPOSE_SERVER_AUTH, "1.3.6.1.5.5.7.3.1");
-		QUARK (OID_PURPOSE_CLIENT_AUTH, "1.3.6.1.5.5.7.3.2");
-		QUARK (OID_PURPOSE_CODE_SIGNING, "1.3.6.1.5.5.7.3.3");
-		QUARK (OID_PURPOSE_EMAIL, "1.3.6.1.5.5.7.3.4");
-		QUARK (OID_PURPOSE_TIME_STAMPING, "1.3.6.1.5.5.7.3.8");
-		QUARK (OID_PURPOSE_IPSEC_ENDPOINT, "1.3.6.1.5.5.7.3.5");
-		QUARK (OID_PURPOSE_IPSEC_TUNNEL, "1.3.6.1.5.5.7.3.6");
-		QUARK (OID_PURPOSE_IPSEC_USER, "1.3.6.1.5.5.7.3.7");
-		QUARK (OID_PURPOSE_IKE_INTERMEDIATE, "1.3.6.1.5.5.8.2.2");
-
 		QUARK (TRUST_UNKNOWN, "trustUnknown");
 		QUARK (TRUST_UNTRUSTED, "untrusted");
-		QUARK (TRUST_MUST_VERIFY, "mustVerify");
 		QUARK (TRUST_TRUSTED, "trusted");
-		QUARK (TRUST_TRUSTED_DELEGATOR, "trustedDelegator");
+		QUARK (TRUST_TRUSTED_ANCHOR, "trustedAnchor");
 
 		#undef QUARK
 
@@ -136,25 +104,6 @@ init_quarks (void)
  * INTERNAL
  */
 
-static CK_ULONG
-lookup_usage (GkmXdgTrust *self, GQuark purpose)
-{
-	CK_ULONG *trust;
-
-	trust = g_hash_table_lookup (self->pv->pairs, GUINT_TO_POINTER (purpose));
-	if (!trust)
-		return CKT_NETSCAPE_TRUST_UNKNOWN;
-	else
-		return *trust;
-}
-
-static CK_RV
-trust_get_usage (GkmXdgTrust *self, GQuark purpose, CK_ATTRIBUTE_PTR attr)
-{
-	g_assert (GKM_XDG_IS_TRUST (self));
-	return gkm_attribute_set_ulong (attr, lookup_usage (self, purpose));
-}
-
 static CK_RV
 trust_get_der (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 {
@@ -164,10 +113,9 @@ trust_get_der (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 
 	g_assert (GKM_XDG_IS_TRUST (self));
 
-	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", NULL);
-	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
+	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", part, NULL);
 
-	node = egg_asn1x_node (node, part, NULL);
+	/* If the assertion doesn't contain this info ... */
 	if (node == NULL)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
@@ -188,10 +136,9 @@ trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 
 	g_assert (GKM_XDG_IS_TRUST (self));
 
-	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", NULL);
-	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
+	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", part, NULL);
 
-	node = egg_asn1x_node (node, part, NULL);
+	/* If the assertion doesn't contain this info ... */
 	if (node == NULL)
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
@@ -203,44 +150,39 @@ trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 }
 
 static CK_RV
-trust_get_hash (GkmXdgTrust *self, GQuark oid, CK_ATTRIBUTE_PTR attr)
+trust_get_hash (GkmXdgTrust *self, GChecksumType ctype, CK_ATTRIBUTE_PTR attr)
 {
-	CK_RV rv = CKR_ATTRIBUTE_VALUE_INVALID;
-	GNode *digests, *digest;
-	gpointer hash;
-	gsize n_hash;
-	guint count, i;
-	GQuark check;
+	GNode *cert;
+	gconstpointer element;
+	gsize n_element;
 
-	digests = egg_asn1x_node (self->pv->asn, "reference", "certReference", "digests", NULL);
-	g_return_val_if_fail (digests, CKR_GENERAL_ERROR);
+	cert = egg_asn1x_node (self->pv->asn, "reference", "certComplete", NULL);
 
-	count = egg_asn1x_count (digests);
-	for (i = 0; i < count; ++i) {
-		digest = egg_asn1x_node (digests, i + 1, NULL);
-		g_return_val_if_fail (digest, CKR_GENERAL_ERROR);
+	/* If it's not stored, then this attribute is not present */
+	if (cert == NULL)
+		return CKR_ATTRIBUTE_TYPE_INVALID;
 
-		check = egg_asn1x_get_oid_as_quark (egg_asn1x_node (digest, "algorithm", NULL));
-		if (oid == check) {
-			hash = egg_asn1x_get_string_as_raw (egg_asn1x_node (digest, "digest", NULL),
-			                                    NULL, &n_hash);
-			g_return_val_if_fail (hash, CKR_GENERAL_ERROR);
+	element = egg_asn1x_get_raw_element (cert, &n_element);
+	g_return_val_if_fail (element, CKR_GENERAL_ERROR);
 
-			rv = gkm_attribute_set_data (attr, hash, n_hash);
-			g_free (hash);
-			break;
-		}
-	}
-
-	return rv;
+	return gkm_attribute_set_checksum (attr, ctype, element, n_element);
 }
 
 static gboolean
-validate_der (CK_ATTRIBUTE_PTR attr)
+validate_der (CK_ATTRIBUTE_PTR attr, const gchar *asn_type)
 {
-	return attr->pValue != NULL &&
-	       attr->ulValueLen != (CK_ULONG)-1 &&
-	       egg_asn1x_element_length (attr->pValue, attr->ulValueLen) >= 0;
+	GNode *asn;
+
+	if (!attr->pValue || attr->ulValueLen == (CK_ULONG)-1)
+		return FALSE;
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, asn_type, attr->pValue, attr->ulValueLen);
+	if (!asn)
+		return FALSE;
+
+	/* Yes, this is an expensive check, but worthwhile */
+	egg_asn1x_destroy (asn);
+	return TRUE;
 }
 
 static gboolean
@@ -251,105 +193,239 @@ validate_integer (CK_ATTRIBUTE_PTR attr)
 	       attr->ulValueLen != (CK_ULONG)-1;
 }
 
-static gboolean
-validate_hash (CK_ATTRIBUTE_PTR attr, GChecksumType type)
-{
-	return attr->pValue != NULL &&
-	       attr->ulValueLen == g_checksum_type_get_length (type);
-}
-
-static void
-append_reference_hash (GNode *asn, GQuark oid, CK_ATTRIBUTE_PTR attr)
-{
-	GNode *node;
-
-	node = egg_asn1x_node (asn, "reference", "certReference", "digests", NULL);
-	g_return_if_fail (node);
-
-	/* Add another digest */
-	node = egg_asn1x_append (node);
-	g_return_if_fail (node);
-
-	egg_asn1x_set_oid_as_quark (egg_asn1x_node (node, "algorithm", NULL), oid);
-	egg_asn1x_set_string_as_raw (egg_asn1x_node (node, "digest", NULL),
-	                             g_memdup (attr->pValue, attr->ulValueLen),
-	                             attr->ulValueLen, g_free);
-}
-
 static GQuark
-trust_ulong_to_level_enum (CK_ULONG trust)
+assertion_type_to_level_enum (CK_ASSERTION_TYPE type)
 {
-	switch (trust) {
-	case CKT_NETSCAPE_TRUST_UNKNOWN:
-		return TRUST_UNKNOWN;
-	case CKT_NETSCAPE_UNTRUSTED:
+	switch (type) {
+	case CKT_G_CERTIFICATE_UNTRUSTED:
 		return TRUST_UNTRUSTED;
-	case CKT_NETSCAPE_TRUSTED_DELEGATOR:
-		return TRUST_TRUSTED_DELEGATOR;
+	case CKT_G_CERTIFICATE_TRUST_ANCHOR:
+		return TRUST_TRUSTED_ANCHOR;
 	case CKT_NETSCAPE_TRUSTED:
 		return TRUST_TRUSTED;
-	case CKT_NETSCAPE_MUST_VERIFY:
-		return TRUST_MUST_VERIFY;
 	default:
-		return -1;
+		return 0;
 	};
 }
 
-static CK_ULONG
-level_enum_to_trust_ulong (GQuark level)
+static gboolean
+level_enum_to_assertion_type (GQuark level, CK_ASSERTION_TYPE *type)
 {
-	if (level == TRUST_UNKNOWN)
-		return CKT_NETSCAPE_TRUST_UNKNOWN;
-	else if (level == TRUST_UNTRUSTED)
-		return CKT_NETSCAPE_UNTRUSTED;
-	else if (level == TRUST_TRUSTED_DELEGATOR)
-		return CKT_NETSCAPE_TRUSTED_DELEGATOR;
+	if (level == TRUST_UNTRUSTED)
+		*type = CKT_G_CERTIFICATE_UNTRUSTED;
+	else if (level == TRUST_TRUSTED_ANCHOR)
+		*type = CKT_G_CERTIFICATE_TRUST_ANCHOR;
 	else if (level == TRUST_TRUSTED)
-		return CKT_NETSCAPE_TRUSTED;
-	else if (level == TRUST_MUST_VERIFY)
-		return CKT_NETSCAPE_MUST_VERIFY;
+		*type = CKT_G_CERTIFICATE_TRUST_EXCEPTION;
+	else if (level == TRUST_UNKNOWN)
+		*type = 0;
 	else
-		return (CK_ULONG)-1;
+		return FALSE;
+	return TRUE;
 }
 
-static GkmObject*
-factory_create_trust (GkmSession *session, GkmTransaction *transaction,
-                      CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
+static void
+init_netscape_trust (NetscapeFlags *netscape)
+{
+	netscape->server_auth = CKT_NETSCAPE_TRUST_UNKNOWN;
+	netscape->client_auth = CKT_NETSCAPE_TRUST_UNKNOWN;
+	netscape->code_signing = CKT_NETSCAPE_TRUST_UNKNOWN;
+	netscape->email_protection = CKT_NETSCAPE_TRUST_UNKNOWN;
+	netscape->ipsec_end_system = CKT_NETSCAPE_TRUST_UNKNOWN;
+	netscape->ipsec_tunnel = CKT_NETSCAPE_TRUST_UNKNOWN;
+	netscape->ipsec_user = CKT_NETSCAPE_TRUST_UNKNOWN;
+	netscape->time_stamping = CKT_NETSCAPE_TRUST_UNKNOWN;
+}
+
+static void
+parse_netscape_trust (NetscapeFlags *netscape, GQuark level, const gchar *purpose)
+{
+	CK_TRUST trust;
+
+	if (level == TRUST_UNTRUSTED)
+		trust = CKT_NETSCAPE_TRUSTED;
+	else if (level == TRUST_TRUSTED_ANCHOR)
+		trust = CKT_NETSCAPE_TRUSTED_DELEGATOR;
+	else if (level == TRUST_TRUSTED)
+		trust = CKT_NETSCAPE_TRUSTED;
+	else if (level == TRUST_UNKNOWN)
+		trust = CKT_NETSCAPE_TRUST_UNKNOWN;
+	else
+		return;
+
+	if (g_str_equal (purpose, GKM_OID_EXTUSAGE_SERVER_AUTH))
+		netscape->server_auth = trust;
+	else if (g_str_equal (purpose, GKM_OID_EXTUSAGE_CLIENT_AUTH))
+		netscape->client_auth = trust;
+	else if (g_str_equal (purpose, GKM_OID_EXTUSAGE_CODE_SIGNING))
+		netscape->code_signing = trust;
+	else if (g_str_equal (purpose, GKM_OID_EXTUSAGE_EMAIL))
+		netscape->email_protection = trust;
+	else if (g_str_equal (purpose, GKM_OID_EXTUSAGE_IPSEC_ENDPOINT))
+		netscape->ipsec_end_system = trust;
+	else if (g_str_equal (purpose, GKM_OID_EXTUSAGE_IPSEC_TUNNEL))
+		netscape->ipsec_tunnel = trust;
+	else if (g_str_equal (purpose, GKM_OID_EXTUSAGE_IPSEC_USER))
+		netscape->ipsec_user = trust;
+	else if (g_str_equal (purpose, GKM_OID_EXTUSAGE_TIME_STAMPING))
+		netscape->time_stamping = trust;
+}
+
+static void
+dispose_each_assertion (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (GKM_IS_ASSERTION (value));
+	g_object_run_dispose (G_OBJECT (value));
+}
+
+static GHashTable*
+create_assertions (void)
+{
+	return g_hash_table_new_full (gkm_util_memory_hash, gkm_util_memory_equal,
+	                              gkm_util_memory_free, gkm_util_dispose_unref);
+}
+
+static GkmAssertion*
+create_assertion (GkmXdgTrust *self, GNode *asn, NetscapeFlags *netscape)
+{
+	CK_ASSERTION_TYPE type;
+	GkmAssertion *assertion;
+	GQuark level;
+	gchar *purpose;
+	gchar *remote;
+	GNode *node;
+
+	/* Get the trust level */
+	level = egg_asn1x_get_enumerated (egg_asn1x_node (asn, "level", NULL));
+	if (level == 0)
+		g_return_val_if_reached (NULL);
+	if (!level_enum_to_assertion_type (level, &type))
+		g_message ("unsupported trust level %s in trust object", g_quark_to_string (level));
+	else if (type == 0)
+		return NULL;
+
+	/* A purpose */
+	purpose = egg_asn1x_get_oid_as_string (egg_asn1x_node (asn, "purpose", NULL));
+	g_return_val_if_fail (purpose, NULL);
+
+	/* A remote name */
+	node = egg_asn1x_node (asn, "remote", NULL);
+	if (egg_asn1x_have (node))
+		remote = egg_asn1x_get_string_as_utf8 (node, NULL);
+	else
+		remote = NULL;
+
+	assertion = gkm_assertion_new (GKM_TRUST (self), type, purpose, remote);
+
+	/* Parse netscape trust flags */
+	if (remote == NULL)
+		parse_netscape_trust (netscape, level, purpose);
+
+	g_free (purpose);
+	g_free (remote);
+
+	return assertion;
+}
+
+static gboolean
+load_assertions (GkmXdgTrust *self, GNode *asn)
+{
+	gconstpointer element;
+	GHashTable *assertions;
+	GkmAssertion *assertion;
+	NetscapeFlags netscape;
+	gsize n_element;
+	GNode *node;
+	guint count, i;
+
+	g_assert (self);
+	g_assert (asn);
+
+	assertions = create_assertions ();
+	init_netscape_trust (&netscape);
+
+	count = egg_asn1x_count (egg_asn1x_node (asn, "assertions", NULL));
+
+	for (i = 0; i < count; ++i) {
+		node = egg_asn1x_node (asn, "assertions", i + 1, NULL);
+		g_return_val_if_fail (node, FALSE);
+
+		/* We use the raw DER encoding as an assertion */
+		element = egg_asn1x_get_raw_element (node, &n_element);
+		g_return_val_if_fail (node, FALSE);
+
+		/* Double check that this is valid, because it's how we hash */
+		g_assert (egg_asn1x_element_length (element, n_element) == n_element);
+
+		/* Already have this assertion? */
+		assertion = g_hash_table_lookup (self->pv->assertions, element);
+		if (assertion) {
+			g_object_ref (assertion);
+			g_hash_table_remove (self->pv->assertions, element);
+
+		/* Create a new assertion */
+		} else {
+			assertion = create_assertion (self, node, &netscape);
+		}
+
+		if (assertion)
+			g_hash_table_insert (assertions, g_memdup (element, n_element), assertion);
+	}
+
+	/* Override the stored assertions and netscape trust */
+	g_hash_table_foreach (self->pv->assertions, dispose_each_assertion, NULL);
+	g_hash_table_unref (self->pv->assertions);
+	self->pv->assertions = assertions;
+	memcpy (&self->pv->netscape, &netscape, sizeof (netscape));
+
+	return TRUE;
+}
+
+static gboolean
+save_assertions (GkmXdgTrust *self, GNode *asn)
+{
+	GkmAssertion *assertion;
+	GHashTableIter iter;
+	GNode *pair, *node;
+	const gchar *purpose;
+	const gchar *remote;
+	gpointer value;
+	GQuark level;
+
+	g_assert (GKM_XDG_IS_TRUST (self));
+	g_assert (asn);
+
+	node = egg_asn1x_node (asn, "trusts", NULL);
+	egg_asn1x_clear (node);
+
+	g_hash_table_iter_init (&iter, self->pv->assertions);
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		assertion = GKM_ASSERTION (value);
+		level = assertion_type_to_level_enum (gkm_assertion_get_trust_type (assertion));
+		purpose = gkm_assertion_get_purpose (assertion);
+		remote = gkm_assertion_get_remote (assertion);
+
+		pair = egg_asn1x_append (node);
+		g_return_val_if_fail (pair, FALSE);
+
+		egg_asn1x_set_oid_as_string (egg_asn1x_node (pair, "purpose", NULL), purpose);
+		egg_asn1x_set_enumerated (egg_asn1x_node (pair, "level", NULL), level);
+
+		if (remote) {
+			egg_asn1x_set_string_as_utf8 (egg_asn1x_node (pair, "remote", NULL),
+			                              g_strdup (remote), g_free);
+		}
+	}
+
+	return TRUE;
+}
+
+static GkmXdgTrust*
+create_trust_for_reference (GkmModule *module, GkmManager *manager,
+                            CK_ATTRIBUTE_PTR serial, CK_ATTRIBUTE_PTR issuer)
 {
 	GkmXdgTrust *trust;
-	CK_ATTRIBUTE_PTR serial, issuer, subject;
-	CK_ATTRIBUTE_PTR md5, sha1;
 	GNode *asn;
-
-	g_return_val_if_fail (attrs || !n_attrs, NULL);
-
-	subject = gkm_attributes_find (attrs, n_attrs, CKA_SUBJECT);
-	serial = gkm_attributes_find (attrs, n_attrs, CKA_SERIAL_NUMBER);
-	issuer = gkm_attributes_find (attrs, n_attrs, CKA_ISSUER);
-
-	if (serial == NULL || issuer == NULL) {
-		gkm_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
-		return NULL;
-	}
-
-	if (!validate_der (issuer) || (subject && !validate_der (subject))) {
-		gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
-		return NULL;
-	}
-
-	if (!validate_integer (serial)) {
-		gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
-		return NULL;
-	}
-
-	md5 = gkm_attributes_find (attrs, n_attrs, CKA_CERT_MD5_HASH);
-	sha1 = gkm_attributes_find (attrs, n_attrs, CKA_CERT_SHA1_HASH);
-
-	if ((md5 && !validate_hash (md5, G_CHECKSUM_MD5)) ||
-	    (sha1 && !validate_hash (sha1, G_CHECKSUM_SHA1))) {
-		gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
-		return NULL;
-	}
 
 	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
 	g_return_val_if_fail (asn, NULL);
@@ -362,101 +438,32 @@ factory_create_trust (GkmSession *session, GkmTransaction *transaction,
 	                           g_memdup (issuer->pValue, issuer->ulValueLen),
 	                           issuer->ulValueLen, g_free);
 
-	if (subject)
-		egg_asn1x_set_raw_element (egg_asn1x_node (asn, "reference", "certReference", "subject", NULL),
-		                           g_memdup (subject->pValue, issuer->ulValueLen),
-		                           issuer->ulValueLen, g_free);
-
-	if (md5)
-		append_reference_hash (asn, OID_HASH_MD5, md5);
-	if (sha1)
-		append_reference_hash (asn, OID_HASH_SHA1, sha1);
-
-	trust = g_object_new (GKM_XDG_TYPE_TRUST,
-	                    "module", gkm_session_get_module (session),
-	                    "manager", gkm_manager_for_template (attrs, n_attrs, session),
-	                    NULL);
+	trust = g_object_new (GKM_XDG_TYPE_TRUST, "module", module, "manager", manager, NULL);
 	trust->pv->asn = asn;
 
-	gkm_attributes_consume (attrs, n_attrs, CKA_CERT_MD5_HASH, CKA_CERT_SHA1_HASH,
-	                        CKA_SUBJECT, CKA_ISSUER, CKA_SERIAL_NUMBER, G_MAXULONG);
-
-	gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (trust),
-	                                      TRUE, attrs, n_attrs);
-	return GKM_OBJECT (trust);
+	return trust;
 }
 
-static gboolean
-load_trust_pairs (GHashTable *pairs, GNode *asn)
+static GkmXdgTrust*
+create_trust_for_certificate (GkmModule *module, GkmManager *manager,
+                              CK_ATTRIBUTE_PTR cert)
 {
-	GNode *pair;
-	guint count, i;
-	gulong trust;
-	GQuark oid;
-	GQuark level;
+	GkmXdgTrust *trust;
+	GNode *asn;
 
-	g_assert (pairs);
-	g_assert (asn);
+	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
+	g_return_val_if_fail (asn, NULL);
 
-	g_hash_table_remove_all (pairs);
+	egg_asn1x_set_raw_element (egg_asn1x_node (asn, "reference", "certComplete", NULL),
+	                           g_memdup (cert->pValue, cert->ulValueLen),
+	                           cert->ulValueLen, g_free);
 
-	count = egg_asn1x_count (egg_asn1x_node (asn, "trusts", NULL));
+	trust = g_object_new (GKM_XDG_TYPE_TRUST, "module", module, "manager", manager, NULL);
+	trust->pv->asn = asn;
 
-	for (i = 0; i < count; ++i) {
-		pair = egg_asn1x_node (asn, "trusts", i + 1, NULL);
-		g_return_val_if_fail (pair, FALSE);
-
-		/* Get the usage */
-		level = egg_asn1x_get_enumerated (egg_asn1x_node (pair, "level", NULL));
-		if (level == 0)
-			g_return_val_if_reached (FALSE);
-
-		trust = level_enum_to_trust_ulong (level);
-		if (trust == (CK_ULONG)-1) {
-			g_message ("unsupported trust level %u in trust object", (guint)level);
-			continue;
-		}
-
-		/* A key usage */
-		oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (pair, "purpose", NULL));
-		g_return_val_if_fail (oid, FALSE);
-
-		g_hash_table_replace (pairs, GUINT_TO_POINTER (oid),
-		                      gkm_util_ulong_alloc (trust));
-	}
-
-	return TRUE;
+	return trust;
 }
 
-static gboolean
-save_trust_pairs (GHashTable *pairs, GNode *asn)
-{
-	GHashTableIter iter;
-	GNode *pair, *node;
-	gpointer key, value;
-	GQuark level;
-	GQuark oid;
-
-	g_assert (pairs);
-	g_assert (asn);
-
-	node = egg_asn1x_node (asn, "trusts", NULL);
-	egg_asn1x_clear (node);
-
-	g_hash_table_iter_init (&iter, pairs);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		oid = GPOINTER_TO_UINT (key);
-		level = trust_ulong_to_level_enum (*((CK_ULONG_PTR)value));
-
-		pair = egg_asn1x_append (node);
-		g_return_val_if_fail (pair, FALSE);
-
-		egg_asn1x_set_oid_as_quark (egg_asn1x_node (pair, "purpose", NULL), oid);
-		egg_asn1x_set_enumerated (egg_asn1x_node (pair, "level", NULL), level);
-	}
-
-	return TRUE;
-}
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -475,41 +482,25 @@ gkm_xdg_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 	case CKA_CLASS:
 		return gkm_attribute_set_ulong (attr, CKO_NETSCAPE_TRUST);
 	case CKA_MODIFIABLE:
-		return gkm_attribute_set_bool (attr, CK_TRUE);
-
-	/* Key restrictions */
-	case CKA_TRUST_DIGITAL_SIGNATURE:
-		return trust_get_usage (self, OID_USAGE_DIGITAL_SIGNATURE, attr);
-	case CKA_TRUST_NON_REPUDIATION:
-		return trust_get_usage (self, OID_USAGE_NON_REPUDIATION, attr);
-	case CKA_TRUST_KEY_ENCIPHERMENT:
-		return trust_get_usage (self, OID_USAGE_KEY_ENCIPHERMENT, attr);
-	case CKA_TRUST_DATA_ENCIPHERMENT:
-		return trust_get_usage (self, OID_USAGE_DATA_ENCIPHERMENT, attr);
-	case CKA_TRUST_KEY_AGREEMENT:
-		return trust_get_usage (self, OID_USAGE_KEY_AGREEMENT, attr);
-	case CKA_TRUST_KEY_CERT_SIGN:
-		return trust_get_usage (self, OID_USAGE_KEY_CERT_SIGN, attr);
-	case CKA_TRUST_CRL_SIGN:
-		return trust_get_usage (self, OID_USAGE_CRL_SIGN, attr);
+		return gkm_attribute_set_bool (attr, CK_FALSE);
 
 	/* Various trust flags */
 	case CKA_TRUST_SERVER_AUTH:
-		return trust_get_usage (self, OID_PURPOSE_SERVER_AUTH, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.server_auth);
 	case CKA_TRUST_CLIENT_AUTH:
-		return trust_get_usage (self, OID_PURPOSE_CLIENT_AUTH, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.client_auth);
 	case CKA_TRUST_CODE_SIGNING:
-		return trust_get_usage (self, OID_PURPOSE_CODE_SIGNING, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.code_signing);
 	case CKA_TRUST_EMAIL_PROTECTION:
-		return trust_get_usage (self, OID_PURPOSE_EMAIL, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.email_protection);
 	case CKA_TRUST_IPSEC_END_SYSTEM:
-		return trust_get_usage (self, OID_PURPOSE_IPSEC_ENDPOINT, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.ipsec_end_system);
 	case CKA_TRUST_IPSEC_TUNNEL:
-		return trust_get_usage (self, OID_PURPOSE_IPSEC_TUNNEL, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.ipsec_tunnel);
 	case CKA_TRUST_IPSEC_USER:
-		return trust_get_usage (self, OID_PURPOSE_IPSEC_USER, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.ipsec_user);
 	case CKA_TRUST_TIME_STAMPING:
-		return trust_get_usage (self, OID_PURPOSE_TIME_STAMPING, attr);
+		return gkm_attribute_set_ulong (attr, self->pv->netscape.time_stamping);
 
 	/* Certificate reference values */
 	case CKA_SUBJECT:
@@ -521,9 +512,9 @@ gkm_xdg_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 
 	/* Certificate hash values */
 	case CKA_CERT_MD5_HASH:
-		return trust_get_hash (self, OID_HASH_MD5, attr);
+		return trust_get_hash (self, G_CHECKSUM_MD5, attr);
 	case CKA_CERT_SHA1_HASH:
-		return trust_get_hash (self, OID_HASH_SHA1, attr);
+		return trust_get_hash (self, G_CHECKSUM_SHA1, attr);
 
 	default:
 		break;
@@ -533,90 +524,10 @@ gkm_xdg_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 }
 
 static void
-gkm_xdg_trust_set_attribute (GkmObject *base, GkmSession *session,
-                             GkmTransaction* transaction, CK_ATTRIBUTE* attr)
-{
-	GkmXdgTrust *self = GKM_XDG_TRUST (base);
-	CK_ULONG value;
-	GQuark oid = 0;
-	CK_RV rv;
-
-	switch (attr->type)
-	{
-
-	/* Key restrictions */
-	case CKA_TRUST_DIGITAL_SIGNATURE:
-		oid = OID_USAGE_DIGITAL_SIGNATURE;
-		break;
-	case CKA_TRUST_NON_REPUDIATION:
-		oid = OID_USAGE_NON_REPUDIATION;
-		break;
-	case CKA_TRUST_KEY_ENCIPHERMENT:
-		oid = OID_USAGE_KEY_ENCIPHERMENT;
-		break;
-	case CKA_TRUST_DATA_ENCIPHERMENT:
-		oid = OID_USAGE_DATA_ENCIPHERMENT;
-		break;
-	case CKA_TRUST_KEY_AGREEMENT:
-		oid = OID_USAGE_KEY_AGREEMENT;
-		break;
-	case CKA_TRUST_KEY_CERT_SIGN:
-		oid = OID_USAGE_KEY_CERT_SIGN;
-		break;
-	case CKA_TRUST_CRL_SIGN:
-		oid = OID_USAGE_CRL_SIGN;
-		break;
-
-	/* Various trust flags */
-	case CKA_TRUST_SERVER_AUTH:
-		oid = OID_PURPOSE_SERVER_AUTH;
-		break;
-	case CKA_TRUST_CLIENT_AUTH:
-		oid = OID_PURPOSE_CLIENT_AUTH;
-		break;
-	case CKA_TRUST_CODE_SIGNING:
-		oid = OID_PURPOSE_CODE_SIGNING;
-		break;
-	case CKA_TRUST_EMAIL_PROTECTION:
-		oid = OID_PURPOSE_EMAIL;
-		break;
-	case CKA_TRUST_IPSEC_END_SYSTEM:
-		oid = OID_PURPOSE_IPSEC_ENDPOINT;
-		break;
-	case CKA_TRUST_IPSEC_TUNNEL:
-		oid = OID_PURPOSE_IPSEC_TUNNEL;
-		break;
-	case CKA_TRUST_IPSEC_USER:
-		oid = OID_PURPOSE_IPSEC_USER;
-		break;
-	case CKA_TRUST_TIME_STAMPING:
-		oid = OID_PURPOSE_TIME_STAMPING;
-		break;
-
-	default:
-		break;
-	};
-
-	if (oid != 0) {
-		rv = gkm_attribute_get_ulong (attr, &value);
-		if (rv != CKR_OK)
-			gkm_transaction_fail (transaction, rv);
-		else if (trust_ulong_to_level_enum (value) < 0)
-			gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
-		else
-			g_hash_table_replace (self->pv->pairs, GUINT_TO_POINTER (oid),
-			                      gkm_util_ulong_alloc (value));
-		return;
-	}
-
-	GKM_OBJECT_CLASS (gkm_xdg_trust_parent_class)->set_attribute (base, session, transaction, attr);
-}
-
-static void
 gkm_xdg_trust_init (GkmXdgTrust *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_XDG_TYPE_TRUST, GkmXdgTrustPrivate);
-	self->pv->pairs = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gkm_util_ulong_free);
+	self->pv->assertions = create_assertions ();
 }
 
 static void
@@ -628,9 +539,9 @@ gkm_xdg_trust_finalize (GObject *obj)
 		egg_asn1x_destroy (self->pv->asn);
 	self->pv->asn = NULL;
 
-	if (self->pv->pairs)
-		g_hash_table_destroy (self->pv->pairs);
-	self->pv->pairs = NULL;
+	if (self->pv->assertions)
+		g_hash_table_destroy (self->pv->assertions);
+	self->pv->assertions = NULL;
 
 	G_OBJECT_CLASS (gkm_xdg_trust_parent_class)->finalize (obj);
 }
@@ -643,7 +554,6 @@ gkm_xdg_trust_class_init (GkmXdgTrustClass *klass)
 
 	gobject_class->finalize = gkm_xdg_trust_finalize;
 	gkm_class->get_attribute = gkm_xdg_trust_get_attribute;
-	gkm_class->set_attribute = gkm_xdg_trust_set_attribute;
 
 	g_type_class_add_private (klass, sizeof (GkmXdgTrustPrivate));
 
@@ -673,7 +583,7 @@ gkm_xdg_trust_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer 
 	}
 
 	/* Next parse out all the pairs */
-	if (!load_trust_pairs (self->pv->pairs, asn)) {
+	if (!load_assertions (self, asn)) {
 		egg_asn1x_destroy (asn);
 		g_free (copy);
 		return FALSE;
@@ -699,7 +609,7 @@ gkm_xdg_trust_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data
 	g_return_val_if_fail (n_data, FALSE);
 	g_return_val_if_fail (self->pv->asn, FALSE);
 
-	if (!save_trust_pairs (self->pv->pairs, self->pv->asn))
+	if (!save_assertions (self, self->pv->asn))
 		return FALSE;
 
 	*data = egg_asn1x_encode (self->pv->asn, NULL, n_data);
@@ -730,22 +640,57 @@ gkm_xdg_trust_serializable (GkmSerializableIface *iface)
  * PUBLIC
  */
 
-
-GkmFactory*
-gkm_xdg_trust_get_factory (void)
+GkmTrust*
+gkm_xdg_trust_create_for_assertion (GkmModule *module, GkmManager *manager,
+                                    GkmTransaction *transaction,
+                                    CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
-	static CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
-	static CK_ATTRIBUTE attributes[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-	};
+	CK_ATTRIBUTE_PTR serial, issuer, cert;
+	GkmXdgTrust *trust;
 
-	static GkmFactory factory = {
-		attributes,
-		G_N_ELEMENTS (attributes),
-		factory_create_trust
-	};
+	g_return_val_if_fail (GKM_IS_MODULE (module), NULL);
+	g_return_val_if_fail (GKM_IS_MANAGER (manager), NULL);
+	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
-	init_quarks ();
-	return &factory;
+	serial = gkm_attributes_find (attrs, n_attrs, CKA_SERIAL_NUMBER);
+	issuer = gkm_attributes_find (attrs, n_attrs, CKA_ISSUER);
+	cert = gkm_attributes_find (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE);
+
+	/* A trust object with just serial + issuer */
+	if (serial != NULL && issuer != NULL) {
+		if (cert != NULL) {
+			gkm_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+			return NULL;
+		}
+		if (!validate_der (issuer, "Name") || !validate_integer (serial)) {
+			gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+			return NULL;
+		}
+
+		trust = create_trust_for_reference (module, manager, serial, issuer);
+
+	/* A trust object with a full certificate */
+	} else if (cert != NULL) {
+		if (serial != NULL || issuer != NULL) {
+			gkm_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
+			return NULL;
+		}
+		if (!validate_der (cert, "TBSCertificate")) {
+			gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
+			return NULL;
+		}
+
+		trust = create_trust_for_certificate (module, manager, cert);
+
+	/* Not sure what this is */
+	} else {
+		gkm_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
+		return NULL;
+	}
+
+	gkm_attributes_consume (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE, CKA_ISSUER,
+	                        CKA_SERIAL_NUMBER, G_MAXULONG);
+
+	return GKM_TRUST (trust);
 }

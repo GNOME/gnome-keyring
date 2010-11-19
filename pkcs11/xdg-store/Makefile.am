@@ -18,6 +18,7 @@ BUILT_SOURCES = \
 
 libgkm_xdg_store_la_SOURCES = \
 	gkm-xdg-store.h \
+	gkm-xdg-assertion.c gkm-xdg-assertion.h \
 	gkm-xdg-module.c gkm-xdg-module.h \
 	gkm-xdg-trust.c gkm-xdg-trust.h \
 	$(BUILT_SOURCES)

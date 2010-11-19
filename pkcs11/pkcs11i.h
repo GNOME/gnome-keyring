@@ -119,4 +119,26 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 
 #define CKA_G_CREDENTIAL_TEMPLATE                (CKA_GNOME + 205)
 
+/* -------------------------------------------------------------------
+ * TRUST ASSERTIONS
+ */
+
+#define CKO_G_TRUST_ASSERTION                    (CKO_GNOME + 400)
+
+#define CKA_G_ASSERTION_TYPE                     (CKO_GNOME + 401)
+
+#define CKA_G_CERTIFICATE_VALUE                  (CKO_GNOME + 402)
+
+#define CKA_G_PURPOSE                            (CKO_GNOME + 403)
+
+#define CKA_G_REMOTE                             (CKO_GNOME + 404)
+
+typedef CK_ULONG CK_ASSERTION_TYPE;
+
+#define CKT_G_CERTIFICATE_UNTRUSTED              1UL
+
+#define CKT_G_CERTIFICATE_TRUST_EXCEPTION        2UL
+
+#define CKT_G_CERTIFICATE_TRUST_ANCHOR           3UL
+
 #endif /* PKCS11I_H */

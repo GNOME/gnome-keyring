@@ -40,56 +40,6 @@
 #define CKA_GNOME_UNIQUE                            (CKA_GNOME + 350)
 
 /* -------------------------------------------------------------------
- * PURPOSES
- */
-
-/*
- * Whether the key or certificate is restricted to a set of
- * purposes (ie: enhanced usages).
- *
- * CK_BBOOL
- *
- *  - When CK_TRUE see CKA_PURPOSE_OIDS for the set of purposes.
- *  - When CK_FALSE then is not restricted to any specific purpose.
- */
-#define CKA_GNOME_PURPOSE_RESTRICTED             (CKA_GNOME + 12)
-
-/*
- * The available purposes that a certificate or key can be
- * used for.
- *
- * CK_STRING
- *
- *  - This is only relevant if CKA_PURPOSE_RESTRICTED is CK_TRUE.
- *  - Use CKA_TRUSTED and CKA_CERTIFICATE_CATEGORY to validate whether
- *    usage of the certificate for these purposes is directly or
- *    indirectly trusted by the user.
- *  - The returned string is a space delemited set of OIDs.
- *  - When an empty string is returned then no purposes are valid.
- */
-#define CKA_GNOME_PURPOSE_OIDS                   (CKA_GNOME + 11)
-
-/*
- * The key or certificate can be used for the purpose
- * indicated
- *
- * CK_BBOOL
- *
- *  - These are shortcuts to using CKA_PURPOSE_OIDS
- *  - Use CKA_TRUSTED and CKA_CERTIFICATE_CATEGORY to validate whether
- *    the certificate is directly or indirectly trusted by the user.
- */
-#define CKA_GNOME_PURPOSE_SSH_AUTH               (CKA_GNOME + 101)
-#define CKA_GNOME_PURPOSE_SERVER_AUTH            (CKA_GNOME + 102)
-#define CKA_GNOME_PURPOSE_CLIENT_AUTH            (CKA_GNOME + 103)
-#define CKA_GNOME_PURPOSE_CODE_SIGNING           (CKA_GNOME + 104)
-#define CKA_GNOME_PURPOSE_EMAIL_PROTECTION       (CKA_GNOME + 105)
-#define CKA_GNOME_PURPOSE_IPSEC_END_SYSTEM       (CKA_GNOME + 106)
-#define CKA_GNOME_PURPOSE_IPSEC_TUNNEL           (CKA_GNOME + 107)
-#define CKA_GNOME_PURPOSE_IPSEC_USER             (CKA_GNOME + 108)
-#define CKA_GNOME_PURPOSE_TIME_STAMPING          (CKA_GNOME + 109)
-
-/* -------------------------------------------------------------------
  */
 
 #define CKA_GNOME_TRANSIENT                      (CKA_GNOME + 201)

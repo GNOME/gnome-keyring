@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include "gkm/gkm-certificate.h"
+#include "gkm-roots-trust.h"
 
 #define GKM_TYPE_ROOTS_CERTIFICATE               (gkm_roots_certificate_get_type ())
 #define GKM_ROOTS_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKM_TYPE_ROOTS_CERTIFICATE, GkmRootsCertificate))
@@ -49,7 +50,5 @@ GkmRootsCertificate*  gkm_roots_certificate_new                    (GkmModule *m
 const gchar*          gkm_roots_certificate_get_unique             (GkmRootsCertificate *self);
 
 const gchar*          gkm_roots_certificate_get_path               (GkmRootsCertificate *self);
-
-GkmCertificateTrust*  gkm_roots_certificate_get_netscape_trust     (GkmRootsCertificate *self);
 
 #endif /* __GKM_ROOTS_CERTIFICATE_H__ */

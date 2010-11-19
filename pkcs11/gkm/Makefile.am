@@ -19,10 +19,10 @@ BUILT_SOURCES = \
 libgkm_la_SOURCES = \
 	gkm-aes-key.c gkm-aes-key.h \
 	gkm-aes-mechanism.c gkm-aes-mechanism.h \
+	gkm-assertion.c gkm-assertion.h \
 	gkm-attributes.c gkm-attributes.h \
 	gkm-certificate.c gkm-certificate.h \
 	gkm-certificate-key.c gkm-certificate-key.h \
-	gkm-certificate-trust.c gkm-certificate-trust.h \
 	gkm-credential.c gkm-credential.h \
 	gkm-crypto.c gkm-crypto.h \
 	gkm-data-asn1.c gkm-data-asn1.h \
@@ -55,6 +55,7 @@ libgkm_la_SOURCES = \
 	gkm-test.c gkm-test.h \
 	gkm-timer.c gkm-timer.h \
 	gkm-transaction.c gkm-transaction.h \
+	gkm-trust.c gkm-trust.h \
 	gkm-types.h \
 	gkm-util.c gkm-util.h \
 	$(BUILT_SOURCES)

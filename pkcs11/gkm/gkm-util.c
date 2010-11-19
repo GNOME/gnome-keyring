@@ -19,6 +19,41 @@
  * 02111-1307, USA.
  */
 
+/*
+ * PORTIONS FROM: ----------------------------------------------------------
+ *
+ * GLIB - Library of useful routines for C programming
+ * Copyright (C) 1995-1997  Peter Mattis, Spencer Kimball and Josh MacDonald
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * --------------------------------------------------------------------------
+ */
+
+/*
+ * PORTIONS FROM: ----------------------------------------------------------
+ *
+ * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
+ * file for a list of people on the GLib Team.  See the ChangeLog
+ * files for a list of changes.  These files are distributed with
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
+ *
+ * --------------------------------------------------------------------------
+ */
+
 #include "config.h"
 
 #include "gkm-util.h"
@@ -31,6 +66,68 @@
 
 /* Only access using atomic operations */
 static gint next_handle = 0x00000010;
+
+GkmMemory*
+gkm_util_memory_new (gconstpointer data, gsize n_data)
+{
+	GkmMemory *memory;
+
+	memory = g_malloc (n_data + sizeof (GkmMemory));
+	memory->n_data = n_data;
+	memory->data = memory + 1;
+
+	if (n_data) {
+		g_assert (data);
+		memcpy (memory + 1, data, n_data);
+	}
+
+	return memory;
+}
+
+guint
+gkm_util_memory_hash (gconstpointer v)
+{
+	const GkmMemory *memory = v;
+	const signed char *p;
+	guint32 h = 0;
+	gsize i;
+
+	g_assert (memory);
+	g_assert (memory->data);
+	p = memory->data;
+
+	/* 31 bit hash function */
+	for (i = 0; i < memory->n_data; ++i, ++p)
+		h = (h << 5) - h + *p;
+
+	return h;
+}
+
+gboolean
+gkm_util_memory_equal (gconstpointer v1, gconstpointer v2)
+{
+	const GkmMemory *memory_1 = v1;
+	const GkmMemory *memory_2 = v2;
+
+	if (memory_1 == memory_2)
+		return TRUE;
+	if (!memory_1 || !memory_2)
+		return FALSE;
+
+	if (memory_1->n_data != memory_2->n_data)
+		return FALSE;
+
+	g_assert (memory_1->data);
+	g_assert (memory_2->data);
+
+	return (memcmp (memory_1->data, memory_2->data, memory_1->n_data) == 0);
+}
+
+void
+gkm_util_memory_free (gpointer memory)
+{
+	g_free (memory);
+}
 
 gulong*
 gkm_util_ulong_alloc (gulong value)

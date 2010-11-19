@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include "gkm/gkm-object.h"
+#include "gkm/gkm-trust.h"
 
 #define GKM_XDG_FACTORY_TRUST            (gkm_xdg_trust_get_factory ())
 #define GKM_XDG_TYPE_TRUST               (gkm_xdg_trust_get_type ())
@@ -39,16 +40,24 @@ typedef struct _GkmXdgTrustClass GkmXdgTrustClass;
 typedef struct _GkmXdgTrustPrivate GkmXdgTrustPrivate;
 
 struct _GkmXdgTrust {
-	GkmObject parent;
+	GkmTrust parent;
 	GkmXdgTrustPrivate *pv;
 };
 
 struct _GkmXdgTrustClass {
-	GkmObjectClass parent_class;
+	GkmTrustClass parent_class;
 };
 
 GType                 gkm_xdg_trust_get_type               (void);
 
-GkmFactory*           gkm_xdg_trust_get_factory            (void);
+GkmTrust*             gkm_xdg_trust_create_for_assertion   (GkmModule *module,
+                                                            GkmManager *manager,
+                                                            GkmTransaction *transaction,
+                                                            CK_ATTRIBUTE_PTR attrs,
+                                                            CK_ULONG n_attrs);
+
+GkmAssertion*         gkm_xdg_trust_add_assertion          (GkmTrust *trust,
+                                                            GkmTrustLevel level,
+                                                            const char *purpose);
 
 #endif /* __GKM_XDG_TRUST_H__ */

@@ -73,6 +73,11 @@ CK_RV                 gkm_attribute_set_mpi                            (CK_ATTRI
 CK_RV                 gkm_attribute_set_template                       (CK_ATTRIBUTE_PTR attr,
                                                                         GArray *template);
 
+CK_RV                 gkm_attribute_set_checksum                       (CK_ATTRIBUTE_PTR attr,
+                                                                        GChecksumType ctype,
+                                                                        gconstpointer data,
+                                                                        gsize n_data);
+
 guint                 gkm_attribute_hash                               (gconstpointer v);
 
 gboolean              gkm_attribute_equal                              (gconstpointer a,

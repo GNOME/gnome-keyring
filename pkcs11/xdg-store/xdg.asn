@@ -6,42 +6,43 @@ BEGIN
 
 -- This file contains definitions for keyring
 
-TrustDigest ::= SEQUENCE {
-	algorithm               OBJECT IDENTIFIER,
-	digest                  OCTET STRING
-}
-
-TrustDigests ::= SEQUENCE OF TrustDigest
-
 TrustLevel ::= ENUMERATED {
-	trustUnknown         (0),
+	unknown              (0),
 	untrusted            (1),
-	mustVerify           (2),
 	trusted              (3),
-	trustedDelegator     (4)
+	trustedAnchor        (4)
 }
 
-TrustPair ::= SEQUENCE {
+TrustAssertion ::= SEQUENCE {
 	purpose                 OBJECT IDENTIFIER,
-	level                   TrustLevel
+	level                   TrustLevel,
+	with                    OCTET STRING,
+
+	additions               SEQUENCE OF ANY
 }
 
-TrustPairs ::= SEQUENCE OF TrustPair
+TrustAssertions ::= SEQUENCE OF TrustAssertion
 
 CertReference ::= SEQUENCE {
 	serialNumber            INTEGER,
 	issuer                  ANY,
 	subject                 ANY OPTIONAL,
-	digests                 TrustDigests OPTIONAL
+
+	additions               SEQUENCE OF ANY
 }
 
 TrustReference ::= CHOICE {
-	certReference CertReference
+	certReference           [0] CertReference,
+	certComplete            [1] ANY,
+
+	additions               [2] ANY
 }
 
 trust-1 ::= SEQUENCE {
 	reference               TrustReference,
-	trusts                  TrustPairs
+	assertions              TrustAssertions,
+
+	additions               SEQUENCE OF ANY
 }
 
 END
