@@ -35,28 +35,21 @@
 static gchar **trust_files = NULL;
 #endif
 
+#if 0
 struct {
 	const gchar *name;
-	GcrPurpose purpose;
+	const gchar *purpose;
 } purpose_names[] = {
 	{ "server", GCR_PURPOSE_SERVER_AUTH },
 	{ "client", GCR_PURPOSE_CLIENT_AUTH },
 	{ "code", GCR_PURPOSE_CODE_SIGNING },
 	{ "email", GCR_PURPOSE_EMAIL },
-	{ "timestamp", GCR_PURPOSE_TIME_STAMPING },
-	{ "ipsec-endpoint", GCR_PURPOSE_IPSEC_ENDPOINT },
-	{ "ipsec-tunnel", GCR_PURPOSE_IPSEC_TUNNEL },
-	{ "ipsec-user", GCR_PURPOSE_IPSEC_USER },
-	{ "ipsec-ike-intermediate", GCR_PURPOSE_IKE_INTERMEDIATE },
 };
 
-struct {
-	const gchar *name;
-	GcrPurpose trust;
-} trust_names[] = {
-	{ "trusted", GCR_TRUST_TRUSTED },
-	{ "untrusted", GCR_TRUST_UNTRUSTED },
-	{ "unknown", GCR_TRUST_UNKNOWN },
+enum {
+	MODE_SHOW = 0,
+	MODE_ADD = 1,
+	MODE_REMOVE = 2
 };
 
 static gboolean
@@ -156,25 +149,31 @@ set_certificate_exception (GcrCertificate *certificate, GcrPurpose purpose, GcrT
 	return 0;
 }
 
-static gchar *set_trust = NULL;
+static gchar *add_trust = NULL;
+static gchar *remove_trust = NULL;
 
 static GOptionEntry trust_entries[] = {
 	GKR_TOOL_BASIC_OPTIONS
-	{ "set", 0, 0, G_OPTION_ARG_STRING, &set_trust, "Set trust exception", "trust" },
+	{ "add", 0, 0, G_OPTION_ARG_STRING, &set_trust, "Add certificate trust exception", "purpose" },
+	{ "remove", 0, 0, G_OPTION_ARG_STRING, &set_trust, "Remove certificate trust exception", "purpose" },
 	{ NULL }
 };
+#endif
 
 int
 gkr_tool_trust (int argc, char *argv[])
 {
+	g_assert_not_reached ();
+	return 1;
+#if 0
 	GcrCertificate *certificate = NULL;
-	GcrPurpose purpose;
+	const gchar *purpose;
 	GError *error = NULL;
 	GArray *purposes = NULL;
 	GFile *file = NULL;
 	gchar *contents;
 	gsize length;
-	GcrTrust trust;
+	TrustMode mode;
 	int ret = 2;
 	guint i;
 
@@ -217,9 +216,9 @@ gkr_tool_trust (int argc, char *argv[])
 	for (i = 0; i < purposes->len; ++i) {
 		purpose = g_array_index (purposes, GcrPurpose, i);
 		if (set_trust)
-			ret = set_certificate_exception (certificate, purpose, trust);
+			ret = add_certificate_exception (certificate, purpose, trust);
 		else
-			ret = get_certificate_exception (certificate, purpose);
+			ret = is_certificate_exception (certificate, purpose);
 		if (ret != 0)
 			break;
 	}
@@ -233,4 +232,5 @@ done:
 		g_object_unref (certificate);
 	g_free (set_trust);
 	return ret;
+#endif
 }
