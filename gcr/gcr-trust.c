@@ -28,7 +28,8 @@
 
 #include <gck/gck.h>
 
-#include <pkcs11/pkcs11n.h>
+#include "pkcs11/pkcs11n.h"
+#include "pkcs11/pkcs11i.h"
 
 /* ----------------------------------------------------------------------------------
  * HELPERS
@@ -37,36 +38,8 @@
 typedef struct _GcrTrustOperation {
 	GckEnumerator *en;
 	GckAttributes *attrs;
-	GcrPurpose purpose;
-	GcrTrust trust;
+	gboolean found;
 } GcrTrustOperation;
-
-static CK_ATTRIBUTE_TYPE
-attribute_type_for_purpose (GcrPurpose purpose)
-{
-	switch (purpose) {
-	case GCR_PURPOSE_SERVER_AUTH:
-		return CKA_TRUST_SERVER_AUTH;
-	case GCR_PURPOSE_CLIENT_AUTH:
-		return CKA_TRUST_CLIENT_AUTH;
-	case GCR_PURPOSE_CODE_SIGNING:
-		return CKA_TRUST_CODE_SIGNING;
-	case GCR_PURPOSE_EMAIL:
-		return CKA_TRUST_EMAIL_PROTECTION;
-	case GCR_PURPOSE_TIME_STAMPING:
-		return CKA_TRUST_TIME_STAMPING;
-	case GCR_PURPOSE_IPSEC_ENDPOINT:
-		return CKA_TRUST_IPSEC_END_SYSTEM;
-	case GCR_PURPOSE_IPSEC_TUNNEL:
-		return CKA_TRUST_IPSEC_TUNNEL;
-	case GCR_PURPOSE_IPSEC_USER:
-		return CKA_TRUST_IPSEC_USER;
-	case GCR_PURPOSE_IKE_INTERMEDIATE:
-		g_return_val_if_reached ((CK_ULONG)-1);
-	default:
-		g_return_val_if_reached ((CK_ULONG)-1);
-	};
-}
 
 static void
 trust_operation_free (gpointer data)
@@ -86,8 +59,7 @@ trust_operation_free (gpointer data)
 }
 
 static void
-trust_operation_init (GckEnumerator *en, GckAttributes *attrs,
-                      GcrPurpose purpose, GcrTrust trust)
+trust_operation_init (GckEnumerator *en, GckAttributes *attrs)
 {
 	GcrTrustOperation *op;
 
@@ -96,8 +68,6 @@ trust_operation_init (GckEnumerator *en, GckAttributes *attrs,
 	g_assert (attrs);
 
 	op = g_slice_new0 (GcrTrustOperation);
-	op->purpose = purpose;
-	op->trust = trust;
 	op->attrs = gck_attributes_ref (attrs);
 
 	/* No reference held, GckEnumerator owns */
@@ -115,29 +85,19 @@ trust_operation_get (GckEnumerator *en)
 }
 
 static GckAttributes*
-prepare_trust_attrs (GcrCertificate *cert)
+prepare_trust_attrs (GcrCertificate *cert, CK_ASSERTION_TYPE type)
 {
 	GckAttributes *attrs;
-	gpointer data;
+	gconstpointer data;
 	gsize n_data;
 
 	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_NETSCAPE_TRUST);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
+	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, type);
 
-	data = gcr_certificate_get_issuer_raw (cert, &n_data);
+	data = gcr_certificate_get_der_data (cert, &n_data);
 	g_return_val_if_fail (data, NULL);
-	gck_attributes_add_data (attrs, CKA_ISSUER, data, n_data);
-	g_free (data);
-
-	data = gcr_certificate_get_serial_number (cert, &n_data);
-	g_return_val_if_fail (data, NULL);
-	gck_attributes_add_data (attrs, CKA_SERIAL_NUMBER, data, n_data);
-	g_free (data);
-
-	data = gcr_certificate_get_fingerprint (cert, G_CHECKSUM_SHA1, &n_data);
-	g_return_val_if_fail (data, NULL);
-	gck_attributes_add_data (attrs, CKA_CERT_SHA1_HASH, data, n_data);
-	g_free (data);
+	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, data, n_data);
 
 	return attrs;
 }
@@ -147,7 +107,7 @@ prepare_trust_attrs (GcrCertificate *cert)
  */
 
 static GckEnumerator*
-prepare_get_certificate_exception (GcrCertificate *cert, GcrPurpose purpose)
+prepare_is_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote)
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
@@ -155,8 +115,11 @@ prepare_get_certificate_exception (GcrCertificate *cert, GcrPurpose purpose)
 
 	modules = _gcr_get_pkcs11_modules ();
 
-	attrs = prepare_trust_attrs (cert);
+	attrs = prepare_trust_attrs (cert, CKT_G_CERTIFICATE_TRUST_EXCEPTION);
 	g_return_val_if_fail (attrs, NULL);
+
+	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_G_REMOTE, remote);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -165,80 +128,59 @@ prepare_get_certificate_exception (GcrCertificate *cert, GcrPurpose purpose)
 	 */
 
 	en = gck_modules_enumerate_objects (modules, attrs, 0);
-	trust_operation_init (en, attrs, purpose, GCR_TRUST_UNKNOWN);
+	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
 
 	return en;
 }
 
-static GcrTrust
-perform_get_certificate_exception (GckEnumerator *en, GCancellable *cancel, GError **error)
+static gboolean
+perform_is_certificate_exception (GckEnumerator *en, GCancellable *cancel, GError **error)
 {
-	CK_ATTRIBUTE_TYPE type;
 	GcrTrustOperation *op;
 	GckObject *object;
-	gpointer data;
-	gsize n_data;
-	gulong value;
 
 	op = trust_operation_get (en);
 
 	g_assert (op != NULL);
-	g_assert (op->trust == GCR_TRUST_UNKNOWN);
+	g_assert (op->found == FALSE);
 
-	type = attribute_type_for_purpose (op->purpose);
+	object = gck_enumerator_next (en, cancel, error);
+	op->found = (object != NULL);
 
-	while (op->trust == GCR_TRUST_UNKNOWN) {
-		object = gck_enumerator_next (en, cancel, error);
-		if (!object)
-			break;
-
-		data = gck_object_get_data (object, type, NULL, &n_data, error);
-
+	if (object)
 		g_object_unref (object);
 
-		if (!data)
-			break;
-
-		if (!gck_value_to_ulong (data, n_data, &value)) {
-			g_message ("an invalid sized value was received for trust attribute");
-			value = CKT_NETSCAPE_TRUST_UNKNOWN;
-		}
-
-		if (value == CKT_NETSCAPE_TRUSTED)
-			op->trust = GCR_TRUST_TRUSTED;
-		else if (value == CKT_NETSCAPE_UNTRUSTED)
-			op->trust = GCR_TRUST_UNTRUSTED;
-
-		g_free (data);
-	}
-
-	return op->trust;
+	return op->found;
 }
 
-GcrTrust
-gcr_trust_get_certificate_exception (GcrCertificate *cert, GcrPurpose purpose,
-                                     GCancellable *cancel, GError **error)
+gboolean
+gcr_trust_is_certificate_exception (GcrCertificate *cert, const gchar *purpose,
+                                    const gchar *remote, GCancellable *cancel, GError **error)
 {
 	GckEnumerator *en;
-	GcrTrust trust;
+	gboolean ret;
 
-	en = prepare_get_certificate_exception (cert, purpose);
-	g_return_val_if_fail (en, GCR_TRUST_UNKNOWN);
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (cert), FALSE);
+	g_return_val_if_fail (purpose, FALSE);
+	g_return_val_if_fail (remote, FALSE);
 
-	trust = perform_get_certificate_exception (en, cancel, error);
+	en = prepare_is_certificate_exception (cert, purpose, remote);
+	g_return_val_if_fail (en, FALSE);
+
+	ret = perform_is_certificate_exception (en, cancel, error);
 
 	g_object_unref (en);
 
-	return trust;
+	return ret;
 }
 
 static void
-thread_get_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
+thread_is_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
 {
 	GError *error = NULL;
 
-	perform_get_certificate_exception (GCK_ENUMERATOR (object), cancel, &error);
+	perform_is_certificate_exception (GCK_ENUMERATOR (object), cancel, &error);
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (res, error);
@@ -247,73 +189,61 @@ thread_get_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCan
 }
 
 void
-gcr_trust_get_certificate_exception_async (GcrCertificate *cert, GcrPurpose purpose,
-                                           GCancellable *cancel, GAsyncReadyCallback callback,
-                                           gpointer user_data)
+gcr_trust_is_certificate_exception_async (GcrCertificate *cert, const gchar *purpose,
+                                          const gchar *remote, GCancellable *cancel,
+                                          GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
-	en = prepare_get_certificate_exception (cert, purpose);
+	en = prepare_is_certificate_exception (cert, purpose, remote);
 	g_return_if_fail (en);
 
 	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
-	                                   gcr_trust_get_certificate_exception_async);
+	                                   gcr_trust_is_certificate_exception_async);
 
-	g_simple_async_result_run_in_thread (async, thread_get_certificate_exception,
+	g_simple_async_result_run_in_thread (async, thread_is_certificate_exception,
 	                                     G_PRIORITY_DEFAULT, cancel);
 
 	g_object_unref (async);
 	g_object_unref (en);
 }
 
-GcrTrust
-gcr_trust_get_certificate_exception_finish (GAsyncResult *res, GError **error)
+gboolean
+gcr_trust_is_certificate_exception_finish (GAsyncResult *res, GError **error)
 {
 	GcrTrustOperation *op;
 	GObject *object;
 
 	object = g_async_result_get_source_object (res);
 	g_return_val_if_fail (g_simple_async_result_is_valid (res, object,
-	                      gcr_trust_get_certificate_exception_async), GCR_TRUST_UNKNOWN);
+	                      gcr_trust_is_certificate_exception_async), FALSE);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
-		return GCR_TRUST_UNKNOWN;
+		return FALSE;
 
 	op = trust_operation_get (GCK_ENUMERATOR (object));
-	return op->trust;
+	return op->found;
 }
 
 /* ----------------------------------------------------------------------------------
- * SET CERTIFICATE EXCEPTION
+ * ADD CERTIFICATE EXCEPTION
  */
 
 static GckEnumerator*
-prepare_set_certificate_exception (GcrCertificate *cert, GcrPurpose purpose, GcrTrust trust)
+prepare_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote)
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
 	GList *modules;
-	gpointer data;
-	gsize n_data;
 
 	modules = _gcr_get_pkcs11_modules ();
 
-	attrs = prepare_trust_attrs (cert);
+	attrs = prepare_trust_attrs (cert, CKT_G_CERTIFICATE_TRUST_EXCEPTION);
 	g_return_val_if_fail (attrs, NULL);
 
-	gck_attributes_add_boolean (attrs, CKA_MODIFIABLE, TRUE);
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-
-	data = gcr_certificate_get_subject_raw (cert, &n_data);
-	g_return_val_if_fail (data, NULL);
-	gck_attributes_add_data (attrs, CKA_SUBJECT, data, n_data);
-	g_free (data);
-
-	data = gcr_certificate_get_fingerprint (cert, G_CHECKSUM_MD5, &n_data);
-	g_return_val_if_fail (data, NULL);
-	gck_attributes_add_data (attrs, CKA_CERT_MD5_HASH, data, n_data);
-	g_free (data);
+	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_G_REMOTE, remote);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -322,23 +252,21 @@ prepare_set_certificate_exception (GcrCertificate *cert, GcrPurpose purpose, Gcr
 	 */
 
 	en = gck_modules_enumerate_objects (modules, attrs, CKF_RW_SESSION);
-	trust_operation_init (en, attrs, purpose, trust);
+	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
 
 	return en;
 }
 
 static gboolean
-perform_set_certificate_exception (GckEnumerator *en, GCancellable *cancel, GError **error)
+perform_add_certificate_exception (GckEnumerator *en, GCancellable *cancel, GError **error)
 {
-	CK_ATTRIBUTE_TYPE type;
 	GcrTrustOperation *op;
 	GckAttributes *attrs;
 	gboolean ret = FALSE;
 	GError *lerr = NULL;
 	GckObject *object;
 	GckSession *session;
-	gulong value;
 	GckSlot *slot;
 
 	op = trust_operation_get (en);
@@ -348,52 +276,36 @@ perform_set_certificate_exception (GckEnumerator *en, GCancellable *cancel, GErr
 	if (error && !*error)
 		*error = lerr;
 
-	switch (op->trust) {
-	case GCR_TRUST_UNKNOWN:
-		value = CKT_NETSCAPE_TRUST_UNKNOWN;
-		break;
-	case GCR_TRUST_UNTRUSTED:
-		value = CKT_NETSCAPE_UNTRUSTED;
-		break;
-	case GCR_TRUST_TRUSTED:
-		value = CKT_NETSCAPE_TRUSTED;
-		break;
+	object = gck_enumerator_next (en, cancel, error);
+	if (*error)
+		return FALSE;
+
+	/* It already exists */
+	if (object) {
+		g_object_unref (object);
+		return TRUE;
 	}
 
-	type = attribute_type_for_purpose (op->purpose);
 	attrs = gck_attributes_new ();
+	gck_attributes_add_all (attrs, op->attrs);
 
-	object = gck_enumerator_next (en, cancel, error);
+	/* TODO: Add relevant label */
 
-	/* Only set this one attribute */
-	if (object) {
-
-		gck_attributes_add_ulong (attrs, type, value);
-		ret = gck_object_set (object, attrs, cancel, error);
-
-	/* Use all trust attributes to create trust object */
-	} else if (!*error) {
-
-		gck_attributes_add_all (attrs, op->attrs);
-		gck_attributes_add_ulong (attrs, type, value);
-
-		/* Find an appropriate token */
-		slot = _gcr_slot_for_storing_trust (error);
-		if (slot != NULL) {
-			session = gck_slot_open_session (slot, CKF_RW_SESSION, NULL, error);
-			if (session != NULL) {
-
-				object = gck_session_create_object (session, attrs, cancel, error);
-				if (object != NULL) {
-					g_object_unref (object);
-					ret = TRUE;
-				}
-
-				g_object_unref (session);
+	/* Find an appropriate token */
+	slot = _gcr_slot_for_storing_trust (error);
+	if (slot != NULL) {
+		session = gck_slot_open_session (slot, CKF_RW_SESSION, NULL, error);
+		if (session != NULL) {
+			object = gck_session_create_object (session, attrs, cancel, error);
+			if (object != NULL) {
+				g_object_unref (object);
+				ret = TRUE;
 			}
 
-			g_object_unref (slot);
+			g_object_unref (session);
 		}
+
+		g_object_unref (slot);
 	}
 
 	gck_attributes_unref (attrs);
@@ -405,16 +317,16 @@ perform_set_certificate_exception (GckEnumerator *en, GCancellable *cancel, GErr
 }
 
 gboolean
-gcr_trust_set_certificate_exception (GcrCertificate *cert, GcrPurpose purpose, GcrTrust trust,
+gcr_trust_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote,
                                      GCancellable *cancel, GError **error)
 {
 	GckEnumerator *en;
 	gboolean ret;
 
-	en = prepare_set_certificate_exception (cert, purpose, trust);
+	en = prepare_add_certificate_exception (cert, purpose, remote);
 	g_return_val_if_fail (en, FALSE);
 
-	ret = perform_set_certificate_exception (en, cancel, error);
+	ret = perform_add_certificate_exception (en, cancel, error);
 
 	g_object_unref (en);
 
@@ -422,11 +334,11 @@ gcr_trust_set_certificate_exception (GcrCertificate *cert, GcrPurpose purpose, G
 }
 
 static void
-thread_set_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
+thread_add_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
 {
 	GError *error = NULL;
 
-	perform_set_certificate_exception (GCK_ENUMERATOR (object), cancel, &error);
+	perform_add_certificate_exception (GCK_ENUMERATOR (object), cancel, &error);
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (res, error);
@@ -435,20 +347,20 @@ thread_set_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCan
 }
 
 void
-gcr_trust_set_certificate_exception_async (GcrCertificate *cert, GcrPurpose purpose,
-                                           GcrTrust trust, GCancellable *cancel,
+gcr_trust_add_certificate_exception_async (GcrCertificate *cert, const gchar *purpose,
+                                           const gchar *remote, GCancellable *cancel,
                                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
-	en = prepare_set_certificate_exception (cert, purpose, trust);
+	en = prepare_add_certificate_exception (cert, purpose, remote);
 	g_return_if_fail (en);
 
 	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
-	                                   gcr_trust_set_certificate_exception_async);
+	                                   gcr_trust_add_certificate_exception_async);
 
-	g_simple_async_result_run_in_thread (async, thread_set_certificate_exception,
+	g_simple_async_result_run_in_thread (async, thread_add_certificate_exception,
 	                                     G_PRIORITY_DEFAULT, cancel);
 
 	g_object_unref (async);
@@ -456,13 +368,141 @@ gcr_trust_set_certificate_exception_async (GcrCertificate *cert, GcrPurpose purp
 }
 
 gboolean
-gcr_trust_set_certificate_exception_finish (GAsyncResult *res, GError **error)
+gcr_trust_add_certificate_exception_finish (GAsyncResult *res, GError **error)
 {
 	GObject *object;
 
 	object = g_async_result_get_source_object (res);
 	g_return_val_if_fail (g_simple_async_result_is_valid (res, object,
-	                      gcr_trust_set_certificate_exception_async), FALSE);
+	                      gcr_trust_add_certificate_exception_async), FALSE);
+
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
+		return FALSE;
+
+	return TRUE;
+}
+
+/* -----------------------------------------------------------------------
+ * REMOVE CERTIFICATE EXCEPTION
+ */
+
+static GckEnumerator*
+prepare_remove_certificate_exception (GcrCertificate *cert, const gchar *purpose,
+                                      const gchar *remote)
+{
+	GckAttributes *attrs;
+	GckEnumerator *en;
+	GList *modules;
+
+	modules = _gcr_get_pkcs11_modules ();
+
+	attrs = prepare_trust_attrs (cert, CKT_G_CERTIFICATE_TRUST_EXCEPTION);
+	g_return_val_if_fail (attrs, NULL);
+
+	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_G_REMOTE, remote);
+
+	/*
+	 * TODO: We need to be able to sort the modules by preference
+	 * on which sources of trust storage we want to read over which
+	 * others.
+	 */
+
+	en = gck_modules_enumerate_objects (modules, attrs, CKF_RW_SESSION);
+	trust_operation_init (en, attrs);
+	gck_attributes_unref (attrs);
+
+	return en;
+}
+
+static gboolean
+perform_remove_certificate_exception (GckEnumerator *en, GCancellable *cancel, GError **error)
+{
+	GcrTrustOperation *op;
+	GList *objects, *l;
+	GError *lerr = NULL;
+
+	op = trust_operation_get (en);
+	g_assert (op != NULL);
+
+	/* We need an error below */
+	if (error && !*error)
+		*error = lerr;
+
+	objects = gck_enumerator_next_n (en, -1, cancel, error);
+	if (*error)
+		return FALSE;
+
+	for (l = objects; l; l = g_list_next (l)) {
+		if (!gck_object_destroy (l->data, cancel, error)) {
+			gck_list_unref_free (objects);
+			return FALSE;
+		}
+	}
+
+	gck_list_unref_free (objects);
+	return TRUE;
+}
+
+gboolean
+gcr_trust_remove_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote,
+                                        GCancellable *cancel, GError **error)
+{
+	GckEnumerator *en;
+	gboolean ret;
+
+	en = prepare_remove_certificate_exception (cert, purpose, remote);
+	g_return_val_if_fail (en, FALSE);
+
+	ret = perform_remove_certificate_exception (en, cancel, error);
+
+	g_object_unref (en);
+
+	return ret;
+}
+
+static void
+thread_remove_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
+{
+	GError *error = NULL;
+
+	perform_remove_certificate_exception (GCK_ENUMERATOR (object), cancel, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (res, error);
+		g_clear_error (&error);
+	}
+}
+
+void
+gcr_trust_remove_certificate_exception_async (GcrCertificate *cert, const gchar *purpose,
+                                              const gchar *remote, GCancellable *cancel,
+                                              GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *async;
+	GckEnumerator *en;
+
+	en = prepare_remove_certificate_exception (cert, purpose, remote);
+	g_return_if_fail (en);
+
+	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
+	                                   gcr_trust_remove_certificate_exception_async);
+
+	g_simple_async_result_run_in_thread (async, thread_remove_certificate_exception,
+	                                     G_PRIORITY_DEFAULT, cancel);
+
+	g_object_unref (async);
+	g_object_unref (en);
+}
+
+gboolean
+gcr_trust_remove_certificate_exception_finish (GAsyncResult *res, GError **error)
+{
+	GObject *object;
+
+	object = g_async_result_get_source_object (res);
+	g_return_val_if_fail (g_simple_async_result_is_valid (res, object,
+	                      gcr_trust_remove_certificate_exception_async), FALSE);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
 		return FALSE;
@@ -475,7 +515,7 @@ gcr_trust_set_certificate_exception_finish (GAsyncResult *res, GError **error)
  */
 
 static GckEnumerator*
-prepare_is_certificate_root (GcrCertificate *cert, GcrPurpose purpose)
+prepare_is_certificate_anchor (GcrCertificate *cert, const gchar *purpose)
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
@@ -483,11 +523,10 @@ prepare_is_certificate_root (GcrCertificate *cert, GcrPurpose purpose)
 
 	modules = _gcr_get_pkcs11_modules ();
 
-	attrs = prepare_trust_attrs (cert);
+	attrs = prepare_trust_attrs (cert, CKT_G_CERTIFICATE_TRUST_ANCHOR);
 	g_return_val_if_fail (attrs, NULL);
 
-	gck_attributes_add_ulong (attrs, attribute_type_for_purpose (purpose),
-	                          CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -495,15 +534,15 @@ prepare_is_certificate_root (GcrCertificate *cert, GcrPurpose purpose)
 	 * others.
 	 */
 
-	en = gck_modules_enumerate_objects (modules, attrs, CKF_RW_SESSION);
-	trust_operation_init (en, attrs, purpose, GCR_TRUST_UNKNOWN);
+	en = gck_modules_enumerate_objects (modules, attrs, 0);
+	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
 
 	return en;
 }
 
 static gboolean
-perform_is_certificate_root (GckEnumerator *en, GCancellable *cancel, GError **error)
+perform_is_certificate_anchor (GckEnumerator *en, GCancellable *cancel, GError **error)
 {
 	GcrTrustOperation *op;
 	GckObject *object;
@@ -513,25 +552,26 @@ perform_is_certificate_root (GckEnumerator *en, GCancellable *cancel, GError **e
 
 	object = gck_enumerator_next (en, cancel, error);
 	if (object != NULL) {
-		op->trust = GCR_TRUST_TRUSTED;
+		op->found = TRUE;
 		g_object_unref (object);
-		return TRUE;
+	} else {
+		op->found = FALSE;
 	}
 
-	return FALSE;
+	return op->found;
 }
 
 gboolean
-gcr_trust_is_certificate_root (GcrCertificate *cert, GcrPurpose purpose,
-                               GCancellable *cancel, GError **error)
+gcr_trust_is_certificate_anchor (GcrCertificate *cert, const gchar *purpose,
+                                 GCancellable *cancel, GError **error)
 {
 	GckEnumerator *en;
 	gboolean ret;
 
-	en = prepare_is_certificate_root (cert, purpose);
+	en = prepare_is_certificate_anchor (cert, purpose);
 	g_return_val_if_fail (en, FALSE);
 
-	ret = perform_is_certificate_root (en, cancel, error);
+	ret = perform_is_certificate_anchor (en, cancel, error);
 
 	g_object_unref (en);
 
@@ -539,11 +579,11 @@ gcr_trust_is_certificate_root (GcrCertificate *cert, GcrPurpose purpose,
 }
 
 static void
-thread_is_certificate_root (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
+thread_is_certificate_anchor (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
 {
 	GError *error = NULL;
 
-	perform_is_certificate_root (GCK_ENUMERATOR (object), cancel, &error);
+	perform_is_certificate_anchor (GCK_ENUMERATOR (object), cancel, &error);
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (res, error);
@@ -552,20 +592,20 @@ thread_is_certificate_root (GSimpleAsyncResult *res, GObject *object, GCancellab
 }
 
 void
-gcr_trust_is_certificate_root_async (GcrCertificate *cert, GcrPurpose purpose,
-                                     GCancellable *cancel, GAsyncReadyCallback callback,
-                                     gpointer user_data)
+gcr_trust_is_certificate_anchor_async (GcrCertificate *cert, const gchar *purpose,
+                                       GCancellable *cancel, GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
-	en = prepare_is_certificate_root (cert, purpose);
+	en = prepare_is_certificate_anchor (cert, purpose);
 	g_return_if_fail (en);
 
 	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
-	                                   gcr_trust_is_certificate_root_async);
+	                                   gcr_trust_is_certificate_anchor_async);
 
-	g_simple_async_result_run_in_thread (async, thread_is_certificate_root,
+	g_simple_async_result_run_in_thread (async, thread_is_certificate_anchor,
 	                                     G_PRIORITY_DEFAULT, cancel);
 
 	g_object_unref (async);
@@ -573,18 +613,18 @@ gcr_trust_is_certificate_root_async (GcrCertificate *cert, GcrPurpose purpose,
 }
 
 gboolean
-gcr_trust_is_certificate_root_finish (GAsyncResult *res, GError **error)
+gcr_trust_is_certificate_anchor_finish (GAsyncResult *res, GError **error)
 {
 	GcrTrustOperation *op;
 	GObject *object;
 
 	object = g_async_result_get_source_object (res);
 	g_return_val_if_fail (g_simple_async_result_is_valid (res, object,
-	                      gcr_trust_is_certificate_root_async), FALSE);
+	                      gcr_trust_is_certificate_anchor_async), FALSE);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
 		return FALSE;
 
 	op = trust_operation_get (GCK_ENUMERATOR (object));
-	return op->trust == GCR_TRUST_TRUSTED;
+	return op->found;
 }
