@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-11-10 12:16+0000\n"
+"POT-Creation-Date: 2010-11-16 00:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Gheyret Kenji<gheyret@yahoo.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
-msgstr ""
+msgstr "بىر پروگرامما '%s' دېگەن keyring نىڭ ئىمىنى ئۆزگەرتمەكچى. ئۇنىڭغا يېڭى ئىم تاللاڭ."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -58,7 +58,7 @@ msgstr ""
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
-msgstr ""
+msgstr "بىر پروگرامما يېڭىدىن '%s' دېگەن keyring نى قۇرماقچى. ئۇنىڭغا ئىم تاللاڭ."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -487,7 +487,7 @@ msgstr "كۈچلۈكلۈك"
 
 #: ../gcr/gcr-key-renderer.c:292
 msgid "Algorithm"
-msgstr ""
+msgstr "ئالگورىزىم"
 
 #: ../gcr/gcr-key-renderer.c:299
 msgid "Size"
@@ -573,7 +573,7 @@ msgstr ""
 
 #: ../gck/gck-misc.c:127
 msgid "An error occurred on the device"
-msgstr ""
+msgstr "ئۈسكىنىدە خاتالىق يۈز بەردى"
 
 #: ../gck/gck-misc.c:129
 msgid "Insufficient memory available on the device"
@@ -633,7 +633,7 @@ msgstr ""
 
 #: ../gck/gck-misc.c:157
 msgid "Cannot export this key"
-msgstr ""
+msgstr "بۇ ئاچقۇچنى ئېكسپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
@@ -649,7 +649,7 @@ msgstr ""
 
 #: ../gck/gck-misc.c:165
 msgid "Another operation is already taking place"
-msgstr ""
+msgstr "باشقا بىر مەشغۇلات ئېلىپ بېرىلىۋاتىدۇ"
 
 #: ../gck/gck-misc.c:167
 msgid "No operation is taking place"
@@ -693,7 +693,7 @@ msgstr ""
 
 #: ../gck/gck-misc.c:187
 msgid "An open session exists"
-msgstr ""
+msgstr "بىر ئوچۇق ئەڭگىمە بار"
 
 #: ../gck/gck-misc.c:189
 msgid "A read-only session exists"
@@ -733,15 +733,15 @@ msgstr ""
 
 #: ../gck/gck-misc.c:207
 msgid "Cannot import because the key is invalid"
-msgstr ""
+msgstr "ئاچقۇچ ئىناۋەتسىز بولغاچقا ئىمپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
-msgstr ""
+msgstr "ئاچقۇچ ئۇزۇنلۇقى خاتا بولغاچقا ئىمپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
-msgstr ""
+msgstr "ئاچقۇچ تىپى خاتا بولغاچقا ئىمپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:213
 msgid "You are already logged in"
@@ -761,7 +761,7 @@ msgstr ""
 
 #: ../gck/gck-misc.c:221
 msgid "Another user is already logged in"
-msgstr ""
+msgstr "باشقا ئىشلەتكۈچى ئاللىقاچان تىزىمغا كىرگەن"
 
 #: ../gck/gck-misc.c:223
 msgid "Too many users of different types are logged in"
@@ -769,23 +769,23 @@ msgstr ""
 
 #: ../gck/gck-misc.c:225
 msgid "Cannot import an invalid key"
-msgstr ""
+msgstr "ئىناۋەتسىز ئاچقۇچنى ئىمپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:227
 msgid "Cannot import a key of the wrong size"
-msgstr ""
+msgstr "چوڭلۇقى خاتا بولغان ئاچقۇچنى ئىمپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:229
 msgid "Cannot export because the key is invalid"
-msgstr ""
+msgstr "ئاچقۇچ ئىناۋەتسىز بولغاچقا ئېكسپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
-msgstr ""
+msgstr "ئاچقۇچ چوڭلۇقى توغرا بولمىغاچقا ئېكسپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
-msgstr ""
+msgstr "ئاچقۇچ تىپى توغرا بولمىغاچقا ئېكسپورت قىلغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:235
 msgid "Unable to initialize the random number generator"
@@ -825,7 +825,7 @@ msgstr ""
 
 #: ../gck/gck-misc.c:253
 msgid "Cannot lock data"
-msgstr ""
+msgstr "سانلىق-مەلۇماتلارنى قۇلۇپلىغىلى بولمىدى"
 
 #: ../gck/gck-misc.c:255
 msgid "The data cannot be locked"
@@ -889,7 +889,7 @@ msgstr ""
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
+msgstr "بىر پروگرامما keyring '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
@@ -915,7 +915,7 @@ msgstr ""
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
+msgstr "بىر پروگرامما مەخپىي ئاچقۇچ '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
@@ -927,13 +927,13 @@ msgstr ""
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
+msgstr "بىر پروگرامما ئاممىۋى ئاچقۇچ '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr ""
+msgstr "بىر پروگرامما '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
 msgid "Unlock certificate/key storage"
