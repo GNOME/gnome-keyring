@@ -1069,6 +1069,20 @@ anode_decode_structured (GNode *node, Atlv *tlv, gint flags)
 }
 
 static gboolean
+anode_decode_option_or_default (GNode *node, Atlv *tlv, gint flags)
+{
+	if (flags & FLAG_OPTION || flags & FLAG_DEFAULT) {
+		tlv->len = 0;
+		tlv->end = tlv->buf;
+		tlv->off = 0;
+		anode_clr_tlv_data (node);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
 anode_decode_anything_for_flags (GNode *node, Atlv *tlv, gint flags)
 {
 	gboolean ret;
@@ -1081,8 +1095,11 @@ anode_decode_anything_for_flags (GNode *node, Atlv *tlv, gint flags)
 		tag = tlv->tag;
 
 	/* Tag does not match, what do we do? */
-	if (tlv->off == 0 || tag != tlv->tag)
-		return FALSE;
+	if (tlv->off == 0 || tag != tlv->tag) {
+		if (anode_decode_option_or_default (node, tlv, flags))
+			return TRUE;
+		return anode_failure (node, "decoded tag did not match expected");
+	}
 
 	/* Structured value */
 	if (tlv->cls & ASN1_CLASS_STRUCTURED)
@@ -1100,17 +1117,8 @@ anode_decode_anything (GNode *node, Atlv *tlv)
 {
 	gint flags = anode_def_flags (node);
 
-	if (!anode_decode_anything_for_flags (node, tlv, flags)) {
-		if (flags & FLAG_OPTION || flags & FLAG_DEFAULT) {
-			tlv->len = 0;
-			tlv->end = tlv->buf;
-			tlv->off = 0;
-			anode_clr_tlv_data (node);
-			return TRUE;
-		}
-
-		return FALSE;
-	}
+	if (!anode_decode_anything_for_flags (node, tlv, flags))
+		return anode_decode_option_or_default (node, tlv, flags);
 
 	return TRUE;
 }
