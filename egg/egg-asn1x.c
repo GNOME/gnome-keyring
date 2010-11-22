@@ -1150,6 +1150,21 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
  * ENCODING
  */
 
+static GNode*
+find_chosen_with_tlv_for_choice (GNode *node)
+{
+	GNode *child;
+
+	g_assert (anode_def_type (node) == TYPE_CHOICE);
+
+	for (child = node->children; child; child = child->next) {
+		if (anode_get_tlv_data (child) != NULL)
+			return child;
+	}
+
+	return NULL;
+}
+
 static void
 anode_encode_length (gulong len, guchar *ans, gint *cb)
 {
@@ -1304,7 +1319,6 @@ static gboolean
 anode_encode_build (GNode *node, guchar *data, gsize n_data)
 {
 	gint type;
-	gint flags;
 	guchar cls;
 	gulong tag;
 	Aenc *enc;
@@ -1319,9 +1333,14 @@ anode_encode_build (GNode *node, guchar *data, gsize n_data)
 	enc = anode_get_enc_data (node);
 	g_return_val_if_fail (enc, FALSE);
 
+	/* If it's a choice node, use the choice for calculations */
+	if (type == TYPE_CHOICE) {
+		node = find_chosen_with_tlv_for_choice (node);
+		g_return_val_if_fail (node, FALSE);
+	}
+
 	/* Encode any explicit tag */
-	flags = anode_def_flags (node);
-	if (anode_calc_explicit_for_flags (node, flags)) {
+	if (anode_calc_explicit (node)) {
 		tag = anode_calc_tag (node);
 		g_return_val_if_fail (tag != G_MAXULONG, FALSE);
 		cls = (ASN1_CLASS_STRUCTURED | ASN1_CLASS_CONTEXT_SPECIFIC);
@@ -1488,20 +1507,20 @@ anode_encoder_choice (gpointer user_data, guchar *data, gsize n_data)
 	tlv = anode_get_tlv_data (node);
 	g_return_val_if_fail (tlv, FALSE);
 
-	for (child = node->children; child; child = child->next) {
-		ctlv = anode_get_tlv_data (child);
-		if (ctlv) {
-			enc = anode_get_enc_data (child);
-			g_return_val_if_fail (enc, FALSE);
-			if (!(enc->encoder) (enc->data, data, n_data))
-				return FALSE;
+	child = find_chosen_with_tlv_for_choice (node);
+	g_return_val_if_fail (child, FALSE);
 
-			/* Child's buffer matches ours */
-			ctlv->buf = tlv->buf;
-			ctlv->end = tlv->end;
-			break;
-		}
-	}
+	ctlv = anode_get_tlv_data (child);
+	g_assert (ctlv);
+
+	enc = anode_get_enc_data (child);
+	g_return_val_if_fail (enc, FALSE);
+	if (!(enc->encoder) (enc->data, data, n_data))
+		return FALSE;
+
+	/* Child's buffer matches ours */
+	ctlv->buf = tlv->buf;
+	ctlv->end = tlv->end;
 
 	return TRUE;
 }
@@ -1586,7 +1605,7 @@ anode_encode_prepare_structured (GNode *node)
 	if (type == TYPE_CHOICE) {
 		if (child) {
 			tlv = anode_get_tlv_data (child);
-			g_return_val_if_fail (tlv, had);
+			g_return_val_if_fail (tlv, FALSE);
 			anode_clr_tlv_data (node);
 			anode_set_tlv_data (node, tlv);
 			anode_set_enc_data (node, anode_encoder_choice, node);
@@ -2605,37 +2624,52 @@ gboolean
 egg_asn1x_set_raw_element (GNode *node, gpointer data,
                            gsize n_data, GDestroyNotify destroy)
 {
-	Atlv tlv;
+	Atlv dtlv, *tlv;
+	gint oft, flags;
 
 	g_return_val_if_fail (node, FALSE);
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 
 	anode_clear (node);
-	memset (&tlv, 0, sizeof (tlv));
-
-	/* TODO: This needs implementation */
-	if (anode_calc_explicit (node)) {
-		g_warning ("egg_asn1x_set_raw_element does not yet work with explicit tagging");
-		return FALSE;
-	}
+	memset (&dtlv, 0, sizeof (dtlv));
 
 	/* Decode the beginning TLV */
-	if (!anode_decode_tlv_for_data (data, (const guchar*)data + n_data, &tlv))
+	if (!anode_decode_tlv_for_data (data, (const guchar*)data + n_data, &dtlv))
 		return FALSE;
 
-	/* Decode the data into place properly */
-	if (!anode_decode_anything (node, &tlv))
+	/*
+	 * Decode the data into place properly, to make sure it fits. Note
+	 * we are not decoding any explicit outer tagging, this is just
+	 * the internal value. In addition we do not support optional
+	 * and default values, which would decode successfully in
+	 * unexpected ways.
+	 */
+	flags = anode_def_flags (node);
+	flags &= ~(FLAG_TAG | FLAG_DEFAULT | FLAG_OPTION);
+	if (!anode_decode_anything_for_flags (node, &dtlv, flags))
 		return FALSE;
 
 	/* There was extra data */
-	if (tlv.end - tlv.buf != n_data)
+	if (dtlv.end - dtlv.buf != n_data)
 		return FALSE;
 
-	/* Should have been set above */
-	g_assert (anode_get_tlv_data (node) != NULL);
+	/* Clear buffer from TLV so it gets encoded */
+	tlv = anode_get_tlv_data (node);
+	g_assert (tlv);
+	tlv->buf = tlv->end = NULL;
 
-	/* We set this so the data is properly destroyed */
+	/* Explicit tagging: leave space for the outer tag */
+	if (anode_calc_explicit (node)) {
+		oft = anode_encode_cls_tag_len (NULL, 0, (ASN1_CLASS_STRUCTURED | ASN1_CLASS_CONTEXT_SPECIFIC),
+		                                anode_calc_tag (node), n_data);
+
+		tlv->off += oft;
+		tlv->oft = oft;
+	}
+
+	/* Setup encoding of the contents */
+	anode_set_enc_data (node, anode_encoder_simple, (gpointer)(dtlv.buf + dtlv.off));
 	anode_set_user_data (node, data, destroy);
 	return TRUE;
 }

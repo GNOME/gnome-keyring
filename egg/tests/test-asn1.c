@@ -398,6 +398,9 @@ DEFINE_TEST(asn1_any_set_raw)
 	const guchar *check;
 	gsize n_data, n_check;
 
+	/* ENCODED SEQUENCE ANY with OCTET STRING */
+	const gchar SEQ_ENCODING[] =  "\x30\x0C\x04\x0A""farnsworth";
+
 	asn = egg_asn1x_create (test_asn1_tab, "TestAnySeq");
 	g_assert (asn);
 
@@ -411,6 +414,46 @@ DEFINE_TEST(asn1_any_set_raw)
 	data = egg_asn1x_encode (asn, NULL, &n_data);
 	g_assert (data);
 
+	g_assert_cmpsize (n_data, ==, XL (SEQ_ENCODING));
+	g_assert (memcmp (data, SEQ_ENCODING, n_data) == 0);
+
+	check = egg_asn1x_get_raw_element (node, &n_check);
+	g_assert (check);
+
+	g_assert_cmpsize (n_check, ==, XL (SFARNSWORTH));
+	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+	g_assert (is_freed);
+}
+
+DEFINE_TEST(asn1_any_set_raw_explicit)
+{
+	GNode *asn, *node;
+	guchar *data;
+	const guchar *check;
+	gsize n_data, n_check;
+
+	/* ENCODED SEQUENCE [89] ANY with OCTET STRING */
+	const gchar SEQ_ENCODING[] =  "\x30\x0F\xBF\x59\x0C\x04\x0A""farnsworth";
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestAnyExp");
+	g_assert (asn);
+
+	is_freed = FALSE;
+	node = egg_asn1x_node (asn, "contents", NULL);
+	g_assert (node);
+
+	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert_cmpsize (n_data, ==, XL (SEQ_ENCODING));
+	g_assert (memcmp (data, SEQ_ENCODING, n_data) == 0);
+
 	check = egg_asn1x_get_raw_element (node, &n_check);
 	g_assert (check);
 
@@ -420,6 +463,53 @@ DEFINE_TEST(asn1_any_set_raw)
 	g_free (data);
 	egg_asn1x_destroy (asn);
 	g_assert (is_freed);
+}
+
+static void
+perform_asn1_any_choice_set_raw (const gchar *choice, const gchar *encoding, gsize n_encoding)
+{
+	GNode *asn, *node;
+	guchar *data;
+	const guchar *check;
+	gsize n_data, n_check;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestAnyChoice");
+	g_assert (asn);
+
+	is_freed = FALSE;
+	node = egg_asn1x_node (asn, choice, NULL);
+	g_assert (node);
+
+	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert_cmpsize (n_data, ==, n_encoding);
+	g_assert (memcmp (data, encoding, n_data) == 0);
+
+	check = egg_asn1x_get_raw_element (node, &n_check);
+	g_assert (check);
+
+	g_assert (n_check == XL (SFARNSWORTH));
+	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+	g_assert (is_freed);
+}
+
+DEFINE_TEST(asn1_any_choice_set_raw_short_tag)
+{
+	const gchar ENCODING[] = "\xBE\x0C\x04\x0A""farnsworth";
+	perform_asn1_any_choice_set_raw ("choiceShortTag", ENCODING, XL (ENCODING));
+}
+
+DEFINE_TEST(asn1_any_choice_set_raw_long_tag)
+{
+	const gchar ENCODING[] = "\xBF\x1F\x0C\x04\x0A""farnsworth";
+	perform_asn1_any_choice_set_raw ("choiceLongTag", ENCODING, XL (ENCODING));
 }
 
 DEFINE_TEST(asn1_append)

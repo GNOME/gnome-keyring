@@ -40,6 +40,15 @@ TestAnySeq ::= SEQUENCE {
 	contents                ANY
 }
 
+TestAnyExp ::= SEQUENCE {
+	contents                [89] ANY
+}
+
+TestAnyChoice ::= CHOICE {
+	choiceShortTag          [30] ANY,
+	choiceLongTag           [31] ANY
+}
+
 TestSeqOf ::= SEQUENCE OF INTEGER
 
 TestSetOf ::= SET OF INTEGER
