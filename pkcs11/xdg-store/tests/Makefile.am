@@ -18,7 +18,10 @@ include $(top_srcdir)/testing/testing.make
 # ------------------------------------------------------------------------------
 
 noinst_PROGRAMS += \
-	diddle-trust-file
+	diddle-trust-file \
+	dump-trust-file
 
 diddle_trust_file_LDADD =  \
+	$(top_builddir)/egg/libegg.la
+dump_trust_file_LDADD =  \
 	$(top_builddir)/egg/libegg.la
