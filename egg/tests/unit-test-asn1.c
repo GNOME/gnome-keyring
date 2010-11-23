@@ -47,8 +47,11 @@ DEFINE_SETUP(asn1_tree)
 {
 	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
 
-	asn1_cert = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data_cert, n_data_cert);
+	asn1_cert = egg_asn1x_create (pkix_asn1_tab, "Certificate");
 	g_assert (asn1_cert != NULL);
+
+	if (!egg_asn1x_decode (asn1_cert, data_cert, n_data_cert))
+		egg_asn1x_assert_not_reached (asn1_cert);
 }
 
 DEFINE_TEARDOWN(asn1_tree)

@@ -190,4 +190,15 @@ gconstpointer       egg_asn1x_element_content        (gconstpointer data,
                                                       gsize n_data,
                                                       gsize *n_content);
 
+#define             egg_asn1x_assert(expr, node) \
+	do { if G_LIKELY(expr) ; else \
+		g_assertion_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+		                     egg_asn1x_message (node) ? \
+		                     egg_asn1x_message (node) : "[no message]"); } while(0)
+
+#define             egg_asn1x_assert_not_reached(node) \
+		g_assertion_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+		                     egg_asn1x_message (node) ? \
+		                     egg_asn1x_message (node) : "[no message]")
+
 #endif /*EGG_ASN1X_H_*/
