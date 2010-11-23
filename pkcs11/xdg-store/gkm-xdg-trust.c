@@ -25,6 +25,7 @@
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
+#include "egg/egg-byte-array.h"
 
 #include "gkm/gkm-assertion.h"
 #include "gkm/gkm-attributes.h"
@@ -281,8 +282,8 @@ dispose_each_assertion (gpointer key, gpointer value, gpointer user_data)
 static GHashTable*
 create_assertions (void)
 {
-	return g_hash_table_new_full (gkm_util_memory_hash, gkm_util_memory_equal,
-	                              gkm_util_memory_free, gkm_util_dispose_unref);
+	return g_hash_table_new_full (egg_byte_array_hash, egg_byte_array_equal,
+	                              (GDestroyNotify)g_byte_array_unref, gkm_util_dispose_unref);
 }
 
 static GkmAssertion*
@@ -335,6 +336,7 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 	GkmAssertion *assertion;
 	NetscapeFlags netscape;
 	gsize n_element;
+	GByteArray *key;
 	GNode *node;
 	guint count, i;
 
@@ -355,13 +357,14 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 		g_return_val_if_fail (node, FALSE);
 
 		/* Double check that this is valid, because it's how we hash */
-		g_assert (egg_asn1x_element_length (element, n_element) == n_element);
+		key = g_byte_array_new ();
+		g_byte_array_append (key, element, n_element);
 
 		/* Already have this assertion? */
-		assertion = g_hash_table_lookup (self->pv->assertions, element);
+		assertion = g_hash_table_lookup (self->pv->assertions, key);
 		if (assertion) {
 			g_object_ref (assertion);
-			g_hash_table_remove (self->pv->assertions, element);
+			g_hash_table_remove (self->pv->assertions, key);
 
 		/* Create a new assertion */
 		} else {
@@ -369,7 +372,8 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 		}
 
 		if (assertion)
-			g_hash_table_insert (assertions, g_memdup (element, n_element), assertion);
+			g_hash_table_insert (assertions, g_byte_array_ref (key), assertion);
+		g_byte_array_unref (key);
 	}
 
 	/* Override the stored assertions and netscape trust */

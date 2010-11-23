@@ -67,67 +67,7 @@
 /* Only access using atomic operations */
 static gint next_handle = 0x00000010;
 
-GkmMemory*
-gkm_util_memory_new (gconstpointer data, gsize n_data)
-{
-	GkmMemory *memory;
 
-	memory = g_malloc (n_data + sizeof (GkmMemory));
-	memory->n_data = n_data;
-	memory->data = memory + 1;
-
-	if (n_data) {
-		g_assert (data);
-		memcpy (memory + 1, data, n_data);
-	}
-
-	return memory;
-}
-
-guint
-gkm_util_memory_hash (gconstpointer v)
-{
-	const GkmMemory *memory = v;
-	const signed char *p;
-	guint32 h = 0;
-	gsize i;
-
-	g_assert (memory);
-	g_assert (memory->data);
-	p = memory->data;
-
-	/* 31 bit hash function */
-	for (i = 0; i < memory->n_data; ++i, ++p)
-		h = (h << 5) - h + *p;
-
-	return h;
-}
-
-gboolean
-gkm_util_memory_equal (gconstpointer v1, gconstpointer v2)
-{
-	const GkmMemory *memory_1 = v1;
-	const GkmMemory *memory_2 = v2;
-
-	if (memory_1 == memory_2)
-		return TRUE;
-	if (!memory_1 || !memory_2)
-		return FALSE;
-
-	if (memory_1->n_data != memory_2->n_data)
-		return FALSE;
-
-	g_assert (memory_1->data);
-	g_assert (memory_2->data);
-
-	return (memcmp (memory_1->data, memory_2->data, memory_1->n_data) == 0);
-}
-
-void
-gkm_util_memory_free (gpointer memory)
-{
-	g_free (memory);
-}
 
 gulong*
 gkm_util_ulong_alloc (gulong value)
