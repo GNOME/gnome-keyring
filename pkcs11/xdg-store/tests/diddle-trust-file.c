@@ -44,39 +44,6 @@ barf_and_die (const gchar *msg, const gchar *detail)
 	exit (1);
 }
 
-#if 0
-	gchar *contents;
-	gsize n_contents;
-	GNode *asn;
-#endif
-
-#if 0
-{
-	if (!g_file_get_contents (argv[1], &contents, &n_contents, &error))
-		barf_and_die ("couldn't load file", egg_error_message (error));
-
-	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
-	g_return_val_if_fail (asn, 1);
-
-	if (!egg_asn1x_create_and_decode (contents, n_contents))
-		barf_and_die ("couldn't parse file", egg_asn1x_message (asn));
-
-	/* Print out the certificate we refer to first */
-	node = egg_asn1x_node (asn, "reference", "certReference", NULL);
-	if (egg_asn1x_have (node)) {
-		dump_certificate_reference (node);
-	} else {
-		node = egg_asn1x_node (asn, "reference", "certComplete", NULL);
-		if (egg_asn1x_have (node))
-			dump_certificate_complete (node);
-		else
-			barf_and_die ("unsupported certificate reference", NULL);
-	}
-
-
-}
-#endif
-
 static void
 create_trust_file_for_certificate (const gchar *filename, const gchar *certificate)
 {
@@ -169,6 +136,47 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 
 	if (!g_file_set_contents (filename, result, n_result, &err))
 		barf_and_die ("couldn't write trust file", egg_error_message (err));
+
+	g_free (result);
+}
+
+static void
+add_trust_purpose_to_file (const gchar *filename, const gchar *purpose)
+{
+	GError *err = NULL;
+	gchar *data, *result;
+	gsize n_data, n_result;
+	GNode *asn, *assertion;
+
+	if (!g_file_get_contents (filename, &data, &n_data, &err))
+		barf_and_die ("couldn't read trust file", egg_error_message (err));
+
+	/* Create up the trust structure */
+	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
+	g_return_if_fail (asn);
+
+	/* And parse it */
+	if (!egg_asn1x_decode (asn, data, n_data))
+		barf_and_die ("couldn't parse trust file", egg_asn1x_message (asn));
+
+	assertion = egg_asn1x_append (egg_asn1x_node (asn, "assertions", NULL));
+	g_return_if_fail (assertion);
+
+	if (!egg_asn1x_set_string_as_utf8 (egg_asn1x_node (assertion, "purpose", NULL), g_strdup (purpose), g_free) ||
+	    !egg_asn1x_set_enumerated (egg_asn1x_node (assertion, "level", NULL), g_quark_from_string ("trusted")))
+		g_return_if_reached ();
+
+	result = egg_asn1x_encode (asn, NULL, &n_result);
+	if (result == NULL)
+		barf_and_die ("couldn't encode trust file", egg_asn1x_message (asn));
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+
+	if (!g_file_set_contents (filename, result, n_result, &err))
+		barf_and_die ("couldn't write trust file", egg_error_message (err));
+
+	g_free (result);
 }
 
 /* --------------------------------------------------------------------------------
@@ -214,10 +222,8 @@ main(int argc, char* argv[])
 		create_trust_file_for_certificate (argv[1], create_for_file);
 	else if (refer_for_file)
 		create_trust_file_for_issuer_and_serial (argv[1], refer_for_file);
-#if 0
 	else if (add_trust_purpose)
 		add_trust_purpose_to_file (argv[1], add_trust_purpose);
-#endif
 
 	g_free (create_for_file);
 	g_free (refer_for_file);
