@@ -159,7 +159,7 @@ struct _Abits {
 static gboolean anode_decode_anything (GNode*, Atlv*);
 static gboolean anode_decode_anything_for_flags (GNode *, Atlv*, gint);
 static gboolean anode_validate_anything (GNode*);
-static gboolean anode_encode_prepare (GNode*);
+static gboolean anode_encode_prepare (GNode*, gboolean want);
 
 static gint
 atoin (const char *p, gint digits)
@@ -1555,7 +1555,7 @@ anode_encoder_bit_string (gpointer user_data, guchar *data, gsize n_data)
 }
 
 static gboolean
-anode_encode_prepare_simple (GNode *node)
+anode_encode_prepare_simple (GNode *node, gboolean want)
 {
 	Aenc *enc;
 	Atlv *tlv;
@@ -1574,7 +1574,7 @@ anode_encode_prepare_simple (GNode *node)
 }
 
 static gboolean
-anode_encode_prepare_choice (GNode *node)
+anode_encode_prepare_choice (GNode *node, gboolean want)
 {
 	Atlv *tlv;
 	GNode *child;
@@ -1587,7 +1587,7 @@ anode_encode_prepare_choice (GNode *node)
 	if (!child)
 		return FALSE;
 
-	if (!anode_encode_prepare (child))
+	if (!anode_encode_prepare (child, want))
 		return FALSE;
 
 	tlv = anode_get_tlv_data (child);
@@ -1601,22 +1601,39 @@ anode_encode_prepare_choice (GNode *node)
 }
 
 static gboolean
-anode_encode_prepare_structured (GNode *node)
+anode_encode_prepare_structured (GNode *node, gboolean want)
 {
-	gsize length = 0;
+	gboolean child_want;
+	gsize length;
+	gboolean had;
 	Atlv *tlv;
 	GNode *child;
 	gint type;
 
 	type = anode_def_type (node);
-
+	child_want = want;
+	had = FALSE;
 	length = 0;
 
+	if (type == TYPE_SEQUENCE_OF || type == TYPE_SET_OF)
+		child_want = FALSE;
+
 	for (child = node->children; child; child = child->next) {
-		if (anode_encode_prepare (child)) {
+		if (anode_encode_prepare (child, child_want)) {
 			tlv = anode_get_tlv_data (child);
 			g_return_val_if_fail (tlv, FALSE);
 			length += tlv->off + tlv->len;
+			had = TRUE;
+		}
+	}
+
+	if (had == FALSE) {
+		/* See if we should encode an empty set or seq of */
+		if (type == TYPE_SEQUENCE_OF || type == TYPE_SET_OF) {
+			if (!want)
+				return FALSE;
+		} else {
+			return FALSE;
 		}
 	}
 
@@ -1625,7 +1642,7 @@ anode_encode_prepare_structured (GNode *node)
 }
 
 static gboolean
-anode_encode_prepare (GNode *node)
+anode_encode_prepare (GNode *node, gboolean want)
 {
 	switch (anode_def_type (node)) {
 	case TYPE_INTEGER:
@@ -1637,16 +1654,16 @@ anode_encode_prepare (GNode *node)
 	case TYPE_ENUMERATED:
 	case TYPE_GENERALSTRING:
 	case TYPE_ANY:
-		return anode_encode_prepare_simple (node);
+		return anode_encode_prepare_simple (node, want);
 		break;
 	case TYPE_SEQUENCE:
 	case TYPE_SEQUENCE_OF:
 	case TYPE_SET:
 	case TYPE_SET_OF:
-		return anode_encode_prepare_structured (node);
+		return anode_encode_prepare_structured (node, want);
 		break;
 	case TYPE_CHOICE:
-		return anode_encode_prepare_choice (node);
+		return anode_encode_prepare_choice (node, want);
 		break;
 	default:
 		g_return_val_if_reached (FALSE);
@@ -1667,7 +1684,7 @@ egg_asn1x_encode (GNode *asn, EggAllocator allocator, gsize *n_data)
 	if (!allocator)
 		allocator = g_realloc;
 
-	if (!anode_encode_prepare (asn)) {
+	if (!anode_encode_prepare (asn, TRUE)) {
 		anode_failure (asn, "missing value(s)");
 		return NULL;
 	}
@@ -3091,6 +3108,7 @@ egg_asn1x_set_choice (GNode *node, GNode *choice)
 	Anode *an;
 
 	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_CHOICE, FALSE);
 
 	/* One and only one of the children must be set */
 	for (child = node->children; child; child = child->next) {
