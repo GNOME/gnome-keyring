@@ -131,11 +131,16 @@ struct _Anode {
 	const ASN1_ARRAY_TYPE *def;
 	const ASN1_ARRAY_TYPE *join;
 	GList *opts;
+
 	Atlv *tlv;
 	Aenc *enc;
+
 	gpointer user_data;
 	GDestroyNotify destroy;
+
 	gchar* failure;
+
+	gint chosen : 1;
 };
 
 struct _Abuf {
@@ -822,14 +827,24 @@ anode_decode_tlv_for_contents (Atlv *outer, gboolean first, Atlv *tlv)
 static gboolean
 anode_decode_choice (GNode *node, Atlv *tlv)
 {
+	gboolean have = FALSE;
 	GNode *child;
+	Anode *an;
 
 	for (child = node->children; child; child = child->next) {
-		if (anode_decode_anything (child, tlv))
-			return TRUE;
+		an = (Anode*)child->data;
+		if (!have && anode_decode_anything (child, tlv)) {
+			an->chosen = 1;
+			have = TRUE;
+		} else {
+			an->chosen = 0;
+		}
 	}
 
-	return anode_failure (node, "no choice is present");
+	if (!have)
+		return anode_failure (node, "no choice is present");
+
+	return TRUE;
 }
 
 static gboolean
@@ -1150,21 +1165,6 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
  * ENCODING
  */
 
-static GNode*
-find_chosen_with_tlv_for_choice (GNode *node)
-{
-	GNode *child;
-
-	g_assert (anode_def_type (node) == TYPE_CHOICE);
-
-	for (child = node->children; child; child = child->next) {
-		if (anode_get_tlv_data (child) != NULL)
-			return child;
-	}
-
-	return NULL;
-}
-
 static void
 anode_encode_length (gulong len, guchar *ans, gint *cb)
 {
@@ -1335,7 +1335,7 @@ anode_encode_build (GNode *node, guchar *data, gsize n_data)
 
 	/* If it's a choice node, use the choice for calculations */
 	if (type == TYPE_CHOICE) {
-		node = find_chosen_with_tlv_for_choice (node);
+		node = egg_asn1x_get_choice (node);
 		g_return_val_if_fail (node, FALSE);
 	}
 
@@ -1507,7 +1507,7 @@ anode_encoder_choice (gpointer user_data, guchar *data, gsize n_data)
 	tlv = anode_get_tlv_data (node);
 	g_return_val_if_fail (tlv, FALSE);
 
-	child = find_chosen_with_tlv_for_choice (node);
+	child = egg_asn1x_get_choice (node);
 	g_return_val_if_fail (child, FALSE);
 
 	ctlv = anode_get_tlv_data (child);
@@ -1574,48 +1574,53 @@ anode_encode_prepare_simple (GNode *node)
 }
 
 static gboolean
+anode_encode_prepare_choice (GNode *node)
+{
+	Atlv *tlv;
+	GNode *child;
+	gint type;
+
+	type = anode_def_type (node);
+	g_assert (type == TYPE_CHOICE);
+
+	child = egg_asn1x_get_choice (node);
+	if (!child)
+		return FALSE;
+
+	if (!anode_encode_prepare (child))
+		return FALSE;
+
+	tlv = anode_get_tlv_data (child);
+	g_return_val_if_fail (tlv, FALSE);
+	anode_clr_tlv_data (node);
+	anode_set_tlv_data (node, tlv);
+	anode_set_enc_data (node, anode_encoder_choice, node);
+
+	return TRUE;
+
+}
+
+static gboolean
 anode_encode_prepare_structured (GNode *node)
 {
 	gsize length = 0;
-	gboolean had;
 	Atlv *tlv;
 	GNode *child;
 	gint type;
 
 	type = anode_def_type (node);
 
-	had = FALSE;
 	length = 0;
 
 	for (child = node->children; child; child = child->next) {
 		if (anode_encode_prepare (child)) {
 			tlv = anode_get_tlv_data (child);
-			had = TRUE;
-			g_return_val_if_fail (tlv, had);
-			length += tlv->off + tlv->len;
-			if (type == TYPE_CHOICE)
-				break;
-		}
-	}
-
-	if (!had)
-		return FALSE;
-
-	/* Choice type, take over the child's encoding */
-	if (type == TYPE_CHOICE) {
-		if (child) {
-			tlv = anode_get_tlv_data (child);
 			g_return_val_if_fail (tlv, FALSE);
-			anode_clr_tlv_data (node);
-			anode_set_tlv_data (node, tlv);
-			anode_set_enc_data (node, anode_encoder_choice, node);
+			length += tlv->off + tlv->len;
 		}
-
-	/* Other container types */
-	} else {
-		anode_encode_tlv_and_enc (node, length, anode_encoder_structured, node, NULL);
 	}
 
+	anode_encode_tlv_and_enc (node, length, anode_encoder_structured, node, NULL);
 	return TRUE;
 }
 
@@ -1638,8 +1643,10 @@ anode_encode_prepare (GNode *node)
 	case TYPE_SEQUENCE_OF:
 	case TYPE_SET:
 	case TYPE_SET_OF:
-	case TYPE_CHOICE:
 		return anode_encode_prepare_structured (node);
+		break;
+	case TYPE_CHOICE:
+		return anode_encode_prepare_choice (node);
 		break;
 	default:
 		g_return_val_if_reached (FALSE);
@@ -1660,8 +1667,10 @@ egg_asn1x_encode (GNode *asn, EggAllocator allocator, gsize *n_data)
 	if (!allocator)
 		allocator = g_realloc;
 
-	if (!anode_encode_prepare (asn))
+	if (!anode_encode_prepare (asn)) {
+		anode_failure (asn, "missing value(s)");
 		return NULL;
+	}
 
 	/* We must sort all the nasty SET OF nodes */
 	g_node_traverse (asn, G_POST_ORDER, G_TRAVERSE_ALL, -1,
@@ -3061,16 +3070,43 @@ GNode*
 egg_asn1x_get_choice (GNode *node)
 {
 	GNode *child;
+	Anode *an;
 
 	g_return_val_if_fail (node, NULL);
 
 	/* One and only one of the children must be set */
 	for (child = node->children; child; child = child->next) {
-		if (anode_get_tlv_data (child))
+		an = (Anode*)child->data;
+		if (an->chosen)
 			return child;
 	}
 
 	return NULL;
+}
+
+gboolean
+egg_asn1x_set_choice (GNode *node, GNode *choice)
+{
+	GNode *child;
+	Anode *an;
+
+	g_return_val_if_fail (node, FALSE);
+
+	/* One and only one of the children must be set */
+	for (child = node->children; child; child = child->next) {
+		an = (Anode*)child->data;
+		if (child == choice) {
+			an->chosen = 1;
+			choice = NULL;
+		} else {
+			an->chosen = 0;
+		}
+	}
+
+	/* The choice is not one of the child nodes */
+	g_return_val_if_fail (!choice, FALSE);
+
+	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------------
@@ -3249,22 +3285,25 @@ anode_validate_time (GNode *node, Atlv *tlv)
 static gboolean
 anode_validate_choice (GNode *node)
 {
-	gboolean have = FALSE;
-	GNode *child;
+	GNode *child, *choice;
+	Anode *an;
 
 	/* One and only one of the children must be set */
+	choice = egg_asn1x_get_choice (node);
+	if (!choice)
+		return anode_failure (node, "one choice must be set");
+
+	if (!anode_validate_anything (choice))
+		return FALSE;
+
 	for (child = node->children; child; child = child->next) {
-		if (anode_get_tlv_data (child)) {
-			if (have)
+		if (child != choice) {
+			an = (Anode*)child->data;
+			if (an->chosen)
 				return anode_failure (node, "only one choice may be set");
-			have = TRUE;
-			if (!anode_validate_anything (child))
-				return FALSE;
 		}
 	}
 
-	if (!have)
-		return anode_failure (node, "one choice must be set");
 	return TRUE;
 }
 

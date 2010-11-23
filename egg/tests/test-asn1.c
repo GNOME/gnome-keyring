@@ -465,6 +465,30 @@ DEFINE_TEST(asn1_any_set_raw_explicit)
 	g_assert (is_freed);
 }
 
+DEFINE_TEST(asn1_choice_not_chosen)
+{
+	GNode *asn, *node;
+	guchar *data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestAnyChoice");
+	g_assert (asn);
+
+	node = egg_asn1x_node (asn, "choiceShortTag", NULL);
+	g_assert (node);
+
+	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), NULL))
+		g_assert_not_reached ();
+
+	/* egg_asn1x_set_choice() was not called */
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (!data);
+	g_assert (egg_asn1x_message (asn));
+	g_assert (strstr (egg_asn1x_message (asn), "TestAnyChoice") != NULL);
+
+	egg_asn1x_destroy (asn);
+}
+
 static void
 perform_asn1_any_choice_set_raw (const gchar *choice, const gchar *encoding, gsize n_encoding)
 {
@@ -480,10 +504,17 @@ perform_asn1_any_choice_set_raw (const gchar *choice, const gchar *encoding, gsi
 	node = egg_asn1x_node (asn, choice, NULL);
 	g_assert (node);
 
+	if (!egg_asn1x_set_choice (asn, node))
+		g_assert_not_reached ();
+
 	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
 		g_assert_not_reached ();
 
 	data = egg_asn1x_encode (asn, NULL, &n_data);
+	if (!data) {
+		g_printerr ("%s\n", egg_asn1x_message (asn));
+		g_assert_not_reached ();
+	}
 	g_assert (data);
 
 	g_assert_cmpsize (n_data, ==, n_encoding);
@@ -606,6 +637,31 @@ DEFINE_TEST(asn1_setof)
 
 	g_assert (n_data == XL (SETOF_THREE));
 	g_assert (memcmp (data, SETOF_THREE, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+DEFINE_TEST(asn1_setof_empty)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	/* SEQUENCE OF with nothing */
+	const gchar SETOF_NONE[] =  "\x31\x00";
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestSetOf");
+	g_assert (asn);
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	if (!data) {
+		g_printerr ("%s\n", egg_asn1x_message (asn));
+		g_assert_not_reached ();
+	}
+
+	g_assert (n_data == XL (SETOF_NONE));
+	g_assert (memcmp (data, SETOF_NONE, n_data) == 0);
 
 	g_free (data);
 	egg_asn1x_destroy (asn);

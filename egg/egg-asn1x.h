@@ -75,6 +75,9 @@ gboolean            egg_asn1x_have                   (GNode *node);
 
 GNode*              egg_asn1x_get_choice             (GNode *node);
 
+gboolean            egg_asn1x_set_choice             (GNode *node,
+                                                      GNode *choice);
+
 gboolean            egg_asn1x_get_boolean            (GNode *node,
                                                       gboolean *value);
 
