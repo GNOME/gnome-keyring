@@ -14,9 +14,9 @@ TrustLevel ::= ENUMERATED {
 }
 
 TrustAssertion ::= SEQUENCE {
-	purpose                 OBJECT IDENTIFIER,
+	purpose                 OCTET STRING,
 	level                   TrustLevel,
-	with                    OCTET STRING,
+	peer                    OCTET STRING,
 
 	additions               SEQUENCE OF ANY
 }
