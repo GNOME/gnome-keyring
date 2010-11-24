@@ -35,7 +35,6 @@ static GMutex *mutex = NULL;
 GkmModule*  _gkm_xdg_store_get_module_for_testing (void);
 GMutex* _gkm_module_get_scary_mutex_that_you_should_not_touch (GkmModule *module);
 
-#if 0
 static void
 copy_scratch_file (const gchar *basename)
 {
@@ -56,7 +55,6 @@ copy_scratch_file (const gchar *basename)
 	g_free (filename);
 	g_free (data);
 }
-#endif
 
 GkmModule*
 test_xdg_module_initialize_and_enter (void)
@@ -73,11 +71,8 @@ test_xdg_module_initialize_and_enter (void)
 	args.pReserved = string;
 	args.flags = CKF_OS_LOCKING_OK;
 
-#if 0
 	/* Copy files from test-data to scratch */
-	copy_scratch_file ("encrypted.keyring");
-	copy_scratch_file ("plain.keyring");
-#endif
+	copy_scratch_file ("test-refer-1.trust");
 
 	funcs = gkm_xdg_store_get_functions ();
 	rv = (funcs->C_Initialize) (&args);

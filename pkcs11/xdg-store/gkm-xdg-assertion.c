@@ -36,10 +36,6 @@
 
 #include <glib/gi18n.h>
 
-struct _GkmXdgAssertionPrivate {
-
-};
-
 G_DEFINE_TYPE (GkmXdgAssertion, gkm_xdg_assertion, GKM_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
@@ -178,54 +174,16 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
  * OBJECT
  */
 
-static CK_RV
-gkm_xdg_assertion_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_PTR attr)
-{
-#if 0
-	GkmXdgAssertion *self = GKM_XDG_ASSERTION (base);
-
-	switch (attr->type)
-	{
-	case CKA_G
-	/* Various trust flags */
-	case CKA_G_TRUST_LEVEL:
-		xxxx;
-	case CKA_G_TRUST_PURPOSE:
-		xxxx;
-
-	default:
-		break;
-	};
-
-#endif
-	return GKM_OBJECT_CLASS (gkm_xdg_assertion_parent_class)->get_attribute (base, session, attr);
-}
-
 static void
 gkm_xdg_assertion_init (GkmXdgAssertion *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_XDG_TYPE_ASSERTION, GkmXdgAssertionPrivate);
-}
-
-static void
-gkm_xdg_assertion_finalize (GObject *obj)
-{
-#if 0
-	GkmXdgAssertion *self = GKM_XDG_ASSERTION (obj);
-#endif
-	G_OBJECT_CLASS (gkm_xdg_assertion_parent_class)->finalize (obj);
+	self->pv = NULL;
 }
 
 static void
 gkm_xdg_assertion_class_init (GkmXdgAssertionClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 
-	gobject_class->finalize = gkm_xdg_assertion_finalize;
-	gkm_class->get_attribute = gkm_xdg_assertion_get_attribute;
-
-	g_type_class_add_private (klass, sizeof (GkmXdgAssertionPrivate));
 }
 
 /* -----------------------------------------------------------------------------

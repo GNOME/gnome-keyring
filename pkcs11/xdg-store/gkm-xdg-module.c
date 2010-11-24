@@ -21,9 +21,10 @@
 
 #include "config.h"
 
+#include "gkm-xdg-assertion.h"
 #include "gkm-xdg-module.h"
 #include "gkm-xdg-store.h"
-#include "gkm-xdg-assertion.h"
+#include "gkm-xdg-trust.h"
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
@@ -106,7 +107,7 @@ type_from_path (const gchar *path)
 		return 0;
 
 	if (g_str_equal (ext, ".trust"))
-		return GKM_XDG_TYPE_ASSERTION;
+		return GKM_XDG_TYPE_TRUST;
 
 #if 0
 	else if (strcmp (extension, ".pkcs8") == 0)
