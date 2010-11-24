@@ -140,6 +140,13 @@ add_object_to_module (GkmXdgModule *self, GkmObject *object, const gchar *filena
 }
 
 static void
+remove_object_from_module (GkmXdgModule *self, GkmObject *object, const gchar *filename)
+{
+	g_assert (g_hash_table_lookup (self->objects_by_path, filename) == object);
+	g_hash_table_remove (self->objects_by_path, filename);
+}
+
+static void
 file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 {
 	GkmObject *object;
@@ -195,8 +202,10 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 
 	} else {
 		g_message ("failed to load file in user store: %s", path);
-		if (!added)
+		if (!added) {
 			gkm_object_expose (object, FALSE);
+			remove_object_from_module (self, object, path);
+		}
 	}
 
 	g_object_unref (object);
@@ -205,9 +214,14 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 static void
 file_remove (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 {
+	GkmObject *object;
+
 	g_return_if_fail (path);
 	g_return_if_fail (GKM_IS_XDG_MODULE (self));
-	g_hash_table_remove (self->objects_by_path, path);
+
+	object = g_hash_table_lookup (self->objects_by_path, path);
+	if (object != NULL)
+		remove_object_from_module (self, object, path);
 }
 
 static gchar*
@@ -424,7 +438,8 @@ gkm_xdg_module_constructor (GType type, guint n_props, GObjectConstructParam *pr
 static void
 gkm_xdg_module_init (GkmXdgModule *self)
 {
-	self->objects_by_path = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	self->objects_by_path = g_hash_table_new_full (g_str_hash, g_str_equal,
+	                                               g_free, gkm_util_dispose_unref);
 
 	/* Our default token info, updated as module runs */
 	memcpy (&self->token_info, &user_module_token_info, sizeof (CK_TOKEN_INFO));

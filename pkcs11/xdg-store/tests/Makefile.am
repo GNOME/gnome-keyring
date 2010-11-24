@@ -4,8 +4,8 @@ TESTING_SOURCES = \
 
 # Test files should be listed in order they need to run
 TESTING_FILES = \
-	test-xdg-trust.c \
-	test-xdg-module.c
+	test-xdg-module.c \
+	test-xdg-trust.c
 
 TESTING_LIBS =  \
 	$(top_builddir)/pkcs11/xdg-store/libgkm-xdg-store.la \
