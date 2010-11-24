@@ -110,7 +110,7 @@ debug_print_certificate_info (const gchar *path)
 
 #endif
 
-DEFINE_SETUP (trust_setup)
+TESTING_SETUP (trust_setup)
 {
 	CK_RV rv;
 
@@ -123,14 +123,14 @@ DEFINE_SETUP (trust_setup)
 	g_assert (rv == CKR_OK);
 }
 
-DEFINE_TEARDOWN (trust_teardown)
+TESTING_TEARDOWN (trust_teardown)
 {
 	test_xdg_module_leave_and_finalize ();
 	module = NULL;
 	session = NULL;
 }
 
-DEFINE_TEST (trust_load_object)
+TESTING_TEST (trust_load_object)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 	CK_TRUST trusted = CKT_NETSCAPE_TRUSTED;
@@ -162,7 +162,7 @@ DEFINE_TEST (trust_load_object)
 	gkm_assert_cmpulong (n_objects, ==, 1);
 }
 
-DEFINE_TEST (trust_create)
+TESTING_TEST (trust_create)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -183,7 +183,7 @@ DEFINE_TEST (trust_create)
 }
 
 
-DEFINE_TEST (trust_create_invalid_attrs)
+TESTING_TEST (trust_create_invalid_attrs)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -198,7 +198,7 @@ DEFINE_TEST (trust_create_invalid_attrs)
 	g_assert (rv == CKR_TEMPLATE_INCOMPLETE);
 }
 
-DEFINE_TEST (trust_create_invalid_der)
+TESTING_TEST (trust_create_invalid_der)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -215,7 +215,7 @@ DEFINE_TEST (trust_create_invalid_der)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST (trust_create_invalid_serial)
+TESTING_TEST (trust_create_invalid_serial)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -232,7 +232,7 @@ DEFINE_TEST (trust_create_invalid_serial)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST (trust_create_with_sha1)
+TESTING_TEST (trust_create_with_sha1)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -250,7 +250,7 @@ DEFINE_TEST (trust_create_with_sha1)
 	g_assert (rv == CKR_OK);
 }
 
-DEFINE_TEST (trust_create_with_md5)
+TESTING_TEST (trust_create_with_md5)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -268,7 +268,7 @@ DEFINE_TEST (trust_create_with_md5)
 	g_assert (rv == CKR_OK);
 }
 
-DEFINE_TEST (trust_create_with_subject)
+TESTING_TEST (trust_create_with_subject)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -286,7 +286,7 @@ DEFINE_TEST (trust_create_with_subject)
 	g_assert (rv == CKR_OK);
 }
 
-DEFINE_TEST (trust_create_invalid_checksum)
+TESTING_TEST (trust_create_invalid_checksum)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -304,7 +304,7 @@ DEFINE_TEST (trust_create_invalid_checksum)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST (trust_create_with_trusted)
+TESTING_TEST (trust_create_with_trusted)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 	CK_TRUST trust = CKT_NETSCAPE_TRUSTED;
@@ -323,7 +323,7 @@ DEFINE_TEST (trust_create_with_trusted)
 	g_assert (rv == CKR_OK);
 }
 
-DEFINE_TEST (trust_create_with_trusted_and_save)
+TESTING_TEST (trust_create_with_trusted_and_save)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 	CK_TRUST trusted = CKT_NETSCAPE_TRUSTED;

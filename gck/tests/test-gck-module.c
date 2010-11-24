@@ -7,7 +7,7 @@
 
 static GckModule *module = NULL;
 
-DEFINE_SETUP(load_module)
+TESTING_SETUP(load_module)
 {
 	GError *err = NULL;
 
@@ -16,12 +16,12 @@ DEFINE_SETUP(load_module)
 	SUCCESS_RES (module, err);
 }
 
-DEFINE_TEARDOWN(load_module)
+TESTING_TEARDOWN(load_module)
 {
 	g_object_unref (module);
 }
 
-DEFINE_TEST(invalid_modules)
+TESTING_TEST(invalid_modules)
 {
 	GckModule *invalid;
 	GError *err = NULL;
@@ -35,7 +35,7 @@ DEFINE_TEST(invalid_modules)
 	FAIL_RES (invalid, err);
 }
 
-DEFINE_TEST(module_equals_hash)
+TESTING_TEST(module_equals_hash)
 {
 	GckModule *other;
 	GObject *obj;
@@ -58,7 +58,7 @@ DEFINE_TEST(module_equals_hash)
 	g_object_unref (obj);
 }
 
-DEFINE_TEST(module_props)
+TESTING_TEST(module_props)
 {
 	gchar *path;
 
@@ -68,7 +68,7 @@ DEFINE_TEST(module_props)
 	g_free (path);
 }
 
-DEFINE_TEST(module_info)
+TESTING_TEST(module_info)
 {
 	GckModuleInfo *info;
 
@@ -123,7 +123,7 @@ for_first_object (GckObject *object, gpointer user_data)
 }
 #endif
 
-DEFINE_TEST(module_enumerate)
+TESTING_TEST(module_enumerate)
 {
 #if 0
 	GckSession *session;

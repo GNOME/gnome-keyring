@@ -43,7 +43,7 @@ static GNode *asn1_cert = NULL;
 static guchar *data_cert = NULL;
 static gsize n_data_cert = 0;
 
-DEFINE_SETUP(asn1_tree)
+TESTING_SETUP(asn1_tree)
 {
 	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
 
@@ -54,19 +54,19 @@ DEFINE_SETUP(asn1_tree)
 		egg_asn1x_assert_not_reached (asn1_cert);
 }
 
-DEFINE_TEARDOWN(asn1_tree)
+TESTING_TEARDOWN(asn1_tree)
 {
 	egg_asn1x_destroy (asn1_cert);
 	g_free (data_cert);
 	data_cert = NULL;
 }
 
-DEFINE_TEST(node_name)
+TESTING_TEST(node_name)
 {
 	g_assert_cmpstr (egg_asn1x_name (asn1_cert), ==, "Certificate");
 }
 
-DEFINE_TEST(asn1_integers)
+TESTING_TEST(asn1_integers)
 {
 	GNode *asn;
 	guchar *data;
@@ -112,7 +112,7 @@ DEFINE_TEST(asn1_integers)
 	g_free (data);
 }
 
-DEFINE_TEST(boolean)
+TESTING_TEST(boolean)
 {
 	GNode *asn = NULL;
 	gboolean value, ret;
@@ -153,7 +153,7 @@ DEFINE_TEST(boolean)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(write_value)
+TESTING_TEST(write_value)
 {
 	GNode *asn = NULL;
 	guchar *data;
@@ -180,7 +180,7 @@ DEFINE_TEST(write_value)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(element_length_content)
+TESTING_TEST(element_length_content)
 {
 	GNode *asn = NULL;
 	gchar *buffer;
@@ -223,7 +223,7 @@ DEFINE_TEST(element_length_content)
 	g_free (buffer);
 }
 
-DEFINE_TEST(read_element)
+TESTING_TEST(read_element)
 {
 	GNode *asn = NULL;
 	guchar *buffer;
@@ -254,7 +254,7 @@ DEFINE_TEST(read_element)
 	g_free (buffer);
 }
 
-DEFINE_TEST(oid)
+TESTING_TEST(oid)
 {
 	GNode *asn = NULL;
 	GQuark oid, check;
@@ -334,7 +334,7 @@ static const TimeTestData utc_time_test_data[] = {
 	{ NULL, 0 }
 };
 
-DEFINE_TEST(general_time)
+TESTING_TEST(general_time)
 {
 	time_t when;
 	const TimeTestData *data;
@@ -352,7 +352,7 @@ DEFINE_TEST(general_time)
 	}
 }
 
-DEFINE_TEST(utc_time)
+TESTING_TEST(utc_time)
 {
 	time_t when;
 	const TimeTestData *data;
@@ -370,7 +370,7 @@ DEFINE_TEST(utc_time)
 	}
 }
 
-DEFINE_TEST(read_time)
+TESTING_TEST(read_time)
 {
 	glong time;
 
@@ -378,7 +378,7 @@ DEFINE_TEST(read_time)
 	g_assert_cmpint (time, ==, 820454400);
 }
 
-DEFINE_TEST(read_date)
+TESTING_TEST(read_date)
 {
 	GDate date;
 	if (!egg_asn1x_get_time_as_date (egg_asn1x_node (asn1_cert, "tbsCertificate", "validity", "notAfter", NULL), &date))
@@ -388,7 +388,7 @@ DEFINE_TEST(read_date)
 	g_assert_cmpint (date.year, ==, 2020);
 }
 
-DEFINE_TEST(create_by_oid)
+TESTING_TEST(create_by_oid)
 {
 	/* id-at-initials = X520initials */
 	GNode *node = egg_asn1x_create (pkix_asn1_tab, "2.5.4.43");
@@ -397,13 +397,13 @@ DEFINE_TEST(create_by_oid)
 	egg_asn1x_destroy (node);
 }
 
-DEFINE_TEST(create_by_oid_invalid)
+TESTING_TEST(create_by_oid_invalid)
 {
 	GNode *node = egg_asn1x_create (pkix_asn1_tab, "23.23.23.23");
 	g_assert (node == NULL);
 }
 
-DEFINE_TEST(create_by_bad_order)
+TESTING_TEST(create_by_bad_order)
 {
 	/*
 	 * In pkix.asn the definition for parts of this oid
@@ -417,7 +417,7 @@ DEFINE_TEST(create_by_bad_order)
 	egg_asn1x_destroy (node);
 }
 
-DEFINE_TEST(count)
+TESTING_TEST(count)
 {
 	GNode *node;
 

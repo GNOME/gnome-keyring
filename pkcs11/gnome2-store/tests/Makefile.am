@@ -1,7 +1,7 @@
 
 TESTING_FILES = \
-	test-module.c \
-	unit-test-gnome2-file.c
+	unit-test-gnome2-file.c \
+	test-module.c
 
 TESTING_LIBS = \
 	$(top_builddir)/pkcs11/gnome2-store/libgkm-gnome2-store.la \

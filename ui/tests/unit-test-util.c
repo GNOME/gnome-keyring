@@ -33,19 +33,19 @@
 
 static GKeyFile *key_file = NULL;
 
-DEFINE_SETUP(prompt_util)
+TESTING_SETUP(prompt_util)
 {
 	egg_libgcrypt_initialize ();
 	key_file = g_key_file_new ();
 }
 
-DEFINE_TEARDOWN(prompt_util)
+TESTING_TEARDOWN(prompt_util)
 {
 	g_key_file_free (key_file);
 	key_file = NULL;
 }
 
-DEFINE_TEST(encode_decode_mpi)
+TESTING_TEST(encode_decode_mpi)
 {
 	gcry_mpi_t mpi, check;
 
@@ -61,7 +61,7 @@ DEFINE_TEST(encode_decode_mpi)
 	gcry_mpi_release (check);
 }
 
-DEFINE_TEST(decode_nonexistant_mpi)
+TESTING_TEST(decode_nonexistant_mpi)
 {
 	gcry_mpi_t mpi;
 
@@ -69,7 +69,7 @@ DEFINE_TEST(decode_nonexistant_mpi)
 		g_assert_not_reached ();
 }
 
-DEFINE_TEST(encode_decode_hex)
+TESTING_TEST(encode_decode_hex)
 {
 	gchar buffer[32];
 	gpointer check;
@@ -85,7 +85,7 @@ DEFINE_TEST(encode_decode_hex)
 	g_free (check);
 }
 
-DEFINE_TEST(decode_nonexistant_hex)
+TESTING_TEST(decode_nonexistant_hex)
 {
 	gsize n_data;
 
@@ -126,7 +126,7 @@ do_encrypt_decrypt_text (const gchar *text)
 	g_assert_cmpstr (check, ==, text);
 }
 
-DEFINE_TEST(encrypt_decrypt_text)
+TESTING_TEST(encrypt_decrypt_text)
 {
 	do_encrypt_decrypt_text ("");
 	do_encrypt_decrypt_text ("blah");

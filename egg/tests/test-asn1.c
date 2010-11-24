@@ -55,7 +55,7 @@ const gchar ENUM_THREE[] =           "\x0A\x01\x03";
 
 #define XL(x) G_N_ELEMENTS (x) - 1
 
-DEFINE_TEST(asn1_boolean)
+TESTING_TEST(asn1_boolean)
 {
 	GNode *asn;
 	gboolean value;
@@ -92,7 +92,7 @@ DEFINE_TEST(asn1_boolean)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_integer)
+TESTING_TEST(asn1_integer)
 {
 	GNode *asn;
 	gulong value;
@@ -120,7 +120,7 @@ DEFINE_TEST(asn1_integer)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_octet_string)
+TESTING_TEST(asn1_octet_string)
 {
 	GNode *asn;
 	gchar *value;
@@ -148,7 +148,7 @@ DEFINE_TEST(asn1_octet_string)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_generalized_time)
+TESTING_TEST(asn1_generalized_time)
 {
 	GNode *asn;
 	glong value;
@@ -175,7 +175,7 @@ DEFINE_TEST(asn1_generalized_time)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_implicit)
+TESTING_TEST(asn1_implicit)
 {
 	GNode *asn;
 	gchar *value;
@@ -193,7 +193,7 @@ DEFINE_TEST(asn1_implicit)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_explicit)
+TESTING_TEST(asn1_explicit)
 {
 	GNode *asn;
 	gchar *value;
@@ -211,7 +211,7 @@ DEFINE_TEST(asn1_explicit)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_decode)
+TESTING_TEST(asn1_bit_string_decode)
 {
 	GNode *asn;
 	guchar *bits;
@@ -235,7 +235,7 @@ DEFINE_TEST(asn1_bit_string_decode)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_decode_bad)
+TESTING_TEST(asn1_bit_string_decode_bad)
 {
 	GNode *asn;
 
@@ -249,7 +249,7 @@ DEFINE_TEST(asn1_bit_string_decode_bad)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_decode_ulong)
+TESTING_TEST(asn1_bit_string_decode_ulong)
 {
 	GNode *asn;
 	gulong bits;
@@ -271,7 +271,7 @@ DEFINE_TEST(asn1_bit_string_decode_ulong)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_encode_decode)
+TESTING_TEST(asn1_bit_string_encode_decode)
 {
 	GNode *asn;
 	guchar bits[] = { 0x5d, 0x6e, 0x83 };
@@ -305,7 +305,7 @@ DEFINE_TEST(asn1_bit_string_encode_decode)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_encode_decode_ulong)
+TESTING_TEST(asn1_bit_string_encode_decode_ulong)
 {
 	GNode *asn;
 	gulong check, bits = 0x0101b977;
@@ -335,7 +335,7 @@ DEFINE_TEST(asn1_bit_string_encode_decode_ulong)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_encode_decode_zero)
+TESTING_TEST(asn1_bit_string_encode_decode_zero)
 {
 	GNode *asn;
 	gpointer data;
@@ -357,7 +357,7 @@ DEFINE_TEST(asn1_bit_string_encode_decode_zero)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_have)
+TESTING_TEST(asn1_have)
 {
 	GNode *asn;
 	guchar *data;
@@ -391,7 +391,7 @@ test_is_freed (gpointer unused)
 	is_freed = TRUE;
 }
 
-DEFINE_TEST(asn1_any_set_raw)
+TESTING_TEST(asn1_any_set_raw)
 {
 	GNode *asn, *node;
 	guchar *data;
@@ -428,7 +428,7 @@ DEFINE_TEST(asn1_any_set_raw)
 	g_assert (is_freed);
 }
 
-DEFINE_TEST(asn1_any_set_raw_explicit)
+TESTING_TEST(asn1_any_set_raw_explicit)
 {
 	GNode *asn, *node;
 	guchar *data;
@@ -465,7 +465,7 @@ DEFINE_TEST(asn1_any_set_raw_explicit)
 	g_assert (is_freed);
 }
 
-DEFINE_TEST(asn1_choice_not_chosen)
+TESTING_TEST(asn1_choice_not_chosen)
 {
 	GNode *asn, *node;
 	guchar *data;
@@ -531,19 +531,19 @@ perform_asn1_any_choice_set_raw (const gchar *choice, const gchar *encoding, gsi
 	g_assert (is_freed);
 }
 
-DEFINE_TEST(asn1_any_choice_set_raw_short_tag)
+TESTING_TEST(asn1_any_choice_set_raw_short_tag)
 {
 	const gchar ENCODING[] = "\xBE\x0C\x04\x0A""farnsworth";
 	perform_asn1_any_choice_set_raw ("choiceShortTag", ENCODING, XL (ENCODING));
 }
 
-DEFINE_TEST(asn1_any_choice_set_raw_long_tag)
+TESTING_TEST(asn1_any_choice_set_raw_long_tag)
 {
 	const gchar ENCODING[] = "\xBF\x1F\x0C\x04\x0A""farnsworth";
 	perform_asn1_any_choice_set_raw ("choiceLongTag", ENCODING, XL (ENCODING));
 }
 
-DEFINE_TEST(asn1_append)
+TESTING_TEST(asn1_append)
 {
 	GNode *asn;
 	GNode *child;
@@ -576,7 +576,7 @@ DEFINE_TEST(asn1_append)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_append_and_clear)
+TESTING_TEST(asn1_append_and_clear)
 {
 	GNode *asn;
 	gpointer data;
@@ -606,7 +606,7 @@ DEFINE_TEST(asn1_append_and_clear)
 	g_free (data);
 }
 
-DEFINE_TEST(asn1_setof)
+TESTING_TEST(asn1_setof)
 {
 	GNode *asn;
 	gpointer data;
@@ -642,7 +642,7 @@ DEFINE_TEST(asn1_setof)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_setof_empty)
+TESTING_TEST(asn1_setof_empty)
 {
 	GNode *asn;
 	gpointer data;
@@ -667,7 +667,7 @@ DEFINE_TEST(asn1_setof_empty)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST (asn1_enumerated)
+TESTING_TEST (asn1_enumerated)
 {
 	GNode *asn;
 	gpointer data;

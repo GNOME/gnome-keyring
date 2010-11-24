@@ -7,7 +7,7 @@
 
 static GList *modules = NULL;
 
-DEFINE_SETUP(modules)
+TESTING_SETUP(modules)
 {
 	GckModule *module;
 	GError *err = NULL;
@@ -19,13 +19,13 @@ DEFINE_SETUP(modules)
 	modules = g_list_append (NULL, module);
 }
 
-DEFINE_TEARDOWN(modules)
+TESTING_TEARDOWN(modules)
 {
 	gck_list_unref_free (modules);
 	modules = NULL;
 }
 
-DEFINE_TEST(modules_enumerate_objects)
+TESTING_TEST(modules_enumerate_objects)
 {
 	GckAttributes *attrs;
 	GError *error = NULL;
@@ -48,7 +48,7 @@ DEFINE_TEST(modules_enumerate_objects)
 }
 
 
-DEFINE_TEST(modules_token_for_uri)
+TESTING_TEST(modules_token_for_uri)
 {
 	GckSlot *slot;
 	GError *error = NULL;
@@ -59,7 +59,7 @@ DEFINE_TEST(modules_token_for_uri)
 	g_object_unref (slot);
 }
 
-DEFINE_TEST(modules_token_for_uri_not_found)
+TESTING_TEST(modules_token_for_uri_not_found)
 {
 	GckSlot *slot;
 	GError *error = NULL;
@@ -69,7 +69,7 @@ DEFINE_TEST(modules_token_for_uri_not_found)
 	g_assert (error == NULL);
 }
 
-DEFINE_TEST(modules_token_for_uri_error)
+TESTING_TEST(modules_token_for_uri_error)
 {
 	GckSlot *slot;
 	GError *error = NULL;
@@ -81,7 +81,7 @@ DEFINE_TEST(modules_token_for_uri_error)
 	g_error_free (error);
 }
 
-DEFINE_TEST(modules_object_for_uri)
+TESTING_TEST(modules_object_for_uri)
 {
 	GckObject *object;
 	GError *error = NULL;
@@ -91,7 +91,7 @@ DEFINE_TEST(modules_object_for_uri)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(modules_object_for_uri_not_found)
+TESTING_TEST(modules_object_for_uri_not_found)
 {
 	GckObject *object;
 	GError *error = NULL;
@@ -101,7 +101,7 @@ DEFINE_TEST(modules_object_for_uri_not_found)
 	g_assert (error == NULL);
 }
 
-DEFINE_TEST(modules_object_for_uri_error)
+TESTING_TEST(modules_object_for_uri_error)
 {
 	GckObject *object;
 	GError *error = NULL;
@@ -113,7 +113,7 @@ DEFINE_TEST(modules_object_for_uri_error)
 	g_error_free (error);
 }
 
-DEFINE_TEST(modules_objects_for_uri)
+TESTING_TEST(modules_objects_for_uri)
 {
 	GList *objects;
 	GError *error = NULL;
@@ -126,7 +126,7 @@ DEFINE_TEST(modules_objects_for_uri)
 	gck_list_unref_free (objects);
 }
 
-DEFINE_TEST(modules_enumerate_uri)
+TESTING_TEST(modules_enumerate_uri)
 {
 	GckEnumerator *en;
 	GList *objects;

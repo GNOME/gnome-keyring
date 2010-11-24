@@ -9,7 +9,7 @@
 #define ATTR_DATA "TEST DATA"
 #define N_ATTR_DATA ((gsize)9)
 
-DEFINE_TEST(init_memory)
+TESTING_TEST(init_memory)
 {
 	GckAttribute attr;
 
@@ -23,7 +23,7 @@ DEFINE_TEST(init_memory)
 	gck_attribute_clear (&attr);
 }
 
-DEFINE_TEST(value_to_boolean)
+TESTING_TEST(value_to_boolean)
 {
 	CK_BBOOL data = CK_TRUE;
 	gboolean result = FALSE;
@@ -45,7 +45,7 @@ DEFINE_TEST(value_to_boolean)
 		g_assert_not_reached ();
 }
 
-DEFINE_TEST(value_to_ulong)
+TESTING_TEST(value_to_ulong)
 {
 	CK_ULONG data = 34343;
 	gulong result = 0;
@@ -67,7 +67,7 @@ DEFINE_TEST(value_to_ulong)
 		g_assert_not_reached ();
 }
 
-DEFINE_TEST(init_boolean)
+TESTING_TEST(init_boolean)
 {
 	GckAttribute attr;
 
@@ -79,7 +79,7 @@ DEFINE_TEST(init_boolean)
 	gck_attribute_clear (&attr);
 }
 
-DEFINE_TEST(init_date)
+TESTING_TEST(init_date)
 {
 	GckAttribute attr;
 	CK_DATE ck_date;
@@ -98,7 +98,7 @@ DEFINE_TEST(init_date)
 	gck_attribute_clear (&attr);
 }
 
-DEFINE_TEST(init_ulong)
+TESTING_TEST(init_ulong)
 {
 	GckAttribute attr;
 
@@ -110,7 +110,7 @@ DEFINE_TEST(init_ulong)
 	gck_attribute_clear (&attr);
 }
 
-DEFINE_TEST(init_string)
+TESTING_TEST(init_string)
 {
 	GckAttribute attr;
 
@@ -122,7 +122,7 @@ DEFINE_TEST(init_string)
 	gck_attribute_clear (&attr);
 }
 
-DEFINE_TEST(init_invalid)
+TESTING_TEST(init_invalid)
 {
 	GckAttribute attr;
 
@@ -135,7 +135,7 @@ DEFINE_TEST(init_invalid)
 	gck_attribute_clear (&attr);
 }
 
-DEFINE_TEST(init_empty)
+TESTING_TEST(init_empty)
 {
 	GckAttribute attr;
 
@@ -147,7 +147,7 @@ DEFINE_TEST(init_empty)
 	gck_attribute_clear (&attr);
 }
 
-DEFINE_TEST(new_memory)
+TESTING_TEST(new_memory)
 {
 	GckAttribute *attr;
 
@@ -159,7 +159,7 @@ DEFINE_TEST(new_memory)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(new_boolean)
+TESTING_TEST(new_boolean)
 {
 	GckAttribute *attr;
 
@@ -171,7 +171,7 @@ DEFINE_TEST(new_boolean)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(new_date)
+TESTING_TEST(new_date)
 {
 	GckAttribute *attr;
 	CK_DATE ck_date;
@@ -190,7 +190,7 @@ DEFINE_TEST(new_date)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(new_ulong)
+TESTING_TEST(new_ulong)
 {
 	GckAttribute *attr;
 
@@ -202,7 +202,7 @@ DEFINE_TEST(new_ulong)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(new_string)
+TESTING_TEST(new_string)
 {
 	GckAttribute *attr;
 
@@ -214,7 +214,7 @@ DEFINE_TEST(new_string)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(new_invalid)
+TESTING_TEST(new_invalid)
 {
 	GckAttribute *attr;
 
@@ -228,7 +228,7 @@ DEFINE_TEST(new_invalid)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(new_empty)
+TESTING_TEST(new_empty)
 {
 	GckAttribute *attr;
 
@@ -240,7 +240,7 @@ DEFINE_TEST(new_empty)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(get_boolean)
+TESTING_TEST(get_boolean)
 {
 	GckAttribute *attr;
 
@@ -249,7 +249,7 @@ DEFINE_TEST(get_boolean)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(get_date)
+TESTING_TEST(get_date)
 {
 	GckAttribute *attr;
 	CK_DATE ck_date;
@@ -265,7 +265,7 @@ DEFINE_TEST(get_date)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(get_ulong)
+TESTING_TEST(get_ulong)
 {
 	GckAttribute *attr;
 
@@ -274,7 +274,7 @@ DEFINE_TEST(get_ulong)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(get_string)
+TESTING_TEST(get_string)
 {
 	GckAttribute *attr;
 	gchar *value;
@@ -292,7 +292,7 @@ DEFINE_TEST(get_string)
 	gck_attribute_free (attr);
 }
 
-DEFINE_TEST(dup_attribute)
+TESTING_TEST(dup_attribute)
 {
 	GckAttribute attr, *dup;
 
@@ -308,7 +308,7 @@ DEFINE_TEST(dup_attribute)
 	g_assert (dup == NULL);
 }
 
-DEFINE_TEST(copy_attribute)
+TESTING_TEST(copy_attribute)
 {
 	GckAttribute attr, copy;
 
@@ -320,7 +320,7 @@ DEFINE_TEST(copy_attribute)
 	gck_attribute_clear (&copy);
 }
 
-DEFINE_TEST(new_attributes)
+TESTING_TEST(new_attributes)
 {
 	GckAttributes *attrs;
 
@@ -390,7 +390,7 @@ test_attributes_contents (GckAttributes *attrs, gboolean extras)
 	g_assert (attr->value == NULL);
 }
 
-DEFINE_TEST(new_empty_attributes)
+TESTING_TEST(new_empty_attributes)
 {
 	GckAttributes *attrs = gck_attributes_new_empty (101UL, 202UL, 303UL, 404UL, GCK_INVALID);
 	GckAttribute *attr;
@@ -405,7 +405,7 @@ DEFINE_TEST(new_empty_attributes)
 	}
 }
 
-DEFINE_TEST(add_data_attributes)
+TESTING_TEST(add_data_attributes)
 {
 	GckAttributes *attrs;
 	GDate *date = g_date_new_dmy (11, 12, 2008);
@@ -422,7 +422,7 @@ DEFINE_TEST(add_data_attributes)
 	gck_attributes_unref (attrs);
 }
 
-DEFINE_TEST(add_attributes)
+TESTING_TEST(add_attributes)
 {
 	GckAttributes *attrs;
 	GckAttribute attr;
@@ -462,7 +462,7 @@ DEFINE_TEST(add_attributes)
 	gck_attributes_unref (attrs);
 }
 
-DEFINE_TEST(add_all_attributes)
+TESTING_TEST(add_all_attributes)
 {
 	GckAttributes *attrs;
 	GckAttributes *copy;
@@ -486,7 +486,7 @@ DEFINE_TEST(add_all_attributes)
 }
 
 
-DEFINE_TEST(find_attributes)
+TESTING_TEST(find_attributes)
 {
 	GckAttribute *attr;
 	GDate check, *date = g_date_new_dmy (13, 12, 2008);

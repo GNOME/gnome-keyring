@@ -42,7 +42,7 @@ static GNode* asn1_cert = NULL;
 static guchar *data_cert = NULL;
 static gsize n_data_cert = 0;
 
-DEFINE_SETUP(dn_cert)
+TESTING_SETUP(dn_cert)
 {
 	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
 
@@ -53,14 +53,14 @@ DEFINE_SETUP(dn_cert)
 		g_assert_not_reached ();
 }
 
-DEFINE_TEARDOWN(dn_cert)
+TESTING_TEARDOWN(dn_cert)
 {
 	egg_asn1x_destroy (asn1_cert);
 	g_free (data_cert);
 	data_cert = NULL;
 }
 
-DEFINE_TEST(read_dn)
+TESTING_TEST(read_dn)
 {
 	gchar *dn;
 
@@ -71,7 +71,7 @@ DEFINE_TEST(read_dn)
 	g_free (dn);
 }
 
-DEFINE_TEST(dn_value)
+TESTING_TEST(dn_value)
 {
 	const guchar value[] = { 0x13, 0x1a, 0x54, 0x68, 0x61, 0x77, 0x74, 0x65, 0x20, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x20, 0x50, 0x72, 0x65, 0x6d, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x41 };
 	gsize n_value = 28;
@@ -118,7 +118,7 @@ concatenate_dn (guint index, GQuark oid, const guchar *value, gsize n_value, gpo
 	g_free (text);
 }
 
-DEFINE_TEST(parse_dn)
+TESTING_TEST(parse_dn)
 {
 	GString *dn = g_string_new ("");
 	last_index = 1;
@@ -130,7 +130,7 @@ DEFINE_TEST(parse_dn)
 	g_string_free (dn, TRUE);
 }
 
-DEFINE_TEST(read_dn_part)
+TESTING_TEST(read_dn_part)
 {
 	GNode *node;
 	gchar *value;

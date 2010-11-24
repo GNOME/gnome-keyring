@@ -24,6 +24,9 @@
 #ifndef TESTING_H_
 #define TESTING_H_
 
+/* Don't use this header while preparing tests */
+#ifndef TESTING_PREPARING
+
 #include "config.h"
 
 #include <glib.h>
@@ -70,39 +73,24 @@ const gchar*     testing_external_name            (void);
 
 void             testing_external_fail            (void);
 
-#define DECLARE_SETUP(x) \
-	void setup_##x(int *v, gconstpointer d)
-#define DEFINE_SETUP(x) \
-	void setup_##x(int *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)
-
-#define DECLARE_TEARDOWN(x) \
-	void teardown_##x(int *v, gconstpointer d)
-#define DEFINE_TEARDOWN(x) \
-	void teardown_##x(int *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)
-
-#define DECLARE_TEST(x) \
-	void test_##x(int *v, gconstpointer d)
-#define DEFINE_TEST(x) \
-	void test_##x(int *__unused G_GNUC_UNUSED, gconstpointer __data G_GNUC_UNUSED)
-
-#define DECLARE_START(x) \
-	void start_##x(void)
-#define DEFINE_START(x) \
-	void start_##x(void)
-
-#define DECLARE_STOP(x) \
-	void stop_##x(void)
-#define DEFINE_STOP(x) \
-	void stop_##x(void)
-
-#define DECLARE_EXTERNAL(x) \
-	void external_##x(void)
-#define DEFINE_EXTERNAL(x) \
-	void external_##x(void)
+#define TESTING_SETUP(x) \
+	void __testing_setup_##x(int *__unused, gconstpointer __data)
+#define TESTING_TEARDOWN(x) \
+	void __testing_teardown_##x(int *__unused, gconstpointer __data)
+#define TESTING_TEST(x) \
+	void __testing_test_##x(int *__unused, gconstpointer __data)
+#define TESTING_START(x) \
+	void __testing_start_##x(void)
+#define TESTING_STOP(x) \
+	void __testing_stop_##x(void)
+#define TESTING_EXTERNAL(x) \
+	void __testing_external_##x(void)
 
 #ifndef g_assert_cmpsize
 #define g_assert_cmpsize(a, o, b) \
 	g_assert_cmpuint ((guint)(a), o, (guint)(b))
 #endif
+
+#endif /* TESTING_PREPARING */
 
 #endif /* TESTING_H_ */

@@ -12,7 +12,7 @@ static GckModule *module = NULL;
 static GckSlot *slot = NULL;
 static GckSession *session = NULL;
 
-DEFINE_SETUP(load_session)
+TESTING_SETUP(load_session)
 {
 	GError *err = NULL;
 	GList *slots;
@@ -32,14 +32,14 @@ DEFINE_SETUP(load_session)
 	SUCCESS_RES(session, err);
 }
 
-DEFINE_TEARDOWN(load_session)
+TESTING_TEARDOWN(load_session)
 {
 	g_object_unref (session);
 	g_object_unref (slot);
 	g_object_unref (module);
 }
 
-DEFINE_TEST(session_props)
+TESTING_TEST(session_props)
 {
 	GckModule *mod;
 	GckSlot *sl;
@@ -55,7 +55,7 @@ DEFINE_TEST(session_props)
 	g_assert (gck_session_get_handle (session) == handle);
 }
 
-DEFINE_TEST(session_info)
+TESTING_TEST(session_info)
 {
 	GckSessionInfo *info;
 
@@ -76,7 +76,7 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 	testing_wait_stop ();
 }
 
-DEFINE_TEST(open_close_session)
+TESTING_TEST(open_close_session)
 {
 	GckSession *sess;
 	GAsyncResult *result = NULL;
@@ -101,7 +101,7 @@ DEFINE_TEST(open_close_session)
 	g_object_unref (sess);
 }
 
-DEFINE_TEST(init_set_pin)
+TESTING_TEST(init_set_pin)
 {
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
@@ -135,7 +135,7 @@ DEFINE_TEST(init_set_pin)
 }
 
 
-DEFINE_TEST(login_logout)
+TESTING_TEST(login_logout)
 {
 	GAsyncResult *result = NULL;
 	GError *err = NULL;
@@ -185,7 +185,7 @@ authenticate_token (GckModule *module, GckSlot *slot, gchar *label, gchar **pass
 	return TRUE;
 }
 
-DEFINE_TEST(auto_login)
+TESTING_TEST(auto_login)
 {
 	GckObject *object;
 	GckSession *new_session;

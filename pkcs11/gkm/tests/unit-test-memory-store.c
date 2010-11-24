@@ -59,7 +59,7 @@ test_validator (GkmObject *obj, CK_ATTRIBUTE_PTR attr)
 	return CKR_OK;
 }
 
-DEFINE_SETUP(memory_store)
+TESTING_SETUP(memory_store)
 {
 	CK_ATTRIBUTE attr;
 	CK_ULONG twentyfour = 24;
@@ -92,7 +92,7 @@ DEFINE_SETUP(memory_store)
 	transaction = gkm_transaction_new ();
 }
 
-DEFINE_TEARDOWN(memory_store)
+TESTING_TEARDOWN(memory_store)
 {
 	g_object_unref (store);
 	store = NULL;
@@ -108,7 +108,7 @@ DEFINE_TEARDOWN(memory_store)
 	module = NULL;
 }
 
-DEFINE_TEST(get_attribute_default)
+TESTING_TEST(get_attribute_default)
 {
 	CK_ATTRIBUTE attr;
 	CK_RV rv;
@@ -125,7 +125,7 @@ DEFINE_TEST(get_attribute_default)
 	g_assert (memcmp (attr.pValue, "label", 5) == 0);
 }
 
-DEFINE_TEST(read_value_default)
+TESTING_TEST(read_value_default)
 {
 	gconstpointer value;
 	gsize n_value;
@@ -141,7 +141,7 @@ DEFINE_TEST(read_value_default)
 	g_assert (*((CK_ULONG_PTR)value) == 24);
 }
 
-DEFINE_TEST(read_string)
+TESTING_TEST(read_string)
 {
 	gchar *str;
 
@@ -150,7 +150,7 @@ DEFINE_TEST(read_string)
 	g_free (str);
 }
 
-DEFINE_TEST(get_invalid)
+TESTING_TEST(get_invalid)
 {
 	CK_ATTRIBUTE attr;
 	CK_RV rv;
@@ -163,7 +163,7 @@ DEFINE_TEST(get_invalid)
 	g_assert (rv == CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-DEFINE_TEST(get_sensitive)
+TESTING_TEST(get_sensitive)
 {
 	CK_ATTRIBUTE attr;
 	CK_RV rv;
@@ -176,7 +176,7 @@ DEFINE_TEST(get_sensitive)
 	g_assert (rv == CKR_ATTRIBUTE_SENSITIVE);
 }
 
-DEFINE_TEST(get_internal)
+TESTING_TEST(get_internal)
 {
 	CK_ATTRIBUTE attr;
 	CK_RV rv;
@@ -189,7 +189,7 @@ DEFINE_TEST(get_internal)
 	g_assert (rv == CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-DEFINE_TEST(set_invalid)
+TESTING_TEST(set_invalid)
 {
 	CK_ATTRIBUTE attr;
 
@@ -201,7 +201,7 @@ DEFINE_TEST(set_invalid)
 	g_assert (gkm_transaction_get_result (transaction) == CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-DEFINE_TEST(set_internal)
+TESTING_TEST(set_internal)
 {
 	CK_ATTRIBUTE attr;
 	CK_ULONG five = 5;
@@ -214,7 +214,7 @@ DEFINE_TEST(set_internal)
 	g_assert (gkm_transaction_get_result (transaction) == CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-DEFINE_TEST(set_get_attribute)
+TESTING_TEST(set_get_attribute)
 {
 	CK_ATTRIBUTE attr;
 	CK_RV rv;
@@ -236,7 +236,7 @@ DEFINE_TEST(set_get_attribute)
 	g_assert (memcmp (attr.pValue, "booyah", 6) == 0);
 }
 
-DEFINE_TEST(write_read_value)
+TESTING_TEST(write_read_value)
 {
 	CK_ATTRIBUTE attr;
 	CK_ULONG five = 5;
@@ -258,7 +258,7 @@ DEFINE_TEST(write_read_value)
 	g_assert (memcmp (value, &five, sizeof (five)) == 0);
 }
 
-DEFINE_TEST(set_no_validate)
+TESTING_TEST(set_no_validate)
 {
 	CK_ATTRIBUTE attr;
 
@@ -273,7 +273,7 @@ DEFINE_TEST(set_no_validate)
 	g_assert (gkm_transaction_get_result (transaction) == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(set_transaction_default)
+TESTING_TEST(set_transaction_default)
 {
 	CK_ATTRIBUTE attr;
 	gconstpointer value;
@@ -311,7 +311,7 @@ DEFINE_TEST(set_transaction_default)
 	g_assert (memcmp (value, "label", 5) == 0);
 }
 
-DEFINE_TEST(set_transaction_revert_first)
+TESTING_TEST(set_transaction_revert_first)
 {
 	CK_ATTRIBUTE attr, prev;
 	gconstpointer value;
@@ -387,7 +387,7 @@ notify_attribute (GkmObject *obj, CK_ATTRIBUTE_TYPE type, gpointer data)
 	*((CK_ATTRIBUTE_TYPE*)data) = type;
 }
 
-DEFINE_TEST(set_notifies)
+TESTING_TEST(set_notifies)
 {
 	CK_ATTRIBUTE attr;
 	CK_ATTRIBUTE_TYPE type = 0;
@@ -420,7 +420,7 @@ DEFINE_TEST(set_notifies)
 	g_assert (type == CKA_LABEL);
 }
 
-DEFINE_TEST(set_object_gone_first)
+TESTING_TEST(set_object_gone_first)
 {
 	CK_ATTRIBUTE attr;
 

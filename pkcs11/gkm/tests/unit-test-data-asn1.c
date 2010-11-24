@@ -43,21 +43,21 @@ static GNode *asn1_cert = NULL;
 static guchar *data_cert = NULL;
 static gsize n_data_cert = 0;
 
-DEFINE_SETUP(asn1_tree)
+TESTING_SETUP(asn1_tree)
 {
 	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
 	asn1_cert = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data_cert, n_data_cert);
 	g_assert (asn1_cert);
 }
 
-DEFINE_TEARDOWN(asn1_tree)
+TESTING_TEARDOWN(asn1_tree)
 {
 	egg_asn1x_destroy (asn1_cert);
 	g_free (data_cert);
 	data_cert = NULL;
 }
 
-DEFINE_TEST(asn1_integers)
+TESTING_TEST(asn1_integers)
 {
 	GNode *asn;
 	gcry_mpi_t mpi, mpt;

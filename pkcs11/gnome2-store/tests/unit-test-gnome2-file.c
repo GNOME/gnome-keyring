@@ -43,7 +43,7 @@ static int public_fd = -1;
 static int private_fd = -1;
 static GkmSecret *login = NULL;
 
-DEFINE_SETUP(file_store)
+TESTING_SETUP(file_store)
 {
 	egg_libgcrypt_initialize ();
 
@@ -65,7 +65,7 @@ DEFINE_SETUP(file_store)
 	login = gkm_secret_new ((guchar*)"booo", 4);
 }
 
-DEFINE_TEARDOWN(file_store)
+TESTING_TEARDOWN(file_store)
 {
 	g_free (public_filename);
 	g_free (private_filename);
@@ -85,7 +85,7 @@ DEFINE_TEARDOWN(file_store)
 	g_object_unref (login);
 }
 
-DEFINE_TEST(test_file_create)
+TESTING_TEST(test_file_create)
 {
 	GkmDataResult res;
 
@@ -97,7 +97,7 @@ DEFINE_TEST(test_file_create)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(test_file_write_value)
+TESTING_TEST(test_file_write_value)
 {
 	GkmDataResult res;
 
@@ -113,7 +113,7 @@ DEFINE_TEST(test_file_write_value)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(test_file_read_value)
+TESTING_TEST(test_file_read_value)
 {
 	gconstpointer value = NULL;
 	GkmDataResult res;
@@ -151,7 +151,7 @@ DEFINE_TEST(test_file_read_value)
 	g_assert_cmpstr ((const gchar*)value, ==, "TWO-label");
 }
 
-DEFINE_TEST(test_file_read)
+TESTING_TEST(test_file_read)
 {
 	GkmDataResult res;
 
@@ -159,7 +159,7 @@ DEFINE_TEST(test_file_read)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(test_file_lookup)
+TESTING_TEST(test_file_lookup)
 {
 	GkmDataResult res;
 	guint section;
@@ -182,7 +182,7 @@ DEFINE_TEST(test_file_lookup)
 	g_assert (ret == TRUE);
 }
 
-DEFINE_TEST(file_read_private_without_login)
+TESTING_TEST(file_read_private_without_login)
 {
 	GkmDataResult res;
 	guint section;
@@ -219,7 +219,7 @@ DEFINE_TEST(file_read_private_without_login)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(test_file_write)
+TESTING_TEST(test_file_write)
 {
 	GkmDataResult res;
 
@@ -236,7 +236,7 @@ DEFINE_TEST(test_file_write)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(cant_write_private_without_login)
+TESTING_TEST(cant_write_private_without_login)
 {
 	GkmDataResult res;
 
@@ -247,7 +247,7 @@ DEFINE_TEST(cant_write_private_without_login)
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
-DEFINE_TEST(write_private_with_login)
+TESTING_TEST(write_private_with_login)
 {
 	GkmDataResult res;
 	gulong value;
@@ -274,7 +274,7 @@ DEFINE_TEST(write_private_with_login)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(read_private_with_login)
+TESTING_TEST(read_private_with_login)
 {
 	GkmDataResult res;
 	gconstpointer value;
@@ -290,7 +290,7 @@ DEFINE_TEST(read_private_with_login)
 	g_assert (memcmp (value, "private-label", 13) == 0);
 }
 
-DEFINE_TEST(destroy_entry)
+TESTING_TEST(destroy_entry)
 {
 	GkmDataResult res;
 
@@ -310,7 +310,7 @@ DEFINE_TEST(destroy_entry)
 	g_assert (!gkm_gnome2_file_lookup_entry (data_file, "identifier-public", NULL));
 }
 
-DEFINE_TEST(destroy_entry_by_loading)
+TESTING_TEST(destroy_entry_by_loading)
 {
 	GkmDataResult res;
 
@@ -330,7 +330,7 @@ DEFINE_TEST(destroy_entry_by_loading)
 }
 
 
-DEFINE_TEST(destroy_private_without_login)
+TESTING_TEST(destroy_private_without_login)
 {
 	GkmDataResult res;
 
@@ -361,7 +361,7 @@ entry_added_one (GkmGnome2File *df, const gchar *identifier, gboolean *added)
 	*added = TRUE;
 }
 
-DEFINE_TEST(entry_added_signal)
+TESTING_TEST(entry_added_signal)
 {
 	GkmDataResult res;
 	gboolean added;
@@ -395,7 +395,7 @@ entry_changed_one (GkmGnome2File *df, const gchar *identifier, gulong type, gboo
 	*changed = TRUE;
 }
 
-DEFINE_TEST(entry_changed_signal)
+TESTING_TEST(entry_changed_signal)
 {
 	GkmDataResult res;
 	gboolean changed;
@@ -447,7 +447,7 @@ entry_removed_one (GkmGnome2File *df, const gchar *identifier, gboolean *removed
 	*removed = TRUE;
 }
 
-DEFINE_TEST(entry_removed_signal)
+TESTING_TEST(entry_removed_signal)
 {
 	GkmDataResult res;
 	gboolean removed;
@@ -506,7 +506,7 @@ foreach_entry (GkmGnome2File *df, const gchar *identifier, gpointer data)
 	g_ptr_array_add (array, g_strdup (identifier));
 }
 
-DEFINE_TEST(data_file_foreach)
+TESTING_TEST(data_file_foreach)
 {
 	GkmDataResult res;
 	GPtrArray *array;
@@ -522,7 +522,7 @@ DEFINE_TEST(data_file_foreach)
 	g_strfreev ((gchar**)g_ptr_array_free (array, FALSE));
 }
 
-DEFINE_TEST(unique_entry)
+TESTING_TEST(unique_entry)
 {
 	GkmDataResult res;
 	gchar *identifier;
@@ -553,7 +553,7 @@ DEFINE_TEST(unique_entry)
 	g_free (identifier);
 }
 
-DEFINE_TEST(have_sections)
+TESTING_TEST(have_sections)
 {
 	GkmDataResult res;
 

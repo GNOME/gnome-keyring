@@ -2,8 +2,6 @@
 TESTING_FILES = \
 	test-module.c
 
-UNIT_PROMPT =
-
 TESTING_LIBS = \
 	$(top_builddir)/pkcs11/roots-store/libgkm-roots-store.la \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \

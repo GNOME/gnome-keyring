@@ -38,7 +38,7 @@ static CK_FUNCTION_LIST_PTR funcs;
 static GList *modules = NULL;
 static GcrCertificate *certificate = NULL;
 
-DEFINE_SETUP (trust_setup)
+TESTING_SETUP (trust_setup)
 {
 	GckModule *module;
 	guchar *contents;
@@ -65,7 +65,7 @@ DEFINE_SETUP (trust_setup)
 	_gcr_set_test_trust_slot (GCK_MOCK_SLOT_ONE_URI);
 }
 
-DEFINE_TEARDOWN (trust_setup)
+TESTING_TEARDOWN (trust_setup)
 {
 	CK_RV rv;
 
@@ -80,7 +80,7 @@ DEFINE_TEARDOWN (trust_setup)
 	modules = NULL;
 }
 
-DEFINE_TEST (trust_is_exception_none)
+TESTING_TEST (trust_is_exception_none)
 {
 	GError *error = NULL;
 	gboolean trust;
@@ -90,7 +90,7 @@ DEFINE_TEST (trust_is_exception_none)
 	g_assert (error == NULL);
 }
 
-DEFINE_TEST (trust_add_and_is_exception)
+TESTING_TEST (trust_add_and_is_exception)
 {
 	GError *error = NULL;
 	gboolean trust;
@@ -109,7 +109,7 @@ DEFINE_TEST (trust_add_and_is_exception)
 	g_assert (error == NULL);
 }
 
-DEFINE_TEST (trust_add_and_remov_exception)
+TESTING_TEST (trust_add_and_remov_exception)
 {
 	GError *error = NULL;
 	gboolean trust;
@@ -140,7 +140,7 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 	testing_wait_stop ();
 }
 
-DEFINE_TEST (trust_add_and_is_exception_async)
+TESTING_TEST (trust_add_and_is_exception_async)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
@@ -176,7 +176,7 @@ DEFINE_TEST (trust_add_and_is_exception_async)
 	result = NULL;
 }
 
-DEFINE_TEST (trust_is_certificate_anchor_not)
+TESTING_TEST (trust_is_certificate_anchor_not)
 {
 	GError *error = NULL;
 	gboolean ret;
@@ -186,7 +186,7 @@ DEFINE_TEST (trust_is_certificate_anchor_not)
 	g_assert (error == NULL);
 }
 
-DEFINE_TEST (trust_is_certificate_anchor_yes)
+TESTING_TEST (trust_is_certificate_anchor_yes)
 {
 	GError *error = NULL;
 	GckAttributes *attrs;
@@ -217,7 +217,7 @@ DEFINE_TEST (trust_is_certificate_anchor_yes)
 	g_assert (error == NULL);
 }
 
-DEFINE_TEST (trust_is_certificate_anchor_async)
+TESTING_TEST (trust_is_certificate_anchor_async)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;

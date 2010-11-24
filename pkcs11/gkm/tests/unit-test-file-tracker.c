@@ -89,7 +89,7 @@ file_reset_stats (void)
 	n_files_added = n_files_changed = n_files_removed = 0;
 }
 
-DEFINE_SETUP(tracker)
+TESTING_SETUP(tracker)
 {
 	/* Make a test directory */
 	test_dir = g_build_filename ("/tmp", SUBDIR, NULL);
@@ -106,7 +106,7 @@ DEFINE_SETUP(tracker)
 	g_unlink (test_file);
 }
 
-DEFINE_TEARDOWN(tracker)
+TESTING_TEARDOWN(tracker)
 {
 	file_reset_stats ();
 	g_object_unref (the_tracker);
@@ -114,7 +114,7 @@ DEFINE_TEARDOWN(tracker)
 	g_free (test_file);
 }
 
-DEFINE_TEST(file_watch)
+TESTING_TEST(file_watch)
 {
 	/* A watch for an non-existant directory, should have no responses */
 	gkm_file_tracker_refresh (the_tracker, FALSE);
@@ -133,7 +133,7 @@ DEFINE_TEST(file_watch)
 	g_assert_cmpint (0, ==, n_files_removed);
 }
 
-DEFINE_TEST(watch_file)
+TESTING_TEST(watch_file)
 {
 	gboolean ret;
 
@@ -196,7 +196,7 @@ DEFINE_TEST(watch_file)
 	g_assert_cmpstr (last_file_removed, ==, test_file);
 }
 
-DEFINE_TEST(nomatch)
+TESTING_TEST(nomatch)
 {
 	gchar *file = g_build_filename (test_dir, "my-file.toot", NULL);
 	gboolean ret;

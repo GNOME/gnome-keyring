@@ -13,7 +13,7 @@ static GckSlot *slot = NULL;
 static GckSession *session = NULL;
 static GckObject *object = NULL;
 
-DEFINE_SETUP(prep_object)
+TESTING_SETUP(prep_object)
 {
 	GError *err = NULL;
 	GList *slots;
@@ -37,7 +37,7 @@ DEFINE_SETUP(prep_object)
 	g_assert (object != NULL);
 }
 
-DEFINE_TEARDOWN(prep_object)
+TESTING_TEARDOWN(prep_object)
 {
 	g_object_unref (object);
 	g_object_unref (session);
@@ -45,7 +45,7 @@ DEFINE_TEARDOWN(prep_object)
 	g_object_unref (module);
 }
 
-DEFINE_TEST(object_props)
+TESTING_TEST(object_props)
 {
 	GckSession *sess;
 	GckModule *mod;
@@ -58,7 +58,7 @@ DEFINE_TEST(object_props)
 	g_assert (handle == 2);
 }
 
-DEFINE_TEST(object_equals_hash)
+TESTING_TEST(object_equals_hash)
 {
 	GckSlot *other_slot;
 	GckSession *other_session;
@@ -102,7 +102,7 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 	testing_wait_stop ();
 }
 
-DEFINE_TEST(create_object)
+TESTING_TEST(create_object)
 {
 	GAsyncResult *result = NULL;
 	GckAttributes *attrs;
@@ -139,7 +139,7 @@ DEFINE_TEST(create_object)
 	gck_attributes_unref (attrs);
 }
 
-DEFINE_TEST(destroy_object)
+TESTING_TEST(destroy_object)
 {
 	GAsyncResult *result = NULL;
 	GckAttributes *attrs;
@@ -177,7 +177,7 @@ DEFINE_TEST(destroy_object)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(get_attributes)
+TESTING_TEST(get_attributes)
 {
 	GAsyncResult *result = NULL;
 	GckAttributes *attrs;
@@ -225,7 +225,7 @@ DEFINE_TEST(get_attributes)
 	gck_attributes_unref (attrs);
 }
 
-DEFINE_TEST(get_data_attribute)
+TESTING_TEST(get_data_attribute)
 {
 	GAsyncResult *result = NULL;
 	CK_OBJECT_CLASS_PTR klass;
@@ -266,7 +266,7 @@ DEFINE_TEST(get_data_attribute)
 
 }
 
-DEFINE_TEST(set_attributes)
+TESTING_TEST(set_attributes)
 {
 	GAsyncResult *result = NULL;
 	GckAttributes *attrs, *templ;
@@ -312,7 +312,7 @@ DEFINE_TEST(set_attributes)
 	}
 }
 
-DEFINE_TEST(find_objects)
+TESTING_TEST(find_objects)
 {
 	GAsyncResult *result = NULL;
 	GckAttributes *templ, *attrs;

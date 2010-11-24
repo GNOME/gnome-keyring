@@ -1,7 +1,10 @@
+TESTING_SOURCES = \
+	test-ssh-module.h
+
 TESTING_FILES = \
 	unit-test-ssh-openssh.c \
 	unit-test-private-key.c \
-	test-ssh-module.c test-ssh-module.h
+	test-ssh-module.c
 
 UNIT_PROMPT =
 

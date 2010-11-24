@@ -145,7 +145,7 @@ test_xdg_module_open_session (gboolean writable)
 	return session;
 }
 
-DEFINE_EXTERNAL(xdg_module)
+TESTING_EXTERNAL(xdg_module)
 {
 	CK_FUNCTION_LIST_PTR funcs = gkm_xdg_store_get_functions ();
 	testing_test_p11_module (funcs, "p11-tests.conf");

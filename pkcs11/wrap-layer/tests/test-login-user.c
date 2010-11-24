@@ -34,7 +34,7 @@ static CK_FUNCTION_LIST prompt_login_functions;
 static CK_FUNCTION_LIST_PTR module = NULL;
 static CK_SESSION_HANDLE session = 0;
 
-DEFINE_SETUP (login_user)
+TESTING_SETUP (login_user)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
@@ -63,7 +63,7 @@ DEFINE_SETUP (login_user)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEARDOWN (login_user)
+TESTING_TEARDOWN (login_user)
 {
 	CK_RV rv;
 
@@ -78,7 +78,7 @@ DEFINE_TEARDOWN (login_user)
 	module = NULL;
 }
 
-DEFINE_TEST (login_fail_unsupported_so)
+TESTING_TEST (login_fail_unsupported_so)
 {
 	CK_RV rv;
 
@@ -86,7 +86,7 @@ DEFINE_TEST (login_fail_unsupported_so)
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST (login_skip_prompt_because_pin)
+TESTING_TEST (login_skip_prompt_because_pin)
 {
 	CK_RV rv;
 
@@ -94,7 +94,7 @@ DEFINE_TEST (login_skip_prompt_because_pin)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEST (login_user_ok_password)
+TESTING_TEST (login_user_ok_password)
 {
 	CK_RV rv;
 
@@ -104,7 +104,7 @@ DEFINE_TEST (login_user_ok_password)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEST (login_user_bad_password_then_cancel)
+TESTING_TEST (login_user_bad_password_then_cancel)
 {
 	CK_RV rv;
 
@@ -115,7 +115,7 @@ DEFINE_TEST (login_user_bad_password_then_cancel)
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST (login_user_cancel_immediately)
+TESTING_TEST (login_user_cancel_immediately)
 {
 	CK_RV rv;
 
@@ -125,7 +125,7 @@ DEFINE_TEST (login_user_cancel_immediately)
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST (login_user_fail_get_session_info)
+TESTING_TEST (login_user_fail_get_session_info)
 {
 	CK_RV rv;
 
@@ -134,7 +134,7 @@ DEFINE_TEST (login_user_fail_get_session_info)
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST (login_user_fail_get_token_info)
+TESTING_TEST (login_user_fail_get_token_info)
 {
 	CK_RV rv;
 

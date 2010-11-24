@@ -29,7 +29,7 @@
 
 #include "gkm/gkm-secret.h"
 
-DEFINE_TEST(test_secret)
+TESTING_TEST(test_secret)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -52,7 +52,7 @@ DEFINE_TEST(test_secret)
 	g_object_unref (secret);
 }
 
-DEFINE_TEST(test_secret_from_login)
+TESTING_TEST(test_secret_from_login)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -75,7 +75,7 @@ DEFINE_TEST(test_secret_from_login)
 	g_object_unref (secret);
 }
 
-DEFINE_TEST(test_null_terminated)
+TESTING_TEST(test_null_terminated)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -98,7 +98,7 @@ DEFINE_TEST(test_null_terminated)
 	g_object_unref (secret);
 }
 
-DEFINE_TEST(test_always_has_null)
+TESTING_TEST(test_always_has_null)
 {
 	GkmSecret *secret;
 	const guchar *memory;
@@ -117,7 +117,7 @@ DEFINE_TEST(test_always_has_null)
 	g_object_unref (secret);
 }
 
-DEFINE_TEST(test_null)
+TESTING_TEST(test_null)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -139,7 +139,7 @@ DEFINE_TEST(test_null)
 	g_object_unref (secret);
 }
 
-DEFINE_TEST(test_empty)
+TESTING_TEST(test_empty)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -161,7 +161,7 @@ DEFINE_TEST(test_empty)
 	g_object_unref (secret);
 }
 
-DEFINE_TEST(test_equal)
+TESTING_TEST(test_equal)
 {
 	GkmSecret *one;
 	GkmSecret *two;

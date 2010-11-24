@@ -106,7 +106,7 @@ test_ssh_module_open_session (gboolean writable)
 	return session;
 }
 
-DEFINE_EXTERNAL(ssh_module)
+TESTING_EXTERNAL(ssh_module)
 {
 	CK_FUNCTION_LIST_PTR funcs = gkm_ssh_store_get_functions ();
 	testing_test_p11_module (funcs, "p11-tests.conf");

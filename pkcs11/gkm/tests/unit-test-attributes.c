@@ -36,14 +36,14 @@ static CK_ATTRIBUTE attr_template[] = {
 	{ CKA_VALUE, "\a[\315\025", 4 }
 };
 
-DEFINE_TEST(attribute_equal_zero_len_null_ptr)
+TESTING_TEST(attribute_equal_zero_len_null_ptr)
 {
 	CK_ATTRIBUTE attr1 = { CKA_LABEL, "", 0 };
 	CK_ATTRIBUTE attr2 = { CKA_LABEL, NULL, 0 };
 	g_assert (gkm_attribute_equal (&attr1, &attr2));
 }
 
-DEFINE_TEST(attribute_consume)
+TESTING_TEST(attribute_consume)
 {
 	CK_ATTRIBUTE attr;
 	attr.type = CKA_LABEL;
@@ -52,7 +52,7 @@ DEFINE_TEST(attribute_consume)
 	g_assert (attr.type == (gulong)-1);
 }
 
-DEFINE_TEST(attribute_consumed)
+TESTING_TEST(attribute_consumed)
 {
 	CK_ATTRIBUTE attr;
 	gboolean ret;
@@ -68,7 +68,7 @@ DEFINE_TEST(attribute_consumed)
 	g_assert (ret == TRUE);
 }
 
-DEFINE_TEST(attribute_set_data)
+TESTING_TEST(attribute_set_data)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -80,7 +80,7 @@ DEFINE_TEST(attribute_set_data)
 	g_assert (memcmp (buffer, "mytest", 6) == 0);
 }
 
-DEFINE_TEST(attribute_set_data_short)
+TESTING_TEST(attribute_set_data_short)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, 4 };
@@ -91,7 +91,7 @@ DEFINE_TEST(attribute_set_data_short)
 	g_assert (attr.ulValueLen == (CK_ULONG)-1);
 }
 
-DEFINE_TEST(attribute_set_data_length)
+TESTING_TEST(attribute_set_data_length)
 {
 	CK_ATTRIBUTE attr = { 0, NULL, 0 };
 	CK_RV rv;
@@ -101,7 +101,7 @@ DEFINE_TEST(attribute_set_data_length)
 	g_assert (attr.ulValueLen == 6);
 }
 
-DEFINE_TEST(attribute_set_empty)
+TESTING_TEST(attribute_set_empty)
 {
 	CK_ATTRIBUTE attr;
 	gchar buf[30];
@@ -114,7 +114,7 @@ DEFINE_TEST(attribute_set_empty)
 	g_assert (attr.ulValueLen == 0);
 }
 
-DEFINE_TEST(attribute_get_bool)
+TESTING_TEST(attribute_get_bool)
 {
 	CK_ATTRIBUTE attr;
 	CK_BBOOL val = CK_TRUE;
@@ -128,7 +128,7 @@ DEFINE_TEST(attribute_get_bool)
 	g_assert (value == TRUE);
 }
 
-DEFINE_TEST(attribute_get_bool_invalid)
+TESTING_TEST(attribute_get_bool_invalid)
 {
 	CK_ATTRIBUTE attr;
 	CK_ULONG val = 4;
@@ -141,7 +141,7 @@ DEFINE_TEST(attribute_get_bool_invalid)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(attribute_set_time)
+TESTING_TEST(attribute_set_time)
 {
 	CK_ATTRIBUTE attr;
 	gchar buf[30];
@@ -155,7 +155,7 @@ DEFINE_TEST(attribute_set_time)
 	g_assert (memcmp (attr.pValue, "2009071815161100", 16) == 0);
 }
 
-DEFINE_TEST(attribute_set_time_empty)
+TESTING_TEST(attribute_set_time_empty)
 {
 	CK_ATTRIBUTE attr;
 	gchar buf[30];
@@ -168,7 +168,7 @@ DEFINE_TEST(attribute_set_time_empty)
 	g_assert (attr.ulValueLen == 0);
 }
 
-DEFINE_TEST(attribute_set_time_length)
+TESTING_TEST(attribute_set_time_length)
 {
 	CK_ATTRIBUTE attr;
 	CK_RV rv;
@@ -181,7 +181,7 @@ DEFINE_TEST(attribute_set_time_length)
 	g_assert (attr.pValue == NULL);
 }
 
-DEFINE_TEST(attribute_get_time)
+TESTING_TEST(attribute_get_time)
 {
 	CK_ATTRIBUTE attr;
 	glong when;
@@ -194,7 +194,7 @@ DEFINE_TEST(attribute_get_time)
 	g_assert (when == 1247930171);
 }
 
-DEFINE_TEST(attribute_get_time_empty)
+TESTING_TEST(attribute_get_time_empty)
 {
 	CK_ATTRIBUTE attr;
 	glong when;
@@ -207,7 +207,7 @@ DEFINE_TEST(attribute_get_time_empty)
 	g_assert (when == -1);
 }
 
-DEFINE_TEST(attribute_get_time_invalid)
+TESTING_TEST(attribute_get_time_invalid)
 {
 	CK_ATTRIBUTE attr;
 	glong when;
@@ -219,7 +219,7 @@ DEFINE_TEST(attribute_get_time_invalid)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(attribute_get_time_invalid_length)
+TESTING_TEST(attribute_get_time_invalid_length)
 {
 	CK_ATTRIBUTE attr;
 	glong when;
@@ -231,7 +231,7 @@ DEFINE_TEST(attribute_get_time_invalid_length)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(attribute_get_string)
+TESTING_TEST(attribute_get_string)
 {
 	CK_ATTRIBUTE attr;
 	gchar *value;
@@ -247,7 +247,7 @@ DEFINE_TEST(attribute_get_string)
 	g_free (value);
 }
 
-DEFINE_TEST(attribute_get_string_null)
+TESTING_TEST(attribute_get_string_null)
 {
 	CK_ATTRIBUTE attr;
 	gchar *value;
@@ -261,7 +261,7 @@ DEFINE_TEST(attribute_get_string_null)
 	g_assert (value == NULL);
 }
 
-DEFINE_TEST(attribute_get_string_not_utf8)
+TESTING_TEST(attribute_get_string_not_utf8)
 {
 	CK_ATTRIBUTE attr;
 	gchar *value;
@@ -275,7 +275,7 @@ DEFINE_TEST(attribute_get_string_not_utf8)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(attribute_get_string_bad_pointer)
+TESTING_TEST(attribute_get_string_bad_pointer)
 {
 	CK_ATTRIBUTE attr;
 	gchar *value;
@@ -289,7 +289,7 @@ DEFINE_TEST(attribute_get_string_bad_pointer)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(attribute_set_bool)
+TESTING_TEST(attribute_set_bool)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -306,7 +306,7 @@ DEFINE_TEST(attribute_set_bool)
 	g_assert (memcmp (buffer, "\0", 1) == 0);
 }
 
-DEFINE_TEST(attribute_set_bool_short)
+TESTING_TEST(attribute_set_bool_short)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, 0 };
@@ -317,7 +317,7 @@ DEFINE_TEST(attribute_set_bool_short)
 	g_assert (attr.ulValueLen == (CK_ULONG)-1);
 }
 
-DEFINE_TEST(attribute_set_bool_length)
+TESTING_TEST(attribute_set_bool_length)
 {
 	CK_ATTRIBUTE attr = { 0, NULL, 0 };
 	CK_RV rv;
@@ -327,7 +327,7 @@ DEFINE_TEST(attribute_set_bool_length)
 	g_assert (attr.ulValueLen == 1);
 }
 
-DEFINE_TEST(attribute_set_ulong)
+TESTING_TEST(attribute_set_ulong)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -340,7 +340,7 @@ DEFINE_TEST(attribute_set_ulong)
 	g_assert (memcmp (buffer, &value, sizeof (CK_ULONG)) == 0);
 }
 
-DEFINE_TEST(attribute_set_ulong_short)
+TESTING_TEST(attribute_set_ulong_short)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, 0 };
@@ -351,7 +351,7 @@ DEFINE_TEST(attribute_set_ulong_short)
 	g_assert (attr.ulValueLen == (CK_ULONG)-1);
 }
 
-DEFINE_TEST(attribute_set_ulong_length)
+TESTING_TEST(attribute_set_ulong_length)
 {
 	CK_ATTRIBUTE attr = { 0, NULL, 0 };
 	CK_RV rv;
@@ -361,7 +361,7 @@ DEFINE_TEST(attribute_set_ulong_length)
 	g_assert (attr.ulValueLen == sizeof (CK_ULONG));
 }
 
-DEFINE_TEST(attribute_set_string)
+TESTING_TEST(attribute_set_string)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -373,7 +373,7 @@ DEFINE_TEST(attribute_set_string)
 	g_assert (memcmp (buffer, "hello", 5) == 0);
 }
 
-DEFINE_TEST(attribute_set_string_null)
+TESTING_TEST(attribute_set_string_null)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -384,7 +384,7 @@ DEFINE_TEST(attribute_set_string_null)
 	g_assert (attr.ulValueLen == 0);
 }
 
-DEFINE_TEST(attribute_set_string_short)
+TESTING_TEST(attribute_set_string_short)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, 3 };
@@ -395,7 +395,7 @@ DEFINE_TEST(attribute_set_string_short)
 	g_assert (attr.ulValueLen == (CK_ULONG)-1);
 }
 
-DEFINE_TEST(attribute_set_string_length)
+TESTING_TEST(attribute_set_string_length)
 {
 	CK_ATTRIBUTE attr = { 0, NULL, 0 };
 	CK_RV rv;
@@ -405,7 +405,7 @@ DEFINE_TEST(attribute_set_string_length)
 	g_assert (attr.ulValueLen == 5);
 }
 
-DEFINE_TEST(attribute_set_date)
+TESTING_TEST(attribute_set_date)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -421,7 +421,7 @@ DEFINE_TEST(attribute_set_date)
 	g_assert (memcmp (date->year, "2009", 4) == 0);
 }
 
-DEFINE_TEST(attribute_set_date_none)
+TESTING_TEST(attribute_set_date_none)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -432,7 +432,7 @@ DEFINE_TEST(attribute_set_date_none)
 	g_assert (attr.ulValueLen == 0);
 }
 
-DEFINE_TEST(attribute_set_date_short)
+TESTING_TEST(attribute_set_date_short)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, 5 };
@@ -443,7 +443,7 @@ DEFINE_TEST(attribute_set_date_short)
 	g_assert (attr.ulValueLen == (CK_ULONG)-1);
 }
 
-DEFINE_TEST(attribute_set_date_length)
+TESTING_TEST(attribute_set_date_length)
 {
 	CK_ATTRIBUTE attr = { 0, NULL, 0 };
 	CK_RV rv;
@@ -453,7 +453,7 @@ DEFINE_TEST(attribute_set_date_length)
 	g_assert (attr.ulValueLen == sizeof (CK_DATE));
 }
 
-DEFINE_TEST(attribute_set_mpi)
+TESTING_TEST(attribute_set_mpi)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, sizeof (buffer) };
@@ -471,7 +471,7 @@ DEFINE_TEST(attribute_set_mpi)
 	gcry_mpi_release (mpi);
 }
 
-DEFINE_TEST(attribute_set_mpi_short)
+TESTING_TEST(attribute_set_mpi_short)
 {
 	guchar buffer[32];
 	CK_ATTRIBUTE attr = { 0, buffer, 2 };
@@ -488,7 +488,7 @@ DEFINE_TEST(attribute_set_mpi_short)
 	gcry_mpi_release (mpi);
 }
 
-DEFINE_TEST(attribute_set_mpi_length)
+TESTING_TEST(attribute_set_mpi_length)
 {
 	CK_ATTRIBUTE attr = { 0, NULL, 0 };
 	gcry_mpi_t mpi;
@@ -504,7 +504,7 @@ DEFINE_TEST(attribute_set_mpi_length)
 	gcry_mpi_release (mpi);
 }
 
-DEFINE_TEST(attribute_equal)
+TESTING_TEST(attribute_equal)
 {
 	/* Make sure we actually have two different strings */
 	gchar *val1 = g_strdup ("my-identifier");
@@ -520,7 +520,7 @@ DEFINE_TEST(attribute_equal)
 	g_free (val2);
 }
 
-DEFINE_TEST(attribute_equal_same)
+TESTING_TEST(attribute_equal_same)
 {
 	CK_ATTRIBUTE attr = { CKA_ID, "my-identifier", 13 };
 	gboolean ret;
@@ -529,7 +529,7 @@ DEFINE_TEST(attribute_equal_same)
 	g_assert (ret == TRUE);
 }
 
-DEFINE_TEST(attribute_equal_same_pointer)
+TESTING_TEST(attribute_equal_same_pointer)
 {
 	gchar *val = "my-identifier";
 	CK_ATTRIBUTE attr1 = { CKA_ID, val, 13 };
@@ -540,7 +540,7 @@ DEFINE_TEST(attribute_equal_same_pointer)
 	g_assert (ret == TRUE);
 }
 
-DEFINE_TEST(attribute_equal_diff_types)
+TESTING_TEST(attribute_equal_diff_types)
 {
 	gchar *val = "my-identifier";
 	CK_ATTRIBUTE attr1 = { CKA_ID, val, 13 };
@@ -551,7 +551,7 @@ DEFINE_TEST(attribute_equal_diff_types)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_equal_diff_length)
+TESTING_TEST(attribute_equal_diff_length)
 {
 	CK_ATTRIBUTE attr1 = { CKA_ID, "my-identifier", 13 };
 	CK_ATTRIBUTE attr2 = { CKA_ID, "my-identifier", 2 };
@@ -561,7 +561,7 @@ DEFINE_TEST(attribute_equal_diff_length)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_equal_diff_value)
+TESTING_TEST(attribute_equal_diff_value)
 {
 	CK_ATTRIBUTE attr1 = { CKA_ID, "my-identifier", 13 };
 	CK_ATTRIBUTE attr2 = { CKA_ID, "xy-identifier", 13 };
@@ -571,7 +571,7 @@ DEFINE_TEST(attribute_equal_diff_value)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_hash)
+TESTING_TEST(attribute_hash)
 {
 	CK_ATTRIBUTE attr = { CKA_VALUE, "value", 5 };
 	guint hash;
@@ -581,7 +581,7 @@ DEFINE_TEST(attribute_hash)
 	g_assert_cmpuint (hash, !=, 0U);
 }
 
-DEFINE_TEST(attribute_contains)
+TESTING_TEST(attribute_contains)
 {
 	CK_ATTRIBUTE attr = { CKA_ID, "my-identifier", 13 };
 	gboolean ret;
@@ -590,7 +590,7 @@ DEFINE_TEST(attribute_contains)
 	g_assert (ret == TRUE);
 }
 
-DEFINE_TEST(attribute_contains_no_value)
+TESTING_TEST(attribute_contains_no_value)
 {
 	CK_ATTRIBUTE attr = { CKA_ID, "other-identifier", 16 };
 	gboolean ret;
@@ -599,7 +599,7 @@ DEFINE_TEST(attribute_contains_no_value)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_contains_no_type)
+TESTING_TEST(attribute_contains_no_type)
 {
 	CK_ATTRIBUTE attr = { CKA_VALUE, "value", 5 };
 	gboolean ret;
@@ -608,7 +608,7 @@ DEFINE_TEST(attribute_contains_no_type)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attributes_find)
+TESTING_TEST(attributes_find)
 {
 	CK_ATTRIBUTE_PTR attr;
 
@@ -617,7 +617,7 @@ DEFINE_TEST(attributes_find)
 	g_assert (attr->type == CKA_LABEL);
 }
 
-DEFINE_TEST(attributes_find_not_found)
+TESTING_TEST(attributes_find_not_found)
 {
 	CK_ATTRIBUTE_PTR attr;
 
@@ -625,7 +625,7 @@ DEFINE_TEST(attributes_find_not_found)
 	g_assert (attr == NULL);
 }
 
-DEFINE_TEST(attribute_find_boolean)
+TESTING_TEST(attribute_find_boolean)
 {
 	gboolean value;
 	gboolean ret;
@@ -635,7 +635,7 @@ DEFINE_TEST(attribute_find_boolean)
 	g_assert (value == TRUE);
 }
 
-DEFINE_TEST(attribute_find_boolean_no_type)
+TESTING_TEST(attribute_find_boolean_no_type)
 {
 	gboolean value;
 	gboolean ret;
@@ -644,7 +644,7 @@ DEFINE_TEST(attribute_find_boolean_no_type)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_find_boolean_not_bbool)
+TESTING_TEST(attribute_find_boolean_not_bbool)
 {
 	gboolean value;
 	gboolean ret;
@@ -653,7 +653,7 @@ DEFINE_TEST(attribute_find_boolean_not_bbool)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_find_ulong)
+TESTING_TEST(attribute_find_ulong)
 {
 	gulong value;
 	gboolean ret;
@@ -663,7 +663,7 @@ DEFINE_TEST(attribute_find_ulong)
 	g_assert (value == CKO_DATA);
 }
 
-DEFINE_TEST(attribute_find_ulong_no_type)
+TESTING_TEST(attribute_find_ulong_no_type)
 {
 	gulong value;
 	gboolean ret;
@@ -672,7 +672,7 @@ DEFINE_TEST(attribute_find_ulong_no_type)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_find_ulong_not_ulong)
+TESTING_TEST(attribute_find_ulong_not_ulong)
 {
 	gulong value;
 	gboolean ret;
@@ -681,7 +681,7 @@ DEFINE_TEST(attribute_find_ulong_not_ulong)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST(attribute_find_mpi)
+TESTING_TEST(attribute_find_mpi)
 {
 	gcry_mpi_t mpi = NULL;
 	gboolean ret;
@@ -694,7 +694,7 @@ DEFINE_TEST(attribute_find_mpi)
 	gcry_mpi_release (mpi);
 }
 
-DEFINE_TEST(attribute_find_mpi_no_type)
+TESTING_TEST(attribute_find_mpi_no_type)
 {
 	gcry_mpi_t mpi = NULL;
 	gboolean ret;
@@ -704,7 +704,7 @@ DEFINE_TEST(attribute_find_mpi_no_type)
 	g_assert (mpi == NULL);
 }
 
-DEFINE_TEST(attributes_consume)
+TESTING_TEST(attributes_consume)
 {
 	CK_ATTRIBUTE_PTR attrs;
 	CK_ULONG n_attrs;
@@ -729,14 +729,14 @@ DEFINE_TEST(attributes_consume)
 	g_free (attrs);
 }
 
-DEFINE_TEST(template_new_free)
+TESTING_TEST(template_new_free)
 {
 	GArray *template = gkm_template_new (attr_template, G_N_ELEMENTS (attr_template));
 	g_assert (template);
 	gkm_template_free (template);
 }
 
-DEFINE_TEST(template_find)
+TESTING_TEST(template_find)
 {
 	GArray *template = gkm_template_new (attr_template, G_N_ELEMENTS (attr_template));
 	gulong uvalue;
@@ -757,7 +757,7 @@ DEFINE_TEST(template_find)
 	gkm_template_free (template);
 }
 
-DEFINE_TEST(template_set_replace)
+TESTING_TEST(template_set_replace)
 {
 	GArray *template = gkm_template_new (attr_template, G_N_ELEMENTS (attr_template));
 	CK_OBJECT_CLASS klass = CKO_HW_FEATURE;

@@ -160,7 +160,7 @@ static EggSpawnCallbacks null_callbacks = {
 	child_setup,
 };
 
-DEFINE_TEST(test_spawn_sync)
+TESTING_TEST(test_spawn_sync)
 {
 	GError *error = NULL;
 	gboolean ret;
@@ -187,7 +187,7 @@ DEFINE_TEST(test_spawn_sync)
 	g_assert_cmpstr (data.error, ==, "1\n2\n3\n4\n5\n");
 }
 
-DEFINE_TEST(test_spawn_sync_error)
+TESTING_TEST(test_spawn_sync_error)
 {
 	GError *error = NULL;
 	gboolean ret;
@@ -202,7 +202,7 @@ DEFINE_TEST(test_spawn_sync_error)
 }
 
 
-DEFINE_TEST(test_spawn_async)
+TESTING_TEST(test_spawn_async)
 {
 	GError *error = NULL;
 	EchoData data;
@@ -232,7 +232,7 @@ DEFINE_TEST(test_spawn_async)
 	g_assert_cmpstr (data.error, ==, "1\n2\n3\n4\n5\n");
 }
 
-DEFINE_TEST(test_spawn_async_none)
+TESTING_TEST(test_spawn_async_none)
 {
 	GError *error = NULL;
 	EchoData data;
@@ -259,7 +259,7 @@ DEFINE_TEST(test_spawn_async_none)
 	g_assert (!data.output);
 }
 
-DEFINE_TEST(test_spawn_async_error)
+TESTING_TEST(test_spawn_async_error)
 {
 	GError *error = NULL;
 	guint ret;

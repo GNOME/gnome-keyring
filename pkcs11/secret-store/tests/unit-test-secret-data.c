@@ -36,14 +36,14 @@
 #include <stdio.h>
 #include <string.h>
 
-DEFINE_TEST(secret_data_new)
+TESTING_TEST(secret_data_new)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	g_assert (GKM_IS_SECRET_DATA (data));
 	g_object_unref (data);
 }
 
-DEFINE_TEST(secret_data_get_set)
+TESTING_TEST(secret_data_get_set)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *secret = gkm_secret_new_from_password ("barn");
@@ -60,7 +60,7 @@ DEFINE_TEST(secret_data_get_set)
 	g_object_unref (data);
 }
 
-DEFINE_TEST(secret_data_get_raw)
+TESTING_TEST(secret_data_get_raw)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *secret = gkm_secret_new_from_password ("barn");
@@ -81,7 +81,7 @@ DEFINE_TEST(secret_data_get_raw)
 	g_object_unref (data);
 }
 
-DEFINE_TEST(secret_data_remove)
+TESTING_TEST(secret_data_remove)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *secret = gkm_secret_new_from_password ("barn");
@@ -99,7 +99,7 @@ DEFINE_TEST(secret_data_remove)
 	g_object_unref (data);
 }
 
-DEFINE_TEST(secret_data_set_transacted)
+TESTING_TEST(secret_data_set_transacted)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -120,7 +120,7 @@ DEFINE_TEST(secret_data_set_transacted)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(secret_data_set_transacted_replace)
+TESTING_TEST(secret_data_set_transacted_replace)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -147,7 +147,7 @@ DEFINE_TEST(secret_data_set_transacted_replace)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(secret_data_set_transacted_fail)
+TESTING_TEST(secret_data_set_transacted_fail)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -169,7 +169,7 @@ DEFINE_TEST(secret_data_set_transacted_fail)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(secret_data_set_transacted_fail_revert)
+TESTING_TEST(secret_data_set_transacted_fail_revert)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -197,7 +197,7 @@ DEFINE_TEST(secret_data_set_transacted_fail_revert)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(secret_data_get_set_master)
+TESTING_TEST(secret_data_get_set_master)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *master = gkm_secret_new_from_password ("master");

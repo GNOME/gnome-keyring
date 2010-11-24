@@ -58,7 +58,7 @@ find_non_zero (gpointer mem, gsize len)
 	return G_MAXSIZE;
 }
 
-DEFINE_TEST(secmem_alloc_free)
+TESTING_TEST(secmem_alloc_free)
 {
 	gpointer p;
 	gboolean ret;
@@ -75,7 +75,7 @@ DEFINE_TEST(secmem_alloc_free)
 	egg_secure_free_full (p, 0);
 }
 
-DEFINE_TEST(secmem_realloc_across)
+TESTING_TEST(secmem_realloc_across)
 {
 	gpointer p, p2;
 	
@@ -90,7 +90,7 @@ DEFINE_TEST(secmem_realloc_across)
 	g_assert_cmpint (G_MAXSIZE, ==, find_non_zero (p2, 16200));
 }
 
-DEFINE_TEST(secmem_alloc_two)
+TESTING_TEST(secmem_alloc_two)
 {
 	gpointer p, p2;
 	gboolean ret;
@@ -114,7 +114,7 @@ DEFINE_TEST(secmem_alloc_two)
 	egg_secure_free_full (p, 0);
 }
 
-DEFINE_TEST(secmem_realloc)
+TESTING_TEST(secmem_realloc)
 {
 	gchar *str = "a test string to see if realloc works properly";
 	gpointer p, p2;
@@ -138,7 +138,7 @@ DEFINE_TEST(secmem_realloc)
 	g_assert (p == NULL);
 }
 
-DEFINE_TEST(secmem_multialloc)
+TESTING_TEST(secmem_multialloc)
 {
 	GPtrArray *memory;
 	gpointer data;
@@ -205,7 +205,7 @@ DEFINE_TEST(secmem_multialloc)
 	egg_secure_warnings = 1;
 }
 
-DEFINE_TEST(secmem_clear)
+TESTING_TEST(secmem_clear)
 {
 	gpointer p;
 
@@ -220,7 +220,7 @@ DEFINE_TEST(secmem_clear)
 	egg_secure_free_full (p, 0);
 }
 
-DEFINE_TEST(secmem_strclear)
+TESTING_TEST(secmem_strclear)
 {
 	gchar *str;
 

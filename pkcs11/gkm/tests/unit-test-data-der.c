@@ -112,7 +112,7 @@ test_der_public (gcry_sexp_t key)
 	g_assert ("key parsed differently" && compare_keys (key, sexp));
 }
 
-DEFINE_SETUP(preload)
+TESTING_SETUP(preload)
 {
 	certificate_data = testing_data_read ("test-certificate-1.der", &n_certificate_data);
 	certificate = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", certificate_data, n_certificate_data);
@@ -123,7 +123,7 @@ DEFINE_SETUP(preload)
 	g_assert (certificate2);
 }
 
-DEFINE_TEARDOWN(preload)
+TESTING_TEARDOWN(preload)
 {
 	egg_asn1x_destroy (certificate);
 	g_free (certificate_data);
@@ -134,7 +134,7 @@ DEFINE_TEARDOWN(preload)
 	certificate2_data = NULL;
 }
 
-DEFINE_TEST(der_rsa_public)
+TESTING_TEST(der_rsa_public)
 {
 	gcry_sexp_t key;
 	gcry_error_t gcry;
@@ -145,7 +145,7 @@ DEFINE_TEST(der_rsa_public)
 	test_der_public (key);
 }
 
-DEFINE_TEST(der_dsa_public)
+TESTING_TEST(der_dsa_public)
 {
 	gcry_sexp_t key;
 	gcry_error_t gcry;
@@ -180,7 +180,7 @@ test_der_private (gcry_sexp_t key)
 	egg_secure_free (data);
 }
 
-DEFINE_TEST(der_rsa_private)
+TESTING_TEST(der_rsa_private)
 {
 	gcry_sexp_t key;
 	gcry_error_t gcry;
@@ -191,7 +191,7 @@ DEFINE_TEST(der_rsa_private)
 	test_der_private (key);
 }
 
-DEFINE_TEST(der_dsa_private)
+TESTING_TEST(der_dsa_private)
 {
 	gcry_sexp_t key;
 	gcry_error_t gcry;
@@ -202,7 +202,7 @@ DEFINE_TEST(der_dsa_private)
 	test_der_private (key);
 }
 
-DEFINE_TEST(der_dsa_private_parts)
+TESTING_TEST(der_dsa_private_parts)
 {
 	guchar *params, *key;
 	gsize n_params, n_key;
@@ -235,7 +235,7 @@ const gchar *certpub = "(public-key (rsa " \
 	"(n #00C966D9F80744CFB98C2EF0A1EF13456C05DFDE2716513641116C6C3BEDFE107D129EE59B429AFE6031C366B7733A48AE4ED032379488B50DB6D9F3F244D9D58812DD764DF21AFC6F231E7AF1D898454E0710EF1642D043756D4ADEE2AAC931FF1F00707C66CF102508BAFAEE00E94603662711153BAA5BF298DD3642B2DA8875#) " \
 	"(e #010001#) ) )";
 
-DEFINE_TEST(read_public_key_info)
+TESTING_TEST(read_public_key_info)
 {
 	const guchar *data;
 	guchar hash[20];
@@ -263,7 +263,7 @@ DEFINE_TEST(read_public_key_info)
 	gcry_sexp_release (match);
 }
 
-DEFINE_TEST(read_certificate)
+TESTING_TEST(read_certificate)
 {
 	GNode *asn = NULL;
 	GkmDataResult res;
@@ -275,7 +275,7 @@ DEFINE_TEST(read_certificate)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(write_certificate)
+TESTING_TEST(write_certificate)
 {
 	guchar *data;
 	gsize n_data;
@@ -316,7 +316,7 @@ on_ca_certificate_public_key_info (GQuark type, const guchar *data, gsize n_data
 	g_free (keydata);
 }
 
-DEFINE_TEST(read_ca_certificates_public_key_info)
+TESTING_TEST(read_ca_certificates_public_key_info)
 {
 	gpointer data;
 	gsize n_data;
@@ -361,7 +361,7 @@ find_extension (GNode *asn, const guchar *data, gsize n_data, const gchar *oid, 
 	g_assert_not_reached ();
 }
 
-DEFINE_TEST(read_basic_constraints)
+TESTING_TEST(read_basic_constraints)
 {
 	const guchar *extension;
 	gsize n_extension;
@@ -379,7 +379,7 @@ DEFINE_TEST(read_basic_constraints)
 	g_assert (path_len == -1);
 }
 
-DEFINE_TEST(read_key_usage)
+TESTING_TEST(read_key_usage)
 {
 	const guchar *extension;
 	gsize n_extension;
@@ -394,7 +394,7 @@ DEFINE_TEST(read_key_usage)
 	g_assert_cmpuint (key_usage, ==, 0x01);
 }
 
-DEFINE_TEST(read_enhanced_usage)
+TESTING_TEST(read_enhanced_usage)
 {
 	const guchar *extension;
 	gsize n_extension;
@@ -410,7 +410,7 @@ DEFINE_TEST(read_enhanced_usage)
 	g_free (usages);
 }
 
-DEFINE_TEST(read_all_pkcs8)
+TESTING_TEST(read_all_pkcs8)
 {
 	gcry_sexp_t sexp;
 	GkmDataResult res;
@@ -442,7 +442,7 @@ DEFINE_TEST(read_all_pkcs8)
 	g_dir_close (dir);
 }
 
-DEFINE_TEST(read_pkcs8_bad_password)
+TESTING_TEST(read_pkcs8_bad_password)
 {
 	gcry_sexp_t sexp;
 	GkmDataResult res;
@@ -456,7 +456,7 @@ DEFINE_TEST(read_pkcs8_bad_password)
 	g_free (data);
 }
 
-DEFINE_TEST(write_pkcs8_plain)
+TESTING_TEST(write_pkcs8_plain)
 {
 	gcry_sexp_t sexp, check;
 	gcry_error_t gcry;
@@ -503,7 +503,7 @@ DEFINE_TEST(write_pkcs8_plain)
 }
 
 
-DEFINE_TEST(write_pkcs8_encrypted)
+TESTING_TEST(write_pkcs8_encrypted)
 {
 	gcry_sexp_t sexp, check;
 	gcry_error_t gcry;

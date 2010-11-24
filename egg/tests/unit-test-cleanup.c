@@ -43,7 +43,7 @@ cleanup_callback (gpointer user_data)
 	param->value = NULL;
 }
 
-DEFINE_TEST(cleanup)
+TESTING_TEST(cleanup)
 {
 	CleanupParam param;
 	
@@ -76,7 +76,7 @@ order_callback (gpointer user_data)
 	--order_value;
 }
 
-DEFINE_TEST(order)
+TESTING_TEST(order)
 {
 	OrderParam param[8];
 	int i;
@@ -116,7 +116,7 @@ reregister_callback (gpointer user_data)
 	egg_cleanup_register (second_callback, NULL);
 } 
 
-DEFINE_TEST(reregister)
+TESTING_TEST(reregister)
 {
 	cleaned_up = FALSE;
 	
@@ -140,7 +140,7 @@ remove_callback (gpointer user_data)
 	test_cleaned_up = TRUE;	
 }
 
-DEFINE_TEST(remove)
+TESTING_TEST(remove)
 {
 	egg_cleanup_register (remove_callback, NULL);
 	egg_cleanup_register (remove_callback, DATA);

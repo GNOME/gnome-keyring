@@ -25,7 +25,7 @@
 
 #include "gkm/gkm-transaction.h"
 
-DEFINE_SETUP (transaction_setup)
+TESTING_SETUP (transaction_setup)
 {
 	GDir *dir;
 	const gchar *directory;
@@ -50,7 +50,7 @@ DEFINE_SETUP (transaction_setup)
 	g_dir_close (dir);
 }
 
-DEFINE_TEST(transaction_empty)
+TESTING_TEST(transaction_empty)
 {
 	GkmTransaction *transaction;
 	gboolean completed, failed;
@@ -77,7 +77,7 @@ DEFINE_TEST(transaction_empty)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(transaction_fail)
+TESTING_TEST(transaction_fail)
 {
 	GkmTransaction *transaction;
 
@@ -123,7 +123,7 @@ completed_callback (GkmTransaction *transaction, GObject *object, gpointer data)
 	return TRUE;
 }
 
-DEFINE_TEST(transaction_signals_success)
+TESTING_TEST(transaction_signals_success)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -146,7 +146,7 @@ DEFINE_TEST(transaction_signals_success)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(transaction_signals_failure)
+TESTING_TEST(transaction_signals_failure)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -183,7 +183,7 @@ order_callback (GkmTransaction *transaction, GObject *object, gpointer data)
 	return TRUE;
 }
 
-DEFINE_TEST(transaction_order_is_reverse)
+TESTING_TEST(transaction_order_is_reverse)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -196,7 +196,7 @@ DEFINE_TEST(transaction_order_is_reverse)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(transaction_dispose_completes)
+TESTING_TEST(transaction_dispose_completes)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -212,7 +212,7 @@ DEFINE_TEST(transaction_dispose_completes)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(remove_file_success)
+TESTING_TEST(remove_file_success)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-remove");
@@ -232,7 +232,7 @@ DEFINE_TEST(remove_file_success)
 	g_free (filename);
 }
 
-DEFINE_TEST(remove_file_abort)
+TESTING_TEST(remove_file_abort)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-remove");
@@ -264,7 +264,7 @@ DEFINE_TEST(remove_file_abort)
 	g_free (filename);
 }
 
-DEFINE_TEST(remove_file_non_exist)
+TESTING_TEST(remove_file_non_exist)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-non-existant");
@@ -280,7 +280,7 @@ DEFINE_TEST(remove_file_non_exist)
 	g_free (filename);
 }
 
-DEFINE_TEST(write_file)
+TESTING_TEST(write_file)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-test");
@@ -306,7 +306,7 @@ DEFINE_TEST(write_file)
 	g_free (filename);
 }
 
-DEFINE_TEST(write_file_abort_gone)
+TESTING_TEST(write_file_abort_gone)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-test");
@@ -332,7 +332,7 @@ DEFINE_TEST(write_file_abort_gone)
 	g_free (filename);
 }
 
-DEFINE_TEST(write_file_abort_revert)
+TESTING_TEST(write_file_abort_revert)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-test");
@@ -358,7 +358,7 @@ DEFINE_TEST(write_file_abort_revert)
 	g_free (filename);
 }
 
-DEFINE_TEST (unique_file_conflict)
+TESTING_TEST (unique_file_conflict)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-test");
@@ -386,7 +386,7 @@ DEFINE_TEST (unique_file_conflict)
 	g_free (filename);
 }
 
-DEFINE_TEST (unique_file_conflict_with_ext)
+TESTING_TEST (unique_file_conflict_with_ext)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	gchar *filename = testing_scratch_filename ("transaction-test.ext");
@@ -414,7 +414,7 @@ DEFINE_TEST (unique_file_conflict_with_ext)
 	g_free (filename);
 }
 
-DEFINE_TEST (unique_file_no_conflict)
+TESTING_TEST (unique_file_no_conflict)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	const gchar *dirname = testing_scratch_directory ();

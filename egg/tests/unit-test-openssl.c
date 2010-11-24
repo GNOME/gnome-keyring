@@ -70,7 +70,7 @@ parse_reference (GQuark type, const guchar *data, gsize n_data,
 	g_assert ("invalid amount of data returned from openssl decrypt" && n_refdata == n_data);
 }
 
-DEFINE_TEST(parse_reference)
+TESTING_TEST(parse_reference)
 {
 	guchar *input;
 	gsize n_input;
@@ -84,7 +84,7 @@ DEFINE_TEST(parse_reference)
 	g_assert ("parse_reference() wasn't called" && refdata != NULL);
 }
 
-DEFINE_TEST(write_reference)
+TESTING_TEST(write_reference)
 {
 	const gchar *dekinfo;
 	guchar *encrypted;
@@ -107,7 +107,7 @@ DEFINE_TEST(write_reference)
 static const guchar *TEST_DATA = (guchar*)"ABCDEFGHIJKLMNOPQRSTUVWXYZ123";
 const gsize TEST_DATA_L = 29;
 	
-DEFINE_TEST(openssl_roundtrip)
+TESTING_TEST(openssl_roundtrip)
 {
 	const gchar *dekinfo;
 	gboolean res;

@@ -37,14 +37,14 @@ static GkmSession *session = NULL;
 static guchar *certificate_data = NULL;
 static gsize certificate_n_data = 0;
 
-DEFINE_SETUP(object_setup)
+TESTING_SETUP(object_setup)
 {
 	module = test_module_initialize_and_enter ();
 	session = test_module_open_session (TRUE);
 	certificate_data = testing_data_read ("test-certificate-1.der", &certificate_n_data);
 }
 
-DEFINE_TEARDOWN(object_teardown)
+TESTING_TEARDOWN(object_teardown)
 {
 	g_free (certificate_data);
 	certificate_data = NULL;
@@ -70,7 +70,7 @@ check_object_exists (CK_OBJECT_HANDLE handle)
 	return TRUE;
 }
 
-DEFINE_TEST(object_create_destroy_transient)
+TESTING_TEST(object_create_destroy_transient)
 {
 	CK_BBOOL transient = CK_TRUE;
 	CK_BBOOL token = CK_TRUE;
@@ -106,7 +106,7 @@ DEFINE_TEST(object_create_destroy_transient)
 	g_assert (!check_object_exists (handle));
 }
 
-DEFINE_TEST(object_transient_transacted_fail)
+TESTING_TEST(object_transient_transacted_fail)
 {
 	CK_BBOOL transient = CK_TRUE;
 	CK_BBOOL token = CK_TRUE;
@@ -132,7 +132,7 @@ DEFINE_TEST(object_transient_transacted_fail)
 	g_assert (rv == CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-DEFINE_TEST(object_create_transient_bad_value)
+TESTING_TEST(object_create_transient_bad_value)
 {
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
@@ -152,7 +152,7 @@ DEFINE_TEST(object_create_transient_bad_value)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(object_create_auto_destruct)
+TESTING_TEST(object_create_auto_destruct)
 {
 	CK_BBOOL token = CK_FALSE;
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
@@ -197,7 +197,7 @@ DEFINE_TEST(object_create_auto_destruct)
 	g_assert (!check_object_exists (handle));
 }
 
-DEFINE_TEST(object_create_auto_destruct_not_transient)
+TESTING_TEST(object_create_auto_destruct_not_transient)
 {
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
@@ -220,7 +220,7 @@ DEFINE_TEST(object_create_auto_destruct_not_transient)
 	g_assert (rv == CKR_TEMPLATE_INCONSISTENT);
 }
 
-DEFINE_TEST(object_expose)
+TESTING_TEST(object_expose)
 {
 	CK_OBJECT_HANDLE handle;
 	GkmManager *manager;
@@ -243,7 +243,7 @@ DEFINE_TEST(object_expose)
 	g_assert (check == NULL);
 }
 
-DEFINE_TEST(object_expose_transaction)
+TESTING_TEST(object_expose_transaction)
 {
 	CK_OBJECT_HANDLE handle;
 	GkmManager *manager;

@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 
-DEFINE_TEST(access_free)
+TESTING_TEST(access_free)
 {
 	GkmSecretAccess *ac;
 
@@ -45,7 +45,7 @@ DEFINE_TEST(access_free)
 	gkm_secret_compat_access_free (ac);
 }
 
-DEFINE_TEST(acl_free)
+TESTING_TEST(acl_free)
 {
 	GkmSecretAccess *ac;
 	GList *acl = NULL;
@@ -62,7 +62,7 @@ DEFINE_TEST(acl_free)
 	gkm_secret_compat_acl_free (acl);
 }
 
-DEFINE_TEST(parse_item_type)
+TESTING_TEST(parse_item_type)
 {
 	guint type;
 
@@ -88,7 +88,7 @@ DEFINE_TEST(parse_item_type)
 	g_assert_cmpuint (type, ==, 0);
 }
 
-DEFINE_TEST(format_item_type)
+TESTING_TEST(format_item_type)
 {
 	const gchar *type;
 

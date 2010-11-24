@@ -46,7 +46,7 @@ static GkmModule *module = NULL;
 static GkmSession *session = NULL;
 static GkmSecretCollection *collection = NULL;
 
-DEFINE_SETUP(secret_item)
+TESTING_SETUP(secret_item)
 {
 	module = test_secret_module_initialize_and_enter ();
 	session = test_secret_module_open_session (TRUE);
@@ -57,7 +57,7 @@ DEFINE_SETUP(secret_item)
 	                           NULL);
 }
 
-DEFINE_TEARDOWN(secret_item)
+TESTING_TEARDOWN(secret_item)
 {
 	if (collection)
 		g_object_unref (collection);
@@ -87,7 +87,7 @@ unlock_collection(void)
 	g_object_unref (cred);
 }
 
-DEFINE_TEST(secret_item_new)
+TESTING_TEST(secret_item_new)
 {
 	GkmSecretItem *item;
 
@@ -96,7 +96,7 @@ DEFINE_TEST(secret_item_new)
 	g_assert_cmpstr (gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (item)), ==, "the-identifier");
 }
 
-DEFINE_TEST(secret_item_create)
+TESTING_TEST(secret_item_create)
 {
 	GkmTransaction *transaction;
 	GkmSecretItem *item;
@@ -115,7 +115,7 @@ DEFINE_TEST(secret_item_create)
 	g_object_unref (item);
 }
 
-DEFINE_TEST(secret_item_create_failed)
+TESTING_TEST(secret_item_create_failed)
 {
 	GkmTransaction *transaction;
 	GkmSecretItem *item;
@@ -135,7 +135,7 @@ DEFINE_TEST(secret_item_create_failed)
 	g_object_unref (item);
 }
 
-DEFINE_TEST(secret_item_destroy)
+TESTING_TEST(secret_item_destroy)
 {
 	GkmTransaction *transaction;
 	GkmSecretItem *item;
@@ -156,7 +156,7 @@ DEFINE_TEST(secret_item_destroy)
 	g_object_unref (item);
 }
 
-DEFINE_TEST(secret_item_destroy_failed)
+TESTING_TEST(secret_item_destroy_failed)
 {
 	GkmTransaction *transaction;
 	GkmSecretItem *item;
@@ -178,7 +178,7 @@ DEFINE_TEST(secret_item_destroy_failed)
 	g_object_unref (item);
 }
 
-DEFINE_TEST(secret_item_collection_get)
+TESTING_TEST(secret_item_collection_get)
 {
 	GkmSecretItem *item, *check;
 
@@ -189,7 +189,7 @@ DEFINE_TEST(secret_item_collection_get)
 	g_assert (item == check);
 }
 
-DEFINE_TEST(secret_item_collection_items)
+TESTING_TEST(secret_item_collection_items)
 {
 	GList *l, *items;
 	const gchar *identifier;
@@ -211,7 +211,7 @@ DEFINE_TEST(secret_item_collection_items)
 	g_list_free (items);
 }
 
-DEFINE_TEST(secret_item_collection_remove)
+TESTING_TEST(secret_item_collection_remove)
 {
 	GkmSecretItem *item;
 
@@ -222,7 +222,7 @@ DEFINE_TEST(secret_item_collection_remove)
 	g_assert (gkm_secret_collection_get_item (collection, "the-identifier") == NULL);
 }
 
-DEFINE_TEST(secret_item_is_locked)
+TESTING_TEST(secret_item_is_locked)
 {
 	GkmSecretItem *item;
 
@@ -235,14 +235,14 @@ DEFINE_TEST(secret_item_is_locked)
 	g_assert (gkm_secret_object_is_locked (GKM_SECRET_OBJECT (item), session) == FALSE);
 }
 
-DEFINE_TEST(secret_item_get_collection)
+TESTING_TEST(secret_item_get_collection)
 {
 	GkmSecretItem *item;
 	item = gkm_secret_collection_new_item (collection, "the-identifier");
 	g_assert (gkm_secret_item_get_collection (item) == collection);
 }
 
-DEFINE_TEST(secret_item_tracks_collection)
+TESTING_TEST(secret_item_tracks_collection)
 {
 	GkmSecretItem *item;
 	item = gkm_secret_collection_new_item (collection, "the-identifier");
@@ -263,7 +263,7 @@ DEFINE_TEST(secret_item_tracks_collection)
 	g_object_unref (item);
 }
 
-DEFINE_TEST(secret_item_get_set_fields)
+TESTING_TEST(secret_item_get_set_fields)
 {
 	GHashTable *fields = gkm_secret_fields_new ();
 	GHashTable *check;
@@ -279,7 +279,7 @@ DEFINE_TEST(secret_item_get_set_fields)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(secret_item_collection_attr)
+TESTING_TEST(secret_item_collection_attr)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE check = { CKA_G_COLLECTION, buffer, 32 };
@@ -293,7 +293,7 @@ DEFINE_TEST(secret_item_collection_attr)
 	g_assert (memcmp (buffer, "test", 4) == 0);
 }
 
-DEFINE_TEST(secret_item_secret_attr)
+TESTING_TEST(secret_item_secret_attr)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	CK_ATTRIBUTE attr = { CKA_VALUE, "hello", 5 };
@@ -318,7 +318,7 @@ DEFINE_TEST(secret_item_secret_attr)
 	g_assert (memcmp (buffer, "hello", 5) == 0);
 }
 
-DEFINE_TEST(secret_item_secret_attr_locked)
+TESTING_TEST(secret_item_secret_attr_locked)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	CK_ATTRIBUTE attr = { CKA_VALUE, "hello", 5 };
@@ -339,7 +339,7 @@ DEFINE_TEST(secret_item_secret_attr_locked)
 	g_assert (rv == CKR_USER_NOT_LOGGED_IN);
 }
 
-DEFINE_TEST(secret_item_fields_attr)
+TESTING_TEST(secret_item_fields_attr)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "name1\0value1\0name2\0value2", 26 };
@@ -373,7 +373,7 @@ DEFINE_TEST(secret_item_fields_attr)
 	g_assert_cmpstr (value, ==, "value2");
 }
 
-DEFINE_TEST(secret_item_fields_attr_locked)
+TESTING_TEST(secret_item_fields_attr_locked)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "name1\0value1\0name2\0value2", 26 };
@@ -388,7 +388,7 @@ DEFINE_TEST(secret_item_fields_attr_locked)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(secret_item_fields_attr_reverts)
+TESTING_TEST(secret_item_fields_attr_reverts)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "new\0value\0", 10 };
