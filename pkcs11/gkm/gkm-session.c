@@ -241,7 +241,6 @@ lookup_object_from_handle (GkmSession *self, CK_OBJECT_HANDLE handle,
 	GkmObject *object;
 	gboolean is_private;
 	gboolean is_token;
-	gboolean is_modifiable;
 
 	g_return_val_if_fail (result, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (GKM_IS_SESSION (self), CKR_GENERAL_ERROR);
@@ -289,10 +288,6 @@ lookup_object_from_handle (GkmSession *self, CK_OBJECT_HANDLE handle,
 			if (self->pv->read_only)
 				return CKR_SESSION_READ_ONLY;
 		}
-		if (!gkm_object_get_attribute_boolean (object, self, CKA_MODIFIABLE, &is_modifiable))
-			is_modifiable = FALSE;
-		if (!is_modifiable) /* What's a better return code in this case? */
-			return CKR_ATTRIBUTE_READ_ONLY;
 	}
 
 	*result = object;
