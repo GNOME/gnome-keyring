@@ -128,6 +128,7 @@ test_xdg_module_initialize_and_enter (void)
 
 	/* Copy files from test-data to scratch */
 	copy_scratch_file ("test-refer-1.trust");
+	copy_scratch_file ("test-certificate-1.cer");
 	empty_scratch_file ("invalid-without-ext");
 	empty_scratch_file ("test-file.unknown");
 	empty_scratch_file ("test-invalid.trust");
@@ -237,11 +238,11 @@ TESTING_TEST (xdg_module_find_twice_is_same)
 	CK_RV rv;
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_objects);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjectsFinal (session);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, >, 0);
 
@@ -249,11 +250,11 @@ TESTING_TEST (xdg_module_find_twice_is_same)
 	touch_scratch_file ("test-refer-1.trust", 1);
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_check);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjectsFinal (session);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Should have same objects after reload */
 	gkm_assert_cmpulong (n_check, ==, n_objects);
@@ -267,11 +268,11 @@ TESTING_TEST (xdg_module_file_becomes_invalid)
 	CK_RV rv;
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_objects);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjectsFinal (session);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, >, 0);
 
@@ -280,11 +281,11 @@ TESTING_TEST (xdg_module_file_becomes_invalid)
 	touch_scratch_file ("test-refer-1.trust", 2);
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_check);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjectsFinal (session);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Should have less objects */
 	gkm_assert_cmpulong (n_check, <, n_objects);
@@ -298,11 +299,11 @@ TESTING_TEST (xdg_module_file_remove)
 	CK_RV rv;
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_objects);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjectsFinal (session);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, >, 0);
 
@@ -310,12 +311,38 @@ TESTING_TEST (xdg_module_file_remove)
 	remove_scratch_file ("test-refer-1.trust");
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_check);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjectsFinal (session);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Should have less objects */
 	gkm_assert_cmpulong (n_check, <, n_objects);
+}
+
+TESTING_TEST (xdg_create_and_add_object)
+{
+	CK_OBJECT_HANDLE object = 0;
+	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
+	CK_CERTIFICATE_TYPE ctype = CKC_X_509;
+	CK_BBOOL tval = CK_TRUE;
+	gpointer data;
+	gsize n_data;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_VALUE, NULL, 0 },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_TOKEN, &tval, sizeof (tval) },
+		{ CKA_CERTIFICATE_TYPE, &ctype, sizeof (ctype) }
+	};
+
+	data = testing_data_read ("test-certificate-2.cer", &n_data);
+	attrs[0].pValue = data;
+	attrs[0].ulValueLen = n_data;
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
 }

@@ -33,6 +33,7 @@
 #include "egg/egg-hex.h"
 
 #include "gkm/gkm-assertion.h"
+#include "gkm/gkm-certificate.h"
 #include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-transaction.h"
@@ -109,15 +110,8 @@ type_from_path (const gchar *path)
 
 	if (g_str_equal (ext, ".trust"))
 		return GKM_XDG_TYPE_TRUST;
-
-#if 0
-	else if (strcmp (extension, ".pkcs8") == 0)
-		return GKM_TYPE_GNOME2_PRIVATE_KEY;
-	else if (strcmp (extension, ".pub") == 0)
-		return GKM_TYPE_GNOME2_PUBLIC_KEY;
-	else if (strcmp (extension, ".cer") == 0)
+	else if (strcmp (ext, ".cer") == 0)
 		return GKM_TYPE_CERTIFICATE;
-#endif
 
 	return 0;
 }
@@ -137,11 +131,15 @@ add_object_to_module (GkmXdgModule *self, GkmObject *object, const gchar *filena
 	g_assert (!lookup_filename_for_object (object));
 	g_object_set_data_full (G_OBJECT (object), "xdg-module-filename",
 	                        g_strdup (filename), g_free);
+
+	gkm_object_expose (object, TRUE);
 }
 
 static void
 remove_object_from_module (GkmXdgModule *self, GkmObject *object, const gchar *filename)
 {
+	gkm_object_expose (object, FALSE);
+
 	g_assert (g_hash_table_lookup (self->objects_by_path, filename) == object);
 	g_hash_table_remove (self->objects_by_path, filename);
 }
@@ -446,6 +444,7 @@ gkm_xdg_module_init (GkmXdgModule *self)
 
 	/* For creating stored objects */
 	gkm_module_register_factory (GKM_MODULE (self), GKM_XDG_FACTORY_ASSERTION);
+	gkm_module_register_factory (GKM_MODULE (self), GKM_FACTORY_CERTIFICATE);
 }
 
 static void

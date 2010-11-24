@@ -369,7 +369,11 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointe
 	GkmSexp *wrapper;
 
 	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
+
+	if (!data || !n_data) {
+		g_message ("cannot load empty certificate file");
+		return FALSE;
+	}
 
 	copy = g_memdup (data, n_data);
 

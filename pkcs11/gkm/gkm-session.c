@@ -956,6 +956,7 @@ gkm_session_C_CreateObject (GkmSession* self, CK_ATTRIBUTE_PTR template,
                             CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
 	GkmObject *object = NULL;
+	CK_OBJECT_HANDLE handle;
 	GkmTransaction *transaction;
 	CK_RV rv;
 
@@ -973,7 +974,13 @@ gkm_session_C_CreateObject (GkmSession* self, CK_ATTRIBUTE_PTR template,
 
 	if (rv == CKR_OK) {
 		g_assert (object);
-		*new_object = gkm_object_get_handle (object);
+		handle = gkm_object_get_handle (object);
+		if (handle == 0) {
+			g_warning ("an object was not properly exposed its owner");
+			rv = CKR_GENERAL_ERROR;
+		} else {
+			*new_object = handle;
+		}
 		g_object_unref (object);
 	}
 
