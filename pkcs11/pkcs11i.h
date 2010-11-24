@@ -131,7 +131,7 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 
 #define CKA_G_PURPOSE                            (CKO_GNOME + 403)
 
-#define CKA_G_REMOTE                             (CKO_GNOME + 404)
+#define CKA_G_PEER                               (CKO_GNOME + 404)
 
 typedef CK_ULONG CK_ASSERTION_TYPE;
 

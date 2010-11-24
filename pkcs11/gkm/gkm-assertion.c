@@ -37,14 +37,14 @@ enum {
 	PROP_TRUST,
 	PROP_TYPE,
 	PROP_PURPOSE,
-	PROP_REMOTE
+	PROP_PEER
 };
 
 struct _GkmAssertionPrivate {
 	GkmTrust *trust;
 	gulong type;
 	gchar *purpose;
-	gchar *remote;
+	gchar *peer;
 };
 
 G_DEFINE_TYPE (GkmAssertion, gkm_assertion, GKM_TYPE_OBJECT);
@@ -77,10 +77,10 @@ gkm_assertion_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 		return gkm_attribute_set_ulong (attr, self->pv->type);
 	case CKA_G_PURPOSE:
 		return gkm_attribute_set_string (attr, self->pv->purpose);
-	case CKA_G_REMOTE:
-		if (!self->pv->remote)
+	case CKA_G_PEER:
+		if (!self->pv->peer)
 			return CKR_ATTRIBUTE_TYPE_INVALID;
-		return gkm_attribute_set_string (attr, self->pv->remote);
+		return gkm_attribute_set_string (attr, self->pv->peer);
 
 	/* Certificate reference values */
 	case CKA_SERIAL_NUMBER:
@@ -113,8 +113,8 @@ gkm_assertion_finalize (GObject *obj)
 	g_free (self->pv->purpose);
 	self->pv->purpose = NULL;
 
-	g_free (self->pv->remote);
-	self->pv->remote = NULL;
+	g_free (self->pv->peer);
+	self->pv->peer = NULL;
 
 	G_OBJECT_CLASS (gkm_assertion_parent_class)->finalize (obj);
 }
@@ -139,8 +139,8 @@ gkm_assertion_set_property (GObject *obj, guint prop_id, const GValue *value,
 	case PROP_PURPOSE:
 		self->pv->purpose = g_value_dup_string (value);
 		break;
-	case PROP_REMOTE:
-		self->pv->remote = g_value_dup_string (value);
+	case PROP_PEER:
+		self->pv->peer = g_value_dup_string (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -164,8 +164,8 @@ gkm_assertion_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_PURPOSE:
 		g_value_set_string (value, gkm_assertion_get_purpose (self));
 		break;
-	case PROP_REMOTE:
-		g_value_set_string (value, gkm_assertion_get_remote (self));
+	case PROP_PEER:
+		g_value_set_string (value, gkm_assertion_get_peer (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -185,6 +185,22 @@ gkm_assertion_class_init (GkmAssertionClass *klass)
 
 	gkm_class->get_attribute = gkm_assertion_get_attribute;
 
+	g_object_class_install_property (gobject_class, PROP_TRUST,
+	         g_param_spec_object ("trust", "Trust", "Trust object this assertion belongs to",
+	                              GKM_TYPE_TRUST, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_TYPE,
+	         g_param_spec_ulong ("type", "Type", "PKCS#11 assertion type",
+	                             0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_PURPOSE,
+	         g_param_spec_string ("purpose", "Purpose", "The purpose for the trust",
+	                              NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_PURPOSE,
+	         g_param_spec_string ("peer", "Peer", "Optional peer this assertion applies to",
+	                              NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
 	g_type_class_add_private (klass, sizeof (GkmAssertionPrivate));
 }
 
@@ -193,13 +209,15 @@ gkm_assertion_class_init (GkmAssertionClass *klass)
  */
 
 GkmAssertion*
-gkm_assertion_new (GkmTrust *trust, gulong type, const gchar *purpose, const gchar *remote)
+gkm_assertion_new (GkmTrust *trust, gulong type, const gchar *purpose, const gchar *peer)
 {
 	return g_object_new (GKM_TYPE_ASSERTION,
+	                     "module", gkm_object_get_module (GKM_OBJECT (trust)),
+	                     "manager", gkm_object_get_manager (GKM_OBJECT (trust)),
 	                     "trust", trust,
 	                     "type", type,
 	                     "purpose", purpose,
-	                     "remote", remote,
+	                     "peer", peer,
 	                     NULL);
 }
 
@@ -211,10 +229,10 @@ gkm_assertion_get_purpose (GkmAssertion *self)
 }
 
 const gchar*
-gkm_assertion_get_remote (GkmAssertion *self)
+gkm_assertion_get_peer (GkmAssertion *self)
 {
 	g_return_val_if_fail (GKM_IS_ASSERTION (self), NULL);
-	return self->pv->remote;
+	return self->pv->peer;
 }
 
 gulong

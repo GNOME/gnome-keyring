@@ -57,7 +57,7 @@ GkmAssertion*         gkm_assertion_new                    (GkmTrust *trust,
 
 const gchar*          gkm_assertion_get_purpose            (GkmAssertion *self);
 
-const gchar*          gkm_assertion_get_remote             (GkmAssertion *self);
+const gchar*          gkm_assertion_get_peer               (GkmAssertion *self);
 
 gulong                gkm_assertion_get_trust_type         (GkmAssertion *self);
 

@@ -119,7 +119,7 @@ prepare_is_certificate_exception (GcrCertificate *cert, const gchar *purpose, co
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_REMOTE, remote);
+	gck_attributes_add_string (attrs, CKA_G_PEER, remote);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -243,7 +243,7 @@ prepare_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, c
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_REMOTE, remote);
+	gck_attributes_add_string (attrs, CKA_G_PEER, remote);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -400,7 +400,7 @@ prepare_remove_certificate_exception (GcrCertificate *cert, const gchar *purpose
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_REMOTE, remote);
+	gck_attributes_add_string (attrs, CKA_G_PEER, remote);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference

@@ -293,7 +293,7 @@ create_assertion (GkmXdgTrust *self, GNode *asn, NetscapeFlags *netscape)
 	GkmAssertion *assertion;
 	GQuark level;
 	gchar *purpose;
-	gchar *remote;
+	gchar *peer;
 	GNode *node;
 
 	/* Get the trust level */
@@ -306,24 +306,24 @@ create_assertion (GkmXdgTrust *self, GNode *asn, NetscapeFlags *netscape)
 		return NULL;
 
 	/* A purpose */
-	purpose = egg_asn1x_get_oid_as_string (egg_asn1x_node (asn, "purpose", NULL));
+	purpose = egg_asn1x_get_string_as_utf8 (egg_asn1x_node (asn, "purpose", NULL), NULL);
 	g_return_val_if_fail (purpose, NULL);
 
-	/* A remote name */
-	node = egg_asn1x_node (asn, "remote", NULL);
+	/* A peer name */
+	node = egg_asn1x_node (asn, "peer", NULL);
 	if (egg_asn1x_have (node))
-		remote = egg_asn1x_get_string_as_utf8 (node, NULL);
+		peer = egg_asn1x_get_string_as_utf8 (node, NULL);
 	else
-		remote = NULL;
+		peer = NULL;
 
-	assertion = gkm_assertion_new (GKM_TRUST (self), type, purpose, remote);
+	assertion = gkm_assertion_new (GKM_TRUST (self), type, purpose, peer);
 
 	/* Parse netscape trust flags */
-	if (remote == NULL)
+	if (peer == NULL)
 		parse_netscape_trust (netscape, level, purpose);
 
 	g_free (purpose);
-	g_free (remote);
+	g_free (peer);
 
 	return assertion;
 }
@@ -392,7 +392,7 @@ save_assertions (GkmXdgTrust *self, GNode *asn)
 	GHashTableIter iter;
 	GNode *pair, *node;
 	const gchar *purpose;
-	const gchar *remote;
+	const gchar *peer;
 	gpointer value;
 	GQuark level;
 
@@ -407,7 +407,7 @@ save_assertions (GkmXdgTrust *self, GNode *asn)
 		assertion = GKM_ASSERTION (value);
 		level = assertion_type_to_level_enum (gkm_assertion_get_trust_type (assertion));
 		purpose = gkm_assertion_get_purpose (assertion);
-		remote = gkm_assertion_get_remote (assertion);
+		peer = gkm_assertion_get_peer (assertion);
 
 		pair = egg_asn1x_append (node);
 		g_return_val_if_fail (pair, FALSE);
@@ -415,9 +415,9 @@ save_assertions (GkmXdgTrust *self, GNode *asn)
 		egg_asn1x_set_oid_as_string (egg_asn1x_node (pair, "purpose", NULL), purpose);
 		egg_asn1x_set_enumerated (egg_asn1x_node (pair, "level", NULL), level);
 
-		if (remote) {
-			egg_asn1x_set_string_as_utf8 (egg_asn1x_node (pair, "remote", NULL),
-			                              g_strdup (remote), g_free);
+		if (peer) {
+			egg_asn1x_set_string_as_utf8 (egg_asn1x_node (pair, "peer", NULL),
+			                              g_strdup (peer), g_free);
 		}
 	}
 
@@ -579,9 +579,12 @@ gkm_xdg_trust_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer 
 
 	copy = g_memdup (data, n_data);
 
-	asn = egg_asn1x_create_and_decode (xdg_asn1_tab, "trust-1", copy, n_data);
-	if (asn == NULL) {
-		g_warning ("couldn't parse trust data");
+	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
+	g_return_val_if_fail (asn, FALSE);
+
+	if (!egg_asn1x_decode (asn, copy, n_data)) {
+		g_warning ("couldn't parse trust data: %s", egg_asn1x_message (asn));
+		egg_asn1x_destroy (asn);
 		g_free (copy);
 		return FALSE;
 	}
