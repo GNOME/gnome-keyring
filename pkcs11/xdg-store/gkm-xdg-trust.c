@@ -71,6 +71,15 @@ static void gkm_xdg_trust_serializable (GkmSerializableIface *iface);
 G_DEFINE_TYPE_EXTENDED (GkmXdgTrust, gkm_xdg_trust, GKM_TYPE_TRUST, 0,
                         G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_xdg_trust_serializable));
 
+static GQuark QDATA_ASSERTION_KEY = 0;
+
+/* Forward declarations */
+static void add_assertion_to_trust (GkmXdgTrust *self, GkmAssertion *assertion,
+                                    GkmTransaction *transaction);
+
+static void remove_assertion_from_trust (GkmXdgTrust *self, GkmAssertion *assertion,
+                                         GkmTransaction *transaction);
+
 /* -----------------------------------------------------------------------------
  * QUARKS
  */
@@ -273,17 +282,20 @@ parse_netscape_trust (NetscapeFlags *netscape, GQuark level, const gchar *purpos
 }
 
 static void
-dispose_each_assertion (gpointer key, gpointer value, gpointer user_data)
+check_and_unref_assertion (gpointer data)
 {
-	g_assert (GKM_IS_ASSERTION (value));
-	g_object_run_dispose (G_OBJECT (value));
+	g_assert (GKM_IS_ASSERTION (data));
+	g_assert (g_object_get_qdata (data, QDATA_ASSERTION_KEY) != NULL);
+	g_object_run_dispose (data);
+	g_object_unref (data);
 }
 
 static GHashTable*
 create_assertions (void)
 {
 	return g_hash_table_new_full (egg_byte_array_hash, egg_byte_array_equal,
-	                              (GDestroyNotify)g_byte_array_unref, gkm_util_dispose_unref);
+	                              (GDestroyNotify)g_byte_array_unref,
+	                              check_and_unref_assertion);
 }
 
 static GkmAssertion*
@@ -328,6 +340,82 @@ create_assertion (GkmXdgTrust *self, GNode *asn, NetscapeFlags *netscape)
 	return assertion;
 }
 
+static void
+stash_assertion_key (GkmAssertion *assertion, GByteArray *key)
+{
+	g_assert (g_object_get_qdata (G_OBJECT (assertion), QDATA_ASSERTION_KEY) == NULL);
+	g_object_set_qdata_full (G_OBJECT (assertion), QDATA_ASSERTION_KEY,
+	                         g_byte_array_ref (key), (GDestroyNotify)g_byte_array_unref);
+}
+
+static GByteArray*
+lookup_assertion_key (GkmAssertion *assertion)
+{
+	return g_object_get_qdata (G_OBJECT (assertion), QDATA_ASSERTION_KEY);
+}
+
+static gboolean
+complete_add_assertion (GkmTransaction *transaction, GObject *object, gpointer user_data)
+{
+	GkmAssertion *assertion = GKM_ASSERTION (user_data);
+	GkmXdgTrust *self = GKM_XDG_TRUST (object);
+
+	if (gkm_transaction_get_failed (transaction))
+		remove_assertion_from_trust (self, assertion, NULL);
+	else
+		g_object_run_dispose (G_OBJECT (object));
+
+	g_object_unref (assertion);
+	return TRUE;
+}
+
+static void
+add_assertion_to_trust (GkmXdgTrust *self, GkmAssertion *assertion,
+                        GkmTransaction *transaction)
+{
+	GByteArray *key;
+
+	key = lookup_assertion_key (assertion);
+	g_assert (key);
+
+	g_hash_table_insert (self->pv->assertions, g_byte_array_ref (key), assertion);
+	gkm_object_expose (GKM_OBJECT (assertion), gkm_object_is_exposed (GKM_OBJECT (self)));
+
+	if (transaction != NULL)
+		gkm_transaction_add (transaction, self, complete_add_assertion, g_object_ref (assertion));
+}
+
+static gboolean
+complete_remove_assertion (GkmTransaction *transaction, GObject *object, gpointer user_data)
+{
+	GkmXdgTrust *self = GKM_XDG_TRUST (object);
+	GkmAssertion *assertion = GKM_ASSERTION (user_data);
+
+	if (gkm_transaction_get_failed (transaction))
+		add_assertion_to_trust (self, assertion, NULL);
+
+	g_object_unref (assertion);
+	return TRUE;
+}
+
+static void
+remove_assertion_from_trust (GkmXdgTrust *self, GkmAssertion *assertion,
+                             GkmTransaction *transaction)
+{
+	GByteArray *key;
+
+	key = lookup_assertion_key (assertion);
+	g_assert (key);
+
+	if (transaction != NULL)
+		gkm_transaction_add (transaction, self, complete_remove_assertion, g_object_ref (assertion));
+
+	gkm_object_expose (GKM_OBJECT (assertion), FALSE);
+
+	if (!g_hash_table_remove (self->pv->assertions, key))
+		g_return_if_reached ();
+}
+
 static gboolean
 load_assertions (GkmXdgTrust *self, GNode *asn)
 {
@@ -369,6 +457,7 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 		/* Create a new assertion */
 		} else {
 			assertion = create_assertion (self, node, &netscape);
+			stash_assertion_key (assertion, key);
 		}
 
 		if (assertion)
@@ -377,7 +466,7 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 	}
 
 	/* Override the stored assertions and netscape trust */
-	g_hash_table_foreach (self->pv->assertions, dispose_each_assertion, NULL);
+	g_hash_table_remove_all (self->pv->assertions);
 	g_hash_table_unref (self->pv->assertions);
 	self->pv->assertions = assertions;
 	memcpy (&self->pv->netscape, &netscape, sizeof (netscape));
@@ -386,15 +475,33 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 }
 
 static gboolean
-save_assertions (GkmXdgTrust *self, GNode *asn)
+save_assertion (GNode *asn, GkmAssertion *assertion)
 {
-	GkmAssertion *assertion;
-	GHashTableIter iter;
-	GNode *pair, *node;
 	const gchar *purpose;
 	const gchar *peer;
-	gpointer value;
 	GQuark level;
+
+	level = assertion_type_to_level_enum (gkm_assertion_get_trust_type (assertion));
+	purpose = gkm_assertion_get_purpose (assertion);
+	peer = gkm_assertion_get_peer (assertion);
+
+	if (!egg_asn1x_set_oid_as_string (egg_asn1x_node (asn, "purpose", NULL), purpose) ||
+	    !egg_asn1x_set_enumerated (egg_asn1x_node (asn, "level", NULL), level))
+		g_return_val_if_reached (FALSE);
+
+	if (peer && !egg_asn1x_set_string_as_utf8 (egg_asn1x_node (asn, "peer", NULL),
+	                                           g_strdup (peer), g_free))
+		g_return_val_if_reached (FALSE);
+
+	return TRUE;
+}
+
+static gboolean
+save_assertions (GkmXdgTrust *self, GNode *asn)
+{
+	GHashTableIter iter;
+	GNode *pair, *node;
+	gpointer value;
 
 	g_assert (GKM_XDG_IS_TRUST (self));
 	g_assert (asn);
@@ -404,21 +511,9 @@ save_assertions (GkmXdgTrust *self, GNode *asn)
 
 	g_hash_table_iter_init (&iter, self->pv->assertions);
 	while (g_hash_table_iter_next (&iter, NULL, &value)) {
-		assertion = GKM_ASSERTION (value);
-		level = assertion_type_to_level_enum (gkm_assertion_get_trust_type (assertion));
-		purpose = gkm_assertion_get_purpose (assertion);
-		peer = gkm_assertion_get_peer (assertion);
-
 		pair = egg_asn1x_append (node);
 		g_return_val_if_fail (pair, FALSE);
-
-		egg_asn1x_set_oid_as_string (egg_asn1x_node (pair, "purpose", NULL), purpose);
-		egg_asn1x_set_enumerated (egg_asn1x_node (pair, "level", NULL), level);
-
-		if (peer) {
-			egg_asn1x_set_string_as_utf8 (egg_asn1x_node (pair, "peer", NULL),
-			                              g_strdup (peer), g_free);
-		}
+		save_assertion (pair, GKM_ASSERTION (value));
 	}
 
 	return TRUE;
@@ -559,6 +654,7 @@ gkm_xdg_trust_class_init (GkmXdgTrustClass *klass)
 	gobject_class->finalize = gkm_xdg_trust_finalize;
 	gkm_class->get_attribute = gkm_xdg_trust_get_attribute;
 
+	QDATA_ASSERTION_KEY = g_quark_from_static_string ("gkm-xdg-trust-assertion-key");
 	g_type_class_add_private (klass, sizeof (GkmXdgTrustPrivate));
 
 	init_quarks ();
@@ -647,7 +743,7 @@ gkm_xdg_trust_serializable (GkmSerializableIface *iface)
  * PUBLIC
  */
 
-GkmTrust*
+GkmXdgTrust*
 gkm_xdg_trust_create_for_assertion (GkmModule *module, GkmManager *manager,
                                     GkmTransaction *transaction,
                                     CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
@@ -699,5 +795,77 @@ gkm_xdg_trust_create_for_assertion (GkmModule *module, GkmManager *manager,
 	gkm_attributes_consume (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE, CKA_ISSUER,
 	                        CKA_SERIAL_NUMBER, G_MAXULONG);
 
-	return GKM_TRUST (trust);
+	return trust;
+}
+
+GkmAssertion*
+gkm_xdg_trust_add_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
+                             GkmTransaction *transaction)
+{
+	GkmAssertion *previous;
+	GByteArray *key;
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	g_return_val_if_fail (GKM_XDG_IS_TRUST (self), NULL);
+	g_return_val_if_fail (GKM_IS_ASSERTION (assertion), NULL);
+	g_return_val_if_fail (!transaction || GKM_IS_TRANSACTION (transaction), NULL);
+
+	/* Build up a key if we don't have one */
+	key = lookup_assertion_key (assertion);
+	if (key == NULL) {
+		asn = egg_asn1x_create (xdg_asn1_tab, "TrustAssertion");
+		g_return_val_if_fail (asn, NULL);
+
+		if (!save_assertion (asn, assertion))
+			g_return_val_if_reached (NULL);
+
+		data = egg_asn1x_encode (asn, NULL, &n_data);
+		g_return_val_if_fail (data, NULL);
+
+		key = g_byte_array_new ();
+		g_byte_array_append (key, data, n_data);
+		stash_assertion_key (assertion, key);
+		g_byte_array_unref (key);
+
+		g_free (data);
+		egg_asn1x_destroy (asn);
+
+	/* Already has a key, check if we alraedy have the assertion */
+	} else {
+		previous = g_hash_table_lookup (self->pv->assertions, key);
+
+		/* Just return previous assertion, don't add */
+		if (previous != NULL)
+			return previous;
+	}
+
+	add_assertion_to_trust (self, assertion, transaction);
+	return assertion;
+}
+
+void
+gkm_xdg_trust_remove_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
+                                GkmTransaction *transaction)
+{
+	GByteArray *key;
+
+	g_return_if_fail (GKM_XDG_IS_TRUST (self));
+	g_return_if_fail (GKM_IS_ASSERTION (assertion));
+	g_return_if_fail (!transaction || GKM_IS_TRANSACTION (transaction));
+
+	key = lookup_assertion_key (assertion);
+	g_return_if_fail (key);
+
+	/* Assertion needs to be from this trust object */
+	g_return_if_fail (g_hash_table_lookup (self->pv->assertions, key) != assertion);
+	remove_assertion_from_trust (self, assertion, transaction);
+}
+
+gboolean
+gkm_xdg_trust_have_assertion (GkmXdgTrust *self)
+{
+	g_return_val_if_fail (GKM_XDG_IS_TRUST (self), FALSE);
+	return g_hash_table_size (self->pv->assertions);
 }

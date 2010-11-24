@@ -86,6 +86,12 @@ G_DEFINE_TYPE (GkmXdgModule, gkm_xdg_module, GKM_TYPE_MODULE);
 
 GkmModule*  _gkm_xdg_store_get_module_for_testing (void);
 
+/* Forward declarations */
+static void  remove_object_from_module (GkmXdgModule *self, GkmObject *object,
+                                        const gchar *filename, GkmTransaction *transaction);
+static void  add_object_to_module (GkmXdgModule *self, GkmObject *object,
+                                   const gchar *filename, GkmTransaction *transaction);
+
 /* -----------------------------------------------------------------------------
  * ACTUAL PKCS#11 Module Implementation
  */
@@ -122,8 +128,27 @@ lookup_filename_for_object (GkmObject *object)
 	return g_object_get_data (G_OBJECT (object), "xdg-module-filename");
 }
 
+static gboolean
+complete_add_object (GkmTransaction *transaction, GObject *module, gpointer user_data)
+{
+	GkmXdgModule *self = GKM_XDG_MODULE (module);
+	GkmObject *object = GKM_OBJECT (user_data);
+	const gchar *filename;
+
+	/* If the transaction failed, revert it */
+	if (gkm_transaction_get_failed (transaction)) {
+		filename = g_object_get_data (G_OBJECT (object), "xdg-module-filename");
+		g_return_val_if_fail (filename, FALSE);
+		remove_object_from_module (self, object, filename, NULL);
+	}
+
+	g_object_unref (object);
+	return TRUE;
+}
+
 static void
-add_object_to_module (GkmXdgModule *self, GkmObject *object, const gchar *filename)
+add_object_to_module (GkmXdgModule *self, GkmObject *object,
+                      const gchar *filename, GkmTransaction *transaction)
 {
 	g_assert (!g_hash_table_lookup (self->objects_by_path, filename));
 	g_hash_table_insert (self->objects_by_path, g_strdup (filename), g_object_ref (object));
@@ -133,12 +158,37 @@ add_object_to_module (GkmXdgModule *self, GkmObject *object, const gchar *filena
 	                        g_strdup (filename), g_free);
 
 	gkm_object_expose (object, TRUE);
+
+	if (transaction != NULL)
+		gkm_transaction_add (transaction, self, complete_add_object, g_object_ref (object));
+}
+
+static gboolean
+complete_remove_object (GkmTransaction *transaction, GObject *module, gpointer user_data)
+{
+	GkmXdgModule *self = GKM_XDG_MODULE (module);
+	GkmObject *object = GKM_OBJECT (user_data);
+	const gchar *filename;
+
+	/* If the transaction failed, revert it */
+	if (gkm_transaction_get_failed (transaction)) {
+		filename = g_object_get_data (G_OBJECT (object), "xdg-module-filename");
+		g_return_val_if_fail (filename, FALSE);
+		add_object_to_module (self, object, filename, NULL);
+	}
+
+	g_object_unref (object);
+	return TRUE;
 }
 
 static void
-remove_object_from_module (GkmXdgModule *self, GkmObject *object, const gchar *filename)
+remove_object_from_module (GkmXdgModule *self, GkmObject *object,
+                           const gchar *filename, GkmTransaction *transaction)
 {
 	gkm_object_expose (object, FALSE);
+
+	if (transaction != NULL)
+		gkm_transaction_add (transaction, self, complete_remove_object, g_object_ref (object));
 
 	g_assert (g_hash_table_lookup (self->objects_by_path, filename) == object);
 	g_hash_table_remove (self->objects_by_path, filename);
@@ -195,14 +245,14 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 	/* And load the data into it */
 	} else if (gkm_serializable_load (GKM_SERIALIZABLE (object), NULL, data, n_data)) {
 		if (added)
-			add_object_to_module (self, object, path);
+			add_object_to_module (self, object, path, NULL);
 		gkm_object_expose (object, TRUE);
 
 	} else {
 		g_message ("failed to load file in user store: %s", path);
 		if (!added) {
 			gkm_object_expose (object, FALSE);
-			remove_object_from_module (self, object, path);
+			remove_object_from_module (self, object, path, NULL);
 		}
 	}
 
@@ -219,7 +269,7 @@ file_remove (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 
 	object = g_hash_table_lookup (self->objects_by_path, path);
 	if (object != NULL)
-		remove_object_from_module (self, object, path);
+		remove_object_from_module (self, object, path, NULL);
 }
 
 static gchar*
@@ -353,7 +403,7 @@ gkm_xdg_module_real_add_token_object (GkmModule *module, GkmTransaction *transac
 	actual = gkm_transaction_unique_file (transaction, self->directory, basename);
 	if (!gkm_transaction_get_failed (transaction)) {
 		filename = g_build_filename (self->directory, actual, NULL);
-		add_object_to_module (self, object, filename);
+		add_object_to_module (self, object, filename, transaction);
 		g_free (filename);
 	}
 
@@ -404,16 +454,28 @@ gkm_xdg_module_real_remove_token_object (GkmModule *module, GkmTransaction *tran
 {
 	GkmXdgModule *self = GKM_XDG_MODULE (module);
 	const gchar *filename;
+	GkmXdgTrust *trust;
 
-	/* XXXX; need to implement for assertions */
-	g_assert_not_reached ();
+	/* Always serialize the trust object for each assertion */
+	if (GKM_XDG_IS_ASSERTION (object)) {
+		trust = GKM_XDG_TRUST (gkm_assertion_get_trust_object (GKM_ASSERTION (object)));
+		gkm_xdg_trust_remove_assertion (trust, GKM_ASSERTION (object), transaction);
 
-	filename = lookup_filename_for_object (object);
-	g_return_if_fail (filename != NULL);
-	g_return_if_fail (g_hash_table_lookup (self->objects_by_path, filename) == object);
+		/* Remove the trust object if it has no assertions */
+		if (!gkm_xdg_trust_have_assertion (trust))
+			object = GKM_OBJECT (trust);
+		else
+			object = NULL;
+	}
 
-	gkm_transaction_remove_file (transaction, filename);
-	g_hash_table_remove (self->objects_by_path, filename);
+	if (object && !gkm_transaction_get_failed (transaction)) {
+		filename = lookup_filename_for_object (object);
+		g_return_if_fail (filename != NULL);
+		g_return_if_fail (g_hash_table_lookup (self->objects_by_path, filename) == object);
+
+		gkm_transaction_remove_file (transaction, filename);
+		remove_object_from_module (self, object, filename, transaction);
+	}
 }
 
 static GObject*

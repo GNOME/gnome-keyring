@@ -24,6 +24,7 @@
 #include "gkm-xdg-assertion.h"
 #include "gkm-xdg-trust.h"
 
+#include "gkm/gkm-assertion.h"
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-object.h"
 #include "gkm/gkm-session.h"
@@ -36,7 +37,7 @@
 
 #include <glib/gi18n.h>
 
-G_DEFINE_TYPE (GkmXdgAssertion, gkm_xdg_assertion, GKM_TYPE_OBJECT);
+G_DEFINE_TYPE (GkmXdgAssertion, gkm_xdg_assertion, GKM_TYPE_ASSERTION);
 
 /* -----------------------------------------------------------------------------
  * QUARKS
@@ -46,7 +47,7 @@ G_DEFINE_TYPE (GkmXdgAssertion, gkm_xdg_assertion, GKM_TYPE_OBJECT);
  * INTERNAL
  */
 
-static GkmTrust*
+static GkmXdgTrust*
 lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
                                GkmTransaction *transaction, CK_ASSERTION_TYPE type,
                                CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gboolean *created)
@@ -56,7 +57,7 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 	CK_OBJECT_CLASS klass;
 	CK_ULONG n_lookups;
 	GList *objects;
-	GkmTrust *trust;
+	GkmXdgTrust *trust;
 	GkmModule *module;
 
 	klass = CKO_NETSCAPE_TRUST;
@@ -102,8 +103,8 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 
 	/* Found a matching trust object for this assertion */
 	if (objects) {
-		g_return_val_if_fail (GKM_IS_TRUST (objects->data), NULL);
-		trust = GKM_TRUST (objects->data);
+		g_return_val_if_fail (GKM_XDG_IS_TRUST (objects->data), NULL);
+		trust = GKM_XDG_TRUST (objects->data);
 		g_list_free (objects);
 
 	/* Create a trust object for this assertion */
@@ -130,11 +131,13 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GkmAssertion *assertion;
+	GkmAssertion *previous;
 	CK_ASSERTION_TYPE type;
 	GkmManager *manager;
 	gboolean created = FALSE;
-	GkmTrust *trust;
+	GkmXdgTrust *trust;
 	gchar *purpose;
+	gchar *peer;
 
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
@@ -148,6 +151,9 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 		return NULL;
 	}
 
+	if (!gkm_attributes_find_string (attrs, n_attrs, CKA_G_PEER, &peer))
+		peer = NULL;
+
 	/* Try to find or create an appropriate trust object for this assertion */
 	manager = gkm_manager_for_template (attrs, n_attrs, session);
 	trust = lookup_or_create_trust_object (session, manager, transaction,
@@ -157,17 +163,39 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 	if (trust == NULL) {
 		g_return_val_if_fail (gkm_transaction_get_failed (transaction), NULL);
 		g_free (purpose);
+		g_free (peer);
 		return NULL;
 	}
 
-	assertion = g_object_new (GKM_XDG_TYPE_ASSERTION, "trust", trust,
-	                          "type", type, "purpose", purpose, NULL);
+	assertion = g_object_new (GKM_XDG_TYPE_ASSERTION,
+	                          "module", gkm_object_get_module (GKM_OBJECT (trust)),
+	                          "manager", gkm_object_get_manager (GKM_OBJECT (manager)),
+	                          "trust", trust,
+	                          "type", type,
+	                          "purpose", purpose,
+	                          "peer", peer,
+	                          NULL);
 
-	gkm_attributes_consume (attrs, n_attrs, CKA_G_ASSERTION_TYPE, CKA_G_PURPOSE, G_MAXULONG);
-	gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (assertion),
-	                                      TRUE, attrs, n_attrs);
+	/* Add the assertion to the trust object */
+	if (!gkm_transaction_get_failed (transaction)) {
+		previous = gkm_xdg_trust_add_assertion (trust, GKM_ASSERTION (assertion), transaction);
+		if (previous == NULL) {
+			gkm_transaction_fail (transaction, CKR_GENERAL_ERROR);
 
-	return GKM_OBJECT (trust);
+		/* If trust refused to add this object, return whatever we did add */
+		} else if (previous != assertion) {
+			g_object_unref (assertion);
+			assertion = g_object_ref (previous);
+		}
+	}
+
+	if (!gkm_transaction_get_failed (transaction)) {
+		gkm_attributes_consume (attrs, n_attrs, CKA_G_ASSERTION_TYPE, CKA_G_PURPOSE, G_MAXULONG);
+		gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (assertion),
+		                                      TRUE, attrs, n_attrs);
+	}
+
+	return GKM_OBJECT (assertion);
 }
 
 /* -----------------------------------------------------------------------------

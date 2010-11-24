@@ -134,6 +134,7 @@ test_xdg_module_open_session (gboolean writable)
 
 static GkmModule *module = NULL;
 static GkmSession *session = NULL;
+static CK_SLOT_ID slot_id = 0;
 
 TESTING_EXTERNAL(xdg_module)
 {
@@ -143,13 +144,19 @@ TESTING_EXTERNAL(xdg_module)
 
 TESTING_SETUP(xdg_module_setup)
 {
+	CK_SESSION_INFO info;
 	CK_RV rv;
 
 	module = test_xdg_module_initialize_and_enter ();
 	session = test_xdg_module_open_session (TRUE);
 
 	rv = gkm_module_C_Login (module, gkm_session_get_handle (session), CKU_USER, NULL, 0);
-	g_assert (rv == CKR_OK);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	rv = gkm_session_C_GetSessionInfo (session, &info);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	slot_id = info.slotID;
 }
 
 TESTING_TEARDOWN(xdg_module_teardown)
@@ -274,4 +281,62 @@ TESTING_TEST (xdg_create_and_add_object)
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
+}
+
+TESTING_TEST (xdg_destroy_object)
+{
+	CK_OBJECT_HANDLE object = 0;
+	CK_CERTIFICATE_TYPE ctype = CKC_X_509;
+	CK_ULONG n_objects = 0;
+	CK_BBOOL tval = CK_TRUE;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CERTIFICATE_TYPE, &ctype, sizeof (ctype) },
+		{ CKA_TOKEN, &tval, sizeof (tval) }
+	};
+
+	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, &object, 1, &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (n_objects, ==, 1);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	/* Destroy this object, which should be stored on the disk */
+	rv = gkm_session_C_DestroyObject (session, object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	/* Make sure it's really gone */
+	rv = gkm_session_C_DestroyObject (session, object);
+	gkm_assert_cmprv (rv, ==, CKR_OBJECT_HANDLE_INVALID);
+}
+
+TESTING_TEST (xdg_get_slot_info)
+{
+	CK_SLOT_INFO info;
+	const gchar *str;
+	CK_RV rv;
+
+	rv = gkm_module_C_GetSlotInfo (module, slot_id, &info);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	str = g_strstr_len ((gchar*)info.slotDescription, sizeof (info.slotDescription),
+	                    "User Key Storage");
+	g_assert (str != NULL);
+}
+
+TESTING_TEST (xdg_get_token_info)
+{
+	CK_TOKEN_INFO info;
+	const gchar *str;
+	CK_RV rv;
+
+	rv = gkm_module_C_GetTokenInfo (module, slot_id, &info);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	str = g_strstr_len ((gchar*)info.label, sizeof (info.label),
+	                    "User Key Storage");
+	g_assert (str != NULL);
 }

@@ -50,14 +50,20 @@ struct _GkmXdgTrustClass {
 
 GType                 gkm_xdg_trust_get_type               (void);
 
-GkmTrust*             gkm_xdg_trust_create_for_assertion   (GkmModule *module,
+GkmXdgTrust*          gkm_xdg_trust_create_for_assertion   (GkmModule *module,
                                                             GkmManager *manager,
                                                             GkmTransaction *transaction,
                                                             CK_ATTRIBUTE_PTR attrs,
                                                             CK_ULONG n_attrs);
 
-GkmAssertion*         gkm_xdg_trust_add_assertion          (GkmTrust *trust,
-                                                            GkmTrustLevel level,
-                                                            const char *purpose);
+GkmAssertion*         gkm_xdg_trust_add_assertion          (GkmXdgTrust *trust,
+                                                            GkmAssertion *assertion,
+                                                            GkmTransaction *transaction);
+
+void                  gkm_xdg_trust_remove_assertion       (GkmXdgTrust *trust,
+                                                            GkmAssertion *assertion,
+                                                            GkmTransaction *transaction);
+
+gboolean              gkm_xdg_trust_have_assertion         (GkmXdgTrust *trust);
 
 #endif /* __GKM_XDG_TRUST_H__ */

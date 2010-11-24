@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include "gkm/gkm-object.h"
+#include "gkm/gkm-assertion.h"
 
 #define GKM_XDG_FACTORY_ASSERTION            (gkm_xdg_assertion_get_factory ())
 #define GKM_XDG_TYPE_ASSERTION               (gkm_xdg_assertion_get_type ())
@@ -40,12 +40,12 @@ typedef struct _GkmXdgAssertionClass GkmXdgAssertionClass;
 typedef struct _GkmXdgAssertionPrivate GkmXdgAssertionPrivate;
 
 struct _GkmXdgAssertion {
-	GkmObject parent;
+	GkmAssertion parent;
 	GkmXdgAssertionPrivate *pv;
 };
 
 struct _GkmXdgAssertionClass {
-	GkmObjectClass parent_class;
+	GkmAssertionClass parent_class;
 };
 
 GType                 gkm_xdg_assertion_get_type               (void);
