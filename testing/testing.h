@@ -2,6 +2,7 @@
 /* testing.h: Declarations for common functions called from gtest unit tests
 
    Copyright (C) 2008 Stefan Walter
+   Copyright (C) 2010 Collabora Ltd
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -53,6 +54,13 @@ void             testing_data_to_scratch          (const gchar *basename,
                                                    const gchar *newname);
 
 gchar*           testing_scratch_filename         (const gchar *basename);
+
+void             testing_scratch_empty            (const gchar *basename);
+
+void             testing_scratch_touch            (const gchar *basename,
+                                                   gint future);
+
+void             testing_scratch_remove           (const gchar *basename);
 
 gchar*           testing_data_filename            (const gchar *basename);
 

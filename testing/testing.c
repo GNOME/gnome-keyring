@@ -2,6 +2,7 @@
 /* test-helpers.c: Common functions called from gtest unit tests
 
    Copyright (C) 2008 Stefan Walter
+   Copyright (C) 2010 Collabora Ltd
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -32,6 +33,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "testing.h"
 
@@ -174,6 +177,51 @@ testing_data_to_scratch (const gchar *basename, const gchar *newname)
 	g_free (filename);
 	g_free (data);
 }
+
+
+void
+testing_scratch_empty (const gchar *basename)
+{
+	GError *err = NULL;
+	gchar *filename;
+	filename = testing_scratch_filename (basename);
+	if (!g_file_set_contents (filename, "", 0, &err))
+		g_error ("couldn't write to file: %s: %s", filename,
+		         err && err->message ? err->message : "");
+	g_free (filename);
+}
+
+void
+testing_scratch_touch (const gchar *basename, gint future)
+{
+	gchar *filename;
+	struct timeval tv[2];
+
+	filename = testing_scratch_filename (basename);
+
+	/* Initialize the access and modification times */
+	gettimeofday (tv, NULL);
+	tv[0].tv_sec += future;
+	memcpy (tv + 1, tv, sizeof (struct timeval));
+
+	if (utimes (filename, tv) < 0)
+		g_error ("couldn't update file time: %s: %s", filename, g_strerror (errno));
+
+	g_free (filename);
+}
+
+void
+testing_scratch_remove (const gchar *basename)
+{
+	gchar *filename;
+
+	filename = testing_scratch_filename (basename);
+	if (g_unlink (filename) < 0)
+		g_error ("couldn't delete file: %s: %s", filename, g_strerror (errno));
+
+	g_free (filename);
+}
+
 
 #if WITH_P11_TESTS
 

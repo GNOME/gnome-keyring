@@ -2,6 +2,7 @@
 /* test-xdg-module.c: A test PKCS#11 module implementation
 
    Copyright (C) 2010 Stefan Walter
+   Copyright (C) 2010 Collabora Ltd
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -39,78 +40,6 @@ static GMutex *mutex = NULL;
 GkmModule*  _gkm_xdg_store_get_module_for_testing (void);
 GMutex* _gkm_module_get_scary_mutex_that_you_should_not_touch (GkmModule *module);
 
-static void
-copy_scratch_file (const gchar *basename)
-{
-	gchar *filename;
-	gchar *data;
-	gsize n_data;
-
-	filename = testing_data_filename (basename);
-	if (!g_file_get_contents (filename, &data, &n_data, NULL)) {
-		g_warning ("couldn't read: %s", filename);
-		g_return_if_reached ();
-	}
-	g_free (filename);
-
-	filename = testing_scratch_filename (basename);
-	if (!g_file_set_contents (filename, data, n_data, NULL))
-		g_return_if_reached ();
-	g_free (filename);
-	g_free (data);
-}
-
-static void
-empty_scratch_file (const gchar *basename)
-{
-	GError *err = NULL;
-	gchar *filename;
-
-	filename = testing_scratch_filename (basename);
-	if (!g_file_set_contents (filename, "", 0, &err))
-		g_assert_no_error (err);
-
-	g_free (filename);
-}
-
-static void
-touch_scratch_file (const gchar *basename, gint future)
-{
-	GError *err = NULL;
-	gchar *filename;
-	struct timeval tv;
-
-	filename = testing_scratch_filename (basename);
-
-	gettimeofday (&tv, NULL);
-	tv.tv_sec += future;
-
-	if (utimes (filename, &tv) < 0) {
-		err = g_error_new_literal (G_FILE_ERROR, g_file_error_from_errno (errno),
-		                           g_strerror (errno));
-		g_assert_no_error (err);
-	}
-
-	g_free (filename);
-}
-
-static void
-remove_scratch_file (const gchar *basename)
-{
-	GError *err = NULL;
-	gchar *filename;
-
-	filename = testing_scratch_filename (basename);
-	if (g_unlink (filename) < 0) {
-		err = g_error_new_literal (G_FILE_ERROR, g_file_error_from_errno (errno),
-		                           g_strerror (errno));
-		g_assert_no_error (err);
-	}
-
-	g_free (filename);
-}
-
-
 GkmModule*
 test_xdg_module_initialize_and_enter (void)
 {
@@ -127,11 +56,11 @@ test_xdg_module_initialize_and_enter (void)
 	args.flags = CKF_OS_LOCKING_OK;
 
 	/* Copy files from test-data to scratch */
-	copy_scratch_file ("test-refer-1.trust");
-	copy_scratch_file ("test-certificate-1.cer");
-	empty_scratch_file ("invalid-without-ext");
-	empty_scratch_file ("test-file.unknown");
-	empty_scratch_file ("test-invalid.trust");
+	testing_data_to_scratch ("test-refer-1.trust", NULL);
+	testing_data_to_scratch ("test-certificate-1.cer", NULL);
+	testing_scratch_empty ("invalid-without-ext");
+	testing_scratch_empty ("test-file.unknown");
+	testing_scratch_empty ("test-invalid.trust");
 
 	funcs = gkm_xdg_store_get_functions ();
 	rv = (funcs->C_Initialize) (&args);
@@ -247,7 +176,7 @@ TESTING_TEST (xdg_module_find_twice_is_same)
 	gkm_assert_cmpulong (n_objects, >, 0);
 
 	/* Update the time on the file */
-	touch_scratch_file ("test-refer-1.trust", 1);
+	testing_scratch_touch ("test-refer-1.trust", 1);
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
@@ -277,8 +206,8 @@ TESTING_TEST (xdg_module_file_becomes_invalid)
 	gkm_assert_cmpulong (n_objects, >, 0);
 
 	/* Overwrite the file with empty */
-	empty_scratch_file ("test-refer-1.trust");
-	touch_scratch_file ("test-refer-1.trust", 2);
+	testing_scratch_empty ("test-refer-1.trust");
+	testing_scratch_touch ("test-refer-1.trust", 2);
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
@@ -308,7 +237,7 @@ TESTING_TEST (xdg_module_file_remove)
 	gkm_assert_cmpulong (n_objects, >, 0);
 
 	/* This file goes away */
-	remove_scratch_file ("test-refer-1.trust");
+	testing_scratch_remove ("test-refer-1.trust");
 
 	rv = gkm_session_C_FindObjectsInit (session, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
