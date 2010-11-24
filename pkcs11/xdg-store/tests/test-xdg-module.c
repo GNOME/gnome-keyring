@@ -56,6 +56,16 @@ copy_scratch_file (const gchar *basename)
 	g_free (data);
 }
 
+static void
+empty_scratch_file (const gchar *basename)
+{
+	gchar *filename;
+	filename = testing_scratch_filename (basename);
+	if (!g_file_set_contents (filename, "", 0, NULL))
+		g_return_if_reached ();
+	g_free (filename);
+}
+
 GkmModule*
 test_xdg_module_initialize_and_enter (void)
 {
@@ -73,6 +83,8 @@ test_xdg_module_initialize_and_enter (void)
 
 	/* Copy files from test-data to scratch */
 	copy_scratch_file ("test-refer-1.trust");
+	empty_scratch_file ("invalid-without-ext");
+	empty_scratch_file ("test-file.unknown");
 
 	funcs = gkm_xdg_store_get_functions ();
 	rv = (funcs->C_Initialize) (&args);

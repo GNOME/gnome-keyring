@@ -103,8 +103,9 @@ type_from_path (const gchar *path)
 	const gchar *ext;
 
 	ext = strrchr (path, '.');
-	if (ext == NULL)
-		return 0;
+
+	/* The file tracker doesn't match files without exts */
+	g_return_val_if_fail (ext, 0);
 
 	if (g_str_equal (ext, ".trust"))
 		return GKM_XDG_TYPE_TRUST;

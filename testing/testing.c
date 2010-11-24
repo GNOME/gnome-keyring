@@ -271,6 +271,13 @@ testing_thread (gpointer loop)
 	return GINT_TO_POINTER (ret);
 }
 
+static void
+null_log_handler (const gchar *log_domain, GLogLevelFlags log_level,
+                  const gchar *message, gpointer user_data)
+{
+
+}
+
 int
 main (int argc, char* argv[])
 {
@@ -301,6 +308,10 @@ main (int argc, char* argv[])
 	fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
 	fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
 	g_log_set_always_fatal (fatal_mask);
+
+	/* Suppress these messages in tests */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+	                   null_log_handler, NULL);
 
 	thread = g_thread_create (testing_thread, loop, TRUE, NULL);
 	g_assert (thread);
