@@ -75,7 +75,7 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		}
 
 		/* Attributes used for looking up trust object */
-		memcpy (lookups + 1, value, sizeof (value));
+		memcpy (lookups + 1, value, sizeof (*value));
 		n_lookups = 2;
 		break;
 
@@ -88,8 +88,8 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		}
 
 		/* Attributes used for looking up trust object */
-		memcpy (lookups + 1, issuer, sizeof (issuer));
-		memcpy (lookups + 2, issuer, sizeof (serial));
+		memcpy (lookups + 1, issuer, sizeof (*issuer));
+		memcpy (lookups + 2, serial, sizeof (*serial));
 		n_lookups = 2;
 		break;
 
@@ -104,23 +104,22 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 	/* Found a matching trust object for this assertion */
 	if (objects) {
 		g_return_val_if_fail (GKM_XDG_IS_TRUST (objects->data), NULL);
-		trust = GKM_XDG_TRUST (objects->data);
+		trust = g_object_ref (objects->data);
 		g_list_free (objects);
 
 	/* Create a trust object for this assertion */
 	} else {
 		trust = gkm_xdg_trust_create_for_assertion (module, manager, transaction,
 		                                            lookups, n_lookups);
-	}
 
-	gkm_attributes_consume (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE,
-	                        CKA_ISSUER, CKA_SERIAL_NUMBER, G_MAXULONG);
-	gkm_attributes_consume (lookups, n_lookups, CKA_G_CERTIFICATE_VALUE,
-	                        CKA_ISSUER, CKA_SERIAL_NUMBER, G_MAXULONG);
+		gkm_attributes_consume (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE,
+		                        CKA_ISSUER, CKA_SERIAL_NUMBER, G_MAXULONG);
+		gkm_attributes_consume (lookups, n_lookups, CKA_G_CERTIFICATE_VALUE,
+		                        CKA_ISSUER, CKA_SERIAL_NUMBER, G_MAXULONG);
 
-	if (!gkm_transaction_get_failed (transaction)) {
-		gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (trust),
-		                                      TRUE, lookups, n_lookups);
+		if (!gkm_transaction_get_failed (transaction))
+			gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (trust),
+			                                      TRUE, lookups, n_lookups);
 	}
 
 	return trust;
@@ -168,8 +167,8 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 	}
 
 	assertion = g_object_new (GKM_XDG_TYPE_ASSERTION,
-	                          "module", gkm_object_get_module (GKM_OBJECT (trust)),
-	                          "manager", gkm_object_get_manager (GKM_OBJECT (manager)),
+	                          "module", gkm_session_get_module (session),
+	                          "manager", manager,
 	                          "trust", trust,
 	                          "type", type,
 	                          "purpose", purpose,
@@ -195,6 +194,7 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 		                                      TRUE, attrs, n_attrs);
 	}
 
+	g_object_unref (trust);
 	return GKM_OBJECT (assertion);
 }
 

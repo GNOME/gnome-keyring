@@ -95,6 +95,18 @@ gkm_assertion_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 	return GKM_OBJECT_CLASS (gkm_assertion_parent_class)->get_attribute (base, session, attr);
 }
 
+static GObject*
+gkm_assertion_constructor (GType type, guint n_props, GObjectConstructParam *props)
+{
+	GkmAssertion *self = GKM_ASSERTION (G_OBJECT_CLASS (gkm_assertion_parent_class)->constructor(type, n_props, props));
+
+	g_return_val_if_fail (self, NULL);
+	g_return_val_if_fail (self->pv->purpose, NULL);
+	g_return_val_if_fail (self->pv->type, NULL);
+
+	return G_OBJECT (self);
+}
+
 static void
 gkm_assertion_init (GkmAssertion *self)
 {
@@ -179,6 +191,7 @@ gkm_assertion_class_init (GkmAssertionClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 
+	gobject_class->constructor = gkm_assertion_constructor;
 	gobject_class->finalize = gkm_assertion_finalize;
 	gobject_class->set_property = gkm_assertion_set_property;
 	gobject_class->get_property = gkm_assertion_get_property;
@@ -197,7 +210,7 @@ gkm_assertion_class_init (GkmAssertionClass *klass)
 	         g_param_spec_string ("purpose", "Purpose", "The purpose for the trust",
 	                              NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (gobject_class, PROP_PURPOSE,
+	g_object_class_install_property (gobject_class, PROP_PEER,
 	         g_param_spec_string ("peer", "Peer", "Optional peer this assertion applies to",
 	                              NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 

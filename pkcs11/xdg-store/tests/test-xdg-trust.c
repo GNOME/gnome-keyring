@@ -160,6 +160,34 @@ TESTING_TEST (trust_load_object)
 	gkm_assert_cmpulong (n_objects, ==, 1);
 }
 
+TESTING_TEST (trust_create_assertion)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_ANCHOR;
+	CK_OBJECT_HANDLE object = 0;
+	gpointer data;
+	gsize n_data;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, NULL, 0 },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	data = testing_data_read ("test-certificate-2.cer", &n_data);
+	g_assert (data);
+
+	attrs[0].pValue = data;
+	attrs[0].ulValueLen = n_data;
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+}
+
+
 #if 0
 TESTING_TEST (trust_create)
 {

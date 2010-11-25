@@ -182,17 +182,22 @@ static gboolean
 validate_der (CK_ATTRIBUTE_PTR attr, const gchar *asn_type)
 {
 	GNode *asn;
+	gboolean valid = TRUE;
 
 	if (!attr->pValue || attr->ulValueLen == (CK_ULONG)-1)
 		return FALSE;
 
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, asn_type, attr->pValue, attr->ulValueLen);
-	if (!asn)
-		return FALSE;
+	asn = egg_asn1x_create (pkix_asn1_tab, asn_type);
+	g_return_val_if_fail (asn, FALSE);
+
+	valid = egg_asn1x_decode (asn, attr->pValue, attr->ulValueLen);
+	if (!valid)
+		g_message ("failed to parse certificate passed to trust assertion: %s",
+		           egg_asn1x_message (asn));
 
 	/* Yes, this is an expensive check, but worthwhile */
 	egg_asn1x_destroy (asn);
-	return TRUE;
+	return valid;
 }
 
 static gboolean
@@ -363,7 +368,7 @@ complete_add_assertion (GkmTransaction *transaction, GObject *object, gpointer u
 	if (gkm_transaction_get_failed (transaction))
 		remove_assertion_from_trust (self, assertion, NULL);
 	else
-		g_object_run_dispose (G_OBJECT (object));
+		g_object_run_dispose (G_OBJECT (assertion));
 
 	g_object_unref (assertion);
 	return TRUE;
@@ -378,7 +383,7 @@ add_assertion_to_trust (GkmXdgTrust *self, GkmAssertion *assertion,
 	key = lookup_assertion_key (assertion);
 	g_assert (key);
 
-	g_hash_table_insert (self->pv->assertions, g_byte_array_ref (key), assertion);
+	g_hash_table_insert (self->pv->assertions, g_byte_array_ref (key), g_object_ref (assertion));
 	gkm_object_expose (GKM_OBJECT (assertion), gkm_object_is_exposed (GKM_OBJECT (self)));
 
 	if (transaction != NULL)
@@ -485,7 +490,8 @@ save_assertion (GNode *asn, GkmAssertion *assertion)
 	purpose = gkm_assertion_get_purpose (assertion);
 	peer = gkm_assertion_get_peer (assertion);
 
-	if (!egg_asn1x_set_oid_as_string (egg_asn1x_node (asn, "purpose", NULL), purpose) ||
+	if (!egg_asn1x_set_string_as_utf8 (egg_asn1x_node (asn, "purpose", NULL),
+	                                   g_strdup (purpose), g_free) ||
 	    !egg_asn1x_set_enumerated (egg_asn1x_node (asn, "level", NULL), level))
 		g_return_val_if_reached (FALSE);
 
@@ -779,7 +785,7 @@ gkm_xdg_trust_create_for_assertion (GkmModule *module, GkmManager *manager,
 			gkm_transaction_fail (transaction, CKR_TEMPLATE_INCONSISTENT);
 			return NULL;
 		}
-		if (!validate_der (cert, "TBSCertificate")) {
+		if (!validate_der (cert, "Certificate")) {
 			gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
 			return NULL;
 		}
