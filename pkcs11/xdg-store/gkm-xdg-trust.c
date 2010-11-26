@@ -367,8 +367,6 @@ complete_add_assertion (GkmTransaction *transaction, GObject *object, gpointer u
 
 	if (gkm_transaction_get_failed (transaction))
 		remove_assertion_from_trust (self, assertion, NULL);
-	else
-		g_object_run_dispose (G_OBJECT (assertion));
 
 	g_object_unref (assertion);
 	return TRUE;
@@ -398,6 +396,8 @@ complete_remove_assertion (GkmTransaction *transaction, GObject *object, gpointe
 
 	if (gkm_transaction_get_failed (transaction))
 		add_assertion_to_trust (self, assertion, NULL);
+	else
+		g_object_run_dispose (G_OBJECT (assertion));
 
 	g_object_unref (assertion);
 	return TRUE;
@@ -412,13 +412,16 @@ remove_assertion_from_trust (GkmXdgTrust *self, GkmAssertion *assertion,
 	key = lookup_assertion_key (assertion);
 	g_assert (key);
 
-	if (transaction != NULL)
-		gkm_transaction_add (transaction, self, complete_remove_assertion, g_object_ref (assertion));
-
 	gkm_object_expose (GKM_OBJECT (assertion), FALSE);
 
-	if (!g_hash_table_remove (self->pv->assertions, key))
-		g_return_if_reached ();
+	if (transaction == NULL) {
+		if (!g_hash_table_remove (self->pv->assertions, key))
+			g_return_if_reached ();
+	} else {
+		if (!g_hash_table_steal (self->pv->assertions, key))
+			g_return_if_reached ();
+		gkm_transaction_add (transaction, self, complete_remove_assertion, assertion);
+	}
 }
 
 static gboolean
@@ -436,7 +439,8 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 	g_assert (self);
 	g_assert (asn);
 
-	assertions = create_assertions ();
+	assertions = self->pv->assertions;
+	self->pv->assertions = create_assertions ();
 	init_netscape_trust (&netscape);
 
 	count = egg_asn1x_count (egg_asn1x_node (asn, "assertions", NULL));
@@ -454,10 +458,10 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 		g_byte_array_append (key, element, n_element);
 
 		/* Already have this assertion? */
-		assertion = g_hash_table_lookup (self->pv->assertions, key);
+		assertion = g_hash_table_lookup (assertions, key);
 		if (assertion) {
-			g_object_ref (assertion);
-			g_hash_table_remove (self->pv->assertions, key);
+			if (!g_hash_table_steal (assertions, key))
+				g_assert_not_reached ();
 
 		/* Create a new assertion */
 		} else {
@@ -465,15 +469,14 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 			stash_assertion_key (assertion, key);
 		}
 
-		if (assertion)
-			g_hash_table_insert (assertions, g_byte_array_ref (key), assertion);
+		add_assertion_to_trust (self, assertion, NULL);
 		g_byte_array_unref (key);
+		g_object_unref (assertion);
 	}
 
 	/* Override the stored assertions and netscape trust */
-	g_hash_table_remove_all (self->pv->assertions);
-	g_hash_table_unref (self->pv->assertions);
-	self->pv->assertions = assertions;
+	g_hash_table_remove_all (assertions);
+	g_hash_table_unref (assertions);
 	memcpy (&self->pv->netscape, &netscape, sizeof (netscape));
 
 	return TRUE;
@@ -629,6 +632,19 @@ gkm_xdg_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 }
 
 static void
+gkm_xdg_trust_expose_object (GkmObject *base, gboolean expose)
+{
+	GHashTableIter iter;
+	gpointer value;
+
+	GKM_OBJECT_CLASS (gkm_xdg_trust_parent_class)->expose_object (base, expose);
+
+	g_hash_table_iter_init (&iter, GKM_XDG_TRUST (base)->pv->assertions);
+	while (g_hash_table_iter_next (&iter, NULL, &value))
+		gkm_object_expose (value, expose);
+}
+
+static void
 gkm_xdg_trust_init (GkmXdgTrust *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_XDG_TYPE_TRUST, GkmXdgTrustPrivate);
@@ -659,6 +675,7 @@ gkm_xdg_trust_class_init (GkmXdgTrustClass *klass)
 
 	gobject_class->finalize = gkm_xdg_trust_finalize;
 	gkm_class->get_attribute = gkm_xdg_trust_get_attribute;
+	gkm_class->expose_object = gkm_xdg_trust_expose_object;
 
 	QDATA_ASSERTION_KEY = g_quark_from_static_string ("gkm-xdg-trust-assertion-key");
 	g_type_class_add_private (klass, sizeof (GkmXdgTrustPrivate));
