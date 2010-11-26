@@ -363,7 +363,7 @@ gkm_attribute_set_checksum (CK_ATTRIBUTE_PTR attr, GChecksumType ctype,
 	g_return_val_if_fail (n_data, CKR_GENERAL_ERROR);
 
 	length = g_checksum_type_get_length (ctype);
-	g_return_val_if_fail (length < 0, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (length > 0, CKR_GENERAL_ERROR);
 
 	/* Just asking for the length */
 	if (!attr->pValue) {
