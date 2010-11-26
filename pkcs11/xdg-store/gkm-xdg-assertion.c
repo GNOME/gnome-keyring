@@ -90,7 +90,7 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		/* Attributes used for looking up trust object */
 		memcpy (lookups + 1, issuer, sizeof (*issuer));
 		memcpy (lookups + 2, serial, sizeof (*serial));
-		n_lookups = 2;
+		n_lookups = 3;
 		break;
 
 	default:
@@ -178,20 +178,21 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 	/* Add the assertion to the trust object */
 	if (!gkm_transaction_get_failed (transaction)) {
 		previous = gkm_xdg_trust_add_assertion (trust, GKM_ASSERTION (assertion), transaction);
-		if (previous == NULL) {
+		if (gkm_transaction_get_failed (transaction)) {
 			gkm_transaction_fail (transaction, CKR_GENERAL_ERROR);
 
 		/* If trust refused to add this object, return whatever we did add */
 		} else if (previous != assertion) {
+			g_assert (previous);
 			g_object_unref (assertion);
 			assertion = g_object_ref (previous);
-		}
-	}
 
-	if (!gkm_transaction_get_failed (transaction)) {
-		gkm_attributes_consume (attrs, n_attrs, CKA_G_ASSERTION_TYPE, CKA_G_PURPOSE, G_MAXULONG);
-		gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (assertion),
-		                                      TRUE, attrs, n_attrs);
+		/* A new trust assertion */
+		} else {
+			gkm_attributes_consume (attrs, n_attrs, CKA_G_ASSERTION_TYPE, CKA_G_PURPOSE, G_MAXULONG);
+			gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (assertion),
+			                                      TRUE, attrs, n_attrs);
+		}
 	}
 
 	g_object_unref (trust);

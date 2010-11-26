@@ -32,6 +32,8 @@
 
 static GkmModule *module = NULL;
 static GkmSession *session = NULL;
+static gpointer cert_data = NULL;
+static gsize n_cert_data;
 
 /*
  * C=ZA, ST=Western Cape, L=Cape Town, O=Thawte Consulting, OU=Certification Services Division,
@@ -119,6 +121,9 @@ TESTING_SETUP (trust_setup)
 
 	rv = gkm_module_C_Login (module, gkm_session_get_handle (session), CKU_USER, NULL, 0);
 	g_assert (rv == CKR_OK);
+
+	cert_data = testing_data_read ("test-certificate-2.cer", &n_cert_data);
+	g_assert (cert_data);
 }
 
 TESTING_TEARDOWN (trust_teardown)
@@ -126,22 +131,18 @@ TESTING_TEARDOWN (trust_teardown)
 	test_xdg_module_leave_and_finalize ();
 	module = NULL;
 	session = NULL;
+
+	g_free (cert_data);
+	cert_data = NULL;
+	n_cert_data = 0;
 }
 
-TESTING_TEST (trust_load_object)
+TESTING_TEST (trust_load_objects)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-/*	CK_TRUST trusted = CKT_NETSCAPE_TRUSTED;
-	CK_TRUST unknown = CKT_NETSCAPE_TRUST_UNKNOWN; */
 
-	/* This info matches what's in test-trust-1.der */
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-/*		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SERIAL_NUMBER, "\x00", 1 }, */
-/*		{ CKA_TRUST_CLIENT_AUTH, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_CODE_SIGNING, &unknown, sizeof (unknown) },
-		{ CKA_TRUST_EMAIL_PROTECTION, &trusted, sizeof (trusted) }, */
 	};
 
 	CK_ULONG n_objects;
@@ -150,25 +151,231 @@ TESTING_TEST (trust_load_object)
 
 	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
 	g_assert (rv == CKR_OK);
-
 	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_objects);
 	g_assert (rv == CKR_OK);
-
 	rv = gkm_session_C_FindObjectsFinal (session);
 	g_assert (rv == CKR_OK);
 
-	gkm_assert_cmpulong (n_objects, ==, 1);
+	gkm_assert_cmpulong (n_objects, >=, 1);
 }
 
-TESTING_TEST (trust_create_assertion)
+TESTING_TEST (trust_create_assertion_complete)
 {
 	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
 	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_ANCHOR;
 	CK_OBJECT_HANDLE object = 0;
-	gpointer data;
-	gsize n_data;
+	CK_OBJECT_HANDLE check = 0;
+	CK_ULONG n_objects = 0;
 	CK_RV rv;
 
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+
+	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (n_objects, ==, 1);
+	gkm_assert_cmpulong (check, ==, object);
+}
+
+TESTING_TEST (trust_complete_assertion_has_no_serial_or_issuer)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_ANCHOR;
+	CK_OBJECT_HANDLE object = 0;
+	CK_ATTRIBUTE check;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+
+	check.type = CKA_SERIAL_NUMBER;
+	check.pValue = NULL;
+	check.ulValueLen = 0;
+	rv = gkm_session_C_GetAttributeValue (session, object, &check, 1);
+	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_TYPE_INVALID);
+
+	check.type = CKA_ISSUER;
+	check.pValue = NULL;
+	check.ulValueLen = 0;
+	rv = gkm_session_C_GetAttributeValue (session, object, &check, 1);
+	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_TYPE_INVALID);
+}
+
+TESTING_TEST (trust_complete_assertion_netscape_md5_hash)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_EXCEPTION;
+	CK_OBJECT_HANDLE object = 0;
+	CK_OBJECT_HANDLE check = 0;
+	CK_ULONG n_objects = 0;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	CK_ATTRIBUTE lookup[] = {
+		{ CKA_CERT_MD5_HASH, (void*)MD5_CHECKSUM, XL (MD5_CHECKSUM) },
+		{ CKA_CLASS, &nklass, sizeof (nklass) },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+
+	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (check, !=, 0);
+	gkm_assert_cmpulong (n_objects, >, 0);
+}
+
+TESTING_TEST (trust_complete_assertion_netscape_sha1_hash)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_EXCEPTION;
+	CK_OBJECT_HANDLE object = 0;
+	CK_OBJECT_HANDLE check = 0;
+	CK_ULONG n_objects = 0;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	CK_ATTRIBUTE lookup[] = {
+		{ CKA_CERT_SHA1_HASH, (void*)SHA1_CHECKSUM, XL (SHA1_CHECKSUM) },
+		{ CKA_CLASS, &nklass, sizeof (nklass) },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+
+	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (check, !=, 0);
+	gkm_assert_cmpulong (n_objects, >, 0);
+}
+
+TESTING_TEST (trust_create_assertion_missing_type)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_HANDLE object = 0;
+	CK_RV rv;
+
+	/* Missing CKT_G_CERTIFICATE_TRUST_ANCHOR */
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
+}
+
+TESTING_TEST (trust_create_assertion_bad_type)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = 0xFFFF;
+	CK_OBJECT_HANDLE object = 0;
+	CK_RV rv;
+
+	/* Missing CKA_G_CERTIFICATE_VALUE */
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCONSISTENT);
+}
+
+TESTING_TEST (trust_create_assertion_missing_cert_value)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_ANCHOR;
+	CK_OBJECT_HANDLE object = 0;
+	CK_RV rv;
+
+	/* Missing CKA_G_CERTIFICATE_VALUE */
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
+}
+
+TESTING_TEST (trust_create_assertion_bad_cert_value)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_ANCHOR;
+	CK_OBJECT_HANDLE object = 0;
+	CK_RV rv;
+
+	/* Bad CKA_G_CERTIFICATE_VALUE */
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, "12", 2 },
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_VALUE_INVALID);
+}
+
+TESTING_TEST (trust_create_assertion_null_cert_value)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_ANCHOR;
+	CK_OBJECT_HANDLE object = 0;
+	CK_RV rv;
+
+	/* Bad CKA_G_CERTIFICATE_VALUE */
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_G_CERTIFICATE_VALUE, NULL, 0 },
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -176,215 +383,252 @@ TESTING_TEST (trust_create_assertion)
 		{ CKA_G_PURPOSE, "test-purpose", 12 },
 	};
 
-	data = testing_data_read ("test-certificate-2.cer", &n_data);
-	g_assert (data);
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_VALUE_INVALID);
+}
 
-	attrs[0].pValue = data;
-	attrs[0].ulValueLen = n_data;
+TESTING_TEST (trust_create_assertion_for_untrusted)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_UNTRUSTED;
+	CK_OBJECT_HANDLE object = 0;
+	CK_OBJECT_HANDLE check = 0;
+	CK_ULONG n_objects = 0;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
+		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
+	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
+
+	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (n_objects, ==, 1);
+	gkm_assert_cmpulong (check, ==, object);
 }
 
-
-#if 0
-TESTING_TEST (trust_create)
+TESTING_TEST (trust_create_assertion_for_untrusted_no_purpose)
 {
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-
-	CK_ATTRIBUTE attrs[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) }
-	};
-
-	CK_OBJECT_HANDLE handle;
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_UNTRUSTED;
+	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_OK);
-
-	rv = gkm_session_C_DestroyObject (session, handle);
-	g_assert (rv == CKR_OK);
-}
-
-
-TESTING_TEST (trust_create_invalid_attrs)
-{
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-	};
-
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
-
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_TEMPLATE_INCOMPLETE);
-}
-
-TESTING_TEST (trust_create_invalid_der)
-{
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-
-	CK_ATTRIBUTE attrs[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, "test", 4 },
-		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) }
-	};
-
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
-
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
-}
-
-TESTING_TEST (trust_create_invalid_serial)
-{
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-
-	CK_ATTRIBUTE attrs[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SERIAL_NUMBER, "", 0 }
-	};
-
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
-
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
-}
-
-TESTING_TEST (trust_create_with_sha1)
-{
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-
-	CK_ATTRIBUTE attrs[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
-		{ CKA_CERT_SHA1_HASH, (void*)SHA1_CHECKSUM, XL (SHA1_CHECKSUM) }
+		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
-
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_OK);
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
 }
 
-TESTING_TEST (trust_create_with_md5)
+TESTING_TEST (trust_create_assertion_for_untrusted_no_serial)
 {
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_UNTRUSTED;
+	CK_OBJECT_HANDLE object = 0;
+	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
+}
+
+TESTING_TEST (trust_create_assertion_twice)
+{
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_UNTRUSTED;
+	CK_OBJECT_HANDLE object_1 = 0;
+	CK_OBJECT_HANDLE object_2 = 0;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_CLASS, &klass, sizeof (klass) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
-		{ CKA_CERT_MD5_HASH, (void*)MD5_CHECKSUM, XL (MD5_CHECKSUM) }
+		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
+	/* Should end up pointing to the same object */
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_OK);
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object_1);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object_1, !=, 0);
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object_2);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object_2, !=, 0);
+
+	gkm_assert_cmpulong (object_1, ==, object_2);
 }
 
-TESTING_TEST (trust_create_with_subject)
+TESTING_TEST (trust_untrusted_assertion_has_no_cert_value)
 {
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_UNTRUSTED;
+	CK_OBJECT_HANDLE object = 0;
+	CK_ATTRIBUTE check;
+	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SUBJECT, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) }
-	};
-
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
-
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_OK);
-}
-
-TESTING_TEST (trust_create_invalid_checksum)
-{
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-
-	CK_ATTRIBUTE attrs[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "test-purpose", 12 },
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
-		{ CKA_CERT_SHA1_HASH, "test", 4 }
+		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
+	/* Created as untrusted, should have no CKA_G_CERTIFICATE_VALUE */
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+
+	check.type = CKA_G_CERTIFICATE_VALUE;
+	check.pValue = NULL;
+	check.ulValueLen = 0;
+	rv = gkm_session_C_GetAttributeValue (session, object, &check, 1);
+	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-TESTING_TEST (trust_create_with_trusted)
+TESTING_TEST (trust_create_assertion_complete_on_token)
 {
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-	CK_TRUST trust = CKT_NETSCAPE_TRUSTED;
+	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_EXCEPTION;
+	CK_OBJECT_HANDLE object = 0;
+	CK_OBJECT_HANDLE check = 0;
+	CK_OBJECT_HANDLE results[8];
+	CK_BBOOL token = CK_TRUE;
+	CK_ULONG n_objects = 0;
+	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
-		{ CKA_TRUST_EMAIL_PROTECTION, &trust, sizeof (trust) }
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_G_PURPOSE, "other", 5 },
+		{ CKA_TOKEN, &token, sizeof (token) },
 	};
 
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_OK);
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &check);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (check, !=, 0);
+
+	gkm_assert_cmpulong (check, ==, object);
+
+	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (n_objects, ==, 1);
+	gkm_assert_cmpulong (results[0], ==, object);
 }
 
-TESTING_TEST (trust_create_with_trusted_and_save)
+static void
+_assert_positive_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpose,
+                           CK_ATTRIBUTE_TYPE netscape_type, CK_TRUST netscape_trust,
+                           const gchar *description)
 {
-	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
-	CK_TRUST trusted = CKT_NETSCAPE_TRUSTED;
-	CK_TRUST untrusted = CKT_NETSCAPE_UNTRUSTED;
-	CK_TRUST unknown = CKT_NETSCAPE_TRUST_UNKNOWN;
-	CK_BBOOL true = CK_TRUE;
+	CK_OBJECT_CLASS aklass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
+	CK_OBJECT_HANDLE object = 0;
+	CK_OBJECT_HANDLE results[256];
+	CK_ULONG n_results = 0;
+	CK_BYTE checksum[20];
+	gsize n_checksum;
+	CK_ATTRIBUTE attr;
+	CK_TRUST check;
+	GChecksum *md;
+	CK_BBOOL fval = CK_FALSE;
+	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SUBJECT, (void*)DER_ISSUER, XL (DER_ISSUER) },
-		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
-		{ CKA_TOKEN, &true, sizeof (true) },
-		{ CKA_TRUST_DIGITAL_SIGNATURE, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_NON_REPUDIATION, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_KEY_ENCIPHERMENT, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_DATA_ENCIPHERMENT, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_KEY_AGREEMENT, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_KEY_CERT_SIGN, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_CRL_SIGN, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_SERVER_AUTH, &untrusted, sizeof (untrusted) },
-		{ CKA_TRUST_CLIENT_AUTH, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_CODE_SIGNING, &unknown, sizeof (unknown) },
-		{ CKA_TRUST_EMAIL_PROTECTION, &trusted, sizeof (trusted) },
-		{ CKA_TRUST_TIME_STAMPING, &untrusted, sizeof (untrusted) },
-		{ CKA_TRUST_IPSEC_END_SYSTEM, &untrusted, sizeof (untrusted) },
-		{ CKA_TRUST_IPSEC_TUNNEL, &untrusted, sizeof (untrusted) },
-		{ CKA_TRUST_IPSEC_USER, &untrusted, sizeof (untrusted) },
+		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_CLASS, &aklass, sizeof (aklass) },
+		{ CKA_G_ASSERTION_TYPE, &assertion_type, sizeof (assertion_type) },
+		{ CKA_G_PURPOSE, (void*)purpose, strlen (purpose) },
+		{ CKA_TOKEN, &fval, sizeof (fval) },
 	};
 
-	CK_OBJECT_HANDLE handle;
-	CK_RV rv;
+	CK_ATTRIBUTE lookup[] = {
+		{ CKA_CLASS, &nklass, sizeof (nklass) },
+		{ CKA_TOKEN, &fval, sizeof (fval) },
+		{ CKA_CERT_SHA1_HASH, checksum, sizeof (checksum) },
+	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
-	g_assert (rv == CKR_OK);
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+
+	md = g_checksum_new (G_CHECKSUM_SHA1);
+	g_checksum_update (md, cert_data, n_cert_data);
+	n_checksum = sizeof (checksum);
+	g_checksum_get_digest (md, checksum, &n_checksum);
+	g_assert (n_checksum == sizeof (checksum));
+
+	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_results);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (n_results, ==, 1);
+
+	check = (CK_ULONG)-1;
+	attr.type = netscape_type;
+	attr.pValue = &check;
+	attr.ulValueLen = sizeof (check);
+
+	rv = gkm_session_C_GetAttributeValue (session, results[0], &attr, 1);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	if (check != netscape_trust)
+		g_warning ("netscape trust was not mapped correctly: \"%s\"", description);
+	gkm_assert_cmpulong (check, ==, netscape_trust);
 }
-#endif
+
+/* Some macros for intelligent failure messages */
+#define assert_positive_netscape(a, b, c, d) \
+	_assert_positive_netscape (a, b, c, d, #a ", " #b ", " #c ", " #d)
+
+TESTING_TEST (trust_netscape_map_email)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.4",
+	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED);
+}
+
+TESTING_TEST (trust_netscape_map_email_anchor)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.4",
+	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+}

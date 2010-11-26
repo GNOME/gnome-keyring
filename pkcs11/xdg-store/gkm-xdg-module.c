@@ -374,11 +374,11 @@ static void
 gkm_xdg_module_real_add_token_object (GkmModule *module, GkmTransaction *transaction,
                                       GkmObject *object)
 {
+	gchar *filename = NULL;
 	GkmXdgModule *self;
 	GkmTrust *trust;
 	gchar *basename;
 	gchar *actual;
-	gchar *filename;
 
 	self = GKM_XDG_MODULE (module);
 
@@ -386,6 +386,10 @@ gkm_xdg_module_real_add_token_object (GkmModule *module, GkmTransaction *transac
 	if (GKM_XDG_IS_ASSERTION (object)) {
 		trust = gkm_assertion_get_trust_object (GKM_ASSERTION (object));
 		object = GKM_OBJECT (trust);
+
+		/* If this trust object has already been added, then ignore */
+		if (lookup_filename_for_object (object))
+			return;
 	}
 
 	/* Double check that the object is in fact serializable */
