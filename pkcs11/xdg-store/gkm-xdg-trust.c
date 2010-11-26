@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "gkm-xdg-assertion.h"
 #include "gkm-xdg-trust.h"
 
 #include "egg/egg-asn1x.h"
@@ -295,7 +296,14 @@ create_assertion (GkmXdgTrust *self, GNode *asn)
 	else
 		peer = NULL;
 
-	assertion = gkm_assertion_new (GKM_TRUST (self), type, purpose, peer);
+	assertion = g_object_new (GKM_XDG_TYPE_ASSERTION,
+	                          "module", gkm_object_get_module (GKM_OBJECT (self)),
+	                          "manager", gkm_object_get_manager (GKM_OBJECT (self)),
+	                          "trust", self,
+	                          "type", type,
+	                          "purpose", purpose,
+	                          "peer", peer,
+	                          NULL);
 
 	g_free (purpose);
 	g_free (peer);
@@ -871,7 +879,7 @@ gkm_xdg_trust_remove_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
 	g_return_if_fail (key);
 
 	/* Assertion needs to be from this trust object */
-	g_return_if_fail (g_hash_table_lookup (self->pv->assertions, key) != assertion);
+	g_return_if_fail (g_hash_table_lookup (self->pv->assertions, key) == assertion);
 	remove_assertion_from_trust (self, assertion, transaction);
 }
 

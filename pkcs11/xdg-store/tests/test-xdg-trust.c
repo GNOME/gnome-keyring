@@ -556,6 +556,41 @@ TESTING_TEST (trust_create_assertion_complete_on_token)
 	gkm_assert_cmpulong (results[0], ==, check);
 }
 
+TESTING_TEST (trust_destroy_assertion_on_token)
+{
+	CK_ASSERTION_TYPE atype = CKT_G_CERTIFICATE_TRUST_EXCEPTION;
+	CK_OBJECT_HANDLE results[8];
+	CK_BBOOL token = CK_TRUE;
+	CK_ULONG n_objects = 0;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_TOKEN, &token, sizeof (token) },
+	};
+
+	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (n_objects, ==, 1);
+
+	rv = gkm_session_C_DestroyObject (session, results[0]);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_objects);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (n_objects, ==, 0);
+}
+
 static void
 _assert_positive_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpose,
                            CK_ATTRIBUTE_TYPE netscape_type, CK_TRUST netscape_trust,
