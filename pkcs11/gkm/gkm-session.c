@@ -354,27 +354,6 @@ add_object (GkmSession *self, GkmTransaction *transaction, GkmObject *object)
 		                     g_object_ref (object));
 }
 
-static gboolean
-attributes_find_boolean (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
-                         CK_ATTRIBUTE_TYPE type, CK_BBOOL *value)
-{
-	CK_ULONG i;
-
-	g_assert (attrs || !n_attrs);
-	g_assert (value);
-
-	for (i = 0; i < n_attrs; ++i) {
-		if (attrs[i].type == type &&
-		    attrs[i].pValue != NULL &&
-		    attrs[i].ulValueLen == sizeof (CK_BBOOL)) {
-			*value = *((CK_BBOOL*)attrs[i].pValue);
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -767,6 +746,7 @@ gkm_session_create_object_for_factory (GkmSession *self, GkmFactory *factory,
 {
 	GkmTransaction *owned = NULL;
 	GkmObject  *object;
+	gboolean token;
 
 	g_return_val_if_fail (GKM_IS_SESSION (self), NULL);
 	g_return_val_if_fail (factory && factory->func, NULL);
@@ -777,6 +757,10 @@ gkm_session_create_object_for_factory (GkmSession *self, GkmFactory *factory,
 		owned = transaction = gkm_transaction_new ();
 
 	g_return_val_if_fail (GKM_IS_TRANSACTION (transaction), NULL);
+
+	/* Refresh the module if storing on the token */
+	if (gkm_attributes_find_boolean (template, count, CKA_TOKEN, &token) && token)
+		gkm_module_refresh_token (self->pv->module);
 
 	/*
 	 * Duplicate the memory for the attributes (but not values) so we
@@ -1115,7 +1099,7 @@ CK_RV
 gkm_session_C_FindObjectsInit (GkmSession* self, CK_ATTRIBUTE_PTR template,
                                CK_ULONG count)
 {
-	CK_BBOOL token = CK_FALSE;
+	gboolean token = FALSE;
 	gboolean also_private;
 	CK_RV rv = CKR_OK;
 	GArray *found;
@@ -1132,7 +1116,7 @@ gkm_session_C_FindObjectsInit (GkmSession* self, CK_ATTRIBUTE_PTR template,
 	}
 
 	/* See whether this is token or not */
-	all = !attributes_find_boolean (template, count, CKA_TOKEN, &token);
+	all = !gkm_attributes_find_boolean (template, count, CKA_TOKEN, &token);
 
 	/* An array of object handles */
 	found = g_array_new (FALSE, TRUE, sizeof (CK_OBJECT_HANDLE));
