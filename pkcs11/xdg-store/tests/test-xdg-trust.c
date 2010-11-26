@@ -620,16 +620,97 @@ _assert_positive_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpos
 	gkm_assert_cmpulong (check, ==, netscape_trust);
 }
 
+static void
+_assert_negative_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpose,
+                           CK_ATTRIBUTE_TYPE netscape_type, CK_TRUST netscape_trust,
+                           const gchar *description)
+{
+	CK_OBJECT_CLASS aklass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
+	CK_OBJECT_HANDLE object = 0;
+	CK_OBJECT_HANDLE results[256];
+	CK_ULONG n_results = 0;
+	CK_ATTRIBUTE attr;
+	CK_TRUST check;
+	CK_BBOOL fval = CK_FALSE;
+	CK_RV rv;
+
+	CK_ATTRIBUTE attrs[] = {
+		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
+		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
+		{ CKA_CLASS, &aklass, sizeof (aklass) },
+		{ CKA_G_ASSERTION_TYPE, &assertion_type, sizeof (assertion_type) },
+		{ CKA_G_PURPOSE, (void*)purpose, strlen (purpose) },
+		{ CKA_TOKEN, &fval, sizeof (fval) },
+	};
+
+	CK_ATTRIBUTE lookup[] = {
+		{ CKA_CLASS, &nklass, sizeof (nklass) },
+		{ CKA_TOKEN, &fval, sizeof (fval) },
+		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
+		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
+	};
+
+	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	gkm_assert_cmpulong (object, !=, 0);
+
+	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_results);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	rv = gkm_session_C_FindObjectsFinal (session);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	gkm_assert_cmpulong (n_results, ==, 1);
+
+	check = (CK_ULONG)-1;
+	attr.type = netscape_type;
+	attr.pValue = &check;
+	attr.ulValueLen = sizeof (check);
+
+	rv = gkm_session_C_GetAttributeValue (session, results[0], &attr, 1);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	if (check != netscape_trust)
+		g_warning ("netscape trust was not mapped correctly: \"%s\"", description);
+	gkm_assert_cmpulong (check, ==, netscape_trust);
+}
+
 /* Some macros for intelligent failure messages */
 #define assert_positive_netscape(a, b, c, d) \
 	_assert_positive_netscape (a, b, c, d, #a ", " #b ", " #c ", " #d)
+#define assert_negative_netscape(a, b, c, d) \
+	_assert_negative_netscape (a, b, c, d, #a ", " #b ", " #c ", " #d)
 
-TESTING_TEST (trust_netscape_map_server_aunth)
+TESTING_TEST (trust_netscape_map_server_auth)
 {
 	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED);
 	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.1",
+	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_UNTRUSTED);
+}
+
+TESTING_TEST (trust_netscape_map_client_auth)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.2",
+	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_TRUSTED);
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.2",
+	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.2",
+	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_UNTRUSTED);
+}
+
+TESTING_TEST (trust_netscape_map_code_signing)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.3",
+	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_TRUSTED);
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.3",
+	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.3",
+	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_email)
@@ -638,4 +719,46 @@ TESTING_TEST (trust_netscape_map_email)
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED);
 	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.4",
+	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_UNTRUSTED);
+}
+
+TESTING_TEST (trust_netscape_map_ipsec_endpoint)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.5",
+	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_TRUSTED);
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.5",
+	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.5",
+	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_UNTRUSTED);
+}
+
+TESTING_TEST (trust_netscape_map_ipsec_tunnel)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.6",
+	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_TRUSTED);
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.6",
+	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.6",
+	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_UNTRUSTED);
+}
+
+TESTING_TEST (trust_netscape_map_ipsec_user)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.7",
+	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_TRUSTED);
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.7",
+	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.7",
+	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_UNTRUSTED);
+}
+
+TESTING_TEST (trust_netscape_map_time_stamping)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.8",
+	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_TRUSTED);
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.8",
+	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	assert_negative_netscape (CKT_G_CERTIFICATE_UNTRUSTED, "1.3.6.1.5.5.7.3.8",
+	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_UNTRUSTED);
 }
