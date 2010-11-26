@@ -222,6 +222,24 @@ testing_scratch_remove (const gchar *basename)
 	g_free (filename);
 }
 
+void
+testing_scratch_remove_all (void)
+{
+	GError *err = NULL;
+	const gchar *basename;
+	GDir *dir;
+
+	/* WARNING: Don't change path without changing remove below */
+	dir = g_dir_open (testing_scratch_directory (), 0, &err);
+	if (dir == NULL)
+		g_error ("couldn't open directory: %s",
+		         err && err->message ? err->message : "");
+
+	while ((basename = g_dir_read_name (dir)) != NULL)
+		testing_scratch_remove (basename);
+
+	g_dir_close (dir);
+}
 
 #if WITH_P11_TESTS
 

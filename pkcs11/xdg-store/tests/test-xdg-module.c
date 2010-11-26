@@ -55,6 +55,9 @@ test_xdg_module_initialize_and_enter (void)
 	args.pReserved = string;
 	args.flags = CKF_OS_LOCKING_OK;
 
+	/* Delete all files in this directory */
+	testing_scratch_remove_all ();
+
 	/* Copy files from test-data to scratch */
 	testing_data_to_scratch ("test-refer-1.trust", NULL);
 	testing_data_to_scratch ("test-certificate-1.cer", NULL);

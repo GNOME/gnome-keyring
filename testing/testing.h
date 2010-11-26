@@ -62,6 +62,8 @@ void             testing_scratch_touch            (const gchar *basename,
 
 void             testing_scratch_remove           (const gchar *basename);
 
+void             testing_scratch_remove_all       (void);
+
 gchar*           testing_data_filename            (const gchar *basename);
 
 #ifdef CRYPTOKI_VERSION_MAJOR
