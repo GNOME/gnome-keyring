@@ -130,7 +130,6 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GkmAssertion *assertion;
-	GkmAssertion *previous;
 	CK_ASSERTION_TYPE type;
 	GkmManager *manager;
 	gboolean created = FALSE;
@@ -177,15 +176,9 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 
 	/* Add the assertion to the trust object */
 	if (!gkm_transaction_get_failed (transaction)) {
-		previous = gkm_xdg_trust_add_assertion (trust, GKM_ASSERTION (assertion), transaction);
+		gkm_xdg_trust_replace_assertion (trust, GKM_ASSERTION (assertion), transaction);
 		if (gkm_transaction_get_failed (transaction)) {
 			gkm_transaction_fail (transaction, CKR_GENERAL_ERROR);
-
-		/* If trust refused to add this object, return whatever we did add */
-		} else if (previous != assertion) {
-			g_assert (previous);
-			g_object_unref (assertion);
-			assertion = g_object_ref (previous);
 
 		/* A new trust assertion */
 		} else {

@@ -834,31 +834,27 @@ gkm_xdg_trust_create_for_assertion (GkmModule *module, GkmManager *manager,
 	return trust;
 }
 
-GkmAssertion*
-gkm_xdg_trust_add_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
+void
+gkm_xdg_trust_replace_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
                              GkmTransaction *transaction)
 {
 	GkmAssertion *previous;
 	GByteArray *key;
 
-	g_return_val_if_fail (GKM_XDG_IS_TRUST (self), NULL);
-	g_return_val_if_fail (GKM_IS_ASSERTION (assertion), NULL);
-	g_return_val_if_fail (!transaction || GKM_IS_TRANSACTION (transaction), NULL);
+	g_return_if_fail (GKM_XDG_IS_TRUST (self));
+	g_return_if_fail (GKM_IS_ASSERTION (assertion));
+	g_return_if_fail (!transaction || GKM_IS_TRANSACTION (transaction));
 
 	/* Build up a key if we don't have one */
 	key = lookup_or_create_assertion_key (assertion);
 
-	/* Check if we alraedy have the assertion */
+	/* Remove any previous assertion with this key */
 	previous = g_hash_table_lookup (self->pv->assertions, key);
+	if (previous != NULL)
+		remove_assertion_from_trust (self, previous, transaction);
+	add_assertion_to_trust (self, assertion, transaction);
 
 	g_byte_array_unref (key);
-
-	/* Just return previous assertion, don't add */
-	if (previous != NULL)
-		return previous;
-
-	add_assertion_to_trust (self, assertion, transaction);
-	return assertion;
 }
 
 void

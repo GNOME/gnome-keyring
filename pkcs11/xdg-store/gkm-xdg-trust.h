@@ -56,7 +56,7 @@ GkmXdgTrust*          gkm_xdg_trust_create_for_assertion   (GkmModule *module,
                                                             CK_ATTRIBUTE_PTR attrs,
                                                             CK_ULONG n_attrs);
 
-GkmAssertion*         gkm_xdg_trust_add_assertion          (GkmXdgTrust *trust,
+void                  gkm_xdg_trust_replace_assertion      (GkmXdgTrust *trust,
                                                             GkmAssertion *assertion,
                                                             GkmTransaction *transaction);
 

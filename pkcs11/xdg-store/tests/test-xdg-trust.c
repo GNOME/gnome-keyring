@@ -471,7 +471,7 @@ TESTING_TEST (trust_create_assertion_twice)
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	/* Should end up pointing to the same object */
+	/* First object should go away when we create an overlapping assertion */
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object_1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
@@ -481,7 +481,11 @@ TESTING_TEST (trust_create_assertion_twice)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object_2, !=, 0);
 
-	gkm_assert_cmpulong (object_1, ==, object_2);
+	gkm_assert_cmpulong (object_1, !=, object_2);
+
+	/* First object no longer exists */
+	rv = gkm_session_C_DestroyObject (session, object_1);
+	gkm_assert_cmprv (rv, ==, CKR_OBJECT_HANDLE_INVALID);
 }
 
 TESTING_TEST (trust_untrusted_assertion_has_no_cert_value)
@@ -540,8 +544,6 @@ TESTING_TEST (trust_create_assertion_complete_on_token)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (check, !=, 0);
 
-	gkm_assert_cmpulong (check, ==, object);
-
 	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_objects);
@@ -549,8 +551,9 @@ TESTING_TEST (trust_create_assertion_complete_on_token)
 	rv = gkm_session_C_FindObjectsFinal (session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
+	/* Second should have overwritten the first */
 	gkm_assert_cmpulong (n_objects, ==, 1);
-	gkm_assert_cmpulong (results[0], ==, object);
+	gkm_assert_cmpulong (results[0], ==, check);
 }
 
 static void
@@ -621,14 +624,18 @@ _assert_positive_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpos
 #define assert_positive_netscape(a, b, c, d) \
 	_assert_positive_netscape (a, b, c, d, #a ", " #b ", " #c ", " #d)
 
+TESTING_TEST (trust_netscape_map_server_aunth)
+{
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.1",
+	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED);
+	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.1",
+	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+}
+
 TESTING_TEST (trust_netscape_map_email)
 {
 	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_EXCEPTION, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED);
-}
-
-TESTING_TEST (trust_netscape_map_email_anchor)
-{
 	assert_positive_netscape (CKT_G_CERTIFICATE_TRUST_ANCHOR, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED_DELEGATOR);
 }
