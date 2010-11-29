@@ -33,13 +33,13 @@ G_BEGIN_DECLS
 
 gboolean       gcr_trust_is_certificate_exception              (GcrCertificate *cert,
                                                                 const gchar *purpose,
-                                                                const gchar *remote,
+                                                                const gchar *peer,
                                                                 GCancellable *cancel,
                                                                 GError **error);
 
 void           gcr_trust_is_certificate_exception_async        (GcrCertificate *cert,
                                                                 const gchar *purpose,
-                                                                const gchar *remote,
+                                                                const gchar *peer,
                                                                 GCancellable *cancel,
                                                                 GAsyncReadyCallback callback,
                                                                 gpointer user_data);
@@ -49,13 +49,13 @@ gboolean       gcr_trust_is_certificate_exception_finish       (GAsyncResult *re
 
 gboolean       gcr_trust_add_certificate_exception             (GcrCertificate *cert,
                                                                 const gchar *purpose,
-                                                                const gchar *remote,
+                                                                const gchar *peer,
                                                                 GCancellable *cancel,
                                                                 GError **error);
 
 void           gcr_trust_add_certificate_exception_async       (GcrCertificate *cert,
                                                                 const gchar *purpose,
-                                                                const gchar *remote,
+                                                                const gchar *peer,
                                                                 GCancellable *cancel,
                                                                 GAsyncReadyCallback callback,
                                                                 gpointer user_data);
@@ -65,13 +65,13 @@ gboolean       gcr_trust_add_certificate_exception_finish      (GAsyncResult *re
 
 gboolean       gcr_trust_remove_certificate_exception          (GcrCertificate *cert,
                                                                 const gchar *purpose,
-                                                                const gchar *remote,
+                                                                const gchar *peer,
                                                                 GCancellable *cancel,
                                                                 GError **error);
 
 void           gcr_trust_remove_certificate_exception_async    (GcrCertificate *cert,
                                                                 const gchar *purpose,
-                                                                const gchar *remote,
+                                                                const gchar *peer,
                                                                 GCancellable *cancel,
                                                                 GAsyncReadyCallback callback,
                                                                 gpointer user_data);

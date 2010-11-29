@@ -107,7 +107,7 @@ prepare_trust_attrs (GcrCertificate *cert, CK_ASSERTION_TYPE type)
  */
 
 static GckEnumerator*
-prepare_is_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote)
+prepare_is_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *peer)
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
@@ -119,7 +119,7 @@ prepare_is_certificate_exception (GcrCertificate *cert, const gchar *purpose, co
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_PEER, remote);
+	gck_attributes_add_string (attrs, CKA_G_PEER, peer);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -156,16 +156,16 @@ perform_is_certificate_exception (GckEnumerator *en, GCancellable *cancel, GErro
 
 gboolean
 gcr_trust_is_certificate_exception (GcrCertificate *cert, const gchar *purpose,
-                                    const gchar *remote, GCancellable *cancel, GError **error)
+                                    const gchar *peer, GCancellable *cancel, GError **error)
 {
 	GckEnumerator *en;
 	gboolean ret;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (cert), FALSE);
 	g_return_val_if_fail (purpose, FALSE);
-	g_return_val_if_fail (remote, FALSE);
+	g_return_val_if_fail (peer, FALSE);
 
-	en = prepare_is_certificate_exception (cert, purpose, remote);
+	en = prepare_is_certificate_exception (cert, purpose, peer);
 	g_return_val_if_fail (en, FALSE);
 
 	ret = perform_is_certificate_exception (en, cancel, error);
@@ -190,13 +190,13 @@ thread_is_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCanc
 
 void
 gcr_trust_is_certificate_exception_async (GcrCertificate *cert, const gchar *purpose,
-                                          const gchar *remote, GCancellable *cancel,
+                                          const gchar *peer, GCancellable *cancel,
                                           GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
-	en = prepare_is_certificate_exception (cert, purpose, remote);
+	en = prepare_is_certificate_exception (cert, purpose, peer);
 	g_return_if_fail (en);
 
 	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
@@ -231,7 +231,7 @@ gcr_trust_is_certificate_exception_finish (GAsyncResult *res, GError **error)
  */
 
 static GckEnumerator*
-prepare_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote)
+prepare_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *peer)
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
@@ -243,7 +243,8 @@ prepare_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, c
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_PEER, remote);
+	gck_attributes_add_string (attrs, CKA_G_PEER, peer);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -317,13 +318,13 @@ perform_add_certificate_exception (GckEnumerator *en, GCancellable *cancel, GErr
 }
 
 gboolean
-gcr_trust_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote,
+gcr_trust_add_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *peer,
                                      GCancellable *cancel, GError **error)
 {
 	GckEnumerator *en;
 	gboolean ret;
 
-	en = prepare_add_certificate_exception (cert, purpose, remote);
+	en = prepare_add_certificate_exception (cert, purpose, peer);
 	g_return_val_if_fail (en, FALSE);
 
 	ret = perform_add_certificate_exception (en, cancel, error);
@@ -348,13 +349,13 @@ thread_add_certificate_exception (GSimpleAsyncResult *res, GObject *object, GCan
 
 void
 gcr_trust_add_certificate_exception_async (GcrCertificate *cert, const gchar *purpose,
-                                           const gchar *remote, GCancellable *cancel,
+                                           const gchar *peer, GCancellable *cancel,
                                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
-	en = prepare_add_certificate_exception (cert, purpose, remote);
+	en = prepare_add_certificate_exception (cert, purpose, peer);
 	g_return_if_fail (en);
 
 	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
@@ -388,7 +389,7 @@ gcr_trust_add_certificate_exception_finish (GAsyncResult *res, GError **error)
 
 static GckEnumerator*
 prepare_remove_certificate_exception (GcrCertificate *cert, const gchar *purpose,
-                                      const gchar *remote)
+                                      const gchar *peer)
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
@@ -400,7 +401,7 @@ prepare_remove_certificate_exception (GcrCertificate *cert, const gchar *purpose
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_PEER, remote);
+	gck_attributes_add_string (attrs, CKA_G_PEER, peer);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -445,13 +446,13 @@ perform_remove_certificate_exception (GckEnumerator *en, GCancellable *cancel, G
 }
 
 gboolean
-gcr_trust_remove_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *remote,
+gcr_trust_remove_certificate_exception (GcrCertificate *cert, const gchar *purpose, const gchar *peer,
                                         GCancellable *cancel, GError **error)
 {
 	GckEnumerator *en;
 	gboolean ret;
 
-	en = prepare_remove_certificate_exception (cert, purpose, remote);
+	en = prepare_remove_certificate_exception (cert, purpose, peer);
 	g_return_val_if_fail (en, FALSE);
 
 	ret = perform_remove_certificate_exception (en, cancel, error);
@@ -476,13 +477,13 @@ thread_remove_certificate_exception (GSimpleAsyncResult *res, GObject *object, G
 
 void
 gcr_trust_remove_certificate_exception_async (GcrCertificate *cert, const gchar *purpose,
-                                              const gchar *remote, GCancellable *cancel,
+                                              const gchar *peer, GCancellable *cancel,
                                               GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
-	en = prepare_remove_certificate_exception (cert, purpose, remote);
+	en = prepare_remove_certificate_exception (cert, purpose, peer);
 	g_return_if_fail (en);
 
 	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,

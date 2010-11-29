@@ -850,6 +850,14 @@ gck_mock_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 }
 
 CK_RV
+gck_mock_fail_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
+                              CK_ULONG ulCount, CK_OBJECT_HANDLE_PTR phObject)
+{
+	/* Always fails */
+	return CKR_FUNCTION_FAILED;
+}
+
+CK_RV
 gck_mock_unsupported_C_CopyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject,
                                    CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount,
                                    CK_OBJECT_HANDLE_PTR phNewObject)
@@ -1015,6 +1023,14 @@ gck_mock_C_FindObjectsInit (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTempla
 
 	gck_mock_module_enumerate_objects (hSession, enumerate_and_find_objects, &ctx);
 	return CKR_OK;
+}
+
+CK_RV
+gck_mock_fail_C_FindObjects (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE_PTR phObject,
+                             CK_ULONG ulMaxObjectCount, CK_ULONG_PTR pulObjectCount)
+{
+	/* Always fails */
+	return CKR_FUNCTION_FAILED;
 }
 
 CK_RV

@@ -34,12 +34,13 @@
 
 #include <glib.h>
 
-static CK_FUNCTION_LIST_PTR funcs;
+static CK_FUNCTION_LIST funcs;
 static GList *modules = NULL;
 static GcrCertificate *certificate = NULL;
 
 TESTING_SETUP (trust_setup)
 {
+	CK_FUNCTION_LIST_PTR f;
 	GckModule *module;
 	guchar *contents;
 	gsize len;
@@ -50,15 +51,16 @@ TESTING_SETUP (trust_setup)
 
 	certificate = gcr_simple_certificate_new (contents, len);
 
-	rv = gck_mock_C_GetFunctionList (&funcs);
+	rv = gck_mock_C_GetFunctionList (&f);
 	gck_assert_cmprv (rv, ==, CKR_OK);
+	memcpy (&funcs, f, sizeof (funcs));
 
 	/* Open a session */
-	rv = (funcs->C_Initialize) (NULL);
+	rv = (funcs.C_Initialize) (NULL);
 	gck_assert_cmprv (rv, ==, CKR_OK);
 
 	g_assert (!modules);
-	module = gck_module_new (funcs, 0);
+	module = gck_module_new (&funcs, 0);
 	modules = g_list_prepend (modules, module);
 
 	_gcr_set_test_pkcs11_modules (modules);
@@ -72,8 +74,7 @@ TESTING_TEARDOWN (trust_setup)
 	g_object_unref (certificate);
 	certificate = NULL;
 
-	g_assert (funcs);
-	rv = (funcs->C_Finalize) (NULL);
+	rv = (funcs.C_Finalize) (NULL);
 	gck_assert_cmprv (rv, ==, CKR_OK);
 
 	gck_list_unref_free (modules);
@@ -86,7 +87,7 @@ TESTING_TEST (trust_is_exception_none)
 	gboolean trust;
 
 	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
-	g_assert_cmpint (trust, ==, TRUE);
+	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 }
 
@@ -97,7 +98,7 @@ TESTING_TEST (trust_add_and_is_exception)
 	gboolean ret;
 
 	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
-	g_assert_cmpint (trust, ==, TRUE);
+	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 
 	ret = gcr_trust_add_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
@@ -107,6 +108,19 @@ TESTING_TEST (trust_add_and_is_exception)
 	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, TRUE);
 	g_assert (error == NULL);
+}
+
+TESTING_TEST (trust_add_certificate_exception_fail)
+{
+	GError *error = NULL;
+	gboolean ret;
+
+	/* Make this function fail */
+	funcs.C_CreateObject = gck_mock_fail_C_CreateObject;
+
+	ret = gcr_trust_add_certificate_exception (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, NULL, &error);
+	g_assert (ret == FALSE);
+	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
 }
 
 TESTING_TEST (trust_add_and_remov_exception)
@@ -176,6 +190,50 @@ TESTING_TEST (trust_add_and_is_exception_async)
 	result = NULL;
 }
 
+TESTING_TEST (trust_add_and_remov_exception_async)
+{
+	GAsyncResult *result = NULL;
+	GError *error = NULL;
+	gboolean trust;
+	gboolean ret;
+
+	gcr_trust_add_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	testing_wait_until (500);
+	g_assert (result);
+	ret = gcr_trust_add_certificate_exception_finish (result, &error);
+	g_assert (ret == TRUE);
+	g_assert (error == NULL);
+	g_object_unref (result);
+	result = NULL;
+
+	gcr_trust_is_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	testing_wait_until (500);
+	g_assert (result);
+	trust = gcr_trust_is_certificate_exception_finish (result, &error);
+	g_assert (trust == TRUE);
+	g_assert (error == NULL);
+	g_object_unref (result);
+	result = NULL;
+
+	gcr_trust_remove_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	testing_wait_until (500);
+	g_assert (result);
+	ret = gcr_trust_remove_certificate_exception_finish (result, &error);
+	g_assert (ret == TRUE);
+	g_assert (error == NULL);
+	g_object_unref (result);
+	result = NULL;
+
+	gcr_trust_is_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	testing_wait_until (500);
+	g_assert (result);
+	trust = gcr_trust_is_certificate_exception_finish (result, &error);
+	g_assert (trust == FALSE);
+	g_assert (error == NULL);
+	g_object_unref (result);
+	result = NULL;
+}
+
 TESTING_TEST (trust_is_certificate_anchor_not)
 {
 	GError *error = NULL;
@@ -190,26 +248,18 @@ TESTING_TEST (trust_is_certificate_anchor_yes)
 {
 	GError *error = NULL;
 	GckAttributes *attrs;
-	gpointer data;
-	gsize n_data;
+	gconstpointer der;
+	gsize n_der;
 	gboolean ret;
 
 	/* Create a certificate root trust */
 	attrs = gck_attributes_new ();
-	data = gcr_certificate_get_issuer_raw (certificate, &n_data);
-	g_assert (data && n_data);
-	gck_attributes_add_data (attrs, CKA_ISSUER, data, n_data);
-	g_free (data);
-	data = gcr_certificate_get_serial_number (certificate, &n_data);
-	g_assert (data && n_data);
-	gck_attributes_add_data (attrs, CKA_SERIAL_NUMBER, data, n_data);
-	g_free (data);
-	data = gcr_certificate_get_fingerprint (certificate, G_CHECKSUM_SHA1, &n_data);
-	g_assert (data);
-	gck_attributes_add_data (attrs, CKA_CERT_SHA1_HASH, data, n_data);
-	g_free (data);
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_NETSCAPE_TRUST);
-	gck_attributes_add_ulong (attrs, CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
+	der = gcr_certificate_get_der_data (certificate, &n_der);
+	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, der, n_der);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
+	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_attributes_add_string (attrs, CKA_G_PURPOSE, GCR_PURPOSE_CLIENT_AUTH);
+	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_CERTIFICATE_TRUST_ANCHOR);
 	gck_mock_module_take_object (attrs);
 
 	ret = gcr_trust_is_certificate_anchor (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
