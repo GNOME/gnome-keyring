@@ -33,6 +33,7 @@ libgck_la_SOURCES = \
 	gck.h gck-private.h pkcs11.h \
 	gck-attributes.c \
 	gck-call.c \
+	gck-dump.c \
 	gck-enumerator.c \
 	gck-misc.c \
 	gck-module.c \

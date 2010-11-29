@@ -152,6 +152,7 @@ void                gck_attribute_clear                     (GckAttribute *attr)
 
 void                gck_attribute_free                      (GckAttribute *attr);
 
+void                gck_attribute_dump                      (GckAttribute *attr);
 
 typedef struct _GckAttributes GckAttributes;
 
@@ -229,6 +230,8 @@ void                gck_attributes_unref                    (GckAttributes *attr
 
 gboolean            gck_attributes_contains                 (GckAttributes *attrs,
                                                              GckAttribute *match);
+
+void                gck_attributes_dump                     (GckAttributes *attrs);
 
 /* -------------------------------------------------------------------------
  * FORWARDS
