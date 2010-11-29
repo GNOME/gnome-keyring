@@ -84,17 +84,17 @@ const gchar*     testing_external_name            (void);
 void             testing_external_fail            (void);
 
 #define TESTING_SETUP(x) \
-	void __testing_setup_##x(int *__unused, gconstpointer __data)
+	void testing__setup__##x(int *__unused, gconstpointer __data)
 #define TESTING_TEARDOWN(x) \
-	void __testing_teardown_##x(int *__unused, gconstpointer __data)
+	void testing__teardown__##x(int *__unused, gconstpointer __data)
 #define TESTING_TEST(x) \
-	void __testing_test_##x(int *__unused, gconstpointer __data)
+	void testing__test__##x(int *__unused, gconstpointer __data)
 #define TESTING_START(x) \
-	void __testing_start_##x(void)
+	void testing__start__##x(void)
 #define TESTING_STOP(x) \
-	void __testing_stop_##x(void)
+	void testing__stop__##x(void)
 #define TESTING_EXTERNAL(x) \
-	void __testing_external_##x(void)
+	void testing__external__##x(void)
 
 #ifndef g_assert_cmpsize
 #define g_assert_cmpsize(a, o, b) \

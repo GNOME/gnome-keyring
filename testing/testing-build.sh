@@ -24,7 +24,7 @@ file_to_name()
 
 testing_lines()
 {
-	grep -h "__testing_" $@ /dev/null || true
+	grep -h "testing__" $@ /dev/null || true
 }
 
 build_header()
@@ -57,14 +57,14 @@ build_source()
 	# Startup function
 	echo "static void start_tests (void) {"
 		echo $lines | sed -n \
-			-e "s/.*\(__testing_start_[0-9a-z_]\+\).*/	\1 ();/p"
+			-e "s/.*\(testing__start__[0-9a-z_]\+\).*/	\1 ();/p"
 	echo "}"
 	echo
 
 	# Shutdown function
 	echo "static void stop_tests (void) {"
 		echo $lines | sed -n \
-			-e "s/.*\(__testing_stop_[0-9a-z_]\+\).*/	\1 ();/p"
+			-e "s/.*\(testing__stop__[0-9a-z_]\+\).*/	\1 ();/p"
 	echo "}"
 	echo
 
@@ -82,9 +82,9 @@ build_source()
 		echo "	setup = teardown = NULL;"
 
 		testing_lines $file | sed -n \
-			-e "s/.*\(__testing_setup_[0-9a-z_]\+\).*/setup = \1;/p" \
-			-e "s/.*\(__testing_teardown_[0-9a-z_]\+\).*/teardown = \1;/p" \
-			-e "s/.*__testing_test_\([0-9a-z_]\+\).*/g_test_add(\"\/$name\/\1\", int, NULL, setup, __testing_test_\1, teardown);/p"
+			-e "s/.*\(testing__setup__[0-9a-z_]\+\).*/setup = \1;/p" \
+			-e "s/.*\(testing__teardown__[0-9a-z_]\+\).*/teardown = \1;/p" \
+			-e "s/.*testing__test__\([0-9a-z_]\+\).*/g_test_add(\"\/$name\/\1\", int, NULL, setup, testing__test__\1, teardown);/p"
 	done
 	echo "}"
 	echo
@@ -92,7 +92,7 @@ build_source()
 	# External function
 	echo "static void run_externals (int *ret) {"
 		echo $lines | sed -n \
-			-e "s/.*\(__testing_external_[0-9a-z_]\+\).*/	testing_external_run (\"\1\", \1, ret);/p"
+			-e "s/.*\(testing__external__[0-9a-z_]\+\).*/	testing_external_run (\"\1\", \1, ret);/p"
 	echo "}"
 	echo
 
