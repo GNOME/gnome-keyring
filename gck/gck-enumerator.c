@@ -409,10 +409,9 @@ state_authenticated (GckEnumeratorState *args, gboolean forward)
 	rv = (funcs->C_FindObjectsInit) (session, attrs, n_attrs);
 
 	if (rv == CKR_OK) {
-		while (rv == CKR_OK) {
+		for(;;) {
 			rv = (funcs->C_FindObjects) (session, objects, G_N_ELEMENTS (objects), &count);
-
-			if (count == 0)
+			if (rv != CKR_OK || count == 0)
 				break;
 
 			if (!args->objects)
