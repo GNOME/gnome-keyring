@@ -1,3 +1,9 @@
+Changes in version 2.91.3 are:
+ * Shutdown module timer when holding proper mutex.
+ * Linux capabilities to overcome limits on locked memory.
+ * Update HACKING with coding style
+ * Build fixes.
+
 Changes in version 2.91.2 are:
  * Add timeout if PAM startup doesn't complete shortly.
  * Fix login keyring password when it doesn't match unix login.
