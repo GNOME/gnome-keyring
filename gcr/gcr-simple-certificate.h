@@ -53,7 +53,7 @@ GType               gcr_simple_certificate_get_type               (void);
 GcrCertificate*     gcr_simple_certificate_new                    (gconstpointer data,
                                                                    gsize n_data);
 
-GcrCertificate*     gcr_simple_certificate_new_static             (const guchar *data,
+GcrCertificate*     gcr_simple_certificate_new_static             (gconstpointer data,
                                                                    gsize n_data);
 
 G_END_DECLS

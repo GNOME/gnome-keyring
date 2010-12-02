@@ -111,7 +111,7 @@ gcr_simple_certificate_new (gconstpointer data, gsize n_data)
 }
 
 GcrCertificate*
-gcr_simple_certificate_new_static (const guchar *data, gsize n_data)
+gcr_simple_certificate_new_static (gconstpointer data, gsize n_data)
 {
 	GcrSimpleCertificate *cert;
 
