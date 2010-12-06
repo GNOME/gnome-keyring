@@ -32,6 +32,8 @@
 
 #define __GCR_H_INSIDE__
 
+#include "gcr-types.h"
+
 #include "gcr-certificate.h"
 #include "gcr-certificate-renderer.h"
 #include "gcr-certificate-widget.h"
@@ -42,7 +44,6 @@
 #include "gcr-pkcs11-certificate.h"
 #include "gcr-simple-certificate.h"
 #include "gcr-trust.h"
-#include "gcr-types.h"
 #include "gcr-unlock-options.h"
 #include "gcr-unlock-options-widget.h"
 #include "gcr-viewer.h"

@@ -61,10 +61,10 @@ GcrCertificate*         gcr_certificate_widget_get_certificate        (GcrCertif
 void                    gcr_certificate_widget_set_certificate        (GcrCertificateWidget *self,
                                                                        GcrCertificate *cert);
 
-struct _GckAttributes*  gcr_certificate_widget_get_attributes         (GcrCertificateWidget *self);
+GckAttributes*          gcr_certificate_widget_get_attributes         (GcrCertificateWidget *self);
 
 void                    gcr_certificate_widget_set_attributes         (GcrCertificateWidget *self,
-                                                                       struct _GckAttributes* attrs);
+                                                                       GckAttributes* attrs);
 
 G_END_DECLS
 

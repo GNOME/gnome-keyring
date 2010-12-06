@@ -59,18 +59,18 @@ struct _GcrImporterClass {
 	GObjectClass parent_class;
 
 	/* signals */
-	void (*queued) (GcrImporter *self, const gchar *label, struct _GckAttributes *attrs);
-	void (*imported) (GcrImporter *self, struct _GckObject *object);
+	void (*queued) (GcrImporter *self, const gchar *label, GckAttributes *attrs);
+	void (*imported) (GcrImporter *self, GckObject *object);
 };
 
 GType                     gcr_importer_get_type               (void);
 
 GcrImporter*              gcr_importer_new                    (void);
 
-struct _GckSlot*          gcr_importer_get_slot               (GcrImporter *self);
+GckSlot*                  gcr_importer_get_slot               (GcrImporter *self);
 
 void                      gcr_importer_set_slot               (GcrImporter *self,
-                                                               struct _GckSlot *slot);
+                                                               GckSlot *slot);
 
 GcrImporterPromptBehavior gcr_importer_get_prompt_behavior    (GcrImporter *self);
 
@@ -79,7 +79,7 @@ void                      gcr_importer_set_prompt_behavior    (GcrImporter *self
 
 void                      gcr_importer_queue                  (GcrImporter *self,
                                                                const gchar *label,
-                                                               struct _GckAttributes *attrs);
+                                                               GckAttributes *attrs);
 
 void                      gcr_importer_listen                 (GcrImporter *self,
                                                                GcrParser *parser);

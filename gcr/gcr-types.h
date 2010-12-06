@@ -30,6 +30,17 @@
 
 #include <glib.h>
 
+#ifndef GCK_API_SUBJECT_TO_CHANGE
+#define GCK_API_SUBJECT_TO_CHANGE 1
+#define __GCR_DEFINED_GCK_SUBJECT_TO_CHANGE__ 1
+#endif
+
+#include <gck/gck.h>
+
+#ifdef __GCR_DEFINED_GCK_SUBJECT_TO_CHANGE__
+#undef GCK_API_SUBJECT_TO_CHANGE
+#endif
+
 G_BEGIN_DECLS
 
 #define             GCR_DATA_ERROR                    (gcr_data_error_get_domain ())
@@ -73,11 +84,6 @@ enum {
 	GCR_FORMAT_PEM_PKCS8_ENCRYPTED,
 	GCR_FORMAT_PEM_PKCS12
 };
-
-/* Forward declare some of the Gck objects */
-struct _GckAttributes;
-struct _GckObject;
-struct _GckSlot;
 
 G_END_DECLS
 

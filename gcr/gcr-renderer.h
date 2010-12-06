@@ -63,10 +63,10 @@ void                   gcr_renderer_render                        (GcrRenderer *
 void                   gcr_renderer_emit_data_changed             (GcrRenderer *self);
 
 GcrRenderer*           gcr_renderer_create                        (const gchar *label,
-                                                                   struct _GckAttributes *attrs);
+                                                                   GckAttributes *attrs);
 
 void                   gcr_renderer_register                      (GType renderer_type,
-                                                                   struct _GckAttributes *attrs);
+                                                                   GckAttributes *attrs);
 
 G_END_DECLS
 
