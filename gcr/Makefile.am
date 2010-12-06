@@ -73,6 +73,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 	-DPKCS11_MODULE_PATH=\""$(libdir)/gnome-keyring/gnome-keyring-pkcs11.so"\" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
+	-DGCR_COMPILATION \
 	-DUIDIR=\""$(uidir)"\"
 
 libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \

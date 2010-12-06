@@ -17,6 +17,10 @@
  * 02111-1307, USA.
  */
 
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
+
 #ifndef __GCR_CERTIFICATE_WIDGET_H__
 #define __GCR_CERTIFICATE_WIDGET_H__
 
