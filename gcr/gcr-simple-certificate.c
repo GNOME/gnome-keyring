@@ -25,8 +25,6 @@
 #include "gcr-internal.h"
 #include "gcr-simple-certificate.h"
 
-#include "egg/egg-hex.h"
-
 #include <string.h>
 
 struct _GcrSimpleCertificatePrivate {
@@ -71,7 +69,7 @@ gcr_simple_certificate_class_init (GcrSimpleCertificateClass *klass)
 	_gcr_initialize ();
 }
 
-static const guchar* 
+static const guchar*
 gcr_simple_certificate_real_get_der_data (GcrCertificate *base, gsize *n_data)
 {
 	GcrSimpleCertificate *self = GCR_SIMPLE_CERTIFICATE (base);
