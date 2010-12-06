@@ -136,8 +136,13 @@ on_expander_expanded (GObject *object, GParamSpec *param_spec, gpointer user_dat
 static void
 style_display_item (GtkWidget *widget, GcrDisplayItem *item)
 {
+#if GTK_CHECK_VERSION (2,91,5)
+	GdkRGBA transparent = { 1.0, 1.0, 1.0, 0.0 };
+	gtk_widget_override_background_color (item->details_widget, GTK_STATE_NORMAL, &transparent);
+#else
 	GtkStyle *style = gtk_widget_get_style (widget);
 	gtk_widget_modify_bg (item->details_widget, GTK_STATE_NORMAL, &style->base[GTK_STATE_NORMAL]);
+#endif
 }
 
 static GcrDisplayItem*
