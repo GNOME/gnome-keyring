@@ -25,6 +25,7 @@
 
 #include "gkd-glue.h"
 #include "gkd-main.h"
+#include "gkd-capability.h"
 #include "gkd-pkcs11.h"
 #include "gkd-util.h"
 
@@ -777,6 +778,12 @@ main (int argc, char *argv[])
 	 * Without either of these options, we follow a more boring and
 	 * predictable startup.
 	 */
+
+	/*
+	 * Before we do ANYTHING, we drop privileges so we don't become
+	 * a security issue ourselves.
+	 */
+	gkd_capability_obtain_capability_and_drop_privileges ();
 
 #ifdef WITH_TESTS
 	g_setenv ("DBUS_FATAL_WARNINGS", "1", FALSE);

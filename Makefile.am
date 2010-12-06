@@ -64,12 +64,10 @@ install-pam:
 	@echo "WARNING: install-pam is no longer used, use the --with-pam-dir configure option instead"
 
 if WITH_COVERAGE
-clear:
-	$(LCOV) --directory . --zerocounters
-
 coverage:
 	mkdir -p testing/coverage
 	$(LCOV) --directory . --capture --output-file testing/coverage.info
 	$(GENHTML) --output-directory testing/coverage testing/coverage.info
+	$(LCOV) --directory . --zerocounters
 	@echo "file://$(abs_top_builddir)/testing/coverage/index.html"
 endif

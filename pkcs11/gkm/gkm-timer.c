@@ -131,9 +131,14 @@ gkm_timer_shutdown (void)
 	GkmTimer *timer;
 
 	if (g_atomic_int_dec_and_test (&timer_refs)) {
-		timer_run = FALSE;
-		g_assert (timer_cond);
-		g_cond_broadcast (timer_cond);
+
+		g_static_mutex_lock (&timer_mutex);
+
+			timer_run = FALSE;
+			g_assert (timer_cond);
+			g_cond_broadcast (timer_cond);
+
+		g_static_mutex_unlock (&timer_mutex);
 
 		g_assert (timer_thread);
 		g_thread_join (timer_thread);
