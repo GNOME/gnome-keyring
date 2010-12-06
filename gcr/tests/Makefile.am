@@ -3,6 +3,7 @@
 TESTING_FILES = \
 	test-certificate.c \
 	test-simple-certificate.c \
+	test-pkcs11-certificate.c \
 	test-trust.c \
 	unit-test-parser.c
 

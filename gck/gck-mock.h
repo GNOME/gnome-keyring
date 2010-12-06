@@ -152,6 +152,11 @@ CK_RV               gck_mock_C_GetAttributeValue                   (CK_SESSION_H
                                                                     CK_ATTRIBUTE_PTR pTemplate,
                                                                     CK_ULONG ulCount);
 
+CK_RV               gck_mock_fail_C_GetAttributeValue              (CK_SESSION_HANDLE hSession,
+                                                                    CK_OBJECT_HANDLE hObject,
+                                                                    CK_ATTRIBUTE_PTR pTemplate,
+                                                                    CK_ULONG ulCount);
+
 CK_RV               gck_mock_C_SetAttributeValue                   (CK_SESSION_HANDLE hSession,
                                                                     CK_OBJECT_HANDLE hObject,
                                                                     CK_ATTRIBUTE_PTR pTemplate,
