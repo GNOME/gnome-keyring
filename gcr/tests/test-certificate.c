@@ -10,23 +10,30 @@
 #include <string.h>
 
 static GcrCertificate *certificate = NULL;
+static GcrCertificate *certificate2 = NULL;
 
 TESTING_SETUP(certificate)
 {
 	guchar *contents;
 	gsize n_contents;
-	
+
 	contents = testing_data_read ("der-certificate.crt", &n_contents);
 	certificate = gcr_simple_certificate_new (contents, n_contents);
 	g_assert (certificate);
+	g_free (contents);
+
+	contents = testing_data_read ("der-certificate-dsa.cer", &n_contents);
+	certificate2 = gcr_simple_certificate_new (contents, n_contents);
+	g_assert (certificate2);
 	g_free (contents);
 }
 
 TESTING_TEARDOWN(certificate)
 {
-	if (certificate)
-		g_object_unref (certificate);
+	g_object_unref (certificate);
 	certificate = NULL;
+	g_object_unref (certificate2);
+	certificate2 = NULL;
 }
 
 TESTING_TEST(issuer_cn)
@@ -124,7 +131,7 @@ TESTING_TEST(serial_number)
 	gsize n_serial;
 	guchar *serial;
 	gchar *hex;
-	
+
 	serial = gcr_certificate_get_serial_number (certificate, &n_serial);
 	g_assert (serial);
 	g_assert_cmpuint (n_serial, ==, 1);
@@ -155,3 +162,20 @@ TESTING_TEST(fingerprint_hex)
 	g_free (print);
 }
 
+TESTING_TEST (certificate_key_size)
+{
+	guint key_size = gcr_certificate_get_key_size (certificate);
+	g_assert_cmpuint (key_size, ==, 1024);
+
+	key_size = gcr_certificate_get_key_size (certificate2);
+	g_assert_cmpuint (key_size, ==, 1024);
+}
+
+TESTING_TEST (certificate_is_issuer)
+{
+	gboolean ret = gcr_certificate_is_issuer (certificate, certificate);
+	g_assert (ret == TRUE);
+
+	ret = gcr_certificate_is_issuer (certificate, certificate2);
+	g_assert (ret == FALSE);
+}

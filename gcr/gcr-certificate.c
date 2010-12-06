@@ -61,6 +61,11 @@ typedef struct _GcrCertificateInfo {
 	guint key_size;
 } GcrCertificateInfo;
 
+/* Forward declarations */
+
+static gconstpointer _gcr_certificate_get_subject_const (GcrCertificate *self, gsize *n_data);
+static gconstpointer _gcr_certificate_get_issuer_const (GcrCertificate *self, gsize *n_data);
+
 /* -----------------------------------------------------------------------------
  * INTERNAL 
  */
@@ -87,7 +92,7 @@ certificate_info_load (GcrCertificate *cert)
 	GNode *asn1;
 	const guchar *der;
 	gsize n_der;
-	
+
 	g_assert (GCR_IS_CERTIFICATE (cert));
 	
 	der = gcr_certificate_get_der_data (cert, &n_der);
@@ -158,7 +163,7 @@ calculate_key_size (GcrCertificateInfo *info)
 	const guchar *data, *params;
 	gsize n_data, n_params;
 	guint key_size = 0, n_bits;
-	guchar *key;
+	guchar *key = NULL;
 	GQuark oid;
 
 	data = egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "subjectPublicKeyInfo", NULL), &n_data);
@@ -178,6 +183,7 @@ calculate_key_size (GcrCertificateInfo *info)
 		key = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "subjectPublicKey", NULL), NULL, &n_bits);
 		g_return_val_if_fail (key, 0);
 		key_size = calculate_rsa_key_size (key, n_bits / 8);
+		g_free (key);
 
 	/* The DSA key size is discovered by the prime in params */
 	} else if (oid == OID_DSA_KEY) {
@@ -189,7 +195,6 @@ calculate_key_size (GcrCertificateInfo *info)
 	}
 
 	egg_asn1x_destroy (asn);
-	g_free (key);
 
 	return key_size;
 }
@@ -200,7 +205,7 @@ digest_certificate (GcrCertificate *self, GChecksumType type)
 	GChecksum *digest;
 	const guchar *der;
 	gsize n_der;
-	
+
 	g_assert (GCR_IS_CERTIFICATE (self));
 
 	der = gcr_certificate_get_der_data (self, &n_der);
@@ -324,20 +329,46 @@ gcr_certificate_get_issuer_part (GcrCertificate *self, const char *part)
 	return egg_dn_read_part (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL), part);
 }
 
+static gconstpointer
+_gcr_certificate_get_issuer_const (GcrCertificate *self, gsize *n_data)
+{
+	GcrCertificateInfo *info;
+
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
+
+	return egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", NULL), n_data);
+}
+
 gpointer
 gcr_certificate_get_issuer_raw (GcrCertificate *self, gsize *n_data)
 {
-	GcrCertificateInfo *info;
 	gconstpointer data;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	g_return_val_if_fail (n_data, NULL);
 
-	info = certificate_info_load (self);
-	g_return_val_if_fail (info, NULL);
-
-	data = egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", NULL), n_data);
+	data = _gcr_certificate_get_issuer_const (self, n_data);
 	return g_memdup (data, data ? *n_data : 0);
+}
+
+gboolean
+gcr_certificate_is_issuer (GcrCertificate *self, GcrCertificate *issuer)
+{
+	gconstpointer subject_dn, issuer_dn;
+	gsize n_subject_dn, n_issuer_dn;
+
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), FALSE);
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (issuer), FALSE);
+
+	subject_dn = _gcr_certificate_get_subject_const (issuer, &n_subject_dn);
+	g_return_val_if_fail (subject_dn, FALSE);
+
+	issuer_dn = _gcr_certificate_get_issuer_const (self, &n_issuer_dn);
+	g_return_val_if_fail (issuer_dn, FALSE);
+
+	return (n_issuer_dn == n_subject_dn &&
+	        memcmp (issuer_dn, subject_dn, n_issuer_dn) == 0);
 }
 
 /**
@@ -436,6 +467,17 @@ gcr_certificate_get_subject_dn (GcrCertificate *self)
 	return egg_dn_read (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL));
 }
 
+static gconstpointer
+_gcr_certificate_get_subject_const (GcrCertificate *self, gsize *n_data)
+{
+	GcrCertificateInfo *info;
+
+	info = certificate_info_load (self);
+	g_return_val_if_fail (info, NULL);
+
+	return egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "subject", NULL), n_data);
+}
+
 gpointer
 gcr_certificate_get_subject_raw (GcrCertificate *self, gsize *n_data)
 {
@@ -448,7 +490,7 @@ gcr_certificate_get_subject_raw (GcrCertificate *self, gsize *n_data)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 
-	data = egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "subject", NULL), n_data);
+	data = _gcr_certificate_get_subject_const (self, n_data);
 	return g_memdup (data, data ? *n_data : 0);
 }
 
