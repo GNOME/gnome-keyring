@@ -70,4 +70,8 @@ coverage:
 	$(GENHTML) --output-directory testing/coverage testing/coverage.info
 	$(LCOV) --directory . --zerocounters
 	@echo "file://$(abs_top_builddir)/testing/coverage/index.html"
+
+clear-coverage:
+	$(LCOV) --directory . --zerocounters
+
 endif
