@@ -69,7 +69,7 @@ gcr_simple_certificate_class_init (GcrSimpleCertificateClass *klass)
 	_gcr_initialize ();
 }
 
-static const guchar*
+static gconstpointer
 gcr_simple_certificate_real_get_der_data (GcrCertificate *base, gsize *n_data)
 {
 	GcrSimpleCertificate *self = GCR_SIMPLE_CERTIFICATE (base);

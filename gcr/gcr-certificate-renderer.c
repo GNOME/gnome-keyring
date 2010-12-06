@@ -294,7 +294,7 @@ static void
 gcr_certificate_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 {
 	GcrCertificateRenderer *self;
-	const guchar *data, *value;
+	gconstpointer data, value;
 	gsize n_data, n_value, n_raw;
 	GcrDisplayView *view;
 	on_parsed_dn_args args;

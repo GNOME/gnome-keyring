@@ -55,7 +55,7 @@
  */
 
 typedef struct _GcrCertificateInfo {
-	const guchar *der;
+	gconstpointer der;
 	gsize n_der;
 	GNode *asn1;
 	guint key_size;
@@ -90,11 +90,11 @@ certificate_info_load (GcrCertificate *cert)
 {
 	GcrCertificateInfo *info;
 	GNode *asn1;
-	const guchar *der;
+	gconstpointer der;
 	gsize n_der;
 
 	g_assert (GCR_IS_CERTIFICATE (cert));
-	
+
 	der = gcr_certificate_get_der_data (cert, &n_der);
 	g_return_val_if_fail (der, NULL);
 
@@ -121,7 +121,7 @@ certificate_info_load (GcrCertificate *cert)
 }
 
 static guint
-calculate_rsa_key_size (const guchar *data, gsize n_data)
+calculate_rsa_key_size (gconstpointer data, gsize n_data)
 {
 	GNode *asn;
 	gsize n_content;
@@ -139,7 +139,7 @@ calculate_rsa_key_size (const guchar *data, gsize n_data)
 }
 
 static guint
-calculate_dsa_params_size (const guchar *data, gsize n_data)
+calculate_dsa_params_size (gconstpointer data, gsize n_data)
 {
 	GNode *asn;
 	gsize n_content;
@@ -160,7 +160,7 @@ static guint
 calculate_key_size (GcrCertificateInfo *info)
 {
 	GNode *asn;
-	const guchar *data, *params;
+	gconstpointer data, params;
 	gsize n_data, n_params;
 	guint key_size = 0, n_bits;
 	guchar *key = NULL;
@@ -203,7 +203,7 @@ static GChecksum*
 digest_certificate (GcrCertificate *self, GChecksumType type)
 {
 	GChecksum *digest;
-	const guchar *der;
+	gconstpointer der;
 	gsize n_der;
 
 	g_assert (GCR_IS_CERTIFICATE (self));
@@ -275,7 +275,7 @@ gcr_certificate_get_type (void)
  * 
  * Returns: raw DER data of the X509 certificate.
  **/
-const guchar*
+gconstpointer
 gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_data)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);

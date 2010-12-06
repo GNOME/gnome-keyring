@@ -39,7 +39,7 @@ typedef struct _GcrCertificateIface GcrCertificateIface;
 struct _GcrCertificateIface {
 	GTypeInterface parent;
 
-	const guchar* (*get_der_data)   (GcrCertificate *self, gsize *n_data);
+	gconstpointer (*get_der_data)   (GcrCertificate *self, gsize *n_data);
 
 	gpointer dummy1;
 	gpointer dummy2;
@@ -52,7 +52,7 @@ struct _GcrCertificateIface {
 
 GType               gcr_certificate_get_type               (void);
 
-const guchar*       gcr_certificate_get_der_data           (GcrCertificate *self,
+gconstpointer       gcr_certificate_get_der_data           (GcrCertificate *self,
                                                             gsize *n_data);
 
 gchar*              gcr_certificate_get_issuer_cn          (GcrCertificate *self);
