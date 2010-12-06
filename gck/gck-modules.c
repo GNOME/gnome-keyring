@@ -73,6 +73,10 @@ gck_modules_list_registered_paths (GError **err)
 		if (!name)
 			break;
 
+		/* HACK: libtool can bite my shiny metal ass */
+		if (g_str_has_suffix (name, ".la"))
+			continue;
+
 		path = g_build_filename (PKCS11_REGISTRY_DIR, name, NULL);
 		if (g_file_test (path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
 			g_array_append_val (paths, path);
