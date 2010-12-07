@@ -23,6 +23,7 @@
 stamp-*
 Makefile
 Makefile.in
+Makefile.local
 core
 test-suite.[ch]
 run-tests

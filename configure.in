@@ -651,6 +651,9 @@ AC_SUBST(LIBRARY_LIBS)
 AC_SUBST(P11_TESTS_CFLAGS)
 AC_SUBST(P11_TESTS_LIBS)
 
+# Are we running with GNU Make?
+AM_CONDITIONAL([WITH_GNU_MAKE], [make --version | grep -q 'GNU Make' > /dev/null])
+
 # HACK: Because autoconf is nasty
 if test "${prefix}" = "NONE"; then
     prefix=/usr/local
