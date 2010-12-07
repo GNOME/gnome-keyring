@@ -2,8 +2,7 @@
 #include "config.h"
 #include "test-suite.h"
 
-#include "gcr-certificate.h"
-#include "gcr-simple-certificate.h"
+#include "gcr/gcr.h"
 
 #include <glib.h>
 

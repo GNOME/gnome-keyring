@@ -28,7 +28,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gcr/gcr-parser.h"
+#include "gcr/gcr.h"
 
 #include "gck/gck.h"
 
