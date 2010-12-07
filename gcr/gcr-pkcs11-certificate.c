@@ -33,6 +33,21 @@
 
 #include "pkcs11/pkcs11.h"
 
+/**
+ * SECTION:gcr-pkcs11-certificate
+ * @title: GcrPkcs11Certificate
+ * @short_description: A certificate loaded from PKCS\#11 storage
+ *
+ * A #GcrPkcs11Certificate is a certificate loaded from a PKCS\#11 storage.
+ * It is also a valid #GckObject and can be used as such.
+ *
+ * Use gcr_pkcs11_certificate_lookup_issuer() to lookup the issuer of a given
+ * certificate in the PKCS\#11 store.
+ *
+ * Various common PKCS\#11 certificate attributes are automatically loaded and
+ * are available via gcr_pkcs11_certificate_get_attributes().
+ */
+
 enum {
 	PROP_0,
 	PROP_ATTRIBUTES
@@ -235,6 +250,11 @@ gcr_pkcs11_certificate_class_init (GcrPkcs11CertificateClass *klass)
 	gobject_class->set_property = gcr_pkcs11_certificate_set_property;
 	gobject_class->finalize = gcr_pkcs11_certificate_finalize;
 
+	/**
+	 * GcrPkcs11Certificate:attributes:
+	 *
+	 * Automatically loaded attributes for this certificate.
+	 */
 	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
 	         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the renderer",
 	                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -270,7 +290,14 @@ gcr_certificate_iface (GcrCertificateIface *iface)
  * PUBLIC
  */
 
-
+/**
+ * gcr_pkcs11_certificate_get_attributes:
+ * @self: A #GcrPkcs11Certificate
+ *
+ * Access the automatically loaded attributes for this certificate.
+ *
+ * Returns: the certificate attributes
+ */
 GckAttributes*
 gcr_pkcs11_certificate_get_attributes (GcrPkcs11Certificate *self)
 {
@@ -278,55 +305,106 @@ gcr_pkcs11_certificate_get_attributes (GcrPkcs11Certificate *self)
 	return self->pv->attrs;
 }
 
+/**
+ * gcr_pkcs11_certificate_lookup_issuer:
+ * @certificate: a #GcrCertificate
+ * @cancellable: a #GCancellable
+ * @error: a #GError, or NULL
+ *
+ * Lookup a the issuer of a @certificate in the PKCS\#11 storage. The
+ * lookup is done using the issuer DN of the certificate. No certificate chain
+ * verification is done. Use a crypto library to make trust decisions.
+ *
+ * This call may block, see gcr_pkcs11_certificate_lookup_issuer() for the
+ * non-blocking version.
+ *
+ * Will return %NULL if no issuer certificate is found. Use @error to determine
+ * if an error occurred.
+ *
+ * Returns: a new #GcrPkcs11Certificate, or %NULL
+ */
 GcrCertificate*
-gcr_pkcs11_certificate_lookup_issuer (GcrCertificate *cert, GCancellable *cancel,
+gcr_pkcs11_certificate_lookup_issuer (GcrCertificate *certificate, GCancellable *cancellable,
                                       GError **error)
 {
 	GckEnumerator *en;
 	GcrCertificate *issuer;
 
-	en = prepare_lookup_certificate_issuer (cert);
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), NULL);
+
+	en = prepare_lookup_certificate_issuer (certificate);
 	g_return_val_if_fail (en, FALSE);
 
-	issuer = perform_lookup_certificate (en, cancel, error);
+	issuer = perform_lookup_certificate (en, cancellable, error);
 	g_object_unref (en);
 
 	return issuer;
 }
 
+/**
+ * gcr_pkcs11_certificate_lookup_issuer_async:
+ * @certificate: a #GcrCertificate
+ * @cancellable: a #GCancellable
+ * @callback: a #GAsyncReadyCallback to call when the operation completes
+ * @user_data: the data to pass to callback function
+ *
+ * Lookup a the issuer of a @certificate in the PKCS\#11 storage. The
+ * lookup is done using the issuer DN of the certificate. No certificate chain
+ * verification is done. Use a crypto library to make trust decisions.
+ *
+ * When the operation is finished, callback will be called. You can then call
+ * gcr_pkcs11_certificate_lookup_issuer_finish() to get the result of the
+ * operation.
+ */
 void
-gcr_pkcs11_certificate_lookup_issuer_async (GcrCertificate *cert, GCancellable *cancel,
+gcr_pkcs11_certificate_lookup_issuer_async (GcrCertificate *certificate, GCancellable *cancellable,
                                             GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
-	en = prepare_lookup_certificate_issuer (cert);
+	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
+
+	en = prepare_lookup_certificate_issuer (certificate);
 	g_return_if_fail (en);
 
 	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
 	                                   gcr_pkcs11_certificate_lookup_issuer_async);
 
 	g_simple_async_result_run_in_thread (async, thread_lookup_certificate,
-	                                     G_PRIORITY_DEFAULT, cancel);
+	                                     G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (async);
 	g_object_unref (en);
 }
 
+/**
+ * gcr_pkcs11_certificate_lookup_issuer_finish:
+ * @result: the #GAsyncResult passed to the callback
+ * @error: a #GError, or NULL
+ *
+ * Finishes an asynchronous operation started by
+ * gcr_pkcs11_certificate_lookup_issuer_async().
+ *
+ * Will return %NULL if no issuer certificate is found. Use @error to determine
+ * if an error occurred.
+ *
+ * Returns: a new #GcrPkcs11Certificate, or %NULL
+ */
 GcrCertificate*
-gcr_pkcs11_certificate_lookup_issuer_finish (GAsyncResult *res, GError **error)
+gcr_pkcs11_certificate_lookup_issuer_finish (GAsyncResult *result, GError **error)
 {
 	GcrCertificate *cert;
 
-	g_return_val_if_fail (g_simple_async_result_is_valid (res,
-	                      g_async_result_get_source_object (res),
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result,
+	                      g_async_result_get_source_object (result),
 	                      gcr_pkcs11_certificate_lookup_issuer_async), NULL);
 
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return NULL;
 
-	cert = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (res));
+	cert = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
 	if (cert != NULL)
 		g_object_ref (cert);
 

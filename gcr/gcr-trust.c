@@ -36,7 +36,7 @@
 /**
  * SECTION:gcr-trust
  * @title: Trust Storage and Lookups
- * @short_description: Used to store and lookup bits of information used for
+ * @short_description: Store and lookup bits of information used for
  * verifying certificates.
  *
  * These functions provide access to stored information about which

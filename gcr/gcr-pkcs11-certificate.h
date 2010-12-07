@@ -59,16 +59,16 @@ GType                   gcr_pkcs11_certificate_get_type               (void);
 
 GckAttributes*          gcr_pkcs11_certificate_get_attributes         (GcrPkcs11Certificate *self);
 
-GcrCertificate*         gcr_pkcs11_certificate_lookup_issuer          (GcrCertificate *cert,
-                                                                       GCancellable *cancel,
+GcrCertificate*         gcr_pkcs11_certificate_lookup_issuer          (GcrCertificate *certificate,
+                                                                       GCancellable *cancellable,
                                                                        GError **error);
 
-void                    gcr_pkcs11_certificate_lookup_issuer_async    (GcrCertificate *cert,
-                                                                       GCancellable *cancel,
+void                    gcr_pkcs11_certificate_lookup_issuer_async    (GcrCertificate *certificate,
+                                                                       GCancellable *cancellable,
                                                                        GAsyncReadyCallback callback,
                                                                        gpointer user_data);
 
-GcrCertificate*         gcr_pkcs11_certificate_lookup_issuer_finish   (GAsyncResult *res,
+GcrCertificate*         gcr_pkcs11_certificate_lookup_issuer_finish   (GAsyncResult *result,
                                                                        GError **error);
 
 G_END_DECLS

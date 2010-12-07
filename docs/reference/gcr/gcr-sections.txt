@@ -39,16 +39,18 @@ GCR_PARSER_GET_CLASS
 
 <SECTION>
 <FILE>gcr-certificate</FILE>
-GCR_CERTIFICATE_GET_INTERFACE
 GcrCertificate
 GcrCertificateIface
 gcr_certificate_get_der_data
 gcr_certificate_get_issuer_cn
 gcr_certificate_get_issuer_dn
 gcr_certificate_get_issuer_part
+gcr_certificate_get_issuer_raw
+gcr_certificate_is_issuer
 gcr_certificate_get_subject_cn
 gcr_certificate_get_subject_dn
 gcr_certificate_get_subject_part
+gcr_certificate_get_subject_raw
 gcr_certificate_get_issued_date
 gcr_certificate_get_expiry_date
 gcr_certificate_get_serial_number
@@ -60,6 +62,7 @@ gcr_certificate_get_fingerprint_hex
 GCR_CERTIFICATE
 GCR_IS_CERTIFICATE
 GCR_TYPE_CERTIFICATE
+GCR_CERTIFICATE_GET_INTERFACE
 gcr_certificate_get_type
 </SECTION>
 
@@ -114,11 +117,12 @@ GCR_IMPORTER_GET_CLASS
 
 <SECTION>
 <FILE>gcr-simple-certificate</FILE>
-GcrSimpleCertificatePrivate
 <TITLE>GcrSimpleCertificate</TITLE>
 GcrSimpleCertificate
 gcr_simple_certificate_new
+gcr_simple_certificate_new_static
 <SUBSECTION Standard>
+GcrSimpleCertificatePrivate
 GCR_SIMPLE_CERTIFICATE
 GCR_IS_SIMPLE_CERTIFICATE
 GCR_TYPE_SIMPLE_CERTIFICATE
@@ -126,6 +130,22 @@ gcr_simple_certificate_get_type
 GCR_SIMPLE_CERTIFICATE_CLASS
 GCR_IS_SIMPLE_CERTIFICATE_CLASS
 GCR_SIMPLE_CERTIFICATE_GET_CLASS
+</SECTION>
+
+<SECTION>
+<FILE>gcr-pkcs11-certificate</FILE>
+<TITLE>GcrPkcs11Certificate</TITLE>
+GcrPkcs11Certificate
+gcr_pkcs11_certificate_get_attributes
+gcr_pkcs11_certificate_lookup_issuer
+gcr_pkcs11_certificate_lookup_issuer_async
+gcr_pkcs11_certificate_lookup_issuer_finish
+<SUBSECTION Standard>
+gcr_pkcs11_certificate_get_type
+GCR_IS_PKCS11_CERTIFICATE
+GCR_IS_PKCS11_CERTIFICATE_CLASS
+GcrPkcs11CertificateClass
+GcrPkcs11CertificatePrivate
 </SECTION>
 
 <SECTION>

@@ -34,13 +34,18 @@
 /**
  * SECTION:gcr-certificate
  * @title: GcrCertificate
- * @short_description: Represents a certificate.
+ * @short_description: Represents an X.509 certificate
  * 
- * This is an interface that represents an X509 certificate. Objects can 
+ * This is an interface that represents an X.509 certificate. Objects can
  * implement this interface to make a certificate usable with the GCR
  * library. 
- * 
- * You can use #GcrSimpleCertificate to simply load a certificate.
+ *
+ * Various methods are available to parse out relevant bits of the certificate.
+ * However no verification of the validity of a certificate is done here. Use
+ * your favorite crypto library to do this.
+ *
+ * You can use #GcrSimpleCertificate to simply load a certificate for which
+ * you already have the raw certificate data.
  */
 
 /* 
@@ -107,7 +112,7 @@ certificate_info_load (GcrCertificate *cert)
 	/* Cache is invalid or non existent */
 	asn1 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", der, n_der);
 	if (asn1 == NULL) {
-		g_warning ("a derived class provided an invalid or unparseable X509 DER certificate data.");
+		g_warning ("a derived class provided an invalid or unparseable X.509 DER certificate data.");
 		return NULL;
 	}
 	
@@ -271,9 +276,9 @@ gcr_certificate_get_type (void)
  * @self: a #GcrCertificate
  * @n_data: a pointer to a location to store the size of the resulting DER data.
  * 
- * Gets the raw DER data for an X509 certificate.
+ * Gets the raw DER data for an X.509 certificate.
  * 
- * Returns: raw DER data of the X509 certificate.
+ * Returns: raw DER data of the X.509 certificate.
  **/
 gconstpointer
 gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_data)
@@ -340,6 +345,17 @@ _gcr_certificate_get_issuer_const (GcrCertificate *self, gsize *n_data)
 	return egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", NULL), n_data);
 }
 
+/**
+ * gcr_certificate_get_issuer_raw:
+ * @self: a #GcrCertificate
+ * @n_data: The length of the returned data.
+ *
+ * Get the raw DER data for the issuer DN of the certificate.
+ *
+ * The data should be freed by using g_free() when no longer required.
+ *
+ * Returns: allocated memory containing the raw issuer.
+ */
 gpointer
 gcr_certificate_get_issuer_raw (GcrCertificate *self, gsize *n_data)
 {
@@ -352,6 +368,18 @@ gcr_certificate_get_issuer_raw (GcrCertificate *self, gsize *n_data)
 	return g_memdup (data, data ? *n_data : 0);
 }
 
+/**
+ * gcr_certificate_is_issuer:
+ * @self: a #GcrCertificate
+ * @issuer: a possible issuer #GcrCertificate
+ *
+ * Check if @issuer could be the issuer of this certificate. This is done by
+ * comparing the relevant subject and issuer fields. No signature check is
+ * done. Proper verification of certificates must be done via a crypto
+ * library.
+ *
+ * Returns: whether @issuer could be the issuer of the certificate.
+ */
 gboolean
 gcr_certificate_is_issuer (GcrCertificate *self, GcrCertificate *issuer)
 {
@@ -478,6 +506,17 @@ _gcr_certificate_get_subject_const (GcrCertificate *self, gsize *n_data)
 	return egg_asn1x_get_raw_element (egg_asn1x_node (info->asn1, "tbsCertificate", "subject", NULL), n_data);
 }
 
+/**
+ * gcr_certificate_get_subject_raw:
+ * @self: a #GcrCertificate
+ * @n_data: The length of the returned data.
+ *
+ * Get the raw DER data for the subject DN of the certificate.
+ *
+ * The data should be freed by using g_free() when no longer required.
+ *
+ * Returns: allocated memory containing the raw subject.
+ */
 gpointer
 gcr_certificate_get_subject_raw (GcrCertificate *self, gsize *n_data)
 {
