@@ -369,18 +369,34 @@ AM_CONDITIONAL(WITH_GPG, test "$enable_gpg_agent" != "no")
 # Trusted Root Certificates Directory
 #
 
-AC_ARG_WITH([root-certs],
-            [AC_HELP_STRING([--with-root-certs=DIR],
-                            [directory with trusted root certificates])])
+AC_MSG_CHECKING([location of system Certificate Authority list])
+AC_ARG_WITH(root-certs,
+		[AC_HELP_STRING([--with-root-certs=@<:@path@:>@],
+			[path to system Certificate Authority list])])
+if test "$with_root_certs" = "no"; then
+	AC_MSG_RESULT([disabled])
+	root_status="none"
+	with_root_certs="no"
+else
+	if test -z "$with_root_certs"; then
+		for f in /etc/pki/tls/certs /etc/ssl/certs; do
+			if test -d "$f"; then
+				with_root_certs="$f"
+			fi
+		done
+		if test -z "$with_root_certs"; then
+			AC_MSG_ERROR([could not find. Use --with-root-certs=path to set, or --without-root-certs to disable])
+		fi
+	fi
 
-root_status="none"
-if test -n "$with_root_certs"; then
-	AC_DEFINE_UNQUOTED(ROOT_CERTIFICATES, "$with_root_certs", [Directory for trusted root certificates])
-	root_status="$with_root_certs"
+	AC_MSG_RESULT($with_root_certs)
+	if ! test -d "$with_root_certs"; then
+		AC_MSG_ERROR([No such directory '$with_root_certs'. Use --with-root-certs=path to set, or --without-root-certs to disable])
+	fi
+
+	root_status="yes ($with_root_certs)"
+	AC_DEFINE_UNQUOTED([ROOT_CERTIFICATES], ["$with_root_certs"], [path to system Certificate Authority list])
 fi
-
-AM_CONDITIONAL(WITH_ROOT_CERTS, test -n "$with_root_certs")
-
 
 # --------------------------------------------------------------------
 # Check for /dev/random
