@@ -696,7 +696,7 @@ gcr_certificate_chain_build_async (GcrCertificateChain *self, const gchar *purpo
 
 	g_simple_async_result_run_in_thread (result, thread_build_chain,
 	                                     G_PRIORITY_DEFAULT, cancellable);
-
+	g_object_unref (result);
 }
 
 /**
