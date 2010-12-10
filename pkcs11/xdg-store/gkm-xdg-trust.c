@@ -39,6 +39,7 @@
 
 #include "pkcs11/pkcs11i.h"
 #include "pkcs11/pkcs11n.h"
+#include "pkcs11/pkcs11x.h"
 
 #include <libtasn1.h>
 
@@ -220,14 +221,14 @@ validate_integer (CK_ATTRIBUTE_PTR attr)
 }
 
 static GQuark
-assertion_type_to_level_enum (CK_ASSERTION_TYPE type)
+assertion_type_to_level_enum (CK_X_ASSERTION_TYPE type)
 {
 	switch (type) {
-	case CKT_G_UNTRUSTED_CERTIFICATE:
+	case CKT_X_UNTRUSTED_CERTIFICATE:
 		return TRUST_UNTRUSTED;
-	case CKT_G_ANCHORED_CERTIFICATE:
+	case CKT_X_ANCHORED_CERTIFICATE:
 		return TRUST_TRUSTED_ANCHOR;
-	case CKT_G_PINNED_CERTIFICATE:
+	case CKT_X_PINNED_CERTIFICATE:
 		return TRUST_TRUSTED;
 	default:
 		return 0;
@@ -235,14 +236,14 @@ assertion_type_to_level_enum (CK_ASSERTION_TYPE type)
 }
 
 static gboolean
-level_enum_to_assertion_type (GQuark level, CK_ASSERTION_TYPE *type)
+level_enum_to_assertion_type (GQuark level, CK_X_ASSERTION_TYPE *type)
 {
 	if (level == TRUST_UNTRUSTED)
-		*type = CKT_G_UNTRUSTED_CERTIFICATE;
+		*type = CKT_X_UNTRUSTED_CERTIFICATE;
 	else if (level == TRUST_TRUSTED_ANCHOR)
-		*type = CKT_G_ANCHORED_CERTIFICATE;
+		*type = CKT_X_ANCHORED_CERTIFICATE;
 	else if (level == TRUST_TRUSTED)
-		*type = CKT_G_PINNED_CERTIFICATE;
+		*type = CKT_X_PINNED_CERTIFICATE;
 	else if (level == TRUST_UNKNOWN)
 		*type = 0;
 	else
@@ -270,7 +271,7 @@ create_assertions (void)
 static GkmAssertion*
 create_assertion (GkmXdgTrust *self, GNode *asn)
 {
-	CK_ASSERTION_TYPE type;
+	CK_X_ASSERTION_TYPE type;
 	GkmAssertion *assertion;
 	GQuark level;
 	gchar *purpose;
@@ -608,7 +609,7 @@ gkm_xdg_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 		return trust_get_integer (self, "serialNumber", attr);
 	case CKA_ISSUER:
 		return trust_get_der (self, "issuer", attr);
-	case CKA_G_CERTIFICATE_VALUE:
+	case CKA_X_CERTIFICATE_VALUE:
 		return trust_get_complete (self, attr);
 
 	/* Certificate hash values */
@@ -653,11 +654,11 @@ gkm_xdg_trust_get_level (GkmTrust *base, const gchar *purpose)
 		return GKM_TRUST_UNKNOWN;
 
 	type = gkm_assertion_get_trust_type (assertion);
-	if (type == CKT_G_ANCHORED_CERTIFICATE)
+	if (type == CKT_X_ANCHORED_CERTIFICATE)
 		return GKM_TRUST_ANCHOR;
-	else if (type == CKT_G_PINNED_CERTIFICATE)
+	else if (type == CKT_X_PINNED_CERTIFICATE)
 		return GKM_TRUST_TRUSTED;
-	else if (type == CKT_G_UNTRUSTED_CERTIFICATE)
+	else if (type == CKT_X_UNTRUSTED_CERTIFICATE)
 		return GKM_TRUST_UNTRUSTED;
 	else
 		g_return_val_if_reached (GKM_TRUST_UNKNOWN);
@@ -802,7 +803,7 @@ gkm_xdg_trust_create_for_assertion (GkmModule *module, GkmManager *manager,
 
 	serial = gkm_attributes_find (attrs, n_attrs, CKA_SERIAL_NUMBER);
 	issuer = gkm_attributes_find (attrs, n_attrs, CKA_ISSUER);
-	cert = gkm_attributes_find (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE);
+	cert = gkm_attributes_find (attrs, n_attrs, CKA_X_CERTIFICATE_VALUE);
 
 	/* A trust object with just serial + issuer */
 	if (serial != NULL && issuer != NULL) {
@@ -836,7 +837,7 @@ gkm_xdg_trust_create_for_assertion (GkmModule *module, GkmManager *manager,
 		return NULL;
 	}
 
-	gkm_attributes_consume (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE, CKA_ISSUER,
+	gkm_attributes_consume (attrs, n_attrs, CKA_X_CERTIFICATE_VALUE, CKA_ISSUER,
 	                        CKA_SERIAL_NUMBER, G_MAXULONG);
 
 	return trust;

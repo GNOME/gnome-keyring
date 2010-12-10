@@ -27,8 +27,8 @@
 #include "gkm-trust.h"
 #include "gkm-util.h"
 
-#include "pkcs11/pkcs11g.h"
 #include "pkcs11/pkcs11i.h"
+#include "pkcs11/pkcs11x.h"
 
 #include <glib/gi18n.h>
 
@@ -68,16 +68,16 @@ gkm_assertion_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 	case CKA_PRIVATE:
 		return gkm_attribute_set_bool (attr, CK_FALSE);
 	case CKA_CLASS:
-		return gkm_attribute_set_ulong (attr, CKO_G_TRUST_ASSERTION);
+		return gkm_attribute_set_ulong (attr, CKO_X_TRUST_ASSERTION);
 	case CKA_MODIFIABLE:
 		return gkm_attribute_set_bool (attr, CK_FALSE);
 
 	/* Various trust flags */
-	case CKA_G_ASSERTION_TYPE:
+	case CKA_X_ASSERTION_TYPE:
 		return gkm_attribute_set_ulong (attr, self->pv->type);
-	case CKA_G_PURPOSE:
+	case CKA_X_PURPOSE:
 		return gkm_attribute_set_string (attr, self->pv->purpose);
-	case CKA_G_PEER:
+	case CKA_X_PEER:
 		if (!self->pv->peer)
 			return CKR_ATTRIBUTE_TYPE_INVALID;
 		return gkm_attribute_set_string (attr, self->pv->peer);
@@ -85,7 +85,7 @@ gkm_assertion_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 	/* Certificate reference values */
 	case CKA_SERIAL_NUMBER:
 	case CKA_ISSUER:
-	case CKA_G_CERTIFICATE_VALUE:
+	case CKA_X_CERTIFICATE_VALUE:
 		return gkm_object_get_attribute (GKM_OBJECT (self->pv->trust), session, attr);
 
 	default:

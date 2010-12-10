@@ -30,7 +30,7 @@
 
 #include "ssh-store/gkm-ssh-private-key.h"
 
-#include "pkcs11g.h"
+#include "pkcs11i.h"
 
 static GkmModule *module = NULL;
 static GkmSession *session = NULL;

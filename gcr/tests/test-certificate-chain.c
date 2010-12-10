@@ -10,6 +10,9 @@
 #include "gck/gck-mock.h"
 #include "gck/gck-test.h"
 
+#include "pkcs11/pkcs11.h"
+#include "pkcs11/pkcs11x.h"
+
 #include <glib.h>
 
 #include <string.h>
@@ -173,10 +176,10 @@ add_anchor_to_module (GcrCertificate *certificate, const gchar *purpose)
 
 	/* And add a pinned certificate for the signed certificate */
 	attrs = gck_attributes_new ();
-	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, data, n_data);
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
-	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_ANCHORED_CERTIFICATE);
-	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
+	gck_attributes_add_data (attrs, CKA_X_CERTIFICATE_VALUE, data, n_data);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_X_TRUST_ASSERTION);
+	gck_attributes_add_ulong (attrs, CKA_X_ASSERTION_TYPE, CKT_X_ANCHORED_CERTIFICATE);
+	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 	gck_mock_module_take_object (attrs);
 }
 
@@ -192,11 +195,11 @@ add_pinned_to_module (GcrCertificate *certificate, const gchar *purpose, const g
 
 	/* And add a pinned certificate for the signed certificate */
 	attrs = gck_attributes_new ();
-	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, data, n_data);
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
-	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_PINNED_CERTIFICATE);
-	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_PEER, host);
+	gck_attributes_add_data (attrs, CKA_X_CERTIFICATE_VALUE, data, n_data);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_X_TRUST_ASSERTION);
+	gck_attributes_add_ulong (attrs, CKA_X_ASSERTION_TYPE, CKT_X_PINNED_CERTIFICATE);
+	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_X_PEER, host);
 	gck_mock_module_take_object (attrs);
 }
 

@@ -34,6 +34,7 @@
 
 #include "pkcs11/pkcs11i.h"
 #include "pkcs11/pkcs11n.h"
+#include "pkcs11/pkcs11x.h"
 
 #include <glib/gi18n.h>
 
@@ -49,7 +50,7 @@ G_DEFINE_TYPE (GkmXdgAssertion, gkm_xdg_assertion, GKM_TYPE_ASSERTION);
 
 static GkmXdgTrust*
 lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
-                               GkmTransaction *transaction, CK_ASSERTION_TYPE type,
+                               GkmTransaction *transaction, CK_X_ASSERTION_TYPE type,
                                CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gboolean *created)
 {
 	CK_ATTRIBUTE_PTR serial, issuer, value;
@@ -66,9 +67,9 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 	lookups[0].ulValueLen = sizeof (klass);
 
 	switch (type) {
-	case CKT_G_ANCHORED_CERTIFICATE:
-	case CKT_G_PINNED_CERTIFICATE:
-		value = gkm_attributes_find (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE);
+	case CKT_X_ANCHORED_CERTIFICATE:
+	case CKT_X_PINNED_CERTIFICATE:
+		value = gkm_attributes_find (attrs, n_attrs, CKA_X_CERTIFICATE_VALUE);
 		if (!value) {
 			gkm_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
 			return NULL;
@@ -79,7 +80,7 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		n_lookups = 2;
 		break;
 
-	case CKT_G_UNTRUSTED_CERTIFICATE:
+	case CKT_X_UNTRUSTED_CERTIFICATE:
 		serial = gkm_attributes_find (attrs, n_attrs, CKA_SERIAL_NUMBER);
 		issuer = gkm_attributes_find (attrs, n_attrs, CKA_ISSUER);
 		if (!serial || !issuer) {
@@ -112,9 +113,9 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		trust = gkm_xdg_trust_create_for_assertion (module, manager, transaction,
 		                                            lookups, n_lookups);
 
-		gkm_attributes_consume (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE,
+		gkm_attributes_consume (attrs, n_attrs, CKA_X_CERTIFICATE_VALUE,
 		                        CKA_ISSUER, CKA_SERIAL_NUMBER, G_MAXULONG);
-		gkm_attributes_consume (lookups, n_lookups, CKA_G_CERTIFICATE_VALUE,
+		gkm_attributes_consume (lookups, n_lookups, CKA_X_CERTIFICATE_VALUE,
 		                        CKA_ISSUER, CKA_SERIAL_NUMBER, G_MAXULONG);
 
 		if (!gkm_transaction_get_failed (transaction))
@@ -130,7 +131,7 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
                           CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 {
 	GkmAssertion *assertion;
-	CK_ASSERTION_TYPE type;
+	CK_X_ASSERTION_TYPE type;
 	GkmManager *manager;
 	gboolean created = FALSE;
 	GkmXdgTrust *trust;
@@ -139,17 +140,17 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
 
-	if (!gkm_attributes_find_ulong (attrs, n_attrs, CKA_G_ASSERTION_TYPE, &type)) {
+	if (!gkm_attributes_find_ulong (attrs, n_attrs, CKA_X_ASSERTION_TYPE, &type)) {
 		gkm_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
 		return NULL;
 	}
 
-	if (!gkm_attributes_find_string (attrs, n_attrs, CKA_G_PURPOSE, &purpose)) {
+	if (!gkm_attributes_find_string (attrs, n_attrs, CKA_X_PURPOSE, &purpose)) {
 		gkm_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
 		return NULL;
 	}
 
-	if (!gkm_attributes_find_string (attrs, n_attrs, CKA_G_PEER, &peer))
+	if (!gkm_attributes_find_string (attrs, n_attrs, CKA_X_PEER, &peer))
 		peer = NULL;
 
 	/* Try to find or create an appropriate trust object for this assertion */
@@ -182,7 +183,7 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 
 		/* A new trust assertion */
 		} else {
-			gkm_attributes_consume (attrs, n_attrs, CKA_G_ASSERTION_TYPE, CKA_G_PURPOSE, G_MAXULONG);
+			gkm_attributes_consume (attrs, n_attrs, CKA_X_ASSERTION_TYPE, CKA_X_PURPOSE, G_MAXULONG);
 			gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (assertion),
 			                                      TRUE, attrs, n_attrs);
 		}
@@ -216,7 +217,7 @@ gkm_xdg_assertion_class_init (GkmXdgAssertionClass *klass)
 GkmFactory*
 gkm_xdg_assertion_get_factory (void)
 {
-	static CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	static CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 
 	static CK_ATTRIBUTE attributes[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },

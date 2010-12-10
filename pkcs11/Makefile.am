@@ -4,8 +4,8 @@ incdir = $(includedir)/gck
 
 inc_HEADERS = \
 	pkcs11.h \
-	pkcs11g.h \
-	pkcs11n.h
+	pkcs11n.h \
+	pkcs11x.h
 
 EXTRA_DIST = \
 	pkcs11i.h

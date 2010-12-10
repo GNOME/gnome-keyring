@@ -34,6 +34,7 @@
 
 #include "pkcs11/pkcs11i.h"
 #include "pkcs11/pkcs11n.h"
+#include "pkcs11/pkcs11x.h"
 
 #include <glib/gi18n.h>
 
@@ -175,13 +176,13 @@ build_linked_assertion (GkmRootsTrust *self, GkmTrustLevel level, const gchar *p
 	case GKM_TRUST_UNKNOWN:
 		return;
 	case GKM_TRUST_TRUSTED:
-		type = CKT_G_PINNED_CERTIFICATE;
+		type = CKT_X_PINNED_CERTIFICATE;
 		break;
 	case GKM_TRUST_UNTRUSTED:
-		type = CKT_G_UNTRUSTED_CERTIFICATE;
+		type = CKT_X_UNTRUSTED_CERTIFICATE;
 		break;
 	case GKM_TRUST_ANCHOR:
-		type = CKT_G_ANCHORED_CERTIFICATE;
+		type = CKT_X_ANCHORED_CERTIFICATE;
 		break;
 	default:
 		g_assert_not_reached ();
@@ -240,7 +241,7 @@ gkm_roots_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUT
 		return hash_certificate (self, GCRY_MD_MD5, attr);
 	case CKA_CERT_SHA1_HASH:
 		return hash_certificate (self, GCRY_MD_SHA1, attr);
-	case CKA_G_CERTIFICATE_VALUE:
+	case CKA_X_CERTIFICATE_VALUE:
 		return full_certificate (self, attr);
 
 	default:

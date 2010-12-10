@@ -28,7 +28,9 @@
 #include "gkm/gkm-module.h"
 #include "gkm/gkm-session.h"
 
+#include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11n.h"
+#include "pkcs11/pkcs11x.h"
 
 static GkmModule *module = NULL;
 static GkmSession *session = NULL;
@@ -161,18 +163,18 @@ TESTING_TEST (trust_load_objects)
 
 TESTING_TEST (trust_create_assertion_complete)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_ANCHORED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_OBJECT_HANDLE check = 0;
 	CK_ULONG n_objects = 0;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
@@ -192,17 +194,17 @@ TESTING_TEST (trust_create_assertion_complete)
 
 TESTING_TEST (trust_complete_assertion_has_no_serial_or_issuer)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_ANCHORED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_ATTRIBUTE check;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
@@ -224,19 +226,19 @@ TESTING_TEST (trust_complete_assertion_has_no_serial_or_issuer)
 
 TESTING_TEST (trust_complete_assertion_netscape_md5_hash)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
-	CK_ASSERTION_TYPE atype = CKT_G_PINNED_CERTIFICATE;
+	CK_X_ASSERTION_TYPE atype = CKT_X_PINNED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_OBJECT_HANDLE check = 0;
 	CK_ULONG n_objects = 0;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	CK_ATTRIBUTE lookup[] = {
@@ -261,19 +263,19 @@ TESTING_TEST (trust_complete_assertion_netscape_md5_hash)
 
 TESTING_TEST (trust_complete_assertion_netscape_sha1_hash)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
-	CK_ASSERTION_TYPE atype = CKT_G_PINNED_CERTIFICATE;
+	CK_X_ASSERTION_TYPE atype = CKT_X_PINNED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_OBJECT_HANDLE check = 0;
 	CK_ULONG n_objects = 0;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	CK_ATTRIBUTE lookup[] = {
@@ -298,15 +300,15 @@ TESTING_TEST (trust_complete_assertion_netscape_sha1_hash)
 
 TESTING_TEST (trust_create_assertion_missing_type)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
-	/* Missing CKT_G_ANCHORED_CERTIFICATE */
+	/* Missing CKT_X_ANCHORED_CERTIFICATE */
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
@@ -315,16 +317,16 @@ TESTING_TEST (trust_create_assertion_missing_type)
 
 TESTING_TEST (trust_create_assertion_bad_type)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = 0xFFFF;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = 0xFFFF;
 	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
-	/* Missing CKA_G_CERTIFICATE_VALUE */
+	/* Missing CKA_X_CERTIFICATE_VALUE */
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
@@ -333,16 +335,16 @@ TESTING_TEST (trust_create_assertion_bad_type)
 
 TESTING_TEST (trust_create_assertion_missing_cert_value)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_ANCHORED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
-	/* Missing CKA_G_CERTIFICATE_VALUE */
+	/* Missing CKA_X_CERTIFICATE_VALUE */
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
@@ -351,17 +353,17 @@ TESTING_TEST (trust_create_assertion_missing_cert_value)
 
 TESTING_TEST (trust_create_assertion_bad_cert_value)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_ANCHORED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
-	/* Bad CKA_G_CERTIFICATE_VALUE */
+	/* Bad CKA_X_CERTIFICATE_VALUE */
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, "12", 2 },
+		{ CKA_X_CERTIFICATE_VALUE, "12", 2 },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
@@ -370,17 +372,17 @@ TESTING_TEST (trust_create_assertion_bad_cert_value)
 
 TESTING_TEST (trust_create_assertion_null_cert_value)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_ANCHORED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
-	/* Bad CKA_G_CERTIFICATE_VALUE */
+	/* Bad CKA_X_CERTIFICATE_VALUE */
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, NULL, 0 },
+		{ CKA_X_CERTIFICATE_VALUE, NULL, 0 },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
@@ -389,8 +391,8 @@ TESTING_TEST (trust_create_assertion_null_cert_value)
 
 TESTING_TEST (trust_create_assertion_for_untrusted)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_UNTRUSTED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_UNTRUSTED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_OBJECT_HANDLE check = 0;
 	CK_ULONG n_objects = 0;
@@ -398,8 +400,8 @@ TESTING_TEST (trust_create_assertion_for_untrusted)
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
@@ -421,14 +423,14 @@ TESTING_TEST (trust_create_assertion_for_untrusted)
 
 TESTING_TEST (trust_create_assertion_for_untrusted_no_purpose)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_UNTRUSTED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_UNTRUSTED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
@@ -439,15 +441,15 @@ TESTING_TEST (trust_create_assertion_for_untrusted_no_purpose)
 
 TESTING_TEST (trust_create_assertion_for_untrusted_no_serial)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_UNTRUSTED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_UNTRUSTED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
@@ -457,16 +459,16 @@ TESTING_TEST (trust_create_assertion_for_untrusted_no_serial)
 
 TESTING_TEST (trust_create_assertion_twice)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_UNTRUSTED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_UNTRUSTED_CERTIFICATE;
 	CK_OBJECT_HANDLE object_1 = 0;
 	CK_OBJECT_HANDLE object_2 = 0;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
@@ -490,27 +492,27 @@ TESTING_TEST (trust_create_assertion_twice)
 
 TESTING_TEST (trust_untrusted_assertion_has_no_cert_value)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_UNTRUSTED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_UNTRUSTED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_ATTRIBUTE check;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "test-purpose", 12 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "test-purpose", 12 },
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	/* Created as untrusted, should have no CKA_G_CERTIFICATE_VALUE */
+	/* Created as untrusted, should have no CKA_X_CERTIFICATE_VALUE */
 
 	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
-	check.type = CKA_G_CERTIFICATE_VALUE;
+	check.type = CKA_X_CERTIFICATE_VALUE;
 	check.pValue = NULL;
 	check.ulValueLen = 0;
 	rv = gkm_session_C_GetAttributeValue (session, object, &check, 1);
@@ -519,8 +521,8 @@ TESTING_TEST (trust_untrusted_assertion_has_no_cert_value)
 
 TESTING_TEST (trust_create_assertion_complete_on_token)
 {
-	CK_OBJECT_CLASS klass = CKO_G_TRUST_ASSERTION;
-	CK_ASSERTION_TYPE atype = CKT_G_PINNED_CERTIFICATE;
+	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
+	CK_X_ASSERTION_TYPE atype = CKT_X_PINNED_CERTIFICATE;
 	CK_OBJECT_HANDLE object = 0;
 	CK_OBJECT_HANDLE check = 0;
 	CK_OBJECT_HANDLE results[8];
@@ -529,10 +531,10 @@ TESTING_TEST (trust_create_assertion_complete_on_token)
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
-		{ CKA_G_PURPOSE, "other", 5 },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_PURPOSE, "other", 5 },
 		{ CKA_TOKEN, &token, sizeof (token) },
 	};
 
@@ -558,14 +560,14 @@ TESTING_TEST (trust_create_assertion_complete_on_token)
 
 TESTING_TEST (trust_destroy_assertion_on_token)
 {
-	CK_ASSERTION_TYPE atype = CKT_G_PINNED_CERTIFICATE;
+	CK_X_ASSERTION_TYPE atype = CKT_X_PINNED_CERTIFICATE;
 	CK_OBJECT_HANDLE results[8];
 	CK_BBOOL token = CK_TRUE;
 	CK_ULONG n_objects = 0;
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_ASSERTION_TYPE, &atype, sizeof (atype) },
+		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_TOKEN, &token, sizeof (token) },
 	};
 
@@ -592,11 +594,11 @@ TESTING_TEST (trust_destroy_assertion_on_token)
 }
 
 static void
-_assert_positive_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpose,
+_assert_positive_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purpose,
                            CK_ATTRIBUTE_TYPE netscape_type, CK_TRUST netscape_trust,
                            const gchar *description)
 {
-	CK_OBJECT_CLASS aklass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS aklass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
 	CK_OBJECT_HANDLE object = 0;
 	CK_OBJECT_HANDLE results[256];
@@ -610,10 +612,10 @@ _assert_positive_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpos
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_G_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
 		{ CKA_CLASS, &aklass, sizeof (aklass) },
-		{ CKA_G_ASSERTION_TYPE, &assertion_type, sizeof (assertion_type) },
-		{ CKA_G_PURPOSE, (void*)purpose, strlen (purpose) },
+		{ CKA_X_ASSERTION_TYPE, &assertion_type, sizeof (assertion_type) },
+		{ CKA_X_PURPOSE, (void*)purpose, strlen (purpose) },
 		{ CKA_TOKEN, &fval, sizeof (fval) },
 	};
 
@@ -656,11 +658,11 @@ _assert_positive_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpos
 }
 
 static void
-_assert_negative_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpose,
+_assert_negative_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purpose,
                            CK_ATTRIBUTE_TYPE netscape_type, CK_TRUST netscape_trust,
                            const gchar *description)
 {
-	CK_OBJECT_CLASS aklass = CKO_G_TRUST_ASSERTION;
+	CK_OBJECT_CLASS aklass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
 	CK_OBJECT_HANDLE object = 0;
 	CK_OBJECT_HANDLE results[256];
@@ -674,8 +676,8 @@ _assert_negative_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpos
 		{ CKA_SERIAL_NUMBER, (void*)SERIAL_NUMBER, XL (SERIAL_NUMBER) },
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
 		{ CKA_CLASS, &aklass, sizeof (aklass) },
-		{ CKA_G_ASSERTION_TYPE, &assertion_type, sizeof (assertion_type) },
-		{ CKA_G_PURPOSE, (void*)purpose, strlen (purpose) },
+		{ CKA_X_ASSERTION_TYPE, &assertion_type, sizeof (assertion_type) },
+		{ CKA_X_PURPOSE, (void*)purpose, strlen (purpose) },
 		{ CKA_TOKEN, &fval, sizeof (fval) },
 	};
 
@@ -720,80 +722,80 @@ _assert_negative_netscape (CK_ASSERTION_TYPE assertion_type, const gchar *purpos
 
 TESTING_TEST (trust_netscape_map_server_auth)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_client_auth)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
 	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
 	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
 	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_code_signing)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
 	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
 	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
 	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_email)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_ipsec_endpoint)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
 	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
 	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
 	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_ipsec_tunnel)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
 	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
 	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
 	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_ipsec_user)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
 	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
 	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
 	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_UNTRUSTED);
 }
 
 TESTING_TEST (trust_netscape_map_time_stamping)
 {
-	assert_positive_netscape (CKT_G_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
+	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
 	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_G_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
+	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
 	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_G_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
+	assert_negative_netscape (CKT_X_UNTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
 	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_UNTRUSTED);
 }

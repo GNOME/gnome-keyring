@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* pkcs11g.h - GNOME internal definitions to PKCS#11
+/* pkcs11i.h - GNOME internal definitions to PKCS#11
 
    Copyright (C) 2008, Stef Walter
 
@@ -25,7 +25,24 @@
 #define PKCS11I_H
 
 #include "pkcs11.h"
-#include "pkcs11g.h"
+
+#define CKA_GNOME   (CKA_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKO_GNOME   (CKO_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKR_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKM_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKK_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+
+/* -------------------------------------------------------------------
+ * OBJECT UNIQUE IDENTIFIER
+ */
+
+/* A string unique among all objects on a given machine */
+#define CKA_GNOME_UNIQUE                            (CKA_GNOME + 350)
+
+/* -------------------------------------------------------------------
+ */
+
+#define CKA_GNOME_TRANSIENT                      (CKA_GNOME + 201)
 
 /* Signifies that nobody is logged in */
 #define CKU_NONE G_MAXULONG
@@ -118,27 +135,5 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 #define CKA_G_CREDENTIAL                         (CKA_GNOME + 204)
 
 #define CKA_G_CREDENTIAL_TEMPLATE                (CKA_GNOME + 205)
-
-/* -------------------------------------------------------------------
- * TRUST ASSERTIONS
- */
-
-#define CKO_G_TRUST_ASSERTION                    (CKO_GNOME + 400)
-
-#define CKA_G_ASSERTION_TYPE                     (CKO_GNOME + 401)
-
-#define CKA_G_CERTIFICATE_VALUE                  (CKO_GNOME + 402)
-
-#define CKA_G_PURPOSE                            (CKO_GNOME + 403)
-
-#define CKA_G_PEER                               (CKO_GNOME + 404)
-
-typedef CK_ULONG CK_ASSERTION_TYPE;
-
-#define CKT_G_UNTRUSTED_CERTIFICATE              1UL
-
-#define CKT_G_PINNED_CERTIFICATE        2UL
-
-#define CKT_G_ANCHORED_CERTIFICATE           3UL
 
 #endif /* PKCS11I_H */

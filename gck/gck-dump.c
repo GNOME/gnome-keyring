@@ -32,6 +32,7 @@
 #include <string.h>
 
 #include "pkcs11/pkcs11i.h"
+#include "pkcs11/pkcs11x.h"
 
 static void
 dump_class_value (gulong klass)
@@ -49,7 +50,7 @@ dump_class_value (gulong klass)
 	DX(CKO_G_COLLECTION);
 	DX(CKO_G_SEARCH);
 	DX(CKO_G_CREDENTIAL);
-	DX(CKO_G_TRUST_ASSERTION);
+	DX(CKO_X_TRUST_ASSERTION);
 	#undef DX
 
 	default:
@@ -66,9 +67,9 @@ dump_assertion_type_value (gulong type)
 {
 	switch (type) {
 	#define DX(x) case x: g_printerr ("%s", #x); break;
-	DX(CKT_G_UNTRUSTED_CERTIFICATE);
-	DX(CKT_G_PINNED_CERTIFICATE);
-	DX(CKT_G_ANCHORED_CERTIFICATE);
+	DX(CKT_X_UNTRUSTED_CERTIFICATE);
+	DX(CKT_X_PINNED_CERTIFICATE);
+	DX(CKT_X_ANCHORED_CERTIFICATE);
 	#undef DX
 
 	default:
@@ -98,9 +99,9 @@ dump_attribute_value (GckAttribute *attr)
 		}
 		break;
 
-	case CKA_G_ASSERTION_TYPE:
-		if (attr->length == sizeof (CK_ASSERTION_TYPE)) {
-			dump_assertion_type_value (*(CK_ASSERTION_TYPE*)attr->value);
+	case CKA_X_ASSERTION_TYPE:
+		if (attr->length == sizeof (CK_X_ASSERTION_TYPE)) {
+			dump_assertion_type_value (*(CK_X_ASSERTION_TYPE*)attr->value);
 			return;
 		}
 		break;
@@ -171,8 +172,8 @@ dump_attribute_value (GckAttribute *attr)
 	case CKA_MIME_TYPES:
 	case CKA_G_COLLECTION:
 	case CKA_G_SCHEMA:
-	case CKA_G_PURPOSE:
-	case CKA_G_PEER:
+	case CKA_X_PURPOSE:
+	case CKA_X_PEER:
 		if (g_utf8_validate (attr->value, attr->length, NULL)) {
 			int length = MIN (32, attr->length);
 			g_printerr ("%.*s%s", length, (gchar*)attr->value,
@@ -307,10 +308,10 @@ dump_attribute_type (GckAttribute *attr)
 	DX(CKA_G_OBJECT);
 	DX(CKA_G_CREDENTIAL);
 	DX(CKA_G_CREDENTIAL_TEMPLATE);
-	DX(CKA_G_ASSERTION_TYPE);
-	DX(CKA_G_CERTIFICATE_VALUE);
-	DX(CKA_G_PURPOSE);
-	DX(CKA_G_PEER);
+	DX(CKA_X_ASSERTION_TYPE);
+	DX(CKA_X_CERTIFICATE_VALUE);
+	DX(CKA_X_PURPOSE);
+	DX(CKA_X_PEER);
 	#undef DX
 
 	default:

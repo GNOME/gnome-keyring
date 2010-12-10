@@ -33,6 +33,7 @@
 
 #include "pkcs11/pkcs11n.h"
 #include "pkcs11/pkcs11i.h"
+#include "pkcs11/pkcs11x.h"
 
 /**
  * SECTION:gcr-trust
@@ -148,19 +149,19 @@ trust_operation_get (GckEnumerator *en)
 }
 
 static GckAttributes*
-prepare_trust_attrs (GcrCertificate *certificate, CK_ASSERTION_TYPE type)
+prepare_trust_attrs (GcrCertificate *certificate, CK_X_ASSERTION_TYPE type)
 {
 	GckAttributes *attrs;
 	gconstpointer data;
 	gsize n_data;
 
 	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
-	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, type);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_X_TRUST_ASSERTION);
+	gck_attributes_add_ulong (attrs, CKA_X_ASSERTION_TYPE, type);
 
 	data = gcr_certificate_get_der_data (certificate, &n_data);
 	g_return_val_if_fail (data, NULL);
-	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, data, n_data);
+	gck_attributes_add_data (attrs, CKA_X_CERTIFICATE_VALUE, data, n_data);
 
 	return attrs;
 }
@@ -176,11 +177,11 @@ prepare_is_certificate_pinned (GcrCertificate *certificate, const gchar *purpose
 	GckEnumerator *en;
 	GList *modules;
 
-	attrs = prepare_trust_attrs (certificate, CKT_G_PINNED_CERTIFICATE);
+	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
 
-	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_PEER, peer);
+	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -361,11 +362,11 @@ prepare_add_pinned_certificate (GcrCertificate *certificate, const gchar *purpos
 	GckEnumerator *en;
 	GList *modules;
 
-	attrs = prepare_trust_attrs (certificate, CKT_G_PINNED_CERTIFICATE);
+	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
 
-	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_PEER, peer);
+	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
 	/*
@@ -586,11 +587,11 @@ prepare_remove_pinned_certificate (GcrCertificate *certificate, const gchar *pur
 	GckEnumerator *en;
 	GList *modules;
 
-	attrs = prepare_trust_attrs (certificate, CKT_G_PINNED_CERTIFICATE);
+	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
 
-	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
-	gck_attributes_add_string (attrs, CKA_G_PEER, peer);
+	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference
@@ -783,10 +784,10 @@ prepare_is_certificate_anchored (GcrCertificate *certificate, const gchar *purpo
 	GckEnumerator *en;
 	GList *modules;
 
-	attrs = prepare_trust_attrs (certificate, CKT_G_ANCHORED_CERTIFICATE);
+	attrs = prepare_trust_attrs (certificate, CKT_X_ANCHORED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
 
-	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
+	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 
 	/*
 	 * TODO: We need to be able to sort the modules by preference

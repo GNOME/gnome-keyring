@@ -29,7 +29,9 @@
 #include "gck/gck-mock.h"
 #include "gck/gck-test.h"
 
+#include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11n.h"
+#include "pkcs11/pkcs11x.h"
 
 #include <glib.h>
 
@@ -252,11 +254,11 @@ TESTING_TEST (trust_is_certificate_anchored_yes)
 	/* Create a certificate root trust */
 	attrs = gck_attributes_new ();
 	der = gcr_certificate_get_der_data (certificate, &n_der);
-	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, der, n_der);
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
+	gck_attributes_add_data (attrs, CKA_X_CERTIFICATE_VALUE, der, n_der);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_X_TRUST_ASSERTION);
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-	gck_attributes_add_string (attrs, CKA_G_PURPOSE, GCR_PURPOSE_CLIENT_AUTH);
-	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_ANCHORED_CERTIFICATE);
+	gck_attributes_add_string (attrs, CKA_X_PURPOSE, GCR_PURPOSE_CLIENT_AUTH);
+	gck_attributes_add_ulong (attrs, CKA_X_ASSERTION_TYPE, CKT_X_ANCHORED_CERTIFICATE);
 	gck_mock_module_take_object (attrs);
 
 	ret = gcr_trust_is_certificate_anchored (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
