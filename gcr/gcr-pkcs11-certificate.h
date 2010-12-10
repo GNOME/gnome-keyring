@@ -36,11 +36,11 @@
 G_BEGIN_DECLS
 
 #define GCR_TYPE_PKCS11_CERTIFICATE               (gcr_pkcs11_certificate_get_type ())
-#define GCR_PKCS11_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrPkcs11Certificate))
-#define GCR_PKCS11_CERTIFICATE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_CERTIFICATE, GcrPkcs11CertificateClass))
-#define GCR_IS_PKCS11_CERTIFICATE(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_CERTIFICATE))
-#define GCR_IS_PKCS11_CERTIFICATE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_CERTIFICATE))
-#define GCR_PKCS11_CERTIFICATE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_CERTIFICATE, GcrPkcs11CertificateClass))
+#define GCR_PKCS11_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_PKCS11_CERTIFICATE, GcrPkcs11Certificate))
+#define GCR_PKCS11_CERTIFICATE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_PKCS11_CERTIFICATE, GcrPkcs11CertificateClass))
+#define GCR_IS_PKCS11_CERTIFICATE(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_PKCS11_CERTIFICATE))
+#define GCR_IS_PKCS11_CERTIFICATE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_PKCS11_CERTIFICATE))
+#define GCR_PKCS11_CERTIFICATE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_PKCS11_CERTIFICATE, GcrPkcs11CertificateClass))
 
 typedef struct _GcrPkcs11Certificate GcrPkcs11Certificate;
 typedef struct _GcrPkcs11CertificateClass GcrPkcs11CertificateClass;
