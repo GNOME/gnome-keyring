@@ -40,6 +40,7 @@
 #include "gcr-key-renderer.h"
 #include "gcr-key-widget.h"
 #include "gcr-importer.h"
+#include "gcr-library.h"
 #include "gcr-parser.h"
 #include "gcr-pkcs11-certificate.h"
 #include "gcr-simple-certificate.h"

@@ -21,9 +21,29 @@
  * Author: Stef Walter <stefw@collabora.co.uk>
  */
 
-#ifndef GCR_INTERNAL_H_
-#define GCR_INTERNAL_H_
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
 
-void              _gcr_initialize                  (void);
+#ifndef GCR_LIBRARY_H_
+#define GCR_LIBRARY_H_
 
-#endif /* GCR_INTERNAL_H_ */
+#include "gcr-types.h"
+
+#include <glib.h>
+
+GList*            gcr_pkcs11_get_modules                   (void);
+
+void              gcr_pkcs11_set_modules                   (GList *modules);
+
+void              gcr_pkcs11_add_module                    (GckModule *module);
+
+GList*            gcr_pkcs11_get_trust_lookup_modules      (void);
+
+GckSlot*          gcr_pkcs11_get_trust_store_slot          (GError **error);
+
+const gchar*      gcr_pkcs11_get_trust_store_uri           (void);
+
+void              gcr_pkcs11_set_trust_store_uri           (const gchar *pkcs11_uri);
+
+#endif /* GCR_LIBRARY_H_ */

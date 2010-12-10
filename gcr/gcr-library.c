@@ -21,9 +21,9 @@
 
 #include "config.h"
 
-#include "gcr.h"
 #include "gcr-types.h"
 #include "gcr-internal.h"
+#include "gcr-library.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-libgcrypt.h"
@@ -35,8 +35,29 @@
 
 #include <glib/gi18n-lib.h>
 
+/**
+ * SECTION:gcr-library
+ * @title: Library Settings
+ * @short_description: functions for manipulating GCR library global settings.
+ *
+ * Manage or lookup various global aspesct and settings of the library.
+ *
+ * The GCR library maintains a global list of PKCS\#11 modules to use for
+ * its various lookups and storage operations. Each module is represented by
+ * a GckModule object. You can examine this list by using
+ * gcr_pkcs11_get_modules().
+ *
+ * The list is configured automatically by looking for system installed
+ * PKCS\#11 modules. It's not not normally necessary to modify this list. But
+ * if you have special needs, you can use the gcr_pkcs11_set_modules() and
+ * gcr_pkcs11_add_module() to do so.
+ *
+ * Trust assertions are stored and looked up in specific PKCS\#11 modules.
+ * You can examine this list with gcr_pkcs11_get_trust_lookup_modules()
+ */
 static GList *all_modules = NULL;
-static const gchar *trust_slot_uri = "pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT";
+
+static gchar *trust_store_uri = NULL;
 
 GQuark
 gcr_data_error_get_domain (void)
@@ -132,23 +153,97 @@ _gcr_initialize (void)
 
 	if (g_once_init_enter (&gcr_initialized)) {
 		all_modules = gck_modules_initialize_registered (0);
+
+		/* TODO: We should be loading this from a config file */
+		trust_store_uri = g_strdup ("pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT");
+
 		g_once_init_leave (&gcr_initialized, 1);
 	}
 }
 
+/**
+ * gcr_pkcs11_get_modules:
+ *
+ * List all the PKCS\#11 modules that are used by the GCR library.
+ * Each module is a #GckModule object.
+ *
+ * When done with the list, free it with gck_list_unref_free().
+ *
+ * Returns: A newly allocated list of #GckModule objects.
+ */
 GList*
-_gcr_get_pkcs11_modules (void)
+gcr_pkcs11_get_modules (void)
 {
-	return all_modules;
+	_gcr_initialize ();
+	return gck_list_ref_copy (all_modules);
 }
 
+/**
+ * gcr_pkcs11_set_modules:
+ * @list: a list of #GckModule
+ *
+ * Set the list of PKCS\#11 modules that are used by the GCR library.
+ * Each module in the list is a #GckModule object.
+ *
+ * It is not normally necessary to call this function. The available
+ * PKCS\#11 modules installed on the system are automatically loaded
+ * by the GCR library.
+ */
+void
+gcr_pkcs11_set_modules (GList *modules)
+{
+	GList *l;
+
+	_gcr_initialize ();
+
+	for (l = modules; l; l = g_list_next (l))
+		g_return_if_fail (GCK_IS_MODULE (l->data));
+
+	modules = gck_list_ref_copy (modules);
+	gck_list_unref_free (all_modules);
+	all_modules = modules;
+}
+
+/**
+ * gcr_pkcs11_add_module:
+ * @module: a #GckModule
+ *
+ * Add a #GckModule to the list of PKCS\#11 modules that are used by the
+ * GCR library.
+ *
+ * It is not normally necessary to call this function. The available
+ * PKCS\#11 modules installed on the system are automatically loaded
+ * by the GCR library.
+ */
+void
+gcr_pkcs11_add_module (GckModule *module)
+{
+	g_return_if_fail (GCK_IS_MODULE (module));
+	_gcr_initialize ();
+	all_modules = g_list_append (all_modules, g_object_ref (module));
+}
+
+/**
+ * gcr_pkcs11_get_trust_store_slot:
+ * @error: a #GError or NULL
+ *
+ * Selects an appropriate PKCS\#11 slot to store trust assertions. The slot
+ * to use is normally configured automatically by the system.
+ *
+ * When done with the #GckSlot, use g_object_unref() to release it.
+ *
+ * Returns: the #GckSlot to use for trust assertions.
+ */
 GckSlot*
-_gcr_slot_for_storing_trust (GError **error)
+gcr_pkcs11_get_trust_store_slot (GError **error)
 {
 	GList *modules;
 	GckSlot *slot;
 
-	modules = _gcr_get_pkcs11_modules ();
+	g_return_val_if_fail (!error || !*error, NULL);
+
+	_gcr_initialize ();
+	modules = gcr_pkcs11_get_trust_lookup_modules ();
 
 	/*
 	 * TODO: We need a better way to figure this out as far as
@@ -156,7 +251,7 @@ _gcr_slot_for_storing_trust (GError **error)
 	 * gnome-keyring.
 	 */
 
-	slot = gck_modules_token_for_uri (modules, trust_slot_uri, error);
+	slot = gck_modules_token_for_uri (modules, gcr_pkcs11_get_trust_store_uri (), error);
 	if (!slot) {
 		if (error && !*error) {
 			g_set_error (error, GCR_ERROR, /* TODO: */ 0,
@@ -164,23 +259,57 @@ _gcr_slot_for_storing_trust (GError **error)
 		}
 	}
 
+	gck_list_unref_free (modules);
 	return slot;
 }
 
-#ifdef WITH_TESTS
-
-void
-_gcr_set_test_pkcs11_modules (GList *modules)
+/**
+ * gcr_pkcs11_get_trust_lookup_modules:
+ *
+ * List all the PKCS\#11 modules that are used by the GCR library for lookup
+ * of trust assertions. Each module is a #GckModule object.
+ *
+ * When done with the list, free it with gck_list_unref_free().
+ *
+ * Returns: a list of #GckModule objects to use for lookup of trust.
+ */
+GList*
+gcr_pkcs11_get_trust_lookup_modules (void)
 {
-	modules = gck_list_ref_copy (modules);
-	gck_list_unref_free (all_modules);
-	all_modules = modules;
+	/* TODO: This should be configurable, for now all modules */
+	_gcr_initialize ();
+	return gck_list_ref_copy (all_modules);
 }
 
-void
-_gcr_set_test_trust_slot (const gchar *uri)
+/**
+ * gcr_pkcs11_get_trust_store_uri:
+ *
+ * Get the PKCS\#11 URI that is used to identify which slot to use for
+ * storing trust storage.
+ *
+ * Returns: the uri which identifies trust storage slot
+ */
+const gchar*
+gcr_pkcs11_get_trust_store_uri (void)
 {
-	trust_slot_uri = uri;
+	_gcr_initialize ();
+	return trust_store_uri;
 }
 
-#endif /* WITH_TESTS */
+/**
+ * gcr_pkcs11_set_trust_store_uri:
+ * @pkcs11_uri: the uri which identifies trust storage slot
+ *
+ * Set the PKCS\#11 URI that is used to identify which slot to use for
+ * storing trust storage.
+ *
+ * It is not normally necessary to call this function. The relevant
+ * PKCS\#11 slot is automatically configured by the GCR library.
+ */
+void
+gcr_pkcs11_set_trust_store_uri (const gchar *pkcs11_uri)
+{
+	_gcr_initialize ();
+	g_free (trust_store_uri);
+	trust_store_uri = g_strdup (pkcs11_uri);
+}

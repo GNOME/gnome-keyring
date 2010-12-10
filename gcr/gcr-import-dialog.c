@@ -23,6 +23,7 @@
 
 #include "gcr-import-dialog.h"
 #include "gcr-internal.h"
+#include "gcr-library.h"
 
 #include "egg/egg-entry-buffer.h"
 
@@ -72,9 +73,9 @@ populate_slots (GcrImportDialog *self)
 	self->pv->slots = gtk_list_store_new (N_COLUMNS, GCK_TYPE_SLOT, G_TYPE_STRING, G_TYPE_STRING);
 	gtk_combo_box_set_model (self->pv->combo, GTK_TREE_MODEL (self->pv->slots));
 
-	modules = _gcr_get_pkcs11_modules ();
+	modules = gcr_pkcs11_get_modules ();
 	g_return_if_fail (modules);
-	
+
 	gtk_list_store_clear (self->pv->slots);
 	
 	added = FALSE;
@@ -100,6 +101,8 @@ populate_slots (GcrImportDialog *self)
 	
 	if (added)
 		gtk_combo_box_set_active (self->pv->combo, 0);
+
+	gck_list_unref_free (modules);
 }
 
 /* -----------------------------------------------------------------------------

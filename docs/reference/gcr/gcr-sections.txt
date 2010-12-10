@@ -167,3 +167,14 @@ gcr_trust_remove_certificate_exception
 gcr_trust_remove_certificate_exception_async
 gcr_trust_remove_certificate_exception_finish
 </SECTION>
+
+<SECTION>
+<FILE>gcr-library</FILE>
+gcr_pkcs11_get_modules
+gcr_pkcs11_set_modules
+gcr_pkcs11_add_module
+gcr_pkcs11_get_trust_lookup_modules
+gcr_pkcs11_get_trust_store_slot
+gcr_pkcs11_get_trust_store_uri
+gcr_pkcs11_set_trust_store_uri
+</SECTION>

@@ -21,6 +21,7 @@ inc_HEADERS = \
 	gcr-key-renderer.h \
 	gcr-key-widget.h \
 	gcr-importer.h \
+	gcr-library.h \
 	gcr-parser.h \
 	gcr-pkcs11-certificate.h \
 	gcr-renderer.h \
@@ -59,7 +60,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-internal.h \
 	gcr-key-renderer.c gcr-key-renderer.h \
 	gcr-key-widget.c gcr-key-widget.h \
-	gcr-library.c \
+	gcr-library.c gcr-library.h \
 	gcr-parser.c gcr-parser.h \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
 	gcr-renderer.c gcr-renderer.h \

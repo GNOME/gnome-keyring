@@ -25,7 +25,6 @@
 #include "test-suite.h"
 
 #include "gcr.h"
-#include "gcr/gcr-internal.h"
 
 #include "gck/gck-mock.h"
 #include "gck/gck-test.h"
@@ -35,11 +34,11 @@
 #include <glib.h>
 
 static CK_FUNCTION_LIST funcs;
-static GList *modules = NULL;
 static GcrCertificate *certificate = NULL;
 
 TESTING_SETUP (trust_setup)
 {
+	GList *modules = NULL;
 	CK_FUNCTION_LIST_PTR f;
 	GckModule *module;
 	guchar *contents;
@@ -62,9 +61,10 @@ TESTING_SETUP (trust_setup)
 	g_assert (!modules);
 	module = gck_module_new (&funcs, 0);
 	modules = g_list_prepend (modules, module);
+	gcr_pkcs11_set_modules (modules);
+	gck_list_unref_free (modules);
 
-	_gcr_set_test_pkcs11_modules (modules);
-	_gcr_set_test_trust_slot (GCK_MOCK_SLOT_ONE_URI);
+	gcr_pkcs11_set_trust_store_uri (GCK_MOCK_SLOT_ONE_URI);
 }
 
 TESTING_TEARDOWN (trust_setup)
@@ -76,9 +76,6 @@ TESTING_TEARDOWN (trust_setup)
 
 	rv = (funcs.C_Finalize) (NULL);
 	gck_assert_cmprv (rv, ==, CKR_OK);
-
-	gck_list_unref_free (modules);
-	modules = NULL;
 }
 
 TESTING_TEST (trust_is_exception_none)
@@ -118,7 +115,7 @@ TESTING_TEST (trust_add_certificate_exception_fail)
 	/* Make this function fail */
 	funcs.C_CreateObject = gck_mock_fail_C_CreateObject;
 
-	ret = gcr_trust_add_certificate_exception (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, NULL, &error);
+	ret = gcr_trust_add_certificate_exception (certificate, GCR_PURPOSE_CLIENT_AUTH, "peer", NULL, &error);
 	g_assert (ret == FALSE);
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
 }

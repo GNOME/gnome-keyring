@@ -28,7 +28,6 @@
 #include "egg/egg-asn1-defs.h"
 
 #include "gcr.h"
-#include "gcr/gcr-internal.h"
 
 #include "gck/gck-mock.h"
 #include "gck/gck-test.h"
@@ -42,10 +41,10 @@ static gsize n_cert_data = 0;
 static gpointer cert2_data = NULL;
 static gsize n_cert2_data = 0;
 static CK_FUNCTION_LIST funcs;
-static GList *modules = NULL;
 
 TESTING_SETUP (pkcs11_certificate)
 {
+	GList *modules = NULL;
 	GckAttributes *attrs;
 	CK_FUNCTION_LIST_PTR f;
 	GckModule *module;
@@ -71,8 +70,8 @@ TESTING_SETUP (pkcs11_certificate)
 	g_assert (!modules);
 	module = gck_module_new (&funcs, 0);
 	modules = g_list_prepend (modules, module);
-
-	_gcr_set_test_pkcs11_modules (modules);
+	gcr_pkcs11_set_modules (modules);
+	gck_list_unref_free (modules);
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", cert_data, n_cert_data);
 	g_assert (asn);
@@ -104,9 +103,6 @@ TESTING_TEARDOWN (pkcs11_certificate)
 
 	rv = (funcs.C_Finalize) (NULL);
 	gck_assert_cmprv (rv, ==, CKR_OK);
-
-	gck_list_unref_free (modules);
-	modules = NULL;
 }
 
 TESTING_TEST (pkcs11_lookup_certificate_issuer)

@@ -26,6 +26,7 @@
 #include "gcr.h"
 #include "gcr-types.h"
 #include "gcr-internal.h"
+#include "gcr-library.h"
 #include "gcr-trust.h"
 
 #include <gck/gck.h>
@@ -175,8 +176,6 @@ prepare_is_certificate_exception (GcrCertificate *certificate, const gchar *purp
 	GckEnumerator *en;
 	GList *modules;
 
-	modules = _gcr_get_pkcs11_modules ();
-
 	attrs = prepare_trust_attrs (certificate, CKT_G_CERTIFICATE_TRUST_EXCEPTION);
 	g_return_val_if_fail (attrs, NULL);
 
@@ -189,9 +188,11 @@ prepare_is_certificate_exception (GcrCertificate *certificate, const gchar *purp
 	 * others.
 	 */
 
+	modules = gcr_pkcs11_get_trust_lookup_modules ();
 	en = gck_modules_enumerate_objects (modules, attrs, 0);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
+	gck_list_unref_free (modules);
 
 	return en;
 }
@@ -247,6 +248,8 @@ gcr_trust_is_certificate_exception (GcrCertificate *certificate, const gchar *pu
 	g_return_val_if_fail (purpose, FALSE);
 	g_return_val_if_fail (peer, FALSE);
 
+	_gcr_initialize ();
+
 	en = prepare_is_certificate_exception (certificate, purpose, peer);
 	g_return_val_if_fail (en, FALSE);
 
@@ -295,6 +298,12 @@ gcr_trust_is_certificate_exception_async (GcrCertificate *certificate, const gch
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
+	g_return_if_fail (GCR_CERTIFICATE (certificate));
+	g_return_if_fail (purpose);
+	g_return_if_fail (peer);
+
+	_gcr_initialize ();
+
 	en = prepare_is_certificate_exception (certificate, purpose, peer);
 	g_return_if_fail (en);
 
@@ -327,6 +336,11 @@ gcr_trust_is_certificate_exception_finish (GAsyncResult *result, GError **error)
 	GcrTrustOperation *op;
 	GObject *object;
 
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (!error || !*error, FALSE);
+
+	_gcr_initialize ();
+
 	object = g_async_result_get_source_object (result);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
 	                      gcr_trust_is_certificate_exception_async), FALSE);
@@ -349,8 +363,6 @@ prepare_add_certificate_exception (GcrCertificate *certificate, const gchar *pur
 	GckEnumerator *en;
 	GList *modules;
 
-	modules = _gcr_get_pkcs11_modules ();
-
 	attrs = prepare_trust_attrs (certificate, CKT_G_CERTIFICATE_TRUST_EXCEPTION);
 	g_return_val_if_fail (attrs, NULL);
 
@@ -364,9 +376,11 @@ prepare_add_certificate_exception (GcrCertificate *certificate, const gchar *pur
 	 * others.
 	 */
 
+	modules = gcr_pkcs11_get_trust_lookup_modules ();
 	en = gck_modules_enumerate_objects (modules, attrs, CKF_RW_SESSION);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
+	gck_list_unref_free (modules);
 
 	return en;
 }
@@ -405,7 +419,7 @@ perform_add_certificate_exception (GckEnumerator *en, GCancellable *cancellable,
 	/* TODO: Add relevant label */
 
 	/* Find an appropriate token */
-	slot = _gcr_slot_for_storing_trust (error);
+	slot = gcr_pkcs11_get_trust_store_slot (error);
 	if (slot != NULL) {
 		session = gck_slot_open_session (slot, CKF_RW_SESSION, NULL, error);
 		if (session != NULL) {
@@ -455,6 +469,12 @@ gcr_trust_add_certificate_exception (GcrCertificate *certificate, const gchar *p
 {
 	GckEnumerator *en;
 	gboolean ret;
+
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), FALSE);
+	g_return_val_if_fail (purpose, FALSE);
+	g_return_val_if_fail (peer, FALSE);
+
+	_gcr_initialize ();
 
 	en = prepare_add_certificate_exception (certificate, purpose, peer);
 	g_return_val_if_fail (en, FALSE);
@@ -507,6 +527,12 @@ gcr_trust_add_certificate_exception_async (GcrCertificate *certificate, const gc
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
+	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
+	g_return_if_fail (purpose);
+	g_return_if_fail (peer);
+
+	_gcr_initialize ();
+
 	en = prepare_add_certificate_exception (certificate, purpose, peer);
 	g_return_if_fail (en);
 
@@ -535,6 +561,11 @@ gcr_trust_add_certificate_exception_finish (GAsyncResult *result, GError **error
 {
 	GObject *object;
 
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (!error || !*error, FALSE);
+
+	_gcr_initialize ();
+
 	object = g_async_result_get_source_object (result);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
 	                      gcr_trust_add_certificate_exception_async), FALSE);
@@ -557,8 +588,6 @@ prepare_remove_certificate_exception (GcrCertificate *certificate, const gchar *
 	GckEnumerator *en;
 	GList *modules;
 
-	modules = _gcr_get_pkcs11_modules ();
-
 	attrs = prepare_trust_attrs (certificate, CKT_G_CERTIFICATE_TRUST_EXCEPTION);
 	g_return_val_if_fail (attrs, NULL);
 
@@ -571,9 +600,11 @@ prepare_remove_certificate_exception (GcrCertificate *certificate, const gchar *
 	 * others.
 	 */
 
+	modules = gcr_pkcs11_get_trust_lookup_modules ();
 	en = gck_modules_enumerate_objects (modules, attrs, CKF_RW_SESSION);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
+	gck_list_unref_free (modules);
 
 	return en;
 }
@@ -640,6 +671,12 @@ gcr_trust_remove_certificate_exception (GcrCertificate *certificate, const gchar
 	GckEnumerator *en;
 	gboolean ret;
 
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), FALSE);
+	g_return_val_if_fail (purpose, FALSE);
+	g_return_val_if_fail (peer, FALSE);
+
+	_gcr_initialize ();
+
 	en = prepare_remove_certificate_exception (certificate, purpose, peer);
 	g_return_val_if_fail (en, FALSE);
 
@@ -690,6 +727,12 @@ gcr_trust_remove_certificate_exception_async (GcrCertificate *certificate, const
 	GSimpleAsyncResult *async;
 	GckEnumerator *en;
 
+	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
+	g_return_if_fail (purpose);
+	g_return_if_fail (peer);
+
+	_gcr_initialize ();
+
 	en = prepare_remove_certificate_exception (certificate, purpose, peer);
 	g_return_if_fail (en);
 
@@ -718,6 +761,11 @@ gcr_trust_remove_certificate_exception_finish (GAsyncResult *result, GError **er
 {
 	GObject *object;
 
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (!error || !*error, FALSE);
+
+	_gcr_initialize ();
+
 	object = g_async_result_get_source_object (result);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
 	                      gcr_trust_remove_certificate_exception_async), FALSE);
@@ -739,8 +787,6 @@ prepare_is_certificate_anchor (GcrCertificate *certificate, const gchar *purpose
 	GckEnumerator *en;
 	GList *modules;
 
-	modules = _gcr_get_pkcs11_modules ();
-
 	attrs = prepare_trust_attrs (certificate, CKT_G_CERTIFICATE_TRUST_ANCHOR);
 	g_return_val_if_fail (attrs, NULL);
 
@@ -752,9 +798,11 @@ prepare_is_certificate_anchor (GcrCertificate *certificate, const gchar *purpose
 	 * others.
 	 */
 
+	modules = gcr_pkcs11_get_trust_lookup_modules ();
 	en = gck_modules_enumerate_objects (modules, attrs, 0);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
+	gck_list_unref_free (modules);
 
 	return en;
 }
@@ -808,6 +856,8 @@ gcr_trust_is_certificate_anchor (GcrCertificate *certificate, const gchar *purpo
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), FALSE);
 	g_return_val_if_fail (purpose, FALSE);
 
+	_gcr_initialize ();
+
 	en = prepare_is_certificate_anchor (certificate, purpose);
 	g_return_val_if_fail (en, FALSE);
 
@@ -857,6 +907,8 @@ gcr_trust_is_certificate_anchor_async (GcrCertificate *certificate, const gchar 
 	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
 	g_return_if_fail (purpose);
 
+	_gcr_initialize ();
+
 	en = prepare_is_certificate_anchor (certificate, purpose);
 	g_return_if_fail (en);
 
@@ -890,6 +942,10 @@ gcr_trust_is_certificate_anchor_finish (GAsyncResult *result, GError **error)
 	GObject *object;
 
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (!error || !*error, FALSE);
+
+	_gcr_initialize ();
+
 	object = g_async_result_get_source_object (result);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
 	                      gcr_trust_is_certificate_anchor_async), FALSE);

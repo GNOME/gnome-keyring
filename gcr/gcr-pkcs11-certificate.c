@@ -30,6 +30,7 @@
 
 #include "gcr-certificate.h"
 #include "gcr-internal.h"
+#include "gcr-library.h"
 
 #include "pkcs11/pkcs11.h"
 
@@ -82,9 +83,10 @@ prepare_lookup_certificate_issuer (GcrCertificate *cert)
 	gck_attributes_add_data (search, CKA_SUBJECT, data, n_data);
 	g_free (data);
 
-	modules = _gcr_get_pkcs11_modules ();
+	modules = gcr_pkcs11_get_modules ();
 	en = gck_modules_enumerate_objects (modules, search, 0);
 	gck_attributes_unref (search);
+	gck_list_unref_free (modules);
 
 	return en;
 }

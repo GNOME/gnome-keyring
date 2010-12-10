@@ -26,4 +26,8 @@
 		<xi:include href="xml/gcr-parser.xml"/>
 	</part>
 
+	<part id="misc">
+		<title>Miscellaneous</title>
+		<xi:include href="xml/gcr-library.xml"/>
+	</part>
 </book>

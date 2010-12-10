@@ -24,6 +24,7 @@
 #include "gck/gck.h"
 
 #include "gcr-internal.h"
+#include "gcr-importer.h"
 #include "gcr-marshal.h"
 #include "gcr-parser.h"
 #include "gcr-types.h"
