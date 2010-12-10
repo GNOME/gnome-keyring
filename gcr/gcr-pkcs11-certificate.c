@@ -97,6 +97,8 @@ perform_lookup_certificate (GckEnumerator *en, GCancellable *cancel, GError **er
 	GcrCertificate *cert;
 	GckObject *object;
 	GckAttributes *attrs;
+	GckModule *module;
+	GckSession *session;
 
 	object = gck_enumerator_next (en, cancel, error);
 
@@ -120,14 +122,20 @@ perform_lookup_certificate (GckEnumerator *en, GCancellable *cancel, GError **er
 		return NULL;
 	}
 
+	module = gck_object_get_module (object);
+	session = gck_object_get_session (object);
+
 	cert = g_object_new (GCR_TYPE_PKCS11_CERTIFICATE,
-	                     "module", gck_object_get_module (object),
+	                     "module", module,
 	                     "handle", gck_object_get_handle (object),
-	                     "session", gck_object_get_session (object),
+	                     "session", session,
 	                     "attributes", attrs,
 	                     NULL);
 
+	g_object_unref (module);
+	g_object_unref (session);
 	g_object_unref (object);
+
 	gck_attributes_unref (attrs);
 
 	return cert;
