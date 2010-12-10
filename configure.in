@@ -681,6 +681,12 @@ fi
 eval BINDIR="$bindir"
 AC_SUBST(BINDIR)
 
+pkcs11dir="${libdir}/pkcs11"
+AC_SUBST(pkcs11dir)
+
+pkcs11standalonedir="${libdir}/gnome-keyring/standalone"
+AC_SUBST(pkcs11standalonedir)
+
 AC_OUTPUT([
 Makefile
 daemon/Makefile

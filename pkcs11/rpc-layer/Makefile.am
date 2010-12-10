@@ -34,7 +34,7 @@ libgkm_rpc_layer_la_CFLAGS = \
 # ------------------------------------------------------------------------------
 # The module code, built as the public gnome-keyring module
 
-moduledir = $(libdir)/pkcs11/
+moduledir = $(pkcs11dir)
 
 module_LTLIBRARIES = \
 	gnome-keyring-pkcs11.la

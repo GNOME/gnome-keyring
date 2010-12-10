@@ -25,7 +25,7 @@ libgkm_gnome2_store_la_SOURCES = \
 # ------------------------------------------------------------------------------
 # The standalone module
 
-moduledir = $(libdir)/gnome-keyring/devel/
+moduledir = $(pkcs11standalonedir)
 
 module_LTLIBRARIES = \
 	gkm-gnome2-store-standalone.la

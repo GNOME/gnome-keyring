@@ -23,14 +23,14 @@ libgkm_roots_store_la_SOURCES = \
 # ------------------------------------------------------------------------------
 # The standalone module
 
-moduledir = $(libdir)/gnome-keyring/standalone/
+moduledir = $(pkcs11standalonedir)
 
 module_LTLIBRARIES = \
 	gkm-roots-store-standalone.la
 
 gkm_roots_store_standalone_la_LDFLAGS = \
 	-module -avoid-version \
-	-no-undefined -export-symbols-regex 'C_GetFunctionList'
+	-no-undefined -export-symbols-regex 'C_GetFunctionList|g_module_check_init'
 
 gkm_roots_store_standalone_la_SOURCES = \
 	gkm-roots-standalone.c

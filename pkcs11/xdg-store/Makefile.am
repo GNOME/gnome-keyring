@@ -29,14 +29,14 @@ asn1-def-xdg.c: xdg.asn
 # ------------------------------------------------------------------------------
 # The standalone module
 
-moduledir = $(libdir)/gnome-keyring/devel/
+moduledir = $(pkcs11standalonedir)
 
 module_LTLIBRARIES = \
 	gkm-xdg-store-standalone.la
 
 gkm_xdg_store_standalone_la_LDFLAGS = \
 	-module -avoid-version \
-	-no-undefined -export-symbols-regex 'C_GetFunctionList'
+	-no-undefined -export-symbols-regex 'C_GetFunctionList|g_module_check_init'
 
 gkm_xdg_store_standalone_la_SOURCES = \
 	gkm-xdg-standalone.c
