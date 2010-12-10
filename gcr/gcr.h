@@ -35,6 +35,7 @@
 #include "gcr-types.h"
 
 #include "gcr-certificate.h"
+#include "gcr-certificate-chain.h"
 #include "gcr-certificate-renderer.h"
 #include "gcr-certificate-widget.h"
 #include "gcr-key-renderer.h"

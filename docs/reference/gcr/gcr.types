@@ -3,3 +3,4 @@ gcr_certificate_get_type
 gcr_importer_get_type
 gcr_simple_certificate_get_type
 gcr_pkcs11_certificate_get_type
+gcr_certificate_chain_get_type

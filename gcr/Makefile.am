@@ -16,6 +16,7 @@ incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
 inc_HEADERS = \
 	gcr.h \
 	gcr-certificate.h \
+	gcr-certificate-chain.h \
 	gcr-certificate-renderer.h \
 	gcr-certificate-widget.h \
 	gcr-key-renderer.h \
@@ -51,6 +52,7 @@ lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
 
 libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
+	gcr-certificate-chain.c gcr-certificate-chain.h \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-display-view.c gcr-display-view.h \

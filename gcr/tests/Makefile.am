@@ -2,6 +2,7 @@
 # Test files should be listed in order they need to run
 TESTING_FILES = \
 	test-certificate.c \
+	test-certificate-chain.c \
 	test-simple-certificate.c \
 	test-pkcs11-certificate.c \
 	test-trust.c \
