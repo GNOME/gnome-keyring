@@ -110,6 +110,18 @@ hash_certificate (GkmRootsTrust *self, int algo, CK_ATTRIBUTE_PTR result)
 	return rv;
 }
 
+static CK_RV
+full_certificate (GkmRootsTrust *self, CK_ATTRIBUTE_PTR result)
+{
+	gconstpointer data;
+	gsize n_data;
+
+	data = gkm_certificate_der_data (self->pv->certificate ,&n_data);
+	g_return_val_if_fail (data, CKR_GENERAL_ERROR);
+
+	return gkm_attribute_set_data (result, data, n_data);
+}
+
 static GQuark*
 lookup_extended_usages (GkmRootsTrust *self)
 {
@@ -180,6 +192,32 @@ build_linked_assertion (GkmRootsTrust *self, GkmTrustLevel level, const gchar *p
 	self->pv->assertions = g_list_prepend (self->pv->assertions, assertion);
 }
 
+static void
+ensure_linked_assertions (GkmRootsTrust *self)
+{
+        GQuark *usages, *u;
+        const gchar **p;
+        GkmTrustLevel level;
+
+        usages = lookup_extended_usages (self);
+
+        if (is_certificate_authority (self->pv->certificate))
+                level = GKM_TRUST_ANCHOR;
+        else
+                level = GKM_TRUST_TRUSTED;
+
+        /* Build assertions for all the listed usages */
+        if (usages) {
+                for (u = usages; *u; ++u)
+                        build_linked_assertion (self, level, g_quark_to_string (*u));
+
+        /* Build assertions for all the known default purposes */
+        } else {
+                for (p = OID_KNOWN_PURPOSES; *p; ++p)
+                        build_linked_assertion (self, level, *p);
+        }
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -202,6 +240,8 @@ gkm_roots_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUT
 		return hash_certificate (self, GCRY_MD_MD5, attr);
 	case CKA_CERT_SHA1_HASH:
 		return hash_certificate (self, GCRY_MD_SHA1, attr);
+	case CKA_G_CERTIFICATE_VALUE:
+		return full_certificate (self, attr);
 
 	default:
 		break;
@@ -213,9 +253,17 @@ gkm_roots_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUT
 static void
 gkm_roots_trust_expose_object (GkmObject *base, gboolean expose)
 {
+	GkmRootsTrust *self = GKM_ROOTS_TRUST (base);
 	GList *l;
+
+	/* Build all the assertions the first time around */
+	if (expose && !self->pv->assertions)
+		ensure_linked_assertions (self);
+
 	GKM_OBJECT_CLASS (gkm_roots_trust_parent_class)->expose_object (base, expose);
-	for (l = GKM_ROOTS_TRUST (base)->pv->assertions; l; l = g_list_next (l))
+
+	/* Now expose all the child assertions */
+	for (l = self->pv->assertions; l; l = g_list_next (l))
 		gkm_object_expose (l->data, expose);
 }
 
@@ -264,38 +312,6 @@ static void
 gkm_roots_trust_init (GkmRootsTrust *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_ROOTS_TYPE_TRUST, GkmRootsTrustPrivate);
-}
-
-static GObject*
-gkm_roots_trust_constructor (GType type, guint n_props, GObjectConstructParam *props)
-{
-	GkmRootsTrust *self;
-	GQuark *usages, *u;
-	const gchar **p;
-	GkmTrustLevel level;
-
-	self = GKM_ROOTS_TRUST (G_OBJECT_CLASS (gkm_roots_trust_parent_class)->constructor (type, n_props, props));
-	g_return_val_if_fail (self->pv->certificate, NULL);
-
-	usages = lookup_extended_usages (self);
-
-	if (is_certificate_authority (self->pv->certificate))
-		level = GKM_TRUST_TRUSTED;
-	else
-		level = GKM_TRUST_ANCHOR;
-
-	/* Build assertions for all the listed usages */
-	if (usages) {
-		for (u = usages; *u; ++u)
-			build_linked_assertion (self, level, g_quark_to_string (*u));
-
-	/* Build assertions for all the known default purposes */
-	} else {
-		for (p = OID_KNOWN_PURPOSES; *p; ++p)
-			build_linked_assertion (self, level, *p);
-	}
-
-	return G_OBJECT (self);
 }
 
 static void
@@ -371,7 +387,6 @@ gkm_roots_trust_class_init (GkmRootsTrustClass *klass)
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 	GkmTrustClass *trust_class = GKM_TRUST_CLASS (klass);
 
-	gobject_class->constructor = gkm_roots_trust_constructor;
 	gobject_class->dispose = gkm_roots_trust_dispose;
 	gobject_class->finalize = gkm_roots_trust_finalize;
 	gobject_class->set_property = gkm_roots_trust_set_property;

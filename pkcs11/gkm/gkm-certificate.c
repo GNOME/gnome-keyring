@@ -605,6 +605,17 @@ gkm_certificate_hash (GkmCertificate *self, int hash_algo, gsize *n_hash)
 	return hash;
 }
 
+gconstpointer
+gkm_certificate_der_data (GkmCertificate *self, gsize *n_data)
+{
+	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (self->pv->data, NULL);
+	g_return_val_if_fail (n_data, NULL);
+
+	*n_data = self->pv->n_data;
+	return self->pv->data;
+}
+
 GkmFactory*
 gkm_certificate_get_factory (void)
 {
