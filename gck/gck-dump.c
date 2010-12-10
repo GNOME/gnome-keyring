@@ -66,9 +66,9 @@ dump_assertion_type_value (gulong type)
 {
 	switch (type) {
 	#define DX(x) case x: g_printerr ("%s", #x); break;
-	DX(CKT_G_CERTIFICATE_UNTRUSTED);
-	DX(CKT_G_CERTIFICATE_TRUST_EXCEPTION);
-	DX(CKT_G_CERTIFICATE_TRUST_ANCHOR);
+	DX(CKT_G_UNTRUSTED_CERTIFICATE);
+	DX(CKT_G_PINNED_CERTIFICATE);
+	DX(CKT_G_ANCHORED_CERTIFICATE);
 	#undef DX
 
 	default:

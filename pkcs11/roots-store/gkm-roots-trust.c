@@ -175,13 +175,13 @@ build_linked_assertion (GkmRootsTrust *self, GkmTrustLevel level, const gchar *p
 	case GKM_TRUST_UNKNOWN:
 		return;
 	case GKM_TRUST_TRUSTED:
-		type = CKT_G_CERTIFICATE_TRUST_EXCEPTION;
+		type = CKT_G_PINNED_CERTIFICATE;
 		break;
 	case GKM_TRUST_UNTRUSTED:
-		type = CKT_G_CERTIFICATE_UNTRUSTED;
+		type = CKT_G_UNTRUSTED_CERTIFICATE;
 		break;
 	case GKM_TRUST_ANCHOR:
-		type = CKT_G_CERTIFICATE_TRUST_ANCHOR;
+		type = CKT_G_ANCHORED_CERTIFICATE;
 		break;
 	default:
 		g_assert_not_reached ();

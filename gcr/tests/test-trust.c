@@ -78,36 +78,36 @@ TESTING_TEARDOWN (trust_setup)
 	gck_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEST (trust_is_exception_none)
+TESTING_TEST (trust_is_pinned_none)
 {
 	GError *error = NULL;
 	gboolean trust;
 
-	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_add_and_is_exception)
+TESTING_TEST (trust_add_and_is_pinned)
 {
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 
-	ret = gcr_trust_add_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	ret = gcr_trust_add_pinned_certificate (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 
-	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, TRUE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_add_certificate_exception_fail)
+TESTING_TEST (trust_add_certificate_pinned_fail)
 {
 	GError *error = NULL;
 	gboolean ret;
@@ -115,30 +115,30 @@ TESTING_TEST (trust_add_certificate_exception_fail)
 	/* Make this function fail */
 	funcs.C_CreateObject = gck_mock_fail_C_CreateObject;
 
-	ret = gcr_trust_add_certificate_exception (certificate, GCR_PURPOSE_CLIENT_AUTH, "peer", NULL, &error);
+	ret = gcr_trust_add_pinned_certificate (certificate, GCR_PURPOSE_CLIENT_AUTH, "peer", NULL, &error);
 	g_assert (ret == FALSE);
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
 }
 
-TESTING_TEST (trust_add_and_remov_exception)
+TESTING_TEST (trust_add_and_remov_pinned)
 {
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	ret = gcr_trust_add_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	ret = gcr_trust_add_pinned_certificate (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 
-	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, TRUE);
 	g_assert (error == NULL);
 
-	ret = gcr_trust_remove_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	ret = gcr_trust_remove_pinned_certificate (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 
-	trust = gcr_trust_is_certificate_exception (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 }
@@ -151,97 +151,97 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 	testing_wait_stop ();
 }
 
-TESTING_TEST (trust_add_and_is_exception_async)
+TESTING_TEST (trust_add_and_is_pinned_async)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	gcr_trust_is_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
-	trust = gcr_trust_is_certificate_exception_finish (result, &error);
+	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == FALSE);
 	g_assert (error == NULL);
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_add_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host",
+	gcr_trust_add_pinned_certificate_async (certificate, GCR_PURPOSE_EMAIL, "host",
 	                                           NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
-	ret = gcr_trust_add_certificate_exception_finish (result, &error);
+	ret = gcr_trust_add_pinned_certificate_finish (result, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_is_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
-	trust = gcr_trust_is_certificate_exception_finish (result, &error);
+	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == TRUE);
 	g_assert (error == NULL);
 	g_object_unref (result);
 	result = NULL;
 }
 
-TESTING_TEST (trust_add_and_remov_exception_async)
+TESTING_TEST (trust_add_and_remov_pinned_async)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	gcr_trust_add_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	gcr_trust_add_pinned_certificate_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
-	ret = gcr_trust_add_certificate_exception_finish (result, &error);
+	ret = gcr_trust_add_pinned_certificate_finish (result, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_is_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
-	trust = gcr_trust_is_certificate_exception_finish (result, &error);
+	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == TRUE);
 	g_assert (error == NULL);
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_remove_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	gcr_trust_remove_pinned_certificate_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
-	ret = gcr_trust_remove_certificate_exception_finish (result, &error);
+	ret = gcr_trust_remove_pinned_certificate_finish (result, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_is_certificate_exception_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
-	trust = gcr_trust_is_certificate_exception_finish (result, &error);
+	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == FALSE);
 	g_assert (error == NULL);
 	g_object_unref (result);
 	result = NULL;
 }
 
-TESTING_TEST (trust_is_certificate_anchor_not)
+TESTING_TEST (trust_is_certificate_anchored_not)
 {
 	GError *error = NULL;
 	gboolean ret;
 
-	ret = gcr_trust_is_certificate_anchor (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
+	ret = gcr_trust_is_certificate_anchored (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
 	g_assert (ret == FALSE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_is_certificate_anchor_yes)
+TESTING_TEST (trust_is_certificate_anchored_yes)
 {
 	GError *error = NULL;
 	GckAttributes *attrs;
@@ -256,25 +256,25 @@ TESTING_TEST (trust_is_certificate_anchor_yes)
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, GCR_PURPOSE_CLIENT_AUTH);
-	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_CERTIFICATE_TRUST_ANCHOR);
+	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_ANCHORED_CERTIFICATE);
 	gck_mock_module_take_object (attrs);
 
-	ret = gcr_trust_is_certificate_anchor (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
+	ret = gcr_trust_is_certificate_anchored (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_is_certificate_anchor_async)
+TESTING_TEST (trust_is_certificate_anchored_async)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	gboolean ret;
 
-	gcr_trust_is_certificate_anchor_async (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, fetch_async_result, &result);
+	gcr_trust_is_certificate_anchored_async (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, fetch_async_result, &result);
 	testing_wait_until (500);
 	g_assert (result);
 
-	ret = gcr_trust_is_certificate_anchor_finish (result, &error);
+	ret = gcr_trust_is_certificate_anchored_finish (result, &error);
 	g_assert (ret == FALSE);
 	g_assert (error == NULL);
 

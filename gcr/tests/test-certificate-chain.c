@@ -171,11 +171,11 @@ add_anchor_to_module (GcrCertificate *certificate, const gchar *purpose)
 	data = gcr_certificate_get_der_data (certificate, &n_data);
 	g_assert (data);
 
-	/* And add a certificate exception for the signed certificate */
+	/* And add a pinned certificate for the signed certificate */
 	attrs = gck_attributes_new ();
 	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, data, n_data);
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
-	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_CERTIFICATE_TRUST_ANCHOR);
+	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_ANCHORED_CERTIFICATE);
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
 	gck_mock_module_take_object (attrs);
 }
@@ -190,11 +190,11 @@ add_pinned_to_module (GcrCertificate *certificate, const gchar *purpose, const g
 	data = gcr_certificate_get_der_data (certificate, &n_data);
 	g_assert (data);
 
-	/* And add a certificate exception for the signed certificate */
+	/* And add a pinned certificate for the signed certificate */
 	attrs = gck_attributes_new ();
 	gck_attributes_add_data (attrs, CKA_G_CERTIFICATE_VALUE, data, n_data);
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_TRUST_ASSERTION);
-	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_CERTIFICATE_TRUST_EXCEPTION);
+	gck_attributes_add_ulong (attrs, CKA_G_ASSERTION_TYPE, CKT_G_PINNED_CERTIFICATE);
 	gck_attributes_add_string (attrs, CKA_G_PURPOSE, purpose);
 	gck_attributes_add_string (attrs, CKA_G_PEER, host);
 	gck_mock_module_take_object (attrs);

@@ -223,11 +223,11 @@ static GQuark
 assertion_type_to_level_enum (CK_ASSERTION_TYPE type)
 {
 	switch (type) {
-	case CKT_G_CERTIFICATE_UNTRUSTED:
+	case CKT_G_UNTRUSTED_CERTIFICATE:
 		return TRUST_UNTRUSTED;
-	case CKT_G_CERTIFICATE_TRUST_ANCHOR:
+	case CKT_G_ANCHORED_CERTIFICATE:
 		return TRUST_TRUSTED_ANCHOR;
-	case CKT_G_CERTIFICATE_TRUST_EXCEPTION:
+	case CKT_G_PINNED_CERTIFICATE:
 		return TRUST_TRUSTED;
 	default:
 		return 0;
@@ -238,11 +238,11 @@ static gboolean
 level_enum_to_assertion_type (GQuark level, CK_ASSERTION_TYPE *type)
 {
 	if (level == TRUST_UNTRUSTED)
-		*type = CKT_G_CERTIFICATE_UNTRUSTED;
+		*type = CKT_G_UNTRUSTED_CERTIFICATE;
 	else if (level == TRUST_TRUSTED_ANCHOR)
-		*type = CKT_G_CERTIFICATE_TRUST_ANCHOR;
+		*type = CKT_G_ANCHORED_CERTIFICATE;
 	else if (level == TRUST_TRUSTED)
-		*type = CKT_G_CERTIFICATE_TRUST_EXCEPTION;
+		*type = CKT_G_PINNED_CERTIFICATE;
 	else if (level == TRUST_UNKNOWN)
 		*type = 0;
 	else
@@ -653,11 +653,11 @@ gkm_xdg_trust_get_level (GkmTrust *base, const gchar *purpose)
 		return GKM_TRUST_UNKNOWN;
 
 	type = gkm_assertion_get_trust_type (assertion);
-	if (type == CKT_G_CERTIFICATE_TRUST_ANCHOR)
+	if (type == CKT_G_ANCHORED_CERTIFICATE)
 		return GKM_TRUST_ANCHOR;
-	else if (type == CKT_G_CERTIFICATE_TRUST_EXCEPTION)
+	else if (type == CKT_G_PINNED_CERTIFICATE)
 		return GKM_TRUST_TRUSTED;
-	else if (type == CKT_G_CERTIFICATE_UNTRUSTED)
+	else if (type == CKT_G_UNTRUSTED_CERTIFICATE)
 		return GKM_TRUST_UNTRUSTED;
 	else
 		g_return_val_if_reached (GKM_TRUST_UNKNOWN);

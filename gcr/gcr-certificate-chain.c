@@ -248,8 +248,8 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 	/* First check for pinned certificates */
 	certificate = g_ptr_array_index (pv->certificates, 0);
 	if (lookups && pv->peer) {
-		ret = gcr_trust_is_certificate_exception (certificate, pv->purpose,
-		                                          pv->peer, cancellable, &error);
+		ret = gcr_trust_is_certificate_pinned (certificate, pv->purpose,
+		                                       pv->peer, cancellable, &error);
 		if (!ret && error) {
 			g_propagate_error (rerror, error);
 			return FALSE;
@@ -307,8 +307,8 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 
 		/* See if this certificate is an anchor */
 		if (lookups) {
-			ret = gcr_trust_is_certificate_anchor (certificate, pv->purpose,
-			                                       cancellable, &error);
+			ret = gcr_trust_is_certificate_anchored (certificate, pv->purpose,
+			                                         cancellable, &error);
 
 			if (!ret && error) {
 				g_propagate_error (rerror, error);

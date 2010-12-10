@@ -66,8 +66,8 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 	lookups[0].ulValueLen = sizeof (klass);
 
 	switch (type) {
-	case CKT_G_CERTIFICATE_TRUST_ANCHOR:
-	case CKT_G_CERTIFICATE_TRUST_EXCEPTION:
+	case CKT_G_ANCHORED_CERTIFICATE:
+	case CKT_G_PINNED_CERTIFICATE:
 		value = gkm_attributes_find (attrs, n_attrs, CKA_G_CERTIFICATE_VALUE);
 		if (!value) {
 			gkm_transaction_fail (transaction, CKR_TEMPLATE_INCOMPLETE);
@@ -79,7 +79,7 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		n_lookups = 2;
 		break;
 
-	case CKT_G_CERTIFICATE_UNTRUSTED:
+	case CKT_G_UNTRUSTED_CERTIFICATE:
 		serial = gkm_attributes_find (attrs, n_attrs, CKA_SERIAL_NUMBER);
 		issuer = gkm_attributes_find (attrs, n_attrs, CKA_ISSUER);
 		if (!serial || !issuer) {

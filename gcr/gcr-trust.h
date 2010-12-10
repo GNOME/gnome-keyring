@@ -35,66 +35,66 @@ G_BEGIN_DECLS
 #define GCR_PURPOSE_CODE_SIGNING "1.3.6.1.5.5.7.3.3"
 #define GCR_PURPOSE_EMAIL "1.3.6.1.5.5.7.3.4"
 
-gboolean       gcr_trust_is_certificate_exception              (GcrCertificate *certificate,
+gboolean       gcr_trust_is_certificate_pinned                 (GcrCertificate *certificate,
                                                                 const gchar *purpose,
                                                                 const gchar *peer,
                                                                 GCancellable *cancellable,
                                                                 GError **error);
 
-void           gcr_trust_is_certificate_exception_async        (GcrCertificate *certificate,
-                                                                const gchar *purpose,
-                                                                const gchar *peer,
-                                                                GCancellable *cancellable,
-                                                                GAsyncReadyCallback callback,
-                                                                gpointer user_data);
-
-gboolean       gcr_trust_is_certificate_exception_finish       (GAsyncResult *result,
-                                                                GError **error);
-
-gboolean       gcr_trust_add_certificate_exception             (GcrCertificate *certificate,
-                                                                const gchar *purpose,
-                                                                const gchar *peer,
-                                                                GCancellable *cancellable,
-                                                                GError **error);
-
-void           gcr_trust_add_certificate_exception_async       (GcrCertificate *certificate,
+void           gcr_trust_is_certificate_pinned_async           (GcrCertificate *certificate,
                                                                 const gchar *purpose,
                                                                 const gchar *peer,
                                                                 GCancellable *cancellable,
                                                                 GAsyncReadyCallback callback,
                                                                 gpointer user_data);
 
-gboolean       gcr_trust_add_certificate_exception_finish      (GAsyncResult *result,
+gboolean       gcr_trust_is_certificate_pinned_finish          (GAsyncResult *result,
                                                                 GError **error);
 
-gboolean       gcr_trust_remove_certificate_exception          (GcrCertificate *certificate,
+gboolean       gcr_trust_add_pinned_certificate                (GcrCertificate *certificate,
                                                                 const gchar *purpose,
                                                                 const gchar *peer,
                                                                 GCancellable *cancellable,
                                                                 GError **error);
 
-void           gcr_trust_remove_certificate_exception_async    (GcrCertificate *certificate,
+void           gcr_trust_add_pinned_certificate_async          (GcrCertificate *certificate,
                                                                 const gchar *purpose,
                                                                 const gchar *peer,
                                                                 GCancellable *cancellable,
                                                                 GAsyncReadyCallback callback,
                                                                 gpointer user_data);
 
-gboolean       gcr_trust_remove_certificate_exception_finish   (GAsyncResult *result,
+gboolean       gcr_trust_add_pinned_certificate_finish         (GAsyncResult *result,
                                                                 GError **error);
 
-gboolean       gcr_trust_is_certificate_anchor                 (GcrCertificate *certificate,
+gboolean       gcr_trust_remove_pinned_certificate             (GcrCertificate *certificate,
+                                                                const gchar *purpose,
+                                                                const gchar *peer,
+                                                                GCancellable *cancellable,
+                                                                GError **error);
+
+void           gcr_trust_remove_pinned_certificate_async       (GcrCertificate *certificate,
+                                                                const gchar *purpose,
+                                                                const gchar *peer,
+                                                                GCancellable *cancellable,
+                                                                GAsyncReadyCallback callback,
+                                                                gpointer user_data);
+
+gboolean       gcr_trust_remove_pinned_certificate_finish      (GAsyncResult *result,
+                                                                GError **error);
+
+gboolean       gcr_trust_is_certificate_anchored               (GcrCertificate *certificate,
                                                                 const gchar *purpose,
                                                                 GCancellable *cancellable,
                                                                 GError **error);
 
-void           gcr_trust_is_certificate_anchor_async           (GcrCertificate *certificate,
+void           gcr_trust_is_certificate_anchored_async         (GcrCertificate *certificate,
                                                                 const gchar *purpose,
                                                                 GCancellable *cancellable,
                                                                 GAsyncReadyCallback callback,
                                                                 gpointer user_data);
 
-gboolean       gcr_trust_is_certificate_anchor_finish          (GAsyncResult *result,
+gboolean       gcr_trust_is_certificate_anchored_finish        (GAsyncResult *result,
                                                                 GError **error);
 
 G_END_DECLS

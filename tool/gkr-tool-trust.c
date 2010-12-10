@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-tool-trust.c: Command line certificate trust exceptions
+/* gkr-tool-trust.c: Command line pinned certificates
 
    Copyright (C) 2010 Stefan Walter
 
@@ -102,7 +102,7 @@ purpose_to_string (GcrPurpose purpose)
 }
 
 static int
-get_certificate_exception (GcrCertificate *certificate, GcrPurpose purpose)
+get_pinned_certificate (GcrCertificate *certificate, GcrPurpose purpose)
 {
 	GError *error = NULL;
 	const gchar *string;
