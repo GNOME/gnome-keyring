@@ -226,7 +226,7 @@ TESTING_TEST (certificate_chain_new)
 
 	chain = gcr_certificate_chain_new ();
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 0);
 
@@ -239,20 +239,20 @@ TESTING_TEST (certificate_chain_new_with_cert)
 {
 	GcrCertificateChain *chain;
 	GcrCertificate *check;
-	guint type, length;
+	guint status, length;
 
 	chain = gcr_certificate_chain_new ();
 	gcr_certificate_chain_add (chain, cert_signed);
 	gcr_certificate_chain_add (chain, cert_ca);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 2);
 
-	type = G_MAXUINT;
+	status = G_MAXUINT;
 	length = 0;
-	g_object_get (chain, "type", &type, "length", &length, NULL);
-	g_assert_cmpuint (type, ==, GCR_CERTIFICATE_CHAIN_UNKNOWN);
+	g_object_get (chain, "status", &status, "length", &length, NULL);
+	g_assert_cmpuint (status, ==, GCR_CERTIFICATE_CHAIN_UNKNOWN);
 	g_assert_cmpuint (length, ==, 2);
 
 	check = gcr_certificate_chain_get_certificate (chain, 1);
@@ -283,7 +283,7 @@ TESTING_TEST (certificate_chain_selfsigned)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_SELFSIGNED);
 
 	g_object_unref (chain);
@@ -304,7 +304,7 @@ TESTING_TEST (certificate_chain_incomplete)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_INCOMPLETE);
 
 	g_object_unref (chain);
@@ -324,7 +324,7 @@ TESTING_TEST (certificate_chain_empty)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
 
 	g_object_unref (chain);
@@ -348,7 +348,7 @@ TESTING_TEST (certificate_chain_trim_extras)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_SELFSIGNED);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 1);
 
@@ -384,7 +384,7 @@ TESTING_TEST (certificate_chain_complete_async)
 	g_assert_no_error (error);
 	g_object_unref (result);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_SELFSIGNED);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 2);
 
@@ -410,7 +410,7 @@ TESTING_TEST (certificate_chain_with_anchor)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_ANCHORED);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 2);
 	g_assert (gcr_certificate_chain_get_anchor (chain) == cert_ca);
@@ -437,7 +437,7 @@ TESTING_TEST (certificate_chain_with_anchor_and_lookup_ca)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_ANCHORED);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 2);
 	g_assert (gcr_certificate_chain_get_anchor (chain) != NULL);
@@ -465,7 +465,7 @@ TESTING_TEST (certificate_chain_with_pinned)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_PINNED);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 1);
 	g_assert (gcr_certificate_chain_get_anchor (chain) == NULL);
@@ -493,7 +493,7 @@ TESTING_TEST (certificate_chain_without_lookups)
 		g_assert_not_reached ();
 	g_assert_no_error (error);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_INCOMPLETE);
 	g_assert_cmpuint (gcr_certificate_chain_get_length (chain), ==, 1);
 	g_assert (gcr_certificate_chain_get_anchor (chain) == NULL);
@@ -522,7 +522,7 @@ TESTING_TEST (certificate_chain_with_lookup_error)
 		g_assert_not_reached ();
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
 
 	g_object_unref (chain);
@@ -547,7 +547,7 @@ TESTING_TEST (certificate_chain_with_anchor_error)
 		g_assert_not_reached ();
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
 
 	g_object_unref (chain);
@@ -576,7 +576,7 @@ TESTING_TEST (certificate_chain_with_anchor_error_async)
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
 	g_object_unref (result);
 
-	g_assert_cmpuint (gcr_certificate_chain_get_chain_type (chain), ==,
+	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
 
 	g_object_unref (chain);

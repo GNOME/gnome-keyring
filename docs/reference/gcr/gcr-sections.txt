@@ -183,11 +183,11 @@ gcr_pkcs11_set_trust_store_uri
 <SECTION>
 <FILE>gcr-certificate-chain</FILE>
 GcrCertificateChain
-GcrCertificateChainType
+GcrCertificateChainStatus
 gcr_certificate_chain_new
 gcr_certificate_chain_add
 gcr_certificate_chain_get_certificate
-gcr_certificate_chain_get_chain_type
+gcr_certificate_chain_get_status
 gcr_certificate_chain_get_anchor
 gcr_certificate_chain_get_endpoint
 gcr_certificate_chain_get_length

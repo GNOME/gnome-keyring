@@ -58,20 +58,20 @@
  * found, then the chain is considered built. Any extra certificates are
  * removed from the chain.
  *
- * Once the certificate chain has been built, you can access its type
- * through gcr_certificate_chain_get_chain_type(). The type signifies whether
+ * Once the certificate chain has been built, you can access its status
+ * through gcr_certificate_chain_get_status(). The status signifies whether
  * the chain is anchored on a trust root, self-signed, incomplete etc. See
- * #GcrCertificateChainType for information on the various types.
+ * #GcrCertificateChainStatus for information on the various statuses.
  *
  * It's important to understand that the building of a certificate chain is
  * merely the first step towards verifying trust in a certificate.
  */
 
 /**
- * GcrCertificateChainType:
- * @GCR_CERTIFICATE_CHAIN_UNKNOWN: The certificate chain's type is unknown.
- * When a chain is not yet built it has this type. If a chain is modified after
- * being built, it has this type.
+ * GcrCertificateChainStatus:
+ * @GCR_CERTIFICATE_CHAIN_UNKNOWN: The certificate chain's status is unknown.
+ * When a chain is not yet built it has this status. If a chain is modified after
+ * being built, it has this status.
  * @GCR_CERTIFICATE_CHAIN_INCOMPLETE: A full chain could not be loaded. The
  * chain does not end with a self-signed certificate, a trusted anchor, or a
  * pinned certificate.
@@ -83,7 +83,7 @@
  * pinned certificate is an exception which trusts a given certificate
  * explicitly for a purpose and communication with a certain peer.
  *
- * The type of a built certificate chain. Will be set to
+ * The status of a built certificate chain. Will be set to
  * %GCR_CERTIFICATE_CHAIN_UNKNOWN for certificate chains that have not been
  * built.
  */
@@ -100,13 +100,13 @@
 
 enum {
 	PROP_0,
-	PROP_TYPE,
+	PROP_STATUS,
 	PROP_LENGTH,
 };
 
 struct _GcrCertificateChainPrivate {
 	GPtrArray *certificates;
-	GcrCertificateChainType type;
+	GcrCertificateChainStatus status;
 
 	/* Used in build operation */
 	gchar *purpose;
@@ -158,7 +158,7 @@ prep_chain_private (GcrCertificateChainPrivate *orig, const gchar *purpose,
 		g_ptr_array_add (pv->certificates, g_object_ref (certificate));
 	}
 
-	pv->type = orig->type;
+	pv->status = orig->status;
 	pv->purpose = g_strdup (purpose);
 	pv->peer = g_strdup (peer);
 	pv->flags = flags;
@@ -238,7 +238,7 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 	g_assert (pv);
 	g_assert (pv->certificates);
 
-	pv->type = GCR_CERTIFICATE_CHAIN_UNKNOWN;
+	pv->status = GCR_CERTIFICATE_CHAIN_UNKNOWN;
 	lookups = !((pv->flags & GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS) == GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS);
 
 	/* This chain is built */
@@ -261,7 +261,7 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 		 */
 		if (ret) {
 			g_ptr_array_set_size (pv->certificates, 1);
-			pv->type = GCR_CERTIFICATE_CHAIN_PINNED;
+			pv->status = GCR_CERTIFICATE_CHAIN_PINNED;
 			return TRUE;
 		}
 	}
@@ -269,11 +269,11 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 	length = 1;
 
 	/* The first certificate is always unconditionally in the chain */
-	while (pv->type == GCR_CERTIFICATE_CHAIN_UNKNOWN) {
+	while (pv->status == GCR_CERTIFICATE_CHAIN_UNKNOWN) {
 
 		/* Stop the chain if previous was self-signed */
 		if (gcr_certificate_is_issuer (certificate, certificate)) {
-			pv->type = GCR_CERTIFICATE_CHAIN_SELFSIGNED;
+			pv->status = GCR_CERTIFICATE_CHAIN_SELFSIGNED;
 			break;
 		}
 
@@ -299,7 +299,7 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 
 		/* Stop the chain if nothing found */
 		if (certificate == NULL) {
-			pv->type = GCR_CERTIFICATE_CHAIN_INCOMPLETE;
+			pv->status = GCR_CERTIFICATE_CHAIN_INCOMPLETE;
 			break;
 		}
 
@@ -316,7 +316,7 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 
 			/* Stop the chain at the first anchor */
 			} else if (ret) {
-				pv->type = GCR_CERTIFICATE_CHAIN_ANCHORED;
+				pv->status = GCR_CERTIFICATE_CHAIN_ANCHORED;
 				break;
 			}
 		}
@@ -360,7 +360,7 @@ gcr_certificate_chain_dispose (GObject *obj)
 	GcrCertificateChain *self = GCR_CERTIFICATE_CHAIN (obj);
 
 	g_ptr_array_set_size (self->pv->certificates, 0);
-	self->pv->type = GCR_CERTIFICATE_CHAIN_UNKNOWN;
+	self->pv->status = GCR_CERTIFICATE_CHAIN_UNKNOWN;
 
 	G_OBJECT_CLASS (gcr_certificate_chain_parent_class)->dispose (obj);
 }
@@ -383,8 +383,8 @@ gcr_certificate_chain_get_property (GObject *obj, guint prop_id, GValue *value,
 	GcrCertificateChain *self = GCR_CERTIFICATE_CHAIN (obj);
 
 	switch (prop_id) {
-	case PROP_TYPE:
-		g_value_set_uint (value, gcr_certificate_chain_get_chain_type (self));
+	case PROP_STATUS:
+		g_value_set_enum (value, gcr_certificate_chain_get_status (self));
 		break;
 	case PROP_LENGTH:
 		g_value_set_uint (value, gcr_certificate_chain_get_length (self));
@@ -407,13 +407,13 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
 	gobject_class->get_property = gcr_certificate_chain_get_property;
 
 	/**
-	 * GcrCertificateChain:type:
+	 * GcrCertificateChain:status:
 	 *
-	 * The certificate chain type. See #GcrCertificateChainType
+	 * The certificate chain status. See #GcrCertificateChainStatus
 	 */
-	g_object_class_install_property (gobject_class, PROP_TYPE,
-	           g_param_spec_uint ("type", "Type", "Type of certificate chain",
-	                              0, _GCR_CERTIFICATE_CHAIN_TYPE_MAX,
+	g_object_class_install_property (gobject_class, PROP_STATUS,
+	           g_param_spec_enum ("status", "Status", "Status of certificate chain",
+	                              GCR_TYPE_CERTIFICATE_CHAIN_STATUS,
 	                              GCR_CERTIFICATE_CHAIN_UNKNOWN, G_PARAM_READABLE));
 
 	/**
@@ -432,6 +432,46 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
+
+GType
+gcr_certificate_chain_status_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	static const GEnumValue values[] = {
+		{ GCR_CERTIFICATE_CHAIN_UNKNOWN, "GCR_CERTIFICATE_CHAIN_UNKNOWN", "unknown" },
+		{ GCR_CERTIFICATE_CHAIN_INCOMPLETE, "GCR_CERTIFICATE_CHAIN_INCOMPLETE", "incomplete" },
+		{ GCR_CERTIFICATE_CHAIN_SELFSIGNED, "GCR_CERTIFICATE_CHAIN_SELFSIGNED", "self-signed" },
+		{ GCR_CERTIFICATE_CHAIN_PINNED, "GCR_CERTIFICATE_CHAIN_PINNED", "pinned" },
+		{ GCR_CERTIFICATE_CHAIN_ANCHORED, "GCR_CERTIFICATE_CHAIN_ANCHORED", "anchored" },
+		{ 0, NULL, NULL }
+	};
+
+	if (g_once_init_enter (&initialized)) {
+		type = g_enum_register_static ("GcrCertificateChainStatus", values);
+		g_once_init_leave (&initialized, 1);
+	}
+
+	return type;
+}
+
+GType
+gcr_certificate_chain_flags_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	static const GFlagsValue values[] = {
+		{ GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS, "GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS", "no-lookups" },
+		{ 0, NULL, NULL }
+	};
+
+	if (g_once_init_enter (&initialized)) {
+		type = g_flags_register_static ("GcrCertificateChainFlags", values);
+		g_once_init_leave (&initialized, 1);
+	}
+
+	return type;
+}
 
 /**
  * gcr_certificate_chain_new:
@@ -466,36 +506,36 @@ gcr_certificate_chain_add (GcrCertificateChain *self, GcrCertificate *certificat
 	g_return_if_fail (GCR_IS_CERTIFICATE_CHAIN (self));
 	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
 	g_ptr_array_add (self->pv->certificates, g_object_ref (certificate));
-	self->pv->type = GCR_CERTIFICATE_CHAIN_UNKNOWN;
-	g_object_notify (G_OBJECT (self), "type");
+	self->pv->status = GCR_CERTIFICATE_CHAIN_UNKNOWN;
+	g_object_notify (G_OBJECT (self), "status");
 	g_object_notify (G_OBJECT (self), "length");
 }
 
 /**
- * gcr_certificate_chain_get_chain_type:
+ * gcr_certificate_chain_get_status:
  * @self: the #GcrCertificateChain
  *
- * Get the type of a certificate chain. If the certificate chain has not
- * been built, then the type will be %GCR_CERTIFICATE_CHAIN_UNKNOWN.
+ * Get the status of a certificate chain. If the certificate chain has not
+ * been built, then the status will be %GCR_CERTIFICATE_CHAIN_UNKNOWN.
  *
- * A type of %GCR_CERTIFICATE_CHAIN_ANCHORED does not mean that the
+ * A status of %GCR_CERTIFICATE_CHAIN_ANCHORED does not mean that the
  * certificate chain has been verified, but merely that an anchor has been
  * found.
  *
- * Returns: the type of the certificate chain.
+ * Returns: the status of the certificate chain.
  */
-GcrCertificateChainType
-gcr_certificate_chain_get_chain_type (GcrCertificateChain *self)
+GcrCertificateChainStatus
+gcr_certificate_chain_get_status (GcrCertificateChain *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_CHAIN (self), GCR_CERTIFICATE_CHAIN_UNKNOWN);
-	return self->pv->type;
+	return self->pv->status;
 }
 
 /**
  * gcr_certificate_chain_get_anchor:
  * @self: the #GcrCertificateChain
  *
- * If the certificate chain has been built and is of type
+ * If the certificate chain has been built and is of status
  * %GCR_CERTIFICATE_CHAIN_ANCHORED, then this will return the anchor
  * certificate that was found. This is not necessarily a root certificate
  * authority. If an intermediate certificate authority in the chain was
@@ -510,7 +550,7 @@ GcrCertificate*
 gcr_certificate_chain_get_anchor (GcrCertificateChain *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_CHAIN (self), NULL);
-	if (self->pv->type != GCR_CERTIFICATE_CHAIN_ANCHORED)
+	if (self->pv->status != GCR_CERTIFICATE_CHAIN_ANCHORED)
 		return NULL;
 	g_assert (self->pv->certificates->len > 0);
 	return GCR_CERTIFICATE (g_ptr_array_index (self->pv->certificates,
@@ -578,7 +618,7 @@ gcr_certificate_chain_get_certificate (GcrCertificateChain *self, guint index)
  * @error: a #GError or %NULL
  *
  * Complete a certificate chain. Once a certificate chain has been built
- * its type can be examined.
+ * its status can be examined.
  *
  * This operation will lookup missing certificates in PKCS\#11
  * modules and also that each certificate in the chain is the signer of the
@@ -627,7 +667,7 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
 	if (ret) {
 		free_chain_private (self->pv);
 		self->pv = cleanup_chain_private (pv);
-		g_object_notify (G_OBJECT (self), "type");
+		g_object_notify (G_OBJECT (self), "status");
 		g_object_notify (G_OBJECT (self), "length");
 	}
 
@@ -645,7 +685,7 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
  * @user_data: data to pass to the callback
  *
  * Complete a certificate chain. Once a certificate chain has been built
- * its type can be examined.
+ * its status can be examined.
  *
  * This will lookup missing certificates in PKCS\#11
  * modules and also that each certificate in the chain is the signer of the
@@ -729,7 +769,7 @@ gcr_certificate_chain_build_finish (GcrCertificateChain *self, GAsyncResult *res
 	free_chain_private (self->pv);
 	self->pv = cleanup_chain_private (pv);
 
-	g_object_notify (G_OBJECT (self), "type");
+	g_object_notify (G_OBJECT (self), "status");
 	g_object_notify (G_OBJECT (self), "length");
 	return TRUE;
 }

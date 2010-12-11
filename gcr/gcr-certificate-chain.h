@@ -36,20 +36,33 @@
 
 G_BEGIN_DECLS
 
-typedef enum _GcrCertificateChainType {
+/*
+ * IMPORTANT: When adding a status, always update the
+ * gcr_certificate_chain_status_get_type() function
+ */
+typedef enum _GcrCertificateChainStatus {
 	GCR_CERTIFICATE_CHAIN_UNKNOWN,
 	GCR_CERTIFICATE_CHAIN_INCOMPLETE,
 	GCR_CERTIFICATE_CHAIN_SELFSIGNED,
-	GCR_CERTIFICATE_CHAIN_ANCHORED,
 	GCR_CERTIFICATE_CHAIN_PINNED,
+	GCR_CERTIFICATE_CHAIN_ANCHORED,
+} GcrCertificateChainStatus;
 
-	/*< private >*/
-	_GCR_CERTIFICATE_CHAIN_TYPE_MAX
-} GcrCertificateChainType;
+#define GCR_TYPE_CERTIFICATE_CHAIN_STATUS        (gcr_certificate_chain_status_get_type())
 
+GType                     gcr_certificate_chain_status_get_type       (void) G_GNUC_CONST;
+
+/*
+ * IMPORTANT: When adding a status, always update the
+ * gcr_certificate_chain_flags_get_type() function
+ */
 typedef enum _GcrCertificateChainFlags {
 	GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS = 1 << 0,
 } GcrCertificateChainFlags;
+
+#define GCR_TYPE_CERTIFICATE_CHAIN_FLAGS         (gcr_certificate_chain_flags_get_type())
+
+GType                     gcr_certificate_chain_flags_get_type       (void) G_GNUC_CONST;
 
 #define GCR_TYPE_CERTIFICATE_CHAIN               (gcr_certificate_chain_get_type ())
 #define GCR_CERTIFICATE_CHAIN(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE_CHAIN, GcrCertificateChain))
@@ -71,14 +84,14 @@ struct _GcrCertificateChainClass {
 	GObjectClass parent_class;
 };
 
-GType                     gcr_certificate_chain_get_type           (void);
+GType                     gcr_certificate_chain_get_type           (void) G_GNUC_CONST;
 
 GcrCertificateChain*      gcr_certificate_chain_new                (void);
 
 void                      gcr_certificate_chain_add                (GcrCertificateChain *self,
                                                                     GcrCertificate *certificate);
 
-GcrCertificateChainType   gcr_certificate_chain_get_chain_type     (GcrCertificateChain *self);
+GcrCertificateChainStatus gcr_certificate_chain_get_status         (GcrCertificateChain *self);
 
 GcrCertificate*           gcr_certificate_chain_get_anchor         (GcrCertificateChain *self);
 

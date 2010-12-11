@@ -50,7 +50,7 @@
  * purpose is the #GCR_PURPOSE_SERVER_AUTH and is used for a client application
  * to verify that the certificate at the server side of a TLS connection is
  * authorized to act as such. To check if a certificate is a trust anchor use
- * gcr_trust_is_certificate_anchor().
+ * gcr_trust_is_certificate_anchored().
  *
  * Pinned certificates are used when a user overrides the default trust
  * decision for a given certificate. They're often used with self-signed
