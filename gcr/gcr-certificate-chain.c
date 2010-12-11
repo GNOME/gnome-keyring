@@ -630,7 +630,7 @@ gcr_certificate_chain_get_certificate (GcrCertificateChain *self, guint index)
  * constitute verifying that chain. This is merely the first step towards
  * trust verification.
  *
- * The @purpose is a string like #GCR_PURPOSE_CLIENT_AUTH and is the purpose
+ * The @purpose is a string like %GCR_PURPOSE_CLIENT_AUTH and is the purpose
  * for which the certificate chain will be used. Trust anchors are looked up
  * for this purpose. This argument is required.
  *
@@ -639,7 +639,7 @@ gcr_certificate_chain_get_certificate (GcrCertificateChain *self, guint index)
  * been stored for this peer. If %NULL then no pinned certificates will
  * be considered.
  *
- * If the #GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS flag is specified then no
+ * If the %GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS flag is specified then no
  * lookups for anchors or pinned certificates are done, and the resulting chain
  * will be neither anchored or pinned. Additionally no missing certificate
  * authorities are looked up in PKCS\#11
@@ -697,7 +697,7 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
  * constitute verifying that chain. This is merely the first step towards
  * trust verification.
  *
- * The @purpose is a string like #GCR_PURPOSE_CLIENT_AUTH and is the purpose
+ * The @purpose is a string like %GCR_PURPOSE_CLIENT_AUTH and is the purpose
  * for which the certificate chain will be used. Trust anchors are looked up
  * for this purpose. This argument is required.
  *
@@ -706,7 +706,7 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
  * been stored for this peer. If %NULL then no pinned certificates will
  * be considered.
  *
- * If the #GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS flag is specified then no
+ * If the %GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS flag is specified then no
  * lookups for anchors or pinned certificates are done, and the resulting chain
  * will be neither anchored or pinned. Additionally no missing certificate
  * authorities are looked up in PKCS\#11
@@ -740,7 +740,8 @@ gcr_certificate_chain_build_async (GcrCertificateChain *self, const gchar *purpo
 }
 
 /**
- * gcr_pkcs11_certificate_lookup_issuer_finish:
+ * gcr_certificate_chain_build_finish:
+ * @self: the #GcrCertificateChain
  * @result: the #GAsyncResult passed to the callback
  * @error: a #GError, or NULL
  *
