@@ -492,7 +492,7 @@ gcr_certificate_get_subject_dn (GcrCertificate *self)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 
-	return egg_dn_read (egg_asn1x_node (info->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL));
+	return egg_dn_read (egg_asn1x_node (info->asn1, "tbsCertificate", "subject", "rdnSequence", NULL));
 }
 
 static gconstpointer

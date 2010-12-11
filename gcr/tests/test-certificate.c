@@ -9,7 +9,8 @@
 #include <string.h>
 
 static GcrCertificate *certificate = NULL;
-static GcrCertificate *certificate2 = NULL;
+static GcrCertificate *dsa_cert = NULL;
+static GcrCertificate *dhansak_cert = NULL;
 
 TESTING_SETUP(certificate)
 {
@@ -22,8 +23,13 @@ TESTING_SETUP(certificate)
 	g_free (contents);
 
 	contents = testing_data_read ("der-certificate-dsa.cer", &n_contents);
-	certificate2 = gcr_simple_certificate_new (contents, n_contents);
-	g_assert (certificate2);
+	dsa_cert = gcr_simple_certificate_new (contents, n_contents);
+	g_assert (dsa_cert);
+	g_free (contents);
+
+	contents = testing_data_read ("dhansak-collabora.cer", &n_contents);
+	dhansak_cert = gcr_simple_certificate_new (contents, n_contents);
+	g_assert (certificate);
 	g_free (contents);
 }
 
@@ -31,8 +37,10 @@ TESTING_TEARDOWN(certificate)
 {
 	g_object_unref (certificate);
 	certificate = NULL;
-	g_object_unref (certificate2);
-	certificate2 = NULL;
+	g_object_unref (dsa_cert);
+	dsa_cert = NULL;
+	g_object_unref (dhansak_cert);
+	dhansak_cert = NULL;
 }
 
 TESTING_TEST(issuer_cn)
@@ -76,6 +84,11 @@ TESTING_TEST(subject_cn)
 	g_assert (cn);
 	g_assert_cmpstr (cn, ==, "http://www.valicert.com/");
 	g_free (cn);
+
+	cn = gcr_certificate_get_subject_cn (dhansak_cert);
+	g_assert (cn);
+	g_assert_cmpstr (cn, ==, "dhansak.collabora.co.uk");
+	g_free (cn);
 }
 
 TESTING_TEST(subject_dn)
@@ -84,6 +97,12 @@ TESTING_TEST(subject_dn)
 	g_assert (dn);
 	g_assert_cmpstr (dn, ==, "L=ValiCert Validation Network, O=ValiCert, Inc., OU=ValiCert Class 3 Policy Validation Authority, CN=http://www.valicert.com/, EMAIL=info@valicert.com");
 	g_free (dn);
+
+	dn = gcr_certificate_get_subject_dn (dhansak_cert);
+	g_assert (dn);
+	g_assert_cmpstr (dn, ==, "CN=dhansak.collabora.co.uk, EMAIL=sysadmin@collabora.co.uk");
+	g_free (dn);
+
 }
 
 TESTING_TEST(subject_part)
@@ -92,6 +111,12 @@ TESTING_TEST(subject_part)
 	g_assert (part);
 	g_assert_cmpstr (part, ==, "ValiCert Class 3 Policy Validation Authority");
 	g_free (part);
+
+	part = gcr_certificate_get_subject_part (dhansak_cert, "EMAIL");
+	g_assert (part);
+	g_assert_cmpstr (part, ==, "sysadmin@collabora.co.uk");
+	g_free (part);
+
 }
 
 TESTING_TEST(subject_raw)
@@ -102,6 +127,11 @@ TESTING_TEST(subject_raw)
 	der = gcr_certificate_get_subject_raw (certificate, &n_der);
 	g_assert (der);
 	g_assert_cmpsize (n_der, ==, 190);
+	g_free (der);
+
+	der = gcr_certificate_get_subject_raw (dhansak_cert, &n_der);
+	g_assert (der);
+	g_assert_cmpsize (n_der, ==, 77);
 	g_free (der);
 }
 
@@ -166,7 +196,7 @@ TESTING_TEST (certificate_key_size)
 	guint key_size = gcr_certificate_get_key_size (certificate);
 	g_assert_cmpuint (key_size, ==, 1024);
 
-	key_size = gcr_certificate_get_key_size (certificate2);
+	key_size = gcr_certificate_get_key_size (dsa_cert);
 	g_assert_cmpuint (key_size, ==, 1024);
 }
 
@@ -175,6 +205,6 @@ TESTING_TEST (certificate_is_issuer)
 	gboolean ret = gcr_certificate_is_issuer (certificate, certificate);
 	g_assert (ret == TRUE);
 
-	ret = gcr_certificate_is_issuer (certificate, certificate2);
+	ret = gcr_certificate_is_issuer (certificate, dsa_cert);
 	g_assert (ret == FALSE);
 }
