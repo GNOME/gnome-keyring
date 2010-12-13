@@ -214,7 +214,7 @@ TESTING_TEARDOWN (certificate_chain)
 	cert_signed = NULL;
 
 	g_object_unref (cert_ca);
-	cert_signed = NULL;
+	cert_ca = NULL;
 
 	rv = (funcs.C_Finalize) (NULL);
 	gck_assert_cmprv (rv, ==, CKR_OK);
@@ -521,6 +521,7 @@ TESTING_TEST (certificate_chain_with_lookup_error)
 	                                 NULL, 0, NULL, &error))
 		g_assert_not_reached ();
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
+	g_clear_error (&error);
 
 	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
@@ -546,6 +547,7 @@ TESTING_TEST (certificate_chain_with_anchor_error)
 	                                 NULL, 0, NULL, &error))
 		g_assert_not_reached ();
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
+	g_clear_error (&error);
 
 	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,
 	                  GCR_CERTIFICATE_CHAIN_UNKNOWN);
@@ -574,6 +576,7 @@ TESTING_TEST (certificate_chain_with_anchor_error_async)
 	if (gcr_certificate_chain_build_finish (chain, result, &error))
 		g_assert_not_reached ();
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
+	g_clear_error (&error);
 	g_object_unref (result);
 
 	g_assert_cmpuint (gcr_certificate_chain_get_status (chain), ==,

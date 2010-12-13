@@ -192,11 +192,11 @@ prep_chain_private_thread_safe (GcrCertificateChainPrivate *orig, const gchar *p
 			der = gcr_certificate_get_der_data (certificate, &n_der);
 			g_return_val_if_fail (der, NULL);
 			safe = gcr_simple_certificate_new (der, n_der);
-		}
 
-		/* Always set the original certificate onto the safe one */
-		g_object_set_qdata_full (G_OBJECT (safe), Q_ORIGINAL_CERT,
-		                         g_object_ref (certificate), g_object_unref);
+			/* Always set the original certificate onto the safe one */
+			g_object_set_qdata_full (G_OBJECT (safe), Q_ORIGINAL_CERT,
+			                         g_object_ref (certificate), g_object_unref);
+		}
 
 		g_ptr_array_index (pv->certificates, i) = safe;
 		g_object_unref (certificate);
@@ -669,6 +669,8 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
 		self->pv = cleanup_chain_private (pv);
 		g_object_notify (G_OBJECT (self), "status");
 		g_object_notify (G_OBJECT (self), "length");
+	} else {
+		free_chain_private (pv);
 	}
 
 	return ret;
