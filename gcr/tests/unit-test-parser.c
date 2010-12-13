@@ -127,6 +127,8 @@ DEFINE_TEST(parse_all)
 		contents = testing_data_read (filename, &len);
 		
 		result = gcr_parser_parse_data (parser, contents, len, &err);
+		g_free (contents);
+
 		if (!result) { 
 			g_warning ("couldn't parse file data: %s: %s", 
 			           filename, egg_error_message (err));
