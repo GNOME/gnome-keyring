@@ -119,6 +119,7 @@ add_certificate_for_data (GkmRootsModule *self, const guchar *data,
 
 	/* Create a new certificate object */
 	cert = GKM_CERTIFICATE (gkm_roots_certificate_new (GKM_MODULE (self), unique, path));
+	g_free (unique);
 
 	if (!gkm_serializable_load (GKM_SERIALIZABLE (cert), NULL, data, n_data)) {
 		g_message ("couldn't parse certificate(s): %s", path);
