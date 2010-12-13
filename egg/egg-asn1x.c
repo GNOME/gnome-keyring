@@ -3268,14 +3268,6 @@ compare_nodes_by_tag (gconstpointer a, gconstpointer b)
 	return (taga < tagb) ? -1 : 1;
 }
 
-static void
-join_each_child (GNode *child, gpointer data)
-{
-	GNode *node = data;
-	g_node_unlink (child);
-	g_node_append (node, child);
-}
-
 static const ASN1_ARRAY_TYPE*
 adef_next_sibling (const ASN1_ARRAY_TYPE *def)
 {
@@ -3357,8 +3349,19 @@ traverse_and_prepare (GNode *node, gpointer data)
 		an->join = anj->def;
 	}
 
-	if (join)
-		g_node_children_foreach (join, G_TRAVERSE_ALL, join_each_child, node);
+	/* Move all the children of join node into our node */
+	if (join) {
+		list = NULL;
+		for (child = join->children, list = NULL; child; child = child->next)
+			list = g_list_prepend (list, child);
+		list = g_list_reverse (list);
+		for (l = list; l; l = g_list_next (l)) {
+			child = l->data;
+			g_node_unlink (child);
+			g_node_append (node, child);
+		}
+		g_list_free (list);
+	}
 
 	/* Lookup the max set size */
 	if (anode_def_type (node) == TYPE_SIZE) {
@@ -3382,7 +3385,7 @@ traverse_and_prepare (GNode *node, gpointer data)
 				for (l = an->opts; l; l = g_list_next (l))
 					anode_opt_add (node, l->data);
 				g_node_unlink (child);
-				g_node_destroy (child);
+				anode_destroy (child);
 			}
 			child = next;
 		}
