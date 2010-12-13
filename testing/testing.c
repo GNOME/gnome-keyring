@@ -325,6 +325,7 @@ chdir_base_dir (char* argv0)
 			           g_strerror (errno));
 	}
 
+	g_free (base);
 	g_free (dir);
 }
 
