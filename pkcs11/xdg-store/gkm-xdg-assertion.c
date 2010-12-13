@@ -80,7 +80,7 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		n_lookups = 2;
 		break;
 
-	case CKT_X_UNTRUSTED_CERTIFICATE:
+	case CKT_X_DISTRUSTED_CERTIFICATE:
 		serial = gkm_attributes_find (attrs, n_attrs, CKA_SERIAL_NUMBER);
 		issuer = gkm_attributes_find (attrs, n_attrs, CKA_ISSUER);
 		if (!serial || !issuer) {

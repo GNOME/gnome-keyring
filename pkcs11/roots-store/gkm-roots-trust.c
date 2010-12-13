@@ -178,8 +178,8 @@ build_linked_assertion (GkmRootsTrust *self, GkmTrustLevel level, const gchar *p
 	case GKM_TRUST_TRUSTED:
 		type = CKT_X_PINNED_CERTIFICATE;
 		break;
-	case GKM_TRUST_UNTRUSTED:
-		type = CKT_X_UNTRUSTED_CERTIFICATE;
+	case GKM_TRUST_DISTRUSTED:
+		type = CKT_X_DISTRUSTED_CERTIFICATE;
 		break;
 	case GKM_TRUST_ANCHOR:
 		type = CKT_X_ANCHORED_CERTIFICATE;
@@ -290,7 +290,7 @@ gkm_roots_trust_get_trust_level (GkmTrust *base, const gchar *purpose)
 		result = GKM_TRUST_TRUSTED;
 
 	} else {
-		result = GKM_TRUST_UNTRUSTED;
+		result = GKM_TRUST_DISTRUSTED;
 		oid = g_quark_try_string (purpose);
 		for (usage = usages; *usage; ++usage) {
 			if (*usage == oid) {

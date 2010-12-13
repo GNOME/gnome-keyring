@@ -74,7 +74,7 @@ static void remove_assertion_from_trust (GkmXdgTrust *self, GkmAssertion *assert
  */
 
 static GQuark TRUST_UNKNOWN;
-static GQuark TRUST_UNTRUSTED;
+static GQuark TRUST_DISTRUSTED;
 static GQuark TRUST_TRUSTED;
 static GQuark TRUST_TRUSTED_ANCHOR;
 
@@ -89,7 +89,7 @@ init_quarks (void)
 			name = g_quark_from_static_string(value)
 
 		QUARK (TRUST_UNKNOWN, "trustUnknown");
-		QUARK (TRUST_UNTRUSTED, "untrusted");
+		QUARK (TRUST_DISTRUSTED, "distrusted");
 		QUARK (TRUST_TRUSTED, "trusted");
 		QUARK (TRUST_TRUSTED_ANCHOR, "trustedAnchor");
 
@@ -224,8 +224,8 @@ static GQuark
 assertion_type_to_level_enum (CK_X_ASSERTION_TYPE type)
 {
 	switch (type) {
-	case CKT_X_UNTRUSTED_CERTIFICATE:
-		return TRUST_UNTRUSTED;
+	case CKT_X_DISTRUSTED_CERTIFICATE:
+		return TRUST_DISTRUSTED;
 	case CKT_X_ANCHORED_CERTIFICATE:
 		return TRUST_TRUSTED_ANCHOR;
 	case CKT_X_PINNED_CERTIFICATE:
@@ -238,8 +238,8 @@ assertion_type_to_level_enum (CK_X_ASSERTION_TYPE type)
 static gboolean
 level_enum_to_assertion_type (GQuark level, CK_X_ASSERTION_TYPE *type)
 {
-	if (level == TRUST_UNTRUSTED)
-		*type = CKT_X_UNTRUSTED_CERTIFICATE;
+	if (level == TRUST_DISTRUSTED)
+		*type = CKT_X_DISTRUSTED_CERTIFICATE;
 	else if (level == TRUST_TRUSTED_ANCHOR)
 		*type = CKT_X_ANCHORED_CERTIFICATE;
 	else if (level == TRUST_TRUSTED)
@@ -658,8 +658,8 @@ gkm_xdg_trust_get_level (GkmTrust *base, const gchar *purpose)
 		return GKM_TRUST_ANCHOR;
 	else if (type == CKT_X_PINNED_CERTIFICATE)
 		return GKM_TRUST_TRUSTED;
-	else if (type == CKT_X_UNTRUSTED_CERTIFICATE)
-		return GKM_TRUST_UNTRUSTED;
+	else if (type == CKT_X_DISTRUSTED_CERTIFICATE)
+		return GKM_TRUST_DISTRUSTED;
 	else
 		g_return_val_if_reached (GKM_TRUST_UNKNOWN);
 }

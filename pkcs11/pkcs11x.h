@@ -35,7 +35,7 @@
 
 typedef CK_ULONG CK_X_ASSERTION_TYPE;
 
-#define CKT_X_UNTRUSTED_CERTIFICATE              1UL
+#define CKT_X_DISTRUSTED_CERTIFICATE             1UL
 
 #define CKT_X_PINNED_CERTIFICATE                 2UL
 

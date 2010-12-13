@@ -119,8 +119,8 @@ get_pinned_certificate (GcrCertificate *certificate, GcrPurpose purpose)
 		g_print ("%s: no trust exception\n", string);
 	else if (trust == GCR_TRUST_TRUSTED)
 		g_print ("%s: certificate is explicitly trusted\n", string);
-	else if (trust == GCR_TRUST_UNTRUSTED)
-		g_print ("%s: certificate is explicitly untrusted\n", string);
+	else if (trust == GCR_TRUST_DISTRUSTED)
+		g_print ("%s: certificate is explicitly distrusted\n", string);
 
 	return 0;
 }
@@ -142,8 +142,8 @@ set_certificate_exception (GcrCertificate *certificate, GcrPurpose purpose, GcrT
 			g_print ("%s: no trust exception\n", string);
 		else if (trust == GCR_TRUST_TRUSTED)
 			g_print ("%s: certificate is explicitly trusted\n", string);
-		else if (trust == GCR_TRUST_UNTRUSTED)
-			g_print ("%s: certificate is explicitly untrusted\n", string);
+		else if (trust == GCR_TRUST_DISTRUSTED)
+			g_print ("%s: certificate is explicitly distrusted\n", string);
 	}
 
 	return 0;

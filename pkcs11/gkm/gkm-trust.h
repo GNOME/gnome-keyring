@@ -28,7 +28,7 @@
 
 typedef enum _GkmTrustLevel {
 	GKM_TRUST_UNKNOWN = 0,
-	GKM_TRUST_UNTRUSTED = 1,
+	GKM_TRUST_DISTRUSTED = 1,
 	GKM_TRUST_TRUSTED = 2,
 	GKM_TRUST_ANCHOR = 3,
 } GkmTrustLevel;

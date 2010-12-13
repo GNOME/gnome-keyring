@@ -50,7 +50,7 @@ trust_get_usage (GkmTrust *self, const gchar *purpose, CK_ATTRIBUTE_PTR attr)
 	case GKM_TRUST_UNKNOWN:
 		trust = CKT_NETSCAPE_TRUST_UNKNOWN;
 		break;
-	case GKM_TRUST_UNTRUSTED:
+	case GKM_TRUST_DISTRUSTED:
 		trust = CKT_NETSCAPE_UNTRUSTED;
 		break;
 	case GKM_TRUST_TRUSTED:
