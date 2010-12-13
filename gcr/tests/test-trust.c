@@ -51,6 +51,7 @@ TESTING_SETUP (trust_setup)
 	g_assert (contents);
 
 	certificate = gcr_simple_certificate_new (contents, len);
+	g_free (contents);
 
 	rv = gck_mock_C_GetFunctionList (&f);
 	gck_assert_cmprv (rv, ==, CKR_OK);
@@ -120,6 +121,7 @@ TESTING_TEST (trust_add_certificate_pinned_fail)
 	ret = gcr_trust_add_pinned_certificate (certificate, GCR_PURPOSE_CLIENT_AUTH, "peer", NULL, &error);
 	g_assert (ret == FALSE);
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
+	g_clear_error (&error);
 }
 
 TESTING_TEST (trust_add_and_remov_pinned)
