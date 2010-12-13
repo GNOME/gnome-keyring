@@ -405,11 +405,13 @@ GcrCertificate*
 gcr_pkcs11_certificate_lookup_issuer_finish (GAsyncResult *result, GError **error)
 {
 	GcrCertificate *cert;
+	GObject *source;
 
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result,
-	                      g_async_result_get_source_object (result),
+	source = g_async_result_get_source_object (result);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, source,
 	                      gcr_pkcs11_certificate_lookup_issuer_async), NULL);
+	g_object_unref (source);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return NULL;

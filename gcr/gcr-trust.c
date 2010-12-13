@@ -334,6 +334,7 @@ gcr_trust_is_certificate_pinned_finish (GAsyncResult *result, GError **error)
 {
 	GcrTrustOperation *op;
 	GObject *object;
+	gboolean found;
 
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
@@ -348,7 +349,9 @@ gcr_trust_is_certificate_pinned_finish (GAsyncResult *result, GError **error)
 		return FALSE;
 
 	op = trust_operation_get (GCK_ENUMERATOR (object));
-	return op->found;
+	found = op->found;
+	g_object_unref (object);
+	return found;
 }
 
 /* ----------------------------------------------------------------------------------
@@ -568,6 +571,7 @@ gcr_trust_add_pinned_certificate_finish (GAsyncResult *result, GError **error)
 	object = g_async_result_get_source_object (result);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
 	                      gcr_trust_add_pinned_certificate_async), FALSE);
+	g_object_unref (object);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return FALSE;
@@ -766,6 +770,7 @@ gcr_trust_remove_pinned_certificate_finish (GAsyncResult *result, GError **error
 	object = g_async_result_get_source_object (result);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
 	                      gcr_trust_remove_pinned_certificate_async), FALSE);
+	g_object_unref (object);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return FALSE;
@@ -937,6 +942,7 @@ gcr_trust_is_certificate_anchored_finish (GAsyncResult *result, GError **error)
 {
 	GcrTrustOperation *op;
 	GObject *object;
+	gboolean found;
 
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
@@ -951,5 +957,7 @@ gcr_trust_is_certificate_anchored_finish (GAsyncResult *result, GError **error)
 		return FALSE;
 
 	op = trust_operation_get (GCK_ENUMERATOR (object));
-	return op->found;
+	found = op->found;
+	g_object_unref (object);
+	return found;
 }
