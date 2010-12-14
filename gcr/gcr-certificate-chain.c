@@ -67,37 +67,6 @@
  * merely the first step towards verifying trust in a certificate.
  */
 
-/**
- * GcrCertificateChainStatus:
- * @GCR_CERTIFICATE_CHAIN_UNKNOWN: The certificate chain's status is unknown.
- * When a chain is not yet built it has this status. If a chain is modified after
- * being built, it has this status.
- * @GCR_CERTIFICATE_CHAIN_INCOMPLETE: A full chain could not be loaded. The
- * chain does not end with a self-signed certificate, a trusted anchor, or a
- * pinned certificate.
- * @GCR_CERTIFICATE_CHAIN_SELFSIGNED: The chain ends with a self-signed
- * certificate. No trust anchor was found.
- * @GCR_CERTIFICATE_CHAIN_ANCHORED: The chain ends with an anchored
- * certificate. The anchored certificate is not necessarily self-signed.
- * @GCR_CERTIFICATE_CHAIN_PINNED: The chain represents a pinned certificate. A
- * pinned certificate is an exception which trusts a given certificate
- * explicitly for a purpose and communication with a certain peer.
- *
- * The status of a built certificate chain. Will be set to
- * %GCR_CERTIFICATE_CHAIN_UNKNOWN for certificate chains that have not been
- * built.
- */
-
-/**
- * GcrCertificateChainFlags:
- * @GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS: If this flag is specified then no
- * lookups for anchors or pinned certificates are done, and the resulting chain
- * will be neither anchored or pinned. Additionally no missing certificate
- * authorities are looked up in PKCS\#11.
- *
- * Flags to be used with the gcr_certificate_chain_build() operation.
- */
-
 enum {
 	PROP_0,
 	PROP_STATUS,
@@ -322,6 +291,8 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 		}
 	}
 
+	/* TODO: Need to check each certificate in the chain for distrusted */
+
 	/* Truncate to the appropriate length */
 	g_assert (length <= pv->certificates->len);
 	g_ptr_array_set_size (pv->certificates, length);
@@ -433,6 +404,30 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
  * PUBLIC
  */
 
+/**
+ * GcrCertificateChainStatus:
+ * @GCR_CERTIFICATE_CHAIN_UNKNOWN: The certificate chain's status is unknown.
+ * When a chain is not yet built it has this status. If a chain is modified after
+ * being built, it has this status.
+ * @GCR_CERTIFICATE_CHAIN_INCOMPLETE: A full chain could not be loaded. The
+ * chain does not end with a self-signed certificate, a trusted anchor, or a
+ * pinned certificate.
+ * @GCR_CERTIFICATE_CHAIN_SELFSIGNED: The chain ends with a self-signed
+ * certificate. No trust anchor was found.
+ * @GCR_CERTIFICATE_CHAIN_DISTRUSTED: The certificate chain contains a revoked
+ * or otherwise explicitly distrusted certificate. The entire chain should
+ * be distrusted.
+ * @GCR_CERTIFICATE_CHAIN_ANCHORED: The chain ends with an anchored
+ * certificate. The anchored certificate is not necessarily self-signed.
+ * @GCR_CERTIFICATE_CHAIN_PINNED: The chain represents a pinned certificate. A
+ * pinned certificate is an exception which trusts a given certificate
+ * explicitly for a purpose and communication with a certain peer.
+ *
+ * The status of a built certificate chain. Will be set to
+ * %GCR_CERTIFICATE_CHAIN_UNKNOWN for certificate chains that have not been
+ * built.
+ */
+
 GType
 gcr_certificate_chain_status_get_type (void)
 {
@@ -441,6 +436,7 @@ gcr_certificate_chain_status_get_type (void)
 	static const GEnumValue values[] = {
 		{ GCR_CERTIFICATE_CHAIN_UNKNOWN, "GCR_CERTIFICATE_CHAIN_UNKNOWN", "unknown" },
 		{ GCR_CERTIFICATE_CHAIN_INCOMPLETE, "GCR_CERTIFICATE_CHAIN_INCOMPLETE", "incomplete" },
+		{ GCR_CERTIFICATE_CHAIN_DISTRUSTED, "GCR_CERTIFICATE_CHAIN_DISTRUSTED", "distrusted" },
 		{ GCR_CERTIFICATE_CHAIN_SELFSIGNED, "GCR_CERTIFICATE_CHAIN_SELFSIGNED", "self-signed" },
 		{ GCR_CERTIFICATE_CHAIN_PINNED, "GCR_CERTIFICATE_CHAIN_PINNED", "pinned" },
 		{ GCR_CERTIFICATE_CHAIN_ANCHORED, "GCR_CERTIFICATE_CHAIN_ANCHORED", "anchored" },
@@ -454,6 +450,16 @@ gcr_certificate_chain_status_get_type (void)
 
 	return type;
 }
+
+/**
+ * GcrCertificateChainFlags:
+ * @GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS: If this flag is specified then no
+ * lookups for anchors or pinned certificates are done, and the resulting chain
+ * will be neither anchored or pinned. Additionally no missing certificate
+ * authorities are looked up in PKCS\#11.
+ *
+ * Flags to be used with the gcr_certificate_chain_build() operation.
+ */
 
 GType
 gcr_certificate_chain_flags_get_type (void)
