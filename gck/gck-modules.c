@@ -135,7 +135,7 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
 }
 
 /**
- * gck_module_enumerate_objects_full:
+ * gck_module_enumerate_objects:
  * @self: The module to enumerate objects.
  * @attrs: Attributes that the objects must have, or empty for all objects.
  * @session_flags: Flags for opening a session.

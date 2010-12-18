@@ -494,6 +494,10 @@ GckMechanismInfo*   gck_slot_get_mechanism_info             (GckSlot *self,
 gboolean            gck_slot_has_flags                      (GckSlot *self,
                                                              gulong flags);
 
+GckEnumerator*      gck_slots_enumerate_objects             (GList *slots,
+                                                             GckAttributes *attrs,
+                                                             guint session_options);
+
 #if UNIMPLEMENTED
 
 gboolean            gck_slot_init_token                     (GckSlot *self,
