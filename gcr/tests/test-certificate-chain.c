@@ -105,6 +105,7 @@ TESTING_SETUP (certificate_chain)
 	CK_FUNCTION_LIST_PTR f;
 	guchar *contents;
 	gsize n_contents;
+	const gchar *uris[2];
 	CK_RV rv;
 	GckModule *module;
 
@@ -120,6 +121,9 @@ TESTING_SETUP (certificate_chain)
 	module = gck_module_new (&funcs, 0);
 	modules = g_list_prepend (modules, module);
 	gcr_pkcs11_set_modules (modules);
+	uris[0] = GCK_MOCK_SLOT_ONE_URI;
+	uris[1] = NULL;
+	gcr_pkcs11_set_trust_lookup_uris (uris);
 	gcr_pkcs11_set_trust_store_uri (GCK_MOCK_SLOT_ONE_URI);
 	gck_list_unref_free (modules);
 
@@ -367,7 +371,7 @@ TESTING_TEST (certificate_chain_complete_async)
 {
 	GcrCertificateChain *chain;
 	GError *error = NULL;
-	GAsyncResult *result;
+	GAsyncResult *result = NULL;
 
 	chain = gcr_certificate_chain_new ();
 

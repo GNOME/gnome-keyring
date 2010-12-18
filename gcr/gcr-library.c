@@ -52,12 +52,24 @@
  * if you have special needs, you can use the gcr_pkcs11_set_modules() and
  * gcr_pkcs11_add_module() to do so.
  *
- * Trust assertions are stored and looked up in specific PKCS\#11 modules.
- * You can examine this list with gcr_pkcs11_get_trust_lookup_modules()
+ * Trust assertions are stored and looked up in specific PKCS\#11 slots.
+ * You can examine this list with gcr_pkcs11_get_trust_lookup_slots()
  */
 static GList *all_modules = NULL;
 
 static gchar *trust_store_uri = NULL;
+static gchar **trust_lookup_uris = NULL;
+
+const gchar DEFAULT_PKCS11_CONF[] =
+	"[trust-assertions]\n" \
+	"lookups=pkcs11:manufacturer=Gnome%20Keyring;serial=1:ROOTS:DEFAULT " \
+		"pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT\n" \
+	"storage=pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT\n" \
+;
+
+/* -----------------------------------------------------------------------------
+ * ERRORS
+ */
 
 GQuark
 gcr_data_error_get_domain (void)
@@ -143,10 +155,17 @@ egg_memory_fallback (void *p, size_t sz)
 	return g_realloc (p, sz);
 }
 
+/* -----------------------------------------------------------------------------
+ * INITIALIZATION
+ */
+
 void
 _gcr_initialize (void)
 {
 	static volatile gsize gcr_initialized = 0;
+	GError *error = NULL;
+	GKeyFile *key_file;
+	gchar *value;
 
 	/* Initialize the libgcrypt library if needed */
 	egg_libgcrypt_initialize ();
@@ -154,8 +173,28 @@ _gcr_initialize (void)
 	if (g_once_init_enter (&gcr_initialized)) {
 		all_modules = gck_modules_initialize_registered (0);
 
-		/* TODO: We should be loading this from a config file */
-		trust_store_uri = g_strdup ("pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT");
+		key_file = g_key_file_new ();
+		if (g_file_test (PKCS11_CONF_PATH, G_FILE_TEST_EXISTS)) {
+			if (!g_key_file_load_from_file (key_file, PKCS11_CONF_PATH,
+			                                G_KEY_FILE_NONE, &error)) {
+				g_warning ("couldn't parse %s file: %s", PKCS11_CONF_PATH,
+				           egg_error_message (error));
+				g_clear_error (&error);
+			}
+		} else {
+			if (!g_key_file_load_from_data (key_file, DEFAULT_PKCS11_CONF,
+			                                strlen (DEFAULT_PKCS11_CONF),
+			                                G_KEY_FILE_NONE, NULL))
+				g_warn_if_reached ();
+		}
+
+		trust_store_uri = g_key_file_get_string (key_file, "trust-assertions", "storage", NULL);
+
+		value = g_key_file_get_string (key_file, "trust-assertions", "lookups", NULL);
+		trust_lookup_uris = g_strsplit_set (value ? value : "", " \t", -1);
+		g_free (value);
+
+		g_key_file_free (key_file);
 
 		g_once_init_leave (&gcr_initialized, 1);
 	}
@@ -259,7 +298,6 @@ gcr_pkcs11_add_module_from_file (const gchar *module_path, const gchar *init_par
 
 /**
  * gcr_pkcs11_get_trust_store_slot:
- * @error: a #GError or NULL
  *
  * Selects an appropriate PKCS\#11 slot to store trust assertions. The slot
  * to use is normally configured automatically by the system.
@@ -269,50 +307,57 @@ gcr_pkcs11_add_module_from_file (const gchar *module_path, const gchar *init_par
  * Returns: the #GckSlot to use for trust assertions.
  */
 GckSlot*
-gcr_pkcs11_get_trust_store_slot (GError **error)
+gcr_pkcs11_get_trust_store_slot (void)
 {
-	GList *modules;
 	GckSlot *slot;
-
-	g_return_val_if_fail (!error || !*error, NULL);
+	GError *error = NULL;
 
 	_gcr_initialize ();
-	modules = gcr_pkcs11_get_trust_lookup_modules ();
 
-	/*
-	 * TODO: We need a better way to figure this out as far as
-	 * being able to store trust. But for now just hard code in
-	 * gnome-keyring.
-	 */
-
-	slot = gck_modules_token_for_uri (modules, gcr_pkcs11_get_trust_store_uri (), error);
+	slot = gck_modules_token_for_uri (all_modules, trust_store_uri, &error);
 	if (!slot) {
-		if (error && !*error) {
-			g_set_error (error, GCR_ERROR, /* TODO: */ 0,
-			             _("Unable to find a place to store trust choices."));
+		if (error) {
+			g_warning ("error finding slot to store trust assertions: %s: %s",
+			           trust_store_uri, egg_error_message (error));
+			g_clear_error (&error);
 		}
 	}
 
-	gck_list_unref_free (modules);
 	return slot;
 }
 
 /**
- * gcr_pkcs11_get_trust_lookup_modules:
+ * gcr_pkcs11_get_trust_lookup_slots:
  *
- * List all the PKCS\#11 modules that are used by the GCR library for lookup
- * of trust assertions. Each module is a #GckModule object.
+ * List all the PKCS\#11 slots that are used by the GCR library for lookup
+ * of trust assertions. Each slot is a #GckSlot object.
  *
  * When done with the list, free it with gck_list_unref_free().
  *
- * Returns: a list of #GckModule objects to use for lookup of trust.
+ * Returns: a list of #GckSlot objects to use for lookup of trust.
  */
 GList*
-gcr_pkcs11_get_trust_lookup_modules (void)
+gcr_pkcs11_get_trust_lookup_slots (void)
 {
-	/* TODO: This should be configurable, for now all modules */
+	GList *results = NULL;
+	GError *error = NULL;
+	GckSlot *slot;
+	gchar **uri;
+
 	_gcr_initialize ();
-	return gck_list_ref_copy (all_modules);
+
+	for (uri = trust_lookup_uris; uri && *uri; ++uri) {
+		slot = gck_modules_token_for_uri (all_modules, *uri, &error);
+		if (slot) {
+			results = g_list_append (results, slot);
+		} else if (error) {
+			g_warning ("error finding slot for trust assertions: %s: %s",
+			           *uri, egg_error_message (error));
+			g_clear_error (&error);
+		}
+	}
+
+	return results;
 }
 
 /**
@@ -335,7 +380,7 @@ gcr_pkcs11_get_trust_store_uri (void)
  * @pkcs11_uri: the uri which identifies trust storage slot
  *
  * Set the PKCS\#11 URI that is used to identify which slot to use for
- * storing trust storage.
+ * storing trust assertions.
  *
  * It is not normally necessary to call this function. The relevant
  * PKCS\#11 slot is automatically configured by the GCR library.
@@ -346,4 +391,38 @@ gcr_pkcs11_set_trust_store_uri (const gchar *pkcs11_uri)
 	_gcr_initialize ();
 	g_free (trust_store_uri);
 	trust_store_uri = g_strdup (pkcs11_uri);
+}
+
+
+/**
+ * gcr_pkcs11_get_trust_lookup_uris:
+ *
+ * Get the PKCS\#11 URIs that are used to identify which slots to use for
+ * lookup trust assertions.
+ *
+ * Returns: the uri which identifies trust storage slot
+ */
+const gchar**
+gcr_pkcs11_get_trust_lookup_uris (void)
+{
+	_gcr_initialize ();
+	return (const gchar**)	trust_lookup_uris;
+}
+
+/**
+ * gcr_pkcs11_set_trust_lookup_uris:
+ * @pkcs11_uris: the uris which identifies trust lookup slots
+ *
+ * Set the PKCS\#11 URIs that are used to identify which slots to use for
+ * lookup of trust assertions.
+ *
+ * It is not normally necessary to call this function. The relevant
+ * PKCS\#11 slots are automatically configured by the GCR library.
+ */
+void
+gcr_pkcs11_set_trust_lookup_uris (const gchar **pkcs11_uris)
+{
+	_gcr_initialize ();
+	g_strfreev (trust_lookup_uris);
+	trust_lookup_uris = g_strdupv ((gchar**)pkcs11_uris);
 }

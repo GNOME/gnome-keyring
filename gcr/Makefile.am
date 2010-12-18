@@ -75,7 +75,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
-	-DPKCS11_MODULE_PATH=\""$(libdir)/gnome-keyring/gnome-keyring-pkcs11.so"\" \
+	-DPKCS11_CONF_PATH=\""$(sysconfdir)/pkcs11.conf"\" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \

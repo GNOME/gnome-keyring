@@ -44,6 +44,7 @@ TESTING_SETUP (trust_setup)
 	CK_FUNCTION_LIST_PTR f;
 	GckModule *module;
 	guchar *contents;
+	const gchar *uris[2];
 	gsize len;
 	CK_RV rv;
 
@@ -67,7 +68,11 @@ TESTING_SETUP (trust_setup)
 	gcr_pkcs11_set_modules (modules);
 	gck_list_unref_free (modules);
 
+	uris[0] = GCK_MOCK_SLOT_ONE_URI;
+	uris[1] = NULL;
+
 	gcr_pkcs11_set_trust_store_uri (GCK_MOCK_SLOT_ONE_URI);
+	gcr_pkcs11_set_trust_lookup_uris (uris);
 }
 
 TESTING_TEARDOWN (trust_setup)

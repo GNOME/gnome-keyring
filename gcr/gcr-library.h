@@ -42,9 +42,13 @@ gboolean          gcr_pkcs11_add_module_from_file          (const gchar *module_
                                                             const gchar *init_params,
                                                             GError **error);
 
-GList*            gcr_pkcs11_get_trust_lookup_modules      (void);
+GList*            gcr_pkcs11_get_trust_lookup_slots        (void);
 
-GckSlot*          gcr_pkcs11_get_trust_store_slot          (GError **error);
+GckSlot*          gcr_pkcs11_get_trust_store_slot          (void);
+
+const gchar**     gcr_pkcs11_get_trust_lookup_uris         (void);
+
+void              gcr_pkcs11_set_trust_lookup_uris         (const gchar **pkcs11_uris);
 
 const gchar*      gcr_pkcs11_get_trust_store_uri           (void);
 

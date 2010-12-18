@@ -174,8 +174,10 @@ gcr_pkcs11_get_modules
 gcr_pkcs11_set_modules
 gcr_pkcs11_add_module
 gcr_pkcs11_add_module_from_file
-gcr_pkcs11_get_trust_lookup_modules
+gcr_pkcs11_get_trust_lookup_slots
 gcr_pkcs11_get_trust_store_slot
+gcr_pkcs11_get_trust_lookup_uris
+gcr_pkcs11_set_trust_lookup_uris
 gcr_pkcs11_get_trust_store_uri
 gcr_pkcs11_set_trust_store_uri
 </SECTION>

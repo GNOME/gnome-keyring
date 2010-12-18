@@ -35,6 +35,8 @@
 #include "pkcs11/pkcs11i.h"
 #include "pkcs11/pkcs11x.h"
 
+#include <glib/gi18n-lib.h>
+
 /**
  * SECTION:gcr-trust
  * @title: Trust Storage and Lookups
@@ -175,7 +177,7 @@ prepare_is_certificate_pinned (GcrCertificate *certificate, const gchar *purpose
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
-	GList *modules;
+	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
@@ -183,17 +185,11 @@ prepare_is_certificate_pinned (GcrCertificate *certificate, const gchar *purpose
 	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 
-	/*
-	 * TODO: We need to be able to sort the modules by preference
-	 * on which sources of trust storage we want to read over which
-	 * others.
-	 */
-
-	modules = gcr_pkcs11_get_trust_lookup_modules ();
-	en = gck_modules_enumerate_objects (modules, attrs, 0);
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, attrs, 0);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
-	gck_list_unref_free (modules);
+	gck_list_unref_free (slots);
 
 	return en;
 }
@@ -363,7 +359,7 @@ prepare_add_pinned_certificate (GcrCertificate *certificate, const gchar *purpos
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
-	GList *modules;
+	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
@@ -372,17 +368,11 @@ prepare_add_pinned_certificate (GcrCertificate *certificate, const gchar *purpos
 	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
-	/*
-	 * TODO: We need to be able to sort the modules by preference
-	 * on which sources of trust storage we want to read over which
-	 * others.
-	 */
-
-	modules = gcr_pkcs11_get_trust_lookup_modules ();
-	en = gck_modules_enumerate_objects (modules, attrs, CKF_RW_SESSION);
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, attrs, CKF_RW_SESSION);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
-	gck_list_unref_free (modules);
+	gck_list_unref_free (slots);
 
 	return en;
 }
@@ -421,8 +411,12 @@ perform_add_pinned_certificate (GckEnumerator *en, GCancellable *cancellable, GE
 	/* TODO: Add relevant label */
 
 	/* Find an appropriate token */
-	slot = gcr_pkcs11_get_trust_store_slot (error);
-	if (slot != NULL) {
+	slot = gcr_pkcs11_get_trust_store_slot ();
+	if (slot == NULL) {
+		g_set_error (error, GCK_ERROR, CKR_FUNCTION_FAILED,
+		             _("Couldn't find a place to store the pinned certificate"));
+		ret = FALSE;
+	} else {
 		session = gck_slot_open_session (slot, CKF_RW_SESSION, NULL, error);
 		if (session != NULL) {
 			object = gck_session_create_object (session, attrs, cancellable, error);
@@ -589,7 +583,7 @@ prepare_remove_pinned_certificate (GcrCertificate *certificate, const gchar *pur
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
-	GList *modules;
+	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
@@ -597,17 +591,11 @@ prepare_remove_pinned_certificate (GcrCertificate *certificate, const gchar *pur
 	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 
-	/*
-	 * TODO: We need to be able to sort the modules by preference
-	 * on which sources of trust storage we want to read over which
-	 * others.
-	 */
-
-	modules = gcr_pkcs11_get_trust_lookup_modules ();
-	en = gck_modules_enumerate_objects (modules, attrs, CKF_RW_SESSION);
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, attrs, CKF_RW_SESSION);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
-	gck_list_unref_free (modules);
+	gck_list_unref_free (slots);
 
 	return en;
 }
@@ -787,24 +775,18 @@ prepare_is_certificate_anchored (GcrCertificate *certificate, const gchar *purpo
 {
 	GckAttributes *attrs;
 	GckEnumerator *en;
-	GList *modules;
+	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_ANCHORED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 
-	/*
-	 * TODO: We need to be able to sort the modules by preference
-	 * on which sources of trust storage we want to read over which
-	 * others.
-	 */
-
-	modules = gcr_pkcs11_get_trust_lookup_modules ();
-	en = gck_modules_enumerate_objects (modules, attrs, 0);
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, attrs, 0);
 	trust_operation_init (en, attrs);
 	gck_attributes_unref (attrs);
-	gck_list_unref_free (modules);
+	gck_list_unref_free (slots);
 
 	return en;
 }
