@@ -29,7 +29,7 @@ libgkm_secret_store_la_SOURCES = \
 # ------------------------------------------------------------------------------
 # The standalone module
 
-moduledir = $(libdir)/gnome-keyring/standalone/
+moduledir = $(libdir)/gnome-keyring/devel/
 
 module_LTLIBRARIES = \
 	gkm-secret-store-standalone.la

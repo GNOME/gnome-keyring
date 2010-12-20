@@ -22,7 +22,7 @@ libgkm_roots_store_la_SOURCES = \
 # ------------------------------------------------------------------------------
 # The standalone module
 
-moduledir = $(libdir)/gnome-keyring/standalone/
+moduledir = $(libdir)/gnome-keyring/devel/
 
 module_LTLIBRARIES = \
 	gkm-roots-store-standalone.la
