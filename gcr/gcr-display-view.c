@@ -121,7 +121,11 @@ on_expander_realize (GtkWidget *widget, gpointer user_data)
 {
 	GdkCursor *cursor = gdk_cursor_new (GDK_ARROW);
 	gdk_window_set_cursor (gtk_widget_get_window (widget), cursor);
+#if GTK_CHECK_VERSION (2,91,7)
+	g_object_unref (cursor);
+#else
 	gdk_cursor_unref (cursor);
+#endif
 }
 
 static void
@@ -783,7 +787,11 @@ _gcr_display_view_set_stock_image (GcrDisplayView *self, GcrRenderer *renderer,
 	if (item->pixbuf)
 		g_object_unref (item->pixbuf);
 	if (stock_id)
+#if GTK_CHECK_VERSION (2,91,7)
+		item->pixbuf = gtk_widget_render_icon_pixbuf (GTK_WIDGET (self), stock_id, GTK_ICON_SIZE_DIALOG);
+#else
 		item->pixbuf = gtk_widget_render_icon (GTK_WIDGET (self), stock_id, GTK_ICON_SIZE_DIALOG, NULL);
+#endif
 	else
 		item->pixbuf = NULL;
 }
