@@ -57,6 +57,7 @@
  */
 static GList *all_modules = NULL;
 
+static const gchar *config_dir = PKCS11_CONFIG_DIR;
 static gchar *trust_store_uri = NULL;
 static gchar **trust_lookup_uris = NULL;
 
@@ -158,7 +159,7 @@ _gcr_initialize (void)
 	static volatile gsize gcr_initialized = 0;
 	GError *error = NULL;
 	GKeyFile *key_file;
-	gchar *value;
+	gchar *value, *path;
 
 	/* Initialize the libgcrypt library if needed */
 	egg_libgcrypt_initialize ();
@@ -169,21 +170,21 @@ _gcr_initialize (void)
 		key_file = g_key_file_new ();
 
 		/* Load the defaults */
-		if (!g_key_file_load_from_file (key_file, PKCS11_DEFAULT_PATH,
-		                                G_KEY_FILE_NONE, &error)) {
-			g_warning ("couldn't parse %s file: %s", PKCS11_DEFAULT_PATH,
-			           egg_error_message (error));
+		path = g_build_filename (config_dir, "pkcs11.conf.defaults", NULL);
+		if (!g_key_file_load_from_file (key_file, path, G_KEY_FILE_NONE, &error)) {
+			g_warning ("couldn't parse %s file: %s", path, egg_error_message (error));
 			g_clear_error (&error);
 		}
+		g_free (path);
 
-		/* Load any changes */
-		if (g_file_test (PKCS11_CONFIG_PATH, G_FILE_TEST_EXISTS) &&
-		    !g_key_file_load_from_file (key_file, PKCS11_CONFIG_PATH,
-		                                G_KEY_FILE_NONE, &error)) {
-			g_warning ("couldn't parse %s file: %s", PKCS11_CONFIG_PATH,
-			           egg_error_message (error));
+		/* Load any overrides */
+		path = g_build_filename (config_dir, "pkcs11.conf", NULL);
+		if (g_file_test (path, G_FILE_TEST_EXISTS) &&
+		    !g_key_file_load_from_file (key_file, path, G_KEY_FILE_NONE, &error)) {
+			g_warning ("couldn't parse %s file: %s", path, egg_error_message (error));
 			g_clear_error (&error);
 		}
+		g_free (path);
 
 		trust_store_uri = g_key_file_get_string (key_file, "trust-assertions", "storage", NULL);
 
@@ -195,6 +196,12 @@ _gcr_initialize (void)
 
 		g_once_init_leave (&gcr_initialized, 1);
 	}
+}
+
+void
+_gcr_set_pkcs11_config_dir (const gchar *dir)
+{
+	config_dir = dir;
 }
 
 /**

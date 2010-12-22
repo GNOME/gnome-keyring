@@ -13,11 +13,8 @@ ui_DATA = \
 
 confdir = $(sysconfdir)/xdg
 
-PKCS11_DEFAULT_FILE =  pkcs11.conf.defaults
-PKCS11_CONFIG_FILE = pkcs11.conf
-
 conf_DATA = \
-	$(PKCS11_DEFAULT_FILE)
+	pkcs11.conf.defaults
 
 # ------------------------------------------------------------------
 # HEADERS
@@ -86,8 +83,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
-	-DPKCS11_DEFAULT_PATH=\""$(confdir)/$(PKCS11_DEFAULT_FILE)"\" \
-	-DPKCS11_CONFIG_PATH=\""$(confdir)/$(PKCS11_CONFIG_FILE)"\" \
+	-DPKCS11_CONFIG_DIR=\""$(confdir)"\" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \

@@ -38,6 +38,9 @@ static gsize n_cert_data;
 
 TESTING_SETUP (simple_certificate)
 {
+	/* Look for the config in the build directory */
+	_gcr_set_pkcs11_config_dir (TEST_CONFIG_DIR);
+
 	cert_data = testing_data_read ("der-certificate.crt", &n_cert_data);
 	g_assert (cert_data);
 }

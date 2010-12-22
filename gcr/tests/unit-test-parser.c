@@ -29,6 +29,7 @@
 #include "egg/egg-secure-memory.h"
 
 #include "gcr/gcr.h"
+#include "gcr/gcr-internal.h"
 
 #include "gck/gck.h"
 
@@ -93,6 +94,9 @@ authenticate (GcrParser *par, gint state, gpointer user_data)
 
 TESTING_SETUP(parser)
 {
+	/* Look for the config in the build directory */
+	_gcr_set_pkcs11_config_dir (TEST_CONFIG_DIR);
+
 	parser = gcr_parser_new ();
 	g_signal_connect (parser, "parsed", G_CALLBACK (parsed_item), parser);
 	g_signal_connect (parser, "authenticate", G_CALLBACK (authenticate), parser);

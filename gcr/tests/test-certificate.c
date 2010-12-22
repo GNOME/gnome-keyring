@@ -3,6 +3,7 @@
 #include "test-suite.h"
 
 #include "gcr/gcr.h"
+#include "gcr/gcr-internal.h"
 
 #include <glib.h>
 
@@ -16,6 +17,9 @@ TESTING_SETUP(certificate)
 {
 	guchar *contents;
 	gsize n_contents;
+
+	/* Look for the config in the build directory */
+	_gcr_set_pkcs11_config_dir (TEST_CONFIG_DIR);
 
 	contents = testing_data_read ("der-certificate.crt", &n_contents);
 	certificate = gcr_simple_certificate_new (contents, n_contents);

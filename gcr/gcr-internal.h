@@ -24,6 +24,10 @@
 #ifndef GCR_INTERNAL_H_
 #define GCR_INTERNAL_H_
 
+#include <glib.h>
+
 void              _gcr_initialize                  (void);
+
+void              _gcr_set_pkcs11_config_dir       (const gchar *dir);
 
 #endif /* GCR_INTERNAL_H_ */
