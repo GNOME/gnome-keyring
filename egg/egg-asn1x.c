@@ -3578,6 +3578,7 @@ traverse_and_prepare (GNode *node, gpointer data)
 			g_node_append (node, child);
 		}
 		g_list_free (list);
+		list = NULL;
 	}
 
 	/* Lookup the max set size */
@@ -3625,6 +3626,7 @@ traverse_and_prepare (GNode *node, gpointer data)
 		for (l = list; l; l = g_list_next (l))
 			g_node_append (node, l->data);
 		g_list_free (list);
+		list = NULL;
 	}
 
 	/* Continue traversal */
