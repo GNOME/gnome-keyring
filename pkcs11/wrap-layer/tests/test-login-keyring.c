@@ -36,7 +36,7 @@ extern CK_FUNCTION_LIST mock_secret_store;
 static CK_FUNCTION_LIST functions;
 static CK_FUNCTION_LIST_PTR module = NULL;
 
-DEFINE_SETUP (login_keyring)
+TESTING_SETUP (login_keyring)
 {
 	CK_RV rv;
 
@@ -51,7 +51,7 @@ DEFINE_SETUP (login_keyring)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEARDOWN (login_keyring)
+TESTING_TEARDOWN (login_keyring)
 {
 	CK_RV rv;
 
@@ -60,7 +60,7 @@ DEFINE_TEARDOWN (login_keyring)
 	module = NULL;
 }
 
-DEFINE_TEST (login_is_usable)
+TESTING_TEST (login_is_usable)
 {
 	gboolean ret;
 
@@ -68,7 +68,7 @@ DEFINE_TEST (login_is_usable)
 	g_assert (ret == TRUE);
 }
 
-DEFINE_TEST (login_usable_fail_open_session)
+TESTING_TEST (login_usable_fail_open_session)
 {
 	gboolean ret;
 
@@ -77,7 +77,7 @@ DEFINE_TEST (login_usable_fail_open_session)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST (login_usable_fail_not_trusted)
+TESTING_TEST (login_usable_fail_not_trusted)
 {
 	CK_OBJECT_HANDLE object;
 	CK_ATTRIBUTE attr;
@@ -107,7 +107,7 @@ DEFINE_TEST (login_usable_fail_not_trusted)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST (login_usable_fail_locked)
+TESTING_TEST (login_usable_fail_locked)
 {
 	CK_OBJECT_HANDLE object;
 	CK_ATTRIBUTE attr;
@@ -137,7 +137,7 @@ DEFINE_TEST (login_usable_fail_locked)
 	g_assert (ret == FALSE);
 }
 
-DEFINE_TEST (login_lookup_secret_no_match)
+TESTING_TEST (login_lookup_secret_no_match)
 {
 	gchar *password;
 
@@ -146,7 +146,7 @@ DEFINE_TEST (login_lookup_secret_no_match)
 	g_assert_cmpstr (password, ==, NULL);
 }
 
-DEFINE_TEST (login_lookup_secret_and_match)
+TESTING_TEST (login_lookup_secret_and_match)
 {
 	gchar *password;
 
@@ -158,7 +158,7 @@ DEFINE_TEST (login_lookup_secret_and_match)
 	egg_secure_free (password);
 }
 
-DEFINE_TEST (login_lookup_store_secret)
+TESTING_TEST (login_lookup_store_secret)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -182,7 +182,7 @@ DEFINE_TEST (login_lookup_store_secret)
 	gkm_assert_cmpulong (object, !=, 0);
 }
 
-DEFINE_TEST (login_lookup_store_secret_overwrite)
+TESTING_TEST (login_lookup_store_secret_overwrite)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -220,7 +220,7 @@ DEFINE_TEST (login_lookup_store_secret_overwrite)
 	gkm_assert_cmpulong (object1, ==, object2);
 }
 
-DEFINE_TEST (login_lookup_store_null_secret)
+TESTING_TEST (login_lookup_store_null_secret)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -243,7 +243,7 @@ DEFINE_TEST (login_lookup_store_null_secret)
 	gkm_assert_cmpulong (object, !=, 0);
 }
 
-DEFINE_TEST (login_lookup_store_no_attributes_not_stored)
+TESTING_TEST (login_lookup_store_no_attributes_not_stored)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -265,7 +265,7 @@ DEFINE_TEST (login_lookup_store_no_attributes_not_stored)
 }
 
 
-DEFINE_TEST (login_lookup_remove_present)
+TESTING_TEST (login_lookup_remove_present)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -291,7 +291,7 @@ DEFINE_TEST (login_lookup_remove_present)
 	gkm_assert_cmpulong (object, ==, 0);
 }
 
-DEFINE_TEST (login_lookup_remove_no_attributes)
+TESTING_TEST (login_lookup_remove_no_attributes)
 {
 	guint n_objects, check;
 

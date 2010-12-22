@@ -48,7 +48,7 @@ static CK_OBJECT_HANDLE credential = 0;
 static CK_OBJECT_HANDLE credential2 = 0;
 static GkmSecretCollection *collection = NULL;
 
-DEFINE_SETUP(secret_collection)
+TESTING_SETUP(secret_collection)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	GkmObject *cred;
@@ -81,7 +81,7 @@ DEFINE_SETUP(secret_collection)
 	g_object_unref (cred);
 }
 
-DEFINE_TEARDOWN(secret_collection)
+TESTING_TEARDOWN(secret_collection)
 {
 	if (collection)
 		g_object_unref (collection);
@@ -93,7 +93,7 @@ DEFINE_TEARDOWN(secret_collection)
 	credential = 0;
 }
 
-DEFINE_TEST(secret_collection_is_locked)
+TESTING_TEST(secret_collection_is_locked)
 {
 	gboolean locked;
 
@@ -102,7 +102,7 @@ DEFINE_TEST(secret_collection_is_locked)
 	g_assert (locked == TRUE);
 }
 
-DEFINE_TEST(secret_collection_unlocked_data)
+TESTING_TEST(secret_collection_unlocked_data)
 {
 	GkmCredential *cred;
 	GkmSecretData *sdata;
@@ -121,7 +121,7 @@ DEFINE_TEST(secret_collection_unlocked_data)
 	g_object_unref (sdata);
 }
 
-DEFINE_TEST(secret_collection_get_filename)
+TESTING_TEST(secret_collection_get_filename)
 {
 	GkmSecretCollection *other;
 	const gchar *filename;
@@ -138,7 +138,7 @@ DEFINE_TEST(secret_collection_get_filename)
 	g_object_unref (other);
 }
 
-DEFINE_TEST(secret_collection_set_filename)
+TESTING_TEST(secret_collection_set_filename)
 {
 	const gchar *filename;
 
@@ -148,7 +148,7 @@ DEFINE_TEST(secret_collection_set_filename)
 	g_assert_cmpstr (filename, ==, "/tmp/filename.keyring");
 }
 
-DEFINE_TEST(secret_collection_has_item)
+TESTING_TEST(secret_collection_has_item)
 {
 	GkmSecretItem *item;
 
@@ -156,7 +156,7 @@ DEFINE_TEST(secret_collection_has_item)
 	g_assert (gkm_secret_collection_has_item (collection, item));
 }
 
-DEFINE_TEST(secret_collection_load_unlock_plain)
+TESTING_TEST(secret_collection_load_unlock_plain)
 {
 	GkmCredential *cred;
 	GkmSecretData *sdata;
@@ -184,7 +184,7 @@ DEFINE_TEST(secret_collection_load_unlock_plain)
 	g_object_unref (sdata);
 }
 
-DEFINE_TEST(secret_collection_load_unlock_encrypted)
+TESTING_TEST(secret_collection_load_unlock_encrypted)
 {
 	GkmCredential *cred;
 	GkmSecretData *sdata;
@@ -213,7 +213,7 @@ DEFINE_TEST(secret_collection_load_unlock_encrypted)
 	g_object_unref (sdata);
 }
 
-DEFINE_TEST(secret_collection_load_unlock_bad_password)
+TESTING_TEST(secret_collection_load_unlock_bad_password)
 {
 	GkmCredential *cred;
 	GkmDataResult res;
@@ -234,7 +234,7 @@ DEFINE_TEST(secret_collection_load_unlock_bad_password)
 	g_assert (rv == CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST(secret_collection_unlock_without_load)
+TESTING_TEST(secret_collection_unlock_without_load)
 {
 	GkmCredential *cred;
 	GkmSecretData *sdata;
@@ -258,7 +258,7 @@ DEFINE_TEST(secret_collection_unlock_without_load)
 	g_object_unref (sdata);
 }
 
-DEFINE_TEST(secret_collection_twice_unlock)
+TESTING_TEST(secret_collection_twice_unlock)
 {
 	GkmCredential *cred;
 	GkmSecretData *sdata;
@@ -289,7 +289,7 @@ DEFINE_TEST(secret_collection_twice_unlock)
 	g_object_unref (sdata);
 }
 
-DEFINE_TEST(secret_collection_twice_unlock_bad_password)
+TESTING_TEST(secret_collection_twice_unlock_bad_password)
 {
 	GkmCredential *cred;
 	GkmSecretData *sdata;
@@ -318,7 +318,7 @@ DEFINE_TEST(secret_collection_twice_unlock_bad_password)
 	g_object_unref (sdata);
 }
 
-DEFINE_TEST(secret_collection_memory_unlock)
+TESTING_TEST(secret_collection_memory_unlock)
 {
 	GkmCredential *cred;
 	GkmDataResult res;
@@ -336,7 +336,7 @@ DEFINE_TEST(secret_collection_memory_unlock)
 	g_object_unref (cred);
 }
 
-DEFINE_TEST(secret_collection_memory_unlock_bad_password)
+TESTING_TEST(secret_collection_memory_unlock_bad_password)
 {
 	GkmCredential *cred;
 	GkmDataResult res;
@@ -352,7 +352,7 @@ DEFINE_TEST(secret_collection_memory_unlock_bad_password)
 	g_assert (rv == CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST(secret_collection_factory)
+TESTING_TEST(secret_collection_factory)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	GkmObject *object;
@@ -372,7 +372,7 @@ DEFINE_TEST(secret_collection_factory)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(secret_collection_factory_unnamed)
+TESTING_TEST(secret_collection_factory_unnamed)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier;
@@ -393,7 +393,7 @@ DEFINE_TEST(secret_collection_factory_unnamed)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(secret_collection_factory_token)
+TESTING_TEST(secret_collection_factory_token)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier;
@@ -417,7 +417,7 @@ DEFINE_TEST(secret_collection_factory_token)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(secret_collection_factory_duplicate)
+TESTING_TEST(secret_collection_factory_duplicate)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	const gchar *identifier1, *identifier2;
@@ -452,7 +452,7 @@ DEFINE_TEST(secret_collection_factory_duplicate)
 	g_assert_cmpstr (identifier1, !=, identifier2);
 }
 
-DEFINE_TEST(secret_collection_factory_item)
+TESTING_TEST(secret_collection_factory_item)
 {
 	CK_OBJECT_CLASS c_klass = CKO_G_COLLECTION;
 	CK_OBJECT_CLASS i_klass = CKO_SECRET_KEY;
@@ -490,7 +490,7 @@ DEFINE_TEST(secret_collection_factory_item)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(secret_collection_token_remove)
+TESTING_TEST(secret_collection_token_remove)
 {
 	CK_OBJECT_CLASS klass = CKO_G_COLLECTION;
 	GkmTransaction *transaction;
@@ -517,7 +517,7 @@ DEFINE_TEST(secret_collection_token_remove)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(secret_collection_token_item_remove)
+TESTING_TEST(secret_collection_token_item_remove)
 {
 	CK_OBJECT_CLASS c_klass = CKO_G_COLLECTION;
 	CK_OBJECT_CLASS i_klass = CKO_SECRET_KEY;

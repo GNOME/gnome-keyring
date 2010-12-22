@@ -29,7 +29,7 @@
 
 #include <glib.h>
 
-DEFINE_TEST(oid_tests)
+TESTING_TEST(oid_tests)
 {
 	GQuark oid;
 	

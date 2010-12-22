@@ -19,7 +19,7 @@ on_discard_handle_ignore (GckSession *self, CK_OBJECT_HANDLE handle, gpointer un
 	return TRUE;
 }
 
-DEFINE_SETUP(crypto_session)
+TESTING_SETUP(crypto_session)
 {
 	GError *err = NULL;
 	GList *slots;
@@ -46,7 +46,7 @@ DEFINE_SETUP(crypto_session)
 	gck_list_unref_free (slots);
 }
 
-DEFINE_TEARDOWN(crypto_session)
+TESTING_TEARDOWN(crypto_session)
 {
 	g_object_unref (session);
 	g_object_unref (module);
@@ -147,7 +147,7 @@ authenticate_object (GckSlot *module, GckObject *object, gchar *label, gchar **p
 	return TRUE;
 }
 
-DEFINE_TEST(encrypt)
+TESTING_TEST(encrypt)
 {
 	GckMechanism mech = { CKM_MOCK_CAPITALIZE, NULL, 0 };
 	GError *error = NULL;
@@ -184,7 +184,7 @@ DEFINE_TEST(encrypt)
 	g_object_unref (key);
 }
 
-DEFINE_TEST(decrypt)
+TESTING_TEST(decrypt)
 {
 	GckMechanism mech = { CKM_MOCK_CAPITALIZE, NULL, 0 };
 	GError *error = NULL;
@@ -221,7 +221,7 @@ DEFINE_TEST(decrypt)
 	g_object_unref (key);
 }
 
-DEFINE_TEST(login_context_specific)
+TESTING_TEST(login_context_specific)
 {
 	/* The test module won't let us sign without doing a login, check that */
 
@@ -243,7 +243,7 @@ DEFINE_TEST(login_context_specific)
 	g_object_unref (key);
 }
 
-DEFINE_TEST(sign)
+TESTING_TEST(sign)
 {
 	GckMechanism mech = { CKM_MOCK_PREFIX, "my-prefix:", 10 };
 	GError *error = NULL;
@@ -283,7 +283,7 @@ DEFINE_TEST(sign)
 	g_object_unref (key);
 }
 
-DEFINE_TEST(verify)
+TESTING_TEST(verify)
 {
 	GckMechanism mech = { CKM_MOCK_PREFIX, "my-prefix:", 10 };
 	GError *error = NULL;
@@ -330,7 +330,7 @@ DEFINE_TEST(verify)
 	g_object_unref (key);
 }
 
-DEFINE_TEST(generate_key_pair)
+TESTING_TEST(generate_key_pair)
 {
 	GckMechanism mech = { CKM_MOCK_GENERATE, "generate", 9 };
 	GckAttributes *pub_attrs, *prv_attrs;
@@ -388,7 +388,7 @@ DEFINE_TEST(generate_key_pair)
 	gck_attributes_unref (prv_attrs);
 }
 
-DEFINE_TEST(wrap_key)
+TESTING_TEST(wrap_key)
 {
 	GckMechanism mech = { CKM_MOCK_WRAP, "wrap", 4 };
 	GError *error = NULL;
@@ -450,7 +450,7 @@ DEFINE_TEST(wrap_key)
 	g_object_unref (wrapped);
 }
 
-DEFINE_TEST(unwrap_key)
+TESTING_TEST(unwrap_key)
 {
 	GckMechanism mech = { CKM_MOCK_WRAP, "wrap", 4 };
 	GError *error = NULL;
@@ -500,7 +500,7 @@ DEFINE_TEST(unwrap_key)
 	gck_attributes_unref (attrs);
 }
 
-DEFINE_TEST(derive_key)
+TESTING_TEST(derive_key)
 {
 	GckMechanism mech = { CKM_MOCK_DERIVE, "derive", 6 };
 	GError *error = NULL;

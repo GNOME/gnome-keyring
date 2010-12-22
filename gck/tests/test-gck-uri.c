@@ -6,24 +6,24 @@
 #include "gck-test.h"
 #include "gck-private.h"
 
-DEFINE_SETUP(uri)
+TESTING_SETUP(uri)
 {
 
 }
 
-DEFINE_TEARDOWN(uri)
+TESTING_TEARDOWN(uri)
 {
 
 }
 
-DEFINE_TEST(uri_parse)
+TESTING_TEST(uri_parse)
 {
 	GError *error = NULL;
 	if (!gck_uri_parse ("pkcs11:", NULL, NULL, &error))
 		g_assert_not_reached ();
 }
 
-DEFINE_TEST(uri_parse_bad_scheme)
+TESTING_TEST(uri_parse_bad_scheme)
 {
 	GError *error = NULL;
 	if (gck_uri_parse ("http:\\example.com\test", NULL, NULL, &error))
@@ -32,7 +32,7 @@ DEFINE_TEST(uri_parse_bad_scheme)
 	g_error_free (error);
 }
 
-DEFINE_TEST(uri_parse_with_label)
+TESTING_TEST(uri_parse_with_label)
 {
 	GError *error = NULL;
 	GckAttributes *attrs;
@@ -47,7 +47,7 @@ DEFINE_TEST(uri_parse_with_label)
 	g_assert_cmpstr (value, ==, "Test Label");
 	g_free (value);
 }
-DEFINE_TEST(uri_parse_with_label_and_klass)
+TESTING_TEST(uri_parse_with_label_and_klass)
 {
 	GError *error = NULL;
 	GckAttributes *attrs;
@@ -68,7 +68,7 @@ DEFINE_TEST(uri_parse_with_label_and_klass)
 	g_free (value);
 }
 
-DEFINE_TEST(uri_parse_with_id)
+TESTING_TEST(uri_parse_with_id)
 {
 	GError *error = NULL;
 	GckAttributes *attrs;
@@ -86,7 +86,7 @@ DEFINE_TEST(uri_parse_with_id)
 	gck_attributes_unref (attrs);
 }
 
-DEFINE_TEST(uri_parse_with_bad_string_encoding)
+TESTING_TEST(uri_parse_with_bad_string_encoding)
 {
 	GError *error = NULL;
 	if (gck_uri_parse ("pkcs11:object=Test%", NULL, NULL, &error))
@@ -95,7 +95,7 @@ DEFINE_TEST(uri_parse_with_bad_string_encoding)
 	g_error_free (error);
 }
 
-DEFINE_TEST(uri_parse_with_bad_binary_encoding)
+TESTING_TEST(uri_parse_with_bad_binary_encoding)
 {
 	GError *error = NULL;
 	if (gck_uri_parse ("pkcs11:id=xxxxx", NULL, NULL, &error))
@@ -104,7 +104,7 @@ DEFINE_TEST(uri_parse_with_bad_binary_encoding)
 	g_error_free (error);
 }
 
-DEFINE_TEST(uri_parse_with_token)
+TESTING_TEST(uri_parse_with_token)
 {
 	GError *error = NULL;
 	GckTokenInfo *token = NULL;
@@ -121,7 +121,7 @@ DEFINE_TEST(uri_parse_with_token)
 	gck_token_info_free (token);
 }
 
-DEFINE_TEST(uri_parse_with_token_bad_encoding)
+TESTING_TEST(uri_parse_with_token_bad_encoding)
 {
 	GError *error = NULL;
 
@@ -132,7 +132,7 @@ DEFINE_TEST(uri_parse_with_token_bad_encoding)
 	g_error_free (error);
 }
 
-DEFINE_TEST(uri_parse_with_bad_syntax)
+TESTING_TEST(uri_parse_with_bad_syntax)
 {
 	GError *error = NULL;
 
@@ -143,7 +143,7 @@ DEFINE_TEST(uri_parse_with_bad_syntax)
 	g_error_free (error);
 }
 
-DEFINE_TEST(uri_build_empty)
+TESTING_TEST(uri_build_empty)
 {
 	gchar *uri = NULL;
 
@@ -152,7 +152,7 @@ DEFINE_TEST(uri_build_empty)
 	g_free (uri);
 }
 
-DEFINE_TEST(uri_build_with_token_info)
+TESTING_TEST(uri_build_with_token_info)
 {
 	gchar *uri = NULL;
 	GckTokenInfo *token;
@@ -184,7 +184,7 @@ DEFINE_TEST(uri_build_with_token_info)
 	g_free (uri);
 }
 
-DEFINE_TEST(uri_build_with_attributes)
+TESTING_TEST(uri_build_with_attributes)
 {
 	gchar *uri = NULL;
 	GckAttributes *attrs;

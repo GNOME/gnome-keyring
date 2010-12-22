@@ -17,6 +17,10 @@
  * 02111-1307, USA.
  */
 
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
+
 #ifndef __GCR_KEY_RENDERER_H__
 #define __GCR_KEY_RENDERER_H__
 
@@ -50,12 +54,12 @@ struct _GcrKeyRendererClass {
 GType                   gcr_key_renderer_get_type             (void);
 
 GcrKeyRenderer*         gcr_key_renderer_new                  (const gchar *label,
-                                                               struct _GckAttributes *attrs);
+                                                               GckAttributes *attrs);
 
 void                    gcr_key_renderer_set_attributes       (GcrKeyRenderer *self,
-                                                               struct _GckAttributes *attrs);
+                                                               GckAttributes *attrs);
 
-struct _GckAttributes*  gcr_key_renderer_get_attributes       (GcrKeyRenderer *self);
+GckAttributes*          gcr_key_renderer_get_attributes       (GcrKeyRenderer *self);
 
 G_END_DECLS
 

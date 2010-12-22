@@ -47,9 +47,15 @@ const gchar BITS_TEST[] =  "\x03\x04\x06\x6e\x5d\xc0";
 const gchar BITS_BAD[] =  "\x03\x04\x06\x6e\x5d\xc1";
 const gchar BITS_ZERO[] =  "\x03\x01\x00";
 
+/* ENUM with value = 2 */
+const gchar ENUM_TWO[] =           "\x0A\x01\x02";
+
+/* ENUM with value = 3 */
+const gchar ENUM_THREE[] =           "\x0A\x01\x03";
+
 #define XL(x) G_N_ELEMENTS (x) - 1
 
-DEFINE_TEST(asn1_boolean)
+TESTING_TEST(asn1_boolean)
 {
 	GNode *asn;
 	gboolean value;
@@ -86,7 +92,7 @@ DEFINE_TEST(asn1_boolean)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_integer)
+TESTING_TEST(asn1_integer)
 {
 	GNode *asn;
 	gulong value;
@@ -114,7 +120,7 @@ DEFINE_TEST(asn1_integer)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_octet_string)
+TESTING_TEST(asn1_octet_string)
 {
 	GNode *asn;
 	gchar *value;
@@ -142,7 +148,7 @@ DEFINE_TEST(asn1_octet_string)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_generalized_time)
+TESTING_TEST(asn1_generalized_time)
 {
 	GNode *asn;
 	glong value;
@@ -169,7 +175,7 @@ DEFINE_TEST(asn1_generalized_time)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_implicit)
+TESTING_TEST(asn1_implicit)
 {
 	GNode *asn;
 	gchar *value;
@@ -187,7 +193,7 @@ DEFINE_TEST(asn1_implicit)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_explicit)
+TESTING_TEST(asn1_explicit)
 {
 	GNode *asn;
 	gchar *value;
@@ -205,7 +211,7 @@ DEFINE_TEST(asn1_explicit)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_decode)
+TESTING_TEST(asn1_bit_string_decode)
 {
 	GNode *asn;
 	guchar *bits;
@@ -229,7 +235,7 @@ DEFINE_TEST(asn1_bit_string_decode)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_decode_bad)
+TESTING_TEST(asn1_bit_string_decode_bad)
 {
 	GNode *asn;
 
@@ -243,7 +249,7 @@ DEFINE_TEST(asn1_bit_string_decode_bad)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_decode_ulong)
+TESTING_TEST(asn1_bit_string_decode_ulong)
 {
 	GNode *asn;
 	gulong bits;
@@ -265,7 +271,7 @@ DEFINE_TEST(asn1_bit_string_decode_ulong)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_encode_decode)
+TESTING_TEST(asn1_bit_string_encode_decode)
 {
 	GNode *asn;
 	guchar bits[] = { 0x5d, 0x6e, 0x83 };
@@ -299,7 +305,7 @@ DEFINE_TEST(asn1_bit_string_encode_decode)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_encode_decode_ulong)
+TESTING_TEST(asn1_bit_string_encode_decode_ulong)
 {
 	GNode *asn;
 	gulong check, bits = 0x0101b977;
@@ -329,7 +335,7 @@ DEFINE_TEST(asn1_bit_string_encode_decode_ulong)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_bit_string_encode_decode_zero)
+TESTING_TEST(asn1_bit_string_encode_decode_zero)
 {
 	GNode *asn;
 	gpointer data;
@@ -351,7 +357,7 @@ DEFINE_TEST(asn1_bit_string_encode_decode_zero)
 	egg_asn1x_destroy (asn);
 }
 
-DEFINE_TEST(asn1_have)
+TESTING_TEST(asn1_have)
 {
 	GNode *asn;
 	guchar *data;
@@ -385,12 +391,15 @@ test_is_freed (gpointer unused)
 	is_freed = TRUE;
 }
 
-DEFINE_TEST(asn1_any_set_raw)
+TESTING_TEST(asn1_any_set_raw)
 {
 	GNode *asn, *node;
 	guchar *data;
 	const guchar *check;
 	gsize n_data, n_check;
+
+	/* ENCODED SEQUENCE ANY with OCTET STRING */
+	const gchar SEQ_ENCODING[] =  "\x30\x0C\x04\x0A""farnsworth";
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestAnySeq");
 	g_assert (asn);
@@ -405,6 +414,46 @@ DEFINE_TEST(asn1_any_set_raw)
 	data = egg_asn1x_encode (asn, NULL, &n_data);
 	g_assert (data);
 
+	g_assert_cmpsize (n_data, ==, XL (SEQ_ENCODING));
+	g_assert (memcmp (data, SEQ_ENCODING, n_data) == 0);
+
+	check = egg_asn1x_get_raw_element (node, &n_check);
+	g_assert (check);
+
+	g_assert_cmpsize (n_check, ==, XL (SFARNSWORTH));
+	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+	g_assert (is_freed);
+}
+
+TESTING_TEST(asn1_any_set_raw_explicit)
+{
+	GNode *asn, *node;
+	guchar *data;
+	const guchar *check;
+	gsize n_data, n_check;
+
+	/* ENCODED SEQUENCE [89] ANY with OCTET STRING */
+	const gchar SEQ_ENCODING[] =  "\x30\x0F\xBF\x59\x0C\x04\x0A""farnsworth";
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestAnyExp");
+	g_assert (asn);
+
+	is_freed = FALSE;
+	node = egg_asn1x_node (asn, "contents", NULL);
+	g_assert (node);
+
+	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert_cmpsize (n_data, ==, XL (SEQ_ENCODING));
+	g_assert (memcmp (data, SEQ_ENCODING, n_data) == 0);
+
 	check = egg_asn1x_get_raw_element (node, &n_check);
 	g_assert (check);
 
@@ -414,4 +463,233 @@ DEFINE_TEST(asn1_any_set_raw)
 	g_free (data);
 	egg_asn1x_destroy (asn);
 	g_assert (is_freed);
+}
+
+TESTING_TEST(asn1_choice_not_chosen)
+{
+	GNode *asn, *node;
+	guchar *data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestAnyChoice");
+	g_assert (asn);
+
+	node = egg_asn1x_node (asn, "choiceShortTag", NULL);
+	g_assert (node);
+
+	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), NULL))
+		g_assert_not_reached ();
+
+	/* egg_asn1x_set_choice() was not called */
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (!data);
+	g_assert (egg_asn1x_message (asn));
+	g_assert (strstr (egg_asn1x_message (asn), "TestAnyChoice") != NULL);
+
+	egg_asn1x_destroy (asn);
+}
+
+static void
+perform_asn1_any_choice_set_raw (const gchar *choice, const gchar *encoding, gsize n_encoding)
+{
+	GNode *asn, *node;
+	guchar *data;
+	const guchar *check;
+	gsize n_data, n_check;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestAnyChoice");
+	g_assert (asn);
+
+	is_freed = FALSE;
+	node = egg_asn1x_node (asn, choice, NULL);
+	g_assert (node);
+
+	if (!egg_asn1x_set_choice (asn, node))
+		g_assert_not_reached ();
+
+	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	if (!data) {
+		g_printerr ("%s\n", egg_asn1x_message (asn));
+		g_assert_not_reached ();
+	}
+	g_assert (data);
+
+	g_assert_cmpsize (n_data, ==, n_encoding);
+	g_assert (memcmp (data, encoding, n_data) == 0);
+
+	check = egg_asn1x_get_raw_element (node, &n_check);
+	g_assert (check);
+
+	g_assert (n_check == XL (SFARNSWORTH));
+	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+	g_assert (is_freed);
+}
+
+TESTING_TEST(asn1_any_choice_set_raw_short_tag)
+{
+	const gchar ENCODING[] = "\xBE\x0C\x04\x0A""farnsworth";
+	perform_asn1_any_choice_set_raw ("choiceShortTag", ENCODING, XL (ENCODING));
+}
+
+TESTING_TEST(asn1_any_choice_set_raw_long_tag)
+{
+	const gchar ENCODING[] = "\xBF\x1F\x0C\x04\x0A""farnsworth";
+	perform_asn1_any_choice_set_raw ("choiceLongTag", ENCODING, XL (ENCODING));
+}
+
+TESTING_TEST(asn1_append)
+{
+	GNode *asn;
+	GNode *child;
+	gpointer data;
+	gsize n_data;
+
+	/* SEQUENCE OF with one INTEGER = 1 */
+	const gchar SEQOF_ONE[] =  "\x30\x03\x02\x01\x01";
+
+	/* SEQUENCE OF with two INTEGER = 1, 2 */
+	const gchar SEQOF_TWO[] =  "\x30\x06\x02\x01\x01\x02\x01\x02";
+
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSeqOf", SEQOF_ONE, XL (SEQOF_ONE));
+	g_assert (asn);
+
+	child = egg_asn1x_append (asn);
+	g_assert (child);
+
+	/* Second integer is 2 */
+	if (!egg_asn1x_set_integer_as_ulong (child, 2))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert (n_data == XL (SEQOF_TWO));
+	g_assert (memcmp (data, SEQOF_TWO, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+TESTING_TEST(asn1_append_and_clear)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestSeqOf");
+	g_assert (asn);
+
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
+
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 2))
+		g_assert_not_reached ();
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 3))
+		g_assert_not_reached ();
+
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 2);
+
+	egg_asn1x_clear (asn);
+	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
+
+	egg_asn1x_destroy (asn);
+	g_free (data);
+}
+
+TESTING_TEST(asn1_setof)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	/* SEQUENCE OF with one INTEGER = 3 */
+	const gchar SETOF_ONE[] =  "\x31\x03\x02\x01\x03";
+
+	/* SET OF with two INTEGER = 1, 3, 8 */
+	const gchar SETOF_THREE[] =  "\x31\x09\x02\x01\x01\x02\x01\x03\x02\x01\x08";
+
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSetOf", SETOF_ONE, XL (SETOF_ONE));
+	g_assert (asn);
+
+	/* Add integer 1, in SET OF DER should sort to front */
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 1))
+		g_assert_not_reached ();
+
+	/* Add integer 8, in SET OF DER should sort to back */
+	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 8))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	if (!data) {
+		g_printerr ("%s\n", egg_asn1x_message (asn));
+		g_assert_not_reached ();
+	}
+
+	g_assert (n_data == XL (SETOF_THREE));
+	g_assert (memcmp (data, SETOF_THREE, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+TESTING_TEST(asn1_setof_empty)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	/* SEQUENCE OF with nothing */
+	const gchar SETOF_NONE[] =  "\x31\x00";
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestSetOf");
+	g_assert (asn);
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	if (!data) {
+		g_printerr ("%s\n", egg_asn1x_message (asn));
+		g_assert_not_reached ();
+	}
+
+	g_assert (n_data == XL (SETOF_NONE));
+	g_assert (memcmp (data, SETOF_NONE, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
+}
+
+TESTING_TEST (asn1_enumerated)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+	GQuark value;
+
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestEnumerated", ENUM_TWO, XL (ENUM_TWO));
+	g_assert (asn);
+
+	value = egg_asn1x_get_enumerated (asn);
+	g_assert (value);
+	g_assert_cmpstr (g_quark_to_string (value), ==, "valueTwo");
+
+	if (!egg_asn1x_set_enumerated (asn, g_quark_from_static_string ("valueThree")))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, NULL, &n_data);
+	g_assert (data);
+
+	g_assert (n_data == XL (ENUM_THREE));
+	g_assert (memcmp (data, ENUM_THREE, n_data) == 0);
+
+	g_free (data);
+	egg_asn1x_destroy (asn);
 }

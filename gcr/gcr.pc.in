@@ -5,6 +5,8 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 sysconfdir=@sysconfdir@
+pkcs11dir=@pkcs11dir@
+pkcs11standalonedir=@pkcs11standalonedir@
 
 Name: gcr@GCR_VERSION_SUFFIX@
 Description: GObject and GUI library for high level crypto parsing and display

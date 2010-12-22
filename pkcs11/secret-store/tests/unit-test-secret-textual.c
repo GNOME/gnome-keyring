@@ -47,7 +47,7 @@ static GkmSession *session = NULL;
 static GkmSecretCollection *collection = NULL;
 static GkmSecretData *sdata = NULL;
 
-DEFINE_SETUP(textual)
+TESTING_SETUP(textual)
 {
 	module = test_secret_module_initialize_and_enter ();
 	session = test_secret_module_open_session (TRUE);
@@ -64,7 +64,7 @@ DEFINE_SETUP(textual)
 
 }
 
-DEFINE_TEARDOWN(textual)
+TESTING_TEARDOWN(textual)
 {
 	if (collection)
 		g_object_unref (collection);
@@ -79,7 +79,7 @@ DEFINE_TEARDOWN(textual)
 	session = NULL;
 }
 
-DEFINE_TEST(textual_read)
+TESTING_TEST(textual_read)
 {
 	GkmDataResult res;
 	guchar *data;
@@ -94,7 +94,7 @@ DEFINE_TEST(textual_read)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(textual_read_wrong_format)
+TESTING_TEST(textual_read_wrong_format)
 {
 	GkmDataResult res;
 	guchar *data;
@@ -107,7 +107,7 @@ DEFINE_TEST(textual_read_wrong_format)
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 }
 
-DEFINE_TEST(textual_read_bad_number)
+TESTING_TEST(textual_read_bad_number)
 {
 	GkmSecretItem *item;
 	GkmDataResult res;
@@ -129,7 +129,7 @@ DEFINE_TEST(textual_read_bad_number)
 	g_assert (value == NULL);
 }
 
-DEFINE_TEST(textual_write)
+TESTING_TEST(textual_write)
 {
 	GkmDataResult res;
 	guchar *data;
@@ -147,7 +147,7 @@ DEFINE_TEST(textual_write)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(textual_remove_unavailable)
+TESTING_TEST(textual_remove_unavailable)
 {
 	GkmDataResult res;
 	GList *items;

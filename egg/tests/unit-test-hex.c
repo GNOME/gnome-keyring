@@ -33,7 +33,7 @@ static const guchar TEST_DATA[] = { 0x05, 0xD6, 0x95, 0x96, 0x10, 0x12, 0xAE, 0x
 static const gchar *TEST_HEX = "05D695961012AE35";
 static const gchar *TEST_HEX_DELIM = "05 D6 95 96 10 12 AE 35";
 
-DEFINE_TEST(hex_encode)
+TESTING_TEST(hex_encode)
 {
 	gchar *hex;
 	
@@ -42,7 +42,7 @@ DEFINE_TEST(hex_encode)
 	g_assert_cmpstr (hex, ==, TEST_HEX);
 }
 
-DEFINE_TEST(hex_encode_spaces)
+TESTING_TEST(hex_encode_spaces)
 {
 	gchar *hex;
 	
@@ -57,7 +57,7 @@ DEFINE_TEST(hex_encode_spaces)
 	g_assert_cmpstr (hex, ==, TEST_HEX_DELIM);
 }
 
-DEFINE_TEST(hex_decode)
+TESTING_TEST(hex_decode)
 {
 	guchar *data;
 	gsize n_data;
@@ -82,7 +82,7 @@ DEFINE_TEST(hex_decode)
 	g_free (data);
 }
 
-DEFINE_TEST(hex_decode_fail)
+TESTING_TEST(hex_decode_fail)
 {
 	guchar *data;
 	gsize n_data;

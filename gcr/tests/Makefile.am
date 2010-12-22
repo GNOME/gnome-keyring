@@ -1,7 +1,11 @@
 
 # Test files should be listed in order they need to run
 TESTING_FILES = \
-	unit-test-certificate.c \
+	test-certificate.c \
+	test-certificate-chain.c \
+	test-simple-certificate.c \
+	test-pkcs11-certificate.c \
+	test-trust.c \
 	unit-test-parser.c
 
 TESTING_LIBS =  \
@@ -16,7 +20,7 @@ TESTING_FLAGS = \
 
 include $(top_srcdir)/testing/testing.make
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	test-data
 
 # ------------------------------------------------------------------

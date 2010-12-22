@@ -95,7 +95,7 @@ msgstr "Portachiavi di GNOME: agente SSH"
 msgid "SSH Key Agent"
 msgstr "Agente della chiave SSH"
 
-# [NdT] no, più che l'agente Bond, c'è l'agente SSH 
+# [NdT] no, più che l'agente Bond, c'è l'agente SSH
 #       (chissà che numero 00 ha) :-D
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
 #| msgid "GNOME Keyring: SSH Agent"

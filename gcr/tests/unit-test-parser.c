@@ -28,7 +28,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gcr/gcr-parser.h"
+#include "gcr/gcr.h"
 
 #include "gck/gck.h"
 
@@ -91,20 +91,20 @@ authenticate (GcrParser *par, gint state, gpointer user_data)
 	};
 } 
 
-DEFINE_SETUP(parser)
+TESTING_SETUP(parser)
 {
 	parser = gcr_parser_new ();
 	g_signal_connect (parser, "parsed", G_CALLBACK (parsed_item), parser);
 	g_signal_connect (parser, "authenticate", G_CALLBACK (authenticate), parser);
 }
 
-DEFINE_TEARDOWN(parser)
+TESTING_TEARDOWN(parser)
 {
 	g_object_unref (parser);
 	parser = NULL;
 }
 
-DEFINE_TEST(parse_all)
+TESTING_TEST(parse_all)
 {
 	guchar *contents;
 	GError *err = NULL;

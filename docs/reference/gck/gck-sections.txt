@@ -98,6 +98,7 @@ gck_slot_get_token_info
 gck_slot_get_mechanisms
 gck_slot_get_mechanism_info
 gck_slot_has_flags
+gck_slots_enumerate_objects
 gck_slot_open_session
 gck_slot_open_session_full
 gck_slot_open_session_async

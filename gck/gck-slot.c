@@ -799,6 +799,25 @@ gck_slot_has_flags (GckSlot *self, gulong flags)
 	return (info.flags & flags) != 0;
 }
 
+/**
+ * gck_slots_enumerate_objects:
+ * @slots: a list of #GckSlot to enumerate objects on.
+ * @attrs: Attributes that the objects must have, or empty for all objects.
+ * @session_options: Options for opening a session.
+ *
+ * Setup an enumerator for listing matching objects on the slots.
+ *
+ * This call will not block but will return an enumerator immediately.
+ *
+ * Return value: a new enumerator
+ **/
+GckEnumerator*
+gck_slots_enumerate_objects (GList *slots, GckAttributes *attrs, guint session_options)
+{
+	return _gck_enumerator_new (slots, session_options, NULL, attrs);
+}
+
+
 #if UNIMPLEMENTED
 
 typedef struct InitToken {

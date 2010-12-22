@@ -35,20 +35,20 @@
 #include <stdio.h>
 #include <string.h>
 
-DEFINE_TEST(fields_new)
+TESTING_TEST(fields_new)
 {
 	GHashTable *fields = gkm_secret_fields_new ();
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_boxed)
+TESTING_TEST(fields_boxed)
 {
 	GType boxed = gkm_secret_fields_boxed_type ();
 	GType check = gkm_secret_fields_boxed_type ();
 	g_assert (boxed == check);
 }
 
-DEFINE_TEST(fields_add_get_values)
+TESTING_TEST(fields_add_get_values)
 {
 	GHashTable *fields = gkm_secret_fields_new ();
 	const gchar *value;
@@ -69,7 +69,7 @@ DEFINE_TEST(fields_add_get_values)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_parse)
+TESTING_TEST(fields_parse)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0value1\0two\0value2\0three\0value3\0", 35 };
 	GHashTable *fields;
@@ -90,7 +90,7 @@ DEFINE_TEST(fields_parse)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_parse_empty)
+TESTING_TEST(fields_parse_empty)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "", 0 };
 	GHashTable *fields;
@@ -104,7 +104,7 @@ DEFINE_TEST(fields_parse_empty)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_parse_null_invalid)
+TESTING_TEST(fields_parse_null_invalid)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, NULL, 5 };
 	GHashTable *fields;
@@ -114,7 +114,7 @@ DEFINE_TEST(fields_parse_null_invalid)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(fields_parse_missing_value)
+TESTING_TEST(fields_parse_missing_value)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one", 3 };
 	GHashTable *fields;
@@ -124,7 +124,7 @@ DEFINE_TEST(fields_parse_missing_value)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(fields_parse_missing_terminator)
+TESTING_TEST(fields_parse_missing_terminator)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0value", 9 };
 	GHashTable *fields;
@@ -134,7 +134,7 @@ DEFINE_TEST(fields_parse_missing_terminator)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(fields_parse_not_utf8)
+TESTING_TEST(fields_parse_not_utf8)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0not\234utf8\0", 13 };
 	GHashTable *fields;
@@ -144,7 +144,7 @@ DEFINE_TEST(fields_parse_not_utf8)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-DEFINE_TEST(fields_serialize)
+TESTING_TEST(fields_serialize)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, buffer, 32 };
@@ -162,7 +162,7 @@ DEFINE_TEST(fields_serialize)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_serialize_length)
+TESTING_TEST(fields_serialize_length)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, NULL, 0 };
 	GHashTable *fields;
@@ -178,7 +178,7 @@ DEFINE_TEST(fields_serialize_length)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_add_get_compat_uint32)
+TESTING_TEST(fields_add_get_compat_uint32)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -194,7 +194,7 @@ DEFINE_TEST(fields_add_get_compat_uint32)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_get_compat_uint32_fail)
+TESTING_TEST(fields_get_compat_uint32_fail)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -209,7 +209,7 @@ DEFINE_TEST(fields_get_compat_uint32_fail)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_get_compat_hashed_string)
+TESTING_TEST(fields_get_compat_hashed_string)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -226,7 +226,7 @@ DEFINE_TEST(fields_get_compat_hashed_string)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_get_compat_hashed_already)
+TESTING_TEST(fields_get_compat_hashed_already)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -243,7 +243,7 @@ DEFINE_TEST(fields_get_compat_hashed_already)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_get_compat_hashed_uint32)
+TESTING_TEST(fields_get_compat_hashed_uint32)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -260,7 +260,7 @@ DEFINE_TEST(fields_get_compat_hashed_uint32)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_get_compat_hashed_uint32_already)
+TESTING_TEST(fields_get_compat_hashed_uint32_already)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -277,7 +277,7 @@ DEFINE_TEST(fields_get_compat_hashed_uint32_already)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_get_names)
+TESTING_TEST(fields_get_names)
 {
 	GHashTable *fields;
 	GList *names, *l;
@@ -303,7 +303,7 @@ DEFINE_TEST(fields_get_names)
 	g_hash_table_unref (fields);
 }
 
-DEFINE_TEST(fields_match)
+TESTING_TEST(fields_match)
 {
 	GHashTable *haystack;
 	GHashTable *needle;
@@ -329,7 +329,7 @@ DEFINE_TEST(fields_match)
 	g_hash_table_unref (needle);
 }
 
-DEFINE_TEST(fields_match_mismatch_value)
+TESTING_TEST(fields_match_mismatch_value)
 {
 	GHashTable *haystack;
 	GHashTable *needle;
@@ -348,7 +348,7 @@ DEFINE_TEST(fields_match_mismatch_value)
 	g_hash_table_unref (needle);
 }
 
-DEFINE_TEST(fields_match_mismatch_field)
+TESTING_TEST(fields_match_mismatch_field)
 {
 	GHashTable *haystack;
 	GHashTable *needle;
@@ -367,7 +367,7 @@ DEFINE_TEST(fields_match_mismatch_field)
 	g_hash_table_unref (needle);
 }
 
-DEFINE_TEST(fields_match_wrong_hashed)
+TESTING_TEST(fields_match_wrong_hashed)
 {
 	GHashTable *haystack;
 	GHashTable *needle;

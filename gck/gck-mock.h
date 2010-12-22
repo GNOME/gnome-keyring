@@ -129,6 +129,11 @@ CK_RV               gck_mock_C_CreateObject                        (CK_SESSION_H
                                                                     CK_ULONG ulCount,
                                                                     CK_OBJECT_HANDLE_PTR phObject);
 
+CK_RV               gck_mock_fail_C_CreateObject                   (CK_SESSION_HANDLE hSession,
+                                                                    CK_ATTRIBUTE_PTR pTemplate,
+                                                                    CK_ULONG ulCount,
+                                                                    CK_OBJECT_HANDLE_PTR phObject);
+
 CK_RV               gck_mock_unsupported_C_CopyObject              (CK_SESSION_HANDLE hSession,
                                                                     CK_OBJECT_HANDLE hObject,
                                                                     CK_ATTRIBUTE_PTR pTemplate,
@@ -147,6 +152,11 @@ CK_RV               gck_mock_C_GetAttributeValue                   (CK_SESSION_H
                                                                     CK_ATTRIBUTE_PTR pTemplate,
                                                                     CK_ULONG ulCount);
 
+CK_RV               gck_mock_fail_C_GetAttributeValue              (CK_SESSION_HANDLE hSession,
+                                                                    CK_OBJECT_HANDLE hObject,
+                                                                    CK_ATTRIBUTE_PTR pTemplate,
+                                                                    CK_ULONG ulCount);
+
 CK_RV               gck_mock_C_SetAttributeValue                   (CK_SESSION_HANDLE hSession,
                                                                     CK_OBJECT_HANDLE hObject,
                                                                     CK_ATTRIBUTE_PTR pTemplate,
@@ -157,6 +167,11 @@ CK_RV               gck_mock_C_FindObjectsInit                     (CK_SESSION_H
                                                                     CK_ULONG ulCount);
 
 CK_RV               gck_mock_C_FindObjects                         (CK_SESSION_HANDLE hSession,
+                                                                    CK_OBJECT_HANDLE_PTR phObject,
+                                                                    CK_ULONG ulMaxObjectCount,
+                                                                    CK_ULONG_PTR pulObjectCount);
+
+CK_RV               gck_mock_fail_C_FindObjects                    (CK_SESSION_HANDLE hSession,
                                                                     CK_OBJECT_HANDLE_PTR phObject,
                                                                     CK_ULONG ulMaxObjectCount,
                                                                     CK_ULONG_PTR pulObjectCount);

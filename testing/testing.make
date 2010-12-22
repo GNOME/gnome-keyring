@@ -3,17 +3,19 @@
 #   TESTING_FILES    A list of C files with tests
 #   TESTING_LIBS     Libraries to link the tests to
 #   TESTING_FLAGS    C flags for tests
+#   TESTING_SOURCES  Other sources for tests
 
 # ------------------------------------------------------------------------------
 
-INCLUDES=				\
-	-I$(top_srcdir) 		\
-	-I$(top_builddir) 		\
-	-I$(srcdir)/..			\
-	-I$(srcdir)/../..		\
-	$(GTK_CFLAGS)			\
-	$(GLIB_CFLAGS) \
-	$(P11_TESTS_CFLAGS)
+INCLUDES=			\
+	-I$(top_srcdir) 	\
+	-I$(top_builddir) 	\
+	-I$(srcdir)/..		\
+	-I$(srcdir)/../..	\
+	$(GTK_CFLAGS)		\
+	$(GLIB_CFLAGS) 		\
+	$(P11_TESTS_CFLAGS) 	\
+	$(TESTING_FLAGS)
 
 LIBS = \
 	$(GTK_LIBS) \
@@ -24,14 +26,25 @@ LIBS = \
 noinst_PROGRAMS= \
 	run-tests
 
-test-suite.h: $(TESTING_FILES) Makefile.am $(top_srcdir)/testing/testing-build.sh
-	sh $(top_srcdir)/testing/testing-build.sh -b test-suite $(TESTING_FILES)
+PREPROCESSED = \
+	$(TESTING_FILES:.c=.i)
 
-test-suite.c: test-suite.h
+.c.i:
+	@echo "#include \"testing/testing.h\"" > test-suite.h
+	$(AM_V_GEN)$(CC) -E $(CFLAGS) $(INCLUDES)  -o $@ $<
+
+.i.o:
+	$(AM_V_GEN)$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+
+test-suite.c: $(PREPROCESSED) Makefile.am $(top_srcdir)/testing/testing-build.sh
+	sh $(top_srcdir)/testing/testing-build.sh -b test-suite $(PREPROCESSED)
+
+test-suite.h: test-suite.c
 
 run_tests_SOURCES = \
 	test-suite.c test-suite.h \
-	$(TESTING_FILES)
+	$(TESTING_SOURCES) \
+	$(PREPROCESSED)
 
 run_tests_LDADD = \
 	$(TESTING_LIBS) \
@@ -47,6 +60,13 @@ run_tests_LDFLAGS = \
 BUILT_SOURCES = \
 	test-suite.c \
 	test-suite.h
+
+CLEANFILES = \
+	$(PREPROCESSED) \
+	$(BUILT_SOURCES)
+
+EXTRA_DIST = \
+	$(TESTING_FILES)
 
 # ------------------------------------------------------------------------------
 # Run the tests

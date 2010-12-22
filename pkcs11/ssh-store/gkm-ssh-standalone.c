@@ -32,9 +32,24 @@
 #include "pkcs11/pkcs11.h"
 
 #include <glib-object.h>
+#include <gmodule.h>
 
 /* Module callbacks for secure memory */
 EGG_SECURE_GLIB_DEFINITIONS ();
+
+const gchar* g_module_check_init (GModule *module);
+
+const gchar*
+g_module_check_init (GModule *module)
+{
+	/*
+	 * We can't handle being unloaded due to the gobject
+	 * types we register
+	 */
+
+	g_module_make_resident (module);
+	return NULL;
+}
 
 CK_RV
 C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)

@@ -49,7 +49,7 @@ static const gchar *PUBLIC_FILES[] = {
 
 #define COMMENT "A public key comment"
 
-DEFINE_TEST(parse_public)
+TESTING_TEST(parse_public)
 {
 	gcry_sexp_t sexp;
 	gchar *comment;
@@ -84,7 +84,7 @@ DEFINE_TEST(parse_public)
 	}
 }
 
-DEFINE_TEST(parse_private)
+TESTING_TEST(parse_private)
 {
 	gcry_sexp_t sexp;
 	guchar *data;

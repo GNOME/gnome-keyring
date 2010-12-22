@@ -19,6 +19,10 @@
  * 02111-1307, USA.  
  */
 
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
+
 #ifndef __GCR_CERTIFICATE_H__
 #define __GCR_CERTIFICATE_H__
 
@@ -38,9 +42,9 @@ typedef struct _GcrCertificateIface GcrCertificateIface;
 
 struct _GcrCertificateIface {
 	GTypeInterface parent;
-	
-	const guchar* (*get_der_data)   (GcrCertificate *self, gsize *n_data);
-	
+
+	gconstpointer (*get_der_data)   (GcrCertificate *self, gsize *n_data);
+
 	gpointer dummy1;
 	gpointer dummy2;
 	gpointer dummy3;
@@ -52,7 +56,7 @@ struct _GcrCertificateIface {
 
 GType               gcr_certificate_get_type               (void);
 
-const guchar*       gcr_certificate_get_der_data           (GcrCertificate *self, 
+gconstpointer       gcr_certificate_get_der_data           (GcrCertificate *self,
                                                             gsize *n_data);
 
 gchar*              gcr_certificate_get_issuer_cn          (GcrCertificate *self);
@@ -62,12 +66,21 @@ gchar*              gcr_certificate_get_issuer_dn          (GcrCertificate *self
 gchar*              gcr_certificate_get_issuer_part        (GcrCertificate *self, 
                                                             const gchar *part);
 
+gpointer            gcr_certificate_get_issuer_raw         (GcrCertificate *self,
+                                                            gsize *n_data);
+
+gboolean            gcr_certificate_is_issuer              (GcrCertificate *self,
+                                                            GcrCertificate *issuer);
+
 gchar*              gcr_certificate_get_subject_cn         (GcrCertificate *self);
 
 gchar*              gcr_certificate_get_subject_dn         (GcrCertificate *self);
 
 gchar*              gcr_certificate_get_subject_part       (GcrCertificate *self, 
                                                             const gchar *part);
+
+gpointer            gcr_certificate_get_subject_raw        (GcrCertificate *self,
+                                                            gsize *n_data);
 
 GDate*              gcr_certificate_get_issued_date        (GcrCertificate *self);
 

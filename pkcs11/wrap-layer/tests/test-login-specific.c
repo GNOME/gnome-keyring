@@ -34,7 +34,7 @@ static CK_FUNCTION_LIST prompt_login_functions;
 static CK_FUNCTION_LIST_PTR module = NULL;
 static CK_SESSION_HANDLE session = 0;
 
-DEFINE_SETUP (login_specific)
+TESTING_SETUP (login_specific)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_OBJECT_HANDLE key;
@@ -88,7 +88,7 @@ DEFINE_SETUP (login_specific)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEARDOWN (login_specific)
+TESTING_TEARDOWN (login_specific)
 {
 	CK_RV rv;
 
@@ -103,7 +103,7 @@ DEFINE_TEARDOWN (login_specific)
 	module = NULL;
 }
 
-DEFINE_TEST (login_specific_ok_password)
+TESTING_TEST (login_specific_ok_password)
 {
 	CK_RV rv;
 
@@ -113,7 +113,7 @@ DEFINE_TEST (login_specific_ok_password)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEST (login_specific_bad_password_then_cancel)
+TESTING_TEST (login_specific_bad_password_then_cancel)
 {
 	CK_RV rv;
 
@@ -124,7 +124,7 @@ DEFINE_TEST (login_specific_bad_password_then_cancel)
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST (login_specific_cancel_immediately)
+TESTING_TEST (login_specific_cancel_immediately)
 {
 	CK_RV rv;
 

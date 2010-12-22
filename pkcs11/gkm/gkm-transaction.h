@@ -69,9 +69,13 @@ CK_RV                       gkm_transaction_get_result             (GkmTransacti
 
 gboolean                    gkm_transaction_get_completed          (GkmTransaction *self);
 
+gchar*                      gkm_transaction_unique_file            (GkmTransaction *self,
+                                                                    const gchar *directory,
+                                                                    const gchar *basename);
+
 void                        gkm_transaction_write_file             (GkmTransaction *self,
                                                                     const gchar *filename,
-                                                                    const guchar *data,
+                                                                    gconstpointer data,
                                                                     gsize n_data);
 
 void                        gkm_transaction_remove_file            (GkmTransaction *self,

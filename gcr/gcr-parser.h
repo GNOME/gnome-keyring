@@ -19,6 +19,10 @@
  * 02111-1307, USA.  
  */
 
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
+
 #ifndef __GCR_PARSER_H__
 #define __GCR_PARSER_H__
 
@@ -97,7 +101,7 @@ const gchar*             gcr_parser_get_parsed_label       (GcrParser *self);
 
 const gchar*             gcr_parser_get_parsed_description (GcrParser *self);
 
-struct _GckAttributes*   gcr_parser_get_parsed_attributes  (GcrParser *self);
+GckAttributes*           gcr_parser_get_parsed_attributes  (GcrParser *self);
 
 G_END_DECLS
 

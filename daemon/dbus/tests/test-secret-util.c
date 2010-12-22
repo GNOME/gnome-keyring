@@ -29,7 +29,7 @@
 
 #include <glib.h>
 
-DEFINE_TEST(secret_util_build_path)
+TESTING_TEST(secret_util_build_path)
 {
 	const gchar *identifier = "par_d\xc3\xa9""faut";
 	gchar *result;

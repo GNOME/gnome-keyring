@@ -32,7 +32,7 @@
 
 #include <gcrypt.h>
 
-DEFINE_TEST(dh_perform)
+TESTING_TEST(dh_perform)
 {
 	gcry_mpi_t p, g;
 	gcry_mpi_t x1, X1;
@@ -69,7 +69,7 @@ DEFINE_TEST(dh_perform)
 	egg_secure_free (k2);
 }
 
-DEFINE_TEST(dh_short_pair)
+TESTING_TEST(dh_short_pair)
 {
 	gcry_mpi_t p, g;
 	gcry_mpi_t x1, X1;
@@ -126,43 +126,43 @@ test_dh_default (const gchar *name, guint bits)
 	gcry_mpi_release (g);
 }
 
-DEFINE_TEST(dh_default_768)
+TESTING_TEST(dh_default_768)
 {
 	test_dh_default ("ietf-ike-grp-modp-768", 768);
 }
 
-DEFINE_TEST(dh_default_1024)
+TESTING_TEST(dh_default_1024)
 {
 	test_dh_default ("ietf-ike-grp-modp-1024", 1024);
 }
 
-DEFINE_TEST(dh_default_1536)
+TESTING_TEST(dh_default_1536)
 {
 	test_dh_default ("ietf-ike-grp-modp-1536", 1536);
 }
 
 
-DEFINE_TEST(dh_default_2048)
+TESTING_TEST(dh_default_2048)
 {
 	test_dh_default ("ietf-ike-grp-modp-2048", 2048);
 }
 
-DEFINE_TEST(dh_default_3072)
+TESTING_TEST(dh_default_3072)
 {
 	test_dh_default ("ietf-ike-grp-modp-3072", 3072);
 }
 
-DEFINE_TEST(dh_default_4096)
+TESTING_TEST(dh_default_4096)
 {
 	test_dh_default ("ietf-ike-grp-modp-4096", 4096);
 }
 
-DEFINE_TEST(dh_default_8192)
+TESTING_TEST(dh_default_8192)
 {
 	test_dh_default ("ietf-ike-grp-modp-8192", 8192);
 }
 
-DEFINE_TEST(dh_default_bad)
+TESTING_TEST(dh_default_bad)
 {
 	gboolean ret;
 	gcry_mpi_t p, g;

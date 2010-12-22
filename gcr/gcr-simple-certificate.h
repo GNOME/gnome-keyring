@@ -19,6 +19,10 @@
  * 02111-1307, USA.  
  */
 
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
+
 #ifndef __GCR_SIMPLE_CERTIFICATE_H__
 #define __GCR_SIMPLE_CERTIFICATE_H__
 
@@ -29,11 +33,11 @@
 G_BEGIN_DECLS
 
 #define GCR_TYPE_SIMPLE_CERTIFICATE               (gcr_simple_certificate_get_type ())
-#define GCR_SIMPLE_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE, GcrSimpleCertificate))
-#define GCR_SIMPLE_CERTIFICATE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_CERTIFICATE, GcrSimpleCertificateClass))
-#define GCR_IS_SIMPLE_CERTIFICATE(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_CERTIFICATE))
-#define GCR_IS_SIMPLE_CERTIFICATE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_CERTIFICATE))
-#define GCR_SIMPLE_CERTIFICATE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_CERTIFICATE, GcrSimpleCertificateClass))
+#define GCR_SIMPLE_CERTIFICATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_SIMPLE_CERTIFICATE, GcrSimpleCertificate))
+#define GCR_SIMPLE_CERTIFICATE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_SIMPLE_CERTIFICATE, GcrSimpleCertificateClass))
+#define GCR_IS_SIMPLE_CERTIFICATE(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_SIMPLE_CERTIFICATE))
+#define GCR_IS_SIMPLE_CERTIFICATE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_SIMPLE_CERTIFICATE))
+#define GCR_SIMPLE_CERTIFICATE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_SIMPLE_CERTIFICATE, GcrSimpleCertificateClass))
 
 typedef struct _GcrSimpleCertificate GcrSimpleCertificate;
 typedef struct _GcrSimpleCertificateClass GcrSimpleCertificateClass;
@@ -50,10 +54,10 @@ struct _GcrSimpleCertificateClass {
 
 GType               gcr_simple_certificate_get_type               (void);
 
-GcrCertificate*     gcr_simple_certificate_new                    (const guchar *data,
+GcrCertificate*     gcr_simple_certificate_new                    (gconstpointer data,
                                                                    gsize n_data);
 
-GcrCertificate*     gcr_simple_certificate_new_static             (const guchar *data,
+GcrCertificate*     gcr_simple_certificate_new_static             (gconstpointer data,
                                                                    gsize n_data);
 
 G_END_DECLS

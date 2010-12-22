@@ -38,7 +38,7 @@ static GkmModule *module = NULL;
 static GkmSession *session = NULL;
 static GkmObject *object = NULL;
 
-DEFINE_SETUP(credential_setup)
+TESTING_SETUP(credential_setup)
 {
 	CK_RV rv;
 	module = test_module_initialize_and_enter ();
@@ -51,7 +51,7 @@ DEFINE_SETUP(credential_setup)
 	gkm_object_expose (object, TRUE);
 }
 
-DEFINE_TEARDOWN(credential_teardown)
+TESTING_TEARDOWN(credential_teardown)
 {
 	g_object_unref (object);
 	object = NULL;
@@ -61,7 +61,7 @@ DEFINE_TEARDOWN(credential_teardown)
 	session = NULL;
 }
 
-DEFINE_TEST(credential_create)
+TESTING_TEST(credential_create)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_OBJECT_HANDLE locked = gkm_object_get_handle (object);
@@ -83,7 +83,7 @@ DEFINE_TEST(credential_create)
 	g_assert (rv == CKR_OK);
 }
 
-DEFINE_TEST(credential_create_missing_pin)
+TESTING_TEST(credential_create_missing_pin)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_OBJECT_HANDLE locked = gkm_object_get_handle (object);
@@ -100,7 +100,7 @@ DEFINE_TEST(credential_create_missing_pin)
 	g_assert (rv == CKR_USER_NOT_LOGGED_IN);
 }
 
-DEFINE_TEST(credential_create_no_object)
+TESTING_TEST(credential_create_no_object)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_BBOOL token = CK_FALSE;
@@ -127,7 +127,7 @@ DEFINE_TEST(credential_create_no_object)
 	g_assert (objhand == 0);
 }
 
-DEFINE_TEST(credential_create_invalid_object)
+TESTING_TEST(credential_create_invalid_object)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_OBJECT_HANDLE locked = 0;
@@ -146,7 +146,7 @@ DEFINE_TEST(credential_create_invalid_object)
 	g_assert (rv == CKR_OBJECT_HANDLE_INVALID);
 }
 
-DEFINE_TEST(credential_get_attributes)
+TESTING_TEST(credential_get_attributes)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_OBJECT_HANDLE locked = gkm_object_get_handle (object);
@@ -176,7 +176,7 @@ DEFINE_TEST(credential_get_attributes)
 	g_assert (value == locked);
 }
 
-DEFINE_TEST(credential_object_property)
+TESTING_TEST(credential_object_property)
 {
 	GkmCredential *auth;
 	GkmObject *check;
@@ -196,7 +196,7 @@ DEFINE_TEST(credential_object_property)
 	g_object_unref (auth);
 }
 
-DEFINE_TEST(credential_login_property)
+TESTING_TEST(credential_login_property)
 {
 	GkmCredential *cred;
 	GkmSecret *check, *secret;
@@ -239,7 +239,7 @@ boxed_string (void)
 	return type;
 }
 
-DEFINE_TEST(credential_data)
+TESTING_TEST(credential_data)
 {
 	GkmCredential *cred;
 	GType type = boxed_string ();
@@ -269,7 +269,7 @@ DEFINE_TEST(credential_data)
 	g_object_unref (cred);
 }
 
-DEFINE_TEST(credential_connect_object)
+TESTING_TEST(credential_connect_object)
 {
 	GkmCredential *cred;
 	CK_RV rv;

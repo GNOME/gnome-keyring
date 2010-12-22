@@ -48,7 +48,7 @@ static GkmFactory *factory = NULL;
 static GkmSecretCollection *collection = NULL;
 static GkmSecretItem *item = NULL;
 
-DEFINE_SETUP(secret_search)
+TESTING_SETUP(secret_search)
 {
 	GHashTable *fields;
 
@@ -74,7 +74,7 @@ DEFINE_SETUP(secret_search)
 	gkm_object_expose (GKM_OBJECT (collection), TRUE);
 }
 
-DEFINE_TEARDOWN(secret_search)
+TESTING_TEARDOWN(secret_search)
 {
 	g_object_unref (collection);
 
@@ -83,7 +83,7 @@ DEFINE_TEARDOWN(secret_search)
 	session = NULL;
 }
 
-DEFINE_TEST(create_search_incomplete)
+TESTING_TEST(create_search_incomplete)
 {
 	CK_ATTRIBUTE attrs[1];
 	GkmObject *object = NULL;
@@ -94,7 +94,7 @@ DEFINE_TEST(create_search_incomplete)
 	g_assert (object == NULL);
 }
 
-DEFINE_TEST(create_search_bad_fields)
+TESTING_TEST(create_search_bad_fields)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "bad-value", 9 },
@@ -108,7 +108,7 @@ DEFINE_TEST(create_search_bad_fields)
 	g_assert (object == NULL);
 }
 
-DEFINE_TEST(create_search)
+TESTING_TEST(create_search)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "test\0value\0two\0value2", 22 },
@@ -162,7 +162,7 @@ DEFINE_TEST(create_search)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(create_search_and_match)
+TESTING_TEST(create_search_and_match)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "name1\0value1\0name2\0value2", 26 },
@@ -186,7 +186,7 @@ DEFINE_TEST(create_search_and_match)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(create_search_and_change_to_match)
+TESTING_TEST(create_search_and_change_to_match)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "name1\0value1", 13 },
@@ -228,7 +228,7 @@ DEFINE_TEST(create_search_and_change_to_match)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(create_search_and_change_to_not_match)
+TESTING_TEST(create_search_and_change_to_not_match)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "name1\0value1", 13 },
@@ -263,7 +263,7 @@ DEFINE_TEST(create_search_and_change_to_not_match)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(create_search_for_bad_collection)
+TESTING_TEST(create_search_for_bad_collection)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "name1\0value1", 13 },
@@ -279,7 +279,7 @@ DEFINE_TEST(create_search_for_bad_collection)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(create_search_for_collection)
+TESTING_TEST(create_search_for_collection)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "name1\0value1", 13 },
@@ -311,7 +311,7 @@ DEFINE_TEST(create_search_for_collection)
 	g_object_unref (object);
 }
 
-DEFINE_TEST(create_search_for_collection_no_match)
+TESTING_TEST(create_search_for_collection_no_match)
 {
 	CK_ATTRIBUTE attrs[] = {
 	        { CKA_G_FIELDS, "test\0value", 11 },

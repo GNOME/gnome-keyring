@@ -27,7 +27,7 @@
 
 #include "test-suite.h"
 
-DEFINE_EXTERNAL(roots_module)
+TESTING_EXTERNAL(roots_module)
 {
 	CK_FUNCTION_LIST_PTR funcs = gkm_roots_store_get_functions ();
 	testing_test_p11_module (funcs, "p11-tests.conf");

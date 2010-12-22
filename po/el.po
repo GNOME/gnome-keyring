@@ -1040,4 +1040,3 @@ msgstr "_Παλιός κωδικός:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Κωδικός:"
-

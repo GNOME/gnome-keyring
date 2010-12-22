@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* pkcs11g.h - GNOME internal definitions to PKCS#11
+/* pkcs11i.h - GNOME internal definitions to PKCS#11
 
    Copyright (C) 2008, Stef Walter
 
@@ -25,7 +25,24 @@
 #define PKCS11I_H
 
 #include "pkcs11.h"
-#include "pkcs11g.h"
+
+#define CKA_GNOME   (CKA_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKO_GNOME   (CKO_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKR_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKM_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+#define CKK_GNOME   (CKR_VENDOR_DEFINED | 0x474E4D45UL /* GNME */ )
+
+/* -------------------------------------------------------------------
+ * OBJECT UNIQUE IDENTIFIER
+ */
+
+/* A string unique among all objects on a given machine */
+#define CKA_GNOME_UNIQUE                            (CKA_GNOME + 350)
+
+/* -------------------------------------------------------------------
+ */
+
+#define CKA_GNOME_TRANSIENT                      (CKA_GNOME + 201)
 
 /* Signifies that nobody is logged in */
 #define CKU_NONE G_MAXULONG

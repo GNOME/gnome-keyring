@@ -35,7 +35,7 @@ static CK_FUNCTION_LIST_PTR module = NULL;
 static CK_SESSION_HANDLE session = 0;
 static CK_OBJECT_HANDLE object = 0;
 
-DEFINE_SETUP (create_credential)
+TESTING_SETUP (create_credential)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
@@ -82,7 +82,7 @@ DEFINE_SETUP (create_credential)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEARDOWN (create_credential)
+TESTING_TEARDOWN (create_credential)
 {
 	CK_RV rv;
 
@@ -99,7 +99,7 @@ DEFINE_TEARDOWN (create_credential)
 	module = NULL;
 }
 
-DEFINE_TEST (create_credential_ok_password)
+TESTING_TEST (create_credential_ok_password)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_ATTRIBUTE attrs[] = {
@@ -118,7 +118,7 @@ DEFINE_TEST (create_credential_ok_password)
 	gkm_assert_cmpulong (cred, !=, 0);
 }
 
-DEFINE_TEST (create_credential_bad_password_then_cancel)
+TESTING_TEST (create_credential_bad_password_then_cancel)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_ATTRIBUTE attrs[] = {
@@ -137,7 +137,7 @@ DEFINE_TEST (create_credential_bad_password_then_cancel)
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-DEFINE_TEST (create_credentiaol_cancel_immediately)
+TESTING_TEST (create_credentiaol_cancel_immediately)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_ATTRIBUTE attrs[] = {

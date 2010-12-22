@@ -349,6 +349,42 @@ gkm_attribute_set_template (CK_ATTRIBUTE_PTR attr, GArray *template)
 	return rv;
 }
 
+CK_RV
+gkm_attribute_set_checksum (CK_ATTRIBUTE_PTR attr, GChecksumType ctype,
+                            gconstpointer data, gsize n_data)
+{
+	GChecksum *checksum;
+	gssize length;
+	gsize result;
+
+	g_assert (attr);
+
+	g_return_val_if_fail (data, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (n_data, CKR_GENERAL_ERROR);
+
+	length = g_checksum_type_get_length (ctype);
+	g_return_val_if_fail (length > 0, CKR_GENERAL_ERROR);
+
+	/* Just asking for the length */
+	if (!attr->pValue) {
+		attr->ulValueLen = length;
+		return CKR_OK;
+	}
+
+	/* Buffer is too short */
+	if (length > attr->ulValueLen) {
+		attr->ulValueLen = length;
+		return CKR_BUFFER_TOO_SMALL;
+	}
+
+	checksum = g_checksum_new (ctype);
+	g_checksum_update (checksum, data, n_data);
+	result = attr->ulValueLen;
+	g_checksum_get_digest (checksum, attr->pValue, &result);
+	attr->ulValueLen = result;
+	return CKR_OK;
+}
+
 gboolean
 gkm_attribute_equal (gconstpointer v1, gconstpointer v2)
 {

@@ -17,6 +17,10 @@
  * 02111-1307, USA.
  */
 
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
+
 #ifndef __GCR_KEY_WIDGET_H__
 #define __GCR_KEY_WIDGET_H__
 
@@ -49,12 +53,12 @@ struct _GcrKeyWidgetClass {
 
 GType                   gcr_key_widget_get_type               (void);
 
-GcrKeyWidget*           gcr_key_widget_new                    (struct _GckAttributes *attrs);
+GcrKeyWidget*           gcr_key_widget_new                    (GckAttributes *attrs);
 
 void                    gcr_key_widget_set_attributes         (GcrKeyWidget *self,
-                                                               struct _GckAttributes *attrs);
+                                                               GckAttributes *attrs);
 
-struct _GckAttributes*  gcr_key_widget_get_attributes         (GcrKeyWidget *self);
+GckAttributes*          gcr_key_widget_get_attributes         (GcrKeyWidget *self);
 
 G_END_DECLS
 

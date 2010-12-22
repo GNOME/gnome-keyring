@@ -369,18 +369,34 @@ AM_CONDITIONAL(WITH_GPG, test "$enable_gpg_agent" != "no")
 # Trusted Root Certificates Directory
 #
 
-AC_ARG_WITH([root-certs],
-            [AC_HELP_STRING([--with-root-certs=DIR],
-                            [directory with trusted root certificates])])
+AC_MSG_CHECKING([location of system Certificate Authority list])
+AC_ARG_WITH(root-certs,
+		[AC_HELP_STRING([--with-root-certs=@<:@path@:>@],
+			[path to system Certificate Authority list])])
+if test "$with_root_certs" = "no"; then
+	AC_MSG_RESULT([disabled])
+	root_status="none"
+	with_root_certs="no"
+else
+	if test -z "$with_root_certs"; then
+		for f in /etc/pki/tls/certs /etc/ssl/certs; do
+			if test -d "$f"; then
+				with_root_certs="$f"
+			fi
+		done
+		if test -z "$with_root_certs"; then
+			AC_MSG_ERROR([could not find. Use --with-root-certs=path to set, or --without-root-certs to disable])
+		fi
+	fi
 
-root_status="none"
-if test -n "$with_root_certs"; then
-	AC_DEFINE_UNQUOTED(ROOT_CERTIFICATES, "$with_root_certs", [Directory for trusted root certificates])
-	root_status="$with_root_certs"
+	AC_MSG_RESULT($with_root_certs)
+	if ! test -d "$with_root_certs"; then
+		AC_MSG_ERROR([No such directory '$with_root_certs'. Use --with-root-certs=path to set, or --without-root-certs to disable])
+	fi
+
+	root_status="yes ($with_root_certs)"
+	AC_DEFINE_UNQUOTED([ROOT_CERTIFICATES], ["$with_root_certs"], [path to system Certificate Authority list])
 fi
-
-AM_CONDITIONAL(WITH_ROOT_CERTS, test -n "$with_root_certs")
-
 
 # --------------------------------------------------------------------
 # Check for /dev/random
@@ -651,6 +667,9 @@ AC_SUBST(LIBRARY_LIBS)
 AC_SUBST(P11_TESTS_CFLAGS)
 AC_SUBST(P11_TESTS_LIBS)
 
+# Are we running with GNU Make?
+AM_CONDITIONAL([WITH_GNU_MAKE], [make --version | grep -q 'GNU Make' > /dev/null])
+
 # HACK: Because autoconf is nasty
 if test "${prefix}" = "NONE"; then
     prefix=/usr/local
@@ -661,6 +680,12 @@ fi
 
 eval BINDIR="$bindir"
 AC_SUBST(BINDIR)
+
+pkcs11dir="${libdir}/pkcs11"
+AC_SUBST(pkcs11dir)
+
+pkcs11standalonedir="${libdir}/gnome-keyring/devel"
+AC_SUBST(pkcs11standalonedir)
 
 AC_OUTPUT([
 Makefile
@@ -695,6 +720,8 @@ pam/Makefile
 pkcs11/Makefile
 pkcs11/gkm/Makefile
 pkcs11/gkm/tests/Makefile
+pkcs11/gnome2-store/Makefile
+pkcs11/gnome2-store/tests/Makefile
 pkcs11/roots-store/Makefile
 pkcs11/roots-store/tests/Makefile
 pkcs11/rpc-layer/Makefile
@@ -702,10 +729,10 @@ pkcs11/secret-store/Makefile
 pkcs11/secret-store/tests/Makefile
 pkcs11/ssh-store/Makefile
 pkcs11/ssh-store/tests/Makefile
-pkcs11/user-store/Makefile
-pkcs11/user-store/tests/Makefile
 pkcs11/wrap-layer/Makefile
 pkcs11/wrap-layer/tests/Makefile
+pkcs11/xdg-store/Makefile
+pkcs11/xdg-store/tests/Makefile
 po/Makefile.in
 schema/Makefile
 testing/Makefile

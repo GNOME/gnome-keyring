@@ -1,6 +1,8 @@
 
+TESTING_SOURCES = \
+	mock-secret-store.c
+
 TESTING_FILES = \
-	mock-secret-store.c \
 	test-create-credential.c \
 	test-init-pin.c \
 	test-login-auto.c \

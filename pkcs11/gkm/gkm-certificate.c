@@ -40,7 +40,7 @@
 #include "egg/egg-asn1x.h"
 
 #include "pkcs11/pkcs11.h"
-#include "pkcs11/pkcs11g.h"
+#include "pkcs11/pkcs11i.h"
 
 #include <glib/gi18n.h>
 
@@ -60,17 +60,6 @@ struct _GkmCertificatePrivate {
 
 static GQuark OID_BASIC_CONSTRAINTS;
 static GQuark OID_ENHANCED_USAGE;
-
-static GQuark OID_USAGE_SSH_AUTH;
-static GQuark OID_USAGE_SERVER_AUTH;
-static GQuark OID_USAGE_CLIENT_AUTH;
-static GQuark OID_USAGE_CODE_SIGNING;
-static GQuark OID_USAGE_EMAIL;
-static GQuark OID_USAGE_TIME_STAMPING;
-static GQuark OID_USAGE_IPSEC_ENDPOINT;
-static GQuark OID_USAGE_IPSEC_TUNNEL;
-static GQuark OID_USAGE_IPSEC_USER;
-static GQuark OID_USAGE_IKE_INTERMEDIATE;
 
 static void gkm_certificate_serializable (GkmSerializableIface *iface);
 
@@ -93,122 +82,11 @@ init_quarks (void)
 		QUARK (OID_BASIC_CONSTRAINTS, "2.5.29.19");
 		QUARK (OID_ENHANCED_USAGE, "2.5.29.37");
 
-		QUARK (OID_USAGE_SSH_AUTH, "ssh-authentication");
-		QUARK (OID_USAGE_SERVER_AUTH, "1.3.6.1.5.5.7.3.1");
-		QUARK (OID_USAGE_CLIENT_AUTH, "1.3.6.1.5.5.7.3.2");
-		QUARK (OID_USAGE_CODE_SIGNING, "1.3.6.1.5.5.7.3.3");
-		QUARK (OID_USAGE_EMAIL, "1.3.6.1.5.5.7.3.4");
-		QUARK (OID_USAGE_TIME_STAMPING, "1.3.6.1.5.5.7.3.8");
-		QUARK (OID_USAGE_IPSEC_ENDPOINT, "1.3.6.1.5.5.7.3.5");
-		QUARK (OID_USAGE_IPSEC_TUNNEL, "1.3.6.1.5.5.7.3.6");
-		QUARK (OID_USAGE_IPSEC_USER, "1.3.6.1.5.5.7.3.7");
-		QUARK (OID_USAGE_IKE_INTERMEDIATE, "1.3.6.1.5.5.8.2.2");
-
 		#undef QUARK
 
 		g_once_init_leave (&quarks_inited, 1);
 	}
 }
-
-static gboolean
-has_certificate_purposes (GkmCertificate *self)
-{
-	const guchar *extension;
-	gsize n_extension;
-
-	/* TODO: Storage of certificate purposes in the store */
-
-	extension = gkm_certificate_get_extension (self, OID_ENHANCED_USAGE, &n_extension, NULL);
-	return extension != NULL;
-}
-
-static CK_RV
-lookup_certificate_purposes (GkmCertificate *self, GQuark **oids)
-{
-	GkmDataResult res;
-	const guchar *extension;
-	gsize n_extension;
-
-	*oids = NULL;
-
-	/* TODO: Storage of certificate purposes in the store */
-
-	extension = gkm_certificate_get_extension (self, OID_ENHANCED_USAGE, &n_extension, NULL);
-
-	/* No enhanced usage noted, any are allowed */
-	if (!extension)
-		return CKR_OK;
-
-	res = gkm_data_der_read_enhanced_usage (extension, n_extension, oids);
-
-	if (res != GKM_DATA_SUCCESS)
-		return CKR_GENERAL_ERROR;
-
-	return CKR_OK;
-}
-
-
-static gboolean
-check_certificate_purpose (GkmCertificate *self, GQuark oid)
-{
-	GQuark *usages, *usage;
-	gboolean ret;
-
-	if (lookup_certificate_purposes (self, &usages) != CKR_OK)
-		return FALSE;
-
-	/* No usages noted, any are allowed */
-	if (!usages)
-		return TRUE;
-
-	ret = FALSE;
-	for (usage = usages; *usage; ++usage) {
-		if (*usage == oid) {
-			ret = TRUE;
-			break;
-		}
-	}
-
-	g_free (usages);
-
-	return ret;
-}
-
-static CK_RV
-read_certificate_purpose (GkmCertificate *self, GQuark oid, CK_ATTRIBUTE_PTR attr)
-{
-	gboolean value = check_certificate_purpose (self, oid);
-	gkm_attribute_set_bool (attr, value);
-	return CKR_OK;
-}
-
-
-static CK_RV
-read_certificate_purposes (GkmCertificate *self, CK_ATTRIBUTE_PTR attr)
-{
-	GQuark *purposes, *purpose;
-	GString *result;
-	CK_RV ret;
-
-	ret = lookup_certificate_purposes (self, &purposes);
-	if (ret != CKR_OK)
-		return ret;
-
-	/* Convert into a space delimited string */
-	result = g_string_sized_new (128);
-	for (purpose = purposes; purpose && *purpose; ++purpose) {
-		g_string_append (result, g_quark_to_string (*purpose));
-		g_string_append_c (result, ' ');
-	}
-
-	g_free (purposes);
-
-	gkm_attribute_set_string (attr, result->str);
-	g_string_free (result, TRUE);
-
-	return CKR_OK;
-}
-
 
 static gint
 find_certificate_extension (GkmCertificate *self, GQuark oid)
@@ -369,40 +247,6 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 	/* What in the world is this doing in the spec? */
 	case CKA_JAVA_MIDP_SECURITY_DOMAIN:
 		return gkm_attribute_set_ulong (attr, 0); /* 0 = unspecified */
-
-	case CKA_GNOME_PURPOSE_RESTRICTED:
-		gkm_attribute_set_bool (attr, has_certificate_purposes (self));
-		return CKR_OK;
-
-	case CKA_GNOME_PURPOSE_OIDS:
-		return read_certificate_purposes (self, attr);
-
-	case CKA_GNOME_PURPOSE_SSH_AUTH:
-		return read_certificate_purpose (self, OID_USAGE_SSH_AUTH, attr);
-
-	case CKA_GNOME_PURPOSE_SERVER_AUTH:
-		return read_certificate_purpose (self, OID_USAGE_SERVER_AUTH, attr);
-
-	case CKA_GNOME_PURPOSE_CLIENT_AUTH:
-		return read_certificate_purpose (self, OID_USAGE_CLIENT_AUTH, attr);
-
-	case CKA_GNOME_PURPOSE_CODE_SIGNING:
-		return read_certificate_purpose (self, OID_USAGE_CODE_SIGNING, attr);
-
-	case CKA_GNOME_PURPOSE_EMAIL_PROTECTION:
-		return read_certificate_purpose (self, OID_USAGE_EMAIL, attr);
-
-	case CKA_GNOME_PURPOSE_IPSEC_END_SYSTEM:
-		return read_certificate_purpose (self, OID_USAGE_IPSEC_ENDPOINT, attr);
-
-	case CKA_GNOME_PURPOSE_IPSEC_TUNNEL:
-		return read_certificate_purpose (self, OID_USAGE_IPSEC_TUNNEL, attr);
-
-	case CKA_GNOME_PURPOSE_IPSEC_USER:
-		return read_certificate_purpose (self, OID_USAGE_IPSEC_USER, attr);
-
-	case CKA_GNOME_PURPOSE_TIME_STAMPING:
-		return read_certificate_purpose (self, OID_USAGE_TIME_STAMPING, attr);
 	};
 
 	return GKM_OBJECT_CLASS (gkm_certificate_parent_class)->get_attribute (base, session, attr);
@@ -514,7 +358,7 @@ gkm_certificate_class_init (GkmCertificateClass *klass)
 }
 
 static gboolean
-gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar *data, gsize n_data)
+gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer data, gsize n_data)
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
 	GNode *asn1 = NULL;
@@ -525,8 +369,11 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar
 	GkmSexp *wrapper;
 
 	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
+
+	if (!data || !n_data) {
+		g_message ("cannot load empty certificate file");
+		return FALSE;
+	}
 
 	copy = g_memdup (data, n_data);
 
@@ -590,7 +437,7 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, const guchar
 }
 
 static gboolean
-gkm_certificate_real_save (GkmSerializable *base, GkmSecret *login, guchar **data, gsize *n_data)
+gkm_certificate_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
 
@@ -756,6 +603,17 @@ gkm_certificate_hash (GkmCertificate *self, int hash_algo, gsize *n_hash)
 	gcry_md_hash_buffer (hash_algo, hash, self->pv->data, self->pv->n_data);
 
 	return hash;
+}
+
+gconstpointer
+gkm_certificate_der_data (GkmCertificate *self, gsize *n_data)
+{
+	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (self->pv->data, NULL);
+	g_return_val_if_fail (n_data, NULL);
+
+	*n_data = self->pv->n_data;
+	return self->pv->data;
 }
 
 GkmFactory*

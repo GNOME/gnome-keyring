@@ -19,15 +19,14 @@ BUILT_SOURCES = \
 libgkm_la_SOURCES = \
 	gkm-aes-key.c gkm-aes-key.h \
 	gkm-aes-mechanism.c gkm-aes-mechanism.h \
+	gkm-assertion.c gkm-assertion.h \
 	gkm-attributes.c gkm-attributes.h \
 	gkm-certificate.c gkm-certificate.h \
 	gkm-certificate-key.c gkm-certificate-key.h \
-	gkm-certificate-trust.c gkm-certificate-trust.h \
 	gkm-credential.c gkm-credential.h \
 	gkm-crypto.c gkm-crypto.h \
 	gkm-data-asn1.c gkm-data-asn1.h \
 	gkm-data-der.c gkm-data-der.h \
-	gkm-data-file.c gkm-data-file.h \
 	gkm-data-types.h \
 	gkm-dh-key.c gkm-dh-key.h \
 	gkm-dh-mechanism.c gkm-dh-mechanism.h \
@@ -43,6 +42,7 @@ libgkm_la_SOURCES = \
 	gkm-null-key.c gkm-null-key.h \
 	gkm-null-mechanism.c gkm-null-mechanism.h \
 	gkm-object.c gkm-object.h \
+	gkm-oids.h \
 	gkm-private-xsa-key.c gkm-private-xsa-key.h \
 	gkm-public-xsa-key.c gkm-public-xsa-key.h \
 	gkm-rsa-mechanism.c gkm-rsa-mechanism.h \
@@ -56,6 +56,7 @@ libgkm_la_SOURCES = \
 	gkm-test.c gkm-test.h \
 	gkm-timer.c gkm-timer.h \
 	gkm-transaction.c gkm-transaction.h \
+	gkm-trust.c gkm-trust.h \
 	gkm-types.h \
 	gkm-util.c gkm-util.h \
 	$(BUILT_SOURCES)

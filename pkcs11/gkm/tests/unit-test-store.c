@@ -34,13 +34,13 @@
 static GkmModule *module = NULL;
 static GkmStore *store = NULL;
 
-DEFINE_SETUP(store)
+TESTING_SETUP(store)
 {
 	module = test_module_initialize_and_enter ();
 	store = g_object_new (GKM_TYPE_STORE, NULL);
 }
 
-DEFINE_TEARDOWN(store)
+TESTING_TEARDOWN(store)
 {
 	g_object_unref (store);
 	store = NULL;
@@ -49,7 +49,7 @@ DEFINE_TEARDOWN(store)
 	module = NULL;
 }
 
-DEFINE_TEST(store_schema)
+TESTING_TEST(store_schema)
 {
 	CK_ATTRIBUTE attr;
 
@@ -64,7 +64,7 @@ DEFINE_TEST(store_schema)
 	g_assert (!gkm_store_lookup_schema (store, CKA_VALUE, NULL));
 }
 
-DEFINE_TEST(store_schema_flags)
+TESTING_TEST(store_schema_flags)
 {
 	CK_ATTRIBUTE attr;
 	guint flags;

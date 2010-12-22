@@ -16,7 +16,15 @@ usage()
 
 file_to_name()
 {
-	echo -n $1 | sed -E -e 's/^(unit-)?test-//' -e 's/\.c//' | tr -c '[a-z0-9_]' '_'
+	echo -n $1 | sed -E \
+		-e 's/^(unit-)?test-//' \
+		-e 's/\.c//' \
+		-e 's/\.i//' | tr -c '[a-z0-9_]' '_'
+}
+
+testing_lines()
+{
+	grep -h "testing__" $@ /dev/null || true
 }
 
 build_header()
@@ -24,15 +32,14 @@ build_header()
 	echo "/* This is auto-generated code. Edit at your own peril. */"
 	echo "#include \"testing/testing.h\""
 	echo
+	echo "#ifndef TESTING_HEADER_INCLUDED"
+	echo "#define TESTING_HEADER_INCLUDED"
+	echo
 
-	for file in $@; do
-		sed -ne "s/.*DEFINE_SETUP[ 	]*(\([^)]\+\))/DECLARE_SETUP (\1);/p" ${file}
-		sed -ne "s/.*DEFINE_TEARDOWN[ 	]*(\([^)]\+\))/DECLARE_TEARDOWN (\1);/p" ${file}
-		sed -ne "s/.*DEFINE_TEST[ 	]*(\([^)]\+\))/DECLARE_TEST (\1);/p" ${file}
-		sed -ne "s/.*DEFINE_START[ 	]*(\([^)]\+\))/DECLARE_START (\1);/p" ${file}
-		sed -ne "s/.*DEFINE_STOP[ 	]*(\([^)]\+\))/DECLARE_STOP (\1);/p" ${file}
-		sed -ne "s/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\))/DECLARE_EXTERNAL (\1);/p" ${file}
-	done
+	testing_lines $@ | sed -ne 's/\(.*\)/\1;/p'
+
+	echo
+	echo "#endif /* TESTING_HEADER_INCLUDED */"
 	echo
 }
 
@@ -42,55 +49,50 @@ build_source()
 	echo "#include \"testing/testing.h\""
 	echo "#include \"$BASE.h\""
 	echo
+	echo "typedef void (*TestingFunc)(int *, const void *);"
+	echo
+
+	lines="$(testing_lines $@)"
 
 	# Startup function
 	echo "static void start_tests (void) {"
-		for file in $@; do
-			name=`file_to_name ${file}`
-			sed -ne "s/.*DEFINE_START[ 	]*(\([^)]\+\)).*/	start_\1 ();/p" ${file}
-		done
+		echo $lines | sed -n \
+			-e "s/.*\(testing__start__[0-9a-z_]\+\).*/	\1 ();/p"
 	echo "}"
 	echo
 
 	# Shutdown function
 	echo "static void stop_tests (void) {"
-		for file in $@; do
-			name=`file_to_name ${file}`
-			sed -ne "s/.*DEFINE_STOP[ 	]*(\([^)]\+\)).*/	stop_\1 ();/p" ${file}
-		done
+		echo $lines | sed -n \
+			-e "s/.*\(testing__stop__[0-9a-z_]\+\).*/	\1 ();/p"
 	echo "}"
 	echo
 
+	# Add all tests to the test case
 	echo "static void initialize_tests (void) {"
-	# Include each file, and build a test case for it
-	tcases=""
+	first=YES
 	for file in $@; do
-		name=`file_to_name ${file}`
-
-		# Calculate what our setup and teardowns are.
-		setup=`sed -ne "s/.*DEFINE_SETUP[ 	]*(\([^)]\+\)).*/setup_\1/p" ${file} || echo "NULL"`
-		if [ -z "${setup}" ]; then
-			setup="NULL"
+		if [ "$first" = "YES" ]; then
+			echo "	TestingFunc setup = NULL;"
+			echo "	TestingFunc teardown = NULL;"
+			first=NO
 		fi
 
-		teardown=`sed -ne "s/.*DEFINE_TEARDOWN[ 	]*(\([^)]\+\)).*/teardown_\1/p" ${file}`
-		if [ -z "${teardown}" ]; then
-			teardown="NULL"
-		fi
+		name=$(file_to_name $file)
+		echo "	setup = teardown = NULL;"
 
-		# Add all tests to the test case
-		sed -ne "s/.*DEFINE_TEST[ 	]*(\([^)]\+\)).*/	g_test_add(\"\/${name}\/\1\", int, NULL, ${setup}, test_\1, ${teardown});/p" ${file}
-
+		testing_lines $file | sed -n \
+			-e "s/.*\(testing__setup__[0-9a-z_]\+\).*/setup = \1;/p" \
+			-e "s/.*\(testing__teardown__[0-9a-z_]\+\).*/teardown = \1;/p" \
+			-e "s/.*testing__test__\([0-9a-z_]\+\).*/g_test_add(\"\/$name\/\1\", int, NULL, setup, testing__test__\1, teardown);/p"
 	done
 	echo "}"
 	echo
 
 	# External function
 	echo "static void run_externals (int *ret) {"
-	for file in $@; do
-		name=`file_to_name ${file}`
-		sed -ne "s/.*DEFINE_EXTERNAL[ 	]*(\([^)]\+\)).*/	testing_external_run (\"\1\", external_\1, ret);/p" ${file}
-	done
+		echo $lines | sed -n \
+			-e "s/.*\(testing__external__[0-9a-z_]\+\).*/	testing_external_run (\"\1\", \1, ret);/p"
 	echo "}"
 	echo
 
@@ -133,5 +135,5 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-build_header $* > $BASE.h
-build_source $* > $BASE.c
+build_header $@ > $BASE.h
+build_source $@ > $BASE.c

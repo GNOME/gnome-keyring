@@ -47,7 +47,7 @@ static GkmSession *session = NULL;
 static GkmSecretCollection *collection = NULL;
 static GkmSecretData *sdata = NULL;
 
-DEFINE_SETUP(binary)
+TESTING_SETUP(binary)
 {
 	GkmSecret *master;
 
@@ -69,7 +69,7 @@ DEFINE_SETUP(binary)
 
 }
 
-DEFINE_TEARDOWN(binary)
+TESTING_TEARDOWN(binary)
 {
 	if (collection)
 		g_object_unref (collection);
@@ -84,7 +84,7 @@ DEFINE_TEARDOWN(binary)
 	session = NULL;
 }
 
-DEFINE_TEST(binary_read)
+TESTING_TEST(binary_read)
 {
 	GkmDataResult res;
 	guchar *data;
@@ -99,7 +99,7 @@ DEFINE_TEST(binary_read)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(binary_read_wrong_format)
+TESTING_TEST(binary_read_wrong_format)
 {
 	GkmDataResult res;
 	guchar *data;
@@ -112,7 +112,7 @@ DEFINE_TEST(binary_read_wrong_format)
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 }
 
-DEFINE_TEST(binary_read_wrong_master)
+TESTING_TEST(binary_read_wrong_master)
 {
 	GkmDataResult res;
 	GkmSecret *master;
@@ -130,7 +130,7 @@ DEFINE_TEST(binary_read_wrong_master)
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
-DEFINE_TEST(binary_read_sdata_but_no_master)
+TESTING_TEST(binary_read_sdata_but_no_master)
 {
 	GkmDataResult res;
 	guchar *data;
@@ -145,7 +145,7 @@ DEFINE_TEST(binary_read_sdata_but_no_master)
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
-DEFINE_TEST(binary_write)
+TESTING_TEST(binary_write)
 {
 	GkmDataResult res;
 	guchar *data;
@@ -163,7 +163,7 @@ DEFINE_TEST(binary_write)
 	g_assert (res == GKM_DATA_SUCCESS);
 }
 
-DEFINE_TEST(binary_remove_unavailable)
+TESTING_TEST(binary_remove_unavailable)
 {
 	GkmDataResult res;
 	GList *items;

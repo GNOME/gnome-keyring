@@ -50,9 +50,9 @@ struct _GcrTokenManagerClass {
 
 GType                     gcr_token_manager_get_type             (void);
 
-GcrTokenManager*          gcr_token_manager_new                  (struct _GckSlot *slot);
+GcrTokenManager*          gcr_token_manager_new                  (GckSlot *slot);
 
-struct _GckSlot*          gcr_token_manager_get_slot             (GcrTokenManager *self);
+GckSlot*                  gcr_token_manager_get_slot             (GcrTokenManager *self);
 
 gboolean                  gcr_token_manager_initialize           (GcrTokenManager *self,
                                                                   GCancellable *cancel,

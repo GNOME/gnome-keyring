@@ -17,6 +17,10 @@
  * 02111-1307, USA.
  */
 
+#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> can be included directly."
+#endif
+
 #ifndef __GCR_CERTIFICATE_RENDERER_H__
 #define __GCR_CERTIFICATE_RENDERER_H__
 
@@ -57,10 +61,10 @@ GcrCertificate*           gcr_certificate_renderer_get_certificate    (GcrCertif
 void                      gcr_certificate_renderer_set_certificate    (GcrCertificateRenderer *self,
                                                                        GcrCertificate *cert);
 
-struct _GckAttributes*    gcr_certificate_renderer_get_attributes     (GcrCertificateRenderer *self);
+GckAttributes*            gcr_certificate_renderer_get_attributes     (GcrCertificateRenderer *self);
 
 void                      gcr_certificate_renderer_set_attributes     (GcrCertificateRenderer *self,
-                                                                       struct _GckAttributes *attrs);
+                                                                       GckAttributes *attrs);
 
 G_END_DECLS
 

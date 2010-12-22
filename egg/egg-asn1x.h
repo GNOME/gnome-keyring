@@ -69,15 +69,25 @@ const gchar*        egg_asn1x_name                   (GNode *asn);
 
 guint               egg_asn1x_count                  (GNode *node);
 
+GNode*              egg_asn1x_append                 (GNode *node);
+
 gboolean            egg_asn1x_have                   (GNode *node);
 
 GNode*              egg_asn1x_get_choice             (GNode *node);
+
+gboolean            egg_asn1x_set_choice             (GNode *node,
+                                                      GNode *choice);
 
 gboolean            egg_asn1x_get_boolean            (GNode *node,
                                                       gboolean *value);
 
 gboolean            egg_asn1x_set_boolean            (GNode *node,
                                                       gboolean value);
+
+GQuark              egg_asn1x_get_enumerated         (GNode *node);
+
+gboolean            egg_asn1x_set_enumerated         (GNode *node,
+                                                      GQuark value);
 
 gboolean            egg_asn1x_get_integer_as_ulong   (GNode *node,
                                                       gulong *value);
@@ -179,5 +189,16 @@ gssize              egg_asn1x_element_length         (gconstpointer data,
 gconstpointer       egg_asn1x_element_content        (gconstpointer data,
                                                       gsize n_data,
                                                       gsize *n_content);
+
+#define             egg_asn1x_assert(expr, node) \
+	do { if G_LIKELY(expr) ; else \
+		g_assertion_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+		                     egg_asn1x_message (node) ? \
+		                     egg_asn1x_message (node) : "[no message]"); } while(0)
+
+#define             egg_asn1x_assert_not_reached(node) \
+		g_assertion_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+		                     egg_asn1x_message (node) ? \
+		                     egg_asn1x_message (node) : "[no message]")
 
 #endif /*EGG_ASN1X_H_*/

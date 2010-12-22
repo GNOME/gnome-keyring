@@ -72,5 +72,7 @@ guchar*                    gkm_certificate_hash                   (GkmCertificat
                                                                    int hash_algo,
                                                                    gsize *n_hash);
 
+gconstpointer              gkm_certificate_der_data               (GkmCertificate *self,
+                                                                   gsize *n_data);
 
 #endif /* __GKM_CERTIFICATE_H__ */

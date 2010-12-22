@@ -31,7 +31,7 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gcr/gcr-unlock-options-widget.h"
+#include "gcr/gcr.h"
 
 #include <gcrypt.h>
 

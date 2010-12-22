@@ -1,0 +1,13 @@
+
+# Settings which control which PKCS#11 modules are used to lookup trust
+# assertions like anchor certificate authorities, or pinned certificates.
+#
+# These are PKCS#11 URI's and are described here:
+# http://tools.ietf.org/html/draft-pechanec-pkcs11uri-03
+#
+# Do not change the settings here. Put your changes or overrides in
+# a file called "pkcs11.conf" in the same directory.
+
+[trust-assertions]
+lookups=pkcs11:manufacturer=Gnome%20Keyring;serial=1:ROOTS:DEFAULT pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT
+storage=pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT

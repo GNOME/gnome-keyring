@@ -28,7 +28,7 @@
 #include "wrap-layer/gkm-wrap-layer.h"
 #include "wrap-layer/gkm-wrap-login.h"
 
-DEFINE_TEST (login_did_unlock_fail)
+TESTING_TEST (login_did_unlock_fail)
 {
 	gchar *password;
 	gboolean ret;

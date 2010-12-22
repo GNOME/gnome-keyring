@@ -30,25 +30,25 @@
 
 #include "ssh-store/gkm-ssh-private-key.h"
 
-#include "pkcs11g.h"
+#include "pkcs11i.h"
 
 static GkmModule *module = NULL;
 static GkmSession *session = NULL;
 
-DEFINE_SETUP(private_key_setup)
+TESTING_SETUP(private_key_setup)
 {
 	module = test_ssh_module_initialize_and_enter ();
 	session = test_ssh_module_open_session (TRUE);
 }
 
-DEFINE_TEARDOWN(private_key_teardown)
+TESTING_TEARDOWN(private_key_teardown)
 {
 	test_ssh_module_leave_and_finalize ();
 	module = NULL;
 	session = NULL;
 }
 
-DEFINE_TEST(private_key_parse_plain)
+TESTING_TEST(private_key_parse_plain)
 {
 	GkmSshPrivateKey *key;
 	gchar *pub_path, *priv_path;
@@ -69,7 +69,7 @@ DEFINE_TEST(private_key_parse_plain)
 }
 
 
-DEFINE_TEST(private_key_parse_and_unlock)
+TESTING_TEST(private_key_parse_and_unlock)
 {
 	GkmSshPrivateKey *key;
 	GkmCredential *cred;

@@ -22,9 +22,9 @@
 #include "config.h"
 
 #include "gkm-roots-certificate.h"
+#include "gkm-roots-trust.h"
 
 #include "gkm/gkm-attributes.h"
-#include "gkm/gkm-certificate-trust.h"
 #include "gkm/gkm-manager.h"
 #include "gkm/gkm-module.h"
 #include "gkm/gkm-object.h"
@@ -35,13 +35,12 @@
 
 enum {
 	PROP_0,
-	PROP_PATH,
-	PROP_NETSCAPE_TRUST,
+	PROP_PATH
 };
 
 struct _GkmRootsCertificate {
 	GkmCertificate parent;
-	GkmCertificateTrust *trust;
+	GkmRootsTrust *trust;
 	gchar *path;
 };
 
@@ -97,9 +96,9 @@ gkm_roots_certificate_constructor (GType type, guint n_props, GObjectConstructPa
 	GkmRootsCertificate *self = GKM_ROOTS_CERTIFICATE (G_OBJECT_CLASS (gkm_roots_certificate_parent_class)->constructor(type, n_props, props));
 	g_return_val_if_fail (self, NULL);
 
-	self->trust = gkm_certificate_trust_new (gkm_object_get_module (GKM_OBJECT (self)),
-	                                         gkm_object_get_manager (GKM_OBJECT (self)),
-	                                         GKM_CERTIFICATE (self));
+	self->trust = gkm_roots_trust_new (gkm_object_get_module (GKM_OBJECT (self)),
+	                                   gkm_object_get_manager (GKM_OBJECT (self)),
+	                                   GKM_CERTIFICATE (self));
 
 	return G_OBJECT (self);
 }
@@ -130,9 +129,6 @@ gkm_roots_certificate_get_property (GObject *obj, guint prop_id, GValue *value,
 	switch (prop_id) {
 	case PROP_PATH:
 		g_value_set_string (value, gkm_roots_certificate_get_path (self));
-		break;
-	case PROP_NETSCAPE_TRUST:
-		g_value_set_object (value, gkm_roots_certificate_get_netscape_trust (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -183,10 +179,6 @@ gkm_roots_certificate_class_init (GkmRootsCertificateClass *klass)
 	g_object_class_install_property (gobject_class, PROP_PATH,
 	           g_param_spec_string ("path", "Path", "Certificate origin path",
 	                                "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
-	g_object_class_install_property (gobject_class, PROP_NETSCAPE_TRUST,
-	           g_param_spec_object ("netscape-trust", "Netscape Trust", "Netscape trust object",
-	                                GKM_TYPE_CERTIFICATE_TRUST, G_PARAM_READABLE));
 }
 
 /* -----------------------------------------------------------------------------
@@ -205,12 +197,4 @@ gkm_roots_certificate_get_path (GkmRootsCertificate *self)
 {
 	g_return_val_if_fail (GKM_IS_ROOTS_CERTIFICATE (self), "");
 	return self->path;
-}
-
-GkmCertificateTrust*
-gkm_roots_certificate_get_netscape_trust (GkmRootsCertificate *self)
-{
-	g_return_val_if_fail (GKM_IS_ROOTS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (GKM_IS_CERTIFICATE_TRUST (self->trust), NULL);
-	return self->trust;
 }

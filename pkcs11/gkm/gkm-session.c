@@ -241,7 +241,6 @@ lookup_object_from_handle (GkmSession *self, CK_OBJECT_HANDLE handle,
 	GkmObject *object;
 	gboolean is_private;
 	gboolean is_token;
-	gboolean is_modifiable;
 
 	g_return_val_if_fail (result, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (GKM_IS_SESSION (self), CKR_GENERAL_ERROR);
@@ -289,10 +288,6 @@ lookup_object_from_handle (GkmSession *self, CK_OBJECT_HANDLE handle,
 			if (self->pv->read_only)
 				return CKR_SESSION_READ_ONLY;
 		}
-		if (!gkm_object_get_attribute_boolean (object, self, CKA_MODIFIABLE, &is_modifiable))
-			is_modifiable = FALSE;
-		if (!is_modifiable) /* What's a better return code in this case? */
-			return CKR_ATTRIBUTE_READ_ONLY;
 	}
 
 	*result = object;
@@ -357,27 +352,6 @@ add_object (GkmSession *self, GkmTransaction *transaction, GkmObject *object)
 	if (transaction)
 		gkm_transaction_add (transaction, self, (GkmTransactionFunc)complete_add,
 		                     g_object_ref (object));
-}
-
-static gboolean
-attributes_find_boolean (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
-                         CK_ATTRIBUTE_TYPE type, CK_BBOOL *value)
-{
-	CK_ULONG i;
-
-	g_assert (attrs || !n_attrs);
-	g_assert (value);
-
-	for (i = 0; i < n_attrs; ++i) {
-		if (attrs[i].type == type &&
-		    attrs[i].pValue != NULL &&
-		    attrs[i].ulValueLen == sizeof (CK_BBOOL)) {
-			*value = *((CK_BBOOL*)attrs[i].pValue);
-			return TRUE;
-		}
-	}
-
-	return FALSE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -772,6 +746,7 @@ gkm_session_create_object_for_factory (GkmSession *self, GkmFactory *factory,
 {
 	GkmTransaction *owned = NULL;
 	GkmObject  *object;
+	gboolean token;
 
 	g_return_val_if_fail (GKM_IS_SESSION (self), NULL);
 	g_return_val_if_fail (factory && factory->func, NULL);
@@ -782,6 +757,10 @@ gkm_session_create_object_for_factory (GkmSession *self, GkmFactory *factory,
 		owned = transaction = gkm_transaction_new ();
 
 	g_return_val_if_fail (GKM_IS_TRANSACTION (transaction), NULL);
+
+	/* Refresh the module if storing on the token */
+	if (gkm_attributes_find_boolean (template, count, CKA_TOKEN, &token) && token)
+		gkm_module_refresh_token (self->pv->module);
 
 	/*
 	 * Duplicate the memory for the attributes (but not values) so we
@@ -956,6 +935,7 @@ gkm_session_C_CreateObject (GkmSession* self, CK_ATTRIBUTE_PTR template,
                             CK_ULONG count, CK_OBJECT_HANDLE_PTR new_object)
 {
 	GkmObject *object = NULL;
+	CK_OBJECT_HANDLE handle;
 	GkmTransaction *transaction;
 	CK_RV rv;
 
@@ -973,7 +953,13 @@ gkm_session_C_CreateObject (GkmSession* self, CK_ATTRIBUTE_PTR template,
 
 	if (rv == CKR_OK) {
 		g_assert (object);
-		*new_object = gkm_object_get_handle (object);
+		handle = gkm_object_get_handle (object);
+		if (handle == 0) {
+			g_warning ("an object was not properly exposed its owner");
+			rv = CKR_GENERAL_ERROR;
+		} else {
+			*new_object = handle;
+		}
 		g_object_unref (object);
 	}
 
@@ -1113,7 +1099,7 @@ CK_RV
 gkm_session_C_FindObjectsInit (GkmSession* self, CK_ATTRIBUTE_PTR template,
                                CK_ULONG count)
 {
-	CK_BBOOL token = CK_FALSE;
+	gboolean token = FALSE;
 	gboolean also_private;
 	CK_RV rv = CKR_OK;
 	GArray *found;
@@ -1130,7 +1116,7 @@ gkm_session_C_FindObjectsInit (GkmSession* self, CK_ATTRIBUTE_PTR template,
 	}
 
 	/* See whether this is token or not */
-	all = !attributes_find_boolean (template, count, CKA_TOKEN, &token);
+	all = !gkm_attributes_find_boolean (template, count, CKA_TOKEN, &token);
 
 	/* An array of object handles */
 	found = g_array_new (FALSE, TRUE, sizeof (CK_OBJECT_HANDLE));

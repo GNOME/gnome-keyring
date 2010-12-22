@@ -9,6 +9,17 @@ ui_DATA = \
 	gcr-unlock-options-widget.ui
 
 # ------------------------------------------------------------------
+# CONFIG
+
+confdir = $(sysconfdir)/xdg
+
+PKCS11_DEFAULT_FILE =  pkcs11.conf.defaults
+PKCS11_CONFIG_FILE = pkcs11.conf
+
+conf_DATA = \
+	$(PKCS11_DEFAULT_FILE)
+
+# ------------------------------------------------------------------
 # HEADERS
 
 incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
@@ -16,14 +27,18 @@ incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
 inc_HEADERS = \
 	gcr.h \
 	gcr-certificate.h \
+	gcr-certificate-chain.h \
 	gcr-certificate-renderer.h \
 	gcr-certificate-widget.h \
 	gcr-key-renderer.h \
 	gcr-key-widget.h \
 	gcr-importer.h \
+	gcr-library.h \
 	gcr-parser.h \
+	gcr-pkcs11-certificate.h \
 	gcr-renderer.h \
 	gcr-simple-certificate.h \
+	gcr-trust.h \
 	gcr-types.h \
 	gcr-unlock-options.h \
 	gcr-unlock-options-widget.h \
@@ -48,6 +63,7 @@ lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
 
 libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
+	gcr-certificate-chain.c gcr-certificate-chain.h \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-display-view.c gcr-display-view.h \
@@ -57,10 +73,12 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-internal.h \
 	gcr-key-renderer.c gcr-key-renderer.h \
 	gcr-key-widget.c gcr-key-widget.h \
-	gcr-library.c \
+	gcr-library.c gcr-library.h \
 	gcr-parser.c gcr-parser.h \
+	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
 	gcr-renderer.c gcr-renderer.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
+	gcr-trust.c gcr-trust.h \
 	gcr-types.h \
 	gcr-unlock-options.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
@@ -68,9 +86,11 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
-	-DPKCS11_MODULE_PATH=\""$(libdir)/gnome-keyring/gnome-keyring-pkcs11.so"\" \
+	-DPKCS11_DEFAULT_PATH=\""$(confdir)/$(PKCS11_DEFAULT_FILE)"\" \
+	-DPKCS11_CONFIG_PATH=\""$(confdir)/$(PKCS11_CONFIG_FILE)"\" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
+	-DGCR_COMPILATION \
 	-DUIDIR=\""$(uidir)"\"
 
 libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
@@ -104,7 +124,8 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
-	$(ui_DATA)
+	$(ui_DATA) \
+	$(conf_DATA)
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \

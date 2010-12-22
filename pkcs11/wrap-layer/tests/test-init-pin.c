@@ -34,7 +34,7 @@ static CK_FUNCTION_LIST functions;
 static CK_FUNCTION_LIST_PTR module = NULL;
 static CK_SESSION_HANDLE session = 0;
 
-DEFINE_SETUP (init_pin)
+TESTING_SETUP (init_pin)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
@@ -63,7 +63,7 @@ DEFINE_SETUP (init_pin)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEARDOWN (init_pin)
+TESTING_TEARDOWN (init_pin)
 {
 	CK_RV rv;
 
@@ -78,7 +78,7 @@ DEFINE_TEARDOWN (init_pin)
 	module = NULL;
 }
 
-DEFINE_TEST (init_pin_ok_password)
+TESTING_TEST (init_pin_ok_password)
 {
 	CK_RV rv;
 

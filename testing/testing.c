@@ -2,6 +2,7 @@
 /* test-helpers.c: Common functions called from gtest unit tests
 
    Copyright (C) 2008 Stefan Walter
+   Copyright (C) 2010 Collabora Ltd
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -32,6 +33,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "testing.h"
 
@@ -156,6 +159,88 @@ testing_data_read (const gchar *basename, gsize *n_result)
 	return (guchar*)result;
 }
 
+void
+testing_data_to_scratch (const gchar *basename, const gchar *newname)
+{
+	gchar *filename;
+	gchar *data;
+	gsize n_data;
+
+	filename = testing_data_filename (basename);
+	if (!g_file_get_contents (filename, &data, &n_data, NULL))
+		g_error ("couldn't read: %s", filename);
+	g_free (filename);
+
+	filename = testing_scratch_filename (newname ? newname : basename);
+	if (!g_file_set_contents (filename, data, n_data, NULL))
+		g_error ("couldn't write: %s", filename);
+	g_free (filename);
+	g_free (data);
+}
+
+
+void
+testing_scratch_empty (const gchar *basename)
+{
+	GError *err = NULL;
+	gchar *filename;
+	filename = testing_scratch_filename (basename);
+	if (!g_file_set_contents (filename, "", 0, &err))
+		g_error ("couldn't write to file: %s: %s", filename,
+		         err && err->message ? err->message : "");
+	g_free (filename);
+}
+
+void
+testing_scratch_touch (const gchar *basename, gint future)
+{
+	gchar *filename;
+	struct timeval tv[2];
+
+	filename = testing_scratch_filename (basename);
+
+	/* Initialize the access and modification times */
+	gettimeofday (tv, NULL);
+	tv[0].tv_sec += future;
+	memcpy (tv + 1, tv, sizeof (struct timeval));
+
+	if (utimes (filename, tv) < 0)
+		g_error ("couldn't update file time: %s: %s", filename, g_strerror (errno));
+
+	g_free (filename);
+}
+
+void
+testing_scratch_remove (const gchar *basename)
+{
+	gchar *filename;
+
+	filename = testing_scratch_filename (basename);
+	if (g_unlink (filename) < 0)
+		g_error ("couldn't delete file: %s: %s", filename, g_strerror (errno));
+
+	g_free (filename);
+}
+
+void
+testing_scratch_remove_all (void)
+{
+	GError *err = NULL;
+	const gchar *basename;
+	GDir *dir;
+
+	/* WARNING: Don't change path without changing remove below */
+	dir = g_dir_open (testing_scratch_directory (), 0, &err);
+	if (dir == NULL)
+		g_error ("couldn't open directory: %s",
+		         err && err->message ? err->message : "");
+
+	while ((basename = g_dir_read_name (dir)) != NULL)
+		testing_scratch_remove (basename);
+
+	g_dir_close (dir);
+}
+
 #if WITH_P11_TESTS
 
 static void
@@ -253,6 +338,13 @@ testing_thread (gpointer loop)
 	return GINT_TO_POINTER (ret);
 }
 
+static void
+null_log_handler (const gchar *log_domain, GLogLevelFlags log_level,
+                  const gchar *message, gpointer user_data)
+{
+
+}
+
 int
 main (int argc, char* argv[])
 {
@@ -283,6 +375,10 @@ main (int argc, char* argv[])
 	fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
 	fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
 	g_log_set_always_fatal (fatal_mask);
+
+	/* Suppress these messages in tests */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+	                   null_log_handler, NULL);
 
 	thread = g_thread_create (testing_thread, loop, TRUE, NULL);
 	g_assert (thread);

@@ -25,9 +25,20 @@
 #include "gcr-internal.h"
 #include "gcr-simple-certificate.h"
 
-#include "egg/egg-hex.h"
-
 #include <string.h>
+
+/**
+ * SECTION:gcr-simple-certificate
+ * @title: GcrSimpleCertificate
+ * @short_description: A certificate loaded from a memory buffer
+ *
+ * An implementation of #GcrCertificate which loads a certificate from DER
+ * data already located in memory.
+ *
+ * To create a #GcrSimpleCertificate object use the
+ * gcr_simple_certificate_new() or gcr_simple_certificate_new_static()
+ * functions.
+ */
 
 struct _GcrSimpleCertificatePrivate {
 	const guchar *data;
@@ -71,7 +82,7 @@ gcr_simple_certificate_class_init (GcrSimpleCertificateClass *klass)
 	_gcr_initialize ();
 }
 
-static const guchar* 
+static gconstpointer
 gcr_simple_certificate_real_get_der_data (GcrCertificate *base, gsize *n_data)
 {
 	GcrSimpleCertificate *self = GCR_SIMPLE_CERTIFICATE (base);
@@ -95,11 +106,21 @@ gcr_certificate_iface (GcrCertificateIface *iface)
  * PUBLIC 
  */
 
+/**
+ * gcr_simple_certificate_new:
+ * @data: The raw DER certificate data
+ * @n_data: The length of @data
+ *
+ * Create a new #GcrSimpleCertificate for the raw DER data. The @data memory is
+ * copied so you can dispose of it after this function returns.
+ *
+ * Returns: a new #GcrSimpleCertificate
+ */
 GcrCertificate*
-gcr_simple_certificate_new (const guchar *data, gsize n_data)
+gcr_simple_certificate_new (gconstpointer data, gsize n_data)
 {
 	GcrSimpleCertificate *cert;
-	
+
 	g_return_val_if_fail (data, NULL);
 	g_return_val_if_fail (n_data, NULL);
 	
@@ -110,8 +131,19 @@ gcr_simple_certificate_new (const guchar *data, gsize n_data)
 	return GCR_CERTIFICATE (cert);
 }
 
+/**
+ * gcr_simple_certificate_new_static:
+ * @data: The raw DER certificate data
+ * @n_data: The length of @data
+ *
+ * Create a new #GcrSimpleCertificate for the raw DER data. The @data memory is
+ * not copied and must persist until the #GcrSimpleCertificate object is
+ * destroyed.
+ *
+ * Returns: a new #GcrSimpleCertificate
+ */
 GcrCertificate*
-gcr_simple_certificate_new_static (const guchar *data, gsize n_data)
+gcr_simple_certificate_new_static (gconstpointer data, gsize n_data)
 {
 	GcrSimpleCertificate *cert;
 

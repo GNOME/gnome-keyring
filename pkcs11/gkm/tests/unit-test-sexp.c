@@ -53,7 +53,7 @@
 gcry_sexp_t rsakey = NULL;
 gcry_sexp_t dsakey = NULL;
 
-DEFINE_SETUP(crypto_setup)
+TESTING_SETUP(crypto_setup)
 {
 	gcry_error_t gcry;
 
@@ -65,7 +65,7 @@ DEFINE_SETUP(crypto_setup)
 	g_return_if_fail (gcry == 0);
 }
 
-DEFINE_TEARDOWN(crypto_setup)
+TESTING_TEARDOWN(crypto_setup)
 {
 	gcry_sexp_release (rsakey);
 	rsakey = NULL;
@@ -73,7 +73,7 @@ DEFINE_TEARDOWN(crypto_setup)
 	dsakey = NULL;
 }
 
-DEFINE_TEST(parse_key)
+TESTING_TEST(parse_key)
 {
 	gcry_sexp_t sexp = NULL;
 	gcry_mpi_t mpi = NULL;
@@ -93,7 +93,7 @@ DEFINE_TEST(parse_key)
 	g_assert (mpi != NULL);
 }
 
-DEFINE_TEST(sexp_key_to_public)
+TESTING_TEST(sexp_key_to_public)
 {
 	gcry_sexp_t pubkey = NULL;
 	guchar id1[20], id2[20];

@@ -28,17 +28,17 @@
 
 static GkmModule *module = NULL;
 
-DEFINE_SETUP(timer_setup)
+TESTING_SETUP(timer_setup)
 {
 	module = test_module_initialize_and_enter ();
 }
 
-DEFINE_TEARDOWN(timer_teardown)
+TESTING_TEARDOWN(timer_teardown)
 {
 	test_module_leave_and_finalize ();
 }
 
-DEFINE_TEST(timer_extra_initialize)
+TESTING_TEST(timer_extra_initialize)
 {
 	gkm_timer_initialize ();
 	gkm_timer_shutdown ();
@@ -53,7 +53,7 @@ timer_callback (GkmTimer *timer, gpointer user_data)
 	*value = NULL;
 }
 
-DEFINE_TEST(timer_simple)
+TESTING_TEST(timer_simple)
 {
 	GkmTimer *timer;
 
@@ -66,7 +66,7 @@ DEFINE_TEST(timer_simple)
 	g_assert (timer == NULL);
 }
 
-DEFINE_TEST(timer_cancel)
+TESTING_TEST(timer_cancel)
 {
 	GkmTimer *timer;
 
@@ -86,7 +86,7 @@ DEFINE_TEST(timer_cancel)
 	g_assert (timer != NULL);
 }
 
-DEFINE_TEST(timer_immediate)
+TESTING_TEST(timer_immediate)
 {
 	GkmTimer *timer;
 
@@ -118,7 +118,7 @@ multiple_callback (GkmTimer *timer, gpointer user_data)
 	timer_check += 1;
 }
 
-DEFINE_TEST(timer_multiple)
+TESTING_TEST(timer_multiple)
 {
 	timer_check = 0;
 
@@ -135,7 +135,7 @@ DEFINE_TEST(timer_multiple)
 	g_assert (timer_check == 4);
 }
 
-DEFINE_TEST(timer_outstanding)
+TESTING_TEST(timer_outstanding)
 {
 	/* A timer that can't be called */
 	gkm_timer_start (module, 5, timer_callback, NULL);

@@ -33,12 +33,12 @@
 
 #include <gcrypt.h>
 
-DEFINE_SETUP(crypto_setup)
+TESTING_SETUP(crypto_setup)
 {
 	egg_libgcrypt_initialize ();
 }
 
-DEFINE_TEARDOWN(crypto_setup)
+TESTING_TEARDOWN(crypto_setup)
 {
 
 }
@@ -122,7 +122,7 @@ static const struct {
 
 #define N_GENERATION_TESTS (sizeof (all_generation_tests) / sizeof (all_generation_tests[0]))
 
-DEFINE_TEST(generate_key_simple)
+TESTING_TEST(generate_key_simple)
 {
 	int i;
 	gboolean ret;
@@ -148,7 +148,7 @@ DEFINE_TEST(generate_key_simple)
 	}
 }
 
-DEFINE_TEST(generate_key_pkcs12)
+TESTING_TEST(generate_key_pkcs12)
 {
 	int i;
 	gboolean ret;
@@ -174,7 +174,7 @@ DEFINE_TEST(generate_key_pkcs12)
 	}
 }
 
-DEFINE_TEST(generate_key_pbkdf2)
+TESTING_TEST(generate_key_pbkdf2)
 {
 	int i;
 	gboolean ret;
@@ -200,7 +200,7 @@ DEFINE_TEST(generate_key_pbkdf2)
 	}
 }
 
-DEFINE_TEST(generate_key_pbe)
+TESTING_TEST(generate_key_pbe)
 {
 	int i;
 	gboolean ret;

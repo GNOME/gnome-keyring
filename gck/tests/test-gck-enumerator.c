@@ -7,26 +7,29 @@
 #include "gck-private.h"
 
 static GList *modules = NULL;
+static GckModule *module = NULL;
 
-DEFINE_SETUP(enumerator)
+TESTING_SETUP(enumerator)
 {
-	GckModule *module;
 	GError *err = NULL;
 
 	/* Successful load */
 	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
 	SUCCESS_RES (module, err);
 
-	modules = g_list_append (NULL, module);
+	modules = g_list_append (NULL, g_object_ref (module));
 }
 
-DEFINE_TEARDOWN(enumerator)
+TESTING_TEARDOWN(enumerator)
 {
 	gck_list_unref_free (modules);
 	modules = NULL;
+
+	g_object_unref (module);
+	module = NULL;
 }
 
-DEFINE_TEST(enumerator_create)
+TESTING_TEST(enumerator_create)
 {
 	GckEnumerator *en;
 
@@ -35,7 +38,19 @@ DEFINE_TEST(enumerator_create)
 	g_object_unref (en);
 }
 
-DEFINE_TEST(enumerator_next)
+TESTING_TEST(enumerator_create_slots)
+{
+	GckEnumerator *en;
+	GList *slots;
+
+	slots = gck_module_get_slots (module, FALSE);
+	en = _gck_enumerator_new (slots, 0, NULL, NULL);
+	g_assert (GCK_IS_ENUMERATOR (en));
+	g_object_unref (en);
+	gck_list_unref_free (slots);
+}
+
+TESTING_TEST(enumerator_next)
 {
 	GError *error = NULL;
 	GckEnumerator *en;
@@ -51,7 +66,26 @@ DEFINE_TEST(enumerator_next)
 	g_object_unref (en);
 }
 
-DEFINE_TEST(enumerator_next_and_resume)
+TESTING_TEST(enumerator_next_slots)
+{
+	GError *error = NULL;
+	GList *slots = NULL;
+	GckEnumerator *en;
+	GckObject *obj;
+
+	slots = gck_module_get_slots (module, FALSE);
+	en = _gck_enumerator_new (slots, 0, NULL, NULL);
+	g_assert (GCK_IS_ENUMERATOR (en));
+
+	obj = gck_enumerator_next (en, NULL, &error);
+	g_assert (GCK_IS_OBJECT (obj));
+
+	g_object_unref (obj);
+	g_object_unref (en);
+	gck_list_unref_free (slots);
+}
+
+TESTING_TEST(enumerator_next_and_resume)
 {
 	GError *error = NULL;
 	GckEnumerator *en;
@@ -75,7 +109,7 @@ DEFINE_TEST(enumerator_next_and_resume)
 	g_object_unref (en);
 }
 
-DEFINE_TEST(enumerator_next_n)
+TESTING_TEST(enumerator_next_n)
 {
 	GError *error = NULL;
 	GckEnumerator *en;
@@ -102,7 +136,7 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 	testing_wait_stop ();
 }
 
-DEFINE_TEST(enumerator_next_async)
+TESTING_TEST(enumerator_next_async)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
@@ -127,7 +161,7 @@ DEFINE_TEST(enumerator_next_async)
 	g_object_unref (en);
 }
 
-DEFINE_TEST(enumerator_attributes)
+TESTING_TEST(enumerator_attributes)
 {
 	GckAttributes *attrs;
 	GError *error = NULL;
@@ -149,7 +183,7 @@ DEFINE_TEST(enumerator_attributes)
 	g_object_unref (en);
 }
 
-DEFINE_TEST(enumerator_token_match)
+TESTING_TEST(enumerator_token_match)
 {
 	GckTokenInfo *token;
 	GError *error = NULL;

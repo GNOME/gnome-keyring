@@ -38,7 +38,7 @@ static CK_OBJECT_HANDLE key = 0;
 static CK_OBJECT_HANDLE collection = 0;
 static CK_MECHANISM mech = { CKM_MOCK_PREFIX, NULL, 0 };
 
-DEFINE_SETUP (login_auto)
+TESTING_SETUP (login_auto)
 {
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
@@ -100,7 +100,7 @@ DEFINE_SETUP (login_auto)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEARDOWN (login_auto)
+TESTING_TEARDOWN (login_auto)
 {
 	CK_RV rv;
 
@@ -118,7 +118,7 @@ DEFINE_TEARDOWN (login_auto)
 	module = NULL;
 }
 
-DEFINE_TEST (login_auto_specific)
+TESTING_TEST (login_auto_specific)
 {
 	CK_RV rv;
 
@@ -149,7 +149,7 @@ DEFINE_TEST (login_auto_specific)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEST (login_auto_user_token)
+TESTING_TEST (login_auto_user_token)
 {
 	CK_RV rv;
 
@@ -176,7 +176,7 @@ DEFINE_TEST (login_auto_user_token)
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-DEFINE_TEST (login_auto_unlock_keyring)
+TESTING_TEST (login_auto_unlock_keyring)
 {
 	CK_OBJECT_HANDLE credential;
 	CK_RV rv;

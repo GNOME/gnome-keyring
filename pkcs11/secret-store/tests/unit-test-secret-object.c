@@ -42,7 +42,7 @@ static GkmModule *module = NULL;
 static GkmSession *session = NULL;
 static GkmSecretObject *object = NULL;
 
-DEFINE_SETUP(secret_object)
+TESTING_SETUP(secret_object)
 {
 	module = test_secret_module_initialize_and_enter ();
 	session = test_secret_module_open_session (TRUE);
@@ -55,7 +55,7 @@ DEFINE_SETUP(secret_object)
 	g_assert (GKM_IS_SECRET_OBJECT (object));
 }
 
-DEFINE_TEARDOWN(secret_object)
+TESTING_TEARDOWN(secret_object)
 {
 	g_object_unref (object);
 	object = NULL;
@@ -65,13 +65,13 @@ DEFINE_TEARDOWN(secret_object)
 	session = NULL;
 }
 
-DEFINE_TEST(secret_object_is_locked)
+TESTING_TEST(secret_object_is_locked)
 {
 	/* Plain GkmSecretObject is never locked */
 	g_assert (!gkm_secret_object_is_locked (object, session));
 }
 
-DEFINE_TEST(secret_object_identifier_prop)
+TESTING_TEST(secret_object_identifier_prop)
 {
 	const gchar *identifier;
 	identifier = gkm_secret_object_get_identifier (object);
@@ -87,7 +87,7 @@ was_notified (GObject *obj, GParamSpec *pspec, gpointer user_data)
 	*notified = TRUE;
 }
 
-DEFINE_TEST(secret_object_created_prop)
+TESTING_TEST(secret_object_created_prop)
 {
 	glong created;
 
@@ -106,7 +106,7 @@ DEFINE_TEST(secret_object_created_prop)
 	g_assert (created == 1247930171);
 }
 
-DEFINE_TEST(secret_object_modified_prop)
+TESTING_TEST(secret_object_modified_prop)
 {
 	glong modified;
 
@@ -125,7 +125,7 @@ DEFINE_TEST(secret_object_modified_prop)
 	g_assert (modified == 1247930171);
 }
 
-DEFINE_TEST(secret_object_was_modified)
+TESTING_TEST(secret_object_was_modified)
 {
 	GTimeVal tv;
 	g_get_current_time (&tv);
@@ -133,7 +133,7 @@ DEFINE_TEST(secret_object_was_modified)
 	g_assert (tv.tv_sec == gkm_secret_object_get_modified (object));
 }
 
-DEFINE_TEST(secret_object_label_prop)
+TESTING_TEST(secret_object_label_prop)
 {
 	const gchar *label;
 
@@ -152,7 +152,7 @@ DEFINE_TEST(secret_object_label_prop)
 	g_assert_cmpstr (label, ==, "hello");
 }
 
-DEFINE_TEST(secret_object_identifier_get_attr)
+TESTING_TEST(secret_object_identifier_get_attr)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE attr = { CKA_ID, buffer, 32 };
@@ -164,7 +164,7 @@ DEFINE_TEST(secret_object_identifier_get_attr)
 	g_assert (memcmp (buffer, "my-identifier", 13) == 0);
 }
 
-DEFINE_TEST(secret_object_label_get_attr)
+TESTING_TEST(secret_object_label_get_attr)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE attr = { CKA_LABEL, buffer, 32 };
@@ -177,7 +177,7 @@ DEFINE_TEST(secret_object_label_get_attr)
 	g_assert (memcmp (buffer, "hello", 5) == 0);
 }
 
-DEFINE_TEST(secret_object_label_set_attr)
+TESTING_TEST(secret_object_label_set_attr)
 {
 	CK_ATTRIBUTE attr = { CKA_LABEL, "hello", 5 };
 	GkmTransaction *transaction = gkm_transaction_new ();
@@ -199,7 +199,7 @@ DEFINE_TEST(secret_object_label_set_attr)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(secret_object_label_set_attr_fail)
+TESTING_TEST(secret_object_label_set_attr_fail)
 {
 	CK_ATTRIBUTE attr = { CKA_LABEL, "hello", 5 };
 	GkmTransaction *transaction = gkm_transaction_new ();
@@ -230,7 +230,7 @@ DEFINE_TEST(secret_object_label_set_attr_fail)
 	g_object_unref (transaction);
 }
 
-DEFINE_TEST(secret_object_modified_get_attr)
+TESTING_TEST(secret_object_modified_get_attr)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE attr = { CKA_G_MODIFIED, buffer, 32 };
@@ -243,7 +243,7 @@ DEFINE_TEST(secret_object_modified_get_attr)
 	g_assert (memcmp (buffer, "2009071815161100", 16) == 0);
 }
 
-DEFINE_TEST(secret_object_created_get_attr)
+TESTING_TEST(secret_object_created_get_attr)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE attr = { CKA_G_CREATED, buffer, 32 };
@@ -256,7 +256,7 @@ DEFINE_TEST(secret_object_created_get_attr)
 	g_assert (memcmp (buffer, "2009071815161100", 16) == 0);
 }
 
-DEFINE_TEST(secret_object_locked_get_attr)
+TESTING_TEST(secret_object_locked_get_attr)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE attr = { CKA_G_LOCKED, buffer, 32 };

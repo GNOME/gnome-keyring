@@ -29,14 +29,14 @@ libgkm_secret_store_la_SOURCES = \
 # ------------------------------------------------------------------------------
 # The standalone module
 
-moduledir = $(libdir)/gnome-keyring/devel/
+moduledir = $(pkcs11standalonedir)
 
 module_LTLIBRARIES = \
 	gkm-secret-store-standalone.la
 
 gkm_secret_store_standalone_la_LDFLAGS = \
 	-module -avoid-version \
-	-no-undefined -export-symbols-regex 'C_GetFunctionList'
+	-no-undefined -export-symbols-regex 'C_GetFunctionList|g_module_check_init'
 
 gkm_secret_store_standalone_la_SOURCES = \
 	gkm-secret-standalone.c
