@@ -86,7 +86,7 @@ CLEANFILES = \
 # If installing as non-root, chown+chmod will not succeed but
 # the build will continue.
 install-exec-hook:
-	chown root $(bindir)/gnome-keyring-daemon || true
-	chmod u+s $(bindir)/gnome-keyring-daemon || true
+	chown root $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
+	chmod u+s $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
 
 @INTLTOOL_DESKTOP_RULE@
