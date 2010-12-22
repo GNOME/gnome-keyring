@@ -8,7 +8,7 @@ TESTING_LIBS =  \
 	$(top_builddir)/ui/libgku-prompt.la \
 	$(top_builddir)/egg/libegg-prompt.la
 
-EXTRA_DIST = \
-	test-data
-
 include $(top_srcdir)/testing/testing.make
+
+EXTRA_DIST += \
+	test-data

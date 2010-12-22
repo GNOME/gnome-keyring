@@ -26,6 +26,9 @@ libgkm_xdg_store_la_SOURCES = \
 asn1-def-xdg.c: xdg.asn
 	$(ASN1PARSER) -o asn1-def-xdg.c $(srcdir)/xdg.asn
 
+EXTRA_DIST = \
+	xdg.asn
+
 # ------------------------------------------------------------------------------
 # The standalone module
 

@@ -42,6 +42,7 @@ libgkm_la_SOURCES = \
 	gkm-null-key.c gkm-null-key.h \
 	gkm-null-mechanism.c gkm-null-mechanism.h \
 	gkm-object.c gkm-object.h \
+	gkm-oids.h \
 	gkm-private-xsa-key.c gkm-private-xsa-key.h \
 	gkm-public-xsa-key.c gkm-public-xsa-key.h \
 	gkm-rsa-mechanism.c gkm-rsa-mechanism.h \

@@ -10,7 +10,7 @@ TESTING_LIBS = \
 
 include $(top_srcdir)/testing/testing.make
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	test-data \
 	p11-tests.conf
 

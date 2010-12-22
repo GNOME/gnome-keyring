@@ -20,7 +20,7 @@ TESTING_FLAGS = \
 
 include $(top_srcdir)/testing/testing.make
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	test-data
 
 # ------------------------------------------------------------------

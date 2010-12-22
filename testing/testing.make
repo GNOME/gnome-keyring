@@ -65,6 +65,9 @@ CLEANFILES = \
 	$(PREPROCESSED) \
 	$(BUILT_SOURCES)
 
+EXTRA_DIST = \
+	$(TESTING_FILES)
+
 # ------------------------------------------------------------------------------
 # Run the tests
 

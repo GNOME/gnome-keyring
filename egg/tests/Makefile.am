@@ -24,14 +24,14 @@ UNIT_PROMPT =
 TESTING_LIBS =  \
 	$(top_builddir)/egg/libegg.la
 
-EXTRA_DIST = \
-	test.asn \
-	test-data
-
 include $(top_srcdir)/testing/testing.make
 
 BUILT_SOURCES += \
 	asn1-def-test.c
+
+EXTRA_DIST += \
+	test.asn \
+	test-data
 
 # ------------------------------------------------------------------------------
 

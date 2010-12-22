@@ -21,10 +21,10 @@ TESTING_LIBS = \
 	$(top_builddir)/gck/libgck.la \
 	libmock-test-module.la
 
-EXTRA_DIST = \
-	gck-test.h
-
 include $(top_srcdir)/testing/testing.make
+
+EXTRA_DIST += \
+	gck-test.h
 
 # ------------------------------------------------------------------------
 

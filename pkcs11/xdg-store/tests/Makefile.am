@@ -12,11 +12,11 @@ TESTING_LIBS =  \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/egg/libegg.la
 
-EXTRA_DIST = \
+include $(top_srcdir)/testing/testing.make
+
+EXTRA_DIST += \
 	p11-tests.conf \
 	test-data
-
-include $(top_srcdir)/testing/testing.make
 
 # ------------------------------------------------------------------------------
 
