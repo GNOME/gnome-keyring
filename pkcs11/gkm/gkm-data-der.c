@@ -670,6 +670,8 @@ gkm_data_der_write_public_key_rsa (gcry_sexp_t s_key, gsize *len)
 		goto done;
 
 	result = egg_asn1x_encode (asn, NULL, len);
+	if (result == NULL)
+		g_warning ("couldn't encode public rsa key: %s", egg_asn1x_message (asn));
 
 done:
 	egg_asn1x_destroy (asn);
@@ -726,6 +728,8 @@ gkm_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 		goto done;
 
 	result = egg_asn1x_encode (asn, egg_secure_realloc, n_key);
+	if (result == NULL)
+		g_warning ("couldn't encode private rsa key: %s", egg_asn1x_message (asn));
 
 done:
 	egg_asn1x_destroy (asn);
@@ -771,6 +775,8 @@ gkm_data_der_write_public_key_dsa (gcry_sexp_t s_key, gsize *len)
 		goto done;
 
 	result = egg_asn1x_encode (asn, NULL, len);
+	if (result == NULL)
+		g_warning ("couldn't encode public dsa key: %s", egg_asn1x_message (asn));
 
 done:
 	egg_asn1x_destroy (asn);
@@ -801,6 +807,8 @@ gkm_data_der_write_private_key_dsa_part (gcry_sexp_t skey, gsize *n_key)
 		goto done;
 
 	result = egg_asn1x_encode (asn, egg_secure_realloc, n_key);
+	if (result == NULL)
+		g_warning ("couldn't encode private dsa key: %s", egg_asn1x_message (asn));
 
 done:
 	egg_asn1x_destroy (asn);
@@ -832,6 +840,8 @@ gkm_data_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params)
 		goto done;
 
 	result = egg_asn1x_encode (asn, egg_secure_realloc, n_params);
+	if (result == NULL)
+		g_warning ("couldn't encode private dsa params: %s", egg_asn1x_message (asn));
 
 done:
 	egg_asn1x_destroy (asn);
@@ -872,6 +882,8 @@ gkm_data_der_write_private_key_dsa (gcry_sexp_t s_key, gsize *len)
 		goto done;
 
 	result = egg_asn1x_encode (asn, egg_secure_realloc, len);
+	if (result == NULL)
+		g_warning ("couldn't encode private dsa key: %s", egg_asn1x_message (asn));
 
 done:
 	egg_asn1x_destroy (asn);
@@ -975,7 +987,10 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn1_params, "iterations", NULL), iterations))
 		g_return_val_if_reached (NULL);
 	portion = egg_asn1x_encode (asn1_params, NULL, &n_portion);
-	g_return_val_if_fail (portion, NULL);
+	if (portion == NULL) {
+		g_warning ("couldn't encode pkcs8 params key: %s", egg_asn1x_message (asn1_params));
+		g_return_val_if_reached (NULL);
+	}
 
 	if (!egg_asn1x_set_raw_element (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL),
 	                                portion, n_portion, g_free))
@@ -1060,7 +1075,8 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 		g_return_val_if_reached (NULL);
 
 	data = egg_asn1x_encode (asn, egg_secure_realloc, n_data);
-	g_return_val_if_fail (data, NULL);
+	if (data == NULL)
+		g_warning ("couldn't encode private pkcs8 key: %s", egg_asn1x_message (asn));
 
 	egg_asn1x_destroy (asn);
 	return data;
@@ -1112,7 +1128,8 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
 		g_return_val_if_reached (NULL);
 
 	data = egg_asn1x_encode (asn, NULL, n_data);
-	g_return_val_if_fail (data, NULL);
+	if (data == NULL)
+		g_warning ("couldn't encode encrypted pkcs8 key: %s", egg_asn1x_message (asn));
 
 	egg_asn1x_destroy (asn);
 	return data;
@@ -1236,8 +1253,14 @@ done:
 guchar*
 gkm_data_der_write_certificate (GNode *asn1, gsize *n_data)
 {
+	gpointer result;
+
 	g_return_val_if_fail (asn1, NULL);
 	g_return_val_if_fail (n_data, NULL);
 
-	return egg_asn1x_encode (asn1, NULL, n_data);
+	result = egg_asn1x_encode (asn1, NULL, n_data);
+	if (result == NULL)
+		g_warning ("couldn't encode certificate: %s", egg_asn1x_message (asn1));
+
+	return result;
 }
