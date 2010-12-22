@@ -1617,6 +1617,8 @@ anode_encode_prepare_structured (GNode *node, gboolean want)
 
 	if (type == TYPE_SEQUENCE_OF || type == TYPE_SET_OF)
 		child_want = FALSE;
+	if (anode_def_flags (node) & FLAG_OPTION)
+		want = FALSE;
 
 	for (child = node->children; child; child = child->next) {
 		if (anode_encode_prepare (child, child_want)) {
