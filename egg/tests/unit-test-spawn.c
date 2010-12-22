@@ -221,8 +221,6 @@ TESTING_TEST(test_spawn_async)
 	g_assert (ret != 0);
 	g_assert (error == NULL);
 	g_assert (!data.finalized);
-	g_assert (!data.output);
-	g_assert (!data.completed);
 
 	testing_wait_until (2000);
 
@@ -249,8 +247,6 @@ TESTING_TEST(test_spawn_async_none)
 	g_assert (ret != 0);
 	g_assert (error == NULL);
 	g_assert (!data.finalized);
-	g_assert (!data.completed);
-	g_assert (!data.output);
 
 	testing_wait_until (2000);
 
