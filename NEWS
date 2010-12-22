@@ -1,3 +1,26 @@
+Changes in version 2.91.4 are:
+ * gck library loads PKCS#11 modules from /usr/lib/pkcs11
+ * PKCS#11 config file in /etc/xdg/pkcs11.conf[.defaults]
+ * Many ASN.1 encoding fixes.
+ * Refactor how tests work.
+ * Install standalone PKCS#11 modules to a consistent location.
+ * Memory leaks and other bug fixes.
+ * Allow enumeration of objects in specific PKCS#11 slots as well
+   as modules.
+ * Add GcrCertificateChain for building certificate chains.
+ * Implementation of the initial PKCS#11 Trust Assertions spec.
+ * Add GcrPkcs11Certificate for looking up certificates in PKCS#11
+   modules by issuer.
+ * Expose gcr functionality for setting which PKCS#11 modules to use.
+ * Find the root certificates by default.
+ * Move to a single header model for libgcr.
+ * Don't load *.la files when looking for PKCS#11 modules.
+ * Fixes for GTK+3.0
+ * New xdg-store PKCS#11 module with support for storing trust
+   assertions.
+ * Rename old user-store to gnome2-store since it stores its data
+   in old formats in the old .gnome2 location.
+
 Changes in version 2.91.3 are:
  * Shutdown module timer when holding proper mutex.
  * Linux capabilities to overcome limits on locked memory.
