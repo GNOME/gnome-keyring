@@ -60,13 +60,6 @@ static GList *all_modules = NULL;
 static gchar *trust_store_uri = NULL;
 static gchar **trust_lookup_uris = NULL;
 
-const gchar DEFAULT_PKCS11_CONF[] =
-	"[trust-assertions]\n" \
-	"lookups=pkcs11:manufacturer=Gnome%20Keyring;serial=1:ROOTS:DEFAULT " \
-		"pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT\n" \
-	"storage=pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT\n" \
-;
-
 /* -----------------------------------------------------------------------------
  * ERRORS
  */
@@ -174,18 +167,22 @@ _gcr_initialize (void)
 		all_modules = gck_modules_initialize_registered (0);
 
 		key_file = g_key_file_new ();
-		if (g_file_test (PKCS11_CONF_PATH, G_FILE_TEST_EXISTS)) {
-			if (!g_key_file_load_from_file (key_file, PKCS11_CONF_PATH,
-			                                G_KEY_FILE_NONE, &error)) {
-				g_warning ("couldn't parse %s file: %s", PKCS11_CONF_PATH,
-				           egg_error_message (error));
-				g_clear_error (&error);
-			}
-		} else {
-			if (!g_key_file_load_from_data (key_file, DEFAULT_PKCS11_CONF,
-			                                strlen (DEFAULT_PKCS11_CONF),
-			                                G_KEY_FILE_NONE, NULL))
-				g_warn_if_reached ();
+
+		/* Load the defaults */
+		if (!g_key_file_load_from_file (key_file, PKCS11_DEFAULT_PATH,
+		                                G_KEY_FILE_NONE, &error)) {
+			g_warning ("couldn't parse %s file: %s", PKCS11_DEFAULT_PATH,
+			           egg_error_message (error));
+			g_clear_error (&error);
+		}
+
+		/* Load any changes */
+		if (g_file_test (PKCS11_CONFIG_PATH, G_FILE_TEST_EXISTS) &&
+		    !g_key_file_load_from_file (key_file, PKCS11_CONFIG_PATH,
+		                                G_KEY_FILE_NONE, &error)) {
+			g_warning ("couldn't parse %s file: %s", PKCS11_CONFIG_PATH,
+			           egg_error_message (error));
+			g_clear_error (&error);
 		}
 
 		trust_store_uri = g_key_file_get_string (key_file, "trust-assertions", "storage", NULL);

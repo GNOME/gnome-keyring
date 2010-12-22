@@ -9,6 +9,17 @@ ui_DATA = \
 	gcr-unlock-options-widget.ui
 
 # ------------------------------------------------------------------
+# CONFIG
+
+confdir = $(sysconfdir)/xdg
+
+PKCS11_DEFAULT_FILE =  pkcs11.conf.defaults
+PKCS11_CONFIG_FILE = pkcs11.conf
+
+conf_DATA = \
+	$(PKCS11_DEFAULT_FILE)
+
+# ------------------------------------------------------------------
 # HEADERS
 
 incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
@@ -75,7 +86,8 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
-	-DPKCS11_CONF_PATH=\""$(sysconfdir)/pkcs11.conf"\" \
+	-DPKCS11_DEFAULT_PATH=\""$(confdir)/$(PKCS11_DEFAULT_FILE)"\" \
+	-DPKCS11_CONFIG_PATH=\""$(confdir)/$(PKCS11_CONFIG_FILE)"\" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \
@@ -112,7 +124,8 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
-	$(ui_DATA)
+	$(ui_DATA) \
+	$(conf_DATA)
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
