@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-21 01:00+0200\n"
-"PO-Revision-Date: 2010-10-21 01:02+0200\n"
+"POT-Creation-Date: 2010-12-23 17:25+0200\n"
+"PO-Revision-Date: 2010-12-23 17:25+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -257,7 +257,7 @@ msgstr "שגיאה בלתי צפויה בעת ש־select()‎ קרא נתוני�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "שגיאה בלתי צפויה ב־waitpid()‎‏ (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:200
+#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "תעודה"
 
@@ -354,7 +354,7 @@ msgid "Key Size"
 msgstr "גודל המפתח"
 
 #: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "מפתח ציבורי"
 
@@ -443,7 +443,7 @@ msgstr "כדי לייבא את התעודה '%s', יש לשחררה"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "כדי לייבא את '%s', יש לבצע שחרור"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1565 ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
 #: ../gck/gck-misc.c:98
 msgid "The operation was cancelled"
 msgstr "הפעולה בוטלה"
@@ -473,7 +473,7 @@ msgstr "מפתח RSA פרטי"
 msgid "Private DSA Key"
 msgstr "מפתח DSA פרטי"
 
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "מפתח פרטי"
 
@@ -503,17 +503,22 @@ msgstr "גודל"
 msgid "Fingerprint"
 msgstr "טביעת אצבע"
 
-#: ../gcr/gcr-parser.c:1568
+#: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
 msgstr "הנתונים אינם מוכרים או שאינם נתמכים."
 
-#: ../gcr/gcr-parser.c:1571
+#: ../gcr/gcr-parser.c:1572
 msgid "Could not parse invalid or corrupted data."
 msgstr "לא ניתן לנתח נתונים שגויים או פגומים."
 
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1575
 msgid "The data is locked"
 msgstr "הנתונים נעולים"
+
+#: ../gcr/gcr-trust.c:417
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "לא ניתן למצוא את המיקום לאחסון האישור המוצמד"
 
 #: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
 #, c-format
@@ -844,7 +849,7 @@ msgstr "בקשת החתימה נדחתה על ידי המשתמש"
 msgid "Unknown error"
 msgstr "שגיאה לא ידועה"
 
-#: ../pkcs11/gkm/gkm-certificate.c:725
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "תעודה ללא שם"
 
