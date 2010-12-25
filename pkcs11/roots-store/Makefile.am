@@ -5,7 +5,9 @@ INCLUDES = \
     	-I$(top_srcdir)/pkcs11 \
     	$(GOBJECT_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(GMODULE_CFLAGS)
+
 
 
 # ------------------------------------------------------------------------------
@@ -41,7 +43,8 @@ gkm_roots_store_standalone_la_LIBADD = \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \
-	$(LIBGCRYPT_LIBS)
+	$(LIBGCRYPT_LIBS) \
+	$(GMODULE_LIBS)
 
 
 # -------------------------------------------------------------------------------

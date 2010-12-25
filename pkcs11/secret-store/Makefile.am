@@ -4,7 +4,8 @@ INCLUDES = \
     	-I$(top_srcdir) \
     	-I$(top_srcdir)/pkcs11 \
     	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(GMODULE_CFLAGS)
 
 # ------------------------------------------------------------------------------
 # The secret store component code
@@ -47,6 +48,7 @@ gkm_secret_store_standalone_la_LIBADD = \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \
+	$(GMODULE_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
 # -------------------------------------------------------------------------------

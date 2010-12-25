@@ -5,7 +5,8 @@ INCLUDES = \
 	-I$(top_srcdir)/pkcs11 \
 	$(GOBJECT_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(GMODULE_CFLAGS)
 
 # ------------------------------------------------------------------------------
 # The xdg-store component code
@@ -50,6 +51,7 @@ gkm_xdg_store_standalone_la_LIBADD = \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \
+	$(GMODULE_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
 
