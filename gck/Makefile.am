@@ -47,7 +47,7 @@ libgck_la_SOURCES = \
 
 libgck_la_LDFLAGS = \
 	-version-info $(GCK_LT_RELEASE) \
-	-no-undefined -export-symbols-regex 'gck_*'
+	-no-undefined -export-symbols-regex '^gck_*'
 
 libgck_la_LIBADD = \
 	$(top_builddir)/egg/libegg-hex.la \
