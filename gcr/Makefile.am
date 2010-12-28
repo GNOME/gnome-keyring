@@ -91,7 +91,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 
 libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
 	-version-info $(GCR_LT_RELEASE) \
-	-no-undefined -export-symbols-regex 'gcr_*'
+	-no-undefined -export-symbols-regex '^gcr_*'
 
 libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
