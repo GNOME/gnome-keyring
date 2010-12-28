@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-11-10 12:16+0000\n"
-"PO-Revision-Date: 2010-11-13 11:19+0100\n"
+"POT-Creation-Date: 2010-12-24 17:06+0000\n"
+"PO-Revision-Date: 2010-12-28 22:56+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -262,7 +262,7 @@ msgid "Unexpected error in waitpid() (%s)"
 msgstr "Nepričakovana napaka v waitpid() (%s)"
 
 #: ../gcr/gcr-certificate-renderer.c:82
-#: ../gcr/gcr-parser.c:200
+#: ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Potrdilo"
 
@@ -360,7 +360,7 @@ msgstr "Velikost ključa"
 
 #: ../gcr/gcr-certificate-renderer.c:444
 #: ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Javni ključ"
 
@@ -451,8 +451,8 @@ msgid "In order to import '%s', it must be unlocked"
 msgstr "Za uvoz  predmeta'%s' mora biti ta odklenjen"
 
 #: ../gcr/gcr-importer.c:254
-#: ../gcr/gcr-parser.c:1565
-#: ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-parser.c:1566
+#: ../gcr/gcr-parser.c:1757
 #: ../gck/gck-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Dejanje je preklicano."
@@ -483,7 +483,7 @@ msgid "Private DSA Key"
 msgstr "Osebni ključ DSA"
 
 #: ../gcr/gcr-key-renderer.c:264
-#: ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Osebni ključ"
 
@@ -514,17 +514,22 @@ msgstr "Velikost"
 msgid "Fingerprint"
 msgstr "Prstni odtis"
 
-#: ../gcr/gcr-parser.c:1568
+#: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
 msgstr "Neznani ali nepodprti podatki."
 
-#: ../gcr/gcr-parser.c:1571
+#: ../gcr/gcr-parser.c:1572
 msgid "Could not parse invalid or corrupted data."
 msgstr "Ni mogoče razčleniti neveljavnih ali pokvarjenih podatkov."
 
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1575
 msgid "The data is locked"
 msgstr "Podatki so zaklenjeni"
+
+#: ../gcr/gcr-trust.c:417
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Ni mogoče najti mesta za shranjevanje uvoženih potrdil"
 
 #: ../gck/gck-uri.c:78
 #: ../gck/gck-uri.c:135
@@ -857,7 +862,7 @@ msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
 msgid "Unknown error"
 msgstr "Neznana napaka"
 
-#: ../pkcs11/gkm/gkm-certificate.c:725
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Neimenovano potrdilo"
 
