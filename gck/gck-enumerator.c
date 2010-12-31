@@ -56,8 +56,7 @@ struct _GckEnumeratorState {
 
 	/* Input to enumerator */
 	GList *modules;
-	GckTokenInfo *match_token;
-	GckAttributes *match_attrs;
+	GckUriInfo *match;
 	guint session_options;
 	gboolean authenticate;
 	gchar *password;
@@ -151,12 +150,11 @@ cleanup_state (GckEnumeratorState *args)
 		args->password  = NULL;
 	}
 
-	gck_token_info_free (args->match_token);
-	args->match_token = NULL;
-
-	if (args->match_attrs) {
-		_gck_attributes_unlock (args->match_attrs);
-		gck_attributes_unref (args->match_attrs);
+	if (args->match) {
+		if (args->match->attributes)
+			_gck_attributes_unlock (args->match->attributes);
+		gck_uri_info_free (args->match);
+		args->match = NULL;
 	}
 }
 
@@ -194,6 +192,7 @@ state_slots (GckEnumeratorState *args, gboolean forward)
 	GckSlot *slot;
 	GckModule *module;
 	GckTokenInfo *token_info;
+	gboolean matched;
 
 	g_assert (args->slot == NULL);
 
@@ -215,15 +214,23 @@ state_slots (GckEnumeratorState *args, gboolean forward)
 			return rewind_state (args, state_modules);
 		}
 
+		matched = TRUE;
+
+		/* Do we have unrecognized matches? */
+		if (args->match->any_unrecognized) {
+			matched = FALSE;
+
 		/* Are we trying to match the slot? */
-		if (args->match_token) {
+		} else if (args->match->token_info) {
 
 			/* No match? Go to next slot */
-			if (!_gck_token_info_match (args->match_token, token_info)) {
-				g_object_unref (slot);
-				gck_token_info_free (token_info);
-				return state_slots;
-			}
+			matched = _gck_token_info_match (args->match->token_info, token_info);
+		}
+
+		if (!matched) {
+			g_object_unref (slot);
+			gck_token_info_free (token_info);
+			return state_slots;
 		}
 
 		module = gck_slot_get_module (slot);
@@ -372,8 +379,8 @@ state_authenticated (GckEnumeratorState *args, gboolean forward)
 	g_assert (args->want_objects);
 	g_assert (args->funcs);
 
-	if (args->match_attrs) {
-		attrs = _gck_attributes_commit_out (args->match_attrs, &n_attrs);
+	if (args->match->attributes) {
+		attrs = _gck_attributes_commit_out (args->match->attributes, &n_attrs);
 	} else {
 		attrs = NULL;
 		n_attrs = 0;
@@ -494,7 +501,7 @@ gck_enumerator_class_init (GckEnumeratorClass *klass)
 
 GckEnumerator*
 _gck_enumerator_new (GList *modules_or_slots, guint session_options,
-                     GckTokenInfo *match_token, GckAttributes *match_attrs)
+                     GckUriInfo *uri_info)
 {
 	GckEnumerator *self;
 	GckEnumeratorState *state;
@@ -514,11 +521,9 @@ _gck_enumerator_new (GList *modules_or_slots, guint session_options,
 		state->handler = state_modules;
 	}
 
-	if (match_attrs) {
-		state->match_attrs = gck_attributes_ref (match_attrs);
-		_gck_attributes_lock (state->match_attrs);
-	}
-	state->match_token = match_token;
+	state->match = uri_info;
+	if (uri_info->attributes)
+		_gck_attributes_lock (uri_info->attributes);
 
 	return self;
 }

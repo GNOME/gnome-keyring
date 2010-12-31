@@ -20,6 +20,7 @@
 		<xi:include href="xml/gck-attribute.xml"/>
 		<xi:include href="xml/gck-attributes.xml"/>
 		<xi:include href="xml/gck-error.xml"/>
+		<xi:include href="xml/gck-uri.xml"/>
 		<xi:include href="xml/gck-misc.xml"/>
 	</chapter>
 </book>

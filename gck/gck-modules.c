@@ -151,32 +151,57 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
 GckEnumerator*
 gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_options)
 {
-	return _gck_enumerator_new (modules, session_options, NULL, attrs);
+	GckUriInfo *uri_info;
+
+	g_return_val_if_fail (attrs, NULL);
+
+	uri_info = _gck_uri_info_new ();
+	uri_info->attributes = gck_attributes_ref (attrs);
+
+	return _gck_enumerator_new (modules, session_options, uri_info);
 }
 
 GckSlot*
 gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 {
-	GckTokenInfo *match, *token;
+	GckTokenInfo *token_info;
 	GckSlot *result = NULL;
+	GckUriInfo *uri_info;
+	GckModuleInfo *module_info;
 	GList *slots;
 	GList *m, *s;
+	gboolean matched;
 
-	if (!gck_uri_parse (uri, &match, NULL, error))
+	uri_info = gck_uri_parse (uri, GCK_URI_PARSE_TOKEN, error);
+	if (uri_info == NULL)
 		return NULL;
 
-	for (m = modules; result == NULL && m != NULL; m = g_list_next (m)) {
-		slots = gck_module_get_slots (m->data, TRUE);
-		for (s = slots; result == NULL && s != NULL; s = g_list_next (s)) {
-			token = gck_slot_get_token_info (s->data);
-			if (token && _gck_token_info_match (match, token))
-				result = g_object_ref (s->data);
-			gck_token_info_free (token);
+	if (!uri_info->any_unrecognized) {
+		for (m = modules; result == NULL && m != NULL; m = g_list_next (m)) {
+			if (uri_info->module_info) {
+				module_info = gck_module_get_info (m->data);
+				matched = _gck_module_info_match (uri_info->module_info, module_info);
+				gck_module_info_free (module_info);
+				if (!matched)
+					continue;
+			}
+
+			slots = gck_module_get_slots (m->data, TRUE);
+			for (s = slots; result == NULL && s != NULL; s = g_list_next (s)) {
+				if (!uri_info->token_info) {
+					result = g_object_ref (s->data);
+				} else {
+					token_info = gck_slot_get_token_info (s->data);
+					if (token_info && _gck_token_info_match (uri_info->token_info, token_info))
+						result = g_object_ref (s->data);
+					gck_token_info_free (token_info);
+				}
+			}
+			gck_list_unref_free (slots);
 		}
-		gck_list_unref_free (slots);
 	}
 
-	gck_token_info_free (match);
+	gck_uri_info_free (uri_info);
 	return result;
 }
 
@@ -224,16 +249,12 @@ GckEnumerator*
 gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_options,
                            GError **error)
 {
-	GckTokenInfo *token;
-	GckAttributes *attrs;
-	GckEnumerator *en;
+	GckUriInfo *uri_info;
 
-	if (!gck_uri_parse (uri, &token, &attrs, error))
+	uri_info = gck_uri_parse (uri, GCK_URI_PARSE_OBJECT, error);
+	if (uri_info == NULL)
 		return NULL;
 
-	/* Takes ownership of token info */
-	en = _gck_enumerator_new (modules, session_options, token, attrs);
-	gck_attributes_unref (attrs);
-
-	return en;
+	/* Takes ownership of uri_info */
+	return _gck_enumerator_new (modules, session_options, uri_info);
 }

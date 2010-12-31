@@ -31,20 +31,24 @@ TESTING_TEARDOWN(enumerator)
 
 TESTING_TEST(enumerator_create)
 {
+	GckUriInfo *uri_info;
 	GckEnumerator *en;
 
-	en = _gck_enumerator_new (modules, 0, NULL, NULL);
+	uri_info = _gck_uri_info_new ();
+	en = _gck_enumerator_new (modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 	g_object_unref (en);
 }
 
 TESTING_TEST(enumerator_create_slots)
 {
+	GckUriInfo *uri_info;
 	GckEnumerator *en;
 	GList *slots;
 
+	uri_info = _gck_uri_info_new ();
 	slots = gck_module_get_slots (module, FALSE);
-	en = _gck_enumerator_new (slots, 0, NULL, NULL);
+	en = _gck_enumerator_new (slots, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 	g_object_unref (en);
 	gck_list_unref_free (slots);
@@ -52,11 +56,13 @@ TESTING_TEST(enumerator_create_slots)
 
 TESTING_TEST(enumerator_next)
 {
+	GckUriInfo *uri_info;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GckObject *obj;
 
-	en = _gck_enumerator_new (modules, 0, NULL, NULL);
+	uri_info = _gck_uri_info_new ();
+	en = _gck_enumerator_new (modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
@@ -68,13 +74,15 @@ TESTING_TEST(enumerator_next)
 
 TESTING_TEST(enumerator_next_slots)
 {
+	GckUriInfo *uri_info;
 	GError *error = NULL;
 	GList *slots = NULL;
 	GckEnumerator *en;
 	GckObject *obj;
 
+	uri_info = _gck_uri_info_new ();
 	slots = gck_module_get_slots (module, FALSE);
-	en = _gck_enumerator_new (slots, 0, NULL, NULL);
+	en = _gck_enumerator_new (slots, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
@@ -87,11 +95,13 @@ TESTING_TEST(enumerator_next_slots)
 
 TESTING_TEST(enumerator_next_and_resume)
 {
+	GckUriInfo *uri_info;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GckObject *obj, *obj2;
 
-	en = _gck_enumerator_new (modules, 0, NULL, NULL);
+	uri_info = _gck_uri_info_new ();
+	en = _gck_enumerator_new (modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
@@ -111,11 +121,13 @@ TESTING_TEST(enumerator_next_and_resume)
 
 TESTING_TEST(enumerator_next_n)
 {
+	GckUriInfo *uri_info;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects, *l;
 
-	en = _gck_enumerator_new (modules, 0, NULL, NULL);
+	uri_info = _gck_uri_info_new ();
+	en = _gck_enumerator_new (modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);
@@ -138,12 +150,14 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 
 TESTING_TEST(enumerator_next_async)
 {
+	GckUriInfo *uri_info;
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects, *l;
 
-	en = _gck_enumerator_new (modules, 0, NULL, NULL);
+	uri_info = _gck_uri_info_new ();
+	en = _gck_enumerator_new (modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	gck_enumerator_next_async (en, -1, NULL, fetch_async_result, &result);
@@ -163,16 +177,16 @@ TESTING_TEST(enumerator_next_async)
 
 TESTING_TEST(enumerator_attributes)
 {
-	GckAttributes *attrs;
+	GckUriInfo *uri_info;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects;
 
-	attrs = gck_attributes_new ();
-	gck_attributes_add_string (attrs, CKA_LABEL, "Private Capitalize Key");
-	en = _gck_enumerator_new (modules, 0, NULL, attrs);
+	uri_info = _gck_uri_info_new ();
+	uri_info->attributes = gck_attributes_new ();
+	gck_attributes_add_string (uri_info->attributes, CKA_LABEL, "Private Capitalize Key");
+	en = _gck_enumerator_new (modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
-	gck_attributes_unref (attrs);
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);
 	SUCCESS_RES (objects, error);
@@ -185,14 +199,15 @@ TESTING_TEST(enumerator_attributes)
 
 TESTING_TEST(enumerator_token_match)
 {
-	GckTokenInfo *token;
+	GckUriInfo *uri_info;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects;
 
-	token = g_new0 (GckTokenInfo, 1);
-	token->label = g_strdup ("Invalid token name");
-	en = _gck_enumerator_new (modules, 0, token, NULL);
+	uri_info = _gck_uri_info_new ();
+	uri_info->token_info = g_new0 (GckTokenInfo, 1);
+	uri_info->token_info->label = g_strdup ("Invalid token name");
+	en = _gck_enumerator_new (modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);

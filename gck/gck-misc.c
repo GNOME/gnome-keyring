@@ -372,3 +372,42 @@ gck_value_to_boolean (gconstpointer value, gsize length, gboolean *result)
 		*result = *((CK_BBOOL*)value) ? TRUE : FALSE;
 	return TRUE;
 }
+
+static gboolean
+match_info_string (const gchar *match, const gchar *string)
+{
+	/* NULL matches anything */
+	if (match == NULL)
+		return TRUE;
+
+	if (string == NULL)
+		return FALSE;
+
+	return g_str_equal (match, string);
+}
+
+gboolean
+_gck_module_info_match (GckModuleInfo *match, GckModuleInfo *info)
+{
+	/* Matches two GckModuleInfo for use in PKCS#11 URI's */
+
+	g_return_val_if_fail (match, FALSE);
+	g_return_val_if_fail (info, FALSE);
+
+	return (match_info_string (match->library_description, info->library_description) &&
+	        match_info_string (match->manufacturer_id, info->manufacturer_id));
+}
+
+gboolean
+_gck_token_info_match (GckTokenInfo *match, GckTokenInfo *info)
+{
+	/* Matches two GckTokenInfo for use in PKCS#11 URI's */
+
+	g_return_val_if_fail (match, FALSE);
+	g_return_val_if_fail (info, FALSE);
+
+	return (match_info_string (match->label, info->label) &&
+	        match_info_string (match->manufacturer_id, info->manufacturer_id) &&
+	        match_info_string (match->model, info->model) &&
+	        match_info_string (match->serial_number, info->serial_number));
+}

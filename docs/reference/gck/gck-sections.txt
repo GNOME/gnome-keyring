@@ -189,6 +189,15 @@ CKR_GCK_MODULE_PROBLEM
 </SECTION>
 
 <SECTION>
+<FILE>gck-uri</FILE>
+GckUriInfo
+GckUriParseFlags
+gck_uri_parse
+gck_uri_build
+gck_uri_info_free
+</SECTION>
+
+<SECTION>
 <FILE>gck-misc</FILE>
 gck_list_ref_copy
 gck_list_unref_free

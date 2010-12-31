@@ -72,14 +72,16 @@ gboolean            _gck_module_fire_authenticate_object   (GckModule *module,
                                                              gchar *label,
                                                              gchar **password);
 
+gboolean            _gck_module_info_match                  (GckModuleInfo *match,
+                                                             GckModuleInfo *module_info);
+
 /* -----------------------------------------------------------------------------
  * ENUMERATOR
  */
 
 GckEnumerator*      _gck_enumerator_new                     (GList *modules,
                                                              guint session_options,
-                                                             GckTokenInfo *match_token,
-                                                             GckAttributes *match_attrs);
+                                                             GckUriInfo *uri_info);
 
 /* ----------------------------------------------------------------------------
  * SLOT
@@ -87,6 +89,12 @@ GckEnumerator*      _gck_enumerator_new                     (GList *modules,
 
 gboolean           _gck_token_info_match                    (GckTokenInfo *match,
                                                              GckTokenInfo *info);
+
+/* ----------------------------------------------------------------------------
+ * URI
+ */
+
+GckUriInfo*         _gck_uri_info_new                       (void);
 
 /* ----------------------------------------------------------------------------
  * CALL
