@@ -1,27 +1,30 @@
 # Norwegian translations for gnome-keyring.
 # Copyright (C) 2003 Red Hat Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Kjartan Maraas <kmaraas@gnome.org>, 2003-2010.
 #
+# Kjartan Maraas <kmaraas@gnome.org>, 2003-2010.
+# Torstein Adolf Winterseth <kvikende@fsfe.org>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.91.x\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-16 20:25+0200\n"
-"PO-Revision-Date: 2010-10-16 20:27+0200\n"
-"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
-"Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
-"Language: no\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2010-12-22 18:04+0000\n"
+"PO-Revision-Date: 2010-12-30 20:20+0100\n"
+"Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
+"Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: no\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.1\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Uten navn"
 
@@ -258,7 +261,7 @@ msgstr "Uventet feil i select() under lesing av data fra underprosess (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Uventet feil i waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:200
+#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Sertifikat"
 
@@ -355,7 +358,7 @@ msgid "Key Size"
 msgstr "Størrelse på nøkkel"
 
 #: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
@@ -397,15 +400,15 @@ msgstr "Lås denne nøkkelringen når jeg logger ut"
 msgid "minutes"
 msgstr "minutter"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "Oppgi passord for å låse opp privat nøkkel"
 
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "Oppgi passord for å låse opp sertifikat"
 
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "Oppgi passord for å låse opp"
 
@@ -442,7 +445,7 @@ msgstr "Sertifikat «%s» må låses opp før det kan importeres"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "«%s» må låses opp før import"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1565 ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
 #: ../gck/gck-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Operasjonen ble avbrutt"
@@ -450,7 +453,7 @@ msgstr "Operasjonen ble avbrutt"
 #: ../gcr/gcr-importer.c:346
 #, c-format
 msgid "No location available to import to"
-msgstr "Ingen lokasjon tilgjengelig for import"
+msgstr "Ingen adresse tilgjengelig for import"
 
 #: ../gcr/gcr-importer.c:495
 msgid "Import Certificates/Keys"
@@ -458,7 +461,7 @@ msgstr "Importer sertifikater/nøkler"
 
 #: ../gcr/gcr-importer.c:502
 msgid "Choose a location to store the imported certificates/keys."
-msgstr "Velg en lokasjon for å lagre importerte sertifikater og nøkler."
+msgstr "Velg en adresse for å lagre importerte sertifikater og nøkler."
 
 #: ../gcr/gcr-key-renderer.c:69
 msgid "Key"
@@ -472,7 +475,7 @@ msgstr "Privat RSA-nøkkel"
 msgid "Private DSA Key"
 msgstr "Privat DSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Privat nøkkel"
 
@@ -502,17 +505,23 @@ msgstr "Størrelse"
 msgid "Fingerprint"
 msgstr "Fingeravtrykk"
 
-#: ../gcr/gcr-parser.c:1568
+#: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
 msgstr "Ikke gjenkjente eller støttede data."
 
-#: ../gcr/gcr-parser.c:1571
+#: ../gcr/gcr-parser.c:1572
 msgid "Could not parse invalid or corrupted data."
 msgstr "Kunne ikke lese ugyldige eller korrupte data."
 
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1575
 msgid "The data is locked"
 msgstr "Data er låst"
+
+#: ../gcr/gcr-trust.c:417
+#, fuzzy, c-format
+#| msgid "Choose a location to store the imported certificates/keys."
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Klarte ikke å finne en plass å lagre de lagr p lagrj"
 
 #: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
 #, c-format
@@ -681,31 +690,31 @@ msgstr "Passord eller PIN er låst"
 
 #: ../gck/gck-misc.c:179
 msgid "The session is closed"
-msgstr "Sesjonen er lukket"
+msgstr "Økten er lukket"
 
 #: ../gck/gck-misc.c:181
 msgid "Too many sessions are active"
-msgstr "For mange aktive sesjoner"
+msgstr "For mange aktive økter"
 
 #: ../gck/gck-misc.c:183
 msgid "The session is invalid"
-msgstr "Sesjonen er ugyldig"
+msgstr "Økten er ugyldig"
 
 #: ../gck/gck-misc.c:185
 msgid "The session is read-only"
-msgstr "Sesjonen er skrivebeskyttet"
+msgstr "Økten er skrivebeskyttet"
 
 #: ../gck/gck-misc.c:187
 msgid "An open session exists"
-msgstr "En åpen sesjon finnes"
+msgstr "En åpen økt finnes"
 
 #: ../gck/gck-misc.c:189
 msgid "A read-only session exists"
-msgstr "En skrivebeskyttet sesjon finnes."
+msgstr "En skrivebeskyttet økt finnes."
 
 #: ../gck/gck-misc.c:191
 msgid "An administrator session exists"
-msgstr "En administrator-sesjon eksisterer"
+msgstr "En administrator-økt eksisterer"
 
 #: ../gck/gck-misc.c:193
 msgid "The signature is bad or corrupted"
@@ -843,7 +852,7 @@ msgstr "Signaturforespørselen ble avvist av bruker"
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: ../pkcs11/gkm/gkm-certificate.c:725
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Sertifikat uten navn"
 
@@ -852,25 +861,25 @@ msgid "Couldn't parse public SSH key"
 msgstr "Kunne ikke lese offentlig nøkkel for SSH"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Passord for å låse opp: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
 msgid "The unlock password was incorrect"
 msgstr "Passord for å låse opp var feil"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock Login Keyring"
 msgstr "Lås opp nøkkelring for innlogging"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Enter password to unlock your login keyring"
 msgstr "Oppgi passord for å låse opp din nøkkelring for innlogging"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -878,80 +887,80 @@ msgstr ""
 "Passordet du bruker for å logge på din datamaskin er ikke lenger det samme "
 "som passordet for din nøkkelring for pålogging."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Nøkkelring for pålogging ble ikke låst opp når du logget på din datamaskin."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
 msgstr "Lås opp nøkkelring"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Oppgi passord for nøkkelring «%s» for å låse opp"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Et program ønsker tilgang til nøkkelring «%s», men den er låst"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
 msgstr "Lås opp privat nøkkel"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 msgid "Unlock certificate"
 msgstr "Lås opp sertifikat"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Lås opp offentlig nøkkel"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
 msgstr "Lås opp"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Oppgi passord for å låse opp offentlig nøkkel"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Et program ønsker tilgang til privat nøkkel «%s», men den er låst"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Et program ønsker tilgang til sertifikat «%s», men den er låst"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Et program ønsker tilgang til offentlignøkkel «%s», men den er låst"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Et program ønsker tilgang til «%s», men den er låst"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
 msgid "Unlock certificate/key storage"
 msgstr "Lås opp lager for sertifikat/nøkkel"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Oppgi passord for å låse opp lager for sertifikat/nøkkel"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -960,15 +969,15 @@ msgstr ""
 "Et program ønsker tilgang til lager for sertifikat/nøkkel «%s», men det er "
 "låst"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "Nytt passord kreves"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "Nytt passord kreves for sikkerhetslager"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -977,15 +986,15 @@ msgstr ""
 "Et passord kreves for å forberede «%s» for lagring av sertifikater eller "
 "nøkler."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
 msgstr "Bytt passord"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
 msgid "Change password for secure storage"
 msgstr "Bytt passord sikkerhetslager"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
@@ -1044,3 +1053,4 @@ msgstr "Gammelt pass_ord:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Passord:"
+
