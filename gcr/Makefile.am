@@ -11,10 +11,10 @@ ui_DATA = \
 # ------------------------------------------------------------------
 # CONFIG
 
-confdir = $(sysconfdir)/xdg
+confdir = $(sysconfdir)/pkcs11
 
 conf_DATA = \
-	pkcs11.conf.defaults
+	pkcs11-options.defaults
 
 # ------------------------------------------------------------------
 # HEADERS

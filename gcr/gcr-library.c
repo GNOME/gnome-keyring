@@ -170,7 +170,7 @@ _gcr_initialize (void)
 		key_file = g_key_file_new ();
 
 		/* Load the defaults */
-		path = g_build_filename (config_dir, "pkcs11.conf.defaults", NULL);
+		path = g_build_filename (config_dir, "pkcs11-options.defaults", NULL);
 		if (!g_key_file_load_from_file (key_file, path, G_KEY_FILE_NONE, &error)) {
 			g_warning ("couldn't parse %s file: %s", path, egg_error_message (error));
 			g_clear_error (&error);
@@ -178,7 +178,7 @@ _gcr_initialize (void)
 		g_free (path);
 
 		/* Load any overrides */
-		path = g_build_filename (config_dir, "pkcs11.conf", NULL);
+		path = g_build_filename (config_dir, "pkcs11-options.conf", NULL);
 		if (g_file_test (path, G_FILE_TEST_EXISTS) &&
 		    !g_key_file_load_from_file (key_file, path, G_KEY_FILE_NONE, &error)) {
 			g_warning ("couldn't parse %s file: %s", path, egg_error_message (error));

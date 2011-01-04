@@ -6,8 +6,8 @@
 # http://tools.ietf.org/html/draft-pechanec-pkcs11uri-03
 #
 # Do not change the settings here. Put your changes or overrides in
-# a file called "pkcs11.conf" in the same directory.
+# a file called "pkcs11-options.conf" in the same directory.
 
 [trust-assertions]
-lookups=pkcs11:manufacturer=Gnome%20Keyring;serial=1:ROOTS:DEFAULT pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT
-storage=pkcs11:manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT
+lookups=pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:ROOTS:DEFAULT pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT
+storage=pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT
