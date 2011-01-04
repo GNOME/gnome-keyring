@@ -66,6 +66,7 @@ install-pam:
 if WITH_COVERAGE
 coverage:
 	mkdir -p testing/coverage
+	$(LCOV) --directory docs/ --zerocounters
 	$(LCOV) --directory . --capture --output-file testing/coverage.info
 	$(GENHTML) --output-directory testing/coverage testing/coverage.info
 	$(LCOV) --directory . --zerocounters
