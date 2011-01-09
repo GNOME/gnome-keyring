@@ -7,14 +7,14 @@
 # Mancomún - Centro de Referencia e Servizos de Software Libre <g11n@mancomun.org>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Dieguez <frandieguez@ubuntu.com>, 2010.
-# Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
+# Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-26 16:47+0200\n"
-"PO-Revision-Date: 2010-10-26 16:48+0200\n"
+"POT-Creation-Date: 2011-01-09 17:10+0100\n"
+"PO-Revision-Date: 2011-01-09 17:11+0100\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "Language: gl\n"
@@ -267,7 +267,7 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Produciuse un erro non esperado en waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:200
+#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Certificado"
 
@@ -364,7 +364,7 @@ msgid "Key Size"
 msgstr "Tamaño de chave"
 
 #: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Chave pública"
 
@@ -451,7 +451,7 @@ msgstr "Para importar o certificado «%s» debe estar desbloqueado"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Para importar «%s» debe estar desbloqueado"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1565 ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
 #: ../gck/gck-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Cancelouse a operación"
@@ -481,7 +481,7 @@ msgstr "Chave privada RSA"
 msgid "Private DSA Key"
 msgstr "Chave privada DSA"
 
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Chave privada"
 
@@ -511,17 +511,23 @@ msgstr "Tamaño"
 msgid "Fingerprint"
 msgstr "Pegada"
 
-#: ../gcr/gcr-parser.c:1568
+#: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
 msgstr "Datos non recoñecíbeis ou non soportados."
 
-#: ../gcr/gcr-parser.c:1571
+#: ../gcr/gcr-parser.c:1572
 msgid "Could not parse invalid or corrupted data."
 msgstr "Non é posíbel analizar datos danados ou non válidos."
 
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1575
 msgid "The data is locked"
 msgstr "Os datos están bloqueados"
+
+#: ../gcr/gcr-trust.c:417
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr ""
+"Non foi posíbel encontrar un lugar para almacenar o certificado anclado"
 
 #: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
 #, c-format
@@ -853,7 +859,7 @@ msgstr "A solicitude de sinatura foi rexeitada polo usuario"
 msgid "Unknown error"
 msgstr "Erro descoñecido"
 
-#: ../pkcs11/gkm/gkm-certificate.c:725
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Certificado sen nome"
 
