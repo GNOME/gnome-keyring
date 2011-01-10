@@ -9,8 +9,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
 "POT-Creation-Date: 2010-12-22 18:04+0000\n"
-"PO-Revision-Date: 2010-03-23 00:05+0930\n"
-"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"PO-Revision-Date: 2011-01-03 16:51+0900\n"
+"Last-Translator: Nguyen Vu Hung <vuhung16plus@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -90,49 +90,44 @@ msgid "SSH Key Agent"
 msgstr "Tác nhân khoá SSH"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-#, fuzzy
 #| msgid "GNOME Keyring: SSH Agent"
 msgid "GNOME Keyring: GPG Agent"
-msgstr "Vòng Khoá GNOME: SSH Agent"
+msgstr "Vòng Khoá GNOME: GPG Agent"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#, fuzzy
 #| msgid "New password strength"
 msgid "GPG Password Agent"
-msgstr "Độ mạnh của mật khẩu mới"
+msgstr "Agent cho mật khẩu GPG"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
 #: ../gcr/gcr-key-renderer.c:296
-#, fuzzy
 #| msgid "Unknown error"
 msgid "Unknown"
-msgstr "Lỗi lạ"
+msgstr "Không biết"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
 #, c-format
 msgid "PGP Key: %s"
-msgstr ""
+msgstr "Khóa PGP: %s"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
 msgid "Enter Passphrase"
-msgstr ""
+msgstr "Nhập mật mã"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
-#, fuzzy
 #| msgid "Lock this keyring if idle for"
 msgid "Forget this password if idle for"
-msgstr "Khoá vòng khoá này nếu vẫn nghỉ sau"
+msgstr "Quên mật khẩu này nếu không dùng trong"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Forget this password after"
-msgstr ""
+msgstr "Quên mật khẩu sau"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
-#, fuzzy
 #| msgid "Lock this keyring when I log out"
 msgid "Forget this password when I log out"
-msgstr "Khoá vòng khoá này khi tôi đang xuất"
+msgstr "Quên mật khẩu sau khi đăng xuất"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:147
@@ -149,7 +144,7 @@ msgstr "Mã số người dùng"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr ""
+msgstr "Thư điện tử"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -300,20 +295,18 @@ msgid "No"
 msgstr "Không"
 
 #: ../gcr/gcr-certificate-renderer.c:339
-#, fuzzy
 #| msgid "Identifier"
 msgid "Identity"
-msgstr "Dấu nhận diện"
+msgstr "Nhận diện"
 
 #: ../gcr/gcr-certificate-renderer.c:343
 msgid "Verified by"
-msgstr ""
+msgstr "Kiểm chứng bởi"
 
 #: ../gcr/gcr-certificate-renderer.c:350
-#, fuzzy
 #| msgid "Expires On"
 msgid "Expires"
-msgstr "Hết hạn vào"
+msgstr "Hết hạn"
 
 #. The subject
 #: ../gcr/gcr-certificate-renderer.c:360
@@ -382,10 +375,9 @@ msgid "Fingerprints"
 msgstr "Vân tay"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-#, fuzzy
 #| msgid "Import Certificates/Keys"
 msgid "Import Certificates and Keys"
-msgstr "Nhập các chứng nhận/khoá"
+msgstr "Nhập chứng nhận/khoá"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
@@ -481,56 +473,49 @@ msgstr "Hãy chọn một vị trí vào đó cần lưu các chứng nhận/kho
 
 #: ../gcr/gcr-key-renderer.c:69
 msgid "Key"
-msgstr ""
+msgstr "Khóa"
 
 #: ../gcr/gcr-key-renderer.c:260
-#, fuzzy
 #| msgid "Private Key"
 msgid "Private RSA Key"
-msgstr "Khoá cá nhân"
+msgstr "Khoá cá nhân RSA"
 
 #: ../gcr/gcr-key-renderer.c:262
-#, fuzzy
 #| msgid "Private Key"
 msgid "Private DSA Key"
-msgstr "Khoá cá nhân"
+msgstr "Khoá cá nhân DSA"
 
 #: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Khoá cá nhân"
 
 #: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-#, fuzzy
 #| msgid "Public Key"
 msgid "Public DSA Key"
-msgstr "Khoá công khai"
+msgstr "Khoá công khai DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
 msgid "%d bits"
-msgstr ""
+msgstr "%d bit"
 
 #: ../gcr/gcr-key-renderer.c:279
-#, fuzzy
 #| msgid "Street"
 msgid "Strength"
-msgstr "Đường"
+msgstr "Độ mạnh"
 
 #: ../gcr/gcr-key-renderer.c:292
-#, fuzzy
 #| msgid "Key Algorithm"
 msgid "Algorithm"
-msgstr "Thuật toán khoá"
+msgstr "Thuật toán"
 
 #: ../gcr/gcr-key-renderer.c:299
-#, fuzzy
 #| msgid "Key Size"
 msgid "Size"
-msgstr "Cỡ khoá"
+msgstr "Cỡ"
 
 #. TODO: We need to have consistent key fingerprints.
 #: ../gcr/gcr-key-renderer.c:303
-#, fuzzy
 #| msgid "Fingerprints"
 msgid "Fingerprint"
 msgstr "Vân tay"
@@ -549,19 +534,19 @@ msgid "The data is locked"
 msgstr "Dữ liệu bị khoá"
 
 #: ../gcr/gcr-trust.c:417
-#, fuzzy, c-format
+#, c-format
 #| msgid "Choose a location to store the imported certificates/keys."
 msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Hãy chọn một vị trí vào đó cần lưu các chứng nhận/khoá được nhập."
+msgstr "Không tìm thấy vị trí lưu chứng nhận/khoá được nhập."
 
 #: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr ""
+msgstr "URI sai cú pháp. Trường '%s' sai."
 
 #: ../gck/gck-uri.c:195
 msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr ""
+msgstr "URI không có 'pkcs11'."
 
 #: ../gck/gck-misc.c:101
 msgid "Insufficient memory available"
@@ -620,7 +605,6 @@ msgid "An error occurred on the device"
 msgstr "Lỗi xảy ra trên thiết bị"
 
 #: ../gck/gck-misc.c:129
-#, fuzzy
 #| msgid "Insufficient memory available on device"
 msgid "Insufficient memory available on the device"
 msgstr "Không đủ bộ nhớ trên thiết bị."
@@ -666,7 +650,6 @@ msgid "A key is needed"
 msgstr "Cần khoá"
 
 #: ../gck/gck-misc.c:151
-#, fuzzy
 #| msgid "Cannot include the key in digest"
 msgid "Cannot include the key in the digest"
 msgstr "Không thể kèm khoá trong tóm tắt"
@@ -812,10 +795,9 @@ msgid "Another user is already logged in"
 msgstr "Người dùng khác đã đăng nhập"
 
 #: ../gck/gck-misc.c:223
-#, fuzzy
 #| msgid "Too many users of different types logged in"
 msgid "Too many users of different types are logged in"
-msgstr "Quá nhiều loại người dùng đăng nhập"
+msgstr "Quá nhiều người dùng thuộc các loại khác nhau đang đăng nhập"
 
 #: ../gck/gck-misc.c:225
 msgid "Cannot import an invalid key"
@@ -913,10 +895,9 @@ msgid "Unlock Login Keyring"
 msgstr "Gỡ khoá vòng khoá đăng nhập"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
-#, fuzzy
 #| msgid "Enter password for to unlock your login keyring"
 msgid "Enter password to unlock your login keyring"
-msgstr "Gõ mật khẩu để gỡ khoá vòng khoá đăng nhập"
+msgstr "Nhập mật khẩu để gỡ khoá vòng khoá đăng nhập"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid ""
@@ -1021,25 +1002,24 @@ msgstr "Yêu cầu mật khẩu mới để lưu trữ bảo mật"
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr "Để chuẩn bi « %s » lưu trữ chứng nhận hay khoá thì yêu cầu một mật khẩu"
+msgstr ""
+"Cần có mật khẩu để chuẩn bị '%s'để lưu trữ chứng nhận hay khoá"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-#, fuzzy
 #| msgid "Change Keyring Password"
 msgid "Change Password"
-msgstr "Đổi mật khẩu vòng khóa"
+msgstr "Đổi mật khẩu"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-#, fuzzy
 #| msgid "New password required for secure storage"
 msgid "Change password for secure storage"
-msgstr "Yêu cầu mật khẩu mới để lưu trữ bảo mật"
+msgstr "Thay đổi mật khẩu mới để lưu trữ bảo mật"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
-msgstr ""
+msgstr "Cần nhập mật khẩu cũ và mới để đổi mật khẩu cho '%s'"
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
