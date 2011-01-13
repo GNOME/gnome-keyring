@@ -4,14 +4,17 @@
 #
 # Kostas Papadimas <pkst@gnome.org>, 2004, 2006.
 # Jennie Petoumenou <epetoumenou@gmail.com>, 2009, 2010.
+# Christos Spyroglou <cspyroglou@gmail.com>, 2010.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2010-09-13 06:35+0000\n"
-"PO-Revision-Date: 2010-09-29 10:38+0100\n"
-"Last-Translator: Christos Spyroglou <cspyroglou@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-01-13 11:58+0200\n"
+"PO-Revision-Date: 2011-01-13 11:59+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,8 +25,8 @@ msgstr ""
 #: ../daemon/dbus/gkd-secret-change.c:78
 #: ../daemon/dbus/gkd-secret-create.c:74
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Χωρίς όνομα"
 
@@ -91,33 +94,35 @@ msgid "GPG Password Agent"
 msgstr "Πρόγραμμα κωδικού GPG"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+#: ../gcr/gcr-key-renderer.c:291
+#: ../gcr/gcr-key-renderer.c:296
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Κλειδί PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:352
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:353
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
 msgid "Enter Passphrase"
 msgstr "Εισάγετε την κωδική φράση"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
 msgid "Forget this password if idle for"
 msgstr "Να ξεχαστεί αυτός ο κωδικός αν είναι αδρανής για"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:386
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Forget this password after"
 msgstr "Να ξεχαστεί αυτός ο κωδικός μετά από"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:387
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
 msgid "Forget this password when I log out"
 msgstr "Να ξεχαστεί αυτός ο κωδικός όταν αποσυνδεθώ"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:159
+#: ../daemon/login/gkd-login.c:147
 msgid "Login"
 msgstr "Σύνδεση"
 
@@ -130,8 +135,8 @@ msgid "User ID"
 msgstr "ID Χρήστη"
 
 #: ../egg/egg-oid.c:46
-msgid "Email"
-msgstr "Ηλ. διεύθυνση"
+msgid "Email Address"
+msgstr "Διεύθυνση ηλεκτρονικού ταχυδρομείου"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -162,8 +167,7 @@ msgid "Surname"
 msgstr "Επώνυμο"
 
 #: ../egg/egg-oid.c:69
-#: ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:318
+#: ../gcr/gcr-certificate-renderer.c:379
 msgid "Serial Number"
 msgstr "Σειριακός αριθμός"
 
@@ -220,6 +224,7 @@ msgid "Pseudonym"
 msgstr "Ψευδώνυμο"
 
 #: ../egg/egg-oid.c:98
+#: ../gcr/gcr-key-renderer.c:287
 msgid "RSA"
 msgstr "RSA"
 
@@ -236,6 +241,7 @@ msgid "SHA1 with RSA"
 msgstr "SHA1 με RSA"
 
 #: ../egg/egg-oid.c:107
+#: ../gcr/gcr-key-renderer.c:289
 msgid "DSA"
 msgstr "DSA"
 
@@ -253,177 +259,117 @@ msgstr "Απρόσμενο σφάλμα στο select() ανάγνωσης δε�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Απρόσμενο σφάλμα στο waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-basics-widget.c:59
-msgid "<i>Not Part of Certificate</i>"
-msgstr "<i>Δεν περιέχεται στο πιστοποιητικό</i>"
+#: ../gcr/gcr-certificate-renderer.c:82
+#: ../gcr/gcr-parser.c:201
+msgid "Certificate"
+msgstr "Πιστοποιητικό"
 
-#: ../gcr/gcr-certificate-basics-widget.c:80
-msgid "<i>unknown</i>"
-msgstr "<i>άγνωστο</i>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<Δεν περιέχεται στο πιστοποιητικό>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>Αποτυπώματα</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>Εκδόθηκε από</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>Εκδόθηκε για</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>Αυτό το πιστοποιητικό έχει επαληθευτεί για τις ακόλουθες χρήσεις:</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>Ισχύς</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:7
-msgid "Common Name (CN)"
-msgstr "Όνομα, υποκοριστικό (CN)"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:8
-msgid "Email Recipient Certificate"
-msgstr "Πιστοποιητικό παραλήπτη email"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:9
-msgid "Email Signer Certificate"
-msgstr "Πιστοποιητικό υπογράφοντος email"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:10
-msgid "Expires On"
-msgstr "Λήγει στις"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:11
-msgid "Issued On"
-msgstr "Εκδόθηκε στις"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:12
-msgid "MD5 Fingerprint"
-msgstr "Αποτύπωμα MD5"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:13
-msgid "Organization (O)"
-msgstr "Οργανισμός (O)"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:14
-msgid "Organizational Unit (OU)"
-msgstr "Μονάδα Οργανισμού (OU)"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:15
-msgid "SHA1 Fingerprint"
-msgstr "Αποτύπωμα SHA1"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:16
-msgid "SSL Client Certificate"
-msgstr "Πιστοποιητικό πελάτη SSL"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:17
-msgid "SSL Server Certificate"
-msgstr "Πιστοποιητικό εξυπηρετητή SSL"
-
-#: ../gcr/gcr-certificate-details-widget.c:203
+#: ../gcr/gcr-certificate-renderer.c:107
 msgid "Extension"
 msgstr "Επέκταση"
 
-#: ../gcr/gcr-certificate-details-widget.c:208
+#: ../gcr/gcr-certificate-renderer.c:112
 msgid "Identifier"
 msgstr "Αναγνωριστικό"
 
-#: ../gcr/gcr-certificate-details-widget.c:216
+#: ../gcr/gcr-certificate-renderer.c:120
 msgid "Value"
 msgstr "Τιμή"
 
-#: ../gcr/gcr-certificate-details-widget.c:224
+#: ../gcr/gcr-certificate-renderer.c:126
 msgid "Critical"
 msgstr "Κρίσιμο"
 
-#: ../gcr/gcr-certificate-details-widget.c:224
+#: ../gcr/gcr-certificate-renderer.c:126
 msgid "Yes"
 msgstr "Ναι"
 
-#: ../gcr/gcr-certificate-details-widget.c:224
+#: ../gcr/gcr-certificate-renderer.c:126
 msgid "No"
 msgstr "Όχι"
 
+#: ../gcr/gcr-certificate-renderer.c:339
+msgid "Identity"
+msgstr "Ταυτότητα"
+
+#: ../gcr/gcr-certificate-renderer.c:343
+msgid "Verified by"
+msgstr "Επαληθεύτηκε από"
+
+#: ../gcr/gcr-certificate-renderer.c:350
+msgid "Expires"
+msgstr "Λήγει"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:299
+#: ../gcr/gcr-certificate-renderer.c:360
 msgid "Subject Name"
 msgstr "Όνομα θέματος"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-renderer.c:364
 msgid "Issuer Name"
 msgstr "Όνομα εκδότη"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-renderer.c:368
 msgid "Issued Certificate"
 msgstr "Εκδοθέν πιστοποιητικό"
 
-#: ../gcr/gcr-certificate-details-widget.c:312
+#: ../gcr/gcr-certificate-renderer.c:373
 msgid "Version"
 msgstr "Έκδοση"
 
-#: ../gcr/gcr-certificate-details-widget.c:325
+#: ../gcr/gcr-certificate-renderer.c:387
 msgid "Not Valid Before"
 msgstr "Έναρξη ισχύος"
 
-#: ../gcr/gcr-certificate-details-widget.c:330
+#: ../gcr/gcr-certificate-renderer.c:392
 msgid "Not Valid After"
 msgstr "Λήξη ισχύος"
 
-#. Signature
-#: ../gcr/gcr-certificate-details-widget.c:335
-#: ../gcr/gcr-certificate-details-widget.c:351
-msgid "Signature"
-msgstr "Υπογραφή"
-
-#: ../gcr/gcr-certificate-details-widget.c:339
+#: ../gcr/gcr-certificate-renderer.c:401
 msgid "Signature Algorithm"
 msgstr "Αλγόριθμος υπογραφής"
 
-#: ../gcr/gcr-certificate-details-widget.c:344
+#: ../gcr/gcr-certificate-renderer.c:406
 msgid "Signature Parameters"
 msgstr "Παράμετροι υπογραφής"
 
+#: ../gcr/gcr-certificate-renderer.c:413
+msgid "Signature"
+msgstr "Υπογραφή"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-renderer.c:418
 msgid "Public Key Info"
 msgstr "Πληροφορίες Δημοσίου Κλειδιού"
 
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-renderer.c:423
 msgid "Key Algorithm"
 msgstr "Αλγόριθμος κλειδιού"
 
-#: ../gcr/gcr-certificate-details-widget.c:364
+#: ../gcr/gcr-certificate-renderer.c:429
 msgid "Key Parameters"
 msgstr "Παράμετροι κλειδιού"
 
-#: ../gcr/gcr-certificate-details-widget.c:371
+#: ../gcr/gcr-certificate-renderer.c:436
 msgid "Key Size"
 msgstr "Μέγεθος κλειδιού"
 
-#: ../gcr/gcr-certificate-details-widget.c:378
-#: ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-certificate-renderer.c:444
+#: ../gcr/gcr-key-renderer.c:271
+#: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Δημόσιο κλειδί"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:383
+#: ../gcr/gcr-certificate-renderer.c:449
 msgid "Fingerprints"
 msgstr "Αποτυπώματα"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>Εισαγωγή πιστοποιητικών και κλειδιών</span>"
+msgid "Import Certificates and Keys"
+msgstr "Εισαγωγή πιστοποιητικών και κλειδιών"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
@@ -449,418 +395,472 @@ msgstr "Κλείδωμα αυτής της κλειδοθήκης αν είνα�
 msgid "Lock this keyring when I log out"
 msgstr "Κλείδωμα αυτής της κλειδοθήκης όταν αποσυνδεθώ"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:5
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
+#: ../gcr/gcr-unlock-options-widget.ui.h:6
 msgid "minutes"
 msgstr "λεπτά"
 
-#: ../gcr/gcr-importer.c:163
-#: ../gcr/gcr-parser.c:1565
-#: ../gp11/gp11-misc.c:98
-msgid "The operation was cancelled"
-msgstr "Η διεργασία ακυρώθηκε"
-
-#: ../gcr/gcr-importer.c:255
-#, c-format
-msgid "No location available to import to"
-msgstr "Δεν υπάρχει τοποθεσία διαθέσιμη για την εισαγωγή"
-
-#: ../gcr/gcr-importer.c:404
-msgid "Import Certificates/Keys"
-msgstr "Εισαγωγή πιστοποιητικών/κλειδιών"
-
-#: ../gcr/gcr-importer.c:411
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Επιλέξτε τοποθεσία για την αποθήκευση των εισηγμένων πιστοποιητικών/κλειδιών."
-
-#: ../gcr/gcr-importer.c:436
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: ../gcr/gcr-importer.c:133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "Εισάγετε κωδικό για το ξεκλείδωμα του ιδιωτικού κλειδιού"
 
-#: ../gcr/gcr-importer.c:438
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#: ../gcr/gcr-importer.c:135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "Εισάγετε κωδικό για το ξεκλείδωμα του πιστοποιητικού"
 
-#: ../gcr/gcr-importer.c:440
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+#: ../gcr/gcr-importer.c:137
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "Εισάγετε κωδικό για ξεκλείδωμα"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:449
+#: ../gcr/gcr-importer.c:146
 msgid "In order to import the private key, it must be unlocked"
 msgstr "Για να γίνει εισαγωγή του ιδιωτικού κλειδιού, πρέπει να μην είναι κλειδωμένο"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:452
+#: ../gcr/gcr-importer.c:149
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "Για να γίνει εισαγωγή του πιστοποιητικού, πρέπει να μην είναι κλειδωμένο"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:455
+#: ../gcr/gcr-importer.c:152
 msgid "In order to import the data, it must be unlocked"
 msgstr "Για να γίνει εισαγωγή των δεδομένων, πρέπει να μην είναι κλειδωμένα"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:460
+#: ../gcr/gcr-importer.c:157
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "Για να γίνει εισαγωγή του ιδιωτικού κλειδιού '%s', πρέπει να μην είναι κλειδωμένο"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:463
+#: ../gcr/gcr-importer.c:160
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "Για να γίνει εισαγωγή του πιστοποιητικού '%s', πρέπει να μην είναι κλειδωμένο"
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:466
+#: ../gcr/gcr-importer.c:163
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Για να γίνει εισαγωγή του '%s', πρέπει να μην είναι κλειδωμένο"
 
-#: ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-importer.c:254
+#: ../gcr/gcr-parser.c:1566
+#: ../gcr/gcr-parser.c:1757
+#: ../gck/gck-misc.c:98
+msgid "The operation was cancelled"
+msgstr "Η διεργασία ακυρώθηκε"
+
+#: ../gcr/gcr-importer.c:346
+#, c-format
+msgid "No location available to import to"
+msgstr "Δεν υπάρχει τοποθεσία διαθέσιμη για την εισαγωγή"
+
+#: ../gcr/gcr-importer.c:495
+msgid "Import Certificates/Keys"
+msgstr "Εισαγωγή πιστοποιητικών/κλειδιών"
+
+#: ../gcr/gcr-importer.c:502
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Επιλέξτε τοποθεσία για την αποθήκευση των εισηγμένων πιστοποιητικών/κλειδιών."
+
+#: ../gcr/gcr-key-renderer.c:69
+msgid "Key"
+msgstr "Κλειδί"
+
+#: ../gcr/gcr-key-renderer.c:260
+msgid "Private RSA Key"
+msgstr "Ιδιωτικό κλειδί RSA"
+
+#: ../gcr/gcr-key-renderer.c:262
+msgid "Private DSA Key"
+msgstr "Ιδιωτικό κλειδί DSA"
+
+#: ../gcr/gcr-key-renderer.c:264
+#: ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Ιδιωτικό κλειδί"
 
-#: ../gcr/gcr-parser.c:200
-msgid "Certificate"
-msgstr "Πιστοποιητικό"
+#: ../gcr/gcr-key-renderer.c:267
+#: ../gcr/gcr-key-renderer.c:269
+msgid "Public DSA Key"
+msgstr "Δημόσιο κλειδί DSA"
 
-#: ../gcr/gcr-parser.c:1568
+#: ../gcr/gcr-key-renderer.c:278
+#, c-format
+msgid "%d bits"
+msgstr "%d bits"
+
+#: ../gcr/gcr-key-renderer.c:279
+msgid "Strength"
+msgstr "Ισχύς"
+
+#: ../gcr/gcr-key-renderer.c:292
+msgid "Algorithm"
+msgstr "Αλγόριθμος"
+
+#: ../gcr/gcr-key-renderer.c:299
+msgid "Size"
+msgstr "Μέγεθος"
+
+#. TODO: We need to have consistent key fingerprints.
+#: ../gcr/gcr-key-renderer.c:303
+msgid "Fingerprint"
+msgstr "Αποτύπωμα"
+
+#: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
 msgstr "Μη αναγνωρίσιμα ή μη υποστηριζόμενα δεδομένα."
 
-#: ../gcr/gcr-parser.c:1571
+#: ../gcr/gcr-parser.c:1572
 msgid "Could not parse invalid or corrupted data."
 msgstr "Αδυναμία ανάλυσης μη έγκυρων ή κατεστραμμένων δεδομένων."
 
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1575
 msgid "The data is locked"
 msgstr "Τα δεδομένα είναι κλειδωμένα"
 
-#: ../gp11/gp11-misc.c:101
+#: ../gcr/gcr-trust.c:417
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Αδυναμία εύρεσης τοποθεσίας για την αποθήκευση του πιστοποιητικού"
+
+#: ../gck/gck-uri.c:78
+#: ../gck/gck-uri.c:135
+#: ../gck/gck-uri.c:170
+#, c-format
+msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+msgstr "Το URI έχει λανθασμένη σύνταξη. Η κωδικοποίηση του πεδίου '%s' είναι λανθασμένη."
+
+#: ../gck/gck-uri.c:195
+msgid "The URI has does not have the 'pkcs11' scheme."
+msgstr "Το URI δεν έχει το σχήμα 'pkcs11'"
+
+#: ../gck/gck-misc.c:101
 msgid "Insufficient memory available"
 msgstr "Δεν υπάρχει επαρκής μνήμη"
 
-#: ../gp11/gp11-misc.c:103
+#: ../gck/gck-misc.c:103
 msgid "The specified slot ID is not valid"
 msgstr "Το καθορισμένο slot ID δεν είναι έγκυρο"
 
-#: ../gp11/gp11-misc.c:105
+#: ../gck/gck-misc.c:105
 msgid "Internal error"
 msgstr "Εσωτερικό σφάλμα"
 
-#: ../gp11/gp11-misc.c:107
+#: ../gck/gck-misc.c:107
 msgid "The operation failed"
 msgstr "Η διεργασία απέτυχε"
 
-#: ../gp11/gp11-misc.c:109
+#: ../gck/gck-misc.c:109
 msgid "Invalid arguments"
 msgstr "Μη έγκυροι παράμετροι"
 
-#: ../gp11/gp11-misc.c:111
+#: ../gck/gck-misc.c:111
 msgid "The module cannot create needed threads"
 msgstr "Η λειτουργική μονάδα δεν μπορεί να δημιουργήσει τα απαιτούμενα νήματα"
 
-#: ../gp11/gp11-misc.c:113
+#: ../gck/gck-misc.c:113
 msgid "The module cannot lock data properly"
 msgstr "Αδυναμία έγκυρου κλειδώματος από την λειτουργική μονάδα"
 
-#: ../gp11/gp11-misc.c:115
+#: ../gck/gck-misc.c:115
 msgid "The field is read-only"
 msgstr "Το πεδίο είναι μόνο για ανάγνωση"
 
-#: ../gp11/gp11-misc.c:117
+#: ../gck/gck-misc.c:117
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Το πεδίο είναι ευαίσθητο και δεν μπορεί να αποκαλυφθεί"
 
-#: ../gp11/gp11-misc.c:119
+#: ../gck/gck-misc.c:119
 msgid "The field is invalid or does not exist"
 msgstr "Το πεδίο δεν είναι έγκυρο ή δεν υπάρχει"
 
-#: ../gp11/gp11-misc.c:121
+#: ../gck/gck-misc.c:121
 msgid "Invalid value for field"
 msgstr "Μη έγκυρη τιμή για το πεδίο"
 
-#: ../gp11/gp11-misc.c:123
+#: ../gck/gck-misc.c:123
 msgid "The data is not valid or unrecognized"
 msgstr "Τα δεδομένα είναι άκυρα ή μην αναγνωρίσιμα"
 
-#: ../gp11/gp11-misc.c:125
+#: ../gck/gck-misc.c:125
 msgid "The data is too long"
 msgstr "Τα δεδομένα είναι πολύ μεγάλου μήκους"
 
-#: ../gp11/gp11-misc.c:127
+#: ../gck/gck-misc.c:127
 msgid "An error occurred on the device"
 msgstr "Συνέβηκε ένα σφάλμα στη συσκευή"
 
-#: ../gp11/gp11-misc.c:129
-msgid "Insufficient memory available on device"
+#: ../gck/gck-misc.c:129
+msgid "Insufficient memory available on the device"
 msgstr "Δεν υπάρχει επαρκής μνήμη στην συσκευή"
 
-#: ../gp11/gp11-misc.c:131
+#: ../gck/gck-misc.c:131
 msgid "The device was removed or unplugged"
 msgstr "Η συσκευή απομακρύνθηκε ή αποσυνδέθηκε"
 
-#: ../gp11/gp11-misc.c:133
+#: ../gck/gck-misc.c:133
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Τα κρυπτογραφημένα δεδομένα δεν είναι έγκυρα ή δεν είναι αναγνωρίσιμα"
 
-#: ../gp11/gp11-misc.c:135
+#: ../gck/gck-misc.c:135
 msgid "The encrypted data is too long"
 msgstr "Τα κρυπτογραφημένα δεδομένα είναι πολύ μεγάλου μήκους"
 
-#: ../gp11/gp11-misc.c:137
+#: ../gck/gck-misc.c:137
 msgid "This operation is not supported"
 msgstr "Η διεργασία δεν υποστηρίζεται"
 
-#: ../gp11/gp11-misc.c:139
+#: ../gck/gck-misc.c:139
 msgid "The key is missing or invalid"
 msgstr "Το κλειδί λείπει ή δεν είναι έγκυρο"
 
-#: ../gp11/gp11-misc.c:141
+#: ../gck/gck-misc.c:141
 msgid "The key is the wrong size"
 msgstr "Το κλειδί έχει λανθασμένο μέγεθος"
 
-#: ../gp11/gp11-misc.c:143
+#: ../gck/gck-misc.c:143
 msgid "The key is of the wrong type"
 msgstr "Το κλειδί έχει λανθασμένο τύπο"
 
-#: ../gp11/gp11-misc.c:145
+#: ../gck/gck-misc.c:145
 msgid "No key is needed"
 msgstr "Δεν χρειάζεται κλειδί"
 
-#: ../gp11/gp11-misc.c:147
-msgid "The key is different from before"
+#: ../gck/gck-misc.c:147
+msgid "The key is different than before"
 msgstr "Το κλειδί είναι διαφορετικό από πριν"
 
-#: ../gp11/gp11-misc.c:149
+#: ../gck/gck-misc.c:149
 msgid "A key is needed"
 msgstr "Χρειάζεται ένα κλειδί"
 
-#: ../gp11/gp11-misc.c:151
-msgid "Cannot include the key in digest"
+#: ../gck/gck-misc.c:151
+msgid "Cannot include the key in the digest"
 msgstr "Αδυναμία συμπερίληψης του κλειδιού στο digest"
 
-#: ../gp11/gp11-misc.c:153
+#: ../gck/gck-misc.c:153
 msgid "This operation cannot be done with this key"
 msgstr "Δεν είναι δυνατή η εκτέλεση αυτής της διεργασίας με αυτό το κλειδί"
 
-#: ../gp11/gp11-misc.c:155
+#: ../gck/gck-misc.c:155
 msgid "The key cannot be wrapped"
 msgstr "Δεν είναι δυνατή η αναδίπλωση του κλειδιού"
 
-#: ../gp11/gp11-misc.c:157
+#: ../gck/gck-misc.c:157
 msgid "Cannot export this key"
 msgstr "Αδυναμία εξαγωγής αυτού του κλειδιού"
 
-#: ../gp11/gp11-misc.c:159
+#: ../gck/gck-misc.c:159
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Ο μηχανισμός κρυπτογράφησης δεν είναι έγκυρος ή είναι μη αναγνωρίσιμος"
 
-#: ../gp11/gp11-misc.c:161
+#: ../gck/gck-misc.c:161
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Ο μηχανισμός κρυπτογράφησης έχει μια μη έγκυρη παράμετρο"
 
-#: ../gp11/gp11-misc.c:163
+#: ../gck/gck-misc.c:163
 msgid "The object is missing or invalid"
 msgstr "Το αντικείμενο λείπει ή δεν είναι έγκυρο"
 
-#: ../gp11/gp11-misc.c:165
+#: ../gck/gck-misc.c:165
 msgid "Another operation is already taking place"
 msgstr "Μια άλλη διεργασία εκτελείται ήδη"
 
-#: ../gp11/gp11-misc.c:167
+#: ../gck/gck-misc.c:167
 msgid "No operation is taking place"
 msgstr "Δεν εκτελείται καμιά διεργασία"
 
-#: ../gp11/gp11-misc.c:169
+#: ../gck/gck-misc.c:169
 msgid "The password or PIN is incorrect"
 msgstr "Ο κωδικός ή το PIN είναι λάθος"
 
-#: ../gp11/gp11-misc.c:171
+#: ../gck/gck-misc.c:171
 msgid "The password or PIN is invalid"
 msgstr "Ο κωδικός ή το PIN δεν είναι έγκυρα"
 
-#: ../gp11/gp11-misc.c:173
+#: ../gck/gck-misc.c:173
 msgid "The password or PIN is of an invalid length"
 msgstr "Ο κωδικός ή το PIN δεν έχουν έγκυρο μήκος"
 
-#: ../gp11/gp11-misc.c:175
+#: ../gck/gck-misc.c:175
 msgid "The password or PIN has expired"
 msgstr "Ο κωδικός ή το PIN έχουν λήξει"
 
-#: ../gp11/gp11-misc.c:177
+#: ../gck/gck-misc.c:177
 msgid "The password or PIN is locked"
 msgstr "Ο κωδικός ή το PIN είναι κλειδωμένα"
 
-#: ../gp11/gp11-misc.c:179
+#: ../gck/gck-misc.c:179
 msgid "The session is closed"
 msgstr "Η συνεδρία είναι κλειστή"
 
-#: ../gp11/gp11-misc.c:181
+#: ../gck/gck-misc.c:181
 msgid "Too many sessions are active"
 msgstr "Υπάρχουν πάρα πολλές συνεδρίες ενεργές"
 
-#: ../gp11/gp11-misc.c:183
+#: ../gck/gck-misc.c:183
 msgid "The session is invalid"
 msgstr "Η συνεδρία δεν είναι έγκυρη"
 
-#: ../gp11/gp11-misc.c:185
+#: ../gck/gck-misc.c:185
 msgid "The session is read-only"
 msgstr "Η συνεδρία είναι μόνο για ανάγνωση"
 
-#: ../gp11/gp11-misc.c:187
+#: ../gck/gck-misc.c:187
 msgid "An open session exists"
 msgstr "Μια ανοικτή συνεδρία υπάρχει ήδη"
 
-#: ../gp11/gp11-misc.c:189
+#: ../gck/gck-misc.c:189
 msgid "A read-only session exists"
 msgstr "Υπάρχει μια συνεδρία που είναι μόνο για ανάγνωση"
 
-#: ../gp11/gp11-misc.c:191
+#: ../gck/gck-misc.c:191
 msgid "An administrator session exists"
 msgstr "Υπάρχει μια συνεδρία διαχειριστή"
 
-#: ../gp11/gp11-misc.c:193
+#: ../gck/gck-misc.c:193
 msgid "The signature is bad or corrupted"
 msgstr "Η υπογραφή είναι λάθος ή είναι κατεστραμμένη"
 
-#: ../gp11/gp11-misc.c:195
+#: ../gck/gck-misc.c:195
 msgid "The signature is unrecognized or corrupted"
 msgstr "Η υπογραφή είναι μη αναγνωρίσιμη ή είναι κατεστραμμένη"
 
-#: ../gp11/gp11-misc.c:197
+#: ../gck/gck-misc.c:197
 msgid "Certain required fields are missing"
 msgstr "Λείπουν μερικά απαιτούμενα πεδία"
 
-#: ../gp11/gp11-misc.c:199
+#: ../gck/gck-misc.c:199
 msgid "Certain fields have invalid values"
 msgstr "Μερικά πεδία έχουν μη έγκυρες τιμές"
 
-#: ../gp11/gp11-misc.c:201
+#: ../gck/gck-misc.c:201
 msgid "The device is not present or unplugged"
 msgstr "Η συσκευή δεν είναι παρούσα ή δεν είναι συνδεδεμένη"
 
-#: ../gp11/gp11-misc.c:203
+#: ../gck/gck-misc.c:203
 msgid "The device is invalid or unrecognizable"
 msgstr "Η συσκευή δεν είναι έγκυρη ή είναι μη αναγνωρίσιμη"
 
-#: ../gp11/gp11-misc.c:205
+#: ../gck/gck-misc.c:205
 msgid "The device is write protected"
 msgstr "Η συσκευή έχει προστασία εγγραφής"
 
-#: ../gp11/gp11-misc.c:207
+#: ../gck/gck-misc.c:207
 msgid "Cannot import because the key is invalid"
 msgstr "Αδυναμία εισαγωγής επειδή το κλειδί δεν είναι έγκυρο"
 
-#: ../gp11/gp11-misc.c:209
+#: ../gck/gck-misc.c:209
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Αδυναμία εισαγωγής επειδή το κλειδί είναι λανθασμένου μεγέθους"
 
-#: ../gp11/gp11-misc.c:211
+#: ../gck/gck-misc.c:211
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Αδυναμία εισαγωγής επειδή το κλειδί είναι λανθασμένου τύπου"
 
-#: ../gp11/gp11-misc.c:213
+#: ../gck/gck-misc.c:213
 msgid "You are already logged in"
 msgstr "Έχετε ήδη συνδεθεί"
 
-#: ../gp11/gp11-misc.c:215
+#: ../gck/gck-misc.c:215
 msgid "No user has logged in"
 msgstr "Ο χρήστης δεν είναι συνδεδεμένος"
 
-#: ../gp11/gp11-misc.c:217
+#: ../gck/gck-misc.c:217
 msgid "The user's password or PIN is not set"
 msgstr "Δεν έχει ορισθεί κωδικός ή PIN χρήστη"
 
-#: ../gp11/gp11-misc.c:219
+#: ../gck/gck-misc.c:219
 msgid "The user is of an invalid type"
 msgstr "Δεν είναι έγκυρος ο τύπος χρήστη"
 
-#: ../gp11/gp11-misc.c:221
+#: ../gck/gck-misc.c:221
 msgid "Another user is already logged in"
 msgstr "Ένας άλλος χρήστης είναι ήδη συνδεδεμένος"
 
-#: ../gp11/gp11-misc.c:223
-msgid "Too many users of different types logged in"
+#: ../gck/gck-misc.c:223
+msgid "Too many users of different types are logged in"
 msgstr "Έχουν συνδεθεί πάρα πολλοί χρήστες διαφορετικού τύπου"
 
-#: ../gp11/gp11-misc.c:225
+#: ../gck/gck-misc.c:225
 msgid "Cannot import an invalid key"
 msgstr "Αδυναμία εισαγωγής ενός μη έγκυρου κλειδιού"
 
-#: ../gp11/gp11-misc.c:227
+#: ../gck/gck-misc.c:227
 msgid "Cannot import a key of the wrong size"
 msgstr "Αδυναμία εισαγωγής επειδή το κλειδί είναι λανθασμένου μεγέθους"
 
-#: ../gp11/gp11-misc.c:229
+#: ../gck/gck-misc.c:229
 msgid "Cannot export because the key is invalid"
 msgstr "Αδυναμία εξαγωγής επειδή το κλειδί δεν είναι έγκυρο"
 
-#: ../gp11/gp11-misc.c:231
+#: ../gck/gck-misc.c:231
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Αδυναμία εξαγωγής επειδή το κλειδί είναι λανθασμένου μεγέθους"
 
-#: ../gp11/gp11-misc.c:233
+#: ../gck/gck-misc.c:233
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Αδυναμία εξαγωγής επειδή το κλειδί είναι λανθασμένου τύπου"
 
-#: ../gp11/gp11-misc.c:235
+#: ../gck/gck-misc.c:235
 msgid "Unable to initialize the random number generator"
 msgstr "Αδυναμία αρχικοποίησης της γεννήτριας τυχαίων αριθμών"
 
-#: ../gp11/gp11-misc.c:237
+#: ../gck/gck-misc.c:237
 msgid "No random number generator available"
 msgstr "Δεν υπάρχει διαθέσιμη γεννήτρια τυχαίων αριθμών"
 
-#: ../gp11/gp11-misc.c:239
+#: ../gck/gck-misc.c:239
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Ο μηχανισμός κρυπτογράφησης έχει μια μη έγκυρη παράμετρο"
 
-#: ../gp11/gp11-misc.c:241
+#: ../gck/gck-misc.c:241
 msgid "Not enough space to store the result"
 msgstr "Δεν υπάρχει αρκετός ελεύθερος χώρος για την αποθήκευση του αποτελέσματος"
 
-#: ../gp11/gp11-misc.c:243
+#: ../gck/gck-misc.c:243
 msgid "The saved state is invalid"
 msgstr "Η αποθηκευμένη κατάσταση δεν είναι έγκυρη"
 
-#: ../gp11/gp11-misc.c:245
+#: ../gck/gck-misc.c:245
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Οι πληροφορίες είναι ευαίσθητες και δεν είναι δυνατή η αποκάλυψή τους"
 
-#: ../gp11/gp11-misc.c:247
+#: ../gck/gck-misc.c:247
 msgid "The state cannot be saved"
 msgstr "Δεν είναι δυνατή η αποθήκευση της κατάστασης"
 
-#: ../gp11/gp11-misc.c:249
+#: ../gck/gck-misc.c:249
 msgid "The module has not been initialized"
 msgstr "Η λειτουργική μονάδα δεν έχει αρχικοποιηθεί"
 
-#: ../gp11/gp11-misc.c:251
+#: ../gck/gck-misc.c:251
 msgid "The module has already been initialized"
 msgstr "Η λειτουργική μονάδα έχει ήδη αρχικοποιηθεί"
 
-#: ../gp11/gp11-misc.c:253
+#: ../gck/gck-misc.c:253
 msgid "Cannot lock data"
 msgstr "Αδυναμία κλειδώματος δεδομένων"
 
-#: ../gp11/gp11-misc.c:255
+#: ../gck/gck-misc.c:255
 msgid "The data cannot be locked"
 msgstr "Δεν είναι δυνατό το κλείδωμα των δεδομένων"
 
-#: ../gp11/gp11-misc.c:257
+#: ../gck/gck-misc.c:257
 msgid "The signature request was rejected by the user"
 msgstr "Η αίτηση υπογραφής απορρίφθηκε από τον χρήστη"
 
-#: ../gp11/gp11-misc.c:261
+#: ../gck/gck-misc.c:261
 msgid "Unknown error"
 msgstr "Άγνωστο σφάλμα"
 
-#: ../pkcs11/gkm/gkm-certificate.c:725
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Ανώνυμο πιστοποιητικό"
 
@@ -869,126 +869,126 @@ msgid "Couldn't parse public SSH key"
 msgstr "Αδυναμία ανάλυσης δημόσιου κλειδιού SSH"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Ξεκλείδωμα κωδικού για: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
 msgid "The unlock password was incorrect"
 msgstr "Ο κωδικός ξεκλειδώματος είναι λάθος"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock Login Keyring"
 msgstr "Ξεκλείδωμα κλειδοθήκης εισόδου"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Enter password to unlock your login keyring"
 msgstr "Εισαγωγή κωδικού για ξεκλείδωμα της κλειδοθήκης εισόδου"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "The password you use to log in to your computer no longer matches that of your login keyring."
 msgstr "Ο κωδικός που χρησιμοποιείτε για να συνδεθείτε στον υπολογιστή σας δεν ταιριάζει πλέον με αυτό της κλειδοθήκης εισόδου."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr "Η κλειδοθήκη εισόδου σας δεν ξεκλειδώθηκε όταν συνδεθήκατε σε αυτόν τον υπολογιστή."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
 msgstr "Ξεκλείδωμα κλειδοθήκης"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Εισάγετε κωδικό για την κλειδοθήκη '%s' για ξεκλείδωμα"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Μια εφαρμογή επιθυμεί πρόσβαση στη κλειδοθήκη '%s', αλλά είναι κλειδωμένο"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
 msgstr "Ξεκλείδωμα ιδιωτικού κλειδιού"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 msgid "Unlock certificate"
 msgstr "Ξεκλείδωμα πιστοποιητικού"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Ξεκλείδωμα δημοσίου κλειδιού"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
 msgstr "Ξεκλείδωμα"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Εισάγετε κωδικό για το ξεκλείδωμα του δημόσιου κλειδιού"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Μια  εφαρμογή  επιθυμεί πρόσβαση στο ιδιωτικό κλειδί '%s', αλλά είναι κλειδωμένο"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Μια εφαρμογή επιθυμεί πρόσβαση στο πιστοποιητικό '%s', αλλά είναι κλειδωμένο"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Μια εφαρμογή επιθυμεί πρόσβαση στο δημόσιο κλειδί '%s', αλλά είναι κλειδωμένο"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Μια εφαρμογή  επιθυμεί πρόσβαση στο '%s', αλλά είναι κλειδωμένο"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
 msgid "Unlock certificate/key storage"
 msgstr "Ξεκλείδωμα πιστοποιητικού/αποθήκης κλειδιών"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Εισάγετε κωδικό για το ξεκλείδωμα του πιστοποιητικού/της αποθήκης κλειδιών"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
 msgid "An application wants access to the certificate/key storage '%s', but it is locked"
 msgstr "Μια εφαρμογή επιθυμεί πρόσβαση στο πιστοποιητικό/αποθήκη κλειδιών '%s', αλλά αυτό είναι κλειδωμένο"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "Απαιτείται νέος κωδικός"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "Απαιτείται νέος κωδικός για την ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "Απαιτείται κωδικός για την προετοιμασία του '%s' για αποθήκευση πιστοποιητικών ή κλειδιών"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
 msgstr "Αλλαγή κωδικού"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
 msgid "Change password for secure storage"
 msgstr "Αλλαγή κωδικού για ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
 msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "Για να αλλάξετε τον κωδικό για '%s', απαιτούνται ο αρχικός και ο νέος κωδικός"
@@ -1040,3 +1040,66 @@ msgstr "_Παλιός κωδικός:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Κωδικός:"
+
+#~ msgid "Email"
+#~ msgstr "Ηλ. διεύθυνση"
+
+#~ msgid "<i>Not Part of Certificate</i>"
+#~ msgstr "<i>Δεν περιέχεται στο πιστοποιητικό</i>"
+
+#~ msgid "<i>unknown</i>"
+#~ msgstr "<i>άγνωστο</i>"
+
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<Δεν περιέχεται στο πιστοποιητικό>"
+
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>Αποτυπώματα</b>"
+
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>Εκδόθηκε από</b>"
+
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>Εκδόθηκε για</b>"
+
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr ""
+#~ "<b>Αυτό το πιστοποιητικό έχει επαληθευτεί για τις ακόλουθες χρήσεις:</b>"
+
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>Ισχύς</b>"
+
+#~ msgid "Common Name (CN)"
+#~ msgstr "Όνομα, υποκοριστικό (CN)"
+
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "Πιστοποιητικό παραλήπτη email"
+
+#~ msgid "Email Signer Certificate"
+#~ msgstr "Πιστοποιητικό υπογράφοντος email"
+
+#~ msgid "Issued On"
+#~ msgstr "Εκδόθηκε στις"
+
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "Αποτύπωμα MD5"
+
+#~ msgid "Organization (O)"
+#~ msgstr "Οργανισμός (O)"
+
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "Μονάδα Οργανισμού (OU)"
+
+#~ msgid "SHA1 Fingerprint"
+#~ msgstr "Αποτύπωμα SHA1"
+
+#~ msgid "SSL Client Certificate"
+#~ msgstr "Πιστοποιητικό πελάτη SSL"
+
+#~ msgid "SSL Server Certificate"
+#~ msgstr "Πιστοποιητικό εξυπηρετητή SSL"
+
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgstr ""
+#~ "<span size='large' weight='bold'>Εισαγωγή πιστοποιητικών και κλειδιών</"
+#~ "span>"
