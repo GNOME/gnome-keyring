@@ -275,7 +275,7 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 
 	size = calculate_key_size (self->pv->attributes, key_type);
 	if (size >= 0) {
-		display = g_strdup_printf (_("%d bits"), size);
+		display = g_strdup_printf (ngettext ("%d bit", "%d bits", size), size);
 		_gcr_display_view_append_content (view, renderer, _("Strength"), display);
 		g_free (display);
 	}
