@@ -98,12 +98,13 @@ print_general_usage (void)
 	CommandInfo *cmd;
 	const gchar *prefix;
 	
-	g_printerr ("usage: gnome-keyring command [options]\n");
+	g_printerr (_("usage: gnome-keyring command [options]\n"));
 	
-	prefix = "commands: ";
+	prefix = _("commands: ");
 	for (cmd = command_info; cmd->name; ++cmd) {
 		g_printerr ("%s%s\n", prefix, cmd->name);
-		prefix = "          ";
+		// Translators: keep same length as translated message "commands: "
+		prefix = _("          ");
 	}
 }
 
