@@ -7,15 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-23 17:25+0200\n"
-"PO-Revision-Date: 2010-12-23 17:25+0200\n"
+"POT-Creation-Date: 2011-01-16 22:20+0200\n"
+"PO-Revision-Date: 2011-01-17 09:41+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <he@li.org>\n"
+"Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2007-11-27 11:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Hebrew\n"
+"X-Poedit-Country: ISRAEL\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
@@ -483,8 +487,10 @@ msgstr "מפתח DSA ציבורי"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-msgid "%d bits"
-msgstr "%d סיביות"
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "סיבית אחת"
+msgstr[1] "%d סיביות"
 
 #: ../gcr/gcr-key-renderer.c:279
 msgid "Strength"
@@ -990,6 +996,20 @@ msgstr "שינוי ססמה עבור אחסון מאובטח"
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "כדי לשנות את הססמה עבור  '%s', נדרשות הססמאות המקורית והחדשה"
+
+#: ../tool/gkr-tool.c:101
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "usage: gnome-keyring command [options]\n"
+
+#: ../tool/gkr-tool.c:103
+msgid "commands: "
+msgstr "commands: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:107
+msgid "          "
+msgstr "          "
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
