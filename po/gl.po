@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-09 17:10+0100\n"
-"PO-Revision-Date: 2011-01-09 17:11+0100\n"
+"POT-Creation-Date: 2011-01-19 15:03+0100\n"
+"PO-Revision-Date: 2011-01-19 15:03+0100\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "Language: gl\n"
@@ -491,8 +491,10 @@ msgstr "Chave pública DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-msgid "%d bits"
-msgstr "%d bits"
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bits"
 
 #: ../gcr/gcr-key-renderer.c:279
 msgid "Strength"
@@ -1012,6 +1014,20 @@ msgid ""
 msgstr ""
 "Para cambiar o contrasinal de «%s», requírense o orixinal e os novos "
 "contrasinais"
+
+#: ../tool/gkr-tool.c:101
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "uso: gnome-keyring orde [opcións]\n"
+
+#: ../tool/gkr-tool.c:103
+msgid "commands: "
+msgstr "ordes: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:107
+msgid "          "
+msgstr "          "
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
