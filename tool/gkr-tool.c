@@ -87,8 +87,9 @@ typedef struct _CommandInfo {
 } CommandInfo;
 
 static CommandInfo command_info[] = {
-	{ "import", gkr_tool_import },
 	{ "certificate-exception", gkr_tool_trust },
+	{ "import", gkr_tool_import },
+	{ "version", gkr_tool_version },
 	{ NULL, NULL }
 };
 

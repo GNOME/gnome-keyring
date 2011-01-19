@@ -112,6 +112,7 @@ static gboolean gpg_started = FALSE;
 
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
+static gboolean run_version = FALSE;
 static gboolean run_for_login = FALSE;
 static gboolean run_for_start = FALSE;
 static gboolean run_for_replace = FALSE;
@@ -137,6 +138,8 @@ static GOptionEntry option_entries[] = {
 	  "The optional components to run", DEFAULT_COMPONENTS },
 	{ "control-directory", 'C', 0, G_OPTION_ARG_FILENAME, &control_directory,
 	  "The directory for sockets and control data", NULL },
+	{ "version", 'V', 0, G_OPTION_ARG_NONE, &run_version,
+	  "Show the version number and exit.", NULL },
 	{ NULL }
 };
 
@@ -817,6 +820,18 @@ main (int argc, char *argv[])
 	prepare_logging ();
 
 	parse_arguments (&argc, &argv);
+
+	/* The --version option. This is machine parseable output */
+	if (run_version) {
+		g_print ("gnome-keyring-daemon: %s\n", VERSION);
+		g_print ("testing: %s\n",
+#ifdef WITH_TESTS
+		         "enabled");
+#else
+		         "disabled");
+#endif
+		exit (0);
+	}
 
 	/* The --start option */
 	if (run_for_start) {

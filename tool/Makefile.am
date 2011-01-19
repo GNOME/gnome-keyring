@@ -12,7 +12,8 @@ INCLUDES=	\
 gnome_keyring@GCR_VERSION_SUFFIX@_SOURCES = \
 	gkr-tool.c gkr-tool.h \
 	gkr-tool-import.c \
-	gkr-tool-trust.c
+	gkr-tool-trust.c \
+	gkr-tool-version.c
 
 gnome_keyring@GCR_VERSION_SUFFIX@_CFLAGS = \
 	-DGCR_API_SUBJECT_TO_CHANGE \

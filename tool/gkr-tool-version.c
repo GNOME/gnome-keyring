@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkr-tool.h: Command line utility
+/* gkr-tool-version.c: Version display
 
-   Copyright (C) 2008 Stefan Walter
+   Copyright (C) 2011 Collabora Ltd.
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -21,32 +21,28 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef GKRTOOL_H_
-#define GKRTOOL_H_
+#include "config.h"
 
-#include <glib.h>
+#include "gkr-tool.h"
 
-/* -------------------------------------------------------------------------------
- * GENERAL HELPERS
- */
+#include "gck/gck.h"
+#include "gcr/gcr.h"
 
-extern gboolean gkr_tool_mode_quiet;
+#include "egg/egg-hex.h"
 
-#define GKR_TOOL_BASIC_OPTIONS \
-	{ "quiet", 'q', 0, G_OPTION_ARG_NONE, &gkr_tool_mode_quiet, "Don't print unnecessary output", NULL }, 
+static GOptionEntry version_entries[] = {
+	{ NULL }
+};
 
-void gkr_tool_handle_error (GError **error, const gchar *message, ...);
+int
+gkr_tool_version (int argc, char *argv[])
+{
+	int ret;
 
-int gkr_tool_parse_options (int *argc, char** argv[], GOptionEntry *options);
+	ret = gkr_tool_parse_options (&argc, &argv, version_entries);
+	if (ret != 0)
+		return ret;
 
-/* -------------------------------------------------------------------------------
- * VARIOUS COMMAND HANDLERS 
- */
-
-int gkr_tool_import (int argc, char *argv[]);
-
-int gkr_tool_trust (int argc, char *argv[]);
-
-int gkr_tool_version (int argc, char *argv[]);
-
-#endif /* GKRTOOL_H_ */
+	g_print ("gnome-keyring: %s\n", VERSION);
+	return 0;
+}
