@@ -163,7 +163,7 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 	DBusError derr = DBUS_ERROR_INIT;
 	dbus_uint32_t res = 0;
 	const gchar *service = NULL;
-	unsigned int flags;
+	unsigned int flags = 0;
 
 	g_assert (acquired);
 
@@ -192,7 +192,7 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 #endif
 			service = GNOME_KEYRING_DAEMON_SERVICE;
 
-		res = dbus_bus_request_name (dbus_conn, service, 0, &derr);
+		res = dbus_bus_request_name (dbus_conn, service, flags, &derr);
 		if (dbus_error_is_set (&derr)) {
 			g_message ("couldn't request name '%s' on session bus: %s", service, derr.message);
 			dbus_error_free (&derr);
