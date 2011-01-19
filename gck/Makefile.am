@@ -2,9 +2,11 @@
 if WITH_TESTS
 TESTS_DIR = tests
 TESTS_SOURCES = gck-mock.c gck-mock.h gck-test.c gck-test.h
+EXPORT_PATT = '^_?gck_*'
 else
 TESTS_DIR =
 TESTS_SOURCES =
+EXPORT_PATT = '^gck_*'
 endif
 
 SUBDIRS = . \
@@ -47,7 +49,8 @@ libgck_la_SOURCES = \
 
 libgck_la_LDFLAGS = \
 	-version-info $(GCK_LT_RELEASE) \
-	-no-undefined -export-symbols-regex '^gck_*'
+	-no-undefined \
+	-export-symbols-regex $(EXPORT_PATT)
 
 libgck_la_LIBADD = \
 	$(top_builddir)/egg/libegg-hex.la \

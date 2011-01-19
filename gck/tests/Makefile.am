@@ -24,7 +24,7 @@ TESTING_LIBS = \
 include $(top_srcdir)/testing/testing.make
 
 EXTRA_DIST += \
-	gck-test.h
+	test-gck.h
 
 # ------------------------------------------------------------------------
 

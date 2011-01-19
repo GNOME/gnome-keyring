@@ -7,6 +7,8 @@
 #include <glib.h>
 
 #include "gck-test.h"
+#include "gck-mock.h"
+#include "test-gck.h"
 
 static GckModule *module = NULL;
 static GckSession *session = NULL;

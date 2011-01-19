@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "test-suite.h"
+#include "test-gck.h"
 #include "gck-test.h"
 #include "gck-private.h"
 

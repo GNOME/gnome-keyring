@@ -4,6 +4,7 @@
 
 #include "test-suite.h"
 #include "gck-test.h"
+#include "test-gck.h"
 
 static GList *modules = NULL;
 

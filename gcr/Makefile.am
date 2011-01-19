@@ -1,3 +1,15 @@
+
+if WITH_TESTS
+TESTS_DIR = tests
+EXPORT_PATT = '^_?gcr_*'
+else
+TESTS_DIR =
+EXPORT_PATT = '^gcr_*'
+endif
+
+SUBDIRS = . \
+	$(TESTS_DIR)
+
 # ------------------------------------------------------------------
 # UI BUILDER
 # 
@@ -91,7 +103,8 @@ libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 
 libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
 	-version-info $(GCR_LT_RELEASE) \
-	-no-undefined -export-symbols-regex '^gcr_*'
+	-no-undefined \
+	-export-symbols-regex $(EXPORT_PATT)
 
 libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
@@ -129,12 +142,3 @@ CLEANFILES = \
 
 DISTCLEANFILES = \
 	$(pkgconfig_DATA)
-
-if WITH_TESTS
-TESTS_DIR = tests
-else
-TESTS_DIR = 
-endif
-
-SUBDIRS = . \
-	$(TESTS_DIR)
