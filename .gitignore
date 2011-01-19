@@ -20,6 +20,7 @@
 *.stamp
 .deps
 .libs
+00*-*.patch
 stamp-*
 Makefile
 Makefile.in
