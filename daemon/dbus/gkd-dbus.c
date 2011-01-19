@@ -276,13 +276,13 @@ dbus_cleanup (gpointer unused)
 	gkd_dbus_environment_cleanup (dbus_conn);
 }
 
-void
+gboolean
 gkd_dbus_setup (void)
 {
 	gboolean unused;
 
 	if (!connect_to_session_bus ())
-		return;
+		return FALSE;
 
 	/* Our singleton, and internal service API */
 	gkd_dbus_singleton_acquire (&unused);
@@ -295,4 +295,5 @@ gkd_dbus_setup (void)
 	gkd_dbus_secrets_init (dbus_conn);
 
 	egg_cleanup_register (dbus_cleanup, NULL);
+	return TRUE;
 }

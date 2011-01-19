@@ -109,6 +109,7 @@ static gboolean pkcs11_started = FALSE;
 static gboolean secrets_started = FALSE;
 static gboolean ssh_started = FALSE;
 static gboolean gpg_started = FALSE;
+static gboolean dbus_started = FALSE;
 
 static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
@@ -708,7 +709,9 @@ gkr_daemon_initialize_steps (const gchar *components)
 			egg_secure_strclear (login_password);
 		}
 
-		gkd_dbus_setup ();
+		dbus_started = TRUE;
+		if (!gkd_dbus_setup ())
+			dbus_started = FALSE;
 	}
 
 	/* The Secret Service API */
@@ -716,10 +719,17 @@ gkr_daemon_initialize_steps (const gchar *components)
 		if (secrets_started) {
 			g_message ("The Secret Service was already initialized");
 		} else {
-			secrets_started = TRUE;
-			if (!gkd_dbus_secrets_startup ()) {
-				secrets_started = FALSE;
-				return FALSE;
+			if (!dbus_started) {
+				dbus_started = TRUE;
+				if (!gkd_dbus_setup ())
+					dbus_started = FALSE;
+			}
+			if (dbus_started) {
+				secrets_started = TRUE;
+				if (!gkd_dbus_secrets_startup ()) {
+					secrets_started = FALSE;
+					return FALSE;
+				}
 			}
 		}
 	}

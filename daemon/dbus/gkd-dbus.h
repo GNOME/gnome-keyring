@@ -26,7 +26,7 @@
 
 #include <glib.h>
 
-void      gkd_dbus_setup            (void);
+gboolean      gkd_dbus_setup                    (void);
 
 gboolean  gkd_dbus_secrets_startup  (void);
 
