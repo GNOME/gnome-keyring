@@ -1,14 +1,14 @@
 # Swedish messages for gnome-keyring.
-# Copyright (C) 2003-2010 Free Software Foundation, Inc.
+# Copyright (C) 2003-2011 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2003, 2004.
-# Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008, 2009, 2010.
+# Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-29 20:53+0100\n"
-"PO-Revision-Date: 2010-12-29 20:56+0100\n"
+"POT-Creation-Date: 2011-01-22 15:49+0100\n"
+"PO-Revision-Date: 2011-01-22 15:50+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -487,8 +487,8 @@ msgstr "Publik DSA-nyckel"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-msgid "%d bits"
-msgstr "%d bitar"
+msgid "%d bit"
+msgid_plural "%d bits"
 
 #: ../gcr/gcr-key-renderer.c:279
 msgid "Strength"
@@ -524,14 +524,15 @@ msgstr "Data är låst"
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Kunde inte hitta en plats att lagra de nålade certifikaten i"
 
-#: ../gck/gck-uri.c:78
-#: ../gck/gck-uri.c:135
-#: ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124
+#: ../gck/gck-uri.c:181
+#: ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "URI:n har en ogiltig syntax. Kodningen för fältet \"%s\" är ogiltig."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "URI:n saknar \"pkcs11\"-schemat."
 
@@ -987,6 +988,20 @@ msgstr "Ändra lösenordet för säker lagring"
 #, c-format
 msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "För att ändra lösenordet för \"%s\" så krävs det ursprungliga och det nya lösenordet"
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "användning: gnome-keyring kommando [flaggor]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "kommandon: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "           "
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
