@@ -4,15 +4,15 @@
 # Copyright (C) 2006 The Free Software Foundation.
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-10-08 01:25+0000\n"
-"PO-Revision-Date: 2010-10-09 14:34+0200\n"
+"POT-Creation-Date: 2011-01-15 16:34+0000\n"
+"PO-Revision-Date: 2011-01-22 16:30+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,8 +24,8 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Sin nombre"
 
@@ -262,7 +262,7 @@ msgstr "Error inesperado en select() al leer los datos de un proceso hijo (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Error inesperado en waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:200
+#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Certificado"
 
@@ -291,7 +291,6 @@ msgid "No"
 msgstr "No"
 
 #: ../gcr/gcr-certificate-renderer.c:339
-#| msgid "Identifier"
 msgid "Identity"
 msgstr "Identidad"
 
@@ -300,7 +299,6 @@ msgid "Verified by"
 msgstr "Verificado por"
 
 #: ../gcr/gcr-certificate-renderer.c:350
-#| msgid "Expires On"
 msgid "Expires"
 msgstr "Caduca"
 
@@ -361,7 +359,7 @@ msgid "Key Size"
 msgstr "Tamaño de la clave"
 
 #: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Clave privada"
 
@@ -403,15 +401,15 @@ msgstr "Bloquear este depósito de claves al cerrar la sesión"
 msgid "minutes"
 msgstr "minutos"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "Introduzca la contraseña para desbloquear la clave privada"
 
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "Introduzca la contraseña para desbloquear el certificado"
 
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "Introduzca la contraseña para desbloquearlo"
 
@@ -448,8 +446,8 @@ msgstr "Para poder impotar el certificado «%s», se debe desbloquear"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Para poder importar «%s», se debe desbloquear"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1565 ../gcr/gcr-parser.c:1756
-#: ../gp11/gp11-misc.c:98 ../gck/gck-misc.c:98
+#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
+#: ../gck/gck-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Se canceló la operación"
 
@@ -472,409 +470,396 @@ msgid "Key"
 msgstr "Clave"
 
 #: ../gcr/gcr-key-renderer.c:260
-#| msgid "Private Key"
 msgid "Private RSA Key"
 msgstr "Clave privada RSA"
 
 #: ../gcr/gcr-key-renderer.c:262
-#| msgid "Private Key"
 msgid "Private DSA Key"
 msgstr "Clave privada DSA"
 
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Clave privada"
 
 #: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-#| msgid "Public Key"
 msgid "Public DSA Key"
 msgstr "Clave pública DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-msgid "%d bits"
-msgstr "%d bits"
+#| msgid "%d bits"
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bits"
 
 #: ../gcr/gcr-key-renderer.c:279
-#| msgid "Street"
 msgid "Strength"
 msgstr "Fortaleza"
 
 #: ../gcr/gcr-key-renderer.c:292
-#| msgid "Key Algorithm"
 msgid "Algorithm"
 msgstr "Algoritmo"
 
 #: ../gcr/gcr-key-renderer.c:299
-#| msgid "Key Size"
 msgid "Size"
 msgstr "Tamaño"
 
 #. TODO: We need to have consistent key fingerprints.
 #: ../gcr/gcr-key-renderer.c:303
-#| msgid "Fingerprints"
 msgid "Fingerprint"
 msgstr "Huella"
 
-#: ../gcr/gcr-parser.c:1568
+#: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
 msgstr "Datos no reconocidos o no soportados."
 
-#: ../gcr/gcr-parser.c:1571
+#: ../gcr/gcr-parser.c:1572
 msgid "Could not parse invalid or corrupted data."
 msgstr "No se pudo analizar los datos no válidos o corruptos."
 
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1575
 msgid "The data is locked"
 msgstr "Los datos están bloqueados"
 
-#: ../gp11/gp11-misc.c:101 ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "No hay suficiente memoria disponible"
-
-#: ../gp11/gp11-misc.c:103 ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "El ID de la ranura especificada no es válido"
-
-#: ../gp11/gp11-misc.c:105 ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "Error interno"
-
-#: ../gp11/gp11-misc.c:107 ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "Falló la operación"
-
-#: ../gp11/gp11-misc.c:109 ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "Argumentos no válidos"
-
-#: ../gp11/gp11-misc.c:111 ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "El módulo no pudo crear los hilos necesarios"
-
-#: ../gp11/gp11-misc.c:113 ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "El módulo no puede bloquear los datos adecuadamente"
-
-#: ../gp11/gp11-misc.c:115 ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "El campo es de sólo lectura"
-
-#: ../gp11/gp11-misc.c:117 ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "El campo es sensible y no se puede revelar"
-
-#: ../gp11/gp11-misc.c:119 ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "El campo no es válido o no existe"
-
-#: ../gp11/gp11-misc.c:121 ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "Valor no válido para el campo"
-
-#: ../gp11/gp11-misc.c:123 ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "El dato no es válido o reconocible"
-
-#: ../gp11/gp11-misc.c:125 ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "El dato es demasiado largo"
-
-#: ../gp11/gp11-misc.c:127 ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "Ocurrió un error en el dispositivo"
-
-#: ../gp11/gp11-misc.c:129
-msgid "Insufficient memory available on device"
-msgstr "No hay memoria suficiente en el dispositivo"
-
-#: ../gp11/gp11-misc.c:131 ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "El dispositivo se extrajo o desconectó"
-
-#: ../gp11/gp11-misc.c:133 ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "El dato cifrados no son válidos o reconocibles"
-
-#: ../gp11/gp11-misc.c:135 ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "El dato cifrado es demasiado largo"
-
-#: ../gp11/gp11-misc.c:137 ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "Esta operación no está soportada"
-
-#: ../gp11/gp11-misc.c:139 ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "Falta la clave o no es válida"
-
-#: ../gp11/gp11-misc.c:141 ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "La clave tiene un tamaño incorrecto"
-
-#: ../gp11/gp11-misc.c:143 ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "La clave es de tipo erróneo"
-
-#: ../gp11/gp11-misc.c:145 ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "No se necesita clave"
-
-#: ../gp11/gp11-misc.c:147
-msgid "The key is different from before"
-msgstr "La clave es diferente que anteriormente"
-
-#: ../gp11/gp11-misc.c:149 ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "Se necesita una clave"
-
-#: ../gp11/gp11-misc.c:151
-msgid "Cannot include the key in digest"
-msgstr "No se puede incluir la clave en el resumen"
-
-#: ../gp11/gp11-misc.c:153 ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "Esta operación no se puede realizar con esta clave"
-
-#: ../gp11/gp11-misc.c:155 ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "La clave no se puede envolver"
-
-#: ../gp11/gp11-misc.c:157 ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "No se puede exportar esta clave"
-
-#: ../gp11/gp11-misc.c:159 ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "El mecanismo de cifrado no es válido o no se reconoce"
-
-#: ../gp11/gp11-misc.c:161 ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "El mecanismo de cifrado tiene un argumento no válido"
-
-#: ../gp11/gp11-misc.c:163 ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "El objeto falta o no es válido"
-
-#: ../gp11/gp11-misc.c:165 ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "Ya se está realizando otra operación"
-
-#: ../gp11/gp11-misc.c:167 ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "No se está realizando ninguna operación"
-
-#: ../gp11/gp11-misc.c:169 ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "La contraseña o PIN es incorrecta"
-
-#: ../gp11/gp11-misc.c:171 ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "La contraseña o PIN no es válida"
-
-#: ../gp11/gp11-misc.c:173 ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "La contraseña o PIN es de una longitud no válida"
-
-#: ../gp11/gp11-misc.c:175 ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "La contraseña o PIN ha caducado"
-
-#: ../gp11/gp11-misc.c:177 ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "La contraseña o PIN está bloqueada"
-
-#: ../gp11/gp11-misc.c:179 ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "La sesión está cerrada"
-
-#: ../gp11/gp11-misc.c:181 ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "Hay demasiadas sesiones activas"
-
-#: ../gp11/gp11-misc.c:183 ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "La sesión no es válida"
-
-#: ../gp11/gp11-misc.c:185 ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "La sesión es de sólo lectura"
-
-#: ../gp11/gp11-misc.c:187 ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "Existe una sesión abierta"
-
-#: ../gp11/gp11-misc.c:189 ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "Existe una sesión de sólo lectura"
-
-#: ../gp11/gp11-misc.c:191 ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "Existe una sesión de administrador"
-
-#: ../gp11/gp11-misc.c:193 ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "La firma es errónea o está corrupta"
-
-#: ../gp11/gp11-misc.c:195 ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "La firma no es reconocible o está corrupta"
-
-#: ../gp11/gp11-misc.c:197 ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "Faltan ciertos campos necesarios"
-
-#: ../gp11/gp11-misc.c:199 ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "Ciertos campos tienen valores no válidos"
-
-#: ../gp11/gp11-misc.c:201 ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "El dispositivo no está presente o no está conectado"
-
-#: ../gp11/gp11-misc.c:203 ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "El dispositivo no es válido o es irreconocible"
-
-#: ../gp11/gp11-misc.c:205 ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "El dispositivo está protegido contra escritura"
-
-#: ../gp11/gp11-misc.c:207 ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "No se puede importar porque la clave no es válida"
-
-#: ../gp11/gp11-misc.c:209 ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "No se puede importar porque la clave es de tamaño erróneo"
-
-#: ../gp11/gp11-misc.c:211 ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "No se puede importar porque la clave es de tipo erróneo"
-
-#: ../gp11/gp11-misc.c:213 ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "Ya ha iniciado sesión"
-
-#: ../gp11/gp11-misc.c:215 ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "Ningún usuario ha iniciado sesión"
-
-#: ../gp11/gp11-misc.c:217 ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "La contraseña o PIN del usuario no está establecida"
-
-#: ../gp11/gp11-misc.c:219 ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "El usuario es de tipo no válido"
-
-#: ../gp11/gp11-misc.c:221 ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "Otro usuario ya ha iniciado sesión"
-
-#: ../gp11/gp11-misc.c:223
-msgid "Too many users of different types logged in"
-msgstr "Demasiados usuarios de tipos diferentes han iniciado sesión"
-
-#: ../gp11/gp11-misc.c:225 ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "No se puede importar una clave válida"
-
-#: ../gp11/gp11-misc.c:227 ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "No se puede importar una clave de tamaño incorrecto"
-
-#: ../gp11/gp11-misc.c:229 ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "No se puede exportar porque la clave no es válida"
-
-#: ../gp11/gp11-misc.c:231 ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "No se puede exportar porque la clave es de tamaño incorrecto"
-
-#: ../gp11/gp11-misc.c:233 ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "No se puede exportar porque la clave es de tipo erróneo"
-
-#: ../gp11/gp11-misc.c:235 ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "No se pudo inicializar el generador de números aleatorios"
-
-#: ../gp11/gp11-misc.c:237 ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "No existe un generador de números aleatorios disponible"
-
-#: ../gp11/gp11-misc.c:239 ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "El mecanismo de cifrado tiene un parámetro no válido"
-
-#: ../gp11/gp11-misc.c:241 ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "No hay suficiente espacio para almacenar el resultado"
-
-#: ../gp11/gp11-misc.c:243 ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "El estado guardado no es válido"
-
-#: ../gp11/gp11-misc.c:245 ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "La información es sensible y no se puede revelar"
-
-#: ../gp11/gp11-misc.c:247 ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "El estado no se puede guardar"
-
-#: ../gp11/gp11-misc.c:249 ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "El módulo no se ha inicializado"
-
-#: ../gp11/gp11-misc.c:251 ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "El módulo ya se ha inicializado"
-
-#: ../gp11/gp11-misc.c:253 ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "No se pueden bloquear los datos"
-
-#: ../gp11/gp11-misc.c:255 ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "Los datos no se pueden bloquear"
-
-#: ../gp11/gp11-misc.c:257 ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "El usuario rechazó la petición de firma"
-
-#: ../gp11/gp11-misc.c:261 ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "Error desconocido"
+#: ../gcr/gcr-trust.c:417
+#, c-format
+#| msgid "Choose a location to store the imported certificates/keys."
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "No se pudo encontrar un lugar para almacenar el certificado importado"
 
 #: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr ""
-"La sintaxis del URI no es válida. La codificación del campo «%s» no es válida."
+"La sintaxis del URI no es válida. La codificación del campo «%s» no es "
+"válida."
 
 #: ../gck/gck-uri.c:195
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "El URI no tiene el esquema «pkcs11»."
 
+#: ../gck/gck-misc.c:101
+msgid "Insufficient memory available"
+msgstr "No hay suficiente memoria disponible"
+
+#: ../gck/gck-misc.c:103
+msgid "The specified slot ID is not valid"
+msgstr "El ID de la ranura especificada no es válido"
+
+#: ../gck/gck-misc.c:105
+msgid "Internal error"
+msgstr "Error interno"
+
+#: ../gck/gck-misc.c:107
+msgid "The operation failed"
+msgstr "Falló la operación"
+
+#: ../gck/gck-misc.c:109
+msgid "Invalid arguments"
+msgstr "Argumentos no válidos"
+
+#: ../gck/gck-misc.c:111
+msgid "The module cannot create needed threads"
+msgstr "El módulo no pudo crear los hilos necesarios"
+
+#: ../gck/gck-misc.c:113
+msgid "The module cannot lock data properly"
+msgstr "El módulo no puede bloquear los datos adecuadamente"
+
+#: ../gck/gck-misc.c:115
+msgid "The field is read-only"
+msgstr "El campo es de sólo lectura"
+
+#: ../gck/gck-misc.c:117
+msgid "The field is sensitive and cannot be revealed"
+msgstr "El campo es sensible y no se puede revelar"
+
+#: ../gck/gck-misc.c:119
+msgid "The field is invalid or does not exist"
+msgstr "El campo no es válido o no existe"
+
+#: ../gck/gck-misc.c:121
+msgid "Invalid value for field"
+msgstr "Valor no válido para el campo"
+
+#: ../gck/gck-misc.c:123
+msgid "The data is not valid or unrecognized"
+msgstr "El dato no es válido o reconocible"
+
+#: ../gck/gck-misc.c:125
+msgid "The data is too long"
+msgstr "El dato es demasiado largo"
+
+#: ../gck/gck-misc.c:127
+msgid "An error occurred on the device"
+msgstr "Ocurrió un error en el dispositivo"
+
 #: ../gck/gck-misc.c:129
 msgid "Insufficient memory available on the device"
 msgstr "No hay memoria suficiente en el dispositivo"
+
+#: ../gck/gck-misc.c:131
+msgid "The device was removed or unplugged"
+msgstr "El dispositivo se extrajo o desconectó"
+
+#: ../gck/gck-misc.c:133
+msgid "The encrypted data is not valid or unrecognized"
+msgstr "El dato cifrados no son válidos o reconocibles"
+
+#: ../gck/gck-misc.c:135
+msgid "The encrypted data is too long"
+msgstr "El dato cifrado es demasiado largo"
+
+#: ../gck/gck-misc.c:137
+msgid "This operation is not supported"
+msgstr "Esta operación no está soportada"
+
+#: ../gck/gck-misc.c:139
+msgid "The key is missing or invalid"
+msgstr "Falta la clave o no es válida"
+
+#: ../gck/gck-misc.c:141
+msgid "The key is the wrong size"
+msgstr "La clave tiene un tamaño incorrecto"
+
+#: ../gck/gck-misc.c:143
+msgid "The key is of the wrong type"
+msgstr "La clave es de tipo erróneo"
+
+#: ../gck/gck-misc.c:145
+msgid "No key is needed"
+msgstr "No se necesita clave"
 
 #: ../gck/gck-misc.c:147
 msgid "The key is different than before"
 msgstr "La clave es diferente que anteriormente"
 
+#: ../gck/gck-misc.c:149
+msgid "A key is needed"
+msgstr "Se necesita una clave"
+
 #: ../gck/gck-misc.c:151
 msgid "Cannot include the key in the digest"
 msgstr "No se puede incluir la clave en el resumen"
+
+#: ../gck/gck-misc.c:153
+msgid "This operation cannot be done with this key"
+msgstr "Esta operación no se puede realizar con esta clave"
+
+#: ../gck/gck-misc.c:155
+msgid "The key cannot be wrapped"
+msgstr "La clave no se puede envolver"
+
+#: ../gck/gck-misc.c:157
+msgid "Cannot export this key"
+msgstr "No se puede exportar esta clave"
+
+#: ../gck/gck-misc.c:159
+msgid "The crypto mechanism is invalid or unrecognized"
+msgstr "El mecanismo de cifrado no es válido o no se reconoce"
+
+#: ../gck/gck-misc.c:161
+msgid "The crypto mechanism has an invalid argument"
+msgstr "El mecanismo de cifrado tiene un argumento no válido"
+
+#: ../gck/gck-misc.c:163
+msgid "The object is missing or invalid"
+msgstr "El objeto falta o no es válido"
+
+#: ../gck/gck-misc.c:165
+msgid "Another operation is already taking place"
+msgstr "Ya se está realizando otra operación"
+
+#: ../gck/gck-misc.c:167
+msgid "No operation is taking place"
+msgstr "No se está realizando ninguna operación"
+
+#: ../gck/gck-misc.c:169
+msgid "The password or PIN is incorrect"
+msgstr "La contraseña o PIN es incorrecta"
+
+#: ../gck/gck-misc.c:171
+msgid "The password or PIN is invalid"
+msgstr "La contraseña o PIN no es válida"
+
+#: ../gck/gck-misc.c:173
+msgid "The password or PIN is of an invalid length"
+msgstr "La contraseña o PIN es de una longitud no válida"
+
+#: ../gck/gck-misc.c:175
+msgid "The password or PIN has expired"
+msgstr "La contraseña o PIN ha caducado"
+
+#: ../gck/gck-misc.c:177
+msgid "The password or PIN is locked"
+msgstr "La contraseña o PIN está bloqueada"
+
+#: ../gck/gck-misc.c:179
+msgid "The session is closed"
+msgstr "La sesión está cerrada"
+
+#: ../gck/gck-misc.c:181
+msgid "Too many sessions are active"
+msgstr "Hay demasiadas sesiones activas"
+
+#: ../gck/gck-misc.c:183
+msgid "The session is invalid"
+msgstr "La sesión no es válida"
+
+#: ../gck/gck-misc.c:185
+msgid "The session is read-only"
+msgstr "La sesión es de sólo lectura"
+
+#: ../gck/gck-misc.c:187
+msgid "An open session exists"
+msgstr "Existe una sesión abierta"
+
+#: ../gck/gck-misc.c:189
+msgid "A read-only session exists"
+msgstr "Existe una sesión de sólo lectura"
+
+#: ../gck/gck-misc.c:191
+msgid "An administrator session exists"
+msgstr "Existe una sesión de administrador"
+
+#: ../gck/gck-misc.c:193
+msgid "The signature is bad or corrupted"
+msgstr "La firma es errónea o está corrupta"
+
+#: ../gck/gck-misc.c:195
+msgid "The signature is unrecognized or corrupted"
+msgstr "La firma no es reconocible o está corrupta"
+
+#: ../gck/gck-misc.c:197
+msgid "Certain required fields are missing"
+msgstr "Faltan ciertos campos necesarios"
+
+#: ../gck/gck-misc.c:199
+msgid "Certain fields have invalid values"
+msgstr "Ciertos campos tienen valores no válidos"
+
+#: ../gck/gck-misc.c:201
+msgid "The device is not present or unplugged"
+msgstr "El dispositivo no está presente o no está conectado"
+
+#: ../gck/gck-misc.c:203
+msgid "The device is invalid or unrecognizable"
+msgstr "El dispositivo no es válido o es irreconocible"
+
+#: ../gck/gck-misc.c:205
+msgid "The device is write protected"
+msgstr "El dispositivo está protegido contra escritura"
+
+#: ../gck/gck-misc.c:207
+msgid "Cannot import because the key is invalid"
+msgstr "No se puede importar porque la clave no es válida"
+
+#: ../gck/gck-misc.c:209
+msgid "Cannot import because the key is of the wrong size"
+msgstr "No se puede importar porque la clave es de tamaño erróneo"
+
+#: ../gck/gck-misc.c:211
+msgid "Cannot import because the key is of the wrong type"
+msgstr "No se puede importar porque la clave es de tipo erróneo"
+
+#: ../gck/gck-misc.c:213
+msgid "You are already logged in"
+msgstr "Ya ha iniciado sesión"
+
+#: ../gck/gck-misc.c:215
+msgid "No user has logged in"
+msgstr "Ningún usuario ha iniciado sesión"
+
+#: ../gck/gck-misc.c:217
+msgid "The user's password or PIN is not set"
+msgstr "La contraseña o PIN del usuario no está establecida"
+
+#: ../gck/gck-misc.c:219
+msgid "The user is of an invalid type"
+msgstr "El usuario es de tipo no válido"
+
+#: ../gck/gck-misc.c:221
+msgid "Another user is already logged in"
+msgstr "Otro usuario ya ha iniciado sesión"
 
 #: ../gck/gck-misc.c:223
 msgid "Too many users of different types are logged in"
 msgstr "Demasiados usuarios de tipos diferentes han iniciado sesión"
 
-#: ../pkcs11/gkm/gkm-certificate.c:725
+#: ../gck/gck-misc.c:225
+msgid "Cannot import an invalid key"
+msgstr "No se puede importar una clave válida"
+
+#: ../gck/gck-misc.c:227
+msgid "Cannot import a key of the wrong size"
+msgstr "No se puede importar una clave de tamaño incorrecto"
+
+#: ../gck/gck-misc.c:229
+msgid "Cannot export because the key is invalid"
+msgstr "No se puede exportar porque la clave no es válida"
+
+#: ../gck/gck-misc.c:231
+msgid "Cannot export because the key is of the wrong size"
+msgstr "No se puede exportar porque la clave es de tamaño incorrecto"
+
+#: ../gck/gck-misc.c:233
+msgid "Cannot export because the key is of the wrong type"
+msgstr "No se puede exportar porque la clave es de tipo erróneo"
+
+#: ../gck/gck-misc.c:235
+msgid "Unable to initialize the random number generator"
+msgstr "No se pudo inicializar el generador de números aleatorios"
+
+#: ../gck/gck-misc.c:237
+msgid "No random number generator available"
+msgstr "No existe un generador de números aleatorios disponible"
+
+#: ../gck/gck-misc.c:239
+msgid "The crypto mechanism has an invalid parameter"
+msgstr "El mecanismo de cifrado tiene un parámetro no válido"
+
+#: ../gck/gck-misc.c:241
+msgid "Not enough space to store the result"
+msgstr "No hay suficiente espacio para almacenar el resultado"
+
+#: ../gck/gck-misc.c:243
+msgid "The saved state is invalid"
+msgstr "El estado guardado no es válido"
+
+#: ../gck/gck-misc.c:245
+msgid "The information is sensitive and cannot be revealed"
+msgstr "La información es sensible y no se puede revelar"
+
+#: ../gck/gck-misc.c:247
+msgid "The state cannot be saved"
+msgstr "El estado no se puede guardar"
+
+#: ../gck/gck-misc.c:249
+msgid "The module has not been initialized"
+msgstr "El módulo no se ha inicializado"
+
+#: ../gck/gck-misc.c:251
+msgid "The module has already been initialized"
+msgstr "El módulo ya se ha inicializado"
+
+#: ../gck/gck-misc.c:253
+msgid "Cannot lock data"
+msgstr "No se pueden bloquear los datos"
+
+#: ../gck/gck-misc.c:255
+msgid "The data cannot be locked"
+msgstr "Los datos no se pueden bloquear"
+
+#: ../gck/gck-misc.c:257
+msgid "The signature request was rejected by the user"
+msgstr "El usuario rechazó la petición de firma"
+
+#: ../gck/gck-misc.c:261
+msgid "Unknown error"
+msgstr "Error desconocido"
+
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Certificado sin nombre"
 
@@ -883,27 +868,27 @@ msgid "Couldn't parse public SSH key"
 msgstr "No se pudo analizar la clave SSH pública"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Contraseña de desbloqueo para %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
 msgid "The unlock password was incorrect"
 msgstr "La contraseña de desbloqueo era incorrecta"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock Login Keyring"
 msgstr "Desbloquear el depósito de claves de inicio"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Enter password to unlock your login keyring"
 msgstr ""
 "Introducir la contraseña para desbloquear su depósito de claves de inicio de "
 "sesión"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -911,85 +896,85 @@ msgstr ""
 "La contraseña que usa para iniciar sesión en su equipo ya no coincide con la "
 "contraseña de su depósito de claves de inicio de sesión."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "El depósito de claves de inicio de sesión no se desbloqueó cuando inició "
 "sesión en su equipo."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
 msgstr "Desbloquear depósito"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Introduzca la contraseña para desbloquear el depósito de claves «%s»"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Una aplicación quiere acceder al depósito de claves «%s», pero está bloqueado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
 msgstr "Desbloquear la clave privada"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 msgid "Unlock certificate"
 msgstr "Desbloquear el certificado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Desbloquear la clave pública"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
 msgstr "Desbloquear"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Introduzca la contraseña para desbloquear la clave pública"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
 "Una aplicación quiere acceder a la clave privada «%s», pero está bloqueada"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Una aplicación quiere acceder al certificado «%s», pero está bloqueado"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "Una aplicación quiere acceder a la clave pública «%s», pero está bloqueada"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Una aplicación quiere acceder «%s», pero está bloqueado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
 msgid "Unlock certificate/key storage"
 msgstr "Desbloquear el depósito de certificados/claves"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "Introducir la contraseña para desbloquear el depósito de certificados/claves"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -998,15 +983,15 @@ msgstr ""
 "Una aplicación quiere acceder al depósito de certificados/claves «%s», pero "
 "está bloqueado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "Se requiere una contraseña nueva"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "Se requiere una contraseña nueva para el almacén seguro"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -1015,21 +1000,35 @@ msgstr ""
 "Se requiere una contraseña para poder preparar «%s» para almacenar "
 "certificados o claves"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
 msgstr "Cambiar la contraseña"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
 msgid "Change password for secure storage"
 msgstr "Cambiar la contraseña para el almacén seguro"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr ""
 "Se necesitan la contraseña original y la nueva para cambiar la contraseña de "
 "«%s»"
+
+#: ../tool/gkr-tool.c:101
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "uso: gnome-keyring comando [opciones]\n"
+
+#: ../tool/gkr-tool.c:103
+msgid "commands: "
+msgstr "comandos: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:107
+msgid "          "
+msgstr "          "
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
@@ -1084,6 +1083,18 @@ msgstr "Contraseña _antigua:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Contraseña:"
+
+#~ msgid "Insufficient memory available on device"
+#~ msgstr "No hay memoria suficiente en el dispositivo"
+
+#~ msgid "The key is different from before"
+#~ msgstr "La clave es diferente que anteriormente"
+
+#~ msgid "Cannot include the key in digest"
+#~ msgstr "No se puede incluir la clave en el resumen"
+
+#~ msgid "Too many users of different types logged in"
+#~ msgstr "Demasiados usuarios de tipos diferentes han iniciado sesión"
 
 #~ msgid "Email"
 #~ msgstr "Correo-e"
@@ -1230,15 +1241,15 @@ msgstr "_Contraseña:"
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/"
-#~ ">» en el depósito predeterminado."
+#~ "La aplicación «%s» quiere acceder a la contraseña para «<object "
+#~ "prop='name'/>» en el depósito predeterminado."
 
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/"
-#~ ">» en %s."
+#~ "La aplicación «%s» quiere acceder a la contraseña para «<object "
+#~ "prop='name'/>» en %s."
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '<object "
@@ -1298,8 +1309,8 @@ msgstr "_Contraseña:"
 #~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 #~ "have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» (%s) quiere crear un depósito de claves nuevo llamado «%"
-#~ "s». Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» (%s) quiere crear un depósito de claves nuevo llamado "
+#~ "«%s». Tiene que elegir la contraseña que quiere usar con él."
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to create a new default keyring. You have "
@@ -1349,15 +1360,16 @@ msgstr "_Contraseña:"
 #~ "The application '%s' wants to change the password for the '%s' keyring. "
 #~ "You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves "
-#~ "«%s». Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de "
+#~ "claves «%s». Tiene que elegir la contraseña que quiere usar con él."
 
 #~ msgid ""
 #~ "The application '%s' wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves "
-#~ "predeterminado. Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de "
+#~ "claves predeterminado. Tiene que elegir la contraseña que quiere usar con "
+#~ "él."
 
 #~ msgid ""
 #~ "An unknown application wants to change the password for the default "
