@@ -2,14 +2,14 @@
 # Copyright (C) 2003 Red Hat Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 #
-# Kjartan Maraas <kmaraas@gnome.org>, 2003-2010.
+# Kjartan Maraas <kmaraas@gnome.org>, 2003-2011.
 # Torstein Adolf Winterseth <kvikende@fsfe.org>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.91.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-15 12:16+0100\n"
-"PO-Revision-Date: 2011-01-15 12:16+0100\n"
+"POT-Creation-Date: 2011-01-25 20:42+0100\n"
+"PO-Revision-Date: 2011-01-25 20:43+0100\n"
 "Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -484,8 +484,10 @@ msgstr "Offentlig DSA-nøkkel"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-msgid "%d bits"
-msgstr "%d bits"
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bits"
 
 #: ../gcr/gcr-key-renderer.c:279
 msgid "Strength"
@@ -521,12 +523,13 @@ msgstr "Data er låst"
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Klarte ikke å finne en plass å lagre festet sertifikat"
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "URI har ugyldig syntaks. Feltkoding for «%s» er ugyldig."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "URI har ikke korrekt utforming i henhold til «pkcs11»."
 
@@ -997,6 +1000,20 @@ msgstr "Bytt passord sikkerhetslager"
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "Du må oppgi opprinnelig og nytt passord for å bytte passord for «%s»"
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "bruk: gnome-keyring kommando [alternativer]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "kommandoer: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "            "
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
