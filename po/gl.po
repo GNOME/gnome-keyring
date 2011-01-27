@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-19 15:03+0100\n"
-"PO-Revision-Date: 2011-01-19 15:03+0100\n"
+"POT-Creation-Date: 2011-01-27 03:39+0100\n"
+"PO-Revision-Date: 2011-01-25 00:50+0100\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "Language: gl\n"
@@ -259,7 +259,7 @@ msgstr "SHA1 con DSA"
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
-"Produciuse un erro non esperado en select() ao ler os datos dende o proceso "
+"Produciuse un erro non esperado en select() ao ler os datos desde o proceso "
 "fillo (%s)."
 
 #: ../egg/egg-spawn.c:320
@@ -528,14 +528,13 @@ msgstr "Os datos están bloqueados"
 #: ../gcr/gcr-trust.c:417
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
-msgstr ""
-"Non foi posíbel encontrar un lugar para almacenar o certificado anclado"
+msgstr "Non foi posíbel atopar un lugar para almacenar o certificado anclado"
 
 #: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr ""
-"O URI ten unha sintaxe inválida. A codificación do cmpo «%s» é inválida."
+"O URI ten unha sintaxe incorrecta. A codificación do campo «%s» é inválida."
 
 #: ../gck/gck-uri.c:195
 msgid "The URI has does not have the 'pkcs11' scheme."
