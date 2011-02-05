@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-10-16 18:28+0000\n"
-"PO-Revision-Date: 2010-10-19 21:00+0100\n"
+"POT-Creation-Date: 2011-01-15 16:34+0000\n"
+"PO-Revision-Date: 2011-02-05 21:06+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,8 +29,8 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Unbenannt"
 
@@ -269,7 +269,7 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Unerwarteter Fehler in waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:200
+#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Zertifikat"
 
@@ -366,7 +366,7 @@ msgid "Key Size"
 msgstr "Schlüssellänge"
 
 #: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:203
+#: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Öffentlicher Schlüssel"
 
@@ -408,15 +408,15 @@ msgstr "Diesen Schlüsselbund beim Abmelden automatisch sperren."
 msgid "minutes"
 msgstr "Minuten"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "Geben Sie das Passwort zum Entsperren des privaten Schlüssels ein"
 
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "Geben Sie das Passwort zum Entsperren des Zertifikats ein"
 
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:699
+#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "Geben Sie das Passwort zum Entsperren ein"
 
@@ -453,7 +453,7 @@ msgstr "Das private Zertifikat »%s« muss zum Importieren entsperrt werden"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "»%s« muss zum Importieren entsperrt werden"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1565 ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
 #: ../gck/gck-misc.c:98
 msgid "The operation was cancelled"
 msgstr "Der Vorgang wurde abgebrochen"
@@ -485,7 +485,7 @@ msgstr "Privater RSA-Schlüssel"
 msgid "Private DSA Key"
 msgstr "Privater DSA-Schlüssel"
 
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:197
+#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Privater Schlüssel"
 
@@ -495,8 +495,10 @@ msgstr "Öffentlicher DSA-Schlüssel"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-msgid "%d bits"
-msgstr "%d bits"
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bit"
 
 #: ../gcr/gcr-key-renderer.c:279
 msgid "Strength"
@@ -515,17 +517,24 @@ msgstr "Größe"
 msgid "Fingerprint"
 msgstr "Fingerabdruck"
 
-#: ../gcr/gcr-parser.c:1568
+#: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
 msgstr "Unbekannte oder nicht unterstützte Daten"
 
-#: ../gcr/gcr-parser.c:1571
+#: ../gcr/gcr-parser.c:1572
 msgid "Could not parse invalid or corrupted data."
 msgstr "Ungültige oder defekte Daten konnten nicht verarbeitet werden."
 
-#: ../gcr/gcr-parser.c:1574
+#: ../gcr/gcr-parser.c:1575
 msgid "The data is locked"
 msgstr "Die Daten sind gesperrt"
+
+#: ../gcr/gcr-trust.c:417
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr ""
+"Es konnte kein Ort für die Hinterlegung des importierten Zertifikats gefunden "
+"werden"
 
 #: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
 #, c-format
@@ -859,7 +868,7 @@ msgstr "Die Signaturanfrage ist vom Benutzer abgelehnt worden"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: ../pkcs11/gkm/gkm-certificate.c:725
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Unbenanntes Zertifikat"
 
@@ -868,25 +877,25 @@ msgid "Couldn't parse public SSH key"
 msgstr "Öffentlicher SSH-Schlüssel konnte nicht verarbeitet werden"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:317
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Passwort zum Entsperren von: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:794
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
 msgid "The unlock password was incorrect"
 msgstr "Das Passwort zum Entsperren war nicht korrekt"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:626
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock Login Keyring"
 msgstr "Anmeldeschlüsselbund entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Enter password to unlock your login keyring"
 msgstr "Geben Sie das Passwort zum Entsperren des Schlüsselbundes ein"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:632
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -894,53 +903,53 @@ msgstr ""
 "Das Passwort, mit dem Sie sich am Rechner anmelden, stimmt nicht mit dem des "
 "Schlüsselbundes überein."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Ihr Anmeldeschlüsselbund wurde nicht automatisch entsperrt, als Sie sich an "
 "diesem Rechner angemeldet haben."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
 msgstr "Schlüsselbund entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr ""
 "Geben Sie das Passwort für den Schlüsselbund »%s« ein, um diesen zu "
 "entsperren."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "Eine Anwendung versucht, auf den Schlüsselbund »%s« zuzugreifen, dieser ist "
 "jedoch gesperrt."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:678
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
 msgstr "Privaten Schlüssel entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:680
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 msgid "Unlock certificate"
 msgstr "Zertifikat entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:682
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Öffentlichen Schlüssel entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
 msgstr "Entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:697
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Geben Sie das Passwort zum Entsperren des öffentlichen Schlüssels ein"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -948,7 +957,7 @@ msgstr ""
 "ist jedoch gesperrt"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:712
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
@@ -956,7 +965,7 @@ msgstr ""
 "jedoch gesperrt"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
@@ -964,23 +973,23 @@ msgstr ""
 "dieser ist jedoch gesperrt"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr ""
 "Eine Anwendung versucht, auf »%s« zuzugreifen, dieses ist jedoch gesperrt"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:815
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
 msgid "Unlock certificate/key storage"
 msgstr "Zertifikat-/Schlüsselverwahrung entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:816
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "Geben Sie das Passwort zum Entsperren der Zertifikat-/Schlüsselverwahrung ein"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:819
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -989,15 +998,15 @@ msgstr ""
 "Eine Anwendung versucht, auf die Zertifikat-/Schlüsselverwahrung »%s« "
 "zuzugreifen, diese ist jedoch gesperrt"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1057
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "Neues Passwort ist erforderlich"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1058
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "Neues Passwort ist für den Sicherheitsdienst erforderlich"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1060
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -1006,21 +1015,35 @@ msgstr ""
 "Ein Passwort ist zur Vorbereitung von »%s« zur Hinterlegung von Zertifikaten "
 "oder Schlüsseln erforderlich"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1183
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1184
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
 msgid "Change password for secure storage"
 msgstr "Passwort für den Sicherheitsdienst ändern"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
 msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr ""
 "Um das Passwort für »%s« zu ändern, sind das bisherige und das neue Passwort "
 "erforderlich"
+
+#: ../tool/gkr-tool.c:101
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "Aufruf: gnome-keyring Befehl [Optionen]\n"
+
+#: ../tool/gkr-tool.c:103
+msgid "commands: "
+msgstr "Befehle: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:107
+msgid "          "
+msgstr "         "
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
