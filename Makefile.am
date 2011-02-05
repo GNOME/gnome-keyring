@@ -25,6 +25,8 @@ SUBDIRS = \
 	po \
 	docs
 
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+
 EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-merge.in \
