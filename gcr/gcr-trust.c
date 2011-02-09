@@ -414,6 +414,9 @@ perform_add_pinned_certificate (GckEnumerator *en, GCancellable *cancellable, GE
 	slot = gcr_pkcs11_get_trust_store_slot ();
 	if (slot == NULL) {
 		g_set_error (error, GCK_ERROR, CKR_FUNCTION_FAILED,
+		             /* Translators: A pinned certificate is an exception which
+		                trusts a given certificate explicitly for a purpose and
+		                communication with a certain peer. */
 		             _("Couldn't find a place to store the pinned certificate"));
 		ret = FALSE;
 	} else {
