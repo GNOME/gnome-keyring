@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-15 08:22+0200\n"
-"PO-Revision-Date: 2011-01-15 08:22+0200\n"
+"POT-Creation-Date: 2011-02-16 22:40+0200\n"
+"PO-Revision-Date: 2011-02-16 22:40+0200\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -486,8 +486,10 @@ msgstr "Публичен ключ за DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-msgid "%d bits"
-msgstr "%d бита"
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d бит"
+msgstr[1] "%d бита"
 
 #: ../gcr/gcr-key-renderer.c:279
 msgid "Strength"
@@ -518,17 +520,21 @@ msgstr "Неправилни или повредени данни не мога�
 msgid "The data is locked"
 msgstr "Данните са заключени"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Не може да бъде открито място за съхранението на избрания сертификат"
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "Адресът е неправилен . Кодирането на полето „%s“ е неправилно."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "В адреса липсва схемата „pkcs11“."
 
@@ -1001,6 +1007,20 @@ msgid ""
 msgstr ""
 "За да промените паролата за „%s“, е необходимо да въведете старата и новата "
 "пароли"
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "употреба: gnome-keyring КОМАНДА [ОПЦИИ]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "команди: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "         "
 
 #: ../ui/gku-prompt-tool.c:538
 msgid "Store passwords unencrypted?"
