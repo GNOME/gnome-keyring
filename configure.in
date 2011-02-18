@@ -309,17 +309,6 @@ AC_CHECK_LIB(c, dlopen, DL_LIBS="",
 AC_SUBST(DL_LIBS)
 
 # --------------------------------------------------------------------
-# Disable ACL Prompts
-
-AC_ARG_ENABLE(acl-prompts, 
-	    AC_HELP_STRING([--disable-acl-prompts],
-	    [Disable prompted for user to give access to passwords]))
-
-if test "$enable_acl_prompts" != "no"; then
-	AC_DEFINE(ENABLE_ACL_PROMPTS, 1, [Whether to prompt before giving access to passwords])
-fi
-
-# --------------------------------------------------------------------
 # PAM Module Directory
 
 AC_ARG_WITH([pam-dir],
