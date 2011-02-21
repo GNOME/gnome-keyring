@@ -62,7 +62,7 @@ struct _GckEnumeratorState {
 
 	/* Input to enumerator */
 	GList *modules;
-	GckUriInfo *match;
+	GckUriData *match;
 	guint session_options;
 	gboolean authenticate;
 	gchar *password;
@@ -159,7 +159,7 @@ cleanup_state (GckEnumeratorState *args)
 	if (args->match) {
 		if (args->match->attributes)
 			_gck_attributes_unlock (args->match->attributes);
-		gck_uri_info_free (args->match);
+		gck_uri_data_free (args->match);
 		args->match = NULL;
 	}
 }
@@ -507,7 +507,7 @@ gck_enumerator_class_init (GckEnumeratorClass *klass)
 
 GckEnumerator*
 _gck_enumerator_new (GList *modules_or_slots, guint session_options,
-                     GckUriInfo *uri_info)
+                     GckUriData *uri_data)
 {
 	GckEnumerator *self;
 	GckEnumeratorState *state;
@@ -527,9 +527,9 @@ _gck_enumerator_new (GList *modules_or_slots, guint session_options,
 		state->handler = state_modules;
 	}
 
-	state->match = uri_info;
-	if (uri_info->attributes)
-		_gck_attributes_lock (uri_info->attributes);
+	state->match = uri_data;
+	if (uri_data->attributes)
+		_gck_attributes_lock (uri_data->attributes);
 
 	return self;
 }

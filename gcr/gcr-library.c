@@ -270,7 +270,7 @@ gcr_pkcs11_add_module (GckModule *module)
 /**
  * gcr_pkcs11_add_module_from_file:
  * @module_path: the full file path of the PKCS\#11 module
- * @init_params: initialization string for the module, or NULL
+ * @unused: unused
  * @error: a #GError or NULL
  *
  * Initialize a PKCS\#11 module and add it to the modules that are
@@ -284,7 +284,7 @@ gcr_pkcs11_add_module (GckModule *module)
  * Returns: whether the module was sucessfully added.
  */
 gboolean
-gcr_pkcs11_add_module_from_file (const gchar *module_path, const gchar *init_params,
+gcr_pkcs11_add_module_from_file (const gchar *module_path, gpointer unused,
                                  GError **error)
 {
 	GckModule *module;
@@ -292,7 +292,7 @@ gcr_pkcs11_add_module_from_file (const gchar *module_path, const gchar *init_par
 	g_return_val_if_fail (module_path, FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	module = gck_module_initialize (module_path, (gpointer)init_params, 0, error);
+	module = gck_module_initialize (module_path, 0, error);
 	if (module == NULL)
 		return FALSE;
 

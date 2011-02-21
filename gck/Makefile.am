@@ -17,10 +17,12 @@ inc_HEADERS = \
 INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
+	$(P11_KIT_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
 	$(GTHREAD_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	-DGCK_API_SUBJECT_TO_CHANGE \
+	-DP11_KIT_API_SUBJECT_TO_CHANGE \
 	-DPKCS11_REGISTRY_DIR=\"$(libdir)/pkcs11\"
 
 BUILT_SOURCES = \
@@ -50,6 +52,7 @@ libgck_la_LDFLAGS = \
 
 libgck_la_LIBADD = \
 	$(top_builddir)/egg/libegg-hex.la \
+	$(P11_KIT_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GIO_LIBS) \

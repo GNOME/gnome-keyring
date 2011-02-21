@@ -90,7 +90,6 @@ gck_modules_enumerate_objects
 gck_modules_enumerate_uri
 gck_modules_get_slots
 gck_modules_initialize_registered
-gck_modules_list_registered_paths
 gck_modules_object_for_uri
 gck_modules_objects_for_uri
 gck_modules_token_for_uri
@@ -266,11 +265,13 @@ CKR_GCK_MODULE_PROBLEM
 
 <SECTION>
 <FILE>gck-uri</FILE>
-GckUriInfo
-GckUriParseFlags
+GckUriData
+GckUriFlags
+gck_uri_data_new
 gck_uri_parse
 gck_uri_build
-gck_uri_info_free
+gck_uri_data_free
+GCK_URI_BAD_PREFIX
 GCK_URI_ERROR
 <SUBSECTION Private>
 gck_uri_get_error_quark
@@ -300,6 +301,7 @@ GCK_TYPE_ENUMERATOR
 gck_list_ref_copy
 gck_list_unref_free
 gck_string_from_chars
+gck_string_to_chars
 gck_value_to_boolean
 gck_value_to_ulong
 GCK_INVALID

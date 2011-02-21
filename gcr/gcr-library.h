@@ -39,7 +39,7 @@ void              gcr_pkcs11_set_modules                   (GList *modules);
 void              gcr_pkcs11_add_module                    (GckModule *module);
 
 gboolean          gcr_pkcs11_add_module_from_file          (const gchar *module_path,
-                                                            const gchar *init_params,
+                                                            gpointer unused,
                                                             GError **error);
 
 GList*            gcr_pkcs11_get_trust_lookup_slots        (void);

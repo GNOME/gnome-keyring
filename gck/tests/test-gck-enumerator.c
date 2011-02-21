@@ -48,7 +48,7 @@ setup (Test *test, gconstpointer unused)
 	GError *err = NULL;
 
 	/* Successful load */
-	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", NULL, 0, &err);
+	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", 0, &err);
 	g_assert_no_error (err);
 	g_assert (GCK_IS_MODULE (test->module));
 
@@ -68,11 +68,11 @@ teardown (Test *test, gconstpointer unused)
 static void
 test_create (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GckEnumerator *en;
 
-	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (test->modules, 0, uri_info);
+	uri_data = gck_uri_data_new ();
+	en = _gck_enumerator_new (test->modules, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 	g_object_unref (en);
 }
@@ -80,13 +80,13 @@ test_create (Test *test, gconstpointer unused)
 static void
 test_create_slots (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GckEnumerator *en;
 	GList *slots;
 
-	uri_info = _gck_uri_info_new ();
+	uri_data = gck_uri_data_new ();
 	slots = gck_module_get_slots (test->module, FALSE);
-	en = _gck_enumerator_new (slots, 0, uri_info);
+	en = _gck_enumerator_new (slots, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 	g_object_unref (en);
 	gck_list_unref_free (slots);
@@ -95,13 +95,13 @@ test_create_slots (Test *test, gconstpointer unused)
 static void
 test_next (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GckObject *obj;
 
-	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (test->modules, 0, uri_info);
+	uri_data = gck_uri_data_new ();
+	en = _gck_enumerator_new (test->modules, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
@@ -114,15 +114,15 @@ test_next (Test *test, gconstpointer unused)
 static void
 test_next_slots (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GError *error = NULL;
 	GList *slots = NULL;
 	GckEnumerator *en;
 	GckObject *obj;
 
-	uri_info = _gck_uri_info_new ();
+	uri_data = gck_uri_data_new ();
 	slots = gck_module_get_slots (test->module, FALSE);
-	en = _gck_enumerator_new (slots, 0, uri_info);
+	en = _gck_enumerator_new (slots, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
@@ -136,13 +136,13 @@ test_next_slots (Test *test, gconstpointer unused)
 static void
 test_next_and_resume (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GckObject *obj, *obj2;
 
-	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (test->modules, 0, uri_info);
+	uri_data = gck_uri_data_new ();
+	en = _gck_enumerator_new (test->modules, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
@@ -163,13 +163,13 @@ test_next_and_resume (Test *test, gconstpointer unused)
 static void
 test_next_n (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects, *l;
 
-	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (test->modules, 0, uri_info);
+	uri_data = gck_uri_data_new ();
+	en = _gck_enumerator_new (test->modules, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);
@@ -193,14 +193,14 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 static void
 test_next_async (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects, *l;
 
-	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (test->modules, 0, uri_info);
+	uri_data = gck_uri_data_new ();
+	en = _gck_enumerator_new (test->modules, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	gck_enumerator_next_async (en, -1, NULL, fetch_async_result, &result);
@@ -221,15 +221,15 @@ test_next_async (Test *test, gconstpointer unused)
 static void
 test_attributes (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects;
 
-	uri_info = _gck_uri_info_new ();
-	uri_info->attributes = gck_attributes_new ();
-	gck_attributes_add_string (uri_info->attributes, CKA_LABEL, "Private Capitalize Key");
-	en = _gck_enumerator_new (test->modules, 0, uri_info);
+	uri_data = gck_uri_data_new ();
+	uri_data->attributes = gck_attributes_new ();
+	gck_attributes_add_string (uri_data->attributes, CKA_LABEL, "Private Capitalize Key");
+	en = _gck_enumerator_new (test->modules, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);
@@ -244,15 +244,15 @@ test_attributes (Test *test, gconstpointer unused)
 static void
 test_token_match (Test *test, gconstpointer unused)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GError *error = NULL;
 	GckEnumerator *en;
 	GList *objects;
 
-	uri_info = _gck_uri_info_new ();
-	uri_info->token_info = g_new0 (GckTokenInfo, 1);
-	uri_info->token_info->label = g_strdup ("Invalid token name");
-	en = _gck_enumerator_new (test->modules, 0, uri_info);
+	uri_data = gck_uri_data_new ();
+	uri_data->token_info = g_new0 (GckTokenInfo, 1);
+	uri_data->token_info->label = g_strdup ("Invalid token name");
+	en = _gck_enumerator_new (test->modules, 0, uri_data);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);

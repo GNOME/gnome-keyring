@@ -63,7 +63,8 @@ INCLUDES = \
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS) \
-	$(LIBTASN1_CFLAGS)
+	$(LIBTASN1_CFLAGS) \
+	$(P11_KIT_CFLAGS)
 
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h
@@ -129,7 +130,8 @@ libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS) \
 	$(LIBGCRYPT_LIBS) \
-	$(GTK_LIBS)
+	$(GTK_LIBS) \
+	$(P11_KIT_LIBS)
 
 noinst_LTLIBRARIES = $(TESTABLE_LIB)
 libgcr_testable_la_SOURCES =

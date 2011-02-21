@@ -50,7 +50,7 @@ setup (Test *test, gconstpointer unused)
 	GList *slots;
 
 	/* Successful load */
-	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", NULL, 0, &err);
+	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", 0, &err);
 	g_assert_no_error (err);
 	g_assert (GCK_IS_MODULE (test->module));
 

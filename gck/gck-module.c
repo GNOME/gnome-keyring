@@ -27,6 +27,8 @@
 #include "gck-private.h"
 #include "gck-marshal.h"
 
+#include <p11-kit/p11-kit.h>
+
 #include <string.h>
 
 /**
@@ -100,53 +102,6 @@ struct _GckModulePrivate {
 G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 
 static guint signals[LAST_SIGNAL] = { 0 };
-
-/* ----------------------------------------------------------------------------
- * HELPERS
- */
-
-static CK_RV
-create_mutex (void **mutex)
-{
-	if (!mutex)
-		return CKR_ARGUMENTS_BAD;
-
-	if (!g_thread_supported ()) {
-		g_warning ("cannot create pkcs11 mutex, threading has not been initialized");
-		return CKR_GENERAL_ERROR;
-	}
-
-	*mutex = g_mutex_new ();
-	g_return_val_if_fail (*mutex, CKR_GENERAL_ERROR);
-	return CKR_OK;
-}
-
-static CK_RV
-destroy_mutex (void *mutex)
-{
-	if (!mutex)
-		return CKR_MUTEX_BAD;
-	g_mutex_free ((GMutex*)mutex);
-	return CKR_OK;
-}
-
-static CK_RV
-lock_mutex (void *mutex)
-{
-	if (!mutex)
-		return CKR_MUTEX_BAD;
-	g_mutex_lock ((GMutex*)mutex);
-	return CKR_OK;
-}
-
-static CK_RV
-unlock_mutex (void *mutex)
-{
-	if (!mutex)
-		return CKR_MUTEX_BAD;
-	g_mutex_unlock ((GMutex*)mutex);
-	return CKR_OK;
-}
 
 /* ----------------------------------------------------------------------------
  * INTERNAL
@@ -289,7 +244,7 @@ gck_module_dispose (GObject *obj)
 
 	/* Must be careful when accessing funcs */
 	if (finalize) {
-		rv = (self->pv->funcs->C_Finalize) (NULL);
+		rv = p11_kit_finalize_module (self->pv->funcs);
 		if (rv != CKR_OK) {
 			g_warning ("C_Finalize on module '%s' failed: %s",
 			           self->pv->path, gck_message_from_rv (rv));
@@ -419,8 +374,7 @@ gck_module_info_free (GckModuleInfo *module_info)
 /**
  * gck_module_initialize:
  * @path: The file system path to the PKCS\#11 module to load.
- * @reserved: Extra arguments for the PKCS\#11 module, should usually be NULL.
- * @reserved_options: No options are currently available.
+ * @flags: No options are currently available.
  * @error: A location to store an error resulting from a failed load.
  *
  * Load and initialize a PKCS\#11 module represented by a GckModule object.
@@ -428,8 +382,7 @@ gck_module_info_free (GckModuleInfo *module_info)
  * Return value: The loaded PKCS\#11 module or NULL if failed.
  **/
 GckModule*
-gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_options,
-                       GError **error)
+gck_module_initialize (const gchar *path, guint flags, GError **error)
 {
 	CK_C_GetFunctionList get_function_list;
 	CK_FUNCTION_LIST_PTR funcs;
@@ -468,16 +421,8 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_opti
 	self = g_object_new (GCK_TYPE_MODULE, "functions", funcs, "path", path, NULL);
 	self->pv->module = module;
 
-	memset (&self->pv->init_args, 0, sizeof (self->pv->init_args));
-	self->pv->init_args.flags = CKF_OS_LOCKING_OK;
-	self->pv->init_args.CreateMutex = create_mutex;
-	self->pv->init_args.DestroyMutex = destroy_mutex;
-	self->pv->init_args.LockMutex = lock_mutex;
-	self->pv->init_args.UnlockMutex = unlock_mutex;
-	self->pv->init_args.pReserved = reserved;
-
 	/* Now initialize the module */
-	rv = (self->pv->funcs->C_Initialize) (&self->pv->init_args);
+	rv = p11_kit_initialize_module (self->pv->funcs);
 	if (rv != CKR_OK) {
 		g_set_error (error, GCK_ERROR, rv, "Couldn't initialize module: %s",
 		             gck_message_from_rv (rv));
@@ -492,7 +437,7 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_opti
 /**
  * gck_module_new:
  * @funcs: Initialized PKCS\#11 function list pointer
- * @reserved_options: Must be zero
+ * @flags: Must be zero
  *
  * Create a GckModule representing a PKCS\#11 module. It is assumed that
  * this the module is already initialized. In addition it will not be
@@ -501,10 +446,18 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_opti
  * Return value: The new PKCS\#11 module.
  **/
 GckModule*
-gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint reserved_options)
+gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint flags)
 {
 	g_return_val_if_fail (funcs, NULL);
 	return g_object_new (GCK_TYPE_MODULE, "functions", funcs, NULL);
+}
+
+GckModule*
+_gck_module_new_initialized (CK_FUNCTION_LIST_PTR funcs, guint reserved_options)
+{
+	GckModule *module = gck_module_new (funcs, reserved_options);
+	module->pv->initialized = TRUE; /* As if we initialized it */
+	return module;
 }
 
 /**
@@ -554,6 +507,44 @@ gck_module_hash (gconstpointer module)
 	return g_direct_hash (self->pv->funcs);
 }
 
+GckModuleInfo*
+_gck_module_info_from_pkcs11 (CK_INFO_PTR info)
+{
+	GckModuleInfo *modinfo;
+
+	modinfo = g_new0 (GckModuleInfo, 1);
+	modinfo->flags = info->flags;
+	modinfo->library_description = gck_string_from_chars (info->libraryDescription,
+	                                                       sizeof (info->libraryDescription));
+	modinfo->manufacturer_id = gck_string_from_chars (info->manufacturerID,
+	                                                   sizeof (info->manufacturerID));
+	modinfo->library_version_major = info->libraryVersion.major;
+	modinfo->library_version_minor = info->libraryVersion.minor;
+	modinfo->pkcs11_version_major = info->cryptokiVersion.major;
+	modinfo->pkcs11_version_minor = info->cryptokiVersion.minor;
+
+	return modinfo;
+}
+
+void
+_gck_module_info_to_pkcs11 (GckModuleInfo* module_info, CK_INFO_PTR info)
+{
+	info->flags = module_info->flags;
+	if (!gck_string_to_chars (info->libraryDescription,
+	                          sizeof (info->libraryDescription),
+	                          module_info->library_description))
+		g_return_if_reached ();
+	if (!gck_string_to_chars (info->manufacturerID,
+	                          sizeof (info->manufacturerID),
+	                          module_info->manufacturer_id))
+		g_return_if_reached ();
+
+	info->libraryVersion.major = module_info->library_version_major;
+	info->libraryVersion.minor = module_info->library_version_minor;
+	info->cryptokiVersion.major = module_info->pkcs11_version_major;
+	info->cryptokiVersion.minor = module_info->pkcs11_version_minor;
+}
+
 /**
  * gck_module_get_info:
  * @self: The module to get info for.
@@ -565,7 +556,6 @@ gck_module_hash (gconstpointer module)
 GckModuleInfo*
 gck_module_get_info (GckModule *self)
 {
-	GckModuleInfo *modinfo;
 	CK_INFO info;
 	CK_RV rv;
 
@@ -579,18 +569,7 @@ gck_module_get_info (GckModule *self)
 		return NULL;
 	}
 
-	modinfo = g_new0 (GckModuleInfo, 1);
-	modinfo->flags = info.flags;
-	modinfo->library_description = gck_string_from_chars (info.libraryDescription,
-	                                                       sizeof (info.libraryDescription));
-	modinfo->manufacturer_id = gck_string_from_chars (info.manufacturerID,
-	                                                   sizeof (info.manufacturerID));
-	modinfo->library_version_major = info.libraryVersion.major;
-	modinfo->library_version_minor = info.libraryVersion.minor;
-	modinfo->pkcs11_version_major = info.cryptokiVersion.major;
-	modinfo->pkcs11_version_minor = info.cryptokiVersion.minor;
-
-	return modinfo;
+	return _gck_module_info_from_pkcs11 (&info);
 }
 
 /**

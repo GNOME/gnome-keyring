@@ -45,8 +45,8 @@
  *
  * Each row can have a selected state, which is represented by a boolean column.
  * The selected state can be toggled with gcr_collection_model_toggle_selected()
- * or set with gcr_collection_model_set_selected() and retrieved with
- * gcr_collection_model_get_selected().
+ * or set with gcr_collection_model_set_selected_objects() and retrieved with
+ * gcr_collection_model_get_selected_objects().
  *
  * To determine which object a row represents and vice versa, use the
  * gcr_collection_model_iter_for_object() or gcr_collection_model_object_for_iter()

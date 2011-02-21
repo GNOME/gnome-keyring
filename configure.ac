@@ -264,9 +264,6 @@ DBUS_CFLAGS="$DBUS_CFLAGS -DGKR_DBUS_MICRO_VERSION=$DBUS_MICRO_VERSION"
 DAEMON_CFLAGS="$DAEMON_CFLAGS $DBUS_CFLAGS"
 DAEMON_LIBS="$DAEMON_LIBS $DBUS_LIBS"
 
-LIBRARY_CFLAGS="$LIBRARY_CFLAGS $DBUS_CFLAGS"
-LIBRARY_LIBS="$LIBRARY_LIBS $DBUS_LIBS"
-
 AC_ARG_WITH(dbus-services,
 		  [AC_HELP_STRING([--with-dbus-services=<dir>],
 		  [where D-BUS session services directory is])])
@@ -310,6 +307,13 @@ AC_CHECK_LIB(c, dlopen, DL_LIBS="",
 )
 
 AC_SUBST(DL_LIBS)
+
+# --------------------------------------------------------------------
+# p11-kit
+
+PKG_CHECK_MODULES([P11_KIT], p11-kit-1)
+AC_SUBST(P11_KIT_CFLAGS)
+AC_SUBST(P11_KIT_LIBS)
 
 # --------------------------------------------------------------------
 # PAM Module Directory
@@ -695,9 +699,6 @@ AC_SUBST(GCR_VERSION_SUFFIX)
 
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
-
-AC_SUBST(LIBRARY_CFLAGS)
-AC_SUBST(LIBRARY_LIBS)
 
 AC_SUBST(P11_TESTS_CFLAGS)
 AC_SUBST(P11_TESTS_LIBS)

@@ -29,9 +29,10 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <string.h>
+#include <p11-kit/uri.h>
 
-#include "egg/egg-hex.h"
+#include <string.h>
+#include <stdlib.h>
 
 /**
  * SECTION:gck-uri
@@ -56,7 +57,7 @@
  **/
 
 /**
- * GckUriInfo:
+ * GckUriData:
  * @any_unrecognized: whether any parts of the PKCS\#11 URI were unsupported or unrecognized.
  * @module_info: information about the PKCS\#11 modules matching the URI.
  * @token_info: information about the PKCS\#11 tokens matching the URI.
@@ -71,11 +72,11 @@
  */
 
 /**
- * GckUriParseFlags:
- * @GCK_URI_PARSE_MODULE: the URI will be used to match modules.
- * @GCK_URI_PARSE_TOKEN: the URI will be used to match tokens.
- * @GCK_URI_PARSE_OBJECT: the URI will be used to match objects.
- * @GCK_URI_PARSE_ANY: parse all recognized components of the URI.
+ * GckUriFlags:
+ * @GCK_URI_CONTEXT_MODULE: the URI will be used to match modules.
+ * @GCK_URI_CONTEXT_TOKEN: the URI will be used to match tokens.
+ * @GCK_URI_CONTEXT_OBJECT: the URI will be used to match objects.
+ * @GCK_URI_CONTEXT_ANY: parse all recognized components of the URI.
  *
  * Which context the PKCS\#11 URI will be used in.
  */
@@ -103,380 +104,165 @@ gck_uri_get_error_quark (void)
 	return domain;
 }
 
-GckUriInfo*
-_gck_uri_info_new (void)
+/**
+ * gck_uri_new:
+ *
+ * Allocate a new GckUriData structure. None of the fields
+ * will be set.
+ *
+ * Returns: A newly allocated GckUriData, free with gck_uri_data_free().
+ */
+GckUriData*
+gck_uri_data_new (void)
 {
-	return g_slice_new0 (GckUriInfo);
-}
-
-static gint
-parse_string_attribute (const gchar *name, const gchar *start, const gchar *end,
-                        GckAttributes *attrs, GError **error)
-{
-	gchar *value;
-	gint res = 0;
-
-	g_assert (name);
-	g_assert (start);
-	g_assert (end);
-
-	if (!g_str_equal (name, "object") && !g_str_equal (name, "objecttype"))
-		return 0;
-
-	value = g_uri_unescape_segment (start, end, "");
-	if (value == NULL) {
-		g_set_error (error, GCK_URI_ERROR, GCK_URI_BAD_ENCODING,
-		             _("The URI has invalid syntax. The '%s' field encoding is invalid."), name);
-		return -1;
-	}
-
-	if (g_str_equal (name, "object")) {
-		gck_attributes_add_string (attrs, CKA_LABEL, value);
-		res = 1;
-
-	} else if (g_str_equal (name, "objecttype")) {
-
-		res = 1;
-		if (g_str_equal (value, "cert"))
-			gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_CERTIFICATE);
-		else if (g_str_equal (value, "public"))
-			gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-		else if (g_str_equal (value, "private"))
-			gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-		else if (g_str_equal (value, "secretkey"))
-			gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
-		else if (g_str_equal (value, "data"))
-			gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
-		else {
-			g_message ("ignoring unsupported value for '%s'", value);
-			res = 0;
-		}
-	} else {
-		g_assert_not_reached ();
-	}
-
-	g_free (value);
-	return res;
-}
-
-static gint
-parse_binary_attribute (const gchar *name, const gchar *start, const gchar *end,
-                        GckAttributes *attrs, GError **error)
-{
-	guchar *data;
-	gsize n_data;
-
-	g_assert (name);
-	g_assert (start);
-	g_assert (end);
-	g_assert (attrs);
-
-	if (!g_str_equal (name, "id"))
-		return 0;
-
-	/*
-	 * TODO: This requires some work. We're not yet sure about the actual
-	 * encoding that's supported here.
-	 */
-
-	g_assert (end >= start);
-	data = egg_hex_decode_full (start, end - start, ':', 1, &n_data);
-	if (data == NULL) {
-		g_set_error (error, GCK_URI_ERROR, GCK_URI_BAD_ENCODING,
-		             _("The URI has invalid syntax. The '%s' field encoding is invalid."), name);
-		return -1;
-	}
-
-	gck_attributes_add_data (attrs, CKA_ID, data, n_data);
-	g_free (data);
-	return 1;
-}
-
-static gint
-parse_token_attribute (const gchar *name, const gchar *start, const gchar *end,
-                       GckTokenInfo *token, GError **error)
-{
-	gchar **value;
-	gchar *string;
-
-	g_assert (name);
-	g_assert (start);
-	g_assert (end);
-	g_assert (token);
-
-	if (g_str_equal (name, "model"))
-		value = &(token->model);
-	else if (g_str_equal (name, "manufacturer"))
-		value = &(token->manufacturer_id);
-	else if (g_str_equal (name, "serial"))
-		value = &(token->serial_number);
-	else if (g_str_equal (name, "token"))
-		value = &(token->label);
-	else
-		return 0;
-
-	string = g_uri_unescape_segment (start, end, "");
-	if (string == NULL) {
-		g_set_error (error, GCK_URI_ERROR, GCK_URI_BAD_ENCODING,
-		             _("The URI has invalid syntax. The '%s' field encoding is invalid."), name);
-		return -1;
-	}
-
-	g_free (*value);
-	*value = string;
-
-	return 1;
-}
-
-static gint
-parse_library_attribute (const gchar *name, const gchar *start, const gchar *end,
-                         GckModuleInfo *library, GError **error)
-{
-	gchar **value;
-	gchar *string;
-
-	g_assert (name);
-	g_assert (start);
-	g_assert (end);
-	g_assert (library);
-
-	if (g_str_equal (name, "library-description"))
-		value = &(library->library_description);
-	else if (g_str_equal (name, "library-manufacturer"))
-		value = &(library->manufacturer_id);
-	else
-		return 0;
-
-	string = g_uri_unescape_segment (start, end, "");
-	if (string == NULL) {
-		g_set_error (error, GCK_URI_ERROR, GCK_URI_BAD_ENCODING,
-		             _("The URI has invalid syntax. The '%s' field encoding is invalid."), name);
-		return -1;
-	}
-
-	g_free (*value);
-	*value = string;
-
-	return 1;
+	return g_slice_new0 (GckUriData);
 }
 
 /**
  * gck_uri_parse:
- * @uri: the URI to parse.
+ * @string: the URI to parse.
  * @flags: the context in which the URI will be used.
  * @error: a #GError, or %NULL.
  *
  * Parse a PKCS\#11 URI for use in a given context.
  *
  * The result will contain the fields that are relevant for
- * the given context. See #GckUriInfo  for more info.
+ * the given context. See #GckUriData  for more info.
  * Other fields will be set to %NULL.
  *
- * Return value: a newly allocated #GckUriInfo, which should be freed with
+ * Return value: a newly allocated #GckUriData, which should be freed with
  * 	gck_uri_info_free().
  */
-GckUriInfo*
-gck_uri_parse (const gchar *uri, GckUriParseFlags flags, GError **error)
+GckUriData*
+gck_uri_parse (const gchar *string, GckUriFlags flags, GError **error)
 {
-	const gchar *spos, *epos;
-	gchar *key = NULL;
-	gboolean ret = FALSE;
-	GckUriInfo *uri_info = NULL;
+	GckUriData *uri_data = NULL;
+	CK_ATTRIBUTE_PTR attrs;
+	CK_ULONG i, n_attrs;
+	P11KitUri *p11_uri;
 	gint res;
 
-	g_return_val_if_fail (uri, FALSE);
+	g_return_val_if_fail (string, FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	if (!g_str_has_prefix (uri, URI_PREFIX)) {
-		g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_PREFIX,
-		                     _("The URI does not have the 'pkcs11' scheme."));
-		goto cleanup;
-	}
+	p11_uri = p11_kit_uri_new ();
+	if (!p11_uri)
+		g_error ("failed to allocate P11KitUri");
 
-	uri += N_URI_PREFIX;
-
-	uri_info = _gck_uri_info_new ();
-	if ((flags & GCK_URI_PARSE_MODULE) == GCK_URI_PARSE_MODULE)
-		uri_info->module_info = g_new0 (GckModuleInfo, 1);
-	if ((flags & GCK_URI_PARSE_TOKEN) == GCK_URI_PARSE_TOKEN)
-		uri_info->token_info = g_new0 (GckTokenInfo, 1);
-	if ((flags & GCK_URI_PARSE_OBJECT) == GCK_URI_PARSE_OBJECT)
-		uri_info->attributes = gck_attributes_new ();
-
-	for (;;) {
-		spos = strchr (uri, ';');
-		if (spos == NULL) {
-			spos = uri + strlen (uri);
-			g_assert (*spos == '\0');
-			if (spos == uri)
-				break;
-		}
-
-		epos = strchr (uri, '=');
-		if (epos == NULL || spos == uri || epos == uri || epos >= spos) {
-			g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_SYNTAX,
-			                     "The URI has invalid syntax. It must consist of key=value pairs.");
-			goto cleanup;
-		}
-
-		g_free (key);
-		key = g_strndup (uri, epos - uri);
-		epos++;
-
-		res = 0;
-		if (uri_info->attributes)
-			res = parse_string_attribute (key, epos, spos, uri_info->attributes, error);
-		if (res == 0 && uri_info->attributes)
-			res = parse_binary_attribute (key, epos, spos, uri_info->attributes, error);
-		if (res == 0 && uri_info->token_info)
-			res = parse_token_attribute (key, epos, spos, uri_info->token_info, error);
-		if (res == 0 && uri_info->module_info)
-			res = parse_library_attribute (key, epos, spos, uri_info->module_info, error);
-		if (res < 0)
-			goto cleanup;
-		if (res == 0) {
-			g_message ("Ignoring unrecognized or unsupported field '%s'", key);
-			uri_info->any_unrecognized = TRUE;
-		}
-
-		if (*spos == '\0')
+	res = p11_kit_uri_parse (string, flags, p11_uri);
+	if (res != P11_KIT_URI_OK) {
+		p11_kit_uri_free (p11_uri);
+		switch (res) {
+		case P11_KIT_URI_NO_MEMORY:
+			g_error ("failed to allocate memory in p11_kit_uri_parse()");
 			break;
-		uri = spos + 1;
+		case P11_KIT_URI_BAD_ENCODING:
+			g_set_error (error, GCK_URI_ERROR, GCK_URI_BAD_ENCODING,
+				     _("The URI has invalid encoding."));
+			break;
+		case P11_KIT_URI_BAD_SCHEME:
+			g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_SCHEME,
+			                     _("The URI has does not have the 'pkcs11' scheme."));
+			break;
+		case P11_KIT_URI_BAD_SYNTAX:
+			g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_SYNTAX,
+			                     _("The URI has bad syntax."));
+			break;
+		case P11_KIT_URI_BAD_VERSION:
+			g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_SYNTAX,
+			                     _("The URI has a bad version number."));
+			break;
+		case P11_KIT_URI_NOT_FOUND:
+			g_assert_not_reached ();
+			break;
+		};
+		return NULL;
 	}
 
-	ret = TRUE;
-
-cleanup:
-	if (!ret) {
-		gck_uri_info_free (uri_info);
-		uri_info = NULL;
+	/* Convert it to a GckUri */
+	uri_data = gck_uri_data_new ();
+	if ((flags & GCK_URI_CONTEXT_MODULE) == GCK_URI_CONTEXT_MODULE)
+		uri_data->module_info = _gck_module_info_from_pkcs11 (p11_kit_uri_get_module_info (p11_uri));
+	if ((flags & GCK_URI_CONTEXT_TOKEN) == GCK_URI_CONTEXT_TOKEN)
+		uri_data->token_info = _gck_token_info_from_pkcs11 (p11_kit_uri_get_token_info (p11_uri));
+	if ((flags & GCK_URI_CONTEXT_OBJECT) == GCK_URI_CONTEXT_OBJECT) {
+		attrs = p11_kit_uri_get_attributes (p11_uri, &n_attrs);
+		uri_data->attributes = gck_attributes_new ();
+		for (i = 0; i < n_attrs; ++i)
+			gck_attributes_add (uri_data->attributes, (GckAttribute*)&attrs[i]);
 	}
+	uri_data->any_unrecognized = p11_kit_uri_any_unrecognized (p11_uri);
 
-	g_free (key);
-	return uri_info;
-}
-
-static void
-build_string_attribute (const gchar *name, const gchar *value,
-                        GString *result, gboolean *first)
-{
-	gchar *segment;
-
-	g_assert (first);
-	g_assert (result);
-	g_assert (name);
-
-	if (!value)
-		return;
-
-	segment = g_uri_escape_string (value, "", FALSE);
-	if (!*first)
-		g_string_append_c (result, ';');
-	*first = FALSE;
-
-	g_string_append (result, name);
-	g_string_append_c (result, '=');
-	g_string_append (result, segment);
-	g_free (segment);
-}
-
-static void
-build_binary_attribute (const gchar *name, gconstpointer data, gsize n_data,
-                        GString *result, gboolean *first)
-{
-	gchar *segment;
-
-	g_assert (first);
-	g_assert (result);
-	g_assert (name);
-	g_assert (!n_data || data);
-
-	segment = egg_hex_encode_full (data, n_data, FALSE, ':', 1);
-	if (!*first)
-		g_string_append_c (result, ';');
-	*first = FALSE;
-
-	g_string_append (result, name);
-	g_string_append_c (result, '=');
-	g_string_append (result, segment);
-	g_free (segment);
+	p11_kit_uri_free (p11_uri);
+	return uri_data;
 }
 
 /**
  * gck_uri_build:
- * @uri_info: the info to build the URI from.
+ * @uri_data: the info to build the URI from.
+ * @flags: The context that the URI is for
  *
- * Build a PKCS\#11 URI. Any set fields of @uri_info will be used to build
- * the URI.
+ * Build a PKCS\#11 URI. The various parts relevant to the flags
+ * specified will be used to build the URI.
  *
  * Return value: a newly allocated string containing a PKCS\#11 URI.
  */
 gchar*
-gck_uri_build (GckUriInfo *uri_info)
+gck_uri_build (GckUriData *uri_data, GckUriFlags flags)
 {
 	GckAttribute *attr;
-	GString *result;
-	gchar *value;
-	gulong klass;
-	gboolean first = TRUE;
+	P11KitUri *p11_uri = 0;
+	gchar *string;
+	int res;
+	guint i;
 
-	g_return_val_if_fail (uri_info, NULL);
+	g_return_val_if_fail (uri_data, NULL);
 
-	result = g_string_new (URI_PREFIX);
+	p11_uri = p11_kit_uri_new ();
 
-	if (uri_info->module_info) {
-		build_string_attribute ("library-description", uri_info->module_info->library_description, result, &first);
-		build_string_attribute ("library-manufacturer", uri_info->module_info->manufacturer_id, result, &first);
-	}
-
-	if (uri_info->token_info) {
-		build_string_attribute ("model", uri_info->token_info->model, result, &first);
-		build_string_attribute ("manufacturer", uri_info->token_info->manufacturer_id, result, &first);
-		build_string_attribute ("serial", uri_info->token_info->serial_number, result, &first);
-		build_string_attribute ("token", uri_info->token_info->label, result, &first);
-	}
-
-	if (uri_info->attributes) {
-		if (gck_attributes_find_string (uri_info->attributes, CKA_LABEL, &value)) {
-			build_string_attribute ("object", value, result, &first);
-			g_free (value);
+	if ((flags & GCK_URI_CONTEXT_MODULE) == GCK_URI_CONTEXT_MODULE && uri_data->module_info)
+		_gck_module_info_to_pkcs11 (uri_data->module_info,
+		                            p11_kit_uri_get_module_info (p11_uri));
+	if ((flags & GCK_URI_CONTEXT_TOKEN) == GCK_URI_CONTEXT_TOKEN && uri_data->token_info)
+		_gck_token_info_to_pkcs11 (uri_data->token_info,
+		                           p11_kit_uri_get_token_info (p11_uri));
+	if ((flags & GCK_URI_CONTEXT_OBJECT) == GCK_URI_CONTEXT_OBJECT && uri_data->attributes) {
+		for (i = 0; i < gck_attributes_count (uri_data->attributes); ++i) {
+			attr = gck_attributes_at (uri_data->attributes, i);
+			res = p11_kit_uri_set_attribute (p11_uri, (CK_ATTRIBUTE_PTR)attr);
+			if (res == P11_KIT_URI_NO_MEMORY)
+				g_error ("failed to allocate memory in p11_kit_uri_set_attribute()");
+			else if (res != P11_KIT_URI_NOT_FOUND && res != P11_KIT_URI_OK)
+				g_return_val_if_reached (NULL);
 		}
-		if (gck_attributes_find_ulong (uri_info->attributes, CKA_CLASS, &klass)) {
-			if (klass == CKO_CERTIFICATE)
-				build_string_attribute ("objecttype", "cert", result, &first);
-			else if (klass == CKO_PUBLIC_KEY)
-				build_string_attribute ("objecttype", "public", result, &first);
-			else if (klass == CKO_PRIVATE_KEY)
-				build_string_attribute ("objecttype", "private", result, &first);
-			else if (klass == CKO_SECRET_KEY)
-				build_string_attribute ("objecttype", "secretkey", result, &first);
-			else if (klass == CKO_DATA)
-				build_string_attribute ("objecttype", "data", result, &first);
-		}
-		attr = gck_attributes_find (uri_info->attributes, CKA_ID);
-		if (attr != NULL)
-			build_binary_attribute ("id", attr->value, attr->length, result, &first);
 	}
 
-	return g_string_free (result, FALSE);
+	res = p11_kit_uri_format (p11_uri, flags & GCK_URI_CONTEXT_ANY, &string);
+	if (res == P11_KIT_URI_NO_MEMORY)
+		g_error ("failed to allocate memory in p11_kit_uri_format()");
+	else if (res != P11_KIT_URI_OK)
+		g_return_val_if_reached (NULL);
+
+	p11_kit_uri_free (p11_uri);
+	return string;
 }
 
 /**
- * gck_uri_info_free:
- * @uri_info: URI info to free.
+ * gck_uri_data_free:
+ * @uri_data: URI data to free.
  *
- * Free a #GckUriInfo.
+ * Free a #GckUriData.
  */
 void
-gck_uri_info_free (GckUriInfo *uri_info)
+gck_uri_data_free (GckUriData *uri_data)
 {
-	if (uri_info) {
-		if (uri_info->attributes)
-			gck_attributes_unref (uri_info->attributes);
-		if (uri_info->module_info)
-			gck_module_info_free (uri_info->module_info);
-		if (uri_info->token_info)
-			gck_token_info_free (uri_info->token_info);
-		g_slice_free (GckUriInfo, uri_info);
+	if (uri_data) {
+		if (uri_data->attributes)
+			gck_attributes_unref (uri_data->attributes);
+		if (uri_data->module_info)
+			gck_module_info_free (uri_data->module_info);
+		if (uri_data->token_info)
+			gck_token_info_free (uri_data->token_info);
+		g_slice_free (GckUriData, uri_data);
 	}
 }

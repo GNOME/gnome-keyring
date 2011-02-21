@@ -62,6 +62,9 @@ gboolean            _gck_ulong_equal                       (gconstpointer v1,
  * MODULE
  */
 
+GckModule*          _gck_module_new_initialized            (CK_FUNCTION_LIST_PTR funcs,
+                                                            guint reserved_options);
+
 gboolean            _gck_module_fire_authenticate_slot     (GckModule *module,
                                                              GckSlot *slot,
                                                              gchar *label,
@@ -72,6 +75,11 @@ gboolean            _gck_module_fire_authenticate_object   (GckModule *module,
                                                              gchar *label,
                                                              gchar **password);
 
+GckModuleInfo*      _gck_module_info_from_pkcs11            (CK_INFO_PTR info);
+
+void                _gck_module_info_to_pkcs11              (GckModuleInfo* module_info,
+                                                             CK_INFO_PTR info);
+
 gboolean            _gck_module_info_match                  (GckModuleInfo *match,
                                                              GckModuleInfo *module_info);
 
@@ -81,20 +89,19 @@ gboolean            _gck_module_info_match                  (GckModuleInfo *matc
 
 GckEnumerator*      _gck_enumerator_new                     (GList *modules,
                                                              guint session_options,
-                                                             GckUriInfo *uri_info);
+                                                             GckUriData *uri_data);
 
 /* ----------------------------------------------------------------------------
  * SLOT
  */
 
+GckTokenInfo*      _gck_token_info_from_pkcs11              (CK_TOKEN_INFO_PTR info);
+
+void               _gck_token_info_to_pkcs11                (GckTokenInfo *token_info,
+                                                             CK_TOKEN_INFO_PTR info);
+
 gboolean           _gck_token_info_match                    (GckTokenInfo *match,
                                                              GckTokenInfo *info);
-
-/* ----------------------------------------------------------------------------
- * URI
- */
-
-GckUriInfo*         _gck_uri_info_new                       (void);
 
 /* ----------------------------------------------------------------------------
  * CALL

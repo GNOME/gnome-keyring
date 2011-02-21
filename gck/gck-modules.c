@@ -27,7 +27,10 @@
 #include "gck-private.h"
 #include "gck-marshal.h"
 
+#include <p11-kit/p11-kit.h>
+
 #include <string.h>
+#include <stdlib.h>
 
 /**
  * SECTION:gck-modules
@@ -39,103 +42,38 @@
  */
 
 /**
- * gck_modules_list_registered_paths:
- * @error: A location to store an error, on failure
- *
- * Get the paths for all registered modules.
- *
- * Returns: An array of module paths, should be freed with g_strfreev().
- */
-gchar**
-gck_modules_list_registered_paths (GError **error)
-{
-	GError *err = NULL;
-	const gchar *name;
-	gchar *path;
-	GDir *dir;
-	GArray *paths;
-
-	g_return_val_if_fail (!error || !*error, NULL);
-
-	/* We use this below */
-	if (!error)
-		error = &err;
-
-	paths = g_array_new (TRUE, TRUE, sizeof (gchar*));
-
-	dir = g_dir_open (PKCS11_REGISTRY_DIR, 0, error);
-
-	if (dir == NULL) {
-		if (g_error_matches (*error, G_FILE_ERROR, G_FILE_ERROR_NOENT) ||
-		    g_error_matches (*error, G_FILE_ERROR, G_FILE_ERROR_NOTDIR)) {
-			g_clear_error (error);
-			return (gchar**)g_array_free (paths, FALSE);
-		} else {
-			g_array_free (paths, TRUE);
-			g_clear_error (&err);
-			return NULL;
-		}
-	}
-
-	for (;;) {
-		name = g_dir_read_name (dir);
-		if (!name)
-			break;
-
-		/* HACK: libtool can bite my shiny metal ass */
-		if (g_str_has_suffix (name, ".la"))
-			continue;
-
-		path = g_build_filename (PKCS11_REGISTRY_DIR, name, NULL);
-		if (g_file_test (path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
-			g_array_append_val (paths, path);
-		else
-			g_free (path);
-	}
-
-	g_dir_close (dir);
-
-	return (gchar**)g_array_free (paths, FALSE);
-}
-
-/**
  * gck_modules_initialize_registered:
- * @reserved_options: Module options
+ * @flags: reserved options set to zero.
  *
- * Initialize all the registered modules.
+ * Load and initialize all the registered modules.
  *
- * Returns: A list of #GckModule objects, which should be freed by
- *     gck_list_unref_free().
+ * Returns: A newly allocated list of GckModule objects, which should
+ * be released with gck_list_unref_free().
  */
 GList*
-gck_modules_initialize_registered (guint reserved_options)
+gck_modules_initialize_registered (guint flags)
 {
-	GError *err = NULL;
-	gchar **paths, **p;
 	GckModule *module;
 	GList *results = NULL;
+	CK_FUNCTION_LIST_PTR *modules, *funcs;
+	CK_RV rv;
 
-	paths = gck_modules_list_registered_paths (&err);
-	if (!paths && err) {
-		g_warning ("couldn't list registered PKCS#11 module paths: %s",
-		           err && err->message ? err->message : "");
-		g_clear_error (&err);
+	rv = p11_kit_initialize_registered ();
+	if (rv != CKR_OK) {
+		g_warning ("couldn't initialize registered PKCS#11 modules: %s",
+		           gck_message_from_rv (rv));
 		return NULL;
 	}
 
-	for (p = paths; *p; ++p) {
-		module = gck_module_initialize (*p, NULL, 0, &err);
-		if (module) {
-			results = g_list_prepend (results, module);
+	modules = p11_kit_registered_modules ();
 
-		} else {
-			g_warning ("couldn't load PKCS#11 module: %s: %s",
-			           *p, err && err->message ? err->message : "");
-			g_clear_error (&err);
-		}
+	for (funcs = modules; *funcs; ++funcs) {
+		module = _gck_module_new_initialized (*funcs, 0);
+		results = g_list_prepend (results, module);
 	}
 
-	g_strfreev (paths);
+	free (modules);
+
 	return results;
 }
 
@@ -177,14 +115,14 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
 GckEnumerator*
 gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_options)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 
 	g_return_val_if_fail (attrs, NULL);
 
-	uri_info = _gck_uri_info_new ();
-	uri_info->attributes = gck_attributes_ref (attrs);
+	uri_data = gck_uri_data_new ();
+	uri_data->attributes = gck_attributes_ref (attrs);
 
-	return _gck_enumerator_new (modules, session_options, uri_info);
+	return _gck_enumerator_new (modules, session_options, uri_data);
 }
 
 /**
@@ -203,21 +141,21 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 {
 	GckTokenInfo *token_info;
 	GckSlot *result = NULL;
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 	GckModuleInfo *module_info;
 	GList *slots;
 	GList *m, *s;
 	gboolean matched;
 
-	uri_info = gck_uri_parse (uri, GCK_URI_PARSE_TOKEN, error);
-	if (uri_info == NULL)
+	uri_data = gck_uri_parse (uri, GCK_URI_CONTEXT_TOKEN, error);
+	if (uri_data == NULL)
 		return NULL;
 
-	if (!uri_info->any_unrecognized) {
+	if (!uri_data->any_unrecognized) {
 		for (m = modules; result == NULL && m != NULL; m = g_list_next (m)) {
-			if (uri_info->module_info) {
+			if (uri_data->module_info) {
 				module_info = gck_module_get_info (m->data);
-				matched = _gck_module_info_match (uri_info->module_info, module_info);
+				matched = _gck_module_info_match (uri_data->module_info, module_info);
 				gck_module_info_free (module_info);
 				if (!matched)
 					continue;
@@ -225,11 +163,11 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 
 			slots = gck_module_get_slots (m->data, TRUE);
 			for (s = slots; result == NULL && s != NULL; s = g_list_next (s)) {
-				if (!uri_info->token_info) {
+				if (!uri_data->token_info) {
 					result = g_object_ref (s->data);
 				} else {
 					token_info = gck_slot_get_token_info (s->data);
-					if (token_info && _gck_token_info_match (uri_info->token_info, token_info))
+					if (token_info && _gck_token_info_match (uri_data->token_info, token_info))
 						result = g_object_ref (s->data);
 					gck_token_info_free (token_info);
 				}
@@ -238,7 +176,7 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 		}
 	}
 
-	gck_uri_info_free (uri_info);
+	gck_uri_data_free (uri_data);
 	return result;
 }
 
@@ -330,12 +268,12 @@ GckEnumerator*
 gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_options,
                            GError **error)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 
-	uri_info = gck_uri_parse (uri, GCK_URI_PARSE_OBJECT, error);
-	if (uri_info == NULL)
+	uri_data = gck_uri_parse (uri, GCK_URI_CONTEXT_OBJECT, error);
+	if (uri_data == NULL)
 		return NULL;
 
 	/* Takes ownership of uri_info */
-	return _gck_enumerator_new (modules, session_options, uri_info);
+	return _gck_enumerator_new (modules, session_options, uri_data);
 }

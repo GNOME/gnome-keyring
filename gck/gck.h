@@ -56,7 +56,12 @@ void                gck_list_unref_free                     (GList *reflist);
 
 const gchar*        gck_message_from_rv                     (CK_RV rv);
 
-gchar*              gck_string_from_chars                   (const guchar *data, gsize max);
+gboolean            gck_string_to_chars                     (guchar *data,
+                                                             gsize max,
+                                                             const gchar *string);
+
+gchar*              gck_string_from_chars                   (const guchar *data,
+                                                             gsize max);
 
 typedef gpointer    (*GckAllocator)                         (gpointer data, gsize length);
 
@@ -292,11 +297,10 @@ struct _GckModuleClass {
 GType                 gck_module_get_type                     (void) G_GNUC_CONST;
 
 GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs,
-                                                               guint reserved_options);
+                                                               guint flags);
 
 GckModule*            gck_module_initialize                   (const gchar *path,
-                                                               gpointer reserved,
-                                                               guint reserved_options,
+                                                               guint flags,
                                                                GError **error);
 
 gboolean              gck_module_equal                        (gconstpointer module1,
@@ -313,9 +317,7 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-gchar**               gck_modules_list_registered_paths       (GError **error);
-
-GList*                gck_modules_initialize_registered       (guint reserved_options);
+GList*                gck_modules_initialize_registered       (guint flags);
 
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);
@@ -1114,19 +1116,24 @@ GckAttributes*      gck_object_get_template_finish          (GckObject *self,
  */
 
 enum {
-	GCK_URI_BAD_PREFIX = 1,
-	GCK_URI_BAD_ENCODING = 2,
-	GCK_URI_BAD_SYNTAX = 3
+	GCK_URI_BAD_SCHEME = 1,
+	GCK_URI_BAD_ENCODING,
+	GCK_URI_BAD_SYNTAX,
+	GCK_URI_BAD_VERSION,
+	GCK_URI_NOT_FOUND
 };
 
-typedef enum {
-	GCK_URI_PARSE_MODULE = (1 << 1),
-	GCK_URI_PARSE_TOKEN =   (1 << 2) | GCK_URI_PARSE_MODULE,
-	GCK_URI_PARSE_OBJECT =  (1 << 3) | GCK_URI_PARSE_TOKEN,
-	GCK_URI_PARSE_ANY =     0xFFFFFFFF,
-} GckUriParseFlags;
+#define GCK_URI_BAD_PREFIX GCK_URI_BAD_SCHEME
 
-typedef struct _GckUriInfo {
+/* WARNING: Don't modify these without syncing with p11-kit */
+typedef enum {
+	GCK_URI_CONTEXT_MODULE = (1 << 1),
+	GCK_URI_CONTEXT_TOKEN =   (1 << 2) | GCK_URI_CONTEXT_MODULE,
+	GCK_URI_CONTEXT_OBJECT =  (1 << 3) | GCK_URI_CONTEXT_TOKEN,
+	GCK_URI_CONTEXT_ANY =     0x00000FFF,
+} GckUriFlags;
+
+typedef struct _GckUriData {
 	gboolean any_unrecognized;
 	GckModuleInfo *module_info;
 	GckTokenInfo *token_info;
@@ -1134,19 +1141,22 @@ typedef struct _GckUriInfo {
 
 	/*< private >*/
 	gpointer dummy[4];
-} GckUriInfo;
+} GckUriData;
 
 #define             GCK_URI_ERROR                           (gck_uri_get_error_quark ())
 
 GQuark              gck_uri_get_error_quark                 (void);
 
-gchar*              gck_uri_build                           (GckUriInfo *uri_info);
+GckUriData*         gck_uri_data_new                        (void);
 
-GckUriInfo*         gck_uri_parse                           (const gchar *uri,
-                                                             GckUriParseFlags flags,
+gchar*              gck_uri_build                           (GckUriData *uri_data,
+                                                             GckUriFlags flags);
+
+GckUriData*         gck_uri_parse                           (const gchar *string,
+                                                             GckUriFlags flags,
                                                              GError **error);
 
-void                gck_uri_info_free                       (GckUriInfo *uri_info);
+void                gck_uri_data_free                       (GckUriData *uri_data);
 
 G_END_DECLS
 

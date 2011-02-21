@@ -9,6 +9,6 @@ sysconfdir=@sysconfdir@
 Name: gck
 Description: GObject bindings for PKCS#11
 Version: @VERSION@
-Requires: glib-2.0
+Requires: glib-2.0 p11-kit-1
 Libs: -L${libdir} -lgck
 Cflags: -I${includedir}/gck

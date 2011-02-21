@@ -554,6 +554,105 @@ gck_slot_get_info (GckSlot *self)
 	return slotinfo;
 }
 
+GckTokenInfo*
+_gck_token_info_from_pkcs11 (CK_TOKEN_INFO_PTR info)
+{
+	GckTokenInfo *token_info;
+	gchar *string;
+	struct tm tm;
+
+	token_info = g_new0 (GckTokenInfo, 1);
+	token_info->label = gck_string_from_chars (info->label, sizeof (info->label));
+	token_info->model = gck_string_from_chars (info->model, sizeof (info->model));
+	token_info->manufacturer_id = gck_string_from_chars (info->manufacturerID,
+	                                                     sizeof (info->manufacturerID));
+	token_info->serial_number = gck_string_from_chars (info->serialNumber,
+	                                                   sizeof (info->serialNumber));
+	token_info->flags = info->flags;
+	token_info->max_session_count = info->ulMaxSessionCount;
+	token_info->session_count = info->ulSessionCount;
+	token_info->max_rw_session_count = info->ulMaxRwSessionCount;
+	token_info->rw_session_count = info->ulRwSessionCount;
+	token_info->max_pin_len = info->ulMaxPinLen;
+	token_info->min_pin_len = info->ulMinPinLen;
+	token_info->total_public_memory = info->ulTotalPublicMemory;
+	token_info->total_private_memory = info->ulTotalPrivateMemory;
+	token_info->free_private_memory = info->ulFreePrivateMemory;
+	token_info->free_public_memory = info->ulFreePublicMemory;
+	token_info->hardware_version_major = info->hardwareVersion.major;
+	token_info->hardware_version_minor = info->hardwareVersion.minor;
+	token_info->firmware_version_major = info->firmwareVersion.major;
+	token_info->firmware_version_minor = info->firmwareVersion.minor;
+
+	/* Parse the time into seconds since epoch */
+	if (info->flags & CKF_CLOCK_ON_TOKEN) {
+		string = g_strndup ((gchar*)info->utcTime, MIN (14, sizeof (info->utcTime)));
+		if (!strptime (string, "%Y%m%d%H%M%S", &tm))
+			token_info->utc_time = -1;
+		else
+			token_info->utc_time = timegm (&tm);
+		g_free (string);
+	} else {
+		token_info->utc_time = -1;
+	}
+
+	return token_info;
+}
+
+void
+_gck_token_info_to_pkcs11 (GckTokenInfo *token_info, CK_TOKEN_INFO_PTR info)
+{
+	gchar buffer[64];
+	struct tm tm;
+	time_t tim;
+	gsize len;
+
+	if (!gck_string_to_chars (info->label,
+	                          sizeof (info->label),
+	                          token_info->label))
+		g_return_if_reached ();
+	if (!gck_string_to_chars (info->model,
+	                          sizeof (info->model),
+	                          token_info->model))
+		g_return_if_reached ();
+	if (!gck_string_to_chars (info->manufacturerID,
+	                          sizeof (info->manufacturerID),
+	                          token_info->manufacturer_id))
+		g_return_if_reached ();
+	if (!gck_string_to_chars (info->serialNumber,
+	                          sizeof (info->serialNumber),
+	                          token_info->serial_number))
+		g_return_if_reached ();
+
+	info->flags = token_info->flags;
+	info->ulMaxSessionCount = token_info->max_session_count;
+	info->ulSessionCount = token_info->session_count;
+	info->ulMaxRwSessionCount = token_info->max_rw_session_count;
+	info->ulRwSessionCount = token_info->rw_session_count;
+	info->ulMaxPinLen = token_info->max_pin_len;
+	info->ulMinPinLen = token_info->min_pin_len;
+	info->ulTotalPublicMemory = token_info->total_public_memory;
+	info->ulTotalPrivateMemory = token_info->total_private_memory;
+	info->ulFreePrivateMemory = token_info->free_private_memory;
+	info->ulFreePublicMemory = token_info->free_public_memory;
+	info->hardwareVersion.major = token_info->hardware_version_major;
+	info->hardwareVersion.minor = token_info->hardware_version_minor;
+	info->firmwareVersion.major = token_info->firmware_version_major;
+	info->firmwareVersion.minor = token_info->firmware_version_minor;
+
+	/* Parse the time into seconds since epoch */
+	if (token_info->flags & CKF_CLOCK_ON_TOKEN) {
+		tim = token_info->utc_time;
+		if (!gmtime_r (&tim, &tm))
+			g_return_if_reached ();
+		len = strftime (buffer, sizeof (buffer), "%Y%m%d%H%M%S", &tm);
+		g_return_if_fail (len == sizeof (info->utcTime));
+		memcpy (info->utcTime, buffer, sizeof (info->utcTime));
+	} else {
+		memset (info->utcTime, 0, sizeof (info->utcTime));
+	}
+}
+
 /**
  * gck_slot_get_token_info:
  * @self: The slot to get info for.
@@ -569,10 +668,7 @@ gck_slot_get_token_info (GckSlot *self)
 	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
 	CK_FUNCTION_LIST_PTR funcs;
 	GckModule *module = NULL;
-	GckTokenInfo *tokeninfo;
 	CK_TOKEN_INFO info;
-	gchar *string;
-	struct tm tm;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SLOT (self), NULL);
@@ -593,42 +689,7 @@ gck_slot_get_token_info (GckSlot *self)
 		return NULL;
 	}
 
-	tokeninfo = g_new0 (GckTokenInfo, 1);
-	tokeninfo->label = gck_string_from_chars (info.label, sizeof (info.label));
-	tokeninfo->model = gck_string_from_chars (info.model, sizeof (info.model));
-	tokeninfo->manufacturer_id = gck_string_from_chars (info.manufacturerID,
-	                                                     sizeof (info.manufacturerID));
-	tokeninfo->serial_number = gck_string_from_chars (info.serialNumber,
-	                                                   sizeof (info.serialNumber));
-	tokeninfo->flags = info.flags;
-	tokeninfo->max_session_count = info.ulMaxSessionCount;
-	tokeninfo->session_count = info.ulSessionCount;
-	tokeninfo->max_rw_session_count = info.ulMaxRwSessionCount;
-	tokeninfo->rw_session_count = info.ulRwSessionCount;
-	tokeninfo->max_pin_len = info.ulMaxPinLen;
-	tokeninfo->min_pin_len = info.ulMinPinLen;
-	tokeninfo->total_public_memory = info.ulTotalPublicMemory;
-	tokeninfo->total_private_memory = info.ulTotalPrivateMemory;
-	tokeninfo->free_private_memory = info.ulFreePrivateMemory;
-	tokeninfo->free_public_memory = info.ulFreePublicMemory;
-	tokeninfo->hardware_version_major = info.hardwareVersion.major;
-	tokeninfo->hardware_version_minor = info.hardwareVersion.minor;
-	tokeninfo->firmware_version_major = info.firmwareVersion.major;
-	tokeninfo->firmware_version_minor = info.firmwareVersion.minor;
-
-	/* Parse the time into seconds since epoch */
-	if (info.flags & CKF_CLOCK_ON_TOKEN) {
-		string = g_strndup ((gchar*)info.utcTime, MIN (14, sizeof (info.utcTime)));
-		if (!strptime (string, "%Y%m%d%H%M%S", &tm))
-			tokeninfo->utc_time = -1;
-		else
-			tokeninfo->utc_time = timegm (&tm);
-		g_free (string);
-	} else {
-		tokeninfo->utc_time = -1;
-	}
-
-	return tokeninfo;
+	return _gck_token_info_from_pkcs11 (&info);
 }
 
 /**
@@ -788,14 +849,14 @@ gck_slot_has_flags (GckSlot *self, gulong flags)
 GckEnumerator*
 gck_slots_enumerate_objects (GList *slots, GckAttributes *attrs, guint session_options)
 {
-	GckUriInfo *uri_info;
+	GckUriData *uri_data;
 
 	g_return_val_if_fail (attrs, NULL);
 
-	uri_info = _gck_uri_info_new ();
-	uri_info->attributes = gck_attributes_ref (attrs);
+	uri_data = gck_uri_data_new ();
+	uri_data->attributes = gck_attributes_ref (attrs);
 
-	return _gck_enumerator_new (slots, session_options, uri_info);
+	return _gck_enumerator_new (slots, session_options, uri_data);
 }
 
 
