@@ -1,6 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* unit-test-oid.c: Test OID routines
-
    Copyright (C) 2008 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
@@ -23,24 +22,33 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
-#include "egg/egg-oid.h"
+#include "egg-oid.h"
 
 #include <glib.h>
 
-TESTING_TEST(oid_tests)
+static void
+test_tests (void)
 {
 	GQuark oid;
-	
+
 	oid = g_quark_from_static_string ("0.9.2342.19200300.100.1.25");
 	g_assert_cmpstr (egg_oid_get_name (oid), ==, "DC");
 	g_assert_cmpstr (egg_oid_get_description (oid), ==, "Domain Component");
 	g_assert_cmpuint (egg_oid_get_flags (oid), ==, EGG_OID_PRINTABLE);
-	
+
 	/* Should return OID for invalid oids */
 	oid = g_quark_from_static_string ("1.1.1.1.1");
 	g_assert_cmpstr (egg_oid_get_name (oid), ==, "1.1.1.1.1");
-	g_assert_cmpstr (egg_oid_get_description (oid), ==, "1.1.1.1.1");	
+	g_assert_cmpstr (egg_oid_get_description (oid), ==, "1.1.1.1.1");
 	g_assert_cmpuint (egg_oid_get_flags (oid), ==, 0);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/oid/tests", test_tests);
+
+	return g_test_run ();
 }

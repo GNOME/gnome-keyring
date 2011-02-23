@@ -1,12 +1,34 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* test-asn1.c: Test ASN1 stuf
 
-#include "egg/egg-asn1x.h"
-#include "testing/testing.h"
+   Copyright (C) 2009 Stefan Walter
+
+   The Gnome Keyring Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+
+   The Gnome Keyring Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public
+   License along with the Gnome Library; see the file COPYING.LIB.  If not,
+   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+
+   Author: Stef Walter <stef@memberwebs.com>
+*/
+
+#include "egg-asn1x.h"
 
 #include <pwd.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "egg/egg-asn1-defs.h"
+#include "egg-asn1-defs.h"
+#include "egg-testing.h"
 
 #if 0
 static void
@@ -47,7 +69,8 @@ test_some_asn1_stuff (const ASN1_ARRAY_TYPE *defs, const gchar *file, const gcha
 	gpointer data, encoded;
 	gsize n_data, n_encoded;
 
-	data = testing_data_read (file, &n_data);
+	if (!g_file_get_contents (file, (gchar**)&data, &n_data, NULL))
+		g_assert_not_reached ();
 	asn = egg_asn1x_create (defs, identifier);
 	egg_asn1x_dump (asn);
 
@@ -68,25 +91,23 @@ test_some_asn1_stuff (const ASN1_ARRAY_TYPE *defs, const gchar *file, const gcha
 	g_free (data);
 }
 
-static int
-run (void)
+int
+main (int argc, char **argv)
 {
-
 	/* Build up a personal name, which is a set */
 #if 0
 	build_personal_name ();
 #endif
 
+	egg_tests_chdir_base (argv[0]);
 
-	test_some_asn1_stuff (pkix_asn1_tab, "test-certificate-1.der", "Certificate");
-	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo");
-	test_some_asn1_stuff (pk_asn1_tab, "test-rsakey-1.der", "RSAPrivateKey");
-	test_some_asn1_stuff (pkix_asn1_tab, "test-personalname-1.der", "PersonalName");
-	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs7-1.der", "pkcs-7-ContentInfo");
-	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs7-2.der", "pkcs-7-ContentInfo");
-	test_some_asn1_stuff (pkix_asn1_tab, "test-pkcs12-1.der", "pkcs-12-PFX");
+	test_some_asn1_stuff (pkix_asn1_tab, "files/test-certificate-1.der", "Certificate");
+	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo");
+	test_some_asn1_stuff (pk_asn1_tab, "files/test-rsakey-1.der", "RSAPrivateKey");
+	test_some_asn1_stuff (pkix_asn1_tab, "files/test-personalname-1.der", "PersonalName");
+	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs7-1.der", "pkcs-7-ContentInfo");
+	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs7-2.der", "pkcs-7-ContentInfo");
+	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs12-1.der", "pkcs-12-PFX");
 
 	return 0;
 }
-
-#include "testing/testing.c"

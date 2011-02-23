@@ -23,12 +23,10 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
-#include "egg/egg-asn1-defs.h"
-#include "egg/egg-asn1x.h"
-#include "egg/egg-dn.h"
-#include "egg/egg-oid.h"
+#include "egg-asn1-defs.h"
+#include "egg-asn1x.h"
+#include "egg-dn.h"
+#include "egg-oid.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -38,40 +36,47 @@
 #include <stdio.h>
 #include <string.h>
 
-static GNode* asn1_cert = NULL;
-static guchar *data_cert = NULL;
-static gsize n_data_cert = 0;
+typedef struct {
+	GNode* asn1;
+	guchar *data;
+	gsize n_data;
+} Test;
 
-TESTING_SETUP(dn_cert)
+static void
+setup (Test *test, gconstpointer unused)
 {
-	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
+	if (!g_file_get_contents ("files/test-certificate-1.der", (gchar**)&test->data,
+	                          &test->n_data, NULL))
+		g_assert_not_reached ();
 
-	asn1_cert = egg_asn1x_create (pkix_asn1_tab, "Certificate");
-	g_assert (asn1_cert != NULL);
+	test->asn1 = egg_asn1x_create (pkix_asn1_tab, "Certificate");
+	g_assert (test->asn1 != NULL);
 
-	if (!egg_asn1x_decode (asn1_cert, data_cert, n_data_cert))
+	if (!egg_asn1x_decode (test->asn1, test->data, test->n_data))
 		g_assert_not_reached ();
 }
 
-TESTING_TEARDOWN(dn_cert)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	egg_asn1x_destroy (asn1_cert);
-	g_free (data_cert);
-	data_cert = NULL;
+	egg_asn1x_destroy (test->asn1);
+	g_free (test->data);
 }
 
-TESTING_TEST(read_dn)
+static void
+test_read_dn (Test* test, gconstpointer unused)
 {
 	gchar *dn;
 
-	dn = egg_dn_read (egg_asn1x_node (asn1_cert, "tbsCertificate", "issuer", "rdnSequence", NULL));
+	dn = egg_dn_read (egg_asn1x_node (test->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL));
 	g_assert (dn != NULL);
 	g_assert_cmpstr (dn, ==, "C=ZA, ST=Western Cape, L=Cape Town, O=Thawte Consulting, OU=Certification Services Division, CN=Thawte Personal Premium CA, EMAIL=personal-premium@thawte.com");
 
 	g_free (dn);
 }
 
-TESTING_TEST(dn_value)
+static void
+test_dn_value (Test* test, gconstpointer unused)
 {
 	const guchar value[] = { 0x13, 0x1a, 0x54, 0x68, 0x61, 0x77, 0x74, 0x65, 0x20, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x20, 0x50, 0x72, 0x65, 0x6d, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x41 };
 	gsize n_value = 28;
@@ -118,24 +123,26 @@ concatenate_dn (guint index, GQuark oid, const guchar *value, gsize n_value, gpo
 	g_free (text);
 }
 
-TESTING_TEST(parse_dn)
+static void
+test_parse_dn (Test* test, gconstpointer unused)
 {
 	GString *dn = g_string_new ("");
 	last_index = 1;
 
-	if (!egg_dn_parse (egg_asn1x_node (asn1_cert, "tbsCertificate", "issuer", "rdnSequence", NULL), concatenate_dn, dn))
+	if (!egg_dn_parse (egg_asn1x_node (test->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL), concatenate_dn, dn))
 		g_assert_not_reached ();
 
 	g_assert_cmpstr (dn->str, ==, "C=ZA, ST=Western Cape, L=Cape Town, O=Thawte Consulting, OU=Certification Services Division, CN=Thawte Personal Premium CA, EMAIL=personal-premium@thawte.com");
 	g_string_free (dn, TRUE);
 }
 
-TESTING_TEST(read_dn_part)
+static void
+test_read_dn_part (Test* test, gconstpointer unused)
 {
 	GNode *node;
 	gchar *value;
 
-	node = egg_asn1x_node (asn1_cert, "tbsCertificate", "issuer", "rdnSequence", NULL);
+	node = egg_asn1x_node (test->asn1, "tbsCertificate", "issuer", "rdnSequence", NULL);
 
 	value = egg_dn_read_part (node, "CN");
 	g_assert (value != NULL);
@@ -155,4 +162,17 @@ TESTING_TEST(read_dn_part)
 
 	value = egg_dn_read_part (node, "2.5.4.9");
 	g_assert (value == NULL);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/dn/read_dn", Test, NULL, setup, test_read_dn, teardown);
+	g_test_add ("/dn/dn_value", Test, NULL, setup, test_dn_value, teardown);
+	g_test_add ("/dn/parse_dn", Test, NULL, setup, test_parse_dn, teardown);
+	g_test_add ("/dn/read_dn_part", Test, NULL, setup, test_read_dn_part, teardown);
+
+	return g_test_run ();
 }
