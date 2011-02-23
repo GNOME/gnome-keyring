@@ -25,9 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "test-suite.h"
-
-#include "egg/egg-cleanup.h"
+#include "egg-cleanup.h"
 
 #define DATA "some string"
 
@@ -35,29 +33,30 @@ typedef struct _CleanupParam {
 	gpointer value;
 } CleanupParam;
 
-static void 
+static void
 cleanup_callback (gpointer user_data)
-{	
+{
 	CleanupParam *param = (CleanupParam*)user_data;
 	g_assert (param->value && strcmp(param->value, DATA) == 0);
 	param->value = NULL;
 }
 
-TESTING_TEST(cleanup)
+static void
+test_cleanup (void)
 {
 	CleanupParam param;
-	
+
 	param.value = DATA;
-	
+
 	egg_cleanup_register (cleanup_callback, &param);
-	
+
 	egg_cleanup_perform ();
-	
+
 	g_assert (param.value == NULL);
 }
 
 /* -----------------------------------------------------------------------------
- * Cleanup handlers are called in the opposite order as installed 
+ * Cleanup handlers are called in the opposite order as installed
  */
 
 static gint order_value = 0;
@@ -66,9 +65,9 @@ typedef struct _OrderParam {
 	gint reference;
 } OrderParam;
 
-static void 
+static void
 order_callback (gpointer user_data)
-{	
+{
 	OrderParam *param = (OrderParam*)user_data;
 	/* cleanup handler called out of order */
 	g_assert_cmpint (order_value, ==, param->reference);
@@ -76,24 +75,25 @@ order_callback (gpointer user_data)
 	--order_value;
 }
 
-TESTING_TEST(order)
+static void
+test_order (void)
 {
 	OrderParam param[8];
 	int i;
-	
+
 	for (i = 0; i < 8; ++i) {
-		param[i].reference = i;	
+		param[i].reference = i;
 		egg_cleanup_register (order_callback, &param[i]);
 	}
 
 	order_value = i - 1;
-	
+
 	egg_cleanup_perform ();
 
 	for (i = 0; i < 8; ++i)
 		/* "cleanup handler not called" */
 		g_assert (param[i].reference == -1);
-	
+
 	/* "not all cleanup handlers called" */
 	g_assert_cmpint (order_value, ==, -1);
 }
@@ -101,7 +101,7 @@ TESTING_TEST(order)
 /* -----------------------------------------------------------------------------
  * A cleanup handler might cause another to be registered.
  */
- 
+
 static gboolean cleaned_up = FALSE;
 
 static void
@@ -109,45 +109,60 @@ second_callback (gpointer user_data)
 {
 	cleaned_up = TRUE;
 }
- 
+
 static void
 reregister_callback (gpointer user_data)
 {
 	egg_cleanup_register (second_callback, NULL);
-} 
+}
 
-TESTING_TEST(reregister)
+static void
+test_reregister (void)
 {
 	cleaned_up = FALSE;
-	
+
 	egg_cleanup_register (reregister_callback, NULL);
-	
+
 	egg_cleanup_perform ();
-	
+
 	/* "second cleanup handler not called" */
 	g_assert (cleaned_up == TRUE);
 }
 
 /* -----------------------------------------------------------------------------
- * Cleanup handlers can be removed 
+ * Cleanup handlers can be removed
  */
- 
+
 static gboolean test_cleaned_up = FALSE;
 
-static void 
+static void
 remove_callback (gpointer user_data)
 {
-	test_cleaned_up = TRUE;	
+	test_cleaned_up = TRUE;
 }
 
-TESTING_TEST(remove)
+static void
+test_remove (void)
 {
 	egg_cleanup_register (remove_callback, NULL);
 	egg_cleanup_register (remove_callback, DATA);
 	egg_cleanup_unregister (remove_callback, DATA);
 	egg_cleanup_unregister (remove_callback, NULL);
 	egg_cleanup_perform ();
-	
+
 	/* "removed callback was called" */
 	g_assert (test_cleaned_up == FALSE);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/cleanup/cleanup", test_cleanup);
+	g_test_add_func ("/cleanup/order", test_order);
+	g_test_add_func ("/cleanup/reregister", test_reregister);
+	g_test_add_func ("/cleanup/remove", test_remove);
+
+	return g_test_run ();
 }

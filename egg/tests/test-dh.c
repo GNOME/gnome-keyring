@@ -21,18 +21,22 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
+#include "config.h"
+
+#include "egg-dh.h"
+#include "egg-secure-memory.h"
+#include "egg-testing.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "test-suite.h"
-
-#include "egg-dh.h"
-#include "egg-secure-memory.h"
-
 #include <gcrypt.h>
 
-TESTING_TEST(dh_perform)
+EGG_SECURE_GLIB_DEFINITIONS ();
+
+static void
+test_perform (void)
 {
 	gcry_mpi_t p, g;
 	gcry_mpi_t x1, X1;
@@ -69,7 +73,8 @@ TESTING_TEST(dh_perform)
 	egg_secure_free (k2);
 }
 
-TESTING_TEST(dh_short_pair)
+static void
+test_short_pair (void)
 {
 	gcry_mpi_t p, g;
 	gcry_mpi_t x1, X1;
@@ -108,9 +113,9 @@ test_dh_default (const gchar *name, guint bits)
 	ret = egg_dh_default_params_raw (name, &prime, &n_prime, &base, &n_base);
 	g_assert (ret);
 	g_assert (prime != NULL);
-	g_assert_cmpsize (n_prime, >, 0);
+	egg_assert_cmpsize (n_prime, >, 0);
 	g_assert (base != NULL);
-	g_assert_cmpsize (n_base, >, 0);
+	egg_assert_cmpsize (n_base, >, 0);
 
 	gcry = gcry_mpi_scan (&check, GCRYMPI_FMT_USG, prime, n_prime, NULL);
 	g_assert (gcry == 0);
@@ -126,47 +131,74 @@ test_dh_default (const gchar *name, guint bits)
 	gcry_mpi_release (g);
 }
 
-TESTING_TEST(dh_default_768)
+static void
+test_default_768 (void)
 {
 	test_dh_default ("ietf-ike-grp-modp-768", 768);
 }
 
-TESTING_TEST(dh_default_1024)
+static void
+test_default_1024 (void)
 {
 	test_dh_default ("ietf-ike-grp-modp-1024", 1024);
 }
 
-TESTING_TEST(dh_default_1536)
+static void
+test_default_1536 (void)
 {
 	test_dh_default ("ietf-ike-grp-modp-1536", 1536);
 }
 
 
-TESTING_TEST(dh_default_2048)
+static void
+test_default_2048 (void)
 {
 	test_dh_default ("ietf-ike-grp-modp-2048", 2048);
 }
 
-TESTING_TEST(dh_default_3072)
+static void
+test_default_3072 (void)
 {
 	test_dh_default ("ietf-ike-grp-modp-3072", 3072);
 }
 
-TESTING_TEST(dh_default_4096)
+static void
+test_default_4096 (void)
 {
 	test_dh_default ("ietf-ike-grp-modp-4096", 4096);
 }
 
-TESTING_TEST(dh_default_8192)
+static void
+test_default_8192 (void)
 {
 	test_dh_default ("ietf-ike-grp-modp-8192", 8192);
 }
 
-TESTING_TEST(dh_default_bad)
+static void
+test_default_bad (void)
 {
 	gboolean ret;
 	gcry_mpi_t p, g;
 
 	ret = egg_dh_default_params ("bad-name", &p, &g);
 	g_assert (!ret);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/dh/perform", test_perform);
+	g_test_add_func ("/dh/short_pair", test_short_pair);
+	g_test_add_func ("/dh/default_768", test_default_768);
+	g_test_add_func ("/dh/default_1024", test_default_1024);
+	g_test_add_func ("/dh/default_1536", test_default_1536);
+	g_test_add_func ("/dh/default_2048", test_default_2048);
+	g_test_add_func ("/dh/default_3072", test_default_3072);
+	g_test_add_func ("/dh/default_4096", test_default_4096);
+	g_test_add_func ("/dh/default_8192", test_default_8192);
+	g_test_add_func ("/dh/default_bad", test_default_bad);
+
+	return g_test_run ();
 }

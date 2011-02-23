@@ -21,15 +21,18 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
+#include "config.h"
+
+#include "egg-spawn.h"
+#include "egg-testing.h"
+
+#include <sys/wait.h>
+
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "test-suite.h"
-
-#include "egg-spawn.h"
-
-#include <sys/wait.h>
+#include <unistd.h>
 
 typedef struct _EchoData {
 	gint index;
@@ -113,7 +116,7 @@ completed_func (gpointer user_data)
 	g_assert (!data->completed);
 	data->completed = TRUE;
 	if (data->is_async)
-		testing_wait_stop ();
+		egg_test_wait_stop ();
 }
 
 static void
@@ -160,7 +163,8 @@ static EggSpawnCallbacks null_callbacks = {
 	child_setup,
 };
 
-TESTING_TEST(test_spawn_sync)
+static void
+test_sync (void)
 {
 	GError *error = NULL;
 	gboolean ret;
@@ -172,7 +176,7 @@ TESTING_TEST(test_spawn_sync)
 	data.parent_pid = getpid();
 	data.index = 80;
 
-	ret = egg_spawn_sync_with_callbacks (testing_data_directory (),
+	ret = egg_spawn_sync_with_callbacks ("./files",
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     &exit_status, &error);
@@ -187,12 +191,13 @@ TESTING_TEST(test_spawn_sync)
 	g_assert_cmpstr (data.error, ==, "1\n2\n3\n4\n5\n");
 }
 
-TESTING_TEST(test_spawn_sync_error)
+static void
+test_sync_error (void)
 {
 	GError *error = NULL;
 	gboolean ret;
 
-	ret = egg_spawn_sync_with_callbacks (testing_data_directory (),
+	ret = egg_spawn_sync_with_callbacks ("./files",
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);
@@ -202,7 +207,8 @@ TESTING_TEST(test_spawn_sync_error)
 }
 
 
-TESTING_TEST(test_spawn_async)
+static void
+test_async (void)
 {
 	GError *error = NULL;
 	EchoData data;
@@ -214,7 +220,7 @@ TESTING_TEST(test_spawn_async)
 	data.index = 80;
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (testing_data_directory (),
+	ret = egg_spawn_async_with_callbacks ("./files",
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     NULL, &error);
@@ -222,7 +228,7 @@ TESTING_TEST(test_spawn_async)
 	g_assert (error == NULL);
 	g_assert (!data.finalized);
 
-	testing_wait_until (2000);
+	egg_test_wait_until (2000);
 
 	g_assert (data.finalized);
 	g_assert (data.completed);
@@ -230,7 +236,8 @@ TESTING_TEST(test_spawn_async)
 	g_assert_cmpstr (data.error, ==, "1\n2\n3\n4\n5\n");
 }
 
-TESTING_TEST(test_spawn_async_none)
+static void
+test_async_none (void)
 {
 	GError *error = NULL;
 	EchoData data;
@@ -240,7 +247,7 @@ TESTING_TEST(test_spawn_async_none)
 	data.parent_pid = getpid();
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (testing_data_directory (),
+	ret = egg_spawn_async_with_callbacks ("./files",
 	                                     echo_argv, NULL, 0, NULL,
 	                                     &null_callbacks, &data,
 	                                     NULL, &error);
@@ -248,23 +255,44 @@ TESTING_TEST(test_spawn_async_none)
 	g_assert (error == NULL);
 	g_assert (!data.finalized);
 
-	testing_wait_until (2000);
+	egg_test_wait_until (2000);
 
 	g_assert (data.finalized);
 	g_assert (data.completed);
 	g_assert (!data.output);
 }
 
-TESTING_TEST(test_spawn_async_error)
+static void
+test_async_error (void)
 {
 	GError *error = NULL;
 	guint ret;
 
-	ret = egg_spawn_async_with_callbacks (testing_data_directory (),
+	ret = egg_spawn_async_with_callbacks ("./files",
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);
 	g_assert (ret == 0);
 	g_assert (error != NULL);
 	g_clear_error (&error);
+}
+
+int
+main (int argc, char **argv)
+{
+	const gchar *srcdir;
+
+	g_test_init (&argc, &argv, NULL);
+
+	srcdir = g_getenv ("SRCDIR");
+	if (srcdir && chdir (srcdir) < 0)
+		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
+
+	g_test_add_func ("/spawn/sync", test_sync);
+	g_test_add_func ("/spawn/sync_error", test_sync_error);
+	g_test_add_func ("/spawn/async", test_async);
+	g_test_add_func ("/spawn/async_none", test_async_none);
+	g_test_add_func ("/spawn/async_error", test_async_error);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

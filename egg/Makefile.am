@@ -39,6 +39,7 @@ libegg_la_SOURCES = \
 	egg-secure-memory.c egg-secure-memory.h \
 	egg-spawn.c egg-spawn.h \
 	egg-symkey.c egg-symkey.h \
+	egg-testing.c egg-testing.h \
 	egg-asn1-defs.h \
 	$(BUILT_SOURCES)
 
