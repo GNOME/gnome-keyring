@@ -306,12 +306,11 @@ egg_dh_gen_pair (gcry_mpi_t prime, gcry_mpi_t base, guint bits,
 
 gpointer
 egg_dh_gen_secret (gcry_mpi_t peer, gcry_mpi_t priv,
-                   gcry_mpi_t prime, gsize bytes)
+                   gcry_mpi_t prime, gsize *bytes)
 {
 	gcry_error_t gcry;
 	guchar *value;
 	gsize n_value;
-	gsize offset = 0;
 	gcry_mpi_t k;
 	gint bits;
 
@@ -329,11 +328,8 @@ egg_dh_gen_secret (gcry_mpi_t peer, gcry_mpi_t priv,
 	/* Write out the secret */
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &n_value, k);
 	g_return_val_if_fail (gcry == 0, NULL);
-	if (n_value < bytes)
-		offset = bytes - n_value;
-	value = egg_secure_alloc (n_value + offset);
-	memset (value, 0, n_value + offset);
-	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value + offset, n_value, &n_value, k);
+	value = egg_secure_alloc (n_value);
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value, n_value, &n_value, k);
 	g_return_val_if_fail (gcry == 0, NULL);
 
 #if DEBUG_DH_SECRET
@@ -342,11 +338,7 @@ egg_dh_gen_secret (gcry_mpi_t peer, gcry_mpi_t priv,
 	gcry_mpi_release (k);
 #endif
 
-	if (bytes != 0 && bytes < n_value) {
-		offset = n_value - bytes;
-		memmove (value, value + offset, bytes);
-		egg_secure_clear (value + bytes, offset);
-	}
+	*bytes = n_value;
 
 #if DEBUG_DH_SECRET
 	gcry_mpi_scan (&k, GCRYMPI_FMT_USG, value, bytes, NULL);

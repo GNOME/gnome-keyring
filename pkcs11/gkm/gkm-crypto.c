@@ -25,6 +25,7 @@
 #include "gkm-aes-mechanism.h"
 #include "gkm-dh-mechanism.h"
 #include "gkm-dsa-mechanism.h"
+#include "gkm-hkdf-mechanism.h"
 #include "gkm-null-mechanism.h"
 #include "gkm-rsa-mechanism.h"
 #include "gkm-session.h"
@@ -430,6 +431,9 @@ gkm_crypto_derive_key (GkmSession *session, CK_MECHANISM_PTR mech, GkmObject *ba
 	case CKM_DH_PKCS_DERIVE:
 		return gkm_dh_mechanism_derive (session, mech, base, attrs,
 		                                n_attrs, derived);
+	case CKM_G_HKDF_SHA256_DERIVE:
+		return gkm_hkdf_mechanism_derive (session, "sha256", mech, base,
+		                                  attrs, n_attrs, derived);
 	default:
 		return CKR_MECHANISM_INVALID;
 	}

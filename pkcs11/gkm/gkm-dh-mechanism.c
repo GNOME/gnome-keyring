@@ -209,8 +209,9 @@ gkm_dh_mechanism_derive (GkmSession *session, CK_MECHANISM_PTR mech, GkmObject *
 	gcry_error_t gcry;
 	CK_ATTRIBUTE attr;
 	GArray *array;
+	gsize n_actual = 0;
 	CK_ULONG n_value = 0;
-	gpointer value;
+	guchar *value;
 	GkmTransaction *transaction;
 	CK_KEY_TYPE type;
 
@@ -239,7 +240,7 @@ gkm_dh_mechanism_derive (GkmSession *session, CK_MECHANISM_PTR mech, GkmObject *
 	if (n_value == 0)
 		n_value = (gcry_mpi_get_nbits (prime) + 7) / 8;
 
-	value = egg_dh_gen_secret (peer, priv, prime, n_value);
+	value = egg_dh_gen_secret (peer, priv, prime, &n_actual);
 	gcry_mpi_release (peer);
 
 	if (value == NULL)
@@ -250,8 +251,24 @@ gkm_dh_mechanism_derive (GkmSession *session, CK_MECHANISM_PTR mech, GkmObject *
 
 	/* Prepend the value */
 	attr.type = CKA_VALUE;
-	attr.pValue = value;
 	attr.ulValueLen = n_value;
+
+	/* Is it too long, move to the front and truncate */
+	if (n_actual > n_value) {
+		attr.pValue = value + (n_actual - n_value);
+
+	/* If it's too short, expand with zeros */
+	} else if (n_actual < n_value) {
+		value = egg_secure_realloc (value, n_value);
+		memmove (value + (n_value - n_actual), value, n_actual);
+		memset (value, 0, (n_value - n_actual));
+		attr.pValue = value;
+
+	/* It's just right */
+	} else {
+		attr.pValue = value;
+	}
+
 	g_array_append_val (array, attr);
 
 	/* Add the remainder of the attributes */

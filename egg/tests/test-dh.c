@@ -27,22 +27,24 @@
 #include "egg-secure-memory.h"
 #include "egg-testing.h"
 
+#include <glib.h>
+#include <gcrypt.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include <gcrypt.h>
-
 EGG_SECURE_GLIB_DEFINITIONS ();
 
 static void
-test_perform (void)
+test_dh_perform (void)
 {
 	gcry_mpi_t p, g;
 	gcry_mpi_t x1, X1;
 	gcry_mpi_t x2, X2;
 	gpointer k1, k2;
 	gboolean ret;
+	gsize n1, n2;
 
 	/* Load up the parameters */
 	if (!egg_dh_default_params ("ietf-ike-grp-modp-768", &p, &g))
@@ -55,13 +57,14 @@ test_perform (void)
 	g_assert (ret);
 
 	/* Calculate keys */
-	k1 = egg_dh_gen_secret (X2, x1, p, 96);
+	k1 = egg_dh_gen_secret (X2, x1, p, &n1);
 	g_assert (k1);
-	k2 = egg_dh_gen_secret (X1, x2, p, 96);
+	k2 = egg_dh_gen_secret (X1, x2, p, &n2);
 	g_assert (k2);
 
 	/* Keys must be the same */
-	g_assert (memcmp (k1, k2, 96) == 0);
+	egg_assert_cmpsize (n1, ==, n2);
+	g_assert (memcmp (k1, k2, n1) == 0);
 
 	gcry_mpi_release (p);
 	gcry_mpi_release (g);
@@ -74,7 +77,7 @@ test_perform (void)
 }
 
 static void
-test_short_pair (void)
+test_dh_short_pair (void)
 {
 	gcry_mpi_t p, g;
 	gcry_mpi_t x1, X1;
@@ -97,7 +100,7 @@ test_short_pair (void)
 }
 
 static void
-test_dh_default (const gchar *name, guint bits)
+check_dh_default (const gchar *name, guint bits)
 {
 	gboolean ret;
 	gcry_mpi_t p, g, check;
@@ -132,50 +135,49 @@ test_dh_default (const gchar *name, guint bits)
 }
 
 static void
-test_default_768 (void)
+test_dh_default_768 (void)
 {
-	test_dh_default ("ietf-ike-grp-modp-768", 768);
+	check_dh_default ("ietf-ike-grp-modp-768", 768);
 }
 
 static void
-test_default_1024 (void)
+test_dh_default_1024 (void)
 {
-	test_dh_default ("ietf-ike-grp-modp-1024", 1024);
+	check_dh_default ("ietf-ike-grp-modp-1024", 1024);
 }
 
 static void
-test_default_1536 (void)
+test_dh_default_1536 (void)
 {
-	test_dh_default ("ietf-ike-grp-modp-1536", 1536);
-}
-
-
-static void
-test_default_2048 (void)
-{
-	test_dh_default ("ietf-ike-grp-modp-2048", 2048);
+	check_dh_default ("ietf-ike-grp-modp-1536", 1536);
 }
 
 static void
-test_default_3072 (void)
+test_dh_default_2048 (void)
 {
-	test_dh_default ("ietf-ike-grp-modp-3072", 3072);
+	check_dh_default ("ietf-ike-grp-modp-2048", 2048);
 }
 
 static void
-test_default_4096 (void)
+test_dh_default_3072 (void)
 {
-	test_dh_default ("ietf-ike-grp-modp-4096", 4096);
+	check_dh_default ("ietf-ike-grp-modp-3072", 3072);
 }
 
 static void
-test_default_8192 (void)
+test_dh_default_4096 (void)
 {
-	test_dh_default ("ietf-ike-grp-modp-8192", 8192);
+	check_dh_default ("ietf-ike-grp-modp-4096", 4096);
 }
 
 static void
-test_default_bad (void)
+test_dh_default_8192 (void)
+{
+	check_dh_default ("ietf-ike-grp-modp-8192", 8192);
+}
+
+static void
+test_dh_default_bad (void)
 {
 	gboolean ret;
 	gcry_mpi_t p, g;
@@ -189,16 +191,16 @@ main (int argc, char **argv)
 {
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add_func ("/dh/perform", test_perform);
-	g_test_add_func ("/dh/short_pair", test_short_pair);
-	g_test_add_func ("/dh/default_768", test_default_768);
-	g_test_add_func ("/dh/default_1024", test_default_1024);
-	g_test_add_func ("/dh/default_1536", test_default_1536);
-	g_test_add_func ("/dh/default_2048", test_default_2048);
-	g_test_add_func ("/dh/default_3072", test_default_3072);
-	g_test_add_func ("/dh/default_4096", test_default_4096);
-	g_test_add_func ("/dh/default_8192", test_default_8192);
-	g_test_add_func ("/dh/default_bad", test_default_bad);
+	g_test_add_func ("/dh/perform", test_dh_perform);
+	g_test_add_func ("/dh/short-pair", test_dh_short_pair);
+	g_test_add_func ("/dh/default-768", test_dh_default_768);
+	g_test_add_func ("/dh/default-1024", test_dh_default_1024);
+	g_test_add_func ("/dh/default-1536", test_dh_default_1536);
+	g_test_add_func ("/dh/default-2048", test_dh_default_2048);
+	g_test_add_func ("/dh/default-3072", test_dh_default_3072);
+	g_test_add_func ("/dh/default-4096", test_dh_default_4096);
+	g_test_add_func ("/dh/default-8192", test_dh_default_8192);
+	g_test_add_func ("/dh/default-bad", test_dh_default_bad);
 
 	return g_test_run ();
 }

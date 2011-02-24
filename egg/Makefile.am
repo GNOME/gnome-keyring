@@ -30,6 +30,7 @@ libegg_la_SOURCES = \
 	egg-dn.c egg-dn.h \
 	egg-error.h \
 	egg-hex.c egg-hex.h \
+	egg-hkdf.c egg-hkdf.h \
 	egg-libgcrypt.c egg-libgcrypt.h \
 	egg-mkdtemp.c egg-mkdtemp.h \
 	egg-oid.c egg-oid.h \
@@ -98,6 +99,7 @@ libegg_dbus_la_LIBADD = \
 libegg_prompt_la_SOURCES = \
 	egg-dh.c egg-dh.h \
 	egg-hex.c egg-hex.h \
+	egg-hkdf.c egg-hkdf.h \
 	egg-libgcrypt.c egg-libgcrypt.h \
 	egg-padding.c egg-padding.h \
 	egg-secure-memory.c egg-secure-memory.h

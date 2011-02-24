@@ -157,3 +157,14 @@ gkm_secret_key_class_init (GkmSecretKeyClass *klass)
 /* -----------------------------------------------------------------------------
  * PUBLIC
  */
+
+gconstpointer
+gkm_secret_key_get_key_value (GkmSecretKey *self, gsize *n_value)
+{
+	g_return_val_if_fail (GKM_IS_SECRET_KEY (self), NULL);
+	g_return_val_if_fail (n_value, NULL);
+
+	/* Check with the derived class */
+	g_return_val_if_fail (GKM_SECRET_KEY_GET_CLASS (self)->get_key_value, NULL);
+	return GKM_SECRET_KEY_GET_CLASS (self)->get_key_value (self, n_value);
+}

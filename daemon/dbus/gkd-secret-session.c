@@ -118,20 +118,52 @@ aes_derive_key (GckSession *session, GckObject *priv_key,
                 gconstpointer input, gsize n_input, GckObject **aes_key)
 {
 	GError *error = NULL;
-	GckMechanism mech = { CKM_DH_PKCS_DERIVE, input, n_input };
+	GckMechanism mech;
 	GckAttributes *attrs;
+	GckObject *dh_key;
+
+	/*
+	 * First we have to generate a secret key from the DH key. The
+	 * length of this key depends on the size of our DH prime
+	 */
+
+	mech.type = CKM_DH_PKCS_DERIVE;
+	mech.parameter = input;
+	mech.n_parameter = n_input;
+
+	attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
+	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_GENERIC_SECRET);
+
+	dh_key = gck_session_derive_key_full (session, priv_key, &mech, attrs, NULL, &error);
+
+	gck_attributes_unref (attrs);
+
+	if (!dh_key) {
+		g_warning ("couldn't derive key from dh key pair: %s", egg_error_message (error));
+		g_clear_error (&error);
+		return FALSE;
+	}
+
+	/*
+	 * Now use HKDF to generate our AES key.
+	 */
+
+	mech.type = CKM_G_HKDF_SHA256_DERIVE;
+	mech.parameter = NULL;
+	mech.n_parameter = 0;
 
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_VALUE_LEN, 16UL);
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_AES);
 
-	*aes_key = gck_session_derive_key_full (session, priv_key, &mech, attrs, NULL, &error);
-
+	*aes_key = gck_session_derive_key_full (session, dh_key, &mech, attrs, NULL, &error);
 	gck_attributes_unref (attrs);
+	g_object_unref (dh_key);
 
 	if (!*aes_key) {
-		g_warning ("couldn't derive aes key from dh key pair: %s", egg_error_message (error));
+		g_warning ("couldn't derive aes key from dh key: %s", egg_error_message (error));
 		g_clear_error (&error);
 		return FALSE;
 	}
@@ -528,7 +560,7 @@ gkd_secret_session_handle_open (GkdSecretSession *self, DBusMessage *message)
 			                               "The session algorithm input argument was invalid");
 		reply = plain_negotiate (self, message);
 
-	} else if (g_str_equal (algorithm, "dh-ietf1024-aes128-cbc-pkcs7")) {
+	} else if (g_str_equal (algorithm, "dh-ietf1024-sha256-aes128-cbc-pkcs7")) {
 		if (!g_str_equal ("ay", dbus_message_iter_get_signature (&variant)))
 			return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
 			                               "The session algorithm input argument was invalid");

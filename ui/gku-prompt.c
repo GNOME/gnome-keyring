@@ -29,6 +29,7 @@
 #include "egg/egg-dh.h"
 #include "egg/egg-error.h"
 #include "egg/egg-hex.h"
+#include "egg/egg-hkdf.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-spawn.h"
@@ -333,7 +334,8 @@ static gconstpointer
 calculate_transport_key (GkuPrompt *self, gsize *n_key)
 {
 	gcry_mpi_t peer;
-	gpointer value;
+	gpointer ikm, key;
+	gsize n_ikm;
 
 	g_assert (self->pv->output);
 	g_assert (n_key);
@@ -348,16 +350,21 @@ calculate_transport_key (GkuPrompt *self, gsize *n_key)
 		if (!gku_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
 			return NULL;
 
-		value = egg_dh_gen_secret (peer, self->pv->transport->private,
-		                           self->pv->transport->prime, 16);
+		ikm = egg_dh_gen_secret (peer, self->pv->transport->private,
+		                         self->pv->transport->prime, &n_ikm);
 
 		gcry_mpi_release (peer);
 
-		if (!value)
+		if (!ikm)
 			return NULL;
 
+		key = egg_secure_alloc (16);
+		if (!egg_hkdf_perform ("sha256", ikm, n_ikm, NULL, 0, NULL, 0, key, 16))
+			g_return_val_if_reached (NULL);
+
+		egg_secure_free (ikm);
 		egg_secure_free (self->pv->transport->key);
-		self->pv->transport->key = value;
+		self->pv->transport->key = key;
 		self->pv->transport->n_key = 16;
 	}
 

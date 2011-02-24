@@ -31,10 +31,6 @@
 #define GKM_AES_MECHANISM_MIN_LENGTH     16
 #define GKM_AES_MECHANISM_MAX_LENGTH     32
 
-static const CK_MECHANISM_TYPE GKM_AES_MECHANISMS[] = {
-	CKM_AES_CBC_PAD
-};
-
 CK_RV                   gkm_aes_mechanism_wrap                 (GkmSession *session,
                                                                 CK_MECHANISM_PTR mech,
                                                                 GkmObject *wrapper,

@@ -112,6 +112,8 @@ typedef CK_G_APPLICATION* CK_G_APPLICATION_PTR;
 /* Used for wrapping and unwrapping as null */
 #define CKM_G_NULL                           (CKM_GNOME + 100)
 
+#define CKM_G_HKDF_SHA256_DERIVE             (CKM_GNOME + 101)
+
 #define CKK_G_NULL                           (CKK_GNOME + 100)
 
 /* -------------------------------------------------------------------
