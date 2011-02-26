@@ -93,3 +93,6 @@ run-tests
 /egg/tests/test-symkey
 
 /daemon/dbus/tests/test-secret-util
+
+/ui/gnome-keyring-prompt.desktop
+/ui/gnome-keyring-prompt.desktop.in

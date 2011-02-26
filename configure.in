@@ -730,6 +730,7 @@ schema/Makefile
 testing/Makefile
 tool/Makefile
 ui/Makefile
+ui/gnome-keyring-prompt.desktop.in
 ui/tests/Makefile
 ])
 

@@ -30,4 +30,5 @@ pkcs11/wrap-layer/gkm-wrap-login.c
 pkcs11/wrap-layer/gkm-wrap-prompt.c
 tool/gkr-tool.c
 ui/gku-prompt-tool.c
+ui/gnome-keyring-prompt.desktop.in.in
 [type: gettext/glade]ui/gku-prompt.ui

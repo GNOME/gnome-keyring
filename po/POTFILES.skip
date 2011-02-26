@@ -6,3 +6,4 @@ daemon/org.freedesktop.secrets.service.in
 daemon/org.gnome.keyring.service.in
 gcr/gcr-import-dialog.ui
 gcr/gcr-certificate-basics-widget.ui
+ui/gnome-keyring-prompt.desktop.in

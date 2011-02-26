@@ -84,3 +84,18 @@ if WITH_GTK3
 install-exec-hook:
 	@test -e "$(DESTDIR)$(libexecdir)/gnome-keyring-prompt" || (cd $(DESTDIR)$(libexecdir) && $(LN_S) gnome-keyring-prompt@GCR_VERSION_SUFFIX@ gnome-keyring-prompt)
 endif
+
+@INTLTOOL_DESKTOP_RULE@
+desktopdir= $(datadir)/applications
+desktop_in_in_files = gnome-keyring-prompt.desktop.in.in
+desktop_in_files = gnome-keyring-prompt.desktop.in
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
+EXTRA_DIST += \
+	$(desktop_in_in_files)
+
+CLEANFILES = \
+	$(desktop_DATA)
+
+DISTCLEANFILES = \
+	$(desktop_in_files)
