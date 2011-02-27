@@ -42,7 +42,6 @@
 
 #define SECRET_ERROR_ALREADY_EXISTS    "org.freedesktop.Secret.Error.AlreadyExists"
 #define SECRET_ERROR_IS_LOCKED         "org.freedesktop.Secret.Error.IsLocked"
-#define SECRET_ERROR_NOT_SUPPORTED     "org.freedesktop.Secret.Error.NotSupported"
 #define SECRET_ERROR_NO_SESSION        "org.freedesktop.Secret.Error.NoSession"
 #define SECRET_ERROR_NO_SUCH_OBJECT    "org.freedesktop.Secret.Error.NoSuchObject"
 

@@ -569,7 +569,7 @@ gkd_secret_session_handle_open (GkdSecretSession *self, DBusMessage *message)
 		reply = aes_negotiate (self, message, input, n_input);
 
 	} else {
-		reply = dbus_message_new_error_printf (message, SECRET_ERROR_NOT_SUPPORTED,
+		reply = dbus_message_new_error_printf (message, DBUS_ERROR_NOT_SUPPORTED,
 		                                       "The algorithm '%s' is not supported", algorithm);
 	}
 
