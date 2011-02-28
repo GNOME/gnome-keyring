@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gkd-secret-dispatch.h"
+#include "gkd-secret-introspect.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
@@ -282,7 +283,7 @@ gkd_secret_session_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *
 		return session_method_close (self, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, "session");
+		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_session);
 
 	return NULL;
 }

@@ -26,6 +26,7 @@
 #include "gkd-secret-create.h"
 #include "gkd-secret-dispatch.h"
 #include "gkd-secret-error.h"
+#include "gkd-secret-introspect.h"
 #include "gkd-secret-lock.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-prompt.h"
@@ -870,7 +871,7 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 		return service_property_getall (self, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, "service");
+		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_service);
 
 	return NULL;
 }

@@ -3,7 +3,6 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/daemon \
 	-I$(top_builddir) \
-	-DINTROSPECTDIR=\"$(datadir)/gnome-keyring/introspect\" \
 	$(DAEMON_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS) \
@@ -22,6 +21,7 @@ libgkd_dbus_la_SOURCES = \
 	gkd-secret-create.c gkd-secret-create.h \
 	gkd-secret-dispatch.c gkd-secret-dispatch.h \
 	gkd-secret-error.c gkd-secret-error.h \
+	gkd-secret-introspect.c gkd-secret-introspect.h \
 	gkd-secret-lock.c gkd-secret-lock.h \
 	gkd-secret-objects.c gkd-secret-objects.h \
 	gkd-secret-property.c gkd-secret-property.h \

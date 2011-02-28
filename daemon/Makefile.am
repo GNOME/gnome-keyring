@@ -3,8 +3,7 @@ SUBDIRS = \
 	control \
 	ssh-agent \
 	gpg-agent \
-	dbus \
-	data
+	dbus
 
 bin_PROGRAMS= \
 	gnome-keyring-daemon

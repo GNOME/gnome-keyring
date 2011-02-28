@@ -24,6 +24,7 @@
 #include "gkd-dbus-util.h"
 
 #include "gkd-secret-error.h"
+#include "gkd-secret-introspect.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-property.h"
 #include "gkd-secret-secret.h"
@@ -455,7 +456,7 @@ item_message_handler (GkdSecretObjects *self, GckObject *object, DBusMessage *me
 		return item_property_getall (object, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, "item");
+		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_item);
 
 	return NULL;
 }
@@ -806,7 +807,7 @@ collection_message_handler (GkdSecretObjects *self, GckObject *object, DBusMessa
 		return collection_property_getall (self, object, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, "collection");
+		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_collection);
 
 	return NULL;
 }

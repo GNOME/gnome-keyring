@@ -691,7 +691,6 @@ daemon/org.gnome.keyring.service
 daemon/org.freedesktop.secrets.service
 daemon/control/Makefile
 daemon/control/tests/Makefile
-daemon/data/Makefile
 daemon/dbus/Makefile
 daemon/dbus/tests/Makefile
 daemon/gpg-agent/Makefile
