@@ -54,9 +54,6 @@ TESTING_SETUP (pkcs11_certificate)
 	GNode *asn, *node;
 	CK_RV rv;
 
-	/* Look for the config in the build directory */
-	_gcr_set_pkcs11_config_dir (TEST_CONFIG_DIR);
-
 	cert_data = testing_data_read ("der-certificate.crt", &n_cert_data);
 	g_assert (cert_data);
 

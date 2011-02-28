@@ -15,7 +15,6 @@ TESTING_LIBS =  \
 	$(top_builddir)/gck/libgck.la
 
 TESTING_FLAGS = \
-	-DTEST_CONFIG_DIR=\""$(srcdir)/.."\" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCK_API_SUBJECT_TO_CHANGE
 

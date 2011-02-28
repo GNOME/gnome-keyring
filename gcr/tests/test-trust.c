@@ -49,9 +49,6 @@ TESTING_SETUP (trust_setup)
 	gsize len;
 	CK_RV rv;
 
-	/* Look for the config in the build directory */
-	_gcr_set_pkcs11_config_dir (TEST_CONFIG_DIR);
-
 	contents = testing_data_read ("der-certificate.crt", &len);
 	g_assert (contents);
 
