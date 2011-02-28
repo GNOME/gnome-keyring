@@ -91,3 +91,5 @@ run-tests
 /egg/tests/test-secmem
 /egg/tests/test-spawn
 /egg/tests/test-symkey
+
+/daemon/dbus/tests/test-secret-util

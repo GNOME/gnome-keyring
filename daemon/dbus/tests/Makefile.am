@@ -1,14 +1,23 @@
 
-# Test files should be listed in order they need to run
-TESTING_FILES = \
-	test-secret-util.c
-
-TESTING_LIBS =  \
-	$(top_builddir)/daemon/dbus/libgkd-dbus.la
-
-TESTING_FLAGS = \
+INCLUDES = \
+	-I$(top_srcdir)/daemon/dbus \
+	-DSRCDIR=$(srcdir) \
 	$(DAEMON_CFLAGS) \
-	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS)
 
-include $(top_srcdir)/testing/testing.make
+LDADD =  \
+	$(top_builddir)/daemon/dbus/libgkd-dbus.la
+
+TEST_PROGS = \
+	test-secret-util
+
+check_PROGRAMS = $(TEST_PROGS)
+
+test: $(TEST_PROGS)
+	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+
+check-local: test
+
+if WITH_TESTS
+all-local: $(check_PROGRAMS)
+endif

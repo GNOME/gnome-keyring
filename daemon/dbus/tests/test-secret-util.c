@@ -23,13 +23,14 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
-#include "dbus/gkd-secret-util.h"
+#include "gkd-secret-util.h"
 
 #include <glib.h>
 
-TESTING_TEST(secret_util_build_path)
+#include <string.h>
+
+static void
+test_build_path (void)
 {
 	const gchar *identifier = "par_d\xc3\xa9""faut";
 	gchar *result;
@@ -39,4 +40,15 @@ TESTING_TEST(secret_util_build_path)
 
 	g_assert_cmpstr (result, ==, "/path/par_5fd_c3_a9faut");
 	g_free (result);
+}
+
+
+int
+main (int argc, char **argv)
+{
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/secret-util/build-path", test_build_path);
+
+	return g_test_run ();
 }
