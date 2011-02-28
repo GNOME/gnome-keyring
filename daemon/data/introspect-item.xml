@@ -37,10 +37,10 @@
 		</method>
 		<method name="GetSecret">
 			<arg name="session" type="o" direction="in"/>
-			<arg name="secret" type="(oayay)" direction="out"/>
+			<arg name="secret" type="(oayays)" direction="out"/>
 		</method>
 		<method name="SetSecret">
-			<arg name="secret" type="(oayay)" direction="in"/>
+			<arg name="secret" type="(oayays)" direction="in"/>
 		</method>
 	</interface>
 

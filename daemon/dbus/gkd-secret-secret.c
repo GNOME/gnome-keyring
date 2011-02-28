@@ -71,7 +71,7 @@ gkd_secret_secret_parse (GkdSecretService *service, DBusMessage *message,
 	DBusMessageIter struc, array;
 	void *parameter, *value;
 	int n_value, n_parameter;
-	char *path;
+	char *path, *content_type;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (message, NULL);
@@ -107,6 +107,17 @@ gkd_secret_secret_parse (GkdSecretService *service, DBusMessage *message,
 	dbus_message_iter_recurse (&struc, &array);
 	dbus_message_iter_get_fixed_array (&array, &value, &n_value);
 
+	/*
+	 * TODO: We currently don't do anythinrg with the content type, because
+	 * we have nowhere to store it.
+	 */
+	if (!dbus_message_iter_next (&struc) ||
+	    dbus_message_iter_get_arg_type (&struc) != DBUS_TYPE_STRING) {
+		dbus_set_error (derr, DBUS_ERROR_INVALID_ARGS, "Invalid content type argument");
+		return NULL;
+	}
+	dbus_message_iter_get_basic (&struc, &content_type);
+
 	/* Try to lookup the session */
 	session = gkd_secret_service_lookup_session (service, path,
 	                                             dbus_message_get_sender (message));
@@ -133,6 +144,7 @@ gkd_secret_secret_parse (GkdSecretService *service, DBusMessage *message,
 void
 gkd_secret_secret_append (GkdSecretSecret *secret, DBusMessageIter *iter)
 {
+	const gchar *content_type = "application/octet-stream";
 	DBusMessageIter struc, array;
 	const gchar *path;
 	int length;
@@ -150,6 +162,12 @@ gkd_secret_secret_append (GkdSecretSecret *secret, DBusMessageIter *iter)
 	length = secret->n_value;
 	dbus_message_iter_append_fixed_array (&array, DBUS_TYPE_BYTE, &(secret->value), length);
 	dbus_message_iter_close_container (&struc, &array);
+
+	/*
+	 * TODO: We're just putting a place holder value here for now.
+	 */
+	dbus_message_iter_append_basic (&struc, DBUS_TYPE_STRING, &content_type);
+
 	dbus_message_iter_close_container (iter, &struc);
 }
 

@@ -63,7 +63,7 @@
 		<method name="GetSecrets">
 			<arg name="items" type="ao" direction="in"/>
 			<arg name="session" type="o" direction="in"/>
-			<arg name="secrets" type="a{o(oayay)}" direction="out"/>
+			<arg name="secrets" type="a{o(oayays)}" direction="out"/>
 		</method>
 
 		<method name="ReadAlias">
