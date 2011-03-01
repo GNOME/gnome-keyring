@@ -409,7 +409,7 @@ item_method_set_secret (GkdSecretObjects *self, GckObject *item, DBusMessage *me
 	GkdSecretSecret *secret;
 	const char *caller;
 
-	if (!dbus_message_has_signature (message, "(oayay)"))
+	if (!dbus_message_has_signature (message, "(oayays)"))
 		return NULL;
 	dbus_message_iter_init (message, &iter);
 	secret = gkd_secret_secret_parse (self->service, message, &iter, &derr);
@@ -662,7 +662,7 @@ collection_method_create_item (GkdSecretObjects *self, GckObject *object, DBusMe
 	gboolean created = FALSE;
 
 	/* Parse the message */
-	if (!dbus_message_has_signature (message, "a{sv}(oayay)b"))
+	if (!dbus_message_has_signature (message, "a{sv}(oayays)b"))
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
@@ -1293,7 +1293,7 @@ gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self, DBusMessage *mess
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{o(oayay)}", &array);
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{o(oayays)}", &array);
 
 	for (i = 0; i < n_paths; ++i) {
 

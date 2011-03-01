@@ -666,7 +666,7 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 	gchar *path;
 
 	/* Parse the incoming message */
-	if (!dbus_message_has_signature (message, "a{sv}(oayay)"))
+	if (!dbus_message_has_signature (message, "a{sv}(oayays)"))
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
@@ -710,7 +710,7 @@ service_method_change_with_master_password (GkdSecretService *self, DBusMessage 
 	const gchar *path;
 
 	/* Parse the incoming message */
-	if (!dbus_message_has_signature (message, "o(oayay)(oayay)"))
+	if (!dbus_message_has_signature (message, "o(oayays)(oayays)"))
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
@@ -764,7 +764,7 @@ service_method_unlock_with_master_password (GkdSecretService *self, DBusMessage 
 	const gchar *path;
 
 	/* Parse the incoming message */
-	if (!dbus_message_has_signature (message, "o(oayay)"))
+	if (!dbus_message_has_signature (message, "o(oayays)"))
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
