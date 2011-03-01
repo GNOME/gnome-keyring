@@ -237,7 +237,7 @@ parse_library_attribute (const gchar *name, const gchar *start, const gchar *end
 
 	if (g_str_equal (name, "library-description"))
 		value = &(library->library_description);
-	else if (g_str_equal (name, "manufacturer"))
+	else if (g_str_equal (name, "library-manufacturer"))
 		value = &(library->manufacturer_id);
 	else
 		return 0;
