@@ -21,14 +21,6 @@ ui_DATA = \
 	gcr-unlock-options-widget.ui
 
 # ------------------------------------------------------------------
-# CONFIG
-
-confdir = $(sysconfdir)/pkcs11
-
-conf_DATA = \
-	pkcs11-options.defaults
-
-# ------------------------------------------------------------------
 # HEADERS
 
 incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
@@ -95,7 +87,6 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
-	-DPKCS11_CONFIG_DIR=\""$(confdir)"\" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \

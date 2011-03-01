@@ -57,7 +57,6 @@
  */
 static GList *all_modules = NULL;
 
-static const gchar *config_dir = PKCS11_CONFIG_DIR;
 static gchar *trust_store_uri = NULL;
 static gchar **trust_lookup_uris = NULL;
 
@@ -157,9 +156,6 @@ void
 _gcr_initialize (void)
 {
 	static volatile gsize gcr_initialized = 0;
-	GError *error = NULL;
-	GKeyFile *key_file;
-	gchar *value, *path;
 
 	/* Initialize the libgcrypt library if needed */
 	egg_libgcrypt_initialize ();
@@ -167,41 +163,21 @@ _gcr_initialize (void)
 	if (g_once_init_enter (&gcr_initialized)) {
 		all_modules = gck_modules_initialize_registered (0);
 
-		key_file = g_key_file_new ();
+		/*
+		 * Soon we're going to have support for using a configuration of
+		 * PKCS#11 modules using p11-kit. But for this release this is
+		 * hard coded.
+		 */
 
-		/* Load the defaults */
-		path = g_build_filename (config_dir, "pkcs11-options.defaults", NULL);
-		if (!g_key_file_load_from_file (key_file, path, G_KEY_FILE_NONE, &error)) {
-			g_warning ("couldn't parse %s file: %s", path, egg_error_message (error));
-			g_clear_error (&error);
-		}
-		g_free (path);
+		trust_store_uri = g_strdup ("pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT");
 
-		/* Load any overrides */
-		path = g_build_filename (config_dir, "pkcs11-options.conf", NULL);
-		if (g_file_test (path, G_FILE_TEST_EXISTS) &&
-		    !g_key_file_load_from_file (key_file, path, G_KEY_FILE_NONE, &error)) {
-			g_warning ("couldn't parse %s file: %s", path, egg_error_message (error));
-			g_clear_error (&error);
-		}
-		g_free (path);
-
-		trust_store_uri = g_key_file_get_string (key_file, "trust-assertions", "storage", NULL);
-
-		value = g_key_file_get_string (key_file, "trust-assertions", "lookups", NULL);
-		trust_lookup_uris = g_strsplit_set (value ? value : "", " \t", -1);
-		g_free (value);
-
-		g_key_file_free (key_file);
+		trust_lookup_uris = g_new0 (gchar*, 3);
+		trust_lookup_uris[0] = g_strdup ("pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:ROOTS:DEFAULT");
+		trust_lookup_uris[1] = g_strdup ("pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT");
+		trust_lookup_uris[2] = NULL;
 
 		g_once_init_leave (&gcr_initialized, 1);
 	}
-}
-
-void
-_gcr_set_pkcs11_config_dir (const gchar *dir)
-{
-	config_dir = dir;
 }
 
 /**

@@ -110,9 +110,6 @@ TESTING_SETUP (certificate_chain)
 	CK_RV rv;
 	GckModule *module;
 
-	/* Look for the config in the build directory */
-	_gcr_set_pkcs11_config_dir (TEST_CONFIG_DIR);
-
 	rv = gck_mock_C_GetFunctionList (&f);
 	gck_assert_cmprv (rv, ==, CKR_OK);
 	memcpy (&funcs, f, sizeof (funcs));
