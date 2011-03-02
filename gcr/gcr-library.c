@@ -169,11 +169,11 @@ _gcr_initialize (void)
 		 * hard coded.
 		 */
 
-		trust_store_uri = g_strdup ("pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT");
+		trust_store_uri = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:XDG:DEFAULT");
 
 		trust_lookup_uris = g_new0 (gchar*, 3);
-		trust_lookup_uris[0] = g_strdup ("pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:ROOTS:DEFAULT");
-		trust_lookup_uris[1] = g_strdup ("pkcs11:library-manufacturer=Gnome%20Keyring;serial=1:XDG:DEFAULT");
+		trust_lookup_uris[0] = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:ROOTS:DEFAULT");
+		trust_lookup_uris[1] = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:XDG:DEFAULT");
 		trust_lookup_uris[2] = NULL;
 
 		g_once_init_leave (&gcr_initialized, 1);
