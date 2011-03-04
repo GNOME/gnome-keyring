@@ -217,8 +217,18 @@ static void
 style_display_item (GtkWidget *widget, GcrDisplayItem *item)
 {
 #if GTK_CHECK_VERSION (2,91,6)
-	GdkRGBA transparent = { 1.0, 1.0, 1.0, 0.0 };
-	gtk_widget_override_background_color (item->details_widget, GTK_STATE_NORMAL, &transparent);
+	GtkStyleContext *style;
+	GdkRGBA color;
+
+	style = gtk_widget_get_style_context (GTK_WIDGET (widget));
+	gtk_style_context_save (style);
+
+	gtk_style_context_add_class (style, GTK_STYLE_CLASS_VIEW);
+	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL, &color);
+
+	gtk_style_context_restore (style);
+
+	gtk_widget_override_background_color (item->details_widget, GTK_STATE_NORMAL, &color);
 #else
 	GtkStyle *style = gtk_widget_get_style (widget);
 	gtk_widget_modify_bg (item->details_widget, GTK_STATE_NORMAL, &style->base[GTK_STATE_NORMAL]);
