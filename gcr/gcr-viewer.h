@@ -57,6 +57,8 @@ GType                   gcr_viewer_get_type               (void);
 
 GcrViewer*              gcr_viewer_new                    (void);
 
+GcrViewer*              gcr_viewer_new_scrolled           (void);
+
 void                    gcr_viewer_add_renderer           (GcrViewer *self,
                                                            GcrRenderer *renderer);
 

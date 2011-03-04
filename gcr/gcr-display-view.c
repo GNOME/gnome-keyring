@@ -62,11 +62,86 @@ struct _GcrDisplayViewPrivate {
 	GtkTextTag *content_tag;
 	GtkTextTag *heading_tag;
 	GtkTextTag *monospace_tag;
+
+	gboolean have_measurements;
+	gint minimal_width;
+	gint natural_width;
+	gint minimal_height;
+	gint natural_height;
 };
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
+
+#if GTK_CHECK_VERSION (3,0,0)
+
+static void
+ensure_measurements (GcrDisplayView *self)
+{
+	PangoLayout *layout;
+	PangoRectangle extents;
+	gint icon_width;
+	gint icon_height;
+	GHashTableIter iter;
+	GcrDisplayItem *item;
+	gpointer value;
+	gboolean expanded;
+
+	if (self->pv->have_measurements)
+		return;
+
+	/* See if anything is expanded? */
+	expanded = FALSE;
+	g_hash_table_iter_init (&iter, self->pv->items);
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		item = value;
+		if (item->expanded) {
+			expanded = TRUE;
+			break;
+		}
+	}
+
+	/*
+	 * We use a string in our widget font as the basis for our measurements.
+	 * These are just estimates of what we need, and what looks goodish.
+	 * There's room here for improvement. If this is causes problems for
+	 * you or bothers you, scratch that itch:
+	 */
+
+	layout = gtk_widget_create_pango_layout (GTK_WIDGET (self), "0123456789");
+	pango_layout_get_extents (layout, NULL, &extents);
+	pango_extents_to_pixels (&extents, NULL);
+	g_object_unref (layout);
+
+	if (!gtk_icon_size_lookup (GTK_ICON_SIZE_DIALOG, &icon_width, &icon_height)) {
+		icon_width = 48;
+		icon_height = 48;
+	}
+
+	if (expanded) {
+		/* If expanded, display more 10 lines at least */
+		self->pv->minimal_height = extents.height * 14;
+		self->pv->natural_height = extents.height * 25;
+	} else {
+		/* If not expanded we can get by with 9 lines */
+		self->pv->minimal_height = extents.height * 8;
+		self->pv->natural_height = extents.height * 9;
+	}
+
+	self->pv->minimal_width = icon_width + (extents.width * 5);
+	self->pv->natural_width = icon_width + (extents.width * 8);
+	self->pv->have_measurements = TRUE;
+}
+
+#endif /* GTK+ 3 */
+
+static void
+recalculate_and_resize (GcrDisplayView *self)
+{
+	self->pv->have_measurements = FALSE;
+	gtk_widget_queue_resize (GTK_WIDGET (self));
+}
 
 static GtkTextTagTable*
 create_tag_table (GcrDisplayView *self)
@@ -135,6 +210,7 @@ on_expander_expanded (GObject *object, GParamSpec *param_spec, gpointer user_dat
 	GcrDisplayItem *item = user_data;
 	item->expanded = gtk_expander_get_expanded (expander);
 	gcr_renderer_render (item->renderer, GCR_VIEWER (item->display_view));
+	recalculate_and_resize (item->display_view);
 }
 
 static void
@@ -472,6 +548,30 @@ _gcr_display_view_expose_event (GtkWidget *widget, GdkEventExpose *event)
 
 #endif /* GTK 2.x */
 
+#if GTK_CHECK_VERSION (3,0,0)
+
+static void
+_gcr_display_get_preferred_height (GtkWidget *widget, gint *minimal_height,
+                                   gint *natural_height)
+{
+	GcrDisplayView *self = GCR_DISPLAY_VIEW (widget);
+	ensure_measurements (self);
+	*minimal_height = self->pv->minimal_height;
+	*natural_height = self->pv->natural_height;
+}
+
+static void
+_gcr_display_get_preferred_width (GtkWidget *widget, gint *minimal_width,
+                                  gint *natural_width)
+{
+	GcrDisplayView *self = GCR_DISPLAY_VIEW (widget);
+	ensure_measurements (self);
+	*minimal_width = self->pv->minimal_width;
+	*natural_width = self->pv->natural_width;
+}
+
+#endif /* GTK 3.x */
+
 static void
 _gcr_display_view_class_init (GcrDisplayViewClass *klass)
 {
@@ -486,6 +586,11 @@ _gcr_display_view_class_init (GcrDisplayViewClass *klass)
 	gobject_class->finalize = _gcr_display_view_finalize;
 
 	widget_class->realize = _gcr_display_view_realize;
+
+#if GTK_CHECK_VERSION (3,0,0)
+	widget_class->get_preferred_height = _gcr_display_get_preferred_height;
+	widget_class->get_preferred_width = _gcr_display_get_preferred_width;
+#endif
 
 #if GTK_CHECK_VERSION (2,91,0)
 	widget_class->draw = _gcr_display_view_draw;

@@ -19,6 +19,7 @@
 
 #include "config.h"
 
+#include "gcr-display-scrolled.h"
 #include "gcr-display-view.h"
 #include "gcr-renderer.h"
 #include "gcr-viewer.h"
@@ -62,6 +63,12 @@ GcrViewer*
 gcr_viewer_new (void)
 {
 	return GCR_VIEWER (_gcr_display_view_new ());
+}
+
+GcrViewer*
+gcr_viewer_new_scrolled (void)
+{
+	return GCR_VIEWER (_gcr_display_scrolled_new ());
 }
 
 void
