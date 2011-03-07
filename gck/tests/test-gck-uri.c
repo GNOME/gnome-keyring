@@ -195,7 +195,7 @@ TESTING_TEST(uri_parse_with_library)
 	GError *error = NULL;
 	GckUriInfo *uri_info = NULL;
 
-	uri_info = gck_uri_parse ("pkcs11:library-description=The%20Library;manufacturer=Me",
+	uri_info = gck_uri_parse ("pkcs11:library-description=The%20Library;library-manufacturer=Me",
 	                          GCK_URI_PARSE_MODULE, &error);
 
 	g_assert (uri_info);
