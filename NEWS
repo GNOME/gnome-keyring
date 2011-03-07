@@ -1,3 +1,18 @@
+Changes in version 2.91.91 are:
+ * Fix the certificate details expander when used with GTK+3
+ * Calculate the minimum/natural size of the certificate widget better.
+ * Fix gnome-keyring-prompt for GTK+3 release.
+ * Fix problems with the URIs used for trust lookup and storage.
+ * Pass around a content-type for secrets in the DBus Secret Service API.
+ * If DBus couldn't be initialized when starting up the daemon, try
+   again at a later point.
+ * Build and testing fixes.
+ * Remove support for the pkcs11-options file, and wait for a proper
+   configuration file setup being worked on in p11-kit.
+ * Add support for --version argument to gnome-keyring-daemon and
+   gnome-keyring
+ * Create necessary directory when storing trust assertion objects.
+
 Changes in version 2.91.4 are:
  * gck library loads PKCS#11 modules from /usr/lib/pkcs11
  * PKCS#11 config file in /etc/xdg/pkcs11.conf[.defaults]
