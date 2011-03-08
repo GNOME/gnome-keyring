@@ -66,6 +66,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
 	gcr-certificate-chain.c gcr-certificate-chain.h \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
+	gcr-certificate-exporter.c gcr-certificate-exporter.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-display-view.c gcr-display-view.h \

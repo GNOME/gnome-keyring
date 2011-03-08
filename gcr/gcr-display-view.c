@@ -62,6 +62,7 @@ struct _GcrDisplayViewPrivate {
 	GtkTextTag *content_tag;
 	GtkTextTag *heading_tag;
 	GtkTextTag *monospace_tag;
+	GcrDisplayItem *current_item;
 
 	gboolean have_measurements;
 	gint minimal_width;
@@ -347,6 +348,29 @@ lookup_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 	return item;
 }
 
+static GcrDisplayItem*
+find_item_at_iter (GcrDisplayView *self, GtkTextIter *iter)
+{
+	GHashTableIter hi;
+	GcrDisplayItem *item;
+	gpointer value;
+	GtkTextIter start, end;
+
+	g_hash_table_iter_init (&hi, self->pv->items);
+	while (g_hash_table_iter_next (&hi, NULL, &value)) {
+		item = value;
+
+		gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &start, item->beginning);
+		gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &end, item->ending);
+
+		if (gtk_text_iter_compare (iter, &start) >= 0 &&
+		    gtk_text_iter_compare (iter, &end) < 0)
+			return item;
+	}
+
+	return NULL;
+}
+
 static void
 on_renderer_data_changed (GcrRenderer *renderer, GcrViewer *self)
 {
@@ -514,6 +538,32 @@ _gcr_display_view_realize (GtkWidget *widget)
 		style_display_item (widget, value);
 }
 
+static gboolean
+_gcr_display_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
+{
+	GtkTextView *text_view = GTK_TEXT_VIEW (widget);
+	GcrDisplayView *self = GCR_DISPLAY_VIEW (widget);
+	GcrDisplayItem *item;
+	gboolean handled = FALSE;
+	GtkTextIter iter;
+	gint x, y;
+
+	if (GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->button_press_event)
+		handled = GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->button_press_event (
+				widget, event);
+
+	if (event->window == gtk_text_view_get_window (text_view, GTK_TEXT_WINDOW_TEXT)) {
+		gtk_text_view_window_to_buffer_coords (text_view, GTK_TEXT_WINDOW_TEXT,
+		                                       event->x, event->y, &x, &y);
+		gtk_text_view_get_iter_at_location (text_view, &iter, x, y);
+
+		item = find_item_at_iter (self, &iter);
+		self->pv->current_item = item;
+	}
+
+	return handled;
+}
+
 #if GTK_CHECK_VERSION (2,91,0)
 
 static gboolean
@@ -583,10 +633,25 @@ _gcr_display_get_preferred_width (GtkWidget *widget, gint *minimal_width,
 #endif /* GTK 3.x */
 
 static void
+_gcr_display_view_populate_popup (GtkTextView *text_view, GtkMenu *menu)
+{
+	GcrDisplayView *self = GCR_DISPLAY_VIEW (text_view);
+
+	if (GTK_TEXT_VIEW_CLASS (_gcr_display_view_parent_class)->populate_popup)
+		GTK_TEXT_VIEW_CLASS (_gcr_display_view_parent_class)->populate_popup (text_view, menu);
+
+	/* Ask the current renderer to add menu items */
+	if (self->pv->current_item)
+		gcr_renderer_popuplate_popup (self->pv->current_item->renderer,
+		                              GCR_VIEWER (self), menu);
+}
+
+static void
 _gcr_display_view_class_init (GcrDisplayViewClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+	GtkTextViewClass *text_view_class = GTK_TEXT_VIEW_CLASS (klass);
 
 	_gcr_display_view_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrDisplayViewPrivate));
@@ -596,6 +661,7 @@ _gcr_display_view_class_init (GcrDisplayViewClass *klass)
 	gobject_class->finalize = _gcr_display_view_finalize;
 
 	widget_class->realize = _gcr_display_view_realize;
+	widget_class->button_press_event = _gcr_display_view_button_press_event;
 
 #if GTK_CHECK_VERSION (3,0,0)
 	widget_class->get_preferred_height = _gcr_display_get_preferred_height;
@@ -607,6 +673,8 @@ _gcr_display_view_class_init (GcrDisplayViewClass *klass)
 #else
 	widget_class->expose_event = _gcr_display_view_expose_event;
 #endif
+
+	text_view_class->populate_popup = _gcr_display_view_populate_popup;
 }
 
 static void

@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include "gcr-certificate.h"
+#include "gcr-certificate-exporter.h"
 #include "gcr-certificate-renderer.h"
 #include "gcr-display-view.h"
 #include "gcr-icons.h"
@@ -174,6 +175,62 @@ on_parsed_dn_part (guint index, GQuark oid, const guchar *value,
 	g_free (display);
 }
 
+static gboolean
+on_delete_unref_dialog (GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	g_object_unref (widget);
+	return FALSE;
+}
+
+static void
+on_export_completed (GObject *source, GAsyncResult *result, gpointer user_data)
+{
+	GtkWindow *parent = GTK_WINDOW (user_data);
+	GcrCertificateExporter *exporter = GCR_CERTIFICATE_EXPORTER (source);
+	GError *error = NULL;
+	GtkWidget *dialog;
+
+	if (!_gcr_certificate_exporter_export_finish (exporter, result, &error)) {
+		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			dialog = gtk_message_dialog_new_with_markup (parent,
+				  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR,
+				  GTK_BUTTONS_OK, "<big>%s</big>\n\n%s",
+				  _("Couldn't export the certificate."),
+				  error->message);
+			gtk_widget_show (dialog);
+			g_signal_connect (dialog, "delete-event",
+					  G_CALLBACK (on_delete_unref_dialog), NULL);
+		}
+	}
+
+	/* Matches ref in on_certificate_export */
+	if (parent)
+		g_object_unref (parent);
+}
+
+static void
+on_certificate_export (GtkMenuItem *menuitem, gpointer user_data)
+{
+	GcrCertificateRenderer *self = GCR_CERTIFICATE_RENDERER (user_data);
+	GcrCertificateExporter *exporter;
+	gchar *label;
+	GtkWidget *parent;
+
+	label = calculate_label (self, NULL);
+
+	parent = gtk_widget_get_toplevel (GTK_WIDGET (menuitem));
+	if (parent && !GTK_IS_WINDOW (parent))
+		parent = NULL;
+
+	exporter = _gcr_certificate_exporter_new (self->pv->certificate, label,
+	                                          GTK_WINDOW (parent));
+
+	g_free (label);
+
+	_gcr_certificate_exporter_export_async (exporter, NULL, on_export_completed,
+	                                        parent ? g_object_ref (parent) : NULL);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -291,7 +348,7 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 }
 
 static void
-gcr_certificate_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
+gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 {
 	GcrCertificateRenderer *self;
 	gconstpointer data, value;
@@ -461,9 +518,27 @@ gcr_certificate_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 }
 
 static void
+gcr_certificate_renderer_populate_popup (GcrRenderer *self, GcrViewer *viewer,
+                                         GtkMenu *menu)
+{
+	GtkWidget *item;
+
+	item = gtk_separator_menu_item_new ();
+	gtk_widget_show (item);
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+
+	item = gtk_menu_item_new_with_label ("Export Certificate...");
+	gtk_widget_show (item);
+	g_signal_connect_data (item, "activate", G_CALLBACK (on_certificate_export),
+	                       g_object_ref (self), (GClosureNotify)g_object_unref, 0);
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+}
+
+static void
 gcr_renderer_iface_init (GcrRendererIface *iface)
 {
-	iface->render = gcr_certificate_renderer_real_render;
+	iface->render = gcr_certificate_renderer_render;
+	iface->populate_popup = gcr_certificate_renderer_populate_popup;
 }
 
 /* -----------------------------------------------------------------------------

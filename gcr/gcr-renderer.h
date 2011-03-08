@@ -45,6 +45,8 @@ struct _GcrRendererIface {
 	/* virtual */
 	void (*render) (GcrRenderer *self, GcrViewer *viewer);
 
+	void (*populate_popup) (GcrRenderer *self, GcrViewer *viewer, GtkMenu *menu);
+
 	gpointer dummy1;
 	gpointer dummy2;
 	gpointer dummy3;
@@ -59,6 +61,10 @@ GType                  gcr_renderer_get_type                      (void) G_GNUC_
 
 void                   gcr_renderer_render                        (GcrRenderer *self,
                                                                    GcrViewer *viewer);
+
+void                   gcr_renderer_popuplate_popup               (GcrRenderer *self,
+                                                                   GcrViewer *viewer,
+                                                                   GtkMenu *menu);
 
 void                   gcr_renderer_emit_data_changed             (GcrRenderer *self);
 

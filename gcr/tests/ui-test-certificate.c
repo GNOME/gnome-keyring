@@ -53,13 +53,10 @@ chdir_base_dir (char* argv0)
 }
 
 static void
-on_parser_parsed (GcrParser *parser, gpointer unused)
+on_parser_parsed (GcrParser *parser, gpointer user_data)
 {
 	GcrCertificateWidget *details;
-	GtkDialog *dialog;
-
-	dialog = GTK_DIALOG (gtk_dialog_new ());
-	g_object_ref_sink (dialog);
+	GtkDialog *dialog = GTK_DIALOG (user_data);
 
 	details = g_object_new (GCR_TYPE_CERTIFICATE_WIDGET,
 	                        "attributes", gcr_parser_get_parsed_attributes (parser),
@@ -69,10 +66,6 @@ on_parser_parsed (GcrParser *parser, gpointer unused)
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (details));
 
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 20);
-	gtk_dialog_run (dialog);
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-
-	g_object_unref (dialog);
 }
 
 static void
@@ -82,17 +75,27 @@ test_certificate (const gchar *path)
 	GError *err = NULL;
 	guchar *data;
 	gsize n_data;
+	GtkWidget *dialog;
 
 	if (!g_file_get_contents (path, (gchar**)&data, &n_data, NULL))
 		g_error ("couldn't read file: %s", path);
 
+	dialog = gtk_dialog_new ();
+	g_object_ref_sink (dialog);
+
 	parser = gcr_parser_new ();
-	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), NULL);
+	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), dialog);
 	if (!gcr_parser_parse_data (parser, data, n_data, &err))
 		g_error ("couldn't parse data: %s", err->message);
 
 	g_object_unref (parser);
 	g_free (data);
+
+	gtk_widget_show (dialog);
+	g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_main_quit), NULL);
+	gtk_main ();
+
+	g_object_unref (dialog);
 }
 
 int

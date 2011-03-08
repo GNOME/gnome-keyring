@@ -89,6 +89,15 @@ gcr_renderer_render (GcrRenderer *self, GcrViewer *viewer)
 }
 
 void
+gcr_renderer_popuplate_popup (GcrRenderer *self, GcrViewer *viewer,
+                              GtkMenu *menu)
+{
+	g_return_if_fail (GCR_IS_RENDERER (self));
+	if (GCR_RENDERER_GET_INTERFACE (self)->populate_popup)
+		GCR_RENDERER_GET_INTERFACE (self)->populate_popup (self, viewer, menu);
+}
+
+void
 gcr_renderer_emit_data_changed (GcrRenderer *self)
 {
 	g_return_if_fail (GCR_IS_RENDERER (self));
