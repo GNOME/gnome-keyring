@@ -33,12 +33,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 EGG_SECURE_GLIB_DEFINITIONS ();
 
 typedef struct {
 	guchar *input;
 	gsize n_input;
+	GQuark reftype;
 	guchar *refenc;
 	guchar *refdata;
 	gsize n_refenc;
@@ -75,6 +77,9 @@ parse_reference (GQuark type, const guchar *data, gsize n_data,
 	Test *test = user_data;
 	gboolean res;
 	const gchar *dekinfo;
+
+	g_assert (type);
+	test->reftype = type;
 
 	g_assert ("no data in PEM callback" && data != NULL);
 	g_assert ("no data in PEM callback" && n_data > 0);
@@ -129,6 +134,29 @@ test_write_reference (Test *test, gconstpointer unused)
 	g_assert ("data doesn't match input" && memcmp (encrypted, test->refenc, n_encrypted) == 0);
 }
 
+static void
+test_write_exactly_same (Test *test, gconstpointer unused)
+{
+	guchar *result;
+	gsize n_result;
+	guint num;
+
+	num = egg_openssl_pem_parse (test->input, test->n_input, parse_reference, test);
+	g_assert ("couldn't PEM block in reference data" && num == 1);
+
+	result = egg_openssl_pem_write (test->refenc, test->n_refenc, test->reftype,
+	                                test->refheaders, &n_result);
+
+	/*
+	 * Yes sirrr. Openssl's parser is so fragile, that we have to make it
+	 * character for character identical. This includes line breaks, whitespace
+	 * and line endings.
+	 */
+
+	egg_assert_cmpmem (test->input, test->n_input, ==, result, n_result);
+	g_free (result);
+}
+
 /* 29 bytes (prime number, so block length has bad chance of matching */
 static const guchar *TEST_DATA = (guchar*)"ABCDEFGHIJKLMNOPQRSTUVWXYZ123";
 const gsize TEST_DATA_L = 29;
@@ -175,6 +203,7 @@ main (int argc, char **argv)
 
 	g_test_add ("/openssl/parse_reference", Test, NULL, setup, test_parse_reference, teardown);
 	g_test_add ("/openssl/write_reference", Test, NULL, setup, test_write_reference, teardown);
+	g_test_add ("/openssl/write_exactly_same", Test, NULL, setup, test_write_exactly_same, teardown);
 	g_test_add ("/openssl/openssl_roundtrip", Test, NULL, setup, test_openssl_roundtrip, teardown);
 
 	return g_test_run ();
