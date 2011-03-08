@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-04 18:46+0200\n"
-"PO-Revision-Date: 2011-02-04 18:45+0300\n"
+"POT-Creation-Date: 2011-03-09 00:31+0200\n"
+"PO-Revision-Date: 2011-03-09 00:31+0300\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
@@ -526,10 +526,13 @@ msgstr "تعذّر قراءة بيانات معطوبة أو غير سليمة."
 msgid "The data is locked"
 msgstr "البيانات موصدة"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
-msgstr ""
+msgstr "تعذّر العثور على مكان لحفظ الشهادة"
 
 #: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
 #: ../gck/gck-uri.c:248
@@ -1018,11 +1021,11 @@ msgstr "الأوامر: "
 msgid "          "
 msgstr "        "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:596
 msgid "Store passwords unencrypted?"
 msgstr "احفظ كلمات السر من دون تعمية؟"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:597
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1031,17 +1034,25 @@ msgstr ""
 "باختيار استخدام كلمة سر فارغة، لن تكون كلمات السر الخاصة بك معمّاة بشكل آمن. "
 "وسيستطيع كل من يملك الوصول إلى ملفاتك الوصول إليها."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:604
 msgid "Use Unsafe Storage"
 msgstr "استعمل التخزين غير الآمن"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "كلمتا السّر غير متطابقتين."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "كلمة السّر لا يمكن أن تكون فارغة"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "الوصول إلى حلقة المفاتيح"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "افتح الوصول إلى كلمات السر والأسرار الأخرى"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
