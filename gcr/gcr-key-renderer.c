@@ -21,6 +21,7 @@
 
 #include "gcr-key-renderer.h"
 #include "gcr-display-view.h"
+#include "gcr-fingerprint.h"
 #include "gcr-icons.h"
 #include "gcr-renderer.h"
 #include "gcr-viewer.h"
@@ -239,6 +240,8 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 	GcrKeyRenderer *self;
 	GcrDisplayView *view;
 	const gchar *text = "";
+	gpointer fingerprint;
+	gsize n_fingerprint;
 	gchar *display;
 	gulong klass;
 	gulong key_type;
@@ -316,8 +319,21 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 	_gcr_display_view_append_value (view, renderer, _("Size"), display, FALSE);
 	g_free (display);
 
-	/* TODO: We need to have consistent key fingerprints. */
-	_gcr_display_view_append_value (view, renderer, _("Fingerprint"), "XX XX XX XX XX XX XX XX XX XX", TRUE);
+	/* Fingerprints */
+	_gcr_display_view_append_heading (view, renderer, _("Fingerprints"));
+
+	fingerprint = _gcr_fingerprint_from_attributes (self->pv->attributes,
+	                                                G_CHECKSUM_SHA1, &n_fingerprint);
+	if (fingerprint) {
+		_gcr_display_view_append_hex (view, renderer, _("SHA1"), fingerprint, n_fingerprint);
+		g_free (fingerprint);
+	}
+	fingerprint = _gcr_fingerprint_from_attributes (self->pv->attributes,
+	                                                G_CHECKSUM_SHA256, &n_fingerprint);
+	if (fingerprint) {
+		_gcr_display_view_append_hex (view, renderer, _("SHA256"), fingerprint, n_fingerprint);
+		g_free (fingerprint);
+	}
 }
 
 static void

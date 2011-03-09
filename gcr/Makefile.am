@@ -78,12 +78,13 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-collection.c gcr-collection.h \
 	gcr-collection-model.c gcr-collection-model.h \
 	gcr-colons.c gcr-colons.h \
+	gcr-comparable.c gcr-comparable.h \
 	gcr-debug.c gcr-debug.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
-	gcr-comparable.c gcr-comparable.h \
 	gcr-display-view.c gcr-display-view.h \
 	gcr-gnupg-collection.c gcr-gnupg-collection.h \
 	gcr-gnupg-key.c gcr-gnupg-key.h \
+	gcr-fingerprint.c gcr-fingerprint.h \
 	gcr-icons.c gcr-icons.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \

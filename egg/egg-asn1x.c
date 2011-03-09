@@ -2606,7 +2606,7 @@ egg_asn1x_get_integer_as_raw (GNode *node, EggAllocator allocator, gsize *n_data
 }
 
 gboolean
-egg_asn1x_set_integer_as_raw (GNode *node, gpointer data, gsize n_data, GDestroyNotify destroy)
+egg_asn1x_set_integer_as_raw (GNode *node, gconstpointer data, gsize n_data, GDestroyNotify destroy)
 {
 	gboolean sign;
 	guchar *p;
@@ -2624,7 +2624,7 @@ egg_asn1x_set_integer_as_raw (GNode *node, gpointer data, gsize n_data, GDestroy
 		return FALSE;
 	}
 
-	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, data, destroy);
+	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, (gpointer)data, destroy);
 	return TRUE;
 }
 

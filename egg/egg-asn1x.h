@@ -100,7 +100,7 @@ gpointer            egg_asn1x_get_integer_as_raw     (GNode *node,
                                                       gsize *n_data);
 
 gboolean            egg_asn1x_set_integer_as_raw     (GNode *node,
-                                                      gpointer data,
+                                                      gconstpointer data,
                                                       gsize n_data,
                                                       GDestroyNotify destroy);
 

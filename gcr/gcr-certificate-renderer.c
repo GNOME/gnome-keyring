@@ -23,6 +23,7 @@
 #include "gcr-certificate-exporter.h"
 #include "gcr-certificate-renderer.h"
 #include "gcr-display-view.h"
+#include "gcr-fingerprint.h"
 #include "gcr-icons.h"
 #include "gcr-simple-certificate.h"
 #include "gcr-renderer.h"
@@ -485,6 +486,12 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	}
 	g_free (display);
 
+	/* Fingerprints */
+	_gcr_display_view_append_heading (view, renderer, _("Certificate Fingerprints"));
+
+	_gcr_display_view_append_fingerprint (view, renderer, data, n_data, "SHA1", G_CHECKSUM_SHA1);
+	_gcr_display_view_append_fingerprint (view, renderer, data, n_data, "MD5", G_CHECKSUM_MD5);
+
 	/* Signature */
 	_gcr_display_view_append_heading (view, renderer, _("Signature"));
 
@@ -521,17 +528,17 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 		g_free (display);
 	}
 
+	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "tbsCertificate",
+	                                                   "subjectPublicKeyInfo", NULL), &n_value);
+	raw = _gcr_fingerprint_from_subject_public_key_info (value, n_value, G_CHECKSUM_SHA1, &n_raw);
+	_gcr_display_view_append_hex (view, renderer, _("Key SHA1 Fingerprint"), raw, n_raw);
+	g_free (raw);
+
 	raw = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo",
 	                                                 "subjectPublicKey", NULL), NULL, &bits);
 	g_return_if_fail (raw);
 	_gcr_display_view_append_hex (view, renderer, _("Public Key"), raw, bits / 8);
 	g_free (raw);
-
-	/* Fingerprints */
-	_gcr_display_view_append_heading (view, renderer, _("Fingerprints"));
-
-	_gcr_display_view_append_fingerprint (view, renderer, data, n_data, "SHA1", G_CHECKSUM_SHA1);
-	_gcr_display_view_append_fingerprint (view, renderer, data, n_data, "MD5", G_CHECKSUM_MD5);
 
 	/* Extensions */
 	for (index = 1; TRUE; ++index) {
