@@ -673,7 +673,7 @@ prepare_unlock_keyring_other (GkmWrapPrompt *self, const gchar *label)
 	gku_prompt_show_widget (prompt, "password_area");
 	gku_prompt_show_widget (prompt, "options_area");
 
-	if (gkm_wrap_login_is_usable ())
+	if (!gkm_wrap_login_is_usable ())
 		gku_prompt_set_unlock_sensitive (prompt, GCR_UNLOCK_OPTION_ALWAYS, FALSE, NULL);
 }
 
