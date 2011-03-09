@@ -815,7 +815,7 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 	
 	pwd = getpwnam (user);
 	if (!pwd) {
-		syslog (GKR_LOG_ERR, "gkr-pam: error looking up user information for: %s", user);
+		syslog (GKR_LOG_ERR, "gkr-pam: error looking up user information");
 		return PAM_SERVICE_ERR;
 	}
 		
