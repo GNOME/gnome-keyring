@@ -267,11 +267,7 @@ prompt_method_prompt (GkdSecretUnlock *self, DBusMessage *message)
 		return dbus_message_new_error (message, SECRET_ERROR_ALREADY_EXISTS,
 		                               "This prompt has already been shown.");
 
-	g_free (self->window_id);
-	self->window_id = g_strdup (window_id);
-
-	self->prompted = TRUE;
-	perform_next_unlock (self);
+	gkd_secret_unlock_call_prompt (self, window_id);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
@@ -350,7 +346,8 @@ gkd_secret_unlock_constructor (GType type, guint n_props, GObjectConstructParam 
 	g_return_val_if_fail (self->service, NULL);
 
 	/* Setup the path for the object */
-	self->object_path = g_strdup_printf (SECRET_PROMPT_PREFIX "/u%d", ++unique_prompt_number);
+	if (!self->object_path)
+		self->object_path = g_strdup_printf (SECRET_PROMPT_PREFIX "/u%d", ++unique_prompt_number);
 
 	return G_OBJECT (self);
 }
@@ -426,6 +423,10 @@ gkd_secret_unlock_set_property (GObject *obj, guint prop_id, const GValue *value
 		g_object_add_weak_pointer (G_OBJECT (self->service),
 		                           (gpointer*)&(self->service));
 		break;
+	case PROP_OBJECT_PATH:
+		g_return_if_fail (!self->object_path);
+		self->object_path = g_strdup (g_value_get_pointer (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -472,7 +473,7 @@ gkd_secret_unlock_class_init (GkdSecretUnlockClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_OBJECT_PATH,
 	        g_param_spec_pointer ("object-path", "Object Path", "DBus Object Path",
-		                      G_PARAM_READABLE));
+		                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 		g_param_spec_object ("service", "Service", "Service which owns this prompt",
@@ -490,22 +491,27 @@ gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface)
  */
 
 GkdSecretUnlock*
-gkd_secret_unlock_new (GkdSecretService *service, const gchar *caller)
+gkd_secret_unlock_new (GkdSecretService *service, const gchar *caller,
+                       const gchar *object_path)
 {
-	return g_object_new (GKD_SECRET_TYPE_UNLOCK, "service", service, "caller", caller, NULL);
+	return g_object_new (GKD_SECRET_TYPE_UNLOCK,
+	                     "service", service,
+	                     "caller", caller,
+	                     "object-path", object_path,
+	                     NULL);
 }
 
 void
-gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
+gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *unlock_path)
 {
 	gboolean locked = TRUE;
 	GckObject *coll;
 	gchar *path;
 
 	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
-	g_return_if_fail (objpath);
+	g_return_if_fail (unlock_path);
 
-	coll = lookup_collection (self, objpath);
+	coll = lookup_collection (self, unlock_path);
 	if (coll == NULL)
 		return;
 
@@ -515,7 +521,7 @@ gkd_secret_unlock_queue (GkdSecretUnlock *self, const gchar *objpath)
 
 	}
 
-	path = g_strdup (objpath);
+	path = g_strdup (unlock_path);
 	if (locked)
 		g_queue_push_tail (self->queued, path);
 	else
@@ -550,6 +556,19 @@ gkd_secret_unlock_reset_results (GkdSecretUnlock *self)
 	for (i = 0; i < self->results->len; ++i)
 		g_free (g_array_index (self->results, gchar*, i));
 	g_array_set_size (self->results, 0);
+}
+
+void
+gkd_secret_unlock_call_prompt (GkdSecretUnlock *self, const gchar *window_id)
+{
+	g_return_if_fail (GKD_SECRET_IS_UNLOCK (self));
+	g_return_if_fail (!self->prompted);
+
+	g_assert (!self->window_id);
+	self->window_id = g_strdup (window_id);
+
+	self->prompted = TRUE;
+	perform_next_unlock (self);
 }
 
 gboolean

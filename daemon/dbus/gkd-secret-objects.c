@@ -49,7 +49,6 @@ struct _GkdSecretObjects {
 	GObject parent;
 	GkdSecretService *service;
 	GckSlot *pkcs11_slot;
-	GHashTable *aliases;
 };
 
 G_DEFINE_TYPE (GkdSecretObjects, gkd_secret_objects, G_TYPE_OBJECT);
@@ -71,7 +70,7 @@ parse_object_path (GkdSecretObjects *self, const gchar *path, gchar **collection
 		return FALSE;
 
 	if (g_str_has_prefix (path, SECRET_ALIAS_PREFIX)) {
-		replace = g_hash_table_lookup (self->aliases, *collection);
+		replace = gkd_secret_service_get_alias (self->service, *collection);
 		if (!replace) {
 
 			/*
@@ -831,7 +830,7 @@ gkd_secret_objects_constructor (GType type, guint n_props, GObjectConstructParam
 static void
 gkd_secret_objects_init (GkdSecretObjects *self)
 {
-	self->aliases = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
 }
 
 static void
@@ -858,7 +857,6 @@ gkd_secret_objects_finalize (GObject *obj)
 {
 	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
 
-	g_hash_table_destroy (self->aliases);
 	g_assert (!self->pkcs11_slot);
 	g_assert (!self->service);
 
@@ -1332,21 +1330,4 @@ gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self, DBusMessage *mess
 	dbus_free_string_array (paths);
 
 	return reply;
-}
-
-const gchar*
-gkd_secret_objects_get_alias (GkdSecretObjects *self, const gchar *alias)
-{
-	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
-	g_return_val_if_fail (alias, NULL);
-	return g_hash_table_lookup (self->aliases, alias);
-}
-
-void
-gkd_secret_objects_set_alias (GkdSecretObjects *self, const gchar *alias,
-                              const gchar *identifier)
-{
-	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
-	g_return_if_fail (alias);
-	g_hash_table_replace (self->aliases, g_strdup (alias), g_strdup (identifier));
 }

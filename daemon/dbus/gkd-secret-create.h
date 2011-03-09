@@ -46,7 +46,8 @@ GType               gkd_secret_create_get_type                (void);
 
 GkdSecretCreate*    gkd_secret_create_new                     (GkdSecretService *service,
                                                                const gchar *caller,
-                                                               GckAttributes *attrs);
+                                                               GckAttributes *attrs,
+                                                               const gchar *alias);
 
 GckObject*          gkd_secret_create_with_credential         (GckSession *session,
                                                                GckAttributes *attrs,

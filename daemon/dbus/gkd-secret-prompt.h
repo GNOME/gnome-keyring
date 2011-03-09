@@ -59,6 +59,8 @@ GType               gkd_secret_prompt_get_type                (void);
 
 const gchar*        gkd_secret_prompt_get_caller              (GkdSecretPrompt *self);
 
+const gchar*        gkd_secret_prompt_get_window_id           (GkdSecretPrompt *self);
+
 GckSession*         gkd_secret_prompt_get_pkcs11_session      (GkdSecretPrompt *self);
 
 GkdSecretService*   gkd_secret_prompt_get_service             (GkdSecretPrompt *self);

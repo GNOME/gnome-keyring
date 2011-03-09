@@ -74,11 +74,4 @@ GckObject*          gkd_secret_objects_lookup_item               (GkdSecretObjec
                                                                   const gchar *caller,
                                                                   const gchar *path);
 
-const gchar*        gkd_secret_objects_get_alias                 (GkdSecretObjects *self,
-                                                                  const gchar *alias);
-
-void                gkd_secret_objects_set_alias                 (GkdSecretObjects *self,
-                                                                  const gchar *alias,
-                                                                  const gchar *identifier);
-
 #endif /* __GKD_SECRET_OBJECTS_H__ */

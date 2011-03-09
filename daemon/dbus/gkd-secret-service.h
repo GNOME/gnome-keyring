@@ -66,4 +66,15 @@ void                    gkd_secret_service_close_session           (GkdSecretSer
 void                    gkd_secret_service_send                    (GkdSecretService *self,
                                                                     DBusMessage *message);
 
+const gchar*            gkd_secret_service_get_alias               (GkdSecretService *self,
+                                                                    const gchar *alias);
+
+void                    gkd_secret_service_set_alias               (GkdSecretService *self,
+                                                                    const gchar *alias,
+                                                                    const gchar *identifier);
+
+void                    gkd_secret_service_publish_dispatch        (GkdSecretService *self,
+                                                                    const gchar *caller,
+                                                                    GkdSecretDispatch *object);
+
 #endif /* ___SECRET_SERVICE_H__ */

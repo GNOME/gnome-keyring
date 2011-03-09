@@ -42,10 +42,11 @@ struct _GkdSecretUnlockClass {
 GType               gkd_secret_unlock_get_type                (void);
 
 GkdSecretUnlock*    gkd_secret_unlock_new                     (GkdSecretService *service,
-                                                               const gchar *caller);
+                                                               const gchar *caller,
+                                                               const gchar *object_path);
 
 void                gkd_secret_unlock_queue                   (GkdSecretUnlock *self,
-                                                               const gchar *objpath);
+                                                               const gchar *unlock_path);
 
 gboolean            gkd_secret_unlock_have_queued             (GkdSecretUnlock *self);
 
@@ -53,6 +54,9 @@ gchar**             gkd_secret_unlock_get_results             (GkdSecretUnlock *
                                                                gint *n_results);
 
 void                gkd_secret_unlock_reset_results           (GkdSecretUnlock *self);
+
+void                gkd_secret_unlock_call_prompt             (GkdSecretUnlock *self,
+                                                               const gchar *window_id);
 
 gboolean            gkd_secret_unlock_with_secret             (GckObject *collection,
                                                                GkdSecretSecret *master,

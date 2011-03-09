@@ -59,6 +59,7 @@ struct _GkdSecretService {
 	GHashTable *clients;
 	gchar *match_rule;
 	GkdSecretObjects *objects;
+	GHashTable *aliases;
 };
 
 typedef struct _ServiceClient {
@@ -67,8 +68,7 @@ typedef struct _ServiceClient {
 	pid_t caller_pid;
 	CK_G_APPLICATION app;
 	GckSession *pkcs11_session;
-	GHashTable *sessions;
-	GHashTable *prompts;
+	GHashTable *dispatch;
 } ServiceClient;
 
 /* Forward declaration */
@@ -93,9 +93,11 @@ update_default (GkdSecretService *self, gboolean force)
 	const gchar *identifier;
 	gchar *path;
 
-	identifier = gkd_secret_objects_get_alias (self->objects, "default");
-	if (!force && identifier)
-		return;
+	if (!force) {
+		identifier = g_hash_table_lookup (self->aliases, "default");
+		if (identifier)
+			return;
+	}
 
 	path = default_path ();
 	if (g_file_get_contents (path, &contents, NULL, NULL)) {
@@ -107,8 +109,7 @@ update_default (GkdSecretService *self, gboolean force)
 	}
 	g_free (path);
 
-	gkd_secret_objects_set_alias (self->objects, "default", contents);
-	g_free (contents);
+	g_hash_table_replace (self->aliases, g_strdup ("default"), contents);
 }
 
 static void
@@ -118,7 +119,7 @@ store_default (GkdSecretService *self)
 	const gchar *identifier;
 	gchar *path;
 
-	identifier = gkd_secret_objects_get_alias (self->objects, "default");
+	identifier = g_hash_table_lookup (self->aliases, "default");
 	if (!identifier)
 		return;
 
@@ -172,8 +173,7 @@ free_client (gpointer data)
 	}
 
 	/* The sessions and prompts the client has open */
-	g_hash_table_destroy (client->sessions);
-	g_hash_table_destroy (client->prompts);
+	g_hash_table_destroy (client->dispatch);
 
 	g_free (client);
 }
@@ -237,8 +237,7 @@ on_get_connection_unix_process_id (DBusPendingCall *pending, gpointer user_data)
 		if (caller_pid != 0)
 			client->caller_exec = egg_unix_credentials_executable (caller_pid);
 		client->app.applicationData = client;
-		client->sessions = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, dispose_and_unref);
-		client->prompts = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, dispose_and_unref);
+		client->dispatch = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, dispose_and_unref);
 
 		g_hash_table_replace (self->clients, client->caller_peer, client);
 
@@ -371,10 +370,8 @@ static DBusMessage*
 service_method_open_session (GkdSecretService *self, DBusMessage *message)
 {
 	GkdSecretSession *session;
-	ServiceClient *client;
 	DBusMessage *reply = NULL;
 	const gchar *caller;
-	const gchar *path;
 
 	if (!dbus_message_has_signature (message, "sv"))
 		return NULL;
@@ -385,18 +382,11 @@ service_method_open_session (GkdSecretService *self, DBusMessage *message)
 	session = gkd_secret_session_new (self, caller);
 	reply = gkd_secret_session_handle_open (session, message);
 
-	if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN) {
-		/* Take ownership of the session */
-		client = g_hash_table_lookup (self->clients, caller);
-		g_return_val_if_fail (client, NULL);
-		path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (session));
-		g_return_val_if_fail (!g_hash_table_lookup (client->sessions, path), NULL);
-		g_hash_table_replace (client->sessions, (gpointer)path, session);
+	if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN)
+		gkd_secret_service_publish_dispatch (self, caller,
+		                                     GKD_SECRET_DISPATCH (session));
 
-	} else {
-		g_object_unref (session);
-	}
-
+	g_object_unref (session);
 	return reply;
 }
 
@@ -406,14 +396,14 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 	DBusMessageIter iter, array;
 	GckAttributes *attrs;
 	GkdSecretCreate *create;
-	ServiceClient *client;
 	DBusMessage *reply;
 	const gchar *path;
+	const gchar *alias;
 	const char *caller;
 	const gchar *coll;
 
 	/* Parse the incoming message */
-	if (!dbus_message_has_signature (message, "a{sv}"))
+	if (!dbus_message_has_signature (message, "a{sv}s"))
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
@@ -424,18 +414,31 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
 		                                      "Invalid properties");
 	}
+	if (!dbus_message_iter_next (&iter))
+		g_return_val_if_reached (NULL);
+	dbus_message_iter_get_basic (&iter, &alias);
+
+	/* Empty alias is no alias */
+	if (alias) {
+		if (!alias[0]) {
+			alias = NULL;
+		} else if (!g_str_equal (alias, "default")) {
+			gck_attributes_unref (attrs);
+			return dbus_message_new_error (message, DBUS_ERROR_NOT_SUPPORTED,
+			                               "Only the 'default' alias is supported");
+		}
+	}
 
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
 	/* Create the prompt object, for the password */
 	caller = dbus_message_get_sender (message);
-	create = gkd_secret_create_new (self, caller, attrs);
+	create = gkd_secret_create_new (self, caller, attrs, alias);
 	gck_attributes_unref (attrs);
 
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (create));
-	client = g_hash_table_lookup (self->clients, caller);
-	g_return_val_if_fail (client, NULL);
-	g_hash_table_replace (client->prompts, (gpointer)path, create);
+	gkd_secret_service_publish_dispatch (self, caller,
+	                                     GKD_SECRET_DISPATCH (create));
 
 	coll = "/";
 	reply = dbus_message_new_method_return (message);
@@ -444,6 +447,7 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 	                          DBUS_TYPE_OBJECT_PATH, &path,
 	                          DBUS_TYPE_INVALID);
 
+	g_object_unref (create);
 	return reply;
 }
 
@@ -461,7 +465,6 @@ static DBusMessage*
 service_method_unlock (GkdSecretService *self, DBusMessage *message)
 {
 	GkdSecretUnlock *unlock;
-	ServiceClient *client;
 	DBusMessage *reply;
 	const char *caller;
 	const gchar *path;
@@ -474,17 +477,16 @@ service_method_unlock (GkdSecretService *self, DBusMessage *message)
 		return NULL;
 
 	caller = dbus_message_get_sender (message);
-	unlock = gkd_secret_unlock_new (self, caller);
+	unlock = gkd_secret_unlock_new (self, caller, NULL);
 	for (i = 0; i < n_objpaths; ++i)
 		gkd_secret_unlock_queue (unlock, objpaths[i]);
 	dbus_free_string_array (objpaths);
 
 	/* So do we need to prompt? */
 	if (gkd_secret_unlock_have_queued (unlock)) {
-		client = g_hash_table_lookup (self->clients, caller);
-		g_return_val_if_fail (client, NULL);
+		gkd_secret_service_publish_dispatch (self, caller,
+		                                     GKD_SECRET_DISPATCH (unlock));
 		path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (unlock));
-		g_hash_table_replace (client->prompts, (gpointer)path, g_object_ref (unlock));
 
 	/* No need to prompt */
 	} else {
@@ -546,7 +548,6 @@ static DBusMessage*
 service_method_change_lock (GkdSecretService *self, DBusMessage *message)
 {
 	GkdSecretChange *change;
-	ServiceClient *client;
 	DBusMessage *reply;
 	const char *caller;
 	const gchar *path;
@@ -564,10 +565,9 @@ service_method_change_lock (GkdSecretService *self, DBusMessage *message)
 	g_object_unref (collection);
 
 	change = gkd_secret_change_new (self, caller, path);
-	client = g_hash_table_lookup (self->clients, caller);
-	g_return_val_if_fail (client, NULL);
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (change));
-	g_hash_table_replace (client->prompts, (gpointer)path, g_object_ref (change));
+	gkd_secret_service_publish_dispatch (self, caller,
+	                                     GKD_SECRET_DISPATCH (change));
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
@@ -588,9 +588,7 @@ service_method_read_alias (GkdSecretService *self, DBusMessage *message)
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias, DBUS_TYPE_INVALID))
 		return NULL;
 
-	update_default (self, FALSE);
-
-	identifier = gkd_secret_objects_get_alias (self->objects, alias);
+	identifier = gkd_secret_service_get_alias (self, alias);
 	if (identifier)
 		path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, -1);
 
@@ -647,10 +645,8 @@ service_method_set_alias (GkdSecretService *self, DBusMessage *message)
 
 	g_object_unref (collection);
 
-	gkd_secret_objects_set_alias (self->objects, alias, identifier);
+	gkd_secret_service_set_alias (self, alias, identifier);
 	g_free (identifier);
-
-	store_default (self);
 
 	return dbus_message_new_method_return (message);
 }
@@ -907,17 +903,10 @@ service_dispatch_message (GkdSecretService *self, DBusMessage *message)
 	path = dbus_message_get_path (message);
 	g_return_if_fail (path);
 
-	/* Dispatched to a session, find a session in this client */
-	if (object_path_has_prefix (path, SECRET_SESSION_PREFIX)) {
-		object = g_hash_table_lookup (client->sessions, path);
-		if (object == NULL)
-			reply = gkd_secret_error_no_such_object (message);
-		else
-			reply = gkd_secret_dispatch_message (GKD_SECRET_DISPATCH (object), message);
-
-	/* Dispatched to a prompt, find a prompt in this client */
-	} else if (object_path_has_prefix (path, SECRET_PROMPT_PREFIX)) {
-		object = g_hash_table_lookup (client->prompts, path);
+	/* Dispatched to a session or prompt */
+	if (object_path_has_prefix (path, SECRET_SESSION_PREFIX) ||
+	    object_path_has_prefix (path, SECRET_PROMPT_PREFIX)) {
+		object = g_hash_table_lookup (client->dispatch, path);
 		if (object == NULL)
 			reply = gkd_secret_error_no_such_object (message);
 		else
@@ -1064,6 +1053,7 @@ static void
 gkd_secret_service_init (GkdSecretService *self)
 {
 	self->clients = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, free_client);
+	self->aliases = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 }
 
 static void
@@ -1105,6 +1095,9 @@ gkd_secret_service_finalize (GObject *obj)
 	g_assert (g_hash_table_size (self->clients) == 0);
 	g_hash_table_destroy (self->clients);
 	self->clients = NULL;
+
+	g_hash_table_destroy (self->aliases);
+	self->aliases = NULL;
 
 	G_OBJECT_CLASS (gkd_secret_service_parent_class)->finalize (obj);
 }
@@ -1251,6 +1244,7 @@ gkd_secret_service_lookup_session (GkdSecretService *self, const gchar *path,
                                    const gchar *caller)
 {
 	ServiceClient *client;
+	gpointer object;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (path, NULL);
@@ -1259,7 +1253,11 @@ gkd_secret_service_lookup_session (GkdSecretService *self, const gchar *path,
 	client = g_hash_table_lookup (self->clients, caller);
 	g_return_val_if_fail (client, NULL);
 
-	return g_hash_table_lookup (client->sessions, path);
+	object = g_hash_table_lookup (client->dispatch, path);
+	if (object == NULL || !GKD_SECRET_IS_SESSION (object))
+		return NULL;
+
+	return GKD_SECRET_SESSION (object);
 }
 
 void
@@ -1277,5 +1275,53 @@ gkd_secret_service_close_session (GkdSecretService *self, GkdSecretSession *sess
 	g_return_if_fail (client);
 
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (session));
-	g_hash_table_remove (client->sessions, path);
+	g_hash_table_remove (client->dispatch, path);
+}
+
+const gchar*
+gkd_secret_service_get_alias (GkdSecretService *self, const gchar *alias)
+{
+	const gchar *identifier;
+
+	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (alias, NULL);
+
+	identifier =  g_hash_table_lookup (self->aliases, alias);
+	if (!identifier && g_str_equal (alias, "default")) {
+		update_default (self, TRUE);
+		identifier = g_hash_table_lookup (self->aliases, alias);
+	}
+	return identifier;
+}
+
+void
+gkd_secret_service_set_alias (GkdSecretService *self, const gchar *alias,
+                              const gchar *identifier)
+{
+	g_return_if_fail (GKD_SECRET_IS_SERVICE (self));
+	g_return_if_fail (alias);
+
+	g_hash_table_replace (self->aliases, g_strdup (alias), g_strdup (identifier));
+
+	if (g_str_equal (alias, "default"))
+		store_default (self);
+}
+
+void
+gkd_secret_service_publish_dispatch (GkdSecretService *self, const gchar *caller,
+                                     GkdSecretDispatch *object)
+{
+	ServiceClient *client;
+	const gchar *path;
+
+	g_return_if_fail (GKD_SECRET_IS_SERVICE (self));
+	g_return_if_fail (caller);
+	g_return_if_fail (GKD_SECRET_IS_DISPATCH (object));
+
+	/* Take ownership of the session */
+	client = g_hash_table_lookup (self->clients, caller);
+	g_return_if_fail (client);
+	path = gkd_secret_dispatch_get_object_path (object);
+	g_return_if_fail (!g_hash_table_lookup (client->dispatch, path));
+	g_hash_table_replace (client->dispatch, (gpointer)path, g_object_ref (object));
 }

@@ -22,12 +22,15 @@
 #include "config.h"
 
 #include "gkd-secret-create.h"
+#include "gkd-secret-dispatch.h"
 #include "gkd-secret-error.h"
+#include "gkd-secret-objects.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
+#include "gkd-secret-unlock.h"
 #include "gkd-secret-util.h"
 
 #include "egg/egg-error.h"
@@ -43,12 +46,14 @@
 
 enum {
 	PROP_0,
-	PROP_PKCS11_ATTRIBUTES
+	PROP_PKCS11_ATTRIBUTES,
+	PROP_ALIAS
 };
 
 struct _GkdSecretCreate {
 	GkdSecretPrompt parent;
 	GckAttributes *pkcs11_attrs;
+	gchar *alias;
 	gchar *result_path;
 };
 
@@ -93,6 +98,8 @@ static gboolean
 create_collection_with_secret (GkdSecretCreate *self, GkdSecretSecret *master)
 {
 	DBusError derr = DBUS_ERROR_INIT;
+	GkdSecretService *service;
+	gchar *identifier;
 
 	g_assert (GKD_SECRET_IS_CREATE (self));
 	g_assert (master);
@@ -106,7 +113,82 @@ create_collection_with_secret (GkdSecretCreate *self, GkdSecretSecret *master)
 		return FALSE;
 	}
 
+	if (self->alias) {
+		if (!gkd_secret_util_parse_path (self->result_path, &identifier, NULL))
+			g_assert_not_reached ();
+		service = gkd_secret_prompt_get_service (GKD_SECRET_PROMPT (self));
+		gkd_secret_service_set_alias (service, self->alias, identifier);
+		g_free (identifier);
+	}
+
 	return TRUE;
+}
+
+static gboolean
+locate_alias_collection_if_exists (GkdSecretCreate *self)
+{
+	GkdSecretService *service;
+	GkdSecretObjects *objects;
+	GckObject *collection;
+	const gchar *identifier;
+	const gchar *caller;
+	gchar *path;
+
+	if (!self->alias)
+		return FALSE;
+
+	g_assert (!self->result_path);
+
+	service = gkd_secret_prompt_get_service (GKD_SECRET_PROMPT (self));
+	caller = gkd_secret_prompt_get_caller (GKD_SECRET_PROMPT (self));
+	objects = gkd_secret_prompt_get_objects (GKD_SECRET_PROMPT (self));
+
+	identifier = gkd_secret_service_get_alias (service, self->alias);
+	if (!identifier)
+		return FALSE;
+
+	/* Make sure it actually exists */
+	path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, -1);
+	collection = gkd_secret_objects_lookup_collection (objects, caller, path);
+
+	if (collection) {
+		self->result_path = path;
+		g_object_unref (collection);
+		return TRUE;
+	} else {
+		g_free (path);
+		return FALSE;
+	}
+}
+
+static void
+unlock_or_complete_this_prompt (GkdSecretCreate *self)
+{
+	GkdSecretUnlock *unlock;
+	GkdSecretPrompt *prompt;
+
+	g_object_ref (self);
+	prompt = GKD_SECRET_PROMPT (self);
+
+	unlock = gkd_secret_unlock_new (gkd_secret_prompt_get_service (prompt),
+	                                gkd_secret_prompt_get_caller (prompt),
+	                                gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (self)));
+	gkd_secret_unlock_queue (unlock, self->result_path);
+
+	/*
+	 * If any need to be unlocked, then replace this prompt
+	 * object with an unlock prompt object, and call the prompt
+	 * method.
+	 */
+	if (gkd_secret_unlock_have_queued (unlock)) {
+		gkd_secret_service_publish_dispatch (gkd_secret_prompt_get_service (prompt),
+		                                     gkd_secret_prompt_get_caller (prompt),
+		                                     GKD_SECRET_DISPATCH (unlock));
+		gkd_secret_unlock_call_prompt (unlock, gkd_secret_prompt_get_window_id (prompt));
+	}
+
+	g_object_unref (unlock);
+	g_object_unref (self);
 }
 
 /* -----------------------------------------------------------------------------
@@ -120,7 +202,15 @@ gkd_secret_create_prompt_ready (GkdSecretPrompt *prompt)
 	GkdSecretSecret *master;
 
 	if (!gku_prompt_has_response (GKU_PROMPT (prompt))) {
-		prepare_create_prompt (self);
+
+		/* Does the alias exist? */
+		if (locate_alias_collection_if_exists (self))
+			unlock_or_complete_this_prompt (self);
+
+		/* Otherwise we're going to prompt */
+		else
+			prepare_create_prompt (self);
+
 		return;
 	}
 
@@ -161,10 +251,8 @@ gkd_secret_create_finalize (GObject *obj)
 	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
 
 	gck_attributes_unref (self->pkcs11_attrs);
-	self->pkcs11_attrs = NULL;
-
 	g_free (self->result_path);
-	self->result_path = NULL;
+	g_free (self->alias);
 
 	G_OBJECT_CLASS (gkd_secret_create_parent_class)->finalize (obj);
 }
@@ -181,6 +269,10 @@ gkd_secret_create_set_property (GObject *obj, guint prop_id, const GValue *value
 		self->pkcs11_attrs = g_value_dup_boxed (value);
 		g_return_if_fail (self->pkcs11_attrs);
 		break;
+	case PROP_ALIAS:
+		g_return_if_fail (!self->alias);
+		self->alias = g_value_dup_string (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -196,6 +288,9 @@ gkd_secret_create_get_property (GObject *obj, guint prop_id, GValue *value,
 	switch (prop_id) {
 	case PROP_PKCS11_ATTRIBUTES:
 		g_value_set_boxed (value, self->pkcs11_attrs);
+		break;
+	case PROP_ALIAS:
+		g_value_set_string (value, self->alias);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -219,6 +314,10 @@ gkd_secret_create_class_init (GkdSecretCreateClass *klass)
 	g_object_class_install_property (gobject_class, PROP_PKCS11_ATTRIBUTES,
 		g_param_spec_boxed ("pkcs11-attributes", "PKCS11 Attributes", "PKCS11 Attributes",
 		                     GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_ALIAS,
+		g_param_spec_string ("alias", "Alias", "Collection Alias",
+		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -227,12 +326,13 @@ gkd_secret_create_class_init (GkdSecretCreateClass *klass)
 
 GkdSecretCreate*
 gkd_secret_create_new (GkdSecretService *service, const gchar *caller,
-                       GckAttributes *attrs)
+                       GckAttributes *attrs, const gchar *alias)
 {
 	return g_object_new (GKD_SECRET_TYPE_CREATE,
 	                     "service", service,
 	                     "caller", caller,
 	                     "pkcs11-attributes", attrs,
+	                     "alias", alias,
 	                     NULL);
 }
 

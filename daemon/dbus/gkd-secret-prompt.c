@@ -48,7 +48,6 @@ enum {
 #define PROMPT_IKE_GROUP  "ietf-ike-grp-modp-1536"
 
 struct _GkdSecretPromptPrivate {
-	GkuPrompt parent;
 	gchar *object_path;
 	GkdSecretService *service;
 	GkdSecretSession *session;
@@ -443,12 +442,27 @@ gkd_secret_prompt_get_caller (GkdSecretPrompt *self)
 	return self->pv->caller;
 }
 
+const gchar*
+gkd_secret_prompt_get_window_id (GkdSecretPrompt *self)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+	return self->pv->window_id;
+}
+
 GckSession*
 gkd_secret_prompt_get_pkcs11_session (GkdSecretPrompt *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
 	g_return_val_if_fail (self->pv->service, NULL);
 	return gkd_secret_service_get_pkcs11_session (self->pv->service, self->pv->caller);
+}
+
+GkdSecretService*
+gkd_secret_prompt_get_service (GkdSecretPrompt *self)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+	g_return_val_if_fail (self->pv->service, NULL);
+	return self->pv->service;
 }
 
 GkdSecretObjects*
