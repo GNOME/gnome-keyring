@@ -380,7 +380,7 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointe
 	/* Parse the ASN1 data */
 	res = gkm_data_der_read_certificate (copy, n_data, &asn1);
 	if (res != GKM_DATA_SUCCESS) {
-		g_warning ("couldn't parse certificate data");
+		g_message ("couldn't parse certificate data");
 		g_free (copy);
 		return FALSE;
 	}
