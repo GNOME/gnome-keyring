@@ -44,8 +44,15 @@ struct _GkmSecretKey {
 
 struct _GkmSecretKeyClass {
 	GkmObjectClass parent_class;
+
+	/* virtual methods  --------------------------------------------------------- */
+
+	gconstpointer (*get_key_value) (GkmSecretKey *key, gsize *n_value);
 };
 
 GType                     gkm_secret_key_get_type           (void);
+
+gconstpointer             gkm_secret_key_get_key_value      (GkmSecretKey *self,
+                                                             gsize *n_value);
 
 #endif /* __GKM_SECRET_KEY_H__ */

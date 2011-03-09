@@ -28,6 +28,7 @@
 #include "egg/egg-entry-buffer.h"
 #include "egg/egg-error.h"
 #include "egg/egg-hex.h"
+#include "egg/egg-hkdf.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
@@ -693,6 +694,8 @@ negotiate_transport_crypto (void)
 	gcry_mpi_t base, prime, peer;
 	gcry_mpi_t key, pub, priv;
 	gboolean ret = FALSE;
+	gpointer ikm;
+	gsize n_ikm;
 
 	g_assert (!the_key);
 	base = prime = peer = NULL;
@@ -709,9 +712,14 @@ negotiate_transport_crypto (void)
 			gku_prompt_util_encode_mpi (output_data, "transport", "public", pub);
 
 			/* Build up a key we can use */
-			n_the_key = 16;
-			the_key = egg_dh_gen_secret (peer, priv, prime, n_the_key);
-			ret = (the_key != NULL);
+			ikm = egg_dh_gen_secret (peer, priv, prime, &n_ikm);
+			if (ikm != NULL) {
+				n_the_key = 16;
+				the_key = egg_secure_alloc (n_the_key);
+				if (!egg_hkdf_perform ("sha256", ikm, n_ikm, NULL, 0, NULL, 0, the_key, n_the_key))
+					g_return_val_if_reached (FALSE);
+				ret = TRUE;
+			}
 		}
 	}
 

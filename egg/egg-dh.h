@@ -45,6 +45,6 @@ gboolean   egg_dh_gen_pair                                    (gcry_mpi_t prime,
 gpointer   egg_dh_gen_secret                                  (gcry_mpi_t peer,
                                                                gcry_mpi_t priv,
                                                                gcry_mpi_t prime,
-                                                               gsize bytes);
+                                                               gsize *bytes);
 
 #endif /* EGG_DH_H_ */

@@ -31,6 +31,7 @@ typedef struct _GkmDhKey GkmDhKey;
 typedef struct _GkmDhPrivateKey GkmDhPrivateKey;
 typedef struct _GkmDhPublicKey GkmDhPublicKey;
 typedef struct _GkmFactory GkmFactory;
+typedef struct _GkmGenericKey GkmGenericKey;
 typedef struct _GkmManager GkmManager;
 typedef struct _GkmModule GkmModule;
 typedef struct _GkmNullKey GkmNullKey;

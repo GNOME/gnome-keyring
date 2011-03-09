@@ -30,6 +30,7 @@
 #include "gkm-certificate.h"
 #include "gkm-credential.h"
 #include "gkm-factory.h"
+#include "gkm-generic-key.h"
 #include "gkm-manager.h"
 #include "gkm-memory-store.h"
 #include "gkm-module.h"
@@ -160,9 +161,15 @@ static const MechanismAndInfo mechanism_list[] = {
 
 	/*
 	 * CKM_DH_PKCS_DERIVE
-	 * For DH derivation the min and max are sizes of prime in bits.
+	 * For DH derivation the min and max are sizes of output key in bytes.
 	 */
-	{ CKM_DH_PKCS_DERIVE, { 768, 8192, CKF_DERIVE } },
+	{ CKM_DH_PKCS_DERIVE, { 1, 255, CKF_DERIVE } },
+
+	/*
+	 * CKM_G_HKDF_DERIVE
+	 * For HKDF derivation the min and max are sizes of prime in bits.
+	 */
+	{ CKM_G_HKDF_SHA256_DERIVE, { 768, 8192, CKF_DERIVE } },
 
 	/*
 	 * CKM_AES_CBC_PAD
@@ -598,6 +605,7 @@ gkm_module_init (GkmModule *self)
 	gkm_module_register_factory (self, GKM_FACTORY_AES_KEY);
 	gkm_module_register_factory (self, GKM_FACTORY_CERTIFICATE);
 	gkm_module_register_factory (self, GKM_FACTORY_CREDENTIAL);
+	gkm_module_register_factory (self, GKM_FACTORY_GENERIC_KEY);
 	gkm_module_register_factory (self, GKM_FACTORY_NULL_KEY);
 	gkm_module_register_factory (self, GKM_FACTORY_DH_PRIVATE_KEY);
 	gkm_module_register_factory (self, GKM_FACTORY_PRIVATE_XSA_KEY);
