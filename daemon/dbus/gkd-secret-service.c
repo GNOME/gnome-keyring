@@ -623,27 +623,35 @@ service_method_set_alias (GkdSecretService *self, DBusMessage *message)
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &alias,
 	                            DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
 		return NULL;
+
 	g_return_val_if_fail (alias, NULL);
+	g_return_val_if_fail (path, NULL);
 
 	if (!g_str_equal (alias, "default"))
 		return dbus_message_new_error (message, DBUS_ERROR_NOT_SUPPORTED,
 		                               "Only the 'default' alias is supported");
 
+	/* No default collection */
+	if (g_str_equal (path, "/")) {
+		identifier = g_strdup ("");
+
 	/* Find a collection with that path */
-	if (!object_path_has_prefix (path, SECRET_COLLECTION_PREFIX) ||
-	    !gkd_secret_util_parse_path (path, &identifier, NULL))
-		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
-		                               "Invalid collection object path");
+	} else {
+		if (!object_path_has_prefix (path, SECRET_COLLECTION_PREFIX) ||
+		    !gkd_secret_util_parse_path (path, &identifier, NULL))
+			return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
+						       "Invalid collection object path");
 
-	collection = gkd_secret_objects_lookup_collection (self->objects,
-	                                                   dbus_message_get_sender (message), path);
-	if (collection == NULL) {
-		g_free (identifier);
-		return dbus_message_new_error (message, SECRET_ERROR_NO_SUCH_OBJECT,
-		                               "No such collection exists");
+		collection = gkd_secret_objects_lookup_collection (self->objects,
+								   dbus_message_get_sender (message), path);
+		if (collection == NULL) {
+			g_free (identifier);
+			return dbus_message_new_error (message, SECRET_ERROR_NO_SUCH_OBJECT,
+						       "No such collection exists");
+		}
+
+		g_object_unref (collection);
 	}
-
-	g_object_unref (collection);
 
 	gkd_secret_service_set_alias (self, alias, identifier);
 	g_free (identifier);
