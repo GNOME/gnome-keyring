@@ -3,20 +3,20 @@
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Matic Žgur <mr.zgur@gmail.com>, 2006.
-# Matej Urbančič <mateju@svn.gnome.org>, 2005 - 2010.
+# Matej Urbančič <mateju@svn.gnome.org>, 2005 - 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2011-01-15 16:44+0000\n"
-"PO-Revision-Date: 2011-01-15 21:03+0100\n"
+"POT-Creation-Date: 2011-03-09 09:51+0000\n"
+"PO-Revision-Date: 2011-03-09 13:16+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
@@ -24,7 +24,7 @@ msgstr ""
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78
-#: ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -50,15 +50,15 @@ msgstr "Program želi spremeniti geslo za zbirko ključev '%s'. Izbrati je treba
 msgid "The original password was incorrect"
 msgstr "Staro geslo je napačno."
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Novo geslo za zbirko ključev"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Izberite geslo za novo zbirko ključev"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
 msgstr "Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati je treba geslo za novo zbirko."
@@ -530,19 +530,23 @@ msgstr "Ni mogoče razčleniti neveljavnih ali pokvarjenih podatkov."
 msgid "The data is locked"
 msgstr "Podatki so zaklenjeni"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Ni mogoče najti mesta za shranjevanje uvoženih potrdil"
 
-#: ../gck/gck-uri.c:78
-#: ../gck/gck-uri.c:135
-#: ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124
+#: ../gck/gck-uri.c:181
+#: ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "Skladnja naslova URI je nepravilna. Neveljavno je polje kodiranja '%s',"
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "Naslov URI ni oblikovan z ustrezno shemo 'pkcs11'."
 
@@ -999,39 +1003,47 @@ msgstr "Spremeni geslo varno shranjevanje"
 msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "Za spreminjanje gesla za uporabnika '%s', je zahtevano prvotno in novo geslo"
 
-#: ../tool/gkr-tool.c:101
+#: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "uporaba: gnome-keyring ukaz [možnosti]\n"
 
-#: ../tool/gkr-tool.c:103
+#: ../tool/gkr-tool.c:104
 msgid "commands: "
 msgstr "ukazi:"
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:107
+#: ../tool/gkr-tool.c:108
 msgid "          "
 msgstr "             "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Ali naj bodo shranjena gesla nešifrirana?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop to takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Uporabi nevarno shranjevanje"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Gesli se ne skladata."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Geslo ne sme biti prazno."
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Dostop do zbirke ključev"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Varovan dostop do gesel in ostalih skritih podatkov"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1063,52 +1075,76 @@ msgstr "_Geslo:"
 
 #~ msgid "Insufficient memory available on device"
 #~ msgstr "Ni zadostnega pomnilnika na napravi"
+
 #~ msgid "The key is different from before"
 #~ msgstr "Ključ je drugačen, kot je bil prej"
+
 #~ msgid "Cannot include the key in digest"
 #~ msgstr "V povzetku ni mogoče vključiti ključa"
+
 #~ msgid "Too many users of different types logged in"
 #~ msgstr "Prijavljenih je preveč različnih uporabnikov"
+
 #~ msgid "Email"
 #~ msgstr "Elektronski naslov"
+
 #~ msgid "<i>Not Part of Certificate</i>"
 #~ msgstr "<i>Ni del potrdila</i>"
+
 #~ msgid "<i>unknown</i>"
 #~ msgstr "<i>neznano</i>"
+
 #~ msgid "<Not Part of Certificate>"
 #~ msgstr "<Ni del potrdila>"
+
 #~ msgid "<b>Fingerprints</b>"
 #~ msgstr "<b>Prstni odtisi</b>"
+
 #~ msgid "<b>Issued By</b>"
 #~ msgstr "<b>Izdajatelj</b>"
+
 #~ msgid "<b>Issued To</b>"
 #~ msgstr "<b>Izdano</b>"
+
 #~ msgid "<b>This certificate has been verified for the following uses:</b>"
 #~ msgstr "<b>To potrdilo je bilo preverjeno za naslednje vrste uporabe:</b>"
+
 #~ msgid "<b>Validity</b>"
 #~ msgstr "<b>Veljavnost</b>"
+
 #~ msgid "Common Name (CN)"
 #~ msgstr "Splošno ime (CN)"
+
 #~ msgid "Email Recipient Certificate"
 #~ msgstr "Potrdilo prejemnika elektronske pošte"
+
 #~ msgid "Email Signer Certificate"
 #~ msgstr "Potrdilo podpisnika elektronske pošte"
+
 #~ msgid "Issued On"
 #~ msgstr "Izdan dne"
+
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "Prstni odtis MD5"
+
 #~ msgid "Organization (O)"
 #~ msgstr "Organizacija (O)"
+
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "Organizacijska enota (OU)"
+
 #~ msgid "SHA1 Fingerprint"
 #~ msgstr "Prstni odtis SHA1"
+
 #~ msgid "SSL Client Certificate"
 #~ msgstr "Potrdilo odjemalca SSL"
+
 #~ msgid "SSL Server Certificate"
 #~ msgstr "Potrdilo strežnika SSL"
+
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr "<span size='large' weight='bold'>Uvoz potrdil in ključev</span>"
+
 #~ msgid ""
 #~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
 #~ "only takes effect during startup with gnome-session, (ie: when the user "
@@ -1119,6 +1155,7 @@ msgstr "_Geslo:"
 #~ "Uporablja se le med zagonom programa gnome-session, (primer: ko se "
 #~ "uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom "
 #~ "preklicati."
+
 #~ msgid ""
 #~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
 #~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
@@ -1129,6 +1166,7 @@ msgstr "_Geslo:"
 #~ "Uporablja se le ob zagonu ozadnjega programa gnome-keyring-daemon, "
 #~ "(primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi "
 #~ "argumenti med zagonom preklicati."
+
 #~ msgid ""
 #~ "This option enables the secret service component in the gnome-keyring "
 #~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
@@ -1139,10 +1177,12 @@ msgstr "_Geslo:"
 #~ "Uporablja se le med zagonom programa gnome-session, (primer: ko se "
 #~ "uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom "
 #~ "preklicati."
+
 #~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
 #~ msgstr "Ali je gnome-keyring PKCS#11 enota omogočena."
+
 #~ msgid "Whether the gnome-keyring SSH agent is enabled."
 #~ msgstr "Ali je gnome-keyring SSH agent omogočen."
+
 #~ msgid "Whether the gnome-keyring secret service is enabled."
 #~ msgstr "Ali je skrita storitev gnome-keyring omogočena."
-
