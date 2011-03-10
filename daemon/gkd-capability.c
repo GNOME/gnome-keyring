@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gkd-capability.c - the security-critical initial phase of the daemon
  *
- * Copyright (C) 2010 Yaron Sheffer
+ * Copyright (C) 2011 Steve Grubb
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,102 +18,64 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.
  *
- * Author: Yaron Sheffer <yaronf@gmx.com>
- * Author: Stef Walter <stef@thewalter.net>
+ * Author: Steve Grubb <sgrubb@redhat.com>
  */
 
 #include "config.h"
 
 #include "gkd-capability.h"
 
-#ifdef HAVE_LIBCAP
-#include <sys/capability.h>
+#ifdef HAVE_LIBCAPNG
+#include <cap-ng.h>
 #endif
 
 #include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <stdlib.h>
 
-/* Security note: this portion of the code is extremely sensitive.
- * DO NOT add any other include files.
- */
+#ifdef HAVE_LIBCAPNG
 
-/*
- * No logging, no gettext
- */
+/* No logging, no gettext */
 static void
 early_error (const char *err_string)
 {
-	fprintf (stderr, "gnome-keyring-daemon: %s\n", err_string);
+	fprintf (stderr, "gnome-keyring-daemon: %s, aborting\n", err_string);
+	exit (1);
 }
 
-static void
-drop_privileges (void)
-{
-	uid_t orig_uid;
-	gid_t orig_gid;
-
-	orig_uid = getuid ();
-	orig_gid = getgid ();
-
-	/* This is permanent, you cannot go back to root */
-	setgid (orig_gid);
-	setuid (orig_uid);
-
-	/*
-	 * Check that the switch was ok
-	 * We do not allow programs to run without the drop being
-	 * successful as this would possibly run the program
-	 * using root-privs, when that is not what we want
-	 */
-	if ((getegid () != orig_gid) || (geteuid () != orig_uid)) {
-		early_error ("failed to drop privileges, aborting");
-		exit (1);
-	}
-}
+#endif /* HAVE_LIPCAPNG */
 
 /*
- * Try to obtain the CAP_IPC_LOCK Linux capability.
- * Then, whether or not this is successful, drop root
- * privileges to run as the invoking user. The application is aborted
- * if for any reason we are unable to drop privileges. Note: even gettext
- * is unavailable!
+ * This program needs the CAP_IPC_LOCK posix capability.
+ * We want to allow either setuid root or file system based capabilies
+ * to work. If file system based capabilities, this is a no-op unless
+ * the root user is running the program. In that case we just drop
+ * capabilities down to IPC_LOCK. If we are setuid root, then change to the
+ * invoking user retaining just the IPC_LOCK capability. The application
+ * is aborted if for any reason we are unable to drop privileges.
+ * Note: even gettext is unavailable!
  */
 void
 gkd_capability_obtain_capability_and_drop_privileges (void)
 {
-#ifdef HAVE_LIBCAP
-	cap_t caps;
-	cap_value_t cap_list[1];
-
-	caps = cap_get_proc ();
-	if (caps == NULL) {
-		early_error ("capability state cannot be allocated");
-		goto drop;
+#ifdef HAVE_LIBCAPNG
+	capng_get_caps_process ();
+	switch (capng_have_capabilities (CAPNG_SELECT_CAPS))
+	{
+		case CAPNG_FULL:
+			/* We are either setuid root or the root user */
+			capng_clear (CAPNG_SELECT_CAPS);
+			capng_update (CAPNG_ADD,
+					CAPNG_EFFECTIVE|CAPNG_PERMITTED,
+					CAP_IPC_LOCK);
+			if (capng_change_id (getuid (), getgid (), 0))
+				early_error ("failed dropping capabilities");
+			break;
+		case CAPNG_FAIL:
+		case CAPNG_NONE:
+			early_error ("error getting process capabilities");
+			break;
+		case CAPNG_PARTIAL: /* File system based capabilities */
+                        break;
 	}
-
-	cap_list[0] = CAP_IPC_LOCK;
-	if (cap_set_flag (caps, CAP_EFFECTIVE, 1, cap_list, CAP_SET) == -1) {
-		early_error ("error when manipulating capability sets");
-		goto drop;
-	}
-
-	if (cap_set_proc (caps) == -1) {
-		/* Only warn when it's root that's running */
-		if (getuid () == 0)
-			early_error ("cannot apply capabilities to process");
-		goto drop;
-	}
-
-	if (cap_free (caps) == -1) {
-		early_error ("failed to free capability structure");
-		goto drop;
-	}
-drop:
-
-#endif
-	/* Now finally drop the suid by becoming the invoking user */
-	if (geteuid () != getuid() || getegid () != getgid ())
-		drop_privileges ();
+#endif /* HAVE_LIBCAPNG */
 }
