@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-16 22:20+0200\n"
-"PO-Revision-Date: 2011-01-17 09:41+0200\n"
+"POT-Creation-Date: 2011-03-10 18:32+0200\n"
+"PO-Revision-Date: 2011-03-10 18:33+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -51,15 +51,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "הססמה המקורית שגויה"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "ססמה עבור קבוצת ססמאות חדשה"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "יש לבחור ססמה עבור קבוצת הססמאות החדשה"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -171,7 +171,7 @@ msgstr "שם נפוץ"
 msgid "Surname"
 msgstr "שם משפחה"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:436
 msgid "Serial Number"
 msgstr "מספר סידורי"
 
@@ -261,109 +261,113 @@ msgstr "שגיאה בלתי צפויה בעת ש־select()‎ קרא נתוני�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "שגיאה בלתי צפויה ב־waitpid()‎‏ (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gcr/gcr-certificate-renderer.c:83 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "תעודה"
 
-#: ../gcr/gcr-certificate-renderer.c:107
+#: ../gcr/gcr-certificate-renderer.c:108
 msgid "Extension"
 msgstr "הרחבה"
 
-#: ../gcr/gcr-certificate-renderer.c:112
+#: ../gcr/gcr-certificate-renderer.c:113
 msgid "Identifier"
 msgstr "מזהה"
 
-#: ../gcr/gcr-certificate-renderer.c:120
+#: ../gcr/gcr-certificate-renderer.c:121
 msgid "Value"
 msgstr "ערך"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Critical"
 msgstr "קריטי"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Yes"
 msgstr "כן"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "No"
 msgstr "לא"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:198
+msgid "Couldn't export the certificate."
+msgstr "לא ניתן לייצא את האישור."
+
+#: ../gcr/gcr-certificate-renderer.c:396
 msgid "Identity"
 msgstr "זהות"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:400
 msgid "Verified by"
 msgstr "אומת על ידי"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:407
 msgid "Expires"
 msgstr "תפוגה"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:417
 msgid "Subject Name"
 msgstr "שם מקבל התעודה"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:421
 msgid "Issuer Name"
 msgstr "שם החותם"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:425
 msgid "Issued Certificate"
 msgstr "תעודה שהונפקה"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:430
 msgid "Version"
 msgstr "גרסה"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:444
 msgid "Not Valid Before"
 msgstr "לא תקף לפני"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:449
 msgid "Not Valid After"
 msgstr "לא תקף לאחר"
 
-#: ../gcr/gcr-certificate-renderer.c:401
+#: ../gcr/gcr-certificate-renderer.c:458
 msgid "Signature Algorithm"
 msgstr "אלגוריתם החתימה"
 
-#: ../gcr/gcr-certificate-renderer.c:406
+#: ../gcr/gcr-certificate-renderer.c:463
 msgid "Signature Parameters"
 msgstr "הפרמטרים של החתימה"
 
-#: ../gcr/gcr-certificate-renderer.c:413
+#: ../gcr/gcr-certificate-renderer.c:470
 msgid "Signature"
 msgstr "חתימה"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:475
 msgid "Public Key Info"
 msgstr "נתוני מפתח ציבואי"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:480
 msgid "Key Algorithm"
 msgstr "אלגוריתם המפתח"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:486
 msgid "Key Parameters"
 msgstr "הפרמטרים של המפתח"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:493
 msgid "Key Size"
 msgstr "גודל המפתח"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
+#: ../gcr/gcr-certificate-renderer.c:501 ../gcr/gcr-key-renderer.c:271
 #: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "מפתח ציבורי"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
+#: ../gcr/gcr-certificate-renderer.c:506
 msgid "Fingerprints"
 msgstr "טביעות אצבע"
 
@@ -521,17 +525,21 @@ msgstr "לא ניתן לנתח נתונים שגויים או פגומים."
 msgid "The data is locked"
 msgstr "הנתונים נעולים"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "לא ניתן למצוא את המיקום לאחסון האישור המוצמד"
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "תחביר הכתובת שגוי. הקידוד של השדה '%s' אינו תקני."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "הכתובת אינה במבנה 'pkcs11'."
 
@@ -997,25 +1005,25 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "כדי לשנות את הססמה עבור  '%s', נדרשות הססמאות המקורית והחדשה"
 
-#: ../tool/gkr-tool.c:101
+#: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "usage: gnome-keyring command [options]\n"
 
-#: ../tool/gkr-tool.c:103
+#: ../tool/gkr-tool.c:104
 msgid "commands: "
 msgstr "commands: "
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:107
+#: ../tool/gkr-tool.c:108
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1024,17 +1032,25 @@ msgstr ""
 "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל "
 "בעל גישה לקבצים שלך."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "שימוש באחסון בלתי מאובטח"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "הססמאות אינן תואמות."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "הססמה אינה יכולה להיות ריקה"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "גישה לקבוצת המפתחות"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "שחרור הגישה לססמאות ולסודות אחרים"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
