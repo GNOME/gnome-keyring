@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-22 15:50+0100\n"
-"PO-Revision-Date: 2011-01-22 15:51+0100\n"
+"POT-Creation-Date: 2011-03-11 08:14+0100\n"
+"PO-Revision-Date: 2011-03-11 08:14+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78
-#: ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -44,15 +44,15 @@ msgstr "Ett okänt program vill ändra lösenordet för nyckelringen \"%s\". Vä
 msgid "The original password was incorrect"
 msgstr "Det ursprungliga lösenordet var felaktigt"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Lösenord för ny nyckelring"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Välj lösenord för den nya nyckelringen"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
 msgstr "Ett okänt program vill skapa en ny nyckelring med namnet \"%s\". Välj ett lösenord som du vill använda för den."
@@ -163,7 +163,7 @@ msgid "Surname"
 msgstr "Förnamn"
 
 #: ../egg/egg-oid.c:69
-#: ../gcr/gcr-certificate-renderer.c:379
+#: ../gcr/gcr-certificate-renderer.c:436
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -255,111 +255,115 @@ msgstr "Oväntat fel i select() vid läsning av data från en barnprocess (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Oväntat fel i waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82
+#: ../gcr/gcr-certificate-renderer.c:83
 #: ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Certifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:107
+#: ../gcr/gcr-certificate-renderer.c:108
 msgid "Extension"
 msgstr "Utökning"
 
-#: ../gcr/gcr-certificate-renderer.c:112
+#: ../gcr/gcr-certificate-renderer.c:113
 msgid "Identifier"
 msgstr "Identifierare"
 
-#: ../gcr/gcr-certificate-renderer.c:120
+#: ../gcr/gcr-certificate-renderer.c:121
 msgid "Value"
 msgstr "Värde"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Critical"
 msgstr "Kritiskt"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Yes"
 msgstr "Ja"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "No"
 msgstr "Nej"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:198
+msgid "Couldn't export the certificate."
+msgstr "Kunde inte exportera certifikatet."
+
+#: ../gcr/gcr-certificate-renderer.c:396
 msgid "Identity"
 msgstr "Identitet"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:400
 msgid "Verified by"
 msgstr "Verifierat av"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:407
 msgid "Expires"
 msgstr "Går ut"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:417
 msgid "Subject Name"
 msgstr "Subject-namn"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:421
 msgid "Issuer Name"
 msgstr "Utfärdarens namn"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:425
 msgid "Issued Certificate"
 msgstr "Utfärdat certifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:430
 msgid "Version"
 msgstr "Version"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:444
 msgid "Not Valid Before"
 msgstr "Inte giltigt före"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:449
 msgid "Not Valid After"
 msgstr "Inte giltigt efter"
 
-#: ../gcr/gcr-certificate-renderer.c:401
+#: ../gcr/gcr-certificate-renderer.c:458
 msgid "Signature Algorithm"
 msgstr "Signaturalgoritm"
 
-#: ../gcr/gcr-certificate-renderer.c:406
+#: ../gcr/gcr-certificate-renderer.c:463
 msgid "Signature Parameters"
 msgstr "Signaturparametrar"
 
-#: ../gcr/gcr-certificate-renderer.c:413
+#: ../gcr/gcr-certificate-renderer.c:470
 msgid "Signature"
 msgstr "Signatur"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:475
 msgid "Public Key Info"
 msgstr "Information om publik nyckel"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:480
 msgid "Key Algorithm"
 msgstr "Nyckelalgoritm"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:486
 msgid "Key Parameters"
 msgstr "Nyckelparametrar"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:493
 msgid "Key Size"
 msgstr "Nyckelstorlek"
 
-#: ../gcr/gcr-certificate-renderer.c:444
+#: ../gcr/gcr-certificate-renderer.c:501
 #: ../gcr/gcr-key-renderer.c:271
 #: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Publik nyckel"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
+#: ../gcr/gcr-certificate-renderer.c:506
 msgid "Fingerprints"
 msgstr "Fingeravtryck"
 
@@ -522,7 +526,10 @@ msgstr "Kunde inte tolka ogiltigt eller skadat data."
 msgid "The data is locked"
 msgstr "Data är låst"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Kunde inte hitta en plats att lagra de nålade certifikaten i"
@@ -1006,25 +1013,33 @@ msgstr "kommandon: "
 msgid "          "
 msgstr "           "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Lagra lösenord okrypterade?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga för alla som har tillgång till dina filer."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Använd osäker lagring"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Lösenorden stämde inte överens."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Lösenord får inte vara blanka"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Nyckelringsåtkomst"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Lås upp åtkomst till lösenord och andra hemligheter"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
