@@ -3,8 +3,7 @@
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Daniel van Eeden <daniel_e@dds.nl>, 2004, 2008.
-# Tino Meinen <a.t.meinen@chello.nl>, 2005.
-# Wouter Bolsterlee <wbolster@gnome.org>, 2006–2011.
+# Tino Meinen <a.t.meinen@chello.nl>, 2005. # Wouter Bolsterlee <wbolster@gnome.org>, 2006–2011.
 #
 # Keyring vertalen we als sleutelbos (Wouter Bolsterlee, Tino Meinen)
 #
@@ -14,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 23:45+0100\n"
-"PO-Revision-Date: 2011-02-16 23:49+0100\n"
+"POT-Creation-Date: 2011-03-12 23:37+0100\n"
+"PO-Revision-Date: 2011-03-12 23:37+0100\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "Language: nl\n"
@@ -25,7 +24,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -54,15 +53,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Het oorspronkelijke wachtwoord was onjuist"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Nieuw wachtwoord voor sleutelbos"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Kies wachtwoord voor de nieuwe sleutelbos"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -177,7 +176,7 @@ msgstr "Algemene naam"
 msgid "Surname"
 msgstr "Achternaam"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:436
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -271,109 +270,113 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Onverwachte fout in waitpid(): %s"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gcr/gcr-certificate-renderer.c:83 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Certificaat"
 
-#: ../gcr/gcr-certificate-renderer.c:107
+#: ../gcr/gcr-certificate-renderer.c:108
 msgid "Extension"
 msgstr "Extensie"
 
-#: ../gcr/gcr-certificate-renderer.c:112
+#: ../gcr/gcr-certificate-renderer.c:113
 msgid "Identifier"
 msgstr "Identifier"
 
-#: ../gcr/gcr-certificate-renderer.c:120
+#: ../gcr/gcr-certificate-renderer.c:121
 msgid "Value"
 msgstr "Waarde"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Critical"
 msgstr "Kritiek"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Yes"
 msgstr "Ja"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "No"
 msgstr "Nee"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:198
+msgid "Couldn't export the certificate."
+msgstr "Kon het certificaat niet exporteren."
+
+#: ../gcr/gcr-certificate-renderer.c:396
 msgid "Identity"
 msgstr "Identiteit"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:400
 msgid "Verified by"
 msgstr "Geverifieerd door"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:407
 msgid "Expires"
 msgstr "Verloopt op"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:417
 msgid "Subject Name"
 msgstr "Subject Name"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:421
 msgid "Issuer Name"
 msgstr "Naam uitgever"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:425
 msgid "Issued Certificate"
 msgstr "Uitgegeven certificaat"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:430
 msgid "Version"
 msgstr "Versie"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:444
 msgid "Not Valid Before"
 msgstr "Niet geldig voor"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:449
 msgid "Not Valid After"
 msgstr "Niet geldig na"
 
-#: ../gcr/gcr-certificate-renderer.c:401
+#: ../gcr/gcr-certificate-renderer.c:458
 msgid "Signature Algorithm"
 msgstr "Algoritme voor ondertekening"
 
-#: ../gcr/gcr-certificate-renderer.c:406
+#: ../gcr/gcr-certificate-renderer.c:463
 msgid "Signature Parameters"
 msgstr "Parameters voor ondertekening"
 
-#: ../gcr/gcr-certificate-renderer.c:413
+#: ../gcr/gcr-certificate-renderer.c:470
 msgid "Signature"
 msgstr "Ondertekening"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:475
 msgid "Public Key Info"
 msgstr "Publieke sleutelinformatie"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:480
 msgid "Key Algorithm"
 msgstr "Sleutelalgoritme"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:486
 msgid "Key Parameters"
 msgstr "Sleutelparameters"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:493
 msgid "Key Size"
 msgstr "Sleutelgrootte"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
+#: ../gcr/gcr-certificate-renderer.c:501 ../gcr/gcr-key-renderer.c:271
 #: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Publieke sleutel"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
+#: ../gcr/gcr-certificate-renderer.c:506
 msgid "Fingerprints"
 msgstr "Vingerafdrukken"
 
@@ -542,7 +545,8 @@ msgstr "Kon geen locatie vinden om het ‘pinned’ certificaat op te slaan"
 #: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "De URI heeft een ongeldige syntaxis. Het gecodeerde veld ‘%s’ is ongeldig."
+msgstr ""
+"De URI heeft een ongeldige syntaxis. Het gecodeerde veld ‘%s’ is ongeldig."
 
 #: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
@@ -980,8 +984,7 @@ msgstr "Certificaat/sleutelopslag ontgrendelen"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
-"Voer wachtwoord in voor ontgrendelen van het certificaat of de "
-"sleutelopslag"
+"Voer wachtwoord in voor ontgrendelen van het certificaat of de sleutelopslag"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
@@ -1040,11 +1043,11 @@ msgstr "opdrachten: "
 msgid "          "
 msgstr "            "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Wachtwoorden zonder versleuteling opslaan?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1054,21 +1057,29 @@ msgstr ""
 "veilig bewaard. Iedereen met toegang tot uw bestanden kan deze wachtwoorden "
 "achterhalen."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Onveilige opslag gebruiken"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Wachtwoorden komen niet overeen."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Wachtwoord mag niet leeg zijn"
 
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Sleutelbostoegang"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Toegang tot wachtwoorden en andere geheime informatie regelen"
+
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
-msgstr "Veiligheid wachtwoord"
+msgstr "Sterkte van nieuw wachtwoord"
 
 #: ../ui/gku-prompt.ui.h:2
 msgid "_Application:"
