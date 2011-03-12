@@ -5,15 +5,16 @@
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2011-01-15 16:34+0000\n"
-"PO-Revision-Date: 2011-01-22 16:30+0100\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-03-11 07:15+0000\n"
+"PO-Revision-Date: 2011-03-11 09:40+0100\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +23,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -51,15 +52,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "La contraseña original era incorrecta"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Contraseña nueva del depósito de claves"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Elija la contraseña para el depósito de claves"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -487,7 +488,6 @@ msgstr "Clave pública DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
 #, c-format
-#| msgid "%d bits"
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d bit"
@@ -522,20 +522,22 @@ msgstr "No se pudo analizar los datos no válidos o corruptos."
 msgid "The data is locked"
 msgstr "Los datos están bloqueados"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
-#| msgid "Choose a location to store the imported certificates/keys."
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "No se pudo encontrar un lugar para almacenar el certificado importado"
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr ""
-"La sintaxis del URI no es válida. La codificación del campo «%s» no es "
-"válida."
+"La sintaxis del URI no es válida. La codificación del campo «%s» no es válida."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "El URI no tiene el esquema «pkcs11»."
 
@@ -1016,25 +1018,25 @@ msgstr ""
 "Se necesitan la contraseña original y la nueva para cambiar la contraseña de "
 "«%s»"
 
-#: ../tool/gkr-tool.c:101
+#: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "uso: gnome-keyring comando [opciones]\n"
 
-#: ../tool/gkr-tool.c:103
+#: ../tool/gkr-tool.c:104
 msgid "commands: "
 msgstr "comandos: "
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:107
+#: ../tool/gkr-tool.c:108
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1044,17 +1046,25 @@ msgstr ""
 "estarán cifradas de forma segura. Serán accesibles por cualquiera que tenga "
 "acceso a sus archivos."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Usar depósito inseguro"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Las contraseñas no coinciden."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "La contraseña no puede estar vacía"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Acceso al depósito de claves"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Desbloquear el acceso a contraseñas y a otros secretos"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1241,15 +1251,15 @@ msgstr "_Contraseña:"
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere acceder a la contraseña para «<object "
-#~ "prop='name'/>» en el depósito predeterminado."
+#~ "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/"
+#~ ">» en el depósito predeterminado."
 
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere acceder a la contraseña para «<object "
-#~ "prop='name'/>» en %s."
+#~ "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/"
+#~ ">» en %s."
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '<object "
@@ -1309,8 +1319,8 @@ msgstr "_Contraseña:"
 #~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 #~ "have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» (%s) quiere crear un depósito de claves nuevo llamado "
-#~ "«%s». Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» (%s) quiere crear un depósito de claves nuevo llamado «%"
+#~ "s». Tiene que elegir la contraseña que quiere usar con él."
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to create a new default keyring. You have "
@@ -1360,16 +1370,15 @@ msgstr "_Contraseña:"
 #~ "The application '%s' wants to change the password for the '%s' keyring. "
 #~ "You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de "
-#~ "claves «%s». Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves "
+#~ "«%s». Tiene que elegir la contraseña que quiere usar con él."
 
 #~ msgid ""
 #~ "The application '%s' wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de "
-#~ "claves predeterminado. Tiene que elegir la contraseña que quiere usar con "
-#~ "él."
+#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves "
+#~ "predeterminado. Tiene que elegir la contraseña que quiere usar con él."
 
 #~ msgid ""
 #~ "An unknown application wants to change the password for the default "
