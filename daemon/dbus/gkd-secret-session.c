@@ -310,7 +310,7 @@ gkd_secret_session_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *
 	if (!caller || !g_str_equal (caller, self->caller))
 		g_return_val_if_reached (NULL);
 
-	/* org.freedesktop.Secrets.Session.Close() */
+	/* org.freedesktop.Secret.Session.Close() */
 	else if (dbus_message_is_method_call (message, SECRET_SESSION_INTERFACE, "Close"))
 		return session_method_close (self, message);
 

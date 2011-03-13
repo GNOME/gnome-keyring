@@ -430,15 +430,15 @@ item_method_set_secret (GkdSecretObjects *self, GckObject *item, DBusMessage *me
 static DBusMessage*
 item_message_handler (GkdSecretObjects *self, GckObject *object, DBusMessage *message)
 {
-	/* org.freedesktop.Secrets.Item.Delete() */
+	/* org.freedesktop.Secret.Item.Delete() */
 	if (dbus_message_is_method_call (message, SECRET_ITEM_INTERFACE, "Delete"))
 		return item_method_delete (self, object, message);
 
-	/* org.freedesktop.Secrets.Session.GetSecret() */
+	/* org.freedesktop.Secret.Session.GetSecret() */
 	else if (dbus_message_is_method_call (message, SECRET_ITEM_INTERFACE, "GetSecret"))
 		return item_method_get_secret (self, object, message);
 
-	/* org.freedesktop.Secrets.Session.SetSecret() */
+	/* org.freedesktop.Secret.Session.SetSecret() */
 	else if (dbus_message_is_method_call (message, SECRET_ITEM_INTERFACE, "SetSecret"))
 		return item_method_set_secret (self, object, message);
 
@@ -781,15 +781,15 @@ collection_method_delete (GkdSecretObjects *self, GckObject *object, DBusMessage
 static DBusMessage*
 collection_message_handler (GkdSecretObjects *self, GckObject *object, DBusMessage *message)
 {
-	/* org.freedesktop.Secrets.Collection.Delete() */
+	/* org.freedesktop.Secret.Collection.Delete() */
 	if (dbus_message_is_method_call (message, SECRET_COLLECTION_INTERFACE, "Delete"))
 		return collection_method_delete (self, object, message);
 
-	/* org.freedesktop.Secrets.Collection.SearchItems() */
+	/* org.freedesktop.Secret.Collection.SearchItems() */
 	if (dbus_message_is_method_call (message, SECRET_COLLECTION_INTERFACE, "SearchItems"))
 		return collection_method_search_items (self, object, message);
 
-	/* org.freedesktop.Secrets.Collection.CreateItem() */
+	/* org.freedesktop.Secret.Collection.CreateItem() */
 	if (dbus_message_is_method_call (message, SECRET_COLLECTION_INTERFACE, "CreateItem"))
 		return collection_method_create_item (self, object, message);
 

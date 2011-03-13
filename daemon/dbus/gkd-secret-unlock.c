@@ -314,11 +314,11 @@ gkd_secret_unlock_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *m
 	if (!caller || !g_str_equal (caller, self->caller))
 		g_return_val_if_reached (NULL);
 
-	/* org.freedesktop.Secrets.Prompt.Prompt() */
+	/* org.freedesktop.Secret.Prompt.Prompt() */
 	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Prompt"))
 		reply = prompt_method_prompt (self, message);
 
-	/* org.freedesktop.Secrets.Prompt.Negotiate() */
+	/* org.freedesktop.Secret.Prompt.Negotiate() */
 	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
 		reply = prompt_method_dismiss (self, message);
 
