@@ -10,11 +10,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring MASTER\n"
+"Project-Id-Version: gnome-keyring 3.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2011-01-15 16:34+0000\n"
-"PO-Revision-Date: 2011-01-16 12:27+0200\n"
+"POT-Creation-Date: 2011-03-09 19:00+0000\n"
+"PO-Revision-Date: 2011-03-10 08:00+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -227,6 +227,9 @@ msgstr "Jah"
 msgid "No"
 msgstr "Ei"
 
+msgid "Couldn't export the certificate."
+msgstr "Sertifikaati pole võimalik eksportida."
+
 msgid "Identity"
 msgstr "Identiteet"
 
@@ -403,6 +406,9 @@ msgstr "Vigaseid või rikutud andmeid pole võimalik töödelda."
 msgid "The data is locked"
 msgstr "Andmed on lukustatud"
 
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Määratud sertifikaadi säilitamiseks pole võimalik kohta leida"
@@ -801,6 +807,12 @@ msgstr "Paroolid pole vastavuses."
 
 msgid "Password cannot be blank"
 msgstr "Parool ei tohi olla tühi"
+
+msgid "Keyring Access"
+msgstr "Ligipääs võtmerõngale"
+
+msgid "Unlock access to passwords and other secrets"
+msgstr "Paroolidele ja teistele saladustele ligipääsu võimaldamine"
 
 msgid "New password strength"
 msgstr "Uue parooli tugevus"
