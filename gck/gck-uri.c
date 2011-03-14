@@ -284,7 +284,7 @@ gck_uri_parse (const gchar *uri, GckUriParseFlags flags, GError **error)
 
 	if (!g_str_has_prefix (uri, URI_PREFIX)) {
 		g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_PREFIX,
-		                     _("The URI has does not have the 'pkcs11' scheme."));
+		                     _("The URI does not have the 'pkcs11' scheme."));
 		goto cleanup;
 	}
 
