@@ -4,7 +4,7 @@
 # Mugurel Tudor <mugurelu@go.ro>, 2004.
 # Mugurel Tudor <mugurelu@gnome.ro>, 2006.
 # Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009
-# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2010.
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2010, 2011.
 # Daniel Șerbănescu <cyber19rider@gmail.com>, 2010.
 msgid ""
 msgstr ""
@@ -12,13 +12,13 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
 "POT-Creation-Date: 2011-03-10 08:08+0000\n"
-"PO-Revision-Date: 2010-11-16 02:33+0300\n"
-"Last-Translator: Daniel Șerbănescu <cyber19rider@gmail.com>\n"
+"PO-Revision-Date: 2011-03-14 13:06+0200\n"
+"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
 "X-Generator: Virtaal 0.6.1\n"
@@ -144,7 +144,7 @@ msgstr "ID utilizator"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr ""
+msgstr "Adresă de email"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -295,17 +295,15 @@ msgid "No"
 msgstr "Nu"
 
 #: ../gcr/gcr-certificate-renderer.c:339
-#, fuzzy
 #| msgid "Identifier"
 msgid "Identity"
-msgstr "Identificator"
+msgstr "Identitate"
 
 #: ../gcr/gcr-certificate-renderer.c:343
 msgid "Verified by"
-msgstr ""
+msgstr "Verificat de"
 
 #: ../gcr/gcr-certificate-renderer.c:350
-#, fuzzy
 #| msgid "Expires On"
 msgid "Expires"
 msgstr "Expiră la"
@@ -377,10 +375,9 @@ msgid "Fingerprints"
 msgstr "Amprente"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-#, fuzzy
 #| msgid "Import Certificates/Keys"
 msgid "Import Certificates and Keys"
-msgstr "Importă certificate/chei"
+msgstr "Importă certificate și chei"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
@@ -476,62 +473,55 @@ msgstr "Alege o locație pentru a stoca certificatele/cheile importate."
 
 #: ../gcr/gcr-key-renderer.c:69
 msgid "Key"
-msgstr ""
+msgstr "Cheie"
 
 #: ../gcr/gcr-key-renderer.c:260
-#, fuzzy
 #| msgid "Private Key"
 msgid "Private RSA Key"
-msgstr "Cheie privată"
+msgstr "Cheie privată RSA"
 
 #: ../gcr/gcr-key-renderer.c:262
-#, fuzzy
 #| msgid "Private Key"
 msgid "Private DSA Key"
-msgstr "Cheie privată"
+msgstr "Cheie privată DSA"
 
 #: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
 msgid "Private Key"
 msgstr "Cheie privată"
 
 #: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-#, fuzzy
 #| msgid "Public Key"
 msgid "Public DSA Key"
-msgstr "Cheie publică"
+msgstr "Cheie publică DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
-#, c-format
+#, c-format, 
 msgid "%d bit"
 msgid_plural "%d bits"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d bit"
+msgstr[1] "%d biți"
+msgstr[2] "%d de biți"
 
 #: ../gcr/gcr-key-renderer.c:279
-#, fuzzy
 #| msgid "Street"
 msgid "Strength"
-msgstr "Stradă"
+msgstr "Putere"
 
 #: ../gcr/gcr-key-renderer.c:292
-#, fuzzy
 #| msgid "Key Algorithm"
 msgid "Algorithm"
-msgstr "Algoritm cheie"
+msgstr "Algoritm"
 
 #: ../gcr/gcr-key-renderer.c:299
-#, fuzzy
 #| msgid "Key Size"
 msgid "Size"
-msgstr "Dimensiune cheie"
+msgstr "Dimensiune"
 
 #. TODO: We need to have consistent key fingerprints.
 #: ../gcr/gcr-key-renderer.c:303
-#, fuzzy
 #| msgid "Fingerprints"
 msgid "Fingerprint"
-msgstr "Amprente"
+msgstr "Amprentă"
 
 #: ../gcr/gcr-parser.c:1569
 msgid "Unrecognized or unsupported data."
@@ -549,20 +539,21 @@ msgstr "Datele sunt blocate"
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
 #: ../gcr/gcr-trust.c:420
-#, fuzzy, c-format
+#, c-format
 #| msgid "Choose a location to store the imported certificates/keys."
 msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Alege o locație pentru a stoca certificatele/cheile importate."
+msgstr ""
+"Nu s-a putut găsi o locație în care să se stocheze certificatele fixate."
 
 #: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
 #: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr ""
+msgstr "URI-ul are sintaxă nevalidă. Codificarea câmpului „%s” nu este validă."
 
 #: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr ""
+msgstr "URI-ul nu are schema „pkcs11”."
 
 #: ../gck/gck-misc.c:101
 msgid "Insufficient memory available"
@@ -621,10 +612,9 @@ msgid "An error occurred on the device"
 msgstr "S-a produs o eroare pe dispozitiv"
 
 #: ../gck/gck-misc.c:129
-#, fuzzy
 #| msgid "Insufficient memory available on device"
 msgid "Insufficient memory available on the device"
-msgstr "Memorie disponibilă insuficientă pe dispozitiv"
+msgstr "Memorie insuficientă pe dispozitiv"
 
 #: ../gck/gck-misc.c:131
 msgid "The device was removed or unplugged"
@@ -659,7 +649,6 @@ msgid "No key is needed"
 msgstr "Nu este nevoie de cheie"
 
 #: ../gck/gck-misc.c:147
-#, fuzzy
 #| msgid "The key is different from before"
 msgid "The key is different than before"
 msgstr "Cheia diferă de cea de dinainte"
@@ -669,7 +658,6 @@ msgid "A key is needed"
 msgstr "Este necesară o cheie"
 
 #: ../gck/gck-misc.c:151
-#, fuzzy
 #| msgid "Cannot include the key in digest"
 msgid "Cannot include the key in the digest"
 msgstr "Nu se poate include cheia în rezumat"
@@ -815,10 +803,9 @@ msgid "Another user is already logged in"
 msgstr "Un alt utilizator este deja autentificat"
 
 #: ../gck/gck-misc.c:223
-#, fuzzy
 #| msgid "Too many users of different types logged in"
 msgid "Too many users of different types are logged in"
-msgstr "Prea mulți utilizatori de tipuri diferite autentificați"
+msgstr "Prea mulți utilizatori de tipuri diferite sunt autentificați"
 
 #: ../gck/gck-misc.c:225
 msgid "Cannot import an invalid key"
@@ -1049,16 +1036,16 @@ msgstr ""
 #: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr ""
+msgstr "utilizare: gnome-keyring comandă [opțiuni]\n"
 
 #: ../tool/gkr-tool.c:104
 msgid "commands: "
-msgstr ""
+msgstr "comenzi:"
 
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr ""
+msgstr "        "
 
 #: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
@@ -1088,11 +1075,11 @@ msgstr "Parola nu poate fi goală"
 
 #: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
 msgid "Keyring Access"
-msgstr ""
+msgstr "Acces la inelul de chei"
 
 #: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
 msgid "Unlock access to passwords and other secrets"
-msgstr ""
+msgstr "Deblochează accesul la parole și alte secrete"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
