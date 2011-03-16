@@ -445,13 +445,15 @@ fi
 
 AC_CHECK_LIB([cap-ng], [capng_clear], have_libcapng="yes", have_libcapng="no")
 
-if test $have_libcapng = yes; then
+if test "$have_libcapng" = "yes"; then
    AC_DEFINE(HAVE_LIBCAPNG, 1, [Have libcap-ng package, libcap-ng library])
    DAEMON_LIBS="$DAEMON_LIBS -lcap-ng"
 else
+   have_lipcapng="no"
    AC_MSG_WARN([libcap-ng (or development headers) is not installed])
 fi
 
+AM_CONDITIONAL(WITH_CAPS, test "$have_libcapng" = "yes")
 libcapng_status=$have_libcapng
 
 # --------------------------------------------------------------------

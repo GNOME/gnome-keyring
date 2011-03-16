@@ -79,13 +79,21 @@ CLEANFILES = \
 	$(service_DATA) \
 	$(desktop_DATA)
 
+if WITH_CAPS
+
+# Set the relevant capabilities on the daemon
+install-exec-hook:
+	setcap cap_ipc_lock=ep $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
+
+else # without caps
+
 # The daemon is installed as setuid so as to obtain specialized
 # capabilities, then immediately drops permissions. In other words,
 # it does *not* run as setuid.
-# If installing as non-root, chown+chmod will not succeed but
-# the build will continue.
 install-exec-hook:
 	chown root $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
 	chmod u+s $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
+
+endif # without caps
 
 @INTLTOOL_DESKTOP_RULE@
