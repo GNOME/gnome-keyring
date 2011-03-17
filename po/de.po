@@ -5,7 +5,7 @@
 # Hendrik Richter <hendrikr@gnome.org>, 2006.
 # Philipp Kerling <k.philipp@gmail.com>, 2008.
 # Stefan Horning <stefan@hornings.de>, 2009.
-# Mario Blättermann <mariobl@gnome.org>, 2009, 2010.
+# Mario Blättermann <mariobl@gnome.org>, 2009-2011.
 # Christian Kirbach <Christian.Kirbach@googlemail.com>, 2008-2010.
 # Nathan-J. Hirschauer <nathanhirschauer@verfriemelt.org>, 2010.
 # Wolfgang Stöggl <c72578@yahoo.de>, 2010.
@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2011-01-15 16:34+0000\n"
-"PO-Revision-Date: 2011-02-05 21:06+0100\n"
+"POT-Creation-Date: 2011-03-10 08:08+0000\n"
+"PO-Revision-Date: 2011-03-17 13:34+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr ""
 "X-Poedit-Country: GERMANY\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -57,15 +57,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Das ursprüngliche Passwort war nicht korrekt"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Passwort für neuen Schlüsselbund"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Legen Sie ein Passwort für den neuen Schlüsselbund fest"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the password "
@@ -529,21 +529,25 @@ msgstr "Ungültige oder defekte Daten konnten nicht verarbeitet werden."
 msgid "The data is locked"
 msgstr "Die Daten sind gesperrt"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr ""
 "Es konnte kein Ort für die Hinterlegung des importierten Zertifikats gefunden "
 "werden"
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr ""
 "Die Syntax der Adresse ist nicht korrekt. Die Feld-Enkodierung »%s« ist "
 "ungültig."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "Die Adresse entspricht nicht dem Schema »PKCS11«."
 
@@ -1031,25 +1035,25 @@ msgstr ""
 "Um das Passwort für »%s« zu ändern, sind das bisherige und das neue Passwort "
 "erforderlich"
 
-#: ../tool/gkr-tool.c:101
+#: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "Aufruf: gnome-keyring Befehl [Optionen]\n"
 
-#: ../tool/gkr-tool.c:103
+#: ../tool/gkr-tool.c:104
 msgid "commands: "
 msgstr "Befehle: "
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:107
+#: ../tool/gkr-tool.c:108
 msgid "          "
 msgstr "         "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Passwörter unverschlüsselt speichern?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be safely "
 "encrypted. They will be accessible by anyone with access to your files."
@@ -1058,17 +1062,25 @@ msgstr ""
 "nicht sicher verschlüsselt werden. Sie werden für jeden mit Zugriff auf Ihre "
 "Dateien zugänglich sein."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Unsichere Speicherung verwenden"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Die Passwörter stimmen nicht überein."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Das Passwort darf nicht leer sein"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Zugriff auf Schlüsselbund"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Zugriff auf Passwörter und andere private Daten entsperren"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1099,90 +1111,3 @@ msgstr "_Altes Passwort:"
 msgid "_Password:"
 msgstr "_Passwort:"
 
-#~ msgid "Email"
-#~ msgstr "E-Mail"
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>Nicht Teil des Zertifikats</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>unbekannt</i>"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Nicht Teil des Zertifikats>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Fingerabdrücke</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Herausgegeben von</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Herausgegeben an</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr ""
-#~ "<b>Dieses Zertifikat wurde für folgende Verwendungsmöglichkeiten "
-#~ "verifiziert:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Gültigkeit</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Voller Name (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Zertifikat des Empfängers per E-Mail versenden"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Zertifikat des Unterzeichners per E-Mail versenden"
-
-#~ msgid "Issued On"
-#~ msgstr "Ausgestellt am"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5-Fingerabdruck"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organisation (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Organisationseinheit (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1-Fingerabdruck"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL-Zertifikat des Client"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL-Zertifikat des Servers"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Zertifikate und Schlüssel importieren</"
-#~ "span>"
-
-#~ msgid ""
-#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#~ "only takes effect during startup with gnome-session, (ie: when the user "
-#~ "logs in). This setting may be overridden when certain command line "
-#~ "arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Diese Option aktiviert die PKCS #11-Komponente im GNOME-"
-#~ "Schlüsselbunddienst. Sie tritt nur in Kraft, wenn die GNOME-Sitzung (gnome-"
-#~ "session) gestartet wird, also der Benutzer sich anmeldet. Diese "
-#~ "Einstellung kann von bestimmten Befehlszeilenargumenten überschrieben "
-#~ "werden, die dem Dienst übergeben werden."
-
-#~ msgid ""
-#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
-#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
-#~ "This setting may be overridden when certain command line arguments are "
-#~ "passed to the daemon."
-#~ msgstr ""
-#~ "Diese Option aktiviert den SSH-Agenten des GNOME-Schlüsselbunddienstes. "
-#~ "Sie tritt nur in Kraft, wenn der Schlüsselbunddienst gestartet wird (also "
-#~ "der Benutzer sich anmeldet). Diese Einstellung kann von bestimmten "
-#~ "Befehlszeilenargumenten überschrieben werden, die dem Dienst übergeben "
-#~ "werden."
