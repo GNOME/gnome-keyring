@@ -50,6 +50,13 @@
 #include "gcr-unlock-options-widget.h"
 #include "gcr-viewer.h"
 
+#ifndef GCR_DISABLE_DEPRECATED
+
+#include "gcr-certificate-basics-widget.h"
+#include "gcr-certificate-details-widget.h"
+
+#endif /* GCR_DISABLE_DEPRECATED */
+
 #undef __GCR_H_INSIDE__
 
 #endif /* __GCR_H__ */
