@@ -317,6 +317,36 @@ cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
 	free_password (data);
 }
 
+#ifdef WITH_SELINUX
+#include  <selinux/flask.h>
+#include  <selinux/selinux.h>
+/* Attempt to set SELinux Context. We are ignoring failure and just going
+   with default behaviour default behaviour
+*/
+static void setup_selinux_context(const char *command) {
+	security_context_t fcon = NULL, newcon = NULL, execcon = NULL;
+
+	if (is_selinux_enabled() != 1) return;
+
+	int ret = getexeccon(&execcon);
+	if ((ret < 0) || (! execcon)) goto err;
+
+	ret = getfilecon(command, &fcon);
+	if (ret < 0) goto err;
+
+	ret = security_compute_create(execcon, fcon, SECCLASS_PROCESS, &newcon);
+	if (ret < 0) goto err;
+
+	setexeccon(newcon);
+
+err:
+	freecon(newcon);
+	freecon(fcon);
+	freecon(execcon);
+	return;
+}
+#endif
+
 static void
 setup_child (int inp[2], int outp[2], int errp[2], pam_handle_t *ph, struct passwd *pwd)
 {
@@ -329,6 +359,10 @@ setup_child (int inp[2], int outp[2], int errp[2], pam_handle_t *ph, struct pass
 	char *args[] = { GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
 #endif
 	
+#ifdef WITH_SELINUX
+	setup_selinux_context(GNOME_KEYRING_DAEMON);
+#endif
+
 	assert (pwd);
 	assert (pwd->pw_dir);
 

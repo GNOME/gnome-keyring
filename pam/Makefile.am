@@ -16,6 +16,7 @@ pam_gnome_keyring_la_LIBADD = \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-creds.la \
 	$(top_builddir)/egg/libegg-secure.la \
+	$(LIBSELINUX) \
 	-lpam
 	
 pam_gnome_keyring_la_LDFLAGS = \
