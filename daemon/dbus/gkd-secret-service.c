@@ -409,7 +409,7 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 		g_return_val_if_reached (NULL);
 	attrs = gck_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
-	if (!gkd_secret_property_parse_all (&array, attrs)) {
+	if (!gkd_secret_property_parse_all (&array, SECRET_COLLECTION_INTERFACE, attrs)) {
 		gck_attributes_unref (attrs);
 		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
 		                                      "Invalid properties");
@@ -676,7 +676,7 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 		g_return_val_if_reached (NULL);
 	attrs = gck_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
-	if (!gkd_secret_property_parse_all (&array, attrs)) {
+	if (!gkd_secret_property_parse_all (&array, SECRET_COLLECTION_INTERFACE, attrs)) {
 		gck_attributes_unref (attrs);
 		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
 		                               "Invalid properties argument");

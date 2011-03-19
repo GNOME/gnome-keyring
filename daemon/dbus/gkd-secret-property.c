@@ -61,11 +61,23 @@ typedef enum _DataType {
  */
 
 static gboolean
-property_to_attribute (const gchar *prop_name, CK_ATTRIBUTE_TYPE *attr_type, DataType *data_type)
+property_to_attribute (const gchar *prop_name, const gchar *interface,
+                       CK_ATTRIBUTE_TYPE *attr_type, DataType *data_type)
 {
 	g_return_val_if_fail (prop_name, FALSE);
 	g_assert (attr_type);
 	g_assert (data_type);
+
+	/* If an interface is desired, check that it matches, and remove */
+	if (interface) {
+		if (!g_str_has_prefix (prop_name, interface))
+			return FALSE;
+
+		prop_name += strlen (interface);
+		if (prop_name[0] != '.')
+			return FALSE;
+		++prop_name;
+	}
 
 	if (g_str_equal (prop_name, "Label")) {
 		*attr_type = CKA_LABEL;
@@ -458,11 +470,12 @@ gkd_secret_property_get_type (const gchar *property, CK_ATTRIBUTE_TYPE *type)
 	g_return_val_if_fail (property, FALSE);
 	g_return_val_if_fail (type, FALSE);
 
-	return property_to_attribute (property, type, &data_type);
+	return property_to_attribute (property, NULL, type, &data_type);
 }
 
 gboolean
-gkd_secret_property_parse_all (DBusMessageIter *array, GckAttributes *attrs)
+gkd_secret_property_parse_all (DBusMessageIter *array, const gchar *interface,
+                               GckAttributes *attrs)
 {
 	DBusMessageIter dict;
 	CK_ATTRIBUTE_TYPE attr_type;
@@ -476,12 +489,12 @@ gkd_secret_property_parse_all (DBusMessageIter *array, GckAttributes *attrs)
 	while (dbus_message_iter_get_arg_type (array) == DBUS_TYPE_DICT_ENTRY) {
 		dbus_message_iter_recurse (array, &dict);
 
-		/* Property name */
+		/* Property interface.name */
 		g_return_val_if_fail (dbus_message_iter_get_arg_type (&dict) == DBUS_TYPE_STRING, FALSE);
 		dbus_message_iter_get_basic (&dict, &name);
 		dbus_message_iter_next (&dict);
 
-		if (!property_to_attribute (name, &attr_type, &data_type))
+		if (!property_to_attribute (name, interface, &attr_type, &data_type))
 			return FALSE;
 
 		/* Property value */
@@ -549,7 +562,7 @@ gkd_secret_property_parse_variant (DBusMessageIter *iter, const gchar *property,
 	g_return_val_if_fail (iter, FALSE);
 	g_return_val_if_fail (property, FALSE);
 
-	if (!property_to_attribute (property, &attr_type, &data_type))
+	if (!property_to_attribute (property, NULL, &attr_type, &data_type))
 		return FALSE;
 
 	attr->type = attr_type;
