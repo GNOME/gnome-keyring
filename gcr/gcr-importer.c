@@ -793,3 +793,22 @@ gcr_importer_queue (GcrImporter *self, const gchar *label, GckAttributes *attrs)
 	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
 	g_signal_emit (self, signals[QUEUED], 0, label, attrs);
 }
+
+#ifndef GCR_DISABLE_DEPRECATED
+
+GcrParser*
+gcr_importer_get_parser (GcrImporter *self)
+{
+	g_warning ("gcr_importer_get_parser() is no longer supported "
+	           "Use gcr_importer_listen() instead.");
+	return NULL;
+}
+
+void
+gcr_importer_set_parser (GcrImporter *self, GcrParser *parser)
+{
+	g_warning ("gcr_importer_set_parser() is no longer supported "
+	           "Use gcr_importer_listen() instead.");
+}
+
+#endif /* GCR_DISABLE_DEPRECATED */

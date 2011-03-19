@@ -45,6 +45,7 @@ gboolean               gkd_secret_property_parse_fields           (DBusMessageIt
                                                                    GckAttribute *attr);
 
 gboolean               gkd_secret_property_parse_all              (DBusMessageIter *array,
+                                                                   const gchar *interface,
                                                                    GckAttributes *attrs);
 
 #endif /* __GKD_SECRET_PROPERTY_H__ */

@@ -28,7 +28,9 @@ incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
 inc_HEADERS = \
 	gcr.h \
 	gcr-certificate.h \
+	gcr-certificate-basics-widget.h \
 	gcr-certificate-chain.h \
+	gcr-certificate-details-widget.h \
 	gcr-certificate-renderer.h \
 	gcr-certificate-widget.h \
 	gcr-key-renderer.h \

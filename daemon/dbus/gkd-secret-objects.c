@@ -667,7 +667,7 @@ collection_method_create_item (GkdSecretObjects *self, GckObject *object, DBusMe
 		g_return_val_if_reached (NULL);
 	attrs = gck_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
-	if (!gkd_secret_property_parse_all (&array, attrs)) {
+	if (!gkd_secret_property_parse_all (&array, SECRET_ITEM_INTERFACE, attrs)) {
 		reply = dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
 		                                "Invalid properties argument");
 		goto cleanup;

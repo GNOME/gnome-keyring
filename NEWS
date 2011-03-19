@@ -1,3 +1,15 @@
+Changes in version 2.91.92 are:
+ * Don't leak login name from PAM when logging error.
+ * Also start daemon in XFCE
+ * Fix inability to save password for other keyrings.
+ * Build and test fixes.
+ * Support removal of aliases via the secret service API
+ * Fix race condition when multiple applications create the default
+   keyring at the same time.
+ * Add a desktop file for gnome-keyring-prompt, so the icon shows up
+   properly in gnome-shell.
+ * Implement HKDF for transport encryption security.
+
 Changes in version 2.91.91 are:
  * Fix the certificate details expander when used with GTK+3
  * Calculate the minimum/natural size of the certificate widget better.
