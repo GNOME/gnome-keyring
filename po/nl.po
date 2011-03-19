@@ -3,7 +3,8 @@
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Daniel van Eeden <daniel_e@dds.nl>, 2004, 2008.
-# Tino Meinen <a.t.meinen@chello.nl>, 2005. # Wouter Bolsterlee <wbolster@gnome.org>, 2006–2011.
+# Tino Meinen <a.t.meinen@chello.nl>, 2005.
+# Wouter Bolsterlee <wbolster@gnome.org>, 2006–2011.
 #
 # Keyring vertalen we als sleutelbos (Wouter Bolsterlee, Tino Meinen)
 #
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-12 23:37+0100\n"
-"PO-Revision-Date: 2011-03-12 23:37+0100\n"
+"POT-Creation-Date: 2011-03-19 15:25+0100\n"
+"PO-Revision-Date: 2011-03-19 15:25+0100\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "Language: nl\n"
@@ -549,7 +550,7 @@ msgstr ""
 "De URI heeft een ongeldige syntaxis. Het gecodeerde veld ‘%s’ is ongeldig."
 
 #: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "De URI heeft niet het ‘pkcs11’-schema."
 
 #: ../gck/gck-misc.c:101
