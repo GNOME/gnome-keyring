@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2011-01-15 16:34+0000\n"
-"PO-Revision-Date: 2011-02-27 00:48+0900\n"
+"POT-Creation-Date: 2011-03-10 08:08+0000\n"
+"PO-Revision-Date: 2011-03-19 23:03+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -49,15 +49,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "원래 암호가 올바르지 않습니다"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "새 키 모음 암호"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "새 키 모음에 대한 암호를 지정하십시오"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -519,17 +519,21 @@ msgstr "잘못되었거나 손상된 데이터를 파싱할 수 없습니다."
 msgid "The data is locked"
 msgstr "데이터가 잠겨 있습니다"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "지정한 인증서를 저장할 위치를 찾을 수 없습니다"
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "URI 형식이 잘못되었습니다. '%s' 항목의 인코딩이 올바르지 않습니다."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "URI에 pkcs11 스킴이 들어있지 않습니다."
 
@@ -997,25 +1001,25 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "'%s'의 암호를 바꾸려면, 기존 암호와 새 암호를 입력해야 합니다"
 
-#: ../tool/gkr-tool.c:101
+#: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "사용법: gnome-keyring <명령> [<옵션>]\n"
 
-#: ../tool/gkr-tool.c:103
+#: ../tool/gkr-tool.c:104
 msgid "commands: "
 msgstr "명령:"
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:107
+#: ../tool/gkr-tool.c:108
 msgid "          "
 msgstr "     "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "암호를 암호화하지 않은 상태로 저장하시겠습니까?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1024,17 +1028,25 @@ msgstr ""
 "암호를 비워 놓으면 암호화하지 않은 상태로 암호를 저장합니다. 그러면 파일을 "
 "볼 수 있는 사람이면 암호를 알아낼 수 있습니다."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "안전하지 않은 저장소 사용"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "암호가 맞지 않습니다."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "암호는 비워져 있으면 안 됩니다"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "키 모음 접근"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "암호 및 기타 비밀 정보에 접근을 허용합니다"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
