@@ -9,22 +9,22 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lv\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
-"cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2011-01-15 16:34+0000\n"
-"PO-Revision-Date: 2011-02-07 00:38+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&component=general\n"
+"POT-Creation-Date: 2011-03-10 08:08+0000\n"
+"PO-Revision-Date: 2011-03-10 22:34+0200\n"
 "Last-Translator: Rudolfs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-01-04 12:36+0000\n"
-"X-Generator: Lokalize 1.1\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
+"X-Generator: Lokalize 1.1\n"
+"X-Launchpad-Export-Date: 2009-01-04 12:36+0000\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -53,15 +53,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Oriģinālā parole bija nepareiza"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Saišķa jaunā parole"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Izvēlieties jaunu paroli saišķim"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -95,18 +95,15 @@ msgid "SSH Key Agent"
 msgstr "SSH atslēgu aģents"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-#| msgid "GNOME Keyring: SSH Agent"
 msgid "GNOME Keyring: GPG Agent"
 msgstr "GNOME Keyring: GPG aģents"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#| msgid "New password strength"
 msgid "GPG Password Agent"
 msgstr "GPG paroles aģents"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
 #: ../gcr/gcr-key-renderer.c:296
-#| msgid "Unknown error"
 msgid "Unknown"
 msgstr "Nezināms"
 
@@ -121,7 +118,6 @@ msgid "Enter Passphrase"
 msgstr "Ievadiet paroli"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
-#| msgid "Lock this keyring if idle for"
 msgid "Forget this password if idle for"
 msgstr "Aizmirst šo atslēgu, ja nekas nenotiek pēc"
 
@@ -130,7 +126,6 @@ msgid "Forget this password after"
 msgstr "Aizmirst šo atslēgu pēc"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
-#| msgid "Lock this keyring when I log out"
 msgid "Forget this password when I log out"
 msgstr "Aizmirst šo atslēgu, kad es atsakos no sistēmas"
 
@@ -298,7 +293,6 @@ msgid "No"
 msgstr "Nē"
 
 #: ../gcr/gcr-certificate-renderer.c:339
-#| msgid "Identifier"
 msgid "Identity"
 msgstr "Identitāte"
 
@@ -307,7 +301,6 @@ msgid "Verified by"
 msgstr "Pārbaudīja"
 
 #: ../gcr/gcr-certificate-renderer.c:350
-#| msgid "Expires On"
 msgid "Expires"
 msgstr "Derīguma termiņš"
 
@@ -378,7 +371,6 @@ msgid "Fingerprints"
 msgstr "Nospiedumi"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-#| msgid "Import Certificates/Keys"
 msgid "Import Certificates and Keys"
 msgstr "Importēt sertifikātus/atslēgas"
 
@@ -479,12 +471,10 @@ msgid "Key"
 msgstr "Atslēga"
 
 #: ../gcr/gcr-key-renderer.c:260
-#| msgid "Private Key"
 msgid "Private RSA Key"
 msgstr "Privātā RSA atslēga"
 
 #: ../gcr/gcr-key-renderer.c:262
-#| msgid "Private Key"
 msgid "Private DSA Key"
 msgstr "Privātā DSA atslēga"
 
@@ -493,7 +483,6 @@ msgid "Private Key"
 msgstr "Privātā atslēga"
 
 #: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-#| msgid "Public Key"
 msgid "Public DSA Key"
 msgstr "Publiskā DSA atslēga"
 
@@ -506,23 +495,19 @@ msgstr[1] "%d biti"
 msgstr[2] "%d biti"
 
 #: ../gcr/gcr-key-renderer.c:279
-#| msgid "Street"
 msgid "Strength"
 msgstr "Stiprums"
 
 #: ../gcr/gcr-key-renderer.c:292
-#| msgid "Key Algorithm"
 msgid "Algorithm"
 msgstr "Algoritms"
 
 #: ../gcr/gcr-key-renderer.c:299
-#| msgid "Key Size"
 msgid "Size"
 msgstr "Izmērs"
 
 #. TODO: We need to have consistent key fingerprints.
 #: ../gcr/gcr-key-renderer.c:303
-#| msgid "Fingerprints"
 msgid "Fingerprint"
 msgstr "Nospiedums"
 
@@ -538,18 +523,21 @@ msgstr "Neizdevās izparsēt nederīgus vai bojātus datus."
 msgid "The data is locked"
 msgstr "Dati ir noslēgti"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
-#| msgid "Choose a location to store the imported certificates/keys."
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Nevarēja atrast vietu, kur glabāt sertifikātu"
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "URI ir nederīga sintakse. '%s' lauka kodējums nav derīgs."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "URI neatbilst 'pkcs11' shēmai."
 
@@ -610,7 +598,6 @@ msgid "An error occurred on the device"
 msgstr "Ierīcei gadījās kļūda"
 
 #: ../gck/gck-misc.c:129
-#| msgid "Insufficient memory available on device"
 msgid "Insufficient memory available on the device"
 msgstr "Ierīcei nepietiek atmiņas"
 
@@ -655,7 +642,6 @@ msgid "A key is needed"
 msgstr "Nepieciešama atslēga"
 
 #: ../gck/gck-misc.c:151
-#| msgid "Cannot include the key in digest"
 msgid "Cannot include the key in the digest"
 msgstr "Neizdodas iekļaut atslēgu īssavilkumā"
 
@@ -800,7 +786,6 @@ msgid "Another user is already logged in"
 msgstr "Cits lietotājs jau ir pieteicies"
 
 #: ../gck/gck-misc.c:223
-#| msgid "Too many users of different types logged in"
 msgid "Too many users of different types are logged in"
 msgstr "Ir pieteikušies pārāk daudz dažāda veida lietotāju"
 
@@ -900,7 +885,6 @@ msgid "Unlock Login Keyring"
 msgstr "Atbloķēt pieteikšanās saišķi"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
-#| msgid "Enter password for to unlock your login keyring"
 msgid "Enter password to unlock your login keyring"
 msgstr "Ievadiet paroli, lai atbloķētu jūsu pieteikšanās saišķi"
 
@@ -992,7 +976,8 @@ msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"Lietotne vēlas piekļūt sertifikātu/atslēgu glabātavu '%s', taču tas ir slēgts"
+"Lietotne vēlas piekļūt sertifikātu/atslēgu glabātavu '%s', taču tas ir "
+"slēgts"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
@@ -1011,12 +996,10 @@ msgstr ""
 "Lai izveidotu '%s' glabātavu sertifikātiem vai atslēgām, nepieciešama parole"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-#| msgid "Change Keyring Password"
 msgid "Change Password"
 msgstr "Mainīt paroli"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-#| msgid "New password required for secure storage"
 msgid "Change password for secure storage"
 msgstr "Mainīt paroli drošajai glabāšanai"
 
@@ -1026,25 +1009,25 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "Lai mainītu '%s' paroli, ir nepieciešama sākotnējā un jaunā parole"
 
-#: ../tool/gkr-tool.c:101
+#: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "lietojums:  gnome-keyring komanda [opcijas]\n"
 
-#: ../tool/gkr-tool.c:103
+#: ../tool/gkr-tool.c:104
 msgid "commands: "
 msgstr "komandas: "
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:107
+#: ../tool/gkr-tool.c:108
 msgid "          "
 msgstr "                    "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Glabāt paroles nešifrētas?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1053,17 +1036,25 @@ msgstr ""
 "Izvēloties tukšu paroli, jūsu saglabātās paroles netiks droši šifrētas. Tās "
 "būs pieejamas ikvienam, kas varēs piekļūt jūsu failiem."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Izmantot nedrošu glabātuvi"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Paroles nesakrīt."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Parole nedrīkst būt tukša"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Pieeja atslēgu saišķim"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Atslēgt pieeju parolēm un citiem noslēpumiem"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1092,476 +1083,3 @@ msgstr "_Iepriekšējā parole:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Parole:"
-
-#~| msgid ""
-#~| "This option enables the PKCS#11 component in the gnome-keyring daemon. "
-#~| "It only takes effect as gnome-keyring-daemon starts, (ie: when the user "
-#~| "logs in). This setting may be overridden when certain command line "
-#~| "arguments are passed to the daemon."
-#~ msgid ""
-#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#~ "only takes effect during startup with gnome-session, (ie: when the user "
-#~ "logs in). This setting may be overridden when certain command line "
-#~ "arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Šī opcija aktivizē gnome-keyring dēmona PKCS#11 komponenti. Tā stājas "
-#~ "spēkā tikai ar gnome-session startēšanos (t.i., kad lietotājs piesakās "
-#~ "sistēmā). Šis iestatījums var tikt aizstāts ar noteiktiem dēmonam "
-#~ "padotiem komandrindas argumentiem."
-
-#~ msgid ""
-#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
-#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
-#~ "This setting may be overridden when certain command line arguments are "
-#~ "passed to the daemon."
-#~ msgstr ""
-#~ "Šī opcija aktivizē gnome-keyring dēmona SSH aģentu. Tā stāja spēkā tikai "
-#~ "ar gnome-keyring-daemon startēšanos (t.i., kad lietotājs piesakās "
-#~ "sistēmā).Šis iestatījums var tikt aizstāts ar noteiktiem dēmonam padotiem "
-#~ "komandrindas argumentiem."
-
-#~| msgid ""
-#~| "This option enables the PKCS#11 component in the gnome-keyring daemon. "
-#~| "It only takes effect as gnome-keyring-daemon starts, (ie: when the user "
-#~| "logs in). This setting may be overridden when certain command line "
-#~| "arguments are passed to the daemon."
-#~ msgid ""
-#~ "This option enables the secret service component in the gnome-keyring "
-#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
-#~ "the user logs in). This setting may be overridden when certain command "
-#~ "line arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Šī opcija aktivizē gnome-keyring dēmona slepenā servisa komponenti. Tā "
-#~ "stājas spēkā tikai ar gnome-session startēšanos (t.i., kad lietotājs "
-#~ "piesakās sistēmā). Šis iestatījums var tikt aizstāts ar noteiktiem "
-#~ "dēmonam padotiem komandrindas argumentiem."
-
-#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-#~ msgstr "Vai gnome-keyring PKCS#11 komponente ir aktivizēta."
-
-#~ msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgstr "Vai gnome-keyring SSH aģents ir aktivizēts."
-
-#~| msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgid "Whether the gnome-keyring secret service is enabled."
-#~ msgstr "Vai gnome-keyring slepenais serviss ir aktivizēts."
-
-#~ msgid "Email"
-#~ msgstr "E-pasta adrese"
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>Nav daļa no sertifikāta</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>nezināms</i>"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Nav daļa no sertifikāta>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Nospiedumi</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Izsniedzis</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Izsniegts</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr ""
-#~ "<b>Šis sertifikāts ir pārbaudīts, lai to varētu izmantot sekojoši:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Derīgums</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Kopējais nosaukums (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "E-pasta adresāta sertifikāts"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "E-pasta parakstītāja sertifikāts"
-
-#~ msgid "Issued On"
-#~ msgstr "Izsniegts"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5 nospiedums"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organizācija (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Organizācijas vienība (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 nospiedums"
-
-#~| msgid "Unlock certificate"
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL klienta sertifikāts"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL servera sertifikāts"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Importēt sertifikātus un atslēgas</span>"
-
-#~ msgid "_Confirm new password:"
-#~ msgstr "_Apstiprināt jauno paroli:"
-
-#~ msgid "<span weight=\"bold\">Password strength meter:</span>"
-#~ msgstr "<span weight=\"bold\">Paroles stipruma mērītājs:</span>"
-
-#~ msgid "Old password cannot be blank."
-#~ msgstr "Iepriekšējai parolei jāsatur vismaz viens simbols."
-
-#~ msgid "Password cannot be blank."
-#~ msgstr "Parolei jāsatur vismaz viens simbols."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas piekļūt noklusētajam atslēgu saišķim, bet tas "
-#~ "ir aizslēgts"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas piekļūt atslēgu saišķim '%s', bet tas ir "
-#~ "aizslēgts"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to an unknown keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Programma '%s' (%s) vēlas piekļūt nezināmam atslēgu saišķim, bet tas ir "
-#~ "aizslēgts"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the default keyring, but it is locked"
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas piekļūt noklusētajam atslēgu saišķim, bet tas ir "
-#~ "aizslēgts"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the keyring '%s', but it is locked"
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas piekļūt atslēgu saišķim '%s', bet tas ir aizslēgts"
-
-#~ msgid ""
-#~ "The application '%s' wants access to an unknown keyring, but it is locked"
-#~ msgstr ""
-#~ "Programma '%s' vēlas piekļūt nezināmam atslēgu saišķim, bet tas ir "
-#~ "aizslēgts"
-
-#~ msgid ""
-#~ "An unknown application wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Nezināma aplikācija vēlas piekļūt noklusētajam atslēgu saišķim, bet tas "
-#~ "ir aizslēgts"
-
-#~ msgid ""
-#~ "An unknown application wants access to an unknown keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Nezināma programma vēlas piekļūt nezināmam atslēgu saišķim, bet tas ir "
-#~ "aizslēgts"
-
-#~ msgid "Enter password for default keyring to unlock"
-#~ msgstr "Ievadiet paroli, lai atslēgtu noklusēto atslēgu saišķi"
-
-#~ msgid "_Deny"
-#~ msgstr "_Liegt"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
-#~ "have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas izveidot jaunu atslēgu saišķi ar nosaukumu '%"
-#~ "s'. Lūdzu izvēlieties tam paroli."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new default keyring. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas izveidot jaunu noklusēto atslēgu saišķi. Lūdzu "
-#~ "izvēlieties tam paroli."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new keyring called '%s'. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas izveidot jaunu atslēgu saišķi ar nosaukumu '%s'. "
-#~ "Lūdzu izvēlieties tam paroli."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas izveidot jaunu noklusēto atslēgu saišķi. Lūdzu "
-#~ "izvēlieties tam paroli."
-
-#~ msgid ""
-#~ "An unknown application wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "Nezināma aplikācija vēlas izveidot jaunu noklusēto atslēgu saišķi. Lūdzu "
-#~ "izvēlieties tam paroli."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the '%s' "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu "
-#~ "izvēlieties paroli šim nolūkam."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas mainīt noklusētā atslēgu saišķa paroli. Lūdzu "
-#~ "izvēlieties paroli šim nolūkam."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the '%s' keyring. "
-#~ "You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas mainīt atslēgu saišķa '%s' paroli. Lūdzu "
-#~ "izvēlieties paroli šim nolūkam."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas mainīt noklusētā atslēgu saišķa paroli. Lūdzu "
-#~ "izvēlieties paroli šim nolūkam."
-
-#~ msgid ""
-#~ "An unknown application wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Nezināma aplikācija vēlas mainīt noklusētā atslēgu saišķa paroli. Lūdzu "
-#~ "izvēlieties paroli šim nolūkam."
-
-#~ msgid "Choose a new password for the default keyring. "
-#~ msgstr "Izvēlēties jaunu paroli noklusētajam atslēgu saišķim. "
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to store a password, but there is no "
-#~ "default keyring. To create one, you need to choose the password you wish "
-#~ "to use for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas saglabāt paroli noklusētajā atslēgu saišķī, "
-#~ "bet tāds neeskistē. Lai izveidotu jaunu noklusēto atslēgu saišķi, "
-#~ "izvēlieties tam paroli."
-
-#~ msgid ""
-#~ "The application '%s' wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas saglabāt paroli noklusētajā atslēgu saišķī, bet "
-#~ "tāds neeskistē. Lai izveidotu jaunu noklusēto atslēgu saišķi, izvēlieties "
-#~ "tam paroli."
-
-#~ msgid ""
-#~ "An unknown application wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "Nezināma aplikācija vēlas saglabāt paroli noklusētajā atslēgu saišķī, bet "
-#~ "tāds neeskistē. Lai izveidotu jaunu noklusēto atslēgu saišķi, izvēlieties "
-#~ "tam paroli."
-
-#~ msgid "Create Default Keyring"
-#~ msgstr "Izveidot noklusēto atslēgu saišķi"
-
-#~ msgid "Choose password for default keyring"
-#~ msgstr "Izvēlēties paroli noklusētajam atslēgu saišķim"
-
-#~ msgid "Allow application access to keyring?"
-#~ msgstr "Atļaut aplikācijai pieeju atslēgu saišķim?"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '%s' in %s."
-#~ msgstr ""
-#~ "Programma '%s' (%s) vēlas piekļūt parolei priekš '%s', kura tiek glabāta %"
-#~ "s."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '%s' in the "
-#~ "default keyring."
-#~ msgstr ""
-#~ "Programma '%s' (%s) vēlas piekļūt parolei priekš '%s', kura tiek glabāta "
-#~ "noklusētajā atslēgu saišķī."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '%s' in an "
-#~ "unknown keyring."
-#~ msgstr ""
-#~ "Programma '%s' (%s) vēlas piekļūt parolei priekš '%s', kura tiek glabāta "
-#~ "nezināmā atslēgu saišķī."
-
-#~ msgid "The application '%s' wants to access the password for '%s' in %s."
-#~ msgstr ""
-#~ "Programma '%s' vēlas piekļūt parolei priekš '%s', kura tiek glabāta %s."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '%s' in the default "
-#~ "keyring."
-#~ msgstr ""
-#~ "Programma '%s' vēlas piekļūt parolei priekš '%s', kura tiek glabāta "
-#~ "noklusētajā atslēgu saišķī."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '%s' in an unknown "
-#~ "keyring."
-#~ msgstr ""
-#~ "Programma '%s' vēlas piekļūt parolei priekš '%s', kura tiek glabāta "
-#~ "nezināmā atslēgu saišķī."
-
-#~ msgid "An unknown application wants to access the password for '%s' in %s."
-#~ msgstr ""
-#~ "Nezināma programma vēlas piekļūt parolei priekš '%s', kura tiek glabāta %"
-#~ "s."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '%s' in the "
-#~ "default keyring."
-#~ msgstr ""
-#~ "Nezināma programma vēlas piekļūt parolei priekš '%s', kura tiek glabāta "
-#~ "noklusētajā atslēgu saišķī."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '%s' in an "
-#~ "unknown keyring."
-#~ msgstr ""
-#~ "Nezināma programma vēlas piekļūt parolei priekš '%s', kura tiek glabāta "
-#~ "nezināmā atslēgu saišķī."
-
-#~ msgid "Allow access"
-#~ msgstr "Atļaut pieeju"
-
-#~ msgid "Allow _Once"
-#~ msgstr "Atļaut _vienreiz"
-
-#~ msgid "_Always Allow"
-#~ msgstr "Atļau_t vienmēr"
-
-#~ msgid "You must specify the type of request to run\n"
-#~ msgstr "Lūdzu norādiet pieprasījuma veidu, lai palaistu\n"
-
-#~ msgid "Unknown request type\n"
-#~ msgstr "Nezināms pieprasījuma veids\n"
-
-#~ msgid "Removable Disk: %s"
-#~ msgstr "Maināms disks: %s"
-
-#~ msgid "Removable Disk"
-#~ msgstr "Maināms disks"
-
-#~ msgid "Home"
-#~ msgstr "Mājas"
-
-#~ msgid "The disk or drive this file is located on is not present"
-#~ msgstr "Diska vai ierīce uz kura atrodas šis fails nav atrodams"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas pieeju objekta '<object prop='name'/>' parolei "
-#~ "noklusētajā atslēgu saišķī."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Aplikācija '%s' (%s) vēlas pieeju objekta '<object prop='name'/>' parolei "
-#~ "no %s."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas pieeju objekta '<object prop='name'/>' parolei "
-#~ "noklusētajā atslēgu saišķī."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Aplikācija '%s' vēlas pieeju objekta '<object prop='name'/>' parolei no %"
-#~ "s."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Nezināma aplikācija vēlas pieeju objekta '<object prop='name'/>' parolei "
-#~ "noklusētajā atslēgu saišķī."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Nezināma aplikācija vēlas pieeju objekta '<object prop='name'/>' parolei "
-#~ "no %s."
-
-#~ msgid "Create Login Keyring"
-#~ msgstr "Izveidot pieteikšanās atslēgu saišķi"
-
-#~ msgid "Enter your login password"
-#~ msgstr "Ievadiet savu pieteikšanās paroli"
-
-#~ msgid ""
-#~ "Your login keyring was not automatically created when you logged into "
-#~ "this computer. It will now be created."
-#~ msgstr ""
-#~ "Jūsu pieteikšanās atslēgu saišķis netika automātiski izveidots, kad "
-#~ "pieslēdzāties datoram. Tas tiks izveidots tagad."
-
-#~ msgid "The system wants to import the public key '%s', but it is locked"
-#~ msgstr "Sistēmas vēlas importēt publisko atslēgu '%s', taču tā ir bloķēta"
-
-#~ msgid "Automatically unlock this private key when I log in."
-#~ msgstr "Automātiski atbloķēt privāto atslēgu, kas es pieslēdzos."
-
-#~ msgid "Automatically unlock this certificate when I log in."
-#~ msgstr "Automātiski atbloķēt sertifikātu, kas es pieslēdzos."
-
-#~ msgid "Automatically unlock this public key when I log in."
-#~ msgstr "Automātiski atbloķēt publisko atslēgu, kas es pieslēdzos."
-
-#~ msgid "Automatically unlock this when I log in"
-#~ msgstr "Automātiski atbloķēt, kas es pieslēdzos."
-
-#~ msgid "Deny"
-#~ msgstr "Aizliegt"
-
-#~ msgid "Access Denied"
-#~ msgstr "Pieeja aizliegta"
-
-#~ msgid "The gnome-keyring-daemon application is not running."
-#~ msgstr "gnome-keyring-daemon aplikācija nestrādā."
-
-#~ msgid "Error communicating with gnome-keyring-daemon"
-#~ msgstr "Kļūda komunicējot ar gnome-keyring-daemon"
-
-#~ msgid "A keyring with that name already exists"
-#~ msgstr "Atslēgu saišķis ar tādu nosaukumu jau eksistē"
-
-#~ msgid "Programmer error: The application sent invalid data."
-#~ msgstr "Programmētāja kļūda: aplikācija nosūtījusi nepareizus datus."
-
-#~ msgid "No matching results"
-#~ msgstr "Nav neviena rezultāta"
-
-#~ msgid "A keyring with that name does not exist."
-#~ msgstr "Atslēgu saižķis ar šādu nosaukumu neeksistē."
