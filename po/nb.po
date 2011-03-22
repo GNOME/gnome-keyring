@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.91.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-25 20:42+0100\n"
-"PO-Revision-Date: 2011-01-25 20:43+0100\n"
+"POT-Creation-Date: 2011-03-22 10:59+0100\n"
+"PO-Revision-Date: 2011-03-22 10:59+0100\n"
 "Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Lokalize 1.1\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -49,15 +49,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Opprinnelig passord var feil"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Nytt passord for nøkkelring"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Oppgi passord for ny nøkkelring"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -103,25 +103,25 @@ msgstr "GPG passordagent"
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP-nøkkel: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "Oppgi passord"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "Lås denne nøkkelringen hvis inaktiv i"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "Glem dette passordet etter"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "Glem dette passordet når jeg logger ut"
 
@@ -518,7 +518,10 @@ msgstr "Kunne ikke lese ugyldige eller korrupte data."
 msgid "The data is locked"
 msgstr "Data er låst"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Klarte ikke å finne en plass å lagre festet sertifikat"
@@ -1015,11 +1018,11 @@ msgstr "kommandoer: "
 msgid "          "
 msgstr "            "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1029,17 +1032,25 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Tilgang til nøkkelring"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Lås opp tilgang til passord og andre hemmeligheter"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
