@@ -1,32 +1,39 @@
 
-# Keep these in the order they should be tested
-TESTING_FILES = \
-	test-gck-attributes.c \
-	test-gck-module.c \
-	test-gck-slot.c \
-	test-gck-session.c \
-	test-gck-object.c \
-	test-gck-crypto.c \
-	test-gck-uri.c \
-	test-gck-enumerator.c \
-	test-gck-modules.c
+INCLUDES = \
+	-I$(top_srcdir)/egg \
+	-DSRCDIR=$(srcdir) \
+	-DGCK_API_SUBJECT_TO_CHANGE \
+	$(GLIB_CFLAGS)
 
-TESTING_FLAGS = \
-	-I$(top_srcdir)/gck/ \
-	-DEXTERNAL_TEST \
-	-DGCK_API_SUBJECT_TO_CHANGE
-
-TESTING_LIBS = \
-	$(GIO_LIBS) \
+LDADD =  \
 	$(top_builddir)/gck/libgck.la \
+	$(top_builddir)/egg/libegg-test.la \
+	$(GTHREAD_LIBS) \
+	$(GLIB_LIBS)
+	$(GIO_LIBS) \
 	libmock-test-module.la
 
-include $(top_srcdir)/testing/testing.make
+TEST_PROGS = \
+	test-gck-attributes \
+	test-gck-module \
+	test-gck-slot \
+	test-gck-session \
+	test-gck-object \
+	test-gck-crypto \
+	test-gck-uri \
+	test-gck-enumerator \
+	test-gck-modules
 
-EXTRA_DIST += \
-	test-gck.h
+check_PROGRAMS = $(TEST_PROGS)
 
-# ------------------------------------------------------------------------
+test: $(TEST_PROGS)
+	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+
+check-local: test
+
+if WITH_TESTS
+all-local: $(check_PROGRAMS)
+endif
 
 lib_LTLIBRARIES = libmock-test-module.la
 

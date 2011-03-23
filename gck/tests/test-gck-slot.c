@@ -1,46 +1,76 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* test-gck-slot.c - the GObject PKCS#11 wrapper library
 
+   Copyright (C) 2011 Collabora Ltd.
+
+   The Gnome Keyring Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+
+   The Gnome Keyring Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public
+   License along with the Gnome Library; see the file COPYING.LIB.  If not,
+   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+
+   Author: Stef Walter <stefw@collabora.co.uk>
+*/
+
+#include "config.h"
+
+#include <errno.h>
 #include <glib.h>
 #include <string.h>
 
-#include "test-suite.h"
-#include "gck-test.h"
-#include "gck-private.h"
-#include "test-gck.h"
+#include "gck/gck.h"
+#include "gck/gck-private.h"
+#include "gck/gck-test.h"
 
-static GckModule *module = NULL;
-static GckSlot *slot = NULL;
+typedef struct {
+	GckModule *module;
+	GckSlot *slot;
+} Test;
 
-TESTING_SETUP(load_slots)
+static void
+setup (Test *test, gconstpointer unused)
 {
 	GError *err = NULL;
 	GList *slots;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
-	SUCCESS_RES (module, err);
+	test->module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
+	g_assert_no_error (err);
+	g_assert (GCK_IS_MODULE (test->module));
 
-	slots = gck_module_get_slots (module, TRUE);
+	slots = gck_module_get_slots (test->module, TRUE);
 	g_assert (slots != NULL);
 
-	slot = GCK_SLOT (slots->data);
-	g_object_ref (slot);
+	test->slot = GCK_SLOT (slots->data);
+	g_object_ref (test->slot);
 	gck_list_unref_free (slots);
 
 }
 
-TESTING_TEARDOWN(load_slots)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	g_object_unref (slot);
-	g_object_unref (module);
+	g_object_unref (test->slot);
+	g_object_unref (test->module);
 }
 
-TESTING_TEST(slot_info)
+static void
+test_slot_info (Test *test, gconstpointer unused)
 {
 	GckSlotInfo *info;
 	GckTokenInfo *token;
 	GList *slots, *l;
 
-	slots = gck_module_get_slots (module, FALSE);
+	slots = gck_module_get_slots (test->module, FALSE);
 	g_assert (2 == g_list_length (slots) && "wrong number of slots returned");
 	g_assert (GCK_IS_SLOT (slots->data) && "missing slot one");
 	g_assert (GCK_IS_SLOT (slots->next->data) && "missing slot two");
@@ -57,7 +87,7 @@ TESTING_TEST(slot_info)
 		g_assert (165 == info->firmware_version_minor);
 
 		if (info->flags & CKF_TOKEN_PRESENT) {
-			token = gck_slot_get_token_info (slot);
+			token = gck_slot_get_token_info (test->slot);
 			g_assert (token != NULL && "no token info");
 
 			g_assert (strcmp ("TEST MANUFACTURER", token->manufacturer_id) == 0);
@@ -89,57 +119,60 @@ TESTING_TEST(slot_info)
 	gck_list_unref_free (slots);
 }
 
-TESTING_TEST(slot_props)
+static void
+test_slot_props (Test *test, gconstpointer unused)
 {
 	GckModule *mod;
 	CK_SLOT_ID slot_id;
 
-	g_object_get (slot, "module", &mod, "handle", &slot_id, NULL);
-	g_assert (mod == module);
+	g_object_get (test->slot, "module", &mod, "handle", &slot_id, NULL);
+	g_assert (mod == test->module);
 	g_assert (slot_id == 52);
 
 	g_object_unref (mod);
 }
 
-TESTING_TEST(slot_equals_hash)
+static void
+test_slot_equals_hash (Test *test, gconstpointer unused)
 {
 	GckModule *other_mod;
 	GckSlot *other_slot;
 	GObject *obj;
 	guint hash;
 
-	hash = gck_slot_hash (slot);
+	hash = gck_slot_hash (test->slot);
 	g_assert (hash != 0);
 
-	g_assert (gck_slot_equal (slot, slot));
+	g_assert (gck_slot_equal (test->slot, test->slot));
 
-	other_mod = gck_module_new (gck_module_get_functions (module), 0);
-	other_slot = g_object_new (GCK_TYPE_SLOT, "module", other_mod, "handle", gck_slot_get_handle (slot), NULL);
-	g_assert (gck_slot_equal (slot, other_slot));
+	other_mod = gck_module_new (gck_module_get_functions (test->module), 0);
+	other_slot = g_object_new (GCK_TYPE_SLOT, "module", other_mod, "handle", gck_slot_get_handle (test->slot), NULL);
+	g_assert (gck_slot_equal (test->slot, other_slot));
 	g_object_unref (other_mod);
 	g_object_unref (other_slot);
 
 	obj = g_object_new (G_TYPE_OBJECT, NULL);
-	g_assert (!gck_slot_equal (slot, obj));
+	g_assert (!gck_slot_equal (test->slot, obj));
 	g_object_unref (obj);
 
-	other_slot = g_object_new (GCK_TYPE_SLOT, "module", module, "handle", 8909, NULL);
-	g_assert (!gck_slot_equal (slot, obj));
+	other_slot = g_object_new (GCK_TYPE_SLOT, "module", test->module, "handle", 8909, NULL);
+	g_assert (!gck_slot_equal (test->slot, obj));
 	g_object_unref (other_slot);
 }
 
-TESTING_TEST(slot_mechanisms)
+static void
+test_slot_mechanisms (Test *test, gconstpointer unused)
 {
 	GckMechanisms *mechs;
 	GckMechanismInfo *info;
 	guint i;
 
-	mechs = gck_slot_get_mechanisms (slot);
+	mechs = gck_slot_get_mechanisms (test->slot);
 	g_assert (2 == gck_mechanisms_length (mechs) && "wrong number of mech types returned");
 
 	for (i = 0; i < gck_mechanisms_length (mechs); ++i) {
 
-		info = gck_slot_get_mechanism_info (slot, gck_mechanisms_at (mechs, i));
+		info = gck_slot_get_mechanism_info (test->slot, gck_mechanisms_at (mechs, i));
 		g_assert (info != NULL && "no mech info returned");
 
 		gck_mechanism_info_free (info);
@@ -148,13 +181,14 @@ TESTING_TEST(slot_mechanisms)
 	gck_mechanisms_free (mechs);
 }
 
-TESTING_TEST(token_info_match_null)
+static void
+test_token_info_match_null (Test *test, gconstpointer unused)
 {
 	GckTokenInfo *match;
 	GckTokenInfo *token;
 	gboolean ret;
 
-	token = gck_slot_get_token_info (slot);
+	token = gck_slot_get_token_info (test->slot);
 	match = g_new0 (GckTokenInfo, 1);
 
 	/* Should match, since no fields are set */
@@ -165,13 +199,14 @@ TESTING_TEST(token_info_match_null)
 	gck_token_info_free (token);
 }
 
-TESTING_TEST(token_info_match_label)
+static void
+test_token_info_match_label (Test *test, gconstpointer unused)
 {
 	GckTokenInfo *match;
 	GckTokenInfo *token;
 	gboolean ret;
 
-	token = gck_slot_get_token_info (slot);
+	token = gck_slot_get_token_info (test->slot);
 	match = g_new0 (GckTokenInfo, 1);
 
 	/* Should match since the label and serial are matching */
@@ -184,13 +219,14 @@ TESTING_TEST(token_info_match_label)
 	gck_token_info_free (token);
 }
 
-TESTING_TEST(token_info_match_different)
+static void
+test_token_info_match_different (Test *test, gconstpointer unused)
 {
 	GckTokenInfo *match;
 	GckTokenInfo *token;
 	gboolean ret;
 
-	token = gck_slot_get_token_info (slot);
+	token = gck_slot_get_token_info (test->slot);
 	match = g_new0 (GckTokenInfo, 1);
 
 	/* Should not match since serial is different */
@@ -201,4 +237,27 @@ TESTING_TEST(token_info_match_different)
 
 	gck_token_info_free (match);
 	gck_token_info_free (token);
+}
+
+int
+main (int argc, char **argv)
+{
+	const gchar *srcdir;
+
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	srcdir = g_getenv ("SRCDIR");
+	if (srcdir && chdir (srcdir) < 0)
+		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
+
+	g_test_add ("/gck/slot/slot_info", Test, NULL, setup, test_slot_info, teardown);
+	g_test_add ("/gck/slot/slot_props", Test, NULL, setup, test_slot_props, teardown);
+	g_test_add ("/gck/slot/slot_equals_hash", Test, NULL, setup, test_slot_equals_hash, teardown);
+	g_test_add ("/gck/slot/slot_mechanisms", Test, NULL, setup, test_slot_mechanisms, teardown);
+	g_test_add ("/gck/slot/token_info_match_null", Test, NULL, setup, test_token_info_match_null, teardown);
+	g_test_add ("/gck/slot/token_info_match_label", Test, NULL, setup, test_token_info_match_label, teardown);
+	g_test_add ("/gck/slot/token_info_match_different", Test, NULL, setup, test_token_info_match_different, teardown);
+
+	return g_test_run ();
 }
