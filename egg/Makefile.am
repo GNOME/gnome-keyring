@@ -8,7 +8,8 @@ noinst_LTLIBRARIES = \
 	libegg-secure.la \
 	libegg-prompt.la \
 	libegg-entry-buffer.la \
-	libegg-hex.la
+	libegg-hex.la \
+	libegg-test.la
 
 BUILT_SOURCES = \
 	asn1-def-pk.c asn1-def-pkix.c
@@ -120,6 +121,15 @@ libegg_hex_la_CFLAGS = \
 	$(GLIB_CFLAGS)
 
 libegg_hex_la_LIBS = \
+	$(GLIB_LIBS)
+
+libegg_test_la_SOURCES = \
+	egg-testing.c egg-testing.h
+
+libegg_test_la_CFLAGS = \
+	$(GLIB_CFLAGS)
+
+libegg_test_la_LIBS = \
 	$(GLIB_LIBS)
 
 # -------------------------------------------------------------------

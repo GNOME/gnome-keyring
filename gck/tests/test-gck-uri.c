@@ -21,24 +21,19 @@
    Author: Stef Walter <stefw@collabora.co.uk>
 */
 
+#include "config.h"
+
+#include "gck/gck.h"
+#include "gck/gck-private.h"
+#include "gck/gck-test.h"
+
 #include <glib.h>
+
+#include <errno.h>
 #include <string.h>
 
-#include "test-suite.h"
-#include "gck-test.h"
-#include "gck-private.h"
-
-TESTING_SETUP(uri)
-{
-
-}
-
-TESTING_TEARDOWN(uri)
-{
-
-}
-
-TESTING_TEST(uri_parse)
+static void
+test_parse (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -57,7 +52,8 @@ TESTING_TEST(uri_parse)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST(uri_parse_bad_scheme)
+static void
+test_parse_bad_scheme (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -68,7 +64,8 @@ TESTING_TEST(uri_parse_bad_scheme)
 	g_error_free (error);
 }
 
-TESTING_TEST(uri_parse_with_label)
+static void
+test_parse_with_label (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -87,7 +84,8 @@ TESTING_TEST(uri_parse_with_label)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST(uri_parse_with_label_and_klass)
+static void
+test_parse_with_label_and_klass (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -111,7 +109,8 @@ TESTING_TEST(uri_parse_with_label_and_klass)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST(uri_parse_with_id)
+static void
+test_parse_with_id (void)
 {
 	GError *error = NULL;
 	GckAttribute *attr;
@@ -130,7 +129,8 @@ TESTING_TEST(uri_parse_with_id)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST(uri_parse_with_bad_string_encoding)
+static void
+test_parse_with_bad_string_encoding (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -141,7 +141,8 @@ TESTING_TEST(uri_parse_with_bad_string_encoding)
 	g_error_free (error);
 }
 
-TESTING_TEST(uri_parse_with_bad_binary_encoding)
+static void
+test_parse_with_bad_binary_encoding (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -151,7 +152,8 @@ TESTING_TEST(uri_parse_with_bad_binary_encoding)
 	g_error_free (error);
 }
 
-TESTING_TEST(uri_parse_with_token)
+static void
+test_parse_with_token (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info = NULL;
@@ -168,7 +170,8 @@ TESTING_TEST(uri_parse_with_token)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST(uri_parse_with_token_bad_encoding)
+static void
+test_parse_with_token_bad_encoding (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -179,7 +182,8 @@ TESTING_TEST(uri_parse_with_token_bad_encoding)
 	g_error_free (error);
 }
 
-TESTING_TEST(uri_parse_with_bad_syntax)
+static void
+test_parse_with_bad_syntax (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -190,7 +194,8 @@ TESTING_TEST(uri_parse_with_bad_syntax)
 	g_error_free (error);
 }
 
-TESTING_TEST(uri_parse_with_library)
+static void
+test_parse_with_library (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info = NULL;
@@ -205,7 +210,8 @@ TESTING_TEST(uri_parse_with_library)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST(uri_parse_with_library_bad_encoding)
+static void
+test_parse_with_library_bad_encoding (void)
 {
 	GError *error = NULL;
 	GckUriInfo *uri_info;
@@ -216,7 +222,8 @@ TESTING_TEST(uri_parse_with_library_bad_encoding)
 	g_error_free (error);
 }
 
-TESTING_TEST(uri_build_empty)
+static void
+test_build_empty (void)
 {
 	GckUriInfo uri_info;
 	gchar *uri;
@@ -227,7 +234,8 @@ TESTING_TEST(uri_build_empty)
 	g_free (uri);
 }
 
-TESTING_TEST(uri_build_with_token_info)
+static void
+test_build_with_token_info (void)
 {
 	gchar *uri = NULL;
 	GckUriInfo uri_info;
@@ -261,7 +269,8 @@ TESTING_TEST(uri_build_with_token_info)
 	g_free (uri);
 }
 
-TESTING_TEST(uri_build_with_token_null_info)
+static void
+test_build_with_token_null_info (void)
 {
 	gchar *uri = NULL;
 	GckUriInfo uri_info;
@@ -281,7 +290,8 @@ TESTING_TEST(uri_build_with_token_null_info)
 	g_free (uri);
 }
 
-TESTING_TEST(uri_build_with_token_empty_info)
+static void
+test_build_with_token_empty_info (void)
 {
 	gchar *uri = NULL;
 	GckUriInfo uri_info;
@@ -302,7 +312,8 @@ TESTING_TEST(uri_build_with_token_empty_info)
 	g_free (uri);
 }
 
-TESTING_TEST(uri_build_with_attributes)
+static void
+test_build_with_attributes (void)
 {
 	gchar *uri = NULL;
 	GckUriInfo uri_info;
@@ -349,7 +360,8 @@ TESTING_TEST(uri_build_with_attributes)
 	g_free (uri);
 }
 
-TESTING_TEST (uri_parse_private_key)
+static void
+test_parse_private_key (void)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -367,7 +379,8 @@ TESTING_TEST (uri_parse_private_key)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST (uri_parse_parse_secret_key)
+static void
+test_parse_secret_key (void)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -386,7 +399,8 @@ TESTING_TEST (uri_parse_parse_secret_key)
 }
 
 
-TESTING_TEST (uri_parse_parse_unknown_objecttype)
+static void
+test_parse_unknown_objecttype (void)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -404,7 +418,8 @@ TESTING_TEST (uri_parse_parse_unknown_objecttype)
 	gck_uri_info_free (uri_info);
 }
 
-TESTING_TEST (uri_build_objecttype_cert)
+static void
+test_build_objecttype_cert (void)
 {
 	GckUriInfo *uri_info;
 	gchar *uri;
@@ -421,7 +436,8 @@ TESTING_TEST (uri_build_objecttype_cert)
 	g_free (uri);
 }
 
-TESTING_TEST (uri_build_objecttype_private)
+static void
+test_build_objecttype_private (void)
 {
 	GckUriInfo *uri_info;
 	gchar *uri;
@@ -438,7 +454,8 @@ TESTING_TEST (uri_build_objecttype_private)
 	g_free (uri);
 }
 
-TESTING_TEST (uri_build_objecttype_public)
+static void
+test_build_objecttype_public (void)
 {
 	GckUriInfo *uri_info;
 	gchar *uri;
@@ -455,7 +472,8 @@ TESTING_TEST (uri_build_objecttype_public)
 	g_free (uri);
 }
 
-TESTING_TEST (uri_build_objecttype_secret)
+static void
+test_build_objecttype_secret (void)
 {
 	GckUriInfo *uri_info;
 	gchar *uri;
@@ -472,7 +490,8 @@ TESTING_TEST (uri_build_objecttype_secret)
 	g_free (uri);
 }
 
-TESTING_TEST (uri_build_with_library)
+static void
+test_build_with_library (void)
 {
 	GckUriInfo *uri_info;
 	gchar *uri;
@@ -487,4 +506,57 @@ TESTING_TEST (uri_build_with_library)
 
 	gck_uri_info_free (uri_info);
 	g_free (uri);
+}
+
+
+static void
+null_log_handler (const gchar *log_domain, GLogLevelFlags log_level,
+                  const gchar *message, gpointer user_data)
+{
+
+}
+
+int
+main (int argc, char **argv)
+{
+	const gchar *srcdir;
+
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	srcdir = g_getenv ("SRCDIR");
+	if (srcdir && chdir (srcdir) < 0)
+		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
+
+	/* Suppress these messages in tests */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+	                   null_log_handler, NULL);
+
+	g_test_add_func ("/gck/uri/parse", test_parse);
+	g_test_add_func ("/gck/uri/parse_bad_scheme", test_parse_bad_scheme);
+	g_test_add_func ("/gck/uri/parse_with_label", test_parse_with_label);
+	g_test_add_func ("/gck/uri/parse_with_label_and_klass", test_parse_with_label_and_klass);
+	g_test_add_func ("/gck/uri/parse_with_id", test_parse_with_id);
+	g_test_add_func ("/gck/uri/parse_with_bad_string_encoding", test_parse_with_bad_string_encoding);
+	g_test_add_func ("/gck/uri/parse_with_bad_binary_encoding", test_parse_with_bad_binary_encoding);
+	g_test_add_func ("/gck/uri/parse_with_token", test_parse_with_token);
+	g_test_add_func ("/gck/uri/parse_with_token_bad_encoding", test_parse_with_token_bad_encoding);
+	g_test_add_func ("/gck/uri/parse_with_bad_syntax", test_parse_with_bad_syntax);
+	g_test_add_func ("/gck/uri/parse_with_library", test_parse_with_library);
+	g_test_add_func ("/gck/uri/parse_with_library_bad_encoding", test_parse_with_library_bad_encoding);
+	g_test_add_func ("/gck/uri/build_empty", test_build_empty);
+	g_test_add_func ("/gck/uri/build_with_token_info", test_build_with_token_info);
+	g_test_add_func ("/gck/uri/build_with_token_null_info", test_build_with_token_null_info);
+	g_test_add_func ("/gck/uri/build_with_token_empty_info", test_build_with_token_empty_info);
+	g_test_add_func ("/gck/uri/build_with_attributes", test_build_with_attributes);
+	g_test_add_func ("/gck/uri/parse_private_key", test_parse_private_key);
+	g_test_add_func ("/gck/uri/parse_secret_key", test_parse_secret_key);
+	g_test_add_func ("/gck/uri/parse_unknown_objecttype", test_parse_unknown_objecttype);
+	g_test_add_func ("/gck/uri/build_objecttype_cert", test_build_objecttype_cert);
+	g_test_add_func ("/gck/uri/build_objecttype_private", test_build_objecttype_private);
+	g_test_add_func ("/gck/uri/build_objecttype_public", test_build_objecttype_public);
+	g_test_add_func ("/gck/uri/build_objecttype_secret", test_build_objecttype_secret);
+	g_test_add_func ("/gck/uri/build_with_library", test_build_with_library);
+
+	return g_test_run ();
 }

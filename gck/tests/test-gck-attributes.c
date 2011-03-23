@@ -1,15 +1,39 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* test-gck-attributes.c - the GObject PKCS#11 wrapper library
+
+   Copyright (C) 2011 Collabora Ltd.
+
+   The Gnome Keyring Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+
+   The Gnome Keyring Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public
+   License along with the Gnome Library; see the file COPYING.LIB.  If not,
+   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+
+   Author: Stef Walter <stefw@collabora.co.uk>
+*/
+
+#include "config.h"
 
 #include <glib.h>
 #include <string.h>
 
-#include "test-suite.h"
-#include "gck-test.h"
+#include "gck/gck.h"
 
 #define ATTR_TYPE 55
 #define ATTR_DATA "TEST DATA"
 #define N_ATTR_DATA ((gsize)9)
 
-TESTING_TEST(init_memory)
+static void
+test_init_memory (void)
 {
 	GckAttribute attr;
 
@@ -23,7 +47,8 @@ TESTING_TEST(init_memory)
 	gck_attribute_clear (&attr);
 }
 
-TESTING_TEST(value_to_boolean)
+static void
+test_value_to_boolean (void)
 {
 	CK_BBOOL data = CK_TRUE;
 	gboolean result = FALSE;
@@ -45,7 +70,8 @@ TESTING_TEST(value_to_boolean)
 		g_assert_not_reached ();
 }
 
-TESTING_TEST(value_to_ulong)
+static void
+test_value_to_ulong (void)
 {
 	CK_ULONG data = 34343;
 	gulong result = 0;
@@ -67,7 +93,8 @@ TESTING_TEST(value_to_ulong)
 		g_assert_not_reached ();
 }
 
-TESTING_TEST(init_boolean)
+static void
+test_init_boolean (void)
 {
 	GckAttribute attr;
 
@@ -79,7 +106,8 @@ TESTING_TEST(init_boolean)
 	gck_attribute_clear (&attr);
 }
 
-TESTING_TEST(init_date)
+static void
+test_init_date (void)
 {
 	GckAttribute attr;
 	CK_DATE ck_date;
@@ -98,7 +126,8 @@ TESTING_TEST(init_date)
 	gck_attribute_clear (&attr);
 }
 
-TESTING_TEST(init_ulong)
+static void
+test_init_ulong (void)
 {
 	GckAttribute attr;
 
@@ -110,7 +139,8 @@ TESTING_TEST(init_ulong)
 	gck_attribute_clear (&attr);
 }
 
-TESTING_TEST(init_string)
+static void
+test_init_string (void)
 {
 	GckAttribute attr;
 
@@ -122,7 +152,8 @@ TESTING_TEST(init_string)
 	gck_attribute_clear (&attr);
 }
 
-TESTING_TEST(init_invalid)
+static void
+test_init_invalid (void)
 {
 	GckAttribute attr;
 
@@ -135,7 +166,8 @@ TESTING_TEST(init_invalid)
 	gck_attribute_clear (&attr);
 }
 
-TESTING_TEST(init_empty)
+static void
+test_init_empty (void)
 {
 	GckAttribute attr;
 
@@ -147,7 +179,8 @@ TESTING_TEST(init_empty)
 	gck_attribute_clear (&attr);
 }
 
-TESTING_TEST(new_memory)
+static void
+test_new_memory (void)
 {
 	GckAttribute *attr;
 
@@ -159,7 +192,8 @@ TESTING_TEST(new_memory)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(new_boolean)
+static void
+test_new_boolean (void)
 {
 	GckAttribute *attr;
 
@@ -171,7 +205,8 @@ TESTING_TEST(new_boolean)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(new_date)
+static void
+test_new_date (void)
 {
 	GckAttribute *attr;
 	CK_DATE ck_date;
@@ -190,7 +225,8 @@ TESTING_TEST(new_date)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(new_ulong)
+static void
+test_new_ulong (void)
 {
 	GckAttribute *attr;
 
@@ -202,7 +238,8 @@ TESTING_TEST(new_ulong)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(new_string)
+static void
+test_new_string (void)
 {
 	GckAttribute *attr;
 
@@ -214,7 +251,8 @@ TESTING_TEST(new_string)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(new_invalid)
+static void
+test_new_invalid (void)
 {
 	GckAttribute *attr;
 
@@ -228,7 +266,8 @@ TESTING_TEST(new_invalid)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(new_empty)
+static void
+test_new_empty (void)
 {
 	GckAttribute *attr;
 
@@ -240,7 +279,8 @@ TESTING_TEST(new_empty)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(get_boolean)
+static void
+test_get_boolean (void)
 {
 	GckAttribute *attr;
 
@@ -249,7 +289,8 @@ TESTING_TEST(get_boolean)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(get_date)
+static void
+test_get_date (void)
 {
 	GckAttribute *attr;
 	CK_DATE ck_date;
@@ -265,7 +306,8 @@ TESTING_TEST(get_date)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(get_ulong)
+static void
+test_get_ulong (void)
 {
 	GckAttribute *attr;
 
@@ -274,7 +316,8 @@ TESTING_TEST(get_ulong)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(get_string)
+static void
+test_get_string (void)
 {
 	GckAttribute *attr;
 	gchar *value;
@@ -292,7 +335,8 @@ TESTING_TEST(get_string)
 	gck_attribute_free (attr);
 }
 
-TESTING_TEST(dup_attribute)
+static void
+test_dup_attribute (void)
 {
 	GckAttribute attr, *dup;
 
@@ -308,7 +352,8 @@ TESTING_TEST(dup_attribute)
 	g_assert (dup == NULL);
 }
 
-TESTING_TEST(copy_attribute)
+static void
+test_copy_attribute (void)
 {
 	GckAttribute attr, copy;
 
@@ -320,7 +365,8 @@ TESTING_TEST(copy_attribute)
 	gck_attribute_clear (&copy);
 }
 
-TESTING_TEST(new_attributes)
+static void
+test_new_attributes (void)
 {
 	GckAttributes *attrs;
 
@@ -390,7 +436,8 @@ test_attributes_contents (GckAttributes *attrs, gboolean extras)
 	g_assert (attr->value == NULL);
 }
 
-TESTING_TEST(new_empty_attributes)
+static void
+test_new_empty_attributes (void)
 {
 	GckAttributes *attrs = gck_attributes_new_empty (101UL, 202UL, 303UL, 404UL, GCK_INVALID);
 	GckAttribute *attr;
@@ -405,7 +452,8 @@ TESTING_TEST(new_empty_attributes)
 	}
 }
 
-TESTING_TEST(add_data_attributes)
+static void
+test_add_data_attributes (void)
 {
 	GckAttributes *attrs;
 	GDate *date = g_date_new_dmy (11, 12, 2008);
@@ -422,7 +470,8 @@ TESTING_TEST(add_data_attributes)
 	gck_attributes_unref (attrs);
 }
 
-TESTING_TEST(add_attributes)
+static void
+test_add_attributes (void)
 {
 	GckAttributes *attrs;
 	GckAttribute attr;
@@ -462,7 +511,8 @@ TESTING_TEST(add_attributes)
 	gck_attributes_unref (attrs);
 }
 
-TESTING_TEST(add_all_attributes)
+static void
+test_add_all_attributes (void)
 {
 	GckAttributes *attrs;
 	GckAttributes *copy;
@@ -486,7 +536,8 @@ TESTING_TEST(add_all_attributes)
 }
 
 
-TESTING_TEST(find_attributes)
+static void
+test_find_attributes (void)
 {
 	GckAttribute *attr;
 	GDate check, *date = g_date_new_dmy (13, 12, 2008);
@@ -526,4 +577,41 @@ TESTING_TEST(find_attributes)
 
 	gck_attributes_unref (attrs);
 	g_date_free (date);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/gck/attributes/init_memory", test_init_memory);
+	g_test_add_func ("/gck/attributes/value_to_boolean", test_value_to_boolean);
+	g_test_add_func ("/gck/attributes/value_to_ulong", test_value_to_ulong);
+	g_test_add_func ("/gck/attributes/init_boolean", test_init_boolean);
+	g_test_add_func ("/gck/attributes/init_date", test_init_date);
+	g_test_add_func ("/gck/attributes/init_ulong", test_init_ulong);
+	g_test_add_func ("/gck/attributes/init_string", test_init_string);
+	g_test_add_func ("/gck/attributes/init_invalid", test_init_invalid);
+	g_test_add_func ("/gck/attributes/init_empty", test_init_empty);
+	g_test_add_func ("/gck/attributes/new_memory", test_new_memory);
+	g_test_add_func ("/gck/attributes/new_boolean", test_new_boolean);
+	g_test_add_func ("/gck/attributes/new_date", test_new_date);
+	g_test_add_func ("/gck/attributes/new_ulong", test_new_ulong);
+	g_test_add_func ("/gck/attributes/new_string", test_new_string);
+	g_test_add_func ("/gck/attributes/new_invalid", test_new_invalid);
+	g_test_add_func ("/gck/attributes/new_empty", test_new_empty);
+	g_test_add_func ("/gck/attributes/get_boolean", test_get_boolean);
+	g_test_add_func ("/gck/attributes/get_date", test_get_date);
+	g_test_add_func ("/gck/attributes/get_ulong", test_get_ulong);
+	g_test_add_func ("/gck/attributes/get_string", test_get_string);
+	g_test_add_func ("/gck/attributes/dup_attribute", test_dup_attribute);
+	g_test_add_func ("/gck/attributes/copy_attribute", test_copy_attribute);
+	g_test_add_func ("/gck/attributes/new_attributes", test_new_attributes);
+	g_test_add_func ("/gck/attributes/new_empty_attributes", test_new_empty_attributes);
+	g_test_add_func ("/gck/attributes/add_data_attributes", test_add_data_attributes);
+	g_test_add_func ("/gck/attributes/add_attributes", test_add_attributes);
+	g_test_add_func ("/gck/attributes/add_all_attributes", test_add_all_attributes);
+	g_test_add_func ("/gck/attributes/find_attributes", test_find_attributes);
+
+	return g_test_run ();
 }

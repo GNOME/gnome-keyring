@@ -1,61 +1,99 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* test-gck-enumerator.c - the GObject PKCS#11 wrapper library
+
+   Copyright (C) 2011 Collabora Ltd.
+
+   The Gnome Keyring Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+
+   The Gnome Keyring Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public
+   License along with the Gnome Library; see the file COPYING.LIB.  If not,
+   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+
+   Author: Stef Walter <stefw@collabora.co.uk>
+*/
+
+#include "config.h"
+
+#include "gck/gck.h"
+#include "gck/gck-mock.h"
+#include "gck/gck-private.h"
+#include "gck/gck-test.h"
+
+#include "egg/egg-testing.h"
 
 #include <glib.h>
+
+#include <errno.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
-#include "test-suite.h"
-#include "test-gck.h"
-#include "gck-test.h"
-#include "gck-private.h"
+typedef struct {
+	GList *modules;
+	GckModule *module;
+} Test;
 
-static GList *modules = NULL;
-static GckModule *module = NULL;
-
-TESTING_SETUP(enumerator)
+static void
+setup (Test *test, gconstpointer unused)
 {
 	GError *err = NULL;
 
 	/* Successful load */
-	module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
-	SUCCESS_RES (module, err);
+	test->module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
+	g_assert_no_error (err);
+	g_assert (GCK_IS_MODULE (test->module));
 
-	modules = g_list_append (NULL, g_object_ref (module));
+	test->modules = g_list_append (NULL, g_object_ref (test->module));
 }
 
-TESTING_TEARDOWN(enumerator)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	gck_list_unref_free (modules);
-	modules = NULL;
+	gck_list_unref_free (test->modules);
+	test->modules = NULL;
 
-	g_object_unref (module);
-	module = NULL;
+	g_object_unref (test->module);
+	test->module = NULL;
 }
 
-TESTING_TEST(enumerator_create)
+static void
+test_create (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GckEnumerator *en;
 
 	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (modules, 0, uri_info);
+	en = _gck_enumerator_new (test->modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 	g_object_unref (en);
 }
 
-TESTING_TEST(enumerator_create_slots)
+static void
+test_create_slots (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GckEnumerator *en;
 	GList *slots;
 
 	uri_info = _gck_uri_info_new ();
-	slots = gck_module_get_slots (module, FALSE);
+	slots = gck_module_get_slots (test->module, FALSE);
 	en = _gck_enumerator_new (slots, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 	g_object_unref (en);
 	gck_list_unref_free (slots);
 }
 
-TESTING_TEST(enumerator_next)
+static void
+test_next (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -63,7 +101,7 @@ TESTING_TEST(enumerator_next)
 	GckObject *obj;
 
 	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (modules, 0, uri_info);
+	en = _gck_enumerator_new (test->modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
@@ -73,7 +111,8 @@ TESTING_TEST(enumerator_next)
 	g_object_unref (en);
 }
 
-TESTING_TEST(enumerator_next_slots)
+static void
+test_next_slots (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -82,7 +121,7 @@ TESTING_TEST(enumerator_next_slots)
 	GckObject *obj;
 
 	uri_info = _gck_uri_info_new ();
-	slots = gck_module_get_slots (module, FALSE);
+	slots = gck_module_get_slots (test->module, FALSE);
 	en = _gck_enumerator_new (slots, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
@@ -94,7 +133,8 @@ TESTING_TEST(enumerator_next_slots)
 	gck_list_unref_free (slots);
 }
 
-TESTING_TEST(enumerator_next_and_resume)
+static void
+test_next_and_resume (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -102,15 +142,15 @@ TESTING_TEST(enumerator_next_and_resume)
 	GckObject *obj, *obj2;
 
 	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (modules, 0, uri_info);
+	en = _gck_enumerator_new (test->modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	obj = gck_enumerator_next (en, NULL, &error);
-	SUCCESS_RES (obj, error);
+	g_assert_no_error (error);
 	g_assert (GCK_IS_OBJECT (obj));
 
 	obj2 = gck_enumerator_next (en, NULL, &error);
-	SUCCESS_RES (obj2, error);
+	g_assert_no_error (error);
 	g_assert (GCK_IS_OBJECT (obj2));
 
 	g_assert (!gck_object_equal (obj, obj2));
@@ -120,7 +160,8 @@ TESTING_TEST(enumerator_next_and_resume)
 	g_object_unref (en);
 }
 
-TESTING_TEST(enumerator_next_n)
+static void
+test_next_n (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -128,11 +169,11 @@ TESTING_TEST(enumerator_next_n)
 	GList *objects, *l;
 
 	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (modules, 0, uri_info);
+	en = _gck_enumerator_new (test->modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);
-	SUCCESS_RES (objects, error);
+	g_assert_no_error (error);
 	g_assert_cmpint (g_list_length (objects), ==, 5);
 	for (l = objects; l; l = g_list_next (l))
 		g_assert (GCK_IS_OBJECT (l->data));
@@ -146,10 +187,11 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 {
 	*((GAsyncResult**)user_data) = result;
 	g_object_ref (result);
-	testing_wait_stop ();
+	egg_test_wait_stop ();
 }
 
-TESTING_TEST(enumerator_next_async)
+static void
+test_next_async (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GAsyncResult *result = NULL;
@@ -158,15 +200,15 @@ TESTING_TEST(enumerator_next_async)
 	GList *objects, *l;
 
 	uri_info = _gck_uri_info_new ();
-	en = _gck_enumerator_new (modules, 0, uri_info);
+	en = _gck_enumerator_new (test->modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	gck_enumerator_next_async (en, -1, NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	egg_test_wait_until (500);
 	g_assert (result);
 
 	objects = gck_enumerator_next_finish (en, result, &error);
-	SUCCESS_RES (objects, error);
+	g_assert_no_error (error);
 	g_assert_cmpint (g_list_length (objects), ==, 5);
 	for (l = objects; l; l = g_list_next (l))
 		g_assert (GCK_IS_OBJECT (l->data));
@@ -176,7 +218,8 @@ TESTING_TEST(enumerator_next_async)
 	g_object_unref (en);
 }
 
-TESTING_TEST(enumerator_attributes)
+static void
+test_attributes (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -186,11 +229,11 @@ TESTING_TEST(enumerator_attributes)
 	uri_info = _gck_uri_info_new ();
 	uri_info->attributes = gck_attributes_new ();
 	gck_attributes_add_string (uri_info->attributes, CKA_LABEL, "Private Capitalize Key");
-	en = _gck_enumerator_new (modules, 0, uri_info);
+	en = _gck_enumerator_new (test->modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);
-	SUCCESS_RES (objects, error);
+	g_assert_no_error (error);
 	g_assert_cmpint (g_list_length (objects), ==, 1);
 	g_assert (GCK_IS_OBJECT (objects->data));
 
@@ -198,7 +241,8 @@ TESTING_TEST(enumerator_attributes)
 	g_object_unref (en);
 }
 
-TESTING_TEST(enumerator_token_match)
+static void
+test_token_match (Test *test, gconstpointer unused)
 {
 	GckUriInfo *uri_info;
 	GError *error = NULL;
@@ -208,7 +252,7 @@ TESTING_TEST(enumerator_token_match)
 	uri_info = _gck_uri_info_new ();
 	uri_info->token_info = g_new0 (GckTokenInfo, 1);
 	uri_info->token_info->label = g_strdup ("Invalid token name");
-	en = _gck_enumerator_new (modules, 0, uri_info);
+	en = _gck_enumerator_new (test->modules, 0, uri_info);
 	g_assert (GCK_IS_ENUMERATOR (en));
 
 	objects = gck_enumerator_next_n (en, -1, NULL, &error);
@@ -217,4 +261,29 @@ TESTING_TEST(enumerator_token_match)
 
 	gck_list_unref_free (objects);
 	g_object_unref (en);
+}
+
+int
+main (int argc, char **argv)
+{
+	const gchar *srcdir;
+
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	srcdir = g_getenv ("SRCDIR");
+	if (srcdir && chdir (srcdir) < 0)
+		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
+
+	g_test_add ("/gck/enumerator/create", Test, NULL, setup, test_create, teardown);
+	g_test_add ("/gck/enumerator/create_slots", Test, NULL, setup, test_create_slots, teardown);
+	g_test_add ("/gck/enumerator/next", Test, NULL, setup, test_next, teardown);
+	g_test_add ("/gck/enumerator/next_slots", Test, NULL, setup, test_next_slots, teardown);
+	g_test_add ("/gck/enumerator/next_and_resume", Test, NULL, setup, test_next_and_resume, teardown);
+	g_test_add ("/gck/enumerator/next_n", Test, NULL, setup, test_next_n, teardown);
+	g_test_add ("/gck/enumerator/next_async", Test, NULL, setup, test_next_async, teardown);
+	g_test_add ("/gck/enumerator/attributes", Test, NULL, setup, test_attributes, teardown);
+	g_test_add ("/gck/enumerator/token_match", Test, NULL, setup, test_token_match, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

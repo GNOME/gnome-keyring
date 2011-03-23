@@ -92,6 +92,17 @@ run-tests
 /egg/tests/test-spawn
 /egg/tests/test-symkey
 
+/gck/tests/test-gck-attributes
+/gck/tests/test-gck-crypto
+/gck/tests/test-gck-enumerator
+/gck/tests/test-gck-module
+/gck/tests/test-gck-modules
+/gck/tests/test-gck-object
+/gck/tests/test-gck-session
+/gck/tests/test-gck-slot
+/gck/tests/test-gck-uri
+
+
 /daemon/dbus/tests/test-secret-util
 
 /ui/gnome-keyring-prompt.desktop
