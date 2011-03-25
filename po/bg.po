@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 22:40+0200\n"
-"PO-Revision-Date: 2011-02-16 22:40+0200\n"
+"POT-Creation-Date: 2011-03-25 22:02+0200\n"
+"PO-Revision-Date: 2011-03-25 22:02+0200\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -51,15 +51,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Първоначалната парола е грешна"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Нова парола за ключодържател"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Изберете паролата за новия ключодържател"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -105,25 +105,25 @@ msgstr "Агент за пароли на GPG"
 msgid "Unknown"
 msgstr "Непознат"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Ключ за PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "Въведете парола"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "Забравяне на паролата след бездействане от"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "Забравяне на паролата след"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "Забравяне на паролата при излизане"
 
@@ -172,7 +172,7 @@ msgstr "Лично име"
 msgid "Surname"
 msgstr "Фамилия"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:436
 msgid "Serial Number"
 msgstr "Сериен номер"
 
@@ -262,109 +262,113 @@ msgstr "Неочаквана грешка при прочитане на дан�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Неочаквана грешка в waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gcr/gcr-certificate-renderer.c:83 ../gcr/gcr-parser.c:201
 msgid "Certificate"
 msgstr "Сертификат"
 
-#: ../gcr/gcr-certificate-renderer.c:107
+#: ../gcr/gcr-certificate-renderer.c:108
 msgid "Extension"
 msgstr "Разширение"
 
-#: ../gcr/gcr-certificate-renderer.c:112
+#: ../gcr/gcr-certificate-renderer.c:113
 msgid "Identifier"
 msgstr "Идентификатор"
 
-#: ../gcr/gcr-certificate-renderer.c:120
+#: ../gcr/gcr-certificate-renderer.c:121
 msgid "Value"
 msgstr "Стойност"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Critical"
 msgstr "Критичен"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "Yes"
 msgstr "Да"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:127
 msgid "No"
 msgstr "Не"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:198
+msgid "Couldn't export the certificate."
+msgstr "Сертификатът не може да бъде изнесен."
+
+#: ../gcr/gcr-certificate-renderer.c:396
 msgid "Identity"
 msgstr "Идентичност"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:400
 msgid "Verified by"
 msgstr "Проверен от"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:407
 msgid "Expires"
 msgstr "Изтича на"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:417
 msgid "Subject Name"
 msgstr "Име на получателя"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:421
 msgid "Issuer Name"
 msgstr "Име на издателя"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:425
 msgid "Issued Certificate"
 msgstr "Издаден сертификат"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:430
 msgid "Version"
 msgstr "Версия"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:444
 msgid "Not Valid Before"
 msgstr "Не е валиден преди"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:449
 msgid "Not Valid After"
 msgstr "Не е валиден след"
 
-#: ../gcr/gcr-certificate-renderer.c:401
+#: ../gcr/gcr-certificate-renderer.c:458
 msgid "Signature Algorithm"
 msgstr "Алгоритъм на подписа"
 
-#: ../gcr/gcr-certificate-renderer.c:406
+#: ../gcr/gcr-certificate-renderer.c:463
 msgid "Signature Parameters"
 msgstr "Параметри на подписа"
 
-#: ../gcr/gcr-certificate-renderer.c:413
+#: ../gcr/gcr-certificate-renderer.c:470
 msgid "Signature"
 msgstr "Подпис"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:475
 msgid "Public Key Info"
 msgstr "Информация за публичен ключ"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:480
 msgid "Key Algorithm"
 msgstr "Алгоритъм на ключа"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:486
 msgid "Key Parameters"
 msgstr "Параметри на ключа"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:493
 msgid "Key Size"
 msgstr "Размер на ключа"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
+#: ../gcr/gcr-certificate-renderer.c:501 ../gcr/gcr-key-renderer.c:271
 #: ../gcr/gcr-parser.c:204
 msgid "Public Key"
 msgstr "Публичен ключ"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
+#: ../gcr/gcr-certificate-renderer.c:506
 msgid "Fingerprints"
 msgstr "Отпечатъци"
 
@@ -535,7 +539,7 @@ msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "Адресът е неправилен . Кодирането на полето „%s“ е неправилно."
 
 #: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "В адреса липсва схемата „pkcs11“."
 
 #: ../gck/gck-misc.c:101
@@ -1022,11 +1026,11 @@ msgstr "команди: "
 msgid "          "
 msgstr "         "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Запазване на паролите нешифрирани?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1035,17 +1039,25 @@ msgstr ""
 "Ако изберете празна парола, запазените ви пароли няма да бъдат шифрирани "
 "надеждно и ще бъдат достъпни за всеки, който има достъп до вашите файлове."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Използване на незащитен ключодържател"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Паролите не съвпадат."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Паролата не може да бъде празна"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Достъп до ключодържателя"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Отключване на паролите и другите тайни"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
