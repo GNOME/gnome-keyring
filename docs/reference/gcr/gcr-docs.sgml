@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY version SYSTEM "version.xml">
+]>
 <book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
 	<bookinfo>
-		<title>gcr Reference Manual</title>
+		<title>Gcr Library Reference Manual</title>
 		<releaseinfo>
-			for gcr [VERSION]
-			The latest version of this documentation can be found on-line at
-			<ulink role="online-location" url="http://[SERVER]/gcr/index.html">http://[SERVER]/gcr/</ulink>.
+			for Gcr &version;
+			An online version of this documentation can be found on-line at
+			<ulink role="online-location" url="http://library.gnome.org/devel/gcr/stable/">http://library.gnome.org/devel/gcr/stable/</ulink>.
 		</releaseinfo>
 	</bookinfo>
 

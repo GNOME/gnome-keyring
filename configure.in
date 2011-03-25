@@ -718,8 +718,10 @@ daemon/login/Makefile
 daemon/ssh-agent/Makefile
 docs/Makefile
 docs/reference/Makefile
-docs/reference/gcr/Makefile
 docs/reference/gck/Makefile
+docs/reference/gck/version.xml
+docs/reference/gcr/Makefile
+docs/reference/gcr/version.xml
 egg/Makefile
 egg/tests/Makefile
 gck/gck.pc
