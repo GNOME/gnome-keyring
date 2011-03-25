@@ -123,6 +123,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
 	gcr-util.c gcr-util.h \
 	gcr-viewer.c gcr-viewer.h \
+	gcr-viewer-window.c gcr-viewer-window.h \
 	$(BUILT_SOURCES)
 
 libgcr_@GCR_MAJOR@_la_CFLAGS = \
@@ -177,6 +178,20 @@ pkgconfig_DATA = gcr-$(GCR_MAJOR).pc
 gcr-$(GCR_MAJOR).pc: gcr.pc
 	cp gcr.pc gcr-$(GCR_MAJOR).pc
 
+
+# ----------------------------------------------------------------
+# TOOLS
+
+bin_PROGRAMS = gcr-viewer
+
+gcr_viewer_SOURCES = \
+	gcr-viewer-tool.c
+
+gcr_viewer_CFLAGS = \
+	-DLOCALEDIR=\""$(datadir)/locale"\"
+
+gcr_viewer_LDADD = \
+	$(builddir)/libgcr-$(GCR_MAJOR).la
 
 # ----------------------------------------------------------------
 

@@ -186,6 +186,8 @@ run-tests
 /pkcs11/xdg-store/tests/test-xdg-module
 /pkcs11/xdg-store/tests/test-xdg-trust
 
+/gcr/gcr-viewer
+
 /daemon/dbus/tests/test-secret-util
 
 /ui/gnome-keyring-prompt.desktop
