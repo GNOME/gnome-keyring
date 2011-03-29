@@ -28,8 +28,6 @@
 /* Don't use this header while preparing tests */
 #ifndef TESTING_PREPARING
 
-#include "config.h"
-
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gstdio.h>
