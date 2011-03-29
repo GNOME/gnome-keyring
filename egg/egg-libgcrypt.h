@@ -19,8 +19,6 @@
  * 02111-1307, USA.  
  */
 
-#include "config.h"
-
 #ifndef EGG_LIBGCRYPT_H_
 #define EGG_LIBGCRYPT_H_
 

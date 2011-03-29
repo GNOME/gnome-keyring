@@ -24,8 +24,6 @@
 #ifndef GKM_RPC_CALLS_H
 #define GKM_RPC_CALLS_H
 
-#include "config.h"
-
 #include <stdlib.h>
 #include <stdarg.h>
 
