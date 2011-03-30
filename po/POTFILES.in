@@ -12,8 +12,10 @@ daemon/login/gkd-login.c
 daemon/org.gnome.keyring.service.in
 egg/egg-oid.c
 egg/egg-spawn.c
+gcr/gcr-certificate-exporter.c
 gcr/gcr-certificate-renderer.c
 gcr/gcr-certificate-widget.c
+gcr/gcr-display-view.c
 [type: gettext/glade]gcr/gcr-import-dialog.ui
 [type: gettext/glade]gcr/gcr-unlock-options-widget.ui
 gcr/gcr-importer.c

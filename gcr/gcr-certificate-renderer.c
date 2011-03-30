@@ -451,7 +451,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	g_free (display);
 
 	/* Signature */
-	_gcr_display_view_append_heading (view, renderer, ("Signature"));
+	_gcr_display_view_append_heading (view, renderer, _("Signature"));
 
 	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "signatureAlgorithm", "algorithm", NULL));
 	text = egg_oid_get_description (oid);

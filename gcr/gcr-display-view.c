@@ -27,6 +27,7 @@
 #include "egg/egg-hex.h"
 
 #include <gdk/gdk.h>
+#include <glib/gi18n-lib.h>
 
 static void _gcr_display_view_viewer_iface (GcrViewerIface *iface);
 
@@ -245,6 +246,7 @@ create_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 	GtkWidget *widget;
 	GtkWidget *label;
 	GtkWidget *alignment;
+	gchar *text;
 
 	item = g_new0 (GcrDisplayItem, 1);
 	item->display_view = self;
@@ -278,10 +280,12 @@ create_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 
 	widget = gtk_expander_new_with_mnemonic ("");
 	label = gtk_expander_get_label_widget (GTK_EXPANDER (widget));
-	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), "<b>_Details</b>");
+	text = g_strdup_printf ("<b>%s</b>", _("_Details"));
+	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), text);
 	g_signal_connect (widget, "notify::expanded", G_CALLBACK (on_expander_expanded), item);
 	g_signal_connect (widget, "realize", G_CALLBACK (on_expander_realize), NULL);
 	item->expanded = gtk_expander_get_expanded (GTK_EXPANDER (widget));
+	g_free (text);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 0.5, 0.5);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 9, 0, 0);
