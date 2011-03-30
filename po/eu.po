@@ -1,4 +1,4 @@
-# translation of eu_to_be_translate.po to Basque
+# translation of eu.po to Basque
 # translation of gnome-keyring.HEAD.po  to Basque
 # Copyright (C) 2004 THE eu'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the eu package.
@@ -8,20 +8,20 @@
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: eu_to_be_translate\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 22:12+0100\n"
-"PO-Revision-Date: 2011-02-16 22:18+0100\n"
+"Project-Id-Version: eu\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
+"POT-Creation-Date: 2011-03-10 08:08+0000\n"
+"PO-Revision-Date: 2011-03-30 23:12+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -50,15 +50,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Jatorriko pasahitza ez da zuzena"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Gako-sorta berriaren pasahitza"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Aukeratu gako-sorta berriaren pasahitza"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -254,8 +254,7 @@ msgstr "SHA1 DSA-rekin"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Ustekabeko errorea select() funtzioan ume prozesutik (%s) datuak irakurtzean"
+msgstr "Ustekabeko errorea select() funtzioan ume prozesutik (%s) datuak irakurtzean"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
@@ -524,7 +523,7 @@ msgstr "Datuak blokeatuta daude"
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
 #: ../gcr/gcr-trust.c:420
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Ezin izan da zaztutatutako ziurtagiriak gordetzeko lekurik aurkitu"
 
@@ -894,8 +893,7 @@ msgstr ""
 "etorriko gako-sortara atzitzekoarekin."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
+msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Zure saioaren gako-sorta ez da automatikoki desblokeatu (ordenagailuan saioa "
 "hastean)."
@@ -938,8 +936,7 @@ msgstr "Idatzi pasahitza gako publikoa desblokeatzeko"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Aplikazio batek '%s' gako pribatua atzitu nahi du, baina blokeatuta dago"
+msgstr "Aplikazio batek '%s' gako pribatua atzitu nahi du, baina blokeatuta dago"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
@@ -951,8 +948,7 @@ msgstr "Aplikazio batek '%s' ziurtagiria atzitu nahi du, baina blokeatuta dago"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Aplikazio batek '%s' gako publikoa atzitu nahi du, baina blokeatuta dago"
+msgstr "Aplikazio batek '%s' gako publikoa atzitu nahi du, baina blokeatuta dago"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
@@ -974,8 +970,7 @@ msgstr "Idatzi pasahitza ziurtagirien/gakoen biltegia desblokeatzeko"
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
-msgstr ""
-"Aplikazio batek '%s' ziurtagiria/gakoa atzitu nahi du, baina blokeatuta dago"
+msgstr "Aplikazio batek '%s' ziurtagiria/gakoa atzitu nahi du, baina blokeatuta dago"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
@@ -1002,10 +997,8 @@ msgstr "Pasahitza aldatu behar da biltegia babesteko"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr ""
-"'%s'(r)en pasahitza aldatzeko, jatorrizkoa eta pasahitz berriak behar dira"
+msgid "To change the password for '%s', the original and new passwords are required"
+msgstr "'%s'(r)en pasahitza aldatzeko, jatorrizkoa eta pasahitz berriak behar dira"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -1021,11 +1014,11 @@ msgstr "komandoak: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Gorde pasahitzak enkriptatu gabe?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1035,17 +1028,25 @@ msgstr ""
 "segurtasunez enkriptatuko. Zure fitxategiak atzitu ditzakeen edonork "
 "pasahitz hauek atzi ditzake."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Erabili segurtasun gabeko biltegia"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Pasahitzak ez datoz bat"
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Pasahitza ezin da hutsa izan"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Gako-sortaren sarbidetza"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Desblokeatu sarbidetzea pasahitz eta bestelako ezkutukoentzat"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1075,105 +1076,3 @@ msgstr "Pasahitz _zaharra:"
 msgid "_Password:"
 msgstr "_Pasahitza:"
 
-#~ msgid "Email"
-#~ msgstr "Helbide elektronikoa"
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>Ez da ziurtagiriaren zatia</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>ezezaguna</i>"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Ez da ziurtagiriaren zatia>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Hatz-markak</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Jaulkitzailea</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Honentzat jaulkia</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>Ziurtagiri hau ondorengo erabileretarako egiaztatu da:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Baliozkotasuna</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Izen arrunta (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Posta elektronikoko hartzailearen ziurtagiria"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Posta elektronikoko sinatzailearen ziurtagiria"
-
-#~ msgid "Issued On"
-#~ msgstr "Jaulkitze-data"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5 hatz-marka"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Erakundea (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Erakundeko Saila (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 hatz-marka"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL bezero-ziurtagiria"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL zerbitzari-ziurtagiria"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Inportatu ziurtagiriak eta gakoak</span>"
-
-#~ msgid ""
-#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#~ "only takes effect during startup with gnome-session, (ie: when the user "
-#~ "logs in). This setting may be overridden when certain command line "
-#~ "arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemon-ean. gnome-"
-#~ "session-ekin abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
-#~ "saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko "
-#~ "argumentu batzuk daemon-ari ematean."
-
-#~ msgid ""
-#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
-#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
-#~ "This setting may be overridden when certain command line arguments are "
-#~ "passed to the daemon."
-#~ msgstr ""
-#~ "Aukera honek SSH agentea gaitzen du gnome-keyring daemon-ean. gnome-"
-#~ "keyring-daemon abiaraztean soilik hartzen da eragina (adib. "
-#~ "erabiltzaileak saioa hastean). Ezarpen hau gainidatzi egingo da komando-"
-#~ "lerroko argumentu batzuk daemon-ari ematean."
-
-#~ msgid ""
-#~ "This option enables the secret service component in the gnome-keyring "
-#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
-#~ "the user logs in). This setting may be overridden when certain command "
-#~ "line arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Aukera honek PKCS#11 osagaia gaitzen du gnome-keyring daemon-ean. gnome-"
-#~ "session-ekin abiaraztean soilik hartzen da eragina (adib. erabiltzaileak "
-#~ "saioa hastean). Ezarpen hau gainidatzi egingo da komando-lerroko "
-#~ "argumentu batzuk daemon-ari ematean."
-
-#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-#~ msgstr "'Gnome-keyring'-en PKCS#11 osagaia gaitu behar den ala ez."
-
-#~ msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgstr "'Gnome-keyring'-en SSH agentea gaitu behar den ala ez."
-
-#~ msgid "Whether the gnome-keyring secret service is enabled."
-#~ msgstr "'Gnome-keyring'-en ezkutuko zerbitzua gaitu behar den ala ez."
