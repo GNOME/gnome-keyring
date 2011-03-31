@@ -1780,7 +1780,7 @@ state_parse_buffer (GcrParsing *self, gboolean async)
 static void
 complete_read_buffer (GcrParsing *self, gssize count, GError *error)
 {
-	g_assert (GCR_IS_IMPORTER (self));
+	g_assert (GCR_IS_PARSING (self));
 	g_assert (self->buffer);
 
 	/* A failure */
@@ -1820,7 +1820,7 @@ state_read_buffer (GcrParsing *self, gboolean async)
 	gssize count;
 	gsize at;
 
-	g_assert (GCR_IS_IMPORTER (self));
+	g_assert (GCR_IS_PARSING (self));
 	g_assert (G_IS_INPUT_STREAM (self->input));
 
 	if (!self->buffer)
@@ -1940,7 +1940,7 @@ gcr_parser_parse_stream_async (GcrParser *self, GInputStream *input, GCancellabl
 	GcrParsing *parsing;
 
 	g_return_if_fail (GCR_IS_PARSER (self));
-	g_return_if_fail (G_IS_INPUT_STREAM (self));
+	g_return_if_fail (G_IS_INPUT_STREAM (input));
 
 	parsing = gcr_parsing_new (self, input, cancel);
 	parsing->async = TRUE;
