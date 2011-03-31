@@ -24,6 +24,9 @@
 #include "gcr-deprecated.h"
 #include "gcr-renderer.h"
 
+#include "gcr-certificate-renderer.h"
+#include "gcr-key-renderer.h"
+
 #include "gck/gck.h"
 
 #include <gtk/gtk.h>
@@ -229,6 +232,8 @@ gcr_renderer_create (const gchar *label, GckAttributes *attrs)
 
 	g_return_val_if_fail (attrs, NULL);
 
+	gcr_renderer_register_well_known ();
+
 	if (!registered_renderers)
 		return NULL;
 
@@ -278,4 +283,11 @@ gcr_renderer_register (GType renderer_type, GckAttributes *attrs)
 	registered.attrs = gck_attributes_ref (attrs);
 	g_array_append_val (registered_renderers, registered);
 	registered_sorted = FALSE;
+}
+
+void
+gcr_renderer_register_well_known (void)
+{
+	g_type_class_unref (g_type_class_ref (GCR_TYPE_CERTIFICATE_RENDERER));
+	g_type_class_unref (g_type_class_ref (GCR_TYPE_KEY_RENDERER));
 }

@@ -77,6 +77,8 @@ GcrRenderer*              gcr_renderer_create                     (const gchar *
 void                      gcr_renderer_register                   (GType renderer_type,
                                                                    GckAttributes *attrs);
 
+void                   gcr_renderer_register_well_known           (void);
+
 G_END_DECLS
 
 #endif /* __GCR_RENDERER_H__ */
