@@ -112,7 +112,7 @@ gkd_util_init_master_directory (const gchar *replace)
 
 	/* Generate a new directory */
 	if (!valid) {
-		master_directory = g_build_filename (g_get_tmp_dir (), "keyring-XXXXXX", NULL);
+		master_directory = g_build_filename (g_get_user_runtime_dir (), "keyring-XXXXXX", NULL);
 		if (egg_mkdtemp (master_directory) == NULL)
 			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
 
