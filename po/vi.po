@@ -1,6 +1,6 @@
 # Vietnamese translation of GNOME Keyring.
 # Copyright © 2010 GNOME i18n Project for Vietnamese.
-# Nguyễn Thái Ngọc Duy <pclouds@vnlinux.org>, 2004,2008.
+# Nguyễn Thái Ngọc Duy <pclouds@vnlinux.org>, 2004,2008,2011.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
 #
 msgid ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
 "POT-Creation-Date: 2011-03-10 08:08+0000\n"
-"PO-Revision-Date: 2011-01-03 16:51+0900\n"
+"PO-Revision-Date: 2011-04-03 14:55+0700\n"
 "Last-Translator: Nguyen Vu Hung <vuhung16plus@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -373,11 +373,11 @@ msgstr "Nhập chứng nhận/khoá"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
-msgstr "Nhập vào :"
+msgstr "Nhập vào:"
 
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
-msgstr "Mật khẩu :"
+msgstr "Mật khẩu:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -484,7 +484,7 @@ msgid "Public DSA Key"
 msgstr "Khoá công khai DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
-#, fuzzy, c-format
+#, c-format
 #| msgid "%d bits"
 msgid "%d bit"
 msgid_plural "%d bits"
@@ -870,7 +870,7 @@ msgstr "Không thể phân tích cú pháp của khoá SSH công khai"
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #, c-format
 msgid "Unlock password for: %s"
-msgstr "Mật khẩu gỡ khoá cho : %s"
+msgstr "Mật khẩu gỡ khoá cho: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
@@ -1007,16 +1007,16 @@ msgstr "Cần nhập mật khẩu cũ và mới để đổi mật khẩu cho '%
 #: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr ""
+msgstr "cách dùng: gnome-keyring lệnh [tuỳ chọn]\n"
 
 #: ../tool/gkr-tool.c:104
 msgid "commands: "
-msgstr ""
+msgstr "lệnh: "
 
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr ""
+msgstr "          "
 
 #: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
@@ -1037,7 +1037,7 @@ msgstr "Lưu không an toàn"
 
 #: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
-msgstr "Hai mật khẩu không trùng."
+msgstr "Mật khẩu không khớp."
 
 #: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
@@ -1045,11 +1045,11 @@ msgstr "Không cho phép mật khẩu trắng"
 
 #: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
 msgid "Keyring Access"
-msgstr ""
+msgstr "Truy cập vòng khoá"
 
 #: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
 msgid "Unlock access to passwords and other secrets"
-msgstr ""
+msgstr "Bỏ khoá truy cập mật khẩu và những bí mật khác"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1073,11 +1073,11 @@ msgstr "Tê_n:"
 
 #: ../ui/gku-prompt.ui.h:6
 msgid "_Old Password:"
-msgstr "Mật khẩu _cũ :"
+msgstr "Mật khẩu _cũ:"
 
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
-msgstr "_Mật khẩu :"
+msgstr "_Mật khẩu:"
 
 #~| msgid ""
 #~| "This option enables the PKCS#11 component in the gnome-keyring daemon. "
