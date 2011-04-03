@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring 2.26.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&component=general\n"
-"POT-Creation-Date: 2010-12-22 18:04+0000\n"
+"POT-Creation-Date: 2011-03-10 08:08+0000\n"
 "PO-Revision-Date: 2011-01-03 16:51+0900\n"
 "Last-Translator: Nguyen Vu Hung <vuhung16plus@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: LocFactoryEditor 1.8\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -48,15 +48,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Bạn đã gõ sai mật khẩu gốc"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Mật khẩu vòng khóa mới"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Hãy chọn mật khẩu cho vòng khóa mới"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -90,18 +90,15 @@ msgid "SSH Key Agent"
 msgstr "Tác nhân khoá SSH"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-#| msgid "GNOME Keyring: SSH Agent"
 msgid "GNOME Keyring: GPG Agent"
 msgstr "Vòng Khoá GNOME: GPG Agent"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#| msgid "New password strength"
 msgid "GPG Password Agent"
 msgstr "Agent cho mật khẩu GPG"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
 #: ../gcr/gcr-key-renderer.c:296
-#| msgid "Unknown error"
 msgid "Unknown"
 msgstr "Không biết"
 
@@ -116,7 +113,6 @@ msgid "Enter Passphrase"
 msgstr "Nhập mật mã"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
-#| msgid "Lock this keyring if idle for"
 msgid "Forget this password if idle for"
 msgstr "Quên mật khẩu này nếu không dùng trong"
 
@@ -125,7 +121,6 @@ msgid "Forget this password after"
 msgstr "Quên mật khẩu sau"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
-#| msgid "Lock this keyring when I log out"
 msgid "Forget this password when I log out"
 msgstr "Quên mật khẩu sau khi đăng xuất"
 
@@ -295,7 +290,6 @@ msgid "No"
 msgstr "Không"
 
 #: ../gcr/gcr-certificate-renderer.c:339
-#| msgid "Identifier"
 msgid "Identity"
 msgstr "Nhận diện"
 
@@ -304,7 +298,6 @@ msgid "Verified by"
 msgstr "Kiểm chứng bởi"
 
 #: ../gcr/gcr-certificate-renderer.c:350
-#| msgid "Expires On"
 msgid "Expires"
 msgstr "Hết hạn"
 
@@ -375,7 +368,6 @@ msgid "Fingerprints"
 msgstr "Vân tay"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-#| msgid "Import Certificates/Keys"
 msgid "Import Certificates and Keys"
 msgstr "Nhập chứng nhận/khoá"
 
@@ -476,12 +468,10 @@ msgid "Key"
 msgstr "Khóa"
 
 #: ../gcr/gcr-key-renderer.c:260
-#| msgid "Private Key"
 msgid "Private RSA Key"
 msgstr "Khoá cá nhân RSA"
 
 #: ../gcr/gcr-key-renderer.c:262
-#| msgid "Private Key"
 msgid "Private DSA Key"
 msgstr "Khoá cá nhân DSA"
 
@@ -490,33 +480,30 @@ msgid "Private Key"
 msgstr "Khoá cá nhân"
 
 #: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-#| msgid "Public Key"
 msgid "Public DSA Key"
 msgstr "Khoá công khai DSA"
 
 #: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bits"
-msgstr "%d bit"
+#, fuzzy, c-format
+#| msgid "%d bits"
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
 
 #: ../gcr/gcr-key-renderer.c:279
-#| msgid "Street"
 msgid "Strength"
 msgstr "Độ mạnh"
 
 #: ../gcr/gcr-key-renderer.c:292
-#| msgid "Key Algorithm"
 msgid "Algorithm"
 msgstr "Thuật toán"
 
 #: ../gcr/gcr-key-renderer.c:299
-#| msgid "Key Size"
 msgid "Size"
 msgstr "Cỡ"
 
 #. TODO: We need to have consistent key fingerprints.
 #: ../gcr/gcr-key-renderer.c:303
-#| msgid "Fingerprints"
 msgid "Fingerprint"
 msgstr "Vân tay"
 
@@ -533,18 +520,21 @@ msgstr ""
 msgid "The data is locked"
 msgstr "Dữ liệu bị khoá"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
-#| msgid "Choose a location to store the imported certificates/keys."
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Không tìm thấy vị trí lưu chứng nhận/khoá được nhập."
 
-#: ../gck/gck-uri.c:78 ../gck/gck-uri.c:135 ../gck/gck-uri.c:170
+#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
+#: ../gck/gck-uri.c:248
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "URI sai cú pháp. Trường '%s' sai."
 
-#: ../gck/gck-uri.c:195
+#: ../gck/gck-uri.c:287
 msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "URI không có 'pkcs11'."
 
@@ -605,7 +595,6 @@ msgid "An error occurred on the device"
 msgstr "Lỗi xảy ra trên thiết bị"
 
 #: ../gck/gck-misc.c:129
-#| msgid "Insufficient memory available on device"
 msgid "Insufficient memory available on the device"
 msgstr "Không đủ bộ nhớ trên thiết bị."
 
@@ -650,7 +639,6 @@ msgid "A key is needed"
 msgstr "Cần khoá"
 
 #: ../gck/gck-misc.c:151
-#| msgid "Cannot include the key in digest"
 msgid "Cannot include the key in the digest"
 msgstr "Không thể kèm khoá trong tóm tắt"
 
@@ -795,7 +783,6 @@ msgid "Another user is already logged in"
 msgstr "Người dùng khác đã đăng nhập"
 
 #: ../gck/gck-misc.c:223
-#| msgid "Too many users of different types logged in"
 msgid "Too many users of different types are logged in"
 msgstr "Quá nhiều người dùng thuộc các loại khác nhau đang đăng nhập"
 
@@ -895,7 +882,6 @@ msgid "Unlock Login Keyring"
 msgstr "Gỡ khoá vòng khoá đăng nhập"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
-#| msgid "Enter password for to unlock your login keyring"
 msgid "Enter password to unlock your login keyring"
 msgstr "Nhập mật khẩu để gỡ khoá vòng khoá đăng nhập"
 
@@ -1002,16 +988,13 @@ msgstr "Yêu cầu mật khẩu mới để lưu trữ bảo mật"
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr ""
-"Cần có mật khẩu để chuẩn bị '%s'để lưu trữ chứng nhận hay khoá"
+msgstr "Cần có mật khẩu để chuẩn bị '%s'để lưu trữ chứng nhận hay khoá"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-#| msgid "Change Keyring Password"
 msgid "Change Password"
 msgstr "Đổi mật khẩu"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-#| msgid "New password required for secure storage"
 msgid "Change password for secure storage"
 msgstr "Thay đổi mật khẩu mới để lưu trữ bảo mật"
 
@@ -1021,11 +1004,25 @@ msgid ""
 "To change the password for '%s', the original and new passwords are required"
 msgstr "Cần nhập mật khẩu cũ và mới để đổi mật khẩu cho '%s'"
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr ""
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr ""
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr ""
+
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Lưu mật khẩu không mật mã không?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1034,17 +1031,25 @@ msgstr ""
 "Dùng một mật khẩu trắng thì mật khẩu đã lưu sẽ không thể được mã hoá an "
 "toàn. Mọi người đều có thể truy cập vào tập tin của bạn."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Lưu không an toàn"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Hai mật khẩu không trùng."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Không cho phép mật khẩu trắng"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr ""
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr ""
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
