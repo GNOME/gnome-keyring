@@ -723,7 +723,7 @@ handle_pkcs12_cert_bag (GcrParser *self, const guchar *data, gsize n_data)
 {
 	GNode *asn = NULL;
 	GNode *asn_content = NULL;
-	guchar *certificate;
+	guchar *certificate = NULL;
 	const guchar *element;
 	gsize n_certificate, n_element;
 	gint ret;

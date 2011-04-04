@@ -783,7 +783,7 @@ rpc_C_Finalize (CallState *cs)
 {
 	CK_SLOT_ID_PTR slots;
 	CK_ULONG n_slots, i;
-	CK_RV ret;
+	CK_RV ret = CKR_OK;
 
 	debug (("C_Finalize: enter"));
 

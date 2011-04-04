@@ -1,3 +1,6 @@
+Changes in version 3.0.0 are:
+ * Translations
+
 Changes in version 2.91.93 are:
  * Use full interface.Property form for CreateCollection and CreateItem
    in the DBus API.

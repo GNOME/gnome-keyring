@@ -271,7 +271,7 @@ create_assertions (void)
 static GkmAssertion*
 create_assertion (GkmXdgTrust *self, GNode *asn)
 {
-	CK_X_ASSERTION_TYPE type;
+	CK_X_ASSERTION_TYPE type = 0;
 	GkmAssertion *assertion;
 	GQuark level;
 	gchar *purpose;

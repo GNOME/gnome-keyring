@@ -2233,6 +2233,7 @@ anode_write_oid (const gchar *oid, guchar *data, gsize *n_data)
 
 	p = oid;
 	at = 0;
+	num1 = 0;
 
 	for (i = 0; oid[0]; ++i, oid = next) {
 		p = strchr (oid, '.');
@@ -3331,7 +3332,7 @@ static gboolean
 anode_validate_sequence_or_set (GNode *node)
 {
 	GNode *child;
-	gulong tag;
+	gulong tag = 0;
 	gint count = 0;
 	gint type;
 	Atlv *tlv;
@@ -3365,6 +3366,7 @@ anode_validate_sequence_or_set_of (GNode *node)
 	gulong count;
 	gint type;
 
+	tag = 0;
 	count = 0;
 	tlv = ptlv = NULL;
 
@@ -3696,6 +3698,7 @@ match_oid_in_definitions (const ASN1_ARRAY_TYPE *defs, const gchar *match)
 	const gchar *problem;
 
 	names = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
+	result = NULL;
 
 	for (;;) {
 		progress = FALSE;

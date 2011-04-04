@@ -520,7 +520,7 @@ static gboolean
 _gcr_display_view_draw (GtkWidget *widget, cairo_t *cr)
 {
 	GdkWindow *window;
-	gboolean handled;
+	gboolean handled = TRUE;
 
 	/* Have GtkTextView draw the text first. */
 	if (GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->draw)
