@@ -31,15 +31,21 @@
 /**
  * SECTION:gck-enumerator
  * @title: GckEnumerator
- * @short_description: Enumerates through PKCS#11 objects.
+ * @short_description: Enumerates through PKCS\#11 objects.
  *
- * Xxxxxx
+ * A GckEnumerator can be used to enumerate through PKCS\#11 objects. It will
+ * automatically create sessions as necessary.
+ *
+ * Use gck_modules_enumerate_objects() or gck_modules_enumerate_uri() to create
+ * an enumerator. To get the objects use gck_enumerator_next() or
+ * gck_enumerator_next_async() functions.
  */
 
 /**
  * GckEnumerator:
+ * @parent: derived from this.
  *
- * Xxxxxx
+ * An object that allows enumerating of objects across modules, tokens.
  */
 
 typedef struct _GckEnumeratorState GckEnumeratorState;
@@ -593,6 +599,20 @@ free_enumerate_next (EnumerateNext *args)
 	g_free (args);
 }
 
+/**
+ * gck_enumerator_next:
+ * @self: The enumerator
+ * @cancellable: A #GCancellable or %NULL
+ * @error: A location to store an error on failure
+ *
+ * Get the next object in the enumerator, or %NULL if there are no more objects.
+ *
+ * %NULL is also returned if the function fails. Use the @error to determine
+ * whether a failure occurred or not.
+ *
+ * Returns: The next object, which must be released using g_object_unref,
+ *     or %NULL.
+ */
 GckObject*
 gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **error)
 {
@@ -634,6 +654,22 @@ gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **er
 	return result;
 }
 
+/**
+ * gck_enumerator_next_n:
+ * @self: An enumerator
+ * @max_objects: The maximum amount of objects to enumerate
+ * @cancellable: A #GCancellable or %NULL
+ * @error: A location to store an error on failure
+ *
+ * Get the next set of objects from the enumerator. The maximum number of
+ * objects can be specified with @max_objects. If -1 is specified, then all
+ * the remaining objects will be returned.
+ *
+ * %NULL is also returned if the function fails. Use the @error to determine
+ * whether a failure occurred or not.
+ *
+ * Returns: A list of objects, which should be freed using gck_list_unref_free().
+ */
 GList*
 gck_enumerator_next_n (GckEnumerator *self, gint max_objects, GCancellable *cancellable,
                        GError **error)
@@ -669,6 +705,19 @@ gck_enumerator_next_n (GckEnumerator *self, gint max_objects, GCancellable *canc
 	return results;
 }
 
+/**
+ * gck_enumerator_next_async:
+ * @self: An enumerator
+ * @max_objects: The maximum number of objects to get
+ * @cancellable: A #GCancellable or %NULL
+ * @callback: Called when the result is ready
+ * @user_data: Data to pass to the callback
+ *
+ * Get the next set of objects from the enumerator. This operation completes
+ * asynchronously.The maximum number of objects can be specified with
+ * @max_objects. If -1 is specified, then all the remaining objects will be
+ * enumerated.
+ */
 void
 gck_enumerator_next_async (GckEnumerator *self, gint max_objects, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
@@ -697,6 +746,19 @@ gck_enumerator_next_async (GckEnumerator *self, gint max_objects, GCancellable *
 	g_object_unref (self);
 }
 
+/**
+ * gck_enumerator_next_finish:
+ * @self: An enumerator
+ * @result: The result passed to the callback
+ * @error: A location to raise an error on failure.
+ *
+ * Complete an operation to enumerate next objects.
+ *
+ * %NULL is also returned if the function fails. Use the @error to determine
+ * whether a failure occurred or not.
+ *
+ * Returns: The list of objects, which should be freed with gck_list_unref_free()
+ */
 GList*
 gck_enumerator_next_finish (GckEnumerator *self, GAsyncResult *result, GError **error)
 {

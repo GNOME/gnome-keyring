@@ -272,6 +272,8 @@ typedef struct _GckModulePrivate GckModulePrivate;
 
 struct _GckModule {
 	GObject parent;
+
+	/*< private >*/
 	GckModulePrivate *pv;
 	gpointer reserved[4];
 };
@@ -283,6 +285,7 @@ struct _GckModuleClass {
 
 	gboolean (*authenticate_object) (GckModule *self, GckObject *object, gchar *label, gchar **password);
 
+	/*< private >*/
 	gpointer reserved[8];
 };
 
@@ -294,7 +297,7 @@ GckModule*            gck_module_new                          (CK_FUNCTION_LIST_
 GckModule*            gck_module_initialize                   (const gchar *path,
                                                                gpointer reserved,
                                                                guint reserved_options,
-                                                               GError **err);
+                                                               GError **error);
 
 gboolean              gck_module_equal                        (gconstpointer module1,
                                                                gconstpointer module2);
@@ -310,7 +313,7 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-gchar**               gck_modules_list_registered_paths       (GError **err);
+gchar**               gck_modules_list_registered_paths       (GError **error);
 
 GList*                gck_modules_initialize_registered       (guint reserved_options);
 
@@ -357,12 +360,16 @@ typedef struct _GckEnumeratorPrivate GckEnumeratorPrivate;
 
 struct _GckEnumerator {
 	GObject parent;
+
+	/*< private >*/
 	GckEnumeratorPrivate *pv;
 	gpointer reserved[2];
 };
 
 struct _GckEnumeratorClass {
 	GObjectClass parent;
+
+	/*< private >*/
 	gpointer reserved[2];
 };
 
@@ -370,12 +377,12 @@ GType                 gck_enumerator_get_type                 (void) G_GNUC_CONS
 
 GckObject*            gck_enumerator_next                     (GckEnumerator *self,
                                                                GCancellable *cancellable,
-                                                               GError **err);
+                                                               GError **error);
 
 GList*                gck_enumerator_next_n                   (GckEnumerator *self,
                                                                gint max_objects,
                                                                GCancellable *cancellable,
-                                                               GError **err);
+                                                               GError **error);
 
 void                  gck_enumerator_next_async               (GckEnumerator *self,
                                                                gint max_objects,
@@ -384,8 +391,8 @@ void                  gck_enumerator_next_async               (GckEnumerator *se
                                                                gpointer user_data);
 
 GList*                gck_enumerator_next_finish              (GckEnumerator *self,
-                                                               GAsyncResult *res,
-                                                               GError **err);
+                                                               GAsyncResult *result,
+                                                               GError **error);
 
 /* ------------------------------------------------------------------------
  * SLOT
@@ -459,12 +466,16 @@ typedef struct _GckSlotPrivate GckSlotPrivate;
 
 struct _GckSlot {
 	GObject parent;
+
+	/*< private >*/
 	GckSlotPrivate *pv;
 	gpointer reserved[4];
 };
 
 struct _GckSlotClass {
 	GObjectClass parent;
+
+	/*< private >*/
 	gpointer reserved[9];
 };
 
@@ -498,32 +509,10 @@ GckEnumerator*      gck_slots_enumerate_objects             (GList *slots,
                                                              GckAttributes *attrs,
                                                              guint session_options);
 
-#if UNIMPLEMENTED
-
-gboolean            gck_slot_init_token                     (GckSlot *self,
-                                                             const guchar *pin,
-                                                             gsize length,
-                                                             const gchar *label,
-                                                             GError **err);
-
-
-void                gck_slot_init_token_async               (GckSlot *self,
-                                                             const guchar *pin,
-                                                             gsize length,
-                                                             const gchar *label,
-                                                             GAsyncReadyCallback callback,
-                                                             gpointer user_data);
-
-gboolean            gck_slot_init_token_finish              (GckSlot *self,
-                                                             GAsyncResult *result,
-                                                             GError **err);
-
-#endif /* UNIMPLEMENTED */
-
 GckSession*         gck_slot_open_session                   (GckSlot *self,
                                                              guint options,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 GckSession*         gck_slot_open_session_full              (GckSlot *self,
                                                              guint options,
@@ -531,7 +520,7 @@ GckSession*         gck_slot_open_session_full              (GckSlot *self,
                                                              gpointer app_data,
                                                              CK_NOTIFY notify,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_slot_open_session_async             (GckSlot *self,
                                                              guint options,
@@ -550,7 +539,7 @@ void                gck_slot_open_session_full_async        (GckSlot *self,
 
 GckSession*         gck_slot_open_session_finish            (GckSlot *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 /* ------------------------------------------------------------------------
  * SESSION
@@ -583,6 +572,8 @@ typedef struct _GckSessionPrivate GckSessionPrivate;
 
 struct _GckSession {
 	GObject parent;
+
+	/*< private >*/
 	GckSessionPrivate *pv;
 	gpointer reserved[4];
 };
@@ -592,6 +583,7 @@ struct _GckSessionClass {
 
 	gboolean (*discard_handle) (GckSession *session, CK_SESSION_HANDLE handle);
 
+	/*< private >*/
 	gpointer reserved[8];
 };
 
@@ -617,7 +609,7 @@ gboolean            gck_session_init_pin                    (GckSession *self,
                                                              const guchar *pin,
                                                              gsize n_pin,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_session_init_pin_async              (GckSession *self,
                                                              const guchar *pin,
@@ -628,7 +620,7 @@ void                gck_session_init_pin_async              (GckSession *self,
 
 gboolean            gck_session_init_pin_finish             (GckSession *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 gboolean            gck_session_set_pin                     (GckSession *self,
                                                              const guchar *old_pin,
@@ -636,7 +628,7 @@ gboolean            gck_session_set_pin                     (GckSession *self,
                                                              const guchar *new_pin,
                                                              gsize n_new_pin,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_session_set_pin_async               (GckSession *self,
                                                              const guchar *old_pin,
@@ -649,14 +641,14 @@ void                gck_session_set_pin_async               (GckSession *self,
 
 gboolean            gck_session_set_pin_finish              (GckSession *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 gboolean            gck_session_login                       (GckSession *self,
                                                              gulong user_type,
                                                              const guchar *pin,
                                                              gsize n_pin,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_session_login_async                 (GckSession *self,
                                                              gulong user_type,
@@ -668,11 +660,11 @@ void                gck_session_login_async                 (GckSession *self,
 
 gboolean            gck_session_login_finish                (GckSession *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 gboolean            gck_session_logout                      (GckSession *self,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_session_logout_async                (GckSession *self,
                                                              GCancellable *cancellable,
@@ -681,12 +673,12 @@ void                gck_session_logout_async                (GckSession *self,
 
 gboolean            gck_session_logout_finish               (GckSession *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 GckObject*          gck_session_create_object               (GckSession *self,
                                                              GckAttributes *attrs,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_session_create_object_async         (GckSession *self,
                                                              GckAttributes *attrs,
@@ -696,12 +688,12 @@ void                gck_session_create_object_async         (GckSession *self,
 
 GckObject*          gck_session_create_object_finish        (GckSession *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 GList*              gck_session_find_objects                (GckSession *self,
                                                              GckAttributes *attrs,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_session_find_objects_async          (GckSession *self,
                                                              GckAttributes *attrs,
@@ -711,27 +703,7 @@ void                gck_session_find_objects_async          (GckSession *self,
 
 GList*              gck_session_find_objects_finish         (GckSession *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
-
-#if UNIMPLEMENTED
-
-GckObject*          gck_session_generate_key                (GckSession *self,
-                                                             GckMechanism *mechanism,
-                                                             GError **err,
-                                                             ...);
-
-void                gck_session_generate_key_async          (GckSession *self,
-                                                             GckMechanism *mechanism,
-                                                             GAsyncReadyCallback callback,
-                                                             gpointer user_data,
-                                                             ...);
-
-GckObject*          gck_session_generate_key_finish         (GckSession *self,
-                                                             GAsyncResult *result,
-                                                             GError **err,
-                                                             ...);
-
-#endif /* UNIMPLEMENTED */
+                                                             GError **error);
 
 gboolean            gck_session_generate_key_pair           (GckSession *self,
                                                              gulong mech_type,
@@ -740,7 +712,7 @@ gboolean            gck_session_generate_key_pair           (GckSession *self,
                                                              GckObject **public_key,
                                                              GckObject **private_key,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 gboolean            gck_session_generate_key_pair_full      (GckSession *self,
                                                              GckMechanism *mechanism,
@@ -749,7 +721,7 @@ gboolean            gck_session_generate_key_pair_full      (GckSession *self,
                                                              GckObject **public_key,
                                                              GckObject **private_key,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_session_generate_key_pair_async     (GckSession *self,
                                                              GckMechanism *mechanism,
@@ -763,7 +735,7 @@ gboolean            gck_session_generate_key_pair_finish    (GckSession *self,
                                                              GAsyncResult *result,
                                                              GckObject **public_key,
                                                              GckObject **private_key,
-                                                             GError **err);
+                                                             GError **error);
 
 guchar*             gck_session_encrypt                      (GckSession *self,
                                                               GckObject *key,
@@ -772,7 +744,7 @@ guchar*             gck_session_encrypt                      (GckSession *self,
                                                               gsize n_input,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 guchar*             gck_session_encrypt_full                 (GckSession *self,
                                                               GckObject *key,
@@ -781,7 +753,7 @@ guchar*             gck_session_encrypt_full                 (GckSession *self,
                                                               gsize n_input,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 void                gck_session_encrypt_async                (GckSession *self,
                                                               GckObject *key,
@@ -795,7 +767,7 @@ void                gck_session_encrypt_async                (GckSession *self,
 guchar*             gck_session_encrypt_finish               (GckSession *self,
                                                               GAsyncResult *result,
                                                               gsize *n_result,
-                                                              GError **err);
+                                                              GError **error);
 
 guchar*             gck_session_decrypt                      (GckSession *self,
                                                               GckObject *key,
@@ -804,7 +776,7 @@ guchar*             gck_session_decrypt                      (GckSession *self,
                                                               gsize n_input,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 guchar*             gck_session_decrypt_full                 (GckSession *self,
                                                               GckObject *key,
@@ -813,7 +785,7 @@ guchar*             gck_session_decrypt_full                 (GckSession *self,
                                                               gsize n_input,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 void                gck_session_decrypt_async                (GckSession *self,
                                                               GckObject *key,
@@ -827,39 +799,7 @@ void                gck_session_decrypt_async                (GckSession *self,
 guchar*             gck_session_decrypt_finish               (GckSession *self,
                                                               GAsyncResult *result,
                                                               gsize *n_result,
-                                                              GError **err);
-
-#if UNIMPLEMENTED
-
-guchar*             gck_session_digest                       (GckSession *self,
-                                                              gulong mech_type,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-guchar*             gck_session_digest_full                  (GckSession *self,
-                                                              GckMechanism *mechanism,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              gsize *n_result,
-                                                              GCancellable *cancellable,
-                                                              GError **err);
-
-void                gck_session_digest_async                 (GckSession *self,
-                                                              GckMechanism *mechanism,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              GCancellable *cancellable,
-                                                              GAsyncReadyCallback callback,
-                                                              gpointer user_data);
-
-guchar*             gck_session_digest_finish                (GckSession *self,
-                                                              GAsyncResult *result,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-#endif /* UNIMPLEMENTED */
+                                                              GError **error);
 
 guchar*             gck_session_sign                         (GckSession *self,
                                                               GckObject *key,
@@ -868,7 +808,7 @@ guchar*             gck_session_sign                         (GckSession *self,
                                                               gsize n_input,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 guchar*             gck_session_sign_full                    (GckSession *self,
                                                               GckObject *key,
@@ -877,7 +817,7 @@ guchar*             gck_session_sign_full                    (GckSession *self,
                                                               gsize n_input,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 void                gck_session_sign_async                   (GckSession *self,
                                                               GckObject *key,
@@ -891,42 +831,7 @@ void                gck_session_sign_async                   (GckSession *self,
 guchar*             gck_session_sign_finish                  (GckSession *self,
                                                               GAsyncResult *result,
                                                               gsize *n_result,
-                                                              GError **err);
-
-#if UNIMPLEMENTED
-
-guchar*             gck_session_sign_recover                 (GckSession *self,
-                                                              GckObject *key,
-                                                              gulong mech_type,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-guchar*             gck_session_sign_recover_full            (GckSession *self,
-                                                              GckObject *key,
-                                                              GckMechanism *mechanism,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              gsize *n_result,
-                                                              GCancellable *cancellable,
-                                                              GError **err);
-
-void                gck_session_sign_recover_async           (GckSession *self,
-                                                              GckObject *key,
-                                                              GckMechanism *mechanism,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              GCancellable *cancellable,
-                                                              GAsyncReadyCallback callback,
-                                                              gpointer user_data);
-
-guchar*             gck_session_sign_recover_finish          (GckSession *self,
-                                                              GAsyncResult *result,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-#endif /* UNIMPLEMENTED */
+                                                              GError **error);
 
 gboolean            gck_session_verify                       (GckSession *self,
                                                               GckObject *key,
@@ -936,7 +841,7 @@ gboolean            gck_session_verify                       (GckSession *self,
                                                               const guchar *signature,
                                                               gsize n_signature,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 gboolean            gck_session_verify_full                  (GckSession *self,
                                                               GckObject *key,
@@ -946,7 +851,7 @@ gboolean            gck_session_verify_full                  (GckSession *self,
                                                               const guchar *signature,
                                                               gsize n_signature,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 void                gck_session_verify_async                 (GckSession *self,
                                                               GckObject *key,
@@ -961,42 +866,7 @@ void                gck_session_verify_async                 (GckSession *self,
 
 gboolean            gck_session_verify_finish                (GckSession *self,
                                                               GAsyncResult *result,
-                                                              GError **err);
-
-#if UNIMPLEMENTED
-
-guchar*             gck_session_verify_recover               (GckSession *self,
-                                                              GckObject *key,
-                                                              gulong mech_type,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-guchar*             gck_session_verify_recover_full          (GckSession *self,
-                                                              GckObject *key,
-                                                              GckMechanism *mechanism,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              gsize *n_result,
-                                                              GCancellable *cancellable,
-                                                              GError **err);
-
-void                gck_session_verify_recover_async         (GckSession *self,
-                                                              GckObject *key,
-                                                              GckMechanism *mechanism,
-                                                              const guchar *input,
-                                                              gsize n_input,
-                                                              GCancellable *cancellable,
-                                                              GAsyncReadyCallback callback,
-                                                              gpointer user_data);
-
-guchar*             gck_session_verify_recover_finish        (GckSession *self,
-                                                              GAsyncResult *result,
-                                                              gsize *n_result,
-                                                              GError **err);
-
-#endif /* UNIMPLEMENTED */
+                                                              GError **error);
 
 gpointer            gck_session_wrap_key                     (GckSession *self,
                                                               GckObject *wrapper,
@@ -1004,7 +874,7 @@ gpointer            gck_session_wrap_key                     (GckSession *self,
                                                               GckObject *wrapped,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 gpointer            gck_session_wrap_key_full                (GckSession *self,
                                                               GckObject *wrapper,
@@ -1012,7 +882,7 @@ gpointer            gck_session_wrap_key_full                (GckSession *self,
                                                               GckObject *wrapped,
                                                               gsize *n_result,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 void                gck_session_wrap_key_async               (GckSession *self,
                                                               GckObject *wrapper,
@@ -1025,7 +895,7 @@ void                gck_session_wrap_key_async               (GckSession *self,
 gpointer            gck_session_wrap_key_finish              (GckSession *self,
                                                               GAsyncResult *result,
                                                               gsize *n_result,
-                                                              GError **err);
+                                                              GError **error);
 
 GckObject*          gck_session_unwrap_key                   (GckSession *self,
                                                               GckObject *wrapper,
@@ -1034,7 +904,7 @@ GckObject*          gck_session_unwrap_key                   (GckSession *self,
                                                               gsize n_input,
                                                               GckAttributes *attrs,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 GckObject*          gck_session_unwrap_key_full              (GckSession *self,
                                                               GckObject *wrapper,
@@ -1043,7 +913,7 @@ GckObject*          gck_session_unwrap_key_full              (GckSession *self,
                                                               gsize n_input,
                                                               GckAttributes *attrs,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 void                gck_session_unwrap_key_async             (GckSession *self,
                                                               GckObject *wrapper,
@@ -1057,21 +927,21 @@ void                gck_session_unwrap_key_async             (GckSession *self,
 
 GckObject*          gck_session_unwrap_key_finish            (GckSession *self,
                                                               GAsyncResult *result,
-                                                              GError **err);
+                                                              GError **error);
 
 GckObject*          gck_session_derive_key                   (GckSession *self,
                                                               GckObject *base,
                                                               gulong mech_type,
                                                               GckAttributes *attrs,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 GckObject*          gck_session_derive_key_full              (GckSession *self,
                                                               GckObject *base,
                                                               GckMechanism *mechanism,
                                                               GckAttributes *attrs,
                                                               GCancellable *cancellable,
-                                                              GError **err);
+                                                              GError **error);
 
 void                gck_session_derive_key_async             (GckSession *self,
                                                               GckObject *base,
@@ -1083,7 +953,7 @@ void                gck_session_derive_key_async             (GckSession *self,
 
 GckObject*          gck_session_derive_key_finish            (GckSession *self,
                                                               GAsyncResult *result,
-                                                              GError **err);
+                                                              GError **error);
 
 /* ------------------------------------------------------------------------
  * OBJECT
@@ -1101,6 +971,8 @@ typedef struct _GckObjectPrivate GckObjectPrivate;
 
 struct _GckObject {
 	GObject parent;
+
+	/*< private >*/
 	GckObjectPrivate *pv;
 	gpointer reserved[4];
 };
@@ -1130,46 +1002,9 @@ CK_OBJECT_HANDLE    gck_object_get_handle                   (GckObject *self);
 
 GckSession*         gck_object_get_session                  (GckObject *self);
 
-gchar*              gck_object_build_uri                    (GckObject *self,
-                                                             guint options,
-                                                             GCancellable *cancellable,
-                                                             GError **err);
-
-void                gck_object_build_uri_async              (GckObject *self,
-                                                             guint options,
-                                                             GCancellable *cancellable,
-                                                             GError **err);
-
-gchar*              gck_object_build_uri_finish             (GckObject *self,
-                                                             GAsyncResult *result,
-                                                             GError **err);
-
-#ifdef UNIMPLEMENTED
-
-GckObject*          gck_object_copy                         (GckObject *self,
-                                                             GCancellable *cancellable,
-                                                             GError **err);
-
-GckObject*          gck_object_copy_full                    (GckObject *self,
-                                                             GckAttributes *additional,
-                                                             GCancellable *cancellable,
-                                                             GError **err);
-
-void                gck_object_copy_async                   (GckObject *self,
-                                                             GckAttributes *additional,
-                                                             GCancellable *cancellable,
-                                                             GAsyncReadyCallback callback,
-                                                             gpointer user_data);
-
-GckObject*          gck_object_copy_finish                  (GckObject *self,
-                                                             GAsyncResult *result,
-                                                             GError **err);
-
-#endif /* UNIMPLEMENTED */
-
 gboolean            gck_object_destroy                      (GckObject *self,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_object_destroy_async                (GckObject *self,
                                                              GCancellable *cancellable,
@@ -1178,28 +1013,12 @@ void                gck_object_destroy_async                (GckObject *self,
 
 gboolean            gck_object_destroy_finish               (GckObject *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
-
-#if UNIMPLEMENTED
-
-gssize              gck_object_get_size                     (GckObject *self,
-                                                             GCancellable *cancellable,
-                                                             GError **err);
-
-void                gck_object_get_size_async               (GckObject *self,
-                                                             GAsyncReadyCallback callback,
-                                                             gpointer user_data);
-
-gssize              gck_object_get_size_finish              (GckObject *self,
-                                                             GAsyncResult *result,
-                                                             GError **err);
-
-#endif /* UNIMPLEMENTED */
+                                                             GError **error);
 
 gboolean            gck_object_set                          (GckObject *self,
                                                              GckAttributes *attrs,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_object_set_async                    (GckObject *self,
                                                              GckAttributes *attrs,
@@ -1209,18 +1028,18 @@ void                gck_object_set_async                    (GckObject *self,
 
 gboolean            gck_object_set_finish                   (GckObject *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 GckAttributes*      gck_object_get                          (GckObject *self,
                                                              GCancellable *cancellable,
-                                                             GError **err,
+                                                             GError **error,
                                                              ...);
 
 GckAttributes*      gck_object_get_full                     (GckObject *self,
                                                              gulong *attr_types,
                                                              guint n_attr_types,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_object_get_async                    (GckObject *self,
                                                              gulong *attr_types,
@@ -1231,20 +1050,20 @@ void                gck_object_get_async                    (GckObject *self,
 
 GckAttributes*      gck_object_get_finish                   (GckObject *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 gpointer            gck_object_get_data                     (GckObject *self,
                                                              gulong attr_type,
                                                              GCancellable *cancellable,
                                                              gsize *n_data,
-                                                             GError **err);
+                                                             GError **error);
 
 gpointer            gck_object_get_data_full                (GckObject *self,
                                                              gulong attr_type,
                                                              GckAllocator allocator,
                                                              GCancellable *cancellable,
                                                              gsize *n_data,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_object_get_data_async               (GckObject *self,
                                                              gulong attr_type,
@@ -1256,13 +1075,13 @@ void                gck_object_get_data_async               (GckObject *self,
 gpointer            gck_object_get_data_finish              (GckObject *self,
                                                              GAsyncResult *result,
                                                              gsize *n_data,
-                                                             GError **err);
+                                                             GError **error);
 
 gboolean            gck_object_set_template                 (GckObject *self,
                                                              gulong attr_type,
                                                              GckAttributes *attrs,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_object_set_template_async           (GckObject *self,
                                                              gulong attr_type,
@@ -1273,12 +1092,12 @@ void                gck_object_set_template_async           (GckObject *self,
 
 gboolean            gck_object_set_template_finish          (GckObject *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 GckAttributes*      gck_object_get_template                 (GckObject *self,
                                                              gulong attr_type,
                                                              GCancellable *cancellable,
-                                                             GError **err);
+                                                             GError **error);
 
 void                gck_object_get_template_async           (GckObject *self,
                                                              gulong attr_type,
@@ -1288,7 +1107,7 @@ void                gck_object_get_template_async           (GckObject *self,
 
 GckAttributes*      gck_object_get_template_finish          (GckObject *self,
                                                              GAsyncResult *result,
-                                                             GError **err);
+                                                             GError **error);
 
 /* ----------------------------------------------------------------------------
  * URI

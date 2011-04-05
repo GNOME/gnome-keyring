@@ -32,19 +32,20 @@
 /**
  * SECTION:gck-module
  * @title: GckModule
- * @short_description: A loaded and initialized PKCS#11 module.
+ * @short_description: A loaded and initialized PKCS\#11 module.
  *
- * A GckModule object holds a loaded PKCS#11 module. A PKCS#11 module is a shared library.
+ * A GckModule object holds a loaded PKCS\#11 module. A PKCS\#11 module is a shared library.
  *
- * You can load and initialize a PKCS#11 module with the gck_module_initialize() call. If you already
+ * You can load and initialize a PKCS\#11 module with the gck_module_initialize() call. If you already
  * have a loaded and initialized module that you'd like to use with the various gck functions, then
  * you can use gck_module_new().
  */
 
 /**
  * GckModule:
+ * @parent: derived from this.
  *
- * Holds a loaded and initialized PKCS#11 module.
+ * Holds a loaded and initialized PKCS\#11 module.
  */
 
 /**
@@ -59,7 +60,7 @@
  *
  * Holds information about the PKCS&num;11 module.
  *
- * This structure corresponds to CK_MODULE_INFO in the PKCS#11 standard. The
+ * This structure corresponds to CK_MODULE_INFO in the PKCS\#11 standard. The
  * strings are NULL terminated for easier use.
  *
  * Use gck_module_info_free() to release this structure when done with it.
@@ -417,17 +418,18 @@ gck_module_info_free (GckModuleInfo *module_info)
 
 /**
  * gck_module_initialize:
- * @path: The file system path to the PKCS#11 module to load.
- * @reserved: Extra arguments for the PKCS#11 module, should usually be NULL.
+ * @path: The file system path to the PKCS\#11 module to load.
+ * @reserved: Extra arguments for the PKCS\#11 module, should usually be NULL.
  * @reserved_options: No options are currently available.
- * @err: A location to store an error resulting from a failed load.
+ * @error: A location to store an error resulting from a failed load.
  *
- * Load and initialize a PKCS#11 module represented by a GckModule object.
+ * Load and initialize a PKCS\#11 module represented by a GckModule object.
  *
- * Return value: The loaded PKCS#11 module or NULL if failed.
+ * Return value: The loaded PKCS\#11 module or NULL if failed.
  **/
 GckModule*
-gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_options, GError **err)
+gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_options,
+                       GError **error)
 {
 	CK_C_GetFunctionList get_function_list;
 	CK_FUNCTION_LIST_PTR funcs;
@@ -436,19 +438,19 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_opti
 	CK_RV rv;
 
 	g_return_val_if_fail (path != NULL, NULL);
-	g_return_val_if_fail (!err || !*err, NULL);
+	g_return_val_if_fail (!error || !*error, NULL);
 
 	/* Load the actual module */
 	module = g_module_open (path, 0);
 	if (!module) {
-		g_set_error (err, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
+		g_set_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
 		             "Error loading pkcs11 module: %s", g_module_error ());
 		return NULL;
 	}
 
 	/* Get the entry point */
 	if (!g_module_symbol (module, "C_GetFunctionList", (void**)&get_function_list)) {
-		g_set_error (err, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
+		g_set_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
 		             "Invalid pkcs11 module: %s", g_module_error ());
 		g_module_close (module);
 		return NULL;
@@ -457,7 +459,7 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_opti
 	/* Get the function list */
 	rv = (get_function_list) (&funcs);
 	if (rv != CKR_OK) {
-		g_set_error (err, GCK_ERROR, rv, "Couldn't get pkcs11 function list: %s",
+		g_set_error (error, GCK_ERROR, rv, "Couldn't get pkcs11 function list: %s",
 		             gck_message_from_rv (rv));
 		g_module_close (module);
 		return NULL;
@@ -477,7 +479,7 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_opti
 	/* Now initialize the module */
 	rv = (self->pv->funcs->C_Initialize) (&self->pv->init_args);
 	if (rv != CKR_OK) {
-		g_set_error (err, GCK_ERROR, rv, "Couldn't initialize module: %s",
+		g_set_error (error, GCK_ERROR, rv, "Couldn't initialize module: %s",
 		             gck_message_from_rv (rv));
 		g_object_unref (self);
 		return NULL;
@@ -489,13 +491,14 @@ gck_module_initialize (const gchar *path, gpointer reserved, guint reserved_opti
 
 /**
  * gck_module_new:
- * @funcs: Initialized PKCS#11 function list pointer
+ * @funcs: Initialized PKCS\#11 function list pointer
+ * @reserved_options: Must be zero
  *
- * Create a GckModule representing a PKCS#11 module. It is assumed that
+ * Create a GckModule representing a PKCS\#11 module. It is assumed that
  * this the module is already initialized. In addition it will not be
  * finalized when complete.
  *
- * Return value: The new PKCS#11 module.
+ * Return value: The new PKCS\#11 module.
  **/
 GckModule*
 gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint reserved_options)
@@ -510,7 +513,7 @@ gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint reserved_options)
  * @module2: A pointer to the second GckModule
  *
  * Checks equality of two modules. Two GckModule objects can point to the same
- * underlying PKCS#11 module.
+ * underlying PKCS\#11 module.
  *
  * Return value: TRUE if module1 and module2 are equal. FALSE if either is not a GckModule.
  **/
@@ -555,7 +558,7 @@ gck_module_hash (gconstpointer module)
  * gck_module_get_info:
  * @self: The module to get info for.
  *
- * Get the info about a PKCS#11 module.
+ * Get the info about a PKCS\#11 module.
  *
  * Return value: The module info. Release this with gck_module_info_free().
  **/
@@ -658,7 +661,7 @@ gck_module_get_path (GckModule *self)
  * gck_module_get_functions:
  * @self: The module for which to get the function list.
  *
- * Get the PKCS#11 function list for the module.
+ * Get the PKCS\#11 function list for the module.
  *
  * Return value: The function list, do not modify this structure.
  **/

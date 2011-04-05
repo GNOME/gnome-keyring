@@ -31,14 +31,15 @@
 /**
  * SECTION:gck-slot
  * @title: GckSlot
- * @short_description: Represents a PKCS11 slot that can contain a token.
+ * @short_description: Represents a PKCS\#11 slot that can contain a token.
  *
  * A PKCS11 slot can contain a token. As an example, a slot might be a card reader, and the token
- * the card. If the PKCS11 module is not a hardware driver, often the slot and token are equivalent.
+ * the card. If the PKCS\#11 module is not a hardware driver, often the slot and token are equivalent.
  */
 
 /**
  * GckSlot:
+ * @parent: derived from this.
  *
  * Represents a PKCS11 slot.
  */
@@ -411,7 +412,7 @@ gck_mechanisms_check (GckMechanisms *mechanisms, ...)
  * @slot2: A pointer to the second GckSlot
  *
  * Checks equality of two slots. Two GckSlot objects can point to the same
- * underlying PKCS#11 slot.
+ * underlying PKCS\#11 slot.
  *
  * Return value: TRUE if slot1 and slot2 are equal. FALSE if either is not a GckSlot.
  **/
@@ -459,9 +460,9 @@ gck_slot_hash (gconstpointer slot)
 /**
  * gck_slot_from_handle:
  * @module: The module that this slot is on.
- * @slot_id: The raw PKCS#11 handle or slot id of this slot.
+ * @slot_id: The raw PKCS\#11 handle or slot id of this slot.
  *
- * Create a new GckSlot object for a raw PKCS#11 handle.
+ * Create a new GckSlot object for a raw PKCS\#11 handle.
  *
  * Return value: The new GckSlot object.
  **/
@@ -475,7 +476,7 @@ gck_slot_from_handle (GckModule *module, CK_SLOT_ID slot_id)
  * gck_slot_get_handle:
  * @self: The slot to get the handle of.
  *
- * Get the raw PKCS#11 handle of a slot.
+ * Get the raw PKCS\#11 handle of a slot.
  *
  * Return value: The raw handle.
  **/
@@ -798,55 +799,6 @@ gck_slots_enumerate_objects (GList *slots, GckAttributes *attrs, guint session_o
 }
 
 
-#if UNIMPLEMENTED
-
-typedef struct InitToken {
-	GckArguments base;
-	const guchar *pin;
-	gsize length;
-	const gchar *label;
-} InitToken;
-
-static CK_RV
-perform_init_token (InitToken *args)
-{
-	return (args->base.pkcs11->C_InitToken) (args->base.handle,
-	                                         args->pin, args->length,
-	                                         args->label);
-}
-
-gboolean
-gck_slot_init_token (GckSlot *self, const guchar *pin, gsize length,
-                      const gchar *label, GCancellable *cancellable,
-                      GError **err)
-{
-	InitToken args = { GCK_ARGUMENTS_INIT, pin, length, label };
-	return _gck_call_sync (self, perform_init_token, NULL, &args, err);
-}
-
-void
-gck_slot_init_token_async (GckSlot *self, const guchar *pin, gsize length,
-                            const gchar *label, GCancellable *cancellable,
-                            GAsyncReadyCallback callback, gpointer user_data)
-{
-	InitToken* args = _gck_call_async_prep (self, self, perform_init_token,
-	                                         NULL, sizeof (*args));
-
-	args->pin = pin;
-	args->length = length;
-	args->label = label;
-
-	_gck_call_async_go (args, cancellable, callback, user_data);
-}
-
-gboolean
-gck_slot_init_token_finish (GckSlot *self, GAsyncResult *result, GError **err)
-{
-	return _gck_call_basic_finish (self, result, err);
-}
-
-#endif /* UNIMPLEMENTED */
-
 typedef struct OpenSession {
 	GckArguments base;
 	GckSlot *slot;
@@ -928,8 +880,9 @@ free_open_session (OpenSession *args)
 /**
  * gck_slot_open_session:
  * @self: The slot ot open a session on.
- * @flags: The flags to open a session with.
- * @err: A location to return an error, or NULL.
+ * @options: The #GckSessionOptions to open a session with.
+ * @cancellable: An optional cancellation object, or %NULL.
+ * @error: A location to return an error, or %NULL.
  *
  * Open a session on the slot. If the 'auto reuse' setting is set,
  * then this may be a recycled session with the same flags.
@@ -939,20 +892,21 @@ free_open_session (OpenSession *args)
  * Return value: A new session or NULL if an error occurs.
  **/
 GckSession*
-gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable, GError **err)
+gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
+                       GError **error)
 {
-	return gck_slot_open_session_full (self, options, 0, NULL, NULL, cancellable, err);
+	return gck_slot_open_session_full (self, options, 0, NULL, NULL, cancellable, error);
 }
 
 /**
  * gck_slot_open_session_full:
  * @self: The slot to open a session on.
  * @options: The options to open the new session with.
- * @pkcs11_flags: Additional raw PKCS#11 flags.
+ * @pkcs11_flags: Additional raw PKCS\#11 flags.
  * @app_data: Application data for notification callback.
- * @notify: PKCS#11 notification callback.
+ * @notify: PKCS\#11 notification callback.
  * @cancellable: Optional cancellation object, or NULL.
- * @err: A location to return an error, or NULL.
+ * @error: A location to return an error, or NULL.
  *
  * Open a session on the slot. If the 'auto reuse' setting is set,
  * then this may be a recycled session with the same flags.
@@ -963,7 +917,7 @@ gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable, 
  **/
 GckSession*
 gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, gpointer app_data,
-                            CK_NOTIFY notify, GCancellable *cancellable, GError **err)
+                            CK_NOTIFY notify, GCancellable *cancellable, GError **error)
 {
 	OpenSession args = { GCK_ARGUMENTS_INIT, 0,  };
 	GckSession *session = NULL;
@@ -989,7 +943,7 @@ gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, g
 	if ((options & GCK_SESSION_READ_WRITE) == GCK_SESSION_READ_WRITE)
 		args.flags |= CKF_RW_SESSION;
 
-	if (_gck_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, err))
+	if (_gck_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, error))
 		session = make_session_object (self, options, args.session);
 
 	g_object_unref (module);
@@ -998,6 +952,19 @@ gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, g
 	return session;
 }
 
+/**
+ * gck_slot_open_session_async:
+ * @self: The slot to open a session on.
+ * @options: The options to open the new session with.
+ * @cancellable: Optional cancellation object, or NULL.
+ * @callback: Called when the operation completes.
+ * @user_data: Data to pass to the callback.
+ *
+ * Open a session on the slot. If the 'auto reuse' setting is set,
+ * then this may be a recycled session with the same flags.
+ *
+ * This call will return immediately and complete asynchronously.
+ **/
 void
 gck_slot_open_session_async (GckSlot *self, guint options, GCancellable *cancellable,
                              GAsyncReadyCallback callback, gpointer user_data)
@@ -1006,12 +973,12 @@ gck_slot_open_session_async (GckSlot *self, guint options, GCancellable *cancell
 }
 
 /**
- * gck_slot_open_session_async:
+ * gck_slot_open_session_full_async:
  * @self: The slot to open a session on.
  * @options: Options to open the new session with.
- * @pkcs11_flags: Additional raw PKCS#11 flags.
+ * @pkcs11_flags: Additional raw PKCS\#11 flags.
  * @app_data: Application data for notification callback.
- * @notify: PKCS#11 notification callback.
+ * @notify: PKCS\#11 notification callback.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
  * @user_data: Data to pass to the callback.
@@ -1051,7 +1018,7 @@ gck_slot_open_session_full_async (GckSlot *self, guint options, gulong pkcs11_fl
  * gck_slot_open_session_finish:
  * @self: The slot to open a session on.
  * @result: The result passed to the callback.
- * @err: A location to return an error or NULL.
+ * @error: A location to return an error or NULL.
  *
  * Get the result of an open session operation. If the 'auto reuse' setting is set,
  * then this may be a recycled session with the same flags.

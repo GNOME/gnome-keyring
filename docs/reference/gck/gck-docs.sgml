@@ -13,7 +13,7 @@
 		</releaseinfo>
 	</bookinfo>
 
-	<chapter>
+	<chapter id="reference">
 		<title>PKCS#11 GObject Bindings</title>
 		<xi:include href="xml/gck-module.xml"/>
 		<xi:include href="xml/gck-slot.xml"/>
@@ -21,8 +21,12 @@
 		<xi:include href="xml/gck-object.xml"/>
 		<xi:include href="xml/gck-attribute.xml"/>
 		<xi:include href="xml/gck-attributes.xml"/>
+		<xi:include href="xml/gck-enumerator.xml"/>
+		<xi:include href="xml/gck-modules.xml"/>
 		<xi:include href="xml/gck-error.xml"/>
 		<xi:include href="xml/gck-uri.xml"/>
 		<xi:include href="xml/gck-misc.xml"/>
 	</chapter>
+
+	<xi:include href="gck-pkcs11-links.xml"/>
 </book>

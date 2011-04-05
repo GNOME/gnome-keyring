@@ -32,38 +32,47 @@
 /**
  * SECTION:gck-modules
  * @title: GckModule lists
- * @short_description: Dealing with lists of PKCS#11 modules.
+ * @short_description: Dealing with lists of PKCS\#11 modules.
  *
- * Xxxxx
+ * These functions are useful for dealing with lists of modules, and performing
+ * operations on all of them.
  */
 
+/**
+ * gck_modules_list_registered_paths:
+ * @error: A location to store an error, on failure
+ *
+ * Get the paths for all registered modules.
+ *
+ * Returns: An array of module paths, should be freed with g_strfreev().
+ */
 gchar**
-gck_modules_list_registered_paths (GError **err)
+gck_modules_list_registered_paths (GError **error)
 {
-	GError *error = NULL;
+	GError *err = NULL;
 	const gchar *name;
 	gchar *path;
 	GDir *dir;
 	GArray *paths;
 
-	g_return_val_if_fail (!err || !*err, NULL);
+	g_return_val_if_fail (!error || !*error, NULL);
 
 	/* We use this below */
-	if (!err)
-		err = &error;
+	if (!error)
+		error = &err;
 
 	paths = g_array_new (TRUE, TRUE, sizeof (gchar*));
 
-	dir = g_dir_open (PKCS11_REGISTRY_DIR, 0, err);
+	dir = g_dir_open (PKCS11_REGISTRY_DIR, 0, error);
 
 	if (dir == NULL) {
-		if (g_error_matches (*err, G_FILE_ERROR, G_FILE_ERROR_NOENT) ||
-		    g_error_matches (*err, G_FILE_ERROR, G_FILE_ERROR_NOTDIR)) {
-			g_clear_error (err);
+		if (g_error_matches (*error, G_FILE_ERROR, G_FILE_ERROR_NOENT) ||
+		    g_error_matches (*error, G_FILE_ERROR, G_FILE_ERROR_NOTDIR)) {
+			g_clear_error (error);
 			return (gchar**)g_array_free (paths, FALSE);
 		} else {
 			g_array_free (paths, TRUE);
-			g_clear_error (&error);
+			g_clear_error (&err);
 			return NULL;
 		}
 	}
@@ -89,8 +98,17 @@ gck_modules_list_registered_paths (GError **err)
 	return (gchar**)g_array_free (paths, FALSE);
 }
 
+/**
+ * gck_modules_initialize_registered:
+ * @reserved_options: Module options
+ *
+ * Initialize all the registered modules.
+ *
+ * Returns: A list of #GckModule objects, which should be freed by
+ *     gck_list_unref_free().
+ */
 GList*
-gck_modules_initialize_registered (guint options)
+gck_modules_initialize_registered (guint reserved_options)
 {
 	GError *err = NULL;
 	gchar **paths, **p;
@@ -121,6 +139,16 @@ gck_modules_initialize_registered (guint options)
 	return results;
 }
 
+/**
+ * gck_modules_get_slots:
+ * @modules: The modules
+ * @token_present: Whether to only list slots with token present
+ *
+ * Get a list of slots for across all of the modules.
+ *
+ * Returns: A list of #GckSlot objects, which should be freed with
+ *     gck_list_unref_free().
+ */
 GList*
 gck_modules_get_slots (GList *modules, gboolean token_present)
 {
@@ -135,18 +163,16 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
 }
 
 /**
- * gck_module_enumerate_objects:
- * @self: The module to enumerate objects.
- * @attrs: Attributes that the objects must have, or empty for all objects.
- * @session_flags: Flags for opening a session.
+ * gck_modules_enumerate_objects:
+ * @modules: The modules
+ * @attrs: Attributes that the objects must have, or empty for all objects
+ * @session_options: Options from GckSessionOptions
  *
  * Setup an enumerator for listing matching objects on the modules.
  *
  * This call will not block but will return an enumerator immediately.
- *
- * XXX
- *
- * Return value: A new enumerator
+
+ * Return value: A new enumerator, which should be released with g_object_unref().
  **/
 GckEnumerator*
 gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_options)
@@ -161,6 +187,17 @@ gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint sessi
 	return _gck_enumerator_new (modules, session_options, uri_info);
 }
 
+/**
+ * gck_modules_token_for_uri:
+ * @modules: The modules
+ * @uri: The URI that the token must match
+ * @error: A location to raise an error on failure
+ *
+ * Lookup a token that matches the URI.
+ *
+ * Returns: A newly allocated #GckSlot or %NULL if no such token was
+ *    found.
+ */
 GckSlot*
 gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 {
@@ -205,6 +242,21 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 	return result;
 }
 
+/**
+ * gck_modules_object_for_uri:
+ * @modules: The modules
+ * @uri: The URI the objects must match
+ * @session_options: Options from GckSessionOptions
+ * @error: A location to raise an error on failure.
+ *
+ * Find an object that matches a URI.
+ *
+ * This call can block. Use gck_modules_enumerate_uri() for a non-blocking
+ * version.
+ *
+ * Returns: A new #GckObject which should be released with g_object_unref(),
+ *     or %NULL if no matching object was found.
+ */
 GckObject*
 gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_options,
                             GError **error)
@@ -225,6 +277,21 @@ gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_opti
 	return result;
 }
 
+/**
+ * gck_modules_objects_for_uri:
+ * @modules: The modules
+ * @uri: The URI the objects must match
+ * @session_options: Options from GckSessionOptions
+ * @error: A location to raise an error on failure.
+ *
+ * Find objects that match a URI.
+ *
+ * This call can block. Use gck_modules_enumerate_uri() for a non-blocking
+ * version.
+ *
+ * Returns: A list of #GckObject which should be released with gck_list_unref_free(),
+ *     or %NULL if no matching object was found.
+ */
 GList*
 gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_options,
                              GError **error)
@@ -245,6 +312,20 @@ gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_opt
 	return results;
 }
 
+/**
+ * gck_modules_enumerate_uri:
+ * @modules: The modules
+ * @uri: The URI that the enumerator will match
+ * @session_options: Options from GckSessionOptions
+ * @error: A location to raise an error on failure.
+ *
+ * Enumerate objects that match a URI.
+ *
+ * This call will not block. Use the #GckEnumerator functions in order to
+ * get at the actual objects that match.
+ *
+ * Returns: A new #GckEnumerator, or %NULL if an error occurs.
+ */
 GckEnumerator*
 gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_options,
                            GError **error)
