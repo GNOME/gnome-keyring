@@ -3,11 +3,6 @@
 # We require automake 1.6 at least.
 AUTOMAKE_OPTIONS = 1.6
 
-# This is a blank Makefile.am for using gtk-doc.
-# Copy this to your project's API docs directory and modify the variables to
-# suit your project. See the GTK+ Makefiles in gtk+/docs/reference for examples
-# of using the various options.
-
 # The name of the module, e.g. 'glib'.
 DOC_MODULE=gck
 
@@ -58,7 +53,11 @@ EXTRA_HFILES=
 
 # Header files to ignore when scanning. Use base file name, no paths
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=
+IGNORE_HFILES= \
+	gck-private.h \
+	test-suite.h \
+	gck-mock.h \
+	gck-test.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -66,7 +65,8 @@ HTML_IMAGES=
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
-content_files=
+content_files= \
+	gck-pkcs11-links.xml
 
 # SGML files where gtk-doc abbrevations (#GtkWidget) are expanded
 # These files must be listed here *and* in content_files

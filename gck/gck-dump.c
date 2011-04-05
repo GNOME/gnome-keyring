@@ -323,6 +323,12 @@ dump_attribute_type (GckAttribute *attr)
 	}
 }
 
+/**
+ * gck_attribute_dump:
+ * @attr: The attribute
+ *
+ * Dump the specified attribute using g_printerr().
+ */
 void
 gck_attribute_dump (GckAttribute *attr)
 {
@@ -336,6 +342,12 @@ gck_attribute_dump (GckAttribute *attr)
 	}
 }
 
+/**
+ * gck_attributes_dump:
+ * @attrs: The attributes
+ *
+ * Dump the attributes using g_printerr().
+ */
 void
 gck_attributes_dump (GckAttributes *attrs)
 {

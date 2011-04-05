@@ -48,6 +48,12 @@
  * This structure represents a PKCS11 CK_ATTRIBUTE.
  */
 
+/**
+ * GCK_TYPE_ATTRIBUTES:
+ *
+ * Boxed type for #GckAttributes
+ */
+
 static void
 attribute_init (GckAttribute *attr, gulong attr_type,
                 gconstpointer value, gsize length,
@@ -69,11 +75,11 @@ attribute_init (GckAttribute *attr, gulong attr_type,
 /**
  * gck_attribute_init:
  * @attr: An uninitialized attribute.
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The raw value of the attribute.
  * @length: The length of the raw value.
  *
- * Initialize a PKCS#11 attribute. This copies the value memory
+ * Initialize a PKCS\#11 attribute. This copies the value memory
  * into an internal buffer.
  *
  * When done with the attribute you should use gck_attribute_clear()
@@ -90,11 +96,11 @@ gck_attribute_init (GckAttribute *attr, gulong attr_type,
 /**
  * gck_attribute_init_invalid:
  * @attr: An uninitialized attribute.
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
- * Initialize a PKCS#11 attribute to an 'invalid' or 'not found'
+ * Initialize a PKCS\#11 attribute to an 'invalid' or 'not found'
  * state. Specifically this sets the value length to (CK_ULONG)-1
- * as specified in the PKCS#11 specification.
+ * as specified in the PKCS\#11 specification.
  *
  * When done with the attribute you should use gck_attribute_clear()
  * to free the internal memory.
@@ -112,9 +118,9 @@ gck_attribute_init_invalid (GckAttribute *attr, gulong attr_type)
 /**
  * gck_attribute_init_empty:
  * @attr: An uninitialized attribute.
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
- * Initialize a PKCS#11 attribute to an empty state. The attribute
+ * Initialize a PKCS\#11 attribute to an empty state. The attribute
  * type will be set, but no data will be set.
  *
  * When done with the attribute you should use gck_attribute_clear()
@@ -142,11 +148,11 @@ attribute_init_boolean (GckAttribute *attr, gulong attr_type,
 /**
  * gck_attribute_init_boolean:
  * @attr: An uninitialized attribute.
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The boolean value of the attribute.
  *
- * Initialize a PKCS#11 attribute to boolean. This will result
- * in a CK_BBOOL attribute from the PKCS#11 specs.
+ * Initialize a PKCS\#11 attribute to boolean. This will result
+ * in a CK_BBOOL attribute from the PKCS\#11 specs.
  *
  * When done with the attribute you should use gck_attribute_clear()
  * to free the internal memory.
@@ -179,11 +185,11 @@ attribute_init_date (GckAttribute *attr, gulong attr_type,
 /**
  * gck_attribute_init_date:
  * @attr: An uninitialized attribute.
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The date value of the attribute.
  *
- * Initialize a PKCS#11 attribute to a date. This will result
- * in a CK_DATE attribute from the PKCS#11 specs.
+ * Initialize a PKCS\#11 attribute to a date. This will result
+ * in a CK_DATE attribute from the PKCS\#11 specs.
  *
  * When done with the attribute you should use gck_attribute_clear()
  * to free the internal memory.
@@ -208,11 +214,11 @@ attribute_init_ulong (GckAttribute *attr, gulong attr_type,
 /**
  * gck_attribute_init_ulong:
  * @attr: An uninitialized attribute.
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The ulong value of the attribute.
  *
- * Initialize a PKCS#11 attribute to a unsigned long. This will result
- * in a CK_ULONG attribute from the PKCS#11 specs.
+ * Initialize a PKCS\#11 attribute to a unsigned long. This will result
+ * in a CK_ULONG attribute from the PKCS\#11 specs.
  *
  * When done with the attribute you should use gck_attribute_clear()
  * to free the internal memory.
@@ -236,10 +242,10 @@ attribute_init_string (GckAttribute *attr, gulong attr_type,
 /**
  * gck_attribute_init_string:
  * @attr: An uninitialized attribute.
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The null terminated string value of the attribute.
  *
- * Initialize a PKCS#11 attribute to a string. This will result
+ * Initialize a PKCS\#11 attribute to a string. This will result
  * in an attribute containing the text, but not the null terminator.
  * The text in the attribute will be of the same encoding as you pass
  * to this function.
@@ -257,11 +263,11 @@ gck_attribute_init_string (GckAttribute *attr, gulong attr_type,
 
 /**
  * gck_attribute_new:
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The raw value of the attribute.
  * @length: The length of the attribute.
  *
- * Create a new PKCS#11 attribute. The value will be copied
+ * Create a new PKCS\#11 attribute. The value will be copied
  * into the new attribute.
  *
  * Return value: The new attribute. When done with the attribute use
@@ -277,11 +283,11 @@ gck_attribute_new (gulong attr_type, gpointer value, gsize length)
 
 /**
  * gck_attribute_new_invalid:
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
- * Create a new PKCS#11 attribute as 'invalid' or 'not found'
+ * Create a new PKCS\#11 attribute as 'invalid' or 'not found'
  * state. Specifically this sets the value length to (CK_ULONG)-1
- * as specified in the PKCS#11 specification.
+ * as specified in the PKCS\#11 specification.
  *
  * Return value: The new attribute. When done with the attribute use
  * gck_attribute_free() to free it.
@@ -296,9 +302,9 @@ gck_attribute_new_invalid (gulong attr_type)
 
 /**
  * gck_attribute_new_empty:
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
- * Create a new PKCS#11 attribute with empty data.
+ * Create a new PKCS\#11 attribute with empty data.
  *
  * Return value: The new attribute. When done with the attribute use
  * gck_attribute_free() to free it.
@@ -313,11 +319,11 @@ gck_attribute_new_empty (gulong attr_type)
 
 /**
  * gck_attribute_new_boolean:
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The boolean value of the attribute.
  *
- * Initialize a PKCS#11 attribute to boolean. This will result
- * in a CK_BBOOL attribute from the PKCS#11 specs.
+ * Initialize a PKCS\#11 attribute to boolean. This will result
+ * in a CK_BBOOL attribute from the PKCS\#11 specs.
  *
  * Return value: The new attribute. When done with the attribute use
  * gck_attribute_free() to free it.
@@ -332,11 +338,11 @@ gck_attribute_new_boolean (gulong attr_type, gboolean value)
 
 /**
  * gck_attribute_new_date:
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The date value of the attribute.
  *
- * Initialize a PKCS#11 attribute to a date. This will result
- * in a CK_DATE attribute from the PKCS#11 specs.
+ * Initialize a PKCS\#11 attribute to a date. This will result
+ * in a CK_DATE attribute from the PKCS\#11 specs.
  *
  * Return value: The new attribute. When done with the attribute use
  * gck_attribute_free() to free it.
@@ -351,11 +357,11 @@ gck_attribute_new_date (gulong attr_type, const GDate *value)
 
 /**
  * gck_attribute_new_ulong:
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The ulong value of the attribute.
  *
- * Initialize a PKCS#11 attribute to a unsigned long. This will result
- * in a CK_ULONG attribute from the PKCS#11 specs.
+ * Initialize a PKCS\#11 attribute to a unsigned long. This will result
+ * in a CK_ULONG attribute from the PKCS\#11 specs.
  *
  * Return value: The new attribute. When done with the attribute use
  * gck_attribute_free() to free it.
@@ -370,10 +376,10 @@ gck_attribute_new_ulong (gulong attr_type, gulong value)
 
 /**
  * gck_attribute_new_string:
- * @attr_type: The PKCS#11 attribute type to set on the attribute.
+ * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The null terminated string value of the attribute.
  *
- * Initialize a PKCS#11 attribute to a string. This will result
+ * Initialize a PKCS\#11 attribute to a string. This will result
  * in an attribute containing the text, but not the null terminator.
  * The text in the attribute will be of the same encoding as you pass
  * to this function.
@@ -393,8 +399,8 @@ gck_attribute_new_string (gulong attr_type, const gchar *value)
  * gck_attribute_is_invalid:
  * @attr: The attribute to check.
  *
- * Check if the PKCS#11 attribute represents 'invalid' or 'not found'
- * according to the PKCS#11 spec. That is, having length
+ * Check if the PKCS\#11 attribute represents 'invalid' or 'not found'
+ * according to the PKCS\#11 spec. That is, having length
  * of (CK_ULONG)-1.
  *
  * Return value: Whether the attribute represents invalid or not.
@@ -410,7 +416,7 @@ gck_attribute_is_invalid (GckAttribute *attr)
  * gck_attribute_get_boolean:
  * @attr: The attribute to retrieve value from.
  *
- * Get the CK_BBOOL of a PKCS#11 attribute. No conversion
+ * Get the CK_BBOOL of a PKCS\#11 attribute. No conversion
  * is performed. It is an error to pass an attribute to this
  * function unless you're know it's supposed to contain a
  * boolean value.
@@ -434,7 +440,7 @@ gck_attribute_get_boolean (GckAttribute *attr)
  * gck_attribute_get_ulong:
  * @attr: The attribute to retrieve value from.
  *
- * Get the CK_ULONG value of a PKCS#11 attribute. No
+ * Get the CK_ULONG value of a PKCS\#11 attribute. No
  * conversion is performed. It is an error to pass an attribute
  * to this function unless you're know it's supposed to contain
  * a value of the right type.
@@ -458,7 +464,7 @@ gck_attribute_get_ulong (GckAttribute *attr)
  * gck_attribute_get_string:
  * @attr: The attribute to retrieve value from.
  *
- * Get the string value of a PKCS#11 attribute. No
+ * Get the string value of a PKCS\#11 attribute. No
  * conversion is performed. It is an error to pass an attribute
  * to this function unless you're know it's supposed to contain
  * a value of the right type.
@@ -484,7 +490,7 @@ gck_attribute_get_string (GckAttribute *attr)
  * @attr: The attribute to retrieve value from.
  * @value: The date value to fill in with the parsed date.
  *
- * Get the CK_DATE of a PKCS#11 attribute. No
+ * Get the CK_DATE of a PKCS\#11 attribute. No
  * conversion is performed. It is an error to pass an attribute
  * to this function unless you're know it's supposed to contain
  * a value of the right type.
@@ -530,7 +536,7 @@ gck_attribute_get_date (GckAttribute *attr, GDate *value)
  * gck_attribute_dup:
  * @attr: The attribute to duplicate.
  *
- * Duplicate the PKCS#11 attribute. All value memory is
+ * Duplicate the PKCS\#11 attribute. All value memory is
  * also copied.
  *
  * Return value: The duplicated attribute. Use gck_attribute_free()
@@ -574,7 +580,7 @@ attribute_init_copy (GckAttribute *dest, const GckAttribute *src, GckAllocator a
  * @dest: An uninitialized attribute.
  * @src: An attribute to copy.
  *
- * Initialize a PKCS#11 attribute as a copy of another attribute.
+ * Initialize a PKCS\#11 attribute as a copy of another attribute.
  * This copies the value memory as well.
  *
  * When done with the copied attribute you should use
@@ -633,6 +639,15 @@ gck_attribute_free (GckAttribute *attr)
 	}
 }
 
+/**
+ * gck_attribute_equal:
+ * @a: First attribute to compare.
+ * @b: Second attribute to compare.
+ *
+ * Compare two attributes. Useful with <code>GHashTable</code>.
+ *
+ * Returns: %TRUE if the attributes are equal.
+ */
 gboolean
 gck_attribute_equal (gconstpointer a, gconstpointer b)
 {
@@ -941,7 +956,7 @@ gck_attributes_add_empty (GckAttributes *attrs, gulong attr_type)
  *
  * Add an attribute with the specified type and value to the array.
  *
- * The value will be stored as a CK_BBOOL PKCS#11 style attribute.
+ * The value will be stored as a CK_BBOOL PKCS\#11 style attribute.
  *
  * Return value: The attribute that was added.
  **/
@@ -987,7 +1002,7 @@ gck_attributes_add_string (GckAttributes *attrs, gulong attr_type, const gchar *
  *
  * Add an attribute with the specified type and value to the array.
  *
- * The value will be stored as a CK_DATE PKCS#11 style attribute.
+ * The value will be stored as a CK_DATE PKCS\#11 style attribute.
  *
  * Return value: The attribute that was added.
  **/
@@ -1010,7 +1025,7 @@ gck_attributes_add_date (GckAttributes *attrs, gulong attr_type, const GDate *va
  *
  * Add an attribute with the specified type and value to the array.
  *
- * The value will be stored as a CK_ULONG PKCS#11 style attribute.
+ * The value will be stored as a CK_ULONG PKCS\#11 style attribute.
  *
  * Return value: The attribute that was added.
  **/
@@ -1025,6 +1040,13 @@ gck_attributes_add_ulong (GckAttributes *attrs, gulong attr_type, gulong value)
 	return added;
 }
 
+/**
+ * gck_attributes_add_all:
+ * @attrs: A set of attributes
+ * @from: Attributes to add
+ *
+ * Add all attributes in @from to @attrs.
+ */
 void
 gck_attributes_add_all (GckAttributes *attrs, GckAttributes *from)
 {
@@ -1243,6 +1265,15 @@ gck_attributes_unref (GckAttributes *attrs)
 	}
 }
 
+/**
+ * gck_attributes_contains:
+ * @attrs: The attributes to check
+ * @match: The attribute to find
+ *
+ * Check whether the attributes contain a certain attribute.
+ *
+ * Returns: %TRUE if the attributes contain the attribute.
+ */
 gboolean
 gck_attributes_contains (GckAttributes *attrs, GckAttribute *match)
 {

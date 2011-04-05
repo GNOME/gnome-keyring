@@ -38,6 +38,12 @@
  */
 
 /**
+ * GCK_INVALID:
+ *
+ * Used as a terminator at the end of variable argument lists.
+ */
+
+/**
  * GCK_VENDOR_CODE:
  *
  * Custom PKCS11 errors that originate from the gck library, are
@@ -74,9 +80,9 @@ gck_get_error_quark (void)
 
 /**
  * gck_message_from_rv:
- * @rv: The PKCS#11 return value to get a message for.
+ * @rv: The PKCS\#11 return value to get a message for.
  *
- * Get a message for a PKCS#11 return value or error code. Do not
+ * Get a message for a PKCS\#11 return value or error code. Do not
  * pass CKR_OK or other such non errors to this function.
  *
  * Return value: The user readable message.
@@ -315,9 +321,9 @@ gck_list_ref_copy (GList *reflist)
  * @data: The character data to turn into a null terminated string.
  * @max: The maximum length of the charater data.
  *
- * Create a string from a set of PKCS#11 characters. This is
+ * Create a string from a set of PKCS\#11 characters. This is
  * similar to g_strndup, except for that it also strips trailing
- * spaces. These space padded strings are often used in PKCS#11
+ * spaces. These space padded strings are often used in PKCS\#11
  * structures.
  *
  * Return value: The null terminated string.
@@ -353,6 +359,16 @@ _gck_ulong_equal (gconstpointer v1, gconstpointer v2)
 	return *((const gulong*)v1) == *((const gulong*)v2);
 }
 
+/**
+ * gck_value_to_ulong:
+ * @value: memory to convert
+ * @length: length of memory
+ * @result: A location to store the result
+ *
+ * Convert CK_ULONG type memory to a boolean.
+ *
+ * Returns: Whether the conversion was successful.
+ */
 gboolean
 gck_value_to_ulong (gconstpointer value, gsize length, gulong *result)
 {
@@ -363,6 +379,16 @@ gck_value_to_ulong (gconstpointer value, gsize length, gulong *result)
 	return TRUE;
 }
 
+/**
+ * gck_value_to_boolean:
+ * @value: memory to convert
+ * @length: length of memory
+ * @result: A location to store the result
+ *
+ * Convert CK_BBOOL type memory to a boolean.
+ *
+ * Returns: Whether the conversion was successful.
+ */
 gboolean
 gck_value_to_boolean (gconstpointer value, gsize length, gboolean *result)
 {

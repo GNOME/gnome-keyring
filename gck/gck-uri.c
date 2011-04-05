@@ -38,8 +38,8 @@
  * @title: PKCS11 URIs
  * @short_description: Parsing and building PKCS\#11 URIs.
  *
- * <ulink href='http://tools.ietf.org/html/draft-pechanec-pkcs11uri-03'>PKCS#11 URIs</ulink>
- * are a standard for referring to PKCS#11 modules, tokens, or objects. What the
+ * <ulink href='http://tools.ietf.org/html/draft-pechanec-pkcs11uri-03'>PKCS\#11 URIs</ulink>
+ * are a standard for referring to PKCS\#11 modules, tokens, or objects. What the
  * PKCS\#11 URI refers to depends on the context in which it is used.
  *
  * A PKCS\#11 URI can always resolve to more than one object, token or module. A
@@ -48,8 +48,7 @@
  *
  * In most cases the parsing or building of URIs is handled elsewhere in the GCK
  * library. For example to enumerate objects that match a PKCS\#11 URI use the
- * gck_modules_enumerate_uri() function. Or to build a PKCS\#11 URI for a given
- * object, use the gck_object_build_uri() function.
+ * gck_modules_enumerate_uri() function.
  *
  * To parse a PKCS\#11 URI use the gck_uri_parse() function passing in the type of
  * context in which you're using the URI. To build a URI use the gck_uri_build()
@@ -72,13 +71,19 @@
  */
 
 /**
- * GckUriContext:
- * @GCK_URI_CONTEXT_MODULE: the URI will be used to match modules.
- * @GCK_URI_CONTEXT_TOKEN: the URI will be used to match tokens.
- * @GCK_URI_CONTEXT_OBJECT: the URI will be used to match objects.
- * @GCK_URI_CONTEXT_ANY: parse all recognized components of the URI.
+ * GckUriParseFlags:
+ * @GCK_URI_PARSE_MODULE: the URI will be used to match modules.
+ * @GCK_URI_PARSE_TOKEN: the URI will be used to match tokens.
+ * @GCK_URI_PARSE_OBJECT: the URI will be used to match objects.
+ * @GCK_URI_PARSE_ANY: parse all recognized components of the URI.
  *
  * Which context the PKCS\#11 URI will be used in.
+ */
+
+/**
+ * GCK_URI_ERROR:
+ *
+ * Error domain for URI errors.
  */
 
 #define URI_PREFIX "pkcs11:"
