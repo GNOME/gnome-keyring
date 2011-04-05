@@ -34,6 +34,8 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
+#include <p11-kit/p11-kit.h>
+
 #include <gck/gck.h>
 
 #include <gcrypt.h>
@@ -176,25 +178,39 @@ void
 _gcr_initialize (void)
 {
 	static volatile gsize gcr_initialized = 0;
+	CK_FUNCTION_LIST_PTR_PTR module_list;
+	GPtrArray *uris;
+	gchar *uri;
+	guint i;
 
 	/* Initialize the libgcrypt library if needed */
 	egg_libgcrypt_initialize ();
 
 	if (g_once_init_enter (&gcr_initialized)) {
+
+		/* This calls p11_kit_initialize_registered */
 		all_modules = gck_modules_initialize_registered ();
 
-		/*
-		 * Soon we're going to have support for using a configuration of
-		 * PKCS#11 modules using p11-kit. But for this release this is
-		 * hard coded.
-		 */
+		module_list = p11_kit_registered_modules ();
 
-		trust_store_uri = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:XDG:DEFAULT");
+		/* Ask for the global x-trust-store option */
+		trust_store_uri = p11_kit_registered_option (NULL, "x-trust-store");
+		for (i = 0; !trust_store_uri && module_list[i]; i++)
+			trust_store_uri = p11_kit_registered_option (module_list[i], "x-trust-store");
 
-		trust_lookup_uris = g_new0 (gchar*, 3);
-		trust_lookup_uris[0] = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:ROOTS:DEFAULT");
-		trust_lookup_uris[1] = g_strdup ("pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:XDG:DEFAULT");
-		trust_lookup_uris[2] = NULL;
+		uris = g_ptr_array_new ();
+		uri = p11_kit_registered_option (NULL, "x-trust-lookup");
+		if (uri != NULL)
+			g_ptr_array_add (uris, uri);
+		for (i = 0; module_list[i]; i++) {
+			uri = p11_kit_registered_option (module_list[i], "x-trust-lookup");
+			if (uri != NULL)
+				g_ptr_array_add (uris, uri);
+		}
+		g_ptr_array_add (uris, NULL);
+
+		trust_lookup_uris = (gchar**)g_ptr_array_free (uris, FALSE);
+		free (module_list);
 
 		g_once_init_leave (&gcr_initialized, 1);
 	}
