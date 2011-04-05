@@ -568,7 +568,7 @@ gku_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
 	g_return_val_if_fail (self, NULL);
 
 	if (!self->pv->executable)
-		self->pv->executable = g_strdup (LIBEXECDIR "/gnome-keyring-prompt");
+		self->pv->executable = g_strdup (PROMPTEXEC);
 
 	return G_OBJECT (self);
 }
