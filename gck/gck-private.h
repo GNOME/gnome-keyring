@@ -62,8 +62,7 @@ gboolean            _gck_ulong_equal                       (gconstpointer v1,
  * MODULE
  */
 
-GckModule*          _gck_module_new_initialized            (CK_FUNCTION_LIST_PTR funcs,
-                                                            guint reserved_options);
+GckModule*          _gck_module_new_initialized            (CK_FUNCTION_LIST_PTR funcs);
 
 gboolean            _gck_module_fire_authenticate_slot     (GckModule *module,
                                                              GckSlot *slot,

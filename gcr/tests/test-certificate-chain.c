@@ -148,7 +148,7 @@ setup (Test *test, gconstpointer unused)
 	gck_assert_cmprv (rv, ==, CKR_OK);
 
 	g_assert (!modules);
-	module = gck_module_new (&test->funcs, 0);
+	module = gck_module_new (&test->funcs);
 	modules = g_list_prepend (modules, module);
 	gcr_pkcs11_set_modules (modules);
 	uris[0] = GCK_MOCK_SLOT_ONE_URI;

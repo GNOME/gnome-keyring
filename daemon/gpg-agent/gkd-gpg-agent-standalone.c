@@ -87,7 +87,7 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
-	module = gck_module_initialize (argv[1], 0, &error);
+	module = gck_module_initialize (argv[1], &error);
 	if (!module) {
 		g_message ("couldn't load pkcs11 module: %s", egg_error_message (error));
 		g_clear_error (&error);

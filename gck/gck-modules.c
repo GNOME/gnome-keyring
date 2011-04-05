@@ -43,7 +43,6 @@
 
 /**
  * gck_modules_initialize_registered:
- * @flags: reserved options set to zero.
  *
  * Load and initialize all the registered modules.
  *
@@ -51,7 +50,7 @@
  * be released with gck_list_unref_free().
  */
 GList*
-gck_modules_initialize_registered (guint flags)
+gck_modules_initialize_registered (void)
 {
 	GckModule *module;
 	GList *results = NULL;
@@ -68,7 +67,7 @@ gck_modules_initialize_registered (guint flags)
 	modules = p11_kit_registered_modules ();
 
 	for (funcs = modules; *funcs; ++funcs) {
-		module = _gck_module_new_initialized (*funcs, 0);
+		module = _gck_module_new_initialized (*funcs);
 		results = g_list_prepend (results, module);
 	}
 

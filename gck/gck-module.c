@@ -374,7 +374,6 @@ gck_module_info_free (GckModuleInfo *module_info)
 /**
  * gck_module_initialize:
  * @path: The file system path to the PKCS\#11 module to load.
- * @flags: No options are currently available.
  * @error: A location to store an error resulting from a failed load.
  *
  * Load and initialize a PKCS\#11 module represented by a GckModule object.
@@ -382,7 +381,7 @@ gck_module_info_free (GckModuleInfo *module_info)
  * Return value: The loaded PKCS\#11 module or NULL if failed.
  **/
 GckModule*
-gck_module_initialize (const gchar *path, guint flags, GError **error)
+gck_module_initialize (const gchar *path, GError **error)
 {
 	CK_C_GetFunctionList get_function_list;
 	CK_FUNCTION_LIST_PTR funcs;
@@ -437,7 +436,6 @@ gck_module_initialize (const gchar *path, guint flags, GError **error)
 /**
  * gck_module_new:
  * @funcs: Initialized PKCS\#11 function list pointer
- * @flags: Must be zero
  *
  * Create a GckModule representing a PKCS\#11 module. It is assumed that
  * this the module is already initialized. In addition it will not be
@@ -446,16 +444,16 @@ gck_module_initialize (const gchar *path, guint flags, GError **error)
  * Return value: The new PKCS\#11 module.
  **/
 GckModule*
-gck_module_new (CK_FUNCTION_LIST_PTR funcs, guint flags)
+gck_module_new (CK_FUNCTION_LIST_PTR funcs)
 {
 	g_return_val_if_fail (funcs, NULL);
 	return g_object_new (GCK_TYPE_MODULE, "functions", funcs, NULL);
 }
 
 GckModule*
-_gck_module_new_initialized (CK_FUNCTION_LIST_PTR funcs, guint reserved_options)
+_gck_module_new_initialized (CK_FUNCTION_LIST_PTR funcs)
 {
-	GckModule *module = gck_module_new (funcs, reserved_options);
+	GckModule *module = gck_module_new (funcs);
 	module->pv->initialized = TRUE; /* As if we initialized it */
 	return module;
 }

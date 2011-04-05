@@ -40,7 +40,7 @@ setup (Test *test, gconstpointer unused)
 	GError *err = NULL;
 
 	/* Successful load */
-	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", 0, &err);
+	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", &err);
 	g_assert_no_error (err);
 	g_assert (test->module);
 }
@@ -58,14 +58,14 @@ test_invalid_modules (Test *test, gconstpointer unused)
 	GError *err = NULL;
 
 	/* Shouldn't be able to load modules */
-	invalid = gck_module_initialize ("blah-blah-non-existant", 0, &err);
+	invalid = gck_module_initialize ("blah-blah-non-existant", &err);
 	g_assert (invalid == NULL);
 	g_assert_error (err, GCK_ERROR, CKR_GCK_MODULE_PROBLEM);
 
 	g_clear_error (&err);
 
 	/* Shouldn't be able to load any file successfully */
-	invalid = gck_module_initialize ("/usr/lib/libm.so", 0, &err);
+	invalid = gck_module_initialize ("/usr/lib/libm.so", &err);
 	g_assert (invalid == NULL);
 	g_assert_error (err, GCK_ERROR, CKR_GCK_MODULE_PROBLEM);
 }
@@ -82,7 +82,7 @@ test_module_equals_hash (Test *test, gconstpointer unused)
 
 	g_assert (gck_module_equal (test->module, test->module));
 
-	other = gck_module_new (gck_module_get_functions (test->module), 0);
+	other = gck_module_new (gck_module_get_functions (test->module));
 	obj = g_object_new (G_TYPE_OBJECT, NULL);
 
 	g_assert (gck_module_equal (test->module, other));

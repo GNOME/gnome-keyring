@@ -296,11 +296,9 @@ struct _GckModuleClass {
 
 GType                 gck_module_get_type                     (void) G_GNUC_CONST;
 
-GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs,
-                                                               guint flags);
+GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs);
 
 GckModule*            gck_module_initialize                   (const gchar *path,
-                                                               guint flags,
                                                                GError **error);
 
 gboolean              gck_module_equal                        (gconstpointer module1,
@@ -317,7 +315,7 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-GList*                gck_modules_initialize_registered       (guint flags);
+GList*                gck_modules_initialize_registered       (void);
 
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);

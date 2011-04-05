@@ -181,7 +181,7 @@ _gcr_initialize (void)
 	egg_libgcrypt_initialize ();
 
 	if (g_once_init_enter (&gcr_initialized)) {
-		all_modules = gck_modules_initialize_registered (0);
+		all_modules = gck_modules_initialize_registered ();
 
 		/*
 		 * Soon we're going to have support for using a configuration of
@@ -292,7 +292,7 @@ gcr_pkcs11_add_module_from_file (const gchar *module_path, gpointer unused,
 	g_return_val_if_fail (module_path, FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	module = gck_module_initialize (module_path, 0, error);
+	module = gck_module_initialize (module_path, error);
 	if (module == NULL)
 		return FALSE;
 

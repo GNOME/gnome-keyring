@@ -43,7 +43,7 @@ setup (Test *test, gconstpointer unused)
 	GList *slots;
 
 	/* Successful load */
-	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", 0, &err);
+	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", &err);
 	g_assert_no_error (err);
 	g_assert (GCK_IS_MODULE (test->module));
 
@@ -145,7 +145,7 @@ test_slot_equals_hash (Test *test, gconstpointer unused)
 
 	g_assert (gck_slot_equal (test->slot, test->slot));
 
-	other_mod = gck_module_new (gck_module_get_functions (test->module), 0);
+	other_mod = gck_module_new (gck_module_get_functions (test->module));
 	other_slot = g_object_new (GCK_TYPE_SLOT, "module", other_mod, "handle", gck_slot_get_handle (test->slot), NULL);
 	g_assert (gck_slot_equal (test->slot, other_slot));
 	g_object_unref (other_mod);
