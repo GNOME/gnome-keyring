@@ -108,7 +108,7 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 	GdkGrabStatus status;
 
 #if GTK_CHECK_VERSION (3,0,0)
-	GdkDevice *device;
+	GdkDevice *device = NULL;
 	GdkDeviceManager *manager;
 	GdkDisplay *display;
 	GList *devices, *l;

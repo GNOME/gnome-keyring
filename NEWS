@@ -1,3 +1,13 @@
+Changes in version 3.0.0 are:
+ * Translations
+
+Changes in version 2.91.93 are:
+ * Use full interface.Property form for CreateCollection and CreateItem
+   in the DBus API.
+ * Add deprecated functions for libgcr symbols lost since 2.32.x
+ * Don't crash when the GPG agent is asked for a passhprase without a
+   key id.
+
 Changes in version 2.91.92 are:
  * Don't leak login name from PAM when logging error.
  * Also start daemon in XFCE

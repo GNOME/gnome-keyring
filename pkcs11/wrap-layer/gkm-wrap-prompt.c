@@ -537,7 +537,7 @@ get_unlock_options_from_prompt (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 static void
 set_unlock_options_on_prompt (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR options, CK_ULONG n_options)
 {
-	const gchar *choice;
+	const gchar *choice = 0;
 	gboolean have_ttl = FALSE;
 	gboolean bval;
 	gulong uval;

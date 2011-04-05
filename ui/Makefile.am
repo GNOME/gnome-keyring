@@ -8,10 +8,8 @@ endif
 SUBDIRS = . $(TESTS_DIR)
 
 INCLUDES= \
-	-DPREFIX=\""$(prefix)"\" \
-	-DBINDIR=\""$(bindir)"\" \
-	-DLIBEXECDIR=\""$(libexecdir)"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DPROMPTEXEC=\""$(libexecdir)/gnome-keyring-prompt@GCR_VERSION_SUFFIX@"\" \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(GOBJECT_CFLAGS) \
