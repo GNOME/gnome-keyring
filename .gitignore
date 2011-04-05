@@ -110,6 +110,7 @@ run-tests
 /gck/tests/test-gck-slot
 /gck/tests/test-gck-uri
 
+<<<<<<< HEAD
 /gcr/tests/frob-certificate
 /gcr/tests/frob-key
 /gcr/tests/frob-gnupg-selector
@@ -151,6 +152,8 @@ run-tests
 
 /pkcs11/roots-store/tests/check-roots-module
 
+/pkcs11/rpc-layer/gnome-keyring-module
+
 /pkcs11/secret-store/tests/test-secret-binary
 /pkcs11/secret-store/tests/test-secret-collection
 /pkcs11/secret-store/tests/test-secret-compat
@@ -179,12 +182,11 @@ run-tests
 /pkcs11/xdg-store/tests/test-xdg-module
 /pkcs11/xdg-store/tests/test-xdg-trust
 
-/ui/tests/test-util
-
 /daemon/dbus/tests/test-secret-util
 
 /ui/gnome-keyring-prompt.desktop
 /ui/gnome-keyring-prompt.desktop.in
+/ui/tests/test-util
 
 /docs/reference/*/*-scan
 /docs/reference/*/*-scan.c

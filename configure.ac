@@ -315,6 +315,15 @@ PKG_CHECK_MODULES([P11_KIT], p11-kit-1)
 AC_SUBST(P11_KIT_CFLAGS)
 AC_SUBST(P11_KIT_LIBS)
 
+AC_MSG_CHECKING([where to put pkcs11 module configuration])
+P11_SYSTEM_MODULES=`$PKG_CONFIG p11-kit --variable=p11_system_modules`
+AC_MSG_RESULT($P11_SYSTEM_MODULES)
+AC_SUBST(P11_SYSTEM_MODULES)
+
+if "$P11_SYSTEM_MODULES" = ""; then
+	AC_MSG_ERROR([Could not find location for pkcs11 module config])
+fi
+
 # --------------------------------------------------------------------
 # PAM Module Directory
 
@@ -720,7 +729,7 @@ AC_SUBST(BINDIR)
 eval LIBEXECDIR="$libexecdir"
 AC_SUBST(LIBEXECDIR)
 
-pkcs11dir="${libdir}/pkcs11"
+eval pkcs11dir="${libdir}/pkcs11"
 AC_SUBST(pkcs11dir)
 
 pkcs11standalonedir="${libdir}/gnome-keyring/devel"
@@ -765,6 +774,7 @@ pkcs11/gnome2-store/tests/Makefile
 pkcs11/roots-store/Makefile
 pkcs11/roots-store/tests/Makefile
 pkcs11/rpc-layer/Makefile
+pkcs11/rpc-layer/gnome-keyring-module
 pkcs11/secret-store/Makefile
 pkcs11/secret-store/tests/Makefile
 pkcs11/ssh-store/Makefile
@@ -797,11 +807,12 @@ echo "  SSH Agent:            $ssh_status"
 echo "  GPG Agent:            $gpg_status"
 echo "  Root Certificates:    $root_status"
 echo "  GTK+ Version:         $GTK_API_VERSION"
+echo "  PKCS#11 Modules:      $P11_SYSTEM_MODULES"
 echo
 echo "BUILD"
 echo "  Debug Build:          $debug_status"
 echo "  Valgrind:             $valgrind_status"
-echo "  Pkcs#11 Tests         $p11_tests_status"
+echo "  PKCS#11 Tests         $p11_tests_status"
 echo "  Tests, -Werror:       $tests_status"
 echo "  Test Coverage:        $enable_gcov"
 echo
