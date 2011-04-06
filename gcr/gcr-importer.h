@@ -52,6 +52,8 @@ typedef struct _GcrImporterPrivate GcrImporterPrivate;
 
 struct _GcrImporter {
 	GObject parent;
+
+	/*< private >*/
 	GcrImporterPrivate *pv;
 };
 
@@ -89,12 +91,12 @@ gboolean                  gcr_importer_import                 (GcrImporter *self
                                                                GError **error);
 
 void                      gcr_importer_import_async           (GcrImporter *self,
-                                                               GCancellable *cancel,
+                                                               GCancellable *cancellable,
                                                                GAsyncReadyCallback callback,
                                                                gpointer user_data);
 
 gboolean                  gcr_importer_import_finish          (GcrImporter *self,
-                                                               GAsyncResult *res,
+                                                               GAsyncResult *result,
                                                                GError **error);
 
 #ifndef GCR_DISABLE_DEPRECATED

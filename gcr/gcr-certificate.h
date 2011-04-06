@@ -45,6 +45,7 @@ struct _GcrCertificateIface {
 
 	gconstpointer (*get_der_data)   (GcrCertificate *self, gsize *n_data);
 
+	/*< private >*/
 	gpointer dummy1;
 	gpointer dummy2;
 	gpointer dummy3;

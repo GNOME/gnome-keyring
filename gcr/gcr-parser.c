@@ -41,6 +41,80 @@
 #include <stdlib.h>
 #include <gcrypt.h>
 
+/**
+ * SECTION:gcr-parser
+ * @title: GcrParser
+ * @short_description: Parser for certificate and key files
+ *
+ * A #GcrParser can parse various certificate and key files such as OpenSSL
+ * PEM files, DER encoded certifictes, PKCS\#8 keys and so on. Each various
+ * format is identified by a value in the #GcrDataFormat enumeration.
+ *
+ * In order to parse data, a new parser is created with gcr_parser_new() and
+ * then the GcrParser::authenticate and GcrParser::parsed signals should be
+ * connected to. Data is then fed to the parser via gcr_parser_parse_data()
+ * or gcr_parser_parse_stream().
+ *
+ * During the GcrParsed::parsed signal the attributes that make up the currently
+ * parsed item can be retrieved using the gcr_parser_get_parsed_attributes()
+ * function.
+ */
+
+/**
+ * GcrParser:
+ *
+ * A parser for parsing various types of files or data.
+ */
+
+/**
+ * GcrParserClass:
+ * @parent_class: The parent class
+ * @authenticate: The default handler for the authenticate signal.
+ * @parsed: The default handler for the parsed signal.
+ *
+ * The class for #GcrParser
+ */
+
+/**
+ * GcrDataFormat:
+ * @GCR_FORMAT_INVALID: Not a valid format
+ * @GCR_FORMAT_DER_PRIVATE_KEY: DER encoded private key
+ * @GCR_FORMAT_DER_PRIVATE_KEY_RSA: DER encoded RSA private key
+ * @GCR_FORMAT_DER_PRIVATE_KEY_DSA: DER encoded DSA private key
+ * @GCR_FORMAT_DER_CERTIFICATE_X509: DER encoded X.509 certificate
+ * @GCR_FORMAT_DER_PKCS7: DER encoded PKCS\#7 container file which can contain certificates
+ * @GCR_FORMAT_DER_PKCS8: DER encoded PKCS\#8 file which can contain a key
+ * @GCR_FORMAT_DER_PKCS8_PLAIN: Unencrypted DER encoded PKCS\#8 file which can contain a key
+ * @GCR_FORMAT_DER_PKCS8_ENCRYPTED: Encrypted DER encoded PKCS\#8 file which can contain a key
+ * @GCR_FORMAT_DER_PKCS12: DER encoded PKCS\#12 file which can contain certificates and/or keys
+ * @GCR_FORMAT_PEM: An OpenSSL style PEM file with unspecified contents
+ * @GCR_FORMAT_PEM_PRIVATE_KEY_RSA: An OpenSSL style PEM file with a private RSA key
+ * @GCR_FORMAT_PEM_PRIVATE_KEY_DSA: An OpenSSL style PEM file with a private DSA key
+ * @GCR_FORMAT_PEM_CERTIFICATE_X509: An OpenSSL style PEM file with an X.509 certificate
+ * @GCR_FORMAT_PEM_PKCS7: An OpenSSL style PEM file containing PKCS\#7
+ * @GCR_FORMAT_PEM_PKCS8_PLAIN: Unencrypted OpenSSL style PEM file containing PKCS\#8
+ * @GCR_FORMAT_PEM_PKCS8_ENCRYPTED: Encrypted OpenSSL style PEM file containing PKCS\#8
+ * @GCR_FORMAT_PEM_PKCS12: An OpenSSL style PEM file containing PKCS\#12
+ *
+ * The various format identifiers.
+ */
+
+/**
+ * GCR_DATA_ERROR:
+ *
+ * A domain for data errors with codes from #GcrDataError
+ */
+
+/**
+ * GcrDataError
+ * @GCR_ERROR_FAILURE: Failed to parse or serialize the data
+ * @GCR_ERROR_UNRECOGNIZED: The data was unrecognized or unsupported
+ * @GCR_ERROR_CANCELLED: The operation was cancelled
+ * @GCR_ERROR_LOCKED: The data was encrypted or locked and could not be unlocked.
+ *
+ * Values responding to error codes for parsing and serializing data.
+ */
+
 enum {
 	PROP_0,
 	PROP_PARSED_LABEL,
@@ -1441,9 +1515,6 @@ static void
 gcr_parser_set_property (GObject *obj, guint prop_id, const GValue *value, 
                            GParamSpec *pspec)
 {
-#if 0
-	GcrParser *self = GCR_PARSER (obj);
-#endif
 	switch (prop_id) {
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -1484,26 +1555,70 @@ gcr_parser_class_init (GcrParserClass *klass)
 	gobject_class->finalize = gcr_parser_finalize;
 	gobject_class->set_property = gcr_parser_set_property;
 	gobject_class->get_property = gcr_parser_get_property;
-    
+
+	/**
+	 * GcrParser:parsed-attributes:
+	 *
+	 * Get the attributes that make up the currently parsed item. This is
+	 * generally only valid during a #GcrParser::parsed signal.
+	 */
 	g_type_class_add_private (gobject_class, sizeof (GcrParserPrivate));
 	
 	g_object_class_install_property (gobject_class, PROP_PARSED_ATTRIBUTES,
 	           g_param_spec_boxed ("parsed-attributes", "Parsed Attributes", "Parsed PKCS#11 attributes", 
 	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READABLE));
 
+	/**
+	 * GcrParser:parsed-label:
+	 *
+	 * The label of the currently parsed item. This is generally
+	 * only valid during a #GcrParser::parsed signal.
+	 */
 	g_object_class_install_property (gobject_class, PROP_PARSED_LABEL,
 	           g_param_spec_string ("parsed-label", "Parsed Label", "Parsed item label", 
 	                                "", G_PARAM_READABLE));
 
+	/**
+	 * GcrParser:parsed-description:
+	 *
+	 * The description of the type of the currently parsed item. This is generally
+	 * only valid during a #GcrParser::parsed signal.
+	 */
 	g_object_class_install_property (gobject_class, PROP_PARSED_DESCRIPTION,
 	           g_param_spec_string ("parsed-description", "Parsed Description", "Parsed item description", 
 	                                "", G_PARAM_READABLE));
-    
+
+	/**
+	 * GcrParser::authenticate:
+	 * @count: The number of times this item has been authenticated.
+	 *
+	 * This signal is emitted when an item needs to be unlocked or decrypted before
+	 * it can be parsed. The @count argument specifies the number of times
+	 * the signal has been emitted for a given item. This can be used to
+	 * display a message saying the previous password was incorrect.
+	 *
+	 * Typically the gcr_parser_add_password() function is called in
+	 * response to this signal.
+	 *
+	 * If %FALSE is returned, then the authentication was not handled. If
+	 * no handlers return %TRUE then the item is not parsed and an error
+	 * with the code %GCR_ERROR_CANCELLED will be raised.
+	 *
+	 * Returns: Whether the authentication was handled.
+	 */
 	signals[AUTHENTICATE] = g_signal_new ("authenticate", GCR_TYPE_PARSER, 
 	                                G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GcrParserClass, authenticate),
 	                                g_signal_accumulator_true_handled, NULL, _gcr_marshal_BOOLEAN__INT, 
 	                                G_TYPE_BOOLEAN, 1, G_TYPE_POINTER);
 
+	/**
+	 * GcrParser::parsed:
+	 *
+	 * This signal is emitted when an item is sucessfully parsed. To access
+	 * the information about the item use the gcr_parser_get_parsed_label(),
+	 * gcr_parser_get_parsed_attributes() and gcr_parser_get_parsed_description()
+	 * functions.
+	 */
 	signals[PARSED] = g_signal_new ("parsed", GCR_TYPE_PARSER, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrParserClass, parsed),
 	                                NULL, NULL, g_cclosure_marshal_VOID__VOID, 
@@ -1521,12 +1636,27 @@ gcr_parser_class_init (GcrParserClass *klass)
  * PUBLIC 
  */
 
+/**
+ * gcr_parser_new:
+ *
+ * Create a new #GcrParser
+ *
+ * Returns: A newly allocated #GcrParser
+ */
 GcrParser*
 gcr_parser_new (void)
 {
 	return g_object_new (GCR_TYPE_PARSER, NULL);
 }
 
+/**
+ * gcr_parser_add_password:
+ * @self: The parser
+ * @password: A password to try
+ *
+ * Add a password to the set of passwords to try when parsing locked or encrypted
+ * items. This is usually called from the GcrParser::authenticate signal.
+ */
 void
 gcr_parser_add_password (GcrParser *self, const gchar *password)
 {
@@ -1534,9 +1664,21 @@ gcr_parser_add_password (GcrParser *self, const gchar *password)
 	g_ptr_array_add (self->pv->passwords, egg_secure_strdup (password));
 }
 
+/**
+ * gcr_parser_parse_data:
+ * @self: The parser
+ * @data: The data to parse
+ * @n_data: The length of the data
+ * @error: A location to raise an error on failure.
+ *
+ * Parse the data. The GcrParser::parsed and GcrParser::authenticate signals
+ * may fire during the parsing.
+ *
+ * Returns: Whether the data was parsed successfully or not.
+ */
 gboolean
 gcr_parser_parse_data (GcrParser *self, gconstpointer data,
-                       gsize n_data, GError **err)
+                       gsize n_data, GError **error)
 {
 	ForeachArgs args = { self, data, n_data, GCR_ERROR_UNRECOGNIZED };
 	const gchar *message;
@@ -1544,7 +1686,7 @@ gcr_parser_parse_data (GcrParser *self, gconstpointer data,
 	
 	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
 	g_return_val_if_fail (data || !n_data, FALSE);
-	g_return_val_if_fail (!err || !*err, FALSE);
+	g_return_val_if_fail (!error || !*error, FALSE);
 
 	/* Just the specific formats requested */
 	if (self->pv->specific_formats) { 
@@ -1578,66 +1720,84 @@ gcr_parser_parse_data (GcrParser *self, gconstpointer data,
 		g_assert_not_reached ();
 		break;
 	};
-	
-	g_set_error_literal (err, GCR_DATA_ERROR, args.result, message);
+
+	g_set_error_literal (error, GCR_DATA_ERROR, args.result, message);
 	return FALSE;
 }
 
-gboolean
+/**
+ * gcr_parser_format_disable:
+ * @self: The parser
+ * @format_id: The format identifier
+ *
+ * Enable parsing of the given format. Use -1 to enable all the formats.
+ */
+void
 gcr_parser_format_enable (GcrParser *self, gint format_id)
 {
 	ParserFormat *format;
-	
-	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
-	
+
+	g_return_if_fail (GCR_IS_PARSER (self));
+
 	if (format_id == -1) {
 		if (self->pv->specific_formats)
 			g_tree_destroy (self->pv->specific_formats);
 		self->pv->specific_formats = NULL;
 		self->pv->normal_formats = TRUE;
-		return TRUE;
+		return;
 	}
-	
+
 	format = parser_format_lookup (format_id);
-	if (format == NULL)
-		return FALSE;
-	
+	g_return_if_fail (format);
+
 	if (!self->pv->specific_formats) {
 		if (self->pv->normal_formats)
-			return TRUE;
+			return;
 		self->pv->specific_formats = g_tree_new (compare_pointers);
 	}
-	
+
 	g_tree_insert (self->pv->specific_formats, format, format);
-	return TRUE;
 }
 
-gboolean
+/**
+ * gcr_parser_format_disable:
+ * @self: The parser
+ * @format_id: The format identifier
+ *
+ * Disable parsing of the given format. Use -1 to disable all the formats.
+ */
+void
 gcr_parser_format_disable (GcrParser *self, gint format_id)
 {
 	ParserFormat *format;
-	
-	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
-	
+
+	g_return_if_fail (GCR_IS_PARSER (self));
+
 	if (format_id == -1) {
 		if (self->pv->specific_formats)
 			g_tree_destroy (self->pv->specific_formats);
 		self->pv->specific_formats = NULL;
 		self->pv->normal_formats = FALSE;
-		return TRUE;
 	}
-	
+
 	if (!self->pv->specific_formats)
-		return TRUE;
-	
+		return;
+
 	format = parser_format_lookup (format_id);
-	if (format == NULL)
-		return FALSE;
-	
+	g_return_if_fail (format);
+
 	g_tree_remove (self->pv->specific_formats, format);
-	return TRUE;
 }
 
+/**
+ * gcr_parser_format_supported:
+ * @self: The parser
+ * @format_id: The format identifier
+ *
+ * Check whether the given format is supported by the parser.
+ *
+ * Returns: Whether the format is supported.
+ */
 gboolean
 gcr_parser_format_supported (GcrParser *self, gint format_id)
 {
@@ -1646,6 +1806,16 @@ gcr_parser_format_supported (GcrParser *self, gint format_id)
 	return parser_format_lookup (format_id) ? TRUE : FALSE;	
 }
 
+/**
+ * gcr_parser_get_parsed_description:
+ * @self: The parser
+ *
+ * Get a description for the type of the currently parsed item. This is generally
+ * only valid during the GcrParser::parsed signal.
+ *
+ * Returns: The description for the current item. This is owned by the parser
+ *     and should not be freed.
+ */
 const gchar*
 gcr_parser_get_parsed_description (GcrParser *self)
 {
@@ -1653,6 +1823,16 @@ gcr_parser_get_parsed_description (GcrParser *self)
 	return self->pv->parsed_desc;
 }
 
+/**
+ * gcr_parser_get_parsed_attributes:
+ * @self: The parser
+ *
+ * Get the attributes which make up the currently parsed item. This is generally
+ * only valid during the GcrParser::parsed signal.
+ *
+ * Returns: The attributes for the current item. These are owned by the parser
+ *     and should not be freed.
+ */
 GckAttributes*
 gcr_parser_get_parsed_attributes (GcrParser *self)
 {
@@ -1660,11 +1840,21 @@ gcr_parser_get_parsed_attributes (GcrParser *self)
 	return self->pv->parsed_attrs;	
 }
 
+/**
+ * gcr_parser_get_parsed_label:
+ * @self: The parser
+ *
+ * Get the label of the currently parsed item. This is generally only valid
+ * during the GcrParser::parsed signal.
+ *
+ * Returns: The label of the currently parsed item. The value is owned by
+ *     the parser and should not be freed.
+ */
 const gchar*
 gcr_parser_get_parsed_label (GcrParser *self)
 {
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
-	return self->pv->parsed_label;		
+	return self->pv->parsed_label;
 }
 
 /* ---------------------------------------------------------------------------------
@@ -1914,8 +2104,24 @@ gcr_parsing_new (GcrParser *parser, GInputStream *input, GCancellable *cancel)
 	return self;
 }
 
+/**
+ * gcr_parser_parse_stream:
+ * @self: The parser
+ * @input: The input stream
+ * @cancellable: An optional cancellation object
+ * @error: A location to raise an error on failure
+ *
+ * Parse items from the data in a #GInputStream. This function may block while
+ * reading from the input stream. Use gcr_parser_parse_stream_async() for
+ * a non-blocking variant.
+ *
+ * The GcrParser::parsed and GcrParser::authenticate signals
+ * may fire during the parsing.
+ *
+ * Returns: Whether the parsing completed successfully or not.
+ */
 gboolean
-gcr_parser_parse_stream (GcrParser *self, GInputStream *input, GCancellable *cancel,
+gcr_parser_parse_stream (GcrParser *self, GInputStream *input, GCancellable *cancellable,
                          GError **error)
 {
 	GcrParsing *parsing;
@@ -1924,7 +2130,7 @@ gcr_parser_parse_stream (GcrParser *self, GInputStream *input, GCancellable *can
 	g_return_val_if_fail (G_IS_INPUT_STREAM (self), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	parsing = gcr_parsing_new (self, input, cancel);
+	parsing = gcr_parsing_new (self, input, cancellable);
 	parsing->async = FALSE;
 
 	next_state (parsing, state_read_buffer);
@@ -1933,8 +2139,22 @@ gcr_parser_parse_stream (GcrParser *self, GInputStream *input, GCancellable *can
 	return gcr_parser_parse_stream_finish (self, G_ASYNC_RESULT (parsing), error);
 }
 
+/**
+ * gcr_parser_parse_stream_async:
+ * @self: The parser
+ * @input: The input stream
+ * @cancellable: An optional cancellation object
+ * @callback: Called when the operation result is ready.
+ * @user_data: Data to pass to callback
+ *
+ * Parse items from the data in a #GInputStream. This function completes
+ * asyncronously and doesn't block.
+ *
+ * The GcrParser::parsed and GcrParser::authenticate signals
+ * may fire during the parsing.
+ */
 void
-gcr_parser_parse_stream_async (GcrParser *self, GInputStream *input, GCancellable *cancel,
+gcr_parser_parse_stream_async (GcrParser *self, GInputStream *input, GCancellable *cancellable,
                                GAsyncReadyCallback callback, gpointer user_data)
 {
 	GcrParsing *parsing;
@@ -1942,7 +2162,7 @@ gcr_parser_parse_stream_async (GcrParser *self, GInputStream *input, GCancellabl
 	g_return_if_fail (GCR_IS_PARSER (self));
 	g_return_if_fail (G_IS_INPUT_STREAM (input));
 
-	parsing = gcr_parsing_new (self, input, cancel);
+	parsing = gcr_parsing_new (self, input, cancellable);
 	parsing->async = TRUE;
 	parsing->callback = callback;
 	parsing->user_data = user_data;
@@ -1950,15 +2170,25 @@ gcr_parser_parse_stream_async (GcrParser *self, GInputStream *input, GCancellabl
 	next_state (parsing, state_read_buffer);
 }
 
+/**
+ * gcr_parser_parse_stream_finish:
+ * @self: The parser
+ * @result:The operation result
+ * @error: A location to raise an error on failure
+ *
+ * Complete an operation to parse a stream.
+ *
+ * Returns: Whether the parsing completed successfully or not.
+ */
 gboolean
-gcr_parser_parse_stream_finish (GcrParser *self, GAsyncResult *res, GError **error)
+gcr_parser_parse_stream_finish (GcrParser *self, GAsyncResult *result, GError **error)
 {
 	GcrParsing *parsing;
 
-	g_return_val_if_fail (GCR_IS_PARSING (res), FALSE);
+	g_return_val_if_fail (GCR_IS_PARSING (result), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	parsing = GCR_PARSING (res);
+	parsing = GCR_PARSING (result);
 	g_return_val_if_fail (parsing->complete, FALSE);
 
 	if (parsing->error) {

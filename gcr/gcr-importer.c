@@ -29,6 +29,43 @@
 
 #include <glib/gi18n-lib.h>
 
+/**
+ * SECTION:gcr-importer
+ * @title: GcrImporter
+ * @short_description: Import objects into PKCS\#11 slots.
+ *
+ * A #GcrImporter can be used to import items into PKCS\#11 slots. It's most
+ * often used to parse the objects parsed with a #GcrParser. Use
+ * gcr_importer_listen() to hook up the importer to the parser.
+ *
+ * Items are queued, and then imported with gcr_importer_import() or
+ * gcr_importer_import_async().
+ */
+
+/**
+ * GcrImporter:
+ *
+ * Imports items into PKCS\#11
+ */
+
+/**
+ * GcrImporterClass:
+ * @parent_class: The parent class
+ * @queued: Signal which is fired when an item is queued
+ * @imported: Signal which is fired when an item is imported
+ *
+ * The class for #GcrImporter.
+ */
+
+/**
+ * GcrImporterPromptBehavior:
+ * @GCR_IMPORTER_PROMPT_NEEDED: Prompt when needed.
+ * @GCR_IMPORTER_PROMPT_ALWAYS: Always prompt.
+ * @GCR_IMPORTER_PROMPT_NEVER: Never prompt.
+ *
+ * Flags for the prompting behavior of #GcrImporter.
+ */
+
 enum {
 	PROP_0,
 	PROP_SLOT,
@@ -626,11 +663,24 @@ gcr_importer_class_init (GcrImporterClass *klass)
 	           g_param_spec_int ("prompt-behavior", "Prompt Behavior", "Import Prompt Behavior",
 	                             0, G_MAXINT, GCR_IMPORTER_PROMPT_NEEDED, G_PARAM_READWRITE));
 
+	/**
+	 * GcrImporter::queued:
+	 * @label: The label of the queued item.
+	 * @attrs: The attributes of the queued item.
+	 *
+	 * This signal is emitted when an item is queued for import.
+	 */
 	signals[QUEUED] = g_signal_new ("queued", GCR_TYPE_IMPORTER,
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrImporterClass, queued),
 	                                NULL, NULL, _gcr_marshal_VOID__STRING_BOXED,
 	                                G_TYPE_NONE, 1, G_TYPE_STRING, GCK_TYPE_ATTRIBUTES);
 
+	/**
+	 * GcrImporter::imported:
+	 * @object: The object which was imported.
+	 *
+	 * This signal is emitted when an item has been imported.
+	 */
 	signals[IMPORTED] = g_signal_new ("imported", GCR_TYPE_IMPORTER, 
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrImporterClass, imported),
 	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
@@ -664,12 +714,29 @@ gcr_importer_async_result (GAsyncResultIface *iface)
  * PUBLIC 
  */
 
+/**
+ * gcr_importer_new:
+ *
+ * Create a new #GcrImporter.
+ *
+ * Returns: A newly allocated importer, which should be released with
+ *    g_object_unref().
+ */
 GcrImporter*
 gcr_importer_new (void)
 {
 	return g_object_new (GCR_TYPE_IMPORTER, NULL);
 }
 
+/**
+ * gcr_importer_get_slot:
+ * @self: The importer
+ *
+ * Get the PKCS\#11 slot the items will be imported to, or after
+ * an import operation, which slot they have been imported to.
+ *
+ * Returns: The slot.
+ */
 GckSlot*
 gcr_importer_get_slot (GcrImporter *self)
 {
@@ -677,6 +744,13 @@ gcr_importer_get_slot (GcrImporter *self)
 	return self->pv->slot;
 }
 
+/**
+ * gcr_importer_set_slot:
+ * @self: The importer
+ * @slot: The slot to import to
+ *
+ * Set the PKCS\#11 slot to import the items to.
+ */
 void 
 gcr_importer_set_slot (GcrImporter *self, GckSlot *slot)
 {
@@ -690,6 +764,14 @@ gcr_importer_set_slot (GcrImporter *self, GckSlot *slot)
 	g_object_notify (G_OBJECT (self), "slot");
 }
 
+/**
+ * gcr_importer_get_prompt_behavior:
+ * @self: The importer
+ *
+ * Get the type of prompting configured for this importer.
+ *
+ * Returns: The prompting flags.
+ */
 GcrImporterPromptBehavior
 gcr_importer_get_prompt_behavior (GcrImporter *self)
 {
@@ -697,6 +779,13 @@ gcr_importer_get_prompt_behavior (GcrImporter *self)
 	return self->pv->behavior;
 }
 
+/**
+ * gcr_importer_set_prompt_behavior:
+ * @self: The importer
+ * @behavior: The prompt behavior flag
+ *
+ * Set the type of prompting desired during import.
+ */
 void
 gcr_importer_set_prompt_behavior (GcrImporter *self, GcrImporterPromptBehavior behavior)
 {
@@ -705,8 +794,18 @@ gcr_importer_set_prompt_behavior (GcrImporter *self, GcrImporterPromptBehavior b
 	g_object_notify (G_OBJECT (self), "prompt-behavior");
 }
 
+/**
+ * gcr_importer_import_async:
+ * @self: The importer
+ * @cancellable: An optional cancellation object
+ * @error: A location to raise an error on failure
+ *
+ * Start an synchronous import operation of the items that have been queued.
+ *
+ * Returns: Whether the import was successful or not.
+ */
 gboolean
-gcr_importer_import (GcrImporter *self, GCancellable *cancel, GError **error)
+gcr_importer_import (GcrImporter *self, GCancellable *cancellable, GError **error)
 {
 	g_return_val_if_fail (GCR_IS_IMPORTER (self), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
@@ -714,8 +813,8 @@ gcr_importer_import (GcrImporter *self, GCancellable *cancel, GError **error)
 
 	cleanup_import_data (self);
 
-	if (cancel)
-		self->pv->cancel = g_object_ref (cancel);
+	if (cancellable)
+		self->pv->cancel = g_object_ref (cancellable);
 	self->pv->processing = TRUE;
 	self->pv->async = FALSE;
 
@@ -733,8 +832,17 @@ gcr_importer_import (GcrImporter *self, GCancellable *cancel, GError **error)
 	return TRUE;
 }
 
+/**
+ * gcr_importer_import_async:
+ * @self: The importer
+ * @cancellable: An optional cancellation object
+ * @callback: Call when the operation result is ready
+ * @user_data: Data to pass to the callback
+ *
+ * Start an asynchronous import operation of the items that have been queued.
+ */
 void
-gcr_importer_import_async (GcrImporter *self, GCancellable *cancel,
+gcr_importer_import_async (GcrImporter *self, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	g_return_if_fail (GCR_IS_IMPORTER (self));
@@ -742,8 +850,8 @@ gcr_importer_import_async (GcrImporter *self, GCancellable *cancel,
 
 	cleanup_import_data (self);
 
-	if (cancel)
-		self->pv->cancel = g_object_ref (cancel);
+	if (cancellable)
+		self->pv->cancel = g_object_ref (cancellable);
 	self->pv->processing = TRUE;
 	self->pv->async = TRUE;
 	self->pv->callback = callback;
@@ -753,11 +861,21 @@ gcr_importer_import_async (GcrImporter *self, GCancellable *cancel,
 	g_assert (self->pv->processing);
 }
 
+/**
+ * gcr_importer_import_finish:
+ * @self: The importer
+ * @result: The operation result
+ * @error: A location to raise an error on failure.
+ *
+ * Complete an asynchronous import operation.
+ *
+ * Returns: Whether the operation was successful or not.
+ */
 gboolean
-gcr_importer_import_finish (GcrImporter *self, GAsyncResult *res, GError **error)
+gcr_importer_import_finish (GcrImporter *self, GAsyncResult *result, GError **error)
 {
 	g_return_val_if_fail (GCR_IS_IMPORTER (self), FALSE);
-	g_return_val_if_fail (GCR_IMPORTER (res) == self, FALSE);
+	g_return_val_if_fail (GCR_IMPORTER (result) == self, FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 	g_return_val_if_fail (!self->pv->processing, FALSE);
 
@@ -772,7 +890,14 @@ gcr_importer_import_finish (GcrImporter *self, GAsyncResult *res, GError **error
 	return TRUE;
 }
 
-
+/**
+ * gcr_importer_listen:
+ * @self: The importer
+ * @parser: The parser to listen to
+ *
+ * Listen for parse events from the #GcrParser, and queue parsed items for
+ * importing.
+ */
 void
 gcr_importer_listen (GcrImporter *self, GcrParser *parser)
 {
@@ -784,6 +909,15 @@ gcr_importer_listen (GcrImporter *self, GcrParser *parser)
 	g_signal_connect_object (parser, "authenticate", G_CALLBACK (on_parser_authenticate), self, 0);
 }
 
+/**
+ * gcr_importer_queue:
+ * @self: The importer
+ * @label: Label of item to import
+ * @attrs: Attributes of item to import
+ *
+ * Queue the importing of an item. Use gcr_importer_listen() to automatically
+ * queue items parsed by a #GcrParser.
+ */
 void
 gcr_importer_queue (GcrImporter *self, const gchar *label, GckAttributes *attrs)
 {
@@ -796,6 +930,15 @@ gcr_importer_queue (GcrImporter *self, const gchar *label, GckAttributes *attrs)
 
 #ifndef GCR_DISABLE_DEPRECATED
 
+/**
+ * gcr_importer_get_parser:
+ * @self: An importer
+ *
+ * Has no effect. Use gcr_importer_listen() instead.
+ *
+ * Returns: %NULL is always returned.
+ * Deprecated: Since 3.0.0
+ */
 GcrParser*
 gcr_importer_get_parser (GcrImporter *self)
 {
@@ -804,6 +947,15 @@ gcr_importer_get_parser (GcrImporter *self)
 	return NULL;
 }
 
+/**
+ * gcr_importer_set_parser:
+ * @self: An importer
+ * @parser: A parser
+ *
+ * Has no effect. Use gcr_importer_listen() instead.
+ *
+ * Deprecated: Since 3.0.0
+ */
 void
 gcr_importer_set_parser (GcrImporter *self, GcrParser *parser)
 {

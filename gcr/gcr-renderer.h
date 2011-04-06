@@ -45,6 +45,7 @@ struct _GcrRendererIface {
 	/* virtual */
 	void (*render) (GcrRenderer *self, GcrViewer *viewer);
 
+	/*< private >*/
 	gpointer dummy1;
 	gpointer dummy2;
 	gpointer dummy3;

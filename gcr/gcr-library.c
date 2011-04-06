@@ -55,6 +55,13 @@
  * Trust assertions are stored and looked up in specific PKCS\#11 slots.
  * You can examine this list with gcr_pkcs11_get_trust_lookup_slots()
  */
+
+/**
+ * GCR_DATA_ERROR:
+ *
+ * The #GError domain for data parsing errors.
+ */
+
 static GList *all_modules = NULL;
 
 static gchar *trust_store_uri = NULL;
@@ -70,15 +77,6 @@ gcr_data_error_get_domain (void)
 	static GQuark domain = 0;
 	if (domain == 0)
 		domain = g_quark_from_static_string ("gcr-parser-error");
-	return domain;
-}
-
-GQuark
-gcr_error_get_domain (void)
-{
-	static GQuark domain = 0;
-	if (domain == 0)
-		domain = g_quark_from_static_string ("gcr-error");
 	return domain;
 }
 

@@ -44,10 +44,13 @@ typedef struct _GcrKeyWidgetPrivate GcrKeyWidgetPrivate;
 
 struct _GcrKeyWidget {
 	GtkAlignment parent;
+
+	/*< private >*/
 	GcrKeyWidgetPrivate *pv;
 };
 
 struct _GcrKeyWidgetClass {
+	/*< private >*/
 	GtkAlignmentClass parent_class;
 };
 

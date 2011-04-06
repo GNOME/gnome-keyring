@@ -44,6 +44,8 @@ typedef struct _GcrKeyRendererPrivate GcrKeyRendererPrivate;
 
 struct _GcrKeyRenderer {
 	GObject parent;
+
+	/*< private >*/
 	GcrKeyRendererPrivate *pv;
 };
 

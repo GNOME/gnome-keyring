@@ -24,10 +24,37 @@
 #include "gcr-renderer.h"
 #include "gcr-viewer.h"
 
-/* -----------------------------------------------------------------------------
- * INTERFACE
+/**
+ * SECTION:gcr-viewer
+ * @title: GcrViewer
+ * @short_description: A viewer which can hold renderers
+ *
+ * A #GcrViewer is an abstract interface that represents a widget that can hold
+ * various renderers and display their contents.
+ *
+ * The interaction between #GcrRenderer and #GcrViewer is not stable yet, and
+ * so viewers cannot be implemented outside the Gcr library at this time.
+ *
+ * Use the gcr_viewer_new() and gcr_viewer_new_scrolled() to get default
+ * implementations of viewers.
  */
 
+/**
+ * GcrViewer:
+ *
+ * An abstract viewer which displays renderers contents.
+ */
+
+/**
+ * GcrViewerIface:
+ * @parent: The parent interface
+ * @add_renderer: Virtual method to add a renderer
+ * @remove_renderer: Virtual method to remove a renderer
+ * @count_renderers: Virtual method to count renderers
+ * @get_renderer: Virtual method to get a renderer
+ *
+ * The interface for #GcrViewer
+ */
 static void
 gcr_viewer_base_init (gpointer gobject_iface)
 {
@@ -59,18 +86,43 @@ gcr_viewer_get_type (void)
  * PUBLIC
  */
 
+/**
+ * gcr_viewer_new:
+ *
+ * Get an implementation of #GcrViewer that supports a view
+ * of multiple renderers.
+ *
+ * Returns: A newly allocated #GcrViewer, which should be released with
+ *     g_object_unref()
+ */
 GcrViewer*
 gcr_viewer_new (void)
 {
 	return GCR_VIEWER (_gcr_display_view_new ());
 }
 
+/**
+ * gcr_viewer_new_scrolled:
+ *
+ * Get an implementation of #GcrViewer that supports a scrolled view
+ * of multiple renderers.
+ *
+ * Returns: A newly allocated #GcrViewer, which should be released with
+ *     g_object_unref()
+ */
 GcrViewer*
 gcr_viewer_new_scrolled (void)
 {
 	return GCR_VIEWER (_gcr_display_scrolled_new ());
 }
 
+/**
+ * gcr_viewer_add_renderer:
+ * @self: The viewer
+ * @renderer: The renderer to add
+ *
+ * Add a renderer to this viewer.
+ */
 void
 gcr_viewer_add_renderer (GcrViewer *self, GcrRenderer *renderer)
 {
@@ -80,6 +132,13 @@ gcr_viewer_add_renderer (GcrViewer *self, GcrRenderer *renderer)
 	GCR_VIEWER_GET_INTERFACE (self)->add_renderer (self, renderer);
 }
 
+/**
+ * gcr_viewer_remove_renderer:
+ * @self: The viewer
+ * @renderer: The renderer to remove
+ *
+ * Remove a renderer from this viewer.
+ */
 void
 gcr_viewer_remove_renderer (GcrViewer *self, GcrRenderer *renderer)
 {
@@ -89,6 +148,14 @@ gcr_viewer_remove_renderer (GcrViewer *self, GcrRenderer *renderer)
 	GCR_VIEWER_GET_INTERFACE (self)->remove_renderer (self, renderer);
 }
 
+/**
+ * gcr_viewer_count_renderers:
+ * @self: The viewer
+ *
+ * Get the number of renderers present in the viewer.
+ *
+ * Returns: The number of renderers.
+ */
 guint
 gcr_viewer_count_renderers (GcrViewer *self)
 {
@@ -97,6 +164,16 @@ gcr_viewer_count_renderers (GcrViewer *self)
 	return GCR_VIEWER_GET_INTERFACE (self)->count_renderers (self);
 }
 
+/**
+ * gcr_viewer_get_renderer:
+ * @self: The viewer
+ * @index_: The index of the renderer to get
+ *
+ * Get a pointer to the renderer at the given index. It is an error to request
+ * an index that is out of bounds.
+ *
+ * Returns: The render, owned by the viewer.
+ */
 GcrRenderer*
 gcr_viewer_get_renderer (GcrViewer *self, guint index_)
 {

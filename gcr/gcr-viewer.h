@@ -47,6 +47,7 @@ struct _GcrViewerIface {
 
 	GcrRenderer* (*get_renderer) (GcrViewer *self, guint index_);
 
+	/*< private >*/
 	gpointer dummy1;
 	gpointer dummy2;
 	gpointer dummy3;
@@ -68,7 +69,7 @@ void                    gcr_viewer_remove_renderer        (GcrViewer *self,
 guint                   gcr_viewer_count_renderers        (GcrViewer *self);
 
 GcrRenderer*            gcr_viewer_get_renderer           (GcrViewer *self,
-                                                           guint at);
+                                                           guint index_);
 
 G_END_DECLS
 

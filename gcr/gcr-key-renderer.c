@@ -32,6 +32,20 @@
 #include <gdk/gdk.h>
 #include <glib/gi18n-lib.h>
 
+/**
+ * GcrKeyRenderer:
+ * @parent: The parent object
+ *
+ * An implementation of #GcrRenderer which renders keys.
+ */
+
+/**
+ * GcrKeyRendererClass:
+ * @parent_class: The parent class.
+ *
+ * The class for #GcrKeyRenderer.
+ */
+
 enum {
 	PROP_0,
 	PROP_LABEL,
@@ -313,12 +327,30 @@ gcr_key_renderer_renderer_iface (GcrRendererIface *iface)
  * PUBLIC
  */
 
+/**
+ * gcr_key_renderer_new:
+ * @label: Label describing the key
+ * @attrs: Key to display, or %NULL
+ *
+ * Create a new key renderer which renders a given key in the attributes.
+ *
+ * Returns: A newly allocated #GcrKeyRenderer, which should be freed
+ *     with g_object_unref().
+ */
 GcrKeyRenderer*
 gcr_key_renderer_new (const gchar *label, GckAttributes *attrs)
 {
 	return g_object_new (GCR_TYPE_KEY_RENDERER, "label", label, "attributes", attrs, NULL);
 }
 
+/**
+ * gcr_key_renderer_set_attributes:
+ * @self: The key renderer
+ * @attrs: The attributes to display
+ *
+ * Get the attributes displayed in the renderer. The attributes should represent
+ * either an RSA or DSA key in PKCS\#11 style.
+ */
 void
 gcr_key_renderer_set_attributes (GcrKeyRenderer *self, GckAttributes *attrs)
 {
@@ -334,6 +366,14 @@ gcr_key_renderer_set_attributes (GcrKeyRenderer *self, GckAttributes *attrs)
 	gcr_renderer_emit_data_changed (GCR_RENDERER (self));
 }
 
+/**
+ * gcr_key_renderer_get_attributes:
+ * @self: The key renderer
+ *
+ * Get the attributes displayed in the renderer.
+ *
+ * Returns: The attributes, owned by the renderer.
+ */
 GckAttributes*
 gcr_key_renderer_get_attributes (GcrKeyRenderer *self)
 {

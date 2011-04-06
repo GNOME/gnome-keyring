@@ -91,7 +91,7 @@
  */
 
 /**
- * GCR_PURPOSE_CODE_SIGNING:
+ * GCR_PURPOSE_EMAIL:
  *
  * The purpose used to verify certificates that are used in email communication
  * such as S/MIME.

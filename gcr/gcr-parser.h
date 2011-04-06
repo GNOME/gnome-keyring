@@ -41,20 +41,21 @@ G_BEGIN_DECLS
 #define GCR_PARSER_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_PARSER, GcrParserClass))
 
 typedef struct _GcrParser GcrParser;
-typedef struct _GcrParsedItem GcrParsedItem;
 typedef struct _GcrParserClass GcrParserClass;
 typedef struct _GcrParserPrivate GcrParserPrivate;
 
 struct _GcrParser {
 	GObject parent;
+
+	/*< private >*/
 	GcrParserPrivate *pv;
 };
 
 struct _GcrParserClass {
 	GObjectClass parent_class;
-    
+
 	/* signals --------------------------------------------------------- */
-    
+
 	/* A callback for each password needed */
 	gboolean (*authenticate) (GcrParser *self, gint count);
 	
@@ -65,33 +66,33 @@ GType                    gcr_parser_get_type               (void);
 
 GcrParser*               gcr_parser_new                    (void);
 
-gboolean                 gcr_parser_format_enable          (GcrParser *self, 
-                                                            gint format);
+void                     gcr_parser_format_enable          (GcrParser *self,
+                                                            gint format_id);
 
-gboolean                 gcr_parser_format_disable         (GcrParser *self, 
-                                                            gint format);
+void                     gcr_parser_format_disable         (GcrParser *self,
+                                                            gint format_id);
 
 gboolean                 gcr_parser_format_supported       (GcrParser *self,
-                                                            gint format);
+                                                            gint format_id);
 
 gboolean                 gcr_parser_parse_data             (GcrParser *self, 
                                                             gconstpointer data,
                                                             gsize n_data, 
-                                                            GError **err);
+                                                            GError **error);
 
 gboolean                 gcr_parser_parse_stream           (GcrParser *self,
                                                             GInputStream *input,
-                                                            GCancellable *cancel,
+                                                            GCancellable *cancellable,
                                                             GError **error);
 
 void                     gcr_parser_parse_stream_async     (GcrParser *self,
                                                             GInputStream *input,
-                                                            GCancellable *cancel,
+                                                            GCancellable *cancellable,
                                                             GAsyncReadyCallback callback,
                                                             gpointer user_data);
 
 gboolean                 gcr_parser_parse_stream_finish    (GcrParser *self,
-                                                            GAsyncResult *res,
+                                                            GAsyncResult *result,
                                                             GError **error);
 
 void                     gcr_parser_add_password           (GcrParser *self,

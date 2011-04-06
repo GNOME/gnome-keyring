@@ -45,6 +45,8 @@ typedef struct _GcrUnlockOptionsWidgetPrivate GcrUnlockOptionsWidgetPrivate;
 
 struct _GcrUnlockOptionsWidget {
 	GtkAlignment parent;
+
+	/*< private >*/
 	GcrUnlockOptionsWidgetPrivate *pv;
 };
 

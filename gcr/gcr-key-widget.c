@@ -29,6 +29,34 @@
 #include <gdk/gdk.h>
 #include <glib/gi18n-lib.h>
 
+/**
+ * SECTION:gcr-key-widget
+ * @title: GcrKeyWidget
+ * @short_description: Key widget and renderer
+ *
+ * A #GcrKeyWidget can be used to display a RSA or DSA key. The widget
+ * is normally in a collapsed state showing only details, but can be expanded
+ * by the user.
+ *
+ * Use gcr_key_widget_new() to create a new key widget. Only
+ * one key can be displayed.  A #GcrKeyWidget contains a
+ * #GcrViewer internally and #GcrKeyRenderer is used to render the
+ * key to the viewer. To show more than one key in a view,
+ * create the viewer and add renderers to it.
+ */
+
+/**
+ * GcrKeyWidget:
+ * @parent: The parent object
+ *
+ * A widget that displays a key.
+ */
+
+/**
+ * GcrKeyWidgetClass:
+ *
+ * The class for #GcrKeyWidget
+ */
 enum {
 	PROP_0,
 	PROP_ATTRIBUTES
@@ -153,12 +181,29 @@ gcr_key_widget_class_init (GcrKeyWidgetClass *klass)
  * PUBLIC
  */
 
+/**
+ * gcr_key_widget_new:
+ * @attrs: Key to display, or %NULL
+ *
+ * Create a new key widget which displays a given key in the attributes.
+ *
+ * Returns: A newly allocated #GcrKeyWidget, which should be freed
+ *     with g_object_unref().
+ */
 GcrKeyWidget*
 gcr_key_widget_new (GckAttributes *attrs)
 {
 	return g_object_new (GCR_TYPE_KEY_WIDGET, "attributes", attrs, NULL);
 }
 
+/**
+ * gcr_key_widget_set_attributes:
+ * @self: The key widget
+ * @attrs: The attributes to display
+ *
+ * Get the attributes displayed in the widget. The attributes should represent
+ * either an RSA or DSA key in PKCS\#11 style.
+ */
 void
 gcr_key_widget_set_attributes (GcrKeyWidget *self, GckAttributes *attrs)
 {
@@ -166,6 +211,14 @@ gcr_key_widget_set_attributes (GcrKeyWidget *self, GckAttributes *attrs)
 	gcr_key_renderer_set_attributes (self->pv->renderer, attrs);
 }
 
+/**
+ * gcr_key_widget_get_attributes:
+ * @self: The key widget
+ *
+ * Get the attributes displayed in the widget.
+ *
+ * Returns: The attributes, owned by the widget.
+ */
 GckAttributes*
 gcr_key_widget_get_attributes (GcrKeyWidget *self)
 {

@@ -45,6 +45,8 @@ typedef struct _GcrCertificateRendererPrivate GcrCertificateRendererPrivate;
 
 struct _GcrCertificateRenderer {
 	GObject parent;
+
+	/*< private >*/
 	GcrCertificateRendererPrivate *pv;
 };
 
@@ -54,12 +56,12 @@ struct _GcrCertificateRendererClass {
 
 GType                     gcr_certificate_renderer_get_type           (void);
 
-GcrCertificateRenderer*   gcr_certificate_renderer_new                (GcrCertificate *cert);
+GcrCertificateRenderer*   gcr_certificate_renderer_new                (GcrCertificate *certificate);
 
 GcrCertificate*           gcr_certificate_renderer_get_certificate    (GcrCertificateRenderer *self);
 
 void                      gcr_certificate_renderer_set_certificate    (GcrCertificateRenderer *self,
-                                                                       GcrCertificate *cert);
+                                                                       GcrCertificate *certificate);
 
 GckAttributes*            gcr_certificate_renderer_get_attributes     (GcrCertificateRenderer *self);
 
