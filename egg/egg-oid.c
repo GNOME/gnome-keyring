@@ -57,9 +57,9 @@ static OidInfo oid_info[] = {
 		EGG_OID_PRINTABLE },
 	{ 0, "1.3.6.1.5.5.7.9.3", "gender", N_("Gender"), 
 		EGG_OID_PRINTABLE },
-        { 0, "1.3.6.1.5.5.7.9.4", "countryOfCitizenship", N_("Country of Citizenship"), 
+	{ 0, "1.3.6.1.5.5.7.9.4", "countryOfCitizenship", N_("Country of Citizenship"),
 		EGG_OID_PRINTABLE },
-        { 0, "1.3.6.1.5.5.7.9.5", "countryOfResidence", N_("Country of Residence"), 
+	{ 0, "1.3.6.1.5.5.7.9.5", "countryOfResidence", N_("Country of Residence"),
 		EGG_OID_PRINTABLE },
 
 	{ 0, "2.5.4.3", "CN", N_("Common Name"), 
@@ -95,19 +95,20 @@ static OidInfo oid_info[] = {
 	{ 0, "2.5.4.65", "pseudonym", N_("Pseudonym"), 
 		EGG_OID_PRINTABLE | EGG_OID_IS_CHOICE },
 
-	{ 0, "1.2.840.113549.1.1.1", "rsaEncryption", N_("RSA"),
-	        0 },
-	{ 0, "1.2.840.113549.1.1.2", "md2WithRSAEncryption", N_("MD2 with RSA"),
-	        0 },
-	{ 0, "1.2.840.113549.1.1.4", "md5WithRSAEncryption", N_("MD5 with RSA"),
-		0 },
-	{ 0, "1.2.840.113549.1.1.5", "sha1WithRSAEncryption", N_("SHA1 with RSA"),
-		0 },
+	{ 0, "1.2.840.113549.1.1.1", "rsaEncryption", N_("RSA"), 0 },
+	{ 0, "1.2.840.113549.1.1.2", "md2WithRSAEncryption", N_("MD2 with RSA"), 0 },
+	{ 0, "1.2.840.113549.1.1.4", "md5WithRSAEncryption", N_("MD5 with RSA"), 0 },
+	{ 0, "1.2.840.113549.1.1.5", "sha1WithRSAEncryption", N_("SHA1 with RSA"), 0 },
 
-	{ 0, "1.2.840.10040.4.1", "dsa", N_("DSA"),
-		0 },
-	{ 0, "1.2.840.10040.4.3", "sha1WithDSA", N_("SHA1 with DSA"),
-		0 },
+	{ 0, "1.2.840.10040.4.1", "dsa", N_("DSA"), 0 },
+	{ 0, "1.2.840.10040.4.3", "sha1WithDSA", N_("SHA1 with DSA"), 0 },
+
+	/* Extended Key Usages */
+	{ 0, "1.3.6.1.5.5.7.3.1", NULL, N_("Server Authentication"), 0 },
+	{ 0, "1.3.6.1.5.5.7.3.2", NULL, N_("Client Authentication"), 0 },
+	{ 0, "1.3.6.1.5.5.7.3.3", NULL, N_("Code Signing"), 0 },
+	{ 0, "1.3.6.1.5.5.7.3.4", NULL, N_("Email Protection"), 0 },
+	{ 0, "1.3.6.1.5.5.7.3.8", NULL, N_("Time Stamping"), 0 },
 
 	{ 0, NULL, NULL, NULL, FALSE }
 };

@@ -29,6 +29,8 @@
 
 G_BEGIN_DECLS
 
+#define GCR_DISPLAY_VIEW_LINE_BREAK   0x2028
+
 #define GCR_TYPE_DISPLAY_VIEW               (_gcr_display_view_get_type ())
 #define GCR_DISPLAY_VIEW(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_DISPLAY_VIEW, GcrDisplayView))
 #define GCR_DISPLAY_VIEW_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_DISPLAY_VIEW, GcrDisplayViewClass))
