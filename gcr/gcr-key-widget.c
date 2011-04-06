@@ -89,21 +89,14 @@ gcr_key_widget_constructor (GType type, guint n_props, GObjectConstructParam *pr
 {
 	GObject *obj = G_OBJECT_CLASS (gcr_key_widget_parent_class)->constructor (type, n_props, props);
 	GcrKeyWidget *self = NULL;
-	GtkWidget *scroll;
 
 	g_return_val_if_fail (obj, NULL);
 
 	self = GCR_KEY_WIDGET (obj);
 
-	self->pv->viewer = gcr_viewer_new ();
-
-	scroll = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll), GTK_SHADOW_ETCHED_IN);
-	gtk_container_add (GTK_CONTAINER (scroll), GTK_WIDGET (self->pv->viewer));
-
-	gtk_container_add (GTK_CONTAINER (self), scroll);
-	gtk_widget_show_all (scroll);
+	self->pv->viewer = gcr_viewer_new_scrolled ();
+	gtk_container_add (GTK_CONTAINER (self), GTK_WIDGET (self->pv->viewer));
+	gtk_widget_show (GTK_WIDGET (self->pv->viewer));
 
 	gcr_viewer_add_renderer (self->pv->viewer, GCR_RENDERER (self->pv->renderer));
 	return obj;
