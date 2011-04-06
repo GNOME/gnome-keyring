@@ -105,7 +105,6 @@ append_extension (GcrCertificateRenderer *self, GcrDisplayView *view,
 	GcrRenderer *renderer = GCR_RENDERER (self);
 	GNode *node;
 	GQuark oid;
-	gchar *display;
 	gsize n_value;
 	const guchar *value;
 	const gchar *text;
@@ -132,9 +131,7 @@ append_extension (GcrCertificateRenderer *self, GcrDisplayView *view,
 	value = egg_asn1x_get_raw_value (egg_asn1x_node (node, "extnValue", NULL), &n_value);
 
 	/* TODO: Parsing of extensions that we understand */
-	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
-	_gcr_display_view_append_value (view, renderer, _("Value"), display, TRUE);
-	g_free (display);
+	_gcr_display_view_append_hex (view, renderer, _("Value"), value, n_value);
 
 
 	/* Critical */
@@ -472,9 +469,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 
 	raw = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "tbsCertificate", "serialNumber", NULL), NULL, &n_raw);
 	g_return_if_fail (raw);
-	display = egg_hex_encode_full (raw, n_raw, TRUE, ' ', 1);
-	_gcr_display_view_append_value (view, renderer, _("Serial Number"), display, TRUE);
-	g_free (display);
+	_gcr_display_view_append_hex (view, renderer, _("Serial Number"), raw, n_raw);
 	g_free (raw);
 
 	display = g_malloc0 (128);
@@ -498,17 +493,12 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	_gcr_display_view_append_value (view, renderer, _("Signature Algorithm"), text, FALSE);
 
 	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "signatureAlgorithm", "parameters", NULL), &n_value);
-	if (value && n_value) {
-		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
-		_gcr_display_view_append_value (view, renderer, _("Signature Parameters"), display, TRUE);
-		g_free (display);
-	}
+	if (value && n_value)
+		_gcr_display_view_append_hex (view, renderer, _("Signature Parameters"), value, n_value);
 
 	raw = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "signature", NULL), NULL, &bits);
 	g_return_if_fail (raw);
-	display = egg_hex_encode_full (raw, bits / 8, TRUE, ' ', 1);
-	_gcr_display_view_append_value (view, renderer, _("Signature"), display, TRUE);
-	g_free (display);
+	_gcr_display_view_append_hex (view, renderer, _("Signature"), raw, bits / 8);
 	g_free (raw);
 
 	/* Public Key Info */
@@ -521,11 +511,8 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 
 	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo",
 	                                                   "algorithm", "parameters", NULL), &n_value);
-	if (value && n_value) {
-		display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
-		_gcr_display_view_append_value (view, renderer, _("Key Parameters"), display, TRUE);
-		g_free (display);
-	}
+	if (value && n_value)
+		_gcr_display_view_append_hex (view, renderer, _("Key Parameters"), value, n_value);
 
 	bits = gcr_certificate_get_key_size (cert);
 	if (bits > 0) {
@@ -537,9 +524,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	raw = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "tbsCertificate", "subjectPublicKeyInfo",
 	                                                 "subjectPublicKey", NULL), NULL, &bits);
 	g_return_if_fail (raw);
-	display = egg_hex_encode_full (raw, bits / 8, TRUE, ' ', 1);
-	_gcr_display_view_append_value (view, renderer, _("Public Key"), display, TRUE);
-	g_free (display);
+	_gcr_display_view_append_hex (view, renderer, _("Public Key"), raw, bits / 8);
 	g_free (raw);
 
 	/* Fingerprints */

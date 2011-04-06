@@ -62,6 +62,12 @@ void             _gcr_display_view_append_value                (GcrDisplayView *
                                                                 const gchar *value,
                                                                 gboolean monospace);
 
+void             _gcr_display_view_append_hex                  (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
+                                                                const gchar *field,
+                                                                gconstpointer value,
+                                                                gsize n_value);
+
 void             _gcr_display_view_append_title                (GcrDisplayView *self,
                                                                 GcrRenderer *renderer,
                                                                 const gchar *title);

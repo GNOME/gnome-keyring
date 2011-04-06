@@ -889,6 +889,17 @@ _gcr_display_view_append_value (GcrDisplayView *self, GcrRenderer *renderer, con
 }
 
 void
+_gcr_display_view_append_hex (GcrDisplayView *self, GcrRenderer *renderer,
+                              const gchar *field, gconstpointer value, gsize n_value)
+{
+	gchar *display;
+
+	display = egg_hex_encode_full (value, n_value, TRUE, ' ', 1);
+	_gcr_display_view_append_value (self, renderer, field, display, TRUE);
+	g_free (display);
+}
+
+void
 _gcr_display_view_append_title (GcrDisplayView *self, GcrRenderer *renderer, const gchar *title)
 {
 	GcrDisplayItem *item;
@@ -939,7 +950,6 @@ _gcr_display_view_append_fingerprint (GcrDisplayView *self, GcrRenderer *rendere
 	GChecksum *checksum;
 	guint8 *buffer;
 	gsize n_buffer;
-	gchar *display;
 
 	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
 
@@ -954,9 +964,7 @@ _gcr_display_view_append_fingerprint (GcrDisplayView *self, GcrRenderer *rendere
 	g_checksum_get_digest (checksum, buffer, &n_buffer);
 	g_checksum_free (checksum);
 
-	display = egg_hex_encode_full (buffer, n_buffer, TRUE, ' ', 1);
-	_gcr_display_view_append_value (self, renderer, name, display, TRUE);
-	g_free (display);
+	_gcr_display_view_append_hex (self, renderer, name, buffer, n_buffer);
 
 	g_free (buffer);
 }
