@@ -75,7 +75,7 @@ gboolean                 gcr_parser_format_supported       (GcrParser *self,
                                                             gint format);
 
 gboolean                 gcr_parser_parse_data             (GcrParser *self, 
-                                                            const guchar *data, 
+                                                            gconstpointer data,
                                                             gsize n_data, 
                                                             GError **err);
 

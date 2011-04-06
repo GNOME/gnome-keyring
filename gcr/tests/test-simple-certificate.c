@@ -22,8 +22,6 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
 #include "gcr.h"
 #include "gcr/gcr-internal.h"
 
@@ -31,54 +29,81 @@
 
 #include "pkcs11/pkcs11n.h"
 
+#include "egg/egg-testing.h"
+
 #include <glib.h>
 
-static gpointer cert_data;
-static gsize n_cert_data;
+#include <errno.h>
 
-TESTING_SETUP (simple_certificate)
+typedef struct {
+	gpointer cert_data;
+	gsize n_cert_data;
+} Test;
+
+static void
+setup (Test *test, gconstpointer unused)
 {
-	cert_data = testing_data_read ("der-certificate.crt", &n_cert_data);
-	g_assert (cert_data);
+	if (!g_file_get_contents ("files/der-certificate.crt", (gchar**)&test->cert_data,
+	                          &test->n_cert_data, NULL))
+		g_assert_not_reached ();
+	g_assert (test->cert_data);
 }
 
-TESTING_TEARDOWN (simple_certificate)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	g_free (cert_data);
-	cert_data = NULL;
-	n_cert_data = 0;
+	g_free (test->cert_data);
 }
 
-TESTING_TEST (simple_certificate_new)
+static void
+test_new (Test *test, gconstpointer unused)
 {
 	GcrCertificate *cert;
 	gconstpointer der;
 	gsize n_der;
 
-	cert = gcr_simple_certificate_new (cert_data, n_cert_data);
+	cert = gcr_simple_certificate_new (test->cert_data, test->n_cert_data);
 	g_assert (GCR_IS_SIMPLE_CERTIFICATE (cert));
 
 	der = gcr_certificate_get_der_data (cert, &n_der);
 	g_assert (der);
-	g_assert_cmpsize (n_der, ==, n_cert_data);
-	g_assert (memcmp (der, cert_data, n_der) == 0);
+	egg_assert_cmpmem (der, n_der, ==, test->cert_data, test->n_cert_data);
 
 	g_object_unref (cert);
 }
 
-TESTING_TEST (simple_certificate_new_static)
+static void
+test_new_static (Test *test, gconstpointer unused)
 {
 	GcrCertificate *cert;
 	gconstpointer der;
 	gsize n_der;
 
-	cert = gcr_simple_certificate_new_static (cert_data, n_cert_data);
+	cert = gcr_simple_certificate_new_static (test->cert_data, test->n_cert_data);
 	g_assert (GCR_IS_SIMPLE_CERTIFICATE (cert));
 
 	der = gcr_certificate_get_der_data (cert, &n_der);
 	g_assert (der);
-	g_assert_cmpsize (n_der, ==, n_cert_data);
-	g_assert (der == cert_data); /* Must be same pointer */
+	egg_assert_cmpsize (n_der, ==, test->n_cert_data);
+	g_assert (der == test->cert_data); /* Must be same pointer */
 
 	g_object_unref (cert);
+}
+
+int
+main (int argc, char **argv)
+{
+	const gchar *srcdir;
+
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	srcdir = g_getenv ("SRCDIR");
+	if (srcdir && chdir (srcdir) < 0)
+		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
+
+	g_test_add ("/gcr/simple-certificate/new", Test, NULL, setup, test_new, teardown);
+	g_test_add ("/gcr/simple-certificate/new_static", Test, NULL, setup, test_new_static, teardown);
+
+	return g_test_run ();
 }

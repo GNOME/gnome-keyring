@@ -1535,7 +1535,7 @@ gcr_parser_add_password (GcrParser *self, const gchar *password)
 }
 
 gboolean
-gcr_parser_parse_data (GcrParser *self, const guchar *data, 
+gcr_parser_parse_data (GcrParser *self, gconstpointer data,
                        gsize n_data, GError **err)
 {
 	ForeachArgs args = { self, data, n_data, GCR_ERROR_UNRECOGNIZED };

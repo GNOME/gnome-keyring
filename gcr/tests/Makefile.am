@@ -1,70 +1,48 @@
 
-# Test files should be listed in order they need to run
-TESTING_FILES = \
-	test-certificate.c \
-	test-certificate-chain.c \
-	test-simple-certificate.c \
-	test-pkcs11-certificate.c \
-	test-trust.c \
-	unit-test-parser.c
+INCLUDES = \
+	-I$(top_srcdir)/egg \
+	-I$(top_srcdir)/gcr \
+	-DSRCDIR=$(srcdir) \
+	-DGCR_API_SUBJECT_TO_CHANGE \
+	-DGCK_API_SUBJECT_TO_CHANGE \
+	$(GLIB_CFLAGS) \
+	$(GTK_CFLAGS) \
+	$(LIBGCRYPT_CFLAGS)
 
-TESTING_LIBS =  \
+LDADD = \
 	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
-	$(top_builddir)/gck/libgck.la
+	$(top_builddir)/gck/libgck.la \
+	$(GTK_LIBS) \
+	$(GLIB_LIBS) \
+	$(LIBGCRYT_LIBS)
 
-TESTING_FLAGS = \
-	-DGCR_API_SUBJECT_TO_CHANGE \
-	-DGCK_API_SUBJECT_TO_CHANGE
+TEST_PROGS = \
+	test-certificate \
+	test-certificate-chain \
+	test-pkcs11-certificate \
+	test-simple-certificate \
+	test-trust \
+	test-parser
 
-include $(top_srcdir)/testing/testing.make
+check_PROGRAMS = $(TEST_PROGS)
 
-EXTRA_DIST += \
+test: $(TEST_PROGS)
+	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+
+check-local: test
+
+if WITH_TESTS
+all-local: $(check_PROGRAMS)
+endif
+
+EXTRA_DIST = \
 	test-data
 
 # ------------------------------------------------------------------
 
-noinst_PROGRAMS += \
-	ui-test-certificate \
-	ui-test-key \
-	ui-test-unlock-options
-
-ui_test_certificate_SOURCES = \
-	ui-test-certificate.c
-
-ui_test_certificate_CFLAGS = \
-	-DGCR_API_SUBJECT_TO_CHANGE \
-	$(GTK_CFLAGS)
-
-ui_test_certificate_LDADD = \
-	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
-	$(top_builddir)/gck/libgck.la \
-	$(GTK_LIBS) \
-	$(LIBGCRYPT_LIBS)
-
-ui_test_unlock_options_SOURCES = \
-	ui-test-unlock-options.c
-
-ui_test_unlock_options_CFLAGS = \
-	-DGCR_API_SUBJECT_TO_CHANGE \
-	$(GTK_CFLAGS)
-
-ui_test_unlock_options_LDADD = \
-	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
-	$(top_builddir)/gck/libgck.la \
-	$(GTK_LIBS) \
-	$(LIBGCRYPT_LIBS)
-
-ui_test_key_SOURCES = \
-	ui-test-key.c
-
-ui_test_key_CFLAGS = \
-	-DGCR_API_SUBJECT_TO_CHANGE \
-	$(GTK_CFLAGS)
-
-ui_test_key_LDADD = \
-	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
-	$(top_builddir)/gck/libgck.la \
-	$(GTK_LIBS) \
-	$(LIBGCRYPT_LIBS)
+noinst_PROGRAMS = \
+	frob-certificate \
+	frob-key \
+	frob-unlock-options

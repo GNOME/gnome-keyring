@@ -22,8 +22,6 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
 #include "gcr.h"
 #include "gcr/gcr-internal.h"
 
@@ -34,37 +32,45 @@
 #include "pkcs11/pkcs11n.h"
 #include "pkcs11/pkcs11x.h"
 
+#include "egg/egg-testing.h"
+
 #include <glib.h>
 
-static CK_FUNCTION_LIST funcs;
-static GcrCertificate *certificate = NULL;
+#include <errno.h>
 
-TESTING_SETUP (trust_setup)
+typedef struct {
+	CK_FUNCTION_LIST funcs;
+	GcrCertificate *certificate;
+} Test;
+
+static void
+setup (Test *test, gconstpointer unused)
 {
 	GList *modules = NULL;
 	CK_FUNCTION_LIST_PTR f;
 	GckModule *module;
-	guchar *contents;
+	gchar *contents;
 	const gchar *uris[2];
 	gsize len;
 	CK_RV rv;
 
-	contents = testing_data_read ("der-certificate.crt", &len);
+	if (!g_file_get_contents ("files/der-certificate.crt", &contents, &len, NULL))
+		g_assert_not_reached ();
 	g_assert (contents);
 
-	certificate = gcr_simple_certificate_new (contents, len);
+	test->certificate = gcr_simple_certificate_new (contents, len);
 	g_free (contents);
 
 	rv = gck_mock_C_GetFunctionList (&f);
 	gck_assert_cmprv (rv, ==, CKR_OK);
-	memcpy (&funcs, f, sizeof (funcs));
+	memcpy (&test->funcs, f, sizeof (test->funcs));
 
 	/* Open a session */
-	rv = (funcs.C_Initialize) (NULL);
+	rv = (test->funcs.C_Initialize) (NULL);
 	gck_assert_cmprv (rv, ==, CKR_OK);
 
 	g_assert (!modules);
-	module = gck_module_new (&funcs, 0);
+	module = gck_module_new (&test->funcs, 0);
 	modules = g_list_prepend (modules, module);
 	gcr_pkcs11_set_modules (modules);
 	gck_list_unref_free (modules);
@@ -76,79 +82,83 @@ TESTING_SETUP (trust_setup)
 	gcr_pkcs11_set_trust_lookup_uris (uris);
 }
 
-TESTING_TEARDOWN (trust_setup)
+static void
+teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	g_object_unref (certificate);
-	certificate = NULL;
+	g_object_unref (test->certificate);
 
-	rv = (funcs.C_Finalize) (NULL);
+	rv = (test->funcs.C_Finalize) (NULL);
 	gck_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEST (trust_is_pinned_none)
+static void
+test_is_pinned_none (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	gboolean trust;
 
-	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_add_and_is_pinned)
+static void
+test_add_and_is_pinned (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 
-	ret = gcr_trust_add_pinned_certificate (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	ret = gcr_trust_add_pinned_certificate (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 
-	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, TRUE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_add_certificate_pinned_fail)
+static void
+test_add_certificate_pinned_fail (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	gboolean ret;
 
 	/* Make this function fail */
-	funcs.C_CreateObject = gck_mock_fail_C_CreateObject;
+	test->funcs.C_CreateObject = gck_mock_fail_C_CreateObject;
 
-	ret = gcr_trust_add_pinned_certificate (certificate, GCR_PURPOSE_CLIENT_AUTH, "peer", NULL, &error);
+	ret = gcr_trust_add_pinned_certificate (test->certificate, GCR_PURPOSE_CLIENT_AUTH, "peer", NULL, &error);
 	g_assert (ret == FALSE);
 	g_assert_error (error, GCK_ERROR, CKR_FUNCTION_FAILED);
 	g_clear_error (&error);
 }
 
-TESTING_TEST (trust_add_and_remov_pinned)
+static void
+test_add_and_remov_pinned (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	ret = gcr_trust_add_pinned_certificate (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	ret = gcr_trust_add_pinned_certificate (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 
-	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, TRUE);
 	g_assert (error == NULL);
 
-	ret = gcr_trust_remove_pinned_certificate (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	ret = gcr_trust_remove_pinned_certificate (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 
-	trust = gcr_trust_is_certificate_pinned (certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
+	trust = gcr_trust_is_certificate_pinned (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, &error);
 	g_assert_cmpint (trust, ==, FALSE);
 	g_assert (error == NULL);
 }
@@ -158,18 +168,19 @@ fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
 {
 	*((GAsyncResult**)user_data) = result;
 	g_object_ref (result);
-	testing_wait_stop ();
+	egg_test_wait_stop ();
 }
 
-TESTING_TEST (trust_add_and_is_pinned_async)
+static void
+test_add_and_is_pinned_async (Test *test, gconstpointer unused)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_is_certificate_pinned_async (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == FALSE);
@@ -177,9 +188,9 @@ TESTING_TEST (trust_add_and_is_pinned_async)
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_add_pinned_certificate_async (certificate, GCR_PURPOSE_EMAIL, "host",
-	                                           NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_add_pinned_certificate_async (test->certificate, GCR_PURPOSE_EMAIL, "host",
+	                                        NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 	ret = gcr_trust_add_pinned_certificate_finish (result, &error);
 	g_assert (ret == TRUE);
@@ -187,8 +198,8 @@ TESTING_TEST (trust_add_and_is_pinned_async)
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_is_certificate_pinned_async (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == TRUE);
@@ -197,15 +208,16 @@ TESTING_TEST (trust_add_and_is_pinned_async)
 	result = NULL;
 }
 
-TESTING_TEST (trust_add_and_remov_pinned_async)
+static void
+test_add_and_remov_pinned_async (Test *test, gconstpointer unused)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	gboolean trust;
 	gboolean ret;
 
-	gcr_trust_add_pinned_certificate_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_add_pinned_certificate_async (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 	ret = gcr_trust_add_pinned_certificate_finish (result, &error);
 	g_assert (ret == TRUE);
@@ -213,8 +225,8 @@ TESTING_TEST (trust_add_and_remov_pinned_async)
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_is_certificate_pinned_async (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == TRUE);
@@ -222,8 +234,8 @@ TESTING_TEST (trust_add_and_remov_pinned_async)
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_remove_pinned_certificate_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_remove_pinned_certificate_async (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 	ret = gcr_trust_remove_pinned_certificate_finish (result, &error);
 	g_assert (ret == TRUE);
@@ -231,8 +243,8 @@ TESTING_TEST (trust_add_and_remov_pinned_async)
 	g_object_unref (result);
 	result = NULL;
 
-	gcr_trust_is_certificate_pinned_async (certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_is_certificate_pinned_async (test->certificate, GCR_PURPOSE_EMAIL, "host", NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 	trust = gcr_trust_is_certificate_pinned_finish (result, &error);
 	g_assert (trust == FALSE);
@@ -241,17 +253,19 @@ TESTING_TEST (trust_add_and_remov_pinned_async)
 	result = NULL;
 }
 
-TESTING_TEST (trust_is_certificate_anchored_not)
+static void
+test_is_certificate_anchored_not (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	gboolean ret;
 
-	ret = gcr_trust_is_certificate_anchored (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
+	ret = gcr_trust_is_certificate_anchored (test->certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
 	g_assert (ret == FALSE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_is_certificate_anchored_yes)
+static void
+test_is_certificate_anchored_yes (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	GckAttributes *attrs;
@@ -261,7 +275,7 @@ TESTING_TEST (trust_is_certificate_anchored_yes)
 
 	/* Create a certificate root trust */
 	attrs = gck_attributes_new ();
-	der = gcr_certificate_get_der_data (certificate, &n_der);
+	der = gcr_certificate_get_der_data (test->certificate, &n_der);
 	gck_attributes_add_data (attrs, CKA_X_CERTIFICATE_VALUE, der, n_der);
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_X_TRUST_ASSERTION);
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
@@ -269,19 +283,20 @@ TESTING_TEST (trust_is_certificate_anchored_yes)
 	gck_attributes_add_ulong (attrs, CKA_X_ASSERTION_TYPE, CKT_X_ANCHORED_CERTIFICATE);
 	gck_mock_module_take_object (attrs);
 
-	ret = gcr_trust_is_certificate_anchored (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
+	ret = gcr_trust_is_certificate_anchored (test->certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, &error);
 	g_assert (ret == TRUE);
 	g_assert (error == NULL);
 }
 
-TESTING_TEST (trust_is_certificate_anchored_async)
+static void
+test_is_certificate_anchored_async (Test *test, gconstpointer unused)
 {
 	GAsyncResult *result = NULL;
 	GError *error = NULL;
 	gboolean ret;
 
-	gcr_trust_is_certificate_anchored_async (certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, fetch_async_result, &result);
-	testing_wait_until (500);
+	gcr_trust_is_certificate_anchored_async (test->certificate, GCR_PURPOSE_CLIENT_AUTH, NULL, fetch_async_result, &result);
+	egg_test_wait_until (500);
 	g_assert (result);
 
 	ret = gcr_trust_is_certificate_anchored_finish (result, &error);
@@ -289,4 +304,29 @@ TESTING_TEST (trust_is_certificate_anchored_async)
 	g_assert (error == NULL);
 
 	g_object_unref (result);
+}
+
+int
+main (int argc, char **argv)
+{
+	const gchar *srcdir;
+
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	srcdir = g_getenv ("SRCDIR");
+	if (srcdir && chdir (srcdir) < 0)
+		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
+
+	g_test_add ("/gcr/trust/is_pinned_none", Test, NULL, setup, test_is_pinned_none, teardown);
+	g_test_add ("/gcr/trust/add_and_is_pinned", Test, NULL, setup, test_add_and_is_pinned, teardown);
+	g_test_add ("/gcr/trust/add_certificate_pinned_fail", Test, NULL, setup, test_add_certificate_pinned_fail, teardown);
+	g_test_add ("/gcr/trust/add_and_remov_pinned", Test, NULL, setup, test_add_and_remov_pinned, teardown);
+	g_test_add ("/gcr/trust/add_and_is_pinned_async", Test, NULL, setup, test_add_and_is_pinned_async, teardown);
+	g_test_add ("/gcr/trust/add_and_remov_pinned_async", Test, NULL, setup, test_add_and_remov_pinned_async, teardown);
+	g_test_add ("/gcr/trust/is_certificate_anchored_not", Test, NULL, setup, test_is_certificate_anchored_not, teardown);
+	g_test_add ("/gcr/trust/is_certificate_anchored_yes", Test, NULL, setup, test_is_certificate_anchored_yes, teardown);
+	g_test_add ("/gcr/trust/is_certificate_anchored_async", Test, NULL, setup, test_is_certificate_anchored_async, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }
