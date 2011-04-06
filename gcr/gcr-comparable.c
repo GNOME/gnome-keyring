@@ -25,6 +25,27 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gcr-comparable
+ * @title: GcrComparable
+ * @short_description: Interface for comparing objects
+ *
+ * The #GcrComparable interface is implemented by objects when they should be
+ * comparable against one another.
+ */
+
+/**
+ * GcrComparable:
+ *
+ * The #GcrComparable interface is implemented by comparable objects.
+ */
+
+/**
+ * GcrComparableIface:
+ *
+ * The interface to implement for #GcrComparable
+ */
+
 /* ---------------------------------------------------------------------------------
  * INTERFACE
  */
@@ -68,6 +89,16 @@ gcr_comparable_get_type (void)
  * PUBLIC
  */
 
+/**
+ * gcr_comparable_compare:
+ * @self: The comparable object
+ * @other: Another comparable object
+ *
+ * Compare whether two objects represent the same thing. The return value can
+ * also be used to sort the objects.
+ *
+ * Returns: Zero if the two objects represent the same thing, non-zero if not.
+ */
 gint
 gcr_comparable_compare (GcrComparable *self, GcrComparable *other)
 {
@@ -77,6 +108,18 @@ gcr_comparable_compare (GcrComparable *self, GcrComparable *other)
 	return GCR_COMPARABLE_GET_INTERFACE (self)->compare (self, other);
 }
 
+/**
+ * gcr_comparable_memcmp:
+ * @mem1: First block of memory
+ * @size1: Length of first block
+ * @mem2: Second lock of memory
+ * @size2: Length of second block
+ *
+ * Compare two blocks of memory. The return value can be used to sort
+ * the blocks of memory.
+ *
+ * Returns: Zero if the blocks are identical, non-zero if not.
+ */
 gint
 gcr_comparable_memcmp (gconstpointer mem1, gsize size1,
                        gconstpointer mem2, gsize size2)

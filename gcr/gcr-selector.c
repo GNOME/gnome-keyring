@@ -27,11 +27,55 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gcr-selector
+ * @title: GcrSelector
+ * @short_description: A selector widget to select certificates or keys.
+ *
+ * The #GcrSelector can be used to select certificates or keys. The selector
+ * comes in one of two modes: %GCR_SELECTOR_MODE_SINGLE and
+ * %GCR_SELECTOR_MODE_MULTIPLE. The single selector mode allows the user to
+ * select one object at a time, and the multiple selector allows the user
+ * to select multiple objects from a list.
+ */
+
+/**
+ * GcrSelector:
+ *
+ * A selector widget.
+ */
+
+/**
+ * GcrSelectorClass:
+ *
+ * The class for #GcrSelector.
+ */
+
+/**
+ * GcrSelectorMode:
+ * @GCR_SELECTOR_MODE_SINGLE: User can select a single object.
+ * @GCR_SELECTOR_MODE_MULTIPLE: The user can select multiple objects.
+ *
+ * The mode for the selector.
+ */
+
 enum {
 	PROP_0,
 	PROP_COLLECTION,
 	PROP_COLUMNS,
 	PROP_MODE
+};
+
+struct _GcrSelector {
+	GtkAlignment parent;
+
+	/*< private >*/
+	GcrSelectorPrivate *pv;
+};
+
+struct _GcrSelectorClass {
+	/*< private >*/
+	GtkAlignmentClass parent_class;
 };
 
 struct _GcrSelectorPrivate {
@@ -410,14 +454,29 @@ gcr_selector_class_init (GcrSelectorClass *klass)
 
 	g_type_class_add_private (gobject_class, sizeof (GcrSelectorPrivate));
 
+	/**
+	 * GcrSelector:collection:
+	 *
+	 * The collection which contains the objects to display in the selector.
+	 */
 	g_object_class_install_property (gobject_class, PROP_COLLECTION,
 	           g_param_spec_object ("collection", "Collection", "Collection to select from",
 	                                GCR_TYPE_COLLECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GcrSelector:columns:
+	 *
+	 * The columns to use to display the objects.
+	 */
 	g_object_class_install_property (gobject_class, PROP_COLUMNS,
 	           g_param_spec_pointer ("columns", "Columns", "Columns to display in multiple selector",
 	                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GcrSelector:mode:
+	 *
+	 * The mode of the selector.
+	 */
 	g_object_class_install_property (gobject_class, PROP_MODE,
 	           g_param_spec_enum ("mode", "Mode", "The mode of the selector",
 	                              GCR_TYPE_SELECTOR_MODE, GCR_SELECTOR_MODE_SINGLE,
@@ -430,6 +489,17 @@ gcr_selector_class_init (GcrSelectorClass *klass)
  * PUBLIC
  */
 
+/**
+ * gcr_selector_new:
+ * @collection: The collection that contains the objects to display
+ * @columns: The columns to use to display the objects
+ * @mode: The mode of the selector
+ *
+ * Create a new #GcrSelector.
+ *
+ * Returns: A newly allocated selector, which should be released with
+ *     g_object_unref().
+ */
 GcrSelector*
 gcr_selector_new (GcrCollection *collection, const GcrColumn *columns, GcrSelectorMode mode)
 {
@@ -440,6 +510,14 @@ gcr_selector_new (GcrCollection *collection, const GcrColumn *columns, GcrSelect
 	                     NULL);
 }
 
+/**
+ * gcr_selector_get_collection:
+ * @self: The selector
+ *
+ * Get the collection that this selector is displaying objects from.
+ *
+ * Returns: The collection, owned by the selector.
+ */
 GcrCollection*
 gcr_selector_get_collection (GcrSelector *self)
 {
@@ -447,6 +525,14 @@ gcr_selector_get_collection (GcrSelector *self)
 	return self->pv->collection;
 }
 
+/**
+ * gcr_selector_get_columns:
+ * @self: The selector
+ *
+ * Get the columns displayed in a selector in multiple mode.
+ *
+ * Returns: The columns, owned by the selector.
+ */
 const GcrColumn*
 gcr_selector_get_columns (GcrSelector *self)
 {
@@ -454,6 +540,14 @@ gcr_selector_get_columns (GcrSelector *self)
 	return self->pv->columns;
 }
 
+/**
+ * gcr_selector_get_mode:
+ * @self: The selector
+ *
+ * Get the mode of the selector, whether single or multiple selection.
+ *
+ * Returns: The mode of the selector.
+ */
 GcrSelectorMode
 gcr_selector_get_mode (GcrSelector *self)
 {

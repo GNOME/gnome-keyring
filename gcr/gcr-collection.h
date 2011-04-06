@@ -49,6 +49,7 @@ struct _GcrCollectionIface {
 
 	GList* (*get_objects) (GcrCollection *self);
 
+	/*< private >*/
 	gpointer dummy1;
 	gpointer dummy2;
 	gpointer dummy3;

@@ -1726,7 +1726,7 @@ gcr_parser_parse_data (GcrParser *self, gconstpointer data,
 }
 
 /**
- * gcr_parser_format_disable:
+ * gcr_parser_format_enable:
  * @self: The parser
  * @format_id: The format identifier
  *

@@ -42,6 +42,8 @@ typedef struct _GcrSimpleCollectionPrivate GcrSimpleCollectionPrivate;
 
 struct _GcrSimpleCollection {
 	GObject parent;
+
+	/*< private >*/
 	GcrSimpleCollectionPrivate *pv;
 };
 

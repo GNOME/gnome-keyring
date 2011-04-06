@@ -40,7 +40,6 @@
 
 /**
  * GcrCertificateRenderer:
- * @parent: The parent object
  *
  * An implementation of #GcrRenderer which renders certificates.
  */
@@ -356,10 +355,21 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	           g_param_spec_object ("certificate", "Certificate", "Certificate to display.",
 	                                GCR_TYPE_CERTIFICATE, G_PARAM_READWRITE));
 
+	/**
+	 * GcrCertificateRenderer:attributes:
+	 *
+	 * The certificate attributes to display. One of the attributes must be
+	 * a CKA_VALUE type attribute which contains a DER encoded certificate.
+	 */
 	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
 	           g_param_spec_boxed ("attributes", "Attributes", "Certificate pkcs11 attributes",
 	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
+	/**
+	 * GcrCertificateRenderer:label:
+	 *
+	 * The label to display.
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	           g_param_spec_string ("label", "Label", "Certificate Label",
 	                                "", G_PARAM_READWRITE));
@@ -617,6 +627,18 @@ gcr_certificate_renderer_new (GcrCertificate *certificate)
 	return g_object_new (GCR_TYPE_CERTIFICATE_RENDERER, "certificate", certificate, NULL);
 }
 
+/**
+ * gcr_certificate_renderer_new_for_attributes:
+ * @label: The label to display
+ * @attrs: The attributes to display
+ *
+ * Create a new certificate renderer to display the label and attributes. One
+ * of the attributes should be a CKA_VALUE type attribute containing a DER
+ * encoded certificate.
+ *
+ * Returns: A newly allocated #GcrCertificateRenderer, which should be released
+ *     with g_object_unref().
+ */
 GcrCertificateRenderer*
 gcr_certificate_renderer_new_for_attributes (const gchar *label, struct _GckAttributes *attrs)
 {

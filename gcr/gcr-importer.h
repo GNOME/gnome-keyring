@@ -87,7 +87,7 @@ void                      gcr_importer_listen                 (GcrImporter *self
                                                                GcrParser *parser);
 
 gboolean                  gcr_importer_import                 (GcrImporter *self,
-                                                               GCancellable *cancel,
+                                                               GCancellable *cancellable,
                                                                GError **error);
 
 void                      gcr_importer_import_async           (GcrImporter *self,

@@ -28,10 +28,10 @@
 
 G_BEGIN_DECLS
 
-enum {
+typedef enum {
 	GCR_COLUMN_HIDDEN = 0x01,
 	GCR_COLUMN_SORTABLE = 0x02,
-};
+} GcrColumnFlags;
 
 typedef struct _GcrColumn {
 	const gchar *property_name;     /* The property to retrieve */
@@ -44,6 +44,8 @@ typedef struct _GcrColumn {
 	GValueTransform transformer;    /* The way to transform to this type or NULL */
 
 	gpointer user_data;
+
+	/*< private >*/
 	gpointer reserved;
 } GcrColumn;
 

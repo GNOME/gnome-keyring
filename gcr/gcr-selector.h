@@ -45,14 +45,10 @@ typedef enum _GcrSelectorMode {
 	GCR_SELECTOR_MODE_MULTIPLE
 } GcrSelectorMode;
 
-struct _GcrSelector {
-	GtkAlignment parent;
-	GcrSelectorPrivate *pv;
-};
-
-struct _GcrSelectorClass {
-	GtkAlignmentClass parent_class;
-};
+/*
+ * TODO: GcrSelector and GcrSelectorClass are hidden until
+ * we can figure out what they should be derived from.
+ */
 
 GType                    gcr_selector_get_type               (void);
 

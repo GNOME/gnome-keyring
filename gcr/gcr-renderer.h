@@ -71,12 +71,6 @@ void                      gcr_renderer_popuplate_popup            (GcrRenderer *
                                                                    GcrViewer *viewer,
                                                                    GtkMenu *menu);
 
-gchar*                    gcr_renderer_get_markup                 (GcrRenderer *self);
-
-gchar*                    gcr_renderer_get_description            (GcrRenderer *self);
-
-gchar*                    gcr_renderer_get_stock_icon             (GcrRenderer *self);
-
 void                      gcr_renderer_emit_data_changed          (GcrRenderer *self);
 
 GcrRenderer*              gcr_renderer_create                     (const gchar *label,

@@ -21,10 +21,19 @@
 		<xi:include href="xml/gcr-certificate-chain.xml"/>
 	</part>
 
+	<part id="collections">
+		<title>Collections</title>
+		<xi:include href="xml/gcr-collection.xml"/>
+		<xi:include href="xml/gcr-comparable.xml"/>
+		<xi:include href="xml/gcr-simple-collection.xml"/>
+		<xi:include href="xml/gcr-collection-model.xml"/>
+	</part>
+
 	<part id="widgets">
-		<title>Widgets</title>
 		<xi:include href="xml/gcr-certificate-widget.xml"/>
 		<xi:include href="xml/gcr-key-widget.xml"/>
+		<xi:include href="xml/gcr-column.xml"/>
+		<xi:include href="xml/gcr-selector.xml"/>
 		<xi:include href="xml/gcr-renderer.xml"/>
 		<xi:include href="xml/gcr-viewer.xml"/>
 	</part>

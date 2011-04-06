@@ -41,6 +41,7 @@ typedef struct _GcrCollectionModelPrivate GcrCollectionModelPrivate;
 struct _GcrCollectionModel {
 	GObject parent;
 
+	/*< private >*/
 	GcrCollectionModelPrivate *pv;
 };
 
@@ -56,7 +57,7 @@ GcrCollectionModel*   gcr_collection_model_new                 (GcrCollection *c
 GcrCollectionModel*   gcr_collection_model_new_full            (GcrCollection *collection,
                                                                 const GcrColumn *columns);
 
-gint                  gcr_collection_model_set_columns         (GcrCollectionModel *self,
+void                  gcr_collection_model_set_columns         (GcrCollectionModel *self,
                                                                 const GcrColumn *columns);
 
 GObject*              gcr_collection_model_object_for_iter     (GcrCollectionModel *self,
@@ -65,12 +66,6 @@ GObject*              gcr_collection_model_object_for_iter     (GcrCollectionMod
 gboolean              gcr_collection_model_iter_for_object     (GcrCollectionModel *self,
                                                                 GObject *object,
                                                                 GtkTreeIter *iter);
-
-gint                  gcr_collection_model_column_for_property (GcrCollectionModel *self,
-                                                                const gchar *property);
-
-gint                  gcr_collection_model_column_for_sortable (GcrCollectionModel *self,
-                                                                const gchar *property);
 
 gint                  gcr_collection_model_column_for_selected (GcrCollectionModel *self);
 

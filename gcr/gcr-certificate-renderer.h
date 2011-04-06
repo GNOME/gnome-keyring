@@ -33,8 +33,6 @@
 
 G_BEGIN_DECLS
 
-#define GCR_TYPE_CERTIFICATE_COLUMNS                (gcr_certificate_renderer_get_columns ())
-
 #define GCR_TYPE_CERTIFICATE_RENDERER               (gcr_certificate_renderer_get_type ())
 #define GCR_CERTIFICATE_RENDERER(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE_RENDERER, GcrCertificateRenderer))
 #define GCR_CERTIFICATE_RENDERER_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_CERTIFICATE_RENDERER, GcrCertificateRendererClass))

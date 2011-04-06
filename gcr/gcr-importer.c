@@ -795,7 +795,7 @@ gcr_importer_set_prompt_behavior (GcrImporter *self, GcrImporterPromptBehavior b
 }
 
 /**
- * gcr_importer_import_async:
+ * gcr_importer_import:
  * @self: The importer
  * @cancellable: An optional cancellation object
  * @error: A location to raise an error on failure

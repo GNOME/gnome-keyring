@@ -66,7 +66,7 @@ gconstpointer       gcr_certificate_get_der_data           (GcrCertificate *self
 
 const GcrColumn*    gcr_certificate_get_columns            (void);
 
-gint                gcr_certificate_compare                (GcrComparable *self,
+gint                gcr_certificate_compare                (GcrComparable *first,
                                                             GcrComparable *other);
 
 gchar*              gcr_certificate_get_issuer_cn          (GcrCertificate *self);

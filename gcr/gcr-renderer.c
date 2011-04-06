@@ -51,9 +51,6 @@
 
 /**
  * GcrRendererIface:
- * @parent: The parent interface
- * @data_changed: The GcrRenderer::data-changed signal
- * @render: A virtual method to render the contents.
  *
  * The interface for #GcrRenderer
  */
@@ -128,7 +125,7 @@ gcr_renderer_get_type (void)
 }
 
 /**
- * gcr_renderer_render:
+ * gcr_renderer_render_view:
  * @self: The renderer
  * @viewer: The viewer to render to.
  *
@@ -142,6 +139,15 @@ gcr_renderer_render_view (GcrRenderer *self, GcrViewer *viewer)
 	GCR_RENDERER_GET_INTERFACE (self)->render_view (self, viewer);
 }
 
+/**
+ * gcr_renderer_popuplate_popup:
+ * @self: The renderer
+ * @viewer: The viewer that is displaying a popup
+ * @menu: The popup menu being displayed
+ *
+ * Called by #GcrViewer when about to display a popup menu for the content
+ * displayed by the renderer. The renderer can add a menu item if desired.
+ */
 void
 gcr_renderer_popuplate_popup (GcrRenderer *self, GcrViewer *viewer,
                               GtkMenu *menu)

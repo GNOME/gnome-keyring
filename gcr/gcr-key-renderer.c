@@ -34,7 +34,6 @@
 
 /**
  * GcrKeyRenderer:
- * @parent: The parent object
  *
  * An implementation of #GcrRenderer which renders keys.
  */

@@ -27,6 +27,30 @@
 
 #include <string.h>
 
+/**
+ * SECTION:gcr-simple-collection
+ * @title: GcrSimpleCollection
+ * @short_description: A simple implementation of GcrCollection
+ *
+ * A simple implementation of #GcrCollection, which you can add and remove
+ * objects from. Use gcr_simple_collection_add() to do this
+ * gcr_simple_collection_remove().
+ */
+
+/**
+ * GcrSimpleCollection:
+ * @parent: The parent object
+ *
+ * A simple implementation of #GcrCollection.
+ */
+
+/**
+ * GcrSimpleCollectionClass:
+ * @parent_class: The parent class
+ *
+ * The class for #GcrSimpleCollection.
+ */
+
 struct _GcrSimpleCollectionPrivate {
 	GHashTable *items;
 };
@@ -106,12 +130,27 @@ gcr_collection_iface (GcrCollectionIface *iface)
  * PUBLIC
  */
 
+/**
+ * gcr_simple_collection_new:
+ *
+ * Create a new #GcrSimpleCollection.
+ *
+ * Returns: A newly allocated collection, which should be freed with
+ *     g_object_unref().
+ */
 GcrCollection*
 gcr_simple_collection_new (void)
 {
 	return g_object_new (GCR_TYPE_SIMPLE_COLLECTION, NULL);
 }
 
+/**
+ * gcr_simple_collection_add:
+ * @self: The collection
+ * @object: The object to add
+ *
+ * Add an object to this collection
+ */
 void
 gcr_simple_collection_add (GcrSimpleCollection *self, GObject *object)
 {
@@ -122,6 +161,13 @@ gcr_simple_collection_add (GcrSimpleCollection *self, GObject *object)
 	gcr_collection_emit_added (GCR_COLLECTION (self), object);
 }
 
+/**
+ * gcr_simple_collection_remove:
+ * @self: The collection
+ * @object: The object to remove from the collection
+ *
+ * Remove an object from the collection.
+ */
 void
 gcr_simple_collection_remove (GcrSimpleCollection *self, GObject *object)
 {
@@ -134,6 +180,15 @@ gcr_simple_collection_remove (GcrSimpleCollection *self, GObject *object)
 	g_object_unref (object);
 }
 
+/**
+ * gcr_simple_collection_contains:
+ * @self: The collection
+ * @object: The object to check
+ *
+ * Check if the collection contains a certain object.
+ *
+ * Returns: %TRUE if the collection contains the object.
+ */
 gboolean
 gcr_simple_collection_contains (GcrSimpleCollection *self, GObject *object)
 {

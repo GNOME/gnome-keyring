@@ -72,6 +72,15 @@
  * The interface that implementors of #GcrCertificate must implement.
  */
 
+/**
+ * GCR_CERTIFICATE_COLUMNS:
+ *
+ * The columns that are valid for a certificate. This is to be used with
+ * the #GcrSelector or #GcrCollectionModel.
+ *
+ * This is an array of #GcrColumn, owned by the gcr library.
+ */
+
 /* 
  * The DER data in this structure is owned by the derived class. 
  * It is only valid for the duration of the current call stack
@@ -391,6 +400,20 @@ gcr_certificate_get_columns (void)
 	return columns;
 }
 
+/**
+ * gcr_certificate_compare:
+ * @first: The certificate to compare
+ * @other: The certificate to compare against
+ *
+ * Compare one certificate against another. If the certificates are equal
+ * then zero is returned. If one certificate is %NULL or not a certificate,
+ * then a non-zero value is returned.
+ *
+ * The return value is useful in a stable sort, but has no user logical
+ * meaning.
+ *
+ * Returns: zero if the certificates match, non-zero otherwise.
+ */
 gint
 gcr_certificate_compare (GcrComparable *first, GcrComparable *other)
 {
@@ -898,6 +921,15 @@ gcr_certificate_get_serial_number_hex (GcrCertificate *self)
 	return hex;
 }
 
+/**
+ * gcr_certificate_get_icon:
+ * @self: The certificate
+ *
+ * Get the icon for a certificate.
+ *
+ * Returns: The icon for this certificate, which should be released with
+ *     g_object_unref().
+ */
 GIcon*
 gcr_certificate_get_icon (GcrCertificate *self)
 {
@@ -943,7 +975,7 @@ gcr_certificate_mixin_comparable_init (GcrComparableIface *iface)
  * Initialize the certificate mixin for the class. This mixin implements the
  * various required properties for the certificate.
  *
- * Call this function near the end of your derived class_init() function. The
+ * Call this function near the end of your derived class_init function. The
  * derived class must implement the #GcrCertificate interface.
  */
 void

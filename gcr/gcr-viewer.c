@@ -55,6 +55,7 @@
  *
  * The interface for #GcrViewer
  */
+
 static void
 gcr_viewer_base_init (gpointer gobject_iface)
 {

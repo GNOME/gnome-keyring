@@ -28,7 +28,18 @@
  * @title: GcrCollection
  * @short_description: A collection of objects.
  *
- * Xxxxx
+ * A #GcrCollection is used to group a set of objects. This is an abstract
+ * interface which can be used to determine which objects show up in a selector
+ * or other user interface element.
+ *
+ * Use gcr_simple_collection_new() to create a concrete implementation of this
+ * interface which you can add objects to.
+ */
+
+/**
+ * GcrCollection:
+ *
+ * A #GcrCollection is used to group a set of objects.
  */
 
 enum {
@@ -97,6 +108,14 @@ gcr_collection_get_type (void)
  */
 
 
+/**
+ * gcr_collection_get_length:
+ * @self: The collection
+ *
+ * Get the number of objects in this collection.
+ *
+ * Returns: The number of objects.
+ */
 guint
 gcr_collection_get_length (GcrCollection *self)
 {
@@ -105,6 +124,15 @@ gcr_collection_get_length (GcrCollection *self)
 	return GCR_COLLECTION_GET_INTERFACE (self)->get_length (self);
 }
 
+/**
+ * gcr_collection_get_objects:
+ * @self: The collection
+ *
+ * Get a list of the objects in this collection.
+ *
+ * Returns: A list of the objects in this collection, which should be freed
+ *     with g_list_free().
+ */
 GList*
 gcr_collection_get_objects (GcrCollection *self)
 {
@@ -113,6 +141,14 @@ gcr_collection_get_objects (GcrCollection *self)
 	return GCR_COLLECTION_GET_INTERFACE (self)->get_objects (self);
 }
 
+/**
+ * gcr_collection_emit_added:
+ * @self: The collection
+ * @object: The object that was added
+ *
+ * Emit the GcrCollection::added signal for the given object. This function
+ * is used by implementors of this interface.
+ */
 void
 gcr_collection_emit_added (GcrCollection *self, GObject *object)
 {
@@ -120,6 +156,14 @@ gcr_collection_emit_added (GcrCollection *self, GObject *object)
 	g_signal_emit (self, signals[ADDED], 0, object);
 }
 
+/**
+ * gcr_collection_emit_removed:
+ * @self: The collection
+ * @object: The object that was removed
+ *
+ * Emit the GcrCollection::removed signal for the given object. This function
+ * is used by implementors of this interface.
+ */
 void
 gcr_collection_emit_removed (GcrCollection *self, GObject *object)
 {

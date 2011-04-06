@@ -28,6 +28,45 @@
 #include <string.h>
 #include <unistd.h>
 
+/**
+ * SECTION:gcr-collection-model
+ * @title: GcrCollectionModel
+ * @short_description: A GtkTreeModel that represents a collection
+ *
+ * This is an implementation of #GtkTreeModel which represents the objects in
+ * the a #GcrCollection. As objects are added or removed from the collection,
+ * rows are added and removed from this model.
+ *
+ * The row values come from the properties of the objects in the collection. Use
+ * gcr_collection_model_new() to create a new collection model. To have more
+ * control over the values use a set of #GcrColumn structures to define the
+ * columns. This can be done with gcr_collection_model_new_full() or
+ * gcr_collection_model_set_columns().
+ *
+ * Each row can have a selected state, which is represented by a boolean column.
+ * The selected state can be toggled with gcr_collection_model_toggle_selected()
+ * or set with gcr_collection_model_set_selected() and retrieved with
+ * gcr_collection_model_get_selected().
+ *
+ * To determine which object a row represents and vice versa, use the
+ * gcr_collection_model_iter_for_object() or gcr_collection_model_object_for_iter()
+ * functions.
+ */
+
+/**
+ * GcrCollectionModel:
+ * @parent: The parent object
+ *
+ * A #GtkTreeModel which contains a row for each object in a #GcrCollection.
+ */
+
+/**
+ * GcrCollectionModelClass:
+ * @parent_class: The parent class
+ *
+ * The class for #GcrCollectionModel.
+ */
+
 #define COLLECTION_MODEL_STAMP 0xAABBCCDD
 
 enum {
@@ -569,6 +608,17 @@ gcr_collection_model_class_init (GcrCollectionModelClass *klass)
  * PUBLIC
  */
 
+/**
+ * gcr_collection_model_new:
+ * @collection: The collection to represent
+ * @...: The column names and types.
+ *
+ * Create a new #GcrCollectionModel. The variable argument list should contain
+ * pairs of property names, and #GType values. The variable argument list should
+ * be terminated with %NULL.
+ *
+ * Returns: A newly allocated model, which should be released with g_object_unref().
+ */
 GcrCollectionModel*
 gcr_collection_model_new (GcrCollection *collection, ...)
 {
@@ -598,6 +648,15 @@ gcr_collection_model_new (GcrCollection *collection, ...)
 	return self;
 }
 
+/**
+ * gcr_collection_model_new_full:
+ * @collection: The collection to represent
+ * @columns: The columns the model should contain
+ *
+ * Create a new #GcrCollectionModel.
+ *
+ * Returns: A newly allocated model, which should be released with g_object_unref().
+ */
 GcrCollectionModel*
 gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *columns)
 {
@@ -606,15 +665,27 @@ gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *colum
 	return self;
 }
 
-gint
+/**
+ * gcr_collection_model_set_columns:
+ * @self: The model
+ * @columns: The columns the model should contain
+ *
+ * Set the columns that the model should contain. @columns is an array of
+ * #GcrColumn structures, with the last one containing %NULL for all values.
+ *
+ * This function can only be called once, and only if the model was not created
+ * without a set of columns. This function cannot be called after the model
+ * has been added to a view.
+ */
+void
 gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *columns)
 {
 	const GcrColumn *col;
 	guint n_columns;
 
-	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), -1);
-	g_return_val_if_fail (columns, -1);
-	g_return_val_if_fail (self->pv->n_columns == 0, -1);
+	g_return_if_fail (GCR_IS_COLLECTION_MODEL (self));
+	g_return_if_fail (columns);
+	g_return_if_fail (self->pv->n_columns == 0);
 
 	/* Count the number of columns, extra column for selected */
 	for (col = columns, n_columns = 1; col->property_name; ++col)
@@ -623,10 +694,17 @@ gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *col
 	/* We expect the columns to stay around */
 	self->pv->columns = columns;
 	self->pv->n_columns = n_columns;
-
-	return n_columns + 1;
 }
 
+/**
+ * gcr_collection_model_object_for_iter:
+ * @self: The model
+ * @iter: The row
+ *
+ * Get the object that is represented by the given row in the model.
+ *
+ * Returns: The object, owned by the model.
+ */
 GObject*
 gcr_collection_model_object_for_iter (GcrCollectionModel *self, const GtkTreeIter *iter)
 {
@@ -638,6 +716,17 @@ gcr_collection_model_object_for_iter (GcrCollectionModel *self, const GtkTreeIte
 	return G_OBJECT (iter->user_data);
 }
 
+/**
+ * gcr_collection_model_iter_for_object:
+ * @self: The model
+ * @object: The object
+ * @iter: The row for the object
+ *
+ * Set @iter to the row for the given object. If the object is not in this
+ * model, then %FALSE will be returned.
+ *
+ * Returns: %TRUE if the object was present.
+ */
 gboolean
 gcr_collection_model_iter_for_object (GcrCollectionModel *self, GObject *object,
                                       GtkTreeIter *iter)
@@ -655,6 +744,15 @@ gcr_collection_model_iter_for_object (GcrCollectionModel *self, GObject *object,
 	return iter_for_index (self, index, iter);
 }
 
+/**
+ * gcr_collection_model_column_for_selected:
+ * @self: The model
+ *
+ * Get the column identifier for the column that contains the values
+ * of the selected state.
+ *
+ * Returns: The column identifier.
+ */
 gint
 gcr_collection_model_column_for_selected (GcrCollectionModel *self)
 {
@@ -663,6 +761,13 @@ gcr_collection_model_column_for_selected (GcrCollectionModel *self)
 	return self->pv->n_columns - 1;
 }
 
+/**
+ * gcr_collection_model_toggle_selected:
+ * @self: The model
+ * @iter: The row
+ *
+ * Toggle the selected state of a given row.
+ */
 void
 gcr_collection_model_toggle_selected (GcrCollectionModel *self, GtkTreeIter *iter)
 {
@@ -682,9 +787,18 @@ gcr_collection_model_toggle_selected (GcrCollectionModel *self, GtkTreeIter *ite
 		g_hash_table_insert (self->pv->selected, object, UNUSED_VALUE);
 }
 
+/**
+ * gcr_collection_model_set_selected:
+ * @self: The model
+ * @iter: The row
+ * @selected: Whether the row should be selected or not.
+ *
+ * Set whether a given row is toggled selected or not.
+ */
 void
 gcr_collection_model_set_selected (GcrCollectionModel *self, GtkTreeIter *iter, gboolean selected)
 {
+	GtkTreePath *path;
 	GObject *object;
 
 	g_return_if_fail (GCR_IS_COLLECTION_MODEL (self));
@@ -699,8 +813,23 @@ gcr_collection_model_set_selected (GcrCollectionModel *self, GtkTreeIter *iter, 
 		g_hash_table_insert (self->pv->selected, object, UNUSED_VALUE);
 	else
 		g_hash_table_remove (self->pv->selected, object);
+
+	/* Tell the view that this row changed */
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (self), iter);
+	g_return_if_fail (path);
+	gtk_tree_model_row_changed (GTK_TREE_MODEL (self), path, iter);
+	gtk_tree_path_free (path);
 }
 
+/**
+ * gcr_collection_model_get_selected:
+ * @self: The model
+ * @iter: The row
+ *
+ * Check whether a given row has been toggled as selected.
+ *
+ * Returns: Whether the row has been selected.
+ */
 gboolean
 gcr_collection_model_get_selected (GcrCollectionModel *self, GtkTreeIter *iter)
 {
