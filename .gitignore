@@ -119,6 +119,7 @@ run-tests
 /gcr/tests/test-certificate
 /gcr/tests/test-certificate-chain
 /gcr/tests/test-colons
+/gcr/tests/test-fingerprint
 /gcr/tests/test-gnupg-collection
 /gcr/tests/test-gnupg-key
 /gcr/tests/test-parser
