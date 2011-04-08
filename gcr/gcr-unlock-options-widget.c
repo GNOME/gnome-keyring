@@ -63,14 +63,12 @@
 
 /**
  * GcrUnlockOptionsWidget:
- * @parent: The parent object
  *
  * An unlock options widget.
  */
 
 /**
  * GcrUnlockOptionsWidgetClass:
- * @parent_class: The parent class
  *
  * Class for #GcrUnlockOptionsWidget.
  */
@@ -79,6 +77,17 @@ enum {
 	PROP_0,
 	PROP_CHOICE,
 	PROP_TTL
+};
+
+struct _GcrUnlockOptionsWidget {
+	GtkAlignment parent;
+
+	/*< private >*/
+	GcrUnlockOptionsWidgetPrivate *pv;
+};
+
+struct _GcrUnlockOptionsWidgetClass {
+	GtkAlignmentClass parent_class;
 };
 
 struct _GcrUnlockOptionsWidgetPrivate {

@@ -47,7 +47,6 @@
 
 /**
  * GcrKeyWidget:
- * @parent: The parent object
  *
  * A widget that displays a key.
  */
@@ -60,6 +59,18 @@
 enum {
 	PROP_0,
 	PROP_ATTRIBUTES
+};
+
+struct _GcrKeyWidget {
+	GtkAlignment parent;
+
+	/*< private >*/
+	GcrKeyWidgetPrivate *pv;
+};
+
+struct _GcrKeyWidgetClass {
+	/*< private >*/
+	GtkAlignmentClass parent_class;
 };
 
 struct _GcrKeyWidgetPrivate {

@@ -48,7 +48,6 @@
 
 /**
  * GcrCertificateWidget:
- * @parent: The parent object
  *
  * A widget that displays a certificate.
  */
@@ -63,6 +62,18 @@ enum {
 	PROP_0,
 	PROP_CERTIFICATE,
 	PROP_ATTRIBUTES
+};
+
+struct _GcrCertificateWidget {
+	GtkAlignment parent;
+
+	/*< private >*/
+	GcrCertificateWidgetPrivate *pv;
+};
+
+struct _GcrCertificateWidgetClass {
+	/*< private >*/
+	GtkAlignmentClass parent_class;
 };
 
 struct _GcrCertificateWidgetPrivate {
