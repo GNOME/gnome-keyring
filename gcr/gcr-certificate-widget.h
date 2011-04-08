@@ -45,21 +45,24 @@ typedef struct _GcrCertificateWidgetPrivate GcrCertificateWidgetPrivate;
 
 struct _GcrCertificateWidget {
 	GtkAlignment parent;
+
+	/*< private >*/
 	GcrCertificateWidgetPrivate *pv;
 };
 
 struct _GcrCertificateWidgetClass {
+	/*< private >*/
 	GtkAlignmentClass parent_class;
 };
 
 GType                   gcr_certificate_widget_get_type               (void);
 
-GcrCertificateWidget*   gcr_certificate_widget_new                    (GcrCertificate *cert);
+GcrCertificateWidget*   gcr_certificate_widget_new                    (GcrCertificate *certificate);
 
 GcrCertificate*         gcr_certificate_widget_get_certificate        (GcrCertificateWidget *self);
 
 void                    gcr_certificate_widget_set_certificate        (GcrCertificateWidget *self,
-                                                                       GcrCertificate *cert);
+                                                                       GcrCertificate *certificate);
 
 GckAttributes*          gcr_certificate_widget_get_attributes         (GcrCertificateWidget *self);
 

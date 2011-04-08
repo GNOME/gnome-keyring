@@ -41,6 +41,19 @@
  * functions.
  */
 
+/**
+ * GcrSimpleCertificate:
+ *
+ * A #GcrCertificate which represents a certificate already in memory.
+ */
+
+/**
+ * GcrSimpleCertificateClass:
+ * @parent_class: The parent class
+ *
+ * The class for #GcrSimpleCertificate.
+ */
+
 struct _GcrSimpleCertificatePrivate {
 	const guchar *data;
 	gsize n_data;

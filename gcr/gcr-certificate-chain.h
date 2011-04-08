@@ -78,6 +78,8 @@ typedef struct _GcrCertificateChainPrivate GcrCertificateChainPrivate;
 
 struct _GcrCertificateChain {
 	GObject parent;
+
+	/*< private >*/
 	GcrCertificateChainPrivate *pv;
 };
 

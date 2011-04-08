@@ -28,7 +28,7 @@ SCANGOBJ_OPTIONS=
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"
-SCAN_OPTIONS=
+SCAN_OPTIONS=--deprecated-guards="GCR_DISABLE_DEPRECATED"
 
 # Extra options to supply to gtkdoc-mkdb.
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -57,7 +57,18 @@ EXTRA_HFILES=
 
 # Header files to ignore when scanning. Use base file name, no paths
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES= gcr-xxx.h
+IGNORE_HFILES= \
+	gcr-certificate-exporter.h \
+	gcr-certificate-basics-widget.h \
+	gcr-certificate-details-widget.h \
+	gcr-display-scrolled.h \
+	gcr-display-view.h \
+	gcr-icons.h \
+	gcr-import-dialog.h \
+	gcr-internal.h \
+	gcr-marshal.h \
+	gcr-xxx.h \
+	gcr-zzz.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png

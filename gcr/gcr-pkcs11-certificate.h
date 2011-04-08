@@ -48,10 +48,13 @@ typedef struct _GcrPkcs11CertificatePrivate GcrPkcs11CertificatePrivate;
 
 struct _GcrPkcs11Certificate {
 	GckObject parent;
+
+	/*< private >*/
 	GcrPkcs11CertificatePrivate *pv;
 };
 
 struct _GcrPkcs11CertificateClass {
+	/*< private >*/
 	GckObjectClass parent_class;
 };
 

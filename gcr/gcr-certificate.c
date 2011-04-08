@@ -60,6 +60,18 @@
  * interface.
  */
 
+/**
+ * GcrCertificate:
+ *
+ * An object which holds a certificate.
+ */
+
+/**
+ * GcrCertificateIface:
+ *
+ * The interface that implementors of #GcrCertificate must implement.
+ */
+
 /* 
  * The DER data in this structure is owned by the derived class. 
  * It is only valid for the duration of the current call stack

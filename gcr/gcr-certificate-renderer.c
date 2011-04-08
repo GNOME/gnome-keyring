@@ -38,6 +38,20 @@
 #include <gdk/gdk.h>
 #include <glib/gi18n-lib.h>
 
+/**
+ * GcrCertificateRenderer:
+ * @parent: The parent object
+ *
+ * An implementation of #GcrRenderer which renders certificates.
+ */
+
+/**
+ * GcrCertificateRendererClass:
+ * @parent_class: The parent class.
+ *
+ * The class for #GcrCertificateRenderer.
+ */
+
 enum {
 	PROP_0,
 	PROP_CERTIFICATE,
@@ -333,6 +347,11 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	gobject_class->set_property = gcr_certificate_renderer_set_property;
 	gobject_class->get_property = gcr_certificate_renderer_get_property;
 
+	/**
+	 * GcrCertificateRenderer:certificate:
+	 *
+	 * The certificate to display. May be %NULL.
+	 */
 	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
 	           g_param_spec_object ("certificate", "Certificate", "Certificate to display.",
 	                                GCR_TYPE_CERTIFICATE, G_PARAM_READWRITE));
@@ -583,6 +602,15 @@ gcr_renderer_certificate_iface_init (GcrCertificateIface *iface)
  * PUBLIC
  */
 
+/**
+ * gcr_certificate_renderer_new:
+ * @certificate: The certificate to display
+ *
+ * Create a new certificate renderer to display the certificate.
+ *
+ * Returns: A newly allocated #GcrCertificateRenderer, which should be released
+ *     with g_object_unref().
+ */
 GcrCertificateRenderer*
 gcr_certificate_renderer_new (GcrCertificate *certificate)
 {
@@ -595,6 +623,16 @@ gcr_certificate_renderer_new_for_attributes (const gchar *label, struct _GckAttr
 	return g_object_new (GCR_TYPE_CERTIFICATE_RENDERER, "label", label, "attributes", attrs, NULL);
 }
 
+/**
+ * gcr_certificate_renderer_get_certificate:
+ * @self: The renderer
+ *
+ * Get the certificate displayed in the renderer. If no certificate was
+ * explicitly set, then the renderer will return itself since it acts as
+ * a valid certificate.
+ *
+ * Returns: The certificate, owned by the renderer.
+ */
 GcrCertificate*
 gcr_certificate_renderer_get_certificate (GcrCertificateRenderer *self)
 {
@@ -604,14 +642,21 @@ gcr_certificate_renderer_get_certificate (GcrCertificateRenderer *self)
 	return GCR_CERTIFICATE (self);
 }
 
+/**
+ * gcr_certificate_renderer_set_certificate:
+ * @self: The renderer
+ * @certificate: The certificate to display
+ *
+ * Set a certificate to display in the renderer.
+ */
 void
-gcr_certificate_renderer_set_certificate (GcrCertificateRenderer *self, GcrCertificate *cert)
+gcr_certificate_renderer_set_certificate (GcrCertificateRenderer *self, GcrCertificate *certificate)
 {
 	g_return_if_fail (GCR_IS_CERTIFICATE_RENDERER (self));
 
 	if (self->pv->opt_cert)
 		g_object_unref (self->pv->opt_cert);
-	self->pv->opt_cert = cert;
+	self->pv->opt_cert = certificate;
 	if (self->pv->opt_cert)
 		g_object_ref (self->pv->opt_cert);
 
@@ -624,6 +669,14 @@ gcr_certificate_renderer_set_certificate (GcrCertificateRenderer *self, GcrCerti
 	g_object_notify (G_OBJECT (self), "certificate");
 }
 
+/**
+ * gcr_certificate_renderer_get_attributes:
+ * @self: The renderer
+ *
+ * Get the PKCS\#11 attributes, if any, set for this renderer to display.
+ *
+ * Returns: The attributes, owned by the renderer.
+ */
 GckAttributes*
 gcr_certificate_renderer_get_attributes (GcrCertificateRenderer *self)
 {
@@ -631,6 +684,14 @@ gcr_certificate_renderer_get_attributes (GcrCertificateRenderer *self)
 	return self->pv->opt_attrs;
 }
 
+/**
+ * gcr_certificate_renderer_set_attributes:
+ * @self: The renderer
+ * @attrs: Attributes to set
+ *
+ * Set the PKCS\#11 attributes for this renderer to display. One of the attributes
+ * should be a CKA_VALUE type attribute containing a DER encoded certificate.
+ */
 void
 gcr_certificate_renderer_set_attributes (GcrCertificateRenderer *self, GckAttributes *attrs)
 {

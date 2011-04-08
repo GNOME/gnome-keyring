@@ -49,6 +49,18 @@
  * are available via gcr_pkcs11_certificate_get_attributes().
  */
 
+/**
+ * GcrPkcs11Certificate:
+ *
+ * A certificate loaded from PKCS\#11 storage.
+ */
+
+/**
+ * GcrPkcs11CertificateClass:
+ *
+ * The class for #GcrPkcs11Certificate.
+ */
+
 enum {
 	PROP_0,
 	PROP_ATTRIBUTES

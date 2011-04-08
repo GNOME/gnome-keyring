@@ -43,7 +43,7 @@ EXTRA_DIST = \
 # ------------------------------------------------------------------
 
 noinst_PROGRAMS = \
-	frob-selector \
 	frob-certificate \
 	frob-key \
+	frob-selector \
 	frob-unlock-options

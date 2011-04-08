@@ -50,6 +50,7 @@ struct _GcrRendererIface {
 
 	void (*populate_popup) (GcrRenderer *self, GcrViewer *viewer, GtkMenu *menu);
 
+	/*< private >*/
 	gpointer dummy1;
 
 	gpointer dummy2;

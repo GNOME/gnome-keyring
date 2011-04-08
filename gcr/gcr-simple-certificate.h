@@ -45,6 +45,8 @@ typedef struct _GcrSimpleCertificatePrivate GcrSimpleCertificatePrivate;
 
 struct _GcrSimpleCertificate {
 	GObject parent;
+
+	/*< private >*/
 	GcrSimpleCertificatePrivate *pv;
 };
 

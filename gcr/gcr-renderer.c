@@ -27,6 +27,37 @@
 
 #include <gtk/gtk.h>
 
+/**
+ * SECTION:gcr-renderer
+ * @title: GcrRenderer
+ * @short_description: An interface implemented by renderers.
+ *
+ * A #GcrRenderer is an interface that's implemented by renderers which wish
+ * to render data to a #GcrViewer.
+ *
+ * The interaction between #GcrRenderer and #GcrViewer is not stable yet, and
+ * so new renderers cannot be implemented outside the Gcr library at this time.
+ *
+ * To lookup a renderer for a given set of attributes, use the gcr_renderer_create()
+ * function. This will create and initialize a renderer that's capable of viewing
+ * the data in those attributes.
+ */
+
+/**
+ * GcrRenderer:
+ *
+ * A renderer.
+ */
+
+/**
+ * GcrRendererIface:
+ * @parent: The parent interface
+ * @data_changed: The GcrRenderer::data-changed signal
+ * @render: A virtual method to render the contents.
+ *
+ * The interface for #GcrRenderer
+ */
+
 enum {
 	DATA_CHANGED,
 	LAST_SIGNAL
@@ -48,14 +79,30 @@ gcr_renderer_base_init (gpointer gobject_iface)
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 
+		/**
+		 * GcrRenderer:label:
+		 *
+		 * The label to display.
+		 */
 		g_object_interface_install_property (gobject_iface,
 		         g_param_spec_string ("label", "Label", "The label for the renderer",
 		                              "", G_PARAM_READWRITE));
 
+		/**
+		 * GcrRenderer:attributes:
+		 *
+		 * The attributes to display.
+		 */
 		g_object_interface_install_property (gobject_iface,
 		         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the renderer",
 		                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
+		/**
+		 * GcrRenderer::data-changed:
+		 *
+		 * A signal that is emitted by the renderer when it's data
+		 * changed and should be rerendered.
+		 */
 		signals[DATA_CHANGED] = g_signal_new ("data-changed", GCR_TYPE_RENDERER, G_SIGNAL_RUN_LAST,
 		                                      G_STRUCT_OFFSET (GcrRendererIface, data_changed),
 		                                      NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
@@ -80,6 +127,13 @@ gcr_renderer_get_type (void)
 	return type;
 }
 
+/**
+ * gcr_renderer_render:
+ * @self: The renderer
+ * @viewer: The viewer to render to.
+ *
+ * Render the contents of the renderer to the given viewer.
+ */
 void
 gcr_renderer_render_view (GcrRenderer *self, GcrViewer *viewer)
 {
@@ -97,6 +151,13 @@ gcr_renderer_popuplate_popup (GcrRenderer *self, GcrViewer *viewer,
 		GCR_RENDERER_GET_INTERFACE (self)->populate_popup (self, viewer, menu);
 }
 
+/**
+ * gcr_renderer_emit_data_changed:
+ * @self: The renderer
+ *
+ * Emit the GcrRenderer::data-changed signal on the renderer. This is used by
+ * renderer implementations.
+ */
 void
 gcr_renderer_emit_data_changed (GcrRenderer *self)
 {
@@ -123,6 +184,17 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 	return (na == nb) ? 0 : -1;
 }
 
+/**
+ * gcr_renderer_create:
+ * @label: The label for the renderer
+ * @attrs: The attributes to render
+ *
+ * Create and initialize a renderer for the given attributes and label. These
+ * renderers should have been preregistered via gcr_renderer_register().
+ *
+ * Returns: A new renderer, or %NULL if no renderer matched the attributes.
+ *     The render should be released with g_object-unref().
+ */
 GcrRenderer*
 gcr_renderer_create (const gchar *label, GckAttributes *attrs)
 {
@@ -163,6 +235,14 @@ gcr_renderer_create (const gchar *label, GckAttributes *attrs)
 	return NULL;
 }
 
+/**
+ * gcr_renderer_register:
+ * @renderer_type: The renderer class type
+ * @attrs: The attributes to match
+ *
+ * Register a renderer to be created when matching attributes are passed to
+ * gcr_renderer_create().
+ */
 void
 gcr_renderer_register (GType renderer_type, GckAttributes *attrs)
 {

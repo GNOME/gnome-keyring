@@ -30,6 +30,35 @@
 #include <gdk/gdk.h>
 #include <glib/gi18n-lib.h>
 
+/**
+ * SECTION:gcr-certificate-widget
+ * @title: GcrCertificateWidget
+ * @short_description: Certificate widget and renderer
+ *
+ * A #GcrCertificateWidget can be used to display a certificate. The widget
+ * is normally in a collapsed state showing only details, but can be expanded
+ * by the user.
+ *
+ * Use gcr_certificate_widget_new() to create a new certificate widget. Only
+ * one certificate can be displayed.  A #GcrCertificateWidget contains a
+ * #GcrViewer internally and #GcrCertificateRenderer is used to render the
+ * certificate to the viewer. To show more than one certificate in a view,
+ * create the viewer and add renderers to it.
+ */
+
+/**
+ * GcrCertificateWidget:
+ * @parent: The parent object
+ *
+ * A widget that displays a certificate.
+ */
+
+/**
+ * GcrCertificateWidgetClass:
+ *
+ * The class for #GcrCertificateWidget
+ */
+
 enum {
 	PROP_0,
 	PROP_CERTIFICATE,
@@ -158,12 +187,29 @@ gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
  * PUBLIC
  */
 
+/**
+ * gcr_certificate_widget_new:
+ * @certificate: Certificate to display, or %NULL
+ *
+ * Create a new certificate widget which displays a given certificate.
+ *
+ * Returns: A newly allocated #GcrCertificateWidget, which should be freed
+ *     with g_object_unref().
+ */
 GcrCertificateWidget*
 gcr_certificate_widget_new (GcrCertificate *certificate)
 {
 	return g_object_new (GCR_TYPE_CERTIFICATE_WIDGET, "certificate", certificate, NULL);
 }
 
+/**
+ * gcr_certificate_widget_get_certificate:
+ * @self: The certificate widget
+ *
+ * Get the certificate displayed in the widget.
+ *
+ * Returns: The certificate.
+ */
 GcrCertificate*
 gcr_certificate_widget_get_certificate (GcrCertificateWidget *self)
 {
@@ -171,13 +217,29 @@ gcr_certificate_widget_get_certificate (GcrCertificateWidget *self)
 	return gcr_certificate_renderer_get_certificate (self->pv->renderer);
 }
 
+/**
+ * gcr_certificate_widget_set_certificate:
+ * @self: The certificate widget
+ * @certificate: The certificate to display
+ *
+ * Set the certificate displayed in the widget
+ */
 void
-gcr_certificate_widget_set_certificate (GcrCertificateWidget *self, GcrCertificate *cert)
+gcr_certificate_widget_set_certificate (GcrCertificateWidget *self, GcrCertificate *certificate)
 {
 	g_return_if_fail (GCR_IS_CERTIFICATE_WIDGET (self));
-	gcr_certificate_renderer_set_certificate (self->pv->renderer, cert);
+	gcr_certificate_renderer_set_certificate (self->pv->renderer, certificate);
 }
 
+/**
+ * gcr_certificate_widget_get_attributes:
+ * @self: The certificate widget
+ *
+ * Get the attributes displayed in the widget. The attributes should contain
+ * a certificate.
+ *
+ * Returns: The attributes, owned by the widget.
+ */
 GckAttributes*
 gcr_certificate_widget_get_attributes (GcrCertificateWidget *self)
 {
@@ -185,6 +247,14 @@ gcr_certificate_widget_get_attributes (GcrCertificateWidget *self)
 	return gcr_certificate_renderer_get_attributes (self->pv->renderer);
 }
 
+/**
+ * gcr_certificate_widget_set_attributes:
+ * @self: The certificate widget
+ * @attrs: The attributes to display
+ *
+ * Set the attributes displayed in the widget. The attributes should contain
+ * a certificate.
+ */
 void
 gcr_certificate_widget_set_attributes (GcrCertificateWidget *self, GckAttributes* attrs)
 {

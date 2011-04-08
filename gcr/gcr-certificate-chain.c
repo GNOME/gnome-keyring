@@ -67,6 +67,26 @@
  * merely the first step towards verifying trust in a certificate.
  */
 
+
+/**
+ * GCR_TYPE_CERTIFICATE_CHAIN_STATUS:
+ *
+ * The flags #GType for #GcrCertificateChainFlags.
+ */
+
+/**
+ * GcrCertificateChain:
+ *
+ * A chain of certificates.
+ */
+
+/**
+ * GcrCertificateChainClass:
+ * @parent_class: The parent class
+ *
+ * The class for #GcrCertificateChain.
+ */
+
 enum {
 	PROP_0,
 	PROP_STATUS,
@@ -428,6 +448,12 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
  * built.
  */
 
+/**
+ * GCR_TYPE_CERTIFICATE_CHAIN_STATUS:
+ *
+ * The enum #GType for #GcrCertificateChainStatus.
+ */
+
 GType
 gcr_certificate_chain_status_get_type (void)
 {
@@ -459,6 +485,12 @@ gcr_certificate_chain_status_get_type (void)
  * authorities are looked up in PKCS\#11.
  *
  * Flags to be used with the gcr_certificate_chain_build() operation.
+ */
+
+/**
+ * GCR_TYPE_CERTIFICATE_CHAIN_FLAGS:
+ *
+ * The flags #GType for #GcrCertificateChainFlags.
  */
 
 GType

@@ -23,6 +23,58 @@
 
 #include <glib/gi18n-lib.h>
 
+/**
+ * SECTION:gcr-unlock-options-widget
+ * @title: GcrUnlockOptionsWidget
+ * @short_description: A widget for unlock options
+ *
+ * This widget displays a set of unlock options for the user to select. The user
+ * can choose between keeping caching the unlock indefinitely, or for a given
+ * amount of time.
+ *
+ * Each option has a different name, for example #GCR_UNLOCK_OPTION_ALWAYS. These
+ * names are used together with the various functions like
+ * gcr_unlock_options_widget_get_choice().
+ */
+
+/**
+ * GCR_UNLOCK_OPTION_ALWAYS:
+ *
+ * Option name for caching unlock indefinitely.
+ */
+
+/**
+ * GCR_UNLOCK_OPTION_IDLE:
+ *
+ * Option name for caching unlock for a certain amount of idle time.
+ */
+
+/**
+ * GCR_UNLOCK_OPTION_SESSION:
+ *
+ * Option name for caching unlock for the current session.
+ */
+
+/**
+ * GCR_UNLOCK_OPTION_TIMEOUT:
+ *
+ * Option name for caching unlock for a certain amount of time.
+ */
+
+/**
+ * GcrUnlockOptionsWidget:
+ * @parent: The parent object
+ *
+ * An unlock options widget.
+ */
+
+/**
+ * GcrUnlockOptionsWidgetClass:
+ * @parent_class: The parent class
+ *
+ * Class for #GcrUnlockOptionsWidget.
+ */
+
 enum {
 	PROP_0,
 	PROP_CHOICE,
@@ -249,12 +301,27 @@ gcr_unlock_options_widget_class_init (GcrUnlockOptionsWidgetClass *klass)
  * PUBLIC
  */
 
+/**
+ * gcr_unlock_options_widget_new:
+ *
+ * Create a new #GcrUnlockOptionsWidget.
+ *
+ * Returns: A new #GcrUnlockOptionsWidget.
+ */
 GtkWidget*
 gcr_unlock_options_widget_new (void)
 {
 	return g_object_new (GCR_TYPE_UNLOCK_OPTIONS_WIDGET, NULL);
 }
 
+/**
+ * gcr_unlock_options_widget_get_choice:
+ * @self: The unlock options widget
+ *
+ * Get the currently selected option, like %GCR_UNLOCK_OPTION_ALWAYS.
+ *
+ * Returns: The currently selected option name.
+ */
 const gchar*
 gcr_unlock_options_widget_get_choice (GcrUnlockOptionsWidget *self)
 {
@@ -262,6 +329,14 @@ gcr_unlock_options_widget_get_choice (GcrUnlockOptionsWidget *self)
 	return self->pv->choice;
 }
 
+/**
+ * gcr_unlock_options_widget_set_choice:
+ * @self: The unlock options widget
+ * @option: The option name
+ *
+ * Set the currently selected option. Use an option name like
+ * %GCR_UNLOCK_OPTION_ALWAYS.
+ */
 void
 gcr_unlock_options_widget_set_choice (GcrUnlockOptionsWidget *self, const gchar *option)
 {
@@ -274,6 +349,16 @@ gcr_unlock_options_widget_set_choice (GcrUnlockOptionsWidget *self, const gchar 
 	gtk_toggle_button_set_active (button, TRUE);
 }
 
+/**
+ * gcr_unlock_options_widget_get_ttl:
+ * @self: The unlock options widget
+ *
+ * Get the timeout setting set for unlock options that have a timeout.
+ * This will also return a valid value if the currently selected option
+ * does not have a timeout.
+ *
+ * Returns: The unlock timeout in seconds.
+ */
 guint
 gcr_unlock_options_widget_get_ttl (GcrUnlockOptionsWidget *self)
 {
@@ -287,6 +372,14 @@ gcr_unlock_options_widget_get_ttl (GcrUnlockOptionsWidget *self)
 	return amount * 60;
 }
 
+/**
+ * gcr_unlock_options_widget_set_ttl:
+ * @self: The unlock options widget
+ * @ttl: The timeout to set, in seconds
+ *
+ * Set the current setting for the timeout. This can be set even when the
+ * currently selected option does not have a timeout.
+ */
 void
 gcr_unlock_options_widget_set_ttl (GcrUnlockOptionsWidget *self, guint ttl)
 {
@@ -303,6 +396,16 @@ gcr_unlock_options_widget_set_ttl (GcrUnlockOptionsWidget *self, guint ttl)
 	gtk_spin_button_set_value (spin, amount);
 }
 
+/**
+ * gcr_unlock_options_widget_get_label:
+ * @self: The unlock options widget
+ * @option: The option name
+ *
+ * Get the label for one of the options. Use an option name like
+ * %GCR_UNLOCK_OPTION_ALWAYS.
+ *
+ * Returns: The current label for the option.
+ */
 const gchar*
 gcr_unlock_options_widget_get_label (GcrUnlockOptionsWidget *self, const gchar *option)
 {
@@ -321,6 +424,15 @@ gcr_unlock_options_widget_get_label (GcrUnlockOptionsWidget *self, const gchar *
 	return gtk_button_get_label (GTK_BUTTON (button));
 }
 
+/**
+ * gcr_unlock_options_widget_set_label:
+ * @self: The unlock options widget
+ * @option: The option name
+ * @text: The new label
+ *
+ * Set the label for one of the options. Use an option name like
+ * %GCR_UNLOCK_OPTION_ALWAYS.
+ */
 void
 gcr_unlock_options_widget_set_label (GcrUnlockOptionsWidget *self, const gchar *option,
                                      const gchar *text)
@@ -341,6 +453,16 @@ gcr_unlock_options_widget_set_label (GcrUnlockOptionsWidget *self, const gchar *
 	gtk_button_set_label (GTK_BUTTON (button), text);
 }
 
+/**
+ * gcr_unlock_options_widget_get_sensitive:
+ * @self: The unlock options widget
+ * @option: The option name
+ *
+ * Get the sensitivity state for one of the options. Use an option name like
+ * %GCR_UNLOCK_OPTION_ALWAYS.
+ *
+ * Returns: Whether the option is sensitive or not.
+ */
 gboolean
 gcr_unlock_options_widget_get_sensitive (GcrUnlockOptionsWidget *self, const gchar *option)
 {
@@ -355,6 +477,16 @@ gcr_unlock_options_widget_get_sensitive (GcrUnlockOptionsWidget *self, const gch
 	return (state & GTK_STATE_INSENSITIVE) != GTK_STATE_INSENSITIVE;
 }
 
+/**
+ * gcr_unlock_options_widget_set_sensitive:
+ * @self: The unlock options widget
+ * @option: The option name
+ * @sensitive: The sensitivity state.
+ * @reason: A user displayable string which contains the reason for the sensitivity.
+ *
+ * Set the sensitivity state for one of the options. Use an option name like
+ * %GCR_UNLOCK_OPTION_ALWAYS. The reason will be displayed as a tooltip.
+ */
 void
 gcr_unlock_options_widget_set_sensitive (GcrUnlockOptionsWidget *self, const gchar *option,
                                          gboolean sensitive, const gchar *reason)
