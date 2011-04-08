@@ -42,17 +42,10 @@ typedef struct _GcrKeyWidget GcrKeyWidget;
 typedef struct _GcrKeyWidgetClass GcrKeyWidgetClass;
 typedef struct _GcrKeyWidgetPrivate GcrKeyWidgetPrivate;
 
-struct _GcrKeyWidget {
-	GtkAlignment parent;
-
-	/*< private >*/
-	GcrKeyWidgetPrivate *pv;
-};
-
-struct _GcrKeyWidgetClass {
-	/*< private >*/
-	GtkAlignmentClass parent_class;
-};
+/*
+ * TODO: GcrKeyWidget and GcrKeyWidgetClass are hidden until
+ * we can figure out what they should be derived from.
+ */
 
 GType                   gcr_key_widget_get_type               (void);
 

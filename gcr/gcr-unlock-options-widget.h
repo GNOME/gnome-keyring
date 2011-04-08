@@ -43,16 +43,10 @@ typedef struct _GcrUnlockOptionsWidget GcrUnlockOptionsWidget;
 typedef struct _GcrUnlockOptionsWidgetClass GcrUnlockOptionsWidgetClass;
 typedef struct _GcrUnlockOptionsWidgetPrivate GcrUnlockOptionsWidgetPrivate;
 
-struct _GcrUnlockOptionsWidget {
-	GtkAlignment parent;
-
-	/*< private >*/
-	GcrUnlockOptionsWidgetPrivate *pv;
-};
-
-struct _GcrUnlockOptionsWidgetClass {
-	GtkAlignmentClass parent_class;
-};
+/*
+ * TODO: GcrUnlockOptionsWidget and GcrUnlockOptionsWidgetClass are hidden until
+ * we can figure out what they should be derived from.
+ */
 
 GType                         gcr_unlock_options_widget_get_type               (void);
 

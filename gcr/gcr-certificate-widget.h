@@ -43,17 +43,10 @@ typedef struct _GcrCertificateWidget GcrCertificateWidget;
 typedef struct _GcrCertificateWidgetClass GcrCertificateWidgetClass;
 typedef struct _GcrCertificateWidgetPrivate GcrCertificateWidgetPrivate;
 
-struct _GcrCertificateWidget {
-	GtkAlignment parent;
-
-	/*< private >*/
-	GcrCertificateWidgetPrivate *pv;
-};
-
-struct _GcrCertificateWidgetClass {
-	/*< private >*/
-	GtkAlignmentClass parent_class;
-};
+/*
+ * TODO: GcrCertificateWidget and GcrCertificateWidgetClass are hidden until
+ * we can figure out what they should be derived from.
+ */
 
 GType                   gcr_certificate_widget_get_type               (void);
 
