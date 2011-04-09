@@ -922,13 +922,10 @@ gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, g
 	OpenSession args = { GCK_ARGUMENTS_INIT, 0,  };
 	GckSession *session = NULL;
 	GckModule *module = NULL;
-	CK_SLOT_ID slot_id;
 
 	g_object_ref (self);
 
-	/* Try to use a cached session */
 	module = gck_slot_get_module (self);
-	slot_id = gck_slot_get_handle (self);
 
 	/* Open a new session */
 	args.slot = self;

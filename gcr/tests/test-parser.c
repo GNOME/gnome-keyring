@@ -69,6 +69,8 @@ parsed_item (GcrParser *par, gpointer user_data)
 	g_assert (par == test->parser);
 
 	attrs = gcr_parser_get_parsed_attributes (test->parser);
+	g_assert (attrs);
+
 	description = gcr_parser_get_parsed_description (test->parser);
 	label = gcr_parser_get_parsed_label (test->parser);
 

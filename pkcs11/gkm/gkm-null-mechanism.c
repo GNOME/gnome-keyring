@@ -75,7 +75,6 @@ gkm_null_mechanism_wrap (GkmSession *session, CK_MECHANISM_PTR mech,
                         GkmObject *wrapper, GkmObject *wrapped,
                         CK_BYTE_PTR output, CK_ULONG_PTR n_output)
 {
-	GkmNullKey *key;
 	gpointer value;
 	gsize n_value;
 	CK_RV rv;
@@ -88,7 +87,6 @@ gkm_null_mechanism_wrap (GkmSession *session, CK_MECHANISM_PTR mech,
 
 	if (!GKM_IS_NULL_KEY (wrapper))
 		return CKR_WRAPPING_KEY_TYPE_INCONSISTENT;
-	key = GKM_NULL_KEY (wrapper);
 
 	/* They just want the length */
 	if (!output) {
@@ -118,7 +116,6 @@ gkm_null_mechanism_unwrap (GkmSession *session, CK_MECHANISM_PTR mech,
 {
 	CK_ATTRIBUTE attr;
 	GArray *array;
-	GkmNullKey *key;
 	GkmTransaction *transaction;
 
 	g_return_val_if_fail (GKM_IS_SESSION (session), CKR_GENERAL_ERROR);
@@ -128,7 +125,6 @@ gkm_null_mechanism_unwrap (GkmSession *session, CK_MECHANISM_PTR mech,
 
 	if (!GKM_IS_NULL_KEY (wrapper))
 		return CKR_WRAPPING_KEY_TYPE_INCONSISTENT;
-	key = GKM_NULL_KEY (wrapper);
 
 	if (mech->ulParameterLen)
 		return CKR_MECHANISM_PARAM_INVALID;
