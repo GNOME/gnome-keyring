@@ -533,9 +533,11 @@ if test "$enable_tests" != "no"; then
 	AC_MSG_RESULT(yes)
 	CFLAGS="$CFLAGS -Werror"
 	tests_status="yes"
+	enable_tests="yes"
 else
 	AC_MSG_RESULT(no)
-  	tests_status="no"
+	tests_status="no"
+	enable_tests="no"
 fi
 
 AM_CONDITIONAL(WITH_TESTS, test "$enable_tests" = "yes")
