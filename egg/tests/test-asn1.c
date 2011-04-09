@@ -46,6 +46,7 @@ const gchar TGENERALIZED[] =  "\x18\x0F""20070725130528Z";
 const gchar BITS_TEST[] =  "\x03\x04\x06\x6e\x5d\xc0";
 const gchar BITS_BAD[] =  "\x03\x04\x06\x6e\x5d\xc1";
 const gchar BITS_ZERO[] =  "\x03\x01\x00";
+const gchar NULL_TEST[] =  "\x05\x00";
 
 /* ENUM with value = 2 */
 const gchar ENUM_TWO[] =           "\x0A\x01\x02";
@@ -91,6 +92,29 @@ test_boolean (void)
 		g_assert_not_reached ();
 
 	egg_asn1x_destroy (asn);
+}
+
+static void
+test_null (void)
+{
+	GNode *asn;
+	gpointer data;
+	gsize n_data;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestNull");
+	g_assert (asn);
+
+	if (!egg_asn1x_set_null (asn))
+		g_assert_not_reached ();
+
+	data = egg_asn1x_encode (asn, g_realloc, &n_data);
+	egg_assert_cmpmem (NULL_TEST, XL (NULL_TEST), ==, data, n_data);
+
+	if (!egg_asn1x_decode (asn, data, n_data))
+		g_assert_not_reached ();
+
+	egg_asn1x_destroy (asn);
+	g_free (data);
 }
 
 static void
@@ -1130,6 +1154,7 @@ main (int argc, char **argv)
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/asn1/boolean", test_boolean);
+	g_test_add_func ("/asn1/null", test_null);
 	g_test_add_func ("/asn1/integer", test_integer);
 	g_test_add_func ("/asn1/octet_string", test_octet_string);
 	g_test_add_func ("/asn1/generalized_time", test_generalized_time);

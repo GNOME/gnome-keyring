@@ -1263,6 +1263,7 @@ anode_encode_tlv_and_enc (GNode *node, gsize n_data, EggAsn1xEncoder encoder,
 	case TYPE_TIME:
 	case TYPE_ENUMERATED:
 	case TYPE_GENERALSTRING:
+	case TYPE_NULL:
 		tlv.cls = ASN1_CLASS_UNIVERSAL;
 		break;
 	/* Container types */
@@ -1656,6 +1657,7 @@ anode_encode_prepare (GNode *node, gboolean want)
 	case TYPE_ENUMERATED:
 	case TYPE_GENERALSTRING:
 	case TYPE_ANY:
+	case TYPE_NULL:
 		return anode_encode_prepare_simple (node, want);
 		break;
 	case TYPE_SEQUENCE:
@@ -2448,6 +2450,17 @@ egg_asn1x_set_boolean (GNode *node, gboolean value)
 	if (!anode_write_boolean (value, data, &n_data))
 		return FALSE;
 	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, data, g_free);
+	return TRUE;
+}
+
+gboolean
+egg_asn1x_set_null (GNode *node)
+{
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_NULL, FALSE);
+
+	/* Encode zero characters */
+	anode_encode_tlv_and_enc (node, 0, anode_encoder_simple, "", NULL);
 	return TRUE;
 }
 

@@ -84,6 +84,8 @@ gboolean            egg_asn1x_get_boolean            (GNode *node,
 gboolean            egg_asn1x_set_boolean            (GNode *node,
                                                       gboolean value);
 
+gboolean            egg_asn1x_set_null               (GNode *node);
+
 GQuark              egg_asn1x_get_enumerated         (GNode *node);
 
 gboolean            egg_asn1x_set_enumerated         (GNode *node,
