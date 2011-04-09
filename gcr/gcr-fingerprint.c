@@ -83,13 +83,17 @@ rsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 {
 	GckAttribute *attr;
 	GNode *key_asn;
-	gpointer key;
-	gsize n_key;
+	GNode *params_asn;
+	gpointer key, params;
+	gsize n_key, n_params;
 
 	init_quarks ();
 
 	key_asn = egg_asn1x_create (pk_asn1_tab, "RSAPublicKey");
 	g_return_val_if_fail (key_asn, FALSE);
+
+	params_asn = egg_asn1x_create (pk_asn1_tab, "RSAParameters");
+	g_return_val_if_fail (params_asn, FALSE);
 
 	attr = gck_attributes_find (attrs, CKA_MODULUS);
 	g_return_val_if_fail (attr, FALSE);
@@ -104,10 +108,17 @@ rsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 	key = egg_asn1x_encode (key_asn, g_realloc, &n_key);
 	egg_asn1x_destroy (key_asn);
 
+	egg_asn1x_set_null (params_asn);
+
+	params = egg_asn1x_encode (params_asn, g_realloc, &n_params);
+	egg_asn1x_destroy (params_asn);
+
 	egg_asn1x_set_bits_as_raw (egg_asn1x_node (info_asn, "subjectPublicKey", NULL),
 	                           key, n_key * 8, g_free);
 
 	egg_asn1x_set_oid_as_quark (egg_asn1x_node (info_asn, "algorithm", "algorithm", NULL), OID_PKIX1_RSA);
+	egg_asn1x_set_raw_element (egg_asn1x_node (info_asn, "algorithm", "parameters", NULL),
+	                           params, n_params, g_free);
 
 	return TRUE;
 }

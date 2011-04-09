@@ -63,10 +63,10 @@ setup (Test *test, gconstpointer unused)
 		g_assert_not_reached ();
 	g_assert (test->key_rsa);
 
-	if (!g_file_get_contents ("files/generic-dsa.crt", (gchar**)&test->key_dsa,
-	                          &test->n_key_dsa, NULL))
+	if (!g_file_get_contents ("files/generic-dsa.crt", (gchar**)&test->cert_dsa,
+	                          &test->n_cert_dsa, NULL))
 		g_assert_not_reached ();
-	g_assert (test->key_dsa);
+	g_assert (test->cert_dsa);
 
 	if (!g_file_get_contents ("files/generic-dsa.key", (gchar**)&test->key_dsa,
 	                          &test->n_key_dsa, NULL))
@@ -80,7 +80,7 @@ teardown (Test *test, gconstpointer unused)
 	g_free (test->cert_rsa);
 	g_free (test->key_rsa);
 	g_free (test->cert_dsa);
-	g_free (test->key_rsa);
+	g_free (test->key_dsa);
 }
 
 static GckAttributes*
