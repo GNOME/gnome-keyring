@@ -97,6 +97,7 @@ main (int argc, char **argv)
 
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
+	g_set_prgname ("test-simple-certificate");
 
 	srcdir = g_getenv ("SRCDIR");
 	if (srcdir && chdir (srcdir) < 0)

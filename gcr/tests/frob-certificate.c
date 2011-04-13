@@ -99,6 +99,7 @@ int
 main(int argc, char *argv[])
 {
 	gtk_init (&argc, &argv);
+	g_set_prgname ("frob-certificate");
 
 	if (argc > 1) {
 		test_certificate (argv[1]);

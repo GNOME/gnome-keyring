@@ -97,6 +97,7 @@ int
 main(int argc, char *argv[])
 {
 	gtk_init (&argc, &argv);
+	g_set_prgname ("frob-unlock-options");
 
 	chdir_base_dir (argv[0]);
 	test_unlock_options ();

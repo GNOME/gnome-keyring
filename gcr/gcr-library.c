@@ -22,6 +22,8 @@
 #include "config.h"
 
 #include "gcr-types.h"
+#define DEBUG_FLAG GCR_DEBUG_LIBRARY
+#include "gcr-debug.h"
 #include "gcr-internal.h"
 #include "gcr-library.h"
 
@@ -176,6 +178,8 @@ _gcr_initialize (void)
 
 		g_once_init_leave (&gcr_initialized, 1);
 	}
+
+	_gcr_debug ("initialized library");
 }
 
 /**
