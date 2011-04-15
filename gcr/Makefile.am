@@ -1,15 +1,4 @@
 
-if WITH_TESTS
-TESTS_DIR = tests
-EXPORT_PATT = '^_?gcr_*'
-else
-TESTS_DIR =
-EXPORT_PATT = '^gcr_*'
-endif
-
-SUBDIRS = . \
-	$(TESTS_DIR)
-
 # ------------------------------------------------------------------
 # UI BUILDER
 # 
@@ -68,9 +57,7 @@ INCLUDES = \
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h
 
-lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
-
-libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
+LIB_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
 	gcr-certificate-chain.c gcr-certificate-chain.h \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
@@ -101,16 +88,22 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-viewer.c gcr-viewer.h \
 	$(BUILT_SOURCES)
 
-libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
+LIB_CFLAGS = \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \
 	-DUIDIR=\""$(uidir)"\"
 
+lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
+
+libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = $(LIB_SOURCES)
+
+libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = $(LIB_CFLAGS)
+
 libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
 	-version-info $(GCR_LT_RELEASE) \
 	-no-undefined \
-	-export-symbols-regex $(EXPORT_PATT)
+	-export-symbols-regex '^gcr_*'
 
 libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
@@ -134,8 +127,6 @@ pkgconfig_DATA = gcr-$(GCR_MAJOR).pc
 gcr-$(GCR_MAJOR).pc: gcr.pc
 	cp gcr.pc gcr-$(GCR_MAJOR).pc
 
-# ----------------------------------------------------------------
-
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
@@ -148,3 +139,31 @@ CLEANFILES = \
 
 DISTCLEANFILES = \
 	$(pkgconfig_DATA)
+
+# ----------------------------------------------------------------
+# TESTS
+
+if WITH_TESTS
+
+TESTS_DIR = tests
+
+noinst_LTLIBRARIES = \
+	libgcr-testable.la
+
+libgcr_testable_la_SOURCES = $(LIB_SOURCES)
+
+libgcr_testable_la_CFLAGS = $(LIB_CFLAGS)
+
+libgcr_testable_la_LDFLAGS = \
+	-no-undefined
+
+else # WITH_TESTS
+
+TESTS_DIR =
+
+endif # WITH_TESTS
+
+# ----------------------------------------------------------------
+
+SUBDIRS = . \
+	$(TESTS_DIR)

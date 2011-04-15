@@ -10,13 +10,13 @@ INCLUDES = \
 	$(LIBGCRYPT_CFLAGS)
 
 LDADD = \
-	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
+	$(top_builddir)/gcr/libgcr-testable.la \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gck/libgck.la \
 	$(GTK_LIBS) \
 	$(GLIB_LIBS) \
-	$(LIBGCRYT_LIBS)
+	$(LIBGCRYPT_LIBS)
 
 TEST_PROGS = \
 	test-certificate \
