@@ -5,6 +5,7 @@ INCLUDES = \
 	-DSRCDIR=$(srcdir) \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCK_API_SUBJECT_TO_CHANGE \
+	-DGCR_COMPILATION \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS)
@@ -19,12 +20,16 @@ LDADD = \
 	$(LIBGCRYPT_LIBS)
 
 TEST_PROGS = \
+	test-util \
+	test-simple-certificate \
 	test-certificate \
 	test-certificate-chain \
 	test-pkcs11-certificate \
-	test-simple-certificate \
 	test-trust \
-	test-parser
+	test-parser \
+	test-colons \
+	test-gnupg-key \
+	test-gnupg-collection
 
 check_PROGRAMS = $(TEST_PROGS)
 
@@ -44,6 +49,7 @@ EXTRA_DIST = \
 
 noinst_PROGRAMS = \
 	frob-certificate \
+	frob-gnupg-selector \
 	frob-key \
 	frob-selector \
 	frob-unlock-options

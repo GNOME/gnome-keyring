@@ -65,10 +65,13 @@ LIB_SOURCES = \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-collection.c gcr-collection.h \
 	gcr-collection-model.c gcr-collection-model.h \
+	gcr-colons.c gcr-colons.h \
 	gcr-debug.c gcr-debug.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-comparable.c gcr-comparable.h \
 	gcr-display-view.c gcr-display-view.h \
+	gcr-gnupg-collection.c gcr-gnupg-collection.h \
+	gcr-gnupg-key.c gcr-gnupg-key.h \
 	gcr-icons.c gcr-icons.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \
@@ -86,6 +89,7 @@ LIB_SOURCES = \
 	gcr-types.h \
 	gcr-unlock-options.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
+	gcr-util.c gcr-util.h \
 	gcr-viewer.c gcr-viewer.h \
 	$(BUILT_SOURCES)
 

@@ -359,6 +359,12 @@ fi
 AM_CONDITIONAL(WITH_GPG, test "$enable_gpg_agent" != "no")
 
 # --------------------------------------------------------------------
+# GPG support
+
+AC_PATH_PROGS([GNUPG], [gpg gpg2], ["gpg"])
+AC_DEFINE_UNQUOTED([GPG_EXECUTABLE], ["$GNUPG"], [Path to gpg executable.])
+
+# --------------------------------------------------------------------
 # Trusted Root Certificates Directory
 #
 
