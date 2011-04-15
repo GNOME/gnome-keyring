@@ -108,6 +108,7 @@ run-tests
 /gcr/tests/frob-certificate
 /gcr/tests/frob-key
 /gcr/tests/frob-unlock-options
+/gcr/tests/frob-parser
 /gcr/tests/test-certificate
 /gcr/tests/test-certificate-chain
 /gcr/tests/test-parser

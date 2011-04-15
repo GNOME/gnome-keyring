@@ -44,5 +44,6 @@ EXTRA_DIST = \
 
 noinst_PROGRAMS = \
 	frob-certificate \
+	frob-parser \
 	frob-key \
 	frob-unlock-options
