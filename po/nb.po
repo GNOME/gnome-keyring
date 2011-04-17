@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.91.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-25 20:42+0100\n"
-"PO-Revision-Date: 2011-01-25 20:43+0100\n"
+"POT-Creation-Date: 2011-04-17 16:09+0200\n"
+"PO-Revision-Date: 2011-04-17 16:10+0200\n"
 "Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Lokalize 1.1\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -49,15 +49,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Opprinnelig passord var feil"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Nytt passord for nøkkelring"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Oppgi passord for ny nøkkelring"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -98,30 +98,30 @@ msgstr "GNOME nøkkelring: GPG-agent"
 msgid "GPG Password Agent"
 msgstr "GPG passordagent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:310
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP-nøkkel: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "Oppgi passord"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "Lås denne nøkkelringen hvis inaktiv i"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "Glem dette passordet etter"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "Glem dette passordet når jeg logger ut"
 
@@ -170,7 +170,7 @@ msgstr "Vanlig navn"
 msgid "Surname"
 msgstr "Etternavn"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:476
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -226,7 +226,7 @@ msgstr "DN-kvalifikator"
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:306
 msgid "RSA"
 msgstr "RSA"
 
@@ -242,7 +242,7 @@ msgstr "MD5 med RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 med DSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:308
 msgid "DSA"
 msgstr "DSA"
 
@@ -260,111 +260,163 @@ msgstr "Uventet feil i select() under lesing av data fra underprosess (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Uventet feil i waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
-msgid "Certificate"
-msgstr "Sertifikat"
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:389
+msgid "Name"
+msgstr "Navn"
 
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "Utvidelse"
+#: ../gcr/gcr-certificate.c:391
+msgid "Issued By"
+msgstr "Utstedt av"
 
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "Identifikator"
-
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "Verdi"
-
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "Kritisk"
-
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Yes"
-msgstr "Ja"
-
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "No"
-msgstr "Nei"
-
-#: ../gcr/gcr-certificate-renderer.c:339
-msgid "Identity"
-msgstr "Identitet"
-
-#: ../gcr/gcr-certificate-renderer.c:343
-msgid "Verified by"
-msgstr "Verifisert av"
-
-#: ../gcr/gcr-certificate-renderer.c:350
+#. later
+#: ../gcr/gcr-certificate.c:393 ../gcr/gcr-certificate-renderer.c:447
 msgid "Expires"
 msgstr "Utløper"
 
+#: ../gcr/gcr-certificate.c:1061 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:98 ../gcr/gcr-parser.c:275
+msgid "Certificate"
+msgstr "Sertifikat"
+
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>En fil med dette navnet eksisterer allerede.</b>\n"
+"\n"
+"Vil du erstatte denne med en ny fil?"
+
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "E_rstatt"
+
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "Operasjonen ble avbrutt."
+
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "Eksporter sertifikat"
+
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "Sertifikatfiler"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "PEM-filer"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Extension"
+msgstr "Utvidelse"
+
+#: ../gcr/gcr-certificate-renderer.c:128
+msgid "Identifier"
+msgstr "Identifikator"
+
+#: ../gcr/gcr-certificate-renderer.c:136
+msgid "Value"
+msgstr "Verdi"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Critical"
+msgstr "Kritisk"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Yes"
+msgstr "Ja"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "No"
+msgstr "Nei"
+
+#: ../gcr/gcr-certificate-renderer.c:213
+msgid "Couldn't export the certificate."
+msgstr "Klarte ikke å eksportere sertifikatet."
+
+#: ../gcr/gcr-certificate-renderer.c:436
+msgid "Identity"
+msgstr "Identitet"
+
+#: ../gcr/gcr-certificate-renderer.c:440
+msgid "Verified by"
+msgstr "Verifisert av"
+
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:457
 msgid "Subject Name"
 msgstr "Navn på subjekt"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:461
 msgid "Issuer Name"
 msgstr "Navn på utsteder"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:465
 msgid "Issued Certificate"
 msgstr "Utstedt sertifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:470
 msgid "Version"
 msgstr "Versjon"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:484
 msgid "Not Valid Before"
 msgstr "Ikke gyldig før"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:489
 msgid "Not Valid After"
 msgstr "Ikke gyldig etter"
 
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "Algoritme for signatur"
-
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "Parametere for signatur"
-
-#: ../gcr/gcr-certificate-renderer.c:413
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:494 ../gcr/gcr-certificate-renderer.c:510
 msgid "Signature"
 msgstr "Signatur"
 
+#: ../gcr/gcr-certificate-renderer.c:498
+msgid "Signature Algorithm"
+msgstr "Algoritme for signatur"
+
+#: ../gcr/gcr-certificate-renderer.c:503
+msgid "Signature Parameters"
+msgstr "Parametere for signatur"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:515
 msgid "Public Key Info"
 msgstr "Informasjon om offentlig nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:520
 msgid "Key Algorithm"
 msgstr "Algoritme for nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:526
 msgid "Key Parameters"
 msgstr "Nøkkelparametere"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:533
 msgid "Key Size"
 msgstr "Størrelse på nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:541 ../gcr/gcr-key-renderer.c:290
+#: ../gcr/gcr-parser.c:278
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
+#: ../gcr/gcr-certificate-renderer.c:546
 msgid "Fingerprints"
 msgstr "Fingeravtrykk"
+
+#: ../gcr/gcr-display-view.c:283
+msgid "_Details"
+msgstr "_Detaljer"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -399,457 +451,460 @@ msgstr "Lås denne nøkkelringen når jeg logger ut"
 msgid "minutes"
 msgstr "minutter"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "Oppgi passord for å låse opp privat nøkkel"
 
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "Oppgi passord for å låse opp sertifikat"
 
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "Oppgi passord for å låse opp"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
+#: ../gcr/gcr-importer.c:183
 msgid "In order to import the private key, it must be unlocked"
 msgstr "Den private nøkkelen må låses opp før den importeres"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
+#: ../gcr/gcr-importer.c:186
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "Sertifikatet må låses opp før det kan importeres"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
+#: ../gcr/gcr-importer.c:189
 msgid "In order to import the data, it must be unlocked"
 msgstr "Data må låses opp før de kan importeres"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-importer.c:194
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "Privat nøkkel «%s» må låses opp før den kan importeres"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-importer.c:197
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "Sertifikat «%s» må låses opp før det kan importeres"
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-importer.c:200
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "«%s» må låses opp før import"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
+#: ../gcr/gcr-importer.c:291 ../gcr/gcr-parser.c:1708 ../gcr/gcr-parser.c:1947
+#: ../gck/gck-misc.c:104
 msgid "The operation was cancelled"
 msgstr "Operasjonen ble avbrutt"
 
-#: ../gcr/gcr-importer.c:346
+#: ../gcr/gcr-importer.c:383
 #, c-format
 msgid "No location available to import to"
 msgstr "Ingen adresse tilgjengelig for import"
 
-#: ../gcr/gcr-importer.c:495
+#: ../gcr/gcr-importer.c:532
 msgid "Import Certificates/Keys"
 msgstr "Importer sertifikater/nøkler"
 
-#: ../gcr/gcr-importer.c:502
+#: ../gcr/gcr-importer.c:539
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "Velg en adresse for å lagre importerte sertifikater og nøkler."
 
-#: ../gcr/gcr-key-renderer.c:69
+#: ../gcr/gcr-key-renderer.c:83
 msgid "Key"
 msgstr "Nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:260
+#: ../gcr/gcr-key-renderer.c:279
 msgid "Private RSA Key"
 msgstr "Privat RSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:262
+#: ../gcr/gcr-key-renderer.c:281
 msgid "Private DSA Key"
 msgstr "Privat DSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
+#: ../gcr/gcr-key-renderer.c:283 ../gcr/gcr-parser.c:272
 msgid "Private Key"
 msgstr "Privat nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
+#: ../gcr/gcr-key-renderer.c:286 ../gcr/gcr-key-renderer.c:288
 msgid "Public DSA Key"
 msgstr "Offentlig DSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:278
+#: ../gcr/gcr-key-renderer.c:297
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d bit"
 msgstr[1] "%d bits"
 
-#: ../gcr/gcr-key-renderer.c:279
+#: ../gcr/gcr-key-renderer.c:298
 msgid "Strength"
 msgstr "Styrke"
 
-#: ../gcr/gcr-key-renderer.c:292
+#: ../gcr/gcr-key-renderer.c:311
 msgid "Algorithm"
 msgstr "Algoritme"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:318
 msgid "Size"
 msgstr "Størrelse"
 
 #. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Fingerprint"
 msgstr "Fingeravtrykk"
 
-#: ../gcr/gcr-parser.c:1569
+#: ../gcr/gcr-parser.c:1711
 msgid "Unrecognized or unsupported data."
 msgstr "Ikke gjenkjente eller støttede data."
 
-#: ../gcr/gcr-parser.c:1572
+#: ../gcr/gcr-parser.c:1714
 msgid "Could not parse invalid or corrupted data."
 msgstr "Kunne ikke lese ugyldige eller korrupte data."
 
-#: ../gcr/gcr-parser.c:1575
+#: ../gcr/gcr-parser.c:1717
 msgid "The data is locked"
 msgstr "Data er låst"
 
-#: ../gcr/gcr-trust.c:417
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Klarte ikke å finne en plass å lagre festet sertifikat"
 
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
+#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
+#: ../gck/gck-uri.c:253
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "URI har ugyldig syntaks. Feltkoding for «%s» er ugyldig."
 
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "URI har ikke korrekt utforming i henhold til «pkcs11»."
+#: ../gck/gck-uri.c:292
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "URI har ikke korrekt utforming i henhold til skjema «pkcs11»."
 
-#: ../gck/gck-misc.c:101
+#: ../gck/gck-misc.c:107
 msgid "Insufficient memory available"
 msgstr "Ikke nok minne tilgjengelig"
 
-#: ../gck/gck-misc.c:103
+#: ../gck/gck-misc.c:109
 msgid "The specified slot ID is not valid"
 msgstr "Oppgitt ID for plass er ikke gyldig"
 
-#: ../gck/gck-misc.c:105
+#: ../gck/gck-misc.c:111
 msgid "Internal error"
 msgstr "Intern feil"
 
-#: ../gck/gck-misc.c:107
+#: ../gck/gck-misc.c:113
 msgid "The operation failed"
 msgstr "Operasjonen feilet"
 
-#: ../gck/gck-misc.c:109
+#: ../gck/gck-misc.c:115
 msgid "Invalid arguments"
 msgstr "Ugyldige argumenter"
 
-#: ../gck/gck-misc.c:111
+#: ../gck/gck-misc.c:117
 msgid "The module cannot create needed threads"
 msgstr "Modulen kan ikke lage nødvendige tråder"
 
-#: ../gck/gck-misc.c:113
+#: ../gck/gck-misc.c:119
 msgid "The module cannot lock data properly"
 msgstr "Modulen kan ikke låse data ordentlig"
 
-#: ../gck/gck-misc.c:115
+#: ../gck/gck-misc.c:121
 msgid "The field is read-only"
 msgstr "Feltet er skrivebeskyttet"
 
-#: ../gck/gck-misc.c:117
+#: ../gck/gck-misc.c:123
 msgid "The field is sensitive and cannot be revealed"
 msgstr "Feltet er sensitivt og kan ikke vises"
 
-#: ../gck/gck-misc.c:119
+#: ../gck/gck-misc.c:125
 msgid "The field is invalid or does not exist"
 msgstr "Feltet er ugyldig eller eksisterer ikke"
 
-#: ../gck/gck-misc.c:121
+#: ../gck/gck-misc.c:127
 msgid "Invalid value for field"
 msgstr "Ugyldig verdi for felt"
 
-#: ../gck/gck-misc.c:123
+#: ../gck/gck-misc.c:129
 msgid "The data is not valid or unrecognized"
 msgstr "Data er ikke gyldig eller kan ikke gjenkjennes"
 
-#: ../gck/gck-misc.c:125
+#: ../gck/gck-misc.c:131
 msgid "The data is too long"
 msgstr "For mye data"
 
-#: ../gck/gck-misc.c:127
+#: ../gck/gck-misc.c:133
 msgid "An error occurred on the device"
 msgstr "Fen feil oppsto på enheten"
 
-#: ../gck/gck-misc.c:129
+#: ../gck/gck-misc.c:135
 msgid "Insufficient memory available on the device"
 msgstr "Ikke nok minne tilgjengelig på enheten"
 
-#: ../gck/gck-misc.c:131
+#: ../gck/gck-misc.c:137
 msgid "The device was removed or unplugged"
 msgstr "Enheten ble fjernet eller koblet fra"
 
-#: ../gck/gck-misc.c:133
+#: ../gck/gck-misc.c:139
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "Krypterte data er ikke gyldige eller ble ikke gjenkjent"
 
-#: ../gck/gck-misc.c:135
+#: ../gck/gck-misc.c:141
 msgid "The encrypted data is too long"
 msgstr "For mye krypterte data"
 
-#: ../gck/gck-misc.c:137
+#: ../gck/gck-misc.c:143
 msgid "This operation is not supported"
 msgstr "Operasjonen er ikke støttet"
 
-#: ../gck/gck-misc.c:139
+#: ../gck/gck-misc.c:145
 msgid "The key is missing or invalid"
 msgstr "Nøkkelen mangler eller er ugyldig"
 
-#: ../gck/gck-misc.c:141
+#: ../gck/gck-misc.c:147
 msgid "The key is the wrong size"
 msgstr "Nøkkelen har feil størrelse"
 
-#: ../gck/gck-misc.c:143
+#: ../gck/gck-misc.c:149
 msgid "The key is of the wrong type"
 msgstr "Nøkkelen er av feil type"
 
-#: ../gck/gck-misc.c:145
+#: ../gck/gck-misc.c:151
 msgid "No key is needed"
 msgstr "Ingen nøkkel kreves"
 
-#: ../gck/gck-misc.c:147
+#: ../gck/gck-misc.c:153
 msgid "The key is different than before"
 msgstr "Nøkkelen er forskjellig fra tidligere"
 
-#: ../gck/gck-misc.c:149
+#: ../gck/gck-misc.c:155
 msgid "A key is needed"
 msgstr "En nøkkel kreves"
 
-#: ../gck/gck-misc.c:151
+#: ../gck/gck-misc.c:157
 msgid "Cannot include the key in the digest"
 msgstr "Kan ikke ta med nøkkelen i sammendraget"
 
-#: ../gck/gck-misc.c:153
+#: ../gck/gck-misc.c:159
 msgid "This operation cannot be done with this key"
 msgstr "Operasjonen kan ikke utføres med denne nøkkelen"
 
-#: ../gck/gck-misc.c:155
+#: ../gck/gck-misc.c:161
 msgid "The key cannot be wrapped"
 msgstr "Nøkkelen kan ikke pakkes inn"
 
-#: ../gck/gck-misc.c:157
+#: ../gck/gck-misc.c:163
 msgid "Cannot export this key"
 msgstr "Kan ikke eksportere denne nøkkelen"
 
-#: ../gck/gck-misc.c:159
+#: ../gck/gck-misc.c:165
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "Mekanisme for kryptering er ugyldig eller ikke gjenkjent"
 
-#: ../gck/gck-misc.c:161
+#: ../gck/gck-misc.c:167
 msgid "The crypto mechanism has an invalid argument"
 msgstr "Kryptomekanismen har et ugyldig argument"
 
-#: ../gck/gck-misc.c:163
+#: ../gck/gck-misc.c:169
 msgid "The object is missing or invalid"
 msgstr "Objektet mangler eller er ugyldig"
 
-#: ../gck/gck-misc.c:165
+#: ../gck/gck-misc.c:171
 msgid "Another operation is already taking place"
 msgstr "En annen operasjon er i gang allerede"
 
-#: ../gck/gck-misc.c:167
+#: ../gck/gck-misc.c:173
 msgid "No operation is taking place"
 msgstr "Ingen operasjon pågår"
 
-#: ../gck/gck-misc.c:169
+#: ../gck/gck-misc.c:175
 msgid "The password or PIN is incorrect"
 msgstr "Passord eller pin-kode er feil"
 
-#: ../gck/gck-misc.c:171
+#: ../gck/gck-misc.c:177
 msgid "The password or PIN is invalid"
 msgstr "Passord eller pin-kode er ugyldig"
 
-#: ../gck/gck-misc.c:173
+#: ../gck/gck-misc.c:179
 msgid "The password or PIN is of an invalid length"
 msgstr "Passord eller pin-kode har ugyldig lengde"
 
-#: ../gck/gck-misc.c:175
+#: ../gck/gck-misc.c:181
 msgid "The password or PIN has expired"
 msgstr "Passord eller pin-kode er utløpt"
 
-#: ../gck/gck-misc.c:177
+#: ../gck/gck-misc.c:183
 msgid "The password or PIN is locked"
 msgstr "Passord eller PIN er låst"
 
-#: ../gck/gck-misc.c:179
+#: ../gck/gck-misc.c:185
 msgid "The session is closed"
 msgstr "Økten er lukket"
 
-#: ../gck/gck-misc.c:181
+#: ../gck/gck-misc.c:187
 msgid "Too many sessions are active"
 msgstr "For mange aktive økter"
 
-#: ../gck/gck-misc.c:183
+#: ../gck/gck-misc.c:189
 msgid "The session is invalid"
 msgstr "Økten er ugyldig"
 
-#: ../gck/gck-misc.c:185
+#: ../gck/gck-misc.c:191
 msgid "The session is read-only"
 msgstr "Økten er skrivebeskyttet"
 
-#: ../gck/gck-misc.c:187
+#: ../gck/gck-misc.c:193
 msgid "An open session exists"
 msgstr "En åpen økt finnes"
 
-#: ../gck/gck-misc.c:189
+#: ../gck/gck-misc.c:195
 msgid "A read-only session exists"
 msgstr "En skrivebeskyttet økt finnes."
 
-#: ../gck/gck-misc.c:191
+#: ../gck/gck-misc.c:197
 msgid "An administrator session exists"
 msgstr "En administrator-økt eksisterer"
 
-#: ../gck/gck-misc.c:193
+#: ../gck/gck-misc.c:199
 msgid "The signature is bad or corrupted"
 msgstr "Signaturen er ugyldig eller korrupt"
 
-#: ../gck/gck-misc.c:195
+#: ../gck/gck-misc.c:201
 msgid "The signature is unrecognized or corrupted"
 msgstr "Signatur ikke gjenkjent eller korrupt"
 
-#: ../gck/gck-misc.c:197
+#: ../gck/gck-misc.c:203
 msgid "Certain required fields are missing"
 msgstr "Noen obligatoriske felt mangler"
 
-#: ../gck/gck-misc.c:199
+#: ../gck/gck-misc.c:205
 msgid "Certain fields have invalid values"
 msgstr "Noen felt har ugyldige verdier"
 
-#: ../gck/gck-misc.c:201
+#: ../gck/gck-misc.c:207
 msgid "The device is not present or unplugged"
 msgstr "Enheten er ikke tilgjengelig eller koblet fra"
 
-#: ../gck/gck-misc.c:203
+#: ../gck/gck-misc.c:209
 msgid "The device is invalid or unrecognizable"
 msgstr "Enheten er ugyldig eller ikke gjenkjennbar"
 
-#: ../gck/gck-misc.c:205
+#: ../gck/gck-misc.c:211
 msgid "The device is write protected"
 msgstr "Enheten er skrivebeskyttet"
 
-#: ../gck/gck-misc.c:207
+#: ../gck/gck-misc.c:213
 msgid "Cannot import because the key is invalid"
 msgstr "Kan ikke importere fordi nøkkelen er ugyldig"
 
-#: ../gck/gck-misc.c:209
+#: ../gck/gck-misc.c:215
 msgid "Cannot import because the key is of the wrong size"
 msgstr "Kan ikke importere fordi nøkkelen har feil størrelse"
 
-#: ../gck/gck-misc.c:211
+#: ../gck/gck-misc.c:217
 msgid "Cannot import because the key is of the wrong type"
 msgstr "Kan ikke importere fordi nøkkelen er av feil type"
 
-#: ../gck/gck-misc.c:213
+#: ../gck/gck-misc.c:219
 msgid "You are already logged in"
 msgstr "Du er allerede logget inn"
 
-#: ../gck/gck-misc.c:215
+#: ../gck/gck-misc.c:221
 msgid "No user has logged in"
 msgstr "Ingen bruker har logget inn"
 
-#: ../gck/gck-misc.c:217
+#: ../gck/gck-misc.c:223
 msgid "The user's password or PIN is not set"
 msgstr "Brukers passord eller PIN-kode er ikke satt"
 
-#: ../gck/gck-misc.c:219
+#: ../gck/gck-misc.c:225
 msgid "The user is of an invalid type"
 msgstr "Bruker har ugyldig type"
 
-#: ../gck/gck-misc.c:221
+#: ../gck/gck-misc.c:227
 msgid "Another user is already logged in"
 msgstr "En annen bruker er allerede logget inn"
 
-#: ../gck/gck-misc.c:223
+#: ../gck/gck-misc.c:229
 msgid "Too many users of different types are logged in"
 msgstr "For mange brukere av forskjellig type er logget inn"
 
-#: ../gck/gck-misc.c:225
+#: ../gck/gck-misc.c:231
 msgid "Cannot import an invalid key"
 msgstr "Kan ikke importere en ugyldig nøkkel"
 
-#: ../gck/gck-misc.c:227
+#: ../gck/gck-misc.c:233
 msgid "Cannot import a key of the wrong size"
 msgstr "Kan ikke importere en nøkkel med feil størrelse"
 
-#: ../gck/gck-misc.c:229
+#: ../gck/gck-misc.c:235
 msgid "Cannot export because the key is invalid"
 msgstr "Kan ikke eksportere fordi nøkkelen er ugyldig"
 
-#: ../gck/gck-misc.c:231
+#: ../gck/gck-misc.c:237
 msgid "Cannot export because the key is of the wrong size"
 msgstr "Kan ikke eksportere fordi nøkkelen har feil størrelse"
 
-#: ../gck/gck-misc.c:233
+#: ../gck/gck-misc.c:239
 msgid "Cannot export because the key is of the wrong type"
 msgstr "Kan ikke eksportere fordi nøkkelen er av feil type"
 
-#: ../gck/gck-misc.c:235
+#: ../gck/gck-misc.c:241
 msgid "Unable to initialize the random number generator"
 msgstr "Kan ikke initiere generator av tilfeldige tall"
 
-#: ../gck/gck-misc.c:237
+#: ../gck/gck-misc.c:243
 msgid "No random number generator available"
 msgstr "Ingen generator av tilfeldige tall tilgjengelig"
 
-#: ../gck/gck-misc.c:239
+#: ../gck/gck-misc.c:245
 msgid "The crypto mechanism has an invalid parameter"
 msgstr "Kryptomekanismen har en ugyldig parameter"
 
-#: ../gck/gck-misc.c:241
+#: ../gck/gck-misc.c:247
 msgid "Not enough space to store the result"
 msgstr "Ikke nok plass til å lagre resultatet"
 
-#: ../gck/gck-misc.c:243
+#: ../gck/gck-misc.c:249
 msgid "The saved state is invalid"
 msgstr "Lagret tilstand er ugyldig"
 
-#: ../gck/gck-misc.c:245
+#: ../gck/gck-misc.c:251
 msgid "The information is sensitive and cannot be revealed"
 msgstr "Informasjonen er sensitiv og kan ikke vises"
 
-#: ../gck/gck-misc.c:247
+#: ../gck/gck-misc.c:253
 msgid "The state cannot be saved"
 msgstr "Tilstand kan ikke lagres"
 
-#: ../gck/gck-misc.c:249
+#: ../gck/gck-misc.c:255
 msgid "The module has not been initialized"
 msgstr "Modulen er ikke initiert"
 
-#: ../gck/gck-misc.c:251
+#: ../gck/gck-misc.c:257
 msgid "The module has already been initialized"
 msgstr "Modulen er allerede initiert"
 
-#: ../gck/gck-misc.c:253
+#: ../gck/gck-misc.c:259
 msgid "Cannot lock data"
 msgstr "Kan ikke låse data"
 
-#: ../gck/gck-misc.c:255
+#: ../gck/gck-misc.c:261
 msgid "The data cannot be locked"
 msgstr "Data kan ikke låses"
 
-#: ../gck/gck-misc.c:257
+#: ../gck/gck-misc.c:263
 msgid "The signature request was rejected by the user"
 msgstr "Signaturforespørselen ble avvist av bruker"
 
-#: ../gck/gck-misc.c:261
+#: ../gck/gck-misc.c:267
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
@@ -1015,11 +1070,11 @@ msgstr "kommandoer: "
 msgid "          "
 msgstr "            "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1029,17 +1084,25 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:643
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:653
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Tilgang til nøkkelring"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Lås opp tilgang til passord og andre hemmeligheter"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
