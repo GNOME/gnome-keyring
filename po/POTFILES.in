@@ -12,6 +12,7 @@ daemon/login/gkd-login.c
 daemon/org.gnome.keyring.service.in
 egg/egg-oid.c
 egg/egg-spawn.c
+gcr/gcr-certificate.c
 gcr/gcr-certificate-exporter.c
 gcr/gcr-certificate-renderer.c
 gcr/gcr-certificate-widget.c
