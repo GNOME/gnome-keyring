@@ -30,19 +30,46 @@
 
 #include <glib.h>
 
+/*
+ * Gnupg's official format for listing keys is in the '--with-colons' format.
+ * This is documented in doc/DETAILS in the gnupg distribution. Looks like:
+ *
+ * pub:f:1024:17:6C7EE1B8621CC013:899817715:1055898235::m:::scESC:
+ * fpr:::::::::ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013:
+ * uid:f::::::::Werner Koch <wk@g10code.com>:
+ * uid:f::::::::Werner Koch <wk@gnupg.org>:
+ * sub:f:1536:16:06AD222CADF6A6E1:919537416:1036177416:::::e:
+ * fpr:::::::::CF8BCC4B18DE08FCD8A1615906AD222CADF6A6E1:
+ * sub:r:1536:20:5CE086B5B5A18FF4:899817788:1025961788:::::esc:
+ * fpr:::::::::AB059359A3B81F410FCFF97F5CE086B5B5A18FF4:
+ *
+ * Each row is colon delimeted, and has a certain 'schema'. The first item
+ * in the row tells us the schema. Then the various columns are numbered,
+ * (schema is zero).
+ */
+
 G_BEGIN_DECLS
 
 #define GCR_COLONS_SCHEMA_UID  _gcr_colons_get_schema_uid_quark ()
 #define GCR_COLONS_SCHEMA_PUB  _gcr_colons_get_schema_pub_quark ()
 
+/* Common columns for all schemas */
 typedef enum {
 	GCR_COLONS_SCHEMA = 0
 } GcrColonColumns;
 
+/*
+ * Columns for pub schema, add them as they're used. eg:
+ * pub:f:1024:17:6C7EE1B8621CC013:899817715:1055898235::m:::scESC:
+ */
 typedef enum {
 	GCR_COLONS_PUB_KEYID = 4
 } GcrColonPubColumns;
 
+/*
+ * Columns for uid schema, add them as they're used. eg:
+ * pub:f:1024:17:6C7EE1B8621CC013:899817715:1055898235::m:::scESC:
+ */
 typedef enum {
 	GCR_COLONS_UID_NAME = 9
 } GcrColonUidColumns;

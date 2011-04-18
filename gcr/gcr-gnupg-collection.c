@@ -256,12 +256,21 @@ on_line_parse_output (const gchar *line, gpointer user_data)
 	}
 
 	schema = _gcr_colons_get_schema (colons);
+
+	/*
+	 * Each time we see a line with 'pub' schema we assume that it's
+	 * a new key being listed.
+	 */
 	if (schema == GCR_COLONS_SCHEMA_PUB) {
 		if (load->dataset->len)
 			process_dataset_as_key (load);
 		g_assert (!load->dataset->len);
 		g_ptr_array_add (load->dataset, colons);
 		colons = NULL;
+
+	/*
+	 * 'uid' schema lines get added to the key that came before.
+	 */
 	} else if (schema == GCR_COLONS_SCHEMA_UID) {
 		if (load->dataset->len) {
 			g_ptr_array_add (load->dataset, colons);
@@ -435,6 +444,11 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	load->out_data = g_string_sized_new (1024);
 	load->difference = g_hash_table_new (g_str_hash, g_str_equal);
 	load->collection = g_object_ref (self);
+
+	/*
+	 * Track all the keys we currently have, at end remove those that
+	 * didn't get listed by the gpg process.
+	 */
 	g_hash_table_foreach (self->pv->items, on_each_item_add_keyid_to_difference,
 	                      load->difference);
 

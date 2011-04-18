@@ -27,6 +27,12 @@
 
 #include <string.h>
 
+/*
+ * Calls callback for each line. If last_line, also sends the remainder
+ * data that comes after the last line break. \n and \r\n are line separators.
+ * Neither are sent.
+ */
+
 void
 _gcr_util_parse_lines (GString *string, gboolean last_line,
                        GcrLineCallback callback, gpointer user_data)

@@ -100,6 +100,7 @@ _gcr_colons_get_string (GcrColons *colons, guint column)
 	if (g_utf8_validate (text, -1, NULL))
 		return text;
 
+	/* If it's not UTF-8, we guess that it's latin1 */
 	converted = g_convert (text, -1, "UTF-8", "ISO-8859-1", NULL, NULL, NULL);
 	g_free (text);
 
