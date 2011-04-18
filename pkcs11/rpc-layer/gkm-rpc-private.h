@@ -214,7 +214,7 @@ static const GkmRpcCall gkm_rpc_calls[] = {
 #define GKM_RPC_HANDSHAKE \
 	((unsigned char*)"PRIVATE-GNOME-KEYRING-PKCS11-PROTOCOL-V-1")
 #define GKM_RPC_HANDSHAKE_LEN \
-	(sizeof (GKM_RPC_HANDSHAKE) - 1)
+	(strlen ((char *)GKM_RPC_HANDSHAKE))
 
 #define GKM_RPC_SOCKET_EXT 	"pkcs11"
 
