@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-timer.c: Test thread timer functionality
+/* test-object.c: Test GkmObject
 
    Copyright (C) 2009 Stefan Walter
 
@@ -21,8 +21,9 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "test-suite.h"
-#include "test-module.h"
+#include "config.h"
+
+#include "mock-module.h"
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-object.h"
@@ -30,39 +31,42 @@
 #include "gkm/gkm-module.h"
 #include "gkm/gkm-transaction.h"
 
+#include "egg/egg-testing.h"
+
 #include "pkcs11i.h"
 
-static GkmModule *module = NULL;
-static GkmSession *session = NULL;
-static guchar *certificate_data = NULL;
-static gsize certificate_n_data = 0;
+typedef struct {
+	GkmModule *module;
+	GkmSession *session;
+	gchar *certificate_data;
+	gsize n_certificate_data;
+} Test;
 
-TESTING_SETUP(object_setup)
+static void
+setup (Test* test, gconstpointer unused)
 {
-	module = test_module_initialize_and_enter ();
-	session = test_module_open_session (TRUE);
-	certificate_data = testing_data_read ("test-certificate-1.der", &certificate_n_data);
+	test->module = mock_module_initialize_and_enter ();
+	test->session = mock_module_open_session (TRUE);
+
+	if (!g_file_get_contents ("files/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
+		g_assert_not_reached ();
 }
 
-TESTING_TEARDOWN(object_teardown)
+static void
+teardown (Test* test, gconstpointer unused)
 {
-	g_free (certificate_data);
-	certificate_data = NULL;
-	certificate_n_data = 0;
-
-	test_module_leave_and_finalize ();
-	module = NULL;
-	session = NULL;
+	g_free (test->certificate_data);
+	mock_module_leave_and_finalize ();
 }
 
 static gboolean
-check_object_exists (CK_OBJECT_HANDLE handle)
+check_object_exists (CK_OBJECT_HANDLE handle, Test *test)
 {
 	CK_BBOOL token;
 	CK_ATTRIBUTE attr = { CKA_TOKEN, &token, sizeof (token) };
 	CK_RV rv;
 
-	rv = gkm_session_C_GetAttributeValue (session, handle, &attr, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, handle, &attr, 1);
 	if (rv == CKR_OBJECT_HANDLE_INVALID)
 		return FALSE;
 
@@ -70,7 +74,8 @@ check_object_exists (CK_OBJECT_HANDLE handle)
 	return TRUE;
 }
 
-TESTING_TEST(object_create_destroy_transient)
+static void
+test_create_destroy_transient (Test* test, gconstpointer unused)
 {
 	CK_BBOOL transient = CK_TRUE;
 	CK_BBOOL token = CK_TRUE;
@@ -82,31 +87,32 @@ TESTING_TEST(object_create_destroy_transient)
 		{ CKA_GNOME_TRANSIENT, &transient, sizeof (transient) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
-		{ CKA_VALUE, certificate_data, certificate_n_data },
+		{ CKA_VALUE, test->certificate_data, test->n_certificate_data },
 	};
 
 	CK_ATTRIBUTE lookup = { CKA_GNOME_TRANSIENT, &transient, sizeof (transient) };
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_OK);
 	g_assert (handle != 0);
 
-	g_assert (check_object_exists (handle));
+	g_assert (check_object_exists (handle, test));
 
 	transient = CK_FALSE;
-	rv = gkm_session_C_GetAttributeValue (session, handle, &lookup, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, handle, &lookup, 1);
 	g_assert (rv == CKR_OK);
 	g_assert (transient == CK_TRUE);
 
-	rv = gkm_session_C_DestroyObject (session, handle);
+	rv = gkm_session_C_DestroyObject (test->session, handle);
 	g_assert (rv == CKR_OK);
 
-	g_assert (!check_object_exists (handle));
+	g_assert (!check_object_exists (handle, test));
 }
 
-TESTING_TEST(object_transient_transacted_fail)
+static void
+test_transient_transacted_fail (Test* test, gconstpointer unused)
 {
 	CK_BBOOL transient = CK_TRUE;
 	CK_BBOOL token = CK_TRUE;
@@ -119,7 +125,7 @@ TESTING_TEST(object_transient_transacted_fail)
 		{ CKA_GNOME_TRANSIENT, &transient, sizeof (transient) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
-		{ CKA_VALUE, certificate_data, certificate_n_data },
+		{ CKA_VALUE, test->certificate_data, test->n_certificate_data },
 
 		/* An invalid attribute, should cause transaction to fail */
 		{ CKA_BITS_PER_PIXEL, &invalid, sizeof (invalid) }
@@ -128,11 +134,12 @@ TESTING_TEST(object_transient_transacted_fail)
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-TESTING_TEST(object_create_transient_bad_value)
+static void
+test_create_transient_bad_value (Test* test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
@@ -141,18 +148,19 @@ TESTING_TEST(object_create_transient_bad_value)
 		{ CKA_GNOME_TRANSIENT, NULL, 0 },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
-		{ CKA_VALUE, certificate_data, certificate_n_data },
+		{ CKA_VALUE, test->certificate_data, test->n_certificate_data },
 	};
 
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
 	/* Can't have a non-transient object that auto-destructs */
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-TESTING_TEST(object_create_auto_destruct)
+static void
+test_create_auto_destruct (Test* test, gconstpointer unused)
 {
 	CK_BBOOL token = CK_FALSE;
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
@@ -165,7 +173,7 @@ TESTING_TEST(object_create_auto_destruct)
 		{ CKA_TOKEN, &token, sizeof (token) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
-		{ CKA_VALUE, certificate_data, certificate_n_data },
+		{ CKA_VALUE, test->certificate_data, test->n_certificate_data },
 	};
 
 	CK_BBOOL transient;
@@ -178,26 +186,27 @@ TESTING_TEST(object_create_auto_destruct)
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_OK);
 	g_assert (handle != 0);
 
-	g_assert (check_object_exists (handle));
+	g_assert (check_object_exists (handle, test));
 
 	transient = CK_FALSE;
-	rv = gkm_session_C_GetAttributeValue (session, handle, lookups, G_N_ELEMENTS (lookups));
+	rv = gkm_session_C_GetAttributeValue (test->session, handle, lookups, G_N_ELEMENTS (lookups));
 	g_assert (rv == CKR_OK);
 	g_assert (transient == TRUE);
 	g_assert (memcmp (&lifetime, &check, sizeof (lifetime)) == 0);
 
-	test_module_leave ();
-	testing_wait_until (2200);
-	test_module_enter ();
+	mock_module_leave ();
+	egg_test_wait_until (2200);
+	mock_module_enter ();
 
-	g_assert (!check_object_exists (handle));
+	g_assert (!check_object_exists (handle, test));
 }
 
-TESTING_TEST(object_create_auto_destruct_not_transient)
+static void
+test_create_auto_destruct_not_transient (Test* test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
 	CK_CERTIFICATE_TYPE type = CKC_X_509;
@@ -209,25 +218,26 @@ TESTING_TEST(object_create_auto_destruct_not_transient)
 		{ CKA_GNOME_TRANSIENT, &transient, sizeof (transient) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
-		{ CKA_VALUE, certificate_data, certificate_n_data },
+		{ CKA_VALUE, test->certificate_data, test->n_certificate_data },
 	};
 
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
 	/* Can't have a non-transient object that auto-destructs */
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_TEMPLATE_INCONSISTENT);
 }
 
-TESTING_TEST(object_expose)
+static void
+test_expose (Test* test, gconstpointer unused)
 {
 	CK_OBJECT_HANDLE handle;
 	GkmManager *manager;
 	GkmObject *check, *object;
 
-	manager = gkm_session_get_manager (session);
-	object = test_module_object_new (session);
+	manager = gkm_session_get_manager (test->session);
+	object = mock_module_object_new (test->session);
 
 	handle = gkm_object_get_handle (object);
 	gkm_object_expose (object, TRUE);
@@ -243,15 +253,16 @@ TESTING_TEST(object_expose)
 	g_assert (check == NULL);
 }
 
-TESTING_TEST(object_expose_transaction)
+static void
+test_expose_transaction (Test* test, gconstpointer unused)
 {
 	CK_OBJECT_HANDLE handle;
 	GkmManager *manager;
 	GkmObject *check, *object;
 	GkmTransaction *transaction;
 
-	manager = gkm_session_get_manager (session);
-	object = test_module_object_new (session);
+	manager = gkm_session_get_manager (test->session);
+	object = mock_module_object_new (test->session);
 
 	handle = gkm_object_get_handle (object);
 	transaction = gkm_transaction_new ();
@@ -274,4 +285,21 @@ TESTING_TEST(object_expose_transaction)
 	g_assert (check == NULL);
 
 	g_object_unref (transaction);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/gkm/object/create_destroy_transient", Test, NULL, setup, test_create_destroy_transient, teardown);
+	g_test_add ("/gkm/object/transient_transacted_fail", Test, NULL, setup, test_transient_transacted_fail, teardown);
+	g_test_add ("/gkm/object/create_transient_bad_value", Test, NULL, setup, test_create_transient_bad_value, teardown);
+	g_test_add ("/gkm/object/create_auto_destruct", Test, NULL, setup, test_create_auto_destruct, teardown);
+	g_test_add ("/gkm/object/create_auto_destruct_not_transient", Test, NULL, setup, test_create_auto_destruct_not_transient, teardown);
+	g_test_add ("/gkm/object/expose", Test, NULL, setup, test_expose, teardown);
+	g_test_add ("/gkm/object/expose_transaction", Test, NULL, setup, test_expose_transaction, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

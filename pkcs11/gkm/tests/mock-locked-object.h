@@ -24,8 +24,8 @@
 
 #include <glib-object.h>
 
-#include "gkm-object.h"
-#include "gkm-types.h"
+#include "gkm/gkm-object.h"
+#include "gkm/gkm-types.h"
 
 #define MOCK_TYPE_LOCKED_OBJECT               (mock_locked_object_get_type ())
 #define MOCK_LOCKED_OBJECT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), MOCK_TYPE_LOCKED_OBJECT, MockLockedObject))

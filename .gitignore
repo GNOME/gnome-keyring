@@ -115,6 +115,19 @@ run-tests
 /gcr/tests/test-simple-certificate
 /gcr/tests/test-trust
 
+/pkcs11/gkm/tests/test-attributes
+/pkcs11/gkm/tests/test-credential
+/pkcs11/gkm/tests/test-data-asn1
+/pkcs11/gkm/tests/test-data-der
+/pkcs11/gkm/tests/test-file-tracker
+/pkcs11/gkm/tests/test-memory-store
+/pkcs11/gkm/tests/test-object
+/pkcs11/gkm/tests/test-secret
+/pkcs11/gkm/tests/test-sexp
+/pkcs11/gkm/tests/test-store
+/pkcs11/gkm/tests/test-timer
+/pkcs11/gkm/tests/test-transaction
+
 /daemon/dbus/tests/test-secret-util
 
 /ui/gnome-keyring-prompt.desktop

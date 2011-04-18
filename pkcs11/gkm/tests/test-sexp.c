@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-sexp.c: Test sexp stuff
+/* test-sexp.c: Test sexp stuff
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,16 +21,20 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
+#include "config.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "test-suite.h"
-
 #include "gkm/gkm-crypto.h"
 #include "gkm/gkm-sexp.h"
 
+#include "egg/egg-secure-memory.h"
+
 #include <gcrypt.h>
+
+EGG_SECURE_GLIB_DEFINITIONS ();
 
 #define TEST_RSA \
 "(private-key (rsa " \
@@ -50,30 +54,35 @@
 "  (y #54734451DB79D4EEDF0BBCEBD43BB6CBB7B8584603B957080075DD318EB5B0266D4B20DC5EFF376BDFC4EA2983B1F7F02A39ED4C619ED68712729FFF3B7C696ADD1B6D748F56A4B4BEC5C4385E528423A3B88AE65E6D5500F97839E7A486255982189C3B4FA8D94338C76F0E5CAFC9A30A1ED728BB9F2091D594E3250A09EA00#)" \
 "  (x #00876F84F709D51108DFB0CBFA1F1C569C09C413EC#)))"
 
-gcry_sexp_t rsakey = NULL;
-gcry_sexp_t dsakey = NULL;
+typedef struct {
+	gcry_sexp_t rsakey;
+	gcry_sexp_t dsakey;
+} Test;
 
-TESTING_SETUP(crypto_setup)
+static void
+setup (Test *test, gconstpointer unused)
 {
 	gcry_error_t gcry;
 
 	gkm_crypto_initialize ();
 
-	gcry = gcry_sexp_new (&rsakey, TEST_RSA, strlen (TEST_RSA), 1);
+	gcry = gcry_sexp_new (&test->rsakey, TEST_RSA, strlen (TEST_RSA), 1);
 	g_return_if_fail (gcry == 0);
-	gcry = gcry_sexp_new (&dsakey, TEST_DSA, strlen (TEST_DSA), 1);
+	gcry = gcry_sexp_new (&test->dsakey, TEST_DSA, strlen (TEST_DSA), 1);
 	g_return_if_fail (gcry == 0);
 }
 
-TESTING_TEARDOWN(crypto_setup)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	gcry_sexp_release (rsakey);
-	rsakey = NULL;
-	gcry_sexp_release (dsakey);
-	dsakey = NULL;
+	gcry_sexp_release (test->rsakey);
+	test->rsakey = NULL;
+	gcry_sexp_release (test->dsakey);
+	test->dsakey = NULL;
 }
 
-TESTING_TEST(parse_key)
+static void
+test_parse_key (Test *test, gconstpointer unused)
 {
 	gcry_sexp_t sexp = NULL;
 	gcry_mpi_t mpi = NULL;
@@ -82,18 +91,19 @@ TESTING_TEST(parse_key)
 	int algorithm = 0;
 
 	/* Get the private key out */
-	ret = gkm_sexp_parse_key (rsakey, &algorithm, &is_priv, &sexp);
+	ret = gkm_sexp_parse_key (test->rsakey, &algorithm, &is_priv, &sexp);
 	g_assert (ret);
 	g_assert (algorithm == GCRY_PK_RSA);
 	g_assert (is_priv == TRUE);
 	g_assert (sexp != NULL);
 
-	ret = gkm_sexp_extract_mpi (rsakey, &mpi, "p", NULL);
+	ret = gkm_sexp_extract_mpi (test->rsakey, &mpi, "p", NULL);
 	g_assert (ret);
 	g_assert (mpi != NULL);
 }
 
-TESTING_TEST(sexp_key_to_public)
+static void
+test_key_to_public (Test *test, gconstpointer unused)
 {
 	gcry_sexp_t pubkey = NULL;
 	guchar id1[20], id2[20];
@@ -101,11 +111,11 @@ TESTING_TEST(sexp_key_to_public)
 	guchar *p;
 
 	/* RSA */
-	ret = gkm_sexp_key_to_public (rsakey, &pubkey);
+	ret = gkm_sexp_key_to_public (test->rsakey, &pubkey);
 	g_assert (ret);
 	g_assert (pubkey != NULL);
 
-	p = gcry_pk_get_keygrip (rsakey, id1);
+	p = gcry_pk_get_keygrip (test->rsakey, id1);
 	g_return_if_fail (p == id1);
 	p = gcry_pk_get_keygrip (pubkey, id2);
 	g_return_if_fail (p == id2);
@@ -116,11 +126,11 @@ TESTING_TEST(sexp_key_to_public)
 
 
 	/* DSA */
-	ret = gkm_sexp_key_to_public (dsakey, &pubkey);
+	ret = gkm_sexp_key_to_public (test->dsakey, &pubkey);
 	g_assert (ret);
 	g_assert (pubkey != NULL);
 
-	p = gcry_pk_get_keygrip (dsakey, id1);
+	p = gcry_pk_get_keygrip (test->dsakey, id1);
 	g_return_if_fail (p == id1);
 	p = gcry_pk_get_keygrip (pubkey, id2);
 	g_return_if_fail (p == id2);
@@ -129,4 +139,16 @@ TESTING_TEST(sexp_key_to_public)
 
 	gcry_sexp_release (pubkey);
 
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/gkm/sexp/parse_key", Test, NULL, setup, test_parse_key, teardown);
+	g_test_add ("/gkm/sexp/key_to_public", Test, NULL, setup, test_key_to_public, teardown);
+
+	return g_test_run ();
 }

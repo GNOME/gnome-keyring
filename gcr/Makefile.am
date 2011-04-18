@@ -65,6 +65,7 @@ LIB_SOURCES = \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-collection.c gcr-collection.h \
 	gcr-collection-model.c gcr-collection-model.h \
+	gcr-debug.c gcr-debug.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-comparable.c gcr-comparable.h \
 	gcr-display-view.c gcr-display-view.h \

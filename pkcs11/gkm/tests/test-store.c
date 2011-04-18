@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-store.c: Test general store functionality
+/* test-store.c: Test general store functionality
 
    Copyright (C) 2008 Stefan Walter
 
@@ -21,35 +21,38 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
+#include "config.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "test-suite.h"
-#include "test-module.h"
+#include "mock-module.h"
 
 #include "gkm/gkm-store.h"
 
-static GkmModule *module = NULL;
-static GkmStore *store = NULL;
+typedef struct {
+	GkmModule *module;
+	GkmStore *store;
+} Test;
 
-TESTING_SETUP(store)
+static void
+setup (Test *test, gconstpointer unused)
 {
-	module = test_module_initialize_and_enter ();
-	store = g_object_new (GKM_TYPE_STORE, NULL);
+	test->module = mock_module_initialize_and_enter ();
+	test->store = g_object_new (GKM_TYPE_STORE, NULL);
 }
 
-TESTING_TEARDOWN(store)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	g_object_unref (store);
-	store = NULL;
-
-	test_module_leave_and_finalize ();
-	module = NULL;
+	g_object_unref (test->store);
+	mock_module_leave_and_finalize ();
 }
 
-TESTING_TEST(store_schema)
+static void
+test_schema (Test *test, gconstpointer unused)
 {
 	CK_ATTRIBUTE attr;
 
@@ -57,14 +60,15 @@ TESTING_TEST(store_schema)
 	attr.pValue = "Label";
 	attr.ulValueLen = 5;
 
-	gkm_store_register_schema (store, &attr, NULL, 0);
-	g_assert (gkm_store_lookup_schema (store, CKA_LABEL, NULL));
+	gkm_store_register_schema (test->store, &attr, NULL, 0);
+	g_assert (gkm_store_lookup_schema (test->store, CKA_LABEL, NULL));
 
 	/* Not in the schema */
-	g_assert (!gkm_store_lookup_schema (store, CKA_VALUE, NULL));
+	g_assert (!gkm_store_lookup_schema (test->store, CKA_VALUE, NULL));
 }
 
-TESTING_TEST(store_schema_flags)
+static void
+test_schema_flags (Test *test, gconstpointer unused)
 {
 	CK_ATTRIBUTE attr;
 	guint flags;
@@ -73,8 +77,8 @@ TESTING_TEST(store_schema_flags)
 	attr.pValue = NULL;
 	attr.ulValueLen = 0;
 
-	gkm_store_register_schema (store, &attr, NULL, GKM_STORE_IS_SENSITIVE);
-	g_assert (gkm_store_lookup_schema (store, CKA_VALUE, &flags));
+	gkm_store_register_schema (test->store, &attr, NULL, GKM_STORE_IS_SENSITIVE);
+	g_assert (gkm_store_lookup_schema (test->store, CKA_VALUE, &flags));
 	g_assert (flags == GKM_STORE_IS_SENSITIVE);
 }
 
@@ -83,3 +87,16 @@ TESTING_TEST(store_schema_flags)
  * derived class. For more tests see unit-test-memory-store.c and
  * unit-test-file-store.c
  */
+
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/gkm/store/schema", Test, NULL, setup, test_schema, teardown);
+	g_test_add ("/gkm/store/schema_flags", Test, NULL, setup, test_schema_flags, teardown);
+
+	return g_test_run ();
+}

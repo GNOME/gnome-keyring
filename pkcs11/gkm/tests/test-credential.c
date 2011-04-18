@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-timer.c: Test thread timer functionality
+/* test-credential.c: Test credentials
 
    Copyright (C) 2009 Stefan Walter
 
@@ -21,8 +21,9 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "test-suite.h"
-#include "test-module.h"
+#include "config.h"
+
+#include "mock-module.h"
 #include "mock-locked-object.h"
 
 #include "gkm/gkm-attributes.h"
@@ -34,37 +35,38 @@
 
 #include "pkcs11i.h"
 
-static GkmModule *module = NULL;
-static GkmSession *session = NULL;
-static GkmObject *object = NULL;
+typedef struct {
+	GkmModule *module;
+	GkmSession *session;
+	GkmObject *object;
+} Test;
 
-TESTING_SETUP(credential_setup)
+static void
+setup (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
-	module = test_module_initialize_and_enter ();
-	session = test_module_open_session (TRUE);
+	test->module = mock_module_initialize_and_enter ();
+	test->session = mock_module_open_session (TRUE);
 
-	rv = gkm_module_C_Login (module, gkm_session_get_handle (session), CKU_USER, NULL, 0);
+	rv = gkm_module_C_Login (test->module, gkm_session_get_handle (test->session), CKU_USER, NULL, 0);
 	g_assert (rv == CKR_OK);
 
-	object = mock_locked_object_new (module, gkm_module_get_manager (module));
-	gkm_object_expose (object, TRUE);
+	test->object = mock_locked_object_new (test->module, gkm_module_get_manager (test->module));
+	gkm_object_expose (test->object, TRUE);
 }
 
-TESTING_TEARDOWN(credential_teardown)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	g_object_unref (object);
-	object = NULL;
-
-	test_module_leave_and_finalize ();
-	module = NULL;
-	session = NULL;
+	g_object_unref (test->object);
+	mock_module_leave_and_finalize ();
 }
 
-TESTING_TEST(credential_create)
+static void
+test_create (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
-	CK_OBJECT_HANDLE locked = gkm_object_get_handle (object);
+	CK_OBJECT_HANDLE locked = gkm_object_get_handle (test->object);
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -75,18 +77,19 @@ TESTING_TEST(credential_create)
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_OK);
 	g_assert (handle != 0);
 
-	rv = gkm_session_C_DestroyObject (session, handle);
+	rv = gkm_session_C_DestroyObject (test->session, handle);
 	g_assert (rv == CKR_OK);
 }
 
-TESTING_TEST(credential_create_missing_pin)
+static void
+test_create_missing_pin (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
-	CK_OBJECT_HANDLE locked = gkm_object_get_handle (object);
+	CK_OBJECT_HANDLE locked = gkm_object_get_handle (test->object);
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -96,11 +99,12 @@ TESTING_TEST(credential_create_missing_pin)
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_USER_NOT_LOGGED_IN);
 }
 
-TESTING_TEST(credential_create_no_object)
+static void
+test_create_no_object (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_BBOOL token = CK_FALSE;
@@ -115,19 +119,20 @@ TESTING_TEST(credential_create_no_object)
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_OK);
 	g_assert (handle != 0);
 
 	attr.type = CKA_G_OBJECT;
 	attr.pValue = &objhand;
 	attr.ulValueLen = sizeof (objhand);
-	rv = gkm_session_C_GetAttributeValue (session, handle, &attr, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, handle, &attr, 1);
 	g_assert (rv == CKR_OK);
 	g_assert (objhand == 0);
 }
 
-TESTING_TEST(credential_create_invalid_object)
+static void
+test_create_invalid_object (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_OBJECT_HANDLE locked = 0;
@@ -142,14 +147,15 @@ TESTING_TEST(credential_create_invalid_object)
 	CK_OBJECT_HANDLE handle;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_OBJECT_HANDLE_INVALID);
 }
 
-TESTING_TEST(credential_get_attributes)
+static void
+test_get_attributes (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
-	CK_OBJECT_HANDLE locked = gkm_object_get_handle (object);
+	CK_OBJECT_HANDLE locked = gkm_object_get_handle (test->object);
 
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
@@ -162,7 +168,7 @@ TESTING_TEST(credential_get_attributes)
 	CK_ULONG value;
 	CK_RV rv;
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &handle);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &handle);
 	g_assert (rv == CKR_OK);
 	g_assert (handle != 0);
 
@@ -170,33 +176,35 @@ TESTING_TEST(credential_get_attributes)
 	check.pValue = &value;
 	check.ulValueLen = sizeof (value);
 
-	rv = gkm_session_C_GetAttributeValue (session, handle, &check, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, handle, &check, 1);
 	g_assert (rv == CKR_OK);
 	g_assert (check.ulValueLen == sizeof (value));
 	g_assert (value == locked);
 }
 
-TESTING_TEST(credential_object_property)
+static void
+test_object_property (Test *test, gconstpointer unused)
 {
 	GkmCredential *auth;
 	GkmObject *check;
 	CK_RV rv;
 
-	rv = gkm_credential_create (module, NULL, object, (guchar*)"mock", 4, &auth);
+	rv = gkm_credential_create (test->module, NULL, test->object, (guchar*)"mock", 4, &auth);
 	g_assert (rv == CKR_OK);
 	g_assert (auth);
 
 	g_object_get (auth, "object", &check, NULL);
-	g_assert (check == object);
+	g_assert (check == test->object);
 	g_object_unref (check);
 
 	check = gkm_credential_get_object (auth);
-	g_assert (check == object);
+	g_assert (check == test->object);
 
 	g_object_unref (auth);
 }
 
-TESTING_TEST(credential_login_property)
+static void
+test_login_property (Test *test, gconstpointer unused)
 {
 	GkmCredential *cred;
 	GkmSecret *check, *secret;
@@ -204,7 +212,7 @@ TESTING_TEST(credential_login_property)
 	gsize n_password;
 	CK_RV rv;
 
-	rv = gkm_credential_create (module, NULL, object, (guchar*)"mock", 4, &cred);
+	rv = gkm_credential_create (test->module, NULL, test->object, (guchar*)"mock", 4, &cred);
 	g_assert (rv == CKR_OK);
 	g_assert (cred);
 
@@ -239,14 +247,15 @@ boxed_string (void)
 	return type;
 }
 
-TESTING_TEST(credential_data)
+static void
+test_data (Test *test, gconstpointer unused)
 {
 	GkmCredential *cred;
 	GType type = boxed_string ();
 	gchar *check;
 	CK_RV rv;
 
-	rv = gkm_credential_create (module, NULL, object, (guchar*)"mock", 4, &cred);
+	rv = gkm_credential_create (test->module, NULL, test->object, (guchar*)"mock", 4, &cred);
 	g_assert (rv == CKR_OK);
 	g_assert (cred);
 
@@ -269,17 +278,37 @@ TESTING_TEST(credential_data)
 	g_object_unref (cred);
 }
 
-TESTING_TEST(credential_connect_object)
+static void
+test_connect_object (Test *test, gconstpointer unused)
 {
 	GkmCredential *cred;
 	CK_RV rv;
 
-	rv = gkm_credential_create (module, NULL, NULL, (guchar*)"mock", 4, &cred);
+	rv = gkm_credential_create (test->module, NULL, NULL, (guchar*)"mock", 4, &cred);
 	g_assert (rv == CKR_OK);
 	g_assert (cred);
 
-	gkm_credential_connect (cred, object);
-	g_assert (gkm_credential_get_object (cred) == object);
+	gkm_credential_connect (cred, test->object);
+	g_assert (gkm_credential_get_object (cred) == test->object);
 
 	g_object_unref (cred);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/gkm/credential/create", Test, NULL, setup, test_create, teardown);
+	g_test_add ("/gkm/credential/create_missing_pin", Test, NULL, setup, test_create_missing_pin, teardown);
+	g_test_add ("/gkm/credential/create_no_object", Test, NULL, setup, test_create_no_object, teardown);
+	g_test_add ("/gkm/credential/create_invalid_object", Test, NULL, setup, test_create_invalid_object, teardown);
+	g_test_add ("/gkm/credential/get_attributes", Test, NULL, setup, test_get_attributes, teardown);
+	g_test_add ("/gkm/credential/object_property", Test, NULL, setup, test_object_property, teardown);
+	g_test_add ("/gkm/credential/login_property", Test, NULL, setup, test_login_property, teardown);
+	g_test_add ("/gkm/credential/data", Test, NULL, setup, test_data, teardown);
+	g_test_add ("/gkm/credential/connect_object", Test, NULL, setup, test_connect_object, teardown);
+
+	return g_test_run ();
 }

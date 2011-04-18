@@ -22,8 +22,10 @@
 */
 
 #include "config.h"
-#include "test-module.h"
-#include "test-suite.h"
+
+#include "mock-module.h"
+
+#include "egg/egg-secure-memory.h"
 
 /* Include all the module entry points */
 #include "gkm/gkm-module-ep.h"
@@ -31,8 +33,10 @@ GKM_DEFINE_MODULE (test_module, GKM_TYPE_MODULE);
 
 #include "gkm/gkm-certificate.h"
 
+EGG_SECURE_GLIB_DEFINITIONS ();
+
 GkmModule*
-test_module_initialize_and_enter (void)
+mock_module_initialize_and_enter (void)
 {
 	CK_RV rv;
 
@@ -42,34 +46,34 @@ test_module_initialize_and_enter (void)
 
 	g_return_val_if_fail (pkcs11_module, NULL);
 
-	test_module_enter ();
+	mock_module_enter ();
 	return pkcs11_module;
 }
 
 void
-test_module_leave_and_finalize (void)
+mock_module_leave_and_finalize (void)
 {
 	CK_RV rv;
 
-	test_module_leave ();
+	mock_module_leave ();
 	rv = test_module_function_list->C_Finalize (NULL);
 	g_return_if_fail (rv == CKR_OK);
 }
 
 void
-test_module_leave (void)
+mock_module_leave (void)
 {
 	g_static_mutex_unlock (&pkcs11_module_mutex);
 }
 
 void
-test_module_enter (void)
+mock_module_enter (void)
 {
 	g_static_mutex_lock (&pkcs11_module_mutex);
 }
 
 GkmSession*
-test_module_open_session (gboolean writable)
+mock_module_open_session (gboolean writable)
 {
 	CK_ULONG flags = CKF_SERIAL_SESSION;
 	CK_SESSION_HANDLE handle;
@@ -89,7 +93,7 @@ test_module_open_session (gboolean writable)
 }
 
 GkmObject*
-test_module_object_new (GkmSession *session)
+mock_module_object_new (GkmSession *session)
 {
 	CK_BBOOL token = CK_FALSE;
 	CK_OBJECT_CLASS klass = CKO_CERTIFICATE;
@@ -97,18 +101,26 @@ test_module_object_new (GkmSession *session)
 	GkmObject *object;
 
 	gsize n_data;
-	guchar *data = testing_data_read ("test-certificate-1.der", &n_data);
+	gchar *data;
 
 	CK_ATTRIBUTE attrs[] = {
+		{ CKA_VALUE, data, n_data },
 		{ CKA_TOKEN, &token, sizeof (token) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
-		{ CKA_VALUE, data, n_data },
 	};
+
+	if (!g_file_get_contents ("files/test-certificate-1.der", &data, &n_data, NULL))
+		g_assert_not_reached ();
+
+	attrs[0].pValue = data;
+	attrs[0].ulValueLen = n_data;
 
 	object = gkm_session_create_object_for_factory (session, GKM_FACTORY_CERTIFICATE, NULL,
 	                                              attrs, G_N_ELEMENTS (attrs));
 	if (object) /* Owned by storage */
 		g_object_unref (object);
+
+	g_free (data);
 	return object;
 }

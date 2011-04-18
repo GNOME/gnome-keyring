@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* test-module.h: A test PKCS#11 module implementation
+/* mock-module.h: A test PKCS#11 module implementation
 
    Copyright (C) 2009 Stefan Walter
 
@@ -21,25 +21,25 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef TESTMODULE_H_
-#define TESTMODULE_H_
+#ifndef MOCK_MODULE_H_
+#define MOCK_MODULE_H_
 
 #include <glib.h>
 
-#include "gkm-types.h"
+#include "gkm/gkm-types.h"
 
 #include "pkcs11.h"
 
-void                   test_module_leave                    (void);
+void                   mock_module_leave                    (void);
 
-void                   test_module_enter                    (void);
+void                   mock_module_enter                    (void);
 
-GkmModule*             test_module_initialize_and_enter     (void);
+GkmModule*             mock_module_initialize_and_enter     (void);
 
-void                   test_module_leave_and_finalize       (void);
+void                   mock_module_leave_and_finalize       (void);
 
-GkmSession*            test_module_open_session             (gboolean writable);
+GkmSession*            mock_module_open_session             (gboolean writable);
 
-GkmObject*             test_module_object_new               (GkmSession *session);
+GkmObject*             mock_module_object_new               (GkmSession *session);
 
-#endif /* TESTMODULE_H_ */
+#endif /* MOCK_MODULE_H_ */

@@ -23,6 +23,8 @@
 
 #include "gcr.h"
 #include "gcr-certificate-renderer.h"
+#define DEBUG_FLAG GCR_DEBUG_LIBRARY
+#include "gcr-debug.h"
 #include "gcr-internal.h"
 #include "gcr-library.h"
 #include "gcr-key-renderer.h"
@@ -182,6 +184,8 @@ _gcr_initialize (void)
 
 	g_type_class_unref (g_type_class_ref (GCR_TYPE_CERTIFICATE_RENDERER));
 	g_type_class_unref (g_type_class_ref (GCR_TYPE_KEY_RENDERER));
+
+	_gcr_debug ("initialized library");
 }
 
 /**

@@ -97,6 +97,7 @@ int
 main(int argc, char *argv[])
 {
 	gtk_init (&argc, &argv);
+	g_set_prgname ("frob-key");
 
 	if (argc > 1) {
 		test_key (argv[1]);

@@ -75,7 +75,7 @@ init_quarks (void)
 	"    (e %m)))"
 
 GkmDataResult
-gkm_data_der_read_public_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+gkm_data_der_read_public_key_rsa (gconstpointer data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	GNode *asn = NULL;
@@ -123,7 +123,7 @@ done:
 	"    (u %m)))"
 
 GkmDataResult
-gkm_data_der_read_private_key_rsa (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+gkm_data_der_read_private_key_rsa (gconstpointer data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	gcry_mpi_t n, e, d, p, q, u;
@@ -200,7 +200,7 @@ done:
 	"    (y %m)))"
 
 GkmDataResult
-gkm_data_der_read_public_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+gkm_data_der_read_public_key_dsa (gconstpointer data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	GNode *asn = NULL;
@@ -242,8 +242,8 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_public_key_dsa_parts (const guchar *keydata, gsize n_keydata,
-                                        const guchar *params, gsize n_params,
+gkm_data_der_read_public_key_dsa_parts (gconstpointer keydata, gsize n_keydata,
+                                        gconstpointer params, gsize n_params,
                                         gcry_sexp_t *s_key)
 {
 	gcry_mpi_t p, q, g, y;
@@ -300,7 +300,7 @@ done:
 	"    (x %m)))"
 
 GkmDataResult
-gkm_data_der_read_private_key_dsa (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+gkm_data_der_read_private_key_dsa (gconstpointer data, gsize n_data, gcry_sexp_t *s_key)
 {
 	gcry_mpi_t p, q, g, y, x;
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
@@ -344,8 +344,8 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_private_key_dsa_parts (const guchar *keydata, gsize n_keydata,
-                                         const guchar *params, gsize n_params,
+gkm_data_der_read_private_key_dsa_parts (gconstpointer keydata, gsize n_keydata,
+                                         gconstpointer params, gsize n_params,
                                          gcry_sexp_t *s_key)
 {
 	gcry_mpi_t p, q, g, y, x;
@@ -398,7 +398,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_public_key (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+gkm_data_der_read_public_key (gconstpointer data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GkmDataResult res;
 
@@ -410,7 +410,7 @@ gkm_data_der_read_public_key (const guchar *data, gsize n_data, gcry_sexp_t *s_k
 }
 
 GkmDataResult
-gkm_data_der_read_public_key_info (const guchar* data, gsize n_data, gcry_sexp_t* s_key)
+gkm_data_der_read_public_key_info (gconstpointer data, gsize n_data, gcry_sexp_t* s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	GQuark oid;
@@ -466,7 +466,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_private_key (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+gkm_data_der_read_private_key (gconstpointer data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GkmDataResult res;
 
@@ -478,7 +478,7 @@ gkm_data_der_read_private_key (const guchar *data, gsize n_data, gcry_sexp_t *s_
 }
 
 GkmDataResult
-gkm_data_der_read_private_pkcs8_plain (const guchar *data, gsize n_data, gcry_sexp_t *s_key)
+gkm_data_der_read_private_pkcs8_plain (gconstpointer data, gsize n_data, gcry_sexp_t *s_key)
 {
 	GNode *asn = NULL;
 	GkmDataResult ret;
@@ -552,7 +552,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_private_pkcs8_crypted (const guchar *data, gsize n_data, const gchar *password,
+gkm_data_der_read_private_pkcs8_crypted (gconstpointer data, gsize n_data, const gchar *password,
                                          gsize n_password, gcry_sexp_t *s_key)
 {
 	GNode *asn = NULL;
@@ -637,7 +637,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_private_pkcs8 (const guchar *data, gsize n_data, const gchar *password,
+gkm_data_der_read_private_pkcs8 (gconstpointer data, gsize n_data, const gchar *password,
                                  gsize n_password, gcry_sexp_t *s_key)
 {
 	GkmDataResult res;
@@ -649,7 +649,7 @@ gkm_data_der_read_private_pkcs8 (const guchar *data, gsize n_data, const gchar *
 	return res;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_public_key_rsa (gcry_sexp_t s_key, gsize *len)
 {
 	GNode *asn = NULL;
@@ -681,7 +681,7 @@ done:
 	return result;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_private_key_rsa (gcry_sexp_t s_key, gsize *n_key)
 {
 	GNode *asn = NULL;
@@ -747,7 +747,7 @@ done:
 	return result;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_public_key_dsa (gcry_sexp_t s_key, gsize *len)
 {
 	GNode *asn = NULL;
@@ -788,7 +788,7 @@ done:
 	return result;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_private_key_dsa_part (gcry_sexp_t skey, gsize *n_key)
 {
 	GNode *asn = NULL;
@@ -817,7 +817,7 @@ done:
 	return result;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params)
 {
 	GNode *asn = NULL;
@@ -852,7 +852,7 @@ done:
 	return result;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_private_key_dsa (gcry_sexp_t s_key, gsize *len)
 {
 	GNode *asn = NULL;
@@ -896,7 +896,7 @@ done:
 	return result;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_public_key (gcry_sexp_t s_key, gsize *len)
 {
 	gboolean is_priv;
@@ -919,7 +919,7 @@ gkm_data_der_write_public_key (gcry_sexp_t s_key, gsize *len)
 	}
 }
 
-guchar*
+gpointer
 gkm_data_der_write_private_key (gcry_sexp_t s_key, gsize *len)
 {
 	gboolean is_priv;
@@ -1011,7 +1011,7 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	return cih;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 {
 	GNode *asn = NULL;
@@ -1082,7 +1082,7 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey, gsize *n_data)
 	return data;
 }
 
-guchar*
+gpointer
 gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *password,
                                           gsize n_password, gsize *n_data)
 {
@@ -1140,7 +1140,7 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey, const gchar *passwor
  */
 
 GkmDataResult
-gkm_data_der_read_certificate (const guchar *data, gsize n_data, GNode **asn1)
+gkm_data_der_read_certificate (gconstpointer data, gsize n_data, GNode **asn1)
 {
 	*asn1 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	if (!*asn1)
@@ -1150,7 +1150,7 @@ gkm_data_der_read_certificate (const guchar *data, gsize n_data, GNode **asn1)
 }
 
 GkmDataResult
-gkm_data_der_read_basic_constraints (const guchar *data, gsize n_data,
+gkm_data_der_read_basic_constraints (gconstpointer data, gsize n_data,
                                      gboolean *is_ca, gint *path_len)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
@@ -1193,7 +1193,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_key_usage (const guchar *data, gsize n_data, gulong *key_usage)
+gkm_data_der_read_key_usage (gconstpointer data, gsize n_data, gulong *key_usage)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	GNode *asn = NULL;
@@ -1216,7 +1216,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_enhanced_usage (const guchar *data, gsize n_data, GQuark **usage_oids)
+gkm_data_der_read_enhanced_usage (gconstpointer data, gsize n_data, GQuark **usage_oids)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	GNode *asn = NULL;
@@ -1250,7 +1250,7 @@ done:
 }
 
 
-guchar*
+gpointer
 gkm_data_der_write_certificate (GNode *asn1, gsize *n_data)
 {
 	gpointer result;

@@ -163,6 +163,8 @@ gcr_pkcs11_get_trust_lookup_uris
 gcr_pkcs11_set_trust_lookup_uris
 gcr_pkcs11_get_trust_store_uri
 gcr_pkcs11_set_trust_store_uri
+<SUBSECTION Private>
+GcrDebugFlags
 </SECTION>
 
 <SECTION>

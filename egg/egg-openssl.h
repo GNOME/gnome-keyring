@@ -31,7 +31,7 @@ typedef void (*EggOpensslPemCallback) (GQuark type, const guchar *data, gsize n_
 
 GHashTable*      egg_openssl_headers_new       (void);
 
-guint            egg_openssl_pem_parse         (const guchar *data, gsize n_data, 
+guint            egg_openssl_pem_parse         (gconstpointer data, gsize n_data,
                                                 EggOpensslPemCallback callback, 
                                                 gpointer user_data);
 
