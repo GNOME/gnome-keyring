@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-secret.c: Test gkm-secret.c
+/* test-secret.c: Test gkm-secret.c
 
    Copyright (C) 2007 Stefan Walter
 
@@ -21,15 +21,20 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
+#include "config.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "test-suite.h"
-
 #include "gkm/gkm-secret.h"
 
-TESTING_TEST(test_secret)
+#include "egg/egg-secure-memory.h"
+
+EGG_SECURE_GLIB_DEFINITIONS ();
+
+static void
+test_secret (void)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -52,7 +57,8 @@ TESTING_TEST(test_secret)
 	g_object_unref (secret);
 }
 
-TESTING_TEST(test_secret_from_login)
+static void
+test_secret_from_login (void)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -75,7 +81,8 @@ TESTING_TEST(test_secret_from_login)
 	g_object_unref (secret);
 }
 
-TESTING_TEST(test_null_terminated)
+static void
+test_null_terminated (void)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -98,7 +105,8 @@ TESTING_TEST(test_null_terminated)
 	g_object_unref (secret);
 }
 
-TESTING_TEST(test_always_has_null)
+static void
+test_always_has_null (void)
 {
 	GkmSecret *secret;
 	const guchar *memory;
@@ -117,7 +125,8 @@ TESTING_TEST(test_always_has_null)
 	g_object_unref (secret);
 }
 
-TESTING_TEST(test_null)
+static void
+test_null (void)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -139,7 +148,8 @@ TESTING_TEST(test_null)
 	g_object_unref (secret);
 }
 
-TESTING_TEST(test_empty)
+static void
+test_empty (void)
 {
 	GkmSecret *secret;
 	const gchar *password;
@@ -161,7 +171,8 @@ TESTING_TEST(test_empty)
 	g_object_unref (secret);
 }
 
-TESTING_TEST(test_equal)
+static void
+test_equal (void)
 {
 	GkmSecret *one;
 	GkmSecret *two;
@@ -175,4 +186,21 @@ TESTING_TEST(test_equal)
 	g_object_unref (one);
 	one = gkm_secret_new_from_password ("other");
 	g_assert (!gkm_secret_equal (one, two));
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/gkm/secret/secret", test_secret);
+	g_test_add_func ("/gkm/secret/secret_from_login", test_secret_from_login);
+	g_test_add_func ("/gkm/secret/null_terminated", test_null_terminated);
+	g_test_add_func ("/gkm/secret/always_has_null", test_always_has_null);
+	g_test_add_func ("/gkm/secret/null", test_null);
+	g_test_add_func ("/gkm/secret/empty", test_empty);
+	g_test_add_func ("/gkm/secret/equal", test_equal);
+
+	return g_test_run ();
 }

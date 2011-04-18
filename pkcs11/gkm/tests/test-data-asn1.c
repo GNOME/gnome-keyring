@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-data-asn1.c: Test ASN.1 routines
+/* test-data-asn1.c: Test ASN.1 routines
 
    Copyright (C) 2007 Stefan Walter
 
@@ -23,11 +23,10 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
 #include "gkm/gkm-data-asn1.h"
 
 #include <glib.h>
+#include <glib-object.h>
 #include <gcrypt.h>
 
 #include <stdlib.h>
@@ -39,25 +38,31 @@
 
 #include "asn1-def-test.h"
 
-static GNode *asn1_cert = NULL;
-static guchar *data_cert = NULL;
-static gsize n_data_cert = 0;
+typedef struct {
+	GNode *asn1_cert;
+	gchar *data_cert;
+	gsize n_data_cert;
+} Test;
 
-TESTING_SETUP(asn1_tree)
+static void
+setup (Test *test, gconstpointer unused)
 {
-	data_cert = testing_data_read ("test-certificate-1.der", &n_data_cert);
-	asn1_cert = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data_cert, n_data_cert);
-	g_assert (asn1_cert);
+	if (!g_file_get_contents ("files/test-certificate-1.der", &test->data_cert, &test->n_data_cert, NULL))
+		g_assert_not_reached ();
+
+	test->asn1_cert = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", test->data_cert, test->n_data_cert);
+	g_assert (test->asn1_cert);
 }
 
-TESTING_TEARDOWN(asn1_tree)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	egg_asn1x_destroy (asn1_cert);
-	g_free (data_cert);
-	data_cert = NULL;
+	egg_asn1x_destroy (test->asn1_cert);
+	g_free (test->data_cert);
 }
 
-TESTING_TEST(asn1_integers)
+static void
+test_asn1_integers (Test *test, gconstpointer unused)
 {
 	GNode *asn;
 	gcry_mpi_t mpi, mpt;
@@ -92,4 +97,15 @@ TESTING_TEST(asn1_integers)
 	g_assert ("mpi is wrong number" && gcry_mpi_cmp (mpi, mpt) == 0);
 
 	g_free (data);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/gkm/data-asn1/integers", Test, NULL, setup, test_asn1_integers, teardown);
+
+	return g_test_run ();
 }

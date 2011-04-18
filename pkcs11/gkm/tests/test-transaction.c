@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-store.c: Test general store functionality
+/* test-transaction.c: Test transaction functionality
 
    Copyright (C) 2008 Stefan Walter
 
@@ -21,18 +21,25 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "test-suite.h"
+#include "config.h"
 
 #include "gkm/gkm-transaction.h"
 
-TESTING_SETUP (transaction_setup)
+#include <glib/gstdio.h>
+
+typedef struct {
+	int unused;
+} Test;
+
+static void
+setup (Test* test, gconstpointer unused)
 {
 	GDir *dir;
 	const gchar *directory;
 	const gchar *basename;
 	gchar *filename;
 
-	directory = testing_scratch_directory ();
+	directory = "/tmp";
 	dir = g_dir_open (directory, 0, NULL);
 	g_assert (dir);
 
@@ -50,7 +57,14 @@ TESTING_SETUP (transaction_setup)
 	g_dir_close (dir);
 }
 
-TESTING_TEST(transaction_empty)
+static void
+teardown (Test *test, gconstpointer unused)
+{
+
+}
+
+static void
+test_transaction_empty (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction;
 	gboolean completed, failed;
@@ -77,7 +91,8 @@ TESTING_TEST(transaction_empty)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(transaction_fail)
+static void
+test_transaction_fail (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction;
 
@@ -123,7 +138,8 @@ completed_callback (GkmTransaction *transaction, GObject *object, gpointer data)
 	return TRUE;
 }
 
-TESTING_TEST(transaction_signals_success)
+static void
+test_transaction_signals_success (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -146,7 +162,8 @@ TESTING_TEST(transaction_signals_success)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(transaction_signals_failure)
+static void
+test_transaction_signals_failure (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -183,7 +200,8 @@ order_callback (GkmTransaction *transaction, GObject *object, gpointer data)
 	return TRUE;
 }
 
-TESTING_TEST(transaction_order_is_reverse)
+static void
+test_transaction_order_is_reverse (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -196,7 +214,8 @@ TESTING_TEST(transaction_order_is_reverse)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(transaction_dispose_completes)
+static void
+test_transaction_dispose_completes (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 
@@ -212,10 +231,11 @@ TESTING_TEST(transaction_dispose_completes)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(remove_file_success)
+static void
+test_remove_file_success (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-remove");
+	const gchar *filename = "/tmp/transaction-remove";
 
 	g_assert (g_file_set_contents (filename, "xxx", 3, NULL));
 	g_assert (g_file_test (filename, G_FILE_TEST_IS_REGULAR));
@@ -229,13 +249,13 @@ TESTING_TEST(remove_file_success)
 	g_assert (!g_file_test (filename, G_FILE_TEST_IS_REGULAR));
 
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST(remove_file_abort)
+static void
+test_remove_file_abort (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-remove");
+	const gchar *filename = "/tmp/transaction-remove";
 	gchar *data;
 	gsize n_data;
 
@@ -261,13 +281,13 @@ TESTING_TEST(remove_file_abort)
 
 	g_unlink (filename);
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST(remove_file_non_exist)
+static void
+test_remove_file_non_exist (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-non-existant");
+	const gchar *filename = "/tmp/transaction-non-existant";
 
 	g_unlink (filename);
 
@@ -277,13 +297,13 @@ TESTING_TEST(remove_file_non_exist)
 
 	gkm_transaction_complete (transaction);
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST(write_file)
+static void
+test_write_file (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-test");
+	const gchar *filename = "/tmp/transaction-test";
 	gchar *data;
 	gsize n_data;
 
@@ -303,13 +323,13 @@ TESTING_TEST(write_file)
 	g_free (data);
 
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST(write_file_abort_gone)
+static void
+test_write_file_abort_gone (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-test");
+	const gchar *filename = "/tmp/transaction-test";
 	gchar *data;
 	gsize n_data;
 
@@ -329,13 +349,13 @@ TESTING_TEST(write_file_abort_gone)
 	g_assert (!g_file_test (filename, G_FILE_TEST_IS_REGULAR));
 
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST(write_file_abort_revert)
+static void
+test_write_file_abort_revert (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-test");
+	const gchar *filename = "/tmp/transaction-test";
 	gchar *data;
 
 	g_assert (g_file_set_contents (filename, "my original", -1, NULL));
@@ -355,13 +375,13 @@ TESTING_TEST(write_file_abort_revert)
 	g_free (data);
 
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST (unique_file_conflict)
+static void
+test_unique_file_conflict (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-test");
+	const gchar *filename = "/tmp/transaction-test";
 	gchar *dirname;
 	gchar *basename;
 	gchar *result;
@@ -383,13 +403,13 @@ TESTING_TEST (unique_file_conflict)
 	g_free (result);
 
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST (unique_file_conflict_with_ext)
+static void
+test_unique_file_conflict_with_ext (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	gchar *filename = testing_scratch_filename ("transaction-test.ext");
+	const gchar *filename = "/tmp/transaction-test.ext";
 	gchar *dirname;
 	gchar *basename;
 	gchar *result;
@@ -411,13 +431,13 @@ TESTING_TEST (unique_file_conflict_with_ext)
 	g_free (result);
 
 	g_object_unref (transaction);
-	g_free (filename);
 }
 
-TESTING_TEST (unique_file_no_conflict)
+static void
+test_unique_file_no_conflict (Test* test, gconstpointer unused)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
-	const gchar *dirname = testing_scratch_directory ();
+	const gchar *dirname = "/tmp";
 	gchar *result;
 
 	result = gkm_transaction_unique_file (transaction, dirname, "transaction-another");
@@ -429,4 +449,29 @@ TESTING_TEST (unique_file_no_conflict)
 	g_free (result);
 
 	g_object_unref (transaction);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/gkm/transaction/transaction_empty", Test, NULL, setup, test_transaction_empty, teardown);
+	g_test_add ("/gkm/transaction/transaction_fail", Test, NULL, setup, test_transaction_fail, teardown);
+	g_test_add ("/gkm/transaction/transaction_signals_success", Test, NULL, setup, test_transaction_signals_success, teardown);
+	g_test_add ("/gkm/transaction/transaction_signals_failure", Test, NULL, setup, test_transaction_signals_failure, teardown);
+	g_test_add ("/gkm/transaction/transaction_order_is_reverse", Test, NULL, setup, test_transaction_order_is_reverse, teardown);
+	g_test_add ("/gkm/transaction/transaction_dispose_completes", Test, NULL, setup, test_transaction_dispose_completes, teardown);
+	g_test_add ("/gkm/transaction/remove_file_success", Test, NULL, setup, test_remove_file_success, teardown);
+	g_test_add ("/gkm/transaction/remove_file_abort", Test, NULL, setup, test_remove_file_abort, teardown);
+	g_test_add ("/gkm/transaction/remove_file_non_exist", Test, NULL, setup, test_remove_file_non_exist, teardown);
+	g_test_add ("/gkm/transaction/write_file", Test, NULL, setup, test_write_file, teardown);
+	g_test_add ("/gkm/transaction/write_file_abort_gone", Test, NULL, setup, test_write_file_abort_gone, teardown);
+	g_test_add ("/gkm/transaction/write_file_abort_revert", Test, NULL, setup, test_write_file_abort_revert, teardown);
+	g_test_add ("/gkm/transaction/unique_file_conflict", Test, NULL, setup, test_unique_file_conflict, teardown);
+	g_test_add ("/gkm/transaction/unique_file_conflict_with_ext", Test, NULL, setup, test_unique_file_conflict_with_ext, teardown);
+	g_test_add ("/gkm/transaction/unique_file_no_conflict", Test, NULL, setup, test_unique_file_no_conflict, teardown);
+
+	return g_test_run ();
 }
