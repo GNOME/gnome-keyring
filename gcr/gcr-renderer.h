@@ -46,8 +46,6 @@ struct _GcrRendererIface {
 	/* virtual */
 	void (*render_view) (GcrRenderer *self, GcrViewer *viewer);
 
-	const void (*get_column_value) (GcrRenderer *self, GQuark column, GValue *value);
-
 	void (*populate_popup) (GcrRenderer *self, GcrViewer *viewer, GtkMenu *menu);
 
 	/*< private >*/
