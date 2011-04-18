@@ -234,7 +234,7 @@ egg_openssl_headers_new (void)
 }
 
 guint
-egg_openssl_pem_parse (const guchar *data, gsize n_data, 
+egg_openssl_pem_parse (gconstpointer data, gsize n_data,
                        EggOpensslPemCallback callback, gpointer user_data)
 {
 	const gchar *beg, *end;
@@ -258,7 +258,7 @@ egg_openssl_pem_parse (const guchar *data, gsize n_data,
 		g_assert (type);
 		
 		/* This returns the character position before the PEM END header */
-		end = pem_find_end ((const gchar*)beg, n_data - ((const guchar*)beg - data), type);
+		end = pem_find_end ((const gchar*)beg, n_data - ((const gchar*)beg - (const gchar *)data), type);
 		if (!end)
 			break;
 
@@ -274,8 +274,8 @@ egg_openssl_pem_parse (const guchar *data, gsize n_data,
                      
 		/* Try for another block */
 		end += PEM_SUFF_L;
-		n_data -= (const guchar*)end - data; 
-		data = (const guchar*)end;
+		n_data -= (const gchar*)end - (const gchar*)data;
+		data = end;
 	}
 	
 	if (headers)
