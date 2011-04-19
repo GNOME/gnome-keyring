@@ -89,7 +89,7 @@ main (int argc, char *argv[])
 
 	if (argc == 1) {
 		chdir_base_dir (argv[0]);
-		add_to_selector (parser, "test-data/ca-certificates.crt");
+		add_to_selector (parser, "files/ca-certificates.crt");
 	} else {
 		for (i = 1; i < argc; ++i)
 			add_to_selector (parser, argv[i]);
