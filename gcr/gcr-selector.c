@@ -25,6 +25,8 @@
 #include "gcr-internal.h"
 #include "gcr-selector.h"
 
+#include <glib/gi18n-lib.h>
+
 #include <string.h>
 
 /**
@@ -192,13 +194,15 @@ add_string_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
+	const gchar *label;
 
 	g_assert (column->column_type == G_TYPE_STRING);
 	g_assert (!(column->flags & GCR_COLUMN_HIDDEN));
 
 	cell = gtk_cell_renderer_text_new ();
 	g_object_set (G_OBJECT (cell), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-	col = gtk_tree_view_column_new_with_attributes (column->label, cell, "text", column_id, NULL);
+	label = g_dpgettext2 (NULL, "column", column->label);
+	col = gtk_tree_view_column_new_with_attributes (label, cell, "text", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
 	if (column->flags & GCR_COLUMN_SORTABLE)
 		gtk_tree_view_column_set_sort_column_id (col, column_id);
@@ -210,13 +214,15 @@ add_icon_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
+	const gchar *label;
 
 	g_assert (column->column_type == G_TYPE_ICON);
 	g_assert (!(column->flags & GCR_COLUMN_HIDDEN));
 
 	cell = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (cell, "stock-size", GTK_ICON_SIZE_BUTTON, NULL);
-	col = gtk_tree_view_column_new_with_attributes (column->label, cell, "gicon", column_id, NULL);
+	label = g_dpgettext2 (NULL, "column", column->label);
+	col = gtk_tree_view_column_new_with_attributes (label, cell, "gicon", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
 	if (column->flags & GCR_COLUMN_SORTABLE)
 		gtk_tree_view_column_set_sort_column_id (col, column_id);

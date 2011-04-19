@@ -386,11 +386,11 @@ gcr_certificate_get_columns (void)
 {
 	static GcrColumn columns[] = {
 		{ "icon", /* later */ 0, /* later */ 0, NULL, 0 },
-		{ "label", G_TYPE_STRING, G_TYPE_STRING, N_("Name"),
+		{ "label", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Name"),
 		  GCR_COLUMN_SORTABLE },
-		{ "issuer", G_TYPE_STRING, G_TYPE_STRING, N_("Issued By"),
+		{ "issuer", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Issued By"),
 		  GCR_COLUMN_SORTABLE },
-		{ "expiry", /* later */ 0, G_TYPE_STRING, N_("Expires"),
+		{ "expiry", /* later */ 0, G_TYPE_STRING, NC_("column", "Expires"),
 		  GCR_COLUMN_SORTABLE, on_transform_date_to_string },
 		{ NULL }
 	};

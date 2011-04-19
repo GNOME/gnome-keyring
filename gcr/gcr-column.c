@@ -55,4 +55,11 @@
  * @user_data: User data associated with the column
  *
  * Represents a column to display in a #GcrCollectionModel or #GcrSelector.
+ *
+ * The label should be set as a translatable string with a context of
+ * <code>"column"</code>. This should be done with with this macro:
+ *
+ * <informalexample><programlisting>
+ * NC_("column", "My Column Name")
+ * </programlisting></informalexample>
  */
