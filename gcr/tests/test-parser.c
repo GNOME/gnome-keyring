@@ -106,6 +106,7 @@ static void
 teardown (Test *test, gconstpointer unused)
 {
 	g_object_unref (test->parser);
+	g_free (test->filedesc);
 }
 
 static void
@@ -128,7 +129,12 @@ test_parse_all (Test *test, gconstpointer unused)
 		if (filename[0] == '.')
 			continue;
 
+		g_free (test->filedesc);
 		test->filedesc = g_build_filename ("files", filename, NULL);
+
+		if (g_file_test (test->filedesc, G_FILE_TEST_IS_DIR))
+			continue;
+
 		if (!g_file_get_contents (test->filedesc, &contents, &len, NULL))
 			g_assert_not_reached ();
 
@@ -141,9 +147,6 @@ test_parse_all (Test *test, gconstpointer unused)
 			g_error_free (err);
 			g_assert_not_reached ();
 		}
-
-		g_free (test->filedesc);
-		test->filedesc = NULL;
 	}
 
 	g_dir_close (dir);
