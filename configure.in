@@ -8,7 +8,7 @@ dnl ****************************************************************************
 dnl Library package and libtool versioning
 dnl
 dnl Updating the libtool versions, follow these instructions sequentially:
-dnl  1. If the library source code has changed at all since the last update, then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
+dnl  1. If the library source code has changed at all since the last update, then increment revision ('c:r:a' becomes 'c:r+1:a').
 dnl  2. If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
 dnl  3. If any interfaces have been added since the last public release, then increment age.
 dnl  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
