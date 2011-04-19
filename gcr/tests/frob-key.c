@@ -103,7 +103,7 @@ main(int argc, char *argv[])
 		test_key (argv[1]);
 	} else {
 		chdir_base_dir (argv[0]);
-		test_key ("test-data/pem-dsa-1024.key");
+		test_key ("files/pem-dsa-1024.key");
 	}
 
 	return 0;
