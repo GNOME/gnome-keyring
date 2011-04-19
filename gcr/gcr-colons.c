@@ -24,6 +24,8 @@
 #include "config.h"
 
 #include "gcr-colons.h"
+#define DEBUG_FLAG GCR_DEBUG_PARSE
+#include "gcr-debug.h"
 
 #include <string.h>
 
@@ -51,6 +53,7 @@ _gcr_colons_parse (const gchar *line, gssize n_line)
 	p = result->data;
 	for (;;) {
 		if (result->n_columns >= MAX_COLUMNS) {
+			_gcr_debug ("too many colons in gnupg line: %.*s", n_line, line);
 			_gcr_colons_free (result);
 			return NULL;
 		}
@@ -65,6 +68,7 @@ _gcr_colons_parse (const gchar *line, gssize n_line)
 		p++;
 	}
 
+	_gcr_debug ("parsed line %.*s into %d columns", n_line, line, result->n_columns);
 	return result;
 }
 
@@ -104,8 +108,10 @@ _gcr_colons_get_string (GcrColons *colons, guint column)
 	converted = g_convert (text, -1, "UTF-8", "ISO-8859-1", NULL, NULL, NULL);
 	g_free (text);
 
-	if (!converted)
-		g_return_val_if_reached (NULL);
+	if (!converted) {
+		_gcr_debug ("failed to convert value from latin1 to utf-8: %s", text);
+		return NULL;
+	}
 
 	return converted;
 }
@@ -115,8 +121,11 @@ _gcr_colons_get_raw (GcrColons *colons, guint column)
 {
 	g_return_val_if_fail (colons, NULL);
 
-	if (column >= colons->n_columns)
+	if (column >= colons->n_columns) {
+		_gcr_debug ("only %d columns exist, tried to access %d",
+		            colons->n_columns, column);
 		return NULL;
+	}
 
 	return colons->columns[column];
 }
@@ -140,16 +149,4 @@ _gcr_colons_get_schema (GcrColons *colons)
 	if (value != NULL)
 		return g_quark_try_string (value);
 	return 0;
-}
-
-GQuark
-_gcr_colons_get_schema_uid_quark (void)
-{
-	return g_quark_from_static_string ("uid");
-}
-
-GQuark
-_gcr_colons_get_schema_pub_quark (void)
-{
-	return g_quark_from_static_string ("pub");
 }

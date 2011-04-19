@@ -27,12 +27,17 @@
 
 #include <string.h>
 
-/*
+/**
+ * _gcr_util_parse_lines:
+ * @string: The string to parse lines from, will be modified
+ * @last_line: Whether or not we should run for last line or not
+ * @callback: Call for each line
+ * @user_data: Data for callback
+ *
  * Calls callback for each line. If last_line, also sends the remainder
  * data that comes after the last line break. \n and \r\n are line separators.
- * Neither are sent.
+ * Neither are included in data passed to callback.
  */
-
 void
 _gcr_util_parse_lines (GString *string, gboolean last_line,
                        GcrLineCallback callback, gpointer user_data)

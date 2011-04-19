@@ -50,8 +50,8 @@
 
 G_BEGIN_DECLS
 
-#define GCR_COLONS_SCHEMA_UID  _gcr_colons_get_schema_uid_quark ()
-#define GCR_COLONS_SCHEMA_PUB  _gcr_colons_get_schema_pub_quark ()
+#define GCR_COLONS_SCHEMA_UID  (g_quark_from_static_string ("uid"))
+#define GCR_COLONS_SCHEMA_PUB  (g_quark_from_static_string ("pub"))
 
 /* Common columns for all schemas */
 typedef enum {
@@ -91,10 +91,6 @@ const gchar*   _gcr_colons_get_raw              (GcrColons *colons,
                                                  guint column);
 
 GQuark         _gcr_colons_get_schema           (GcrColons *colons);
-
-GQuark         _gcr_colons_get_schema_uid_quark (void) G_GNUC_CONST;
-
-GQuark         _gcr_colons_get_schema_pub_quark (void) G_GNUC_CONST;
 
 G_END_DECLS
 

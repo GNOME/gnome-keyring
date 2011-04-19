@@ -62,6 +62,14 @@
  */
 
 /**
+ * SECTION:gcr-private
+ * @title: Private declarations
+ * @short_description: private declarations to supress warnings.
+ *
+ * This section is only here to supress warnings, and should not be displayed.
+ */
+
+/**
  * GCR_DATA_ERROR:
  *
  * The #GError domain for data parsing errors.

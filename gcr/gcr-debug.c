@@ -37,6 +37,7 @@ static GcrDebugFlags current_flags = 0;
 
 static GDebugKey keys[] = {
 	{ "certificate-chain", GCR_DEBUG_CERTIFICATE_CHAIN },
+	{ "parse", GCR_DEBUG_PARSE },
 	{ 0, }
 };
 

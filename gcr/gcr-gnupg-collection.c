@@ -42,7 +42,7 @@ enum {
 };
 
 struct _GcrGnupgCollectionPrivate {
-	GHashTable *items;
+	GHashTable *items;          /* Map of char *keyid -> GcrGnupgKey *key */
 	gchar *directory;
 };
 
@@ -98,6 +98,7 @@ _gcr_gnupg_collection_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	}
 }
+
 static void
 _gcr_gnupg_collection_dispose (GObject *obj)
 {
@@ -163,6 +164,18 @@ _gcr_collection_iface (GcrCollectionIface *iface)
 	iface->get_objects = gcr_gnupg_collection_real_get_objects;
 }
 
+/**
+ * _gcr_gnupg_collection_new:
+ * @directory: The gnupg home directory, or %NULL
+ *
+ * Create a new GcrGnupgCollection.
+ *
+ * The gnupg home directory is where the keyring files live. If directory is
+ * %NULL then the default gnupg home directory is used.
+ *
+ * Returns: A newly allocated collection, which should be released with
+ *     g_object_unref().
+ */
 GcrCollection*
 _gcr_gnupg_collection_new (const gchar *directory)
 {
@@ -171,15 +184,21 @@ _gcr_gnupg_collection_new (const gchar *directory)
 	                     NULL);
 }
 
+/*
+ * We use @difference to track the keys that were in the collection before
+ * the load process, and then remove any not found, at the end of the load
+ * process. Strings are directly used from collection->pv->items keys.
+ */
+
 typedef struct {
-	GcrGnupgCollection *collection;
-	GPtrArray *dataset;
+	GcrGnupgCollection *collection;       /* reffed pointer back to collection */
+	GPtrArray *dataset;                   /* GcrColons* not yet made into a key */
 	guint spawn_sig;
 	guint child_sig;
 	GPid gnupg_pid;
-	GString *out_data;
-	GString *err_data;
-	GHashTable *difference;
+	GString *out_data;                    /* Pending output not yet parsed into colons */
+	GString *err_data;                    /* Pending errors not yet printed */
+	GHashTable *difference;               /* Hashset gchar *keyid -> gchar *keyid */
 } GcrGnupgCollectionLoad;
 
 static void
@@ -330,25 +349,13 @@ on_spawn_standard_error (int fd, gpointer user_data)
 }
 
 static void
-on_each_difference_remove (gpointer key, gpointer value, gpointer user_data)
-{
-	GcrGnupgCollection *self = GCR_GNUPG_COLLECTION (user_data);
-	GObject *object;
-
-	object = g_hash_table_lookup (self->pv->items, key);
-	if (object != NULL) {
-		g_object_ref (object);
-		g_hash_table_remove (self->pv->items, key);
-		gcr_collection_emit_removed (GCR_COLLECTION (self), object);
-		g_object_unref (object);
-	}
-}
-
-static void
 on_spawn_completed (gpointer user_data)
 {
 	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
 	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
+	GHashTableIter iter;
+	GObject *object;
+	gpointer keyid;
 
 	/* Should be the last call we receive */
 	g_assert (load->spawn_sig != 0);
@@ -365,7 +372,16 @@ on_spawn_completed (gpointer user_data)
 		process_dataset_as_key (load);
 
 	/* Remove any keys that we still have in the difference */
-	g_hash_table_foreach (load->difference, on_each_difference_remove, load->collection);
+	g_hash_table_iter_init (&iter, load->difference);
+	while (g_hash_table_iter_next (&iter, &keyid, NULL)) {
+		object = g_hash_table_lookup (load->collection->pv->items, keyid);
+		if (object != NULL) {
+			g_object_ref (object);
+			g_hash_table_remove (load->collection->pv->items, keyid);
+			gcr_collection_emit_removed (GCR_COLLECTION (load->collection), object);
+			g_object_unref (object);
+		}
+	}
 
 	g_simple_async_result_complete (res);
 }
@@ -403,13 +419,16 @@ static EggSpawnCallbacks spawn_callbacks = {
 	NULL
 };
 
-static void
-on_each_item_add_keyid_to_difference (gpointer key, gpointer value, gpointer user_data)
-{
-	GHashTable *difference = user_data;
-	g_hash_table_insert (difference, key, key);
-}
-
+/**
+ * _gcr_gnupg_collection_load_async:
+ * @self: The collection
+ * @cancellable: Cancellation object or %NULL
+ * @callback: Callback to call when result is ready
+ * @user_data: Data for callback
+ *
+ * Start an operation to load or reload the list of gnupg keys in this
+ * collection.
+ */
 void
 _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancellable,
                                   GAsyncReadyCallback callback, gpointer user_data)
@@ -418,19 +437,20 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	GcrGnupgCollectionLoad *load;
 	GError *error = NULL;
 	GPtrArray *argv;
+	GHashTableIter iter;
+	gpointer keyid;
 
 	g_return_if_fail (GCR_IS_GNUPG_COLLECTION (self));
 
-	/* Not yet implemented */
-	g_return_if_fail (cancellable == NULL);
+	/* TODO: Cancellation not yet implemented */
 
 	argv = g_ptr_array_new ();
-	g_ptr_array_add (argv, GPG_EXECUTABLE);
-	g_ptr_array_add (argv, "--list-keys");
-	g_ptr_array_add (argv, "--fixed-list-mode");
-	g_ptr_array_add (argv, "--with-colons");
+	g_ptr_array_add (argv, (gpointer)GPG_EXECUTABLE);
+	g_ptr_array_add (argv, (gpointer)"--list-keys");
+	g_ptr_array_add (argv, (gpointer)"--fixed-list-mode");
+	g_ptr_array_add (argv, (gpointer)"--with-colons");
 	if (self->pv->directory) {
-		g_ptr_array_add (argv, "--homedir");
+		g_ptr_array_add (argv, (gpointer)"--homedir");
 		g_ptr_array_add (argv, (gpointer)self->pv->directory);
 	}
 	g_ptr_array_add (argv, NULL);
@@ -442,15 +462,16 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	load->dataset = g_ptr_array_new_with_free_func (_gcr_colons_free);
 	load->err_data = g_string_sized_new (128);
 	load->out_data = g_string_sized_new (1024);
-	load->difference = g_hash_table_new (g_str_hash, g_str_equal);
 	load->collection = g_object_ref (self);
 
 	/*
 	 * Track all the keys we currently have, at end remove those that
 	 * didn't get listed by the gpg process.
 	 */
-	g_hash_table_foreach (self->pv->items, on_each_item_add_keyid_to_difference,
-	                      load->difference);
+	load->difference = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_iter_init (&iter, self->pv->items);
+	while (g_hash_table_iter_next (&iter, &keyid, NULL))
+		g_hash_table_insert (load->difference, keyid, keyid);
 
 	g_simple_async_result_set_op_res_gpointer (res, load,
 	                                           _gcr_gnupg_collection_load_free);
@@ -466,6 +487,7 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	if (error) {
 		g_simple_async_result_set_from_error (res, error);
 		g_simple_async_result_complete_in_idle (res);
+		g_clear_error (&error);
 	} else {
 		load->child_sig = g_child_watch_add_full (G_PRIORITY_DEFAULT,
 		                                          load->gnupg_pid,
@@ -475,8 +497,18 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	}
 
 	g_object_unref (res);
+	g_ptr_array_unref (argv);
 }
 
+/**
+ * _gcr_gnupg_collection_load_finish:
+ * @self: The collection
+ * @result: The result passed to the callback
+ * @error: Location to raise an error on failure.
+ *
+ * Get the result of an operation to load or reload the list of gnupg keys
+ * in this collection.
+ */
 gboolean
 _gcr_gnupg_collection_load_finish (GcrGnupgCollection *self, GAsyncResult *result,
                                    GError **error)

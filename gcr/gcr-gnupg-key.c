@@ -103,7 +103,6 @@ _gcr_gnupg_key_finalize (GObject *obj)
 
 	if (self->pv->dataset)
 		g_ptr_array_free (self->pv->dataset, TRUE);
-	self->pv->dataset = NULL;
 
 	G_OBJECT_CLASS (_gcr_gnupg_key_parent_class)->finalize (obj);
 }
@@ -116,8 +115,7 @@ _gcr_gnupg_key_set_property (GObject *obj, guint prop_id, const GValue *value,
 
 	switch (prop_id) {
 	case PROP_DATASET:
-		g_return_if_fail (!self->pv->dataset);
-		self->pv->dataset = g_value_dup_boxed (value);
+		_gcr_gnupg_key_set_dataset (self, g_value_get_boxed (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -167,7 +165,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_DATASET,
 	         g_param_spec_boxed ("dataset", "Dataset", "Colon Dataset",
-	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	         g_param_spec_string ("label", "Label", "Key label",
@@ -186,13 +184,30 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                              "", G_PARAM_READABLE));
 }
 
+/**
+ * _gcr_gnupg_key_new:
+ * @dataset: array of GcrColons*
+ *
+ * Create a new GcrGnupgKey for the colons data passed.
+ *
+ * Returns: A newly allocated key, which should be released with
+ *     g_object_unref().
+ */
 GcrGnupgKey*
 _gcr_gnupg_key_new (GPtrArray *dataset)
 {
+	g_return_val_if_fail (dataset, NULL);
 	return g_object_new (GCR_TYPE_GNUPG_KEY, "dataset", dataset, NULL);
 }
 
-
+/**
+ * _gcr_gnupg_key_get_dataset:
+ * @self: The key
+ *
+ * Get the colons data this key is based on.
+ *
+ * Returns: An array of GcrColons*, owned by the key.
+ */
 GPtrArray*
 _gcr_gnupg_key_get_dataset (GcrGnupgKey *self)
 {
@@ -200,6 +215,13 @@ _gcr_gnupg_key_get_dataset (GcrGnupgKey *self)
 	return self->pv->dataset;
 }
 
+/**
+ * _gcr_gnupg_key_set_dataset:
+ * @self: The key
+ * @dataset: The new array of GcrColons*
+ *
+ * Change the colons data that this key is based on.
+ */
 void
 _gcr_gnupg_key_set_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 {
@@ -222,6 +244,14 @@ _gcr_gnupg_key_set_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 	g_object_thaw_notify (obj);
 }
 
+/**
+ * _gcr_gnupg_key_get_keyid_for_colons:
+ * @dataset: Array of GcrColons*
+ *
+ * Get the keyid for some colons data.
+ *
+ * Returns: The keyid, owned by the colons data.
+ */
 const gchar*
 _gcr_gnupg_key_get_keyid_for_colons (GPtrArray *dataset)
 {
@@ -234,13 +264,20 @@ _gcr_gnupg_key_get_keyid_for_colons (GPtrArray *dataset)
 	return _gcr_colons_get_raw (colons, GCR_COLONS_PUB_KEYID);
 }
 
+/**
+ * _gcr_gnupg_key_get_columns:
+ *
+ * Get the columns that we should display for gnupg keys.
+ *
+ * Returns: The columns, NULL terminated, should not be freed.
+ */
 const GcrColumn*
 _gcr_gnupg_key_get_columns (void)
 {
 	static GcrColumn columns[] = {
-		{ "label", G_TYPE_STRING, G_TYPE_STRING, N_("Name"),
+		{ "label", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Name"),
 		  GCR_COLUMN_SORTABLE },
-		{ "keyid", G_TYPE_STRING, G_TYPE_STRING, N_("Key ID"),
+		{ "keyid", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Key ID"),
 		  GCR_COLUMN_SORTABLE },
 		{ NULL }
 	};

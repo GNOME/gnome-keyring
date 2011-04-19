@@ -161,18 +161,6 @@ test_get_schema (Test *test, gconstpointer unused)
 	g_assert_cmpstr (g_quark_to_string (schema), ==, "one");
 }
 
-static void
-test_schemas (void)
-{
-	GQuark check;
-
-	check = _gcr_colons_get_schema_uid_quark ();
-	g_assert_cmpstr (g_quark_to_string (check), ==, "uid");
-
-	check = _gcr_colons_get_schema_pub_quark ();
-	g_assert_cmpstr (g_quark_to_string (check), ==, "pub");
-}
-
 int
 main (int argc, char **argv)
 {
@@ -182,7 +170,6 @@ main (int argc, char **argv)
 	g_test_add_func ("/gcr/colons/parse_part", test_parse_part);
 	g_test_add_func ("/gcr/colons/parse_too_long", test_parse_too_long);
 	g_test_add_func ("/gcr/colons/free_null", test_free_null);
-	g_test_add_func ("/gcr/colons/schemas", test_schemas);
 	g_test_add_func ("/gcr/colons/find", test_find);
 	g_test_add ("/gcr/colons/get_string", Test, NULL, setup, test_get_string, teardown);
 	g_test_add ("/gcr/colons/get_string_null", Test, NULL, setup, test_get_string_null, teardown);
