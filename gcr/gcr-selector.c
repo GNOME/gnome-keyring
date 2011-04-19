@@ -378,6 +378,10 @@ gcr_selector_dispose (GObject *obj)
 		g_object_unref (self->pv->collection);
 	self->pv->collection = NULL;
 
+	if (self->pv->sort)
+		g_object_unref (self->pv->sort);
+	self->pv->sort = NULL;
+
 	G_OBJECT_CLASS (gcr_selector_parent_class)->dispose (obj);
 }
 
