@@ -87,6 +87,7 @@ run-tests
 /egg/tests/test-dh
 /egg/tests/test-dn
 /egg/tests/test-hex
+/egg/tests/test-hkdf
 /egg/tests/test-oid
 /egg/tests/test-openssl
 /egg/tests/test-padding
