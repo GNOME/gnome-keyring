@@ -53,7 +53,7 @@ _gcr_colons_parse (const gchar *line, gssize n_line)
 	p = result->data;
 	for (;;) {
 		if (result->n_columns >= MAX_COLUMNS) {
-			_gcr_debug ("too many colons in gnupg line: %.*s", n_line, line);
+			_gcr_debug ("too many colons in gnupg line: %.*s", (gint)n_line, line);
 			_gcr_colons_free (result);
 			return NULL;
 		}
@@ -68,7 +68,7 @@ _gcr_colons_parse (const gchar *line, gssize n_line)
 		p++;
 	}
 
-	_gcr_debug ("parsed line %.*s into %d columns", n_line, line, result->n_columns);
+	_gcr_debug ("parsed line %.*s into %d columns", (gint)n_line, line, result->n_columns);
 	return result;
 }
 
