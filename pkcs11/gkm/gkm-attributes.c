@@ -600,15 +600,12 @@ gkm_template_new (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 void
 gkm_template_set (GArray *template, CK_ATTRIBUTE_PTR attr)
 {
-	CK_ATTRIBUTE_PTR pat;
 	CK_ATTRIBUTE at;
 	guint i;
 
 	g_return_if_fail (template);
 	g_return_if_fail (attr);
 	g_return_if_fail (attr->ulValueLen != (CK_ULONG)-1);
-
-	pat = gkm_attributes_find ((CK_ATTRIBUTE_PTR)template->data, template->len, attr->type);
 
 	/* Remove any previous value */
 	for (i = 0; i < template->len; ++i) {

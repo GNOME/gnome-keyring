@@ -18,6 +18,7 @@ TEST_PROGS = \
 	test-dn \
 	test-cleanup \
 	test-hex \
+	test-hkdf \
 	test-oid \
 	test-secmem \
 	test-padding \

@@ -43,7 +43,7 @@ all-local: $(check_PROGRAMS)
 endif
 
 EXTRA_DIST = \
-	test-data
+	files
 
 # ------------------------------------------------------------------
 

@@ -710,6 +710,9 @@ fi
 eval BINDIR="$bindir"
 AC_SUBST(BINDIR)
 
+eval LIBEXECDIR="$libexecdir"
+AC_SUBST(LIBEXECDIR)
+
 pkcs11dir="${libdir}/pkcs11"
 AC_SUBST(pkcs11dir)
 

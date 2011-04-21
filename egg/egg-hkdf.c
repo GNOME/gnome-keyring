@@ -71,14 +71,14 @@ egg_hkdf_perform (const gchar *hash_algo, gconstpointer input, gsize n_input,
 	}
 
 	/* Step 1: Extract */
-	gcry = gcry_md_open (&md1, algo, GCRY_MD_FLAG_HMAC);
+	gcry = gcry_md_open (&md1, algo, GCRY_MD_FLAG_HMAC | flags);
 	g_return_val_if_fail (gcry == 0, FALSE);
 	gcry = gcry_md_setkey (md1, salt, n_salt);
 	g_return_val_if_fail (gcry == 0, FALSE);
 	gcry_md_write (md1, input, n_input);
 
 	/* Step 2: Expand */
-	gcry = gcry_md_open (&md2, algo, GCRY_MD_FLAG_HMAC);
+	gcry = gcry_md_open (&md2, algo, GCRY_MD_FLAG_HMAC | flags);
 	g_return_val_if_fail (gcry == 0, FALSE);
 	gcry = gcry_md_setkey (md2, gcry_md_read (md1, algo), hash_len);
 	g_return_val_if_fail (gcry == 0, FALSE);
