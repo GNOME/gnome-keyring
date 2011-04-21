@@ -9,7 +9,7 @@ LDADD =  \
 	$(top_builddir)/gck/libgck.la \
 	$(top_builddir)/egg/libegg-test.la \
 	$(GTHREAD_LIBS) \
-	$(GLIB_LIBS)
+	$(GLIB_LIBS) \
 	$(GIO_LIBS) \
 	libmock-test-module.la
 
