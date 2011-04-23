@@ -775,7 +775,6 @@ on_login_timeout (gpointer data)
 int
 main (int argc, char *argv[])
 {
-	GMainContext *ctx;
 	GMainLoop *loop;
 
 	/*
@@ -868,7 +867,6 @@ main (int argc, char *argv[])
 
 	/* Initialize our daemon main loop and threading */
 	loop = g_main_loop_new (NULL, FALSE);
-	ctx = g_main_loop_get_context (loop);
 
 	/* Initialize our control socket */
 	if (!gkd_control_listen ())

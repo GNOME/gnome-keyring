@@ -1100,11 +1100,9 @@ op_v1_challenge (GkdSshAgentCall *call)
 	GckObject *key = NULL;
 	guint32 resp_type;
 	GError *error = NULL;
-	gboolean ret;
 	guint i;
 	guchar b;
 
-	ret = FALSE;
 	offset = 5;
 
 	attrs = gck_attributes_new ();

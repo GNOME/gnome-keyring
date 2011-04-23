@@ -181,7 +181,6 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 	GList *objects, *l;
 	GError *error = NULL;
 	gsize n_data;
-	guint num;
 
 	manager = gkm_module_get_manager (GKM_MODULE (self));
 	g_return_if_fail (manager);
@@ -206,7 +205,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 	g_list_free (objects);
 
 	/* Try and parse the PEM */
-	num = egg_openssl_pem_parse (data, n_data, parsed_pem_block, &ctx);
+	egg_openssl_pem_parse (data, n_data, parsed_pem_block, &ctx);
 
 	/* If no PEM data, try to parse directly as DER  */
 	if (ctx.count == 0) {

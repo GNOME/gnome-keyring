@@ -1600,11 +1600,14 @@ static CK_RV
 rpc_C_FindObjects (CK_SESSION_HANDLE session, CK_OBJECT_HANDLE_PTR objects,
                    CK_ULONG max_count, CK_ULONG_PTR count)
 {
+	/* HACK: To fix a stupid gcc warning */
+	CK_ULONG_PTR address_of_max_count = &max_count;
+
 	return_val_if_fail (count, CKR_ARGUMENTS_BAD);
 
 	BEGIN_CALL (C_FindObjects);
 		IN_ULONG (session);
-		IN_ULONG_BUFFER (objects, &max_count);
+		IN_ULONG_BUFFER (objects, address_of_max_count);
 	PROCESS_CALL;
 		*count = max_count;
 		OUT_ULONG_ARRAY (objects, count);
@@ -2105,9 +2108,10 @@ rpc_C_GenerateRandom (CK_SESSION_HANDLE session, CK_BYTE_PTR random_data,
 {
 	BEGIN_CALL (C_GenerateRandom);
 		IN_ULONG (session);
-		IN_BYTE_BUFFER (random_data, &random_len);
+    CK_ULONG_PTR address = &random_len;
+		IN_BYTE_BUFFER (random_data, address);
 	PROCESS_CALL;
-		OUT_BYTE_ARRAY (random_data, &random_len);
+		OUT_BYTE_ARRAY (random_data, address);
 	END_CALL;
 }
 

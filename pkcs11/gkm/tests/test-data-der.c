@@ -344,9 +344,6 @@ find_extension (GNode *asn, gconstpointer data, gsize n_data, const gchar *oid, 
 	GNode *node = NULL;
 	gchar *exoid;
 	guint index;
-	int len;
-
-	len = strlen (oid);
 
 	for (index = 1; TRUE; ++index) {
 
