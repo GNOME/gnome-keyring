@@ -15,7 +15,10 @@ TESTING_FILES = \
 TESTING_LIBS = \
 	$(top_builddir)/pkcs11/wrap-layer/libgkm-wrap-layer.la \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
-	$(top_builddir)/ui/libgku-prompt.la \
+	$(top_builddir)/ui/libgku-prompt-testable.la \
 	$(top_builddir)/egg/libegg.la
+
+TESTING_FLAGS = \
+	-DWITH_TESTABLE
 
 include $(top_srcdir)/testing/testing.make

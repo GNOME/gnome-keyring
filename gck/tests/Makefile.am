@@ -6,12 +6,13 @@ INCLUDES = \
 	$(GLIB_CFLAGS)
 
 LDADD =  \
-	$(top_builddir)/gck/libgck.la \
+	libmock-test-module.la \
+	$(top_builddir)/gck/libgck-testable.la \
 	$(top_builddir)/egg/libegg-test.la \
+	$(top_builddir)/egg/libegg-hex.la \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \
-	$(GIO_LIBS) \
-	libmock-test-module.la
+	$(GIO_LIBS)
 
 TEST_PROGS = \
 	test-gck-attributes \
@@ -27,13 +28,11 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+	SRCDIR='$(srcdir)' gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
-if WITH_TESTS
 all-local: $(check_PROGRAMS)
-endif
 
 lib_LTLIBRARIES = libmock-test-module.la
 
@@ -50,4 +49,4 @@ libmock_test_module_la_SOURCES = \
 	mock-test-module.c
 
 libmock_test_module_la_LIBADD = \
-	$(top_builddir)/gck/libgck.la
+	$(top_builddir)/gck/libgck-testable.la

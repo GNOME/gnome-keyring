@@ -71,7 +71,7 @@ gkd_dbus_secrets_startup (void)
 
 	g_return_val_if_fail (dbus_conn, FALSE);
 
-#ifdef WITH_TESTS
+#ifdef WITH_TESTABLE
 	service = g_getenv ("GNOME_KEYRING_TEST_SERVICE");
 	if (service && service[0])
 		flags = DBUS_NAME_FLAG_ALLOW_REPLACEMENT | DBUS_NAME_FLAG_REPLACE_EXISTING;

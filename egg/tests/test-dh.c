@@ -191,8 +191,11 @@ main (int argc, char **argv)
 {
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add_func ("/dh/perform", test_perform);
-	g_test_add_func ("/dh/short_pair", test_short_pair);
+	if (!g_test_quick ()) {
+		g_test_add_func ("/dh/perform", test_perform);
+		g_test_add_func ("/dh/short_pair", test_short_pair);
+	}
+
 	g_test_add_func ("/dh/default_768", test_default_768);
 	g_test_add_func ("/dh/default_1024", test_default_1024);
 	g_test_add_func ("/dh/default_1536", test_default_1536);

@@ -1,14 +1,13 @@
 
 if WITH_TESTS
 TESTS_DIR = tests
-EXPORT_PATT = '^_?gcr_*'
+TESTABLE_LIB = libgcr-testable.la
 else
 TESTS_DIR =
-EXPORT_PATT = '^gcr_*'
+TESTABLE_LIB =
 endif
 
-SUBDIRS = . \
-	$(TESTS_DIR)
+SUBDIRS = . $(TESTS_DIR)
 
 # ------------------------------------------------------------------
 # UI BUILDER
@@ -99,7 +98,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
 	-version-info $(GCR_LT_RELEASE) \
 	-no-undefined \
-	-export-symbols-regex $(EXPORT_PATT)
+	-export-symbols-regex '^gcr_*'
 
 libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
@@ -109,6 +108,10 @@ libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(LIBGCRYPT_LIBS) \
 	$(GTK_LIBS)
+
+noinst_LTLIBRARIES = $(TESTABLE_LIB)
+libgcr_testable_la_SOURCES =
+libgcr_testable_la_LIBADD = $(libgcr@GCR_VERSION_SUFFIX@_la_OBJECTS)
 
 gcr-marshal.h: gcr-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=_gcr_marshal > $@

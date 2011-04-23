@@ -34,13 +34,11 @@ test_asn1_SOURCES = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+	SRCDIR='$(srcdir)' gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
-if WITH_TESTS
 all-local: $(check_PROGRAMS)
-endif
 
 EXTRA_DIST = \
 	test.asn \

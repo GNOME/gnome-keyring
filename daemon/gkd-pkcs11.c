@@ -105,7 +105,7 @@ gkd_pkcs11_initialize (void)
 	memset (&init_args, 0, sizeof (init_args));
 	init_args.flags = CKF_OS_LOCKING_OK;
 
-#if WITH_TESTS
+#if WITH_TESTABLE
 	{
 		const gchar *path = g_getenv ("GNOME_KEYRING_TEST_PATH");
 		if (path && path[0])

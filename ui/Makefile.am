@@ -1,8 +1,10 @@
 
 if WITH_TESTS
 TESTS_DIR = tests
+TESTABLE_LIB = libgku-prompt-testable.la
 else
 TESTS_DIR =
+TESTABLE_LIB =
 endif
 
 SUBDIRS = . $(TESTS_DIR)
@@ -27,7 +29,7 @@ ui_DATA = \
 # ------------------------------------------------------------------
 # DAEMON CODE
 
-noinst_LTLIBRARIES = libgku-prompt.la
+noinst_LTLIBRARIES = libgku-prompt.la $(TESTABLE_LIB)
 
 BUILT_SOURCES = \
 	gku-prompt-marshal.c gku-prompt-marshal.h
@@ -40,6 +42,9 @@ libgku_prompt_la_SOURCES = \
 libgku_prompt_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
+
+libgku_prompt_testable_la_SOURCES = $(libgku_prompt_la_SOURCES)
+libgku_prompt_testable_la_CFLAGS = -DWITH_TESTABLE
 
 gku-prompt-marshal.h: gku-prompt-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=gku_prompt_marshal > $@
@@ -77,7 +82,7 @@ gnome_keyring_prompt@GCR_VERSION_SUFFIX@_CFLAGS = \
 	$(LIBGCRYPT_CFLAGS) \
 	$(GTK_CFLAGS)
 
-# Install a link from gnome-keyring-prompt → gnome-keyring-prompt@GCR_VERSION_SUFFIX@ to maintain compatibility
+# Install a link from gnome-keyring-prompt -> gnome-keyring-prompt@GCR_VERSION_SUFFIX@ to maintain compatibility
 if WITH_GTK3
 install-exec-hook:
 	@test -e "$(DESTDIR)$(libexecdir)/gnome-keyring-prompt" || (cd $(DESTDIR)$(libexecdir) && $(LN_S) gnome-keyring-prompt@GCR_VERSION_SUFFIX@ gnome-keyring-prompt)

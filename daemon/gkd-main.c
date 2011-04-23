@@ -803,7 +803,7 @@ main (int argc, char *argv[])
 	 */
 	gkd_capability_obtain_capability_and_drop_privileges ();
 
-#ifdef WITH_TESTS
+#ifdef WITH_TESTABLE
 	g_setenv ("DBUS_FATAL_WARNINGS", "1", FALSE);
 	if (!g_getenv ("G_DEBUG"))
 		g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
@@ -834,7 +834,7 @@ main (int argc, char *argv[])
 	if (run_version) {
 		g_print ("gnome-keyring-daemon: %s\n", VERSION);
 		g_print ("testing: %s\n",
-#ifdef WITH_TESTS
+#ifdef WITH_TESTABLE
 		         "enabled");
 #else
 		         "disabled");

@@ -10,13 +10,13 @@ INCLUDES = \
 	$(LIBGCRYPT_CFLAGS)
 
 LDADD = \
-	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
+	$(top_builddir)/gcr/libgcr-testable.la \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
-	$(top_builddir)/gck/libgck.la \
+	$(top_builddir)/gck/libgck-testable.la \
 	$(GTK_LIBS) \
 	$(GLIB_LIBS) \
-	$(LIBGCRYT_LIBS)
+	$(LIBGCRYPT_LIBS)
 
 TEST_PROGS = \
 	test-certificate \
@@ -29,13 +29,11 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+	SRCDIR='$(srcdir)' gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
-if WITH_TESTS
 all-local: $(check_PROGRAMS)
-endif
 
 EXTRA_DIST = \
 	files

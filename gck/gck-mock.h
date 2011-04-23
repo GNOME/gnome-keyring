@@ -29,8 +29,6 @@
 #ifndef GCK_MOCK_H
 #define GCK_MOCK_H
 
-#ifdef WITH_TESTS
-
 CK_RV               gck_mock_C_Initialize                          (CK_VOID_PTR pInitArgs);
 
 CK_RV               gck_mock_validate_and_C_Initialize             (CK_VOID_PTR pInitArgs);
@@ -419,6 +417,4 @@ void                gck_mock_module_set_pin                        (const gchar 
 
 #define GCK_MOCK_SLOT_ONE_URI "pkcs11:manufacturer=TEST%20MANUFACTURER;serial=TEST%20SERIAL"
 
-#endif /* WITH_TESTS */
-
-#endif /* TESTMODULE_H_ */
+#endif /* GCK_MOCK_H */
