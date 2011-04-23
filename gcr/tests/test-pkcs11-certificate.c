@@ -25,7 +25,7 @@
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
 
-#include "gcr.h"
+#include "gcr/gcr.h"
 #include "gcr/gcr-internal.h"
 
 #include "egg/egg-testing.h"
@@ -59,12 +59,12 @@ setup (Test *test, gconstpointer unused)
 	GNode *asn, *node;
 	CK_RV rv;
 
-	if (!g_file_get_contents ("files/der-certificate.crt", (gchar**)&test->cert_data,
+	if (!g_file_get_contents (SRCDIR "/files/der-certificate.crt", (gchar**)&test->cert_data,
 	                          &test->n_cert_data, NULL))
 		g_assert_not_reached ();
 	g_assert (test->cert_data);
 
-	if (!g_file_get_contents ("files/der-certificate-dsa.cer", (gchar**)&test->cert2_data,
+	if (!g_file_get_contents (SRCDIR "/files/der-certificate-dsa.cer", (gchar**)&test->cert2_data,
 	                          &test->n_cert2_data, NULL))
 		g_assert_not_reached ();
 	g_assert (test->cert2_data);
@@ -265,15 +265,9 @@ test_lookup_certificate_issuer_fail_async (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 	g_set_prgname ("test-pkcs11-certificate");
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/pkcs11-certificate/lookup_certificate_issuer", Test, NULL, setup, test_lookup_certificate_issuer, teardown);
 	g_test_add ("/gcr/pkcs11-certificate/lookup_certificate_issuer_not_found", Test, NULL, setup, test_lookup_certificate_issuer_not_found, teardown);

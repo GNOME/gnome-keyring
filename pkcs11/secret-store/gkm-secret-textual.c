@@ -380,7 +380,7 @@ parse_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata,
 
 GkmDataResult
 gkm_secret_textual_write (GkmSecretCollection *collection, GkmSecretData *sdata,
-                          guchar **data, gsize *n_data)
+                          gpointer *data, gsize *n_data)
 {
 	GkmSecretObject *obj;
 	GList *items, *l;
@@ -445,7 +445,7 @@ remove_unavailable_item (gpointer key, gpointer dummy, gpointer user_data)
 
 GkmDataResult
 gkm_secret_textual_read (GkmSecretCollection *collection, GkmSecretData *sdata,
-                         const guchar *data, gsize n_data)
+                         gconstpointer data, gsize n_data)
 {
 	GkmSecretObject *obj;
 	GkmSecretItem *item;

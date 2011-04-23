@@ -23,9 +23,9 @@
 
 #include "config.h"
 
-#include "egg-libgcrypt.h"
-#include "egg-secure-memory.h"
-#include "egg-symkey.h"
+#include "egg/egg-libgcrypt.h"
+#include "egg/egg-secure-memory.h"
+#include "egg/egg-symkey.h"
 
 #include <gcrypt.h>
 

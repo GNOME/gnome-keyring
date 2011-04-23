@@ -3,8 +3,9 @@ asn1-def-test.c: test.asn
 	$(ASN1PARSER) -o asn1-def-test.c $(srcdir)/test.asn
 
 INCLUDES = \
-	-I$(top_srcdir)/egg \
-	-DSRCDIR=$(srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	$(GLIB_CFLAGS)
 
 LDADD =  \
@@ -34,7 +35,7 @@ test_asn1_SOURCES = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+	gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
@@ -43,6 +44,9 @@ all-local: $(check_PROGRAMS)
 EXTRA_DIST = \
 	test.asn \
 	files
+
+DISTCLEANFILES = \
+	asn1-def-test.c
 
 # ------------------------------------------------------------------------------
 

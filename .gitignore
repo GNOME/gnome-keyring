@@ -95,6 +95,11 @@ run-tests
 /egg/tests/test-spawn
 /egg/tests/test-symkey
 
+/daemon/control/tests/frob-control-change
+/daemon/control/tests/frob-control-init
+/daemon/control/tests/frob-control-quit
+/daemon/control/tests/frob-control-unlock
+
 /gck/tests/test-gck-attributes
 /gck/tests/test-gck-crypto
 /gck/tests/test-gck-enumerator
@@ -128,6 +133,43 @@ run-tests
 /pkcs11/gkm/tests/test-store
 /pkcs11/gkm/tests/test-timer
 /pkcs11/gkm/tests/test-transaction
+
+/pkcs11/gnome2-store/tests/frob-gnome2-file
+/pkcs11/gnome2-store/tests/test-gnome2-file
+/pkcs11/gnome2-store/tests/check-gnome2-module
+/pkcs11/gnome2-store/tests/check-module
+
+/pkcs11/roots-store/tests/check-roots-module
+
+/pkcs11/secret-store/tests/test-secret-binary
+/pkcs11/secret-store/tests/test-secret-collection
+/pkcs11/secret-store/tests/test-secret-compat
+/pkcs11/secret-store/tests/test-secret-data
+/pkcs11/secret-store/tests/test-secret-fields
+/pkcs11/secret-store/tests/test-secret-item
+/pkcs11/secret-store/tests/test-secret-object
+/pkcs11/secret-store/tests/test-secret-search
+/pkcs11/secret-store/tests/test-secret-textual
+
+/pkcs11/ssh-store/tests/check-ssh-module
+/pkcs11/ssh-store/tests/test-private-key
+/pkcs11/ssh-store/tests/test-ssh-openssh
+
+/pkcs11/wrap-layer/tests/test-create-credential
+/pkcs11/wrap-layer/tests/test-init-pin
+/pkcs11/wrap-layer/tests/test-login-auto
+/pkcs11/wrap-layer/tests/test-login-hints
+/pkcs11/wrap-layer/tests/test-login-keyring
+/pkcs11/wrap-layer/tests/test-login-specific
+/pkcs11/wrap-layer/tests/test-login-user
+/pkcs11/wrap-layer/tests/test-set-pin
+
+/pkcs11/xdg-store/tests/check-xdg-module
+/pkcs11/xdg-store/tests/frob-trust-file
+/pkcs11/xdg-store/tests/test-xdg-module
+/pkcs11/xdg-store/tests/test-xdg-trust
+
+/ui/tests/test-util
 
 /daemon/dbus/tests/test-secret-util
 

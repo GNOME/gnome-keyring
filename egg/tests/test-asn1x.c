@@ -21,14 +21,15 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "egg-asn1x.h"
+#include "config.h"
+
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
+#include "egg/egg-testing.h"
 
 #include <pwd.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#include "egg-asn1-defs.h"
-#include "egg-testing.h"
 
 #if 0
 static void
@@ -101,13 +102,13 @@ main (int argc, char **argv)
 
 	egg_tests_chdir_base (argv[0]);
 
-	test_some_asn1_stuff (pkix_asn1_tab, "files/test-certificate-1.der", "Certificate");
-	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo");
-	test_some_asn1_stuff (pk_asn1_tab, "files/test-rsakey-1.der", "RSAPrivateKey");
-	test_some_asn1_stuff (pkix_asn1_tab, "files/test-personalname-1.der", "PersonalName");
-	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs7-1.der", "pkcs-7-ContentInfo");
-	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs7-2.der", "pkcs-7-ContentInfo");
-	test_some_asn1_stuff (pkix_asn1_tab, "files/test-pkcs12-1.der", "pkcs-12-PFX");
+	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-certificate-1.der", "Certificate");
+	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo");
+	test_some_asn1_stuff (pk_asn1_tab, SRCDIR "/files/test-rsakey-1.der", "RSAPrivateKey");
+	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-personalname-1.der", "PersonalName");
+	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-pkcs7-1.der", "pkcs-7-ContentInfo");
+	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-pkcs7-2.der", "pkcs-7-ContentInfo");
+	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-pkcs12-1.der", "pkcs-12-PFX");
 
 	return 0;
 }

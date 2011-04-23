@@ -1,8 +1,8 @@
 
 INCLUDES = \
-	-I$(top_srcdir)/egg \
-	-I$(top_srcdir)/gcr \
-	-DSRCDIR=$(srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	$(GLIB_CFLAGS) \
@@ -29,7 +29,7 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+	gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 

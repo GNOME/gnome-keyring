@@ -155,19 +155,19 @@ setup (Test *test, gconstpointer unused)
 	gck_list_unref_free (modules);
 
 	/* A self-signed certificate */
-	if (!g_file_get_contents ("files/der-certificate.crt", &contents, &n_contents, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/der-certificate.crt", &contents, &n_contents, NULL))
 		g_assert_not_reached ();
 	test->cert_self = gcr_simple_certificate_new (contents, n_contents);
 	g_free (contents);
 
 	/* A signed certificate */
-	if (!g_file_get_contents ("files/dhansak-collabora.cer", &contents, &n_contents, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/dhansak-collabora.cer", &contents, &n_contents, NULL))
 		g_assert_not_reached ();
 	test->cert_signed = mock_certificate_new (contents, n_contents);
 	g_free (contents);
 
 	/* The signer for the above certificate */
-	if (!g_file_get_contents ("files/collabora-ca.cer", &contents, &n_contents, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/collabora-ca.cer", &contents, &n_contents, NULL))
 		g_assert_not_reached ();
 	test->cert_ca = mock_certificate_new (contents, n_contents);
 	g_free (contents);
@@ -632,15 +632,9 @@ test_with_anchor_error_async (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 	g_set_prgname ("test-certificate-chain");
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/certificate-chain/new", Test, NULL, setup, test_new, teardown);
 	g_test_add ("/gcr/certificate-chain/new_with_cert", Test, NULL, setup, test_new_with_cert, teardown);

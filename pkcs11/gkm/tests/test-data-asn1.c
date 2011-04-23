@@ -47,7 +47,7 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	if (!g_file_get_contents ("files/test-certificate-1.der", &test->data_cert, &test->n_data_cert, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &test->data_cert, &test->n_data_cert, NULL))
 		g_assert_not_reached ();
 
 	test->asn1_cert = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", test->data_cert, test->n_data_cert);

@@ -21,14 +21,16 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include "wrap-layer/gkm-wrap-layer.h"
 #include "wrap-layer/gkm-wrap-login.h"
 
-TESTING_TEST (login_did_unlock_fail)
+#include <glib-object.h>
+
+static void
+test_did_unlock_fail (void)
 {
 	gchar *password;
 	gboolean ret;
@@ -48,4 +50,15 @@ TESTING_TEST (login_did_unlock_fail)
 
 	ret = gkm_wrap_login_did_unlock_fail ();
 	g_assert (ret == FALSE);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/wrap-layer/login-hints/did_unlock_fail", test_did_unlock_fail);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

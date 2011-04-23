@@ -28,12 +28,12 @@
 
 GkmDataResult          gkm_secret_textual_read       (GkmSecretCollection *collection,
                                                       GkmSecretData *sdata,
-                                                      const guchar *data,
+                                                      gconstpointer data,
                                                       gsize n_data);
 
 GkmDataResult          gkm_secret_textual_write      (GkmSecretCollection *collection,
                                                       GkmSecretData *sdata,
-                                                      guchar **data,
+                                                      gpointer *data,
                                                       gsize *n_data);
 
 #endif /* __GKM_SECRET_TEXTUAL_H__ */

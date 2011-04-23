@@ -27,9 +27,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "egg-hkdf.h"
-#include "egg-secure-memory.h"
-#include "egg-testing.h"
+#include "egg/egg-hkdf.h"
+#include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include <gcrypt.h>
 

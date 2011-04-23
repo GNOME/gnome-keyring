@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "gcr.h"
+#include "gcr/gcr.h"
 #include "gcr/gcr-internal.h"
 
 #include "gck/gck-mock.h"
@@ -54,7 +54,7 @@ setup (Test *test, gconstpointer unused)
 	gsize len;
 	CK_RV rv;
 
-	if (!g_file_get_contents ("files/der-certificate.crt", &contents, &len, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/der-certificate.crt", &contents, &len, NULL))
 		g_assert_not_reached ();
 	g_assert (contents);
 
@@ -309,15 +309,9 @@ test_is_certificate_anchored_async (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 	g_set_prgname ("test-trust");
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/trust/is_pinned_none", Test, NULL, setup, test_is_pinned_none, teardown);
 	g_test_add ("/gcr/trust/add_and_is_pinned", Test, NULL, setup, test_add_and_is_pinned, teardown);

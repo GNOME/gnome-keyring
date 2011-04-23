@@ -23,8 +23,8 @@
 
 #include "config.h"
 
-#include "egg-padding.h"
-#include "egg-testing.h"
+#include "egg/egg-padding.h"
+#include "egg/egg-testing.h"
 
 #include <gcrypt.h>
 

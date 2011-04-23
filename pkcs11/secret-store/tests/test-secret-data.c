@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-secret-compat.c: Test secret compat files
+/* test-secret-compat.c: Test secret compat files
 
    Copyright (C) 2008 Stefan Walter
 
@@ -23,12 +23,12 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
-#include "gkm-secret-data.h"
+#include "secret-store/gkm-secret-data.h"
 
 #include "gkm/gkm-secret.h"
 #include "gkm/gkm-transaction.h"
+
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 
@@ -36,14 +36,18 @@
 #include <stdio.h>
 #include <string.h>
 
-TESTING_TEST(secret_data_new)
+EGG_SECURE_GLIB_DEFINITIONS ();
+
+static void
+test_new (void)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	g_assert (GKM_IS_SECRET_DATA (data));
 	g_object_unref (data);
 }
 
-TESTING_TEST(secret_data_get_set)
+static void
+test_get_set (void)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *secret = gkm_secret_new_from_password ("barn");
@@ -60,7 +64,8 @@ TESTING_TEST(secret_data_get_set)
 	g_object_unref (data);
 }
 
-TESTING_TEST(secret_data_get_raw)
+static void
+test_get_raw (void)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *secret = gkm_secret_new_from_password ("barn");
@@ -81,7 +86,8 @@ TESTING_TEST(secret_data_get_raw)
 	g_object_unref (data);
 }
 
-TESTING_TEST(secret_data_remove)
+static void
+test_remove (void)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *secret = gkm_secret_new_from_password ("barn");
@@ -99,7 +105,8 @@ TESTING_TEST(secret_data_remove)
 	g_object_unref (data);
 }
 
-TESTING_TEST(secret_data_set_transacted)
+static void
+test_set_transacted (void)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -120,7 +127,8 @@ TESTING_TEST(secret_data_set_transacted)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(secret_data_set_transacted_replace)
+static void
+test_set_transacted_replace (void)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -147,7 +155,8 @@ TESTING_TEST(secret_data_set_transacted_replace)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(secret_data_set_transacted_fail)
+static void
+test_set_transacted_fail (void)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -169,7 +178,8 @@ TESTING_TEST(secret_data_set_transacted_fail)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(secret_data_set_transacted_fail_revert)
+static void
+test_set_transacted_fail_revert (void)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
@@ -197,7 +207,8 @@ TESTING_TEST(secret_data_set_transacted_fail_revert)
 	g_object_unref (transaction);
 }
 
-TESTING_TEST(secret_data_get_set_master)
+static void
+test_get_set_master (void)
 {
 	GkmSecretData *data = g_object_new (GKM_TYPE_SECRET_DATA, NULL);
 	GkmSecret *master = gkm_secret_new_from_password ("master");
@@ -212,4 +223,23 @@ TESTING_TEST(secret_data_get_set_master)
 	g_assert (gkm_secret_equals (check, (guchar*)"master", -1));
 
 	g_object_unref (data);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/secret-store/data/new", test_new);
+	g_test_add_func ("/secret-store/data/get_set", test_get_set);
+	g_test_add_func ("/secret-store/data/get_raw", test_get_raw);
+	g_test_add_func ("/secret-store/data/remove", test_remove);
+	g_test_add_func ("/secret-store/data/set_transacted", test_set_transacted);
+	g_test_add_func ("/secret-store/data/set_transacted_replace", test_set_transacted_replace);
+	g_test_add_func ("/secret-store/data/set_transacted_fail", test_set_transacted_fail);
+	g_test_add_func ("/secret-store/data/set_transacted_fail_revert", test_set_transacted_fail_revert);
+	g_test_add_func ("/secret-store/data/get_set_master", test_get_set_master);
+
+	return g_test_run ();
 }

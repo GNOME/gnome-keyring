@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "test-suite.h"
+#include "egg/egg-testing.h"
 
 #include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
@@ -30,15 +30,21 @@
 
 #include "ui/gku-prompt.h"
 
-extern CK_FUNCTION_LIST mock_secret_store;
-static CK_FUNCTION_LIST functions;
-static CK_FUNCTION_LIST_PTR module = NULL;
-static CK_SESSION_HANDLE session = 0;
-static CK_OBJECT_HANDLE key = 0;
-static CK_OBJECT_HANDLE collection = 0;
-static CK_MECHANISM mech = { CKM_MOCK_PREFIX, NULL, 0 };
+#include <string.h>
 
-TESTING_SETUP (login_auto)
+extern CK_FUNCTION_LIST mock_secret_store;
+
+typedef struct {
+	CK_FUNCTION_LIST functions;
+	CK_FUNCTION_LIST_PTR module;
+	CK_SESSION_HANDLE session;
+	CK_OBJECT_HANDLE key;
+	CK_OBJECT_HANDLE collection;
+	CK_MECHANISM mech;
+} Test;
+
+static void
+setup (Test *test, gconstpointer unused)
 {
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
@@ -56,115 +62,120 @@ TESTING_SETUP (login_auto)
 		{ CKA_ID, "other", 5 },
 	};
 
-	/* Always start off with test functions */
-	memcpy (&functions, &mock_secret_store, sizeof (functions));
+	test->mech.mechanism = CKM_MOCK_PREFIX;
+
+	/* Always start off with test test->functions */
+	memcpy (&test->functions, &mock_secret_store, sizeof (test->functions));
 
 	gkm_wrap_layer_reset_modules ();
-	gkm_wrap_layer_add_module (&functions);
-	module = gkm_wrap_layer_get_functions ();
+	gkm_wrap_layer_add_module (&test->functions);
+	test->module = gkm_wrap_layer_get_functions ();
 
 	gku_prompt_dummy_prepare_response ();
 
-	/* Open a session */
-	rv = (module->C_Initialize) (NULL);
+	/* Open a test->session */
+	rv = (test->module->C_Initialize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
+	rv = (test->module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &session);
+	rv = (test->module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Find keyring object */
-	rv = (module->C_FindObjectsInit) (session, fattrs, 1);
+	rv = (test->module->C_FindObjectsInit) (test->session, fattrs, 1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = (module->C_FindObjects) (session, &collection, 1, &count);
+	rv = (test->module->C_FindObjects) (test->session, &test->collection, 1, &count);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (count, ==, 1);
-	gkm_assert_cmpulong (collection, !=, 0);
-	rv = (module->C_FindObjectsFinal) (session);
+	gkm_assert_cmpulong (test->collection, !=, 0);
+	rv = (test->module->C_FindObjectsFinal) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	/* Find the key object */
-	rv = (module->C_FindObjectsInit) (session, kattrs, 1);
+	/* Find the test->key object */
+	rv = (test->module->C_FindObjectsInit) (test->session, kattrs, 1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = (module->C_FindObjects) (session, &key, 1, &count);
+	rv = (test->module->C_FindObjects) (test->session, &test->key, 1, &count);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (count, ==, 1);
-	gkm_assert_cmpulong (key, !=, 0);
-	rv = (module->C_FindObjectsFinal) (session);
+	gkm_assert_cmpulong (test->key, !=, 0);
+	rv = (test->module->C_FindObjectsFinal) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Start a signing operation, that needs to be authenticated */
-	rv = (module->C_SignInit) (session, &mech, key);
+	rv = (test->module->C_SignInit) (test->session, &test->mech, test->key);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEARDOWN (login_auto)
+static void
+teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	g_assert (!gku_prompt_dummy_have_response ());
 
-	key = 0;
-	collection = 0;
+	test->key = 0;
+	test->collection = 0;
 
-	rv = (module->C_CloseSession) (session);
+	rv = (test->module->C_CloseSession) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	session = 0;
+	test->session = 0;
 
-	rv = (module->C_Finalize) (NULL);
+	rv = (test->module->C_Finalize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	module = NULL;
+	test->module = NULL;
 }
 
-TESTING_TEST (login_auto_specific)
+static void
+test_specific (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	/* Login with prompt */
 	gku_prompt_dummy_queue_auto_password ("booo");
-	rv = (module->C_Login) (session, CKU_CONTEXT_SPECIFIC, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_CONTEXT_SPECIFIC, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Start a signing operation, that needs to be authenticated */
-	rv = (module->C_SignInit) (session, &mech, key);
+	rv = (test->module->C_SignInit) (test->session, &test->mech, test->key);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* No further prompting should be shown, uses stored password */
 	gku_prompt_dummy_prepare_response ();
-	rv = (module->C_Login) (session, CKU_CONTEXT_SPECIFIC, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_CONTEXT_SPECIFIC, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Change the password */
 	gkm_mock_module_set_pin ("other");
 
 	/* Start a signing operation, that needs to be authenticated */
-	rv = (module->C_SignInit) (session, &mech, key);
+	rv = (test->module->C_SignInit) (test->session, &test->mech, test->key);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* This should prompt again, as stored password is now wrong */
 	gku_prompt_dummy_queue_ok_password ("other");
-	rv = (module->C_Login) (session, CKU_CONTEXT_SPECIFIC, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_CONTEXT_SPECIFIC, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEST (login_auto_user_token)
+static void
+test_user_token (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	/* Login with prompt */
 	gku_prompt_dummy_queue_auto_password ("booo");
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = (module->C_Logout) (session);
+	rv = (test->module->C_Logout) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* No further prompting should be shown, uses stored password */
 	gku_prompt_dummy_prepare_response ();
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = (module->C_Logout) (session);
+	rv = (test->module->C_Logout) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Change the password */
@@ -172,11 +183,12 @@ TESTING_TEST (login_auto_user_token)
 
 	/* This should prompt again, as stored password is now wrong */
 	gku_prompt_dummy_queue_ok_password ("other");
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEST (login_auto_unlock_keyring)
+static void
+test_unlock_keyring (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_HANDLE credential;
 	CK_RV rv;
@@ -185,19 +197,19 @@ TESTING_TEST (login_auto_unlock_keyring)
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_VALUE, NULL, 0 },
-		{ CKA_G_OBJECT, &collection, sizeof (collection) },
+		{ CKA_G_OBJECT, &test->collection, sizeof (test->collection) },
 	};
 
 	/* Create credential with prompt */
 	gku_prompt_dummy_queue_auto_password ("booo");
-	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &credential);
+	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &credential);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = (module->C_DestroyObject) (session, credential);
+	rv = (test->module->C_DestroyObject) (test->session, credential);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* No further prompting should be shown, uses stored password */
 	gku_prompt_dummy_prepare_response ();
-	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &credential);
+	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &credential);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Change the password */
@@ -205,6 +217,19 @@ TESTING_TEST (login_auto_unlock_keyring)
 
 	/* This should prompt again, as stored password is now wrong */
 	gku_prompt_dummy_queue_ok_password ("other");
-	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &credential);
+	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &credential);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/wrap-layer/login-auto/specific", Test, NULL, setup, test_specific, teardown);
+	g_test_add ("/wrap-layer/login-auto/user_token", Test, NULL, setup, test_user_token, teardown);
+	g_test_add ("/wrap-layer/login-auto/unlock_keyring", Test, NULL, setup, test_unlock_keyring, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

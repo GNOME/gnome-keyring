@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "gcr.h"
+#include "gcr/gcr.h"
 #include "gcr/gcr-internal.h"
 
 #include "gck/gck-test.h"
@@ -43,7 +43,7 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	if (!g_file_get_contents ("files/der-certificate.crt", (gchar**)&test->cert_data,
+	if (!g_file_get_contents (SRCDIR "/files/der-certificate.crt", (gchar**)&test->cert_data,
 	                          &test->n_cert_data, NULL))
 		g_assert_not_reached ();
 	g_assert (test->cert_data);
@@ -93,15 +93,9 @@ test_new_static (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 	g_set_prgname ("test-simple-certificate");
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/simple-certificate/new", Test, NULL, setup, test_new, teardown);
 	g_test_add ("/gcr/simple-certificate/new_static", Test, NULL, setup, test_new_static, teardown);

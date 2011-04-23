@@ -22,13 +22,16 @@
 */
 
 #include "config.h"
-#include "test-ssh-module.h"
+
+#include "mock-ssh-module.h"
+
+#include "egg/egg-secure-memory.h"
 
 #include "gkm/gkm-module.h"
 
 #include "ssh-store/gkm-ssh-store.h"
 
-#include "test-suite.h"
+EGG_SECURE_GLIB_DEFINITIONS ();
 
 static GMutex *mutex = NULL;
 
@@ -104,10 +107,4 @@ test_ssh_module_open_session (gboolean writable)
 	g_assert (session);
 
 	return session;
-}
-
-TESTING_EXTERNAL(ssh_module)
-{
-	CK_FUNCTION_LIST_PTR funcs = gkm_ssh_store_get_functions ();
-	testing_test_p11_module (funcs, "p11-tests.conf");
 }

@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "test-suite.h"
+#include "egg/egg-testing.h"
 
 #include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
@@ -30,11 +30,14 @@
 
 #include "ui/gku-prompt.h"
 
-static CK_FUNCTION_LIST prompt_login_functions;
-static CK_FUNCTION_LIST_PTR module = NULL;
-static CK_SESSION_HANDLE session = 0;
+typedef struct {
+	CK_FUNCTION_LIST prompt_login_functions;
+	CK_FUNCTION_LIST_PTR module;
+	CK_SESSION_HANDLE session;
+} Test;
 
-TESTING_SETUP (login_user)
+static void
+setup (Test *test, gconstpointer unused)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
@@ -44,101 +47,126 @@ TESTING_SETUP (login_user)
 	/* Always start off with test functions */
 	rv = gkm_mock_C_GetFunctionList (&funcs);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	memcpy (&prompt_login_functions, funcs, sizeof (prompt_login_functions));
+	memcpy (&test->prompt_login_functions, funcs, sizeof (test->prompt_login_functions));
 
 	gkm_wrap_layer_reset_modules ();
-	gkm_wrap_layer_add_module (&prompt_login_functions);
-	module = gkm_wrap_layer_get_functions ();
+	gkm_wrap_layer_add_module (&test->prompt_login_functions);
+	test->module = gkm_wrap_layer_get_functions ();
 
 	gku_prompt_dummy_prepare_response ();
 
-	/* Open a session */
-	rv = (module->C_Initialize) (NULL);
+	/* Open a test->session */
+	rv = (test->module->C_Initialize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
+	rv = (test->module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &session);
+	rv = (test->module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEARDOWN (login_user)
+static void
+teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	g_assert (!gku_prompt_dummy_have_response ());
 
-	rv = (module->C_CloseSession) (session);
+	rv = (test->module->C_CloseSession) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	session = 0;
+	test->session = 0;
 
-	rv = (module->C_Finalize) (NULL);
+	rv = (test->module->C_Finalize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	module = NULL;
+	test->module = NULL;
 }
 
-TESTING_TEST (login_fail_unsupported_so)
+static void
+test_fail_unsupported_so (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	rv = (module->C_Login) (session, CKU_SO, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_SO, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-TESTING_TEST (login_skip_prompt_because_pin)
+static void
+test_skip_prompt_because_pin (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	rv = (module->C_Login) (session, CKU_USER, (guchar*)"booo", 4);
+	rv = (test->module->C_Login) (test->session, CKU_USER, (guchar*)"booo", 4);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEST (login_user_ok_password)
+static void
+test_ok_password (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	gku_prompt_dummy_queue_ok_password ("booo");
 
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEST (login_user_bad_password_then_cancel)
+static void
+test_bad_password_then_cancel (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	gku_prompt_dummy_queue_ok_password ("bad password");
 	gku_prompt_dummy_queue_no ();
 
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-TESTING_TEST (login_user_cancel_immediately)
+static void
+test_cancel_immediately (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	gku_prompt_dummy_queue_no ();
 
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-TESTING_TEST (login_user_fail_get_session_info)
+static void
+test_fail_get_session_info (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	prompt_login_functions.C_GetSessionInfo = gkm_mock_fail_C_GetSessionInfo;
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	test->prompt_login_functions.C_GetSessionInfo = gkm_mock_fail_C_GetSessionInfo;
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-TESTING_TEST (login_user_fail_get_token_info)
+static void
+test_fail_get_token_info (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	prompt_login_functions.C_GetTokenInfo = gkm_mock_fail_C_GetTokenInfo;
-	rv = (module->C_Login) (session, CKU_USER, NULL, 0);
+	test->prompt_login_functions.C_GetTokenInfo = gkm_mock_fail_C_GetTokenInfo;
+	rv = (test->module->C_Login) (test->session, CKU_USER, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/wrap-layer/login-user/fail_unsupported_so", Test, NULL, setup, test_fail_unsupported_so, teardown);
+	g_test_add ("/wrap-layer/login-user/skip_prompt_because_pin", Test, NULL, setup, test_skip_prompt_because_pin, teardown);
+	g_test_add ("/wrap-layer/login-user/ok_password", Test, NULL, setup, test_ok_password, teardown);
+	g_test_add ("/wrap-layer/login-user/bad_password_then_cancel", Test, NULL, setup, test_bad_password_then_cancel, teardown);
+	g_test_add ("/wrap-layer/login-user/cancel_immediately", Test, NULL, setup, test_cancel_immediately, teardown);
+	g_test_add ("/wrap-layer/login-user/fail_get_session_info", Test, NULL, setup, test_fail_get_session_info, teardown);
+	g_test_add ("/wrap-layer/login-user/fail_get_token_info", Test, NULL, setup, test_fail_get_token_info, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "egg-hex.h"
+#include "egg/egg-hex.h"
 
 #include <stdlib.h>
 #include <stdio.h>

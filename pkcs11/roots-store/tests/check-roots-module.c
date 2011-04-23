@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* test-module.c: A test PKCS#11 implementation
+/* check-roots-module.c: Test PKCS#11 implementation
 
    Copyright (C) 2009 Stefan Walter
 
@@ -25,10 +25,44 @@
 
 #include "roots-store/gkm-roots-store.h"
 
-#include "test-suite.h"
+#include "egg/egg-secure-memory.h"
 
-TESTING_EXTERNAL(roots_module)
+#include <glib.h>
+#include <glib-object.h>
+
+#include <p11-tests.h>
+
+static int failures = 0;
+
+EGG_SECURE_GLIB_DEFINITIONS ();
+
+static void
+on_p11_tests_log (int level, const char *section, const char *message)
 {
-	CK_FUNCTION_LIST_PTR funcs = gkm_roots_store_get_functions ();
-	testing_test_p11_module (funcs, "p11-tests.conf");
+	if (level == P11_TESTS_NONE) {
+		g_message ("%s", message);
+	} else if (level != P11_TESTS_FAIL) {
+		g_message ("%s: %s", section, message);
+	} else {
+		g_print ("  /roots-store/%s: FAIL: %s\n", section, message);
+		++failures;
+	}
+}
+
+int
+main (int argc, const char *argv[])
+{
+	g_type_init ();
+
+	p11_tests_set_log_func (on_p11_tests_log);
+	p11_tests_set_unexpected (1);
+	p11_tests_set_verbose (0);
+	p11_tests_set_write_session (1);
+	p11_tests_load_config (SRCDIR "/p11-tests.conf");
+
+	g_print ("CHECK: check-roots-module...\n");
+	p11_tests_perform (gkm_roots_store_get_functions ());
+
+	g_print ("%s: check-roots-module\n", failures ? "FAIL" : "PASS");
+	return failures;
 }

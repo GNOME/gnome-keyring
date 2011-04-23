@@ -121,7 +121,7 @@ test_parse_all (Test *test, gconstpointer unused)
 	gsize len;
 	GDir *dir;
 
-	dir = g_dir_open ("files", 0, NULL);
+	dir = g_dir_open (SRCDIR "/files", 0, NULL);
 	g_assert (dir);
 
 	for (;;) {
@@ -132,7 +132,7 @@ test_parse_all (Test *test, gconstpointer unused)
 			continue;
 
 		g_free (test->filedesc);
-		test->filedesc = g_build_filename ("files", filename, NULL);
+		test->filedesc = g_build_filename (SRCDIR "/files", filename, NULL);
 
 		if (g_file_test (test->filedesc, G_FILE_TEST_IS_DIR))
 			continue;
@@ -157,15 +157,9 @@ test_parse_all (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 	g_set_prgname ("test-parser");
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/parser/parse_all", Test, NULL, setup, test_parse_all, teardown);
 

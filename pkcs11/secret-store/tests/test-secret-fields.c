@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-secret-fields.c: Test secret fields
+/* test-secret-fields.c: Test secret fields
 
    Copyright (C) 2009 Stefan Walter
 
@@ -23,9 +23,7 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
-#include "gkm-secret-fields.h"
+#include "secret-store/gkm-secret-fields.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -35,20 +33,23 @@
 #include <stdio.h>
 #include <string.h>
 
-TESTING_TEST(fields_new)
+static void
+test_new (void)
 {
 	GHashTable *fields = gkm_secret_fields_new ();
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_boxed)
+static void
+test_boxed (void)
 {
 	GType boxed = gkm_secret_fields_boxed_type ();
 	GType check = gkm_secret_fields_boxed_type ();
 	g_assert (boxed == check);
 }
 
-TESTING_TEST(fields_add_get_values)
+static void
+test_add_get_values (void)
 {
 	GHashTable *fields = gkm_secret_fields_new ();
 	const gchar *value;
@@ -69,7 +70,8 @@ TESTING_TEST(fields_add_get_values)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_parse)
+static void
+test_parse (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0value1\0two\0value2\0three\0value3\0", 35 };
 	GHashTable *fields;
@@ -90,7 +92,8 @@ TESTING_TEST(fields_parse)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_parse_empty)
+static void
+test_parse_empty (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "", 0 };
 	GHashTable *fields;
@@ -104,7 +107,8 @@ TESTING_TEST(fields_parse_empty)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_parse_null_invalid)
+static void
+test_parse_null_invalid (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, NULL, 5 };
 	GHashTable *fields;
@@ -114,7 +118,8 @@ TESTING_TEST(fields_parse_null_invalid)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-TESTING_TEST(fields_parse_missing_value)
+static void
+test_parse_missing_value (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one", 3 };
 	GHashTable *fields;
@@ -124,7 +129,8 @@ TESTING_TEST(fields_parse_missing_value)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-TESTING_TEST(fields_parse_missing_terminator)
+static void
+test_parse_missing_terminator (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0value", 9 };
 	GHashTable *fields;
@@ -134,7 +140,8 @@ TESTING_TEST(fields_parse_missing_terminator)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-TESTING_TEST(fields_parse_not_utf8)
+static void
+test_parse_not_utf8 (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0not\234utf8\0", 13 };
 	GHashTable *fields;
@@ -144,7 +151,8 @@ TESTING_TEST(fields_parse_not_utf8)
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-TESTING_TEST(fields_serialize)
+static void
+test_serialize (void)
 {
 	gchar buffer[32];
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, buffer, 32 };
@@ -162,7 +170,8 @@ TESTING_TEST(fields_serialize)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_serialize_length)
+static void
+test_serialize_length (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, NULL, 0 };
 	GHashTable *fields;
@@ -178,7 +187,8 @@ TESTING_TEST(fields_serialize_length)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_add_get_compat_uint32)
+static void
+test_add_get_compat_uint32 (void)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -194,7 +204,8 @@ TESTING_TEST(fields_add_get_compat_uint32)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_get_compat_uint32_fail)
+static void
+test_get_compat_uint32_fail (void)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -209,7 +220,8 @@ TESTING_TEST(fields_get_compat_uint32_fail)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_get_compat_hashed_string)
+static void
+test_get_compat_hashed_string (void)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -226,7 +238,8 @@ TESTING_TEST(fields_get_compat_hashed_string)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_get_compat_hashed_already)
+static void
+test_get_compat_hashed_already (void)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -243,7 +256,8 @@ TESTING_TEST(fields_get_compat_hashed_already)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_get_compat_hashed_uint32)
+static void
+test_get_compat_hashed_uint32 (void)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -260,7 +274,8 @@ TESTING_TEST(fields_get_compat_hashed_uint32)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_get_compat_hashed_uint32_already)
+static void
+test_get_compat_hashed_uint32_already (void)
 {
 	GHashTable *fields;
 	gboolean ret;
@@ -277,7 +292,8 @@ TESTING_TEST(fields_get_compat_hashed_uint32_already)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_get_names)
+static void
+test_get_names (void)
 {
 	GHashTable *fields;
 	GList *names, *l;
@@ -303,7 +319,8 @@ TESTING_TEST(fields_get_names)
 	g_hash_table_unref (fields);
 }
 
-TESTING_TEST(fields_match)
+static void
+test_match (void)
 {
 	GHashTable *haystack;
 	GHashTable *needle;
@@ -329,7 +346,8 @@ TESTING_TEST(fields_match)
 	g_hash_table_unref (needle);
 }
 
-TESTING_TEST(fields_match_mismatch_value)
+static void
+test_match_mismatch_value (void)
 {
 	GHashTable *haystack;
 	GHashTable *needle;
@@ -348,7 +366,8 @@ TESTING_TEST(fields_match_mismatch_value)
 	g_hash_table_unref (needle);
 }
 
-TESTING_TEST(fields_match_mismatch_field)
+static void
+test_match_mismatch_field (void)
 {
 	GHashTable *haystack;
 	GHashTable *needle;
@@ -367,7 +386,8 @@ TESTING_TEST(fields_match_mismatch_field)
 	g_hash_table_unref (needle);
 }
 
-TESTING_TEST(fields_match_wrong_hashed)
+static void
+test_match_wrong_hashed (void)
 {
 	GHashTable *haystack;
 	GHashTable *needle;
@@ -384,4 +404,36 @@ TESTING_TEST(fields_match_wrong_hashed)
 
 	g_hash_table_unref (haystack);
 	g_hash_table_unref (needle);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/secret-store/fields/new", test_new);
+	g_test_add_func ("/secret-store/fields/boxed", test_boxed);
+	g_test_add_func ("/secret-store/fields/add_get_values", test_add_get_values);
+	g_test_add_func ("/secret-store/fields/parse", test_parse);
+	g_test_add_func ("/secret-store/fields/parse_empty", test_parse_empty);
+	g_test_add_func ("/secret-store/fields/parse_null_invalid", test_parse_null_invalid);
+	g_test_add_func ("/secret-store/fields/parse_missing_value", test_parse_missing_value);
+	g_test_add_func ("/secret-store/fields/parse_missing_terminator", test_parse_missing_terminator);
+	g_test_add_func ("/secret-store/fields/parse_not_utf8", test_parse_not_utf8);
+	g_test_add_func ("/secret-store/fields/serialize", test_serialize);
+	g_test_add_func ("/secret-store/fields/serialize_length", test_serialize_length);
+	g_test_add_func ("/secret-store/fields/add_get_compat_uint32", test_add_get_compat_uint32);
+	g_test_add_func ("/secret-store/fields/get_compat_uint32_fail", test_get_compat_uint32_fail);
+	g_test_add_func ("/secret-store/fields/get_compat_hashed_string", test_get_compat_hashed_string);
+	g_test_add_func ("/secret-store/fields/get_compat_hashed_already", test_get_compat_hashed_already);
+	g_test_add_func ("/secret-store/fields/get_compat_hashed_uint32", test_get_compat_hashed_uint32);
+	g_test_add_func ("/secret-store/fields/get_compat_hashed_uint32_already", test_get_compat_hashed_uint32_already);
+	g_test_add_func ("/secret-store/fields/get_names", test_get_names);
+	g_test_add_func ("/secret-store/fields/match", test_match);
+	g_test_add_func ("/secret-store/fields/match_mismatch_value", test_match_mismatch_value);
+	g_test_add_func ("/secret-store/fields/match_mismatch_field", test_match_mismatch_field);
+	g_test_add_func ("/secret-store/fields/match_wrong_hashed", test_match_wrong_hashed);
+
+	return g_test_run ();
 }

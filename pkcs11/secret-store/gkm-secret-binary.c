@@ -561,7 +561,7 @@ generate_hashed_items (GkmSecretCollection *collection, EggBuffer *buffer)
 
 GkmDataResult
 gkm_secret_binary_write (GkmSecretCollection *collection, GkmSecretData *sdata,
-                         guchar **data, gsize *n_data)
+                         gpointer *data, gsize *n_data)
 {
 	GkmSecretObject *obj;
 	EggBuffer to_encrypt;
@@ -843,7 +843,7 @@ free_item_info (ItemInfo *info)
 
 gint
 gkm_secret_binary_read (GkmSecretCollection *collection, GkmSecretData *sdata,
-                        const guchar *data, gsize n_data)
+                        gconstpointer data, gsize n_data)
 {
 	gsize offset;
 	guchar major, minor, crypto, hash;

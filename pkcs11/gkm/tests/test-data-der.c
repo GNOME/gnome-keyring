@@ -116,11 +116,11 @@ test_der_public (gcry_sexp_t key)
 static void
 setup (Test *test, gconstpointer unused)
 {
-	if (!g_file_get_contents ("files/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
 		g_assert_not_reached ();
 	test->certificate = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", test->certificate_data, test->n_certificate_data);
 	g_assert (test->certificate);
-	if (!g_file_get_contents ("files/test-certificate-2.der", &test->certificate2_data, &test->n_certificate2_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/test-certificate-2.der", &test->certificate2_data, &test->n_certificate2_data, NULL))
 		g_assert_not_reached ();
 	test->certificate2 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", test->certificate2_data, test->n_certificate2_data);
 	g_assert (test->certificate2);
@@ -331,7 +331,7 @@ test_read_ca_certificates_public_key_info (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents ("files/ca-certificates.crt", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/ca-certificates.crt", &data, &n_data, NULL))
 		g_assert_not_reached ();
 	egg_openssl_pem_parse (data, n_data, on_ca_certificate_public_key_info, NULL);
 	g_free (data);
@@ -432,7 +432,7 @@ test_read_all_pkcs8 (Test *test, gconstpointer unused)
 	gsize n_data;
 	gchar *path;
 
-	dir = g_dir_open ("files", 0, NULL);
+	dir = g_dir_open (SRCDIR "/files", 0, NULL);
 	g_assert (dir);
 
 	for(;;) {
@@ -443,7 +443,7 @@ test_read_all_pkcs8 (Test *test, gconstpointer unused)
 		if (!g_pattern_match_simple ("der-pkcs8-*", name))
 			continue;
 
-		path = g_build_filename ("files", name, NULL);
+		path = g_build_filename (SRCDIR "/files", name, NULL);
 		if (!g_file_get_contents (path, &data, &n_data, NULL))
 			g_assert_not_reached ();
 		g_free (path);
@@ -467,7 +467,7 @@ test_read_pkcs8_bad_password (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents ("files/der-pkcs8-encrypted-pkcs5.key", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/der-pkcs8-encrypted-pkcs5.key", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
 	res = gkm_data_der_read_private_pkcs8 (data, n_data, "wrong password", 4, &sexp);

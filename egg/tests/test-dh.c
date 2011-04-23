@@ -23,9 +23,9 @@
 
 #include "config.h"
 
-#include "egg-dh.h"
-#include "egg-secure-memory.h"
-#include "egg-testing.h"
+#include "egg/egg-dh.h"
+#include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include <stdlib.h>
 #include <stdio.h>

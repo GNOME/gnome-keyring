@@ -21,8 +21,8 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#ifndef TEST_XDG_MODULE_H_
-#define TEST_XDG_MODULE_H_
+#ifndef MOCK_XDG_MODULE_H_
+#define MOCK_XDG_MODULE_H_
 
 #include <glib.h>
 
@@ -30,16 +30,22 @@
 #include "gkm/gkm-types.h"
 
 #include "pkcs11.h"
-#include "test-suite.h"
 
-void                   test_xdg_module_leave                    (void);
+void                   mock_xdg_module_leave                    (void);
 
-void                   test_xdg_module_enter                    (void);
+void                   mock_xdg_module_enter                    (void);
 
-GkmModule*             test_xdg_module_initialize_and_enter     (void);
+GkmModule*             mock_xdg_module_initialize_and_enter     (void);
 
-void                   test_xdg_module_leave_and_finalize       (void);
+void                   mock_xdg_module_leave_and_finalize       (void);
 
-GkmSession*            test_xdg_module_open_session             (gboolean writable);
+GkmSession*            mock_xdg_module_open_session             (gboolean writable);
 
-#endif /* TEST_XDG_MODULE_H_ */
+void                   mock_xdg_module_empty_file               (const gchar *name);
+
+void                   mock_xdg_module_touch_file               (const gchar *name,
+                                                                 gint future);
+
+void                   mock_xdg_module_remove_file              (const gchar *name);
+
+#endif /* MOCK_XDG_MODULE_H_ */
