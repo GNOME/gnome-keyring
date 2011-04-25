@@ -79,35 +79,39 @@ teardown (Test *test, gconstpointer unused)
 	test_secret_module_leave_and_finalize ();
 }
 
-static void
-test_read (Test *test, gconstpointer unused)
+static GkmDataResult
+check_read_keyring_file (Test *test, const gchar *path)
 {
 	GkmDataResult res;
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/files/encrypted.keyring", &data, &n_data, NULL))
+	if (!g_file_get_contents (path, &data, &n_data, NULL))
 		g_assert_not_reached ();
 	res = gkm_secret_binary_read (test->collection, test->sdata, data, n_data);
 	g_free (data);
 
-	test_secret_collection_validate (test->collection, test->sdata);
+	return res;
+}
 
+
+static void
+test_read_encrypted (Test *test, gconstpointer unused)
+{
+	GkmDataResult res;
+
+	res = check_read_keyring_file (test, SRCDIR "/files/encrypted.keyring");
 	g_assert (res == GKM_DATA_SUCCESS);
+
+	test_secret_collection_validate (test->collection, test->sdata);
 }
 
 static void
 test_read_wrong_format (Test *test, gconstpointer unused)
 {
 	GkmDataResult res;
-	gchar *data;
-	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/files/plain.keyring", &data, &n_data, NULL))
-		g_assert_not_reached ();
-	res = gkm_secret_binary_read (test->collection, test->sdata, data, n_data);
-	g_free (data);
-
+	res = check_read_keyring_file (test, SRCDIR "/files/plain.keyring");
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 }
 
@@ -116,18 +120,12 @@ test_read_wrong_master (Test *test, gconstpointer unused)
 {
 	GkmDataResult res;
 	GkmSecret *master;
-	gchar *data;
-	gsize n_data;
 
 	master = gkm_secret_new_from_password ("wrong");
 	gkm_secret_data_set_master (test->sdata, master);
 	g_object_unref (master);
 
-	if (!g_file_get_contents (SRCDIR "/files/encrypted.keyring", &data, &n_data, NULL))
-		g_assert_not_reached ();
-	res = gkm_secret_binary_read (test->collection, test->sdata, data, n_data);
-	g_free (data);
-
+	res = check_read_keyring_file (test, SRCDIR "/files/encrypted.keyring");
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
@@ -135,16 +133,10 @@ static void
 test_read_sdata_but_no_master (Test *test, gconstpointer unused)
 {
 	GkmDataResult res;
-	gchar *data;
-	gsize n_data;
 
 	gkm_secret_data_set_master (test->sdata, NULL);
 
-	if (!g_file_get_contents (SRCDIR "/files/encrypted.keyring", &data, &n_data, NULL))
-		g_assert_not_reached ();
-	res = gkm_secret_binary_read (test->collection, test->sdata, data, n_data);
-	g_free (data);
-
+	res = check_read_keyring_file (test, SRCDIR "/files/encrypted.keyring");
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
@@ -205,18 +197,48 @@ test_remove_unavailable (Test *test, gconstpointer unused)
 	g_free (data);
 }
 
+static void
+test_read_created_on_solaris_opencsw (Test *test, gconstpointer unused)
+{
+	GkmDataResult res;
+	GkmSecret *master;
+
+	master = gkm_secret_new_from_password ("test");
+	gkm_secret_data_set_master (test->sdata, master);
+	g_object_unref (master);
+
+	res = check_read_keyring_file (test, SRCDIR "/files/created-on-solaris-opencsw.keyring");
+	g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
+}
+
+static void
+test_read_created_on_rhel (Test *test, gconstpointer unused)
+{
+	GkmDataResult res;
+	GkmSecret *master;
+
+	master = gkm_secret_new_from_password ("test");
+	gkm_secret_data_set_master (test->sdata, master);
+	g_object_unref (master);
+
+	res = check_read_keyring_file (test, SRCDIR "/files/created-on-rhel.keyring");
+	g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
+}
+
 int
 main (int argc, char **argv)
 {
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/secret-store/binary/read", Test, NULL, setup, test_read, teardown);
+	g_test_add ("/secret-store/binary/read_encrypted", Test, NULL, setup, test_read_encrypted, teardown);
 	g_test_add ("/secret-store/binary/read_wrong_format", Test, NULL, setup, test_read_wrong_format, teardown);
 	g_test_add ("/secret-store/binary/read_wrong_master", Test, NULL, setup, test_read_wrong_master, teardown);
 	g_test_add ("/secret-store/binary/read_sdata_but_no_master", Test, NULL, setup, test_read_sdata_but_no_master, teardown);
 	g_test_add ("/secret-store/binary/write", Test, NULL, setup, test_write, teardown);
 	g_test_add ("/secret-store/binary/remove_unavailable", Test, NULL, setup, test_remove_unavailable, teardown);
+	g_test_add ("/secret-store/binary/created_on_rhel", Test, NULL, setup, test_read_created_on_rhel, teardown);
+	g_test_add ("/secret-store/binary/created_on_solaris_opencsw", Test, NULL, setup, test_read_created_on_solaris_opencsw, teardown);
 
 	return g_test_run ();
 }
