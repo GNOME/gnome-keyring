@@ -1,3 +1,13 @@
+Changes in version 3.0.1 are:
+ * Fix clicking buttons in 'unsafe storage' dialog on GTK+3
+ * Build with GTK+3 by default
+ * More tests and test fine tuning: --enable-tests=yes/no/full
+ * Expand path in gnome-keyring-prompt.desktop properly
+ * Implement debug tracing in parts of gcr library.
+ * Complete documentation in gcr and gck libraries.
+ * Fix assertions in gcr library during parsing of a stream.
+ * Build fixes
+
 Changes in version 3.0.0 are:
  * Translations
 
