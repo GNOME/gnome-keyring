@@ -8,7 +8,7 @@ REQUIRED_AUTOMAKE_VERSION=1.7
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-(test -f $srcdir/configure.in \
+(test -f $srcdir/configure.ac \
   && test -f $srcdir/daemon/gkd-main.c) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
     echo " top-level $PKG_NAME directory"

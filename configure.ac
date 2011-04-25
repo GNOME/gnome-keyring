@@ -130,7 +130,7 @@ GLIB_GSETTINGS
 
 # --------------------------------------------------------------------
 # Check for socklen_t
-# 
+#
 
 AC_MSG_CHECKING(whether socklen_t is defined)
 AC_TRY_COMPILE([
@@ -149,7 +149,7 @@ fi
 
 # --------------------------------------------------------------------
 # Check for various credentials.
-# 
+#
 
 AC_MSG_CHECKING(for struct cmsgcred)
 AC_TRY_COMPILE([
@@ -174,7 +174,7 @@ AC_CHECK_FUNCS(getpeerucred, AC_DEFINE(HAVE_GETPEERUCRED,1,[Have getpeerucred]))
 
 # --------------------------------------------------------------------
 # Check for getpeereid
-# 
+#
 
 AC_CHECK_FUNCS(getpeereid, AC_DEFINE(HAVE_GETPEEREID, 1, [Have getpeereid function]))
 
@@ -185,7 +185,7 @@ AC_CHECK_FUNCS(getpeereid, AC_DEFINE(HAVE_GETPEEREID, 1, [Have getpeereid functi
 AC_CHECK_FUNCS(flock, AC_DEFINE(HAVE_FLOCK,1,[Have flock]))
 
 # --------------------------------------------------------------------
-# Check for timegm 
+# Check for timegm
 #
 
 AC_CHECK_FUNCS(timegm, AC_DEFINE(HAVE_TIMEGM,1,[Have timegm]))
@@ -228,7 +228,7 @@ AC_CHECK_FUNCS(mlock)
 
 # --------------------------------------------------------------------
 # socket()
-#	
+#
 
 AC_CHECK_LIB(socket, socket)
 
@@ -247,7 +247,7 @@ fi
 
 # --------------------------------------------------------------------
 # DBus Checks
-# 
+#
 
 DBUS_REQUIRED=1.0
 PKG_CHECK_MODULES([DBUS], dbus-1 >= 1.0)
@@ -280,7 +280,7 @@ AC_SUBST(DBUS_SERVICES_DIR)
 # --------------------------------------------------------------------
 # PAM Checks
 
-AC_ARG_ENABLE(pam, 
+AC_ARG_ENABLE(pam,
 	    AC_HELP_STRING([--disable-pam],
 	    [Build GNOME keyring PAM helper]))
 
@@ -330,7 +330,7 @@ fi
 # SSH Agent support
 #
 
-AC_ARG_ENABLE([ssh-agent], 
+AC_ARG_ENABLE([ssh-agent],
 		AC_HELP_STRING([--disable-ssh-agent],
 		[Don't include SSH agent in gnome-keyring]))
 
@@ -408,14 +408,14 @@ AC_CHECK_FILE(/dev/random, AC_DEFINE(HAVE_DEVRANDOM,1,[Have /dev/random]))
 
 # --------------------------------------------------------------------
 # libgcrypt
-# 
+#
 
 GCRYPT_VERSION=1.2.2
 GCRYPT_LIBVER=1
 
 AM_PATH_LIBGCRYPT($GCRYPT_LIBVER:$GCRYPT_VERSION,,
- 	AC_MSG_ERROR([[
-***  
+	AC_MSG_ERROR([[
+***
 *** libgcrypt was not found. You may want to get it from
 *** ftp://ftp.gnupg.org/gcrypt/libgcrypt/
 ***
@@ -431,7 +431,7 @@ AC_SUBST([LIBGCRYPT_LIBS])
 
 # -------------------------------------------------------------------
 # libtasn1
-# 
+#
 
 GKR_LIBTASN1_VERSION=0.3.4
 
@@ -506,8 +506,8 @@ if test "$GCC" = "yes"; then
 	$CFLAGS"
 
 	# Disable -Werror for now, because of issues with
-	# strange gtk-doc programs not building cleanly.  
-	# -Werror \ 
+	# strange gtk-doc programs not building cleanly.
+	# -Werror \
 
 	for option in -Wno-strict-aliasing -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"
@@ -531,7 +531,7 @@ fi
 # --------------------------------------------------------------------
 # Tests and Unit Tests
 
-AC_ARG_ENABLE(tests, 
+AC_ARG_ENABLE(tests,
 	    AC_HELP_STRING([--enable-tests=yes/no/full],
 	    [Build tests and testing tools. default: yes]))
 
@@ -618,7 +618,7 @@ AM_CONDITIONAL([HAVE_LIBSELINUX], [test ! -z "$LIBSELINUX"])
 AC_ARG_ENABLE(valgrind,
 	AC_HELP_STRING([--enable-valgrind],
 	[Run gnome-keyring-daemon using valgrind]))
-	
+
 AC_MSG_CHECKING([valgrind])
 valgrind_status="yes"
 
@@ -630,13 +630,13 @@ if test "$enable_valgrind" = "run"; then
 	if test "$VALGRIND" = "no" ; then
 		AC_MSG_ERROR(valgrind tool is not installed)
 	fi
-	
+
 	VALGRIND_ARG="--log-file=/tmp/gkr-valgrind.log.%p"
 	VALGRIND_RUN="$VALGRIND $VALGRIND_ARG "
 
 	AC_DEFINE_UNQUOTED(VALGRIND, "$VALGRIND", [Path to valgrind executable])
 	AC_DEFINE_UNQUOTED(VALGRIND_ARG, "$VALGRIND_ARG", [Valgrind arguments])
-	
+
 	enable_valgrind="yes"
 	valgrind_status="run"
 fi
@@ -653,8 +653,8 @@ if test "$enable_valgrind" = "yes"; then
 	fi
 	AC_DEFINE_UNQUOTED(WITH_VALGRIND, 1, [Run under valgrind])
 	AC_MSG_RESULT(yes)
-	
-	
+
+
 # No valgrind
 else
 	AC_MSG_RESULT(no)
@@ -782,7 +782,7 @@ ui/tests/Makefile
 
 # ------------------------------------------------------------------------------
 # Summary
-# 
+#
 
 echo
 echo "OPTIONAL DEPENDENCIES"
