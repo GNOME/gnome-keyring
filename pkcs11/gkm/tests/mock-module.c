@@ -110,7 +110,7 @@ mock_module_object_new (GkmSession *session)
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
 	};
 
-	if (!g_file_get_contents ("files/test-certificate-1.der", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
 	attrs[0].pValue = data;

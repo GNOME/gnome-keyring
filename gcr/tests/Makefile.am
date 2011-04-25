@@ -1,8 +1,8 @@
 
 INCLUDES = \
-	-I$(top_srcdir)/egg \
-	-I$(top_srcdir)/gcr \
-	-DSRCDIR=$(srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \
@@ -14,7 +14,7 @@ LDADD = \
 	$(top_builddir)/gcr/libgcr-testable.la \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
-	$(top_builddir)/gck/libgck.la \
+	$(top_builddir)/gck/libgck-testable.la \
 	$(GTK_LIBS) \
 	$(GLIB_LIBS) \
 	$(LIBGCRYPT_LIBS)
@@ -34,13 +34,11 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+	gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
-if WITH_TESTS
 all-local: $(check_PROGRAMS)
-endif
 
 EXTRA_DIST = \
 	files
@@ -50,6 +48,7 @@ EXTRA_DIST = \
 noinst_PROGRAMS = \
 	frob-certificate \
 	frob-gnupg-selector \
+	frob-parser \
 	frob-key \
 	frob-selector \
 	frob-unlock-options

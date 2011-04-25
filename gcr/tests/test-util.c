@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "gcr.h"
+#include "gcr/gcr.h"
 #include "gcr/gcr-util.h"
 
 #include <errno.h>

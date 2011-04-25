@@ -22,25 +22,53 @@
 */
 
 #include "config.h"
-#include "test-secret-module.h"
-#include "test-suite.h"
+
+#include "mock-secret-module.h"
 
 #include "gkm/gkm-secret.h"
 #include "gkm/gkm-module.h"
 
-#include "gkm-secret-collection.h"
-#include "gkm-secret-data.h"
-#include "gkm-secret-fields.h"
-#include "gkm-secret-item.h"
-#include "gkm-secret-object.h"
-#include "gkm-secret-store.h"
+#include "secret-store/gkm-secret-collection.h"
+#include "secret-store/gkm-secret-data.h"
+#include "secret-store/gkm-secret-fields.h"
+#include "secret-store/gkm-secret-item.h"
+#include "secret-store/gkm-secret-object.h"
+#include "secret-store/gkm-secret-store.h"
+
+#include "egg/egg-mkdtemp.h"
+#include "egg/egg-secure-memory.h"
+
+#include <glib.h>
 
 #include <string.h>
 
+EGG_SECURE_GLIB_DEFINITIONS ();
+
 static GMutex *mutex = NULL;
+static gchar *directory = NULL;
 
 GkmModule*  _gkm_secret_store_get_module_for_testing (void);
 GMutex* _gkm_module_get_scary_mutex_that_you_should_not_touch (GkmModule *module);
+
+static void
+copy_file_to_directory (const gchar *from, const gchar *directory)
+{
+	gchar *filename;
+	gchar *basename;
+	gchar *data;
+	gsize n_data;
+
+	if (!g_file_get_contents (from, &data, &n_data, NULL))
+		g_error ("couldn't read: %s", from);
+
+	basename = g_path_get_basename (from);
+	filename = g_build_filename (directory, basename, NULL);
+	if (!g_file_set_contents (filename, data, n_data, NULL))
+		g_error ("couldn't write: %s", filename);
+	g_free (filename);
+	g_free (basename);
+	g_free (data);
+}
 
 GkmModule*
 test_secret_module_initialize_and_enter (void)
@@ -51,15 +79,17 @@ test_secret_module_initialize_and_enter (void)
 	gchar *string;
 	CK_RV rv;
 
+	directory = egg_mkdtemp (g_strdup ("/tmp/mock-secret-XXXXXX"));
+
 	/* Setup test directory to work in */
 	memset (&args, 0, sizeof (args));
-	string = g_strdup_printf ("directory='%s'", testing_scratch_directory ());
+	string = g_strdup_printf ("directory='%s'", directory);
 	args.pReserved = string;
 	args.flags = CKF_OS_LOCKING_OK;
 
 	/* Copy files from test-data to scratch */
-	testing_data_to_scratch ("encrypted.keyring", NULL);
-	testing_data_to_scratch ("plain.keyring", NULL);
+	copy_file_to_directory (SRCDIR "/files/encrypted.keyring", directory);
+	copy_file_to_directory (SRCDIR "/files/plain.keyring", directory);
 
 	funcs = gkm_secret_store_get_functions ();
 	rv = (funcs->C_Initialize) (&args);
@@ -87,6 +117,9 @@ test_secret_module_leave_and_finalize (void)
 	funcs = gkm_secret_store_get_functions ();
 	rv = (funcs->C_Finalize) (NULL);
 	g_return_if_fail (rv == CKR_OK);
+
+	g_free (directory);
+	directory = NULL;
 }
 
 void

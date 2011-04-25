@@ -7,12 +7,12 @@
 
 #include "gkm/gkm-data-types.h"
 
-GkmDataResult         gkm_ssh_openssh_parse_public_key                   (const guchar *data,
+GkmDataResult         gkm_ssh_openssh_parse_public_key                   (gconstpointer data,
                                                                           gsize n_data,
                                                                           gcry_sexp_t *sexp,
                                                                           gchar **comment);
 
-GkmDataResult         gkm_ssh_openssh_parse_private_key                  (const guchar *data,
+GkmDataResult         gkm_ssh_openssh_parse_private_key                  (gconstpointer data,
                                                                           gsize n_data,
                                                                           const gchar *password,
                                                                           gssize n_password,

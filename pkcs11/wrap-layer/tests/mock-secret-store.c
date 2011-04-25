@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "test-suite.h"
+#include "egg/egg-secure-memory.h"
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-mock.h"
@@ -32,6 +32,8 @@
 #include "ui/gku-prompt.h"
 
 static guint secret_identifier = 8800;
+
+EGG_SECURE_GLIB_DEFINITIONS ();
 
 static CK_RV
 mock_secret_C_Initialize (CK_VOID_PTR pInitArgs)

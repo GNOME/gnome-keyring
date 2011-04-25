@@ -1,13 +1,16 @@
 
 #include "control/gkd-control.h"
-#include "testing/testing.h"
+
+#include "egg/egg-secure-memory.h"
 
 #include <pwd.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-static int
-run (void)
+EGG_SECURE_GLIB_DEFINITIONS ();
+
+int
+main (int argc, char *argv[])
 {
 	const char *directory;
 	const gchar *env[] = { NULL };
@@ -26,5 +29,3 @@ run (void)
 
 	return 0;
 }
-
-#include "testing/testing.c"

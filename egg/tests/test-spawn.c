@@ -23,8 +23,8 @@
 
 #include "config.h"
 
-#include "egg-spawn.h"
-#include "egg-testing.h"
+#include "egg/egg-spawn.h"
+#include "egg/egg-testing.h"
 
 #include <sys/wait.h>
 
@@ -176,7 +176,7 @@ test_sync (void)
 	data.parent_pid = getpid();
 	data.index = 80;
 
-	ret = egg_spawn_sync_with_callbacks ("./files",
+	ret = egg_spawn_sync_with_callbacks (SRCDIR "/files",
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     &exit_status, &error);
@@ -197,7 +197,7 @@ test_sync_error (void)
 	GError *error = NULL;
 	gboolean ret;
 
-	ret = egg_spawn_sync_with_callbacks ("./files",
+	ret = egg_spawn_sync_with_callbacks (SRCDIR "/files",
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);
@@ -220,7 +220,7 @@ test_async (void)
 	data.index = 80;
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks ("./files",
+	ret = egg_spawn_async_with_callbacks (SRCDIR "/files",
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     NULL, &error);
@@ -247,7 +247,7 @@ test_async_none (void)
 	data.parent_pid = getpid();
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks ("./files",
+	ret = egg_spawn_async_with_callbacks (SRCDIR "/files",
 	                                     echo_argv, NULL, 0, NULL,
 	                                     &null_callbacks, &data,
 	                                     NULL, &error);
@@ -268,7 +268,7 @@ test_async_error (void)
 	GError *error = NULL;
 	guint ret;
 
-	ret = egg_spawn_async_with_callbacks ("./files",
+	ret = egg_spawn_async_with_callbacks (SRCDIR "/files",
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);
@@ -280,13 +280,7 @@ test_async_error (void)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_test_init (&argc, &argv, NULL);
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add_func ("/spawn/sync", test_sync);
 	g_test_add_func ("/spawn/sync_error", test_sync_error);

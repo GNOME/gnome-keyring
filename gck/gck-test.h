@@ -29,8 +29,6 @@
 #ifndef GCK_TEST_H
 #define GCK_TEST_H
 
-#ifdef WITH_TESTS
-
 #define         gck_assert_cmprv(v1, cmp, v2) \
 		do { CK_RV __v1 = (v1), __v2 = (v2); \
 			if (__v1 cmp __v2) ; else \
@@ -62,7 +60,5 @@ void            gck_assertion_message_cmpulong     (const gchar *domain,
                                                     CK_ULONG arg1,
                                                     const gchar *cmp,
                                                     CK_ULONG arg2);
-
-#endif /* WITH_TESTS */
 
 #endif /* GCK_TEST_H */

@@ -1,16 +1,13 @@
 
 if WITH_TESTS
 TESTS_DIR = tests
-TESTS_SOURCES = gck-mock.c gck-mock.h gck-test.c gck-test.h
-EXPORT_PATT = '^_?gck_*'
+TESTABLE_LIB = libgck-testable.la
 else
 TESTS_DIR =
-TESTS_SOURCES =
-EXPORT_PATT = '^gck_*'
+TESTABLE_LIB =
 endif
 
-SUBDIRS = . \
-	$(TESTS_DIR)
+SUBDIRS = . $(TESTS_DIR)
 
 incdir = $(includedir)/gck
 
@@ -44,13 +41,12 @@ libgck_la_SOURCES = \
 	gck-session.c \
 	gck-slot.c \
 	gck-uri.c \
-	$(TESTS_SOURCES) \
 	$(BUILT_SOURCES)
 
 libgck_la_LDFLAGS = \
 	-version-info $(GCK_LT_RELEASE) \
 	-no-undefined \
-	-export-symbols-regex $(EXPORT_PATT)
+	-export-symbols-regex '^gck_*'
 
 libgck_la_LIBADD = \
 	$(top_builddir)/egg/libegg-hex.la \
@@ -58,6 +54,15 @@ libgck_la_LIBADD = \
 	$(GTHREAD_LIBS) \
 	$(GIO_LIBS) \
 	$(GLIB_LIBS)
+
+noinst_LTLIBRARIES = $(TESTABLE_LIB)
+libgck_testable_la_SOURCES = \
+	gck-mock.c \
+	gck-mock.h \
+	gck-test.c \
+	gck-test.h
+libgck_testable_la_LIBADD = \
+	$(libgck_la_OBJECTS)
 
 gck-marshal.h: gck-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=_gck_marshal > $@

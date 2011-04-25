@@ -643,8 +643,6 @@ update_from_private_block (GkmGnome2File *self, EggBuffer *buffer, GkmSecret *lo
 {
 	EggBuffer custom;
 	GkmDataResult res;
-	const gchar *password;
-	gsize n_password;
 	gsize offset;
 
 	g_assert (GKM_IS_GNOME2_FILE (self));
@@ -664,7 +662,6 @@ update_from_private_block (GkmGnome2File *self, EggBuffer *buffer, GkmSecret *lo
 	egg_buffer_init_full (&custom, 1024, egg_secure_realloc);
 
 	/* Decrypt the buffer */
-	password = gkm_secret_get_password (login, &n_password);
 	if (!decrypt_buffer (buffer, &offset, login, &custom)) {
 		egg_buffer_uninit (&custom);
 		return GKM_DATA_FAILURE;

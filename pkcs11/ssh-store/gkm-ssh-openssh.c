@@ -255,7 +255,7 @@ digest_pem_block (GQuark type, const guchar *data, gsize n_data,
  */
 
 GkmDataResult
-gkm_ssh_openssh_parse_public_key (const guchar *data, gsize n_data,
+gkm_ssh_openssh_parse_public_key (gconstpointer input, gsize n_data,
                                   gcry_sexp_t *sexp, gchar **comment)
 {
 	EggBuffer buf;
@@ -267,6 +267,7 @@ gkm_ssh_openssh_parse_public_key (const guchar *data, gsize n_data,
 	gboolean ret;
 	gint state, algo;
 	guint save;
+	const guchar *data = input;
 
 	g_return_val_if_fail (data, FALSE);
 	g_return_val_if_fail (sexp, FALSE);
@@ -360,7 +361,7 @@ gkm_ssh_openssh_parse_public_key (const guchar *data, gsize n_data,
 }
 
 GkmDataResult
-gkm_ssh_openssh_parse_private_key (const guchar *data, gsize n_data,
+gkm_ssh_openssh_parse_private_key (gconstpointer data, gsize n_data,
                                    const gchar *password, gssize n_password,
                                    gcry_sexp_t *sexp)
 {

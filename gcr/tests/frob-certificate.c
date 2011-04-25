@@ -108,7 +108,7 @@ main(int argc, char *argv[])
 		test_certificate (argv[1]);
 	} else {
 		chdir_base_dir (argv[0]);
-		test_certificate ("files/der-certificate.crt");
+		test_certificate (SRCDIR "/files/der-certificate.crt");
 	}
 
 	return 0;

@@ -23,7 +23,9 @@
 
 #include "config.h"
 
-#include "test-xdg-module.h"
+#include "mock-xdg-module.h"
+
+#include "egg/egg-testing.h"
 
 #include "gkm/gkm-module.h"
 #include "gkm/gkm-session.h"
@@ -32,10 +34,12 @@
 #include "pkcs11/pkcs11n.h"
 #include "pkcs11/pkcs11x.h"
 
-static GkmModule *module = NULL;
-static GkmSession *session = NULL;
-static gpointer cert_data = NULL;
-static gsize n_cert_data;
+typedef struct {
+	GkmModule *module;
+	GkmSession *session;
+	gchar *cert_data;
+	gsize n_cert_data;
+} Test;
 
 /*
  * C=ZA, ST=Western Cape, L=Cape Town, O=Thawte Consulting, OU=Certification Services Division,
@@ -114,32 +118,35 @@ debug_print_certificate_info (const gchar *path)
 
 #endif
 
-TESTING_SETUP (trust_setup)
+static void
+setup (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	module = test_xdg_module_initialize_and_enter ();
-	session = test_xdg_module_open_session (TRUE);
+	test->module = mock_xdg_module_initialize_and_enter ();
+	test->session = mock_xdg_module_open_session (TRUE);
 
-	rv = gkm_module_C_Login (module, gkm_session_get_handle (session), CKU_USER, NULL, 0);
+	rv = gkm_module_C_Login (test->module, gkm_session_get_handle (test->session), CKU_USER, NULL, 0);
 	g_assert (rv == CKR_OK);
 
-	cert_data = testing_data_read ("test-certificate-2.cer", &n_cert_data);
-	g_assert (cert_data);
+	if (!g_file_get_contents (SRCDIR "/files/test-certificate-2.cer", &test->cert_data, &test->n_cert_data, NULL))
+		g_assert_not_reached ();
 }
 
-TESTING_TEARDOWN (trust_teardown)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	test_xdg_module_leave_and_finalize ();
-	module = NULL;
-	session = NULL;
+	mock_xdg_module_leave_and_finalize ();
+	test->module = NULL;
+	test->session = NULL;
 
-	g_free (cert_data);
-	cert_data = NULL;
-	n_cert_data = 0;
+	g_free (test->cert_data);
+	test->cert_data = NULL;
+	test->n_cert_data = 0;
 }
 
-TESTING_TEST (trust_load_objects)
+static void
+test_load_objects (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_NETSCAPE_TRUST;
 
@@ -151,17 +158,18 @@ TESTING_TEST (trust_load_objects)
 	CK_OBJECT_HANDLE objects[16];
 	CK_RV rv;
 
-	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	rv = gkm_session_C_FindObjectsInit (test->session, attrs, G_N_ELEMENTS (attrs));
 	g_assert (rv == CKR_OK);
-	rv = gkm_session_C_FindObjects (session, objects, G_N_ELEMENTS (objects), &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, objects, G_N_ELEMENTS (objects), &n_objects);
 	g_assert (rv == CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	g_assert (rv == CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, >=, 1);
 }
 
-TESTING_TEST (trust_create_assertion_complete)
+static void
+test_create_assertion_complete (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
@@ -171,28 +179,29 @@ TESTING_TEST (trust_create_assertion_complete)
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, test->cert_data, test->n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
-	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	rv = gkm_session_C_FindObjectsInit (test->session, attrs, G_N_ELEMENTS (attrs));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, &check, 1, &n_objects);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, ==, 1);
 	gkm_assert_cmpulong (check, ==, object);
 }
 
-TESTING_TEST (trust_complete_assertion_has_no_serial_or_issuer)
+static void
+test_complete_assertion_has_no_serial_or_issuer (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
@@ -201,30 +210,31 @@ TESTING_TEST (trust_complete_assertion_has_no_serial_or_issuer)
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, test->cert_data, test->n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
 	check.type = CKA_SERIAL_NUMBER;
 	check.pValue = NULL;
 	check.ulValueLen = 0;
-	rv = gkm_session_C_GetAttributeValue (session, object, &check, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, object, &check, 1);
 	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_TYPE_INVALID);
 
 	check.type = CKA_ISSUER;
 	check.pValue = NULL;
 	check.ulValueLen = 0;
-	rv = gkm_session_C_GetAttributeValue (session, object, &check, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, object, &check, 1);
 	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-TESTING_TEST (trust_complete_assertion_netscape_md5_hash)
+static void
+test_complete_assertion_netscape_md5_hash (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
@@ -235,7 +245,7 @@ TESTING_TEST (trust_complete_assertion_netscape_md5_hash)
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, test->cert_data, test->n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
@@ -246,22 +256,23 @@ TESTING_TEST (trust_complete_assertion_netscape_md5_hash)
 		{ CKA_CLASS, &nklass, sizeof (nklass) },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
-	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	rv = gkm_session_C_FindObjectsInit (test->session, lookup, G_N_ELEMENTS (lookup));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, &check, 1, &n_objects);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (check, !=, 0);
 	gkm_assert_cmpulong (n_objects, >, 0);
 }
 
-TESTING_TEST (trust_complete_assertion_netscape_sha1_hash)
+static void
+test_complete_assertion_netscape_sha1_hash (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_CLASS nklass = CKO_NETSCAPE_TRUST;
@@ -272,7 +283,7 @@ TESTING_TEST (trust_complete_assertion_netscape_sha1_hash)
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, test->cert_data, test->n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
@@ -283,22 +294,23 @@ TESTING_TEST (trust_complete_assertion_netscape_sha1_hash)
 		{ CKA_CLASS, &nklass, sizeof (nklass) },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
-	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	rv = gkm_session_C_FindObjectsInit (test->session, lookup, G_N_ELEMENTS (lookup));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, &check, 1, &n_objects);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (check, !=, 0);
 	gkm_assert_cmpulong (n_objects, >, 0);
 }
 
-TESTING_TEST (trust_create_assertion_missing_type)
+static void
+test_create_assertion_missing_type (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_OBJECT_HANDLE object = 0;
@@ -306,16 +318,17 @@ TESTING_TEST (trust_create_assertion_missing_type)
 
 	/* Missing CKT_X_ANCHORED_CERTIFICATE */
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, test->cert_data, test->n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
 }
 
-TESTING_TEST (trust_create_assertion_bad_type)
+static void
+test_create_assertion_bad_type (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = 0xFFFF;
@@ -329,11 +342,12 @@ TESTING_TEST (trust_create_assertion_bad_type)
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCONSISTENT);
 }
 
-TESTING_TEST (trust_create_assertion_missing_cert_value)
+static void
+test_create_assertion_missing_cert_value (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
@@ -347,11 +361,12 @@ TESTING_TEST (trust_create_assertion_missing_cert_value)
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
 }
 
-TESTING_TEST (trust_create_assertion_bad_cert_value)
+static void
+test_create_assertion_bad_cert_value (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
@@ -366,11 +381,12 @@ TESTING_TEST (trust_create_assertion_bad_cert_value)
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-TESTING_TEST (trust_create_assertion_null_cert_value)
+static void
+test_create_assertion_null_cert_value (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_ANCHORED_CERTIFICATE;
@@ -385,11 +401,12 @@ TESTING_TEST (trust_create_assertion_null_cert_value)
 		{ CKA_X_PURPOSE, "test-purpose", 12 },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
-TESTING_TEST (trust_create_assertion_for_distrusted)
+static void
+test_create_assertion_for_distrusted (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_DISTRUSTED_CERTIFICATE;
@@ -406,22 +423,23 @@ TESTING_TEST (trust_create_assertion_for_distrusted)
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
-	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	rv = gkm_session_C_FindObjectsInit (test->session, attrs, G_N_ELEMENTS (attrs));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, &check, 1, &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, &check, 1, &n_objects);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, ==, 1);
 	gkm_assert_cmpulong (check, ==, object);
 }
 
-TESTING_TEST (trust_create_assertion_for_distrusted_no_purpose)
+static void
+test_create_assertion_for_distrusted_no_purpose (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_DISTRUSTED_CERTIFICATE;
@@ -435,11 +453,12 @@ TESTING_TEST (trust_create_assertion_for_distrusted_no_purpose)
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
 }
 
-TESTING_TEST (trust_create_assertion_for_distrusted_no_serial)
+static void
+test_create_assertion_for_distrusted_no_serial (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_DISTRUSTED_CERTIFICATE;
@@ -453,11 +472,12 @@ TESTING_TEST (trust_create_assertion_for_distrusted_no_serial)
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) }
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_TEMPLATE_INCOMPLETE);
 }
 
-TESTING_TEST (trust_create_assertion_twice)
+static void
+test_create_assertion_twice (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_DISTRUSTED_CERTIFICATE;
@@ -475,22 +495,23 @@ TESTING_TEST (trust_create_assertion_twice)
 
 	/* First object should go away when we create an overlapping assertion */
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object_1);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object_1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object_1, !=, 0);
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object_2);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object_2);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object_2, !=, 0);
 
 	gkm_assert_cmpulong (object_1, !=, object_2);
 
 	/* First object no longer exists */
-	rv = gkm_session_C_DestroyObject (session, object_1);
+	rv = gkm_session_C_DestroyObject (test->session, object_1);
 	gkm_assert_cmprv (rv, ==, CKR_OBJECT_HANDLE_INVALID);
 }
 
-TESTING_TEST (trust_distrusted_assertion_has_no_cert_value)
+static void
+test_distrusted_assertion_has_no_cert_value (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_DISTRUSTED_CERTIFICATE;
@@ -508,18 +529,19 @@ TESTING_TEST (trust_distrusted_assertion_has_no_cert_value)
 
 	/* Created as distrusted, should have no CKA_X_CERTIFICATE_VALUE */
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
 	check.type = CKA_X_CERTIFICATE_VALUE;
 	check.pValue = NULL;
 	check.ulValueLen = 0;
-	rv = gkm_session_C_GetAttributeValue (session, object, &check, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, object, &check, 1);
 	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_TYPE_INVALID);
 }
 
-TESTING_TEST (trust_create_assertion_complete_on_token)
+static void
+test_create_assertion_complete_on_token (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_X_TRUST_ASSERTION;
 	CK_X_ASSERTION_TYPE atype = CKT_X_PINNED_CERTIFICATE;
@@ -531,26 +553,26 @@ TESTING_TEST (trust_create_assertion_complete_on_token)
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, test->cert_data, test->n_cert_data },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_X_ASSERTION_TYPE, &atype, sizeof (atype) },
 		{ CKA_X_PURPOSE, "other", 5 },
 		{ CKA_TOKEN, &token, sizeof (token) },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &check);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &check);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (check, !=, 0);
 
-	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	rv = gkm_session_C_FindObjectsInit (test->session, attrs, G_N_ELEMENTS (attrs));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, results, G_N_ELEMENTS (results), &n_objects);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Second should have overwritten the first */
@@ -558,7 +580,8 @@ TESTING_TEST (trust_create_assertion_complete_on_token)
 	gkm_assert_cmpulong (results[0], ==, check);
 }
 
-TESTING_TEST (trust_destroy_assertion_on_token)
+static void
+test_destroy_assertion_on_token (Test *test, gconstpointer unused)
 {
 	CK_X_ASSERTION_TYPE atype = CKT_X_PINNED_CERTIFICATE;
 	CK_OBJECT_HANDLE results[8];
@@ -571,30 +594,30 @@ TESTING_TEST (trust_destroy_assertion_on_token)
 		{ CKA_TOKEN, &token, sizeof (token) },
 	};
 
-	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	rv = gkm_session_C_FindObjectsInit (test->session, attrs, G_N_ELEMENTS (attrs));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, results, G_N_ELEMENTS (results), &n_objects);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, ==, 1);
 
-	rv = gkm_session_C_DestroyObject (session, results[0]);
+	rv = gkm_session_C_DestroyObject (test->session, results[0]);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = gkm_session_C_FindObjectsInit (session, attrs, G_N_ELEMENTS (attrs));
+	rv = gkm_session_C_FindObjectsInit (test->session, attrs, G_N_ELEMENTS (attrs));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_objects);
+	rv = gkm_session_C_FindObjects (test->session, results, G_N_ELEMENTS (results), &n_objects);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_objects, ==, 0);
 }
 
 static void
-_assert_positive_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purpose,
+_assert_positive_netscape (Test *test, CK_X_ASSERTION_TYPE assertion_type, const gchar *purpose,
                            CK_ATTRIBUTE_TYPE netscape_type, CK_TRUST netscape_trust,
                            const gchar *description)
 {
@@ -612,7 +635,7 @@ _assert_positive_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purp
 	CK_RV rv;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_X_CERTIFICATE_VALUE, cert_data, n_cert_data },
+		{ CKA_X_CERTIFICATE_VALUE, test->cert_data, test->n_cert_data },
 		{ CKA_CLASS, &aklass, sizeof (aklass) },
 		{ CKA_X_ASSERTION_TYPE, &assertion_type, sizeof (assertion_type) },
 		{ CKA_X_PURPOSE, (void*)purpose, strlen (purpose) },
@@ -625,21 +648,21 @@ _assert_positive_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purp
 		{ CKA_CERT_SHA1_HASH, checksum, sizeof (checksum) },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
 	md = g_checksum_new (G_CHECKSUM_SHA1);
-	g_checksum_update (md, cert_data, n_cert_data);
+	g_checksum_update (md, (guchar*)test->cert_data, test->n_cert_data);
 	n_checksum = sizeof (checksum);
 	g_checksum_get_digest (md, checksum, &n_checksum);
 	g_assert (n_checksum == sizeof (checksum));
 
-	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	rv = gkm_session_C_FindObjectsInit (test->session, lookup, G_N_ELEMENTS (lookup));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_results);
+	rv = gkm_session_C_FindObjects (test->session, results, G_N_ELEMENTS (results), &n_results);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_results, ==, 1);
@@ -649,7 +672,7 @@ _assert_positive_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purp
 	attr.pValue = &check;
 	attr.ulValueLen = sizeof (check);
 
-	rv = gkm_session_C_GetAttributeValue (session, results[0], &attr, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, results[0], &attr, 1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	if (check != netscape_trust)
@@ -658,7 +681,7 @@ _assert_positive_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purp
 }
 
 static void
-_assert_negative_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purpose,
+_assert_negative_netscape (Test *test, CK_X_ASSERTION_TYPE assertion_type, const gchar *purpose,
                            CK_ATTRIBUTE_TYPE netscape_type, CK_TRUST netscape_trust,
                            const gchar *description)
 {
@@ -688,15 +711,15 @@ _assert_negative_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purp
 		{ CKA_ISSUER, (void*)DER_ISSUER, XL (DER_ISSUER) },
 	};
 
-	rv = gkm_session_C_CreateObject (session, attrs, G_N_ELEMENTS (attrs), &object);
+	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
 
-	rv = gkm_session_C_FindObjectsInit (session, lookup, G_N_ELEMENTS (lookup));
+	rv = gkm_session_C_FindObjectsInit (test->session, lookup, G_N_ELEMENTS (lookup));
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjects (session, results, G_N_ELEMENTS (results), &n_results);
+	rv = gkm_session_C_FindObjects (test->session, results, G_N_ELEMENTS (results), &n_results);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	rv = gkm_session_C_FindObjectsFinal (session);
+	rv = gkm_session_C_FindObjectsFinal (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	gkm_assert_cmpulong (n_results, ==, 1);
@@ -706,7 +729,7 @@ _assert_negative_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purp
 	attr.pValue = &check;
 	attr.ulValueLen = sizeof (check);
 
-	rv = gkm_session_C_GetAttributeValue (session, results[0], &attr, 1);
+	rv = gkm_session_C_GetAttributeValue (test->session, results[0], &attr, 1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	if (check != netscape_trust)
@@ -715,87 +738,142 @@ _assert_negative_netscape (CK_X_ASSERTION_TYPE assertion_type, const gchar *purp
 }
 
 /* Some macros for intelligent failure messages */
-#define assert_positive_netscape(a, b, c, d) \
-	_assert_positive_netscape (a, b, c, d, #a ", " #b ", " #c ", " #d)
-#define assert_negative_netscape(a, b, c, d) \
-	_assert_negative_netscape (a, b, c, d, #a ", " #b ", " #c ", " #d)
+#define assert_positive_netscape(test, a, b, c, d) \
+	_assert_positive_netscape (test, a, b, c, d, #a ", " #b ", " #c ", " #d)
+#define assert_negative_netscape(test, a, b, c, d) \
+	_assert_negative_netscape (test, a, b, c, d, #a ", " #b ", " #c ", " #d)
 
-TESTING_TEST (trust_netscape_map_server_auth)
+static void
+test_netscape_map_server_auth (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.1",
 	                          CKA_TRUST_SERVER_AUTH, CKT_NETSCAPE_UNTRUSTED);
 }
 
-TESTING_TEST (trust_netscape_map_client_auth)
+static void
+test_netscape_map_client_auth (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
 	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
 	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.2",
 	                          CKA_TRUST_CLIENT_AUTH, CKT_NETSCAPE_UNTRUSTED);
 }
 
-TESTING_TEST (trust_netscape_map_code_signing)
+static void
+test_netscape_map_code_signing (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
 	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
 	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.3",
 	                          CKA_TRUST_CODE_SIGNING, CKT_NETSCAPE_UNTRUSTED);
 }
 
-TESTING_TEST (trust_netscape_map_email)
+static void
+test_netscape_map_email (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.4",
 	                          CKA_TRUST_EMAIL_PROTECTION, CKT_NETSCAPE_UNTRUSTED);
 }
 
-TESTING_TEST (trust_netscape_map_ipsec_endpoint)
+static void
+test_netscape_map_ipsec_endpoint (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
 	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
 	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.5",
 	                          CKA_TRUST_IPSEC_END_SYSTEM, CKT_NETSCAPE_UNTRUSTED);
 }
 
-TESTING_TEST (trust_netscape_map_ipsec_tunnel)
+static void
+test_netscape_map_ipsec_tunnel (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
 	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
 	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.6",
 	                          CKA_TRUST_IPSEC_TUNNEL, CKT_NETSCAPE_UNTRUSTED);
 }
 
-TESTING_TEST (trust_netscape_map_ipsec_user)
+static void
+test_netscape_map_ipsec_user (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
 	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
 	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.7",
 	                          CKA_TRUST_IPSEC_USER, CKT_NETSCAPE_UNTRUSTED);
 }
 
-TESTING_TEST (trust_netscape_map_time_stamping)
+static void
+test_netscape_map_time_stamping (Test *test, gconstpointer unused)
 {
-	assert_positive_netscape (CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
+	assert_positive_netscape (test, CKT_X_PINNED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
 	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_TRUSTED);
-	assert_positive_netscape (CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
+	assert_positive_netscape (test, CKT_X_ANCHORED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
 	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_TRUSTED_DELEGATOR);
-	assert_negative_netscape (CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
+	assert_negative_netscape (test, CKT_X_DISTRUSTED_CERTIFICATE, "1.3.6.1.5.5.7.3.8",
 	                          CKA_TRUST_TIME_STAMPING, CKT_NETSCAPE_UNTRUSTED);
+}
+
+
+static void
+null_log_handler (const gchar *log_domain, GLogLevelFlags log_level,
+                  const gchar *message, gpointer user_data)
+{
+
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	/* Suppress these messages in tests */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+	                   null_log_handler, NULL);
+
+	g_test_add ("/xdg-store/trust/load_objects", Test, NULL, setup, test_load_objects, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_complete", Test, NULL, setup, test_create_assertion_complete, teardown);
+	g_test_add ("/xdg-store/trust/complete_assertion_has_no_serial_or_issuer", Test, NULL, setup, test_complete_assertion_has_no_serial_or_issuer, teardown);
+	g_test_add ("/xdg-store/trust/complete_assertion_netscape_md5_hash", Test, NULL, setup, test_complete_assertion_netscape_md5_hash, teardown);
+	g_test_add ("/xdg-store/trust/complete_assertion_netscape_sha1_hash", Test, NULL, setup, test_complete_assertion_netscape_sha1_hash, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_missing_type", Test, NULL, setup, test_create_assertion_missing_type, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_bad_type", Test, NULL, setup, test_create_assertion_bad_type, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_missing_cert_value", Test, NULL, setup, test_create_assertion_missing_cert_value, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_bad_cert_value", Test, NULL, setup, test_create_assertion_bad_cert_value, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_null_cert_value", Test, NULL, setup, test_create_assertion_null_cert_value, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_for_distrusted", Test, NULL, setup, test_create_assertion_for_distrusted, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_for_distrusted_no_purpose", Test, NULL, setup, test_create_assertion_for_distrusted_no_purpose, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_for_distrusted_no_serial", Test, NULL, setup, test_create_assertion_for_distrusted_no_serial, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_twice", Test, NULL, setup, test_create_assertion_twice, teardown);
+	g_test_add ("/xdg-store/trust/distrusted_assertion_has_no_cert_value", Test, NULL, setup, test_distrusted_assertion_has_no_cert_value, teardown);
+	g_test_add ("/xdg-store/trust/create_assertion_complete_on_token", Test, NULL, setup, test_create_assertion_complete_on_token, teardown);
+	g_test_add ("/xdg-store/trust/destroy_assertion_on_token", Test, NULL, setup, test_destroy_assertion_on_token, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_server_auth", Test, NULL, setup, test_netscape_map_server_auth, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_client_auth", Test, NULL, setup, test_netscape_map_client_auth, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_code_signing", Test, NULL, setup, test_netscape_map_code_signing, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_email", Test, NULL, setup, test_netscape_map_email, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_ipsec_endpoint", Test, NULL, setup, test_netscape_map_ipsec_endpoint, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_ipsec_tunnel", Test, NULL, setup, test_netscape_map_ipsec_tunnel, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_ipsec_user", Test, NULL, setup, test_netscape_map_ipsec_user, teardown);
+	g_test_add ("/xdg-store/trust/netscape_map_time_stamping", Test, NULL, setup, test_netscape_map_time_stamping, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

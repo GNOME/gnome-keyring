@@ -23,10 +23,10 @@
 
 #include "config.h"
 
-#include "egg-symkey.h"
-#include "egg-openssl.h"
-#include "egg-secure-memory.h"
-#include "egg-testing.h"
+#include "egg/egg-symkey.h"
+#include "egg/egg-openssl.h"
+#include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include <glib.h>
 
@@ -51,7 +51,7 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	if (!g_file_get_contents ("files/pem-rsa-enc.key", (gchar**)&test->input, &test->n_input, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/pem-rsa-enc.key", (gchar**)&test->input, &test->n_input, NULL))
 		g_assert_not_reached ();
 }
 

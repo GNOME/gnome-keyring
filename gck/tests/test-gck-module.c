@@ -40,7 +40,7 @@ setup (Test *test, gconstpointer unused)
 	GError *err = NULL;
 
 	/* Successful load */
-	test->module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
+	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", NULL, 0, &err);
 	g_assert_no_error (err);
 	g_assert (test->module);
 }
@@ -101,7 +101,7 @@ test_module_props (Test *test, gconstpointer unused)
 
 	g_object_get (test->module, "path", &path, NULL);
 	g_assert (path != NULL && "no module-path");
-	g_assert (strcmp (".libs/libmock-test-module.so", path) == 0 && "module path wrong");
+	g_assert (strcmp (BUILDDIR "/.libs/libmock-test-module.so", path) == 0 && "module path wrong");
 	g_free (path);
 }
 
@@ -127,14 +127,8 @@ test_module_info (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gck/module/invalid_modules", Test, NULL, setup, test_invalid_modules, teardown);
 	g_test_add ("/gck/module/module_equals_hash", Test, NULL, setup, test_module_equals_hash, teardown);

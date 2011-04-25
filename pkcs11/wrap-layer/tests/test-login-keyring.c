@@ -21,9 +21,8 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-mock.h"
@@ -32,35 +31,43 @@
 #include "wrap-layer/gkm-wrap-layer.h"
 #include "wrap-layer/gkm-wrap-login.h"
 
-extern CK_FUNCTION_LIST mock_secret_store;
-static CK_FUNCTION_LIST functions;
-static CK_FUNCTION_LIST_PTR module = NULL;
+#include <glib-object.h>
 
-TESTING_SETUP (login_keyring)
+extern CK_FUNCTION_LIST mock_secret_store;
+
+typedef struct {
+	CK_FUNCTION_LIST functions;
+	CK_FUNCTION_LIST_PTR module;
+} Test;
+
+static void
+setup (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	/* Always start off with test functions */
-	memcpy (&functions, &mock_secret_store, sizeof (functions));
+	/* Always start off with test test->functions */
+	memcpy (&test->functions, &mock_secret_store, sizeof (test->functions));
 	gkm_wrap_layer_reset_modules ();
-	gkm_wrap_layer_add_module (&functions);
-	module = gkm_wrap_layer_get_functions ();
+	gkm_wrap_layer_add_module (&test->functions);
+	test->module = gkm_wrap_layer_get_functions ();
 
 	/* Initialize */
-	rv = (module->C_Initialize) (NULL);
+	rv = (test->module->C_Initialize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEARDOWN (login_keyring)
+static void
+teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	rv = (module->C_Finalize) (NULL);
+	rv = (test->module->C_Finalize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	module = NULL;
+	test->module = NULL;
 }
 
-TESTING_TEST (login_is_usable)
+static void
+test_is_usable (Test *test, gconstpointer unused)
 {
 	gboolean ret;
 
@@ -68,16 +75,18 @@ TESTING_TEST (login_is_usable)
 	g_assert (ret == TRUE);
 }
 
-TESTING_TEST (login_usable_fail_open_session)
+static void
+test_usable_fail_open_session (Test *test, gconstpointer unused)
 {
 	gboolean ret;
 
-	functions.C_OpenSession = gkm_mock_fail_C_OpenSession;
+	test->functions.C_OpenSession = gkm_mock_fail_C_OpenSession;
 	ret = gkm_wrap_login_is_usable ();
 	g_assert (ret == FALSE);
 }
 
-TESTING_TEST (login_usable_fail_not_trusted)
+static void
+test_usable_fail_not_trusted (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_HANDLE object;
 	CK_ATTRIBUTE attr;
@@ -107,7 +116,8 @@ TESTING_TEST (login_usable_fail_not_trusted)
 	g_assert (ret == FALSE);
 }
 
-TESTING_TEST (login_usable_fail_locked)
+static void
+test_usable_fail_locked (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_HANDLE object;
 	CK_ATTRIBUTE attr;
@@ -137,7 +147,8 @@ TESTING_TEST (login_usable_fail_locked)
 	g_assert (ret == FALSE);
 }
 
-TESTING_TEST (login_lookup_secret_no_match)
+static void
+test_lookup_secret_no_match (Test *test, gconstpointer unused)
 {
 	gchar *password;
 
@@ -146,7 +157,8 @@ TESTING_TEST (login_lookup_secret_no_match)
 	g_assert_cmpstr (password, ==, NULL);
 }
 
-TESTING_TEST (login_lookup_secret_and_match)
+static void
+test_lookup_secret_and_match (Test *test, gconstpointer unused)
 {
 	gchar *password;
 
@@ -158,7 +170,8 @@ TESTING_TEST (login_lookup_secret_and_match)
 	egg_secure_free (password);
 }
 
-TESTING_TEST (login_lookup_store_secret)
+static void
+test_lookup_store_secret (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -182,7 +195,8 @@ TESTING_TEST (login_lookup_store_secret)
 	gkm_assert_cmpulong (object, !=, 0);
 }
 
-TESTING_TEST (login_lookup_store_secret_overwrite)
+static void
+test_lookup_store_secret_overwrite (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -220,7 +234,8 @@ TESTING_TEST (login_lookup_store_secret_overwrite)
 	gkm_assert_cmpulong (object1, ==, object2);
 }
 
-TESTING_TEST (login_lookup_store_null_secret)
+static void
+test_lookup_store_null_secret (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -243,7 +258,8 @@ TESTING_TEST (login_lookup_store_null_secret)
 	gkm_assert_cmpulong (object, !=, 0);
 }
 
-TESTING_TEST (login_lookup_store_no_attributes_not_stored)
+static void
+test_lookup_store_no_attributes_not_stored (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -265,7 +281,8 @@ TESTING_TEST (login_lookup_store_no_attributes_not_stored)
 }
 
 
-TESTING_TEST (login_lookup_remove_present)
+static void
+test_lookup_remove_present (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_SECRET_KEY;
 	CK_BBOOL tval = CK_TRUE;
@@ -291,7 +308,8 @@ TESTING_TEST (login_lookup_remove_present)
 	gkm_assert_cmpulong (object, ==, 0);
 }
 
-TESTING_TEST (login_lookup_remove_no_attributes)
+static void
+test_lookup_remove_no_attributes (Test *test, gconstpointer unused)
 {
 	guint n_objects, check;
 
@@ -303,4 +321,26 @@ TESTING_TEST (login_lookup_remove_no_attributes)
 
 	check = gkm_mock_module_count_objects (0);
 	g_assert_cmpuint (check, ==, n_objects);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/wrap-layer/login-keyring/is_usable", Test, NULL, setup, test_is_usable, teardown);
+	g_test_add ("/wrap-layer/login-keyring/usable_fail_open_session", Test, NULL, setup, test_usable_fail_open_session, teardown);
+	g_test_add ("/wrap-layer/login-keyring/usable_fail_not_trusted", Test, NULL, setup, test_usable_fail_not_trusted, teardown);
+	g_test_add ("/wrap-layer/login-keyring/usable_fail_locked", Test, NULL, setup, test_usable_fail_locked, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_secret_no_match", Test, NULL, setup, test_lookup_secret_no_match, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_secret_and_match", Test, NULL, setup, test_lookup_secret_and_match, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_store_secret", Test, NULL, setup, test_lookup_store_secret, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_store_secret_overwrite", Test, NULL, setup, test_lookup_store_secret_overwrite, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_store_null_secret", Test, NULL, setup, test_lookup_store_null_secret, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_store_no_attributes_not_stored", Test, NULL, setup, test_lookup_store_no_attributes_not_stored, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_remove_present", Test, NULL, setup, test_lookup_remove_present, teardown);
+	g_test_add ("/wrap-layer/login-keyring/lookup_remove_no_attributes", Test, NULL, setup, test_lookup_remove_no_attributes, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

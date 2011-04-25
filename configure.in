@@ -1,6 +1,6 @@
 AC_INIT(daemon/gkd-main.c)
 
-AM_INIT_AUTOMAKE(gnome-keyring, 3.0.0)
+AM_INIT_AUTOMAKE(gnome-keyring, 3.0.1)
 AM_CONFIG_HEADER(config.h)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
@@ -87,26 +87,28 @@ AC_SUBST(GIO_LIBS)
 
 AC_MSG_CHECKING([which GTK+ version to compile against])
 AC_ARG_WITH([gtk],
-	[AS_HELP_STRING([--with-gtk=2.0|3.0],[which GTK+ version to compile against (default: 2.0)])],
+	[AS_HELP_STRING([--with-gtk=2|3],[which GTK+ version to compile against (default: 3)])],
 	[case "$with_gtk" in
-		2.0|3.0) ;;
+		2*|3*) ;;
 		*) AC_MSG_ERROR([invalid GTK+ version specified]) ;;
 	esac],
-	[with_gtk=2.0])
+	[with_gtk=3])
 AC_MSG_RESULT([$with_gtk])
 
 case "$with_gtk" in
-	2.0)
+	2*)
 		GCR_MAJOR=$GCR_MAJOR_GTK2
 		GCR_VERSION_SUFFIX=
 		GTK_API_VERSION=2.0
 		GTK_REQUIRED=2.20.0
+		with_gtk=2.0
 	;;
-	3.0)
+	3*)
 		GCR_MAJOR=$GCR_MAJOR_GTK3
 		GCR_VERSION_SUFFIX=-$GCR_MAJOR
 		GTK_API_VERSION=3.0
 		GTK_REQUIRED=2.90.0
+		with_gtk=3.0
 	;;
 esac
 
@@ -530,23 +532,26 @@ fi
 # Tests and Unit Tests
 
 AC_ARG_ENABLE(tests, 
-	    AC_HELP_STRING([--disable-tests],
-	    [Build test tools, unit tests, and -Werror]))
+	    AC_HELP_STRING([--enable-tests=yes/no/full],
+	    [Build tests and testing tools. default: yes]))
 
 AC_MSG_CHECKING([build test tools, unit tests, and -Werror])
-if test "$enable_tests" != "no"; then
-	AC_DEFINE_UNQUOTED(WITH_TESTS, 1, [Build with internal tests and unit tests])
-	AC_MSG_RESULT(yes)
+
+if test "$enable_tests" = "full"; then
+	tests_status="full"
 	CFLAGS="$CFLAGS -Werror"
-	tests_status="yes"
-	enable_tests="yes"
-else
-	AC_MSG_RESULT(no)
+	TEST_MODE="thorough"
+	AC_DEFINE_UNQUOTED(WITH_TESTABLE, 1, [Build extra hooks for more testable code])
+elif test "$enable_tests" = "no"; then
 	tests_status="no"
-	enable_tests="no"
+else
+	TEST_MODE="quick"
+	tests_status="yes"
 fi
 
-AM_CONDITIONAL(WITH_TESTS, test "$enable_tests" = "yes")
+AC_MSG_RESULT($tests_status)
+AC_SUBST(TEST_MODE)
+AM_CONDITIONAL(WITH_TESTS, test "$enable_tests" != "no")
 
 # ----------------------------------------------------------------------
 # Coverage

@@ -265,7 +265,6 @@ static void
 generate_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata)
 {
 	GkmSecretObject *obj;
-	GHashTable *attributes;
 	const gchar *value;
 	const gchar *identifier;
 	const guchar *secret;
@@ -278,7 +277,6 @@ generate_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata)
 
 	obj = GKM_SECRET_OBJECT (item);
 	identifier = gkm_secret_object_get_identifier (obj);
-	attributes = gkm_secret_item_get_fields (item);
 
 	value = gkm_secret_item_get_schema (item);
 	g_key_file_set_integer (file, identifier, "item-type",
@@ -314,7 +312,6 @@ parse_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata,
             const gchar **groups)
 {
 	GkmSecretObject *obj;
-	GHashTable *attributes;
 	const gchar *identifier;
 	GError *err = NULL;
 	GkmSecret *secret;
@@ -328,7 +325,6 @@ parse_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata,
 
 	obj = GKM_SECRET_OBJECT (item);
 	identifier = gkm_secret_object_get_identifier (obj);
-	attributes = gkm_secret_item_get_fields (item);
 
 	type = g_key_file_get_integer (file, identifier, "item-type", &err);
 	if (err) {
@@ -384,7 +380,7 @@ parse_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata,
 
 GkmDataResult
 gkm_secret_textual_write (GkmSecretCollection *collection, GkmSecretData *sdata,
-                          guchar **data, gsize *n_data)
+                          gpointer *data, gsize *n_data)
 {
 	GkmSecretObject *obj;
 	GList *items, *l;
@@ -449,7 +445,7 @@ remove_unavailable_item (gpointer key, gpointer dummy, gpointer user_data)
 
 GkmDataResult
 gkm_secret_textual_read (GkmSecretCollection *collection, GkmSecretData *sdata,
-                         const guchar *data, gsize n_data)
+                         gconstpointer data, gsize n_data)
 {
 	GkmSecretObject *obj;
 	GkmSecretItem *item;

@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "test-suite.h"
+#include "egg/egg-testing.h"
 
 #include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
@@ -30,63 +30,81 @@
 
 #include "ui/gku-prompt.h"
 
-static CK_FUNCTION_LIST functions;
-static CK_FUNCTION_LIST_PTR module = NULL;
-static CK_SESSION_HANDLE session = 0;
+#include <string.h>
 
-TESTING_SETUP (init_pin)
+typedef struct {
+	CK_FUNCTION_LIST functions;
+	CK_FUNCTION_LIST_PTR module;
+	CK_SESSION_HANDLE session;
+} Test;
+
+static void
+setup (Test *test, gconstpointer unused)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
 	CK_RV rv;
 
-	/* Always start off with test functions */
+	/* Always start off with test test->functions */
 	rv = gkm_mock_C_GetFunctionList (&funcs);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	memcpy (&functions, funcs, sizeof (functions));
+	memcpy (&test->functions, funcs, sizeof (test->functions));
 
 	gkm_wrap_layer_reset_modules ();
-	gkm_wrap_layer_add_module (&functions);
-	module = gkm_wrap_layer_get_functions ();
+	gkm_wrap_layer_add_module (&test->functions);
+	test->module = gkm_wrap_layer_get_functions ();
 
 	gku_prompt_dummy_prepare_response ();
 
-	/* Open a session */
-	rv = (module->C_Initialize) (NULL);
+	/* Open a test->session */
+	rv = (test->module->C_Initialize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
+	rv = (test->module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &session);
+	rv = (test->module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEARDOWN (init_pin)
+static void
+teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	g_assert (!gku_prompt_dummy_have_response ());
 
-	rv = (module->C_CloseSession) (session);
+	rv = (test->module->C_CloseSession) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	session = 0;
+	test->session = 0;
 
-	rv = (module->C_Finalize) (NULL);
+	rv = (test->module->C_Finalize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	module = NULL;
+	test->module = NULL;
 }
 
-TESTING_TEST (init_pin_ok_password)
+static void
+test_ok_password (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	gku_prompt_dummy_queue_ok_password ("new");
 
-	rv = (module->C_InitPIN) (session, NULL, 0);
+	rv = (test->module->C_InitPIN) (test->session, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_Login) (session, CKU_USER, (guchar*)"new", 3);
+	rv = (test->module->C_Login) (test->session, CKU_USER, (guchar*)"new", 3);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/wrap-layer/init-pin/ok_password", Test, NULL, setup, test_ok_password, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

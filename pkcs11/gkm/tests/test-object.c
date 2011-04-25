@@ -48,7 +48,7 @@ setup (Test* test, gconstpointer unused)
 	test->module = mock_module_initialize_and_enter ();
 	test->session = mock_module_open_session (TRUE);
 
-	if (!g_file_get_contents ("files/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
 		g_assert_not_reached ();
 }
 

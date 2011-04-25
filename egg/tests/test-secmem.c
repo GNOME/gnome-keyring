@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "egg-secure-memory.h"
+#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 

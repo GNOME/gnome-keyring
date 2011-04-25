@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-secret-compat.c: Test secret compat files
+/* test-secret-compat.c: Test secret compat files
 
    Copyright (C) 2008 Stefan Walter
 
@@ -23,9 +23,7 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
-#include "gkm-secret-compat.h"
+#include "secret-store/gkm-secret-compat.h"
 
 #include <glib.h>
 
@@ -33,7 +31,8 @@
 #include <stdio.h>
 #include <string.h>
 
-TESTING_TEST(access_free)
+static void
+test_access_free (void)
 {
 	GkmSecretAccess *ac;
 
@@ -45,7 +44,8 @@ TESTING_TEST(access_free)
 	gkm_secret_compat_access_free (ac);
 }
 
-TESTING_TEST(acl_free)
+static void
+test_acl_free (void)
 {
 	GkmSecretAccess *ac;
 	GList *acl = NULL;
@@ -62,7 +62,8 @@ TESTING_TEST(acl_free)
 	gkm_secret_compat_acl_free (acl);
 }
 
-TESTING_TEST(parse_item_type)
+static void
+test_parse_item_type (void)
 {
 	guint type;
 
@@ -88,7 +89,8 @@ TESTING_TEST(parse_item_type)
 	g_assert_cmpuint (type, ==, 0);
 }
 
-TESTING_TEST(format_item_type)
+static void
+test_format_item_type (void)
 {
 	const gchar *type;
 
@@ -112,4 +114,17 @@ TESTING_TEST(format_item_type)
 	/* Unrecognized should be null */
 	type = gkm_secret_compat_format_item_type (32);
 	g_assert (type == NULL);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/secret-store/compat/access_free", test_access_free);
+	g_test_add_func ("/secret-store/compat/acl_free", test_acl_free);
+	g_test_add_func ("/secret-store/compat/parse_item_type", test_parse_item_type);
+	g_test_add_func ("/secret-store/compat/format_item_type", test_format_item_type);
+
+	return g_test_run ();
 }

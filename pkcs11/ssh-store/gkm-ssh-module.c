@@ -103,14 +103,11 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmSshModule *self)
 {
 	GkmSshPrivateKey *key;
 	gchar *private_path;
-	GkmManager *manager;
 	GError *error = NULL;
 	gchar *unique;
 
 	g_return_if_fail (path);
 	g_return_if_fail (GKM_IS_SSH_MODULE (self));
-
-	manager = gkm_module_get_manager (GKM_MODULE (self));
 
 	private_path = private_path_for_public (path);
 	if (!private_path || !g_file_test (private_path, G_FILE_TEST_IS_REGULAR)) {

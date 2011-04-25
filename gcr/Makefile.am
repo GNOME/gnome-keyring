@@ -1,4 +1,14 @@
 
+if WITH_TESTS
+TESTS_DIR = tests
+TESTABLE_LIB = libgcr-testable.la
+else
+TESTS_DIR =
+TESTABLE_LIB =
+endif
+
+SUBDIRS = . $(TESTS_DIR)
+
 # ------------------------------------------------------------------
 # UI BUILDER
 # 
@@ -57,7 +67,9 @@ INCLUDES = \
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h
 
-LIB_SOURCES = \
+lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
+
+libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
 	gcr-certificate-chain.c gcr-certificate-chain.h \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
@@ -93,17 +105,11 @@ LIB_SOURCES = \
 	gcr-viewer.c gcr-viewer.h \
 	$(BUILT_SOURCES)
 
-LIB_CFLAGS = \
+libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \
 	-DUIDIR=\""$(uidir)"\"
-
-lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
-
-libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = $(LIB_SOURCES)
-
-libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = $(LIB_CFLAGS)
 
 libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
 	-version-info $(GCR_LT_RELEASE) \
@@ -118,6 +124,10 @@ libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(LIBGCRYPT_LIBS) \
 	$(GTK_LIBS)
+
+noinst_LTLIBRARIES = $(TESTABLE_LIB)
+libgcr_testable_la_SOURCES =
+libgcr_testable_la_LIBADD = $(libgcr@GCR_VERSION_SUFFIX@_la_OBJECTS)
 
 gcr-marshal.h: gcr-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=_gcr_marshal > $@
@@ -144,31 +154,3 @@ CLEANFILES = \
 
 DISTCLEANFILES = \
 	$(pkgconfig_DATA)
-
-# ----------------------------------------------------------------
-# TESTS
-
-if WITH_TESTS
-
-TESTS_DIR = tests
-
-noinst_LTLIBRARIES = \
-	libgcr-testable.la
-
-libgcr_testable_la_SOURCES = $(LIB_SOURCES)
-
-libgcr_testable_la_CFLAGS = $(LIB_CFLAGS)
-
-libgcr_testable_la_LDFLAGS = \
-	-no-undefined
-
-else # WITH_TESTS
-
-TESTS_DIR =
-
-endif # WITH_TESTS
-
-# ----------------------------------------------------------------
-
-SUBDIRS = . \
-	$(TESTS_DIR)

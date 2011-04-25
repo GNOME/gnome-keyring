@@ -27,7 +27,8 @@
 #include <glib.h>
 
 #include "gkm/gkm-types.h"
-#include "gkm-secret-types.h"
+
+#include "secret-store/gkm-secret-types.h"
 
 #include "pkcs11.h"
 

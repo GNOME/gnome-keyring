@@ -1,8 +1,9 @@
 
 INCLUDES = \
-	-I$(top_srcdir)/egg \
+	-I$(top_builddir) \
+	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
-	-DSRCDIR=$(srcdir) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	$(GLIB_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS)
 
@@ -59,13 +60,11 @@ test_timer_LDADD = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+	gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
-if WITH_TESTS
 all-local: $(check_PROGRAMS)
-endif
 
 asn1-def-test.h: test.asn
 	$(ASN1PARSER) -o asn1-def-test.h $(srcdir)/test.asn
@@ -73,3 +72,6 @@ asn1-def-test.h: test.asn
 EXTRA_DIST = \
 	test.asn \
 	files
+
+DISTCLEANFILES = \
+	$(BUILT_SOURCES)

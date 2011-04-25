@@ -21,7 +21,9 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "gkm-gnome2-file.h"
+#include "config.h"
+
+#include "gnome2-store/gkm-gnome2-file.h"
 
 #include "gkm/gkm-crypto.h"
 

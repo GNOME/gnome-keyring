@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "egg-cleanup.h"
+#include "egg/egg-cleanup.h"
 
 #define DATA "some string"
 

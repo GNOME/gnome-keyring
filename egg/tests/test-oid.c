@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "egg-oid.h"
+#include "egg/egg-oid.h"
 
 #include <glib.h>
 

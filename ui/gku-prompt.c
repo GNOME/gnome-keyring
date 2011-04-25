@@ -1212,7 +1212,7 @@ gku_prompt_request_attention_sync (const gchar *window_id, GkuPromptAttentionFun
 	g_cond_free (cond);
 }
 
-#ifdef WITH_TESTS
+#ifdef WITH_TESTABLE
 
 void
 gku_prompt_dummy_prepare_response (void)
@@ -1299,4 +1299,4 @@ gku_prompt_dummy_queue_no (void)
 	gku_prompt_dummy_queue_response (RESPONSE);
 }
 
-#endif
+#endif /* WITH_TESTABLE */

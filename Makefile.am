@@ -36,8 +36,8 @@ EXTRA_DIST = \
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
-	--enable-tests \
-	--disable-debug \
+	--enable-tests=full \
+	--enable-debug=yes \
 	--disable-gcov
 
 DISTCLEANFILES = \

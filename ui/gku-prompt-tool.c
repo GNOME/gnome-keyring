@@ -54,7 +54,6 @@ static GKeyFile *output_data = NULL;
 
 #if GTK_CHECK_VERSION (3,0,0)
 static GdkDevice *grabbed_device = NULL;
-static guint32 grabbed_at = 0;
 static gulong grab_broken_id = 0;
 #else
 static gboolean keyboard_grabbed = FALSE;
@@ -89,30 +88,49 @@ create_markup (const gchar *primary, const gchar *secondary)
 					primary, secondary ? secondary : "");
 }
 
+static const gchar*
+grab_status_message (GdkGrabStatus status)
+{
+	switch (status) {
+	case GDK_GRAB_SUCCESS:
+		g_return_val_if_reached ("");
+		break;
+	case GDK_GRAB_ALREADY_GRABBED:
+		return "already grabbed";
+	case GDK_GRAB_INVALID_TIME:
+		return "invalid time";
+	case GDK_GRAB_NOT_VIEWABLE:
+		return "not viewable";
+	case GDK_GRAB_FROZEN:
+		return "frozen";
+	default:
+		g_message ("unknown grab status: %d", (int)status);
+		return "unknown";
+	}
+}
+
 #if GTK_CHECK_VERSION (3,0,0)
 static gboolean
 on_grab_broken (GtkWidget * widget, GdkEventGrabBroken * event)
 {
-	if (grabbed_device && event->keyboard) {
+	if (grabbed_device && event->keyboard)
 		grabbed_device = NULL;
-		grabbed_at = 0;
-	}
 
 	return TRUE;
 }
 #endif
 
 static gboolean
-grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
+grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
 {
 	GdkGrabStatus status;
+	guint32 at;
 
 #if GTK_CHECK_VERSION (3,0,0)
 	GdkDevice *device = NULL;
 	GdkDeviceManager *manager;
 	GdkDisplay *display;
 	GList *devices, *l;
-	guint32 at;
 
 	if (grabbed_device || !GRAB_KEYBOARD)
 		return FALSE;
@@ -132,7 +150,7 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 		return FALSE;
 	}
 
-	at = gdk_event_get_time (event);
+	at = event ? gdk_event_get_time (event) : GDK_CURRENT_TIME;
 	status = gdk_device_grab (device, gtk_widget_get_window (win),
 				  GDK_OWNERSHIP_WINDOW, TRUE,
 				  GDK_KEY_PRESS | GDK_KEY_RELEASE, NULL, at);
@@ -141,17 +159,17 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 						   G_CALLBACK (on_grab_broken), NULL);
 		gtk_device_grab_add (win, device, TRUE);
 		grabbed_device = device;
-		grabbed_at = at;
 	} else {
-		g_message ("could not grab keyboard: %d", (int)status);
+		g_message ("could not grab keyboard: %s", grab_status_message (status));
 	}
 #else
 	if (!keyboard_grabbed && GRAB_KEYBOARD) {
-		status = gdk_keyboard_grab (gtk_widget_get_window (win), FALSE, gdk_event_get_time (event));
+		at = event ? gdk_event_get_time (event) : GDK_CURRENT_TIME;
+		status = gdk_keyboard_grab (gtk_widget_get_window (win), FALSE, at);
 		if (status == GDK_GRAB_SUCCESS) {
 			keyboard_grabbed = TRUE;
 		} else {
-			g_message ("could not grab keyboard: %d", (int)status);
+			g_message ("could not grab keyboard: %s", grab_status_message (status));
 		}
 	}
 #endif
@@ -161,20 +179,21 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
 }
 
 static gboolean
-ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer data)
+ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
 {
+	guint32 at = event ? gdk_event_get_time (event) : GDK_CURRENT_TIME;
+
 #if GTK_CHECK_VERSION (3,0,0)
 	if (grabbed_device) {
 		g_signal_handler_disconnect (win, grab_broken_id);
-		gdk_device_ungrab (grabbed_device, grabbed_at);
+		gdk_device_ungrab (grabbed_device, at);
 		gtk_device_grab_remove (win, grabbed_device);
 		grabbed_device = NULL;
-		grabbed_at = 0;
 		grab_broken_id = 0;
 	}
 #else
 	if (keyboard_grabbed)
-		gdk_keyboard_ungrab (gdk_event_get_time (event));
+		gdk_keyboard_ungrab (at);
 	keyboard_grabbed = FALSE;
 #endif
 
@@ -591,6 +610,8 @@ validate_blank_password (GtkWindow *parent)
 	gchar *markup;
 	gint ret;
 
+	ungrab_keyboard (GTK_WIDGET (parent), NULL, NULL);
+
 	dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING,
 	                                 GTK_BUTTONS_NONE, NULL);
 
@@ -607,6 +628,8 @@ validate_blank_password (GtkWindow *parent)
 
 	ret = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
+
+	grab_keyboard (GTK_WIDGET (parent), NULL, NULL);
 
 	return ret == GTK_RESPONSE_ACCEPT;
 }

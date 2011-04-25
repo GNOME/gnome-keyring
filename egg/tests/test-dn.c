@@ -23,10 +23,10 @@
 
 #include "config.h"
 
-#include "egg-asn1-defs.h"
-#include "egg-asn1x.h"
-#include "egg-dn.h"
-#include "egg-oid.h"
+#include "egg/egg-asn1-defs.h"
+#include "egg/egg-asn1x.h"
+#include "egg/egg-dn.h"
+#include "egg/egg-oid.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -45,8 +45,8 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	if (!g_file_get_contents ("files/test-certificate-1.der", (gchar**)&test->data,
-	                          &test->n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der",
+	                          (gchar**)&test->data, &test->n_data, NULL))
 		g_assert_not_reached ();
 
 	test->asn1 = egg_asn1x_create (pkix_asn1_tab, "Certificate");

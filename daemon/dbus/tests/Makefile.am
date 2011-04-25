@@ -1,7 +1,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/daemon/dbus \
-	-DSRCDIR=$(srcdir) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	$(DAEMON_CFLAGS) \
 	$(GLIB_CFLAGS)
 
@@ -14,10 +14,8 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	SRCDIR='$(srcdir)' gtester -k --verbose ${TEST_PROGS}
+	gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
-if WITH_TESTS
 all-local: $(check_PROGRAMS)
-endif

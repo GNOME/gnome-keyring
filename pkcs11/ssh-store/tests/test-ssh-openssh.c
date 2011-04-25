@@ -1,6 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-ssh-openssh.c: Test OpenSSH parsing
-
+/*
    Copyright (C) 2008 Stefan Walter
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
@@ -23,9 +22,9 @@
 
 #include "config.h"
 
-#include "test-suite.h"
+#include "egg/egg-secure-memory.h"
 
-#include "gkm-ssh-openssh.h"
+#include "ssh-store/gkm-ssh-openssh.h"
 
 #include "gkm/gkm-sexp.h"
 
@@ -35,25 +34,28 @@
 #include <stdio.h>
 #include <string.h>
 
+EGG_SECURE_GLIB_DEFINITIONS ();
+
 static const gchar *PRIVATE_FILES[] = {
-	"id_rsa_encrypted",
-	"id_rsa_plain",
-	"id_dsa_encrypted",
-	"id_dsa_plain"
+	SRCDIR "/files/id_rsa_encrypted",
+	SRCDIR "/files/id_rsa_plain",
+	SRCDIR "/files/id_dsa_encrypted",
+	SRCDIR "/files/id_dsa_plain"
 };
 
 static const gchar *PUBLIC_FILES[] = {
-	"id_rsa_test.pub",
-	"id_dsa_test.pub"
+	SRCDIR "/files/id_rsa_test.pub",
+	SRCDIR "/files/id_dsa_test.pub"
 };
 
 #define COMMENT "A public key comment"
 
-TESTING_TEST(parse_public)
+static void
+test_parse_public (void)
 {
 	gcry_sexp_t sexp;
 	gchar *comment;
-	guchar *data;
+	gchar *data;
 	gsize n_data;
 	int algorithm;
 	gboolean is_private;
@@ -63,7 +65,8 @@ TESTING_TEST(parse_public)
 
 	for (i = 0; i < G_N_ELEMENTS (PUBLIC_FILES); ++i) {
 
-		data = testing_data_read (PUBLIC_FILES[i], &n_data);
+		if (!g_file_get_contents (PUBLIC_FILES[i], &data, &n_data, NULL))
+			g_assert_not_reached ();
 
 		res = gkm_ssh_openssh_parse_public_key (data, n_data, &sexp, &comment);
 		if (res != GKM_DATA_SUCCESS) {
@@ -84,10 +87,11 @@ TESTING_TEST(parse_public)
 	}
 }
 
-TESTING_TEST(parse_private)
+static void
+test_parse_private (void)
 {
 	gcry_sexp_t sexp;
-	guchar *data;
+	gchar *data;
 	gsize n_data;
 	int algorithm;
 	gboolean is_private;
@@ -97,7 +101,8 @@ TESTING_TEST(parse_private)
 
 	for (i = 0; i < G_N_ELEMENTS (PRIVATE_FILES); ++i) {
 
-		data = testing_data_read (PRIVATE_FILES[i], &n_data);
+		if (!g_file_get_contents (PRIVATE_FILES[i], &data, &n_data, NULL))
+			g_assert_not_reached ();
 
 		res = gkm_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
 		if (res != GKM_DATA_SUCCESS) {
@@ -114,4 +119,16 @@ TESTING_TEST(parse_private)
 		g_free (data);
 		gcry_sexp_release (sexp);
 	}
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add_func ("/ssh-store/openssh/parse_private", test_parse_private);
+	g_test_add_func ("/ssh-store/openssh/parse_public", test_parse_public);
+
+	return g_test_run ();
 }

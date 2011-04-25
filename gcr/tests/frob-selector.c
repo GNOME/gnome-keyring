@@ -1,7 +1,7 @@
 
 #include "config.h"
 
-#include "gcr.h"
+#include "gcr/gcr.h"
 
 #include <gtk/gtk.h>
 

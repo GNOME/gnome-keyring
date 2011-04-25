@@ -48,7 +48,7 @@ setup (Test *test, gconstpointer unused)
 	GError *err = NULL;
 
 	/* Successful load */
-	test->module = gck_module_initialize (".libs/libmock-test-module.so", NULL, 0, &err);
+	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", NULL, 0, &err);
 	g_assert_no_error (err);
 	g_assert (GCK_IS_MODULE (test->module));
 
@@ -266,14 +266,8 @@ test_token_match (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gck/enumerator/create", Test, NULL, setup, test_create, teardown);
 	g_test_add ("/gck/enumerator/create_slots", Test, NULL, setup, test_create_slots, teardown);

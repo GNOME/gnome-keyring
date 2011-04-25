@@ -12,45 +12,45 @@ LIBS = \
 	$(P11_TESTS_LIBS)
 
 noinst_PROGRAMS= \
-	test-control-change \
-	test-control-init \
-	test-control-unlock \
-	test-control-quit
+	frob-control-change \
+	frob-control-init \
+	frob-control-unlock \
+	frob-control-quit
 
 # ------------------------------------------------------------------------------
 # Test unlocking the login keyring
 
-test_control_change_SOURCES = \
-	test-control-change.c
+frob_control_change_SOURCES = \
+	frob-control-change.c
 
-test_control_change_LDADD = \
+frob_control_change_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control-client.la \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-creds.la \
 	$(top_builddir)/egg/libegg-secure.la
 
-test_control_init_SOURCES = \
-	test-control-init.c
+frob_control_init_SOURCES = \
+	frob-control-init.c
 
-test_control_init_LDADD = \
+frob_control_init_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control-client.la \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-creds.la \
 	$(top_builddir)/egg/libegg-secure.la
 
-test_control_quit_SOURCES = \
-	test-control-quit.c
+frob_control_quit_SOURCES = \
+	frob-control-quit.c
 
-test_control_quit_LDADD = \
+frob_control_quit_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control-client.la \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-creds.la \
 	$(top_builddir)/egg/libegg-secure.la
 
-test_control_unlock_SOURCES = \
-	test-control-unlock.c
+frob_control_unlock_SOURCES = \
+	frob-control-unlock.c
 
-test_control_unlock_LDADD = \
+frob_control_unlock_LDADD = \
 	$(top_builddir)/daemon/control/libgkd-control-client.la \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-creds.la \

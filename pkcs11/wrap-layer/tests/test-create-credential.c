@@ -21,21 +21,26 @@
 
 #include "config.h"
 
-#include "test-suite.h"
-
 #include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
+
+#include "egg/egg-testing.h"
 
 #include "wrap-layer/gkm-wrap-layer.h"
 
 #include "ui/gku-prompt.h"
 
-static CK_FUNCTION_LIST test_functions;
-static CK_FUNCTION_LIST_PTR module = NULL;
-static CK_SESSION_HANDLE session = 0;
-static CK_OBJECT_HANDLE object = 0;
+#include <string.h>
 
-TESTING_SETUP (create_credential)
+typedef struct {
+	CK_FUNCTION_LIST functions;
+	CK_FUNCTION_LIST_PTR module;
+	CK_SESSION_HANDLE session;
+	CK_OBJECT_HANDLE object;
+} Test;
+
+static void
+setup (Test *test, gconstpointer unused)
 {
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
@@ -51,60 +56,58 @@ TESTING_SETUP (create_credential)
 	/* Always start off with test functions */
 	rv = gkm_mock_C_GetFunctionList (&funcs);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	memcpy (&test_functions, funcs, sizeof (test_functions));
+	memcpy (&test->functions, funcs, sizeof (test->functions));
 
 	gkm_wrap_layer_reset_modules ();
-	gkm_wrap_layer_add_module (&test_functions);
-	module = gkm_wrap_layer_get_functions ();
+	gkm_wrap_layer_add_module (&test->functions);
+	test->module = gkm_wrap_layer_get_functions ();
 
 	gku_prompt_dummy_prepare_response ();
 
-	/* Open a session */
-	rv = (module->C_Initialize) (NULL);
+	/* Open a test->session */
+	rv = (test->module->C_Initialize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
+	rv = (test->module->C_GetSlotList) (CK_TRUE, &slot_id, &n_slots);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &session);
+	rv = (test->module->C_OpenSession) (slot_id, CKF_SERIAL_SESSION, NULL, NULL, &test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	/* Find the always authenticate object */
-	rv = (module->C_FindObjectsInit) (session, attrs, 1);
+	/* Find the always authenticate test->object */
+	rv = (test->module->C_FindObjectsInit) (test->session, attrs, 1);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
-	rv = (module->C_FindObjects) (session, &object, 1, &count);
+	rv = (test->module->C_FindObjects) (test->session, &test->object, 1, &count);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (count, ==, 1);
-	gkm_assert_cmpulong (object, !=, 0);
+	gkm_assert_cmpulong (test->object, !=, 0);
 
-	rv = (module->C_FindObjectsFinal) (session);
+	rv = (test->module->C_FindObjectsFinal) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 }
 
-TESTING_TEARDOWN (create_credential)
+static void
+teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
 	g_assert (!gku_prompt_dummy_have_response ());
 
-	object = 0;
-
-	rv = (module->C_CloseSession) (session);
+	rv = (test->module->C_CloseSession) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	session = 0;
 
-	rv = (module->C_Finalize) (NULL);
+	rv = (test->module->C_Finalize) (NULL);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
-	module = NULL;
 }
 
-TESTING_TEST (create_credential_ok_password)
+static void
+test_ok_password (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_OBJECT, &object, sizeof (object) },
+		{ CKA_G_OBJECT, &test->object, sizeof (test->object) },
 		{ CKA_VALUE, NULL, 0 }
 	};
 
@@ -113,17 +116,18 @@ TESTING_TEST (create_credential_ok_password)
 
 	gku_prompt_dummy_queue_ok_password ("booo");
 
-	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &cred);
+	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (cred, !=, 0);
 }
 
-TESTING_TEST (create_credential_bad_password_then_cancel)
+static void
+test_bad_password_then_cancel (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_OBJECT, &object, sizeof (object) },
+		{ CKA_G_OBJECT, &test->object, sizeof (test->object) },
 		{ CKA_VALUE, NULL, 0 }
 	};
 
@@ -133,16 +137,17 @@ TESTING_TEST (create_credential_bad_password_then_cancel)
 	gku_prompt_dummy_queue_ok_password ("bad password");
 	gku_prompt_dummy_queue_no ();
 
-	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &cred);
+	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
 }
 
-TESTING_TEST (create_credentiaol_cancel_immediately)
+static void
+test_cancel_immediately (Test *test, gconstpointer unused)
 {
 	CK_OBJECT_CLASS klass = CKO_G_CREDENTIAL;
 	CK_ATTRIBUTE attrs[] = {
 		{ CKA_CLASS, &klass, sizeof (klass) },
-		{ CKA_G_OBJECT, &object, sizeof (object) },
+		{ CKA_G_OBJECT, &test->object, sizeof (test->object) },
 		{ CKA_VALUE, NULL, 0 }
 	};
 
@@ -151,6 +156,19 @@ TESTING_TEST (create_credentiaol_cancel_immediately)
 
 	gku_prompt_dummy_queue_no ();
 
-	rv = (module->C_CreateObject) (session, attrs, G_N_ELEMENTS (attrs), &cred);
+	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/wrap-layer/create-credential/ok_password", Test, NULL, setup, test_ok_password, teardown);
+	g_test_add ("/wrap-layer/create-credential/bad_password_then_cancel", Test, NULL, setup, test_bad_password_then_cancel, teardown);
+	g_test_add ("/wrap-layer/create-credential/cancel_immediately", Test, NULL, setup, test_cancel_immediately, teardown);
+
+	return egg_tests_run_in_thread_with_loop ();
 }

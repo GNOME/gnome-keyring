@@ -21,39 +21,48 @@
    Author: Stef Walter <stef@memberwebs.com>
 */
 
-#include "test-suite.h"
+#include "config.h"
 
-#include "gku-prompt-util.h"
+#include "ui/gku-prompt-util.h"
 
-#include <egg/egg-dh.h>
-#include <egg/egg-libgcrypt.h>
-#include <egg/egg-secure-memory.h>
+#include "egg/egg-dh.h"
+#include "egg/egg-libgcrypt.h"
+#include "egg/egg-secure-memory.h"
 
 #include <gcrypt.h>
 
-static GKeyFile *key_file = NULL;
+#include <glib-object.h>
 
-TESTING_SETUP(prompt_util)
+EGG_SECURE_GLIB_DEFINITIONS ();
+
+typedef struct {
+	GKeyFile *key_file;
+} Test;
+
+static void
+setup (Test *test, gconstpointer unused)
 {
 	egg_libgcrypt_initialize ();
-	key_file = g_key_file_new ();
+	test->key_file = g_key_file_new ();
 }
 
-TESTING_TEARDOWN(prompt_util)
+static void
+teardown (Test *test, gconstpointer unused)
 {
-	g_key_file_free (key_file);
-	key_file = NULL;
+	g_key_file_free (test->key_file);
+	test->key_file = NULL;
 }
 
-TESTING_TEST(encode_decode_mpi)
+static void
+test_encode_decode_mpi (Test *test, gconstpointer unused)
 {
 	gcry_mpi_t mpi, check;
 
 	mpi = gcry_mpi_new (512);
 	gcry_mpi_randomize (mpi, 512, GCRY_WEAK_RANDOM);
 
-	gku_prompt_util_encode_mpi (key_file, "section", "field", mpi);
-	if (!gku_prompt_util_decode_mpi (key_file, "section", "field", &check))
+	gku_prompt_util_encode_mpi (test->key_file, "section", "field", mpi);
+	if (!gku_prompt_util_decode_mpi (test->key_file, "section", "field", &check))
 		g_assert_not_reached ();
 
 	g_assert (gcry_mpi_cmp (mpi, check) == 0);
@@ -61,23 +70,25 @@ TESTING_TEST(encode_decode_mpi)
 	gcry_mpi_release (check);
 }
 
-TESTING_TEST(decode_nonexistant_mpi)
+static void
+test_decode_nonexistant_mpi (Test *test, gconstpointer unused)
 {
 	gcry_mpi_t mpi;
 
-	if (gku_prompt_util_decode_mpi (key_file, "nonexist", "nope", &mpi))
+	if (gku_prompt_util_decode_mpi (test->key_file, "nonexist", "nope", &mpi))
 		g_assert_not_reached ();
 }
 
-TESTING_TEST(encode_decode_hex)
+static void
+test_encode_decode_hex (Test *test, gconstpointer unused)
 {
 	gchar buffer[32];
 	gpointer check;
 	gsize n_check;
 
 	gcry_create_nonce (buffer, 32);
-	gku_prompt_util_encode_hex (key_file, "section", "field", buffer, 32);
-	check = gku_prompt_util_decode_hex (key_file, "section", "field", &n_check);
+	gku_prompt_util_encode_hex (test->key_file, "section", "field", buffer, 32);
+	check = gku_prompt_util_decode_hex (test->key_file, "section", "field", &n_check);
 	g_assert (check);
 	g_assert (n_check == 32);
 	g_assert (memcmp (buffer, check, 32) == 0);
@@ -85,11 +96,12 @@ TESTING_TEST(encode_decode_hex)
 	g_free (check);
 }
 
-TESTING_TEST(decode_nonexistant_hex)
+static void
+test_decode_nonexistant_hex (Test *test, gconstpointer unused)
 {
 	gsize n_data;
 
-	if (gku_prompt_util_decode_hex (key_file, "nonexist", "nope", &n_data))
+	if (gku_prompt_util_decode_hex (test->key_file, "nonexist", "nope", &n_data))
 		g_assert_not_reached ();
 }
 
@@ -126,11 +138,27 @@ do_encrypt_decrypt_text (const gchar *text)
 	g_assert_cmpstr (check, ==, text);
 }
 
-TESTING_TEST(encrypt_decrypt_text)
+static void
+test_encrypt_decrypt_text (Test *test, gconstpointer unused)
 {
 	do_encrypt_decrypt_text ("");
 	do_encrypt_decrypt_text ("blah");
 	do_encrypt_decrypt_text ("0123456789ABCDEF");
 	do_encrypt_decrypt_text ("0123456789ABCDE");
 	do_encrypt_decrypt_text ("0123456789ABCDEF 12345");
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/ui/util/encode_decode_mpi", Test, NULL, setup, test_encode_decode_mpi, teardown);
+	g_test_add ("/ui/util/decode_nonexistant_mpi", Test, NULL, setup, test_decode_nonexistant_mpi, teardown);
+	g_test_add ("/ui/util/encode_decode_hex", Test, NULL, setup, test_encode_decode_hex, teardown);
+	g_test_add ("/ui/util/decode_nonexistant_hex", Test, NULL, setup, test_decode_nonexistant_hex, teardown);
+	g_test_add ("/ui/util/encrypt_decrypt_text", Test, NULL, setup, test_encrypt_decrypt_text, teardown);
+
+	return g_test_run ();
 }

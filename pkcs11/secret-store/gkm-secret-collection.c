@@ -888,7 +888,7 @@ gkm_secret_collection_save (GkmSecretCollection *self, GkmTransaction *transacti
 {
 	GkmSecret *master;
 	GkmDataResult res;
-	guchar *data;
+	gpointer data;
 	gsize n_data;
 
 	g_return_if_fail (GKM_IS_SECRET_COLLECTION (self));

@@ -1,12 +1,15 @@
 
 #include "control/gkd-control.h"
-#include "testing/testing.h"
+
+#include "egg/egg-secure-memory.h"
 
 #include <pwd.h>
 #include <unistd.h>
 
-static int
-run (void)
+EGG_SECURE_GLIB_DEFINITIONS ();
+
+int
+main (int argc, char *argv[])
 {
 	gchar *original;
 	const char *password;
@@ -26,5 +29,3 @@ run (void)
 	g_free (original);
 	return 0;
 }
-
-#include "testing/testing.c"
