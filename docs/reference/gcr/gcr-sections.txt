@@ -435,6 +435,7 @@ GcrUnlockOptionsWidgetPrivate
 <SUBSECTION Private>
 GCR_COLONS_SCHEMA_PUB
 GCR_COLONS_SCHEMA_UID
+GCR_COLONS_SCHEMA_SEC
 GCR_GNUPG_COLLECTION
 GCR_GNUPG_COLLECTION_CLASS
 GCR_GNUPG_COLLECTION_GET_CLASS
@@ -451,6 +452,7 @@ GCR_TYPE_GNUPG_KEY
 GcrColonColumns
 GcrColonPubColumns
 GcrColonUidColumns
+GcrColonSecColumns
 GcrColons
 GcrGnupgCollection
 GcrGnupgCollectionClass

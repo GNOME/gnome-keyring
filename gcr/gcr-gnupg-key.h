@@ -63,9 +63,14 @@ const GcrColumn*    _gcr_gnupg_key_get_columns                   (void);
 
 GcrGnupgKey*        _gcr_gnupg_key_new                           (GPtrArray *dataset);
 
-GPtrArray*          _gcr_gnupg_key_get_dataset                   (GcrGnupgKey *self);
+GPtrArray*          _gcr_gnupg_key_get_public_dataset            (GcrGnupgKey *self);
 
-void                _gcr_gnupg_key_set_dataset                   (GcrGnupgKey *self,
+void                _gcr_gnupg_key_set_public_dataset            (GcrGnupgKey *self,
+                                                                  GPtrArray *dataset);
+
+GPtrArray*          _gcr_gnupg_key_get_secret_dataset            (GcrGnupgKey *self);
+
+void                _gcr_gnupg_key_set_secret_dataset            (GcrGnupgKey *self,
                                                                   GPtrArray *dataset);
 
 const gchar*        _gcr_gnupg_key_get_keyid_for_colons          (GPtrArray *dataset);

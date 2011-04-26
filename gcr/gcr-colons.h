@@ -52,6 +52,7 @@ G_BEGIN_DECLS
 
 #define GCR_COLONS_SCHEMA_UID  (g_quark_from_static_string ("uid"))
 #define GCR_COLONS_SCHEMA_PUB  (g_quark_from_static_string ("pub"))
+#define GCR_COLONS_SCHEMA_SEC  (g_quark_from_static_string ("sec"))
 
 /* Common columns for all schemas */
 typedef enum {
@@ -65,6 +66,14 @@ typedef enum {
 typedef enum {
 	GCR_COLONS_PUB_KEYID = 4
 } GcrColonPubColumns;
+
+/*
+ * Columns for sec schema, add them as they're used. eg:
+ * sec::2048:1:293FC71A513189BD:1299771018::::::::::
+ */
+typedef enum {
+	GCR_COLONS_SEC_KEYID = 4
+} GcrColonSecColumns;
 
 /*
  * Columns for uid schema, add them as they're used. eg:
