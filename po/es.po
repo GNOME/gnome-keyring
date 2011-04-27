@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-09 20:04+0000\n"
-"PO-Revision-Date: 2011-04-12 16:58+0200\n"
+"POT-Creation-Date: 2011-04-25 07:07+0000\n"
+"PO-Revision-Date: 2011-04-27 13:12+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -263,6 +263,32 @@ msgstr "Error inesperado en select() al leer los datos de un proceso hijo (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Error inesperado en waitpid() (%s)"
 
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:389
+#| msgid "_Name:"
+msgctxt "column"
+msgid "Name"
+msgstr "Nombre"
+
+#: ../gcr/gcr-certificate.c:391
+#| msgid "Issued On"
+msgctxt "column"
+msgid "Issued By"
+msgstr "Emitido por"
+
+#. later
+#: ../gcr/gcr-certificate.c:393
+#| msgid "Expires"
+msgctxt "column"
+msgid "Expires"
+msgstr "Caduca"
+
+#: ../gcr/gcr-certificate.c:1061 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:98 ../gcr/gcr-parser.c:275
+msgid "Certificate"
+msgstr "Certificado"
+
 #: ../gcr/gcr-certificate-exporter.c:224
 msgid ""
 "<b>A file already exists with this name.</b>\n"
@@ -279,28 +305,20 @@ msgstr "_Reemplazar"
 
 #: ../gcr/gcr-certificate-exporter.c:257
 #, c-format
-#| msgid "The operation was cancelled"
 msgid "The operation was cancelled."
 msgstr "Se canceló la operación."
 
 #: ../gcr/gcr-certificate-exporter.c:301
-#| msgid "Import certificate"
 msgid "Export certificate"
 msgstr "Exportar certificado"
 
 #: ../gcr/gcr-certificate-exporter.c:313
-#| msgid "Certificate"
 msgid "Certificate files"
 msgstr "Archivos de certificados"
 
 #: ../gcr/gcr-certificate-exporter.c:324
 msgid "PEM files"
 msgstr "Archivos PEM"
-
-#: ../gcr/gcr-certificate-exporter.c:462 ../gcr/gcr-certificate-renderer.c:98
-#: ../gcr/gcr-parser.c:275
-msgid "Certificate"
-msgstr "Certificado"
 
 #: ../gcr/gcr-certificate-renderer.c:123
 msgid "Extension"
@@ -410,7 +428,6 @@ msgid "Fingerprints"
 msgstr "Huellas"
 
 #: ../gcr/gcr-display-view.c:283
-#| msgid "_Details:"
 msgid "_Details"
 msgstr "_Detalles"
 
@@ -583,7 +600,6 @@ msgstr ""
 "La sintaxis del URI no es válida. La codificación del campo «%s» no es válida."
 
 #: ../gck/gck-uri.c:292
-#| msgid "The URI has does not have the 'pkcs11' scheme."
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "El URI no tiene el esquema «pkcs11»."
 
@@ -1078,11 +1094,11 @@ msgstr "comandos: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:618
 msgid "Store passwords unencrypted?"
 msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:619
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1092,15 +1108,15 @@ msgstr ""
 "estarán cifradas de forma segura. Serán accesibles por cualquiera que tenga "
 "acceso a sus archivos."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:626
 msgid "Use Unsafe Storage"
 msgstr "Usar depósito inseguro"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:666
 msgid "Passwords do not match."
 msgstr "Las contraseñas no coinciden."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:676
 msgid "Password cannot be blank"
 msgstr "La contraseña no puede estar vacía"
 
@@ -1188,9 +1204,6 @@ msgstr "_Contraseña:"
 
 #~ msgid "Email Signer Certificate"
 #~ msgstr "Certificado del firmante del correo-e"
-
-#~ msgid "Issued On"
-#~ msgstr "Emitido el"
 
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "Huella MD5"
