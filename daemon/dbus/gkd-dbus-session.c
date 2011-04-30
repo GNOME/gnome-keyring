@@ -78,8 +78,6 @@ unregister_daemon_in_session (DBusConnection *conn)
 {
 	DBusMessageIter args;
 	DBusMessage *msg;
-	DBusMessage *reply;
-	DBusError derr = { 0 };
 
 	if (client_session_rule) {
 		dbus_bus_remove_match (conn, client_session_rule, NULL);
@@ -100,15 +98,10 @@ unregister_daemon_in_session (DBusConnection *conn)
 	if (!dbus_message_iter_append_basic (&args, DBUS_TYPE_OBJECT_PATH, &client_session_path))
 		g_return_if_reached ();
 
-	reply = dbus_connection_send_with_reply_and_block (conn, msg, 1000, &derr);
+	dbus_message_set_no_reply (msg, TRUE);
+	dbus_connection_send (conn, msg, NULL);
+	dbus_connection_flush (conn);
 	dbus_message_unref (msg);
-
-	if (!reply) {
-		g_message ("dbus failure unregistering from session: %s", derr.message);
-		return;
-	}
-
-	dbus_message_unref (reply);
 
 	g_free (client_session_path);
 	client_session_path = NULL;
@@ -131,7 +124,6 @@ signal_filter (DBusConnection *conn, DBusMessage *msg, void *user_data)
 		gkd_main_quit ();
 		return DBUS_HANDLER_RESULT_HANDLED;
 	} else if (dbus_message_is_signal (msg, DBUS_INTERFACE_LOCAL, "Disconnected")) {
-		unregister_daemon_in_session (conn);
 		gkd_main_quit ();
 		return DBUS_HANDLER_RESULT_HANDLED;
 	}
@@ -142,8 +134,6 @@ signal_filter (DBusConnection *conn, DBusMessage *msg, void *user_data)
 void
 gkd_dbus_session_cleanup (DBusConnection *conn)
 {
-	unregister_daemon_in_session (conn);
-
 	g_free (client_session_path);
 	client_session_path = NULL;
 
