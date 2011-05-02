@@ -4,14 +4,16 @@
 # Gheyret Kenji<gheyret@yahoo.com>,2010.
 # Sahran <sahran.ug@gmail.com>, 2010.
 # Zeper <zeper@msn.com>, 2010.
+# Oghlan Temkin <temkin119@gmail.com>,2011
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2011-03-10 08:08+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Gheyret Kenji<gheyret@yahoo.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-04-25 01:53+0000\n"
+"PO-Revision-Date: 2011-04-26 09:25+0600\n"
+"Last-Translator: Sahran <sahran.ug@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,7 +42,9 @@ msgstr "%s نىڭ  ئاچقۇچ ھالقىسى ئۈچۈن  يېڭى ئىم تا�
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
-msgstr "بىر پروگرامما '%s' دېگەن keyring نىڭ ئىمىنى ئۆزگەرتمەكچى. ئۇنىڭغا يېڭى ئىم تاللاڭ."
+msgstr ""
+"بىر پروگرامما '%s' دېگەن keyring نىڭ ئىمىنى ئۆزگەرتمەكچى. ئۇنىڭغا يېڭى ئىم "
+"تاللاڭ."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -59,7 +63,8 @@ msgstr "يېڭى ئاچقۇچ ھالقىسى ئۈچۈن ئىم تاللاڭ"
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
-msgstr "بىر پروگرامما يېڭىدىن '%s' دېگەن keyring نى قۇرماقچى. ئۇنىڭغا ئىم تاللاڭ."
+msgstr ""
+"بىر پروگرامما يېڭىدىن '%s' دېگەن keyring نى قۇرماقچى. ئۇنىڭغا ئىم تاللاڭ."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -71,11 +76,11 @@ msgstr "GNOME ئاچقۇچ ھالقىسى：PKCS#11 دېتالى"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
 msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME ئاچقۇچ ھالقىسى：مەخپىيەت مۇلازىمىتى"
+msgstr "GNOME ئاچقۇچ ھالقىسى：مەخپىيەت مۇلازىمېتى"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
-msgstr "مەخپىيەتلىكنى ساقلاش مۇلازىمىتى"
+msgstr "مەخپىيەتلىكنى ساقلاش مۇلازىمېتى"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "GNOME Keyring: SSH Agent"
@@ -93,30 +98,30 @@ msgstr "NOME ئاچقۇچ ھالقىسى：GPG ياردەمچىسى"
 msgid "GPG Password Agent"
 msgstr "GPG ئىم ياردەمچىسى"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:305
+#: ../gcr/gcr-key-renderer.c:310
 msgid "Unknown"
 msgstr "نامەلۇم"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP ئاچقۇچ: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
-msgstr "Passphrase كىرگۈزۈڭ"
+msgstr "ئىم جۈملىسى كىرگۈزۈڭ"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "بوش قالغان ۋاقتى بۇ ۋاقىتتىن ھالقىپ كەتسە ئىمنى ئۇنتۇپ كەت"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "بۇ ئىمنى ئاخىرىدا ئۇنتۇپ كەت"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "تىزىمدىن چىققان ۋاقتىمدا بۇ ئىمنى ئۇنتۇپ كەت"
 
@@ -165,7 +170,7 @@ msgstr "ئادەتتىكى ئات"
 msgid "Surname"
 msgstr "تەگات"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:398
 msgid "Serial Number"
 msgstr "تەرتىپ نومۇرى"
 
@@ -203,7 +208,7 @@ msgstr "تېلېفون نومۇرى"
 
 #: ../egg/egg-oid.c:87
 msgid "Given Name"
-msgstr "ئاتى"
+msgstr "بېرىلگەن ئاتى"
 
 #: ../egg/egg-oid.c:89
 msgid "Initials"
@@ -211,153 +216,155 @@ msgstr "قىسقارتىلمىسى"
 
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr ""
+msgstr "مەشغۇلات چەكلىگۈچى"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr ""
+msgstr "DN چەكلىگۈچى"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
 msgstr "تەخەللۇسى"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:301
 msgid "RSA"
 msgstr "RSA"
 
 #: ../egg/egg-oid.c:100
 msgid "MD2 with RSA"
-msgstr "MD2 بىلەن شىفىرلانغانRSA"
+msgstr "MD2 بىلەن شىفىرلەنگەنRSA"
 
 #: ../egg/egg-oid.c:102
 msgid "MD5 with RSA"
-msgstr "MD5 بىلەن شىفىرلانغانRSA"
+msgstr "MD5 بىلەن شىفىرلەنگەنRSA"
 
 #: ../egg/egg-oid.c:104
 msgid "SHA1 with RSA"
-msgstr "SHA1 بىلەن شىفىرلانغانRSA"
+msgstr "SHA1 بىلەن شىفىرلەنگەنRSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:303
 msgid "DSA"
 msgstr "DSA"
 
 #: ../egg/egg-oid.c:109
 msgid "SHA1 with DSA"
-msgstr "SHA1 بىلەن شىفىرلانغانDSA"
+msgstr "SHA1 بىلەن شىفىرلەنگەنDSA"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "جەريان (%s) دىن سانلىق مەلۇمات ئوقۇۋاتقاندا select() دا تاسادىپىي خاتالىق كۆرۈلدى"
+msgstr ""
+"ئىجرا (%s) دىن سانلىق-مەلۇمات ئوقۇۋاتقاندا select() دا تاسادىپىي خاتالىق "
+"كۆرۈلدى"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() دا تاسادىپىي خاتالىق كۆرۈلدى (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gcr/gcr-certificate-renderer.c:96 ../gcr/gcr-parser.c:275
 msgid "Certificate"
 msgstr "گۇۋاھنامە"
 
-#: ../gcr/gcr-certificate-renderer.c:107
+#: ../gcr/gcr-certificate-renderer.c:121
 msgid "Extension"
 msgstr "كېڭەيتىلمە"
 
-#: ../gcr/gcr-certificate-renderer.c:112
+#: ../gcr/gcr-certificate-renderer.c:126
 msgid "Identifier"
 msgstr "بەلگە"
 
-#: ../gcr/gcr-certificate-renderer.c:120
+#: ../gcr/gcr-certificate-renderer.c:134
 msgid "Value"
-msgstr "قىممىتى"
+msgstr "قىممەت"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:140
 msgid "Critical"
 msgstr "ئاچقۇچلۇق"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:140
 msgid "Yes"
 msgstr "ھەئە"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:140
 msgid "No"
 msgstr "ياق"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:358
 msgid "Identity"
-msgstr "سالاھىيەت"
+msgstr "كىملىك"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:362
 msgid "Verified by"
 msgstr "دەلىللىگۈچى"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:369
 msgid "Expires"
 msgstr "ۋاقتى ئۆتتى"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:379
 msgid "Subject Name"
 msgstr "تېما ئاتى"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:383
 msgid "Issuer Name"
 msgstr "تارقاتقۇچى ئاتى"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:387
 msgid "Issued Certificate"
 msgstr "تارقاتقان گۇۋاھنامە"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:392
 msgid "Version"
 msgstr "نەشرى"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:406
 msgid "Not Valid Before"
 msgstr "بۇندىن بۇرۇن ئىناۋەتسىز"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:411
 msgid "Not Valid After"
 msgstr "بۇندىن كېيىن ئىناۋەتسىز"
 
-#: ../gcr/gcr-certificate-renderer.c:401
+#: ../gcr/gcr-certificate-renderer.c:420
 msgid "Signature Algorithm"
 msgstr "ئىمزا ئالگورىزىمى"
 
-#: ../gcr/gcr-certificate-renderer.c:406
+#: ../gcr/gcr-certificate-renderer.c:425
 msgid "Signature Parameters"
 msgstr "ئىمزا پارامېتىرى"
 
-#: ../gcr/gcr-certificate-renderer.c:413
+#: ../gcr/gcr-certificate-renderer.c:432
 msgid "Signature"
 msgstr "ئىمزا"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:437
 msgid "Public Key Info"
-msgstr "ئاممىۋى شىفىرلىق ئاچقۇچ ئۇچۇرى"
+msgstr "ئاممىۋى شىفىرلىك ئاچقۇچ ئۇچۇرى"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:442
 msgid "Key Algorithm"
 msgstr "ئاچقۇچ ئالگورىزىمى"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:448
 msgid "Key Parameters"
 msgstr "شىفىرلىق ئاچقۇچ پارامېتىرى"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:455
 msgid "Key Size"
 msgstr "شىفىرلىق ئاچقۇچ چوڭلۇقى"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:463 ../gcr/gcr-key-renderer.c:285
+#: ../gcr/gcr-parser.c:278
 msgid "Public Key"
 msgstr "ئاممىۋى شىفىرلىق ئاچقۇچ"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
+#: ../gcr/gcr-certificate-renderer.c:468
 msgid "Fingerprints"
 msgstr "بارماق ئىزى"
 
@@ -394,122 +401,126 @@ msgstr "تىزىمدىن چىققان ۋاقىتتا ئاچقۇچ ھالقىسى
 msgid "minutes"
 msgstr "مىنۇت"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "خۇسۇسىي ئاچقۇچنى قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
 
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "ئىسپاتنامىنى قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
 
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
+#: ../gcr/gcr-importer.c:183
 msgid "In order to import the private key, it must be unlocked"
-msgstr "خۇسۇسىي ئاچقۇچنىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
+msgstr ""
+"خۇسۇسىي ئاچقۇچنىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
+#: ../gcr/gcr-importer.c:186
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "ئىسپاتنامىنىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
+#: ../gcr/gcr-importer.c:189
 msgid "In order to import the data, it must be unlocked"
-msgstr "سانلىق-مەلۇماتنى ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
+msgstr ""
+"سانلىق-مەلۇماتنى ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-importer.c:194
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "خۇسۇسىي ئاچقۇچ «%s» نىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
+msgstr ""
+"خۇسۇسىي ئاچقۇچ «%s» نىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى "
+"كېرەك."
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-importer.c:197
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "ئىسپاتنامە «%s» نىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
+msgstr ""
+"ئىسپاتنامە «%s» نىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-importer.c:200
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "«%s» نىڭ ئىمپورت قىلىنىشى ئۈچۈن، ئۇ قۇلۇپسىزلانغان بولۇشى كېرەك."
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
+#: ../gcr/gcr-importer.c:291 ../gcr/gcr-parser.c:1708 ../gcr/gcr-parser.c:1947
+#: ../gck/gck-misc.c:104
 msgid "The operation was cancelled"
 msgstr "مەشغۇلاتتىن ۋاز كەچتى"
 
-#: ../gcr/gcr-importer.c:346
+#: ../gcr/gcr-importer.c:383
 #, c-format
 msgid "No location available to import to"
 msgstr "ئەكىرگىلى بولىدىغان ئورۇن يوق"
 
-#: ../gcr/gcr-importer.c:495
+#: ../gcr/gcr-importer.c:532
 msgid "Import Certificates/Keys"
 msgstr "ئىسپاتنامىلەر/ئاچقۇچلارنى ئىمپورت قىلىش"
 
-#: ../gcr/gcr-importer.c:502
+#: ../gcr/gcr-importer.c:539
 msgid "Choose a location to store the imported certificates/keys."
-msgstr "گۇۋاھنامىلەر/شىفىرلىق ئاچقۇچلارنى ئەكىرىپ ساقلايدىغان ئورۇننى تاللاڭ."
+msgstr "گۇۋانامەلەر/شىفىرلىق ئاچقۇچلارنى ئەكىرىپ ساقلايدىغان ئورۇننى تاللاڭ."
 
-#: ../gcr/gcr-key-renderer.c:69
+#: ../gcr/gcr-key-renderer.c:83
 msgid "Key"
 msgstr "ئاچقۇچ"
 
-#: ../gcr/gcr-key-renderer.c:260
+#: ../gcr/gcr-key-renderer.c:274
 msgid "Private RSA Key"
 msgstr "RSA شەخسىي ئاچقۇچى"
 
-#: ../gcr/gcr-key-renderer.c:262
+#: ../gcr/gcr-key-renderer.c:276
 msgid "Private DSA Key"
 msgstr "DSA  شەخسىي ئاچقۇچى"
 
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
+#: ../gcr/gcr-key-renderer.c:278 ../gcr/gcr-parser.c:272
 msgid "Private Key"
 msgstr "مەخپىي ئاچقۇچ"
 
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
+#: ../gcr/gcr-key-renderer.c:281 ../gcr/gcr-key-renderer.c:283
 msgid "Public DSA Key"
 msgstr "DSA ئاممىۋى ئاچقۇچ"
 
-#: ../gcr/gcr-key-renderer.c:278
+#: ../gcr/gcr-key-renderer.c:292
 #, c-format
-#| msgid "%d bits"
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d بىت"
 
-#: ../gcr/gcr-key-renderer.c:279
+#: ../gcr/gcr-key-renderer.c:293
 msgid "Strength"
 msgstr "كۈچلۈكلۈك"
 
-#: ../gcr/gcr-key-renderer.c:292
+#: ../gcr/gcr-key-renderer.c:306
 msgid "Algorithm"
 msgstr "ئالگورىزىم"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:313
 msgid "Size"
 msgstr "چوڭلۇقى"
 
 #. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
+#: ../gcr/gcr-key-renderer.c:317
 msgid "Fingerprint"
 msgstr "بارماق ئىزى"
 
-#: ../gcr/gcr-parser.c:1569
+#: ../gcr/gcr-parser.c:1711
 msgid "Unrecognized or unsupported data."
-msgstr "تونۇمايدىغان ياكى قوللىمايدىغان تەپسىلات"
+msgstr "تونۇتۇلمىغان ياكى قوللىمايدىغان تەپسىلات"
 
-#: ../gcr/gcr-parser.c:1572
+#: ../gcr/gcr-parser.c:1714
 msgid "Could not parse invalid or corrupted data."
 msgstr "ئىناۋەتسىز ياكى بۇزۇلغان سانلىق-مەلۇماتنى تەھلىل قىلالمىدى."
 
-#: ../gcr/gcr-parser.c:1575
+#: ../gcr/gcr-parser.c:1717
 msgid "The data is locked"
 msgstr "مەلۇمات قۇلۇپلاقلىق"
 
@@ -519,335 +530,335 @@ msgstr "مەلۇمات قۇلۇپلاقلىق"
 #: ../gcr/gcr-trust.c:420
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
-msgstr ""
+msgstr "قادالغان گۇۋاھنامىنى ساقلايدىغان ئورۇننى تاپالمىدى"
 
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
+#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
+#: ../gck/gck-uri.c:253
 #, c-format
 msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgstr "بۇ URI توغرا بولمىغانلىقتىن،'%s' ئابزاسنى كودلاش ئىناۋەتسىز."
 
-#: ../gck/gck-uri.c:287
+#: ../gck/gck-uri.c:292
 msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "بۇ URIغا كېرەكلىك بولغان  'pkcs11' scheme كەم."
+msgstr "بۇ URIغا كېرەكلىك بولغان  'pkcs11' لايىھە كەم."
 
-#: ../gck/gck-misc.c:101
+#: ../gck/gck-misc.c:107
 msgid "Insufficient memory available"
 msgstr "يېتەرلىك ئەسلەك يوق"
 
-#: ../gck/gck-misc.c:103
+#: ../gck/gck-misc.c:109
 msgid "The specified slot ID is not valid"
-msgstr "كۆرسىتىلگەن ساقلاش ئوقۇرى ID سى ئىناۋەتسىز"
+msgstr "كۆرسىتىلگەن ساقلاش ئوقۇرى IDسى ئىناۋەتسىز"
 
-#: ../gck/gck-misc.c:105
+#: ../gck/gck-misc.c:111
 msgid "Internal error"
 msgstr "ئىچكى خاتالىق"
 
-#: ../gck/gck-misc.c:107
+#: ../gck/gck-misc.c:113
 msgid "The operation failed"
 msgstr "مەشغۇلات مەغلۇپ بولدى."
 
-#: ../gck/gck-misc.c:109
+#: ../gck/gck-misc.c:115
 msgid "Invalid arguments"
-msgstr "پارامېتىر خاتا"
+msgstr "ئارگۇمېنت خاتا"
 
-#: ../gck/gck-misc.c:111
+#: ../gck/gck-misc.c:117
 msgid "The module cannot create needed threads"
 msgstr "بۇ بۆلەك لازىملىق جەرياننى قۇرالمىدى"
 
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "بۇ بۆلەك مەلۇماتنى توغرا قۇلۇپلىيالمىدى"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "بۇ ئابزاسنى ئوقۇشقىلا بولىدۇ."
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "بۇ ئابزاس بولسا سەزگۈر ئابزاس ،كۆرسىتىشكە بولمايدۇ."
-
 #: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "بۇ ئابزاس ئىناۋەتسىز ياكى مەۋجۇت ئەمەس"
+msgid "The module cannot lock data properly"
+msgstr "بۇ بۆلەك مەلۇماتنى توغرا قولۇپلىيالمىدى"
 
 #: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "ئىناۋەتسىز ئابزاس قىممىتى"
+msgid "The field is read-only"
+msgstr "بۇ سۆز بۆلىكىنى ئوقۇشقىلا بولىدۇ."
 
 #: ../gck/gck-misc.c:123
+msgid "The field is sensitive and cannot be revealed"
+msgstr "بۇ سۆز بۆلىكى سەزگۈر  بولۇپ كۆرسىتىشكە بولمايدۇ."
+
+#: ../gck/gck-misc.c:125
+msgid "The field is invalid or does not exist"
+msgstr "بۇ سۆز بۆلىكى ئىناۋەتسىز ياكى مەۋجۇت ئەمەس"
+
+#: ../gck/gck-misc.c:127
+msgid "Invalid value for field"
+msgstr "ئىناۋەتسىز سۆز بۆلىكى قىممىتى"
+
+#: ../gck/gck-misc.c:129
 msgid "The data is not valid or unrecognized"
 msgstr "بۇ مەلۇمات  ئىناۋەتسىز ياكى تونۇيالمىدى."
 
-#: ../gck/gck-misc.c:125
+#: ../gck/gck-misc.c:131
 msgid "The data is too long"
 msgstr "بۇ مەلۇمات بەك ئۇزۇن"
 
-#: ../gck/gck-misc.c:127
+#: ../gck/gck-misc.c:133
 msgid "An error occurred on the device"
 msgstr "ئۈسكىنىدە خاتالىق يۈز بەردى"
 
-#: ../gck/gck-misc.c:129
+#: ../gck/gck-misc.c:135
 msgid "Insufficient memory available on the device"
 msgstr "ئۈسكىنىدە يېتەرلىك ئەسلەك يوق"
 
-#: ../gck/gck-misc.c:131
+#: ../gck/gck-misc.c:137
 msgid "The device was removed or unplugged"
-msgstr "بۇ ئۈسكىنە چېقىۋېتىلگەن ياكى چېتىلمىغان"
+msgstr "بۇ ئۈسكۈنە چىقىرىۋېتىلگەن ياكى چېتىلمىغان"
 
-#: ../gck/gck-misc.c:133
+#: ../gck/gck-misc.c:139
 msgid "The encrypted data is not valid or unrecognized"
 msgstr "بۇ شىفىرلانغان مەلۇمات ئىناۋەتسىز ياكى تونۇيالمىدى."
 
-#: ../gck/gck-misc.c:135
+#: ../gck/gck-misc.c:141
 msgid "The encrypted data is too long"
 msgstr "شىفىرلايدىغان مەلۇمات بەك ئۇزۇن"
 
-#: ../gck/gck-misc.c:137
+#: ../gck/gck-misc.c:143
 msgid "This operation is not supported"
 msgstr "بۇ مەشغۇلاتنى قوللىمايدۇ"
 
-#: ../gck/gck-misc.c:139
+#: ../gck/gck-misc.c:145
 msgid "The key is missing or invalid"
 msgstr "بۇ ئاچقۇچ يوقالغان ياكى ئىناۋەتسىز"
 
-#: ../gck/gck-misc.c:141
+#: ../gck/gck-misc.c:147
 msgid "The key is the wrong size"
 msgstr "بۇ ئاچقۇچنىڭ چوڭلۇقى خاتا"
 
-#: ../gck/gck-misc.c:143
+#: ../gck/gck-misc.c:149
 msgid "The key is of the wrong type"
 msgstr "بۇ ئاچقۇچنىڭ تىپى خاتا"
 
-#: ../gck/gck-misc.c:145
+#: ../gck/gck-misc.c:151
 msgid "No key is needed"
 msgstr "ئاچقۇچ كېرەك ئەمەس"
 
-#: ../gck/gck-misc.c:147
+#: ../gck/gck-misc.c:153
 msgid "The key is different than before"
 msgstr "بۇ ئاچقۇچ بۇرۇنقىسىغا ئوخشىمايدۇ"
 
-#: ../gck/gck-misc.c:149
+#: ../gck/gck-misc.c:155
 msgid "A key is needed"
 msgstr "بىر تال ئاچقۇچ كېرەك"
 
-#: ../gck/gck-misc.c:151
+#: ../gck/gck-misc.c:157
 msgid "Cannot include the key in the digest"
-msgstr ""
+msgstr "ئۈزۈندىدە بۇ ئاچقۇچنى ئۆز ئىچىگە ئالالمايدۇ"
 
-#: ../gck/gck-misc.c:153
+#: ../gck/gck-misc.c:159
 msgid "This operation cannot be done with this key"
-msgstr "مەزكۇر مەشغۇلاتلارنى بۇ ئاچقۇچ ئارقىلىق تاماملىغىلى بولمىدى"
+msgstr "مەزكۇر مەشغۇلاتنى بۇ ئاچقۇچ ئارقىلىق تاماملىغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:155
+#: ../gck/gck-misc.c:161
 msgid "The key cannot be wrapped"
 msgstr "بۇ ئاچقۇچنى قاپلىغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:157
+#: ../gck/gck-misc.c:163
 msgid "Cannot export this key"
 msgstr "بۇ ئاچقۇچنى ئېكسپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:159
+#: ../gck/gck-misc.c:165
 msgid "The crypto mechanism is invalid or unrecognized"
 msgstr "شىفىرلاش تۈزۈلمىسى ئىناۋەتسىز ياكى تونۇيالمىدى."
 
-#: ../gck/gck-misc.c:161
+#: ../gck/gck-misc.c:167
 msgid "The crypto mechanism has an invalid argument"
-msgstr "شىفىرلاش تۈزۈلمىسىدە بىر ئىناۋەتسىز ئەركىن ئۆزگەرگۈچى بار"
+msgstr "شىفىرلاش تۈزۈلمىسدە بىر ئىناۋەتسىز ئەركىن ئۆزگەرگۈچى بار"
 
-#: ../gck/gck-misc.c:163
+#: ../gck/gck-misc.c:169
 msgid "The object is missing or invalid"
-msgstr "بۇ object كەم ياكى ئىناۋەتسىز"
+msgstr "بۇ نەڭ كەم ياكى ئىناۋەتسىز"
 
-#: ../gck/gck-misc.c:165
+#: ../gck/gck-misc.c:171
 msgid "Another operation is already taking place"
 msgstr "باشقا بىر مەشغۇلات ئېلىپ بېرىلىۋاتىدۇ"
 
-#: ../gck/gck-misc.c:167
+#: ../gck/gck-misc.c:173
 msgid "No operation is taking place"
 msgstr "ئىجرا بولۇۋاتقان مەشغۇلات يوق"
 
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "ئىم ياكىPINخاتا"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "ئىم ياكىPIN ئىناۋەتسىز"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "ئىم ياكىPIN نىڭ ئۇزۇنلۇقى ئىناۋەتسىز"
-
 #: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "ئىم ياكىPIN نىڭ ۋاقتى ئۆتكەن"
+msgid "The password or PIN is incorrect"
+msgstr "ئىم ياكى PIN خاتا"
 
 #: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "ئىم ياكىPIN قۇلۇپلانغان"
+msgid "The password or PIN is invalid"
+msgstr "ئىم ياكى PIN ئىناۋەتسىز"
 
 #: ../gck/gck-misc.c:179
+msgid "The password or PIN is of an invalid length"
+msgstr "ئىم ياكى PIN نىڭ ئۇزۇنلۇقى ئىناۋەتسىز"
+
+#: ../gck/gck-misc.c:181
+msgid "The password or PIN has expired"
+msgstr "ئىم ياكى PIN نىڭ ۋاقتى ئۆتكەن"
+
+#: ../gck/gck-misc.c:183
+msgid "The password or PIN is locked"
+msgstr "ئىم ياكى PIN قۇلۇپلانغان"
+
+#: ../gck/gck-misc.c:185
 msgid "The session is closed"
 msgstr "ئەڭگىمە تاقالدى"
 
-#: ../gck/gck-misc.c:181
+#: ../gck/gck-misc.c:187
 msgid "Too many sessions are active"
 msgstr "بەك كۆپ ئەڭگىمە ئاكتىپلاغلىق"
 
-#: ../gck/gck-misc.c:183
+#: ../gck/gck-misc.c:189
 msgid "The session is invalid"
 msgstr "ئەڭگىمە ئىناۋەتسىز"
 
-#: ../gck/gck-misc.c:185
+#: ../gck/gck-misc.c:191
 msgid "The session is read-only"
-msgstr "بۇ ئەڭگىمەنى ئوقۇشقىلا بولىدۇ."
+msgstr "بۇ ئەڭگىمەنى ئوقۇشقىلا بولىدۇ"
 
-#: ../gck/gck-misc.c:187
+#: ../gck/gck-misc.c:193
 msgid "An open session exists"
 msgstr "بىر ئوچۇق ئەڭگىمە بار"
 
-#: ../gck/gck-misc.c:189
+#: ../gck/gck-misc.c:195
 msgid "A read-only session exists"
 msgstr "ئوقۇشقىلا بولىدىغان بىر ئەڭگىمە مەۋجۇت"
 
-#: ../gck/gck-misc.c:191
+#: ../gck/gck-misc.c:197
 msgid "An administrator session exists"
 msgstr "باشقۇرغۇچى ئەڭگىمەسى مەۋجۇت"
 
-#: ../gck/gck-misc.c:193
+#: ../gck/gck-misc.c:199
 msgid "The signature is bad or corrupted"
 msgstr "بۇ ئىمزا چاتاق ياكى بۇزۇلغان"
 
-#: ../gck/gck-misc.c:195
+#: ../gck/gck-misc.c:201
 msgid "The signature is unrecognized or corrupted"
-msgstr "بۇ ئىمزا تونۇمايدۇ ياكى بۇزۇلغان"
+msgstr "بۇ ئىمزا تونۇتۇلمىغان ياكى بۇزۇلغان"
 
-#: ../gck/gck-misc.c:197
+#: ../gck/gck-misc.c:203
 msgid "Certain required fields are missing"
 msgstr "بەزى زۆرۈر بولغان ئابزاس يوقالغان"
 
-#: ../gck/gck-misc.c:199
+#: ../gck/gck-misc.c:205
 msgid "Certain fields have invalid values"
 msgstr "بەزى ئابزاسلارنىڭ ئىناۋەتسىز قىممەتلىرى بار"
 
-#: ../gck/gck-misc.c:201
+#: ../gck/gck-misc.c:207
 msgid "The device is not present or unplugged"
-msgstr "بۇ ئۈسكىنە يوق ياكى چېتىلمىغان"
+msgstr "بۇ ئۈسكۈنە يوق ياكى چىتىلمىغان"
 
-#: ../gck/gck-misc.c:203
+#: ../gck/gck-misc.c:209
 msgid "The device is invalid or unrecognizable"
-msgstr "بۇ ئۈسكىنە ئىناۋەتسىز ياكى تونۇمايدۇ"
+msgstr "بۇ ئۈسكۈنە ئىناۋەتسىز ياكى تونۇتۇلمىغان"
 
-#: ../gck/gck-misc.c:205
+#: ../gck/gck-misc.c:211
 msgid "The device is write protected"
 msgstr "بۇ قوزغاتقۇچ يېزىشتىن قوغدالغان ھالەتتە"
 
-#: ../gck/gck-misc.c:207
+#: ../gck/gck-misc.c:213
 msgid "Cannot import because the key is invalid"
 msgstr "ئاچقۇچ ئىناۋەتسىز بولغاچقا ئىمپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:209
+#: ../gck/gck-misc.c:215
 msgid "Cannot import because the key is of the wrong size"
 msgstr "ئاچقۇچ ئۇزۇنلۇقى خاتا بولغاچقا ئىمپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:211
+#: ../gck/gck-misc.c:217
 msgid "Cannot import because the key is of the wrong type"
 msgstr "ئاچقۇچ تىپى خاتا بولغاچقا ئىمپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:213
+#: ../gck/gck-misc.c:219
 msgid "You are already logged in"
 msgstr "سىز تىزىمغا كىرگەن ھالەتتە"
 
-#: ../gck/gck-misc.c:215
+#: ../gck/gck-misc.c:221
 msgid "No user has logged in"
 msgstr "ھېچقانداق ئىشلەتكۈچى تىزىمغا كىرمىگەن"
 
-#: ../gck/gck-misc.c:217
+#: ../gck/gck-misc.c:223
 msgid "The user's password or PIN is not set"
-msgstr "ئىشلەتكۈچى ئىمى ياكى PINتەڭشەلمىگەن"
+msgstr "ئىشلەتكۈچى ئىمى ياكى PIN تەڭشەلمىگەن"
 
-#: ../gck/gck-misc.c:219
+#: ../gck/gck-misc.c:225
 msgid "The user is of an invalid type"
-msgstr "بۇ ئىناۋەتسىز تۈرىدىكى ئىشلەتكۈچى"
+msgstr "بۇ ئىناۋەتسىز تىپتىكى ئىشلەتكۈچى"
 
-#: ../gck/gck-misc.c:221
+#: ../gck/gck-misc.c:227
 msgid "Another user is already logged in"
 msgstr "باشقا ئىشلەتكۈچى ئاللىقاچان تىزىمغا كىرگەن"
 
-#: ../gck/gck-misc.c:223
+#: ../gck/gck-misc.c:229
 msgid "Too many users of different types are logged in"
 msgstr "ئوخشىمىغان تىپتا تىزىمغا كىرگەن ئىشلەتكۈچىلەر زىيادە كۆپ"
 
-#: ../gck/gck-misc.c:225
+#: ../gck/gck-misc.c:231
 msgid "Cannot import an invalid key"
 msgstr "ئىناۋەتسىز ئاچقۇچنى ئىمپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:227
+#: ../gck/gck-misc.c:233
 msgid "Cannot import a key of the wrong size"
 msgstr "چوڭلۇقى خاتا بولغان ئاچقۇچنى ئىمپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:229
+#: ../gck/gck-misc.c:235
 msgid "Cannot export because the key is invalid"
 msgstr "ئاچقۇچ ئىناۋەتسىز بولغاچقا ئېكسپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:231
+#: ../gck/gck-misc.c:237
 msgid "Cannot export because the key is of the wrong size"
 msgstr "ئاچقۇچ چوڭلۇقى توغرا بولمىغاچقا ئېكسپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:233
+#: ../gck/gck-misc.c:239
 msgid "Cannot export because the key is of the wrong type"
 msgstr "ئاچقۇچ تىپى توغرا بولمىغاچقا ئېكسپورت قىلغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:235
+#: ../gck/gck-misc.c:241
 msgid "Unable to initialize the random number generator"
-msgstr "خالىغانچە سان ھاسىللىغۇچنى دەسلەپلەشتۈرگىلى بولمىدى."
+msgstr "خالىغانچە سان ھاسللىغۇچنى دەسلەپلەشتۈرگىلى بولمىدى."
 
-#: ../gck/gck-misc.c:237
+#: ../gck/gck-misc.c:243
 msgid "No random number generator available"
 msgstr "ئىشلەتكىلى بولىدىغان خالىغانچە سان ھاسىللىغۇچ يوق."
 
-#: ../gck/gck-misc.c:239
+#: ../gck/gck-misc.c:245
 msgid "The crypto mechanism has an invalid parameter"
-msgstr "شىفىرلاش تۈزۈلمىسىدە بىر ئىناۋەتسىز پارامېتىر بار"
+msgstr "شىفىرلاش تۈزۈلمىسدە بىر ئىناۋەتسىز پارامېتىر بار"
 
-#: ../gck/gck-misc.c:241
+#: ../gck/gck-misc.c:247
 msgid "Not enough space to store the result"
 msgstr "نەتىجىنى ساقلايدىغان يېتەرلىك بوشلۇق يوق"
 
-#: ../gck/gck-misc.c:243
+#: ../gck/gck-misc.c:249
 msgid "The saved state is invalid"
 msgstr "ساقلانغان ھالەت ئىناۋەتسىز"
 
-#: ../gck/gck-misc.c:245
+#: ../gck/gck-misc.c:251
 msgid "The information is sensitive and cannot be revealed"
-msgstr "بۇ سەزگۈر ئۇچۇرنى ،ئاشكارىلاشقا بولمايدۇ."
+msgstr "بۇ سەزگۈر ئۇچۇرنى ئاشكارىلاشقا بولمايدۇ."
 
-#: ../gck/gck-misc.c:247
+#: ../gck/gck-misc.c:253
 msgid "The state cannot be saved"
 msgstr "بۇ ھالەتنى ساقلىغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:249
+#: ../gck/gck-misc.c:255
 msgid "The module has not been initialized"
 msgstr "بۆلەك دەسلەپلەشتۈرۈلمىگەن"
 
-#: ../gck/gck-misc.c:251
+#: ../gck/gck-misc.c:257
 msgid "The module has already been initialized"
 msgstr "بۆلەك دەسلەپلەشتۈرۈلگەن"
 
-#: ../gck/gck-misc.c:253
+#: ../gck/gck-misc.c:259
 msgid "Cannot lock data"
 msgstr "سانلىق-مەلۇماتلارنى قۇلۇپلىغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:255
+#: ../gck/gck-misc.c:261
 msgid "The data cannot be locked"
 msgstr "سانلىق-مەلۇماتلارنى قۇلۇپلىغىلى بولمىدى"
 
-#: ../gck/gck-misc.c:257
+#: ../gck/gck-misc.c:263
 msgid "The signature request was rejected by the user"
 msgstr "ئىمزا ئىلتىماسى ئىشلەتكۈچى تەرىپىدىن رەت قىلىندى"
 
-#: ../gck/gck-misc.c:261
+#: ../gck/gck-misc.c:267
 msgid "Unknown error"
 msgstr "نامەلۇم خاتالىق"
 
@@ -882,26 +893,31 @@ msgstr "ئاچقۇچ ھالقىسىنى قۇلۇپسىزلاش ئۈچۈن ئىم
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
-msgstr "كومپيۇتېرغا تىزىمغا كىرىش ئۈچۈن ئىشلىتىدىغان ئىم بىلەن ئاچقۇچ ھالقىسىغا تىزىمغا كىرىدىغان ئىم ماسلاشتۇرۇلمايدۇ."
+msgstr ""
+"كومپيۇتېرغا تىزىمغا كىرىش ئۈچۈن ئىشلىتىدىغان ئىم بىلەن ئاچقۇچ ھالقىسىغا "
+"تىزىمغا كىرىدىغان ئىم ماسلاشتۇرۇلمايدۇ."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
-msgstr "كومپيۇتېرغا تىزىمغا كىرگەندە، ئاچقۇچ ھالقىسىغا تىزىملىتىش قۇلۇپسىزلانمايدۇ."
+msgstr ""
+"كومپيۇتېرغا تىزىمغا كىرگەندە ئاچقۇچ ھالقىسىغا تىزىملىتىش قۇلۇپسىزلانمايدۇ."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
-msgstr "ئاچقۇچ ھالقىسى(Keyring)نى قۇلۇپسىزلا"
+msgstr "ئاچقۇچ ھالقىىسى(Keyring)نى قۇلۇپسىزلا"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "قۇلۇپسىزلاش ئۈچۈن ئاچقۇچ ھالقىسى '%s' نىڭ ئىمىنى كىرگۈزۈڭ"
+msgstr "قۇلۇپسىزلاش ئۈچۈن ئاچقۇچ ھالقىىسى '%s' نىڭ ئىمىنى كىرگۈزۈڭ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "بىر پروگرامما keyring '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+msgstr ""
+"بىر پروگرامما keyring '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق "
+"ئىكەن"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
@@ -917,7 +933,7 @@ msgstr "ئاممىۋى ئاچقۇچنى قۇلۇپسىزلا"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
-msgstr "قۇلۇپسىزلا"
+msgstr "قۇلۇپ ئاچ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -927,25 +943,32 @@ msgstr "ئاممىۋى ئاچقۇچنى قۇلۇپسىزلاش ئۈچۈن ئىم
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "بىر پروگرامما مەخپىي ئاچقۇچ '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+msgstr ""
+"بىر پروگرامما مەخپىي ئاچقۇچ '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ "
+"قۇلۇپلاقلىق ئىكەن"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "بىر پروگرامما گۇۋاھنامە '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+msgstr ""
+"بىر پروگرامما گۇۋاھنامە '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق "
+"ئىكەن"
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "بىر پروگرامما ئاممىۋى ئاچقۇچ '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+msgstr ""
+"بىر پروگرامما ئاممىۋى ئاچقۇچ '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ "
+"قۇلۇپلاقلىق ئىكەن"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "بىر پروگرامما '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن."
+msgstr ""
+"بىر پروگرامما '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
 msgid "Unlock certificate/key storage"
@@ -953,7 +976,7 @@ msgstr "گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ 
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ ساقلىغۇچ ئۈچۈن ئىم كىرگۈز"
+msgstr "گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ ساقلىغۇچ ئۈچۈن ئىم كىرگۈزۈڭ"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
@@ -961,7 +984,9 @@ msgstr "گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ 
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
-msgstr "بىر پروگرامما  گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ ساقلىغۇچ '%s' نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+msgstr ""
+"بىر پروگرامما  گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ ساقلىغۇچ '%s' نى "
+"زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
@@ -976,7 +1001,9 @@ msgstr "بىخەتەر ساقلىغۇچنى قوغداش ئۈچۈن يېڭى ئ�
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr "بۇ %s گە گۇۋاھنامە ياكى شىفىرلىق ئاچقۇچ ساقلاش ئۈچۈن ،چوقۇم بىر ئىم بۆلىشى كېرەك"
+msgstr ""
+"بۇ %s گە گۇۋاھنامە ياكى شىفىرلىق ئاچقۇچ ساقلاش ئۈچۈن چوقۇم بىر ئىم بولۇشى "
+"كېرەك"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
@@ -1004,28 +1031,30 @@ msgstr "بۇيرۇقلار: "
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr ""
+msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:618
 msgid "Store passwords unencrypted?"
-msgstr "ئىمنى شىفىرسىز ساقلىسۇنمۇ؟"
+msgstr "ئىمنى شىفىرلىماي ساقلامدۇ؟"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:619
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
-msgstr "قۇرۇق ئىم ئىشلەتسىڭىز، ساقلانغان ئىم بىخەتەر ھالدا مەخپىيلەشتۈرۈلمەيدۇ،باشقىلار سىزنىڭ ھۆججىتىڭىزنى خالىغانچە زىيارەت قىلالايدۇ."
+msgstr ""
+"بوش ئىم ئىشلەتسىڭىز، ساقلانغان ئىم بىخەتەر ھالدا مەخپىيلەشتۈرۈلمەيدۇ، "
+"باشقىلار سىزنىڭ ھۆججىتىڭىزنى خالىغانچە زىيارەت قىلالايدۇ."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:626
 msgid "Use Unsafe Storage"
 msgstr "ئىختىيارى ساقلىغۇچ ئىشلەت"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:666
 msgid "Passwords do not match."
 msgstr "ئىم ماس كەلمىدى."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:676
 msgid "Password cannot be blank"
 msgstr "ئىم قۇرۇق بولسا بولمايدۇ"
 
@@ -1035,7 +1064,7 @@ msgstr "ئاچقۇچ ھالقىسى زىيارەت"
 
 #: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
 msgid "Unlock access to passwords and other secrets"
-msgstr ""
+msgstr "قۇلۇپ ئاچىدىغان ئاچقۇچ ھالقىسى ئىم ئوقۇش ۋە باشقا بىخەتەرلىك ھوقۇقى"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
