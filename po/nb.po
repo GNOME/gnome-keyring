@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.91.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-17 16:09+0200\n"
-"PO-Revision-Date: 2011-04-17 16:10+0200\n"
+"POT-Creation-Date: 2011-05-04 12:47+0200\n"
+"PO-Revision-Date: 2011-05-04 12:49+0200\n"
 "Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -263,15 +263,18 @@ msgstr "Uventet feil i waitpid() (%s)"
 #. later
 #. later
 #: ../gcr/gcr-certificate.c:389
+msgctxt "column"
 msgid "Name"
 msgstr "Navn"
 
 #: ../gcr/gcr-certificate.c:391
+msgctxt "column"
 msgid "Issued By"
 msgstr "Utstedt av"
 
 #. later
-#: ../gcr/gcr-certificate.c:393 ../gcr/gcr-certificate-renderer.c:447
+#: ../gcr/gcr-certificate.c:393
+msgctxt "column"
 msgid "Expires"
 msgstr "Utløper"
 
@@ -346,6 +349,10 @@ msgstr "Identitet"
 #: ../gcr/gcr-certificate-renderer.c:440
 msgid "Verified by"
 msgstr "Verifisert av"
+
+#: ../gcr/gcr-certificate-renderer.c:447
+msgid "Expires"
+msgstr "Utløper"
 
 #. The subject
 #: ../gcr/gcr-certificate-renderer.c:457
@@ -1070,11 +1077,11 @@ msgstr "kommandoer: "
 msgid "          "
 msgstr "            "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:618
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:619
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1084,15 +1091,15 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:626
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:666
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:676
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
