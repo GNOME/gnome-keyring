@@ -42,6 +42,12 @@ early_error (const char *err_string)
 	exit (1);
 }
 
+static void
+early_warning (const char *warn_string)
+{
+	fprintf (stderr, "gnome-keyring-daemon: %s\n", warn_string);
+}
+
 #endif /* HAVE_LIPCAPNG */
 
 /*
@@ -74,11 +80,14 @@ gkd_capability_obtain_capability_and_drop_privileges (void)
 			early_error ("error getting process capabilities");
 			break;
 		case CAPNG_NONE:
-			early_error ("insufficient process capabilities");
+			early_warning ("insufficient process capabilities, unsecure memory might get used");
 			break;
 		case CAPNG_PARTIAL: /* File system based capabilities */
 			if (!capng_have_capability (CAPNG_EFFECTIVE, CAP_IPC_LOCK)) {
-				early_error ("insufficient process capabilities");
+				early_warning ("insufficient process capabilities, unsecure memory might get used");
+				/* Drop all capabilities */
+				capng_clear (CAPNG_SELECT_BOTH);
+				capng_apply (CAPNG_SELECT_BOTH);
 				break;
 			}
 
