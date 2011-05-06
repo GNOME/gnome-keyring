@@ -71,11 +71,26 @@ gkd_capability_obtain_capability_and_drop_privileges (void)
 				early_error ("failed dropping capabilities");
 			break;
 		case CAPNG_FAIL:
-		case CAPNG_NONE:
 			early_error ("error getting process capabilities");
 			break;
+		case CAPNG_NONE:
+			early_error ("insufficient process capabilities");
+			break;
 		case CAPNG_PARTIAL: /* File system based capabilities */
-                        break;
+			if (!capng_have_capability (CAPNG_EFFECTIVE, CAP_IPC_LOCK)) {
+				early_error ("insufficient process capabilities");
+				break;
+			}
+
+			/* Drop all capabilities except ipc_lock */
+			capng_clear (CAPNG_SELECT_BOTH);
+			if (capng_update (CAPNG_ADD,
+					  CAPNG_EFFECTIVE|CAPNG_PERMITTED,
+					  CAP_IPC_LOCK) != 0)
+				early_error ("error dropping process capabilities");
+			if (capng_apply (CAPNG_SELECT_BOTH) != 0)
+				early_error ("error dropping process capabilities");
+			break;
 	}
 #endif /* HAVE_LIBCAPNG */
 }
