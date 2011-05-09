@@ -4,23 +4,23 @@
 # Copyright (C) 2006 The Free Software Foundation.
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010, 2011.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-25 07:07+0000\n"
-"PO-Revision-Date: 2011-04-27 13:12+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"POT-Creation-Date: 2011-05-09 09:40+0000\n"
+"PO-Revision-Date: 2011-05-09 14:23+0200\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
@@ -265,21 +265,18 @@ msgstr "Error inesperado en waitpid() (%s)"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389
-#| msgid "_Name:"
+#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:278
 msgctxt "column"
 msgid "Name"
 msgstr "Nombre"
 
 #: ../gcr/gcr-certificate.c:391
-#| msgid "Issued On"
 msgctxt "column"
 msgid "Issued By"
 msgstr "Emitido por"
 
 #. later
 #: ../gcr/gcr-certificate.c:393
-#| msgid "Expires"
 msgctxt "column"
 msgid "Expires"
 msgstr "Caduca"
@@ -443,26 +440,14 @@ msgstr "Importar en:"
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Desbloquear este depósito de claves siempre que haya iniciado sesión"
+#: ../gcr/gcr-gnupg-key.c:140
+msgid "PGP Key"
+msgstr "Clave GPG"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "Bloquear después este depósito de claves"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "Bloquear este depósito de claves si está inactivo durante"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "Bloquear este depósito de claves al cerrar la sesión"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "minutos"
+#: ../gcr/gcr-gnupg-key.c:280
+msgctxt "column"
+msgid "Key ID"
+msgstr "ID de la clave"
 
 #: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
@@ -591,6 +576,27 @@ msgstr "Los datos están bloqueados"
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "No se pudo encontrar un lugar para almacenar el certificado importado"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Desbloquear este depósito de claves siempre que haya iniciado sesión"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring after"
+msgstr "Bloquear después este depósito de claves"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring if idle for"
+msgstr "Bloquear este depósito de claves si está inactivo durante"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "Lock this keyring when I log out"
+msgstr "Bloquear este depósito de claves al cerrar la sesión"
+
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
+#: ../gcr/gcr-unlock-options-widget.ui.h:6
+msgid "minutes"
+msgstr "minutos"
 
 #: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
 #: ../gck/gck-uri.c:253
