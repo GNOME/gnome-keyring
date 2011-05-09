@@ -127,7 +127,8 @@ libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 
 noinst_LTLIBRARIES = $(TESTABLE_LIB)
 libgcr_testable_la_SOURCES =
-libgcr_testable_la_LIBADD = $(libgcr@GCR_VERSION_SUFFIX@_la_OBJECTS)
+libgcr_testable_la_LIBADD = $(libgcr@GCR_VERSION_SUFFIX@_la_OBJECTS) \
+	$(libgcr@GCR_VERSION_SUFFIX@_la_LIBADD)
 libgcr_testable_la_DEPENDENCIES = $(libgcr@GCR_VERSION_SUFFIX@_la_OBJECTS)
 
 gcr-marshal.h: gcr-marshal.list $(GLIB_GENMARSHAL)

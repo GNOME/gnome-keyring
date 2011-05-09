@@ -61,7 +61,7 @@ libgck_testable_la_SOURCES = \
 	gck-mock.h \
 	gck-test.c \
 	gck-test.h
-libgck_testable_la_LIBADD = $(libgck_la_OBJECTS)
+libgck_testable_la_LIBADD = $(libgck_la_OBJECTS) $(libgck_la_LIBADD)
 libgck_testable_la_DEPENDENCIES = $(libgck_la_OBJECTS)
 
 gck-marshal.h: gck-marshal.list $(GLIB_GENMARSHAL)
