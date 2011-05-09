@@ -1,3 +1,16 @@
+Changes in version 3.1.1 are:
+ * Add 'Export Certificate' option to right click of certificate widget.
+ * Use file system linux capabilities for memory locking.
+ * Set correct daemon SELinux context when started from PAM module.
+ * Fix assertions in parser.
+ * Add GcrCollection interface to represent collections of objects.
+ * Add GcrGnupgCollection to libgcr.
+ * Implement functionality in renderers to populate GtkTreeModel
+ * Add a GcrSelector widget.
+ * Cleanup unregistering from session.
+ * Translations and translation fixes.
+ * Build fixes.
+
 Changes in version 3.0.1 are:
  * Fix clicking buttons in 'unsafe storage' dialog on GTK+3
  * Build with GTK+3 by default

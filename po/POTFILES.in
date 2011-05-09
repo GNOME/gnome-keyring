@@ -18,12 +18,13 @@ gcr/gcr-certificate-renderer.c
 gcr/gcr-certificate-widget.c
 gcr/gcr-display-view.c
 [type: gettext/glade]gcr/gcr-import-dialog.ui
-[type: gettext/glade]gcr/gcr-unlock-options-widget.ui
+gcr/gcr-gnupg-key.c
 gcr/gcr-importer.c
 gcr/gcr-library.c
 gcr/gcr-key-renderer.c
 gcr/gcr-parser.c
 gcr/gcr-trust.c
+[type: gettext/glade]gcr/gcr-unlock-options-widget.ui
 gck/gck-uri.c
 gck/gck-misc.c
 pkcs11/gkm/gkm-certificate.c
