@@ -184,3 +184,4 @@ run-tests
 
 /docs/reference/*/*-scan
 /docs/reference/*/*-scan.c
+/docs/reference/*/gcr-shooter

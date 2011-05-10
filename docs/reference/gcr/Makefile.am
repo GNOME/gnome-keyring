@@ -72,11 +72,13 @@ IGNORE_HFILES= \
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
-HTML_IMAGES=
+HTML_IMAGES= \
+	$(srcdir)/images/certificate-widget.png \
+	$(srcdir)/images/key-widget.png
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
-content_files=
+content_files=gcr-visual-index.xml
 
 # SGML files where gtk-doc abbrevations (#GtkWidget) are expanded
 # These files must be listed here *and* in content_files
@@ -109,3 +111,32 @@ DISTCLEANFILES = tmpl/gcr-unused.sgml
 #TESTS_ENVIRONMENT = cd $(srcsrc)
 #TESTS = $(GTKDOC_CHECK)
 
+# ------------------------------------------------------------------------------
+# SHOOTER
+
+WIDGETS = \
+	certificate-widget \
+	key-widget
+
+shots: gcr-shooter
+	mkdir -p $(builddir)/images
+	for widget in $(WIDGETS); do ./gcr-shooter $$widget $(builddir)/images; done
+
+SHOOTER_SRCS = \
+	gcr-shooter.c \
+	gcr-widgets.c
+
+SHOOTER_HEADS = \
+	gcr-shooter.h
+
+gcr-shooter: $(SHOOTER_SRCS) $(SHOOTER_HEADERS) Makefile
+	$(AM_V_CC) libtool --mode=link gcc -o gcr-shooter -Wall -Werror $(GTK_CFLAGS) \
+		-I$(top_srcdir)/gcr -DGCR_API_SUBJECT_TO_CHANGE \
+		-DSRCDIR=\"$(srcdir)\" -DTOPDIR=\"$(top_srcdir)\" \
+		$(GTK_LDFLAGS) -lm $(top_builddir)/gcr/libgcr-testable.la \
+		$(SHOOTER_SRCS)
+
+EXTRA_DIST += \
+	$(SHOOTER_SRCS) \
+	$(SHOOTER_HEADERS) \
+	images
