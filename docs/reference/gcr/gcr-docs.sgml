@@ -27,6 +27,10 @@
 		<xi:include href="xml/gcr-key-widget.xml"/>
 		<xi:include href="xml/gcr-renderer.xml"/>
 		<xi:include href="xml/gcr-viewer.xml"/>
+		<chapter>
+			<title>Widget Gallery</title>
+			<xi:include href="gcr-visual-index.xml" />
+		</chapter>
 	</part>
 
 	<part id="storage">
