@@ -35,6 +35,7 @@ inc_HEADERS = \
 	gcr-collection.h \
 	gcr-collection-model.h \
 	gcr-column.h \
+	gcr-combo-selector.h \
 	gcr-comparable.h \
 	gcr-key-renderer.h \
 	gcr-key-widget.h \
@@ -43,9 +44,9 @@ inc_HEADERS = \
 	gcr-parser.h \
 	gcr-pkcs11-certificate.h \
 	gcr-renderer.h \
-	gcr-selector.h \
 	gcr-simple-certificate.h \
 	gcr-simple-collection.h \
+	gcr-tree-selector.h \
 	gcr-trust.h \
 	gcr-types.h \
 	gcr-unlock-options.h \
@@ -78,6 +79,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-collection.c gcr-collection.h \
 	gcr-collection-model.c gcr-collection-model.h \
 	gcr-colons.c gcr-colons.h \
+	gcr-combo-selector.c gcr-combo-selector.h \
 	gcr-debug.c gcr-debug.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-comparable.c gcr-comparable.h \
@@ -94,9 +96,9 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-parser.c gcr-parser.h \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
 	gcr-renderer.c gcr-renderer.h \
-	gcr-selector.c gcr-selector.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-simple-collection.c gcr-simple-collection.h \
+	gcr-tree-selector.c gcr-tree-selector.h \
 	gcr-trust.c gcr-trust.h \
 	gcr-types.h \
 	gcr-unlock-options.h \

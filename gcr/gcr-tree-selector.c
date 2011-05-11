@@ -23,74 +23,48 @@
 
 #include "gcr-collection-model.h"
 #include "gcr-internal.h"
-#include "gcr-selector.h"
+#include "gcr-tree-selector.h"
 
 #include <glib/gi18n-lib.h>
 
 #include <string.h>
 
 /**
- * SECTION:gcr-selector
- * @title: GcrSelector
+ * SECTION:gcr-tree-selector
+ * @title: GcrTreeSelector
  * @short_description: A selector widget to select certificates or keys.
  *
- * The #GcrSelector can be used to select certificates or keys. The selector
- * comes in one of two modes: %GCR_SELECTOR_MODE_SINGLE and
- * %GCR_SELECTOR_MODE_MULTIPLE. The single selector mode allows the user to
- * select one object at a time, and the multiple selector allows the user
- * to select multiple objects from a list.
+ * The #GcrTreeSelector can be used to select certificates or keys. It allows
+ * the user to select multiple objects from a tree.
  */
 
 /**
- * GcrSelector:
+ * GcrTreeSelector:
+ * @parent: The parent object
  *
- * A selector widget.
+ * A tree selector widget.
  */
 
 /**
- * GcrSelectorClass:
+ * GcrTreeSelectorClass:
  *
- * The class for #GcrSelector.
- */
-
-/**
- * GcrSelectorMode:
- * @GCR_SELECTOR_MODE_SINGLE: User can select a single object.
- * @GCR_SELECTOR_MODE_MULTIPLE: The user can select multiple objects.
- *
- * The mode for the selector.
+ * The class for #GcrTreeSelector.
  */
 
 enum {
 	PROP_0,
 	PROP_COLLECTION,
-	PROP_COLUMNS,
-	PROP_MODE
+	PROP_COLUMNS
 };
 
-struct _GcrSelector {
-	GtkAlignment parent;
-
-	/*< private >*/
-	GcrSelectorPrivate *pv;
-};
-
-struct _GcrSelectorClass {
-	/*< private >*/
-	GtkAlignmentClass parent_class;
-};
-
-struct _GcrSelectorPrivate {
-	GtkComboBox *combo;
-	GtkTreeView *tree;
+struct _GcrTreeSelectorPrivate {
 	GcrCollection *collection;
 	const GcrColumn *columns;
 	GtkTreeModel *sort;
 	GcrCollectionModel *model;
-	GcrSelectorMode mode;
 };
 
-G_DEFINE_TYPE (GcrSelector, gcr_selector, GTK_TYPE_ALIGNMENT);
+G_DEFINE_TYPE (GcrTreeSelector, gcr_tree_selector, GTK_TYPE_TREE_VIEW);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -190,7 +164,7 @@ on_sort_column (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b,
 }
 
 static void
-add_string_column (GcrSelector *self, const GcrColumn *column, gint column_id)
+add_string_column (GcrTreeSelector *self, const GcrColumn *column, gint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
@@ -201,16 +175,16 @@ add_string_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 
 	cell = gtk_cell_renderer_text_new ();
 	g_object_set (G_OBJECT (cell), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-	label = g_dpgettext2 (NULL, "column", column->label);
+	label = column->label ? g_dpgettext2 (NULL, "column", column->label) : NULL;
 	col = gtk_tree_view_column_new_with_attributes (label, cell, "text", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
 	if (column->flags & GCR_COLUMN_SORTABLE)
 		gtk_tree_view_column_set_sort_column_id (col, column_id);
-	gtk_tree_view_append_column (self->pv->tree, col);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (self), col);
 }
 
 static void
-add_icon_column (GcrSelector *self, const GcrColumn *column, gint column_id)
+add_icon_column (GcrTreeSelector *self, const GcrColumn *column, gint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
@@ -221,16 +195,16 @@ add_icon_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 
 	cell = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (cell, "stock-size", GTK_ICON_SIZE_BUTTON, NULL);
-	label = g_dpgettext2 (NULL, "column", column->label);
+	label = column->label ? g_dpgettext2 (NULL, "column", column->label) : NULL;
 	col = gtk_tree_view_column_new_with_attributes (label, cell, "gicon", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
 	if (column->flags & GCR_COLUMN_SORTABLE)
 		gtk_tree_view_column_set_sort_column_id (col, column_id);
-	gtk_tree_view_append_column (self->pv->tree, col);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (self), col);
 }
 
 static void
-add_check_column (GcrSelector *self, guint column_id)
+add_check_column (GcrTreeSelector *self, guint column_id)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
@@ -240,45 +214,23 @@ add_check_column (GcrSelector *self, guint column_id)
 
 	col = gtk_tree_view_column_new_with_attributes ("", cell, "active", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, FALSE);
-	gtk_tree_view_append_column (self->pv->tree, col);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (self), col);
 }
 
-static void
-construct_single_selector (GcrSelector *self)
+/* -----------------------------------------------------------------------------
+ * OBJECT
+ */
+
+static GObject*
+gcr_tree_selector_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
-	GtkCellRenderer *cell;
-	GtkWidget *widget;
-
-	self->pv->model = gcr_collection_model_new (self->pv->collection,
-	                                            "icon", G_TYPE_ICON,
-	                                            "markup", G_TYPE_STRING,
-	                                            NULL);
-
-	widget = gtk_combo_box_new_with_model (GTK_TREE_MODEL (self->pv->model));
-	self->pv->combo = GTK_COMBO_BOX (widget);
-
-	/* The icon */
-	cell = gtk_cell_renderer_pixbuf_new ();
-	g_object_set (cell, "stock-size", GTK_ICON_SIZE_DND, NULL);
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (widget), cell, FALSE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (widget), cell, "gicon", 0);
-
-	/* The markup */
-	cell = gtk_cell_renderer_text_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (widget), cell, TRUE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (widget), cell, "markup", 1);
-
-	gtk_widget_show (widget);
-	gtk_container_add (GTK_CONTAINER (self), widget);
-}
-
-static void
-construct_multiple_selector (GcrSelector *self)
-{
+	GcrTreeSelector *self = GCR_TREE_SELECTOR (G_OBJECT_CLASS (gcr_tree_selector_parent_class)->constructor(type, n_props, props));
 	const GcrColumn *column;
-	GtkWidget *widget, *scroll;
 	GtkTreeSortable *sortable;
 	guint i;
+
+	g_return_val_if_fail (self, NULL);
+	g_return_val_if_fail (self->pv->columns, NULL);
 
 	self->pv->model = gcr_collection_model_new_full (self->pv->collection,
 	                                                 self->pv->columns);
@@ -286,8 +238,7 @@ construct_multiple_selector (GcrSelector *self)
 	self->pv->sort = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (self->pv->model));
 	sortable = GTK_TREE_SORTABLE (self->pv->sort);
 
-	widget = gtk_tree_view_new_with_model (GTK_TREE_MODEL (self->pv->sort));
-	self->pv->tree = GTK_TREE_VIEW (widget);
+	gtk_tree_view_set_model (GTK_TREE_VIEW (self), GTK_TREE_MODEL (self->pv->sort));
 
 	/* First add the check mark column */
 	add_check_column (self, gcr_collection_model_column_for_selected (self->pv->model));
@@ -315,66 +266,19 @@ construct_multiple_selector (GcrSelector *self)
 		}
 	}
 
-	scroll = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add (GTK_CONTAINER (scroll), widget);
-	gtk_container_add (GTK_CONTAINER (self), scroll);
-
-	gtk_widget_show_all (scroll);
-}
-
-/* -----------------------------------------------------------------------------
- * OBJECT
- */
-
-GType
-gcr_selector_mode_get_type (void)
-{
-	static GType type = 0;
-	static GEnumValue values[] = {
-		{ GCR_SELECTOR_MODE_SINGLE, "single", "Single"},
-		{ GCR_SELECTOR_MODE_MULTIPLE, "multiple", "Multiple"},
-		{ 0, NULL, NULL }
-	};
-	if (!type)
-		type = g_enum_register_static ("GcrSelectorMode", values);
-	return type;
-}
-
-static GObject*
-gcr_selector_constructor (GType type, guint n_props, GObjectConstructParam *props)
-{
-	GcrSelector *self = GCR_SELECTOR (G_OBJECT_CLASS (gcr_selector_parent_class)->constructor(type, n_props, props));
-	g_return_val_if_fail (self, NULL);
-
-	g_return_val_if_fail (self->pv->columns, NULL);
-
-	switch (self->pv->mode) {
-	case GCR_SELECTOR_MODE_SINGLE:
-		construct_single_selector (self);
-		break;
-	case GCR_SELECTOR_MODE_MULTIPLE:
-		construct_multiple_selector (self);
-		break;
-	default:
-		g_assert_not_reached ();
-		break;
-	}
-
 	return G_OBJECT (self);
 }
 
 static void
-gcr_selector_init (GcrSelector *self)
+gcr_tree_selector_init (GcrTreeSelector *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_SELECTOR, GcrSelectorPrivate);
+	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_TREE_SELECTOR, GcrTreeSelectorPrivate);
 }
 
 static void
-gcr_selector_dispose (GObject *obj)
+gcr_tree_selector_dispose (GObject *obj)
 {
-	GcrSelector *self = GCR_SELECTOR (obj);
+	GcrTreeSelector *self = GCR_TREE_SELECTOR (obj);
 
 	if (self->pv->model)
 		g_object_unref (self->pv->model);
@@ -388,27 +292,25 @@ gcr_selector_dispose (GObject *obj)
 		g_object_unref (self->pv->sort);
 	self->pv->sort = NULL;
 
-	G_OBJECT_CLASS (gcr_selector_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gcr_tree_selector_parent_class)->dispose (obj);
 }
 
 static void
-gcr_selector_finalize (GObject *obj)
+gcr_tree_selector_finalize (GObject *obj)
 {
-	GcrSelector *self = GCR_SELECTOR (obj);
+	GcrTreeSelector *self = GCR_TREE_SELECTOR (obj);
 
 	g_assert (!self->pv->collection);
 	g_assert (!self->pv->model);
-	self->pv->combo = NULL;
-	self->pv->tree = NULL;
 
-	G_OBJECT_CLASS (gcr_selector_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gcr_tree_selector_parent_class)->finalize (obj);
 }
 
 static void
-gcr_selector_set_property (GObject *obj, guint prop_id, const GValue *value,
-                           GParamSpec *pspec)
+gcr_tree_selector_set_property (GObject *obj, guint prop_id, const GValue *value,
+                                GParamSpec *pspec)
 {
-	GcrSelector *self = GCR_SELECTOR (obj);
+	GcrTreeSelector *self = GCR_TREE_SELECTOR (obj);
 	switch (prop_id) {
 	case PROP_COLLECTION:
 		g_return_if_fail (!self->pv->collection);
@@ -420,9 +322,6 @@ gcr_selector_set_property (GObject *obj, guint prop_id, const GValue *value,
 		self->pv->columns = g_value_get_pointer (value);
 		g_return_if_fail (self->pv->columns);
 		break;
-	case PROP_MODE:
-		self->pv->mode = g_value_get_enum (value);
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -430,20 +329,17 @@ gcr_selector_set_property (GObject *obj, guint prop_id, const GValue *value,
 }
 
 static void
-gcr_selector_get_property (GObject *obj, guint prop_id, GValue *value,
-                         GParamSpec *pspec)
+gcr_tree_selector_get_property (GObject *obj, guint prop_id, GValue *value,
+                                GParamSpec *pspec)
 {
-	GcrSelector *self = GCR_SELECTOR (obj);
+	GcrTreeSelector *self = GCR_TREE_SELECTOR (obj);
 
 	switch (prop_id) {
 	case PROP_COLLECTION:
-		g_value_set_object (value, gcr_selector_get_collection (self));
+		g_value_set_object (value, gcr_tree_selector_get_collection (self));
 		break;
 	case PROP_COLUMNS:
-		g_value_set_pointer (value, (gpointer)gcr_selector_get_columns (self));
-		break;
-	case PROP_MODE:
-		g_value_set_enum (value, gcr_selector_get_mode (self));
+		g_value_set_pointer (value, (gpointer)gcr_tree_selector_get_columns (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -452,20 +348,20 @@ gcr_selector_get_property (GObject *obj, guint prop_id, GValue *value,
 }
 
 static void
-gcr_selector_class_init (GcrSelectorClass *klass)
+gcr_tree_selector_class_init (GcrTreeSelectorClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->constructor = gcr_selector_constructor;
-	gobject_class->dispose = gcr_selector_dispose;
-	gobject_class->finalize = gcr_selector_finalize;
-	gobject_class->set_property = gcr_selector_set_property;
-	gobject_class->get_property = gcr_selector_get_property;
+	gobject_class->constructor = gcr_tree_selector_constructor;
+	gobject_class->dispose = gcr_tree_selector_dispose;
+	gobject_class->finalize = gcr_tree_selector_finalize;
+	gobject_class->set_property = gcr_tree_selector_set_property;
+	gobject_class->get_property = gcr_tree_selector_get_property;
 
-	g_type_class_add_private (gobject_class, sizeof (GcrSelectorPrivate));
+	g_type_class_add_private (gobject_class, sizeof (GcrTreeSelectorPrivate));
 
 	/**
-	 * GcrSelector:collection:
+	 * GcrTreeSelector:collection:
 	 *
 	 * The collection which contains the objects to display in the selector.
 	 */
@@ -474,23 +370,13 @@ gcr_selector_class_init (GcrSelectorClass *klass)
 	                                GCR_TYPE_COLLECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * GcrSelector:columns:
+	 * GcrTreeSelector:columns:
 	 *
 	 * The columns to use to display the objects.
 	 */
 	g_object_class_install_property (gobject_class, PROP_COLUMNS,
-	           g_param_spec_pointer ("columns", "Columns", "Columns to display in multiple selector",
+	           g_param_spec_pointer ("columns", "Columns", "Columns to display in selector",
 	                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
-	/**
-	 * GcrSelector:mode:
-	 *
-	 * The mode of the selector.
-	 */
-	g_object_class_install_property (gobject_class, PROP_MODE,
-	           g_param_spec_enum ("mode", "Mode", "The mode of the selector",
-	                              GCR_TYPE_SELECTOR_MODE, GCR_SELECTOR_MODE_SINGLE,
-	                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	_gcr_initialize ();
 }
@@ -500,28 +386,26 @@ gcr_selector_class_init (GcrSelectorClass *klass)
  */
 
 /**
- * gcr_selector_new:
+ * gcr_tree_selector_new:
  * @collection: The collection that contains the objects to display
  * @columns: The columns to use to display the objects
- * @mode: The mode of the selector
  *
- * Create a new #GcrSelector.
+ * Create a new #GcrTreeSelector.
  *
  * Returns: A newly allocated selector, which should be released with
  *     g_object_unref().
  */
-GcrSelector*
-gcr_selector_new (GcrCollection *collection, const GcrColumn *columns, GcrSelectorMode mode)
+GcrTreeSelector*
+gcr_tree_selector_new (GcrCollection *collection, const GcrColumn *columns)
 {
-	return g_object_new (GCR_TYPE_SELECTOR,
+	return g_object_new (GCR_TYPE_TREE_SELECTOR,
 	                     "collection", collection,
 	                     "columns", columns,
-	                     "mode", mode,
 	                     NULL);
 }
 
 /**
- * gcr_selector_get_collection:
+ * gcr_tree_selector_get_collection:
  * @self: The selector
  *
  * Get the collection that this selector is displaying objects from.
@@ -529,14 +413,14 @@ gcr_selector_new (GcrCollection *collection, const GcrColumn *columns, GcrSelect
  * Returns: The collection, owned by the selector.
  */
 GcrCollection*
-gcr_selector_get_collection (GcrSelector *self)
+gcr_tree_selector_get_collection (GcrTreeSelector *self)
 {
-	g_return_val_if_fail (GCR_IS_SELECTOR (self), NULL);
+	g_return_val_if_fail (GCR_IS_TREE_SELECTOR (self), NULL);
 	return self->pv->collection;
 }
 
 /**
- * gcr_selector_get_columns:
+ * gcr_tree_selector_get_columns:
  * @self: The selector
  *
  * Get the columns displayed in a selector in multiple mode.
@@ -544,23 +428,37 @@ gcr_selector_get_collection (GcrSelector *self)
  * Returns: The columns, owned by the selector.
  */
 const GcrColumn*
-gcr_selector_get_columns (GcrSelector *self)
+gcr_tree_selector_get_columns (GcrTreeSelector *self)
 {
-	g_return_val_if_fail (GCR_IS_SELECTOR (self), NULL);
+	g_return_val_if_fail (GCR_IS_TREE_SELECTOR (self), NULL);
 	return self->pv->columns;
 }
 
 /**
- * gcr_selector_get_mode:
+ * gcr_tree_selector_get_selected:
  * @self: The selector
  *
- * Get the mode of the selector, whether single or multiple selection.
+ * Get a list of selected objects.
  *
- * Returns: The mode of the selector.
+ * Returns: The list of selected objects, to be released with g_list_free().
  */
-GcrSelectorMode
-gcr_selector_get_mode (GcrSelector *self)
+GList*
+gcr_tree_selector_get_selected (GcrTreeSelector *self)
 {
-	g_return_val_if_fail (GCR_IS_SELECTOR (self), 0);
-	return self->pv->mode;
+	g_return_val_if_fail (GCR_IS_TREE_SELECTOR (self), NULL);
+	return gcr_collection_model_get_selected_objects (self->pv->model);
+}
+
+/**
+ * gcr_tree_selector_set_selected:
+ * @self: The selector
+ * @selected: The list of objects to select.
+ *
+ * Select certain objects in the selector.
+ */
+void
+gcr_tree_selector_set_selected (GcrTreeSelector *self, GList *selected)
+{
+	g_return_if_fail (GCR_IS_TREE_SELECTOR (self));
+	gcr_collection_model_set_selected_objects (self->pv->model, selected);
 }

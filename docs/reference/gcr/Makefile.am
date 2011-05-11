@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = 1.6
 # suit your project. See the GTK+ Makefiles in gtk+/docs/reference for examples
 # of using the various options.
 
-# The name of the module, e.g. 'glib'.
+# The name the module, e.g. 'glib'.
 DOC_MODULE=gcr
 
 # Uncomment for versioned docs and specify the version of the module, e.g. '2'.
@@ -74,7 +74,9 @@ IGNORE_HFILES= \
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
 HTML_IMAGES= \
 	$(srcdir)/images/certificate-widget.png \
-	$(srcdir)/images/key-widget.png
+	$(srcdir)/images/key-widget.png \
+	$(srcdir)/images/combo-selector.png \
+	$(srcdir)/images/tree-selector.png
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
@@ -116,7 +118,9 @@ DISTCLEANFILES = tmpl/gcr-unused.sgml
 
 WIDGETS = \
 	certificate-widget \
-	key-widget
+	key-widget \
+	combo-selector \
+	tree-selector
 
 shots: gcr-shooter
 	mkdir -p $(builddir)/images

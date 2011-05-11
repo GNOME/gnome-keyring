@@ -256,9 +256,11 @@ gcr_collection_model_new_full
 gcr_collection_model_set_columns
 gcr_collection_model_iter_for_object
 gcr_collection_model_object_for_iter
-gcr_collection_model_get_selected
-gcr_collection_model_set_selected
+gcr_collection_model_is_selected
+gcr_collection_model_change_selected
 gcr_collection_model_toggle_selected
+gcr_collection_model_get_selected_objects
+gcr_collection_model_set_selected_objects
 gcr_collection_model_column_for_selected
 <SUBSECTION Standard>
 gcr_collection_model_get_type
@@ -278,25 +280,43 @@ GcrColumnFlags
 </SECTION>
 
 <SECTION>
-<FILE>gcr-selector</FILE>
-GcrSelector
-GcrSelectorClass
-GcrSelectorMode
-gcr_selector_get_collection
-gcr_selector_get_columns
-gcr_selector_get_mode
-gcr_selector_new
+<FILE>gcr-tree-selector</FILE>
+GcrTreeSelector
+GcrTreeSelectorClass
+gcr_tree_selector_get_collection
+gcr_tree_selector_get_columns
+gcr_tree_selector_new
+gcr_tree_selector_get_selected
+gcr_tree_selector_set_selected
 <SUBSECTION Standard>
-gcr_selector_get_type
-gcr_selector_mode_get_type
-GCR_IS_SELECTOR
-GCR_IS_SELECTOR_CLASS
-GCR_SELECTOR
-GCR_SELECTOR_CLASS
-GCR_SELECTOR_GET_CLASS
-GCR_TYPE_SELECTOR
-GCR_TYPE_SELECTOR_MODE
-GcrSelectorPrivate
+gcr_tree_selector_get_type
+GCR_IS_TREE_SELECTOR
+GCR_IS_TREE_SELECTOR_CLASS
+GCR_TREE_SELECTOR
+GCR_TREE_SELECTOR_CLASS
+GCR_TREE_SELECTOR_GET_CLASS
+GCR_TYPE_TREE_SELECTOR
+GcrTreeSelectorPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gcr-combo-selector</FILE>
+GcrComboSelector
+GcrComboSelectorClass
+gcr_combo_selector_get_collection
+gcr_combo_selector_get_columns
+gcr_combo_selector_new
+gcr_combo_selector_get_selected
+gcr_combo_selector_set_selected
+<SUBSECTION Standard>
+gcr_combo_selector_get_type
+GCR_IS_COMBO_SELECTOR
+GCR_IS_COMBO_SELECTOR_CLASS
+GCR_COMBO_SELECTOR
+GCR_COMBO_SELECTOR_CLASS
+GCR_COMBO_SELECTOR_GET_CLASS
+GCR_TYPE_COMBO_SELECTOR
+GcrComboSelectorPrivate
 </SECTION>
 
 <SECTION>
