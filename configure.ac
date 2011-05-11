@@ -436,18 +436,30 @@ fi
 # libcap-ng
 #
 
-AC_CHECK_LIB([cap-ng], [capng_clear], have_libcapng="yes", have_libcapng="no")
+AC_ARG_WITH([libcap-ng],
+            [AC_HELP_STRING([--without-libcap-ng],
+                            [build without libcap-ng (disables Linux capabilities support)])],,
+            [with_libcap_ng=auto])
 
-if test "$have_libcapng" = "yes"; then
-   AC_DEFINE(HAVE_LIBCAPNG, 1, [Have libcap-ng package, libcap-ng library])
-   DAEMON_LIBS="$DAEMON_LIBS -lcap-ng"
-else
-   have_lipcapng="no"
-   AC_MSG_WARN([libcap-ng (or development headers) is not installed])
+if test x"$with_libcap_ng" != x"no" ; then
+    AC_CHECK_LIB([cap-ng], [capng_clear],
+                 [
+                   with_libcap_ng="yes"
+                   AC_DEFINE([HAVE_LIBCAPNG], [1], [have libcap-ng headers and library])
+                   DAEMON_LIBS="$DAEMON_LIBS -lcap-ng"
+                 ],
+                 [
+                   if test x"$with_libcap_ng" = x"yes" ; then
+                     AC_MSG_ERROR([libcap-ng support requested, but package not found])
+                   else
+                     AC_MSG_WARN([libcap-ng headers not installed])
+                   fi
+                   with_libcap_ng="no"
+                 ])
 fi
 
-AM_CONDITIONAL(WITH_CAPS, test "$have_libcapng" = "yes")
-libcapng_status=$have_libcapng
+AM_CONDITIONAL([WITH_CAPS], [test x"$with_libcap_ng" = x"yes"])
+libcapng_status="$with_libcap_ng"
 
 # --------------------------------------------------------------------
 # Debug mode
