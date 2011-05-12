@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gcr-colons.h"
+#include "gcr-record.h"
 #include "gcr-collection.h"
 #define DEBUG_FLAG GCR_DEBUG_GNUPG
 #include "gcr-debug.h"
@@ -214,7 +214,7 @@ typedef enum {
 typedef struct {
 	GcrGnupgCollection *collection;       /* reffed pointer back to collection */
 	GcrLoadingPhase loading_phase;        /* Whether loading public or private */
-	GPtrArray *dataset;                   /* GcrColons* not yet made into a key */
+	GPtrArray *records;                   /* GcrRecord* not yet made into a key */
 	guint spawn_sig;
 	GString *out_data;                    /* Pending output not yet parsed into colons */
 	GString *err_data;                    /* Pending errors not yet printed */
@@ -230,7 +230,7 @@ _gcr_gnupg_collection_load_free (gpointer data)
 	GcrGnupgCollectionLoad *load = data;
 	g_assert (load);
 
-	g_ptr_array_unref (load->dataset);
+	g_ptr_array_unref (load->records);
 	g_string_free (load->err_data, TRUE);
 	g_string_free (load->out_data, TRUE);
 	g_hash_table_destroy (load->difference);
@@ -242,7 +242,7 @@ _gcr_gnupg_collection_load_free (gpointer data)
 }
 
 static void
-process_dataset_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
+process_records_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *records,
                                const gchar *keyid)
 {
 	GcrGnupgKey *key;
@@ -255,11 +255,11 @@ process_dataset_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
 	/* Already have this key, just update */
 	if (key) {
 		_gcr_debug ("updating public key: %s", keyid);
-		_gcr_gnupg_key_set_public_dataset (key, dataset);
+		_gcr_gnupg_key_set_public_records (key, records);
 
 	/* Add a new key */
 	} else {
-		key = _gcr_gnupg_key_new (dataset, NULL);
+		key = _gcr_gnupg_key_new (records, NULL);
 		_gcr_debug ("creating public key: %s", keyid);
 		g_hash_table_insert (load->collection->pv->items, g_strdup (keyid), key);
 		gcr_collection_emit_added (GCR_COLLECTION (load->collection), G_OBJECT (key));
@@ -267,7 +267,7 @@ process_dataset_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
 }
 
 static void
-process_dataset_as_secret_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
+process_records_as_secret_key (GcrGnupgCollectionLoad *load, GPtrArray *records,
                                const gchar *keyid)
 {
 	GcrGnupgKey *key;
@@ -280,34 +280,34 @@ process_dataset_as_secret_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
 
 	/* Tell the private key that it's a secret one */
 	} else {
-		_gcr_debug ("adding secret dataset to key: %s", keyid);
-		_gcr_gnupg_key_set_secret_dataset (key, dataset);
+		_gcr_debug ("adding secret records to key: %s", keyid);
+		_gcr_gnupg_key_set_secret_records (key, records);
 	}
 }
 
 static void
-process_dataset_as_key (GcrGnupgCollectionLoad *load)
+process_records_as_key (GcrGnupgCollectionLoad *load)
 {
-	GPtrArray *dataset;
+	GPtrArray *records;
 	const gchar *keyid;
 	GQuark schema;
 
-	g_assert (load->dataset->len);
+	g_assert (load->records->len);
 
-	dataset = load->dataset;
-	load->dataset = g_ptr_array_new_with_free_func (_gcr_colons_free);
+	records = load->records;
+	load->records = g_ptr_array_new_with_free_func (_gcr_record_free);
 
-	keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
+	keyid = _gcr_gnupg_key_get_keyid_for_records (records);
 	if (keyid) {
-		schema = _gcr_colons_get_schema (dataset->pdata[0]);
+		schema = _gcr_record_get_schema (records->pdata[0]);
 
 		/* A public key */
-		if (schema == GCR_COLONS_SCHEMA_PUB)
-			process_dataset_as_public_key (load, dataset, keyid);
+		if (schema == GCR_RECORD_SCHEMA_PUB)
+			process_records_as_public_key (load, records, keyid);
 
 		/* A secret key */
-		else if (schema == GCR_COLONS_SCHEMA_SEC)
-			process_dataset_as_secret_key (load, dataset, keyid);
+		else if (schema == GCR_RECORD_SCHEMA_SEC)
+			process_records_as_secret_key (load, records, keyid);
 
 		else
 			g_assert_not_reached ();
@@ -316,50 +316,50 @@ process_dataset_as_key (GcrGnupgCollectionLoad *load)
 		g_warning ("parsed gnupg data had no keyid");
 	}
 
-	g_ptr_array_unref (dataset);
+	g_ptr_array_unref (records);
 }
 
 static void
 on_line_parse_output (const gchar *line, gpointer user_data)
 {
 	GcrGnupgCollectionLoad *load = user_data;
-	GcrColons *colons;
+	GcrRecord *record;
 	GQuark schema;
 
 	_gcr_debug ("output: %s", line);
 
-	colons = _gcr_colons_parse (line, -1);
-	if (!colons) {
+	record = _gcr_record_parse_colons (line, -1);
+	if (!record) {
 		g_warning ("invalid gnupg output line: %s", line);
 		return;
 	}
 
-	schema = _gcr_colons_get_schema (colons);
+	schema = _gcr_record_get_schema (record);
 
 	/*
 	 * Each time we see a line with 'pub' or 'sec' schema we assume that
 	 * it's a new key being listed.
 	 */
-	if (schema == GCR_COLONS_SCHEMA_PUB || schema == GCR_COLONS_SCHEMA_SEC) {
+	if (schema == GCR_RECORD_SCHEMA_PUB || schema == GCR_RECORD_SCHEMA_SEC) {
 		_gcr_debug ("start of new key");
-		if (load->dataset->len)
-			process_dataset_as_key (load);
-		g_assert (!load->dataset->len);
-		g_ptr_array_add (load->dataset, colons);
-		colons = NULL;
+		if (load->records->len)
+			process_records_as_key (load);
+		g_assert (!load->records->len);
+		g_ptr_array_add (load->records, record);
+		record = NULL;
 
 	/*
 	 * 'uid' schema lines get added to the key that came before.
 	 */
-	} else if (schema == GCR_COLONS_SCHEMA_UID) {
-		if (load->dataset->len) {
-			g_ptr_array_add (load->dataset, colons);
-			colons = NULL;
+	} else if (schema == GCR_RECORD_SCHEMA_UID) {
+		if (load->records->len) {
+			g_ptr_array_add (load->records, record);
+			record = NULL;
 		}
 	}
 
-	if (colons != NULL)
-		_gcr_colons_free (colons);
+	if (record != NULL)
+		_gcr_record_free (record);
 }
 
 
@@ -429,8 +429,8 @@ on_spawn_completed (gpointer user_data)
 	_gcr_util_parse_lines (load->out_data, TRUE, on_line_parse_output, load);
 
 	/* Process last bit as a key, if any */
-	if (load->dataset->len)
-		process_dataset_as_key (load);
+	if (load->records->len)
+		process_records_as_key (load);
 
 	/* If we completed loading public keys, then go and load secret */
 	switch (load->loading_phase) {
@@ -577,7 +577,7 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	                                 _gcr_gnupg_collection_load_async);
 
 	load = g_slice_new0 (GcrGnupgCollectionLoad);
-	load->dataset = g_ptr_array_new_with_free_func (_gcr_colons_free);
+	load->records = g_ptr_array_new_with_free_func (_gcr_record_free);
 	load->err_data = g_string_sized_new (128);
 	load->out_data = g_string_sized_new (1024);
 	load->collection = g_object_ref (self);

@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "gcr-colons.h"
+#include "gcr-record.h"
 #include "gcr-gnupg-key.h"
 
 #include "gck/gck.h"
@@ -32,8 +32,8 @@
 enum {
 	PROP_0,
 	PROP_KEYID,
-	PROP_PUBLIC_DATASET,
-	PROP_SECRET_DATASET,
+	PROP_PUBLIC_RECORDS,
+	PROP_SECRET_RECORDS,
 	PROP_LABEL,
 	PROP_MARKUP,
 	PROP_DESCRIPTION,
@@ -41,8 +41,8 @@ enum {
 };
 
 struct _GcrGnupgKeyPrivate {
-	GPtrArray *public_dataset;
-	GPtrArray *secret_dataset;
+	GPtrArray *public_records;
+	GPtrArray *secret_records;
 };
 
 G_DEFINE_TYPE (GcrGnupgKey, _gcr_gnupg_key, G_TYPE_OBJECT);
@@ -54,12 +54,12 @@ G_DEFINE_TYPE (GcrGnupgKey, _gcr_gnupg_key, G_TYPE_OBJECT);
 static gchar *
 calculate_name (GcrGnupgKey *self)
 {
-	GcrColons* colons;
+	GcrRecord* record;
 
-	colons = _gcr_colons_find (self->pv->public_dataset, GCR_COLONS_SCHEMA_UID);
-	g_return_val_if_fail (colons, NULL);
+	record = _gcr_record_find (self->pv->public_records, GCR_RECORD_SCHEMA_UID);
+	g_return_val_if_fail (record, NULL);
 
-	return _gcr_colons_get_string (colons, GCR_COLONS_UID_NAME);
+	return _gcr_record_get_string (record, GCR_RECORD_UID_NAME);
 }
 
 static gchar *
@@ -82,7 +82,7 @@ calculate_short_keyid (GcrGnupgKey *self)
 	const gchar *keyid;
 	gsize length;
 
-	keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
+	keyid = _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
 	if (keyid == NULL)
 		return NULL;
 
@@ -104,10 +104,10 @@ _gcr_gnupg_key_finalize (GObject *obj)
 {
 	GcrGnupgKey *self = GCR_GNUPG_KEY (obj);
 
-	if (self->pv->public_dataset)
-		g_ptr_array_free (self->pv->public_dataset, TRUE);
-	if (self->pv->secret_dataset)
-		g_ptr_array_free (self->pv->secret_dataset, TRUE);
+	if (self->pv->public_records)
+		g_ptr_array_free (self->pv->public_records, TRUE);
+	if (self->pv->secret_records)
+		g_ptr_array_free (self->pv->secret_records, TRUE);
 
 	G_OBJECT_CLASS (_gcr_gnupg_key_parent_class)->finalize (obj);
 }
@@ -119,11 +119,11 @@ _gcr_gnupg_key_set_property (GObject *obj, guint prop_id, const GValue *value,
 	GcrGnupgKey *self = GCR_GNUPG_KEY (obj);
 
 	switch (prop_id) {
-	case PROP_PUBLIC_DATASET:
-		_gcr_gnupg_key_set_public_dataset (self, g_value_get_boxed (value));
+	case PROP_PUBLIC_RECORDS:
+		_gcr_gnupg_key_set_public_records (self, g_value_get_boxed (value));
 		break;
-	case PROP_SECRET_DATASET:
-		_gcr_gnupg_key_set_secret_dataset (self, g_value_get_boxed (value));
+	case PROP_SECRET_RECORDS:
+		_gcr_gnupg_key_set_secret_records (self, g_value_get_boxed (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -138,11 +138,11 @@ _gcr_gnupg_key_get_property (GObject *obj, guint prop_id, GValue *value,
 	GcrGnupgKey *self = GCR_GNUPG_KEY (obj);
 
 	switch (prop_id) {
-	case PROP_PUBLIC_DATASET:
-		g_value_set_boxed (value, self->pv->public_dataset);
+	case PROP_PUBLIC_RECORDS:
+		g_value_set_boxed (value, self->pv->public_records);
 		break;
-	case PROP_SECRET_DATASET:
-		g_value_set_boxed (value, self->pv->secret_dataset);
+	case PROP_SECRET_RECORDS:
+		g_value_set_boxed (value, self->pv->secret_records);
 		break;
 	case PROP_KEYID:
 		g_value_set_string (value, _gcr_gnupg_key_get_keyid (self));
@@ -178,22 +178,22 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	gobject_class->get_property = _gcr_gnupg_key_get_property;
 
 	/**
-	 * GcrGnupgKey::public-dataset:
+	 * GcrGnupgKey::public-records:
 	 *
 	 * Public key data. Should always be present.
 	 */
-	g_object_class_install_property (gobject_class, PROP_PUBLIC_DATASET,
-	         g_param_spec_boxed ("public-dataset", "Public Dataset", "Public Key Colon Dataset",
+	g_object_class_install_property (gobject_class, PROP_PUBLIC_RECORDS,
+	         g_param_spec_boxed ("public-records", "Public Records", "Public Key Colon Records",
 	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
 	/**
-	 * GcrGnupgKey::secret-dataset:
+	 * GcrGnupgKey::secret-records:
 	 *
 	 * Secret key data. The keyid of this data must match public-dataset.
 	 * If present, this key represents a secret key.
 	 */
-	g_object_class_install_property (gobject_class, PROP_SECRET_DATASET,
-	         g_param_spec_boxed ("secret-dataset", "Secret Dataset", "Secret Key Colon Dataset",
+	g_object_class_install_property (gobject_class, PROP_SECRET_RECORDS,
+	         g_param_spec_boxed ("secret-records", "Secret Records", "Secret Key Colon Records",
 	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
 	/**
@@ -244,10 +244,10 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 
 /**
  * _gcr_gnupg_key_new:
- * @pubset: array of GcrColons* representing public part of key
- * @secset: (allow-none): array of GcrColons* representing secret part of key.
+ * @pubset: array of GcrRecord* representing public part of key
+ * @secset: (allow-none): array of GcrRecord* representing secret part of key.
  *
- * Create a new GcrGnupgKey for the colons data passed. If the secret part
+ * Create a new GcrGnupgKey for the record data passed. If the secret part
  * of the key is set, then this represents a secret key; otherwise it represents
  * a public key.
  *
@@ -258,45 +258,45 @@ _gcr_gnupg_key_new (GPtrArray *pubset, GPtrArray *secset)
 {
 	g_return_val_if_fail (pubset, NULL);
 	return g_object_new (GCR_TYPE_GNUPG_KEY,
-	                     "public-dataset", pubset,
-	                     "secret-dataset", secset,
+	                     "public-records", pubset,
+	                     "secret-records", secset,
 	                     NULL);
 }
 
 /**
- * _gcr_gnupg_key_get_public_dataset:
+ * _gcr_gnupg_key_get_public_records:
  * @self: The key
  *
- * Get the colons data this key is based on.
+ * Get the record data this key is based on.
  *
- * Returns: (transfer none): An array of GcrColons*.
+ * Returns: (transfer none): An array of GcrRecord*.
  */
 GPtrArray*
-_gcr_gnupg_key_get_public_dataset (GcrGnupgKey *self)
+_gcr_gnupg_key_get_public_records (GcrGnupgKey *self)
 {
 	g_return_val_if_fail (GCR_IS_GNUPG_KEY (self), NULL);
-	return self->pv->public_dataset;
+	return self->pv->public_records;
 }
 
 /**
- * _gcr_gnupg_key_set_public_dataset:
+ * _gcr_gnupg_key_set_public_records:
  * @self: The key
- * @dataset: The new array of GcrColons*
+ * @records: The new array of GcrRecord*
  *
- * Change the colons data that this key is based on.
+ * Change the record data that this key is based on.
  */
 void
-_gcr_gnupg_key_set_public_dataset (GcrGnupgKey *self, GPtrArray *dataset)
+_gcr_gnupg_key_set_public_records (GcrGnupgKey *self, GPtrArray *records)
 {
 	GObject *obj;
 
 	g_return_if_fail (GCR_IS_GNUPG_KEY (self));
-	g_return_if_fail (dataset);
+	g_return_if_fail (records);
 
 	/* Check that it matches previous */
-	if (self->pv->public_dataset) {
-		const gchar *old_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
-		const gchar *new_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
+	if (self->pv->public_records) {
+		const gchar *old_keyid = _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
+		const gchar *new_keyid = _gcr_gnupg_key_get_keyid_for_records (records);
 
 		if (g_strcmp0 (old_keyid, new_keyid) != 0) {
 			g_warning ("it is an error to change a gnupg key so that the "
@@ -306,52 +306,52 @@ _gcr_gnupg_key_set_public_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 		}
 	}
 
-	g_ptr_array_ref (dataset);
-	if (self->pv->public_dataset)
-		g_ptr_array_unref (self->pv->public_dataset);
-	self->pv->public_dataset = dataset;
+	g_ptr_array_ref (records);
+	if (self->pv->public_records)
+		g_ptr_array_unref (self->pv->public_records);
+	self->pv->public_records = records;
 
 	obj = G_OBJECT (self);
 	g_object_freeze_notify (obj);
-	g_object_notify (obj, "public-dataset");
+	g_object_notify (obj, "public-records");
 	g_object_notify (obj, "label");
 	g_object_notify (obj, "markup");
 	g_object_thaw_notify (obj);
 }
 
 /**
- * _gcr_gnupg_key_get_secret_dataset:
+ * _gcr_gnupg_key_get_secret_records:
  * @self: The key
  *
- * Get the colons secret data this key is based on. %NULL if a public key.
+ * Get the record secret data this key is based on. %NULL if a public key.
  *
  * Returns: (transfer none) (allow-none): An array of GcrColons*.
  */
 GPtrArray*
-_gcr_gnupg_key_get_secret_dataset (GcrGnupgKey *self)
+_gcr_gnupg_key_get_secret_records (GcrGnupgKey *self)
 {
 	g_return_val_if_fail (GCR_IS_GNUPG_KEY (self), NULL);
-	return self->pv->secret_dataset;
+	return self->pv->secret_records;
 }
 
 /**
- * _gcr_gnupg_key_set_secret_dataset:
+ * _gcr_gnupg_key_set_secret_records:
  * @self: The key
- * @dataset: (allow-none): The new array of GcrColons*
+ * @records: (allow-none): The new array of GcrRecord*
  *
  * Set the secret data for this key. %NULL if public key.
  */
 void
-_gcr_gnupg_key_set_secret_dataset (GcrGnupgKey *self, GPtrArray *dataset)
+_gcr_gnupg_key_set_secret_records (GcrGnupgKey *self, GPtrArray *records)
 {
 	GObject *obj;
 
 	g_return_if_fail (GCR_IS_GNUPG_KEY (self));
 
 	/* Check that it matches public key */
-	if (self->pv->public_dataset && dataset) {
-		const gchar *pub_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
-		const gchar *sec_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
+	if (self->pv->public_records && records) {
+		const gchar *pub_keyid = _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
+		const gchar *sec_keyid = _gcr_gnupg_key_get_keyid_for_records (records);
 
 		if (g_strcmp0 (pub_keyid, sec_keyid) != 0) {
 			g_warning ("it is an error to create a gnupg key so that the "
@@ -361,15 +361,15 @@ _gcr_gnupg_key_set_secret_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 		}
 	}
 
-	if (dataset)
-		g_ptr_array_ref (dataset);
-	if (self->pv->secret_dataset)
-		g_ptr_array_unref (self->pv->secret_dataset);
-	self->pv->secret_dataset = dataset;
+	if (records)
+		g_ptr_array_ref (records);
+	if (self->pv->secret_records)
+		g_ptr_array_unref (self->pv->secret_records);
+	self->pv->secret_records = records;
 
 	obj = G_OBJECT (self);
 	g_object_freeze_notify (obj);
-	g_object_notify (obj, "secret-dataset");
+	g_object_notify (obj, "secret-records");
 	g_object_thaw_notify (obj);
 }
 
@@ -378,33 +378,35 @@ _gcr_gnupg_key_set_secret_dataset (GcrGnupgKey *self, GPtrArray *dataset)
  * @self: The key
  *
  * Get the keyid for this key.
+ *
+ * Returns: (transfer none): The keyid.
  */
 const gchar*
 _gcr_gnupg_key_get_keyid (GcrGnupgKey *self)
 {
 	g_return_val_if_fail (GCR_IS_GNUPG_KEY (self), NULL);
-	return _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
+	return _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
 }
 
 /**
- * _gcr_gnupg_key_get_keyid_for_colons:
- * @dataset: Array of GcrColons*
+ * _gcr_gnupg_key_get_keyid_for_records:
+ * @records: Array of GcrRecord*
  *
- * Get the keyid for some colons data.
+ * Get the keyid for some record data.
  *
  * Returns: (transfer none): The keyid.
  */
 const gchar*
-_gcr_gnupg_key_get_keyid_for_colons (GPtrArray *dataset)
+_gcr_gnupg_key_get_keyid_for_records (GPtrArray *records)
 {
-	GcrColons *colons;
+	GcrRecord *record;
 
-	colons = _gcr_colons_find (dataset, GCR_COLONS_SCHEMA_PUB);
-	if (colons != NULL)
-		return _gcr_colons_get_raw (colons, GCR_COLONS_PUB_KEYID);
-	colons = _gcr_colons_find (dataset, GCR_COLONS_SCHEMA_SEC);
-	if (colons != NULL)
-		return _gcr_colons_get_raw (colons, GCR_COLONS_SEC_KEYID);
+	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_PUB);
+	if (record != NULL)
+		return _gcr_record_get_raw (record, GCR_RECORD_PUB_KEYID);
+	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_SEC);
+	if (record != NULL)
+		return _gcr_record_get_raw (record, GCR_RECORD_SEC_KEYID);
 	return NULL;
 }
 

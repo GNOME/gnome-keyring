@@ -66,17 +66,17 @@ GcrGnupgKey*        _gcr_gnupg_key_new                           (GPtrArray *pub
 
 const gchar*        _gcr_gnupg_key_get_keyid                     (GcrGnupgKey *self);
 
-GPtrArray*          _gcr_gnupg_key_get_public_dataset            (GcrGnupgKey *self);
+GPtrArray*          _gcr_gnupg_key_get_public_records            (GcrGnupgKey *self);
 
-void                _gcr_gnupg_key_set_public_dataset            (GcrGnupgKey *self,
-                                                                  GPtrArray *dataset);
+void                _gcr_gnupg_key_set_public_records            (GcrGnupgKey *self,
+                                                                  GPtrArray *records);
 
-GPtrArray*          _gcr_gnupg_key_get_secret_dataset            (GcrGnupgKey *self);
+GPtrArray*          _gcr_gnupg_key_get_secret_records            (GcrGnupgKey *self);
 
-void                _gcr_gnupg_key_set_secret_dataset            (GcrGnupgKey *self,
-                                                                  GPtrArray *dataset);
+void                _gcr_gnupg_key_set_secret_records            (GcrGnupgKey *self,
+                                                                  GPtrArray *records);
 
-const gchar*        _gcr_gnupg_key_get_keyid_for_colons          (GPtrArray *dataset);
+const gchar*        _gcr_gnupg_key_get_keyid_for_records         (GPtrArray *records);
 
 G_END_DECLS
 

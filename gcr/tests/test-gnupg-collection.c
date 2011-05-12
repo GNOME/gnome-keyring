@@ -135,12 +135,12 @@ test_load (Test *test, gconstpointer unused)
 	/* Werner Koch (a public key) */
 	key = g_hash_table_lookup (test->keys, "5DE249965B0358A2");
 	g_assert (GCR_IS_GNUPG_KEY (key));
-	g_assert (_gcr_gnupg_key_get_secret_dataset (key) == NULL);
+	g_assert (_gcr_gnupg_key_get_secret_records (key) == NULL);
 
 	/* Test Number 2 (a secret key)*/
 	key = g_hash_table_lookup (test->keys, "268FEE686262C395");
 	g_assert (GCR_IS_GNUPG_KEY (key));
-	g_assert (_gcr_gnupg_key_get_secret_dataset (key));
+	g_assert (_gcr_gnupg_key_get_secret_records (key));
 }
 
 static void
@@ -167,12 +167,12 @@ test_reload (Test *test, gconstpointer unused)
 	/* Werner Koch (a public key) */
 	key = g_hash_table_lookup (test->keys, "5DE249965B0358A2");
 	g_assert (GCR_IS_GNUPG_KEY (key));
-	g_assert (_gcr_gnupg_key_get_secret_dataset (key) == NULL);
+	g_assert (_gcr_gnupg_key_get_secret_records (key) == NULL);
 
 	/* Test Number 2 (a secret key)*/
 	key = g_hash_table_lookup (test->keys, "268FEE686262C395");
 	g_assert (GCR_IS_GNUPG_KEY (key));
-	g_assert (_gcr_gnupg_key_get_secret_dataset (key));
+	g_assert (_gcr_gnupg_key_get_secret_records (key));
 }
 
 int

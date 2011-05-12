@@ -77,7 +77,6 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-collection.c gcr-collection.h \
 	gcr-collection-model.c gcr-collection-model.h \
-	gcr-colons.c gcr-colons.h \
 	gcr-debug.c gcr-debug.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-comparable.c gcr-comparable.h \
@@ -93,6 +92,7 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-library.c gcr-library.h \
 	gcr-parser.c gcr-parser.h \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
+	gcr-record.c gcr-record.h \
 	gcr-renderer.c gcr-renderer.h \
 	gcr-selector.c gcr-selector.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \

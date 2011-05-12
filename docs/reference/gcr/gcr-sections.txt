@@ -433,9 +433,9 @@ GcrUnlockOptionsWidgetPrivate
 <SECTION>
 <FILE>gcr-private</FILE>
 <SUBSECTION Private>
-GCR_COLONS_SCHEMA_PUB
-GCR_COLONS_SCHEMA_UID
-GCR_COLONS_SCHEMA_SEC
+GCR_RECORD_SCHEMA_PUB
+GCR_RECORD_SCHEMA_UID
+GCR_RECORD_SCHEMA_SEC
 GCR_GNUPG_COLLECTION
 GCR_GNUPG_COLLECTION_CLASS
 GCR_GNUPG_COLLECTION_GET_CLASS
@@ -449,11 +449,11 @@ GCR_IS_GNUPG_KEY
 GCR_IS_GNUPG_KEY_CLASS
 GCR_TYPE_GNUPG_COLLECTION
 GCR_TYPE_GNUPG_KEY
-GcrColonColumns
-GcrColonPubColumns
-GcrColonUidColumns
-GcrColonSecColumns
-GcrColons
+GcrRecordColumns
+GcrRecordPubColumns
+GcrRecordUidColumns
+GcrRecordSecColumns
+GcrRecord
 GcrGnupgCollection
 GcrGnupgCollectionClass
 GcrGnupgCollectionPrivate

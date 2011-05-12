@@ -27,7 +27,7 @@ TEST_PROGS = \
 	test-pkcs11-certificate \
 	test-trust \
 	test-parser \
-	test-colons \
+	test-record \
 	test-gnupg-key \
 	test-gnupg-collection
 

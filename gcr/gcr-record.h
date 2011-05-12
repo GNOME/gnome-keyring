@@ -25,8 +25,8 @@
 #error "Only <gcr/gcr.h> can be included directly."
 #endif
 
-#ifndef GCR_GNUPG_COLONS_H
-#define GCR_GNUPG_COLONS_H
+#ifndef GCR_RECORD_H
+#define GCR_RECORD_H
 
 #include <glib.h>
 
@@ -50,57 +50,60 @@
 
 G_BEGIN_DECLS
 
-#define GCR_COLONS_SCHEMA_UID  (g_quark_from_static_string ("uid"))
-#define GCR_COLONS_SCHEMA_PUB  (g_quark_from_static_string ("pub"))
-#define GCR_COLONS_SCHEMA_SEC  (g_quark_from_static_string ("sec"))
+#define GCR_RECORD_SCHEMA_UID  (g_quark_from_static_string ("uid"))
+#define GCR_RECORD_SCHEMA_PUB  (g_quark_from_static_string ("pub"))
+#define GCR_RECORD_SCHEMA_SEC  (g_quark_from_static_string ("sec"))
 
 /* Common columns for all schemas */
 typedef enum {
-	GCR_COLONS_SCHEMA = 0
-} GcrColonColumns;
+	GCR_RECORD_SCHEMA = 0
+} GcrRecordColumns;
 
 /*
  * Columns for pub schema, add them as they're used. eg:
  * pub:f:1024:17:6C7EE1B8621CC013:899817715:1055898235::m:::scESC:
  */
 typedef enum {
-	GCR_COLONS_PUB_KEYID = 4
-} GcrColonPubColumns;
+	GCR_RECORD_PUB_KEYID = 4
+} GcrRecordPubColumns;
 
 /*
  * Columns for sec schema, add them as they're used. eg:
  * sec::2048:1:293FC71A513189BD:1299771018::::::::::
  */
 typedef enum {
-	GCR_COLONS_SEC_KEYID = 4
-} GcrColonSecColumns;
+	GCR_RECORD_SEC_KEYID = 4
+} GcrRecordSecColumns;
 
 /*
  * Columns for uid schema, add them as they're used. eg:
  * pub:f:1024:17:6C7EE1B8621CC013:899817715:1055898235::m:::scESC:
  */
 typedef enum {
-	GCR_COLONS_UID_NAME = 9
-} GcrColonUidColumns;
+	GCR_RECORD_UID_NAME = 9
+} GcrRecordUidColumns;
 
-typedef struct _GcrColons GcrColons;
+typedef struct _GcrRecord GcrRecord;
 
-GcrColons*     _gcr_colons_parse                (const gchar *line,
+GcrRecord*     _gcr_record_parse_colons         (const gchar *line,
                                                  gssize n_line);
 
-void           _gcr_colons_free                 (gpointer colons);
+GcrRecord*     _gcr_record_parse_spaces         (const gchar *line,
+                                                 gssize n_line);
 
-GcrColons*     _gcr_colons_find                 (GPtrArray *dataset,
+void           _gcr_record_free                 (gpointer record);
+
+GcrRecord*     _gcr_record_find                 (GPtrArray *records,
                                                  GQuark schema);
 
-gchar*         _gcr_colons_get_string           (GcrColons *colons,
+gchar*         _gcr_record_get_string           (GcrRecord *record,
                                                  guint column);
 
-const gchar*   _gcr_colons_get_raw              (GcrColons *colons,
+const gchar*   _gcr_record_get_raw              (GcrRecord *record,
                                                  guint column);
 
-GQuark         _gcr_colons_get_schema           (GcrColons *colons);
+GQuark         _gcr_record_get_schema           (GcrRecord *record);
 
 G_END_DECLS
 
-#endif /* GCR_GNUPG_COLONS_H */
+#endif /* GCR_RECORD_H */

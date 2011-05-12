@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gcr-colons.h"
+#include "gcr-record.h"
 #define DEBUG_FLAG GCR_DEBUG_PARSE
 #include "gcr-debug.h"
 
@@ -31,30 +31,31 @@
 
 #define MAX_COLUMNS 32
 
-struct _GcrColons {
+struct _GcrRecord {
 	gchar *data;
-	gpointer columns[MAX_COLUMNS];
+	gchar *columns[MAX_COLUMNS];
 	guint n_columns;
 };
 
-GcrColons*
-_gcr_colons_parse (const gchar *line, gssize n_line)
+static GcrRecord*
+parse_internal (gchar *line, gsize n_line)
 {
-	GcrColons *result;
+	GcrRecord *result;
 	gchar *p;
 
-	g_return_val_if_fail (line, NULL);
-	if (n_line < 0)
-		n_line = strlen (line);
+	g_assert (line);
+	g_assert (n_line);
 
-	result = g_slice_new0 (GcrColons);
-	result->data = g_strndup (line, n_line);
+	result = g_slice_new0 (GcrRecord);
+	result->data = line;
+
+	_gcr_debug ("parsing line %.*s", (gint)n_line, line);
 
 	p = result->data;
 	for (;;) {
 		if (result->n_columns >= MAX_COLUMNS) {
-			_gcr_debug ("too many colons in gnupg line: %.*s", (gint)n_line, line);
-			_gcr_colons_free (result);
+			_gcr_debug ("too many record (%d) in gnupg line", MAX_COLUMNS);
+			_gcr_record_free (result);
 			return NULL;
 		}
 
@@ -68,36 +69,45 @@ _gcr_colons_parse (const gchar *line, gssize n_line)
 		p++;
 	}
 
-	_gcr_debug ("parsed line %.*s into %d columns", (gint)n_line, line, result->n_columns);
 	return result;
 }
 
-GcrColons*
-_gcr_colons_find (GPtrArray *dataset, GQuark schema)
+GcrRecord*
+_gcr_record_parse_colons (const gchar *line, gssize n_line)
+{
+	g_return_val_if_fail (line, NULL);
+	if (n_line < 0)
+		n_line = strlen (line);
+
+	return parse_internal (g_strndup (line, n_line), n_line);
+}
+
+GcrRecord*
+_gcr_record_find (GPtrArray *records, GQuark schema)
 {
 	guint i;
 
-	g_return_val_if_fail (dataset, NULL);
+	g_return_val_if_fail (records, NULL);
 	g_return_val_if_fail (schema, NULL);
 
-	for (i = 0; i < dataset->len; i++) {
-		if (schema == _gcr_colons_get_schema (dataset->pdata[i]))
-			return dataset->pdata[i];
+	for (i = 0; i < records->len; i++) {
+		if (schema == _gcr_record_get_schema (records->pdata[i]))
+			return records->pdata[i];
 	}
 
 	return NULL;
 }
 
 gchar*
-_gcr_colons_get_string (GcrColons *colons, guint column)
+_gcr_record_get_string (GcrRecord *record, guint column)
 {
 	const gchar *value;
 	gchar *text;
 	gchar *converted;
 
-	g_return_val_if_fail (colons, NULL);
+	g_return_val_if_fail (record, NULL);
 
-	value = _gcr_colons_get_raw (colons, column);
+	value = _gcr_record_get_raw (record, column);
 	if (!value)
 		return NULL;
 	text = g_strcompress (value);
@@ -117,35 +127,35 @@ _gcr_colons_get_string (GcrColons *colons, guint column)
 }
 
 const gchar*
-_gcr_colons_get_raw (GcrColons *colons, guint column)
+_gcr_record_get_raw (GcrRecord *record, guint column)
 {
-	g_return_val_if_fail (colons, NULL);
+	g_return_val_if_fail (record, NULL);
 
-	if (column >= colons->n_columns) {
+	if (column >= record->n_columns) {
 		_gcr_debug ("only %d columns exist, tried to access %d",
-		            colons->n_columns, column);
+		            record->n_columns, column);
 		return NULL;
 	}
 
-	return colons->columns[column];
+	return record->columns[column];
 }
 
 void
-_gcr_colons_free (gpointer colons)
+_gcr_record_free (gpointer record)
 {
-	if (!colons)
+	if (!record)
 		return;
 
-	g_free (((GcrColons*)colons)->data);
-	g_slice_free (GcrColons, colons);
+	g_free (((GcrRecord*)record)->data);
+	g_slice_free (GcrRecord, record);
 }
 
 GQuark
-_gcr_colons_get_schema (GcrColons *colons)
+_gcr_record_get_schema (GcrRecord *record)
 {
 	const gchar *value;
 
-	value = _gcr_colons_get_raw (colons, GCR_COLONS_SCHEMA);
+	value = _gcr_record_get_raw (record, GCR_RECORD_SCHEMA);
 	if (value != NULL)
 		return g_quark_try_string (value);
 	return 0;
