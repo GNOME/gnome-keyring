@@ -61,7 +61,8 @@ GType               _gcr_gnupg_key_get_type                      (void);
 
 const GcrColumn*    _gcr_gnupg_key_get_columns                   (void);
 
-GcrGnupgKey*        _gcr_gnupg_key_new                           (GPtrArray *dataset);
+GcrGnupgKey*        _gcr_gnupg_key_new                           (GPtrArray *pubset,
+                                                                  GPtrArray *secset);
 
 GPtrArray*          _gcr_gnupg_key_get_public_dataset            (GcrGnupgKey *self);
 

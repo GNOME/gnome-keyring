@@ -200,18 +200,23 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 
 /**
  * _gcr_gnupg_key_new:
- * @dataset: array of GcrColons*
+ * @pubset: array of GcrColons* representing public part of key
+ * @secset: optional array of GcrColons* representing secret part of key.
  *
- * Create a new GcrGnupgKey for the colons data passed.
+ * Create a new GcrGnupgKey for the colons data passed. If the secret part
+ * of the key is set, then this represents a secret key.
  *
  * Returns: A newly allocated key, which should be released with
  *     g_object_unref().
  */
 GcrGnupgKey*
-_gcr_gnupg_key_new (GPtrArray *dataset)
+_gcr_gnupg_key_new (GPtrArray *pubset, GPtrArray *secset)
 {
-	g_return_val_if_fail (dataset, NULL);
-	return g_object_new (GCR_TYPE_GNUPG_KEY, "public-dataset", dataset, NULL);
+	g_return_val_if_fail (pubset, NULL);
+	return g_object_new (GCR_TYPE_GNUPG_KEY,
+	                     "public-dataset", pubset,
+	                     "secret-dataset", secset,
+	                     NULL);
 }
 
 /**
@@ -240,9 +245,24 @@ void
 _gcr_gnupg_key_set_public_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 {
 	GObject *obj;
+	const gchar *old_keyid;
+	const gchar *new_keyid;
 
 	g_return_if_fail (GCR_IS_GNUPG_KEY (self));
 	g_return_if_fail (dataset);
+
+	/* Check that it matches previous */
+	if (self->pv->public_dataset) {
+		old_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
+		new_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
+
+		if (g_strcmp0 (old_keyid, new_keyid) != 0) {
+			g_warning ("it is an error to change a gnupg key so that the "
+			           "fingerprint is no longer the same: %s != %s",
+			           old_keyid, new_keyid);
+			return;
+		}
+	}
 
 	g_ptr_array_ref (dataset);
 	if (self->pv->public_dataset)
@@ -254,7 +274,6 @@ _gcr_gnupg_key_set_public_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 	g_object_notify (obj, "public-dataset");
 	g_object_notify (obj, "label");
 	g_object_notify (obj, "markup");
-	g_object_notify (obj, "keyid");
 	g_object_thaw_notify (obj);
 }
 
@@ -284,11 +303,26 @@ void
 _gcr_gnupg_key_set_secret_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 {
 	GObject *obj;
+	const gchar *pub_keyid;
+	const gchar *sec_keyid;
 
 	g_return_if_fail (GCR_IS_GNUPG_KEY (self));
-	g_return_if_fail (dataset);
 
-	g_ptr_array_ref (dataset);
+	/* Check that it matches public key */
+	if (self->pv->public_dataset && dataset) {
+		pub_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
+		sec_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
+
+		if (g_strcmp0 (pub_keyid, sec_keyid) != 0) {
+			g_warning ("it is an error to create a gnupg key so that the "
+			           "fingerprint of thet pub and sec parts are not the same: %s != %s",
+			           pub_keyid, sec_keyid);
+			return;
+		}
+	}
+
+	if (dataset)
+		g_ptr_array_ref (dataset);
 	if (self->pv->secret_dataset)
 		g_ptr_array_unref (self->pv->secret_dataset);
 	self->pv->secret_dataset = dataset;

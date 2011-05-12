@@ -251,7 +251,7 @@ process_dataset_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
 
 	/* Add a new key */
 	} else {
-		key = _gcr_gnupg_key_new (dataset);
+		key = _gcr_gnupg_key_new (dataset, NULL);
 		g_hash_table_insert (load->collection->pv->items, g_strdup (keyid), key);
 		gcr_collection_emit_added (GCR_COLLECTION (load->collection), G_OBJECT (key));
 	}
