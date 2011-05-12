@@ -410,6 +410,17 @@ _gcr_gnupg_key_get_keyid_for_records (GPtrArray *records)
 	return NULL;
 }
 
+const gchar*
+_gcr_gnupg_key_get_fingerprint_for_records (GPtrArray *records)
+{
+	GcrRecord *record;
+
+	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_FPR);
+	if (record != NULL)
+		return _gcr_record_get_raw (record, GCR_RECORD_FPR_FINGERPRINT);
+	return NULL;
+}
+
 /**
  * _gcr_gnupg_key_get_columns:
  *

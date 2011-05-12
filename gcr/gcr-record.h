@@ -51,14 +51,39 @@
 
 G_BEGIN_DECLS
 
-#define GCR_RECORD_SCHEMA_UID  (g_quark_from_static_string ("uid"))
+#define GCR_RECORD_SCHEMA_ATTRIBUTE  (g_quark_from_static_string ("ATTRIBUTE"))
+#define GCR_RECORD_SCHEMA_FPR  (g_quark_from_static_string ("fpr"))
 #define GCR_RECORD_SCHEMA_PUB  (g_quark_from_static_string ("pub"))
 #define GCR_RECORD_SCHEMA_SEC  (g_quark_from_static_string ("sec"))
+#define GCR_RECORD_SCHEMA_UID  (g_quark_from_static_string ("uid"))
+#define GCR_RECORD_SCHEMA_XA1  (g_quark_from_static_string ("xa1"))
 
 /* Common columns for all schemas */
 typedef enum {
 	GCR_RECORD_SCHEMA = 0
 } GcrRecordColumns;
+
+/*
+ * Columns for ATTRIBUTE status message. eg:
+ * [GNUPG:] ATTRIBUTE FBAFC70D60AE13D560764062B547B5580EEB5A80 10604 1 1 1 1227936754 0 1
+ */
+typedef enum {
+	GCR_RECORD_ATTRIBUTE_FINGERPRINT = 1,
+	GCR_RECORD_ATTRIBUTE_LENGTH = 2,
+	GCR_RECORD_ATTRIBUTE_TYPE = 3,
+	GCR_RECORD_ATTRIBUTE_TIMESTAMP = 6,
+	GCR_RECORD_ATTRIBUTE_EXPIRY = 7,
+	GCR_RECORD_ATTRIBUTE_FLAGS = 8
+} GcrRecordAttributeColumns;
+
+/*
+ * Columns for fpr schema, add them as they're used. eg:
+ * fpr:::::::::ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013:
+ */
+typedef enum {
+	GCR_RECORD_FPR_FINGERPRINT = 9
+} GcrRecordFprColumns;
+
 
 /*
  * Columns for pub schema, add them as they're used. eg:
@@ -83,6 +108,22 @@ typedef enum {
 typedef enum {
 	GCR_RECORD_UID_NAME = 9
 } GcrRecordUidColumns;
+
+/*
+ * Columns for xa1 schema. This is a schema that we've invented ourselves
+ * for representing the actual data of openpgp attribute packets. eg:
+ * xa1::10838:1:ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013:1998-02-02:0:ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013:P:...
+ */
+typedef enum {
+	GCR_RECORD_XA1_LENGTH = 2,
+	GCR_RECORD_XA1_TYPE = 3,
+	GCR_RECORD_XA1_FINGERPRINT = 4,
+	GCR_RECORD_XA1_TIMESTAMP = 5,
+	GCR_RECORD_XA1_EXPIRY = 6,
+	GCR_RECORD_XA1_HASH = 7,
+	GCR_RECORD_XA1_STATUS = 8,
+	GCR_RECORD_XA1_DATA = 9,
+} GcrRecordXa1Columns;
 
 typedef struct _GcrRecord GcrRecord;
 

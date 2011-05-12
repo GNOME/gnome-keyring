@@ -30,6 +30,7 @@
 #include "gcr-gnupg-collection.h"
 #include "gcr-gnupg-key.h"
 #include "gcr-gnupg-process.h"
+#include "gcr-gnupg-util.h"
 #include "gcr-internal.h"
 #include "gcr-util.h"
 
@@ -165,7 +166,7 @@ static GList*
 gcr_gnupg_collection_real_get_objects (GcrCollection *coll)
 {
 	GcrGnupgCollection *self = GCR_GNUPG_COLLECTION (coll);
-	return g_hash_table_get_keys (self->pv->items);
+	return g_hash_table_get_values (self->pv->items);
 }
 
 static void
@@ -229,6 +230,10 @@ typedef struct {
 	guint error_sig;
 	guint status_sig;
 	guint attribute_sig;
+
+	GQueue *attribute_queue;              /* Queue of unprocessed GcrRecord* status records */
+	GByteArray *attribute_buf;            /* Buffer of unprocessed attribute data received */
+	GHashTable *attributes;               /* Processed attributes waiting for a matching key */
 } GcrGnupgCollectionLoad;
 
 /* Forward declarations */
@@ -259,6 +264,17 @@ _gcr_gnupg_collection_load_free (gpointer data)
 
 	if (load->cancel)
 		g_object_unref (load->cancel);
+
+	if (load->attribute_queue) {
+		while (!g_queue_is_empty (load->attribute_queue))
+			_gcr_record_free (g_queue_pop_head (load->attribute_queue));
+		g_queue_free (load->attribute_queue);
+	}
+	if (load->attribute_buf)
+		g_byte_array_unref (load->attribute_buf);
+	if (load->attributes)
+		g_hash_table_destroy (load->attributes);
+
 	g_slice_free (GcrGnupgCollectionLoad, load);
 }
 
@@ -266,7 +282,29 @@ static void
 process_records_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *records,
                                const gchar *keyid)
 {
+	GPtrArray *attr_records = NULL;
+	const gchar *fingerprint;
 	GcrGnupgKey *key;
+	guint i;
+
+	/* Add in any attributes we have loaded */
+	fingerprint = _gcr_gnupg_key_get_fingerprint_for_records (records);
+	if (fingerprint && load->attributes)
+		attr_records = g_hash_table_lookup (load->attributes, fingerprint);
+	if (attr_records) {
+		_gcr_debug ("adding %d user id attribute(s) to key/fingerprint: %s/%s",
+		            (gint)attr_records->len, keyid, fingerprint);
+
+		if (!g_hash_table_steal (load->attributes, fingerprint))
+			g_assert_not_reached ();
+
+		/* Move all the attribute records over to main records set */
+		for (i = 0; i < attr_records->len; i++)
+			g_ptr_array_add (records, attr_records->pdata[i]);
+
+		/* Shallow free of attr_records array */
+		g_free (g_ptr_array_free (attr_records, FALSE));
+	}
 
 	/* Note that we've seen this keyid */
 	g_hash_table_remove (load->difference, keyid);
@@ -340,6 +378,76 @@ process_records_as_key (GcrGnupgCollectionLoad *load)
 	g_ptr_array_unref (records);
 }
 
+static gboolean
+process_outstanding_attribute (GcrGnupgCollectionLoad *load, GcrRecord *record)
+{
+	const gchar *fingerprint;
+	GPtrArray *records;
+	GcrRecord *xa1;
+	guint length;
+
+	if (!_gcr_record_get_uint (record, GCR_RECORD_ATTRIBUTE_LENGTH, &length))
+		g_return_val_if_reached (FALSE);
+	fingerprint = _gcr_record_get_raw (record, GCR_RECORD_ATTRIBUTE_FINGERPRINT);
+	g_return_val_if_fail (fingerprint != NULL, FALSE);
+
+	/* Do we have enough data for this attribute? */
+	if (!load->attribute_buf || load->attribute_buf->len < length) {
+		_gcr_debug ("not enough attribute data in buffer: %u", length);
+		return FALSE;
+	}
+
+	if (!load->attributes)
+		load->attributes = g_hash_table_new_full (g_str_hash, g_str_equal,
+							  g_free, (GDestroyNotify)g_ptr_array_unref);
+
+	records = g_hash_table_lookup (load->attributes, fingerprint);
+	if (!records) {
+		records = g_ptr_array_new_with_free_func (_gcr_record_free);
+		g_hash_table_insert (load->attributes, g_strdup (fingerprint), records);
+	}
+
+	_gcr_debug ("new attribute of length %d for key with fingerprint %s",
+		    length, fingerprint);
+
+	xa1 = _gcr_gnupg_build_xa1_record (record, load->attribute_buf->data, length);
+	g_ptr_array_add (records, xa1);
+
+	/* Did we use up all the attribute data? Get rid of the buffer */
+	if (length == load->attribute_buf->len) {
+		g_byte_array_unref (load->attribute_buf);
+		load->attribute_buf = NULL;
+
+	/* Otherwise clear out the used data from buffer */
+	} else {
+		g_byte_array_remove_range (load->attribute_buf, 0, length);
+	}
+
+	return TRUE;
+}
+
+static void
+process_outstanding_attributes (GcrGnupgCollectionLoad *load)
+{
+	GcrRecord *record;
+
+	if (load->attribute_queue == NULL)
+		return;
+
+	_gcr_debug ("%d outstanding attribute records",
+	            (gint)g_queue_get_length (load->attribute_queue));
+
+	for (;;) {
+		record = g_queue_peek_head (load->attribute_queue);
+		if (record == NULL)
+			break;
+		if (!process_outstanding_attribute (load, record))
+			break;
+		g_queue_pop_head (load->attribute_queue);
+		_gcr_record_free (record);
+	}
+}
+
 static void
 on_line_parse_output (const gchar *line, gpointer user_data)
 {
@@ -370,9 +478,10 @@ on_line_parse_output (const gchar *line, gpointer user_data)
 		record = NULL;
 
 	/*
-	 * 'uid' schema lines get added to the key that came before.
+	 * 'uid' and 'fpr' schema lines get added to the key that came before.
 	 */
-	} else if (schema == GCR_RECORD_SCHEMA_UID) {
+	} else if (schema == GCR_RECORD_SCHEMA_UID ||
+	           schema == GCR_RECORD_SCHEMA_FPR) {
 		if (load->records->len) {
 			g_ptr_array_add (load->records, record);
 			record = NULL;
@@ -400,6 +509,41 @@ on_gnupg_process_error_line (GcrGnupgProcess *process, const gchar *line,
                              gpointer user_data)
 {
 	g_printerr ("%s\n", line);
+}
+
+static void
+on_gnupg_process_status_record (GcrGnupgProcess *process, GcrRecord *record,
+                                gpointer user_data)
+{
+	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
+
+	if (GCR_RECORD_SCHEMA_ATTRIBUTE != _gcr_record_get_schema (record))
+		return;
+
+	if (!load->attribute_queue)
+		load->attribute_queue = g_queue_new ();
+
+	g_queue_push_tail (load->attribute_queue, _gcr_record_copy (record));
+	process_outstanding_attributes (load);
+}
+
+static void
+on_gnupg_process_attribute_data (GcrGnupgProcess *process, GByteArray *buffer,
+                                 gpointer user_data)
+{
+	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
+
+	/* If we don't have a buffer, just claim this one */
+	if (!load->attribute_buf)
+		load->attribute_buf = g_byte_array_ref (buffer);
+
+	/* If we have data remaining over, add it to our buffer */
+	else
+		g_byte_array_append (load->attribute_buf, buffer->data, buffer->len);
+
+	process_outstanding_attributes (load);
 }
 
 static void
@@ -486,13 +630,8 @@ spawn_gnupg_list_process (GcrGnupgCollectionLoad *load, GSimpleAsyncResult *res)
 
 	g_ptr_array_add (argv, (gpointer)"--fixed-list-mode");
 	g_ptr_array_add (argv, (gpointer)"--with-colons");
+	g_ptr_array_add (argv, (gpointer)"--with-fingerprint");
 	g_ptr_array_add (argv, NULL);
-
-	if (_gcr_debugging) {
-		gchar *command = g_strjoinv (" ", (gchar**)argv->pdata);
-		_gcr_debug ("spawning gnupg process: %s", command);
-		g_free (command);
-	}
 
 	/* res is unreffed in on_gnupg_process_completed */
 	_gcr_gnupg_process_run_async (load->process, (const gchar**)argv->pdata, NULL, flags,
@@ -537,10 +676,8 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	load->process = _gcr_gnupg_process_new (self->pv->directory, NULL);
 	load->output_sig = g_signal_connect (load->process, "output-data", G_CALLBACK (on_gnupg_process_output_data), res);
 	load->error_sig = g_signal_connect (load->process, "error-line", G_CALLBACK (on_gnupg_process_error_line), res);
-#if 0
-	load->status_sig = g_signal_connect (load->process, "status-message", G_CALLBACK (on_gnupg_process_status_message), res);
+	load->status_sig = g_signal_connect (load->process, "status-record", G_CALLBACK (on_gnupg_process_status_record), res);
 	load->attribute_sig = g_signal_connect (load->process, "attribute-data", G_CALLBACK (on_gnupg_process_attribute_data), res);
-#endif
 
 	/*
 	 * Track all the keys we currently have, at end remove those that

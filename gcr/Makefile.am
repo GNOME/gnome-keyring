@@ -91,6 +91,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-key.c gcr-gnupg-key.h \
 	gcr-fingerprint.c gcr-fingerprint.h \
 	gcr-gnupg-process.c gcr-gnupg-process.h \
+	gcr-gnupg-util.c gcr-gnupg-util.h \
 	gcr-icons.c gcr-icons.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \

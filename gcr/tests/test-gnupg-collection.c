@@ -25,6 +25,7 @@
 #include "gcr/gcr.h"
 #include "gcr/gcr-gnupg-collection.h"
 #include "gcr/gcr-gnupg-key.h"
+#include "gcr/gcr-record.h"
 
 #include "egg/egg-testing.h"
 
@@ -35,6 +36,7 @@
 
 typedef struct {
 	GcrGnupgCollection *collection;
+	gchar *directory;
 	GHashTable *keys;
 	GAsyncResult *result;
 } Test;
@@ -81,19 +83,17 @@ setup (Test *test, gconstpointer unused)
 {
 	GcrCollection *collection;
 	gchar *directory;
-	gchar *path;
 
 	directory = g_get_current_dir ();
-	path = g_build_filename (directory, "files", "gnupg-homedir", NULL);
+	test->directory = g_build_filename (directory, "files", "gnupg-homedir", NULL);
 
-	collection = _gcr_gnupg_collection_new (path);
+	collection = _gcr_gnupg_collection_new (test->directory);
 	test->collection = GCR_GNUPG_COLLECTION (collection);
 
 	test->keys = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	g_signal_connect (collection, "added", G_CALLBACK (on_collection_added), test);
 	g_signal_connect (collection, "removed", G_CALLBACK (on_collection_removed), test);
 
-	g_free (path);
 	g_free (directory);
 }
 
@@ -106,6 +106,7 @@ teardown (Test *test, gconstpointer unused)
 		g_object_unref (test->result);
 
 	g_object_unref (test->collection);
+	g_free (test->directory);
 }
 
 static void
@@ -119,13 +120,24 @@ on_async_ready (GObject *source, GAsyncResult *res, gpointer user_data)
 }
 
 static void
+test_properties (Test *test, gconstpointer unused)
+{
+	gchar *directory;
+	g_object_get (test->collection, "directory", &directory, NULL);
+	g_assert_cmpstr (directory, ==, test->directory);
+	g_free (directory);
+}
+
+static void
 test_load (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	GcrGnupgKey *key;
+	GList *l, *objects;
+	GcrRecord *record;
 
 	_gcr_gnupg_collection_load_async (test->collection, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (500000);
 
 	g_assert (test->result);
 	_gcr_gnupg_collection_load_finish (test->collection, test->result, &error);
@@ -140,6 +152,26 @@ test_load (Test *test, gconstpointer unused)
 	key = g_hash_table_lookup (test->keys, "268FEE686262C395");
 	g_assert (GCR_IS_GNUPG_KEY (key));
 	g_assert (_gcr_gnupg_key_get_secret_records (key));
+
+	/* The length of collection should be correct */
+	g_assert_cmpuint (g_hash_table_size (test->keys), ==,
+	                  gcr_collection_get_length (GCR_COLLECTION (test->collection)));
+
+	/* The list of objects should be correct */
+	objects = gcr_collection_get_objects (GCR_COLLECTION (test->collection));
+	g_assert_cmpuint (g_hash_table_size (test->keys), ==, g_list_length (objects));
+	for (l = objects; l != NULL; l = g_list_next (l)) {
+		g_assert (GCR_IS_GNUPG_KEY (l->data));
+		key = g_hash_table_lookup (test->keys, _gcr_gnupg_key_get_keyid (l->data));
+		g_assert (key == l->data);
+	}
+	g_list_free (objects);
+
+	/* Phillip R. Zimmerman's key should have a photo */
+	key = g_hash_table_lookup (test->keys, "C7463639B2D7795E");
+	g_assert (GCR_IS_GNUPG_KEY (key));
+	record = _gcr_record_find (_gcr_gnupg_key_get_public_records (key), GCR_RECORD_SCHEMA_XA1);
+	g_assert (record);
 }
 
 static void
@@ -158,7 +190,7 @@ test_reload (Test *test, gconstpointer unused)
 	test->result = NULL;
 
 	_gcr_gnupg_collection_load_async (test->collection, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (500000);
 	g_assert (test->result);
 	_gcr_gnupg_collection_load_finish (test->collection, test->result, &error);
 	g_assert_no_error (error);
@@ -187,6 +219,7 @@ main (int argc, char **argv)
 	if (srcdir && chdir (srcdir) < 0)
 		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
+	g_test_add ("/gcr/gnupg-collection/properties", Test, NULL, setup, test_properties, teardown);
 	g_test_add ("/gcr/gnupg-collection/load", Test, NULL, setup, test_load, teardown);
 	g_test_add ("/gcr/gnupg-collection/reload", Test, NULL, setup, test_reload, teardown);
 
