@@ -32,11 +32,11 @@
 G_BEGIN_DECLS
 
 #define GCR_TYPE_GNUPG_COLLECTION               (_gcr_gnupg_collection_get_type ())
-#define GCR_GNUPG_COLLECTION(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_COLLECTION, GcrGnupgCollection))
-#define GCR_GNUPG_COLLECTION_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_COLLECTION, GcrGnupgCollectionClass))
-#define GCR_IS_GNUPG_COLLECTION(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_COLLECTION))
-#define GCR_IS_GNUPG_COLLECTION_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_COLLECTION))
-#define GCR_GNUPG_COLLECTION_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_COLLECTION, GcrGnupgCollectionClass))
+#define GCR_GNUPG_COLLECTION(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_GNUPG_COLLECTION, GcrGnupgCollection))
+#define GCR_GNUPG_COLLECTION_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_GNUPG_COLLECTION, GcrGnupgCollectionClass))
+#define GCR_IS_GNUPG_COLLECTION(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_GNUPG_COLLECTION))
+#define GCR_IS_GNUPG_COLLECTION_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_GNUPG_COLLECTION))
+#define GCR_GNUPG_COLLECTION_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_GNUPG_COLLECTION, GcrGnupgCollectionClass))
 
 typedef struct _GcrGnupgCollection GcrGnupgCollection;
 typedef struct _GcrGnupgCollectionClass GcrGnupgCollectionClass;

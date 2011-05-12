@@ -29,10 +29,9 @@
 #include "gcr-debug.h"
 #include "gcr-gnupg-collection.h"
 #include "gcr-gnupg-key.h"
+#include "gcr-gnupg-process.h"
 #include "gcr-internal.h"
 #include "gcr-util.h"
-
-#include "egg/egg-spawn.h"
 
 #include <sys/wait.h>
 #include <string.h>
@@ -215,10 +214,15 @@ typedef struct {
 	GcrGnupgCollection *collection;       /* reffed pointer back to collection */
 	GcrLoadingPhase loading_phase;        /* Whether loading public or private */
 	GPtrArray *records;                   /* GcrRecord* not yet made into a key */
-	guint spawn_sig;
+	GcrGnupgProcess *process;             /* The gnupg process itself */
+	GCancellable *cancel;                 /* Cancellation for process */
 	GString *out_data;                    /* Pending output not yet parsed into colons */
-	GString *err_data;                    /* Pending errors not yet printed */
 	GHashTable *difference;               /* Hashset gchar *keyid -> gchar *keyid */
+
+	guint output_sig;
+	guint error_sig;
+	guint status_sig;
+	guint attribute_sig;
 } GcrGnupgCollectionLoad;
 
 /* Forward declarations */
@@ -231,13 +235,22 @@ _gcr_gnupg_collection_load_free (gpointer data)
 	g_assert (load);
 
 	g_ptr_array_unref (load->records);
-	g_string_free (load->err_data, TRUE);
 	g_string_free (load->out_data, TRUE);
 	g_hash_table_destroy (load->difference);
 	g_object_unref (load->collection);
 
-	if (load->spawn_sig)
-		g_source_remove (load->spawn_sig);
+	if (load->process)
+		g_object_unref (load->process);
+	if (load->output_sig)
+		g_source_remove (load->output_sig);
+	if (load->error_sig)
+		g_source_remove (load->error_sig);
+	if (load->status_sig)
+		g_source_remove (load->status_sig);
+	if (load->attribute_sig)
+		g_source_remove (load->attribute_sig);
+	if (load->cancel)
+		g_object_unref (load->cancel);
 	g_slice_free (GcrGnupgCollectionLoad, load);
 }
 
@@ -363,67 +376,41 @@ on_line_parse_output (const gchar *line, gpointer user_data)
 }
 
 
-static gboolean
-on_spawn_standard_output (int fd, gpointer user_data)
+static void
+on_gnupg_process_output_data (GcrGnupgProcess *process, GByteArray *buffer,
+                              gpointer user_data)
 {
 	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
 	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
-	gchar buffer[1024];
-	gssize ret;
 
-	ret = egg_spawn_read_output (fd, buffer, sizeof (buffer));
-	if (ret < 0) {
-		g_warning ("couldn't read output data from prompt process");
-		return FALSE;
-	}
-
-	g_string_append_len (load->out_data, buffer, ret);
+	g_string_append_len (load->out_data, (gchar*)buffer->data, buffer->len);
 	_gcr_util_parse_lines (load->out_data, FALSE, on_line_parse_output, load);
-
-	return (ret > 0);
 }
 
 static void
-on_line_print_error (const gchar *line, gpointer unused)
+on_gnupg_process_error_line (GcrGnupgProcess *process, const gchar *line,
+                             gpointer user_data)
 {
 	g_printerr ("%s\n", line);
 }
 
-static gboolean
-on_spawn_standard_error (int fd, gpointer user_data)
-{
-	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
-	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
-	gchar buffer[1024];
-	gssize ret;
-
-	ret = egg_spawn_read_output (fd, buffer, sizeof (buffer));
-	if (ret < 0) {
-		g_warning ("couldn't read error data from prompt process");
-		return FALSE;
-	}
-
-	g_string_append_len (load->err_data, buffer, ret);
-	_gcr_util_parse_lines (load->err_data, FALSE, on_line_print_error, NULL);
-
-	return ret > 0;
-}
-
 static void
-on_spawn_completed (gpointer user_data)
+on_gnupg_process_completed (GObject *source, GAsyncResult *result, gpointer user_data)
 {
 	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
 	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
 	GHashTableIter iter;
+	GError *error = NULL;
 	GObject *object;
 	gpointer keyid;
 
-	/* Should be the last call we receive */
-	g_assert (load->spawn_sig != 0);
-	load->spawn_sig = 0;
-
-	/* Print out any remaining errors */
-	_gcr_util_parse_lines (load->err_data, TRUE, on_line_print_error, NULL);
+	if (!_gcr_gnupg_process_run_finish (GCR_GNUPG_PROCESS (source), result, &error)) {
+		g_simple_async_result_set_from_error (res, error);
+		g_simple_async_result_complete (res);
+		g_object_unref (res);
+		g_clear_error (&error);
+		return;
+	}
 
 	/* Process any remaining output */
 	_gcr_util_parse_lines (load->out_data, TRUE, on_line_parse_output, load);
@@ -438,6 +425,7 @@ on_spawn_completed (gpointer user_data)
 		_gcr_debug ("public load phase completed");
 		load->loading_phase = GCR_LOADING_PHASE_SECRET;
 		spawn_gnupg_list_process (load, res);
+		g_object_unref (res);
 		return;
 	case GCR_LOADING_PHASE_SECRET:
 		_gcr_debug ("secret load phase completed");
@@ -461,50 +449,24 @@ on_spawn_completed (gpointer user_data)
 	}
 
 	g_simple_async_result_complete (res);
+	g_object_unref (res);
 }
-
-static void
-on_child_exited (GPid pid, gint status, gpointer unused)
-{
-	gint code;
-
-	_gcr_debug ("process exited: %d", (gint)pid);
-	g_spawn_close_pid (pid);
-
-	if (WIFEXITED (status)) {
-		code = WEXITSTATUS (status);
-		if (code != 0) {
-			g_message ("gnupg process exited with failure code: %d", code);
-		} else if (WIFSIGNALED (status)) {
-			code = WTERMSIG (status);
-			g_message ("gnupg process was killed with signal: %d", code);
-		}
-	}
-}
-
-static EggSpawnCallbacks spawn_callbacks = {
-	NULL,
-	on_spawn_standard_output,
-	on_spawn_standard_error,
-	on_spawn_completed,
-	g_object_unref,
-	NULL
-};
 
 static void
 spawn_gnupg_list_process (GcrGnupgCollectionLoad *load, GSimpleAsyncResult *res)
 {
-	GError *error = NULL;
+	GcrGnupgProcessFlags flags = 0;
 	GPtrArray *argv;
-	GPid pid;
 
 	argv = g_ptr_array_new ();
-	g_ptr_array_add (argv, (gpointer)GPG_EXECUTABLE);
 
 	switch (load->loading_phase) {
 	case GCR_LOADING_PHASE_PUBLIC:
 		_gcr_debug ("starting public load phase");
 		g_ptr_array_add (argv, (gpointer)"--list-keys");
+		/* Load photos in public phase */
+		flags = GCR_GNUPG_PROCESS_WITH_ATTRIBUTES |
+		        GCR_GNUPG_PROCESS_WITH_STATUS;
 		break;
 	case GCR_LOADING_PHASE_SECRET:
 		_gcr_debug ("starting secret load phase");
@@ -516,13 +478,7 @@ spawn_gnupg_list_process (GcrGnupgCollectionLoad *load, GSimpleAsyncResult *res)
 
 	g_ptr_array_add (argv, (gpointer)"--fixed-list-mode");
 	g_ptr_array_add (argv, (gpointer)"--with-colons");
-	if (load->collection->pv->directory) {
-		g_ptr_array_add (argv, (gpointer)"--homedir");
-		g_ptr_array_add (argv, (gpointer)load->collection->pv->directory);
-	}
 	g_ptr_array_add (argv, NULL);
-
-	g_assert (!load->spawn_sig);
 
 	if (_gcr_debugging) {
 		gchar *command = g_strjoinv (" ", (gchar**)argv->pdata);
@@ -530,22 +486,10 @@ spawn_gnupg_list_process (GcrGnupgCollectionLoad *load, GSimpleAsyncResult *res)
 		g_free (command);
 	}
 
-	load->spawn_sig = egg_spawn_async_with_callbacks (load->collection->pv->directory,
-	                                                  (gchar**)argv->pdata, NULL,
-	                                                  G_SPAWN_DO_NOT_REAP_CHILD,
-	                                                  &pid, &spawn_callbacks,
-	                                                  g_object_ref (res),
-	                                                  NULL, &error);
-
-	if (error) {
-		_gcr_debug ("spawning process failed: %s", error->message);
-		g_simple_async_result_set_from_error (res, error);
-		g_simple_async_result_complete_in_idle (res);
-		g_clear_error (&error);
-	} else {
-		_gcr_debug ("process spawned: %d", (gint)pid);
-		g_child_watch_add (pid, on_child_exited, NULL);
-	}
+	/* res is unreffed in on_gnupg_process_completed */
+	_gcr_gnupg_process_run_async (load->process, (const gchar**)argv->pdata, NULL, flags,
+	                              load->cancel, on_gnupg_process_completed,
+	                              g_object_ref (res));
 
 	g_ptr_array_unref (argv);
 }
@@ -578,9 +522,17 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 
 	load = g_slice_new0 (GcrGnupgCollectionLoad);
 	load->records = g_ptr_array_new_with_free_func (_gcr_record_free);
-	load->err_data = g_string_sized_new (128);
 	load->out_data = g_string_sized_new (1024);
 	load->collection = g_object_ref (self);
+	load->cancel = cancellable ? g_object_ref (cancellable) : cancellable;
+
+	load->process = _gcr_gnupg_process_new (self->pv->directory, NULL);
+	load->output_sig = g_signal_connect (load->process, "output-data", G_CALLBACK (on_gnupg_process_output_data), res);
+	load->error_sig = g_signal_connect (load->process, "error-line", G_CALLBACK (on_gnupg_process_error_line), res);
+#if 0
+	load->status_sig = g_signal_connect (load->process, "status-message", G_CALLBACK (on_gnupg_process_status_message), res);
+	load->attribute_sig = g_signal_connect (load->process, "attribute-data", G_CALLBACK (on_gnupg_process_attribute_data), res);
+#endif
 
 	/*
 	 * Track all the keys we currently have, at end remove those that
