@@ -93,12 +93,6 @@ G_DEFINE_TYPE_WITH_CODE (GcrCollectionModel, gcr_collection_model, G_TYPE_OBJECT
 
 #define UNUSED_VALUE GINT_TO_POINTER (1)
 
-static gboolean
-column_id_is_valid_and_real (GcrCollectionModel *self, gint column_id)
-{
-	return (column_id >= 0 && column_id < self->pv->n_columns);
-}
-
 static gint
 on_sequence_compare (gconstpointer a, gconstpointer b, gpointer user_data)
 {
@@ -168,19 +162,21 @@ on_object_notify (GObject *object, GParamSpec *spec, GcrCollectionModel *self)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
+	gboolean found = FALSE;
 	guint i;
 
 	g_return_if_fail (spec->name);
 
-	for (i = 0; i < self->pv->n_columns; ++i) {
+	for (i = 0; i < self->pv->n_columns - 1; ++i) {
 		g_assert (self->pv->columns[i].property_name);
 		if (g_str_equal (self->pv->columns[i].property_name, spec->name)) {
+			found = TRUE;
 			break;
 		}
 	}
 
 	/* Tell the tree view that this row changed */
-	if (column_id_is_valid_and_real (self, i)) {
+	if (found) {
 		if (!gcr_collection_model_iter_for_object (self, object, &iter))
 			g_return_if_reached ();
 		path = gtk_tree_model_get_path (GTK_TREE_MODEL (self), &iter);
