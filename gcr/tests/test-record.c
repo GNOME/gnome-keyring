@@ -35,7 +35,7 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	test->record = _gcr_record_parse_colons ("one:tab\\there::four:f\xfc""nf:", -1);
+	test->record = _gcr_record_parse_colons ("one:tab\\there::four:f\xfc""nf:3533333:-88", -1);
 }
 
 static void
@@ -45,7 +45,13 @@ teardown (Test *test, gconstpointer unused)
 }
 
 static void
-test_parse (void)
+test_count (Test *test, gconstpointer unused)
+{
+	g_assert_cmpuint (_gcr_record_get_count (test->record), ==, 7);
+}
+
+static void
+test_parse_colons (void)
 {
 	GcrRecord *record;
 
@@ -59,6 +65,45 @@ test_parse (void)
 	g_assert_cmpstr (_gcr_record_get_raw (record, 4), ==, "");
 	g_assert_cmpstr (_gcr_record_get_raw (record, 5), ==, "six");
 	g_assert (_gcr_record_get_raw (record, 6) == NULL);
+
+	_gcr_record_free (record);
+}
+
+static void
+test_take_colons (void)
+{
+	GcrRecord *record;
+
+	record = _gcr_record_take_colons (g_strdup ("one:two::four::six"));
+	g_assert (record);
+
+	g_assert_cmpstr (_gcr_record_get_raw (record, 0), ==, "one");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 1), ==, "two");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 2), ==, "");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 3), ==, "four");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 4), ==, "");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 5), ==, "six");
+	g_assert (_gcr_record_get_raw (record, 6) == NULL);
+	g_assert_cmpuint (_gcr_record_get_count (record), ==, 6);
+
+	_gcr_record_free (record);
+}
+
+
+static void
+test_parse_spaces (void)
+{
+	GcrRecord *record;
+
+	record = _gcr_record_parse_spaces (" one two  four six   ", -1);
+	g_assert (record);
+
+	g_assert_cmpstr (_gcr_record_get_raw (record, 0), ==, "one");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 1), ==, "two");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 2), ==, "four");
+	g_assert_cmpstr (_gcr_record_get_raw (record, 3), ==, "six");
+	g_assert (_gcr_record_get_raw (record, 4) == NULL);
+	g_assert_cmpuint (_gcr_record_get_count (record), ==, 4);
 
 	_gcr_record_free (record);
 }
@@ -142,6 +187,34 @@ test_get_string_latin1 (Test *test, gconstpointer unused)
 }
 
 static void
+test_get_uint (Test *test, gconstpointer unused)
+{
+	guint value = 0;
+
+	if (!_gcr_record_get_uint (test->record, 5, &value))
+		g_assert_not_reached ();
+	g_assert_cmpuint (value, ==, 3533333);
+}
+
+static void
+test_get_uint_range (Test *test, gconstpointer unused)
+{
+	guint value = 0;
+
+	if (_gcr_record_get_uint (test->record, 6, &value))
+		g_assert_not_reached ();
+}
+
+static void
+test_get_uint_invalid (Test *test, gconstpointer unused)
+{
+	guint value = 0;
+
+	if (_gcr_record_get_uint (test->record, 0, &value))
+		g_assert_not_reached ();
+}
+
+static void
 test_free_null (void)
 {
 	_gcr_record_free (NULL);
@@ -161,19 +234,62 @@ test_get_schema (Test *test, gconstpointer unused)
 	g_assert_cmpstr (g_quark_to_string (schema), ==, "one");
 }
 
+static void
+test_copy (Test *test, gconstpointer unused)
+{
+	GcrRecord *copy;
+	guint count, i;
+
+	copy = _gcr_record_copy (test->record);
+
+	count = _gcr_record_get_count (test->record);
+	g_assert_cmpuint (_gcr_record_get_count (copy), ==, count);
+	for (i = 0; i < count; i++) {
+		g_assert_cmpstr (_gcr_record_get_raw (copy, i), ==,
+		                 _gcr_record_get_raw (test->record, i));
+	}
+}
+
+static void
+test_boxed (Test *test, gconstpointer unused)
+{
+	GcrRecord *copy;
+	guint count, i;
+
+	copy = g_boxed_copy (GCR_TYPE_RECORD, test->record);
+
+	count = _gcr_record_get_count (test->record);
+	g_assert_cmpuint (_gcr_record_get_count (copy), ==, count);
+	for (i = 0; i < count; i++) {
+		g_assert_cmpstr (_gcr_record_get_raw (copy, i), ==,
+		                 _gcr_record_get_raw (test->record, i));
+	}
+
+	g_boxed_free (GCR_TYPE_RECORD, copy);
+}
+
 int
 main (int argc, char **argv)
 {
+	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add_func ("/gcr/record/parse", test_parse);
+	g_test_add_func ("/gcr/record/parse_colons", test_parse_colons);
+	g_test_add_func ("/gcr/record/take_colons", test_take_colons);
+	g_test_add_func ("/gcr/record/parse_colons", test_parse_spaces);
 	g_test_add_func ("/gcr/record/parse_part", test_parse_part);
 	g_test_add_func ("/gcr/record/parse_too_long", test_parse_too_long);
 	g_test_add_func ("/gcr/record/free_null", test_free_null);
 	g_test_add_func ("/gcr/record/find", test_find);
+	g_test_add ("/gcr/record/count", Test, NULL, setup, test_count, teardown);
+	g_test_add ("/gcr/record/copy", Test, NULL, setup, test_copy, teardown);
+	g_test_add ("/gcr/record/boxed", Test, NULL, setup, test_boxed, teardown);
 	g_test_add ("/gcr/record/get_string", Test, NULL, setup, test_get_string, teardown);
 	g_test_add ("/gcr/record/get_string_null", Test, NULL, setup, test_get_string_null, teardown);
 	g_test_add ("/gcr/record/get_string_latin1", Test, NULL, setup, test_get_string_latin1, teardown);
+	g_test_add ("/gcr/record/get_uint", Test, NULL, setup, test_get_uint, teardown);
+	g_test_add ("/gcr/record/get_uint_invalid", Test, NULL, setup, test_get_uint_invalid, teardown);
+	g_test_add ("/gcr/record/get_uint_range", Test, NULL, setup, test_get_uint_range, teardown);
 	g_test_add ("/gcr/record/get_schema", Test, NULL, setup, test_get_schema, teardown);
 
 	return g_test_run ();

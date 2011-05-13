@@ -27,31 +27,69 @@
 #define DEBUG_FLAG GCR_DEBUG_PARSE
 #include "gcr-debug.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 #define MAX_COLUMNS 32
 
 struct _GcrRecord {
 	gchar *data;
+	gsize n_data;
 	gchar *columns[MAX_COLUMNS];
 	guint n_columns;
 };
 
-static GcrRecord*
-parse_internal (gchar *line, gsize n_line)
+GType
+_gcr_record_get_boxed_type (void)
+{
+	static gsize initialization_value = 0;
+	static GType type = 0;
+
+	if (g_once_init_enter (&initialization_value)) {
+		type = g_boxed_type_register_static ("GcrRecord",
+		                                     (GBoxedCopyFunc)_gcr_record_copy,
+		                                     (GBoxedFreeFunc)_gcr_record_free);
+		g_once_init_leave (&initialization_value, 1);
+	}
+
+	return type;
+}
+
+GcrRecord*
+_gcr_record_copy (GcrRecord *record)
 {
 	GcrRecord *result;
-	gchar *p;
+	gchar *column;
+	guint i;
+
+	result = g_slice_new0 (GcrRecord);
+	result->data = g_memdup (record->data, record->n_data);
+	result->n_data = record->n_data;
+
+	for (i = 0; i < record->n_columns; i++) {
+		column = (gchar*)record->columns[i];
+		g_assert (column >= record->data);
+		result->columns[i] = result->data + (column - record->data);
+	}
+	result->n_columns = record->n_columns;
+	return result;
+}
+
+static GcrRecord*
+take_and_parse_internal (gchar *line, gchar delimiter, gboolean allow_empty)
+{
+	GcrRecord *result;
+	gchar *at, *beg, *end;
 
 	g_assert (line);
-	g_assert (n_line);
 
 	result = g_slice_new0 (GcrRecord);
 	result->data = line;
+	result->n_data = strlen (line) + 1;
 
-	_gcr_debug ("parsing line %.*s", (gint)n_line, line);
+	_gcr_debug ("parsing line %s", line);
 
-	p = result->data;
+	at = result->data;
 	for (;;) {
 		if (result->n_columns >= MAX_COLUMNS) {
 			_gcr_debug ("too many record (%d) in gnupg line", MAX_COLUMNS);
@@ -59,14 +97,23 @@ parse_internal (gchar *line, gsize n_line)
 			return NULL;
 		}
 
-		result->columns[result->n_columns] = p;
-		result->n_columns++;
+		beg = at;
+		result->columns[result->n_columns] = beg;
 
-		p = strchr (p, ':');
-		if (p == NULL)
+		at = strchr (beg, delimiter);
+		if (at == NULL) {
+			end = (result->data + result->n_data) - 1;
+		} else {
+			at[0] = '\0';
+			end = at;
+			at++;
+		}
+
+		if (allow_empty || end > beg)
+			result->n_columns++;
+
+		if (at == NULL)
 			break;
-		p[0] = '\0';
-		p++;
 	}
 
 	return result;
@@ -78,9 +125,30 @@ _gcr_record_parse_colons (const gchar *line, gssize n_line)
 	g_return_val_if_fail (line, NULL);
 	if (n_line < 0)
 		n_line = strlen (line);
-
-	return parse_internal (g_strndup (line, n_line), n_line);
+	return take_and_parse_internal (g_strndup (line, n_line), ':', TRUE);
 }
+
+GcrRecord*
+_gcr_record_take_colons (gchar *line)
+{
+	GcrRecord *record;
+
+	g_return_val_if_fail (line, NULL);
+	record = take_and_parse_internal (line, ':', TRUE);
+	if (record == NULL)
+		g_warning ("internal parsing of colons format failed");
+	return record;
+}
+
+GcrRecord*
+_gcr_record_parse_spaces (const gchar *line, gssize n_line)
+{
+	g_return_val_if_fail (line, NULL);
+	if (n_line < 0)
+		n_line = strlen (line);
+	return take_and_parse_internal (g_strndup (line, n_line), ' ', FALSE);
+}
+
 
 GcrRecord*
 _gcr_record_find (GPtrArray *records, GQuark schema)
@@ -96,6 +164,13 @@ _gcr_record_find (GPtrArray *records, GQuark schema)
 	}
 
 	return NULL;
+}
+
+guint
+_gcr_record_get_count (GcrRecord *record)
+{
+	g_return_val_if_fail (record, 0);
+	return record->n_columns;
 }
 
 gchar*
@@ -118,13 +193,44 @@ _gcr_record_get_string (GcrRecord *record, guint column)
 	converted = g_convert (text, -1, "UTF-8", "ISO-8859-1", NULL, NULL, NULL);
 	g_free (text);
 
-	if (!converted) {
-		_gcr_debug ("failed to convert value from latin1 to utf-8: %s", text);
-		return NULL;
-	}
+	/*
+	 * latin1 to utf-8 conversion can't really fail, just produce
+	 * garbage... so there's no need to check here.
+	 */
 
 	return converted;
 }
+
+gboolean
+_gcr_record_get_uint (GcrRecord *record, guint column, guint *value)
+{
+	const gchar *raw;
+	glong result;
+	gchar *end = NULL;
+
+	g_return_val_if_fail (record, FALSE);
+
+	raw = _gcr_record_get_raw (record, column);
+	if (raw == NULL)
+		return FALSE;
+
+	result = strtol (raw, &end, 10);
+	if (!end || end[0]) {
+		_gcr_debug ("invalid unsigned integer value: %s", raw);
+		return FALSE;
+	}
+
+	if (result < 0 || result > G_MAXUINT32) {
+		_gcr_debug ("unsigned integer value is out of range: %s", raw);
+		return FALSE;
+	}
+
+	if (value)
+		*value = (guint)result;
+	return TRUE;
+}
+
+
 
 const gchar*
 _gcr_record_get_raw (GcrRecord *record, guint column)

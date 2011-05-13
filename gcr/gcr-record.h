@@ -29,6 +29,7 @@
 #define GCR_RECORD_H
 
 #include <glib.h>
+#include <glib-object.h>
 
 /*
  * Gnupg's official format for listing keys is in the '--with-colons' format.
@@ -85,8 +86,16 @@ typedef enum {
 
 typedef struct _GcrRecord GcrRecord;
 
+#define        GCR_TYPE_RECORD                  (_gcr_record_get_boxed_type ())
+
+GType          _gcr_record_get_boxed_type       (void) G_GNUC_CONST;
+
+GcrRecord*     _gcr_record_copy                 (GcrRecord *record);
+
 GcrRecord*     _gcr_record_parse_colons         (const gchar *line,
                                                  gssize n_line);
+
+GcrRecord*     _gcr_record_take_colons          (gchar *line);
 
 GcrRecord*     _gcr_record_parse_spaces         (const gchar *line,
                                                  gssize n_line);
@@ -96,8 +105,14 @@ void           _gcr_record_free                 (gpointer record);
 GcrRecord*     _gcr_record_find                 (GPtrArray *records,
                                                  GQuark schema);
 
+guint          _gcr_record_get_count            (GcrRecord *record);
+
 gchar*         _gcr_record_get_string           (GcrRecord *record,
                                                  guint column);
+
+gboolean       _gcr_record_get_uint             (GcrRecord *record,
+                                                 guint column,
+                                                 guint *value);
 
 const gchar*   _gcr_record_get_raw              (GcrRecord *record,
                                                  guint column);
