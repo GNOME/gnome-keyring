@@ -201,7 +201,7 @@ add_string_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 
 	cell = gtk_cell_renderer_text_new ();
 	g_object_set (G_OBJECT (cell), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-	label = g_dpgettext2 (NULL, "column", column->label);
+	label = column->label ? g_dpgettext2 (NULL, "column", column->label) : "";
 	col = gtk_tree_view_column_new_with_attributes (label, cell, "text", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
 	if (column->flags & GCR_COLUMN_SORTABLE)
@@ -221,7 +221,7 @@ add_icon_column (GcrSelector *self, const GcrColumn *column, gint column_id)
 
 	cell = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (cell, "stock-size", GTK_ICON_SIZE_BUTTON, NULL);
-	label = g_dpgettext2 (NULL, "column", column->label);
+	label = column->label ? g_dpgettext2 (NULL, "column", column->label) : "";
 	col = gtk_tree_view_column_new_with_attributes (label, cell, "gicon", column_id, NULL);
 	gtk_tree_view_column_set_resizable (col, TRUE);
 	if (column->flags & GCR_COLUMN_SORTABLE)
