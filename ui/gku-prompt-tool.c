@@ -52,12 +52,8 @@
 static GKeyFile *input_data = NULL;
 static GKeyFile *output_data = NULL;
 
-#if GTK_CHECK_VERSION (3,0,0)
 static GdkDevice *grabbed_device = NULL;
 static gulong grab_broken_id = 0;
-#else
-static gboolean keyboard_grabbed = FALSE;
-#endif
 
 /* An encryption key for returning passwords */
 static gpointer the_key = NULL;
@@ -109,7 +105,6 @@ grab_status_message (GdkGrabStatus status)
 	}
 }
 
-#if GTK_CHECK_VERSION (3,0,0)
 static gboolean
 on_grab_broken (GtkWidget * widget, GdkEventGrabBroken * event)
 {
@@ -118,7 +113,6 @@ on_grab_broken (GtkWidget * widget, GdkEventGrabBroken * event)
 
 	return TRUE;
 }
-#endif
 
 static gboolean
 grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
@@ -126,7 +120,6 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
 	GdkGrabStatus status;
 	guint32 at;
 
-#if GTK_CHECK_VERSION (3,0,0)
 	GdkDevice *device = NULL;
 	GdkDeviceManager *manager;
 	GdkDisplay *display;
@@ -162,17 +155,6 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
 	} else {
 		g_message ("could not grab keyboard: %s", grab_status_message (status));
 	}
-#else
-	if (!keyboard_grabbed && GRAB_KEYBOARD) {
-		at = event ? gdk_event_get_time (event) : GDK_CURRENT_TIME;
-		status = gdk_keyboard_grab (gtk_widget_get_window (win), FALSE, at);
-		if (status == GDK_GRAB_SUCCESS) {
-			keyboard_grabbed = TRUE;
-		} else {
-			g_message ("could not grab keyboard: %s", grab_status_message (status));
-		}
-	}
-#endif
 
 	/* Always return false, so event is handled elsewhere */
 	return FALSE;
@@ -183,7 +165,6 @@ ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
 {
 	guint32 at = event ? gdk_event_get_time (event) : GDK_CURRENT_TIME;
 
-#if GTK_CHECK_VERSION (3,0,0)
 	if (grabbed_device) {
 		g_signal_handler_disconnect (win, grab_broken_id);
 		gdk_device_ungrab (grabbed_device, at);
@@ -191,11 +172,6 @@ ungrab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
 		grabbed_device = NULL;
 		grab_broken_id = 0;
 	}
-#else
-	if (keyboard_grabbed)
-		gdk_keyboard_ungrab (at);
-	keyboard_grabbed = FALSE;
-#endif
 
 	/* Always return false, so event is handled elsewhere */
 	return FALSE;

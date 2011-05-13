@@ -13,7 +13,7 @@ SUBDIRS = . $(TESTS_DIR)
 # UI BUILDER
 # 
 
-uidir = $(datadir)/gcr@GCR_VERSION_SUFFIX@/ui/
+uidir = $(datadir)/gcr-@GCR_MAJOR@/ui/
 
 ui_DATA = \
 	gcr-import-dialog.ui \
@@ -22,7 +22,7 @@ ui_DATA = \
 # ------------------------------------------------------------------
 # HEADERS
 
-incdir = $(includedir)/gcr@GCR_VERSION_SUFFIX@/gcr
+incdir = $(includedir)/gcr-@GCR_MAJOR@/gcr
 
 inc_HEADERS = \
 	gcr.h \
@@ -69,9 +69,9 @@ INCLUDES = \
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h
 
-lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
+lib_LTLIBRARIES = libgcr-@GCR_MAJOR@.la
 
-libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
+libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
 	gcr-certificate-basics-widget.h gcr-certificate-basics-widget.c \
 	gcr-certificate-chain.c gcr-certificate-chain.h \
@@ -112,19 +112,19 @@ libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-viewer.c gcr-viewer.h \
 	$(BUILT_SOURCES)
 
-libgcr@GCR_VERSION_SUFFIX@_la_CFLAGS = \
+libgcr_@GCR_MAJOR@_la_CFLAGS = \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DP11_KIT_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \
 	-DUIDIR=\""$(uidir)"\"
 
-libgcr@GCR_VERSION_SUFFIX@_la_LDFLAGS = \
+libgcr_@GCR_MAJOR@_la_LDFLAGS = \
 	-version-info $(GCR_LT_RELEASE) \
 	-no-undefined \
 	-export-symbols-regex '^gcr_*'
 
-libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
+libgcr_@GCR_MAJOR@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gck/libgck.la \
@@ -136,9 +136,9 @@ libgcr@GCR_VERSION_SUFFIX@_la_LIBADD = \
 
 noinst_LTLIBRARIES = $(TESTABLE_LIB)
 libgcr_testable_la_SOURCES =
-libgcr_testable_la_LIBADD = $(libgcr@GCR_VERSION_SUFFIX@_la_OBJECTS) \
-	$(libgcr@GCR_VERSION_SUFFIX@_la_LIBADD)
-libgcr_testable_la_DEPENDENCIES = $(libgcr@GCR_VERSION_SUFFIX@_la_OBJECTS)
+libgcr_testable_la_LIBADD = $(libgcr_@GCR_MAJOR@_la_OBJECTS) \
+	$(libgcr_@GCR_MAJOR@_la_LIBADD)
+libgcr_testable_la_DEPENDENCIES = $(libgcr_@GCR_MAJOR@_la_OBJECTS)
 
 gcr-marshal.h: gcr-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=_gcr_marshal > $@

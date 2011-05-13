@@ -24,8 +24,7 @@ GCK_REVISION=0
 GCK_AGE=0
 
 # GCR package versioning
-GCR_MAJOR_GTK2=0
-GCR_MAJOR_GTK3=3
+GCR_MAJOR=3
 GCR_MINOR=0
 GCR_MICRO=0
 
@@ -85,38 +84,9 @@ PKG_CHECK_MODULES(GIO, glib-2.0 >= 2.25.0 gio-2.0)
 AC_SUBST(GIO_CFLAGS)
 AC_SUBST(GIO_LIBS)
 
-AC_MSG_CHECKING([which GTK+ version to compile against])
-AC_ARG_WITH([gtk],
-	[AS_HELP_STRING([--with-gtk=2|3],[which GTK+ version to compile against (default: 3)])],
-	[case "$with_gtk" in
-		2*|3*) ;;
-		*) AC_MSG_ERROR([invalid GTK+ version specified]) ;;
-	esac],
-	[with_gtk=3])
-AC_MSG_RESULT([$with_gtk])
-
-case "$with_gtk" in
-	2*)
-		GCR_MAJOR=$GCR_MAJOR_GTK2
-		GCR_VERSION_SUFFIX=
-		GTK_API_VERSION=2.0
-		GTK_REQUIRED=2.20.0
-		with_gtk=2.0
-	;;
-	3*)
-		GCR_MAJOR=$GCR_MAJOR_GTK3
-		GCR_VERSION_SUFFIX=-$GCR_MAJOR
-		GTK_API_VERSION=3.0
-		GTK_REQUIRED=2.90.0
-		with_gtk=3.0
-	;;
-esac
-
-PKG_CHECK_MODULES(GTK, gtk+-$GTK_API_VERSION >= $GTK_REQUIRED)
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.0)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
-AC_SUBST(GTK_API_VERSION)
-AM_CONDITIONAL([WITH_GTK3],[test "$with_gtk" = "3.0"])
 
 GETTEXT_PACKAGE=gnome-keyring
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [The gettext domain name])
@@ -704,7 +674,6 @@ AC_SUBST(GCK_MAJOR)
 GCR_LT_RELEASE=$GCR_CURRENT:$GCR_REVISION:$GCR_AGE
 AC_SUBST(GCR_LT_RELEASE)
 AC_SUBST(GCR_MAJOR)
-AC_SUBST(GCR_VERSION_SUFFIX)
 
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
@@ -806,7 +775,6 @@ echo "CONFIGURATION"
 echo "  SSH Agent:            $ssh_status"
 echo "  GPG Agent:            $gpg_status"
 echo "  Root Certificates:    $root_status"
-echo "  GTK+ Version:         $GTK_API_VERSION"
 echo "  PKCS#11 Modules:      $P11_SYSTEM_MODULES"
 echo
 echo "BUILD"

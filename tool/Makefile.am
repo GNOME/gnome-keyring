@@ -1,5 +1,5 @@
 bin_PROGRAMS= \
-	gnome-keyring@GCR_VERSION_SUFFIX@
+	gnome-keyring-@GCR_MAJOR@
 
 INCLUDES=	\
 	-I$(top_srcdir) \
@@ -9,18 +9,18 @@ INCLUDES=	\
 	$(GLIB_CFLAGS) \
 	-DGCK_API_SUBJECT_TO_CHANGE
 
-gnome_keyring@GCR_VERSION_SUFFIX@_SOURCES = \
+gnome_keyring_@GCR_MAJOR@_SOURCES = \
 	gkr-tool.c gkr-tool.h \
 	gkr-tool-import.c \
 	gkr-tool-trust.c \
 	gkr-tool-version.c
 
-gnome_keyring@GCR_VERSION_SUFFIX@_CFLAGS = \
+gnome_keyring_@GCR_MAJOR@_CFLAGS = \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
 
-gnome_keyring@GCR_VERSION_SUFFIX@_LDADD = \
-	$(top_builddir)/gcr/libgcr@GCR_VERSION_SUFFIX@.la \
+gnome_keyring_@GCR_MAJOR@_LDADD = \
+	$(top_builddir)/gcr/libgcr-@GCR_MAJOR@.la \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/gck/libgck.la \
 	$(GTHREAD_LIBS) \
@@ -28,8 +28,6 @@ gnome_keyring@GCR_VERSION_SUFFIX@_LDADD = \
 	$(GCRYPT_LIBS) \
 	$(DAEMON_LIBS)
 
-# Install a link from gnome-keyring → gnome-keyring@GCR_VERSION_SUFFIX@ to maintain compatibility
-if WITH_GTK3
+# Install a link from gnome-keyring > gnome-keyring-@GCR_MAJOR@ to maintain compatibility
 install-exec-hook:
-	@test -e "$(DESTDIR)$(bindir)/gnome-keyring" || (cd $(DESTDIR)$(bindir) && $(LN_S) gnome-keyring@GCR_VERSION_SUFFIX@ gnome-keyring)
-endif
+	@test -e "$(DESTDIR)$(bindir)/gnome-keyring" || (cd $(DESTDIR)$(bindir) && $(LN_S) gnome-keyring-@GCR_MAJOR@ gnome-keyring)
