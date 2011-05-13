@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-09 08:46+0300\n"
-"PO-Revision-Date: 2011-05-09 08:47+0200\n"
+"POT-Creation-Date: 2011-05-13 08:22+0300\n"
+"PO-Revision-Date: 2011-05-13 08:22+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -264,7 +264,7 @@ msgstr "שגיאה בלתי צפויה ב־waitpid()‎‏ (%s)"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389
+#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:278
 msgctxt "column"
 msgid "Name"
 msgstr "שם"
@@ -439,26 +439,14 @@ msgstr "ייבוא לתוך:"
 msgid "Password:"
 msgstr "ססמה:"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "יש לפתוח קבוצת ססמאות זו באופן אוטומטי בעת הכניסה למערכת"
+#: ../gcr/gcr-gnupg-key.c:140
+msgid "PGP Key"
+msgstr "מפתח PGP"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "נעילת קבוצת ססמאות זו לאחר"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "קבוצת ססמאות זו תנעל אם אינה בשימוש למשך"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "יש לנעול קבוצת מפתחות זו בעת הניתוק"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "דקות"
+#: ../gcr/gcr-gnupg-key.c:280
+msgctxt "column"
+msgid "Key ID"
+msgstr "מזהה המפתח"
 
 #: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
@@ -588,6 +576,27 @@ msgstr "הנתונים נעולים"
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "לא ניתן למצוא את המיקום לאחסון האישור המוצמד"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "יש לפתוח קבוצת ססמאות זו באופן אוטומטי בעת הכניסה למערכת"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring after"
+msgstr "נעילת קבוצת ססמאות זו לאחר"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring if idle for"
+msgstr "קבוצת ססמאות זו תנעל אם אינה בשימוש למשך"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "Lock this keyring when I log out"
+msgstr "יש לנעול קבוצת מפתחות זו בעת הניתוק"
+
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
+#: ../gcr/gcr-unlock-options-widget.ui.h:6
+msgid "minutes"
+msgstr "דקות"
 
 #: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
 #: ../gck/gck-uri.c:253
