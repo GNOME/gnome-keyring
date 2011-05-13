@@ -216,6 +216,20 @@ _gcr_record_get_uint (GcrRecord *record, guint column, guint *value)
 	return TRUE;
 }
 
+gpointer
+_gcr_record_get_base64 (GcrRecord *record, guint column, gsize *n_data)
+{
+	const gchar *raw;
+
+	g_return_val_if_fail (record, NULL);
+
+	raw = _gcr_record_get_raw (record, column);
+	if (raw == NULL)
+		return NULL;
+
+	return g_base64_decode (raw, n_data);
+}
+
 const gchar*
 _gcr_record_get_raw (GcrRecord *record, guint column)
 {

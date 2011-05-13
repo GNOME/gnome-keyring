@@ -76,6 +76,8 @@ GPtrArray*          _gcr_gnupg_key_get_secret_records            (GcrGnupgKey *s
 void                _gcr_gnupg_key_set_secret_records            (GcrGnupgKey *self,
                                                                   GPtrArray *records);
 
+GIcon*              _gcr_gnupg_key_get_icon                      (GcrGnupgKey *self);
+
 const gchar*        _gcr_gnupg_key_get_keyid_for_records         (GPtrArray *records);
 
 const gchar*        _gcr_gnupg_key_get_fingerprint_for_records   (GPtrArray *records);

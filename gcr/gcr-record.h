@@ -155,6 +155,10 @@ gboolean       _gcr_record_get_uint             (GcrRecord *record,
                                                  guint column,
                                                  guint *value);
 
+gpointer       _gcr_record_get_base64           (GcrRecord *record,
+                                                 guint column,
+                                                 gsize *n_data);
+
 const gchar*   _gcr_record_get_raw              (GcrRecord *record,
                                                  guint column);
 

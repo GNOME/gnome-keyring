@@ -29,6 +29,7 @@ TEST_PROGS = \
 	test-trust \
 	test-parser \
 	test-record \
+	test-memory-icon \
 	test-gnupg-key \
 	test-gnupg-collection \
 	test-gnupg-process

@@ -21,8 +21,9 @@
 
 #include "config.h"
 
-#include "gcr-record.h"
 #include "gcr-gnupg-key.h"
+#include "gcr-record.h"
+#include "gcr-memory-icon.h"
 
 #include "gck/gck.h"
 
@@ -37,12 +38,14 @@ enum {
 	PROP_LABEL,
 	PROP_MARKUP,
 	PROP_DESCRIPTION,
-	PROP_SHORT_KEYID
+	PROP_SHORT_KEYID,
+	PROP_ICON
 };
 
 struct _GcrGnupgKeyPrivate {
 	GPtrArray *public_records;
 	GPtrArray *secret_records;
+	GIcon *icon;
 };
 
 G_DEFINE_TYPE (GcrGnupgKey, _gcr_gnupg_key, G_TYPE_OBJECT);
@@ -159,6 +162,9 @@ _gcr_gnupg_key_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_SHORT_KEYID:
 		g_value_set_string (value, calculate_short_keyid (self));
 		break;
+	case PROP_ICON:
+		g_value_set_object (value, _gcr_gnupg_key_get_icon (self));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -240,6 +246,15 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	g_object_class_install_property (gobject_class, PROP_SHORT_KEYID,
 	         g_param_spec_string ("short-keyid", "Short Key ID", "Display key identifier",
 	                              "", G_PARAM_READABLE));
+
+	/**
+	 * GcrGnupgKey::icon:
+	 *
+	 * Icon for this key.
+	 */
+	g_object_class_install_property (gobject_class, PROP_ICON,
+	         g_param_spec_object ("icon", "Icon", "Icon for this key",
+	                              G_TYPE_ICON, G_PARAM_READABLE));
 }
 
 /**
@@ -421,6 +436,66 @@ _gcr_gnupg_key_get_fingerprint_for_records (GPtrArray *records)
 	return NULL;
 }
 
+#define TYPE_IMAGE 0x01
+#define IMAGE_HEADER_LEN 0x10
+#define IMAGE_JPEG_SIG "\x10\x00\x01\x01"
+#define IMAGE_JPEG_SIG_LEN 4
+
+static GIcon*
+load_user_attribute_icon (GcrGnupgKey *self)
+{
+	GcrRecord *record;
+	guchar *data;
+	gsize n_data;
+	guint type;
+	guint i;
+
+	for (i = 0; i < self->pv->public_records->len; i++) {
+		record = self->pv->public_records->pdata[i];
+		if (GCR_RECORD_SCHEMA_XA1 != _gcr_record_get_schema (record))
+			continue;
+		if (!_gcr_record_get_uint (record, GCR_RECORD_XA1_TYPE, &type))
+			continue;
+		if (type != TYPE_IMAGE)
+			continue;
+
+		/* TODO: Validity? */
+
+		data = _gcr_record_get_base64 (record, GCR_RECORD_XA1_DATA, &n_data);
+		g_return_val_if_fail (data != NULL, NULL);
+
+		/* Header is 16 bytes long */
+		if (n_data <= IMAGE_HEADER_LEN)
+			continue;
+
+		/* These are the header bytes. See gnupg doc/DETAILS */
+		g_assert (IMAGE_JPEG_SIG_LEN < IMAGE_HEADER_LEN);
+		if (memcmp (data, IMAGE_JPEG_SIG, IMAGE_JPEG_SIG_LEN) != 0)
+			continue;
+
+		/* We have a valid header */
+		return G_ICON (_gcr_memory_icon_new_full ("image/jpeg", data,
+		                                          n_data, IMAGE_HEADER_LEN,
+		                                          g_free));
+	}
+
+	return NULL;
+}
+
+GIcon*
+_gcr_gnupg_key_get_icon (GcrGnupgKey *self)
+{
+	g_return_val_if_fail (GCR_IS_GNUPG_KEY (self), NULL);
+
+	if (self->pv->icon == NULL) {
+		self->pv->icon = load_user_attribute_icon (self);
+		if (self->pv->icon == NULL)
+			self->pv->icon = g_themed_icon_new ("folder"); /* TODO: proper icon */
+	}
+
+	return self->pv->icon;
+}
+
 /**
  * _gcr_gnupg_key_get_columns:
  *
@@ -432,12 +507,14 @@ const GcrColumn*
 _gcr_gnupg_key_get_columns (void)
 {
 	static GcrColumn columns[] = {
+		{ "icon", /* later */ 0, /* later */ 0, NULL, 0, NULL, 0 },
 		{ "label", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Name"),
-		  GCR_COLUMN_SORTABLE },
+		  GCR_COLUMN_SORTABLE, NULL, 0 },
 		{ "short-keyid", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Key ID"),
-		  GCR_COLUMN_SORTABLE },
+		  GCR_COLUMN_SORTABLE, NULL, 0 },
 		{ NULL }
 	};
 
+	columns[0].property_type = columns[0].column_type = G_TYPE_ICON;
 	return columns;
 }

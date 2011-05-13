@@ -35,7 +35,7 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	test->record = _gcr_record_parse_colons ("one:tab\\there::four:f\xfc""nf:3533333:-88", -1);
+	test->record = _gcr_record_parse_colons ("one:tab\\there::YW9ldTM4Mzg=:f\xfc""nf:3533333:-88", -1);
 }
 
 static void
@@ -215,6 +215,21 @@ test_get_uint_invalid (Test *test, gconstpointer unused)
 }
 
 static void
+test_get_base64 (Test *test, gconstpointer unused)
+{
+	gchar *value;
+	gsize n_value;
+
+	value = _gcr_record_get_base64 (test->record, 3, &n_value);
+	g_assert (value);
+	egg_assert_cmpsize (n_value, ==, 8);
+	g_assert (memcmp (value, "aoeu3838", n_value) == 0);
+
+	g_free (value);
+}
+
+
+static void
 test_free_null (void)
 {
 	_gcr_record_free (NULL);
@@ -294,6 +309,7 @@ main (int argc, char **argv)
 	g_test_add ("/gcr/record/get_uint", Test, NULL, setup, test_get_uint, teardown);
 	g_test_add ("/gcr/record/get_uint_invalid", Test, NULL, setup, test_get_uint_invalid, teardown);
 	g_test_add ("/gcr/record/get_uint_range", Test, NULL, setup, test_get_uint_range, teardown);
+	g_test_add ("/gcr/record/get_base64", Test, NULL, setup, test_get_base64, teardown);
 	g_test_add ("/gcr/record/get_schema", Test, NULL, setup, test_get_schema, teardown);
 
 	return g_test_run ();
