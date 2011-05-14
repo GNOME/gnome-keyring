@@ -65,7 +65,9 @@ lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
 
 libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
+	gcr-certificate-basics-widget.h gcr-certificate-basics-widget.c \
 	gcr-certificate-chain.c gcr-certificate-chain.h \
+	gcr-certificate-details-widget.h gcr-certificate-details-widget.c \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-debug.c gcr-debug.h \
