@@ -137,6 +137,19 @@ test_keyid (Test *test, gconstpointer unused)
 	gchar *keyid;
 
 	g_object_get (test->key, "keyid", &keyid, NULL);
+	g_assert_cmpstr (keyid, ==, "6C7EE1B8621CC013");
+
+	g_free (keyid);
+
+	g_assert_cmpstr (_gcr_gnupg_key_get_keyid (test->key), ==, "6C7EE1B8621CC013");
+}
+
+static void
+test_short_keyid (Test *test, gconstpointer unused)
+{
+	gchar *keyid;
+
+	g_object_get (test->key, "short-keyid", &keyid, NULL);
 	g_assert_cmpstr (keyid, ==, "621CC013");
 
 	g_free (keyid);
@@ -204,6 +217,7 @@ main (int argc, char **argv)
 	g_test_add ("/gcr/gnupg-key/markup", Test, NULL, setup, test_markup, teardown);
 	g_test_add ("/gcr/gnupg-key/dataset", Test, NULL, setup, test_dataset, teardown);
 	g_test_add ("/gcr/gnupg-key/keyid", Test, NULL, setup, test_keyid, teardown);
+	g_test_add ("/gcr/gnupg-key/short_keyid", Test, NULL, setup, test_short_keyid, teardown);
 	g_test_add ("/gcr/gnupg-key/keyid_for_colons", Test, NULL, setup, test_keyid_for_colons, teardown);
 	g_test_add ("/gcr/gnupg-key/with_secret", Test, NULL, setup, test_with_secret, teardown);
 	g_test_add ("/gcr/gnupg-key/no_change_keyid", Test, NULL, setup, test_no_change_keyid, teardown);
