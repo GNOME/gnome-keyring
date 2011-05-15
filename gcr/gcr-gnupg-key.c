@@ -325,7 +325,7 @@ _gcr_gnupg_key_set_public_dataset (GcrGnupgKey *self, GPtrArray *dataset)
  *
  * Get the colons secret data this key is based on. %NULL if a public key.
  *
- * Returns: (transfer none): An array of GcrColons*.
+ * Returns: (transfer none) (allow-none): An array of GcrColons*.
  */
 GPtrArray*
 _gcr_gnupg_key_get_secret_dataset (GcrGnupgKey *self)
