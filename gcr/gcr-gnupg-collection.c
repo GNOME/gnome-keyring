@@ -37,13 +37,7 @@
 
 enum {
 	PROP_0,
-	PROP_DIRECTORY,
-	PROP_MAIN_CONTEXT
-};
-
-enum {
-	PHASE_PUBLIC_KEYS = 1,
-	PHASE_SECRET_KEYS = 2,
+	PROP_DIRECTORY
 };
 
 struct _GcrGnupgCollectionPrivate {
@@ -172,15 +166,14 @@ _gcr_collection_iface (GcrCollectionIface *iface)
 
 /**
  * _gcr_gnupg_collection_new:
- * @directory: The gnupg home directory, or %NULL
+ * @directory: (allow-none): The gnupg home directory.
  *
  * Create a new GcrGnupgCollection.
  *
  * The gnupg home directory is where the keyring files live. If directory is
  * %NULL then the default gnupg home directory is used.
  *
- * Returns: A newly allocated collection, which should be released with
- *     g_object_unref().
+ * Returns: (transfer full): A newly allocated collection.
  */
 GcrCollection*
 _gcr_gnupg_collection_new (const gchar *directory)
@@ -191,6 +184,22 @@ _gcr_gnupg_collection_new (const gchar *directory)
 }
 
 /*
+ * We have to run the gnupg process twice to list the public and then the
+ * secret keys. These phases are tracked by GcrLoadingPhase. If the first
+ * phase completes successfully (using gpg --list-keys) then we move on to
+ * the second phase where the secret keys are loaded (using gpg --list-secret-keys)
+ *
+ * If a key is loaded as a public key by the public phase, it can be updated by
+ * the secret phase. A key discovered in the secret phase must have a public
+ * counterpart already loaded by the public phase.
+ */
+
+typedef enum {
+	GCR_LOADING_PHASE_PUBLIC = 1,
+	GCR_LOADING_PHASE_SECRET = 2,
+} GcrLoadingPhase;
+
+/*
  * We use @difference to track the keys that were in the collection before
  * the load process, and then remove any not found, at the end of the load
  * process. Strings are directly used from collection->pv->items keys.
@@ -198,7 +207,7 @@ _gcr_gnupg_collection_new (const gchar *directory)
 
 typedef struct {
 	GcrGnupgCollection *collection;       /* reffed pointer back to collection */
-	gint loading_phase;
+	GcrLoadingPhase loading_phase;        /* Whether loading public or private */
 	GPtrArray *dataset;                   /* GcrColons* not yet made into a key */
 	guint spawn_sig;
 	guint child_sig;
@@ -267,7 +276,7 @@ process_dataset_as_secret_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
 
 	/* Don't have this key */
 	if (key == NULL)
-		g_message ("secret key seen but no public key for: %s", keyid);
+		g_message ("Secret key seen but no public key for: %s", keyid);
 
 	/* Tell the private key that it's a secret one */
 	else
@@ -420,11 +429,11 @@ on_spawn_completed (gpointer user_data)
 
 	/* If we completed loading public keys, then go and load secret */
 	switch (load->loading_phase) {
-	case PHASE_PUBLIC_KEYS:
-		load->loading_phase = PHASE_SECRET_KEYS;
+	case GCR_LOADING_PHASE_PUBLIC:
+		load->loading_phase = GCR_LOADING_PHASE_SECRET;
 		spawn_gnupg_list_process (load, res);
 		return;
-	case PHASE_SECRET_KEYS:
+	case GCR_LOADING_PHASE_SECRET:
 		/* continue below */
 		break;
 	default:
@@ -489,10 +498,10 @@ spawn_gnupg_list_process (GcrGnupgCollectionLoad *load, GSimpleAsyncResult *res)
 	g_ptr_array_add (argv, (gpointer)GPG_EXECUTABLE);
 
 	switch (load->loading_phase) {
-	case PHASE_PUBLIC_KEYS:
+	case GCR_LOADING_PHASE_PUBLIC:
 		g_ptr_array_add (argv, (gpointer)"--list-keys");
 		break;
-	case PHASE_SECRET_KEYS:
+	case GCR_LOADING_PHASE_SECRET:
 		g_ptr_array_add (argv, (gpointer)"--list-secret-keys");
 		break;
 	default:
@@ -578,7 +587,7 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	g_simple_async_result_set_op_res_gpointer (res, load,
 	                                           _gcr_gnupg_collection_load_free);
 
-	load->loading_phase = PHASE_PUBLIC_KEYS;
+	load->loading_phase = GCR_LOADING_PHASE_PUBLIC;
 	spawn_gnupg_list_process (load, res);
 
 	g_object_unref (res);

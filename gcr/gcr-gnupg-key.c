@@ -173,26 +173,57 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	gobject_class->set_property = _gcr_gnupg_key_set_property;
 	gobject_class->get_property = _gcr_gnupg_key_get_property;
 
+	/**
+	 * GcrGnupgKey::public-dataset:
+	 *
+	 * Public key data. Should always be present.
+	 */
 	g_object_class_install_property (gobject_class, PROP_PUBLIC_DATASET,
 	         g_param_spec_boxed ("public-dataset", "Public Dataset", "Public Key Colon Dataset",
 	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
+	/**
+	 * GcrGnupgKey::secret-dataset:
+	 *
+	 * Secret key data. The keyid of this data must match public-dataset.
+	 * If present, this key represents a secret key.
+	 */
 	g_object_class_install_property (gobject_class, PROP_SECRET_DATASET,
 	         g_param_spec_boxed ("secret-dataset", "Secret Dataset", "Secret Key Colon Dataset",
 	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
+	/**
+	 * GcrGnupgKey::label:
+	 *
+	 * User readable label for this key.
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	         g_param_spec_string ("label", "Label", "Key label",
 	                              "", G_PARAM_READABLE));
 
+	/**
+	 * GcrGnupgKey::description:
+	 *
+	 * Description of type of key.
+	 */
 	g_object_class_install_property (gobject_class, PROP_DESCRIPTION,
 	         g_param_spec_string ("description", "Description", "Description of object type",
 	                              "", G_PARAM_READABLE));
 
+	/**
+	 * GcrGnupgKey::markup:
+	 *
+	 * User readable markup which contains key label.
+	 */
 	g_object_class_install_property (gobject_class, PROP_MARKUP,
 	         g_param_spec_string ("markup", "Markup", "Markup which describes key",
 	                              "", G_PARAM_READABLE));
 
+	/**
+	 * GcrGnupgKey::keyid:
+	 *
+	 * User readable key identifier.
+	 */
 	g_object_class_install_property (gobject_class, PROP_KEYID,
 	         g_param_spec_string ("keyid", "Key ID", "Display key identifier",
 	                              "", G_PARAM_READABLE));
@@ -201,13 +232,13 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 /**
  * _gcr_gnupg_key_new:
  * @pubset: array of GcrColons* representing public part of key
- * @secset: optional array of GcrColons* representing secret part of key.
+ * @secset: (allow-none): array of GcrColons* representing secret part of key.
  *
  * Create a new GcrGnupgKey for the colons data passed. If the secret part
- * of the key is set, then this represents a secret key.
+ * of the key is set, then this represents a secret key; otherwise it represents
+ * a public key.
  *
- * Returns: A newly allocated key, which should be released with
- *     g_object_unref().
+ * Returns: (transfer full): A newly allocated key.
  */
 GcrGnupgKey*
 _gcr_gnupg_key_new (GPtrArray *pubset, GPtrArray *secset)
@@ -225,7 +256,7 @@ _gcr_gnupg_key_new (GPtrArray *pubset, GPtrArray *secset)
  *
  * Get the colons data this key is based on.
  *
- * Returns: An array of GcrColons*, owned by the key.
+ * Returns: (transfer none): An array of GcrColons*.
  */
 GPtrArray*
 _gcr_gnupg_key_get_public_dataset (GcrGnupgKey *self)
@@ -245,16 +276,14 @@ void
 _gcr_gnupg_key_set_public_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 {
 	GObject *obj;
-	const gchar *old_keyid;
-	const gchar *new_keyid;
 
 	g_return_if_fail (GCR_IS_GNUPG_KEY (self));
 	g_return_if_fail (dataset);
 
 	/* Check that it matches previous */
 	if (self->pv->public_dataset) {
-		old_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
-		new_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
+		const gchar *old_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
+		const gchar *new_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
 
 		if (g_strcmp0 (old_keyid, new_keyid) != 0) {
 			g_warning ("it is an error to change a gnupg key so that the "
@@ -283,7 +312,7 @@ _gcr_gnupg_key_set_public_dataset (GcrGnupgKey *self, GPtrArray *dataset)
  *
  * Get the colons secret data this key is based on. %NULL if a public key.
  *
- * Returns: An array of GcrColons*, owned by the key.
+ * Returns: (transfer none): An array of GcrColons*.
  */
 GPtrArray*
 _gcr_gnupg_key_get_secret_dataset (GcrGnupgKey *self)
@@ -295,7 +324,7 @@ _gcr_gnupg_key_get_secret_dataset (GcrGnupgKey *self)
 /**
  * _gcr_gnupg_key_set_secret_dataset:
  * @self: The key
- * @dataset: The new array of GcrColons*
+ * @dataset: (allow-none): The new array of GcrColons*
  *
  * Set the secret data for this key. %NULL if public key.
  */
@@ -303,15 +332,13 @@ void
 _gcr_gnupg_key_set_secret_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 {
 	GObject *obj;
-	const gchar *pub_keyid;
-	const gchar *sec_keyid;
 
 	g_return_if_fail (GCR_IS_GNUPG_KEY (self));
 
 	/* Check that it matches public key */
 	if (self->pv->public_dataset && dataset) {
-		pub_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
-		sec_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
+		const gchar *pub_keyid = _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
+		const gchar *sec_keyid = _gcr_gnupg_key_get_keyid_for_colons (dataset);
 
 		if (g_strcmp0 (pub_keyid, sec_keyid) != 0) {
 			g_warning ("it is an error to create a gnupg key so that the "
@@ -339,7 +366,7 @@ _gcr_gnupg_key_set_secret_dataset (GcrGnupgKey *self, GPtrArray *dataset)
  *
  * Get the keyid for some colons data.
  *
- * Returns: The keyid, owned by the colons data.
+ * Returns: (transfer none): The keyid.
  */
 const gchar*
 _gcr_gnupg_key_get_keyid_for_colons (GPtrArray *dataset)
@@ -360,7 +387,7 @@ _gcr_gnupg_key_get_keyid_for_colons (GPtrArray *dataset)
  *
  * Get the columns that we should display for gnupg keys.
  *
- * Returns: The columns, NULL terminated, should not be freed.
+ * Returns: (transfer none): The columns, NULL terminated, should not be freed.
  */
 const GcrColumn*
 _gcr_gnupg_key_get_columns (void)
