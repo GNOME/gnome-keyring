@@ -24,6 +24,7 @@
 
 #include "gcr/gcr.h"
 #include "gcr/gcr-gnupg-collection.h"
+#include "gcr/gcr-gnupg-key.h"
 
 #include "egg/egg-testing.h"
 
@@ -32,34 +33,146 @@
 #include <errno.h>
 #include <string.h>
 
-#if 0
 typedef struct {
-
+	GcrGnupgCollection *collection;
+	GHashTable *keys;
+	GAsyncResult *result;
 } Test;
+
+static void
+on_collection_added (GcrCollection *collection, GObject *object, gpointer user_data)
+{
+	Test *test = user_data;
+	GcrGnupgKey *key;
+	const gchar *keyid;
+
+	g_assert (GCR_COLLECTION (test->collection) == collection);
+
+	g_assert (GCR_IS_GNUPG_KEY (object));
+	key = GCR_GNUPG_KEY (object);
+
+	keyid = _gcr_gnupg_key_get_keyid (key);
+	g_assert (keyid);
+	g_assert (!g_hash_table_lookup (test->keys, keyid));
+
+	g_hash_table_insert (test->keys, g_strdup (keyid), key);
+}
+
+static void
+on_collection_removed (GcrCollection *collection, GObject *object, gpointer user_data)
+{
+	Test *test = user_data;
+	GcrGnupgKey *key;
+	const gchar *keyid;
+
+	g_assert (GCR_COLLECTION (test->collection) == collection);
+	g_assert (GCR_IS_GNUPG_KEY (object));
+
+	keyid = _gcr_gnupg_key_get_keyid (GCR_GNUPG_KEY (object));
+	key = g_hash_table_lookup (test->keys, keyid);
+	g_assert (key == GCR_GNUPG_KEY (object));
+
+	if (!g_hash_table_remove (test->keys, keyid))
+		g_assert_not_reached ();
+}
 
 static void
 setup (Test *test, gconstpointer unused)
 {
+	GcrCollection *collection;
+	gchar *directory;
+	gchar *path;
 
+	directory = g_get_current_dir ();
+	path = g_build_filename (directory, "files", "gnupg-homedir", NULL);
+
+	collection = _gcr_gnupg_collection_new (path);
+	test->collection = GCR_GNUPG_COLLECTION (collection);
+
+	test->keys = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	g_signal_connect (collection, "added", G_CALLBACK (on_collection_added), test);
+	g_signal_connect (collection, "removed", G_CALLBACK (on_collection_removed), test);
+
+	g_free (path);
+	g_free (directory);
 }
 
 static void
 teardown (Test *test, gconstpointer unused)
 {
+	g_hash_table_destroy (test->keys);
 
+	if (test->result)
+		g_object_unref (test->result);
+
+	g_object_unref (test->collection);
+	g_assert (!GCR_IS_GNUPG_COLLECTION (test->collection));
 }
-#endif
 
 static void
-test_create (void)
+on_async_ready (GObject *source, GAsyncResult *res, gpointer user_data)
 {
-	GcrCollection *collection;
-
-	collection = _gcr_gnupg_collection_new ("files/gnupg-homedir/");
-
-	g_object_unref (collection);
+	Test *test = user_data;
+	g_assert (G_OBJECT (test->collection) == source);
+	g_assert (test->result == NULL);
+	test->result = g_object_ref (res);
 }
 
+static void
+test_load (Test *test, gconstpointer unused)
+{
+	GError *error = NULL;
+	GcrGnupgKey *key;
+
+	_gcr_gnupg_collection_load_async (test->collection, NULL, on_async_ready, test);
+	egg_test_wait_until (500);
+
+	g_assert (test->result);
+	_gcr_gnupg_collection_load_finish (test->collection, test->result, &error);
+	g_assert_no_error (error);
+
+	/* Werner Koch (a public key) */
+	key = g_hash_table_lookup (test->keys, "5DE249965B0358A2");
+	g_assert (GCR_IS_GNUPG_KEY (key));
+	g_assert (_gcr_gnupg_key_get_secret_dataset (key) == NULL);
+
+	/* Test Number 2 (a secret key)*/
+	key = g_hash_table_lookup (test->keys, "268FEE686262C395");
+	g_assert (GCR_IS_GNUPG_KEY (key));
+	g_assert (_gcr_gnupg_key_get_secret_dataset (key));
+}
+
+static void
+test_reload (Test *test, gconstpointer unused)
+{
+	GError *error = NULL;
+	GcrGnupgKey *key;
+
+	_gcr_gnupg_collection_load_async (test->collection, NULL, on_async_ready, test);
+	egg_test_wait_until (500);
+	g_assert (test->result);
+	_gcr_gnupg_collection_load_finish (test->collection, test->result, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (test->result);
+	test->result = NULL;
+
+	_gcr_gnupg_collection_load_async (test->collection, NULL, on_async_ready, test);
+	egg_test_wait_until (500);
+	g_assert (test->result);
+	_gcr_gnupg_collection_load_finish (test->collection, test->result, &error);
+	g_assert_no_error (error);
+
+	/* Werner Koch (a public key) */
+	key = g_hash_table_lookup (test->keys, "5DE249965B0358A2");
+	g_assert (GCR_IS_GNUPG_KEY (key));
+	g_assert (_gcr_gnupg_key_get_secret_dataset (key) == NULL);
+
+	/* Test Number 2 (a secret key)*/
+	key = g_hash_table_lookup (test->keys, "268FEE686262C395");
+	g_assert (GCR_IS_GNUPG_KEY (key));
+	g_assert (_gcr_gnupg_key_get_secret_dataset (key));
+}
 
 int
 main (int argc, char **argv)
@@ -68,15 +181,14 @@ main (int argc, char **argv)
 
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
+	g_set_prgname ("test-gnupg-collection");
 
 	srcdir = g_getenv ("SRCDIR");
 	if (srcdir && chdir (srcdir) < 0)
 		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
-	g_test_add_func ("/gcr/gnupg-collection/create", test_create);
-#if 0
-	g_test_add ("/gcr/certificate/issuer_dn", Test, NULL, setup, test_issuer_dn, teardown);
-#endif
+	g_test_add ("/gcr/gnupg-collection/load", Test, NULL, setup, test_load, teardown);
+	g_test_add ("/gcr/gnupg-collection/reload", Test, NULL, setup, test_reload, teardown);
 
-	return g_test_run ();
+	return egg_tests_run_in_thread_with_loop ();
 }

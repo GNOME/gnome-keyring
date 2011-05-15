@@ -25,6 +25,8 @@
 
 #include "gcr-colons.h"
 #include "gcr-collection.h"
+#define DEBUG_FLAG GCR_DEBUG_GNUPG
+#include "gcr-debug.h"
 #include "gcr-gnupg-collection.h"
 #include "gcr-gnupg-key.h"
 #include "gcr-internal.h"
@@ -76,6 +78,10 @@ _gcr_gnupg_collection_set_property (GObject *obj, guint prop_id, const GValue *v
 	case PROP_DIRECTORY:
 		g_return_if_fail (!self->pv->directory);
 		self->pv->directory = g_value_dup_string (value);
+		if (self->pv->directory && !g_path_is_absolute (self->pv->directory)) {
+			g_warning ("gnupg collection directory path should be absolute: %s",
+			           self->pv->directory);
+		}
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -210,8 +216,6 @@ typedef struct {
 	GcrLoadingPhase loading_phase;        /* Whether loading public or private */
 	GPtrArray *dataset;                   /* GcrColons* not yet made into a key */
 	guint spawn_sig;
-	guint child_sig;
-	GPid gnupg_pid;
 	GString *out_data;                    /* Pending output not yet parsed into colons */
 	GString *err_data;                    /* Pending errors not yet printed */
 	GHashTable *difference;               /* Hashset gchar *keyid -> gchar *keyid */
@@ -234,12 +238,6 @@ _gcr_gnupg_collection_load_free (gpointer data)
 
 	if (load->spawn_sig)
 		g_source_remove (load->spawn_sig);
-	if (load->child_sig)
-		g_source_remove (load->child_sig);
-	if (load->gnupg_pid) {
-		kill (load->gnupg_pid, SIGTERM);
-		g_spawn_close_pid (load->gnupg_pid);
-	}
 	g_slice_free (GcrGnupgCollectionLoad, load);
 }
 
@@ -256,11 +254,13 @@ process_dataset_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
 
 	/* Already have this key, just update */
 	if (key) {
+		_gcr_debug ("updating public key: %s", keyid);
 		_gcr_gnupg_key_set_public_dataset (key, dataset);
 
 	/* Add a new key */
 	} else {
 		key = _gcr_gnupg_key_new (dataset, NULL);
+		_gcr_debug ("creating public key: %s", keyid);
 		g_hash_table_insert (load->collection->pv->items, g_strdup (keyid), key);
 		gcr_collection_emit_added (GCR_COLLECTION (load->collection), G_OBJECT (key));
 	}
@@ -275,12 +275,14 @@ process_dataset_as_secret_key (GcrGnupgCollectionLoad *load, GPtrArray *dataset,
 	key = g_hash_table_lookup (load->collection->pv->items, keyid);
 
 	/* Don't have this key */
-	if (key == NULL)
+	if (key == NULL) {
 		g_message ("Secret key seen but no public key for: %s", keyid);
 
 	/* Tell the private key that it's a secret one */
-	else
+	} else {
+		_gcr_debug ("adding secret dataset to key: %s", keyid);
 		_gcr_gnupg_key_set_secret_dataset (key, dataset);
+	}
 }
 
 static void
@@ -324,6 +326,8 @@ on_line_parse_output (const gchar *line, gpointer user_data)
 	GcrColons *colons;
 	GQuark schema;
 
+	_gcr_debug ("output: %s", line);
+
 	colons = _gcr_colons_parse (line, -1);
 	if (!colons) {
 		g_warning ("invalid gnupg output line: %s", line);
@@ -337,6 +341,7 @@ on_line_parse_output (const gchar *line, gpointer user_data)
 	 * it's a new key being listed.
 	 */
 	if (schema == GCR_COLONS_SCHEMA_PUB || schema == GCR_COLONS_SCHEMA_SEC) {
+		_gcr_debug ("start of new key");
 		if (load->dataset->len)
 			process_dataset_as_key (load);
 		g_assert (!load->dataset->len);
@@ -430,10 +435,12 @@ on_spawn_completed (gpointer user_data)
 	/* If we completed loading public keys, then go and load secret */
 	switch (load->loading_phase) {
 	case GCR_LOADING_PHASE_PUBLIC:
+		_gcr_debug ("public load phase completed");
 		load->loading_phase = GCR_LOADING_PHASE_SECRET;
 		spawn_gnupg_list_process (load, res);
 		return;
 	case GCR_LOADING_PHASE_SECRET:
+		_gcr_debug ("secret load phase completed");
 		/* continue below */
 		break;
 	default:
@@ -446,6 +453,7 @@ on_spawn_completed (gpointer user_data)
 		object = g_hash_table_lookup (load->collection->pv->items, keyid);
 		if (object != NULL) {
 			g_object_ref (object);
+			_gcr_debug ("removing key no longer present in keyring: %s", (gchar*)keyid);
 			g_hash_table_remove (load->collection->pv->items, keyid);
 			gcr_collection_emit_removed (GCR_COLLECTION (load->collection), object);
 			g_object_unref (object);
@@ -456,17 +464,12 @@ on_spawn_completed (gpointer user_data)
 }
 
 static void
-on_child_exited (GPid pid, gint status, gpointer user_data)
+on_child_exited (GPid pid, gint status, gpointer unused)
 {
-	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
-	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
 	gint code;
 
-	g_return_if_fail (pid == load->gnupg_pid);
-
-	g_spawn_close_pid (load->gnupg_pid);
-	load->gnupg_pid = 0;
-	load->child_sig = 0;
+	_gcr_debug ("process exited: %d", (gint)pid);
+	g_spawn_close_pid (pid);
 
 	if (WIFEXITED (status)) {
 		code = WEXITSTATUS (status);
@@ -493,15 +496,18 @@ spawn_gnupg_list_process (GcrGnupgCollectionLoad *load, GSimpleAsyncResult *res)
 {
 	GError *error = NULL;
 	GPtrArray *argv;
+	GPid pid;
 
 	argv = g_ptr_array_new ();
 	g_ptr_array_add (argv, (gpointer)GPG_EXECUTABLE);
 
 	switch (load->loading_phase) {
 	case GCR_LOADING_PHASE_PUBLIC:
+		_gcr_debug ("starting public load phase");
 		g_ptr_array_add (argv, (gpointer)"--list-keys");
 		break;
 	case GCR_LOADING_PHASE_SECRET:
+		_gcr_debug ("starting secret load phase");
 		g_ptr_array_add (argv, (gpointer)"--list-secret-keys");
 		break;
 	default:
@@ -517,27 +523,28 @@ spawn_gnupg_list_process (GcrGnupgCollectionLoad *load, GSimpleAsyncResult *res)
 	g_ptr_array_add (argv, NULL);
 
 	g_assert (!load->spawn_sig);
-	g_assert (!load->gnupg_pid);
+
+	if (_gcr_debugging) {
+		gchar *command = g_strjoinv (" ", (gchar**)argv->pdata);
+		_gcr_debug ("spawning gnupg process: %s", command);
+		g_free (command);
+	}
 
 	load->spawn_sig = egg_spawn_async_with_callbacks (load->collection->pv->directory,
 	                                                  (gchar**)argv->pdata, NULL,
 	                                                  G_SPAWN_DO_NOT_REAP_CHILD,
-	                                                  &load->gnupg_pid,
-	                                                  &spawn_callbacks,
+	                                                  &pid, &spawn_callbacks,
 	                                                  g_object_ref (res),
 	                                                  NULL, &error);
 
 	if (error) {
+		_gcr_debug ("spawning process failed: %s", error->message);
 		g_simple_async_result_set_from_error (res, error);
 		g_simple_async_result_complete_in_idle (res);
 		g_clear_error (&error);
 	} else {
-		g_assert (!load->child_sig);
-		load->child_sig = g_child_watch_add_full (G_PRIORITY_DEFAULT,
-		                                          load->gnupg_pid,
-		                                          on_child_exited,
-		                                          g_object_ref (res),
-		                                          g_object_unref);
+		_gcr_debug ("process spawned: %d", (gint)pid);
+		g_child_watch_add (pid, on_child_exited, NULL);
 	}
 
 	g_ptr_array_unref (argv);

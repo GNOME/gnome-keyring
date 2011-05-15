@@ -31,6 +31,7 @@ typedef enum {
 	GCR_DEBUG_LIBRARY = 1 << 1,
 	GCR_DEBUG_CERTIFICATE_CHAIN = 1 << 2,
 	GCR_DEBUG_PARSE = 1 << 3,
+	GCR_DEBUG_GNUPG = 1 << 4
 } GcrDebugFlags;
 
 gboolean           _gcr_debug_flag_is_set              (GcrDebugFlags flag);
