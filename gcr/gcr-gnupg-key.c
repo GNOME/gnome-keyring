@@ -31,12 +31,13 @@
 
 enum {
 	PROP_0,
+	PROP_KEYID,
 	PROP_PUBLIC_DATASET,
 	PROP_SECRET_DATASET,
 	PROP_LABEL,
 	PROP_MARKUP,
 	PROP_DESCRIPTION,
-	PROP_KEYID
+	PROP_SHORT_KEYID
 };
 
 struct _GcrGnupgKeyPrivate {
@@ -76,7 +77,7 @@ calculate_markup (GcrGnupgKey *self)
 }
 
 static const gchar *
-calculate_keyid (GcrGnupgKey *self)
+calculate_short_keyid (GcrGnupgKey *self)
 {
 	const gchar *keyid;
 	gsize length;
@@ -143,6 +144,9 @@ _gcr_gnupg_key_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_SECRET_DATASET:
 		g_value_set_boxed (value, self->pv->secret_dataset);
 		break;
+	case PROP_KEYID:
+		g_value_set_string (value, _gcr_gnupg_key_get_keyid (self));
+		break;
 	case PROP_LABEL:
 		g_value_take_string (value, calculate_name (self));
 		break;
@@ -152,8 +156,8 @@ _gcr_gnupg_key_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_MARKUP:
 		g_value_take_string (value, calculate_markup (self));
 		break;
-	case PROP_KEYID:
-		g_value_set_string (value, calculate_keyid (self));
+	case PROP_SHORT_KEYID:
+		g_value_set_string (value, calculate_short_keyid (self));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -193,6 +197,15 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
 	/**
+	 * GcrGnupgKey::keyid:
+	 *
+	 * Key identifier.
+	 */
+	g_object_class_install_property (gobject_class, PROP_KEYID,
+	         g_param_spec_string ("keyid", "Key ID", "Key identifier",
+	                              "", G_PARAM_READABLE));
+
+	/**
 	 * GcrGnupgKey::label:
 	 *
 	 * User readable label for this key.
@@ -220,12 +233,12 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                              "", G_PARAM_READABLE));
 
 	/**
-	 * GcrGnupgKey::keyid:
+	 * GcrGnupgKey::short-keyid:
 	 *
 	 * User readable key identifier.
 	 */
-	g_object_class_install_property (gobject_class, PROP_KEYID,
-	         g_param_spec_string ("keyid", "Key ID", "Display key identifier",
+	g_object_class_install_property (gobject_class, PROP_SHORT_KEYID,
+	         g_param_spec_string ("short-keyid", "Short Key ID", "Display key identifier",
 	                              "", G_PARAM_READABLE));
 }
 
@@ -361,6 +374,19 @@ _gcr_gnupg_key_set_secret_dataset (GcrGnupgKey *self, GPtrArray *dataset)
 }
 
 /**
+ * _gcr_gnupg_key_get_keyid:
+ * @self: The key
+ *
+ * Get the keyid for this key.
+ */
+const gchar*
+_gcr_gnupg_key_get_keyid (GcrGnupgKey *self)
+{
+	g_return_val_if_fail (GCR_IS_GNUPG_KEY (self), NULL);
+	return _gcr_gnupg_key_get_keyid_for_colons (self->pv->public_dataset);
+}
+
+/**
  * _gcr_gnupg_key_get_keyid_for_colons:
  * @dataset: Array of GcrColons*
  *
@@ -395,7 +421,7 @@ _gcr_gnupg_key_get_columns (void)
 	static GcrColumn columns[] = {
 		{ "label", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Name"),
 		  GCR_COLUMN_SORTABLE },
-		{ "keyid", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Key ID"),
+		{ "short-keyid", G_TYPE_STRING, G_TYPE_STRING, NC_("column", "Key ID"),
 		  GCR_COLUMN_SORTABLE },
 		{ NULL }
 	};

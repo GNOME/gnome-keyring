@@ -30,6 +30,7 @@
 #include <glib.h>
 
 #include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct {
@@ -76,6 +77,8 @@ static void
 teardown (Test *test, gconstpointer unused)
 {
 	g_object_unref (test->key);
+	g_assert (!GCR_IS_GNUPG_KEY (test->key));
+
 	g_ptr_array_unref (test->dataset);
 	g_ptr_array_unref (test->pubset);
 	g_ptr_array_unref (test->secset);
@@ -164,6 +167,32 @@ test_with_secret (Test *test, gconstpointer unused)
 	g_object_unref (key);
 }
 
+static void
+test_no_change_keyid (Test *test, gconstpointer unused)
+{
+	if (g_test_trap_fork (50000, G_TEST_TRAP_SILENCE_STDERR)) {
+		/* Changing the keyid. This should fail with a warning */
+		_gcr_gnupg_key_set_public_dataset (test->key, test->pubset);
+		exit (0);
+	}
+
+	g_test_trap_assert_failed ();
+	g_test_trap_assert_stderr ("*fingerprint is no longer the same:*");
+}
+
+static void
+test_secret_mismatched_keyid (Test *test, gconstpointer unused)
+{
+	if (g_test_trap_fork (50000, G_TEST_TRAP_SILENCE_STDERR)) {
+		/* Different keyid for secret part. This should fail with a warning */
+		_gcr_gnupg_key_set_secret_dataset (test->key, test->secset);
+		exit (0);
+	}
+
+	g_test_trap_assert_failed ();
+	g_test_trap_assert_stderr ("*pub and sec parts are not the same:*");
+}
+
 int
 main (int argc, char **argv)
 {
@@ -177,6 +206,8 @@ main (int argc, char **argv)
 	g_test_add ("/gcr/gnupg-key/keyid", Test, NULL, setup, test_keyid, teardown);
 	g_test_add ("/gcr/gnupg-key/keyid_for_colons", Test, NULL, setup, test_keyid_for_colons, teardown);
 	g_test_add ("/gcr/gnupg-key/with_secret", Test, NULL, setup, test_with_secret, teardown);
+	g_test_add ("/gcr/gnupg-key/no_change_keyid", Test, NULL, setup, test_no_change_keyid, teardown);
+	g_test_add ("/gcr/gnupg-key/secret_mismatched_keyid", Test, NULL, setup, test_secret_mismatched_keyid, teardown);
 
 	return g_test_run ();
 }
