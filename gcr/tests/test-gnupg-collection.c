@@ -116,6 +116,7 @@ on_async_ready (GObject *source, GAsyncResult *res, gpointer user_data)
 	g_assert (G_OBJECT (test->collection) == source);
 	g_assert (test->result == NULL);
 	test->result = g_object_ref (res);
+	egg_test_wait_stop ();
 }
 
 static void
