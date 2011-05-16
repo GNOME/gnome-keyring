@@ -86,9 +86,9 @@ typedef enum {
 
 typedef struct _GcrRecord GcrRecord;
 
-#define        GCR_TYPE_RECORD                  (_gcr_record_get_boxed_type ())
+#define        GCR_TYPE_RECORD                  (_gcr_record_get_type ())
 
-GType          _gcr_record_get_boxed_type       (void) G_GNUC_CONST;
+GType          _gcr_record_get_type             (void) G_GNUC_CONST;
 
 GcrRecord*     _gcr_record_copy                 (GcrRecord *record);
 

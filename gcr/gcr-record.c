@@ -39,21 +39,7 @@ struct _GcrRecord {
 	guint n_columns;
 };
 
-GType
-_gcr_record_get_boxed_type (void)
-{
-	static gsize initialization_value = 0;
-	static GType type = 0;
-
-	if (g_once_init_enter (&initialization_value)) {
-		type = g_boxed_type_register_static ("GcrRecord",
-		                                     (GBoxedCopyFunc)_gcr_record_copy,
-		                                     (GBoxedFreeFunc)_gcr_record_free);
-		g_once_init_leave (&initialization_value, 1);
-	}
-
-	return type;
-}
+G_DEFINE_BOXED_TYPE (GcrRecord, _gcr_record, _gcr_record_copy, _gcr_record_free);
 
 GcrRecord*
 _gcr_record_copy (GcrRecord *record)
@@ -205,7 +191,7 @@ gboolean
 _gcr_record_get_uint (GcrRecord *record, guint column, guint *value)
 {
 	const gchar *raw;
-	glong result;
+	gint64 result;
 	gchar *end = NULL;
 
 	g_return_val_if_fail (record, FALSE);
@@ -214,7 +200,7 @@ _gcr_record_get_uint (GcrRecord *record, guint column, guint *value)
 	if (raw == NULL)
 		return FALSE;
 
-	result = strtol (raw, &end, 10);
+	result = g_ascii_strtoll (raw, &end, 10);
 	if (!end || end[0]) {
 		_gcr_debug ("invalid unsigned integer value: %s", raw);
 		return FALSE;
@@ -229,8 +215,6 @@ _gcr_record_get_uint (GcrRecord *record, guint column, guint *value)
 		*value = (guint)result;
 	return TRUE;
 }
-
-
 
 const gchar*
 _gcr_record_get_raw (GcrRecord *record, guint column)

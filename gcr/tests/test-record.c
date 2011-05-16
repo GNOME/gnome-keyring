@@ -248,6 +248,9 @@ test_copy (Test *test, gconstpointer unused)
 		g_assert_cmpstr (_gcr_record_get_raw (copy, i), ==,
 		                 _gcr_record_get_raw (test->record, i));
 	}
+
+	g_assert (_gcr_record_get_raw (copy, count) == NULL);
+	_gcr_record_free (copy);
 }
 
 static void
@@ -265,6 +268,7 @@ test_boxed (Test *test, gconstpointer unused)
 		                 _gcr_record_get_raw (test->record, i));
 	}
 
+	g_assert (_gcr_record_get_raw (copy, count) == NULL);
 	g_boxed_free (GCR_TYPE_RECORD, copy);
 }
 
