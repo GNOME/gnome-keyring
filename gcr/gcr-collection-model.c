@@ -629,11 +629,10 @@ gcr_collection_model_new (GcrCollection *collection, ...)
 
 	va_start (va, collection);
 	while ((arg = va_arg (va, const gchar*)) != NULL) {
+		memset (&column, 0, sizeof (column));
 		column.property_name = g_strdup (arg);
 		column.property_type = va_arg (va, GType);
 		column.column_type = column.property_type;
-		column.reserved = NULL;
-		column.label = NULL;
 		g_array_append_val (array, column);
 	}
 	va_end (va);
@@ -672,6 +671,9 @@ gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *colum
  * This function can only be called once, and only if the model was not created
  * without a set of columns. This function cannot be called after the model
  * has been added to a view.
+ *
+ * The columns are accessed as static data. They should continue to remain
+ * in memory for longer than the GcrCollectionModel object.
  */
 void
 gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *columns)
