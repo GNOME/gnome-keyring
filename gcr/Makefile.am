@@ -132,15 +132,21 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 
 # ----------------------------------------------------------------
 
+libgcr.symbols: .libs/libgcr@GCR_VERSION_SUFFIX@.so
+	nm -D .libs/libgcr@GCR_VERSION_SUFFIX@.so | grep -F ' T ' | \
+		cut -d ' ' -f 3 | sort > $@
+
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
 	$(ui_DATA) \
-	$(conf_DATA)
+	$(conf_DATA) \
+	libgcr.symbols
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	$(pkgconfig_DATA)
 
 DISTCLEANFILES = \
-	$(pkgconfig_DATA)
+	$(pkgconfig_DATA) \
+	libgcr.symbols
