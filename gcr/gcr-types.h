@@ -47,6 +47,14 @@ G_BEGIN_DECLS
 
 GQuark 	            gcr_data_error_get_domain         (void) G_GNUC_CONST;
 
+#ifndef GCR_DISABLE_DEPRECATED
+
+#define             GCR_ERROR                         (gcr_error_get_domain ())
+
+GQuark              gcr_error_get_domain              (void) G_GNUC_CONST;
+
+#endif /* GCR_DISABLE_DEPRECATED */
+
 typedef enum {
 	GCR_ERROR_FAILURE = -1,
 	GCR_ERROR_UNRECOGNIZED = 1,
