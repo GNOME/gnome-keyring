@@ -50,6 +50,7 @@ gcr_certificate_widget_new
 gcr_certificate_widget_set_attributes
 gcr_certificate_widget_set_certificate
 gcr_data_error_get_domain
+gcr_error_get_domain
 gcr_importer_get_parser
 gcr_importer_get_prompt_behavior
 gcr_importer_get_slot
