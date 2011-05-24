@@ -114,6 +114,8 @@ run-tests
 /gcr/tests/frob-key
 /gcr/tests/frob-gnupg-selector
 /gcr/tests/frob-selector
+/gcr/tests/frob-combo-selector
+/gcr/tests/frob-tree-selector
 /gcr/tests/frob-unlock-options
 /gcr/tests/frob-parser
 /gcr/tests/test-certificate

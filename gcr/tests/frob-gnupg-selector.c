@@ -49,7 +49,8 @@ int
 main (int argc, char *argv[])
 {
 	GcrCollection *collection;
-	GcrSelector *selector;
+	GcrTreeSelector *selector;
+	GtkWidget *scroll;
 	GtkDialog *dialog;
 
 	gtk_init (&argc, &argv);
@@ -58,10 +59,15 @@ main (int argc, char *argv[])
 	g_object_ref_sink (dialog);
 
 	collection = _gcr_gnupg_collection_new (NULL);
-	selector = gcr_selector_new (collection, GCR_GNUPG_KEY_COLUMNS, GCR_SELECTOR_MODE_MULTIPLE);
+	selector = gcr_tree_selector_new (collection, GCR_GNUPG_KEY_COLUMNS);
 
-	gtk_widget_show (GTK_WIDGET (selector));
-	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (selector));
+	scroll = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add (GTK_CONTAINER (scroll), GTK_WIDGET (selector));
+
+	gtk_widget_show_all (scroll);
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (scroll));
 
 	_gcr_gnupg_collection_load_async (GCR_GNUPG_COLLECTION (collection), NULL,
 	                                  on_collection_loaded, NULL);

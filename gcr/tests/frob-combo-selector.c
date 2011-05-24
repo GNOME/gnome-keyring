@@ -65,9 +65,10 @@ int
 main (int argc, char *argv[])
 {
 	GcrCollection *collection;
-	GcrSelector *selector;
+	GcrComboSelector *selector;
 	GtkDialog *dialog;
 	GcrParser *parser;
+	GObject *selected;
 	int i;
 
 	gtk_init (&argc, &argv);
@@ -76,7 +77,7 @@ main (int argc, char *argv[])
 	g_object_ref_sink (dialog);
 
 	collection = gcr_simple_collection_new ();
-	selector = gcr_selector_new (collection, GCR_CERTIFICATE_COLUMNS, GCR_SELECTOR_MODE_MULTIPLE);
+	selector = gcr_combo_selector_new (collection);
 
 	gtk_widget_show (GTK_WIDGET (selector));
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (selector));
@@ -99,6 +100,16 @@ main (int argc, char *argv[])
 	g_object_unref (collection);
 
 	gtk_dialog_run (dialog);
+
+	selected = gcr_combo_selector_get_selected (selector);
+	if (selected == NULL) {
+		g_print ("nothing selected\n");
+	} else {
+		gchar *label;
+		g_object_get (selected, "label", &label, NULL);
+		g_print ("selected: %s\n", label);
+	}
+
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 	g_object_unref (dialog);
 

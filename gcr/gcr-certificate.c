@@ -76,7 +76,7 @@
  * GCR_CERTIFICATE_COLUMNS:
  *
  * The columns that are valid for a certificate. This is to be used with
- * the #GcrSelector or #GcrCollectionModel.
+ * the #GcrTreeSelector or #GcrCollectionModel.
  *
  * This is an array of #GcrColumn, owned by the gcr library.
  */

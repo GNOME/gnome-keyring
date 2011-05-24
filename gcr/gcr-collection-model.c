@@ -93,6 +93,12 @@ G_DEFINE_TYPE_WITH_CODE (GcrCollectionModel, gcr_collection_model, G_TYPE_OBJECT
 
 #define UNUSED_VALUE GINT_TO_POINTER (1)
 
+static GHashTable*
+selected_hash_table_new (void)
+{
+	return g_hash_table_new (g_direct_hash, g_direct_equal);
+}
+
 static gint
 on_sequence_compare (gconstpointer a, gconstpointer b, gpointer user_data)
 {
@@ -347,7 +353,7 @@ gcr_collection_model_real_get_value (GtkTreeModel *model, GtkTreeIter *iter,
 	/* The selected column? Last one */
 	if (column_id == self->pv->n_columns - 1) {
 		g_value_init (value, G_TYPE_BOOLEAN);
-		g_value_set_boolean (value, gcr_collection_model_get_selected (self, iter));
+		g_value_set_boolean (value, gcr_collection_model_is_selected (self, iter));
 		return;
 	}
 
@@ -777,7 +783,7 @@ gcr_collection_model_toggle_selected (GcrCollectionModel *self, GtkTreeIter *ite
 	g_return_if_fail (G_IS_OBJECT (object));
 
 	if (!self->pv->selected)
-		self->pv->selected = g_hash_table_new (g_direct_hash, g_direct_equal);
+		self->pv->selected = selected_hash_table_new ();
 
 	if (g_hash_table_lookup (self->pv->selected, object))
 		g_hash_table_remove (self->pv->selected, object);
@@ -786,7 +792,7 @@ gcr_collection_model_toggle_selected (GcrCollectionModel *self, GtkTreeIter *ite
 }
 
 /**
- * gcr_collection_model_set_selected:
+ * gcr_collection_model_change_selected:
  * @self: The model
  * @iter: The row
  * @selected: Whether the row should be selected or not.
@@ -794,7 +800,7 @@ gcr_collection_model_toggle_selected (GcrCollectionModel *self, GtkTreeIter *ite
  * Set whether a given row is toggled selected or not.
  */
 void
-gcr_collection_model_set_selected (GcrCollectionModel *self, GtkTreeIter *iter, gboolean selected)
+gcr_collection_model_change_selected (GcrCollectionModel *self, GtkTreeIter *iter, gboolean selected)
 {
 	GtkTreePath *path;
 	GObject *object;
@@ -820,7 +826,7 @@ gcr_collection_model_set_selected (GcrCollectionModel *self, GtkTreeIter *iter, 
 }
 
 /**
- * gcr_collection_model_get_selected:
+ * gcr_collection_model_is_selected:
  * @self: The model
  * @iter: The row
  *
@@ -829,7 +835,7 @@ gcr_collection_model_set_selected (GcrCollectionModel *self, GtkTreeIter *iter, 
  * Returns: Whether the row has been selected.
  */
 gboolean
-gcr_collection_model_get_selected (GcrCollectionModel *self, GtkTreeIter *iter)
+gcr_collection_model_is_selected (GcrCollectionModel *self, GtkTreeIter *iter)
 {
 	GObject *object;
 
@@ -842,4 +848,58 @@ gcr_collection_model_get_selected (GcrCollectionModel *self, GtkTreeIter *iter)
 		return FALSE;
 
 	return g_hash_table_lookup (self->pv->selected, object) ? TRUE : FALSE;
+}
+
+GList*
+gcr_collection_model_get_selected_objects (GcrCollectionModel *self)
+{
+	GHashTableIter iter;
+	GList *result = NULL;
+	gpointer key;
+
+	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), NULL);
+
+	if (!self->pv->selected)
+		return NULL;
+
+	g_hash_table_iter_init (&iter, self->pv->selected);
+	while (g_hash_table_iter_next (&iter, &key, NULL))
+		result = g_list_prepend (result, key);
+	return result;
+}
+
+void
+gcr_collection_model_set_selected_objects (GcrCollectionModel *self, GList *selected)
+{
+	GHashTable *newly_selected;
+	GList *old_selection;
+	GtkTreeIter iter;
+	GList *l;
+
+	old_selection = gcr_collection_model_get_selected_objects (self);
+	newly_selected = selected_hash_table_new ();
+
+	/* Select all the objects in selected which aren't already selected */
+	for (l = selected; l; l = g_list_next (l)) {
+		if (!self->pv->selected || !g_hash_table_lookup (self->pv->selected, l->data)) {
+			if (!gcr_collection_model_iter_for_object (self, l->data, &iter))
+				g_return_if_reached ();
+			gcr_collection_model_change_selected (self, &iter, TRUE);
+		}
+
+		/* Note that we've seen this one */
+		g_hash_table_insert (newly_selected, l->data, UNUSED_VALUE);
+	}
+
+	/* Unselect all the objects which aren't supposed to be selected */
+	for (l = old_selection; l; l = g_list_next (l)) {
+		if (!g_hash_table_lookup (newly_selected, l->data)) {
+			if (!gcr_collection_model_iter_for_object (self, l->data, &iter))
+				g_return_if_reached ();
+			gcr_collection_model_change_selected (self, &iter, FALSE);
+		}
+	}
+
+	g_list_free (old_selection);
+	g_hash_table_destroy (newly_selected);
 }

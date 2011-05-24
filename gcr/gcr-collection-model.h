@@ -72,11 +72,16 @@ gint                  gcr_collection_model_column_for_selected (GcrCollectionMod
 void                  gcr_collection_model_toggle_selected     (GcrCollectionModel *self,
                                                                 GtkTreeIter *iter);
 
-void                  gcr_collection_model_set_selected        (GcrCollectionModel *self,
+void                  gcr_collection_model_change_selected     (GcrCollectionModel *self,
                                                                 GtkTreeIter *iter,
                                                                 gboolean selected);
 
-gboolean              gcr_collection_model_get_selected        (GcrCollectionModel *self,
+gboolean              gcr_collection_model_is_selected         (GcrCollectionModel *self,
                                                                 GtkTreeIter *iter);
+
+GList*                gcr_collection_model_get_selected_objects  (GcrCollectionModel *self);
+
+void                  gcr_collection_model_set_selected_objects  (GcrCollectionModel *self,
+                                                                  GList *selected);
 
 #endif /* __GCR_COLLECTION_MODEL_H__ */

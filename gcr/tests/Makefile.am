@@ -48,8 +48,9 @@ EXTRA_DIST = \
 
 noinst_PROGRAMS = \
 	frob-certificate \
+	frob-combo-selector \
 	frob-gnupg-selector \
-	frob-parser \
 	frob-key \
-	frob-selector \
+	frob-tree-selector \
+	frob-parser \
 	frob-unlock-options

@@ -30,10 +30,12 @@
 	</part>
 
 	<part id="widgets">
+		<title>Widgets</title>
 		<xi:include href="xml/gcr-certificate-widget.xml"/>
 		<xi:include href="xml/gcr-key-widget.xml"/>
 		<xi:include href="xml/gcr-column.xml"/>
-		<xi:include href="xml/gcr-selector.xml"/>
+		<xi:include href="xml/gcr-combo-selector.xml"/>
+		<xi:include href="xml/gcr-tree-selector.xml"/>
 		<xi:include href="xml/gcr-renderer.xml"/>
 		<xi:include href="xml/gcr-viewer.xml"/>
 		<chapter>
