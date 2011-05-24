@@ -25,8 +25,6 @@
 #include "gcr-renderer.h"
 #include "gcr-viewer.h"
 
-#include "egg/egg-hex.h"
-
 #include "gck/gck.h"
 
 #include <gdk/gdk.h>
