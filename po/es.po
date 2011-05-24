@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-05-09 09:40+0000\n"
+"POT-Creation-Date: 2011-05-24 07:37+0000\n"
 "PO-Revision-Date: 2011-05-09 14:23+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -101,8 +101,8 @@ msgstr "Depósito de claves de GNOME: agente GPG"
 msgid "GPG Password Agent"
 msgstr "Agente de contraseñas GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:310
-#: ../gcr/gcr-key-renderer.c:315
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
+#: ../gcr/gcr-key-renderer.c:316
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -173,7 +173,7 @@ msgstr "Nombre común"
 msgid "Surname"
 msgstr "Apellido"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:476
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:473
 msgid "Serial Number"
 msgstr "Número de serie"
 
@@ -229,7 +229,7 @@ msgstr "Calificador del nombre de dominio"
 msgid "Pseudonym"
 msgstr "Seudónimo"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:306
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
 msgid "RSA"
 msgstr "RSA"
 
@@ -245,7 +245,7 @@ msgstr "MD5 con RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 con RSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:308
+#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:309
 msgid "DSA"
 msgstr "DSA"
 
@@ -265,7 +265,7 @@ msgstr "Error inesperado en waitpid() (%s)"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:278
+#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:424
 msgctxt "column"
 msgid "Name"
 msgstr "Nombre"
@@ -282,7 +282,7 @@ msgid "Expires"
 msgstr "Caduca"
 
 #: ../gcr/gcr-certificate.c:1061 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:98 ../gcr/gcr-parser.c:275
+#: ../gcr/gcr-certificate-renderer.c:99 ../gcr/gcr-parser.c:275
 msgid "Certificate"
 msgstr "Certificado"
 
@@ -325,104 +325,111 @@ msgstr "Extensión"
 msgid "Identifier"
 msgstr "Identificador"
 
-#: ../gcr/gcr-certificate-renderer.c:136
+#. TODO: Parsing of extensions that we understand
+#: ../gcr/gcr-certificate-renderer.c:135
 msgid "Value"
 msgstr "Valor"
 
-#: ../gcr/gcr-certificate-renderer.c:142
+#: ../gcr/gcr-certificate-renderer.c:140
 msgid "Critical"
 msgstr "Crítico"
 
-#: ../gcr/gcr-certificate-renderer.c:142
+#: ../gcr/gcr-certificate-renderer.c:140
 msgid "Yes"
 msgstr "Sí"
 
-#: ../gcr/gcr-certificate-renderer.c:142
+#: ../gcr/gcr-certificate-renderer.c:140
 msgid "No"
 msgstr "No"
 
-#: ../gcr/gcr-certificate-renderer.c:213
+#: ../gcr/gcr-certificate-renderer.c:211
 msgid "Couldn't export the certificate."
 msgstr "No se pudo exportar el certificado."
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:434
 msgid "Identity"
 msgstr "Identidad"
 
-#: ../gcr/gcr-certificate-renderer.c:440
+#: ../gcr/gcr-certificate-renderer.c:438
 msgid "Verified by"
 msgstr "Verificado por"
 
-#: ../gcr/gcr-certificate-renderer.c:447
+#: ../gcr/gcr-certificate-renderer.c:445
 msgid "Expires"
 msgstr "Caduca"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:457
+#: ../gcr/gcr-certificate-renderer.c:455
 msgid "Subject Name"
 msgstr "Nombre del asunto"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:461
+#: ../gcr/gcr-certificate-renderer.c:459
 msgid "Issuer Name"
 msgstr "Nombre del emisor"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:465
+#: ../gcr/gcr-certificate-renderer.c:463
 msgid "Issued Certificate"
 msgstr "Certificado emitido"
 
-#: ../gcr/gcr-certificate-renderer.c:470
+#: ../gcr/gcr-certificate-renderer.c:468
 msgid "Version"
 msgstr "Versión"
 
-#: ../gcr/gcr-certificate-renderer.c:484
+#: ../gcr/gcr-certificate-renderer.c:480
 msgid "Not Valid Before"
 msgstr "No es válido antes de"
 
-#: ../gcr/gcr-certificate-renderer.c:489
+#: ../gcr/gcr-certificate-renderer.c:485
 msgid "Not Valid After"
 msgstr "No es válido después de"
 
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:490
+#| msgid "Certificate files"
+msgid "Certificate Fingerprints"
+msgstr "Huellas de certificados"
+
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:494 ../gcr/gcr-certificate-renderer.c:510
+#: ../gcr/gcr-certificate-renderer.c:496 ../gcr/gcr-certificate-renderer.c:508
 msgid "Signature"
 msgstr "Firma"
 
-#: ../gcr/gcr-certificate-renderer.c:498
+#: ../gcr/gcr-certificate-renderer.c:500
 msgid "Signature Algorithm"
 msgstr "Algoritmo de firma"
 
-#: ../gcr/gcr-certificate-renderer.c:503
+#: ../gcr/gcr-certificate-renderer.c:504
 msgid "Signature Parameters"
 msgstr "Parámetros de la firma"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:515
+#: ../gcr/gcr-certificate-renderer.c:512
 msgid "Public Key Info"
 msgstr "Información de la clave pública"
 
-#: ../gcr/gcr-certificate-renderer.c:520
+#: ../gcr/gcr-certificate-renderer.c:517
 msgid "Key Algorithm"
 msgstr "Clave del algoritmo"
 
-#: ../gcr/gcr-certificate-renderer.c:526
+#: ../gcr/gcr-certificate-renderer.c:522
 msgid "Key Parameters"
 msgstr "Parámetros de la clave"
 
-#: ../gcr/gcr-certificate-renderer.c:533
+#: ../gcr/gcr-certificate-renderer.c:527
 msgid "Key Size"
 msgstr "Tamaño de la clave"
 
-#: ../gcr/gcr-certificate-renderer.c:541 ../gcr/gcr-key-renderer.c:290
+#: ../gcr/gcr-certificate-renderer.c:534
+#| msgid "SHA1 Fingerprint"
+msgid "Key SHA1 Fingerprint"
+msgstr "Huella de clave SHA1"
+
+#: ../gcr/gcr-certificate-renderer.c:540 ../gcr/gcr-key-renderer.c:291
 #: ../gcr/gcr-parser.c:278
 msgid "Public Key"
 msgstr "Clave privada"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:546
-msgid "Fingerprints"
-msgstr "Huellas"
 
 #: ../gcr/gcr-display-view.c:283
 msgid "_Details"
@@ -440,11 +447,11 @@ msgstr "Importar en:"
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../gcr/gcr-gnupg-key.c:140
+#: ../gcr/gcr-gnupg-key.c:154
 msgid "PGP Key"
 msgstr "Clave GPG"
 
-#: ../gcr/gcr-gnupg-key.c:280
+#: ../gcr/gcr-gnupg-key.c:426
 msgctxt "column"
 msgid "Key ID"
 msgstr "ID de la clave"
@@ -513,49 +520,57 @@ msgid "Choose a location to store the imported certificates/keys."
 msgstr ""
 "Elija una ubicación donde almacenar los certificados/claves importados."
 
-#: ../gcr/gcr-key-renderer.c:83
+#: ../gcr/gcr-key-renderer.c:82
 msgid "Key"
 msgstr "Clave"
 
-#: ../gcr/gcr-key-renderer.c:279
+#: ../gcr/gcr-key-renderer.c:280
 msgid "Private RSA Key"
 msgstr "Clave privada RSA"
 
-#: ../gcr/gcr-key-renderer.c:281
+#: ../gcr/gcr-key-renderer.c:282
 msgid "Private DSA Key"
 msgstr "Clave privada DSA"
 
-#: ../gcr/gcr-key-renderer.c:283 ../gcr/gcr-parser.c:272
+#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:272
 msgid "Private Key"
 msgstr "Clave privada"
 
-#: ../gcr/gcr-key-renderer.c:286 ../gcr/gcr-key-renderer.c:288
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
 msgid "Public DSA Key"
 msgstr "Clave pública DSA"
 
-#: ../gcr/gcr-key-renderer.c:297
+#: ../gcr/gcr-key-renderer.c:298
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d bit"
 msgstr[1] "%d bits"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:299
 msgid "Strength"
 msgstr "Fortaleza"
 
-#: ../gcr/gcr-key-renderer.c:311
+#: ../gcr/gcr-key-renderer.c:312
 msgid "Algorithm"
 msgstr "Algoritmo"
 
-#: ../gcr/gcr-key-renderer.c:318
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Size"
 msgstr "Tamaño"
 
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Fingerprint"
-msgstr "Huella"
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:323
+msgid "Fingerprints"
+msgstr "Huellas"
+
+#: ../gcr/gcr-key-renderer.c:328
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:334
+msgid "SHA256"
+msgstr "SHA256"
 
 #: ../gcr/gcr-parser.c:1711
 msgid "Unrecognized or unsupported data."
@@ -1162,6 +1177,9 @@ msgstr "Contraseña _antigua:"
 msgid "_Password:"
 msgstr "_Contraseña:"
 
+#~ msgid "Fingerprint"
+#~ msgstr "Huella"
+
 #~ msgid "Insufficient memory available on device"
 #~ msgstr "No hay memoria suficiente en el dispositivo"
 
@@ -1219,9 +1237,6 @@ msgstr "_Contraseña:"
 
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "Unidad organizativa (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "Huella SHA1"
 
 #~ msgid "SSL Client Certificate"
 #~ msgstr "Certificado de cliente SSL"
