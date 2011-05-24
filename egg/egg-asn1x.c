@@ -1263,6 +1263,7 @@ anode_encode_tlv_and_enc (GNode *node, gsize n_data, EggAsn1xEncoder encoder,
 	case TYPE_TIME:
 	case TYPE_ENUMERATED:
 	case TYPE_GENERALSTRING:
+	case TYPE_NULL:
 		tlv.cls = ASN1_CLASS_UNIVERSAL;
 		break;
 	/* Container types */
@@ -1656,6 +1657,7 @@ anode_encode_prepare (GNode *node, gboolean want)
 	case TYPE_ENUMERATED:
 	case TYPE_GENERALSTRING:
 	case TYPE_ANY:
+	case TYPE_NULL:
 		return anode_encode_prepare_simple (node, want);
 		break;
 	case TYPE_SEQUENCE:
@@ -2451,6 +2453,17 @@ egg_asn1x_set_boolean (GNode *node, gboolean value)
 	return TRUE;
 }
 
+gboolean
+egg_asn1x_set_null (GNode *node)
+{
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_NULL, FALSE);
+
+	/* Encode zero characters */
+	anode_encode_tlv_and_enc (node, 0, anode_encoder_simple, "", NULL);
+	return TRUE;
+}
+
 GQuark
 egg_asn1x_get_enumerated (GNode *node)
 {
@@ -2606,7 +2619,7 @@ egg_asn1x_get_integer_as_raw (GNode *node, EggAllocator allocator, gsize *n_data
 }
 
 gboolean
-egg_asn1x_set_integer_as_raw (GNode *node, gpointer data, gsize n_data, GDestroyNotify destroy)
+egg_asn1x_set_integer_as_raw (GNode *node, gconstpointer data, gsize n_data, GDestroyNotify destroy)
 {
 	gboolean sign;
 	guchar *p;
@@ -2624,7 +2637,7 @@ egg_asn1x_set_integer_as_raw (GNode *node, gpointer data, gsize n_data, GDestroy
 		return FALSE;
 	}
 
-	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, data, destroy);
+	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, (gpointer)data, destroy);
 	return TRUE;
 }
 

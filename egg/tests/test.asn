@@ -8,6 +8,8 @@ TestInteger ::= INTEGER
 
 TestBoolean ::= BOOLEAN
 
+TestNull ::= NULL
+
 TestOctetString ::= OCTET STRING
 
 TestGeneralized ::= GeneralizedTime

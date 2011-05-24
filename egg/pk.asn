@@ -32,6 +32,8 @@ RSAPrivateKey ::= SEQUENCE {
 Version ::= INTEGER { two-prime(0), multi(1) }
 -- version must be multi if otherPrimeInfos present --
 
+RSAParameters ::= NULL
+
 OtherPrimeInfos ::= SEQUENCE SIZE(1..MAX) OF OtherPrimeInfo
 
 OtherPrimeInfo ::= SEQUENCE {

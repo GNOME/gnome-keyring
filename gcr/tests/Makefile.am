@@ -24,6 +24,7 @@ TEST_PROGS = \
 	test-simple-certificate \
 	test-certificate \
 	test-certificate-chain \
+	test-fingerprint \
 	test-pkcs11-certificate \
 	test-trust \
 	test-parser \
