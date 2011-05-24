@@ -107,7 +107,11 @@ egg_unix_credentials_read (int sock, pid_t *pid, uid_t *uid)
 
 	{
 #ifdef SO_PEERCRED
+#ifndef __OpenBSD__
 		struct ucred cr;   
+#else
+		struct sockpeercred cr;
+#endif
 		socklen_t cr_len = sizeof (cr);
 		
 		if (getsockopt (sock, SOL_SOCKET, SO_PEERCRED, &cr, &cr_len) == 0 &&
