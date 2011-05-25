@@ -4,8 +4,8 @@
 # Copyright (C) 2006 The Free Software Foundation.
 #
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
@@ -13,14 +13,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-05-24 07:37+0000\n"
-"PO-Revision-Date: 2011-05-09 14:23+0200\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"PO-Revision-Date: 2011-05-24 10:01+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
@@ -424,7 +424,7 @@ msgstr "Tamaño de la clave"
 #: ../gcr/gcr-certificate-renderer.c:534
 #| msgid "SHA1 Fingerprint"
 msgid "Key SHA1 Fingerprint"
-msgstr "Huella de clave SHA1"
+msgstr "Huella de la clave SHA1"
 
 #: ../gcr/gcr-certificate-renderer.c:540 ../gcr/gcr-key-renderer.c:291
 #: ../gcr/gcr-parser.c:278
