@@ -1,3 +1,7 @@
+Changes in version 3.0.3 are:
+ * Build fixes on OpenBSD.
+ * Don't prompt multiple times for simultaneous unlocking of keyrings.
+
 Changes in version 3.0.2 are:
  * Add documentation images for gcr widgets.
  * Translation fixes.
