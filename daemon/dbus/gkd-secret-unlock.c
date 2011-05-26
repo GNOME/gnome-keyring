@@ -45,6 +45,13 @@
 
 #include <string.h>
 
+/*
+ * We try to serialize unlock requests, so the user doesn't get prompted
+ * multiple times for the same thing. There are two queues:
+ *  - self->queued: A queue of object paths per unlock requests.
+ *  - unlock_prompt_queue: A queue of unlock requests ready to prompt.
+ */
+
 enum {
 	PROP_0,
 	PROP_CALLER,
@@ -74,6 +81,7 @@ G_DEFINE_TYPE_WITH_CODE (GkdSecretUnlock, gkd_secret_unlock, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
 
 static guint unique_prompt_number = 0;
+static GQueue unlock_prompt_queue = G_QUEUE_INIT;
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -118,6 +126,7 @@ common_unlock_attributes (GckAttributes *attrs, GckObject *collection)
 static gboolean
 mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 {
+	GkdSecretUnlock *other;
 	DBusMessage *signal;
 	DBusMessageIter iter;
 	dbus_bool_t bval;
@@ -151,6 +160,14 @@ mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 
 	gkd_secret_service_send (self->service, signal);
 	dbus_message_unref (signal);
+
+	/* Fire off the next item in the unlock prompt queue */
+	other = g_queue_pop_head (&unlock_prompt_queue);
+	if (other != NULL) {
+		perform_next_unlock (other);
+		g_object_unref (other);
+	}
+
 	return TRUE;
 }
 
@@ -158,9 +175,18 @@ static void
 on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 {
 	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (user_data);
+	GkdSecretUnlock *other;
 	GckObject *cred;
 	GError *error = NULL;
 
+	/* We should be at the front of the unlock queue, pop ourselves */
+	other = g_queue_pop_head (&unlock_prompt_queue);
+	if (other == self)
+		g_object_unref (other);
+	else
+		g_warning ("unlock prompt queue is out of sync with prompts");
+
+	/* Now process the results */
 	cred = gck_session_create_object_finish (GCK_SESSION (object), res, &error);
 
 	/* Successfully authentication */
@@ -200,9 +226,11 @@ perform_next_unlock (GkdSecretUnlock *self)
 	GckAttributes *template;
 	GckSession *session;
 	gboolean locked;
+	gboolean proceed;
 	gchar *objpath;
 
-	while (!self->current) {
+	for (;;) {
+		g_assert (!self->current);
 		objpath = g_queue_pop_head (self->queued);
 
 		/* Nothing more to prompt for? */
@@ -229,18 +257,37 @@ perform_next_unlock (GkdSecretUnlock *self)
 			continue;
 		}
 
-		/* The various unlock options */
-		template = gck_attributes_new ();
-		common_unlock_attributes (template, collection);
-		gck_attributes_add_data (template, CKA_VALUE, NULL, 0);
+		/* Add ourselves to the unlock prompt queue */
+		proceed = g_queue_is_empty (&unlock_prompt_queue);
+		g_queue_push_tail (&unlock_prompt_queue, g_object_ref (self));
 
-		session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
-		gck_session_create_object_async (session, template, self->cancellable, on_unlock_complete,
-		                                 g_object_ref (self));
-		gck_attributes_unref (template);
+		/*
+		 * Proceed with this unlock request. The on_unlock_complete callback
+		 * pops us back off the unlock prompt queue
+		 */
+		if (proceed) {
+			template = gck_attributes_new ();
+			common_unlock_attributes (template, collection);
+			gck_attributes_add_data (template, CKA_VALUE, NULL, 0);
+
+			session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
+			gck_session_create_object_async (session, template, self->cancellable, on_unlock_complete,
+							 g_object_ref (self));
+			gck_attributes_unref (template);
+			self->current = objpath;
+			break;
+		}
 
 		g_object_unref (collection);
-		self->current = objpath;
+
+		/*
+		 * Already have one unlock request going on. Just wait around
+		 * and this function will be called again later.
+		 */
+		if (!proceed) {
+			g_queue_push_head (self->queued, objpath);
+			break;
+		}
 	}
 }
 
@@ -373,6 +420,9 @@ static void
 gkd_secret_unlock_finalize (GObject *obj)
 {
 	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
+
+	if (g_queue_find (&unlock_prompt_queue, self))
+		g_warning ("unlock queue is not in sync with prompting");
 
 	if (self->queued) {
 		while (!g_queue_is_empty (self->queued))

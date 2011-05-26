@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 
 #include "gcr-certificate.h"
+#include "gcr-certificate-widget.h"
 #include "gcr-types.h"
 
 G_BEGIN_DECLS

@@ -72,7 +72,9 @@ lib_LTLIBRARIES = libgcr@GCR_VERSION_SUFFIX@.la
 
 libgcr@GCR_VERSION_SUFFIX@_la_SOURCES = \
 	gcr-certificate.c gcr-certificate.h \
+	gcr-certificate-basics-widget.h gcr-certificate-basics-widget.c \
 	gcr-certificate-chain.c gcr-certificate-chain.h \
+	gcr-certificate-details-widget.h gcr-certificate-details-widget.c \
 	gcr-certificate-renderer.c gcr-certificate-renderer.h \
 	gcr-certificate-exporter.c gcr-certificate-exporter.h \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
@@ -147,15 +149,24 @@ pkgconfig_DATA = gcr-$(GCR_MAJOR).pc
 gcr-$(GCR_MAJOR).pc: gcr.pc
 	cp gcr.pc gcr-$(GCR_MAJOR).pc
 
+
+# ----------------------------------------------------------------
+
+libgcr.symbols: .libs/libgcr@GCR_VERSION_SUFFIX@.so
+	nm -D .libs/libgcr@GCR_VERSION_SUFFIX@.so | grep -F ' T ' | \
+		cut -d ' ' -f 3 | sort > $@
+
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
 	$(ui_DATA) \
-	$(conf_DATA)
+	$(conf_DATA) \
+	libgcr.symbols
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	$(pkgconfig_DATA)
 
 DISTCLEANFILES = \
-	$(pkgconfig_DATA)
+	$(pkgconfig_DATA) \
+	libgcr.symbols
