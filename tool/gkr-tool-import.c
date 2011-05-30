@@ -34,7 +34,7 @@ static gchar **import_files = NULL;
 
 static GOptionEntry import_entries[] = {
 	GKR_TOOL_BASIC_OPTIONS
-	{ G_OPTION_REMAINING, 0, G_OPTION_FLAG_FILENAME, G_OPTION_ARG_FILENAME_ARRAY, &import_files, "Filename", NULL },
+	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &import_files, "Filename", NULL },
 	{ NULL }
 };
 

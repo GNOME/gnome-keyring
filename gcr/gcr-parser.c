@@ -2127,7 +2127,7 @@ gcr_parser_parse_stream (GcrParser *self, GInputStream *input, GCancellable *can
 	GcrParsing *parsing;
 
 	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
-	g_return_val_if_fail (G_IS_INPUT_STREAM (self), FALSE);
+	g_return_val_if_fail (G_IS_INPUT_STREAM (input), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
 	parsing = gcr_parsing_new (self, input, cancellable);

@@ -902,7 +902,7 @@ void
 gcr_importer_listen (GcrImporter *self, GcrParser *parser)
 {
 	g_return_if_fail (GCR_IS_IMPORTER (self));
-	g_return_if_fail (GCR_IS_PARSER (self));
+	g_return_if_fail (GCR_IS_PARSER (parser));
 
 	/* Listen in to the parser */
 	g_signal_connect_object (parser, "parsed", G_CALLBACK (on_parser_parsed), self, 0);
