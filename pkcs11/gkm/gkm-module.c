@@ -301,6 +301,20 @@ unregister_apartment (GkmModule *self, Apartment *apt)
 	g_assert (apt);
 	g_assert (GKM_IS_MODULE (self));
 
+	switch (apt->logged_in) {
+	case CKU_NONE:
+		break;
+	case CKU_USER:
+		gkm_module_logout_user (self, apt->apt_id);
+		break;
+	case CKU_SO:
+		gkm_module_logout_so (self, apt->apt_id);
+		break;
+	default:
+		g_return_if_reached ();
+		break;
+	}
+
 	if (!g_hash_table_remove (self->pv->apartments_by_id, &(apt->apt_id)))
 		g_assert_not_reached ();
 }
