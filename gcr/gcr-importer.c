@@ -97,6 +97,7 @@ struct _GcrImporterPrivate {
 	GByteArray *buffer;
 	GckSession *session;
 	GQueue queue;
+	gboolean any_private;
 
 	/* Extra async stuff */
 	GAsyncReadyCallback callback;
@@ -136,6 +137,7 @@ cleanup_state_data (GcrImporter *self)
 	while ((attrs = g_queue_pop_head (&self->pv->queue)) != NULL)
 		gck_attributes_unref (attrs);
 	g_assert (g_queue_is_empty (&self->pv->queue));
+	self->pv->any_private = FALSE;
 
 	if (self->pv->cancel)
 		g_object_unref (self->pv->cancel);
@@ -376,6 +378,7 @@ on_open_session (GObject *obj, GAsyncResult *res, gpointer user_data)
 static void
 state_open_session (GcrImporter *self, gboolean async)
 {
+	guint options = GCK_SESSION_READ_WRITE;
 	GckSession *session;
 	GError *error = NULL;
 	
@@ -384,12 +387,14 @@ state_open_session (GcrImporter *self, gboolean async)
 		next_state (self, state_failure);
 		
 	} else {
-		
+		if (self->pv->any_private)
+			options |= GCK_SESSION_LOGIN_USER;
+
 		if (async) {
-			gck_slot_open_session_async (self->pv->slot, GCK_SESSION_READ_WRITE, self->pv->cancel,
+			gck_slot_open_session_async (self->pv->slot, options, self->pv->cancel,
 			                             on_open_session, self);
 		} else {
-			session = gck_slot_open_session_full (self->pv->slot, GCK_SESSION_READ_WRITE, 0, NULL, NULL,
+			session = gck_slot_open_session_full (self->pv->slot, options, 0, NULL, NULL,
 			                                      self->pv->cancel, &error);
 			complete_open_session (self, session, error);
 		}
@@ -902,7 +907,7 @@ void
 gcr_importer_listen (GcrImporter *self, GcrParser *parser)
 {
 	g_return_if_fail (GCR_IS_IMPORTER (self));
-	g_return_if_fail (GCR_IS_PARSER (self));
+	g_return_if_fail (GCR_IS_PARSER (parser));
 
 	/* Listen in to the parser */
 	g_signal_connect_object (parser, "parsed", G_CALLBACK (on_parser_parsed), self, 0);
@@ -921,8 +926,15 @@ gcr_importer_listen (GcrImporter *self, GcrParser *parser)
 void
 gcr_importer_queue (GcrImporter *self, const gchar *label, GckAttributes *attrs)
 {
+	gboolean is_private;
+
 	g_return_if_fail (GCR_IS_IMPORTER (self));
 	g_return_if_fail (attrs);
+
+	if (!gck_attributes_find_boolean (attrs, CKA_PRIVATE, &is_private))
+		is_private = FALSE;
+	if (is_private)
+		self->pv->any_private = TRUE;
 
 	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
 	g_signal_emit (self, signals[QUEUED], 0, label, attrs);

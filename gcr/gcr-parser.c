@@ -306,6 +306,14 @@ parsed_ulong (GcrParser *self, CK_ATTRIBUTE_TYPE type, gulong value)
 	gck_attributes_add_ulong (self->pv->parsed_attrs, type, value);
 }
 
+static void
+parsed_boolean (GcrParser *self, CK_ATTRIBUTE_TYPE type, gboolean value)
+{
+	g_assert (GCR_IS_PARSER (self));
+	g_assert (self->pv->parsed_attrs);
+	gck_attributes_add_boolean (self->pv->parsed_attrs, type, value);
+}
+
 static gint
 enum_next_password (GcrParser *self, PasswordState *state, const gchar **password)
 {
@@ -379,6 +387,7 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_RSA);
+	parsed_boolean (self, CKA_PRIVATE, CK_TRUE);
 	res = GCR_ERROR_FAILURE;
 
 	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), &version))
@@ -426,6 +435,7 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
+	parsed_boolean (self, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
 	if (!parsed_asn1_attribute (self, asn, data, n_data, "p", CKA_PRIME) ||
@@ -460,6 +470,7 @@ parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n
 
 	parsed_clear (self, CKO_PRIVATE_KEY);
 	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
+	parsed_boolean (self, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
 	if (!parsed_asn1_attribute (self, asn_params, params, n_params, "p", CKA_PRIME) ||
@@ -2127,7 +2138,7 @@ gcr_parser_parse_stream (GcrParser *self, GInputStream *input, GCancellable *can
 	GcrParsing *parsing;
 
 	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
-	g_return_val_if_fail (G_IS_INPUT_STREAM (self), FALSE);
+	g_return_val_if_fail (G_IS_INPUT_STREAM (input), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
 	parsing = gcr_parsing_new (self, input, cancellable);
