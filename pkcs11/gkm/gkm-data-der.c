@@ -957,8 +957,8 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	init_quarks ();
 
 	/* Make sure the encryption algorithm works */
-	g_return_val_if_fail (gcry_cipher_algo_info (OID_PKCS12_PBE_3DES_SHA1,
-	                                             GCRYCTL_TEST_ALGO, NULL, 0), NULL);
+	g_return_val_if_fail (gcry_cipher_algo_info (gcry_cipher_map_name (g_quark_to_string (OID_PKCS12_PBE_3DES_SHA1)),
+	                                             GCRYCTL_TEST_ALGO, NULL, 0) == 0, NULL);
 
 	/* The encryption algorithm */
 	if(!egg_asn1x_set_oid_as_quark (egg_asn1x_node (asn, "encryptionAlgorithm", "algorithm", NULL),
