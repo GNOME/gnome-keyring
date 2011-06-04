@@ -21,6 +21,7 @@
 
 #include "gcr-certificate.h"
 #include "gcr-certificate-exporter.h"
+#include "gcr-certificate-extensions.h"
 #include "gcr-certificate-renderer.h"
 #include "gcr-display-view.h"
 #include "gcr-fingerprint.h"
@@ -75,6 +76,12 @@ G_DEFINE_TYPE_WITH_CODE (GcrCertificateRenderer, gcr_certificate_renderer, G_TYP
 	G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_renderer_certificate_iface_init);
 );
 
+static GQuark OID_BASIC_CONSTRAINTS = 0;
+static GQuark OID_EXTENDED_KEY_USAGE = 0;
+static GQuark OID_SUBJECT_KEY_IDENTIFIER = 0;
+static GQuark OID_KEY_USAGE = 0;
+static GQuark OID_SUBJECT_ALT_NAME = 0;
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */
@@ -100,6 +107,173 @@ calculate_label (GcrCertificateRenderer *self)
 }
 
 static gboolean
+append_extension_basic_constraints (GcrCertificateRenderer *self, GcrDisplayView *view,
+                                    gconstpointer data, gsize n_data)
+{
+	GcrRenderer *renderer = GCR_RENDERER (self);
+	gboolean is_ca = FALSE;
+	gint path_len = -1;
+	gchar *number;
+
+	if (!_gcr_certificate_extension_basic_constraints (data, n_data, &is_ca, &path_len))
+		return FALSE;
+
+	_gcr_display_view_append_heading (view, renderer, _("Basic Constraints"));
+
+	_gcr_display_view_append_value (view, renderer, _("Certificate Authority"),
+	                                is_ca ? _("Yes") : _("No"), FALSE);
+
+	number = g_strdup_printf ("%d", path_len);
+	_gcr_display_view_append_value (view, renderer, _("Max Path Length"),
+	                                path_len < 0 ? _("Unlimited") : number, FALSE);
+	g_free (number);
+
+	return TRUE;
+}
+
+static gboolean
+append_extension_extended_key_usage (GcrCertificateRenderer *self, GcrDisplayView *view,
+                                     gconstpointer data, gsize n_data)
+{
+	GcrRenderer *renderer = GCR_RENDERER (self);
+	GQuark *oids;
+	GString *text;
+	guint i;
+
+	oids = _gcr_certificate_extension_extended_key_usage (data, n_data);
+	if (oids == NULL)
+		return FALSE;
+
+	_gcr_display_view_append_heading (view, renderer, _("Extended Key Usage"));
+
+	text = g_string_new ("");
+	for (i = 0; oids[i] != 0; i++) {
+		if (i > 0)
+			g_string_append_unichar (text, GCR_DISPLAY_VIEW_LINE_BREAK);
+		g_string_append (text, egg_oid_get_description (oids[i]));
+	}
+
+	g_free (oids);
+
+	_gcr_display_view_append_value (view, renderer, _("Allowed Purposes"),
+	                                text->str, FALSE);
+
+	g_string_free (text, TRUE);
+
+	return TRUE;
+}
+
+static gboolean
+append_extension_subject_key_identifier (GcrCertificateRenderer *self, GcrDisplayView *view,
+                                         gconstpointer data, gsize n_data)
+{
+	GcrRenderer *renderer = GCR_RENDERER (self);
+	gpointer keyid;
+	gsize n_keyid;
+
+	keyid = _gcr_certificate_extension_subject_key_identifier (data, n_data, &n_keyid);
+	if (keyid == NULL)
+		return FALSE;
+
+	_gcr_display_view_append_heading (view, renderer, _("Subject Key Identifier"));
+	_gcr_display_view_append_hex (view, renderer, _("Key Identifier"), keyid, n_keyid);
+
+	g_free (keyid);
+
+	return TRUE;
+}
+
+static const struct {
+	guint usage;
+	const gchar *description;
+} usage_descriptions[] = {
+	{ GCR_KEY_USAGE_DIGITAL_SIGNATURE, N_("Digital signature") },
+	{ GCR_KEY_USAGE_KEY_ENCIPHERMENT, N_("Key encipherment") },
+	{ GCR_KEY_USAGE_DATA_ENCIPHERMENT, N_("Data encipherment") },
+	{ GCR_KEY_USAGE_KEY_AGREEMENT, N_("Key agreement") },
+	{ GCR_KEY_USAGE_KEY_CERT_SIGN, N_("Certificate signature") },
+	{ GCR_KEY_USAGE_CRL_SIGN, N_("Revocation list signature") }
+};
+
+static gboolean
+append_extension_key_usage (GcrCertificateRenderer *self, GcrDisplayView *view,
+                            gconstpointer data, gsize n_data)
+{
+	GcrRenderer *renderer = GCR_RENDERER (self);
+	gulong key_usage;
+	GString *text;
+	guint i;
+
+	if (!_gcr_certificate_extension_key_usage (data, n_data, &key_usage))
+		return FALSE;
+
+	text = g_string_new ("");
+
+	for (i = 0; i < G_N_ELEMENTS (usage_descriptions); i++) {
+		if (key_usage & usage_descriptions[i].usage) {
+			if (text->len > 0)
+				g_string_append_unichar (text, GCR_DISPLAY_VIEW_LINE_BREAK);
+			g_string_append (text, gettext (usage_descriptions[i].description));
+		}
+	}
+
+	_gcr_display_view_append_heading (view, renderer, _("Key Usage"));
+	_gcr_display_view_append_value (view, renderer, _("Usages"), text->str, FALSE);
+
+	g_string_free (text, TRUE);
+
+	return TRUE;
+}
+
+static gboolean
+append_extension_subject_alt_name (GcrCertificateRenderer *self, GcrDisplayView *view,
+                                   gconstpointer data, gsize n_data)
+{
+	GcrRenderer *renderer = GCR_RENDERER (self);
+	GArray *general_names;
+	GcrGeneralName *general;
+	guint i;
+
+	general_names = _gcr_certificate_extension_subject_alt_name (data, n_data);
+	if (general_names == NULL)
+		return FALSE;
+
+	_gcr_display_view_append_heading (view, renderer, _("Subject Alternative Names"));
+
+	for (i = 0; i < general_names->len; i++) {
+		general = &g_array_index (general_names, GcrGeneralName, i);
+		if (general->display == NULL)
+			_gcr_display_view_append_hex (view, renderer, general->description,
+			                              general->raw, general->n_raw);
+		else
+			_gcr_display_view_append_value (view, renderer, general->description,
+			                                general->display, FALSE);
+	}
+
+	_gcr_general_names_free (general_names);
+
+	return TRUE;
+}
+
+
+static gboolean
+append_extension_hex (GcrCertificateRenderer *self, GcrDisplayView *view,
+                      GQuark oid, gconstpointer data, gsize n_data)
+{
+	GcrRenderer *renderer = GCR_RENDERER (self);
+	const gchar *text;
+
+	_gcr_display_view_append_heading (view, renderer, _("Extension"));
+
+	/* Extension type */
+	text = egg_oid_get_description (oid);
+	_gcr_display_view_append_value (view, renderer, _("Identifier"), text, FALSE);
+	_gcr_display_view_append_hex (view, renderer, _("Value"), data, n_data);
+
+	return TRUE;
+}
+
+static gboolean
 append_extension (GcrCertificateRenderer *self, GcrDisplayView *view,
                   GNode *asn, const guchar *data, gsize n_data, gint index)
 {
@@ -108,8 +282,8 @@ append_extension (GcrCertificateRenderer *self, GcrDisplayView *view,
 	GQuark oid;
 	gsize n_value;
 	const guchar *value;
-	const gchar *text;
 	gboolean critical;
+	gboolean ret = FALSE;
 
 	/* Make sure it is present */
 	node = egg_asn1x_node (asn, "tbsCertificate", "extensions", index, NULL);
@@ -120,26 +294,32 @@ append_extension (GcrCertificateRenderer *self, GcrDisplayView *view,
 	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (node, "extnID", NULL));
 	g_return_val_if_fail (oid, FALSE);
 
-	_gcr_display_view_append_heading (view, renderer, _("Extension"));
-
-
-	/* Extension type */
-	text = egg_oid_get_description (oid);
-	_gcr_display_view_append_value (view, renderer, _("Identifier"), text, FALSE);
-
-
 	/* Extension value */
 	value = egg_asn1x_get_raw_value (egg_asn1x_node (node, "extnValue", NULL), &n_value);
 
-	/* TODO: Parsing of extensions that we understand */
-	_gcr_display_view_append_hex (view, renderer, _("Value"), value, n_value);
+	/* The custom parsers */
+	if (oid == OID_BASIC_CONSTRAINTS)
+		ret = append_extension_basic_constraints (self, view, value, n_value);
+	else if (oid == OID_EXTENDED_KEY_USAGE)
+		ret = append_extension_extended_key_usage (self, view, value, n_value);
+	else if (oid == OID_SUBJECT_KEY_IDENTIFIER)
+		ret = append_extension_subject_key_identifier (self, view, value, n_value);
+	else if (oid == OID_KEY_USAGE)
+		ret = append_extension_key_usage (self, view, value, n_value);
+	else if (oid == OID_SUBJECT_ALT_NAME)
+		ret = append_extension_subject_alt_name (self, view, value, n_value);
 
+	/* Otherwise the default raw display */
+	if (ret == FALSE)
+		ret = append_extension_hex (self, view, oid, value, n_value);
 
 	/* Critical */
-	if (egg_asn1x_get_boolean (egg_asn1x_node (node, "critical", NULL), &critical))
-		_gcr_display_view_append_value (view, renderer, _("Critical"), critical ? _("Yes") : _("No"), FALSE);
+	if (ret == TRUE && egg_asn1x_get_boolean (egg_asn1x_node (node, "critical", NULL), &critical)) {
+		_gcr_display_view_append_value (view, renderer, _("Critical"),
+		                                critical ? _("Yes") : _("No"), FALSE);
+	}
 
-	return TRUE;
+	return ret;
 }
 
 typedef struct _on_parsed_dn_args {
@@ -335,6 +515,12 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckAttributes *registered;
+
+	OID_SUBJECT_KEY_IDENTIFIER = g_quark_from_static_string ("2.5.29.14");
+	OID_BASIC_CONSTRAINTS = g_quark_from_static_string ("2.5.29.19");
+	OID_EXTENDED_KEY_USAGE = g_quark_from_static_string ("2.5.29.37");
+	OID_KEY_USAGE = g_quark_from_static_string ("2.5.29.15");
+	OID_SUBJECT_ALT_NAME = g_quark_from_static_string ("2.5.29.17");
 
 	gcr_certificate_renderer_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrCertificateRendererPrivate));
