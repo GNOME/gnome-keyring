@@ -42,7 +42,7 @@ enum {
 	PROP_SLOT_ID,
 	PROP_APARTMENT,
 	PROP_HANDLE,
-	PROP_READ_ONLY,
+	PROP_FLAGS,
 	PROP_MANAGER,
 	PROP_LOGGED_IN
 };
@@ -58,7 +58,7 @@ struct _GkmSessionPrivate {
 	GkmStore *store;
 
 	CK_USER_TYPE logged_in;
-	gboolean read_only;
+	CK_ULONG flags;
 
 	CK_NOTIFY notify_callback;
 	CK_VOID_PTR application_ptr;
@@ -285,7 +285,7 @@ lookup_object_from_handle (GkmSession *self, CK_OBJECT_HANDLE handle,
 			if (!gkm_object_is_transient (object))
 				if (gkm_module_get_write_protected (self->pv->module))
 					return CKR_TOKEN_WRITE_PROTECTED;
-			if (self->pv->read_only)
+			if (gkm_session_is_read_only (self))
 				return CKR_SESSION_READ_ONLY;
 		}
 	}
@@ -381,7 +381,7 @@ gkm_session_init (GkmSession *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_SESSION, GkmSessionPrivate);
 	self->pv->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gkm_util_dispose_unref);
-	self->pv->read_only = TRUE;
+	self->pv->flags = 0;
 
 	/* Create the store and register attributes */
 	self->pv->store = GKM_STORE (gkm_memory_store_new ());
@@ -462,8 +462,8 @@ gkm_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 		self->pv->handle = g_value_get_ulong (value);
 		g_return_if_fail (self->pv->handle != 0);
 		break;
-	case PROP_READ_ONLY:
-		self->pv->read_only = g_value_get_boolean (value);
+	case PROP_FLAGS:
+		self->pv->flags = g_value_get_ulong (value);
 		break;
 	case PROP_LOGGED_IN:
 		gkm_session_set_logged_in (self, g_value_get_ulong (value));
@@ -496,8 +496,8 @@ gkm_session_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_HANDLE:
 		g_value_set_ulong (value, gkm_session_get_handle (self));
 		break;
-	case PROP_READ_ONLY:
-		g_value_set_boolean (value, gkm_session_get_read_only (self));
+	case PROP_FLAGS:
+		g_value_set_ulong (value, self->pv->flags);
 		break;
 	case PROP_LOGGED_IN:
 		g_value_set_ulong (value, gkm_session_get_logged_in (self));
@@ -542,9 +542,9 @@ gkm_session_class_init (GkmSessionClass *klass)
 	         g_param_spec_ulong ("apartment", "Apartment", "Apartment this session is opened on",
 	                             0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (gobject_class, PROP_READ_ONLY,
-	         g_param_spec_boolean ("read-only", "Read Only", "Whether a read-only session or not",
-	                               TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property(gobject_class, PROP_FLAGS,
+	         g_param_spec_ulong ("flags", "Flags", "Flags for the session",
+	                             0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_LOGGED_IN,
 	         g_param_spec_ulong ("logged-in", "Logged in", "Whether this session is logged in or not",
@@ -635,10 +635,17 @@ gkm_session_set_crypto_state (GkmSession *self, gpointer state,
 }
 
 gboolean
-gkm_session_get_read_only (GkmSession *self)
+gkm_session_is_read_only (GkmSession *self)
 {
 	g_return_val_if_fail (GKM_IS_SESSION (self), TRUE);
-	return self->pv->read_only;
+	return (self->pv->flags & CKF_RW_SESSION) ? FALSE : TRUE;
+}
+
+gboolean
+gkm_session_is_for_application (GkmSession *self)
+{
+	g_return_val_if_fail (GKM_IS_SESSION (self), TRUE);
+	return (self->pv->flags & CKF_G_APPLICATION_SESSION) ? TRUE : FALSE;
 }
 
 CK_RV
@@ -837,7 +844,7 @@ gkm_session_complete_object_creation (GkmSession *self, GkmTransaction *transact
 			gkm_transaction_fail (transaction, CKR_TOKEN_WRITE_PROTECTED);
 			return;
 		}
-		else if (self->pv->read_only) {
+		else if (gkm_session_is_read_only (self)) {
 			gkm_transaction_fail (transaction, CKR_SESSION_READ_ONLY);
 			return;
 		}
@@ -900,14 +907,12 @@ gkm_session_C_GetSessionInfo(GkmSession* self, CK_SESSION_INFO_PTR info)
 
 	info->slotID = self->pv->slot_id;
 	if (self->pv->logged_in == CKU_USER)
-		info->state = self->pv->read_only ? CKS_RO_USER_FUNCTIONS : CKS_RW_USER_FUNCTIONS;
+		info->state = gkm_session_is_read_only (self) ? CKS_RO_USER_FUNCTIONS : CKS_RW_USER_FUNCTIONS;
 	else if (self->pv->logged_in == CKU_SO)
 		info->state = CKS_RW_SO_FUNCTIONS;
 	else
-		info->state = self->pv->read_only ? CKS_RO_PUBLIC_SESSION : CKS_RW_PUBLIC_SESSION;
-	info->flags = CKF_SERIAL_SESSION;
-	if (!self->pv->read_only)
-		info->flags |= CKF_RW_SESSION;
+		info->state = gkm_session_is_read_only (self) ? CKS_RO_PUBLIC_SESSION : CKS_RW_PUBLIC_SESSION;
+	info->flags = CKF_SERIAL_SESSION | self->pv->flags;
 	info->ulDeviceError = 0;
 
 	return CKR_OK;

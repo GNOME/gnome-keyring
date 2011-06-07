@@ -156,6 +156,8 @@ gkm_credential_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTR
 {
 	GkmCredential *self = GKM_CREDENTIAL (base);
 	CK_OBJECT_HANDLE handle;
+	gconstpointer value;
+	gsize n_value;
 
 	switch (attr->type) {
 
@@ -170,7 +172,15 @@ gkm_credential_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTR
 		return gkm_attribute_set_ulong (attr, handle);
 
 	case CKA_VALUE:
-		return CKR_ATTRIBUTE_SENSITIVE;
+		if (gkm_session_is_for_application (session))
+			return CKR_ATTRIBUTE_SENSITIVE;
+		if (!self->pv->secret) {
+			value = NULL;
+			n_value = 0;
+		} else {
+			value = gkm_secret_get (self->pv->secret, &n_value);
+		}
+		return gkm_attribute_set_data (attr, value, n_value);
 	};
 
 	return GKM_OBJECT_CLASS (gkm_credential_parent_class)->get_attribute (base, session, attr);

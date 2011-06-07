@@ -26,12 +26,15 @@
 #include "mock-module.h"
 #include "mock-locked-object.h"
 
+#include "egg/egg-testing.h"
+
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-credential.h"
 #include "gkm/gkm-object.h"
 #include "gkm/gkm-secret.h"
 #include "gkm/gkm-session.h"
 #include "gkm/gkm-module.h"
+#include "gkm/gkm-test.h"
 
 #include "pkcs11i.h"
 
@@ -294,6 +297,62 @@ test_connect_object (Test *test, gconstpointer unused)
 	g_object_unref (cred);
 }
 
+static void
+test_value_is_accessible_to_daemon (Test *test, gconstpointer unused)
+{
+	GkmCredential *cred;
+	gchar buffer[20];
+	CK_ATTRIBUTE attr;
+	CK_RV rv;
+
+	rv = gkm_credential_create (test->module, NULL, NULL, (guchar*)"mock", 4, &cred);
+	g_assert (rv == CKR_OK);
+	g_assert (cred);
+
+	attr.type = CKA_VALUE;
+	attr.pValue = buffer;
+	attr.ulValueLen = sizeof (buffer);
+
+	rv = gkm_object_get_attribute (GKM_OBJECT (cred), test->session, &attr);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+	egg_assert_cmpmem ("mock", 4, ==, attr.pValue, attr.ulValueLen);
+
+	g_object_unref (cred);
+}
+
+static void
+test_value_is_inaccessible_to_applications (Test *test, gconstpointer unused)
+{
+	GkmCredential *cred;
+	CK_G_APPLICATION app;
+	gchar buffer[20];
+	CK_ATTRIBUTE attr;
+	CK_SESSION_HANDLE handle;
+	GkmSession *session;
+	CK_RV rv;
+
+	memset (&app, 0, sizeof (app));
+	rv = gkm_module_C_OpenSession (test->module, 1, CKF_SERIAL_SESSION | CKF_G_APPLICATION_SESSION, &app, NULL, &handle);
+	gkm_assert_cmprv (rv, ==, CKR_OK);
+
+	session = gkm_module_lookup_session (test->module, handle);
+	g_assert (session);
+
+	rv = gkm_credential_create (test->module, NULL, NULL, (guchar*)"mock", 4, &cred);
+	g_assert (rv == CKR_OK);
+	g_assert (cred);
+
+	attr.type = CKA_VALUE;
+	attr.pValue = buffer;
+	attr.ulValueLen = sizeof (buffer);
+
+	rv = gkm_object_get_attribute (GKM_OBJECT (cred), session, &attr);
+	gkm_assert_cmprv (rv, ==, CKR_ATTRIBUTE_SENSITIVE);
+
+	g_object_unref (cred);
+}
+
+
 int
 main (int argc, char **argv)
 {
@@ -309,6 +368,8 @@ main (int argc, char **argv)
 	g_test_add ("/gkm/credential/login_property", Test, NULL, setup, test_login_property, teardown);
 	g_test_add ("/gkm/credential/data", Test, NULL, setup, test_data, teardown);
 	g_test_add ("/gkm/credential/connect_object", Test, NULL, setup, test_connect_object, teardown);
+	g_test_add ("/gkm/credential/value_is_accessible_to_daemon", Test, NULL, setup, test_value_is_accessible_to_daemon, teardown);
+	g_test_add ("/gkm/credential/value_is_inaccessible_to_applications", Test, NULL, setup, test_value_is_inaccessible_to_applications, teardown);
 
 	return g_test_run ();
 }

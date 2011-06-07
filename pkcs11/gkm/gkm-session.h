@@ -68,7 +68,9 @@ GkmModule*               gkm_session_get_module                         (GkmSess
 
 GkmManager*              gkm_session_get_manager                        (GkmSession *self);
 
-gboolean                 gkm_session_get_read_only                      (GkmSession *self);
+gboolean                 gkm_session_is_read_only                       (GkmSession *self);
+
+gboolean                 gkm_session_is_for_application                 (GkmSession *self);
 
 gulong                   gkm_session_get_logged_in                      (GkmSession *self);
 

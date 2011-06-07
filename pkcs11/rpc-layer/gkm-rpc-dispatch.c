@@ -950,6 +950,14 @@ rpc_C_OpenSession (CallState *cs)
 
 	/* Slot id becomes appartment so lower layers can tell clients apart. */
 
+	/*
+	 * IMPORTANT: When we open sessions on behalf of a client caller
+	 * we always specify CKF_G_APPLICATION_SESSION. This allows the module
+	 * to know whether they're talking to the daemon or a client app.
+	 *
+	 * This is a security feature.
+	 */
+
 	BEGIN_CALL (C_OpenSession);
 		IN_ULONG (slot_id);
 		IN_ULONG (flags);

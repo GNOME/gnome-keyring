@@ -1148,7 +1148,6 @@ gkm_module_C_OpenSession (GkmModule *self, CK_SLOT_ID id, CK_FLAGS flags, CK_VOI
 {
 	CK_G_APPLICATION_PTR app;
 	CK_SESSION_HANDLE handle;
-	gboolean read_only;
 	GkmSession *session;
 	Apartment *apt = NULL;
 
@@ -1189,9 +1188,8 @@ gkm_module_C_OpenSession (GkmModule *self, CK_SLOT_ID id, CK_FLAGS flags, CK_VOI
 
 	/* Make and register a new session */
 	handle = gkm_module_next_handle (self);
-	read_only = !(flags & CKF_RW_SESSION);
 	session = g_object_new (GKM_TYPE_SESSION, "slot-id", apt->slot_id, "apartment", apt->apt_id,
-	                        "read-only", read_only, "handle", handle, "module", self,
+	                        "flags", flags, "handle", handle, "module", self,
 	                        "manager", apt->session_manager, "logged-in", apt->logged_in, NULL);
 	apt->sessions = g_list_prepend (apt->sessions, session);
 
@@ -1348,7 +1346,7 @@ gkm_module_C_Login (GkmModule *self, CK_SESSION_HANDLE handle, CK_USER_TYPE user
 
 		/* Can't login as SO if read-only sessions exist */
 		for (l = apt->sessions; l; l = g_list_next (l)) {
-			if (gkm_session_get_read_only (l->data))
+			if (gkm_session_is_read_only (l->data))
 				return CKR_SESSION_READ_ONLY_EXISTS;
 		}
 
