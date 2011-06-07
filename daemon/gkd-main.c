@@ -69,7 +69,7 @@
 #define  STDERR  2
 
 #ifndef HAVE_SOCKLEN_T
-#define socklen_t int
+typedef int socklen_t;
 #endif
 
 #define GKD_COMP_KEYRING    "keyring"

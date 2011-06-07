@@ -140,6 +140,7 @@ AC_TRY_COMPILE([
 ],[
 socklen_t foo;
 foo = 1;
+foo = foo;
 ],have_socklen_t=yes,have_socklen_t=no)
 AC_MSG_RESULT($have_socklen_t)
 
