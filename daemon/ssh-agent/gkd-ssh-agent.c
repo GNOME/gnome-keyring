@@ -41,7 +41,7 @@
 #include "egg/egg-secure-memory.h"
 
 #ifndef HAVE_SOCKLEN_T
-#define socklen_t int
+typedef int socklen_t;
 #endif
 
 /* The loaded PKCS#11 modules */
