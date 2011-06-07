@@ -316,7 +316,7 @@ AC_SUBST(P11_KIT_CFLAGS)
 AC_SUBST(P11_KIT_LIBS)
 
 AC_MSG_CHECKING([where to put pkcs11 module configuration])
-P11_SYSTEM_MODULES=`$PKG_CONFIG p11-kit --variable=p11_system_modules`
+P11_SYSTEM_MODULES=`$PKG_CONFIG p11-kit-1 --variable=p11_system_modules`
 AC_MSG_RESULT($P11_SYSTEM_MODULES)
 AC_SUBST(P11_SYSTEM_MODULES)
 
