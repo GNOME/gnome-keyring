@@ -6,11 +6,11 @@
 # Torstein Adolf Winterseth <kvikende@fsfe.org>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.91.x\n"
+"Project-Id-Version: gnome-keyring 3.1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-04 12:47+0200\n"
-"PO-Revision-Date: 2011-05-04 12:49+0200\n"
-"Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
+"POT-Creation-Date: 2011-06-09 14:39+0200\n"
+"PO-Revision-Date: 2011-06-09 14:43+0200\n"
+"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
 "MIME-Version: 1.0\n"
@@ -98,8 +98,8 @@ msgstr "GNOME nøkkelring: GPG-agent"
 msgid "GPG Password Agent"
 msgstr "GPG passordagent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:310
-#: ../gcr/gcr-key-renderer.c:315
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
+#: ../gcr/gcr-key-renderer.c:316
 msgid "Unknown"
 msgstr "Ukjent"
 
@@ -170,7 +170,7 @@ msgstr "Vanlig navn"
 msgid "Surname"
 msgstr "Etternavn"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:476
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:659
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -226,29 +226,50 @@ msgstr "DN-kvalifikator"
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:306
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 med RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 med RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 med DSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:308
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:309
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 med DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Tjenerautentisering"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Klientautentisering"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Kodesignering"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "Beskyttelse av e-post"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Tidsstempling"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -262,7 +283,7 @@ msgstr "Uventet feil i waitpid() (%s)"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389
+#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:424
 msgctxt "column"
 msgid "Name"
 msgstr "Navn"
@@ -279,7 +300,7 @@ msgid "Expires"
 msgstr "Utløper"
 
 #: ../gcr/gcr-certificate.c:1061 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:98 ../gcr/gcr-parser.c:275
+#: ../gcr/gcr-certificate-renderer.c:106 ../gcr/gcr-parser.c:275
 msgid "Certificate"
 msgstr "Sertifikat"
 
@@ -314,112 +335,220 @@ msgstr "Sertifikatfiler"
 msgid "PEM files"
 msgstr "PEM-filer"
 
+#: ../gcr/gcr-certificate-extensions.c:135
+msgid "Other Name"
+msgstr "Annet navn"
+
+#: ../gcr/gcr-certificate-extensions.c:142
+msgid "Email"
+msgstr "E-post"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:158
+msgid "X400 Address"
+msgstr "X400-adresse"
+
+#: ../gcr/gcr-certificate-extensions.c:165
+msgid "Directory Name"
+msgstr "Navn på katalog"
+
+#: ../gcr/gcr-certificate-extensions.c:173
+msgid "EDI Party Name"
+msgstr "Navn på EDI-partner"
+
+#: ../gcr/gcr-certificate-extensions.c:180
+msgid "URI"
+msgstr "URI"
+
+#: ../gcr/gcr-certificate-extensions.c:188
+msgid "IP Address"
+msgstr "IP-adresse"
+
+#: ../gcr/gcr-certificate-extensions.c:196
+msgid "Registered ID"
+msgstr "Registrert ID"
+
+#: ../gcr/gcr-certificate-renderer.c:121
+msgid "Basic Constraints"
+msgstr "Grunnleggende begrensninger"
+
 #: ../gcr/gcr-certificate-renderer.c:123
-msgid "Extension"
-msgstr "Utvidelse"
+msgid "Certificate Authority"
+msgstr "Sertifikatautoritet"
 
-#: ../gcr/gcr-certificate-renderer.c:128
-msgid "Identifier"
-msgstr "Identifikator"
-
-#: ../gcr/gcr-certificate-renderer.c:136
-msgid "Value"
-msgstr "Verdi"
-
-#: ../gcr/gcr-certificate-renderer.c:142
-msgid "Critical"
-msgstr "Kritisk"
-
-#: ../gcr/gcr-certificate-renderer.c:142
+#: ../gcr/gcr-certificate-renderer.c:124 ../gcr/gcr-certificate-renderer.c:319
 msgid "Yes"
 msgstr "Ja"
 
-#: ../gcr/gcr-certificate-renderer.c:142
+#: ../gcr/gcr-certificate-renderer.c:124 ../gcr/gcr-certificate-renderer.c:319
 msgid "No"
 msgstr "Nei"
 
-#: ../gcr/gcr-certificate-renderer.c:213
+#: ../gcr/gcr-certificate-renderer.c:127
+msgid "Max Path Length"
+msgstr "Maksimal lengde på sti"
+
+#: ../gcr/gcr-certificate-renderer.c:128
+msgid "Unlimited"
+msgstr "Ubegrenset"
+
+#: ../gcr/gcr-certificate-renderer.c:147
+msgid "Extended Key Usage"
+msgstr "Utvidet bruk av nøkkel"
+
+#: ../gcr/gcr-certificate-renderer.c:158
+msgid "Allowed Purposes"
+msgstr "Tillatte formål"
+
+#: ../gcr/gcr-certificate-renderer.c:178
+msgid "Subject Key Identifier"
+msgstr "Identifikator for subjektnøkkel"
+
+#: ../gcr/gcr-certificate-renderer.c:179
+msgid "Key Identifier"
+msgstr "Identifikator for nøkkel"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Digital signature"
+msgstr "Digital signatur"
+
+#: ../gcr/gcr-certificate-renderer.c:191
+msgid "Key encipherment"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:192
+msgid "Data encipherment"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:193
+msgid "Key agreement"
+msgstr "Nøkkelavtale"
+
+#: ../gcr/gcr-certificate-renderer.c:194
+msgid "Certificate signature"
+msgstr "Sertifikatsignatur"
+
+#: ../gcr/gcr-certificate-renderer.c:195
+msgid "Revocation list signature"
+msgstr "Signatur for tilbaketrekkingsliste"
+
+#: ../gcr/gcr-certificate-renderer.c:220
+msgid "Key Usage"
+msgstr "Bruk av nøkkel"
+
+#: ../gcr/gcr-certificate-renderer.c:221
+msgid "Usages"
+msgstr "Bruksområder"
+
+#: ../gcr/gcr-certificate-renderer.c:241
+msgid "Subject Alternative Names"
+msgstr "Alternative navn på subjekt"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Extension"
+msgstr "Utvidelse"
+
+#: ../gcr/gcr-certificate-renderer.c:270
+msgid "Identifier"
+msgstr "Identifikator"
+
+#: ../gcr/gcr-certificate-renderer.c:271
+msgid "Value"
+msgstr "Verdi"
+
+#: ../gcr/gcr-certificate-renderer.c:318
+msgid "Critical"
+msgstr "Kritisk"
+
+#: ../gcr/gcr-certificate-renderer.c:391
 msgid "Couldn't export the certificate."
 msgstr "Klarte ikke å eksportere sertifikatet."
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:620
 msgid "Identity"
 msgstr "Identitet"
 
-#: ../gcr/gcr-certificate-renderer.c:440
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Verified by"
 msgstr "Verifisert av"
 
-#: ../gcr/gcr-certificate-renderer.c:447
+#: ../gcr/gcr-certificate-renderer.c:631
 msgid "Expires"
 msgstr "Utløper"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:457
+#: ../gcr/gcr-certificate-renderer.c:641
 msgid "Subject Name"
 msgstr "Navn på subjekt"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:461
+#: ../gcr/gcr-certificate-renderer.c:645
 msgid "Issuer Name"
 msgstr "Navn på utsteder"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:465
+#: ../gcr/gcr-certificate-renderer.c:649
 msgid "Issued Certificate"
 msgstr "Utstedt sertifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:470
+#: ../gcr/gcr-certificate-renderer.c:654
 msgid "Version"
 msgstr "Versjon"
 
-#: ../gcr/gcr-certificate-renderer.c:484
+#: ../gcr/gcr-certificate-renderer.c:666
 msgid "Not Valid Before"
 msgstr "Ikke gyldig før"
 
-#: ../gcr/gcr-certificate-renderer.c:489
+#: ../gcr/gcr-certificate-renderer.c:671
 msgid "Not Valid After"
 msgstr "Ikke gyldig etter"
 
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:676
+msgid "Certificate Fingerprints"
+msgstr "Fingeravtrykk for sertifikat"
+
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:494 ../gcr/gcr-certificate-renderer.c:510
+#: ../gcr/gcr-certificate-renderer.c:682 ../gcr/gcr-certificate-renderer.c:694
 msgid "Signature"
 msgstr "Signatur"
 
-#: ../gcr/gcr-certificate-renderer.c:498
+#: ../gcr/gcr-certificate-renderer.c:686
 msgid "Signature Algorithm"
 msgstr "Algoritme for signatur"
 
-#: ../gcr/gcr-certificate-renderer.c:503
+#: ../gcr/gcr-certificate-renderer.c:690
 msgid "Signature Parameters"
 msgstr "Parametere for signatur"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:515
+#: ../gcr/gcr-certificate-renderer.c:698
 msgid "Public Key Info"
 msgstr "Informasjon om offentlig nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:520
+#: ../gcr/gcr-certificate-renderer.c:703
 msgid "Key Algorithm"
 msgstr "Algoritme for nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:526
+#: ../gcr/gcr-certificate-renderer.c:708
 msgid "Key Parameters"
 msgstr "Nøkkelparametere"
 
-#: ../gcr/gcr-certificate-renderer.c:533
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key Size"
 msgstr "Størrelse på nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:541 ../gcr/gcr-key-renderer.c:290
+#: ../gcr/gcr-certificate-renderer.c:720
+msgid "Key SHA1 Fingerprint"
+msgstr "SHA1-fingeravtrykk for nøkkel"
+
+#: ../gcr/gcr-certificate-renderer.c:726 ../gcr/gcr-key-renderer.c:291
 #: ../gcr/gcr-parser.c:278
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:546
-msgid "Fingerprints"
-msgstr "Fingeravtrykk"
 
 #: ../gcr/gcr-display-view.c:283
 msgid "_Details"
@@ -436,6 +565,150 @@ msgstr "Importer til:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Passord:"
+
+#: ../gcr/gcr-gnupg-key.c:154
+msgid "PGP Key"
+msgstr "PGP-nøkkel"
+
+#: ../gcr/gcr-gnupg-key.c:426
+msgctxt "column"
+msgid "Key ID"
+msgstr "Nøkkel-ID"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Oppgi passord for å låse opp privat nøkkel"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Oppgi passord for å låse opp sertifikat"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Oppgi passord for å låse opp"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Den private nøkkelen må låses opp før den importeres"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Sertifikatet må låses opp før det kan importeres"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "Data må låses opp før de kan importeres"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "Privat nøkkel «%s» må låses opp før den kan importeres"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "Sertifikat «%s» må låses opp før det kan importeres"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "«%s» må låses opp før import"
+
+#: ../gcr/gcr-importer.c:293 ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
+#: ../gck/gck-misc.c:104
+msgid "The operation was cancelled"
+msgstr "Operasjonen ble avbrutt"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "Ingen adresse tilgjengelig for import"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "Importer sertifikater/nøkler"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Velg en adresse for å lagre importerte sertifikater og nøkler."
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "Nøkkel"
+
+#: ../gcr/gcr-key-renderer.c:280
+msgid "Private RSA Key"
+msgstr "Privat RSA-nøkkel"
+
+#: ../gcr/gcr-key-renderer.c:282
+msgid "Private DSA Key"
+msgstr "Privat DSA-nøkkel"
+
+#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:272
+msgid "Private Key"
+msgstr "Privat nøkkel"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
+msgid "Public DSA Key"
+msgstr "Offentlig DSA-nøkkel"
+
+#: ../gcr/gcr-key-renderer.c:298
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bits"
+
+#: ../gcr/gcr-key-renderer.c:299
+msgid "Strength"
+msgstr "Styrke"
+
+#: ../gcr/gcr-key-renderer.c:312
+msgid "Algorithm"
+msgstr "Algoritme"
+
+#: ../gcr/gcr-key-renderer.c:319
+msgid "Size"
+msgstr "Størrelse"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:323
+msgid "Fingerprints"
+msgstr "Fingeravtrykk"
+
+#: ../gcr/gcr-key-renderer.c:328
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:334
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1722
+msgid "Unrecognized or unsupported data."
+msgstr "Ikke gjenkjente eller støttede data."
+
+#: ../gcr/gcr-parser.c:1725
+msgid "Could not parse invalid or corrupted data."
+msgstr "Kunne ikke lese ugyldige eller korrupte data."
+
+#: ../gcr/gcr-parser.c:1728
+msgid "The data is locked"
+msgstr "Data er låst"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:420
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Klarte ikke å finne en plass å lagre festet sertifikat"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -457,133 +730,6 @@ msgstr "Lås denne nøkkelringen når jeg logger ut"
 #: ../gcr/gcr-unlock-options-widget.ui.h:6
 msgid "minutes"
 msgstr "minutter"
-
-#: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Oppgi passord for å låse opp privat nøkkel"
-
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Oppgi passord for å låse opp sertifikat"
-
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Oppgi passord for å låse opp"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:183
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Den private nøkkelen må låses opp før den importeres"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:186
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Sertifikatet må låses opp før det kan importeres"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:189
-msgid "In order to import the data, it must be unlocked"
-msgstr "Data må låses opp før de kan importeres"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:194
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Privat nøkkel «%s» må låses opp før den kan importeres"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:197
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Sertifikat «%s» må låses opp før det kan importeres"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:200
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "«%s» må låses opp før import"
-
-#: ../gcr/gcr-importer.c:291 ../gcr/gcr-parser.c:1708 ../gcr/gcr-parser.c:1947
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "Operasjonen ble avbrutt"
-
-#: ../gcr/gcr-importer.c:383
-#, c-format
-msgid "No location available to import to"
-msgstr "Ingen adresse tilgjengelig for import"
-
-#: ../gcr/gcr-importer.c:532
-msgid "Import Certificates/Keys"
-msgstr "Importer sertifikater/nøkler"
-
-#: ../gcr/gcr-importer.c:539
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Velg en adresse for å lagre importerte sertifikater og nøkler."
-
-#: ../gcr/gcr-key-renderer.c:83
-msgid "Key"
-msgstr "Nøkkel"
-
-#: ../gcr/gcr-key-renderer.c:279
-msgid "Private RSA Key"
-msgstr "Privat RSA-nøkkel"
-
-#: ../gcr/gcr-key-renderer.c:281
-msgid "Private DSA Key"
-msgstr "Privat DSA-nøkkel"
-
-#: ../gcr/gcr-key-renderer.c:283 ../gcr/gcr-parser.c:272
-msgid "Private Key"
-msgstr "Privat nøkkel"
-
-#: ../gcr/gcr-key-renderer.c:286 ../gcr/gcr-key-renderer.c:288
-msgid "Public DSA Key"
-msgstr "Offentlig DSA-nøkkel"
-
-#: ../gcr/gcr-key-renderer.c:297
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bit"
-msgstr[1] "%d bits"
-
-#: ../gcr/gcr-key-renderer.c:298
-msgid "Strength"
-msgstr "Styrke"
-
-#: ../gcr/gcr-key-renderer.c:311
-msgid "Algorithm"
-msgstr "Algoritme"
-
-#: ../gcr/gcr-key-renderer.c:318
-msgid "Size"
-msgstr "Størrelse"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Fingerprint"
-msgstr "Fingeravtrykk"
-
-#: ../gcr/gcr-parser.c:1711
-msgid "Unrecognized or unsupported data."
-msgstr "Ikke gjenkjente eller støttede data."
-
-#: ../gcr/gcr-parser.c:1714
-msgid "Could not parse invalid or corrupted data."
-msgstr "Kunne ikke lese ugyldige eller korrupte data."
-
-#: ../gcr/gcr-parser.c:1717
-msgid "The data is locked"
-msgstr "Data er låst"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Klarte ikke å finne en plass å lagre festet sertifikat"
 
 #: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
 #: ../gck/gck-uri.c:253
