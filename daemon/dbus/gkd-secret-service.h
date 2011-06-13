@@ -52,6 +52,8 @@ GckSlot*                gkd_secret_service_get_pkcs11_slot         (GkdSecretSer
 GckSession*             gkd_secret_service_get_pkcs11_session      (GkdSecretService *self,
                                                                     const gchar *caller);
 
+GckSession*             gkd_secret_service_internal_pkcs11_session (GkdSecretService *self);
+
 GkdSecretObjects*       gkd_secret_service_get_objects             (GkdSecretService *self);
 
 GkdSecretIndex*         gkd_secret_service_get_index               (GkdSecretService *self);

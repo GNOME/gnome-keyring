@@ -60,6 +60,7 @@ struct _GkdSecretService {
 	gchar *match_rule;
 	GkdSecretObjects *objects;
 	GHashTable *aliases;
+	GckSession *internal_session;
 };
 
 typedef struct _ServiceClient {
@@ -1092,6 +1093,11 @@ gkd_secret_service_dispose (GObject *obj)
 		self->connection = NULL;
 	}
 
+	if (self->internal_session) {
+		dispose_and_unref (self->internal_session);
+		self->internal_session = NULL;
+	}
+
 	G_OBJECT_CLASS (gkd_secret_service_parent_class)->dispose (obj);
 }
 
@@ -1202,14 +1208,32 @@ gkd_secret_service_get_pkcs11_slot (GkdSecretService *self)
 	return gkd_secret_objects_get_pkcs11_slot (self->objects);
 }
 
+static gboolean
+log_into_pkcs11_session (GckSession *session, GError **error)
+{
+	GckTokenInfo *info;
+	GckSlot *slot;
+	gboolean login;
+
+	/* Perform the necessary 'user' login to secrets token. Doesn't unlock anything */
+	slot = gck_session_get_slot (session);
+	info = gck_slot_get_token_info (slot);
+	login = info && (info->flags & CKF_LOGIN_REQUIRED);
+	gck_token_info_free (info);
+	g_object_unref (slot);
+
+	if (login && !gck_session_login (session, CKU_USER, NULL, 0, NULL, error))
+		return FALSE;
+
+	return TRUE;
+}
+
 GckSession*
 gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *caller)
 {
 	ServiceClient *client;
 	GError *error = NULL;
-	GckTokenInfo *info;
 	GckSlot *slot;
-	gboolean login;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (caller, NULL);
@@ -1230,11 +1254,7 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 			return NULL;
 		}
 
-		/* Perform the necessary 'user' login to secrets token. Doesn't unlock anything */
-		info = gck_slot_get_token_info (slot);
-		login = info && (info->flags & CKF_LOGIN_REQUIRED);
-		gck_token_info_free (info);
-		if (login && !gck_session_login (client->pkcs11_session, CKU_USER, NULL, 0, NULL, &error)) {
+		if (!log_into_pkcs11_session (client->pkcs11_session, &error)) {
 			g_warning ("couldn't log in to pkcs11 session for secret service: %s",
 			           egg_error_message (error));
 			g_clear_error (&error);
@@ -1245,6 +1265,39 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 	}
 
 	return client->pkcs11_session;
+}
+
+GckSession*
+gkd_secret_service_internal_pkcs11_session (GkdSecretService *self)
+{
+	GError *error = NULL;
+	GckSlot *slot;
+
+	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
+
+	if (self->internal_session)
+		return self->internal_session;
+
+	slot = gkd_secret_service_get_pkcs11_slot (self);
+	self->internal_session = gck_slot_open_session_full (slot, GCK_SESSION_READ_WRITE,
+	                                                     0, NULL, NULL, NULL, &error);
+	if (!self->internal_session) {
+		g_warning ("couldn't open pkcs11 session for secret service: %s",
+		           egg_error_message (error));
+		g_clear_error (&error);
+		return NULL;
+	}
+
+	if (!log_into_pkcs11_session (self->internal_session, &error)) {
+		g_warning ("couldn't log in to pkcs11 session for secret service: %s",
+		           egg_error_message (error));
+		g_clear_error (&error);
+		g_object_unref (self->internal_session);
+		self->internal_session = NULL;
+		return NULL;
+	}
+
+	return self->internal_session;
 }
 
 GkdSecretSession*
