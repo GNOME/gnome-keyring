@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-09 14:39+0200\n"
-"PO-Revision-Date: 2011-06-09 14:43+0200\n"
+"POT-Creation-Date: 2011-07-02 11:18+0200\n"
+"PO-Revision-Date: 2011-07-02 11:22+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -417,11 +417,11 @@ msgstr "Digital signatur"
 
 #: ../gcr/gcr-certificate-renderer.c:191
 msgid "Key encipherment"
-msgstr ""
+msgstr "Metode for kryptering av nøkkel"
 
 #: ../gcr/gcr-certificate-renderer.c:192
 msgid "Data encipherment"
-msgstr ""
+msgstr "Metode for kryptering av data"
 
 #: ../gcr/gcr-certificate-renderer.c:193
 msgid "Key agreement"
