@@ -145,8 +145,10 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 	GList *slots;
 	GList *m, *s;
 	gboolean matched;
+	GckUriFlags flags;
 
-	uri_data = gck_uri_parse (uri, GCK_URI_CONTEXT_TOKEN, error);
+	flags = GCK_URI_FOR_OBJECT_ON_TOKEN_AND_MODULE | GCK_URI_FOR_MODULE_WITH_VERSION;
+	uri_data = gck_uri_parse (uri, flags, error);
 	if (uri_data == NULL)
 		return NULL;
 
@@ -269,7 +271,7 @@ gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_optio
 {
 	GckUriData *uri_data;
 
-	uri_data = gck_uri_parse (uri, GCK_URI_CONTEXT_OBJECT, error);
+	uri_data = gck_uri_parse (uri, GCK_URI_FOR_ANY, error);
 	if (uri_data == NULL)
 		return NULL;
 

@@ -90,6 +90,13 @@
 #define URI_PREFIX "pkcs11:"
 #define N_URI_PREFIX 7
 
+struct _GckUri {
+	gboolean any_unrecognized;
+	GckModuleInfo *module_info;
+	GckTokenInfo *token_info;
+	GckAttributes *attributes;
+};
+
 GQuark
 gck_uri_get_error_quark (void)
 {
@@ -181,11 +188,11 @@ gck_uri_parse (const gchar *string, GckUriFlags flags, GError **error)
 
 	/* Convert it to a GckUri */
 	uri_data = gck_uri_data_new ();
-	if ((flags & GCK_URI_CONTEXT_MODULE) == GCK_URI_CONTEXT_MODULE)
+	if (flags & GCK_URI_FOR_MODULE_WITH_VERSION)
 		uri_data->module_info = _gck_module_info_from_pkcs11 (p11_kit_uri_get_module_info (p11_uri));
-	if ((flags & GCK_URI_CONTEXT_TOKEN) == GCK_URI_CONTEXT_TOKEN)
+	if (flags & GCK_URI_FOR_TOKEN)
 		uri_data->token_info = _gck_token_info_from_pkcs11 (p11_kit_uri_get_token_info (p11_uri));
-	if ((flags & GCK_URI_CONTEXT_OBJECT) == GCK_URI_CONTEXT_OBJECT) {
+	if (flags & GCK_URI_FOR_OBJECT) {
 		attrs = p11_kit_uri_get_attributes (p11_uri, &n_attrs);
 		uri_data->attributes = gck_attributes_new ();
 		for (i = 0; i < n_attrs; ++i)
@@ -220,13 +227,13 @@ gck_uri_build (GckUriData *uri_data, GckUriFlags flags)
 
 	p11_uri = p11_kit_uri_new ();
 
-	if ((flags & GCK_URI_CONTEXT_MODULE) == GCK_URI_CONTEXT_MODULE && uri_data->module_info)
+	if ((flags & GCK_URI_FOR_MODULE_WITH_VERSION) && uri_data->module_info)
 		_gck_module_info_to_pkcs11 (uri_data->module_info,
 		                            p11_kit_uri_get_module_info (p11_uri));
-	if ((flags & GCK_URI_CONTEXT_TOKEN) == GCK_URI_CONTEXT_TOKEN && uri_data->token_info)
+	if ((flags & GCK_URI_FOR_TOKEN) && uri_data->token_info)
 		_gck_token_info_to_pkcs11 (uri_data->token_info,
 		                           p11_kit_uri_get_token_info (p11_uri));
-	if ((flags & GCK_URI_CONTEXT_OBJECT) == GCK_URI_CONTEXT_OBJECT && uri_data->attributes) {
+	if ((flags & GCK_URI_FOR_OBJECT) && uri_data->attributes) {
 		for (i = 0; i < gck_attributes_count (uri_data->attributes); ++i) {
 			attr = gck_attributes_at (uri_data->attributes, i);
 			res = p11_kit_uri_set_attribute (p11_uri, (CK_ATTRIBUTE_PTR)attr);
@@ -237,7 +244,7 @@ gck_uri_build (GckUriData *uri_data, GckUriFlags flags)
 		}
 	}
 
-	res = p11_kit_uri_format (p11_uri, flags & GCK_URI_CONTEXT_ANY, &string);
+	res = p11_kit_uri_format (p11_uri, flags & GCK_URI_FOR_ANY, &string);
 	if (res == P11_KIT_URI_NO_MEMORY)
 		g_error ("failed to allocate memory in p11_kit_uri_format()");
 	else if (res != P11_KIT_URI_OK)
