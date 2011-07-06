@@ -1325,7 +1325,7 @@ gkm_gnome2_file_unique_entry (GkmGnome2File *self, gchar **identifier)
 		if (!gkm_gnome2_file_lookup_entry (self, *identifier, NULL))
 			break;
 
-		if (seed < 1000000) {
+		if (seed > 1000000) {
 			g_warning ("couldn't find a unique identifier in a %d tries", seed);
 			g_free (base);
 			return GKM_DATA_FAILURE;
