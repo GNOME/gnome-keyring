@@ -125,7 +125,11 @@ gkm_util_return_data (CK_VOID_PTR output, CK_ULONG_PTR n_output,
 CK_ULONG
 gkm_util_next_handle (void)
 {
+#if GLIB_CHECK_VERSION(2,29,6)
+	return (CK_ULONG)g_atomic_int_add (&next_handle, 1);
+#else
 	return (CK_ULONG)g_atomic_int_exchange_and_add (&next_handle, 1);
+#endif
 }
 
 void
