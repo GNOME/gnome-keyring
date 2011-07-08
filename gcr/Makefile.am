@@ -156,8 +156,8 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 
 # ----------------------------------------------------------------
 
-libgcr.symbols: .libs/libgcr@GCR_VERSION_SUFFIX@.so
-	nm -D .libs/libgcr@GCR_VERSION_SUFFIX@.so | grep -F ' T ' | \
+libgcr.symbols: .libs/libgcr-@GCR_MAJOR@.so
+	nm -D .libs/libgcr-@GCR_MAJOR@.so | grep -F ' T ' | \
 		cut -d ' ' -f 3 | sort > $@
 
 EXTRA_DIST = \

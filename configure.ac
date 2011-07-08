@@ -300,7 +300,7 @@ fi
 AC_ARG_WITH([pam-dir],
             [AC_HELP_STRING([--with-pam-dir=DIR],
                              [directory to install pam modules in])],
-             [], [with_pam_dir='${prefix}/lib/security'])
+             [], [with_pam_dir='${libdir}/security'])
 PAM_DEST_DIR="$with_pam_dir"
 AC_SUBST(PAM_DEST_DIR)
 
