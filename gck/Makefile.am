@@ -9,7 +9,7 @@ endif
 
 SUBDIRS = . $(TESTS_DIR)
 
-incdir = $(includedir)/gck
+incdir = $(includedir)/gck-@GCK_MAJOR@/gck
 
 inc_HEADERS = \
 	gck.h
@@ -28,9 +28,9 @@ INCLUDES = \
 BUILT_SOURCES = \
 	gck-marshal.c gck-marshal.h
 
-lib_LTLIBRARIES = libgck.la
+lib_LTLIBRARIES = libgck-@GCK_MAJOR@.la
 
-libgck_la_SOURCES = \
+libgck_@GCK_MAJOR@_la_SOURCES = \
 	gck.h gck-private.h pkcs11.h \
 	gck-attributes.c \
 	gck-call.c \
@@ -45,12 +45,12 @@ libgck_la_SOURCES = \
 	gck-uri.c \
 	$(BUILT_SOURCES)
 
-libgck_la_LDFLAGS = \
+libgck_@GCK_MAJOR@_la_LDFLAGS = \
 	-version-info $(GCK_LT_RELEASE) \
 	-no-undefined \
 	-export-symbols-regex '^gck_*'
 
-libgck_la_LIBADD = \
+libgck_@GCK_MAJOR@_la_LIBADD = \
 	$(top_builddir)/egg/libegg-hex.la \
 	$(P11_KIT_LIBS) \
 	$(GOBJECT_LIBS) \
@@ -64,8 +64,9 @@ libgck_testable_la_SOURCES = \
 	gck-mock.h \
 	gck-test.c \
 	gck-test.h
-libgck_testable_la_LIBADD = $(libgck_la_OBJECTS) $(libgck_la_LIBADD)
-libgck_testable_la_DEPENDENCIES = $(libgck_la_OBJECTS)
+libgck_testable_la_LIBADD = $(libgck_@GCK_MAJOR@_la_OBJECTS) \
+	$(libgck_@GCK_MAJOR@_la_LIBADD)
+libgck_testable_la_DEPENDENCIES = $(libgck_@GCK_MAJOR@_la_OBJECTS)
 
 gck-marshal.h: gck-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=_gck_marshal > $@

@@ -14,7 +14,7 @@ dnl  3. If any interfaces have been added since the last public release, then in
 dnl  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 
 # GCK package versioning
-GCK_MAJOR=0
+GCK_MAJOR=1
 GCK_MINOR=0
 GCK_MICRO=0
 

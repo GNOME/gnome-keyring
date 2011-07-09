@@ -20,6 +20,6 @@ libgkd_login_la_SOURCES = \
 	gkd-login.c gkd-login.h
 
 libgkd_login_la_LIBADD = \
-	$(top_builddir)/gck/libgck.la \
+	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)

@@ -72,7 +72,7 @@ gnome_keyring_prompt_@GCR_MAJOR@_LDADD = \
 	$(top_builddir)/egg/libegg-prompt.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gcr/libgcr-@GCR_MAJOR@.la \
-	$(top_builddir)/gck/libgck.la \
+	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
 	$(LIBGCRYPT_LIBS) \
 	$(GTK_LIBS)
 
