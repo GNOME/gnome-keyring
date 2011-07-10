@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-04 07:40+0000\n"
-"PO-Revision-Date: 2011-05-24 10:01+0200\n"
+"POT-Creation-Date: 2011-07-08 11:32+0000\n"
+"PO-Revision-Date: 2011-07-10 10:51+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -255,12 +255,10 @@ msgstr "SHA1 con DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
-#| msgid "SSL Server Certificate"
 msgid "Server Authentication"
 msgstr "Autenticación del servidor"
 
 #: ../egg/egg-oid.c:108
-#| msgid "SSL Client Certificate"
 msgid "Client Authentication"
 msgstr "Autenticación del clente"
 
@@ -341,7 +339,6 @@ msgid "PEM files"
 msgstr "Archivos PEM"
 
 #: ../gcr/gcr-certificate-extensions.c:135
-#| msgid "Issuer Name"
 msgid "Other Name"
 msgstr "Otro nombre"
 
@@ -350,17 +347,14 @@ msgid "Email"
 msgstr "Correo-e"
 
 #: ../gcr/gcr-certificate-extensions.c:150
-#| msgid "DSA"
 msgid "DNS"
 msgstr "DNS"
 
 #: ../gcr/gcr-certificate-extensions.c:158
-#| msgid "Email Address"
 msgid "X400 Address"
 msgstr "Dirección X400"
 
 #: ../gcr/gcr-certificate-extensions.c:165
-#| msgid "Subject Name"
 msgid "Directory Name"
 msgstr "Nombre del directorio"
 
@@ -373,12 +367,10 @@ msgid "URI"
 msgstr "URI"
 
 #: ../gcr/gcr-certificate-extensions.c:188
-#| msgid "Email Address"
 msgid "IP Address"
 msgstr "Dirección IP"
 
 #: ../gcr/gcr-certificate-extensions.c:196
-#| msgid "User ID"
 msgid "Registered ID"
 msgstr "ID registrado"
 
@@ -387,7 +379,6 @@ msgid "Basic Constraints"
 msgstr "Restricciones básicas"
 
 #: ../gcr/gcr-certificate-renderer.c:123
-#| msgid "Certificate"
 msgid "Certificate Authority"
 msgstr "Autoridad de certificación"
 
@@ -404,7 +395,6 @@ msgid "Max Path Length"
 msgstr "Longitud máxima de la ruta"
 
 #: ../gcr/gcr-certificate-renderer.c:128
-#| msgid "Unnamed"
 msgid "Unlimited"
 msgstr "Sin límite"
 
@@ -417,17 +407,14 @@ msgid "Allowed Purposes"
 msgstr "Propósitos permitidos"
 
 #: ../gcr/gcr-certificate-renderer.c:178
-#| msgid "Identifier"
 msgid "Subject Key Identifier"
 msgstr "Identificador del asunto de la clave"
 
 #: ../gcr/gcr-certificate-renderer.c:179
-#| msgid "Identifier"
 msgid "Key Identifier"
 msgstr "Identificador de clave"
 
 #: ../gcr/gcr-certificate-renderer.c:190
-#| msgid "Signature"
 msgid "Digital signature"
 msgstr "Firma digital"
 
@@ -440,12 +427,10 @@ msgid "Data encipherment"
 msgstr "Cifrado de los datos"
 
 #: ../gcr/gcr-certificate-renderer.c:193
-#| msgid "Key Parameters"
 msgid "Key agreement"
 msgstr "Acuerdo de la clave"
 
 #: ../gcr/gcr-certificate-renderer.c:194
-#| msgid "Certificate files"
 msgid "Certificate signature"
 msgstr "Firma del certificado"
 
@@ -462,7 +447,6 @@ msgid "Usages"
 msgstr "Usos"
 
 #: ../gcr/gcr-certificate-renderer.c:241
-#| msgid "Subject Name"
 msgid "Subject Alternative Names"
 msgstr "Nombres alternativos del asunto"
 
@@ -640,7 +624,6 @@ msgid "In order to import '%s', it must be unlocked"
 msgstr "Para poder importar «%s», se debe desbloquear"
 
 #: ../gcr/gcr-importer.c:293 ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
-#: ../gck/gck-misc.c:104
 msgid "The operation was cancelled"
 msgstr "Se canceló la operación"
 
@@ -751,336 +734,24 @@ msgstr "Bloquear este depósito de claves al cerrar la sesión"
 msgid "minutes"
 msgstr "minutos"
 
-#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
+#: ../gck/gck-uri.c:168
 #, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr ""
-"La sintaxis del URI no es válida. La codificación del campo «%s» no es válida."
+#| msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+msgid "The URI has invalid encoding."
+msgstr "El URI tiene una codificación no válida."
 
-#: ../gck/gck-uri.c:292
-msgid "The URI does not have the 'pkcs11' scheme."
+#: ../gck/gck-uri.c:172
+#| msgid "The URI does not have the 'pkcs11' scheme."
+msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "El URI no tiene el esquema «pkcs11»."
 
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr "No hay suficiente memoria disponible"
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr "El ID de la ranura especificada no es válido"
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "Error interno"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "Falló la operación"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "Argumentos no válidos"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr "El módulo no pudo crear los hilos necesarios"
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr "El módulo no puede bloquear los datos adecuadamente"
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "El campo es de sólo lectura"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr "El campo es sensible y no se puede revelar"
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "El campo no es válido o no existe"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "Valor no válido para el campo"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr "El dato no es válido o reconocible"
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "El dato es demasiado largo"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "Ocurrió un error en el dispositivo"
-
-#: ../gck/gck-misc.c:135
-msgid "Insufficient memory available on the device"
-msgstr "No hay memoria suficiente en el dispositivo"
-
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr "El dispositivo se extrajo o desconectó"
-
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "El dato cifrados no son válidos o reconocibles"
-
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr "El dato cifrado es demasiado largo"
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "Esta operación no está soportada"
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "Falta la clave o no es válida"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr "La clave tiene un tamaño incorrecto"
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr "La clave es de tipo erróneo"
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr "No se necesita clave"
-
-#: ../gck/gck-misc.c:153
-msgid "The key is different than before"
-msgstr "La clave es diferente que anteriormente"
-
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "Se necesita una clave"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot include the key in the digest"
-msgstr "No se puede incluir la clave en el resumen"
-
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr "Esta operación no se puede realizar con esta clave"
-
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr "La clave no se puede envolver"
-
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "No se puede exportar esta clave"
-
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "El mecanismo de cifrado no es válido o no se reconoce"
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr "El mecanismo de cifrado tiene un argumento no válido"
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr "El objeto falta o no es válido"
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr "Ya se está realizando otra operación"
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr "No se está realizando ninguna operación"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr "La contraseña o PIN es incorrecta"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr "La contraseña o PIN no es válida"
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr "La contraseña o PIN es de una longitud no válida"
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr "La contraseña o PIN ha caducado"
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr "La contraseña o PIN está bloqueada"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "La sesión está cerrada"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "Hay demasiadas sesiones activas"
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "La sesión no es válida"
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "La sesión es de sólo lectura"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "Existe una sesión abierta"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "Existe una sesión de sólo lectura"
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "Existe una sesión de administrador"
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr "La firma es errónea o está corrupta"
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr "La firma no es reconocible o está corrupta"
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "Faltan ciertos campos necesarios"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "Ciertos campos tienen valores no válidos"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr "El dispositivo no está presente o no está conectado"
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr "El dispositivo no es válido o es irreconocible"
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr "El dispositivo está protegido contra escritura"
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr "No se puede importar porque la clave no es válida"
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr "No se puede importar porque la clave es de tamaño erróneo"
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr "No se puede importar porque la clave es de tipo erróneo"
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "Ya ha iniciado sesión"
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "Ningún usuario ha iniciado sesión"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr "La contraseña o PIN del usuario no está establecida"
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr "El usuario es de tipo no válido"
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "Otro usuario ya ha iniciado sesión"
-
-#: ../gck/gck-misc.c:229
-msgid "Too many users of different types are logged in"
-msgstr "Demasiados usuarios de tipos diferentes han iniciado sesión"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "No se puede importar una clave válida"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr "No se puede importar una clave de tamaño incorrecto"
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "No se puede exportar porque la clave no es válida"
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr "No se puede exportar porque la clave es de tamaño incorrecto"
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr "No se puede exportar porque la clave es de tipo erróneo"
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr "No se pudo inicializar el generador de números aleatorios"
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr "No existe un generador de números aleatorios disponible"
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "El mecanismo de cifrado tiene un parámetro no válido"
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr "No hay suficiente espacio para almacenar el resultado"
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr "El estado guardado no es válido"
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr "La información es sensible y no se puede revelar"
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr "El estado no se puede guardar"
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr "El módulo no se ha inicializado"
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr "El módulo ya se ha inicializado"
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr "No se pueden bloquear los datos"
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr "Los datos no se pueden bloquear"
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr "El usuario rechazó la petición de firma"
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "Error desconocido"
+#: ../gck/gck-uri.c:176
+msgid "The URI has bad syntax."
+msgstr "El URI tiene una sintaxis incorrecta."
+
+#: ../gck/gck-uri.c:180
+msgid "The URI has a bad version number."
+msgstr "El URI tiene un número de versión incorrecto."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -1315,6 +986,246 @@ msgstr "Contraseña _antigua:"
 msgid "_Password:"
 msgstr "_Contraseña:"
 
+#~ msgid "Insufficient memory available"
+#~ msgstr "No hay suficiente memoria disponible"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "El ID de la ranura especificada no es válido"
+
+#~ msgid "Internal error"
+#~ msgstr "Error interno"
+
+#~ msgid "The operation failed"
+#~ msgstr "Falló la operación"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "Argumentos no válidos"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "El módulo no pudo crear los hilos necesarios"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "El módulo no puede bloquear los datos adecuadamente"
+
+#~ msgid "The field is read-only"
+#~ msgstr "El campo es de sólo lectura"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "El campo es sensible y no se puede revelar"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "El campo no es válido o no existe"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "Valor no válido para el campo"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "El dato no es válido o reconocible"
+
+#~ msgid "The data is too long"
+#~ msgstr "El dato es demasiado largo"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "Ocurrió un error en el dispositivo"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "No hay memoria suficiente en el dispositivo"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "El dispositivo se extrajo o desconectó"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "El dato cifrados no son válidos o reconocibles"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "El dato cifrado es demasiado largo"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "Esta operación no está soportada"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "Falta la clave o no es válida"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "La clave tiene un tamaño incorrecto"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "La clave es de tipo erróneo"
+
+#~ msgid "No key is needed"
+#~ msgstr "No se necesita clave"
+
+#~ msgid "The key is different than before"
+#~ msgstr "La clave es diferente que anteriormente"
+
+#~ msgid "A key is needed"
+#~ msgstr "Se necesita una clave"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "No se puede incluir la clave en el resumen"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "Esta operación no se puede realizar con esta clave"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "La clave no se puede envolver"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "No se puede exportar esta clave"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "El mecanismo de cifrado no es válido o no se reconoce"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "El mecanismo de cifrado tiene un argumento no válido"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "El objeto falta o no es válido"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "Ya se está realizando otra operación"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "No se está realizando ninguna operación"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "La contraseña o PIN es incorrecta"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "La contraseña o PIN no es válida"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "La contraseña o PIN es de una longitud no válida"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "La contraseña o PIN ha caducado"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "La contraseña o PIN está bloqueada"
+
+#~ msgid "The session is closed"
+#~ msgstr "La sesión está cerrada"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "Hay demasiadas sesiones activas"
+
+#~ msgid "The session is invalid"
+#~ msgstr "La sesión no es válida"
+
+#~ msgid "The session is read-only"
+#~ msgstr "La sesión es de sólo lectura"
+
+#~ msgid "An open session exists"
+#~ msgstr "Existe una sesión abierta"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "Existe una sesión de sólo lectura"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "Existe una sesión de administrador"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "La firma es errónea o está corrupta"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "La firma no es reconocible o está corrupta"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "Faltan ciertos campos necesarios"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "Ciertos campos tienen valores no válidos"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "El dispositivo no está presente o no está conectado"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "El dispositivo no es válido o es irreconocible"
+
+#~ msgid "The device is write protected"
+#~ msgstr "El dispositivo está protegido contra escritura"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "No se puede importar porque la clave no es válida"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "No se puede importar porque la clave es de tamaño erróneo"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "No se puede importar porque la clave es de tipo erróneo"
+
+#~ msgid "You are already logged in"
+#~ msgstr "Ya ha iniciado sesión"
+
+#~ msgid "No user has logged in"
+#~ msgstr "Ningún usuario ha iniciado sesión"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "La contraseña o PIN del usuario no está establecida"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "El usuario es de tipo no válido"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "Otro usuario ya ha iniciado sesión"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "Demasiados usuarios de tipos diferentes han iniciado sesión"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "No se puede importar una clave válida"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "No se puede importar una clave de tamaño incorrecto"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "No se puede exportar porque la clave no es válida"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "No se puede exportar porque la clave es de tamaño incorrecto"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "No se puede exportar porque la clave es de tipo erróneo"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "No se pudo inicializar el generador de números aleatorios"
+
+#~ msgid "No random number generator available"
+#~ msgstr "No existe un generador de números aleatorios disponible"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "El mecanismo de cifrado tiene un parámetro no válido"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "No hay suficiente espacio para almacenar el resultado"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "El estado guardado no es válido"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "La información es sensible y no se puede revelar"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "El estado no se puede guardar"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "El módulo no se ha inicializado"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "El módulo ya se ha inicializado"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "No se pueden bloquear los datos"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "Los datos no se pueden bloquear"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "El usuario rechazó la petición de firma"
+
+#~ msgid "Unknown error"
+#~ msgstr "Error desconocido"
+
 #~ msgid "Fingerprint"
 #~ msgstr "Huella"
 
@@ -1460,15 +1371,15 @@ msgstr "_Contraseña:"
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/"
-#~ ">» en el depósito predeterminado."
+#~ "La aplicación «%s» quiere acceder a la contraseña para «<object "
+#~ "prop='name'/>» en el depósito predeterminado."
 
 #~ msgid ""
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in %s."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere acceder a la contraseña para «<object prop='name'/"
-#~ ">» en %s."
+#~ "La aplicación «%s» quiere acceder a la contraseña para «<object "
+#~ "prop='name'/>» en %s."
 
 #~ msgid ""
 #~ "An unknown application wants to access the password for '<object "
@@ -1528,8 +1439,8 @@ msgstr "_Contraseña:"
 #~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
 #~ "have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» (%s) quiere crear un depósito de claves nuevo llamado «%"
-#~ "s». Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» (%s) quiere crear un depósito de claves nuevo llamado "
+#~ "«%s». Tiene que elegir la contraseña que quiere usar con él."
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to create a new default keyring. You have "
@@ -1579,15 +1490,16 @@ msgstr "_Contraseña:"
 #~ "The application '%s' wants to change the password for the '%s' keyring. "
 #~ "You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves "
-#~ "«%s». Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de "
+#~ "claves «%s». Tiene que elegir la contraseña que quiere usar con él."
 
 #~ msgid ""
 #~ "The application '%s' wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de claves "
-#~ "predeterminado. Tiene que elegir la contraseña que quiere usar con él."
+#~ "La aplicación «%s» quiere cambiar la contraseña para el depósito de "
+#~ "claves predeterminado. Tiene que elegir la contraseña que quiere usar con "
+#~ "él."
 
 #~ msgid ""
 #~ "An unknown application wants to change the password for the default "
