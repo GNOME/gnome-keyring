@@ -475,6 +475,16 @@ GcrRecordPubColumns
 GcrRecordUidColumns
 GcrRecordSecColumns
 GcrRecord
+GCR_GNUPG_PROCESS
+GCR_GNUPG_PROCESS_CLASS
+GCR_GNUPG_PROCESS_GET_CLASS
+GCR_IS_GNUPG_PROCESS
+GCR_IS_GNUPG_PROCESS_CLASS
+GCR_TYPE_GNUPG_PROCESS
+GcrGnupgProcess
+GcrGnupgProcessClass
+GcrGnupgProcessPrivate
+GcrGnupgProcessFlags
 GcrGnupgCollection
 GcrGnupgCollectionClass
 GcrGnupgCollectionPrivate

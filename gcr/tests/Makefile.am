@@ -30,7 +30,8 @@ TEST_PROGS = \
 	test-parser \
 	test-record \
 	test-gnupg-key \
-	test-gnupg-collection
+	test-gnupg-collection \
+	test-gnupg-process
 
 check_PROGRAMS = $(TEST_PROGS)
 

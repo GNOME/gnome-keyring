@@ -106,7 +106,6 @@ teardown (Test *test, gconstpointer unused)
 		g_object_unref (test->result);
 
 	g_object_unref (test->collection);
-	g_assert (!GCR_IS_GNUPG_COLLECTION (test->collection));
 }
 
 static void
