@@ -2,7 +2,7 @@
 
 # This script is used with test-gnupg-process
 # Needs to be run with /bin/bash in order to handle two digit
-# file descripter redirects
+# file descriptor redirects
 
 set -euf
 

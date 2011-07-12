@@ -61,12 +61,13 @@ struct _GcrGnupgProcessClass {
 };
 
 typedef enum {
+	GCR_GNUPG_PROCESS_NONE              = 0,
 	GCR_GNUPG_PROCESS_RESPECT_LOCALE    = 1 << 0,
 	GCR_GNUPG_PROCESS_WITH_STATUS       = 1 << 1,
 	GCR_GNUPG_PROCESS_WITH_ATTRIBUTES   = 1 << 2
 } GcrGnupgProcessFlags;
 
-GType               _gcr_gnupg_process_get_type                (void);
+GType               _gcr_gnupg_process_get_type                (void) G_GNUC_CONST;
 
 GcrGnupgProcess*    _gcr_gnupg_process_new                     (const gchar *directory,
                                                                 const gchar *executable);

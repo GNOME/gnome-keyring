@@ -29,12 +29,22 @@
 #include "gcr-marshal.h"
 #include "gcr-util.h"
 
-#include "egg/egg-spawn.h"
+#include <glib/gi18n-lib.h>
 
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
+
+/**
+ * GcrGnupgProcessFlags:
+ * @GCR_GNUPG_PROCESS_NONE: No flags
+ * @GCR_GNUPG_PROCESS_RESPECT_LOCALE: Respect the user's locale when running gnupg.
+ * @GCR_GNUPG_PROCESS_WITH_STATUS: Ask the process to send status records.
+ * @GCR_GNUPG_PROCESS_WITH_ATTRIBUTES: Ask the process to output attribute data.
+ *
+ * Flags for running a gnupg process.
+ */
 
 enum {
 	PROP_0,
@@ -73,6 +83,7 @@ typedef struct _GnupgSource {
 	GPid child_pid;
 	guint child_sig;
 
+	GCancellable *cancellable;
 	guint cancel_sig;
 } GnupgSource;
 
@@ -178,29 +189,68 @@ _gcr_gnupg_process_class_init (GcrGnupgProcessClass *klass)
 	gobject_class->set_property = _gcr_gnupg_process_set_property;
 	gobject_class->finalize = _gcr_gnupg_process_finalize;
 
+	/**
+	 * GcrGnupgProcess:directory:
+	 *
+	 * Directory to run as gnupg home directory, or %NULL for default
+	 * ~/.gnupg/ directory.
+	 */
 	g_object_class_install_property (gobject_class, PROP_DIRECTORY,
 	           g_param_spec_string ("directory", "Directory", "Gnupg Directory",
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GcrGnupgProcess:executable:
+	 *
+	 * Path to the gnupg executable, or %NULL for default.
+	 */
 	g_object_class_install_property (gobject_class, PROP_EXECUTABLE,
 	           g_param_spec_string ("executable", "Executable", "Gnupg Executable",
 	                                GPG_EXECUTABLE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+	/**
+	 * GcrGnupgProcess::output-data:
+	 * @data: a #GByteArray of output data.
+	 *
+	 * Signal emitted when normal output data is available from the gnupg
+	 * process. The data does not necessarily come on line boundaries, and
+	 * won't be null-terminated.
+	 */
 	signals[OUTPUT_DATA] = g_signal_new ("output-data", GCR_TYPE_GNUPG_PROCESS,
 	           G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GcrGnupgProcessClass, output_data),
 	           NULL, NULL, _gcr_marshal_VOID__BOXED,
 	           G_TYPE_NONE, 1, G_TYPE_BYTE_ARRAY);
 
+	/**
+	 * GcrGnupgProcess::error-line:
+	 * @line: a line of error output.
+	 *
+	 * Signal emitted when a line of error output is available from the
+	 * gnupg process.
+	 */
 	signals[ERROR_LINE] = g_signal_new ("error-line", GCR_TYPE_GNUPG_PROCESS,
 	           G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GcrGnupgProcessClass, error_line),
 	           NULL, NULL, _gcr_marshal_VOID__STRING,
 	           G_TYPE_NONE, 1, G_TYPE_STRING);
 
+	/**
+	 * GcrGnupgProcess::status-record:
+	 * @record: a status record.
+	 *
+	 * Signal emitted when a status record is available from the gnupg process.
+	 */
 	signals[STATUS_RECORD] = g_signal_new ("status-record", GCR_TYPE_GNUPG_PROCESS,
 	           G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GcrGnupgProcessClass, status_record),
 	           NULL, NULL, _gcr_marshal_VOID__BOXED,
 	           G_TYPE_NONE, 1, GCR_TYPE_RECORD);
 
+	/**
+	 * GcrGnupgProcess::attribute-data:
+	 * @data: a #GByteArray of attribute data.
+	 *
+	 * Signal emitted when attribute data is available from the gnupg
+	 * process.
+	 */
 	signals[ATTRIBUTE_DATA] = g_signal_new ("attribute-data", GCR_TYPE_GNUPG_PROCESS,
 	           G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GcrGnupgProcessClass, attribute_data),
 	           NULL, NULL, _gcr_marshal_VOID__BOXED,
@@ -243,7 +293,7 @@ _gcr_gnupg_process_init_async (GAsyncResultIface *iface)
  * The executable will default to the compiled in path if a %NULL executable
  * argument is used.
  *
- * Returns: (transfer full) A newly allocated process.
+ * Returns: (transfer full): A newly allocated process.
  */
 GcrGnupgProcess*
 _gcr_gnupg_process_new (const gchar *directory, const gchar *executable)
@@ -393,10 +443,10 @@ on_gnupg_source_finalize (GSource *source)
 	GnupgSource *gnupg_source = (GnupgSource*)source;
 	gint i;
 
-	if (gnupg_source->cancel_sig) {
-		g_source_remove (gnupg_source->cancel_sig);
-		gnupg_source->cancel_sig = 0;
-	}
+	if (gnupg_source->cancel_sig)
+		g_signal_handler_disconnect (gnupg_source->cancellable, gnupg_source->cancel_sig);
+	if (gnupg_source->cancellable)
+		g_object_unref (gnupg_source->cancellable);
 
 	for (i = 0; i < NUM_FDS; ++i)
 		close_fd (&gnupg_source->polls[i].fd);
@@ -415,7 +465,7 @@ read_output (int fd, GByteArray *buffer)
 	guchar block[1024];
 	gssize result;
 
-	g_return_val_if_fail (fd >= 0, -1);
+	g_return_val_if_fail (fd >= 0, FALSE);
 
 	do {
 		result = read (fd, block, sizeof (block));
@@ -468,7 +518,7 @@ on_gnupg_source_dispatch (GSource *source, GSourceFunc unused, gpointer user_dat
 	GByteArray *buffer;
 	GPollFD *poll;
 
-	/* Standard input, no suport yet */
+	/* Standard input, no support yet */
 	poll = &gnupg_source->polls[FD_INPUT];
 	if (poll->fd >= 0 && poll->revents != 0) {
 		close_poll (source, poll);
@@ -519,7 +569,7 @@ on_gnupg_source_dispatch (GSource *source, GSourceFunc unused, gpointer user_dat
 			if (!read_output (poll->fd, buffer)) {
 				g_warning ("couldn't read output data from gnupg process");
 			} else if (buffer->len > 0) {
-				_gcr_debug ("received %d bytes of attribute data", (gint)buffer->len);
+				_gcr_debug ("received %d bytes of output data", (gint)buffer->len);
 				g_signal_emit (gnupg_source->process, signals[OUTPUT_DATA], 0, buffer);
 			}
 			g_byte_array_unref (buffer);
@@ -579,14 +629,14 @@ on_gnupg_process_child_exited (GPid pid, gint status, gpointer user_data)
 		code = WEXITSTATUS (status);
 		if (code != 0) {
 			error = g_error_new (G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED,
-			                     "Gnupg process exited with code: %d", code);
+			                     _("Gnupg process exited with code: %d"), code);
 		}
 	} else if (WIFSIGNALED (status)) {
 		code = WTERMSIG (status);
 		/* Ignore cases where we've signaled the process because we were cancelled */
 		if (!g_error_matches (self->pv->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 			error = g_error_new (G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED,
-			                     "Gnupg process was terminated with signal: %d", code);
+			                     _("Gnupg process was terminated with signal: %d"), code);
 	}
 
 	/* Take this as the async result error */
@@ -596,7 +646,7 @@ on_gnupg_process_child_exited (GPid pid, gint status, gpointer user_data)
 
 	/* Already have an error, just print out message */
 	} else if (error) {
-		g_message ("%s", error->message);
+		g_warning ("%s", error->message);
 		g_error_free (error);
 	}
 
@@ -642,7 +692,7 @@ on_cancellable_cancelled (GCancellable *cancellable, gpointer user_data)
 	/* Set an error, which is respected when this actually completes. */
 	if (gnupg_source->process->pv->error == NULL)
 		gnupg_source->process->pv->error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_CANCELLED,
-		                                                        "The operation was cancelled");
+		                                                        _("The operation was cancelled"));
 
 	complete_if_source_is_done (gnupg_source);
 }
@@ -650,11 +700,12 @@ on_cancellable_cancelled (GCancellable *cancellable, gpointer user_data)
 /**
  * _gcr_gnupg_process_run_async:
  * @self: The process
- * @argv: The arguments for the process, not including executable
- * @envp: (allow-none): The environment for new process.
+ * @argv: (array zero-terminated=1): The arguments for the process, not including executable, terminated with %NULL.
+ * @envp: (allow-none) (array zero-terminated=1): The environment for new process, terminated with %NULL.
  * @flags: Flags for starting the process.
  * @cancellable: (allow-none): Cancellation object
  * @callback: Will be called when operation completes.
+ * @user_data: (closure): Data passed to callback.
  *
  * Run the gpg process. Only one 'run' operation can run per GcrGnupgProcess
  * object. The GcrGnupgProcess:output_data and GcrGnupgProcess:error_line
@@ -688,6 +739,7 @@ _gcr_gnupg_process_run_async (GcrGnupgProcess *self, const gchar **argv, const g
 	g_return_if_fail (GCR_IS_GNUPG_PROCESS (self));
 	g_return_if_fail (argv);
 	g_return_if_fail (callback);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	g_return_if_fail (self->pv->running == FALSE);
 	g_return_if_fail (self->pv->complete == FALSE);
@@ -811,6 +863,7 @@ _gcr_gnupg_process_run_async (GcrGnupgProcess *self, const gchar **argv, const g
 	}
 
 	if (cancellable) {
+		gnupg_source->cancellable = g_object_ref (cancellable);
 		gnupg_source->cancel_sig = g_cancellable_connect (cancellable,
 		                                                  G_CALLBACK (on_cancellable_cancelled),
 		                                                  g_source_ref (source),
@@ -838,6 +891,8 @@ _gcr_gnupg_process_run_async (GcrGnupgProcess *self, const gchar **argv, const g
  * @error: Location to raise an error on failure.
  *
  * Get the result of running a gnupg process.
+ *
+ * Return value: Whether the Gnupg process was run or not.
  */
 gboolean
 _gcr_gnupg_process_run_finish (GcrGnupgProcess *self, GAsyncResult *result,

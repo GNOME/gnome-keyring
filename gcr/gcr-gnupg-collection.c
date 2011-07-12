@@ -140,6 +140,12 @@ _gcr_gnupg_collection_class_init (GcrGnupgCollectionClass *klass)
 	gobject_class->dispose = _gcr_gnupg_collection_dispose;
 	gobject_class->finalize = _gcr_gnupg_collection_finalize;
 
+	/**
+	 * GcrGnupgCollection:directory:
+	 *
+	 * Directory to load the gnupg keys from, or %NULL for default
+	 * ~/.gnupg/ directory.
+	 */
 	g_object_class_install_property (gobject_class, PROP_DIRECTORY,
 	           g_param_spec_string ("directory", "Directory", "Gnupg Directory",
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
@@ -239,16 +245,18 @@ _gcr_gnupg_collection_load_free (gpointer data)
 	g_hash_table_destroy (load->difference);
 	g_object_unref (load->collection);
 
-	if (load->process)
+	if (load->process) {
+		if (load->output_sig)
+			g_signal_handler_disconnect (load->process, load->output_sig);
+		if (load->error_sig)
+			g_signal_handler_disconnect (load->process, load->error_sig);
+		if (load->status_sig)
+			g_signal_handler_disconnect (load->process, load->status_sig);
+		if (load->attribute_sig)
+			g_signal_handler_disconnect (load->process, load->attribute_sig);
 		g_object_unref (load->process);
-	if (load->output_sig)
-		g_source_remove (load->output_sig);
-	if (load->error_sig)
-		g_source_remove (load->error_sig);
-	if (load->status_sig)
-		g_source_remove (load->status_sig);
-	if (load->attribute_sig)
-		g_source_remove (load->attribute_sig);
+	}
+
 	if (load->cancel)
 		g_object_unref (load->cancel);
 	g_slice_free (GcrGnupgCollectionLoad, load);

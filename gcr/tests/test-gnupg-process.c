@@ -52,10 +52,8 @@ setup (Test *test, gconstpointer unused)
 static void
 teardown (Test *test, gconstpointer unused)
 {
-	if (test->result)
-		g_object_unref (test->result);
-	if (test->process)
-		g_object_unref (test->process);
+	g_assert (!test->result);
+	g_assert (!test->process);
 	if (test->output_buf)
 		g_string_free (test->output_buf, TRUE);
 	if (test->error_buf)
@@ -79,6 +77,8 @@ test_create (Test *test, gconstpointer unused)
 	g_object_get (test->process, "executable", &value, NULL);
 	g_assert_cmpstr (value, ==, "/path/to/executable");
 	g_free (value);
+
+	g_clear_object (&test->process);
 }
 
 static void
@@ -158,6 +158,7 @@ test_run_simple_output (Test *test, gconstpointer unused)
 {
 	const gchar *argv[] = { NULL };
 	GError *error = NULL;
+	gboolean ret;
 	gchar *script;
 
 	script = build_script_path ("mock-simple-output");
@@ -170,10 +171,14 @@ test_run_simple_output (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_no_error (error);
+	g_assert (ret == TRUE);
 
 	g_assert_cmpstr ("simple-output\n", ==, test->output_buf->str);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -182,6 +187,7 @@ test_run_simple_error (Test *test, gconstpointer unused)
 	const gchar *argv[] = { NULL };
 	GError *error = NULL;
 	gchar *script;
+	gboolean ret;
 
 	script = build_script_path ("mock-simple-error");
 	test->process = _gcr_gnupg_process_new (NULL, script);
@@ -193,10 +199,14 @@ test_run_simple_error (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_no_error (error);
+	g_assert (ret == TRUE);
 
 	g_assert_cmpstr ("line 1: more line 1\nline 2\nline 3\n", ==, test->error_buf->str);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -205,6 +215,7 @@ test_run_status_and_output (Test *test, gconstpointer unused)
 	const gchar *argv[] = { NULL };
 	GError *error = NULL;
 	gchar *script;
+	gboolean ret;
 
 	script = build_script_path ("mock-status-and-output");
 	test->process = _gcr_gnupg_process_new (NULL, script);
@@ -218,8 +229,9 @@ test_run_status_and_output (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_no_error (error);
+	g_assert (ret == TRUE);
 
 	g_assert (test->record);
 	g_assert_cmpstr (_gcr_record_get_raw (test->record, 0), ==, "SCHEMA");
@@ -229,6 +241,9 @@ test_run_status_and_output (Test *test, gconstpointer unused)
 	g_assert_cmpstr (_gcr_record_get_raw (test->record, 4), ==, "four");
 	g_assert_cmpstr (_gcr_record_get_raw (test->record, 5), ==, NULL);
 	g_assert_cmpstr ("Here's some output\nMore output\n", ==, test->output_buf->str);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -237,6 +252,7 @@ test_run_status_and_attribute (Test *test, gconstpointer unused)
 	const gchar *argv[] = { NULL };
 	GError *error = NULL;
 	gchar *script;
+	gboolean ret;
 
 	script = build_script_path ("mock-status-and-attribute");
 	test->process = _gcr_gnupg_process_new (NULL, script);
@@ -251,8 +267,9 @@ test_run_status_and_attribute (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_no_error (error);
+	g_assert (ret == TRUE);
 
 	g_assert (test->record);
 	g_assert_cmpstr (_gcr_record_get_raw (test->record, 0), ==, "SCHEMA");
@@ -262,6 +279,9 @@ test_run_status_and_attribute (Test *test, gconstpointer unused)
 	g_assert_cmpstr (_gcr_record_get_raw (test->record, 4), ==, "four");
 	g_assert_cmpstr (_gcr_record_get_raw (test->record, 5), ==, NULL);
 	g_assert_cmpstr ("1lc923g4laoeurc23rc241lcg2r23c4gr3", ==, test->attribute_buf->str);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 
@@ -270,6 +290,7 @@ test_run_arguments_and_environment (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
 	gchar *script;
+	gboolean ret;
 
 	const gchar *argv[] = {
 		"-1", "value1",
@@ -294,11 +315,15 @@ test_run_arguments_and_environment (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_no_error (error);
+	g_assert (ret == TRUE);
 
 	g_assert_cmpstr ("value1\nvalue2\n", ==, test->output_buf->str);
 	g_assert_cmpstr ("VALUE1VALUE2\n", ==, test->error_buf->str);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -309,6 +334,7 @@ test_run_with_homedir (Test *test, gconstpointer unused)
 	gchar *script;
 	gchar *directory;
 	gchar *check;
+	gboolean ret;
 
 	directory = g_get_current_dir ();
 
@@ -322,13 +348,17 @@ test_run_with_homedir (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_no_error (error);
+	g_assert (ret == TRUE);
 
 	check = g_strdup_printf ("DIR: %s\n", directory);
 	g_assert_cmpstr (check, ==, test->output_buf->str);
 	g_free (check);
 	g_free (directory);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -337,6 +367,7 @@ test_run_bad_executable (Test *test, gconstpointer unused)
 	GError *error = NULL;
 	gchar *script;
 	const gchar *argv[] = { NULL };
+	gboolean ret;
 
 	script = build_script_path ("mock-invalid");
 	test->process = _gcr_gnupg_process_new (NULL, script);
@@ -346,9 +377,13 @@ test_run_bad_executable (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_error (error, G_SPAWN_ERROR, G_SPAWN_ERROR_NOENT);
 	g_clear_error (&error);
+	g_assert (ret == FALSE);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -357,6 +392,7 @@ test_run_fail_exit (Test *test, gconstpointer unused)
 	GError *error = NULL;
 	gchar *script;
 	const gchar *argv[] = { "55" };
+	gboolean ret;
 
 	script = build_script_path ("mock-fail-exit");
 	test->process = _gcr_gnupg_process_new (NULL, script);
@@ -366,10 +402,14 @@ test_run_fail_exit (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_error (error, G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED);
 	g_assert_cmpstr (error->message, ==, "Gnupg process exited with code: 55");
 	g_clear_error (&error);
+	g_assert (ret == FALSE);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -378,6 +418,7 @@ test_run_fail_signal (Test *test, gconstpointer unused)
 	GError *error = NULL;
 	gchar *script;
 	const gchar *argv[] = { "15" };
+	gboolean ret;
 
 	script = build_script_path ("mock-fail-signal");
 	test->process = _gcr_gnupg_process_new (NULL, script);
@@ -387,10 +428,14 @@ test_run_fail_signal (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_error (error, G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED);
 	g_assert_cmpstr (error->message, ==, "Gnupg process was terminated with signal: 15");
 	g_clear_error (&error);
+	g_assert (ret == FALSE);
+
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 static void
@@ -400,6 +445,7 @@ test_run_and_cancel (Test *test, gconstpointer unused)
 	gchar *script;
 	const gchar *argv[] = { "15" };
 	GCancellable *cancellable;
+	gboolean ret;
 
 	cancellable = g_cancellable_new ();
 
@@ -412,9 +458,51 @@ test_run_and_cancel (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 
 	g_assert (test->result);
-	_gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
 	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
 	g_clear_error (&error);
+	g_assert (ret == FALSE);
+
+	g_object_unref (cancellable);
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
+}
+
+static void
+on_process_output_cancel (GcrGnupgProcess *process, GByteArray *buffer, gpointer user_data)
+{
+	GCancellable *cancellable = G_CANCELLABLE (user_data);
+	g_cancellable_cancel (cancellable);
+}
+
+static void
+test_run_and_cancel_later (Test *test, gconstpointer unused)
+{
+	GError *error = NULL;
+	gchar *script;
+	const gchar *argv[] = { "15" };
+	GCancellable *cancellable;
+	gboolean ret;
+
+	cancellable = g_cancellable_new ();
+
+	script = build_script_path ("mock-simple-output");
+	test->process = _gcr_gnupg_process_new (NULL, script);
+	g_signal_connect (test->process, "output-data", G_CALLBACK (on_process_output_cancel), cancellable);
+	g_free (script);
+
+	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, cancellable, on_async_ready, test);
+	egg_test_wait_until (500);
+
+	g_assert (test->result);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_clear_error (&error);
+	g_assert (ret == FALSE);
+
+	g_object_unref (cancellable);
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
 }
 
 int
@@ -441,6 +529,7 @@ main (int argc, char **argv)
 	g_test_add ("/gcr/gnupg-process/run_fail_exit", Test, NULL, setup, test_run_fail_exit, teardown);
 	g_test_add ("/gcr/gnupg-process/run_fail_signal", Test, NULL, setup, test_run_fail_signal, teardown);
 	g_test_add ("/gcr/gnupg-process/run_and_cancel", Test, NULL, setup, test_run_and_cancel, teardown);
+	g_test_add ("/gcr/gnupg-process/run_and_cancel_later", Test, NULL, setup, test_run_and_cancel_later, teardown);
 
 	return egg_tests_run_in_thread_with_loop ();
 }
