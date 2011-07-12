@@ -216,6 +216,16 @@ _gcr_record_get_uint (GcrRecord *record, guint column, guint *value)
 	return TRUE;
 }
 
+/**
+ * _gcr_record_get_base64:
+ * @record: The record
+ * @column: The column to decode.
+ * @n_data: Location to return size of returned data.
+ *
+ * Decode a column of a record as base64 data.
+ *
+ * Returns: (transfer full): The decoded value, or %NULL if not found.
+ */
 gpointer
 _gcr_record_get_base64 (GcrRecord *record, guint column, gsize *n_data)
 {

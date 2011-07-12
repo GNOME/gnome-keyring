@@ -27,6 +27,17 @@
 
 #include <gcrypt.h>
 
+/**
+ * _gcr_gnupg_build_xa1_record:
+ * @meta: Status metadata record about the attribute data.
+ * @attribute: Pointer to attribute data.
+ * @n_attribute: Length of attribute data.
+ *
+ * Build a record for attribute data. We use this records to convert attribute
+ * data into something we can keep with an array of GcrRecord.
+ *
+ * Returns: (transfer full): The newly allocated record.
+ */
 GcrRecord*
 _gcr_gnupg_build_xa1_record (GcrRecord *meta, gpointer attribute,
                              gsize n_attribute)
@@ -65,6 +76,7 @@ _gcr_gnupg_build_xa1_record (GcrRecord *meta, gpointer attribute,
 	if (expiry == NULL)
 		expiry = "";
 
+	/* These values are from gnupg doc/DETAILS */
 	if (flags & 0x02)
 		status = "r";
 	else if (flags & 0x04)

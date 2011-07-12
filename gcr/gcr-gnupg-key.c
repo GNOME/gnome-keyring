@@ -184,7 +184,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	gobject_class->get_property = _gcr_gnupg_key_get_property;
 
 	/**
-	 * GcrGnupgKey::public-records:
+	 * GcrGnupgKey:public-records:
 	 *
 	 * Public key data. Should always be present.
 	 */
@@ -193,7 +193,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
 	/**
-	 * GcrGnupgKey::secret-records:
+	 * GcrGnupgKey:secret-records:
 	 *
 	 * Secret key data. The keyid of this data must match public-dataset.
 	 * If present, this key represents a secret key.
@@ -203,7 +203,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                             G_TYPE_PTR_ARRAY, G_PARAM_READWRITE));
 
 	/**
-	 * GcrGnupgKey::keyid:
+	 * GcrGnupgKey:keyid:
 	 *
 	 * Key identifier.
 	 */
@@ -212,7 +212,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                              "", G_PARAM_READABLE));
 
 	/**
-	 * GcrGnupgKey::label:
+	 * GcrGnupgKey:label:
 	 *
 	 * User readable label for this key.
 	 */
@@ -230,7 +230,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                              "", G_PARAM_READABLE));
 
 	/**
-	 * GcrGnupgKey::markup:
+	 * GcrGnupgKey:markup:
 	 *
 	 * User readable markup which contains key label.
 	 */
@@ -239,7 +239,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                              "", G_PARAM_READABLE));
 
 	/**
-	 * GcrGnupgKey::short-keyid:
+	 * GcrGnupgKey:short-keyid:
 	 *
 	 * User readable key identifier.
 	 */
@@ -248,7 +248,7 @@ _gcr_gnupg_key_class_init (GcrGnupgKeyClass *klass)
 	                              "", G_PARAM_READABLE));
 
 	/**
-	 * GcrGnupgKey::icon:
+	 * GcrGnupgKey:icon:
 	 *
 	 * Icon for this key.
 	 */
@@ -425,6 +425,14 @@ _gcr_gnupg_key_get_keyid_for_records (GPtrArray *records)
 	return NULL;
 }
 
+/**
+ * _gcr_gnupg_key_get_fingerprint_for_records:
+ * @records: Array of GcrRecord*
+ *
+ * Get the fingerprint field for some record data:
+ *
+ * Returns: (transfer none): The fingerprint.
+ */
 const gchar*
 _gcr_gnupg_key_get_fingerprint_for_records (GPtrArray *records)
 {
@@ -465,13 +473,17 @@ load_user_attribute_icon (GcrGnupgKey *self)
 		g_return_val_if_fail (data != NULL, NULL);
 
 		/* Header is 16 bytes long */
-		if (n_data <= IMAGE_HEADER_LEN)
+		if (n_data <= IMAGE_HEADER_LEN) {
+			g_free (data);
 			continue;
+		}
 
 		/* These are the header bytes. See gnupg doc/DETAILS */
 		g_assert (IMAGE_JPEG_SIG_LEN < IMAGE_HEADER_LEN);
-		if (memcmp (data, IMAGE_JPEG_SIG, IMAGE_JPEG_SIG_LEN) != 0)
+		if (memcmp (data, IMAGE_JPEG_SIG, IMAGE_JPEG_SIG_LEN) != 0) {
+			g_free (data);
 			continue;
+		}
 
 		/* We have a valid header */
 		return G_ICON (_gcr_memory_icon_new_full ("image/jpeg", data,
@@ -482,6 +494,14 @@ load_user_attribute_icon (GcrGnupgKey *self)
 	return NULL;
 }
 
+/**
+ * _gcr_gnupg_key_get_icon:
+ * @self: A gnupg key.
+ *
+ * Get the display icon for this key.
+ *
+ * Return value: (transfer none): The icon, owned by the key.
+ */
 GIcon*
 _gcr_gnupg_key_get_icon (GcrGnupgKey *self)
 {

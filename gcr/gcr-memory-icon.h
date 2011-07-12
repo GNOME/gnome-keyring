@@ -50,7 +50,7 @@ struct _GcrMemoryIconClass {
 	GObjectClass parent_class;
 };
 
-GType               _gcr_memory_icon_get_type             (void);
+GType               _gcr_memory_icon_get_type             (void) G_GNUC_CONST;
 
 GIcon*              _gcr_memory_icon_new                  (const gchar *image_type,
                                                            gconstpointer data,

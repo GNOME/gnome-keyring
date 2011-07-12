@@ -66,7 +66,6 @@ _gcr_memory_icon_class_init (GcrMemoryIconClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	_gcr_memory_icon_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrMemoryIconPrivate));
 
 	gobject_class->finalize = _gcr_memory_icon_finalize;
@@ -127,6 +126,11 @@ _gcr_memory_icon_load (GLoadableIcon *icon, int size, gchar **type,
 
 	is = g_memory_input_stream_new_from_data ((guchar*)self->pv->data + self->pv->offset,
 	                                          self->pv->n_data, NULL);
+
+	/*
+	 * Hold a reference to this object from the stream, so that we can rely
+	 * on the data hanging around.
+	 */
 	g_object_set_data_full (G_OBJECT (is), "back-reference", g_object_ref (self),
 	                        g_object_unref);
 
@@ -164,16 +168,42 @@ _gcr_memory_icon_iface_loadable_icon (GLoadableIconIface *iface)
 	iface->load_finish = _gcr_memory_icon_finish;
 }
 
+/**
+ * _gcr_memory_icon_new:
+ * @image_type: MIME content-type of the image.
+ * @data: Data for the image.
+ * @n_data: Length of data.
+ *
+ * Create a new GIcon based on image data in memory. The data will be copied
+ * by the new icon.
+ *
+ * Returns: (transfer full): A newly allocated icon.
+ */
 GIcon*
 _gcr_memory_icon_new (const gchar *image_type, gconstpointer data, gsize n_data)
 {
 	g_return_val_if_fail (image_type != NULL, NULL);
 	g_return_val_if_fail (data != NULL, NULL);
+	g_return_val_if_fail (n_data != 0, NULL);
 
 	return _gcr_memory_icon_new_full (image_type, g_memdup (data, n_data),
 	                                  n_data, 0, g_free);
 }
 
+/**
+ * _gcr_memory_icon_new_full:
+ * @image_type: MIME content-type of the image.
+ * @data: Data for the image.
+ * @n_data: Length of data.
+ * @offset: Offset of the start of the image in @data.
+ * @destroy: Callback to free or release @data when no longer needed.
+ *
+ * Create a new GIcon based on image data in memory. The data will be used
+ * directly from the @data passed. Use @destroy to control the lifetime of
+ * the data in memory.
+ *
+ * Returns: (transfer full): A newly allocated icon.
+ */
 GIcon*
 _gcr_memory_icon_new_full (const gchar *image_type, gpointer data, gsize n_data,
                            goffset offset, GDestroyNotify destroy)
@@ -182,7 +212,7 @@ _gcr_memory_icon_new_full (const gchar *image_type, gpointer data, gsize n_data,
 
 	g_return_val_if_fail (image_type != NULL, NULL);
 	g_return_val_if_fail (data != NULL, NULL);
-	g_return_val_if_fail (offset <= n_data, NULL);
+	g_return_val_if_fail (offset < n_data, NULL);
 
 	self = g_object_new (GCR_TYPE_MEMORY_ICON, NULL);
 	self->pv->data = data;

@@ -284,6 +284,7 @@ process_records_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *records,
 {
 	GPtrArray *attr_records = NULL;
 	const gchar *fingerprint;
+	gchar *orig_fingerprint;
 	GcrGnupgKey *key;
 	guint i;
 
@@ -295,8 +296,12 @@ process_records_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *records,
 		_gcr_debug ("adding %d user id attribute(s) to key/fingerprint: %s/%s",
 		            (gint)attr_records->len, keyid, fingerprint);
 
+		if (!g_hash_table_lookup_extended (load->attributes, fingerprint,
+		                                   (gpointer*)&orig_fingerprint, NULL))
+			g_assert_not_reached ();
 		if (!g_hash_table_steal (load->attributes, fingerprint))
 			g_assert_not_reached ();
+		g_free (orig_fingerprint);
 
 		/* Move all the attribute records over to main records set */
 		for (i = 0; i < attr_records->len; i++)

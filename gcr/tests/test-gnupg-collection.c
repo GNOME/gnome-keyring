@@ -135,6 +135,7 @@ test_load (Test *test, gconstpointer unused)
 	GcrGnupgKey *key;
 	GList *l, *objects;
 	GcrRecord *record;
+	GHashTable *check;
 
 	_gcr_gnupg_collection_load_async (test->collection, NULL, on_async_ready, test);
 	egg_test_wait_until (500000);
@@ -160,11 +161,15 @@ test_load (Test *test, gconstpointer unused)
 	/* The list of objects should be correct */
 	objects = gcr_collection_get_objects (GCR_COLLECTION (test->collection));
 	g_assert_cmpuint (g_hash_table_size (test->keys), ==, g_list_length (objects));
+	check = g_hash_table_new (g_str_hash, g_str_equal);
 	for (l = objects; l != NULL; l = g_list_next (l)) {
 		g_assert (GCR_IS_GNUPG_KEY (l->data));
 		key = g_hash_table_lookup (test->keys, _gcr_gnupg_key_get_keyid (l->data));
 		g_assert (key == l->data);
+		g_hash_table_replace (check, (gchar*)_gcr_gnupg_key_get_keyid (l->data), "");
 	}
+	g_assert_cmpuint (g_hash_table_size (check), ==, g_hash_table_size (test->keys));
+	g_hash_table_destroy (check);
 	g_list_free (objects);
 
 	/* Phillip R. Zimmerman's key should have a photo */
