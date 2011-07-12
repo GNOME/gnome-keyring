@@ -15,4 +15,7 @@
   <link linkend="gcr-GcrTreeSelector">
     <inlinegraphic fileref="tree-selector.png" format="PNG"></inlinegraphic>
   </link>
+  <link linkend="gcr-GcrListSelector">
+    <inlinegraphic fileref="list-selector.png" format="PNG"></inlinegraphic>
+  </link>
 </para>

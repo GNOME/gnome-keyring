@@ -66,6 +66,7 @@ IGNORE_HFILES= \
 	gcr-icons.h \
 	gcr-import-dialog.h \
 	gcr-internal.h \
+	gcr-live-search.h \
 	gcr-marshal.h \
 	gcr-xxx.h \
 	gcr-zzz.h
@@ -76,7 +77,8 @@ HTML_IMAGES= \
 	$(srcdir)/images/certificate-widget.png \
 	$(srcdir)/images/key-widget.png \
 	$(srcdir)/images/combo-selector.png \
-	$(srcdir)/images/tree-selector.png
+	$(srcdir)/images/tree-selector.png \
+	$(srcdir)/images/list-selector.png
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
@@ -120,7 +122,8 @@ WIDGETS = \
 	certificate-widget \
 	key-widget \
 	combo-selector \
-	tree-selector
+	tree-selector \
+	list-selector
 
 shots: gcr-shooter
 	mkdir -p $(builddir)/images
