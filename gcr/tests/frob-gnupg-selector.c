@@ -26,6 +26,8 @@
 #include "gcr/gcr.h"
 #include "gcr/gcr-gnupg-collection.h"
 #include "gcr/gcr-gnupg-key.h"
+#include "gcr/gcr-list-selector-private.h"
+#include "gcr/gcr-live-search.h"
 
 #include <gtk/gtk.h>
 
@@ -49,9 +51,11 @@ int
 main (int argc, char *argv[])
 {
 	GcrCollection *collection;
-	GcrTreeSelector *selector;
+	GcrListSelector *selector;
 	GtkWidget *scroll;
 	GtkDialog *dialog;
+	GtkWidget *search;
+	GtkBox *box;
 
 	gtk_init (&argc, &argv);
 
@@ -59,15 +63,21 @@ main (int argc, char *argv[])
 	g_object_ref_sink (dialog);
 
 	collection = _gcr_gnupg_collection_new (NULL);
-	selector = gcr_tree_selector_new (collection, GCR_GNUPG_KEY_COLUMNS);
+	selector = gcr_list_selector_new (collection);
+	search = _gcr_live_search_new (GTK_WIDGET (selector));
+	_gcr_list_selector_set_live_search (selector, GCR_LIVE_SEARCH (search));
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scroll), GTK_WIDGET (selector));
 
-	gtk_widget_show_all (scroll);
-	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (dialog)), GTK_WIDGET (scroll));
+	box = GTK_BOX (gtk_dialog_get_content_area (dialog));
+	gtk_box_pack_start (box, GTK_WIDGET (scroll), TRUE, TRUE, 0);
+	gtk_box_pack_end (box, search, FALSE, TRUE, 0);
+
+	gtk_widget_show (GTK_WIDGET (selector));
+	gtk_widget_show (scroll);
 
 	_gcr_gnupg_collection_load_async (GCR_GNUPG_COLLECTION (collection), NULL,
 	                                  on_collection_loaded, NULL);

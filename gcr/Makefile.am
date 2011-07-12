@@ -41,6 +41,7 @@ inc_HEADERS = \
 	gcr-key-widget.h \
 	gcr-importer.h \
 	gcr-library.h \
+	gcr-list-selector.h \
 	gcr-parser.h \
 	gcr-pkcs11-certificate.h \
 	gcr-renderer.h \
@@ -99,6 +100,8 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-key-renderer.c gcr-key-renderer.h \
 	gcr-key-widget.c gcr-key-widget.h \
 	gcr-library.c gcr-library.h \
+	gcr-list-selector.c gcr-list-selector.h \
+	gcr-live-search.c gcr-live-search.h \
 	gcr-memory-icon.c gcr-memory-icon.h \
 	gcr-parser.c gcr-parser.h \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
