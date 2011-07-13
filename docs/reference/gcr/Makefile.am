@@ -102,7 +102,7 @@ include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST +=
+# EXTRA_DIST +=
 
 # Files not to distribute
 # for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
@@ -137,10 +137,10 @@ gcr-shooter: $(SHOOTER_SRCS) $(SHOOTER_HEADERS) Makefile
 	$(AM_V_CC) libtool --mode=link gcc -o gcr-shooter -Wall -Werror $(GTK_CFLAGS) \
 		-I$(top_srcdir)/gcr -DGCR_API_SUBJECT_TO_CHANGE \
 		-DSRCDIR=\"$(srcdir)\" -DTOPDIR=\"$(top_srcdir)\" \
+		`pkg-config x11 xext --cflags --libs` \
 		$(GTK_LDFLAGS) -lm $(top_builddir)/gcr/libgcr-testable.la \
 		$(SHOOTER_SRCS)
 
-EXTRA_DIST += \
-	$(SHOOTER_SRCS) \
+EXTRA_DIST += $(SHOOTER_SRCS) \
 	$(SHOOTER_HEADERS) \
 	images
