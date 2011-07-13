@@ -54,6 +54,90 @@ G_DEFINE_TYPE (GcrGnupgKey, _gcr_gnupg_key, G_TYPE_OBJECT);
  * INTERNAL
  */
 
+/* Copied from GPGME */
+static void
+parse_user_id (const gchar *uid, gchar **name, gchar **email, gchar **comment)
+{
+	gchar *src, *tail, *x;
+	int in_name = 0;
+	int in_email = 0;
+	int in_comment = 0;
+
+	*name = NULL;
+	*email = NULL;
+	*comment = NULL;
+	x = tail = src = g_strdup (uid);
+
+	while (*src) {
+		if (in_email) {
+			/* Not legal but anyway.  */
+			if (*src == '<')
+				in_email++;
+			else if (*src == '>') {
+				if (!--in_email && !*email) {
+					*email = tail;
+					*src = 0;
+					tail = src + 1;
+				}
+			}
+		} else if (in_comment) {
+			if (*src == '(')
+				in_comment++;
+			else if (*src == ')') {
+				if (!--in_comment && !*comment) {
+					*comment = tail;
+					*src = 0;
+					tail = src + 1;
+				}
+			}
+		} else if (*src == '<') {
+			if (in_name) {
+				if (!*name) {
+					*name = tail;
+					*src = 0;
+					tail = src + 1;
+				}
+				in_name = 0;
+			} else
+				tail = src + 1;
+
+			in_email = 1;
+		} else if (*src == '(') {
+			if (in_name) {
+				if (!*name) {
+					*name = tail;
+					*src = 0;
+					tail = src + 1;
+				}
+				in_name = 0;
+			}
+			in_comment = 1;
+		} else if (!in_name && *src != ' ' && *src != '\t') {
+			in_name = 1;
+		}
+		src++;
+	}
+
+	if (in_name) {
+		if (!*name) {
+			*name = tail;
+			*src = 0;
+			tail = src + 1;
+		}
+	}
+
+	/* Let unused parts point to an EOS.  */
+	*name = g_strdup (*name ? *name : "");
+	*email = g_strdup (*email ? *email : "");
+	*comment = g_strdup (*comment ? *comment : "");
+
+	g_strstrip (*name);
+	g_strstrip (*email);
+	g_strstrip (*comment);
+
+	g_free (x);
+}
+
 static gchar *
 calculate_name (GcrGnupgKey *self)
 {
@@ -68,15 +152,24 @@ calculate_name (GcrGnupgKey *self)
 static gchar *
 calculate_markup (GcrGnupgKey *self)
 {
-	gchar *result = NULL;
-	gchar *name;
+	gchar *markup = NULL;
+	gchar *uid, *name, *email, *comment;
 
-	name = calculate_name (self);
-	if (name)
-		result = g_markup_escape_text (name, -1);
+	uid = calculate_name (self);
+	if (uid == NULL)
+		return NULL;
+
+	parse_user_id (uid, &name, &email, &comment);
+	if (comment != NULL && comment[0] != '\0')
+		markup = g_markup_printf_escaped ("%s\n<small>%s \'%s\'</small>", name, email, comment);
+	else
+		markup = g_markup_printf_escaped ("%s\n<small>%s</small>", name, email);
 	g_free (name);
+	g_free (email);
+	g_free (comment);
+	g_free (uid);
 
-	return result;
+	return markup;
 }
 
 static const gchar *
