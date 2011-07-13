@@ -733,6 +733,12 @@ gck/Makefile
 gck/tests/Makefile
 gcr/gcr.pc
 gcr/Makefile
+gcr/icons/Makefile
+gcr/icons/16x16/Makefile
+gcr/icons/22x22/Makefile
+gcr/icons/24x24/Makefile
+gcr/icons/32x32/Makefile
+gcr/icons/48x48/Makefile
 gcr/tests/Makefile
 pam/Makefile
 pkcs11/Makefile

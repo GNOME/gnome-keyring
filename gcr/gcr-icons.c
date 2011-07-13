@@ -28,8 +28,9 @@
 
 static gboolean registered_icons = FALSE;
 static const gchar *themed_icons[] = {
-	GCR_ICON_FOLDER,
 	GCR_ICON_CERTIFICATE,
+	GCR_ICON_KEY,
+	GCR_ICON_KEY_PAIR,
 	NULL,
 };
 

@@ -137,7 +137,7 @@ static void
 gcr_key_renderer_init (GcrKeyRenderer *self)
 {
 	self->pv = (G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_KEY_RENDERER, GcrKeyRendererPrivate));
-	self->pv->icon = g_themed_icon_new (GCR_ICON_FOLDER);
+	self->pv->icon = g_themed_icon_new (GCR_ICON_KEY);
 }
 
 static void

@@ -509,8 +509,12 @@ _gcr_gnupg_key_get_icon (GcrGnupgKey *self)
 
 	if (self->pv->icon == NULL) {
 		self->pv->icon = load_user_attribute_icon (self);
-		if (self->pv->icon == NULL)
-			self->pv->icon = g_themed_icon_new ("folder"); /* TODO: proper icon */
+		if (self->pv->icon == NULL) {
+			if (self->pv->secret_records)
+				self->pv->icon = g_themed_icon_new ("gcr-key-pair");
+			else
+				self->pv->icon = g_themed_icon_new ("gcr-key");
+		}
 	}
 
 	return self->pv->icon;

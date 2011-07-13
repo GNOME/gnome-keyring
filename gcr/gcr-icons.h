@@ -26,8 +26,9 @@
 
 G_BEGIN_DECLS
 
-#define GCR_ICON_FOLDER         "folder"
 #define GCR_ICON_CERTIFICATE    "application-certificate"
+#define GCR_ICON_KEY            "gcr-key"
+#define GCR_ICON_KEY_PAIR       "gcr-key-pair"
 
 void         _gcr_icons_register         (void);
 

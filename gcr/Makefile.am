@@ -7,7 +7,7 @@ TESTS_DIR =
 TESTABLE_LIB =
 endif
 
-SUBDIRS = . $(TESTS_DIR)
+SUBDIRS = . icons $(TESTS_DIR)
 
 # ------------------------------------------------------------------
 # UI BUILDER
