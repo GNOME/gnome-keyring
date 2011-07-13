@@ -37,8 +37,8 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	chmod -f 700 files/gnupg-homedir
-	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+	chmod -f 700 $(srcdir)/files/gnupg-homedir
+	SRCDIR=$(srcdir) gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 
