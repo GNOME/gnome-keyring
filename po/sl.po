@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-09 12:44+0000\n"
-"PO-Revision-Date: 2011-06-13 08:24+0100\n"
+"POT-Creation-Date: 2011-07-13 09:32+0000\n"
+"PO-Revision-Date: 2011-07-14 08:03+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -285,7 +285,7 @@ msgstr "Nepričakovana napaka v waitpid() (%s)"
 #. later
 #. later
 #: ../gcr/gcr-certificate.c:389
-#: ../gcr/gcr-gnupg-key.c:424
+#: ../gcr/gcr-gnupg-key.c:628
 msgctxt "column"
 msgid "Name"
 msgstr "Ime"
@@ -558,7 +558,7 @@ msgstr "Prstni odtis SHA1"
 msgid "Public Key"
 msgstr "Javni ključ"
 
-#: ../gcr/gcr-display-view.c:283
+#: ../gcr/gcr-display-view.c:270
 msgid "_Details"
 msgstr "_Podrobnosti"
 
@@ -574,14 +574,31 @@ msgstr "Uvozi v:"
 msgid "Password:"
 msgstr "Geslo:"
 
-#: ../gcr/gcr-gnupg-key.c:154
+#: ../gcr/gcr-gnupg-key.c:250
 msgid "PGP Key"
 msgstr "Ključ PGP"
 
-#: ../gcr/gcr-gnupg-key.c:426
+#: ../gcr/gcr-gnupg-key.c:630
 msgctxt "column"
 msgid "Key ID"
 msgstr "ID ključa"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "Opravilo Gnupg je končano z napako: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "Opravilo Gnupg je nepričakovano končano s signalom: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695
+#: ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1719
+#: ../gcr/gcr-parser.c:1958
+msgid "The operation was cancelled"
+msgstr "Dejanje je preklicano."
 
 #: ../gcr/gcr-importer.c:172
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
@@ -630,13 +647,6 @@ msgstr "Za uvoz osebnega potrdila '%s' mora biti to odklenjeno"
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Za uvoz  predmeta'%s' mora biti ta odklenjen"
-
-#: ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1719
-#: ../gcr/gcr-parser.c:1958
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "Dejanje je preklicano."
 
 #: ../gcr/gcr-importer.c:386
 #, c-format
@@ -748,337 +758,22 @@ msgstr "Samodejno zakleni zbirko ključev ob odjavi."
 msgid "minutes"
 msgstr "minut"
 
-#: ../gck/gck-uri.c:129
-#: ../gck/gck-uri.c:186
-#: ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
+#: ../gck/gck-uri.c:168
 #, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "Skladnja naslova URI je nepravilna. Neveljavno je polje kodiranja '%s',"
+msgid "The URI has invalid encoding."
+msgstr "Naslov URI je zapisan v neveljavnem kodnem zapisu."
 
-#: ../gck/gck-uri.c:292
-msgid "The URI does not have the 'pkcs11' scheme."
+#: ../gck/gck-uri.c:172
+msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "Naslov URI je brez ustrezne sheme 'pkcs11'."
 
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr "Na voljo je premalo pomnilnika"
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr "Izbran ID ni veljaven"
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "Notranja napaka"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "Dejanje ni uspelo"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "Neveljavni argumenti"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr "Z modulom ni mogoče ustvariti zahtevanih niti"
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr "Z modulom ni mogoče ustrezno zakleniti podatkov"
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "Polje je le za branje"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr "Polje je občutljivo in ga ni mogoče odkriti"
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "Polje ni veljavno ali pa ne obstaja"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "Neveljavna vrednost polja"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr "Podatki niso veljavni ali pa jih ni mogoče prepoznati"
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "Podatki so predolgi"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "Prišlo je do napake na napravi"
-
-#: ../gck/gck-misc.c:135
-msgid "Insufficient memory available on the device"
-msgstr "Ni zadostnega pomnilnika na napravi"
-
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr "Naprava je bila odstranjena ali pa je bila odklopljena"
-
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "Šifrirani podatki niso veljavni ali pa jih ni mogoče prepoznati"
-
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr "Šifrirani podatki so predolgi"
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "Naloga ni podprta."
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "Ključa ni ali pa je neveljaven"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr "Velikost ključa je napačna"
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr "Vrsta ključa je napačna"
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr "Ključ ni zahtevan"
-
-#: ../gck/gck-misc.c:153
-msgid "The key is different than before"
-msgstr "Ključ je drugačen, kot je bil prej"
-
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "Ključ je nujno zahtevan"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot include the key in the digest"
-msgstr "V povzetku ni mogoče vključiti ključa"
-
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr "Dejanja s tem ključem ni mogoče izvesti"
-
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr "Ključa ni mogoče prelomiti."
-
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "Ključa ni mogoče uporabiti"
-
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Mehanizem šifriranja je neveljaven ali pa ni prepoznan"
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr "Mehanizem šifriranja ima neveljaven argument"
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr "Predmet manjka ali pa je neveljaven"
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr "Trenutno teče že druga dejavnost"
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr "Trenutno ni dejanj v izvajanju"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr "Uporabniško ime ali pa PIN geslo ni pravilno."
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr "Uporabniško ime ali pa PIN geslo je neveljavno."
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr "Geslo ali PIN koda ni ustrezne velikosti"
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr "Geslo ali PIN koda sta pokvarjena"
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr "Uporabniško ime ali pa PIN geslo je zakljenjeno."
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "Seja je zaprta"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "Dejavnih je preveč sej."
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "Seja ni veljavna."
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "Seja je le za branje"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "Trenutno obtaja odprta seja"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "Trenutno je zagnana seja le za branje "
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "Trenutno je zagnana skrbniška seja."
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr "Podpis je slab ali pa je pokvarjen"
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr "Podpis ni prepoznan ali pa je pokvarjen"
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "Nekatera zahtevana polja niso izpolnjena"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "Nekatera polja imajo neveljavne vrednosti"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr "Naprava ni navzoča ali pa ni ustrezno priklopljena"
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr "Naprava je neveljavna ali pa je ni mogoče prepoznati"
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr "Naprava je zaščitena pred pisanjem"
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr "Uvoz ni mogoč, ker je ključ neveljaven"
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Uvoz ni mogoč, ker je ključ napačne velikosti."
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Uvoz ni mogoč, ker je ključ napačne vrste."
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "Vi ste že uspešno prijavljeni."
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "Noben uporabnik se ni logiral"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr "Podatek uporabniškega gesla ali PIN kode ni nastavljen."
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr "Vrsta uporabnika ni veljavna"
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "Drug uporabnik je že prijavljen"
-
-#: ../gck/gck-misc.c:229
-msgid "Too many users of different types are logged in"
-msgstr "Prijavljenih je preveč različnih vrst uporabnikov"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "Ni mogoče uvoziti neveljavnega ključa"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr "Uvoz ni mogoče, ker ima ključ napačno velikost."
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "Izvoz ni mogoče, ker ključ ni veljaven."
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Izvoz ni mogoče, ker ima ključ napačno velikost."
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Izvoz ni mogoče, ker je ključ napačne vrste."
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr "Ni mogoče zagnati programa za izpis naključnih števil."
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr "Na voljo ni nobenega programa za izpis naključnih števil"
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "Mehanizem šifriranja ima določene neveljavne parametre."
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr "Ni dovolj prostora za shranjevanje rezultatov."
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr "Shranjeno stanje je neveljavno."
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr "Podrobnosti so občutljive in jih ni mogoče odkriti."
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr "Stanja ni mogoče shraniti."
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr "Modul še ni zagnan."
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr "Modul je že zagnan."
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr "Ni mogoče zakleniti podatkov."
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr "Podatkov ni mogoče zakleniti"
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "Neznana napaka"
+#: ../gck/gck-uri.c:176
+msgid "The URI has bad syntax."
+msgstr "Skladnja naslova URI je slaba."
+
+#: ../gck/gck-uri.c:180
+msgid "The URI has a bad version number."
+msgstr "Naslov URI vsebuje nepravilno vrednost različice."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -1227,23 +922,23 @@ msgstr "ukazi:"
 msgid "          "
 msgstr "             "
 
-#: ../ui/gku-prompt-tool.c:618
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "Ali naj bodo shranjena gesla nešifrirana?"
 
-#: ../ui/gku-prompt-tool.c:619
+#: ../ui/gku-prompt-tool.c:595
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop to takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
-#: ../ui/gku-prompt-tool.c:626
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "Uporabi nevarno shranjevanje"
 
-#: ../ui/gku-prompt-tool.c:666
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "Gesli se ne skladata."
 
-#: ../ui/gku-prompt-tool.c:676
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "Geslo ne sme biti prazno."
 
@@ -1282,6 +977,246 @@ msgstr "_Staro geslo:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Geslo:"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "Na voljo je premalo pomnilnika"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "Izbran ID ni veljaven"
+
+#~ msgid "Internal error"
+#~ msgstr "Notranja napaka"
+
+#~ msgid "The operation failed"
+#~ msgstr "Dejanje ni uspelo"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "Neveljavni argumenti"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "Z modulom ni mogoče ustvariti zahtevanih niti"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "Z modulom ni mogoče ustrezno zakleniti podatkov"
+
+#~ msgid "The field is read-only"
+#~ msgstr "Polje je le za branje"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "Polje je občutljivo in ga ni mogoče odkriti"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "Polje ni veljavno ali pa ne obstaja"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "Neveljavna vrednost polja"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "Podatki niso veljavni ali pa jih ni mogoče prepoznati"
+
+#~ msgid "The data is too long"
+#~ msgstr "Podatki so predolgi"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "Prišlo je do napake na napravi"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "Ni zadostnega pomnilnika na napravi"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "Naprava je bila odstranjena ali pa je bila odklopljena"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "Šifrirani podatki niso veljavni ali pa jih ni mogoče prepoznati"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "Šifrirani podatki so predolgi"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "Naloga ni podprta."
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "Ključa ni ali pa je neveljaven"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "Velikost ključa je napačna"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "Vrsta ključa je napačna"
+
+#~ msgid "No key is needed"
+#~ msgstr "Ključ ni zahtevan"
+
+#~ msgid "The key is different than before"
+#~ msgstr "Ključ je drugačen, kot je bil prej"
+
+#~ msgid "A key is needed"
+#~ msgstr "Ključ je nujno zahtevan"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "V povzetku ni mogoče vključiti ključa"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "Dejanja s tem ključem ni mogoče izvesti"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "Ključa ni mogoče prelomiti."
+
+#~ msgid "Cannot export this key"
+#~ msgstr "Ključa ni mogoče uporabiti"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "Mehanizem šifriranja je neveljaven ali pa ni prepoznan"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "Mehanizem šifriranja ima neveljaven argument"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "Predmet manjka ali pa je neveljaven"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "Trenutno teče že druga dejavnost"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "Trenutno ni dejanj v izvajanju"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "Uporabniško ime ali pa PIN geslo ni pravilno."
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "Uporabniško ime ali pa PIN geslo je neveljavno."
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "Geslo ali PIN koda ni ustrezne velikosti"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "Geslo ali PIN koda sta pokvarjena"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "Uporabniško ime ali pa PIN geslo je zakljenjeno."
+
+#~ msgid "The session is closed"
+#~ msgstr "Seja je zaprta"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "Dejavnih je preveč sej."
+
+#~ msgid "The session is invalid"
+#~ msgstr "Seja ni veljavna."
+
+#~ msgid "The session is read-only"
+#~ msgstr "Seja je le za branje"
+
+#~ msgid "An open session exists"
+#~ msgstr "Trenutno obtaja odprta seja"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "Trenutno je zagnana seja le za branje "
+
+#~ msgid "An administrator session exists"
+#~ msgstr "Trenutno je zagnana skrbniška seja."
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "Podpis je slab ali pa je pokvarjen"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "Podpis ni prepoznan ali pa je pokvarjen"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "Nekatera zahtevana polja niso izpolnjena"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "Nekatera polja imajo neveljavne vrednosti"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "Naprava ni navzoča ali pa ni ustrezno priklopljena"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "Naprava je neveljavna ali pa je ni mogoče prepoznati"
+
+#~ msgid "The device is write protected"
+#~ msgstr "Naprava je zaščitena pred pisanjem"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "Uvoz ni mogoč, ker je ključ neveljaven"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "Uvoz ni mogoč, ker je ključ napačne velikosti."
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "Uvoz ni mogoč, ker je ključ napačne vrste."
+
+#~ msgid "You are already logged in"
+#~ msgstr "Vi ste že uspešno prijavljeni."
+
+#~ msgid "No user has logged in"
+#~ msgstr "Noben uporabnik se ni logiral"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "Podatek uporabniškega gesla ali PIN kode ni nastavljen."
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "Vrsta uporabnika ni veljavna"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "Drug uporabnik je že prijavljen"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "Prijavljenih je preveč različnih vrst uporabnikov"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "Ni mogoče uvoziti neveljavnega ključa"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "Uvoz ni mogoče, ker ima ključ napačno velikost."
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "Izvoz ni mogoče, ker ključ ni veljaven."
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "Izvoz ni mogoče, ker ima ključ napačno velikost."
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "Izvoz ni mogoče, ker je ključ napačne vrste."
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "Ni mogoče zagnati programa za izpis naključnih števil."
+
+#~ msgid "No random number generator available"
+#~ msgstr "Na voljo ni nobenega programa za izpis naključnih števil"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "Mehanizem šifriranja ima določene neveljavne parametre."
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "Ni dovolj prostora za shranjevanje rezultatov."
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "Shranjeno stanje je neveljavno."
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "Podrobnosti so občutljive in jih ni mogoče odkriti."
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "Stanja ni mogoče shraniti."
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "Modul še ni zagnan."
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "Modul je že zagnan."
+
+#~ msgid "Cannot lock data"
+#~ msgstr "Ni mogoče zakleniti podatkov."
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "Podatkov ni mogoče zakleniti"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
+
+#~ msgid "Unknown error"
+#~ msgstr "Neznana napaka"
 
 #~ msgid "Fingerprint"
 #~ msgstr "Prstni odtis"
