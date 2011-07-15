@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-04 14:01+0300\n"
-"PO-Revision-Date: 2011-06-04 14:05+0200\n"
+"POT-Creation-Date: 2011-07-15 10:56+0300\n"
+"PO-Revision-Date: 2011-07-15 10:58+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -285,7 +285,7 @@ msgstr "שגיאה בלתי צפויה ב־waitpid()‎‏ (%s)"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:424
+#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:628
 msgctxt "column"
 msgid "Name"
 msgstr "שם"
@@ -343,7 +343,7 @@ msgstr "שם אחר"
 
 #: ../gcr/gcr-certificate-extensions.c:142
 msgid "Email"
-msgstr "דוא\"ל"
+msgstr "דוא״ל"
 
 #: ../gcr/gcr-certificate-extensions.c:150
 msgid "DNS"
@@ -552,7 +552,7 @@ msgstr "טביעת אצבע של מפתח SHA1"
 msgid "Public Key"
 msgstr "מפתח ציבורי"
 
-#: ../gcr/gcr-display-view.c:283
+#: ../gcr/gcr-display-view.c:270
 msgid "_Details"
 msgstr "_פרטים"
 
@@ -568,14 +568,29 @@ msgstr "ייבוא לתוך:"
 msgid "Password:"
 msgstr "ססמה:"
 
-#: ../gcr/gcr-gnupg-key.c:154
+#: ../gcr/gcr-gnupg-key.c:250
 msgid "PGP Key"
 msgstr "מפתח PGP"
 
-#: ../gcr/gcr-gnupg-key.c:426
+#: ../gcr/gcr-gnupg-key.c:630
 msgctxt "column"
 msgid "Key ID"
 msgstr "מזהה המפתח"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "התהליך Gnupg יצא עם הקוד: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "התהליך Gnupg חוסל עם האות: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
+msgid "The operation was cancelled"
+msgstr "הפעולה בוטלה"
 
 #: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
@@ -623,11 +638,6 @@ msgstr "כדי לייבא את התעודה '%s', יש לשחררה"
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "כדי לייבא את '%s', יש לבצע שחרור"
-
-#: ../gcr/gcr-importer.c:293 ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "הפעולה בוטלה"
 
 #: ../gcr/gcr-importer.c:386
 #, c-format
@@ -735,335 +745,22 @@ msgstr "יש לנעול קבוצת מפתחות זו בעת הניתוק"
 msgid "minutes"
 msgstr "דקות"
 
-#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
+#: ../gck/gck-uri.c:168
 #, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "תחביר הכתובת שגוי. הקידוד של השדה '%s' אינו תקני."
+msgid "The URI has invalid encoding."
+msgstr "הכתובת הנה בקידוד שגוי."
 
-#: ../gck/gck-uri.c:292
-msgid "The URI does not have the 'pkcs11' scheme."
+#: ../gck/gck-uri.c:172
+msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "הכתובת אינה במבנה 'pkcs11'."
 
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr "אין מספיק זיכרון פנוי"
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr "מזהה החריץ שצוין אינו תקני"
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "שגיאה פנימית"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "הפעולה בוטלה"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "ארגומנטים שגויים"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr "המודול לא יכול ליצור את האשכולות הנדרשים"
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr "המודול לא יכו לנעול את הנתונים כראוי"
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "השדה הוא לקריאה בלבד"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr "השדה רגיש ולא ניתן לחשוף אותו"
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "השדה פגום או שאינו קיים"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "ערך שגוי לשדה"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr "הנתונים אינם תקינים או שאינם מזוהים"
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "הנתונים ארוכים מדי"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "ארעה שגיאה בהתקן"
-
-#: ../gck/gck-misc.c:135
-msgid "Insufficient memory available on the device"
-msgstr "אין די זיכרון פנוי בהתקן"
-
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr "ההתקן הוסר או נותק"
-
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "הנתונים המוצפנים אינם תקינים או שאינם מזוהים"
-
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr "המידע המוצפן ארוך מדי"
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "פעולה זאת אינה נתמכת"
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "המפתח חסר או שגוי"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr "המפתח אינו בגודל הנכון"
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr "הפתח אינו מהסוג הנכון"
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr "אין צורך במפתח"
-
-#: ../gck/gck-misc.c:153
-msgid "The key is different than before"
-msgstr "המפתח שונה מבעבר"
-
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "יש צורך במפתח"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot include the key in the digest"
-msgstr "לא ניתן לכלול את המפתח בלקט"
-
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr "לא ניתן לבצע פעולה זו עם מפתח זה"
-
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr "לא ניתן לעטוף את המפתח"
-
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "לא ניתן ליצא את מפתח זה"
-
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "מנגנון ההצפנה שגוי או שאינו מזוהה"
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr "למנגנון ההצפנה יש ארגומנט בלתי תקין"
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr "הרכיב חסר או פגום"
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr "כבר מתבצעת פעולה אחרת"
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr "לא מתבצעת פעולה"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr "הססמה או הקוד אינם נכונים"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr "הססמה או הקוד שגויים"
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr "הססמה או הקוד באורך שגוי"
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr "תוקף הססמה או הקוד פג"
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr "הססמה או הקוד נעולים"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "ההפעלה סגורה"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "יותר מדי הפעלות פעילות"
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "ההפעלה שגוייה"
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "ההפעלה היא לקריאה בלבד"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "קיימת הפעלה פתוחה"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "קיימת הפעלה לקריאה בלבד"
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "קיימת הפעלת מנהל"
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr "החתימה שגויה או פגומה"
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr "החתימה בלתי מזוהה או פגומה"
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "מספר שדות נדרשים חסרים"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "לשדות מסוימים יש ערכים שגוים"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr "ההתקן אינו קיים או שאינו מחובר"
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr "ההתקן אינו תקני או בלתי מזוהה"
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr "ההתקן אינו ניתן לכתיבה"
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr "לא ניתן לייבא מכיון שהמפתח שגוי"
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr "לא ניתן לייבא כיוון שהמפתח הוא בגודל שגוי"
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr "לא ניתן לייבא כיוון שהמפתח הוא מסוג שגוי"
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "אתה כבר מחובר"
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "אין אף משתמש מחובר"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr "הססמה או קוד המשתמש אינם מוגדרים"
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr "המשתמש הוא מסוג בלתי תקני"
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "כבר יש משתמש מחובר"
-
-#: ../gck/gck-misc.c:229
-msgid "Too many users of different types are logged in"
-msgstr "יותר מדי משתמשים מסוגים שונים מחוברים"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "לא ניתן ליבא מפתח שגוי"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr "לא ניתן ליבא מפתח באורך שגוי"
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "לא ניתן ליצא מכיון שהמפתח שגוי"
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr "לא ניתן ליצא מכיון שאורך המפתח שגוי"
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr "לא ניתן ליצא מכיון שסוג המפתח שגוי"
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr "לא ניתן להפעיל את מחולל המספרים האקראיים"
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr "אין מחולל מספרים אקראיים זמין"
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "למנגנון ההצפנה יש פרמטר שגוי"
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr "אין די מקום כדי לאחסן את התוצאה"
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr "המצב שנשמר שגוי"
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr "המידע רגיש ולא ניתן לחשוף אותו"
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr "לא ניתן לשמור את המצב"
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr "לא ניתן להפעיל את המודול"
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr "המודול כבר הופעל"
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr "לא ניתן לנעול את המידע"
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr "לא ניתן לנעול את המידע"
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr "בקשת החתימה נדחתה על ידי המשתמש"
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "שגיאה לא ידועה"
+#: ../gck/gck-uri.c:176
+msgid "The URI has bad syntax."
+msgstr "לכתובת יש תחביר שגוי."
+
+#: ../gck/gck-uri.c:180
+msgid "The URI has a bad version number."
+msgstr "לכתובת יש מספר גרסה שגוי."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -1221,11 +918,11 @@ msgstr "commands: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:618
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
 
-#: ../ui/gku-prompt-tool.c:619
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1234,15 +931,15 @@ msgstr ""
 "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל "
 "בעל גישה לקבצים שלך."
 
-#: ../ui/gku-prompt-tool.c:626
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "שימוש באחסון בלתי מאובטח"
 
-#: ../ui/gku-prompt-tool.c:666
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "הססמאות אינן תואמות."
 
-#: ../ui/gku-prompt-tool.c:676
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "הססמה אינה יכולה להיות ריקה"
 
@@ -1281,6 +978,246 @@ msgstr "הססמה ה_קודמת:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_ססמה:"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "אין מספיק זיכרון פנוי"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "מזהה החריץ שצוין אינו תקני"
+
+#~ msgid "Internal error"
+#~ msgstr "שגיאה פנימית"
+
+#~ msgid "The operation failed"
+#~ msgstr "הפעולה בוטלה"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "ארגומנטים שגויים"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "המודול לא יכול ליצור את האשכולות הנדרשים"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "המודול לא יכו לנעול את הנתונים כראוי"
+
+#~ msgid "The field is read-only"
+#~ msgstr "השדה הוא לקריאה בלבד"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "השדה רגיש ולא ניתן לחשוף אותו"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "השדה פגום או שאינו קיים"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "ערך שגוי לשדה"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "הנתונים אינם תקינים או שאינם מזוהים"
+
+#~ msgid "The data is too long"
+#~ msgstr "הנתונים ארוכים מדי"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "ארעה שגיאה בהתקן"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "אין די זיכרון פנוי בהתקן"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "ההתקן הוסר או נותק"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "הנתונים המוצפנים אינם תקינים או שאינם מזוהים"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "המידע המוצפן ארוך מדי"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "פעולה זאת אינה נתמכת"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "המפתח חסר או שגוי"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "המפתח אינו בגודל הנכון"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "הפתח אינו מהסוג הנכון"
+
+#~ msgid "No key is needed"
+#~ msgstr "אין צורך במפתח"
+
+#~ msgid "The key is different than before"
+#~ msgstr "המפתח שונה מבעבר"
+
+#~ msgid "A key is needed"
+#~ msgstr "יש צורך במפתח"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "לא ניתן לכלול את המפתח בלקט"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "לא ניתן לבצע פעולה זו עם מפתח זה"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "לא ניתן לעטוף את המפתח"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "לא ניתן ליצא את מפתח זה"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "מנגנון ההצפנה שגוי או שאינו מזוהה"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "למנגנון ההצפנה יש ארגומנט בלתי תקין"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "הרכיב חסר או פגום"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "כבר מתבצעת פעולה אחרת"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "לא מתבצעת פעולה"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "הססמה או הקוד אינם נכונים"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "הססמה או הקוד שגויים"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "הססמה או הקוד באורך שגוי"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "תוקף הססמה או הקוד פג"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "הססמה או הקוד נעולים"
+
+#~ msgid "The session is closed"
+#~ msgstr "ההפעלה סגורה"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "יותר מדי הפעלות פעילות"
+
+#~ msgid "The session is invalid"
+#~ msgstr "ההפעלה שגוייה"
+
+#~ msgid "The session is read-only"
+#~ msgstr "ההפעלה היא לקריאה בלבד"
+
+#~ msgid "An open session exists"
+#~ msgstr "קיימת הפעלה פתוחה"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "קיימת הפעלה לקריאה בלבד"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "קיימת הפעלת מנהל"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "החתימה שגויה או פגומה"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "החתימה בלתי מזוהה או פגומה"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "מספר שדות נדרשים חסרים"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "לשדות מסוימים יש ערכים שגוים"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "ההתקן אינו קיים או שאינו מחובר"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "ההתקן אינו תקני או בלתי מזוהה"
+
+#~ msgid "The device is write protected"
+#~ msgstr "ההתקן אינו ניתן לכתיבה"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "לא ניתן לייבא מכיון שהמפתח שגוי"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "לא ניתן לייבא כיוון שהמפתח הוא בגודל שגוי"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "לא ניתן לייבא כיוון שהמפתח הוא מסוג שגוי"
+
+#~ msgid "You are already logged in"
+#~ msgstr "אתה כבר מחובר"
+
+#~ msgid "No user has logged in"
+#~ msgstr "אין אף משתמש מחובר"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "הססמה או קוד המשתמש אינם מוגדרים"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "המשתמש הוא מסוג בלתי תקני"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "כבר יש משתמש מחובר"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "יותר מדי משתמשים מסוגים שונים מחוברים"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "לא ניתן ליבא מפתח שגוי"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "לא ניתן ליבא מפתח באורך שגוי"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "לא ניתן ליצא מכיון שהמפתח שגוי"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "לא ניתן ליצא מכיון שאורך המפתח שגוי"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "לא ניתן ליצא מכיון שסוג המפתח שגוי"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "לא ניתן להפעיל את מחולל המספרים האקראיים"
+
+#~ msgid "No random number generator available"
+#~ msgstr "אין מחולל מספרים אקראיים זמין"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "למנגנון ההצפנה יש פרמטר שגוי"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "אין די מקום כדי לאחסן את התוצאה"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "המצב שנשמר שגוי"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "המידע רגיש ולא ניתן לחשוף אותו"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "לא ניתן לשמור את המצב"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "לא ניתן להפעיל את המודול"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "המודול כבר הופעל"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "לא ניתן לנעול את המידע"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "לא ניתן לנעול את המידע"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "בקשת החתימה נדחתה על ידי המשתמש"
+
+#~ msgid "Unknown error"
+#~ msgstr "שגיאה לא ידועה"
 
 #~ msgid "Fingerprint"
 #~ msgstr "טביעת אצבע"
