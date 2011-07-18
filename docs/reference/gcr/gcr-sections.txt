@@ -64,6 +64,10 @@ GCR_IS_CERTIFICATE
 GCR_TYPE_CERTIFICATE
 GCR_CERTIFICATE_GET_INTERFACE
 gcr_certificate_get_type
+<SUBSECTION Private>
+GcrCertificateExtensionKeyUsage
+GcrGeneralName
+GcrGeneralNameType
 </SECTION>
 
 <SECTION>
@@ -528,4 +532,6 @@ GCR_TYPE_MEMORY_ICON
 GcrMemoryIcon
 GcrMemoryIconClass
 GcrMemoryIconPrivate
+GCR_ERROR
+gcr_error_get_domain
 </SECTION>
