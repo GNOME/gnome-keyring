@@ -73,12 +73,17 @@
 
 /**
  * GckUriFlags:
- * @GCK_URI_CONTEXT_MODULE: the URI will be used to match modules.
- * @GCK_URI_CONTEXT_TOKEN: the URI will be used to match tokens.
- * @GCK_URI_CONTEXT_OBJECT: the URI will be used to match objects.
- * @GCK_URI_CONTEXT_ANY: parse all recognized components of the URI.
+ * @GCK_URI_FOR_MODULE: the URI will be used to match modules.
+ * @GCK_URI_FOR_TOKEN: the URI will be used to match tokens.
+ * @GCK_URI_FOR_OBJECT: the URI will be used to match objects.
+ * @GCK_URI_FOR_ANY: parse all recognized components of the URI.
+ * @GCK_URI_FOR_MODULE_WITH_VERSION: the URI will match specific version of modules.
+ * @GCK_URI_FOR_OBJECT_ON_TOKEN: the URI will match objects on a specific token.
+ * @GCK_URI_FOR_OBJECT_ON_TOKEN_AND_MODULE: the URI will match objects on a specific
+ *      token inserted into a device with a specific module.
  *
- * Which context the PKCS\#11 URI will be used in.
+ * Which parts of the PKCS\#11 URI will be parsed or formatted. These can be
+ * combined.
  */
 
 /**
@@ -138,7 +143,7 @@ gck_uri_data_new (void)
  * Other fields will be set to %NULL.
  *
  * Return value: a newly allocated #GckUriData, which should be freed with
- * 	gck_uri_info_free().
+ * 	gck_uri_data_free().
  */
 GckUriData*
 gck_uri_parse (const gchar *string, GckUriFlags flags, GError **error)
