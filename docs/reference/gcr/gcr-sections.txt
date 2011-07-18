@@ -300,6 +300,26 @@ GcrTreeSelectorPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gcr-list-selector</FILE>
+GcrListSelector
+GcrListSelectorClass
+gcr_list_selector_new
+gcr_list_selector_get_collection
+gcr_list_selector_get_columns
+gcr_list_selector_get_selected
+gcr_list_selector_set_selected
+<SUBSECTION Standard>
+gcr_list_selector_get_type
+GcrListSelectorPrivate
+GCR_IS_LIST_SELECTOR
+GCR_IS_LIST_SELECTOR_CLASS
+GCR_LIST_SELECTOR
+GCR_LIST_SELECTOR_CLASS
+GCR_LIST_SELECTOR_GET_CLASS
+GCR_TYPE_LIST_SELECTOR
+</SECTION>
+
+<SECTION>
 <FILE>gcr-combo-selector</FILE>
 GcrComboSelector
 GcrComboSelectorClass

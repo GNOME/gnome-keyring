@@ -140,6 +140,43 @@ create_tree_selector (const gchar *name)
 	return gcr_shooter_info_new (name, align, GCR_SHOOTER_MEDIUM);
 }
 
+static GcrShooterInfo *
+create_list_selector (const gchar *name)
+{
+	GcrListSelector *selector;
+	GcrCertificate *certificate;
+	GcrCollection *collection;
+	GtkWidget *align;
+	gchar *contents;
+	gsize length;
+	GList *selected = NULL;
+
+	collection = gcr_simple_collection_new ();
+	selector = gcr_list_selector_new (collection);
+
+	contents = load_gcr_test_file ("cacert.org.cer", &length);
+	certificate = gcr_simple_certificate_new (contents, length);
+	g_free (contents);
+	gcr_simple_collection_add (GCR_SIMPLE_COLLECTION (collection), G_OBJECT (certificate));
+	selected = g_list_append (selected, certificate);
+	gcr_list_selector_set_selected (selector, selected);
+	g_list_free (selected);
+	g_object_unref (certificate);
+
+	contents = load_gcr_test_file ("der-certificate-dsa.cer", &length);
+	certificate = gcr_simple_certificate_new (contents, length);
+	g_free (contents);
+	gcr_simple_collection_add (GCR_SIMPLE_COLLECTION (collection), G_OBJECT (certificate));
+	g_object_unref (certificate);
+
+	g_object_unref (collection);
+
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (selector));
+
+	return gcr_shooter_info_new (name, align, GCR_SHOOTER_MEDIUM);
+}
+
 
 GcrShooterInfo*
 gcr_widgets_create (const gchar *name)
@@ -154,6 +191,8 @@ gcr_widgets_create (const gchar *name)
 		return create_combo_selector (name);
 	else if (g_str_equal (name, "tree-selector"))
 		return create_tree_selector (name);
+	else if (g_str_equal (name, "list-selector"))
+		return create_list_selector (name);
 
 	return NULL;
 }

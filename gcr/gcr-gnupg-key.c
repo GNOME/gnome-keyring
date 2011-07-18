@@ -66,6 +66,7 @@ parse_user_id (const gchar *uid, gchar **name, gchar **email, gchar **comment)
 	*name = NULL;
 	*email = NULL;
 	*comment = NULL;
+
 	x = tail = src = g_strdup (uid);
 
 	while (*src) {
