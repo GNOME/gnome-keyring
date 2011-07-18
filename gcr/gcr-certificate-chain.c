@@ -496,29 +496,6 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
  * The enum #GType for #GcrCertificateChainStatus.
  */
 
-GType
-gcr_certificate_chain_status_get_type (void)
-{
-	static volatile gsize initialized = 0;
-	static GType type = 0;
-	static const GEnumValue values[] = {
-		{ GCR_CERTIFICATE_CHAIN_UNKNOWN, "GCR_CERTIFICATE_CHAIN_UNKNOWN", "unknown" },
-		{ GCR_CERTIFICATE_CHAIN_INCOMPLETE, "GCR_CERTIFICATE_CHAIN_INCOMPLETE", "incomplete" },
-		{ GCR_CERTIFICATE_CHAIN_DISTRUSTED, "GCR_CERTIFICATE_CHAIN_DISTRUSTED", "distrusted" },
-		{ GCR_CERTIFICATE_CHAIN_SELFSIGNED, "GCR_CERTIFICATE_CHAIN_SELFSIGNED", "self-signed" },
-		{ GCR_CERTIFICATE_CHAIN_PINNED, "GCR_CERTIFICATE_CHAIN_PINNED", "pinned" },
-		{ GCR_CERTIFICATE_CHAIN_ANCHORED, "GCR_CERTIFICATE_CHAIN_ANCHORED", "anchored" },
-		{ 0, NULL, NULL }
-	};
-
-	if (g_once_init_enter (&initialized)) {
-		type = g_enum_register_static ("GcrCertificateChainStatus", values);
-		g_once_init_leave (&initialized, 1);
-	}
-
-	return type;
-}
-
 /**
  * GcrCertificateChainFlags:
  * @GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS: If this flag is specified then no
@@ -534,24 +511,6 @@ gcr_certificate_chain_status_get_type (void)
  *
  * The flags #GType for #GcrCertificateChainFlags.
  */
-
-GType
-gcr_certificate_chain_flags_get_type (void)
-{
-	static volatile gsize initialized = 0;
-	static GType type = 0;
-	static const GFlagsValue values[] = {
-		{ GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS, "GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS", "no-lookups" },
-		{ 0, NULL, NULL }
-	};
-
-	if (g_once_init_enter (&initialized)) {
-		type = g_flags_register_static ("GcrCertificateChainFlags", values);
-		g_once_init_leave (&initialized, 1);
-	}
-
-	return type;
-}
 
 /**
  * gcr_certificate_chain_new:

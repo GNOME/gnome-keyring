@@ -68,7 +68,8 @@ INCLUDES = \
 	$(P11_KIT_CFLAGS)
 
 BUILT_SOURCES = \
-	gcr-marshal.c gcr-marshal.h
+	gcr-marshal.c gcr-marshal.h \
+	gcr-enum-types.c gcr-enum-types.h
 
 lib_LTLIBRARIES = libgcr-@GCR_MAJOR@.la
 
@@ -147,11 +148,19 @@ libgcr_testable_la_LIBADD = $(libgcr_@GCR_MAJOR@_la_OBJECTS) \
 libgcr_testable_la_DEPENDENCIES = $(libgcr_@GCR_MAJOR@_la_OBJECTS)
 
 gcr-marshal.h: gcr-marshal.list $(GLIB_GENMARSHAL)
-	$(GLIB_GENMARSHAL) $< --header --prefix=_gcr_marshal > $@
+	$(AM_V_GEN) $(GLIB_GENMARSHAL) $< --header --prefix=_gcr_marshal > $@
 
 gcr-marshal.c: gcr-marshal.list $(GLIB_GENMARSHAL)
-	echo "#include \"gcr-marshal.h\"" > $@ && \
-	$(GLIB_GENMARSHAL) $< --body --prefix=_gcr_marshal >> $@
+	$(AM_V_GEN) ( echo "#include \"gcr-marshal.h\"" > $@ && \
+		$(GLIB_GENMARSHAL) $< --body --prefix=_gcr_marshal >> $@ )
+
+gcr-enum-types.h: $(inc_HEADERS) gcr-enum-types.h.template
+	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(srcdir)/gcr-enum-types.h.template \
+		$(inc_HEADERS) > $@
+
+gcr-enum-types.c: $(inc_HEADERS) gcr-enum-types.c.template
+	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(srcdir)/gcr-enum-types.c.template \
+		$(inc_HEADERS) > $@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gcr-$(GCR_MAJOR).pc

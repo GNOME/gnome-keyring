@@ -28,6 +28,10 @@ GCR_IS_PARSER_CLASS
 GCR_PARSER_GET_CLASS
 GCK_API_SUBJECT_TO_CHANGE
 gcr_data_error_get_domain
+GCR_TYPE_DATA_ERROR
+GCR_TYPE_DATA_FORMAT
+gcr_data_error_get_type
+gcr_data_format_get_type
 </SECTION>
 
 <SECTION>
@@ -96,6 +100,8 @@ gcr_importer_get_type
 GCR_IMPORTER_CLASS
 GCR_IS_IMPORTER_CLASS
 GCR_IMPORTER_GET_CLASS
+GCR_TYPE_IMPORTER_PROMPT_BEHAVIOR
+gcr_importer_prompt_behavior_get_type
 </SECTION>
 
 <SECTION>
@@ -281,6 +287,9 @@ GcrCollectionModelPrivate
 <FILE>gcr-column</FILE>
 GcrColumn
 GcrColumnFlags
+<SUBSECTION Standard>
+GCR_TYPE_COLUMN_FLAGS
+gcr_column_flags_get_type
 </SECTION>
 
 <SECTION>

@@ -36,11 +36,7 @@
 
 G_BEGIN_DECLS
 
-/*
- * IMPORTANT: When adding a status, always update the
- * gcr_certificate_chain_status_get_type() function
- */
-typedef enum _GcrCertificateChainStatus {
+typedef enum {
 	GCR_CERTIFICATE_CHAIN_UNKNOWN,
 	GCR_CERTIFICATE_CHAIN_INCOMPLETE,
 	GCR_CERTIFICATE_CHAIN_DISTRUSTED,
@@ -49,21 +45,9 @@ typedef enum _GcrCertificateChainStatus {
 	GCR_CERTIFICATE_CHAIN_ANCHORED,
 } GcrCertificateChainStatus;
 
-#define GCR_TYPE_CERTIFICATE_CHAIN_STATUS        (gcr_certificate_chain_status_get_type())
-
-GType                     gcr_certificate_chain_status_get_type       (void) G_GNUC_CONST;
-
-/*
- * IMPORTANT: When adding a status, always update the
- * gcr_certificate_chain_flags_get_type() function
- */
-typedef enum _GcrCertificateChainFlags {
+typedef enum {
 	GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS = 1 << 0,
 } GcrCertificateChainFlags;
-
-#define GCR_TYPE_CERTIFICATE_CHAIN_FLAGS         (gcr_certificate_chain_flags_get_type())
-
-GType                     gcr_certificate_chain_flags_get_type       (void) G_GNUC_CONST;
 
 #define GCR_TYPE_CERTIFICATE_CHAIN               (gcr_certificate_chain_get_type ())
 #define GCR_CERTIFICATE_CHAIN(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_CERTIFICATE_CHAIN, GcrCertificateChain))
