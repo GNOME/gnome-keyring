@@ -37,6 +37,7 @@ inc_HEADERS = \
 	gcr-column.h \
 	gcr-combo-selector.h \
 	gcr-comparable.h \
+	gcr-enum-types.h \
 	gcr-key-renderer.h \
 	gcr-key-widget.h \
 	gcr-importer.h \
