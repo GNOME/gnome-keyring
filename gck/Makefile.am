@@ -87,3 +87,9 @@ DISTCLEANFILES = \
 
 gck-$(GCK_MAJOR).pc: gck.pc
 	cp gck.pc gck-$(GCK_MAJOR).pc
+
+symbols: libgck-$(VERSION).symbols
+
+libgck-$(VERSION).symbols: .libs/libgck-@GCK_MAJOR@.so
+	nm -D .libs/libgck-@GCK_MAJOR@.so | grep -F ' T ' | \
+		cut -d ' ' -f 3 | sort > $@

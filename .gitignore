@@ -36,6 +36,7 @@ run-tests
 *.gcno
 *.gcda
 *.valid
+*.symbols
 
 /compile
 /ABOUT-NLS

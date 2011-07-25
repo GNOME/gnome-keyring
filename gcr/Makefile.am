@@ -102,7 +102,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-key-renderer.c gcr-key-renderer.h \
 	gcr-key-widget.c gcr-key-widget.h \
 	gcr-library.c gcr-library.h \
-	gcr-list-selector.c gcr-list-selector.h \
+	gcr-list-selector.c gcr-list-selector.h gcr-list-selector-private.h \
 	gcr-live-search.c gcr-live-search.h \
 	gcr-memory-icon.c gcr-memory-icon.h \
 	gcr-parser.c gcr-parser.h \
@@ -172,21 +172,23 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 
 # ----------------------------------------------------------------
 
-libgcr.symbols: .libs/libgcr-@GCR_MAJOR@.so
-	nm -D .libs/libgcr-@GCR_MAJOR@.so | grep -F ' T ' | \
-		cut -d ' ' -f 3 | sort > $@
-
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
 	$(ui_DATA) \
 	$(conf_DATA) \
-	libgcr.symbols
+	gcr-enum-types.h.template \
+	gcr-enum-types.c.template
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	$(pkgconfig_DATA)
 
 DISTCLEANFILES = \
-	$(pkgconfig_DATA) \
-	libgcr.symbols
+	$(pkgconfig_DATA)
+
+symbols: libgcr-$(VERSION).symbols
+
+libgcr-$(VERSION).symbols: .libs/libgcr-@GCR_MAJOR@.so
+	nm -D .libs/libgcr-@GCR_MAJOR@.so | grep -F ' T ' | \
+		cut -d ' ' -f 3 | sort > $@

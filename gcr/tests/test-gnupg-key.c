@@ -101,7 +101,7 @@ test_markup (Test *test, gconstpointer unused)
 	gchar *markup;
 
 	g_object_get (test->key, "markup", &markup, NULL);
-	g_assert_cmpstr (markup, ==, "Werner Koch &lt;wk@g10code.com&gt;");
+	g_assert_cmpstr (markup, ==, "Werner Koch\n<small>wk@g10code.com</small>");
 
 	g_free (markup);
 }

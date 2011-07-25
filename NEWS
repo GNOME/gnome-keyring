@@ -1,3 +1,14 @@
+Changes in version 3.1.4 are:
+ * New GcrListSelector class for selecting multiple keys.
+ * Add icons for key and key pair.
+ * Gcr now has support for loading of GnuPG keys from gpg, including photos.
+ * New gcr dependency on p11-kit for loading PKCS#11 modules.
+ * Remove support for GTK+ 2.x
+ * Implement calculation of fingerprints in gcr for keys.
+ * Fix problems in daemon if IPC lock or FS capabilities are not available.
+ * Bug fixes and build fixes.
+ * Code cleanup and refactoring.
+
 Changes in version 3.1.1 are:
  * Add 'Export Certificate' option to right click of certificate widget.
  * Use file system linux capabilities for memory locking.
