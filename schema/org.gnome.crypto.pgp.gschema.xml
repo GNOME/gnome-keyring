@@ -25,5 +25,10 @@
 			<summary>Last key used to sign a message.</summary>
 			<description>The ID of the last secret key used to sign a message.</description>
 		</key>
+		<key name="keyservers" type="as">
+			<default>['hkp://pool.sks-keyservers.net', 'ldap://keyserver.pgp.com']</default>
+			<summary>PGP key servers</summary>
+			<description>A list of key server URIs to search for remote PGP keys. A display name can be included, by appending a space and then the name.</description>
+		</key>
 	</schema>
 </schemalist>

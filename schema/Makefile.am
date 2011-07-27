@@ -7,7 +7,8 @@ gsettings_SCHEMAS = \
 
 convert_DATA = \
 	org.gnome.crypto.cache.convert \
-	org.gnome.crypto.pgp.convert
+	org.gnome.crypto.pgp.convert \
+	org.gnome.crypto.pgp_keyservers.convert
 
 convertdir = \
 	$(datarootdir)/GConf/gsettings
