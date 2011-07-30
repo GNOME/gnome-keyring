@@ -40,9 +40,8 @@ typedef struct _GcrMemoryIconClass GcrMemoryIconClass;
 typedef struct _GcrMemoryIconPrivate GcrMemoryIconPrivate;
 
 struct _GcrMemoryIcon {
-	GObject parent;
-
 	/*< private >*/
+	GObject parent;
 	GcrMemoryIconPrivate *pv;
 };
 

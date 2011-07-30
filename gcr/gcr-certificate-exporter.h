@@ -45,6 +45,7 @@ typedef struct _GcrCertificateExporterClass GcrCertificateExporterClass;
 typedef struct _GcrCertificateExporterPrivate GcrCertificateExporterPrivate;
 
 struct _GcrCertificateExporter {
+	/*< private >*/
 	GObject parent;
 	GcrCertificateExporterPrivate *pv;
 };

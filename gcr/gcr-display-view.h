@@ -43,6 +43,7 @@ typedef struct _GcrDisplayViewClass GcrDisplayViewClass;
 typedef struct _GcrDisplayViewPrivate GcrDisplayViewPrivate;
 
 struct _GcrDisplayView {
+	/*< private >*/
 	GtkTextView parent;
 	GcrDisplayViewPrivate *pv;
 };

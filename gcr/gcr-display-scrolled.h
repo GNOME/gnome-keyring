@@ -39,6 +39,7 @@ typedef struct _GcrDisplayScrolledClass GcrDisplayScrolledClass;
 typedef struct _GcrDisplayScrolledPrivate GcrDisplayScrolledPrivate;
 
 struct _GcrDisplayScrolled {
+	/*< private >*/
 	GtkScrolledWindow parent;
 	GcrDisplayScrolledPrivate *pv;
 };

@@ -65,9 +65,8 @@ enum {
 };
 
 struct _GcrCertificateWidget {
-	GtkAlignment parent;
-
 	/*< private >*/
+	GtkAlignment parent;
 	GcrCertificateWidgetPrivate *pv;
 };
 

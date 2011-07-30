@@ -42,6 +42,7 @@ typedef struct _GcrImportDialogClass GcrImportDialogClass;
 typedef struct _GcrImportDialogPrivate GcrImportDialogPrivate;
 
 struct _GcrImportDialog {
+	/*< private >*/
 	GtkDialog parent;
 	GcrImportDialogPrivate *pv;
 };

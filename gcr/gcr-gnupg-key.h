@@ -46,9 +46,8 @@ typedef struct _GcrGnupgKeyClass GcrGnupgKeyClass;
 typedef struct _GcrGnupgKeyPrivate GcrGnupgKeyPrivate;
 
 struct _GcrGnupgKey {
-	GObject parent;
-
 	/*< private >*/
+	GObject parent;
 	GcrGnupgKeyPrivate *pv;
 };
 

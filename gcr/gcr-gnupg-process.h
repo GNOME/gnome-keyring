@@ -43,6 +43,7 @@ typedef struct _GcrGnupgProcessClass GcrGnupgProcessClass;
 typedef struct _GcrGnupgProcessPrivate GcrGnupgProcessPrivate;
 
 struct _GcrGnupgProcess {
+	/*< private >*/
 	GObject parent;
 	GcrGnupgProcessPrivate *pv;
 };

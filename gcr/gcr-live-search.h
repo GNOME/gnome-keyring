@@ -44,9 +44,8 @@ typedef struct _GcrLiveSearchClass GcrLiveSearchClass;
 typedef struct _GcrLiveSearchPrivate GcrLiveSearchPrivate;
 
 struct _GcrLiveSearch {
+	/*< private >*/
 	GtkBox parent;
-
-	/* <private> */
 	GcrLiveSearchPrivate *pv;
 };
 

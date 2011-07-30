@@ -43,6 +43,7 @@ typedef struct _GcrGnupgCollectionClass GcrGnupgCollectionClass;
 typedef struct _GcrGnupgCollectionPrivate GcrGnupgCollectionPrivate;
 
 struct _GcrGnupgCollection {
+	/*< private >*/
 	GObject parent;
 	GcrGnupgCollectionPrivate *pv;
 };
