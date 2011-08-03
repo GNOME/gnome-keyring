@@ -26,6 +26,7 @@
 #include "gcr-internal.h"
 #include "gcr-importer.h"
 #include "gcr-marshal.h"
+#include "gcr-oids.h"
 #include "gcr-parser.h"
 #include "gcr-types.h"
 
@@ -179,40 +180,18 @@ static GQuark PEM_PRIVATE_KEY;
 static GQuark PEM_PKCS7;
 static GQuark PEM_PKCS12;
 
-/* 
- * OIDS
- */
-
-static GQuark OID_PKIX1_RSA;
-static GQuark OID_PKIX1_DSA;
-static GQuark OID_PKCS7_DATA;
-static GQuark OID_PKCS7_SIGNED_DATA;
-static GQuark OID_PKCS7_ENCRYPTED_DATA;
-static GQuark OID_PKCS12_BAG_PKCS8_KEY;
-static GQuark OID_PKCS12_BAG_PKCS8_ENCRYPTED_KEY;
-static GQuark OID_PKCS12_BAG_CERTIFICATE;
-static GQuark OID_PKCS12_BAG_CRL;
-
 static void
 init_quarks (void)
 {
 	static volatile gsize quarks_inited = 0;
 
+	_gcr_oids_init ();
+
 	if (g_once_init_enter (&quarks_inited)) {
 
 		#define QUARK(name, value) \
 			name = g_quark_from_static_string(value)
-	 
-		QUARK (OID_PKIX1_RSA, "1.2.840.113549.1.1.1");
-		QUARK (OID_PKIX1_DSA, "1.2.840.10040.4.1");
-		QUARK (OID_PKCS7_DATA, "1.2.840.113549.1.7.1");
-		QUARK (OID_PKCS7_SIGNED_DATA, "1.2.840.113549.1.7.2");
-		QUARK (OID_PKCS7_ENCRYPTED_DATA, "1.2.840.113549.1.7.6");
-		QUARK (OID_PKCS12_BAG_PKCS8_KEY, "1.2.840.113549.1.12.10.1.1");
-		QUARK (OID_PKCS12_BAG_PKCS8_ENCRYPTED_KEY, "1.2.840.113549.1.12.10.1.2");
-		QUARK (OID_PKCS12_BAG_CERTIFICATE, "1.2.840.113549.1.12.10.1.3");
-		QUARK (OID_PKCS12_BAG_CRL, "1.2.840.113549.1.12.10.1.4");
-		
+
 		QUARK (PEM_CERTIFICATE, "CERTIFICATE");
 		QUARK (PEM_PRIVATE_KEY, "PRIVATE KEY");
 		QUARK (PEM_RSA_PRIVATE_KEY, "RSA PRIVATE KEY");
@@ -533,12 +512,12 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 	key_type = GCK_INVALID;
 
 	key_algo = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "privateKeyAlgorithm", "algorithm", NULL));
-  	if (!key_algo)
-  		goto done;
-  	else if (key_algo == OID_PKIX1_RSA)
-  		key_type = CKK_RSA;
-  	else if (key_algo == OID_PKIX1_DSA)
-  		key_type = CKK_DSA;
+	if (!key_algo)
+		goto done;
+	else if (key_algo == GCR_OID_PKIX1_RSA)
+		key_type = CKK_RSA;
+	else if (key_algo == GCR_OID_PKIX1_DSA)
+		key_type = CKK_DSA;
 
 	if (key_type == GCK_INVALID) {
   		ret = GCR_ERROR_UNRECOGNIZED;
@@ -783,7 +762,7 @@ parse_der_pkcs7 (GcrParser *self, const guchar *data, gsize n_data)
 	g_return_val_if_fail (oid, GCR_ERROR_FAILURE);
 
 	/* Outer most one must just be plain data */
-	if (oid != OID_PKCS7_SIGNED_DATA) {
+	if (oid != GCR_OID_PKCS7_SIGNED_DATA) {
 		g_message ("unsupported outer content type in pkcs7: %s", g_quark_to_string (oid));
 		goto done;
 	}
@@ -883,18 +862,18 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 			goto done;
 
 		/* A normal unencrypted key */
-		if (oid == OID_PKCS12_BAG_PKCS8_KEY) {
+		if (oid == GCR_OID_PKCS12_BAG_PKCS8_KEY) {
 			r = parse_der_pkcs8_plain (self, element, n_element);
 			
 		/* A properly encrypted key */
-		} else if (oid == OID_PKCS12_BAG_PKCS8_ENCRYPTED_KEY) {
+		} else if (oid == GCR_OID_PKCS12_BAG_PKCS8_ENCRYPTED_KEY) {
 			r = parse_der_pkcs8_encrypted (self, element, n_element);
 			
 		/* A certificate */
-		} else if (oid == OID_PKCS12_BAG_CERTIFICATE) {
+		} else if (oid == GCR_OID_PKCS12_BAG_CERTIFICATE) {
 			r = handle_pkcs12_cert_bag (self, element, n_element);
 								
-		/* TODO: OID_PKCS12_BAG_CRL */
+		/* TODO: GCR_OID_PKCS12_BAG_CRL */
 		} else {
 			r = GCR_ERROR_UNRECOGNIZED;
 		}
@@ -1044,7 +1023,7 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 		g_return_val_if_fail (bag, ret);
 
 		/* A non encrypted bag, just parse */
-		if (oid == OID_PKCS7_DATA) {
+		if (oid == GCR_OID_PKCS7_DATA) {
 
 			egg_asn1x_destroy (asn_content);
 			asn_content = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-Data", bag, n_bag);
@@ -1059,7 +1038,7 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 			r = handle_pkcs12_bag (self, content, n_content);
 
 		/* Encrypted data first needs decryption */
-		} else if (oid == OID_PKCS7_ENCRYPTED_DATA) {
+		} else if (oid == GCR_OID_PKCS7_ENCRYPTED_DATA) {
 			r = handle_pkcs12_encrypted_bag (self, bag, n_bag);
 		
 		/* Hmmmm, not sure what this is */
@@ -1107,7 +1086,7 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 		goto done;
 
 	/* Outer most one must just be plain data */
-	if (oid != OID_PKCS7_DATA) {
+	if (oid != GCR_OID_PKCS7_DATA) {
 		g_message ("unsupported safe content type in pkcs12: %s", g_quark_to_string (oid));
 		goto done;
 	}

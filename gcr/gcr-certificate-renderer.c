@@ -26,6 +26,7 @@
 #include "gcr-display-view.h"
 #include "gcr-fingerprint.h"
 #include "gcr-icons.h"
+#include "gcr-oids.h"
 #include "gcr-simple-certificate.h"
 #include "gcr-renderer.h"
 
@@ -75,12 +76,6 @@ G_DEFINE_TYPE_WITH_CODE (GcrCertificateRenderer, gcr_certificate_renderer, G_TYP
 	GCR_CERTIFICATE_MIXIN_IMPLEMENT_COMPARABLE ();
 	G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_renderer_certificate_iface_init);
 );
-
-static GQuark OID_BASIC_CONSTRAINTS = 0;
-static GQuark OID_EXTENDED_KEY_USAGE = 0;
-static GQuark OID_SUBJECT_KEY_IDENTIFIER = 0;
-static GQuark OID_KEY_USAGE = 0;
-static GQuark OID_SUBJECT_ALT_NAME = 0;
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -298,15 +293,15 @@ append_extension (GcrCertificateRenderer *self, GcrDisplayView *view,
 	value = egg_asn1x_get_raw_value (egg_asn1x_node (node, "extnValue", NULL), &n_value);
 
 	/* The custom parsers */
-	if (oid == OID_BASIC_CONSTRAINTS)
+	if (oid == GCR_OID_BASIC_CONSTRAINTS)
 		ret = append_extension_basic_constraints (self, view, value, n_value);
-	else if (oid == OID_EXTENDED_KEY_USAGE)
+	else if (oid == GCR_OID_EXTENDED_KEY_USAGE)
 		ret = append_extension_extended_key_usage (self, view, value, n_value);
-	else if (oid == OID_SUBJECT_KEY_IDENTIFIER)
+	else if (oid == GCR_OID_SUBJECT_KEY_IDENTIFIER)
 		ret = append_extension_subject_key_identifier (self, view, value, n_value);
-	else if (oid == OID_KEY_USAGE)
+	else if (oid == GCR_OID_KEY_USAGE)
 		ret = append_extension_key_usage (self, view, value, n_value);
-	else if (oid == OID_SUBJECT_ALT_NAME)
+	else if (oid == GCR_OID_SUBJECT_ALT_NAME)
 		ret = append_extension_subject_alt_name (self, view, value, n_value);
 
 	/* Otherwise the default raw display */
@@ -516,11 +511,7 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GckAttributes *registered;
 
-	OID_SUBJECT_KEY_IDENTIFIER = g_quark_from_static_string ("2.5.29.14");
-	OID_BASIC_CONSTRAINTS = g_quark_from_static_string ("2.5.29.19");
-	OID_EXTENDED_KEY_USAGE = g_quark_from_static_string ("2.5.29.37");
-	OID_KEY_USAGE = g_quark_from_static_string ("2.5.29.15");
-	OID_SUBJECT_ALT_NAME = g_quark_from_static_string ("2.5.29.17");
+	_gcr_oids_init ();
 
 	gcr_certificate_renderer_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrCertificateRendererPrivate));

@@ -24,34 +24,13 @@
 #include "config.h"
 
 #include "gcr-fingerprint.h"
+#include "gcr-oids.h"
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
 
 #include <glib.h>
 #include <gcrypt.h>
-
-static GQuark OID_PKIX1_RSA = 0;
-static GQuark OID_PKIX1_DSA = 0;
-
-static void
-init_quarks (void)
-{
-	static volatile gsize quarks_inited = 0;
-
-	if (g_once_init_enter (&quarks_inited)) {
-
-		#define QUARK(name, value) \
-			name = g_quark_from_static_string(value)
-
-		QUARK (OID_PKIX1_RSA, "1.2.840.113549.1.1.1");
-		QUARK (OID_PKIX1_DSA, "1.2.840.10040.4.1");
-
-		#undef QUARK
-
-		g_once_init_leave (&quarks_inited, 1);
-	}
-}
 
 gpointer
 _gcr_fingerprint_from_subject_public_key_info (gconstpointer key_info, gsize n_key_info,
@@ -87,7 +66,7 @@ rsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 	gpointer key, params;
 	gsize n_key, n_params;
 
-	init_quarks ();
+	_gcr_oids_init ();
 
 	key_asn = egg_asn1x_create (pk_asn1_tab, "RSAPublicKey");
 	g_return_val_if_fail (key_asn, FALSE);
@@ -116,7 +95,7 @@ rsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 	egg_asn1x_set_bits_as_raw (egg_asn1x_node (info_asn, "subjectPublicKey", NULL),
 	                           key, n_key * 8, g_free);
 
-	egg_asn1x_set_oid_as_quark (egg_asn1x_node (info_asn, "algorithm", "algorithm", NULL), OID_PKIX1_RSA);
+	egg_asn1x_set_oid_as_quark (egg_asn1x_node (info_asn, "algorithm", "algorithm", NULL), GCR_OID_PKIX1_RSA);
 	egg_asn1x_set_raw_element (egg_asn1x_node (info_asn, "algorithm", "parameters", NULL),
 	                           params, n_params, g_free);
 
@@ -171,7 +150,7 @@ dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 	gsize n_key, n_params;
 	gulong klass;
 
-	init_quarks ();
+	_gcr_oids_init ();
 
 	key_asn = egg_asn1x_create (pk_asn1_tab, "DSAPublicPart");
 	g_return_val_if_fail (key_asn, FALSE);
@@ -219,7 +198,7 @@ dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 	egg_asn1x_set_raw_element (egg_asn1x_node (info_asn, "algorithm", "parameters", NULL),
 	                           params, n_params, g_free);
 
-	egg_asn1x_set_oid_as_quark (egg_asn1x_node (info_asn, "algorithm", "algorithm", NULL), OID_PKIX1_DSA);
+	egg_asn1x_set_oid_as_quark (egg_asn1x_node (info_asn, "algorithm", "algorithm", NULL), GCR_OID_PKIX1_DSA);
 
 	return TRUE;
 }

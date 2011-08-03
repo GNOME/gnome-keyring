@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include "gcr-certificate-extensions.h"
+#include "gcr-oids.h"
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
@@ -206,6 +207,8 @@ _gcr_certificate_extension_subject_alt_name (gconstpointer data, gsize n_data)
 	GArray *names;
 	GcrGeneralName general;
 	GNode *choice;
+
+	_gcr_oids_init ();
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "SubjectAltName", data, n_data);
 	if (asn == NULL)

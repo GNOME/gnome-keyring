@@ -111,6 +111,7 @@ run-tests
 /gck/tests/test-gck-slot
 /gck/tests/test-gck-uri
 
+/gcr/gcr-oids.[ch]
 /gcr/gcr-enum-types.[ch]
 /gcr/tests/frob-certificate
 /gcr/tests/frob-key
