@@ -25,6 +25,7 @@ HEADER_BASE_FILES = \
 	gcr-library.h \
 	gcr-parser.h \
 	gcr-pkcs11-certificate.h \
+	gcr-secret-exchange.h \
 	gcr-simple-certificate.h \
 	gcr-trust.h \
 	gcr-types.h \
@@ -116,6 +117,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
 	gcr-pkcs11-importer.c gcr-pkcs11-importer.h \
 	gcr-record.c gcr-record.h \
+	gcr-secret-exchange.c gcr-secret-exchange.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-simple-collection.c gcr-simple-collection.h \
 	gcr-single-collection.c gcr-single-collection.h \
