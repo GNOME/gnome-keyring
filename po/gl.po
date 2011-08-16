@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-06 10:27+0200\n"
-"PO-Revision-Date: 2011-06-06 10:27+0200\n"
+"POT-Creation-Date: 2011-08-16 19:08+0200\n"
+"PO-Revision-Date: 2011-08-16 19:09+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -290,7 +290,7 @@ msgstr "Produciuse un erro non esperado en waitpid() (%s)"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:424
+#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:629
 msgctxt "column"
 msgid "Name"
 msgstr "Nome"
@@ -557,7 +557,7 @@ msgstr "Pegada dixital da chave SHA1"
 msgid "Public Key"
 msgstr "Chave pública"
 
-#: ../gcr/gcr-display-view.c:283
+#: ../gcr/gcr-display-view.c:270
 msgid "_Details"
 msgstr "_Detalles"
 
@@ -573,14 +573,29 @@ msgstr "Importar en:"
 msgid "Password:"
 msgstr "Contrasinal:"
 
-#: ../gcr/gcr-gnupg-key.c:154
+#: ../gcr/gcr-gnupg-key.c:251
 msgid "PGP Key"
 msgstr "Chave GPG"
 
-#: ../gcr/gcr-gnupg-key.c:426
+#: ../gcr/gcr-gnupg-key.c:631
 msgctxt "column"
 msgid "Key ID"
 msgstr "ID da chave"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "O proceso Gnupg pechouse có código: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "O proceso de Gnupg rematou co sinal: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
+msgid "The operation was cancelled"
+msgstr "Cancelouse a operación"
 
 #: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
@@ -626,11 +641,6 @@ msgstr "Para importar o certificado «%s» debe estar desbloqueado"
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Para importar «%s» debe estar desbloqueado"
-
-#: ../gcr/gcr-importer.c:293 ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "Cancelouse a operación"
 
 #: ../gcr/gcr-importer.c:386
 #, c-format
@@ -738,336 +748,22 @@ msgstr "Bloquear este anel de chaves cando saia da sesión"
 msgid "minutes"
 msgstr "minutos"
 
-#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
+#: ../gck/gck-uri.c:173
 #, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr ""
-"O URI ten unha sintaxe incorrecta. A codificación do campo «%s» é inválida."
+msgid "The URI has invalid encoding."
+msgstr "O URI ten unha sintaxe incorrecta."
 
-#: ../gck/gck-uri.c:292
-msgid "The URI does not have the 'pkcs11' scheme."
+#: ../gck/gck-uri.c:177
+msgid "The URI has does not have the 'pkcs11' scheme."
 msgstr "O URI non ten que ter o esquema «pkcs11»."
 
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr "Non hai suficiente memoria dispoñíbel"
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr "O ID de espazo especificado non é válido"
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "Erro interno"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "A operación fallou"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "Os argumentos non son válidos"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr "O módulo non pode crear os fíos necesarios"
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr "O módulo non pode bloquear os datos apropiadamente"
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "O campo é só de lectura"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr "O campo é sensível e non pode ser revelado"
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "O campo non é válido ou non existe"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "Valor non válido para o campo"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr "Os datos non son válidos ou non se recoñecen"
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "Os datos son demasiado grandes"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "Produciuse un erro no dispositivo"
-
-#: ../gck/gck-misc.c:135
-msgid "Insufficient memory available on the device"
-msgstr "Non hai suficiente memoria dispoñíbel no dispositivo"
-
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr "O dispositivo foi eliminado ou desconectado"
-
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "Os datos codificados non son válidos ou non se recoñecen"
-
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr "Os datos codificados son demasiado grandes"
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "Esta operación non está soportada"
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "Falta a chave ou non é válida"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr "A chave ten un tamaño incorrecto"
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr "Esta chave é dun tipo incorrecto"
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr "Non é necesaria unha chave"
-
-#: ../gck/gck-misc.c:153
-msgid "The key is different than before"
-msgstr "A chave é distinta que anteriormente"
-
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "É necesario unha chave"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot include the key in the digest"
-msgstr "Non é posíbel incluír a chave no resumo"
-
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr "Non é posíbel facer esta operación con esta chave"
-
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr "Non é posíbel axustar a chave"
-
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "Non é posíbel exportar esta chave"
-
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "O mecanismo de codificación non é válido ou non se recoñece"
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr "O mecanismo de codificación ten un argumento non válido"
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr "O obxecto falta ou non é válido"
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr "Xa se está efectuando outra operación"
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr "Non se está efectuando ningunha operación"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr "O contrasinal ou o PIN é incorrecto"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr "O contrasinal ou o PIN non é válido"
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr "O contrasinal ou o PIN é dunha lonxitude non válida"
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr "O contrasinal ou o PIN caducou"
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr "O contrasinal ou o PIN está bloqueado"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "A sesión está bloqueada"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "Hai demasiadas sesións activas"
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "Esta sesión non é válida"
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "A sesión é só de lectura"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "Xa existe unha sesión aberta"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "Xa existe unha sesión só de lectura"
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "Xa existe unha sesión de administrador"
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr "A sinatura está danada ou non é correcta"
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr "A sinatura está danada ou non se recoñece"
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "Faltan certos campos requiridos"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "Certos campos teñen valores non válidos"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr "O dispositivo non está presente ou está desconectado"
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr "O dispositivo non é válido ou non é recoñecíbel"
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr "O dispositivo está protexido contra a escrita"
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr "Non é posíbel importar porque a chave non é válida"
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Non é posíbel importar porque a chave ten un tamaño incorrecto"
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Non é posíbel importar porque a chave é dun tipo incorrecto"
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "Xa ten unha sesión iniciada"
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "Non hai ningún usuario con sesión iniciada"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr "O contrasinal de usuario ou o PIN non está definido"
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr "O usuario é dun tipo non válido"
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "Xa hai outro usuario con sesión iniciada"
-
-#: ../gck/gck-misc.c:229
-msgid "Too many users of different types are logged in"
-msgstr "Hai demasiados usuarios de diferentes tipos coa sesión iniciada"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "Non é posíbel importar unha chave non válida"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr "Non é posíbel importar unha chave do tamaño incorrecto"
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "Non é posíbel exportar porque a chave non é válida"
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Non é posíbel exportar porque a chave non ten o tamaño correcto"
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Non é posíbel exportar porque a chave é dun tipo incorrecto"
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr "Non é posíbel inicializar o xerador de números aleatorios"
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr "Non hai un xerador de números aleatorios dispoñíbel"
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "O mecanismo de codificación ten un parámetro non válido"
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr "Non hai o suficiente espazo para almacenar o resultado"
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr "O estado gardado non é válido"
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr "A información é sensíbel e non pode ser revelada"
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr "Non é posíbel gardar o estado"
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr "O módulo non foi inicializado"
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr "O módulo xa foi inicializado"
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr "Non é posíbel bloquear os datos"
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr "O datos non poden ser bloqueados"
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr "A solicitude de sinatura foi rexeitada polo usuario"
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "Erro descoñecido"
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "O URI ten unha sintaxe incorrecta."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "O URI ten un número de versión incorrecto."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -1237,11 +933,11 @@ msgstr "ordes: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:618
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "Quere gardar os contrasinais sen codificar?"
 
-#: ../ui/gku-prompt-tool.c:619
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1251,15 +947,15 @@ msgstr ""
 "non serán cifrados de modo seguro. Polo que serán accesíbeis por calquera "
 "que acceda aos seus ficheiros."
 
-#: ../ui/gku-prompt-tool.c:626
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "Usar o almacenamento non seguro"
 
-#: ../ui/gku-prompt-tool.c:666
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "Os contrasinais non coinciden."
 
-#: ../ui/gku-prompt-tool.c:676
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "O contrasinal non pode estar en branco"
 
@@ -1299,6 +995,246 @@ msgstr "_Contrasinal antigo:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Contrasinal:"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "Non hai suficiente memoria dispoñíbel"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "O ID de espazo especificado non é válido"
+
+#~ msgid "Internal error"
+#~ msgstr "Erro interno"
+
+#~ msgid "The operation failed"
+#~ msgstr "A operación fallou"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "Os argumentos non son válidos"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "O módulo non pode crear os fíos necesarios"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "O módulo non pode bloquear os datos apropiadamente"
+
+#~ msgid "The field is read-only"
+#~ msgstr "O campo é só de lectura"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "O campo é sensível e non pode ser revelado"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "O campo non é válido ou non existe"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "Valor non válido para o campo"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "Os datos non son válidos ou non se recoñecen"
+
+#~ msgid "The data is too long"
+#~ msgstr "Os datos son demasiado grandes"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "Produciuse un erro no dispositivo"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "Non hai suficiente memoria dispoñíbel no dispositivo"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "O dispositivo foi eliminado ou desconectado"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "Os datos codificados non son válidos ou non se recoñecen"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "Os datos codificados son demasiado grandes"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "Esta operación non está soportada"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "Falta a chave ou non é válida"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "A chave ten un tamaño incorrecto"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "Esta chave é dun tipo incorrecto"
+
+#~ msgid "No key is needed"
+#~ msgstr "Non é necesaria unha chave"
+
+#~ msgid "The key is different than before"
+#~ msgstr "A chave é distinta que anteriormente"
+
+#~ msgid "A key is needed"
+#~ msgstr "É necesario unha chave"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "Non é posíbel incluír a chave no resumo"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "Non é posíbel facer esta operación con esta chave"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "Non é posíbel axustar a chave"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "Non é posíbel exportar esta chave"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "O mecanismo de codificación non é válido ou non se recoñece"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "O mecanismo de codificación ten un argumento non válido"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "O obxecto falta ou non é válido"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "Xa se está efectuando outra operación"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "Non se está efectuando ningunha operación"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "O contrasinal ou o PIN é incorrecto"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "O contrasinal ou o PIN non é válido"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "O contrasinal ou o PIN é dunha lonxitude non válida"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "O contrasinal ou o PIN caducou"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "O contrasinal ou o PIN está bloqueado"
+
+#~ msgid "The session is closed"
+#~ msgstr "A sesión está bloqueada"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "Hai demasiadas sesións activas"
+
+#~ msgid "The session is invalid"
+#~ msgstr "Esta sesión non é válida"
+
+#~ msgid "The session is read-only"
+#~ msgstr "A sesión é só de lectura"
+
+#~ msgid "An open session exists"
+#~ msgstr "Xa existe unha sesión aberta"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "Xa existe unha sesión só de lectura"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "Xa existe unha sesión de administrador"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "A sinatura está danada ou non é correcta"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "A sinatura está danada ou non se recoñece"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "Faltan certos campos requiridos"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "Certos campos teñen valores non válidos"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "O dispositivo non está presente ou está desconectado"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "O dispositivo non é válido ou non é recoñecíbel"
+
+#~ msgid "The device is write protected"
+#~ msgstr "O dispositivo está protexido contra a escrita"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "Non é posíbel importar porque a chave non é válida"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "Non é posíbel importar porque a chave ten un tamaño incorrecto"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "Non é posíbel importar porque a chave é dun tipo incorrecto"
+
+#~ msgid "You are already logged in"
+#~ msgstr "Xa ten unha sesión iniciada"
+
+#~ msgid "No user has logged in"
+#~ msgstr "Non hai ningún usuario con sesión iniciada"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "O contrasinal de usuario ou o PIN non está definido"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "O usuario é dun tipo non válido"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "Xa hai outro usuario con sesión iniciada"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "Hai demasiados usuarios de diferentes tipos coa sesión iniciada"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "Non é posíbel importar unha chave non válida"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "Non é posíbel importar unha chave do tamaño incorrecto"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "Non é posíbel exportar porque a chave non é válida"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "Non é posíbel exportar porque a chave non ten o tamaño correcto"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "Non é posíbel exportar porque a chave é dun tipo incorrecto"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "Non é posíbel inicializar o xerador de números aleatorios"
+
+#~ msgid "No random number generator available"
+#~ msgstr "Non hai un xerador de números aleatorios dispoñíbel"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "O mecanismo de codificación ten un parámetro non válido"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "Non hai o suficiente espazo para almacenar o resultado"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "O estado gardado non é válido"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "A información é sensíbel e non pode ser revelada"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "Non é posíbel gardar o estado"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "O módulo non foi inicializado"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "O módulo xa foi inicializado"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "Non é posíbel bloquear os datos"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "O datos non poden ser bloqueados"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "A solicitude de sinatura foi rexeitada polo usuario"
+
+#~ msgid "Unknown error"
+#~ msgstr "Erro descoñecido"
 
 #~ msgid "Fingerprint"
 #~ msgstr "Pegada"
