@@ -25,6 +25,7 @@
 #include "gcr-comparable.h"
 #include "gcr-icons.h"
 #include "gcr-internal.h"
+#include "gcr-oids.h"
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
@@ -120,8 +121,6 @@ enum {
  */
 
 static GQuark CERTIFICATE_INFO = 0;
-static GQuark OID_RSA_KEY = 0;
-static GQuark OID_DSA_KEY = 0;
 
 static void
 certificate_info_free (gpointer data)
@@ -226,7 +225,7 @@ calculate_key_size (GcrCertificateInfo *info)
 	g_return_val_if_fail (oid, 0);
 
 	/* RSA keys are stored in the main subjectPublicKey field */
-	if (oid == OID_RSA_KEY) {
+	if (oid == GCR_OID_PKIX1_RSA) {
 
 		/* A bit string so we cannot process in place */
 		key = egg_asn1x_get_bits_as_raw (egg_asn1x_node (asn, "subjectPublicKey", NULL), NULL, &n_bits);
@@ -235,7 +234,7 @@ calculate_key_size (GcrCertificateInfo *info)
 		g_free (key);
 
 	/* The DSA key size is discovered by the prime in params */
-	} else if (oid == OID_DSA_KEY) {
+	} else if (oid == GCR_OID_PKIX1_DSA) {
 		params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "algorithm", "parameters", NULL), &n_params);
 		key_size = calculate_dsa_params_size (params, n_params);
 
@@ -318,9 +317,9 @@ gcr_certificate_iface_init (gpointer gobject_iface)
 	static volatile gsize initialized = 0;
 
 	if (g_once_init_enter (&initialized)) {
+		_gcr_oids_init ();
+
 		CERTIFICATE_INFO = g_quark_from_static_string ("_gcr_certificate_certificate_info");
-		OID_RSA_KEY = g_quark_from_static_string ("1.2.840.113549.1.1.1");
-		OID_DSA_KEY = g_quark_from_static_string ("1.2.840.10040.4.1");
 
 		g_object_interface_install_property (gobject_iface,
 		         g_param_spec_string ("label", "Label", "Certificate label",

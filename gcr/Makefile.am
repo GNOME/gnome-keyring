@@ -70,7 +70,8 @@ INCLUDES = \
 
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h \
-	gcr-enum-types.c gcr-enum-types.h
+	gcr-enum-types.c gcr-enum-types.h \
+	gcr-oids.c gcr-oids.h
 
 lib_LTLIBRARIES = libgcr-@GCR_MAJOR@.la
 
@@ -163,6 +164,9 @@ gcr-enum-types.c: $(inc_HEADERS) gcr-enum-types.c.template
 	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(srcdir)/gcr-enum-types.c.template \
 		$(inc_HEADERS) > $@
 
+gcr-oids.c: gcr-oids.list gcr-mkoids
+	$(AM_V_GEN) sh gcr-mkoids -p GCR -c gcr-oids.c -h gcr-oids.h gcr-oids.list
+
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gcr-$(GCR_MAJOR).pc
 
@@ -175,6 +179,8 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
+	gcr-oids.list \
+	gcr-mkoids \
 	$(ui_DATA) \
 	$(conf_DATA) \
 	gcr-enum-types.h.template \

@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include "gcr-certificate-extensions.h"
+#include "gcr-oids.h"
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
@@ -131,8 +132,31 @@ _gcr_certificate_extension_key_usage (gconstpointer data, gsize n_data,
 static void
 general_name_parse_other (GNode *node, GcrGeneralName *general)
 {
+	GNode *decode = NULL;
+	GQuark oid;
+	gconstpointer value;
+	gsize n_value;
+
 	general->type = GCR_GENERAL_NAME_OTHER;
 	general->description = _("Other Name");
+
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (node, "type-id", NULL));
+	value = egg_asn1x_get_raw_element (egg_asn1x_node (node, "value", NULL), &n_value);
+
+	if (value == NULL)
+		return;
+
+	if (oid == GCR_OID_ALT_NAME_XMPP_ADDR) {
+		general->description = _("XMPP Addr");
+		decode = egg_asn1x_create_and_decode (pkix_asn1_tab, "UTF8String", value, n_value);
+		general->display = egg_asn1x_get_string_as_utf8 (decode, g_realloc);
+	} else if (oid == GCR_OID_ALT_NAME_DNS_SRV) {
+		general->description = _("DNS SRV");
+		decode = egg_asn1x_create_and_decode (pkix_asn1_tab, "IA5String", value, n_value);
+		general->display = egg_asn1x_get_string_as_utf8 (decode, g_realloc);
+	}
+
+	egg_asn1x_destroy (decode);
 }
 
 static void
@@ -207,6 +231,8 @@ _gcr_certificate_extension_subject_alt_name (gconstpointer data, gsize n_data)
 	GcrGeneralName general;
 	GNode *choice;
 
+	_gcr_oids_init ();
+
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "SubjectAltName", data, n_data);
 	if (asn == NULL)
 		return NULL;
@@ -250,7 +276,7 @@ _gcr_certificate_extension_subject_alt_name (gconstpointer data, gsize n_data)
 		else if (g_str_equal (node_name, "registeredID"))
 			general_name_parse_registered (choice, &general);
 
-		general.raw = egg_asn1x_get_raw_value (choice, &general.n_raw);
+		general.raw = egg_asn1x_get_raw_element (choice, &general.n_raw);
 		g_array_append_val (names, general);
 	}
 
