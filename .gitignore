@@ -143,6 +143,7 @@ run-tests
 /gcr/tests/test-parser
 /gcr/tests/test-pkcs11-certificate
 /gcr/tests/test-record
+/gcr/tests/test-secret-exchange
 /gcr/tests/test-simple-certificate
 /gcr/tests/test-trust
 /gcr/tests/test-util

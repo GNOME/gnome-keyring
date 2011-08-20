@@ -52,8 +52,10 @@
 struct _GcrSecretExchangePrivate {
 	gcry_mpi_t prime;
 	gcry_mpi_t base;
+	gcry_mpi_t pub;
 	gcry_mpi_t priv;
-	guchar *secret;
+	gpointer key;
+	gchar *secret;
 	gsize n_secret;
 };
 
@@ -134,10 +136,6 @@ key_file_get_mpi (GKeyFile *key_file, const gchar *section,
 	return (gcry == 0) ? mpi : NULL;
 }
 
-/* ----------------------------------------------------------------------------
- * REQUESTER SIDE
- */
-
 static void
 gcr_secret_exchange_init (GcrSecretExchange *self)
 {
@@ -151,10 +149,12 @@ gcr_secret_exchange_init (GcrSecretExchange *self)
 static void
 clear_secret_exchange (GcrSecretExchange *self)
 {
-	if (self->pv->priv) {
-		gcry_mpi_release (self->pv->priv);
-		self->pv->priv = NULL;
-	}
+	gcry_mpi_release (self->pv->priv);
+	self->pv->priv = NULL;
+	gcry_mpi_release (self->pv->pub);
+	self->pv->pub = NULL;
+	egg_secure_free (self->pv->key);
+	self->pv->key = NULL;
 	egg_secure_free (self->pv->secret);
 	self->pv->secret = NULL;
 	self->pv->n_secret = 0;
@@ -166,7 +166,8 @@ gcr_secret_exchange_finalize (GObject *obj)
 	GcrSecretExchange *self = GCR_SECRET_EXCHANGE (obj);
 
 	clear_secret_exchange (self);
-	gcry_mpi_release (self->pv->priv);
+	gcry_mpi_release (self->pv->prime);
+	gcry_mpi_release (self->pv->base);
 
 	G_OBJECT_CLASS (gcr_secret_exchange_parent_class)->finalize (obj);
 }
@@ -189,23 +190,23 @@ gcr_secret_exchange_new (void)
 }
 
 gchar *
-gcr_secret_exchange_request (GcrSecretExchange *self)
+gcr_secret_exchange_begin (GcrSecretExchange *self)
 {
 	GKeyFile *output;
-	gcry_mpi_t pub;
 	gchar *result;
 
 	g_return_val_if_fail (GCR_IS_SECRET_EXCHANGE (self), NULL);
 
 	clear_secret_exchange (self);
+	g_assert (self->pv->priv == NULL);
 
 	output = g_key_file_new ();
 
-	if (!egg_dh_gen_pair (self->pv->prime, self->pv->base, 0, &pub, &self->pv->priv))
+	if (!egg_dh_gen_pair (self->pv->prime, self->pv->base, 0,
+	                      &self->pv->pub, &self->pv->priv))
 		g_return_val_if_reached (NULL);
 
-	key_file_set_mpi (output, EXCHANGE_VERSION, "public", pub);
-	gcry_mpi_release (pub);
+	key_file_set_mpi (output, EXCHANGE_VERSION, "public", self->pv->pub);
 
 	result = g_key_file_to_data (output, NULL, NULL);
 	g_return_val_if_fail (result != NULL, NULL);
@@ -215,46 +216,46 @@ gcr_secret_exchange_request (GcrSecretExchange *self)
 	return result;
 }
 
-static gpointer
-calculate_receive_key (GKeyFile *input, gcry_mpi_t prime, gcry_mpi_t priv)
+static gboolean
+calculate_key (GcrSecretExchange *self,
+               GKeyFile *input)
 {
 	gcry_mpi_t peer;
 	gpointer ikm;
 	gsize n_ikm;
-	gpointer key;
 
 	peer = key_file_get_mpi (input, EXCHANGE_VERSION, "public");
 	if (peer == NULL) {
 		g_message ("secret-exchange: invalid or missing 'public' argument");
-		return NULL;
+		return FALSE;
 	}
 
 	/* Build up a key we can use */
-	ikm = egg_dh_gen_secret (peer, priv, prime, &n_ikm);
-	g_return_val_if_fail (ikm != NULL, NULL);
+	ikm = egg_dh_gen_secret (peer, self->pv->priv, self->pv->prime, &n_ikm);
+	g_return_val_if_fail (ikm != NULL, FALSE);
 
-	key = egg_secure_alloc (EXCHANGE_1_KEY_LENGTH);
+	if (self->pv->key == NULL)
+		self->pv->key = egg_secure_alloc (EXCHANGE_1_KEY_LENGTH);
+
 	if (!egg_hkdf_perform (EXCHANGE_1_HASH_ALGO, ikm, n_ikm, NULL, 0,
-	                       NULL, 0, key, EXCHANGE_1_KEY_LENGTH))
-		g_return_val_if_reached (NULL);
+	                       NULL, 0, self->pv->key, EXCHANGE_1_KEY_LENGTH))
+		g_return_val_if_reached (FALSE);
 
 	egg_secure_free (ikm);
 	gcry_mpi_release (peer);
 
-	return key;
+	return TRUE;
 }
 
 static gpointer
-perform_aes_decrypt (GKeyFile *input,
-                     gcry_mpi_t prime,
-                     gcry_mpi_t priv,
+perform_aes_decrypt (GcrSecretExchange *self,
+                     GKeyFile *input,
                      gsize *n_secret)
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gcry;
 	guchar* padded;
 	guchar* result;
-	gpointer key;
 	gpointer iv;
 	gpointer value;
 	gsize n_result;
@@ -268,37 +269,28 @@ perform_aes_decrypt (GKeyFile *input,
 		return NULL;
 	}
 
-	value = key_file_get_base64 (input, EXCHANGE_VERSION, "value", &n_value);
+	value = key_file_get_base64 (input, EXCHANGE_VERSION, "secret", &n_value);
 	if (value == NULL) {
 		g_message ("secret-exchange: invalid or missing value");
 		g_free (iv);
 		return NULL;
 	}
 
-	key = calculate_receive_key (input, prime, priv);
-	if (key == NULL) {
-		g_free (iv);
-		g_free (value);
-		return NULL;
-	}
-
 	gcry = gcry_cipher_open (&cih, EXCHANGE_1_CIPHER_ALGO, EXCHANGE_1_CIPHER_MODE, 0);
 	if (gcry != 0) {
 		g_warning ("couldn't create aes cipher context: %s", gcry_strerror (gcry));
-		egg_secure_free (key);
 		g_free (iv);
 		return FALSE;
 	}
 
 	/* 16 = 128 bits */
-	gcry = gcry_cipher_setkey (cih, key, EXCHANGE_1_KEY_LENGTH);
+	gcry = gcry_cipher_setkey (cih, self->pv->key, EXCHANGE_1_KEY_LENGTH);
 	g_return_val_if_fail (gcry == 0, FALSE);
 
 	/* 16 = 128 bits */
 	gcry = gcry_cipher_setiv (cih, iv, EXCHANGE_1_IV_LENGTH);
 	g_return_val_if_fail (gcry == 0, FALSE);
 
-	egg_secure_free (key);
 	g_free (iv);
 
 	/* Allocate memory for the result */
@@ -324,36 +316,50 @@ perform_aes_decrypt (GKeyFile *input,
 
 gboolean
 gcr_secret_exchange_receive (GcrSecretExchange *self,
-                             const gchar *response)
+                             const gchar *exchange)
 {
 	GKeyFile *input;
-	guchar *secret;
+	gchar *secret;
 	gsize n_secret;
+	gboolean ret;
 
 	/* Parse the input */
 	input = g_key_file_new ();
-	if (!g_key_file_load_from_data (input, response, strlen (response),
+	if (!g_key_file_load_from_data (input, exchange, strlen (exchange),
 	                                G_KEY_FILE_NONE, NULL)) {
 		g_key_file_free (input);
-		g_message ("couldn't parse secret exchange request data");
+		g_message ("couldn't parse secret exchange data");
 		return FALSE;
 	}
 
-	secret = perform_aes_decrypt (input, self->pv->prime, self->pv->priv, &n_secret);
-	g_key_file_free (input);
-
-	if (secret != NULL) {
-		egg_secure_free (self->pv->secret);
-		self->pv->secret = secret;
-		self->pv->n_secret = n_secret;
+	if (self->pv->priv == NULL) {
+		if (!egg_dh_gen_pair (self->pv->prime, self->pv->base, 0,
+		                      &self->pv->pub, &self->pv->priv))
+			g_return_val_if_reached (FALSE);
 	}
 
-	return (secret != NULL);
+	if (!calculate_key (self, input))
+		return FALSE;
+
+	ret = TRUE;
+
+	if (g_key_file_has_key (input, EXCHANGE_VERSION, "secret", NULL)) {
+		secret = perform_aes_decrypt (self, input, &n_secret);
+		if (secret == NULL) {
+			ret = FALSE;
+		} else {
+			egg_secure_free (self->pv->secret);
+			self->pv->secret = secret;
+			self->pv->n_secret = n_secret;
+		}
+	}
+
+	return ret;
 }
 
-const guchar *
-gcr_secret_exchange_get_response (GcrSecretExchange *self,
-                                  gsize *secret_len)
+const gchar *
+gcr_secret_exchange_get_secret (GcrSecretExchange *self,
+                                gsize *secret_len)
 {
 	g_return_val_if_fail (GCR_IS_SECRET_EXCHANGE (self), NULL);
 
@@ -362,58 +368,8 @@ gcr_secret_exchange_get_response (GcrSecretExchange *self,
 	return self->pv->secret;
 }
 
-/* ----------------------------------------------------------------------------
- * RESPONDER SIDE
- */
-
 static gpointer
-calculate_response_key (GKeyFile *input, GKeyFile *output)
-{
-	gcry_mpi_t prime;
-	gcry_mpi_t base;
-	gcry_mpi_t pub;
-	gcry_mpi_t priv;
-	gcry_mpi_t peer;
-	gpointer ikm;
-	gsize n_ikm;
-	gpointer key;
-
-	peer = key_file_get_mpi (input, EXCHANGE_VERSION, "public");
-	if (peer == NULL) {
-		g_message ("secret-exchange: invalid or missing 'public' argument");
-		return NULL;
-	}
-
-	if (!egg_dh_default_params (EXCHANGE_1_IKE_NAME, &prime, &base))
-		g_return_val_if_reached (NULL);
-
-	/* Generate our own public/priv, and then a key, send it back */
-	if (!egg_dh_gen_pair (prime, base, 0, &pub, &priv))
-		g_return_val_if_reached (NULL);
-
-	/* Build up a key we can use */
-	ikm = egg_dh_gen_secret (peer, priv, prime, &n_ikm);
-	g_return_val_if_fail (ikm != NULL, NULL);
-
-	key = egg_secure_alloc (EXCHANGE_1_KEY_LENGTH);
-	if (!egg_hkdf_perform (EXCHANGE_1_HASH_ALGO, ikm, n_ikm, NULL, 0,
-	                       NULL, 0, key, EXCHANGE_1_KEY_LENGTH))
-		g_return_val_if_reached (NULL);
-
-	key_file_set_mpi (output, EXCHANGE_VERSION, "public", pub);
-
-	egg_secure_free (ikm);
-	gcry_mpi_release (prime);
-	gcry_mpi_release (base);
-	gcry_mpi_release (peer);
-	gcry_mpi_release (pub);
-	gcry_mpi_release (priv);
-
-	return key;
-}
-
-static gpointer
-calculate_response_iv (GKeyFile *input, GKeyFile *output)
+calculate_iv (GKeyFile *output)
 {
 	gpointer iv;
 
@@ -425,29 +381,25 @@ calculate_response_iv (GKeyFile *input, GKeyFile *output)
 }
 
 static gboolean
-perform_aes_encrypt (GKeyFile *input, GKeyFile *output,
-                     gconstpointer secret, gsize n_secret)
+perform_aes_encrypt (GKeyFile *output,
+                     gconstpointer key,
+                     const gchar *secret,
+                     gsize n_secret)
 {
 	gcry_cipher_hd_t cih;
 	gcry_error_t gcry;
 	guchar* padded;
 	guchar* result;
-	gpointer key;
 	gpointer iv;
 	gsize n_result;
 	gsize pos;
 
-	key = calculate_response_key (input, output);
-	if (key == NULL)
-		return FALSE;
-
-	iv = calculate_response_iv (input, output);
+	iv = calculate_iv (output);
 	g_return_val_if_fail (iv != NULL, FALSE);
 
 	gcry = gcry_cipher_open (&cih, EXCHANGE_1_CIPHER_ALGO, EXCHANGE_1_CIPHER_MODE, 0);
 	if (gcry != 0) {
 		g_warning ("couldn't create aes cipher context: %s", gcry_strerror (gcry));
-		egg_secure_free (key);
 		g_free (iv);
 		return FALSE;
 	}
@@ -460,7 +412,6 @@ perform_aes_encrypt (GKeyFile *input, GKeyFile *output,
 	gcry = gcry_cipher_setiv (cih, iv, EXCHANGE_1_IV_LENGTH);
 	g_return_val_if_fail (gcry == 0, FALSE);
 
-	egg_secure_free (key);
 	g_free (iv);
 
 	/* Pad the text properly */
@@ -479,45 +430,42 @@ perform_aes_encrypt (GKeyFile *input, GKeyFile *output,
 	egg_secure_clear (padded, n_result);
 	egg_secure_free (padded);
 
-	key_file_set_base64 (output, EXCHANGE_VERSION, "value", result, n_result);
+	key_file_set_base64 (output, EXCHANGE_VERSION, "secret", result, n_result);
 	g_free (result);
 
 	return TRUE;
 }
 
 gchar *
-gcr_secret_exchange_respond (const gchar *request,
-                             const guchar *secret,
-                             gssize secret_len)
+gcr_secret_exchange_send (GcrSecretExchange *self,
+                          const gchar *secret,
+                          gssize secret_len)
 {
-	GKeyFile *input;
 	GKeyFile *output;
 	gchar *result;
 
-	g_return_val_if_fail (request, NULL);
-	g_return_val_if_fail (secret, NULL);
+	g_return_val_if_fail (GCR_IS_SECRET_EXCHANGE (self), NULL);
 
-	if (secret_len < 0)
-		secret_len = strlen ((gchar *)secret);
-
-	/* Parse the input */
-	input = g_key_file_new ();
-	if (!g_key_file_load_from_data (input, request, strlen (request),
-	                                G_KEY_FILE_NONE, NULL)) {
-		g_key_file_free (input);
-		g_message ("couldn't parse secret exchange request data");
+	if (self->pv->key == NULL) {
+		g_warning ("gcr_secret_exchange_receive() must be called "
+		           "before calling this function");
 		return NULL;
 	}
 
 	output = g_key_file_new ();
+	key_file_set_mpi (output, EXCHANGE_VERSION, "public", self->pv->pub);
 
-	if (perform_aes_encrypt (input, output, secret, secret_len)) {
-		result = g_key_file_to_data (output, NULL, NULL);
-		g_return_val_if_fail (result != NULL, NULL);
+	if (secret != NULL) {
+		if (secret_len < 0)
+			secret_len = strlen (secret);
+		if (!perform_aes_encrypt (output, self->pv->key, secret, secret_len)) {
+			g_key_file_free (output);
+			return NULL;
+		}
 	}
 
-	g_key_file_free (input);
+	result = g_key_file_to_data (output, NULL, NULL);
+	g_return_val_if_fail (result != NULL, NULL);
 	g_key_file_free (output);
-
 	return result;
 }

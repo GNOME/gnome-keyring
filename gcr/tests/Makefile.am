@@ -21,6 +21,7 @@ LDADD = \
 
 TEST_PROGS = \
 	test-util \
+	test-secret-exchange \
 	test-simple-certificate \
 	test-certificate \
 	test-certificate-chain \

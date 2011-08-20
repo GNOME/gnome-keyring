@@ -31,11 +31,11 @@
 G_BEGIN_DECLS
 
 #define GCR_TYPE_SECRET_EXCHANGE               (gcr_secret_exchange_get_type ())
-#define GCR_SECRET_EXCHANGE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_COLLECTION, GcrSecretExchange))
-#define GCR_SECRET_EXCHANGE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_COLLECTION, GcrSecretExchangeClass))
-#define GCR_IS_SECRET_EXCHANGE(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_COLLECTION))
-#define GCR_IS_SECRET_EXCHANGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_COLLECTION))
-#define GCR_SECRET_EXCHANGE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_COLLECTION, GcrSecretExchangeClass))
+#define GCR_SECRET_EXCHANGE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_SECRET_EXCHANGE, GcrSecretExchange))
+#define GCR_SECRET_EXCHANGE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_SECRET_EXCHANGE, GcrSecretExchangeClass))
+#define GCR_IS_SECRET_EXCHANGE(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_SECRET_EXCHANGE))
+#define GCR_IS_SECRET_EXCHANGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GCR_TYPE_SECRET_EXCHANGE))
+#define GCR_SECRET_EXCHANGE_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_SECRET_EXCHANGE, GcrSecretExchangeClass))
 
 typedef struct _GcrSecretExchange GcrSecretExchange;
 typedef struct _GcrSecretExchangeClass GcrSecretExchangeClass;
@@ -58,20 +58,17 @@ GType               gcr_secret_exchange_get_type        (void);
 
 GcrSecretExchange * gcr_secret_exchange_new             (void);
 
-gchar *             gcr_secret_exchange_request         (GcrSecretExchange *self);
+gchar *             gcr_secret_exchange_begin           (GcrSecretExchange *self);
 
 gboolean            gcr_secret_exchange_receive         (GcrSecretExchange *self,
-                                                         const gchar *response);
+                                                         const gchar *exchange);
 
-const guchar *      gcr_secret_exchange_get_response    (GcrSecretExchange *self,
-                                                         gsize *secret_len);
-
-/* Responder side functions */
-
-gchar *             gcr_secret_exchange_respond         (const gchar *request,
-                                                         const guchar *secret,
+gchar *             gcr_secret_exchange_send            (GcrSecretExchange *self,
+                                                         const gchar *secret,
                                                          gssize secret_len);
 
+const gchar *       gcr_secret_exchange_get_secret      (GcrSecretExchange *self,
+                                                         gsize *secret_len);
 
 G_END_DECLS
 
