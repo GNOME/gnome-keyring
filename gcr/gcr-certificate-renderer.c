@@ -589,12 +589,14 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 		return;
 	}
 
-	_gcr_display_view_clear (view, renderer);
+	_gcr_display_view_begin (view, renderer);
 	cert = GCR_CERTIFICATE (self);
 
 	data = gcr_certificate_get_der_data (cert, &n_data);
-	if (!data)
+	if (!data) {
+		_gcr_display_view_end (view, renderer);
 		return;
+	}
 
 	icon = gcr_certificate_get_icon (cert);
 	_gcr_display_view_set_icon (view, GCR_RENDERER (self), icon);
@@ -724,6 +726,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	}
 
 	egg_asn1x_destroy (asn);
+	_gcr_display_view_end (view, renderer);
 }
 
 static void

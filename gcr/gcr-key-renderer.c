@@ -258,14 +258,17 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 		return;
 	}
 
-	_gcr_display_view_clear (view, renderer);
+	_gcr_display_view_begin (view, renderer);
 
-	if (!self->pv->attributes)
+	if (!self->pv->attributes) {
+		_gcr_display_view_end (view, renderer);
 		return;
+	}
 
 	if (!gck_attributes_find_ulong (self->pv->attributes, CKA_CLASS, &klass) ||
 	    !gck_attributes_find_ulong (self->pv->attributes, CKA_KEY_TYPE, &key_type)) {
 		g_warning ("private key does not have the CKA_CLASS and CKA_KEY_TYPE attributes");
+		_gcr_display_view_end (view, renderer);
 		return;
 	}
 
@@ -334,6 +337,8 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 		_gcr_display_view_append_hex (view, renderer, _("SHA256"), fingerprint, n_fingerprint);
 		g_free (fingerprint);
 	}
+
+	_gcr_display_view_end (view, renderer);
 }
 
 static void

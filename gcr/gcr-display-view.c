@@ -64,6 +64,8 @@ struct _GcrDisplayViewPrivate {
 	GtkTextTag *heading_tag;
 	GtkTextTag *monospace_tag;
 	GcrDisplayItem *current_item;
+	gint text_height;
+	GdkCursor *cursor;
 
 	gboolean have_measurements;
 	gint minimal_width;
@@ -135,6 +137,23 @@ ensure_measurements (GcrDisplayView *self)
 }
 
 static void
+ensure_text_height (GcrDisplayView *self)
+{
+	PangoRectangle extents;
+	PangoLayout *layout;
+
+	if (self->pv->text_height > 0)
+		return;
+
+	layout = gtk_widget_create_pango_layout (GTK_WIDGET (self), "Wp");
+	pango_layout_get_extents (layout, NULL, &extents);
+	pango_extents_to_pixels (&extents, NULL);
+	g_object_unref (layout);
+
+	self->pv->text_height = extents.height;
+}
+
+static void
 recalculate_and_resize (GcrDisplayView *self)
 {
 	self->pv->have_measurements = FALSE;
@@ -158,7 +177,6 @@ create_tag_table (GcrDisplayView *self)
 	                                    "name", "title",
 	                                    "scale", PANGO_SCALE_LARGE,
 	                                    "right-margin", (ICON_MARGIN * 2) + width,
-	                                    "pixels-above-lines", 9,
 	                                    "pixels-below-lines", 6,
 	                                    "weight", PANGO_WEIGHT_BOLD,
 	                                    NULL);
@@ -221,7 +239,10 @@ style_display_item (GtkWidget *widget, GcrDisplayItem *item)
 
 	gtk_style_context_restore (style);
 
-	gtk_widget_override_background_color (item->details_widget, GTK_STATE_NORMAL, &color);
+	color.red = 255;
+	color.green = 0;
+	color.blue = 0;
+	gtk_widget_override_background_color (item->details_widget, GTK_STATE_FLAG_NORMAL, &color);
 }
 
 static GcrDisplayItem*
@@ -255,13 +276,20 @@ create_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 	item->details_tag = g_object_new (GTK_TYPE_TEXT_TAG, NULL);
 	gtk_text_tag_table_add (tags, item->details_tag);
 
-	/* The mark that determines the beginning of this item, with left gravity. */
+	/*
+	 * Add two zero width spaces that delimit this from later items. The
+	 * item will live between the two zero width spaces.
+	 */
 	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
+	gtk_text_buffer_insert (self->pv->buffer, &iter, "\n\n", -1);
+	if (!gtk_text_iter_backward_char (&iter))
+		g_assert_not_reached ();
+
+	/* The mark that determines the beginning of this item, with left gravity. */
 	item->beginning = gtk_text_buffer_create_mark (self->pv->buffer, NULL, &iter, TRUE);
 	g_object_ref (item->beginning);
 
 	/* The mark that determines the end of this item, with right gravity. */
-	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
 	item->ending = gtk_text_buffer_create_mark (self->pv->buffer, NULL, &iter, FALSE);
 	g_object_ref (item->ending);
 
@@ -280,6 +308,7 @@ create_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 	gtk_widget_show_all (alignment);
 
 	item->details_widget = gtk_event_box_new ();
+	gtk_event_box_set_visible_window (GTK_EVENT_BOX (item->details_widget), FALSE);
 	gtk_container_add (GTK_CONTAINER (item->details_widget), alignment);
 	g_signal_connect (item->details_widget, "realize", G_CALLBACK (on_expander_realize), NULL);
 	g_object_ref (item->details_widget);
@@ -370,45 +399,103 @@ on_renderer_data_changed (GcrRenderer *renderer, GcrViewer *self)
 }
 
 static void
-paint_widget_icons (GcrDisplayView *self, cairo_t *cr)
+paint_item_icon (GcrDisplayView *self,
+                 GcrDisplayItem *item,
+                 GdkRectangle *visible,
+                 cairo_t *cr)
 {
-	GHashTableIter hit;
-	GtkTextView *view;
-	GdkRectangle visible;
-	GdkRectangle location;
-	GcrDisplayItem *item;
-	gpointer value;
 	GtkTextIter iter;
+	GdkRectangle location;
+	GtkTextView *view;
+
+	if (item->pixbuf == NULL)
+		return;
 
 	view = GTK_TEXT_VIEW (self);
-	gtk_text_view_get_visible_rect (view, &visible);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
+	gtk_text_view_get_iter_location (view, &iter, &location);
 
-	g_hash_table_iter_init (&hit, self->pv->items);
-	while (g_hash_table_iter_next (&hit, NULL, &value)) {
+	location.height = gdk_pixbuf_get_height (item->pixbuf);
+	location.width = gdk_pixbuf_get_width (item->pixbuf);
+	location.x = visible->width - location.width - ICON_MARGIN;
 
-		item = value;
-		if (item->pixbuf == NULL)
-			continue;
+	if (!gdk_rectangle_intersect (visible, &location, NULL))
+		return;
 
-		gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
-		gtk_text_view_get_iter_location (view, &iter, &location);
+	gtk_text_view_buffer_to_window_coords (view, GTK_TEXT_WINDOW_TEXT,
+	                                       location.x, location.y,
+	                                       &location.x, &location.y);
 
-		location.height = gdk_pixbuf_get_height (item->pixbuf);
-		location.width = gdk_pixbuf_get_width (item->pixbuf);
-		location.x = visible.width - location.width - ICON_MARGIN;
+	cairo_save (cr);
+	gdk_cairo_set_source_pixbuf (cr, item->pixbuf, location.x, location.y);
+	cairo_rectangle (cr, location.x, location.y, location.width, location.height);
+	cairo_fill (cr);
+	cairo_restore (cr);
+}
 
-		if (!gdk_rectangle_intersect (&visible, &location, NULL))
-			continue;
+static void
+paint_item_border (GcrDisplayView *self,
+                   GcrDisplayItem *item,
+                   GtkStyleContext *context,
+                   GdkRectangle *visible,
+                   gint index,
+                   cairo_t *cr)
+{
+	GdkRGBA color;
+	GtkTextView *view;
+	GtkTextIter iter;
+	GdkRectangle location;
 
-		gtk_text_view_buffer_to_window_coords (view, GTK_TEXT_WINDOW_TEXT,
-		                                       location.x, location.y,
-		                                       &location.x, &location.y);
+	if (index == 0)
+		return;
 
-		cairo_save (cr);
-		gdk_cairo_set_source_pixbuf (cr, item->pixbuf, location.x, location.y);
-		cairo_rectangle (cr, location.x, location.y, location.width, location.height);
-		cairo_fill (cr);
-		cairo_restore (cr);
+	ensure_text_height (self);
+
+	gtk_style_context_get_background_color (context,
+	                                        GTK_STATE_FLAG_SELECTED | GTK_STATE_FLAG_FOCUSED,
+	                                        &color);
+
+	view = GTK_TEXT_VIEW (self);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
+	gtk_text_view_get_iter_location (view, &iter, &location);
+
+	location.height = 2;
+	location.width = visible->width - (NORMAL_MARGIN * 2);
+	location.x = NORMAL_MARGIN;
+	location.y -= self->pv->text_height / 2;
+
+	if (!gdk_rectangle_intersect (visible, &location, NULL))
+		return;
+
+	gtk_text_view_buffer_to_window_coords (view, GTK_TEXT_WINDOW_TEXT,
+	                                       location.x, location.y,
+	                                       &location.x, &location.y);
+
+	cairo_save (cr);
+	cairo_set_source_rgb (cr, color.red, color.green, color.blue);
+	cairo_set_line_width (cr, 0.5);
+	cairo_move_to (cr, location.x, location.y);
+	cairo_line_to (cr, location.x + location.width, location.y);
+	cairo_stroke (cr);
+	cairo_restore (cr);
+}
+
+static void
+paint_extras (GcrDisplayView *self, cairo_t *cr)
+{
+	GdkRectangle visible;
+	GcrDisplayItem *item;
+	GtkStyleContext *context;
+	guint i;
+
+	gtk_text_view_get_visible_rect (GTK_TEXT_VIEW (self), &visible);
+	context = gtk_widget_get_style_context (GTK_WIDGET (self));
+
+	for (i = 0; i < self->pv->renderers->len; i++) {
+		item = g_hash_table_lookup (self->pv->items, self->pv->renderers->pdata[i]);
+		g_assert (item != NULL);
+		paint_item_icon (self, item, &visible, cr);
+		paint_item_border (self, item, context, &visible, i, cr);
 	}
 }
 
@@ -510,6 +597,8 @@ _gcr_display_view_finalize (GObject *obj)
 	g_object_unref (self->pv->title_tag);
 	self->pv->title_tag = NULL;
 
+	g_clear_object (&self->pv->cursor);
+
 	G_OBJECT_CLASS (_gcr_display_view_parent_class)->finalize (obj);
 }
 
@@ -518,6 +607,7 @@ _gcr_display_view_realize (GtkWidget *widget)
 {
 	GcrDisplayView *self = GCR_DISPLAY_VIEW (widget);
 	GHashTableIter iter;
+	GdkDisplay *display;
 	gpointer value;
 
 	if (GTK_WIDGET_CLASS (_gcr_display_view_parent_class)->realize)
@@ -527,6 +617,14 @@ _gcr_display_view_realize (GtkWidget *widget)
 	g_hash_table_iter_init (&iter, self->pv->items);
 	while (g_hash_table_iter_next (&iter, NULL, &value))
 		style_display_item (widget, value);
+
+	if (!self->pv->cursor) {
+		display = gtk_widget_get_display (GTK_WIDGET (self));
+		self->pv->cursor = gdk_cursor_new_for_display (display, GDK_ARROW);
+	}
+
+	gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (self), GTK_TEXT_WINDOW_WIDGET),
+	                       self->pv->cursor);
 }
 
 static gboolean
@@ -567,7 +665,7 @@ _gcr_display_view_draw (GtkWidget *widget, cairo_t *cr)
 
 	window = gtk_text_view_get_window (GTK_TEXT_VIEW (widget), GTK_TEXT_WINDOW_TEXT);
 	if (gtk_cairo_should_draw_window (cr, window))
-		paint_widget_icons (GCR_DISPLAY_VIEW (widget), cr);
+		paint_extras (GCR_DISPLAY_VIEW (widget), cr);
 
 	return handled;
 }
@@ -700,7 +798,8 @@ _gcr_display_view_new (void)
 }
 
 void
-_gcr_display_view_clear (GcrDisplayView *self, GcrRenderer *renderer)
+_gcr_display_view_begin (GcrDisplayView *self,
+                         GcrRenderer *renderer)
 {
 	GtkTextIter start, iter;
 	GcrDisplayItem *item;
@@ -715,12 +814,29 @@ _gcr_display_view_clear (GcrDisplayView *self, GcrRenderer *renderer)
 	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
 	gtk_text_buffer_delete (self->pv->buffer, &start, &iter);
 
-	g_return_if_fail (!gtk_text_mark_get_deleted (item->beginning));
-	g_return_if_fail (!gtk_text_mark_get_deleted (item->ending));
-
 	item->extra_tag = NULL;
 	item->field_width = 0;
 	item->details = FALSE;
+}
+
+void
+_gcr_display_view_end (GcrDisplayView *self,
+                       GcrRenderer *renderer)
+{
+	GtkTextIter start, iter;
+	GcrDisplayItem *item;
+
+	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
+	item = lookup_display_item (self, renderer);
+	g_return_if_fail (item);
+
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &start, item->beginning);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
+
+#if 0
+	if (gtk_text_iter_compare (&start, &iter) != 0)
+		gtk_text_buffer_insert (self->pv->buffer, &iter, "\n", 1);
+#endif
 }
 
 void
@@ -808,6 +924,9 @@ _gcr_display_view_append_value (GcrDisplayView *self, GcrRenderer *renderer, con
 	pango_layout_get_extents (layout, NULL, &extents);
 	pango_extents_to_pixels (&extents, NULL);
 	g_object_unref (layout);
+
+	/* An estimate of the text height */
+	self->pv->text_height = extents.height;
 
 	/* Make the tab wide enough to accomodate */
 	if (extents.width > item->field_width) {

@@ -55,7 +55,10 @@ GType            _gcr_display_view_get_type                    (void);
 
 GcrDisplayView*  _gcr_display_view_new                         (void);
 
-void             _gcr_display_view_clear                       (GcrDisplayView *self,
+void             _gcr_display_view_begin                       (GcrDisplayView *self,
+                                                                GcrRenderer *renderer);
+
+void             _gcr_display_view_end                         (GcrDisplayView *self,
                                                                 GcrRenderer *renderer);
 
 void             _gcr_display_view_append_value                (GcrDisplayView *self,
