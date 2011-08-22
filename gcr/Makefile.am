@@ -178,6 +178,32 @@ pkgconfig_DATA = gcr-$(GCR_MAJOR).pc
 gcr-$(GCR_MAJOR).pc: gcr.pc
 	cp gcr.pc gcr-$(GCR_MAJOR).pc
 
+# ----------------------------------------------------------------
+# SYSTEM INTEGRATION
+
+# The new mime system
+mimedir = $(datadir)/mime/packages
+mime_DATA = gcr-crypto-types.xml
+
+if WITH_UPDATE_MIME
+install-data-local:
+	mkdir -p $(mimedir)
+	update-mime-database $(datadir)/mime/
+
+uninstall-local:
+	update-mime-database $(datadir)/mime/
+else
+install-data-local:
+
+uninstall-local:
+
+endif
+
+desktopdir = $(datadir)/applications
+desktop_in_in_files = gcr-viewer.desktop.in.in
+desktop_in_files = $(desktop_in_in_files:.desktop.in.in=.desktop.in)
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+@INTLTOOL_DESKTOP_RULE@
 
 # ----------------------------------------------------------------
 # TOOLS
@@ -218,6 +244,9 @@ EXTRA_DIST = \
 	gcr-enum-types.h.template \
 	gcr-enum-types.c.template \
 	gcr.symbols
+	$(desktop_in_in_files) \
+	$(desktop_in_files) \
+	$(desktop_DATA)
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
@@ -226,6 +255,8 @@ CLEANFILES = \
 	gcr-expected.abi
 
 DISTCLEANFILES = \
+	$(desktop_in_files) \
+	$(desktop_DATA) \
 	$(pkgconfig_DATA)
 
 symbols: libgcr-$(VERSION).symbols

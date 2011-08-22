@@ -667,6 +667,14 @@ if test "$p11_tests_status" = "yes"; then
 fi
 
 # ----------------------------------------------------------------------
+# mime-database
+
+AC_ARG_ENABLE(update-mime,
+	AC_HELP_STRING([--disable-update-mime],
+	[don't run update-mime-database utility (useful for packages) ]))
+AM_CONDITIONAL(WITH_UPDATE_MIME, test "$enable_update_mime" != "no")
+
+# ----------------------------------------------------------------------
 
 GCK_LT_RELEASE=$GCK_CURRENT:$GCK_REVISION:$GCK_AGE
 AC_SUBST(GCK_LT_RELEASE)
@@ -733,6 +741,7 @@ gck/gck.pc
 gck/Makefile
 gck/tests/Makefile
 gcr/gcr.pc
+gcr/gcr-viewer.desktop.in
 gcr/Makefile
 gcr/icons/Makefile
 gcr/icons/16x16/Makefile

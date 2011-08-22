@@ -440,7 +440,7 @@ test_read_all_pkcs8 (Test *test, gconstpointer unused)
 		if (!name)
 			break;
 
-		if (!g_pattern_match_simple ("der-pkcs8-*", name))
+		if (!g_pattern_match_simple ("der-key-*", name))
 			continue;
 
 		path = g_build_filename (SRCDIR "/files", name, NULL);
@@ -467,7 +467,7 @@ test_read_pkcs8_bad_password (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/files/der-pkcs8-encrypted-pkcs5.key", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/files/der-key-encrypted-pkcs5.p8", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
 	res = gkm_data_der_read_private_pkcs8 (data, n_data, "wrong password", 4, &sexp);
