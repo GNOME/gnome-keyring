@@ -32,6 +32,46 @@
 #include <string.h>
 #include <gcrypt.h>
 
+/**
+ * SECTION:gcr-secret-exchange
+ * @title: GcrSecretExchange
+ * @short_description: Exchange secrets between processes in an unexposed way.
+ *
+ * Allows exchange of secrets between two processes on the same system without
+ * exposing those secrets to things like loggers, non-pageable memory etc.
+ *
+ * This does not protect against active attacks like MITM attacks.
+ *
+ * Each side creates a #GcrSecretExchange object, and one of the sides calls
+ * gcr_secret_exchange_begin(). This creates a string, which should be passed
+ * to the other side. Each side passes the strings it receives into
+ * gcr_secret_exchange_receive().
+ *
+ * In order to send a reply (either with or without a secret) use
+ * gcr_secret_exchange_send(). A side must have had gcr_secret_exchange_receive()
+ * successfully called before it can use gcr_secret_exchange_send().
+ *
+ * The #GcrSecretExchange objects can be used for multiple iterations of the
+ * conversation, or for just one request/reply. The only limitation being that
+ * the initial request cannot contain a secret.
+ *
+ * Caveat: Information about the approximate length (rounded up to the nearest
+ * 16 bytes) may be leaked. If this is considered inacceptable, do not use
+ * #GcrSecretExchange.
+ */
+
+/**
+ * GcrSecretExchange:
+ *
+ * An object representing one side of a secret exchange.
+ */
+
+/**
+ * GcrSecretExchangeClass:
+ *
+ * The class for #GcrSecretExchange
+ */
+
 /*
  * This is the only set we support so far. It includes:
  *  - DH with the 1536 ike modp group for key exchange
@@ -183,12 +223,30 @@ gcr_secret_exchange_class_init (GcrSecretExchangeClass *klass)
 	egg_libgcrypt_initialize ();
 }
 
+/**
+ * gcr_secret_exchange_new:
+ *
+ * Create a new secret exchange object.
+ *
+ * Returns: (transfer full): A new #GcrSecretExchange object
+ */
 GcrSecretExchange *
 gcr_secret_exchange_new (void)
 {
 	return g_object_new (GCR_TYPE_SECRET_EXCHANGE, NULL);
 }
 
+/**
+ * gcr_secret_exchange_begin:
+ * @self: a #GcrSecretExchange object
+ *
+ * Begin the secret exchange. The resulting string should be sent to the other
+ * side of the exchange. The other side should use gcr_secret_exchange_receive()
+ * to process the string.
+ *
+ * Returns: (transfer full): A newly allocated string to be sent to the other
+ *     side of the secret exchange
+ */
 gchar *
 gcr_secret_exchange_begin (GcrSecretExchange *self)
 {
@@ -314,6 +372,16 @@ perform_aes_decrypt (GcrSecretExchange *self,
 	return result;
 }
 
+/**
+ * gcr_secret_exchange_receive:
+ * @self: a #GcrSecretExchange object
+ * @exchange: the string received
+ *
+ * Receive a string from the other side of secret exchange. This string will
+ * have been created by gcr_secret_exchange_begin() or gcr_secret_exchange_send()
+ *
+ * Returns: whether the string was successfully parsed and received
+ */
 gboolean
 gcr_secret_exchange_receive (GcrSecretExchange *self,
                              const gchar *exchange)
@@ -357,6 +425,23 @@ gcr_secret_exchange_receive (GcrSecretExchange *self,
 	return ret;
 }
 
+/**
+ * gcr_secret_exchange_get_secret:
+ * @self: a #GcrSecretExchange object
+ * @secret_len: (allow-none): optionally, a location to store the length of returned secret
+ *
+ * Returns the last secret received. If no secret has yet been received this
+ * will return %NULL. The string is owned by the #GcrSecretExchange object
+ * and will be valid until the next time that gcr_secret_exchange_receive()
+ * is called on this object, or the object is destroyed.
+ *
+ * Depending on the secret passed into the other side of the secret exchange,
+ * the resurt may be a binary string. It does however have a null terminator,
+ * so if you're certain that it is does not contain arbitrary binary data,
+ * it can be used as a string.
+ *
+ * Returns: (transfer none): The last secret received.
+ */
 const gchar *
 gcr_secret_exchange_get_secret (GcrSecretExchange *self,
                                 gsize *secret_len)
@@ -436,6 +521,22 @@ perform_aes_encrypt (GKeyFile *output,
 	return TRUE;
 }
 
+/**
+ * gcr_secret_exchange_send:
+ * @self: a #GcrSecretExchange object
+ * @secret: (allow-none): optionally, a secret to send to the other side
+ * @secret_len: length of @secret, or -1 if null terminated
+ *
+ * Send a reply to the other side of the secret exchange, optionally sending a
+ * secret.
+ *
+ * gcr_secret_exchange_receive() must have been successfully called at least
+ * once on this object. In other words this object must have received data
+ * from the other side of the secret exchange, before we can send a secret.
+ *
+ * Returns: (transfer full): a newly allocated string to be sent to the other
+ *     side of the secret exchange
+ */
 gchar *
 gcr_secret_exchange_send (GcrSecretExchange *self,
                           const gchar *secret,

@@ -571,6 +571,26 @@ GcrViewerWidgetPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gcr-secret-exchange</FILE>
+GcrSecretExchange
+GcrSecretExchangeClass
+gcr_secret_exchange_new
+gcr_secret_exchange_begin
+gcr_secret_exchange_receive
+gcr_secret_exchange_get_secret
+gcr_secret_exchange_send
+<SUBSECTION Standard>
+gcr_secret_exchange_get_type
+GCR_IS_SECRET_EXCHANGE
+GCR_IS_SECRET_EXCHANGE_CLASS
+GCR_SECRET_EXCHANGE
+GCR_SECRET_EXCHANGE_CLASS
+GCR_SECRET_EXCHANGE_GET_CLASS
+GCR_TYPE_SECRET_EXCHANGE
+GcrSecretExchangePrivate
+</SECTION>
+
+<SECTION>
 <FILE>gcr-private</FILE>
 <SUBSECTION Private>
 GCR_GNUPG_COLLECTION

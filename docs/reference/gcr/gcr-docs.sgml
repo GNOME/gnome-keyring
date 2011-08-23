@@ -57,6 +57,7 @@
 	<part id="misc">
 		<title>Miscellaneous</title>
 		<xi:include href="xml/gcr-library.xml"/>
+		<xi:include href="xml/gcr-secret-exchange.xml"/>
 		<xi:include href="xml/gcr-misc.xml"/>
 	</part>
 

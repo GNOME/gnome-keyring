@@ -42,13 +42,13 @@ typedef struct _GcrSecretExchangeClass GcrSecretExchangeClass;
 typedef struct _GcrSecretExchangePrivate GcrSecretExchangePrivate;
 
 struct _GcrSecretExchange {
-	GObject parent;
-
 	/*< private >*/
+	GObject parent;
 	GcrSecretExchangePrivate *pv;
 };
 
 struct _GcrSecretExchangeClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 
