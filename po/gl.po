@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-16 19:08+0200\n"
-"PO-Revision-Date: 2011-08-16 19:09+0200\n"
+"POT-Creation-Date: 2011-08-24 21:19+0200\n"
+"PO-Revision-Date: 2011-08-24 21:20+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -175,7 +175,7 @@ msgstr "Nome común"
 msgid "Surname"
 msgstr "Apelidos"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:659
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:650
 msgid "Serial Number"
 msgstr "Número de serie"
 
@@ -290,24 +290,24 @@ msgstr "Produciuse un erro non esperado en waitpid() (%s)"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:629
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
 msgctxt "column"
 msgid "Name"
 msgstr "Nome"
 
-#: ../gcr/gcr-certificate.c:391
+#: ../gcr/gcr-certificate.c:390
 msgctxt "column"
 msgid "Issued By"
 msgstr "Emitido por"
 
 #. later
-#: ../gcr/gcr-certificate.c:393
+#: ../gcr/gcr-certificate.c:392
 msgctxt "column"
 msgid "Expires"
 msgstr "Caduca"
 
-#: ../gcr/gcr-certificate.c:1061 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:106 ../gcr/gcr-parser.c:275
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:254
 msgid "Certificate"
 msgstr "Certificado"
 
@@ -342,218 +342,226 @@ msgstr "Ficheiros de certificados"
 msgid "PEM files"
 msgstr "Ficheiros PEM"
 
-#: ../gcr/gcr-certificate-extensions.c:135
+#: ../gcr/gcr-certificate-extensions.c:141
 msgid "Other Name"
 msgstr "Outro nome"
 
-#: ../gcr/gcr-certificate-extensions.c:142
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "Enderezo XMPP"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "SRV do DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:166
 msgid "Email"
 msgstr "Correo electrónico"
 
-#: ../gcr/gcr-certificate-extensions.c:150
+#: ../gcr/gcr-certificate-extensions.c:174
 msgid "DNS"
 msgstr "DNS"
 
-#: ../gcr/gcr-certificate-extensions.c:158
+#: ../gcr/gcr-certificate-extensions.c:182
 msgid "X400 Address"
 msgstr "Enderezos X400"
 
-#: ../gcr/gcr-certificate-extensions.c:165
+#: ../gcr/gcr-certificate-extensions.c:189
 msgid "Directory Name"
 msgstr "Nome do directorio"
 
-#: ../gcr/gcr-certificate-extensions.c:173
+#: ../gcr/gcr-certificate-extensions.c:197
 msgid "EDI Party Name"
 msgstr "Nome do grupo EDI"
 
-#: ../gcr/gcr-certificate-extensions.c:180
+#: ../gcr/gcr-certificate-extensions.c:204
 msgid "URI"
 msgstr "URI"
 
-#: ../gcr/gcr-certificate-extensions.c:188
+#: ../gcr/gcr-certificate-extensions.c:212
 msgid "IP Address"
 msgstr "Enderezo IP"
 
-#: ../gcr/gcr-certificate-extensions.c:196
+#: ../gcr/gcr-certificate-extensions.c:220
 msgid "Registered ID"
 msgstr "ID rexistrado"
 
-#: ../gcr/gcr-certificate-renderer.c:121
+#: ../gcr/gcr-certificate-renderer.c:116
 msgid "Basic Constraints"
 msgstr "Restricións básicas"
 
-#: ../gcr/gcr-certificate-renderer.c:123
+#: ../gcr/gcr-certificate-renderer.c:118
 msgid "Certificate Authority"
 msgstr "Autoridade de certificación"
 
-#: ../gcr/gcr-certificate-renderer.c:124 ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Si"
 
-#: ../gcr/gcr-certificate-renderer.c:124 ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Non"
 
-#: ../gcr/gcr-certificate-renderer.c:127
+#: ../gcr/gcr-certificate-renderer.c:122
 msgid "Max Path Length"
 msgstr "Lonxitude máxima da ruta"
 
-#: ../gcr/gcr-certificate-renderer.c:128
+#: ../gcr/gcr-certificate-renderer.c:123
 msgid "Unlimited"
 msgstr "Sen límite"
 
-#: ../gcr/gcr-certificate-renderer.c:147
+#: ../gcr/gcr-certificate-renderer.c:142
 msgid "Extended Key Usage"
 msgstr "Uso estendido da chave"
 
-#: ../gcr/gcr-certificate-renderer.c:158
+#: ../gcr/gcr-certificate-renderer.c:153
 msgid "Allowed Purposes"
 msgstr "Propósitos permitidos"
 
-#: ../gcr/gcr-certificate-renderer.c:178
+#: ../gcr/gcr-certificate-renderer.c:173
 msgid "Subject Key Identifier"
 msgstr "Identificador do asunto da chave"
 
-#: ../gcr/gcr-certificate-renderer.c:179
+#: ../gcr/gcr-certificate-renderer.c:174
 msgid "Key Identifier"
 msgstr "Identificador da chave"
 
-#: ../gcr/gcr-certificate-renderer.c:190
+#: ../gcr/gcr-certificate-renderer.c:185
 msgid "Digital signature"
 msgstr "Sinatura dixital"
 
-#: ../gcr/gcr-certificate-renderer.c:191
+#: ../gcr/gcr-certificate-renderer.c:186
 msgid "Key encipherment"
 msgstr "Cifrado da chave"
 
-#: ../gcr/gcr-certificate-renderer.c:192
+#: ../gcr/gcr-certificate-renderer.c:187
 msgid "Data encipherment"
 msgstr "Cifrado dos datos"
 
-#: ../gcr/gcr-certificate-renderer.c:193
+#: ../gcr/gcr-certificate-renderer.c:188
 msgid "Key agreement"
 msgstr "Acordo da chave"
 
-#: ../gcr/gcr-certificate-renderer.c:194
+#: ../gcr/gcr-certificate-renderer.c:189
 msgid "Certificate signature"
 msgstr "Sinatura do certificado"
 
-#: ../gcr/gcr-certificate-renderer.c:195
+#: ../gcr/gcr-certificate-renderer.c:190
 msgid "Revocation list signature"
 msgstr "Sinatura da lista de revogación"
 
-#: ../gcr/gcr-certificate-renderer.c:220
+#: ../gcr/gcr-certificate-renderer.c:215
 msgid "Key Usage"
 msgstr "Uso da chave"
 
-#: ../gcr/gcr-certificate-renderer.c:221
+#: ../gcr/gcr-certificate-renderer.c:216
 msgid "Usages"
 msgstr "Usos"
 
-#: ../gcr/gcr-certificate-renderer.c:241
+#: ../gcr/gcr-certificate-renderer.c:236
 msgid "Subject Alternative Names"
 msgstr "Nomes alternativos do asunto"
 
-#: ../gcr/gcr-certificate-renderer.c:266
+#: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
 msgstr "Extensión"
 
-#: ../gcr/gcr-certificate-renderer.c:270
+#: ../gcr/gcr-certificate-renderer.c:265
 msgid "Identifier"
 msgstr "Identificador"
 
-#: ../gcr/gcr-certificate-renderer.c:271
+#: ../gcr/gcr-certificate-renderer.c:266
 msgid "Value"
 msgstr "Valor"
 
-#: ../gcr/gcr-certificate-renderer.c:318
+#: ../gcr/gcr-certificate-renderer.c:313
 msgid "Critical"
 msgstr "Crítico"
 
-#: ../gcr/gcr-certificate-renderer.c:391
+#: ../gcr/gcr-certificate-renderer.c:386
 msgid "Couldn't export the certificate."
 msgstr "Non foi posíbel exportar o certificado"
 
-#: ../gcr/gcr-certificate-renderer.c:620
+#: ../gcr/gcr-certificate-renderer.c:611
 msgid "Identity"
 msgstr "Identidade"
 
-#: ../gcr/gcr-certificate-renderer.c:624
+#: ../gcr/gcr-certificate-renderer.c:615
 msgid "Verified by"
 msgstr "Verificado por"
 
-#: ../gcr/gcr-certificate-renderer.c:631
+#: ../gcr/gcr-certificate-renderer.c:622
 msgid "Expires"
 msgstr "Caduca"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:641
+#: ../gcr/gcr-certificate-renderer.c:632
 msgid "Subject Name"
 msgstr "Nome do asunto"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:636
 msgid "Issuer Name"
 msgstr "Nome do emisor"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:649
+#: ../gcr/gcr-certificate-renderer.c:640
 msgid "Issued Certificate"
 msgstr "Certificado emitido"
 
-#: ../gcr/gcr-certificate-renderer.c:654
+#: ../gcr/gcr-certificate-renderer.c:645
 msgid "Version"
 msgstr "Versión"
 
-#: ../gcr/gcr-certificate-renderer.c:666
+#: ../gcr/gcr-certificate-renderer.c:657
 msgid "Not Valid Before"
 msgstr "Non é válido antes de"
 
-#: ../gcr/gcr-certificate-renderer.c:671
+#: ../gcr/gcr-certificate-renderer.c:662
 msgid "Not Valid After"
 msgstr "Non é válido despois de"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:676
+#: ../gcr/gcr-certificate-renderer.c:667
 msgid "Certificate Fingerprints"
 msgstr "Pegadas dixitais dos certificados"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:682 ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:673 ../gcr/gcr-certificate-renderer.c:685
 msgid "Signature"
 msgstr "Sinatura"
 
-#: ../gcr/gcr-certificate-renderer.c:686
+#: ../gcr/gcr-certificate-renderer.c:677
 msgid "Signature Algorithm"
 msgstr "Algoritmo de sinatura"
 
-#: ../gcr/gcr-certificate-renderer.c:690
+#: ../gcr/gcr-certificate-renderer.c:681
 msgid "Signature Parameters"
 msgstr "Parámetros de sinatura"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:698
+#: ../gcr/gcr-certificate-renderer.c:689
 msgid "Public Key Info"
 msgstr "Información de chave pública"
 
-#: ../gcr/gcr-certificate-renderer.c:703
+#: ../gcr/gcr-certificate-renderer.c:694
 msgid "Key Algorithm"
 msgstr "Algoritmo de chave"
 
-#: ../gcr/gcr-certificate-renderer.c:708
+#: ../gcr/gcr-certificate-renderer.c:699
 msgid "Key Parameters"
 msgstr "Parámetros de chave"
 
-#: ../gcr/gcr-certificate-renderer.c:713
+#: ../gcr/gcr-certificate-renderer.c:704
 msgid "Key Size"
 msgstr "Tamaño de chave"
 
-#: ../gcr/gcr-certificate-renderer.c:720
+#: ../gcr/gcr-certificate-renderer.c:711
 msgid "Key SHA1 Fingerprint"
 msgstr "Pegada dixital da chave SHA1"
 
-#: ../gcr/gcr-certificate-renderer.c:726 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:278
+#: ../gcr/gcr-certificate-renderer.c:717 ../gcr/gcr-key-renderer.c:291
+#: ../gcr/gcr-parser.c:257
 msgid "Public Key"
 msgstr "Chave pública"
 
@@ -593,7 +601,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "O proceso de Gnupg rematou co sinal: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
+#: ../gcr/gcr-parser.c:1698 ../gcr/gcr-parser.c:1937
 msgid "The operation was cancelled"
 msgstr "Cancelouse a operación"
 
@@ -667,7 +675,7 @@ msgstr "Chave privada RSA"
 msgid "Private DSA Key"
 msgstr "Chave privada DSA"
 
-#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:272
+#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:251
 msgid "Private Key"
 msgstr "Chave privada"
 
@@ -707,15 +715,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1722
+#: ../gcr/gcr-parser.c:1701
 msgid "Unrecognized or unsupported data."
 msgstr "Datos non recoñecíbeis ou non soportados."
 
-#: ../gcr/gcr-parser.c:1725
+#: ../gcr/gcr-parser.c:1704
 msgid "Could not parse invalid or corrupted data."
 msgstr "Non é posíbel analizar datos danados ou non válidos."
 
-#: ../gcr/gcr-parser.c:1728
+#: ../gcr/gcr-parser.c:1707
 msgid "The data is locked"
 msgstr "Os datos están bloqueados"
 
