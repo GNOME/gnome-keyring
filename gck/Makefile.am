@@ -78,18 +78,30 @@ gck-marshal.c: gck-marshal.list $(GLIB_GENMARSHAL)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gck-$(GCK_MAJOR).pc
 
+gck-expected.abi: gck.symbols
+	$(AM_V_GEN) cpp -P $< | sort > $@
+
+gck-actual.abi: $(builddir)/.libs/libgck-@GCK_MAJOR@.so
+	$(AM_V_GEN)  $(NM) -D -g --defined-only $< | \
+		cut -d ' ' -f 3 | grep -Ev '^(__bss_start|_edata|_end)' | sort > $@
+
+check-symbols: gck-expected.abi gck-actual.abi
+	$(AM_V_GEN) diff -U0 --ignore-blank-lines gck-expected.abi gck-actual.abi || \
+		(echo "check-symbols: Symbols have CHANGED. Fix gck.symbols"; exit 1)
+
+check-local: check-symbols
+
 EXTRA_DIST = \
 	gck.pc.in \
-	gck-marshal.list
+	gck-marshal.list \
+	gck.symbols
+
+CLEANFILES = \
+	gck-actual.abi \
+	gck-expected.abi
 
 DISTCLEANFILES = \
 	gck-$(GCK_MAJOR).pc
 
 gck-$(GCK_MAJOR).pc: gck.pc
 	cp gck.pc gck-$(GCK_MAJOR).pc
-
-symbols: libgck-$(VERSION).symbols
-
-libgck-$(VERSION).symbols: .libs/libgck-@GCK_MAJOR@.so
-	nm -D .libs/libgck-@GCK_MAJOR@.so | grep -F ' T ' | \
-		cut -d ' ' -f 3 | sort > $@

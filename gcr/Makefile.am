@@ -176,6 +176,19 @@ gcr-$(GCR_MAJOR).pc: gcr.pc
 
 # ----------------------------------------------------------------
 
+gcr-expected.abi: gcr.symbols
+	$(AM_V_GEN) cpp -P $< | sort > $@
+
+gcr-actual.abi: $(builddir)/.libs/libgcr-@GCR_MAJOR@.so
+	$(AM_V_GEN)  $(NM) -D -g --defined-only $< | \
+		cut -d ' ' -f 3 | grep -Ev '^(__bss_start|_edata|_end)' | sort > $@
+
+check-symbols: gcr-expected.abi gcr-actual.abi
+	$(AM_V_GEN) diff -U0 --ignore-blank-lines gcr-expected.abi gcr-actual.abi || \
+		(echo "check-symbols: Symbols have CHANGED. Fix gcr.symbols"; exit 1)
+
+check-local: check-symbols
+
 EXTRA_DIST = \
 	gcr.pc.in \
 	gcr-marshal.list \
@@ -184,11 +197,14 @@ EXTRA_DIST = \
 	$(ui_DATA) \
 	$(conf_DATA) \
 	gcr-enum-types.h.template \
-	gcr-enum-types.c.template
+	gcr-enum-types.c.template \
+	gcr.symbols
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
-	$(pkgconfig_DATA)
+	$(pkgconfig_DATA) \
+	gcr-actual.abi \
+	gcr-expected.abi
 
 DISTCLEANFILES = \
 	$(pkgconfig_DATA)
