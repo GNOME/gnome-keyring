@@ -58,12 +58,37 @@ typedef struct {
 } Test;
 
 static void
+ensure_block_can_be_parsed (gconstpointer block,
+                            gsize n_block)
+{
+	GcrParser *parser;
+	gboolean result;
+	GError *error = NULL;
+
+	g_assert (block);
+	g_assert (n_block);
+
+	parser = gcr_parser_new ();
+	result = gcr_parser_parse_data (parser, block, n_block, &error);
+
+	if (!result) {
+		g_critical ("The data returned from gcr_parser_get_parsed_block() "
+		            "cannot be parsed: %s", error->message);
+		g_assert_not_reached ();
+	}
+
+	g_object_unref (parser);
+}
+
+static void
 parsed_item (GcrParser *par, gpointer user_data)
 {
 	GckAttributes *attrs;
 	const gchar *description;
 	const gchar *label;
 	Test *test = user_data;
+	gconstpointer block;
+	gsize n_block;
 
 	g_assert (GCR_IS_PARSER (par));
 	g_assert (par == test->parser);
@@ -73,6 +98,8 @@ parsed_item (GcrParser *par, gpointer user_data)
 
 	description = gcr_parser_get_parsed_description (test->parser);
 	label = gcr_parser_get_parsed_label (test->parser);
+	block = gcr_parser_get_parsed_block (test->parser, &n_block);
+	ensure_block_can_be_parsed (block, n_block);
 
 	if (g_test_verbose ())
 		g_print ("%s: '%s'\n", description, label);

@@ -18,6 +18,7 @@ gcr_parser_add_password
 gcr_parser_get_parsed_label
 gcr_parser_get_parsed_description
 gcr_parser_get_parsed_attributes
+gcr_parser_get_parsed_block
 <SUBSECTION Standard>
 GcrParserPrivate
 GCR_PARSER

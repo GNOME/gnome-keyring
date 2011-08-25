@@ -104,6 +104,9 @@ const gchar*             gcr_parser_get_parsed_description (GcrParser *self);
 
 GckAttributes*           gcr_parser_get_parsed_attributes  (GcrParser *self);
 
+gconstpointer            gcr_parser_get_parsed_block       (GcrParser *self,
+                                                            gsize *n_block);
+
 G_END_DECLS
 
 #endif /* __GCR_PARSER_H__ */
