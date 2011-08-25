@@ -132,6 +132,36 @@ test_parse_one (Test *test,
 	g_free (contents);
 }
 
+static void
+test_parse_null (void)
+{
+	GcrParser *parser = gcr_parser_new ();
+	GError *error = NULL;
+	gboolean result;
+
+	result = gcr_parser_parse_data (parser, NULL, 0, &error);
+	g_assert_error (error, GCR_DATA_ERROR, GCR_ERROR_UNRECOGNIZED);
+	g_assert (!result);
+	g_error_free (error);
+
+	g_object_unref (parser);
+}
+
+static void
+test_parse_empty (void)
+{
+	GcrParser *parser = gcr_parser_new ();
+	GError *error = NULL;
+	gboolean result;
+
+	result = gcr_parser_parse_data (parser, "", 0, &error);
+	g_assert_error (error, GCR_DATA_ERROR, GCR_ERROR_UNRECOGNIZED);
+	g_assert (!result);
+	g_error_free (error);
+
+	g_object_unref (parser);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -177,6 +207,9 @@ main (int argc, char **argv)
 	}
 
 	g_dir_close (dir);
+
+	g_test_add_func ("/gcr/parser/parse_null", test_parse_null);
+	g_test_add_func ("/gcr/parser/parse_empty", test_parse_empty);
 
 	ret = g_test_run ();
 	g_ptr_array_free (strings, TRUE);

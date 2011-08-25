@@ -1678,19 +1678,21 @@ gcr_parser_parse_data (GcrParser *self, gconstpointer data,
 	g_return_val_if_fail (data || !n_data, FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	/* Just the specific formats requested */
-	if (self->pv->specific_formats) { 
-		g_tree_foreach (self->pv->specific_formats, parser_format_foreach, &args);
-		
-	/* All the 'normal' formats */
-	} else if (self->pv->normal_formats) {
-		for (i = 0; i < G_N_ELEMENTS (parser_normal); ++i) {
-			if (parser_format_foreach ((gpointer)(parser_normal + i), 
-			                           (gpointer)(parser_normal + i), &args))
-				break;
+	if (data && n_data) {
+		/* Just the specific formats requested */
+		if (self->pv->specific_formats) {
+			g_tree_foreach (self->pv->specific_formats, parser_format_foreach, &args);
+
+		/* All the 'normal' formats */
+		} else if (self->pv->normal_formats) {
+			for (i = 0; i < G_N_ELEMENTS (parser_normal); ++i) {
+				if (parser_format_foreach ((gpointer)(parser_normal + i),
+							   (gpointer)(parser_normal + i), &args))
+					break;
+			}
 		}
 	}
-	
+
 	switch (args.result) {
 	case SUCCESS:
 		return TRUE;
