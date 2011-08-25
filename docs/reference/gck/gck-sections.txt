@@ -62,8 +62,10 @@ GckAllocator
 <SECTION>
 <FILE>gck-module</FILE>
 GckModule
-gck_module_new
 gck_module_initialize
+gck_module_initialize_async
+gck_module_initialize_finish
+gck_module_new
 gck_module_equal
 gck_module_hash
 gck_module_get_path
@@ -86,10 +88,12 @@ GckModulePrivate
 
 <SECTION>
 <FILE>gck-modules</FILE>
+gck_modules_initialize_registered
+gck_modules_initialize_registered_async
+gck_modules_initialize_registered_finish
 gck_modules_enumerate_objects
 gck_modules_enumerate_uri
 gck_modules_get_slots
-gck_modules_initialize_registered
 gck_modules_object_for_uri
 gck_modules_objects_for_uri
 gck_modules_token_for_uri

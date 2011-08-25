@@ -301,6 +301,14 @@ GckModule*            gck_module_new                          (CK_FUNCTION_LIST_
 GckModule*            gck_module_initialize                   (const gchar *path,
                                                                GError **error);
 
+void                  gck_module_initialize_async             (const gchar *path,
+                                                               GCancellable *cancellable,
+                                                               GAsyncReadyCallback callback,
+                                                               gpointer user_data);
+
+GckModule *           gck_module_initialize_finish            (GAsyncResult *result,
+                                                               GError **error);
+
 gboolean              gck_module_equal                        (gconstpointer module1,
                                                                gconstpointer module2);
 
@@ -315,7 +323,14 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-GList*                gck_modules_initialize_registered       (void);
+GList*                gck_modules_initialize_registered        (void);
+
+void                  gck_modules_initialize_registered_async  (GCancellable *cancellable,
+                                                                GAsyncReadyCallback callback,
+                                                                gpointer user_data);
+
+GList *               gck_modules_initialize_registered_finish (GAsyncResult *result,
+                                                                GError **error);
 
 GList*                gck_modules_get_slots                   (GList *modules,
                                                                gboolean token_present);

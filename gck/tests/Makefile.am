@@ -30,7 +30,7 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
-	gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 
 check-local: test
 

@@ -27,6 +27,8 @@
 #include <glib.h>
 #include <string.h>
 
+#include "egg/egg-testing.h"
+
 #include "gck/gck.h"
 #include "gck/gck-test.h"
 
@@ -52,22 +54,56 @@ teardown (Test *test, gconstpointer unused)
 }
 
 static void
+fetch_async_result (GObject *source, GAsyncResult *result, gpointer user_data)
+{
+	*((GAsyncResult**)user_data) = result;
+	g_object_ref (result);
+	egg_test_wait_stop ();
+}
+
+static void
+test_initialize_async (void)
+{
+	GckModule *module;
+	GAsyncResult *result;
+	GError *error = NULL;
+
+	/* Shouldn't be able to load modules */
+	gck_module_initialize_async (BUILDDIR "/.libs/libmock-test-module.so",
+	                             NULL, fetch_async_result, &result);
+
+	egg_test_wait_until (500);
+	g_assert (result != NULL);
+
+	/* Get the result */
+	module = gck_module_initialize_finish (result, &error);
+	g_assert_no_error (error);
+	g_assert (GCK_IS_MODULE (module));
+
+	g_object_unref (result);
+	g_object_unref (module);
+}
+
+
+static void
 test_invalid_modules (Test *test, gconstpointer unused)
 {
 	GckModule *invalid;
-	GError *err = NULL;
+	GError *error = NULL;
 
 	/* Shouldn't be able to load modules */
-	invalid = gck_module_initialize ("blah-blah-non-existant", &err);
+	invalid = gck_module_initialize ("blah-blah-non-existant", &error);
+	g_assert_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM);
 	g_assert (invalid == NULL);
-	g_assert_error (err, GCK_ERROR, CKR_GCK_MODULE_PROBLEM);
 
-	g_clear_error (&err);
+	g_clear_error (&error);
 
 	/* Shouldn't be able to load any file successfully */
-	invalid = gck_module_initialize ("/usr/lib/libm.so", &err);
+	invalid = gck_module_initialize ("/usr/lib/libm.so", &error);
+	g_assert_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM);
 	g_assert (invalid == NULL);
-	g_assert_error (err, GCK_ERROR, CKR_GCK_MODULE_PROBLEM);
+
+	g_clear_error (&error);
 }
 
 static void
@@ -130,10 +166,11 @@ main (int argc, char **argv)
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 
+	g_test_add_func ("/gck/module/initialize_async", test_initialize_async);
 	g_test_add ("/gck/module/invalid_modules", Test, NULL, setup, test_invalid_modules, teardown);
 	g_test_add ("/gck/module/module_equals_hash", Test, NULL, setup, test_module_equals_hash, teardown);
 	g_test_add ("/gck/module/module_props", Test, NULL, setup, test_module_props, teardown);
 	g_test_add ("/gck/module/module_info", Test, NULL, setup, test_module_info, teardown);
 
-	return g_test_run ();
+	return egg_tests_run_in_thread_with_loop ();
 }

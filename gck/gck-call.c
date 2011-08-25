@@ -149,8 +149,7 @@ process_result (GckCall *call, gpointer unused)
 
 	/* All done, finish processing */
 	} else if (call->callback) {
-		g_assert (G_IS_OBJECT (call->object));
-		(call->callback) (G_OBJECT (call->object), G_ASYNC_RESULT (call),
+		(call->callback) (call->object, G_ASYNC_RESULT (call),
 				  call->user_data);
 	}
 }
@@ -423,6 +422,7 @@ _gck_call_async_prep (gpointer object, gpointer cb_object, gpointer perform,
 	GckCall *call;
 
 	g_assert (!object || G_IS_OBJECT (object));
+	g_assert (!cb_object || G_IS_OBJECT (cb_object));
 	g_assert (perform);
 
 	if (!destroy)
@@ -437,8 +437,7 @@ _gck_call_async_prep (gpointer object, gpointer cb_object, gpointer perform,
 	call->destroy = (GDestroyNotify)destroy;
 	call->perform = (GckPerformFunc)perform;
 	call->complete = (GckCompleteFunc)complete;
-	call->object = cb_object;
-	g_object_ref (cb_object);
+	call->object = cb_object ? g_object_ref (cb_object) : NULL;
 
 	/* Hook the two together */
 	call->args = args;

@@ -27,6 +27,8 @@
 #include "gck-private.h"
 #include "gck-marshal.h"
 
+#include <glib/gi18n.h>
+
 #include <p11-kit/p11-kit.h>
 
 #include <string.h>
@@ -371,6 +373,78 @@ gck_module_info_free (GckModuleInfo *module_info)
 	g_free (module_info);
 }
 
+typedef struct {
+	GckArguments base;
+	gchar *path;
+	GckModule *result;
+	GError *error;
+} Initialize;
+
+static CK_RV
+perform_initialize (Initialize *args)
+{
+	CK_C_GetFunctionList get_function_list;
+	CK_FUNCTION_LIST_PTR funcs;
+	GModule *module;
+	GckModule *result;
+	CK_RV rv;
+
+	/* Load the actual module */
+	module = g_module_open (args->path, 0);
+	if (!module) {
+		g_set_error (&args->error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
+		             _("Error loading PKCS#11 module: %s"), g_module_error ());
+		return CKR_GCK_MODULE_PROBLEM;
+	}
+
+	/* Get the entry point */
+	if (!g_module_symbol (module, "C_GetFunctionList", (void**)&get_function_list)) {
+		g_set_error (&args->error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
+		             _("Invalid PKCS#11 module: %s"), g_module_error ());
+		g_module_close (module);
+		return CKR_GCK_MODULE_PROBLEM;
+	}
+
+	/* Get the function list */
+	rv = (get_function_list) (&funcs);
+	if (rv != CKR_OK) {
+		g_set_error (&args->error, GCK_ERROR, rv,
+		             _("Couldn't setup PKCS#11 module: %s"),
+		             gck_message_from_rv (rv));
+		g_module_close (module);
+		return rv;
+	}
+
+	result = g_object_new (GCK_TYPE_MODULE,
+	                       "functions", funcs,
+	                       "path", args->path,
+	                       NULL);
+	result->pv->module = module;
+
+	/* Now initialize the module */
+	rv = p11_kit_initialize_module (funcs);
+	if (rv != CKR_OK) {
+		g_set_error (&args->error, GCK_ERROR, rv,
+		             _("Couldn't initialize PKCS#11 module: %s"),
+		             gck_message_from_rv (rv));
+		g_object_unref (result);
+		return rv;
+	}
+
+	result->pv->initialized = TRUE;
+	args->result = result;
+	return CKR_OK;
+}
+
+static void
+free_initialize (Initialize *args)
+{
+	g_free (args->path);
+	g_clear_error (&args->error);
+	g_clear_object (&args->result);
+	g_free (args);
+}
+
 /**
  * gck_module_initialize:
  * @path: The file system path to the PKCS\#11 module to load.
@@ -381,56 +455,68 @@ gck_module_info_free (GckModuleInfo *module_info)
  * Return value: The loaded PKCS\#11 module or NULL if failed.
  **/
 GckModule*
-gck_module_initialize (const gchar *path, GError **error)
+gck_module_initialize (const gchar *path,
+                       GError **error)
 {
-	CK_C_GetFunctionList get_function_list;
-	CK_FUNCTION_LIST_PTR funcs;
-	GModule *module;
-	GckModule *self;
-	CK_RV rv;
+	Initialize args = { GCK_ARGUMENTS_INIT, 0,  };
 
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
-	/* Load the actual module */
-	module = g_module_open (path, 0);
-	if (!module) {
-		g_set_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
-		             "Error loading pkcs11 module: %s", g_module_error ());
-		return NULL;
+	args.path = g_strdup (path);
+
+	if (!_gck_call_sync (NULL, perform_initialize, NULL, &args, NULL, error)) {
+
+		/* A custom error from perform_initialize */
+		if (args.error) {
+			g_clear_error (error);
+			g_propagate_error (error, args.error);
+			args.error = NULL;
+		}
 	}
 
-	/* Get the entry point */
-	if (!g_module_symbol (module, "C_GetFunctionList", (void**)&get_function_list)) {
-		g_set_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
-		             "Invalid pkcs11 module: %s", g_module_error ());
-		g_module_close (module);
-		return NULL;
+	g_free (args.path);
+	g_clear_error (&args.error);
+	return args.result;
+}
+
+void
+gck_module_initialize_async (const gchar *path,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	Initialize *args;
+
+	args =  _gck_call_async_prep (NULL, NULL, perform_initialize, NULL,
+	                              sizeof (*args), free_initialize);
+	args->path = g_strdup (path);
+
+	_gck_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+GckModule *
+gck_module_initialize_finish (GAsyncResult *result,
+                              GError **error)
+{
+	GckModule *module = NULL;
+	Initialize *args;
+
+	args = _gck_call_arguments (result, Initialize);
+	if (_gck_call_basic_finish (result, error)) {
+		module = args->result;
+		args->result = NULL;
+
+	} else {
+		/* A custom error from perform_initialize */
+		if (args->error) {
+			g_clear_error (error);
+			g_propagate_error (error, args->error);
+			args->error = NULL;
+		}
 	}
 
-	/* Get the function list */
-	rv = (get_function_list) (&funcs);
-	if (rv != CKR_OK) {
-		g_set_error (error, GCK_ERROR, rv, "Couldn't get pkcs11 function list: %s",
-		             gck_message_from_rv (rv));
-		g_module_close (module);
-		return NULL;
-	}
-
-	self = g_object_new (GCK_TYPE_MODULE, "functions", funcs, "path", path, NULL);
-	self->pv->module = module;
-
-	/* Now initialize the module */
-	rv = p11_kit_initialize_module (self->pv->funcs);
-	if (rv != CKR_OK) {
-		g_set_error (error, GCK_ERROR, rv, "Couldn't initialize module: %s",
-		             gck_message_from_rv (rv));
-		g_object_unref (self);
-		return NULL;
-	}
-
-	self->pv->initialized = TRUE;
-	return self;
+	return module;
 }
 
 /**

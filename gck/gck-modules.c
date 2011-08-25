@@ -27,6 +27,9 @@
 #include "gck-private.h"
 #include "gck-marshal.h"
 
+#include <glib/gi18n.h>
+
+#define P11_KIT_FUTURE_UNSTABLE_API 1
 #include <p11-kit/p11-kit.h>
 
 #include <string.h>
@@ -41,6 +44,48 @@
  * operations on all of them.
  */
 
+typedef struct {
+	GckArguments base;
+	GList *results;
+	GError *error;
+} InitializeRegistered;
+
+static CK_RV
+perform_initialize_registered (InitializeRegistered *args)
+{
+	GckModule *module;
+	CK_FUNCTION_LIST_PTR *modules, *funcs;
+	const gchar *message;
+	CK_RV rv;
+
+	rv = p11_kit_initialize_registered ();
+	if (rv != CKR_OK) {
+		message = p11_kit_message ();
+		if (message == NULL)
+			message = gck_message_from_rv (rv);
+		g_set_error (&args->error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM,
+		             _("Couldn't initialize registered PKCS#11 modules: %s"), message);
+		return rv;
+	}
+
+	modules = p11_kit_registered_modules ();
+	for (funcs = modules; *funcs; ++funcs) {
+		module = _gck_module_new_initialized (*funcs);
+		args->results = g_list_prepend (args->results, module);
+	}
+
+	free (modules);
+	return CKR_OK;
+}
+
+static void
+free_initialize_registered (InitializeRegistered *args)
+{
+	g_clear_error (&args->error);
+	gck_list_unref_free (args->results);
+	g_free (args);
+}
+
 /**
  * gck_modules_initialize_registered:
  *
@@ -52,28 +97,57 @@
 GList*
 gck_modules_initialize_registered (void)
 {
-	GckModule *module;
-	GList *results = NULL;
-	CK_FUNCTION_LIST_PTR *modules, *funcs;
-	CK_RV rv;
+	InitializeRegistered args = { GCK_ARGUMENTS_INIT, 0,  };
+	GError *error = NULL;
 
-	rv = p11_kit_initialize_registered ();
-	if (rv != CKR_OK) {
-		g_warning ("couldn't initialize registered PKCS#11 modules: %s",
-		           gck_message_from_rv (rv));
-		return NULL;
+	if (!_gck_call_sync (NULL, perform_initialize_registered, NULL, &args, NULL, &error)) {
+		if (args.error)
+			g_warning ("%s", args.error->message);
+		else
+			g_warning ("couldn't initialize registered PKCS#11 modules: %s",
+			           error->message);
 	}
 
-	modules = p11_kit_registered_modules ();
+	g_clear_error (&args.error);
+	g_clear_error (&error);
+	return args.results;
+}
 
-	for (funcs = modules; *funcs; ++funcs) {
-		module = _gck_module_new_initialized (*funcs);
-		results = g_list_prepend (results, module);
+void
+gck_modules_initialize_registered_async (GCancellable *cancellable,
+                                         GAsyncReadyCallback callback,
+                                         gpointer user_data)
+{
+	InitializeRegistered *args;
+
+	args =  _gck_call_async_prep (NULL, NULL, perform_initialize_registered, NULL,
+	                              sizeof (*args), free_initialize_registered);
+
+	_gck_call_async_ready_go (args, cancellable, callback, user_data);
+}
+
+GList *
+gck_modules_initialize_registered_finish (GAsyncResult *result,
+                                          GError **error)
+{
+	GList *modules = NULL;
+	InitializeRegistered *args;
+
+	args = _gck_call_arguments (result, InitializeRegistered);
+	if (_gck_call_basic_finish (result, error)) {
+		modules = args->results;
+		args->results = NULL;
+
+	} else {
+		/* A custom error from perform_initialize */
+		if (args->error) {
+			g_clear_error (error);
+			g_propagate_error (error, args->error);
+			args->error = NULL;
+		}
 	}
 
-	free (modules);
-
-	return results;
+	return modules;
 }
 
 /**
