@@ -28,7 +28,7 @@ TEST_PROGS = \
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS) $(CHECK_PROGS)
-	gtester -k --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 	@for prog in $(CHECK_PROGS); do SRCDIR='.' ./$$prog || exit 1; done
 
 check-local: test
