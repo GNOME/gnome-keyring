@@ -22,9 +22,7 @@ ui_DATA = \
 # ------------------------------------------------------------------
 # HEADERS
 
-incdir = $(includedir)/gcr-@GCR_MAJOR@/gcr
-
-inc_HEADERS = \
+HEADER_FILES = \
 	gcr.h \
 	gcr-certificate.h \
 	gcr-certificate-basics-widget.h \
@@ -37,7 +35,7 @@ inc_HEADERS = \
 	gcr-column.h \
 	gcr-combo-selector.h \
 	gcr-comparable.h \
-	gcr-enum-types.h \
+	gcr-deprecated.h \
 	gcr-key-renderer.h \
 	gcr-key-widget.h \
 	gcr-importer.h \
@@ -54,6 +52,12 @@ inc_HEADERS = \
 	gcr-unlock-options.h \
 	gcr-unlock-options-widget.h \
 	gcr-viewer.h
+
+incdir = $(includedir)/gcr-@GCR_MAJOR@/gcr
+
+inc_HEADERS = \
+	$(HEADER_FILES) \
+	gcr-enum-types.h
 
 # ------------------------------------------------------------------
 # LIBRARY
@@ -156,13 +160,13 @@ gcr-marshal.c: gcr-marshal.list $(GLIB_GENMARSHAL)
 	$(AM_V_GEN) ( echo "#include \"gcr-marshal.h\"" > $@ && \
 		$(GLIB_GENMARSHAL) $< --body --prefix=_gcr_marshal >> $@ )
 
-gcr-enum-types.h: $(inc_HEADERS) gcr-enum-types.h.template
+gcr-enum-types.h: $(HEADER_FILES) gcr-enum-types.h.template
 	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(srcdir)/gcr-enum-types.h.template \
-		$(inc_HEADERS) > $@
+		$(HEADER_FILES) > $@
 
-gcr-enum-types.c: $(inc_HEADERS) gcr-enum-types.c.template
+gcr-enum-types.c: $(HEADER_FILES) gcr-enum-types.c.template
 	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(srcdir)/gcr-enum-types.c.template \
-		$(inc_HEADERS) > $@
+		$(HEADER_FILES) > $@
 
 gcr-oids.c: gcr-oids.list gcr-mkoids
 	$(AM_V_GEN) sh gcr-mkoids -p GCR -c gcr-oids.c -h gcr-oids.h gcr-oids.list

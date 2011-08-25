@@ -99,15 +99,6 @@ gboolean                  gcr_importer_import_finish          (GcrImporter *self
                                                                GAsyncResult *result,
                                                                GError **error);
 
-#ifndef GCR_DISABLE_DEPRECATED
-
-GcrParser*                gcr_importer_get_parser             (GcrImporter *self);
-
-void                      gcr_importer_set_parser             (GcrImporter *self,
-                                                               GcrParser *parser);
-
-#endif /* GCR_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* __GCR_IMPORTER_H__ */

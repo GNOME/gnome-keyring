@@ -41,6 +41,7 @@
 #include "gcr-collection-model.h"
 #include "gcr-column.h"
 #include "gcr-combo-selector.h"
+#include "gcr-deprecated.h"
 #include "gcr-enum-types.h"
 #include "gcr-key-renderer.h"
 #include "gcr-key-widget.h"
@@ -57,13 +58,6 @@
 #include "gcr-unlock-options.h"
 #include "gcr-unlock-options-widget.h"
 #include "gcr-viewer.h"
-
-#ifndef GCR_DISABLE_DEPRECATED
-
-#include "gcr-certificate-basics-widget.h"
-#include "gcr-certificate-details-widget.h"
-
-#endif /* GCR_DISABLE_DEPRECATED */
 
 #undef __GCR_H_INSIDE__
 

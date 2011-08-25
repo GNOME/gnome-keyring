@@ -359,6 +359,7 @@ GcrRendererIface
 gcr_renderer_create
 gcr_renderer_register
 gcr_renderer_popuplate_popup
+gcr_renderer_render
 gcr_renderer_render_view
 gcr_renderer_emit_data_changed
 <SUBSECTION Standard>
