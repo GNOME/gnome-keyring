@@ -54,7 +54,7 @@
 
 typedef struct {
 	GcrParser *parser;
-	gchar* filedesc;
+	const gchar* filedesc;
 } Test;
 
 static void
@@ -74,7 +74,8 @@ parsed_item (GcrParser *par, gpointer user_data)
 	description = gcr_parser_get_parsed_description (test->parser);
 	label = gcr_parser_get_parsed_label (test->parser);
 
-	g_print ("parsed %s '%s' at: %s\n", description, label, test->filedesc);
+	if (g_test_verbose ())
+		g_print ("%s: '%s'\n", description, label);
 }
 
 static gboolean
@@ -108,21 +109,48 @@ static void
 teardown (Test *test, gconstpointer unused)
 {
 	g_object_unref (test->parser);
-	g_free (test->filedesc);
 }
 
 static void
-test_parse_all (Test *test, gconstpointer unused)
+test_parse_one (Test *test,
+                gconstpointer user_data)
 {
+	const gchar *path = user_data;
 	gchar *contents;
-	GError *err = NULL;
+	GError *error = NULL;
 	gboolean result;
-	const gchar *filename;
 	gsize len;
-	GDir *dir;
 
-	dir = g_dir_open (SRCDIR "/files", 0, NULL);
-	g_assert (dir);
+	if (!g_file_get_contents (path, &contents, &len, NULL))
+		g_assert_not_reached ();
+
+	test->filedesc = path;
+	result = gcr_parser_parse_data (test->parser, contents, len, &error);
+	g_assert_no_error (error);
+	g_assert (result);
+
+	g_free (contents);
+}
+
+int
+main (int argc, char **argv)
+{
+	const gchar *filename;
+	GError *error = NULL;
+	GPtrArray *strings;
+	GDir *dir;
+	gchar *path;
+	gchar *lower;
+	gchar *test;
+	int ret;
+
+	g_type_init ();
+	g_test_init (&argc, &argv, NULL);
+	g_set_prgname ("test-parser");
+
+	strings = g_ptr_array_new_with_free_func (g_free);
+	dir = g_dir_open (SRCDIR "/files", 0, &error);
+	g_assert_no_error (error);
 
 	for (;;) {
 		filename = g_dir_read_name (dir);
@@ -131,37 +159,26 @@ test_parse_all (Test *test, gconstpointer unused)
 		if (filename[0] == '.')
 			continue;
 
-		g_free (test->filedesc);
-		test->filedesc = g_build_filename (SRCDIR "/files", filename, NULL);
+		path = g_build_filename (SRCDIR "/files", filename, NULL);
 
-		if (g_file_test (test->filedesc, G_FILE_TEST_IS_DIR))
+		if (g_file_test (path, G_FILE_TEST_IS_DIR)) {
+			g_free (path);
 			continue;
-
-		if (!g_file_get_contents (test->filedesc, &contents, &len, NULL))
-			g_assert_not_reached ();
-
-		result = gcr_parser_parse_data (test->parser, contents, len, &err);
-		g_free (contents);
-
-		if (!result) {
-			g_warning ("couldn't parse file data: %s: %s",
-			           filename, egg_error_message (err));
-			g_error_free (err);
-			g_assert_not_reached ();
 		}
+
+		lower = g_ascii_strdown (filename, -1);
+		test = g_strdup_printf ("/gcr/parser/%s",
+		                        g_strcanon (lower, "abcdefghijklmnopqrstuvwxyz012345789", '_'));
+		g_free (lower);
+
+		g_test_add (test, Test, path, setup, test_parse_one, teardown);
+		g_ptr_array_add (strings, path);
+		g_ptr_array_add (strings, test);
 	}
 
 	g_dir_close (dir);
-}
 
-int
-main (int argc, char **argv)
-{
-	g_type_init ();
-	g_test_init (&argc, &argv, NULL);
-	g_set_prgname ("test-parser");
-
-	g_test_add ("/gcr/parser/parse_all", Test, NULL, setup, test_parse_all, teardown);
-
-	return g_test_run ();
+	ret = g_test_run ();
+	g_ptr_array_free (strings, TRUE);
+	return ret;
 }
