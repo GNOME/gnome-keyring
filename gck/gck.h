@@ -299,6 +299,7 @@ GType                 gck_module_get_type                     (void) G_GNUC_CONS
 GckModule*            gck_module_new                          (CK_FUNCTION_LIST_PTR funcs);
 
 GckModule*            gck_module_initialize                   (const gchar *path,
+                                                               GCancellable *cancellable,
                                                                GError **error);
 
 void                  gck_module_initialize_async             (const gchar *path,
@@ -323,7 +324,8 @@ GckModuleInfo*        gck_module_get_info                     (GckModule *self);
 GList*                gck_module_get_slots                    (GckModule *self,
                                                                gboolean token_present);
 
-GList*                gck_modules_initialize_registered        (void);
+GList*                gck_modules_initialize_registered        (GCancellable *cancellable,
+                                                                GError **error);
 
 void                  gck_modules_initialize_registered_async  (GCancellable *cancellable,
                                                                 GAsyncReadyCallback callback,

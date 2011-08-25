@@ -448,6 +448,7 @@ free_initialize (Initialize *args)
 /**
  * gck_module_initialize:
  * @path: The file system path to the PKCS\#11 module to load.
+ * @cancellable: (allow-none): optional cancellation object
  * @error: A location to store an error resulting from a failed load.
  *
  * Load and initialize a PKCS\#11 module represented by a GckModule object.
@@ -456,6 +457,7 @@ free_initialize (Initialize *args)
  **/
 GckModule*
 gck_module_initialize (const gchar *path,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	Initialize args = { GCK_ARGUMENTS_INIT, 0,  };
@@ -465,7 +467,7 @@ gck_module_initialize (const gchar *path,
 
 	args.path = g_strdup (path);
 
-	if (!_gck_call_sync (NULL, perform_initialize, NULL, &args, NULL, error)) {
+	if (!_gck_call_sync (NULL, perform_initialize, NULL, &args, cancellable, error)) {
 
 		/* A custom error from perform_initialize */
 		if (args.error) {

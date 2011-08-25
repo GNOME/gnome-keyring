@@ -180,6 +180,7 @@ _gcr_initialize (void)
 	static volatile gsize gcr_initialized = 0;
 	CK_FUNCTION_LIST_PTR_PTR module_list;
 	GPtrArray *uris;
+	GError *error = NULL;
 	gchar *uri;
 	guint i;
 
@@ -189,7 +190,11 @@ _gcr_initialize (void)
 	if (g_once_init_enter (&gcr_initialized)) {
 
 		/* This calls p11_kit_initialize_registered */
-		all_modules = gck_modules_initialize_registered ();
+		all_modules = gck_modules_initialize_registered (NULL, &error);
+		if (error != NULL) {
+			g_warning ("%s", error->message);
+			g_clear_error (&error);
+		}
 
 		module_list = p11_kit_registered_modules ();
 
@@ -308,7 +313,7 @@ gcr_pkcs11_add_module_from_file (const gchar *module_path, gpointer unused,
 	g_return_val_if_fail (module_path, FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	module = gck_module_initialize (module_path, error);
+	module = gck_module_initialize (module_path, NULL, error);
 	if (module == NULL)
 		return FALSE;
 

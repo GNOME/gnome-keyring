@@ -42,7 +42,7 @@ setup (Test *test, gconstpointer unused)
 	GError *err = NULL;
 
 	/* Successful load */
-	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", &err);
+	test->module = gck_module_initialize (BUILDDIR "/.libs/libmock-test-module.so", NULL, &err);
 	g_assert_no_error (err);
 	g_assert (test->module);
 }
@@ -92,14 +92,14 @@ test_invalid_modules (Test *test, gconstpointer unused)
 	GError *error = NULL;
 
 	/* Shouldn't be able to load modules */
-	invalid = gck_module_initialize ("blah-blah-non-existant", &error);
+	invalid = gck_module_initialize ("blah-blah-non-existant", NULL, &error);
 	g_assert_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM);
 	g_assert (invalid == NULL);
 
 	g_clear_error (&error);
 
 	/* Shouldn't be able to load any file successfully */
-	invalid = gck_module_initialize ("/usr/lib/libm.so", &error);
+	invalid = gck_module_initialize ("/usr/lib/libm.so", NULL, &error);
 	g_assert_error (error, GCK_ERROR, (int)CKR_GCK_MODULE_PROBLEM);
 	g_assert (invalid == NULL);
 

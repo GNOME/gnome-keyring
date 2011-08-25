@@ -88,6 +88,8 @@ free_initialize_registered (InitializeRegistered *args)
 
 /**
  * gck_modules_initialize_registered:
+ * @cancellable: (allow-none): optional cancellation object
+ * @error: (allow-none): location to place an error on failure
  *
  * Load and initialize all the registered modules.
  *
@@ -95,21 +97,20 @@ free_initialize_registered (InitializeRegistered *args)
  * be released with gck_list_unref_free().
  */
 GList*
-gck_modules_initialize_registered (void)
+gck_modules_initialize_registered (GCancellable *cancellable,
+                                   GError **error)
 {
 	InitializeRegistered args = { GCK_ARGUMENTS_INIT, 0,  };
-	GError *error = NULL;
 
-	if (!_gck_call_sync (NULL, perform_initialize_registered, NULL, &args, NULL, &error)) {
-		if (args.error)
-			g_warning ("%s", args.error->message);
-		else
-			g_warning ("couldn't initialize registered PKCS#11 modules: %s",
-			           error->message);
+	if (!_gck_call_sync (NULL, perform_initialize_registered, NULL, &args, cancellable, error)) {
+		if (args.error) {
+			g_clear_error (error);
+			g_propagate_error (error, args.error);
+			args.error = NULL;
+		}
 	}
 
 	g_clear_error (&args.error);
-	g_clear_error (&error);
 	return args.results;
 }
 
