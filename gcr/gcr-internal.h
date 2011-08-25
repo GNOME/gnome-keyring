@@ -26,7 +26,17 @@
 
 #include <glib.h>
 
-void              _gcr_initialize                  (void);
+void              _gcr_initialize_library          (void);
+
+gboolean          _gcr_initialize_pkcs11           (GCancellable *cancellable,
+                                                    GError **error);
+
+void              _gcr_initialize_pkcs11_async     (GCancellable *cancellable,
+                                                    GAsyncReadyCallback callback,
+                                                    gpointer user_data);
+
+gboolean          _gcr_initialize_pkcs11_finish    (GAsyncResult *result,
+                                                    GError **error);
 
 void              _gcr_set_pkcs11_config_dir       (const gchar *dir);
 

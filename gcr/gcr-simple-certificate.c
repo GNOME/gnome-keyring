@@ -102,7 +102,7 @@ gcr_simple_certificate_class_init (GcrSimpleCertificateClass *klass)
 	g_type_class_add_private (gobject_class, sizeof (GcrSimpleCertificatePrivate));
 
 	gcr_certificate_mixin_class_init (gobject_class);
-	_gcr_initialize ();
+	_gcr_initialize_library ();
 }
 
 static gconstpointer

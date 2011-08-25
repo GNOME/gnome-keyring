@@ -76,18 +76,26 @@ G_DEFINE_TYPE_WITH_CODE (GcrPkcs11Certificate, gcr_pkcs11_certificate, GCK_TYPE_
 	G_IMPLEMENT_INTERFACE (GCR_TYPE_CERTIFICATE, gcr_certificate_iface);
 );
 
-/* ----------------------------------------------------------------------------
- * INTERAL
- */
+typedef struct {
+	GckAttributes *search;
+	GcrCertificate *result;
+} lookup_issuer_closure;
 
-static GckEnumerator*
+static void
+lookup_issuer_free (gpointer data)
+{
+	lookup_issuer_closure *closure = data;
+	gck_attributes_unref (closure->search);
+	g_clear_object (&closure->result);
+	g_free (closure);
+}
+
+static GckAttributes *
 prepare_lookup_certificate_issuer (GcrCertificate *cert)
 {
 	GckAttributes *search;
-	GckEnumerator *en;
 	gpointer data;
 	gsize n_data;
-	GList *modules;
 
 	search = gck_attributes_new ();
 	gck_attributes_add_ulong (search, CKA_CLASS, CKO_CERTIFICATE);
@@ -97,24 +105,31 @@ prepare_lookup_certificate_issuer (GcrCertificate *cert)
 	gck_attributes_add_data (search, CKA_SUBJECT, data, n_data);
 	g_free (data);
 
-	modules = gcr_pkcs11_get_modules ();
-	en = gck_modules_enumerate_objects (modules, search, 0);
-	gck_attributes_unref (search);
-	gck_list_unref_free (modules);
-
-	return en;
+	return search;
 }
 
 static GcrCertificate*
-perform_lookup_certificate (GckEnumerator *en, GCancellable *cancel, GError **error)
+perform_lookup_certificate (GckAttributes *search,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	GcrCertificate *cert;
 	GckObject *object;
 	GckAttributes *attrs;
 	GckModule *module;
 	GckSession *session;
+	GckEnumerator *en;
+	GList *modules;
 
-	object = gck_enumerator_next (en, cancel, error);
+	if (!_gcr_initialize_pkcs11 (cancellable, error))
+		return NULL;
+
+	modules = gcr_pkcs11_get_modules ();
+	en = gck_modules_enumerate_objects (modules, search, 0);
+	gck_list_unref_free (modules);
+
+	object = gck_enumerator_next (en, cancellable, error);
+	g_object_unref (en);
 
 	if (object == NULL)
 		return NULL;
@@ -123,7 +138,7 @@ perform_lookup_certificate (GckEnumerator *en, GCancellable *cancel, GError **er
 	 * Only the CKA_VALUE, CKA_CLASS and CKA_CERTIFICATE_TYPE
 	 * is strictly necessary here, but we get more attrs.
 	 */
-	attrs = gck_object_get (object, cancel, error,
+	attrs = gck_object_get (object, cancellable, error,
 	                        CKA_VALUE, CKA_LABEL,
 	                        CKA_ID, CKA_CLASS,
 	                        CKA_CERTIFICATE_TYPE,
@@ -158,21 +173,15 @@ perform_lookup_certificate (GckEnumerator *en, GCancellable *cancel, GError **er
 static void
 thread_lookup_certificate (GSimpleAsyncResult *res, GObject *object, GCancellable *cancel)
 {
+	lookup_issuer_closure *closure;
 	GError *error = NULL;
-	GcrCertificate *cert;
 
-	cert = perform_lookup_certificate (GCK_ENUMERATOR (object), cancel, &error);
+	closure = g_simple_async_result_get_op_res_gpointer (res);
+	closure->result = perform_lookup_certificate (closure->search, cancel, &error);
 
 	if (error != NULL) {
-		g_assert (!cert);
 		g_simple_async_result_set_from_error (res, error);
 		g_clear_error (&error);
-
-	} else if (cert != NULL) {
-		g_simple_async_result_set_op_res_gpointer (res, cert, g_object_unref);
-
-	} else {
-		g_simple_async_result_set_op_res_gpointer (res, NULL, NULL);
 	}
 }
 
@@ -286,7 +295,7 @@ gcr_pkcs11_certificate_class_init (GcrPkcs11CertificateClass *klass)
 	g_type_class_add_private (gobject_class, sizeof (GcrPkcs11CertificatePrivate));
 
 	gcr_certificate_mixin_class_init (gobject_class);
-	_gcr_initialize ();
+	_gcr_initialize_library ();
 }
 
 static gconstpointer
@@ -352,16 +361,19 @@ GcrCertificate*
 gcr_pkcs11_certificate_lookup_issuer (GcrCertificate *certificate, GCancellable *cancellable,
                                       GError **error)
 {
-	GckEnumerator *en;
+	GckAttributes *search;
 	GcrCertificate *issuer;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), NULL);
 
-	en = prepare_lookup_certificate_issuer (certificate);
-	g_return_val_if_fail (en, FALSE);
+	if (!_gcr_initialize_pkcs11 (cancellable, error))
+		return NULL;
 
-	issuer = perform_lookup_certificate (en, cancellable, error);
-	g_object_unref (en);
+	search = prepare_lookup_certificate_issuer (certificate);
+	g_return_val_if_fail (search, FALSE);
+
+	issuer = perform_lookup_certificate (search, cancellable, error);
+	gck_attributes_unref (search);
 
 	return issuer;
 }
@@ -386,21 +398,21 @@ gcr_pkcs11_certificate_lookup_issuer_async (GcrCertificate *certificate, GCancel
                                             GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
-	GckEnumerator *en;
+	lookup_issuer_closure *closure;
 
 	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
 
-	en = prepare_lookup_certificate_issuer (certificate);
-	g_return_if_fail (en);
-
-	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
+	async = g_simple_async_result_new (G_OBJECT (certificate), callback, user_data,
 	                                   gcr_pkcs11_certificate_lookup_issuer_async);
+	closure = g_new0 (lookup_issuer_closure, 1);
+	closure->search = prepare_lookup_certificate_issuer (certificate);
+	g_return_if_fail (closure->search);
+	g_simple_async_result_set_op_res_gpointer (async, closure, lookup_issuer_free);
 
 	g_simple_async_result_run_in_thread (async, thread_lookup_certificate,
 	                                     G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (async);
-	g_object_unref (en);
 }
 
 /**
@@ -419,10 +431,11 @@ gcr_pkcs11_certificate_lookup_issuer_async (GcrCertificate *certificate, GCancel
 GcrCertificate*
 gcr_pkcs11_certificate_lookup_issuer_finish (GAsyncResult *result, GError **error)
 {
-	GcrCertificate *cert;
+	lookup_issuer_closure *closure;
 	GObject *source;
 
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
 	source = g_async_result_get_source_object (result);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, source,
 	                      gcr_pkcs11_certificate_lookup_issuer_async), NULL);
@@ -431,9 +444,8 @@ gcr_pkcs11_certificate_lookup_issuer_finish (GAsyncResult *result, GError **erro
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return NULL;
 
-	cert = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-	if (cert != NULL)
-		g_object_ref (cert);
-
-	return cert;
+	closure = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	if (closure->result != NULL)
+		g_object_ref (closure->result);
+	return closure->result;
 }

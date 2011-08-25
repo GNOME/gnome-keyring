@@ -995,7 +995,7 @@ gcr_certificate_mixin_class_init (GObjectClass *object_class)
 	if (!g_object_class_find_property (object_class, "expiry"))
 		g_object_class_override_property (object_class, PROP_EXPIRY, "expiry");
 
-	_gcr_initialize ();
+	_gcr_initialize_library ();
 }
 
 /**

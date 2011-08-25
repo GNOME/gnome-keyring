@@ -101,53 +101,17 @@
  * HELPERS
  */
 
-typedef struct _GcrTrustOperation {
-	GckEnumerator *en;
+typedef struct {
 	GckAttributes *attrs;
 	gboolean found;
-} GcrTrustOperation;
+} trust_closure;
 
 static void
-trust_operation_free (gpointer data)
+trust_closure_free (gpointer data)
 {
-	GcrTrustOperation *op = data;
-	g_assert (data);
-
-	/* No reference held */
-	g_assert (GCK_IS_ENUMERATOR (op->en));
-	op->en = NULL;
-
-	g_assert (op->attrs);
-	gck_attributes_unref (op->attrs);
-	op->attrs = NULL;
-
-	g_slice_free (GcrTrustOperation, op);
-}
-
-static void
-trust_operation_init (GckEnumerator *en, GckAttributes *attrs)
-{
-	GcrTrustOperation *op;
-
-	g_assert (GCK_IS_ENUMERATOR (en));
-	g_assert (!g_object_get_data (G_OBJECT (en), "trust-operation"));
-	g_assert (attrs);
-
-	op = g_slice_new0 (GcrTrustOperation);
-	op->attrs = gck_attributes_ref (attrs);
-
-	/* No reference held, GckEnumerator owns */
-	op->en = en;
-	g_object_set_data_full (G_OBJECT (en), "trust-operation", op, trust_operation_free);
-}
-
-static GcrTrustOperation*
-trust_operation_get (GckEnumerator *en)
-{
-	GcrTrustOperation *op = g_object_get_data (G_OBJECT (en), "trust-operation");
-	g_assert (op);
-	g_assert (op->en == en);
-	return op;
+	trust_closure *closure = data;
+	gck_attributes_unref (closure->attrs);
+	g_free (closure);
 }
 
 static GckAttributes*
@@ -172,12 +136,10 @@ prepare_trust_attrs (GcrCertificate *certificate, CK_X_ASSERTION_TYPE type)
  * GET PINNED CERTIFICATE
  */
 
-static GckEnumerator*
+static GckAttributes *
 prepare_is_certificate_pinned (GcrCertificate *certificate, const gchar *purpose, const gchar *peer)
 {
 	GckAttributes *attrs;
-	GckEnumerator *en;
-	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
@@ -185,33 +147,32 @@ prepare_is_certificate_pinned (GcrCertificate *certificate, const gchar *purpose
 	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 
-	slots = gcr_pkcs11_get_trust_lookup_slots ();
-	en = gck_slots_enumerate_objects (slots, attrs, 0);
-	trust_operation_init (en, attrs);
-	gck_attributes_unref (attrs);
-	gck_list_unref_free (slots);
-
-	return en;
+	return attrs;
 }
 
 static gboolean
-perform_is_certificate_pinned (GckEnumerator *en, GCancellable *cancellable, GError **error)
+perform_is_certificate_pinned (GckAttributes *search,
+                               GCancellable *cancellable,
+                               GError **error)
 {
-	GcrTrustOperation *op;
+	GckEnumerator *en;
+	GList *slots;
 	GckObject *object;
 
-	op = trust_operation_get (en);
+	if (!_gcr_initialize_pkcs11 (cancellable, error))
+		return FALSE;
 
-	g_assert (op != NULL);
-	g_assert (op->found == FALSE);
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, search, 0);
+	gck_list_unref_free (slots);
 
 	object = gck_enumerator_next (en, cancellable, error);
-	op->found = (object != NULL);
+	g_object_unref (en);
 
 	if (object)
 		g_object_unref (object);
 
-	return op->found;
+	return (object != NULL);
 }
 
 /**
@@ -237,21 +198,18 @@ gboolean
 gcr_trust_is_certificate_pinned (GcrCertificate *certificate, const gchar *purpose,
                                  const gchar *peer, GCancellable *cancellable, GError **error)
 {
-	GckEnumerator *en;
+	GckAttributes *search;
 	gboolean ret;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), FALSE);
 	g_return_val_if_fail (purpose, FALSE);
 	g_return_val_if_fail (peer, FALSE);
 
-	_gcr_initialize ();
+	search = prepare_is_certificate_pinned (certificate, purpose, peer);
+	g_return_val_if_fail (search, FALSE);
 
-	en = prepare_is_certificate_pinned (certificate, purpose, peer);
-	g_return_val_if_fail (en, FALSE);
-
-	ret = perform_is_certificate_pinned (en, cancellable, error);
-
-	g_object_unref (en);
+	ret = perform_is_certificate_pinned (search, cancellable, error);
+	gck_attributes_unref (search);
 
 	return ret;
 }
@@ -260,8 +218,10 @@ static void
 thread_is_certificate_pinned (GSimpleAsyncResult *result, GObject *object, GCancellable *cancel)
 {
 	GError *error = NULL;
+	trust_closure *closure;
 
-	perform_is_certificate_pinned (GCK_ENUMERATOR (object), cancel, &error);
+	closure = g_simple_async_result_get_op_res_gpointer (result);
+	closure->found = perform_is_certificate_pinned (closure->attrs, cancel, &error);
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
@@ -291,25 +251,23 @@ gcr_trust_is_certificate_pinned_async (GcrCertificate *certificate, const gchar 
                                        GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
-	GckEnumerator *en;
+	trust_closure *closure;
 
 	g_return_if_fail (GCR_CERTIFICATE (certificate));
 	g_return_if_fail (purpose);
 	g_return_if_fail (peer);
 
-	_gcr_initialize ();
-
-	en = prepare_is_certificate_pinned (certificate, purpose, peer);
-	g_return_if_fail (en);
-
-	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
+	async = g_simple_async_result_new (NULL, callback, user_data,
 	                                   gcr_trust_is_certificate_pinned_async);
+	closure = g_new0 (trust_closure, 1);
+	closure->attrs = prepare_is_certificate_pinned (certificate, purpose, peer);
+	g_return_if_fail (closure->attrs);
+	g_simple_async_result_set_op_res_gpointer (async, closure, trust_closure_free);
 
 	g_simple_async_result_run_in_thread (async, thread_is_certificate_pinned,
 	                                     G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (async);
-	g_object_unref (en);
 }
 
 /**
@@ -328,38 +286,29 @@ gcr_trust_is_certificate_pinned_async (GcrCertificate *certificate, const gchar 
 gboolean
 gcr_trust_is_certificate_pinned_finish (GAsyncResult *result, GError **error)
 {
-	GcrTrustOperation *op;
-	GObject *object;
-	gboolean found;
+	trust_closure *closure;
 
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	_gcr_initialize ();
-
-	object = g_async_result_get_source_object (result);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL,
 	                      gcr_trust_is_certificate_pinned_async), FALSE);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return FALSE;
 
-	op = trust_operation_get (GCK_ENUMERATOR (object));
-	found = op->found;
-	g_object_unref (object);
-	return found;
+	closure = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	return closure->found;
 }
 
 /* ----------------------------------------------------------------------------------
  * ADD PINNED CERTIFICATE
  */
 
-static GckEnumerator*
+static GckAttributes *
 prepare_add_pinned_certificate (GcrCertificate *certificate, const gchar *purpose, const gchar *peer)
 {
 	GckAttributes *attrs;
-	GckEnumerator *en;
-	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
@@ -368,34 +317,37 @@ prepare_add_pinned_certificate (GcrCertificate *certificate, const gchar *purpos
 	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
 
-	slots = gcr_pkcs11_get_trust_lookup_slots ();
-	en = gck_slots_enumerate_objects (slots, attrs, CKF_RW_SESSION);
-	trust_operation_init (en, attrs);
-	gck_attributes_unref (attrs);
-	gck_list_unref_free (slots);
-
-	return en;
+	return attrs;
 }
 
 static gboolean
-perform_add_pinned_certificate (GckEnumerator *en, GCancellable *cancellable, GError **error)
+perform_add_pinned_certificate (GckAttributes *search,
+                                GCancellable *cancellable,
+                                GError **error)
 {
-	GcrTrustOperation *op;
 	GckAttributes *attrs;
 	gboolean ret = FALSE;
 	GError *lerr = NULL;
 	GckObject *object;
 	GckSession *session;
 	GckSlot *slot;
+	GckEnumerator *en;
+	GList *slots;
 
-	op = trust_operation_get (en);
-	g_assert (op != NULL);
+	if (!_gcr_initialize_pkcs11 (cancellable, error))
+		return FALSE;
+
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, search, CKF_RW_SESSION);
+	gck_list_unref_free (slots);
 
 	/* We need an error below */
 	if (error && !*error)
 		*error = lerr;
 
 	object = gck_enumerator_next (en, cancellable, error);
+	g_object_unref (en);
+
 	if (*error)
 		return FALSE;
 
@@ -406,7 +358,7 @@ perform_add_pinned_certificate (GckEnumerator *en, GCancellable *cancellable, GE
 	}
 
 	attrs = gck_attributes_new ();
-	gck_attributes_add_all (attrs, op->attrs);
+	gck_attributes_add_all (attrs, search);
 
 	/* TODO: Add relevant label */
 
@@ -466,21 +418,18 @@ gboolean
 gcr_trust_add_pinned_certificate (GcrCertificate *certificate, const gchar *purpose, const gchar *peer,
                                   GCancellable *cancellable, GError **error)
 {
-	GckEnumerator *en;
+	GckAttributes *search;
 	gboolean ret;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), FALSE);
 	g_return_val_if_fail (purpose, FALSE);
 	g_return_val_if_fail (peer, FALSE);
 
-	_gcr_initialize ();
+	search = prepare_add_pinned_certificate (certificate, purpose, peer);
+	g_return_val_if_fail (search, FALSE);
 
-	en = prepare_add_pinned_certificate (certificate, purpose, peer);
-	g_return_val_if_fail (en, FALSE);
-
-	ret = perform_add_pinned_certificate (en, cancellable, error);
-
-	g_object_unref (en);
+	ret = perform_add_pinned_certificate (search, cancellable, error);
+	gck_attributes_unref (search);
 
 	return ret;
 }
@@ -489,8 +438,10 @@ static void
 thread_add_pinned_certificate (GSimpleAsyncResult *result, GObject *object, GCancellable *cancel)
 {
 	GError *error = NULL;
+	trust_closure *closure;
 
-	perform_add_pinned_certificate (GCK_ENUMERATOR (object), cancel, &error);
+	closure = g_simple_async_result_get_op_res_gpointer (result);
+	perform_add_pinned_certificate (closure->attrs, cancel, &error);
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
@@ -524,25 +475,23 @@ gcr_trust_add_pinned_certificate_async (GcrCertificate *certificate, const gchar
                                         GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
-	GckEnumerator *en;
+	trust_closure *closure;
 
 	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
 	g_return_if_fail (purpose);
 	g_return_if_fail (peer);
 
-	_gcr_initialize ();
-
-	en = prepare_add_pinned_certificate (certificate, purpose, peer);
-	g_return_if_fail (en);
-
-	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
+	async = g_simple_async_result_new (NULL, callback, user_data,
 	                                   gcr_trust_add_pinned_certificate_async);
+	closure = g_new0 (trust_closure, 1);
+	closure->attrs = prepare_add_pinned_certificate (certificate, purpose, peer);
+	g_return_if_fail (closure->attrs);
+	g_simple_async_result_set_op_res_gpointer (async, closure, trust_closure_free);
 
 	g_simple_async_result_run_in_thread (async, thread_add_pinned_certificate,
 	                                     G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (async);
-	g_object_unref (en);
 }
 
 /**
@@ -558,17 +507,11 @@ gcr_trust_add_pinned_certificate_async (GcrCertificate *certificate, const gchar
 gboolean
 gcr_trust_add_pinned_certificate_finish (GAsyncResult *result, GError **error)
 {
-	GObject *object;
-
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	_gcr_initialize ();
-
-	object = g_async_result_get_source_object (result);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL,
 	                      gcr_trust_add_pinned_certificate_async), FALSE);
-	g_object_unref (object);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return FALSE;
@@ -580,13 +523,11 @@ gcr_trust_add_pinned_certificate_finish (GAsyncResult *result, GError **error)
  * REMOVE PINNED CERTIFICATE
  */
 
-static GckEnumerator*
+static GckAttributes *
 prepare_remove_pinned_certificate (GcrCertificate *certificate, const gchar *purpose,
                                    const gchar *peer)
 {
 	GckAttributes *attrs;
-	GckEnumerator *en;
-	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_PINNED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
@@ -594,30 +535,33 @@ prepare_remove_pinned_certificate (GcrCertificate *certificate, const gchar *pur
 	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 	gck_attributes_add_string (attrs, CKA_X_PEER, peer);
 
-	slots = gcr_pkcs11_get_trust_lookup_slots ();
-	en = gck_slots_enumerate_objects (slots, attrs, CKF_RW_SESSION);
-	trust_operation_init (en, attrs);
-	gck_attributes_unref (attrs);
-	gck_list_unref_free (slots);
-
-	return en;
+	return attrs;
 }
 
 static gboolean
-perform_remove_pinned_certificate (GckEnumerator *en, GCancellable *cancellable, GError **error)
+perform_remove_pinned_certificate (GckAttributes *attrs,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
-	GcrTrustOperation *op;
 	GList *objects, *l;
 	GError *lerr = NULL;
+	GckEnumerator *en;
+	GList *slots;
 
-	op = trust_operation_get (en);
-	g_assert (op != NULL);
+	if (!_gcr_initialize_pkcs11 (cancellable, error))
+		return FALSE;
+
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, attrs, CKF_RW_SESSION);
+	gck_list_unref_free (slots);
 
 	/* We need an error below */
 	if (error && !*error)
 		*error = lerr;
 
 	objects = gck_enumerator_next_n (en, -1, cancellable, error);
+	g_object_unref (en);
+
 	if (*error)
 		return FALSE;
 
@@ -661,21 +605,18 @@ gboolean
 gcr_trust_remove_pinned_certificate (GcrCertificate *certificate, const gchar *purpose, const gchar *peer,
                                      GCancellable *cancellable, GError **error)
 {
-	GckEnumerator *en;
+	GckAttributes *search;
 	gboolean ret;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), FALSE);
 	g_return_val_if_fail (purpose, FALSE);
 	g_return_val_if_fail (peer, FALSE);
 
-	_gcr_initialize ();
+	search = prepare_remove_pinned_certificate (certificate, purpose, peer);
+	g_return_val_if_fail (search, FALSE);
 
-	en = prepare_remove_pinned_certificate (certificate, purpose, peer);
-	g_return_val_if_fail (en, FALSE);
-
-	ret = perform_remove_pinned_certificate (en, cancellable, error);
-
-	g_object_unref (en);
+	ret = perform_remove_pinned_certificate (search, cancellable, error);
+	gck_attributes_unref (search);
 
 	return ret;
 }
@@ -684,8 +625,10 @@ static void
 thread_remove_pinned_certificate (GSimpleAsyncResult *result, GObject *object, GCancellable *cancel)
 {
 	GError *error = NULL;
+	trust_closure *closure;
 
-	perform_remove_pinned_certificate (GCK_ENUMERATOR (object), cancel, &error);
+	closure = g_simple_async_result_get_op_res_gpointer (result);
+	perform_remove_pinned_certificate (closure->attrs, cancel, &error);
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
@@ -717,25 +660,23 @@ gcr_trust_remove_pinned_certificate_async (GcrCertificate *certificate, const gc
                                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *async;
-	GckEnumerator *en;
+	trust_closure *closure;
 
 	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
 	g_return_if_fail (purpose);
 	g_return_if_fail (peer);
 
-	_gcr_initialize ();
-
-	en = prepare_remove_pinned_certificate (certificate, purpose, peer);
-	g_return_if_fail (en);
-
-	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
+	async = g_simple_async_result_new (NULL, callback, user_data,
 	                                   gcr_trust_remove_pinned_certificate_async);
+	closure = g_new0 (trust_closure, 1);
+	closure->attrs = prepare_remove_pinned_certificate (certificate, purpose, peer);
+	g_return_if_fail (closure->attrs);
+	g_simple_async_result_set_op_res_gpointer (async, closure, trust_closure_free);
 
 	g_simple_async_result_run_in_thread (async, thread_remove_pinned_certificate,
 	                                     G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (async);
-	g_object_unref (en);
 }
 
 /**
@@ -751,17 +692,11 @@ gcr_trust_remove_pinned_certificate_async (GcrCertificate *certificate, const gc
 gboolean
 gcr_trust_remove_pinned_certificate_finish (GAsyncResult *result, GError **error)
 {
-	GObject *object;
-
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	_gcr_initialize ();
-
-	object = g_async_result_get_source_object (result);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL,
 	                      gcr_trust_remove_pinned_certificate_async), FALSE);
-	g_object_unref (object);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return FALSE;
@@ -773,45 +708,42 @@ gcr_trust_remove_pinned_certificate_finish (GAsyncResult *result, GError **error
  * CERTIFICATE ROOT
  */
 
-static GckEnumerator*
+static GckAttributes *
 prepare_is_certificate_anchored (GcrCertificate *certificate, const gchar *purpose)
 {
 	GckAttributes *attrs;
-	GckEnumerator *en;
-	GList *slots;
 
 	attrs = prepare_trust_attrs (certificate, CKT_X_ANCHORED_CERTIFICATE);
 	g_return_val_if_fail (attrs, NULL);
 
 	gck_attributes_add_string (attrs, CKA_X_PURPOSE, purpose);
 
-	slots = gcr_pkcs11_get_trust_lookup_slots ();
-	en = gck_slots_enumerate_objects (slots, attrs, 0);
-	trust_operation_init (en, attrs);
-	gck_attributes_unref (attrs);
-	gck_list_unref_free (slots);
-
-	return en;
+	return attrs;
 }
 
 static gboolean
-perform_is_certificate_anchored (GckEnumerator *en, GCancellable *cancellable, GError **error)
+perform_is_certificate_anchored (GckAttributes *attrs,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
-	GcrTrustOperation *op;
+	GckEnumerator *en;
+	GList *slots;
 	GckObject *object;
 
-	op = trust_operation_get (en);
-	g_assert (op != NULL);
+	if (!_gcr_initialize_pkcs11 (cancellable, error))
+		return FALSE;
+
+	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	en = gck_slots_enumerate_objects (slots, attrs, 0);
+	gck_list_unref_free (slots);
 
 	object = gck_enumerator_next (en, cancellable, error);
-	if (object != NULL) {
-		op->found = TRUE;
-		g_object_unref (object);
-	} else {
-		op->found = FALSE;
-	}
+	g_object_unref (en);
 
-	return op->found;
+	if (object != NULL)
+		g_object_unref (object);
+
+	return (object != NULL);
 }
 
 /**
@@ -837,20 +769,17 @@ gboolean
 gcr_trust_is_certificate_anchored (GcrCertificate *certificate, const gchar *purpose,
                                    GCancellable *cancellable, GError **error)
 {
-	GckEnumerator *en;
+	GckAttributes *search;
 	gboolean ret;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), FALSE);
 	g_return_val_if_fail (purpose, FALSE);
 
-	_gcr_initialize ();
+	search = prepare_is_certificate_anchored (certificate, purpose);
+	g_return_val_if_fail (search, FALSE);
 
-	en = prepare_is_certificate_anchored (certificate, purpose);
-	g_return_val_if_fail (en, FALSE);
-
-	ret = perform_is_certificate_anchored (en, cancellable, error);
-
-	g_object_unref (en);
+	ret = perform_is_certificate_anchored (search, cancellable, error);
+	gck_attributes_unref (search);
 
 	return ret;
 }
@@ -859,8 +788,10 @@ static void
 thread_is_certificate_anchored (GSimpleAsyncResult *result, GObject *object, GCancellable *cancel)
 {
 	GError *error = NULL;
+	trust_closure *closure;
 
-	perform_is_certificate_anchored (GCK_ENUMERATOR (object), cancel, &error);
+	closure = g_simple_async_result_get_op_res_gpointer (result);
+	closure->found = perform_is_certificate_anchored (closure->attrs, cancel, &error);
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
@@ -889,24 +820,22 @@ gcr_trust_is_certificate_anchored_async (GcrCertificate *certificate, const gcha
                                          gpointer user_data)
 {
 	GSimpleAsyncResult *async;
-	GckEnumerator *en;
+	trust_closure *closure;
 
 	g_return_if_fail (GCR_IS_CERTIFICATE (certificate));
 	g_return_if_fail (purpose);
 
-	_gcr_initialize ();
-
-	en = prepare_is_certificate_anchored (certificate, purpose);
-	g_return_if_fail (en);
-
-	async = g_simple_async_result_new (G_OBJECT (en), callback, user_data,
+	async = g_simple_async_result_new (NULL, callback, user_data,
 	                                   gcr_trust_is_certificate_anchored_async);
+	closure = g_new0 (trust_closure, 1);
+	closure->attrs = prepare_is_certificate_anchored (certificate, purpose);
+	g_return_if_fail (closure->attrs);
+	g_simple_async_result_set_op_res_gpointer (async, closure, trust_closure_free);
 
 	g_simple_async_result_run_in_thread (async, thread_is_certificate_anchored,
 	                                     G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (async);
-	g_object_unref (en);
 }
 
 /**
@@ -925,24 +854,17 @@ gcr_trust_is_certificate_anchored_async (GcrCertificate *certificate, const gcha
 gboolean
 gcr_trust_is_certificate_anchored_finish (GAsyncResult *result, GError **error)
 {
-	GcrTrustOperation *op;
-	GObject *object;
-	gboolean found;
+	trust_closure *closure;
 
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
-	_gcr_initialize ();
-
-	object = g_async_result_get_source_object (result);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, object,
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL,
 	                      gcr_trust_is_certificate_anchored_async), FALSE);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return FALSE;
 
-	op = trust_operation_get (GCK_ENUMERATOR (object));
-	found = op->found;
-	g_object_unref (object);
-	return found;
+	closure = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	return closure->found;
 }

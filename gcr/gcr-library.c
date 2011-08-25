@@ -77,8 +77,12 @@
  * The #GError domain for data parsing errors.
  */
 
+G_LOCK_DEFINE_STATIC (modules);
 static GList *all_modules = NULL;
+static gboolean initialized_modules = FALSE;
 
+G_LOCK_DEFINE_STATIC (uris);
+static gboolean initialized_uris = FALSE;
 static gchar *trust_store_uri = NULL;
 static gchar **trust_lookup_uris = NULL;
 
@@ -175,55 +179,152 @@ egg_memory_fallback (void *p, size_t sz)
  */
 
 void
-_gcr_initialize (void)
+_gcr_initialize_library (void)
 {
-	static volatile gsize gcr_initialized = 0;
-	CK_FUNCTION_LIST_PTR_PTR module_list;
-	GPtrArray *uris;
-	GError *error = NULL;
-	gchar *uri;
-	guint i;
+	static gint gcr_initialize = 0;
+
+	if (g_atomic_int_exchange_and_add (&gcr_initialize, 1) == 0)
+		return;
 
 	/* Initialize the libgcrypt library if needed */
 	egg_libgcrypt_initialize ();
 
-	if (g_once_init_enter (&gcr_initialized)) {
+	g_type_class_unref (g_type_class_ref (GCR_TYPE_CERTIFICATE_RENDERER));
+	g_type_class_unref (g_type_class_ref (GCR_TYPE_KEY_RENDERER));
 
-		/* This calls p11_kit_initialize_registered */
-		all_modules = gck_modules_initialize_registered (NULL, &error);
-		if (error != NULL) {
-			g_warning ("%s", error->message);
-			g_clear_error (&error);
-		}
+	_gcr_debug ("initialized library");
+}
 
-		module_list = p11_kit_registered_modules ();
+static void
+initialize_uris (void)
+{
+	GPtrArray *uris;
+	GList *l;
+	gchar *uri;
 
+	g_return_if_fail (initialized_modules);
+
+	if (initialized_uris)
+		return;
+
+	G_LOCK (uris);
+
+	if (!initialized_uris) {
 		/* Ask for the global x-trust-store option */
 		trust_store_uri = p11_kit_registered_option (NULL, "x-trust-store");
-		for (i = 0; !trust_store_uri && module_list[i]; i++)
-			trust_store_uri = p11_kit_registered_option (module_list[i], "x-trust-store");
+		for (l = all_modules; !trust_store_uri && l != NULL; l = g_list_next (l)) {
+			trust_store_uri = p11_kit_registered_option (gck_module_get_functions (l->data),
+			                                             "x-trust-store");
+		}
 
 		uris = g_ptr_array_new ();
 		uri = p11_kit_registered_option (NULL, "x-trust-lookup");
 		if (uri != NULL)
 			g_ptr_array_add (uris, uri);
-		for (i = 0; module_list[i]; i++) {
-			uri = p11_kit_registered_option (module_list[i], "x-trust-lookup");
+		for (l = all_modules; !trust_store_uri && l != NULL; l = g_list_next (l)) {
+			uri = p11_kit_registered_option (gck_module_get_functions (l->data),
+			                                 "x-trust-lookup");
 			if (uri != NULL)
 				g_ptr_array_add (uris, uri);
 		}
 		g_ptr_array_add (uris, NULL);
 
 		trust_lookup_uris = (gchar**)g_ptr_array_free (uris, FALSE);
-		free (module_list);
-
-		g_once_init_leave (&gcr_initialized, 1);
+		initialized_uris = TRUE;
 	}
 
-	g_type_class_unref (g_type_class_ref (GCR_TYPE_CERTIFICATE_RENDERER));
-	g_type_class_unref (g_type_class_ref (GCR_TYPE_KEY_RENDERER));
+	G_UNLOCK (uris);
+}
 
-	_gcr_debug ("initialized library");
+static void
+on_initialize_registered (GObject *object,
+                          GAsyncResult *result,
+                          gpointer user_data)
+{
+	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+	GError *error = NULL;
+	GList *results;
+
+	results = gck_modules_initialize_registered_finish (result, &error);
+	if (error != NULL) {
+		g_simple_async_result_take_error (res, error);
+
+	} else {
+
+		G_LOCK (modules);
+
+		if (!initialized_modules) {
+			all_modules = g_list_concat(all_modules, results);
+			results = NULL;
+			initialized_modules = TRUE;
+		}
+
+		G_UNLOCK (modules);
+	}
+
+	gck_list_unref_free (results);
+	g_simple_async_result_complete (res);
+	g_object_unref (res);
+}
+
+void
+_gcr_initialize_pkcs11_async (GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	res = g_simple_async_result_new (NULL, callback, user_data,
+	                                 _gcr_initialize_pkcs11_async);
+
+	if (initialized_modules)
+		g_simple_async_result_complete_in_idle (res);
+	else
+		gck_modules_initialize_registered_async (cancellable,
+		                                         on_initialize_registered,
+		                                         g_object_ref (res));
+
+	g_object_unref (res);
+}
+
+gboolean
+_gcr_initialize_pkcs11_finish (GAsyncResult *result,
+                               GError **error)
+{
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL,
+	                      _gcr_initialize_pkcs11_async), FALSE);
+
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
+		return FALSE;
+
+	return TRUE;
+}
+
+gboolean
+_gcr_initialize_pkcs11 (GCancellable *cancellable,
+                        GError **error)
+{
+	GList *results;
+
+	if (initialized_modules)
+		return TRUE;
+
+	results = gck_modules_initialize_registered (cancellable, error);
+	if (error == NULL) {
+
+		G_LOCK (modules);
+
+		if (!initialized_modules) {
+			all_modules = g_list_concat(all_modules, results);
+			results = NULL;
+			initialized_modules = TRUE;
+		}
+
+		G_UNLOCK (modules);
+	}
+
+	gck_list_unref_free (results);
+	return (error == NULL);
 }
 
 /**
@@ -239,7 +340,7 @@ _gcr_initialize (void)
 GList*
 gcr_pkcs11_get_modules (void)
 {
-	_gcr_initialize ();
+	g_return_val_if_fail (initialized_modules, NULL);
 	return gck_list_ref_copy (all_modules);
 }
 
@@ -259,14 +360,13 @@ gcr_pkcs11_set_modules (GList *modules)
 {
 	GList *l;
 
-	_gcr_initialize ();
-
 	for (l = modules; l; l = g_list_next (l))
 		g_return_if_fail (GCK_IS_MODULE (l->data));
 
 	modules = gck_list_ref_copy (modules);
 	gck_list_unref_free (all_modules);
 	all_modules = modules;
+	initialized_modules = TRUE;
 }
 
 /**
@@ -284,7 +384,6 @@ void
 gcr_pkcs11_add_module (GckModule *module)
 {
 	g_return_if_fail (GCK_IS_MODULE (module));
-	_gcr_initialize ();
 	all_modules = g_list_append (all_modules, g_object_ref (module));
 }
 
@@ -338,8 +437,9 @@ gcr_pkcs11_get_trust_store_slot (void)
 	GckSlot *slot;
 	GError *error = NULL;
 
-	_gcr_initialize ();
+	g_return_val_if_fail (initialized_modules, NULL);
 
+	initialize_uris ();
 	slot = gck_modules_token_for_uri (all_modules, trust_store_uri, &error);
 	if (!slot) {
 		if (error) {
@@ -370,7 +470,8 @@ gcr_pkcs11_get_trust_lookup_slots (void)
 	GckSlot *slot;
 	gchar **uri;
 
-	_gcr_initialize ();
+	g_return_val_if_fail (initialized_modules, NULL);
+	initialize_uris ();
 
 	for (uri = trust_lookup_uris; uri && *uri; ++uri) {
 		slot = gck_modules_token_for_uri (all_modules, *uri, &error);
@@ -397,7 +498,7 @@ gcr_pkcs11_get_trust_lookup_slots (void)
 const gchar*
 gcr_pkcs11_get_trust_store_uri (void)
 {
-	_gcr_initialize ();
+	initialize_uris ();
 	return trust_store_uri;
 }
 
@@ -414,9 +515,13 @@ gcr_pkcs11_get_trust_store_uri (void)
 void
 gcr_pkcs11_set_trust_store_uri (const gchar *pkcs11_uri)
 {
-	_gcr_initialize ();
+	G_LOCK (uris);
+
 	g_free (trust_store_uri);
 	trust_store_uri = g_strdup (pkcs11_uri);
+	initialized_uris = TRUE;
+
+	G_UNLOCK (uris);
 }
 
 
@@ -431,8 +536,8 @@ gcr_pkcs11_set_trust_store_uri (const gchar *pkcs11_uri)
 const gchar**
 gcr_pkcs11_get_trust_lookup_uris (void)
 {
-	_gcr_initialize ();
-	return (const gchar**)	trust_lookup_uris;
+	initialize_uris ();
+	return (const gchar **)trust_lookup_uris;
 }
 
 /**
@@ -448,7 +553,11 @@ gcr_pkcs11_get_trust_lookup_uris (void)
 void
 gcr_pkcs11_set_trust_lookup_uris (const gchar **pkcs11_uris)
 {
-	_gcr_initialize ();
+	G_LOCK (uris);
+
 	g_strfreev (trust_lookup_uris);
 	trust_lookup_uris = g_strdupv ((gchar**)pkcs11_uris);
+	initialized_uris = TRUE;
+
+	G_UNLOCK (uris);
 }

@@ -152,7 +152,7 @@ _gcr_gnupg_collection_class_init (GcrGnupgCollectionClass *klass)
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_type_class_add_private (gobject_class, sizeof (GcrGnupgCollectionPrivate));
-	_gcr_initialize ();
+	_gcr_initialize_library ();
 }
 
 static guint

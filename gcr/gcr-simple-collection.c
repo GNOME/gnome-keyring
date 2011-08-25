@@ -102,7 +102,7 @@ gcr_simple_collection_class_init (GcrSimpleCollectionClass *klass)
 	gobject_class->dispose = gcr_simple_collection_dispose;
 	gobject_class->finalize = gcr_simple_collection_finalize;
 	g_type_class_add_private (gobject_class, sizeof (GcrSimpleCollectionPrivate));
-	_gcr_initialize ();
+	_gcr_initialize_library ();
 }
 
 static guint

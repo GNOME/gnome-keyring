@@ -691,7 +691,7 @@ gcr_importer_class_init (GcrImporterClass *klass)
 	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
 	                                G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
 
-	_gcr_initialize ();
+	_gcr_initialize_library ();
 }
 
 static gpointer
