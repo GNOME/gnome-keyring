@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-24 21:19+0200\n"
-"PO-Revision-Date: 2011-08-24 21:20+0200\n"
+"POT-Creation-Date: 2011-08-28 18:00+0200\n"
+"PO-Revision-Date: 2011-08-28 18:02+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -287,6 +287,31 @@ msgstr ""
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Produciuse un erro non esperado en waitpid() (%s)"
+
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Produciuse un erro ao cargar o módulo PKCS#11: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Módulos PKCS#11 non válido: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Non foi posíbel configurar o módulo PKCS#11: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "No foi posíbel inicializar o módulo PKCS#11: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Non foi posíbel inicializar os módulos PKCS#11 rexistrador: %s"
 
 #. later
 #. later
@@ -730,7 +755,7 @@ msgstr "Os datos están bloqueados"
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-trust.c:372
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Non foi posíbel atopar un lugar para almacenar o certificado anclado"
