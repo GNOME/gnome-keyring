@@ -364,6 +364,7 @@ gcr_renderer_popuplate_popup
 gcr_renderer_render
 gcr_renderer_render_view
 gcr_renderer_emit_data_changed
+gcr_renderer_register_well_known
 <SUBSECTION Standard>
 gcr_renderer_get_type
 GCR_IS_RENDERER
@@ -484,6 +485,23 @@ GCR_UNLOCK_OPTIONS_WIDGET
 GCR_UNLOCK_OPTIONS_WIDGET_CLASS
 GCR_UNLOCK_OPTIONS_WIDGET_GET_CLASS
 GcrUnlockOptionsWidgetPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gcr-viewer-window</FILE>
+GcrViewerWindow
+GcrViewerWindowClass
+gcr_viewer_window_new
+gcr_viewer_window_load
+<SUBSECTION Private>
+gcr_viewer_window_get_type
+GcrViewerWindowPrivate
+GCR_IS_VIEWER_WINDOW
+GCR_IS_VIEWER_WINDOW_CLASS
+GCR_TYPE_VIEWER_WINDOW
+GCR_VIEWER_WINDOW
+GCR_VIEWER_WINDOW_CLASS
+GCR_VIEWER_WINDOW_GET_CLASS
 </SECTION>
 
 <SECTION>

@@ -34,6 +34,27 @@
 #include <locale.h>
 #include <string.h>
 
+/**
+ * SECTION:gcr-viewer-window
+ * @title: GcrViewerWindow
+ * @short_description: A window which shows certificates or keys
+ *
+ * A viewer window which can display certificates and keys that are
+ * located in files.
+ */
+
+/**
+ * GcrViewerWindow:
+ *
+ * A viewer window object.
+ */
+
+/**
+ * GcrViewerWindowClass:
+ *
+ * Class for #GcrViewerWindow
+ */
+
 struct _GcrViewerWindowPrivate {
 	GQueue *files_to_load;
 	GcrParser *parser;
@@ -203,12 +224,27 @@ viewer_load_next_file (GcrViewerWindow *self)
 	                   on_file_read_returned, self);
 }
 
+/**
+ * gcr_viewer_window_new:
+ *
+ * Create a new viewer window.
+ *
+ * Returns: (transfer full): A new #GcrViewerWindow object
+ */
 GcrViewerWindow *
 gcr_viewer_window_new (void)
 {
 	return g_object_new (GCR_TYPE_VIEWER_WINDOW, NULL);
 }
 
+/**
+ * gcr_viewer_window_load:
+ * @self: a viewer window
+ * @file: a file to load
+ *
+ * Display contents of a file in the viewer window. Multiple files can
+ * be loaded.
+ */
 void
 gcr_viewer_window_load (GcrViewerWindow *self, GFile *file)
 {

@@ -38,11 +38,13 @@ typedef struct _GcrViewerWindowClass GcrViewerWindowClass;
 typedef struct _GcrViewerWindowPrivate GcrViewerWindowPrivate;
 
 struct _GcrViewerWindow {
+	/*< private >*/
 	GtkWindow parent;
 	GcrViewerWindowPrivate *pv;
 };
 
 struct _GcrViewerWindowClass {
+	/*< private >*/
 	GtkWindowClass parent_class;
 };
 
