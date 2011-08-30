@@ -29,6 +29,7 @@ gcr/gcr-key-renderer.c
 gcr/gcr-parser.c
 gcr/gcr-trust.c
 [type: gettext/glade]gcr/gcr-unlock-options-widget.ui
+gcr/gcr-viewer-tool.c
 gck/gck-uri.c
 gck/gck-misc.c
 pkcs11/gkm/gkm-certificate.c

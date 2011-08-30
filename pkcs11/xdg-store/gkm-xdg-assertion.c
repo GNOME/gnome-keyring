@@ -76,7 +76,7 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		}
 
 		/* Attributes used for looking up trust object */
-		memcpy (lookups + 1, value, sizeof (*value));
+		memcpy (&lookups[1], value, sizeof (CK_ATTRIBUTE));
 		n_lookups = 2;
 		break;
 
@@ -89,8 +89,8 @@ lookup_or_create_trust_object (GkmSession *session, GkmManager *manager,
 		}
 
 		/* Attributes used for looking up trust object */
-		memcpy (lookups + 1, issuer, sizeof (*issuer));
-		memcpy (lookups + 2, serial, sizeof (*serial));
+		memcpy (&lookups[1], issuer, sizeof (CK_ATTRIBUTE));
+		memcpy (&lookups[2], serial, sizeof (CK_ATTRIBUTE));
 		n_lookups = 3;
 		break;
 

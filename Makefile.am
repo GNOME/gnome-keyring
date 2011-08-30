@@ -38,7 +38,8 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--enable-tests=full \
 	--enable-debug=yes \
-	--disable-gcov
+	--disable-gcov \
+	--disable-update-mime
 
 DISTCLEANFILES = \
 	intltool-extract \

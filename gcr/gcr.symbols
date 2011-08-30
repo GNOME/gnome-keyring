@@ -150,6 +150,7 @@ gcr_renderer_emit_data_changed
 gcr_renderer_get_type
 gcr_renderer_popuplate_popup
 gcr_renderer_register
+gcr_renderer_register_well_known
 gcr_renderer_render
 gcr_renderer_render_view
 gcr_simple_certificate_get_type
@@ -195,3 +196,6 @@ gcr_viewer_get_type
 gcr_viewer_new
 gcr_viewer_new_scrolled
 gcr_viewer_remove_renderer
+gcr_viewer_window_get_type
+gcr_viewer_window_load
+gcr_viewer_window_new

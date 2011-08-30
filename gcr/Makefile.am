@@ -243,10 +243,11 @@ EXTRA_DIST = \
 	$(conf_DATA) \
 	gcr-enum-types.h.template \
 	gcr-enum-types.c.template \
-	gcr.symbols
+	gcr.symbols \
 	$(desktop_in_in_files) \
 	$(desktop_in_files) \
-	$(desktop_DATA)
+	$(desktop_DATA) \
+	$(mime_DATA)
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \

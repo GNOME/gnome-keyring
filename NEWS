@@ -1,3 +1,15 @@
+Changes in version 3.1.90 are:
+ * Install better xdg-mime files for identifying crypto related file types
+ * New gcr-viewer for viewing certificates and keys, hooked up to file types
+ * Display tweaks for the certificate and key widgets
+ * Don't initialize PKCS#11 modules automatically in gcr library unless needed.
+ * Cleanup the libgck API since we're bumping the major version.
+ * ABI fixes for the GCR library for changes in the 3.1.x release cycle
+ * New automatic checks for symbols that have changed in the ABI
+ * Add async PKCS#11 initialization functions to libgck
+ * Display Certificate otherName subject-alt-name for xmppAddr and DNS SRV
+ * Documentation, testing, translation and build fixes.
+
 Changes in version 3.1.4 are:
  * New GcrListSelector class for selecting multiple keys.
  * Add icons for key and key pair.
