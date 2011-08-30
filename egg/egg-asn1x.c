@@ -1579,10 +1579,8 @@ anode_encode_prepare_choice (GNode *node, gboolean want)
 {
 	Atlv *tlv;
 	GNode *child;
-	gint type;
 
-	type = anode_def_type (node);
-	g_assert (type == TYPE_CHOICE);
+	g_assert (anode_def_type (node) == TYPE_CHOICE);
 
 	child = egg_asn1x_get_choice (node);
 	if (!child)

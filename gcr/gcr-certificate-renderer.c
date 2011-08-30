@@ -330,7 +330,7 @@ on_parsed_dn_part (guint index, GQuark oid, const guchar *value,
 	GcrDisplayView *view = ((on_parsed_dn_args*)user_data)->view;
 	const gchar *attr;
 	const gchar *desc;
-	gchar *field;
+	gchar *field = NULL;
 	gchar *display;
 
 	g_return_if_fail (GCR_IS_CERTIFICATE_RENDERER (self));

@@ -983,7 +983,7 @@ op_sign_request (GkdSshAgentCall *call)
 	gsize n_data, n_result;
 	guint32 flags;
 	gsize offset;
-	gboolean ret;
+	gboolean ret = FALSE;
 	guint blobpos, sz;
 	guint8 *hash;
 	gulong algo, mech;

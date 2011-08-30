@@ -263,6 +263,8 @@ pool_free (void* item)
 	unused_push (&pool->unused, item);
 }
 
+#ifndef G_DISABLE_ASSERT
+
 static int
 pool_valid (void* item)
 {
@@ -281,6 +283,8 @@ pool_valid (void* item)
 	
 	return 0;
 }
+
+#endif /* G_DISABLE_ASSERT */
 
 /* -----------------------------------------------------------------------------
  * SEC ALLOCATION

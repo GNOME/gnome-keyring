@@ -387,7 +387,7 @@ begin_modification_state (GkmGnome2Storage *self, GkmTransaction *transaction)
 {
 	GkmDataResult res;
 	struct stat sb;
-	CK_RV rv;
+	CK_RV rv = CKR_OK;
 
 	if (!begin_write_state (self, transaction))
 		return FALSE;

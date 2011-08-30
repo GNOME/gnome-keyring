@@ -473,7 +473,7 @@ gkm_secret_collection_real_unlock (GkmObject *obj, GkmCredential *cred)
 	GkmDataResult res;
 	GkmSecretData *sdata;
 	GkmSecret *master;
-	CK_RV rv;
+	CK_RV rv = CKR_GENERAL_ERROR;
 
 	master = gkm_credential_get_secret (cred);
 

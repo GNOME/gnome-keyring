@@ -377,8 +377,8 @@ static void
 iter_append_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
 {
 	DBusMessageIter sub;
-	IterAppendFunc func;
-	const gchar *sig;
+	IterAppendFunc func = NULL;
+	const gchar *sig = NULL;
 
 	g_assert (iter);
 	g_assert (attr);
@@ -414,9 +414,9 @@ static gboolean
 iter_get_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
 {
 	DBusMessageIter variant;
-	IterGetFunc func;
+	IterGetFunc func = NULL;
 	gboolean ret;
-	const gchar *sig;
+	const gchar *sig = NULL;
 	char *signature;
 
 	g_assert (iter);

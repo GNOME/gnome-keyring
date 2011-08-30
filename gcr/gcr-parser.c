@@ -1671,7 +1671,7 @@ gcr_parser_parse_data (GcrParser *self, gconstpointer data,
                        gsize n_data, GError **error)
 {
 	ForeachArgs args = { self, data, n_data, GCR_ERROR_UNRECOGNIZED };
-	const gchar *message;
+	const gchar *message = NULL;
 	gint i;
 	
 	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
