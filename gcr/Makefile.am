@@ -98,6 +98,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-display-view.c gcr-display-view.h \
 	gcr-gnupg-collection.c gcr-gnupg-collection.h \
 	gcr-gnupg-key.c gcr-gnupg-key.h \
+	gcr-failure-renderer.c gcr-failure-renderer.h \
 	gcr-fingerprint.c gcr-fingerprint.h \
 	gcr-gnupg-process.c gcr-gnupg-process.h \
 	gcr-gnupg-util.c gcr-gnupg-util.h \

@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include "gcr-failure-renderer.h"
 #include "gcr-parser.h"
 #include "gcr-renderer.h"
 #include "gcr-unlock-renderer.h"
@@ -96,10 +97,11 @@ on_parser_parsed (GcrParser *parser, gpointer user_data)
 	renderer = gcr_renderer_create (get_parsed_label_or_display_name (self, parser),
 	                                gcr_parser_get_parsed_attributes (parser));
 
-	if (renderer) {
-		gcr_viewer_add_renderer (self->pv->viewer, renderer);
-		g_object_unref (renderer);
-	}
+	if (renderer == NULL)
+		renderer = _gcr_failure_renderer_new_unsupported (get_parsed_label_or_display_name (self, parser));
+
+	gcr_viewer_add_renderer (self->pv->viewer, renderer);
+	g_object_unref (renderer);
 }
 
 static gboolean
@@ -252,26 +254,25 @@ on_parser_parse_stream_returned (GObject *source, GAsyncResult *result,
 {
 	GcrViewerWindow *self = GCR_VIEWER_WINDOW (user_data);
 	GError *error = NULL;
+	GcrRenderer *renderer;
 
 	gcr_parser_parse_stream_finish (self->pv->parser, result, &error);
 
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) ||
 	    g_error_matches (error, GCR_DATA_ERROR, GCR_ERROR_CANCELLED)) {
+		viewer_stop_loading_files (self);
 
 	} else if (g_error_matches (error, GCR_DATA_ERROR, GCR_ERROR_LOCKED)) {
-		viewer_load_next_file (self);
-		return;
+		/* Just skip this one, an unlock renderer was added */
 
 	} else if (error) {
-		g_warning ("failed to load: %s", error->message);
+		renderer = _gcr_failure_renderer_new (self->pv->display_name, error);
+		gcr_viewer_add_renderer (self->pv->viewer, renderer);
+		g_object_unref (renderer);
 		g_error_free (error);
-
-	} else {
-		viewer_load_next_file (self);
-		return;
 	}
 
-	viewer_stop_loading_files (self);
+	viewer_load_next_file (self);
 }
 
 static void
@@ -295,6 +296,7 @@ on_file_read_returned (GObject *source, GAsyncResult *result, gpointer user_data
 	GFile *file = G_FILE (source);
 	GError *error = NULL;
 	GFileInputStream *fis;
+	GcrRenderer *renderer;
 
 	fis = g_file_read_finish (file, result, &error);
 	update_display_name (self, file);
@@ -303,7 +305,11 @@ on_file_read_returned (GObject *source, GAsyncResult *result, gpointer user_data
 		viewer_stop_loading_files (self);
 
 	} else if (error) {
-		g_assert_not_reached (); /* TODO: */
+		renderer = _gcr_failure_renderer_new (self->pv->display_name, error);
+		gcr_viewer_add_renderer (self->pv->viewer, renderer);
+		g_object_unref (renderer);
+		g_error_free (error);
+
 		viewer_load_next_file (self);
 
 	} else {
