@@ -71,8 +71,13 @@ copy_each_key_value (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-parse_reference (GQuark type, const guchar *data, gsize n_data,
-                 GHashTable *headers, gpointer user_data)
+parse_reference (GQuark type,
+                 const guchar *data,
+                 gsize n_data,
+                 const gchar *outer,
+                 gsize n_outer,
+                 GHashTable *headers,
+                 gpointer user_data)
 {
 	Test *test = user_data;
 	gboolean res;

@@ -297,8 +297,13 @@ test_write_certificate (Test *test, gconstpointer unused)
 }
 
 static void
-on_ca_certificate_public_key_info (GQuark type, const guchar *data, gsize n_data,
-                                   GHashTable *headers, gpointer user_data)
+on_ca_certificate_public_key_info (GQuark type,
+                                   const guchar *data,
+                                   gsize n_data,
+                                   const gchar *outer,
+                                   gsize n_outer,
+                                   GHashTable *headers,
+                                   gpointer user_data)
 {
 	GNode *asn1 = NULL;
 	GkmDataResult res;

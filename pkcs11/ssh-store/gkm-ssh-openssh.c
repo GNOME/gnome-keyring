@@ -205,8 +205,13 @@ is_private_key_type (GQuark type)
 }
 
 static void
-parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
-                  GHashTable *headers, gpointer user_data)
+parsed_pem_block (GQuark type,
+                  const guchar *data,
+                  gsize n_data,
+                  const gchar *outer,
+                  gsize n_outer,
+                  GHashTable *headers,
+                  gpointer user_data)
 {
 	ParsePrivate *ctx = (ParsePrivate*)user_data;
 	const gchar *dekinfo;
@@ -233,8 +238,13 @@ parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
 }
 
 static void
-digest_pem_block (GQuark type, const guchar *data, gsize n_data,
-                  GHashTable *headers, gpointer user_data)
+digest_pem_block (GQuark type,
+                  const guchar *data,
+                  gsize n_data,
+                  const gchar *outer,
+                  gsize n_outer,
+                  GHashTable *headers,
+                  gpointer user_data)
 {
 	gchar **result = (gchar**)user_data;
 

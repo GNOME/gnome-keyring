@@ -92,7 +92,10 @@ parse_header_lines (const gchar *hbeg, const gchar *hend, GHashTable **result)
 } 
 
 static const gchar*
-pem_find_begin (const gchar *data, gsize n_data, GQuark *type)
+pem_find_begin (const gchar *data,
+                gsize n_data,
+                GQuark *type,
+                const gchar **outer)
 {
 	const gchar *pref, *suff;
 	gchar *stype;
@@ -113,7 +116,10 @@ pem_find_begin (const gchar *data, gsize n_data, GQuark *type)
 	/* Make sure on the same line */
 	if (memchr (pref, '\n', suff - pref))
 		return NULL;
-		
+
+	if (outer)
+		*outer = pref;
+
 	if (type) {
 		*type = 0;
 		pref += PEM_PREF_BEGIN_L;
@@ -122,14 +128,17 @@ pem_find_begin (const gchar *data, gsize n_data, GQuark *type)
 		memcpy (stype, pref, suff - pref);
 		stype[suff - pref] = 0;
 		*type = g_quark_from_string (stype);
-	} 
-	
+	}
+
 	/* The byte after this ---BEGIN--- */
 	return suff + PEM_SUFF_L;
 }
 
 static const gchar*
-pem_find_end (const gchar *data, gsize n_data, GQuark type)
+pem_find_end (const gchar *data,
+              gsize n_data,
+              GQuark type,
+              const gchar **outer)
 {
 	const gchar *stype;
 	const gchar *pref;
@@ -155,7 +164,14 @@ pem_find_end (const gchar *data, gsize n_data, GQuark type)
 	/* Next comes the suffix */
 	if (strncmp ((gchar*)data, PEM_SUFF, PEM_SUFF_L) != 0)
 		return NULL;
-		
+
+	if (outer != NULL) {
+		data += PEM_SUFF_L;
+		if (isspace (data[0]))
+			data++;
+		*outer = data;
+	}
+
 	/* The beginning of this ---END--- */
 	return pref;
 }
@@ -238,6 +254,7 @@ egg_openssl_pem_parse (gconstpointer data, gsize n_data,
                        EggOpensslPemCallback callback, gpointer user_data)
 {
 	const gchar *beg, *end;
+	const gchar *outer_beg, *outer_end;
 	guint nfound = 0;
 	guchar *decoded = NULL;
 	gsize n_decoded = 0;
@@ -251,20 +268,25 @@ egg_openssl_pem_parse (gconstpointer data, gsize n_data,
 	while (n_data > 0) {
 		
 		/* This returns the first character after the PEM BEGIN header */
-		beg = pem_find_begin ((const gchar*)data, n_data, &type);
+		beg = pem_find_begin ((const gchar*)data, n_data, &type, &outer_beg);
 		if (!beg)
 			break;
 			
 		g_assert (type);
 		
 		/* This returns the character position before the PEM END header */
-		end = pem_find_end ((const gchar*)beg, n_data - ((const gchar*)beg - (const gchar *)data), type);
+		end = pem_find_end ((const gchar*)beg, n_data - ((const gchar*)beg - (const gchar *)data),
+		                    type, &outer_end);
 		if (!end)
 			break;
 
 		if (beg != end) {
 			if (pem_parse_block (beg, end - beg, &decoded, &n_decoded, &headers)) {
-				(callback) (type, decoded, n_decoded, headers, user_data);
+				g_assert (outer_end > outer_beg);
+				(callback) (type,
+				            decoded, n_decoded,
+				            outer_beg, outer_end - outer_beg,
+				            headers, user_data);
 				++nfound;
 				egg_secure_free (decoded);
 				if (headers)

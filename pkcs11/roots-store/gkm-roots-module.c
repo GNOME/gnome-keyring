@@ -136,8 +136,13 @@ add_certificate_for_data (GkmRootsModule *self, const guchar *data,
 }
 
 static void
-parsed_pem_block (GQuark type, const guchar *data, gsize n_data,
-                  GHashTable *headers, gpointer user_data)
+parsed_pem_block (GQuark type,
+                  const guchar *data,
+                  gsize n_data,
+                  const gchar *outer,
+                  gsize n_outer,
+                  GHashTable *headers,
+                  gpointer user_data)
 {
 	static GQuark PEM_CERTIFICATE;
 	static volatile gsize quarks_inited = 0;

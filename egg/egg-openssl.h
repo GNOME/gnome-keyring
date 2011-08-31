@@ -26,8 +26,13 @@
 
 #include <glib.h>
 
-typedef void (*EggOpensslPemCallback) (GQuark type, const guchar *data, gsize n_data,
-                                       GHashTable *headers, gpointer user_data);
+typedef void (*EggOpensslPemCallback) (GQuark type,
+                                       const guchar *data,
+                                       gsize n_data,
+                                       const gchar *outer,
+                                       gsize n_outer,
+                                       GHashTable *headers,
+                                       gpointer user_data);
 
 GHashTable*      egg_openssl_headers_new       (void);
 

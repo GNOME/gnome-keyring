@@ -1288,8 +1288,13 @@ typedef struct {
 } HandlePemArgs;
 
 static void
-handle_pem_data (GQuark type, const guchar *data, gsize n_data,
-                 GHashTable *headers, gpointer user_data)
+handle_pem_data (GQuark type,
+                 const guchar *data,
+                 gsize n_data,
+                 const gchar *outer,
+                 gsize n_outer,
+                 GHashTable *headers,
+                 gpointer user_data)
 {
 	HandlePemArgs *args = (HandlePemArgs*)user_data;
 	gint res = GCR_ERROR_FAILURE;
