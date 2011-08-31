@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-26 12:45+0200\n"
-"PO-Revision-Date: 2011-08-26 12:47+0200\n"
+"POT-Creation-Date: 2011-08-31 21:39+0200\n"
+"PO-Revision-Date: 2011-08-31 21:44+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -98,8 +98,8 @@ msgstr "GNOME nøkkelring: GPG-agent"
 msgid "GPG Password Agent"
 msgstr "GPG passordagent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Ukjent"
 
@@ -170,7 +170,7 @@ msgstr "Vanlig navn"
 msgid "Surname"
 msgstr "Etternavn"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:650
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -226,7 +226,7 @@ msgstr "DN-kvalifikator"
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -242,7 +242,7 @@ msgstr "MD5 med RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 med DSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:309
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -500,90 +500,90 @@ msgstr "Kritisk"
 msgid "Couldn't export the certificate."
 msgstr "Klarte ikke å eksportere sertifikatet."
 
-#: ../gcr/gcr-certificate-renderer.c:611
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Identitet"
 
-#: ../gcr/gcr-certificate-renderer.c:615
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Verifisert av"
 
-#: ../gcr/gcr-certificate-renderer.c:622
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Utløper"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:632
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Navn på subjekt"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:636
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Navn på utsteder"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:640
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Utstedt sertifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Versjon"
 
-#: ../gcr/gcr-certificate-renderer.c:657
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Ikke gyldig før"
 
-#: ../gcr/gcr-certificate-renderer.c:662
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Ikke gyldig etter"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:667
+#: ../gcr/gcr-certificate-renderer.c:669
 msgid "Certificate Fingerprints"
 msgstr "Fingeravtrykk for sertifikat"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:673 ../gcr/gcr-certificate-renderer.c:685
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Signatur"
 
-#: ../gcr/gcr-certificate-renderer.c:677
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "Algoritme for signatur"
 
-#: ../gcr/gcr-certificate-renderer.c:681
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "Parametere for signatur"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:689
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Informasjon om offentlig nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Algoritme for nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:699
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Nøkkelparametere"
 
-#: ../gcr/gcr-certificate-renderer.c:704
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Størrelse på nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:711
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key SHA1 Fingerprint"
 msgstr "SHA1-fingeravtrykk for nøkkel"
 
-#: ../gcr/gcr-certificate-renderer.c:717 ../gcr/gcr-key-renderer.c:291
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
 #: ../gcr/gcr-parser.c:257
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
-#: ../gcr/gcr-display-view.c:270
+#: ../gcr/gcr-display-view.c:298
 msgid "_Details"
 msgstr "_Detaljer"
 
@@ -685,51 +685,51 @@ msgstr "Velg en adresse for å lagre importerte sertifikater og nøkler."
 msgid "Key"
 msgstr "Nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:280
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private RSA Key"
 msgstr "Privat RSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:282
+#: ../gcr/gcr-key-renderer.c:285
 msgid "Private DSA Key"
 msgstr "Privat DSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:251
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:251
 msgid "Private Key"
 msgstr "Privat nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "Offentlig DSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:301
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d bit"
 msgstr[1] "%d bits"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:302
 msgid "Strength"
 msgstr "Styrke"
 
-#: ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Algorithm"
 msgstr "Algoritme"
 
-#: ../gcr/gcr-key-renderer.c:319
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Size"
 msgstr "Størrelse"
 
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
+#: ../gcr/gcr-key-renderer.c:326
 msgid "Fingerprints"
 msgstr "Fingeravtrykk"
 
-#: ../gcr/gcr-key-renderer.c:328
+#: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:334
+#: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
 msgstr "SHA256"
 
@@ -748,7 +748,7 @@ msgstr "Data er låst"
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:372
+#: ../gcr/gcr-trust.c:377
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Klarte ikke å finne en plass å lagre festet sertifikat"
@@ -774,14 +774,34 @@ msgstr "Lås denne nøkkelringen når jeg logger ut"
 msgid "minutes"
 msgstr "minutter"
 
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "Visning av GCR-sertifikat og nøkkel"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Vis programmets versjon"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[fil …]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- Vis sertifikat- og nøkkelfiler"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Sertifikatvisning"
+
 #: ../gck/gck-uri.c:173
 #, c-format
 msgid "The URI has invalid encoding."
 msgstr "URI har ugyldig koding."
 
 #: ../gck/gck-uri.c:177
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "URI bruker ikke skjema «pkcs11»."
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "URI har ikke skjema «pkcs11»."
 
 #: ../gck/gck-uri.c:181
 msgid "The URI has bad syntax."
