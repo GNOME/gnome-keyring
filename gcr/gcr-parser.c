@@ -415,13 +415,13 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 	
 	parsed_fire (self);
 	res = SUCCESS;
+	parsing_end (self);
 
 done:
 	egg_asn1x_destroy (asn);
 	if (res == GCR_ERROR_FAILURE)
 		g_message ("invalid RSA key");
 
-	parsing_end (self);
 	return res;
 }
 
@@ -452,13 +452,13 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 		
 	parsed_fire (self);
 	ret = SUCCESS;
+	parsing_end (self);
 
 done:
 	egg_asn1x_destroy (asn);
 	if (ret == GCR_ERROR_FAILURE) 
 		g_message ("invalid DSA key");
 
-	parsing_end (self);
 	return ret;
 }
 
@@ -1239,9 +1239,6 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 		g_message ("missing encryption header");
 		return GCR_ERROR_FAILURE;
 	}
-	
-	/* Fill in information necessary for prompting */
-	parsing_begin (self, pem_type_to_class (type), data, n_data);
 
 	res = GCR_ERROR_FAILURE;
 	for (;;) {
@@ -1277,7 +1274,6 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 			break;
 	}
 
-	parsing_end (self);
 	return res;
 }
 
@@ -1304,7 +1300,10 @@ handle_pem_data (GQuark type,
 	/* Something already failed to parse */
 	if (args->result == GCR_ERROR_FAILURE)
 		return;
-	
+
+	/* Fill in information necessary for prompting */
+	parsing_begin (args->parser, pem_type_to_class (type), outer, n_outer);
+
 	/* See if it's encrypted PEM all openssl like*/
 	if (headers) {
 		val = g_hash_table_lookup (headers, "Proc-Type");
@@ -1318,7 +1317,9 @@ handle_pem_data (GQuark type,
 	else
 		res = handle_plain_pem (args->parser, type, args->subformat, 
 		                        data, n_data);
-	
+
+	parsing_end (args->parser);
+
 	if (res != GCR_ERROR_UNRECOGNIZED) {
 		if (args->result == GCR_ERROR_UNRECOGNIZED)
 			args->result = res;
