@@ -39,6 +39,8 @@
 #include "gkm/gkm-transaction.h"
 #include "gkm/gkm-util.h"
 
+#include "pkcs11x.h"
+
 #include <string.h>
 
 struct _GkmXdgModule {
@@ -313,6 +315,14 @@ guess_basename_for_object (GkmObject *object)
 	if (data && n_data)
 		name = name_for_subject (data, n_data);
 	g_free (data);
+
+	/* Next we try and see if it has a peer (is a trust assertion) */
+	if (name == NULL) {
+		data = gkm_object_get_attribute_data (object, NULL, CKA_X_PEER, &n_data);
+		if (data && n_data)
+			name = g_strndup ((gchar *)data, n_data);
+		g_free (data);
+	}
 
 	/* Next we try hex encoding the ID */
 	if (name == NULL) {
