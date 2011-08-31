@@ -190,17 +190,19 @@ mimedir = $(datadir)/mime/packages
 mime_DATA = gcr-crypto-types.xml
 
 if WITH_UPDATE_MIME
-install-data-local:
-	mkdir -p $(mimedir)
-	update-mime-database $(datadir)/mime/
+update_mime_database_cmd = update-mime-database $(datadir)/mime/
 
-uninstall-local:
-	update-mime-database $(datadir)/mime/
-else
-install-data-local:
+install-data-hook: update_mime_database
+uninstall-hook: update_mime_database
 
-uninstall-local:
-
+update_mime_database:
+	@-if test -z "$(DESTDIR)"; then \
+		echo "Updating MIME database."; \
+		$(update_mime_database_cmd); \
+	else \
+		echo "*** MIME database not updated.  After (un)install, run this:"; \
+		echo "***   $(update_mime_database_cmd)"; \
+	fi
 endif
 
 desktopdir = $(datadir)/applications
