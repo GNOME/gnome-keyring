@@ -39,13 +39,20 @@ typedef struct _GcrViewerIface GcrViewerIface;
 struct _GcrViewerIface {
 	GTypeInterface parent;
 
-	void (*add_renderer) (GcrViewer *self, GcrRenderer *viewer);
+	void (*add_renderer) (GcrViewer *viewer,
+	                      GcrRenderer *renderer);
 
-	void (*remove_renderer) (GcrViewer *self, GcrRenderer *viewer);
+	void (*insert_renderer) (GcrViewer *viewer,
+	                         GcrRenderer *renderer,
+	                         GcrRenderer *before);
 
-	guint (*count_renderers) (GcrViewer *self);
+	void (*remove_renderer) (GcrViewer *viewer,
+	                         GcrRenderer *renderer);
 
-	GcrRenderer* (*get_renderer) (GcrViewer *self, guint index_);
+	guint (*count_renderers) (GcrViewer *viewer);
+
+	GcrRenderer* (*get_renderer) (GcrViewer *viewer,
+	                              guint index_);
 
 	/*< private >*/
 	gpointer dummy1;
@@ -60,15 +67,19 @@ GcrViewer*              gcr_viewer_new                    (void);
 
 GcrViewer*              gcr_viewer_new_scrolled           (void);
 
-void                    gcr_viewer_add_renderer           (GcrViewer *self,
+void                    gcr_viewer_add_renderer           (GcrViewer *viewer,
                                                            GcrRenderer *renderer);
 
-void                    gcr_viewer_remove_renderer        (GcrViewer *self,
+void                    gcr_viewer_insert_renderer        (GcrViewer *viewer,
+                                                           GcrRenderer *renderer,
+                                                           GcrRenderer *before);
+
+void                    gcr_viewer_remove_renderer        (GcrViewer *viewer,
                                                            GcrRenderer *renderer);
 
-guint                   gcr_viewer_count_renderers        (GcrViewer *self);
+guint                   gcr_viewer_count_renderers        (GcrViewer *viewer);
 
-GcrRenderer*            gcr_viewer_get_renderer           (GcrViewer *self,
+GcrRenderer*            gcr_viewer_get_renderer           (GcrViewer *viewer,
                                                            guint index_);
 
 G_END_DECLS

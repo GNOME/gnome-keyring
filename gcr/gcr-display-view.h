@@ -100,6 +100,10 @@ void             _gcr_display_view_set_icon                    (GcrDisplayView *
                                                                 GcrRenderer *renderer,
                                                                 GIcon *icon);
 
+void             _gcr_display_view_add_widget_area             (GcrDisplayView *self,
+                                                                GcrRenderer *render,
+                                                                GtkWidget *area);
+
 G_END_DECLS
 
 #endif /* __GCR_DISPLAY_VIEW_H__ */

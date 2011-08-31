@@ -121,6 +121,7 @@ run-tests
 /gcr/tests/frob-tree-selector
 /gcr/tests/frob-unlock-options
 /gcr/tests/frob-parser
+/gcr/tests/frob-unlock
 /gcr/tests/test-certificate
 /gcr/tests/test-certificate-chain
 /gcr/tests/test-colons

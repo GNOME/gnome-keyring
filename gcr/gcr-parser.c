@@ -1004,7 +1004,7 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 		
 		/* We assume unrecognized data is a bad encryption key */	
 	}
-		
+
 done:
 	if (cih)
 		gcry_cipher_close (cih);
@@ -1077,8 +1077,10 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 			g_warning ("unrecognized type of safe content in pkcs12: %s", g_quark_to_string (oid));
 			r = GCR_ERROR_UNRECOGNIZED;
 		}
-		
-		if (r == GCR_ERROR_FAILURE || r == GCR_ERROR_CANCELLED) {
+
+		if (r == GCR_ERROR_FAILURE ||
+		    r == GCR_ERROR_CANCELLED ||
+		    r == GCR_ERROR_LOCKED) {
 			ret = r;
 			goto done;
 		}
@@ -1134,7 +1136,11 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	if (!content)
 		goto done;
 
+	parsing_begin (self, 0, data, n_data);
+
 	ret = handle_pkcs12_safe (self, content, n_content);
+
+	parsing_end (self);
 
 done:
 	g_free (content);
@@ -1762,28 +1768,29 @@ gcr_parser_parse_data (GcrParser *self, gconstpointer data,
 void
 gcr_parser_format_enable (GcrParser *self, gint format_id)
 {
-	ParserFormat *format;
+	const ParserFormat *format;
+	guint i;
 
 	g_return_if_fail (GCR_IS_PARSER (self));
 
-	if (format_id == -1) {
-		if (self->pv->specific_formats)
-			g_tree_destroy (self->pv->specific_formats);
-		self->pv->specific_formats = NULL;
-		self->pv->normal_formats = TRUE;
-		return;
+	if (format_id != -1) {
+		format = parser_format_lookup (format_id);
+		g_return_if_fail (format);
 	}
 
-	format = parser_format_lookup (format_id);
-	g_return_if_fail (format);
-
-	if (!self->pv->specific_formats) {
-		if (self->pv->normal_formats)
-			return;
+	if (!self->pv->specific_formats)
 		self->pv->specific_formats = g_tree_new (compare_pointers);
-	}
 
-	g_tree_insert (self->pv->specific_formats, format, format);
+	if (format_id != -1) {
+		g_tree_insert (self->pv->specific_formats,
+		               (gpointer)format, (gpointer)format);
+	} else {
+		for (i = 0; i < G_N_ELEMENTS (parser_formats); i++) {
+			format = &parser_formats[i];
+			g_tree_insert (self->pv->specific_formats, (gpointer)format,
+			               (gpointer)format);
+		}
+	}
 }
 
 /**

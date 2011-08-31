@@ -49,6 +49,7 @@
  * GcrViewerIface:
  * @parent: The parent interface
  * @add_renderer: Virtual method to add a renderer
+ * @insert_renderer: Virtual method to insert a renderer
  * @remove_renderer: Virtual method to remove a renderer
  * @count_renderers: Virtual method to count renderers
  * @get_renderer: Virtual method to get a renderer
@@ -119,55 +120,69 @@ gcr_viewer_new_scrolled (void)
 
 /**
  * gcr_viewer_add_renderer:
- * @self: The viewer
+ * @viewer: The viewer
  * @renderer: The renderer to add
  *
  * Add a renderer to this viewer.
  */
 void
-gcr_viewer_add_renderer (GcrViewer *self, GcrRenderer *renderer)
+gcr_viewer_add_renderer (GcrViewer *viewer,
+                         GcrRenderer *renderer)
 {
-	g_return_if_fail (GCR_IS_VIEWER (self));
+	g_return_if_fail (GCR_IS_VIEWER (viewer));
 	g_return_if_fail (GCR_IS_RENDERER (renderer));
-	g_return_if_fail (GCR_VIEWER_GET_INTERFACE (self)->add_renderer);
-	GCR_VIEWER_GET_INTERFACE (self)->add_renderer (self, renderer);
+	g_return_if_fail (GCR_VIEWER_GET_INTERFACE (viewer)->add_renderer);
+	GCR_VIEWER_GET_INTERFACE (viewer)->add_renderer (viewer, renderer);
+}
+
+void
+gcr_viewer_insert_renderer (GcrViewer *viewer,
+                            GcrRenderer *renderer,
+                            GcrRenderer *before)
+{
+	g_return_if_fail (GCR_IS_VIEWER (viewer));
+	g_return_if_fail (GCR_IS_RENDERER (renderer));
+	g_return_if_fail (!before || GCR_IS_RENDERER (before));
+	g_return_if_fail (GCR_VIEWER_GET_INTERFACE (viewer)->insert_renderer);
+	GCR_VIEWER_GET_INTERFACE (viewer)->insert_renderer (viewer, renderer, before);
 }
 
 /**
  * gcr_viewer_remove_renderer:
- * @self: The viewer
+ * @viewer: The viewer
  * @renderer: The renderer to remove
  *
  * Remove a renderer from this viewer.
  */
 void
-gcr_viewer_remove_renderer (GcrViewer *self, GcrRenderer *renderer)
+gcr_viewer_remove_renderer (GcrViewer *viewer,
+                            GcrRenderer *renderer)
 {
-	g_return_if_fail (GCR_IS_VIEWER (self));
+	g_return_if_fail (GCR_IS_VIEWER (viewer));
 	g_return_if_fail (GCR_IS_RENDERER (renderer));
-	g_return_if_fail (GCR_VIEWER_GET_INTERFACE (self)->remove_renderer);
-	GCR_VIEWER_GET_INTERFACE (self)->remove_renderer (self, renderer);
+	g_return_if_fail (GCR_VIEWER_GET_INTERFACE (viewer)->remove_renderer);
+	GCR_VIEWER_GET_INTERFACE (viewer)->remove_renderer (viewer, renderer);
 }
 
 /**
  * gcr_viewer_count_renderers:
- * @self: The viewer
+ * @viewer: The viewer
  *
  * Get the number of renderers present in the viewer.
  *
  * Returns: The number of renderers.
  */
 guint
-gcr_viewer_count_renderers (GcrViewer *self)
+gcr_viewer_count_renderers (GcrViewer *viewer)
 {
-	g_return_val_if_fail (GCR_IS_VIEWER (self), 0);
-	g_return_val_if_fail (GCR_VIEWER_GET_INTERFACE (self)->count_renderers, 0);
-	return GCR_VIEWER_GET_INTERFACE (self)->count_renderers (self);
+	g_return_val_if_fail (GCR_IS_VIEWER (viewer), 0);
+	g_return_val_if_fail (GCR_VIEWER_GET_INTERFACE (viewer)->count_renderers, 0);
+	return GCR_VIEWER_GET_INTERFACE (viewer)->count_renderers (viewer);
 }
 
 /**
  * gcr_viewer_get_renderer:
- * @self: The viewer
+ * @viewer: The viewer
  * @index_: The index of the renderer to get
  *
  * Get a pointer to the renderer at the given index. It is an error to request
@@ -176,9 +191,10 @@ gcr_viewer_count_renderers (GcrViewer *self)
  * Returns: The render, owned by the viewer.
  */
 GcrRenderer*
-gcr_viewer_get_renderer (GcrViewer *self, guint index_)
+gcr_viewer_get_renderer (GcrViewer *viewer,
+                         guint index_)
 {
-	g_return_val_if_fail (GCR_IS_VIEWER (self), NULL);
-	g_return_val_if_fail (GCR_VIEWER_GET_INTERFACE (self)->get_renderer, NULL);
-	return GCR_VIEWER_GET_INTERFACE (self)->get_renderer (self, index_);
+	g_return_val_if_fail (GCR_IS_VIEWER (viewer), NULL);
+	g_return_val_if_fail (GCR_VIEWER_GET_INTERFACE (viewer)->get_renderer, NULL);
+	return GCR_VIEWER_GET_INTERFACE (viewer)->get_renderer (viewer, index_);
 }

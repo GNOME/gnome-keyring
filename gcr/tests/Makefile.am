@@ -2,7 +2,7 @@
 INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
-	-DSRCDIR="\"$(srcdir)\"" \
+	-DSRCDIR="\"@abs_srcdir@\"" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DGCR_COMPILATION \
@@ -56,4 +56,5 @@ noinst_PROGRAMS = \
 	frob-key \
 	frob-tree-selector \
 	frob-parser \
+	frob-unlock \
 	frob-unlock-options

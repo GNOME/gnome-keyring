@@ -25,6 +25,7 @@
 
 #include "gcr-parser.h"
 #include "gcr-renderer.h"
+#include "gcr-unlock-renderer.h"
 #include "gcr-viewer-window.h"
 #include "gcr-viewer.h"
 
@@ -61,12 +62,30 @@ struct _GcrViewerWindowPrivate {
 	GCancellable *cancellable;
 	GcrViewer *viewer;
 	gboolean loading;
+	gchar *display_name;
 };
 
 static void viewer_load_next_file (GcrViewerWindow *self);
 static void viewer_stop_loading_files (GcrViewerWindow *self);
 
-G_DEFINE_TYPE (GcrViewerWindow, gcr_viewer_window, GTK_TYPE_WINDOW);
+static void gcr_viewer_iface_init (GcrViewerIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (GcrViewerWindow, gcr_viewer_window, GTK_TYPE_WINDOW,
+                         G_IMPLEMENT_INTERFACE (GCR_TYPE_VIEWER, gcr_viewer_iface_init);
+);
+
+static const gchar *
+get_parsed_label_or_display_name (GcrViewerWindow *self,
+                                  GcrParser *parser)
+{
+	const gchar *label;
+
+	label = gcr_parser_get_parsed_label (parser);
+	if (label == NULL)
+		label = self->pv->display_name;
+
+	return label;
+}
 
 static void
 on_parser_parsed (GcrParser *parser, gpointer user_data)
@@ -74,13 +93,31 @@ on_parser_parsed (GcrParser *parser, gpointer user_data)
 	GcrViewerWindow *self = GCR_VIEWER_WINDOW (user_data);
 	GcrRenderer *renderer;
 
-	renderer = gcr_renderer_create (gcr_parser_get_parsed_label (parser),
+	renderer = gcr_renderer_create (get_parsed_label_or_display_name (self, parser),
 	                                gcr_parser_get_parsed_attributes (parser));
 
 	if (renderer) {
 		gcr_viewer_add_renderer (self->pv->viewer, renderer);
 		g_object_unref (renderer);
 	}
+}
+
+static gboolean
+on_parser_authenticate (GcrParser *parser,
+                        guint count,
+                        gpointer user_data)
+{
+	GcrViewerWindow *self = GCR_VIEWER_WINDOW (user_data);
+	GcrUnlockRenderer *renderer;
+
+	renderer = _gcr_unlock_renderer_new_for_parsed (parser);
+	if (renderer) {
+		g_object_set (renderer, "label", get_parsed_label_or_display_name (self, parser), NULL);
+		gcr_viewer_add_renderer (self->pv->viewer, GCR_RENDERER (renderer));
+		g_object_unref (renderer);
+	}
+
+	return TRUE;
 }
 
 static void
@@ -94,6 +131,7 @@ gcr_viewer_window_init (GcrViewerWindow *self)
 	self->pv->cancellable = g_cancellable_new ();
 
 	g_signal_connect (self->pv->parser, "parsed", G_CALLBACK (on_parser_parsed), self);
+	g_signal_connect (self->pv->parser, "authenticate", G_CALLBACK (on_parser_authenticate), self);
 }
 
 static void
@@ -137,6 +175,7 @@ gcr_viewer_window_finalize (GObject *obj)
 	g_assert (g_queue_is_empty (self->pv->files_to_load));
 	g_queue_free (self->pv->files_to_load);
 
+	g_free (self->pv->display_name);
 	g_object_unref (self->pv->cancellable);
 	g_object_unref (self->pv->parser);
 
@@ -158,6 +197,56 @@ gcr_viewer_window_class_init (GcrViewerWindowClass *klass)
 }
 
 static void
+gcr_viewer_window_add_renderer (GcrViewer *viewer,
+                                GcrRenderer *renderer)
+{
+	GcrViewerWindow *self = GCR_VIEWER_WINDOW (viewer);
+	gcr_viewer_add_renderer (self->pv->viewer, renderer);
+}
+
+static void
+gcr_viewer_window_insert_renderer (GcrViewer *viewer,
+                                   GcrRenderer *renderer,
+                                   GcrRenderer *before)
+{
+	GcrViewerWindow *self = GCR_VIEWER_WINDOW (viewer);
+	gcr_viewer_insert_renderer (self->pv->viewer, renderer, before);
+}
+
+static void
+gcr_viewer_window_remove_renderer (GcrViewer *viewer,
+                                   GcrRenderer *renderer)
+{
+	GcrViewerWindow *self = GCR_VIEWER_WINDOW (viewer);
+	gcr_viewer_remove_renderer (self->pv->viewer, renderer);
+}
+
+static guint
+gcr_viewer_window_count_renderers (GcrViewer *viewer)
+{
+	GcrViewerWindow *self = GCR_VIEWER_WINDOW (viewer);
+	return gcr_viewer_count_renderers (self->pv->viewer);
+}
+
+static GcrRenderer *
+gcr_viewer_window_get_renderer (GcrViewer *viewer,
+                                guint index_)
+{
+	GcrViewerWindow *self = GCR_VIEWER_WINDOW (viewer);
+	return gcr_viewer_get_renderer (self->pv->viewer, index_);
+}
+
+static void
+gcr_viewer_iface_init (GcrViewerIface *iface)
+{
+	iface->add_renderer = gcr_viewer_window_add_renderer;
+	iface->insert_renderer = gcr_viewer_window_insert_renderer;
+	iface->count_renderers = gcr_viewer_window_count_renderers;
+	iface->get_renderer = gcr_viewer_window_get_renderer;
+	iface->remove_renderer = gcr_viewer_window_remove_renderer;
+}
+
+static void
 on_parser_parse_stream_returned (GObject *source, GAsyncResult *result,
                                  gpointer user_data)
 {
@@ -166,15 +255,37 @@ on_parser_parse_stream_returned (GObject *source, GAsyncResult *result,
 
 	gcr_parser_parse_stream_finish (self->pv->parser, result, &error);
 
-	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		viewer_stop_loading_files (self);
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) ||
+	    g_error_matches (error, GCR_DATA_ERROR, GCR_ERROR_CANCELLED)) {
+
+	} else if (g_error_matches (error, GCR_DATA_ERROR, GCR_ERROR_LOCKED)) {
+		viewer_load_next_file (self);
+		return;
 
 	} else if (error) {
-		g_assert_not_reached (); /* TODO; */
+		g_warning ("failed to load: %s", error->message);
+		g_error_free (error);
 
 	} else {
 		viewer_load_next_file (self);
+		return;
 	}
+
+	viewer_stop_loading_files (self);
+}
+
+static void
+update_display_name (GcrViewerWindow *self,
+                     GFile *file)
+{
+	gchar *basename;
+
+	basename = g_file_get_basename (file);
+
+	g_free (self->pv->display_name);
+	self->pv->display_name = g_filename_display_name (basename);
+
+	g_free (basename);
 }
 
 static void
@@ -186,7 +297,7 @@ on_file_read_returned (GObject *source, GAsyncResult *result, gpointer user_data
 	GFileInputStream *fis;
 
 	fis = g_file_read_finish (file, result, &error);
-	g_object_unref (file);
+	update_display_name (self, file);
 
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 		viewer_stop_loading_files (self);
@@ -222,6 +333,8 @@ viewer_load_next_file (GcrViewerWindow *self)
 
 	g_file_read_async (file, G_PRIORITY_DEFAULT, self->pv->cancellable,
 	                   on_file_read_returned, self);
+
+	g_object_unref (file);
 }
 
 /**

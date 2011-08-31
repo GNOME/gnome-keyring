@@ -126,6 +126,15 @@ _gcr_display_scrolled_real_add_renderer (GcrViewer *viewer, GcrRenderer *rendere
 }
 
 static void
+_gcr_display_scrolled_real_insert_renderer (GcrViewer *viewer,
+                                            GcrRenderer *renderer,
+                                            GcrRenderer *before)
+{
+	GcrDisplayScrolled *self = GCR_DISPLAY_SCROLLED (viewer);
+	gcr_viewer_insert_renderer (self->pv->internal, renderer, before);
+}
+
+static void
 _gcr_display_scrolled_real_remove_renderer (GcrViewer *viewer, GcrRenderer *renderer)
 {
 	GcrDisplayScrolled *self = GCR_DISPLAY_SCROLLED (viewer);
@@ -150,6 +159,7 @@ static void
 _gcr_display_scrolled_viewer_iface (GcrViewerIface *iface)
 {
 	iface->add_renderer = _gcr_display_scrolled_real_add_renderer;
+	iface->insert_renderer = _gcr_display_scrolled_real_insert_renderer;
 	iface->remove_renderer = _gcr_display_scrolled_real_remove_renderer;
 	iface->count_renderers = _gcr_display_scrolled_real_count_renderers;
 	iface->get_renderer = _gcr_display_scrolled_real_get_renderer;

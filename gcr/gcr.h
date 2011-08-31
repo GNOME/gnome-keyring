@@ -58,6 +58,7 @@
 #include "gcr-unlock-options.h"
 #include "gcr-unlock-options-widget.h"
 #include "gcr-viewer.h"
+#include "gcr-viewer-window.h"
 
 #undef __GCR_H_INSIDE__
 

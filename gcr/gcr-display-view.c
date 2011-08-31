@@ -34,6 +34,7 @@ static void _gcr_display_view_viewer_iface (GcrViewerIface *iface);
 G_DEFINE_TYPE_WITH_CODE (GcrDisplayView, _gcr_display_view, GTK_TYPE_TEXT_VIEW,
                          G_IMPLEMENT_INTERFACE (GCR_TYPE_VIEWER, _gcr_display_view_viewer_iface));
 
+#define ZWSP "\342\200\213"
 #define NORMAL_MARGIN 10
 #define FIELD_MARGIN 17
 #define COLUMN_MARGIN 6
@@ -47,6 +48,7 @@ typedef struct _GcrDisplayItem {
 	GtkTextMark *beginning;
 	GtkTextMark *ending;
 	GtkWidget *details_widget;
+	GtkTextChildAnchor *area_anchor;
 	GtkTextTag *extra_tag;
 	gint field_width;
 	GdkPixbuf *pixbuf;
@@ -63,6 +65,7 @@ struct _GcrDisplayViewPrivate {
 	GtkTextTag *content_tag;
 	GtkTextTag *heading_tag;
 	GtkTextTag *monospace_tag;
+	GtkTextTag *area_tag;
 	GcrDisplayItem *current_item;
 	gint text_height;
 	GdkCursor *cursor;
@@ -187,6 +190,7 @@ create_tag_table (GcrDisplayView *self)
 	                                      "right-margin", (ICON_MARGIN * 2) + width,
 	                                      "left-margin", FIELD_MARGIN,
 	                                      "pixels-below-lines", 3,
+	                                      "wrap-mode", GTK_WRAP_WORD,
 	                                      NULL);
 	gtk_text_tag_table_add (tags, self->pv->content_tag);
 
@@ -203,6 +207,12 @@ create_tag_table (GcrDisplayView *self)
 	                                        "family", "monospace",
 	                                        NULL);
 	gtk_text_tag_table_add (tags, self->pv->monospace_tag);
+
+	self->pv->area_tag = g_object_new (GTK_TYPE_TEXT_TAG,
+	                                   "name", "area",
+	                                   "justification", GTK_JUSTIFY_CENTER,
+	                                   NULL);
+	gtk_text_tag_table_add (tags, self->pv->area_tag);
 
 	return tags;
 }
@@ -277,7 +287,7 @@ create_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 	gtk_text_tag_table_add (tags, item->details_tag);
 
 	/*
-	 * Add two zero width spaces that delimit this from later items. The
+	 * Add two lines space that delimit this from later items. The
 	 * item will live between the two zero width spaces.
 	 */
 	gtk_text_buffer_get_end_iter (self->pv->buffer, &iter);
@@ -316,8 +326,6 @@ create_display_item (GcrDisplayView *self, GcrRenderer *renderer)
 	if (gtk_widget_get_realized (GTK_WIDGET (self)))
 		style_display_item (GTK_WIDGET (self), item);
 
-	/* TODO: Initialize the rest of the fields */
-
 	return item;
 }
 
@@ -325,6 +333,7 @@ static void
 destroy_display_item (gpointer data)
 {
 	GcrDisplayItem *item = data;
+	GtkTextIter iter, end;
 	GtkTextTagTable *tags;
 	GcrDisplayView *self;
 
@@ -348,12 +357,22 @@ destroy_display_item (gpointer data)
 	g_object_unref (item->details_widget);
 	item->details_widget = NULL;
 
-	g_return_if_fail (!gtk_text_mark_get_deleted (item->beginning));
-	gtk_text_buffer_delete_mark (self->pv->buffer, item->beginning);
-	g_object_unref (item->beginning);
+	g_clear_object (&item->area_anchor);
 
+	g_return_if_fail (!gtk_text_mark_get_deleted (item->beginning));
 	g_return_if_fail (!gtk_text_mark_get_deleted (item->ending));
+
+	/* Setup iters to encompass our delemiter characters see create_display_item() */
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
+	gtk_text_iter_backward_char (&iter);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &end, item->ending);
+	gtk_text_iter_forward_char (&end);
+	gtk_text_buffer_delete (self->pv->buffer, &iter, &end);
+
+	gtk_text_buffer_delete_mark (self->pv->buffer, item->beginning);
 	gtk_text_buffer_delete_mark (self->pv->buffer, item->ending);
+
+	g_object_unref (item->beginning);
 	g_object_unref (item->ending);
 
 	g_free (item);
@@ -392,10 +411,17 @@ find_item_at_iter (GcrDisplayView *self, GtkTextIter *iter)
 }
 
 static void
-on_renderer_data_changed (GcrRenderer *renderer, GcrViewer *self)
+on_renderer_data_changed (GcrRenderer *renderer,
+                          gpointer user_data)
 {
+	GcrDisplayView *self = GCR_DISPLAY_VIEW (user_data);
+
+	/* Item may be removed, but not yet destroyed */
+	if (!g_hash_table_lookup (self->pv->items, renderer))
+		return;
+
 	/* Just ask the renderer to render itself on us */
-	gcr_renderer_render_view (renderer, self);
+	gcr_renderer_render_view (renderer, GCR_VIEWER (self));
 }
 
 static void
@@ -443,10 +469,18 @@ paint_item_border (GcrDisplayView *self,
 {
 	GdkRGBA color;
 	GtkTextView *view;
-	GtkTextIter iter;
+	GtkTextIter iter, end;
 	GdkRectangle location;
 
 	if (index == 0)
+		return;
+
+	view = GTK_TEXT_VIEW (self);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &end, item->ending);
+
+	/* Don't paint for non-visible items */
+	if (gtk_text_iter_compare (&iter, &end) == 0)
 		return;
 
 	ensure_text_height (self);
@@ -455,8 +489,6 @@ paint_item_border (GcrDisplayView *self,
 	                                        GTK_STATE_FLAG_SELECTED | GTK_STATE_FLAG_FOCUSED,
 	                                        &color);
 
-	view = GTK_TEXT_VIEW (self);
-	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->beginning);
 	gtk_text_view_get_iter_location (view, &iter, &location);
 
 	location.height = 2;
@@ -728,18 +760,50 @@ _gcr_display_view_class_init (GcrDisplayViewClass *klass)
 }
 
 static void
-_gcr_display_view_real_add_renderer (GcrViewer *viewer, GcrRenderer *renderer)
+_gcr_display_view_real_insert_renderer (GcrViewer *viewer,
+                                        GcrRenderer *renderer,
+                                        GcrRenderer *before)
 {
 	GcrDisplayView *self = GCR_DISPLAY_VIEW (viewer);
 	GcrDisplayItem *item;
+	guint i;
+
+	if (before != NULL)
+		g_return_if_fail (g_hash_table_lookup (self->pv->items, before) != NULL);
 
 	item = create_display_item (self, renderer);
-	g_ptr_array_add (self->pv->renderers, g_object_ref (renderer));
+	g_object_ref (renderer);
+
+	/* Insert it at the right place */
+	if (before != NULL) {
+		g_ptr_array_add (self->pv->renderers, NULL);
+		for (i = self->pv->renderers->len; i > 0; i--) {
+			self->pv->renderers->pdata[i] = self->pv->renderers->pdata[i - 1];
+			if (self->pv->renderers->pdata[i] == before) {
+				self->pv->renderers->pdata[i - 1] = renderer;
+				break;
+			}
+		}
+
+		/* Must have been found */
+		g_assert (i > 0);
+
+	/* No before, just add to end */
+	} else {
+		g_ptr_array_add (self->pv->renderers, renderer);
+	}
+
 	g_hash_table_insert (self->pv->items, renderer, item);
 
 	gcr_renderer_render_view (renderer, viewer);
 	item->data_changed_id = g_signal_connect (renderer, "data-changed",
 	                                          G_CALLBACK (on_renderer_data_changed), self);
+}
+
+static void
+_gcr_display_view_real_add_renderer (GcrViewer *viewer, GcrRenderer *renderer)
+{
+	_gcr_display_view_real_insert_renderer (viewer, renderer, NULL);
 }
 
 static void
@@ -782,6 +846,7 @@ static void
 _gcr_display_view_viewer_iface (GcrViewerIface *iface)
 {
 	iface->add_renderer = (gpointer)_gcr_display_view_real_add_renderer;
+	iface->insert_renderer = (gpointer)_gcr_display_view_real_insert_renderer;
 	iface->remove_renderer = (gpointer)_gcr_display_view_real_remove_renderer;
 	iface->count_renderers = (gpointer)_gcr_display_view_real_count_renderers;
 	iface->get_renderer = (gpointer)_gcr_display_view_real_get_renderer;
@@ -803,13 +868,27 @@ _gcr_display_view_begin (GcrDisplayView *self,
 {
 	GtkTextIter start, iter;
 	GcrDisplayItem *item;
+	GList *widgets, *l;
 
 	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
 	item = lookup_display_item (self, renderer);
 	g_return_if_fail (item);
 
+	/* Remove the details widget so it doesn't get destroyed */
 	if (gtk_widget_get_parent (item->details_widget))
 		gtk_container_remove (GTK_CONTAINER (self), item->details_widget);
+
+	/* Remove area widgets so they don't get destroyed unnecessarily */
+	if (item->area_anchor) {
+		g_assert (!gtk_text_child_anchor_get_deleted (item->area_anchor));
+		widgets = gtk_text_child_anchor_get_widgets (item->area_anchor);
+		for (l = widgets; l != NULL; l = g_list_next (l))
+			gtk_container_remove (GTK_CONTAINER (self), l->data);
+		g_list_free (widgets);
+		g_object_unref (item->area_anchor);
+		item->area_anchor = NULL;
+	}
+
 	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &start, item->beginning);
 	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
 	gtk_text_buffer_delete (self->pv->buffer, &start, &iter);
@@ -823,20 +902,11 @@ void
 _gcr_display_view_end (GcrDisplayView *self,
                        GcrRenderer *renderer)
 {
-	GtkTextIter start, iter;
 	GcrDisplayItem *item;
 
 	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
 	item = lookup_display_item (self, renderer);
 	g_return_if_fail (item);
-
-	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &start, item->beginning);
-	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
-
-#if 0
-	if (gtk_text_iter_compare (&start, &iter) != 0)
-		gtk_text_buffer_insert (self->pv->buffer, &iter, "\n", 1);
-#endif
 }
 
 void
@@ -1072,4 +1142,31 @@ _gcr_display_view_set_icon (GcrDisplayView *self, GcrRenderer *renderer, GIcon *
 		item->pixbuf = gtk_icon_info_load_symbolic_for_context (info, style, FALSE, NULL);
 		gtk_icon_info_free (info);
 	}
+}
+
+void
+_gcr_display_view_add_widget_area (GcrDisplayView *self,
+                                   GcrRenderer *renderer,
+                                   GtkWidget *area)
+{
+	GtkTextIter iter, start;
+	GcrDisplayItem *item;
+
+	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
+	g_return_if_fail (GTK_IS_WIDGET (area));
+
+	item = lookup_display_item (self, renderer);
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (item->area_anchor == NULL);
+
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &start, item->ending);
+	iter = start;
+
+	gtk_text_buffer_insert_with_tags (self->pv->buffer, &iter, "\n" ZWSP, -1, self->pv->area_tag, NULL);
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
+
+	item->area_anchor = gtk_text_buffer_create_child_anchor (self->pv->buffer, &iter);
+	g_object_ref (item->area_anchor);
+	gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (self), area, item->area_anchor);
+	gtk_text_buffer_insert_with_tags (self->pv->buffer, &iter, ZWSP "\n", -1, self->pv->area_tag, NULL);
 }
