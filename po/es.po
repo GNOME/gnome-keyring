@@ -2,19 +2,19 @@
 # Translation of gnome-keyring to Spanish.
 # This file is distributed under the same license as the gnome-keyring package.
 # Copyright (C) 2006 The Free Software Foundation.
-# 
+#
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010, 2011.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
-# 
+#
 # Jorge González <jorgegonz@svn.gnome.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-30 10:27+0000\n"
-"PO-Revision-Date: 2011-08-30 13:12Centra4l\n"
+"POT-Creation-Date: 2011-08-31 08:01+0000\n"
+"PO-Revision-Date: 2011-08-31 15:34Centra\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -753,7 +753,7 @@ msgstr "Los datos están bloqueados"
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:372
+#: ../gcr/gcr-trust.c:377
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "No se pudo encontrar un lugar para almacenar el certificado importado"
@@ -805,7 +805,8 @@ msgid "The URI has invalid encoding."
 msgstr "El URI tiene una codificación no válida."
 
 #: ../gck/gck-uri.c:177
-msgid "The URI has does not have the 'pkcs11' scheme."
+#| msgid "The URI has does not have the 'pkcs11' scheme."
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "El URI no tiene el esquema «pkcs11»."
 
 #: ../gck/gck-uri.c:181
