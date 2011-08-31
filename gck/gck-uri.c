@@ -174,7 +174,7 @@ gck_uri_parse (const gchar *string, GckUriFlags flags, GError **error)
 			break;
 		case P11_KIT_URI_BAD_SCHEME:
 			g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_SCHEME,
-			                     _("The URI has does not have the 'pkcs11' scheme."));
+			                     _("The URI does not have the 'pkcs11' scheme."));
 			break;
 		case P11_KIT_URI_BAD_SYNTAX:
 			g_set_error_literal (error, GCK_URI_ERROR, GCK_URI_BAD_SYNTAX,
