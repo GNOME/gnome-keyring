@@ -521,9 +521,20 @@ initialize_daemon_at (const gchar *directory)
 static gboolean
 replace_daemon_at (const gchar *directory)
 {
+	gboolean ret;
+
 	g_free (control_directory);
 	control_directory = g_strdup (directory);
-	return gkd_control_quit (directory);
+	ret = gkd_control_quit (directory);
+
+	/*
+	 * If we quit, wait a short time before initializing so the other
+	 * daemon can quit completely
+	 */
+	if (ret == TRUE)
+		g_usleep (200 * 1000); /* 200 ms in us */
+
+	return ret;
 }
 
 typedef gboolean (*DiscoverFunc) (const gchar *control_directory);
