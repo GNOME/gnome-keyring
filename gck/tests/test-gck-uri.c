@@ -354,7 +354,7 @@ test_build_with_attributes (void)
 
 	g_assert (g_str_has_prefix (uri, "pkcs11:"));
 	g_assert (strstr (uri, "object=The%20Label"));
-	g_assert (strstr (uri, "objecttype=data"));
+	g_assert (strstr (uri, "object-type=data"));
 	g_assert (strstr (uri, "id=TEST%00"));
 
 	g_free (uri);
@@ -430,7 +430,7 @@ test_build_objecttype_cert (void)
 
 	uri = gck_uri_build (uri_data, GCK_URI_FOR_OBJECT);
 	g_assert (uri);
-	g_assert (strstr (uri, "objecttype=cert"));
+	g_assert (strstr (uri, "object-type=cert"));
 
 	gck_uri_data_free (uri_data);
 	g_free (uri);
@@ -448,7 +448,7 @@ test_build_objecttype_private (void)
 
 	uri = gck_uri_build (uri_data, GCK_URI_FOR_OBJECT);
 	g_assert (uri);
-	g_assert (strstr (uri, "objecttype=private"));
+	g_assert (strstr (uri, "object-type=private"));
 
 	gck_uri_data_free (uri_data);
 	g_free (uri);
@@ -466,7 +466,7 @@ test_build_objecttype_public (void)
 
 	uri = gck_uri_build (uri_data, GCK_URI_FOR_OBJECT);
 	g_assert (uri);
-	g_assert (strstr (uri, "objecttype=public"));
+	g_assert (strstr (uri, "object-type=public"));
 
 	gck_uri_data_free (uri_data);
 	g_free (uri);
@@ -484,7 +484,7 @@ test_build_objecttype_secret (void)
 
 	uri = gck_uri_build (uri_data, GCK_URI_FOR_OBJECT);
 	g_assert (uri);
-	g_assert (strstr (uri, "objecttype=secretkey"));
+	g_assert (strstr (uri, "object-type=secret-key"));
 
 	gck_uri_data_free (uri_data);
 	g_free (uri);
