@@ -199,22 +199,14 @@ gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint sessi
 	return _gck_enumerator_new (modules, session_options, uri_data);
 }
 
-/**
- * gck_modules_token_for_uri:
- * @modules: The modules
- * @uri: The URI that the token must match
- * @error: A location to raise an error on failure
- *
- * Lookup a token that matches the URI.
- *
- * Returns: A newly allocated #GckSlot or %NULL if no such token was
- *    found.
- */
-GckSlot*
-gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
+static GList *
+tokens_for_uri (GList *modules,
+                const gchar *uri,
+                gboolean only_one,
+                GError **error)
 {
 	GckTokenInfo *token_info;
-	GckSlot *result = NULL;
+	GList *results = NULL;
 	GckUriData *uri_data;
 	GckModuleInfo *module_info;
 	GList *slots;
@@ -228,7 +220,9 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 		return NULL;
 
 	if (!uri_data->any_unrecognized) {
-		for (m = modules; result == NULL && m != NULL; m = g_list_next (m)) {
+		for (m = modules; m != NULL; m = g_list_next (m)) {
+			if (only_one && results)
+				break;
 			if (uri_data->module_info) {
 				module_info = gck_module_get_info (m->data);
 				matched = _gck_module_info_match (uri_data->module_info, module_info);
@@ -238,13 +232,15 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 			}
 
 			slots = gck_module_get_slots (m->data, TRUE);
-			for (s = slots; result == NULL && s != NULL; s = g_list_next (s)) {
+			for (s = slots; s != NULL; s = g_list_next (s)) {
+				if (only_one && results)
+					break;
 				if (!uri_data->token_info) {
-					result = g_object_ref (s->data);
+					results = g_list_prepend (results, g_object_ref (s->data));
 				} else {
 					token_info = gck_slot_get_token_info (s->data);
 					if (token_info && _gck_token_info_match (uri_data->token_info, token_info))
-						result = g_object_ref (s->data);
+						results = g_list_prepend (results, g_object_ref (s->data));
 					gck_token_info_free (token_info);
 				}
 			}
@@ -253,7 +249,53 @@ gck_modules_token_for_uri (GList *modules, const gchar *uri, GError **error)
 	}
 
 	gck_uri_data_free (uri_data);
-	return result;
+	return results;
+}
+
+/**
+ * gck_modules_token_for_uri:
+ * @modules: The modules
+ * @uri: The URI that the token must match
+ * @error: A location to raise an error on failure
+ *
+ * Lookup a token that matches the URI.
+ *
+ * Returns: A newly allocated #GckSlot or %NULL if no such token was
+ *    found.
+ */
+GckSlot*
+gck_modules_token_for_uri (GList *modules,
+                           const gchar *uri,
+                           GError **error)
+{
+	GList *results;
+	GckSlot *slot = NULL;
+
+	results = tokens_for_uri (modules, uri, TRUE, error);
+	if (results)
+		slot = g_object_ref (results->data);
+	gck_list_unref_free (results);
+
+	return slot;
+}
+
+/**
+ * gck_modules_tokens_for_uri:
+ * @modules: The modules
+ * @uri: The URI that the token must match
+ * @error: A location to raise an error on failure
+ *
+ * Lookup a token that matches the URI.
+ *
+ * Returns: (transfer full): A list of newly allocated #GckSlot objects. Use
+ *     gck_list_unref_free() to release the list once you're done with it.
+ */
+GList *
+gck_modules_tokens_for_uri (GList *modules,
+                            const gchar *uri,
+                            GError **error)
+{
+	return tokens_for_uri (modules, uri, FALSE, error);
 }
 
 /**

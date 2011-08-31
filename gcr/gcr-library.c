@@ -499,17 +499,14 @@ gcr_pkcs11_get_trust_lookup_slots (void)
 {
 	GList *results = NULL;
 	GError *error = NULL;
-	GckSlot *slot;
 	gchar **uri;
 
 	g_return_val_if_fail (initialized_modules, NULL);
 	initialize_uris ();
 
 	for (uri = trust_lookup_uris; uri && *uri; ++uri) {
-		slot = gck_modules_token_for_uri (all_modules, *uri, &error);
-		if (slot) {
-			results = g_list_append (results, slot);
-		} else if (error) {
+		results = g_list_concat (results, gck_modules_tokens_for_uri (all_modules, *uri, &error));
+		if (error != NULL) {
 			g_warning ("error finding slot for trust assertions: %s: %s",
 			           *uri, egg_error_message (error));
 			g_clear_error (&error);
