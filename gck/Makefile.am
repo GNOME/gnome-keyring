@@ -21,6 +21,7 @@ INCLUDES = \
 	$(GOBJECT_CFLAGS) \
 	$(GTHREAD_CFLAGS) \
 	$(GLIB_CFLAGS) \
+	-DG_LOG_DOMAIN=\"Gck\" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	-DP11_KIT_API_SUBJECT_TO_CHANGE \
 	-DPKCS11_REGISTRY_DIR=\"$(libdir)/pkcs11\"
@@ -34,6 +35,7 @@ libgck_@GCK_MAJOR@_la_SOURCES = \
 	gck.h gck-private.h pkcs11.h \
 	gck-attributes.c \
 	gck-call.c \
+	gck-debug.c gck-debug.h \
 	gck-dump.c \
 	gck-enumerator.c \
 	gck-misc.c \

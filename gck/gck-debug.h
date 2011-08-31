@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef GCR_DEBUG_H
-#define GCR_DEBUG_H
+#ifndef GCK_DEBUG_H
+#define GCK_DEBUG_H
 
 #include "config.h"
 
@@ -26,39 +26,36 @@
 
 G_BEGIN_DECLS
 
-/* Please keep this enum in sync with #keys in gcr-debug.c */
+/* Please keep this enum in sync with #keys in gck-debug.c */
 typedef enum {
-	GCR_DEBUG_LIBRARY = 1 << 1,
-	GCR_DEBUG_CERTIFICATE_CHAIN = 1 << 2,
-	GCR_DEBUG_PARSE = 1 << 3,
-	GCR_DEBUG_GNUPG = 1 << 4,
-	GCR_DEBUG_TRUST = 1 << 5
-} GcrDebugFlags;
+	GCK_DEBUG_SESSION = 1 << 1,
+	GCK_DEBUG_ENUMERATOR = 1 << 2,
+} GckDebugFlags;
 
-gboolean           _gcr_debug_flag_is_set              (GcrDebugFlags flag);
+gboolean           _gck_debug_flag_is_set              (GckDebugFlags flag);
 
-void               _gcr_debug_set_flags                (const gchar *flags_string);
+void               _gck_debug_set_flags                (const gchar *flags_string);
 
-void               _gcr_debug_message                  (GcrDebugFlags flag,
+void               _gck_debug_message                  (GckDebugFlags flag,
                                                         const gchar *format,
                                                         ...) G_GNUC_PRINTF (2, 3);
 
 G_END_DECLS
 
-#endif /* GCR_DEBUG_H */
+#endif /* GCK_DEBUG_H */
 
 /* -----------------------------------------------------------------------------
- * Below this point is outside the GCR_DEBUG_H guard - so it can take effect
+ * Below this point is outside the GCK_DEBUG_H guard - so it can take effect
  * more than once. So you can do:
  *
- * #define DEBUG_FLAG GCR_DEBUG_ONE_THING
- * #include "gcr-debug.h"
+ * #define DEBUG_FLAG GCK_DEBUG_ONE_THING
+ * #include "gck-debug.h"
  * ...
  * DEBUG ("if we're debugging one thing");
  * ...
  * #undef DEBUG_FLAG
- * #define DEBUG_FLAG GCR_DEBUG_OTHER_THING
- * #include "gcr-debug.h"
+ * #define DEBUG_FLAG GCK_DEBUG_OTHER_THING
+ * #include "gck-debug.h"
  * ...
  * DEBUG ("if we're debugging the other thing");
  * ...
@@ -67,22 +64,22 @@ G_END_DECLS
 #ifdef DEBUG_FLAG
 #ifdef WITH_DEBUG
 
-#undef _gcr_debug
-#define _gcr_debug(format, ...) \
-	_gcr_debug_message (DEBUG_FLAG, "%s: " format, G_STRFUNC, ##__VA_ARGS__)
+#undef _gck_debug
+#define _gck_debug(format, ...) \
+	_gck_debug_message (DEBUG_FLAG, "%s: " format, G_STRFUNC, ##__VA_ARGS__)
 
-#undef _gcr_debugging
-#define _gcr_debugging \
-	_gcr_debug_flag_is_set (DEBUG_FLAG)
+#undef _gck_debugging
+#define _gck_debugging \
+	_gck_debug_flag_is_set (DEBUG_FLAG)
 
 #else /* !defined (WITH_DEBUG) */
 
-#undef _gcr_debug
-#define _gcr_debug(format, ...) \
+#undef _gck_debug
+#define _gck_debug(format, ...) \
 	do {} while (0)
 
-#undef _gcr_debugging
-#define _gcr_debugging 0
+#undef _gck_debugging
+#define _gck_debugging 0
 
 #endif /* !defined (WITH_DEBUG) */
 

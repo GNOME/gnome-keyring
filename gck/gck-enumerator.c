@@ -24,6 +24,8 @@
 #include "config.h"
 
 #include "gck.h"
+#define DEBUG_FLAG GCK_DEBUG_ENUMERATOR
+#include "gck-debug.h"
 #include "gck-private.h"
 
 #include <string.h>
@@ -173,9 +175,11 @@ state_modules (GckEnumeratorState *args, gboolean forward)
 
 	if (forward) {
 
-		/* There is no no more modules? */
-		if (!args->modules)
+		/* There are no more modules? */
+		if (!args->modules) {
+			_gck_debug ("no more modules, stopping enumerator");
 			return NULL;
+		}
 
 		/* Pop off the current module */
 		module = args->modules->data;
@@ -183,8 +187,14 @@ state_modules (GckEnumeratorState *args, gboolean forward)
 		args->modules = g_list_delete_link (args->modules, args->modules);
 
 		args->slots = gck_module_get_slots (module, TRUE);
-		g_object_unref (module);
 
+		if (_gck_debugging) {
+			GckModuleInfo *info = gck_module_get_info (module);
+			_gck_debug ("enumerating into module: %s", info->library_description);
+			gck_module_info_free (info);
+		}
+
+		g_object_unref (module);
 		return state_slots;
 	}
 
@@ -206,8 +216,10 @@ state_slots (GckEnumeratorState *args, gboolean forward)
 	if (forward) {
 
 		/* If there are no more slots go back to start state */
-		if (!args->slots)
+		if (!args->slots) {
+			_gck_debug ("no more slots, want next module");
 			return rewind_state (args, state_modules);
+		}
 
 		/* Pop the next slot off the stack */
 		slot = args->slots->data;
@@ -220,17 +232,22 @@ state_slots (GckEnumeratorState *args, gboolean forward)
 			return rewind_state (args, state_modules);
 		}
 
-		matched = TRUE;
-
 		/* Do we have unrecognized matches? */
 		if (args->match->any_unrecognized) {
+			_gck_debug ("token uri had unrecognized, not matching any tokens");
 			matched = FALSE;
 
 		/* Are we trying to match the slot? */
 		} else if (args->match->token_info) {
-
 			/* No match? Go to next slot */
 			matched = _gck_token_info_match (args->match->token_info, token_info);
+
+			_gck_debug ("%s token: %s", matched ? "matched" : "did not match",
+			            token_info->label);
+
+		} else {
+			_gck_debug ("matching all tokens: %s", token_info->label);
+			matched = TRUE;
 		}
 
 		if (!matched) {
@@ -284,6 +301,7 @@ state_slot (GckEnumeratorState *args, gboolean forward)
 			return rewind_state (args, state_slots);
 		}
 
+		_gck_debug ("opened %s session", flags & CKF_RW_SESSION ? "read-write" : "read-only");
 		args->session = gck_session_from_handle (args->slot, session, args->session_options);
 		return state_session;
 
@@ -316,12 +334,16 @@ state_session (GckEnumeratorState *args, gboolean forward)
 	if (forward) {
 
 		/* Don't want to authenticate? */
-		if (!args->authenticate)
+		if (!args->authenticate) {
+			_gck_debug ("no authentication necessary, skipping");
 			return state_authenticated;
+		}
 
 		/* No login necessary */
-		if ((args->token_info->flags & CKF_LOGIN_REQUIRED) == 0)
+		if ((args->token_info->flags & CKF_LOGIN_REQUIRED) == 0) {
+			_gck_debug ("no login required, skipping");
 			return state_authenticated;
+		}
 
 		/* Next check if session is logged in */
 		sinfo = gck_session_get_info (args->session);
@@ -335,10 +357,12 @@ state_session (GckEnumeratorState *args, gboolean forward)
 		    sinfo->state == CKS_RO_USER_FUNCTIONS ||
 		    sinfo->state == CKS_RW_SO_FUNCTIONS) {
 			gck_session_info_free (sinfo);
+			_gck_debug ("already logged in, skipping");
 			return state_authenticated;
 		}
 
 		gck_session_info_free (sinfo);
+		_gck_debug ("trying to log into session");
 
 		/* Try to log in */
 		n_pin = args->password ? strlen (args->password) : 0;
@@ -347,6 +371,7 @@ state_session (GckEnumeratorState *args, gboolean forward)
 
 		/* Authentication failed, ask for a password */
 		if (rv == CKR_PIN_INCORRECT) {
+			_gck_debug ("login was incorrect, want password");
 			args->want_password = TRUE;
 			return NULL;
 
@@ -387,9 +412,15 @@ state_authenticated (GckEnumeratorState *args, gboolean forward)
 
 	if (args->match->attributes) {
 		attrs = _gck_attributes_commit_out (args->match->attributes, &n_attrs);
+		if (_gck_debugging) {
+			gchar *string = _gck_attributes_format (args->match->attributes);
+			_gck_debug ("finding objects matching: %s", string);
+			g_free (string);
+		}
 	} else {
 		attrs = NULL;
 		n_attrs = 0;
+		_gck_debug ("finding all objects");
 	}
 
 	session = gck_session_get_handle (args->session);
@@ -406,12 +437,14 @@ state_authenticated (GckEnumeratorState *args, gboolean forward)
 
 			if (!args->objects)
 				args->objects = g_array_new (FALSE, TRUE, sizeof (CK_OBJECT_HANDLE));
+			_gck_debug ("matched %lu objects", count);
 			g_array_append_vals (args->objects, objects, count);
 		}
 
 		(args->funcs->C_FindObjectsFinal) (session);
 	}
 
+	_gck_debug ("finding objects completed with: %s", _gck_stringize_rv (rv));
 	return state_results;
 }
 
@@ -449,12 +482,18 @@ state_results (GckEnumeratorState *args, gboolean forward)
 	while (have < args->want_objects) {
 
 		object = extract_result (args);
-		if (!object)
+		if (!object) {
+			_gck_debug ("wanted %d objects, have %d, looking for more",
+			            args->want_objects, have);
 			return rewind_state (args, state_slots);
+		}
 
 		args->results = g_list_append (args->results, object);
 		++have;
 	}
+
+	_gck_debug ("wanted %d objects, returned %d objects",
+	            args->want_objects, have);
 
 	/* We got all the results we wanted */
 	return NULL;
@@ -531,6 +570,15 @@ _gck_enumerator_new (GList *modules_or_slots, guint session_options,
 	if (uri_data->attributes)
 		_gck_attributes_lock (uri_data->attributes);
 
+	if (_gck_debugging) {
+		gchar *attrs, *uri;
+		attrs = uri_data->attributes ? _gck_attributes_format (uri_data->attributes) : NULL;
+		uri = uri_data ? gck_uri_build (uri_data, GCK_URI_FOR_TOKEN | GCK_URI_FOR_MODULE) : NULL;
+		_gck_debug ("new enumerator: tokens = %s, objects = %s", uri, attrs);
+		g_free (attrs);
+		g_free (uri);
+	}
+
 	return self;
 }
 
@@ -574,6 +622,8 @@ complete_enumerate_next (EnumerateNext *args, CK_RV result)
 
 	if (state->want_password) {
 		g_assert (state->slot);
+
+		_gck_debug ("wants password, emitting authenticate-slot");
 
 		/* TODO: Should we be using secure memory here? */
 		g_free (state->password);

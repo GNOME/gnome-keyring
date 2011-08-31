@@ -25,6 +25,7 @@
 
 #include "gck.h"
 #include "gck-private.h"
+#include "pkcs11-trust-assertions.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -1381,4 +1382,353 @@ _gck_attributes_commit_out (GckAttributes *attrs, CK_ULONG_PTR n_attrs)
 
 	*n_attrs = attrs->array->len;
 	return (CK_ATTRIBUTE_PTR)attrs->array->data;
+}
+
+static gboolean
+_gck_attribute_is_ulong_of_type (GckAttribute *attr,
+                                 gulong attr_type)
+{
+	if (attr->type != attr_type)
+		return FALSE;
+	if (attr->length != sizeof (gulong))
+		return FALSE;
+	if (!attr->value)
+		return FALSE;
+	return TRUE;
+}
+
+static gboolean
+_gck_attribute_is_sensitive (GckAttribute *attr)
+{
+	/*
+	 * Don't print any just attribute, since they may contain
+	 * sensitive data
+	 */
+
+	switch (attr->type) {
+	#define X(x) case x: return FALSE;
+	X (CKA_CLASS)
+	X (CKA_TOKEN)
+	X (CKA_PRIVATE)
+	X (CKA_LABEL)
+	X (CKA_APPLICATION)
+	X (CKA_OBJECT_ID)
+	X (CKA_CERTIFICATE_TYPE)
+	X (CKA_ISSUER)
+	X (CKA_SERIAL_NUMBER)
+	X (CKA_AC_ISSUER)
+	X (CKA_OWNER)
+	X (CKA_ATTR_TYPES)
+	X (CKA_TRUSTED)
+	X (CKA_CERTIFICATE_CATEGORY)
+	X (CKA_JAVA_MIDP_SECURITY_DOMAIN)
+	X (CKA_URL)
+	X (CKA_HASH_OF_SUBJECT_PUBLIC_KEY)
+	X (CKA_HASH_OF_ISSUER_PUBLIC_KEY)
+	X (CKA_CHECK_VALUE)
+	X (CKA_KEY_TYPE)
+	X (CKA_SUBJECT)
+	X (CKA_ID)
+	X (CKA_SENSITIVE)
+	X (CKA_ENCRYPT)
+	X (CKA_DECRYPT)
+	X (CKA_WRAP)
+	X (CKA_UNWRAP)
+	X (CKA_SIGN)
+	X (CKA_SIGN_RECOVER)
+	X (CKA_VERIFY)
+	X (CKA_VERIFY_RECOVER)
+	X (CKA_DERIVE)
+	X (CKA_START_DATE)
+	X (CKA_END_DATE)
+	X (CKA_MODULUS_BITS)
+	X (CKA_PRIME_BITS)
+	/* X (CKA_SUBPRIME_BITS) */
+	/* X (CKA_SUB_PRIME_BITS) */
+	X (CKA_VALUE_BITS)
+	X (CKA_VALUE_LEN)
+	X (CKA_EXTRACTABLE)
+	X (CKA_LOCAL)
+	X (CKA_NEVER_EXTRACTABLE)
+	X (CKA_ALWAYS_SENSITIVE)
+	X (CKA_KEY_GEN_MECHANISM)
+	X (CKA_MODIFIABLE)
+	X (CKA_SECONDARY_AUTH)
+	X (CKA_AUTH_PIN_FLAGS)
+	X (CKA_ALWAYS_AUTHENTICATE)
+	X (CKA_WRAP_WITH_TRUSTED)
+	X (CKA_WRAP_TEMPLATE)
+	X (CKA_UNWRAP_TEMPLATE)
+	X (CKA_HW_FEATURE_TYPE)
+	X (CKA_RESET_ON_INIT)
+	X (CKA_HAS_RESET)
+	X (CKA_PIXEL_X)
+	X (CKA_PIXEL_Y)
+	X (CKA_RESOLUTION)
+	X (CKA_CHAR_ROWS)
+	X (CKA_CHAR_COLUMNS)
+	X (CKA_COLOR)
+	X (CKA_BITS_PER_PIXEL)
+	X (CKA_CHAR_SETS)
+	X (CKA_ENCODING_METHODS)
+	X (CKA_MIME_TYPES)
+	X (CKA_MECHANISM_TYPE)
+	X (CKA_REQUIRED_CMS_ATTRIBUTES)
+	X (CKA_DEFAULT_CMS_ATTRIBUTES)
+	X (CKA_SUPPORTED_CMS_ATTRIBUTES)
+	X (CKA_ALLOWED_MECHANISMS)
+	X (CKA_X_ASSERTION_TYPE)
+	X (CKA_X_CERTIFICATE_VALUE)
+	X (CKA_X_PURPOSE)
+	X (CKA_X_PEER)
+	#undef X
+	}
+
+	return TRUE;
+}
+
+static void
+_gck_format_class (GString *output,
+                   CK_OBJECT_CLASS klass)
+{
+	const gchar *string = NULL;
+
+	switch (klass) {
+	#define X(x) case x: string = #x; break;
+	X (CKO_DATA)
+	X (CKO_CERTIFICATE)
+	X (CKO_PUBLIC_KEY)
+	X (CKO_PRIVATE_KEY)
+	X (CKO_SECRET_KEY)
+	X (CKO_HW_FEATURE)
+	X (CKO_DOMAIN_PARAMETERS)
+	X (CKO_MECHANISM)
+	X (CKO_X_TRUST_ASSERTION)
+	}
+
+	if (string != NULL)
+		g_string_append (output, string);
+	else
+		g_string_append_printf (output, "0x%08lX", klass);
+}
+
+static void
+_gck_format_assertion_type (GString *output,
+                            CK_X_ASSERTION_TYPE type)
+{
+	const gchar *string = NULL;
+
+	switch (type) {
+	#define X(x) case x: string = #x; break;
+	X (CKT_X_UNTRUSTED_CERTIFICATE)
+	X (CKT_X_PINNED_CERTIFICATE)
+	X (CKT_X_ANCHORED_CERTIFICATE)
+	}
+
+	if (string != NULL)
+		g_string_append (output, string);
+	else
+		g_string_append_printf (output, "0x%08lX", type);
+}
+
+static void
+_gck_format_certificate_type (GString *output,
+                              CK_CERTIFICATE_TYPE type)
+{
+	const gchar *string = NULL;
+
+	switch (type) {
+	#define X(x) case x: string = #x; break;
+	X (CKC_X_509)
+	X (CKC_X_509_ATTR_CERT)
+	X (CKC_WTLS)
+	}
+
+	if (string != NULL)
+		g_string_append (output, string);
+	else
+		g_string_append_printf (output, "0x%08lX", type);
+}
+
+static void
+_gck_format_attribute_type (GString *output,
+                            gulong type)
+{
+	const gchar *string = NULL;
+
+	switch (type) {
+	#define X(x) case x: string = #x; break;
+	X (CKA_CLASS)
+	X (CKA_TOKEN)
+	X (CKA_PRIVATE)
+	X (CKA_LABEL)
+	X (CKA_APPLICATION)
+	X (CKA_VALUE)
+	X (CKA_OBJECT_ID)
+	X (CKA_CERTIFICATE_TYPE)
+	X (CKA_ISSUER)
+	X (CKA_SERIAL_NUMBER)
+	X (CKA_AC_ISSUER)
+	X (CKA_OWNER)
+	X (CKA_ATTR_TYPES)
+	X (CKA_TRUSTED)
+	X (CKA_CERTIFICATE_CATEGORY)
+	X (CKA_JAVA_MIDP_SECURITY_DOMAIN)
+	X (CKA_URL)
+	X (CKA_HASH_OF_SUBJECT_PUBLIC_KEY)
+	X (CKA_HASH_OF_ISSUER_PUBLIC_KEY)
+	X (CKA_CHECK_VALUE)
+	X (CKA_KEY_TYPE)
+	X (CKA_SUBJECT)
+	X (CKA_ID)
+	X (CKA_SENSITIVE)
+	X (CKA_ENCRYPT)
+	X (CKA_DECRYPT)
+	X (CKA_WRAP)
+	X (CKA_UNWRAP)
+	X (CKA_SIGN)
+	X (CKA_SIGN_RECOVER)
+	X (CKA_VERIFY)
+	X (CKA_VERIFY_RECOVER)
+	X (CKA_DERIVE)
+	X (CKA_START_DATE)
+	X (CKA_END_DATE)
+	X (CKA_MODULUS)
+	X (CKA_MODULUS_BITS)
+	X (CKA_PUBLIC_EXPONENT)
+	X (CKA_PRIVATE_EXPONENT)
+	X (CKA_PRIME_1)
+	X (CKA_PRIME_2)
+	X (CKA_EXPONENT_1)
+	X (CKA_EXPONENT_2)
+	X (CKA_COEFFICIENT)
+	X (CKA_PRIME)
+	X (CKA_SUBPRIME)
+	X (CKA_BASE)
+	X (CKA_PRIME_BITS)
+	/* X (CKA_SUBPRIME_BITS) */
+	/* X (CKA_SUB_PRIME_BITS) */
+	X (CKA_VALUE_BITS)
+	X (CKA_VALUE_LEN)
+	X (CKA_EXTRACTABLE)
+	X (CKA_LOCAL)
+	X (CKA_NEVER_EXTRACTABLE)
+	X (CKA_ALWAYS_SENSITIVE)
+	X (CKA_KEY_GEN_MECHANISM)
+	X (CKA_MODIFIABLE)
+	X (CKA_ECDSA_PARAMS)
+	/* X (CKA_EC_PARAMS) */
+	X (CKA_EC_POINT)
+	X (CKA_SECONDARY_AUTH)
+	X (CKA_AUTH_PIN_FLAGS)
+	X (CKA_ALWAYS_AUTHENTICATE)
+	X (CKA_WRAP_WITH_TRUSTED)
+	X (CKA_WRAP_TEMPLATE)
+	X (CKA_UNWRAP_TEMPLATE)
+	X (CKA_HW_FEATURE_TYPE)
+	X (CKA_RESET_ON_INIT)
+	X (CKA_HAS_RESET)
+	X (CKA_PIXEL_X)
+	X (CKA_PIXEL_Y)
+	X (CKA_RESOLUTION)
+	X (CKA_CHAR_ROWS)
+	X (CKA_CHAR_COLUMNS)
+	X (CKA_COLOR)
+	X (CKA_BITS_PER_PIXEL)
+	X (CKA_CHAR_SETS)
+	X (CKA_ENCODING_METHODS)
+	X (CKA_MIME_TYPES)
+	X (CKA_MECHANISM_TYPE)
+	X (CKA_REQUIRED_CMS_ATTRIBUTES)
+	X (CKA_DEFAULT_CMS_ATTRIBUTES)
+	X (CKA_SUPPORTED_CMS_ATTRIBUTES)
+	X (CKA_ALLOWED_MECHANISMS)
+	X (CKA_X_ASSERTION_TYPE)
+	X (CKA_X_CERTIFICATE_VALUE)
+	X (CKA_X_PURPOSE)
+	X (CKA_X_PEER)
+	#undef X
+	}
+
+	if (string != NULL)
+		g_string_append (output, string);
+	else
+		g_string_append_printf (output, "CKA_0x%08lX", type);
+}
+
+static void
+_gck_format_some_bytes (GString *output,
+                        gconstpointer bytes,
+                        gulong length)
+{
+	guchar ch;
+	const guchar *data = bytes;
+	gulong i;
+
+	if (bytes == NULL) {
+		g_string_append (output, "NULL");
+		return;
+	}
+
+	g_string_append_c (output, '\"');
+	for (i = 0; i < length && i < 128; i++) {
+		ch = data[i];
+		if (ch == '\t')
+			g_string_append (output, "\\t");
+		else if (ch == '\n')
+			g_string_append (output, "\\n");
+		else if (ch == '\r')
+			g_string_append (output, "\\r");
+		else if (ch >= 32 && ch < 127)
+			g_string_append_c (output, ch);
+		else
+			g_string_append_printf (output, "\\x%02x", ch);
+	}
+
+	if (i < length)
+		g_string_append_printf (output, "...");
+	g_string_append_c (output, '\"');
+}
+
+static void
+_gck_format_attributes (GString *output,
+                        GckAttributes *attrs)
+{
+	GckAttribute *attr;
+	guint count, i;
+
+	count = attrs->array->len;
+	g_string_append_printf (output, "(%d) [", count);
+	for (i = 0; i < count; i++) {
+		attr = &g_array_index (attrs->array, GckAttribute, i);
+		if (i > 0)
+			g_string_append_c (output, ',');
+		g_string_append (output, " { ");
+		_gck_format_attribute_type (output, attr->type);
+		g_string_append (output, " = ");
+		if (attr->length == GCK_INVALID) {
+			g_string_append_printf (output, " (-1) INVALID");
+		} else if (_gck_attribute_is_ulong_of_type (attr, CKA_CLASS)) {
+			_gck_format_class (output, *((CK_OBJECT_CLASS_PTR)attr->value));
+		} else if (_gck_attribute_is_ulong_of_type (attr, CKA_X_ASSERTION_TYPE)) {
+			_gck_format_assertion_type (output, *((CK_X_ASSERTION_TYPE *)attr->value));
+		} else if (_gck_attribute_is_ulong_of_type (attr, CKA_CERTIFICATE_TYPE)) {
+			_gck_format_certificate_type (output, *((CK_CERTIFICATE_TYPE *)attr->value));
+		} else if (_gck_attribute_is_sensitive (attr)) {
+			g_string_append_printf (output, " (%lu) NOT-PRINTED", attr->length);
+		} else {
+			g_string_append_printf (output, " (%lu) ", attr->length);
+			_gck_format_some_bytes (output, attr->value, attr->length);
+		}
+		g_string_append (output, " }");
+	}
+	g_string_append (output, " ]");
+}
+
+gchar *
+_gck_attributes_format (GckAttributes *attrs)
+{
+	GString *output = g_string_sized_new (128);
+	_gck_format_attributes (output, attrs);
+	return g_string_free (output, FALSE);
 }

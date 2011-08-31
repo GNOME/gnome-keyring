@@ -345,6 +345,10 @@ GckSlot*              gck_modules_token_for_uri               (GList *modules,
                                                                const gchar *uri,
                                                                GError **error);
 
+GList *               gck_modules_tokens_for_uri              (GList *modules,
+                                                               const gchar *uri,
+                                                               GError **error);
+
 GckObject*            gck_modules_object_for_uri              (GList *modules,
                                                                const gchar *uri,
                                                                guint session_options,

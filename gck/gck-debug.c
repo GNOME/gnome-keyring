@@ -2,6 +2,7 @@
 /*
  * Copyright (C) 2007 Collabora Ltd.
  * Copyright (C) 2007 Nokia Corporation
+ * Copyright (C) 2011 Collabora Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,38 +21,32 @@
 
 #include "config.h"
 
-#include "gcr-debug.h"
-
-#include <errno.h>
-#include <fcntl.h>
-#include <stdarg.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include "gck.h"
+#include "gck-debug.h"
 
 #include <glib.h>
 #include <glib/gstdio.h>
 
+#include "pkcs11.h"
+
 #ifdef WITH_DEBUG
 
-static GcrDebugFlags current_flags = 0;
+static GckDebugFlags current_flags = 0;
 
 static GDebugKey keys[] = {
-	{ "library", GCR_DEBUG_LIBRARY },
-	{ "certificate-chain", GCR_DEBUG_CERTIFICATE_CHAIN },
-	{ "parse", GCR_DEBUG_PARSE },
-	{ "gnupg", GCR_DEBUG_GNUPG },
-	{ "trust", GCR_DEBUG_TRUST },
+	{ "session", GCK_DEBUG_SESSION },
+	{ "enumerator", GCK_DEBUG_ENUMERATOR },
 	{ 0, }
 };
 
 static void
-debug_set_flags (GcrDebugFlags new_flags)
+debug_set_flags (GckDebugFlags new_flags)
 {
 	current_flags |= new_flags;
 }
 
 void
-_gcr_debug_set_flags (const gchar *flags_string)
+_gck_debug_set_flags (const gchar *flags_string)
 {
 	guint nkeys;
 
@@ -62,20 +57,22 @@ _gcr_debug_set_flags (const gchar *flags_string)
 }
 
 gboolean
-_gcr_debug_flag_is_set (GcrDebugFlags flag)
+_gck_debug_flag_is_set (GckDebugFlags flag)
 {
 	return (flag & current_flags) != 0;
 }
 
 void
-_gcr_debug_message (GcrDebugFlags flag, const gchar *format, ...)
+_gck_debug_message (GckDebugFlags flag,
+                    const gchar *format,
+                    ...)
 {
 	static gsize initialized_flags = 0;
 	gchar *message;
 	va_list args;
 
 	if (g_once_init_enter (&initialized_flags)) {
-		_gcr_debug_set_flags (g_getenv ("GCR_DEBUG"));
+		_gck_debug_set_flags (g_getenv ("GCK_DEBUG"));
 		g_once_init_leave (&initialized_flags, 1);
 	}
 
@@ -92,18 +89,20 @@ _gcr_debug_message (GcrDebugFlags flag, const gchar *format, ...)
 #else /* !WITH_DEBUG */
 
 gboolean
-_gcr_debug_flag_is_set (GcrDebugFlags flag)
+_gck_debug_flag_is_set (GckDebugFlags flag)
 {
 	return FALSE;
 }
 
 void
-_gcr_debug_message (GcrDebugFlags flag, const gchar *format, ...)
+_gck_debug_message (GckDebugFlags flag,
+                    const gchar *format,
+                    ...)
 {
 }
 
 void
-_gcr_debug_set_flags (const gchar *flags_string)
+_gck_debug_set_flags (const gchar *flags_string)
 {
 }
 

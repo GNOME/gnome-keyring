@@ -24,6 +24,8 @@
 #include "config.h"
 
 #include "gck.h"
+#define DEBUG_FLAG GCK_DEBUG_SESSION
+#include "gck-debug.h"
 #include "gck-marshal.h"
 #include "gck-private.h"
 
@@ -852,12 +854,25 @@ perform_create_object (CreateObject *args)
 {
 	CK_ATTRIBUTE_PTR attrs;
 	CK_ULONG n_attrs;
+	CK_RV rv;
 
 	attrs = _gck_attributes_commit_out (args->attrs, &n_attrs);
 
-	return (args->base.pkcs11->C_CreateObject) (args->base.handle,
-	                                            attrs, n_attrs,
-	                                            &args->object);
+	rv = (args->base.pkcs11->C_CreateObject) (args->base.handle,
+	                                          attrs, n_attrs,
+	                                          &args->object);
+
+	if (_gck_debugging) {
+		gchar *string = _gck_attributes_format (args->attrs);
+		if (rv == CKR_OK)
+			_gck_debug ("created object: %s", string);
+		else
+			_gck_debug ("failed %s to create object: %s",
+			            _gck_stringize_rv (rv), string);
+		g_free (string);
+	}
+
+	return rv;
 }
 
 /**
@@ -969,6 +984,12 @@ perform_find_objects (FindObjects *args)
 	CK_ULONG n_attrs;
 	GArray *array;
 	CK_RV rv;
+
+	if (_gck_debugging) {
+		gchar *string = _gck_attributes_format (args->attrs);
+		_gck_debug ("matching: %s", string);
+		g_free (string);
+	}
 
 	attrs = _gck_attributes_commit_out (args->attrs, &n_attrs);
 

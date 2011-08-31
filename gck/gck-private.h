@@ -49,6 +49,8 @@ CK_ATTRIBUTE_PTR    _gck_attributes_commit_in              (GckAttributes *attrs
 CK_ATTRIBUTE_PTR    _gck_attributes_commit_out             (GckAttributes *attrs,
                                                              CK_ULONG_PTR n_attrs);
 
+gchar *             _gck_attributes_format                 (GckAttributes *attrs);
+
 /* ----------------------------------------------------------------------------
  * MISC
  */
@@ -57,6 +59,8 @@ guint               _gck_ulong_hash                        (gconstpointer v);
 
 gboolean            _gck_ulong_equal                       (gconstpointer v1,
                                                              gconstpointer v2);
+
+const gchar *       _gck_stringize_rv                      (CK_RV rv);
 
 /* ----------------------------------------------------------------------------
  * MODULE

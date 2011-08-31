@@ -70,7 +70,8 @@ INCLUDES = \
 	$(GLIB_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS) \
 	$(LIBTASN1_CFLAGS) \
-	$(P11_KIT_CFLAGS)
+	$(P11_KIT_CFLAGS) \
+	-DG_LOG_DOMAIN=\"Gcr\"
 
 BUILT_SOURCES = \
 	gcr-marshal.c gcr-marshal.h \

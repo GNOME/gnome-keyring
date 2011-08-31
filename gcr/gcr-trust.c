@@ -24,6 +24,8 @@
 #include "config.h"
 
 #include "gcr.h"
+#define DEBUG_FLAG GCR_DEBUG_TRUST
+#include "gcr-debug.h"
 #include "gcr-types.h"
 #include "gcr-internal.h"
 #include "gcr-library.h"
@@ -163,6 +165,8 @@ perform_is_certificate_pinned (GckAttributes *search,
 		return FALSE;
 
 	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	_gcr_debug ("searching for pinned certificate in %d slots",
+	            g_list_length (slots));
 	en = gck_slots_enumerate_objects (slots, search, 0);
 	gck_list_unref_free (slots);
 
@@ -172,6 +176,7 @@ perform_is_certificate_pinned (GckAttributes *search,
 	if (object)
 		g_object_unref (object);
 
+	_gcr_debug ("%s certificate anchor", object ? "found" : "did not find");
 	return (object != NULL);
 }
 
@@ -734,6 +739,8 @@ perform_is_certificate_anchored (GckAttributes *attrs,
 		return FALSE;
 
 	slots = gcr_pkcs11_get_trust_lookup_slots ();
+	_gcr_debug ("searching for certificate anchor in %d slots",
+	            g_list_length (slots));
 	en = gck_slots_enumerate_objects (slots, attrs, 0);
 	gck_list_unref_free (slots);
 
@@ -743,6 +750,7 @@ perform_is_certificate_anchored (GckAttributes *attrs,
 	if (object != NULL)
 		g_object_unref (object);
 
+	_gcr_debug ("%s certificate anchor", object ? "found" : "did not find");
 	return (object != NULL);
 }
 
