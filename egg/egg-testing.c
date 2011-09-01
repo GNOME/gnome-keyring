@@ -80,27 +80,6 @@ egg_assertion_message_cmpmem (const char     *domain,
 }
 
 void
-egg_tests_chdir_base (gchar* argv0)
-{
-	gchar *dir, *base;
-
-	dir = g_path_get_dirname (argv0);
-	if (chdir (dir) < 0)
-		g_warning ("couldn't change directory to: %s: %s",
-		           dir, g_strerror (errno));
-
-	base = g_path_get_basename (dir);
-	if (strcmp (base, ".libs") == 0) {
-		if (chdir ("..") < 0)
-			g_warning ("couldn't change directory to ..: %s",
-			           g_strerror (errno));
-	}
-
-	g_free (base);
-	g_free (dir);
-}
-
-void
 egg_test_wait_stop (void)
 {
 	GTimeVal tv;

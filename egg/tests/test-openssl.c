@@ -204,7 +204,6 @@ int
 main (int argc, char **argv)
 {
 	g_test_init (&argc, &argv, NULL);
-	egg_tests_chdir_base (argv[0]);
 
 	g_test_add ("/openssl/parse_reference", Test, NULL, setup, test_parse_reference, teardown);
 	g_test_add ("/openssl/write_reference", Test, NULL, setup, test_write_reference, teardown);

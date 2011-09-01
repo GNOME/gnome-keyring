@@ -53,24 +53,26 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	if (!g_file_get_contents ("files/client.crt", (gchar**)&test->cert_rsa,
-	                          &test->n_cert_rsa, NULL))
-		g_assert_not_reached ();
+	GError *error = NULL;
+
+	g_file_get_contents (SRCDIR "/files/client.crt", (gchar**)&test->cert_rsa,
+	                     &test->n_cert_rsa, &error);
+	g_assert_no_error (error);
 	g_assert (test->cert_rsa);
 
-	if (!g_file_get_contents ("files/client.key", (gchar**)&test->key_rsa,
-	                          &test->n_key_rsa, NULL))
-		g_assert_not_reached ();
+	g_file_get_contents (SRCDIR "/files/client.key", (gchar**)&test->key_rsa,
+	                     &test->n_key_rsa, &error);
+	g_assert_no_error (error);
 	g_assert (test->key_rsa);
 
-	if (!g_file_get_contents ("files/generic-dsa.crt", (gchar**)&test->cert_dsa,
-	                          &test->n_cert_dsa, NULL))
-		g_assert_not_reached ();
+	g_file_get_contents (SRCDIR "/files/generic-dsa.crt", (gchar**)&test->cert_dsa,
+	                     &test->n_cert_dsa, &error);
+	g_assert_no_error (error);
 	g_assert (test->cert_dsa);
 
-	if (!g_file_get_contents ("files/generic-dsa.key", (gchar**)&test->key_dsa,
-	                          &test->n_key_dsa, NULL))
-		g_assert_not_reached ();
+	g_file_get_contents (SRCDIR "/files/generic-dsa.key", (gchar**)&test->key_dsa,
+	                     &test->n_key_dsa, &error);
+	g_assert_no_error (error);
 	g_assert (test->key_dsa);
 }
 
@@ -83,22 +85,31 @@ teardown (Test *test, gconstpointer unused)
 	g_free (test->key_dsa);
 }
 
+static void
+on_parser_parsed (GcrParser *parser,
+                  gpointer user_data)
+{
+	GckAttributes **attrs = user_data;
+	g_assert (!*attrs);
+	*attrs = gcr_parser_get_parsed_attributes (parser);
+	g_assert (*attrs);
+	gck_attributes_ref (*attrs);
+}
+
 static GckAttributes*
 parse_attributes_for_key (gpointer data, gsize n_data)
 {
 	GcrParser *parser;
-	GckAttributes *attrs;
+	GckAttributes *attrs = NULL;
 	GError *error = NULL;
 
 	parser = gcr_parser_new ();
+	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), &attrs);
 	gcr_parser_parse_data (parser, data, n_data, &error);
 	g_assert_no_error (error);
-
-	attrs = gcr_parser_get_parsed_attributes (parser);
-	g_assert (attrs);
-	gck_attributes_ref (attrs);
-
 	g_object_unref (parser);
+
+	g_assert (attrs);
 	return attrs;
 }
 
@@ -165,14 +176,8 @@ test_dsa (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/fingerprint/rsa", Test, NULL, setup, test_rsa, teardown);
 	g_test_add ("/gcr/fingerprint/dsa", Test, NULL, setup, test_dsa, teardown);

@@ -381,6 +381,7 @@ GcrViewerIface
 gcr_viewer_new
 gcr_viewer_new_scrolled
 gcr_viewer_add_renderer
+gcr_viewer_insert_renderer
 gcr_viewer_remove_renderer
 gcr_viewer_count_renderers
 gcr_viewer_get_renderer

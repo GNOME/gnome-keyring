@@ -47,8 +47,6 @@ void       egg_test_wait_stop                  (void);
 
 gboolean   egg_test_wait_until                 (int timeout);
 
-void       egg_tests_chdir_base                (gchar* argv0);
-
 gint       egg_tests_run_in_thread_with_loop   (void);
 
 #endif /* EGG_DH_H_ */

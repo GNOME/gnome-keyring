@@ -100,8 +100,6 @@ main (int argc, char **argv)
 	build_personal_name ();
 #endif
 
-	egg_tests_chdir_base (argv[0]);
-
 	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-certificate-1.der", "Certificate");
 	test_some_asn1_stuff (pkix_asn1_tab, SRCDIR "/files/test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo");
 	test_some_asn1_stuff (pk_asn1_tab, SRCDIR "/files/test-rsakey-1.der", "RSAPrivateKey");

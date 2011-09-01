@@ -1,7 +1,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/daemon/dbus \
-	-DSRCDIR="\"$(srcdir)\"" \
+	-DSRCDIR="\"@abs_srcdir@\"" \
 	$(DAEMON_CFLAGS) \
 	$(GLIB_CFLAGS)
 

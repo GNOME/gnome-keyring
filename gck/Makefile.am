@@ -96,7 +96,8 @@ check-local: check-symbols
 EXTRA_DIST = \
 	gck.pc.in \
 	gck-marshal.list \
-	gck.symbols
+	gck.symbols \
+	pkcs11-trust-assertions.h
 
 CLEANFILES = \
 	gck-actual.abi \

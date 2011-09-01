@@ -122,6 +122,7 @@ gcr_parser_format_disable
 gcr_parser_format_enable
 gcr_parser_format_supported
 gcr_parser_get_parsed_attributes
+gcr_parser_get_parsed_block
 gcr_parser_get_parsed_description
 gcr_parser_get_parsed_label
 gcr_parser_get_type
@@ -190,6 +191,7 @@ gcr_unlock_options_widget_set_label
 gcr_unlock_options_widget_set_sensitive
 gcr_unlock_options_widget_set_ttl
 gcr_viewer_add_renderer
+gcr_viewer_insert_renderer
 gcr_viewer_count_renderers
 gcr_viewer_get_renderer
 gcr_viewer_get_type

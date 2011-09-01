@@ -63,11 +63,13 @@ IGNORE_HFILES= \
 	gcr-certificate-details-widget.h \
 	gcr-display-scrolled.h \
 	gcr-display-view.h \
+	gcr-failure-renderer.h \
 	gcr-icons.h \
 	gcr-import-dialog.h \
 	gcr-internal.h \
 	gcr-live-search.h \
 	gcr-marshal.h \
+	gcr-unlock-renderer.h \
 	gcr-xxx.h \
 	gcr-zzz.h
 

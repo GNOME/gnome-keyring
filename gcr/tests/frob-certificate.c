@@ -32,27 +32,6 @@
 #include <errno.h>
 
 static void
-chdir_base_dir (char* argv0)
-{
-	gchar *dir, *base;
-
-	dir = g_path_get_dirname (argv0);
-	if (chdir (dir) < 0)
-		g_warning ("couldn't change directory to: %s: %s",
-		           dir, g_strerror (errno));
-
-	base = g_path_get_basename (dir);
-	if (strcmp (base, ".libs") == 0) {
-		if (chdir ("..") < 0)
-			g_warning ("couldn't change directory to ..: %s",
-			           g_strerror (errno));
-	}
-
-	g_free (base);
-	g_free (dir);
-}
-
-static void
 on_parser_parsed (GcrParser *parser, gpointer user_data)
 {
 	GcrCertificateWidget *details;
@@ -104,12 +83,10 @@ main(int argc, char *argv[])
 	gtk_init (&argc, &argv);
 	g_set_prgname ("frob-certificate");
 
-	if (argc > 1) {
+	if (argc > 1)
 		test_certificate (argv[1]);
-	} else {
-		chdir_base_dir (argv[0]);
+	else
 		test_certificate (SRCDIR "/files/der-certificate.crt");
-	}
 
 	return 0;
 }

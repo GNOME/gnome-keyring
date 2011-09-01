@@ -97,12 +97,9 @@ on_async_ready (GObject *source, GAsyncResult *result, gpointer user_data)
 static gchar*
 build_script_path (const gchar *name)
 {
-	gchar *directory;
 	gchar *path;
 
-	directory = g_get_current_dir ();
-	path = g_build_filename (directory, "files", "gnupg-mock", name, NULL);
-	g_free (directory);
+	path = g_build_filename (SRCDIR, "files", "gnupg-mock", name, NULL);
 
 	return path;
 }
@@ -332,14 +329,11 @@ test_run_with_homedir (Test *test, gconstpointer unused)
 	const gchar *argv[] = { NULL };
 	GError *error = NULL;
 	gchar *script;
-	gchar *directory;
 	gchar *check;
 	gboolean ret;
 
-	directory = g_get_current_dir ();
-
 	script = build_script_path ("mock-with-homedir");
-	test->process = _gcr_gnupg_process_new (directory, script);
+	test->process = _gcr_gnupg_process_new (SRCDIR, script);
 	g_free (script);
 
 	g_signal_connect (test->process, "output-data", G_CALLBACK (on_process_output_data), test);
@@ -352,10 +346,9 @@ test_run_with_homedir (Test *test, gconstpointer unused)
 	g_assert_no_error (error);
 	g_assert (ret == TRUE);
 
-	check = g_strdup_printf ("DIR: %s\n", directory);
+	check = g_strdup_printf ("DIR: %s\n", SRCDIR);
 	g_assert_cmpstr (check, ==, test->output_buf->str);
 	g_free (check);
-	g_free (directory);
 
 	g_clear_object (&test->result);
 	g_clear_object (&test->process);
@@ -508,15 +501,9 @@ test_run_and_cancel_later (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 	g_set_prgname ("test-gnupg-process");
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/gnupg-process/create", Test, NULL, setup, test_create, teardown);
 	g_test_add ("/gcr/gnupg-process/run_simple_output", Test, NULL, setup, test_run_simple_output, teardown);

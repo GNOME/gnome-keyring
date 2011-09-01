@@ -82,10 +82,8 @@ static void
 setup (Test *test, gconstpointer unused)
 {
 	GcrCollection *collection;
-	gchar *directory;
 
-	directory = g_get_current_dir ();
-	test->directory = g_build_filename (directory, "files", "gnupg-homedir", NULL);
+	test->directory = g_build_filename (SRCDIR, "files", "gnupg-homedir", NULL);
 
 	collection = _gcr_gnupg_collection_new (test->directory);
 	test->collection = GCR_GNUPG_COLLECTION (collection);
@@ -93,8 +91,6 @@ setup (Test *test, gconstpointer unused)
 	test->keys = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	g_signal_connect (collection, "added", G_CALLBACK (on_collection_added), test);
 	g_signal_connect (collection, "removed", G_CALLBACK (on_collection_removed), test);
-
-	g_free (directory);
 }
 
 static void
@@ -214,15 +210,9 @@ test_reload (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
-	const gchar *srcdir;
-
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 	g_set_prgname ("test-gnupg-collection");
-
-	srcdir = g_getenv ("SRCDIR");
-	if (srcdir && chdir (srcdir) < 0)
-		g_error ("couldn't change directory to: %s: %s", srcdir, g_strerror (errno));
 
 	g_test_add ("/gcr/gnupg-collection/properties", Test, NULL, setup, test_properties, teardown);
 	g_test_add ("/gcr/gnupg-collection/load", Test, NULL, setup, test_load, teardown);

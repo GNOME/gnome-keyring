@@ -10,27 +10,6 @@
 #include <errno.h>
 
 static void
-chdir_base_dir (char* argv0)
-{
-	gchar *dir, *base;
-
-	dir = g_path_get_dirname (argv0);
-	if (chdir (dir) < 0)
-		g_warning ("couldn't change directory to: %s: %s",
-		           dir, g_strerror (errno));
-
-	base = g_path_get_basename (dir);
-	if (strcmp (base, ".libs") == 0) {
-		if (chdir ("..") < 0)
-			g_warning ("couldn't change directory to ..: %s",
-			           g_strerror (errno));
-	}
-
-	g_free (base);
-	g_free (dir);
-}
-
-static void
 on_parser_parsed (GcrParser *parser, gpointer user_data)
 {
 	GcrSimpleCollection *collection = user_data;
@@ -89,7 +68,6 @@ main (int argc, char *argv[])
 	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), collection);
 
 	if (argc == 1) {
-		chdir_base_dir (argv[0]);
 		add_to_selector (parser, "files/ca-certificates.crt");
 	} else {
 		for (i = 1; i < argc; ++i)

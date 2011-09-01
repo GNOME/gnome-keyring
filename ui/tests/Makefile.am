@@ -2,7 +2,7 @@
 INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
-	-DSRCDIR="\"$(srcdir)\"" \
+	-DSRCDIR="\"@abs_srcdir@\"" \
 	$(GLIB_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS)
 

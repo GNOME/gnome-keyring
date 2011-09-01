@@ -2,7 +2,7 @@
 INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
-	-DSRCDIR="\"$(srcdir)\"" \
+	-DSRCDIR="\"@abs_srcdir@\"" \
 	-DBUILDDIR="\"$(builddir)\"" \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	$(GLIB_CFLAGS)

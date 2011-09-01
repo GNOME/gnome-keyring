@@ -3,7 +3,7 @@ INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
-	-DSRCDIR="\"$(srcdir)\"" \
+	-DSRCDIR="\"@abs_srcdir@\"" \
 	$(GLIB_CFLAGS) \
 	-DWITH_TESTABLE
 

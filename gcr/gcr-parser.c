@@ -1779,15 +1779,12 @@ gcr_parser_format_enable (GcrParser *self, gint format_id)
 
 	g_return_if_fail (GCR_IS_PARSER (self));
 
-	if (format_id != -1) {
-		format = parser_format_lookup (format_id);
-		g_return_if_fail (format);
-	}
-
 	if (!self->pv->specific_formats)
 		self->pv->specific_formats = g_tree_new (compare_pointers);
 
 	if (format_id != -1) {
+		format = parser_format_lookup (format_id);
+		g_return_if_fail (format);
 		g_tree_insert (self->pv->specific_formats,
 		               (gpointer)format, (gpointer)format);
 	} else {

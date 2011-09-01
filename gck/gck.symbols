@@ -83,6 +83,7 @@ gck_modules_initialize_registered_finish
 gck_modules_object_for_uri
 gck_modules_objects_for_uri
 gck_modules_token_for_uri
+gck_modules_tokens_for_uri
 gck_object_destroy
 gck_object_destroy_async
 gck_object_destroy_finish
