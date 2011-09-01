@@ -862,6 +862,7 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 	GQuark oid;
 	const guchar *element;
 	gsize n_element;
+	guint i;
 
 	ret = GCR_ERROR_UNRECOGNIZED;
 
@@ -877,20 +878,14 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 	/* 
 	 * Now inside each bag are multiple elements. Who comes up 
 	 * with this stuff?
-	 * 
-	 * But this is where we draw the line. We only support one
-	 * element per bag, not multiple elements, not strange
-	 * nested bags, not fairy queens with magical wands in bags...
-	 * 
-	 * Just one element per bag.
 	 */
-	if (count >= 1) {
+	for (i = 1; i <= count; i++) {
 
-		oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, 1, "bagId", NULL));
+		oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, i, "bagId", NULL));
 		if (!oid)
 			goto done;
 
-		element = egg_asn1x_get_raw_element (egg_asn1x_node (asn, 1, "bagValue", NULL), &n_element);
+		element = egg_asn1x_get_raw_element (egg_asn1x_node (asn, i, "bagValue", NULL), &n_element);
 		if (!element)
 			goto done;
 

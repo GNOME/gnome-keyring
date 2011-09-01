@@ -1,3 +1,16 @@
-$ openssl x509 -CAserial serial.txt -CA certs/ca.crt -CAkey keys/ca.key -days 3650 -req -in requests/client.req -out certs/client.crt
+# Signing a client certificate
+$ openssl x509 -CAserial serial.txt -CA certs/ca.crt -CAkey keys/ca.key \
+	-days 3650 -req -in requests/client.req -out certs/client.crt
 
-$ openssl x509 -signkey keys/server.key -days 3650 -req -in requests/server.req -out certs/server-self.crt
+# Self-signing a certificate
+$ openssl x509 -signkey keys/server.key -days 3650 -req \
+	-in requests/server.req -out certs/server-self.crt
+
+# Generating an basic certificate request
+$ openssl req -new -subj /CN=personal@example.com -out requests/personal.req \
+	-keyout keys/personal.key
+
+# Creating a PKCS#12 file from key and certificate
+openssl pkcs12 -export -in certs/personal.crt -inkey keys/personal.key \
+	-certfile certs/ca.crt -name "Example Certificate" \
+	-out certs/personal.p12
