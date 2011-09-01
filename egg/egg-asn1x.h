@@ -156,6 +156,8 @@ gboolean            egg_asn1x_set_string_as_utf8     (GNode *node,
                                                       gchar *data,
                                                       GDestroyNotify destroy);
 
+gchar *             egg_asn1x_get_bmpstring_as_utf8  (GNode *node);
+
 glong               egg_asn1x_get_time_as_long       (GNode *node);
 
 gboolean            egg_asn1x_set_time_as_long       (GNode *node,

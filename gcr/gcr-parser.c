@@ -251,10 +251,7 @@ parsing_begin (GcrParser *self,
 	else 
 		self->pv->parsed_attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (self->pv->parsed_attrs, CKA_CLASS, klass);
-	
-	g_free (self->pv->parsed_label);
-	self->pv->parsed_label = NULL;
-	
+
 	switch (klass) {
 	case CKO_PRIVATE_KEY:
 		self->pv->parsed_desc = _("Private Key");
@@ -697,8 +694,8 @@ parse_der_pkcs8 (GcrParser *self, const guchar *data, gsize n_data)
 static gint
 parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 {
+	gchar *name = NULL;
 	GNode *asn;
-	gchar *name;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	if (asn == NULL)
@@ -708,7 +705,9 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 
 	parsed_ulong (self, CKA_CERTIFICATE_TYPE, CKC_X_509);
 
-	name = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), "CN");
+	if (self->pv->parsed_label == NULL)
+		name = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), "CN");
+
 	egg_asn1x_destroy (asn);
 
 	if (name != NULL) {
@@ -853,6 +852,41 @@ done:
 	return ret;
 }
 
+static gchar *
+parse_pkcs12_bag_friendly_name (GNode *asn)
+{
+	guint count, i;
+	GQuark oid;
+	GNode *node;
+	gconstpointer element;
+	gsize n_element;
+	GNode *asn_str;
+	gchar *result;
+
+	if (asn == NULL)
+		return NULL;
+
+	count = egg_asn1x_count (asn);
+	for (i = 1; i <= count; i++) {
+		oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, i, "type", NULL));
+		if (oid == GCR_OID_PKCS9_ATTRIBUTE_FRIENDLY) {
+			node = egg_asn1x_node (asn, i, "values", 1, NULL);
+			if (node != NULL) {
+				element = egg_asn1x_get_raw_element (node, &n_element);
+				asn_str = egg_asn1x_create_and_decode (pkix_asn1_tab, "BMPString",
+				                                       element, n_element);
+				if (asn_str) {
+					result = egg_asn1x_get_bmpstring_as_utf8 (asn_str);
+					egg_asn1x_destroy (asn_str);
+					return result;
+				}
+			}
+		}
+	}
+
+	return NULL;
+}
+
 static gint
 handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 {
@@ -861,6 +895,7 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 	guint count = 0;
 	GQuark oid;
 	const guchar *element;
+	gchar *friendly;
 	gsize n_element;
 	guint i;
 
@@ -889,6 +924,10 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 		if (!element)
 			goto done;
 
+		friendly = parse_pkcs12_bag_friendly_name (egg_asn1x_node (asn, i, "bagAttributes", NULL));
+		if (friendly != NULL)
+			parsed_label (self, friendly);
+
 		/* A normal unencrypted key */
 		if (oid == GCR_OID_PKCS12_BAG_PKCS8_KEY) {
 			r = parse_der_pkcs8_plain (self, element, n_element);
@@ -905,7 +944,10 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 		} else {
 			r = GCR_ERROR_UNRECOGNIZED;
 		}
-		 
+
+		if (friendly != NULL)
+			parsed_label (self, NULL);
+
 		if (r == GCR_ERROR_FAILURE || r == GCR_ERROR_CANCELLED) {
 			ret = r;
 			goto done;

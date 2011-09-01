@@ -2796,6 +2796,25 @@ egg_asn1x_set_string_as_raw (GNode *node, guchar *data, gsize n_data, GDestroyNo
 	return TRUE;
 }
 
+gchar *
+egg_asn1x_get_bmpstring_as_utf8 (GNode *node)
+{
+	gchar *string;
+	gsize n_string;
+	gchar *utf8;
+
+	g_return_val_if_fail (node, NULL);
+
+	string = (gchar*)egg_asn1x_get_string_as_raw (node, NULL, &n_string);
+	if (!string)
+		return NULL;
+
+	utf8 = g_convert (string, n_string, "UTF-8", "UTF-16BE", NULL, NULL, NULL);
+	g_free (string);
+
+	return utf8;
+}
+
 gchar*
 egg_asn1x_get_string_as_utf8 (GNode *node, EggAllocator allocator)
 {
