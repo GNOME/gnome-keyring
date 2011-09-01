@@ -169,6 +169,9 @@ _gcr_unlock_renderer_init (GcrUnlockRenderer *self)
 	gtk_box_pack_start (GTK_BOX (box), GTK_WIDGET (self->pv->entry), TRUE, FALSE, 0);
 	gtk_widget_show (GTK_WIDGET (self->pv->entry));
 	g_object_unref (buffer);
+#if GTK_CHECK_VERSION (3,1,1)
+	gtk_entry_set_placeholder_text (self->pv->entry, _("Password"));
+#endif
 
 	button = gtk_button_new_with_label (_("Unlock"));
 	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
