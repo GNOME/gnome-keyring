@@ -60,13 +60,6 @@ GcrCollectionModel*   gcr_collection_model_new_full            (GcrCollection *c
 void                  gcr_collection_model_set_columns         (GcrCollectionModel *self,
                                                                 const GcrColumn *columns);
 
-void                  gcr_collection_model_get_child_property  (GcrCollectionModel *self,
-                                                                const gchar *property_name);
-
-void                  gcr_collection_model_set_child_property  (GcrCollectionModel *self,
-                                                                const gchar *property_name,
-                                                                GValueTransform transformer);
-
 GObject*              gcr_collection_model_object_for_iter     (GcrCollectionModel *self,
                                                                 const GtkTreeIter *iter);
 

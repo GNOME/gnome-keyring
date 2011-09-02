@@ -9,19 +9,125 @@
 #include <string.h>
 #include <errno.h>
 
+#define TEST_TYPE_COLLECTION               (test_collection_get_type ())
+#define TEST_COLLECTION(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), TEST_TYPE_COLLECTION, TestCollection))
+#define TEST_IS_COLLECTION(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TEST_TYPE_COLLECTION))
+
+typedef struct _TestCollection TestCollection;
+typedef struct _TestCollectionClass TestCollectionClass;
+typedef struct _TestCollectionPrivate TestCollectionPrivate;
+
+struct _TestCollection {
+	GcrSimpleCollection parent;
+	gchar *label;
+};
+
+struct _TestCollectionClass {
+	GcrSimpleCollectionClass parent_class;
+};
+
+GType test_collection_get_type (void) G_GNUC_CONST;
+
+enum {
+	PROP_0,
+	PROP_LABEL,
+};
+
+G_DEFINE_TYPE (TestCollection, test_collection, GCR_TYPE_SIMPLE_COLLECTION);
+
+static GHashTable *all_collections = NULL;
+
+static void
+test_collection_init (TestCollection *self)
+{
+
+}
+
+static void
+test_collection_finalize (GObject *obj)
+{
+	TestCollection *self = TEST_COLLECTION (obj);
+	g_free (self->label);
+	g_hash_table_remove (all_collections, self);
+	G_OBJECT_CLASS (test_collection_parent_class)->finalize (obj);
+}
+
+static void
+test_collection_get_property (GObject *obj,
+                              guint prop_id,
+                              GValue *value,
+                              GParamSpec *pspec)
+{
+	TestCollection *self = TEST_COLLECTION (obj);
+	switch (prop_id) {
+	case PROP_LABEL:
+		g_value_set_string (value, self->label);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+test_collection_class_init (TestCollectionClass *klass)
+{
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	gobject_class->get_property = test_collection_get_property;
+	gobject_class->finalize = test_collection_finalize;
+
+	g_object_class_install_property (gobject_class, PROP_LABEL,
+	           g_param_spec_string ("label", "label", "label", NULL, G_PARAM_READABLE));
+}
+
+static GcrSimpleCollection *
+test_collection_instance (const gchar *label)
+{
+	TestCollection *collection = NULL;
+
+	g_assert (label);
+
+	if (!all_collections) {
+		all_collections = g_hash_table_new (g_str_hash, g_str_equal);
+	} else {
+		collection = g_hash_table_lookup (all_collections, label);
+		if (collection != NULL)
+			return g_object_ref (collection);
+	}
+
+	collection = g_object_new (TEST_TYPE_COLLECTION, NULL);
+	collection->label = g_strdup (label);
+	g_hash_table_insert (all_collections, collection->label, collection);
+	return GCR_SIMPLE_COLLECTION (collection);
+}
+
 static void
 on_parser_parsed (GcrParser *parser, gpointer user_data)
 {
 	GcrSimpleCollection *collection = user_data;
+	GcrSimpleCollection *testcol;
 	GcrRenderer *renderer;
+	gchar *group;
 
 	renderer = gcr_renderer_create (gcr_parser_get_parsed_label (parser),
 	                                gcr_parser_get_parsed_attributes (parser));
+	if (renderer == NULL)
+		return;
 
-	if (renderer) {
-		gcr_simple_collection_add (collection, G_OBJECT (renderer));
-		g_object_unref (renderer);
-	}
+	if (GCR_IS_CERTIFICATE (renderer))
+		group = gcr_certificate_get_subject_part (GCR_CERTIFICATE (renderer), "O");
+	else
+		group = g_strdup (G_OBJECT_TYPE_NAME (renderer));
+
+
+	testcol = test_collection_instance (group);
+	if (!gcr_simple_collection_contains (collection, G_OBJECT (testcol)))
+		gcr_simple_collection_add (collection, G_OBJECT (testcol));
+
+	gcr_simple_collection_add (GCR_SIMPLE_COLLECTION (testcol), G_OBJECT (renderer));
+	g_object_unref (renderer);
+	g_object_unref (testcol);
+	g_free (group);
 }
 
 static void
