@@ -75,34 +75,251 @@ enum {
 	PROP_COLUMNS
 };
 
+typedef struct {
+	GtkTreeIterCompareFunc sort_func;
+	gpointer user_data;
+	GDestroyNotify destroy_func;
+} GcrCollectionSortClosure;
+
+typedef struct _GcrCollectionColumn {
+	gchar *property;
+	GType *type;
+	GtkTreeIterCompareFunc sort_func;
+	gpointer sort_data;
+	GDestroyNotify sort_destroy;
+} GcrCollectionColumn;
+
 struct _GcrCollectionModelPrivate {
 	GcrCollection *collection;
 	GHashTable *selected;
-	GSequence *objects;
+	GSequence *object_sequence;
+	GHashTable *object_to_sequence;
 
 	const GcrColumn *columns;
 	guint n_columns;
+
+	/* Sort information */
+	gint sort_column_id;
+	GtkSortType sort_order_type;
+	GcrCollectionSortClosure *column_sort_closures;
+	GcrCollectionSortClosure default_sort_closure;
+
+	/* Sequence ordering information */
+	GCompareDataFunc order_current;
+	gpointer order_argument;
 };
 
 /* Forward declarations */
 static void gcr_collection_model_tree_model_init (GtkTreeModelIface *iface);
+static void gcr_collection_model_tree_sortable_init (GtkTreeSortableIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (GcrCollectionModel, gcr_collection_model, G_TYPE_OBJECT,
-	G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, gcr_collection_model_tree_model_init);
+G_DEFINE_TYPE_EXTENDED (GcrCollectionModel, gcr_collection_model, G_TYPE_OBJECT, 0,
+                        G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, gcr_collection_model_tree_model_init)
+                        G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_SORTABLE, gcr_collection_model_tree_sortable_init)
 );
 
-#define UNUSED_VALUE GINT_TO_POINTER (1)
+typedef gint (*CompareValueFunc) (const GValue *va,
+                                  const GValue *vb);
+
+static gint
+compare_int_value (const GValue *va,
+                   const GValue *vb)
+{
+	gint a = g_value_get_int (va);
+	gint b = g_value_get_int (vb);
+	if (a > b) return 1;
+	else if (a < b) return -1;
+	return 0;
+}
+
+static gint
+compare_uint_value (const GValue *va,
+                    const GValue *vb)
+{
+	guint a = g_value_get_uint (va);
+	guint b = g_value_get_uint (vb);
+	if (a > b) return 1;
+	else if (a < b) return -1;
+	return 0;
+}
+
+static gint
+compare_long_value (const GValue *va,
+                    const GValue *vb)
+{
+	glong a = g_value_get_long (va);
+	glong b = g_value_get_long (vb);
+	if (a > b) return 1;
+	else if (a < b) return -1;
+	return 0;
+}
+
+static gint
+compare_ulong_value (const GValue *va,
+                     const GValue *vb)
+{
+	gulong a = g_value_get_ulong (va);
+	gulong b = g_value_get_ulong (vb);
+	if (a > b) return 1;
+	else if (a < b) return -1;
+	return 0;
+}
+
+static gint
+compare_string_value (const GValue *va,
+                      const GValue *vb)
+{
+	const gchar *a = g_value_get_string (va);
+	const gchar *b = g_value_get_string (vb);
+	gchar *case_a;
+	gchar *case_b;
+	gboolean ret;
+
+	if (a == b)
+		return 0;
+	else if (!a)
+		return -1;
+	else if (!b)
+		return 1;
+
+	case_a = g_utf8_casefold (a, -1);
+	case_b = g_utf8_casefold (b, -1);
+	ret = g_utf8_collate (case_a, case_b);
+	g_free (case_a);
+	g_free (case_b);
+
+	return ret;
+}
+
+static gint
+compare_date_value (const GValue *va,
+                    const GValue *vb)
+{
+	GDate *a = g_value_get_boxed (va);
+	GDate *b = g_value_get_boxed (vb);
+
+	if (a == b)
+		return 0;
+	else if (!a)
+		return -1;
+	else if (!b)
+		return 1;
+	else
+		return g_date_compare (a, b);
+}
+
+static CompareValueFunc
+lookup_compare_func (GType type)
+{
+	switch (type) {
+	case G_TYPE_INT:
+		return compare_int_value;
+	case G_TYPE_UINT:
+		return compare_uint_value;
+	case G_TYPE_LONG:
+		return compare_long_value;
+	case G_TYPE_ULONG:
+		return compare_ulong_value;
+	case G_TYPE_STRING:
+		return compare_string_value;
+	}
+
+	if (type == G_TYPE_DATE)
+		return compare_date_value;
+
+	return NULL;
+}
+
+static gint
+order_sequence_by_closure (gconstpointer a,
+                           gconstpointer b,
+                           gpointer user_data)
+{
+	GcrCollectionModel *self = GCR_COLLECTION_MODEL (user_data);
+	GcrCollectionSortClosure *closure = self->pv->order_argument;
+	GtkTreeIter iter_a;
+	GtkTreeIter iter_b;
+
+	g_assert (closure);
+	g_assert (closure->sort_func);
+
+	if (!gcr_collection_model_iter_for_object (self, (GObject *)a, &iter_a))
+		g_return_val_if_reached (0);
+	if (!gcr_collection_model_iter_for_object (self, (GObject *)b, &iter_b))
+		g_return_val_if_reached (0);
+
+	return (closure->sort_func) (GTK_TREE_MODEL (self),
+	                             &iter_a, &iter_b, closure->user_data);
+}
+
+static gint
+order_sequence_by_closure_reverse (gconstpointer a,
+                                   gconstpointer b,
+                                   gpointer user_data)
+{
+	return 0 - order_sequence_by_closure (a, b, user_data);
+}
+
+static gint
+order_sequence_as_unsorted (gconstpointer a,
+                            gconstpointer b,
+                            gpointer user_data)
+{
+	return GPOINTER_TO_INT (a) - GPOINTER_TO_INT (b);
+}
+
+static gint
+order_sequence_as_unsorted_reverse (gconstpointer a,
+                                    gconstpointer b,
+                                    gpointer user_data)
+{
+	return GPOINTER_TO_INT (b) - GPOINTER_TO_INT (a);
+}
+
+static gint
+order_sequence_by_property (gconstpointer a,
+                            gconstpointer b,
+                            gpointer user_data)
+{
+	GcrCollectionModel *self = GCR_COLLECTION_MODEL (user_data);
+	const GcrColumn *column = self->pv->order_argument;
+	GValue value_a = { 0, };
+	GValue value_b = { 0, };
+	CompareValueFunc compare;
+	gint ret;
+
+	g_assert (column);
+
+	/* Sort according to property values */
+	column = &self->pv->columns[self->pv->sort_column_id];
+	g_value_init (&value_a, column->property_type);
+	g_object_get_property ((GObject *)a, column->property_name, &value_a);
+	g_value_init (&value_b, column->property_type);
+	g_object_get_property ((GObject *)b, column->property_name, &value_b);
+
+	compare = lookup_compare_func (column->property_type);
+	g_assert (compare != NULL);
+
+	ret = (compare) (&value_a, &value_b);
+
+	g_value_unset (&value_a);
+	g_value_unset (&value_b);
+
+	return ret;
+}
+
+static gint
+order_sequence_by_property_reverse (gconstpointer a,
+                                    gconstpointer b,
+                                    gpointer user_data)
+{
+	return 0 - order_sequence_by_property (a, b, user_data);
+}
 
 static GHashTable*
 selected_hash_table_new (void)
 {
 	return g_hash_table_new (g_direct_hash, g_direct_equal);
-}
-
-static gint
-on_sequence_compare (gconstpointer a, gconstpointer b, gpointer user_data)
-{
-	return (GObject*)a - (GObject*)b;
 }
 
 static gint
@@ -116,10 +333,10 @@ index_for_iter (GcrCollectionModel *self, const GtkTreeIter *iter)
 
 	seq = iter->user_data2;
 	g_return_val_if_fail (g_sequence_iter_get_sequence (seq) ==
-	                      self->pv->objects, -1);
+	                      self->pv->object_sequence, -1);
 
 	index = g_sequence_iter_get_position (seq);
-	g_assert (index >= 0 && index < g_sequence_get_length (self->pv->objects));
+	g_assert (index >= 0 && index < g_sequence_get_length (self->pv->object_sequence));
 	return index;
 }
 
@@ -143,10 +360,10 @@ iter_for_index (GcrCollectionModel *self, gint index, GtkTreeIter *iter)
 {
 	GSequenceIter *seq;
 
-	if (index < 0 || index >= g_sequence_get_length (self->pv->objects))
+	if (index < 0 || index >= g_sequence_get_length (self->pv->object_sequence))
 		return FALSE;
 
-	seq = g_sequence_get_iter_at_pos (self->pv->objects, index);
+	seq = g_sequence_get_iter_at_pos (self->pv->object_sequence, index);
 	return iter_for_seq (self, seq, iter);
 }
 
@@ -155,8 +372,7 @@ index_for_object (GcrCollectionModel *self, GObject *object)
 {
 	GSequenceIter *seq;
 
-	seq = g_sequence_lookup (self->pv->objects, object,
-	                         on_sequence_compare, NULL);
+	seq = g_hash_table_lookup (self->pv->object_to_sequence, object);
 	if (seq == NULL)
 		return -1;
 
@@ -211,9 +427,11 @@ on_collection_added (GcrCollection *collection, GObject *object, GcrCollectionMo
 
 	g_assert (GCR_IS_COLLECTION_MODEL (self));
 	g_assert (G_IS_OBJECT (object));
+	g_assert (self->pv->order_current);
 
-	seq = g_sequence_insert_sorted (self->pv->objects, object,
-	                                on_sequence_compare, self);
+	seq = g_sequence_insert_sorted (self->pv->object_sequence, object,
+	                                self->pv->order_current, self);
+	g_hash_table_insert (self->pv->object_to_sequence, object, seq);
 	g_object_weak_ref (G_OBJECT (object), (GWeakNotify)on_object_gone, self);
 	g_signal_connect (object, "notify", G_CALLBACK (on_object_notify), self);
 
@@ -244,7 +462,7 @@ on_collection_removed (GcrCollection *collection, GObject *object,
 	g_return_if_fail (GCR_COLLECTION_MODEL (self));
 	g_return_if_fail (G_IS_OBJECT (object));
 
-	seq = g_sequence_lookup (self->pv->objects, object, on_sequence_compare, NULL);
+	seq = g_hash_table_lookup (self->pv->object_to_sequence, object);
 	g_return_if_fail (seq != NULL);
 
 	path = gtk_tree_path_new_from_indices (g_sequence_iter_get_position (seq), -1);
@@ -252,6 +470,7 @@ on_collection_removed (GcrCollection *collection, GObject *object,
 	disconnect_object (self, object);
 
 	g_hash_table_remove (self->pv->selected, object);
+	g_hash_table_remove (self->pv->object_to_sequence, object);
 	g_sequence_remove (seq);
 
 	/* Fire signal for this removed row */
@@ -412,7 +631,7 @@ gcr_collection_model_real_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter
 {
 	GcrCollectionModel *self = GCR_COLLECTION_MODEL (model);
 	if (iter == NULL)
-		return !g_sequence_iter_is_end (g_sequence_get_begin_iter (self->pv->objects));
+		return !g_sequence_iter_is_end (g_sequence_get_begin_iter (self->pv->object_sequence));
 	return FALSE;
 }
 
@@ -421,7 +640,7 @@ gcr_collection_model_real_iter_n_children (GtkTreeModel *model, GtkTreeIter *ite
 {
 	GcrCollectionModel *self = GCR_COLLECTION_MODEL (model);
 	if (iter == NULL)
-		return g_sequence_get_length (self->pv->objects);
+		return g_sequence_get_length (self->pv->object_sequence);
 	return 0;
 }
 
@@ -473,14 +692,205 @@ gcr_collection_model_tree_model_init (GtkTreeModelIface *iface)
 }
 
 static void
+collection_resort (GcrCollectionModel *self)
+{
+	GPtrArray *previous;
+	GSequenceIter *seq;
+	gint *new_order;
+	GtkTreePath *path;
+	gint index;
+	gint i;
+
+	/* Make note of how things stand */
+	previous = g_ptr_array_new ();
+	for (seq = g_sequence_get_begin_iter (self->pv->object_sequence);
+	     !g_sequence_iter_is_end (seq); seq = g_sequence_iter_next (seq))
+		g_ptr_array_add (previous, g_sequence_get (seq));
+
+	/* Actually perform the sort */
+	g_sequence_sort (self->pv->object_sequence, self->pv->order_current, self);
+
+	/* Now go through and map out how things changed */
+	new_order = g_new0 (gint, previous->len);
+	for (i = 0; i < previous->len; i++) {
+		seq = g_hash_table_lookup (self->pv->object_to_sequence,
+		                           previous->pdata[i]);
+		index = g_sequence_iter_get_position (seq);
+		g_assert (index >= 0 && index < previous->len);
+		new_order[index] = i;
+	}
+
+	g_ptr_array_free (previous, TRUE);
+
+	path = gtk_tree_path_new ();
+	gtk_tree_model_rows_reordered (GTK_TREE_MODEL (self), path, NULL, new_order);
+	g_free (new_order);
+}
+
+static gboolean
+gcr_collection_model_get_sort_column_id (GtkTreeSortable *sortable,
+                                         gint *sort_column_id,
+                                         GtkSortType *order)
+{
+	GcrCollectionModel *self = GCR_COLLECTION_MODEL (sortable);
+
+	if (order)
+		*order = self->pv->sort_order_type;
+	if (sort_column_id)
+		*sort_column_id = self->pv->sort_column_id;
+	return (self->pv->sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID &&
+		self->pv->sort_column_id != GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID);
+}
+
+static void
+gcr_collection_model_set_sort_column_id (GtkTreeSortable *sortable,
+                                         gint sort_column_id,
+                                         GtkSortType order)
+{
+	GcrCollectionModel *self = GCR_COLLECTION_MODEL (sortable);
+	GCompareDataFunc func;
+	gpointer argument;
+	const GcrColumn *column;
+	gboolean reverse;
+
+	reverse = (order == GTK_SORT_DESCENDING);
+
+	if (sort_column_id == GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID) {
+		func = reverse ? order_sequence_as_unsorted_reverse : order_sequence_as_unsorted;
+		argument = NULL;
+
+	} else if (sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID) {
+		func = reverse ? order_sequence_by_closure_reverse : order_sequence_by_closure;
+		argument = &self->pv->default_sort_closure;
+
+	} else if (sort_column_id >= 0 && sort_column_id < self->pv->n_columns) {
+		if (self->pv->column_sort_closures[sort_column_id].sort_func) {
+			func = reverse ? order_sequence_by_closure_reverse : order_sequence_by_closure;
+			argument = &self->pv->column_sort_closures[sort_column_id];
+		} else {
+			column = &self->pv->columns[sort_column_id];
+			if (!(column->flags & GCR_COLUMN_SORTABLE))
+				return;
+			if (!lookup_compare_func (column->property_type)) {
+				g_warning ("no sort implementation defined for type '%s' on column '%s'",
+				           g_type_name (column->property_type), column->property_name);
+				return;
+			}
+
+			func = reverse ? order_sequence_by_property_reverse : order_sequence_by_property;
+			argument = (gpointer)column;
+		}
+	} else {
+		g_warning ("invalid sort_column_id passed to gtk_tree_sortable_set_sort_column_id(): %d",
+		           sort_column_id);
+		return;
+	}
+
+	if (sort_column_id != self->pv->sort_column_id ||
+	    order != self->pv->sort_order_type) {
+		self->pv->sort_column_id = sort_column_id;
+		self->pv->sort_order_type = order;
+		gtk_tree_sortable_sort_column_changed (sortable);
+	}
+
+	if (func != self->pv->order_current ||
+	    argument != self->pv->order_argument) {
+		self->pv->order_current = func;
+		self->pv->order_argument = (gpointer)argument;
+		collection_resort (self);
+	}
+}
+
+static void
+clear_sort_closure (GcrCollectionSortClosure *closure)
+{
+	if (closure->destroy_func)
+		(closure->destroy_func) (closure->user_data);
+	closure->sort_func = NULL;
+	closure->destroy_func = NULL;
+	closure->user_data = NULL;
+}
+
+static void
+set_sort_closure (GcrCollectionSortClosure *closure,
+                  GtkTreeIterCompareFunc func,
+                  gpointer data,
+                  GDestroyNotify destroy)
+{
+	clear_sort_closure (closure);
+	closure->sort_func = func;
+	closure->user_data = data;
+	closure->destroy_func = destroy;
+}
+
+static void
+gcr_collection_model_set_sort_func (GtkTreeSortable *sortable,
+                                    gint sort_column_id,
+                                    GtkTreeIterCompareFunc func,
+                                    gpointer data,
+                                    GDestroyNotify destroy)
+{
+	GcrCollectionModel *self = GCR_COLLECTION_MODEL (sortable);
+
+	g_return_if_fail (sort_column_id >= 0 && sort_column_id < self->pv->n_columns);
+
+	set_sort_closure (&self->pv->column_sort_closures[sort_column_id],
+	                  func, data, destroy);
+
+	/* Resorts if necessary */
+	if (self->pv->sort_column_id == sort_column_id) {
+		gcr_collection_model_set_sort_column_id (sortable,
+		                                         self->pv->sort_column_id,
+		                                         self->pv->sort_order_type);
+	}
+}
+
+static void
+gcr_collection_model_set_default_sort_func (GtkTreeSortable *sortable,
+                                            GtkTreeIterCompareFunc func,
+                                            gpointer data, GDestroyNotify destroy)
+{
+	GcrCollectionModel *self = GCR_COLLECTION_MODEL (sortable);
+
+	set_sort_closure (&self->pv->default_sort_closure,
+	                  func, data, destroy);
+
+	/* Resorts if necessary */
+	if (self->pv->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID) {
+		gcr_collection_model_set_sort_column_id (sortable,
+		                                         self->pv->sort_column_id,
+		                                         self->pv->sort_order_type);
+	}
+}
+
+static gboolean
+gcr_collection_model_has_default_sort_func (GtkTreeSortable *sortable)
+{
+	GcrCollectionModel *self = GCR_COLLECTION_MODEL (sortable);
+
+	return (self->pv->default_sort_closure.sort_func != NULL);
+}
+
+static void
+gcr_collection_model_tree_sortable_init (GtkTreeSortableIface *iface)
+{
+	iface->get_sort_column_id = gcr_collection_model_get_sort_column_id;
+	iface->set_sort_column_id = gcr_collection_model_set_sort_column_id;
+	iface->set_sort_func = gcr_collection_model_set_sort_func;
+	iface->set_default_sort_func = gcr_collection_model_set_default_sort_func;
+	iface->has_default_sort_func = gcr_collection_model_has_default_sort_func;
+}
+
+static void
 gcr_collection_model_init (GcrCollectionModel *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_COLLECTION_MODEL, GcrCollectionModelPrivate);
 
-	self->pv->objects = g_sequence_new (NULL);
-	self->pv->selected = NULL;
-	self->pv->columns = NULL;
-	self->pv->n_columns = 0;
+	self->pv->object_sequence = g_sequence_new (NULL);
+	self->pv->object_to_sequence = g_hash_table_new (g_direct_hash, g_direct_equal);
+	self->pv->sort_column_id = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
+	self->pv->sort_order_type = GTK_SORT_ASCENDING;
+	self->pv->order_current = order_sequence_as_unsorted;
 }
 
 static void
@@ -542,12 +952,14 @@ gcr_collection_model_dispose (GObject *object)
 	GSequenceIter *next;
 
 	/* Disconnect from all rows */
-	for (seq = g_sequence_get_begin_iter (self->pv->objects);
+	for (seq = g_sequence_get_begin_iter (self->pv->object_sequence);
 	     !g_sequence_iter_is_end (seq); seq = next) {
 		next = g_sequence_iter_next (seq);
 		disconnect_object (self, g_sequence_get (seq));
 		g_sequence_remove (seq);
 	}
+
+	g_hash_table_remove_all (self->pv->object_to_sequence);
 
 	/* Disconnect from the collection */
 	if (self->pv->collection) {
@@ -567,19 +979,24 @@ static void
 gcr_collection_model_finalize (GObject *object)
 {
 	GcrCollectionModel *self = GCR_COLLECTION_MODEL (object);
+	guint i;
 
 	g_assert (!self->pv->collection);
 
-	g_assert (self->pv->objects);
-	g_assert (g_sequence_get_length (self->pv->objects) == 0);
-	g_sequence_free (self->pv->objects);
-	self->pv->objects = NULL;
+	g_assert (g_sequence_get_length (self->pv->object_sequence) == 0);
+	g_sequence_free (self->pv->object_sequence);
+	g_assert (g_hash_table_size (self->pv->object_to_sequence) == 0);
+	g_hash_table_destroy (self->pv->object_to_sequence);
 
 	if (self->pv->selected)
 		g_hash_table_destroy (self->pv->selected);
 	self->pv->selected = NULL;
 
 	self->pv->columns = NULL;
+	for (i = 0; i < self->pv->n_columns; i++)
+		clear_sort_closure (&self->pv->column_sort_closures[i]);
+	g_free (self->pv->column_sort_closures);
+	clear_sort_closure (&self->pv->default_sort_closure);
 
 	G_OBJECT_CLASS (gcr_collection_model_parent_class)->finalize (object);
 }
@@ -698,6 +1115,7 @@ gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *col
 	/* We expect the columns to stay around */
 	self->pv->columns = columns;
 	self->pv->n_columns = n_columns;
+	self->pv->column_sort_closures = g_new0 (GcrCollectionSortClosure, self->pv->n_columns);
 }
 
 /**
@@ -788,7 +1206,7 @@ gcr_collection_model_toggle_selected (GcrCollectionModel *self, GtkTreeIter *ite
 	if (g_hash_table_lookup (self->pv->selected, object))
 		g_hash_table_remove (self->pv->selected, object);
 	else
-		g_hash_table_insert (self->pv->selected, object, UNUSED_VALUE);
+		g_hash_table_insert (self->pv->selected, object, object);
 }
 
 /**
@@ -814,7 +1232,7 @@ gcr_collection_model_change_selected (GcrCollectionModel *self, GtkTreeIter *ite
 		self->pv->selected = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	if (selected)
-		g_hash_table_insert (self->pv->selected, object, UNUSED_VALUE);
+		g_hash_table_insert (self->pv->selected, object, object);
 	else
 		g_hash_table_remove (self->pv->selected, object);
 
@@ -888,7 +1306,7 @@ gcr_collection_model_set_selected_objects (GcrCollectionModel *self, GList *sele
 		}
 
 		/* Note that we've seen this one */
-		g_hash_table_insert (newly_selected, l->data, UNUSED_VALUE);
+		g_hash_table_insert (newly_selected, l->data, l->data);
 	}
 
 	/* Unselect all the objects which aren't supposed to be selected */
