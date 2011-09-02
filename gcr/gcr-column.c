@@ -36,6 +36,7 @@
 
 /**
  * GcrColumnFlags:
+ * @GCR_COLUMN_NONE: No column flags
  * @GCR_COLUMN_HIDDEN: Don't display this column.
  * @GCR_COLUMN_SORTABLE: This column is sortable.
  *

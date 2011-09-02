@@ -29,8 +29,9 @@
 G_BEGIN_DECLS
 
 typedef enum {
-	GCR_COLUMN_HIDDEN = 0x01,
-	GCR_COLUMN_SORTABLE = 0x02,
+	GCR_COLUMN_NONE = 0,
+	GCR_COLUMN_HIDDEN = 1 << 1,
+	GCR_COLUMN_SORTABLE = 1 << 2,
 } GcrColumnFlags;
 
 typedef struct _GcrColumn {
@@ -39,7 +40,7 @@ typedef struct _GcrColumn {
 	GType column_type;              /* The resulting property type for this column */
 
 	const gchar *label;             /* The label for this column, or NULL */
-	guint flags;                    /* Column flags */
+	GcrColumnFlags flags;           /* Column flags */
 
 	GValueTransform transformer;    /* The way to transform to this type or NULL */
 
