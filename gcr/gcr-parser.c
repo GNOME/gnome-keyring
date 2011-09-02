@@ -948,7 +948,9 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 		if (friendly != NULL)
 			parsed_label (self, NULL);
 
-		if (r == GCR_ERROR_FAILURE || r == GCR_ERROR_CANCELLED) {
+		if (r == GCR_ERROR_FAILURE ||
+		    r == GCR_ERROR_CANCELLED ||
+		    r == GCR_ERROR_LOCKED) {
 			ret = r;
 			goto done;
 		}
