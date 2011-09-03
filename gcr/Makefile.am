@@ -51,7 +51,8 @@ HEADER_FILES = \
 	gcr-types.h \
 	gcr-unlock-options.h \
 	gcr-unlock-options-widget.h \
-	gcr-viewer.h
+	gcr-viewer.h \
+	gcr-viewer-window.h
 
 incdir = $(includedir)/gcr-@GCR_MAJOR@/gcr
 
@@ -126,7 +127,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-unlock-renderer.c gcr-unlock-renderer.h \
 	gcr-util.c gcr-util.h \
 	gcr-viewer.c gcr-viewer.h \
-	gcr-viewer-window.c gcr-viewer-window.h \
+	gcr-viewer-window.c \
 	$(BUILT_SOURCES)
 
 libgcr_@GCR_MAJOR@_la_CFLAGS = \
