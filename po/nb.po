@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-31 21:39+0200\n"
-"PO-Revision-Date: 2011-08-31 21:44+0200\n"
+"POT-Creation-Date: 2011-09-03 13:53+0200\n"
+"PO-Revision-Date: 2011-09-03 13:54+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -325,7 +325,7 @@ msgid "Expires"
 msgstr "Utløper"
 
 #: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:254
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Sertifikat"
 
@@ -579,13 +579,31 @@ msgid "Key SHA1 Fingerprint"
 msgstr "SHA1-fingeravtrykk for nøkkel"
 
 #: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:257
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
-#: ../gcr/gcr-display-view.c:298
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "_Detaljer"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Kunne ikke vise «%s»"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Kunne ikke vise fil"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Årsak"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Kan ikke vise en fil av denne typen."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -619,7 +637,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "Gnupg-prosessen ble terminert med signal: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1698 ../gcr/gcr-parser.c:1937
+#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
 msgid "The operation was cancelled"
 msgstr "Operasjonen ble avbrutt"
 
@@ -693,7 +711,7 @@ msgstr "Privat RSA-nøkkel"
 msgid "Private DSA Key"
 msgstr "Privat DSA-nøkkel"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:251
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Privat nøkkel"
 
@@ -733,15 +751,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1701
+#: ../gcr/gcr-parser.c:1789
 msgid "Unrecognized or unsupported data."
 msgstr "Ikke gjenkjente eller støttede data."
 
-#: ../gcr/gcr-parser.c:1704
+#: ../gcr/gcr-parser.c:1792
 msgid "Could not parse invalid or corrupted data."
 msgstr "Kunne ikke lese ugyldige eller korrupte data."
 
-#: ../gcr/gcr-parser.c:1707
+#: ../gcr/gcr-parser.c:1795
 msgid "The data is locked"
 msgstr "Data er låst"
 
@@ -773,6 +791,37 @@ msgstr "Lås denne nøkkelringen når jeg logger ut"
 #: ../gcr/gcr-unlock-options-widget.ui.h:6
 msgid "minutes"
 msgstr "minutter"
+
+#: ../gcr/gcr-unlock-renderer.c:63
+#, c-format
+msgid "Unlock: %s"
+msgstr "Lås opp: %s"
+
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Lås opp"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "Passordet var feil"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Passord"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter a the "
+"correct password."
+msgstr "Innholdet i «%s» er låst. Du må oppgi et korrekt passord for å vise innholdet."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter a the correct "
+"password."
+msgstr "Innholdet er låst. Du må oppgi et korrekt passord for å vise innholdet."
 
 #: ../gcr/gcr-viewer-tool.c:41
 msgid "GCR Certificate and Key Viewer"
@@ -877,10 +926,6 @@ msgstr "Lås opp sertifikat"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Lås opp offentlig nøkkel"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Lås opp"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
