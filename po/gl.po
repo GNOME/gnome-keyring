@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-09-04 19:09+0200\n"
-"PO-Revision-Date: 2011-09-04 19:09+0200\n"
+"PO-Revision-Date: 2011-09-04 19:10+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galego <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -601,7 +601,7 @@ msgstr "Non foi posíbel mostrar «%s»"
 
 #: ../gcr/gcr-failure-renderer.c:165
 msgid "Could not display file"
-msgstr "Non se puido amosar o ficheiro"
+msgstr "Non foi posíbel mostrar o ficheiro"
 
 #: ../gcr/gcr-failure-renderer.c:170
 msgid "Reason"
@@ -610,7 +610,7 @@ msgstr "Razón"
 #: ../gcr/gcr-failure-renderer.c:203
 #, c-format
 msgid "Cannot display a file of this type."
-msgstr "Non se pode amosar un ficheiro deste tipo."
+msgstr "Non foi posíbel mostrar un ficheiro deste tipo."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -840,7 +840,7 @@ msgstr "Visor de chaves e certificados GCR"
 
 #: ../gcr/gcr-viewer-tool.c:48
 msgid "Show the application's version"
-msgstr "Amosar a versión do aplicativo"
+msgstr "Mostrar a versión do aplicativo"
 
 #: ../gcr/gcr-viewer-tool.c:50
 msgid "[file...]"
