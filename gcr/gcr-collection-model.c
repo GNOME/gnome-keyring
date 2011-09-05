@@ -608,7 +608,8 @@ remove_object_from_sequence (GcrCollectionModel *self,
 		row->children = NULL;
 	}
 
-	g_hash_table_remove (self->pv->selected, object);
+	if (self->pv->selected)
+		g_hash_table_remove (self->pv->selected, object);
 	if (!g_hash_table_remove (self->pv->object_to_seq, object))
 		g_assert_not_reached ();
 
@@ -918,6 +919,11 @@ collection_resort_sequence (GcrCollectionModel *self,
 		if (row->children)
 			collection_resort_sequence (self, seq, row->children);
 		g_ptr_array_add (previous, row->object);
+	}
+
+	if (previous->len == 0) {
+		g_ptr_array_free (previous, TRUE);
+		return;
 	}
 
 	/* Actually perform the sort */
@@ -1304,16 +1310,19 @@ gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *colum
  *
  * The columns are accessed as static data. They should continue to remain
  * in memory for longer than the GcrCollectionModel object.
+ *
+ * Returns: The number of columns
  */
-void
-gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *columns)
+guint
+gcr_collection_model_set_columns (GcrCollectionModel *self,
+                                  const GcrColumn *columns)
 {
 	const GcrColumn *col;
 	guint n_columns;
 
-	g_return_if_fail (GCR_IS_COLLECTION_MODEL (self));
-	g_return_if_fail (columns);
-	g_return_if_fail (self->pv->n_columns == 0);
+	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), 0);
+	g_return_val_if_fail (columns, 0);
+	g_return_val_if_fail (self->pv->n_columns == 0, 0);
 
 	/* Count the number of columns, extra column for selected */
 	for (col = columns, n_columns = 1; col->property_name; ++col)
@@ -1323,6 +1332,8 @@ gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *col
 	self->pv->columns = columns;
 	self->pv->n_columns = n_columns;
 	self->pv->column_sort_closures = g_new0 (GcrCollectionSortClosure, self->pv->n_columns);
+
+	return n_columns - 1;
 }
 
 /**
