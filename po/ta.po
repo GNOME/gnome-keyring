@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-09-04 12:37+0530\n"
-"PO-Revision-Date: 2011-09-05 16:43+0530\n"
+"PO-Revision-Date: 2011-09-05 17:05+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -310,7 +310,7 @@ msgstr "பிகேசிஎச்(PKCS)#11 நிரல்கூறு ஐ த
 #: ../gck/gck-modules.c:67
 #, c-format
 msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr "பதிவு செய்த பிகேசிஎச்(registered PKCS)#11 நிரல்கூறு ஐ துவக்க முடியவில்லை: s"
+msgstr "பதிவு செய்த பிகேசிஎச்(registered PKCS)#11 நிரல்கூறு ஐ துவக்க முடியவில்லை: %s"
 
 #. later
 #. later
@@ -328,7 +328,7 @@ msgstr "வழங்கியவர்"
 #: ../gcr/gcr-certificate.c:392
 msgctxt "column"
 msgid "Expires"
-msgstr "காலாவதியானது"
+msgstr "காலாவதியானது "
 
 #: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
 #: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
