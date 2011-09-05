@@ -1,3 +1,14 @@
+Changes in version 3.1.91 are:
+ * gcr-viewer will now display errors when failing to load a file.
+ * gcr-viewer can now prompt for passwords to unlock files
+ * Add support for getting the current data block being parsed in GcrParser.
+ * Add debug output to various points in the GCR and GCK libraries.
+ * When replacing another gnome-keyring-daemon, wait a moment before initializing.
+ * Fix GCR library initialization bugs loading PKCS#11 modules.
+ * Fine tuning of GcrParser when parsing PKCS#12 files.
+ * Build and packaging fixes
+ * Updated translations
+
 Changes in version 3.1.90 are:
  * Install better xdg-mime files for identifying crypto related file types
  * New gcr-viewer for viewing certificates and keys, hooked up to file types
