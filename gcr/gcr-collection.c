@@ -142,6 +142,24 @@ gcr_collection_get_objects (GcrCollection *self)
 }
 
 /**
+ * gcr_collection_contains:
+ * @self: the collection
+ *
+ * Check whether the collection contains an object or not.
+ *
+ * Returns: whether the collection contains this object
+ */
+gboolean
+gcr_collection_contains (GcrCollection *self,
+                         GObject *object)
+{
+	g_return_val_if_fail (GCR_IS_COLLECTION (self), FALSE);
+	g_return_val_if_fail (G_IS_OBJECT (object), FALSE);
+	g_return_val_if_fail (GCR_COLLECTION_GET_INTERFACE (self)->contains, FALSE);
+	return GCR_COLLECTION_GET_INTERFACE (self)->contains (self, object);
+}
+
+/**
  * gcr_collection_emit_added:
  * @self: The collection
  * @object: The object that was added

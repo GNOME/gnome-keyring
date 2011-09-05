@@ -45,9 +45,12 @@ struct _GcrCollectionIface {
 	void (*removed) (GcrCollection *self, GObject *object);
 
 	/* virtual */
-	guint (*get_length) (GcrCollection *self);
+	guint    (*get_length)  (GcrCollection *self);
 
-	GList* (*get_objects) (GcrCollection *self);
+	GList*   (*get_objects) (GcrCollection *self);
+
+	gboolean (*contains)    (GcrCollection *self,
+	                         GObject *object);
 
 	/*< private >*/
 	gpointer dummy1;
@@ -64,6 +67,9 @@ GType               gcr_collection_get_type               (void);
 guint               gcr_collection_get_length             (GcrCollection *self);
 
 GList*              gcr_collection_get_objects            (GcrCollection *self);
+
+gboolean            gcr_collection_contains               (GcrCollection *self,
+                                                           GObject *object);
 
 void                gcr_collection_emit_added             (GcrCollection *self,
                                                            GObject *object);

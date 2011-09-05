@@ -228,10 +228,11 @@ GCR_TYPE_COMPARABLE
 <SECTION>
 <FILE>gcr-collection</FILE>
 GcrCollection
-gcr_collection_emit_added
-gcr_collection_emit_removed
 gcr_collection_get_length
 gcr_collection_get_objects
+gcr_collection_contains
+gcr_collection_emit_added
+gcr_collection_emit_removed
 <SUBSECTION Standard>
 gcr_collection_get_type
 GCR_COLLECTION

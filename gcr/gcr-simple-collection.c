@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gcr-collection.h"
+#include "gcr-deprecated.h"
 #include "gcr-internal.h"
 #include "gcr-simple-collection.h"
 
@@ -119,11 +120,20 @@ gcr_simple_collection_real_get_objects (GcrCollection *coll)
 	return g_hash_table_get_keys (self->pv->items);
 }
 
+static gboolean
+gcr_simple_collection_real_contains (GcrCollection *collection,
+                                     GObject *object)
+{
+	GcrSimpleCollection *self = GCR_SIMPLE_COLLECTION (collection);
+	return g_hash_table_lookup (self->pv->items, object) ? TRUE : FALSE;
+}
+
 static void
 gcr_collection_iface (GcrCollectionIface *iface)
 {
 	iface->get_length = gcr_simple_collection_real_get_length;
 	iface->get_objects = gcr_simple_collection_real_get_objects;
+	iface->contains = gcr_simple_collection_real_contains;
 }
 
 /* -----------------------------------------------------------------------------
@@ -187,6 +197,8 @@ gcr_simple_collection_remove (GcrSimpleCollection *self, GObject *object)
  *
  * Check if the collection contains a certain object.
  *
+ * Deprecated: use gcr_collection_contains() instead
+ *
  * Returns: %TRUE if the collection contains the object.
  */
 gboolean
@@ -194,5 +206,5 @@ gcr_simple_collection_contains (GcrSimpleCollection *self, GObject *object)
 {
 	g_return_val_if_fail (GCR_IS_SIMPLE_COLLECTION (self), FALSE);
 	g_return_val_if_fail (G_IS_OBJECT (object), FALSE);
-	return g_hash_table_lookup (self->pv->items, object) ? TRUE : FALSE;
+	return gcr_collection_contains (GCR_COLLECTION (self), object);
 }
