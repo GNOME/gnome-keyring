@@ -4,17 +4,18 @@
 #
 # Jayaradha N <jaya@pune.redhat.com>, 2004.
 # Felix <ifelix@redhat.com>, 2006.
-# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007, 2008, 2009, 2010.
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007, 2008, 2009, 2010, 2011.
 # I. Felix <ifelix@redhat.com>, 2009.
 # Dr,T,Vasudevan <agnihot3@gmail.com>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-01 13:10+0530\n"
-"PO-Revision-Date: 2011-04-01 13:14+0530\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2011-09-04 12:37+0530\n"
+"PO-Revision-Date: 2011-09-05 16:43+0530\n"
+"Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +23,7 @@ msgstr ""
 "\n"
 "\n"
 "\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.1\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
@@ -103,8 +104,8 @@ msgstr "GNOME கீரிங்: ஜிபிஜி முகவர்"
 msgid "GPG Password Agent"
 msgstr "ஜிபிஜி கடவுச்சொல்லின் பலம்"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "தெரியாத"
 
@@ -175,7 +176,7 @@ msgstr "பொதுவான பெயர்"
 msgid "Surname"
 msgstr "புனைப்பெயர்"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:436
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "வரிசை எண்"
 
@@ -231,29 +232,50 @@ msgstr "DN தகுதியாளர்"
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 உடன் RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 உடன் RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 உடன் RSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 உடன் DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "சேவையக உறுதி செய்தல்"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "சார்ந்தோன் உறுதி செய்தல்"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "நிரற்றொடர் கையொப்பம்"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "மின்னஞ்சல் பாதுகாப்பு"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "நேர முத்திரை"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -264,6 +286,54 @@ msgstr "select()ல் சேய் செயல்பாட்டிலிர�
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() ல் எதிர்பாராத பிழை(%s)"
+
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "பிகேசிஎச்(PKCS)#11 ஐ ஏற்றும்போது பிழை: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "பிகேசிஎச்(PKCS)#11 நிரல்கூறு செல்லுபடியாகாதது: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "பிகேசிஎச்(PKCS)#11 நிரல்கூறு ஐ அமைக்க முடியவில்லை: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "பிகேசிஎச்(PKCS)#11 நிரல்கூறு ஐ துவக்க முடியவில்லை: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "பதிவு செய்த பிகேசிஎச்(registered PKCS)#11 நிரல்கூறு ஐ துவக்க முடியவில்லை: s"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "பெயர்"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "வழங்கியவர்"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "காலாவதியானது"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
+msgid "Certificate"
+msgstr "சான்றிதழ்"
 
 #: ../gcr/gcr-certificate-exporter.c:224
 msgid ""
@@ -296,121 +366,250 @@ msgstr "சான்றிதழ் கோப்புகள்"
 msgid "PEM files"
 msgstr "PEM கோப்புகள்"
 
-#: ../gcr/gcr-certificate-exporter.c:462 ../gcr/gcr-certificate-renderer.c:83
-#: ../gcr/gcr-parser.c:201
-msgid "Certificate"
-msgstr "சான்றிதழ்"
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "வேறு பெயர்"
 
-#: ../gcr/gcr-certificate-renderer.c:108
-msgid "Extension"
-msgstr "தொடர்ச்சி"
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "எக்ஸ்எம்பிபி முகவரி"
 
-#: ../gcr/gcr-certificate-renderer.c:113
-msgid "Identifier"
-msgstr "அடையாளம் காட்டுபவர்"
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "டிஎன்எஸ் எஸ்ஆர்வி"
 
-#: ../gcr/gcr-certificate-renderer.c:121
-msgid "Value"
-msgstr "மதிப்பு"
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "மின்னஞ்சல்"
 
-#: ../gcr/gcr-certificate-renderer.c:127
-msgid "Critical"
-msgstr "அவசரம்"
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
 
-#: ../gcr/gcr-certificate-renderer.c:127
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "X400 முகவரி"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "அடைவின் பெயர்"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "ஈடிஐ நபரின் பெயர் "
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "யூஆர்ஐ"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "IP முகவரி"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "பதிவு செய்த ஐடி"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "அடிப்படை கட்டுப்பாடுகள்"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "சான்றிதழ் ஆணையம்"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "ஆம்"
 
-#: ../gcr/gcr-certificate-renderer.c:127
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "இல்லை"
 
-#: ../gcr/gcr-certificate-renderer.c:198
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "அதிக பட்ச நீளம்"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "வரையில்லாதது"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "நீட்டித்த விசை பயன்பாடு"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "அனுமதித்த நோக்கங்கள்"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "பொருள் விசை அடையாளம் காட்டி"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "விசை அடையாளம் காட்டி"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "மின்னெண் கையொப்பம்"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "விசை குறியாக்கம்"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "தரவு குறியாக்கம்"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "விசை ஒத்திசைவு"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "சான்றிதழ் கையொப்பம்"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "திருப்பிப்பெற்ற பட்டியல் கையொப்பம்"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "விசை பயன்பாடு"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "பயன்பாடுகள்"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "பொருளின் மாற்று பெயர்கள்"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "நீட்சி"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "அடையாளம் காட்டுபவர்"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "மதிப்பு"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "அவசரம்"
+
+#: ../gcr/gcr-certificate-renderer.c:386
 msgid "Couldn't export the certificate."
 msgstr "சான்றிதழ் ஏற்றுமதி செய்ய முடியவில்லை "
 
-#: ../gcr/gcr-certificate-renderer.c:396
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "அடையாளம் "
 
-#: ../gcr/gcr-certificate-renderer.c:400
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "உறுதிப்படுத்தியது "
 
-#: ../gcr/gcr-certificate-renderer.c:407
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "காலாவதி தேதி"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:417
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "பொருளின் பெயர்"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:421
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "வழங்குபவரின் பெயர்"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:425
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "தரப்பட்ட சான்றிதழ்"
 
-#: ../gcr/gcr-certificate-renderer.c:430
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "பதிப்பு"
 
-#: ../gcr/gcr-certificate-renderer.c:444
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "இதற்கு முன் செல்லுபடியாகாது"
 
-#: ../gcr/gcr-certificate-renderer.c:449
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "அதற்கு பின் செல்லுபடியாகாது"
 
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "சான்றிதழ் கைரேகைகள்"
+
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:454 ../gcr/gcr-certificate-renderer.c:470
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "கையொப்பம்"
 
-#: ../gcr/gcr-certificate-renderer.c:458
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "கையொப்ப கணிமுறை"
 
-#: ../gcr/gcr-certificate-renderer.c:463
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "கையொப்ப பாராமீட்டர்கள்"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:475
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "பொது விசை தகவல்"
 
-#: ../gcr/gcr-certificate-renderer.c:480
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "விசை கணிமுறை"
 
-#: ../gcr/gcr-certificate-renderer.c:486
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "விசை பாராமீட்டர்கள்"
 
-#: ../gcr/gcr-certificate-renderer.c:493
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "விசை அளவு"
 
-#: ../gcr/gcr-certificate-renderer.c:501 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "விசை SHA1 கைரேகை"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "பொது விசை"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:506
-msgid "Fingerprints"
-msgstr "கைரேகைகள்"
-
-#: ../gcr/gcr-display-view.c:283
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "விவரங்கள் (_D)"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "'%s' ஐ காட்ட முடியவில்லை'"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "கோப்பினை காட்ட முடியவில்லை"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "காரணம்"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "இந்த வகை கோப்பை காட்ட இயலாது."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -423,6 +622,160 @@ msgstr "இதில் இறக்குமதி செய்:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "கடவுச்சொல்:"
+
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "PGP விசை"
+
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "விசை ஐடி"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "ஜிஎன்யுபிஜி செயல் இந்த கோட் உடன் வெளியேறியது: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "ஜிஎன்யுபிஜி செயல் சமிக்ஞையால் முடிக்கப்பட்டது: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+msgid "The operation was cancelled"
+msgstr "செயல் ரத்து செய்யப்பட்டது."
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "தனிப்பட்ட விசையை இறக்க, அது பூட்டுநீக்கப்பட வேண்டும்."
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "சான்றிதழை இறக்க அது பூட்டு நீக்கப்பட வேண்டும்"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "தரவை இறக்க, அது பூட்டு நீக்கப்படவேண்டும்"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "தனிபட்ட விசை '%s' யை இறக்க, அது பூட்ட நீக்கப்பட வேண்டும்."
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "சான்றிதழ்  '%s' ஐ இறக்க, அது பூட்டு நீக்கப்பட வேண்டும்."
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s'யை இறக்க, அது பூட்டு நீக்கப்பட வேண்டும்."
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "இறக்க இடம் எதுவும் இல்லை"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "சான்றிதழைகளை இறக்குமதி செய்/ விசைகள்"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "இறக்குமதி செய்யப்பட்ட சான்றிதழ்களையும்/விசைகளையும் சேமிக்க ஒரு இடத்தை தேர்ந்தெடு."
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "விசை"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "அந்தரங்க ஆர்எஸ்ஏ விசை"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "அந்தரங்க டிஎஸ்ஏ விசை"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+msgid "Private Key"
+msgstr "அந்தரங்க விசை"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "பொது டிஎஸ்ஏ விசை"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d பிட்"
+msgstr[1] "%d பிட்கள்"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "பலம்"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "அல்கரிதம்"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "அளவு"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "கைரேகைகள்"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "எஸ்ஹெச்ஏ1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "எஸ்ஹெச்ஏ256"
+
+#: ../gcr/gcr-parser.c:1789
+msgid "Unrecognized or unsupported data."
+msgstr "இனம் காணாத அல்லது ஆதரவு இல்லா தரவு."
+
+#: ../gcr/gcr-parser.c:1792
+msgid "Could not parse invalid or corrupted data."
+msgstr "பகுக்க செல்லுபடியாகாத அல்லது சிதைந்த தரவு."
+
+#: ../gcr/gcr-parser.c:1795
+msgid "The data is locked"
+msgstr "தரவு பூட்டப்பட்டுள்ளது"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "பிணைக்கப்பட்ட சான்றிதழ்களை சேமிக்க ஒரு இடத்தை கண்டுபிடிக்க முடியவில்லை"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -445,464 +798,73 @@ msgstr "நான் வெளி செல்லும்போது இந்
 msgid "minutes"
 msgstr "நிமிடங்கள்"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "தனிப்பட்ட விசையை இறக்க, அது பூட்டுநீக்கப்பட வேண்டும்."
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "சான்றிதழை இறக்க அது பூட்டு நீக்கப்பட வேண்டும்"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "தரவை இறக்க, அது பூட்டு நீக்கப்படவேண்டும்"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "தனிபட்ட விசை '%s' யை இறக்க, அது பூட்ட நீக்கப்பட வேண்டும்."
+msgid "Unlock: %s"
+msgstr "பூட்டை திற:%s"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "பூட்டை திற"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "கடவுச்சொல் தவறானது."
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "கடவுச்சொல்"
+
+#: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "சான்றிதழ்  '%s' ஐ இறக்க, அது பூட்டு நீக்கப்பட வேண்டும்."
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter a the "
+"correct password."
+msgstr "'%s' இன் உள்ளடக்கங்கள் பூட்டப்பட்டன. அதை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
 
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter a the correct "
+"password."
+msgstr "உள்ளடக்கங்கள் பூட்டப்பட்டன. அதை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "சிஜிஆர் சான்றிதழ்/விசை காட்டி"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "இப்பயன்பாட்டின் பதிப்பைக் காட்டு"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[file...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "-சான்றிதழ் மற்றும் விசை கோப்புகள் ஐ காண்"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "சான்றிதழ் காட்டி"
+
+#: ../gck/gck-uri.c:173
 #, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s'யை இறக்க, அது பூட்டு நீக்கப்பட வேண்டும்."
+msgid "The URI has invalid encoding."
+msgstr "யூஆர் ஐ க்கு செல்லுபடியாகாத குறியாக்கம் உள்ளது"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "செயல் ரத்து செய்யப்பட்டது."
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "இறக்க இடம் எதுவும் இல்லை"
-
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "சான்றிதழைகளை இறக்குமதி செய்/ விசைகள்"
-
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "இறக்குமதி செய்யப்பட்ட சான்றிதழ்களையும்/விசைகளையும் சேமிக்க ஒரு இடத்தை தேர்ந்தெடு."
-
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "விசை"
-
-#: ../gcr/gcr-key-renderer.c:260
-msgid "Private RSA Key"
-msgstr "அந்தரங்க ஆர்எஸ்ஏ விசை"
-
-#: ../gcr/gcr-key-renderer.c:262
-msgid "Private DSA Key"
-msgstr "அந்தரங்க டிஎஸ்ஏ விசை"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "அந்தரங்க விசை"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-msgid "Public DSA Key"
-msgstr "பொது டிஎஸ்ஏ விசை"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d பிட்"
-msgstr[1] "%d பிட்கள்"
-
-#: ../gcr/gcr-key-renderer.c:279
-msgid "Strength"
-msgstr "பலம்"
-
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Algorithm"
-msgstr "அல்கரிதம்"
-
-#: ../gcr/gcr-key-renderer.c:299
-msgid "Size"
-msgstr "அளவு"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-msgid "Fingerprint"
-msgstr "கைரேகை"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "இனம் காணாத அல்லது ஆதரவு இல்லா தரவு."
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "பகுக்க செல்லுபடியாகாத அல்லது சிதைந்த தரவு."
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "தரவு பூட்டப்பட்டுள்ளது"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "பிணைக்கப்பட்ட சான்றிதழ்களை சேமிக்க ஒரு இடத்தை கண்டுபிடிக்க முடியவில்லை"
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr ""
-"யூஆர் ஐ க்கு செல்லுபடியாகாத இலக்கணக்குறிப்பு உள்ளது. '%s' புலத்தின் குறியாக்கம் "
-"செல்லுபடியாகாது."
-
-#: ../gck/gck-uri.c:287
+#: ../gck/gck-uri.c:177
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "யூஆர்ஐ ´pkcs11´  திட்டத்தை கொண்டிருக்கவில்லை."
 
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "போதிய நினைவகம் இல்லை"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "குறிக்கப்பட்ட அடையாள இடம் செல்லுபடியாகாதது"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "உள்ளமை பிழை"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "செயல் தோல்வியடைந்தது"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "செல்லாத அளவுருக்கள்"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "இந்த கூறு தேவையான இழைகளை உருவாக்க இயலாது."
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "இந்த கூறு தரவை சரியாக பூட்ட முடியாது."
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "புலம் படிக்க மட்டுமே"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "புலம் பாதுகாக்க படுவது. ஆகையால் காட்டஇயலாது"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "புலம் செல்லுபடியாகாதது அல்லது இருப்பில் இல்லை"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "புலது்துக செல்லுபடியாகாத மதிப்பு்கு"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "தரவு செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது."
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "தரவு மிகப் பெரியது"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "சாதனத்தில் தவறு நிகழ்ந்தது"
-
-#: ../gck/gck-misc.c:129
-msgid "Insufficient memory available on the device"
-msgstr "சாதனத்தில் போதிய றினைவகம் இல்லை"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "சாதனம் நீக்கப்பட்டது அல்லது இணைப்பு துண்டிக்கப்பட்டது"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "சுருக்கி குறியாக்கம் செய்த தரவு செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "சுருக்கி குறியாக்கம் செய்த தரவு மிக நீளமானது."
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "இந்த செயலுக்கு ஆதரவு இல்லை"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "விசை காணவில்லை அல்லது செல்லுபடியாகாதது"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "விசை தவறான அளவு உடையது"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "விசை தவறான வகையானது"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "விசை தேவை இல்லை"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is different than before"
-msgstr "விசை முன்னை விட மாறானது"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "ஒரு விசை தேவை"
-
-#: ../gck/gck-misc.c:151
-msgid "Cannot include the key in the digest"
-msgstr "விசையை தொகுப்பில் சேர்க்க முடியாது"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "இந்த செெயலை இந்த்த விசையால் செய்ய முடியாது"
-
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "விசைக்கு உறையிட முடியாது"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "விசையை ஏற்றுமதி செய்ய முடியாது"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "சுருக்க குறியாக்கம் செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது."
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "சுருக்க குறியாக்கத்தில் செல்லுபடியாகாத அளவுரு உள்ளது"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "பொருள் காணவில்லை அல்லது செல்லுபடியாகாதது"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "இன்னொரு செயல் ஏற்கெனவே நிகழ்கிறது்"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "செயல் ஏதும் நிகழவில்லை"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "கடவுச்சொல் அல்லது 'பின்' தவறானது."
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "கடவுச்சொல் அல்லது 'பின்' செல்லுபடியாகாதது"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "கடவுச்சொல் அல்லது 'பின்' செல்லுபடியாகாத நீளம்"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "கடவுச்சொல் அல்லது 'பின்' காலாவதியாகிவிட்டது"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "கடவுச்சொல் அல்லது 'பின்' பூட்டப்பட்டு உள்ளது"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "அமர்வு முடிந்துவிட்டது"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "மிக அதிக அமர்வுகள் செயலில் உள்ளன"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "அமர்வு செல்லுபடியாகாதது"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "அமர்வு படிக்க மட்டும்"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "திறந்த அமர்வு உள்ளது"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "படிக்க மட்டும் அமர்வு உள்ளது"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "நிர்வாகி அமர்வு ு உள்ளது"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "கையொப்பம் தவறு அல்லது சிதைந்தது"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "கையொப்பத்தை இனம் காண இயலவில்லை அல்லது சிதைந்தது"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "தேவையான சில புலங்கள் காணப்படவில்லை"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "சில புலங்களில் செல்லுபடியாகாத மதிப்பு உள்ளது"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "சாதனம் இல்லை அல்லது இணைப்பு நீக்கப்பட்டது"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "சாதனம் செல்லுபடியாகாதது அல்லது இனம் காண இயலவில்லை "
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "சாதனத்தில்  எழுததல் தடை செய்யப்பட்டுள்ளதுு"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "விசை செல்லுபடியாகாதது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "விசை  அளவு தவறானது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "விசை வகை தவறானது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது "
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "நீங்கள் ஏற்கெனவே உள் நுழைந்து உள்ளீர்"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "பயனர் யாரும் உள் நுழையவில்லை"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "பயனர் கடவுச்சொல் அல்லது 'பின்' அமைக்கப்படவில்லை"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "பயனர் செல்லுபடியாகாத வகையினர்"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "இன்னொரு பயனர் ஏற்கெனவே உள் நுழைந்து உள்ளார்"
-
-#: ../gck/gck-misc.c:223
-msgid "Too many users of different types are logged in"
-msgstr "வேறு பல்வகை பயனர்கள் ஏற்கெனவே உள் நுழைந்து உள்ளனர்"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "செல்லுபடியாகாத விசையை இறக்குமதி செய்ய இயலாது"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "தவறான அளவு விசையை இறக்குமதி செய்ய இயலாது"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr " செல்லுபடியாகாத விசையை ஏற்றுமதி செய்ய இயலாது"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "தவறான அளவு விசையை ஏற்றுமதி செய்ய இயலாது"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "விசை வகை தவறானது. ஆகையால் ஏற்றுமதி செய்ய இயலாது"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "தற்போக்கு எண் உருவாக்கியை துவக்க இயலவில்லை"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "தற்போக்கு எண் உருவாக்கி ஏதும் இல்லை "
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "மறையாக்க இயந்திரம்  செல்லுபடியாகாத அளபுரு கொண்டது"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "விடையை சேமிக்க போதுமான இடைவெளி இல்லை"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "சேமித்த நிலை செல்லுபடியாகாதது."
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "தகவல் அந்தரங்கமானது; காட்ட இயலாதது"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "இந்த நிலையை சேமிக்க முடியாது"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "இந்த கூறு துவக்கப்பட முடியாது."
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "கூறு ஏற்கெனவே துவக்கப்பட்டு விட்டது."
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "தரவை பூட்ட முடியாது"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "தரவை பூட்ட முடியாது"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "பயனர் கையெழுத்து வேண்டுதலை நிராகரித்தார்."
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "தெரியாத பிழை "
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "யூஆர்ஐ க்கு மோசமான வழிமுறைத் தொடரமைப்பு உள்ளது"
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "யூஆர்ஐ க்கு மோசமான பதிப்பு எண் உள்ளது"
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -972,10 +934,6 @@ msgstr "சான்றிதழின் பூட்டை திற"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "பொது விசையின் பூட்டை திற"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "பூட்டை திற"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1069,11 +1027,11 @@ msgstr "கட்டளைகள்: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "கடவுச்சொற்களை சுருக்க குறியாக்கம் செய்யாமலே சேமிக்கவா? "
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1082,15 +1040,15 @@ msgstr ""
 "ஒரு வெற்று கடவுச்சொல்லை தேர்ந்தெடுப்பதால் உங்கள் சேமிக்கப்பட்ட கடவுச்சொறகள் மறையாக்கம் "
 "செய்யப்படவில்லை. உங்கள் கோப்பை யாரால் அணூக முடியுமோ அவர் இதை பார்க்கலாம்."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "பாதுகாப்பு இல்லாத கிடங்கை பயன்படுத்து."
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "கடவுச்சொற்கள் பொருந்தவில்லை"
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
 
@@ -1130,8 +1088,248 @@ msgstr "பழைய கடவுச்சொல் (_O):"
 msgid "_Password:"
 msgstr "கடவுச்சொல் (_P):"
 
-#~ msgid "Email"
-#~ msgstr "மின்னஞ்சல்"
+#~ msgid "Fingerprint"
+#~ msgstr "கைரேகை"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "போதிய நினைவகம் இல்லை"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "குறிக்கப்பட்ட அடையாள இடம் செல்லுபடியாகாதது"
+
+#~ msgid "Internal error"
+#~ msgstr "உள்ளமை பிழை"
+
+#~ msgid "The operation failed"
+#~ msgstr "செயல் தோல்வியடைந்தது"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "செல்லாத அளவுருக்கள்"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "இந்த கூறு தேவையான இழைகளை உருவாக்க இயலாது."
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "இந்த கூறு தரவை சரியாக பூட்ட முடியாது."
+
+#~ msgid "The field is read-only"
+#~ msgstr "புலம் படிக்க மட்டுமே"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "புலம் பாதுகாக்க படுவது. ஆகையால் காட்டஇயலாது"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "புலம் செல்லுபடியாகாதது அல்லது இருப்பில் இல்லை"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "புலது்துக செல்லுபடியாகாத மதிப்பு்கு"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "தரவு செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது."
+
+#~ msgid "The data is too long"
+#~ msgstr "தரவு மிகப் பெரியது"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "சாதனத்தில் தவறு நிகழ்ந்தது"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "சாதனத்தில் போதிய றினைவகம் இல்லை"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "சாதனம் நீக்கப்பட்டது அல்லது இணைப்பு துண்டிக்கப்பட்டது"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "சுருக்கி குறியாக்கம் செய்த தரவு செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "சுருக்கி குறியாக்கம் செய்த தரவு மிக நீளமானது."
+
+#~ msgid "This operation is not supported"
+#~ msgstr "இந்த செயலுக்கு ஆதரவு இல்லை"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "விசை காணவில்லை அல்லது செல்லுபடியாகாதது"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "விசை தவறான அளவு உடையது"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "விசை தவறான வகையானது"
+
+#~ msgid "No key is needed"
+#~ msgstr "விசை தேவை இல்லை"
+
+#~ msgid "The key is different than before"
+#~ msgstr "விசை முன்னை விட மாறானது"
+
+#~ msgid "A key is needed"
+#~ msgstr "ஒரு விசை தேவை"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "விசையை தொகுப்பில் சேர்க்க முடியாது"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "இந்த செெயலை இந்த்த விசையால் செய்ய முடியாது"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "விசைக்கு உறையிட முடியாது"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "விசையை ஏற்றுமதி செய்ய முடியாது"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "சுருக்க குறியாக்கம் செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது."
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "சுருக்க குறியாக்கத்தில் செல்லுபடியாகாத அளவுரு உள்ளது"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "பொருள் காணவில்லை அல்லது செல்லுபடியாகாதது"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "இன்னொரு செயல் ஏற்கெனவே நிகழ்கிறது்"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "செயல் ஏதும் நிகழவில்லை"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "கடவுச்சொல் அல்லது 'பின்' தவறானது."
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "கடவுச்சொல் அல்லது 'பின்' செல்லுபடியாகாதது"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "கடவுச்சொல் அல்லது 'பின்' செல்லுபடியாகாத நீளம்"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "கடவுச்சொல் அல்லது 'பின்' காலாவதியாகிவிட்டது"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "கடவுச்சொல் அல்லது 'பின்' பூட்டப்பட்டு உள்ளது"
+
+#~ msgid "The session is closed"
+#~ msgstr "அமர்வு முடிந்துவிட்டது"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "மிக அதிக அமர்வுகள் செயலில் உள்ளன"
+
+#~ msgid "The session is invalid"
+#~ msgstr "அமர்வு செல்லுபடியாகாதது"
+
+#~ msgid "The session is read-only"
+#~ msgstr "அமர்வு படிக்க மட்டும்"
+
+#~ msgid "An open session exists"
+#~ msgstr "திறந்த அமர்வு உள்ளது"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "படிக்க மட்டும் அமர்வு உள்ளது"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "நிர்வாகி அமர்வு ு உள்ளது"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "கையொப்பம் தவறு அல்லது சிதைந்தது"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "கையொப்பத்தை இனம் காண இயலவில்லை அல்லது சிதைந்தது"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "தேவையான சில புலங்கள் காணப்படவில்லை"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "சில புலங்களில் செல்லுபடியாகாத மதிப்பு உள்ளது"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "சாதனம் இல்லை அல்லது இணைப்பு நீக்கப்பட்டது"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "சாதனம் செல்லுபடியாகாதது அல்லது இனம் காண இயலவில்லை "
+
+#~ msgid "The device is write protected"
+#~ msgstr "சாதனத்தில்  எழுததல் தடை செய்யப்பட்டுள்ளதுு"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "விசை செல்லுபடியாகாதது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "விசை  அளவு தவறானது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "விசை வகை தவறானது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது "
+
+#~ msgid "You are already logged in"
+#~ msgstr "நீங்கள் ஏற்கெனவே உள் நுழைந்து உள்ளீர்"
+
+#~ msgid "No user has logged in"
+#~ msgstr "பயனர் யாரும் உள் நுழையவில்லை"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "பயனர் கடவுச்சொல் அல்லது 'பின்' அமைக்கப்படவில்லை"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "பயனர் செல்லுபடியாகாத வகையினர்"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "இன்னொரு பயனர் ஏற்கெனவே உள் நுழைந்து உள்ளார்"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "வேறு பல்வகை பயனர்கள் ஏற்கெனவே உள் நுழைந்து உள்ளனர்"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "செல்லுபடியாகாத விசையை இறக்குமதி செய்ய இயலாது"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "தவறான அளவு விசையை இறக்குமதி செய்ய இயலாது"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr " செல்லுபடியாகாத விசையை ஏற்றுமதி செய்ய இயலாது"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "தவறான அளவு விசையை ஏற்றுமதி செய்ய இயலாது"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "விசை வகை தவறானது. ஆகையால் ஏற்றுமதி செய்ய இயலாது"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "தற்போக்கு எண் உருவாக்கியை துவக்க இயலவில்லை"
+
+#~ msgid "No random number generator available"
+#~ msgstr "தற்போக்கு எண் உருவாக்கி ஏதும் இல்லை "
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "மறையாக்க இயந்திரம்  செல்லுபடியாகாத அளபுரு கொண்டது"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "விடையை சேமிக்க போதுமான இடைவெளி இல்லை"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "சேமித்த நிலை செல்லுபடியாகாதது."
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "தகவல் அந்தரங்கமானது; காட்ட இயலாதது"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "இந்த நிலையை சேமிக்க முடியாது"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "இந்த கூறு துவக்கப்பட முடியாது."
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "கூறு ஏற்கெனவே துவக்கப்பட்டு விட்டது."
+
+#~ msgid "Cannot lock data"
+#~ msgstr "தரவை பூட்ட முடியாது"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "தரவை பூட்ட முடியாது"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "பயனர் கையெழுத்து வேண்டுதலை நிராகரித்தார்."
+
+#~ msgid "Unknown error"
+#~ msgstr "தெரியாத பிழை "
 
 #~ msgid "<i>Not Part of Certificate</i>"
 #~ msgstr "<i>சான்றிதழலில் பங்கு இல்லை</i>"
@@ -1166,9 +1364,6 @@ msgstr "கடவுச்சொல் (_P):"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "மின்னஞ்சல் கையொப்ப சான்றிதழ்"
 
-#~ msgid "Issued On"
-#~ msgstr "வழங்கப்பட்ட அன்று"
-
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "MD5 கைரேகை"
 
@@ -1177,15 +1372,6 @@ msgstr "கடவுச்சொல் (_P):"
 
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "நிறுவனத்தின் அலகு (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 கைரேகை"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL கிளையன்ட் சான்றிதழ்"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL  சேவையகத்தின் சான்றிதழ்"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr ""
@@ -1515,9 +1701,6 @@ msgstr "கடவுச்சொல் (_P):"
 
 #~ msgid "Couldn't create directory: %s"
 #~ msgstr "அடைவு  %s ஐ உருவாக்க முடியவில்லை"
-
-#~ msgid "Couldn't delete the file: %s"
-#~ msgstr "அடைவு %s ஐ நீக்க முடியவில்லை"
 
 #~ msgid "Access Denied"
 #~ msgstr "அணுகல் மறுக்கப்பட்டது"
