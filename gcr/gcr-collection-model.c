@@ -1326,6 +1326,21 @@ gcr_collection_model_set_columns (GcrCollectionModel *self, const GcrColumn *col
 }
 
 /**
+ * gcr_collection_model_get_collection:
+ * @self: a collection model
+ *
+ * Get the collection which this model represents
+ *
+ * Returns: (transfer none): the collection, owned by the model
+ */
+GcrCollection *
+gcr_collection_model_get_collection (GcrCollectionModel *self)
+{
+	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), NULL);
+	return self->pv->collection;
+}
+
+/**
  * gcr_collection_model_object_for_iter:
  * @self: The model
  * @iter: The row
