@@ -49,6 +49,7 @@ HEADER_FILES = \
 	gcr-tree-selector.h \
 	gcr-trust.h \
 	gcr-types.h \
+	gcr-union-collection.h \
 	gcr-unlock-options.h \
 	gcr-unlock-options-widget.h \
 	gcr-viewer.h \
@@ -122,6 +123,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-tree-selector.c gcr-tree-selector.h \
 	gcr-trust.c gcr-trust.h \
 	gcr-types.h \
+	gcr-union-collection.c \
 	gcr-unlock-options.h \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
 	gcr-unlock-renderer.c gcr-unlock-renderer.h \

@@ -246,10 +246,10 @@ GcrCollectionIface
 <FILE>gcr-simple-collection</FILE>
 GcrSimpleCollection
 GcrSimpleCollectionClass
-gcr_simple_collection_add
-gcr_simple_collection_contains
 gcr_simple_collection_new
+gcr_simple_collection_add
 gcr_simple_collection_remove
+gcr_simple_collection_contains
 <SUBSECTION Standard>
 gcr_simple_collection_get_type
 GCR_IS_SIMPLE_COLLECTION
@@ -259,6 +259,25 @@ GCR_SIMPLE_COLLECTION_CLASS
 GCR_SIMPLE_COLLECTION_GET_CLASS
 GCR_TYPE_SIMPLE_COLLECTION
 GcrSimpleCollectionPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gcr-union-collection</FILE>
+GcrUnionCollection
+GcrUnionCollectionClass
+gcr_union_collection_new
+gcr_union_collection_add
+gcr_union_collection_take
+gcr_union_collection_remove
+<SUBSECTION Standard>
+GCR_IS_UNION_COLLECTION
+GCR_IS_UNION_COLLECTION_CLASS
+GCR_TYPE_UNION_COLLECTION
+GCR_UNION_COLLECTION
+GCR_UNION_COLLECTION_CLASS
+GCR_UNION_COLLECTION_GET_CLASS
+GcrUnionCollectionPrivate
+gcr_union_collection_get_type
 </SECTION>
 
 <SECTION>

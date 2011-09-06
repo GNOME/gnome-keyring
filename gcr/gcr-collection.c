@@ -144,6 +144,7 @@ gcr_collection_get_objects (GcrCollection *self)
 /**
  * gcr_collection_contains:
  * @self: the collection
+ * @object: object to check
  *
  * Check whether the collection contains an object or not.
  *
