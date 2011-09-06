@@ -220,6 +220,7 @@ gcr_viewer_SOURCES = \
 	gcr-viewer-tool.c
 
 gcr_viewer_CFLAGS = \
+	$(GTK_CFLAGS) \
 	-DLOCALEDIR=\""$(datadir)/locale"\"
 
 gcr_viewer_LDADD = \
