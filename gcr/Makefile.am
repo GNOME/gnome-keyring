@@ -223,7 +223,9 @@ gcr_viewer_CFLAGS = \
 	-DLOCALEDIR=\""$(datadir)/locale"\"
 
 gcr_viewer_LDADD = \
-	$(builddir)/libgcr-$(GCR_MAJOR).la
+	$(builddir)/libgcr-$(GCR_MAJOR).la \
+	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
+	$(GTK_LIBS)
 
 # ----------------------------------------------------------------
 
