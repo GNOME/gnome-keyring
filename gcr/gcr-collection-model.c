@@ -1200,10 +1200,11 @@ gcr_collection_model_finalize (GObject *object)
 	g_assert (g_hash_table_size (self->pv->object_to_seq) == 0);
 	g_hash_table_destroy (self->pv->object_to_seq);
 
-	g_assert (g_hash_table_size (self->pv->selected) == 0);
-	if (self->pv->selected)
+	if (self->pv->selected) {
+		g_assert (g_hash_table_size (self->pv->selected) == 0);
 		g_hash_table_destroy (self->pv->selected);
-	self->pv->selected = NULL;
+		self->pv->selected = NULL;
+	}
 
 	self->pv->columns = NULL;
 	for (i = 0; i < self->pv->n_columns; i++)
