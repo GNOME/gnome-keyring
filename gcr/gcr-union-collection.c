@@ -265,7 +265,7 @@ gcr_union_collection_take (GcrUnionCollection *self,
 
 	g_object_ref (collection);
 
-	g_hash_table_insert (self->pv->collections, g_object_ref (collection), collection);
+	g_hash_table_insert (self->pv->collections, collection, collection);
 	connect_to_collection (self, collection);
 
 	objects = gcr_collection_get_objects (collection);
