@@ -246,6 +246,7 @@ typedef struct _GckModule GckModule;
 typedef struct _GckSession GckSession;
 typedef struct _GckObject GckObject;
 typedef struct _GckEnumerator GckEnumerator;
+typedef struct _GckUriData GckUriData;
 
 /* -------------------------------------------------------------------------
  * MODULE
@@ -314,6 +315,9 @@ gboolean              gck_module_equal                        (gconstpointer mod
                                                                gconstpointer module2);
 
 guint                 gck_module_hash                         (gconstpointer module);
+
+gboolean              gck_module_match                        (GckModule *self,
+                                                               GckUriData *uri);
 
 const gchar*          gck_module_get_path                     (GckModule *self);
 
@@ -454,6 +458,9 @@ typedef struct _GckTokenInfo {
 	gint64 utc_time;
 } GckTokenInfo;
 
+gboolean            gck_token_info_match                    (GckTokenInfo *match,
+                                                             GckTokenInfo *info);
+
 void                gck_token_info_free                     (GckTokenInfo *token_info);
 
 typedef struct _GckMechanismInfo {
@@ -506,6 +513,9 @@ gboolean            gck_slot_equal                          (gconstpointer slot1
                                                              gconstpointer slot2);
 
 guint               gck_slot_hash                           (gconstpointer slot);
+
+gboolean            gck_slot_match                          (GckSlot *self,
+                                                             GckUriData *uri);
 
 GckSlot*            gck_slot_from_handle                    (GckModule *module,
                                                              CK_SLOT_ID slot_id);
@@ -1162,7 +1172,7 @@ typedef enum {
 	GCK_URI_FOR_ANY =     0x0000FFFF,
 } GckUriFlags;
 
-typedef struct _GckUriData {
+struct _GckUriData {
 	gboolean any_unrecognized;
 	GckModuleInfo *module_info;
 	GckTokenInfo *token_info;
@@ -1170,7 +1180,7 @@ typedef struct _GckUriData {
 
 	/*< private >*/
 	gpointer dummy[4];
-} GckUriData;
+};
 
 #define             GCK_URI_ERROR                           (gck_uri_get_error_quark ())
 

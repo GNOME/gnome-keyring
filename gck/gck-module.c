@@ -736,3 +736,34 @@ gck_module_get_functions (GckModule *self)
 	g_return_val_if_fail (GCK_IS_MODULE (self), NULL);
 	return self->pv->funcs;
 }
+
+/**
+ * gck_module_match:
+ * @self: the module to match
+ * @uri: the uri to match against the module
+ *
+ * Check whether the PKCS\#11 URI matches the module
+ *
+ * Returns: whether the URI matches or not
+ */
+gboolean
+gck_module_match (GckModule *self,
+                  GckUriData *uri)
+{
+	gboolean match = TRUE;
+	GckModuleInfo *info;
+
+	g_return_val_if_fail (GCK_IS_MODULE (self), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	if (uri->any_unrecognized)
+		match = FALSE;
+
+	if (match && uri->module_info) {
+		info = gck_module_get_info (self);
+		match = _gck_module_info_match (uri->module_info, info);
+		gck_module_info_free (info);
+	}
+
+	return match;
+}
