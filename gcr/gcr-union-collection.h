@@ -66,6 +66,11 @@ void                gcr_union_collection_take                    (GcrUnionCollec
 void                gcr_union_collection_remove                  (GcrUnionCollection *self,
                                                                   GcrCollection *collection);
 
+gboolean            gcr_union_collection_have                    (GcrUnionCollection *self,
+                                                                  GcrCollection *collection);
+
+guint               gcr_union_collection_size                    (GcrUnionCollection *self);
+
 G_END_DECLS
 
 #endif /* __GCR_UNION_COLLECTION_H__ */

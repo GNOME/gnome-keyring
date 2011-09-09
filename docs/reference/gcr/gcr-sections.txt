@@ -269,6 +269,8 @@ gcr_union_collection_new
 gcr_union_collection_add
 gcr_union_collection_take
 gcr_union_collection_remove
+gcr_union_collection_have
+gcr_union_collection_size
 <SUBSECTION Standard>
 GCR_IS_UNION_COLLECTION
 GCR_IS_UNION_COLLECTION_CLASS

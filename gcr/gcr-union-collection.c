@@ -305,3 +305,37 @@ gcr_union_collection_remove (GcrUnionCollection *self,
 
 	g_object_unref (collection);
 }
+
+/**
+ * gcr_union_collection_have:
+ * @self: the union collection
+ * @collection: the collection to check
+ *
+ * Check whether the collection is present in the union.
+ *
+ * Returns: whether present or not
+ */
+gboolean
+gcr_union_collection_have (GcrUnionCollection *self,
+                           GcrCollection *collection)
+{
+	g_return_val_if_fail (GCR_IS_UNION_COLLECTION (self), FALSE);
+	g_return_val_if_fail (GCR_IS_COLLECTION (collection), FALSE);
+	return g_hash_table_lookup (self->pv->collections, collection) != NULL;
+}
+
+/**
+ * gcr_union_collection_size:
+ * @self: the union collection
+ *
+ * Return the number of collections in this union. This does not reflect
+ * the number of objects in the combined collection.
+ *
+ * Returns: number of collections inlcuded
+ */
+guint
+gcr_union_collection_size (GcrUnionCollection *self)
+{
+	g_return_val_if_fail (GCR_IS_UNION_COLLECTION (self), FALSE);
+	return g_hash_table_size (self->pv->collections);
+}
