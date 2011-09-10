@@ -321,10 +321,10 @@ gcr_unlock_renderer_render (GcrRenderer *renderer,
 		g_free (display);
 
 		if (self->pv->label)
-			display = g_strdup_printf (_("The contents of '%s' are locked. In order to view the contents, enter a the correct password."),
+			display = g_strdup_printf (_("The contents of '%s' are locked. In order to view the contents, enter the correct password."),
 			                           self->pv->label);
 		else
-			display = g_strdup (_("The contents are locked. In order to view the contents, enter a the correct password."));
+			display = g_strdup (_("The contents are locked. In order to view the contents, enter the correct password."));
 		_gcr_display_view_append_content (view, renderer, display, NULL);
 		g_free (display);
 
