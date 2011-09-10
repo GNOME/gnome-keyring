@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.1.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-06 19:24+0800\n"
-"PO-Revision-Date: 2011-09-04 22:58+0800\n"
+"POT-Creation-Date: 2011-09-10 15:08+0800\n"
+"PO-Revision-Date: 2011-09-10 15:07+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (traditional)\n"
 "Language: \n"
@@ -805,13 +805,13 @@ msgstr "密碼"
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
 msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter a the "
+"The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
 msgstr "「%s」的內容已鎖定。為了檢視內容，請輸入正確的密碼。"
 
 #: ../gcr/gcr-unlock-renderer.c:327
 msgid ""
-"The contents are locked. In order to view the contents, enter a the correct "
+"The contents are locked. In order to view the contents, enter the correct "
 "password."
 msgstr "內容已鎖定。為了檢視內容，請輸入正確的密碼。"
 
