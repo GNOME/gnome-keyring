@@ -40,7 +40,7 @@ full_version=`printf %03d%03d%03d $version_bits`
 AC_DEFINE_UNQUOTED(GKR_VERSION, $full_version, [The gnome-keyring version as a number])
 
 AM_SANITY_CHECK
-AM_MAINTAINER_MODE
+AM_MAINTAINER_MODE([enable])
 
 AC_GNU_SOURCE
 AC_ISC_POSIX
