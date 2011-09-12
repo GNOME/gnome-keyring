@@ -1136,6 +1136,94 @@ done:
 }
 
 static gint
+verify_pkcs12_safe (GcrParser *self,
+                    GNode *asn,
+                    gconstpointer content,
+                    gsize n_content)
+{
+	PasswordState pstate = PASSWORD_STATE_INIT;
+	const gchar *password;
+	gcry_md_hd_t mdh = NULL;
+	const guchar *mac_digest;
+	gsize mac_len;
+	guchar *digest = NULL;
+	gsize n_digest;
+	GQuark algorithm;
+	GNode *mac_data;
+	gconstpointer params;
+	gsize n_params;
+	int ret, r;
+
+	ret = GCR_ERROR_FAILURE;
+
+	/*
+	 * The MAC is optional (and outside the encryption no less). I wonder
+	 * what the designers (ha) of PKCS#12 were trying to achieve
+	 */
+
+	mac_data = egg_asn1x_node (asn, "macData", NULL);
+	if (mac_data == NULL)
+		return SUCCESS;
+
+	algorithm = egg_asn1x_get_oid_as_quark (egg_asn1x_node (mac_data, "mac",
+	                                        "digestAlgorithm", "algorithm", NULL));
+	if (!algorithm)
+		goto done;
+
+	params = egg_asn1x_get_raw_element (mac_data, &n_params);
+	if (!params)
+		goto done;
+
+	digest = egg_asn1x_get_string_as_raw (egg_asn1x_node (mac_data, "mac", "digest", NULL), NULL, &n_digest);
+	if (!digest)
+		goto done;
+
+	/* Loop to try different passwords */
+	for (;;) {
+		g_assert (mdh == NULL);
+
+		r = enum_next_password (self, &pstate, &password);
+		if (r != SUCCESS) {
+			ret = r;
+			goto done;
+		}
+
+		/* Parse the encryption stuff into a cipher. */
+		if (!egg_symkey_read_mac (algorithm, password, -1, params, n_params,
+		                          &mdh, &mac_len)) {
+			ret = GCR_ERROR_FAILURE;
+			goto done;
+		}
+
+		/* If not the right length, then that's really broken */
+		if (mac_len != n_digest) {
+			r = GCR_ERROR_FAILURE;
+
+		} else {
+			gcry_md_write (mdh, content, n_content);
+			mac_digest = gcry_md_read (mdh, 0);
+			g_return_val_if_fail (mac_digest, GCR_ERROR_FAILURE);
+			r = memcmp (mac_digest, digest, n_digest) == 0 ? SUCCESS : GCR_ERROR_LOCKED;
+		}
+
+		gcry_md_close (mdh);
+		mdh = NULL;
+
+		if (r != GCR_ERROR_LOCKED) {
+			ret = r;
+			break;
+		}
+	}
+
+done:
+	if (mdh)
+		gcry_md_close (mdh);
+	g_free (digest);
+	return ret;
+
+}
+
+static gint
 parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 {
 	GNode *asn = NULL;
@@ -1152,7 +1240,7 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	if (!asn)
 		goto done;
 
-	ret = GCR_ERROR_FAILURE;
+	parsing_begin (self, 0, data, n_data);
 
 	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "authSafe", "contentType", NULL));
 	if (!oid)
@@ -1176,9 +1264,9 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	if (!content)
 		goto done;
 
-	parsing_begin (self, 0, data, n_data);
-
-	ret = handle_pkcs12_safe (self, content, n_content);
+	ret = verify_pkcs12_safe (self, asn, content, n_content);
+	if (ret == SUCCESS)
+		ret = handle_pkcs12_safe (self, content, n_content);
 
 	parsing_end (self);
 

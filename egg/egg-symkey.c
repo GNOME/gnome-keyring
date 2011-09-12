@@ -51,6 +51,8 @@ static GQuark OID_PKCS12_PBE_2DES_SHA1;
 static GQuark OID_PKCS12_PBE_RC2_128_SHA1;
 static GQuark OID_PKCS12_PBE_RC2_40_SHA1;
 
+static GQuark OID_SHA1;
+
 static void
 init_quarks (void)
 {
@@ -83,7 +85,9 @@ init_quarks (void)
 		QUARK (OID_PKCS12_PBE_2DES_SHA1, "1.2.840.113549.1.12.1.4");
 		QUARK (OID_PKCS12_PBE_RC2_128_SHA1, "1.2.840.113549.1.12.1.5");
 		QUARK (OID_PKCS12_PBE_RC2_40_SHA1, "1.2.840.113549.1.12.1.6");
-		
+
+		QUARK (OID_SHA1, "1.3.14.3.2.26");
+
 		#undef QUARK
 		
 		g_once_init_leave (&quarks_inited, 1);
@@ -475,6 +479,43 @@ egg_symkey_generate_pkcs12 (int cipher_algo, int hash_algo, const gchar *passwor
 		egg_secure_free (key ? *key : NULL);
 	}
 	
+	return ret;
+}
+
+gboolean
+egg_symkey_generate_pkcs12_mac (int hash_algo,
+                                const gchar *password,
+                                gssize n_password,
+                                const guchar *salt,
+                                gsize n_salt,
+                                int iterations,
+                                guchar **key)
+{
+	gsize n_key;
+	gboolean ret = TRUE;
+
+	g_return_val_if_fail (hash_algo, FALSE);
+	g_return_val_if_fail (iterations > 0, FALSE);
+
+	n_key = gcry_md_get_algo_dlen (hash_algo);
+
+	if (password && !g_utf8_validate (password, n_password, NULL)) {
+		g_warning ("invalid non-UTF8 password");
+		g_return_val_if_reached (FALSE);
+	}
+
+	/* Generate us an key */
+	if (key) {
+		*key = egg_secure_alloc (n_key);
+		g_return_val_if_fail (*key != NULL, FALSE);
+		ret = generate_pkcs12 (hash_algo, 3, password, n_password, salt, n_salt,
+		                       iterations, *key, n_key);
+	}
+
+	/* Cleanup in case of failure */
+	if (!key)
+		egg_secure_free (key ? *key : NULL);
+
 	return ret;
 }
 
@@ -966,6 +1007,75 @@ done:
 	return ret;
 }
 
+static gboolean
+read_mac_pkcs12_pbe (int hash_algo,
+                     const gchar *password,
+                     gsize n_password,
+                     const guchar *data,
+                     gsize n_data,
+                     gcry_md_hd_t *mdh,
+                     gsize *digest_len)
+{
+	GNode *asn = NULL;
+	gcry_error_t gcry;
+	gboolean ret;
+	gsize n_key;
+	const guchar *salt;
+	gsize n_salt;
+	gulong iterations;
+	guchar *key = NULL;
+
+	g_return_val_if_fail (hash_algo != 0, FALSE);
+	g_return_val_if_fail (mdh != NULL, FALSE);
+	g_return_val_if_fail (data != NULL && n_data != 0, FALSE);
+
+	*mdh = NULL;
+	ret = FALSE;
+
+	/* Check if we can use this algorithm */
+	if (gcry_md_algo_info (hash_algo, GCRYCTL_TEST_ALGO, NULL, 0) != 0)
+		goto done;
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-MacData", data, n_data);
+	if (!asn)
+		goto done;
+
+	salt = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "macSalt", NULL), &n_salt);
+	if (!salt)
+		goto done;
+	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "iterations", NULL), &iterations))
+		goto done;
+
+	n_key = gcry_md_get_algo_dlen (hash_algo);
+
+	/* Generate IV and key using salt read above */
+	if (!egg_symkey_generate_pkcs12_mac (hash_algo, password, n_password,
+	                                     salt, n_salt, iterations, &key))
+		goto done;
+
+	gcry = gcry_md_open (mdh, hash_algo, GCRY_MD_FLAG_HMAC);
+	if (gcry != 0) {
+		g_warning ("couldn't create mac digest: %s", gcry_strerror (gcry));
+		goto done;
+	}
+
+	if (digest_len)
+		*digest_len = n_key;
+	gcry_md_setkey (*mdh, key, n_key);
+
+	ret = TRUE;
+
+done:
+	if (ret != TRUE && *mdh) {
+		gcry_md_close (*mdh);
+		*mdh = NULL;
+	}
+
+	egg_secure_free (key);
+	egg_asn1x_destroy (asn);
+	return ret;
+}
+
 gboolean
 egg_symkey_read_cipher (GQuark oid_scheme, const gchar *password, gsize n_password,
                         const guchar *data, gsize n_data, gcry_cipher_hd_t *cih)
@@ -1029,4 +1139,32 @@ egg_symkey_read_cipher (GQuark oid_scheme, const gchar *password, gsize n_passwo
     		g_message ("unsupported or invalid cipher: %s", g_quark_to_string (oid_scheme));
 	
     	return ret;
+}
+
+gboolean
+egg_symkey_read_mac (GQuark oid_scheme,
+                     const gchar *password,
+                     gsize n_password,
+                     const guchar *data,
+                     gsize n_data,
+                     gcry_md_hd_t *mdh,
+                     gsize *digest_len)
+{
+	gboolean ret = FALSE;
+
+	g_return_val_if_fail (oid_scheme != 0, FALSE);
+	g_return_val_if_fail (mdh != NULL, FALSE);
+	g_return_val_if_fail (data != NULL && n_data != 0, FALSE);
+
+	init_quarks ();
+
+	/* PKCS#12 MAC with SHA-1 */
+	if (oid_scheme == OID_SHA1)
+		ret = read_mac_pkcs12_pbe (GCRY_MD_SHA1, password, n_password,
+		                           data, n_data, mdh, digest_len);
+
+	if (ret == FALSE)
+		g_message ("unsupported or invalid mac: %s", g_quark_to_string (oid_scheme));
+
+	return ret;
 }

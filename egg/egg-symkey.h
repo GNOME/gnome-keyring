@@ -47,14 +47,22 @@ gboolean                 egg_symkey_generate_pbe                (int cipher_algo
                                                                  guchar **iv);
 
 gboolean                 egg_symkey_generate_pkcs12             (int cipher_algo, 
-                                                                 int hash_algo, 
+                                                                 int hash_algo,
                                                                  const gchar *password,
                                                                  gssize n_password,
-                                                                 const guchar *salt, 
+                                                                 const guchar *salt,
                                                                  gsize n_salt,
-                                                                 int iterations, 
+                                                                 int iterations,
                                                                  guchar **key, 
                                                                  guchar **iv);
+
+gboolean                 egg_symkey_generate_pkcs12_mac         (int hash_algo,
+                                                                 const gchar *password,
+                                                                 gssize n_password,
+                                                                 const guchar *salt,
+                                                                 gsize n_salt,
+                                                                 int iterations,
+                                                                 guchar **key);
 
 gboolean                 egg_symkey_generate_pbkdf2             (int cipher_algo, 
                                                                  int hash_algo, 
@@ -72,5 +80,13 @@ gboolean                 egg_symkey_read_cipher                 (GQuark oid_sche
                                                                  const guchar *data, 
                                                                  gsize n_data, 
                                                                  gcry_cipher_hd_t *cih);
+
+gboolean                 egg_symkey_read_mac                    (GQuark oid_scheme,
+                                                                 const gchar *password,
+                                                                 gsize n_password,
+                                                                 const guchar *data,
+                                                                 gsize n_data,
+                                                                 gcry_md_hd_t *mdh,
+                                                                 gsize *digest_len);
 
 #endif /* EGG_SYMKEY_H_ */
