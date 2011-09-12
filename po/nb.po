@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-03 13:53+0200\n"
-"PO-Revision-Date: 2011-09-03 13:54+0200\n"
+"POT-Creation-Date: 2011-09-12 20:52+0200\n"
+"PO-Revision-Date: 2011-09-12 20:52+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -637,7 +637,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "Gnupg-prosessen ble terminert med signal: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "Operasjonen ble avbrutt"
 
@@ -751,15 +751,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1789
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Ikke gjenkjente eller støttede data."
 
-#: ../gcr/gcr-parser.c:1792
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Kunne ikke lese ugyldige eller korrupte data."
 
-#: ../gcr/gcr-parser.c:1795
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Data er låst"
 
@@ -813,15 +813,15 @@ msgstr "Passord"
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
 msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter a the "
+"The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
-msgstr "Innholdet i «%s» er låst. Du må oppgi et korrekt passord for å vise innholdet."
+msgstr "Innholdet i «%s» er låst. Du må oppgi korrekt passord for å vise innholdet."
 
 #: ../gcr/gcr-unlock-renderer.c:327
 msgid ""
-"The contents are locked. In order to view the contents, enter a the correct "
+"The contents are locked. In order to view the contents, enter the correct "
 "password."
-msgstr "Innholdet er låst. Du må oppgi et korrekt passord for å vise innholdet."
+msgstr "Innholdet er låst. Du må oppgi korrekt passord for å vise innholdet."
 
 #: ../gcr/gcr-viewer-tool.c:41
 msgid "GCR Certificate and Key Viewer"
