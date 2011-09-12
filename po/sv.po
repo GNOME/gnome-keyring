@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 20:39+0200\n"
-"PO-Revision-Date: 2011-09-12 20:53+0100\n"
+"POT-Creation-Date: 2011-09-12 20:56+0200\n"
+"PO-Revision-Date: 2011-09-12 20:56+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -422,7 +422,7 @@ msgstr "Nej"
 
 #: ../gcr/gcr-certificate-renderer.c:122
 msgid "Max Path Length"
-msgstr ""
+msgstr "Maximal sökvägslängd"
 
 #: ../gcr/gcr-certificate-renderer.c:123
 msgid "Unlimited"
