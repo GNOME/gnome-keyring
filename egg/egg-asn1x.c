@@ -158,7 +158,7 @@ struct _Abits {
 /* Forward Declarations */
 static gboolean anode_decode_anything (GNode*, Atlv*);
 static gboolean anode_decode_anything_for_flags (GNode *, Atlv*, gint);
-static gboolean anode_validate_anything (GNode*);
+static gboolean anode_validate_anything (GNode*, gboolean);
 static gboolean anode_encode_prepare (GNode*, gboolean want);
 
 static gint
@@ -354,13 +354,13 @@ anode_opts_lookup (GNode *node, gint type, const gchar *name)
 static gint
 compare_tlvs (Atlv *tlva, Atlv *tlvb)
 {
-	gint la = tlva->len;
-	gint lb = tlvb->len;
+	gint la = tlva->off + tlva->len;
+	gint lb = tlvb->off + tlvb->len;
 	gint res;
 
 	g_assert (tlva->buf);
 	g_assert (tlvb->buf);
-	res = memcmp (tlva->buf + tlva->off, tlvb->buf + tlvb->off, MIN (la, lb));
+	res = memcmp (tlva->buf, tlvb->buf, MIN (la, lb));
 	if (la == lb || res != 0)
 		return res;
 	return la < lb ? -1 : 1;
@@ -1139,13 +1139,11 @@ anode_decode_anything (GNode *node, Atlv *tlv)
 }
 
 gboolean
-egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
+egg_asn1x_decode_no_validate (GNode *asn,
+                              gconstpointer data,
+                              gsize n_data)
 {
 	Atlv tlv;
-
-	g_return_val_if_fail (asn, FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
 
 	egg_asn1x_clear (asn);
 
@@ -1158,7 +1156,25 @@ egg_asn1x_decode (GNode *asn, gconstpointer data, gsize n_data)
 	if (tlv.end - tlv.buf != n_data)
 		return FALSE;
 
-	return egg_asn1x_validate (asn);
+	return TRUE;
+}
+
+gboolean
+egg_asn1x_decode (GNode *asn,
+                  gconstpointer data,
+                  gsize n_data)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (asn, FALSE);
+	g_return_val_if_fail (data, FALSE);
+	g_return_val_if_fail (n_data, FALSE);
+
+	ret = egg_asn1x_decode_no_validate (asn, data, n_data);
+	if (!ret)
+		return ret;
+
+	return egg_asn1x_validate (asn, TRUE);
 }
 
 /* -----------------------------------------------------------------------------------
@@ -1705,7 +1721,7 @@ egg_asn1x_encode (GNode *asn, EggAllocator allocator, gsize *n_data)
 		return NULL;
 
 	if (anode_encode_build (asn, data, length) &&
-	    anode_validate_anything (asn)) {
+	    anode_validate_anything (asn, TRUE)) {
 		anode_encode_commit (asn);
 		*n_data = length;
 		return data;
@@ -3334,7 +3350,8 @@ anode_validate_time (GNode *node, Atlv *tlv)
 }
 
 static gboolean
-anode_validate_choice (GNode *node)
+anode_validate_choice (GNode *node,
+                       gboolean strict)
 {
 	GNode *child, *choice;
 	Anode *an;
@@ -3344,7 +3361,7 @@ anode_validate_choice (GNode *node)
 	if (!choice)
 		return anode_failure (node, "one choice must be set");
 
-	if (!anode_validate_anything (choice))
+	if (!anode_validate_anything (choice, strict))
 		return FALSE;
 
 	for (child = node->children; child; child = child->next) {
@@ -3359,7 +3376,8 @@ anode_validate_choice (GNode *node)
 }
 
 static gboolean
-anode_validate_sequence_or_set (GNode *node)
+anode_validate_sequence_or_set (GNode *node,
+                                gboolean strict)
 {
 	GNode *child;
 	gulong tag = 0;
@@ -3371,7 +3389,7 @@ anode_validate_sequence_or_set (GNode *node)
 
 	/* All of the children must validate properly */
 	for (child = node->children; child; child = child->next) {
-		if (!anode_validate_anything (child))
+		if (!anode_validate_anything (child, strict))
 			return FALSE;
 
 		/* Tags must be in ascending order */
@@ -3388,7 +3406,8 @@ anode_validate_sequence_or_set (GNode *node)
 }
 
 static gboolean
-anode_validate_sequence_or_set_of (GNode *node)
+anode_validate_sequence_or_set_of (GNode *node,
+                                   gboolean strict)
 {
 	GNode *child;
 	Atlv *tlv, *ptlv;
@@ -3406,7 +3425,7 @@ anode_validate_sequence_or_set_of (GNode *node)
 	for (child = node->children; child; child = child->next) {
 		tlv = anode_get_tlv_data (child);
 		if (tlv) {
-			if (!anode_validate_anything (child))
+			if (!anode_validate_anything (child, strict))
 				return FALSE;
 
 			/* Tag must have same tag as top */
@@ -3416,7 +3435,8 @@ anode_validate_sequence_or_set_of (GNode *node)
 				return anode_failure (node, "invalid mismatched content");
 
 			/* Set of must be in ascending order */
-			if (type == TYPE_SET_OF && ptlv && compare_tlvs (ptlv, tlv) > 0)
+			if (strict && type == TYPE_SET_OF &&
+			    ptlv != NULL && compare_tlvs (ptlv, tlv) > 0)
 				return anode_failure (node, "content must be in ascending order");
 			ptlv = tlv;
 			++count;
@@ -3427,7 +3447,8 @@ anode_validate_sequence_or_set_of (GNode *node)
 }
 
 static gboolean
-anode_validate_anything (GNode *node)
+anode_validate_anything (GNode *node,
+                         gboolean strict)
 {
 	Atlv *tlv;
 	gint type;
@@ -3471,16 +3492,16 @@ anode_validate_anything (GNode *node)
 	case TYPE_ANY:
 		return TRUE;
 	case TYPE_CHOICE:
-		return anode_validate_choice (node);
+		return anode_validate_choice (node, strict);
 
 	/* Structured types */
 	case TYPE_SEQUENCE:
 	case TYPE_SET:
-		return anode_validate_sequence_or_set (node);
+		return anode_validate_sequence_or_set (node, strict);
 
 	case TYPE_SEQUENCE_OF:
 	case TYPE_SET_OF:
-		return anode_validate_sequence_or_set_of (node);
+		return anode_validate_sequence_or_set_of (node, strict);
 
 	default:
 		g_return_val_if_reached (FALSE);
@@ -3488,10 +3509,11 @@ anode_validate_anything (GNode *node)
 }
 
 gboolean
-egg_asn1x_validate (GNode *asn)
+egg_asn1x_validate (GNode *asn,
+                    gboolean strict)
 {
 	g_return_val_if_fail (asn, FALSE);
-	return anode_validate_anything (asn);
+	return anode_validate_anything (asn, strict);
 }
 
 /* -----------------------------------------------------------------------------------

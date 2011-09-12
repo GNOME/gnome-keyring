@@ -815,6 +815,38 @@ done:
  * PKCS12
  */
 
+static GNode *
+decode_pkcs12_asn1_accepting_invalid_crap (const ASN1_ARRAY_TYPE *defs,
+                                           const gchar *identifier,
+                                           gconstpointer data,
+                                           gsize n_data)
+{
+	GNode *asn;
+
+	/*
+	 * Because PKCS#12 files, the bags specifically, are notorious for
+	 * being crappily constructed and are often break rules such as DER
+	 * sorting order etc.. we parse the DER in a non-strict fashion.
+	 *
+	 * The rules in DER are designed for X.509 certificates, so there is
+	 * only one way to represent a given certificate (although they fail
+	 * at that as well). But with PKCS#12 we don't have such high
+	 * requirements, and we can slack off on our validation.
+	 */
+
+	asn = egg_asn1x_create (defs, identifier);
+	g_return_val_if_fail (asn != NULL, NULL);
+
+	/* Passing FALSE as the strictness argument */
+	if (!egg_asn1x_decode_no_validate (asn, data, n_data) ||
+	    !egg_asn1x_validate (asn, FALSE)) {
+		egg_asn1x_destroy (asn);
+		asn = NULL;
+	}
+
+	return asn;
+}
+
 static gint
 handle_pkcs12_cert_bag (GcrParser *self, const guchar *data, gsize n_data)
 {
@@ -826,7 +858,9 @@ handle_pkcs12_cert_bag (GcrParser *self, const guchar *data, gsize n_data)
 	gint ret;
 
 	ret = GCR_ERROR_UNRECOGNIZED;
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-CertBag", data, n_data);
+	asn = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab,
+	                                                 "pkcs-12-CertBag",
+	                                                 data, n_data);
 	if (!asn)
 		goto done;
 
@@ -902,7 +936,9 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 
 	ret = GCR_ERROR_UNRECOGNIZED;
 
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-SafeContents", data, n_data);
+	asn = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab,
+	                                                 "pkcs-12-SafeContents",
+	                                                 data, n_data);
 	if (!asn)
 		goto done;
 
@@ -981,7 +1017,9 @@ handle_pkcs12_encrypted_bag (GcrParser *self, const guchar *data, gsize n_data)
 
 	ret = GCR_ERROR_UNRECOGNIZED;
 
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-EncryptedData", data, n_data);
+	asn = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab,
+	                                                 "pkcs-7-EncryptedData",
+	                                                 data, n_data);
 	if (!asn)
 		goto done;
 
@@ -1068,7 +1106,9 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 
 	ret = GCR_ERROR_UNRECOGNIZED;
 
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-AuthenticatedSafe", data, n_data);
+	asn = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab,
+	                                                 "pkcs-12-AuthenticatedSafe",
+	                                                 data, n_data);
 	if (!asn)
 		goto done;
 
@@ -1097,7 +1137,9 @@ handle_pkcs12_safe (GcrParser *self, const guchar *data, gsize n_data)
 		if (oid == GCR_OID_PKCS7_DATA) {
 
 			egg_asn1x_destroy (asn_content);
-			asn_content = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-Data", bag, n_bag);
+			asn_content = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab,
+			                                                         "pkcs-7-Data",
+			                                                         bag, n_bag);
 			if (!asn_content)
 				goto done;
 
@@ -1236,7 +1278,8 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 
 	ret = GCR_ERROR_UNRECOGNIZED;
 
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-12-PFX", data, n_data);
+	asn = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab, "pkcs-12-PFX",
+	                                                 data, n_data);
 	if (!asn)
 		goto done;
 
@@ -1256,7 +1299,8 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	if (!element)
 		goto done;
 
-	asn_content = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-Data", element, n_element);
+	asn_content = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab, "pkcs-7-Data",
+	                                                         element, n_element);
 	if (!asn_content)
 		goto done;
 
