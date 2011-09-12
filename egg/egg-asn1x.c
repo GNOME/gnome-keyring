@@ -354,13 +354,13 @@ anode_opts_lookup (GNode *node, gint type, const gchar *name)
 static gint
 compare_tlvs (Atlv *tlva, Atlv *tlvb)
 {
-	gint la = tlva->off + tlva->len;
-	gint lb = tlvb->off + tlvb->len;
+	gint la = tlva->len;
+	gint lb = tlvb->len;
 	gint res;
 
 	g_assert (tlva->buf);
 	g_assert (tlvb->buf);
-	res = memcmp (tlva->buf, tlvb->buf, MIN (la, lb));
+	res = memcmp (tlva->buf + tlva->off, tlvb->buf + tlvb->off, MIN (la, lb));
 	if (la == lb || res != 0)
 		return res;
 	return la < lb ? -1 : 1;
