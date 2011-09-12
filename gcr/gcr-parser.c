@@ -654,6 +654,7 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 		
 		/* Try to parse the resulting key */
 		r = parse_der_pkcs8_plain (self, crypted, n_crypted);
+		egg_secure_free (crypted);
 		crypted = NULL;
 		
 		if (r != GCR_ERROR_UNRECOGNIZED) {
