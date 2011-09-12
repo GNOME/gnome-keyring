@@ -305,7 +305,8 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 	gsize n_hash, i;
 	gunichar unich;
 	gcry_error_t gcry;
-	
+	gsize length;
+
 	num_b1 = num_ij = NULL;
 	
 	n_hash = gcry_md_get_algo_dlen (hash_algo);
@@ -405,7 +406,11 @@ generate_pkcs12 (int hash_algo, int type, const gchar *utf8_password,
 			g_return_val_if_fail (gcry == 0, FALSE);
 			gcry_mpi_add (num_ij, num_ij, num_b1);
 			gcry_mpi_clear_highbit (num_ij, 64 * 8);
-			gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buf_i + i, 64, NULL, num_ij);
+			/* We take special care to right align the number in the buffer */
+			gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &length, num_ij);
+			g_return_val_if_fail (gcry == 0 && length <= 64, FALSE);
+			memset (buf_i + i, 0, 64 - length);
+			gcry = gcry_mpi_print (GCRYMPI_FMT_USG, buf_i + i + (64 - length), 64, NULL, num_ij);
 			g_return_val_if_fail (gcry == 0, FALSE);
 			gcry_mpi_release (num_ij);
 		}
