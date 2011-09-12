@@ -13,14 +13,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-04 19:09+0200\n"
-"PO-Revision-Date: 2011-09-04 19:10+0200\n"
+"POT-Creation-Date: 2011-09-12 21:32+0200\n"
+"PO-Revision-Date: 2011-09-12 21:33+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galego <gnome-l10n-gl@gnome.org>\n"
+"Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
@@ -644,7 +644,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "O proceso de Gnupg rematou co sinal: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "Cancelouse a operación"
 
@@ -758,15 +758,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1789
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Datos non recoñecíbeis ou non soportados."
 
-#: ../gcr/gcr-parser.c:1792
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Non é posíbel analizar datos danados ou non válidos."
 
-#: ../gcr/gcr-parser.c:1795
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Os datos están bloqueados"
 
@@ -820,7 +820,7 @@ msgstr "Contrasinal"
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
 msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter a the "
+"The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
 msgstr ""
 "Os contidos de '%s' están bloqueados. Para poder velos, introduza o "
@@ -828,10 +828,10 @@ msgstr ""
 
 #: ../gcr/gcr-unlock-renderer.c:327
 msgid ""
-"The contents are locked. In order to view the contents, enter a the correct "
+"The contents are locked. In order to view the contents, enter the correct "
 "password."
 msgstr ""
-"Oss contido están bloqueados. Para poder velos, introduza o contrasinal "
+"Os contidos están bloqueados. Para poder velos, escriba o contrasinal "
 "correcto."
 
 #: ../gcr/gcr-viewer-tool.c:41
