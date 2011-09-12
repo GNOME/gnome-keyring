@@ -86,6 +86,7 @@ run-tests
 
 /egg/tests/test-asn1
 /egg/tests/test-cleanup
+/egg/tests/test-decimal
 /egg/tests/test-dh
 /egg/tests/test-dn
 /egg/tests/test-hex

@@ -30,6 +30,7 @@ libegg_la_SOURCES = \
 	egg-dh.c egg-dh.h \
 	egg-dn.c egg-dn.h \
 	egg-error.h \
+	egg-decimal.c egg-decimal.h \
 	egg-hex.c egg-hex.h \
 	egg-hkdf.c egg-hkdf.h \
 	egg-libgcrypt.c egg-libgcrypt.h \
