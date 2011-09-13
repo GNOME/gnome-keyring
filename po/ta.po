@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-04 12:37+0530\n"
-"PO-Revision-Date: 2011-09-05 17:05+0530\n"
+"POT-Creation-Date: 2011-09-13 19:50+0530\n"
+"PO-Revision-Date: 2011-09-13 19:52+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -643,7 +643,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "ஜிஎன்யுபிஜி செயல் சமிக்ஞையால் முடிக்கப்பட்டது: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "செயல் ரத்து செய்யப்பட்டது."
 
@@ -757,15 +757,15 @@ msgstr "எஸ்ஹெச்ஏ1"
 msgid "SHA256"
 msgstr "எஸ்ஹெச்ஏ256"
 
-#: ../gcr/gcr-parser.c:1789
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "இனம் காணாத அல்லது ஆதரவு இல்லா தரவு."
 
-#: ../gcr/gcr-parser.c:1792
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "பகுக்க செல்லுபடியாகாத அல்லது சிதைந்த தரவு."
 
-#: ../gcr/gcr-parser.c:1795
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "தரவு பூட்டப்பட்டுள்ளது"
 
@@ -819,15 +819,15 @@ msgstr "கடவுச்சொல்"
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
 msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter a the "
+"The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
-msgstr "'%s' இன் உள்ளடக்கங்கள் பூட்டப்பட்டன. அதை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
+msgstr "'%s' இன் உள்ளடக்கங்கள் பூட்டப்பட்டன. அவற்றை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
 
 #: ../gcr/gcr-unlock-renderer.c:327
 msgid ""
-"The contents are locked. In order to view the contents, enter a the correct "
+"The contents are locked. In order to view the contents, enter the correct "
 "password."
-msgstr "உள்ளடக்கங்கள் பூட்டப்பட்டன. அதை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
+msgstr "உள்ளடக்கங்கள் பூட்டப்பட்டன. அவற்றை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
 
 #: ../gcr/gcr-viewer-tool.c:41
 msgid "GCR Certificate and Key Viewer"
