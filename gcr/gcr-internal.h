@@ -26,6 +26,9 @@
 
 #include <glib.h>
 
+/* Should only be used internally */
+#define GCR_SUCCESS 0
+
 void              _gcr_initialize_library          (void);
 
 gboolean          _gcr_initialize_pkcs11           (GCancellable *cancellable,

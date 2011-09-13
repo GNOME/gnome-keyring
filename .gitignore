@@ -133,6 +133,7 @@ run-tests
 /gcr/tests/test-gnupg-key
 /gcr/tests/test-gnupg-process
 /gcr/tests/test-memory-icon
+/gcr/tests/test-openssh
 /gcr/tests/test-parser
 /gcr/tests/test-pkcs11-certificate
 /gcr/tests/test-record
