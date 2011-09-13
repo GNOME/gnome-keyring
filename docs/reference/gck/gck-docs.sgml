@@ -8,8 +8,8 @@
 		<title>Gck Library Reference Manual</title>
 		<releaseinfo>
 			For Gck &version;.
-			An online version of this documentation can be found on-line at
-			<ulink role="online-location" url="http://library.gnome.org/devel/gck/unstable/">http://library.gnome.org/devel/gck/unstable/</ulink>.
+			An online version of this documentation can be found at
+			<ulink role="online-location" url="http://developer.gnome.org/gck/stable/">http://developer.gnome.org/gck/stable/</ulink>.
 		</releaseinfo>
 	</bookinfo>
 

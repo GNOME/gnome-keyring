@@ -7,9 +7,9 @@
 	<bookinfo>
 		<title>Gcr Library Reference Manual</title>
 		<releaseinfo>
-			for Gcr &version;
-			An online version of this documentation can be found on-line at
-			<ulink role="online-location" url="http://library.gnome.org/devel/gcr/stable/">http://library.gnome.org/devel/gcr/stable/</ulink>.
+			for Gcr &version;.
+			An online version of this documentation can be found at
+			<ulink role="online-location" url="http://developer.gnome.org/gcr/stable/">http://developer.gnome.org/gcr/stable/</ulink>.
 		</releaseinfo>
 	</bookinfo>
 
