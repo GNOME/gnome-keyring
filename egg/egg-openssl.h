@@ -26,24 +26,6 @@
 
 #include <glib.h>
 
-typedef void (*EggOpensslPemCallback) (GQuark type,
-                                       const guchar *data,
-                                       gsize n_data,
-                                       const gchar *outer,
-                                       gsize n_outer,
-                                       GHashTable *headers,
-                                       gpointer user_data);
-
-GHashTable*      egg_openssl_headers_new       (void);
-
-guint            egg_openssl_pem_parse         (gconstpointer data, gsize n_data,
-                                                EggOpensslPemCallback callback, 
-                                                gpointer user_data);
-
-guchar*          egg_openssl_pem_write         (const guchar *data, gsize n_data, 
-                                                GQuark type, GHashTable *headers,
-                                                gsize *n_result);
-
 int              egg_openssl_parse_algo        (const gchar *name, int *mode);
 
 gboolean         egg_openssl_encrypt_block     (const gchar *dekinfo, const gchar *password, 

@@ -5,6 +5,7 @@
 #include "gkm/gkm-data-der.h"
 #include "gkm/gkm-data-types.h"
 
+#include "egg/egg-armor.h"
 #include "egg/egg-asn1x.h"
 #include "egg/egg-buffer.h"
 #include "egg/egg-openssl.h"
@@ -385,7 +386,7 @@ gkm_ssh_openssh_parse_private_key (gconstpointer data, gsize n_data,
 	ctx.password = password;
 	ctx.n_password = n_password;
 
-	num = egg_openssl_pem_parse (data, n_data, parsed_pem_block, &ctx);
+	num = egg_armor_parse (data, n_data, parsed_pem_block, &ctx);
 
 	/* Didn't find any private key there */
 	if (num == 0 || !ctx.seen) {
@@ -401,6 +402,6 @@ gchar*
 gkm_ssh_openssh_digest_private_key (const guchar *data, gsize n_data)
 {
 	gchar *result = NULL;
-	egg_openssl_pem_parse (data, n_data, digest_pem_block, &result);
+	egg_armor_parse (data, n_data, digest_pem_block, &result);
 	return result;
 }

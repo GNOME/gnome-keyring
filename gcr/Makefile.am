@@ -103,6 +103,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-internal.h \
 	gcr-memory.c \
 	gcr-memory-icon.c gcr-memory-icon.h \
+	gcr-openpgp.c gcr-openpgp.h \
 	gcr-openssh.c gcr-openssh.h \
 	gcr-parser.c gcr-parser.h \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \

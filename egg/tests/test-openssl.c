@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-pkix-openssl.c: Test PKIX openssl
+/* test-openssl.c: Test openssl
 
    Copyright (C) 2008 Stefan Walter
 
@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include "egg/egg-armor.h"
 #include "egg/egg-symkey.h"
 #include "egg/egg-openssl.h"
 #include "egg/egg-secure-memory.h"
@@ -93,7 +94,7 @@ parse_reference (GQuark type,
 
 	g_assert ("no headers present in file" && headers != NULL);
 	g_assert (!test->refheaders);
-	test->refheaders = egg_openssl_headers_new ();
+	test->refheaders = egg_armor_headers_new ();
 	g_hash_table_foreach (headers, copy_each_key_value, test->refheaders);
 	dekinfo = egg_openssl_get_dekinfo (headers);
 	g_assert ("no dekinfo in headers" && dekinfo != NULL);
@@ -109,7 +110,7 @@ test_parse_reference (Test *test, gconstpointer unused)
 {
 	guint num;
 
-	num = egg_openssl_pem_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
 	g_assert ("parse_reference() wasn't called" && test->refdata != NULL);
@@ -124,7 +125,7 @@ test_write_reference (Test *test, gconstpointer unused)
 	gboolean ret;
 	guint num;
 
-	num = egg_openssl_pem_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
 	dekinfo = egg_openssl_get_dekinfo (test->refheaders);
@@ -146,11 +147,11 @@ test_write_exactly_same (Test *test, gconstpointer unused)
 	gsize n_result;
 	guint num;
 
-	num = egg_openssl_pem_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
-	result = egg_openssl_pem_write (test->refenc, test->n_refenc, test->reftype,
-	                                test->refheaders, &n_result);
+	result = egg_armor_write (test->refenc, test->n_refenc, test->reftype,
+	                          test->refheaders, &n_result);
 
 	/*
 	 * Yes sirrr. Openssl's parser is so fragile, that we have to make it
@@ -177,7 +178,7 @@ test_openssl_roundtrip (Test *test, gconstpointer unused)
 	int i;
 	guint num;
 
-	num = egg_openssl_pem_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
 	dekinfo = egg_openssl_prep_dekinfo (test->refheaders);

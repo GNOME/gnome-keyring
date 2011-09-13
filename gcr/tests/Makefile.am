@@ -26,6 +26,7 @@ TEST_PROGS = \
 	test-certificate-chain \
 	test-fingerprint \
 	test-pkcs11-certificate \
+	test-openpgp \
 	test-openssh \
 	test-trust \
 	test-parser \

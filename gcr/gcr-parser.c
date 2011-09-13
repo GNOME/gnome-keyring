@@ -27,10 +27,12 @@
 #include "gcr-importer.h"
 #include "gcr-marshal.h"
 #include "gcr-oids.h"
+#include "gcr-openpgp.h"
 #include "gcr-openssh.h"
 #include "gcr-parser.h"
 #include "gcr-types.h"
 
+#include "egg/egg-armor.h"
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
 #include "egg/egg-dn.h"
@@ -90,6 +92,8 @@
  * @GCR_FORMAT_DER_PKCS8_ENCRYPTED: Encrypted DER encoded PKCS\#8 file which can contain a key
  * @GCR_FORMAT_DER_PKCS12: DER encoded PKCS\#12 file which can contain certificates and/or keys
  * @GCR_FORMAT_OPENSSH_PUBLIC: OpenSSH v1 or v2 public key
+ * @GCR_FORMAT_OPENPGP_PACKET: OpenPGP key packet(s)
+ * @GCR_FORMAT_OPENPGP_ARMOR: OpenPGP public or private key armor encoded data
  * @GCR_FORMAT_PEM: An OpenSSL style PEM file with unspecified contents
  * @GCR_FORMAT_PEM_PRIVATE_KEY_RSA: An OpenSSL style PEM file with a private RSA key
  * @GCR_FORMAT_PEM_PRIVATE_KEY_DSA: An OpenSSL style PEM file with a private DSA key
@@ -186,6 +190,9 @@ static GQuark PEM_PRIVATE_KEY;
 static GQuark PEM_PKCS7;
 static GQuark PEM_PKCS12;
 
+static GQuark ARMOR_PGP_PUBLIC_KEY_BLOCK;
+static GQuark ARMOR_PGP_PRIVATE_KEY_BLOCK;
+
 static void
 init_quarks (void)
 {
@@ -206,7 +213,9 @@ init_quarks (void)
 		QUARK (PEM_ENCRYPTED_PRIVATE_KEY, "ENCRYPTED PRIVATE KEY");
 		QUARK (PEM_PKCS7, "PKCS7");
 		QUARK (PEM_PKCS12, "PKCS12");
-		
+		QUARK (ARMOR_PGP_PRIVATE_KEY_BLOCK, "PGP PRIVATE KEY BLOCK");
+		QUARK (ARMOR_PGP_PUBLIC_KEY_BLOCK, "PGP PUBLIC KEY BLOCK");
+
 		#undef QUARK
 		
 		g_once_init_leave (&quarks_inited, 1);
@@ -1360,6 +1369,40 @@ done:
 	return ret;
 }
 
+
+/* -----------------------------------------------------------------------------
+ * OPENPGP
+ */
+
+static void
+on_openpgp_packet (GPtrArray *records,
+                   const guchar *outer,
+                   gsize n_outer,
+                   gpointer user_data)
+{
+	GcrParser *self = GCR_PARSER (user_data);
+
+	/* All we can do is the packet bounds */
+	parsing_begin (self, outer, n_outer);
+	parsing_object (self, CKO_DATA);
+	parsed_fire (self);
+	parsing_end (self);
+}
+
+static gint
+parse_openpgp_packets (GcrParser *self,
+                       const guchar *data,
+                       gsize n_data)
+{
+	gint num_parsed;
+
+	num_parsed = _gcr_openpgp_parse (data, n_data, on_openpgp_packet, self);
+
+	if (num_parsed == 0)
+		return GCR_ERROR_UNRECOGNIZED;
+	return SUCCESS;
+}
+
 /* -----------------------------------------------------------------------------
  * PEM PARSING 
  */
@@ -1394,7 +1437,13 @@ handle_plain_pem (GcrParser *self, GQuark type, gint subformat,
 		
 	else if (type == PEM_PKCS12)
 		format_id = GCR_FORMAT_DER_PKCS12;
-		
+
+	else if (type == ARMOR_PGP_PRIVATE_KEY_BLOCK)
+		format_id = GCR_FORMAT_OPENPGP_PACKET;
+
+	else if (type == ARMOR_PGP_PUBLIC_KEY_BLOCK)
+		format_id = GCR_FORMAT_OPENPGP_PACKET;
+
 	else
 		return GCR_ERROR_UNRECOGNIZED;
 
@@ -1549,7 +1598,7 @@ handle_pem_format (GcrParser *self, gint subformat, const guchar *data, gsize n_
 	if (n_data == 0)
 		return GCR_ERROR_UNRECOGNIZED;
 	
-	found = egg_openssl_pem_parse (data, n_data, handle_pem_data, &ctx);
+	found = egg_armor_parse (data, n_data, handle_pem_data, &ctx);
 	
 	if (found == 0)
 		return GCR_ERROR_UNRECOGNIZED;
@@ -1579,31 +1628,39 @@ parse_pem_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 static gint 
 parse_pem_certificate (GcrParser *self, const guchar *data, gsize n_data)
 {
-	return handle_pem_format (self, GCR_FORMAT_PEM_CERTIFICATE_X509, data, n_data);
+	return handle_pem_format (self, GCR_FORMAT_DER_CERTIFICATE_X509, data, n_data);
 }
 
 static gint 
 parse_pem_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 {
-	return handle_pem_format (self, GCR_FORMAT_PEM_PKCS8_PLAIN, data, n_data);
+	return handle_pem_format (self, GCR_FORMAT_DER_PKCS8_PLAIN, data, n_data);
 }
 
 static gint 
 parse_pem_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 {
-	return handle_pem_format (self, GCR_FORMAT_PEM_PKCS8_ENCRYPTED, data, n_data);
+	return handle_pem_format (self, GCR_FORMAT_DER_PKCS8_ENCRYPTED, data, n_data);
 }
 
 static gint 
 parse_pem_pkcs7 (GcrParser *self, const guchar *data, gsize n_data)
 {
-	return handle_pem_format (self, GCR_FORMAT_PEM_PKCS7, data, n_data);
+	return handle_pem_format (self, GCR_FORMAT_DER_PKCS7, data, n_data);
 }
 
 static gint 
 parse_pem_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 {
-	return handle_pem_format (self, GCR_FORMAT_PEM_PKCS12, data, n_data);
+	return handle_pem_format (self, GCR_FORMAT_DER_PKCS12, data, n_data);
+}
+
+static gint
+parse_openpgp_armor (GcrParser *self,
+                     const guchar *data,
+                     gsize n_data)
+{
+	return handle_pem_format (self, GCR_FORMAT_OPENPGP_PACKET, data, n_data);
 }
 
 /* -----------------------------------------------------------------------------
@@ -1628,9 +1685,9 @@ on_openssh_public_key_parsed (GckAttributes *attrs,
 }
 
 static gint
-parse_der_openssh_public (GcrParser *self,
-                          const guchar *data,
-                          gsize n_data)
+parse_openssh_public (GcrParser *self,
+                      const guchar *data,
+                      gsize n_data)
 {
 	guint num_parsed;
 
@@ -1656,7 +1713,9 @@ static const ParserFormat parser_normal[] = {
 	{ GCR_FORMAT_DER_PKCS8_PLAIN, parse_der_pkcs8_plain },
 	{ GCR_FORMAT_DER_PKCS8_ENCRYPTED, parse_der_pkcs8_encrypted },
 	{ GCR_FORMAT_DER_PKCS12, parse_der_pkcs12 },
-	{ GCR_FORMAT_OPENSSH_PUBLIC, parse_der_openssh_public },
+	{ GCR_FORMAT_OPENSSH_PUBLIC, parse_openssh_public },
+	{ GCR_FORMAT_OPENPGP_PACKET, parse_openpgp_packets },
+	{ GCR_FORMAT_OPENPGP_ARMOR, parse_openpgp_armor },
 };
 
 /* Must be in format_id numeric order */
@@ -1670,7 +1729,9 @@ static const ParserFormat parser_formats[] = {
 	{ GCR_FORMAT_DER_PKCS8_PLAIN, parse_der_pkcs8_plain },
 	{ GCR_FORMAT_DER_PKCS8_ENCRYPTED, parse_der_pkcs8_encrypted },
 	{ GCR_FORMAT_DER_PKCS12, parse_der_pkcs12 },
-	{ GCR_FORMAT_OPENSSH_PUBLIC, parse_der_openssh_public },
+	{ GCR_FORMAT_OPENSSH_PUBLIC, parse_openssh_public },
+	{ GCR_FORMAT_OPENPGP_PACKET, parse_openpgp_packets },
+	{ GCR_FORMAT_OPENPGP_ARMOR, parse_openpgp_armor },
 	{ GCR_FORMAT_PEM, parse_pem },
 	{ GCR_FORMAT_PEM_PRIVATE_KEY_RSA, parse_pem_private_key_rsa },
 	{ GCR_FORMAT_PEM_PRIVATE_KEY_DSA, parse_pem_private_key_dsa },

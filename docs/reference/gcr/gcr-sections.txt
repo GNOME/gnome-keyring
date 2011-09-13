@@ -590,4 +590,5 @@ GcrMemoryIconPrivate
 GCR_ERROR
 gcr_error_get_domain
 GcrOpensshPubCallback
+GcrOpenpgpCallback
 </SECTION>

@@ -24,6 +24,7 @@
 #include "gcr-certificate.h"
 #include "gcr-certificate-exporter.h"
 
+#include "egg/egg-armor.h"
 #include "egg/egg-openssl.h"
 
 #include <glib/gi18n-lib.h>
@@ -96,9 +97,9 @@ prepare_data_for_pem (GcrCertificateExporter *self)
 
 	self->pv->buffer = g_byte_array_new ();
 
-	encoded = egg_openssl_pem_write (data, n_data,
-	                                 g_quark_from_static_string ("CERTIFICATE"),
-	                                 NULL, &n_encoded);
+	encoded = egg_armor_write (data, n_data,
+	                           g_quark_from_static_string ("CERTIFICATE"),
+	                           NULL, &n_encoded);
 
 	g_byte_array_append (self->pv->buffer, encoded, n_encoded);
 	g_free (encoded);

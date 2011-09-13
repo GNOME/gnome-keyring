@@ -23,6 +23,7 @@ libegg_la_CFLAGS = \
 	$(GLIB_CFLAGS)
 
 libegg_la_SOURCES = \
+	egg-armor.c egg-armor.h \
 	egg-asn1x.c egg-asn1x.h \
 	egg-buffer.c egg-buffer.h \
 	egg-byte-array.c egg-byte-array.h \

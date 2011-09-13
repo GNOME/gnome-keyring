@@ -28,6 +28,7 @@
 #include "gkm/gkm-data-der.h"
 #include "gkm/gkm-sexp.h"
 
+#include "egg/egg-armor.h"
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
 #include "egg/egg-openssl.h"
@@ -338,7 +339,7 @@ test_read_ca_certificates_public_key_info (Test *test, gconstpointer unused)
 
 	if (!g_file_get_contents (SRCDIR "/files/ca-certificates.crt", &data, &n_data, NULL))
 		g_assert_not_reached ();
-	egg_openssl_pem_parse (data, n_data, on_ca_certificate_public_key_info, NULL);
+	egg_armor_parse (data, n_data, on_ca_certificate_public_key_info, NULL);
 	g_free (data);
 }
 

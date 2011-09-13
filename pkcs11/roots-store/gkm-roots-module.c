@@ -28,6 +28,7 @@
 #include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-serializable.h"
 
+#include "egg/egg-armor.h"
 #include "egg/egg-error.h"
 #include "egg/egg-openssl.h"
 
@@ -210,7 +211,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 	g_list_free (objects);
 
 	/* Try and parse the PEM */
-	egg_openssl_pem_parse (data, n_data, parsed_pem_block, &ctx);
+	egg_armor_parse (data, n_data, parsed_pem_block, &ctx);
 
 	/* If no PEM data, try to parse directly as DER  */
 	if (ctx.count == 0) {
