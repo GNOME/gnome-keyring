@@ -7,24 +7,27 @@
 # Khaled Hosny <khaledhosny@eglug.org>, 2006, 2009, 2010, 2011.
 # Anas Husseini <linux.anas@gmail.org>, 2007.
 # Anas Afif Emad <anas.e87@gmail.com>, 2008.
+# Anass Ahmed <anass.1430@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ar\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-09 00:31+0200\n"
-"PO-Revision-Date: 2011-03-09 00:31+0300\n"
-"Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
-"Language-Team: Arabic <doc@arabeyes.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-12 10:43+0000\n"
+"PO-Revision-Date: 2011-09-05 13:10+0200\n"
+"Last-Translator: Anass Ahmed <anass.1430@gmail.com>\n"
+"Language-Team: Arabeyes\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Virtaal 0.6.1\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-Project-Style: gnome\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -53,15 +56,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "كلمة السر الأصلية غير صحيحة"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "كلمة سر حلقة المفاتيح الجديدة"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "إختر كلمة سر لحلقة المفاتيح الجديدة"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -102,30 +105,30 @@ msgstr "حلقة مفاتيح جنوم: عميل GPG"
 msgid "GPG Password Agent"
 msgstr "عميل كلمة السر GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "غير معروف"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "مفتاح PGP:‏ %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "أدخل عبارة السر"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "انس كلمت السر هذه إذا خملت لمدة"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "انس كلمت السر هذه بعد"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "انس كلمت السر هذه عندما ألج خارجا"
 
@@ -174,7 +177,7 @@ msgstr "الاسم الشائع"
 msgid "Surname"
 msgstr "الكُنية"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "الرقم التسلسلي"
 
@@ -230,29 +233,50 @@ msgstr "مُؤهِّل الاسم المميِّز"
 msgid "Pseudonym"
 msgstr "الاسم المستعار"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "‏RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "‏MD2 مع RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "‏MD5 مع RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "‏SHA1 مع RSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "‏SHA1 مع DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "استيثاق الخادم"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "تصديق العميل"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "توقيع الكود"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "حماية البريد الإليكتروني"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "الختم الزمني"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -264,111 +288,342 @@ msgstr "خطأ غير متوقع في select() أثناء قراءة البيا�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "خطأ غير متوقع في waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "تعذر تحميل وحدة PKCS#11: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "وحدة PKCS#11 غير صالحة: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "تعذّر تثبيت وحدة PKCS#11: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "تعذّر تهيئة وحدة PKCS#11: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "تعذّر تهيئة وحدات PKCS#11 المسجلة: %s"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "الاسم"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "مُصْدَرة مِن"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "تاريخ انتهاء الصلاحية"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "الشهادة"
 
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "الامتداد"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>يوجد بالفعل ملف بهذا الاسم.</b>\n"
+"\n"
+"أترغب في استبداله بملف جديد؟"
 
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "المعرف"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "ا_ستبدل"
 
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "القيمة"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, fuzzy, c-format
+#| msgid "The operation was cancelled"
+msgid "The operation was cancelled."
+msgstr "أُلغيت العملية"
 
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "حرج"
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "استورد الشهادة"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "ملفات الشهادة"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "ملفات PEM"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "الاسم الآخر"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "عنوان XMPP"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "البريد"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+#, fuzzy
+#| msgid "DSA"
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+#, fuzzy
+#| msgid "Email Address"
+msgid "X400 Address"
+msgstr "عنوان X400"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "اسم المجلد"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "اسم طرف EDI"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "العنوان"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "عنوان IP"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "المعرف المسجل"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "القيود الأساسية"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "سلطة الشهادة"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "نعم"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "لا"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "أقصى طول للمسار"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+#, fuzzy
+#| msgid "Unnamed"
+msgid "Unlimited"
+msgstr "غير محدود"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "الاستخدام الموسع للمفتاح"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "الأغراض المسموح بها"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "معرف مفتاح الموضوع"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "معرف المفتاح"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "التوقيع الرقمي"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "تشفير المفتاح"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "تشفير البيانات"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+#, fuzzy
+#| msgid "Key Parameters"
+msgid "Key agreement"
+msgstr "اتفاقية المفتاح"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+#, fuzzy
+#| msgid "Certificate"
+msgid "Certificate signature"
+msgstr "توقيع الشهادة"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "توقيع قائمة الإلغاء"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "استخدام المفتاح"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "الاستعمالات"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "الأسماء البديلة الموضوع"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "الامتداد"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "المعرف"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "القيمة"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "حرج"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "تعذّر تصدير الشهادة."
+
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "المعرّف"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "تحقق منها"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "تاريخ انتهاء الصلاحية"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "اسم المُصدَر إليه"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "اسم المُصدِر"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "الشهادة المُصدرة"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "الإصدارة"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "ليست صالحة قبل"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "ليست صالحة بعد"
 
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "خوارزمية التوقيع"
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "بصمات الشهادة"
 
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "معاملات التوقيع"
-
-#: ../gcr/gcr-certificate-renderer.c:413
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "التوقيع"
 
+#: ../gcr/gcr-certificate-renderer.c:679
+msgid "Signature Algorithm"
+msgstr "خوارزمية التوقيع"
+
+#: ../gcr/gcr-certificate-renderer.c:683
+msgid "Signature Parameters"
+msgstr "معاملات التوقيع"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "معلومات المفتاح العلني"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "خوارزمية المفتاح"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "معاملات المفتاح"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "حجم المفتاح"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:713
+#, fuzzy
+#| msgid "SHA1 Fingerprint"
+msgid "Key SHA1 Fingerprint"
+msgstr "بصمة مفتاح SHA1"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "المفتاح العلني"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
-msgid "Fingerprints"
-msgstr "البصمات"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "الت_فاصيل"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "تعذّر عرض '%s'"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "تعذّر عرض الملف"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "السبب"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "تعذّر عرض ملف من هذا النوع."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -381,6 +636,164 @@ msgstr "استورد إلى:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "كلمة السّر:"
+
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "مفتاح PGP"
+
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "معرّف المفتاح"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "إنتهت عملية Gnupg بكود: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "أُنهِيت عملية Gnupg بالإشارة: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
+msgid "The operation was cancelled"
+msgstr "تم إلغاء العملية"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "أدخل كلمة سر لفكّ قفل المفتاح السري"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "أدخل كلمة سر لفكّ قفل الشهادة"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "أدخل كلمة سر لفكّ القفل"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "يجب فتح قفل المفتاح السري قبل استيراده"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "يجب فتح قفل الشهادة قبل استيرادها"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "يجب فتح قفل البيانات قبل استيرادها"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "يجب فتح قفل المفتاح السري '%s' قبل استيراده"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "يجب فتح قفل الشهادة '%s' قبل استيرادها"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "يجب فتح قفل '%s' قبل استيراده"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "لا مكان متاح للاستيراد منه"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "استورد شهادات/مفاتيح"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "اختر مكانا لتخزين الشهادات/المفاتيح المستورة."
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "مفتاح"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "مفتاح RSA سري"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "مفتاح DSA سري"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+msgid "Private Key"
+msgstr "المفتاح السري"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "مفتاح DSA علني"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d بتة"
+msgstr[1] "%d بتة"
+msgstr[2] "%d بتة"
+msgstr[3] "%d بتات"
+msgstr[4] "%d بتة"
+msgstr[5] "%d بتة"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "القوّة"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "الخوارزمية"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "الحجم"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "البصمات"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1922
+msgid "Unrecognized or unsupported data."
+msgstr "بيانات غير مدعومة أو غير معروفة."
+
+#: ../gcr/gcr-parser.c:1925
+msgid "Could not parse invalid or corrupted data."
+msgstr "تعذّر قراءة بيانات معطوبة أو غير سليمة."
+
+#: ../gcr/gcr-parser.c:1928
+msgid "The data is locked"
+msgstr "البيانات موصدة"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "تعذّر العثور على مكان لحفظ الشهادة"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -403,466 +816,80 @@ msgstr "أقفل حلقة المفاتيح هذه عندما أخرج"
 msgid "minutes"
 msgstr "دقائق"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "أدخل كلمة سر لفكّ قفل المفتاح السري"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "أدخل كلمة سر لفكّ قفل الشهادة"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "أدخل كلمة سر لفكّ القفل"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "يجب فتح قفل المفتاح السري قبل استيراده"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "يجب فتح قفل الشهادة قبل استيرادها"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "يجب فتح قفل البيانات قبل استيرادها"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "يجب فتح قفل المفتاح السري '%s' قبل استيراده"
+msgid "Unlock: %s"
+msgstr "فك قفل: %s"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "فك القفل"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "كلمة السر غير صحيحة"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "كلمة السّر"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, fuzzy, c-format
+#| msgid ""
+#| "The contents of '%s' are locked. In order to view the contents, enter a "
+#| "the correct password."
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr "محتويات '%s' مقفلة. لكي تعرضها أدخل كلمة السّر الصحيحة."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+#, fuzzy
+#| msgid ""
+#| "The contents are locked. In order to view the contents, enter a the "
+#| "correct password."
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr "المحتويات مقفلة. لتعرضها أدخل كلمة السّر الصحيحة."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "عارض مفاتيح وشهادات GCR"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "اعرض إصدار التطبيق"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[ملف...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- اعرض ملفات الشهادة والمفاتيح"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "عارض الشهادات"
+
+#: ../gck/gck-uri.c:173
 #, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "يجب فتح قفل الشهادة '%s' قبل استيرادها"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "يجب فتح قفل '%s' قبل استيراده"
-
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "تم إلغاء العملية"
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "لا مكان متاح للاستيراد منه"
-
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "استورد شهادات/مفاتيح"
-
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "اختر مكانا لتخزين الشهادات/المفاتيح المستورة."
-
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "مفتاح"
-
-#: ../gcr/gcr-key-renderer.c:260
-msgid "Private RSA Key"
-msgstr "مفتاح RSA سري"
-
-#: ../gcr/gcr-key-renderer.c:262
-msgid "Private DSA Key"
-msgstr "مفتاح DSA سري"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "المفتاح السري"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-msgid "Public DSA Key"
-msgstr "مفتاح DSA علني"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d بتة"
-msgstr[1] "%d بتة"
-msgstr[2] "%d بتة"
-msgstr[3] "%d بتات"
-msgstr[4] "%d بتة"
-msgstr[5] "%d بتة"
-
-#: ../gcr/gcr-key-renderer.c:279
-msgid "Strength"
-msgstr "القوّة"
-
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Algorithm"
-msgstr "الخوارزمية"
-
-#: ../gcr/gcr-key-renderer.c:299
-msgid "Size"
-msgstr "الحجم"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-msgid "Fingerprint"
-msgstr "البصمة"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "بيانات غير مدعومة أو غير معروفة."
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "تعذّر قراءة بيانات معطوبة أو غير سليمة."
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "البيانات موصدة"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "تعذّر العثور على مكان لحفظ الشهادة"
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr ""
-
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr ""
-
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "كمية الذاكرة المتاحة غير كافية"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "إن معرّف ID الفتحة المحددة غير صالح"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "خطأ داخلي"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "فشلت العملية"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "خيار غير صالح"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "لم تستطع الوحدة إنشاء الخيوط التي تحتاجها"
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "الوحدة غير قادرة على قفل البيانات بشكل صحيح"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "الحقل للقراءة فقط"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "الحقل حساس ولا يمكن كشفه"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "الحقل غير صالح أو غير موجود"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "قيمة غير صالحة للحقل"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "البيانات غير صالحة أو غير معترف بها"
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "البيانات طويلة جداً"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "حصل خطأ في الجهاز"
-
-#: ../gck/gck-misc.c:129
-msgid "Insufficient memory available on the device"
-msgstr "الذاكرة على الجهاز غير كافية"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "تم إزالة الجهاز أو فصله"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "البيانات المعمّاة غير صالحة أو غير معترف بها"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "البيانات المعمّاة طويلة جداً"
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "العملية غير مدعومة"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "المفتاح مفقود أو غير صالح"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "حجم المفتاح خاطئ"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "المفتاح من النوع الخاطئ"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "لا حاجة لمفتاح"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is different than before"
-msgstr "المفتاح مختلف عن ما قبل"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "المفتاح ضروري"
-
-#: ../gck/gck-misc.c:151
-msgid "Cannot include the key in the digest"
-msgstr "تعذّر تضمين المفتاح في التلبيدة"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "لا يمكن إتمام العملية بهذا المفتاح"
-
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "لا يمكن تغليف المفتاح"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "لا يمكن تصدير هذا المفتاح"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "تقنية الـ crypto غير صالحة أو غير معترف بها"
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "خيار غير صالح لتقنية الـ crypto"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "الكائن مفقود أو غير صالح"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "عملية أخرى تجري مسبقاً"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "لا يوجد أية عملية جارية"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "كلمة السر أو رمز التعريف الشخصي PIN غير صحيحة"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "كلمة السر أو رمز التعريف الشخصي PIN غير صالحة"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "طول كلمة السر أو رمز التعريف الشخصي PIN غير صالح"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "انتهت مدة كلمة السر أو رمز التعريف الشخصي PIN"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "كلمة السر أو رمز التعريف الشخصي PIN مقفلة"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "الجلسة مغلقة"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "الكثير من الجلسات نشطة"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "الجلسة غير صالحة"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "الجلسة للقراءة فقط"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "توجد جلسة مفتوحة"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "توجد جلسة للقراءة فقط"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "توجد جلسة مسئول نظام"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "التوقيع سيء او فاسد"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "التوقيع غير معترف به أو فاسد"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "بعض الحقول المطلوبة مفقودة"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "بعض الحقول لها قيم غير صالحة"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "الجهاز غير موجود أو مفصول"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "الجهاز غير صالح أو غير معترف به"
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "الجهاز محمي ضد الكتابة"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "تعذّر استيراد المفتاح لأنه غير صالح"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "تعذّر الاستيراد لأن حجم المفتاح خاطئ"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "تعذّر الاستيراد لأن نوع المفتاح خاطئ"
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "لقد سجلت الدخول مسبقاً"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "لم يسجل أي مستخدم الدخول"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "لم يتم ضبط كلمة المرور أو رمز التعريف الشخصي PIN للمستخدم"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "المستخدم من النوع الخاطئ"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "هناك مستخدم آخر قد سجل دخوله مسبقاً"
-
-#: ../gck/gck-misc.c:223
-msgid "Too many users of different types are logged in"
-msgstr "العديد من المستخدمين من الأنواع المختلفة قد ولِجوا"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "تعذّر استيراد مفتاح غير صالح"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "تعذّر استيراد مفتاح من الحجم الخاطئ"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "تعذّر التصدير لأن المفتاح غير صالح"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "تعذّر التصدير لأن المفتاح من الحجم الخاطئ"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "تعذّر التصدير لأن المفتاح من النوع الخاطئ"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "تعذّر بدء مولد الأرقام العشوائية"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "لا يتوفر مولّد أرقام عشوائيّة"
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "عامل غير صالح لتقنية الـ crypto"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "لا يتوفر مساحة كافية لتخزين النتيجة"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "الحالة المحفوظة غير صالحة"
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "المعلومات حسّاسة ولا يمكن كشفها"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "لا يمكن حفظ الحالة"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "لم يتم ابتداء الوحدة"
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "تم ابتداء الوحدة مسبقاً"
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "تعذّر قفل البيانات"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "لا يمكن قفل البيانات"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "تم رفض طلب التوقيع من قبل المستخدم"
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "خطأ غير معروف"
+msgid "The URI has invalid encoding."
+msgstr "ترميز المسار URI غير صالح."
+
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "مسار URI لا يملك مخطط 'pkcs11'."
+
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "صيغة المسار URI سيئة."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "مسار URI يملك رقم إصدار سيء."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -929,10 +956,6 @@ msgstr "فكّ قفل الشهادة"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "فك قفل المفتاح العلني"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "فك القفل"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1021,11 +1044,11 @@ msgstr "الأوامر: "
 msgid "          "
 msgstr "        "
 
-#: ../ui/gku-prompt-tool.c:596
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "احفظ كلمات السر من دون تعمية؟"
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1034,7 +1057,7 @@ msgstr ""
 "باختيار استخدام كلمة سر فارغة، لن تكون كلمات السر الخاصة بك معمّاة بشكل آمن. "
 "وسيستطيع كل من يملك الوصول إلى ملفاتك الوصول إليها."
 
-#: ../ui/gku-prompt-tool.c:604
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "استعمل التخزين غير الآمن"
 
@@ -1082,8 +1105,248 @@ msgstr "كلمة السّر الق_ديمة:"
 msgid "_Password:"
 msgstr "_كلمة السّر:"
 
-#~ msgid "Email"
-#~ msgstr "البريد"
+#~ msgid "Fingerprint"
+#~ msgstr "البصمة"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "كمية الذاكرة المتاحة غير كافية"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "إن معرّف ID الفتحة المحددة غير صالح"
+
+#~ msgid "Internal error"
+#~ msgstr "خطأ داخلي"
+
+#~ msgid "The operation failed"
+#~ msgstr "فشلت العملية"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "خيار غير صالح"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "لم تستطع الوحدة إنشاء الخيوط التي تحتاجها"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "الوحدة غير قادرة على قفل البيانات بشكل صحيح"
+
+#~ msgid "The field is read-only"
+#~ msgstr "الحقل للقراءة فقط"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "الحقل حساس ولا يمكن كشفه"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "الحقل غير صالح أو غير موجود"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "قيمة غير صالحة للحقل"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "البيانات غير صالحة أو غير معترف بها"
+
+#~ msgid "The data is too long"
+#~ msgstr "البيانات طويلة جداً"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "حصل خطأ في الجهاز"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "الذاكرة على الجهاز غير كافية"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "تم إزالة الجهاز أو فصله"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "البيانات المعمّاة غير صالحة أو غير معترف بها"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "البيانات المعمّاة طويلة جداً"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "العملية غير مدعومة"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "المفتاح مفقود أو غير صالح"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "حجم المفتاح خاطئ"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "المفتاح من النوع الخاطئ"
+
+#~ msgid "No key is needed"
+#~ msgstr "لا حاجة لمفتاح"
+
+#~ msgid "The key is different than before"
+#~ msgstr "المفتاح مختلف عن ما قبل"
+
+#~ msgid "A key is needed"
+#~ msgstr "المفتاح ضروري"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "تعذّر تضمين المفتاح في التلبيدة"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "لا يمكن إتمام العملية بهذا المفتاح"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "لا يمكن تغليف المفتاح"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "لا يمكن تصدير هذا المفتاح"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "تقنية الـ crypto غير صالحة أو غير معترف بها"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "خيار غير صالح لتقنية الـ crypto"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "الكائن مفقود أو غير صالح"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "عملية أخرى تجري مسبقاً"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "لا يوجد أية عملية جارية"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "كلمة السر أو رمز التعريف الشخصي PIN غير صحيحة"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "كلمة السر أو رمز التعريف الشخصي PIN غير صالحة"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "طول كلمة السر أو رمز التعريف الشخصي PIN غير صالح"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "انتهت مدة كلمة السر أو رمز التعريف الشخصي PIN"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "كلمة السر أو رمز التعريف الشخصي PIN مقفلة"
+
+#~ msgid "The session is closed"
+#~ msgstr "الجلسة مغلقة"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "الكثير من الجلسات نشطة"
+
+#~ msgid "The session is invalid"
+#~ msgstr "الجلسة غير صالحة"
+
+#~ msgid "The session is read-only"
+#~ msgstr "الجلسة للقراءة فقط"
+
+#~ msgid "An open session exists"
+#~ msgstr "توجد جلسة مفتوحة"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "توجد جلسة للقراءة فقط"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "توجد جلسة مسئول نظام"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "التوقيع سيء او فاسد"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "التوقيع غير معترف به أو فاسد"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "بعض الحقول المطلوبة مفقودة"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "بعض الحقول لها قيم غير صالحة"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "الجهاز غير موجود أو مفصول"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "الجهاز غير صالح أو غير معترف به"
+
+#~ msgid "The device is write protected"
+#~ msgstr "الجهاز محمي ضد الكتابة"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "تعذّر استيراد المفتاح لأنه غير صالح"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "تعذّر الاستيراد لأن حجم المفتاح خاطئ"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "تعذّر الاستيراد لأن نوع المفتاح خاطئ"
+
+#~ msgid "You are already logged in"
+#~ msgstr "لقد سجلت الدخول مسبقاً"
+
+#~ msgid "No user has logged in"
+#~ msgstr "لم يسجل أي مستخدم الدخول"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "لم يتم ضبط كلمة المرور أو رمز التعريف الشخصي PIN للمستخدم"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "المستخدم من النوع الخاطئ"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "هناك مستخدم آخر قد سجل دخوله مسبقاً"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "العديد من المستخدمين من الأنواع المختلفة قد ولِجوا"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "تعذّر استيراد مفتاح غير صالح"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "تعذّر استيراد مفتاح من الحجم الخاطئ"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "تعذّر التصدير لأن المفتاح غير صالح"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "تعذّر التصدير لأن المفتاح من الحجم الخاطئ"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "تعذّر التصدير لأن المفتاح من النوع الخاطئ"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "تعذّر بدء مولد الأرقام العشوائية"
+
+#~ msgid "No random number generator available"
+#~ msgstr "لا يتوفر مولّد أرقام عشوائيّة"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "عامل غير صالح لتقنية الـ crypto"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "لا يتوفر مساحة كافية لتخزين النتيجة"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "الحالة المحفوظة غير صالحة"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "المعلومات حسّاسة ولا يمكن كشفها"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "لا يمكن حفظ الحالة"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "لم يتم ابتداء الوحدة"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "تم ابتداء الوحدة مسبقاً"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "تعذّر قفل البيانات"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "لا يمكن قفل البيانات"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "تم رفض طلب التوقيع من قبل المستخدم"
+
+#~ msgid "Unknown error"
+#~ msgstr "خطأ غير معروف"
 
 #~ msgid "<i>Not Part of Certificate</i>"
 #~ msgstr "<i>ليس جزءا من الشهادة</i>"
@@ -1118,9 +1381,6 @@ msgstr "_كلمة السّر:"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "شهادة موقّع البريد الإلكتروني"
 
-#~ msgid "Issued On"
-#~ msgstr "أُصدِرت في"
-
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "بصمة MD5"
 
@@ -1129,15 +1389,6 @@ msgstr "_كلمة السّر:"
 
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "الوحدة التنظيمية (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "بصمة SHA1"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "شهادة عميل SSL"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "شهادة خادوم SSL"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr "<span size='large' weight='bold'>استورد الشهادات والمفاتيح</span>"
@@ -1259,9 +1510,6 @@ msgstr "_كلمة السّر:"
 #~ msgid "Couldn't create directory: %s"
 #~ msgstr "تعذّر إنشاء الدليل: %s"
 
-#~ msgid "Couldn't delete the file: %s"
-#~ msgstr "تعذّر حذف الملف: %s"
-
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
@@ -1304,9 +1552,6 @@ msgstr "_كلمة السّر:"
 
 #~ msgid "Allow access"
 #~ msgstr "اسمح بالوصول"
-
-#~ msgid "Allow application access to keyring?"
-#~ msgstr "هل تريد السماح للتطبيق بالوصول لحلقة المفاتيح؟"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -1491,9 +1736,6 @@ msgstr "_كلمة السّر:"
 #~ "بما أن هذه الميزة تجريبية. يستخدم ذلك في حصان البحر وتطبيقات الإدراك "
 #~ "PKCS#11"
 
-#~ msgid "PKCS#11 Modules"
-#~ msgstr "وحدات PKCS#11"
-
 #~ msgid "Import private key"
 #~ msgstr "استيراد مفتاح خاص"
 
@@ -1570,9 +1812,6 @@ msgstr "_كلمة السّر:"
 
 #~ msgid "Cannot set a random seed"
 #~ msgstr "غير قادر على تعيين بذرة عشوائية"
-
-#~ msgid "Unlock %s"
-#~ msgstr "فك قفل %s"
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "كلمة السر القديمة لا يمكن أن تكون فارغة."
