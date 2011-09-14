@@ -836,7 +836,7 @@ gkd_gpg_agent_ops_getinfo (GkdGpgAgentCall *call, gchar *request)
 	if (implemented)
 		return gkd_gpg_agent_send_reply (call, TRUE, NULL);
 	else
-		return gkd_gpg_agent_send_reply (call, FALSE, "100 not implemented");
+		return gkd_gpg_agent_send_reply (call, FALSE, "280 not implemented");
 }
 
 gboolean
