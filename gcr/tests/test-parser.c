@@ -58,7 +58,8 @@ typedef struct {
 } Test;
 
 static void
-ensure_block_can_be_parsed (gconstpointer block,
+ensure_block_can_be_parsed (GcrDataFormat format,
+                            gconstpointer block,
                             gsize n_block)
 {
 	GcrParser *parser;
@@ -69,6 +70,8 @@ ensure_block_can_be_parsed (gconstpointer block,
 	g_assert (n_block);
 
 	parser = gcr_parser_new ();
+	gcr_parser_format_disable (parser, -1);
+	gcr_parser_format_enable (parser, format);
 	result = gcr_parser_parse_data (parser, block, n_block, &error);
 
 	if (!result) {
@@ -89,6 +92,7 @@ parsed_item (GcrParser *par, gpointer user_data)
 	Test *test = user_data;
 	gconstpointer block;
 	gsize n_block;
+	GcrDataFormat format;
 
 	g_assert (GCR_IS_PARSER (par));
 	g_assert (par == test->parser);
@@ -99,7 +103,8 @@ parsed_item (GcrParser *par, gpointer user_data)
 	description = gcr_parser_get_parsed_description (test->parser);
 	label = gcr_parser_get_parsed_label (test->parser);
 	block = gcr_parser_get_parsed_block (test->parser, &n_block);
-	ensure_block_can_be_parsed (block, n_block);
+	format = gcr_parser_get_parsed_format (test->parser);
+	ensure_block_can_be_parsed (format, block, n_block);
 
 	if (g_test_verbose ())
 		g_print ("%s: '%s'\n", description, label);

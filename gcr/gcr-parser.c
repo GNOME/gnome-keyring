@@ -80,33 +80,6 @@
  */
 
 /**
- * GcrDataFormat:
- * @GCR_FORMAT_INVALID: Not a valid format
- * @GCR_FORMAT_DER_PRIVATE_KEY: DER encoded private key
- * @GCR_FORMAT_DER_PRIVATE_KEY_RSA: DER encoded RSA private key
- * @GCR_FORMAT_DER_PRIVATE_KEY_DSA: DER encoded DSA private key
- * @GCR_FORMAT_DER_CERTIFICATE_X509: DER encoded X.509 certificate
- * @GCR_FORMAT_DER_PKCS7: DER encoded PKCS\#7 container file which can contain certificates
- * @GCR_FORMAT_DER_PKCS8: DER encoded PKCS\#8 file which can contain a key
- * @GCR_FORMAT_DER_PKCS8_PLAIN: Unencrypted DER encoded PKCS\#8 file which can contain a key
- * @GCR_FORMAT_DER_PKCS8_ENCRYPTED: Encrypted DER encoded PKCS\#8 file which can contain a key
- * @GCR_FORMAT_DER_PKCS12: DER encoded PKCS\#12 file which can contain certificates and/or keys
- * @GCR_FORMAT_OPENSSH_PUBLIC: OpenSSH v1 or v2 public key
- * @GCR_FORMAT_OPENPGP_PACKET: OpenPGP key packet(s)
- * @GCR_FORMAT_OPENPGP_ARMOR: OpenPGP public or private key armor encoded data
- * @GCR_FORMAT_PEM: An OpenSSL style PEM file with unspecified contents
- * @GCR_FORMAT_PEM_PRIVATE_KEY_RSA: An OpenSSL style PEM file with a private RSA key
- * @GCR_FORMAT_PEM_PRIVATE_KEY_DSA: An OpenSSL style PEM file with a private DSA key
- * @GCR_FORMAT_PEM_CERTIFICATE_X509: An OpenSSL style PEM file with an X.509 certificate
- * @GCR_FORMAT_PEM_PKCS7: An OpenSSL style PEM file containing PKCS\#7
- * @GCR_FORMAT_PEM_PKCS8_PLAIN: Unencrypted OpenSSL style PEM file containing PKCS\#8
- * @GCR_FORMAT_PEM_PKCS8_ENCRYPTED: Encrypted OpenSSL style PEM file containing PKCS\#8
- * @GCR_FORMAT_PEM_PKCS12: An OpenSSL style PEM file containing PKCS\#12
- *
- * The various format identifiers.
- */
-
-/**
  * GCR_DATA_ERROR:
  *
  * A domain for data errors with codes from #GcrDataError
@@ -139,16 +112,21 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
+typedef struct _GcrParsed {
+	GckAttributes *attrs;
+	const gchar *description;
+	gchar *label;
+	gconstpointer block;
+	gsize n_block;
+	GcrDataFormat format;
+	struct _GcrParsed *next;
+} GcrParsed;
+
 struct _GcrParserPrivate {
 	GTree *specific_formats;
 	gboolean normal_formats;
 	GPtrArray *passwords;
-
-	GckAttributes *parsed_attrs;
-	const gchar *parsed_desc;
-	gchar *parsed_label;
-	gconstpointer parsing_block;
-	gsize parsing_n_block;
+	GcrParsed *parsed;
 };
 
 G_DEFINE_TYPE (GcrParser, gcr_parser, G_TYPE_OBJECT);
@@ -226,135 +204,159 @@ init_quarks (void)
  * INTERNAL
  */
 
+static void
+parsed_attribute (GcrParsed *parsed,
+                  CK_ATTRIBUTE_TYPE type,
+                  gconstpointer data,
+                  gsize n_data)
+{
+	g_assert (parsed);
+	g_assert (parsed->attrs);
+	gck_attributes_add_data (parsed->attrs, type, data, n_data);
+}
+
 static gboolean
-parsed_asn1_attribute (GcrParser *self, GNode *asn, const guchar *data, gsize n_data,
-                       const gchar *part, CK_ATTRIBUTE_TYPE type)
+parsed_asn1_attribute (GcrParsed *parsed,
+                       GNode *asn,
+                       const guchar *data,
+                       gsize n_data,
+                       const gchar *part,
+                       CK_ATTRIBUTE_TYPE type)
 {
 	const guchar *value;
 	gsize n_value;
-	
-	g_assert (GCR_IS_PARSER (self));
+
 	g_assert (asn);
 	g_assert (data);
-	g_assert (self->pv->parsed_attrs);
+	g_assert (parsed);
 
 	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, part, NULL), &n_value);
 	if (value == NULL)
 		return FALSE;
 
 	/* TODO: Convert to USG FROM STD */
-	gck_attributes_add_data (self->pv->parsed_attrs, type, value, n_value);
+	parsed_attribute (parsed, type, value, n_value);
 	return TRUE;
 }
 
 static void
-parsing_begin (GcrParser *self,
-               gconstpointer block,
-               gsize n_block)
+parsed_ulong_attribute (GcrParsed *parsed,
+                        CK_ATTRIBUTE_TYPE type,
+                        gulong value)
 {
-	g_assert (GCR_IS_PARSER (self));
-	g_assert (block);
-	g_assert (n_block);
-
-	if (self->pv->parsed_attrs)
-		gck_attributes_unref (self->pv->parsed_attrs);
-	self->pv->parsed_attrs = NULL;
-
-	self->pv->parsing_block = block;
-	self->pv->parsing_n_block = n_block;
+	g_assert (parsed);
+	g_assert (parsed->attrs);
+	gck_attributes_add_ulong (parsed->attrs, type, value);
 }
 
 static void
-parsed_description (GcrParser *self,
+parsed_boolean_attribute (GcrParsed *parsed,
+                          CK_ATTRIBUTE_TYPE type,
+                          gboolean value)
+{
+	g_assert (parsed);
+	g_assert (parsed->attrs);
+	gck_attributes_add_boolean (parsed->attrs, type, value);
+}
+
+
+static void
+parsing_block (GcrParsed *parsed,
+               gint format,
+               gconstpointer block,
+               gsize n_block)
+{
+	g_assert (parsed);
+	g_assert (block);
+	g_assert (n_block);
+	g_assert (format);
+	g_assert (!parsed->block);
+
+	parsed->format = format;
+	parsed->block = block;
+	parsed->n_block = n_block;
+}
+
+static void
+parsed_description (GcrParsed *parsed,
                     CK_OBJECT_CLASS klass)
 {
+	g_assert (parsed);
 	switch (klass) {
 	case CKO_PRIVATE_KEY:
-		self->pv->parsed_desc = _("Private Key");
+		parsed->description = _("Private Key");
 		break;
 	case CKO_CERTIFICATE:
-		self->pv->parsed_desc = _("Certificate");
+		parsed->description = _("Certificate");
 		break;
 	case CKO_PUBLIC_KEY:
-		self->pv->parsed_desc = _("Public Key");
+		parsed->description = _("Public Key");
 		break;
 	default:
-		self->pv->parsed_desc = NULL;
+		parsed->description = NULL;
 		break;
 	}
 }
 
 static void
-parsing_object (GcrParser *self,
+parsing_object (GcrParsed *parsed,
                 CK_OBJECT_CLASS klass)
 {
-	g_return_if_fail (self->pv->parsed_attrs == NULL);
+	g_assert (parsed);
+	g_assert (!parsed->attrs);
 
 	if (klass == CKO_PRIVATE_KEY)
-		self->pv->parsed_attrs = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
+		parsed->attrs = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
 	else
-		self->pv->parsed_attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (self->pv->parsed_attrs, CKA_CLASS, klass);
-	parsed_description (self, klass);
+		parsed->attrs = gck_attributes_new ();
+	gck_attributes_add_ulong (parsed->attrs, CKA_CLASS, klass);
+	parsed_description (parsed, klass);
 }
 
 static void
-parsed_attributes (GcrParser *self,
+parsed_attributes (GcrParsed *parsed,
                    GckAttributes *attrs)
 {
 	gulong klass;
 
-	g_return_if_fail (self->pv->parsed_attrs == NULL);
-	g_return_if_fail (attrs != NULL);
+	g_assert (parsed);
+	g_assert (attrs);
+	g_assert (!parsed->attrs);
 
-	self->pv->parsed_attrs = gck_attributes_ref (attrs);
+	parsed->attrs = gck_attributes_ref (attrs);
 	if (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
-		parsed_description (self, klass);
+		parsed_description (parsed, klass);
 }
 
 static void
-parsed_label (GcrParser *self, const gchar *label)
+parsed_label (GcrParsed *parsed,
+              const gchar *label)
 {
-	g_free (self->pv->parsed_label);
-	self->pv->parsed_label = g_strdup (label);
+	g_assert (parsed);
+	g_assert (!parsed->label);
+	parsed->label = g_strdup (label);
+}
+
+static GcrParsed *
+push_parsed (GcrParser *self)
+{
+	GcrParsed *parsed = g_new0 (GcrParsed, 1);
+	parsed->next = self->pv->parsed;
+	self->pv->parsed = parsed;
+	return parsed;
 }
 
 static void
-parsed_attribute (GcrParser *self, CK_ATTRIBUTE_TYPE type, gconstpointer data, gsize n_data)
+pop_parsed (GcrParser *self,
+            GcrParsed *parsed)
 {
-	g_assert (GCR_IS_PARSER (self));
-	g_assert (self->pv->parsed_attrs);
-	gck_attributes_add_data (self->pv->parsed_attrs, type, data, n_data);
-}
+	g_assert (parsed == self->pv->parsed);
 
-static void
-parsing_end (GcrParser *self)
-{
-	g_assert (GCR_IS_PARSER (self));
-	self->pv->parsing_block = NULL;
-	self->pv->parsing_n_block = 0;
-	if (self->pv->parsed_attrs)
-		gck_attributes_unref (self->pv->parsed_attrs);
-	self->pv->parsed_attrs = NULL;
-	g_free (self->pv->parsed_label);
-	self->pv->parsed_label = NULL;
-	self->pv->parsed_desc = NULL;
-}
+	self->pv->parsed = parsed->next;
 
-static void
-parsed_ulong (GcrParser *self, CK_ATTRIBUTE_TYPE type, gulong value)
-{
-	g_assert (GCR_IS_PARSER (self));
-	g_assert (self->pv->parsed_attrs);
-	gck_attributes_add_ulong (self->pv->parsed_attrs, type, value);
-}
-
-static void
-parsed_boolean (GcrParser *self, CK_ATTRIBUTE_TYPE type, gboolean value)
-{
-	g_assert (GCR_IS_PARSER (self));
-	g_assert (self->pv->parsed_attrs);
-	gck_attributes_add_boolean (self->pv->parsed_attrs, type, value);
+	gck_attributes_unref (parsed->attrs);
+	g_free (parsed->label);
+	g_free (parsed);
 }
 
 static gint
@@ -404,8 +406,13 @@ enum_next_password (GcrParser *self, PasswordState *state, const gchar **passwor
 }
 
 static void
-parsed_fire (GcrParser *self)
+parsed_fire (GcrParser *self,
+             GcrParsed *parsed)
 {
+	g_assert (GCR_IS_PARSER (self));
+	g_assert (parsed);
+	g_assert (parsed == self->pv->parsed);
+
 	g_object_notify (G_OBJECT (self), "parsed-description");
 	g_object_notify (G_OBJECT (self), "parsed-attributes");
 	g_object_notify (G_OBJECT (self), "parsed-label");
@@ -423,15 +430,18 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 	gint res = GCR_ERROR_UNRECOGNIZED;
 	GNode *asn = NULL;
 	gulong version;
+	GcrParsed *parsed;
+
+	parsed = push_parsed (self);
 
 	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "RSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
 
-	parsing_begin (self, data, n_data);
-	parsing_object (self, CKO_PRIVATE_KEY);
-	parsed_ulong (self, CKA_KEY_TYPE, CKK_RSA);
-	parsed_boolean (self, CKA_PRIVATE, CK_TRUE);
+	parsing_block (parsed, GCR_FORMAT_DER_PRIVATE_KEY_RSA, data, n_data);
+	parsing_object (parsed, CKO_PRIVATE_KEY);
+	parsed_ulong_attribute (parsed, CKA_KEY_TYPE, CKK_RSA);
+	parsed_boolean_attribute (parsed, CKA_PRIVATE, CK_TRUE);
 	res = GCR_ERROR_FAILURE;
 
 	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), &version))
@@ -444,23 +454,23 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 		goto done;
 	}
 
-	if (!parsed_asn1_attribute (self, asn, data, n_data, "modulus", CKA_MODULUS) || 
-	    !parsed_asn1_attribute (self, asn, data, n_data, "publicExponent", CKA_PUBLIC_EXPONENT) ||
-	    !parsed_asn1_attribute (self, asn, data, n_data, "privateExponent", CKA_PRIVATE_EXPONENT) ||
-            !parsed_asn1_attribute (self, asn, data, n_data, "prime1", CKA_PRIME_1) ||
-            !parsed_asn1_attribute (self, asn, data, n_data, "prime2", CKA_PRIME_2) || 
-            !parsed_asn1_attribute (self, asn, data, n_data, "coefficient", CKA_COEFFICIENT))
+	if (!parsed_asn1_attribute (parsed, asn, data, n_data, "modulus", CKA_MODULUS) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "publicExponent", CKA_PUBLIC_EXPONENT) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "privateExponent", CKA_PRIVATE_EXPONENT) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "prime1", CKA_PRIME_1) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "prime2", CKA_PRIME_2) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "coefficient", CKA_COEFFICIENT))
 		goto done;
-	
-	parsed_fire (self);
+
+	parsed_fire (self, parsed);
 	res = SUCCESS;
-	parsing_end (self);
 
 done:
 	egg_asn1x_destroy (asn);
 	if (res == GCR_ERROR_FAILURE)
 		g_message ("invalid RSA key");
 
+	pop_parsed (self, parsed);
 	return res;
 }
 
@@ -473,32 +483,35 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 {
 	gint ret = GCR_ERROR_UNRECOGNIZED;
 	GNode *asn = NULL;
+	GcrParsed *parsed;
+
+	parsed = push_parsed (self);
 
 	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivateKey", data, n_data);
 	if (!asn)
 		goto done;
 
-	parsing_begin (self, data, n_data);
-	parsing_object (self, CKO_PRIVATE_KEY);
-	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
-	parsed_boolean (self, CKA_PRIVATE, CK_TRUE);
+	parsing_block (parsed, GCR_FORMAT_DER_PRIVATE_KEY_DSA, data, n_data);
+	parsing_object (parsed, CKO_PRIVATE_KEY);
+	parsed_ulong_attribute (parsed, CKA_KEY_TYPE, CKK_DSA);
+	parsed_boolean_attribute (parsed, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
-	if (!parsed_asn1_attribute (self, asn, data, n_data, "p", CKA_PRIME) ||
-	    !parsed_asn1_attribute (self, asn, data, n_data, "q", CKA_SUBPRIME) ||
-	    !parsed_asn1_attribute (self, asn, data, n_data, "g", CKA_BASE) ||
-	    !parsed_asn1_attribute (self, asn, data, n_data, "priv", CKA_VALUE))
+	if (!parsed_asn1_attribute (parsed, asn, data, n_data, "p", CKA_PRIME) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "q", CKA_SUBPRIME) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "g", CKA_BASE) ||
+	    !parsed_asn1_attribute (parsed, asn, data, n_data, "priv", CKA_VALUE))
 		goto done;
-		
-	parsed_fire (self);
+
+	parsed_fire (self, parsed);
 	ret = SUCCESS;
-	parsing_end (self);
 
 done:
 	egg_asn1x_destroy (asn);
 	if (ret == GCR_ERROR_FAILURE) 
 		g_message ("invalid DSA key");
 
+	pop_parsed (self, parsed);
 	return ret;
 }
 
@@ -509,23 +522,27 @@ parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n
 	gint ret = GCR_ERROR_UNRECOGNIZED;
 	GNode *asn_params = NULL;
 	GNode *asn_key = NULL;
+	GcrParsed *parsed;
+
+	parsed = push_parsed (self);
 
 	asn_params = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAParameters", params, n_params);
 	asn_key = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivatePart", keydata, n_keydata);
 	if (!asn_params || !asn_key)
 		goto done;
 
-	parsed_ulong (self, CKA_KEY_TYPE, CKK_DSA);
-	parsed_boolean (self, CKA_PRIVATE, CK_TRUE);
+	parsing_object (parsed, CKO_PRIVATE_KEY);
+	parsed_ulong_attribute (parsed, CKA_KEY_TYPE, CKK_DSA);
+	parsed_boolean_attribute (parsed, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
-	if (!parsed_asn1_attribute (self, asn_params, params, n_params, "p", CKA_PRIME) ||
-	    !parsed_asn1_attribute (self, asn_params, params, n_params, "q", CKA_SUBPRIME) ||
-	    !parsed_asn1_attribute (self, asn_params, params, n_params, "g", CKA_BASE) ||
-	    !parsed_asn1_attribute (self, asn_key, keydata, n_keydata, NULL, CKA_VALUE))
+	if (!parsed_asn1_attribute (parsed, asn_params, params, n_params, "p", CKA_PRIME) ||
+	    !parsed_asn1_attribute (parsed, asn_params, params, n_params, "q", CKA_SUBPRIME) ||
+	    !parsed_asn1_attribute (parsed, asn_params, params, n_params, "g", CKA_BASE) ||
+	    !parsed_asn1_attribute (parsed, asn_key, keydata, n_keydata, NULL, CKA_VALUE))
 		goto done;
 
-	parsed_fire (self);
+	parsed_fire (self, parsed);
 	ret = SUCCESS;
 	
 done:
@@ -534,6 +551,7 @@ done:
 	if (ret == GCR_ERROR_FAILURE) 
 		g_message ("invalid DSA key");
 
+	pop_parsed (self, parsed);
 	return ret;
 }
 
@@ -568,13 +586,16 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 	const guchar *params;
 	gsize n_params;
 	GNode *asn = NULL;
+	GcrParsed *parsed;
 
+	parsed = push_parsed (self);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-PrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
+	parsing_block (parsed, GCR_FORMAT_DER_PKCS8_PLAIN, data, n_data);
 	ret = GCR_ERROR_FAILURE;
 	key_type = GCK_INVALID;
 
@@ -609,15 +630,10 @@ done:
 			/* Try the normal sane format */
 			ret = parse_der_private_key_dsa (self, keydata, n_keydata);
 
-			parsing_begin (self, data, n_data);
-			parsing_object (self, CKO_PRIVATE_KEY);
-
 			/* Otherwise try the two part format that everyone seems to like */
 			if (ret == GCR_ERROR_UNRECOGNIZED && params && n_params)
 				ret = parse_der_private_key_dsa_parts (self, keydata, n_keydata, 
 				                                       params, n_params);
-
-			parsing_end (self);
 			break;
 		default:
 			g_message ("invalid or unsupported key type in PKCS#8 key");
@@ -630,6 +646,7 @@ done:
 	}
 
 	egg_asn1x_destroy (asn);
+	pop_parsed (self, parsed);
 	return ret;
 }
 
@@ -647,13 +664,16 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 	gsize n_crypted, n_params;
 	const gchar *password;
 	gint l;
+	GcrParsed *parsed;
 
+	parsed = push_parsed (self);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
 	if (!asn)
 		goto done;
 
+	parsing_block (parsed, GCR_FORMAT_DER_PKCS8_ENCRYPTED, data, n_data);
 	ret = GCR_ERROR_FAILURE;
 
 	/* Figure out the type of encryption */
@@ -662,9 +682,6 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 		goto done;
 
 	params = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL), &n_params);
-
-	parsing_begin (self, data, n_data);
-	parsing_object (self, CKO_PRIVATE_KEY);
 
 	/* Loop to try different passwords */                       
 	for (;;) {
@@ -712,14 +729,13 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 		/* We assume unrecognized data, is a bad encryption key */	
 	}
 
-	parsing_end (self);
-
 done:
 	if (cih)
 		gcry_cipher_close (cih);
 	egg_asn1x_destroy (asn);
 	egg_secure_free (crypted);
 
+	pop_parsed (self, parsed);
 	return ret;
 }
 
@@ -744,30 +760,32 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 {
 	gchar *name = NULL;
 	GNode *asn;
+	GcrParsed *parsed;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	if (asn == NULL)
 		return GCR_ERROR_UNRECOGNIZED;
 
-	parsing_begin (self, data, n_data);
-	parsing_object (self, CKO_CERTIFICATE);
+	parsed = push_parsed (self);
 
-	parsed_ulong (self, CKA_CERTIFICATE_TYPE, CKC_X_509);
+	parsing_block (parsed, GCR_FORMAT_DER_CERTIFICATE_X509, data, n_data);
+	parsing_object (parsed, CKO_CERTIFICATE);
+	parsed_ulong_attribute (parsed, CKA_CERTIFICATE_TYPE, CKC_X_509);
 
-	if (self->pv->parsed_label == NULL)
+	if (gcr_parser_get_parsed_label (self) == NULL)
 		name = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), "CN");
 
 	egg_asn1x_destroy (asn);
 
 	if (name != NULL) {
-		parsed_label (self, name);
+		parsed_label (parsed, name);
 		g_free (name);
 	}
 
-	parsed_attribute (self, CKA_VALUE, data, n_data);
-	parsed_fire (self);
+	parsed_attribute (parsed, CKA_VALUE, data, n_data);
+	parsed_fire (self, parsed);
 
-	parsing_end (self);
+	pop_parsed (self, parsed);
 	return SUCCESS;
 }
 
@@ -826,13 +844,16 @@ parse_der_pkcs7 (GcrParser *self, const guchar *data, gsize n_data)
 	const guchar* content = NULL;
 	gsize n_content;
 	GQuark oid;
+	GcrParsed *parsed;
 
+	parsed = push_parsed (self);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-ContentInfo", data, n_data);
 	if (!asn)
 		goto done;
 
+	parsing_block (parsed, GCR_FORMAT_DER_PKCS7, data, n_data);
 	ret = GCR_ERROR_FAILURE;
 
 	node = egg_asn1x_node (asn, "contentType", NULL);
@@ -856,6 +877,7 @@ parse_der_pkcs7 (GcrParser *self, const guchar *data, gsize n_data)
 
 done:
 	egg_asn1x_destroy (asn);
+	pop_parsed (self, parsed);
 	return ret;
 }
 
@@ -981,6 +1003,7 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 	gchar *friendly;
 	gsize n_element;
 	guint i;
+	GcrParsed *parsed;
 
 	ret = GCR_ERROR_UNRECOGNIZED;
 
@@ -1009,9 +1032,11 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 		if (!element)
 			goto done;
 
+		parsed = push_parsed (self);
+
 		friendly = parse_pkcs12_bag_friendly_name (egg_asn1x_node (asn, i, "bagAttributes", NULL));
 		if (friendly != NULL)
-			parsed_label (self, friendly);
+			parsed_label (parsed, friendly);
 
 		/* A normal unencrypted key */
 		if (oid == GCR_OID_PKCS12_BAG_PKCS8_KEY) {
@@ -1030,8 +1055,7 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 			r = GCR_ERROR_UNRECOGNIZED;
 		}
 
-		if (friendly != NULL)
-			parsed_label (self, NULL);
+		pop_parsed (self, parsed);
 
 		if (r == GCR_ERROR_FAILURE ||
 		    r == GCR_ERROR_CANCELLED ||
@@ -1323,7 +1347,9 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	guchar *content = NULL;
 	gsize n_element, n_content;
 	GQuark oid;
+	GcrParsed *parsed;
 
+	parsed = push_parsed (self);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab, "pkcs-12-PFX",
@@ -1331,7 +1357,7 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	if (!asn)
 		goto done;
 
-	parsing_begin (self, data, n_data);
+	parsing_block (parsed, GCR_FORMAT_DER_PKCS12, data, n_data);
 
 	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "authSafe", "contentType", NULL));
 	if (!oid)
@@ -1360,12 +1386,11 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	if (ret == SUCCESS)
 		ret = handle_pkcs12_safe (self, content, n_content);
 
-	parsing_end (self);
-
 done:
 	g_free (content);
 	egg_asn1x_destroy (asn_content);
 	egg_asn1x_destroy (asn);
+	pop_parsed (self, parsed);
 	return ret;
 }
 
@@ -1381,12 +1406,15 @@ on_openpgp_packet (GPtrArray *records,
                    gpointer user_data)
 {
 	GcrParser *self = GCR_PARSER (user_data);
+	GcrParsed *parsed;
+
+	parsed = push_parsed (self);
 
 	/* All we can do is the packet bounds */
-	parsing_begin (self, outer, n_outer);
-	parsing_object (self, CKO_DATA);
-	parsed_fire (self);
-	parsing_end (self);
+	parsing_block (parsed, GCR_FORMAT_OPENPGP_PACKET, outer, n_outer);
+	parsing_object (parsed, CKO_DATA);
+	parsed_fire (self, parsed);
+	pop_parsed (self, parsed);
 }
 
 static gint
@@ -1404,52 +1432,69 @@ parse_openpgp_packets (GcrParser *self,
 }
 
 /* -----------------------------------------------------------------------------
- * PEM PARSING 
+ * ARMOR PARSING
  */
 
+static gboolean
+formats_for_armor_type (GQuark armor_type,
+                        gint *inner_format,
+                        gint *outer_format)
+{
+	gint dummy;
+	if (!inner_format)
+		inner_format = &dummy;
+	if (!outer_format)
+		outer_format = &dummy;
+
+	if (armor_type == PEM_RSA_PRIVATE_KEY) {
+		*inner_format = GCR_FORMAT_DER_PRIVATE_KEY_RSA;
+		*outer_format = GCR_FORMAT_PEM_PRIVATE_KEY_RSA;
+	} else if (armor_type == PEM_DSA_PRIVATE_KEY) {
+		*inner_format = GCR_FORMAT_DER_PRIVATE_KEY_DSA;
+		*outer_format = GCR_FORMAT_PEM_PRIVATE_KEY_DSA;
+	} else if (armor_type == PEM_ANY_PRIVATE_KEY) {
+		*inner_format = GCR_FORMAT_DER_PRIVATE_KEY;
+		*outer_format = GCR_FORMAT_PEM_PRIVATE_KEY;
+	} else if (armor_type == PEM_PRIVATE_KEY) {
+		*inner_format = GCR_FORMAT_DER_PKCS8_PLAIN;
+		*outer_format = GCR_FORMAT_PEM_PKCS8_PLAIN;
+	} else if (armor_type == PEM_ENCRYPTED_PRIVATE_KEY) {
+		*inner_format = GCR_FORMAT_DER_PKCS8_ENCRYPTED;
+		*outer_format = GCR_FORMAT_PEM_PKCS8_ENCRYPTED;
+	} else if (armor_type == PEM_CERTIFICATE) {
+		*inner_format = GCR_FORMAT_DER_CERTIFICATE_X509;
+		*outer_format = GCR_FORMAT_PEM_CERTIFICATE_X509;
+	} else if (armor_type == PEM_PKCS7) {
+		*inner_format = GCR_FORMAT_DER_PKCS7;
+		*outer_format = GCR_FORMAT_PEM_PKCS7;
+	} else if (armor_type == PEM_PKCS12) {
+		*inner_format = GCR_FORMAT_DER_PKCS12;
+		*outer_format = GCR_FORMAT_PEM_PKCS12;
+	} else if (armor_type == ARMOR_PGP_PRIVATE_KEY_BLOCK) {
+		*inner_format = GCR_FORMAT_OPENPGP_PACKET;
+		*outer_format = GCR_FORMAT_OPENPGP_ARMOR;
+	} else if (armor_type == ARMOR_PGP_PUBLIC_KEY_BLOCK) {
+		*inner_format = GCR_FORMAT_OPENPGP_PACKET;
+		*outer_format = GCR_FORMAT_OPENPGP_ARMOR;
+	} else {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static gint
-handle_plain_pem (GcrParser *self, GQuark type, gint subformat, 
-                  const guchar *data, gsize n_data)
+handle_plain_pem (GcrParser *self,
+                  gint format_id,
+                  gint want_format,
+                  const guchar *data,
+                  gsize n_data)
 {
 	ParserFormat *format;
-	gint format_id;
-	
-	if (type == PEM_RSA_PRIVATE_KEY)
-		format_id = GCR_FORMAT_DER_PRIVATE_KEY_RSA;
 
-	else if (type == PEM_DSA_PRIVATE_KEY)
-		format_id = GCR_FORMAT_DER_PRIVATE_KEY_DSA;
-
-	else if (type == PEM_ANY_PRIVATE_KEY)
-		format_id = GCR_FORMAT_DER_PRIVATE_KEY;
-	
-	else if (type == PEM_PRIVATE_KEY)
-		format_id = GCR_FORMAT_DER_PKCS8_PLAIN;
-		
-	else if (type == PEM_ENCRYPTED_PRIVATE_KEY)
-		format_id = GCR_FORMAT_DER_PKCS8_ENCRYPTED;
-
-	else if (type == PEM_CERTIFICATE)
-		format_id = GCR_FORMAT_DER_CERTIFICATE_X509;
-
-	else if (type == PEM_PKCS7)
-		format_id = GCR_FORMAT_DER_PKCS7;
-		
-	else if (type == PEM_PKCS12)
-		format_id = GCR_FORMAT_DER_PKCS12;
-
-	else if (type == ARMOR_PGP_PRIVATE_KEY_BLOCK)
-		format_id = GCR_FORMAT_OPENPGP_PACKET;
-
-	else if (type == ARMOR_PGP_PUBLIC_KEY_BLOCK)
-		format_id = GCR_FORMAT_OPENPGP_PACKET;
-
-	else
+	if (want_format != 0 && want_format != format_id)
 		return GCR_ERROR_UNRECOGNIZED;
 
-	if (subformat != 0 && subformat != format_id)
-		return GCR_ERROR_UNRECOGNIZED;
-	
 	format = parser_format_lookup (format_id);
 	if (format == NULL)
 		return GCR_ERROR_UNRECOGNIZED;
@@ -1457,29 +1502,13 @@ handle_plain_pem (GcrParser *self, GQuark type, gint subformat,
 	return (format->function) (self, data, n_data);
 }
 
-static CK_OBJECT_CLASS
-pem_type_to_class (gint type)
-{
-	if (type == PEM_RSA_PRIVATE_KEY ||
-	    type == PEM_DSA_PRIVATE_KEY ||
-	    type == PEM_ANY_PRIVATE_KEY ||
-	    type == PEM_PRIVATE_KEY ||
-	    type == PEM_ENCRYPTED_PRIVATE_KEY)
-		return CKO_PRIVATE_KEY;
-
-	else if (type == PEM_CERTIFICATE)
-		return CKO_CERTIFICATE;
-		
-	else if (type == PEM_PKCS7 ||
-	         type == PEM_PKCS12)
-		return 0;
-
-	return 0;
-}
-
 static gint
-handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat, 
-                      GHashTable *headers, const guchar *data, gsize n_data)
+handle_encrypted_pem (GcrParser *self,
+                      gint format_id,
+                      gint want_format,
+                      GHashTable *headers,
+                      const guchar *data,
+                      gsize n_data)
 {
 	PasswordState pstate = PASSWORD_STATE_INIT;
 	const gchar *password;
@@ -1489,11 +1518,10 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 	gboolean ret;
 	gint res;
 	gint l;
-	
+
 	g_assert (GCR_IS_PARSER (self));
 	g_assert (headers);
-	g_assert (type);
-	
+
 	val = g_hash_table_lookup (headers, "DEK-Info");
 	if (!val) {
 		g_message ("missing encryption header");
@@ -1526,7 +1554,8 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 			n_decrypted = l;
 	
 		/* Try to parse */
-		res = handle_plain_pem (self, type, subformat, decrypted, n_decrypted);
+		res = handle_plain_pem (self, format_id, want_format,
+		                        decrypted, n_decrypted);
 		egg_secure_free (decrypted);
 
 		/* Unrecognized is a bad password */
@@ -1540,7 +1569,7 @@ handle_encrypted_pem (GcrParser *self, GQuark type, gint subformat,
 typedef struct {
 	GcrParser *parser;
 	gint result;
-	gint subformat;
+	gint want_format;
 } HandlePemArgs;
 
 static void
@@ -1556,14 +1585,21 @@ handle_pem_data (GQuark type,
 	gint res = GCR_ERROR_FAILURE;
 	gboolean encrypted = FALSE;
 	const gchar *val;
-	
+	gint inner_format;
+	gint outer_format;
+	GcrParsed *parsed;
+
 	/* Something already failed to parse */
 	if (args->result == GCR_ERROR_FAILURE)
 		return;
 
+	if (!formats_for_armor_type (type, &inner_format, &outer_format))
+		return;
+
+	parsed = push_parsed (args->parser);
+
 	/* Fill in information necessary for prompting */
-	parsing_begin (args->parser, outer, n_outer);
-	parsing_object (args->parser, pem_type_to_class (type));
+	parsing_block (parsed, outer_format, outer, n_outer);
 
 	/* See if it's encrypted PEM all openssl like*/
 	if (headers) {
@@ -1573,13 +1609,14 @@ handle_pem_data (GQuark type,
 	}
 
 	if (encrypted)
-		res = handle_encrypted_pem (args->parser, type, args->subformat,  
-		                            headers, data, n_data); 
+		res = handle_encrypted_pem (args->parser, inner_format,
+		                            args->want_format, headers,
+		                            data, n_data);
 	else
-		res = handle_plain_pem (args->parser, type, args->subformat, 
-		                        data, n_data);
+		res = handle_plain_pem (args->parser, inner_format,
+		                        args->want_format, data, n_data);
 
-	parsing_end (args->parser);
+	pop_parsed (args->parser, parsed);
 
 	if (res != GCR_ERROR_UNRECOGNIZED) {
 		if (args->result == GCR_ERROR_UNRECOGNIZED)
@@ -1676,12 +1713,14 @@ on_openssh_public_key_parsed (GckAttributes *attrs,
                               gpointer user_data)
 {
 	GcrParser *self = GCR_PARSER (user_data);
+	GcrParsed *parsed;
 
-	parsing_begin (self, outer, n_outer);
-	parsed_attributes (self, attrs);
-	parsed_label (self, label);
-	parsed_fire (self);
-	parsing_end (self);
+	parsed = push_parsed (self);
+	parsing_block (parsed, GCR_FORMAT_OPENSSH_PUBLIC, outer, n_outer);
+	parsed_attributes (parsed, attrs);
+	parsed_label (parsed, label);
+	parsed_fire (self, parsed);
+	pop_parsed (self, parsed);
 }
 
 static gint
@@ -1701,6 +1740,34 @@ parse_openssh_public (GcrParser *self,
 
 /* -----------------------------------------------------------------------------
  * FORMATS
+ */
+
+/**
+ * GcrDataFormat:
+ * @GCR_FORMAT_INVALID: Not a valid format
+ * @GCR_FORMAT_DER_PRIVATE_KEY: DER encoded private key
+ * @GCR_FORMAT_DER_PRIVATE_KEY_RSA: DER encoded RSA private key
+ * @GCR_FORMAT_DER_PRIVATE_KEY_DSA: DER encoded DSA private key
+ * @GCR_FORMAT_DER_CERTIFICATE_X509: DER encoded X.509 certificate
+ * @GCR_FORMAT_DER_PKCS7: DER encoded PKCS\#7 container file which can contain certificates
+ * @GCR_FORMAT_DER_PKCS8: DER encoded PKCS\#8 file which can contain a key
+ * @GCR_FORMAT_DER_PKCS8_PLAIN: Unencrypted DER encoded PKCS\#8 file which can contain a key
+ * @GCR_FORMAT_DER_PKCS8_ENCRYPTED: Encrypted DER encoded PKCS\#8 file which can contain a key
+ * @GCR_FORMAT_DER_PKCS12: DER encoded PKCS\#12 file which can contain certificates and/or keys
+ * @GCR_FORMAT_OPENSSH_PUBLIC: OpenSSH v1 or v2 public key
+ * @GCR_FORMAT_OPENPGP_PACKET: OpenPGP key packet(s)
+ * @GCR_FORMAT_OPENPGP_ARMOR: OpenPGP public or private key armor encoded data
+ * @GCR_FORMAT_PEM: An OpenSSL style PEM file with unspecified contents
+ * @GCR_FORMAT_PEM_PRIVATE_KEY: An OpenSSL style PEM file with a private key
+ * @GCR_FORMAT_PEM_PRIVATE_KEY_RSA: An OpenSSL style PEM file with a private RSA key
+ * @GCR_FORMAT_PEM_PRIVATE_KEY_DSA: An OpenSSL style PEM file with a private DSA key
+ * @GCR_FORMAT_PEM_CERTIFICATE_X509: An OpenSSL style PEM file with an X.509 certificate
+ * @GCR_FORMAT_PEM_PKCS7: An OpenSSL style PEM file containing PKCS\#7
+ * @GCR_FORMAT_PEM_PKCS8_PLAIN: Unencrypted OpenSSL style PEM file containing PKCS\#8
+ * @GCR_FORMAT_PEM_PKCS8_ENCRYPTED: Encrypted OpenSSL style PEM file containing PKCS\#8
+ * @GCR_FORMAT_PEM_PKCS12: An OpenSSL style PEM file containing PKCS\#12
+ *
+ * The various format identifiers.
  */
 
 /* In order of parsing when no formats specified */
@@ -1830,14 +1897,9 @@ gcr_parser_dispose (GObject *obj)
 {
 	GcrParser *self = GCR_PARSER (obj);
 	gsize i;
-	
-	if (self->pv->parsed_attrs)
-		gck_attributes_unref (self->pv->parsed_attrs);
-	self->pv->parsed_attrs = NULL;
-	
-	g_free (self->pv->parsed_label);
-	self->pv->parsed_label = NULL;
-	
+
+	g_assert (!self->pv->parsed);
+
 	for (i = 0; i < self->pv->passwords->len; ++i)
 		egg_secure_strfree (g_ptr_array_index (self->pv->passwords, i));
 	g_ptr_array_set_size (self->pv->passwords, 0);
@@ -1849,9 +1911,8 @@ static void
 gcr_parser_finalize (GObject *obj)
 {
 	GcrParser *self = GCR_PARSER (obj);
-	
-	g_assert (!self->pv->parsed_attrs);
-	g_assert (!self->pv->parsed_label);
+
+	g_assert (!self->pv->parsed);
 
 	g_ptr_array_free (self->pv->passwords, TRUE);
 	self->pv->passwords = NULL;
@@ -2078,14 +2139,15 @@ gcr_parser_parse_data (GcrParser *self, gconstpointer data,
 /**
  * gcr_parser_format_enable:
  * @self: The parser
- * @format_id: The format identifier
+ * @format: The format identifier
  *
  * Enable parsing of the given format. Use -1 to enable all the formats.
  */
 void
-gcr_parser_format_enable (GcrParser *self, gint format_id)
+gcr_parser_format_enable (GcrParser *self,
+                          GcrDataFormat format)
 {
-	const ParserFormat *format;
+	const ParserFormat *form;
 	guint i;
 
 	g_return_if_fail (GCR_IS_PARSER (self));
@@ -2093,16 +2155,16 @@ gcr_parser_format_enable (GcrParser *self, gint format_id)
 	if (!self->pv->specific_formats)
 		self->pv->specific_formats = g_tree_new (compare_pointers);
 
-	if (format_id != -1) {
-		format = parser_format_lookup (format_id);
-		g_return_if_fail (format);
+	if (format != -1) {
+		form = parser_format_lookup (format);
+		g_return_if_fail (form);
 		g_tree_insert (self->pv->specific_formats,
-		               (gpointer)format, (gpointer)format);
+		               (gpointer)form, (gpointer)form);
 	} else {
 		for (i = 0; i < G_N_ELEMENTS (parser_formats); i++) {
-			format = &parser_formats[i];
-			g_tree_insert (self->pv->specific_formats, (gpointer)format,
-			               (gpointer)format);
+			form = &parser_formats[i];
+			g_tree_insert (self->pv->specific_formats, (gpointer)form,
+			               (gpointer)form);
 		}
 	}
 }
@@ -2110,18 +2172,19 @@ gcr_parser_format_enable (GcrParser *self, gint format_id)
 /**
  * gcr_parser_format_disable:
  * @self: The parser
- * @format_id: The format identifier
+ * @format: The format identifier
  *
  * Disable parsing of the given format. Use -1 to disable all the formats.
  */
 void
-gcr_parser_format_disable (GcrParser *self, gint format_id)
+gcr_parser_format_disable (GcrParser *self,
+                           GcrDataFormat format)
 {
-	ParserFormat *format;
+	ParserFormat *form;
 
 	g_return_if_fail (GCR_IS_PARSER (self));
 
-	if (format_id == -1) {
+	if (format == -1) {
 		if (self->pv->specific_formats)
 			g_tree_destroy (self->pv->specific_formats);
 		self->pv->specific_formats = NULL;
@@ -2131,27 +2194,28 @@ gcr_parser_format_disable (GcrParser *self, gint format_id)
 	if (!self->pv->specific_formats)
 		return;
 
-	format = parser_format_lookup (format_id);
-	g_return_if_fail (format);
+	form = parser_format_lookup (format);
+	g_return_if_fail (form);
 
-	g_tree_remove (self->pv->specific_formats, format);
+	g_tree_remove (self->pv->specific_formats, form);
 }
 
 /**
  * gcr_parser_format_supported:
  * @self: The parser
- * @format_id: The format identifier
+ * @format: The format identifier
  *
  * Check whether the given format is supported by the parser.
  *
  * Returns: Whether the format is supported.
  */
 gboolean
-gcr_parser_format_supported (GcrParser *self, gint format_id)
+gcr_parser_format_supported (GcrParser *self,
+                             GcrDataFormat format)
 {
 	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
-	g_return_val_if_fail (format_id != -1, FALSE);
-	return parser_format_lookup (format_id) ? TRUE : FALSE;	
+	g_return_val_if_fail (format != -1, FALSE);
+	return parser_format_lookup (format) ? TRUE : FALSE;
 }
 
 /**
@@ -2167,8 +2231,16 @@ gcr_parser_format_supported (GcrParser *self, gint format_id)
 const gchar*
 gcr_parser_get_parsed_description (GcrParser *self)
 {
+	GcrParsed *parsed;
+
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
-	return self->pv->parsed_desc;
+
+	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+		if (parsed->description != NULL)
+			return parsed->description;
+	}
+
+	return NULL;
 }
 
 /**
@@ -2184,8 +2256,16 @@ gcr_parser_get_parsed_description (GcrParser *self)
 GckAttributes*
 gcr_parser_get_parsed_attributes (GcrParser *self)
 {
+	GcrParsed *parsed;
+
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
-	return self->pv->parsed_attrs;	
+
+	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+		if (parsed->attrs != NULL)
+			return parsed->attrs;
+	}
+
+	return NULL;
 }
 
 /**
@@ -2201,8 +2281,16 @@ gcr_parser_get_parsed_attributes (GcrParser *self)
 const gchar*
 gcr_parser_get_parsed_label (GcrParser *self)
 {
+	GcrParsed *parsed;
+
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
-	return self->pv->parsed_label;
+
+	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+		if (parsed->label != NULL)
+			return parsed->label;
+	}
+
+	return NULL;
 }
 
 /**
@@ -2220,10 +2308,46 @@ gconstpointer
 gcr_parser_get_parsed_block (GcrParser *self,
                              gsize *n_block)
 {
+	GcrParsed *parsed;
+
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
 	g_return_val_if_fail (n_block, NULL);
-	*n_block = self->pv->parsing_n_block;
-	return self->pv->parsing_block;
+
+	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+		if (parsed->block != NULL) {
+			*n_block = parsed->n_block;
+			return parsed->block;
+		}
+	}
+
+	*n_block = 0;
+	return NULL;
+}
+
+/**
+ * gcr_parser_get_parsed_format:
+ * @self: a parser
+ *
+ * Get the format of the raw data block that represents this parsed object.
+ * This corresponds with the data returned from gcr_parser_get_parsed_block().
+ *
+ * This is only valid during the GcrParser::parsed signal.
+ *
+ * Returns: The data format of the currently parsed item.
+ */
+GcrDataFormat
+gcr_parser_get_parsed_format (GcrParser *self)
+{
+	GcrParsed *parsed;
+
+	g_return_val_if_fail (GCR_IS_PARSER (self), 0);
+
+	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+		if (parsed->block != NULL)
+			return parsed->format;
+	}
+
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------------

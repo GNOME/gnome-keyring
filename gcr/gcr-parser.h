@@ -67,13 +67,13 @@ GType                    gcr_parser_get_type               (void);
 GcrParser*               gcr_parser_new                    (void);
 
 void                     gcr_parser_format_enable          (GcrParser *self,
-                                                            gint format_id);
+                                                            GcrDataFormat format);
 
 void                     gcr_parser_format_disable         (GcrParser *self,
-                                                            gint format_id);
+                                                            GcrDataFormat format);
 
 gboolean                 gcr_parser_format_supported       (GcrParser *self,
-                                                            gint format_id);
+                                                            GcrDataFormat format);
 
 gboolean                 gcr_parser_parse_data             (GcrParser *self, 
                                                             gconstpointer data,
@@ -106,6 +106,8 @@ GckAttributes*           gcr_parser_get_parsed_attributes  (GcrParser *self);
 
 gconstpointer            gcr_parser_get_parsed_block       (GcrParser *self,
                                                             gsize *n_block);
+
+GcrDataFormat            gcr_parser_get_parsed_format      (GcrParser *self);
 
 G_END_DECLS
 

@@ -59,6 +59,7 @@ gcr_parser_format_supported
 gcr_parser_get_parsed_attributes
 gcr_parser_get_parsed_block
 gcr_parser_get_parsed_description
+gcr_parser_get_parsed_format
 gcr_parser_get_parsed_label
 gcr_parser_get_type
 gcr_parser_new
