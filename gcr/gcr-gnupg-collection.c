@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gcr-record.h"
+#include "gcr-callback-output-stream.h"
 #include "gcr-collection.h"
 #define DEBUG_FLAG GCR_DEBUG_GNUPG
 #include "gcr-debug.h"
@@ -32,6 +32,7 @@
 #include "gcr-gnupg-process.h"
 #include "gcr-gnupg-util.h"
 #include "gcr-internal.h"
+#include "gcr-record.h"
 #include "gcr-util.h"
 
 #include <sys/wait.h>
@@ -54,9 +55,6 @@ G_DEFINE_TYPE_WITH_CODE (GcrGnupgCollection, _gcr_gnupg_collection, G_TYPE_OBJEC
 	G_IMPLEMENT_INTERFACE (GCR_TYPE_COLLECTION, _gcr_collection_iface)
 );
 
-/* -----------------------------------------------------------------------------
- * OBJECT
- */
 
 static void
 _gcr_gnupg_collection_init (GcrGnupgCollection *self)
@@ -243,10 +241,10 @@ typedef struct {
 	GString *out_data;                    /* Pending output not yet parsed into colons */
 	GHashTable *difference;               /* Hashset gchar *keyid -> gchar *keyid */
 
-	guint output_sig;
 	guint error_sig;
 	guint status_sig;
-	guint attribute_sig;
+	GOutputStream *output;
+	GOutputStream *outattr;
 
 	GQueue *attribute_queue;              /* Queue of unprocessed GcrRecord* status records */
 	GByteArray *attribute_buf;            /* Buffer of unprocessed attribute data received */
@@ -268,16 +266,17 @@ _gcr_gnupg_collection_load_free (gpointer data)
 	g_object_unref (load->collection);
 
 	if (load->process) {
-		if (load->output_sig)
-			g_signal_handler_disconnect (load->process, load->output_sig);
 		if (load->error_sig)
 			g_signal_handler_disconnect (load->process, load->error_sig);
 		if (load->status_sig)
 			g_signal_handler_disconnect (load->process, load->status_sig);
-		if (load->attribute_sig)
-			g_signal_handler_disconnect (load->process, load->attribute_sig);
 		g_object_unref (load->process);
 	}
+
+	g_output_stream_close (load->output, NULL, NULL);
+	g_object_unref (load->output);
+	g_output_stream_close (load->outattr, NULL, NULL);
+	g_object_unref (load->outattr);
 
 	if (load->cancel)
 		g_object_unref (load->cancel);
@@ -515,15 +514,19 @@ on_line_parse_output (const gchar *line, gpointer user_data)
 }
 
 
-static void
-on_gnupg_process_output_data (GcrGnupgProcess *process, GByteArray *buffer,
-                              gpointer user_data)
+static gssize
+on_gnupg_process_output_data (gconstpointer buffer,
+                              gsize count,
+                              GCancellable *cancellable,
+                              gpointer user_data,
+                              GError **error)
 {
 	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
 	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
 
-	g_string_append_len (load->out_data, (gchar*)buffer->data, buffer->len);
+	g_string_append_len (load->out_data, buffer, count);
 	_gcr_util_parse_lines (load->out_data, FALSE, on_line_parse_output, load);
+	return count;
 }
 
 static void
@@ -550,22 +553,24 @@ on_gnupg_process_status_record (GcrGnupgProcess *process, GcrRecord *record,
 	process_outstanding_attributes (load);
 }
 
-static void
-on_gnupg_process_attribute_data (GcrGnupgProcess *process, GByteArray *buffer,
-                                 gpointer user_data)
+static gssize
+on_gnupg_process_attribute_data (gconstpointer buffer,
+                                 gsize count,
+                                 GCancellable *cancellable,
+                                 gpointer user_data,
+                                 GError **error)
 {
 	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
 	GcrGnupgCollectionLoad *load = g_simple_async_result_get_op_res_gpointer (res);
 
 	/* If we don't have a buffer, just claim this one */
 	if (!load->attribute_buf)
-		load->attribute_buf = g_byte_array_ref (buffer);
+		load->attribute_buf = g_byte_array_new ();
 
-	/* If we have data remaining over, add it to our buffer */
-	else
-		g_byte_array_append (load->attribute_buf, buffer->data, buffer->len);
+	g_byte_array_append (load->attribute_buf, buffer, count);
 
 	process_outstanding_attributes (load);
+	return count;
 }
 
 static void
@@ -695,11 +700,14 @@ _gcr_gnupg_collection_load_async (GcrGnupgCollection *self, GCancellable *cancel
 	load->collection = g_object_ref (self);
 	load->cancel = cancellable ? g_object_ref (cancellable) : cancellable;
 
+	load->output = _gcr_callback_output_stream_new (on_gnupg_process_output_data, res, NULL);
+	load->outattr = _gcr_callback_output_stream_new (on_gnupg_process_attribute_data, res, NULL);
+
 	load->process = _gcr_gnupg_process_new (self->pv->directory, NULL);
-	load->output_sig = g_signal_connect (load->process, "output-data", G_CALLBACK (on_gnupg_process_output_data), res);
+	_gcr_gnupg_process_set_output_stream (load->process, load->output);
+	_gcr_gnupg_process_set_attribute_stream (load->process, load->outattr);
 	load->error_sig = g_signal_connect (load->process, "error-line", G_CALLBACK (on_gnupg_process_error_line), res);
 	load->status_sig = g_signal_connect (load->process, "status-record", G_CALLBACK (on_gnupg_process_status_record), res);
-	load->attribute_sig = g_signal_connect (load->process, "attribute-data", G_CALLBACK (on_gnupg_process_attribute_data), res);
 
 	/*
 	 * Track all the keys we currently have, at end remove those that

@@ -51,13 +51,9 @@ struct _GcrGnupgProcessClass {
 	GObjectClass parent_class;
 
 	/* signals */
-	gboolean (*output_data) (GcrGnupgProcess *self, GByteArray *output);
-
 	gboolean (*error_line) (GcrGnupgProcess *self, const gchar *line);
 
 	gboolean (*status_record) (GcrGnupgProcess *self, GcrRecord *record);
-
-	gboolean (*attribute_data) (GcrGnupgProcess *self, GByteArray *output);
 };
 
 typedef enum {
@@ -71,6 +67,21 @@ GType               _gcr_gnupg_process_get_type                (void) G_GNUC_CON
 
 GcrGnupgProcess*    _gcr_gnupg_process_new                     (const gchar *directory,
                                                                 const gchar *executable);
+
+GInputStream *      _gcr_gnupg_process_get_input_stream        (GcrGnupgProcess *self);
+
+void                _gcr_gnupg_process_set_input_stream        (GcrGnupgProcess *self,
+                                                                GInputStream *input);
+
+GOutputStream *     _gcr_gnupg_process_get_output_stream       (GcrGnupgProcess *self);
+
+void                _gcr_gnupg_process_set_output_stream       (GcrGnupgProcess *self,
+                                                                GOutputStream *output);
+
+GOutputStream *     _gcr_gnupg_process_get_attribute_stream    (GcrGnupgProcess *self);
+
+void                _gcr_gnupg_process_set_attribute_stream    (GcrGnupgProcess *self,
+                                                                GOutputStream *output);
 
 void                _gcr_gnupg_process_run_async               (GcrGnupgProcess *self,
                                                                 const gchar **argv,

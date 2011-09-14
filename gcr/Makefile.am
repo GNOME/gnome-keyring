@@ -90,6 +90,7 @@ BUILT_SOURCES = \
 	$(BUILT_UI_FILES)
 
 libgcr_base_@GCR_MAJOR@_la_SOURCES = \
+	gcr-callback-output-stream.c gcr-callback-output-stream.h \
 	gcr-certificate.c gcr-certificate.h \
 	gcr-certificate-chain.c gcr-certificate-chain.h \
 	gcr-collection.c gcr-collection.h \

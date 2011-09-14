@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include "gcr/gcr-base.h"
+#include "gcr/gcr-callback-output-stream.h"
 #include "gcr/gcr-gnupg-process.h"
 
 #include "egg/egg-testing.h"
@@ -31,6 +32,8 @@
 
 #include <errno.h>
 #include <string.h>
+
+#define WAIT 50000
 
 typedef struct {
 	GcrGnupgProcess *process;
@@ -104,26 +107,28 @@ build_script_path (const gchar *name)
 	return path;
 }
 
-static void
-on_process_output_data (GcrGnupgProcess *process, GByteArray *buffer, gpointer user_data)
+static gssize
+on_process_output_data (gconstpointer buffer,
+                        gsize count,
+                        GCancellable *cancellable,
+                        gpointer user_data,
+                        GError **error)
 {
 	Test *test = user_data;
-
-	g_assert (process == test->process);
-	g_assert (buffer);
-
-	g_string_append_len (test->output_buf, (gchar*)buffer->data, buffer->len);
+	g_string_append_len (test->output_buf, buffer, count);
+	return count;
 }
 
-static void
-on_process_attribute_data (GcrGnupgProcess *process, GByteArray *buffer, gpointer user_data)
+static gssize
+on_process_attribute_data (gconstpointer buffer,
+                           gsize count,
+                           GCancellable *cancellable,
+                           gpointer user_data,
+                           GError **error)
 {
 	Test *test = user_data;
-
-	g_assert (process == test->process);
-	g_assert (buffer);
-
-	g_string_append_len (test->attribute_buf, (gchar*)buffer->data, buffer->len);
+	g_string_append_len (test->attribute_buf, buffer, count);
+	return count;
 }
 
 static void
@@ -154,6 +159,7 @@ static void
 test_run_simple_output (Test *test, gconstpointer unused)
 {
 	const gchar *argv[] = { NULL };
+	GOutputStream *output;
 	GError *error = NULL;
 	gboolean ret;
 	gchar *script;
@@ -162,10 +168,12 @@ test_run_simple_output (Test *test, gconstpointer unused)
 	test->process = _gcr_gnupg_process_new (NULL, script);
 	g_free (script);
 
-	g_signal_connect (test->process, "output-data", G_CALLBACK (on_process_output_data), test);
+	output = _gcr_callback_output_stream_new (on_process_output_data, test, NULL);
+	_gcr_gnupg_process_set_output_stream (test->process, output);
+	g_object_unref (output);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -193,7 +201,7 @@ test_run_simple_error (Test *test, gconstpointer unused)
 	g_signal_connect (test->process, "error-line", G_CALLBACK (on_process_error_line), test);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -210,6 +218,7 @@ static void
 test_run_status_and_output (Test *test, gconstpointer unused)
 {
 	const gchar *argv[] = { NULL };
+	GOutputStream *output;
 	GError *error = NULL;
 	gchar *script;
 	gboolean ret;
@@ -218,12 +227,15 @@ test_run_status_and_output (Test *test, gconstpointer unused)
 	test->process = _gcr_gnupg_process_new (NULL, script);
 	g_free (script);
 
-	g_signal_connect (test->process, "output-data", G_CALLBACK (on_process_output_data), test);
+	output = _gcr_callback_output_stream_new (on_process_output_data, test, NULL);
+	_gcr_gnupg_process_set_output_stream (test->process, output);
+	g_object_unref (output);
+
 	g_signal_connect (test->process, "status-record", G_CALLBACK (on_process_status_record), test);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, GCR_GNUPG_PROCESS_WITH_STATUS,
 	                              NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -247,6 +259,7 @@ static void
 test_run_status_and_attribute (Test *test, gconstpointer unused)
 {
 	const gchar *argv[] = { NULL };
+	GOutputStream *output;
 	GError *error = NULL;
 	gchar *script;
 	gboolean ret;
@@ -255,13 +268,16 @@ test_run_status_and_attribute (Test *test, gconstpointer unused)
 	test->process = _gcr_gnupg_process_new (NULL, script);
 	g_free (script);
 
-	g_signal_connect (test->process, "attribute-data", G_CALLBACK (on_process_attribute_data), test);
+	output = _gcr_callback_output_stream_new (on_process_attribute_data, test, NULL);
+	_gcr_gnupg_process_set_attribute_stream (test->process, output);
+	g_object_unref (output);
+
 	g_signal_connect (test->process, "status-record", G_CALLBACK (on_process_status_record), test);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL,
 	                              GCR_GNUPG_PROCESS_WITH_STATUS | GCR_GNUPG_PROCESS_WITH_ATTRIBUTES,
 	                              NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -286,6 +302,7 @@ static void
 test_run_arguments_and_environment (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
+	GOutputStream *output;
 	gchar *script;
 	gboolean ret;
 
@@ -305,15 +322,21 @@ test_run_arguments_and_environment (Test *test, gconstpointer unused)
 	test->process = _gcr_gnupg_process_new (NULL, script);
 	g_free (script);
 
-	g_signal_connect (test->process, "output-data", G_CALLBACK (on_process_output_data), test);
+	output = _gcr_callback_output_stream_new (on_process_output_data, test, NULL);
+	_gcr_gnupg_process_set_output_stream (test->process, output);
+	g_object_unref (output);
+
 	g_signal_connect (test->process, "error-line", G_CALLBACK (on_process_error_line), test);
 
 	_gcr_gnupg_process_run_async (test->process, argv, envp, 0, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
-	g_assert_no_error (error);
+	if (error) {
+		g_printerr ("%s\n", test->error_buf->str);
+		g_assert_no_error (error);
+	}
 	g_assert (ret == TRUE);
 
 	g_assert_cmpstr ("value1\nvalue2\n", ==, test->output_buf->str);
@@ -327,6 +350,7 @@ static void
 test_run_with_homedir (Test *test, gconstpointer unused)
 {
 	const gchar *argv[] = { NULL };
+	GOutputStream *output;
 	GError *error = NULL;
 	gchar *script;
 	gchar *check;
@@ -336,10 +360,12 @@ test_run_with_homedir (Test *test, gconstpointer unused)
 	test->process = _gcr_gnupg_process_new (SRCDIR, script);
 	g_free (script);
 
-	g_signal_connect (test->process, "output-data", G_CALLBACK (on_process_output_data), test);
+	output = _gcr_callback_output_stream_new (on_process_output_data, test, NULL);
+	_gcr_gnupg_process_set_output_stream (test->process, output);
+	g_object_unref (output);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -355,6 +381,49 @@ test_run_with_homedir (Test *test, gconstpointer unused)
 }
 
 static void
+test_run_with_input_and_output (Test *test,
+                                gconstpointer unused)
+{
+	const gchar *argv[] = { NULL };
+	const gchar *data = "one\ntwenty two\nthree\nfourty four\n";
+	GInputStream *input;
+	GOutputStream *output;
+	GError *error = NULL;
+	GString *string;
+	gchar *script;
+	gboolean ret;
+
+	script = build_script_path ("mock-echo");
+	test->process = _gcr_gnupg_process_new (SRCDIR, script);
+	g_free (script);
+
+	input = g_memory_input_stream_new_from_data ((gpointer)data, -1, NULL);
+	output = g_memory_output_stream_new (NULL, 0, g_realloc, g_free);
+
+	_gcr_gnupg_process_set_input_stream (test->process, input);
+	_gcr_gnupg_process_set_output_stream (test->process, output);
+
+	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, NULL, on_async_ready, test);
+	egg_test_wait_until (WAIT);
+
+	g_assert (test->result);
+	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
+	g_assert_no_error (error);
+	g_assert (ret == TRUE);
+
+	string = g_string_new_len (g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (output)),
+	                           g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (output)));
+	g_assert_cmpstr (data, ==, string->str);
+	g_string_free (string, TRUE);
+
+	g_clear_object (&input);
+	g_clear_object (&output);
+	g_clear_object (&test->result);
+	g_clear_object (&test->process);
+
+}
+
+static void
 test_run_bad_executable (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
@@ -367,7 +436,7 @@ test_run_bad_executable (Test *test, gconstpointer unused)
 	g_free (script);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -392,7 +461,7 @@ test_run_fail_exit (Test *test, gconstpointer unused)
 	g_free (script);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -418,7 +487,7 @@ test_run_fail_signal (Test *test, gconstpointer unused)
 	g_free (script);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, NULL, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -448,7 +517,7 @@ test_run_and_cancel (Test *test, gconstpointer unused)
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, cancellable, on_async_ready, test);
 	g_cancellable_cancel (cancellable);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -461,17 +530,23 @@ test_run_and_cancel (Test *test, gconstpointer unused)
 	g_clear_object (&test->process);
 }
 
-static void
-on_process_output_cancel (GcrGnupgProcess *process, GByteArray *buffer, gpointer user_data)
+static gssize
+on_process_output_cancel (gconstpointer buffer,
+                          gsize count,
+                          GCancellable *cancellable,
+                          gpointer user_data,
+                          GError **error)
 {
-	GCancellable *cancellable = G_CANCELLABLE (user_data);
 	g_cancellable_cancel (cancellable);
+	g_cancellable_set_error_if_cancelled (cancellable, error);
+	return -1;
 }
 
 static void
 test_run_and_cancel_later (Test *test, gconstpointer unused)
 {
 	GError *error = NULL;
+	GOutputStream *output;
 	gchar *script;
 	const gchar *argv[] = { "15" };
 	GCancellable *cancellable;
@@ -481,11 +556,13 @@ test_run_and_cancel_later (Test *test, gconstpointer unused)
 
 	script = build_script_path ("mock-simple-output");
 	test->process = _gcr_gnupg_process_new (NULL, script);
-	g_signal_connect (test->process, "output-data", G_CALLBACK (on_process_output_cancel), cancellable);
+	output = _gcr_callback_output_stream_new (on_process_output_cancel, NULL, NULL);
+	_gcr_gnupg_process_set_output_stream (test->process, output);
+	g_object_unref (output);
 	g_free (script);
 
 	_gcr_gnupg_process_run_async (test->process, argv, NULL, 0, cancellable, on_async_ready, test);
-	egg_test_wait_until (500);
+	egg_test_wait_until (WAIT);
 
 	g_assert (test->result);
 	ret = _gcr_gnupg_process_run_finish (test->process, test->result, &error);
@@ -512,6 +589,7 @@ main (int argc, char **argv)
 	g_test_add ("/gcr/gnupg-process/run_status_and_attribute", Test, NULL, setup, test_run_status_and_attribute, teardown);
 	g_test_add ("/gcr/gnupg-process/run_arguments_and_environment", Test, NULL, setup, test_run_arguments_and_environment, teardown);
 	g_test_add ("/gcr/gnupg-process/run_with_homedir", Test, NULL, setup, test_run_with_homedir, teardown);
+	g_test_add ("/gcr/gnupg-process/run_with_input_and_output", Test, NULL, setup, test_run_with_input_and_output, teardown);
 	g_test_add ("/gcr/gnupg-process/run_bad_executable", Test, NULL, setup, test_run_bad_executable, teardown);
 	g_test_add ("/gcr/gnupg-process/run_fail_exit", Test, NULL, setup, test_run_fail_exit, teardown);
 	g_test_add ("/gcr/gnupg-process/run_fail_signal", Test, NULL, setup, test_run_fail_signal, teardown);
