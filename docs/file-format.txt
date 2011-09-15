@@ -1,0 +1,68 @@
+guint32: 32bit, msbf
+time_t: 2 * guint32
+strings: uint32 + bytes, no padding, NULL is encoded as 0xffffffff
+reserved, must be zero
+
+string hash: 16 bytes md5
+guint32 hash: 0xdeadbeef ^ x ^ (x>>16 | x&0xffff << 16)
+
+
+Header:
+
+"GnomeKeyring\n\r\0\n"
+2 byte version, 1 byte cryto, 1 byte hash
+
+keyring data:
+
+string: keyring name
+time_t ctime
+time_t mtime
+guint32 flags (flag 0 == lock_on_idle)
+guint32 lock_timeout
+guint32 hash_iterations
+byte[8] salt
+guint32 reserved[4]
+
+hashed items:
+
+guint32 num_items
+
+num_items *
+
+ guint32 id
+ guint32 type
+ guint32 num_attributes
+
+ num_attributes *
+  string name
+  guint32 type
+  guint32 int_hash, or string str_hash
+
+guin32 num_encrypted bytes
+ encrypted data:
+  bytes[16] encryted hash, (for decrypt ok verify)
+
+  num_items *
+   string display_name
+   string secret
+   time_t ctime
+   time_t mtime
+
+   string reserved_str
+   guint[4] reserved_int2
+
+   guint32 num_attributes
+   num_attributes *
+    string name
+    guint32 type
+    guint32 or string val
+
+   guint acl_len
+    acl_len *
+     guint32 types_allowed
+     string display_name
+     string pathname
+     string reserved_str
+     guint32 reserved_uint
+
+  zero padding to make even multiple of 16
