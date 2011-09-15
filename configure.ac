@@ -282,18 +282,30 @@ AC_SUBST(DL_LIBS)
 # --------------------------------------------------------------------
 # p11-kit
 
-PKG_CHECK_MODULES([P11_KIT], p11-kit-1)
+PKG_CHECK_MODULES([P11_KIT], p11-kit-1 >= 0.6)
 AC_SUBST(P11_KIT_CFLAGS)
 AC_SUBST(P11_KIT_LIBS)
 
 AC_MSG_CHECKING([where to put pkcs11 module configuration])
-P11_SYSTEM_MODULES=`$PKG_CONFIG p11-kit-1 --variable=p11_system_modules`
-AC_MSG_RESULT($P11_SYSTEM_MODULES)
-AC_SUBST(P11_SYSTEM_MODULES)
+P11_SYSTEM_CONFIG_MODULES=$($PKG_CONFIG p11-kit-1 --variable=p11_system_config_modules)
+AC_MSG_RESULT($P11_SYSTEM_CONFIG_MODULES)
+AC_SUBST(P11_SYSTEM_CONFIG_MODULES)
 
-if "$P11_SYSTEM_MODULES" = ""; then
+if test "$P11_SYSTEM_CONFIG_MODULES" = ""; then
 	AC_MSG_ERROR([Could not find location for pkcs11 module config])
 fi
+
+AC_MSG_CHECKING([default module path for pkcs11 modules])
+P11_MODULE_PATH=$($PKG_CONFIG p11-kit-1 --variable=p11_module_path)
+AC_MSG_RESULT($P11_MODULE_PATH)
+AC_SUBST(P11_MODULE_PATH)
+
+if test "$P11_MODULE_PATH" = ""; then
+	AC_MSG_ERROR([Could not find default path for pkcs11 modules])
+fi
+
+pkcs11standalonedir="${libdir}/gnome-keyring/devel"
+AC_SUBST(pkcs11standalonedir)
 
 # --------------------------------------------------------------------
 # PAM Module Directory
@@ -718,12 +730,6 @@ AC_SUBST(BINDIR)
 
 eval LIBEXECDIR="$libexecdir"
 AC_SUBST(LIBEXECDIR)
-
-eval pkcs11dir="${libdir}/pkcs11"
-AC_SUBST(pkcs11dir)
-
-pkcs11standalonedir="${libdir}/gnome-keyring/devel"
-AC_SUBST(pkcs11standalonedir)
 
 AC_OUTPUT([
 Makefile

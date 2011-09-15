@@ -35,7 +35,7 @@ libgkm_rpc_layer_la_CFLAGS = \
 # The module code, built as the public gnome-keyring module
 
 # This is the location that some older software looks for modules
-moduledir = $(pkcs11dir)
+moduledir = $(P11_MODULE_PATH)
 
 module_LTLIBRARIES = \
 	gnome-keyring-pkcs11.la
@@ -55,7 +55,7 @@ gnome_keyring_pkcs11_la_LDFLAGS = \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
 # This is the configuration file that p11-kit uses to load the module
-configdir = $(P11_SYSTEM_MODULES)
+configdir = $(P11_SYSTEM_CONFIG_MODULES)
 
 config_DATA = \
 	gnome-keyring-module
