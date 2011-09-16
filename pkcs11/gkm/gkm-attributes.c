@@ -24,6 +24,8 @@
 #include "gkm-attributes.h"
 #include "gkm-util.h"
 
+#include "egg/egg-timegm.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -60,37 +62,6 @@ gkm_attribute_get_ulong (CK_ATTRIBUTE_PTR attr, CK_ULONG *value)
 	*value = *ulong;
 	return CKR_OK;
 }
-
-#ifndef HAVE_TIMEGM
-static time_t
-timegm (struct tm *t)
-{
-	time_t tl, tb;
-	struct tm *tg;
-
-	tl = mktime (t);
-	if (tl == -1)
-	{
-		t->tm_hour--;
-		tl = mktime (t);
-		if (tl == -1)
-			return -1; /* can't deal with output from strptime */
-		tl += 3600;
-	}
-	tg = gmtime (&tl);
-	tg->tm_isdst = 0;
-	tb = mktime (tg);
-	if (tb == -1)
-	{
-		tg->tm_hour--;
-		tb = mktime (tg);
-		if (tb == -1)
-			return -1; /* can't deal with output from gmtime */
-		tb += 3600;
-	}
-	return (tl - (tb - tl));
-}
-#endif // NOT_HAVE_TIMEGM
 
 CK_RV
 gkm_attribute_get_time (CK_ATTRIBUTE_PTR attr, glong *when)

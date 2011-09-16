@@ -54,13 +54,19 @@ G_BEGIN_DECLS
 #define GCR_RECORD_SCHEMA_ATTRIBUTE  (g_quark_from_static_string ("ATTRIBUTE"))
 #define GCR_RECORD_SCHEMA_FPR  (g_quark_from_static_string ("fpr"))
 #define GCR_RECORD_SCHEMA_PUB  (g_quark_from_static_string ("pub"))
+#define GCR_RECORD_SCHEMA_SUB  (g_quark_from_static_string ("sub"))
 #define GCR_RECORD_SCHEMA_SEC  (g_quark_from_static_string ("sec"))
+#define GCR_RECORD_SCHEMA_SSB  (g_quark_from_static_string ("ssb"))
 #define GCR_RECORD_SCHEMA_UID  (g_quark_from_static_string ("uid"))
+#define GCR_RECORD_SCHEMA_UAT  (g_quark_from_static_string ("uat"))
 #define GCR_RECORD_SCHEMA_XA1  (g_quark_from_static_string ("xa1"))
+#define GCR_RECORD_SCHEMA_SIG  (g_quark_from_static_string ("sig"))
+#define GCR_RECORD_SCHEMA_RVK  (g_quark_from_static_string ("rvk"))
 
-/* Common columns for all schemas */
+/* Common columns for schemas */
 typedef enum {
-	GCR_RECORD_SCHEMA = 0
+	GCR_RECORD_SCHEMA = 0,
+	GCR_RECORD_TRUST = 1,
 } GcrRecordColumns;
 
 /*
@@ -68,7 +74,7 @@ typedef enum {
  * [GNUPG:] ATTRIBUTE FBAFC70D60AE13D560764062B547B5580EEB5A80 10604 1 1 1 1227936754 0 1
  */
 typedef enum {
-	GCR_RECORD_ATTRIBUTE_FINGERPRINT = 1,
+	GCR_RECORD_ATTRIBUTE_KEY_FINGERPRINT = 1,
 	GCR_RECORD_ATTRIBUTE_LENGTH = 2,
 	GCR_RECORD_ATTRIBUTE_TYPE = 3,
 	GCR_RECORD_ATTRIBUTE_TIMESTAMP = 6,
@@ -84,45 +90,90 @@ typedef enum {
 	GCR_RECORD_FPR_FINGERPRINT = 9
 } GcrRecordFprColumns;
 
-
 /*
- * Columns for pub schema, add them as they're used. eg:
+ * Columns for pub, sec, sub, and ssb schemas. eg:
  * pub:f:1024:17:6C7EE1B8621CC013:899817715:1055898235::m:::scESC:
  */
 typedef enum {
-	GCR_RECORD_PUB_KEYID = 4
+	GCR_RECORD_KEY_BITS = 2,
+	GCR_RECORD_KEY_ALGO = 3,
+	GCR_RECORD_KEY_KEYID = 4,
+	GCR_RECORD_KEY_TIMESTAMP = 5,
+	GCR_RECORD_KEY_EXPIRY = 6,
+	GCR_RECORD_KEY_OWNERTRUST = 8,
+} GcrRecordKeyColumns;
+
+typedef enum {
+	GCR_RECORD_PUB_CAPS = 11,
+	GCR_RECORD_PUB_MAX = 12
 } GcrRecordPubColumns;
 
-/*
- * Columns for sec schema, add them as they're used. eg:
- * sec::2048:1:293FC71A513189BD:1299771018::::::::::
- */
 typedef enum {
-	GCR_RECORD_SEC_KEYID = 4
+	GCR_RECORD_SEC_MAX = 15
 } GcrRecordSecColumns;
 
 /*
  * Columns for uid schema, add them as they're used. eg:
- * pub:f:1024:17:6C7EE1B8621CC013:899817715:1055898235::m:::scESC:
+ * uid:u::::1024442705::7A5C6648DAA1F5D12BD80BBED538439ABAFEE203::Test <test@example.com>:
  */
 typedef enum {
-	GCR_RECORD_UID_NAME = 9
+	GCR_RECORD_UID_TIMESTAMP = 5,
+	GCR_RECORD_UID_FINGERPRINT = 7,
+	GCR_RECORD_UID_NAME = 9,
+	GCR_RECORD_UID_MAX = 10,
 } GcrRecordUidColumns;
+
+/*
+ * Columns for sig schema. eg:
+ * sig:::17:FAD3A86D2505A4D5:1291829838::::Stef Walter <stefw@servingtfi.com>:10x:
+ */
+typedef enum {
+	GCR_RECORD_SIG_STATUS = 1,
+	GCR_RECORD_SIG_ALGO = 3,
+	GCR_RECORD_SIG_KEYID = 4,
+	GCR_RECORD_SIG_TIMESTAMP = 5,
+	GCR_RECORD_SIG_EXPIRY = 6,
+	GCR_RECORD_SIG_NAME = 9,
+	GCR_RECORD_SIG_CLASS = 10,
+	GCR_RECORD_SIG_MAX = 11,
+} GcrRecordSigColumns;
+
+/*
+ * Columns for rvk schema. eg:
+ * rvk:::17::::::3FC732041D23E9EA66DDB5009C9DBC21DF74DC61:80:
+ */
+typedef enum {
+	GCR_RECORD_RVK_ALGO = 3,
+	GCR_RECORD_RVK_FINGERPRINT = 9,
+	GCR_RECORD_RVK_CLASS = 10,
+	GCR_RECORD_RVK_MAX = 11,
+} GcrRecordRvkColumns;
+
+/*
+ * Columns for uat schema, add them as they're used. eg:
+ * uat:u::::1024442705::7A5C6648DAA1F5D12BD80BBED538439ABAFEE203::1 3233:
+ */
+typedef enum {
+	GCR_RECORD_UAT_TRUST = 1,
+	GCR_RECORD_UAT_FINGERPRINT = 7,
+	GCR_RECORD_UAT_COUNT_SIZE = 9,
+	GCR_RECORD_UAT_MAX = 10,
+} GcrRecordUatColumns;
 
 /*
  * Columns for xa1 schema. This is a schema that we've invented ourselves
  * for representing the actual data of openpgp attribute packets. eg:
- * xa1::10838:1:ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013:1998-02-02:0:ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013:P:...
+ * xa1:e:10838:1:::1998-02-02:0:ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013::...
  */
 typedef enum {
+	GCR_RECORD_XA1_TRUST = 1,
 	GCR_RECORD_XA1_LENGTH = 2,
 	GCR_RECORD_XA1_TYPE = 3,
-	GCR_RECORD_XA1_FINGERPRINT = 4,
 	GCR_RECORD_XA1_TIMESTAMP = 5,
 	GCR_RECORD_XA1_EXPIRY = 6,
-	GCR_RECORD_XA1_HASH = 7,
-	GCR_RECORD_XA1_STATUS = 8,
+	GCR_RECORD_XA1_FINGERPRINT = 7,
 	GCR_RECORD_XA1_DATA = 9,
+	GCR_RECORD_XA1_MAX = 11,
 } GcrRecordXa1Columns;
 
 typedef struct _GcrRecord GcrRecord;
@@ -131,36 +182,89 @@ typedef struct _GcrRecord GcrRecord;
 
 GType          _gcr_record_get_type             (void) G_GNUC_CONST;
 
+GcrRecord *    _gcr_record_new                  (GQuark schema,
+                                                 guint n_columns,
+                                                 gchar delimiter);
+
 GcrRecord*     _gcr_record_copy                 (GcrRecord *record);
 
 GcrRecord*     _gcr_record_parse_colons         (const gchar *line,
                                                  gssize n_line);
 
-GcrRecord*     _gcr_record_take_colons          (gchar *line);
-
 GcrRecord*     _gcr_record_parse_spaces         (const gchar *line,
                                                  gssize n_line);
+
+gchar *        _gcr_record_format               (GcrRecord *record);
+
+gchar *        _gcr_records_format              (GPtrArray *records);
 
 void           _gcr_record_free                 (gpointer record);
 
 GcrRecord*     _gcr_record_find                 (GPtrArray *records,
                                                  GQuark schema);
 
+GcrRecord*     _gcr_record_rfind                (GPtrArray *records,
+                                                 GQuark schema);
+
 guint          _gcr_record_get_count            (GcrRecord *record);
+
+gchar          _gcr_record_get_char             (GcrRecord *record,
+                                                 guint column);
+
+void           _gcr_record_set_char             (GcrRecord *record,
+                                                 guint column,
+                                                 gchar value);
 
 gchar*         _gcr_record_get_string           (GcrRecord *record,
                                                  guint column);
+
+void           _gcr_record_set_string           (GcrRecord *record,
+                                                 guint column,
+                                                 const gchar *value);
 
 gboolean       _gcr_record_get_uint             (GcrRecord *record,
                                                  guint column,
                                                  guint *value);
 
+void           _gcr_record_set_uint             (GcrRecord *record,
+                                                 guint column,
+                                                 guint value);
+
+gboolean       _gcr_record_get_ulong            (GcrRecord *record,
+                                                 guint column,
+                                                 gulong *value);
+
+void           _gcr_record_set_ulong            (GcrRecord *record,
+                                                 guint column,
+                                                 gulong value);
+
+gboolean       _gcr_record_get_date             (GcrRecord *record,
+                                                 guint column,
+                                                 gulong *value);
+
+void           _gcr_record_set_date             (GcrRecord *record,
+                                                 guint column,
+                                                 gulong value);
+
 gpointer       _gcr_record_get_base64           (GcrRecord *record,
                                                  guint column,
                                                  gsize *n_data);
 
+void           _gcr_record_set_base64           (GcrRecord *record,
+                                                 guint column,
+                                                 gconstpointer data,
+                                                 gsize n_data);
+
 const gchar*   _gcr_record_get_raw              (GcrRecord *record,
                                                  guint column);
+
+void           _gcr_record_set_raw              (GcrRecord *record,
+                                                 guint column,
+                                                 const gchar *value);
+
+void           _gcr_record_take_raw             (GcrRecord *record,
+                                                 guint column,
+                                                 gchar *value);
 
 GQuark         _gcr_record_get_schema           (GcrRecord *record);
 

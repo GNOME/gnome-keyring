@@ -57,6 +57,7 @@ noinst_PROGRAMS = \
 	frob-gnupg-selector \
 	frob-key \
 	frob-tree-selector \
+	frob-openpgp \
 	frob-parser \
 	frob-unlock \
 	frob-unlock-options

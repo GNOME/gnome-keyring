@@ -32,6 +32,14 @@
 
 #include <gck/gck.h>
 
+typedef enum {
+	GCR_OPENPGP_PARSE_NONE = 0,
+	GCR_OPENPGP_PARSE_KEYS = 1 << 1,
+	GCR_OPENPGP_PARSE_NO_RECORDS = 1 << 2,
+	GCR_OPENPGP_PARSE_SIGNATURES = 1 << 3,
+	GCR_OPENPGP_PARSE_ATTRIBUTES = 1 << 4,
+} GcrOpenpgpParseFlags;
+
 G_BEGIN_DECLS
 
 typedef void             (*GcrOpenpgpCallback)             (GPtrArray *records,
@@ -41,6 +49,7 @@ typedef void             (*GcrOpenpgpCallback)             (GPtrArray *records,
 
 guint                    _gcr_openpgp_parse                (gconstpointer data,
                                                             gsize n_data,
+                                                            GcrOpenpgpParseFlags flags,
                                                             GcrOpenpgpCallback callback,
                                                             gpointer user_data);
 

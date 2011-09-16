@@ -511,10 +511,10 @@ _gcr_gnupg_key_get_keyid_for_records (GPtrArray *records)
 
 	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_PUB);
 	if (record != NULL)
-		return _gcr_record_get_raw (record, GCR_RECORD_PUB_KEYID);
+		return _gcr_record_get_raw (record, GCR_RECORD_KEY_KEYID);
 	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_SEC);
 	if (record != NULL)
-		return _gcr_record_get_raw (record, GCR_RECORD_SEC_KEYID);
+		return _gcr_record_get_raw (record, GCR_RECORD_KEY_KEYID);
 	return NULL;
 }
 

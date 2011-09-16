@@ -1424,7 +1424,9 @@ parse_openpgp_packets (GcrParser *self,
 {
 	gint num_parsed;
 
-	num_parsed = _gcr_openpgp_parse (data, n_data, on_openpgp_packet, self);
+	num_parsed = _gcr_openpgp_parse (data, n_data,
+	                                 GCR_OPENPGP_PARSE_KEYS,
+	                                 on_openpgp_packet, self);
 
 	if (num_parsed == 0)
 		return GCR_ERROR_UNRECOGNIZED;

@@ -70,27 +70,6 @@ test_parse_colons (void)
 }
 
 static void
-test_take_colons (void)
-{
-	GcrRecord *record;
-
-	record = _gcr_record_take_colons (g_strdup ("one:two::four::six"));
-	g_assert (record);
-
-	g_assert_cmpstr (_gcr_record_get_raw (record, 0), ==, "one");
-	g_assert_cmpstr (_gcr_record_get_raw (record, 1), ==, "two");
-	g_assert_cmpstr (_gcr_record_get_raw (record, 2), ==, "");
-	g_assert_cmpstr (_gcr_record_get_raw (record, 3), ==, "four");
-	g_assert_cmpstr (_gcr_record_get_raw (record, 4), ==, "");
-	g_assert_cmpstr (_gcr_record_get_raw (record, 5), ==, "six");
-	g_assert (_gcr_record_get_raw (record, 6) == NULL);
-	g_assert_cmpuint (_gcr_record_get_count (record), ==, 6);
-
-	_gcr_record_free (record);
-}
-
-
-static void
 test_parse_spaces (void)
 {
 	GcrRecord *record;
@@ -294,7 +273,6 @@ main (int argc, char **argv)
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/gcr/record/parse_colons", test_parse_colons);
-	g_test_add_func ("/gcr/record/take_colons", test_take_colons);
 	g_test_add_func ("/gcr/record/parse_colons", test_parse_spaces);
 	g_test_add_func ("/gcr/record/parse_part", test_parse_part);
 	g_test_add_func ("/gcr/record/parse_too_long", test_parse_too_long);

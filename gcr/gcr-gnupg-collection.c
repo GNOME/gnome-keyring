@@ -409,7 +409,7 @@ process_outstanding_attribute (GcrGnupgCollectionLoad *load, GcrRecord *record)
 
 	if (!_gcr_record_get_uint (record, GCR_RECORD_ATTRIBUTE_LENGTH, &length))
 		g_return_val_if_reached (FALSE);
-	fingerprint = _gcr_record_get_raw (record, GCR_RECORD_ATTRIBUTE_FINGERPRINT);
+	fingerprint = _gcr_record_get_raw (record, GCR_RECORD_ATTRIBUTE_KEY_FINGERPRINT);
 	g_return_val_if_fail (fingerprint != NULL, FALSE);
 
 	/* Do we have enough data for this attribute? */

@@ -44,6 +44,7 @@ libegg_la_SOURCES = \
 	egg-spawn.c egg-spawn.h \
 	egg-symkey.c egg-symkey.h \
 	egg-testing.c egg-testing.h \
+	egg-timegm.c egg-timegm.h \
 	egg-asn1-defs.h \
 	$(BUILT_SOURCES)
 

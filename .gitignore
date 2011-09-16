@@ -123,6 +123,7 @@ run-tests
 /gcr/tests/frob-combo-selector
 /gcr/tests/frob-tree-selector
 /gcr/tests/frob-unlock-options
+/gcr/tests/frob-openpgp
 /gcr/tests/frob-parser
 /gcr/tests/frob-unlock
 /gcr/tests/test-certificate

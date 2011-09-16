@@ -44,71 +44,44 @@ _gcr_gnupg_build_xa1_record (GcrRecord *meta, gpointer attribute,
 {
 	gchar hash[20];
 	gchar *hex;
-	gchar *status = "";
-	gint state, save;
-	gsize length;
-	gsize n_prefix, estimate;
-	GString *output;
+	gchar status = 0;
 	GcrRecord *record;
 	guint flags, type;
-	const gchar *fingerprint, *created, *expiry;
+	const gchar *created, *expiry;
 
 	g_return_val_if_fail (meta, NULL);
 
+	record = _gcr_record_new (GCR_RECORD_SCHEMA_XA1, GCR_RECORD_XA1_MAX, ':');
+
 	gcry_md_hash_buffer (GCRY_MD_RMD160, hash, attribute, n_attribute);
 	hex = egg_hex_encode_full (hash, sizeof (hash), TRUE, 0, 1);
+	_gcr_record_take_raw (record, GCR_RECORD_XA1_FINGERPRINT, hex);
 
 	if (!_gcr_record_get_uint (meta, GCR_RECORD_ATTRIBUTE_FLAGS, &flags))
 		flags = 0;
 
-	if (!_gcr_record_get_uint (meta, GCR_RECORD_ATTRIBUTE_TYPE, &type))
-		type = 0;
-
-	fingerprint = _gcr_record_get_raw (meta, GCR_RECORD_ATTRIBUTE_FINGERPRINT);
-	if (fingerprint == NULL)
-		fingerprint = "";
+	if (_gcr_record_get_uint (meta, GCR_RECORD_ATTRIBUTE_TYPE, &type))
+		_gcr_record_set_uint (record, GCR_RECORD_XA1_TYPE, type);
 
 	created = _gcr_record_get_raw (meta, GCR_RECORD_ATTRIBUTE_TIMESTAMP);
 	if (created == NULL)
-		created = "0";
+		_gcr_record_set_raw (record, GCR_RECORD_XA1_TIMESTAMP, created);
 
 	expiry = _gcr_record_get_raw (meta, GCR_RECORD_ATTRIBUTE_EXPIRY);
-	if (expiry == NULL)
-		expiry = "";
+	if (expiry != NULL)
+		_gcr_record_set_raw (record, GCR_RECORD_XA1_EXPIRY, expiry);
 
 	/* These values are from gnupg doc/DETAILS */
 	if (flags & 0x02)
-		status = "r";
+		status = 'r';
 	else if (flags & 0x04)
-		status = "e";
+		status = 'e';
 	else if (flags & 0x01)
-		status = "P";
+		status = 'P';
+	if (status != 0)
+		_gcr_record_set_char (record, GCR_RECORD_XA1_TRUST, status);
 
-	/* Algorithm from Glib reference */
-	estimate = n_attribute * 4 / 3 + n_attribute * 4 / (3 * 65) + 7;
-
-	output = g_string_sized_new (64 + estimate);
-	g_string_append_printf (output, "xa1::%u:%u:%s:%s:%s:%s:%s:",
-	                        (guint)n_attribute, type, fingerprint,
-	                        created, expiry, hex, status);
-
-	g_free (hex);
-
-	/* Resize string to fit the base64 data. */
-	n_prefix = output->len;
-	g_string_set_size (output, n_prefix + estimate);
-
-	/* The actual base64 data, without line breaks */
-	state = save = 0;
-	length = g_base64_encode_step ((guchar*)attribute, n_attribute, FALSE,
-	                               output->str + n_prefix, &state, &save);
-	length += g_base64_encode_close (TRUE, output->str + n_prefix + length,
-	                                 &state, &save);
-
-	g_assert (length <= estimate);
-	g_string_set_size (output, n_prefix + length);
-	record = _gcr_record_take_colons (g_string_free (output, FALSE));
-	g_assert (record);
+	_gcr_record_set_base64 (record, GCR_RECORD_XA1_DATA, attribute, n_attribute);
 
 	return record;
 }
