@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-25 09:27+0000\n"
-"PO-Revision-Date: 2011-08-28 15:08+0100\n"
+"POT-Creation-Date: 2011-09-15 09:51+0000\n"
+"PO-Revision-Date: 2011-09-16 21:51+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -106,8 +106,8 @@ msgstr "GNOME-Schlüsselbunddienst: GPG-Agent"
 msgid "GPG Password Agent"
 msgstr "GPG-Passwort-Agent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -178,7 +178,7 @@ msgstr "Vorname"
 msgid "Surname"
 msgstr "Nachname"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:650
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Seriennummer"
 
@@ -234,7 +234,7 @@ msgstr "DN-Kennzeichnung"
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -250,7 +250,7 @@ msgstr "MD5 mit RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 mit RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:309
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -334,7 +334,7 @@ msgid "Expires"
 msgstr "Läuft ab"
 
 #: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:254
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Zertifikat"
 
@@ -378,9 +378,8 @@ msgid "XMPP Addr"
 msgstr "XMPP-Adresse"
 
 #: ../gcr/gcr-certificate-extensions.c:154
-#, fuzzy
 msgid "DNS SRV"
-msgstr "DNS"
+msgstr "DNS-Server"
 
 #: ../gcr/gcr-certificate-extensions.c:166
 msgid "Email"
@@ -447,9 +446,8 @@ msgid "Allowed Purposes"
 msgstr "Zugelassene Zwecke"
 
 #: ../gcr/gcr-certificate-renderer.c:173
-#, fuzzy
 msgid "Subject Key Identifier"
-msgstr "Bezeichner"
+msgstr ""
 
 #: ../gcr/gcr-certificate-renderer.c:174
 msgid "Key Identifier"
@@ -488,9 +486,8 @@ msgid "Usages"
 msgstr "Verwendungszwecke"
 
 #: ../gcr/gcr-certificate-renderer.c:236
-#, fuzzy
 msgid "Subject Alternative Names"
-msgstr "Personenname"
+msgstr ""
 
 #: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
@@ -512,92 +509,110 @@ msgstr "Kritisch"
 msgid "Couldn't export the certificate."
 msgstr "Zertifikat konnte nicht exportiert werden."
 
-#: ../gcr/gcr-certificate-renderer.c:611
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Identität"
 
-#: ../gcr/gcr-certificate-renderer.c:615
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Überprüft durch"
 
-#: ../gcr/gcr-certificate-renderer.c:622
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Läuft ab"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:632
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Personenname"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:636
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Name des Herausgebers"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:640
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Zertifikat des Herausgebers"
 
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Version"
 
-#: ../gcr/gcr-certificate-renderer.c:657
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Nicht gültig vor"
 
-#: ../gcr/gcr-certificate-renderer.c:662
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Nicht gültig nach"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:667
+#: ../gcr/gcr-certificate-renderer.c:669
 msgid "Certificate Fingerprints"
 msgstr "Zertifikat-Fingerabdrücke"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:673 ../gcr/gcr-certificate-renderer.c:685
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Signatur"
 
-#: ../gcr/gcr-certificate-renderer.c:677
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "Signatur-Algorithmus"
 
-#: ../gcr/gcr-certificate-renderer.c:681
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "Parameter der Signatur"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:689
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Informationen zum öffentlichen Schlüssel"
 
-#: ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Schlüssel-Algorithmus"
 
-#: ../gcr/gcr-certificate-renderer.c:699
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Schlüsselparameter"
 
-#: ../gcr/gcr-certificate-renderer.c:704
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Schlüssellänge"
 
-#: ../gcr/gcr-certificate-renderer.c:711
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key SHA1 Fingerprint"
 msgstr "SHA1-Fingerabdruck des Schlüssels"
 
-#: ../gcr/gcr-certificate-renderer.c:717 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:257
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Öffentlicher Schlüssel"
 
-#: ../gcr/gcr-display-view.c:270
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "_Details"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "»%s« kann nicht angezeigt werden"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Datei kann nicht angezeigt werden"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Grund"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Eine Datei dieses Typs kann nicht angezeigt werden."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -631,7 +646,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "Gnupg-Prozess wurde mit Signal beendet: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1698 ../gcr/gcr-parser.c:1937
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "Der Vorgang wurde abgebrochen"
 
@@ -699,70 +714,70 @@ msgstr ""
 msgid "Key"
 msgstr "Schlüssel"
 
-#: ../gcr/gcr-key-renderer.c:280
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private RSA Key"
 msgstr "Privater RSA-Schlüssel"
 
-#: ../gcr/gcr-key-renderer.c:282
+#: ../gcr/gcr-key-renderer.c:285
 msgid "Private DSA Key"
 msgstr "Privater DSA-Schlüssel"
 
-#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:251
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Privater Schlüssel"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "Öffentlicher DSA-Schlüssel"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:301
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d bit"
 msgstr[1] "%d bit"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:302
 msgid "Strength"
 msgstr "Länge"
 
-#: ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Algorithm"
 msgstr "Algorithmus"
 
-#: ../gcr/gcr-key-renderer.c:319
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Size"
 msgstr "Größe"
 
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
+#: ../gcr/gcr-key-renderer.c:326
 msgid "Fingerprints"
 msgstr "Fingerabdrücke"
 
-#: ../gcr/gcr-key-renderer.c:328
+#: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:334
+#: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1701
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Unbekannte oder nicht unterstützte Daten"
 
-#: ../gcr/gcr-parser.c:1704
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Ungültige oder defekte Daten konnten nicht verarbeitet werden."
 
-#: ../gcr/gcr-parser.c:1707
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Die Daten sind gesperrt"
 
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-trust.c:377
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr ""
@@ -790,13 +805,68 @@ msgstr "Diesen Schlüsselbund beim Abmelden automatisch sperren."
 msgid "minutes"
 msgstr "Minuten"
 
+#: ../gcr/gcr-unlock-renderer.c:63
+#, c-format
+msgid "Unlock: %s"
+msgstr "Entsperren: %s"
+
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Entsperren"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "Das Passwort war nicht korrekt"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Passwort"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr ""
+"Der Inhalt von »%s« ist gesperrt. Um den Inhalt anzeigen zu können, geben Sie "
+"das korrekte Passwort ein."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr ""
+"Der Inhalt ist gesperrt. Um den Inhalt anzeigen zu können, geben Sie das "
+"korrekte Passwort ein."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "GCR Zertifikat- und Schlüsselbetrachter"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Die Version der Anwendung anzeigen"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[Datei …]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- Zertifikat- und Schlüsseldateien anzeigen"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Zertifikatbetrachter"
+
 #: ../gck/gck-uri.c:173
 #, c-format
 msgid "The URI has invalid encoding."
 msgstr "Die Adresse hat eine ungültige Zeichenkodierung."
 
 #: ../gck/gck-uri.c:177
-msgid "The URI has does not have the 'pkcs11' scheme."
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "Die Adresse entspricht nicht dem Schema »PKCS11«."
 
 #: ../gck/gck-uri.c:181
@@ -878,10 +948,6 @@ msgstr "Zertifikat entsperren"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Öffentlichen Schlüssel entsperren"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Entsperren"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
