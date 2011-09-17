@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-07-13 09:32+0000\n"
-"PO-Revision-Date: 2011-07-14 08:03+0100\n"
+"POT-Creation-Date: 2011-09-17 11:10+0000\n"
+"PO-Revision-Date: 2011-09-17 17:48+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
@@ -96,8 +96,8 @@ msgid "GPG Password Agent"
 msgstr "GPG agent gesel"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
-#: ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Neznano"
 
@@ -169,7 +169,7 @@ msgid "Surname"
 msgstr "Priimek"
 
 #: ../egg/egg-oid.c:69
-#: ../gcr/gcr-certificate-renderer.c:659
+#: ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Zaporedna številka"
 
@@ -226,7 +226,7 @@ msgid "Pseudonym"
 msgstr "Psevdonim"
 
 #: ../egg/egg-oid.c:98
-#: ../gcr/gcr-key-renderer.c:307
+#: ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -243,7 +243,7 @@ msgid "SHA1 with RSA"
 msgstr "SHA1 z RSA"
 
 #: ../egg/egg-oid.c:103
-#: ../gcr/gcr-key-renderer.c:309
+#: ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -282,29 +282,54 @@ msgstr "Nepričakovana napaka v select() med branjem podatkov procesa podrejeneg
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Nepričakovana napaka v waitpid() (%s)"
 
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Odkodirnika PKCS#11 ni mogoče naložiti: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Neveljavni odkodirnik PKCS#11: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Odkodirnika PKCS#11 ni mogoče nastaviti: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Odkodirnika PKCS#11 ni mogoče začeti: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Odkodirnikov PKCS#11 ni mogoče začeti: %s"
+
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389
-#: ../gcr/gcr-gnupg-key.c:628
+#: ../gcr/gcr-certificate.c:388
+#: ../gcr/gcr-gnupg-key.c:629
 msgctxt "column"
 msgid "Name"
 msgstr "Ime"
 
-#: ../gcr/gcr-certificate.c:391
+#: ../gcr/gcr-certificate.c:390
 msgctxt "column"
 msgid "Issued By"
 msgstr "Izdal"
 
 #. later
-#: ../gcr/gcr-certificate.c:393
+#: ../gcr/gcr-certificate.c:392
 msgctxt "column"
 msgid "Expires"
 msgstr "Preteče"
 
-#: ../gcr/gcr-certificate.c:1061
+#: ../gcr/gcr-certificate.c:1060
 #: ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:106
-#: ../gcr/gcr-parser.c:275
+#: ../gcr/gcr-certificate-renderer.c:101
+#: ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Potrdilo"
 
@@ -339,228 +364,254 @@ msgstr "Datoteke potrdila"
 msgid "PEM files"
 msgstr "Datoteke PEM"
 
-#: ../gcr/gcr-certificate-extensions.c:135
+#: ../gcr/gcr-certificate-extensions.c:141
 msgid "Other Name"
 msgstr "Drugo ime"
 
-#: ../gcr/gcr-certificate-extensions.c:142
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "XMPP Addr"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
 msgid "Email"
 msgstr "Elektronski naslov"
 
-#: ../gcr/gcr-certificate-extensions.c:150
+#: ../gcr/gcr-certificate-extensions.c:174
 msgid "DNS"
 msgstr "DNS"
 
-#: ../gcr/gcr-certificate-extensions.c:158
+#: ../gcr/gcr-certificate-extensions.c:182
 msgid "X400 Address"
 msgstr "Naslov X400"
 
-#: ../gcr/gcr-certificate-extensions.c:165
+#: ../gcr/gcr-certificate-extensions.c:189
 msgid "Directory Name"
 msgstr "Ime mape"
 
-#: ../gcr/gcr-certificate-extensions.c:173
+#: ../gcr/gcr-certificate-extensions.c:197
 msgid "EDI Party Name"
 msgstr "Ime stranke EDI"
 
-#: ../gcr/gcr-certificate-extensions.c:180
+#: ../gcr/gcr-certificate-extensions.c:204
 msgid "URI"
 msgstr "Naslov URI"
 
-#: ../gcr/gcr-certificate-extensions.c:188
+#: ../gcr/gcr-certificate-extensions.c:212
 msgid "IP Address"
 msgstr "Naslov IP"
 
-#: ../gcr/gcr-certificate-extensions.c:196
+#: ../gcr/gcr-certificate-extensions.c:220
 msgid "Registered ID"
 msgstr "Vpisan ID"
 
-#: ../gcr/gcr-certificate-renderer.c:121
+#: ../gcr/gcr-certificate-renderer.c:116
 msgid "Basic Constraints"
 msgstr "Splošne omejitve"
 
-#: ../gcr/gcr-certificate-renderer.c:123
+#: ../gcr/gcr-certificate-renderer.c:118
 msgid "Certificate Authority"
 msgstr "Pooblastitelj potrdila"
 
-#: ../gcr/gcr-certificate-renderer.c:124
-#: ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Da"
 
-#: ../gcr/gcr-certificate-renderer.c:124
-#: ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Ne"
 
-#: ../gcr/gcr-certificate-renderer.c:127
+#: ../gcr/gcr-certificate-renderer.c:122
 msgid "Max Path Length"
 msgstr "Največja dolžina poti"
 
-#: ../gcr/gcr-certificate-renderer.c:128
+#: ../gcr/gcr-certificate-renderer.c:123
 msgid "Unlimited"
 msgstr "Neomejeno"
 
-#: ../gcr/gcr-certificate-renderer.c:147
+#: ../gcr/gcr-certificate-renderer.c:142
 msgid "Extended Key Usage"
 msgstr "Uporaba razširjenega ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:158
+#: ../gcr/gcr-certificate-renderer.c:153
 msgid "Allowed Purposes"
 msgstr "Dovoljena uporaba"
 
-#: ../gcr/gcr-certificate-renderer.c:178
+#: ../gcr/gcr-certificate-renderer.c:173
 msgid "Subject Key Identifier"
 msgstr "Javni ključ zadeve"
 
-#: ../gcr/gcr-certificate-renderer.c:179
+#: ../gcr/gcr-certificate-renderer.c:174
 msgid "Key Identifier"
 msgstr "Določevalnik ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:190
+#: ../gcr/gcr-certificate-renderer.c:185
 msgid "Digital signature"
 msgstr "Digitalni podpis"
 
-#: ../gcr/gcr-certificate-renderer.c:191
+#: ../gcr/gcr-certificate-renderer.c:186
 msgid "Key encipherment"
 msgstr "Šifriranje ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:192
+#: ../gcr/gcr-certificate-renderer.c:187
 msgid "Data encipherment"
 msgstr "Šifriranje podatkov"
 
-#: ../gcr/gcr-certificate-renderer.c:193
+#: ../gcr/gcr-certificate-renderer.c:188
 msgid "Key agreement"
 msgstr "Dogovor o ključu"
 
-#: ../gcr/gcr-certificate-renderer.c:194
+#: ../gcr/gcr-certificate-renderer.c:189
 msgid "Certificate signature"
 msgstr "Podpis potrdila"
 
-#: ../gcr/gcr-certificate-renderer.c:195
+#: ../gcr/gcr-certificate-renderer.c:190
 msgid "Revocation list signature"
 msgstr "Podpis seznama preklica"
 
-#: ../gcr/gcr-certificate-renderer.c:220
+#: ../gcr/gcr-certificate-renderer.c:215
 msgid "Key Usage"
 msgstr "Uporaba ključa potrdila"
 
-#: ../gcr/gcr-certificate-renderer.c:221
+#: ../gcr/gcr-certificate-renderer.c:216
 msgid "Usages"
 msgstr "Uporaba"
 
-#: ../gcr/gcr-certificate-renderer.c:241
+#: ../gcr/gcr-certificate-renderer.c:236
 msgid "Subject Alternative Names"
 msgstr "Duga imena predmeta"
 
-#: ../gcr/gcr-certificate-renderer.c:266
+#: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
 msgstr "Pripona"
 
-#: ../gcr/gcr-certificate-renderer.c:270
+#: ../gcr/gcr-certificate-renderer.c:265
 msgid "Identifier"
 msgstr "Določilo"
 
-#: ../gcr/gcr-certificate-renderer.c:271
+#: ../gcr/gcr-certificate-renderer.c:266
 msgid "Value"
 msgstr "Vrednost"
 
-#: ../gcr/gcr-certificate-renderer.c:318
+#: ../gcr/gcr-certificate-renderer.c:313
 msgid "Critical"
 msgstr "Kritično"
 
-#: ../gcr/gcr-certificate-renderer.c:391
+#: ../gcr/gcr-certificate-renderer.c:386
 msgid "Couldn't export the certificate."
 msgstr "Ni mogoče izvoziti potrdil."
 
-#: ../gcr/gcr-certificate-renderer.c:620
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Istovetnost"
 
-#: ../gcr/gcr-certificate-renderer.c:624
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Overjeno preko"
 
-#: ../gcr/gcr-certificate-renderer.c:631
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Preteče"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:641
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Ime predmeta"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Ime izdajatelja"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:649
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Izdano potrdilo"
 
-#: ../gcr/gcr-certificate-renderer.c:654
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Različica"
 
-#: ../gcr/gcr-certificate-renderer.c:666
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Neveljaven pred"
 
-#: ../gcr/gcr-certificate-renderer.c:671
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Neveljaven po"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:676
+#: ../gcr/gcr-certificate-renderer.c:669
 msgid "Certificate Fingerprints"
 msgstr "Prstni odtisi potrdila"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:682
-#: ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:675
+#: ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Podpis"
 
-#: ../gcr/gcr-certificate-renderer.c:686
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "Algoritem podpisa"
 
-#: ../gcr/gcr-certificate-renderer.c:690
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "Določila podpisa"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:698
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Podrobnosti javnega ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:703
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Algoritem ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:708
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Določila ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:713
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Velikost ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:720
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key SHA1 Fingerprint"
 msgstr "Prstni odtis SHA1"
 
-#: ../gcr/gcr-certificate-renderer.c:726
-#: ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:278
+#: ../gcr/gcr-certificate-renderer.c:719
+#: ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Javni ključ"
 
-#: ../gcr/gcr-display-view.c:270
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "_Podrobnosti"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Ni mogoče prikazati '%s'"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Ni mogoče prikazati datoteke"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Vzrok"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Ni mogoče prikazati datoteke te vrste."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -574,11 +625,11 @@ msgstr "Uvozi v:"
 msgid "Password:"
 msgstr "Geslo:"
 
-#: ../gcr/gcr-gnupg-key.c:250
+#: ../gcr/gcr-gnupg-key.c:251
 msgid "PGP Key"
 msgstr "Ključ PGP"
 
-#: ../gcr/gcr-gnupg-key.c:630
+#: ../gcr/gcr-gnupg-key.c:631
 msgctxt "column"
 msgid "Key ID"
 msgstr "ID ključa"
@@ -595,8 +646,8 @@ msgstr "Opravilo Gnupg je nepričakovano končano s signalom: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695
 #: ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1719
-#: ../gcr/gcr-parser.c:1958
+#: ../gcr/gcr-parser.c:1919
+#: ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "Dejanje je preklicano."
 
@@ -665,25 +716,25 @@ msgstr "Izbor mesta za shranjevanje uvoženih potrdil in ključev"
 msgid "Key"
 msgstr "Ključ"
 
-#: ../gcr/gcr-key-renderer.c:280
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private RSA Key"
 msgstr "Osebni ključ RSA"
 
-#: ../gcr/gcr-key-renderer.c:282
+#: ../gcr/gcr-key-renderer.c:285
 msgid "Private DSA Key"
 msgstr "Osebni ključ DSA"
 
-#: ../gcr/gcr-key-renderer.c:284
-#: ../gcr/gcr-parser.c:272
+#: ../gcr/gcr-key-renderer.c:287
+#: ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Osebni ključ"
 
-#: ../gcr/gcr-key-renderer.c:287
-#: ../gcr/gcr-key-renderer.c:289
+#: ../gcr/gcr-key-renderer.c:290
+#: ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "Javni ključ DSA"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:301
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
@@ -692,47 +743,47 @@ msgstr[1] "%d bit"
 msgstr[2] "%d bita"
 msgstr[3] "%d biti"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:302
 msgid "Strength"
 msgstr "Jakost"
 
-#: ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Algorithm"
 msgstr "Algoritem"
 
-#: ../gcr/gcr-key-renderer.c:319
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Size"
 msgstr "Velikost"
 
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
+#: ../gcr/gcr-key-renderer.c:326
 msgid "Fingerprints"
 msgstr "Prstni odtisi"
 
-#: ../gcr/gcr-key-renderer.c:328
+#: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:334
+#: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1722
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Neznani ali nepodprti podatki."
 
-#: ../gcr/gcr-parser.c:1725
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Ni mogoče razčleniti neveljavnih ali pokvarjenih podatkov."
 
-#: ../gcr/gcr-parser.c:1728
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Podatki so zaklenjeni"
 
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-trust.c:377
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Ni mogoče najti mesta za shranjevanje uvoženih potrdil"
@@ -758,20 +809,68 @@ msgstr "Samodejno zakleni zbirko ključev ob odjavi."
 msgid "minutes"
 msgstr "minut"
 
-#: ../gck/gck-uri.c:168
+#: ../gcr/gcr-unlock-renderer.c:63
+#, c-format
+msgid "Unlock: %s"
+msgstr "Odkleni: %s"
+
+#: ../gcr/gcr-unlock-renderer.c:65
+#: ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Odkleni"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "Geslo je napačno."
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Geslo"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
+msgstr "Vsebina '%s' je zaklenjena. Za ogled vsebine je treba vnesti pravilno geslo."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid "The contents are locked. In order to view the contents, enter the correct password."
+msgstr "Vsebina je zaklenjena. Za ogled vsebine je treba vnesti pravilno geslo."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "Potrdilo GCR in pregledovalnik datotek ključev"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Pokaži različico programa"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[datoteka ...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- Pregeld potrdila in datotek ključev"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Pregledovalnik potrdil"
+
+#: ../gck/gck-uri.c:173
 #, c-format
 msgid "The URI has invalid encoding."
 msgstr "Naslov URI je zapisan v neveljavnem kodnem zapisu."
 
-#: ../gck/gck-uri.c:172
-msgid "The URI has does not have the 'pkcs11' scheme."
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "Naslov URI je brez ustrezne sheme 'pkcs11'."
 
-#: ../gck/gck-uri.c:176
+#: ../gck/gck-uri.c:181
 msgid "The URI has bad syntax."
 msgstr "Skladnja naslova URI je slaba."
 
-#: ../gck/gck-uri.c:180
+#: ../gck/gck-uri.c:185
 msgid "The URI has a bad version number."
 msgstr "Naslov URI vsebuje nepravilno vrednost različice."
 
@@ -835,10 +934,6 @@ msgstr "Odkleni potrdilo"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Odkleni javni ključ"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Odkleni"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
