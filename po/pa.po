@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-01 10:15+0000\n"
-"PO-Revision-Date: 2011-09-04 20:04+0530\n"
+"POT-Creation-Date: 2011-09-15 09:51+0000\n"
+"PO-Revision-Date: 2011-09-18 01:14+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -296,7 +296,6 @@ msgstr "ਗਲਤ PKCS#11 ਮੋਡੀਊਲ: %s"
 
 #: ../gck/gck-module.c:412
 #, c-format
-#| msgid "Couldn't delete the file: %s"
 msgid "Couldn't setup PKCS#11 module: %s"
 msgstr "PKCS#11  ਮੋਡੀਊਲ ਸੈੱਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ: %s"
 
@@ -329,7 +328,7 @@ msgid "Expires"
 msgstr "ਮਿਆਦ"
 
 #: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:263
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "ਸਰਟੀਫਿਕੇਟ"
 
@@ -369,12 +368,10 @@ msgid "Other Name"
 msgstr "ਹੋਰ ਨਾਂ"
 
 #: ../gcr/gcr-certificate-extensions.c:150
-#| msgid "IP Address"
 msgid "XMPP Addr"
 msgstr "XMPP ਐਡਰੈਸ"
 
 #: ../gcr/gcr-certificate-extensions.c:154
-#| msgid "DNS"
 msgid "DNS SRV"
 msgstr "DNS SRV"
 
@@ -585,7 +582,7 @@ msgid "Key SHA1 Fingerprint"
 msgstr "ਕੁੰਜੀ SHA1 ਫਿੰਗਰਪਰਿੰਟ"
 
 #: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:266
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "ਪਬਲਿਕ ਕੁੰਜੀ"
 
@@ -599,12 +596,10 @@ msgid "Could not display '%s'"
 msgstr "\"'%s\" ਵੇਖਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
 
 #: ../gcr/gcr-failure-renderer.c:165
-#| msgid "Couldn't delete the file: %s"
 msgid "Could not display file"
 msgstr "ਫਾਇਲ ਵੇਖਾਈ ਨਹੀਂ ਜਾ ਸਕੀ"
 
 #: ../gcr/gcr-failure-renderer.c:170
-#| msgid "Version"
 msgid "Reason"
 msgstr "ਕਾਰਨ"
 
@@ -645,7 +640,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "Gnupg ਕਾਰਵਾਈ ਸਿਗਨਲ ਨਾਲ ਖਤਮ ਹੋ ਗਿਆ: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1747 ../gcr/gcr-parser.c:2005
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "ਕਾਰਵਾਈ ਰੱਦ ਕੀਤੀ ਗਈ"
 
@@ -719,7 +714,7 @@ msgstr "ਪ੍ਰਾਈਵੇਟ RSA ਕੁੰਜੀ"
 msgid "Private DSA Key"
 msgstr "ਪ੍ਰਾਈਵੇਟ DSA ਕੁੰਜੀ"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:260
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ"
 
@@ -759,15 +754,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1750
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "ਗ਼ੈਰ-ਪਛਾਣ ਜਾਂ ਗ਼ੈਰ-ਸਹਾਇਕ ਡਾਟਾ ਹੈ।"
 
-#: ../gcr/gcr-parser.c:1753
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "ਅਢੁੱਕਵਾਂ ਜਾਂ ਨਿਕਾਰਾ ਹੋਇਆ ਡਾਟਾ ਪਾਰਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ।"
 
-#: ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "ਡਾਟਾ ਲਾਕ ਹੈ"
 
@@ -802,7 +797,6 @@ msgstr "ਮਿੰਟ"
 
 #: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-#| msgid "Unlock"
 msgid "Unlock: %s"
 msgstr "ਅਣ-ਲਾਕ: %s"
 
@@ -812,35 +806,37 @@ msgid "Unlock"
 msgstr "ਅਣ-ਲਾਕ"
 
 #: ../gcr/gcr-unlock-renderer.c:135
-#| msgid "The unlock password was incorrect"
 msgid "The password was incorrect"
 msgstr "ਪਾਸਵਰਡ ਗਲਤ ਹੈ"
 
 #: ../gcr/gcr-unlock-renderer.c:173
-#| msgid "Password:"
 msgid "Password"
 msgstr "ਪਾਸਵਰਡ"
 
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
+#| msgid ""
+#| "The contents of '%s' are locked. In order to view the contents, enter a "
+#| "the correct password."
 msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter a the "
+"The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
-msgstr "'%s' ਦੀ ਸਮੱਗਰੀ ਲਾਕ ਹੈ। ਸਮੱਗਰੀ ਵੇਖਣ ਲਈ, ਠੀਕ ਪਾਸਵਰਡ ਦਿਉ ਜੀ।"
+msgstr "'%s' ਦੀ ਸਮੱਗਰੀ ਲਾਕ ਕੀਤੀ ਹੈ। ਸਮੱਗਰੀ ਵੇਖਣ ਲਈ, ਠੀਕ ਪਾਸਵਰਡ ਦਿਉ ਜੀ।"
 
 #: ../gcr/gcr-unlock-renderer.c:327
+#| msgid ""
+#| "The contents are locked. In order to view the contents, enter a the "
+#| "correct password."
 msgid ""
-"The contents are locked. In order to view the contents, enter a the correct "
+"The contents are locked. In order to view the contents, enter the correct "
 "password."
 msgstr "ਸਮੱਗਰੀ ਲਾਕ ਕੀਤੀ ਹੋਈ ਹੈ। ਸਮੱਗਰੀ ਵੇਖਣ ਲਈ, ਠੀਕ ਪਾਸਵਰਡ ਦਿਉ ਜੀ।"
 
 #: ../gcr/gcr-viewer-tool.c:41
-#| msgid "Certificate and Key Storage"
 msgid "GCR Certificate and Key Viewer"
 msgstr "GCR ਸਰਟੀਫਿਕੇਟ ਅਤੇ ਕੁੰਜੀ ਦਰਸ਼ਕ"
 
 #: ../gcr/gcr-viewer-tool.c:48
-#| msgid "Allow application access to keyring?"
 msgid "Show the application's version"
 msgstr "ਐਪਲੀਕੇਸ਼ਨ ਦਾ ਵਰਜਨ ਵੇਖੋ"
 
@@ -849,12 +845,10 @@ msgid "[file...]"
 msgstr "[file...]"
 
 #: ../gcr/gcr-viewer-tool.c:104
-#| msgid "Certificate files"
 msgid "- View certificate and key files"
 msgstr "- ਸਰਟੀਫਿਕੇਟ ਅਤੇ ਕੁੰਜੀ ਫਾਇਲਾਂ ਵੇਖੋ"
 
 #: ../gcr/gcr-viewer-tool.c:118
-#| msgid "Certificate files"
 msgid "Certificate Viewer"
 msgstr "ਸਰਟੀਫਿਕੇਟ ਦਰਸ਼ਕ"
 
@@ -864,7 +858,6 @@ msgid "The URI has invalid encoding."
 msgstr "URI ਲਈ ਗਲਤ ਇੰਕੋਡਿੰਗ ਹੈ।"
 
 #: ../gck/gck-uri.c:177
-#| msgid "The URI has does not have the 'pkcs11' scheme."
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "URI  'pkcs11' ਸਕੀਮ ਨਹੀਂ ਹੈ।"
 
