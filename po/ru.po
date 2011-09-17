@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-01 10:15+0000\n"
-"PO-Revision-Date: 2011-09-01 14:57+0300\n"
+"POT-Creation-Date: 2011-09-15 09:51+0000\n"
+"PO-Revision-Date: 2011-09-17 15:10+0300\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -328,7 +328,7 @@ msgstr "Истекает"
 #: ../gcr/gcr-certificate.c:1060
 #: ../gcr/gcr-certificate-exporter.c:462
 #: ../gcr/gcr-certificate-renderer.c:101
-#: ../gcr/gcr-parser.c:263
+#: ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Сертификат"
 
@@ -586,7 +586,7 @@ msgstr "Отпечаток SHA1 для ключа"
 
 #: ../gcr/gcr-certificate-renderer.c:719
 #: ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:266
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Открытый ключ"
 
@@ -604,7 +604,6 @@ msgid "Could not display file"
 msgstr "Не удалось показать файл"
 
 #: ../gcr/gcr-failure-renderer.c:170
-#| msgid "Version"
 msgid "Reason"
 msgstr "Причина"
 
@@ -646,8 +645,8 @@ msgstr "Процесс GnuPG был прерван сигналом: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695
 #: ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1747
-#: ../gcr/gcr-parser.c:2005
+#: ../gcr/gcr-parser.c:1919
+#: ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "Действие было отменено"
 
@@ -725,7 +724,7 @@ msgid "Private DSA Key"
 msgstr "Секретный ключ DSA"
 
 #: ../gcr/gcr-key-renderer.c:287
-#: ../gcr/gcr-parser.c:260
+#: ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Секретный ключ"
 
@@ -767,15 +766,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1750
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Нераспознанные или неподдерживаемые данные."
 
-#: ../gcr/gcr-parser.c:1753
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Не удалось разобрать неверные или повреждённые данные."
 
-#: ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Данные заблокированы"
 
@@ -810,7 +809,6 @@ msgstr "мин"
 
 #: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-#| msgid "Unlock"
 msgid "Unlock: %s"
 msgstr "Разблокировать: %s"
 
@@ -821,26 +819,29 @@ msgid "Unlock"
 msgstr "Разблокирование"
 
 #: ../gcr/gcr-unlock-renderer.c:135
-#| msgid "The unlock password was incorrect"
 msgid "The password was incorrect"
 msgstr "Пароль был неверен"
 
 #: ../gcr/gcr-unlock-renderer.c:173
-#| msgid "Password:"
 msgid "Password"
 msgstr "Пароль"
 
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "The contents of '%s' are locked. In order to view the contents, enter a the correct password."
+#| msgid ""
+#| "The contents of '%s' are locked. In order to view the contents, enter a "
+#| "the correct password."
+msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
 msgstr "Содержимое «%s» заблокировано. Чтобы просмотреть содержимое, введите пароль."
 
 #: ../gcr/gcr-unlock-renderer.c:327
-msgid "The contents are locked. In order to view the contents, enter a the correct password."
+#| msgid ""
+#| "The contents are locked. In order to view the contents, enter a the "
+#| "correct password."
+msgid "The contents are locked. In order to view the contents, enter the correct password."
 msgstr "Содержимое заблокировано. Чтобы просмотреть содержимое, введите пароль."
 
 #: ../gcr/gcr-viewer-tool.c:41
-#| msgid "Certificate and Key Storage"
 msgid "GCR Certificate and Key Viewer"
 msgstr "Просмотрщик ключей и сертификатов GCR"
 
@@ -853,12 +854,10 @@ msgid "[file...]"
 msgstr "[файл…]"
 
 #: ../gcr/gcr-viewer-tool.c:104
-#| msgid "Certificate files"
 msgid "- View certificate and key files"
 msgstr "— показать файлы сертификата и ключа"
 
 #: ../gcr/gcr-viewer-tool.c:118
-#| msgid "Certificate files"
 msgid "Certificate Viewer"
 msgstr "Просмотрщик сертификатов"
 
@@ -868,7 +867,6 @@ msgid "The URI has invalid encoding."
 msgstr "Недопустимая кодировка URI."
 
 #: ../gck/gck-uri.c:177
-#| msgid "The URI has does not have the 'pkcs11' scheme."
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "В URI отсутствует схема «pkcs11»."
 
