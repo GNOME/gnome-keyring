@@ -176,6 +176,8 @@ gcr-enum-types.c: $(HEADER_FILES) gcr-enum-types.c.template
 gcr-oids.c: gcr-oids.list gcr-mkoids
 	$(AM_V_GEN) sh gcr-mkoids -p GCR -c gcr-oids.c -h gcr-oids.h gcr-oids.list
 
+gcr-oids.h: gcr-oids.c
+
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gcr-$(GCR_MAJOR).pc
 
