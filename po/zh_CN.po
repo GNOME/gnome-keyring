@@ -20,8 +20,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-13 15:55+0000\n"
-"PO-Revision-Date: 2011-07-01 22:33+0800\n"
+"POT-Creation-Date: 2011-09-15 10:51+0000\n"
+"PO-Revision-Date: 2011-09-17 13:36+0800\n"
 "Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -104,8 +104,8 @@ msgstr "GNOME 密钥环：GPG 助手"
 msgid "GPG Password Agent"
 msgstr "GPG 密码助手"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "未知"
 
@@ -176,7 +176,7 @@ msgstr "常用名"
 msgid "Surname"
 msgstr "姓"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:659
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "序列号"
 
@@ -232,7 +232,7 @@ msgstr "DN 限定人"
 msgid "Pseudonym"
 msgstr "笔名"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -248,7 +248,7 @@ msgstr "使用 MD5 算法的 RSA 密钥对"
 msgid "SHA1 with RSA"
 msgstr "使用 SHA1 算法的 RSA 密钥对"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:309
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -287,26 +287,51 @@ msgstr "select() 在从子进程中读取数据时出现异常错误(%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() 出现异常错误(%s)"
 
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "加载 PKCS#11 模块失败：%s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "无效的 PKCS#11 模块：%s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "无法设置 PKCS#11 模块：%s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "无法初始化 PKCS#11 模块：%s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "无法初始化注册的 PKCS#11 模块：%s"
+
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389 ../gcr/gcr-gnupg-key.c:424
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
 msgctxt "column"
 msgid "Name"
 msgstr "名称"
 
-#: ../gcr/gcr-certificate.c:391
+#: ../gcr/gcr-certificate.c:390
 msgctxt "column"
 msgid "Issued By"
 msgstr "颁发者"
 
 #. later
-#: ../gcr/gcr-certificate.c:393
+#: ../gcr/gcr-certificate.c:392
 msgctxt "column"
 msgid "Expires"
 msgstr "过期"
 
-#: ../gcr/gcr-certificate.c:1061 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:106 ../gcr/gcr-parser.c:275
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "证书"
 
@@ -341,227 +366,253 @@ msgstr "证书文件"
 msgid "PEM files"
 msgstr "PEM 文件"
 
-#: ../gcr/gcr-certificate-extensions.c:135
+#: ../gcr/gcr-certificate-extensions.c:141
 msgid "Other Name"
 msgstr "其他名称"
 
-#: ../gcr/gcr-certificate-extensions.c:142
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "XMPP 地址"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
 msgid "Email"
 msgstr "电子邮件"
 
-#: ../gcr/gcr-certificate-extensions.c:150
+#: ../gcr/gcr-certificate-extensions.c:174
 msgid "DNS"
 msgstr "DNS"
 
-#: ../gcr/gcr-certificate-extensions.c:158
+#: ../gcr/gcr-certificate-extensions.c:182
 msgid "X400 Address"
 msgstr "X400 地址"
 
-#: ../gcr/gcr-certificate-extensions.c:165
+#: ../gcr/gcr-certificate-extensions.c:189
 msgid "Directory Name"
 msgstr "目录名"
 
-#: ../gcr/gcr-certificate-extensions.c:173
+#: ../gcr/gcr-certificate-extensions.c:197
 msgid "EDI Party Name"
 msgstr "EDI 方的名称"
 
-#: ../gcr/gcr-certificate-extensions.c:180
+#: ../gcr/gcr-certificate-extensions.c:204
 msgid "URI"
 msgstr "URI"
 
-#: ../gcr/gcr-certificate-extensions.c:188
+#: ../gcr/gcr-certificate-extensions.c:212
 msgid "IP Address"
 msgstr "IP 地址"
 
-#: ../gcr/gcr-certificate-extensions.c:196
+#: ../gcr/gcr-certificate-extensions.c:220
 msgid "Registered ID"
 msgstr "注册的 ID"
 
-#: ../gcr/gcr-certificate-renderer.c:121
+#: ../gcr/gcr-certificate-renderer.c:116
 msgid "Basic Constraints"
 msgstr "基本约束"
 
-#: ../gcr/gcr-certificate-renderer.c:123
+#: ../gcr/gcr-certificate-renderer.c:118
 msgid "Certificate Authority"
 msgstr "证书授权"
 
-#: ../gcr/gcr-certificate-renderer.c:124 ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "是"
 
-#: ../gcr/gcr-certificate-renderer.c:124 ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "否"
 
-#: ../gcr/gcr-certificate-renderer.c:127
+#: ../gcr/gcr-certificate-renderer.c:122
 msgid "Max Path Length"
 msgstr "最大路径长度"
 
-#: ../gcr/gcr-certificate-renderer.c:128
+#: ../gcr/gcr-certificate-renderer.c:123
 msgid "Unlimited"
 msgstr "无限制"
 
-#: ../gcr/gcr-certificate-renderer.c:147
+#: ../gcr/gcr-certificate-renderer.c:142
 msgid "Extended Key Usage"
 msgstr "延长密钥使用"
 
-#: ../gcr/gcr-certificate-renderer.c:158
+#: ../gcr/gcr-certificate-renderer.c:153
 msgid "Allowed Purposes"
 msgstr "允许的用途"
 
-#: ../gcr/gcr-certificate-renderer.c:178
+#: ../gcr/gcr-certificate-renderer.c:173
 #, fuzzy
 msgid "Subject Key Identifier"
 msgstr "主体密钥标识"
 
-#: ../gcr/gcr-certificate-renderer.c:179
+#: ../gcr/gcr-certificate-renderer.c:174
 msgid "Key Identifier"
 msgstr "密钥标识"
 
-#: ../gcr/gcr-certificate-renderer.c:190
+#: ../gcr/gcr-certificate-renderer.c:185
 msgid "Digital signature"
 msgstr "数字签名"
 
-#: ../gcr/gcr-certificate-renderer.c:191
+#: ../gcr/gcr-certificate-renderer.c:186
 msgid "Key encipherment"
 msgstr "密钥加密"
 
-#: ../gcr/gcr-certificate-renderer.c:192
+#: ../gcr/gcr-certificate-renderer.c:187
 msgid "Data encipherment"
 msgstr "数据加密"
 
-#: ../gcr/gcr-certificate-renderer.c:193
+#: ../gcr/gcr-certificate-renderer.c:188
 msgid "Key agreement"
 msgstr "密钥协议"
 
-#: ../gcr/gcr-certificate-renderer.c:194
+#: ../gcr/gcr-certificate-renderer.c:189
 msgid "Certificate signature"
 msgstr "证书签名"
 
-#: ../gcr/gcr-certificate-renderer.c:195
+#: ../gcr/gcr-certificate-renderer.c:190
 msgid "Revocation list signature"
 msgstr "作废列表签名"
 
-#: ../gcr/gcr-certificate-renderer.c:220
+#: ../gcr/gcr-certificate-renderer.c:215
 msgid "Key Usage"
 msgstr "密钥使用"
 
-#: ../gcr/gcr-certificate-renderer.c:221
+#: ../gcr/gcr-certificate-renderer.c:216
 msgid "Usages"
 msgstr "使用"
 
-#: ../gcr/gcr-certificate-renderer.c:241
+#: ../gcr/gcr-certificate-renderer.c:236
 #, fuzzy
 msgid "Subject Alternative Names"
 msgstr "主体备用名称"
 
-#: ../gcr/gcr-certificate-renderer.c:266
+#: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
 msgstr "扩展"
 
-#: ../gcr/gcr-certificate-renderer.c:270
+#: ../gcr/gcr-certificate-renderer.c:265
 msgid "Identifier"
 msgstr "识别标志"
 
-#: ../gcr/gcr-certificate-renderer.c:271
+#: ../gcr/gcr-certificate-renderer.c:266
 msgid "Value"
 msgstr "值"
 
-#: ../gcr/gcr-certificate-renderer.c:318
+#: ../gcr/gcr-certificate-renderer.c:313
 msgid "Critical"
 msgstr "关键"
 
-#: ../gcr/gcr-certificate-renderer.c:391
+#: ../gcr/gcr-certificate-renderer.c:386
 msgid "Couldn't export the certificate."
 msgstr "不能导出证书。"
 
-#: ../gcr/gcr-certificate-renderer.c:620
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "身份"
 
-#: ../gcr/gcr-certificate-renderer.c:624
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "认证机构"
 
-#: ../gcr/gcr-certificate-renderer.c:631
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "过期"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:641
+#: ../gcr/gcr-certificate-renderer.c:634
 #, fuzzy
 msgid "Subject Name"
 msgstr "主体名"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "颁发者名称"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:649
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "颁发的证书"
 
-#: ../gcr/gcr-certificate-renderer.c:654
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "版本"
 
-#: ../gcr/gcr-certificate-renderer.c:666
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "在此之前无效"
 
-#: ../gcr/gcr-certificate-renderer.c:671
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "在此之后无效"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:676
+#: ../gcr/gcr-certificate-renderer.c:669
 msgid "Certificate Fingerprints"
 msgstr "证书指纹"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:682 ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "签名"
 
-#: ../gcr/gcr-certificate-renderer.c:686
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "签名算法"
 
-#: ../gcr/gcr-certificate-renderer.c:690
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "签名参数"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:698
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "公共密钥信息"
 
-#: ../gcr/gcr-certificate-renderer.c:703
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "密钥算法"
 
-#: ../gcr/gcr-certificate-renderer.c:708
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "密钥参数"
 
-#: ../gcr/gcr-certificate-renderer.c:713
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "密钥大小"
 
-#: ../gcr/gcr-certificate-renderer.c:720
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key SHA1 Fingerprint"
 msgstr "密钥 SHA1 指纹"
 
-#: ../gcr/gcr-certificate-renderer.c:726 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:278
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "公钥"
 
-#: ../gcr/gcr-display-view.c:283
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "详细信息(_D)"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "无法显示“%s”"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "无法显示文件"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "原因"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "无法显示此类型的文件。"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -575,14 +626,29 @@ msgstr "导入到："
 msgid "Password:"
 msgstr "密码："
 
-#: ../gcr/gcr-gnupg-key.c:154
+#: ../gcr/gcr-gnupg-key.c:251
 msgid "PGP Key"
 msgstr "PGP 密钥"
 
-#: ../gcr/gcr-gnupg-key.c:426
+#: ../gcr/gcr-gnupg-key.c:631
 msgctxt "column"
 msgid "Key ID"
 msgstr "密钥 ID"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "Gnupg 进程退出，退出代码为：%d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "Gnupg 进程由 %d 信号中止"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
+msgid "The operation was cancelled"
+msgstr "操作已取消"
 
 #: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
@@ -629,11 +695,6 @@ msgstr "要导入证书 %s，必须将其解密"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "要导入 %s，必须将其解密"
 
-#: ../gcr/gcr-importer.c:293 ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "操作已取消"
-
 #: ../gcr/gcr-importer.c:386
 #, c-format
 msgid "No location available to import to"
@@ -651,69 +712,69 @@ msgstr "选择某个位置来保存导入的证书及密钥。"
 msgid "Key"
 msgstr "密钥"
 
-#: ../gcr/gcr-key-renderer.c:280
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private RSA Key"
 msgstr "RSA 私钥"
 
-#: ../gcr/gcr-key-renderer.c:282
+#: ../gcr/gcr-key-renderer.c:285
 msgid "Private DSA Key"
 msgstr "DSA 私钥"
 
-#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:272
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "私钥"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "DSA 公钥"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:301
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d 位"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:302
 msgid "Strength"
 msgstr "强度"
 
-#: ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Algorithm"
 msgstr "算法"
 
-#: ../gcr/gcr-key-renderer.c:319
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Size"
 msgstr "长度"
 
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
+#: ../gcr/gcr-key-renderer.c:326
 msgid "Fingerprints"
 msgstr "指纹"
 
-#: ../gcr/gcr-key-renderer.c:328
+#: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:334
+#: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1722
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
-msgstr "无法识别或不被支持的数据。"
+msgstr "无法识别或不支持的数据。"
 
-#: ../gcr/gcr-parser.c:1725
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "无法解析非法的或已损坏的数据。"
 
-#: ../gcr/gcr-parser.c:1728
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "数据已被锁定"
 
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-trust.c:377
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "没有找到可以用来来保存个人身份证明的位置。"
@@ -739,335 +800,73 @@ msgstr "在我注销时锁住此密钥环"
 msgid "minutes"
 msgstr "分钟"
 
-#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "该 URI 语法不正确。“%s”字段的编码无效。"
+msgid "Unlock: %s"
+msgstr "解锁：%s"
 
-#: ../gck/gck-uri.c:292
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "解锁"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "密码错误"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "密码"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr "“%s”的内容已锁定。要查看其内容，请输入正确的密码。"
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr "内容已锁定。要查看内容，请输入正确的密码。"
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "GCR 证书和密钥查看器"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "显示应用程序版本"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[文件...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- 查看证书和密钥文件"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "证书查看器"
+
+#: ../gck/gck-uri.c:173
+#, c-format
+msgid "The URI has invalid encoding."
+msgstr "该 URI 的编码无效。"
+
+#: ../gck/gck-uri.c:177
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "该 URI 没有“pkcs11”结构。"
 
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr "没有足够的可用内存"
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr "指定的存储槽 ID 无效"
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "内部错误"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "操作失败"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "无效参数"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr "该模块无法创建需要的线程"
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr "该模块无法正确锁定数据"
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "该字段只读"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr "该字段为敏感字段，无法显示"
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "该字段无效或不存在"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "无效的字段值"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr "该数据无效或无法识别"
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "该数据太长"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "在设备上发生一个错误"
-
-#: ../gck/gck-misc.c:135
-msgid "Insufficient memory available on the device"
-msgstr "设备上可用空间不足"
-
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr "该设备已移除或未插入"
-
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "该加密数据无效或无法识别"
-
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr "该加密数据太长"
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "不支持该操作"
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "该密钥丢失或无效"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr "该密钥大小错误"
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr "该密钥类型错误"
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr "不需要密钥"
-
-#: ../gck/gck-misc.c:153
-msgid "The key is different than before"
-msgstr "该密钥与之前的不同"
-
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "需要一个密钥"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot include the key in the digest"
-msgstr "无法在摘要中包括该密钥"
-
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr "无法用这个密钥完成这次操作"
-
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr "该密钥无法封装"
-
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "无法导出该密钥"
-
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "加密机制无效或无法识别"
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr "加密机制有一个无效参数"
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr "对象缺失或无效"
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr "另外的操作已正在进行"
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr "没有正在进行的操作"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr "密码或 PIN 错误"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr "密码或 PIN 无效"
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr "密码或 PIN 长度无效"
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr "密码或 PIN 已过期"
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr "密码或 PIN 已锁定"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "会话已关闭"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "太多会话处于活动中"
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "本会话无效"
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "本会话只读"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "存在一个打开的会话"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "存在一个只读会话"
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "存在一个管理者会话"
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr "该签名为坏的或已损坏"
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr "该签名无法识别或已损坏"
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "某要求的字段缺失"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "某字段有无效值"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr "该设备不在或未插入"
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr "该设备无效或无法识别"
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr "该设备处于写保护中"
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr "无法导入因为密钥无效"
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr "无法导入因为密钥大小错误"
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr "无法导入因为密钥类型错误"
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "您已登录"
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "没有用户登录"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr "用户密码或 PIN 没有设定"
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr "该用户为无效类型"
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "另外的用户已经登录"
-
-#: ../gck/gck-misc.c:229
-msgid "Too many users of different types are logged in"
-msgstr "不同类型的用户登录数量过多"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "无法导入无效的密钥"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr "无法导入错误大小的密钥"
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "无法导出因为密钥无效"
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr "无法导出因为密钥大小错误"
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr "无法导出因为密钥类型错误"
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr "无法初始化随机数产生器"
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr "没有随机数产生器可用"
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "加密机制有一个无效的参数"
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr "没有足够的空间来储存结果"
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr "无效的已保存状态"
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr "敏感信息，不能透露"
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr "状态无法保存"
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr "模块没有被初始化"
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr "模块已被初始化"
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr "无法锁定数据"
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr "数据无法被锁定"
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr "签名请求被用户拒绝"
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "未知错误"
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "URI 语法错误。"
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "URI 版本号错误。"
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -1132,10 +931,6 @@ msgstr "解锁证书"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "解锁公钥"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "解锁"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1224,28 +1019,28 @@ msgstr "命令："
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:618
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "以不加密方式储存密码吗？"
 
-#: ../ui/gku-prompt-tool.c:619
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
-"使用空白密码，您所储存的密码将不会被安全地加密。它们可由能访问您的文件的任何"
-"人访问到。"
+"使用空白密码，您所储存的密码将不会被安全地加密。能访问您文件的任何人均可访问"
+"它们。"
 
-#: ../ui/gku-prompt-tool.c:626
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "使用不安全的存储器"
 
-#: ../ui/gku-prompt-tool.c:666
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "密码不匹配。"
 
-#: ../ui/gku-prompt-tool.c:676
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "密码不能为空"
 
@@ -1255,7 +1050,7 @@ msgstr "密钥环权限"
 
 #: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
 msgid "Unlock access to passwords and other secrets"
-msgstr "解锁读取密码和其它机密的权限"
+msgstr "解锁读取密码和其它机密的访问权限"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1284,6 +1079,246 @@ msgstr "旧密码(_O)："
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "密码(_P)："
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "没有足够的可用内存"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "指定的存储槽 ID 无效"
+
+#~ msgid "Internal error"
+#~ msgstr "内部错误"
+
+#~ msgid "The operation failed"
+#~ msgstr "操作失败"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "无效参数"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "该模块无法创建需要的线程"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "该模块无法正确锁定数据"
+
+#~ msgid "The field is read-only"
+#~ msgstr "该字段只读"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "该字段为敏感字段，无法显示"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "该字段无效或不存在"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "无效的字段值"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "该数据无效或无法识别"
+
+#~ msgid "The data is too long"
+#~ msgstr "该数据太长"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "在设备上发生一个错误"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "设备上可用空间不足"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "该设备已移除或未插入"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "该加密数据无效或无法识别"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "该加密数据太长"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "不支持该操作"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "该密钥丢失或无效"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "该密钥大小错误"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "该密钥类型错误"
+
+#~ msgid "No key is needed"
+#~ msgstr "不需要密钥"
+
+#~ msgid "The key is different than before"
+#~ msgstr "该密钥与之前的不同"
+
+#~ msgid "A key is needed"
+#~ msgstr "需要一个密钥"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "无法在摘要中包括该密钥"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "无法用这个密钥完成这次操作"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "该密钥无法封装"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "无法导出该密钥"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "加密机制无效或无法识别"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "加密机制有一个无效参数"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "对象缺失或无效"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "另外的操作已正在进行"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "没有正在进行的操作"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "密码或 PIN 错误"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "密码或 PIN 无效"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "密码或 PIN 长度无效"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "密码或 PIN 已过期"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "密码或 PIN 已锁定"
+
+#~ msgid "The session is closed"
+#~ msgstr "会话已关闭"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "太多会话处于活动中"
+
+#~ msgid "The session is invalid"
+#~ msgstr "本会话无效"
+
+#~ msgid "The session is read-only"
+#~ msgstr "本会话只读"
+
+#~ msgid "An open session exists"
+#~ msgstr "存在一个打开的会话"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "存在一个只读会话"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "存在一个管理者会话"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "该签名为坏的或已损坏"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "该签名无法识别或已损坏"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "某要求的字段缺失"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "某字段有无效值"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "该设备不在或未插入"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "该设备无效或无法识别"
+
+#~ msgid "The device is write protected"
+#~ msgstr "该设备处于写保护中"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "无法导入因为密钥无效"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "无法导入因为密钥大小错误"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "无法导入因为密钥类型错误"
+
+#~ msgid "You are already logged in"
+#~ msgstr "您已登录"
+
+#~ msgid "No user has logged in"
+#~ msgstr "没有用户登录"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "用户密码或 PIN 没有设定"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "该用户为无效类型"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "另外的用户已经登录"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "不同类型的用户登录数量过多"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "无法导入无效的密钥"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "无法导入错误大小的密钥"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "无法导出因为密钥无效"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "无法导出因为密钥大小错误"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "无法导出因为密钥类型错误"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "无法初始化随机数产生器"
+
+#~ msgid "No random number generator available"
+#~ msgstr "没有随机数产生器可用"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "加密机制有一个无效的参数"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "没有足够的空间来储存结果"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "无效的已保存状态"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "敏感信息，不能透露"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "状态无法保存"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "模块没有被初始化"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "模块已被初始化"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "无法锁定数据"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "数据无法被锁定"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "签名请求被用户拒绝"
+
+#~ msgid "Unknown error"
+#~ msgstr "未知错误"
 
 #~ msgid "Fingerprint"
 #~ msgstr "指纹"
@@ -1387,9 +1422,6 @@ msgstr "密码(_P)："
 #~ msgid "Couldn't create directory: %s"
 #~ msgstr "无法创建目录：%s"
 
-#~ msgid "Couldn't delete the file: %s"
-#~ msgstr "无法删除文件：%s"
-
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
@@ -1423,9 +1455,6 @@ msgstr "密码(_P)："
 
 #~ msgid "Allow access"
 #~ msgstr "允许访问"
-
-#~ msgid "Allow application access to keyring?"
-#~ msgstr "允许应用程序访问密钥环吗？"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -1649,9 +1678,6 @@ msgstr "密码(_P)："
 #~ msgstr ""
 #~ "加载 PKCS#11 模块的路径列表。由于这仍然是一个实验中的特性，默认情况下，当"
 #~ "前没有模块被列出。这用于 seahorse 或其他知晓 PKCS#11 的程序。"
-
-#~ msgid "PKCS#11 Modules"
-#~ msgstr "PKCS#11 模块"
 
 #~ msgid "Import private key"
 #~ msgstr "导入私钥"
