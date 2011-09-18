@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2011-03-10 08:08+0000\n"
-"PO-Revision-Date: 2011-04-22 18:28+0700\n"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-10 05:58+0000\n"
+"PO-Revision-Date: 2011-09-18 16:22+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -93,30 +93,30 @@ msgstr "พวงกุญแจของ GNOME: เอเจนต์ GPG"
 msgid "GPG Password Agent"
 msgstr "เอเจนต์รหัสผ่าน GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "ไม่ทราบ"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "กุญแจ PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "กรุณาป้อนวลีรหัสผ่าน"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "ทิ้งรหัสผ่านนี้ถ้าเครื่องไม่มีการใช้งานเป็นเวลา"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "ทิ้งรหัสผ่านนี้ในอีก"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "ทิ้งรหัสผ่านนี้เมื่อออกจากระบบ"
 
@@ -165,7 +165,7 @@ msgstr "ชื่อสามัญ"
 msgid "Surname"
 msgstr "นามสกุล"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "หมายเลขลำดับ"
 
@@ -221,29 +221,50 @@ msgstr "DN Qualifier"
 msgid "Pseudonym"
 msgstr "นามปากกา"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 โดยใช้ RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 โดยใช้ RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 โดยใช้ RSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 โดยใช้ DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "การยืนยันตัวบุคคลของแม่ข่าย"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "การยืนยันตัวบุคคลของลูกข่าย"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "การเซ็นกำกับโค้ด"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "การปกป้องอีเมล"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "การลงเวลา"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -255,111 +276,328 @@ msgstr "เกิดข้อผิดพลาดที่ไม่คาดห
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "เกิดข้อผิดพลาดที่ไม่คาดหมายใน waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "เกิดข้อผิดพลาดขณะโหลดมอดูล PKCS#11: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "มอดูล PKCS#11 ไม่ถูกต้อง: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "ไม่สามารถตั้งค่ามอดูล PKCS#11: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "ไม่สามารถตั้งค่าเริ่มต้นมอดูล PKCS#11: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "ไม่สามารถตั้งค่าเริ่มต้นมอดูล PKCS#11 ที่ลงทะเบียนไว้: %s"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "ชื่อ"
+
+#: ../gcr/gcr-certificate.c:390
+msgid "Issued By"
+msgstr "ออกให้โดย"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "หมดอายุ"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "ใบรับรอง"
 
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "ส่วนขยาย"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>มีแฟ้มชื่อนี้อยู่ก่อนแล้ว</b>\n"
+"\n"
+"คุณต้องการเขียนทับหรือไม่?"
 
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "ตัวระบุ"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "เขียน_ทับ"
 
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "ค่า"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "การกระทำถูกยกเลิก"
 
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "วิกฤติ"
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "ส่งออกใบรับรอง"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "แฟ้มใบรับรอง"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "แฟ้ม PEM"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "ชื่ออื่น"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "ที่อยู่ XMPP"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "อีเมล"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "ที่อยู่ X400"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "ชื่อสารบบ"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "ชื่อภาคี EDI"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "URI"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "ที่อยู่ไอพี"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "ID ที่ลงทะเบียนไว้"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "ข้อบังคับพื้นฐาน"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "องค์กรออกใบรับรอง"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "ใช่"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "ไม่"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "ความยาวพาธสูงสุด"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "ไม่จำกัด"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "การใช้งานกุญแจเพิ่มเติม"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "การใช้งานที่อนุญาต"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "ตัวระบุกุญแจของผู้รับการรับรอง"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "ตัวระบุกุญแจ"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "ลายเซ็นดิจิทัล"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "การเข้ารหัสลับกุญแจ"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "การเข้ารหัสลับข้อมูล"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "การตกลงเห็นพ้องของกุญแจ"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "ลายเซ็นกำกับใบรับรอง"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "ลายเซ็นกำกับรายการเพิกถอน"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "การใช้งานกุญแจ"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "การใช้งาน"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "ชื่ออื่นของผู้รับการรับรอง"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "ส่วนขยาย"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "ตัวระบุ"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "ค่า"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "วิกฤติ"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "ไม่สามารถส่งออกใบรับรอง"
+
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "ชื่อ"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "ตรวจสอบโดย"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "หมดอายุ"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "ชื่อผู้รับการรับรอง"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "ชื่อผู้ออกให้"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "ใบรับรองที่ออก"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "รุ่น"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "ห้ามใช้ก่อน"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "ห้ามใช้หลัง"
 
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "อัลกอริทึมของลายเซ็น"
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "ลายนิ้วมือของใบรับรอง"
 
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "พารามิเตอร์สำหรับลายเซ็น"
-
-#: ../gcr/gcr-certificate-renderer.c:413
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "ลายเซ็น"
 
+#: ../gcr/gcr-certificate-renderer.c:679
+msgid "Signature Algorithm"
+msgstr "อัลกอริทึมของลายเซ็น"
+
+#: ../gcr/gcr-certificate-renderer.c:683
+msgid "Signature Parameters"
+msgstr "พารามิเตอร์สำหรับลายเซ็น"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "ข้อมูลกุญแจสาธารณะ"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "อัลกอริทึมของกุญแจ"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "พารามิเตอร์สำหรับกุญแจ"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "ขนาดกุญแจ"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "ลายนิ้วมือ SHA1 ของกุญแจ"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "กุญแจสาธารณะ"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
-msgid "Fingerprints"
-msgstr "ลายนิ้วมือ"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "_รายละเอียด"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "ไม่สามารถแสดง '%s'"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "ไม่สามารถแสดงแฟ้ม"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "เหตุผล"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "ไม่สามารถแสดงแฟ้มชนิดนี้"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -372,6 +610,159 @@ msgstr "นำเข้าสู่:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "รหัสผ่าน:"
+
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "กุญแจ PGP"
+
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "ID กุญแจ"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "โพรเซส gnupg จบการทำงานด้วยรหัส: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "โพรเซส gnupg จบการทำงานโดยสัญญาณ: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+msgid "The operation was cancelled"
+msgstr "การกระทำถูกยกเลิก"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจส่วนตัว"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคใบรับรอง"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "การนำเข้ากุญแจส่วนตัว จะต้องปลดล็อคกุญแจเสียก่อน"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "การนำเข้าใบรับรอง จะต้องปลดล็อคใบรับรองเสียก่อน"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "การนำเข้าข้อมูล จะต้องปลดล็อคข้อมูลเสียก่อน"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "การนำเข้ากุญแจส่วนตัว '%s' จะต้องปลดล็อคกุญแจเสียก่อน"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "การนำเข้าใบรับรอง '%s' จะต้องปลดล็อคใบรับรองเสียก่อน"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "การนำเข้า '%s' จะต้องปลดล็อคเสียก่อน"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "ไม่มีตำแหน่งให้นำเข้าไปเก็บได้"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "นำเข้าใบรับรอง/กุญแจ"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "เลือกตำแหน่งที่จะเก็บใบรับรอง/กุญแจที่นำเข้า"
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "กุญแจ"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "กุญแจ RSA ส่วนตัว"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "กุญแจ DSA ส่วนตัว"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+msgid "Private Key"
+msgstr "กุญแจส่วนตัว"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "กุญแจ DSA สาธารณะ"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d บิต"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "ความแน่นหนา"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "อัลกอริทึม"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "ขนาด"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "ลายนิ้วมือ"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1789
+msgid "Unrecognized or unsupported data."
+msgstr "ข้อมูลที่ไม่รู้จักหรือไม่รองรับ"
+
+#: ../gcr/gcr-parser.c:1792
+msgid "Could not parse invalid or corrupted data."
+msgstr "ไม่สามารถแจงข้อมูลที่ผิดรูปแบบหรือเสียหาย"
+
+#: ../gcr/gcr-parser.c:1795
+msgid "The data is locked"
+msgstr "ข้อมูลถูกล็อคอยู่"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "ไม่สามารถหาแหล่งที่จะเก็บใบรับรองที่ปักหมุดไว้"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -394,461 +785,73 @@ msgstr "ล็อคพวงกุญแจนี้เมื่อออกจ
 msgid "minutes"
 msgstr "นาที"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคกุญแจส่วนตัว"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อคใบรับรอง"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "ป้อนรหัสผ่านเพื่อปลดล็อค"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "การนำเข้ากุญแจส่วนตัว จะต้องปลดล็อคกุญแจเสียก่อน"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "การนำเข้าใบรับรอง จะต้องปลดล็อคใบรับรองเสียก่อน"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "การนำเข้าข้อมูล จะต้องปลดล็อคข้อมูลเสียก่อน"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "การนำเข้ากุญแจส่วนตัว '%s' จะต้องปลดล็อคกุญแจเสียก่อน"
+msgid "Unlock: %s"
+msgstr "ปลดล็อค: %s"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "ปลดล็อค"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "รหัสผ่านไม่ถูกต้อง"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "รหัสผ่าน"
+
+#: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "การนำเข้าใบรับรอง '%s' จะต้องปลดล็อคใบรับรองเสียก่อน"
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr "เนื้อหาของ '%s' ถูกล็อคอยู่ หากต้องการดูเนื้อหา กรุณาป้อนรหัสผ่านที่ถูกต้อง"
 
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr "เนื้อหาถูกล็อคอยู่ หากต้องการดูเนื้อหา กรุณาป้อนรหัสผ่านที่ถูกต้อง"
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "เครื่องมือแสดงใบรับรองและกุญแจของ GCR"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "แสดงรุ่นของโปรแกรม"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[แฟ้ม...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- ดูแฟ้มใบรับรองและกุญแจ"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "เครื่องมือแสดงใบรับรอง"
+
+#: ../gck/gck-uri.c:173
 #, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "การนำเข้า '%s' จะต้องปลดล็อคเสียก่อน"
+msgid "The URI has invalid encoding."
+msgstr "รหัสของ URI ไม่ถูกต้อง"
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "การกระทำถูกยกเลิก"
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "ไม่มีตำแหน่งให้นำเข้าไปเก็บได้"
-
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "นำเข้าใบรับรอง/กุญแจ"
-
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "เลือกตำแหน่งที่จะเก็บใบรับรอง/กุญแจที่นำเข้า"
-
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "กุญแจ"
-
-#: ../gcr/gcr-key-renderer.c:260
-msgid "Private RSA Key"
-msgstr "กุญแจ RSA ส่วนตัว"
-
-#: ../gcr/gcr-key-renderer.c:262
-msgid "Private DSA Key"
-msgstr "กุญแจ DSA ส่วนตัว"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "กุญแจส่วนตัว"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-msgid "Public DSA Key"
-msgstr "กุญแจ DSA สาธารณะ"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d บิต"
-
-#: ../gcr/gcr-key-renderer.c:279
-msgid "Strength"
-msgstr "ความแน่นหนา"
-
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Algorithm"
-msgstr "อัลกอริทึม"
-
-#: ../gcr/gcr-key-renderer.c:299
-msgid "Size"
-msgstr "ขนาด"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-msgid "Fingerprint"
-msgstr "ลายนิ้วมือ"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "ข้อมูลที่ไม่รู้จักหรือไม่รองรับ"
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "ไม่สามารถแจงข้อมูลที่ผิดรูปแบบหรือเสียหาย"
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "ข้อมูลถูกล็อคอยู่"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "ไม่สามารถหาแหล่งที่จะเก็บใบรับรองที่ปักหมุดไว้"
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "URI ผิดรูปแบบ รูปแบบรหัสของข้อมูล '%s' ไม่ถูกต้อง"
-
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "URI ไม่ได้เป็นชนิด 'pkcs11'"
 
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "เหลือหน่วยความจำไม่เพียงพอ"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "หมายเลข slot ที่ระบุใช้การไม่ได้"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "ข้อผิดพลาดภายใน"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "การกระทำล้มเหลว"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "อาร์กิวเมนต์ไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "มอดูลไม่สามารถสร้างเธรดที่ต้องการได้"
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "มอดูลไม่สามารถล็อคข้อมูลได้อย่างเรียบร้อย"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "เขตข้อมูลอ่านได้อย่างเดียว"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "เขตข้อมูลมีความอ่อนไหวและไม่สามารถเปิดเผยได้"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "เขตข้อมูลไม่ถูกต้องหรือไม่มีเขตข้อมูลนี้อยู่"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "ค่าสำหรับเขตข้อมูลไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "ข้อมูลไม่ถูกต้องหรือไม่รู้จัก"
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "ข้อมูลยาวเกินไป"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "เกิดข้อผิดพลาดขึ้นในอุปกรณ์"
-
-#: ../gck/gck-misc.c:129
-msgid "Insufficient memory available on the device"
-msgstr "เหลือหน่วยความจำไม่เพียงพอในอุปกรณ์"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "อุปกรณ์ถูกถอดออกหรือถูกปิด"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "ข้อมูลที่เข้ารหัสลับไว้ไม่ถูกต้องหรือไม่รู้จัก"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "ข้อมูลที่เข้ารหัสลับไว้ยาวเกินไป"
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "ไม่รองรับการกระทำนี้"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "กุญแจขาดหายไปหรือไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "กุญแจมีขนาดไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "กุญแจมีชนิดไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "ไม่ต้องใช้กุญแจ"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is different than before"
-msgstr "กุญแจเปลี่ยนไปจากเดิม"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "ต้องใช้กุญแจ"
-
-#: ../gck/gck-misc.c:151
-msgid "Cannot include the key in the digest"
-msgstr "ไม่สามารถเพิ่มกุญแจในข้อมูลที่ย่อยแล้วได้"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "การกระทำนี้ทำกับกุญแจนี้ไม่ได้"
-
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "ไม่สามารถห่อหุ้มกุญแจได้"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "ไม่สามารถส่งออกกุญแจนี้ได้"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "กลไกการเข้ารหัสลับไม่ถูกต้องหรือไม่รู้จัก"
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "กลไกการเข้ารหัสลับมีอาร์กิวเมนต์ไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "อ็อบเจกต์ขาดหายไปหรือไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "มีการกระทำอื่นกำลังดำเนินอยู่"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "ไม่มีการกระทำใดดำเนินอยู่"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "รหัสผ่านหรือ PIN ไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "รหัสผ่านหรือ PIN ใช้การไม่ได้"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "รหัสผ่านหรือ PIN มีความยาวไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "รหัสผ่านหรือ PIN หมดอายุแล้ว"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "รหัสผ่านหรือ PIN ถูกล็อคไว้"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "วาระถูกปิดไปแล้ว"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "มีวาระเปิดอยู่มากเกินไป"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "วาระไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "วาระอ่านได้อย่างเดียว"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "มีวาระที่เปิดอยู่"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "มีวาระที่อ่านได้อย่างเดียวเปิดอยู่"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "มีวาระผู้ดูแลระบบเปิดอยู่"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "ลายเซ็นผิดหรือเสียหาย"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "ลายเซ็นไม่รู้จักหรือเสียหาย"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "เขตข้อมูลที่จำเป็นบางเขตขาดหายไป"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "เขตข้อมูลบางเขตมีค่าที่ใช้ไม่ได้"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "ไม่มีอุปกรณ์อยู่ หรืออุปกรณ์ถูกปิดไป"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "อุปกรณ์ไม่ถูกต้องหรือไม่รู้จัก"
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "อุปกรณ์มีการป้องกันการเขียนไว้"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "ไม่สามารถนำเข้าเพราะกุญแจใช้ไม่ได้"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "ไม่สามารถนำเข้าเพราะกุญแจมีขนาดไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "ไม่สามารถนำเข้าเพราะกุญแจมีชนิดไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "คุณได้เข้าระบบแล้ว"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "ไม่มีผู้ใช้เข้าระบบ"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "รหัสผ่านหรือ PIN ของผู้ใช้ยังไม่ได้ตั้ง"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "ผู้ใช้มีชนิดที่ไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "มีผู้ใช้อื่นเข้าระบบอยู่"
-
-#: ../gck/gck-misc.c:223
-msgid "Too many users of different types are logged in"
-msgstr "มีผู้ใช้หลายชนิดเกินไปเข้าระบบอยู่"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "ไม่สามารถนำเข้ากุญแจที่ใช้ไม่ได้"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "ไม่สามารถนำเข้ากุญแจที่มีขนาดไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "ไม่สามารถส่งออกเพราะกุญแจใช้ไม่ได้"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "ไม่สามารถส่งออกเพราะกุญแจมีขนาดไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "ไม่สามารถส่งออกเพราะกุญแจมีชนิดไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "ไม่สามารถตั้งต้นเครื่องมือสร้างตัวเลขสุ่ม"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "ไม่มีตัวสร้างเลขสุ่ม"
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "กลไกการเข้ารหัสลับมีพารามิเตอร์ที่ไม่ถูกต้อง"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "มีที่ว่างไม่เพียงพอที่จะเก็บผลลัพธ์"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "สถานะที่บันทึกไว้ไม่ใช่สถานะที่ถูกต้อง"
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "ข้อมูลมีความอ่อนไหวและไม่สามารถเปิดเผยได้"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "ไม่สามารถบันทึกสถานะได้"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "มอดูลยังไม่ถูกตั้งค่าเริ่มต้น"
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "มอดูลถูกตั้งค่าเริ่มต้นเรียบร้อยแล้ว"
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "ไม่สามารถล็อคข้อมูล"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "ข้อมูลไม่สามารถล็อคได้"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "การร้องขอลายเซ็นถูกผู้ใช้ปฏิเสธ"
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "URI มีรูปแบบที่ผิดไวยากรณ์"
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "URI มีเลขรุ่นที่ใช้การไม่ได้"
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -913,10 +916,6 @@ msgstr "ปลดล็อคใบรับรอง"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "ปลดล็อคกุญแจสาธารณะ"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "ปลดล็อค"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1005,11 +1004,11 @@ msgstr "คำสั่ง: "
 msgid "          "
 msgstr "      "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "จะเก็บรหัสผ่านโดยไม่เข้ารหัสลับจริงหรือ?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1018,15 +1017,15 @@ msgstr ""
 "การใช้รหัสผ่านว่างเปล่า จะทำให้รหัสผ่านไม่มีการเข้ารหัสลับอย่างปลอดภัย "
 "และใครก็ตามที่เข้าถึงแฟ้มของคุณได้ก็จะได้รหัสผ่านของคุณไป"
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "เก็บแบบไม่ปลอดภัย"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "รหัสผ่านไม่ตรงกัน"
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "รหัสผ่านเป็นค่าว่างเปล่าไม่ได้"
 
@@ -1065,6 +1064,249 @@ msgstr "รหัสผ่านเ_ดิม:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_รหัสผ่าน:"
+
+#~ msgid "Fingerprint"
+#~ msgstr "ลายนิ้วมือ"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "เหลือหน่วยความจำไม่เพียงพอ"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "หมายเลข slot ที่ระบุใช้การไม่ได้"
+
+#~ msgid "Internal error"
+#~ msgstr "ข้อผิดพลาดภายใน"
+
+#~ msgid "The operation failed"
+#~ msgstr "การกระทำล้มเหลว"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "อาร์กิวเมนต์ไม่ถูกต้อง"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "มอดูลไม่สามารถสร้างเธรดที่ต้องการได้"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "มอดูลไม่สามารถล็อคข้อมูลได้อย่างเรียบร้อย"
+
+#~ msgid "The field is read-only"
+#~ msgstr "เขตข้อมูลอ่านได้อย่างเดียว"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "เขตข้อมูลมีความอ่อนไหวและไม่สามารถเปิดเผยได้"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "เขตข้อมูลไม่ถูกต้องหรือไม่มีเขตข้อมูลนี้อยู่"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "ค่าสำหรับเขตข้อมูลไม่ถูกต้อง"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "ข้อมูลไม่ถูกต้องหรือไม่รู้จัก"
+
+#~ msgid "The data is too long"
+#~ msgstr "ข้อมูลยาวเกินไป"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "เกิดข้อผิดพลาดขึ้นในอุปกรณ์"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "เหลือหน่วยความจำไม่เพียงพอในอุปกรณ์"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "อุปกรณ์ถูกถอดออกหรือถูกปิด"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "ข้อมูลที่เข้ารหัสลับไว้ไม่ถูกต้องหรือไม่รู้จัก"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "ข้อมูลที่เข้ารหัสลับไว้ยาวเกินไป"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "ไม่รองรับการกระทำนี้"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "กุญแจขาดหายไปหรือไม่ถูกต้อง"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "กุญแจมีขนาดไม่ถูกต้อง"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "กุญแจมีชนิดไม่ถูกต้อง"
+
+#~ msgid "No key is needed"
+#~ msgstr "ไม่ต้องใช้กุญแจ"
+
+#~ msgid "The key is different than before"
+#~ msgstr "กุญแจเปลี่ยนไปจากเดิม"
+
+#~ msgid "A key is needed"
+#~ msgstr "ต้องใช้กุญแจ"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "ไม่สามารถเพิ่มกุญแจในข้อมูลที่ย่อยแล้วได้"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "การกระทำนี้ทำกับกุญแจนี้ไม่ได้"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "ไม่สามารถห่อหุ้มกุญแจได้"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "ไม่สามารถส่งออกกุญแจนี้ได้"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "กลไกการเข้ารหัสลับไม่ถูกต้องหรือไม่รู้จัก"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "กลไกการเข้ารหัสลับมีอาร์กิวเมนต์ไม่ถูกต้อง"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "อ็อบเจกต์ขาดหายไปหรือไม่ถูกต้อง"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "มีการกระทำอื่นกำลังดำเนินอยู่"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "ไม่มีการกระทำใดดำเนินอยู่"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "รหัสผ่านหรือ PIN ไม่ถูกต้อง"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "รหัสผ่านหรือ PIN ใช้การไม่ได้"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "รหัสผ่านหรือ PIN มีความยาวไม่ถูกต้อง"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "รหัสผ่านหรือ PIN หมดอายุแล้ว"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "รหัสผ่านหรือ PIN ถูกล็อคไว้"
+
+#~ msgid "The session is closed"
+#~ msgstr "วาระถูกปิดไปแล้ว"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "มีวาระเปิดอยู่มากเกินไป"
+
+#~ msgid "The session is invalid"
+#~ msgstr "วาระไม่ถูกต้อง"
+
+#~ msgid "The session is read-only"
+#~ msgstr "วาระอ่านได้อย่างเดียว"
+
+#~ msgid "An open session exists"
+#~ msgstr "มีวาระที่เปิดอยู่"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "มีวาระที่อ่านได้อย่างเดียวเปิดอยู่"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "มีวาระผู้ดูแลระบบเปิดอยู่"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "ลายเซ็นผิดหรือเสียหาย"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "ลายเซ็นไม่รู้จักหรือเสียหาย"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "เขตข้อมูลที่จำเป็นบางเขตขาดหายไป"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "เขตข้อมูลบางเขตมีค่าที่ใช้ไม่ได้"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "ไม่มีอุปกรณ์อยู่ หรืออุปกรณ์ถูกปิดไป"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "อุปกรณ์ไม่ถูกต้องหรือไม่รู้จัก"
+
+#~ msgid "The device is write protected"
+#~ msgstr "อุปกรณ์มีการป้องกันการเขียนไว้"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "ไม่สามารถนำเข้าเพราะกุญแจใช้ไม่ได้"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "ไม่สามารถนำเข้าเพราะกุญแจมีขนาดไม่ถูกต้อง"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "ไม่สามารถนำเข้าเพราะกุญแจมีชนิดไม่ถูกต้อง"
+
+#~ msgid "You are already logged in"
+#~ msgstr "คุณได้เข้าระบบแล้ว"
+
+#~ msgid "No user has logged in"
+#~ msgstr "ไม่มีผู้ใช้เข้าระบบ"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "รหัสผ่านหรือ PIN ของผู้ใช้ยังไม่ได้ตั้ง"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "ผู้ใช้มีชนิดที่ไม่ถูกต้อง"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "มีผู้ใช้อื่นเข้าระบบอยู่"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "มีผู้ใช้หลายชนิดเกินไปเข้าระบบอยู่"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "ไม่สามารถนำเข้ากุญแจที่ใช้ไม่ได้"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "ไม่สามารถนำเข้ากุญแจที่มีขนาดไม่ถูกต้อง"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "ไม่สามารถส่งออกเพราะกุญแจใช้ไม่ได้"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "ไม่สามารถส่งออกเพราะกุญแจมีขนาดไม่ถูกต้อง"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "ไม่สามารถส่งออกเพราะกุญแจมีชนิดไม่ถูกต้อง"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "ไม่สามารถตั้งต้นเครื่องมือสร้างตัวเลขสุ่ม"
+
+#~ msgid "No random number generator available"
+#~ msgstr "ไม่มีตัวสร้างเลขสุ่ม"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "กลไกการเข้ารหัสลับมีพารามิเตอร์ที่ไม่ถูกต้อง"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "มีที่ว่างไม่เพียงพอที่จะเก็บผลลัพธ์"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "สถานะที่บันทึกไว้ไม่ใช่สถานะที่ถูกต้อง"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "ข้อมูลมีความอ่อนไหวและไม่สามารถเปิดเผยได้"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "ไม่สามารถบันทึกสถานะได้"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "มอดูลยังไม่ถูกตั้งค่าเริ่มต้น"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "มอดูลถูกตั้งค่าเริ่มต้นเรียบร้อยแล้ว"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "ไม่สามารถล็อคข้อมูล"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "ข้อมูลไม่สามารถล็อคได้"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "การร้องขอลายเซ็นถูกผู้ใช้ปฏิเสธ"
+
+#~ msgid "Unknown error"
+#~ msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
 #~ msgid ""
 #~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
@@ -1105,9 +1347,6 @@ msgstr "_รหัสผ่าน:"
 #~ msgid "Whether the gnome-keyring secret service is enabled."
 #~ msgstr "จะเปิดใช้บริการเก็บข้อมูลลับของ gnome-keyring หรือไม่"
 
-#~ msgid "Email"
-#~ msgstr "อีเมล"
-
 #~ msgid "<i>Not Part of Certificate</i>"
 #~ msgstr "<i>ไม่ใช่ส่วนหนึ่งของใบรับรอง</i>"
 
@@ -1141,9 +1380,6 @@ msgstr "_รหัสผ่าน:"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "ใบรับรองสำหรับเซ็นกำกับอีเมล"
 
-#~ msgid "Issued On"
-#~ msgstr "วันที่ออก"
-
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "ลายนิ้วมือ MD5"
 
@@ -1152,15 +1388,6 @@ msgstr "_รหัสผ่าน:"
 
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "หน่วยงานในองค์กร (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "ลายนิ้วมือ SHA1"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "ใบรับรองลูกข่าย SSL"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "ใบรับรองแม่ข่าย SSL"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr "<span size='large' weight='bold'>นำเข้าใบรับรองและกุญแจ</span>"
@@ -1431,9 +1658,6 @@ msgstr "_รหัสผ่าน:"
 #~ msgid "Couldn't create directory: %s"
 #~ msgstr "ไม่สามารถสร้างไดเรกทอรี: %s"
 
-#~ msgid "Couldn't delete the file: %s"
-#~ msgstr "ไม่สามารถลบแฟ้ม: %s"
-
 #~ msgid "Access Denied"
 #~ msgstr "ปฏิเสธการใช้งาน"
 
@@ -1466,9 +1690,6 @@ msgstr "_รหัสผ่าน:"
 #~ "รายชื่อพาธของมอดูล PKCS#11 ที่จะโหลด ค่าปริยายจะไม่มีชื่อมอดูลใดเลยในตอนนี้ "
 #~ "เนื่องจากเป็นความสามารถที่ยังอยู่ในขั้นทดลอง มอดูลเหล่านี้จะถูกใช้โดย seahorse "
 #~ "และโปรแกรมที่รองรับ PKCS#11 อื่นๆ"
-
-#~ msgid "PKCS#11 Modules"
-#~ msgstr "มอดูล PKCS#11"
 
 #~ msgid "Import private key"
 #~ msgstr "นำเข้ากุญแจส่วนตัว"
@@ -1544,9 +1765,6 @@ msgstr "_รหัสผ่าน:"
 
 #~ msgid "Cannot set a random seed"
 #~ msgstr "ไม่สามารถตั้งค่าสุ่มเริ่มต้น"
-
-#~ msgid "Unlock %s"
-#~ msgstr "ปลดล็อค %s"
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "รหัสผ่านเดิมเป็นค่าว่างเปล่าไม่ได้"
