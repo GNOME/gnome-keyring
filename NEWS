@@ -1,3 +1,14 @@
+Changes in version 3.1.92 are:
+ * Add back the file format "documentation"
+ * Make .desktop file match prompt process so icon and title are shown
+ * Fix packaging issues installing the pkcs11 module
+ * return correct error code in gpg-agent for unimplemented stuff
+ * Fixes for parsing/viewing various (sometimes slightly invalid) PKCS#12 files
+ * Allow daemon to access secrets of internal PKCS#11 modules, so that we can
+   do things like hash NTLM and Kerberos secrets in the future.
+ * Build and documentation fixes
+ * Updated translations
+
 Changes in version 3.1.91 are:
  * gcr-viewer will now display errors when failing to load a file.
  * gcr-viewer can now prompt for passwords to unlock files
