@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-10 05:58+0000\n"
-"PO-Revision-Date: 2011-09-18 16:22+0700\n"
+"POT-Creation-Date: 2011-09-18 13:51+0000\n"
+"PO-Revision-Date: 2011-09-18 20:51+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -309,6 +309,7 @@ msgid "Name"
 msgstr "ชื่อ"
 
 #: ../gcr/gcr-certificate.c:390
+msgctxt "column"
 msgid "Issued By"
 msgstr "ออกให้โดย"
 
@@ -631,7 +632,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "โพรเซส gnupg จบการทำงานโดยสัญญาณ: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "การกระทำถูกยกเลิก"
 
@@ -744,15 +745,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1789
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "ข้อมูลที่ไม่รู้จักหรือไม่รองรับ"
 
-#: ../gcr/gcr-parser.c:1792
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "ไม่สามารถแจงข้อมูลที่ผิดรูปแบบหรือเสียหาย"
 
-#: ../gcr/gcr-parser.c:1795
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "ข้อมูลถูกล็อคอยู่"
 
