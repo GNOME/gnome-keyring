@@ -1,22 +1,23 @@
 # Italian Translation of gnome-keyring.
-# Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc
+# Copyright (C) 2004 - 2010, 2011 Free Software Foundation, Inc
 # This file is distributed under the same license as the gnome-keyring package.
 # Luca Ferretti <elle.uca@libero.it>, 2008.
 # 2008, 2009, 2010.
 # Francesco Marletta <francesco.marletta@tiscali.it>, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011.
+# Milo Casagrande <milo@ubuntu.com>, 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 2.32\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2011-03-10 08:08+0000\n"
-"PO-Revision-Date: 2011-04-03 12:33+0200\n"
-"Last-Translator: Francesco Marletta <francesco.marletta@tiscali.it>\n"
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-18 12:54+0200\n"
+"PO-Revision-Date: 2011-09-18 12:53+0200\n"
+"Last-Translator: Milo Casagrande <milo@ubuntu.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8-bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
@@ -105,30 +106,30 @@ msgstr "Portachiavi di GNOME: agente GPG"
 msgid "GPG Password Agent"
 msgstr "Agente password GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Sconosciuto"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Chiave PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "Inserire passphrase"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "Dimentica questa password se inattivo per"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "Dimentica questa password dopo"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "Dimentica questa password al termine della sessione"
 
@@ -177,7 +178,7 @@ msgstr "Nome comune"
 msgid "Surname"
 msgstr "Cognome"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Numero seriale"
 
@@ -233,29 +234,52 @@ msgstr "Qualificatore DN"
 msgid "Pseudonym"
 msgstr "Pseudonimo"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 con RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 con RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 con RSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 con DSA"
+
+# sarebbe titolo dialogo
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Autenticazione server"
+
+# sarebbe titolo dialogo
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Autenticazione client"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Firma codice"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "Protezione email"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Marcatura temporale"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -269,119 +293,339 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Errore inatteso in waitpid() (%s)"
 
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Errore nel caricare il modulo PKCS#11: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Modulo PKCS#11 non valido: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Impossibile impostare il modulo PKCS#11: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Impossibile inizializzare il modulo PKCS#11: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Impossibile inizializzare i moduli PKCS#11 registrati: %s"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "Nome"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "Emesso da"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "Scadenza"
+
 # sarebbe titolo dialogo
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Certificato"
 
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "Estensione"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>Un file con lo stesso nome esiste già.</b>\n"
+"\n"
+"Sostituirlo col nuovo file?"
 
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "Identificatore"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "_Sostituisci"
 
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "Valore"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "L'operazione è stata annullata."
 
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "Critico"
+# sarebbe titolo dialogo
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "Esporta certificato"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "File certificati"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "File PEM"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "Altro nome"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "Indirizzo XMPP"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "Server DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "Email"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "Indirizzo X400"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "Nome directory"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "Nome gruppo EDI"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "URI"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "Indirizzo IP"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "ID registrato"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "Vincoli di base"
+
+# sarebbe titolo dialogo
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "Autorità di certificazione"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Sì"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "No"
 
-#: ../gcr/gcr-certificate-renderer.c:339
-#| msgid "Identifier"
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "Lunghezza massima percorso"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "Illimitata"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "Utilizzo esteso della chiave"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "Obiettivi consentiti"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "Identificatore chiave soggetto"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "Identificatore chiave"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "Firma digitale"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "Cifratura chiave"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "Cifratura dati"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "Parametri chiave"
+
+# sarebbe titolo dialogo
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "Firma certificato"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "Firma elenco revoca"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "Utilizzo chiave"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "Utilizzi"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "Nomi alternativi soggetto"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "Estensione"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "Identificatore"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "Valore"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "Critico"
+
+# FIXME: magari ha già una traduzione in Firefox o altro??
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "Impossibile esportare il certificato."
+
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Identità"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Verificato da"
 
-#: ../gcr/gcr-certificate-renderer.c:350
-#| msgid "Expires On"
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Scadenza"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Nome soggetto"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Nome emanatore"
 
 # sarebbe titolo dialogo
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Certificato emesso"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Versione"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Non valido prima del"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Non valido dopo il"
 
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "Algoritmo di firma"
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "Impronte digitali certificato"
 
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "Parametri della firma"
-
-#: ../gcr/gcr-certificate-renderer.c:413
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Firma"
 
+#: ../gcr/gcr-certificate-renderer.c:679
+msgid "Signature Algorithm"
+msgstr "Algoritmo di firma"
+
+#: ../gcr/gcr-certificate-renderer.c:683
+msgid "Signature Parameters"
+msgstr "Parametri della firma"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Informazioni chiave pubblica"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
-msgstr "Algoritmo chiave"
+msgstr "Algoritmo della chiave"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
-msgstr "Parametri chiave"
+msgstr "Parametri dell chiave"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
-msgstr "Dimensione chiave"
+msgstr "Dimensione della chiave"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "Impronta digitale della chiave SHA1"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Chiave pubblica"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
-msgid "Fingerprints"
-msgstr "Impronte digitali"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "_Dettagli"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Impossibile visualizzare «%s»"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Impossibile visualizzare il file"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Motivo"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Impossibile visualizzare un file di questo tipo."
 
 # sarebbe titolo dialogo
 #: ../gcr/gcr-import-dialog.ui.h:1
-#| msgid "Import Certificates/Keys"
 msgid "Import Certificates and Keys"
 msgstr "Importa certificati e chiavi"
 
@@ -392,6 +636,164 @@ msgstr "Importa in:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Password:"
+
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "Chiave PGP"
+
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "ID chiave"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "Processo Gnupg uscito con codice %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "Processo Gnupg terminato col segnale %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
+msgid "The operation was cancelled"
+msgstr "L'operazione è stata annullata"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Inserire la password per sbloccare la chiave privata"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Inserire la password per sbloccare il certificato"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Inserire la password per sbloccare"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Per poter importare la chiave privata, questa deve essere sbloccata"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Per poter importare il certificato, questo deve essere sbloccato"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "Per poter importare i dati, questi devono essere sbloccati"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr ""
+"Per poter importare la chiave privata «%s», questa deve essere sbloccata"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "Per poter importare il certificato «%s», questo deve essere sbloccato"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "Per poter importare «%s», questo deve essere sbloccato"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "Nessuna posizione disponibile su cui importare"
+
+# sarebbe titolo dialogo
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "Importa certificati/chiavi"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr ""
+"Scegliere una posizione per archiviare i certificati/le chiavi importati"
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "Chiave"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "Chiave privata RSA"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "Chiave privata DSA"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+msgid "Private Key"
+msgstr "Chiave privata"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "Chiave pubblica DSA"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bit"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "Robustezza"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "Algoritmo"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "Dimensione"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "Impronte digitali"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1922
+msgid "Unrecognized or unsupported data."
+msgstr "Dati non riconosciuti o non supportati."
+
+#: ../gcr/gcr-parser.c:1925
+msgid "Could not parse invalid or corrupted data."
+msgstr "Impossibile analizzare i dati non validi o danneggiati."
+
+#: ../gcr/gcr-parser.c:1928
+msgid "The data is locked"
+msgstr "I dati sono bloccati"
+
+# FIXME: magari ha già una traduzione in Firefox o altro??
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Impossibile trovare una posizione per archiviare il certificato pinned"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -414,482 +816,82 @@ msgstr "Blocca questo portachiavi al termine della sessione"
 msgid "minutes"
 msgstr "minuti"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Inserire la password per sbloccare la chiave privata"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Inserire la password per sbloccare il certificato"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Inserire la password per sbloccare"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Per poter importare la chiave privata, questa deve essere sbloccata"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Per poter importare il certificato, questo deve essere sbloccato"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "Per poter importare i dati, questi devono essere sbloccati"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+# sarebbe titolo dialogo
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr ""
-"Per poter importare la chiave privata «%s», questa deve essere sbloccata"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Per poter importare il certificato «%s», questo deve essere sbloccato"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Per poter importare «%s», questo deve essere sbloccato"
-
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "L'operazione è stata annullata"
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "Nessuna posizione disponibile su cui importare"
+msgid "Unlock: %s"
+msgstr "Sblocca: %s"
 
 # sarebbe titolo dialogo
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "Importa certificati/chiavi"
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Sblocca"
 
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "La password non è corretta"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Password"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
 msgstr ""
-"Scegliere una posizione per archiviare i certificati/le chiavi importati"
+"Il contenuto di «%s» è bloccato. Per poterlo visualizzare, digitare la "
+"password corretta."
 
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "Chiave"
-
-#: ../gcr/gcr-key-renderer.c:260
-#| msgid "Private Key"
-msgid "Private RSA Key"
-msgstr "Chiave privata RSA"
-
-#: ../gcr/gcr-key-renderer.c:262
-#| msgid "Private Key"
-msgid "Private DSA Key"
-msgstr "Chiave privata DSA"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "Chiave privata"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-#| msgid "Public Key"
-msgid "Public DSA Key"
-msgstr "Chiave pubblica DSA"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bit"
-msgstr[1] "%d bit"
-
-#: ../gcr/gcr-key-renderer.c:279
-#| msgid "Street"
-msgid "Strength"
-msgstr "Robustezza"
-
-#: ../gcr/gcr-key-renderer.c:292
-#| msgid "Key Algorithm"
-msgid "Algorithm"
-msgstr "Algoritmo"
-
-#: ../gcr/gcr-key-renderer.c:299
-#| msgid "Key Size"
-msgid "Size"
-msgstr "Dimensione"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-#| msgid "Fingerprints"
-msgid "Fingerprint"
-msgstr "Impronta digitale"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "Dati non riconosciuti o non supportati."
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "Impossibile analizzare i dati non validi o danneggiati."
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "I dati sono bloccati"
-
-# FIXME: magari ha già una traduzione in Firefox o altro??
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-#| msgid "Choose a location to store the imported certificates/keys."
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Impossibile trovare una posizione per archiviare il certificato pinned"
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
 msgstr ""
-"L'URI presenta una sintassi non valida. La codifica del campo «%s» non è "
-"valida."
+"Il contenuto è bloccato. Per poterlo visualizzare, digitare la password "
+"corretta."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "Visualizzatore di certificati GCR e di chiavi"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Mostra la versione dell'applicazione"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[FILE...]"
+
+# sarebbe titolo dialogo
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- Visualizza certificati e file di chiavi"
+
+# sarebbe titolo dialogo
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Visualizzatore di certificati"
+
+#: ../gck/gck-uri.c:173
+#, c-format
+msgid "The URI has invalid encoding."
+msgstr "L'URI presenta una codifica non valida."
 
 # FIXME?
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "L'URI non presenta uno schema \"pkcs11\"."
-
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "Memoria disponibile insufficiente"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "L'ID dello slot specificato non è valido"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "Errore interno"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "L'operazione è fallita"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "Argomenti non validi"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "Il modulo non può creare i thread necessari"
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "Il modulo non può bloccare opportunamente i dati"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "Il campo è a sola lettura"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "Il campo è sensibile e non può essere rivelato"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "Il campo non è valido o non esiste"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "Valore non valido per il campo"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "I dati sono non validi o non riconosciuti"
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "I dati sono troppo lunghi"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "Si è verificato un errore sul dispositivo"
-
-#: ../gck/gck-misc.c:129
-#| msgid "Insufficient memory available on device"
-msgid "Insufficient memory available on the device"
-msgstr "Memoria non sufficiente disponibile sul dispositivo"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "Il dispositivo è stato rimosso o scollegato"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "I dati cifrati sono non validi o non riconosciuti"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "I dati cifrati sono troppo lunghi"
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "L'operazione non è supportata"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "La chiave manca o non è valida"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "La chiave è della dimensione sbagliata"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "La chiave è del tipo sbagliato"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "Non è necessaria alcuna chiave"
-
-#: ../gck/gck-misc.c:147
-#| msgid "The key is different from before"
-msgid "The key is different than before"
-msgstr "La chiave è differente da prima"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "È necessaria una chiave"
-
-#: ../gck/gck-misc.c:151
-#| msgid "Cannot include the key in digest"
-msgid "Cannot include the key in the digest"
-msgstr "Impossibile includere la chiave nel digest"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "Questa operazione non può essere svolta con questa chiave"
-
-# NdT: help help... come lo traduco qui "wrapped" ???
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "La chiave non può essere incapsulata"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "Impossibile esportare questa chiave"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Il meccanismo di cifratura non è valido o non è riconosciuto"
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "Il meccanismo di cifratura ha un argomento non valido"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "L'oggetto è mancante o non valido"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "Un'altra operazione è già in corso"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "Nessuna operazione è in corso"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "La password o il PIN non sono corretti"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "La password o il PIN non sono validi"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "La password o il PIN presentano una lunghezza non valida"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "La password o il PIN sono scaduti"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "La password o il PIN sono bloccati"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "La sessione è chiusa"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "Sono attive troppe sessioni"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "La sessione non è valida"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "La sessione è a sola lettura"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "Esiste una sessione aperta"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "Esiste una sessione a sola lettura"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "Esiste una sessione di amministratore"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "La firma è errata o danneggiata"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "La firma è non riconoscibile o danneggiata"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "Mancano alcuni campi richiesti"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "Alcuni campi richiesti presentano valori non validi"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "Il dispositivo è non presente o non collegato"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "Il dispositivo è non valido o non riconoscibile"
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "Il dispositivo è protetto dalla scrittura"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "Impossibile importare perché la chiave non è valida"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Impossibile importare perché la chiave è di dimensione errata"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Impossibile importare perché la chiave è di tipo errato"
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "Accesso già effettuato"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "Nessun utente ha eseguito l'accesso"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "La password o il PIN dell'utente non sono impostati"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "L'utente è di tipo non valido"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "Un altro utente ha già eseguito l'accesso"
-
-#: ../gck/gck-misc.c:223
-#| msgid "Too many users of different types logged in"
-msgid "Too many users of different types are logged in"
-msgstr "Troppi utenti di tipi differenti hanno eseguito l'accesso"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "Impossibile importare una chiave non valida"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "Impossibile importare una chiave di dimensione errata"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "Impossibile esportare perché la chiave non è valida"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Impossibile esportare perché la chiave è di dimensione errata"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Impossibile esportare perché la chiave è di tipo errato"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "Impossibile inizializzare il generatore di numeri casuali"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "Nessun generatore di numeri casuali disponibile"
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "Il meccanismo di cifratura ha un parametro non valido"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "Spazio non sufficiente per archiviare il risultato"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "Lo stato salvato non è valido"
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "L'informazione è sensibile e non può essere rivelata"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "Lo stato non può essere salvato"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "Il modulo non è stato inizializzato"
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "Il modulo è già stato inizializzato"
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "Impossibile bloccare i dati"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "I dati non possono essere bloccati"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "La richiesta di firma è stata rifiutata dall'utente"
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "Errore sconosciuto"
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "L'URI non presenta lo schema «pkcs11»."
+
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "L'URI presenta una sintassi non valida."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "L'URI presenta un numero di versione errato."
 
 # sarebbe titolo dialogo
 #: ../pkcs11/gkm/gkm-certificate.c:572
@@ -964,11 +966,6 @@ msgstr "Sblocca certificato"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Sblocca chiave pubblica"
-
-# sarebbe titolo dialogo
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Sblocca"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1064,19 +1061,19 @@ msgstr "Uso: gnome-keyring COMANDO [OPZIONE...]\n"
 
 #: ../tool/gkr-tool.c:104
 msgid "commands: "
-msgstr "Comandi:"
+msgstr "Comandi: "
 
-# FIXME!!
+# 	
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr "        "
+msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "Archiviare le password senza cifrarle?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1084,17 +1081,17 @@ msgid ""
 msgstr ""
 "Scegliendo di usare una password vuota, le proprie password archiviate non "
 "saranno cifrate in modo sicuro. In questo modo esse saranno accessibili da "
-"chiunque ha accesso ai propri file."
+"chiunque abbia accesso ai propri file."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "Usa archiviazione non sicura"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "Le password non corrispondono."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "La password non può essere vuota"
 
@@ -1133,69 +1130,3 @@ msgstr "_Vecchia password:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Password:"
-
-#~ msgid "Email"
-#~ msgstr "Email"
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>Non parte del certificato</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>sconosciuto</i>"
-
-# sarebbe titolo dialogo
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Non parte del Certificato>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Impronte digitali</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Emanato da</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Emanato a</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>Questo certificato è stato verificato per i seguenti usi:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Validità</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Nome comune (CN)"
-
-# sarebbe titolo dialogo
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Certificato destinatario email"
-
-# sarebbe titolo dialogo
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Certificato firmatario email"
-
-#~ msgid "Issued On"
-#~ msgstr "Emanato il"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "Impronta digitale MD5"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organizzazione (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Unità organizzativa (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "Impronta digitale SHA1"
-
-# sarebbe titolo dialogo
-#~ msgid "SSL Client Certificate"
-#~ msgstr "Certificato client SSL"
-
-# sarebbe titolo dialogo
-#~ msgid "SSL Server Certificate"
-#~ msgstr "Certificato server SSL"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Importa certificati e chiavi</span>"
