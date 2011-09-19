@@ -96,6 +96,8 @@ const struct { const gchar *section; const gchar *name; } SOFT_RESET[] = {
 	{ "details", "expanded" },
 };
 
+EGG_SECURE_DECLARE (prompt);
+
 /* -----------------------------------------------------------------------------
  * INTERNAL
  */

@@ -28,6 +28,8 @@
 
 #include <string.h>
 
+EGG_SECURE_DECLARE (entry_buffer);
+
 /* Initial size of buffer, in bytes */
 #define MIN_SIZE 16
 

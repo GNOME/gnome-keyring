@@ -39,6 +39,8 @@
 /* Holds failed unlock password, accessed atomically */
 static gpointer unlock_failure = NULL;
 
+EGG_SECURE_DECLARE (wrap_login);
+
 void
 gkm_wrap_layer_mark_login_unlock_success (void)
 {

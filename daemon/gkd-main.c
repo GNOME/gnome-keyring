@@ -78,6 +78,8 @@ typedef int socklen_t;
 #define GKD_COMP_SSH        "ssh"
 #define GKD_COMP_GPG        "gpg"
 
+EGG_SECURE_DECLARE (daemon_main);
+
 /* -----------------------------------------------------------------------------
  * COMMAND LINE
  */
@@ -322,6 +324,58 @@ prepare_logging ()
 	g_set_printerr_handler (printerr_handler);
 }
 
+#ifdef WITH_TESTABLE
+
+static void
+dump_diagnostics (void)
+{
+	egg_secure_rec *records;
+	egg_secure_rec *rec;
+	unsigned int count, i;
+	GHashTable *table;
+	GHashTableIter iter;
+	gsize request = 0;
+	gsize block = 0;
+
+	g_printerr ("------------------- Secure Memory --------------------\n");
+	g_printerr (" Tag                          Used            Space\n");
+	g_printerr ("------------------------------------------------------\n");
+
+	records = egg_secure_records (&count);
+	table = g_hash_table_new (g_str_hash, g_str_equal);
+	for (i = 0; i < count; i++) {
+		if (!records[i].tag)
+			records[i].tag = "<unused>";
+		rec = g_hash_table_lookup (table, records[i].tag);
+		if (rec == NULL)
+			g_hash_table_insert (table, (gchar *)records[i].tag, &records[i]);
+		else {
+			rec->block_length += records[i].block_length;
+			rec->request_length += records[i].request_length;
+		}
+		block += records[i].block_length;
+		request += records[i].request_length;
+	}
+
+	g_hash_table_iter_init (&iter, table);
+	while (g_hash_table_iter_next (&iter, NULL, (gpointer *)&rec))
+		g_printerr (" %-20s %12lu %16lu\n", rec->tag,
+		            (unsigned long)rec->request_length,
+		            (unsigned long)rec->block_length);
+
+	if (count > 0)
+		g_printerr ("------------------------------------------------------\n");
+
+	g_printerr (" %-20s %12lu %16lu\n", "Total",
+	            (unsigned long)request, (unsigned long)block);
+	g_printerr ("------------------------------------------------------\n");
+
+	g_hash_table_destroy (table);
+	free (records);
+}
+
+#endif /* WITH_TESTABLE */
+
 /* -----------------------------------------------------------------------------
  * SIGNALS
  */
@@ -343,6 +397,11 @@ signal_thread (gpointer user_data)
 		}
 
 		switch (sig) {
+		case SIGUSR1:
+#ifdef WITH_TESTABLE
+			dump_diagnostics ();
+#endif /* WITH_TESTABLE */
+			break;
 		case SIGPIPE:
 			/* Ignore */
 			break;
@@ -378,6 +437,7 @@ setup_signal_handling (GMainLoop *loop)
 	sigaddset (&signal_set, SIGPIPE);
 	sigaddset (&signal_set, SIGHUP);
 	sigaddset (&signal_set, SIGTERM);
+	sigaddset (&signal_set, SIGUSR1);
 	pthread_sigmask (SIG_BLOCK, &signal_set, NULL);
 
 	res = pthread_create (&sig_thread, NULL, signal_thread, loop);

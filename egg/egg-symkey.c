@@ -26,6 +26,8 @@
 #include "egg-secure-memory.h"
 #include "egg-symkey.h"
 
+EGG_SECURE_DECLARE (symkey);
+
 /* -----------------------------------------------------------------------------
  * QUARKS
  */

@@ -32,6 +32,8 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
+EGG_SECURE_DECLARE (dh_mechanism);
+
 static GkmObject*
 create_dh_object (GkmSession *session, GkmTransaction *transaction, CK_OBJECT_CLASS klass,
                   CK_ATTRIBUTE_PTR value, CK_ATTRIBUTE_PTR prime, CK_ATTRIBUTE_PTR base,

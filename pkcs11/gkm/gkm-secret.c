@@ -35,6 +35,8 @@ struct _GkmSecret {
 
 G_DEFINE_TYPE (GkmSecret, gkm_secret, G_TYPE_OBJECT);
 
+EGG_SECURE_DECLARE (secret);
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */

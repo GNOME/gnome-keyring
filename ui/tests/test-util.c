@@ -35,6 +35,8 @@
 
 EGG_SECURE_GLIB_DEFINITIONS ();
 
+EGG_SECURE_DECLARE (test_util);
+
 typedef struct {
 	GKeyFile *key_file;
 } Test;

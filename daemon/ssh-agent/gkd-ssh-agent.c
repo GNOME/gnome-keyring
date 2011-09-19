@@ -47,6 +47,8 @@ typedef int socklen_t;
 /* The loaded PKCS#11 modules */
 static GList *pkcs11_modules = NULL;
 
+EGG_SECURE_DECLARE (ssh_agent);
+
 static gboolean
 read_all (int fd, guchar *buf, int len)
 {

@@ -29,6 +29,8 @@
 #include "egg/egg-padding.h"
 #include "egg/egg-secure-memory.h"
 
+EGG_SECURE_DECLARE (prompt);
+
 void
 gku_prompt_util_encode_mpi (GKeyFile *key_file, const gchar *section,
                             const gchar *field, gcry_mpi_t mpi)

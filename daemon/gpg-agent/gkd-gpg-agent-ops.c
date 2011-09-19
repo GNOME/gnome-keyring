@@ -44,6 +44,8 @@
 #define COLLECTION    "session"
 #define N_COLLECTION  7
 
+EGG_SECURE_DECLARE (gpg_agent_ops);
+
 /* ----------------------------------------------------------------------------------
  * PASSWORD STUFF
  */
