@@ -5,7 +5,7 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 sysconfdir=@sysconfdir@
-pkcs11dir=@pkcs11dir@
+pkcs11dir=@P11_MODULE_PATH@
 pkcs11standalonedir=@pkcs11standalonedir@
 
 Name: gcr-@GCR_MAJOR@

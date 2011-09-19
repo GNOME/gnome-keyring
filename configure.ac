@@ -809,7 +809,6 @@ echo "CONFIGURATION"
 echo "  SSH Agent:            $ssh_status"
 echo "  GPG Agent:            $gpg_status"
 echo "  Root Certificates:    $root_status"
-echo "  PKCS#11 Modules:      $P11_SYSTEM_MODULES"
 echo
 echo "BUILD"
 echo "  Debug Build:          $debug_status"
