@@ -85,15 +85,6 @@ if WITH_CAPS
 install-exec-hook:
 	setcap cap_ipc_lock=ep $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
 
-else # without caps
-
-# The daemon is installed as setuid so as to obtain specialized
-# capabilities, then immediately drops permissions. In other words,
-# it does *not* run as setuid.
-install-exec-hook:
-	chown root $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
-	chmod u+s $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
-
-endif # without caps
+endif
 
 @INTLTOOL_DESKTOP_RULE@
