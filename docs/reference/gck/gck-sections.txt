@@ -132,6 +132,7 @@ GckSlotInfo
 gck_slot_info_free
 GckTokenInfo
 gck_token_info_free
+gck_token_info_match
 <SUBSECTION Standard>
 GckSlotClass
 gck_slot_get_type
