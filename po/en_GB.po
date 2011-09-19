@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-07 16:13+0100\n"
-"PO-Revision-Date: 2011-09-07 16:20+0100\n"
+"POT-Creation-Date: 2011-09-19 13:18+0100\n"
+"PO-Revision-Date: 2011-09-19 13:19+0100\n"
 "Last-Translator: Bruce Cowan <bruce@bcowan.me.uk>\n"
 "Language-Team: British English <en@li.org>\n"
 "Language: en_GB\n"
@@ -638,7 +638,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "Gnupg process was terminated with signal: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "The operation was cancelled"
 
@@ -752,15 +752,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1789
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Unrecognised or unsupported data."
 
-#: ../gcr/gcr-parser.c:1792
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Could not parse invalid or corrupted data."
 
-#: ../gcr/gcr-parser.c:1795
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "The data is locked"
 
@@ -814,18 +814,18 @@ msgstr "Password"
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
 msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter a the "
+"The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
 msgstr ""
-"The contents of '%s' are locked. In order to view the contents, enter a the "
+"The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
 
 #: ../gcr/gcr-unlock-renderer.c:327
 msgid ""
-"The contents are locked. In order to view the contents, enter a the correct "
+"The contents are locked. In order to view the contents, enter the correct "
 "password."
 msgstr ""
-"The contents are locked. In order to view the contents, enter a the correct "
+"The contents are locked. In order to view the contents, enter the correct "
 "password."
 
 #: ../gcr/gcr-viewer-tool.c:41
