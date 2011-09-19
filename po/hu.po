@@ -10,10 +10,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-10 22:01+0100\n"
-"PO-Revision-Date: 2011-03-10 22:00+0100\n"
+"POT-Creation-Date: 2011-09-20 01:34+0200\n"
+"PO-Revision-Date: 2011-09-20 01:13+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
-"Language-Team: Hungarian <gnome at fsf dot hu>\n"
+"Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -100,30 +100,30 @@ msgstr "GNOME kulcstartó: GPG-ügynök"
 msgid "GPG Password Agent"
 msgstr "GPG jelszóügynök"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP kulcs: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "Adja meg a jelmondatot"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "Jelszó elfelejtése üresjáratban töltött:"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "Jelszó elfelejtése:"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "Jelszó elfelejtése kijelentkezéskor"
 
@@ -172,7 +172,7 @@ msgstr "Közönséges név"
 msgid "Surname"
 msgstr "Vezetéknév"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Sorozatszám"
 
@@ -228,29 +228,50 @@ msgstr "DN minősítő"
 msgid "Pseudonym"
 msgstr "Álnév"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 RSA-val"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 RSA-val"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 RSA-val"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 DSA-val"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Kiszolgálóhitelesítés"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Klienshitelesítés"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Kódaláírás"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "E-mail védelem"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Időbélyegzés"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -263,111 +284,329 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Váratlan hiba a waitpid() hívásban (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Hiba a PKCS#11 modul betöltésekor: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Érvénytelen PKCS#11 modul: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Nem állítható be a PKCS#11 modul: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Nem készíthető elő a PKCS#11 modul: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Nem készíthetők elő a regisztrált PKCS#11 modulok: %s"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "Név"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "Kibocsátó"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "Lejárat"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Tanúsítvány"
 
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "Kiterjesztés"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>Már létezik egy ugyanilyen nevű fájl.</b>\n"
+"\n"
+"Le akarja cserélni az új fájllal?"
 
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "Azonosító"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "_Csere"
 
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "Érték"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "A művelet megszakítva."
 
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "Kritikus"
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "Tanúsítvány exportálása"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "Tanúsítványfájlok"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "PEM-fájlok"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "Egyéb név"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "XMPP cím"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "E-mail"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "X400 cím"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "Címtár neve"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "EDI fél neve"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "URI"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "IP-cím"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "Regisztrált azonosító"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "Alap megszorítások"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "Hitelesítésszolgáltató"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Igen"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Nem"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "Legnagyobb útvonalhossz"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "Korlátlan"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "Kibővített kulcshasználat"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "Engedélyezett célok"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "Alany kulcsazonosítója"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "Kulcsazonosító"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "Digitális aláírás"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "Kulcstitkosítás"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "Adattitkosítás"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "Kulcsmegállapodás"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "Tanúsítvány-aláírás"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "Visszavonási lista aláírása"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "Kulcshasználat"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "Használat"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "Alany alternatív nevei"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "Kiterjesztés"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "Azonosító"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "Érték"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "Kritikus"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "Nem exportálható a tanúsítvány."
+
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Személyazonosság"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Ellenőrizte"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Lejárat"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Alany neve"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Kibocsátó neve"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Kibocsátott tanúsítvány"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Verzió"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Nem érvényes eddig"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Nem érvényes ezután"
 
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "Aláírási algoritmus"
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "Tanúsítvány ujjlenyomatai"
 
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "Aláírás paraméterei"
-
-#: ../gcr/gcr-certificate-renderer.c:413
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Aláírás"
 
+#: ../gcr/gcr-certificate-renderer.c:679
+msgid "Signature Algorithm"
+msgstr "Aláírási algoritmus"
+
+#: ../gcr/gcr-certificate-renderer.c:683
+msgid "Signature Parameters"
+msgstr "Aláírás paraméterei"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Nyilvános kulcs információi"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Kulcsalgoritmus"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Kulcs paraméterei"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Kulcsméret"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "Kulcs SHA1 ujjlenyomata"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Nyilvános kulcs"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
-msgid "Fingerprints"
-msgstr "Ujjlenyomatok"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "Rés_zletek"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "„%s” nem jeleníthető meg"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "A fájl nem jeleníthető meg"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Ok"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Az ilyen típusú fájl nem jeleníthető meg."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -380,6 +619,160 @@ msgstr "Importálás ebbe:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Jelszó:"
+
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "PGP kulcs"
+
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "Kulcsazonosító"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "A Gnupg a következő kóddal lépett ki: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "A Gnupg folyamat befejeztetve a következő szignállal: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
+msgid "The operation was cancelled"
+msgstr "A művelet megszakítva"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Adja meg a jelszót a magánkulcs feloldásához"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Adja meg a jelszót a tanúsítvány feloldásához"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Adja meg a jelszót a feloldáshoz"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "A magánkulcs importálásához fel kell azt oldani"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "A tanúsítvány importálásához fel kell azt oldani"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "Az adatok importálásához fel kell azokat oldani"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "A(z) „%s” magánkulcs importálásához fel kell azt oldani"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "A(z) „%s” tanúsítvány importálásához fel kell azt oldani"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "A(z) „%s” elem importálásához fel kell azt oldani"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "Nem érhető el hely az importáláshoz"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "Tanúsítványok/kulcsok importálása"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Válassza ki az importált tanúsítványok/kulcsok tárolási helyét."
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "Kulcs"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "Magán RSA kulcs"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "Magán DSA kulcs"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+msgid "Private Key"
+msgstr "Magánkulcs"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "Nyilvános DSA kulcs"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bit"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "Erősség"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "Algoritmus"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "Méret"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "Ujjlenyomatok"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1922
+msgid "Unrecognized or unsupported data."
+msgstr "Ismeretlen vagy nem támogatott adatok."
+
+#: ../gcr/gcr-parser.c:1925
+msgid "Could not parse invalid or corrupted data."
+msgstr "Nem sikerült feldolgozni az érvénytelen vagy hibás adatokat."
+
+#: ../gcr/gcr-parser.c:1928
+msgid "The data is locked"
+msgstr "Az adatok zárolva vannak"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Nem található tárolási hely a rögzített tanúsítványhoz"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -402,462 +795,77 @@ msgstr "Ezen kulcstartó zárolása kijelentkezéskor"
 msgid "minutes"
 msgstr "perc után"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Adja meg a jelszót a magánkulcs feloldásához"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Adja meg a jelszót a tanúsítvány feloldásához"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Adja meg a jelszót a feloldáshoz"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "A magánkulcs importálásához fel kell azt oldani"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "A tanúsítvány importálásához fel kell azt oldani"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "Az adatok importálásához fel kell azokat oldani"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "A(z) „%s” magánkulcs importálásához fel kell azt oldani"
+msgid "Unlock: %s"
+msgstr "Feloldás: %s"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Feloldás"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "A jelszó helytelen volt"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Jelszó"
+
+#: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "A(z) „%s” tanúsítvány importálásához fel kell azt oldani"
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr ""
+"A(z) „%s” tartalma zárolva van. A tartalom megjelenítéséhez adja meg a "
+"helyes jelszót."
 
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr ""
+"A tartalom zárolva van. A tartalom megjelenítéséhez adja meg a helyes "
+"jelszót."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "GCR tanúsítvány- és kulcsmegjelenítő"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Az alkalmazás verziószámának megjelenítése"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[FÁJL…]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "… Tanúsítvány- és kulcsfájlok megjelenítése"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Tanúsítványmegjelenítő"
+
+#: ../gck/gck-uri.c:173
 #, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "A(z) „%s” elem importálásához fel kell azt oldani"
+msgid "The URI has invalid encoding."
+msgstr "Az URI kódolása érvénytelen."
 
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "A művelet megszakítva"
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "Nem érhető el hely az importáláshoz"
-
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "Tanúsítványok/kulcsok importálása"
-
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Válassza ki az importált tanúsítványok/kulcsok tárolási helyét."
-
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "Kulcs"
-
-#: ../gcr/gcr-key-renderer.c:260
-msgid "Private RSA Key"
-msgstr "Magán RSA kulcs"
-
-#: ../gcr/gcr-key-renderer.c:262
-msgid "Private DSA Key"
-msgstr "Magán DSA kulcs"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "Magánkulcs"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-msgid "Public DSA Key"
-msgstr "Nyilvános DSA kulcs"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bit"
-msgstr[1] "%d bit"
-
-#: ../gcr/gcr-key-renderer.c:279
-msgid "Strength"
-msgstr "Erősség"
-
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Algorithm"
-msgstr "Algoritmus"
-
-#: ../gcr/gcr-key-renderer.c:299
-msgid "Size"
-msgstr "Méret"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-msgid "Fingerprint"
-msgstr "Ujjlenyomat"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "Ismeretlen vagy nem támogatott adatok."
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "Nem sikerült feldolgozni az érvénytelen vagy hibás adatokat."
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "Az adatok zárolva vannak"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Nem található tárolási hely a rögzített tanúsítványhoz"
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "Az URI szintaxisa érvénytelen. A(z) „%s” mező kódolása érvénytelen."
-
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "Az URI nem rendelkezik a „pkcs11” sémával."
 
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "Nem érhető el elég memória"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "A megadott helyazonosító nem érvényes"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "Belső hiba"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "A művelet meghiúsult"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "Érvénytelen argumentumok"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "A modul nem képes létrehozni a szükséges szálakat"
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "A modul nem képes megfelelően zárolni az adatokat"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "A mező írásvédett"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "A mező adatai érzékenyek és nem fedhetők fel"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "A mező érvénytelen vagy nem létezik"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "A mező értéke érvénytelen"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "Az adat érvénytelen vagy ismeretlen"
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "Az adat túl hosszú"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "Hiba történt az eszközön"
-
-#: ../gck/gck-misc.c:129
-msgid "Insufficient memory available on the device"
-msgstr "Nem érhető el elegendő memória az eszközön"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "Az eszköz eltávolításra vagy leválasztásra került"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "A titkosított adatok érvénytelenek vagy ismeretlenek"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "A titkosított adatok túl hosszúak"
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "Ez a művelet nem támogatott"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "A kulcs hiányzik vagy érvénytelen"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "A kulcs mérete hibás"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "A kulcs nem megfelelő típusú"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "Nem szükséges kulcs"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is different than before"
-msgstr "A kulcs megváltozott"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "Kulcs szükséges"
-
-#: ../gck/gck-misc.c:151
-msgid "Cannot include the key in the digest"
-msgstr "A kivonatba nem vehető fel a kulcs"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "Ez a művelet nem végezhető el a kulccsal"
-
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "A kulcs nem alakítható át"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "A kulcs nem exportálható"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "A titkosítási mód érvénytelen vagy ismeretlen"
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "A titkosítási mód argumentuma érvénytelen"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "Az objektum hiányzik vagy érvénytelen"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "Már folyamatban van egy művelet"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "Nincs folyamatban művelet"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "A jelszó vagy PIN helytelen"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "A jelszó vagy PIN érvénytelen"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "A jelszó vagy PIN érvénytelen hosszúságú"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "A jelszó vagy PIN lejárt"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "A jelszó vagy PIN zárolva van"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "A munkamenet le van zárva"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "Túl sok munkamenet aktív"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "A munkamenet érvénytelen"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "A munkamenet írásvédett"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "Már létezik nyitott munkamenet"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "Már létezik írásvédett munkamenet"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "Már létezik adminisztrátori munkamenet"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "Az aláírás rossz vagy sérült"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "Az aláírás ismeretlen vagy sérült"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "Néhány szükséges mező hiányzik"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "Néhány szükséges mező értéke érvénytelen"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "Az eszköz nincs jelen vagy eltávolították"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "Az eszköz érvénytelen vagy felismerhetetlen"
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "Az eszköz írásvédett"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "Nem importálható, mert a kulcs érvénytelen"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Nem importálható, mert a kulcs hibás méretű"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Nem importálható, mert a kulcs hibás típusú"
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "Már bejelentkezett"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "Senki sem jelentkezett be"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "A felhasználó jelszava vagy PIN kódja nincs beállítva"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "A felhasználó érvénytelen típusú"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "Már bejelentkezett egy másik felhasználó"
-
-#: ../gck/gck-misc.c:223
-msgid "Too many users of different types are logged in"
-msgstr "Túl sok eltérő típusú felhasználó jelentkezett be"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "Nem importálható érvénytelen kulcs"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "Nem importálható hibás méretű kulcs"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "Nem lehet exportálni, mert a kulcs érvénytelen"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Nem lehet exportálni, mert a kulcs hibás méretű"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Nem lehet exportálni, mert a kulcs hibás típusú"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "A véletlenszám-generátor nem készíthető elő"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "Nem áll rendelkezésre véletlenszám-generátor"
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "A titkosítási mechanizmus egy paramétere érvénytelen"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "Nincs elég hely az eredmény tárolásához"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "A mentett állapot érvénytelen"
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "Az információk érzékenyek és nem fedhetők fel"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "Az állapot nem menthető"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "A modul nincs előkészítve"
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "A modul már elő lett készítve"
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "Az adatok nem zárolhatók"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "Az adatok nem zárolhatók"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "A felhasználó elutasította az aláíráskérést"
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "Ismeretlen hiba"
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "Az URI szintaxisa hibás."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "Az URI verziószáma hibás."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -927,10 +935,6 @@ msgstr "Tanúsítvány feloldása"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Nyilvános kulcs feloldása"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Feloldás"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1027,11 +1031,11 @@ msgstr "parancsok: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "A jelszavak tárolása titkosítás nélkül?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1040,15 +1044,15 @@ msgstr ""
 "Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan "
 "titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "Nem biztonságos tárolás használata"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "Nem egyeznek a megadott jelszavak."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "A jelszó nem lehet üres"
 
