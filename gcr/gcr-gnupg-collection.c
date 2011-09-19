@@ -169,11 +169,28 @@ gcr_gnupg_collection_real_get_objects (GcrCollection *coll)
 	return g_hash_table_get_values (self->pv->items);
 }
 
+static gboolean
+gcr_gnupg_collection_real_contains (GcrCollection *collection,
+                                    GObject *object)
+{
+	GcrGnupgCollection *self = GCR_GNUPG_COLLECTION (collection);
+	GcrGnupgKey *key;
+
+	if (!GCR_IS_GNUPG_KEY (object))
+		return FALSE;
+	key = g_hash_table_lookup (self->pv->items,
+	                           _gcr_gnupg_key_get_keyid (GCR_GNUPG_KEY (object)));
+	if (key != NULL && G_OBJECT (key) == object)
+		return TRUE;
+	return FALSE;
+}
+
 static void
 _gcr_collection_iface (GcrCollectionIface *iface)
 {
 	iface->get_length = gcr_gnupg_collection_real_get_length;
 	iface->get_objects = gcr_gnupg_collection_real_get_objects;
+	iface->contains = gcr_gnupg_collection_real_contains;
 }
 
 /**

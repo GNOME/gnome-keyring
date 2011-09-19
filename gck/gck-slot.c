@@ -1103,3 +1103,41 @@ gck_slot_open_session_finish (GckSlot *self, GAsyncResult *result, GError **err)
 
 	return session;
 }
+
+/**
+ * gck_slot_match:
+ * @self: the slot to match
+ * @uri: the uri to match against the slot
+ *
+ * Check whether the PKCS\#11 URI matches the slot
+ *
+ * Returns: whether the URI matches or not
+ */
+gboolean
+gck_slot_match (GckSlot *self,
+                GckUriData *uri)
+{
+	GckModule *module;
+	GckTokenInfo *info;
+	gboolean match = TRUE;
+
+	g_return_val_if_fail (GCK_IS_SLOT (self), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	if (uri->any_unrecognized)
+		match = FALSE;
+
+	if (match && uri->module_info) {
+		module = gck_slot_get_module (self);
+		match = gck_module_match (module, uri);
+		g_object_unref (module);
+	}
+
+	if (match && uri->token_info) {
+		info = gck_slot_get_token_info (self);
+		match = _gck_token_info_match (uri->token_info, info);
+		gck_token_info_free (info);
+	}
+
+	return match;
+}

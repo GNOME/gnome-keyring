@@ -55,6 +55,7 @@
 #include "gcr-simple-collection.h"
 #include "gcr-tree-selector.h"
 #include "gcr-trust.h"
+#include "gcr-union-collection.h"
 #include "gcr-unlock-options.h"
 #include "gcr-unlock-options-widget.h"
 #include "gcr-viewer.h"

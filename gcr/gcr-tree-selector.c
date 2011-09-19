@@ -60,7 +60,6 @@ enum {
 struct _GcrTreeSelectorPrivate {
 	GcrCollection *collection;
 	const GcrColumn *columns;
-	GtkTreeModel *sort;
 	GcrCollectionModel *model;
 };
 
@@ -79,88 +78,6 @@ on_check_column_toggled (GtkCellRendererToggle *cell, gchar *path, GcrCollection
 
 	if (gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (model), &iter, path))
 		gcr_collection_model_toggle_selected (model, &iter);
-}
-
-typedef gint (*SortFunc) (GValue *, GValue *);
-
-static gint
-sort_string (GValue *val_a, GValue *val_b)
-{
-	const gchar *str_a = g_value_get_string (val_a);
-	const gchar *str_b = g_value_get_string (val_b);
-
-	if (str_a == str_b)
-		return 0;
-	else if (!str_a)
-		return -1;
-	else if (!str_b)
-		return 1;
-	else
-		return g_utf8_collate (str_a, str_b);
-}
-
-static gint
-sort_date (GValue *val_a, GValue *val_b)
-{
-	GDate *date_a = g_value_get_boxed (val_a);
-	GDate *date_b = g_value_get_boxed (val_b);
-
-	if (date_a == date_b)
-		return 0;
-	else if (!date_a)
-		return -1;
-	else if (!date_b)
-		return 1;
-	else
-		return g_date_compare (date_a, date_b);
-}
-
-static inline SortFunc
-sort_implementation_for_type (GType type)
-{
-	if (type == G_TYPE_STRING)
-		return sort_string;
-	else if (type == G_TYPE_DATE)
-		return sort_date;
-	else
-		return NULL;
-}
-
-static gint
-on_sort_column (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b,
-                gpointer user_data)
-{
-	GcrColumn *column = user_data;
-	SortFunc func;
-	GObject *object_a;
-	GObject *object_b;
-	GValue val_a;
-	GValue val_b;
-	gint ret;
-
-	object_a = gcr_collection_model_object_for_iter (GCR_COLLECTION_MODEL (model), a);
-	g_return_val_if_fail (G_IS_OBJECT (object_a), 0);
-	object_b = gcr_collection_model_object_for_iter (GCR_COLLECTION_MODEL (model), b);
-	g_return_val_if_fail (G_IS_OBJECT (object_b), 0);
-
-	memset (&val_a, 0, sizeof (val_a));
-	memset (&val_b, 0, sizeof (val_b));
-
-	g_value_init (&val_a, column->property_type);
-	g_value_init (&val_b, column->property_type);
-
-	g_object_get_property (object_a, column->property_name, &val_a);
-	g_object_get_property (object_b, column->property_name, &val_b);
-
-	func = sort_implementation_for_type (column->property_type);
-	g_return_val_if_fail (func, 0);
-
-	ret = (func) (&val_a, &val_b);
-
-	g_value_unset (&val_a);
-	g_value_unset (&val_b);
-
-	return ret;
 }
 
 static void
@@ -226,7 +143,6 @@ gcr_tree_selector_constructor (GType type, guint n_props, GObjectConstructParam 
 {
 	GcrTreeSelector *self = GCR_TREE_SELECTOR (G_OBJECT_CLASS (gcr_tree_selector_parent_class)->constructor(type, n_props, props));
 	const GcrColumn *column;
-	GtkTreeSortable *sortable;
 	guint i;
 
 	g_return_val_if_fail (self, NULL);
@@ -235,10 +151,7 @@ gcr_tree_selector_constructor (GType type, guint n_props, GObjectConstructParam 
 	self->pv->model = gcr_collection_model_new_full (self->pv->collection,
 	                                                 self->pv->columns);
 
-	self->pv->sort = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (self->pv->model));
-	sortable = GTK_TREE_SORTABLE (self->pv->sort);
-
-	gtk_tree_view_set_model (GTK_TREE_VIEW (self), GTK_TREE_MODEL (self->pv->sort));
+	gtk_tree_view_set_model (GTK_TREE_VIEW (self), GTK_TREE_MODEL (self->pv->model));
 
 	/* First add the check mark column */
 	add_check_column (self, gcr_collection_model_column_for_selected (self->pv->model));
@@ -254,16 +167,6 @@ gcr_tree_selector_constructor (GType type, guint n_props, GObjectConstructParam 
 		else
 			g_warning ("skipping unsupported column '%s' of type: %s",
 			           column->property_name, g_type_name (column->column_type));
-
-		/* Setup the column itself */
-		if (column->flags & GCR_COLUMN_SORTABLE) {
-			if (sort_implementation_for_type (column->property_type))
-				gtk_tree_sortable_set_sort_func (sortable, i, on_sort_column,
-				                                 (gpointer)column, NULL);
-			else
-				g_warning ("no sort implementation defined for type '%s' on column '%s'",
-				           g_type_name (column->property_type), column->property_name);
-		}
 	}
 
 	return G_OBJECT (self);
@@ -287,10 +190,6 @@ gcr_tree_selector_dispose (GObject *obj)
 	if (self->pv->collection)
 		g_object_unref (self->pv->collection);
 	self->pv->collection = NULL;
-
-	if (self->pv->sort)
-		g_object_unref (self->pv->sort);
-	self->pv->sort = NULL;
 
 	G_OBJECT_CLASS (gcr_tree_selector_parent_class)->dispose (obj);
 }

@@ -57,8 +57,10 @@ GcrCollectionModel*   gcr_collection_model_new                 (GcrCollection *c
 GcrCollectionModel*   gcr_collection_model_new_full            (GcrCollection *collection,
                                                                 const GcrColumn *columns);
 
-void                  gcr_collection_model_set_columns         (GcrCollectionModel *self,
+guint                 gcr_collection_model_set_columns         (GcrCollectionModel *self,
                                                                 const GcrColumn *columns);
+
+GcrCollection *       gcr_collection_model_get_collection      (GcrCollectionModel *self);
 
 GObject*              gcr_collection_model_object_for_iter     (GcrCollectionModel *self,
                                                                 const GtkTreeIter *iter);

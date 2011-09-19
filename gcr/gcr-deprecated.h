@@ -35,6 +35,7 @@
 
 #include "gcr-importer.h"
 #include "gcr-parser.h"
+#include "gcr-simple-collection.h"
 #include "gcr-viewer.h"
 
 #ifndef GCR_DISABLE_DEPRECATED
@@ -53,6 +54,9 @@ void              gcr_importer_set_parser                     (GcrImporter *self
 #define           GCR_ERROR                                   (gcr_error_get_domain ())
 
 GQuark            gcr_error_get_domain                        (void) G_GNUC_CONST;
+
+gboolean          gcr_simple_collection_contains              (GcrSimpleCollection *self,
+                                                               GObject *object);
 
 #endif /* GCR_DISABLE_DEPRECATED */
 
