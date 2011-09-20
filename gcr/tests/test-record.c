@@ -128,10 +128,10 @@ test_find (void)
 	uid = _gcr_record_parse_colons ("uid:two", -1);
 	g_ptr_array_add (records, uid);
 
-	check = _gcr_record_find (records, GCR_RECORD_SCHEMA_PUB);
+	check = _gcr_records_find (records, GCR_RECORD_SCHEMA_PUB);
 	g_assert (check == pub);
 
-	check = _gcr_record_find (records, GCR_RECORD_SCHEMA_UID);
+	check = _gcr_records_find (records, GCR_RECORD_SCHEMA_UID);
 	g_assert (check == uid);
 
 	g_ptr_array_unref (records);

@@ -87,7 +87,8 @@ typedef enum {
  * fpr:::::::::ECAF7590EB3443B5C7CF3ACB6C7EE1B8621CC013:
  */
 typedef enum {
-	GCR_RECORD_FPR_FINGERPRINT = 9
+	GCR_RECORD_FPR_FINGERPRINT = 9,
+	GCR_RECORD_FPR_MAX = 10
 } GcrRecordFprColumns;
 
 /*
@@ -118,8 +119,9 @@ typedef enum {
  */
 typedef enum {
 	GCR_RECORD_UID_TIMESTAMP = 5,
+	GCR_RECORD_UID_EXPIRY = 6,
 	GCR_RECORD_UID_FINGERPRINT = 7,
-	GCR_RECORD_UID_NAME = 9,
+	GCR_RECORD_UID_USERID = 9,
 	GCR_RECORD_UID_MAX = 10,
 } GcrRecordUidColumns;
 
@@ -133,7 +135,7 @@ typedef enum {
 	GCR_RECORD_SIG_KEYID = 4,
 	GCR_RECORD_SIG_TIMESTAMP = 5,
 	GCR_RECORD_SIG_EXPIRY = 6,
-	GCR_RECORD_SIG_NAME = 9,
+	GCR_RECORD_SIG_USERID = 9,
 	GCR_RECORD_SIG_CLASS = 10,
 	GCR_RECORD_SIG_MAX = 11,
 } GcrRecordSigColumns;
@@ -196,15 +198,7 @@ GcrRecord*     _gcr_record_parse_spaces         (const gchar *line,
 
 gchar *        _gcr_record_format               (GcrRecord *record);
 
-gchar *        _gcr_records_format              (GPtrArray *records);
-
 void           _gcr_record_free                 (gpointer record);
-
-GcrRecord*     _gcr_record_find                 (GPtrArray *records,
-                                                 GQuark schema);
-
-GcrRecord*     _gcr_record_rfind                (GPtrArray *records,
-                                                 GQuark schema);
 
 guint          _gcr_record_get_count            (GcrRecord *record);
 
@@ -238,13 +232,8 @@ void           _gcr_record_set_ulong            (GcrRecord *record,
                                                  guint column,
                                                  gulong value);
 
-gboolean       _gcr_record_get_date             (GcrRecord *record,
-                                                 guint column,
-                                                 gulong *value);
-
-void           _gcr_record_set_date             (GcrRecord *record,
-                                                 guint column,
-                                                 gulong value);
+GDateTime *    _gcr_record_get_date             (GcrRecord *record,
+                                                 guint column);
 
 gpointer       _gcr_record_get_base64           (GcrRecord *record,
                                                  guint column,
@@ -267,6 +256,14 @@ void           _gcr_record_take_raw             (GcrRecord *record,
                                                  gchar *value);
 
 GQuark         _gcr_record_get_schema           (GcrRecord *record);
+
+GPtrArray *    _gcr_records_parse_colons        (gconstpointer data,
+                                                 gssize n_data);
+
+gchar *        _gcr_records_format              (GPtrArray *records);
+
+GcrRecord *    _gcr_records_find                (GPtrArray *records,
+                                                 GQuark schema);
 
 G_END_DECLS
 

@@ -33,6 +33,14 @@
 #include <gck/gck.h>
 
 typedef enum {
+	GCR_OPENPGP_ALGO_RSA = 1,
+	GCR_OPENPGP_ALGO_RSA_E = 2,
+	GCR_OPENPGP_ALGO_RSA_S = 3,
+	GCR_OPENPGP_ALGO_ELG_E = 16,
+	GCR_OPENPGP_ALGO_DSA = 17
+} GcrOpenpgpAlgo;
+
+typedef enum {
 	GCR_OPENPGP_PARSE_NONE = 0,
 	GCR_OPENPGP_PARSE_KEYS = 1 << 1,
 	GCR_OPENPGP_PARSE_NO_RECORDS = 1 << 2,

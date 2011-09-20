@@ -87,6 +87,16 @@ typedef enum {
 	GCR_FORMAT_PEM_PRIVATE_KEY
 } GcrDataFormat;
 
+/*
+ * Special PKCS#11 style attributes that we use internally in GCR.
+ * These are used by GcrParser the most
+ */
+
+enum {
+	/* An object class representing GcrRecord/gnupg-colons style data */
+	CKO_GCR_GNUPG_RECORDS = (CKO_VENDOR_DEFINED | 0x47435200UL /* GCR0 */)
+};
+
 G_END_DECLS
 
 #endif /* GCRTYPES_H_ */

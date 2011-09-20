@@ -147,22 +147,6 @@ _gcr_record_format (GcrRecord *record)
 	return g_string_free (string, FALSE);
 }
 
-gchar *
-_gcr_records_format (GPtrArray *records)
-{
-	GString *string;
-	guint i;
-
-	g_return_val_if_fail (records, NULL);
-
-	string = g_string_new ("");
-	for (i = 0; i < records->len; i++) {
-		print_record_to_string (records->pdata[i], string);
-		g_string_append_c (string, '\n');
-	}
-	return g_string_free (string, FALSE);
-}
-
 GcrRecord *
 _gcr_record_new (GQuark schema,
                  guint n_columns,
@@ -251,22 +235,6 @@ _gcr_record_parse_spaces (const gchar *line, gssize n_line)
 	if (n_line < 0)
 		n_line = strlen (line);
 	return take_and_parse_internal (record_block_new (line, n_line), ' ', FALSE);
-}
-
-GcrRecord*
-_gcr_record_find (GPtrArray *records, GQuark schema)
-{
-	guint i;
-
-	g_return_val_if_fail (records, NULL);
-	g_return_val_if_fail (schema, NULL);
-
-	for (i = 0; i < records->len; i++) {
-		if (schema == _gcr_record_get_schema (records->pdata[i]))
-			return records->pdata[i];
-	}
-
-	return NULL;
 }
 
 guint
@@ -622,60 +590,35 @@ _gcr_record_set_ulong (GcrRecord *record,
 	                    record_block_take (escaped, strlen (escaped)));
 }
 
-gboolean
+GDateTime *
 _gcr_record_get_date (GcrRecord *record,
-                      guint column,
-                      gulong *value)
+                      guint column)
 {
 	const gchar *raw;
 	gulong result;
 	gchar *end = NULL;
 	struct tm tm;
 
-	g_return_val_if_fail (record, FALSE);
+	g_return_val_if_fail (record, NULL);
 
 	raw = _gcr_record_get_raw (record, column);
 	if (raw == NULL)
-		return FALSE;
+		return NULL;
 
 	/* Try to parse as a number */
 	result = strtoul (raw, &end, 10);
+	if (end != NULL && end[0] == '\0')
+		return g_date_time_new_from_unix_utc (result);
+
+	/* Try to parse as a date */
+	memset (&tm, 0, sizeof (tm));
+	end = strptime (raw, "%Y-%m-%d", &tm);
 	if (!end || end[0]) {
-		/* Try to parse as a date */
-		memset (&tm, 0, sizeof (tm));
-		end = strptime (raw, "%Y-%m-%d", &tm);
-		if (!end || end[0]) {
-			_gcr_debug ("invalid date value: %s", raw);
-			return FALSE;
-		}
-		result = timegm (&tm);
+		_gcr_debug ("invalid date value: %s", raw);
+		return NULL;
 	}
 
-	if (value)
-		*value = result;
-	return TRUE;
-}
-
-void
-_gcr_record_set_date (GcrRecord *record,
-                      guint column,
-                      gulong value)
-{
-	GcrRecordBlock *block;
-	time_t time;
-	struct tm tm;
-	gsize len;
-
-	g_return_if_fail (record != NULL);
-	g_return_if_fail (column < record->n_columns);
-
-	time = value;
-	gmtime_r (&time, &tm);
-	block = record_block_new (NULL, 20);
-	len = strftime (block->value, 20, "%Y-%m-%d", &tm);
-	g_assert (len < 20);
-
-	record_take_column (record, column, block);
+	return g_date_time_new_utc (tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, 0, 0, 0);
 }
 
 /**
@@ -798,4 +741,71 @@ _gcr_record_get_schema (GcrRecord *record)
 	if (value != NULL)
 		return g_quark_try_string (value);
 	return 0;
+}
+
+GcrRecord *
+_gcr_records_find (GPtrArray *records,
+                   GQuark schema)
+{
+	guint i;
+
+	g_return_val_if_fail (records, NULL);
+	g_return_val_if_fail (schema, NULL);
+
+	for (i = 0; i < records->len; i++) {
+		if (schema == _gcr_record_get_schema (records->pdata[i]))
+			return records->pdata[i];
+	}
+
+	return NULL;
+}
+
+gchar *
+_gcr_records_format (GPtrArray *records)
+{
+	GString *string;
+	guint i;
+
+	g_return_val_if_fail (records, NULL);
+
+	string = g_string_new ("");
+	for (i = 0; i < records->len; i++) {
+		print_record_to_string (records->pdata[i], string);
+		g_string_append_c (string, '\n');
+	}
+	return g_string_free (string, FALSE);
+}
+
+GPtrArray *
+_gcr_records_parse_colons (gconstpointer data,
+                           gssize n_data)
+{
+	GPtrArray *result = NULL;
+	GcrRecordBlock *block;
+	GcrRecord *record;
+	gchar **lines;
+	guint i;
+
+	lines = g_strsplit (data, "\n", n_data);
+	result = g_ptr_array_new_with_free_func (_gcr_record_free);
+
+	for (i = 0; lines[i] != NULL; i++) {
+		block = record_block_take (lines[i], strlen (lines[i]));
+		record = take_and_parse_internal (block, ':', TRUE);
+		if (record == NULL) {
+			g_ptr_array_unref (result);
+			result = NULL;
+			break;
+		}
+		g_ptr_array_add (result, record);
+	}
+
+	/* Free any not done */
+	for (; lines[i] != NULL; i++)
+		g_free (lines[i]);
+
+	/* Individual lines already freed */
+	g_free (lines);
+
+	return result;
 }

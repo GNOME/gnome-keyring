@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gcr-gnupg-key.h"
+#include "gcr-gnupg-records.h"
 #include "gcr-record.h"
 #include "gcr-memory-icon.h"
 
@@ -143,10 +144,10 @@ calculate_name (GcrGnupgKey *self)
 {
 	GcrRecord* record;
 
-	record = _gcr_record_find (self->pv->public_records, GCR_RECORD_SCHEMA_UID);
+	record = _gcr_records_find (self->pv->public_records, GCR_RECORD_SCHEMA_UID);
 	g_return_val_if_fail (record, NULL);
 
-	return _gcr_record_get_string (record, GCR_RECORD_UID_NAME);
+	return _gcr_record_get_string (record, GCR_RECORD_UID_USERID);
 }
 
 static gchar *
@@ -170,23 +171,6 @@ calculate_markup (GcrGnupgKey *self)
 	g_free (uid);
 
 	return markup;
-}
-
-static const gchar *
-calculate_short_keyid (GcrGnupgKey *self)
-{
-	const gchar *keyid;
-	gsize length;
-
-	keyid = _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
-	if (keyid == NULL)
-		return NULL;
-
-	length = strlen (keyid);
-	if (length > 8)
-		keyid += (length - 8);
-
-	return keyid;
 }
 
 static void
@@ -253,7 +237,7 @@ _gcr_gnupg_key_get_property (GObject *obj, guint prop_id, GValue *value,
 		g_value_take_string (value, calculate_markup (self));
 		break;
 	case PROP_SHORT_KEYID:
-		g_value_set_string (value, calculate_short_keyid (self));
+		g_value_set_string (value, _gcr_gnupg_records_get_short_keyid (self->pv->public_records));
 		break;
 	case PROP_ICON:
 		g_value_set_object (value, _gcr_gnupg_key_get_icon (self));
@@ -403,8 +387,8 @@ _gcr_gnupg_key_set_public_records (GcrGnupgKey *self, GPtrArray *records)
 
 	/* Check that it matches previous */
 	if (self->pv->public_records) {
-		const gchar *old_keyid = _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
-		const gchar *new_keyid = _gcr_gnupg_key_get_keyid_for_records (records);
+		const gchar *old_keyid = _gcr_gnupg_records_get_keyid (self->pv->public_records);
+		const gchar *new_keyid = _gcr_gnupg_records_get_keyid (records);
 
 		if (g_strcmp0 (old_keyid, new_keyid) != 0) {
 			g_warning ("it is an error to change a gnupg key so that the "
@@ -458,8 +442,8 @@ _gcr_gnupg_key_set_secret_records (GcrGnupgKey *self, GPtrArray *records)
 
 	/* Check that it matches public key */
 	if (self->pv->public_records && records) {
-		const gchar *pub_keyid = _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
-		const gchar *sec_keyid = _gcr_gnupg_key_get_keyid_for_records (records);
+		const gchar *pub_keyid = _gcr_gnupg_records_get_keyid (self->pv->public_records);
+		const gchar *sec_keyid = _gcr_gnupg_records_get_keyid (records);
 
 		if (g_strcmp0 (pub_keyid, sec_keyid) != 0) {
 			g_warning ("it is an error to create a gnupg key so that the "
@@ -493,98 +477,7 @@ const gchar*
 _gcr_gnupg_key_get_keyid (GcrGnupgKey *self)
 {
 	g_return_val_if_fail (GCR_IS_GNUPG_KEY (self), NULL);
-	return _gcr_gnupg_key_get_keyid_for_records (self->pv->public_records);
-}
-
-/**
- * _gcr_gnupg_key_get_keyid_for_records:
- * @records: Array of GcrRecord*
- *
- * Get the keyid for some record data.
- *
- * Returns: (transfer none): The keyid.
- */
-const gchar*
-_gcr_gnupg_key_get_keyid_for_records (GPtrArray *records)
-{
-	GcrRecord *record;
-
-	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_PUB);
-	if (record != NULL)
-		return _gcr_record_get_raw (record, GCR_RECORD_KEY_KEYID);
-	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_SEC);
-	if (record != NULL)
-		return _gcr_record_get_raw (record, GCR_RECORD_KEY_KEYID);
-	return NULL;
-}
-
-/**
- * _gcr_gnupg_key_get_fingerprint_for_records:
- * @records: Array of GcrRecord*
- *
- * Get the fingerprint field for some record data:
- *
- * Returns: (transfer none): The fingerprint.
- */
-const gchar*
-_gcr_gnupg_key_get_fingerprint_for_records (GPtrArray *records)
-{
-	GcrRecord *record;
-
-	record = _gcr_record_find (records, GCR_RECORD_SCHEMA_FPR);
-	if (record != NULL)
-		return _gcr_record_get_raw (record, GCR_RECORD_FPR_FINGERPRINT);
-	return NULL;
-}
-
-#define TYPE_IMAGE 0x01
-#define IMAGE_HEADER_LEN 0x10
-#define IMAGE_JPEG_SIG "\x10\x00\x01\x01"
-#define IMAGE_JPEG_SIG_LEN 4
-
-static GIcon*
-load_user_attribute_icon (GcrGnupgKey *self)
-{
-	GcrRecord *record;
-	guchar *data;
-	gsize n_data;
-	guint type;
-	guint i;
-
-	for (i = 0; i < self->pv->public_records->len; i++) {
-		record = self->pv->public_records->pdata[i];
-		if (GCR_RECORD_SCHEMA_XA1 != _gcr_record_get_schema (record))
-			continue;
-		if (!_gcr_record_get_uint (record, GCR_RECORD_XA1_TYPE, &type))
-			continue;
-		if (type != TYPE_IMAGE)
-			continue;
-
-		/* TODO: Validity? */
-
-		data = _gcr_record_get_base64 (record, GCR_RECORD_XA1_DATA, &n_data);
-		g_return_val_if_fail (data != NULL, NULL);
-
-		/* Header is 16 bytes long */
-		if (n_data <= IMAGE_HEADER_LEN) {
-			g_free (data);
-			continue;
-		}
-
-		/* These are the header bytes. See gnupg doc/DETAILS */
-		g_assert (IMAGE_JPEG_SIG_LEN < IMAGE_HEADER_LEN);
-		if (memcmp (data, IMAGE_JPEG_SIG, IMAGE_JPEG_SIG_LEN) != 0) {
-			g_free (data);
-			continue;
-		}
-
-		/* We have a valid header */
-		return G_ICON (_gcr_memory_icon_new_full ("image/jpeg", data,
-		                                          n_data, IMAGE_HEADER_LEN,
-		                                          g_free));
-	}
-
-	return NULL;
+	return _gcr_gnupg_records_get_keyid (self->pv->public_records);
 }
 
 /**
@@ -601,7 +494,7 @@ _gcr_gnupg_key_get_icon (GcrGnupgKey *self)
 	g_return_val_if_fail (GCR_IS_GNUPG_KEY (self), NULL);
 
 	if (self->pv->icon == NULL) {
-		self->pv->icon = load_user_attribute_icon (self);
+		self->pv->icon = _gcr_gnupg_records_get_icon (self->pv->public_records);
 		if (self->pv->icon == NULL) {
 			if (self->pv->secret_records)
 				self->pv->icon = g_themed_icon_new ("gcr-key-pair");

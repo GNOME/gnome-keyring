@@ -25,6 +25,7 @@ gcr/gcr-failure-renderer.c
 [type: gettext/glade]gcr/gcr-import-dialog.ui
 gcr/gcr-gnupg-key.c
 gcr/gcr-gnupg-process.c
+gcr/gcr-gnupg-renderer.c
 gcr/gcr-importer.c
 gcr/gcr-library.c
 gcr/gcr-key-renderer.c

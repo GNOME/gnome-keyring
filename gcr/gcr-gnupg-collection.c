@@ -30,6 +30,7 @@
 #include "gcr-gnupg-collection.h"
 #include "gcr-gnupg-key.h"
 #include "gcr-gnupg-process.h"
+#include "gcr-gnupg-records.h"
 #include "gcr-gnupg-util.h"
 #include "gcr-internal.h"
 #include "gcr-record.h"
@@ -305,7 +306,7 @@ process_records_as_public_key (GcrGnupgCollectionLoad *load, GPtrArray *records,
 	guint i;
 
 	/* Add in any attributes we have loaded */
-	fingerprint = _gcr_gnupg_key_get_fingerprint_for_records (records);
+	fingerprint = _gcr_gnupg_records_get_fingerprint (records);
 	if (fingerprint && load->attributes)
 		attr_records = g_hash_table_lookup (load->attributes, fingerprint);
 	if (attr_records) {
@@ -377,7 +378,7 @@ process_records_as_key (GcrGnupgCollectionLoad *load)
 	records = load->records;
 	load->records = g_ptr_array_new_with_free_func (_gcr_record_free);
 
-	keyid = _gcr_gnupg_key_get_keyid_for_records (records);
+	keyid = _gcr_gnupg_records_get_keyid (records);
 	if (keyid) {
 		schema = _gcr_record_get_schema (records->pdata[0]);
 

@@ -30,6 +30,7 @@
 #include "gcr-openpgp.h"
 #include "gcr-openssh.h"
 #include "gcr-parser.h"
+#include "gcr-record.h"
 #include "gcr-types.h"
 
 #include "egg/egg-armor.h"
@@ -292,6 +293,9 @@ parsed_description (GcrParsed *parsed,
 	case CKO_PUBLIC_KEY:
 		parsed->description = _("Public Key");
 		break;
+	case CKO_GCR_GNUPG_RECORDS:
+		parsed->description = _("PGP Key");
+		break;
 	default:
 		parsed->description = NULL;
 		break;
@@ -410,7 +414,7 @@ parsed_fire (GcrParser *self,
              GcrParsed *parsed)
 {
 	g_assert (GCR_IS_PARSER (self));
-	g_assert (parsed);
+	g_assert (parsed != NULL);
 	g_assert (parsed == self->pv->parsed);
 
 	g_object_notify (G_OBJECT (self), "parsed-description");
@@ -1407,14 +1411,26 @@ on_openpgp_packet (GPtrArray *records,
 {
 	GcrParser *self = GCR_PARSER (user_data);
 	GcrParsed *parsed;
+	gchar *string;
+
+	/*
+	 * If it's an openpgp packet that doesn't contain a key, then
+	 * just ignore it here.
+	 */
+	if (records->len == 0)
+		return;
 
 	parsed = push_parsed (self);
 
 	/* All we can do is the packet bounds */
 	parsing_block (parsed, GCR_FORMAT_OPENPGP_PACKET, outer, n_outer);
-	parsing_object (parsed, CKO_DATA);
+	parsing_object (parsed, CKO_GCR_GNUPG_RECORDS);
+	string = _gcr_records_format (records);
+	parsed_attribute (parsed, CKA_VALUE, string, strlen (string));
 	parsed_fire (self, parsed);
 	pop_parsed (self, parsed);
+
+	g_free (string);
 }
 
 static gint

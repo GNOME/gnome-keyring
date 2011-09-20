@@ -611,4 +611,14 @@ GcrCallbackOutputFunc
 GcrCallbackOutputStream
 GcrCallbackOutputStreamClass
 GcrOpenpgpParseFlags
+GCR_GNUPG_RENDERER
+GCR_GNUPG_RENDERER_CLASS
+GCR_GNUPG_RENDERER_GET_CLASS
+GCR_IS_GNUPG_RENDERER
+GCR_IS_GNUPG_RENDERER_CLASS
+GCR_TYPE_GNUPG_RENDERER
+GcrGnupgRenderer
+GcrGnupgRendererClass
+GcrGnupgRendererPrivate
+GcrOpenpgpAlgo
 </SECTION>

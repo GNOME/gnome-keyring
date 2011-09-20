@@ -35,14 +35,6 @@
 #include <string.h>
 
 typedef enum {
-	OPENPGP_ALGO_RSA = 1,
-	OPENPGP_ALGO_RSA_E = 2,
-	OPENPGP_ALGO_RSA_S = 3,
-	OPENPGP_ALGO_ELG_E = 16,
-	OPENPGP_ALGO_DSA = 17
-} OpenpgpPkAlgo;
-
-typedef enum {
 	OPENPGP_PKT_RESERVED = 0,
 	OPENPGP_PKT_PUBKEY_ENC = 1,
 	OPENPGP_PKT_SIGNATURE = 2,
@@ -317,7 +309,8 @@ parse_v3_rsa_bits_and_keyid (const guchar **at,
 
 static gchar *
 hash_v4_keyid (const guchar *data,
-               const guchar *end)
+               const guchar *end,
+               gchar **fingerprint)
 {
 	gcry_md_hd_t mdh;
 	gcry_error_t gcry;
@@ -349,6 +342,8 @@ hash_v4_keyid (const guchar *data,
 
 	digest = gcry_md_read (mdh, 0);
 	keyid = egg_hex_encode_full (digest + 12, 8, TRUE, 0, 0);
+	if (fingerprint)
+		*fingerprint = egg_hex_encode_full (digest, 20, TRUE, 0, 0);
 	gcry_md_close (mdh);
 
 	return keyid;
@@ -361,21 +356,21 @@ parse_v4_algo_bits (const guchar **at,
                     guint16 *bits)
 {
 	switch (algo) {
-	case OPENPGP_ALGO_RSA:
-	case OPENPGP_ALGO_RSA_E:
-	case OPENPGP_ALGO_RSA_S:
+	case GCR_OPENPGP_ALGO_RSA:
+	case GCR_OPENPGP_ALGO_RSA_E:
+	case GCR_OPENPGP_ALGO_RSA_S:
 		if (!read_mpi (at, end, bits, NULL) ||
 		    !read_mpi (at, end, NULL, NULL))
 			return FALSE;
 		return TRUE;
-	case OPENPGP_ALGO_DSA:
+	case GCR_OPENPGP_ALGO_DSA:
 		if (!read_mpi (at, end, bits, NULL) ||
 		    !read_mpi (at, end, NULL, NULL) ||
 		    !read_mpi (at, end, NULL, NULL) ||
 		    !read_mpi (at, end, NULL, NULL))
 			return FALSE;
 		return TRUE;
-	case OPENPGP_ALGO_ELG_E:
+	case GCR_OPENPGP_ALGO_ELG_E:
 		if (!read_mpi (at, end, bits, NULL) ||
 		    !read_mpi (at, end, NULL, NULL) ||
 		    !read_mpi (at, end, NULL, NULL))
@@ -390,15 +385,15 @@ static const gchar *
 default_caps_for_algo (guint8 algo)
 {
 	switch (algo) {
-	case OPENPGP_ALGO_RSA:
+	case GCR_OPENPGP_ALGO_RSA:
 		return "cse";
-	case OPENPGP_ALGO_RSA_E:
+	case GCR_OPENPGP_ALGO_RSA_E:
 		return "e";
-	case OPENPGP_ALGO_RSA_S:
+	case GCR_OPENPGP_ALGO_RSA_S:
 		return "s";
-	case OPENPGP_ALGO_ELG_E:
+	case GCR_OPENPGP_ALGO_ELG_E:
 		return "e";
-	case OPENPGP_ALGO_DSA:
+	case GCR_OPENPGP_ALGO_DSA:
 		return "sca";
 	default:
 		return "";
@@ -422,6 +417,7 @@ parse_public_key_or_subkey (GQuark schema,
 	guint8 algo;
 	guint16 bits;
 	gulong expiry;
+	gchar *fingerprint;
 	const guchar *data;
 
 	/* Start of actual key data in packet */
@@ -455,7 +451,7 @@ parse_public_key_or_subkey (GQuark schema,
 	} else {
 		if (!parse_v4_algo_bits (at, end, algo, &bits))
 			return FALSE;
-		keyid = hash_v4_keyid (data, *at);
+		keyid = hash_v4_keyid (data, *at, &fingerprint);
 	}
 
 	record = _gcr_record_new (schema, n_columns, ':');
@@ -472,6 +468,15 @@ parse_public_key_or_subkey (GQuark schema,
 	}
 
 	g_ptr_array_add (records, record);
+
+	if (fingerprint && (schema == GCR_RECORD_SCHEMA_PUB || schema == GCR_RECORD_SCHEMA_SEC)) {
+		record = _gcr_record_new (GCR_RECORD_SCHEMA_FPR, GCR_RECORD_FPR_MAX, ':');
+		_gcr_record_take_raw (record, GCR_RECORD_FPR_FINGERPRINT, fingerprint);
+		g_ptr_array_add (records, record);
+		fingerprint = NULL;
+	}
+
+	g_free (fingerprint);
 	return TRUE;
 }
 
@@ -520,7 +525,7 @@ parse_user_id (const guchar *beg,
 	fingerprint = hash_user_id_or_attribute (*at, end);
 	record = _gcr_record_new (GCR_RECORD_SCHEMA_UID, GCR_RECORD_UID_MAX, ':');
 	_gcr_record_take_raw (record, GCR_RECORD_UID_FINGERPRINT, fingerprint);
-	_gcr_record_set_string (record, GCR_RECORD_UID_NAME, string);
+	_gcr_record_set_string (record, GCR_RECORD_UID_USERID, string);
 	g_free (string);
 
 	g_ptr_array_add (records, record);
@@ -608,11 +613,11 @@ skip_signature_mpis (const guchar **at,
 	switch (algo) {
 
 	/* RSA signature value */
-	case OPENPGP_ALGO_RSA:
+	case GCR_OPENPGP_ALGO_RSA:
 		return read_mpi (at, end, NULL, NULL);
 
 	/* DSA values r and s */
-	case OPENPGP_ALGO_DSA:
+	case GCR_OPENPGP_ALGO_DSA:
 		return read_mpi (at, end, NULL, NULL) &&
 		       read_mpi (at, end, NULL, NULL);
 	default:
@@ -757,7 +762,7 @@ parse_v4_signature_subpacket (const guchar **at,
 
 	case OPENPGP_SIG_SIGNER_USERID:
 		value = g_strndup ((gchar *)*at, end - *at);
-		_gcr_record_set_string (record, GCR_RECORD_SIG_NAME, value);
+		_gcr_record_set_string (record, GCR_RECORD_SIG_USERID, value);
 		g_free (value);
 		return TRUE;
 
@@ -1182,7 +1187,7 @@ normalize_key_records (GPtrArray *records)
 					continue;
 			}
 			schema = _gcr_record_get_schema (records->pdata[i]);
-			if (schema != GCR_RECORD_SCHEMA_SIG)
+			if (schema != GCR_RECORD_SCHEMA_SIG && schema != GCR_RECORD_SCHEMA_FPR)
 				_gcr_record_set_char (records->pdata[i], GCR_RECORD_TRUST, trust);
 		}
 	}

@@ -99,6 +99,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-collection.c gcr-gnupg-collection.h \
 	gcr-gnupg-key.c gcr-gnupg-key.h \
 	gcr-gnupg-process.c gcr-gnupg-process.h \
+	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-gnupg-util.c gcr-gnupg-util.h \
 	gcr-library.c gcr-library.h \
 	gcr-internal.h \
@@ -126,10 +127,13 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-certificate-widget.c gcr-certificate-widget.h \
 	gcr-collection-model.c gcr-collection-model.h \
 	gcr-combo-selector.c gcr-combo-selector.h \
+	gcr-debug.c gcr-debug.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-display-view.c gcr-display-view.h \
 	gcr-failure-renderer.c gcr-failure-renderer.h \
 	gcr-fingerprint.c gcr-fingerprint.h \
+	gcr-gnupg-renderer.c gcr-gnupg-renderer.h \
+	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-icons.c gcr-icons.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-importer.c gcr-importer.h  \
@@ -138,6 +142,8 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-list-selector.c gcr-list-selector.h gcr-list-selector-private.h \
 	gcr-live-search.c gcr-live-search.h \
 	gcr-memory.c \
+	gcr-memory-icon.c gcr-memory-icon.h \
+	gcr-record.c gcr-record.h \
 	gcr-renderer.c gcr-renderer.h \
 	gcr-tree-selector.c gcr-tree-selector.h \
 	gcr-unlock-options.h \

@@ -24,6 +24,7 @@
 
 #include "gcr/gcr-record.h"
 #include "gcr/gcr-gnupg-key.h"
+#include "gcr/gcr-gnupg-records.h"
 
 #include "egg/egg-testing.h"
 
@@ -160,7 +161,7 @@ test_keyid_for_records (Test *test, gconstpointer unused)
 {
 	const gchar *keyid;
 
-	keyid = _gcr_gnupg_key_get_keyid_for_records (test->records);
+	keyid = _gcr_gnupg_records_get_keyid (test->records);
 	g_assert_cmpstr (keyid, ==, "6C7EE1B8621CC013");
 }
 

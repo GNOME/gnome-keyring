@@ -171,7 +171,7 @@ test_load (Test *test, gconstpointer unused)
 	/* Phillip R. Zimmerman's key should have a photo */
 	key = g_hash_table_lookup (test->keys, "C7463639B2D7795E");
 	g_assert (GCR_IS_GNUPG_KEY (key));
-	record = _gcr_record_find (_gcr_gnupg_key_get_public_records (key), GCR_RECORD_SCHEMA_XA1);
+	record = _gcr_records_find (_gcr_gnupg_key_get_public_records (key), GCR_RECORD_SCHEMA_XA1);
 	g_assert (record);
 }
 
