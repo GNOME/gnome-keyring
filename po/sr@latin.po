@@ -11,16 +11,18 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-03-22 09:59+0000\n"
-"PO-Revision-Date: 2011-03-22 11:27+0200\n"
+"POT-Creation-Date: 2011-09-19 12:19+0000\n"
+"PO-Revision-Date: 2011-09-19 19:10+0200\n"
 "Last-Translator: Miroslav Nikolić <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: Serbian (sr)\n"
-"Plural-Forms: nplurals=4;    plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 :    n"
-"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: sr\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 :    n%"
+"10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-Project-Style: gnome\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
@@ -101,8 +103,8 @@ msgstr "Gnomovi privesci: GPG agent"
 msgid "GPG Password Agent"
 msgstr "Agent za GPG lozinke"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Nepoznato"
 
@@ -173,7 +175,7 @@ msgstr "Srednje ime"
 msgid "Surname"
 msgstr "Prezime"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Serijski broj"
 
@@ -229,29 +231,50 @@ msgstr "DN oznaka"
 msgid "Pseudonym"
 msgstr "Pseudonim"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 sa RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 sa RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 sa RSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 sa DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Potvrda identiteta servera"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Potvrda identiteta klijenta"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Potpisivanje koda"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "Zaštita e-pošte"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Prikaz datuma i vremena"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -265,111 +288,329 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Neočekivana greška u funkciji waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Greška učitavanja PKCS#11 modula: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Neispravan PKCS#11 modul: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Ne mogu da podesim PKCS#11 modul: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Ne mogu da pokrenem PKCS#11 modul: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Ne mogu da pokrenem registrovane PKCS#11 module: %s"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "Naziv"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "Izdavač"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "Ističe"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Sertifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "Proširenje"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>Datoteka već postoji sa ovim nazivom.</b>\n"
+"\n"
+"Da li želite da je zamenite novom datotekom?"
 
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "Identifikator"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "_Zameni"
 
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "Vrednost"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "Operacija je otkazana."
 
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "Kritično"
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "Izvezi uverenje"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "Datoteke uverenja"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "PEM datoteke"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "Drugi naziv"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "HMPP adresa"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "E-pošta"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "H400 adresa"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "Fascikla"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "Naziv EDI strane"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "Adresa"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "IP adresa"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "Registrovan IB"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "Osnovna ograničenja"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "Izdavač uverenja"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Da"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Ne"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "Najveća dužina putanje"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "Neograničeno"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "Korišćenje proširenog ključa"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "Dozvoljene svrhe"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "Identifikator ključa objekta"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "Identifikator ključa"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "Digitalni potpis"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "Zamućivanje ključa"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "Zamućivanje podataka"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "Saglasnost ključa"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "Potpis uverenja"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "Spisak opoziva potpisa"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "Korišćenje ključa"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "Upotrebe"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "Alternativni nazivi subjekta"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "Proširenje"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "Identifikator"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "Vrednost"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "Kritično"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "Ne mogu da izvezem uverenje."
+
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Identitet"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Proverio"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Ističe"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Ime predmeta"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Ime izdavaoca"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Izdati sertifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Izdanje"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Ne važi pre"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Ne važi posle"
 
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "Algoritam potpisa"
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "Otisci uverenja"
 
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "Parametri potpisa"
-
-#: ../gcr/gcr-certificate-renderer.c:413
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Potpis"
 
+#: ../gcr/gcr-certificate-renderer.c:679
+msgid "Signature Algorithm"
+msgstr "Algoritam potpisa"
+
+#: ../gcr/gcr-certificate-renderer.c:683
+msgid "Signature Parameters"
+msgstr "Parametri potpisa"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Podaci o javnom ključu"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Algoritam ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Parametri ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Veličina ključa"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "SHA1 otisak ključa"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Javni ključ"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
-msgid "Fingerprints"
-msgstr "Otisci"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "_Detalji"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Ne mogu da prikažem „%s“"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Ne mogu da prikažem datoteku"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Razlog"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Ne mogu da prikažem datoteku ove vrste."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -382,6 +623,162 @@ msgstr "Uvezi u:"
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
 msgstr "Lozinka:"
+
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "PGP ključ"
+
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "IB ključa"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "GnuPG proces je izašao sa kodom: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "GnuPG proces je okončan signalom: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
+msgid "The operation was cancelled"
+msgstr "Radnja je poništena"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Unesite lozinku za otključavanje tajnog ključa"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Unesite lozinku za otključavanje sertifikata"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Unesite lozinku za otključavanje"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Da biste uvezli tajni ključ, on mora biti otključan"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Da biste uvezli sertifikat, on mora biti otključan"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "Da biste uvezli podatak, on mora biti otključan"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "Da biste uvezli tajni ključ „%s“, on mora biti otključan"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "Da biste uvezli sertifikat „%s“, on mora biti otključan"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "Da biste uvezli „%s“, on mora biti otključan"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "Nijedno mesto nije dostupno za uvoz"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "Uvezi sertifikate/ključeve"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Izaberite mesto za skladištenje uvezenih sertifikata/ključeva."
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "Ključ"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "Privatni RSA ključ"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "Privatni DSA ključ"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+msgid "Private Key"
+msgstr "Privatni ključ"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "Javni DSA ključ"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bita"
+msgstr[2] "%d bita"
+msgstr[3] "jedan bit"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "Jačina"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "Algoritam"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "Veličina"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "Otisci"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1922
+msgid "Unrecognized or unsupported data."
+msgstr "Neprepoznati ili nepodržani podaci."
+
+#: ../gcr/gcr-parser.c:1925
+msgid "Could not parse invalid or corrupted data."
+msgstr "Ne mogu da obradim neispravne ili oštećene podatke."
+
+#: ../gcr/gcr-parser.c:1928
+msgid "The data is locked"
+msgstr "Podaci su zaključani"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Ne mogu da pronađem mesto da uskladištim prikačeno uverenje"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -404,464 +801,75 @@ msgstr "Zaključaj ovaj privezak kada se odjavim"
 msgid "minutes"
 msgstr "minuta"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Unesite lozinku za otključavanje tajnog ključa"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Unesite lozinku za otključavanje sertifikata"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Unesite lozinku za otključavanje"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Da biste uvezli tajni ključ, on mora biti otključan"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Da biste uvezli sertifikat, on mora biti otključan"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "Da biste uvezli podatak, on mora biti otključan"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Da biste uvezli tajni ključ „%s“, on mora biti otključan"
+msgid "Unlock: %s"
+msgstr "Otključaj: %s"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Otključaj"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "Lozinka nije ispravna"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Lozinka"
+
+#: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Da biste uvezli sertifikat „%s“, on mora biti otključan"
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr ""
+"Sadržaj „%s“ je zaključana. Da biste videli sadržaj, unesite ispravnu lozinku."
 
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr ""
+"Sadržaji su zaključani. Da biste videli sadržaje, unesite ispravnu lozinku."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "Pregledač GCR uverenja i ključeva"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Prikazuje izdanje programa"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[datoteka...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "— Pregledajte datoteke uverenja i ključeva"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Pregledač uverenja"
+
+#: ../gck/gck-uri.c:173
 #, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Da biste uvezli „%s“, on mora biti otključan"
-
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "Radnja je poništena"
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "Nijedno mesto nije dostupno za uvoz"
-
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "Uvezi sertifikate/ključeve"
-
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Izaberite mesto za skladištenje uvezenih sertifikata/ključeva."
-
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "Ključ"
-
-#: ../gcr/gcr-key-renderer.c:260
-msgid "Private RSA Key"
-msgstr "Privatni RSA ključ"
-
-#: ../gcr/gcr-key-renderer.c:262
-msgid "Private DSA Key"
-msgstr "Privatni DSA ključ"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "Privatni ključ"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-msgid "Public DSA Key"
-msgstr "Javni DSA ključ"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bit"
-msgstr[1] "%d bita"
-msgstr[2] "%d bita"
-msgstr[3] "jedan bit"
-
-#: ../gcr/gcr-key-renderer.c:279
-msgid "Strength"
-msgstr "Jačina"
-
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Algorithm"
-msgstr "Algoritam"
-
-#: ../gcr/gcr-key-renderer.c:299
-msgid "Size"
-msgstr "Veličina"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-msgid "Fingerprint"
-msgstr "Otisak prsta"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "Neprepoznati ili nepodržani podaci."
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "Ne mogu da obradim neispravne ili oštećene podatke."
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "Podaci su zaključani"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Ne mogu da pronađem mesto da uskladištim prikačeno uverenje"
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "Adresa sadrži neispravnu sintaksu. „%s“ šifrovanje polja nije ispravno."
-
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "Adresa nije imala „pkcs11“ šemu."
-
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "Nema dovoljno memorije"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "Navedeni identifikator slota nije ispravan"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "Greška unutar programa"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "Radnja nije uspela"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "Argumenti nisu ispravni"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "Modul ne može da kreira potrebne niti"
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "Modul ne može pravilno da zaključa podatke"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "Ovo polje je samo za čitanje"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "Ovo polje je osetljivo i ne može biti otkriveno"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "Ovo polje je neispravno ili ne postoji"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "Nije ispravna vrednost za polje"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "Podatak nije ispravan ili nije prepoznat"
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "Podatak je predugačak"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "Desila se greška na uređaju"
-
-#: ../gck/gck-misc.c:129
-msgid "Insufficient memory available on the device"
-msgstr "Nema dovoljno memorije na uređaju"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "Uređaj je uklonjen ili isključen"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "Šifrovani podaci nisu ispravni ili nisu prepoznati"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "Šifrovani podaci su predugački"
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "Ova radnja nije podržana"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "Ključ nedostaje ili je neispravan"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "Pogrešna veličina ključa"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "Pogrešan tip ključa"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "Nije potreban ključ"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is different than before"
-msgstr "Ključ je sada drugačiji nego pre"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "Potreban je ključ"
-
-#: ../gck/gck-misc.c:151
-msgid "Cannot include the key in the digest"
-msgstr "Ne mogu da uvrstim ključ u sažetak"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "Ne možete da izvedete traženu operaciju ovim ključem"
-
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "Ne mogu da upakujem ključ"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "Ne mogu da izvezem ovaj ključ"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Mehanizam šifrovanja je neispravan ili nije prepoznat"
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "Mehanizam šifrovanja ima neispravan argument"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "Objekat nedostaje ili nije ispravan"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "Neka druga radnja je u toku"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "Nijedna druga radnja nije u toku"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "Nije tačna lozinka ili PIB"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "Nije ispravna lozinka ili PIB"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "Lozinka ili PIB ima neispravnu dužinu"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "Lozinci ili PIB-u je istekao rok važenja"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "Zaključana je lozinka ili PIB"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "Sesija je zatvorena"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "Ima previše aktivnih sesija"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "Sesija je neispravna"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "Sesija je samo za čitanje"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "Već postoji otvorena sesija"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "Već postoji otvorena sesija, samo za čitanje"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "Već postoji administratorska sesija"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "Potpis je loš ili oštećen"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "Potpis nije prepoznat ili je oštećen"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "Neka obavezna polja nisu popunjena"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "Neka polja imaju neispravne vrednosti"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "Uređaj nije prisutan ili je isključen"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "Uređaj je neispravan ili nepoznat"
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "Uređaj je poseduje zaštitu od upisa"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "Ne mogu da uvezem jer je ključ neispravan"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Ne mogu da uvezem jer ključ nema ispravnu veličinu"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Ne mogu da uvezem jer je tip ključa neispravan"
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "Već ste prijavljeni"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "Nije prijavljen nijedan korisnik"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "Nije postavljena korisnička lozinka ili PIB"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "Nije ispravan tip korisnika"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "Već je prijavljen drugi korisnik"
-
-#: ../gck/gck-misc.c:223
-msgid "Too many users of different types are logged in"
-msgstr "Prijavljeno je previše korisnika različitih tipova"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "Ne mogu da uvezem neispravan ključ"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "Ne mogu da uvezem ključ neispravne veličine"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "Ne mogu da izvezem jer je ključ neispravan"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Ne mogu da izvezem jer ključ nema ipsravnu veličinu"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Ne mogu da izvezem jer je tip ključa neispravan"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "Ne mogu da inicijalizujem generator slučajnih brojeva"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "Nijedan generator slučajnih brojeva nije dostupan"
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "Mehanizam šifrovanja ima neispravan parametar"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "Nedovoljno mesta da se uskladišti rezultat"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "Sačuvano stanje je neispravno"
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "Ovaj podatak je osetljiv i ne mogu da ga otkrijem"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "Ne mogu da sačuvam stanje"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "Modul nije pokrenut"
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "Modul je već pokrenut"
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "Ne mogu da zaključam podatke"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "Ne mogu da zaključam podatke"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "Zahtev za potpisom je odbačen od strane korisnika"
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "Nepoznata greška"
+msgid "The URI has invalid encoding."
+msgstr "Adresa imaše neispravno kodiranje."
+
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "Adresa nema „pkcs11“ šemu."
+
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "Adresa ima lošu sintaksu."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "Adresa ima loš broj izdanja."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -930,10 +938,6 @@ msgstr "Otključaj uverenje"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Otključaj javni ključ"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Otključaj"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1026,11 +1030,11 @@ msgstr "naredbe: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "Da li da pamtim nešifrovane lozinke?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1039,15 +1043,15 @@ msgstr ""
 "Ukoliko izaberete praznu lozinku, zapamćene lozinke neće biti bezbedne, pa "
 "će moći da ih koristi svako ko pristupi vašim datotekama."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "Koristi nebezbedno skladište"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "Lozinke se ne podudaraju."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "Lozinka ne može biti prazna"
 
@@ -1087,8 +1091,248 @@ msgstr "_Stara lozinka:"
 msgid "_Password:"
 msgstr "_Lozinka:"
 
-#~ msgid "Email"
-#~ msgstr "E-pošta"
+#~ msgid "Fingerprint"
+#~ msgstr "Otisak prsta"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "Nema dovoljno memorije"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "Navedeni identifikator slota nije ispravan"
+
+#~ msgid "Internal error"
+#~ msgstr "Greška unutar programa"
+
+#~ msgid "The operation failed"
+#~ msgstr "Radnja nije uspela"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "Argumenti nisu ispravni"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "Modul ne može da kreira potrebne niti"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "Modul ne može pravilno da zaključa podatke"
+
+#~ msgid "The field is read-only"
+#~ msgstr "Ovo polje je samo za čitanje"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "Ovo polje je osetljivo i ne može biti otkriveno"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "Ovo polje je neispravno ili ne postoji"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "Nije ispravna vrednost za polje"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "Podatak nije ispravan ili nije prepoznat"
+
+#~ msgid "The data is too long"
+#~ msgstr "Podatak je predugačak"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "Desila se greška na uređaju"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "Nema dovoljno memorije na uređaju"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "Uređaj je uklonjen ili isključen"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "Šifrovani podaci nisu ispravni ili nisu prepoznati"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "Šifrovani podaci su predugački"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "Ova radnja nije podržana"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "Ključ nedostaje ili je neispravan"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "Pogrešna veličina ključa"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "Pogrešan tip ključa"
+
+#~ msgid "No key is needed"
+#~ msgstr "Nije potreban ključ"
+
+#~ msgid "The key is different than before"
+#~ msgstr "Ključ je sada drugačiji nego pre"
+
+#~ msgid "A key is needed"
+#~ msgstr "Potreban je ključ"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "Ne mogu da uvrstim ključ u sažetak"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "Ne možete da izvedete traženu operaciju ovim ključem"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "Ne mogu da upakujem ključ"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "Ne mogu da izvezem ovaj ključ"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "Mehanizam šifrovanja je neispravan ili nije prepoznat"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "Mehanizam šifrovanja ima neispravan argument"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "Objekat nedostaje ili nije ispravan"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "Neka druga radnja je u toku"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "Nijedna druga radnja nije u toku"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "Nije tačna lozinka ili PIB"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "Nije ispravna lozinka ili PIB"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "Lozinka ili PIB ima neispravnu dužinu"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "Lozinci ili PIB-u je istekao rok važenja"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "Zaključana je lozinka ili PIB"
+
+#~ msgid "The session is closed"
+#~ msgstr "Sesija je zatvorena"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "Ima previše aktivnih sesija"
+
+#~ msgid "The session is invalid"
+#~ msgstr "Sesija je neispravna"
+
+#~ msgid "The session is read-only"
+#~ msgstr "Sesija je samo za čitanje"
+
+#~ msgid "An open session exists"
+#~ msgstr "Već postoji otvorena sesija"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "Već postoji otvorena sesija, samo za čitanje"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "Već postoji administratorska sesija"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "Potpis je loš ili oštećen"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "Potpis nije prepoznat ili je oštećen"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "Neka obavezna polja nisu popunjena"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "Neka polja imaju neispravne vrednosti"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "Uređaj nije prisutan ili je isključen"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "Uređaj je neispravan ili nepoznat"
+
+#~ msgid "The device is write protected"
+#~ msgstr "Uređaj je poseduje zaštitu od upisa"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "Ne mogu da uvezem jer je ključ neispravan"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "Ne mogu da uvezem jer ključ nema ispravnu veličinu"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "Ne mogu da uvezem jer je tip ključa neispravan"
+
+#~ msgid "You are already logged in"
+#~ msgstr "Već ste prijavljeni"
+
+#~ msgid "No user has logged in"
+#~ msgstr "Nije prijavljen nijedan korisnik"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "Nije postavljena korisnička lozinka ili PIB"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "Nije ispravan tip korisnika"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "Već je prijavljen drugi korisnik"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "Prijavljeno je previše korisnika različitih tipova"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "Ne mogu da uvezem neispravan ključ"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "Ne mogu da uvezem ključ neispravne veličine"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "Ne mogu da izvezem jer je ključ neispravan"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "Ne mogu da izvezem jer ključ nema ipsravnu veličinu"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "Ne mogu da izvezem jer je tip ključa neispravan"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "Ne mogu da inicijalizujem generator slučajnih brojeva"
+
+#~ msgid "No random number generator available"
+#~ msgstr "Nijedan generator slučajnih brojeva nije dostupan"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "Mehanizam šifrovanja ima neispravan parametar"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "Nedovoljno mesta da se uskladišti rezultat"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "Sačuvano stanje je neispravno"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "Ovaj podatak je osetljiv i ne mogu da ga otkrijem"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "Ne mogu da sačuvam stanje"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "Modul nije pokrenut"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "Modul je već pokrenut"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "Ne mogu da zaključam podatke"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "Ne mogu da zaključam podatke"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "Zahtev za potpisom je odbačen od strane korisnika"
+
+#~ msgid "Unknown error"
+#~ msgstr "Nepoznata greška"
 
 #~ msgid "<i>Not Part of Certificate</i>"
 #~ msgstr "<i>Nije deo sertifikata</i>"
@@ -1123,9 +1367,6 @@ msgstr "_Lozinka:"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "Sertifikat potpisnika e-pošte"
 
-#~ msgid "Issued On"
-#~ msgstr "Izdat"
-
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "MD5 Otisak"
 
@@ -1134,15 +1375,6 @@ msgstr "_Lozinka:"
 
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "Organizaciona jedinica (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 Otisak"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL sertifikat klijenta"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL sertifikat servera"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr "<span size='large' weight='bold'>Uvezi sertifikate i ključeve</span>"
