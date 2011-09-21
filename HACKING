@@ -107,10 +107,13 @@ instead of an asterisk:
 		}
 
  * Braces around functions on a separate line from function name,
-   return value on a separate line:
+   return value on a separate line, arguments on separate lines.
+   arguments should be indented with spaces past the column of the function
+   name.
 
 		static void
-		my_special_function (int arg)
+		my_special_function (int arg1,
+		                     int arg2)
 		{
 			/* body of function */
 		}
