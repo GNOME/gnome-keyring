@@ -73,6 +73,7 @@ gck_module_info_free
 gck_module_initialize
 gck_module_initialize_async
 gck_module_initialize_finish
+gck_module_match
 gck_module_new
 gck_modules_enumerate_objects
 gck_modules_enumerate_uri
@@ -183,6 +184,7 @@ gck_slot_get_type
 gck_slot_has_flags
 gck_slot_hash
 gck_slot_info_free
+gck_slot_match
 gck_slot_open_session
 gck_slot_open_session_async
 gck_slot_open_session_finish
