@@ -64,11 +64,15 @@ IGNORE_HFILES= \
 	gcr-display-scrolled.h \
 	gcr-display-view.h \
 	gcr-failure-renderer.h \
+	gcr-gnupg-renderer.h \
 	gcr-icons.h \
 	gcr-import-dialog.h \
 	gcr-internal.h \
 	gcr-live-search.h \
 	gcr-marshal.h \
+	gcr-openpgp.h \
+	gcr-pkcs11-renderer.h \
+	gcr-record.h \
 	gcr-unlock-renderer.h \
 	gcr-xxx.h \
 	gcr-zzz.h

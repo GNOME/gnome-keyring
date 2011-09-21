@@ -27,19 +27,14 @@
 
 #include "egg/egg-entry-buffer.h"
 
-enum {
-	PROP_0,
-	PROP_SELECTED_SLOT,
-	PROP_PASSWORD,
-	PROP_PRIMARY_TEXT,
-	PROP_SECONDARY_TEXT
-};
+#if TODO
 
 enum {
-	COLUMN_SLOT,
-	COLUMN_ICON,
-	COLUMN_LABEL,
-	N_COLUMNS
+	PROP_0,
+	PROP_IMPORTER,
+	PROP_IMPORTERS,
+	PROP_PRIMARY_TEXT,
+	PROP_SECONDARY_TEXT
 };
 
 struct _GcrImportDialogPrivate {
@@ -460,3 +455,5 @@ _gcr_import_dialog_set_secondary_text (GcrImportDialog *self, const gchar *text)
 	gtk_label_set_markup (GTK_LABEL (gtk_builder_get_object (self->pv->builder, "secondary-text")), text);
 	g_object_notify (G_OBJECT (self), "primary-text");
 }
+
+#endif /* TODO */

@@ -343,6 +343,13 @@ _gcr_gnupg_process_new (const gchar *directory, const gchar *executable)
 	                     NULL);
 }
 
+const gchar *
+_gcr_gnupg_process_get_directory (GcrGnupgProcess *self)
+{
+	g_return_val_if_fail (GCR_GNUPG_PROCESS (self), NULL);
+	return self->pv->directory;
+}
+
 GInputStream *
 _gcr_gnupg_process_get_input_stream (GcrGnupgProcess *self)
 {

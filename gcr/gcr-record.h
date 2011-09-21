@@ -52,6 +52,7 @@
 G_BEGIN_DECLS
 
 #define GCR_RECORD_SCHEMA_ATTRIBUTE  (g_quark_from_static_string ("ATTRIBUTE"))
+#define GCR_RECORD_SCHEMA_IMPORT_OK  (g_quark_from_static_string ("IMPORT_OK"))
 #define GCR_RECORD_SCHEMA_FPR  (g_quark_from_static_string ("fpr"))
 #define GCR_RECORD_SCHEMA_PUB  (g_quark_from_static_string ("pub"))
 #define GCR_RECORD_SCHEMA_SUB  (g_quark_from_static_string ("sub"))
@@ -81,6 +82,16 @@ typedef enum {
 	GCR_RECORD_ATTRIBUTE_EXPIRY = 7,
 	GCR_RECORD_ATTRIBUTE_FLAGS = 8
 } GcrRecordAttributeColumns;
+
+/*
+ * Columns for IMPORT_OK and IMPORT_PROBLEM status message. eg:
+ * [GNUPG:] IMPORT_OK 1 6BD9050FD8FC941B43412DCC68B7AB8957548DCD
+ * [GNUPG:] IMPORT_PROBLEM 1
+ */
+typedef enum {
+	GCR_RECORD_IMPORT_REASON = 1,
+	GCR_RECORD_IMPORT_FINGERPRINT
+} GcrRecordImportColumns;
 
 /*
  * Columns for fpr schema, add them as they're used. eg:

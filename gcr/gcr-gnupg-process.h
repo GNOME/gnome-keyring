@@ -68,6 +68,8 @@ GType               _gcr_gnupg_process_get_type                (void) G_GNUC_CON
 GcrGnupgProcess*    _gcr_gnupg_process_new                     (const gchar *directory,
                                                                 const gchar *executable);
 
+const gchar *       _gcr_gnupg_process_get_directory           (GcrGnupgProcess *self);
+
 GInputStream *      _gcr_gnupg_process_get_input_stream        (GcrGnupgProcess *self);
 
 void                _gcr_gnupg_process_set_input_stream        (GcrGnupgProcess *self,

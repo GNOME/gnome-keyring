@@ -97,11 +97,13 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-comparable.c gcr-comparable.h \
 	gcr-debug.c gcr-debug.h \
 	gcr-gnupg-collection.c gcr-gnupg-collection.h \
+	gcr-gnupg-importer.c gcr-gnupg-importer.h \
 	gcr-gnupg-key.c gcr-gnupg-key.h \
 	gcr-gnupg-process.c gcr-gnupg-process.h \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-gnupg-util.c gcr-gnupg-util.h \
 	gcr-library.c gcr-library.h \
+	gcr-importer.c gcr-importer.h \
 	gcr-internal.h \
 	gcr-memory.c \
 	gcr-memory-icon.c gcr-memory-icon.h \
@@ -109,6 +111,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-openssh.c gcr-openssh.h \
 	gcr-parser.c gcr-parser.h \
 	gcr-pkcs11-certificate.c gcr-pkcs11-certificate.h \
+	gcr-pkcs11-importer.c gcr-pkcs11-importer.h \
 	gcr-record.c gcr-record.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-simple-collection.c gcr-simple-collection.h \
@@ -136,7 +139,6 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-icons.c gcr-icons.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
-	gcr-importer.c gcr-importer.h  \
 	gcr-key-renderer.c gcr-key-renderer.h \
 	gcr-key-widget.c gcr-key-widget.h \
 	gcr-list-selector.c gcr-list-selector.h gcr-list-selector-private.h \

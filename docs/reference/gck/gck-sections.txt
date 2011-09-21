@@ -315,4 +315,6 @@ gck_value_to_ulong
 GCK_INVALID
 <SUBSECTION Private>
 gck_get_error_quark
+GCK_TYPE_LIST
+gck_list_get_boxed_type
 </SECTION>

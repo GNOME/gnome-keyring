@@ -212,6 +212,18 @@ _gck_stringize_rv (CK_RV rv)
  * library or PKCS11 in general.
  */
 
+GType
+gck_list_get_boxed_type (void)
+{
+	static GType type = 0;
+	if (!type)
+		type = g_boxed_type_register_static ("GckList",
+		                                     (GBoxedCopyFunc)gck_list_ref_copy,
+		                                     (GBoxedFreeFunc)gck_list_unref_free);
+	return type;
+
+}
+
 /**
  * gck_list_unref_free:
  * @reflist: List of Gobject reference counted pointers.

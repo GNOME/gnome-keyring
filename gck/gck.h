@@ -50,6 +50,10 @@ G_BEGIN_DECLS
 
 GQuark              gck_get_error_quark                     (void);
 
+#define             GCK_TYPE_LIST                           (gck_list_get_boxed_type ())
+
+GType               gck_list_get_boxed_type                 (void) G_GNUC_CONST;
+
 GList*              gck_list_ref_copy                       (GList *reflist);
 
 void                gck_list_unref_free                     (GList *reflist);

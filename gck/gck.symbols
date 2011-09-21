@@ -59,6 +59,7 @@ gck_enumerator_next_n
 gck_get_error_quark
 gck_list_ref_copy
 gck_list_unref_free
+gck_list_get_boxed_type
 gck_mechanism_info_free
 gck_mechanisms_check
 gck_message_from_rv

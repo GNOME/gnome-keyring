@@ -52,24 +52,15 @@ struct _GcrImportDialogClass {
 
 GType               _gcr_import_dialog_get_type               (void);
 
-GcrImportDialog*    _gcr_import_dialog_new                    (void);
+GcrImportDialog *   _gcr_import_dialog_new                    (GList *importers);
 
 gboolean            _gcr_import_dialog_run                    (GcrImportDialog *self,
                                                                GtkWindow *parent);
 
-GckSlot*            _gcr_import_dialog_get_selected_slot      (GcrImportDialog *self);
+GcrImporter *       _gcr_import_dialog_get_importer           (GcrImportDialog *self);
 
-void                _gcr_import_dialog_set_selected_slot      (GcrImportDialog *self,
-                                                               GckSlot *slot);
-
-void                _gcr_import_dialog_show_selected_slot     (GcrImportDialog *self);
-
-void                _gcr_import_dialog_hide_selected_slot     (GcrImportDialog *self);
-
-const gchar*        _gcr_import_dialog_get_password           (GcrImportDialog *self);
-
-void                _gcr_import_dialog_set_password           (GcrImportDialog *self,
-                                                               const gchar *password);
+void                _gcr_import_dialog_set_importer           (GcrImportDialog *self,
+                                                               GcrImporter *importer);
 
 void                _gcr_import_dialog_show_password          (GcrImportDialog *self);
 

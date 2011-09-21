@@ -41,11 +41,6 @@ G_BEGIN_DECLS
 void              gcr_renderer_render                         (GcrRenderer *self,
                                                                GcrViewer *viewer);
 
-GcrParser*        gcr_importer_get_parser                     (GcrImporter *self);
-
-void              gcr_importer_set_parser                     (GcrImporter *self,
-                                                               GcrParser *parser);
-
 G_END_DECLS
 
 #endif /* GCR_DISABLE_DEPRECATED */

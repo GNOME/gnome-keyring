@@ -160,7 +160,6 @@ static void
 gcr_key_widget_class_init (GcrKeyWidgetClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GckAttributes *registered;
 
 	gcr_key_widget_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrKeyWidgetPrivate));
@@ -173,12 +172,6 @@ gcr_key_widget_class_init (GcrKeyWidgetClass *klass)
 	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
 	         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the widget",
 	                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
-
-	/* Register this as a view which can be loaded */
-	registered = gck_attributes_new ();
-	gck_attributes_add_ulong (registered, CKA_CLASS, CKO_PRIVATE_KEY);
-	gcr_renderer_register (GCR_TYPE_KEY_WIDGET, registered);
-	gck_attributes_unref (registered);
 }
 
 /* -----------------------------------------------------------------------------

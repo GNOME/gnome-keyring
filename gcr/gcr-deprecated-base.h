@@ -31,6 +31,7 @@
 
 #include <glib.h>
 
+#include "gcr-importer.h"
 #include "gcr-parser.h"
 #include "gcr-simple-collection.h"
 
@@ -42,6 +43,11 @@ GQuark            gcr_error_get_domain                        (void) G_GNUC_CONS
 
 gboolean          gcr_simple_collection_contains              (GcrSimpleCollection *self,
                                                                GObject *object);
+
+GcrParser *       gcr_importer_get_parser                     (GcrImporter *self);
+
+void              gcr_importer_set_parser                     (GcrImporter *self,
+                                                               GcrParser *parser);
 
 G_END_DECLS
 

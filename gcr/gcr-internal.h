@@ -25,6 +25,7 @@
 #define GCR_INTERNAL_H_
 
 #include <glib.h>
+#include <gio/gio.h>
 
 /* Should only be used internally */
 #define GCR_SUCCESS 0

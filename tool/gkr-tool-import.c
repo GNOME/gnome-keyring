@@ -39,7 +39,16 @@ static GOptionEntry import_entries[] = {
 };
 
 static void
-on_imported (GcrImporter *importer, GckObject *object)
+imported_fingerprint (const gchar *fingerprint,
+                      const gchar *destination)
+{
+	g_print ("%s: imported openpgp\n", destination);
+	g_print ("\tfingerprint: %s\n", fingerprint);
+}
+
+static void
+imported_object (GckObject *object,
+                 const gchar *destination)
 {
 	gulong attr_types[3];
 	GckAttributes *attrs;
@@ -67,30 +76,30 @@ on_imported (GcrImporter *importer, GckObject *object)
 	
 	switch (klass) {
 	case CKO_CERTIFICATE:
-		message = "Imported certificate: %s\n";
+		message = "%s: imported certificate: %s\n";
 		break;
 	case CKO_DATA:
-		message = "Imported data: %s\n";
+		message = "%s: imported data: %s\n";
 		break;
 	case CKO_PRIVATE_KEY:
-		message = "Imported private key: %s\n";
+		message = "%s: imported private key: %s\n";
 		break;
 	case CKO_PUBLIC_KEY:
-		message = "Imported public key: %s\n";
+		message = "%s: imported public key: %s\n";
 		break;
 	case CKO_SECRET_KEY:
-		message = "Imported secret key: %s\n";
+		message = "%s: imported secret key: %s\n";
 		break;
 	default:
-		message = "Imported object: %s\n";
+		message = "%s: imported object: %s\n";
 		break;
 	};
 	
-	g_print (message, label);
+	g_print (message, destination, label);
 
 	if (id) {
 		hex = egg_hex_encode (id->value, id->length);
-		g_print ("\tID: %s\n", hex);
+		g_print ("\tidentifier: %s\n", hex);
 		g_free (hex);
 	}
 
@@ -98,18 +107,70 @@ on_imported (GcrImporter *importer, GckObject *object)
 	g_free (label);
 }
 
+static void
+imported_display (GcrImporter *importer)
+{
+	GParamSpec *spec;
+	gchar *label = NULL;
+
+	spec = g_object_class_find_property (G_OBJECT_GET_CLASS (importer), "imported");
+	if (spec == NULL)
+		return;
+
+	g_object_get (importer, "label", &label, NULL);
+
+	if (spec->value_type == GCK_TYPE_LIST) {
+		GList *list, *l;
+		g_object_get (importer, "imported", &list, NULL);
+		for (l = list; l != NULL; l = g_list_next (l))
+			imported_object (l->data, label);
+		gck_list_unref_free (list);
+
+	} else if (spec->value_type == G_TYPE_STRV) {
+		gchar **fingerprints;
+		guint i;
+		g_object_get (importer, "imported", &fingerprints, NULL);
+		for (i = 0; fingerprints && fingerprints[i] != NULL; i++)
+			imported_fingerprint (fingerprints[i], label);
+		g_strfreev (fingerprints);
+	}
+}
+
+typedef struct {
+	GList *importers;
+	gboolean num_parsed;
+} ImportClosure;
+
+static void
+on_parser_parsed (GcrParser *parser,
+                  gpointer user_data)
+{
+	ImportClosure *closure = user_data;
+	GList *filtered;
+
+	if (closure->num_parsed == 0) {
+		closure->importers = gcr_importer_create_for_parsed (parser);
+	} else {
+		filtered = gcr_importer_queue_and_filter_for_parsed (closure->importers, parser);
+		gck_list_unref_free (closure->importers);
+		closure->importers = filtered;
+	}
+
+	closure->num_parsed++;
+}
+
 int
 gkr_tool_import (int argc, char *argv[])
 {
-	GcrImporter *importer;
 	GcrParser *parser;
 	GError *error = NULL;
 	GInputStream *input;
-	gboolean res;
+	ImportClosure *closure;
 	GFile *file;
 	gchar **imp;
 	int ret = 0;
-	
+	GList *l;
+
 	ret = gkr_tool_parse_options (&argc, &argv, import_entries);
 	if (ret != 0)
 		return ret;
@@ -118,39 +179,50 @@ gkr_tool_import (int argc, char *argv[])
 		gkr_tool_handle_error (NULL, "specify files to import");
 		return 2;
 	}
-	
-	importer = gcr_importer_new ();
-	gcr_importer_set_prompt_behavior (importer, GCR_IMPORTER_PROMPT_NEEDED);
-	
-	if (!gkr_tool_mode_quiet) 
-		g_signal_connect (importer, "imported", G_CALLBACK (on_imported), NULL);
-	
+
+	parser = gcr_parser_new ();
+	closure = g_new0 (ImportClosure, 1);
+	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), closure);
+
 	for (imp = import_files; *imp; ++imp) {
 		file = g_file_new_for_commandline_arg (*imp);
 		
 		input = G_INPUT_STREAM (g_file_read (file, NULL, &error));
 		g_object_unref (file);
-		if (!input) {
+		if (input == NULL) {
 			gkr_tool_handle_error (&error, "couldn't read file: %s", *imp);
 			ret = 1;
+
 		} else {
-			parser = gcr_parser_new ();
-			gcr_importer_listen (importer, parser);
-			res = gcr_parser_parse_stream (parser, input, NULL, &error);
-			g_object_unref (input);
-			g_object_unref (parser);
-
-			if (res == TRUE)
-				res = gcr_importer_import (importer, NULL, &error);
-
-			if (res == FALSE) {
-				if (!error || error->code != GCR_ERROR_CANCELLED)
-					gkr_tool_handle_error (&error, "couldn't import file: %s", *imp);
+			if (!gcr_parser_parse_stream (parser, input, NULL, &error)) {
+				if (error->code != GCR_ERROR_CANCELLED)
+					gkr_tool_handle_error (&error, "couldn't parse: %s", *imp);
 				ret = 1;
 			}
+
+			g_object_unref (input);
 		}
 	}
-	
-	g_object_unref (importer);
+
+	if (closure->importers == NULL) {
+		gkr_tool_handle_error (NULL, "couldn't find any place to import files");
+		ret = 1;
+	}
+
+	for (l = closure->importers; l != NULL; l = g_list_next (l)) {
+		if (gcr_importer_import (l->data, NULL, &error)) {
+			if (!gkr_tool_mode_quiet)
+				imported_display (l->data);
+		} else {
+			if (error->code != GCR_ERROR_CANCELLED)
+				gkr_tool_handle_error (&error, "couldn't import");
+			ret = 1;
+		}
+	}
+
+	gck_list_unref_free (closure->importers);
+	g_free (closure);
+
+	g_object_unref (parser);
 	return ret;
 }

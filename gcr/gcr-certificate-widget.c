@@ -169,7 +169,6 @@ static void
 gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GckAttributes *registered;
 
 	gcr_certificate_widget_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (GcrCertificateWidgetPrivate));
@@ -186,12 +185,6 @@ gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
 	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
 	         g_param_spec_boxed ("attributes", "Attributes", "Attributes which contain the certificate",
 	                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
-
-	/* Register this as a renderer which can be loaded */
-	registered = gck_attributes_new ();
-	gck_attributes_add_ulong (registered, CKA_CLASS, CKO_CERTIFICATE);
-	gcr_renderer_register (GCR_TYPE_CERTIFICATE_WIDGET, registered);
-	gck_attributes_unref (registered);
 }
 
 /* -----------------------------------------------------------------------------
