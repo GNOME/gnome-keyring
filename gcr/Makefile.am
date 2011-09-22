@@ -21,6 +21,7 @@ HEADER_BASE_FILES = \
 	gcr-comparable.h \
 	gcr-deprecated-base.h \
 	gcr-icons.h \
+	gcr-importer.h \
 	gcr-library.h \
 	gcr-parser.h \
 	gcr-pkcs11-certificate.h \
@@ -40,9 +41,10 @@ HEADER_UI_FILES = \
 	gcr-column.h \
 	gcr-combo-selector.h \
 	gcr-deprecated.h \
+	gcr-failure-renderer.h \
 	gcr-key-renderer.h \
 	gcr-key-widget.h \
-	gcr-importer.h \
+	gcr-import-button.h \
 	gcr-list-selector.h \
 	gcr-renderer.h \
 	gcr-simple-collection.h \
