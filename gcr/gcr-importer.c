@@ -39,7 +39,7 @@
  * @short_description: Import certificates and keys
  *
  * An interface which allows importing of certificates and keys. Each
- * #GcrImporter is registered with a set of PKCS#11 attributes to match
+ * #GcrImporter is registered with a set of PKCS\#11 attributes to match
  * stuff that it can import.
  *
  * An importer gets passed a #GcrParser and accesses the currently parsed
@@ -62,6 +62,12 @@
 
 /**
  * GcrImporterIface:
+ * @parent: parent interface
+ * @create_for_parsed: implementation of gcr_importer_create_for_parsed(), required
+ * @queue_for_parsed: implementation of gcr_importer_queue_for_parsed(), required
+ * @import_sync: optional implemantionon of gcr_importer_import()
+ * @import_async: implementation of gcr_importer_import_async(), required
+ * @import_finish: implementation of gcr_importer_import_finish()
  *
  * Interface implemented for a #GcrImporter.
  */
@@ -150,7 +156,7 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 
 /**
  * gcr_importer_create_for_parsed:
- * @parsed: a parser with a parsed item to import
+ * @parser: a parser with a parsed item to import
  *
  * Create a set of importers which can import this parsed item.
  * The parsed item is represented by the state of the GcrParser at the
@@ -250,7 +256,7 @@ gcr_importer_queue_for_parsed (GcrImporter *importer,
 
 /**
  * gcr_importer_queue_and_filter_for_parsed:
- * @importer: a set of importers
+ * @importers: a set of importers
  * @parser: a parser with a parsed item to import
  *
  * Queues an additional item to be imported in all compattible importers
@@ -444,7 +450,7 @@ gcr_importer_import_finish (GcrImporter *importer,
 /**
  * gcr_importer_register_well_known:
  *
- * Register built-in PKCS#11 and GnuPG importers.
+ * Register built-in PKCS\#11 and GnuPG importers.
  */
 void
 gcr_importer_register_well_known (void)

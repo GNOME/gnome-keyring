@@ -63,6 +63,7 @@ struct _GcrImporterIface {
 	                                       GAsyncResult *result,
 	                                       GError **error);
 
+	/*< private >*/
 	gpointer reserved[14];
 };
 

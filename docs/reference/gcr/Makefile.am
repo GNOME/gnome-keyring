@@ -70,6 +70,7 @@ IGNORE_HFILES= \
 	gcr-internal.h \
 	gcr-live-search.h \
 	gcr-marshal.h \
+	gcr-menu-button.h \
 	gcr-openpgp.h \
 	gcr-pkcs11-renderer.h \
 	gcr-record.h \
