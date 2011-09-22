@@ -50,6 +50,13 @@ struct _GcrUnlockRendererPrivate {
 	gint no_destroy;
 };
 
+enum {
+	UNLOCK_CLICKED,
+	LAST_SIGNAL,
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 static void gcr_renderer_iface_init (GcrRendererIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (GcrUnlockRenderer, _gcr_unlock_renderer, GTK_TYPE_ALIGNMENT,
@@ -65,41 +72,14 @@ calculate_label (GcrUnlockRenderer *self)
 	return g_strdup (_("Unlock"));
 }
 
-static gboolean
-on_parser_authenticate (GcrParser *parser,
-                        gint count,
-                        gpointer user_data)
-{
-	GcrUnlockRenderer *self = GCR_UNLOCK_RENDERER (user_data);
-
-	/* On the first try, pass unlock password back to parser */
-	if (count == 0)
-		gcr_parser_add_password (parser, gtk_entry_get_text (self->pv->entry));
-
-	return TRUE;
-}
-
-static void
-on_parser_parsed (GcrParser *parser,
-                  gpointer user_data)
-{
-	GcrUnlockRenderer *self = GCR_UNLOCK_RENDERER (user_data);
-	GcrRenderer *renderer;
-
-	/* Create a new renderer for this piece of data */
-	renderer = gcr_renderer_create (gcr_parser_get_parsed_label (parser),
-	                                gcr_parser_get_parsed_attributes (parser));
-
-	/* And save this renderer for placing in viewer later */
-	if (renderer != NULL)
-		self->pv->renderers = g_list_prepend (self->pv->renderers, renderer);
-}
-
-static void
-show_warning (GcrUnlockRenderer *self,
-              const gchar *message)
+void
+_gcr_unlock_renderer_show_warning (GcrUnlockRenderer *self,
+                                   const gchar *message)
 {
 	gchar *text;
+
+	g_return_if_fail (GCR_UNLOCK_RENDERER (self));
+	g_return_if_fail (message != NULL);
 
 	text = g_strdup_printf ("<i>%s</i>", message);
 	gtk_label_set_markup (self->pv->warning, text);
@@ -113,34 +93,7 @@ on_unlock_button_clicked (GtkButton *button,
                           gpointer user_data)
 {
 	GcrUnlockRenderer *self = GCR_UNLOCK_RENDERER (user_data);
-	GcrParser *parser;
-	GError *error = NULL;
-
-	/* Clear out any renderers somehow sitting around */
-	g_list_free_full (self->pv->renderers, g_object_unref);
-	self->pv->renderers = NULL;
-
-	parser = gcr_parser_new ();
-	gcr_parser_format_enable (parser, -1); /* all enabled */
-	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), self);
-	g_signal_connect (parser, "authenticate", G_CALLBACK (on_parser_authenticate), self);
-	if (gcr_parser_parse_data (parser, self->pv->locked_data,
-	                           self->pv->n_locked_data, &error)) {
-
-		/* If we unlocked successfully, then hide ourselves, and add other renderers */
-		self->pv->unlocked = TRUE;
-
-	} else if (g_error_matches (error, GCR_DATA_ERROR, GCR_ERROR_LOCKED)){
-		self->pv->unlock_tries++;
-		show_warning (self, _("The password was incorrect"));
-		g_error_free (error);
-
-	} else {
-		show_warning (self, error->message);
-		g_error_free (error);
-	}
-
-	gcr_renderer_emit_data_changed (GCR_RENDERER (self));
+	g_signal_emit (self, signals[UNLOCK_CLICKED], 0);
 }
 
 static void
@@ -265,6 +218,10 @@ _gcr_unlock_renderer_class_init (GcrUnlockRendererClass *klass)
 	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
 	           g_param_spec_boxed ("attributes", "Attributes", "Certificate pkcs11 attributes",
 	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
+
+	signals[UNLOCK_CLICKED] = g_signal_new ("unlock-clicked", GCR_TYPE_UNLOCK_RENDERER, G_SIGNAL_RUN_LAST,
+	                                        G_STRUCT_OFFSET (GcrUnlockRendererClass, unlock_clicked),
+	                                        NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 }
 
 static void
@@ -363,7 +320,26 @@ _gcr_unlock_renderer_new_for_parsed (GcrParser *parser)
 	gconstpointer block;
 	gsize n_block;
 
+	g_return_val_if_fail (GCR_IS_PARSER (parser), NULL);
+
 	block = gcr_parser_get_parsed_block (parser, &n_block);
 	return _gcr_unlock_renderer_new (gcr_parser_get_parsed_label (parser),
 	                                 block, n_block);
+}
+
+const gchar *
+_gcr_unlock_renderer_get_password (GcrUnlockRenderer *self)
+{
+	g_return_val_if_fail (GCR_IS_UNLOCK_RENDERER (self), NULL);
+	return gtk_entry_get_text (self->pv->entry);
+}
+
+gconstpointer
+_gcr_unlock_renderer_get_locked_data (GcrUnlockRenderer *self,
+                                      gsize *n_data)
+{
+	g_return_val_if_fail (GCR_IS_UNLOCK_RENDERER (self), NULL);
+	g_return_val_if_fail (n_data != NULL, NULL);
+	*n_data = self->pv->n_locked_data;
+	return self->pv->locked_data;
 }

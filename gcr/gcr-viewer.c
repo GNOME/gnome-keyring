@@ -57,31 +57,14 @@
  * The interface for #GcrViewer
  */
 
+typedef GcrViewerIface GcrViewerInterface;
+
+G_DEFINE_INTERFACE (GcrViewer, gcr_viewer, GTK_TYPE_WIDGET);
+
 static void
-gcr_viewer_base_init (gpointer gobject_iface)
+gcr_viewer_default_init (GcrViewerIface *iface)
 {
-	static gboolean initialized = FALSE;
-	if (!initialized) {
 
-		initialized = TRUE;
-	}
-}
-
-GType
-gcr_viewer_get_type (void)
-{
-	static GType type = 0;
-	if (!type) {
-		static const GTypeInfo info = {
-			sizeof (GcrViewerIface),
-			gcr_viewer_base_init,  /* base init */
-			NULL,                  /* base finalize */
-		};
-		type = g_type_register_static (G_TYPE_INTERFACE, "GcrViewerIface", &info, 0);
-		g_type_interface_add_prerequisite (type, GTK_TYPE_WIDGET);
-	}
-
-	return type;
 }
 
 /* -----------------------------------------------------------------------------

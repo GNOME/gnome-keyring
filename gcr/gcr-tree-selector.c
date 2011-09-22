@@ -40,7 +40,6 @@
 
 /**
  * GcrTreeSelector:
- * @parent: The parent object
  *
  * A tree selector widget.
  */

@@ -42,30 +42,30 @@ struct _GcrFailureRendererPrivate {
 
 static void gcr_renderer_iface_init (GcrRendererIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (GcrFailureRenderer, _gcr_failure_renderer, G_TYPE_OBJECT,
+G_DEFINE_TYPE_WITH_CODE (GcrFailureRenderer, gcr_failure_renderer, G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (GCR_TYPE_RENDERER, gcr_renderer_iface_init);
 );
 
 static void
-_gcr_failure_renderer_init (GcrFailureRenderer *self)
+gcr_failure_renderer_init (GcrFailureRenderer *self)
 {
 	self->pv = (G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_FAILURE_RENDERER,
 	                                         GcrFailureRendererPrivate));
 }
 
 static void
-_gcr_failure_renderer_finalize (GObject *obj)
+gcr_failure_renderer_finalize (GObject *obj)
 {
 	GcrFailureRenderer *self = GCR_FAILURE_RENDERER (obj);
 
 	g_error_free (self->pv->error);
 	g_free (self->pv->label);
 
-	G_OBJECT_CLASS (_gcr_failure_renderer_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (gcr_failure_renderer_parent_class)->finalize (obj);
 }
 
 static void
-_gcr_failure_renderer_set_property (GObject *obj,
+gcr_failure_renderer_set_property (GObject *obj,
                                    guint prop_id,
                                    const GValue *value,
                                    GParamSpec *pspec)
@@ -88,7 +88,7 @@ _gcr_failure_renderer_set_property (GObject *obj,
 }
 
 static void
-_gcr_failure_renderer_get_property (GObject *obj,
+gcr_failure_renderer_get_property (GObject *obj,
                                    guint prop_id,
                                    GValue *value,
                                    GParamSpec *pspec)
@@ -109,28 +109,28 @@ _gcr_failure_renderer_get_property (GObject *obj,
 }
 
 static void
-_gcr_failure_renderer_class_init (GcrFailureRendererClass *klass)
+gcr_failure_renderer_class_init (GcrFailureRendererClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GcrFailureRendererPrivate));
 
-	gobject_class->finalize = _gcr_failure_renderer_finalize;
-	gobject_class->set_property = _gcr_failure_renderer_set_property;
-	gobject_class->get_property = _gcr_failure_renderer_get_property;
+	gobject_class->finalize = gcr_failure_renderer_finalize;
+	gobject_class->set_property = gcr_failure_renderer_set_property;
+	gobject_class->get_property = gcr_failure_renderer_get_property;
 
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	           g_param_spec_string ("label", "Label", "Failure Label",
 	                                "", G_PARAM_READWRITE));
 
 	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
-	           g_param_spec_boxed ("attributes", "Attributes", "Certificate pkcs11 attributes",
+	           g_param_spec_boxed ("attributes", "Attributes", "Renderer attributes",
 	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 }
 
 static void
 gcr_failure_renderer_render (GcrRenderer *renderer,
-                            GcrViewer *viewer)
+                             GcrViewer *viewer)
 {
 	GcrFailureRenderer *self = GCR_FAILURE_RENDERER (renderer);
 	GcrDisplayView *view;
@@ -178,8 +178,8 @@ gcr_renderer_iface_init (GcrRendererIface *iface)
 }
 
 GcrRenderer *
-_gcr_failure_renderer_new (const gchar *label,
-                           GError *error)
+gcr_failure_renderer_new (const gchar *label,
+                          GError *error)
 {
 	GcrFailureRenderer *renderer;
 
@@ -192,7 +192,7 @@ _gcr_failure_renderer_new (const gchar *label,
 }
 
 GcrRenderer *
-_gcr_failure_renderer_new_unsupported (const gchar *label)
+gcr_failure_renderer_new_unsupported (const gchar *label)
 {
 	GcrRenderer *renderer;
 	GError *error;
@@ -200,7 +200,7 @@ _gcr_failure_renderer_new_unsupported (const gchar *label)
 	error = g_error_new (GCR_DATA_ERROR, GCR_ERROR_UNRECOGNIZED,
 	                     _("Cannot display a file of this type."));
 
-	renderer = _gcr_failure_renderer_new (label, error);
+	renderer = gcr_failure_renderer_new (label, error);
 
 	g_error_free (error);
 	return renderer;

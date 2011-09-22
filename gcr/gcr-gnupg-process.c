@@ -81,6 +81,7 @@ typedef struct _GnupgSource {
 	GByteArray *input_buf;
 	GString *error_buf;
 	GString *status_buf;
+	guint source_sig;
 
 	GPid child_pid;
 	guint child_sig;
@@ -100,8 +101,6 @@ struct _GcrGnupgProcessPrivate {
 	gboolean running;
 	gboolean complete;
 	GError *error;
-
-	guint source_sig;
 
 	GAsyncReadyCallback async_callback;
 	gpointer user_data;
@@ -458,11 +457,6 @@ complete_run_process (GcrGnupgProcess *self)
 	self->pv->running = FALSE;
 	self->pv->complete = TRUE;
 
-	if (self->pv->source_sig) {
-		g_source_remove (self->pv->source_sig);
-		self->pv->source_sig = 0;
-	}
-
 	if (self->pv->error == NULL) {
 		_gcr_debug ("completed process");
 	} else {
@@ -472,19 +466,12 @@ complete_run_process (GcrGnupgProcess *self)
 }
 
 static gboolean
-complete_if_source_is_done (GnupgSource *gnupg_source)
+complete_source_is_done (GnupgSource *gnupg_source)
 {
-	gint i;
-
-	for (i = 0; i < NUM_FDS; ++i) {
-		if (gnupg_source->polls[i].fd >= 0)
-			return FALSE;
-	}
-
-	if (gnupg_source->child_pid)
-		return FALSE;
-
 	_gcr_debug ("all fds closed and process exited, completing");
+
+	g_assert (gnupg_source->child_sig == 0);
+	g_assert (gnupg_source->source_sig == 0);
 
 	complete_run_process (gnupg_source->process);
 	run_async_ready_callback (gnupg_source->process);
@@ -772,6 +759,7 @@ on_gnupg_source_dispatch (GSource *source, GSourceFunc unused, gpointer user_dat
 	GnupgSource *gnupg_source = (GnupgSource*)source;
 	GcrGnupgProcess *self = gnupg_source->process;
 	GPollFD *poll;
+	guint i;
 
 	/* Standard input, no support yet */
 	poll = &gnupg_source->polls[FD_INPUT];
@@ -829,10 +817,18 @@ on_gnupg_source_dispatch (GSource *source, GSourceFunc unused, gpointer user_dat
 		poll->revents = 0;
 	}
 
-	if (complete_if_source_is_done (gnupg_source))
-		return FALSE; /* Disconnect this source */
+	for (i = 0; i < NUM_FDS; ++i) {
+		if (gnupg_source->polls[i].fd >= 0)
+			return TRUE;
+	}
 
-	return TRUE;
+	/* Because we return below */
+	gnupg_source->source_sig = 0;
+
+	if (!gnupg_source->child_pid)
+		complete_source_is_done (gnupg_source);
+
+	return FALSE; /* Disconnect this source */
 }
 
 static GSourceFuncs gnupg_source_funcs = {
@@ -849,6 +845,7 @@ on_gnupg_process_child_exited (GPid pid, gint status, gpointer user_data)
 	GcrGnupgProcess *self = gnupg_source->process;
 	GError *error = NULL;
 	gint code;
+	guint i;
 
 	_gcr_debug ("process exited: %d", (int)pid);
 
@@ -881,7 +878,12 @@ on_gnupg_process_child_exited (GPid pid, gint status, gpointer user_data)
 		g_error_free (error);
 	}
 
-	complete_if_source_is_done (gnupg_source);
+	for (i = 0; i < NUM_FDS; ++i) {
+		if (gnupg_source->polls[i].fd >= 0)
+			return;
+	}
+
+	complete_source_is_done (gnupg_source);
 }
 
 static void
@@ -913,19 +915,17 @@ on_cancellable_cancelled (GCancellable *cancellable, gpointer user_data)
 
 	_gcr_debug ("process cancelled");
 
+	/* Set an error, which is respected when this actually completes. */
+	if (gnupg_source->process->pv->error == NULL)
+		gnupg_source->process->pv->error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_CANCELLED,
+		                                                        _("The operation was cancelled"));
+
 	/* Try and kill the child process */
 	if (gnupg_source->child_pid) {
 		_gcr_debug ("sending term signal to process: %d",
 		            (int)gnupg_source->child_pid);
 		kill (gnupg_source->child_pid, SIGTERM);
 	}
-
-	/* Set an error, which is respected when this actually completes. */
-	if (gnupg_source->process->pv->error == NULL)
-		gnupg_source->process->pv->error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_CANCELLED,
-		                                                        _("The operation was cancelled"));
-
-	complete_if_source_is_done (gnupg_source);
 }
 
 /**
@@ -1108,9 +1108,8 @@ _gcr_gnupg_process_run_async (GcrGnupgProcess *self, const gchar **argv, const g
 		                                                  (GDestroyNotify)g_source_unref);
 	}
 
-	g_assert (!self->pv->source_sig);
 	g_source_set_callback (source, unused_callback, NULL, NULL);
-	self->pv->source_sig = g_source_attach (source, g_main_context_default ());
+	gnupg_source->source_sig = g_source_attach (source, g_main_context_default ());
 
 	/* This assumes the outstanding reference to source */
 	g_assert (!gnupg_source->child_sig);
@@ -1147,7 +1146,6 @@ _gcr_gnupg_process_run_finish (GcrGnupgProcess *self, GAsyncResult *result,
 	g_assert (!self->pv->running);
 	g_assert (!self->pv->async_callback);
 	g_assert (!self->pv->user_data);
-	g_assert (!self->pv->source_sig);
 
 	if (self->pv->error) {
 		g_propagate_error (error, self->pv->error);

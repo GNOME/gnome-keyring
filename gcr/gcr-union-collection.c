@@ -41,7 +41,6 @@
 
 /**
  * GcrUnionCollection:
- * @parent: The parent object
  *
  * A union implementation of #GcrCollection.
  */

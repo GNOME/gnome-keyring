@@ -52,8 +52,10 @@ struct _GcrUnlockRenderer {
 };
 
 struct _GcrUnlockRendererClass {
-	/*< private >*/
 	GtkAlignmentClass parent_class;
+
+	/* signals */
+	void       (*unlock_clicked)        (GcrUnlockRenderer *unlock);
 };
 
 GType                  _gcr_unlock_renderer_get_type          (void);
@@ -63,6 +65,14 @@ GcrUnlockRenderer *    _gcr_unlock_renderer_new               (const gchar *labe
                                                                gsize n_locked_data);
 
 GcrUnlockRenderer *    _gcr_unlock_renderer_new_for_parsed    (GcrParser *parser);
+
+const gchar *          _gcr_unlock_renderer_get_password      (GcrUnlockRenderer *self);
+
+void                   _gcr_unlock_renderer_show_warning      (GcrUnlockRenderer *self,
+                                                               const gchar *message);
+
+gconstpointer          _gcr_unlock_renderer_get_locked_data   (GcrUnlockRenderer *self,
+                                                               gsize *n_data);
 
 G_END_DECLS
 

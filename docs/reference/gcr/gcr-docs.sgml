@@ -35,10 +35,12 @@
 		<xi:include href="xml/gcr-key-widget.xml"/>
 		<xi:include href="xml/gcr-column.xml"/>
 		<xi:include href="xml/gcr-combo-selector.xml"/>
+		<xi:include href="xml/gcr-import-button.xml"/>
 		<xi:include href="xml/gcr-list-selector.xml"/>
 		<xi:include href="xml/gcr-tree-selector.xml"/>
 		<xi:include href="xml/gcr-renderer.xml"/>
 		<xi:include href="xml/gcr-viewer.xml"/>
+		<xi:include href="xml/gcr-viewer-widget.xml"/>
 		<chapter>
 			<title>Widget Gallery</title>
 			<xi:include href="gcr-visual-index.xml" />

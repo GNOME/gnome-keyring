@@ -40,7 +40,6 @@
 
 /**
  * GcrSimpleCollection:
- * @parent: The parent object
  *
  * A simple implementation of #GcrCollection.
  */

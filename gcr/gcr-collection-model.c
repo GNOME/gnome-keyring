@@ -55,7 +55,6 @@
 
 /**
  * GcrCollectionModel:
- * @parent: The parent object
  *
  * A #GtkTreeModel which contains a row for each object in a #GcrCollection.
  */

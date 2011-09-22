@@ -75,6 +75,7 @@ IGNORE_HFILES= \
 	gcr-pkcs11-renderer.h \
 	gcr-record.h \
 	gcr-unlock-renderer.h \
+	gcr-viewer-window.h \
 	gcr-xxx.h \
 	gcr-zzz.h
 
@@ -82,10 +83,12 @@ IGNORE_HFILES= \
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
 HTML_IMAGES= \
 	$(srcdir)/images/certificate-widget.png \
-	$(srcdir)/images/key-widget.png \
 	$(srcdir)/images/combo-selector.png \
+	$(srcdir)/images/import-button.png \
+	$(srcdir)/images/list-selector.png \
+	$(srcdir)/images/key-widget.png \
 	$(srcdir)/images/tree-selector.png \
-	$(srcdir)/images/list-selector.png
+	$(srcdir)/images/viewer-widget.png
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
@@ -127,10 +130,12 @@ DISTCLEANFILES = tmpl/gcr-unused.sgml
 
 WIDGETS = \
 	certificate-widget \
-	key-widget \
 	combo-selector \
+	import-button \
+	key-widget \
+	list-selector \
 	tree-selector \
-	list-selector
+	viewer-widget
 
 shots: gcr-shooter
 	mkdir -p $(builddir)/images

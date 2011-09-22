@@ -40,7 +40,6 @@
 
 /**
  * GcrComboSelector:
- * @parent: Parent object
  *
  * A combo selector widget.
  */

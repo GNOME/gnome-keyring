@@ -49,7 +49,7 @@ HEADER_UI_FILES = \
 	gcr-tree-selector.h \
 	gcr-unlock-options-widget.h \
 	gcr-viewer.h \
-	gcr-viewer-window.h
+	gcr-viewer-widget.h
 
 incdir = $(includedir)/gcr-@GCR_MAJOR@/gcr
 
@@ -102,12 +102,11 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-process.c gcr-gnupg-process.h \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-gnupg-util.c gcr-gnupg-util.h \
-	gcr-library.c gcr-library.h \
 	gcr-importer.c gcr-importer.h \
 	gcr-internal.h \
+	gcr-library.c gcr-library.h \
 	gcr-memory.c \
 	gcr-memory-icon.c gcr-memory-icon.h \
-	gcr-menu-button.c gcr-menu-button.h \
 	gcr-openpgp.c gcr-openpgp.h \
 	gcr-openssh.c gcr-openssh.h \
 	gcr-parser.c gcr-parser.h \
@@ -139,6 +138,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-renderer.c gcr-gnupg-renderer.h \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-icons.c gcr-icons.h \
+	gcr-import-button.c gcr-import-button.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-key-renderer.c gcr-key-renderer.h \
 	gcr-key-widget.c gcr-key-widget.h \
@@ -146,6 +146,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-live-search.c gcr-live-search.h \
 	gcr-memory.c \
 	gcr-memory-icon.c gcr-memory-icon.h \
+	gcr-menu-button.c gcr-menu-button.h \
 	gcr-record.c gcr-record.h \
 	gcr-renderer.c gcr-renderer.h \
 	gcr-tree-selector.c gcr-tree-selector.h \
@@ -153,7 +154,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-unlock-options-widget.c gcr-unlock-options-widget.h \
 	gcr-unlock-renderer.c gcr-unlock-renderer.h \
 	gcr-viewer.c gcr-viewer.h \
-	gcr-viewer-window.c \
+	gcr-viewer-widget.c gcr-viewer-widget.h \
 	$(BUILT_UI_FILES)
 
 libgcr_base_@GCR_MAJOR@_la_CFLAGS = \
@@ -270,11 +271,13 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 bin_PROGRAMS = gcr-viewer
 
 gcr_viewer_SOURCES = \
-	gcr-viewer-tool.c
+	gcr-viewer-tool.c \
+	gcr-viewer-window.c gcr-viewer-window.h
 
 gcr_viewer_CFLAGS = \
 	$(GTK_CFLAGS) \
-	-DLOCALEDIR=\""$(datadir)/locale"\"
+	-DLOCALEDIR=\""$(datadir)/locale"\" \
+	-DGCR_API_SUBJECT_TO_CHANGE
 
 gcr_viewer_LDADD = \
 	$(builddir)/libgcr-$(GCR_MAJOR).la \

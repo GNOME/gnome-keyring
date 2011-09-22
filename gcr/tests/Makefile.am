@@ -61,3 +61,7 @@ noinst_PROGRAMS = \
 	frob-parser \
 	frob-unlock \
 	frob-unlock-options
+
+frob_unlock_SOURCES = \
+	frob-unlock.c \
+	../gcr-viewer-window.c

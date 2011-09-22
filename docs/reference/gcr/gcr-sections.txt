@@ -117,6 +117,24 @@ GcrPkcs11ImporterPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gcr-import-button</FILE>
+GcrImportButton
+GcrImportButtonClass
+gcr_import_button_new
+gcr_import_button_add_parsed
+<SUBSECTION Standard>
+GCR_IMPORT_BUTTON
+GCR_IMPORT_BUTTON_CLASS
+GCR_IMPORT_BUTTON_GET_CLASS
+GCR_IS_IMPORT_BUTTON
+GCR_IS_IMPORT_BUTTON_CLASS
+gcr_import_button_get_type
+GCR_TYPE_IMPORT_BUTTON
+<SUBSECTION Private>
+GcrImportButtonPrivate
+</SECTION>
+
+<SECTION>
 <FILE>gcr-simple-certificate</FILE>
 <TITLE>GcrSimpleCertificate</TITLE>
 GcrSimpleCertificate
@@ -523,20 +541,22 @@ GcrUnlockOptionsWidgetPrivate
 </SECTION>
 
 <SECTION>
-<FILE>gcr-viewer-window</FILE>
-GcrViewerWindow
-GcrViewerWindowClass
-gcr_viewer_window_new
-gcr_viewer_window_load
+<FILE>gcr-viewer-widget</FILE>
+GcrViewerWidget
+GcrViewerWidgetClass
+gcr_viewer_widget_new
+gcr_viewer_widget_load_data
+gcr_viewer_widget_load_file
+<SUBSECTION Standard>
+gcr_viewer_widget_get_type
+GCR_TYPE_VIEWER_WIDGET
+GCR_IS_VIEWER_WIDGET
+GCR_IS_VIEWER_WIDGET_CLASS
+GCR_VIEWER_WIDGET
+GCR_VIEWER_WIDGET_CLASS
+GCR_VIEWER_WIDGET_GET_CLASS
 <SUBSECTION Private>
-gcr_viewer_window_get_type
-GcrViewerWindowPrivate
-GCR_IS_VIEWER_WINDOW
-GCR_IS_VIEWER_WINDOW_CLASS
-GCR_TYPE_VIEWER_WINDOW
-GCR_VIEWER_WINDOW
-GCR_VIEWER_WINDOW_CLASS
-GCR_VIEWER_WINDOW_GET_CLASS
+GcrViewerWidgetPrivate
 </SECTION>
 
 <SECTION>

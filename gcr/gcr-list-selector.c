@@ -45,7 +45,6 @@
 
 /**
  * GcrListSelector:
- * @parent: Parent object
  *
  * A list selector widget.
  */

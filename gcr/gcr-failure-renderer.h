@@ -30,11 +30,10 @@
 #include <gtk/gtk.h>
 
 #include "gcr-renderer.h"
-#include "gcr-types.h"
 
 G_BEGIN_DECLS
 
-#define GCR_TYPE_FAILURE_RENDERER               (_gcr_failure_renderer_get_type ())
+#define GCR_TYPE_FAILURE_RENDERER               (gcr_failure_renderer_get_type ())
 #define GCR_FAILURE_RENDERER(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_FAILURE_RENDERER, GcrFailureRenderer))
 #define GCR_FAILURE_RENDERER_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_FAILURE_RENDERER, GcrFailureRendererClass))
 #define GCR_IS_FAILURE_RENDERER(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_FAILURE_RENDERER))
@@ -56,12 +55,12 @@ struct _GcrFailureRendererClass {
 	GObjectClass parent_class;
 };
 
-GType                  _gcr_failure_renderer_get_type          (void);
+GType                  gcr_failure_renderer_get_type         (void);
 
-GcrRenderer *          _gcr_failure_renderer_new              (const gchar *label,
-                                                               GError *error);
+GcrRenderer *          gcr_failure_renderer_new              (const gchar *label,
+                                                              GError *error);
 
-GcrRenderer *          _gcr_failure_renderer_new_unsupported  (const gchar *label);
+GcrRenderer *          gcr_failure_renderer_new_unsupported  (const gchar *label);
 
 G_END_DECLS
 

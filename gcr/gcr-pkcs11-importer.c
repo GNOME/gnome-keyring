@@ -332,7 +332,7 @@ calculate_icon (GcrPkcs11Importer *self)
 
 	info = gck_slot_get_token_info (self->pv->slot);
 	if (g_strcmp0 (info->manufacturer_id, "Gnome Keyring") == 0)
-		result = g_themed_icon_new ("home-folder");
+		result = g_themed_icon_new ("user-home");
 	else
 		result = g_themed_icon_new ("media-flash");
 	gck_token_info_free (info);

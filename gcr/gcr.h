@@ -42,14 +42,18 @@
 #include "gcr-deprecated.h"
 #include "gcr-key-renderer.h"
 #include "gcr-key-widget.h"
-#include "gcr-importer.h"
+#include "gcr-enum-types.h"
+#include "gcr-failure-renderer.h"
+#include "gcr-key-renderer.h"
+#include "gcr-key-widget.h"
+#include "gcr-import-button.h"
 #include "gcr-list-selector.h"
 #include "gcr-renderer.h"
 #include "gcr-tree-selector.h"
 #include "gcr-union-collection.h"
 #include "gcr-unlock-options-widget.h"
 #include "gcr-viewer.h"
-#include "gcr-viewer-window.h"
+#include "gcr-viewer-widget.h"
 
 #undef __GCR_INSIDE_HEADER__
 

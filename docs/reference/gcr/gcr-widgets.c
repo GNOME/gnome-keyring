@@ -177,6 +177,38 @@ create_list_selector (const gchar *name)
 	return gcr_shooter_info_new (name, align, GCR_SHOOTER_MEDIUM);
 }
 
+static GcrShooterInfo *
+create_import_button (const gchar *name)
+{
+	GcrImportButton *import;
+	GtkWidget *align;
+
+	import = gcr_import_button_new ("Import");
+
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (import));
+
+	return gcr_shooter_info_new (name, align, GCR_SHOOTER_MEDIUM);
+}
+
+static GcrShooterInfo *
+create_viewer_widget (const gchar *name)
+{
+	GcrViewerWidget *viewer;
+	GtkWidget *align;
+	gchar *contents;
+	gsize length;
+
+	contents = load_gcr_test_file ("email.p12", &length);
+	viewer = gcr_viewer_widget_new ();
+	gcr_viewer_widget_load_data (viewer, "Email certificate", (gpointer)contents, length);
+	g_free (contents);
+
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (viewer));
+
+	return gcr_shooter_info_new (name, align, GCR_SHOOTER_LARGE);
+}
 
 GcrShooterInfo*
 gcr_widgets_create (const gchar *name)
@@ -185,14 +217,20 @@ gcr_widgets_create (const gchar *name)
 
 	if (g_str_equal (name, "certificate-widget"))
 		return create_certificate_widget (name);
-	else if (g_str_equal (name, "key-widget"))
-		return create_key_widget (name);
 	else if (g_str_equal (name, "combo-selector"))
 		return create_combo_selector (name);
-	else if (g_str_equal (name, "tree-selector"))
-		return create_tree_selector (name);
+	else if (g_str_equal (name, "import-button"))
+		return create_import_button (name);
+	else if (g_str_equal (name, "key-widget"))
+		return create_key_widget (name);
 	else if (g_str_equal (name, "list-selector"))
 		return create_list_selector (name);
+	else if (g_str_equal (name, "tree-selector"))
+		return create_tree_selector (name);
+	else if (g_str_equal (name, "viewer-widget"))
+		return create_viewer_widget (name);
+	else
+		g_assert_not_reached ();
 
 	return NULL;
 }
