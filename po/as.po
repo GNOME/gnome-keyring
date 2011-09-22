@@ -2,662 +2,148 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Amitakhya Phukan <aphukan@fedoraproject.org>, 2009.
+# Nilamdyuti Goswami <ngoswami@redhat.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: as\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
-"cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2009-08-26 19:44+0000\n"
-"PO-Revision-Date: 2009-09-21 09:41+0530\n"
-"Last-Translator: \n"
-"Language-Team: Assamese <>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-19 07:40+0000\n"
+"PO-Revision-Date: 2011-08-18 18:04+0530\n"
+"Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
+"Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.2\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:228
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
-msgstr ""
-"'%s' (%s) এপ্লিকেশন, অবিকল্পিত চাবিৰিংত অৱস্থিত '<object prop='name'/>' ৰ "
-"গুপ্তশব্দ ব্যৱহাৰ কৰিবলৈ ইচ্ছুক ।"
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+msgid "Unnamed"
+msgstr "নাম নহোৱা"
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
-msgstr ""
-"'%s' (%s) এপ্লিকেশন, %s ত অৱস্থিত '<object prop='name'/>' ৰ গুপ্তশব্দ ব্যৱহাৰ "
-"কৰিবলৈ ইচ্ছুক ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:238 ../daemon/gkr-daemon-ops.c:248
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"'%s' এপ্লিকেশন, অবিকল্পিত চাবি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ গুপ্তশব্দ "
-"ব্যৱহাৰ কৰিবলৈ ইচ্ছুক ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:242 ../daemon/gkr-daemon-ops.c:252
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"'%s' এপ্লিকেশন %s ত অৱস্থিত '<object prop='name'/>' ৰ গুপ্তশব্দ ব্যৱহাৰ কৰিবলৈ "
-"ইচ্ছুক ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:258
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন অবিকল্পিত চাবি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ "
-"গুপ্তশব্দ ব্যৱহাৰ কৰিবলৈ ইচ্ছুক ।"
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:261
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন %s ত অৱস্থিত '<object prop='name'/>' ৰ গুপ্তশব্দ ব্যৱহাৰ "
-"কৰিবলৈ ইচ্ছুক ।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow access"
-msgstr "ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব"
-
-#: ../daemon/gkr-daemon-ops.c:267
-msgid "Allow application access to keyring?"
-msgstr "এপ্লিকেশনক চাবিৰিং ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব নেকি ?"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:309
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-"'%s' (%s) এপ্লিকেশন অবিকল্পিত চাবিৰিং ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে "
-"লক কৰা আছে"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:314
-#, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-"'%s' (%s) এপ্লিকেশন '%s' চাবিৰিং ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে লক "
-"কৰা আছে"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:321 ../daemon/gkr-daemon-ops.c:333
-#, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-"'%s' এপ্লিকেশন অবিকল্পিত চাবিৰিং ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে লক কৰা "
-"আছে"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:326 ../daemon/gkr-daemon-ops.c:339
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "'%s' এপ্লিকেশন '%s' চাবিৰিং ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে লক কৰা আছে"
-
-#. TRANSLATORS: The default keyring is locked
-#: ../daemon/gkr-daemon-ops.c:346
-#, c-format
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন অবিকল্পিত চাবিৰিং ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে "
-"লক কৰা আছে"
-
-#. TRANSLATORS: The keyring '%s' is locked
-#: ../daemon/gkr-daemon-ops.c:351
-#, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন %s চাবিৰিং ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে লক কৰা "
-"আছে"
-
-#: ../daemon/gkr-daemon-ops.c:358
-msgid "Enter password for default keyring to unlock"
-msgstr "অবিকল্পিত চাবিৰিং আনলক কৰিবলৈ গুপ্তশব্দ লিখক"
-
-#: ../daemon/gkr-daemon-ops.c:360
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "'%s' চাবিৰিং আনলক কৰিবলৈ গুপ্তশব্দ লিখক"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:364
-msgid "Unlock Keyring"
-msgstr "চাবিৰিং আনলক কৰক"
-
-#: ../daemon/gkr-daemon-ops.c:376
-msgid "Automatically unlock this keyring when I log in."
-msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই চাবিৰিং আন-লক কৰা হ'ব ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:413
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"'%s' (%s) এপ্লিকেশন '%s' নামক এটা নতুন চাবিৰিং সৃষ্টি কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:418
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"'%s' (%s) এপ্লিকেশন এটা অবিকল্পিত চাবিৰিং সৃষ্টি কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:425 ../daemon/gkr-daemon-ops.c:437
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"'%s' এপ্লিকেশন '%s' নামক এটা নতুন চাবিৰিং সৃষ্টি কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:430 ../daemon/gkr-daemon-ops.c:442
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"'%s' এপ্লিকেশন এটা নতুন অবিকল্পিত চাবিৰিং সৃষ্টি কৰিবলৈ ইচ্ছুক । এই কামত ব্যৱহাৰযোগ্য "
-"গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:449
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন '%s' নামক এটা নতুন চাবিৰিং সৃষ্টি কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#. TRANSLATORS: The password is for the new keyring
-#: ../daemon/gkr-daemon-ops.c:454
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন এটা নতুন অবিকল্পিত চাবিৰিং সৃষ্টি কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:460
-msgid "New Keyring Password"
-msgstr "নতুন চাবিৰিং গুপ্তশব্দ"
-
-#: ../daemon/gkr-daemon-ops.c:461
-msgid "Choose password for new keyring"
-msgstr "নতুন চাবিৰিং'ৰ বাবে গুপ্তশব্দ নিৰ্বাচন কৰক"
-
-#: ../daemon/gkr-daemon-ops.c:508
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"'%s' (%s) এপ্লিকেশন '%s' চাবিৰিং'ৰ গুপ্তশব্দ পৰিবৰ্তন কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#: ../daemon/gkr-daemon-ops.c:512
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-"'%s' (%s) এপ্লিকেশন অবিকল্পিত চাবিৰিং'ৰ গুপ্তশব্দ পৰিবৰ্তন কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#: ../daemon/gkr-daemon-ops.c:518 ../daemon/gkr-daemon-ops.c:528
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-"'%s' এপ্লিকেশন '%s' চাবিৰিং'ৰ গুপ্তশব্দ পৰিবৰ্তন কৰিবলৈ ইচ্ছুক । এই কামত ব্যৱহাৰযোগ্য "
-"গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#: ../daemon/gkr-daemon-ops.c:522 ../daemon/gkr-daemon-ops.c:532
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"'%s' এপ্লিকেশন অবিকল্পিত চাবিৰিং'ৰ গুপ্তশব্দ পৰিবৰ্তন কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#: ../daemon/gkr-daemon-ops.c:538
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন '%s' চাবিৰিং'ৰ গুপ্তশব্দ পৰিবৰ্তন কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#: ../daemon/gkr-daemon-ops.c:542
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন অবিকল্পিত চাবিৰিং'ৰ গুপ্তশব্দ পৰিবৰ্তন কৰিবলৈ ইচ্ছুক । এই কামত "
-"ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
-
-#: ../daemon/gkr-daemon-ops.c:552
-#, c-format
-#| msgid "Choose a new password for the '%s' keyring. "
-msgid "Choose a new password for the '%s' keyring."
-msgstr "'%s' চাবিৰিংৰ বাবে গুপ্তশব্দ নিৰ্বাচন কৰক. "
-
-#: ../daemon/gkr-daemon-ops.c:554
-#, c-format
-#| msgid "Choose a new password for the default keyring. "
-msgid "Choose a new password for the default keyring."
-msgstr "অবিকল্পিত চাবিৰিংৰ বাবে নতুন গুপ্তশব্দ নিৰ্বাচন কৰক । "
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:558
+#: ../daemon/dbus/gkd-secret-change.c:86
 msgid "Change Keyring Password"
-msgstr "চাবিৰিং'ৰ গুপ্তশব্দ পৰিবৰ্তন কৰক"
+msgstr "keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰক"
 
-#: ../daemon/gkr-daemon-ops.c:631
+#: ../daemon/dbus/gkd-secret-change.c:88
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "'%s' keyring -ৰ বাবে এটা নতুন পাছৱাৰ্ড বাছক"
+
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
 msgstr ""
-"'%s' (%s) এপ্লিকেশন এটা গুপ্তশব্দ সংৰক্ষণ কৰিবলৈ ইচ্ছুক, কিন্তু কোনো অবিকল্পিত চাবিৰিং "
-"উপস্থিত নেই । নতুন চাবিৰিং নিৰ্মাণেৰ বাবে ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
+"এটা অনুপ্ৰয়োগে '%s' keyring -ৰ বাবে পাছৱাৰ্ড সলনি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
+"ব্যৱহাৰ কৰিব বিচৰা নতুন পাছৱাৰ্ড বাছক।"
 
-#: ../daemon/gkr-daemon-ops.c:635 ../daemon/gkr-daemon-ops.c:639
+#: ../daemon/dbus/gkd-secret-change.c:111
+msgid "The original password was incorrect"
+msgstr "প্ৰকৃত পাছৱাৰ্ড সঠিক নাছিল"
+
+#: ../daemon/dbus/gkd-secret-create.c:83
+msgid "New Keyring Password"
+msgstr "নতুন keyring পাছৱাৰ্ড"
+
+#: ../daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "নতুন keyring -ৰ বাবে পাছৱাৰ্ড নিৰ্বাচন কৰক"
+
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
 msgstr ""
-"'%s' এপ্লিকেশন এটা গুপ্তশব্দ সংৰক্ষণ কৰিবলৈ ইচ্ছুক, কিন্তু কোনো অবিকল্পিত চাবিৰিং "
-"উপস্থিত নেই । নতুন চাবিৰিং নিৰ্মাণেৰ বাবে ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
+"এটা অনুপ্ৰয়োগে '%s'  নামৰ এটা নতুন keyring সৃষ্টি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
+"ব্যৱহাৰ কৰিব বিচৰা নতুন পাছৱাৰ্ড বাছক।"
 
-#: ../daemon/gkr-daemon-ops.c:643
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "প্ৰমাণপত্ৰ আৰু চাবি সংৰক্ষণ"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME Keyring: PKCS#11 উপাদান"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME Keyring: গুপ্ত সেৱা"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "গুপ্ত সংৰক্ষণ সেৱা"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME Keyring: SSH সহায়ক"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "SSH চাবি সহায়ক"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME Keyring: GPG সহায়ক"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG পাছৱাৰ্ড সহায়ক"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
+msgid "Unknown"
+msgstr "অজ্ঞাত"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-"এটা অজ্ঞাত এপ্লিকেশন এটা গুপ্তশব্দ সংৰক্ষণ কৰিবলৈ ইচ্ছুক, কিন্তু কোনো অবিকল্পিত চাবিৰিং "
-"উপস্থিত নেই । নতুন চাবিৰিং নিৰ্মাণেৰ বাবে ব্যৱহাৰযোগ্য গুপ্তশব্দ নিৰ্বাচন কৰা আবশ্যক ।"
+msgid "PGP Key: %s"
+msgstr "PGP চাবি: %s"
 
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Create Default Keyring"
-msgstr "অবিকল্পিত চাবিৰিং সৃষ্টি কৰক"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+msgid "Enter Passphrase"
+msgstr "Passphrase সোমাওক"
 
-#: ../daemon/gkr-daemon-ops.c:648
-msgid "Choose password for default keyring"
-msgstr "অবিকল্পিত চাবিৰিং'ৰ বাবে গুপ্তশব্দ নিৰ্বাচন কৰক"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+msgid "Forget this password if idle for"
+msgstr "এই পাছৱাৰ্ড পাহৰি যাওক যদি অলস থাকে"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"এই বিকল্পেৰ সাহায্যে gnome-keyring ডেমনেৰ মধ্যে PKCS#11 সামগ্ৰী সক্ৰিয় কৰা হ'ব। "
-"gnome-keyring-daemon আৰম্ভেৰ সময় (অৰ্থাৎ, ব্যবহাৰকাৰী লগ-ইন কৰাৰ সময়) এটি প্ৰয়োগ "
-"কৰা হ'ব। কমান্ড-লাইন থেকে প্ৰযোজ্য কিছু আৰ্গুমেন্ট এই ডেমনেৰ ব্যবহাৰৰ বাবে উল্লেখ কৰা "
-"হলে এই বৈশিষ্ট্য উপেক্ষা কৰা যাবে।"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
+msgid "Forget this password after"
+msgstr "এই পাছৱাৰ্ড পাহৰি যাওক"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"এই বিকল্পেৰ সাহায্যে gnome-keyring ডেমনেৰ মধ্যে SSH agent সক্ৰিয় কৰা হ'ব। gnome-"
-"keyring-daemon আৰম্ভেৰ সময় (অৰ্থাৎ, ব্যবহাৰকাৰী লগ-ইন কৰাৰ সময়) এটি প্ৰয়োগ কৰা "
-"হ'ব। কমান্ড-লাইন থেকে প্ৰযোজ্য কিছু আৰ্গুমেন্ট এই ডেমনেৰ ব্যবহাৰৰ বাবে উল্লেখ কৰা হলে "
-"এই বৈশিষ্ট্য উপেক্ষা কৰা যাবে।"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
+msgid "Forget this password when I log out"
+msgstr "মই লগআউট কৰিলে এই পাছৱাৰ্ড পাহৰি যাব"
 
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "gnome-keyring PKCS#11 সামগ্ৰী সক্ৰিয় কি না ।"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "gnome-keyring SSH agent সক্ৰিয় কি না ।"
-
-#: ../daemon/gnome-keyring-daemon.desktop.in.in.h:1
-msgid "GNOME Keyring Daemon"
-msgstr "GNOME Keyring ডেমন"
-
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Unlock Login Keyring"
-msgstr "চাবিৰিং আনলক কৰক"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:99
-msgid "Enter login password to unlock keyring"
-msgstr "চাবিৰিং আন-লক কৰিবলৈ ব্যৱহৃত গুপ্তশব্দ লিখক"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:101
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr "এই কম্পিউটাৰে লগ-ইন কৰাৰ সময়, আপনাৰ লগ-ইন কি-ৰিং স্বয়ংক্ৰিয়ভাবে আন-লক কৰা হয়নি"
-
-#. And put together the ask request
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Create Login Keyring"
-msgstr "লগ-ইন চাবিৰিং সৃষ্টি কৰক"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:125
-msgid "Enter your login password"
-msgstr "লগ-ইন গুপ্তশব্দ পৰিবৰ্তন লিখক"
-
-#: ../daemon/keyrings/gkr-keyring-login.c:127
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-"এই কম্পিউটাৰে লগ-ইন কৰাৰ সময়, আপনাৰ লগ-ইন কি-ৰিং স্বয়ংক্ৰিয়ভাবে নিৰ্মাণ কৰা "
-"হয়নি। এটি এখন নিৰ্মাণ কৰা হ'ব।"
-
-#: ../daemon/keyrings/gkr-keyring.c:587
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr "%s চাবিৰিং আন-লক কৰিবলৈ ব্যৱহৃত গুপ্তশব্দ"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:98
-msgid "Unlock private key"
-msgstr "গোপনীয়-কি আন-লক কৰক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:100
-msgid "Unlock certificate"
-msgstr "প্ৰমাণপত্ৰ আন-লক কৰক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:102
-msgid "Unlock public key"
-msgstr "সাৰ্বজনীন-কি আন-লক কৰক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:104
-msgid "Unlock"
-msgstr "আন-লক কৰক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:113 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "গোপনীয় কি আনলক কৰিবলৈ গুপ্তশব্দ লিখক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:115 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "প্ৰমাণপত্ৰ আন-লক কৰাৰ বাবে গুপ্তশব্দ লিখক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:117
-msgid "Enter password to unlock the public key"
-msgstr "সাৰ্বজনীন কি আনলক কৰিবলৈ গুপ্তশব্দ লিখক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:119 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "আনলক কৰিবলৈ গুপ্তশব্দ লিখক"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:129
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "এটা এপ্লিকেশন, %s গোপনীয়-কি ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু বৰ্তমানে এটি লক কৰা আছে"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:132
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "এটা এপ্লিকেশন, %s প্ৰমাণপত্ৰ ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু বৰ্তমানে এটি লক কৰা আছে"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:135
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "এটা এপ্লিকেশন, %s সাৰ্বজনীন-কি ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু বৰ্তমানে এটি লক কৰা আছে"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:138
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "এটা এপ্লিকেশন, %s ব্যৱহাৰ কৰিবলৈ ইচ্ছুক, কিন্তু বৰ্তমানে এটি লক কৰা আছে"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:147
-msgid "Automatically unlock this private key when I log in."
-msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই গোপনীয়-কি আন-লক কৰা হ'ব ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:149
-msgid "Automatically unlock this certificate when I log in."
-msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই প্ৰমাণপত্ৰ আন-লক কৰা হ'ব ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:151
-msgid "Automatically unlock this public key when I log in."
-msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই সাৰ্বজনীন-কি আন-লক কৰা হ'ব ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:153
-msgid "Automatically unlock this when I log in"
-msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এটি আন-লক কৰা হ'ব ।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:394
-msgid "Unlock certificate/key storage"
-msgstr "প্ৰমাণপত্ৰ/কি সংগ্ৰহস্থল আন-লক কৰক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:395
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "প্ৰমাণপত্ৰ/কি সংগ্ৰহস্থল আন-লক কৰাৰ বাবে পাসওয়াৰ্ড লিখক"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:398
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"একটি অ্যাপ্লিকেশন, %s প্ৰমাণপত্ৰ/কি সংগ্ৰহস্থল ব্যবহাৰ কৰতে ইচ্ছুক, কিন্তু বৰ্তমানে এটি "
-"লক কৰা আছে"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:403
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:554
-msgid "Automatically unlock secure storage when I log in."
-msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে নিৰাপদ সংগ্ৰস্থল আন-লক কৰা হ'ব।"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:546
-msgid "New Password Required"
-msgstr "নতুন পাসওয়াৰ্ড আবশ্যক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:547
-msgid "New password required for secure storage"
-msgstr "সংগ্ৰহস্থল নিৰাপদ ৰাখতে পাসওয়াৰ্ড লেখা আবশ্যক"
-
-#: ../daemon/pkcs11/gkr-pkcs11-auth.c:549
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"প্ৰমাণপত্ৰ ও কি সংগ্ৰহেৰ বাবে '%s' প্ৰস্তুত কৰাৰ উদ্দেশ্যে একটি পাসওয়াৰ্ড লেখা আবশ্যক"
-
-#: ../daemon/ui/gkr-ask-tool.c:230
-msgid ""
-"<b><big>Could not grab your mouse.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>মাউসেৰ উপৰ নিয়ন্ত্ৰণ কৰা সম্ভব হয়নি।</big></b>\n"
-"\n"
-"কোনো ক্ষতিকাৰী ক্লায়েন্ট সম্ভবত আপনাৰ সেশান বিনা অধিকাৰে নিৰীক্ষণ কৰছে অথবা সম্ভবত "
-"আপনি কোনো মেনু ক্লিক কৰেছেন অথবা কোনো অ্যাপ্লিকেশন নিজেৰ উপৰ আকৰ্ষণ সৃষ্টি কৰেছে।\n"
-"\n"
-"পুনৰায় চেষ্টা কৰক।"
-
-#: ../daemon/ui/gkr-ask-tool.c:239
-msgid ""
-"<b><big>Could not grab your keyboard.</big></b>\n"
-"\n"
-"A malicious client may be eavesdropping on your session or you may have just "
-"clicked a menu or some application just decided to get focus.\n"
-"\n"
-"Try again."
-msgstr ""
-"<b><big>কি-বোৰ্ডেৰ উপৰ নিয়ন্ত্ৰণ কৰা সম্ভব হয়নি।</big></b>\n"
-"\n"
-"কোনো ক্ষতিকাৰী ক্লায়েন্ট সম্ভবত আপনাৰ সেশান বিনা অধিকাৰে নিৰীক্ষণ কৰছে অথবা সম্ভবত "
-"আপনি কোনো মেনু ক্লিক কৰেছেন অথবা কোনো অ্যাপ্লিকেশন নিজেৰ উপৰ আকৰ্ষণ সৃষ্টি কৰেছে।\n"
-"\n"
-"পুনৰায় চেষ্টা কৰক।"
-
-#: ../daemon/ui/gkr-ask-tool.c:276
-msgid "Store passwords unencrypted?"
-msgstr "এনক্ৰিপশন বিনা গুপ্তশব্দ সংৰক্ষণ কৰা হ'ব নেকি ?"
-
-#: ../daemon/ui/gkr-ask-tool.c:277
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"ফাঁকা পাসওয়াৰ্ড নিৰ্বাচনেৰ ফলে, আপনাৰ সংৰক্ষিত পাসওয়াৰ্ডগুলি নিৰাপদভাবে এনক্ৰিপ্ট "
-"কৰা সম্ভব হ'ব না। আপনাৰ ফাইলগুলি পড়তে অনুমোদিত যে কোনো ব্যবহাৰকাৰী দ্বাৰা এইগুলি "
-"প্ৰয়োগ কৰা সম্ভব হ'ব।"
-
-#: ../daemon/ui/gkr-ask-tool.c:284
-msgid "Use Unsafe Storage"
-msgstr "অনিৰাপদ সংগ্ৰহস্থল ব্যবহাৰ কৰা হ'ব"
-
-#
-#: ../daemon/ui/gkr-ask-tool.c:512
-msgid "_Location:"
-msgstr "অবস্থান:(_L)"
-
-#: ../daemon/ui/gkr-ask-tool.c:525
-msgid "_Old password:"
-msgstr "পুৰোনো গুপ্তশব্দ:(_O)"
-
-#
-#: ../daemon/ui/gkr-ask-tool.c:545
-msgid "_Password:"
-msgstr "গুপ্তশব্দ: (_P)"
-
-#: ../daemon/ui/gkr-ask-tool.c:567
-msgid "_Confirm password:"
-msgstr "গুপ্তশব্দ নিশ্চিত কৰক:(_C)"
-
-#: ../daemon/ui/gkr-ask-tool.c:587
-msgid "New password strength"
-msgstr "নতুন গুপ্তশব্দেৰ দৃঢ়তা"
-
-#: ../daemon/ui/gkr-ask-tool.c:645
-msgid "Passwords do not match."
-msgstr "গুপ্তশব্দে গৰমিল ।"
-
-#: ../daemon/ui/gkr-ask-tool.c:661
-msgid "Password cannot be blank"
-msgstr "গুপ্তশব্দ ফাঁকা ৰাখা যাবে না"
-
-#: ../daemon/ui/gkr-ask-tool.c:712
-msgid "_Deny"
-msgstr "প্ৰত্যাখ্যান কৰক (_D)"
-
-#
-#: ../daemon/ui/gkr-ask-tool.c:724
-msgid "C_reate"
-msgstr "C"
-
-#
-#: ../daemon/ui/gkr-ask-tool.c:728
-msgid "C_hange"
-msgstr "পৰিবৰ্তন কৰক (_h)"
-
-#: ../daemon/ui/gkr-ask-tool.c:732
-msgid "Allow _Once"
-msgstr "একবাৰ ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব (_O)"
-
-#: ../daemon/ui/gkr-ask-tool.c:736
-msgid "_Always Allow"
-msgstr "সৰ্বদা ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব (_A)"
-
-#: ../daemon/util/gkr-location.c:234
-#, c-format
-msgid "Removable Disk: %s"
-msgstr "অপসাৰণযোগ্য ডিস্ক: %s"
-
-#: ../daemon/util/gkr-location.c:236
-msgid "Removable Disk"
-msgstr "অপসাৰণযোগ্য ডিস্ক"
-
-#: ../daemon/util/gkr-location.c:327 ../daemon/util/gkr-location.c:339
-msgid "Home"
-msgstr "ঘৰ"
-
-#: ../daemon/util/gkr-location.c:882 ../daemon/util/gkr-location.c:906
-msgid "The disk or drive this file is located on is not present"
-msgstr "নথিপত্ৰ ধাৰণকাৰী ডিস্ক অথবা ড্ৰাইভ উপস্থিত নহয়"
-
-#: ../daemon/util/gkr-location.c:914
-#, c-format
-msgid "Couldn't create directory: %s"
-msgstr "পঞ্জিকা নিৰ্মাণ কৰা নাযায়: %s"
-
-#: ../daemon/util/gkr-location.c:948
-#, c-format
-msgid "Couldn't delete the file: %s"
-msgstr "চিহ্নিত নথিপত্ৰ আঁতৰুৱা নাযায়: %s"
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:147
+msgid "Login"
+msgstr "লগিন কৰক"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
-msgstr "ডোমেইনেৰ অংশবিশেষ"
+msgstr "ডোমেইনৰ উপাদান"
 
 #: ../egg/egg-oid.c:43
 msgid "User ID"
 msgstr "ব্যবহাৰকাৰীৰ ID"
 
 #: ../egg/egg-oid.c:46
-msgid "Email"
-msgstr "ঈ-মেইল"
+msgid "Email Address"
+msgstr "ই-মেইল ঠিকনা"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
-msgstr "জন্মদিন"
+msgstr "জন্মৰ তাৰিখ"
 
 #: ../egg/egg-oid.c:56
 msgid "Place of Birth"
@@ -673,7 +159,7 @@ msgstr "নাগৰিকত্ব"
 
 #: ../egg/egg-oid.c:62
 msgid "Country of Residence"
-msgstr "বসবাসেৰ দেশ"
+msgstr "বসবাসৰ দেশ"
 
 #
 #: ../egg/egg-oid.c:65
@@ -685,15 +171,14 @@ msgid "Surname"
 msgstr "পদবি"
 
 #
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
-msgstr "ক্ৰমিক সংখ্যা"
+msgstr "ক্ৰমিক নম্বৰ"
 
 #
 #: ../egg/egg-oid.c:71
 msgid "Country"
-msgstr "কান্ট্ৰি"
+msgstr "দেশ"
 
 #: ../egg/egg-oid.c:73
 msgid "Locality"
@@ -720,12 +205,12 @@ msgstr "সংস্থাৰ বিভাগ"
 #
 #: ../egg/egg-oid.c:83
 msgid "Title"
-msgstr "Title"
+msgstr "শীৰ্ষক"
 
 #
 #: ../egg/egg-oid.c:85
 msgid "Telephone Number"
-msgstr "টেলিফোন সংখ্যা"
+msgstr "টেলিফোন নম্বৰ"
 
 #
 #: ../egg/egg-oid.c:87
@@ -735,678 +220,1526 @@ msgstr "প্ৰদত্ত নাম"
 #
 #: ../egg/egg-oid.c:89
 msgid "Initials"
-msgstr "অদ্যাক্ষৰ"
+msgstr "আদ্যাক্ষৰ"
 
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr "Generation Qualifier"
+msgstr "প্ৰজন্ম পৰিপুষ্টক"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr "DN কোয়ালিফায়াৰ"
+msgstr "DN পৰিপুষ্টক"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
 msgstr "ছদ্ধনাম"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "RSA সহ MD2"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "RSA সহ MD5"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "RSA সহ SHA1"
 
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "DSA সহ SHA1"
 
-#: ../gcr/gcr-certificate-basics-widget.c:59
-msgid "<i>Not Part of Certificate</i>"
-msgstr "<i>প্ৰমাণপত্ৰৰ অংশ নয়</i>"
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "চাৰ্ভাৰ প্ৰমাণীকৰণ"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "ক্লাএন্ট প্ৰমাণীকৰণ"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "কোড স্বাক্ষৰণ"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "ই-মেইল সুৰক্ষা"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "সময় মোহৰকৰণ"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr "এটা ছাইল্ড প্ৰক্ৰিয়া (%s) -ৰ পৰা select() তথ্য পঢ়োতে অপ্ৰত্যাশিত ত্ৰুটি"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "waitpid() (%s) -ত অপ্ৰত্যাশিত ত্ৰুটি"
+
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr ""
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr ""
+
+#: ../gck/gck-module.c:412
+#, fuzzy, c-format
+#| msgid "Couldn't delete the file: %s"
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "চিহ্নিত নথিপত্ৰ আঁতৰুৱা নাযায়: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr ""
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr ""
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "নাম"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "প্ৰেৰণ কৰা হৈছে"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "অৱসান ঘটিব"
 
 #
-#: ../gcr/gcr-certificate-basics-widget.c:80
-msgid "<i>unknown</i>"
-msgstr "অজ্ঞাত"
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:262
+msgid "Certificate"
+msgstr "প্ৰমাণপত্ৰ"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<Not Part of Certificate>"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>এই নামৰ এটা নথিপত্ৰ ইতিমধ্যে অস্তিত্ববান।</b>\n"
+"\n"
+"আপুনি ইয়াক এটা নতুন নথিপত্ৰৰে সলনি কৰিব বিচাৰে নে?"
+
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "প্ৰতিস্থাপন কৰক (_R)"
+
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "কাৰ্য্য বাতিল কৰা হৈছিল।"
+
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "প্ৰমাণপত্ৰ এক্সপোৰ্ট কৰক"
+
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "নথিপত্ৰসমূহ এক্সপোৰ্ট কৰক"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "PEM নথিপত্ৰসমূহ"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "অন্য নাম"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "XMPP Addr"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "ই-মেইল"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "X400 ঠিকনা"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "ডাইৰেকটৰি নাম"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "EDI দল নাম"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "URI"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "IP ঠিকনা"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "ৰেজিস্টাৰ্ড ID"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "সাধাৰণ বাধাসমূহ"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "প্ৰমাণপত্ৰ কতৃপক্ষ"
 
 #
-#: ../gcr/gcr-certificate-basics-widget.ui.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>ফিঙ্গাৰপ্ৰিন্ট</b>"
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
+msgid "Yes"
+msgstr "হয়"
 
 #
-#: ../gcr/gcr-certificate-basics-widget.ui.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>প্ৰদানকাৰী</b>"
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
+msgid "No"
+msgstr "নহয়"
+
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "সৰ্বাধিক পথ দৈৰ্ঘ"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "অসীমিত"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "প্ৰসাৰিত চাবি ব্যৱহাৰ"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "অনুমোদিত কাৰণসমূহ"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "বিষয় চাবি পৰিচয়ক"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "চাবি পৰিচয়ক"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "অঙ্কীয় স্বাক্ষৰ"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "চাবি ইনচিফাৰমেন্ট"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "তথ্য ইনচিফাৰমেন্ট"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "চাবি চুক্তি"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "প্ৰমাণপত্ৰ স্বাক্ষৰ"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "প্ৰত্যাৱৰ্তন তালিকা স্বাক্ষৰ"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "চাবি ব্যৱহাৰ"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "ব্যৱহাৰসমূহ"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "বিষয় অতিৰিক্ত নামসমূহ"
 
 #
-#: ../gcr/gcr-certificate-basics-widget.ui.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>লক্ষ্য</b>"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>নিম্নলিখিত কাজেৰ বাবে এই প্ৰমাণপত্ৰ পৰীক্ষিত হয়েছে:</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>বৈধতা</b>"
-
-#: ../gcr/gcr-certificate-basics-widget.ui.h:7
-msgid "Common Name (CN)"
-msgstr "Common Name (CN)"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:8
-msgid "Email Recipient Certificate"
-msgstr "ঈ-মেইল প্ৰাপ্তিৰ প্ৰমাণপত্ৰ"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:9
-msgid "Email Signer Certificate"
-msgstr "ঈ-মেইল স্বাক্ষৰৰ প্ৰমাণপত্ৰ"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:10
-msgid "Expires On"
-msgstr "মেয়াদপূৰ্তী"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:11
-msgid "Issued On"
-msgstr "প্ৰকাশনাৰ তাৰিখ"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:12
-msgid "MD5 Fingerprint"
-msgstr "MD5 ফিঙ্গাৰপ্ৰিন্ট"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:13
-msgid "Organization (O)"
-msgstr "প্ৰতিষ্ঠান (O)"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:14
-msgid "Organizational Unit (OU)"
-msgstr "প্ৰাতিষ্ঠানিক বিভাগ (OU)"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:15
-msgid "SHA1 Fingerprint"
-msgstr "SHA1 ফিংগাৰপ্ৰিন্ট"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:16
-msgid "SSL Client Certificate"
-msgstr "SSL ক্লায়েন্ট প্ৰমাণপত্ৰ"
-
-#
-#: ../gcr/gcr-certificate-basics-widget.ui.h:17
-msgid "SSL Server Certificate"
-msgstr "SSL সাৰ্ভাৰ প্ৰমাণপত্ৰ"
-
-#
-#: ../gcr/gcr-certificate-details-widget.c:207
+#: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
 msgstr "প্ৰসাৰণ"
 
 #
-#: ../gcr/gcr-certificate-details-widget.c:212
+#: ../gcr/gcr-certificate-renderer.c:265
 msgid "Identifier"
-msgstr "অনুক্ৰমণিকা চিনাক্তকৰ্তা:"
+msgstr "পৰিচয়ক"
 
 #
-#: ../gcr/gcr-certificate-details-widget.c:222
+#: ../gcr/gcr-certificate-renderer.c:266
 msgid "Value"
 msgstr "মান"
 
 #
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-renderer.c:313
 msgid "Critical"
 msgstr "গুৰুতৰ"
 
-#
-#: ../gcr/gcr-certificate-details-widget.c:229
-msgid "Yes"
-msgstr "হ্যাঁ"
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "প্ৰমাণপত্ৰ এক্সপোৰ্ট কৰিব নোৱাৰি।"
 
-#
-#: ../gcr/gcr-certificate-details-widget.c:229
-msgid "No"
-msgstr "না"
+#: ../gcr/gcr-certificate-renderer.c:613
+msgid "Identity"
+msgstr "পৰিচয়"
+
+#: ../gcr/gcr-certificate-renderer.c:617
+msgid "Verified by"
+msgstr "দ্বাৰা সতাসত্য নিৰূপিত"
+
+#: ../gcr/gcr-certificate-renderer.c:624
+msgid "Expires"
+msgstr "অৱসান ঘটিব"
 
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
-msgstr "প্ৰসঙ্গেৰ নাম"
+msgstr "বিষয়ৰ নাম"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
-msgstr "নিৰ্মাণকাৰী নাম"
+msgstr "প্ৰেৰণকাৰীৰ নাম"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
-msgstr "জাৰি কৰা প্ৰমাণপত্ৰ"
+msgstr "প্ৰেৰণ কৰা প্ৰমাণপত্ৰ"
 
 #
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
-msgstr "ভাৰ্সান"
+msgstr "সংস্কৰণ"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
-msgstr "চিহ্নিত সময়েৰ পূৰ্বে বৈধ নয়"
+msgstr "চিহ্নিত সময়ৰ পূৰ্বে বৈধ নয়"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
-msgstr "চিহ্নিত সময়েৰ পৰে বৈধ নয়"
+msgstr "চিহ্নিত সময়ৰ পিছত বৈধ নয়"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "প্ৰমাণপত্ৰ ফিংগাৰপ্ৰিন্টসমূহ"
 
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "স্বাক্ষৰ"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
-msgstr "চহিৰ এলগ'ৰিথম"
+msgstr "স্বাক্ষৰৰ এলগৰিথম"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
-msgstr "স্বাক্ষৰৰ পৰামিতি"
+msgstr "স্বাক্ষৰৰ প্ৰাচলসমূহ"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
-msgstr "সাৰ্বজনীন কি সংক্ৰান্ত তথ্য"
+msgstr "ৰাজহুৱা চাবি তথ্য"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
-msgstr "কি-ৰ অ্যালগোৰিদম"
+msgstr "চাবিৰ এলগৰিথম"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
-msgstr "কি-ৰ পৰামিতি"
+msgstr "চাবিৰ প্ৰাচলসমূহ"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
-msgstr "কি-ৰ মাপ"
+msgstr "চাবিৰ আকাৰ"
+
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "Key SHA1 ফিংগাৰপ্ৰিন্ট"
 
 #
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:265
 msgid "Public Key"
-msgstr "সাৰ্বজনীন কি"
+msgstr "ৰাজহুৱা চাবি"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
-msgid "Fingerprints"
-msgstr "ফিংগাৰপ্ৰিন্ট"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "বিৱৰণসমূহ (_D)"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr ""
+
+#: ../gcr/gcr-failure-renderer.c:165
+#, fuzzy
+#| msgid "Couldn't delete the file: %s"
+msgid "Could not display file"
+msgstr "চিহ্নিত নথিপত্ৰ আঁতৰুৱা নাযায়: %s"
+
+#
+#: ../gcr/gcr-failure-renderer.c:170
+#, fuzzy
+#| msgid "Version"
+msgid "Reason"
+msgstr "সংস্কৰণ"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr ""
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>প্ৰমাণপত্ৰ ও কি ইম্পোৰ্ট কৰক</span>"
+msgid "Import Certificates and Keys"
+msgstr "প্ৰমাণপত্ৰসমূহ আৰু চাবিসমূহ ইমপোৰ্ট কৰক"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
-msgstr "চিহ্নিত স্থানে ইম্পোৰ্ট কৰক:"
+msgstr "চিহ্নিত স্থানত ইমপোৰ্ট কৰক:"
 
 #
 #: ../gcr/gcr-import-dialog.ui.h:3
 msgid "Password:"
-msgstr "গুপ্তশব্দ:"
+msgstr "পাছৱাৰ্ড:"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
-msgid "The operation was cancelled"
-msgstr "কৰ্ম বাতিল কৰা হয়েছে"
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "PGP চাবি"
 
-#: ../gcr/gcr-importer.c:255
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "চাবি ID"
+
+#: ../gcr/gcr-gnupg-process.c:632
 #, c-format
-msgid "No location available to import to"
-msgstr "ইম্পোৰ্ট কৰাৰ উদ্দেশ্যে কোনো স্থান চিহ্নিত হয়নি"
+msgid "Gnupg process exited with code: %d"
+msgstr "Gnupg প্ৰক্ৰিয়া কোড: %d -ৰ সৈতে প্ৰস্থান কৰিছে"
 
-#: ../gcr/gcr-importer.c:404
-msgid "Import Certificates/Keys"
-msgstr "প্ৰমাণপত্ৰ/কি ইম্পোৰ্ট কৰক"
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "Gnupg প্ৰক্ৰিয়া সংকেত: %d দ্বাৰা অন্ত পেলোৱা হৈছে"
 
-#: ../gcr/gcr-importer.c:411
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "ইম্পোৰ্ট কৰা প্ৰমাণপত্ৰ/কি সংৰক্ষণেৰ বাবে একটি স্থান নিৰ্বাচন কৰক।"
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1921 ../gcr/gcr-parser.c:2179
+msgid "The operation was cancelled"
+msgstr "কৰ্ম বাতিল কৰা হৈছে"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "ব্যক্তিগত চাবি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "প্ৰমাণপত্ৰ আনলক কৰাৰ বাবে পাছৱাৰ্ড লিখক"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:449
+#: ../gcr/gcr-importer.c:185
 msgid "In order to import the private key, it must be unlocked"
-msgstr "গোপনীয় কি ইম্পোৰ্ট কৰতে হলে সেইটো আন-লক কৰা আবশ্যক"
+msgstr "ব্যক্তিগত চাবি ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:452
+#: ../gcr/gcr-importer.c:188
 msgid "In order to import the certificate, it must be unlocked"
-msgstr "প্ৰমাণপত্ৰ ইম্পোৰ্ট কৰতে হলে সেইটো আন-লক কৰা আবশ্যক"
+msgstr "প্ৰমাণপত্ৰ ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:455
+#: ../gcr/gcr-importer.c:191
 msgid "In order to import the data, it must be unlocked"
-msgstr "তথ্য ইম্পোৰ্ট কৰতে হলে সেইটো আন-লক কৰা আবশ্যক"
+msgstr "তথ্য ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:460
+#: ../gcr/gcr-importer.c:196
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "'%s' গোপনীয় কি ইম্পোৰ্ট কৰতে হলে সেইটো আন-লক কৰা আবশ্যক"
+msgstr "'%s' ব্যক্তিগত চাবি ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:463
+#: ../gcr/gcr-importer.c:199
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "'%s' প্ৰমাণপত্ৰ ইম্পোৰ্ট কৰতে হলে সেইটো আন-লক কৰা আবশ্যক"
+msgstr "'%s' প্ৰমাণপত্ৰ ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:466
+#: ../gcr/gcr-importer.c:202
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s' ইম্পোৰ্ট কৰতে হলে সেইটো আন-লক কৰা আবশ্যক"
+msgstr "'%s' ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "ইমপোৰ্ট কৰাৰ বাবে কোনো স্থান চিহ্নিত কৰা হোৱা নাই"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "প্ৰমাণপত্ৰ/চাবি ইমপোৰ্ট কৰক"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "ইমপোৰ্ট কৰা প্ৰমাণপত্ৰ/চাবি সংৰক্ষণেৰ বাবে এটা স্থান নিৰ্বাচন কৰক।"
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "চাবি"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "ব্যক্তিগত RSA চাবি"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "ব্যক্তিগত DSA চাবি"
 
 #
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:259
 msgid "Private Key"
-msgstr "গোপনীয় কি"
+msgstr "ব্যক্তিগত চাবি"
 
-#
-#: ../gcr/gcr-parser.c:199
-msgid "Certificate"
-msgstr "প্ৰমাণপত্ৰ"
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "ৰাজহুৱা DSA চাবি"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d বিট"
+msgstr[1] "%d বিটসমূহ"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "শক্তি"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "এলগৰিথম"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "আকাৰ"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "ফিংগাৰপ্ৰিন্টসমূহ"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1924
 msgid "Unrecognized or unsupported data."
 msgstr "অপৰিচিত অথবা অসমৰ্থিত তথ্য।"
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1927
 msgid "Could not parse invalid or corrupted data."
-msgstr "অবৈধ অথবা ক্ষতিগ্ৰস্ত তথ্য পাৰ্স কৰতে ব্যৰ্থ।"
+msgstr "অবৈধ অথবা ক্ষতিগ্ৰস্ত তথ্য বিশ্লেষণ কৰিব ব্যৰ্থ।"
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1930
 msgid "The data is locked"
-msgstr "তথ্য লক কৰা ৰয়েছে"
+msgstr "তথ্য লক কৰা আছে"
 
-#: ../gp11/gp11-misc.c:101
-msgid "Insufficient memory available"
-msgstr "পৰ্যাপ্ত মেমৰি উপলব্ধ নেই"
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "পিন্নড প্ৰমাণপত্ৰ সংৰক্ষণ কৰিবলে এটা স্থান পোৱা নগল"
 
-#: ../gp11/gp11-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "চিহ্নিত স্লট ID বৈধ নহয়"
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "যেতিয়ায় মই লগিন কৰো স্বচালিতভাৱে এই keyring আনলক কৰিব"
 
-#: ../gp11/gp11-misc.c:105
-msgid "Internal error"
-msgstr "অভ্যন্তৰীণ ত্ৰুটি"
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring after"
+msgstr "এই keyring লক কৰিব "
 
-#: ../gp11/gp11-misc.c:107
-msgid "The operation failed"
-msgstr "কৰ্ম ব্যৰ্থ"
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring if idle for"
+msgstr "এই keyring লক কৰিব যদি অলস"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "Lock this keyring when I log out"
+msgstr "মই লগ আউট কৰিলে এই keyring লক কৰিব"
+
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
+#: ../gcr/gcr-unlock-options-widget.ui.h:6
+msgid "minutes"
+msgstr "মিনিটসমূহ"
+
+#: ../gcr/gcr-unlock-renderer.c:63
+#, fuzzy, c-format
+#| msgid "Unlock"
+msgid "Unlock: %s"
+msgstr "আনলক কৰক"
+
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "আনলক কৰক"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+#, fuzzy
+#| msgid "The unlock password was incorrect"
+msgid "The password was incorrect"
+msgstr "আনলক কৰা পাছৱাৰ্ড সঠিক নাছিল"
 
 #
-#: ../gp11/gp11-misc.c:109
-msgid "Invalid arguments"
-msgstr "অবৈধ আৰ্গুমেন্ট"
-
-#: ../gp11/gp11-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "আবশ্যক থ্ৰেডগুলি মডিউল দ্বাৰা নিৰ্মাণ কৰা সম্ভব নহয়"
-
-#: ../gp11/gp11-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "চিহ্নিত মডিউল দ্বাৰা সঠিকভাবে তথ্য লক কৰা সম্ভব নয়"
-
-#: ../gp11/gp11-misc.c:115
-msgid "The field is read-only"
-msgstr "এই ক্ষেত্ৰটি শুধুমাত্ৰ পাঠ-যোগ্য"
-
-#: ../gp11/gp11-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "এই ক্ষেত্ৰে সংবেদনশীল তথ্য উপস্থিত ৰয়েছে এবং প্ৰকাশ কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "এই ক্ষেত্ৰটি বৈধ নহয় অথবা অনুপস্থিত"
-
-#: ../gp11/gp11-misc.c:121
-msgid "Invalid value for field"
-msgstr "ক্ষেত্ৰৰ মান বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "তথ্য বৈধ নহয় অথবা পৰিচিত নহয়"
-
-#: ../gp11/gp11-misc.c:125
-msgid "The data is too long"
-msgstr "তথ্য অত্যাধিক লম্বা"
-
-#: ../gp11/gp11-misc.c:127
-msgid "An error occurred on the device"
-msgstr "ডিভাইসেৰ মধ্যে এটা ত্ৰুটি দেখা দিয়েছে"
-
-#: ../gp11/gp11-misc.c:129
-msgid "Insufficient memory available on device"
-msgstr "ডিভাইসেৰ মধ্যে পৰ্যাপ্ত মেমৰি উপস্থিত নেই"
-
-#: ../gp11/gp11-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "ডিভাইসটি সৰিয়ে ফেলা হয়েছে অথবা বিচ্ছিন্ন কৰা হয়েছে"
-
-#: ../gp11/gp11-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "এনক্ৰিপ্ট কৰা তথ্য বৈধ নহয় অথবা পৰিচিত নহয়"
-
-#: ../gp11/gp11-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "এনক্ৰিপ্ট কৰা তথ্য অত্যাধিক লম্বা"
-
-#: ../gp11/gp11-misc.c:137
-msgid "This operation is not supported"
-msgstr "এই কৰ্ম সমৰ্থিত নহয়"
-
-#: ../gp11/gp11-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "কি অনুপস্থিত অথবা বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:141
-msgid "The key is the wrong size"
-msgstr "চাবিৰ মাপ সঠিক নহয়"
-
-#: ../gp11/gp11-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "চাবিৰ ধৰন সঠিক নহয়"
-
-#: ../gp11/gp11-misc.c:145
-msgid "No key is needed"
-msgstr "কোনো চাবিৰ প্ৰয়োজন নেই"
-
-#: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
-msgstr "কি-টি পূৰ্ববৰ্তী অবস্থা থেকে পৰিবৰ্তিত হয়েছে"
-
-#: ../gp11/gp11-misc.c:149
-msgid "A key is needed"
-msgstr "এটা কি আবশ্যক"
-
-#: ../gp11/gp11-misc.c:151
-msgid "Cannot include the key in digest"
-msgstr "ডাইজেস্টেৰ মধ্যে কি অন্তৰ্ভুক্ত কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "এই কি সহযোগে এই কৰ্ম কৰা সম্ভব নহয়"
-
-#: ../gp11/gp11-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "কি-ৰি ৰ্‌যাপ কৰা সম্ভব নয়"
-
-#: ../gp11/gp11-misc.c:157
-msgid "Cannot export this key"
-msgstr "চিহ্নিত কি এক্সপোৰ্ট কৰা সম্ভব নহয়"
-
-#: ../gp11/gp11-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "ক্ৰিপ্টো ব্যৱস্থা বৈধ নহয় অথবা অপৰিচিত"
-
-#: ../gp11/gp11-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "ক্ৰিপ্টো ব্যৱস্থাৰ ক্ষেত্ৰে অবৈধ আৰ্গুমেন্ট উপস্থিত"
-
-#: ../gp11/gp11-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "সামগ্ৰী অনুপস্থিত অথবা বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "এটা পৃথক কৰ্ম বৰ্তমানে চলছে"
-
-#: ../gp11/gp11-misc.c:167
-msgid "No operation is taking place"
-msgstr "কোনো কৰ্ম বৰ্তমানে সঞ্চালিত হচ্ছে না"
-
-#: ../gp11/gp11-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "গুপ্তশব্দ অথবা PIN সঠিক নহয়"
-
-#: ../gp11/gp11-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "গুপ্তশব্দ অথবা PIN বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "গুপ্তশব্দ অথবা PIN ৰ দৈৰ্ঘ্য সঠিক নহয়"
-
-#: ../gp11/gp11-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "গুপ্তশব্দ অথবা PIN ৰ মেয়াদ পূৰ্ণ হয়েছে"
-
-#: ../gp11/gp11-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "গুপ্তশব্দ অথবা PIN লক কৰা আছে"
-
-#: ../gp11/gp11-misc.c:179
-msgid "The session is closed"
-msgstr "সেশান বন্ধ হয়ে গেছে"
-
-#: ../gp11/gp11-misc.c:181
-msgid "Too many sessions are active"
-msgstr "অত্যাধিক সংখ্যক সেশান সক্ৰিয় ৰয়েছে"
-
-#: ../gp11/gp11-misc.c:183
-msgid "The session is invalid"
-msgstr "এই সেশানটি বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:185
-msgid "The session is read-only"
-msgstr "এই সেশানটি শুধুমাত্ৰ পাঠ-যোগ্য"
-
-#: ../gp11/gp11-misc.c:187
-msgid "An open session exists"
-msgstr "এটা সেশান বৰ্তমানে খোলা ৰয়েছে"
-
-#: ../gp11/gp11-misc.c:189
-msgid "A read-only session exists"
-msgstr "শুধুমাত্ৰ পাঠযোগ্য এটা সেশান বৰ্তমানে চলছে"
-
-#: ../gp11/gp11-misc.c:191
-msgid "An administrator session exists"
-msgstr "এডমিনিস্ট্ৰেটৰৰ এটা সেশান বৰ্তমানে চলছে"
-
-#: ../gp11/gp11-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "স্বাক্ষৰ সঠিক নহয় অথবা ক্ষতিগ্ৰস্ত"
-
-#: ../gp11/gp11-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "স্বাক্ষৰ পৰিচিত নহয় অথবা ক্ষতিগ্ৰস্ত"
-
-#: ../gp11/gp11-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "কয়েকটি আবশ্যক ক্ষেত্ৰৰ মান অনুপস্থিত"
-
-#: ../gp11/gp11-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "কয়েকটি ক্ষেত্ৰৰ মান বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "ডিভাইস উপস্থিত নেই অথবা বিচ্ছিন্ন কৰা হয়েছে"
-
-#: ../gp11/gp11-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "ডিভাইসটি বৈধ নহয় অথবা পৰিচিত নহয়"
-
-#: ../gp11/gp11-misc.c:205
-msgid "The device is write protected"
-msgstr "ডিভাইসটি লেখাৰ বাবে অনুমোদিত নহয়"
-
-#: ../gp11/gp11-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "অবৈধ হওয়াৰ ফলে কি ইম্পোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "ভুল মাপেৰ হওয়াৰ ফলে কি ইম্পোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "ভুল ধৰনেৰ হওয়াৰ ফলে কি ইম্পোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:213
-msgid "You are already logged in"
-msgstr "আপনি লগ-ইন কৰা অবস্থায় ৰয়েছে"
-
-#: ../gp11/gp11-misc.c:215
-msgid "No user has logged in"
-msgstr "কোনো ব্যৱহাৰকাৰী লগ-ইন কৰেননি"
-
-#: ../gp11/gp11-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "ব্যৱহাৰকাৰীৰ গুপ্তশব্দ অথবা PIN নিৰ্ধাৰিত হয়নি"
-
-#: ../gp11/gp11-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "ব্যৱহাৰকাৰীৰ প্ৰকৃতি বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:221
-msgid "Another user is already logged in"
-msgstr "পৃথক এক ব্যৱহাৰকাৰী পূৰ্বে লগ-ইন কৰেছেন"
-
-#: ../gp11/gp11-misc.c:223
-msgid "Too many users of different types logged in"
-msgstr "বিভিন্ন ধৰনেৰ অত্যাধিক সংখ্যক ব্যৱহাৰকাৰী লগ-ইন কৰেছেন"
-
-#: ../gp11/gp11-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "এটা অবৈধ-কি ইম্পোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "ভুল মাপেৰ কি ইম্পোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "কি অবৈধ হওয়াৰ ফলে কি এক্সপোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "ভুল মাপেৰ হওয়াৰ ফলে কি এক্সপোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "ভুল ধৰনেৰ হওয়াৰ ফলে কি এক্সপোৰ্ট কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "ৰ্‌যান্ডম সংখ্যা নিৰ্মাণ ব্যবস্থা আৰম্ভ কৰতে ব্যৰ্থ"
-
-#: ../gp11/gp11-misc.c:237
-msgid "No random number generator available"
-msgstr "ৰ্‌যান্ডম সংখ্যা নিৰ্মাণেৰ কোনো ব্যবস্থা উপলব্ধ নেই"
-
-#: ../gp11/gp11-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "ক্ৰিপ্টো ব্যবস্থাৰ ক্ষেত্ৰে উপলব্ধ একটি পৰামিতি বৈধ নয়"
-
-#: ../gp11/gp11-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "ফলাফল সংৰক্ষণেৰ বাবে পৰ্যাপ্ত স্থাপ অনুপস্থিত"
-
-#: ../gp11/gp11-misc.c:243
-msgid "The saved state is invalid"
-msgstr "সংৰক্ষিত অবস্থা বৈধ নহয়"
-
-#: ../gp11/gp11-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "তথ্যটি সংবেদনশীল ও প্ৰকাশ কৰা সম্ভব নহয়"
-
-#: ../gp11/gp11-misc.c:247
-msgid "The state cannot be saved"
-msgstr "অবস্থা সংৰক্ষণ কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:249
-msgid "The module has not been initialized"
-msgstr "মডিউল আৰম্ভ কৰা হয়নি"
-
-#: ../gp11/gp11-misc.c:251
-msgid "The module has already been initialized"
-msgstr "চিহ্নিত মডিউল পূৰ্বে আৰম্ভ কৰা হয়েছে"
-
-#: ../gp11/gp11-misc.c:253
-msgid "Cannot lock data"
-msgstr "তথ্য লক কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:255
-msgid "The data cannot be locked"
-msgstr "তথ্য লক কৰা যাবে না"
-
-#: ../gp11/gp11-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "স্বাক্ষৰৰ অনুৰোধ ব্যৱহাৰকাৰী দ্বাৰা প্ৰত্যাখ্যান কৰা হয়েছে"
-
-#
-#: ../gp11/gp11-misc.c:261
-msgid "Unknown error"
-msgstr "অজ্ঞাত ত্ৰুটি"
-
-#: ../library/gnome-keyring-utils.c:168
-msgid "Access Denied"
-msgstr "প্ৰবেশাধিকাৰ প্ৰত্যাখ্যাত"
-
-#: ../library/gnome-keyring-utils.c:170
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "gnome-keyring-daemon এপ্লিকেশন বৰ্তমানে চলছে না ।"
-
-#: ../library/gnome-keyring-utils.c:172
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "gnome-keyring-daemon ৰ সাথে যোগাযোগ কৰিবলৈ সমস্যা"
-
-#: ../library/gnome-keyring-utils.c:174
-msgid "A keyring with that name already exists"
-msgstr "এই নামেৰ এটা চাবিৰং বৰ্তমানে উপস্থিত ৰয়েছে"
-
-#: ../library/gnome-keyring-utils.c:176
-msgid "Programmer error: The application sent invalid data."
-msgstr "প্ৰোগ্ৰামাৰ ত্ৰুটি: এপ্লিকেশন দ্বাৰা অবৈধ তথ্য প্ৰৰিত হয়েছে ।"
-
-#: ../library/gnome-keyring-utils.c:178
-msgid "No matching results"
-msgstr "কোনো মিল পাওয়া নাযায়"
-
-#: ../library/gnome-keyring-utils.c:180
-msgid "A keyring with that name does not exist."
-msgstr "এই নামেৰ চাবিৰং বৰ্তমানে উপস্থিত নেই ।"
-
-#: ../library/gnome-keyring-utils.c:187
-msgid "The keyring has already been unlocked."
-msgstr "চাবিৰিং পূৰ্বে আন-লক কৰা হয়েছে ।"
-
-#: ../pkcs11/gck/gck-certificate.c:716
+#: ../gcr/gcr-unlock-renderer.c:173
+#, fuzzy
+#| msgid "Password:"
+msgid "Password"
+msgstr "পাছৱাৰ্ড:"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr ""
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr ""
+
+#: ../gcr/gcr-viewer-tool.c:41
+#, fuzzy
+#| msgid "Certificate and Key Storage"
+msgid "GCR Certificate and Key Viewer"
+msgstr "প্ৰমাণপত্ৰ আৰু চাবি সংৰক্ষণ"
+
+#: ../gcr/gcr-viewer-tool.c:48
+#, fuzzy
+#| msgid "Allow application access to keyring?"
+msgid "Show the application's version"
+msgstr "অনুপ্ৰয়োগক keyring ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব নেকি ?"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr ""
+
+#: ../gcr/gcr-viewer-tool.c:104
+#, fuzzy
+#| msgid "Certificate files"
+msgid "- View certificate and key files"
+msgstr "নথিপত্ৰসমূহ এক্সপোৰ্ট কৰক"
+
+#: ../gcr/gcr-viewer-tool.c:118
+#, fuzzy
+#| msgid "Certificate files"
+msgid "Certificate Viewer"
+msgstr "নথিপত্ৰসমূহ এক্সপোৰ্ট কৰক"
+
+#: ../gck/gck-uri.c:173
+#, c-format
+msgid "The URI has invalid encoding."
+msgstr "URI টোৰ অবৈধ এনকোডিং আছে।"
+
+#: ../gck/gck-uri.c:177
+#, fuzzy
+#| msgid "The URI has does not have the 'pkcs11' scheme."
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "URI -ৰ  'pkcs11' আঁচনি নাই।"
+
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "URI -ৰ বেয়া বাক্যবিন্যাস আছে।"
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "URl -ৰ এটা বেয়া সংস্কৰণ আছে।"
+
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "নামবিহীন প্ৰমাণপত্ৰ"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:328
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
-msgstr "সাৰ্বজনীন SSH-কি পাৰ্স কৰতে ব্যৰ্থ"
+msgstr "ৰাজহুৱা SSH-চাবি বিশ্লেষণ কৰিব ব্যৰ্থ"
 
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "%s -ৰ বাবে পাছৱাৰ্ড আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
+msgid "The unlock password was incorrect"
+msgstr "আনলক কৰা পাছৱাৰ্ড সঠিক নাছিল"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid "Unlock Login Keyring"
+msgstr "keyring আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+msgid "Enter password to unlock your login keyring"
+msgstr "আপোনাৰ লগিন keyring আনলক কৰিবলে পাছৱাৰ্ড সোমাওক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"আপুনি আপোনাৰ কমপিউটাৰত লগিন কৰিবলে ব্যৱহাৰ কৰা পাছৱাৰ্ড আপোনাৰ লগিন keyring -ৰ "
+"সৈতে মিল নাখায়।"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr "আপুনি কমপিউটাৰত লগিন কৰোতে লগিন keyring আনলক নহল।"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Unlock Keyring"
+msgstr "keyring আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "'%s' keyring আনলক কৰিবলে পাছৱাৰ্ড লিখক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "এটা অনুপ্ৰয়োগে '%s' keyring লে অভিগম বিচাৰে, কিন্তু ই লক আছে"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+msgid "Unlock private key"
+msgstr "ব্যক্তিগত-চাবি আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+msgid "Unlock certificate"
+msgstr "প্ৰমাণপত্ৰ আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+msgid "Unlock public key"
+msgstr "ৰাজহুৱা-চাবি আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+msgid "Enter password to unlock the public key"
+msgstr "ৰাজহুৱা চাবি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"এটা অনুপ্ৰয়োগ, %s ব্যক্তিগত-চাবি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "এটা অনুপ্ৰয়োগ, %s প্ৰমাণপত্ৰ ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"এটা অনুপ্ৰয়োগ, %s ৰাজহুৱা-চাবি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "এটা অনুপ্ৰয়োগ, %s ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+msgid "Unlock certificate/key storage"
+msgstr "প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ আনলক কৰাৰ বাবে পাছৱাৰ্ড লিখক"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"এটা অনুপ্ৰয়োগ, %s প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ ব্যবহাৰ কৰিব ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা "
+"আছে"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New Password Required"
+msgstr "নতুন পাছৱাৰ্ড আবশ্যক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+msgid "New password required for secure storage"
+msgstr "সংৰক্ষণ সুৰক্ষিত ৰাখিবলে পাছৱাৰ্ড লিখা আবশ্যক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"প্ৰমাণপত্ৰ আৰু চাবি সংগ্ৰহৰ বাবে '%s' প্ৰস্তুত কৰাৰ বাবে এটা পাছৱাৰ্ড লিখা আবশ্যক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+msgid "Change Password"
+msgstr "পাছৱাৰ্ড সলনি কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+msgid "Change password for secure storage"
+msgstr "সুৰক্ষিত সংৰক্ষণৰ বাবে পাছৱাৰ্ড সলনি কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#, c-format
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "'%s' -ৰ বাবে পাছৱাৰ্ড সলনি কৰিবলে, প্ৰকৃত আৰু নতুন পাছৱাৰ্ডসমূহৰ প্ৰয়োজন"
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "ব্যৱহাৰ: gnome-keyring কমান্ড [বিকল্পসমূহ]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "কমান্ডসমূহ: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "          "
+
+#: ../ui/gku-prompt-tool.c:596
+msgid "Store passwords unencrypted?"
+msgstr "এনক্ৰিপশন বিনা পাছৱাৰ্ড সংৰক্ষণ কৰা হ'ব নেকি ?"
+
+#: ../ui/gku-prompt-tool.c:597
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"ৰিক্ত পাছৱাৰ্ড নিৰ্বাচনৰ ফলত, আপোনাৰ সংৰক্ষিত পাছৱাৰ্ডসমূহ সুৰক্ষিতভাবে এনক্ৰিপ্ট কৰা "
+"সম্ভব নহব। আপোনাৰ নথিপত্ৰসমূহ পঢ়োতে অনুমোদিত যি কোনো ব্যবহাৰকাৰী দ্বাৰা এইবোৰ "
+"প্ৰয়োগ কৰা সম্ভব হ'ব।"
+
+#: ../ui/gku-prompt-tool.c:604
+msgid "Use Unsafe Storage"
+msgstr "অসুৰক্ষিত সংৰক্ষণ ব্যবহাৰ কৰক"
+
+#: ../ui/gku-prompt-tool.c:644
+msgid "Passwords do not match."
+msgstr "পাছৱাৰ্ডসমূহ মিল নাখায়।"
+
+#: ../ui/gku-prompt-tool.c:654
+msgid "Password cannot be blank"
+msgstr "পাছৱাৰ্ড ৰিক্ত ৰাখিব নোৱাৰি"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Keyring অভিগম"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "পাছৱাৰ্ডসমূহ আৰু অন্য গোপন তথ্যসমূহলে অভিগম আনলক কৰক"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "নতুন পাছৱাৰ্ডতৰ দৃঢ়তা"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "অনুপ্ৰয়োগ (_A):"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "সুনিশ্চিত কৰক:(_C)"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "বিৱৰণসমূহ (_D):"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "নাম (_N):"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "পুৰনি পাছৱাৰ্ড (_O):"
+
+#
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "পাছৱাৰ্ড: (_P)"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ, অবিকল্পিত keyringত অৱস্থিত '<object prop='name'/>' ৰ "
+#~ "পাছৱাৰ্ড ব্যৱহাৰ কৰিবলে ইচ্ছুক।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ, %s ত অৱস্থিত '<object prop='name'/>' ৰ পাছৱাৰ্ড ব্যৱহাৰ "
+#~ "কৰিবলে ইচ্ছুক।"
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ, অবিকল্পিত চাবি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ পাছৱাৰ্ড "
+#~ "ব্যৱহাৰ কৰিবলে ইচ্ছুক।"
+
+#~ msgid ""
+#~ "The application '%s' wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ %s ত অৱস্থিত '<object prop='name'/>' ৰ পাছৱাৰ্ড ব্যৱহাৰ কৰিবলে "
+#~ "ইচ্ছুক।"
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in the default keyring."
+#~ msgstr ""
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ অবিকল্পিত চাবি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ "
+#~ "পাছৱাৰ্ড ব্যৱহাৰ কৰিবলে ইচ্ছুক।"
+
+#~ msgid ""
+#~ "An unknown application wants to access the password for '<object "
+#~ "prop='name'/>' in %s."
+#~ msgstr ""
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ %s ত অৱস্থিত '<object prop='name'/>' ৰ পাছৱাৰ্ড ব্যৱহাৰ "
+#~ "কৰিবলে ইচ্ছুক।"
+
+#~ msgid "Allow access"
+#~ msgstr "ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ অবিকল্পিত keyring ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে "
+#~ "লক কৰা আছে"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ '%s' keyring ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে লক "
+#~ "কৰা আছে"
+
+#~ msgid ""
+#~ "The application '%s' wants access to the default keyring, but it is locked"
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ অবিকল্পিত keyring ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে লক "
+#~ "কৰা আছে"
+
+#~ msgid ""
+#~ "The application '%s' wants access to the keyring '%s', but it is locked"
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ '%s' keyring ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে লক কৰা "
+#~ "আছে"
+
+#~ msgid ""
+#~ "An unknown application wants access to the default keyring, but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ অবিকল্পিত keyring ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু সেইটো বৰ্তমানে "
+#~ "লক কৰা আছে"
+
+#~ msgid "Enter password for default keyring to unlock"
+#~ msgstr "অবিকল্পিত keyring আনলক কৰিবলে পাছৱাৰ্ড লিখক"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
+#~ "have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ '%s' নামক এটা নতুন keyring সৃষ্টি কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to create a new default keyring. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ এটা অবিকল্পিত keyring সৃষ্টি কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new keyring called '%s'. You have "
+#~ "to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ '%s' নামক এটা নতুন keyring সৃষ্টি কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ এটা নতুন অবিকল্পিত keyring সৃষ্টি কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "An unknown application wants to create a new default keyring. You have to "
+#~ "choose the password you want to use for it."
+#~ msgstr ""
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ এটা নতুন অবিকল্পিত keyring সৃষ্টি কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the '%s' "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ '%s' keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ অবিকল্পিত keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই "
+#~ "কামত ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the '%s' keyring. "
+#~ "You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ '%s' keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ অবিকল্পিত keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "An unknown application wants to change the password for the default "
+#~ "keyring. You have to choose the password you want to use for it."
+#~ msgstr ""
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ অবিকল্পিত keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই "
+#~ "কামত ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+
+#~| msgid "Choose a new password for the default keyring. "
+#~ msgid "Choose a new password for the default keyring."
+#~ msgstr "অবিকল্পিত keyringৰ বাবে নতুন পাছৱাৰ্ড নিৰ্বাচন কৰক। "
+
+#~ msgid ""
+#~ "The application '%s' (%s) wants to store a password, but there is no "
+#~ "default keyring. To create one, you need to choose the password you wish "
+#~ "to use for it."
+#~ msgstr ""
+#~ "'%s' (%s) অনুপ্ৰয়োগ এটা পাছৱাৰ্ড সংৰক্ষণ কৰিবলে ইচ্ছুক, কিন্তু কোনো অবিকল্পিত "
+#~ "keyring উপস্থিত নেই। নতুন keyring নিৰ্মাণেৰ বাবে ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন "
+#~ "কৰা আবশ্যক।"
+
+#~ msgid ""
+#~ "The application '%s' wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "'%s' অনুপ্ৰয়োগ এটা পাছৱাৰ্ড সংৰক্ষণ কৰিবলে ইচ্ছুক, কিন্তু কোনো অবিকল্পিত keyring "
+#~ "উপস্থিত নেই। নতুন keyring নিৰ্মাণেৰ বাবে ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা "
+#~ "আবশ্যক।"
+
+#~ msgid ""
+#~ "An unknown application wants to store a password, but there is no default "
+#~ "keyring. To create one, you need to choose the password you wish to use "
+#~ "for it."
+#~ msgstr ""
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ এটা পাছৱাৰ্ড সংৰক্ষণ কৰিবলে ইচ্ছুক, কিন্তু কোনো অবিকল্পিত "
+#~ "keyring উপস্থিত নেই। নতুন keyring নিৰ্মাণেৰ বাবে ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন "
+#~ "কৰা আবশ্যক।"
+
+#~ msgid "Create Default Keyring"
+#~ msgstr "অবিকল্পিত keyring সৃষ্টি কৰক"
+
+#~ msgid "Choose password for default keyring"
+#~ msgstr "অবিকল্পিত keyring -ৰ বাবে পাছৱাৰ্ড নিৰ্বাচন কৰক"
+
+#~ msgid ""
+#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
+#~ "only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
+#~ "in). This setting may be overridden when certain command line arguments "
+#~ "are passed to the daemon."
+#~ msgstr ""
+#~ "এই বিকল্পেৰ সাহায্যে gnome-keyring ডেমনেৰ মধ্যে PKCS#11 সামগ্ৰী সক্ৰিয় কৰা "
+#~ "হ'ব। gnome-keyring-daemon আৰম্ভেৰ সময় (অৰ্থাৎ, ব্যবহাৰকাৰী লগ-ইন কৰাৰ সময়) ই "
+#~ "প্ৰয়োগ কৰা হ'ব। কমান্ড-লাইন থেকে প্ৰযোজ্য কিছু আৰ্গুমেন্ট এই ডেমনেৰ ব্যবহাৰৰ বাবে "
+#~ "উল্লেখ কৰা হলে এই বৈশিষ্ট্য উপেক্ষা কৰা যাবে।"
+
+#~ msgid ""
+#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
+#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
+#~ "This setting may be overridden when certain command line arguments are "
+#~ "passed to the daemon."
+#~ msgstr ""
+#~ "এই বিকল্পেৰ সাহায্যে gnome-keyring ডেমনেৰ মধ্যে SSH agent সক্ৰিয় কৰা হ'ব। "
+#~ "gnome-keyring-daemon আৰম্ভেৰ সময় (অৰ্থাৎ, ব্যবহাৰকাৰী লগ-ইন কৰাৰ সময়) ই "
+#~ "প্ৰয়োগ কৰা হ'ব। কমান্ড-লাইন থেকে প্ৰযোজ্য কিছু আৰ্গুমেন্ট এই ডেমনেৰ ব্যবহাৰৰ বাবে "
+#~ "উল্লেখ কৰা হলে এই বৈশিষ্ট্য উপেক্ষা কৰা যাবে।"
+
+#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
+#~ msgstr "gnome-keyring PKCS#11 সামগ্ৰী সক্ৰিয় চাবি না।"
+
+#~ msgid "Whether the gnome-keyring SSH agent is enabled."
+#~ msgstr "gnome-keyring SSH agent সক্ৰিয় চাবি না।"
+
+#~ msgid "Create Login Keyring"
+#~ msgstr "লগ-ইন keyring সৃষ্টি কৰক"
+
+#~ msgid "Enter your login password"
+#~ msgstr "লগ-ইন পাছৱাৰ্ড পৰিবৰ্তন লিখক"
+
+#~ msgid ""
+#~ "Your login keyring was not automatically created when you logged into "
+#~ "this computer. It will now be created."
+#~ msgstr ""
+#~ "এই কম্পিউটাৰে লগ-ইন কৰাৰ সময়, আপোনাৰ লগ-ইন কি-ৰিং স্বয়ংক্ৰিয়ভাবে নিৰ্মাণ কৰা "
+#~ "কৰা হোৱা নাই। ই এখন নিৰ্মাণ কৰা হ'ব।"
+
+#~ msgid "Automatically unlock this private key when I log in."
+#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই ব্যক্তিগত-চাবি আনলক কৰা হ'ব।"
+
+#~ msgid "Automatically unlock this certificate when I log in."
+#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই প্ৰমাণপত্ৰ আনলক কৰা হ'ব।"
+
+#~ msgid "Automatically unlock this public key when I log in."
+#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই ৰাজহুৱা-চাবি আনলক কৰা হ'ব।"
+
+#~ msgid "Automatically unlock this when I log in"
+#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে ই আনলক কৰা হ'ব।"
+
+#~ msgid "Automatically unlock secure storage when I log in."
+#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে সুৰক্ষিত সংগ্ৰস্থল আনলক কৰা হ'ব।"
+
+#~ msgid ""
+#~ "<b><big>Could not grab your mouse.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>মাউসেৰ উপৰ নিয়ন্ত্ৰণ কৰা সম্ভব কৰা হোৱা নাই।</big></b>\n"
+#~ "\n"
+#~ "কোনো ক্ষতিকাৰী ক্লায়েন্ট সম্ভবত আপোনাৰ সেশান বিনা অধিকাৰে নিৰীক্ষণ কৰছে অথবা "
+#~ "সম্ভবত আপনি কোনো মেনু ক্লিক কৰেছেন অথবা কোনো অনুপ্ৰয়োগ নিজেৰ উপৰ আকৰ্ষণ সৃষ্টি "
+#~ "কৰেছে।\n"
+#~ "\n"
+#~ "পুনৰায় চেষ্টা কৰক।"
+
+#~ msgid ""
+#~ "<b><big>Could not grab your keyboard.</big></b>\n"
+#~ "\n"
+#~ "A malicious client may be eavesdropping on your session or you may have "
+#~ "just clicked a menu or some application just decided to get focus.\n"
+#~ "\n"
+#~ "Try again."
+#~ msgstr ""
+#~ "<b><big>কি-বোৰ্ডেৰ উপৰ নিয়ন্ত্ৰণ কৰা সম্ভব কৰা হোৱা নাই।</big></b>\n"
+#~ "\n"
+#~ "কোনো ক্ষতিকাৰী ক্লায়েন্ট সম্ভবত আপোনাৰ সেশান বিনা অধিকাৰে নিৰীক্ষণ কৰছে অথবা "
+#~ "সম্ভবত আপনি কোনো মেনু ক্লিক কৰেছেন অথবা কোনো অনুপ্ৰয়োগ নিজেৰ উপৰ আকৰ্ষণ সৃষ্টি "
+#~ "কৰেছে।\n"
+#~ "\n"
+#~ "পুনৰায় চেষ্টা কৰক।"
+
+#~ msgid "_Deny"
+#~ msgstr "প্ৰত্যাখ্যান কৰক (_D)"
+
+#
+#~ msgid "C_reate"
+#~ msgstr "C"
+
+#
+#~ msgid "C_hange"
+#~ msgstr "পৰিবৰ্তন কৰক (_h)"
+
+#~ msgid "Allow _Once"
+#~ msgstr "একবাৰ ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব (_O)"
+
+#~ msgid "_Always Allow"
+#~ msgstr "সৰ্বদা ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব (_A)"
+
+#~ msgid "Removable Disk: %s"
+#~ msgstr "অপসাৰণযোগ্য ডিস্ক: %s"
+
+#~ msgid "Removable Disk"
+#~ msgstr "অপসাৰণযোগ্য ডিস্ক"
+
+#~ msgid "Home"
+#~ msgstr "ঘৰ"
+
+#~ msgid "The disk or drive this file is located on is not present"
+#~ msgstr "নথিপত্ৰ ধাৰণকাৰী ডিস্ক অথবা ড্ৰাইভ উপস্থিত নহয়"
+
+#~ msgid "Couldn't create directory: %s"
+#~ msgstr "পঞ্জিকা নিৰ্মাণ কৰা নাযায়: %s"
+
+#~ msgid "<i>Not Part of Certificate</i>"
+#~ msgstr "<i>প্ৰমাণপত্ৰৰ অংশ নয়</i>"
+
+#
+#~ msgid "<i>unknown</i>"
+#~ msgstr "অজ্ঞাত"
+
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<Not Part of Certificate>"
+
+#
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>ফিঙ্গাৰপ্ৰিন্ট</b>"
+
+#
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>প্ৰদানকাৰী</b>"
+
+#
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>লক্ষ্য</b>"
+
+#
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr "<b>নিম্নলিখিত কাজেৰ বাবে এই প্ৰমাণপত্ৰ পৰীক্ষিত হৈছে:</b>"
+
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>বৈধতা</b>"
+
+#~ msgid "Common Name (CN)"
+#~ msgstr "Common Name (CN)"
+
+#
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "ই-মেইল প্ৰাপ্তিৰ প্ৰমাণপত্ৰ"
+
+#
+#~ msgid "Email Signer Certificate"
+#~ msgstr "ই-মেইল স্বাক্ষৰৰ প্ৰমাণপত্ৰ"
+
+#
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "MD5 ফিঙ্গাৰপ্ৰিন্ট"
+
+#
+#~ msgid "Organization (O)"
+#~ msgstr "প্ৰতিষ্ঠান (O)"
+
+#
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "প্ৰাতিষ্ঠানিক বিভাগ (OU)"
+
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgstr "<span size='large' weight='bold'>প্ৰমাণপত্ৰ আৰু চাবি ইমপোৰ্ট কৰক</span>"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "পৰ্যাপ্ত মেমৰি উপলব্ধ নেই"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "চিহ্নিত স্লট ID বৈধ নহয়"
+
+#~ msgid "Internal error"
+#~ msgstr "অভ্যন্তৰীণ ত্ৰুটি"
+
+#~ msgid "The operation failed"
+#~ msgstr "কৰ্ম ব্যৰ্থ"
+
+#
+#~ msgid "Invalid arguments"
+#~ msgstr "অবৈধ আৰ্গুমেন্ট"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "আবশ্যক থ্ৰেডগুলি মডিউল দ্বাৰা নিৰ্মাণ কৰা সম্ভব নহয়"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "চিহ্নিত মডিউল দ্বাৰা সঠিকভাবে তথ্য লক কৰা সম্ভব নয়"
+
+#~ msgid "The field is read-only"
+#~ msgstr "এই ক্ষেত্ৰটি শুধুমাত্ৰ পাঠ-যোগ্য"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "এই ক্ষেত্ৰে সংবেদনশীল তথ্য উপস্থিত আছে এবং প্ৰকাশ কৰা যাবে না"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "এই ক্ষেত্ৰটি বৈধ নহয় অথবা অনুপস্থিত"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "ক্ষেত্ৰৰ মান বৈধ নহয়"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "তথ্য বৈধ নহয় অথবা পৰিচিত নহয়"
+
+#~ msgid "The data is too long"
+#~ msgstr "তথ্য অত্যাধিক লম্বা"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "ডিভাইসেৰ মধ্যে এটা ত্ৰুটি দেখা দিয়েছে"
+
+#~ msgid "Insufficient memory available on device"
+#~ msgstr "ডিভাইসেৰ মধ্যে পৰ্যাপ্ত মেমৰি উপস্থিত নেই"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "ডিভাইসটি সৰিয়ে ফেলা হৈছে অথবা বিচ্ছিন্ন কৰা হৈছে"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "এনক্ৰিপ্ট কৰা তথ্য বৈধ নহয় অথবা পৰিচিত নহয়"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "এনক্ৰিপ্ট কৰা তথ্য অত্যাধিক লম্বা"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "এই কৰ্ম সমৰ্থিত নহয়"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "চাবি অনুপস্থিত অথবা বৈধ নহয়"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "চাবিৰ আকাৰ সঠিক নহয়"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "চাবিৰ ধৰন সঠিক নহয়"
+
+#~ msgid "No key is needed"
+#~ msgstr "কোনো চাবিৰ প্ৰয়োজন নেই"
+
+#~ msgid "The key is different than before"
+#~ msgstr "কি-টি পূৰ্ববৰ্তী অবস্থা থেকে পৰিবৰ্তিত হৈছে"
+
+#~ msgid "A key is needed"
+#~ msgstr "এটা চাবি আবশ্যক"
+
+#~ msgid "Cannot include the key in digest"
+#~ msgstr "ডাইজেস্টেৰ মধ্যে চাবি অন্তৰ্ভুক্ত কৰা যাবে না"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "এই চাবি সহযোগে এই কৰ্ম কৰা সম্ভব নহয়"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "কি-ৰি ৰ্‌যাপ কৰা সম্ভব নয়"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "চিহ্নিত চাবি এক্সপোৰ্ট কৰা সম্ভব নহয়"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "ক্ৰিপ্টো ব্যৱস্থা বৈধ নহয় অথবা অপৰিচিত"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "ক্ৰিপ্টো ব্যৱস্থাৰ ক্ষেত্ৰে অবৈধ আৰ্গুমেন্ট উপস্থিত"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "সামগ্ৰী অনুপস্থিত অথবা বৈধ নহয়"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "এটা পৃথক কৰ্ম বৰ্তমানে চলছে"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "কোনো কৰ্ম বৰ্তমানে সঞ্চালিত হচ্ছে না"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "পাছৱাৰ্ড অথবা PIN বৈধ নহয়"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "পাছৱাৰ্ড অথবা PIN ৰ দৈৰ্ঘ্য সঠিক নহয়"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "পাছৱাৰ্ড অথবা PIN ৰ মেয়াদ পূৰ্ণ হৈছে"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "পাছৱাৰ্ড অথবা PIN লক কৰা আছে"
+
+#~ msgid "The session is closed"
+#~ msgstr "সেশান বন্ধ হয়ে গেছে"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "অত্যাধিক সংখ্যক সেশান সক্ৰিয় আছে"
+
+#~ msgid "The session is invalid"
+#~ msgstr "এই সেশানটি বৈধ নহয়"
+
+#~ msgid "The session is read-only"
+#~ msgstr "এই সেশানটি শুধুমাত্ৰ পাঠ-যোগ্য"
+
+#~ msgid "An open session exists"
+#~ msgstr "এটা সেশান বৰ্তমানে খোলা আছে"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "শুধুমাত্ৰ পাঠযোগ্য এটা সেশান বৰ্তমানে চলছে"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "এডমিনিস্ট্ৰেটৰৰ এটা সেশান বৰ্তমানে চলছে"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "স্বাক্ষৰ সঠিক নহয় অথবা ক্ষতিগ্ৰস্ত"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "স্বাক্ষৰ পৰিচিত নহয় অথবা ক্ষতিগ্ৰস্ত"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "কয়েকটি আবশ্যক ক্ষেত্ৰৰ মান অনুপস্থিত"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "কয়েকটি ক্ষেত্ৰৰ মান বৈধ নহয়"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "ডিভাইস উপস্থিত নেই অথবা বিচ্ছিন্ন কৰা হৈছে"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "ডিভাইসটি বৈধ নহয় অথবা পৰিচিত নহয়"
+
+#~ msgid "The device is write protected"
+#~ msgstr "ডিভাইসটি লিখাৰ বাবে অনুমোদিত নহয়"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "অবৈধ হওয়াৰ ফলত চাবি ইমপোৰ্ট কৰা যাবে না"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "ভুল মাপেৰ হওয়াৰ ফলত চাবি ইমপোৰ্ট কৰা যাবে না"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "ভুল ধৰনেৰ হওয়াৰ ফলত চাবি ইমপোৰ্ট কৰা যাবে না"
+
+#~ msgid "You are already logged in"
+#~ msgstr "আপনি লগ-ইন কৰা অবস্থায় আছে"
+
+#~ msgid "No user has logged in"
+#~ msgstr "কোনো ব্যৱহাৰকাৰী লগ-ইন কৰেননি"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "ব্যৱহাৰকাৰীৰ পাছৱাৰ্ড অথবা PIN নিৰ্ধাৰিত কৰা হোৱা নাই"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "ব্যৱহাৰকাৰীৰ প্ৰকৃতি বৈধ নহয়"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "পৃথক এক ব্যৱহাৰকাৰী পূৰ্বে লগ-ইন কৰেছেন"
+
+#~ msgid "Too many users of different types logged in"
+#~ msgstr "বিভিন্ন ধৰনেৰ অত্যাধিক সংখ্যক ব্যৱহাৰকাৰী লগ-ইন কৰেছেন"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "এটা অবৈধ-চাবি ইমপোৰ্ট কৰা যাবে না"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "ভুল মাপেৰ চাবি ইমপোৰ্ট কৰা যাবে না"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "চাবি অবৈধ হওয়াৰ ফলত চাবি এক্সপোৰ্ট কৰা যাবে না"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "ভুল মাপেৰ হওয়াৰ ফলত চাবি এক্সপোৰ্ট কৰা যাবে না"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "ভুল ধৰনেৰ হওয়াৰ ফলত চাবি এক্সপোৰ্ট কৰা যাবে না"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "ৰ্‌যান্ডম নম্বৰ নিৰ্মাণ ব্যবস্থা আৰম্ভ কৰিব ব্যৰ্থ"
+
+#~ msgid "No random number generator available"
+#~ msgstr "ৰ্‌যান্ডম নম্বৰ নিৰ্মাণেৰ কোনো ব্যবস্থা উপলব্ধ নেই"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "ক্ৰিপ্টো ব্যবস্থাৰ ক্ষেত্ৰে উপলব্ধ এটা প্ৰাচলসমূহ বৈধ নয়"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "ফলাফল সংৰক্ষণেৰ বাবে পৰ্যাপ্ত স্থাপ অনুপস্থিত"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "সংৰক্ষিত অবস্থা বৈধ নহয়"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "তথ্যটি সংবেদনশীল আৰু প্ৰকাশ কৰা সম্ভব নহয়"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "অবস্থা সংৰক্ষণ কৰা যাবে না"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "মডিউল আৰম্ভ কৰা কৰা হোৱা নাই"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "চিহ্নিত মডিউল পূৰ্বে আৰম্ভ কৰা হৈছে"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "তথ্য লক কৰা যাবে না"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "তথ্য লক কৰা যাবে না"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "স্বাক্ষৰৰ অনুৰোধ ব্যৱহাৰকাৰী দ্বাৰা প্ৰত্যাখ্যান কৰা হৈছে"
+
+#~ msgid "Access Denied"
+#~ msgstr "প্ৰবেশাধিকাৰ প্ৰত্যাখ্যাত"
+
+#~ msgid "The gnome-keyring-daemon application is not running."
+#~ msgstr "gnome-keyring-daemon অনুপ্ৰয়োগ বৰ্তমানে চলছে না।"
+
+#~ msgid "Error communicating with gnome-keyring-daemon"
+#~ msgstr "gnome-keyring-daemon ৰ সাথে যোগাযোগ কৰিবলে সমস্যা"
+
+#~ msgid "A keyring with that name already exists"
+#~ msgstr "এই নামেৰ এটা কিৰং বৰ্তমানে উপস্থিত আছে"
+
+#~ msgid "Programmer error: The application sent invalid data."
+#~ msgstr "প্ৰোগ্ৰামাৰ ত্ৰুটি: অনুপ্ৰয়োগ দ্বাৰা অবৈধ তথ্য প্ৰৰিত হৈছে।"
+
+#~ msgid "No matching results"
+#~ msgstr "কোনো মিল পাওয়া নাযায়"
+
+#~ msgid "A keyring with that name does not exist."
+#~ msgstr "এই নামেৰ কিৰং বৰ্তমানে উপস্থিত নেই।"
+
+#~ msgid "The keyring has already been unlocked."
+#~ msgstr "keyring পূৰ্বে আনলক কৰা হৈছে।"
