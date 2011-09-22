@@ -416,7 +416,7 @@ gcr_viewer_widget_load_file (GcrViewerWidget *self,
 void
 gcr_viewer_widget_load_data (GcrViewerWidget *self,
                              const gchar *display_name,
-                             gconstpointer *data,
+                             gconstpointer data,
                              gsize n_data)
 {
 	GError *error = NULL;

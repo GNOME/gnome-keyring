@@ -91,6 +91,65 @@ gcr_import_button_init (GcrImportButton *self)
 }
 
 static void
+update_import_button (GcrImportButton *self)
+{
+	gchar *message;
+	gchar *label;
+
+	/* Importing, set a spinner */
+	if (self->pv->importing) {
+		gtk_widget_show (self->pv->spinner);
+		gtk_widget_hide (self->pv->arrow);
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Import is in progress..."));
+
+	} else if (self->pv->imported) {
+		gtk_widget_hide (self->pv->spinner);
+		gtk_widget_hide (self->pv->arrow);
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		message = g_strdup_printf (_("Imported to: %s"), self->pv->imported);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), message);
+		g_free (message);
+
+	/* Not importing, but have importers */
+	} else if (self->pv->importers) {
+		gtk_widget_hide (self->pv->spinner);
+		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+
+		/* More than one importer */
+		if (self->pv->importers->next) {
+			gtk_widget_show (self->pv->arrow);
+			gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
+
+		/* Only one importer */
+		} else {
+			gtk_widget_hide (self->pv->arrow);
+			g_object_get (self->pv->importers->data, "label", &label, NULL);
+			message = g_strdup_printf (_("Import to: %s"), label);
+			gtk_widget_set_tooltip_text (GTK_WIDGET (self), message);
+			g_free (message);
+			g_free (label);
+		}
+
+	/* No importers, none compatible */
+	} else if (self->pv->created) {
+		gtk_widget_hide (self->pv->spinner);
+		gtk_widget_hide (self->pv->arrow);
+
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Cannot import because there are no compatible importers"));
+
+	/* No importers yet added */
+	} else {
+		gtk_widget_hide (self->pv->spinner);
+		gtk_widget_hide (self->pv->arrow);
+
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("No data to import"));
+	}
+}
+
+static void
 gcr_import_button_constructed (GObject *obj)
 {
 	GcrImportButton *self = GCR_IMPORT_BUTTON (obj);
@@ -114,6 +173,8 @@ gcr_import_button_constructed (GObject *obj)
 	gtk_widget_show (grid);
 
 	gtk_container_add (GTK_CONTAINER (self), grid);
+
+	update_import_button (self);
 }
 
 static void
@@ -174,65 +235,6 @@ gcr_import_button_finalize (GObject *obj)
 	g_object_unref (self->pv->cancellable);
 
 	G_OBJECT_CLASS (gcr_import_button_parent_class)->finalize (obj);
-}
-
-static void
-update_import_button (GcrImportButton *self)
-{
-	gchar *message;
-	gchar *label;
-
-	/* Importing, set a spinner */
-	if (self->pv->importing) {
-		gtk_widget_show (self->pv->spinner);
-		gtk_widget_hide (self->pv->arrow);
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
-		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Import is in progress..."));
-
-	} else if (self->pv->imported) {
-		gtk_widget_hide (self->pv->spinner);
-		gtk_widget_hide (self->pv->arrow);
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
-		message = g_strdup_printf (_("Imported to: %s"), self->pv->imported);
-		gtk_widget_set_tooltip_text (GTK_WIDGET (self), message);
-		g_free (message);
-
-	/* Not importing, but have importers */
-	} else if (self->pv->importers) {
-		gtk_widget_hide (self->pv->spinner);
-		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
-
-		/* More than one importer */
-		if (self->pv->importers->next) {
-			gtk_widget_show (self->pv->arrow);
-			gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
-
-		/* Only one importer */
-		} else {
-			gtk_widget_hide (self->pv->arrow);
-			g_object_get (self->pv->importers->data, "label", &label, NULL);
-			message = g_strdup_printf (_("Import to: %s"), label);
-			gtk_widget_set_tooltip_text (GTK_WIDGET (self), message);
-			g_free (message);
-			g_free (label);
-		}
-
-	/* No importers, none compatible */
-	} else if (self->pv->created) {
-		gtk_widget_hide (self->pv->spinner);
-		gtk_widget_hide (self->pv->arrow);
-
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
-		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Cannot import because there are no compatible importers"));
-
-	/* No importers yet added */
-	} else {
-		gtk_widget_hide (self->pv->spinner);
-		gtk_widget_hide (self->pv->arrow);
-
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
-		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("No data to import"));
-	}
 }
 
 static void
