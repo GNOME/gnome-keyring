@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 23:39+0300\n"
-"PO-Revision-Date: 2011-08-18 23:40+0200\n"
+"POT-Creation-Date: 2011-09-23 08:52+0300\n"
+"PO-Revision-Date: 2011-09-23 08:57+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -25,7 +25,7 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "ללא שם"
@@ -100,30 +100,30 @@ msgstr "קבוצת מפתחות GNOME: סוכן GPG"
 msgid "GPG Password Agent"
 msgstr "סוכן ססמאות ה־PGP"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "מפתח PGP:‏ %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "יש להזין מילת צופן"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "מחיקת ססמה זו אם אין פעילות במשך"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "מחיקת ססמה זו לאחר"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "מחיקת ססמה זו בעת היציאה"
 
@@ -172,7 +172,7 @@ msgstr "שם נפוץ"
 msgid "Surname"
 msgstr "שם משפחה"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:650
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "מספר סידורי"
 
@@ -228,7 +228,7 @@ msgstr "בעל שם המתחם"
 msgid "Pseudonym"
 msgstr "כינוי"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -244,7 +244,7 @@ msgstr "MD5 עם RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 עם RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:309
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -283,6 +283,31 @@ msgstr "שגיאה בלתי צפויה בעת ש־select()‎ קרא נתוני�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "שגיאה בלתי צפויה ב־waitpid()‎‏ (%s)"
 
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "שגיאה בטעינת PKCS#11:‏ %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "מודול PKCS#11 שגוי:‏ %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "לא ניתן להגדיר את מודול ה־PKCS#11:‏ %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "לא ניתן להפעיל את מודול ה־PKCS#11:‏ %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "לא ניתן להפעיל את מודולי ה־PKCS#11 הרשומים: %s"
+
 #. later
 #. later
 #: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
@@ -302,7 +327,7 @@ msgid "Expires"
 msgstr "תפוגה"
 
 #: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:254
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:262
 msgid "Certificate"
 msgstr "תעודה"
 
@@ -477,92 +502,110 @@ msgstr "קריטי"
 msgid "Couldn't export the certificate."
 msgstr "לא ניתן לייצא את האישור."
 
-#: ../gcr/gcr-certificate-renderer.c:611
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "זהות"
 
-#: ../gcr/gcr-certificate-renderer.c:615
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "אומת על ידי"
 
-#: ../gcr/gcr-certificate-renderer.c:622
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "תפוגה"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:632
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "שם מקבל התעודה"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:636
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "שם החותם"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:640
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "תעודה שהונפקה"
 
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "גרסה"
 
-#: ../gcr/gcr-certificate-renderer.c:657
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "לא תקף לפני"
 
-#: ../gcr/gcr-certificate-renderer.c:662
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "לא תקף לאחר"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:667
+#: ../gcr/gcr-certificate-renderer.c:669
 msgid "Certificate Fingerprints"
 msgstr "טביעות אצבע של תעודה"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:673 ../gcr/gcr-certificate-renderer.c:685
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "חתימה"
 
-#: ../gcr/gcr-certificate-renderer.c:677
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "אלגוריתם החתימה"
 
-#: ../gcr/gcr-certificate-renderer.c:681
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "הפרמטרים של החתימה"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:689
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "נתוני מפתח ציבואי"
 
-#: ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "אלגוריתם המפתח"
 
-#: ../gcr/gcr-certificate-renderer.c:699
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "הפרמטרים של המפתח"
 
-#: ../gcr/gcr-certificate-renderer.c:704
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "גודל המפתח"
 
-#: ../gcr/gcr-certificate-renderer.c:711
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key SHA1 Fingerprint"
 msgstr "טביעת אצבע של מפתח SHA1"
 
-#: ../gcr/gcr-certificate-renderer.c:717 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:257
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:265
 msgid "Public Key"
 msgstr "מפתח ציבורי"
 
-#: ../gcr/gcr-display-view.c:270
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "_פרטים"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "לא ניתן להציג את '%s'"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "לא ניתן להציג את הקובץ"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "סיבה"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "לא ניתן להציג קבצים מסוג זה"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -596,7 +639,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "התהליך Gnupg חוסל עם האות: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1698 ../gcr/gcr-parser.c:1937
+#: ../gcr/gcr-parser.c:1921 ../gcr/gcr-parser.c:2179
 msgid "The operation was cancelled"
 msgstr "הפעולה בוטלה"
 
@@ -664,70 +707,70 @@ msgstr "יש לבחור מיקום לאחסון המפתחות/תעודות המ
 msgid "Key"
 msgstr "מפתח"
 
-#: ../gcr/gcr-key-renderer.c:280
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private RSA Key"
 msgstr "מפתח RSA פרטי"
 
-#: ../gcr/gcr-key-renderer.c:282
+#: ../gcr/gcr-key-renderer.c:285
 msgid "Private DSA Key"
 msgstr "מפתח DSA פרטי"
 
-#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:251
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:259
 msgid "Private Key"
 msgstr "מפתח פרטי"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "מפתח DSA ציבורי"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:301
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "סיבית אחת"
 msgstr[1] "%d סיביות"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:302
 msgid "Strength"
 msgstr "חוזק"
 
-#: ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Algorithm"
 msgstr "אלגוריתם"
 
-#: ../gcr/gcr-key-renderer.c:319
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Size"
 msgstr "גודל"
 
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
+#: ../gcr/gcr-key-renderer.c:326
 msgid "Fingerprints"
 msgstr "טביעות אצבע"
 
-#: ../gcr/gcr-key-renderer.c:328
+#: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:334
+#: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1701
+#: ../gcr/gcr-parser.c:1924
 msgid "Unrecognized or unsupported data."
 msgstr "הנתונים אינם מוכרים או שאינם נתמכים."
 
-#: ../gcr/gcr-parser.c:1704
+#: ../gcr/gcr-parser.c:1927
 msgid "Could not parse invalid or corrupted data."
 msgstr "לא ניתן לנתח נתונים שגויים או פגומים."
 
-#: ../gcr/gcr-parser.c:1707
+#: ../gcr/gcr-parser.c:1930
 msgid "The data is locked"
 msgstr "הנתונים נעולים"
 
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-trust.c:377
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "לא ניתן למצוא את המיקום לאחסון האישור המוצמד"
@@ -753,14 +796,65 @@ msgstr "יש לנעול קבוצת מפתחות זו בעת הניתוק"
 msgid "minutes"
 msgstr "דקות"
 
+#: ../gcr/gcr-unlock-renderer.c:63
+#, c-format
+msgid "Unlock: %s"
+msgstr "שחרור: %s"
+
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "פתח"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "הססמה לא הייתה נכונה"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "ססמה"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr "התכנים של '%s' נעולים. כדי לצפות בתוכן, יש להזין את הססמה הנכונה."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr "התכנים נעולים. כדי לצפות בתכנים, נא להזין את הססמה הנכונה."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "CRG – מציג מפתחות ואישורים"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "הצגת גרסת היישום"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[file...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- צפייה באישור ובקובצי המפתח"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "מציג אישורים"
+
 #: ../gck/gck-uri.c:173
 #, c-format
 msgid "The URI has invalid encoding."
 msgstr "הכתובת הנה בקידוד שגוי."
 
 #: ../gck/gck-uri.c:177
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "הכתובת אינה במבנה 'pkcs11'."
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "לכתובת אין את הסכמה 'pkcs11'"
 
 #: ../gck/gck-uri.c:181
 msgid "The URI has bad syntax."
@@ -779,7 +873,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "לא ניתן לנתח את מפתח ה־SSH הציבורי"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "ססמת שחרור עבור: %s"
@@ -834,10 +928,6 @@ msgstr "פתח תעודה"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "פתח מפתח ציבורי"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "פתח"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -926,11 +1016,11 @@ msgstr "commands: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:596
 msgid "Store passwords unencrypted?"
 msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
 
-#: ../ui/gku-prompt-tool.c:595
+#: ../ui/gku-prompt-tool.c:597
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -939,15 +1029,15 @@ msgstr ""
 "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל "
 "בעל גישה לקבצים שלך."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:604
 msgid "Use Unsafe Storage"
 msgstr "שימוש באחסון בלתי מאובטח"
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:644
 msgid "Passwords do not match."
 msgstr "הססמאות אינן תואמות."
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:654
 msgid "Password cannot be blank"
 msgstr "הססמה אינה יכולה להיות ריקה"
 
@@ -1338,9 +1428,6 @@ msgstr "_ססמה:"
 #~ msgid "Home"
 #~ msgstr "בית"
 
-#~ msgid "Couldn't delete the file: %s"
-#~ msgstr "לא ניתן למחוק את הקובץ: %s"
-
 #~ msgid ""
 #~ "The application '%s' (%s) wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
@@ -1381,9 +1468,6 @@ msgstr "_ססמה:"
 
 #~ msgid "Allow access"
 #~ msgstr "אפשר גישה"
-
-#~ msgid "Allow application access to keyring?"
-#~ msgstr "האם לאפשר ליישום לגשת לקבוצת הסיסמאות?"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants access to the default keyring, but it is "
@@ -1525,9 +1609,6 @@ msgstr "_ססמה:"
 #~ "A list of paths to PKCS#11 modules to load. No modules are currently "
 #~ "listed by default, as this is still an experimental feature. This is used "
 #~ "by seahorse and other PKCS#11 aware applications."
-
-#~ msgid "PKCS#11 Modules"
-#~ msgstr "PKCS#11 Modules"
 
 #~ msgid "Create Login Keyring"
 #~ msgstr "צור קבוצת סיסמאות התחברות"
