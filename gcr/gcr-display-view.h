@@ -96,6 +96,11 @@ void             _gcr_display_view_append_fingerprint          (GcrDisplayView *
                                                                 const gchar *name,
                                                                 GChecksumType type);
 
+void             _gcr_display_view_append_message              (GcrDisplayView *self,
+                                                                GcrRenderer *renderer,
+                                                                GtkMessageType message_type,
+                                                                const gchar *message);
+
 void             _gcr_display_view_set_icon                    (GcrDisplayView *self,
                                                                 GcrRenderer *renderer,
                                                                 GIcon *icon);

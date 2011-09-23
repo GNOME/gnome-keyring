@@ -1441,7 +1441,9 @@ parse_openpgp_packets (GcrParser *self,
 	gint num_parsed;
 
 	num_parsed = _gcr_openpgp_parse (data, n_data,
-	                                 GCR_OPENPGP_PARSE_KEYS,
+	                                 GCR_OPENPGP_PARSE_KEYS |
+	                                 GCR_OPENPGP_PARSE_ATTRIBUTES |
+	                                 GCR_OPENPGP_PARSE_SIGNATURES,
 	                                 on_openpgp_packet, self);
 
 	if (num_parsed == 0)

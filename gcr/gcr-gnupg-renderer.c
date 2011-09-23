@@ -277,43 +277,45 @@ status_for_code (gchar code)
 	}
 }
 
-#ifdef TODO
 static const gchar *
-description_for_code (gchar code, gboolean *warning)
+message_for_code (gchar code,
+                  GtkMessageType *message_type)
 {
-	*warning = FALSE;
+	*message_type = GTK_MESSAGE_OTHER;
 	switch (code) {
 	case 'o':
-		*warning = TRUE;
-		return _("This key has not been verified");
+		*message_type = GTK_MESSAGE_QUESTION;
+		return _("The information in this key has not yet been verified");
 	case 'i':
-		*warning = TRUE;
+		*message_type = GTK_MESSAGE_ERROR;
 		return _("This key is invalid");
 	case 'd':
-		*warning = TRUE;
+		*message_type = GTK_MESSAGE_WARNING;
 		return _("This key has been disabled");
 	case 'r':
-		*warning = TRUE;
+		*message_type = GTK_MESSAGE_ERROR;
 		return _("This key has been revoked");
 	case 'e':
-		*warning = TRUE;
+		*message_type = GTK_MESSAGE_ERROR;
 		return _("This key has expired");
 	case 'q': case '-':
-		return _("The trust in this key is undefined");
+		return NULL;
 	case 'n':
-		*warning = TRUE;
+		*message_type = GTK_MESSAGE_WARNING;
 		return _("This key is distrusted");
 	case 'm':
-		return _("Marginally trusted");
+		*message_type = GTK_MESSAGE_OTHER;
+		return _("This key is marginally trusted");
 	case 'f':
-		return _("Fully trusted");
+		*message_type = GTK_MESSAGE_OTHER;
+		return _("This key is fully trusted");
 	case 'u':
-		return _("Ultimately trusted");
+		*message_type = GTK_MESSAGE_OTHER;
+		return _("This key is ultimately trusted");
 	default:
 		return NULL;
 	}
 }
-#endif
 
 static void
 append_key_record (GcrGnupgRenderer *self,
@@ -656,6 +658,7 @@ static void
 _gcr_gnupg_renderer_render (GcrRenderer *renderer,
                             GcrViewer *viewer)
 {
+	GtkMessageType message_type;
 	GcrGnupgRenderer *self;
 	GcrDisplayView *view;
 	GDateTime *date;
@@ -709,10 +712,6 @@ _gcr_gnupg_renderer_render (GcrRenderer *renderer,
 		g_free (userid);
 	}
 
-	value = _gcr_gnupg_records_get_short_keyid (self->pv->records);
-	if (value != NULL)
-		_gcr_display_view_append_content (view, renderer, _("Key ID"), value);
-
 	code = _gcr_record_get_char (self->pv->records->pdata[0], GCR_RECORD_TRUST);
 	if (code != 'e') {
 		date = _gcr_record_get_date (self->pv->records->pdata[0], GCR_RECORD_KEY_EXPIRY);
@@ -724,8 +723,10 @@ _gcr_gnupg_renderer_render (GcrRenderer *renderer,
 		}
 	}
 
-	/* TODO: Warning */
-
+	/* The warning or status */
+	value = message_for_code (code, &message_type);
+	if (value != NULL)
+		_gcr_display_view_append_message (view, renderer, message_type, value);
 
 	_gcr_display_view_start_details (view, renderer);
 

@@ -39,6 +39,7 @@ G_DEFINE_TYPE_WITH_CODE (GcrDisplayView, _gcr_display_view, GTK_TYPE_TEXT_VIEW,
 #define FIELD_MARGIN 17
 #define COLUMN_MARGIN 6
 #define ICON_MARGIN 8
+#define MESSAGE_PADDING 8
 
 typedef struct _GcrDisplayItem {
 	GcrDisplayView *display_view;
@@ -64,6 +65,7 @@ struct _GcrDisplayViewPrivate {
 	GtkTextTag *title_tag;
 	GtkTextTag *content_tag;
 	GtkTextTag *heading_tag;
+	GtkTextTag *message_tag;
 	GtkTextTag *monospace_tag;
 	GtkTextTag *area_tag;
 	GcrDisplayItem *current_item;
@@ -193,6 +195,15 @@ create_tag_table (GcrDisplayView *self)
 	                                      "wrap-mode", GTK_WRAP_WORD,
 	                                      NULL);
 	gtk_text_tag_table_add (tags, self->pv->content_tag);
+
+	self->pv->message_tag = g_object_new (GTK_TYPE_TEXT_TAG,
+	                                      "name", "message",
+	                                      "right-margin", (ICON_MARGIN * 2) + width,
+	                                      "rise", 3 * PANGO_SCALE,
+	                                      "pixels-below-lines", 3,
+	                                      "wrap-mode", GTK_WRAP_WORD,
+	                                      NULL);
+	gtk_text_tag_table_add (tags, self->pv->message_tag);
 
 	self->pv->heading_tag = g_object_new (GTK_TYPE_TEXT_TAG,
 	                                      "name", "heading",
@@ -1104,6 +1115,66 @@ _gcr_display_view_append_fingerprint (GcrDisplayView *self, GcrRenderer *rendere
 	_gcr_display_view_append_hex (self, renderer, name, buffer, n_buffer);
 
 	g_free (buffer);
+}
+
+void
+_gcr_display_view_append_message (GcrDisplayView *self,
+                                  GcrRenderer *renderer,
+                                  GtkMessageType message_type,
+                                  const gchar *message)
+{
+	const gchar *stock_id = NULL;
+	GtkWidget *image = NULL;
+	GcrDisplayItem *item;
+	GtkTextChildAnchor *anchor;
+	GtkTextIter iter;
+
+	g_return_if_fail (GCR_IS_DISPLAY_VIEW (self));
+	g_return_if_fail (GCR_IS_RENDERER (renderer));
+
+	item = lookup_display_item (self, renderer);
+	g_return_if_fail (item);
+
+	switch (message_type) {
+	case GTK_MESSAGE_INFO:
+		stock_id = GTK_STOCK_DIALOG_INFO;
+		break;
+
+	case GTK_MESSAGE_QUESTION:
+		stock_id = GTK_STOCK_DIALOG_QUESTION;
+		break;
+
+	case GTK_MESSAGE_WARNING:
+		stock_id = GTK_STOCK_DIALOG_WARNING;
+		break;
+
+	case GTK_MESSAGE_ERROR:
+		stock_id = GTK_STOCK_DIALOG_ERROR;
+		break;
+
+	case GTK_MESSAGE_OTHER:
+		break;
+
+	default:
+		g_warning ("unknown GtkMessageType: %u", message_type);
+		break;
+	}
+
+	gtk_text_buffer_get_iter_at_mark (self->pv->buffer, &iter, item->ending);
+
+	if (stock_id != NULL) {
+		image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_MENU);
+		gtk_misc_set_padding (GTK_MISC (image), MESSAGE_PADDING, 0);
+		gtk_widget_show (image);
+
+		anchor = gtk_text_buffer_create_child_anchor (self->pv->buffer, &iter);
+		gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (self), image, anchor);
+	}
+
+	gtk_text_buffer_insert_with_tags (self->pv->buffer, &iter, message, -1,
+	                                  self->pv->message_tag, item->extra_tag, NULL);
+	gtk_text_buffer_insert_with_tags (self->pv->buffer, &iter, "\n", 1,
+	                                  item->extra_tag, NULL);
 }
 
 void
