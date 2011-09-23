@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-04 07:40+0000\n"
-"PO-Revision-Date: 2011-06-29 13:19+0300\n"
+"POT-Creation-Date: 2011-09-19 08:45+0000\n"
+"PO-Revision-Date: 2011-09-24 01:26+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -92,8 +92,8 @@ msgid "GPG Password Agent"
 msgstr "GPG slaptažodžių agentas"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
-#: ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Nežinoma"
 
@@ -165,7 +165,7 @@ msgid "Surname"
 msgstr "Pavardė"
 
 #: ../egg/egg-oid.c:69
-#: ../gcr/gcr-certificate-renderer.c:659
+#: ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Serijos numeris"
 
@@ -222,7 +222,7 @@ msgid "Pseudonym"
 msgstr "Slapyvardis"
 
 #: ../egg/egg-oid.c:98
-#: ../gcr/gcr-key-renderer.c:307
+#: ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -239,7 +239,7 @@ msgid "SHA1 with RSA"
 msgstr "MD2 su RSA"
 
 #: ../egg/egg-oid.c:103
-#: ../gcr/gcr-key-renderer.c:309
+#: ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -249,12 +249,10 @@ msgstr "SHA1 su DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
-#| msgid "SSL Server Certificate"
 msgid "Server Authentication"
 msgstr "Serverio tapatybės patikrinimas"
 
 #: ../egg/egg-oid.c:108
-#| msgid "SSL Client Certificate"
 msgid "Client Authentication"
 msgstr "Kliento tapatybės patikrinimas"
 
@@ -280,32 +278,54 @@ msgstr "Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proc
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Netikėta klaida funkcijoje waitpid() (%s)"
 
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Klaida įkeliant PKCS#11 modulį: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Netinkamas PKCS#11 modulis: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Nepavyko nustatyti PKCS#11 modulio: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Nepavyko inicijuoti PKCS#11 modulio: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Nepavyko inicijuoti registruotų PKCS#11 modulių: %s"
+
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:389
-#: ../gcr/gcr-gnupg-key.c:424
-#| msgid "_Name:"
+#: ../gcr/gcr-certificate.c:388
+#: ../gcr/gcr-gnupg-key.c:629
 msgctxt "column"
 msgid "Name"
 msgstr "Vardas"
 
-#: ../gcr/gcr-certificate.c:391
-#| msgid "Issued On"
+#: ../gcr/gcr-certificate.c:390
 msgctxt "column"
 msgid "Issued By"
 msgstr "Išdavė"
 
 #. later
-#: ../gcr/gcr-certificate.c:393
-#| msgid "Expires On"
+#: ../gcr/gcr-certificate.c:392
 msgctxt "column"
 msgid "Expires"
 msgstr "Galioja iki"
 
-#: ../gcr/gcr-certificate.c:1061
+#: ../gcr/gcr-certificate.c:1060
 #: ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:106
-#: ../gcr/gcr-parser.c:275
+#: ../gcr/gcr-certificate-renderer.c:101
+#: ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Liudijimas"
 
@@ -325,17 +345,14 @@ msgstr "Pa_keisti"
 
 #: ../gcr/gcr-certificate-exporter.c:257
 #, c-format
-#| msgid "The operation was cancelled"
 msgid "The operation was cancelled."
 msgstr "Operacija nutraukta."
 
 #: ../gcr/gcr-certificate-exporter.c:301
-#| msgid "Unlock certificate"
 msgid "Export certificate"
 msgstr "Eksportuoti liudijimą"
 
 #: ../gcr/gcr-certificate-exporter.c:313
-#| msgid "Certificate"
 msgid "Certificate files"
 msgstr "Liudijimo failai"
 
@@ -343,249 +360,259 @@ msgstr "Liudijimo failai"
 msgid "PEM files"
 msgstr "PEM failai"
 
-#: ../gcr/gcr-certificate-extensions.c:135
-#| msgid "Issuer Name"
+#: ../gcr/gcr-certificate-extensions.c:141
 msgid "Other Name"
 msgstr "Kitas vardas"
 
-#: ../gcr/gcr-certificate-extensions.c:142
+#: ../gcr/gcr-certificate-extensions.c:150
+#| msgid "IP Address"
+msgid "XMPP Addr"
+msgstr "XMPP adresas"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+#| msgid "DNS"
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
 msgid "Email"
 msgstr "El. paštas"
 
-#: ../gcr/gcr-certificate-extensions.c:150
-#| msgid "DSA"
+#: ../gcr/gcr-certificate-extensions.c:174
 msgid "DNS"
 msgstr "DNS"
 
-#: ../gcr/gcr-certificate-extensions.c:158
+#: ../gcr/gcr-certificate-extensions.c:182
 msgid "X400 Address"
 msgstr "X400 adresas"
 
-#: ../gcr/gcr-certificate-extensions.c:165
-#| msgid "Subject Name"
+#: ../gcr/gcr-certificate-extensions.c:189
 msgid "Directory Name"
 msgstr "Katalogo pavadinimas"
 
-#: ../gcr/gcr-certificate-extensions.c:173
+#: ../gcr/gcr-certificate-extensions.c:197
 msgid "EDI Party Name"
 msgstr "EDI šalies pavadinimas"
 
-#: ../gcr/gcr-certificate-extensions.c:180
+#: ../gcr/gcr-certificate-extensions.c:204
 msgid "URI"
 msgstr "URI"
 
-#: ../gcr/gcr-certificate-extensions.c:188
+#: ../gcr/gcr-certificate-extensions.c:212
 msgid "IP Address"
 msgstr "IP adresas"
 
-#: ../gcr/gcr-certificate-extensions.c:196
-#| msgid "User ID"
+#: ../gcr/gcr-certificate-extensions.c:220
 msgid "Registered ID"
 msgstr "Registracijos ID"
 
-#: ../gcr/gcr-certificate-renderer.c:121
+#: ../gcr/gcr-certificate-renderer.c:116
 msgid "Basic Constraints"
 msgstr "Pagrindiniai ribojimai"
 
-#: ../gcr/gcr-certificate-renderer.c:123
-#| msgid "Certificate"
+#: ../gcr/gcr-certificate-renderer.c:118
 msgid "Certificate Authority"
 msgstr "Liudijimo įstaiga"
 
-#: ../gcr/gcr-certificate-renderer.c:124
-#: ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Taip"
 
-#: ../gcr/gcr-certificate-renderer.c:124
-#: ../gcr/gcr-certificate-renderer.c:319
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Ne"
 
-#: ../gcr/gcr-certificate-renderer.c:127
+#: ../gcr/gcr-certificate-renderer.c:122
 msgid "Max Path Length"
 msgstr "Didžiausias kelio ilgis"
 
-#: ../gcr/gcr-certificate-renderer.c:128
-#| msgid "Unnamed"
+#: ../gcr/gcr-certificate-renderer.c:123
 msgid "Unlimited"
 msgstr "Neribojamas"
 
-#: ../gcr/gcr-certificate-renderer.c:147
+#: ../gcr/gcr-certificate-renderer.c:142
 msgid "Extended Key Usage"
 msgstr "Išplėstinis rakto naudojimas"
 
-#: ../gcr/gcr-certificate-renderer.c:158
+#: ../gcr/gcr-certificate-renderer.c:153
 msgid "Allowed Purposes"
 msgstr "Leidžiami tikslai"
 
-#: ../gcr/gcr-certificate-renderer.c:178
-#| msgid "Identifier"
+#: ../gcr/gcr-certificate-renderer.c:173
 msgid "Subject Key Identifier"
 msgstr "Subjekto rakto identifikatorius"
 
-#: ../gcr/gcr-certificate-renderer.c:179
-#| msgid "Identifier"
+#: ../gcr/gcr-certificate-renderer.c:174
 msgid "Key Identifier"
 msgstr "Rakto identifikatorius"
 
-#: ../gcr/gcr-certificate-renderer.c:190
-#| msgid "Signature"
+#: ../gcr/gcr-certificate-renderer.c:185
 msgid "Digital signature"
 msgstr "Skaitmeninis parašas"
 
-#: ../gcr/gcr-certificate-renderer.c:191
+#: ../gcr/gcr-certificate-renderer.c:186
 msgid "Key encipherment"
 msgstr "Rakto šifravimas"
 
-#: ../gcr/gcr-certificate-renderer.c:192
+#: ../gcr/gcr-certificate-renderer.c:187
 msgid "Data encipherment"
 msgstr "Duomenų šifravimas"
 
-#: ../gcr/gcr-certificate-renderer.c:193
-#| msgid "Key Parameters"
+#: ../gcr/gcr-certificate-renderer.c:188
 msgid "Key agreement"
 msgstr "Rakto sutartis"
 
-#: ../gcr/gcr-certificate-renderer.c:194
-#| msgid "Certificate"
+#: ../gcr/gcr-certificate-renderer.c:189
 msgid "Certificate signature"
 msgstr "Liudijimo parašas"
 
-#: ../gcr/gcr-certificate-renderer.c:195
+#: ../gcr/gcr-certificate-renderer.c:190
 msgid "Revocation list signature"
 msgstr "Panaikinimų sąrašo parašas"
 
-#: ../gcr/gcr-certificate-renderer.c:220
+#: ../gcr/gcr-certificate-renderer.c:215
 msgid "Key Usage"
 msgstr "Rakto naudojimas"
 
-#: ../gcr/gcr-certificate-renderer.c:221
+#: ../gcr/gcr-certificate-renderer.c:216
 msgid "Usages"
 msgstr "Naudojimai"
 
-#: ../gcr/gcr-certificate-renderer.c:241
-#| msgid "Subject Name"
+#: ../gcr/gcr-certificate-renderer.c:236
 msgid "Subject Alternative Names"
 msgstr "Subjekto alternatyvūs vardai"
 
-#: ../gcr/gcr-certificate-renderer.c:266
+#: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
 msgstr "Plėtinys"
 
-#: ../gcr/gcr-certificate-renderer.c:270
+#: ../gcr/gcr-certificate-renderer.c:265
 msgid "Identifier"
 msgstr "Identifikatorius"
 
-#: ../gcr/gcr-certificate-renderer.c:271
+#: ../gcr/gcr-certificate-renderer.c:266
 msgid "Value"
 msgstr "Reikšmė"
 
-#: ../gcr/gcr-certificate-renderer.c:318
+#: ../gcr/gcr-certificate-renderer.c:313
 msgid "Critical"
 msgstr "Kritinis"
 
-#: ../gcr/gcr-certificate-renderer.c:391
-#| msgid "Enter password to unlock the certificate"
+#: ../gcr/gcr-certificate-renderer.c:386
 msgid "Couldn't export the certificate."
 msgstr "Nepavyko eksportuoti sertifikato."
 
-#: ../gcr/gcr-certificate-renderer.c:620
-#| msgid "Identifier"
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Tapatybė"
 
-#: ../gcr/gcr-certificate-renderer.c:624
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Patikrino"
 
-#: ../gcr/gcr-certificate-renderer.c:631
-#| msgid "Expires On"
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Galioja iki"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:641
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Kam išduotas"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Kas išdavė"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:649
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Išduotasis liudijimas"
 
-#: ../gcr/gcr-certificate-renderer.c:654
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Versija"
 
-#: ../gcr/gcr-certificate-renderer.c:666
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Negalioja iki"
 
-#: ../gcr/gcr-certificate-renderer.c:671
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Negalioja po "
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:676
-#| msgid "Fingerprints"
+#: ../gcr/gcr-certificate-renderer.c:669
 msgid "Certificate Fingerprints"
 msgstr "Sertifikato kontroliniai kodai"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:682
-#: ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:675
+#: ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Parašas"
 
-#: ../gcr/gcr-certificate-renderer.c:686
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "Parašo algoritmas"
 
-#: ../gcr/gcr-certificate-renderer.c:690
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "Parašo parametrai"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:698
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Viešojo rakto informacija"
 
-#: ../gcr/gcr-certificate-renderer.c:703
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Viešojo rakto algoritmas"
 
-#: ../gcr/gcr-certificate-renderer.c:708
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Rakto parametrai"
 
-#: ../gcr/gcr-certificate-renderer.c:713
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Rakto dydis"
 
-#: ../gcr/gcr-certificate-renderer.c:720
-#| msgid "SHA1 Fingerprint"
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key SHA1 Fingerprint"
 msgstr "Rakto SHA1 kontrolinis kodas"
 
-#: ../gcr/gcr-certificate-renderer.c:726
-#: ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:278
+#: ../gcr/gcr-certificate-renderer.c:719
+#: ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Viešasis raktas"
 
-#: ../gcr/gcr-display-view.c:283
-#| msgid "_Details:"
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "_Išsami informacija"
 
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Nepavyko parodyti „%s“"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Nepavyko parodyti failo"
+
+#: ../gcr/gcr-failure-renderer.c:170
+#| msgid "Version"
+msgid "Reason"
+msgstr "Priežastis"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Nepavyksta parodyti šio tipo failo."
+
 #: ../gcr/gcr-import-dialog.ui.h:1
-#| msgid "Import Certificates/Keys"
 msgid "Import Certificates and Keys"
 msgstr "Importuoti liudijimus ir raktus"
 
@@ -597,16 +624,31 @@ msgstr "Importuoti į:"
 msgid "Password:"
 msgstr "Slaptažodis:"
 
-#: ../gcr/gcr-gnupg-key.c:154
-#| msgid "PGP Key: %s"
+#: ../gcr/gcr-gnupg-key.c:251
 msgid "PGP Key"
 msgstr "PGP raktas"
 
-#: ../gcr/gcr-gnupg-key.c:426
-#| msgid "User ID"
+#: ../gcr/gcr-gnupg-key.c:631
 msgctxt "column"
 msgid "Key ID"
 msgstr "Rakto ID"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "Gnupg procesas baigėsi su kodu: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "Gnupg procesas baigėsi su signalu: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695
+#: ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919
+#: ../gcr/gcr-parser.c:2177
+msgid "The operation was cancelled"
+msgstr "Operacija nutraukta"
 
 #: ../gcr/gcr-importer.c:172
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
@@ -656,13 +698,6 @@ msgstr "Norint importuoti liudijimą „%s“, jį reiks atrakinti"
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Norint importuoti „%s“, jį reiks atrakinti"
 
-#: ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1719
-#: ../gcr/gcr-parser.c:1958
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "Operacija nutraukta"
-
 #: ../gcr/gcr-importer.c:386
 #, c-format
 msgid "No location available to import to"
@@ -680,28 +715,25 @@ msgstr "Pasirinkite vietą importuotų liudijimų/raktų saugojimui."
 msgid "Key"
 msgstr "Raktas"
 
-#: ../gcr/gcr-key-renderer.c:280
-#| msgid "Private Key"
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private RSA Key"
 msgstr "Privatus RSA raktas"
 
-#: ../gcr/gcr-key-renderer.c:282
-#| msgid "Private Key"
+#: ../gcr/gcr-key-renderer.c:285
 msgid "Private DSA Key"
 msgstr "Privatus DSA raktas"
 
-#: ../gcr/gcr-key-renderer.c:284
-#: ../gcr/gcr-parser.c:272
+#: ../gcr/gcr-key-renderer.c:287
+#: ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Privatus raktas"
 
-#: ../gcr/gcr-key-renderer.c:287
-#: ../gcr/gcr-key-renderer.c:289
-#| msgid "Public Key"
+#: ../gcr/gcr-key-renderer.c:290
+#: ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "Viešasis DSA raktas"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:301
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
@@ -709,52 +741,48 @@ msgstr[0] "%d bitas"
 msgstr[1] "%d bitai"
 msgstr[2] "%d bitų"
 
-#: ../gcr/gcr-key-renderer.c:299
-#| msgid "Street"
+#: ../gcr/gcr-key-renderer.c:302
 msgid "Strength"
 msgstr "Stiprumas"
 
-#: ../gcr/gcr-key-renderer.c:312
-#| msgid "Key Algorithm"
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Algorithm"
 msgstr "Algoritmas"
 
-#: ../gcr/gcr-key-renderer.c:319
-#| msgid "Key Size"
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Size"
 msgstr "Dydis"
 
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
+#: ../gcr/gcr-key-renderer.c:326
 msgid "Fingerprints"
 msgstr "Kontroliniai kodai"
 
-#: ../gcr/gcr-key-renderer.c:328
+#: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:334
+#: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1722
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Duomenys netaisyklingi arba neatpažinti"
 
-#: ../gcr/gcr-parser.c:1725
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Nepavyko apdoroti netaisyklingų arba sugadintų duomenų."
 
-#: ../gcr/gcr-parser.c:1728
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Duomenys užrakinti"
 
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-trust.c:377
 #, c-format
-#| msgid "Choose a location to store the imported certificates/keys."
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Nepavyksta rasti vietos prisegto sertifikato įrašymui"
 
@@ -779,341 +807,77 @@ msgstr "Užrakinti šią raktinę, kai atsijungiu"
 msgid "minutes"
 msgstr "minučių"
 
-#: ../gck/gck-uri.c:129
-#: ../gck/gck-uri.c:186
-#: ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "URI sintaksė neteisinga. Lauko „%s“ kodavimas netinkamas."
+#| msgid "Unlock"
+msgid "Unlock: %s"
+msgstr "Atrakinti: %s"
 
-#: ../gck/gck-uri.c:292
+#: ../gcr/gcr-unlock-renderer.c:65
+#: ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Atrakinti"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+#| msgid "The unlock password was incorrect"
+msgid "The password was incorrect"
+msgstr "Slaptažodis neteisingas"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+#| msgid "Password:"
+msgid "Password"
+msgstr "Slaptažodis"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
+msgstr "„%s“ turinys užrakintas. Norėdami pamatyti turinį, įveskite teisingą slaptažodį."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid "The contents are locked. In order to view the contents, enter the correct password."
+msgstr "Turinys užrakintas. Norėdami pamatyti turinį, įveskite teisingą slaptažodį."
+
+#: ../gcr/gcr-viewer-tool.c:41
+#| msgid "Certificate and Key Storage"
+msgid "GCR Certificate and Key Viewer"
+msgstr "GCR liudijimų ir raktų žiūryklė"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Rodyti programos versiją"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[failas...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+#| msgid "Certificate files"
+msgid "- View certificate and key files"
+msgstr "- žiūrėti liudijimų ir raktų failus"
+
+#: ../gcr/gcr-viewer-tool.c:118
+#| msgid "Certificate files"
+msgid "Certificate Viewer"
+msgstr "Liudijimų žiūryklė"
+
+#: ../gck/gck-uri.c:173
+#, c-format
+#| msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+msgid "The URI has invalid encoding."
+msgstr "Bloga URI koduotė."
+
+#: ../gck/gck-uri.c:177
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "URI neturi „pkcs11“ schemos."
 
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr "Nepakanka laisvos atminties"
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr "Nurodytas lizdo id netaisyklingas"
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "Vidinė klaida"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "Operacija nesėkminga"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "Netaisyklingi argumentai"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr "Modulis negali sukurti reikalingų gijų"
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr "Modulis negali užrakinti duomenų"
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "Laukas tik skaitymui"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr "Laukas slaptas ir negali būti parodytas"
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "Laukas netaisyklingas arba neegzistuoja"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "Netaisyklinga lauko reikšmė"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr "Duomenys netaisyklingi arba neatpažinti"
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "Duomenys per ilgi"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "Įrenginyje įvyko klaida"
-
-#: ../gck/gck-misc.c:135
-#| msgid "Insufficient memory available on device"
-msgid "Insufficient memory available on the device"
-msgstr "Įrenginyje trūksta atminties"
-
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr "Įrenginys pašalintas arba atjungtas"
-
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "Užšifruoti duomenys netaisyklingi arba neatpažinti"
-
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr "Užšifruoti duomenys per ilgi"
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "Operacija nepalaikoma"
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "Rakto nėra arba jis netaisyklingas"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr "Raktas klaidingo dydžio"
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr "Raktas klaidingo tipo"
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr "Raktas nereikalingas"
-
-#: ../gck/gck-misc.c:153
-#| msgid "The key is different from before"
-msgid "The key is different than before"
-msgstr "Raktas skiriasi nuo ankstesniojo"
-
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "Reikia rakto"
-
-#: ../gck/gck-misc.c:157
-#| msgid "Cannot include the key in digest"
-msgid "Cannot include the key in the digest"
-msgstr "Nepavyko įtraukti rakto į santrauką"
-
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr "Ši operacija negali būti atlikta su šiuo raktu"
-
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr "Raktas negali būti apgaubtas"
-
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "Rakto negalima eksportuoti"
-
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Kriptografijos mechanizmas netinkamas arba neatpažintas"
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr "Kriptografijos mechanizmui pateiktas netinkamas argumentas"
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr "Objekto nėra arba jis netinkamas"
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr "Jau vyksta kita operacija"
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr "Nevyksta jokia operacija"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr "Slaptažodis arba PIN neteisingas"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr "Slaptažodis arba PIN netaisyklingas"
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr "Slaptažodis arba PIN netinkamo ilgio"
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr "Slaptažodžio ar PIN galiojimo laikas baigėsi"
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr "Slaptažodis arba PIN užrakintas"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "Seansas užvertas"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "Per daug aktyvių seansų"
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "Seansas netaisyklingas"
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "Seansas tik skaitymui"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "Egzistuoja atvertas seansas"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "Egzistuoja seansas tik skaitymui"
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "Egzistuoja administratoriaus seansas"
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr "Parašas neteisingas arba sugadintas"
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr "Parašas neatpažintas arba sugadintas"
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "Trūksta būtinų reikšmių"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "Kai kurios reikšmės netaisyklingos"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr "Įrenginio nėra arba jis atjungtas"
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr "Įrenginys netaisyklingas arba neatpažįstamas"
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr "Į įrenginį neleidžiama rašyti"
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr "Nepavyko importuoti, nes raktas netaisyklingas"
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Nepavyko importuoti, nes rakto dydis netinkamas"
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Nepavyko importuoti, nes rakto tipas netinkamas"
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "Jau esate prisijungęs"
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "Joks naudotojas neprisijungė"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr "Naudotojo slaptažodis ar PIN nenustatytas"
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr "Naudotojo tipas netinkamas"
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "Kitas naudotojas jau prisijungęs"
-
-#: ../gck/gck-misc.c:229
-#| msgid "Too many users of different types logged in"
-msgid "Too many users of different types are logged in"
-msgstr "Prisijungę per daug skirtingų tipų naudotojų"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "Negalima importuoti netaisyklingo rakto"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr "Negalia importuoti netinkamo dydžio rakto"
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "Negalima eksportuoti netaisyklingo rakto"
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Negalima eksportuoti netinkamo dydžio rakto"
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Negalima eksportuoti netinkamo tipo rakto"
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr "Nepavyko inicializuoti atsitiktinių skaičių generatoriaus"
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr "Nerastas atsitiktinių skaičių generatorius"
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "Kriptografijos mechanizmas gavo netaisyklingą parametrą"
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr "Trūksta vietos įrašyti rezultatui"
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr "Įrašyta būsena nekorektiška"
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr "Informacija slapta ir negali būti parodyta"
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr "Būsena negali būti įrašyta"
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr "Modulis nebuvo inicializuotas"
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr "Modulis jau buvo inicializuotas."
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr "Nepavyko užrakinti duomenų"
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr "Duomenys negali būti užrakinti"
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr "Pasirašymo užklausa atmesta naudotojo"
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "Nežinoma klaida"
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "Bloga URI sintaksė."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "Blogas URI versijos numeris."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -1176,13 +940,9 @@ msgstr "Atrakinti liudijimą"
 msgid "Unlock public key"
 msgstr "Atrakinti viešąjį raktą"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Atrakinti"
-
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
-msgstr "Įveskite slaptažodį, kad atrakintumėte viešajį raktą"
+msgstr "Įveskite slaptažodį, kad atrakintumėte viešąjį raktą"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
@@ -1262,23 +1022,23 @@ msgstr "komandos:"
 msgid "          "
 msgstr "         "
 
-#: ../ui/gku-prompt-tool.c:618
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "Saugoti nešifruotus slaptažodžius?"
 
-#: ../ui/gku-prompt-tool.c:619
+#: ../ui/gku-prompt-tool.c:595
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
 msgstr "Jei pasirinksite tuščią slaptažodį, saugomi slaptažodžiai nebus saugiai užšifruoti. Jie bus prieinami visiems, kas gali skaityti Jūsų failus."
 
-#: ../ui/gku-prompt-tool.c:626
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "Naudoti nesaugią saugyklą"
 
-#: ../ui/gku-prompt-tool.c:666
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "Slaptažodžiai nesutampa."
 
-#: ../ui/gku-prompt-tool.c:676
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "Slaptažodis negali būti tuščias"
 
@@ -1318,48 +1078,44 @@ msgstr "_Senas slaptažodis:"
 msgid "_Password:"
 msgstr "_Slaptažodis:"
 
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>Ne liudijimo dalis</i>"
+#~ msgid "Insufficient memory available"
+#~ msgstr "Nepakanka laisvos atminties"
 
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<b>nežinoma</b>"
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "Nurodytas lizdo id netaisyklingas"
 
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Ne liudijimo dalis>"
+#~ msgid "Internal error"
+#~ msgstr "Vidinė klaida"
 
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Kontroliniai kodai</b>"
+#~ msgid "The operation failed"
+#~ msgstr "Operacija nesėkminga"
 
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Kas išdavė</b>"
+#~ msgid "Invalid arguments"
+#~ msgstr "Netaisyklingi argumentai"
 
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Kam išdavė</b>"
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "Modulis negali sukurti reikalingų gijų"
 
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>Šis liudijimas patikrintas šioms naudojimo galimybėms:</b>"
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "Modulis negali užrakinti duomenų"
 
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Galiojimas</b>"
+#~ msgid "The field is read-only"
+#~ msgstr "Laukas tik skaitymui"
 
-#~ msgid "Common Name (CN)"
-#~ msgstr "Bendrinis vardas (CN)"
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "Laukas slaptas ir negali būti parodytas"
 
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "El. laiško gavėjo liudijimas"
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "Laukas netaisyklingas arba neegzistuoja"
 
-#~ msgid "Email Signer Certificate"
-#~ msgstr "El. laiško pasirašytojo liudijimas"
+#~ msgid "Invalid value for field"
+#~ msgstr "Netaisyklinga lauko reikšmė"
 
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5 kontrolinis kodas"
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "Duomenys netaisyklingi arba neatpažinti"
 
-#~ msgid "Organization (O)"
-#~ msgstr "Organizacija (O) "
+#~ msgid "The data is too long"
+#~ msgstr "Duomenys per ilgi"
 
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Padalinys (OU)"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Importuoti liudijimus ir raktus</span>"
+#~ msgid "An error occurred on the device"
+#~ msgstr "Įrenginyje įvyko klaida"
