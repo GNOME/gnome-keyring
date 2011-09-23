@@ -763,6 +763,7 @@ gcr/icons/22x22/Makefile
 gcr/icons/24x24/Makefile
 gcr/icons/32x32/Makefile
 gcr/icons/48x48/Makefile
+gcr/icons/256x256/Makefile
 gcr/tests/Makefile
 pam/Makefile
 pkcs11/Makefile
