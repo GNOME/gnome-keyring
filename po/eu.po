@@ -2,28 +2,30 @@
 # translation of gnome-keyring.HEAD.po  to Basque
 # Copyright (C) 2004 THE eu'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the eu package.
-#
 # Alberto Fernández <afernn@euskalnet.net>, 2004.
 # Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2004, 2006, 2008, 2009, 2010, 2011.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2007.
+# Julen Ruiz Aizpuru <julenx@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: eu_to_be_translate\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 22:12+0100\n"
-"PO-Revision-Date: 2011-02-16 22:18+0100\n"
-"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
-"Language-Team: Basque <itzulpena@euskalgnu.org>\n"
+"POT-Creation-Date: 2011-09-24 10:49+0200\n"
+"PO-Revision-Date: 2011-09-24 10:48+0200\n"
+"Last-Translator: \n"
+"Language-Team: American English <kde-i18n-doc@kde.org>\n"
+"Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.0\n"
+"X-Project-Style: gnome\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Izengabea"
@@ -50,15 +52,15 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Jatorriko pasahitza ez da zuzena"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Gako-sorta berriaren pasahitza"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Aukeratu gako-sorta berriaren pasahitza"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -99,30 +101,30 @@ msgstr "GNOMEren gako-sorta: GPG agentea"
 msgid "GPG Password Agent"
 msgstr "GPG pasahitzaren agentea"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Ezezaguna"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP gakoa: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "Sartu pasaesaldia"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
-msgstr "Ahaztu pasahitz hau denbora honetan inaktibo dagoenean "
+msgstr "Ahaztu pasahitz hau denbora honetan inaktibo dagoenean"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "Ahaztu pasahitz hau honen ondoren"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "Ahaztu pasahitz hau nik saioa amaitzean"
 
@@ -171,7 +173,7 @@ msgstr "Izen arrunta"
 msgid "Surname"
 msgstr "Abizena"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Serie-zenbakia"
 
@@ -227,29 +229,50 @@ msgstr "DN identifikatzailea"
 msgid "Pseudonym"
 msgstr "Goitizena"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 RSA-rekin"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 RSA-rekin"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 RSA-rekin"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 DSA-rekin"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Zerbitzariaren autentifikazioa"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Bezeroaren autentifikazioa"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Kode sinaketa"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "Posta elektronikoaren babesa"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Denbora markatzea"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -262,111 +285,329 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Ustekabeko errorea waitpid() (%s) funtzioan"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Errorea PKCS#11 modulua kargatzean: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "PKCS#11 modulu baliogabea: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Ezin izan da PKCS#11 modulua konfiguratu: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Ezin izan da PKCS#11 modulua hasieratu: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Ezin izan dira erregistratutako PKCS#11 moduluak hasieratu: %s"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "Izena"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "Jaulkitzailea"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "Iraungitze-data"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:262
 msgid "Certificate"
 msgstr "Ziurtagiria"
 
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "Luzapena"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>Badago lehendik izen hori duen fitxategi bat.</b>\n"
+"\n"
+"Fitxategi berriarekin ordeztu nahi duzu?"
 
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "Identifikatzailea"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "_Ordeztu"
 
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "Balioa"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "Eragiketa bertan behera utzi da."
 
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "Larria"
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "Esportatu ziurtagiria"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "Ziurtagiri-fitxategiak"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "PEM fitxategiak"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "Bestelako izena"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "XMPP helb"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "Posta elektronikoa"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "X400 helbidea"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "Direktorio-izena"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "EDI taldearen izena"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "URIa"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "IP helbidea"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "Erregistratutako IDa"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "Oinarrizko murriztapenak"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "Ziurtagiri-emailea"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Bai"
 
-#: ../gcr/gcr-certificate-renderer.c:126
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Ez"
 
-#: ../gcr/gcr-certificate-renderer.c:339
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "Bide-izenaren gehienezko luzera"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "Mugagabea"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "Tekla gehigarriaren erabilera"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "Onartutako xedeak"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "Gai gakoaren identifikatzailea"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "Gako identifikatzailea"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "Sinadura digitala"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "Gako-zifraketa"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "Datu-zifraketa"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "Gako-hitzarmena"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "Ziurtagiriaren sinadura"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "Errebokatze-zerrendaren sinadura"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "Gakoaren erabilera"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "Erabilerak"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "Gaiaren bestelako izenak"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "Luzapena"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "Identifikatzailea"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "Balioa"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "Larria"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "Ezin izan da ziurtagiria esportatu."
+
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Identitatea"
 
-#: ../gcr/gcr-certificate-renderer.c:343
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Honek egiaztatuta"
 
-#: ../gcr/gcr-certificate-renderer.c:350
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Iraungitze-data"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Gaiaren izena"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Jaulkitzailearen izena"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Jaulkitako ziurtagiria"
 
-#: ../gcr/gcr-certificate-renderer.c:373
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Bertsioa"
 
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Ez da baliozkoa honen aurretik"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Ez da baliozkoa honen ondoren"
 
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "Sinaduraren algoritmoa"
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "Ziurtagiriaren hatz-markak"
 
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "Sinaduraren parametroak"
-
-#: ../gcr/gcr-certificate-renderer.c:413
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Sinadura"
 
+#: ../gcr/gcr-certificate-renderer.c:679
+msgid "Signature Algorithm"
+msgstr "Sinaduraren algoritmoa"
+
+#: ../gcr/gcr-certificate-renderer.c:683
+msgid "Signature Parameters"
+msgstr "Sinaduraren parametroak"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Gako publikoaren informazioa"
 
-#: ../gcr/gcr-certificate-renderer.c:423
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Gakoaren algoritmoa"
 
-#: ../gcr/gcr-certificate-renderer.c:429
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Gakoaren parametroak"
 
-#: ../gcr/gcr-certificate-renderer.c:436
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Gakoaren tamaina"
 
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "Gakoaren SHA1 hatz-marka"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:265
 msgid "Public Key"
 msgstr "Gako publikoa"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
-msgid "Fingerprints"
-msgstr "Hatz-markak"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "_Xehetasunak"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Ezin izan da '%s' bistaratu"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Ezin izan da fitxategia bistaratu"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Arrazoia"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Ezin da mota honetako fitxategirik bistaratu."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -380,13 +621,167 @@ msgstr "Inportatu hona:"
 msgid "Password:"
 msgstr "Pasahitza:"
 
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "PGP gakoa"
+
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "Gakoaren IDa"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "Gnupg prozesua ondorengo kodearekin irten da: %d"
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "Gnupg prozesua ondorengo seinalearekin amaitu da: %d"
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1921 ../gcr/gcr-parser.c:2179
+msgid "The operation was cancelled"
+msgstr "Eragiketa bertan behera utzi da"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Idatzi pasahitza gako pribatua desblokeatzeko"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Idatzi pasahitza ziurtagiria desblokeatzeko"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Idatzi pasahitza desblokeatzeko"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "Gako pribatua inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "Ziurtagiria inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "Datuak inportatzeko desblokeatu egin behar dira"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "'%s' gako pribatua inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "'%s' ziurtagiria inportatzeko desblokeatu egin behar da"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s' inportatzeko desblokeatu egin behar da"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "Ez dago kokaleku erabilgarririk horra inportatzeko"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "Inportatu ziurtagiriak/gakoak"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Aukeratu kokalekua inportatutako ziurtagiriak/gakoak gordetzeko."
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "Gakoa"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "RSA gako pribatua"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "DSA gako pribatua"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:259
+msgid "Private Key"
+msgstr "Gako pribatua"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "DSA gako publikoa"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "bit %d"
+msgstr[1] "%d bit"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "Indarra"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "Algoritmoa"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "Tamaina"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "Hatz-markak"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1924
+msgid "Unrecognized or unsupported data."
+msgstr "Datu ezezaguna edo onartu gabea."
+
+#: ../gcr/gcr-parser.c:1927
+msgid "Could not parse invalid or corrupted data."
+msgstr "Ezin izan dira hondatutako edo baliogabeak diren datuak analizatu."
+
+#: ../gcr/gcr-parser.c:1930
+msgid "The data is locked"
+msgstr "Datuak blokeatuta daude"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Ezin izan da salbuespen-ziurtagiria gordetzeko lekurik aurkitu"
+
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "Desblokeatu automatikoki gako-sorta hau saioa hastean"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
-msgstr "Blokeatu gako-sorta: "
+msgstr "Blokeatu gako-sorta:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
@@ -401,462 +796,75 @@ msgstr "Blokeatu gako-sorta saioa amaitzean"
 msgid "minutes"
 msgstr "minututan"
 
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Idatzi pasahitza gako pribatua desblokeatzeko"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Idatzi pasahitza ziurtagiria desblokeatzeko"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Idatzi pasahitza desblokeatzeko"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Gako pribatua inportatzeko desblokeatu egin behar da"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Ziurtagiria inportatzeko desblokeatu egin behar da"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "Datuak inportatzeko desblokeatu egin behar dira"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
+#: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "'%s' gako pribatua inportatzeko desblokeatu egin behar da"
+msgid "Unlock: %s"
+msgstr "Desblokeatu: %s"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Desblokeatu"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "Pasahitza okerra da"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Pasahitza"
+
+#: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "'%s' ziurtagiria inportatzeko desblokeatu egin behar da"
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr ""
+"Blokeatuta daude '%s'(r)en edukiak. Ikusi ahal izateko, sartu pasahitz "
+"zuzena."
 
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr "Blokeatuta daude edukiak. Ikusi ahal izateko, sartu pasahitz zuzena."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "GCR ziurtagiria eta gakoen ikustailea"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Erakutsi aplikazioaren bertsioa"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[fitxategia...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- Ikusi ziurtagien eta gakoen fitxategiak"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Ziurtagiri-ikustailea"
+
+#: ../gck/gck-uri.c:173
 #, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s' inportatzeko desblokeatu egin behar da"
-
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "Eragiketa bertan behera utzi da"
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "Ez dago kokaleku erabilgarririk horra inportatzeko"
-
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "Inportatu ziurtagiriak/gakoak"
-
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Aukeratu kokalekua inportatutako ziurtagiriak/gakoak gordetzeko."
-
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "Gakoa"
-
-#: ../gcr/gcr-key-renderer.c:260
-msgid "Private RSA Key"
-msgstr "RSA gako pribatua"
-
-#: ../gcr/gcr-key-renderer.c:262
-msgid "Private DSA Key"
-msgstr "DSA gako pribatua"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "Gako pribatua"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-msgid "Public DSA Key"
-msgstr "DSA gako publikoa"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "bit %d"
-msgstr[1] "%d bit"
-
-#: ../gcr/gcr-key-renderer.c:279
-msgid "Strength"
-msgstr "Indarra"
-
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Algorithm"
-msgstr "Algoritmoa"
-
-#: ../gcr/gcr-key-renderer.c:299
-msgid "Size"
-msgstr "Tamaina"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-msgid "Fingerprint"
-msgstr "Hatz-marka"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "Datu ezezaguna edo onartu gabea."
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "Ezin izan dira hondatutako edo baliogabeak diren datuak analizatu."
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "Datuak blokeatuta daude"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, fuzzy, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Ezin izan da zaztutatutako ziurtagiriak gordetzeko lekurik aurkitu"
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "URIak okerreko sintaxia du. '%s' eremuaren kodeketa baliogabea da."
-
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "URIak ez dauka 'pkcs11' eskemarik."
-
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "Ez dago nahikoa memoria erabilgarri"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "Zehaztutako IDa ez da baliozkoa"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "Barneko errorea"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "Eragiketak huts egin du"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "Argumentu baliogabeak"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "Moduluak ezin du beharrezko hariak sortu"
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "Moduluak ezin du datuak ongi blokeatu"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "Eremua irakurtzeko soilik da"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "Eremua pribatua da, eta ezin da azaldu"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "Eremua baliogabea da edo ez da existitzen"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "Eremuaren balio baliogabea"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "Datua ez da baliozkoa edo ez da ezagutzen"
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "Datua luzeegia da"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "Errorea gertatu da gailuan"
-
-#: ../gck/gck-misc.c:129
-msgid "Insufficient memory available on the device"
-msgstr "Ez dago nahikoa memoria erabilgarri gailuan"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "Gailua kendu edo deskonektatu egin da"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "Enkriptatutako datua ez da baliozkoa edo ez da ezagutzen"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "Enkriptatutako datua luzeegia da"
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "Eragiketa hau ez dago onartuta"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "Gakoa falta da edo baliogabea da"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "Gakoak okerreko tamaina du"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "Gakoa okerreko motakoa da"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "Ez da gakorik behar"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is different than before"
-msgstr "Gakoa aurrekotik desberdina da"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "Gakoa behar da"
-
-#: ../gck/gck-misc.c:151
-msgid "Cannot include the key in the digest"
-msgstr "Ezin da gakoa laburpenean txertatu"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "Eragiketa hau ezin da gako honekin egin"
-
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "Gakoa ez da itzulbiratu"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "Ezin da gako hau esportatu"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Zifratzeko motorra baliogabea da, edo ezezaguna"
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "Zifratzeko motorrak argumentu baliogabe bat du"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "Objektua falta da edo baliogabea da"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "Jadanik beste eragiketa bat ari da lantzen"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "Ez da eragiketarik lantzen ari"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "Pasahitza edo PINa ez da zuzena"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "Pasahitza edo PINa baliogabea da"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "Pasahitza edo PINaren luzera baliogabekoa da"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "Pasahitza edo PINa iraungitu egin da"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "Pasahitza edo PINa blokeatuta dago"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "Saioa itxi da"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "Saio gehiegi daude aktibo"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "Saio baliogabea"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "Saioa irakurtzeko soilik da"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "Irekitako saioa badago lehendik ere"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "Irakurtzeko soilik den saioa badago lehendik ere"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "Administratzailearen saioa badago lehendik ere"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "Sinadura okerrekoa da edo hondatuta dago"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "Sinadura ez da ezaguna edo hondatuta dago"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "Beharrezkoak diren zenbait eremu falta dira"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "Eremu batzuk balio baliogabeak dituzte"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "Gailua ez dago edo deskonektatuta dago"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "Gailua baliogabea da edo ezezaguna"
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "Gailuak idazketaren aurkako babesa du"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "Ezin da inportatu gakoa baliogabea delako"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Ezin da inportatu gakoak okerreko tamaina duelako"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Ezin da inportatu gakoa okerreko motakoa delako"
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "Jadanik saioa hasita zaude"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "Ez dago erabiltzailerik saioa hasi duenik"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "Erabiltzailearen pasahitza edo PINa ez dago ezarrita"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "Erabiltzailea mota baliogabekoa da"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "Beste erabiltzaile bat dago saioa hasita"
-
-#: ../gck/gck-misc.c:223
-msgid "Too many users of different types are logged in"
-msgstr "Mota desberdinetako erabiltzaile gehiegik hasi dute saioa"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "Ezin da gako baliogabea inportatu"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "Ezin da okerreko tamaina duen gakoa inportatu"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "Ezin da esportatu gakoa baliogabea delako"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Ezin da esportatu gakoak okerreko tamaina duelako"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Ezin da esportatu gakoa okerreko motakoa delako"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "Ezin da ausazko zenbakien sortzailea hasieratu"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "Ez dago ausazko zenbaki sortzailea erabilgarri"
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "Zifratzeko motorrak parametro baliogabea du"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "Ez dago nahikoa lekurik emaitza gordetzeko"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "Gordetako egoera baliogabea da"
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "Informazioa pribatua da, eta ezin da azaldu"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "Egoera ezin da gorde"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "Modulua ez da hasieratu"
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "Modulua jadanik hasieratuta dago"
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "Ezin dira datuak blokeatu"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "Datuak ezin dira blokeatu"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "Erabiltzaileak ukatu egin du sinaduraren eskaera"
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "Errore ezezaguna"
+msgid "The URI has invalid encoding."
+msgstr "URIak kodeketa baliogabea du."
+
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "URIak ez dauka 'pkcs11' eskema."
+
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "URIaren sintaxia okerra da."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "URIak bertsio-zenbaki okerra dauka."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -867,7 +875,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "Ezin izan da SSHren gako publikoa analizatu"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Desblokeatu %s(r)en gako-sorta"
@@ -897,8 +905,8 @@ msgstr ""
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"Zure saioaren gako-sorta ez da automatikoki desblokeatu (ordenagailuan saioa "
-"hastean)."
+"Zure saioaren gako-sorta ez da automatikoki desblokeatu ordenagailuan saioa "
+"hastean."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
@@ -925,10 +933,6 @@ msgstr "Desblokeatu ziurtagiria"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Desblokeatu gako publikoa"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Desblokeatu"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1021,11 +1025,11 @@ msgstr "komandoak: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:538
+#: ../ui/gku-prompt-tool.c:596
 msgid "Store passwords unencrypted?"
 msgstr "Gorde pasahitzak enkriptatu gabe?"
 
-#: ../ui/gku-prompt-tool.c:539
+#: ../ui/gku-prompt-tool.c:597
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1035,17 +1039,25 @@ msgstr ""
 "segurtasunez enkriptatuko. Zure fitxategiak atzitu ditzakeen edonork "
 "pasahitz hauek atzi ditzake."
 
-#: ../ui/gku-prompt-tool.c:546
+#: ../ui/gku-prompt-tool.c:604
 msgid "Use Unsafe Storage"
 msgstr "Erabili segurtasun gabeko biltegia"
 
-#: ../ui/gku-prompt-tool.c:584
+#: ../ui/gku-prompt-tool.c:644
 msgid "Passwords do not match."
-msgstr "Pasahitzak ez datoz bat"
+msgstr "Pasahitzak ez datoz bat."
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:654
 msgid "Password cannot be blank"
 msgstr "Pasahitza ezin da hutsa izan"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Gako-sortaren atzipena"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Desblokeatu sarbidea pasahitzetara eta bestelako sekretuetara"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -1075,8 +1087,248 @@ msgstr "Pasahitz _zaharra:"
 msgid "_Password:"
 msgstr "_Pasahitza:"
 
-#~ msgid "Email"
-#~ msgstr "Helbide elektronikoa"
+#~ msgid "Fingerprint"
+#~ msgstr "Hatz-marka"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "Ez dago nahikoa memoria erabilgarri"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "Zehaztutako IDa ez da baliozkoa"
+
+#~ msgid "Internal error"
+#~ msgstr "Barneko errorea"
+
+#~ msgid "The operation failed"
+#~ msgstr "Eragiketak huts egin du"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "Argumentu baliogabeak"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "Moduluak ezin du beharrezko hariak sortu"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "Moduluak ezin du datuak ongi blokeatu"
+
+#~ msgid "The field is read-only"
+#~ msgstr "Eremua irakurtzeko soilik da"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "Eremua pribatua da, eta ezin da azaldu"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "Eremua baliogabea da edo ez da existitzen"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "Eremuaren balio baliogabea"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "Datua ez da baliozkoa edo ez da ezagutzen"
+
+#~ msgid "The data is too long"
+#~ msgstr "Datua luzeegia da"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "Errorea gertatu da gailuan"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "Ez dago nahikoa memoria erabilgarri gailuan"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "Gailua kendu edo deskonektatu egin da"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "Enkriptatutako datua ez da baliozkoa edo ez da ezagutzen"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "Enkriptatutako datua luzeegia da"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "Eragiketa hau ez dago onartuta"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "Gakoa falta da edo baliogabea da"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "Gakoak okerreko tamaina du"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "Gakoa okerreko motakoa da"
+
+#~ msgid "No key is needed"
+#~ msgstr "Ez da gakorik behar"
+
+#~ msgid "The key is different than before"
+#~ msgstr "Gakoa aurrekotik desberdina da"
+
+#~ msgid "A key is needed"
+#~ msgstr "Gakoa behar da"
+
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "Ezin da gakoa laburpenean txertatu"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "Eragiketa hau ezin da gako honekin egin"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "Gakoa ez da itzulbiratu"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "Ezin da gako hau esportatu"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "Zifratzeko motorra baliogabea da, edo ezezaguna"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "Zifratzeko motorrak argumentu baliogabe bat du"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "Objektua falta da edo baliogabea da"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "Jadanik beste eragiketa bat ari da lantzen"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "Ez da eragiketarik lantzen ari"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "Pasahitza edo PINa ez da zuzena"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "Pasahitza edo PINa baliogabea da"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "Pasahitza edo PINaren luzera baliogabekoa da"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "Pasahitza edo PINa iraungitu egin da"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "Pasahitza edo PINa blokeatuta dago"
+
+#~ msgid "The session is closed"
+#~ msgstr "Saioa itxi da"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "Saio gehiegi daude aktibo"
+
+#~ msgid "The session is invalid"
+#~ msgstr "Saio baliogabea"
+
+#~ msgid "The session is read-only"
+#~ msgstr "Saioa irakurtzeko soilik da"
+
+#~ msgid "An open session exists"
+#~ msgstr "Irekitako saioa badago lehendik ere"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "Irakurtzeko soilik den saioa badago lehendik ere"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "Administratzailearen saioa badago lehendik ere"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "Sinadura okerrekoa da edo hondatuta dago"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "Sinadura ez da ezaguna edo hondatuta dago"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "Beharrezkoak diren zenbait eremu falta dira"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "Eremu batzuk balio baliogabeak dituzte"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "Gailua ez dago edo deskonektatuta dago"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "Gailua baliogabea da edo ezezaguna"
+
+#~ msgid "The device is write protected"
+#~ msgstr "Gailuak idazketaren aurkako babesa du"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "Ezin da inportatu gakoa baliogabea delako"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "Ezin da inportatu gakoak okerreko tamaina duelako"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "Ezin da inportatu gakoa okerreko motakoa delako"
+
+#~ msgid "You are already logged in"
+#~ msgstr "Jadanik saioa hasita zaude"
+
+#~ msgid "No user has logged in"
+#~ msgstr "Ez dago erabiltzailerik saioa hasi duenik"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "Erabiltzailearen pasahitza edo PINa ez dago ezarrita"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "Erabiltzailea mota baliogabekoa da"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "Beste erabiltzaile bat dago saioa hasita"
+
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "Mota desberdinetako erabiltzaile gehiegik hasi dute saioa"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "Ezin da gako baliogabea inportatu"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "Ezin da okerreko tamaina duen gakoa inportatu"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "Ezin da esportatu gakoa baliogabea delako"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "Ezin da esportatu gakoak okerreko tamaina duelako"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "Ezin da esportatu gakoa okerreko motakoa delako"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "Ezin da ausazko zenbakien sortzailea hasieratu"
+
+#~ msgid "No random number generator available"
+#~ msgstr "Ez dago ausazko zenbaki sortzailea erabilgarri"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "Zifratzeko motorrak parametro baliogabea du"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "Ez dago nahikoa lekurik emaitza gordetzeko"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "Gordetako egoera baliogabea da"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "Informazioa pribatua da, eta ezin da azaldu"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "Egoera ezin da gorde"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "Modulua ez da hasieratu"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "Modulua jadanik hasieratuta dago"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "Ezin dira datuak blokeatu"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "Datuak ezin dira blokeatu"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "Erabiltzaileak ukatu egin du sinaduraren eskaera"
+
+#~ msgid "Unknown error"
+#~ msgstr "Errore ezezaguna"
 
 #~ msgid "<i>Not Part of Certificate</i>"
 #~ msgstr "<i>Ez da ziurtagiriaren zatia</i>"
@@ -1111,9 +1363,6 @@ msgstr "_Pasahitza:"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "Posta elektronikoko sinatzailearen ziurtagiria"
 
-#~ msgid "Issued On"
-#~ msgstr "Jaulkitze-data"
-
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "MD5 hatz-marka"
 
@@ -1122,15 +1371,6 @@ msgstr "_Pasahitza:"
 
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "Erakundeko Saila (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 hatz-marka"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL bezero-ziurtagiria"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL zerbitzari-ziurtagiria"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr ""
