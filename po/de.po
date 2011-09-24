@@ -8,15 +8,15 @@
 # Mario Blättermann <mariobl@freenet.de>, 2009-2011.
 # Christian Kirbach <Christian.Kirbach@googlemail.com>, 2008-2010.
 # Nathan-J. Hirschauer <nathanhirschauer@verfriemelt.org>, 2010.
-# Wolfgang Stöggl <c72578@yahoo.de>, 2010.
+# Wolfgang Stöggl <c72578@yahoo.de>, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-15 09:51+0000\n"
-"PO-Revision-Date: 2011-09-16 21:51+0100\n"
+"POT-Creation-Date: 2011-09-23 22:32+0000\n"
+"PO-Revision-Date: 2011-09-24 09:41+0200\n"
 "Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -50,8 +50,8 @@ msgid ""
 "new password you want to use for it."
 msgstr ""
 "Eine unbekannte Anwendung versucht, das Passwort für den Schlüsselbund »%s« "
-"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet werden "
-"soll."
+"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
+"werden soll."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -68,8 +68,8 @@ msgstr "Legen Sie ein Passwort für den neuen Schlüsselbund fest"
 #: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
-"An application wants to create a new keyring called '%s'. Choose the password "
-"you want to use for it."
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
 msgstr ""
 "Eine unbekannte Anwendung versucht, den neuen Schlüsselbund »%s« anzulegen. "
 "Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
@@ -399,7 +399,7 @@ msgstr "Ordnername"
 
 #: ../gcr/gcr-certificate-extensions.c:197
 msgid "EDI Party Name"
-msgstr ""
+msgstr "Name der EDI-Stelle"
 
 #: ../gcr/gcr-certificate-extensions.c:204
 msgid "URI"
@@ -447,7 +447,7 @@ msgstr "Zugelassene Zwecke"
 
 #: ../gcr/gcr-certificate-renderer.c:173
 msgid "Subject Key Identifier"
-msgstr ""
+msgstr "Personen-Schlüsselidentifikator"
 
 #: ../gcr/gcr-certificate-renderer.c:174
 msgid "Key Identifier"
@@ -471,7 +471,7 @@ msgstr "Schlüsselaustausch"
 
 #: ../gcr/gcr-certificate-renderer.c:189
 msgid "Certificate signature"
-msgstr "AlZertifikatsignatur"
+msgstr "Zertifikatsignatur"
 
 #: ../gcr/gcr-certificate-renderer.c:190
 msgid "Revocation list signature"
@@ -487,7 +487,7 @@ msgstr "Verwendungszwecke"
 
 #: ../gcr/gcr-certificate-renderer.c:236
 msgid "Subject Alternative Names"
-msgstr ""
+msgstr "Alternative Personennamen"
 
 #: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
@@ -781,8 +781,8 @@ msgstr "Die Daten sind gesperrt"
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr ""
-"Es konnte kein Ort für die Hinterlegung des importierten Zertifikats gefunden "
-"werden"
+"Es konnte kein Ort für die Hinterlegung des importierten Zertifikats "
+"gefunden werden"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -1056,8 +1056,9 @@ msgstr "Passwörter unverschlüsselt speichern?"
 
 #: ../ui/gku-prompt-tool.c:595
 msgid ""
-"By choosing to use a blank password, your stored passwords will not be safely "
-"encrypted. They will be accessible by anyone with access to your files."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
 msgstr ""
 "Wenn Sie ein leeres Passwort auswählen, werden Ihre gespeicherten Passwörter "
 "nicht sicher verschlüsselt werden. Sie werden für jeden mit Zugriff auf Ihre "
