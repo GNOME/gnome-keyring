@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-01 10:15+0000\n"
-"PO-Revision-Date: 2011-09-08 21:07+0700\n"
+"POT-Creation-Date: 2011-09-19 08:45+0000\n"
+"PO-Revision-Date: 2011-09-25 14:50+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,8 @@ msgstr ""
 "X-Poedit-Country: Indonesia\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -91,7 +92,8 @@ msgstr "Ring Kunci GNOME: Agen GPG"
 msgid "GPG Password Agent"
 msgstr "Agen Sandi GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+#: ../gcr/gcr-key-renderer.c:314
 #: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Tak dikenal"
@@ -163,7 +165,8 @@ msgstr "Nama Umum"
 msgid "Surname"
 msgstr "Nama Keluarga"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
+#: ../egg/egg-oid.c:69
+#: ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Nomor Seri"
 
@@ -219,7 +222,8 @@ msgstr "Kualifier DN"
 msgid "Pseudonym"
 msgstr "Pseudonim"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
+#: ../egg/egg-oid.c:98
+#: ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -235,7 +239,8 @@ msgstr "MD5 dengan RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 dengan RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
+#: ../egg/egg-oid.c:103
+#: ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -301,7 +306,8 @@ msgstr "Tak bisa menginisiasi modul PKCS#11 yang terdaftar: %s"
 
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+#: ../gcr/gcr-certificate.c:388
+#: ../gcr/gcr-gnupg-key.c:629
 msgctxt "column"
 msgid "Name"
 msgstr "Nama"
@@ -317,8 +323,10 @@ msgctxt "column"
 msgid "Expires"
 msgstr "Kadaluarsa"
 
-#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:263
+#: ../gcr/gcr-certificate.c:1060
+#: ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101
+#: ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Sertifikat"
 
@@ -405,11 +413,13 @@ msgstr "Kendala Dasar"
 msgid "Certificate Authority"
 msgstr "Otoritas Pengelola Sertifikat"
 
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Ya"
 
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Tidak"
 
@@ -538,7 +548,8 @@ msgid "Certificate Fingerprints"
 msgstr "Sidik Jari Sertifikat"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
+#: ../gcr/gcr-certificate-renderer.c:675
+#: ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Tanda Tangan"
 
@@ -571,8 +582,9 @@ msgstr "Ukuran Kunci"
 msgid "Key SHA1 Fingerprint"
 msgstr "Sidik Jari SHA1 Kunci"
 
-#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:266
+#: ../gcr/gcr-certificate-renderer.c:719
+#: ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Kunci Publik"
 
@@ -590,7 +602,6 @@ msgid "Could not display file"
 msgstr "Tak bisa menampilkan berkas"
 
 #: ../gcr/gcr-failure-renderer.c:170
-#| msgid "Version"
 msgid "Reason"
 msgstr "Alasan"
 
@@ -630,20 +641,25 @@ msgstr "Proses gnupg keluar dengan kode: %d"
 msgid "Gnupg process was terminated with signal: %d"
 msgstr "Proses gnupg diakhiri dengan sinyal: %d"
 
-#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1747 ../gcr/gcr-parser.c:2005
+#: ../gcr/gcr-gnupg-process.c:695
+#: ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919
+#: ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "Operasi dibatalkan"
 
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../gcr/gcr-importer.c:172
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "Masukkan sandi untuk membuka kunci privat"
 
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../gcr/gcr-importer.c:174
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "Masukkan sandi untuk membuka sertifikat"
 
-#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../gcr/gcr-importer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "Masukkan sandi untuk membuka kunci"
 
@@ -705,11 +721,13 @@ msgstr "Kunci Privat RSA"
 msgid "Private DSA Key"
 msgstr "Kunci Privat DSA"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:260
+#: ../gcr/gcr-key-renderer.c:287
+#: ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Kunci Pribadi"
 
-#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+#: ../gcr/gcr-key-renderer.c:290
+#: ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "Kunci Publik DSA"
 
@@ -744,15 +762,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1750
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Data tak dikenali atau tak didukung."
 
-#: ../gcr/gcr-parser.c:1753
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Tak bisa mengurai data tak valid atau rusak."
 
-#: ../gcr/gcr-parser.c:1756
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Data dikunci"
 
@@ -787,36 +805,39 @@ msgstr "menit"
 
 #: ../gcr/gcr-unlock-renderer.c:63
 #, c-format
-#| msgid "Unlock"
 msgid "Unlock: %s"
 msgstr "Buka kunci: %s"
 
-#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../gcr/gcr-unlock-renderer.c:65
+#: ../gcr/gcr-unlock-renderer.c:176
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
 msgstr "Buka Kunci"
 
 #: ../gcr/gcr-unlock-renderer.c:135
-#| msgid "The unlock password was incorrect"
 msgid "The password was incorrect"
 msgstr "Sandi salah"
 
 #: ../gcr/gcr-unlock-renderer.c:173
-#| msgid "Password:"
 msgid "Password"
 msgstr "Sandi"
 
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "The contents of '%s' are locked. In order to view the contents, enter a the correct password."
+#| msgid ""
+#| "The contents of '%s' are locked. In order to view the contents, enter a "
+#| "the correct password."
+msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
 msgstr "Isi '%s' terkunci. Untuk melihat isi, masukkan sandi yang benar."
 
 #: ../gcr/gcr-unlock-renderer.c:327
-msgid "The contents are locked. In order to view the contents, enter a the correct password."
+#| msgid ""
+#| "The contents are locked. In order to view the contents, enter a the "
+#| "correct password."
+msgid "The contents are locked. In order to view the contents, enter the correct password."
 msgstr "Isi terkunci. Untuk melihat isi, masukkan sandi yang benar."
 
 #: ../gcr/gcr-viewer-tool.c:41
-#| msgid "Certificate and Key Storage"
 msgid "GCR Certificate and Key Viewer"
 msgstr "Sertifikat GCR dan Penilik Kunci"
 
@@ -829,12 +850,10 @@ msgid "[file...]"
 msgstr "[berkas...]"
 
 #: ../gcr/gcr-viewer-tool.c:104
-#| msgid "Certificate files"
 msgid "- View certificate and key files"
 msgstr "- Tilik berkas kunci dan sertifikat"
 
 #: ../gcr/gcr-viewer-tool.c:118
-#| msgid "Certificate files"
 msgid "Certificate Viewer"
 msgstr "Penilik Sertifikat"
 
@@ -844,7 +863,6 @@ msgid "The URI has invalid encoding."
 msgstr "URI memiliki pengkodean yang tak valid."
 
 #: ../gck/gck-uri.c:177
-#| msgid "The URI has does not have the 'pkcs11' scheme."
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "URI tak memiliki skema 'pkcs11'."
 
