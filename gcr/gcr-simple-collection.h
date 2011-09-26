@@ -22,7 +22,7 @@
 #ifndef __GCR_SIMPLE_COLLECTION_H__
 #define __GCR_SIMPLE_COLLECTION_H__
 
-#include "gcr.h"
+#include "gcr-base.h"
 #include "gcr-collection.h"
 
 #include <glib-object.h>

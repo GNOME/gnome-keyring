@@ -37,6 +37,7 @@ run-tests
 *.gcda
 *.valid
 *.abi
+*.pc
 
 /compile
 /ABOUT-NLS
@@ -113,6 +114,7 @@ run-tests
 
 /gcr/gcr-oids.[ch]
 /gcr/gcr-enum-types.[ch]
+/gcr/gcr-enum-types-base.[ch]
 /gcr/tests/frob-certificate
 /gcr/tests/frob-key
 /gcr/tests/frob-gnupg-selector

@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2011 Collabora Ltd.
+ * gnome-keyring
+ *
+ * Copyright (C) 2010 Collabora Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,23 +21,31 @@
  * Author: Stef Walter <stefw@collabora.co.uk>
  */
 
-#if !defined (__GCR_INSIDE_HEADER__) && !defined (GCR_COMPILATION)
-#error "Only <gcr/gcr.h> or <gcr/gcr-base.h> can be included directly."
+#ifndef GCR_API_SUBJECT_TO_CHANGE
+#error "This API has not yet reached stability."
 #endif
 
-#ifndef GCR_GNUPG_UTIL_H
-#define GCR_GNUPG_UTIL_H
+#ifndef __GCR_BASE_H__
+#define __GCR_BASE_H__
 
 #include <glib.h>
 
-#include "gcr-record.h"
+#define __GCR_INSIDE_HEADER__
 
-G_BEGIN_DECLS
+#include "gcr-types.h"
 
-GcrRecord*          _gcr_gnupg_build_xa1_record              (GcrRecord *meta,
-                                                              gpointer attribute,
-                                                              gsize n_attribute);
+#include "gcr-certificate.h"
+#include "gcr-certificate-chain.h"
+#include "gcr-deprecated-base.h"
+#include "gcr-enum-types-base.h"
+#include "gcr-library.h"
+#include "gcr-parser.h"
+#include "gcr-pkcs11-certificate.h"
+#include "gcr-simple-certificate.h"
+#include "gcr-trust.h"
+#include "gcr-union-collection.h"
+#include "gcr-unlock-options.h"
 
-G_END_DECLS
+#undef __GCR_INSIDE_HEADER__
 
-#endif /* __GCR_GNUPG_KEY_H__ */
+#endif /* __GCR_BASE_H__ */

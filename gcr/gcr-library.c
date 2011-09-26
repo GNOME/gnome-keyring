@@ -21,13 +21,11 @@
 
 #include "config.h"
 
-#include "gcr.h"
-#include "gcr-certificate-renderer.h"
+#include "gcr-base.h"
 #define DEBUG_FLAG GCR_DEBUG_LIBRARY
 #include "gcr-debug.h"
 #include "gcr-internal.h"
 #include "gcr-library.h"
-#include "gcr-key-renderer.h"
 #include "gcr-types.h"
 
 #include "egg/egg-error.h"
@@ -109,72 +107,6 @@ gcr_error_get_domain (void)
 }
 
 /* -----------------------------------------------------------------------------
- * MEMORY
- */
-
-static gboolean do_warning = TRUE;
-#define WARNING  "couldn't allocate secure memory to keep passwords " \
-		 "and or keys from being written to the disk"
-		 
-#define ABORTMSG "The GNOME_KEYRING_PARANOID environment variable was set. " \
-                 "Exiting..."
-
-static G_LOCK_DEFINE (memory_lock);
-
-/* 
- * These are called from egg-secure-memory.c to provide appropriate
- * locking for memory between threads
- */ 
-
-void
-egg_memory_lock (void)
-{
-	G_LOCK (memory_lock);
-}
-
-void 
-egg_memory_unlock (void)
-{
-	G_UNLOCK (memory_lock);
-}
-
-void*
-egg_memory_fallback (void *p, size_t sz)
-{
-	const gchar *env;
-	
-	/* We were asked to free memory */
-	if (!sz) {
-		g_free (p);
-		return NULL;
-	}
-	
-	/* We were asked to allocate */
-	if (!p) {
-		if (do_warning) {
-			g_message (WARNING);
-			do_warning = FALSE;
-		}
-		
-		env = g_getenv ("GNOME_KEYRING_PARANOID");
-		if (env && *env) 
-			g_error (ABORTMSG);
-			
-		return g_malloc0 (sz);
-	}
-	
-	/* 
-	 * Reallocation is a bit of a gray area, as we can be asked 
-	 * by external libraries (like libgcrypt) to reallocate a 
-	 * non-secure block into secure memory. We cannot satisfy 
-	 * this request (as we don't know the size of the original 
-	 * block) so we just try our best here.
-	 */
-			 
-	return g_realloc (p, sz);
-}
-
-/* -----------------------------------------------------------------------------
  * INITIALIZATION
  */
 
@@ -188,9 +120,6 @@ _gcr_initialize_library (void)
 
 	/* Initialize the libgcrypt library if needed */
 	egg_libgcrypt_initialize ();
-
-	g_type_class_unref (g_type_class_ref (GCR_TYPE_CERTIFICATE_RENDERER));
-	g_type_class_unref (g_type_class_ref (GCR_TYPE_KEY_RENDERER));
 
 	_gcr_debug ("initialized library");
 }

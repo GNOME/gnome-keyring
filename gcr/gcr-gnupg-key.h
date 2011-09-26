@@ -19,15 +19,14 @@
  * Author: Stef Walter <stefw@collabora.co.uk>
  */
 
-#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
-#error "Only <gcr/gcr.h> can be included directly."
+#if !defined (__GCR_INSIDE_HEADER__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> or <gcr/gcr-base.h> can be included directly."
 #endif
 
 #ifndef GCR_GNUPG_KEY_H
 #define GCR_GNUPG_KEY_H
 
 #include <glib-object.h>
-#include <gtk/gtk.h>
 
 #include "gcr-column.h"
 #include "gcr-types.h"

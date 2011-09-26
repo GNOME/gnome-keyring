@@ -30,37 +30,27 @@
 
 #include <glib.h>
 
-#define __GCR_H_INSIDE__
+#include "gcr-base.h"
 
-#include "gcr-types.h"
+#define __GCR_INSIDE_HEADER__
 
-#include "gcr-certificate.h"
-#include "gcr-certificate-chain.h"
 #include "gcr-certificate-renderer.h"
 #include "gcr-certificate-widget.h"
 #include "gcr-collection-model.h"
 #include "gcr-column.h"
 #include "gcr-combo-selector.h"
 #include "gcr-deprecated.h"
-#include "gcr-enum-types.h"
 #include "gcr-key-renderer.h"
 #include "gcr-key-widget.h"
 #include "gcr-importer.h"
-#include "gcr-library.h"
 #include "gcr-list-selector.h"
-#include "gcr-parser.h"
 #include "gcr-renderer.h"
-#include "gcr-pkcs11-certificate.h"
-#include "gcr-simple-certificate.h"
-#include "gcr-simple-collection.h"
 #include "gcr-tree-selector.h"
-#include "gcr-trust.h"
 #include "gcr-union-collection.h"
-#include "gcr-unlock-options.h"
 #include "gcr-unlock-options-widget.h"
 #include "gcr-viewer.h"
 #include "gcr-viewer-window.h"
 
-#undef __GCR_H_INSIDE__
+#undef __GCR_INSIDE_HEADER__
 
 #endif /* __GCR_H__ */

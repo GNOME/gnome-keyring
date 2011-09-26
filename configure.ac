@@ -766,6 +766,7 @@ gck/gck.pc
 gck/Makefile
 gck/tests/Makefile
 gcr/gcr.pc
+gcr/gcr-base.pc
 gcr/gcr-viewer.desktop.in
 gcr/Makefile
 gcr/icons/Makefile

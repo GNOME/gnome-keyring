@@ -1,4 +1,6 @@
 /*
+ * gnome-keyring
+ *
  * Copyright (C) 2011 Collabora Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,19 +25,25 @@
 #error "Only <gcr/gcr.h> or <gcr/gcr-base.h> can be included directly."
 #endif
 
-#ifndef GCR_GNUPG_UTIL_H
-#define GCR_GNUPG_UTIL_H
+#ifndef GCR_BASE_DEPRECATED_H_
+#define GCR_BASE_DEPRECATED_H_
+#ifndef GCR_DISABLE_DEPRECATED
 
 #include <glib.h>
 
-#include "gcr-record.h"
+#include "gcr-parser.h"
+#include "gcr-simple-collection.h"
 
 G_BEGIN_DECLS
 
-GcrRecord*          _gcr_gnupg_build_xa1_record              (GcrRecord *meta,
-                                                              gpointer attribute,
-                                                              gsize n_attribute);
+#define           GCR_ERROR                                   (gcr_error_get_domain ())
+
+GQuark            gcr_error_get_domain                        (void) G_GNUC_CONST;
+
+gboolean          gcr_simple_collection_contains              (GcrSimpleCollection *self,
+                                                               GObject *object);
 
 G_END_DECLS
 
-#endif /* __GCR_GNUPG_KEY_H__ */
+#endif /* GCR_DISABLE_DEPRECATED */
+#endif /* GCRTYPES_H_ */

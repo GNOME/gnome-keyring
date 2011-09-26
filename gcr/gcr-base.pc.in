@@ -8,9 +8,9 @@ sysconfdir=@sysconfdir@
 pkcs11dir=@P11_MODULE_PATH@
 pkcs11standalonedir=@pkcs11standalonedir@
 
-Name: gcr-@GCR_MAJOR@
-Description: GObject and GUI library for high level crypto parsing and display
+Name: gcr-base-@GCR_MAJOR@
+Description: GObject library for high level crypto parsing
 Version: @VERSION@
-Requires: glib-2.0 gtk+-3.0 gcr-base-@GCR_MAJOR@ gck-@GCK_MAJOR@ p11-kit-1
-Libs: -L${libdir} -lgcr-@GCR_MAJOR@
+Requires: glib-2.0 gck-@GCK_MAJOR@ p11-kit-1
+Libs: -L${libdir} -lgcr-base-@GCR_MAJOR@
 Cflags: -I${includedir}/gcr-@GCR_MAJOR@

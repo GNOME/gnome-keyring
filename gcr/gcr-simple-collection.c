@@ -22,7 +22,7 @@
 #include "config.h"
 
 #include "gcr-collection.h"
-#include "gcr-deprecated.h"
+#include "gcr-deprecated-base.h"
 #include "gcr-internal.h"
 #include "gcr-simple-collection.h"
 
@@ -103,7 +103,6 @@ gcr_simple_collection_class_init (GcrSimpleCollectionClass *klass)
 	gobject_class->dispose = gcr_simple_collection_dispose;
 	gobject_class->finalize = gcr_simple_collection_finalize;
 	g_type_class_add_private (gobject_class, sizeof (GcrSimpleCollectionPrivate));
-	_gcr_initialize_library ();
 }
 
 static guint

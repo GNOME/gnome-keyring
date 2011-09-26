@@ -272,8 +272,6 @@ _gcr_import_dialog_class_init (GcrImportDialogClass *klass)
 	g_object_class_install_property (gobject_class, PROP_SECONDARY_TEXT,
 	           g_param_spec_string ("secondary-text", "Secondary Text", "Dialog secondary text",
 	                                NULL, G_PARAM_READWRITE));
-
-	_gcr_initialize_library ();
 }
 
 /* -----------------------------------------------------------------------------

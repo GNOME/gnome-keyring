@@ -24,7 +24,7 @@
 #ifndef GCR_GNUPG_COLLECTION_H
 #define GCR_GNUPG_COLLECTION_H
 
-#include "gcr.h"
+#include "gcr-base.h"
 #include "gcr-collection.h"
 
 #include <glib-object.h>

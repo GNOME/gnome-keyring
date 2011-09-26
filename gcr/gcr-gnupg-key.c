@@ -27,7 +27,6 @@
 
 #include "gck/gck.h"
 
-#include <gdk/gdk.h>
 #include <glib/gi18n-lib.h>
 
 enum {

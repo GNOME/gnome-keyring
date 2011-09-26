@@ -24,7 +24,7 @@
 #ifndef GCR_GNUPG_PROCESS_H
 #define GCR_GNUPG_PROCESS_H
 
-#include "gcr.h"
+#include "gcr-base.h"
 #include "gcr-record.h"
 
 #include <glib-object.h>

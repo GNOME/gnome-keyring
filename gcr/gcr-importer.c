@@ -690,8 +690,6 @@ gcr_importer_class_init (GcrImporterClass *klass)
 	                                G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GcrImporterClass, imported),
 	                                NULL, NULL, g_cclosure_marshal_VOID__OBJECT, 
 	                                G_TYPE_NONE, 1, GCK_TYPE_OBJECT);
-
-	_gcr_initialize_library ();
 }
 
 static gpointer

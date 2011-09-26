@@ -1,13 +1,21 @@
 /*** BEGIN file-header ***/
-#include "gcr.h"
+
+#include <glib-object.h>
+
+#ifndef GCR_COMPILATION
+#define GCR_COMPILATION
+#endif
 
 /*** END file-header ***/
 
 /*** BEGIN file-production ***/
+#include "@filename@"
 /* enumerations from "@filename@" */
 /*** END file-production ***/
 
 /*** BEGIN value-header ***/
+GType @enum_name@_get_type (void) G_GNUC_CONST;
+
 GType
 @enum_name@_get_type (void)
 {

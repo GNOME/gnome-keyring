@@ -21,27 +21,22 @@
  * Author: Stef Walter <stefw@collabora.co.uk>
  */
 
-#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
-#error "Only <gcr/gcr.h> can be included directly."
+#if !defined (__GCR_INSIDE_HEADER__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> or <gcr/gcr-base.h> can be included directly."
 #endif
-
 
 #ifndef GCR_DEPRECATED_H_
 #define GCR_DEPRECATED_H_
+#ifndef GCR_DISABLE_DEPRECATED
 
 #include <glib.h>
 
-#include <gck/gck.h>
-
-#include "gcr-importer.h"
-#include "gcr-parser.h"
-#include "gcr-simple-collection.h"
-#include "gcr-viewer.h"
-
-#ifndef GCR_DISABLE_DEPRECATED
-
 #include "gcr-certificate-basics-widget.h"
 #include "gcr-certificate-details-widget.h"
+#include "gcr-importer.h"
+#include "gcr-viewer.h"
+
+G_BEGIN_DECLS
 
 void              gcr_renderer_render                         (GcrRenderer *self,
                                                                GcrViewer *viewer);
@@ -51,15 +46,7 @@ GcrParser*        gcr_importer_get_parser                     (GcrImporter *self
 void              gcr_importer_set_parser                     (GcrImporter *self,
                                                                GcrParser *parser);
 
-#define           GCR_ERROR                                   (gcr_error_get_domain ())
-
-GQuark            gcr_error_get_domain                        (void) G_GNUC_CONST;
-
-gboolean          gcr_simple_collection_contains              (GcrSimpleCollection *self,
-                                                               GObject *object);
-
-#endif /* GCR_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
+#endif /* GCR_DISABLE_DEPRECATED */
 #endif /* GCRTYPES_H_ */

@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "gcr/gcr.h"
+#include "gcr/gcr-base.h"
 #include "gcr/gcr-gnupg-collection.h"
 #include "gcr/gcr-gnupg-key.h"
 #include "gcr/gcr-record.h"

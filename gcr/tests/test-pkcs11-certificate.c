@@ -25,7 +25,7 @@
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
 
-#include "gcr/gcr.h"
+#include "gcr/gcr-base.h"
 #include "gcr/gcr-internal.h"
 
 #include "egg/egg-testing.h"

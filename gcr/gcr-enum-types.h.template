@@ -1,5 +1,5 @@
 /*** BEGIN file-header ***/
-#if !defined (__GCR_H_INSIDE__) && !defined (GCR_COMPILATION)
+#if !defined (__GCR_INSIDE_HEADER__) && !defined (GCR_COMPILATION)
 #error "Only <gcr/gcr.h> can be included directly."
 #endif
 

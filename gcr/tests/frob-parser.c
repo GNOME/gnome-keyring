@@ -23,9 +23,7 @@
 
 #include "config.h"
 
-#include "gcr/gcr.h"
-
-#include <gtk/gtk.h>
+#include "gcr/gcr-base.h"
 
 #include <unistd.h>
 #include <string.h>
@@ -81,7 +79,7 @@ main(int argc, char *argv[])
 	const gchar *filename;
 	gchar *path;
 
-	gtk_init (&argc, &argv);
+	g_type_init ();
 	g_set_prgname ("frob-parser");
 
 	if (argc != 2) {
