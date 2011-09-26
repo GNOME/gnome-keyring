@@ -39,7 +39,8 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-tests=full \
 	--enable-debug=yes \
 	--disable-gcov \
-	--disable-update-mime
+	--disable-update-mime \
+	--with-pkcs11-modules=$(abs_srcdir)/$(top_distdir)/_inst/lib/
 
 DISTCLEANFILES = \
 	intltool-extract \
