@@ -1,3 +1,7 @@
+Changes in version 3.2.0 are:
+ * Don't install setuid when filesystem capabilities not available
+ * Updated translations
+
 Changes in version 3.1.92 are:
  * Add back the file format "documentation"
  * Make .desktop file match prompt process so icon and title are shown

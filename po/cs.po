@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring\n"
+"Project-Id-Version: gnome-keyring 3.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-09-19 08:45+0000\n"
