@@ -324,7 +324,7 @@ prepare_logging ()
 	g_set_printerr_handler (printerr_handler);
 }
 
-#ifdef WITH_TESTABLE
+#ifdef WITH_DEBUG
 
 static void
 dump_diagnostics (void)
@@ -374,7 +374,7 @@ dump_diagnostics (void)
 	free (records);
 }
 
-#endif /* WITH_TESTABLE */
+#endif /* WITH_DEBUG */
 
 /* -----------------------------------------------------------------------------
  * SIGNALS
@@ -398,9 +398,9 @@ signal_thread (gpointer user_data)
 
 		switch (sig) {
 		case SIGUSR1:
-#ifdef WITH_TESTABLE
+#ifdef WITH_DEBUG
 			dump_diagnostics ();
-#endif /* WITH_TESTABLE */
+#endif /* WITH_DEBUG */
 			break;
 		case SIGPIPE:
 			/* Ignore */
@@ -874,7 +874,7 @@ main (int argc, char *argv[])
 	 */
 	gkd_capability_obtain_capability_and_drop_privileges ();
 
-#ifdef WITH_TESTABLE
+#ifdef WITH_STRICT
 	g_setenv ("DBUS_FATAL_WARNINGS", "1", FALSE);
 	if (!g_getenv ("G_DEBUG"))
 		g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
@@ -905,7 +905,7 @@ main (int argc, char *argv[])
 	if (run_version) {
 		g_print ("gnome-keyring-daemon: %s\n", VERSION);
 		g_print ("testing: %s\n",
-#ifdef WITH_TESTABLE
+#ifdef WITH_DEBUG
 		         "enabled");
 #else
 		         "disabled");

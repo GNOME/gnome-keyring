@@ -4,12 +4,6 @@ else
 PAM_DIR = 
 endif
 
-if WITH_TESTS
-TESTS_DIR = testing
-else
-TESTS_DIR = 
-endif
-
 SUBDIRS = \
 	. \
 	egg \
@@ -20,7 +14,7 @@ SUBDIRS = \
 	schema \
 	daemon \
 	tool \
-	$(TESTS_DIR) \
+	testing \
 	$(PAM_DIR) \
 	po \
 	docs
@@ -36,9 +30,8 @@ EXTRA_DIST = \
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
-	--enable-tests=full \
-	--enable-debug=yes \
-	--disable-gcov \
+	--enable-strict \
+	--disable-coverage \
 	--disable-update-mime \
 	--with-pkcs11-modules=$(abs_srcdir)/$(top_distdir)/_inst/lib/
 

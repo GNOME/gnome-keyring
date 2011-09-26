@@ -1,13 +1,5 @@
 
-if WITH_TESTS
-TESTS_DIR = tests
-TESTABLE_LIB = libgck-testable.la
-else
-TESTS_DIR =
-TESTABLE_LIB =
-endif
-
-SUBDIRS = . $(TESTS_DIR)
+SUBDIRS = . tests
 
 incdir = $(includedir)/gck-@GCK_MAJOR@/gck
 
@@ -60,7 +52,7 @@ libgck_@GCK_MAJOR@_la_LIBADD = \
 	$(GIO_LIBS) \
 	$(GLIB_LIBS)
 
-noinst_LTLIBRARIES = $(TESTABLE_LIB)
+noinst_LTLIBRARIES = libgck-testable.la
 libgck_testable_la_SOURCES = \
 	gck-mock.c \
 	gck-mock.h \

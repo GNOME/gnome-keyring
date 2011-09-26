@@ -53,11 +53,4 @@ gkm_secret_store_standalone_la_LIBADD = \
 
 # -------------------------------------------------------------------------------
 
-
-if WITH_TESTS
-TESTS_DIR = tests
-else
-TESTS_DIR =
-endif
-
-SUBDIRS = . $(TESTS_DIR)
+SUBDIRS = . tests

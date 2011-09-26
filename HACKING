@@ -1,7 +1,24 @@
 
-HACKING GNOME KEYRING 
+HACKING GNOME KEYRING
+
+BUILD OPTIONS
+---------------
+
+Build options for developers:
+
+  --enable-strict: Build with -Werror, disable deprecations, and fatal warnings
+
+  --enable-debug: Turn off compiler optimization
+  --disable-debug: Turn off all debug options and output.
+
+  --enable-coverage: Build coverage, use 'make coverage' for summary.
+
+
+PATCHES
+----------
 
 Patches should be submitted to bugzilla:
+
 http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring
 
 The gnome-keyring mailing list is:

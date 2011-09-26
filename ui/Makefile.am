@@ -1,13 +1,5 @@
 
-if WITH_TESTS
-TESTS_DIR = tests
-TESTABLE_LIB = libgku-prompt-testable.la
-else
-TESTS_DIR =
-TESTABLE_LIB =
-endif
-
-SUBDIRS = . $(TESTS_DIR)
+SUBDIRS = . tests
 
 INCLUDES= \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
@@ -29,7 +21,7 @@ ui_DATA = \
 # ------------------------------------------------------------------
 # DAEMON CODE
 
-noinst_LTLIBRARIES = libgku-prompt.la $(TESTABLE_LIB)
+noinst_LTLIBRARIES = libgku-prompt.la libgku-prompt-testable.la
 
 BUILT_SOURCES = \
 	gku-prompt-marshal.c gku-prompt-marshal.h

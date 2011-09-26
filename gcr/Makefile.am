@@ -1,12 +1,4 @@
-if WITH_TESTS
-TESTS_DIR = tests
-TESTABLE_LIB = libgcr-testable.la
-else
-TESTS_DIR =
-TESTABLE_LIB =
-endif
-
-SUBDIRS = . icons $(TESTS_DIR)
+SUBDIRS = . icons tests
 
 # ------------------------------------------------------------------
 # UI BUILDER
@@ -184,7 +176,7 @@ libgcr_@GCR_MAJOR@_la_LIBADD = \
 	$(libgcr_base_@GCR_MAJOR@_la_LIBADD) \
 	$(builddir)/libgcr-base-$(GCR_MAJOR).la
 
-noinst_LTLIBRARIES = $(TESTABLE_LIB)
+noinst_LTLIBRARIES = libgcr-testable.la
 libgcr_testable_la_SOURCES =
 libgcr_testable_la_LIBADD = \
 	$(libgcr_base_@GCR_MAJOR@_la_OBJECTS) \

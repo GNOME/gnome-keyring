@@ -480,36 +480,78 @@ fi
 AM_CONDITIONAL([WITH_CAPS], [test x"$with_libcap_ng" = x"yes"])
 libcapng_status="$with_libcap_ng"
 
+# ----------------------------------------------------------------------
+# selinux
+
+LIBSELINUX=""
+selinux_status="no"
+AC_ARG_ENABLE([selinux],
+        AC_HELP_STRING([--disable-selinux],[do not use SELinux]))
+if test "x$enable_selinux" != "xno"; then
+    AC_CHECK_LIB([selinux],[getfilecon],
+        [AC_CHECK_LIB([selinux],[setexeccon],
+            [AC_DEFINE([WITH_SELINUX], 1, [Defined if SE Linux support is compiled in])
+             LIBSELINUX="-lselinux"
+             selinux_status="yes"])
+        ])
+fi
+AC_SUBST(LIBSELINUX)
+AM_CONDITIONAL([HAVE_LIBSELINUX], [test ! -z "$LIBSELINUX"])
+
+# ----------------------------------------------------------------------
+# p11-tests
+
+AC_ARG_ENABLE(p11_tests,
+	AC_HELP_STRING([--disable-p11-tests],
+	[Build in p11-tests for testing PKCS#11 modules]))
+
+p11_tests_status="no"
+
+if test "$enable_p11_tests" != "no"; then
+	PKG_CHECK_MODULES(P11_TESTS, p11-tests >= 0.1,
+	                  p11_tests_status=yes, p11_tests_status=no)
+fi
+
+AM_CONDITIONAL(WITH_P11_TESTS, test "$p11_tests_status" = "yes")
+
+if test "$p11_tests_status" = "yes"; then
+	AC_DEFINE_UNQUOTED(WITH_P11_TESTS, 1, [Run p11-tests module testing])
+fi
+
+# ----------------------------------------------------------------------
+# mime-database
+
+AC_ARG_ENABLE(update-mime,
+	AC_HELP_STRING([--disable-update-mime],
+	[don't run update-mime-database utility (useful for packages) ]))
+AM_CONDITIONAL(WITH_UPDATE_MIME, test "$enable_update_mime" != "no")
+
 # --------------------------------------------------------------------
-# Debug mode
+# Compilation and linking options
 #
 
 AC_MSG_CHECKING([for debug mode])
 AC_ARG_ENABLE(debug,
-              AC_HELP_STRING([--enable-debug=no/yes/full],
+              AC_HELP_STRING([--enable-debug=no/default/yes],
               [Turn on or off debugging]))
 
 if test "$enable_debug" != "no"; then
 	AC_DEFINE_UNQUOTED(WITH_DEBUG, 1, [Print debug output])
 	AC_DEFINE_UNQUOTED(_DEBUG, 1, [In debug mode])
+	CFLAGS="$CFLAGS -g"
 fi
 
-if test "$enable_debug" = "full"; then
-	debug_status="full"
-	CFLAGS="$CFLAGS -g -O0 -Werror"
-	CFLAGS="$CFLAGS -DG_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED"
-	CFLAGS="$CFLAGS -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
+if test "$enable_debug" = "yes"; then
+	debug_status="yes (-g, -O0, debug output, testable)"
+	CFLAGS="$CFLAGS -O0"
 elif test "$enable_debug" = "no"; then
-	debug_status="no"
+	debug_status="no (no debug output, not testable, G_DISABLE_ASSERT)"
 	AC_DEFINE_UNQUOTED(G_DISABLE_ASSERT, 1, [Disable glib assertions])
 else
-	debug_status="yes"
+	debug_status="default (-g, debug output, testable)"
 fi
 
 AC_MSG_RESULT($debug_status)
-
-# -------------------------------------------------------------------
-# More warnings
 
 AC_MSG_CHECKING(for more warnings)
 if test "$GCC" = "yes"; then
@@ -544,44 +586,39 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-# --------------------------------------------------------------------
-# Tests and Unit Tests
+AC_ARG_ENABLE(strict, [
+               AS_HELP_STRING([--enable-strict], [Strict code compilation])
+             ])
 
-AC_ARG_ENABLE(tests,
-	    AC_HELP_STRING([--enable-tests=yes/no/full],
-	    [Build tests and testing tools. default: yes]))
+AC_MSG_CHECKING([build strict])
 
-AC_MSG_CHECKING([build test tools, unit tests, and -Werror])
-
-if test "$enable_tests" = "full"; then
-	tests_status="full"
-	CFLAGS="$CFLAGS -Werror"
+if test "$enable_strict" = "yes"; then
+	CFLAGS="$CFLAGS -Werror \
+		-DGTK_DISABLE_DEPRECATED \
+		-DGDK_DISABLE_DEPRECATED \
+		-DG_DISABLE_DEPRECATED \
+		-DGDK_PIXBUF_DISABLE_DEPRECATED"
 	TEST_MODE="thorough"
-	AC_DEFINE_UNQUOTED(WITH_TESTABLE, 1, [Build extra hooks for more testable code])
-elif test "$enable_tests" = "no"; then
-	tests_status="no"
+	AC_DEFINE_UNQUOTED(WITH_STRICT, 1, [More strict checks])
+	strict_status="yes (-Werror, thorough tests, fatals, no deprecations)"
 else
 	TEST_MODE="quick"
-	tests_status="yes"
+	strict_status="no (quick tests, non-fatal warnings)"
 fi
 
-AC_MSG_RESULT($tests_status)
+AC_MSG_RESULT($strict_status)
 AC_SUBST(TEST_MODE)
-AM_CONDITIONAL(WITH_TESTS, test "$enable_tests" != "no")
-
-# ----------------------------------------------------------------------
-# Coverage
 
 AC_MSG_CHECKING([whether to build with gcov testing])
-AC_ARG_ENABLE([gcov],
-		AS_HELP_STRING([--enable-gcov],
+AC_ARG_ENABLE([coverage],
+		AS_HELP_STRING([--enable-coverage],
 			[Whether to enable coverage testing ]),
 		[],
-		[enable_gcov=no])
+		[enable_coverage=no])
 
-AC_MSG_RESULT([$enable_gcov])
+AC_MSG_RESULT([$enable_coverage])
 
-if test "$enable_gcov" = "yes"; then
+if test "$enable_coverage" = "yes"; then
 	if test "$GCC" != "yes"; then
 		AC_MSG_ERROR(Coverage testing requires GCC)
 	fi
@@ -605,31 +642,10 @@ if test "$enable_gcov" = "yes"; then
 	LDFLAGS="$LDFLAGS -lgcov"
 fi
 
-AM_CONDITIONAL([WITH_COVERAGE], [test "$enable_gcov" = "yes"])
+AM_CONDITIONAL([WITH_COVERAGE], [test "$enable_coverage" = "yes"])
 AC_SUBST(LCOV)
 AC_SUBST(GCOV)
 AC_SUBST(GENHTML)
-
-# ----------------------------------------------------------------------
-# selinux
-
-LIBSELINUX=""
-selinux_status="no"
-AC_ARG_ENABLE([selinux],
-        AC_HELP_STRING([--disable-selinux],[do not use SELinux]))
-if test "x$enable_selinux" != "xno"; then
-    AC_CHECK_LIB([selinux],[getfilecon],
-        [AC_CHECK_LIB([selinux],[setexeccon],
-            [AC_DEFINE([WITH_SELINUX], 1, [Defined if SE Linux support is compiled in])
-             LIBSELINUX="-lselinux"
-             selinux_status="yes"])
-        ])
-fi
-AC_SUBST(LIBSELINUX)
-AM_CONDITIONAL([HAVE_LIBSELINUX], [test ! -z "$LIBSELINUX"])
-
-# ----------------------------------------------------------------------
-# Valgrind
 
 AC_ARG_ENABLE(valgrind,
 	AC_HELP_STRING([--enable-valgrind],
@@ -676,34 +692,6 @@ else
 	AC_MSG_RESULT(no)
 	valgrind_status="no"
 fi
-
-# ----------------------------------------------------------------------
-# p11-tests
-
-AC_ARG_ENABLE(p11_tests,
-	AC_HELP_STRING([--disable-p11-tests],
-	[Build in p11-tests for testing PKCS#11 modules]))
-
-p11_tests_status="no"
-
-if test "$enable_p11_tests" != "no"; then
-	PKG_CHECK_MODULES(P11_TESTS, p11-tests >= 0.1,
-	                  p11_tests_status=yes, p11_tests_status=no)
-fi
-
-AM_CONDITIONAL(WITH_P11_TESTS, test "$p11_tests_status" = "yes")
-
-if test "$p11_tests_status" = "yes"; then
-	AC_DEFINE_UNQUOTED(WITH_P11_TESTS, 1, [Run p11-tests module testing])
-fi
-
-# ----------------------------------------------------------------------
-# mime-database
-
-AC_ARG_ENABLE(update-mime,
-	AC_HELP_STRING([--disable-update-mime],
-	[don't run update-mime-database utility (useful for packages) ]))
-AM_CONDITIONAL(WITH_UPDATE_MIME, test "$enable_update_mime" != "no")
 
 # ----------------------------------------------------------------------
 
@@ -820,8 +808,8 @@ echo "  Root Certificates:    $root_status"
 echo
 echo "BUILD"
 echo "  Debug Build:          $debug_status"
+echo "  Strict Compilation:   $strict_status"
 echo "  Valgrind:             $valgrind_status"
 echo "  PKCS#11 Tests         $p11_tests_status"
-echo "  Tests, -Werror:       $tests_status"
-echo "  Test Coverage:        $enable_gcov"
+echo "  Test Coverage:        $enable_coverage"
 echo

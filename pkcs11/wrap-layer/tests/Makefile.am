@@ -4,8 +4,8 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
 	-DSRCDIR="\"@abs_srcdir@\"" \
-	$(GLIB_CFLAGS) \
-	-DWITH_TESTABLE
+	-DWITH_TESTABLE \
+	$(GLIB_CFLAGS)
 
 LDADD = \
 	$(top_builddir)/pkcs11/wrap-layer/libgkm-wrap-layer.la \

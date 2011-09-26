@@ -26,10 +26,4 @@ libgkm_wrap_layer_la_CFLAGS = \
 
 # ------------------------------------------------------------------------------
 
-if WITH_TESTS
-TESTS_DIR = tests
-else
-TESTS_DIR =
-endif
-
-SUBDIRS = . $(TESTS_DIR)
+SUBDIRS = . tests
