@@ -115,7 +115,7 @@ _gcr_initialize_library (void)
 {
 	static gint gcr_initialize = 0;
 
-	if (g_atomic_int_exchange_and_add (&gcr_initialize, 1) == 0)
+	if (g_atomic_int_add (&gcr_initialize, 1) == 0)
 		return;
 
 	/* Initialize the libgcrypt library if needed */

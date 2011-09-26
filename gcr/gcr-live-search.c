@@ -64,7 +64,7 @@ stripped_char (gunichar ch)
 {
 	gunichar retval = 0;
 	GUnicodeType utype;
-	gunichar *decomp;
+	gunichar decomp[4];
 	gsize dlen;
 
 	utype = g_unichar_type (ch);
@@ -74,7 +74,7 @@ stripped_char (gunichar ch)
 	case G_UNICODE_FORMAT:
 	case G_UNICODE_UNASSIGNED:
 	case G_UNICODE_NON_SPACING_MARK:
-	case G_UNICODE_COMBINING_MARK:
+	case G_UNICODE_SPACING_MARK:
 	case G_UNICODE_ENCLOSING_MARK:
 		/* Ignore those */
 		break;
@@ -104,11 +104,9 @@ stripped_char (gunichar ch)
 	case G_UNICODE_SPACE_SEPARATOR:
 	default:
 		ch = g_unichar_tolower (ch);
-		decomp = g_unicode_canonical_decomposition (ch, &dlen);
-		if (decomp != NULL) {
+		dlen = g_unichar_fully_decompose (ch, FALSE, decomp, 4);
+		if (dlen > 0)
 			retval = decomp[0];
-			g_free (decomp);
-		}
 	}
 
 	return retval;

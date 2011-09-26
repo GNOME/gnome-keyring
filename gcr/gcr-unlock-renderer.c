@@ -179,7 +179,7 @@ _gcr_unlock_renderer_init (GcrUnlockRenderer *self)
 	g_signal_connect (self->pv->entry, "activate", G_CALLBACK (on_entry_activated), button);
 	gtk_widget_show (button);
 
-	vbox = gtk_vbox_new (GTK_ORIENTATION_VERTICAL, 6);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_box_pack_start (GTK_BOX (vbox), box, FALSE, FALSE, 0);
 	gtk_widget_show (box);
 
