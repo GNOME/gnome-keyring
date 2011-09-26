@@ -805,6 +805,52 @@ service_method_unlock_with_master_password (GkdSecretService *self, DBusMessage 
 	return reply;
 }
 
+static void
+on_each_path_append_to_array (GkdSecretObjects *self,
+                              const gchar *path,
+                              GckObject *object,
+                              gpointer user_data)
+{
+	GPtrArray *array = user_data;
+	g_ptr_array_add (array, g_strdup (path));
+}
+
+static DBusMessage *
+service_introspect (GkdSecretService *self,
+                    DBusMessage *message)
+{
+	GPtrArray *names;
+	DBusMessage *reply;
+	ServiceClient *client;
+	const gchar *caller;
+	const gchar *path;
+	GHashTableIter iter;
+
+	names = g_ptr_array_new_with_free_func (g_free);
+	gkd_secret_objects_foreach_collection (self->objects, message,
+	                                       on_each_path_append_to_array,
+	                                       names);
+
+	/* Lookup all sessions and prompts for this client */
+	caller = dbus_message_get_sender (message);
+	if (caller != NULL) {
+		client = g_hash_table_lookup (self->clients, caller);
+		if (client != NULL) {
+			g_hash_table_iter_init (&iter, client->dispatch);
+			while (g_hash_table_iter_next (&iter, (gpointer *)&path, NULL))
+				g_ptr_array_add (names, g_strdup (path));
+		}
+	}
+
+	g_ptr_array_add (names, NULL);
+
+	reply = gkd_dbus_introspect_handle (message, gkd_secret_introspect_collection,
+	                                    (const gchar **)names->pdata);
+
+	g_ptr_array_unref (names);
+	return reply;
+}
+
 static DBusMessage*
 service_message_handler (GkdSecretService *self, DBusMessage *message)
 {
@@ -875,10 +921,29 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "GetAll"))
 		return service_property_getall (self, message);
 
+	/* org.freedesktop.DBus.Introspectable.Introspect() */
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_service);
+		return service_introspect (self, message);
 
 	return NULL;
+}
+
+static gboolean
+root_dispatch_message (GkdSecretService *self,
+                       DBusMessage *message)
+{
+	DBusMessage *reply = NULL;
+
+	if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
+		reply = gkd_dbus_introspect_handle (message, gkd_secret_introspect_root, NULL);
+
+	if (reply != NULL) {
+		dbus_connection_send (self->connection, reply, NULL);
+		dbus_message_unref (reply);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void
@@ -987,6 +1052,11 @@ gkd_secret_service_filter_handler (DBusConnection *conn, DBusMessage *message, g
 
 	/* Dispatch any method call on our interfaces, for our objects */
 	case DBUS_MESSAGE_TYPE_METHOD_CALL:
+		if (path != NULL && g_str_equal (path, "/")) {
+			if (root_dispatch_message (self, message))
+				return DBUS_HANDLER_RESULT_HANDLED;
+		}
+
 		if (object_path_has_prefix (path, SECRET_SERVICE_PATH)) {
 			interface = dbus_message_get_interface (message);
 			if (interface == NULL ||

@@ -43,6 +43,11 @@ struct _GkdSecretObjectsClass {
 	GObjectClass parent_class;
 };
 
+typedef void        (*GkdSecretObjectsForeach)                  (GkdSecretObjects *self,
+                                                                 const gchar *path,
+                                                                 GckObject *object,
+                                                                 gpointer user_data);
+
 GType               gkd_secret_objects_get_type                 (void);
 
 DBusMessage*        gkd_secret_objects_dispatch                  (GkdSecretObjects *self,
@@ -54,6 +59,17 @@ DBusMessage*        gkd_secret_objects_handle_search_items       (GkdSecretObjec
 
 DBusMessage*        gkd_secret_objects_handle_get_secrets        (GkdSecretObjects *self,
                                                                   DBusMessage *message);
+
+void                gkd_secret_objects_foreach_collection        (GkdSecretObjects *self,
+                                                                  DBusMessage *message,
+                                                                  GkdSecretObjectsForeach callback,
+                                                                  gpointer user_data);
+
+void                gkd_secret_objects_foreach_item              (GkdSecretObjects *self,
+                                                                  DBusMessage *message,
+                                                                  const gchar *base,
+                                                                  GkdSecretObjectsForeach callback,
+                                                                  gpointer user_data);
 
 void                gkd_secret_objects_append_collection_paths   (GkdSecretObjects *self,
                                                                   DBusMessageIter *iter,

@@ -100,87 +100,6 @@ parse_object_path (GkdSecretObjects *self, const gchar *path, gchar **collection
 	return TRUE;
 }
 
-static void
-iter_append_item_path (const gchar *base, GckObject *object, DBusMessageIter *iter)
-{
-	GError *error = NULL;
-	gpointer identifier;
-	gsize n_identifier;
-	gchar *path;
-	gchar *alloc = NULL;
-
-	if (base == NULL) {
-		identifier = gck_object_get_data (object, CKA_G_COLLECTION, NULL, &n_identifier, &error);
-		if (!identifier) {
-			g_warning ("couldn't get item collection identifier: %s", egg_error_message (error));
-			g_clear_error (&error);
-			return;
-		}
-
-		base = alloc = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
-		g_free (identifier);
-	}
-
-	identifier = gck_object_get_data (object, CKA_ID, NULL, &n_identifier, &error);
-	if (identifier == NULL) {
-		g_warning ("couldn't get item identifier: %s", egg_error_message (error));
-		g_clear_error (&error);
-	} else {
-		path = gkd_secret_util_build_path (base, identifier, n_identifier);
-		g_free (identifier);
-		dbus_message_iter_append_basic (iter, DBUS_TYPE_OBJECT_PATH, &path);
-		g_free (path);
-	}
-
-	g_free (alloc);
-}
-
-static void
-iter_append_item_paths (const gchar *base, GList *items, DBusMessageIter *iter)
-{
-	DBusMessageIter array;
-	GList *l;
-
-	dbus_message_iter_open_container (iter, DBUS_TYPE_ARRAY, "o", &array);
-
-	for (l = items; l; l = g_list_next (l))
-		iter_append_item_path (base, l->data, &array);
-
-	dbus_message_iter_close_container (iter, &array);
-}
-
-static void
-iter_append_collection_paths (GList *collections, DBusMessageIter *iter)
-{
-	DBusMessageIter array;
-	gpointer identifier;
-	gsize n_identifier;
-	GError *error = NULL;
-	gchar *path;
-	GList *l;
-
-	dbus_message_iter_open_container (iter, DBUS_TYPE_ARRAY, "o", &array);
-
-	for (l = collections; l; l = g_list_next (l)) {
-
-		identifier = gck_object_get_data (l->data, CKA_ID, NULL, &n_identifier, &error);
-		if (identifier == NULL) {
-			g_warning ("couldn't get collection identifier: %s", egg_error_message (error));
-			g_clear_error (&error);
-			continue;
-		}
-
-		path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
-		g_free (identifier);
-
-		dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &path);
-		g_free (path);
-	}
-
-	dbus_message_iter_close_container (iter, &array);
-}
-
-
 static DBusMessage*
 object_property_get (GckObject *object, DBusMessage *message,
                      const gchar *prop_name)
@@ -455,7 +374,7 @@ item_message_handler (GkdSecretObjects *self, GckObject *object, DBusMessage *me
 		return item_property_getall (object, message);
 
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_item);
+		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_item, NULL);
 
 	return NULL;
 }
@@ -641,6 +560,43 @@ collection_find_matching_item (GkdSecretObjects *self, GckSession *session,
 	return result;
 }
 
+static gchar *
+object_path_for_item (const gchar *base,
+                      GckObject *object)
+{
+	GError *error = NULL;
+	gpointer identifier;
+	gsize n_identifier;
+	gchar *alloc = NULL;
+	gchar *path = NULL;
+
+	if (base == NULL) {
+		identifier = gck_object_get_data (object, CKA_G_COLLECTION, NULL, &n_identifier, &error);
+		if (!identifier) {
+			g_warning ("couldn't get item collection identifier: %s", egg_error_message (error));
+			g_clear_error (&error);
+			return NULL;
+		}
+
+		base = alloc = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
+		g_free (identifier);
+	}
+
+	identifier = gck_object_get_data (object, CKA_ID, NULL, &n_identifier, &error);
+	if (identifier == NULL) {
+		g_warning ("couldn't get item identifier: %s", egg_error_message (error));
+		g_clear_error (&error);
+		path = NULL;
+
+	} else {
+		path = gkd_secret_util_build_path (base, identifier, n_identifier);
+		g_free (identifier);
+	}
+
+	g_free (alloc);
+	return path;
+}
+
 static DBusMessage*
 collection_method_create_item (GkdSecretObjects *self, GckObject *object, DBusMessage *message)
 {
@@ -720,7 +676,8 @@ collection_method_create_item (GkdSecretObjects *self, GckObject *object, DBusMe
 	/* Build up the item identifier */
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	iter_append_item_path (base, item, &iter);
+	path = object_path_for_item (base, item);
+	dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &path);
 	prompt = "/";
 	dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &prompt);
 
@@ -778,6 +735,36 @@ collection_method_delete (GkdSecretObjects *self, GckObject *object, DBusMessage
 	return reply;
 }
 
+static void
+on_each_path_append_to_array (GkdSecretObjects *self,
+                              const gchar *path,
+                              GckObject *object,
+                              gpointer user_data)
+{
+	GPtrArray *array = user_data;
+	g_ptr_array_add (array, g_strdup (path));
+}
+
+static DBusMessage *
+collection_introspect (GkdSecretObjects *self,
+                       GckObject *object,
+                       DBusMessage *message)
+{
+	GPtrArray *names;
+	DBusMessage *reply;
+
+	names = g_ptr_array_new_with_free_func (g_free);
+	gkd_secret_objects_foreach_item (self, message, dbus_message_get_path (message),
+	                                 on_each_path_append_to_array, names);
+	g_ptr_array_add (names, NULL);
+
+	reply = gkd_dbus_introspect_handle (message, gkd_secret_introspect_collection,
+	                                    (const gchar **)names->pdata);
+
+	g_ptr_array_unref (names);
+	return reply;
+}
+
 static DBusMessage*
 collection_message_handler (GkdSecretObjects *self, GckObject *object, DBusMessage *message)
 {
@@ -805,8 +792,9 @@ collection_message_handler (GkdSecretObjects *self, GckObject *object, DBusMessa
 	else if (dbus_message_is_method_call (message, DBUS_INTERFACE_PROPERTIES, "GetAll"))
 		return collection_property_getall (self, object, message);
 
+	/* org.freedesktop.DBus.Introspectable.Introspect() */
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_collection);
+		return collection_introspect (self, object, message);
 
 	return NULL;
 }
@@ -1089,11 +1077,30 @@ gkd_secret_objects_lookup_item (GkdSecretObjects *self, const gchar *caller,
 	return object;
 }
 
-void
-gkd_secret_objects_append_item_paths (GkdSecretObjects *self, const gchar *base,
-                                      DBusMessageIter *iter, DBusMessage *message)
+static void
+objects_foreach_item (GkdSecretObjects *self,
+                      GList *items,
+                      const gchar *base,
+                      GkdSecretObjectsForeach callback,
+                      gpointer user_data)
 {
-	DBusMessageIter variant;
+	gchar *path;
+	GList *l;
+
+	for (l = items; l; l = g_list_next (l)) {
+		path = object_path_for_item (base, l->data);
+		(callback) (self, path, l->data, user_data);
+		g_free (path);
+	}
+}
+
+void
+gkd_secret_objects_foreach_item (GkdSecretObjects *self,
+                                 DBusMessage *message,
+                                 const gchar *base,
+                                 GkdSecretObjectsForeach callback,
+                                 gpointer user_data)
+{
 	GckSession *session;
 	GError *error = NULL;
 	gchar *identifier;
@@ -1101,9 +1108,8 @@ gkd_secret_objects_append_item_paths (GkdSecretObjects *self, const gchar *base,
 	GckAttributes *attrs;
 
 	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
-	g_return_if_fail (base);
-	g_return_if_fail (iter);
-	g_return_if_fail (message);
+	g_return_if_fail (base != NULL);
+	g_return_if_fail (callback != NULL);
 
 	/* The session we're using to access the object */
 	session = gkd_secret_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
@@ -1121,9 +1127,8 @@ gkd_secret_objects_append_item_paths (GkdSecretObjects *self, const gchar *base,
 	gck_attributes_unref (attrs);
 
 	if (error == NULL) {
-		dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "ao", &variant);
-		iter_append_item_paths (base, items, &variant);
-		dbus_message_iter_close_container (iter, &variant);
+		objects_foreach_item (self, items, base, callback, user_data);
+
 	} else {
 		g_warning ("couldn't lookup items in '%s' collection: %s", identifier, egg_error_message (error));
 		g_clear_error (&error);
@@ -1133,18 +1138,56 @@ gkd_secret_objects_append_item_paths (GkdSecretObjects *self, const gchar *base,
 	g_free (identifier);
 }
 
+static void
+on_object_path_append_to_iter (GkdSecretObjects *self,
+                               const gchar *path,
+                               GckObject *object,
+                               gpointer user_data)
+{
+	DBusMessageIter *array = user_data;
+	dbus_message_iter_append_basic (array, DBUS_TYPE_OBJECT_PATH, &path);
+}
+
 void
-gkd_secret_objects_append_collection_paths (GkdSecretObjects *self, DBusMessageIter *iter,
-                                            DBusMessage *message)
+gkd_secret_objects_append_item_paths (GkdSecretObjects *self,
+                                      const gchar *base,
+                                      DBusMessageIter *iter,
+                                      DBusMessage *message)
 {
 	DBusMessageIter variant;
-	GError *error = NULL;
-	GckAttributes *attrs;
-	GckSession *session;
-	GList *colls;
+	DBusMessageIter array;
 
 	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
-	g_return_if_fail (iter && message);
+	g_return_if_fail (base);
+	g_return_if_fail (iter);
+	g_return_if_fail (message);
+
+
+	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "ao", &variant);
+	dbus_message_iter_open_container (&variant, DBUS_TYPE_ARRAY, "o", &array);
+
+	gkd_secret_objects_foreach_item (self, message, base, on_object_path_append_to_iter, &array);
+
+	dbus_message_iter_close_container (&variant, &array);
+	dbus_message_iter_close_container (iter, &variant);
+}
+
+void
+gkd_secret_objects_foreach_collection (GkdSecretObjects *self,
+                                       DBusMessage *message,
+                                       GkdSecretObjectsForeach callback,
+                                       gpointer user_data)
+{
+	GckSession *session;
+	GckAttributes *attrs;
+	GError *error = NULL;
+	GList *collections, *l;
+	gpointer identifier;
+	gsize n_identifier;
+	gchar *path;
+
+	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
+	g_return_if_fail (callback);
 
 	/* The session we're using to access the object */
 	session = gkd_secret_service_get_pkcs11_session (self->service, dbus_message_get_sender (message));
@@ -1153,7 +1196,7 @@ gkd_secret_objects_append_collection_paths (GkdSecretObjects *self, DBusMessageI
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_COLLECTION);
 
-	colls = gck_session_find_objects (session, attrs, NULL, &error);
+	collections = gck_session_find_objects (session, attrs, NULL, &error);
 
 	gck_attributes_unref (attrs);
 
@@ -1163,10 +1206,43 @@ gkd_secret_objects_append_collection_paths (GkdSecretObjects *self, DBusMessageI
 		return;
 	}
 
+	for (l = collections; l; l = g_list_next (l)) {
+
+		identifier = gck_object_get_data (l->data, CKA_ID, NULL, &n_identifier, &error);
+		if (identifier == NULL) {
+			g_warning ("couldn't get collection identifier: %s", egg_error_message (error));
+			g_clear_error (&error);
+			continue;
+		}
+
+		path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
+		g_free (identifier);
+
+		(callback) (self, path, l->data, user_data);
+		g_free (path);
+	}
+
+	gck_list_unref_free (collections);
+}
+
+void
+gkd_secret_objects_append_collection_paths (GkdSecretObjects *self,
+                                            DBusMessageIter *iter,
+                                            DBusMessage *message)
+{
+	DBusMessageIter variant;
+	DBusMessageIter array;
+
+	g_return_if_fail (GKD_SECRET_IS_OBJECTS (self));
+	g_return_if_fail (iter && message);
+
 	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "ao", &variant);
-	iter_append_collection_paths (colls, &variant);
+	dbus_message_iter_open_container (iter, DBUS_TYPE_ARRAY, "o", &array);
+
+	gkd_secret_objects_foreach_collection (self, message, on_object_path_append_to_iter, &array);
+
+	dbus_message_iter_close_container (iter, &array);
 	dbus_message_iter_close_container (iter, &variant);
-	gck_list_unref_free (colls);
 }
 
 DBusMessage*
@@ -1176,6 +1252,7 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	GckAttributes *attrs;
 	GckAttribute *attr;
 	DBusMessageIter iter;
+	DBusMessageIter array;
 	GckObject *search;
 	GckSession *session;
 	DBusMessage *reply;
@@ -1251,8 +1328,14 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	/* Prepare the reply message */
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	iter_append_item_paths (NULL, unlocked, &iter);
-	iter_append_item_paths (NULL, locked, &iter);
+
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "o", &array);
+	objects_foreach_item (self, unlocked, NULL, on_object_path_append_to_iter, &iter);
+	dbus_message_iter_close_container (&iter, &array);
+
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "o", &array);
+	objects_foreach_item (self, locked, NULL, on_object_path_append_to_iter, &iter);
+	dbus_message_iter_close_container (&iter, &array);
 
 	g_list_free (locked);
 	g_list_free (unlocked);
