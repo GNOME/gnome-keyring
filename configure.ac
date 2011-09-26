@@ -814,6 +814,7 @@ echo
 echo "BUILD"
 echo "  Debug Build:          $debug_status"
 echo "  Strict Compilation:   $strict_status"
+echo "  Introspection:        $found_introspection"
 echo "  Valgrind:             $valgrind_status"
 echo "  PKCS#11 Tests         $p11_tests_status"
 echo "  Test Coverage:        $enable_coverage"
