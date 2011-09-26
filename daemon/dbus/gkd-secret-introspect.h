@@ -26,6 +26,7 @@
 
 #include <glib.h>
 
+extern const gchar *gkd_secret_introspect_root;
 extern const gchar *gkd_secret_introspect_collection;
 extern const gchar *gkd_secret_introspect_item;
 extern const gchar *gkd_secret_introspect_prompt;

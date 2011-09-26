@@ -53,10 +53,59 @@ gkd_dbus_interface_match (const gchar *interface, const gchar *match)
 	return strcmp (interface, match) == 0;
 }
 
-DBusMessage*
-gkd_dbus_introspect_handle (DBusMessage *message, const gchar *data)
+static gchar *
+build_child_node_xml (const gchar *parent,
+                      const gchar **children)
+{
+	GString *result;
+	const gchar *child;
+	guint i;
+
+	result = g_string_new ("");
+	for (i = 0; children != NULL && children[i] != NULL; i++) {
+		if (children[i][0] == '/') {
+			if (!g_str_has_prefix (children[i], parent)) {
+				g_warning ("in introspection data child '%s' is not descendant of parent '%s'",
+				           children[i], parent);
+				continue;
+			}
+			child = children[i] + strlen (parent);
+			while (child[0] == '/')
+				child++;
+		} else {
+			child = children[i];
+		}
+
+		g_string_append_printf (result, "\t<node name=\"%s\"/>\n", child);
+	}
+
+	return g_string_free (result, FALSE);
+}
+
+static gboolean
+string_replace (GString *string,
+                const gchar *search,
+                const gchar *replace)
+{
+	const gchar *pos;
+
+	pos = strstr (string->str, search);
+	if (pos == NULL)
+		return FALSE;
+
+	g_string_erase (string, pos - string->str, strlen (search));
+	g_string_insert (string, pos - string->str, replace);
+	return TRUE;
+}
+
+DBusMessage *
+gkd_dbus_introspect_handle (DBusMessage *message,
+                            const gchar *data,
+                            const gchar **children)
 {
 	DBusMessage *reply;
+	GString *output = NULL;
+	gchar *nodes;
 
 	g_return_val_if_fail (message, NULL);
 	g_return_val_if_fail (data, NULL);
@@ -64,9 +113,21 @@ gkd_dbus_introspect_handle (DBusMessage *message, const gchar *data)
 	if (dbus_message_is_method_call (message, DBUS_INTERFACE_INTROSPECTABLE, "Introspect") &&
 	    dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID)) {
 
+		if (children != NULL) {
+			output = g_string_new (data);
+			nodes = build_child_node_xml (dbus_message_get_path (message), children);
+			if (!string_replace (output, "<!--@children@-->", nodes))
+				g_warning ("introspection data contained no location for child nodes");
+			g_free (nodes);
+			data = output->str;
+		}
+
 		reply = dbus_message_new_method_return (message);
 		if (!dbus_message_append_args (reply, DBUS_TYPE_STRING, &data, DBUS_TYPE_INVALID))
 			g_return_val_if_reached (NULL);
+
+		if (output)
+			g_string_free (output, TRUE);
 		return reply;
 	}
 

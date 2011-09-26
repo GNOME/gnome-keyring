@@ -283,8 +283,9 @@ gkd_secret_prompt_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *m
 	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
 		reply = prompt_method_dismiss (self, message);
 
+	/* org.freedesktop.DBus.Introspectable.Introspect() */
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_prompt);
+		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_prompt, NULL);
 
 	return reply;
 }

@@ -314,8 +314,9 @@ gkd_secret_session_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *
 	else if (dbus_message_is_method_call (message, SECRET_SESSION_INTERFACE, "Close"))
 		return session_method_close (self, message);
 
+	/* org.freedesktop.DBus.Introspectable.Introspect() */
 	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_session);
+		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_session, NULL);
 
 	return NULL;
 }

@@ -25,6 +25,13 @@
 
 #include "gkd-secret-introspect.h"
 
+const gchar *gkd_secret_introspect_root =
+	"<!DOCTYPE node PUBLIC '-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'\n"
+	"	'http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd'>\n"
+	"<node>\n"
+	"	<node name='org/freedesktop/secrets'/>\n"
+	"</node>\n";
+
 const gchar *gkd_secret_introspect_collection =
 	"<!DOCTYPE node PUBLIC '-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'\n"
 	"	'http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd'>\n"
@@ -84,6 +91,7 @@ const gchar *gkd_secret_introspect_collection =
 	"		</signal>\n"
 	"	</interface>\n"
 	"\n"
+	"<!--@children@-->"
 	"</node>\n";
 
 const gchar *gkd_secret_introspect_item =
@@ -254,6 +262,7 @@ const gchar *gkd_secret_introspect_service =
 	"\n"
 	"	</interface>\n"
 	"\n"
+	"<!--@children@-->"
 	"</node>\n";
 
 const gchar *gkd_secret_introspect_session =
