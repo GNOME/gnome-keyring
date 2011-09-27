@@ -98,8 +98,15 @@ update_import_button (GcrImportButton *self)
 	gchar *message;
 	gchar *label;
 
+	/* Initializing, set a spinner */
+	if (self->pv->queued && !self->pv->ready) {
+		gtk_widget_show (self->pv->spinner);
+		gtk_widget_hide (self->pv->arrow);
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Initializing..."));
+
 	/* Importing, set a spinner */
-	if (self->pv->importing) {
+	} else if (self->pv->importing) {
 		gtk_widget_show (self->pv->spinner);
 		gtk_widget_hide (self->pv->arrow);
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
@@ -116,31 +123,22 @@ update_import_button (GcrImportButton *self)
 	/* Not importing, but have importers */
 	} else if (self->pv->importers) {
 
-		/* Initializing, set a spinner */
-		if (!self->pv->ready) {
-			gtk_widget_show (self->pv->spinner);
-			gtk_widget_hide (self->pv->arrow);
-			gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
-			gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Initializing..."));
+		gtk_widget_hide (self->pv->spinner);
+		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
 
+		/* More than one importer */
+		if (self->pv->importers->next) {
+			gtk_widget_show (self->pv->arrow);
+			gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
+
+		/* Only one importer */
 		} else {
-			gtk_widget_hide (self->pv->spinner);
-			gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
-
-			/* More than one importer */
-			if (self->pv->importers->next) {
-				gtk_widget_show (self->pv->arrow);
-				gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
-
-			/* Only one importer */
-			} else {
-				gtk_widget_hide (self->pv->arrow);
-				g_object_get (self->pv->importers->data, "label", &label, NULL);
-				message = g_strdup_printf (_("Import to: %s"), label);
-				gtk_widget_set_tooltip_text (GTK_WIDGET (self), message);
-				g_free (message);
-				g_free (label);
-			}
+			gtk_widget_hide (self->pv->arrow);
+			g_object_get (self->pv->importers->data, "label", &label, NULL);
+			message = g_strdup_printf (_("Import to: %s"), label);
+			gtk_widget_set_tooltip_text (GTK_WIDGET (self), message);
+			g_free (message);
+			g_free (label);
 		}
 
 	/* No importers, none compatible */
@@ -523,6 +521,7 @@ gcr_import_button_add_parsed (GcrImportButton *self,
 
 	if (!self->pv->ready) {
 		self->pv->queued = g_list_prepend (self->pv->queued, gcr_parsed_ref (parsed));
+		update_import_button (self);
 		return;
 	}
 
