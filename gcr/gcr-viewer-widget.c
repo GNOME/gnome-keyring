@@ -225,7 +225,7 @@ gcr_viewer_widget_init (GcrViewerWidget *self)
 	self->pv->unlocks = NULL;
 
 	g_signal_connect (self->pv->parser, "parsed", G_CALLBACK (on_parser_parsed), self);
-	g_signal_connect (self->pv->parser, "authenticate", G_CALLBACK (on_parser_authenticate_for_data), self);
+	g_signal_connect_after (self->pv->parser, "authenticate", G_CALLBACK (on_parser_authenticate_for_data), self);
 }
 
 static void
