@@ -72,6 +72,12 @@
  */
 
 /**
+ * GcrParsed:
+ *
+ * A parsed item parsed by a #GcrParser.
+ */
+
+/**
  * GcrParserClass:
  * @parent_class: The parent class
  * @authenticate: The default handler for the authenticate signal.
@@ -2374,6 +2380,15 @@ gcr_parser_get_parsed_attributes (GcrParser *self)
 	return gcr_parsed_get_attributes (self->pv->parsed);
 }
 
+/**
+ * gcr_parsed_get_attributes:
+ * @parsed: a parsed item
+ *
+ * Get the attributes which make up the parsed item.
+ *
+ * Returns: The attributes for the item. These are owned by the parsed
+ *          item and should not be freed.
+ */
 GckAttributes *
 gcr_parsed_get_attributes (GcrParsed *parsed)
 {
@@ -2405,6 +2420,14 @@ gcr_parser_get_parsed_label (GcrParser *self)
 	return gcr_parsed_get_label (self->pv->parsed);
 }
 
+/**
+ * gcr_parsed_get_label:
+ * @parsed: a parsed item
+ *
+ * Get the label for the parsed item.
+ *
+ * Returns: the label for the item.
+ */
 const gchar*
 gcr_parsed_get_label (GcrParsed *parsed)
 {
@@ -2439,6 +2462,15 @@ gcr_parser_get_parsed_block (GcrParser *self,
 	return gcr_parsed_get_data (self->pv->parsed, n_block);
 }
 
+/**
+ * gcr_parsed_get_data:
+ * @parsed: a parsed item
+ * @n_data: location to store size of returned data
+ *
+ * Get the raw data block for the parsed item.
+ *
+ * Returns: the raw data of the parsed item, or %NULL
+ */
 gconstpointer
 gcr_parsed_get_data (GcrParsed *parsed,
                      gsize *n_data)
@@ -2466,7 +2498,7 @@ gcr_parsed_get_data (GcrParsed *parsed,
  *
  * This is only valid during the GcrParser::parsed signal.
  *
- * Returns: The data format of the currently parsed item.
+ * Returns: the data format of the currently parsed item
  */
 GcrDataFormat
 gcr_parser_get_parsed_format (GcrParser *self)
@@ -2477,6 +2509,14 @@ gcr_parser_get_parsed_format (GcrParser *self)
 	return gcr_parsed_get_format (self->pv->parsed);
 }
 
+/**
+ * gcr_parsed_get_format:
+ * @parsed: a parsed item
+ *
+ * Get the format of the parsed item.
+ *
+ * Returns: the data format of the item
+ */
 GcrDataFormat
 gcr_parsed_get_format (GcrParsed *parsed)
 {

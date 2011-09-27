@@ -486,6 +486,14 @@ gcr_import_button_class_init (GcrImportButtonClass *klass)
 	g_type_class_add_private (klass, sizeof (GcrImportButtonPrivate));
 }
 
+/**
+ * gcr_import_button_new:
+ * @label: label to display on the button
+ *
+ * Create a new #GcrImportButton.
+ *
+ * Returns: a newly created #GcrImportButton
+ */
 GcrImportButton*
 gcr_import_button_new (const gchar *label)
 {
@@ -494,6 +502,13 @@ gcr_import_button_new (const gchar *label)
 	                     NULL);
 }
 
+/**
+ * gcr_import_button_add_parsed:
+ * @self: an import button
+ * @parsed: a parsed item
+ *
+ * Queue an item to import via the button
+ */
 void
 gcr_import_button_add_parsed (GcrImportButton *self,
                               GcrParsed *parsed)

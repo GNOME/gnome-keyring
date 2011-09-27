@@ -26,9 +26,11 @@
 
 #include <gtk/gtk.h>
 
+#ifndef GCR_DISABLE_DEPRECATED
+
 #include "gcr/gcr.h"
 
-#define GCR_TYPE_VIEWER_WINDOW               (_gcr_viewer_window_get_type ())
+#define GCR_TYPE_VIEWER_WINDOW               (gcr_viewer_window_get_type ())
 #define GCR_VIEWER_WINDOW(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_VIEWER_WINDOW, GcrViewerWindow))
 #define GCR_VIEWER_WINDOW_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GCR_TYPE_VIEWER_WINDOW, GcrViewerWindowClass))
 #define GCR_IS_VIEWER_WINDOW(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_VIEWER_WINDOW))
@@ -50,11 +52,13 @@ struct _GcrViewerWindowClass {
 	GtkWindowClass parent_class;
 };
 
-GType              _gcr_viewer_window_get_type         (void);
+GType              gcr_viewer_window_get_type         (void);
 
-GtkWindow *        _gcr_viewer_window_new              (void);
+GtkWindow *        gcr_viewer_window_new              (void);
 
-void               _gcr_viewer_window_load             (GcrViewerWindow *self,
-                                                        GFile *file);
+void               gcr_viewer_window_load             (GcrViewerWindow *self,
+                                                       GFile *file);
+
+#endif /* GCR_DISABLE_DEPRECATED */
 
 #endif /* GCR_VIEWER_WINDOW_H */

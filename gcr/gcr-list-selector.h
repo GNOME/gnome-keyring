@@ -61,8 +61,6 @@ GcrListSelector*         gcr_list_selector_new              (GcrCollection *coll
 
 GcrCollection*           gcr_list_selector_get_collection   (GcrListSelector *self);
 
-const GcrColumn*         gcr_list_selector_get_columns      (GcrListSelector *self);
-
 GList*                   gcr_list_selector_get_selected     (GcrListSelector *self);
 
 void                     gcr_list_selector_set_selected     (GcrListSelector *self,

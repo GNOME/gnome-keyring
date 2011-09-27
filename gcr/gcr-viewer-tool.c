@@ -61,7 +61,7 @@ on_idle_load_files (gpointer user_data)
 	if (remaining_args) {
 		for (i = 0; remaining_args[i] != NULL; ++i) {
 			file = g_file_new_for_commandline_arg (remaining_args[i]);
-			_gcr_viewer_window_load (window, file);
+			gcr_viewer_window_load (window, file);
 			g_object_unref (file);
 		}
 
@@ -119,7 +119,7 @@ main (int argc, char *argv[])
 
 	gtk_init (&argc, &argv);
 
-	window = _gcr_viewer_window_new ();
+	window = gcr_viewer_window_new ();
 	gtk_widget_show (GTK_WIDGET (window));
 
 	g_idle_add (on_idle_load_files, window);

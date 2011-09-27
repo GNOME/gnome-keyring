@@ -49,6 +49,22 @@ GcrParser *       gcr_importer_get_parser                     (GcrImporter *self
 void              gcr_importer_set_parser                     (GcrImporter *self,
                                                                GcrParser *parser);
 
+GckSlot *         gcr_importer_get_slot                       (GcrImporter *self);
+
+void              gcr_importer_set_slot                       (GcrImporter *self,
+                                                               GckSlot *slot);
+
+typedef enum {
+	GCR_IMPORTER_PROMPT_NEEDED,
+	GCR_IMPORTER_PROMPT_ALWAYS,
+	GCR_IMPORTER_PROMPT_NEVER
+} GcrImporterPromptBehavior;
+
+GcrImporterPromptBehavior  gcr_importer_get_prompt_behavior   (GcrImporter *self);
+
+void                       gcr_importer_set_prompt_behavior   (GcrImporter *self,
+                                                               GcrImporterPromptBehavior behavior);
+
 G_END_DECLS
 
 #endif /* GCR_DISABLE_DEPRECATED */

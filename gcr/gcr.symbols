@@ -42,6 +42,12 @@ gcr_combo_selector_get_selected
 gcr_combo_selector_get_type
 gcr_combo_selector_new
 gcr_combo_selector_set_selected
+gcr_failure_renderer_get_type
+gcr_failure_renderer_new
+gcr_failure_renderer_new_unsupported
+gcr_import_button_add_parsed
+gcr_import_button_get_type
+gcr_import_button_new
 gcr_key_renderer_get_attributes
 gcr_key_renderer_get_type
 gcr_key_renderer_new
@@ -90,3 +96,7 @@ gcr_viewer_remove_renderer
 gcr_viewer_window_get_type
 gcr_viewer_window_load
 gcr_viewer_window_new
+gcr_viewer_widget_get_type
+gcr_viewer_widget_load_data
+gcr_viewer_widget_load_file
+gcr_viewer_widget_new

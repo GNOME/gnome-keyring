@@ -56,7 +56,7 @@ on_parser_authenticate (GcrParser *parser,
 	GcrUnlockRenderer *renderer;
 	GtkWindow *window;
 
-	window = GTK_WINDOW (_gcr_viewer_window_new ());
+	window = GTK_WINDOW (gcr_viewer_window_new ());
 	g_object_ref_sink (window);
 
 	renderer = _gcr_unlock_renderer_new_for_parsed (parser);

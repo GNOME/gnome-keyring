@@ -1501,7 +1501,16 @@ gcr_collection_model_is_selected (GcrCollectionModel *self, GtkTreeIter *iter)
 	return g_hash_table_lookup (self->pv->selected, object) ? TRUE : FALSE;
 }
 
-GList*
+/**
+ * gcr_collection_model_get_selected_objects:
+ * @self: the collection model
+ *
+ * Get a list of checked/selected objects.
+ *
+ * Returns: a list of selected objects, which should be freed with
+ *          g_list_free().
+ */
+GList *
 gcr_collection_model_get_selected_objects (GcrCollectionModel *self)
 {
 	GHashTableIter iter;
@@ -1519,8 +1528,16 @@ gcr_collection_model_get_selected_objects (GcrCollectionModel *self)
 	return result;
 }
 
+/**
+ * gcr_collection_model_set_selected_objects:
+ * @self: the collection model
+ * @selected: a list of objects to select
+ *
+ * Set the checked/selected objects.
+ */
 void
-gcr_collection_model_set_selected_objects (GcrCollectionModel *self, GList *selected)
+gcr_collection_model_set_selected_objects (GcrCollectionModel *self,
+                                           GList *selected)
 {
 	GHashTable *newly_selected;
 	GList *old_selection;

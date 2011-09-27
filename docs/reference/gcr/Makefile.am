@@ -61,6 +61,8 @@ IGNORE_HFILES= \
 	gcr-certificate-exporter.h \
 	gcr-certificate-basics-widget.h \
 	gcr-certificate-details-widget.h \
+	gcr-deprecated.h \
+	gcr-deprecated-base.h \
 	gcr-display-scrolled.h \
 	gcr-display-view.h \
 	gcr-failure-renderer.h \
@@ -74,6 +76,7 @@ IGNORE_HFILES= \
 	gcr-openpgp.h \
 	gcr-pkcs11-renderer.h \
 	gcr-record.h \
+	gcr-single-collection.h \
 	gcr-unlock-renderer.h \
 	gcr-viewer-window.h \
 	gcr-xxx.h \

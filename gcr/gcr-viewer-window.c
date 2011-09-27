@@ -36,7 +36,7 @@ struct _GcrViewerWindowPrivate {
 	GcrImportButton *import;
 };
 
-G_DEFINE_TYPE (GcrViewerWindow, _gcr_viewer_window, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE (GcrViewerWindow, gcr_viewer_window, GTK_TYPE_WINDOW);
 
 static void
 on_viewer_renderer_added (GcrViewerWidget *viewer,
@@ -49,7 +49,7 @@ on_viewer_renderer_added (GcrViewerWidget *viewer,
 }
 
 static void
-_gcr_viewer_window_init (GcrViewerWindow *self)
+gcr_viewer_window_init (GcrViewerWindow *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_VIEWER_WINDOW,
 	                                        GcrViewerWindowPrivate);
@@ -85,7 +85,7 @@ on_close_clicked (GtkButton *button,
 }
 
 static void
-_gcr_viewer_window_constructed (GObject *obj)
+gcr_viewer_window_constructed (GObject *obj)
 {
 	GcrViewerWindow *self = GCR_VIEWER_WINDOW (obj);
 	GtkWidget *bbox;
@@ -93,7 +93,7 @@ _gcr_viewer_window_constructed (GObject *obj)
 	GtkWidget *button;
 	GtkWidget *align;
 
-	G_OBJECT_CLASS (_gcr_viewer_window_parent_class)->constructed (obj);
+	G_OBJECT_CLASS (gcr_viewer_window_parent_class)->constructed (obj);
 
 	bbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_set_spacing (GTK_BOX (bbox), 12);
@@ -138,23 +138,23 @@ _gcr_viewer_window_constructed (GObject *obj)
 }
 
 static void
-_gcr_viewer_window_class_init (GcrViewerWindowClass *klass)
+gcr_viewer_window_class_init (GcrViewerWindowClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->constructed = _gcr_viewer_window_constructed;
+	gobject_class->constructed = gcr_viewer_window_constructed;
 
 	g_type_class_add_private (klass, sizeof (GcrViewerWindow));
 }
 
 GtkWindow *
-_gcr_viewer_window_new (void)
+gcr_viewer_window_new (void)
 {
 	return g_object_new (GCR_TYPE_VIEWER_WINDOW, NULL);
 }
 
 void
-_gcr_viewer_window_load (GcrViewerWindow *self,
+gcr_viewer_window_load (GcrViewerWindow *self,
                          GFile *file)
 {
 	g_return_if_fail (GCR_IS_VIEWER_WINDOW (self));

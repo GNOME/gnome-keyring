@@ -57,8 +57,6 @@ GcrComboSelector*        gcr_combo_selector_new              (GcrCollection *col
 
 GcrCollection*           gcr_combo_selector_get_collection   (GcrComboSelector *self);
 
-const GcrColumn*         gcr_combo_selector_get_columns      (GcrComboSelector *self);
-
 GObject*                 gcr_combo_selector_get_selected     (GcrComboSelector *self);
 
 void                     gcr_combo_selector_set_selected     (GcrComboSelector *self,

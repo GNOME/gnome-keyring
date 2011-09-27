@@ -21,3 +21,4 @@ gcr_union_collection_get_type
 gcr_unlock_options_widget_get_type
 gcr_viewer_get_type
 gcr_viewer_widget_get_type
+gcr_viewer_window_get_type

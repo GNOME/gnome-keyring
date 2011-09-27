@@ -158,6 +158,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-unlock-renderer.c gcr-unlock-renderer.h \
 	gcr-viewer.c gcr-viewer.h \
 	gcr-viewer-widget.c gcr-viewer-widget.h \
+	gcr-viewer-window.c gcr-viewer-window.h \
 	$(BUILT_UI_FILES)
 
 libgcr_base_@GCR_MAJOR@_la_CFLAGS = \
@@ -274,8 +275,7 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 bin_PROGRAMS = gcr-viewer
 
 gcr_viewer_SOURCES = \
-	gcr-viewer-tool.c \
-	gcr-viewer-window.c gcr-viewer-window.h
+	gcr-viewer-tool.c
 
 gcr_viewer_CFLAGS = \
 	$(GTK_CFLAGS) \

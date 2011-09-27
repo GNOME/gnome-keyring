@@ -358,10 +358,10 @@ gcr_list_selector_class_init (GcrListSelectorClass *klass)
  */
 
 /**
- * gcr_selector_new:
+ * gcr_list_selector_new:
  * @collection: The collection that contains the objects to display
  *
- * Create a new #GcrTreeSelector.
+ * Create a new #GcrListSelector.
  *
  * Returns: A newly allocated selector, which should be released with
  *     g_object_unref().

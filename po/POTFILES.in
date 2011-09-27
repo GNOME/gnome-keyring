@@ -28,6 +28,7 @@ gcr/gcr-gnupg-key.c
 gcr/gcr-gnupg-process.c
 gcr/gcr-gnupg-renderer.c
 gcr/gcr-importer.c
+gcr/gcr-import-button.c
 gcr/gcr-library.c
 gcr/gcr-key-renderer.c
 gcr/gcr-parser.c
@@ -35,6 +36,8 @@ gcr/gcr-trust.c
 [type: gettext/glade]gcr/gcr-unlock-options-widget.ui
 gcr/gcr-unlock-renderer.c
 gcr/gcr-viewer-tool.c
+gcr/gcr-viewer-widget.c
+gcr/gcr-viewer-window.c
 gck/gck-uri.c
 gck/gck-misc.c
 pkcs11/gkm/gkm-certificate.c

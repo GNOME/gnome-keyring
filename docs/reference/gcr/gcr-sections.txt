@@ -20,8 +20,19 @@ gcr_parser_get_parsed_description
 gcr_parser_get_parsed_attributes
 gcr_parser_get_parsed_block
 gcr_parser_get_parsed_format
+GcrParsed
+gcr_parsed_ref
+gcr_parsed_unref
+gcr_parsed_get_attributes
+gcr_parsed_get_data
+gcr_parsed_get_description
+gcr_parsed_get_format
+gcr_parsed_get_label
+gcr_parser_get_parsed
 <SUBSECTION Standard>
+GCR_TYPE_PARSED
 GcrParserPrivate
+gcr_parsed_get_type
 GCR_PARSER
 GCR_IS_PARSER
 GCR_TYPE_PARSER
@@ -194,6 +205,9 @@ gcr_trust_remove_pinned_certificate_finish
 
 <SECTION>
 <FILE>gcr-library</FILE>
+gcr_pkcs11_initialize
+gcr_pkcs11_initialize_async
+gcr_pkcs11_initialize_finish
 gcr_pkcs11_get_modules
 gcr_pkcs11_set_modules
 gcr_pkcs11_add_module
@@ -277,7 +291,6 @@ GcrSimpleCollectionClass
 gcr_simple_collection_new
 gcr_simple_collection_add
 gcr_simple_collection_remove
-gcr_simple_collection_contains
 <SUBSECTION Standard>
 gcr_simple_collection_get_type
 GCR_IS_SIMPLE_COLLECTION
@@ -372,7 +385,6 @@ GcrListSelector
 GcrListSelectorClass
 gcr_list_selector_new
 gcr_list_selector_get_collection
-gcr_list_selector_get_columns
 gcr_list_selector_get_selected
 gcr_list_selector_set_selected
 <SUBSECTION Standard>
@@ -391,7 +403,6 @@ GCR_TYPE_LIST_SELECTOR
 GcrComboSelector
 GcrComboSelectorClass
 gcr_combo_selector_get_collection
-gcr_combo_selector_get_columns
 gcr_combo_selector_new
 gcr_combo_selector_get_selected
 gcr_combo_selector_set_selected
@@ -413,7 +424,6 @@ GcrRendererIface
 gcr_renderer_create
 gcr_renderer_register
 gcr_renderer_popuplate_popup
-gcr_renderer_render
 gcr_renderer_render_view
 gcr_renderer_emit_data_changed
 gcr_renderer_register_well_known
@@ -602,8 +612,6 @@ GCR_TYPE_MEMORY_ICON
 GcrMemoryIcon
 GcrMemoryIconClass
 GcrMemoryIconPrivate
-GCR_ERROR
-gcr_error_get_domain
 GcrOpensshPubCallback
 GCR_CALLBACK_OUTPUT_STREAM
 GCR_CALLBACK_OUTPUT_STREAM_CLASS
@@ -614,4 +622,6 @@ GCR_TYPE_CALLBACK_OUTPUT_STREAM
 GcrCallbackOutputFunc
 GcrCallbackOutputStream
 GcrCallbackOutputStreamClass
+GCR_TYPE_IMPORTER_PROMPT_BEHAVIOR
+gcr_importer_prompt_behavior_get_type
 </SECTION>

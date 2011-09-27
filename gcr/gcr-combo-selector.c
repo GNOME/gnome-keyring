@@ -194,7 +194,7 @@ gcr_combo_selector_class_init (GcrComboSelectorClass *klass)
  */
 
 /**
- * gcr_selector_new:
+ * gcr_combo_selector_new:
  * @collection: The collection that contains the objects to display
  *
  * Create a new #GcrTreeSelector.

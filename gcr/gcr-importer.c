@@ -246,7 +246,7 @@ gcr_importer_create_for_parsed (GcrParsed *parsed)
 /**
  * gcr_importer_queue_for_parsed:
  * @importer: an importer to add additional items to
- * @parser: a parser with a parsed item to import
+ * @parsed: a parsed item to import
  *
  * Queues an additional item to be imported. The parsed item is represented
  * by the state of the #GcrParser at the time of calling this method.
@@ -275,7 +275,7 @@ gcr_importer_queue_for_parsed (GcrImporter *importer,
 /**
  * gcr_importer_queue_and_filter_for_parsed:
  * @importers: a set of importers
- * @parser: a parser with a parsed item to import
+ * @parsed: a parsed item
  *
  * Queues an additional item to be imported in all compattible importers
  * in the set. The parsed item is represented by the state of the #GcrParser
@@ -476,3 +476,103 @@ gcr_importer_register_well_known (void)
 	g_type_class_unref (g_type_class_ref (GCR_TYPE_PKCS11_IMPORTER));
 	g_type_class_unref (g_type_class_ref (GCR_TYPE_GNUPG_IMPORTER));
 }
+
+#ifndef GCR_DISABLE_DEPRECATED
+
+/**
+ * gcr_importer_get_parser:
+ * @self: An importer
+ *
+ * Has no effect. Use gcr_importer_listen() instead.
+ *
+ * Returns: %NULL is always returned.
+ * Deprecated: Since 3.0.0
+ */
+GcrParser*
+gcr_importer_get_parser (GcrImporter *self)
+{
+        g_warning ("gcr_importer_get_parser() is no longer supported "
+                   "Use gcr_importer_listen() instead.");
+        return NULL;
+}
+
+/**
+ * gcr_importer_set_parser:
+ * @self: An importer
+ * @parser: A parser
+ *
+ * Has no effect. Use gcr_importer_listen() instead.
+ *
+ * Deprecated: Since 3.0.0
+ */
+void
+gcr_importer_set_parser (GcrImporter *self,
+                         GcrParser *parser)
+{
+        g_warning ("gcr_importer_set_parser() is no longer supported "
+                   "Use gcr_importer_listen() instead.");
+}
+
+/*
+ * gcr_importer_get_slot:
+ * @self: The importer
+ *
+ * Returns %NULL.
+ *
+ * Deprecated: since 3.4.0
+ */
+GckSlot *
+gcr_importer_get_slot (GcrImporter *self)
+{
+        g_warning ("gcr_importer_get_slot() is no longer supported.");
+        return NULL;
+}
+
+/**
+ * gcr_importer_set_slot:
+ * @self: The importer
+ * @slot: The slot to import to
+ *
+ * Has no effect.
+ *
+ * Deprecated: since 3.4.0
+ */
+void
+gcr_importer_set_slot (GcrImporter *self,
+                       GckSlot *slot)
+{
+        g_warning ("gcr_importer_set_slot() is no longer supported.");
+}
+
+/**
+ * gcr_importer_get_prompt_behavior:
+ * @self: The importer
+ *
+ * Returns: zero
+ *
+ * Deprecated: since 3.4.0
+ */
+GcrImporterPromptBehavior
+gcr_importer_get_prompt_behavior (GcrImporter *self)
+{
+	g_warning ("gcr_importer_get_prompt_behavior() is no longer supported.");
+	return 0;
+}
+
+/**
+ * gcr_importer_set_prompt_behavior:
+ * @self: The importer
+ * @behavior: The prompt behavior flag
+ *
+ * Has no effect.
+ *
+ * Deprecated: since 3.4.0
+ */
+void
+gcr_importer_set_prompt_behavior (GcrImporter *self,
+                                  GcrImporterPromptBehavior behavior)
+{
+	g_warning ("gcr_importer_set_prompt_behavior() is no longer supported.");
+}
+
+#endif /* GCR_DISABLE_DEPRECATED */
