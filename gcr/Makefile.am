@@ -117,6 +117,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-record.c gcr-record.h \
 	gcr-simple-certificate.c gcr-simple-certificate.h \
 	gcr-simple-collection.c gcr-simple-collection.h \
+	gcr-single-collection.c gcr-single-collection.h \
 	gcr-trust.c gcr-trust.h \
 	gcr-types.h \
 	gcr-union-collection.c gcr-union-collection.h \
