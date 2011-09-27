@@ -154,19 +154,30 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 	return (na == nb) ? 0 : -1;
 }
 
+static gboolean
+check_if_seen_or_add (GHashTable *seen,
+                      gpointer key)
+{
+	if (g_hash_table_lookup (seen, key))
+		return TRUE;
+	g_hash_table_insert (seen, key, key);
+	return FALSE;
+}
+
 /**
  * gcr_importer_create_for_parsed:
- * @parser: a parser with a parsed item to import
+ * @parsed: a parser with a parsed item to import
  *
  * Create a set of importers which can import this parsed item.
  * The parsed item is represented by the state of the GcrParser at the
  * time of calling this method.
  *
  * Returns: a list of importers which can import the parsed item, which
- *          should be freed with gck_list_unref_free().
+ *          should be freed with g_object_unref(), or %NULL if no types
+ *          of importers can be created.
  */
 GList *
-gcr_importer_create_for_parsed (GcrParser *parser)
+gcr_importer_create_for_parsed (GcrParsed *parsed)
 {
 	GcrRegistered *registered;
 	GcrImporterIface *iface;
@@ -175,10 +186,11 @@ gcr_importer_create_for_parsed (GcrParser *parser)
 	gboolean matched;
 	gulong n_attrs;
 	GList *results = NULL;
+	GHashTable *seen;
 	gulong j;
 	gsize i;
 
-	g_return_val_if_fail (GCR_IS_PARSER (parser), NULL);
+	g_return_val_if_fail (parsed != NULL, NULL);
 
 	gcr_importer_register_well_known ();
 
@@ -190,11 +202,13 @@ gcr_importer_create_for_parsed (GcrParser *parser)
 		registered_sorted = TRUE;
 	}
 
-	attrs = gcr_parser_get_parsed_attributes (parser);
+	attrs = gcr_parsed_get_attributes (parsed);
 	if (attrs != NULL)
 		gck_attributes_ref (attrs);
 	else
 		attrs = gck_attributes_new ();
+
+	seen = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (i = 0; i < registered_importers->len; ++i) {
 		registered = &(g_array_index (registered_importers, GcrRegistered, i));
@@ -210,17 +224,21 @@ gcr_importer_create_for_parsed (GcrParser *parser)
 		}
 
 		if (matched) {
+			if (check_if_seen_or_add (seen, GUINT_TO_POINTER (registered->importer_type)))
+				continue;
+
 			instance_class = g_type_class_ref (registered->importer_type);
 
 			iface = g_type_interface_peek (instance_class, GCR_TYPE_IMPORTER);
 			g_return_val_if_fail (iface != NULL, NULL);
 			g_return_val_if_fail (iface->create_for_parsed, NULL);
-			results = g_list_concat (results, (iface->create_for_parsed) (parser));
+			results = g_list_concat (results, (iface->create_for_parsed) (parsed));
 
 			g_type_class_unref (instance_class);
 		}
 	}
 
+	g_hash_table_unref (seen);
 	gck_attributes_unref (attrs);
 	return results;
 }
@@ -240,18 +258,18 @@ gcr_importer_create_for_parsed (GcrParser *parser)
  */
 gboolean
 gcr_importer_queue_for_parsed (GcrImporter *importer,
-                               GcrParser *parser)
+                               GcrParsed *parsed)
 {
 	GcrImporterIface *iface;
 
 	g_return_val_if_fail (GCR_IS_IMPORTER (importer), FALSE);
-	g_return_val_if_fail (GCR_IS_PARSER (parser), FALSE);
+	g_return_val_if_fail (parsed != NULL, FALSE);
 
 	iface = GCR_IMPORTER_GET_INTERFACE (importer);
 	g_return_val_if_fail (iface != NULL, FALSE);
 	g_return_val_if_fail (iface->queue_for_parsed != NULL, FALSE);
 
-	return (iface->queue_for_parsed) (importer, parser);
+	return (iface->queue_for_parsed) (importer, parsed);
 }
 
 /**
@@ -271,13 +289,13 @@ gcr_importer_queue_for_parsed (GcrImporter *importer,
  */
 GList *
 gcr_importer_queue_and_filter_for_parsed (GList *importers,
-                                          GcrParser *parser)
+                                          GcrParsed *parsed)
 {
 	GList *results = NULL;
 	GList *l;
 
 	for (l = importers; l != NULL; l = g_list_next (l)) {
-		if (gcr_importer_queue_for_parsed (l->data, parser))
+		if (gcr_importer_queue_for_parsed (l->data, parsed))
 			results = g_list_prepend (results, g_object_ref (l->data));
 	}
 

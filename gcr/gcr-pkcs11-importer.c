@@ -24,8 +24,10 @@
 
 #include "config.h"
 
+#include "gcr-base.h"
 #include "gcr-internal.h"
 #include "gcr-library.h"
+#include "gcr-internal.h"
 #include "gcr-parser.h"
 #include "gcr-pkcs11-importer.h"
 
@@ -409,19 +411,11 @@ _gcr_pkcs11_importer_class_init (GcrPkcs11ImporterClass *klass)
 static GList *
 list_all_slots (void)
 {
-	GError *error = NULL;
-	GList *modules, *l;
-	GList *results = NULL;
-
-	if (!_gcr_initialize_pkcs11 (NULL, &error)) {
-		g_warning ("couldn't initialize PKCS#11 modules: %s", error->message);
-		g_clear_error (&error);
-		return NULL;
-	}
+	GList *modules;
+	GList *results;
 
 	modules = gcr_pkcs11_get_modules ();
-	for (l = modules; l != NULL; l = g_list_next (l))
-		results = g_list_concat (results, gck_modules_get_slots (modules, TRUE));
+	results = gck_modules_get_slots (modules, TRUE);
 	gck_list_unref_free (modules);
 
 	return results;
@@ -468,7 +462,7 @@ is_slot_importable (GckSlot *slot,
 }
 
 static GList *
-_gcr_pkcs11_importer_create_for_parsed (GcrParser *parser)
+_gcr_pkcs11_importer_create_for_parsed (GcrParsed *parsed)
 {
 	GcrImporter *self;
 	GList *slots, *l;
@@ -484,7 +478,7 @@ _gcr_pkcs11_importer_create_for_parsed (GcrParser *parser)
 
 		if (importable) {
 			self = _gcr_pkcs11_importer_new (l->data);
-			if (!gcr_importer_queue_for_parsed (self, parser))
+			if (!gcr_importer_queue_for_parsed (self, parsed))
 				g_assert_not_reached ();
 			results = g_list_prepend (results, self);
 		}
@@ -496,13 +490,13 @@ _gcr_pkcs11_importer_create_for_parsed (GcrParser *parser)
 
 static gboolean
 _gcr_pkcs11_importer_queue_for_parsed (GcrImporter *importer,
-                                       GcrParser *parser)
+                                       GcrParsed *parsed)
 {
 	GcrPkcs11Importer *self = GCR_PKCS11_IMPORTER (importer);
 	GckAttributes *attrs;
 	gboolean is_private;
 
-	attrs = gcr_parser_get_parsed_attributes (parser);
+	attrs = gcr_parsed_get_attributes (parsed);
 
 	if (!gck_attributes_find_boolean (attrs, CKA_PRIVATE, &is_private))
 		is_private = FALSE;
@@ -579,4 +573,21 @@ _gcr_pkcs11_importer_get_imported (GcrPkcs11Importer *self)
 {
 	g_return_val_if_fail (GCR_IS_PKCS11_IMPORTER (self), NULL);
 	return self->pv->objects;
+}
+
+void
+_gcr_pkcs11_importer_queue (GcrPkcs11Importer *self,
+                            GckAttributes *attrs)
+{
+	gboolean is_private;
+
+	g_return_if_fail (GCR_IS_PKCS11_IMPORTER (self));
+	g_return_if_fail (attrs != NULL);
+
+	if (!gck_attributes_find_boolean (attrs, CKA_PRIVATE, &is_private))
+		is_private = FALSE;
+	if (is_private)
+		self->pv->any_private = TRUE;
+
+	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
 }

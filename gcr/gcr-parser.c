@@ -113,15 +113,18 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-typedef struct _GcrParsed {
+struct _GcrParsed {
+	gint refs;
 	GckAttributes *attrs;
 	const gchar *description;
 	gchar *label;
-	gconstpointer block;
-	gsize n_block;
+	gpointer data;
+	gsize n_data;
+	gboolean sensitive;
+	GDestroyNotify destroy_func;
 	GcrDataFormat format;
 	struct _GcrParsed *next;
-} GcrParsed;
+};
 
 struct _GcrParserPrivate {
 	GTree *specific_formats;
@@ -211,8 +214,8 @@ parsed_attribute (GcrParsed *parsed,
                   gconstpointer data,
                   gsize n_data)
 {
-	g_assert (parsed);
-	g_assert (parsed->attrs);
+	g_assert (parsed != NULL);
+	g_assert (parsed->attrs != NULL);
 	gck_attributes_add_data (parsed->attrs, type, data, n_data);
 }
 
@@ -245,8 +248,8 @@ parsed_ulong_attribute (GcrParsed *parsed,
                         CK_ATTRIBUTE_TYPE type,
                         gulong value)
 {
-	g_assert (parsed);
-	g_assert (parsed->attrs);
+	g_assert (parsed != NULL);
+	g_assert (parsed->attrs != NULL);
 	gck_attributes_add_ulong (parsed->attrs, type, value);
 }
 
@@ -255,8 +258,8 @@ parsed_boolean_attribute (GcrParsed *parsed,
                           CK_ATTRIBUTE_TYPE type,
                           gboolean value)
 {
-	g_assert (parsed);
-	g_assert (parsed->attrs);
+	g_assert (parsed != NULL);
+	g_assert (parsed->attrs != NULL);
 	gck_attributes_add_boolean (parsed->attrs, type, value);
 }
 
@@ -264,25 +267,26 @@ parsed_boolean_attribute (GcrParsed *parsed,
 static void
 parsing_block (GcrParsed *parsed,
                gint format,
-               gconstpointer block,
-               gsize n_block)
+               gconstpointer data,
+               gsize n_data)
 {
-	g_assert (parsed);
-	g_assert (block);
-	g_assert (n_block);
+	g_assert (parsed != NULL);
+	g_assert (data != NULL);
+	g_assert (n_data != 0);
 	g_assert (format);
-	g_assert (!parsed->block);
+	g_assert (parsed->data == NULL);
+	g_assert (parsed->destroy_func == NULL);
 
 	parsed->format = format;
-	parsed->block = block;
-	parsed->n_block = n_block;
+	parsed->data = (gpointer)data;
+	parsed->n_data = n_data;
 }
 
 static void
 parsed_description (GcrParsed *parsed,
                     CK_OBJECT_CLASS klass)
 {
-	g_assert (parsed);
+	g_assert (parsed != NULL);
 	switch (klass) {
 	case CKO_PRIVATE_KEY:
 		parsed->description = _("Private Key");
@@ -306,10 +310,10 @@ static void
 parsing_object (GcrParsed *parsed,
                 CK_OBJECT_CLASS klass)
 {
-	g_assert (parsed);
-	g_assert (!parsed->attrs);
+	g_assert (parsed != NULL);
+	g_assert (parsed->attrs == NULL);
 
-	if (klass == CKO_PRIVATE_KEY)
+	if (parsed->sensitive)
 		parsed->attrs = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
 	else
 		parsed->attrs = gck_attributes_new ();
@@ -323,9 +327,9 @@ parsed_attributes (GcrParsed *parsed,
 {
 	gulong klass;
 
-	g_assert (parsed);
-	g_assert (attrs);
-	g_assert (!parsed->attrs);
+	g_assert (parsed != NULL);
+	g_assert (attrs != NULL);
+	g_assert (parsed->attrs == NULL);
 
 	parsed->attrs = gck_attributes_ref (attrs);
 	if (gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
@@ -336,15 +340,18 @@ static void
 parsed_label (GcrParsed *parsed,
               const gchar *label)
 {
-	g_assert (parsed);
-	g_assert (!parsed->label);
+	g_assert (parsed != NULL);
+	g_assert (parsed->label == NULL);
 	parsed->label = g_strdup (label);
 }
 
 static GcrParsed *
-push_parsed (GcrParser *self)
+push_parsed (GcrParser *self,
+             gboolean sensitive)
 {
 	GcrParsed *parsed = g_new0 (GcrParsed, 1);
+	parsed->refs = 0;
+	parsed->sensitive = sensitive;
 	parsed->next = self->pv->parsed;
 	self->pv->parsed = parsed;
 	return parsed;
@@ -436,7 +443,7 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 	gulong version;
 	GcrParsed *parsed;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, TRUE);
 
 	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "RSAPrivateKey", data, n_data);
 	if (!asn)
@@ -489,7 +496,7 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 	GNode *asn = NULL;
 	GcrParsed *parsed;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, TRUE);
 
 	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivateKey", data, n_data);
 	if (!asn)
@@ -528,7 +535,7 @@ parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n
 	GNode *asn_key = NULL;
 	GcrParsed *parsed;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, TRUE);
 
 	asn_params = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAParameters", params, n_params);
 	asn_key = egg_asn1x_create_and_decode (pk_asn1_tab, "DSAPrivatePart", keydata, n_keydata);
@@ -592,7 +599,7 @@ parse_der_pkcs8_plain (GcrParser *self, const guchar *data, gsize n_data)
 	GNode *asn = NULL;
 	GcrParsed *parsed;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, TRUE);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-PrivateKeyInfo", data, n_data);
@@ -667,10 +674,10 @@ parse_der_pkcs8_encrypted (GcrParser *self, const guchar *data, gsize n_data)
 	const guchar *params;
 	gsize n_crypted, n_params;
 	const gchar *password;
-	gint l;
 	GcrParsed *parsed;
+	gint l;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, FALSE);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-8-EncryptedPrivateKeyInfo", data, n_data);
@@ -770,7 +777,7 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 	if (asn == NULL)
 		return GCR_ERROR_UNRECOGNIZED;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, FALSE);
 
 	parsing_block (parsed, GCR_FORMAT_DER_CERTIFICATE_X509, data, n_data);
 	parsing_object (parsed, CKO_CERTIFICATE);
@@ -850,7 +857,7 @@ parse_der_pkcs7 (GcrParser *self, const guchar *data, gsize n_data)
 	GQuark oid;
 	GcrParsed *parsed;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, FALSE);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "pkcs-7-ContentInfo", data, n_data);
@@ -1036,7 +1043,7 @@ handle_pkcs12_bag (GcrParser *self, const guchar *data, gsize n_data)
 		if (!element)
 			goto done;
 
-		parsed = push_parsed (self);
+		parsed = push_parsed (self, FALSE);
 
 		friendly = parse_pkcs12_bag_friendly_name (egg_asn1x_node (asn, i, "bagAttributes", NULL));
 		if (friendly != NULL)
@@ -1353,7 +1360,7 @@ parse_der_pkcs12 (GcrParser *self, const guchar *data, gsize n_data)
 	GQuark oid;
 	GcrParsed *parsed;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, FALSE);
 	ret = GCR_ERROR_UNRECOGNIZED;
 
 	asn = decode_pkcs12_asn1_accepting_invalid_crap (pkix_asn1_tab, "pkcs-12-PFX",
@@ -1420,7 +1427,7 @@ on_openpgp_packet (GPtrArray *records,
 	if (records->len == 0)
 		return;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, FALSE);
 
 	/* All we can do is the packet bounds */
 	parsing_block (parsed, GCR_FORMAT_OPENPGP_PACKET, outer, n_outer);
@@ -1616,7 +1623,7 @@ handle_pem_data (GQuark type,
 	if (!formats_for_armor_type (type, &inner_format, &outer_format))
 		return;
 
-	parsed = push_parsed (args->parser);
+	parsed = push_parsed (args->parser, FALSE);
 
 	/* Fill in information necessary for prompting */
 	parsing_block (parsed, outer_format, outer, n_outer);
@@ -1735,7 +1742,7 @@ on_openssh_public_key_parsed (GckAttributes *attrs,
 	GcrParser *self = GCR_PARSER (user_data);
 	GcrParsed *parsed;
 
-	parsed = push_parsed (self);
+	parsed = push_parsed (self, FALSE);
 	parsing_block (parsed, GCR_FORMAT_OPENSSH_PUBLIC, outer, n_outer);
 	parsed_attributes (parsed, attrs);
 	parsed_label (parsed, label);
@@ -2238,6 +2245,85 @@ gcr_parser_format_supported (GcrParser *self,
 	return parser_format_lookup (format) ? TRUE : FALSE;
 }
 
+GcrParsed *
+gcr_parser_get_parsed (GcrParser *self)
+{
+	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
+	return self->pv->parsed;
+}
+
+GType
+gcr_parsed_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GcrParsed",
+		                                     (GBoxedCopyFunc)gcr_parsed_ref,
+		                                     (GBoxedFreeFunc)gcr_parsed_unref);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
+}
+
+GcrParsed *
+gcr_parsed_ref (GcrParsed *parsed)
+{
+	GcrParsed *copy;
+
+	g_return_val_if_fail (parsed != NULL, NULL);
+
+	/* Already had a reference */
+	if (g_atomic_int_exchange_and_add (&parsed->refs, 1) >= 1)
+		return parsed;
+
+	/* If this is the first reference, flatten the stack of parsed */
+	copy = g_new0 (GcrParsed, 1);
+	copy->refs = 1;
+	copy->label = g_strdup (gcr_parsed_get_label (parsed));
+	copy->attrs = gcr_parsed_get_attributes (parsed);
+	if (copy->attrs)
+		gck_attributes_ref (copy->attrs);
+	copy->description = gcr_parsed_get_description (parsed);
+	copy->next = NULL;
+
+	/* Find the block of data to copy */
+	while (parsed != NULL) {
+		if (parsed->data != NULL) {
+			if (parsed->sensitive) {
+				copy->data = egg_secure_alloc (parsed->n_data);
+				memcpy (copy->data, parsed->data, parsed->n_data);
+				copy->destroy_func = egg_secure_free;
+			} else {
+				copy->data = g_memdup (parsed->data, parsed->n_data);
+				copy->destroy_func = g_free;
+			}
+			copy->n_data = parsed->n_data;
+			break;
+		}
+		parsed = parsed->next;
+	}
+
+	return copy;
+}
+
+void
+gcr_parsed_unref (gpointer parsed)
+{
+	GcrParsed *par = parsed;
+
+	g_return_if_fail (parsed != NULL);
+
+	if (g_atomic_int_dec_and_test (&par->refs)) {
+		if (par->attrs)
+			gck_attributes_unref (par->attrs);
+		g_free (par->label);
+		if (par->destroy_func)
+			(par->destroy_func) (par->data);
+		g_free (par);
+	}
+}
+
 /**
  * gcr_parser_get_parsed_description:
  * @self: The parser
@@ -2251,13 +2337,19 @@ gcr_parser_format_supported (GcrParser *self,
 const gchar*
 gcr_parser_get_parsed_description (GcrParser *self)
 {
-	GcrParsed *parsed;
-
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
+	g_return_val_if_fail (self->pv->parsed != NULL, NULL);
 
-	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+	return gcr_parsed_get_description (self->pv->parsed);
+}
+
+const gchar*
+gcr_parsed_get_description (GcrParsed *parsed)
+{
+	while (parsed != NULL) {
 		if (parsed->description != NULL)
 			return parsed->description;
+		parsed = parsed->next;
 	}
 
 	return NULL;
@@ -2273,16 +2365,22 @@ gcr_parser_get_parsed_description (GcrParser *self)
  * Returns: The attributes for the current item. These are owned by the parser
  *     and should not be freed.
  */
-GckAttributes*
+GckAttributes *
 gcr_parser_get_parsed_attributes (GcrParser *self)
 {
-	GcrParsed *parsed;
-
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
+	g_return_val_if_fail (self->pv->parsed != NULL, NULL);
 
-	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+	return gcr_parsed_get_attributes (self->pv->parsed);
+}
+
+GckAttributes *
+gcr_parsed_get_attributes (GcrParsed *parsed)
+{
+	while (parsed != NULL) {
 		if (parsed->attrs != NULL)
 			return parsed->attrs;
+		parsed = parsed->next;
 	}
 
 	return NULL;
@@ -2301,13 +2399,19 @@ gcr_parser_get_parsed_attributes (GcrParser *self)
 const gchar*
 gcr_parser_get_parsed_label (GcrParser *self)
 {
-	GcrParsed *parsed;
-
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
+	g_return_val_if_fail (self->pv->parsed != NULL, NULL);
 
-	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
+	return gcr_parsed_get_label (self->pv->parsed);
+}
+
+const gchar*
+gcr_parsed_get_label (GcrParsed *parsed)
+{
+	while (parsed != NULL) {
 		if (parsed->label != NULL)
 			return parsed->label;
+		parsed = parsed->next;
 	}
 
 	return NULL;
@@ -2328,19 +2432,28 @@ gconstpointer
 gcr_parser_get_parsed_block (GcrParser *self,
                              gsize *n_block)
 {
-	GcrParsed *parsed;
-
 	g_return_val_if_fail (GCR_IS_PARSER (self), NULL);
-	g_return_val_if_fail (n_block, NULL);
+	g_return_val_if_fail (n_block != NULL, NULL);
+	g_return_val_if_fail (self->pv->parsed != NULL, NULL);
 
-	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
-		if (parsed->block != NULL) {
-			*n_block = parsed->n_block;
-			return parsed->block;
+	return gcr_parsed_get_data (self->pv->parsed, n_block);
+}
+
+gconstpointer
+gcr_parsed_get_data (GcrParsed *parsed,
+                     gsize *n_data)
+{
+	g_return_val_if_fail (n_data != NULL, NULL);
+
+	while (parsed != NULL) {
+		if (parsed->data != NULL) {
+			*n_data = parsed->n_data;
+			return parsed->data;
 		}
+		parsed = parsed->next;
 	}
 
-	*n_block = 0;
+	*n_data = 0;
 	return NULL;
 }
 
@@ -2358,18 +2471,23 @@ gcr_parser_get_parsed_block (GcrParser *self,
 GcrDataFormat
 gcr_parser_get_parsed_format (GcrParser *self)
 {
-	GcrParsed *parsed;
-
 	g_return_val_if_fail (GCR_IS_PARSER (self), 0);
+	g_return_val_if_fail (self->pv->parsed != NULL, 0);
 
-	for (parsed = self->pv->parsed; parsed != NULL; parsed = parsed->next) {
-		if (parsed->block != NULL)
+	return gcr_parsed_get_format (self->pv->parsed);
+}
+
+GcrDataFormat
+gcr_parsed_get_format (GcrParsed *parsed)
+{
+	while (parsed != NULL) {
+		if (parsed->data != NULL)
 			return parsed->format;
+		parsed = parsed->next;
 	}
 
 	return 0;
 }
-
 /* ---------------------------------------------------------------------------------
  * STREAM PARSING
  */

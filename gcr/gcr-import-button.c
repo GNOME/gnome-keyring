@@ -60,7 +60,9 @@ enum {
  */
 
 struct _GcrImportButtonPrivate {
+	GList *queued;
 	GList *importers;
+	gboolean ready;
 	gboolean created;
 	gboolean importing;
 	gchar *imported;
@@ -96,8 +98,15 @@ update_import_button (GcrImportButton *self)
 	gchar *message;
 	gchar *label;
 
+	/* Initializing, set a spinner */
+	if (!self->pv->ready) {
+		gtk_widget_show (self->pv->spinner);
+		gtk_widget_hide (self->pv->arrow);
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Initializing..."));
+
 	/* Importing, set a spinner */
-	if (self->pv->importing) {
+	} else if (self->pv->importing) {
 		gtk_widget_show (self->pv->spinner);
 		gtk_widget_hide (self->pv->arrow);
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
@@ -150,6 +159,25 @@ update_import_button (GcrImportButton *self)
 }
 
 static void
+on_library_pkcs11_ready (GObject *source,
+                         GAsyncResult *result,
+                         gpointer user_data)
+{
+	GcrImportButton *self = GCR_IMPORT_BUTTON (user_data);
+	GList *queued, *l;
+
+	self->pv->ready = TRUE;
+
+	/* Process the parsed items that have been seen */
+	queued = self->pv->queued;
+	self->pv->queued = NULL;
+	for (l = queued; l != NULL; l = g_list_next (l))
+		gcr_import_button_add_parsed (self, l->data);
+	g_assert (self->pv->queued == NULL);
+	g_list_free_full (queued, gcr_parsed_unref);
+}
+
+static void
 gcr_import_button_constructed (GObject *obj)
 {
 	GcrImportButton *self = GCR_IMPORT_BUTTON (obj);
@@ -175,6 +203,8 @@ gcr_import_button_constructed (GObject *obj)
 	gtk_container_add (GTK_CONTAINER (self), grid);
 
 	update_import_button (self);
+
+	gcr_pkcs11_initialize_async (NULL, on_library_pkcs11_ready, g_object_ref (self));
 }
 
 static void
@@ -223,6 +253,9 @@ gcr_import_button_dispose (GObject *obj)
 	self->pv->importers = NULL;
 	g_cancellable_cancel (self->pv->cancellable);
 	g_clear_object (&self->pv->menu);
+
+	g_list_free_full (self->pv->queued, gcr_parsed_unref);
+	self->pv->queued = NULL;
 
 	G_OBJECT_CLASS (gcr_import_button_parent_class)->dispose (obj);
 }
@@ -463,20 +496,25 @@ gcr_import_button_new (const gchar *label)
 
 void
 gcr_import_button_add_parsed (GcrImportButton *self,
-                              GcrParser *parser)
+                              GcrParsed *parsed)
 {
 	GList *importers;
 
 	g_return_if_fail (GCR_IS_IMPORT_BUTTON (self));
-	g_return_if_fail (GCR_IS_PARSER (parser));
+	g_return_if_fail (parsed != NULL);
+
+	if (!self->pv->ready) {
+		self->pv->queued = g_list_prepend (self->pv->queued, gcr_parsed_ref (parsed));
+		return;
+	}
 
 	g_free (self->pv->imported);
 	self->pv->imported = NULL;
 
 	if (self->pv->created) {
-		importers = gcr_importer_queue_and_filter_for_parsed (self->pv->importers, parser);
+		importers = gcr_importer_queue_and_filter_for_parsed (self->pv->importers, parsed);
 	} else {
-		importers = gcr_importer_create_for_parsed (parser);
+		importers = gcr_importer_create_for_parsed (parsed);
 		self->pv->created = TRUE;
 	}
 

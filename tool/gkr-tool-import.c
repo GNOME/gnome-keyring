@@ -146,12 +146,14 @@ on_parser_parsed (GcrParser *parser,
                   gpointer user_data)
 {
 	ImportClosure *closure = user_data;
+	GcrParsed *parsed;
 	GList *filtered;
 
+	parsed = gcr_parser_get_parsed (parser);
 	if (closure->num_parsed == 0) {
-		closure->importers = gcr_importer_create_for_parsed (parser);
+		closure->importers = gcr_importer_create_for_parsed (parsed);
 	} else {
-		filtered = gcr_importer_queue_and_filter_for_parsed (closure->importers, parser);
+		filtered = gcr_importer_queue_and_filter_for_parsed (closure->importers, parsed);
 		gck_list_unref_free (closure->importers);
 		closure->importers = filtered;
 	}

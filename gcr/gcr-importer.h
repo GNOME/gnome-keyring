@@ -45,10 +45,10 @@ typedef struct _GcrImporterIface GcrImporterIface;
 struct _GcrImporterIface {
 	GTypeInterface parent;
 
-	GList *     (*create_for_parsed)      (GcrParser *parser);
+	GList *     (*create_for_parsed)      (GcrParsed *parsed);
 
 	gboolean    (*queue_for_parsed)       (GcrImporter *importer,
-	                                       GcrParser *parser);
+	                                       GcrParsed *parsed);
 
 	gboolean    (*import_sync)            (GcrImporter *importer,
 	                                       GCancellable *cancellable,
@@ -67,33 +67,33 @@ struct _GcrImporterIface {
 	gpointer reserved[14];
 };
 
-GType          gcr_importer_get_type                       (void);
+GType            gcr_importer_get_type                     (void);
 
-GList *        gcr_importer_create_for_parsed              (GcrParser *parser);
+GList *          gcr_importer_create_for_parsed            (GcrParsed *parsed);
 
-gboolean       gcr_importer_queue_for_parsed               (GcrImporter *importer,
-                                                            GcrParser *parser);
+gboolean         gcr_importer_queue_for_parsed             (GcrImporter *importer,
+                                                            GcrParsed *parsed);
 
-GList *        gcr_importer_queue_and_filter_for_parsed    (GList *importers,
-                                                            GcrParser *parser);
+GList *          gcr_importer_queue_and_filter_for_parsed  (GList *importers,
+                                                            GcrParsed *parsed);
 
-gboolean       gcr_importer_import                         (GcrImporter *importer,
+gboolean         gcr_importer_import                       (GcrImporter *importer,
                                                             GCancellable *cancellable,
                                                             GError **error);
 
-void           gcr_importer_import_async                   (GcrImporter *importer,
+void             gcr_importer_import_async                 (GcrImporter *importer,
                                                             GCancellable *cancellable,
                                                             GAsyncReadyCallback callback,
                                                             gpointer user_data);
 
-gboolean       gcr_importer_import_finish                  (GcrImporter *importer,
+gboolean         gcr_importer_import_finish                (GcrImporter *importer,
                                                             GAsyncResult *result,
                                                             GError **error);
 
-void           gcr_importer_register                       (GType importer_type,
+void             gcr_importer_register                     (GType importer_type,
                                                             GckAttributes *attrs);
 
-void           gcr_importer_register_well_known            (void);
+void             gcr_importer_register_well_known          (void);
 
 G_END_DECLS
 

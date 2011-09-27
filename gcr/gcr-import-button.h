@@ -61,7 +61,7 @@ GType               gcr_import_button_get_type               (void) G_GNUC_CONST
 GcrImportButton *   gcr_import_button_new                    (const gchar *label);
 
 void                gcr_import_button_add_parsed             (GcrImportButton *button,
-                                                              GcrParser *parser);
+                                                              GcrParsed *parsed);
 
 G_END_DECLS
 

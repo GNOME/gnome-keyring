@@ -43,6 +43,7 @@ G_BEGIN_DECLS
 typedef struct _GcrParser GcrParser;
 typedef struct _GcrParserClass GcrParserClass;
 typedef struct _GcrParserPrivate GcrParserPrivate;
+typedef struct _GcrParsed GcrParsed;
 
 struct _GcrParser {
 	GObject parent;
@@ -98,6 +99,8 @@ gboolean                 gcr_parser_parse_stream_finish    (GcrParser *self,
 void                     gcr_parser_add_password           (GcrParser *self,
                                                             const gchar *password);
 
+GcrParsed *              gcr_parser_get_parsed             (GcrParser *self);
+
 const gchar*             gcr_parser_get_parsed_label       (GcrParser *self);
 
 const gchar*             gcr_parser_get_parsed_description (GcrParser *self);
@@ -108,6 +111,25 @@ gconstpointer            gcr_parser_get_parsed_block       (GcrParser *self,
                                                             gsize *n_block);
 
 GcrDataFormat            gcr_parser_get_parsed_format      (GcrParser *self);
+
+#define                  GCR_TYPE_PARSED                   (gcr_parsed_get_type ())
+
+GType                    gcr_parsed_get_type               (void) G_GNUC_CONST;
+
+GcrParsed *              gcr_parsed_ref                    (GcrParsed *parsed);
+
+void                     gcr_parsed_unref                  (gpointer parsed);
+
+const gchar*             gcr_parsed_get_label              (GcrParsed *parsed);
+
+const gchar*             gcr_parsed_get_description        (GcrParsed *parsed);
+
+GckAttributes*           gcr_parsed_get_attributes         (GcrParsed *parsed);
+
+gconstpointer            gcr_parsed_get_data               (GcrParsed *parsed,
+                                                            gsize *n_data);
+
+GcrDataFormat            gcr_parsed_get_format             (GcrParsed *parsed);
 
 G_END_DECLS
 

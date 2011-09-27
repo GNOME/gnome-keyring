@@ -161,7 +161,7 @@ perform_is_certificate_pinned (GckAttributes *search,
 	GList *slots;
 	GckObject *object;
 
-	if (!_gcr_initialize_pkcs11 (cancellable, error))
+	if (!gcr_pkcs11_initialize (cancellable, error))
 		return FALSE;
 
 	slots = gcr_pkcs11_get_trust_lookup_slots ();
@@ -339,7 +339,7 @@ perform_add_pinned_certificate (GckAttributes *search,
 	GckEnumerator *en;
 	GList *slots;
 
-	if (!_gcr_initialize_pkcs11 (cancellable, error))
+	if (!gcr_pkcs11_initialize (cancellable, error))
 		return FALSE;
 
 	slots = gcr_pkcs11_get_trust_lookup_slots ();
@@ -553,7 +553,7 @@ perform_remove_pinned_certificate (GckAttributes *attrs,
 	GckEnumerator *en;
 	GList *slots;
 
-	if (!_gcr_initialize_pkcs11 (cancellable, error))
+	if (!gcr_pkcs11_initialize (cancellable, error))
 		return FALSE;
 
 	slots = gcr_pkcs11_get_trust_lookup_slots ();
@@ -735,7 +735,7 @@ perform_is_certificate_anchored (GckAttributes *attrs,
 	GList *slots;
 	GckObject *object;
 
-	if (!_gcr_initialize_pkcs11 (cancellable, error))
+	if (!gcr_pkcs11_initialize (cancellable, error))
 		return FALSE;
 
 	slots = gcr_pkcs11_get_trust_lookup_slots ();

@@ -207,15 +207,15 @@ _gcr_gnupg_importer_class_init (GcrGnupgImporterClass *klass)
 }
 
 static GList *
-_gcr_gnupg_importer_create_for_parsed (GcrParser *parser)
+_gcr_gnupg_importer_create_for_parsed (GcrParsed *parsed)
 {
 	GcrImporter *self;
 
-	if (gcr_parser_get_parsed_format (parser) != GCR_FORMAT_OPENPGP_PACKET)
-		return FALSE;
+	if (gcr_parsed_get_format (parsed) != GCR_FORMAT_OPENPGP_PACKET)
+		return NULL;
 
 	self = _gcr_gnupg_importer_new (NULL);
-	if (!gcr_importer_queue_for_parsed (self, parser))
+	if (!gcr_importer_queue_for_parsed (self, parsed))
 		g_assert_not_reached ();
 
 	return g_list_append (NULL, self);
@@ -223,16 +223,16 @@ _gcr_gnupg_importer_create_for_parsed (GcrParser *parser)
 
 static gboolean
 _gcr_gnupg_importer_queue_for_parsed (GcrImporter *importer,
-                                      GcrParser *parser)
+                                      GcrParsed *parsed)
 {
 	GcrGnupgImporter *self = GCR_GNUPG_IMPORTER (importer);
 	gconstpointer block;
 	gsize n_block;
 
-	if (gcr_parser_get_parsed_format (parser) != GCR_FORMAT_OPENPGP_PACKET)
+	if (gcr_parsed_get_format (parsed) != GCR_FORMAT_OPENPGP_PACKET)
 		return FALSE;
 
-	block = gcr_parser_get_parsed_block (parser, &n_block);
+	block = gcr_parsed_get_data (parsed, &n_block);
 	g_return_val_if_fail (block, FALSE);
 
 	g_memory_input_stream_add_data (self->pv->packets, g_memdup (block, n_block),

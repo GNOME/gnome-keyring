@@ -121,7 +121,7 @@ perform_lookup_certificate (GckAttributes *search,
 	GckEnumerator *en;
 	GList *modules;
 
-	if (!_gcr_initialize_pkcs11 (cancellable, error))
+	if (!gcr_pkcs11_initialize (cancellable, error))
 		return NULL;
 
 	modules = gcr_pkcs11_get_modules ();
@@ -366,7 +366,7 @@ gcr_pkcs11_certificate_lookup_issuer (GcrCertificate *certificate, GCancellable 
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), NULL);
 
-	if (!_gcr_initialize_pkcs11 (cancellable, error))
+	if (!gcr_pkcs11_initialize (cancellable, error))
 		return NULL;
 
 	search = prepare_lookup_certificate_issuer (certificate);

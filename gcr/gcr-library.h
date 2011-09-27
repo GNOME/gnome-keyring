@@ -32,6 +32,16 @@
 
 #include <glib.h>
 
+void              gcr_pkcs11_initialize_async              (GCancellable *cancellable,
+                                                            GAsyncReadyCallback callback,
+                                                            gpointer user_data);
+
+gboolean          gcr_pkcs11_initialize_finish             (GAsyncResult *result,
+                                                            GError **error);
+
+gboolean          gcr_pkcs11_initialize                    (GCancellable *cancellable,
+                                                            GError **error);
+
 GList*            gcr_pkcs11_get_modules                   (void);
 
 void              gcr_pkcs11_set_modules                   (GList *modules);

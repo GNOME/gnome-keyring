@@ -76,7 +76,7 @@ struct _GcrViewerWidgetClass {
 
 	void       (*added)        (GcrViewerWidget *widget,
 	                            GcrRenderer *renderer,
-	                            GcrParser *parser);
+	                            GcrParsed *parsed);
 };
 
 struct _GcrViewerWidgetPrivate {
@@ -138,7 +138,8 @@ on_parser_parsed (GcrParser *parser,
 
 	/* Let callers know we're rendering data */
 	if (actual == TRUE)
-		g_signal_emit (self, signals[ADDED], 0, renderer, parser);
+		g_signal_emit (self, signals[ADDED], 0, renderer,
+		               gcr_parser_get_parsed (parser));
 
 	g_object_unref (renderer);
 }
@@ -277,8 +278,8 @@ gcr_viewer_widget_class_init (GcrViewerWidgetClass *klass)
 
 	signals[ADDED] = g_signal_new ("added", GCR_TYPE_VIEWER_WIDGET, G_SIGNAL_RUN_LAST,
 	                               G_STRUCT_OFFSET (GcrViewerWidgetClass, added),
-	                               NULL, NULL, _gcr_marshal_VOID__OBJECT_OBJECT,
-	                               G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_OBJECT);
+	                               NULL, NULL, _gcr_marshal_VOID__OBJECT_BOXED,
+	                               G_TYPE_NONE, 2, G_TYPE_OBJECT, GCR_TYPE_PARSED);
 }
 
 static void

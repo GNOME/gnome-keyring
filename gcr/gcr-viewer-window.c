@@ -41,11 +41,11 @@ G_DEFINE_TYPE (GcrViewerWindow, _gcr_viewer_window, GTK_TYPE_WINDOW);
 static void
 on_viewer_renderer_added (GcrViewerWidget *viewer,
                           GcrRenderer *renderer,
-                          GcrParser *parser,
+                          GcrParsed *parsed,
                           gpointer user_data)
 {
 	GcrViewerWindow *self = GCR_VIEWER_WINDOW (user_data);
-	gcr_import_button_add_parsed (self->pv->import, parser);
+	gcr_import_button_add_parsed (self->pv->import, parsed);
 }
 
 static void

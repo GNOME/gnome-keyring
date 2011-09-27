@@ -211,14 +211,14 @@ on_initialize_registered (GObject *object,
 }
 
 void
-_gcr_initialize_pkcs11_async (GCancellable *cancellable,
-                              GAsyncReadyCallback callback,
-                              gpointer user_data)
+gcr_pkcs11_initialize_async (GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
 	GSimpleAsyncResult *res;
 
 	res = g_simple_async_result_new (NULL, callback, user_data,
-	                                 _gcr_initialize_pkcs11_async);
+	                                 gcr_pkcs11_initialize_async);
 
 	if (initialized_modules) {
 		_gcr_debug ("already initialized, no need to async");
@@ -234,11 +234,11 @@ _gcr_initialize_pkcs11_async (GCancellable *cancellable,
 }
 
 gboolean
-_gcr_initialize_pkcs11_finish (GAsyncResult *result,
-                               GError **error)
+gcr_pkcs11_initialize_finish (GAsyncResult *result,
+                              GError **error)
 {
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL,
-	                      _gcr_initialize_pkcs11_async), FALSE);
+	                      gcr_pkcs11_initialize_async), FALSE);
 
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return FALSE;
@@ -247,8 +247,8 @@ _gcr_initialize_pkcs11_finish (GAsyncResult *result,
 }
 
 gboolean
-_gcr_initialize_pkcs11 (GCancellable *cancellable,
-                        GError **error)
+gcr_pkcs11_initialize (GCancellable *cancellable,
+                       GError **error)
 {
 	GList *results;
 	GError *err = NULL;
