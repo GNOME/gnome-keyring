@@ -115,7 +115,11 @@ _gcr_initialize_library (void)
 {
 	static gint gcr_initialize = 0;
 
+#if GLIB_CHECK_VERSION (2,30,0)
 	if (g_atomic_int_add (&gcr_initialize, 1) == 0)
+#else
+	if (g_atomic_int_exchange_and_add (&gcr_initialize, 1) == 0)
+#endif
 		return;
 
 	/* Initialize the libgcrypt library if needed */
