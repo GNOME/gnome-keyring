@@ -104,6 +104,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-process.c gcr-gnupg-process.h \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-gnupg-util.c gcr-gnupg-util.h \
+	gcr-icons.c gcr-icons.h \
 	gcr-importer.c gcr-importer.h \
 	gcr-internal.h \
 	gcr-library.c gcr-library.h \
@@ -140,7 +141,6 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-fingerprint.c gcr-fingerprint.h \
 	gcr-gnupg-renderer.c gcr-gnupg-renderer.h \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
-	gcr-icons.c gcr-icons.h \
 	gcr-import-button.c gcr-import-button.h \
 	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-key-renderer.c gcr-key-renderer.h \

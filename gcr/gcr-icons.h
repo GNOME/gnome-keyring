@@ -25,6 +25,8 @@
 
 #include "gcr-internal.h"
 
+#include <gck/gck.h>
+
 G_BEGIN_DECLS
 
 #define GCR_ICON_CERTIFICATE    "application-certificate"

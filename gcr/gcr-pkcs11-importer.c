@@ -327,16 +327,15 @@ calculate_label (GcrPkcs11Importer *self)
 }
 
 static GIcon *
-calculate_icon (GcrPkcs11Importer *self)
+calculate_icon (GcrPkcs11Importer *self,
+                GckTokenInfo *token_info)
 {
-	GckTokenInfo *info;
+	GckTokenInfo *info = NULL;
 	GIcon *result;
 
-	info = gck_slot_get_token_info (self->pv->slot);
-	if (g_strcmp0 (info->manufacturer_id, "Gnome Keyring") == 0)
-		result = g_themed_icon_new ("user-home");
-	else
-		result = g_themed_icon_new ("media-flash");
+	if (token_info == NULL)
+		info = token_info = gck_slot_get_token_info (self->pv->slot);
+	result = gcr_icon_for_token_info (token_info);
 	gck_token_info_free (info);
 
 	return result;
@@ -355,7 +354,7 @@ _gcr_pkcs11_importer_get_property (GObject *obj,
 		g_value_take_string (value, calculate_label (self));
 		break;
 	case PROP_ICON:
-		g_value_take_object (value, calculate_icon (self));
+		g_value_take_object (value, calculate_icon (self, NULL));
 		break;
 	case PROP_SLOT:
 		g_value_set_object (value, _gcr_pkcs11_importer_get_slot (self));
