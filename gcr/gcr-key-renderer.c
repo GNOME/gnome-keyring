@@ -225,8 +225,6 @@ gcr_key_renderer_class_init (GcrKeyRendererClass *klass)
 	g_object_class_override_property (gobject_class, PROP_LABEL, "label");
 	g_object_class_override_property (gobject_class, PROP_ATTRIBUTES, "attributes");
 
-	_gcr_icons_register ();
-
 	/* Register this as a view which can be loaded */
 	registered = gck_attributes_new ();
 	gck_attributes_add_ulong (registered, CKA_CLASS, CKO_PRIVATE_KEY);

@@ -38,6 +38,7 @@
 #include "gcr-certificate-chain.h"
 #include "gcr-deprecated-base.h"
 #include "gcr-enum-types-base.h"
+#include "gcr-icons.h"
 #include "gcr-library.h"
 #include "gcr-parser.h"
 #include "gcr-pkcs11-certificate.h"

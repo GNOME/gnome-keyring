@@ -549,7 +549,6 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	           g_param_spec_string ("label", "Label", "Certificate Label",
 	                                "", G_PARAM_READWRITE));
 
-	_gcr_icons_register ();
 	gcr_certificate_mixin_class_init (gobject_class);
 
 	/* Register this as a renderer which can be loaded */

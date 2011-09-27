@@ -2,6 +2,7 @@
  * gnome-keyring
  *
  * Copyright (C) 2010 Stefan Walter
+ * Copyright (C) 2011 Collabora Ltd
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,9 +30,11 @@ G_BEGIN_DECLS
 #define GCR_ICON_CERTIFICATE    "application-certificate"
 #define GCR_ICON_KEY            "gcr-key"
 #define GCR_ICON_KEY_PAIR       "gcr-key-pair"
+#define GCR_ICON_SMART_CARD     "gcr-smart-card"
+#define GCR_ICON_HOME_DIRECTORY "user-home"
 
-void         _gcr_icons_register         (void);
+GIcon *          gcr_icon_for_token_info                (GckTokenInfo *token_info);
 
 G_END_DECLS
 
-#endif /* __GCR_TOKEN_MANAGER_H__ */
+#endif /* __GCR_SMART_CARD_H__ */

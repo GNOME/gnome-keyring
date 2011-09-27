@@ -20,6 +20,7 @@ HEADER_BASE_FILES = \
 	gcr-collection.h \
 	gcr-comparable.h \
 	gcr-deprecated-base.h \
+	gcr-icons.h \
 	gcr-library.h \
 	gcr-parser.h \
 	gcr-pkcs11-certificate.h \

@@ -126,8 +126,6 @@ _gcr_failure_renderer_class_init (GcrFailureRendererClass *klass)
 	g_object_class_install_property (gobject_class, PROP_ATTRIBUTES,
 	           g_param_spec_boxed ("attributes", "Attributes", "Certificate pkcs11 attributes",
 	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
-
-	_gcr_icons_register ();
 }
 
 static void
