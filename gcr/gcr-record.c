@@ -668,10 +668,10 @@ _gcr_record_set_base64 (GcrRecord *record,
 	                               block->value, &state, &save);
 	length += g_base64_encode_close (TRUE, block->value + length,
 	                                 &state, &save);
-	g_strchomp (block->value);
-	g_assert (length < estimate);
 	block->value[length] = 0;
+	g_assert (length < estimate);
 
+	g_strchomp (block->value);
 	record_take_column (record, column, block);
 }
 
