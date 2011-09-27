@@ -2280,7 +2280,11 @@ gcr_parsed_ref (GcrParsed *parsed)
 	g_return_val_if_fail (parsed != NULL, NULL);
 
 	/* Already had a reference */
+#if GLIB_CHECK_VERSION (2,29,90)
+	if (g_atomic_int_add (&parsed->refs, 1) >= 1)
+#else
 	if (g_atomic_int_exchange_and_add (&parsed->refs, 1) >= 1)
+#endif
 		return parsed;
 
 	/* If this is the first reference, flatten the stack of parsed */

@@ -64,7 +64,7 @@ stripped_char (gunichar ch)
 {
 	gunichar retval = 0;
 	GUnicodeType utype;
-#if GLIB_CHECK_VERSION (2,30,0)
+#if GLIB_CHECK_VERSION (2,29,90)
 	gunichar decomp[4];
 #else
 	gunichar *decomp;
@@ -78,7 +78,7 @@ stripped_char (gunichar ch)
 	case G_UNICODE_FORMAT:
 	case G_UNICODE_UNASSIGNED:
 	case G_UNICODE_NON_SPACING_MARK:
-#if GLIB_CHECK_VERSION (2,30,0)
+#if GLIB_CHECK_VERSION (2,29,90)
 	case G_UNICODE_SPACING_MARK:
 #else
 	case G_UNICODE_COMBINING_MARK:
@@ -112,7 +112,7 @@ stripped_char (gunichar ch)
 	case G_UNICODE_SPACE_SEPARATOR:
 	default:
 		ch = g_unichar_tolower (ch);
-#if GLIB_CHECK_VERSION (2,30,0)
+#if GLIB_CHECK_VERSION (2,29,90)
 		dlen = g_unichar_fully_decompose (ch, FALSE, decomp, 4);
 		if (dlen > 0) {
 #else
@@ -120,7 +120,7 @@ stripped_char (gunichar ch)
 		if (decomp != NULL) {
 #endif
 			retval = decomp[0];
-#if !GLIB_CHECK_VERSION (2,30,0)
+#if !GLIB_CHECK_VERSION (2,29,90)
 			g_free (decomp);
 #endif
 		}
