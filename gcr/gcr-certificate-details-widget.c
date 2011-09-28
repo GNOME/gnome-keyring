@@ -32,18 +32,33 @@ gcr_certificate_details_widget_get_type (void)
 	return gcr_certificate_widget_get_type ();
 }
 
+/**
+ * gcr_certificate_details_widget_new: (skip):
+ *
+ * Deprecated
+ */
 GcrCertificateDetailsWidget*
 gcr_certificate_details_widget_new (GcrCertificate *cert)
 {
 	return gcr_certificate_widget_new (cert);
 }
 
+/**
+ * gcr_certificate_details_widget_get_certificate: (skip):
+ *
+ * Deprecated
+ */
 GcrCertificate*
 gcr_certificate_details_widget_get_certificate (GcrCertificateDetailsWidget *details)
 {
 	return gcr_certificate_widget_get_certificate (details);
 }
 
+/**
+ * gcr_certificate_details_widget_set_certificate: (skip):
+ *
+ * Deprecated
+ */
 void
 gcr_certificate_details_widget_set_certificate (GcrCertificateDetailsWidget *details,
                                                 GcrCertificate *cert)

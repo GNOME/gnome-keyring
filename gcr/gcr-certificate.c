@@ -312,7 +312,7 @@ on_transform_date_to_string (const GValue *src, GValue *dest)
  */
 
 static void
-gcr_certificate_iface_init (gpointer gobject_iface)
+gcr_certificate_default_init (GcrCertificateIface *iface)
 {
 	static volatile gsize initialized = 0;
 
@@ -321,31 +321,31 @@ gcr_certificate_iface_init (gpointer gobject_iface)
 
 		CERTIFICATE_INFO = g_quark_from_static_string ("_gcr_certificate_certificate_info");
 
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		         g_param_spec_string ("label", "Label", "Certificate label",
 		                              "", G_PARAM_READABLE));
 
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		         g_param_spec_string ("description", "Description", "Description of object being rendered",
 		                              "", G_PARAM_READABLE));
 
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		         g_param_spec_string ("markup", "Markup", "Markup which describes object being rendered",
 		                              "", G_PARAM_READABLE));
 
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		         g_param_spec_object ("icon", "Icon", "Icon for the object being rendered",
 		                              G_TYPE_ICON, G_PARAM_READABLE));
 
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		           g_param_spec_string ("subject", "Subject", "Common name of subject",
 		                                "", G_PARAM_READABLE));
 
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		           g_param_spec_string ("issuer", "Issuer", "Common name of issuer",
 		                                "", G_PARAM_READABLE));
 
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		           g_param_spec_boxed ("expiry", "Expiry", "Certificate expiry",
 		                               G_TYPE_DATE, G_PARAM_READABLE));
 
@@ -353,33 +353,21 @@ gcr_certificate_iface_init (gpointer gobject_iface)
 	}
 }
 
-GType
-gcr_certificate_get_type (void)
-{
-	static GType type = 0;
-	if (!type) {
-		static const GTypeInfo info = {
-			sizeof (GcrCertificateIface),
-			gcr_certificate_iface_init,               /* base init */
-			NULL,             /* base finalize */
-			NULL,             /* class_init */
-			NULL,             /* class finalize */
-			NULL,             /* class data */
-			0,
-			0,                /* n_preallocs */
-			NULL,             /* instance init */
-		};
-		type = g_type_register_static (G_TYPE_INTERFACE, "GcrCertificateIface", &info, 0);
-		g_type_interface_add_prerequisite (type, GCR_TYPE_COMPARABLE);
-	}
-	
-	return type;
-}
+typedef GcrCertificateIface GcrCertificateInterface;
+
+G_DEFINE_INTERFACE (GcrCertificate, gcr_certificate, GCR_TYPE_COMPARABLE);
 
 /* -----------------------------------------------------------------------------
  * PUBLIC 
  */
 
+/**
+ * gcr_certificate_get_columns: (skip):
+ *
+ * Get the columns appropriate for a certificate
+ *
+ * Returns: the columns
+ */
 const GcrColumn*
 gcr_certificate_get_columns (void)
 {
@@ -445,10 +433,11 @@ gcr_certificate_compare (GcrComparable *first, GcrComparable *other)
  * 
  * Gets the raw DER data for an X.509 certificate.
  * 
- * Returns: raw DER data of the X.509 certificate.
+ * Returns: (array length=n_data): raw DER data of the X.509 certificate
  **/
-gconstpointer
-gcr_certificate_get_der_data (GcrCertificate *self, gsize *n_data)
+const guchar *
+gcr_certificate_get_der_data (GcrCertificate *self,
+                              gsize *n_data)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	g_return_val_if_fail (GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data, NULL);
@@ -521,10 +510,12 @@ _gcr_certificate_get_issuer_const (GcrCertificate *self, gsize *n_data)
  *
  * The data should be freed by using g_free() when no longer required.
  *
- * Returns: allocated memory containing the raw issuer.
+ * Returns: (transfer full) (array length=n_data): allocated memory containing
+ *          the raw issuer
  */
-gpointer
-gcr_certificate_get_issuer_raw (GcrCertificate *self, gsize *n_data)
+guchar *
+gcr_certificate_get_issuer_raw (GcrCertificate *self,
+                                gsize *n_data)
 {
 	gconstpointer data;
 
@@ -682,9 +673,10 @@ _gcr_certificate_get_subject_const (GcrCertificate *self, gsize *n_data)
  *
  * The data should be freed by using g_free() when no longer required.
  *
- * Returns: allocated memory containing the raw subject.
+ * Returns: (transfer full) (array length=n_data): allocated memory containing
+ *          the raw subject
  */
-gpointer
+guchar *
 gcr_certificate_get_subject_raw (GcrCertificate *self, gsize *n_data)
 {
 	GcrCertificateInfo *info;
@@ -926,10 +918,10 @@ gcr_certificate_get_serial_number_hex (GcrCertificate *self)
  *
  * Get the icon for a certificate.
  *
- * Returns: The icon for this certificate, which should be released with
- *     g_object_unref().
+ * Returns: (transfer full): the icon for this certificate, which should be
+ *          released with g_object_unref()
  */
-GIcon*
+GIcon *
 gcr_certificate_get_icon (GcrCertificate *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), FALSE);

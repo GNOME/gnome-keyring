@@ -31,8 +31,21 @@
 #include <glib.h>
 
 #ifndef GCK_API_SUBJECT_TO_CHANGE
+
+/**
+ * GCK_API_SUBJECT_TO_CHANGE: (skip):
+ *
+ * skip for gir introspection
+ */
 #define GCK_API_SUBJECT_TO_CHANGE 1
+
+/**
+ * __GCR_DEFINED_GCK_SUBJECT_TO_CHANGE__: (skip):
+ *
+ * skip for gir introspection
+ */
 #define __GCR_DEFINED_GCK_SUBJECT_TO_CHANGE__ 1
+
 #endif
 
 #include <gck/gck.h>

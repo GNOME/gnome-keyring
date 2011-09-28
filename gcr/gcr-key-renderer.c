@@ -394,7 +394,7 @@ gcr_key_renderer_set_attributes (GcrKeyRenderer *self, GckAttributes *attrs)
  *
  * Get the attributes displayed in the renderer.
  *
- * Returns: The attributes, owned by the renderer.
+ * Returns: (transfer none): the attributes, owned by the renderer
  */
 GckAttributes*
 gcr_key_renderer_get_attributes (GcrKeyRenderer *self)

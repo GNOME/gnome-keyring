@@ -32,13 +32,23 @@ gcr_certificate_basics_widget_get_type (void)
 	return gcr_certificate_widget_get_type ();
 }
 
-GcrCertificateBasicsWidget*
+/**
+ * gcr_certificate_basics_widget_new: (skip):
+ *
+ * Deprecated
+ */
+GcrCertificateBasicsWidget *
 gcr_certificate_basics_widget_new (GcrCertificate *cert)
 {
 	return gcr_certificate_widget_new (cert);
 }
 
-GcrCertificate*
+/**
+ * gcr_certificate_basics_widget_get_certificate: (skip):
+ *
+ * Deprecated
+ */
+GcrCertificate *
 gcr_certificate_basics_widget_get_certificate (GcrCertificateBasicsWidget *basics)
 {
 	return gcr_certificate_widget_get_certificate (basics);

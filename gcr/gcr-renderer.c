@@ -76,7 +76,7 @@ static GArray *registered_renderers = NULL;
 static gboolean registered_sorted = FALSE;
 
 static void
-gcr_renderer_base_init (gpointer gobject_iface)
+gcr_renderer_default_init (GcrRendererIface *iface)
 {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
@@ -86,7 +86,7 @@ gcr_renderer_base_init (gpointer gobject_iface)
 		 *
 		 * The label to display.
 		 */
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		         g_param_spec_string ("label", "Label", "The label for the renderer",
 		                              "", G_PARAM_READWRITE));
 
@@ -95,7 +95,7 @@ gcr_renderer_base_init (gpointer gobject_iface)
 		 *
 		 * The attributes to display.
 		 */
-		g_object_interface_install_property (gobject_iface,
+		g_object_interface_install_property (iface,
 		         g_param_spec_boxed ("attributes", "Attributes", "The data displayed in the renderer",
 		                             GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
@@ -113,21 +113,9 @@ gcr_renderer_base_init (gpointer gobject_iface)
 	}
 }
 
-GType
-gcr_renderer_get_type (void)
-{
-	static GType type = 0;
-	if (!type) {
-		static const GTypeInfo info = {
-			sizeof (GcrRendererIface),
-			gcr_renderer_base_init,  /* base init */
-			NULL,                    /* base finalize */
-		};
-		type = g_type_register_static (G_TYPE_INTERFACE, "GcrRendererIface", &info, 0);
-	}
+typedef GcrRendererIface GcrRendererInterface;
 
-	return type;
-}
+G_DEFINE_INTERFACE (GcrRenderer, gcr_renderer, G_TYPE_OBJECT);
 
 /**
  * gcr_renderer_render_view:
@@ -219,10 +207,10 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
  * Create and initialize a renderer for the given attributes and label. These
  * renderers should have been preregistered via gcr_renderer_register().
  *
- * Returns: A new renderer, or %NULL if no renderer matched the attributes.
- *     The render should be released with g_object-unref().
+ * Returns: (transfer full): a new renderer, or %NULL if no renderer matched
+ *          the attributes; the render should be released with g_object_unref()
  */
-GcrRenderer*
+GcrRenderer *
 gcr_renderer_create (const gchar *label, GckAttributes *attrs)
 {
 	GcrRegistered *registered;

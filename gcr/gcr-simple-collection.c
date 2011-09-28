@@ -143,10 +143,10 @@ gcr_collection_iface (GcrCollectionIface *iface)
  *
  * Create a new #GcrSimpleCollection.
  *
- * Returns: A newly allocated collection, which should be freed with
- *     g_object_unref().
+ * Returns: (transfer full): a newly allocated collection, which should be
+ *     freed with g_object_unref()
  */
-GcrCollection*
+GcrCollection *
 gcr_simple_collection_new (void)
 {
 	return g_object_new (GCR_TYPE_SIMPLE_COLLECTION, NULL);

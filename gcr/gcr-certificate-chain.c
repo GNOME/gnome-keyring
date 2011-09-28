@@ -583,9 +583,9 @@ gcr_certificate_chain_get_status (GcrCertificateChain *self)
  * If an anchor is returned it does not mean that the certificate chain has
  * been verified, but merely that an anchor has been found.
  *
- * Returns: the anchor certificate, or NULL if not anchored.
+ * Returns: (transfer full): the anchor certificate, or NULL if not anchored.
  */
-GcrCertificate*
+GcrCertificate *
 gcr_certificate_chain_get_anchor (GcrCertificateChain *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_CHAIN (self), NULL);
@@ -603,7 +603,8 @@ gcr_certificate_chain_get_anchor (GcrCertificateChain *self)
  * Get the endpoint certificate in the chain. This is always the first
  * certificate in the chain. The endpoint certificate cannot be anchored.
  *
- * Returns: the endpoint certificate, or NULL if the chain is empty.
+ * Returns: (transfer none): the endpoint certificate, or %NULL if the chain
+ *          is empty
  */
 GcrCertificate*
 gcr_certificate_chain_get_endpoint (GcrCertificateChain *self)
@@ -637,9 +638,9 @@ gcr_certificate_chain_get_length (GcrCertificateChain *self)
  * Get a certificate in the chain. It is an error to call this function
  * with an invalid index.
  *
- * Returns: the certificate
+ * Returns: (transfer none): the certificate
  */
-GcrCertificate*
+GcrCertificate *
 gcr_certificate_chain_get_certificate (GcrCertificateChain *self, guint index)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_CHAIN (self), NULL);

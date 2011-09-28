@@ -211,9 +211,9 @@ gcr_certificate_widget_new (GcrCertificate *certificate)
  *
  * Get the certificate displayed in the widget.
  *
- * Returns: The certificate.
+ * Returns: (transfer full): The certificate.
  */
-GcrCertificate*
+GcrCertificate *
 gcr_certificate_widget_get_certificate (GcrCertificateWidget *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_WIDGET (self), NULL);

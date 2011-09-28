@@ -177,6 +177,15 @@ gcr_renderer_iface_init (GcrRendererIface *iface)
 	iface->render_view = gcr_failure_renderer_render;
 }
 
+/**
+ * gcr_failure_renderer_new:
+ * @label: the label for the failure
+ * @error: the error to display
+ *
+ * Create a new renderer for an error.
+ *
+ * Returns: (transfer full): the new renderer
+ */
 GcrRenderer *
 gcr_failure_renderer_new (const gchar *label,
                           GError *error)
@@ -191,6 +200,14 @@ gcr_failure_renderer_new (const gchar *label,
 	return GCR_RENDERER (renderer);
 }
 
+/**
+ * gcr_failure_renderer_new_unsupported:
+ * @label: the label for the failure
+ *
+ * Create a new renderer for unsupported data.
+ *
+ * Returns: (transfer full): the new renderer
+ */
 GcrRenderer *
 gcr_failure_renderer_new_unsupported (const gchar *label)
 {

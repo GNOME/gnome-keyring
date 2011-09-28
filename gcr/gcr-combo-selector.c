@@ -216,9 +216,9 @@ gcr_combo_selector_new (GcrCollection *collection)
  *
  * Get the collection that this selector is displaying objects from.
  *
- * Returns: The collection, owned by the selector.
+ * Returns: (transfer none): The collection, owned by the selector.
  */
-GcrCollection*
+GcrCollection *
 gcr_combo_selector_get_collection (GcrComboSelector *self)
 {
 	g_return_val_if_fail (GCR_IS_COMBO_SELECTOR (self), NULL);
@@ -231,9 +231,9 @@ gcr_combo_selector_get_collection (GcrComboSelector *self)
  *
  * Get the selected object in the selector, or %NULL if nothing selected.
  *
- * Returns: The selected object, owned by the selector, or %NULL.
+ * Returns: (transfer none): the selected object, owned by the selector, or %NULL
  */
-GObject*
+GObject *
 gcr_combo_selector_get_selected (GcrComboSelector *self)
 {
 	GtkTreeIter iter;

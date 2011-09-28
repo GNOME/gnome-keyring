@@ -50,16 +50,13 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-/* -----------------------------------------------------------------------------
- * INTERNAL
- */
 
-/* ---------------------------------------------------------------------------------
- * INTERFACE
- */
+typedef GcrCollectionIface GcrCollectionInterface;
+
+G_DEFINE_INTERFACE (GcrCollection, gcr_collection, G_TYPE_OBJECT);
 
 static void
-gcr_collection_base_init (gpointer g_class)
+gcr_collection_default_init (GcrCollectionIface *iface)
 {
 	static volatile gsize initialized = 0;
 
@@ -78,30 +75,6 @@ gcr_collection_base_init (gpointer g_class)
 		g_once_init_leave (&initialized, 1);
 	}
 }
-
-GType
-gcr_collection_get_type (void)
-{
-	static GType type = 0;
-	if (!type) {
-		static const GTypeInfo info = {
-			sizeof (GcrCollectionIface),
-			gcr_collection_base_init,               /* base init */
-			NULL,             /* base finalize */
-			NULL,             /* class_init */
-			NULL,             /* class finalize */
-			NULL,             /* class data */
-			0,
-			0,                /* n_preallocs */
-			NULL,             /* instance init */
-		};
-		type = g_type_register_static (G_TYPE_INTERFACE, "GcrCollectionIface", &info, 0);
-		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-	}
-
-	return type;
-}
-
 
 /* -----------------------------------------------------------------------------
  * PUBLIC
@@ -130,8 +103,8 @@ gcr_collection_get_length (GcrCollection *self)
  *
  * Get a list of the objects in this collection.
  *
- * Returns: A list of the objects in this collection, which should be freed
- *     with g_list_free().
+ * Returns: (transfer container) (element-type GLib.Object): a list of the objects
+ *          in this collection, which should be freed with g_list_free()
  */
 GList*
 gcr_collection_get_objects (GcrCollection *self)

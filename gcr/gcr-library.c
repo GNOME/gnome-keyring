@@ -289,7 +289,8 @@ gcr_pkcs11_initialize (GCancellable *cancellable,
  *
  * When done with the list, free it with gck_list_unref_free().
  *
- * Returns: A newly allocated list of #GckModule objects.
+ * Returns: (transfer full) (element-type Gck.Module): a newly allocated list
+ *          of #GckModule objects
  */
 GList*
 gcr_pkcs11_get_modules (void)
@@ -302,7 +303,7 @@ gcr_pkcs11_get_modules (void)
 
 /**
  * gcr_pkcs11_set_modules:
- * @modules: a list of #GckModule
+ * @modules: (element-type Gck.Module): a list of #GckModule
  *
  * Set the list of PKCS\#11 modules that are used by the GCR library.
  * Each module in the list is a #GckModule object.
@@ -392,9 +393,9 @@ gcr_pkcs11_add_module_from_file (const gchar *module_path, gpointer unused,
  *
  * When done with the #GckSlot, use g_object_unref() to release it.
  *
- * Returns: the #GckSlot to use for trust assertions.
+ * Returns: (transfer full): the #GckSlot to use for trust assertions.
  */
-GckSlot*
+GckSlot *
 gcr_pkcs11_get_trust_store_slot (void)
 {
 	GckSlot *slot;
@@ -425,7 +426,8 @@ gcr_pkcs11_get_trust_store_slot (void)
  *
  * When done with the list, free it with gck_list_unref_free().
  *
- * Returns: a list of #GckSlot objects to use for lookup of trust.
+ * Returns: (transfer full) (element-type Gck.Slot): a list of #GckSlot objects
+ *          to use for lookup of trust.
  */
 GList*
 gcr_pkcs11_get_trust_lookup_slots (void)
@@ -496,9 +498,9 @@ gcr_pkcs11_set_trust_store_uri (const gchar *pkcs11_uri)
  * Get the PKCS\#11 URIs that are used to identify which slots to use for
  * lookup trust assertions.
  *
- * Returns: the uri which identifies trust storage slot
+ * Returns: (transfer none): the uri which identifies trust storage slot
  */
-const gchar**
+const gchar **
 gcr_pkcs11_get_trust_lookup_uris (void)
 {
 	initialize_uris ();

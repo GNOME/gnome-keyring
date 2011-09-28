@@ -282,16 +282,16 @@ gcr_tree_selector_class_init (GcrTreeSelectorClass *klass)
  */
 
 /**
- * gcr_tree_selector_new:
+ * gcr_tree_selector_new: (skip):
  * @collection: The collection that contains the objects to display
  * @columns: The columns to use to display the objects
  *
  * Create a new #GcrTreeSelector.
  *
- * Returns: A newly allocated selector, which should be released with
- *     g_object_unref().
+ * Returns: (transfer full): a newly allocated selector, which should be
+ *          released with g_object_unref()
  */
-GcrTreeSelector*
+GcrTreeSelector *
 gcr_tree_selector_new (GcrCollection *collection, const GcrColumn *columns)
 {
 	return g_object_new (GCR_TYPE_TREE_SELECTOR,
@@ -306,9 +306,9 @@ gcr_tree_selector_new (GcrCollection *collection, const GcrColumn *columns)
  *
  * Get the collection that this selector is displaying objects from.
  *
- * Returns: The collection, owned by the selector.
+ * Returns: (transfer none): the collection, owned by the selector
  */
-GcrCollection*
+GcrCollection *
 gcr_tree_selector_get_collection (GcrTreeSelector *self)
 {
 	g_return_val_if_fail (GCR_IS_TREE_SELECTOR (self), NULL);
@@ -316,7 +316,7 @@ gcr_tree_selector_get_collection (GcrTreeSelector *self)
 }
 
 /**
- * gcr_tree_selector_get_columns:
+ * gcr_tree_selector_get_columns: (skip):
  * @self: The selector
  *
  * Get the columns displayed in a selector in multiple mode.
@@ -336,7 +336,8 @@ gcr_tree_selector_get_columns (GcrTreeSelector *self)
  *
  * Get a list of selected objects.
  *
- * Returns: The list of selected objects, to be released with g_list_free().
+ * Returns: (transfer container) (element-type GLib.Object): the list of selected
+ *          objects, to be released with g_list_free()
  */
 GList*
 gcr_tree_selector_get_selected (GcrTreeSelector *self)
@@ -348,7 +349,7 @@ gcr_tree_selector_get_selected (GcrTreeSelector *self)
 /**
  * gcr_tree_selector_set_selected:
  * @self: The selector
- * @selected: The list of objects to select.
+ * @selected: (element-type GLib.Object): The list of objects to select.
  *
  * Select certain objects in the selector.
  */

@@ -172,9 +172,9 @@ check_if_seen_or_add (GHashTable *seen,
  * The parsed item is represented by the state of the GcrParser at the
  * time of calling this method.
  *
- * Returns: a list of importers which can import the parsed item, which
- *          should be freed with g_object_unref(), or %NULL if no types
- *          of importers can be created.
+ * Returns: (element-type Gcr.Importer) (transfer full): a list of importers
+ *          which can import the parsed item, which should be freed with
+ *          g_object_unref(), or %NULL if no types of importers can be created
  */
 GList *
 gcr_importer_create_for_parsed (GcrParsed *parsed)
@@ -274,7 +274,7 @@ gcr_importer_queue_for_parsed (GcrImporter *importer,
 
 /**
  * gcr_importer_queue_and_filter_for_parsed:
- * @importers: a set of importers
+ * @importers: (element-type Gcr.Importer): a set of importers
  * @parsed: a parsed item
  *
  * Queues an additional item to be imported in all compattible importers
@@ -284,8 +284,8 @@ gcr_importer_queue_for_parsed (GcrImporter *importer,
  * If the parsed item is incompatible with an importer, then that the item
  * will not be queued on that importer.
  *
- * Returns: a new set of importers that queued the item, which should be freed
- *          with gck_list_unref_free().
+ * Returns: (transfer full) (element-type Gcr.Importer): a new set of importers
+ *          that queued the item, which should be freed with gck_list_unref_free()
  */
 GList *
 gcr_importer_queue_and_filter_for_parsed (GList *importers,

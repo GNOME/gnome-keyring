@@ -335,7 +335,7 @@ calculate_icon (GcrPkcs11Importer *self,
 
 	if (token_info == NULL)
 		info = token_info = gck_slot_get_token_info (self->pv->slot);
-	result = gcr_icon_for_token_info (token_info);
+	result = gcr_icon_for_token (token_info);
 	gck_token_info_free (info);
 
 	return result;

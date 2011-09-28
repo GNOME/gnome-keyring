@@ -824,9 +824,9 @@ gcr_certificate_renderer_new_for_attributes (const gchar *label, struct _GckAttr
  * explicitly set, then the renderer will return itself since it acts as
  * a valid certificate.
  *
- * Returns: The certificate, owned by the renderer.
+ * Returns: (transfer full): The certificate, owned by the renderer.
  */
-GcrCertificate*
+GcrCertificate *
 gcr_certificate_renderer_get_certificate (GcrCertificateRenderer *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_RENDERER (self), NULL);

@@ -294,19 +294,19 @@ if HAVE_INTROSPECTION
 
 include $(INTROSPECTION_MAKEFILE)
 
-INTROSPECTION_GIRS = Gcr-@GCR_MAJOR@.@GCR_MINOR@.gir
-INTROSPECTION_SCANNER_ARGS = --warn-all --add-include-path=$(srcdir) --add-include-path=.
-INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir) --includedir=.
+INTROSPECTION_GIRS = Gcr-@GCR_MAJOR@.gir
+INTROSPECTION_SCANNER_ARGS = $(INTROSPECTION_FLAGS) --warn-all --add-include-path=$(srcdir) --add-include-path=$(top_builddir)/gck
+INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir) --includedir=$(top_builddir)/gck
 
-Gcr-@GCR_MAJOR@.@GCR_MINOR@.gir: libgcr-@GCR_MAJOR@.la
+Gcr-@GCR_MAJOR@.gir: libgcr-@GCR_MAJOR@.la
 
-Gcr_@GCR_MAJOR@_@GCR_MINOR@_gir_PACKAGES = gobject-2.0 gtk+-3.0 p11-kit-1
-Gcr_@GCR_MAJOR@_@GCR_MINOR@_gir_EXPORT_PACKAGES = gcr-3
-Gcr_@GCR_MAJOR@_@GCR_MINOR@_gir_INCLUDES = GObject-2.0 Gtk-3.0
-Gcr_@GCR_MAJOR@_@GCR_MINOR@_gir_LIBS = libgcr-@GCR_MAJOR@.la
-Gcr_@GCR_MAJOR@_@GCR_MINOR@_gir_CFLAGS = -I$(top_srcdir) -I$(top_builddir) -DGCR_COMPILATION -DGCR_API_SUBJECT_TO_CHANGE
-Gcr_@GCR_MAJOR@_@GCR_MINOR@_gir_FILES = $(libgcr_@GCR_MAJOR@_la_SOURCES)
-Gcr_@GCR_MAJOR@_@GCR_MINOR@_gir_SCANNERFLAGS = --c-include "gcr.h"
+Gcr_@GCR_MAJOR@_gir_PACKAGES = gobject-2.0 gtk+-3.0 p11-kit-1
+Gcr_@GCR_MAJOR@_gir_EXPORT_PACKAGES = gcr-3
+Gcr_@GCR_MAJOR@_gir_INCLUDES = GObject-2.0 Gtk-3.0 Gck-@GCK_MAJOR@
+Gcr_@GCR_MAJOR@_gir_LIBS = libgcr-base-@GCR_MAJOR@.la libgcr-@GCR_MAJOR@.la
+Gcr_@GCR_MAJOR@_gir_CFLAGS = -I$(top_srcdir) -I$(top_builddir) -DGCR_COMPILATION -DGCR_API_SUBJECT_TO_CHANGE
+Gcr_@GCR_MAJOR@_gir_FILES = $(libgcr_base_@GCR_MAJOR@_la_SOURCES) $(libgcr_@GCR_MAJOR@_la_SOURCES)
+Gcr_@GCR_MAJOR@_gir_SCANNERFLAGS = --c-include "gcr.h" --c-include "gcr-base.h"
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)

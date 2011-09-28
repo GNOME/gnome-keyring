@@ -330,9 +330,9 @@ gcr_certificate_iface (GcrCertificateIface *iface)
  *
  * Access the automatically loaded attributes for this certificate.
  *
- * Returns: the certificate attributes
+ * Returns: (transfer none): the certificate attributes
  */
-GckAttributes*
+GckAttributes *
 gcr_pkcs11_certificate_get_attributes (GcrPkcs11Certificate *self)
 {
 	g_return_val_if_fail (GCR_IS_PKCS11_CERTIFICATE (self), NULL);
@@ -355,9 +355,9 @@ gcr_pkcs11_certificate_get_attributes (GcrPkcs11Certificate *self)
  * Will return %NULL if no issuer certificate is found. Use @error to determine
  * if an error occurred.
  *
- * Returns: a new #GcrPkcs11Certificate, or %NULL
+ * Returns: (transfer full): a new #GcrPkcs11Certificate, or %NULL
  */
-GcrCertificate*
+GcrCertificate *
 gcr_pkcs11_certificate_lookup_issuer (GcrCertificate *certificate, GCancellable *cancellable,
                                       GError **error)
 {
@@ -426,9 +426,9 @@ gcr_pkcs11_certificate_lookup_issuer_async (GcrCertificate *certificate, GCancel
  * Will return %NULL if no issuer certificate is found. Use @error to determine
  * if an error occurred.
  *
- * Returns: a new #GcrPkcs11Certificate, or %NULL
+ * Returns: (transfer full): a new #GcrPkcs11Certificate, or %NULL
  */
-GcrCertificate*
+GcrCertificate *
 gcr_pkcs11_certificate_lookup_issuer_finish (GAsyncResult *result, GError **error)
 {
 	lookup_issuer_closure *closure;

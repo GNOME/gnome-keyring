@@ -380,9 +380,9 @@ gcr_list_selector_new (GcrCollection *collection)
  *
  * Get the collection that this selector is displaying objects from.
  *
- * Returns: The collection, owned by the selector.
+ * Returns: (transfer none): The collection, owned by the selector.
  */
-GcrCollection*
+GcrCollection *
 gcr_list_selector_get_collection (GcrListSelector *self)
 {
 	g_return_val_if_fail (GCR_IS_LIST_SELECTOR (self), NULL);
@@ -395,7 +395,8 @@ gcr_list_selector_get_collection (GcrListSelector *self)
  *
  * Get a list of selected objects.
  *
- * Returns: The list of selected objects, to be released with g_list_free().
+ * Returns: (transfer container) (element-type GLib.Object): the list of
+ *          selected objects, to be released with g_list_free()
  */
 GList*
 gcr_list_selector_get_selected (GcrListSelector *self)
@@ -407,7 +408,7 @@ gcr_list_selector_get_selected (GcrListSelector *self)
 /**
  * gcr_list_selector_set_selected:
  * @self: The selector
- * @selected: The list of objects to select.
+ * @selected: (element-type GLib.Object): the list of objects to select
  *
  * Select certain objects in the selector.
  */

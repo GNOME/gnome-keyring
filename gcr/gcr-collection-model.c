@@ -1280,7 +1280,7 @@ gcr_collection_model_new (GcrCollection *collection, ...)
 }
 
 /**
- * gcr_collection_model_new_full:
+ * gcr_collection_model_new_full: (skip):
  * @collection: The collection to represent
  * @columns: The columns the model should contain
  *
@@ -1297,7 +1297,7 @@ gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *colum
 }
 
 /**
- * gcr_collection_model_set_columns:
+ * gcr_collection_model_set_columns: (skip):
  * @self: The model
  * @columns: The columns the model should contain
  *
@@ -1358,9 +1358,9 @@ gcr_collection_model_get_collection (GcrCollectionModel *self)
  *
  * Get the object that is represented by the given row in the model.
  *
- * Returns: The object, owned by the model.
+ * Returns: (transfer none): The object, owned by the model.
  */
-GObject*
+GObject *
 gcr_collection_model_object_for_iter (GcrCollectionModel *self, const GtkTreeIter *iter)
 {
 	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), NULL);
@@ -1507,8 +1507,8 @@ gcr_collection_model_is_selected (GcrCollectionModel *self, GtkTreeIter *iter)
  *
  * Get a list of checked/selected objects.
  *
- * Returns: a list of selected objects, which should be freed with
- *          g_list_free().
+ * Returns: (transfer container) (element-type GLib.Object): a list of selected
+ *          objects, which should be freed with g_list_free()
  */
 GList *
 gcr_collection_model_get_selected_objects (GcrCollectionModel *self)
@@ -1531,7 +1531,7 @@ gcr_collection_model_get_selected_objects (GcrCollectionModel *self)
 /**
  * gcr_collection_model_set_selected_objects:
  * @self: the collection model
- * @selected: a list of objects to select
+ * @selected: (element-type GLib.Object): a list of objects to select
  *
  * Set the checked/selected objects.
  */

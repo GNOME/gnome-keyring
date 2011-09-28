@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 #define GCR_IS_RENDERER(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_RENDERER))
 #define GCR_RENDERER_GET_INTERFACE(inst)  (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GCR_TYPE_RENDERER, GcrRendererIface))
 
+typedef struct _GcrRenderer GcrRenderer;
 typedef struct _GcrRendererIface GcrRendererIface;
 
 struct _GcrRendererIface {

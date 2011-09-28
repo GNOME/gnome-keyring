@@ -137,9 +137,9 @@ gcr_simple_certificate_iface_init (GcrCertificateIface *iface)
  * Create a new #GcrSimpleCertificate for the raw DER data. The @data memory is
  * copied so you can dispose of it after this function returns.
  *
- * Returns: a new #GcrSimpleCertificate
+ * Returns: (transfer full): a new #GcrSimpleCertificate
  */
-GcrCertificate*
+GcrCertificate *
 gcr_simple_certificate_new (gconstpointer data, gsize n_data)
 {
 	GcrSimpleCertificate *cert;
@@ -163,9 +163,9 @@ gcr_simple_certificate_new (gconstpointer data, gsize n_data)
  * not copied and must persist until the #GcrSimpleCertificate object is
  * destroyed.
  *
- * Returns: a new #GcrSimpleCertificate
+ * Returns: (transfer full): a new #GcrSimpleCertificate
  */
-GcrCertificate*
+GcrCertificate *
 gcr_simple_certificate_new_static (gconstpointer data, gsize n_data)
 {
 	GcrSimpleCertificate *cert;

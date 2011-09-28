@@ -26,8 +26,16 @@
 #include "gcr-base.h"
 #include "gcr-icons.h"
 
+/**
+ * gcr_icon_for_token:
+ * @token_info: the token info
+ *
+ * Get an appropriate icon for the token
+ *
+ * Returns: (transfer full): the icon
+ */
 GIcon *
-gcr_icon_for_token_info (GckTokenInfo *token_info)
+gcr_icon_for_token (GckTokenInfo *token_info)
 {
 	GIcon *icon;
 

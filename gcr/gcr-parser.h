@@ -107,7 +107,7 @@ const gchar*             gcr_parser_get_parsed_description (GcrParser *self);
 
 GckAttributes*           gcr_parser_get_parsed_attributes  (GcrParser *self);
 
-gconstpointer            gcr_parser_get_parsed_block       (GcrParser *self,
+const guchar *           gcr_parser_get_parsed_block       (GcrParser *self,
                                                             gsize *n_block);
 
 GcrDataFormat            gcr_parser_get_parsed_format      (GcrParser *self);
@@ -126,7 +126,7 @@ const gchar*             gcr_parsed_get_description        (GcrParsed *parsed);
 
 GckAttributes*           gcr_parsed_get_attributes         (GcrParsed *parsed);
 
-gconstpointer            gcr_parsed_get_data               (GcrParsed *parsed,
+const guchar *           gcr_parsed_get_data               (GcrParsed *parsed,
                                                             gsize *n_data);
 
 GcrDataFormat            gcr_parsed_get_format             (GcrParsed *parsed);

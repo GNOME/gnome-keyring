@@ -28,6 +28,7 @@
 #ifndef GCR_DEPRECATED_H_
 #define GCR_DEPRECATED_H_
 #ifndef GCR_DISABLE_DEPRECATED
+#ifndef __GI_SCANNER__
 
 #include <glib.h>
 
@@ -43,5 +44,6 @@ void              gcr_renderer_render                         (GcrRenderer *self
 
 G_END_DECLS
 
+#endif /* __GI_SCANNER__ */
 #endif /* GCR_DISABLE_DEPRECATED */
 #endif /* GCRTYPES_H_ */

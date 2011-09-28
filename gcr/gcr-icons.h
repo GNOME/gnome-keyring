@@ -35,7 +35,7 @@ G_BEGIN_DECLS
 #define GCR_ICON_SMART_CARD     "gcr-smart-card"
 #define GCR_ICON_HOME_DIRECTORY "user-home"
 
-GIcon *          gcr_icon_for_token_info                (GckTokenInfo *token_info);
+GIcon *          gcr_icon_for_token                (GckTokenInfo *token_info);
 
 G_END_DECLS
 

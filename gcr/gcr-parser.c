@@ -2372,8 +2372,8 @@ gcr_parsed_get_description (GcrParsed *parsed)
  * Get the attributes which make up the currently parsed item. This is generally
  * only valid during the GcrParser::parsed signal.
  *
- * Returns: The attributes for the current item. These are owned by the parser
- *     and should not be freed.
+ * Returns: (transfer none): the attributes for the current item, which are
+ *          owned by the parser and should not be freed
  */
 GckAttributes *
 gcr_parser_get_parsed_attributes (GcrParser *self)
@@ -2452,10 +2452,10 @@ gcr_parsed_get_label (GcrParsed *parsed)
  * Get the raw data block that represents this parsed object. This is only
  * valid during the GcrParser::parsed signal.
  *
- * Returns: The raw data block of the currently parsed item. The value is
- *      owned by the parser and should not be freed.
+ * Returns: (transfer none) (array length=n_block): the raw data block of the
+ *      currently parsed item; the value is owned by the parser and should not be freed
  */
-gconstpointer
+const guchar *
 gcr_parser_get_parsed_block (GcrParser *self,
                              gsize *n_block)
 {
@@ -2473,9 +2473,10 @@ gcr_parser_get_parsed_block (GcrParser *self,
  *
  * Get the raw data block for the parsed item.
  *
- * Returns: the raw data of the parsed item, or %NULL
+ * Returns: (transfer full) (array length=n_data): the raw data of the parsed
+ *          item, or %NULL
  */
-gconstpointer
+const guchar *
 gcr_parsed_get_data (GcrParsed *parsed,
                      gsize *n_data)
 {

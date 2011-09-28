@@ -61,7 +61,7 @@ struct _GcrCertificateIface {
 
 GType               gcr_certificate_get_type               (void);
 
-gconstpointer       gcr_certificate_get_der_data           (GcrCertificate *self,
+const guchar *      gcr_certificate_get_der_data           (GcrCertificate *self,
                                                             gsize *n_data);
 
 const GcrColumn*    gcr_certificate_get_columns            (void);
@@ -76,7 +76,7 @@ gchar*              gcr_certificate_get_issuer_dn          (GcrCertificate *self
 gchar*              gcr_certificate_get_issuer_part        (GcrCertificate *self, 
                                                             const gchar *part);
 
-gpointer            gcr_certificate_get_issuer_raw         (GcrCertificate *self,
+guchar *            gcr_certificate_get_issuer_raw         (GcrCertificate *self,
                                                             gsize *n_data);
 
 gboolean            gcr_certificate_is_issuer              (GcrCertificate *self,
@@ -89,7 +89,7 @@ gchar*              gcr_certificate_get_subject_dn         (GcrCertificate *self
 gchar*              gcr_certificate_get_subject_part       (GcrCertificate *self, 
                                                             const gchar *part);
 
-gpointer            gcr_certificate_get_subject_raw        (GcrCertificate *self,
+guchar *            gcr_certificate_get_subject_raw        (GcrCertificate *self,
                                                             gsize *n_data);
 
 GDate*              gcr_certificate_get_issued_date        (GcrCertificate *self);

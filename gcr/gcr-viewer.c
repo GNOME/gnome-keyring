@@ -77,10 +77,10 @@ gcr_viewer_default_init (GcrViewerIface *iface)
  * Get an implementation of #GcrViewer that supports a view
  * of multiple renderers.
  *
- * Returns: A newly allocated #GcrViewer, which should be released with
- *     g_object_unref()
+ * Returns: (transfer full): a newly allocated #GcrViewer, which should be
+ *          released with g_object_unref()
  */
-GcrViewer*
+GcrViewer *
 gcr_viewer_new (void)
 {
 	return GCR_VIEWER (_gcr_display_view_new ());
@@ -92,8 +92,8 @@ gcr_viewer_new (void)
  * Get an implementation of #GcrViewer that supports a scrolled view
  * of multiple renderers.
  *
- * Returns: A newly allocated #GcrViewer, which should be released with
- *     g_object_unref()
+ * Returns: (transfer full): a newly allocated #GcrViewer, which should be
+ *          released with g_object_unref()
  */
 GcrViewer*
 gcr_viewer_new_scrolled (void)
@@ -171,7 +171,7 @@ gcr_viewer_count_renderers (GcrViewer *viewer)
  * Get a pointer to the renderer at the given index. It is an error to request
  * an index that is out of bounds.
  *
- * Returns: The render, owned by the viewer.
+ * Returns: (transfer none): the render, owned by the viewer
  */
 GcrRenderer*
 gcr_viewer_get_renderer (GcrViewer *viewer,
