@@ -1,296 +1,1326 @@
+#
+# Ihar Hrachyshka <ihar.hrachyshka@gmail.com>, 2007.
+# Yuri Matsuk <yuri@matsuk.net>, 2011.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring\n"
+"Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-03 13:54+0200\n"
-"PO-Revision-Date: 2007-02-03 13:54+0300\n"
-"Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
-"Language-Team: Belarusian <i18n@mova.org>\n"
+"POT-Creation-Date: 2011-09-28 10:21+0300\n"
+"PO-Revision-Date: 2011-09-28 10:21+0300\n"
+"Last-Translator: Yuri Matsuk <yuri@matsuk.net>\n"
+"Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
+"Language: be\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Poedit-Language: Belarusian\n"
-"X-Poedit-Country: BELARUS\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: ../gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "_Стары пароль:"
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+msgid "Unnamed"
+msgstr "Без назвы"
 
-#: ../gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "_Пароль:"
+#: ../daemon/dbus/gkd-secret-change.c:86
+msgid "Change Keyring Password"
+msgstr "Змяненне пароля да вязкі ключоў"
 
-#: ../gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "_Пацьверджаньне новага пароля:"
-
-#. Strength bar:
-#: ../gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">Моцнасьць пароля:</span>"
-
-#: ../gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr "Стары пароль не можа быць пустым."
-
-#: ../gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "Пароль не можа быць пустым."
-
-#: ../gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "Паролі розьняцца."
-
-#: ../gnome-keyring-ask.c:407
+#: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
-msgid "The application '%s' (%s) wants access to the default keyring, but it is locked"
-msgstr "Праграма '%s' (%s) пытаецца дазволу на выкарыстаньне прадвызначанага зьвязка ключоў, але ён заблякаваны"
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Выберыце новы пароль для вязкі ключоў \"%s\""
 
-#: ../gnome-keyring-ask.c:411
+#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "Праграма '%s' (%s) пытаецца дазволу на выкарыстаньне зьвязка ключоў '%s', але ён заблякаваны"
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Праграма хоча змяніць пароль для вязкі ключоў \"%s\". Выберыце для яе новы "
+"пароль."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:416
+#: ../daemon/dbus/gkd-secret-change.c:111
+msgid "The original password was incorrect"
+msgstr "Уведзены хібны арыгінальны пароль"
+
+#: ../daemon/dbus/gkd-secret-create.c:83
+msgid "New Keyring Password"
+msgstr "Новы пароль да вязкі ключоў"
+
+#: ../daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "Выберыце пароль да новай вязкі ключоў"
+
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
-msgid "The application '%s' (%s) wants access to an unknown keyring, but it is locked"
-msgstr "Праграма '%s' (%s) пытаецца дазволу на выкарыстаньне невядомага зьвязка ключоў, але ён заблякаваны"
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Праграма хоча стварыць новую вязку ключоў з назвай \"%s\". Выберыце для яе "
+"пароль."
 
-#: ../gnome-keyring-ask.c:422
-#: ../gnome-keyring-ask.c:436
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Сховішча сертыфікатаў і ключоў"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "Вязкі ключоў GNOME: кампанент PKCS#11"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "Вязкі ключоў GNOME: служба сакрэтаў"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "Служба сховішча для сакрэтаў"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Вязкі ключоў GNOME: SSH-агент"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "SSH-агент ключоў"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Вязкі ключоў GNOME: GPG-агент"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG-агент пароляў"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106 ../gcr/gcr-gnupg-renderer.c:256
+#: ../gcr/gcr-gnupg-renderer.c:415 ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:317
+msgid "Unknown"
+msgstr "Невядома"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "Праграма '%s' пытаецца дазволу на выкарыстаньне прадвызначанага зьвязка ключоў, але ён заблякаваны"
+msgid "PGP Key: %s"
+msgstr "PGP-ключ: %s"
 
-#: ../gnome-keyring-ask.c:426
-#: ../gnome-keyring-ask.c:441
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+msgid "Enter Passphrase"
+msgstr "Увод парольнай фразы"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+msgid "Forget this password if idle for"
+msgstr "Забыць гэты пароль пры бяздейнасці цягам"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
+msgid "Forget this password after"
+msgstr "Забыць гэты пароль праз"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
+msgid "Forget this password when I log out"
+msgstr "Забыць гэты пароль пасля выхаду з сеанса"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:147
+msgid "Login"
+msgstr "Уваход"
+
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "Даменны складнік"
+
+#: ../egg/egg-oid.c:43 ../gcr/gcr-gnupg-renderer.c:411
+#: ../gcr/gcr-gnupg-renderer.c:580
+msgid "User ID"
+msgstr "Ідэнтыфікатар карыстальніка"
+
+#: ../egg/egg-oid.c:46
+msgid "Email Address"
+msgstr "Адрас электроннай пошты"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "Дата нараджэння"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "Месца нараджэння"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "Пол"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "Грамадзянства"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "Краіна пражывання"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "Агульнае імя"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "Прозвішча"
+
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:651
+msgid "Serial Number"
+msgstr "Серыйны нумар"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "Краіна"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "Мясцовасць"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "Штат"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "Вуліца"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "Установа"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "Аддзел установы"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "Званне"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "Тэлефонны нумар"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "Імя"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "Ініцыялы"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "Пазнака пакалення"
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "Пазнака DN"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "Псеўданім"
+
+#: ../egg/egg-oid.c:98 ../gcr/gcr-gnupg-renderer.c:202
+#: ../gcr/gcr-key-renderer.c:308
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:99
+msgid "MD2 with RSA"
+msgstr "MD2 з RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD5 with RSA"
+msgstr "MD5 з RSA"
+
+#: ../egg/egg-oid.c:101
+msgid "SHA1 with RSA"
+msgstr "SHA1 з RSA"
+
+#: ../egg/egg-oid.c:103 ../gcr/gcr-gnupg-renderer.c:206
+#: ../gcr/gcr-key-renderer.c:310
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with DSA"
+msgstr "SHA1 з DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Серверная ідэнтыфікацыя"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Кліенцкая ідэнтыфікацыя"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Падпісванне коду"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "Абарона для электроннай пошты"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Часавыя меткі"
+
+#: ../egg/egg-spawn.c:273
 #, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "Праграма '%s' пытаецца дазволу на выкарыстаньне зьвязка ключоў '%s', але ён заблякаваны"
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr ""
+"Нечаканая памылка ў функцыі select() пры чытанні даных ад працэсу-нашчадка "
+"(%s)"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:430
-#: ../gnome-keyring-ask.c:446
+#: ../egg/egg-spawn.c:320
 #, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "Праграма '%s' пытаецца дазволу на выкарыстаньне невядомага зьвязка ключоў, але ён заблякаваны"
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Нечаканая памылка ў функцыі waitpid() (%s)"
 
-#: ../gnome-keyring-ask.c:452
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "Невядомая праграма пытаецца дазволу на выкарыстаньне прадвызначанага зьвязка ключоў, але ён заблякаваны"
-
-#: ../gnome-keyring-ask.c:456
+#: ../gck/gck-module.c:396
 #, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "Невядомая праграма пытаецца дазволу на выкарыстаньне зьвязка ключоў '%s', але ён заблякаваны"
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Памылка загрузкі модуля PKCS#11: %s"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:461
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "Невядомая праграма пытаецца дазволу на выкарыстаньне невядомага зьвязка ключоў, але ён заблякаваны"
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Хібны модуль PKCS#11: %s"
 
-#: ../gnome-keyring-ask.c:468
-msgid "Enter password for default keyring to unlock"
-msgstr "Увядзіце пароль для разблякаваньня прадвызначанага зьвязка ключоў"
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Не ўдалося настроіць модуль PKCS#11: %s"
 
-#: ../gnome-keyring-ask.c:470
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Не ўдалося ініцыяваць модуль PKCS#11: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Не ўдалося ініцыяваць зарэгістраваны модуль PKCS#11: %s"
+
+#: ../gcr/gcr-callback-output-stream.c:64
+#: ../gcr/gcr-callback-output-stream.c:81
+#, c-format
+msgid "The stream was closed"
+msgstr "Струмень быў закрыты"
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:521
+msgctxt "column"
+msgid "Name"
+msgstr "Назва"
+
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "Выдавец"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "Тэрмін прыдатнасці"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:463
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:301
+msgid "Certificate"
+msgstr "Сертыфікат"
+
+#: ../gcr/gcr-certificate-exporter.c:225
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>Файл з такой назвай ужо існуе.</b>\n"
+"\n"
+"Ці вы хочаце яго замяніць новым файлам?"
+
+#: ../gcr/gcr-certificate-exporter.c:228
+msgid "_Replace"
+msgstr "_Замяніць"
+
+#: ../gcr/gcr-certificate-exporter.c:258
+#, c-format
+msgid "The operation was cancelled."
+msgstr "Аперацыя была скасавана."
+
+#: ../gcr/gcr-certificate-exporter.c:302
+msgid "Export certificate"
+msgstr "Экспартаванне сертыфіката"
+
+#: ../gcr/gcr-certificate-exporter.c:314
+msgid "Certificate files"
+msgstr "Файлы сертыфікатаў"
+
+#: ../gcr/gcr-certificate-exporter.c:325
+msgid "PEM files"
+msgstr "PEM-файлы"
+
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "Іншая назва"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "XMPP-адрас"
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
+
+#: ../gcr/gcr-certificate-extensions.c:166 ../gcr/gcr-gnupg-renderer.c:424
+#: ../gcr/gcr-gnupg-renderer.c:706
+msgid "Email"
+msgstr "Электронная пошта"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "X400-адрас"
+
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "Назва каталога"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "Імя EDI-удзельніка"
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "URI-адрас"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "IP-адрас"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "Зарэгістраваны ідэнтыфікатар"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "Асноўныя абмежаванні"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "Цэнтр сертыфікацыі"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
+msgid "Yes"
+msgstr "Так"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
+msgid "No"
+msgstr "Не"
+
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "Максімальная даўжыня маршруту"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "Неабмежавана"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+#, fuzzy
+msgid "Extended Key Usage"
+msgstr "Пашыранае выкарыстанне ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "Дазволеныя мэты"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "Ідэнтыфікатар ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "Лічбавы подпіс"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "Шыфраванне ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "Шыфраванне даных"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "Подпіс сертыфіката"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "Подпіс спіса адклікання"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "Выкарыстанне ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "Спосабы выкарыстання"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+#, fuzzy
+msgid "Subject Alternative Names"
+msgstr "Альтэрнатыўныя назвы суб'екта"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "Пашырэнне"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "Ідэнтыфікатар"
+
+#: ../gcr/gcr-certificate-renderer.c:266 ../gcr/gcr-gnupg-renderer.c:415
+#: ../gcr/gcr-gnupg-renderer.c:432
+msgid "Value"
+msgstr "Значэнне"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "Крытычна"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "Не ўдалося экспартаваць сертыфікат."
+
+#: ../gcr/gcr-certificate-renderer.c:612
+msgid "Identity"
+msgstr "Ідэнтычнасць"
+
+#: ../gcr/gcr-certificate-renderer.c:616
+msgid "Verified by"
+msgstr "Выканаўца праверкі"
+
+#: ../gcr/gcr-certificate-renderer.c:623 ../gcr/gcr-gnupg-renderer.c:720
+msgid "Expires"
+msgstr "Тэрмін прыдатнасці"
+
+#. The subject
+#: ../gcr/gcr-certificate-renderer.c:633
+#, fuzzy
+msgid "Subject Name"
+msgstr "Назва суб'екта"
+
+#. The Issuer
+#: ../gcr/gcr-certificate-renderer.c:637
+msgid "Issuer Name"
+msgstr "Назва выдаўца"
+
+#. The Issued Parameters
+#: ../gcr/gcr-certificate-renderer.c:641
+msgid "Issued Certificate"
+msgstr "Выдадзены сертыфікат"
+
+#: ../gcr/gcr-certificate-renderer.c:646
+msgid "Version"
+msgstr "Версія"
+
+#: ../gcr/gcr-certificate-renderer.c:658
+msgid "Not Valid Before"
+msgstr "Не дзейны да"
+
+#: ../gcr/gcr-certificate-renderer.c:663
+msgid "Not Valid After"
+msgstr "Не дзейны пасля"
+
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:668
+msgid "Certificate Fingerprints"
+msgstr "Адбіткі сертыфікатаў"
+
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:674 ../gcr/gcr-certificate-renderer.c:686
+#: ../gcr/gcr-gnupg-renderer.c:561
+msgid "Signature"
+msgstr "Подпіс"
+
+#: ../gcr/gcr-certificate-renderer.c:678
+msgid "Signature Algorithm"
+msgstr "Алгарытм подпісу"
+
+#: ../gcr/gcr-certificate-renderer.c:682
+msgid "Signature Parameters"
+msgstr "Параметры подпісу"
+
+#. Public Key Info
+#: ../gcr/gcr-certificate-renderer.c:690
+msgid "Public Key Info"
+msgstr "Звесткі аб адкрытым ключы"
+
+#: ../gcr/gcr-certificate-renderer.c:695
+msgid "Key Algorithm"
+msgstr "Алгарытм ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:700
+msgid "Key Parameters"
+msgstr "Параметры ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:705 ../gcr/gcr-gnupg-renderer.c:354
+msgid "Key Size"
+msgstr "Памер ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:712
+msgid "Key SHA1 Fingerprint"
+msgstr "SHA1-адбітак ключа"
+
+#: ../gcr/gcr-certificate-renderer.c:718 ../gcr/gcr-gnupg-renderer.c:739
+#: ../gcr/gcr-key-renderer.c:292 ../gcr/gcr-parser.c:304
+msgid "Public Key"
+msgstr "Адкрыты ключ"
+
+#: ../gcr/gcr-display-view.c:319
+msgid "_Details"
+msgstr "_Падрабязнасці"
+
+#: ../gcr/gcr-failure-renderer.c:161
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Не ўдалося паказаць \"%s\""
+
+#: ../gcr/gcr-failure-renderer.c:163
+msgid "Could not display file"
+msgstr "Не ўдалося паказаць файл"
+
+#: ../gcr/gcr-failure-renderer.c:168
+msgid "Reason"
+msgstr "Прычына"
+
+#: ../gcr/gcr-failure-renderer.c:201
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Не ўдалося паказаць файл такога тыпу."
+
+#: ../gcr/gcr-import-dialog.ui.h:1
+msgid "Import Certificates and Keys"
+msgstr "Імпартаванне сертыфікатаў і ключоў"
+
+#: ../gcr/gcr-import-dialog.ui.h:2
+msgid "Import Into:"
+msgstr "Імпартаваць у:"
+
+#: ../gcr/gcr-import-dialog.ui.h:3
+msgid "Password:"
+msgstr "Пароль:"
+
+#: ../gcr/gcr-gnupg-importer.c:90
+msgid "GnuPG Keyring"
+msgstr "Вязка ключоў GnuPG"
+
+#: ../gcr/gcr-gnupg-importer.c:92
+#, c-format
+msgid "GnuPG Keyring: %s"
+msgstr "Вязка ключоў GnuPG: %s"
+
+#: ../gcr/gcr-gnupg-key.c:234 ../gcr/gcr-gnupg-renderer.c:88
+#: ../gcr/gcr-parser.c:307
+msgid "PGP Key"
+msgstr "PGP-ключ"
+
+#: ../gcr/gcr-gnupg-key.c:523
+msgctxt "column"
+msgid "Key ID"
+msgstr "Ідэнтыфікатар ключа"
+
+#: ../gcr/gcr-gnupg-process.c:860
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "Працэс Gnupg скончыў працу, вярнуўшы код: %d"
+
+#: ../gcr/gcr-gnupg-process.c:867
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "Працэс Gnupg быў знішчаны сігналам: %d"
+
+#: ../gcr/gcr-gnupg-process.c:921 ../gcr/gcr-parser.c:2152
+#: ../gcr/gcr-parser.c:2622
+msgid "The operation was cancelled"
+msgstr "Аперацыя была скасавана"
+
+#: ../gcr/gcr-gnupg-renderer.c:204
+msgid "Elgamal"
+msgstr "Elgamal"
+
+#: ../gcr/gcr-gnupg-renderer.c:217
+msgid "Encrypt"
+msgstr "Зашыфраваць"
+
+#: ../gcr/gcr-gnupg-renderer.c:219
+msgid "Sign"
+msgstr "Падпісаць"
+
+#: ../gcr/gcr-gnupg-renderer.c:221
+msgid "Certify"
+msgstr "Сертыфікаваць"
+
+#: ../gcr/gcr-gnupg-renderer.c:223
+msgid "Authenticate"
+msgstr "Ідэнтыфікаваць"
+
+#: ../gcr/gcr-gnupg-renderer.c:225 ../gcr/gcr-gnupg-renderer.c:260
+msgid "Disabled"
+msgstr "Выключаны"
+
+#: ../gcr/gcr-gnupg-renderer.c:258
+msgid "Invalid"
+msgstr "Хібны"
+
+#: ../gcr/gcr-gnupg-renderer.c:262
+msgid "Revoked"
+msgstr "Адкліканы"
+
+#: ../gcr/gcr-gnupg-renderer.c:264
+msgid "Expired"
+msgstr "Састарэлы"
+
+#: ../gcr/gcr-gnupg-renderer.c:266
+msgid "Undefined trust"
+msgstr "Нявызначаны аб'ект даверу"
+
+#: ../gcr/gcr-gnupg-renderer.c:268
+msgid "Distrusted"
+msgstr "Не варты даверу"
+
+#: ../gcr/gcr-gnupg-renderer.c:270
+msgid "Marginally trusted"
+msgstr "Нязначна давераны"
+
+#: ../gcr/gcr-gnupg-renderer.c:272
+msgid "Fully trusted"
+msgstr "Поўнасцю давераны"
+
+#: ../gcr/gcr-gnupg-renderer.c:274
+msgid "Ultimately trusted"
+msgstr "Канчаткова давераны"
+
+#: ../gcr/gcr-gnupg-renderer.c:288
+msgid "The information in this key has not yet been verified"
+msgstr "Інфармацыя ў гэтым ключы яшчэ не была праверана"
+
+#: ../gcr/gcr-gnupg-renderer.c:291
+msgid "This key is invalid"
+msgstr "Гэта хібны ключ"
+
+#: ../gcr/gcr-gnupg-renderer.c:294
+msgid "This key has been disabled"
+msgstr "Гэты ключ быў выключаны"
+
+#: ../gcr/gcr-gnupg-renderer.c:297
+msgid "This key has been revoked"
+msgstr "Гэты ключ быў адкліканы"
+
+#: ../gcr/gcr-gnupg-renderer.c:300
+msgid "This key has expired"
+msgstr "Гэты ключ састарэў"
+
+#: ../gcr/gcr-gnupg-renderer.c:305
+msgid "This key is distrusted"
+msgstr "Гэты ключы не варты даверу"
+
+#: ../gcr/gcr-gnupg-renderer.c:308
+msgid "This key is marginally trusted"
+msgstr "Гэты ключ нязначна давераны"
+
+#: ../gcr/gcr-gnupg-renderer.c:311
+msgid "This key is fully trusted"
+msgstr "Гэты ключ поўнасцю давераны"
+
+#: ../gcr/gcr-gnupg-renderer.c:314
+msgid "This key is ultimately trusted"
+msgstr "Гэты ключ канчаткова давераны"
+
+#: ../gcr/gcr-gnupg-renderer.c:339 ../gcr/gcr-gnupg-renderer.c:565
+msgid "Key ID"
+msgstr "Ідэнтыфікатар ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:347 ../gcr/gcr-gnupg-renderer.c:573
+#: ../gcr/gcr-gnupg-renderer.c:620 ../gcr/gcr-key-renderer.c:313
+msgid "Algorithm"
+msgstr "Алгарытм"
+
+#: ../gcr/gcr-gnupg-renderer.c:362 ../gcr/gcr-gnupg-renderer.c:439
+#: ../gcr/gcr-gnupg-renderer.c:482
+msgid "Created"
+msgstr "Дата стварэння"
+
+#: ../gcr/gcr-gnupg-renderer.c:371 ../gcr/gcr-gnupg-renderer.c:448
+#: ../gcr/gcr-gnupg-renderer.c:491
+msgid "Expiry"
+msgstr "Тэрмін прыдатнасці"
+
+#: ../gcr/gcr-gnupg-renderer.c:380
+msgid "Capabilities"
+msgstr "Здольнасці"
+
+#: ../gcr/gcr-gnupg-renderer.c:393
+msgid "Owner trust"
+msgstr "Давер да ўласніка"
+
+#: ../gcr/gcr-gnupg-renderer.c:421
+#, fuzzy
+msgid "Name"
+msgstr "Імя"
+
+#: ../gcr/gcr-gnupg-renderer.c:427 ../gcr/gcr-gnupg-renderer.c:709
+msgid "Comment"
+msgstr "Каментарый"
+
+#: ../gcr/gcr-gnupg-renderer.c:467
+msgid "User Attribute"
+msgstr "Атрыбут карыстальніка"
+
+#: ../gcr/gcr-gnupg-renderer.c:474 ../gcr/gcr-key-renderer.c:320
+msgid "Size"
+msgstr "Памер"
+
+#: ../gcr/gcr-gnupg-renderer.c:509
+msgid "Signature of a binary document"
+msgstr "Подпіс двайковага дакумента"
+
+#: ../gcr/gcr-gnupg-renderer.c:511
+msgid "Signature of a canonical text document"
+msgstr "Подпіс кананічнага тэкставага дакумента"
+
+#: ../gcr/gcr-gnupg-renderer.c:513
+msgid "Standalone signature"
+msgstr "Асобны подпіс"
+
+#: ../gcr/gcr-gnupg-renderer.c:515
+msgid "Generic certification of key"
+msgstr "Звычайная сертыфікацыя ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:517
+msgid "Persona certification of key"
+msgstr "Персанальная сертыфікацыя ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:519
+msgid "Casual certification of key"
+msgstr "Неафіцыйная сертыфікацыя ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:521
+msgid "Positive certification of key"
+msgstr "Пазітыўная сертыфікацыя ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:523
+msgid "Subkey binding signature"
+msgstr "Подпіс сувязі дадатковага ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:525
+msgid "Primary key binding signature"
+msgstr "Подпіс сувязі галоўнага ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:527
+msgid "Signature directly on key"
+msgstr "Подпіс проста на ключы"
+
+#: ../gcr/gcr-gnupg-renderer.c:529
+msgid "Key revocation signature"
+msgstr "Подпіс для адклікання ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:531
+msgid "Subkey revocation signature"
+msgstr "Подпіс для адклікання дадатковага ключа"
+
+#: ../gcr/gcr-gnupg-renderer.c:533
+msgid "Certification revocation signature"
+msgstr "Подпіс для адклікання сертыфіката"
+
+#: ../gcr/gcr-gnupg-renderer.c:535
+msgid "Timestamp signature"
+msgstr "Подпіс для часавага адбітка"
+
+#: ../gcr/gcr-gnupg-renderer.c:537
+msgid "Third-party confirmation signature"
+msgstr "Подпіс для пацвярджэння іншай асобы"
+
+#: ../gcr/gcr-gnupg-renderer.c:590 ../gcr/gcr-gnupg-renderer.c:598
+msgid "Class"
+msgstr "Клас"
+
+#: ../gcr/gcr-gnupg-renderer.c:592 ../gcr/gcr-gnupg-renderer.c:594
+msgid "Type"
+msgstr "Тып"
+
+#: ../gcr/gcr-gnupg-renderer.c:592
+msgid "Local only"
+msgstr "Толькі мясцовыя ключы"
+
+#: ../gcr/gcr-gnupg-renderer.c:594
+msgid "Exportable"
+msgstr "З магчымасцю экспартавання"
+
+#: ../gcr/gcr-gnupg-renderer.c:612
+msgid "Revocation Key"
+msgstr "Ключ адклікання"
+
+#: ../gcr/gcr-gnupg-renderer.c:626 ../gcr/gcr-gnupg-renderer.c:650
+#: ../gcr/gcr-gnupg-renderer.c:652
+msgid "Fingerprint"
+msgstr "Адбітак"
+
+#: ../gcr/gcr-gnupg-renderer.c:741
+msgid "Public Subkey"
+msgstr "Адкрыты дадатковы ключ"
+
+#: ../gcr/gcr-gnupg-renderer.c:743
+msgid "Secret Key"
+msgstr "Закрыты ключ"
+
+#: ../gcr/gcr-gnupg-renderer.c:745
+msgid "Secret Subkey"
+msgstr "Закрыты дадатковы ключ"
+
+#: ../gcr/gcr-import-button.c:106
+msgid "Import is in progress..."
+msgstr "Выконваецца імпартаванне..."
+
+#: ../gcr/gcr-import-button.c:112
+#, c-format
+msgid "Imported to: %s"
+msgstr "Імпартавана ў: %s"
+
+#: ../gcr/gcr-import-button.c:124
+msgid "Initializing..."
+msgstr "Ініцыяцыя..."
+
+#: ../gcr/gcr-import-button.c:139
+#, c-format
+msgid "Import to: %s"
+msgstr "Імпартаваць у: %s"
+
+#: ../gcr/gcr-import-button.c:152
+msgid "Cannot import because there are no compatible importers"
+msgstr "Не ўдалося імпартаваць, бо няма адпаведных імпартавальнікаў"
+
+#: ../gcr/gcr-import-button.c:160
+msgid "No data to import"
+msgstr "Няма даных для імпартавання"
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "Ключ"
+
+#: ../gcr/gcr-key-renderer.c:281
+msgid "Private RSA Key"
+msgstr "Закрыты RSA-ключ"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private DSA Key"
+msgstr "Закрыты DSA-ключ"
+
+#: ../gcr/gcr-key-renderer.c:285 ../gcr/gcr-parser.c:298
+msgid "Private Key"
+msgstr "Закрыты ключ"
+
+#: ../gcr/gcr-key-renderer.c:288 ../gcr/gcr-key-renderer.c:290
+msgid "Public DSA Key"
+msgstr "Адкрыты DSA-ключ"
+
+#: ../gcr/gcr-key-renderer.c:299
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d біт"
+msgstr[1] "%d біты"
+msgstr[2] "%d бітаў"
+
+#: ../gcr/gcr-key-renderer.c:300
+msgid "Strength"
+msgstr "Трываласць"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:324
+msgid "Fingerprints"
+msgstr "Адбіткі"
+
+#: ../gcr/gcr-key-renderer.c:329
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:335
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:2155
+msgid "Unrecognized or unsupported data."
+msgstr "Даныя не апазнаныя ці не падтрымліваюцца."
+
+#: ../gcr/gcr-parser.c:2158
+msgid "Could not parse invalid or corrupted data."
+msgstr "Не ўдалося разабраць хібныя ці пашкоджаныя даныя."
+
+#: ../gcr/gcr-parser.c:2161
+msgid "The data is locked"
+msgstr "Даныя заблакіраваныя"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Не ўдалося знайсці месца для захавання прышпіленага сертыфіката"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Аўтаматычна разблакіраваць гэту вязку ключоў пры ўваходзе ў сістэму"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring after"
+msgstr "Блакіраваць гэту вязку ключоў праз"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring if idle for"
+msgstr "Блакіраваць гэту вязку ключоў пры бяздзейнасці цягам"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "Lock this keyring when I log out"
+msgstr "Блакіраваць гэту вязку ключоў пры выхадзе з сеанса"
+
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
+#: ../gcr/gcr-unlock-options-widget.ui.h:6
+msgid "minutes"
+msgstr "хв."
+
+#: ../gcr/gcr-unlock-renderer.c:70
+#, c-format
+msgid "Unlock: %s"
+msgstr "Разблакіраваць: %s"
+
+#: ../gcr/gcr-unlock-renderer.c:72 ../gcr/gcr-unlock-renderer.c:129
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Разблакіраваць"
+
+#: ../gcr/gcr-unlock-renderer.c:126
+msgid "Password"
+msgstr "Пароль"
+
+#: ../gcr/gcr-unlock-renderer.c:279
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr ""
+"Змесціва \"%s\" заблакіравана. Каб разблакіраваць гэты аб'ект, трэба ўвесці "
+"правільны пароль."
+
+#: ../gcr/gcr-unlock-renderer.c:282
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr ""
+"Змесціва заблакіравана. Каб паглядзець яго, трэба ўвесці правільны пароль."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "Праглядальнік сертыфікатаў і ключоў GCR"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Паказаць нумар версіі праграмы"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[файл...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- Прагляд файлаў сертыфікатаў і ключоў"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Праглядальнік сертыфікатаў"
+
+#: ../gcr/gcr-viewer-widget.c:186
+msgid "The password was incorrect"
+msgstr "Хібны пароль"
+
+#: ../gcr/gcr-viewer-window.c:68
+msgid "Imported"
+msgstr "Імпартавана"
+
+#: ../gcr/gcr-viewer-window.c:72
+msgid "Import failed"
+msgstr "Няўдалае імпартаванне"
+
+#: ../gcr/gcr-viewer-window.c:103
+msgid "Import"
+msgstr "Імпартаваць"
+
+#: ../gck/gck-uri.c:173
+#, c-format
+msgid "The URI has invalid encoding."
+msgstr "URI-адрас мае хібнае кадаванне."
+
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "URI-адрас не мае схемы \"pkcs11\"."
+
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "URI-адрас мае хібны сінтаксіс."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "URI-адрас мае хібны нумар версіі."
+
+#: ../pkcs11/gkm/gkm-certificate.c:572
+msgid "Unnamed Certificate"
+msgstr "Сертыфікат без назвы"
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+msgid "Couldn't parse public SSH key"
+msgstr "Не ўдалося разабраць адкрыты SSH-ключ"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Пароль для разблакіравання: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
+msgid "The unlock password was incorrect"
+msgstr "Хібны пароль для разблакіравання"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid "Unlock Login Keyring"
+msgstr "Разблакіраванне сеансавай вязкі ключоў"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+msgid "Enter password to unlock your login keyring"
+msgstr "Увядзіце пароль для разблакіравання сеансавай вязкі ключоў"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Пароль для ўваходу ў сістэму ужо не адпавядае паролю да сеансавай вязкі "
+"ключоў."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr "Сеансавая вязка ключоў не была разблакіравана пры ўваходзе ў сістэму."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Unlock Keyring"
+msgstr "Разблакіраванне вязкі ключоў"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Увядзіце пароль для разблякаваньня зьвязка ключоў '%s'"
+msgstr "Увядзіце пароль для разблакіравання вязкі ключоў \"%s\""
 
-#: ../gnome-keyring-ask.c:474
-msgid "Unlock Keyring"
-msgstr "Разблякаваць зьвязак ключоў"
-
-#: ../gnome-keyring-ask.c:479
-#: ../gnome-keyring-ask.c:563
-#: ../gnome-keyring-ask.c:655
-#: ../gnome-keyring-ask.c:711
-#: ../gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "_Адмовіць"
-
-#: ../gnome-keyring-ask.c:517
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
-msgid "The application '%s' (%s) wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' (%s) хоча стварыць новы зьвязак ключоў, названы '%s'. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr ""
+"Праграма патрабуе доступу да вязкі ключоў \"%s\", але яна заблакіравана"
 
-#: ../gnome-keyring-ask.c:521
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+msgid "Unlock private key"
+msgstr "Разблакіраванне закрытага ключа"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+msgid "Unlock certificate"
+msgstr "Разблакіраванне сертыфіката"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+msgid "Unlock public key"
+msgstr "Разблакіраванне адкрытага ключа"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Увядзіце пароль, каб разблакіраваць закрыты ключ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Увядзіце пароль, каб разблакіраваць сертыфікат"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+msgid "Enter password to unlock the public key"
+msgstr "Увядзіце пароль для разблакіравання адкрытага ключа"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Увядзіце пароль, каб разблакіраваць"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
-msgid "The application '%s' (%s) wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' (%s) хоча стварыць новы прадвызначаны зьвязак ключоў. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr ""
+"Праграма патрабуе доступу да закрытага ключа \"%s\", але ён заблакіраваны"
 
-#: ../gnome-keyring-ask.c:527
-#: ../gnome-keyring-ask.c:537
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
-msgid "The application '%s' wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' хоча стварыць новы зьвязак ключоў, названы '%s'. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Праграма патрабуе доступу да сертыфіката \"%s\", але ён заблакіраваны"
 
-#: ../gnome-keyring-ask.c:531
-#: ../gnome-keyring-ask.c:541
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
-msgid "The application '%s' wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' хоча стварыць новы прадвызначаны зьвязак ключоў. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Праграма патрабуе доступу да адкрытага ключа \"%s\", але ён заблакіраваны"
 
-#: ../gnome-keyring-ask.c:547
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
 #, c-format
-msgid "An unknown application wants to create a new keyring called '%s'. You have to choose the password you want to use for it."
-msgstr "Невядомая праграма хоча стварыць новы зьвязак ключоў, названы '%s'. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Праграма патрабуе доступу да аб'екта \"%s\", але ён заблакіраваны"
 
-#: ../gnome-keyring-ask.c:551
-msgid "An unknown application wants to create a new default keyring. You have to choose the password you want to use for it."
-msgstr "Невядомая праграма хоча стварыць новы прадвызначаны зьвязак ключоў. Вы павінны вызначыць пароль для гэтага зьвязка."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+msgid "Unlock certificate/key storage"
+msgstr "Разблакіраванне сховішча сертыфікатаў і ключоў"
 
-#: ../gnome-keyring-ask.c:558
-msgid "New Keyring Password"
-msgstr "Новы пароль для зьвязка ключоў"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Увядзіце пароль для разблакіравання сховішча сертыфікатаў і ключоў"
 
-#: ../gnome-keyring-ask.c:559
-msgid "Choose password for new keyring"
-msgstr "Вызначце пароль для новага зьвязка ключоў"
-
-#: ../gnome-keyring-ask.c:602
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
-msgid "The application '%s' (%s) wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' (%s) хоча зьмяніць пароль для зьвязка ключоў '%s'. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Праграма патрабуе доступу да сховішча сертыфікатаў і ключоў \"%s\", але яно "
+"заблакіравана"
 
-#: ../gnome-keyring-ask.c:606
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New Password Required"
+msgstr "Патрэбны новы пароль"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+msgid "New password required for secure storage"
+msgstr "Для бяспечнага сховішча патрэбны новы пароль"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
-msgid "The application '%s' (%s) wants to change the password for the default keyring. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' (%s) хоча зьмяніць пароль для прадвызначанага зьвязка ключоў. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Каб падрыхтаваць \"%s\" для захавання сертыфікатаў і ключоў, патрэбны пароль"
 
-#: ../gnome-keyring-ask.c:612
-#: ../gnome-keyring-ask.c:622
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+msgid "Change Password"
+msgstr "Змяненне пароля"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+msgid "Change password for secure storage"
+msgstr "Змяненне пароля да бяспечнага сховішча"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid "The application '%s' wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' хоча зьмяніць пароль для зьвязка ключоў '%s'. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr "Каб змяніць пароль да \"%s\", патрэбныя арыгінальны і новы паролі"
 
-#: ../gnome-keyring-ask.c:616
-#: ../gnome-keyring-ask.c:626
+#: ../tool/gkr-tool.c:102
 #, c-format
-msgid "The application '%s' wants to change the password for the default keyring. You have to choose the password you want to use for it."
-msgstr "Праграма '%s' хоча зьмяніць пароль для прадвызначанага зьвязка ключоў. Вы павінны вызначыць пароль для гэтага зьвязка."
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "Правілы карыстання: gnome-keyring загад [опцыі]\n"
 
-#: ../gnome-keyring-ask.c:632
-#, c-format
-msgid "An unknown application wants to change the password for the '%s' keyring. You have to choose the password you want to use for it."
-msgstr "Невядомая праграма хоча зьмяніць пароль для зьвязка ключоў '%s'. Вы павінны вызначыць пароль для гэтага зьвязка."
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "загады: "
 
-#: ../gnome-keyring-ask.c:636
-msgid "An unknown application wants to change the password for the default keyring. You have to choose the password you want to use for it."
-msgstr "Невядомая праграма хоча зьмяніць пароль для прадвызначанага зьвязка ключоў. Вы павінны вызначыць пароль для гэтага зьвязка."
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "        "
 
-#: ../gnome-keyring-ask.c:643
-#, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "Вызначце новы пароль для зьвязка ключоў '%s'. "
+#: ../ui/gku-prompt-tool.c:596
+msgid "Store passwords unencrypted?"
+msgstr "Захоўваць паролі незашыфраванымі?"
 
-#: ../gnome-keyring-ask.c:645
-msgid "Choose a new password for the default keyring. "
-msgstr "Вызначце новы пароль для прадвызначанага зьвязка ключоў. "
+#: ../ui/gku-prompt-tool.c:597
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
 
-#: ../gnome-keyring-ask.c:650
-msgid "Change Keyring Password"
-msgstr "Зьмяніць пароль для зьвязка ключоў"
+#: ../ui/gku-prompt-tool.c:604
+msgid "Use Unsafe Storage"
+msgstr ""
 
-#: ../gnome-keyring-ask.c:689
-#, c-format
-msgid "The application '%s' (%s) wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "Праграма '%s' (%s) хоча захаваць пароль, але няма прадвызначанага зьвязка ключоў. Каб яго стварыць, Вы павінны вызначыць для яго пароль."
+#: ../ui/gku-prompt-tool.c:644
+msgid "Passwords do not match."
+msgstr "Паролі адрозніваюцца."
 
-#: ../gnome-keyring-ask.c:693
-#: ../gnome-keyring-ask.c:697
-#, c-format
-msgid "The application '%s' wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "Праграма '%s' хоча захаваць пароль, але няма прадвызначанага зьвязка ключоў. Каб яго стварыць, Вы павінны вызначыць для яго пароль."
+#: ../ui/gku-prompt-tool.c:654
+msgid "Password cannot be blank"
+msgstr "Пароль не можа быць пустым"
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:701
-msgid "An unknown application wants to store a password, but there is no default keyring. To create one, you need to choose the password you wish to use for it."
-msgstr "Невядомая праграма хоча захаваць пароль, але няма прадвызначанага зьвязка ключоў. Каб яго стварыць, Вы павінны вызначыць для яго пароль."
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Доступ да вязкі ключоў"
 
-#: ../gnome-keyring-ask.c:706
-msgid "Create Default Keyring"
-msgstr "Стварыць прадвызначаны зьвязак ключоў"
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Разблакіраванне доступу да пароляў і іншых сакрэтаў"
 
-#: ../gnome-keyring-ask.c:707
-msgid "Choose password for default keyring"
-msgstr "Вызначце пароль для прадвызначанага зьвязка ключоў"
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "Трываласць новага пароля"
 
-#: ../gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "Дазволіць праграме доступ да зьвязка ключоў?"
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "_Праграма:"
 
-#: ../gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "Праграма '%s' (%s) хоча атрымаць пароль для '%s' з %s."
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "Пац_вярджэнне:"
 
-#: ../gnome-keyring-ask.c:753
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in the default keyring."
-msgstr "Праграма '%s' (%s) хоча атрымаць пароль для '%s' з прадвызначанага зьвязка ключоў."
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "П_адрабязнасці:"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:756
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in an unknown keyring."
-msgstr "Праграма '%s' (%s) хоча атрымаць пароль для '%s' зь невядомага зьвязка ключоў."
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "_Назва:"
 
-#: ../gnome-keyring-ask.c:761
-#: ../gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "Праграма '%s' хоча атрымаць пароль для '%s' з %s."
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "_Стары пароль:"
 
-#: ../gnome-keyring-ask.c:764
-#: ../gnome-keyring-ask.c:775
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in the default keyring."
-msgstr "Праграма '%s' хоча атрымаць пароль для '%s' з прадвызначанага зьвязка ключоў."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:767
-#: ../gnome-keyring-ask.c:778
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in an unknown keyring."
-msgstr "Праграма '%s' хоча атрымаць пароль для '%s' зь невядомага зьвязка ключоў."
-
-#: ../gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "Невядомая праграма хоча атрымаць пароль для '%s' з %s."
-
-#: ../gnome-keyring-ask.c:786
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in the default keyring."
-msgstr "Невядомая праграма хоча атрымаць пароль для '%s' з прадвызначанага зьвязка ключоў."
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../gnome-keyring-ask.c:789
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in an unknown keyring."
-msgstr "Невядомая праграма хоча атрымаць пароль для '%s' зь невядомага зьвязка ключоў."
-
-#: ../gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "Дазволіць"
-
-#: ../gnome-keyring-ask.c:799
-msgid "Allow _Once"
-msgstr "Дазволіць _аднойчы"
-
-#: ../gnome-keyring-ask.c:800
-msgid "_Always Allow"
-msgstr "_Заўсёды дазваляць"
-
-#: ../gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "Вы павінны вызначыць тып запыту\n"
-
-#: ../gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "Невядомы тып запыту\n"
-
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "_Пароль:"
