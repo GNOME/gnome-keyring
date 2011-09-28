@@ -112,7 +112,8 @@ find_key (GckSession *session, CK_ATTRIBUTE_TYPE method, CK_MECHANISM_TYPE mech)
 
 	for (l = objects; l; l = g_list_next (l)) {
 		if (mech) {
-			mechs = gck_object_get_data (l->data, CKA_ALLOWED_MECHANISMS, NULL, &n_mechs, NULL);
+			mechs = (gulong *)gck_object_get_data (l->data, CKA_ALLOWED_MECHANISMS,
+			                                       NULL, &n_mechs, NULL);
 			g_assert (mechs);
 			g_assert (n_mechs == sizeof (CK_MECHANISM_TYPE));
 			/* We know all of them only have one allowed mech */

@@ -66,8 +66,16 @@
  *
  * The error domain for gck library errors.
  */
+
 GQuark
 gck_get_error_quark (void)
+{
+	/* This is the deprecated version */
+	return gck_error_get_quark ();
+}
+
+GQuark
+gck_error_get_quark (void)
 {
 	static GQuark domain = 0;
 	static volatile gsize quark_inited = 0;
@@ -90,7 +98,7 @@ gck_get_error_quark (void)
  * Return value: The user readable message.
  **/
 const gchar*
-gck_message_from_rv (CK_RV rv)
+gck_message_from_rv (gulong rv)
 {
 	switch (rv) {
 
@@ -225,7 +233,7 @@ gck_list_get_boxed_type (void)
 }
 
 /**
- * gck_list_unref_free:
+ * gck_list_unref_free: (skip):
  * @reflist: List of Gobject reference counted pointers.
  *
  * Free a list of GObject based pointers. All objects in the list
@@ -243,7 +251,7 @@ gck_list_unref_free (GList *reflist)
 }
 
 /**
- * gck_list_ref_copy:
+ * gck_list_ref_copy: (skip):
  * @reflist: List of GObject reference counted objects.
  *
  * Copy a list of GObject based pointers. All objects

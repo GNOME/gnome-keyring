@@ -105,6 +105,13 @@ struct _GckUri {
 GQuark
 gck_uri_get_error_quark (void)
 {
+	/* This is deprecated version */
+	return gck_uri_get_error_quark ();
+}
+
+GQuark
+gck_uri_error_get_quark (void)
+{
 	static GQuark domain = 0;
 	static volatile gsize quark_inited = 0;
 
@@ -257,6 +264,41 @@ gck_uri_build (GckUriData *uri_data, GckUriFlags flags)
 
 	p11_kit_uri_free (p11_uri);
 	return string;
+}
+
+GType
+gck_uri_data_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GckUriData",
+		                                     (GBoxedCopyFunc)gck_uri_data_copy,
+		                                     (GBoxedFreeFunc)gck_uri_data_free);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
+}
+
+/**
+ * gck_uri_data_copy:
+ * @uri_data: URI data to copy
+ *
+ * Copy a #GckUriData
+ *
+ * Returns: (transfer full): newly allocated copy of the uri data
+ */
+GckUriData *
+gck_uri_data_copy (GckUriData *uri_data)
+{
+	GckUriData *copy;
+
+	copy = g_memdup (uri_data, sizeof (GckUriData));
+	copy->attributes = gck_attributes_new ();
+	gck_attributes_add_all (copy->attributes, uri_data->attributes);
+	copy->module_info = gck_module_info_copy (copy->module_info);
+	copy->token_info = gck_token_info_copy (copy->token_info);
+	return copy;
 }
 
 /**

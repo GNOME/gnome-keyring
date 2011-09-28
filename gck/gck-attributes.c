@@ -74,7 +74,7 @@ attribute_init (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init:
+ * gck_attribute_init: (skip):
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The raw value of the attribute.
@@ -95,7 +95,7 @@ gck_attribute_init (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_invalid:
+ * gck_attribute_init_invalid: (skip):
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
@@ -117,7 +117,7 @@ gck_attribute_init_invalid (GckAttribute *attr, gulong attr_type)
 }
 
 /**
- * gck_attribute_init_empty:
+ * gck_attribute_init_empty: (skip):
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
@@ -147,7 +147,7 @@ attribute_init_boolean (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_boolean:
+ * gck_attribute_init_boolean: (skip):
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The boolean value of the attribute.
@@ -184,7 +184,7 @@ attribute_init_date (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_date:
+ * gck_attribute_init_date: (skip):
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The date value of the attribute.
@@ -213,7 +213,7 @@ attribute_init_ulong (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_ulong:
+ * gck_attribute_init_ulong: (skip):
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The ulong value of the attribute.
@@ -241,7 +241,7 @@ attribute_init_string (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_string:
+ * gck_attribute_init_string: (skip):
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The null terminated string value of the attribute.
@@ -260,6 +260,20 @@ gck_attribute_init_string (GckAttribute *attr, gulong attr_type,
 {
 	g_return_if_fail (attr);
 	attribute_init_string (attr, attr_type, value, g_realloc);
+}
+
+GType
+gck_attribute_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GckAttribute",
+		                                     (GBoxedCopyFunc)gck_attribute_dup,
+		                                     (GBoxedFreeFunc)gck_attribute_free);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
 }
 
 /**
@@ -743,22 +757,25 @@ struct _GckAttributes {
  * Returns: The allocated memory, or NULL when freeing.
  **/
 
-/**
- * gck_attributes_get_boxed_type:
- *
- * Get the boxed type representing a GckAttributes array.
- *
- * Return value: The boxed type.
- **/
 GType
-gck_attributes_get_boxed_type (void)
+gck_attributes_get_type (void)
 {
+	static volatile gsize initialized = 0;
 	static GType type = 0;
-	if (!type)
+	if (g_once_init_enter (&initialized)) {
 		type = g_boxed_type_register_static ("GckAttributes",
 		                                     (GBoxedCopyFunc)gck_attributes_ref,
 		                                     (GBoxedFreeFunc)gck_attributes_unref);
+		g_once_init_leave (&initialized, 1);
+	}
 	return type;
+}
+
+GType
+gck_attributes_get_boxed_type (void)
+{
+	/* Deprecated version */
+	return gck_attributes_get_type ();
 }
 
 /**
@@ -776,7 +793,7 @@ gck_attributes_new (void)
 }
 
 /**
- * gck_attributes_new_full:
+ * gck_attributes_new_full: (skip):
  * @allocator: Memory allocator for attribute data, or NULL for default.
  *
  * Create a new GckAttributes array.

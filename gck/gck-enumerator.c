@@ -660,8 +660,8 @@ free_enumerate_next (EnumerateNext *args)
  * %NULL is also returned if the function fails. Use the @error to determine
  * whether a failure occurred or not.
  *
- * Returns: The next object, which must be released using g_object_unref,
- *     or %NULL.
+ * Returns: (transfer full) (allow-none): The next object, which must be released
+ * using g_object_unref, or %NULL.
  */
 GckObject*
 gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **error)
@@ -718,7 +718,8 @@ gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **er
  * %NULL is also returned if the function fails. Use the @error to determine
  * whether a failure occurred or not.
  *
- * Returns: A list of objects, which should be freed using gck_list_unref_free().
+ * Returns: (transfer full) (element-type Gck.Object): A list of objects, which
+ * should be freed using gck_list_unref_free().
  */
 GList*
 gck_enumerator_next_n (GckEnumerator *self, gint max_objects, GCancellable *cancellable,
@@ -807,7 +808,8 @@ gck_enumerator_next_async (GckEnumerator *self, gint max_objects, GCancellable *
  * %NULL is also returned if the function fails. Use the @error to determine
  * whether a failure occurred or not.
  *
- * Returns: The list of objects, which should be freed with gck_list_unref_free()
+ * Returns: (element-type Gck.Module) (transfer full): The list of objects, which
+ * should be freed with gck_list_unref_free()
  */
 GList*
 gck_enumerator_next_finish (GckEnumerator *self, GAsyncResult *result, GError **error)

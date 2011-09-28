@@ -306,6 +306,26 @@ gck_session_class_init (GckSessionClass *klass)
  * When done with this structure, release it using gck_session_info_free().
  */
 
+GType
+gck_session_info_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GckSessionInfo",
+		                                     (GBoxedCopyFunc)gck_session_info_copy,
+		                                     (GBoxedFreeFunc)gck_session_info_free);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
+}
+
+GckSessionInfo *
+gck_session_info_copy (GckSessionInfo *session_info)
+{
+	return g_memdup (session_info, sizeof (GckSessionInfo));
+}
+
 /**
  * gck_session_info_free:
  * @session_info: Session info to free.
@@ -323,17 +343,19 @@ gck_session_info_free (GckSessionInfo *session_info)
 /**
  * gck_session_from_handle:
  * @slot: The slot which the session belongs to.
- * @handle: The raw PKCS\#11 handle of the session.
+ * @session_handle: the raw PKCS\#11 handle of the session
  * @options: Session options. Those which are used during opening a session have no effect.
  *
  * Initialize a GckSession object from a raw PKCS\#11 session handle.
  * Usually one would use the gck_slot_open_session() function to
  * create a session.
  *
- * Return value: The new GckSession object.
+ * Returns: (transfer full): the new GckSession object
  **/
-GckSession*
-gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle, guint options)
+GckSession *
+gck_session_from_handle (GckSlot *slot,
+                         gulong session_handle,
+                         guint options)
 {
 	GckModule *module;
 	GckSession *session;
@@ -341,9 +363,12 @@ gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle, guint options)
 	g_return_val_if_fail (GCK_IS_SLOT (slot), NULL);
 
 	module = gck_slot_get_module (slot);
-	session = g_object_new (GCK_TYPE_SESSION, "module", module,
-	                        "handle", handle, "slot", slot,
-	                        "options", options, NULL);
+	session = g_object_new (GCK_TYPE_SESSION,
+	                        "module", module,
+	                        "handle", session_handle,
+	                        "slot", slot,
+	                        "options", options,
+	                        NULL);
 	g_object_unref (module);
 
 	return session;
@@ -357,7 +382,7 @@ gck_session_from_handle (GckSlot *slot, CK_SESSION_HANDLE handle, guint options)
  *
  * Return value: The raw session handle.
  **/
-CK_SESSION_HANDLE
+gulong
 gck_session_get_handle (GckSession *self)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), (CK_SESSION_HANDLE)-1);
@@ -370,9 +395,9 @@ gck_session_get_handle (GckSession *self)
  *
  * Get the PKCS\#11 module to which this session belongs.
  *
- * Return value: The module, which should be unreffed after use.
+ * Return: (transfer full): The module, which should be unreffed after use.
  **/
-GckModule*
+GckModule *
 gck_session_get_module (GckSession *self)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
@@ -386,9 +411,9 @@ gck_session_get_module (GckSession *self)
  *
  * Get the PKCS\#11 slot to which this session belongs.
  *
- * Return value: The slot, which should be unreffed after use.
+ * Return value: (transfer full): The slot, which should be unreffed after use.
  **/
-GckSlot*
+GckSlot *
 gck_session_get_slot (GckSession *self)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
@@ -885,9 +910,9 @@ perform_create_object (CreateObject *args)
  * Create a new PKCS\#11 object. This call may block for an
  * indefinite period.
  *
- * Return value: The newly created object or NULL if an error occurred.
+ * Returns: (transfer full): the newly created object or %NULL if an error occurred
  **/
-GckObject*
+GckObject *
 gck_session_create_object (GckSession *self, GckAttributes *attrs,
                            GCancellable *cancellable, GError **error)
 {
@@ -942,9 +967,9 @@ gck_session_create_object_async (GckSession *self, GckAttributes *attrs,
  *
  * Get the result of creating a new PKCS\#11 object.
  *
- * Return value: The newly created object or NULL if an error occurred.
+ * Return value: (transfer full): the newly created object or NULL if an error occurred
  **/
-GckObject*
+GckObject *
 gck_session_create_object_finish (GckSession *self, GAsyncResult *result, GError **error)
 {
 	CreateObject *args;
@@ -1062,9 +1087,10 @@ objlist_from_handles (GckSession *self, CK_OBJECT_HANDLE_PTR objects,
  * Find the objects matching the passed attributes. This call may
  * block for an indefinite period.
  *
- * Return value: A list of the matching objects, which may be empty.
+ * Returns: (transfer full) (element-type Gck.Object): a list of the matching
+ *          objects, which may be empty
  **/
-GList*
+GList *
 gck_session_find_objects (GckSession *self, GckAttributes *attrs,
                           GCancellable *cancellable, GError **error)
 {
@@ -1113,9 +1139,10 @@ gck_session_find_objects_async (GckSession *self, GckAttributes *attrs,
  *
  * Get the result of a find operation.
  *
- * Return value: A list of the matching objects, which may be empty.
+ * Return: (transfer full) (element-type Gck.Object): a list of the matching
+ *         objects, which may be empty
  **/
-GList*
+GList *
 gck_session_find_objects_finish (GckSession *self, GAsyncResult *result, GError **error)
 {
 	FindObjects *args;
@@ -1376,9 +1403,10 @@ perform_wrap_key (WrapKey *args)
  * Wrap a key into a byte stream. This call may block for an
  * indefinite period.
  *
- * Return value: The wrapped data or NULL if the operation failed.
+ * Returns: (transfer full) (array length=n_result): the wrapped data or %NULL
+ *          if the operation failed
  **/
-gpointer
+guchar *
 gck_session_wrap_key (GckSession *self, GckObject *key, gulong mech_type,
                       GckObject *wrapped, gsize *n_result, GCancellable *cancellable, GError **error)
 {
@@ -1399,9 +1427,10 @@ gck_session_wrap_key (GckSession *self, GckObject *key, gulong mech_type,
  * Wrap a key into a byte stream. This call may block for an
  * indefinite period.
  *
- * Return value: The wrapped data or NULL if the operation failed.
+ * Returns: (transfer full) (array length=n_result): the wrapped data or %NULL
+ *          if the operation failed
  **/
-gpointer
+guchar *
 gck_session_wrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
                             GckObject *wrapped, gsize *n_result, GCancellable *cancellable,
                             GError **error)
@@ -1478,9 +1507,10 @@ gck_session_wrap_key_async (GckSession *self, GckObject *key, GckMechanism *mech
  *
  * Get the result of a wrap key operation.
  *
- * Return value: The wrapped data or NULL if the operation failed.
+ * Returns: (transfer full) (array length=n_result): the wrapped data or %NULL
+ *          if the operation failed
  **/
-gpointer
+guchar *
 gck_session_wrap_key_finish (GckSession *self, GAsyncResult *result,
                               gsize *n_result, GError **error)
 {
@@ -1555,9 +1585,10 @@ perform_unwrap_key (UnwrapKey *args)
  * Unwrap a key from a byte stream. This call may block for an
  * indefinite period.
  *
- * Return value: The new unwrapped key or NULL if the operation failed.
+ * Returns: (transfer full): the new unwrapped key or NULL if the
+ *          operation failed
  **/
-GckObject*
+GckObject *
 gck_session_unwrap_key (GckSession *self, GckObject *wrapper, gulong mech_type,
                         gconstpointer input, gsize n_input, GckAttributes *attrs,
                         GCancellable *cancellable, GError **error)
@@ -1580,9 +1611,10 @@ gck_session_unwrap_key (GckSession *self, GckObject *wrapper, gulong mech_type,
  * Unwrap a key from a byte stream. This call may block for an
  * indefinite period.
  *
- * Return value: The new unwrapped key or NULL if the operation failed.
+ * Returns: (transfer full): the new unwrapped key or NULL if the operation
+ *          failed
  **/
-GckObject*
+GckObject *
 gck_session_unwrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
                              gconstpointer input, gsize n_input, GckAttributes *attrs,
                              GCancellable *cancellable, GError **error)
@@ -1661,9 +1693,10 @@ gck_session_unwrap_key_async (GckSession *self, GckObject *wrapper, GckMechanism
  *
  * Get the result of a unwrap key operation.
  *
- * Return value: The new unwrapped key or NULL if the operation failed.
+ * Returns: (transfer full): the new unwrapped key or %NULL if the operation
+ *          failed.
  **/
-GckObject*
+GckObject *
 gck_session_unwrap_key_finish (GckSession *self, GAsyncResult *result, GError **error)
 {
 	UnwrapKey *args;
@@ -1725,9 +1758,10 @@ perform_derive_key (DeriveKey *args)
  * Derive a key from another key. This call may block for an
  * indefinite period.
  *
- * Return value: The new derived key or NULL if the operation failed.
+ * Returns: (transfer full): the new derived key or NULL if the operation
+ *          failed
  **/
-GckObject*
+GckObject *
 gck_session_derive_key (GckSession *self, GckObject *base, gulong mech_type,
                         GckAttributes *attrs, GCancellable *cancellable, GError **error)
 {
@@ -1747,7 +1781,8 @@ gck_session_derive_key (GckSession *self, GckObject *base, gulong mech_type,
  * Derive a key from another key. This call may block for an
  * indefinite period.
  *
- * Return value: The new derived key or NULL if the operation failed.
+ * Returns: (transfer full): the new derived key or NULL if the operation
+ *          failed
  **/
 GckObject*
 gck_session_derive_key_full (GckSession *self, GckObject *base, GckMechanism *mechanism,
@@ -1822,9 +1857,10 @@ gck_session_derive_key_async (GckSession *self, GckObject *base, GckMechanism *m
  *
  * Get the result of a derive key operation.
  *
- * Return value: The new derived key or NULL if the operation failed.
+ * Returns: (transfer full): the new derived key or %NULL if the operation
+ *          failed
  **/
-GckObject*
+GckObject *
 gck_session_derive_key_finish (GckSession *self, GAsyncResult *result, GError **error)
 {
 	DeriveKey *args;

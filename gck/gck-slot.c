@@ -204,6 +204,34 @@ gck_slot_class_init (GckSlotClass *klass)
  * gck_slot_info_free().
  */
 
+GType
+gck_slot_info_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GckSlotInfo",
+		                                     (GBoxedCopyFunc)gck_slot_info_copy,
+		                                     (GBoxedFreeFunc)gck_slot_info_free);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
+}
+
+GckSlotInfo *
+gck_slot_info_copy (GckSlotInfo *slot_info)
+{
+	if (slot_info == NULL)
+		return NULL;
+
+	slot_info = g_memdup (slot_info, sizeof (GckSlotInfo));
+	slot_info->manufacturer_id = g_strdup (slot_info->manufacturer_id);
+	slot_info->slot_description = g_strdup (slot_info->slot_description);
+
+	return slot_info;
+}
+
+
 /**
  * gck_slot_info_free:
  * @slot_info: The slot info to free, or NULL.
@@ -252,6 +280,34 @@ gck_slot_info_free (GckSlotInfo *slot_info)
  * gck_token_info_free().
  */
 
+GType
+gck_token_info_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GckTokenInfo",
+		                                     (GBoxedCopyFunc)gck_token_info_copy,
+		                                     (GBoxedFreeFunc)gck_token_info_free);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
+}
+
+GckTokenInfo *
+gck_token_info_copy (GckTokenInfo *token_info)
+{
+	if (token_info == NULL)
+		return NULL;
+
+	token_info = g_memdup (token_info, sizeof (GckTokenInfo));
+	token_info->label = g_strdup (token_info->label);
+	token_info->manufacturer_id = g_strdup (token_info->manufacturer_id);
+	token_info->model = g_strdup (token_info->model);
+	token_info->serial_number = g_strdup (token_info->serial_number);
+	return token_info;
+}
+
 /**
  * gck_token_info_free:
  * @token_info: The token info to free, or NULL.
@@ -283,6 +339,26 @@ gck_token_info_free (GckTokenInfo *token_info)
  * When you're done with this structure it should be released with
  * gck_mechanism_info_free().
  */
+
+GType
+gck_mechanism_info_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GckMechanismInfo",
+		                                     (GBoxedCopyFunc)gck_mechanism_info_copy,
+		                                     (GBoxedFreeFunc)gck_mechanism_info_free);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
+}
+
+GckMechanismInfo *
+gck_mechanism_info_copy (GckMechanismInfo *mech_info)
+{
+	return g_memdup (mech_info, sizeof (GckMechanismInfo));
+}
 
 /**
  * gck_mechanism_info_free:
@@ -343,14 +419,14 @@ gck_mechanism_info_free (GckMechanismInfo *mech_info)
  * Return value: Whether the mechanism is in the list or not.
  **/
 gboolean
-gck_mechanisms_check (GckMechanisms *mechanisms, ...)
+gck_mechanisms_check (GArray *mechanisms, ...)
 {
 	gboolean found = TRUE;
 	va_list va;
 	gulong mech;
 	gsize i;
 
-	g_return_val_if_fail (mechanisms, FALSE);
+	g_return_val_if_fail (mechanisms != NULL, FALSE);
 
 	va_start (va, mechanisms);
 	for (;;) {
@@ -433,12 +509,16 @@ gck_slot_hash (gconstpointer slot)
  *
  * Create a new GckSlot object for a raw PKCS\#11 handle.
  *
- * Return value: The new GckSlot object.
+ * Returns: (transfer full): The new GckSlot object.
  **/
-GckSlot*
-gck_slot_from_handle (GckModule *module, CK_SLOT_ID slot_id)
+GckSlot *
+gck_slot_from_handle (GckModule *module,
+                      gulong slot_id)
 {
-	return g_object_new (GCK_TYPE_SLOT, "module", module, "handle", slot_id, NULL);
+	return g_object_new (GCK_TYPE_SLOT,
+	                     "module", module,
+	                     "handle", slot_id,
+	                     NULL);
 }
 
 /**
@@ -447,9 +527,9 @@ gck_slot_from_handle (GckModule *module, CK_SLOT_ID slot_id)
  *
  * Get the raw PKCS\#11 handle of a slot.
  *
- * Return value: The raw handle.
+ * Return value: the raw CK_SLOT_ID handle
  **/
-CK_SLOT_ID
+gulong
 gck_slot_get_handle (GckSlot *self)
 {
 	g_return_val_if_fail (GCK_IS_SLOT (self), (CK_SLOT_ID)-1);
@@ -462,9 +542,10 @@ gck_slot_get_handle (GckSlot *self)
  *
  * Get the module that this slot is on.
  *
- * Return value: The module, you must unreference this after you're done with it.
+ * Returns: (transfer full): The module, you must unreference this after
+ *          you're done with it.
  */
-GckModule*
+GckModule *
 gck_slot_get_module (GckSlot *self)
 {
 	g_return_val_if_fail (GCK_IS_SLOT (self), NULL);
@@ -667,10 +748,10 @@ gck_slot_get_token_info (GckSlot *self)
  *
  * Get the available mechanisms for this slot.
  *
- * Return value: A list of the mechanisms for this slot. Use
- * gck_mechanisms_free() when done with this.
+ * Returns: (transfer full): a list of the mechanisms for this slot, which should
+ *          be freed with g_array_free ()
  **/
-GckMechanisms*
+GArray *
 gck_slot_get_mechanisms (GckSlot *self)
 {
 	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
@@ -678,7 +759,7 @@ gck_slot_get_mechanisms (GckSlot *self)
 	GckModule *module = NULL;
 	CK_MECHANISM_TYPE_PTR mech_list = NULL;
 	CK_ULONG count, i;
-	GckMechanisms *result;
+	GArray *result;
 	CK_RV rv;
 
 	g_return_val_if_fail (GCK_IS_SLOT (self), NULL);
@@ -805,7 +886,7 @@ gck_slot_has_flags (GckSlot *self, gulong flags)
 
 /**
  * gck_slots_enumerate_objects:
- * @slots: a list of #GckSlot to enumerate objects on.
+ * @slots: (element-type Gck.Slot): a list of #GckSlot to enumerate objects on.
  * @attrs: Attributes that the objects must have, or empty for all objects.
  * @session_options: Options for opening a session.
  *
@@ -813,7 +894,7 @@ gck_slot_has_flags (GckSlot *self, gulong flags)
  *
  * This call will not block but will return an enumerator immediately.
  *
- * Return value: a new enumerator
+ * Returns: (transfer full): a new enumerator
  **/
 GckEnumerator*
 gck_slots_enumerate_objects (GList *slots, GckAttributes *attrs, guint session_options)
@@ -919,9 +1000,9 @@ free_open_session (OpenSession *args)
  *
  * This call may block for an indefinite period.
  *
- * Return value: A new session or NULL if an error occurs.
+ * Return value: (transfer full): a new session or %NULL if an error occurs
  **/
-GckSession*
+GckSession *
 gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
                        GError **error)
 {
@@ -929,7 +1010,7 @@ gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
 }
 
 /**
- * gck_slot_open_session_full:
+ * gck_slot_open_session_full: (skip):
  * @self: The slot to open a session on.
  * @options: The options to open the new session with.
  * @pkcs11_flags: Additional raw PKCS\#11 flags.
@@ -943,9 +1024,9 @@ gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
  *
  * This call may block for an indefinite period.
  *
- * Return value: A new session or NULL if an error occurs.
+ * Return value: (transfer full): a new session or %NULL if an error occurs
  **/
-GckSession*
+GckSession *
 gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, gpointer app_data,
                             CK_NOTIFY notify, GCancellable *cancellable, GError **error)
 {
@@ -1000,7 +1081,7 @@ gck_slot_open_session_async (GckSlot *self, guint options, GCancellable *cancell
 }
 
 /**
- * gck_slot_open_session_full_async:
+ * gck_slot_open_session_full_async: (skip):
  * @self: The slot to open a session on.
  * @options: Options to open the new session with.
  * @pkcs11_flags: Additional raw PKCS\#11 flags.
@@ -1050,7 +1131,7 @@ gck_slot_open_session_full_async (GckSlot *self, guint options, gulong pkcs11_fl
  * Get the result of an open session operation. If the 'auto reuse' setting is set,
  * then this may be a recycled session with the same flags.
  *
- * Return value: The new session or NULL if an error occurs.
+ * Return: (transfer full): the new session or %NULL if an error occurs.
  */
 GckSession*
 gck_slot_open_session_finish (GckSlot *self, GAsyncResult *result, GError **err)

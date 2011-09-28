@@ -353,9 +353,32 @@ gck_module_class_init (GckModuleClass *klass)
 	g_type_class_add_private (gobject_class, sizeof (GckModulePrivate));
 }
 
-/* ----------------------------------------------------------------------------
- * PUBLIC
- */
+GType
+gck_module_info_get_type (void)
+{
+	static volatile gsize initialized = 0;
+	static GType type = 0;
+	if (g_once_init_enter (&initialized)) {
+		type = g_boxed_type_register_static ("GckModuleInfo",
+		                                     (GBoxedCopyFunc)gck_module_info_copy,
+		                                     (GBoxedFreeFunc)gck_module_info_free);
+		g_once_init_leave (&initialized, 1);
+	}
+	return type;
+}
+
+GckModuleInfo *
+gck_module_info_copy (GckModuleInfo *module_info)
+{
+	if (module_info == NULL)
+		return NULL;
+
+	module_info = g_memdup (module_info, sizeof (GckModuleInfo));
+	module_info->manufacturer_id = g_strdup (module_info->manufacturer_id);
+	module_info->library_description = g_strdup (module_info->library_description);
+	return module_info;
+
+}
 
 /**
  * gck_module_info_free:
@@ -453,7 +476,7 @@ free_initialize (Initialize *args)
  *
  * Load and initialize a PKCS\#11 module represented by a GckModule object.
  *
- * Return value: The loaded PKCS\#11 module or NULL if failed.
+ * Return value: (transfer full): The loaded PKCS\#11 module or %NULL if failed.
  **/
 GckModule*
 gck_module_initialize (const gchar *path,
@@ -497,6 +520,15 @@ gck_module_initialize_async (const gchar *path,
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gck_module_initialize_finish:
+ * @result: the asynchronous result
+ * @error: location to place an error on failure
+ *
+ * Finishes the asynchronous initialize operation.
+ *
+ * Returns: (transfer full) (allow-none): The initialized module, or NULL
+ */
 GckModule *
 gck_module_initialize_finish (GAsyncResult *result,
                               GError **error)
@@ -522,7 +554,7 @@ gck_module_initialize_finish (GAsyncResult *result,
 }
 
 /**
- * gck_module_new:
+ * gck_module_new: (skip):
  * @funcs: Initialized PKCS\#11 function list pointer
  *
  * Create a GckModule representing a PKCS\#11 module. It is assumed that
@@ -665,7 +697,8 @@ gck_module_get_info (GckModule *self)
  *
  * Get the GckSlot objects for a given module.
  *
- * Return value: The possibly empty list of slots. Release this with gck_list_unref_free().
+ * Return value: (element-type Gck.Slot) (transfer full): The possibly empty
+ *               list of slots. Release this with gck_list_unref_free().
  */
 GList*
 gck_module_get_slots (GckModule *self, gboolean token_present)
@@ -723,7 +756,7 @@ gck_module_get_path (GckModule *self)
 }
 
 /**
- * gck_module_get_functions:
+ * gck_module_get_functions: (skip):
  * @self: The module for which to get the function list.
  *
  * Get the PKCS\#11 function list for the module.

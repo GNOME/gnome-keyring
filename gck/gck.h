@@ -29,6 +29,7 @@
 #include <gio/gio.h>
 
 #include "pkcs11.h"
+#include "gck-deprecated.h"
 
 G_BEGIN_DECLS
 
@@ -44,11 +45,13 @@ G_BEGIN_DECLS
 #define             GCK_VENDOR_CODE                         0x47434B00 /* GCK */
 
 /* An error code which results from a failure to load the PKCS11 module */
-#define             CKR_GCK_MODULE_PROBLEM                  (CKR_VENDOR_DEFINED | (GCK_VENDOR_CODE + 1))
+typedef enum {
+	GCK_ERROR_MODULE_PROBLEM = (CKR_VENDOR_DEFINED | (GCK_VENDOR_CODE + 1))
+} GckError;
 
-#define             GCK_ERROR                               (gck_get_error_quark ())
+#define             GCK_ERROR                               (gck_error_get_quark ())
 
-GQuark              gck_get_error_quark                     (void);
+GQuark              gck_error_get_quark                     (void) G_GNUC_CONST;
 
 #define             GCK_TYPE_LIST                           (gck_list_get_boxed_type ())
 
@@ -58,7 +61,7 @@ GList*              gck_list_ref_copy                       (GList *reflist);
 
 void                gck_list_unref_free                     (GList *reflist);
 
-const gchar*        gck_message_from_rv                     (CK_RV rv);
+const gchar*        gck_message_from_rv                     (gulong rv);
 
 gboolean            gck_string_to_chars                     (guchar *data,
                                                              gsize max,
@@ -121,6 +124,10 @@ void                gck_attribute_init_string               (GckAttribute *attr,
 void                gck_attribute_init_copy                 (GckAttribute *dest,
                                                              const GckAttribute *src);
 
+#define             GCK_TYPE_ATTRIBUTE                      (gck_attribute_get_type ())
+
+GType               gck_attribute_get_type                  (void) G_GNUC_CONST;
+
 GckAttribute*       gck_attribute_new                       (gulong attr_type,
                                                              gpointer value,
                                                              gsize length);
@@ -167,7 +174,7 @@ typedef struct _GckAttributes GckAttributes;
 
 #define             GCK_TYPE_ATTRIBUTES                     (gck_attributes_get_boxed_type ())
 
-GType               gck_attributes_get_boxed_type           (void) G_GNUC_CONST;
+GType               gck_attributes_get_type                 (void) G_GNUC_CONST;
 
 GckAttributes*      gck_attributes_new                      (void);
 
@@ -267,6 +274,12 @@ typedef struct _GckModuleInfo {
 	guint8 library_version_major;
 	guint8 library_version_minor;
 } GckModuleInfo;
+
+#define             GCK_TYPE_MODULE_INFO                   (gck_module_info_get_type ())
+
+GType               gck_module_info_get_type               (void) G_GNUC_CONST;
+
+GckModuleInfo *     gck_module_info_copy                   (GckModuleInfo *module_info);
 
 void                gck_module_info_free                   (GckModuleInfo *module_info);
 
@@ -437,6 +450,12 @@ typedef struct _GckSlotInfo {
 	guint8 firmware_version_minor;
 } GckSlotInfo;
 
+#define             GCK_TYPE_SLOT_INFO                      (gck_slot_info_get_type ())
+
+GType               gck_slot_info_get_type                  (void) G_GNUC_CONST;
+
+GckSlotInfo *       gck_slot_info_copy                      (GckSlotInfo *slot_info);
+
 void                gck_slot_info_free                      (GckSlotInfo *slot_info);
 
 typedef struct _GckTokenInfo {
@@ -465,6 +484,12 @@ typedef struct _GckTokenInfo {
 gboolean            gck_token_info_match                    (GckTokenInfo *match,
                                                              GckTokenInfo *info);
 
+#define             GCK_TYPE_TOKEN_INFO                     (gck_token_info_get_type ())
+
+GType               gck_token_info_get_type                 (void) G_GNUC_CONST;
+
+GckTokenInfo *      gck_token_info_copy                     (GckTokenInfo *token_info);
+
 void                gck_token_info_free                     (GckTokenInfo *token_info);
 
 typedef struct _GckMechanismInfo {
@@ -473,17 +498,19 @@ typedef struct _GckMechanismInfo {
 	gulong flags;
 } GckMechanismInfo;
 
-void                gck_mechanism_info_free                 (GckMechanismInfo *mech_info);
+#define             GCK_TYPE_MECHANISM_INFO                 (gck_mechanism_info_get_type ())
 
-typedef GArray GckMechanisms;
+GType               gck_mechanism_info_get_type             (void) G_GNUC_CONST;
+
+GckMechanismInfo *  gck_mechanism_info_copy                 (GckMechanismInfo *mech_info);
+
+void                gck_mechanism_info_free                 (GckMechanismInfo *mech_info);
 
 #define             gck_mechanisms_length(a)                ((a)->len)
 
-#define             gck_mechanisms_at(a, i)                 (g_array_index(a, CK_MECHANISM_TYPE, i))
+#define             gck_mechanisms_at(a, i)                 (g_array_index (a, CK_MECHANISM_TYPE, i))
 
-#define             gck_mechanisms_free(a)                  (g_array_free(a, TRUE))
-
-gboolean            gck_mechanisms_check                    (GckMechanisms *mechanisms,
+gboolean            gck_mechanisms_check                    (GArray *mechanisms,
                                                              ...);
 
 #define GCK_TYPE_SLOT             (gck_slot_get_type())
@@ -522,17 +549,17 @@ gboolean            gck_slot_match                          (GckSlot *self,
                                                              GckUriData *uri);
 
 GckSlot*            gck_slot_from_handle                    (GckModule *module,
-                                                             CK_SLOT_ID slot_id);
+                                                             gulong slot_id);
 
 GckModule*          gck_slot_get_module                     (GckSlot *self);
 
-CK_SLOT_ID          gck_slot_get_handle                     (GckSlot *self);
+gulong              gck_slot_get_handle                     (GckSlot *self);
 
 GckSlotInfo*        gck_slot_get_info                       (GckSlot *self);
 
 GckTokenInfo*       gck_slot_get_token_info                 (GckSlot *self);
 
-GckMechanisms*      gck_slot_get_mechanisms                 (GckSlot *self);
+GArray *            gck_slot_get_mechanisms                 (GckSlot *self);
 
 GckMechanismInfo*   gck_slot_get_mechanism_info             (GckSlot *self,
                                                              gulong mech_type);
@@ -593,6 +620,12 @@ typedef struct _GckSessionInfo {
 	gulong device_error;
 } GckSessionInfo;
 
+#define             GCK_TYPE_SESSION_INFO                  (gck_session_info_get_type ())
+
+GType               gck_session_info_get_type              (void) G_GNUC_CONST;
+
+GckSessionInfo *    gck_session_info_copy                  (GckSessionInfo *session_info);
+
 void                gck_session_info_free                  (GckSessionInfo *session_info);
 
 #define GCK_TYPE_SESSION             (gck_session_get_type())
@@ -624,15 +657,15 @@ struct _GckSessionClass {
 
 GType               gck_session_get_type                    (void) G_GNUC_CONST;
 
-GckSession*         gck_session_from_handle                 (GckSlot *slot,
-                                                             CK_SESSION_HANDLE handle,
+GckSession *        gck_session_from_handle                 (GckSlot *slot,
+                                                             gulong session_handle,
                                                              guint options);
 
 GckModule*          gck_session_get_module                  (GckSession *self);
 
 GckSlot*            gck_session_get_slot                    (GckSession *self);
 
-CK_SESSION_HANDLE   gck_session_get_handle                  (GckSession *self);
+gulong              gck_session_get_handle                  (GckSession *self);
 
 GckSessionInfo*     gck_session_get_info                    (GckSession *self);
 
@@ -903,7 +936,7 @@ gboolean            gck_session_verify_finish                (GckSession *self,
                                                               GAsyncResult *result,
                                                               GError **error);
 
-gpointer            gck_session_wrap_key                     (GckSession *self,
+guchar *            gck_session_wrap_key                     (GckSession *self,
                                                               GckObject *wrapper,
                                                               gulong mech_type,
                                                               GckObject *wrapped,
@@ -911,7 +944,7 @@ gpointer            gck_session_wrap_key                     (GckSession *self,
                                                               GCancellable *cancellable,
                                                               GError **error);
 
-gpointer            gck_session_wrap_key_full                (GckSession *self,
+guchar *            gck_session_wrap_key_full                (GckSession *self,
                                                               GckObject *wrapper,
                                                               GckMechanism *mechanism,
                                                               GckObject *wrapped,
@@ -927,7 +960,7 @@ void                gck_session_wrap_key_async               (GckSession *self,
                                                               GAsyncReadyCallback callback,
                                                               gpointer user_data);
 
-gpointer            gck_session_wrap_key_finish              (GckSession *self,
+guchar *            gck_session_wrap_key_finish              (GckSession *self,
                                                               GAsyncResult *result,
                                                               gsize *n_result,
                                                               GError **error);
@@ -1019,12 +1052,12 @@ struct _GckObjectClass {
 
 GType               gck_object_get_type                     (void) G_GNUC_CONST;
 
-GckObject*          gck_object_from_handle                  (GckSession *session,
-                                                             CK_OBJECT_HANDLE handle);
+GckObject *         gck_object_from_handle                  (GckSession *session,
+                                                             gulong object_handle);
 
 GList*              gck_objects_from_handle_array           (GckSession *session,
-                                                             CK_OBJECT_HANDLE_PTR handles,
-                                                             CK_ULONG n_handles);
+                                                             gulong *object_handles,
+                                                             gulong n_object_handles);
 
 gboolean            gck_object_equal                        (gconstpointer object1,
                                                              gconstpointer object2);
@@ -1033,7 +1066,7 @@ guint               gck_object_hash                         (gconstpointer objec
 
 GckModule*          gck_object_get_module                   (GckObject *self);
 
-CK_OBJECT_HANDLE    gck_object_get_handle                   (GckObject *self);
+gulong              gck_object_get_handle                   (GckObject *self);
 
 GckSession*         gck_object_get_session                  (GckObject *self);
 
@@ -1087,13 +1120,13 @@ GckAttributes*      gck_object_get_finish                   (GckObject *self,
                                                              GAsyncResult *result,
                                                              GError **error);
 
-gpointer            gck_object_get_data                     (GckObject *self,
+guchar *            gck_object_get_data                     (GckObject *self,
                                                              gulong attr_type,
                                                              GCancellable *cancellable,
                                                              gsize *n_data,
                                                              GError **error);
 
-gpointer            gck_object_get_data_full                (GckObject *self,
+guchar *            gck_object_get_data_full                (GckObject *self,
                                                              gulong attr_type,
                                                              GckAllocator allocator,
                                                              GCancellable *cancellable,
@@ -1107,7 +1140,7 @@ void                gck_object_get_data_async               (GckObject *self,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
 
-gpointer            gck_object_get_data_finish              (GckObject *self,
+guchar *            gck_object_get_data_finish              (GckObject *self,
                                                              GAsyncResult *result,
                                                              gsize *n_data,
                                                              GError **error);
@@ -1148,15 +1181,13 @@ GckAttributes*      gck_object_get_template_finish          (GckObject *self,
  * URI
  */
 
-enum {
+typedef enum {
 	GCK_URI_BAD_SCHEME = 1,
 	GCK_URI_BAD_ENCODING,
 	GCK_URI_BAD_SYNTAX,
 	GCK_URI_BAD_VERSION,
 	GCK_URI_NOT_FOUND
-};
-
-#define GCK_URI_BAD_PREFIX GCK_URI_BAD_SCHEME
+} GckUriError;
 
 /* WARNING: Don't modify these without syncing with p11-kit */
 typedef enum {
@@ -1186,9 +1217,9 @@ struct _GckUriData {
 	gpointer dummy[4];
 };
 
-#define             GCK_URI_ERROR                           (gck_uri_get_error_quark ())
+#define             GCK_URI_ERROR                           (gck_uri_error_get_quark ())
 
-GQuark              gck_uri_get_error_quark                 (void);
+GQuark              gck_uri_error_get_quark                 (void) G_GNUC_CONST;
 
 GckUriData*         gck_uri_data_new                        (void);
 
@@ -1198,6 +1229,12 @@ gchar*              gck_uri_build                           (GckUriData *uri_dat
 GckUriData*         gck_uri_parse                           (const gchar *string,
                                                              GckUriFlags flags,
                                                              GError **error);
+
+#define             GCK_URI_DATA_TYPE                       (gck_uri_data_get_type ())
+
+GType               gck_uri_data_get_type                   (void) G_GNUC_CONST;
+
+GckUriData *        gck_uri_data_copy                       (GckUriData *uri_data);
 
 void                gck_uri_data_free                       (GckUriData *uri_data);
 

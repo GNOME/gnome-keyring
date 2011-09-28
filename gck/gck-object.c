@@ -192,15 +192,17 @@ gck_object_class_init (GckObjectClass *klass)
 /**
  * gck_object_from_handle:
  * @session: The session through which this object is accessed or created.
- * @handle: The raw handle of the object.
+ * @object_handle: The raw CK_OBJECT_HANDLE of the object.
  *
  * Initialize a GckObject from a raw PKCS\#11 handle. Normally you would use
  * gck_session_create_object() or gck_session_find_objects() to access objects.
  *
- * Return value: The new GckObject. You should use g_object_unref() when done with this object.
+ * Return value: (transfer full): The new GckObject. You should use
+ *               g_object_unref() when done with this object.
  **/
-GckObject*
-gck_object_from_handle (GckSession *session, CK_OBJECT_HANDLE handle)
+GckObject *
+gck_object_from_handle (GckSession *session,
+                        gulong object_handle)
 {
 	GckModule *module = NULL;
 	GckObject *object;
@@ -208,7 +210,11 @@ gck_object_from_handle (GckSession *session, CK_OBJECT_HANDLE handle)
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 
 	module = gck_session_get_module (session);
-	object = g_object_new (GCK_TYPE_OBJECT, "module", module, "handle", handle, "session", session, NULL);
+	object = g_object_new (GCK_TYPE_OBJECT,
+	                       "module", module,
+	                       "handle", object_handle,
+	                       "session", session,
+	                       NULL);
 	g_object_unref (module);
 
 	return object;
@@ -217,26 +223,29 @@ gck_object_from_handle (GckSession *session, CK_OBJECT_HANDLE handle)
 /**
  * gck_objects_from_handle_array:
  * @session: The session for these objects
- * @handles: The raw object handles.
- * @n_handles: The number of raw object handles.
+ * @object_handles: (array length=n_object_handles): The raw object handles.
+ * @n_object_handles: The number of raw object handles.
  *
  * Initialize a list of GckObject from raw PKCS\#11 handles. The handles argument must contain
  * contiguous CK_OBJECT_HANDLE handles in an array.
  *
- * Return value: The list of GckObject. You should use gck_list_unref_free() when done with
- * this list.
+ * Returns: (transfer full) (element-type Gck.Object): The list of #GckObject
+ *          objects. You should use gck_list_unref_free() when done with this
+ *          list.
  **/
-GList*
-gck_objects_from_handle_array (GckSession *session, CK_OBJECT_HANDLE_PTR handles, CK_ULONG n_handles)
+GList *
+gck_objects_from_handle_array (GckSession *session,
+                               gulong *object_handles,
+                               gulong n_object_handles)
 {
 	GList *results = NULL;
 	CK_ULONG i;
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
-	g_return_val_if_fail (handles || !n_handles, NULL);
+	g_return_val_if_fail (object_handles == NULL || n_object_handles == 0, NULL);
 
-	for (i = 0; i < n_handles; ++i)
-		results = g_list_prepend (results, gck_object_from_handle (session, handles[i]));
+	for (i = 0; i < n_object_handles; ++i)
+		results = g_list_prepend (results, gck_object_from_handle (session, object_handles[i]));
 	return g_list_reverse (results);
 }
 
@@ -315,9 +324,9 @@ gck_object_hash (gconstpointer object)
  *
  * Get the raw PKCS\#11 handle of a GckObject.
  *
- * Return value: The raw object handle.
+ * Return value: the raw CK_OBJECT_HANDLE object handle
  **/
-CK_OBJECT_HANDLE
+gulong
 gck_object_get_handle (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), (CK_OBJECT_HANDLE)-1);
@@ -330,9 +339,9 @@ gck_object_get_handle (GckObject *self)
  *
  * Get the PKCS\#11 module to which this object belongs.
  *
- * Return value: The module, which should be unreffed after use.
+ * Returns: (transfer full): the module, which should be unreffed after use
  **/
-GckModule*
+GckModule *
 gck_object_get_module (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
@@ -352,9 +361,9 @@ gck_object_get_module (GckObject *self)
  * object. By default an object will open and close sessions
  * appropriate for its calls.
  *
- * Return value: The assigned session, which must be unreffed after use.
+ * Returns: (transfer full): the assigned session, which must be unreffed after use
  **/
-GckSession*
+GckSession *
 gck_object_get_session (GckObject *self)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
@@ -877,11 +886,15 @@ free_get_attribute_data (GetAttributeData *args)
  *
  * This call may block for an indefinite period.
  *
- * Return value: The resulting PKCS\#11 attribute data, or NULL if an error occurred.
+ * Return: (transfer full) (array length=n_data): the resulting PKCS\#11
+ *         attribute data, or %NULL if an error occurred
  **/
-gpointer
-gck_object_get_data (GckObject *self, gulong attr_type, GCancellable *cancellable,
-                     gsize *n_data, GError **error)
+guchar *
+gck_object_get_data (GckObject *self,
+                     gulong attr_type,
+                     GCancellable *cancellable,
+                     gsize *n_data,
+                     GError **error)
 {
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
 	g_return_val_if_fail (n_data, NULL);
@@ -891,7 +904,7 @@ gck_object_get_data (GckObject *self, gulong attr_type, GCancellable *cancellabl
 }
 
 /**
- * gck_object_get_data_full:
+ * gck_object_get_data_full: (skip):
  * @self: The object to get attribute data from.
  * @attr_type: The attribute to get data for.
  * @allocator: An allocator with which to allocate memory for the data, or NULL for default.
@@ -904,9 +917,10 @@ gck_object_get_data (GckObject *self, gulong attr_type, GCancellable *cancellabl
  *
  * This call may block for an indefinite period.
  *
- * Return value: The resulting PKCS\#11 attribute data, or NULL if an error occurred.
+ * Returns: (transfer full) (array length=n_data): The resulting PKCS\#11
+ *          attribute data, or %NULL if an error occurred.
  **/
-gpointer
+guchar *
 gck_object_get_data_full (GckObject *self, gulong attr_type, GckAllocator allocator,
                            GCancellable *cancellable, gsize *n_data, GError **error)
 {
@@ -942,7 +956,7 @@ gck_object_get_data_full (GckObject *self, gulong attr_type, GckAllocator alloca
  * gck_object_get_data_async:
  * @self: The object to get attribute data from.
  * @attr_type: The attribute to get data for.
- * @allocator: An allocator with which to allocate memory for the data, or NULL for default.
+ * @allocator: (skip): An allocator with which to allocate memory for the data, or NULL for default.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
  * @user_data: Data to be passed to the callback.
@@ -984,11 +998,14 @@ gck_object_get_data_async (GckObject *self, gulong attr_type, GckAllocator alloc
  * an object. For convenience the returned data has an extra null terminator,
  * not included in the returned length.
  *
- * Return value: The PKCS\#11 attribute data or NULL if an error occurred.
+ * Returns: (transfer full) (array length=n_data): The PKCS\#11 attribute data
+ *          or %NULL if an error occurred.
  **/
-gpointer
-gck_object_get_data_finish (GckObject *self, GAsyncResult *result,
-                             gsize *n_data, GError **error)
+guchar *
+gck_object_get_data_finish (GckObject *self,
+                            GAsyncResult *result,
+                            gsize *n_data,
+                            GError **error)
 {
 	GetAttributeData *args;
 	guchar *data;

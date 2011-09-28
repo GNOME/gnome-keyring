@@ -274,7 +274,7 @@ test_get_data_attribute (Test *test, gconstpointer unused)
 	GError *err = NULL;
 
 	/* Simple */
-	klass = gck_object_get_data (test->object, CKA_CLASS, NULL, &n_data, &err);
+	klass = (gulong *)gck_object_get_data (test->object, CKA_CLASS, NULL, &n_data, &err);
 	g_assert_no_error (err);
 	g_assert (klass);
 	g_assert (n_data == sizeof (CK_OBJECT_CLASS));
@@ -282,7 +282,7 @@ test_get_data_attribute (Test *test, gconstpointer unused)
 	g_free (klass);
 
 	/* Full */
-	klass = gck_object_get_data_full (test->object, CKA_CLASS, NULL, NULL, &n_data, &err);
+	klass = (gulong *)gck_object_get_data_full (test->object, CKA_CLASS, NULL, NULL, &n_data, &err);
 	g_assert_no_error (err);
 	g_assert (klass);
 	g_assert (n_data == sizeof (CK_OBJECT_CLASS));
@@ -294,7 +294,7 @@ test_get_data_attribute (Test *test, gconstpointer unused)
 	egg_test_wait_until (500);
 	g_assert (result != NULL);
 
-	klass = gck_object_get_data_finish (test->object, result, &n_data, &err);
+	klass = (gulong *)gck_object_get_data_finish (test->object, result, &n_data, &err);
 	g_object_unref (result);
 	g_assert_no_error (err);
 	g_assert (klass);

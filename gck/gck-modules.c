@@ -93,8 +93,8 @@ free_initialize_registered (InitializeRegistered *args)
  *
  * Load and initialize all the registered modules.
  *
- * Returns: A newly allocated list of GckModule objects, which should
- * be released with gck_list_unref_free().
+ * Returns: (transfer full) (element-type Gck.Module): A newly allocated list
+ * of #GckModule objects, which should be released with gck_list_unref_free().
  */
 GList*
 gck_modules_initialize_registered (GCancellable *cancellable,
@@ -127,6 +127,17 @@ gck_modules_initialize_registered_async (GCancellable *cancellable,
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
 }
 
+/**
+ * gck_modules_initialize_registered_finish:
+ * @result: the asynchronous result
+ * @error: location to place an error on failure
+ *
+ * Finishes the asynchronous operation to initialize the registered
+ * PKCS\#11 modules.
+ *
+ * Returns: (transfer full) (element-type Gck.Module): a list of newly
+ * initialized #GckModule objects
+ */
 GList *
 gck_modules_initialize_registered_finish (GAsyncResult *result,
                                           GError **error)
@@ -153,13 +164,13 @@ gck_modules_initialize_registered_finish (GAsyncResult *result,
 
 /**
  * gck_modules_get_slots:
- * @modules: The modules
+ * @modules: (element-type Gck.Module): The modules
  * @token_present: Whether to only list slots with token present
  *
  * Get a list of slots for across all of the modules.
  *
- * Returns: A list of #GckSlot objects, which should be freed with
- *     gck_list_unref_free().
+ * Returns: (transfer full) (element-type Gck.Slot): A list of #GckSlot
+ * objects, which should be freed with gck_list_unref_free().
  */
 GList*
 gck_modules_get_slots (GList *modules, gboolean token_present)
@@ -176,7 +187,7 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
 
 /**
  * gck_modules_enumerate_objects:
- * @modules: The modules
+ * @modules: (element-type Gck.Module): The modules
  * @attrs: Attributes that the objects must have, or empty for all objects
  * @session_options: Options from GckSessionOptions
  *
@@ -184,7 +195,8 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
  *
  * This call will not block but will return an enumerator immediately.
 
- * Return value: A new enumerator, which should be released with g_object_unref().
+ * Return value: (transfer full): A new enumerator, which should be released
+ * with g_object_unref().
  **/
 GckEnumerator*
 gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_options)
@@ -254,14 +266,14 @@ tokens_for_uri (GList *modules,
 
 /**
  * gck_modules_token_for_uri:
- * @modules: The modules
+ * @modules: (element-type Gck.Module): The modules
  * @uri: The URI that the token must match
  * @error: A location to raise an error on failure
  *
  * Lookup a token that matches the URI.
  *
- * Returns: A newly allocated #GckSlot or %NULL if no such token was
- *    found.
+ * Returns: (transfer full): A newly allocated #GckSlot or %NULL if no such
+ * token was found.
  */
 GckSlot*
 gck_modules_token_for_uri (GList *modules,
@@ -281,14 +293,15 @@ gck_modules_token_for_uri (GList *modules,
 
 /**
  * gck_modules_tokens_for_uri:
- * @modules: The modules
+ * @modules: (element-type Gck.Module): The modules
  * @uri: The URI that the token must match
  * @error: A location to raise an error on failure
  *
  * Lookup a token that matches the URI.
  *
- * Returns: (transfer full): A list of newly allocated #GckSlot objects. Use
- *     gck_list_unref_free() to release the list once you're done with it.
+ * Returns: (transfer full) (element-type Gck.Slot): A list of newly allocated
+ * #GckSlot objects. Use gck_list_unref_free() to release the list once you're
+ * done with it.
  */
 GList *
 gck_modules_tokens_for_uri (GList *modules,
@@ -300,7 +313,7 @@ gck_modules_tokens_for_uri (GList *modules,
 
 /**
  * gck_modules_object_for_uri:
- * @modules: The modules
+ * @modules: (element-type Gck.Module): The modules
  * @uri: The URI the objects must match
  * @session_options: Options from GckSessionOptions
  * @error: A location to raise an error on failure.
@@ -310,8 +323,8 @@ gck_modules_tokens_for_uri (GList *modules,
  * This call can block. Use gck_modules_enumerate_uri() for a non-blocking
  * version.
  *
- * Returns: A new #GckObject which should be released with g_object_unref(),
- *     or %NULL if no matching object was found.
+ * Returns: (transfer full) (allow-none): A new #GckObject which should be released with
+ * g_object_unref(), or %NULL if no matching object was found.
  */
 GckObject*
 gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_options,
@@ -335,7 +348,7 @@ gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_opti
 
 /**
  * gck_modules_objects_for_uri:
- * @modules: The modules
+ * @modules: (element-type Gck.Module): The modules
  * @uri: The URI the objects must match
  * @session_options: Options from GckSessionOptions
  * @error: A location to raise an error on failure.
@@ -345,8 +358,9 @@ gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_opti
  * This call can block. Use gck_modules_enumerate_uri() for a non-blocking
  * version.
  *
- * Returns: A list of #GckObject which should be released with gck_list_unref_free(),
- *     or %NULL if no matching object was found.
+ * Returns: (transfer full) (element-type Gck.Object): A list of #GckObject which
+ * should be released with gck_list_unref_free(), or %NULL if no matching object
+ * was found.
  */
 GList*
 gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_options,
@@ -370,7 +384,7 @@ gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_opt
 
 /**
  * gck_modules_enumerate_uri:
- * @modules: The modules
+ * @modules: (element-type Gck.Module): The modules
  * @uri: The URI that the enumerator will match
  * @session_options: Options from GckSessionOptions
  * @error: A location to raise an error on failure.
@@ -380,7 +394,7 @@ gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_opt
  * This call will not block. Use the #GckEnumerator functions in order to
  * get at the actual objects that match.
  *
- * Returns: A new #GckEnumerator, or %NULL if an error occurs.
+ * Returns: (transfer full): A new #GckEnumerator, or %NULL if an error occurs.
  */
 GckEnumerator*
 gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_options,

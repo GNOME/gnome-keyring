@@ -163,7 +163,7 @@ test_slot_equals_hash (Test *test, gconstpointer unused)
 static void
 test_slot_mechanisms (Test *test, gconstpointer unused)
 {
-	GckMechanisms *mechs;
+	GArray *mechs;
 	GckMechanismInfo *info;
 	guint i;
 

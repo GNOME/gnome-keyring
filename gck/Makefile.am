@@ -4,7 +4,8 @@ SUBDIRS = . tests
 incdir = $(includedir)/gck-@GCK_MAJOR@/gck
 
 inc_HEADERS = \
-	gck.h
+	gck.h \
+	gck-deprecated.h
 
 INCLUDES = \
 	-I$(top_builddir) \
@@ -23,11 +24,9 @@ BUILT_SOURCES = \
 
 lib_LTLIBRARIES = libgck-@GCK_MAJOR@.la
 
-libgck_@GCK_MAJOR@_la_SOURCES = \
-	gck.h gck-private.h pkcs11.h \
+PUBLIC_FILES = \
+	gck.h \
 	gck-attributes.c \
-	gck-call.c \
-	gck-debug.c gck-debug.h \
 	gck-dump.c \
 	gck-enumerator.c \
 	gck-misc.c \
@@ -36,7 +35,18 @@ libgck_@GCK_MAJOR@_la_SOURCES = \
 	gck-object.c \
 	gck-session.c \
 	gck-slot.c \
-	gck-uri.c \
+	gck-uri.c
+
+INTERNAL_FILES = \
+	gck-call.c \
+	gck-debug.c gck-debug.h \
+	gck-deprecated.h \
+	gck-private.h \
+	pkcs11.h
+
+libgck_@GCK_MAJOR@_la_SOURCES = \
+	$(PUBLIC_FILES) \
+	$(INTERNAL_FILES) \
 	$(BUILT_SOURCES)
 
 libgck_@GCK_MAJOR@_la_LDFLAGS = \
@@ -68,6 +78,37 @@ gck-marshal.h: gck-marshal.list $(GLIB_GENMARSHAL)
 gck-marshal.c: gck-marshal.list $(GLIB_GENMARSHAL)
 	echo "#include \"gck-marshal.h\"" > $@ && \
 	$(GLIB_GENMARSHAL) $< --body --prefix=_gck_marshal >> $@
+
+# ------------------------------------------------------------------
+# INTROSPECTION
+
+if HAVE_INTROSPECTION
+
+include $(INTROSPECTION_MAKEFILE)
+
+INTROSPECTION_GIRS = Gck-@GCK_MAJOR@.gir
+INTROSPECTION_SCANNER_ARGS = $(INTROSPECTION_FLAGS) --warn-all --add-include-path=$(srcdir) --add-include-path=.
+INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir) --includedir=.
+
+Gck-@GCK_MAJOR@.gir: libgck-@GCK_MAJOR@.la
+
+Gck_@GCK_MAJOR@_gir_PACKAGES = gobject-2.0 gtk+-3.0 p11-kit-1
+Gck_@GCK_MAJOR@_gir_EXPORT_PACKAGES = gck-@GCK_MAJOR@
+Gck_@GCK_MAJOR@_gir_INCLUDES = GObject-2.0 Gtk-3.0
+Gck_@GCK_MAJOR@_gir_LIBS = libgck-@GCK_MAJOR@.la
+Gck_@GCK_MAJOR@_gir_CFLAGS = -I$(top_srcdir) -I$(top_builddir) -DGCK_COMPILATION -DGCK_API_SUBJECT_TO_CHANGE
+Gck_@GCK_MAJOR@_gir_FILES = $(PUBLIC_FILES)
+Gck_@GCK_MAJOR@_gir_SCANNERFLAGS = --c-include "gck.h"
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibsdir = $(libdir)/girepository-1.0
+typelibs_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+endif
+
+# ----------------------------------------------------------------
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gck-$(GCK_MAJOR).pc

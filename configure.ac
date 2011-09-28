@@ -601,14 +601,17 @@ if test "$enable_strict" = "yes"; then
 		-DG_DISABLE_DEPRECATED \
 		-DGDK_PIXBUF_DISABLE_DEPRECATED"
 	TEST_MODE="thorough"
+	INTROSPECTION_FLAGS="--warn-error"
 	AC_DEFINE_UNQUOTED(WITH_STRICT, 1, [More strict checks])
 	strict_status="yes (-Werror, thorough tests, fatals, no deprecations)"
 else
 	TEST_MODE="quick"
+	INTROSPECTION_FLAGS=""
 	strict_status="no (quick tests, non-fatal warnings)"
 fi
 
 AC_MSG_RESULT($strict_status)
+AC_SUBST(INTROSPECTION_FLAGS)
 AC_SUBST(TEST_MODE)
 
 AC_MSG_CHECKING([whether to build with gcov testing])

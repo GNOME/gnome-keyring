@@ -38,6 +38,8 @@ run-tests
 *.valid
 *.abi
 *.pc
+*.gir
+*.typelib
 
 /compile
 /ABOUT-NLS
