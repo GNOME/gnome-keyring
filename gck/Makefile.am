@@ -3,9 +3,13 @@ SUBDIRS = . tests
 
 incdir = $(includedir)/gck-@GCK_MAJOR@/gck
 
-inc_HEADERS = \
+HEADER_FILES = \
 	gck.h \
 	gck-deprecated.h
+
+inc_HEADERS = \
+	$(HEADER_FILES) \
+	gck-enum-types.h
 
 INCLUDES = \
 	-I$(top_builddir) \
@@ -20,12 +24,14 @@ INCLUDES = \
 	-DPKCS11_REGISTRY_DIR=\"$(libdir)/pkcs11\"
 
 BUILT_SOURCES = \
-	gck-marshal.c gck-marshal.h
+	gck-marshal.c gck-marshal.h \
+	gck-enum-types.c gck-enum-types.h
 
 lib_LTLIBRARIES = libgck-@GCK_MAJOR@.la
 
 PUBLIC_FILES = \
 	gck.h \
+	gck-enum-types.h \
 	gck-attributes.c \
 	gck-dump.c \
 	gck-enumerator.c \
@@ -79,6 +85,14 @@ gck-marshal.c: gck-marshal.list $(GLIB_GENMARSHAL)
 	echo "#include \"gck-marshal.h\"" > $@ && \
 	$(GLIB_GENMARSHAL) $< --body --prefix=_gck_marshal >> $@
 
+gck-enum-types.h: gck.h gck-enum-types.h.template
+	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(srcdir)/gck-enum-types.h.template \
+		$(HEADER_FILES) > $@
+
+gck-enum-types.c: gck.h gck-enum-types.c.template
+	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(srcdir)/gck-enum-types.c.template \
+		$(HEADER_FILES) > $@
+
 # ------------------------------------------------------------------
 # INTROSPECTION
 
@@ -130,6 +144,8 @@ EXTRA_DIST = \
 	gck.pc.in \
 	gck-marshal.list \
 	gck.symbols \
+	gck-enum-types.h.template \
+	gck-enum-types.c.template \
 	pkcs11-trust-assertions.h
 
 CLEANFILES = \

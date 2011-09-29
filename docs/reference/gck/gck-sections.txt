@@ -26,12 +26,14 @@ gck_attribute_clear
 gck_attribute_free
 gck_attribute_dump
 gck_attribute_equal
+<SUBSECTION Private>
+GCK_TYPE_ATTRIBUTE
+gck_attribute_get_type
 </SECTION>
 
 <SECTION>
 <FILE>gck-attributes</FILE>
 GckAttributes
-GCK_TYPE_ATTRIBUTES
 gck_attributes_new
 gck_attributes_new_empty
 gck_attributes_at
@@ -54,9 +56,12 @@ gck_attributes_ref
 gck_attributes_unref
 gck_attributes_contains
 gck_attributes_dump
-gck_attributes_get_boxed_type
 gck_attributes_new_full
 GckAllocator
+<SUBSECTION Standard>
+gck_attributes_get_type
+GCK_TYPE_ATTRIBUTES
+gck_attributes_get_boxed_type
 </SECTION>
 
 <SECTION>
@@ -74,6 +79,7 @@ gck_module_get_functions
 gck_module_get_info
 gck_module_get_slots
 GckModuleInfo
+gck_module_info_copy
 gck_module_info_free
 <SUBSECTION Standard>
 GckModuleClass
@@ -85,6 +91,8 @@ GCK_MODULE_CLASS
 GCK_MODULE_GET_CLASS
 GCK_TYPE_MODULE
 GckModulePrivate
+GCK_TYPE_MODULE_INFO
+gck_module_info_get_type
 </SECTION>
 
 <SECTION>
@@ -104,12 +112,12 @@ gck_modules_tokens_for_uri
 <SECTION>
 <FILE>gck-slot</FILE>
 GckMechanismInfo
+gck_mechanism_info_copy
 gck_mechanism_info_free
-GckMechanisms
 gck_mechanisms_length
 gck_mechanisms_at
-gck_mechanisms_free
 gck_mechanisms_check
+GckSessionOptions
 GckSlot
 gck_slot_equal
 gck_slot_hash
@@ -129,10 +137,11 @@ gck_slot_open_session_async
 gck_slot_open_session_finish
 gck_slot_from_handle
 GckSlotInfo
+gck_slot_info_copy
 gck_slot_info_free
 GckTokenInfo
+gck_token_info_copy
 gck_token_info_free
-gck_token_info_match
 <SUBSECTION Standard>
 GckSlotClass
 gck_slot_get_type
@@ -143,12 +152,21 @@ GCK_SLOT_CLASS
 GCK_SLOT_GET_CLASS
 GCK_TYPE_SLOT
 GckSlotPrivate
+GCK_TYPE_MECHANISM_INFO
+GCK_TYPE_SLOT_INFO
+GCK_TYPE_TOKEN_INFO
+GckMechanisms
+gck_mechanisms_free
+gck_mechanism_info_get_type
+gck_slot_info_get_type
+gck_token_info_get_type
+GCK_TYPE_SESSION_OPTIONS
+gck_session_options_get_type
 </SECTION>
 
 <SECTION>
 <FILE>gck-session</FILE>
 GckSession
-GckSessionOptions
 gck_session_from_handle
 gck_session_get_module
 gck_session_get_slot
@@ -192,7 +210,6 @@ gck_session_generate_key_pair_finish
 gck_session_generate_key_pair_full
 gck_session_get_options
 gck_session_get_state
-gck_session_get_type
 gck_session_init_pin
 gck_session_init_pin_async
 gck_session_init_pin_finish
@@ -208,9 +225,11 @@ gck_session_wrap_key_async
 gck_session_wrap_key_finish
 gck_session_wrap_key_full
 GckSessionInfo
+gck_session_info_copy
 gck_session_info_free
 GckMechanism
 <SUBSECTION Standard>
+gck_session_get_type
 GckSessionClass
 GCK_IS_SESSION
 GCK_IS_SESSION_CLASS
@@ -219,6 +238,8 @@ GCK_SESSION_CLASS
 GCK_SESSION_GET_CLASS
 GCK_TYPE_SESSION
 GckSessionPrivate
+GCK_TYPE_SESSION_INFO
+gck_session_info_get_type
 </SECTION>
 
 <SECTION>
@@ -268,21 +289,31 @@ GckObjectPrivate
 GCK_VENDOR_CODE
 GCK_ERROR
 gck_message_from_rv
-CKR_GCK_MODULE_PROBLEM
 </SECTION>
 
 <SECTION>
 <FILE>gck-uri</FILE>
 GckUriData
+GckUriError
 GckUriFlags
+GCK_URI_FOR_MODULE_WITH_VERSION
+GCK_URI_FOR_OBJECT_ON_TOKEN
+GCK_URI_FOR_OBJECT_ON_TOKEN_AND_MODULE
 gck_uri_data_new
 gck_uri_parse
 gck_uri_build
+gck_uri_data_copy
 gck_uri_data_free
-GCK_URI_BAD_PREFIX
 GCK_URI_ERROR
 <SUBSECTION Private>
 gck_uri_get_error_quark
+GCK_URI_DATA_TYPE
+gck_uri_data_get_type
+gck_uri_error_get_quark
+GCK_TYPE_URI_ERROR
+GCK_TYPE_URI_FLAGS
+gck_uri_error_get_type
+gck_uri_flags_get_type
 </SECTION>
 
 <SECTION>
@@ -306,6 +337,7 @@ GCK_TYPE_ENUMERATOR
 
 <SECTION>
 <FILE>gck-misc</FILE>
+GckError
 gck_list_ref_copy
 gck_list_unref_free
 gck_string_from_chars
@@ -315,6 +347,16 @@ gck_value_to_ulong
 GCK_INVALID
 <SUBSECTION Private>
 gck_get_error_quark
+gck_error_get_quark
 GCK_TYPE_LIST
 gck_list_get_boxed_type
+GCK_TYPE_ERROR
+gck_error_get_type
+</SECTION>
+
+<SECTION>
+<FILE>gck-private</FILE>
+<SUBSECTION Private>
+GCK_URI_BAD_PREFIX
+CKR_GCK_MODULE_PROBLEM
 </SECTION>

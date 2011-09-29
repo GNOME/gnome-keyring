@@ -51,8 +51,9 @@
 
 /**
  * GckSessionOptions:
+ * @GCK_SESSION_READ_ONLY: Open session as read only
  * @GCK_SESSION_READ_WRITE: Open sessions as read/write
- * @GCK_SESSION_LOGIN_USER: Login as user on new sessions.
+ * @GCK_SESSION_LOGIN_USER: Login as user on new sessions
  * @GCK_SESSION_AUTHENTICATE: Authenticate as necessary
  *
  * Options for creating sessions.
@@ -320,6 +321,14 @@ gck_session_info_get_type (void)
 	return type;
 }
 
+/**
+ * gck_session_info_copy:
+ * @session_info: a session info structure
+ *
+ * Make a new copy of a session info structure.
+ *
+ * Returns: (transfer full): a new copy of the session info
+ */
 GckSessionInfo *
 gck_session_info_copy (GckSessionInfo *session_info)
 {
@@ -395,7 +404,7 @@ gck_session_get_handle (GckSession *self)
  *
  * Get the PKCS\#11 module to which this session belongs.
  *
- * Return: (transfer full): The module, which should be unreffed after use.
+ * Returns: (transfer full): the module, which should be unreffed after use
  **/
 GckModule *
 gck_session_get_module (GckSession *self)
@@ -465,6 +474,14 @@ gck_session_get_info (GckSession *self)
 	return sessioninfo;
 }
 
+/**
+ * gck_session_get_state:
+ * @self: the session
+ *
+ * Get the session state. The state is the various PKCS\#11 CKS_XXX flags.
+ *
+ * Returns: the session state
+ */
 gulong
 gck_session_get_state (GckSession *self)
 {
@@ -1139,8 +1156,8 @@ gck_session_find_objects_async (GckSession *self, GckAttributes *attrs,
  *
  * Get the result of a find operation.
  *
- * Return: (transfer full) (element-type Gck.Object): a list of the matching
- *         objects, which may be empty
+ * Returns: (transfer full) (element-type Gck.Object): a list of the matching
+ *          objects, which may be empty
  **/
 GList *
 gck_session_find_objects_finish (GckSession *self, GAsyncResult *result, GError **error)

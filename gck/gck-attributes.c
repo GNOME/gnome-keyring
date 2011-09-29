@@ -74,7 +74,7 @@ attribute_init (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init: (skip):
+ * gck_attribute_init: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The raw value of the attribute.
@@ -95,7 +95,7 @@ gck_attribute_init (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_invalid: (skip):
+ * gck_attribute_init_invalid: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
@@ -117,7 +117,7 @@ gck_attribute_init_invalid (GckAttribute *attr, gulong attr_type)
 }
 
 /**
- * gck_attribute_init_empty: (skip):
+ * gck_attribute_init_empty: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  *
@@ -147,7 +147,7 @@ attribute_init_boolean (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_boolean: (skip):
+ * gck_attribute_init_boolean: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The boolean value of the attribute.
@@ -184,7 +184,7 @@ attribute_init_date (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_date: (skip):
+ * gck_attribute_init_date: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The date value of the attribute.
@@ -213,7 +213,7 @@ attribute_init_ulong (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_ulong: (skip):
+ * gck_attribute_init_ulong: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The ulong value of the attribute.
@@ -241,7 +241,7 @@ attribute_init_string (GckAttribute *attr, gulong attr_type,
 }
 
 /**
- * gck_attribute_init_string: (skip):
+ * gck_attribute_init_string: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
  * @value: The null terminated string value of the attribute.
@@ -793,7 +793,7 @@ gck_attributes_new (void)
 }
 
 /**
- * gck_attributes_new_full: (skip):
+ * gck_attributes_new_full: (skip)
  * @allocator: Memory allocator for attribute data, or NULL for default.
  *
  * Create a new GckAttributes array.

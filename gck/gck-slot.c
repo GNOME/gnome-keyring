@@ -218,6 +218,14 @@ gck_slot_info_get_type (void)
 	return type;
 }
 
+/**
+ * gck_slot_info_copy:
+ * @slot_info: a slot info
+ *
+ * Make a copy of the slot info.
+ *
+ * Returns: (transfer full): a newly allocated copy slot info
+ */
 GckSlotInfo *
 gck_slot_info_copy (GckSlotInfo *slot_info)
 {
@@ -294,6 +302,14 @@ gck_token_info_get_type (void)
 	return type;
 }
 
+/**
+ * gck_token_info_copy:
+ * @token_info: a token info
+ *
+ * Make a copy of the token info.
+ *
+ * Returns: (transfer full): a newly allocated copy token info
+ */
 GckTokenInfo *
 gck_token_info_copy (GckTokenInfo *token_info)
 {
@@ -354,6 +370,14 @@ gck_mechanism_info_get_type (void)
 	return type;
 }
 
+/**
+ * gck_mechanism_info_copy:
+ * @mech_info: a mechanism info
+ *
+ * Make a copy of the mechanism info.
+ *
+ * Returns: (transfer full): a newly allocated copy mechanism info
+ */
 GckMechanismInfo *
 gck_mechanism_info_copy (GckMechanismInfo *mech_info)
 {
@@ -1010,7 +1034,7 @@ gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
 }
 
 /**
- * gck_slot_open_session_full: (skip):
+ * gck_slot_open_session_full: (skip)
  * @self: The slot to open a session on.
  * @options: The options to open the new session with.
  * @pkcs11_flags: Additional raw PKCS\#11 flags.
@@ -1081,7 +1105,7 @@ gck_slot_open_session_async (GckSlot *self, guint options, GCancellable *cancell
 }
 
 /**
- * gck_slot_open_session_full_async: (skip):
+ * gck_slot_open_session_full_async: (skip)
  * @self: The slot to open a session on.
  * @options: Options to open the new session with.
  * @pkcs11_flags: Additional raw PKCS\#11 flags.
@@ -1131,7 +1155,7 @@ gck_slot_open_session_full_async (GckSlot *self, guint options, gulong pkcs11_fl
  * Get the result of an open session operation. If the 'auto reuse' setting is set,
  * then this may be a recycled session with the same flags.
  *
- * Return: (transfer full): the new session or %NULL if an error occurs.
+ * Returns: (transfer full): the new session or %NULL if an error occurs
  */
 GckSession*
 gck_slot_open_session_finish (GckSlot *self, GAsyncResult *result, GError **err)

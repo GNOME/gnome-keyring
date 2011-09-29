@@ -114,6 +114,14 @@ gck_modules_initialize_registered (GCancellable *cancellable,
 	return args.results;
 }
 
+/**
+ * gck_modules_initialize_registered_async:
+ * @cancellable: optional cancellation object
+ * @callback: a callback which will be called when the operation completes
+ * @user_data: data to pass to the callback
+ *
+ * Load and initialize all the registered modules asynchronously.
+ */
 void
 gck_modules_initialize_registered_async (GCancellable *cancellable,
                                          GAsyncReadyCallback callback,

@@ -29,7 +29,11 @@
 #include <gio/gio.h>
 
 #include "pkcs11.h"
+
+#define __GCK_INSIDE_HEADER__
+
 #include "gck-deprecated.h"
+#include "gck-enum-types.h"
 
 G_BEGIN_DECLS
 
@@ -46,7 +50,7 @@ G_BEGIN_DECLS
 
 /* An error code which results from a failure to load the PKCS11 module */
 typedef enum {
-	GCK_ERROR_MODULE_PROBLEM = (CKR_VENDOR_DEFINED | (GCK_VENDOR_CODE + 1))
+	GCK_ERROR_MODULE_PROBLEM = (CKR_VENDOR_DEFINED | (GCK_VENDOR_CODE + 1)),
 } GckError;
 
 #define             GCK_ERROR                               (gck_error_get_quark ())
@@ -491,9 +495,6 @@ struct _GckTokenInfo {
 	gint64 utc_time;
 };
 
-gboolean            gck_token_info_match                    (GckTokenInfo *match,
-                                                             GckTokenInfo *info);
-
 #define             GCK_TYPE_TOKEN_INFO                     (gck_token_info_get_type ())
 
 GType               gck_token_info_get_type                 (void) G_GNUC_CONST;
@@ -619,7 +620,8 @@ GckSession*         gck_slot_open_session_finish            (GckSlot *self,
  * SESSION
  */
 
-typedef enum _GckSessionOptions {
+typedef enum {
+	GCK_SESSION_READ_ONLY = 0,
 	GCK_SESSION_READ_WRITE = 1 << 1,
 	GCK_SESSION_LOGIN_USER =  1 << 2,
 	GCK_SESSION_AUTHENTICATE = 1 << 3,
@@ -1208,18 +1210,15 @@ typedef enum {
 	GCK_URI_FOR_OBJECT =  (1 << 1),
 	GCK_URI_FOR_TOKEN =   (1 << 2),
 	GCK_URI_FOR_MODULE =  (1 << 3),
-
-	GCK_URI_FOR_MODULE_WITH_VERSION =
-		(1 << 4) | GCK_URI_FOR_MODULE,
-
-	GCK_URI_FOR_OBJECT_ON_TOKEN =
-		GCK_URI_FOR_OBJECT | GCK_URI_FOR_TOKEN,
-
-	GCK_URI_FOR_OBJECT_ON_TOKEN_AND_MODULE =
-		GCK_URI_FOR_OBJECT_ON_TOKEN | GCK_URI_FOR_MODULE,
-
+	GCK_URI_WITH_VERSION = (1 << 4),
 	GCK_URI_FOR_ANY =     0x0000FFFF,
 } GckUriFlags;
+
+#define             GCK_URI_FOR_MODULE_WITH_VERSION         (GCK_URI_WITH_VERSION | GCK_URI_FOR_MODULE)
+
+#define             GCK_URI_FOR_OBJECT_ON_TOKEN             (GCK_URI_FOR_OBJECT | GCK_URI_FOR_TOKEN)
+
+#define             GCK_URI_FOR_OBJECT_ON_TOKEN_AND_MODULE  (GCK_URI_FOR_OBJECT_ON_TOKEN | GCK_URI_FOR_MODULE)
 
 struct _GckUriData {
 	gboolean any_unrecognized;
@@ -1253,5 +1252,7 @@ GckUriData *        gck_uri_data_copy                       (GckUriData *uri_dat
 void                gck_uri_data_free                       (GckUriData *uri_data);
 
 G_END_DECLS
+
+#undef __GCK_INSIDE_HEADER__
 
 #endif /* GCK_H */

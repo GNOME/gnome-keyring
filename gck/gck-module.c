@@ -367,6 +367,14 @@ gck_module_info_get_type (void)
 	return type;
 }
 
+/**
+ * gck_module_info_copy:
+ * @module_info: a module info
+ *
+ * Make a copy of the module info.
+ *
+ * Returns: (transfer full): a newly allocated copy module info
+ */
 GckModuleInfo *
 gck_module_info_copy (GckModuleInfo *module_info)
 {
@@ -505,6 +513,16 @@ gck_module_initialize (const gchar *path,
 	return args.result;
 }
 
+/**
+ * gck_module_initialize_async:
+ * @path: the file system path to the PKCS\#11 module to load
+ * @cancellable: (allow-none): optional cancellation object
+ * @callback: a callback which will be called when the operation completes
+ * @user_data: data to pass to the callback
+ *
+ * Asynchronously load and initialize a PKCS\#11 module represented by a
+ * #GckModule object.
+ **/
 void
 gck_module_initialize_async (const gchar *path,
                              GCancellable *cancellable,
@@ -554,7 +572,7 @@ gck_module_initialize_finish (GAsyncResult *result,
 }
 
 /**
- * gck_module_new: (skip):
+ * gck_module_new: (skip)
  * @funcs: Initialized PKCS\#11 function list pointer
  *
  * Create a GckModule representing a PKCS\#11 module. It is assumed that
@@ -756,7 +774,7 @@ gck_module_get_path (GckModule *self)
 }
 
 /**
- * gck_module_get_functions: (skip):
+ * gck_module_get_functions: (skip)
  * @self: The module for which to get the function list.
  *
  * Get the PKCS\#11 function list for the module.

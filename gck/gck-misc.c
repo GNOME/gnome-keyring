@@ -40,6 +40,13 @@
  */
 
 /**
+ * SECTION:gck-private
+ * @title: Private, not used in docs
+ * @short_description: Should not show up in docs
+ *
+ */
+
+/**
  * GCK_INVALID:
  *
  * Used as a terminator at the end of variable argument lists.
@@ -53,12 +60,12 @@
  */
 
 /**
- * CKR_GCK_MODULE_PROBLEM:
+ * GckError:
+ * @GCK_ERROR_MODULE_PROBLEM: a result code that signifies there was a problem
+ *                            loading a PKCS\#11 module, usually a shared library
  *
- * A result code that signifies there was a problem loading a PKCS11
- * module, usually a shared library.
- *
- * More details can be found in the error string.
+ * Various error codes. All the CKR_XXX error codes from PKCS\#11 are also
+ * relevant error codes.
  */
 
 /**
@@ -233,7 +240,7 @@ gck_list_get_boxed_type (void)
 }
 
 /**
- * gck_list_unref_free: (skip):
+ * gck_list_unref_free: (skip)
  * @reflist: List of Gobject reference counted pointers.
  *
  * Free a list of GObject based pointers. All objects in the list
@@ -251,7 +258,7 @@ gck_list_unref_free (GList *reflist)
 }
 
 /**
- * gck_list_ref_copy: (skip):
+ * gck_list_ref_copy: (skip)
  * @reflist: List of GObject reference counted objects.
  *
  * Copy a list of GObject based pointers. All objects

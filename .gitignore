@@ -105,6 +105,8 @@ run-tests
 /daemon/control/tests/frob-control-quit
 /daemon/control/tests/frob-control-unlock
 
+/gck/gck-enum-types.[ch]
+
 /gck/tests/test-gck-attributes
 /gck/tests/test-gck-crypto
 /gck/tests/test-gck-enumerator

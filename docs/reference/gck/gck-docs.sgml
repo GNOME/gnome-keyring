@@ -29,4 +29,7 @@
 	</chapter>
 
 	<xi:include href="gck-pkcs11-links.xml"/>
+	<xi:include href="xml/annotation-glossary.xml">
+		<xi:fallback />
+	</xi:include>
 </book>

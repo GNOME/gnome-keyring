@@ -76,20 +76,62 @@
  * @GCK_URI_FOR_MODULE: the URI will be used to match modules.
  * @GCK_URI_FOR_TOKEN: the URI will be used to match tokens.
  * @GCK_URI_FOR_OBJECT: the URI will be used to match objects.
+ * @GCK_URI_WITH_VERSION: the URI has specific version numbers for module and/or token
  * @GCK_URI_FOR_ANY: parse all recognized components of the URI.
- * @GCK_URI_FOR_MODULE_WITH_VERSION: the URI will match specific version of modules.
- * @GCK_URI_FOR_OBJECT_ON_TOKEN: the URI will match objects on a specific token.
- * @GCK_URI_FOR_OBJECT_ON_TOKEN_AND_MODULE: the URI will match objects on a specific
- *      token inserted into a device with a specific module.
  *
  * Which parts of the PKCS\#11 URI will be parsed or formatted. These can be
  * combined.
  */
 
 /**
+ * GCK_URI_FOR_MODULE_WITH_VERSION:
+ *
+ * The URI will match specific version of modules. To be used as a GckUriFlags argument.
+ */
+
+/**
+ * GCK_URI_FOR_OBJECT_ON_TOKEN:
+ *
+ * The URI will match objects on a specific token. To be used as a GckUriFlags argument.
+ */
+
+/**
+ * GCK_URI_FOR_OBJECT_ON_TOKEN_AND_MODULE:
+ *
+ * The token inserted into a device with a specific module.
+ */
+
+/**
+ * GckUriError:
+ * @GCK_URI_BAD_SCHEME: invalid URI scheme
+ * @GCK_URI_BAD_ENCODING: bad URI encoding
+ * @GCK_URI_BAD_SYNTAX: bad URI syntax
+ * @GCK_URI_BAD_VERSION: bad URI version component
+ * @GCK_URI_NOT_FOUND: piece of the URI was not found
+ *
+ * Various error codes used with PKCS\#11 URIs
+ */
+
+/**
  * GCK_URI_ERROR:
  *
  * Error domain for URI errors.
+ */
+
+/**
+ * GCK_URI_BAD_PREFIX:
+ *
+ * Use %GCK_URI_BAD_SCHEME instead.
+ *
+ * Deprecated: Since 3.2
+ */
+
+/**
+ * CKR_GCK_MODULE_PROBLEM:
+ *
+ * Use %GCK_ERROR_MODULE_PROBLEM instead.
+ *
+ * Deprecated: Since 3.4
  */
 
 #define URI_PREFIX "pkcs11:"
@@ -124,14 +166,15 @@ gck_uri_error_get_quark (void)
 }
 
 /**
- * gck_uri_new:
+ * gck_uri_data_new:
  *
  * Allocate a new GckUriData structure. None of the fields
  * will be set.
  *
- * Returns: A newly allocated GckUriData, free with gck_uri_data_free().
+ * Returns: (transfer full): a newly allocated GckUriData, free with
+ *          gck_uri_data_free()
  */
-GckUriData*
+GckUriData *
 gck_uri_data_new (void)
 {
 	return g_slice_new0 (GckUriData);

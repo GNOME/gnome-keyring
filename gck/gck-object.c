@@ -886,8 +886,8 @@ free_get_attribute_data (GetAttributeData *args)
  *
  * This call may block for an indefinite period.
  *
- * Return: (transfer full) (array length=n_data): the resulting PKCS\#11
- *         attribute data, or %NULL if an error occurred
+ * Returns: (transfer full) (array length=n_data): the resulting PKCS\#11
+ *          attribute data, or %NULL if an error occurred
  **/
 guchar *
 gck_object_get_data (GckObject *self,
@@ -904,7 +904,7 @@ gck_object_get_data (GckObject *self,
 }
 
 /**
- * gck_object_get_data_full: (skip):
+ * gck_object_get_data_full: (skip)
  * @self: The object to get attribute data from.
  * @attr_type: The attribute to get data for.
  * @allocator: An allocator with which to allocate memory for the data, or NULL for default.

@@ -2,7 +2,7 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 ]>
 <chapter xml:id="pkcs11-links">
-	<title>About PKCS\#11</title>
+	<title>About PKCS#11</title>
 
 	<anchor id="CK-NOTIFY:CAPS"/>
 	<anchor id="CK-SLOT-ID:CAPS"/>
@@ -14,7 +14,7 @@
 	<anchor id="CK-ULONG:CAPS"/>
 	<anchor id="CK-BBOOL:CAPS"/>
 
-	<para>PKCS\#11 is an API for storing and using crypto objects, and performing
+	<para>PKCS#11 is an API for storing and using crypto objects, and performing
 	crypto operations on them.</para>
 
 	<para>It is specified at the
