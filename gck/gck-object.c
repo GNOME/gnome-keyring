@@ -233,7 +233,7 @@ gck_objects_from_handle_array (GckSession *session, CK_OBJECT_HANDLE_PTR handles
 	CK_ULONG i;
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
-	g_return_val_if_fail (handles || !n_handles, NULL);
+	g_return_val_if_fail (n_handles == 0 || handles != NULL, NULL);
 
 	for (i = 0; i < n_handles; ++i)
 		results = g_list_prepend (results, gck_object_from_handle (session, handles[i]));
