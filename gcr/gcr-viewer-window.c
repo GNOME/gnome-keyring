@@ -147,15 +147,29 @@ gcr_viewer_window_class_init (GcrViewerWindowClass *klass)
 	g_type_class_add_private (klass, sizeof (GcrViewerWindow));
 }
 
+/**
+ * gcr_viewer_window_new:
+ *
+ * Create a new viewer window.
+ *
+ * Returns: (transfer full): a new viewer window
+ */
 GtkWindow *
 gcr_viewer_window_new (void)
 {
 	return g_object_new (GCR_TYPE_VIEWER_WINDOW, NULL);
 }
 
+/**
+ * gcr_viewer_window_load:
+ * @self: a viewer window
+ * @file: file to load
+ *
+ * Load a file into a viewer window. It may not appear immediately.
+ */
 void
 gcr_viewer_window_load (GcrViewerWindow *self,
-                         GFile *file)
+                        GFile *file)
 {
 	g_return_if_fail (GCR_IS_VIEWER_WINDOW (self));
 	g_return_if_fail (G_IS_FILE (file));

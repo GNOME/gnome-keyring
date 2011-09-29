@@ -298,8 +298,9 @@ gcr_pkcs11_certificate_class_init (GcrPkcs11CertificateClass *klass)
 	_gcr_initialize_library ();
 }
 
-static gconstpointer
-gcr_pkcs11_certificate_get_der_data (GcrCertificate *cert, gsize *n_data)
+static const guchar *
+gcr_pkcs11_certificate_get_der_data (GcrCertificate *cert,
+                                     gsize *n_data)
 {
 	GcrPkcs11Certificate *self = GCR_PKCS11_CERTIFICATE (cert);
 	GckAttribute *attr;

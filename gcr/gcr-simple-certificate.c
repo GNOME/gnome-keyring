@@ -105,8 +105,9 @@ gcr_simple_certificate_class_init (GcrSimpleCertificateClass *klass)
 	_gcr_initialize_library ();
 }
 
-static gconstpointer
-gcr_simple_certificate_get_der_data (GcrCertificate *cert, gsize *n_data)
+static const guchar *
+gcr_simple_certificate_get_der_data (GcrCertificate *cert,
+                                     gsize *n_data)
 {
 	GcrSimpleCertificate *self = GCR_SIMPLE_CERTIFICATE (cert);
 
@@ -131,7 +132,7 @@ gcr_simple_certificate_iface_init (GcrCertificateIface *iface)
 
 /**
  * gcr_simple_certificate_new:
- * @data: The raw DER certificate data
+ * @data: (array length=n_data): the raw DER certificate data
  * @n_data: The length of @data
  *
  * Create a new #GcrSimpleCertificate for the raw DER data. The @data memory is
@@ -140,7 +141,8 @@ gcr_simple_certificate_iface_init (GcrCertificateIface *iface)
  * Returns: (transfer full): a new #GcrSimpleCertificate
  */
 GcrCertificate *
-gcr_simple_certificate_new (gconstpointer data, gsize n_data)
+gcr_simple_certificate_new (const guchar *data,
+                            gsize n_data)
 {
 	GcrSimpleCertificate *cert;
 
@@ -155,8 +157,8 @@ gcr_simple_certificate_new (gconstpointer data, gsize n_data)
 }
 
 /**
- * gcr_simple_certificate_new_static:
- * @data: The raw DER certificate data
+ * gcr_simple_certificate_new_static: (skip)
+ * @data: (array length=n_data): The raw DER certificate data
  * @n_data: The length of @data
  *
  * Create a new #GcrSimpleCertificate for the raw DER data. The @data memory is
@@ -166,7 +168,8 @@ gcr_simple_certificate_new (gconstpointer data, gsize n_data)
  * Returns: (transfer full): a new #GcrSimpleCertificate
  */
 GcrCertificate *
-gcr_simple_certificate_new_static (gconstpointer data, gsize n_data)
+gcr_simple_certificate_new_static (const guchar *data,
+                                   gsize n_data)
 {
 	GcrSimpleCertificate *cert;
 

@@ -58,7 +58,7 @@ setup (Test *test, gconstpointer unused)
 		g_assert_not_reached ();
 	g_assert (contents);
 
-	test->certificate = gcr_simple_certificate_new (contents, len);
+	test->certificate = gcr_simple_certificate_new ((const guchar *)contents, len);
 	g_free (contents);
 
 	rv = gck_mock_C_GetFunctionList (&f);

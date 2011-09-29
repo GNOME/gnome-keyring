@@ -157,7 +157,7 @@ test_parse_one (Test *test,
 		g_assert_not_reached ();
 
 	test->filedesc = path;
-	result = gcr_parser_parse_data (test->parser, contents, len, &error);
+	result = gcr_parser_parse_data (test->parser, (const guchar *)contents, len, &error);
 	g_assert_no_error (error);
 	g_assert (result);
 
@@ -186,7 +186,7 @@ test_parse_empty (void)
 	GError *error = NULL;
 	gboolean result;
 
-	result = gcr_parser_parse_data (parser, "", 0, &error);
+	result = gcr_parser_parse_data (parser, (const guchar *)"", 0, &error);
 	g_assert_error (error, GCR_DATA_ERROR, GCR_ERROR_UNRECOGNIZED);
 	g_assert (!result);
 	g_error_free (error);

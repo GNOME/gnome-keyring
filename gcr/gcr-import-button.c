@@ -493,9 +493,9 @@ gcr_import_button_class_init (GcrImportButtonClass *klass)
  *
  * Create a new #GcrImportButton.
  *
- * Returns: a newly created #GcrImportButton
+ * Returns: (transfer full): a newly created #GcrImportButton
  */
-GcrImportButton*
+GcrImportButton *
 gcr_import_button_new (const gchar *label)
 {
 	return g_object_new (GCR_TYPE_IMPORT_BUTTON,

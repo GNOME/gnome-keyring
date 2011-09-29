@@ -517,9 +517,9 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
  *
  * Create a new #GcrCertificateChain.
  *
- * Returns: A newly allocated #GcrCertificateChain
+ * Returns: (transfer full): a newly allocated certificate chain
  */
-GcrCertificateChain*
+GcrCertificateChain *
 gcr_certificate_chain_new (void)
 {
 	return g_object_new (GCR_TYPE_CERTIFICATE_CHAIN, NULL);
@@ -583,7 +583,7 @@ gcr_certificate_chain_get_status (GcrCertificateChain *self)
  * If an anchor is returned it does not mean that the certificate chain has
  * been verified, but merely that an anchor has been found.
  *
- * Returns: (transfer full): the anchor certificate, or NULL if not anchored.
+ * Returns: (transfer none): the anchor certificate, or NULL if not anchored.
  */
 GcrCertificate *
 gcr_certificate_chain_get_anchor (GcrCertificateChain *self)

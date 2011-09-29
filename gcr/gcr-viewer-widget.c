@@ -276,6 +276,14 @@ gcr_viewer_widget_class_init (GcrViewerWidgetClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GcrViewerWidget));
 
+	/**
+	 * GcrViewerWidget::added:
+	 * @self: the viewer widget
+	 * @renderer: (type Gcr.Renderer): the renderer that was added
+	 * @parsed: (type Gcr.Parsed): the parsed item that was added
+	 *
+	 * This signal is emitted when an item is added to the viewer widget.
+	 */
 	signals[ADDED] = g_signal_new ("added", GCR_TYPE_VIEWER_WIDGET, G_SIGNAL_RUN_LAST,
 	                               G_STRUCT_OFFSET (GcrViewerWidgetClass, added),
 	                               NULL, NULL, _gcr_marshal_VOID__OBJECT_BOXED,
@@ -414,10 +422,21 @@ gcr_viewer_widget_load_file (GcrViewerWidget *self,
 		viewer_load_next_file (self);
 }
 
+/**
+ * gcr_viewer_widget_load_data:
+ * @self: a viewer widget
+ * @display_name: label for the loaded data
+ * @data: (array length=n_data): data to load
+ * @n_data: length of data to load
+ *
+ * Parse and load some data to be displayed into the viewer widgets. The data
+ * may contain multiple parseable items if the format can contain multiple
+ * items.
+ */
 void
 gcr_viewer_widget_load_data (GcrViewerWidget *self,
                              const gchar *display_name,
-                             gconstpointer data,
+                             const guchar *data,
                              gsize n_data)
 {
 	GError *error = NULL;

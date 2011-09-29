@@ -35,7 +35,7 @@ gcr_certificate_basics_widget_get_type (void)
 /**
  * gcr_certificate_basics_widget_new: (skip):
  *
- * Deprecated
+ * Deprecated: Since 2.30
  */
 GcrCertificateBasicsWidget *
 gcr_certificate_basics_widget_new (GcrCertificate *cert)
@@ -46,7 +46,7 @@ gcr_certificate_basics_widget_new (GcrCertificate *cert)
 /**
  * gcr_certificate_basics_widget_get_certificate: (skip):
  *
- * Deprecated
+ * Deprecated: Since 2.30
  */
 GcrCertificate *
 gcr_certificate_basics_widget_get_certificate (GcrCertificateBasicsWidget *basics)

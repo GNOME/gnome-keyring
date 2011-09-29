@@ -33,14 +33,14 @@
 #ifndef GCK_API_SUBJECT_TO_CHANGE
 
 /**
- * GCK_API_SUBJECT_TO_CHANGE: (skip):
+ * GCK_API_SUBJECT_TO_CHANGE: (skip)
  *
  * skip for gir introspection
  */
 #define GCK_API_SUBJECT_TO_CHANGE 1
 
 /**
- * __GCR_DEFINED_GCK_SUBJECT_TO_CHANGE__: (skip):
+ * __GCR_DEFINED_GCK_SUBJECT_TO_CHANGE__: (skip)
  *
  * skip for gir introspection
  */

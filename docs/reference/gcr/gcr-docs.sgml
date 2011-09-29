@@ -59,4 +59,8 @@
 		<xi:include href="xml/gcr-library.xml"/>
 		<xi:include href="xml/gcr-misc.xml"/>
 	</part>
+
+	<xi:include href="xml/annotation-glossary.xml">
+		<xi:fallback />
+	</xi:include>
 </book>

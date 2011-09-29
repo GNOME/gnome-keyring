@@ -1249,7 +1249,8 @@ gcr_collection_model_class_init (GcrCollectionModelClass *klass)
  * pairs of property names, and #GType values. The variable argument list should
  * be terminated with %NULL.
  *
- * Returns: A newly allocated model, which should be released with g_object_unref().
+ * Returns: (transfer full): a newly allocated model, which should be released
+ *          with g_object_unref().
  */
 GcrCollectionModel*
 gcr_collection_model_new (GcrCollection *collection, ...)
@@ -1280,13 +1281,14 @@ gcr_collection_model_new (GcrCollection *collection, ...)
 }
 
 /**
- * gcr_collection_model_new_full: (skip):
+ * gcr_collection_model_new_full: (skip)
  * @collection: The collection to represent
  * @columns: The columns the model should contain
  *
  * Create a new #GcrCollectionModel.
  *
- * Returns: A newly allocated model, which should be released with g_object_unref().
+ * Returns: (transfer full): a newly allocated model, which should be released
+ *          with g_object_unref()
  */
 GcrCollectionModel*
 gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *columns)
@@ -1297,7 +1299,7 @@ gcr_collection_model_new_full (GcrCollection *collection, const GcrColumn *colum
 }
 
 /**
- * gcr_collection_model_set_columns: (skip):
+ * gcr_collection_model_set_columns: (skip)
  * @self: The model
  * @columns: The columns the model should contain
  *

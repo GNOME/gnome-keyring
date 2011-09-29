@@ -114,7 +114,7 @@ main(int argc, char *argv[])
 			continue;
 		}
 
-		gcr_parser_parse_data (parser, contents, len, &error);
+		gcr_parser_parse_data (parser, (const guchar *)contents, len, &error);
 		g_free (contents);
 
 		if (error) {

@@ -2083,9 +2083,9 @@ gcr_parser_class_init (GcrParserClass *klass)
  *
  * Create a new #GcrParser
  *
- * Returns: A newly allocated #GcrParser
+ * Returns: (transfer full): a newly allocated #GcrParser
  */
-GcrParser*
+GcrParser *
 gcr_parser_new (void)
 {
 	return g_object_new (GCR_TYPE_PARSER, NULL);
@@ -2109,7 +2109,7 @@ gcr_parser_add_password (GcrParser *self, const gchar *password)
 /**
  * gcr_parser_parse_data:
  * @self: The parser
- * @data: The data to parse
+ * @data: (array length=n_data): the data to parse
  * @n_data: The length of the data
  * @error: A location to raise an error on failure.
  *
@@ -2119,8 +2119,10 @@ gcr_parser_add_password (GcrParser *self, const gchar *password)
  * Returns: Whether the data was parsed successfully or not.
  */
 gboolean
-gcr_parser_parse_data (GcrParser *self, gconstpointer data,
-                       gsize n_data, GError **error)
+gcr_parser_parse_data (GcrParser *self,
+                       const guchar *data,
+                       gsize n_data,
+                       GError **error)
 {
 	ForeachArgs args = { self, data, n_data, GCR_ERROR_UNRECOGNIZED };
 	const gchar *message = NULL;
@@ -2251,6 +2253,14 @@ gcr_parser_format_supported (GcrParser *self,
 	return parser_format_lookup (format) ? TRUE : FALSE;
 }
 
+/**
+ * gcr_parser_get_parsed:
+ * @self: a parser
+ *
+ * Get the currently parsed item
+ *
+ * Returns: (transfer none): the currently parsed item
+ */
 GcrParsed *
 gcr_parser_get_parsed (GcrParser *self)
 {
@@ -2272,6 +2282,15 @@ gcr_parsed_get_type (void)
 	return type;
 }
 
+/**
+ * gcr_parsed_ref:
+ * @parsed: a parsed item
+ *
+ * Add a reference to a parsed item. An item may not be shared across threads
+ * until it has been referenced at least once.
+ *
+ * Returns: (transfer full): the parsed item
+ */
 GcrParsed *
 gcr_parsed_ref (GcrParsed *parsed)
 {
@@ -2317,6 +2336,12 @@ gcr_parsed_ref (GcrParsed *parsed)
 	return copy;
 }
 
+/**
+ * gcr_parsed_unref:
+ * @parsed: a parsed item
+ *
+ * Unreferences a parsed item which was referenced with gcr_parsed_ref()
+ */
 void
 gcr_parsed_unref (gpointer parsed)
 {
@@ -2353,6 +2378,14 @@ gcr_parser_get_parsed_description (GcrParser *self)
 	return gcr_parsed_get_description (self->pv->parsed);
 }
 
+/**
+ * gcr_parsed_get_description:
+ * @parsed: a parsed item
+ *
+ * Get the descirption for a parsed item.
+ *
+ * Returns: the description
+ */
 const gchar*
 gcr_parsed_get_description (GcrParsed *parsed)
 {
@@ -2390,8 +2423,8 @@ gcr_parser_get_parsed_attributes (GcrParser *self)
  *
  * Get the attributes which make up the parsed item.
  *
- * Returns: The attributes for the item. These are owned by the parsed
- *          item and should not be freed.
+ * Returns: (transfer none): the attributes for the item; these are owned by
+ *          the parsed item and should not be freed
  */
 GckAttributes *
 gcr_parsed_get_attributes (GcrParsed *parsed)

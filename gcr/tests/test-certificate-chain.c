@@ -160,7 +160,7 @@ setup (Test *test, gconstpointer unused)
 	/* A self-signed certificate */
 	if (!g_file_get_contents (SRCDIR "/files/der-certificate.crt", &contents, &n_contents, NULL))
 		g_assert_not_reached ();
-	test->cert_self = gcr_simple_certificate_new (contents, n_contents);
+	test->cert_self = gcr_simple_certificate_new ((const guchar *)contents, n_contents);
 	g_free (contents);
 
 	/* A signed certificate */

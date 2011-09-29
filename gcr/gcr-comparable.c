@@ -109,7 +109,7 @@ gcr_comparable_compare (GcrComparable *self, GcrComparable *other)
 }
 
 /**
- * gcr_comparable_memcmp:
+ * gcr_comparable_memcmp: (skip)
  * @mem1: First block of memory
  * @size1: Length of first block
  * @mem2: Second lock of memory

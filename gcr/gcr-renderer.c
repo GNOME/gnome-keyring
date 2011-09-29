@@ -56,6 +56,11 @@
 
 /**
  * GcrRendererIface:
+ * @parent: the parent interface type
+ * @data_changed: signal emitted when data being rendered changes
+ * @render_view: method invoked to render the data into a viewer
+ * @populate_popup: method invoked to populate a popup menu with additional
+ *                  renderer options
  *
  * The interface for #GcrRenderer
  */
@@ -274,6 +279,12 @@ gcr_renderer_register (GType renderer_type, GckAttributes *attrs)
 	registered_sorted = FALSE;
 }
 
+/**
+ * gcr_renderer_register_well_known:
+ *
+ * Register all the well known renderers for certificates and keys known to the
+ * Gcr library.
+ */
 void
 gcr_renderer_register_well_known (void)
 {

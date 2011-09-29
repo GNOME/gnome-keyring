@@ -62,11 +62,25 @@ gcr_collection_default_init (GcrCollectionIface *iface)
 
 	if (g_once_init_enter (&initialized)) {
 
+		/**
+		 * GcrCollection::added:
+		 * @self: the collection
+		 * @object: (type GLib.Object): object that was added
+		 *
+		 * This signal is emitted when an object is added to the collection.
+		 */
 		signals[ADDED] = g_signal_new ("added", GCR_TYPE_COLLECTION,
 		                               G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GcrCollectionIface, added),
 		                               NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 		                               G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
+		/**
+		 * GcrCollection::removed:
+		 * @self: the collection
+		 * @object: (type GLib.Object): object that was removed
+		 *
+		 * This signal is emitted when an object is removed from the collection.
+		 */
 		signals[REMOVED] = g_signal_new ("removed", GCR_TYPE_COLLECTION,
 		                                 G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GcrCollectionIface, removed),
 		                                 NULL, NULL, g_cclosure_marshal_VOID__OBJECT,

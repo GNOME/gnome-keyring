@@ -210,6 +210,14 @@ on_initialize_registered (GObject *object,
 	g_object_unref (res);
 }
 
+/**
+ * gcr_pkcs11_initialize_async:
+ * @cancellable: optional cancellable used to cancel the operation
+ * @callback: callback which will be called when the operation completes
+ * @user_data: data passed to the callback
+ *
+ * Asynchronously initialize the registered PKCS\#11 modules.
+ */
 void
 gcr_pkcs11_initialize_async (GCancellable *cancellable,
                              GAsyncReadyCallback callback,
@@ -233,6 +241,16 @@ gcr_pkcs11_initialize_async (GCancellable *cancellable,
 	g_object_unref (res);
 }
 
+/**
+ * gcr_pkcs11_initialize_finish:
+ * @result: the asynchronous result
+ * @error: location to place an error on failure
+ *
+ * Complete the asynchronous operation to initialize the registered PKCS\#11
+ * modules.
+ *
+ * Returns: whether the operation was successful or not.
+ */
 gboolean
 gcr_pkcs11_initialize_finish (GAsyncResult *result,
                               GError **error)
@@ -245,6 +263,16 @@ gcr_pkcs11_initialize_finish (GAsyncResult *result,
 
 	return TRUE;
 }
+
+/**
+ * gcr_pkcs11_initialize:
+ * @cancellable: optional cancellable used to cancel the operation
+ * @error: location to place an error on failure
+ *
+ * Asynchronously initialize the registered PKCS\#11 modules.
+ *
+ * Returns: whether the operation was successful or not.
+ */
 
 gboolean
 gcr_pkcs11_initialize (GCancellable *cancellable,

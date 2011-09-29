@@ -46,19 +46,19 @@ setup (Test *test, gconstpointer unused)
 
 	if (!g_file_get_contents (SRCDIR "/files/der-certificate.crt", &contents, &n_contents, NULL))
 		g_assert_not_reached ();
-	test->certificate = gcr_simple_certificate_new (contents, n_contents);
+	test->certificate = gcr_simple_certificate_new ((const guchar *)contents, n_contents);
 	g_assert (test->certificate);
 	g_free (contents);
 
 	if (!g_file_get_contents (SRCDIR "/files/der-certificate-dsa.cer", &contents, &n_contents, NULL))
 		g_assert_not_reached ();
-	test->dsa_cert = gcr_simple_certificate_new (contents, n_contents);
+	test->dsa_cert = gcr_simple_certificate_new ((const guchar *)contents, n_contents);
 	g_assert (test->dsa_cert);
 	g_free (contents);
 
 	if (!g_file_get_contents (SRCDIR "/files/dhansak-collabora.cer", &contents, &n_contents, NULL))
 		g_assert_not_reached ();
-	test->dhansak_cert = gcr_simple_certificate_new (contents, n_contents);
+	test->dhansak_cert = gcr_simple_certificate_new ((const guchar *)contents, n_contents);
 	g_assert (test->certificate);
 	g_free (contents);
 }

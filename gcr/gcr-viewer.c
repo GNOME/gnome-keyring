@@ -118,6 +118,14 @@ gcr_viewer_add_renderer (GcrViewer *viewer,
 	GCR_VIEWER_GET_INTERFACE (viewer)->add_renderer (viewer, renderer);
 }
 
+/**
+ * gcr_viewer_insert_renderer:
+ * @viewer: the viewer
+ * @renderer: the renderer to insert
+ * @before: the renderer to insert before
+ *
+ * Insert a renderer at a specific point in the viewer
+ */
 void
 gcr_viewer_insert_renderer (GcrViewer *viewer,
                             GcrRenderer *renderer,

@@ -363,10 +363,10 @@ gcr_list_selector_class_init (GcrListSelectorClass *klass)
  *
  * Create a new #GcrListSelector.
  *
- * Returns: A newly allocated selector, which should be released with
- *     g_object_unref().
+ * Returns: (transfer full): a newly allocated selector, which should be
+ *          released with g_object_unref()
  */
-GcrListSelector*
+GcrListSelector *
 gcr_list_selector_new (GcrCollection *collection)
 {
 	return g_object_new (GCR_TYPE_LIST_SELECTOR,

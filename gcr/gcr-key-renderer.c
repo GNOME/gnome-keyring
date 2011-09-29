@@ -356,8 +356,8 @@ gcr_key_renderer_renderer_iface (GcrRendererIface *iface)
  *
  * Create a new key renderer which renders a given key in the attributes.
  *
- * Returns: A newly allocated #GcrKeyRenderer, which should be freed
- *     with g_object_unref().
+ * Returns: (transfer full): a newly allocated #GcrKeyRenderer, which should be
+ *          freed with g_object_unref()
  */
 GcrKeyRenderer*
 gcr_key_renderer_new (const gchar *label, GckAttributes *attrs)

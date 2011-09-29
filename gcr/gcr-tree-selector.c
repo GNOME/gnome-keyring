@@ -282,7 +282,7 @@ gcr_tree_selector_class_init (GcrTreeSelectorClass *klass)
  */
 
 /**
- * gcr_tree_selector_new: (skip):
+ * gcr_tree_selector_new: (skip)
  * @collection: The collection that contains the objects to display
  * @columns: The columns to use to display the objects
  *
@@ -316,14 +316,14 @@ gcr_tree_selector_get_collection (GcrTreeSelector *self)
 }
 
 /**
- * gcr_tree_selector_get_columns: (skip):
+ * gcr_tree_selector_get_columns: (skip)
  * @self: The selector
  *
  * Get the columns displayed in a selector in multiple mode.
  *
- * Returns: The columns, owned by the selector.
+ * Returns: (transfer none): The columns, owned by the selector.
  */
-const GcrColumn*
+const GcrColumn *
 gcr_tree_selector_get_columns (GcrTreeSelector *self)
 {
 	g_return_val_if_fail (GCR_IS_TREE_SELECTOR (self), NULL);

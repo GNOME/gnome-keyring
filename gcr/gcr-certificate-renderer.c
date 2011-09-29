@@ -752,8 +752,9 @@ gcr_renderer_iface_init (GcrRendererIface *iface)
 	iface->render_view = gcr_certificate_renderer_render;
 }
 
-static gconstpointer
-gcr_certificate_renderer_get_der_data (GcrCertificate *cert, gsize *n_data)
+static const guchar *
+gcr_certificate_renderer_get_der_data (GcrCertificate *cert,
+                                       gsize *n_data)
 {
 	GcrCertificateRenderer *self = GCR_CERTIFICATE_RENDERER (cert);
 	GckAttribute *attr;
@@ -789,10 +790,10 @@ gcr_renderer_certificate_iface_init (GcrCertificateIface *iface)
  *
  * Create a new certificate renderer to display the certificate.
  *
- * Returns: A newly allocated #GcrCertificateRenderer, which should be released
- *     with g_object_unref().
+ * Returns: (transfer full): a newly allocated #GcrCertificateRenderer, which
+ *          should be released with g_object_unref()
  */
-GcrCertificateRenderer*
+GcrCertificateRenderer *
 gcr_certificate_renderer_new (GcrCertificate *certificate)
 {
 	return g_object_new (GCR_TYPE_CERTIFICATE_RENDERER, "certificate", certificate, NULL);
@@ -807,10 +808,10 @@ gcr_certificate_renderer_new (GcrCertificate *certificate)
  * of the attributes should be a CKA_VALUE type attribute containing a DER
  * encoded certificate.
  *
- * Returns: A newly allocated #GcrCertificateRenderer, which should be released
- *     with g_object_unref().
+ * Returns: (transfer full): a newly allocated #GcrCertificateRenderer, which
+ *          should be released with g_object_unref()
  */
-GcrCertificateRenderer*
+GcrCertificateRenderer *
 gcr_certificate_renderer_new_for_attributes (const gchar *label, struct _GckAttributes *attrs)
 {
 	return g_object_new (GCR_TYPE_CERTIFICATE_RENDERER, "label", label, "attributes", attrs, NULL);
@@ -824,7 +825,7 @@ gcr_certificate_renderer_new_for_attributes (const gchar *label, struct _GckAttr
  * explicitly set, then the renderer will return itself since it acts as
  * a valid certificate.
  *
- * Returns: (transfer full): The certificate, owned by the renderer.
+ * Returns: (transfer none): The certificate, owned by the renderer.
  */
 GcrCertificate *
 gcr_certificate_renderer_get_certificate (GcrCertificateRenderer *self)
@@ -868,9 +869,9 @@ gcr_certificate_renderer_set_certificate (GcrCertificateRenderer *self, GcrCerti
  *
  * Get the PKCS\#11 attributes, if any, set for this renderer to display.
  *
- * Returns: The attributes, owned by the renderer.
+ * Returns: (transfer none): the attributes, owned by the renderer
  */
-GckAttributes*
+GckAttributes *
 gcr_certificate_renderer_get_attributes (GcrCertificateRenderer *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_RENDERER (self), NULL);

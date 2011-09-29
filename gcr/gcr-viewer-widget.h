@@ -47,7 +47,7 @@ void               gcr_viewer_widget_load_file        (GcrViewerWidget *self,
 
 void               gcr_viewer_widget_load_data        (GcrViewerWidget *self,
                                                        const gchar *display_name,
-                                                       gconstpointer data,
+                                                       const guchar *data,
                                                        gsize n_data);
 
 #endif /* GCR_VIEWER_WIDGET_H */

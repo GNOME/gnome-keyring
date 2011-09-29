@@ -196,10 +196,10 @@ gcr_certificate_widget_class_init (GcrCertificateWidgetClass *klass)
  *
  * Create a new certificate widget which displays a given certificate.
  *
- * Returns: A newly allocated #GcrCertificateWidget, which should be freed
- *     with g_object_unref().
+ * Returns: (transfer full): a newly allocated #GcrCertificateWidget, which
+ *          should be freed with g_object_unref()
  */
-GcrCertificateWidget*
+GcrCertificateWidget *
 gcr_certificate_widget_new (GcrCertificate *certificate)
 {
 	return g_object_new (GCR_TYPE_CERTIFICATE_WIDGET, "certificate", certificate, NULL);
@@ -211,7 +211,7 @@ gcr_certificate_widget_new (GcrCertificate *certificate)
  *
  * Get the certificate displayed in the widget.
  *
- * Returns: (transfer full): The certificate.
+ * Returns: (transfer none): the certificate
  */
 GcrCertificate *
 gcr_certificate_widget_get_certificate (GcrCertificateWidget *self)
@@ -241,9 +241,9 @@ gcr_certificate_widget_set_certificate (GcrCertificateWidget *self, GcrCertifica
  * Get the attributes displayed in the widget. The attributes should contain
  * a certificate.
  *
- * Returns: The attributes, owned by the widget.
+ * Returns: (transfer none): the attributes, owned by the widget
  */
-GckAttributes*
+GckAttributes *
 gcr_certificate_widget_get_attributes (GcrCertificateWidget *self)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_WIDGET (self), NULL);

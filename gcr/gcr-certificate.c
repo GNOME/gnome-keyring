@@ -69,6 +69,8 @@
 
 /**
  * GcrCertificateIface:
+ * @parent: the parent interface type
+ * @get_der_data: a method which returns the RAW der data of the certificate
  *
  * The interface that implementors of #GcrCertificate must implement.
  */
@@ -362,11 +364,11 @@ G_DEFINE_INTERFACE (GcrCertificate, gcr_certificate, GCR_TYPE_COMPARABLE);
  */
 
 /**
- * gcr_certificate_get_columns: (skip):
+ * gcr_certificate_get_columns: (skip)
  *
  * Get the columns appropriate for a certificate
  *
- * Returns: the columns
+ * Returns: (transfer none): the columns
  */
 const GcrColumn*
 gcr_certificate_get_columns (void)
