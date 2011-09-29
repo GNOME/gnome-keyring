@@ -267,7 +267,9 @@ typedef struct _GckUriData GckUriData;
  * MODULE
  */
 
-typedef struct _GckModuleInfo {
+typedef struct _GckModuleInfo GckModuleInfo;
+
+struct _GckModuleInfo {
 	guint8 pkcs11_version_major;
 	guint8 pkcs11_version_minor;
 
@@ -277,7 +279,7 @@ typedef struct _GckModuleInfo {
 	gchar *library_description;
 	guint8 library_version_major;
 	guint8 library_version_minor;
-} GckModuleInfo;
+};
 
 #define             GCK_TYPE_MODULE_INFO                   (gck_module_info_get_type ())
 
@@ -444,7 +446,9 @@ GList*                gck_enumerator_next_finish              (GckEnumerator *se
  * SLOT
  */
 
-typedef struct _GckSlotInfo {
+typedef struct _GckSlotInfo GckSlotInfo;
+
+struct _GckSlotInfo {
 	gchar *slot_description;
 	gchar *manufacturer_id;
 	gulong flags;
@@ -452,7 +456,7 @@ typedef struct _GckSlotInfo {
 	guint8 hardware_version_minor;
 	guint8 firmware_version_major;
 	guint8 firmware_version_minor;
-} GckSlotInfo;
+};
 
 #define             GCK_TYPE_SLOT_INFO                      (gck_slot_info_get_type ())
 
@@ -462,7 +466,9 @@ GckSlotInfo *       gck_slot_info_copy                      (GckSlotInfo *slot_i
 
 void                gck_slot_info_free                      (GckSlotInfo *slot_info);
 
-typedef struct _GckTokenInfo {
+typedef struct _GckTokenInfo GckTokenInfo;
+
+struct _GckTokenInfo {
 	gchar *label;
 	gchar *manufacturer_id;
 	gchar *model;
@@ -483,7 +489,7 @@ typedef struct _GckTokenInfo {
 	guint8 firmware_version_major;
 	guint8 firmware_version_minor;
 	gint64 utc_time;
-} GckTokenInfo;
+};
 
 gboolean            gck_token_info_match                    (GckTokenInfo *match,
                                                              GckTokenInfo *info);
@@ -496,11 +502,13 @@ GckTokenInfo *      gck_token_info_copy                     (GckTokenInfo *token
 
 void                gck_token_info_free                     (GckTokenInfo *token_info);
 
-typedef struct _GckMechanismInfo {
+typedef struct _GckMechanismInfo GckMechanismInfo;
+
+struct _GckMechanismInfo {
 	gulong min_key_size;
 	gulong max_key_size;
 	gulong flags;
-} GckMechanismInfo;
+};
 
 #define             GCK_TYPE_MECHANISM_INFO                 (gck_mechanism_info_get_type ())
 
@@ -617,12 +625,14 @@ typedef enum _GckSessionOptions {
 	GCK_SESSION_AUTHENTICATE = 1 << 3,
 } GckSessionOptions;
 
-typedef struct _GckSessionInfo {
+typedef struct _GckSessionInfo GckSessionInfo;
+
+struct _GckSessionInfo {
 	gulong slot_id;
 	gulong state;
 	gulong flags;
 	gulong device_error;
-} GckSessionInfo;
+};
 
 #define             GCK_TYPE_SESSION_INFO                  (gck_session_info_get_type ())
 
