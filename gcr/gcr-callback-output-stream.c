@@ -109,6 +109,11 @@ _gcr_callback_output_stream_class_init (GcrCallbackOutputStreamClass *klass)
 	output_class->close_fn = _gcr_callback_output_stream_close;
 }
 
+/**
+ * _gcr_callback_output_stream_new: (skip)
+ *
+ * Returns: (transfer full) (type Gcr.CallbackOutputStream): the new stream
+ */
 GOutputStream *
 _gcr_callback_output_stream_new (GcrCallbackOutputFunc callback,
                                  gpointer user_data,

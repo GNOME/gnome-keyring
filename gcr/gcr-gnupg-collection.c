@@ -201,7 +201,7 @@ _gcr_collection_iface (GcrCollectionIface *iface)
  * The gnupg home directory is where the keyring files live. If directory is
  * %NULL then the default gnupg home directory is used.
  *
- * Returns: (transfer full): A newly allocated collection.
+ * Returns: (transfer full) (type Gcr.GnupgCollection): A newly allocated collection.
  */
 GcrCollection*
 _gcr_gnupg_collection_new (const gchar *directory)

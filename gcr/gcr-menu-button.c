@@ -296,6 +296,11 @@ _gcr_menu_button_class_init (GcrMenuButtonClass *klass)
 
 }
 
+/**
+ * _gcr_menu_button_new:
+ *
+ * Returns: (transfer full) (type Gcr.MenuButton): the new menu button
+ */
 GtkWidget *
 _gcr_menu_button_new (const gchar *label)
 {

@@ -33,9 +33,11 @@ gcr_certificate_basics_widget_get_type (void)
 }
 
 /**
- * gcr_certificate_basics_widget_new: (skip):
+ * gcr_certificate_basics_widget_new: (skip)
  *
  * Deprecated: Since 2.30
+ *
+ * Returns: (transfer full) (type Gcr.CertificateWidget): a new certificate widget
  */
 GcrCertificateBasicsWidget *
 gcr_certificate_basics_widget_new (GcrCertificate *cert)
@@ -44,9 +46,11 @@ gcr_certificate_basics_widget_new (GcrCertificate *cert)
 }
 
 /**
- * gcr_certificate_basics_widget_get_certificate: (skip):
+ * gcr_certificate_basics_widget_get_certificate: (skip)
  *
  * Deprecated: Since 2.30
+ *
+ * Returns: (transfer none): the certificate
  */
 GcrCertificate *
 gcr_certificate_basics_widget_get_certificate (GcrCertificateBasicsWidget *basics)
@@ -54,6 +58,13 @@ gcr_certificate_basics_widget_get_certificate (GcrCertificateBasicsWidget *basic
 	return gcr_certificate_widget_get_certificate (basics);
 }
 
+/**
+ * gcr_certificate_basics_widget_set_certificate: (skip)
+ * @basics: the certificate widget
+ * @cert: the certificate
+ *
+ * Deprecated: Since 2.30
+ */
 void
 gcr_certificate_basics_widget_set_certificate (GcrCertificateBasicsWidget *basics,
                                                 GcrCertificate *cert)

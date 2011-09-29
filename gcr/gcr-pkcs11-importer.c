@@ -550,6 +550,11 @@ _gcr_pkcs11_importer_init_iface (GcrImporterIface *iface)
 	iface->import_finish = _gcr_pkcs11_importer_import_finish;
 }
 
+/**
+ * _gcr_pkcs11_importer_new:
+ *
+ * Returns: (transfer full) (type Gcr.Pkcs11Importer): the new importer
+ */
 GcrImporter *
 _gcr_pkcs11_importer_new (GckSlot *slot)
 {

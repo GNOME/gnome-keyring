@@ -563,6 +563,11 @@ _gcr_live_search_init (GcrLiveSearch *self)
 	self->pv->hook_widget = NULL;
 }
 
+/**
+ * _gcr_live_search_new:
+ *
+ * Returns: (transfer full) (type Gcr.LiveSearch): The new widget
+ */
 GtkWidget *
 _gcr_live_search_new (GtkWidget *hook)
 {

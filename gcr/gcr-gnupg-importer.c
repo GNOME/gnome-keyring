@@ -299,6 +299,11 @@ gcr_gnupg_importer_iface (GcrImporterIface *iface)
 	iface->import_finish = _gcr_gnupg_importer_import_finish;
 }
 
+/**
+ * _gcr_gnupg_importer_new:
+ *
+ * Returns: (transfer full) (type Gcr.GnupgImporter): the new importer
+ */
 GcrImporter *
 _gcr_gnupg_importer_new (const gchar *directory)
 {

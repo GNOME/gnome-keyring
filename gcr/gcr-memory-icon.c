@@ -177,7 +177,7 @@ _gcr_memory_icon_iface_loadable_icon (GLoadableIconIface *iface)
  * Create a new GIcon based on image data in memory. The data will be copied
  * by the new icon.
  *
- * Returns: (transfer full): A newly allocated icon.
+ * Returns: (transfer full) (type Gcr.MemoryIcon): A newly allocated icon.
  */
 GIcon*
 _gcr_memory_icon_new (const gchar *image_type, gconstpointer data, gsize n_data)

@@ -219,8 +219,8 @@ gcr_collection_iface (GcrCollectionIface *iface)
  *
  * Create a new #GcrUnionCollection.
  *
- * Returns: (transfer full): a newly allocated collection, which should be
- *          freed with g_object_unref()
+ * Returns: (transfer full) (type Gcr.UnionCollection): a newly allocated
+ *          collection, which should be freed with g_object_unref()
  */
 GcrCollection *
 gcr_union_collection_new (void)
