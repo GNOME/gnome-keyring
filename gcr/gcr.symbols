@@ -96,6 +96,7 @@ gcr_viewer_remove_renderer
 gcr_viewer_window_get_type
 gcr_viewer_window_load
 gcr_viewer_window_new
+gcr_viewer_widget_get_parser
 gcr_viewer_widget_get_type
 gcr_viewer_widget_load_data
 gcr_viewer_widget_load_file

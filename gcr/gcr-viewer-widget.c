@@ -48,6 +48,11 @@
  * located in files.
  */
 
+enum {
+	PROP_0,
+	PROP_PARSER
+};
+
 /**
  * GcrViewerWidget:
  *
@@ -229,6 +234,24 @@ gcr_viewer_widget_init (GcrViewerWidget *self)
 }
 
 static void
+gcr_viewer_widget_get_property (GObject *obj,
+                                guint prop_id,
+                                GValue *value,
+                                GParamSpec *pspec)
+{
+	GcrViewerWidget *self = GCR_VIEWER_WIDGET (obj);
+
+	switch (prop_id) {
+	case PROP_PARSER:
+		g_value_set_object (value, gcr_viewer_widget_get_parser (self));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
 gcr_viewer_widget_dispose (GObject *obj)
 {
 	GcrViewerWidget *self = GCR_VIEWER_WIDGET (obj);
@@ -273,6 +296,16 @@ gcr_viewer_widget_class_init (GcrViewerWidgetClass *klass)
 
 	gobject_class->dispose = gcr_viewer_widget_dispose;
 	gobject_class->finalize = gcr_viewer_widget_finalize;
+	gobject_class->get_property = gcr_viewer_widget_get_property;
+
+	/**
+	 * GcrViewerWidget:parser:
+	 *
+	 * The parser used to parse loaded data into viewable items.
+	 */
+	g_object_class_install_property (gobject_class, PROP_PARSER,
+	           g_param_spec_object ("parser", "Parser", "Parser used to parse viewable items",
+	                                GCR_TYPE_PARSER, G_PARAM_READABLE));
 
 	g_type_class_add_private (klass, sizeof (GcrViewerWidget));
 
@@ -453,4 +486,19 @@ gcr_viewer_widget_load_data (GcrViewerWidget *self,
 		g_object_unref (renderer);
 		g_error_free (error);
 	}
+}
+
+/**
+ * gcr_viewer_widget_get_parser:
+ * @self: a viewer widget
+ *
+ * Get the parser used to parse loaded data into viewable items.
+ *
+ * Returns: (transfer none): the parser
+ */
+GcrParser *
+gcr_viewer_widget_get_parser (GcrViewerWidget *self)
+{
+	g_return_val_if_fail (GCR_IS_VIEWER_WIDGET (self), NULL);
+	return self->pv->parser;
 }

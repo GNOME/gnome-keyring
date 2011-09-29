@@ -557,6 +557,7 @@ GcrViewerWidgetClass
 gcr_viewer_widget_new
 gcr_viewer_widget_load_data
 gcr_viewer_widget_load_file
+gcr_viewer_widget_get_parser
 <SUBSECTION Standard>
 gcr_viewer_widget_get_type
 GCR_TYPE_VIEWER_WIDGET
