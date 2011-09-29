@@ -92,9 +92,9 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir) --includedir=.
 
 Gck-@GCK_MAJOR@.gir: libgck-@GCK_MAJOR@.la
 
-Gck_@GCK_MAJOR@_gir_PACKAGES = gobject-2.0 gtk+-3.0 p11-kit-1
+Gck_@GCK_MAJOR@_gir_PACKAGES = gobject-2.0 gio-2.0 p11-kit-1
 Gck_@GCK_MAJOR@_gir_EXPORT_PACKAGES = gck-@GCK_MAJOR@
-Gck_@GCK_MAJOR@_gir_INCLUDES = GObject-2.0 Gtk-3.0
+Gck_@GCK_MAJOR@_gir_INCLUDES = GObject-2.0 Gio-2.0
 Gck_@GCK_MAJOR@_gir_LIBS = libgck-@GCK_MAJOR@.la
 Gck_@GCK_MAJOR@_gir_CFLAGS = -I$(top_srcdir) -I$(top_builddir) -DGCK_COMPILATION -DGCK_API_SUBJECT_TO_CHANGE
 Gck_@GCK_MAJOR@_gir_FILES = $(PUBLIC_FILES)
