@@ -40,6 +40,8 @@ void               _gck_debug_message                  (GckDebugFlags flag,
                                                         const gchar *format,
                                                         ...) G_GNUC_PRINTF (2, 3);
 
+void               _gck_debug_init                     (void);
+
 G_END_DECLS
 
 #endif /* GCK_DEBUG_H */

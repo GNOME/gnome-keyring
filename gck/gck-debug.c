@@ -31,6 +31,7 @@
 
 #ifdef WITH_DEBUG
 
+static gsize initialized_flags = 0;
 static GckDebugFlags current_flags = 0;
 
 static GDebugKey keys[] = {
@@ -56,9 +57,20 @@ _gck_debug_set_flags (const gchar *flags_string)
 		debug_set_flags (g_parse_debug_string (flags_string, keys, nkeys));
 }
 
+static void
+initialize_debug_flags (void)
+{
+	if (g_once_init_enter (&initialized_flags)) {
+		_gck_debug_set_flags (g_getenv ("GCK_DEBUG"));
+		g_once_init_leave (&initialized_flags, 1);
+	}
+}
+
 gboolean
 _gck_debug_flag_is_set (GckDebugFlags flag)
 {
+	if G_UNLIKELY (!initialized_flags)
+		initialize_debug_flags ();
 	return (flag & current_flags) != 0;
 }
 
@@ -67,14 +79,11 @@ _gck_debug_message (GckDebugFlags flag,
                     const gchar *format,
                     ...)
 {
-	static gsize initialized_flags = 0;
 	gchar *message;
 	va_list args;
 
-	if (g_once_init_enter (&initialized_flags)) {
-		_gck_debug_set_flags (g_getenv ("GCK_DEBUG"));
-		g_once_init_leave (&initialized_flags, 1);
-	}
+	if G_UNLIKELY (!initialized_flags)
+		initialize_debug_flags ();
 
 	va_start (args, format);
 	message = g_strdup_vprintf (format, args);
