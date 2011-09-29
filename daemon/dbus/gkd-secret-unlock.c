@@ -404,9 +404,6 @@ gkd_secret_unlock_dispose (GObject *obj)
 {
 	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
 
-	g_free (self->object_path);
-	self->object_path = NULL;
-
 	if (self->service) {
 		g_object_remove_weak_pointer (G_OBJECT (self->service),
 		                              (gpointer*)&(self->service));
@@ -420,6 +417,9 @@ static void
 gkd_secret_unlock_finalize (GObject *obj)
 {
 	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
+
+	g_free (self->object_path);
+	self->object_path = NULL;
 
 	if (g_queue_find (&unlock_prompt_queue, self))
 		g_warning ("unlock queue is not in sync with prompting");
