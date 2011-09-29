@@ -251,8 +251,8 @@ gck_objects_from_handle_array (GckSession *session,
 
 /**
  * gck_object_equal:
- * @object1: A pointer to the first GckObject
- * @object2: A pointer to the second GckObject
+ * @object1: (type Gck.Object): a pointer to the first #GckObject
+ * @object2: (type Gck.Object): a pointer to the second #GckObject
  *
  * Checks equality of two objects. Two GckObject objects can point to the same
  * underlying PKCS\#11 object.
@@ -288,7 +288,7 @@ gck_object_equal (gconstpointer object1, gconstpointer object2)
 
 /**
  * gck_object_hash:
- * @object: A pointer to a GckObject
+ * @object: (type Gck.Object): a pointer to a #GckObject
  *
  * Create a hash value for the GckObject.
  *
@@ -658,10 +658,11 @@ free_get_attributes (GetAttributes *args)
  * Get the specified attributes from the object. This call may
  * block for an indefinite period.
  *
- * Return value: The resulting PKCS\#11 attributes, or NULL if an error occurred.
- * The result must be unreffed when you're finished with it.
+ * Returns: (transfer full): the resulting PKCS\#11 attributes, or %NULL if an
+ *          error occurred; the result must be unreffed when you're finished
+ *          with it
  **/
-GckAttributes*
+GckAttributes *
 gck_object_get (GckObject *self, GCancellable *cancellable, GError **error, ...)
 {
 	GckAttributes *attrs;
@@ -702,10 +703,10 @@ gck_object_get (GckObject *self, GCancellable *cancellable, GError **error, ...)
  * No extra references are added to the returned attributes pointer.
  * During this call you may not access the attributes in any way.
  *
- * Return value: A pointer to the filled in attributes if successful,
- * or NULL if not.
+ * Returns: (transfer full): a pointer to the filled in attributes if successful,
+ *          or %NULL if not
  **/
-GckAttributes*
+GckAttributes *
 gck_object_get_full (GckObject *self, gulong *attr_types, guint n_attr_types,
                       GCancellable *cancellable, GError **error)
 {
@@ -1235,9 +1236,10 @@ free_get_template (get_template_args *args)
  *
  * This call may block for an indefinite period.
  *
- * Return value: The resulting PKCS\#11 attribute template, or NULL if an error occurred.
+ * Returns: (transfer full): the resulting PKCS\#11 attribute template, or %NULL
+ *          if an error occurred
  **/
-GckAttributes*
+GckAttributes *
 gck_object_get_template (GckObject *self, gulong attr_type,
                          GCancellable *cancellable, GError **error)
 {
@@ -1304,9 +1306,10 @@ gck_object_get_template_async (GckObject *self, gulong attr_type,
  * Get the result of an operation to get attribute template from
  * an object.
  *
- * Return value: The resulting PKCS\#11 attribute template, or NULL if an error occurred.
+ * Returns: (transfer full): the resulting PKCS\#11 attribute template, or %NULL
+ *          if an error occurred
  **/
-GckAttributes*
+GckAttributes *
 gck_object_get_template_finish (GckObject *self, GAsyncResult *result,
                                 GError **error)
 {

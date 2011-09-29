@@ -94,17 +94,17 @@ struct _GckAttribute {
 
 #define GCK_INVALID G_MAXULONG
 
-gboolean            gck_value_to_ulong                      (gconstpointer value,
+gboolean            gck_value_to_ulong                      (const guchar *value,
                                                              gsize length,
                                                              gulong *result);
 
-gboolean            gck_value_to_boolean                    (gconstpointer value,
+gboolean            gck_value_to_boolean                    (const guchar *value,
                                                              gsize length,
                                                              gboolean *result);
 
 void                gck_attribute_init                      (GckAttribute *attr,
                                                              gulong attr_type,
-                                                             gconstpointer value,
+                                                             const guchar *value,
                                                              gsize length);
 
 void                gck_attribute_init_invalid              (GckAttribute *attr,
@@ -202,7 +202,7 @@ void                gck_attributes_add_all                  (GckAttributes *attr
 
 GckAttribute*       gck_attributes_add_data                 (GckAttributes *attrs,
                                                              gulong attr_type,
-                                                             gconstpointer value,
+                                                             const guchar *value,
                                                              gsize length);
 
 GckAttribute*       gck_attributes_add_invalid              (GckAttributes *attrs,
@@ -984,7 +984,7 @@ guchar *            gck_session_wrap_key_finish              (GckSession *self,
 GckObject*          gck_session_unwrap_key                   (GckSession *self,
                                                               GckObject *wrapper,
                                                               gulong mech_type,
-                                                              gconstpointer input,
+                                                              const guchar *input,
                                                               gsize n_input,
                                                               GckAttributes *attrs,
                                                               GCancellable *cancellable,
@@ -993,7 +993,7 @@ GckObject*          gck_session_unwrap_key                   (GckSession *self,
 GckObject*          gck_session_unwrap_key_full              (GckSession *self,
                                                               GckObject *wrapper,
                                                               GckMechanism *mechanism,
-                                                              gconstpointer input,
+                                                              const guchar *input,
                                                               gsize n_input,
                                                               GckAttributes *attrs,
                                                               GCancellable *cancellable,
@@ -1002,7 +1002,7 @@ GckObject*          gck_session_unwrap_key_full              (GckSession *self,
 void                gck_session_unwrap_key_async             (GckSession *self,
                                                               GckObject *wrapper,
                                                               GckMechanism *mechanism,
-                                                              gconstpointer input,
+                                                              const guchar *input,
                                                               gsize n_input,
                                                               GckAttributes *attrs,
                                                               GCancellable *cancellable,

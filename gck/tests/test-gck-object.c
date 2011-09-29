@@ -152,7 +152,7 @@ test_create_object (Test *test, gconstpointer unused)
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_DATA);
 	gck_attributes_add_string (attrs, CKA_LABEL, "TEST LABEL");
 	gck_attributes_add_boolean (attrs, CKA_TOKEN, CK_FALSE);
-	gck_attributes_add_data (attrs, CKA_VALUE, "BLAH", 4);
+	gck_attributes_add_data (attrs, CKA_VALUE, (const guchar *)"BLAH", 4);
 
 	object = gck_session_create_object (test->session, attrs, NULL, &err);
 	g_assert (GCK_IS_OBJECT (object));

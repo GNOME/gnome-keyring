@@ -326,7 +326,7 @@ test_build_with_attributes (void)
 	uri_data.attributes = gck_attributes_new ();
 	gck_attributes_add_string (uri_data.attributes, CKA_LABEL, "The Label");
 	gck_attributes_add_ulong (uri_data.attributes, CKA_CLASS, CKO_DATA);
-	gck_attributes_add_data (uri_data.attributes, CKA_ID, "TEST", 5);
+	gck_attributes_add_data (uri_data.attributes, CKA_ID, (const guchar *)"TEST", 5);
 
 	uri = gck_uri_build (&uri_data, GCK_URI_FOR_OBJECT);
 	g_assert (uri);

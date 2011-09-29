@@ -416,11 +416,11 @@ gck_mechanism_info_free (GckMechanismInfo *mech_info)
 /**
  * gck_mechanisms_at:
  * @a: A GckMechanisms set.
- * @i: The index of a GckMechanismInfo.
+ * @i: The index of a mechanism
  *
- * Get a specific GckMechanismInfo in a the set.
+ * Get a specific mechanism in a the set.
  *
- * Returns: The GckMechanismInfo.
+ * Returns: the mechanism
  */
 
 /**
@@ -477,8 +477,8 @@ gck_mechanisms_check (GArray *mechanisms, ...)
 
 /**
  * gck_slot_equal:
- * @slot1: A pointer to the first GckSlot
- * @slot2: A pointer to the second GckSlot
+ * @slot1: (type Gck.Slot): a pointer to the first #GckSlot
+ * @slot2: (type Gck.Slot): a pointer to the second #GckSlot
  *
  * Checks equality of two slots. Two GckSlot objects can point to the same
  * underlying PKCS\#11 slot.
@@ -504,7 +504,7 @@ gck_slot_equal (gconstpointer slot1, gconstpointer slot2)
 
 /**
  * gck_slot_hash:
- * @slot: A pointer to a GckSlot
+ * @slot: (type Gck.Slot): a pointer to a #GckSlot
  *
  * Create a hash value for the GckSlot.
  *
@@ -583,10 +583,10 @@ gck_slot_get_module (GckSlot *self)
  *
  * Get the information for this slot.
  *
- * Return value: The slot information. When done, use gck_slot_info_free()
- * to release it.
+ * Returns: (transfer full): the slot information, when done, use gck_slot_info_free()
+ *          to release it.
  **/
-GckSlotInfo*
+GckSlotInfo *
 gck_slot_get_info (GckSlot *self)
 {
 	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
@@ -733,10 +733,10 @@ _gck_token_info_to_pkcs11 (GckTokenInfo *token_info, CK_TOKEN_INFO_PTR info)
  *
  * Get the token information for this slot.
  *
- * Return value: The token information. When done, use gck_token_info_free()
- * to release it.
+ * Returns: (transfer full): the token information; when done, use gck_token_info_free()
+ *          to release it
  **/
-GckTokenInfo*
+GckTokenInfo *
 gck_slot_get_token_info (GckSlot *self)
 {
 	CK_SLOT_ID handle = (CK_SLOT_ID)-1;
@@ -829,8 +829,8 @@ gck_slot_get_mechanisms (GckSlot *self)
  *
  * Get information for the specified mechanism.
  *
- * Return value: The mechanism information, or NULL if failed. Use
- * gck_mechanism_info_free() when done with it.
+ * Returns: (transfer full): the mechanism information, or NULL if failed; use
+ *          gck_mechanism_info_free() when done with it
  **/
 GckMechanismInfo*
 gck_slot_get_mechanism_info (GckSlot *self, gulong mech_type)
@@ -1024,7 +1024,7 @@ free_open_session (OpenSession *args)
  *
  * This call may block for an indefinite period.
  *
- * Return value: (transfer full): a new session or %NULL if an error occurs
+ * Returns: (transfer full): a new session or %NULL if an error occurs
  **/
 GckSession *
 gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
@@ -1048,7 +1048,7 @@ gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
  *
  * This call may block for an indefinite period.
  *
- * Return value: (transfer full): a new session or %NULL if an error occurs
+ * Returns: (transfer full): a new session or %NULL if an error occurs
  **/
 GckSession *
 gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, gpointer app_data,

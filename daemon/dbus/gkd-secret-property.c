@@ -274,7 +274,7 @@ iter_get_time (DBusMessageIter *iter, GckAttribute* attr)
 	if (!strftime (buf, sizeof (buf), "%Y%m%d%H%M%S00", &tm))
 		g_return_val_if_reached (FALSE);
 
-	gck_attribute_init (attr, attr->type, buf, 16);
+	gck_attribute_init (attr, attr->type, (const guchar *)buf, 16);
 	return TRUE;
 }
 
@@ -368,7 +368,7 @@ iter_get_fields (DBusMessageIter *iter, GckAttribute* attr)
 		dbus_message_iter_next (&array);
 	}
 
-	gck_attribute_init (attr, attr->type, result->str, result->len);
+	gck_attribute_init (attr, attr->type, (const guchar *)result->str, result->len);
 	g_string_free (result, TRUE);
 	return TRUE;
 }

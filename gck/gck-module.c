@@ -598,8 +598,8 @@ _gck_module_new_initialized (CK_FUNCTION_LIST_PTR funcs)
 
 /**
  * gck_module_equal:
- * @module1: A pointer to the first GckModule
- * @module2: A pointer to the second GckModule
+ * @module1: (type Gck.Module): a pointer to the first #GckModule
+ * @module2: (type Gck.Module): a pointer to the second #GckModule
  *
  * Checks equality of two modules. Two GckModule objects can point to the same
  * underlying PKCS\#11 module.
@@ -624,7 +624,7 @@ gck_module_equal (gconstpointer module1, gconstpointer module2)
 
 /**
  * gck_module_hash:
- * @module: A pointer to a GckModule
+ * @module: (type Gck.Module): a pointer to a #GckModule
  *
  * Create a hash value for the GckModule.
  *
@@ -687,7 +687,7 @@ _gck_module_info_to_pkcs11 (GckModuleInfo* module_info, CK_INFO_PTR info)
  *
  * Get the info about a PKCS\#11 module.
  *
- * Return value: The module info. Release this with gck_module_info_free().
+ * Returns: (transfer full): the module info; release this with gck_module_info_free()
  **/
 GckModuleInfo*
 gck_module_get_info (GckModule *self)

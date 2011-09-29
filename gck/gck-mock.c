@@ -286,7 +286,7 @@ gck_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
 	gck_attributes_add_string (attrs, CKA_LABEL, "Private Capitalize Key");
-	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, (const guchar *)&value, sizeof (value));
 	gck_attributes_add_boolean (attrs, CKA_DECRYPT, CK_TRUE);
 	gck_attributes_add_boolean (attrs, CKA_PRIVATE, CK_TRUE);
 	gck_attributes_add_boolean (attrs, CKA_WRAP, CK_TRUE);
@@ -301,7 +301,7 @@ gck_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
 	gck_attributes_add_string (attrs, CKA_LABEL, "Public Capitalize Key");
-	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, (const guchar *)&value, sizeof (value));
 	gck_attributes_add_boolean (attrs, CKA_ENCRYPT, CK_TRUE);
 	gck_attributes_add_boolean (attrs, CKA_PRIVATE, CK_FALSE);
 	gck_attributes_add_string (attrs, CKA_VALUE, "value");
@@ -313,7 +313,7 @@ gck_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
 	gck_attributes_add_string (attrs, CKA_LABEL, "Private prefix key");
-	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, (const guchar *)&value, sizeof (value));
 	gck_attributes_add_boolean (attrs, CKA_SIGN, CK_TRUE);
 	gck_attributes_add_boolean (attrs, CKA_PRIVATE, CK_TRUE);
 	gck_attributes_add_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, CK_TRUE);
@@ -326,7 +326,7 @@ gck_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	attrs = gck_attributes_new ();
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
 	gck_attributes_add_string (attrs, CKA_LABEL, "Public prefix key");
-	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, &value, sizeof (value));
+	gck_attributes_add_data (attrs, CKA_ALLOWED_MECHANISMS, (const guchar *)&value, sizeof (value));
 	gck_attributes_add_boolean (attrs, CKA_VERIFY, CK_TRUE);
 	gck_attributes_add_boolean (attrs, CKA_PRIVATE, CK_FALSE);
 	gck_attributes_add_string (attrs, CKA_VALUE, "value");

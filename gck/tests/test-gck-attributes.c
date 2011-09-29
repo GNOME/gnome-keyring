@@ -39,7 +39,7 @@ test_init_memory (void)
 
 	g_assert (sizeof (attr) == sizeof (CK_ATTRIBUTE));
 
-	gck_attribute_init (&attr, ATTR_TYPE, ATTR_DATA, N_ATTR_DATA);
+	gck_attribute_init (&attr, ATTR_TYPE, (const guchar *)ATTR_DATA, N_ATTR_DATA);
 	g_assert (attr.type == ATTR_TYPE);
 	g_assert (attr.length == N_ATTR_DATA);
 	g_assert (memcmp (attr.value, ATTR_DATA, attr.length) == 0);
@@ -76,20 +76,20 @@ test_value_to_ulong (void)
 	CK_ULONG data = 34343;
 	gulong result = 0;
 
-	if (!gck_value_to_ulong (&data, sizeof (data), &result))
+	if (!gck_value_to_ulong ((const guchar *)&data, sizeof (data), &result))
 		g_assert_not_reached ();
 
 	g_assert (result == 34343);
 
-	if (!gck_value_to_ulong (&data, sizeof (data), NULL))
+	if (!gck_value_to_ulong ((const guchar *)&data, sizeof (data), NULL))
 		g_assert_not_reached ();
 
 	/* Should fail */
-	if (gck_value_to_ulong (&data, 0, NULL))
+	if (gck_value_to_ulong ((const guchar *)&data, 0, NULL))
 		g_assert_not_reached ();
-	if (gck_value_to_ulong (&data, 2, NULL))
+	if (gck_value_to_ulong ((const guchar *)&data, 2, NULL))
 		g_assert_not_reached ();
-	if (gck_value_to_ulong (&data, (CK_ULONG)-1, NULL))
+	if (gck_value_to_ulong ((const guchar *)&data, (CK_ULONG)-1, NULL))
 		g_assert_not_reached ();
 }
 
@@ -463,7 +463,7 @@ test_add_data_attributes (void)
 	gck_attributes_add_string (attrs, 202UL, "string");
 	gck_attributes_add_date (attrs, 303UL, date);
 	g_date_free (date);
-	gck_attributes_add_data (attrs, 404UL, ATTR_DATA, N_ATTR_DATA);
+	gck_attributes_add_data (attrs, 404UL, (const guchar *)ATTR_DATA, N_ATTR_DATA);
 	gck_attributes_add_invalid (attrs, 505UL);
 	gck_attributes_add_empty (attrs, 606UL);
 	test_attributes_contents (attrs, TRUE);
@@ -495,7 +495,7 @@ test_add_attributes (void)
 	gck_attribute_clear (&attr);
 	g_date_free (date);
 
-	gck_attribute_init (&attr, 404UL, ATTR_DATA, N_ATTR_DATA);
+	gck_attribute_init (&attr, 404UL, (const guchar *)ATTR_DATA, N_ATTR_DATA);
 	gck_attributes_add (attrs, &attr);
 	gck_attribute_clear (&attr);
 
@@ -523,7 +523,7 @@ test_add_all_attributes (void)
 	gck_attributes_add_string (attrs, 202UL, "string");
 	gck_attributes_add_date (attrs, 303UL, date);
 	g_date_free (date);
-	gck_attributes_add_data (attrs, 404UL, ATTR_DATA, N_ATTR_DATA);
+	gck_attributes_add_data (attrs, 404UL, (const guchar *)ATTR_DATA, N_ATTR_DATA);
 	gck_attributes_add_invalid (attrs, 505UL);
 	gck_attributes_add_empty (attrs, 606UL);
 
@@ -550,7 +550,7 @@ test_find_attributes (void)
 	gck_attributes_add_ulong (attrs, 101UL, 888UL);
 	gck_attributes_add_string (attrs, 202UL, "string");
 	gck_attributes_add_date (attrs, 303UL, date);
-	gck_attributes_add_data (attrs, 404UL, ATTR_DATA, N_ATTR_DATA);
+	gck_attributes_add_data (attrs, 404UL, (const guchar *)ATTR_DATA, N_ATTR_DATA);
 
 	attr = gck_attributes_find (attrs, 404);
 	g_assert (attr != NULL);

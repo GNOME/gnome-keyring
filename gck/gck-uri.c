@@ -192,8 +192,8 @@ gck_uri_data_new (void)
  * the given context. See #GckUriData  for more info.
  * Other fields will be set to %NULL.
  *
- * Return value: a newly allocated #GckUriData, which should be freed with
- * 	gck_uri_data_free().
+ * Returns: (transfer full): a newly allocated #GckUriData; which should be
+ *          freed with gck_uri_data_free()
  */
 GckUriData*
 gck_uri_parse (const gchar *string, GckUriFlags flags, GError **error)

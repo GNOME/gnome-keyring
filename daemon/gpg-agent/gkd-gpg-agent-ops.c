@@ -70,7 +70,7 @@ keyid_to_field_attribute (const gchar *keyid, GckAttributes *attrs)
 	g_string_append (fields, "gnome-keyring:gpg-agent");
 	g_string_append_c (fields, '\0');
 
-	gck_attributes_add_data (attrs, CKA_G_FIELDS, fields->str, fields->len);
+	gck_attributes_add_data (attrs, CKA_G_FIELDS, (const guchar *)fields->str, fields->len);
 	g_string_free (fields, TRUE);
 }
 

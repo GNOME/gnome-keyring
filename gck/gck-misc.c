@@ -241,7 +241,7 @@ gck_list_get_boxed_type (void)
 
 /**
  * gck_list_unref_free: (skip)
- * @reflist: List of Gobject reference counted pointers.
+ * @reflist: (element-type GLib.Object): list of Gobject reference counted pointers
  *
  * Free a list of GObject based pointers. All objects in the list
  * will be unreffed and then the list itself will be freed.
@@ -259,15 +259,16 @@ gck_list_unref_free (GList *reflist)
 
 /**
  * gck_list_ref_copy: (skip)
- * @reflist: List of GObject reference counted objects.
+ * @reflist: (element-type GLib.Object): list of GObject reference counted
+ *           objects
  *
  * Copy a list of GObject based pointers. All objects
  * in the list will be reffed and the list will be copied.
  *
- * Return value: The copied and reffed list. When done, free it with
- * gck_list_unref_free ()
+ * Return value: (transfer full) (element-type GLib.Object): the copied and
+ *               reffed list, when done, free it with gck_list_unref_free ()
  **/
-GList*
+GList *
 gck_list_ref_copy (GList *reflist)
 {
 	GList *l, *copy = g_list_copy (reflist);
@@ -367,7 +368,7 @@ _gck_ulong_equal (gconstpointer v1, gconstpointer v2)
 
 /**
  * gck_value_to_ulong:
- * @value: memory to convert
+ * @value: (array length=length): memory to convert
  * @length: length of memory
  * @result: A location to store the result
  *
@@ -376,7 +377,9 @@ _gck_ulong_equal (gconstpointer v1, gconstpointer v2)
  * Returns: Whether the conversion was successful.
  */
 gboolean
-gck_value_to_ulong (gconstpointer value, gsize length, gulong *result)
+gck_value_to_ulong (const guchar *value,
+                    gsize length,
+                    gulong *result)
 {
 	if (!value || length != sizeof (CK_ULONG))
 		return FALSE;
@@ -387,7 +390,7 @@ gck_value_to_ulong (gconstpointer value, gsize length, gulong *result)
 
 /**
  * gck_value_to_boolean:
- * @value: memory to convert
+ * @value: (array length=length): memory to convert
  * @length: length of memory
  * @result: A location to store the result
  *
@@ -396,7 +399,9 @@ gck_value_to_ulong (gconstpointer value, gsize length, gulong *result)
  * Returns: Whether the conversion was successful.
  */
 gboolean
-gck_value_to_boolean (gconstpointer value, gsize length, gboolean *result)
+gck_value_to_boolean (const guchar *value,
+                      gsize length,
+                      gboolean *result)
 {
 	if (!value || length != sizeof (CK_BBOOL))
 		return FALSE;

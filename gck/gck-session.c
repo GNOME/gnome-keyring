@@ -436,8 +436,8 @@ gck_session_get_slot (GckSession *self)
  *
  * Get information about the session.
  *
- * Return value: The session info. Use the gck_session_info_free() to release
- * when done.
+ * Returns: (transfer full): the session info. Use the gck_session_info_free()
+ *          to release when done
  **/
 GckSessionInfo*
 gck_session_get_info (GckSession *self)
@@ -1593,7 +1593,7 @@ perform_unwrap_key (UnwrapKey *args)
  * @self: The session to use.
  * @wrapper: The key to use for unwrapping.
  * @mech_type: The mechanism to use for unwrapping.
- * @input: The wrapped data as a byte stream.
+ * @input: (array length=n_input): the wrapped data as a byte stream
  * @n_input: The length of the wrapped data.
  * @attrs: Additional attributes for the unwrapped key.
  * @cancellable: Optional cancellation object, or NULL.
@@ -1606,9 +1606,14 @@ perform_unwrap_key (UnwrapKey *args)
  *          operation failed
  **/
 GckObject *
-gck_session_unwrap_key (GckSession *self, GckObject *wrapper, gulong mech_type,
-                        gconstpointer input, gsize n_input, GckAttributes *attrs,
-                        GCancellable *cancellable, GError **error)
+gck_session_unwrap_key (GckSession *self,
+                        GckObject *wrapper,
+                        gulong mech_type,
+                        const guchar *input,
+                        gsize n_input,
+                        GckAttributes *attrs,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	GckMechanism mech = { mech_type, NULL, 0 };
 	return gck_session_unwrap_key_full (self, wrapper, &mech, input, n_input, attrs, cancellable, error);
@@ -1619,7 +1624,7 @@ gck_session_unwrap_key (GckSession *self, GckObject *wrapper, gulong mech_type,
  * @self: The session to use.
  * @wrapper: The key to use for unwrapping.
  * @mechanism: The mechanism to use for unwrapping.
- * @input: The wrapped data as a byte stream.
+ * @input: (array length=n_input): the wrapped data as a byte stream
  * @n_input: The length of the wrapped data.
  * @attrs: Additional attributes for the unwrapped key.
  * @cancellable: Optional cancellation object, or NULL.
@@ -1632,9 +1637,14 @@ gck_session_unwrap_key (GckSession *self, GckObject *wrapper, gulong mech_type,
  *          failed
  **/
 GckObject *
-gck_session_unwrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
-                             gconstpointer input, gsize n_input, GckAttributes *attrs,
-                             GCancellable *cancellable, GError **error)
+gck_session_unwrap_key_full (GckSession *self,
+                             GckObject *wrapper,
+                             GckMechanism *mechanism,
+                             const guchar *input,
+                             gsize n_input,
+                             GckAttributes *attrs,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	UnwrapKey args = { GCK_ARGUMENTS_INIT, GCK_MECHANISM_EMPTY, attrs, 0, input, n_input, 0 };
 	gboolean ret;
@@ -1665,7 +1675,7 @@ gck_session_unwrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism 
  * @self: The session to use.
  * @wrapper: The key to use for unwrapping.
  * @mechanism: The mechanism to use for unwrapping.
- * @input: The wrapped data as a byte stream.
+ * @input: (array length=n_input): the wrapped data as a byte stream
  * @n_input: The length of the wrapped data.
  * @attrs: Additional attributes for the unwrapped key.
  * @cancellable: Optional cancellation object or NULL.
@@ -1676,10 +1686,15 @@ gck_session_unwrap_key_full (GckSession *self, GckObject *wrapper, GckMechanism 
  * return immediately and complete asynchronously.
  **/
 void
-gck_session_unwrap_key_async (GckSession *self, GckObject *wrapper, GckMechanism *mechanism,
-                               gconstpointer input, gsize n_input, GckAttributes *attrs,
-                               GCancellable *cancellable, GAsyncReadyCallback callback,
-                               gpointer user_data)
+gck_session_unwrap_key_async (GckSession *self,
+                              GckObject *wrapper,
+                              GckMechanism *mechanism,
+                              const guchar *input,
+                              gsize n_input,
+                              GckAttributes *attrs,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
 	UnwrapKey *args = _gck_call_async_prep (self, self, perform_unwrap_key,
 	                                         NULL, sizeof (*args), free_unwrap_key);

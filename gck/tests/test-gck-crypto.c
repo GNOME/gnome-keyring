@@ -287,7 +287,7 @@ test_login_context_specific (Test *test, gconstpointer unused)
 static void
 test_sign (Test *test, gconstpointer unused)
 {
-	GckMechanism mech = { CKM_MOCK_PREFIX, "my-prefix:", 10 };
+	GckMechanism mech = { CKM_MOCK_PREFIX, (guchar *)"my-prefix:", 10 };
 	GError *error = NULL;
 	GAsyncResult *result = NULL;
 	GckObject *key;
@@ -330,7 +330,7 @@ test_sign (Test *test, gconstpointer unused)
 static void
 test_verify (Test *test, gconstpointer unused)
 {
-	GckMechanism mech = { CKM_MOCK_PREFIX, "my-prefix:", 10 };
+	GckMechanism mech = { CKM_MOCK_PREFIX, (guchar *)"my-prefix:", 10 };
 	GError *error = NULL;
 	GAsyncResult *result = NULL;
 	GckObject *key;
@@ -384,7 +384,7 @@ test_verify (Test *test, gconstpointer unused)
 static void
 test_generate_key_pair (Test *test, gconstpointer unused)
 {
-	GckMechanism mech = { CKM_MOCK_GENERATE, "generate", 9 };
+	GckMechanism mech = { CKM_MOCK_GENERATE, (guchar *)"generate", 9 };
 	GckAttributes *pub_attrs, *prv_attrs;
 	GError *error = NULL;
 	GAsyncResult *result = NULL;
@@ -449,7 +449,7 @@ test_generate_key_pair (Test *test, gconstpointer unused)
 static void
 test_wrap_key (Test *test, gconstpointer unused)
 {
-	GckMechanism mech = { CKM_MOCK_WRAP, "wrap", 4 };
+	GckMechanism mech = { CKM_MOCK_WRAP, (guchar *)"wrap", 4 };
 	GError *error = NULL;
 	GAsyncResult *result = NULL;
 	GckObject *wrapper, *wrapped;
@@ -518,7 +518,7 @@ test_wrap_key (Test *test, gconstpointer unused)
 static void
 test_unwrap_key (Test *test, gconstpointer unused)
 {
-	GckMechanism mech = { CKM_MOCK_WRAP, "wrap", 4 };
+	GckMechanism mech = { CKM_MOCK_WRAP, (guchar *)"wrap", 4 };
 	GError *error = NULL;
 	GAsyncResult *result = NULL;
 	GckObject *wrapper, *unwrapped;
@@ -529,7 +529,7 @@ test_unwrap_key (Test *test, gconstpointer unused)
 	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
 
 	/* Full One*/
-	unwrapped = gck_session_unwrap_key_full (test->session, wrapper, &mech, "special", 7, attrs, NULL, &error);
+	unwrapped = gck_session_unwrap_key_full (test->session, wrapper, &mech, (const guchar *)"special", 7, attrs, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GCK_IS_OBJECT (unwrapped));
 	check_key_with_value (test->session, unwrapped, CKO_SECRET_KEY, "special");
@@ -537,14 +537,14 @@ test_unwrap_key (Test *test, gconstpointer unused)
 
 	/* Failure one */
 	mech.type = 0;
-	unwrapped = gck_session_unwrap_key_full (test->session, wrapper, &mech, "special", 7, attrs, NULL, &error);
+	unwrapped = gck_session_unwrap_key_full (test->session, wrapper, &mech, (const guchar *)"special", 7, attrs, NULL, &error);
 	g_assert (error != NULL);
 	g_assert (!unwrapped);
 	g_clear_error (&error);
 
 	/* Asynchronous one */
 	mech.type = CKM_MOCK_WRAP;
-	gck_session_unwrap_key_async (test->session, wrapper, &mech, "special", 7, attrs, NULL, fetch_async_result, &result);
+	gck_session_unwrap_key_async (test->session, wrapper, &mech, (const guchar *)"special", 7, attrs, NULL, fetch_async_result, &result);
 	egg_test_wait_until (500);
 	g_assert (result != NULL);
 	unwrapped = gck_session_unwrap_key_finish (test->session, result, &error);
@@ -557,7 +557,7 @@ test_unwrap_key (Test *test, gconstpointer unused)
 	/* Asynchronous failure */
 	result = NULL;
 	mech.type = 0;
-	gck_session_unwrap_key_async (test->session, wrapper, &mech, "special", 6, attrs, NULL, fetch_async_result, &result);
+	gck_session_unwrap_key_async (test->session, wrapper, &mech, (const guchar *)"special", 6, attrs, NULL, fetch_async_result, &result);
 	egg_test_wait_until (500);
 	g_assert (result != NULL);
 	unwrapped = gck_session_unwrap_key_finish (test->session, result, &error);
@@ -573,7 +573,7 @@ test_unwrap_key (Test *test, gconstpointer unused)
 static void
 test_derive_key (Test *test, gconstpointer unused)
 {
-	GckMechanism mech = { CKM_MOCK_DERIVE, "derive", 6 };
+	GckMechanism mech = { CKM_MOCK_DERIVE, (guchar *)"derive", 6 };
 	GError *error = NULL;
 	GAsyncResult *result = NULL;
 	GckObject *wrapper, *derived;

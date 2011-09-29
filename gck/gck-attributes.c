@@ -77,7 +77,7 @@ attribute_init (GckAttribute *attr, gulong attr_type,
  * gck_attribute_init: (skip)
  * @attr: An uninitialized attribute.
  * @attr_type: The PKCS\#11 attribute type to set on the attribute.
- * @value: The raw value of the attribute.
+ * @value: (array length=length): The raw value of the attribute.
  * @length: The length of the raw value.
  *
  * Initialize a PKCS\#11 attribute. This copies the value memory
@@ -87,8 +87,10 @@ attribute_init (GckAttribute *attr, gulong attr_type,
  * to free the internal memory.
  **/
 void
-gck_attribute_init (GckAttribute *attr, gulong attr_type,
-                    gconstpointer value, gsize length)
+gck_attribute_init (GckAttribute *attr,
+                    gulong attr_type,
+                    const guchar *value,
+                    gsize length)
 {
 	g_return_if_fail (attr);
 	attribute_init (attr, attr_type, value, length, g_realloc);
@@ -285,8 +287,8 @@ gck_attribute_get_type (void)
  * Create a new PKCS\#11 attribute. The value will be copied
  * into the new attribute.
  *
- * Return value: The new attribute. When done with the attribute use
- * gck_attribute_free() to free it.
+ * Returns: (transfer full): the new attribute; when done with the attribute
+ *          use gck_attribute_free() to free it
  **/
 GckAttribute*
 gck_attribute_new (gulong attr_type, gpointer value, gsize length)
@@ -304,8 +306,8 @@ gck_attribute_new (gulong attr_type, gpointer value, gsize length)
  * state. Specifically this sets the value length to (CK_ULONG)-1
  * as specified in the PKCS\#11 specification.
  *
- * Return value: The new attribute. When done with the attribute use
- * gck_attribute_free() to free it.
+ * Returns: (transfer full): the new attribute; when done with the attribute
+ *          use gck_attribute_free() to free it
  **/
 GckAttribute*
 gck_attribute_new_invalid (gulong attr_type)
@@ -321,8 +323,8 @@ gck_attribute_new_invalid (gulong attr_type)
  *
  * Create a new PKCS\#11 attribute with empty data.
  *
- * Return value: The new attribute. When done with the attribute use
- * gck_attribute_free() to free it.
+ * Returns: (transfer full): the new attribute; when done with the attribute
+ *          use gck_attribute_free() to free it
  */
 GckAttribute*
 gck_attribute_new_empty (gulong attr_type)
@@ -340,8 +342,8 @@ gck_attribute_new_empty (gulong attr_type)
  * Initialize a PKCS\#11 attribute to boolean. This will result
  * in a CK_BBOOL attribute from the PKCS\#11 specs.
  *
- * Return value: The new attribute. When done with the attribute use
- * gck_attribute_free() to free it.
+ * Returns: (transfer full): the new attribute; when done with the attribute use
+ *          gck_attribute_free() to free it
  **/
 GckAttribute*
 gck_attribute_new_boolean (gulong attr_type, gboolean value)
@@ -359,8 +361,8 @@ gck_attribute_new_boolean (gulong attr_type, gboolean value)
  * Initialize a PKCS\#11 attribute to a date. This will result
  * in a CK_DATE attribute from the PKCS\#11 specs.
  *
- * Return value: The new attribute. When done with the attribute use
- * gck_attribute_free() to free it.
+ * Returns: (transfer full): the new attribute; when done with the attribute use
+ *          gck_attribute_free() to free it
  **/
 GckAttribute*
 gck_attribute_new_date (gulong attr_type, const GDate *value)
@@ -378,8 +380,8 @@ gck_attribute_new_date (gulong attr_type, const GDate *value)
  * Initialize a PKCS\#11 attribute to a unsigned long. This will result
  * in a CK_ULONG attribute from the PKCS\#11 specs.
  *
- * Return value: The new attribute. When done with the attribute use
- * gck_attribute_free() to free it.
+ * Returns: (transfer full): the new attribute; when done with the attribute use
+ *          gck_attribute_free() to free it
  **/
 GckAttribute*
 gck_attribute_new_ulong (gulong attr_type, gulong value)
@@ -399,8 +401,8 @@ gck_attribute_new_ulong (gulong attr_type, gulong value)
  * The text in the attribute will be of the same encoding as you pass
  * to this function.
  *
- * Return value: The new attribute. When done with the attribute use
- * gck_attribute_free() to free it.
+ * Returns: (transfer full): the new attribute; when done with the attribute use
+ *          gck_attribute_free() to free it
  **/
 GckAttribute*
 gck_attribute_new_string (gulong attr_type, const gchar *value)
@@ -554,8 +556,8 @@ gck_attribute_get_date (GckAttribute *attr, GDate *value)
  * Duplicate the PKCS\#11 attribute. All value memory is
  * also copied.
  *
- * Return value: The duplicated attribute. Use gck_attribute_free()
- * to free it.
+ * Returns: (transfer full): the duplicated attribute; use gck_attribute_free()
+ *          to free it
  */
 GckAttribute*
 gck_attribute_dup (GckAttribute *attr)
@@ -656,8 +658,8 @@ gck_attribute_free (GckAttribute *attr)
 
 /**
  * gck_attribute_equal:
- * @a: First attribute to compare.
- * @b: Second attribute to compare.
+ * @a: (type Gck.Attribute): first attribute to compare
+ * @b: (type Gck.Attribute): second attribute to compare
  *
  * Compare two attributes. Useful with <code>GHashTable</code>.
  *
@@ -708,42 +710,6 @@ struct _GckAttributes {
 };
 
 /**
- * gck_BOOLEAN:
- *
- * The attribute data is a gboolean. Used with variable argument functions.
- **/
-
-/**
- * gck_ULONG:
- *
- * The attribute data is a gulong. Used with variable argument functions.
- **/
-
-/**
- * gck_STRING:
- *
- * The attribute data is a gchar. Used with variable argument functions.
- **/
-
-/**
- * gck_DATE:
- *
- * The attribute data is a GDate. Used with variable argument functions.
- **/
-
-/**
- * gck_DATE:
- *
- * Signifies that no more attributes follow. Used with variable argument functions.
- **/
-
-/**
- * gck_ATTRIBUTES_TYPE:
- *
- * A boxed type that can be used to hold a GckAttributes object.
- **/
-
-/**
  * GckAllocator:
  * @data: Memory to allocate or deallocate.
  * @length: New length of memory.
@@ -783,8 +749,8 @@ gck_attributes_get_boxed_type (void)
  *
  * Create a new GckAttributes array.
  *
- * Return value: The new attributes array. When done with the array
- * release it with gck_attributes_unref().
+ * Returns: (transfer full): the new attributes array; when done with the array
+ *          release it with gck_attributes_unref().
  **/
 GckAttributes*
 gck_attributes_new (void)
@@ -798,8 +764,8 @@ gck_attributes_new (void)
  *
  * Create a new GckAttributes array.
  *
- * Return value: The new attributes array. When done with the array
- * release it with gck_attributes_unref().
+ * Returns: (transfer full): the new attributes array; when done with the array
+ *          release it with gck_attributes_unref()
  **/
 GckAttributes*
 gck_attributes_new_full (GckAllocator allocator)
@@ -826,8 +792,8 @@ gck_attributes_new_full (GckAllocator allocator)
  * Creates an GckAttributes array with empty attributes. The arguments
  * should be values of attribute types, terminated with gck_INVALID.
  *
- * Return value: The new attributes array. When done with the array
- * release it with gck_attributes_unref().
+ * Returns: (transfer full): the new attributes array; when done with the array
+ *          release it with gck_attributes_unref()
  **/
 GckAttributes*
 gck_attributes_new_empty (gulong attr_type, ...)
@@ -857,7 +823,7 @@ gck_attributes_new_empty (gulong attr_type, ...)
  * Use gck_attributes_count() to determine how many attributes are
  * in the array.
  *
- * Return value: The specified attribute.
+ * Returns: (transfer none): the specified attribute
  **/
 GckAttribute*
 gck_attributes_at (GckAttributes *attrs, guint index)
@@ -887,9 +853,9 @@ attributes_push (GckAttributes *attrs)
  *
  * The value stored in the attribute will be copied.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_add (GckAttributes *attrs, GckAttribute *attr)
 {
 	GckAttribute *added;
@@ -905,18 +871,20 @@ gck_attributes_add (GckAttributes *attrs, GckAttribute *attr)
  * gck_attributes_add_data:
  * @attrs: The attributes array to add to.
  * @attr_type: The type of attribute to add.
- * @value: The raw memory of the attribute value.
+ * @value: (array length=length): the raw memory of the attribute value
  * @length: The length of the attribute value.
  *
  * Add an attribute with the specified type and value to the array.
  *
  * The value stored in the attribute will be copied.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
-gck_attributes_add_data (GckAttributes *attrs, gulong attr_type,
-                          gconstpointer value, gsize length)
+GckAttribute *
+gck_attributes_add_data (GckAttributes *attrs,
+                         gulong attr_type,
+                         const guchar *value,
+                         gsize length)
 {
 	GckAttribute *added;
 	g_return_val_if_fail (attrs, NULL);
@@ -933,9 +901,9 @@ gck_attributes_add_data (GckAttributes *attrs, gulong attr_type,
  *
  * Add an attribute with the specified type and an 'invalid' value to the array.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_add_invalid (GckAttributes *attrs, gulong attr_type)
 {
 	GckAttribute *added;
@@ -953,9 +921,9 @@ gck_attributes_add_invalid (GckAttributes *attrs, gulong attr_type)
  *
  * Add an attribute with the specified type, with empty data.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_add_empty (GckAttributes *attrs, gulong attr_type)
 {
 	GckAttribute *added;
@@ -976,9 +944,9 @@ gck_attributes_add_empty (GckAttributes *attrs, gulong attr_type)
  *
  * The value will be stored as a CK_BBOOL PKCS\#11 style attribute.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_add_boolean (GckAttributes *attrs, gulong attr_type, gboolean value)
 {
 	GckAttribute *added;
@@ -999,9 +967,9 @@ gck_attributes_add_boolean (GckAttributes *attrs, gulong attr_type, gboolean val
  *
  * The value will be copied into the attribute.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_add_string (GckAttributes *attrs, gulong attr_type, const gchar *value)
 {
 	GckAttribute *added;
@@ -1022,9 +990,9 @@ gck_attributes_add_string (GckAttributes *attrs, gulong attr_type, const gchar *
  *
  * The value will be stored as a CK_DATE PKCS\#11 style attribute.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_add_date (GckAttributes *attrs, gulong attr_type, const GDate *value)
 {
 	GckAttribute *added;
@@ -1045,9 +1013,9 @@ gck_attributes_add_date (GckAttributes *attrs, gulong attr_type, const GDate *va
  *
  * The value will be stored as a CK_ULONG PKCS\#11 style attribute.
  *
- * Return value: The attribute that was added.
+ * Returns: (transfer none): the attribute that was added
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_add_ulong (GckAttributes *attrs, gulong attr_type, gulong value)
 {
 	GckAttribute *added;
@@ -1104,9 +1072,10 @@ gck_attributes_count (GckAttributes *attrs)
  *
  * Find an attribute with the specified type in the array.
  *
- * Return value: The first attribute found with the specified type, or NULL.
+ * Returns: (transfer none): the first attribute found with the specified type,
+ *          or %NULL
  **/
-GckAttribute*
+GckAttribute *
 gck_attributes_find (GckAttributes *attrs, gulong attr_type)
 {
 	GckAttribute *attr;
@@ -1246,9 +1215,9 @@ gck_attributes_find_date (GckAttributes *attrs, gulong attr_type, GDate *value)
  *
  * Reference this attributes array.
  *
- * Returns: The attributes.
+ * Returns: (transfer full): the attributes
  **/
-GckAttributes*
+GckAttributes *
 gck_attributes_ref (GckAttributes *attrs)
 {
 	g_return_val_if_fail (attrs, NULL);
