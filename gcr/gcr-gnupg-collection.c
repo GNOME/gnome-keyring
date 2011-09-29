@@ -141,7 +141,7 @@ _gcr_gnupg_collection_class_init (GcrGnupgCollectionClass *klass)
 	gobject_class->finalize = _gcr_gnupg_collection_finalize;
 
 	/**
-	 * GcrGnupgCollection:directory:
+	 * GcrGnupgCollection:directory: (allow-none)
 	 *
 	 * Directory to load the gnupg keys from, or %NULL for default
 	 * ~/.gnupg/ directory.

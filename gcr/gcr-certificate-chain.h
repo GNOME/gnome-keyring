@@ -45,7 +45,8 @@ typedef enum {
 } GcrCertificateChainStatus;
 
 typedef enum {
-	GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS = 1 << 0,
+	GCR_CERTIFICATE_CHAIN_NONE = 0,
+	GCR_CERTIFICATE_CHAIN_NO_LOOKUPS = 1 << 0,
 } GcrCertificateChainFlags;
 
 #define GCR_TYPE_CERTIFICATE_CHAIN               (gcr_certificate_chain_get_type ())

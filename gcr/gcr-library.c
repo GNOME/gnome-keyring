@@ -488,7 +488,7 @@ gcr_pkcs11_get_trust_lookup_slots (void)
  * Get the PKCS\#11 URI that is used to identify which slot to use for
  * storing trust storage.
  *
- * Returns: the uri which identifies trust storage slot
+ * Returns: (allow-none): the uri which identifies trust storage slot
  */
 const gchar*
 gcr_pkcs11_get_trust_store_uri (void)
@@ -499,7 +499,7 @@ gcr_pkcs11_get_trust_store_uri (void)
 
 /**
  * gcr_pkcs11_set_trust_store_uri:
- * @pkcs11_uri: the uri which identifies trust storage slot
+ * @pkcs11_uri: (allow-none): the uri which identifies trust storage slot
  *
  * Set the PKCS\#11 URI that is used to identify which slot to use for
  * storing trust assertions.
@@ -526,7 +526,7 @@ gcr_pkcs11_set_trust_store_uri (const gchar *pkcs11_uri)
  * Get the PKCS\#11 URIs that are used to identify which slots to use for
  * lookup trust assertions.
  *
- * Returns: (transfer none): the uri which identifies trust storage slot
+ * Returns: (allow-none) (transfer none): the uri which identifies trust storage slot
  */
 const gchar **
 gcr_pkcs11_get_trust_lookup_uris (void)
@@ -537,7 +537,7 @@ gcr_pkcs11_get_trust_lookup_uris (void)
 
 /**
  * gcr_pkcs11_set_trust_lookup_uris:
- * @pkcs11_uris: the uris which identifies trust lookup slots
+ * @pkcs11_uris: (allow-none): the uris which identifies trust lookup slots
  *
  * Set the PKCS\#11 URIs that are used to identify which slots to use for
  * lookup of trust assertions.

@@ -531,6 +531,8 @@ gck_module_initialize_async (const gchar *path,
 {
 	Initialize *args;
 
+	g_return_if_fail (path != NULL);
+
 	args =  _gck_call_async_prep (NULL, NULL, perform_initialize, NULL,
 	                              sizeof (*args), free_initialize);
 	args->path = g_strdup (path);
@@ -584,7 +586,7 @@ gck_module_initialize_finish (GAsyncResult *result,
 GckModule*
 gck_module_new (CK_FUNCTION_LIST_PTR funcs)
 {
-	g_return_val_if_fail (funcs, NULL);
+	g_return_val_if_fail (funcs != NULL, NULL);
 	return g_object_new (GCK_TYPE_MODULE, "functions", funcs, NULL);
 }
 

@@ -278,7 +278,7 @@ gck_uri_build (GckUriData *uri_data, GckUriFlags flags)
 	int res;
 	guint i;
 
-	g_return_val_if_fail (uri_data, NULL);
+	g_return_val_if_fail (uri_data != NULL, NULL);
 
 	p11_uri = p11_kit_uri_new ();
 

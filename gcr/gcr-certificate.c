@@ -391,8 +391,8 @@ gcr_certificate_get_columns (void)
 
 /**
  * gcr_certificate_compare:
- * @first: The certificate to compare
- * @other: The certificate to compare against
+ * @first: (allow-none): the certificate to compare
+ * @other: (allow-none): the certificate to compare against
  *
  * Compare one certificate against another. If the certificates are equal
  * then zero is returned. If one certificate is %NULL or not a certificate,
@@ -442,6 +442,7 @@ gcr_certificate_get_der_data (GcrCertificate *self,
                               gsize *n_data)
 {
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (n_data != NULL, NULL);
 	g_return_val_if_fail (GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data, NULL);
 	return GCR_CERTIFICATE_GET_INTERFACE (self)->get_der_data (self, n_data);
 }
@@ -477,15 +478,17 @@ gcr_certificate_get_issuer_cn (GcrCertificate *self)
  * The string returned should be freed by the caller when no longer
  * required.
  * 
- * Returns: The allocated part of the issuer DN, or NULL if no such part is present.
+ * Returns: (allow-none): the allocated part of the issuer DN, or %NULL if no
+ *          such part is present
  */
-gchar*
+gchar *
 gcr_certificate_get_issuer_part (GcrCertificate *self, const char *part)
 {
 	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	
+	g_return_val_if_fail (part != NULL, NULL);
+
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 
@@ -496,6 +499,9 @@ static gconstpointer
 _gcr_certificate_get_issuer_const (GcrCertificate *self, gsize *n_data)
 {
 	GcrCertificateInfo *info;
+
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (n_data != NULL, NULL);
 
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
@@ -522,7 +528,7 @@ gcr_certificate_get_issuer_raw (GcrCertificate *self,
 	gconstpointer data;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (n_data, NULL);
+	g_return_val_if_fail (n_data != NULL, NULL);
 
 	data = _gcr_certificate_get_issuer_const (self, n_data);
 	return g_memdup (data, data ? *n_data : 0);
@@ -615,7 +621,8 @@ gcr_certificate_get_subject_cn (GcrCertificate *self)
  * The string returned should be freed by the caller when no longer
  * required.
  * 
- * Returns: The allocated part of the subject DN, or NULL if no such part is present.
+ * Returns: (allow-none): the allocated part of the subject DN, or %NULL if no
+ *          such part is present.
  */
 gchar* 
 gcr_certificate_get_subject_part (GcrCertificate *self, const char *part)
@@ -623,7 +630,8 @@ gcr_certificate_get_subject_part (GcrCertificate *self, const char *part)
 	GcrCertificateInfo *info;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	
+	g_return_val_if_fail (part != NULL, NULL);
+
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 
@@ -660,6 +668,9 @@ _gcr_certificate_get_subject_const (GcrCertificate *self, gsize *n_data)
 {
 	GcrCertificateInfo *info;
 
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
+	g_return_val_if_fail (n_data != NULL, NULL);
+
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 
@@ -685,7 +696,7 @@ gcr_certificate_get_subject_raw (GcrCertificate *self, gsize *n_data)
 	gconstpointer data;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (n_data, NULL);
+	g_return_val_if_fail (n_data != NULL, NULL);
 
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
@@ -795,9 +806,9 @@ gcr_certificate_get_key_size (GcrCertificate *self)
  * The caller should free the returned data using g_free() when
  * it is no longer required.
  * 
- * Returns: the raw binary fingerprint.  
+ * Returns: (array length=n_length): the raw binary fingerprint
  **/
-guchar*
+guchar *
 gcr_certificate_get_fingerprint (GcrCertificate *self, GChecksumType type, gsize *n_length)
 {
 	GChecksum *sum;
@@ -805,7 +816,7 @@ gcr_certificate_get_fingerprint (GcrCertificate *self, GChecksumType type, gsize
 	gssize length;
 	
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (n_length, NULL);
+	g_return_val_if_fail (n_length != NULL, NULL);
 	
 	sum = digest_certificate (self, type);
 	g_return_val_if_fail (sum, NULL);
@@ -869,15 +880,15 @@ gcr_certificate_get_fingerprint_hex (GcrCertificate *self, GChecksumType type)
  * The caller should free the returned data using g_free() when
  * it is no longer required.
  * 
- * Returns: the raw binary serial number.
+ * Returns: (array length=n_length): the raw binary serial number.
  */
-guchar*
+guchar *
 gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 {
 	GcrCertificateInfo *info;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (n_length, NULL);
+	g_return_val_if_fail (n_length != NULL, NULL);
 	
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
@@ -948,7 +959,7 @@ gcr_certificate_get_icon (GcrCertificate *self)
  */
 
 /**
- * gcr_certificate_mixin_comparable_init:
+ * gcr_certificate_mixin_comparable_init: (skip)
  * @iface: The interface
  *
  * Initialize a #GcrComparableIface to compare the current certificate.
@@ -962,7 +973,7 @@ gcr_certificate_mixin_comparable_init (GcrComparableIface *iface)
 }
 
 /**
- * gcr_certificate_mixin_class_init:
+ * gcr_certificate_mixin_class_init: (skip)
  * @object_class: The GObjectClass for this class
  *
  * Initialize the certificate mixin for the class. This mixin implements the
@@ -993,7 +1004,7 @@ gcr_certificate_mixin_class_init (GObjectClass *object_class)
 }
 
 /**
- * gcr_certificate_mixin_get_property:
+ * gcr_certificate_mixin_get_property: (skip)
  * @obj: The object
  * @prop_id: The property id
  * @value: The value to fill in.

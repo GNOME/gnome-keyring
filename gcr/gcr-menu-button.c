@@ -298,6 +298,7 @@ _gcr_menu_button_class_init (GcrMenuButtonClass *klass)
 
 /**
  * _gcr_menu_button_new:
+ * @label: (allow-none): the label
  *
  * Returns: (transfer full) (type Gcr.MenuButton): the new menu button
  */

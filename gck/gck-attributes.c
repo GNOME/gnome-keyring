@@ -486,8 +486,8 @@ gck_attribute_get_ulong (GckAttribute *attr)
  * to this function unless you're know it's supposed to contain
  * a value of the right type.
  *
- * Return value: A null terminated string, to be freed with g_free(),
- * or NULL if the value contained a NULL string.
+ * Return value: (allow-none): a null terminated string, to be freed with
+ *               g_free(), or %NULL if the value was invalid
  */
 gchar*
 gck_attribute_get_string (GckAttribute *attr)
@@ -785,7 +785,7 @@ gck_attributes_new_full (GckAllocator allocator)
 }
 
 /**
- * gck_attributes_new_empty:
+ * gck_attributes_new_empty: (skip)
  * @attr_type: The first attribute type to add as empty.
  * @...: The arguments should be values of attribute types, terminated with gck_INVALID.
  *

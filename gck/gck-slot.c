@@ -1027,7 +1027,9 @@ free_open_session (OpenSession *args)
  * Returns: (transfer full): a new session or %NULL if an error occurs
  **/
 GckSession *
-gck_slot_open_session (GckSlot *self, guint options, GCancellable *cancellable,
+gck_slot_open_session (GckSlot *self,
+                       GckSessionOptions options,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	return gck_slot_open_session_full (self, options, 0, NULL, NULL, cancellable, error);
@@ -1098,8 +1100,11 @@ gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, g
  * This call will return immediately and complete asynchronously.
  **/
 void
-gck_slot_open_session_async (GckSlot *self, guint options, GCancellable *cancellable,
-                             GAsyncReadyCallback callback, gpointer user_data)
+gck_slot_open_session_async (GckSlot *self,
+                             GckSessionOptions options,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
 	gck_slot_open_session_full_async (self, options, 0UL, NULL, NULL, cancellable, callback, user_data);
 }

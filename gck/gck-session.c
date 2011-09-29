@@ -578,7 +578,7 @@ gck_session_init_pin (GckSession *self, const guchar *pin, gsize n_pin,
 /**
  * gck_session_init_pin_async:
  * @self: Initialize PIN for this session's slot.
- * @pin: The user's PIN, or NULL for protected authentication path.
+ * @pin: (allow-none) (array length=n_pin): The user's PIN, or NULL for protected authentication path.
  * @n_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
@@ -650,9 +650,11 @@ perform_set_pin (SetPin *args)
 /**
  * gck_session_set_pin:
  * @self: Change the PIN for this session's slot.
- * @old_pin: The user's old PIN, or NULL for protected authentication path.
+ * @old_pin: (allow-none) (array length=n_old_pin): the user's old PIN, or %NULL
+ *           for protected authentication path.
  * @n_old_pin: The length of the PIN.
- * @new_pin: The user's new PIN, or NULL for protected authentication path.
+ * @new_pin: (allow-none) (array length=n_new_pin): the user's new PIN, or %NULL
+ *           for protected authentication path
  * @n_new_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @error: A location to return an error.
@@ -748,7 +750,8 @@ perform_login (Login *args)
  * gck_session_login:
  * @self: Log in to this session.
  * @user_type: The type of login user.
- * @pin: The user's PIN, or NULL for protected authentication path.
+ * @pin: (allow-none) (array length=n_pin): the user's PIN, or %NULL for
+ *       protected authentication path
  * @n_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @error: A location to return an error.
@@ -771,7 +774,8 @@ gck_session_login (GckSession *self, gulong user_type, const guchar *pin,
  * gck_session_login_async:
  * @self: Log in to this session.
  * @user_type: The type of login user.
- * @pin: The user's PIN, or NULL for protected authentication path.
+ * @pin: (allow-none) (array length=n_pin): the user's PIN, or %NULL for
+ *       protected authentication path
  * @n_pin: The length of the PIN.
  * @cancellable: Optional cancellation object, or NULL.
  * @callback: Called when the operation completes.
@@ -937,7 +941,7 @@ gck_session_create_object (GckSession *self, GckAttributes *attrs,
 	gboolean ret;
 
 	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
-	g_return_val_if_fail (attrs, NULL);
+	g_return_val_if_fail (attrs != NULL, NULL);
 
 	_gck_attributes_lock (attrs);
 	ret = _gck_call_sync (self, perform_create_object, NULL, &args, cancellable, error);
@@ -2263,9 +2267,10 @@ crypt_finish (GckSession *self, GAsyncResult *result, gsize *n_result, GError **
  * Encrypt data in a mechanism specific manner. This call may
  * block for an indefinite period.
  *
- * Returns: The data that was encrypted, or NULL if an error occured.
+ * Returns: (transfer full) (array length=n_result): the data that was encrypted,
+ *          or %NULL if an error occured.
  */
-guchar*
+guchar *
 gck_session_encrypt (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
                       gsize n_input, gsize *n_result, GCancellable *cancellable, GError **error)
 {
@@ -2287,9 +2292,10 @@ gck_session_encrypt (GckSession *self, GckObject *key, gulong mech_type, const g
  * Encrypt data in a mechanism specific manner. This call may
  * block for an indefinite period.
  *
- * Returns: The data that was encrypted, or NULL if an error occured.
+ * Returns: (transfer full) (array length=n_result): the data that was encrypted,
+ *          or %NULL if an error occured
  */
-guchar*
+guchar *
 gck_session_encrypt_full (GckSession *self, GckObject *key, GckMechanism *mechanism,
                            const guchar *input, gsize n_input, gsize *n_result,
                            GCancellable *cancellable, GError **error)
@@ -2354,7 +2360,8 @@ gck_session_encrypt_async (GckSession *self, GckObject *key, GckMechanism *mecha
  *
  * Get the result of an encryption operation.
  *
- * Returns: The data that was encrypted, or NULL if an error occurred.
+ * Returns: (transfer full) (array length=n_result): the data that was encrypted,
+ *          or %NULL if an error occurred.
  */
 guchar*
 gck_session_encrypt_finish (GckSession *self, GAsyncResult *result, gsize *n_result,
@@ -2381,9 +2388,10 @@ gck_session_encrypt_finish (GckSession *self, GAsyncResult *result, gsize *n_res
  * Decrypt data in a mechanism specific manner. This call may
  * block for an indefinite period.
  *
- * Returns: The data that was decrypted, or NULL if an error occured.
+ * Returns: (transfer full) (array length=n_result): the data that was decrypted,
+ *          or NULL if an error occured
  */
-guchar*
+guchar *
 gck_session_decrypt (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
                       gsize n_input, gsize *n_result, GCancellable *cancellable, GError **error)
 {
@@ -2405,9 +2413,10 @@ gck_session_decrypt (GckSession *self, GckObject *key, gulong mech_type, const g
  * Decrypt data in a mechanism specific manner. This call may
  * block for an indefinite period.
  *
- * Returns: The data that was decrypted, or NULL if an error occured.
+ * Returns: (transfer full) (array length=n_result): the data that was decrypted,
+ *          or %NULL if an error occured
  */
-guchar*
+guchar *
 gck_session_decrypt_full (GckSession *self, GckObject *key, GckMechanism *mechanism,
                            const guchar *input, gsize n_input, gsize *n_result,
                            GCancellable *cancellable, GError **error)
@@ -2470,7 +2479,8 @@ gck_session_decrypt_async (GckSession *self, GckObject *key, GckMechanism *mecha
  *
  * Get the result of an decryption operation.
  *
- * Returns: The data that was decrypted, or NULL if an error occurred.
+ * Returns: (transfer full) (array length=n_result): the data that was decrypted,
+ *          or NULL if an error occurred
  */
 guchar*
 gck_session_decrypt_finish (GckSession *self, GAsyncResult *result,
@@ -2497,9 +2507,10 @@ gck_session_decrypt_finish (GckSession *self, GAsyncResult *result,
  * Sign data in a mechanism specific manner. This call may
  * block for an indefinite period.
  *
- * Returns: The data that was signed, or NULL if an error occured.
+ * Returns: (transfer full) (array length=n_result): the data that was signed,
+ *          or %NULL if an error occured
  */
-guchar*
+guchar *
 gck_session_sign (GckSession *self, GckObject *key, gulong mech_type, const guchar *input,
                    gsize n_input, gsize *n_result, GCancellable *cancellable, GError **error)
 {
@@ -2586,9 +2597,10 @@ gck_session_sign_async (GckSession *self, GckObject *key, GckMechanism *mechanis
  *
  * Get the result of an signing operation.
  *
- * Returns: The data that was signed, or NULL if an error occurred.
+ * Returns: (transfer full) (array length=n_result): the data that was signed,
+ *          or %NULL if an error occurred
  */
-guchar*
+guchar *
 gck_session_sign_finish (GckSession *self, GAsyncResult *result,
                           gsize *n_result, GError **error)
 {

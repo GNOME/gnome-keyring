@@ -301,6 +301,7 @@ gcr_gnupg_importer_iface (GcrImporterIface *iface)
 
 /**
  * _gcr_gnupg_importer_new:
+ * @directory: (allow-none): the directory to import to, or %NULL for default
  *
  * Returns: (transfer full) (type Gcr.GnupgImporter): the new importer
  */

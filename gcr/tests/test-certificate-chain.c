@@ -532,7 +532,7 @@ test_without_lookups (Test *test, gconstpointer unused)
 
 	/* But we don't allow the lookup to happen */
 	if (!gcr_certificate_chain_build (chain, GCR_PURPOSE_CLIENT_AUTH,
-	                                  NULL, GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS,
+	                                  NULL, GCR_CERTIFICATE_CHAIN_NO_LOOKUPS,
 	                                  NULL, &error))
 		g_assert_not_reached ();
 	g_assert_no_error (error);

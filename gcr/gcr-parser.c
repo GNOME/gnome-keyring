@@ -1777,6 +1777,7 @@ parse_openssh_public (GcrParser *self,
 
 /**
  * GcrDataFormat:
+ * @GCR_FORMAT_ALL: Represents all the formats, when enabling or disabling
  * @GCR_FORMAT_INVALID: Not a valid format
  * @GCR_FORMAT_DER_PRIVATE_KEY: DER encoded private key
  * @GCR_FORMAT_DER_PRIVATE_KEY_RSA: DER encoded RSA private key
@@ -2094,7 +2095,7 @@ gcr_parser_new (void)
 /**
  * gcr_parser_add_password:
  * @self: The parser
- * @password: A password to try
+ * @password: (allow-none): a password to try
  *
  * Add a password to the set of passwords to try when parsing locked or encrypted
  * items. This is usually called from the GcrParser::authenticate signal.
@@ -2176,7 +2177,7 @@ gcr_parser_parse_data (GcrParser *self,
  * @self: The parser
  * @format: The format identifier
  *
- * Enable parsing of the given format. Use -1 to enable all the formats.
+ * Enable parsing of the given format. Use %GCR_FORMAT_ALL to enable all the formats.
  */
 void
 gcr_parser_format_enable (GcrParser *self,
@@ -2209,7 +2210,7 @@ gcr_parser_format_enable (GcrParser *self,
  * @self: The parser
  * @format: The format identifier
  *
- * Disable parsing of the given format. Use -1 to disable all the formats.
+ * Disable parsing of the given format. Use %GCR_FORMAT_ALL to disable all the formats.
  */
 void
 gcr_parser_format_disable (GcrParser *self,
@@ -2249,7 +2250,8 @@ gcr_parser_format_supported (GcrParser *self,
                              GcrDataFormat format)
 {
 	g_return_val_if_fail (GCR_IS_PARSER (self), FALSE);
-	g_return_val_if_fail (format != -1, FALSE);
+	g_return_val_if_fail (format != GCR_FORMAT_ALL, FALSE);
+	g_return_val_if_fail (format != GCR_FORMAT_INVALID, FALSE);
 	return parser_format_lookup (format) ? TRUE : FALSE;
 }
 
@@ -2366,8 +2368,8 @@ gcr_parsed_unref (gpointer parsed)
  * Get a description for the type of the currently parsed item. This is generally
  * only valid during the GcrParser::parsed signal.
  *
- * Returns: The description for the current item. This is owned by the parser
- *     and should not be freed.
+ * Returns: (allow-none): the description for the current item; this is owned by
+ *          the parser and should not be freed
  */
 const gchar*
 gcr_parser_get_parsed_description (GcrParser *self)
@@ -2384,7 +2386,7 @@ gcr_parser_get_parsed_description (GcrParser *self)
  *
  * Get the descirption for a parsed item.
  *
- * Returns: the description
+ * Returns: (allow-none): the description
  */
 const gchar*
 gcr_parsed_get_description (GcrParsed *parsed)
@@ -2405,8 +2407,8 @@ gcr_parsed_get_description (GcrParsed *parsed)
  * Get the attributes which make up the currently parsed item. This is generally
  * only valid during the GcrParser::parsed signal.
  *
- * Returns: (transfer none): the attributes for the current item, which are
- *          owned by the parser and should not be freed
+ * Returns: (transfer none) (allow-none): the attributes for the current item,
+ *          which are owned by the parser and should not be freed
  */
 GckAttributes *
 gcr_parser_get_parsed_attributes (GcrParser *self)
@@ -2423,8 +2425,8 @@ gcr_parser_get_parsed_attributes (GcrParser *self)
  *
  * Get the attributes which make up the parsed item.
  *
- * Returns: (transfer none): the attributes for the item; these are owned by
- *          the parsed item and should not be freed
+ * Returns: (transfer none) (allow-none): the attributes for the item; these
+ *          are owned by the parsed item and should not be freed
  */
 GckAttributes *
 gcr_parsed_get_attributes (GcrParsed *parsed)
@@ -2445,8 +2447,8 @@ gcr_parsed_get_attributes (GcrParsed *parsed)
  * Get the label of the currently parsed item. This is generally only valid
  * during the GcrParser::parsed signal.
  *
- * Returns: The label of the currently parsed item. The value is owned by
- *     the parser and should not be freed.
+ * Returns: (allow-none): the label of the currently parsed item. The value is
+ *          owned by the parser and should not be freed.
  */
 const gchar*
 gcr_parser_get_parsed_label (GcrParser *self)
@@ -2463,7 +2465,7 @@ gcr_parser_get_parsed_label (GcrParser *self)
  *
  * Get the label for the parsed item.
  *
- * Returns: the label for the item.
+ * Returns: (allow-none): the label for the item
  */
 const gchar*
 gcr_parsed_get_label (GcrParsed *parsed)
@@ -2485,8 +2487,9 @@ gcr_parsed_get_label (GcrParsed *parsed)
  * Get the raw data block that represents this parsed object. This is only
  * valid during the GcrParser::parsed signal.
  *
- * Returns: (transfer none) (array length=n_block): the raw data block of the
- *      currently parsed item; the value is owned by the parser and should not be freed
+ * Returns: (transfer none) (array length=n_block) (allow-none): the raw data
+ *          block of the currently parsed item; the value is owned by the parser
+ *          and should not be freed
  */
 const guchar *
 gcr_parser_get_parsed_block (GcrParser *self,
@@ -2506,8 +2509,8 @@ gcr_parser_get_parsed_block (GcrParser *self,
  *
  * Get the raw data block for the parsed item.
  *
- * Returns: (transfer full) (array length=n_data): the raw data of the parsed
- *          item, or %NULL
+ * Returns: (transfer full) (array length=n_data) (allow-none): the raw data of
+ *          the parsed item, or %NULL
  */
 const guchar *
 gcr_parsed_get_data (GcrParsed *parsed,

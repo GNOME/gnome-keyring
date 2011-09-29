@@ -458,7 +458,7 @@ gcr_viewer_widget_load_file (GcrViewerWidget *self,
 /**
  * gcr_viewer_widget_load_data:
  * @self: a viewer widget
- * @display_name: label for the loaded data
+ * @display_name: (allow-none): label for the loaded data
  * @data: (array length=n_data): data to load
  * @n_data: length of data to load
  *

@@ -207,7 +207,9 @@ gck_modules_get_slots (GList *modules, gboolean token_present)
  * with g_object_unref().
  **/
 GckEnumerator*
-gck_modules_enumerate_objects (GList *modules, GckAttributes *attrs, guint session_options)
+gck_modules_enumerate_objects (GList *modules,
+                               GckAttributes *attrs,
+                               GckSessionOptions session_options)
 {
 	GckUriData *uri_data;
 
@@ -291,6 +293,8 @@ gck_modules_token_for_uri (GList *modules,
 	GList *results;
 	GckSlot *slot = NULL;
 
+	g_return_val_if_fail (uri != NULL, NULL);
+
 	results = tokens_for_uri (modules, uri, TRUE, error);
 	if (results)
 		slot = g_object_ref (results->data);
@@ -316,6 +320,8 @@ gck_modules_tokens_for_uri (GList *modules,
                             const gchar *uri,
                             GError **error)
 {
+	g_return_val_if_fail (uri != NULL, NULL);
+
 	return tokens_for_uri (modules, uri, FALSE, error);
 }
 
@@ -341,7 +347,7 @@ gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_opti
 	GckEnumerator *en;
 	GckObject *result;
 
-	g_return_val_if_fail (uri, NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
 	en = gck_modules_enumerate_uri (modules, uri, session_options, error);
@@ -377,7 +383,7 @@ gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_opt
 	GckEnumerator *en;
 	GList *results;
 
-	g_return_val_if_fail (uri, NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
 	en = gck_modules_enumerate_uri (modules, uri, session_options, error);
@@ -409,6 +415,8 @@ gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_optio
                            GError **error)
 {
 	GckUriData *uri_data;
+
+	g_return_val_if_fail (uri != NULL, NULL);
 
 	uri_data = gck_uri_parse (uri, GCK_URI_FOR_ANY, error);
 	if (uri_data == NULL)

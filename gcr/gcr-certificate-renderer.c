@@ -522,7 +522,7 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	gobject_class->get_property = gcr_certificate_renderer_get_property;
 
 	/**
-	 * GcrCertificateRenderer:certificate:
+	 * GcrCertificateRenderer:certificate: (allow-none)
 	 *
 	 * The certificate to display. May be %NULL.
 	 */
@@ -541,7 +541,7 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
 	/**
-	 * GcrCertificateRenderer:label:
+	 * GcrCertificateRenderer:label: (allow-none)
 	 *
 	 * The label to display.
 	 */
@@ -801,7 +801,7 @@ gcr_certificate_renderer_new (GcrCertificate *certificate)
 
 /**
  * gcr_certificate_renderer_new_for_attributes:
- * @label: The label to display
+ * @label: (allow-none): the label to display
  * @attrs: The attributes to display
  *
  * Create a new certificate renderer to display the label and attributes. One
@@ -839,7 +839,7 @@ gcr_certificate_renderer_get_certificate (GcrCertificateRenderer *self)
 /**
  * gcr_certificate_renderer_set_certificate:
  * @self: The renderer
- * @certificate: The certificate to display
+ * @certificate: (allow-none): the certificate to display
  *
  * Set a certificate to display in the renderer.
  */
@@ -869,7 +869,7 @@ gcr_certificate_renderer_set_certificate (GcrCertificateRenderer *self, GcrCerti
  *
  * Get the PKCS\#11 attributes, if any, set for this renderer to display.
  *
- * Returns: (transfer none): the attributes, owned by the renderer
+ * Returns: (allow-none) (transfer none): the attributes, owned by the renderer
  */
 GckAttributes *
 gcr_certificate_renderer_get_attributes (GcrCertificateRenderer *self)
@@ -881,7 +881,7 @@ gcr_certificate_renderer_get_attributes (GcrCertificateRenderer *self)
 /**
  * gcr_certificate_renderer_set_attributes:
  * @self: The renderer
- * @attrs: Attributes to set
+ * @attrs: (allow-none): attributes to set
  *
  * Set the PKCS\#11 attributes for this renderer to display. One of the attributes
  * should be a CKA_VALUE type attribute containing a DER encoded certificate.

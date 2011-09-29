@@ -280,7 +280,7 @@ gck_list_ref_copy (GList *reflist)
 }
 
 /**
- * gck_string_from_chars:
+ * gck_string_from_chars: (skip)
  * @data: The character data to turn into a null terminated string.
  * @max: The maximum length of the charater data.
  *
@@ -312,7 +312,7 @@ gck_string_from_chars (const guchar *data, gsize max)
 }
 
 /**
- * gck_string_to_chars:
+ * gck_string_to_chars: (skip)
  * @data: The character buffer to place string into.
  * @max: The maximum length of the charater buffer.
  * @string: The string to place in the buffer.

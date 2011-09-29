@@ -76,6 +76,13 @@ gchar*              gck_string_from_chars                   (const guchar *data,
 
 typedef gpointer    (*GckAllocator)                         (gpointer data, gsize length);
 
+typedef enum {
+	GCK_SESSION_READ_ONLY = 0,
+	GCK_SESSION_READ_WRITE = 1 << 1,
+	GCK_SESSION_LOGIN_USER =  1 << 2,
+	GCK_SESSION_AUTHENTICATE = 1 << 3,
+} GckSessionOptions;
+
 typedef struct _GckMechanism GckMechanism;
 
 struct _GckMechanism {
@@ -370,7 +377,7 @@ GList*                gck_modules_get_slots                   (GList *modules,
 
 GckEnumerator*        gck_modules_enumerate_objects           (GList *modules,
                                                                GckAttributes *attrs,
-                                                               guint session_options);
+                                                               GckSessionOptions session_options);
 
 GckSlot*              gck_modules_token_for_uri               (GList *modules,
                                                                const gchar *uri,
@@ -382,17 +389,17 @@ GList *               gck_modules_tokens_for_uri              (GList *modules,
 
 GckObject*            gck_modules_object_for_uri              (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_options,
+                                                               GckSessionOptions session_options,
                                                                GError **error);
 
 GList*                gck_modules_objects_for_uri             (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_options,
+                                                               GckSessionOptions session_options,
                                                                GError **error);
 
 GckEnumerator*        gck_modules_enumerate_uri               (GList *modules,
                                                                const gchar *uri,
-                                                               guint session_options,
+                                                               GckSessionOptions session_options,
                                                                GError **error);
 
 
@@ -582,7 +589,7 @@ gboolean            gck_slot_has_flags                      (GckSlot *self,
 
 GckEnumerator*      gck_slots_enumerate_objects             (GList *slots,
                                                              GckAttributes *attrs,
-                                                             guint session_options);
+                                                             GckSessionOptions session_options);
 
 GckSession*         gck_slot_open_session                   (GckSlot *self,
                                                              guint options,
@@ -619,13 +626,6 @@ GckSession*         gck_slot_open_session_finish            (GckSlot *self,
 /* ------------------------------------------------------------------------
  * SESSION
  */
-
-typedef enum {
-	GCK_SESSION_READ_ONLY = 0,
-	GCK_SESSION_READ_WRITE = 1 << 1,
-	GCK_SESSION_LOGIN_USER =  1 << 2,
-	GCK_SESSION_AUTHENTICATE = 1 << 3,
-} GckSessionOptions;
 
 typedef struct _GckSessionInfo GckSessionInfo;
 

@@ -180,7 +180,7 @@ gcr_key_widget_class_init (GcrKeyWidgetClass *klass)
 
 /**
  * gcr_key_widget_new:
- * @attrs: Key to display, or %NULL
+ * @attrs: (allow-none): key to display, or %NULL
  *
  * Create a new key widget which displays a given key in the attributes.
  *
@@ -196,7 +196,7 @@ gcr_key_widget_new (GckAttributes *attrs)
 /**
  * gcr_key_widget_set_attributes:
  * @self: The key widget
- * @attrs: The attributes to display
+ * @attrs: (allow-none): the attributes to display
  *
  * Get the attributes displayed in the widget. The attributes should represent
  * either an RSA or DSA key in PKCS\#11 style.
@@ -214,7 +214,7 @@ gcr_key_widget_set_attributes (GcrKeyWidget *self, GckAttributes *attrs)
  *
  * Get the attributes displayed in the widget.
  *
- * Returns: The attributes, owned by the widget.
+ * Returns: (allow-none) (transfer none): The attributes, owned by the widget.
  */
 GckAttributes*
 gcr_key_widget_get_attributes (GcrKeyWidget *self)

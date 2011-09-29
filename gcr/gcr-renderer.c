@@ -206,14 +206,14 @@ sort_registered_by_n_attrs (gconstpointer a, gconstpointer b)
 
 /**
  * gcr_renderer_create:
- * @label: The label for the renderer
+ * @label: (allow-none): The label for the renderer
  * @attrs: The attributes to render
  *
  * Create and initialize a renderer for the given attributes and label. These
  * renderers should have been preregistered via gcr_renderer_register().
  *
- * Returns: (transfer full): a new renderer, or %NULL if no renderer matched
- *          the attributes; the render should be released with g_object_unref()
+ * Returns: (transfer full) (allow-none): a new renderer, or %NULL if no renderer
+ *          matched the attributes; the render should be released with g_object_unref()
  */
 GcrRenderer *
 gcr_renderer_create (const gchar *label, GckAttributes *attrs)

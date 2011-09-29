@@ -505,7 +505,7 @@ gck_object_set (GckObject *self, GckAttributes *attrs,
 	gboolean ret = FALSE;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (self), FALSE);
-	g_return_val_if_fail (attrs, FALSE);
+	g_return_val_if_fail (attrs != NULL, FALSE);
 	g_return_val_if_fail (!error || !*error, FALSE);
 
 	_gck_attributes_lock (attrs);
@@ -538,7 +538,7 @@ gck_object_set_async (GckObject *self, GckAttributes *attrs, GCancellable *cance
 	SetAttributes *args;
 
 	g_return_if_fail (GCK_IS_OBJECT (self));
-	g_return_if_fail (attrs);
+	g_return_if_fail (attrs != NULL);
 
 	args = _gck_call_async_prep (self->pv->session, self, perform_set_attributes,
 	                             NULL, sizeof (*args), free_set_attributes);
@@ -716,7 +716,6 @@ gck_object_get_full (GckObject *self, gulong *attr_types, guint n_attr_types,
 	guint i;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (self), NULL);
-	g_return_val_if_fail (n_attr_types, NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
 	attrs = gck_attributes_new ();
@@ -765,7 +764,6 @@ gck_object_get_async (GckObject *self, gulong *attr_types, guint n_attr_types, G
 	guint i;
 
 	g_return_if_fail (GCK_IS_OBJECT (self));
-	g_return_if_fail (n_attr_types);
 
 	attrs = gck_attributes_new ();
 	for (i = 0; i < n_attr_types; ++i)

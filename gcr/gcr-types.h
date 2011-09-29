@@ -68,6 +68,7 @@ typedef enum {
 } GcrDataError;
 
 typedef enum {
+	GCR_FORMAT_ALL = -1,
 	GCR_FORMAT_INVALID = 0,
 
 	GCR_FORMAT_DER_PRIVATE_KEY = 100,

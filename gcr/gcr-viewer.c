@@ -122,7 +122,7 @@ gcr_viewer_add_renderer (GcrViewer *viewer,
  * gcr_viewer_insert_renderer:
  * @viewer: the viewer
  * @renderer: the renderer to insert
- * @before: the renderer to insert before
+ * @before: (allow-none): the renderer to insert before
  *
  * Insert a renderer at a specific point in the viewer
  */

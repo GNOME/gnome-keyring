@@ -1241,7 +1241,7 @@ gcr_collection_model_class_init (GcrCollectionModelClass *klass)
  */
 
 /**
- * gcr_collection_model_new:
+ * gcr_collection_model_new: (skip)
  * @collection: The collection to represent
  * @...: The column names and types.
  *
@@ -1366,7 +1366,7 @@ GObject *
 gcr_collection_model_object_for_iter (GcrCollectionModel *self, const GtkTreeIter *iter)
 {
 	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), NULL);
-	g_return_val_if_fail (iter, NULL);
+	g_return_val_if_fail (iter != NULL, NULL);
 	g_return_val_if_fail (iter->stamp == COLLECTION_MODEL_STAMP, NULL);
 	g_return_val_if_fail (G_IS_OBJECT (iter->user_data), NULL);
 
@@ -1392,7 +1392,7 @@ gcr_collection_model_iter_for_object (GcrCollectionModel *self, GObject *object,
 
 	g_return_val_if_fail (GCR_IS_COLLECTION_MODEL (self), FALSE);
 	g_return_val_if_fail (G_IS_OBJECT (object), FALSE);
-	g_return_val_if_fail (iter, FALSE);
+	g_return_val_if_fail (iter != NULL, FALSE);
 
 	seq = g_hash_table_lookup (self->pv->object_to_seq, object);
 	if (seq == NULL)

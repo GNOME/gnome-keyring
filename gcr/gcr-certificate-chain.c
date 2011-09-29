@@ -234,7 +234,7 @@ perform_build_chain (GcrCertificateChainPrivate *pv, GCancellable *cancellable,
 	g_assert (pv->certificates);
 
 	pv->status = GCR_CERTIFICATE_CHAIN_UNKNOWN;
-	lookups = !((pv->flags & GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS) == GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS);
+	lookups = !((pv->flags & GCR_CERTIFICATE_CHAIN_NO_LOOKUPS) == GCR_CERTIFICATE_CHAIN_NO_LOOKUPS);
 
 	/* This chain is built */
 	if (!pv->certificates->len) {
@@ -498,7 +498,7 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
 
 /**
  * GcrCertificateChainFlags:
- * @GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS: If this flag is specified then no
+ * @GCR_CERTIFICATE_CHAIN_NO_LOOKUPS: If this flag is specified then no
  * lookups for anchors or pinned certificates are done, and the resulting chain
  * will be neither anchored or pinned. Additionally no missing certificate
  * authorities are looked up in PKCS\#11.
@@ -652,7 +652,7 @@ gcr_certificate_chain_get_certificate (GcrCertificateChain *self, guint index)
  * gcr_certificate_chain_build:
  * @self: the #GcrCertificateChain
  * @purpose: the purpose the certificate chain will be used for
- * @peer: the peer the certificate chain will be used with, or NULL
+ * @peer: (allow-none): the peer the certificate chain will be used with, or %NULL
  * @flags: chain completion flags
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError or %NULL
@@ -679,7 +679,7 @@ gcr_certificate_chain_get_certificate (GcrCertificateChain *self, guint index)
  * been stored for this peer. If %NULL then no pinned certificates will
  * be considered.
  *
- * If the %GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS flag is specified then no
+ * If the %GCR_CERTIFICATE_CHAIN_NO_LOOKUPS flag is specified then no
  * lookups for anchors or pinned certificates are done, and the resulting chain
  * will be neither anchored or pinned. Additionally no missing certificate
  * authorities are looked up in PKCS\#11
@@ -690,15 +690,18 @@ gcr_certificate_chain_get_certificate (GcrCertificateChain *self, guint index)
  * Returns: whether the operation completed successfully
  */
 gboolean
-gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
-                             const gchar *peer, guint flags,
-                             GCancellable *cancellable, GError **error)
+gcr_certificate_chain_build (GcrCertificateChain *self,
+                             const gchar *purpose,
+                             const gchar *peer,
+                             GcrCertificateChainFlags flags,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	GcrCertificateChainPrivate *pv;
 	gboolean ret;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE_CHAIN (self), FALSE);
-	g_return_val_if_fail (purpose, FALSE);
+	g_return_val_if_fail (purpose != NULL, FALSE);
 
 	pv = prep_chain_private (self->pv, purpose, peer, flags);
 
@@ -720,7 +723,7 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
  * gcr_certificate_chain_build_async:
  * @self: the #GcrCertificateChain
  * @purpose: the purpose the certificate chain will be used for
- * @peer: the peer the certificate chain will be used with, or NULL
+ * @peer: (allow-none): the peer the certificate chain will be used with, or %NULL
  * @flags: chain completion flags
  * @cancellable: a #GCancellable or %NULL
  * @callback: this will be called when the operation completes.
@@ -748,7 +751,7 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
  * been stored for this peer. If %NULL then no pinned certificates will
  * be considered.
  *
- * If the %GCR_CERTIFICATE_CHAIN_FLAG_NO_LOOKUPS flag is specified then no
+ * If the %GCR_CERTIFICATE_CHAIN_NO_LOOKUPS flag is specified then no
  * lookups for anchors or pinned certificates are done, and the resulting chain
  * will be neither anchored or pinned. Additionally no missing certificate
  * authorities are looked up in PKCS\#11
@@ -757,9 +760,12 @@ gcr_certificate_chain_build (GcrCertificateChain *self, const gchar *purpose,
  * gcr_certificate_chain_build_finish() to get the result of the operation.
  */
 void
-gcr_certificate_chain_build_async (GcrCertificateChain *self, const gchar *purpose,
-                                   const gchar *peer, guint flags,
-                                   GCancellable *cancellable, GAsyncReadyCallback callback,
+gcr_certificate_chain_build_async (GcrCertificateChain *self,
+                                   const gchar *purpose,
+                                   const gchar *peer,
+                                   GcrCertificateChainFlags flags,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
                                    gpointer user_data)
 {
 	GcrCertificateChainPrivate *pv;
