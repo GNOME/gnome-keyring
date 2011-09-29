@@ -43,7 +43,7 @@
 /**
  * GckAttribute:
  * @type: The attribute type, such as CKA_LABEL.
- * @value: The value of the attribute. May be NULL.
+ * @value: (array length=length): The value of the attribute. May be NULL.
  * @length: The length of the attribute. May be G_MAXULONG if the attribute is invalid.
  *
  * This structure represents a PKCS11 CK_ATTRIBUTE.

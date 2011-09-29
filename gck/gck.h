@@ -72,17 +72,21 @@ gchar*              gck_string_from_chars                   (const guchar *data,
 
 typedef gpointer    (*GckAllocator)                         (gpointer data, gsize length);
 
-typedef struct GckMechanism {
+typedef struct _GckMechanism GckMechanism;
+
+struct _GckMechanism {
 	gulong type;
 	gconstpointer parameter;
 	gulong n_parameter;
-} GckMechanism;
+};
 
-typedef struct GckAttribute {
+typedef struct _GckAttribute GckAttribute;
+
+struct _GckAttribute {
 	gulong type;
-	gconstpointer value;
+	guchar *value;
 	gulong length;
-} GckAttribute;
+};
 
 #define GCK_INVALID G_MAXULONG
 

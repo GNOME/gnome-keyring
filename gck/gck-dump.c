@@ -174,7 +174,7 @@ dump_attribute_value (GckAttribute *attr)
 	case CKA_G_SCHEMA:
 	case CKA_X_PURPOSE:
 	case CKA_X_PEER:
-		if (g_utf8_validate (attr->value, attr->length, NULL)) {
+		if (g_utf8_validate ((const gchar *)attr->value, attr->length, NULL)) {
 			int length = MIN (32, attr->length);
 			g_printerr ("%.*s%s", length, (gchar*)attr->value,
 			            length < attr->length ? "..." : "");
@@ -187,7 +187,7 @@ dump_attribute_value (GckAttribute *attr)
 	case CKA_G_CREATED:
 	case CKA_G_MODIFIED:
 		if (attr->length == sizeof (CK_DATE)) {
-			const CK_DATE* date = attr->value;
+			const CK_DATE* date = (const CK_DATE *)attr->value;
 			g_printerr ("%.4s-%.2s-%.2s", date->year, date->month, date->day);
 			return;
 		}
