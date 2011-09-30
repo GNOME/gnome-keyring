@@ -589,15 +589,15 @@ gboolean            gck_slot_has_flags                      (GckSlot *self,
 
 GckEnumerator*      gck_slots_enumerate_objects             (GList *slots,
                                                              GckAttributes *attrs,
-                                                             GckSessionOptions session_options);
+                                                             GckSessionOptions options);
 
 GckSession*         gck_slot_open_session                   (GckSlot *self,
-                                                             guint options,
+                                                             GckSessionOptions options,
                                                              GCancellable *cancellable,
                                                              GError **error);
 
 GckSession*         gck_slot_open_session_full              (GckSlot *self,
-                                                             guint options,
+                                                             GckSessionOptions options,
                                                              gulong pkcs11_flags,
                                                              gpointer app_data,
                                                              CK_NOTIFY notify,
@@ -605,13 +605,13 @@ GckSession*         gck_slot_open_session_full              (GckSlot *self,
                                                              GError **error);
 
 void                gck_slot_open_session_async             (GckSlot *self,
-                                                             guint options,
+                                                             GckSessionOptions options,
                                                              GCancellable *cancellable,
                                                              GAsyncReadyCallback callback,
                                                              gpointer user_data);
 
 void                gck_slot_open_session_full_async        (GckSlot *self,
-                                                             guint options,
+                                                             GckSessionOptions options,
                                                              gulong pkcs11_flags,
                                                              gpointer app_data,
                                                              CK_NOTIFY notify,
@@ -675,7 +675,7 @@ GType               gck_session_get_type                    (void) G_GNUC_CONST;
 
 GckSession *        gck_session_from_handle                 (GckSlot *slot,
                                                              gulong session_handle,
-                                                             guint options);
+                                                             GckSessionOptions options);
 
 GckModule*          gck_session_get_module                  (GckSession *self);
 
@@ -687,7 +687,7 @@ GckSessionInfo*     gck_session_get_info                    (GckSession *self);
 
 gulong              gck_session_get_state                   (GckSession *self);
 
-guint               gck_session_get_options                 (GckSession *self);
+GckSessionOptions   gck_session_get_options                 (GckSession *self);
 
 gboolean            gck_session_init_pin                    (GckSession *self,
                                                              const guchar *pin,

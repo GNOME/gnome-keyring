@@ -912,7 +912,7 @@ gck_slot_has_flags (GckSlot *self, gulong flags)
  * gck_slots_enumerate_objects:
  * @slots: (element-type Gck.Slot): a list of #GckSlot to enumerate objects on.
  * @attrs: Attributes that the objects must have, or empty for all objects.
- * @session_options: Options for opening a session.
+ * @options: options for opening a session
  *
  * Setup an enumerator for listing matching objects on the slots.
  *
@@ -921,7 +921,9 @@ gck_slot_has_flags (GckSlot *self, gulong flags)
  * Returns: (transfer full): a new enumerator
  **/
 GckEnumerator*
-gck_slots_enumerate_objects (GList *slots, GckAttributes *attrs, guint session_options)
+gck_slots_enumerate_objects (GList *slots,
+                             GckAttributes *attrs,
+                             GckSessionOptions options)
 {
 	GckUriData *uri_data;
 
@@ -930,7 +932,7 @@ gck_slots_enumerate_objects (GList *slots, GckAttributes *attrs, guint session_o
 	uri_data = gck_uri_data_new ();
 	uri_data->attributes = gck_attributes_ref (attrs);
 
-	return _gck_enumerator_new (slots, session_options, uri_data);
+	return _gck_enumerator_new (slots, options, uri_data);
 }
 
 

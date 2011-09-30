@@ -692,9 +692,9 @@ gck_object_get (GckObject *self, GCancellable *cancellable, GError **error, ...)
 /**
  * gck_object_get_full:
  * @self: The object to get attributes from.
- * @attr_types: The types of the attributes to get.
- * @n_attr_types: The number of attr_types
- * @cancellable: Optional cancellation object, or NULL.
+ * @attr_types: (array length=n_attr_types): the types of the attributes to get
+ * @n_attr_types: the number of attr_types
+ * @cancellable: optional cancellation object, or %NULL
  * @error: A location to store an error.
  *
  * Get the specified attributes from the object. This call may
@@ -742,9 +742,9 @@ gck_object_get_full (GckObject *self, gulong *attr_types, guint n_attr_types,
 /**
  * gck_object_get_async:
  * @self: The object to get attributes from.
- * @attr_types: The types of the attributes to get.
- * @n_attr_types: The number of attr_types
- * @cancellable: Optional cancellation object, or NULL.
+ * @attr_types: (array length=n_attr_types): the types of the attributes to get
+ * @n_attr_types: the number of attr_types
+ * @cancellable: optional cancellation object, or %NULL
  * @callback: A callback which is called when the operation completes.
  * @user_data: Data to be passed to the callback.
  *
