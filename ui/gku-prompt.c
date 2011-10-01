@@ -42,7 +42,7 @@
 #include <sys/wait.h>
 
 #ifdef _DEBUG
-#define DEBUG_PROMPT 1
+#define DEBUG_PROMPT 0
 #define DEBUG_STDERR 0
 #endif
 
