@@ -234,7 +234,7 @@ gcr_secret_exchange_new (const gchar *protocol)
 
 /**
  * gcr_secret_exchange_get_protocol:
- *
+ * @self: a #GcrSecretExchange object
  * Get the secret exchange protocol.
  *
  * Will return %NULL if no protocol was specified, and either

@@ -58,6 +58,7 @@ EXTRA_HFILES=
 # Header files to ignore when scanning. Use base file name, no paths
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES= \
+	gcr-callback-output-stream.h \
 	gcr-certificate-exporter.h \
 	gcr-certificate-basics-widget.h \
 	gcr-certificate-details-widget.h \
@@ -66,6 +67,7 @@ IGNORE_HFILES= \
 	gcr-display-scrolled.h \
 	gcr-display-view.h \
 	gcr-failure-renderer.h \
+	gcr-gnupg-importer.h \
 	gcr-gnupg-renderer.h \
 	gcr-icons.h \
 	gcr-import-dialog.h \
@@ -74,6 +76,7 @@ IGNORE_HFILES= \
 	gcr-marshal.h \
 	gcr-menu-button.h \
 	gcr-openpgp.h \
+	gcr-pkcs11-importer.h \
 	gcr-pkcs11-renderer.h \
 	gcr-record.h \
 	gcr-single-collection.h \

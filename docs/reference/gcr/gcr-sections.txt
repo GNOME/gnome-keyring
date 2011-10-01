@@ -107,24 +107,6 @@ GCR_TYPE_IMPORTER
 gcr_importer_get_type
 GCR_IMPORTER_GET_INTERFACE
 <SUBSECTION Private>
-GCR_GNUPG_IMPORTER
-GCR_GNUPG_IMPORTER_CLASS
-GCR_GNUPG_IMPORTER_GET_CLASS
-GCR_IS_GNUPG_IMPORTER
-GCR_IS_GNUPG_IMPORTER_CLASS
-GCR_IS_PKCS11_IMPORTER
-GCR_IS_PKCS11_IMPORTER_CLASS
-GCR_PKCS11_IMPORTER
-GCR_PKCS11_IMPORTER_CLASS
-GCR_PKCS11_IMPORTER_GET_CLASS
-GCR_TYPE_GNUPG_IMPORTER
-GCR_TYPE_PKCS11_IMPORTER
-GcrGnupgImporter
-GcrGnupgImporterClass
-GcrGnupgImporterPrivate
-GcrPkcs11Importer
-GcrPkcs11ImporterClass
-GcrPkcs11ImporterPrivate
 </SECTION>
 
 <SECTION>
@@ -574,9 +556,11 @@ GcrViewerWidgetPrivate
 <FILE>gcr-secret-exchange</FILE>
 GcrSecretExchange
 GcrSecretExchangeClass
+GCR_SECRET_EXCHANGE_PROTOCOL_1
 gcr_secret_exchange_new
 gcr_secret_exchange_begin
 gcr_secret_exchange_receive
+gcr_secret_exchange_get_protocol
 gcr_secret_exchange_get_secret
 gcr_secret_exchange_send
 <SUBSECTION Standard>
@@ -634,15 +618,6 @@ GcrMemoryIcon
 GcrMemoryIconClass
 GcrMemoryIconPrivate
 GcrOpensshPubCallback
-GCR_CALLBACK_OUTPUT_STREAM
-GCR_CALLBACK_OUTPUT_STREAM_CLASS
-GCR_CALLBACK_OUTPUT_STREAM_GET_CLASS
-GCR_IS_CALLBACK_OUTPUT_STREAM
-GCR_IS_CALLBACK_OUTPUT_STREAM_CLASS
-GCR_TYPE_CALLBACK_OUTPUT_STREAM
-GcrCallbackOutputFunc
-GcrCallbackOutputStream
-GcrCallbackOutputStreamClass
 GCR_TYPE_IMPORTER_PROMPT_BEHAVIOR
 gcr_importer_prompt_behavior_get_type
 </SECTION>
