@@ -82,6 +82,8 @@ EGG_SECURE_DECLARE (secret_exchange);
  * transport encryption is done with 128 bit AES.
  */
 
+#define SECRET_EXCHANGE_PROTOCOL_1_PREFIX "[" GCR_SECRET_EXCHANGE_PROTOCOL_1 "]\n"
+
 enum {
 	PROP_0,
 	PROP_PROTOCOL
@@ -289,6 +291,11 @@ gcr_secret_exchange_begin (GcrSecretExchange *self)
 
 	result = g_key_file_to_data (output, NULL, NULL);
 	g_return_val_if_fail (result != NULL, NULL);
+
+	g_strchomp (result);
+
+	if (g_str_has_prefix (result, SECRET_EXCHANGE_PROTOCOL_1_PREFIX))
+		g_warning ("the prepared data does not have the correct protocol prefix");
 
 	g_key_file_free (output);
 
@@ -531,6 +538,12 @@ gcr_secret_exchange_send (GcrSecretExchange *self,
 
 	result = g_key_file_to_data (output, NULL, NULL);
 	g_return_val_if_fail (result != NULL, NULL);
+
+	g_strchomp (result);
+
+	if (g_str_has_prefix (result, SECRET_EXCHANGE_PROTOCOL_1_PREFIX))
+		g_warning ("the prepared data does not have the correct protocol prefix");
+
 	g_key_file_free (output);
 	return result;
 }
