@@ -80,6 +80,9 @@ run-tests
 /junk
 /TODO.tasks
 
+/docs/*/html/
+/docs/gnome-keyring-daemon/prompter.xml
+
 /egg/tests/test-asn1
 /egg/tests/test-cleanup
 /egg/tests/test-decimal

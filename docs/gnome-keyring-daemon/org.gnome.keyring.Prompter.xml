@@ -1,0 +1,103 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<tp:spec xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
+	<tp:title>Gnome Keyring Prompt API</tp:title>
+	<tp:version>0.1 UNSTABLE</tp:version>
+	<tp:copyright>Copyright (C) 2011 Collabora Ltd.</tp:copyright>
+
+	<node name="/org/gnome/keyring/Prompter">
+
+		<interface name="org.gnome.keyring.Prompter1">
+			<tp:docstring>
+				A service which handles password prompting for Gnome Keyring.
+			</tp:docstring>
+
+			<method name="DisplayPrompt">
+				<tp:docstring>
+					Gnome Keyring will call this method to display a prompt.
+				</tp:docstring>
+				<arg name="description" type="s" direction="in">
+					<tp:docstring>
+						User readable description of what the password is needed for.
+					</tp:docstring>
+				</arg>
+				<arg name="details" type="a{sv}" direction="in">
+					<tp:docstring>
+						<para>Additional arguments to affect display of prompt. If
+						one or more of these arguments are not understood then the prompt
+						is free to ignore them.</para>
+						<para>warning: An 's' string value containing a
+						warning message, for example that the previously tried password
+						was invalid.</para>
+						<para>choice-label: An 's' string value which requests
+						that the prompt display an additional checkbox choice, allowing the
+						user to check this option.</para>
+						<para>choice-default: A 'b' boolean value which
+						controls whether the above choice is selected by default.</para>
+					</tp:docstring>
+				</arg>
+				<arg name="exchange" type="s" direction="in">
+					<tp:docstring>
+						Input string paramaters for exchange of the password.
+						Use with GcrSecretExchange.
+					</tp:docstring>
+				</arg>
+				<arg name="identifier" type="s" direction="out">
+					<tp:docstring>
+						A unique identifier for the prompt displayed.
+					</tp:docstring>
+				</arg>
+			</method>
+
+			<method name="CancelPrompt">
+				<tp:docstring>
+					Cancel an already displayed prompt. The PromptComplete signal
+					will be fired.
+				</tp:docstring>
+				<arg name="identifier" type="s" direction="in">
+					<tp:docstring>
+						The identifier returned from DisplayPrompt().
+					</tp:docstring>
+				</arg>
+			</method>
+
+			<signal name="PromptComplete">
+				<tp:docstring>
+					This signal is emitted when a prompt is completed
+					or cancelled.
+				</tp:docstring>
+				<arg name="identifier" type="s">
+					<tp:docstring>
+						The identifier for the prompt as returned from
+						DisplayPrompt().
+					</tp:docstring>
+				</arg>
+				<arg name="proceed" type="b">
+					<tp:docstring>
+						When set to True indicates that the prompt was not
+						cancelled and the dependent operation should proceed.
+					</tp:docstring>
+				</arg>
+				<arg name="details" type="a{sv}" direction="in">
+					<tp:docstring>
+						<para>Additional details from prompt, empty if prompt was
+						cancelled.</para>
+						<para>choice-selected: A 'b' boolean value which
+						represents whether the checkbox choice was selected. See
+						DisplayPrompt() for more details.</para>
+					</tp:docstring>
+				</arg>
+				<arg name="exchange" type="s">
+					<tp:docstring>
+						Password exchange response. Empty string if prompt was cancelled.
+						See GcrSecretExchange documentation.
+					</tp:docstring>
+				</arg>
+			</signal>
+
+		</interface>
+
+	</node>
+
+</tp:spec>

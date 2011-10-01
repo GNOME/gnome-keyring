@@ -713,6 +713,7 @@ daemon/gpg-agent/Makefile
 daemon/login/Makefile
 daemon/ssh-agent/Makefile
 docs/Makefile
+docs/gnome-keyring-daemon/Makefile
 egg/Makefile
 egg/tests/Makefile
 pam/Makefile

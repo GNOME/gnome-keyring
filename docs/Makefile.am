@@ -2,4 +2,7 @@
 EXTRA_DIST = \
 	file-format.txt \
 	keyring-intro.txt \
-	gnome-keyring.svg
+	gnome-keyring.svg \
+	tools
+
+SUBDIRS = gnome-keyring-daemon
