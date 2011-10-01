@@ -24,11 +24,13 @@
 #ifndef __GCR_SECRET_EXCHANGE_H__
 #define __GCR_SECRET_EXCHANGE_H__
 
-#include "gcr.h"
+#include "gcr-base.h"
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
+
+#define GCR_SECRET_EXCHANGE_PROTOCOL_1 "sx-aes-1"
 
 #define GCR_TYPE_SECRET_EXCHANGE               (gcr_secret_exchange_get_type ())
 #define GCR_SECRET_EXCHANGE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_SECRET_EXCHANGE, GcrSecretExchange))
@@ -50,13 +52,45 @@ struct _GcrSecretExchange {
 struct _GcrSecretExchangeClass {
 	/*< private >*/
 	GObjectClass parent_class;
+
+	/* virtual methods, not used publicly */
+	gboolean        (*generate_exchange_key)   (GcrSecretExchange *exchange,
+	                                            const gchar *scheme,
+	                                            guchar **public_key,
+	                                            gsize *n_public_key);
+
+	gboolean        (*derive_transport_key)    (GcrSecretExchange *exchange,
+	                                            const guchar *peer,
+	                                            gsize n_peer);
+
+	gboolean        (*encrypt_transport_data)  (GcrSecretExchange *exchange,
+	                                            GckAllocator allocator,
+	                                            const guchar *plain_text,
+	                                            gsize n_plain_text,
+	                                            guchar **parameter,
+	                                            gsize *n_parameter,
+	                                            guchar **cipher_text,
+	                                            gsize *n_cipher_text);
+
+	gboolean        (*decrypt_transport_data)  (GcrSecretExchange *exchange,
+	                                            GckAllocator allocator,
+	                                            const guchar *cipher_text,
+	                                            gsize n_cipher_text,
+	                                            const guchar *parameter,
+	                                            gsize n_parameter,
+	                                            guchar **plain_text,
+	                                            gsize *n_plain_text);
+
+	gpointer dummy[6];
 };
 
 /* Caller side functions */
 
 GType               gcr_secret_exchange_get_type        (void);
 
-GcrSecretExchange * gcr_secret_exchange_new             (void);
+GcrSecretExchange * gcr_secret_exchange_new             (const gchar *protocol);
+
+const gchar *       gcr_secret_exchange_get_protocol    (GcrSecretExchange *self);
 
 gchar *             gcr_secret_exchange_begin           (GcrSecretExchange *self);
 

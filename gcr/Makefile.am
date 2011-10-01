@@ -184,7 +184,6 @@ libgcr_@GCR_MAJOR@_la_LDFLAGS = \
 
 libgcr_base_@GCR_MAJOR@_la_LIBADD = \
 	$(top_builddir)/egg/libegg.la \
-	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS) \
@@ -194,6 +193,7 @@ libgcr_base_@GCR_MAJOR@_la_LIBADD = \
 libgcr_@GCR_MAJOR@_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(libgcr_base_@GCR_MAJOR@_la_LIBADD) \
+	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(builddir)/libgcr-base-$(GCR_MAJOR).la
 
 noinst_LTLIBRARIES = libgcr-testable.la

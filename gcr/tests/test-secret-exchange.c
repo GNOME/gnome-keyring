@@ -36,9 +36,9 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	test->caller = gcr_secret_exchange_new ();
+	test->caller = gcr_secret_exchange_new (NULL);
 	g_assert (GCR_IS_SECRET_EXCHANGE (test->caller));
-	test->callee = gcr_secret_exchange_new ();
+	test->callee = gcr_secret_exchange_new (NULL);
 	g_assert (GCR_IS_SECRET_EXCHANGE (test->callee));
 }
 
