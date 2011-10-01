@@ -52,7 +52,7 @@ gcr_data_error_get_domain
 gcr_data_error_get_type
 gcr_data_format_get_type
 gcr_error_get_domain
-gcr_icon_for_token_info
+gcr_icon_for_token
 gcr_importer_create_for_parsed
 gcr_importer_get_parser
 gcr_importer_get_prompt_behavior

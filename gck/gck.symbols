@@ -10,6 +10,7 @@ gck_attribute_free
 gck_attribute_get_boolean
 gck_attribute_get_date
 gck_attribute_get_string
+gck_attribute_get_type
 gck_attribute_get_ulong
 gck_attribute_init
 gck_attribute_init_boolean
@@ -46,6 +47,7 @@ gck_attributes_find_date
 gck_attributes_find_string
 gck_attributes_find_ulong
 gck_attributes_get_boxed_type
+gck_attributes_get_type
 gck_attributes_new
 gck_attributes_new_empty
 gck_attributes_new_full
@@ -56,11 +58,15 @@ gck_enumerator_next
 gck_enumerator_next_async
 gck_enumerator_next_finish
 gck_enumerator_next_n
+gck_error_get_quark
+gck_error_get_type
 gck_get_error_quark
 gck_list_ref_copy
 gck_list_unref_free
 gck_list_get_boxed_type
+gck_mechanism_info_copy
 gck_mechanism_info_free
+gck_mechanism_info_get_type
 gck_mechanisms_check
 gck_message_from_rv
 gck_module_equal
@@ -70,7 +76,9 @@ gck_module_get_path
 gck_module_get_slots
 gck_module_get_type
 gck_module_hash
+gck_module_info_copy
 gck_module_info_free
+gck_module_info_get_type
 gck_module_initialize
 gck_module_initialize_async
 gck_module_initialize_finish
@@ -144,7 +152,9 @@ gck_session_get_options
 gck_session_get_slot
 gck_session_get_state
 gck_session_get_type
+gck_session_info_copy
 gck_session_info_free
+gck_session_info_get_type
 gck_session_init_pin
 gck_session_init_pin_async
 gck_session_init_pin_finish
@@ -154,6 +164,7 @@ gck_session_login_finish
 gck_session_logout
 gck_session_logout_async
 gck_session_logout_finish
+gck_session_options_get_type
 gck_session_set_pin
 gck_session_set_pin_async
 gck_session_set_pin_finish
@@ -184,7 +195,9 @@ gck_slot_get_token_info
 gck_slot_get_type
 gck_slot_has_flags
 gck_slot_hash
+gck_slot_info_copy
 gck_slot_info_free
+gck_slot_info_get_type
 gck_slot_match
 gck_slot_open_session
 gck_slot_open_session_async
@@ -194,10 +207,17 @@ gck_slot_open_session_full_async
 gck_slots_enumerate_objects
 gck_string_from_chars
 gck_string_to_chars
+gck_token_info_copy
 gck_token_info_free
+gck_token_info_get_type
 gck_uri_build
+gck_uri_data_copy
 gck_uri_data_free
+gck_uri_data_get_type
 gck_uri_data_new
+gck_uri_error_get_quark
+gck_uri_error_get_type
+gck_uri_flags_get_type
 gck_uri_get_error_quark
 gck_uri_parse
 gck_value_to_boolean
