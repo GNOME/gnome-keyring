@@ -522,7 +522,7 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	gobject_class->get_property = gcr_certificate_renderer_get_property;
 
 	/**
-	 * GcrCertificateRenderer:certificate: (allow-none)
+	 * GcrCertificateRenderer:certificate:
 	 *
 	 * The certificate to display. May be %NULL.
 	 */
@@ -541,7 +541,7 @@ gcr_certificate_renderer_class_init (GcrCertificateRendererClass *klass)
 	                               GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE));
 
 	/**
-	 * GcrCertificateRenderer:label: (allow-none)
+	 * GcrCertificateRenderer:label:
 	 *
 	 * The label to display.
 	 */

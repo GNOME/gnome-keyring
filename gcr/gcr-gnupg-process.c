@@ -226,7 +226,7 @@ _gcr_gnupg_process_class_init (GcrGnupgProcessClass *klass)
 	gobject_class->finalize = _gcr_gnupg_process_finalize;
 
 	/**
-	 * GcrGnupgProcess:directory: (allow-none)
+	 * GcrGnupgProcess:directory:
 	 *
 	 * Directory to run as gnupg home directory, or %NULL for default
 	 * ~/.gnupg/ directory.
@@ -236,7 +236,7 @@ _gcr_gnupg_process_class_init (GcrGnupgProcessClass *klass)
 	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * GcrGnupgProcess:executable: (allow-none)
+	 * GcrGnupgProcess:executable:
 	 *
 	 * Path to the gnupg executable, or %NULL for default.
 	 */
@@ -245,7 +245,7 @@ _gcr_gnupg_process_class_init (GcrGnupgProcessClass *klass)
 	                                GPG_EXECUTABLE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * GcrGnupgProcess:input-stream: (allow-none)
+	 * GcrGnupgProcess:input-stream:
 	 *
 	 * Input for gnupg, or %NULL for no input.
 	 */
@@ -254,7 +254,7 @@ _gcr_gnupg_process_class_init (GcrGnupgProcessClass *klass)
 	                                G_TYPE_INPUT_STREAM, G_PARAM_READWRITE));
 
 	/**
-	 * GcrGnupgProcess:output-stream: (allow-none)
+	 * GcrGnupgProcess:output-stream:
 	 *
 	 * Output from gnupg, or %NULL for ignored output.
 	 */
@@ -263,7 +263,7 @@ _gcr_gnupg_process_class_init (GcrGnupgProcessClass *klass)
 	                                G_TYPE_OUTPUT_STREAM, G_PARAM_READWRITE));
 
 	/**
-	 * GcrGnupgProcess:attribute-stream: (allow-none)
+	 * GcrGnupgProcess:attribute-stream:
 	 *
 	 * Output of attribute data from gnupg, or %NULL for ignored attributes.
 	 */

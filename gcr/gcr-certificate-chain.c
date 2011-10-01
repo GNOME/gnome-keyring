@@ -498,6 +498,7 @@ gcr_certificate_chain_class_init (GcrCertificateChainClass *klass)
 
 /**
  * GcrCertificateChainFlags:
+ * @GCR_CERTIFICATE_CHAIN_NONE: no flags
  * @GCR_CERTIFICATE_CHAIN_NO_LOOKUPS: If this flag is specified then no
  * lookups for anchors or pinned certificates are done, and the resulting chain
  * will be neither anchored or pinned. Additionally no missing certificate
