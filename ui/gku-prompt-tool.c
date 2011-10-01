@@ -22,8 +22,6 @@
 
 #include "config.h"
 
-#include "gku-prompt-util.h"
-
 #include "egg/egg-dh.h"
 #include "egg/egg-entry-buffer.h"
 #include "egg/egg-error.h"
@@ -33,8 +31,6 @@
 #include "egg/egg-secure-memory.h"
 
 #include "gcr/gcr.h"
-
-#include <gcrypt.h>
 
 #include <glib/gi18n.h>
 
@@ -56,8 +52,7 @@ static GdkDevice *grabbed_device = NULL;
 static gulong grab_broken_id = 0;
 
 /* An encryption key for returning passwords */
-static gpointer the_key = NULL;
-static gsize n_the_key = 0;
+static GcrSecretExchange *the_exchange = NULL;
 
 #define LOG_ERRORS 1
 #define GRAB_KEYBOARD 1
@@ -682,59 +677,6 @@ validate_dialog (GtkBuilder *builder, GtkDialog *dialog, gint response)
 }
 
 /**
-* Negotiates crypto between the calling programm and the prompt
-*
-* Reads data from the transport section of input_data and sends the public key back
-* in the transport section of the output_data.
-*
-* Returns TRUE on success
-**/
-static gboolean
-negotiate_transport_crypto (void)
-{
-	gcry_mpi_t base, prime, peer;
-	gcry_mpi_t key, pub, priv;
-	gboolean ret = FALSE;
-	gpointer ikm;
-	gsize n_ikm;
-
-	g_assert (!the_key);
-	base = prime = peer = NULL;
-	key = pub = priv = NULL;
-
-	/* The DH stuff coming in from our caller */
-	if (gku_prompt_util_decode_mpi (input_data, "transport", "prime", &prime) &&
-	    gku_prompt_util_decode_mpi (input_data, "transport", "base", &base) &&
-	    gku_prompt_util_decode_mpi (input_data, "transport", "public", &peer)) {
-
-		/* Generate our own public/priv, and then a key, send it back */
-		if (egg_dh_gen_pair (prime, base, 0, &pub, &priv)) {
-
-			gku_prompt_util_encode_mpi (output_data, "transport", "public", pub);
-
-			/* Build up a key we can use */
-			ikm = egg_dh_gen_secret (peer, priv, prime, &n_ikm);
-			if (ikm != NULL) {
-				n_the_key = 16;
-				the_key = egg_secure_alloc (n_the_key);
-				if (!egg_hkdf_perform ("sha256", ikm, n_ikm, NULL, 0, NULL, 0, the_key, n_the_key))
-					g_return_val_if_reached (FALSE);
-				ret = TRUE;
-			}
-		}
-	}
-
-	gcry_mpi_release (base);
-	gcry_mpi_release (prime);
-	gcry_mpi_release (peer);
-	gcry_mpi_release (key);
-	gcry_mpi_release (pub);
-	gcry_mpi_release (priv);
-
-	return ret;
-}
-
-/**
 * builder: The GTKBuilder
 * password_type: password type description
 *
@@ -746,9 +688,6 @@ static void
 gather_password (GtkBuilder *builder, const gchar *password_type)
 {
 	GtkEntry *entry;
-	gchar iv[16];
-	gpointer data;
-	gsize n_data;
 	gchar *name;
 	const gchar *text;
 	gchar *value;
@@ -764,27 +703,30 @@ gather_password (GtkBuilder *builder, const gchar *password_type)
 	/* A non-encrypted password: just send the value back */
 	if (!g_key_file_has_group (input_data, "transport")) {
 		text = gtk_entry_get_text (entry);
-		value = egg_hex_encode ((const guchar*)text, strlen (text));
-		g_key_file_set_string (output_data, password_type, "parameter", "");
-		g_key_file_set_string (output_data, password_type, "value", value);
+		g_key_file_set_boolean (output_data, password_type, "encrypted", FALSE);
+		g_key_file_set_string (output_data, password_type, "value", text);
+		return;
+	}
+
+	if (the_exchange == NULL) {
+		GcrSecretExchange *exchange = gcr_secret_exchange_new (NULL);
+
+		value = g_key_file_get_string (input_data, "transport", "exchange", NULL);
+		if (!value || !gcr_secret_exchange_receive (exchange, value)) {
+			g_warning ("couldn't negotiate transport crypto for password");
+			g_object_unref (exchange);
+			g_free (value);
+			return;
+		}
+
 		g_free (value);
-		return;
+		the_exchange = exchange;
 	}
 
-	if (!the_key && !negotiate_transport_crypto ()) {
-		g_warning ("couldn't negotiate transport crypto for password");
-		return;
-	}
-
-	gcry_create_nonce (iv, sizeof (iv));
-	data = gku_prompt_util_encrypt_text (the_key, n_the_key, iv, sizeof (iv),
-	                                     gtk_entry_get_text (entry), &n_data);
-	g_return_if_fail (data);
-
-	gku_prompt_util_encode_hex (output_data, password_type, "parameter", iv, sizeof (iv));
-	gku_prompt_util_encode_hex (output_data, password_type, "value", data, n_data);
-
-	g_free (data);
+	g_key_file_set_boolean (output_data, password_type, "encrypted", TRUE);
+	value = gcr_secret_exchange_send (the_exchange, gtk_entry_get_text (entry), -1);
+	g_key_file_set_string (output_data, password_type, "value", value);
+	g_free (value);
 }
 
 /**
@@ -1214,8 +1156,6 @@ main (int argc, char *argv[])
 
 	prepare_logging ();
 
-	egg_libgcrypt_initialize ();
-
 	input_data = g_key_file_new ();
 	output_data = g_key_file_new ();
 
@@ -1246,14 +1186,6 @@ main (int argc, char *argv[])
 
 	run_dialog ();
 
-	/* Cleanup after any key */
-	if (the_key) {
-		egg_secure_clear (the_key, n_the_key);
-		egg_secure_free (the_key);
-		the_key = NULL;
-		n_the_key = 0;
-	}
-
 	g_key_file_free (input_data);
 	data = g_key_file_to_data (output_data, &length, &err);
 	g_key_file_free (output_data);
@@ -1262,6 +1194,8 @@ main (int argc, char *argv[])
 		fatal ("couldn't format auth dialog response: %s", egg_error_message (err));
 
 	write_all_output (data, length);
+
+	g_clear_object (&the_exchange);
 	g_free (data);
 
 	return 0;

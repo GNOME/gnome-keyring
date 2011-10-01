@@ -15,7 +15,7 @@ BUILT_SOURCES = \
 	asn1-def-pk.c asn1-def-pkix.c
 
 INCLUDES = \
-	-I$(top_srcdir) 
+	-I$(top_srcdir) \
 	-I$(top_builddir) 
 
 libegg_la_CFLAGS = \

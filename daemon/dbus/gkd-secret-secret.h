@@ -40,6 +40,12 @@ struct _GkdSecretSecret {
 	gpointer destroy_data;
 };
 
+GkdSecretSecret *      gkd_secret_secret_new                      (GkdSecretSession *session,
+                                                                   gconstpointer parameter,
+                                                                   gsize n_parameter,
+                                                                   gconstpointer value,
+                                                                   gsize n_value);
+
 GkdSecretSecret*       gkd_secret_secret_new_take_memory          (GkdSecretSession *session,
                                                                    gpointer parameter,
                                                                    gsize n_parameter,

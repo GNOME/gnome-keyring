@@ -32,6 +32,20 @@
 
 #include <string.h>
 
+GkdSecretSecret *
+gkd_secret_secret_new (GkdSecretSession *session,
+                       gconstpointer parameter,
+                       gsize n_parameter,
+                       gconstpointer value,
+                       gsize n_value)
+{
+	return gkd_secret_secret_new_take_memory (session,
+	                                          g_memdup (parameter, n_parameter),
+	                                          n_parameter,
+	                                          g_memdup (value, n_value),
+	                                          n_value);
+}
+
 static void
 destroy_with_owned_memory (gpointer data)
 {

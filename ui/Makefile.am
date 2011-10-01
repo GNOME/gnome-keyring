@@ -4,6 +4,7 @@ SUBDIRS = . tests
 INCLUDES= \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DPROMPTEXEC=\""$(libexecdir)/gnome-keyring-prompt-@GCR_MAJOR@"\" \
+	-DGCR_API_SUBJECT_TO_CHANGE \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(GOBJECT_CFLAGS) \
@@ -28,10 +29,10 @@ BUILT_SOURCES = \
 
 libgku_prompt_la_SOURCES = \
 	gku-prompt.c gku-prompt.h \
-	gku-prompt-util.c gku-prompt-util.h \
 	$(BUILT_SOURCES)
 
 libgku_prompt_la_LIBADD = \
+	$(top_builddir)/gcr/libgcr-base-@GCR_MAJOR@.la \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 
@@ -57,12 +58,11 @@ libexec_PROGRAMS= \
 	gnome-keyring-prompt-@GCR_MAJOR@
 
 gnome_keyring_prompt_@GCR_MAJOR@_SOURCES = \
-	gku-prompt-tool.c \
-	gku-prompt-util.c gku-prompt-util.h
+	gku-prompt-tool.c
 
 gnome_keyring_prompt_@GCR_MAJOR@_LDADD = \
-	$(top_builddir)/egg/libegg-prompt.la \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
+	$(top_builddir)/egg/libegg-prompt.la \
 	$(top_builddir)/gcr/libgcr-@GCR_MAJOR@.la \
 	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
 	$(LIBGCRYPT_LIBS) \

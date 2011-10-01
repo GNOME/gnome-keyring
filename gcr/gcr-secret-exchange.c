@@ -296,8 +296,8 @@ gcr_secret_exchange_begin (GcrSecretExchange *self)
 }
 
 static gboolean
-calculate_key (GcrSecretExchange *self,
-               GKeyFile *input)
+derive_key (GcrSecretExchange *self,
+            GKeyFile *input)
 {
 	GcrSecretExchangeClass *klass;
 	gboolean ret;
@@ -408,8 +408,10 @@ gcr_secret_exchange_receive (GcrSecretExchange *self,
 		self->pv->generated = TRUE;
 	}
 
-	if (!calculate_key (self, input))
-		return FALSE;
+	if (!self->pv->derived) {
+		if (!derive_key (self, input))
+			return FALSE;
+	}
 
 	ret = TRUE;
 

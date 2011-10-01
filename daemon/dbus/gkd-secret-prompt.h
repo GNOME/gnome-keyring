@@ -67,8 +67,6 @@ GkdSecretService*   gkd_secret_prompt_get_service             (GkdSecretPrompt *
 
 GkdSecretObjects*   gkd_secret_prompt_get_objects             (GkdSecretPrompt *self);
 
-GkdSecretSession*   gkd_secret_prompt_get_session             (GkdSecretPrompt *self);
-
 GkdSecretSecret*    gkd_secret_prompt_get_secret              (GkdSecretPrompt *self,
                                                                const gchar *password_type);
 

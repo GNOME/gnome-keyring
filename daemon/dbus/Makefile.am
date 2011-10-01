@@ -6,7 +6,8 @@ INCLUDES = \
 	$(DAEMON_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	-DGCK_API_SUBJECT_TO_CHANGE
+	-DGCK_API_SUBJECT_TO_CHANGE \
+	-DGCR_API_SUBJECT_TO_CHANGE
 
 noinst_LTLIBRARIES = libgkd-dbus.la
 
@@ -21,6 +22,7 @@ libgkd_dbus_la_SOURCES = \
 	gkd-secret-create.c gkd-secret-create.h \
 	gkd-secret-dispatch.c gkd-secret-dispatch.h \
 	gkd-secret-error.c gkd-secret-error.h \
+	gkd-secret-exchange.c gkd-secret-exchange.h \
 	gkd-secret-introspect.c gkd-secret-introspect.h \
 	gkd-secret-lock.c gkd-secret-lock.h \
 	gkd-secret-objects.c gkd-secret-objects.h \

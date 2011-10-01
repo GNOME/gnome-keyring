@@ -91,24 +91,8 @@ gboolean            gku_prompt_has_response           (GkuPrompt *prompt);
 
 gint                gku_prompt_get_response           (GkuPrompt *prompt);
 
-gchar*              gku_prompt_get_password           (GkuPrompt *prompt,
+gchar *             gku_prompt_get_password           (GkuPrompt *prompt,
                                                        const gchar *password_type);
-
-gpointer            gku_prompt_get_transport_param    (GkuPrompt *prompt,
-                                                       const gchar *name,
-                                                       gsize *n_value);
-
-void                gku_prompt_set_transport_param    (GkuPrompt *prompt,
-                                                       const gchar *name,
-                                                       gconstpointer value,
-                                                       gsize n_value);
-
-gboolean            gku_prompt_get_transport_password (GkuPrompt *self,
-                                                       const gchar *password_type,
-                                                       gpointer *parameter,
-                                                       gsize *n_parameter,
-                                                       gpointer *value,
-                                                       gsize *n_value);
 
 const gchar*        gku_prompt_get_unlock_choice      (GkuPrompt *self);
 

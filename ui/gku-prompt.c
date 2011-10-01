@@ -23,7 +23,6 @@
 
 #include "gku-prompt.h"
 #include "gku-prompt-marshal.h"
-#include "gku-prompt-util.h"
 
 #include "egg/egg-cleanup.h"
 #include "egg/egg-dh.h"
@@ -34,7 +33,7 @@
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-spawn.h"
 
-#include "gcr/gcr-unlock-options.h"
+#include "gcr/gcr-base.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -43,9 +42,14 @@
 #include <sys/wait.h>
 
 #ifdef _DEBUG
-#define DEBUG_PROMPT 0
+#define DEBUG_PROMPT 1
 #define DEBUG_STDERR 0
 #endif
+
+enum {
+	PROP_0,
+	PROP_EXCHANGE
+};
 
 enum {
 	RESPONDED,
@@ -55,13 +59,6 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-typedef struct _TransportCrypto {
-	gcry_mpi_t private;
-	gcry_mpi_t prime;
-	gpointer key;
-	gsize n_key;
-} TransportCrypto;
-
 struct _GkuPromptPrivate {
 	GKeyFile *input;
 	GKeyFile *output;
@@ -70,7 +67,7 @@ struct _GkuPromptPrivate {
 	gboolean failure;
 
 	/* Transport crypto */
-	TransportCrypto *transport;
+	GcrSecretExchange *exchange;
 
 	/* Information about child */
 	GPid pid;
@@ -302,76 +299,15 @@ on_child_exited (GPid pid, gint status, gpointer user_data)
 static void
 prepare_transport_crypto (GkuPrompt *self)
 {
-	TransportCrypto *transport;
-	gcry_mpi_t pub, base;
+	gchar *request;
 
-	if (!g_key_file_has_group (self->pv->input, "transport")) {
-		g_assert (!self->pv->transport);
-		transport = g_slice_new0 (TransportCrypto);
-
-		/* Figure out our prime, base, public and secret bits */
-		if (!egg_dh_default_params ("ietf-ike-grp-modp-1536", &transport->prime, &base) ||
-		    !egg_dh_gen_pair (transport->prime, base, 0, &pub, &transport->private))
-			g_return_if_reached ();
-
-		/* Send over the prime, base, and public bits */
-		gku_prompt_util_encode_mpi (self->pv->input, "transport", "prime", transport->prime);
-		gku_prompt_util_encode_mpi (self->pv->input, "transport", "base", base);
-		gku_prompt_util_encode_mpi (self->pv->input, "transport", "public", pub);
-
-		gcry_mpi_release (base);
-		gcry_mpi_release (pub);
-
-		self->pv->transport = transport;
+	if (!g_key_file_has_group (self->pv->input, "exchange")) {
+		if (self->pv->exchange == NULL)
+			self->pv->exchange = gcr_secret_exchange_new (NULL);
+		request = gcr_secret_exchange_begin (self->pv->exchange);
+		g_key_file_set_string (self->pv->input, "transport", "exchange", request);
+		g_free (request);
 	}
-
-	if (self->pv->transport) {
-		egg_secure_free (self->pv->transport->key);
-		self->pv->transport->key = NULL;
-		self->pv->transport->n_key = 0;
-	}
-}
-
-static gconstpointer
-calculate_transport_key (GkuPrompt *self, gsize *n_key)
-{
-	gcry_mpi_t peer;
-	gpointer ikm, key;
-	gsize n_ikm;
-
-	g_assert (self->pv->output);
-	g_assert (n_key);
-
-	if (!self->pv->transport) {
-		g_warning ("GkuPrompt did not negotiate crypto, but its caller is now asking"
-		           " it to do the decryption. This is an error in gnome-keyring");
-		return NULL;
-	}
-
-	if (!self->pv->transport->key) {
-		if (!gku_prompt_util_decode_mpi (self->pv->output, "transport", "public", &peer))
-			return NULL;
-
-		ikm = egg_dh_gen_secret (peer, self->pv->transport->private,
-		                         self->pv->transport->prime, &n_ikm);
-
-		gcry_mpi_release (peer);
-
-		if (!ikm)
-			return NULL;
-
-		key = egg_secure_alloc (16);
-		if (!egg_hkdf_perform ("sha256", ikm, n_ikm, NULL, 0, NULL, 0, key, 16))
-			g_return_val_if_reached (NULL);
-
-		egg_secure_free (ikm);
-		egg_secure_free (self->pv->transport->key);
-		self->pv->transport->key = key;
-		self->pv->transport->n_key = 16;
-	}
-
-	*n_key = self->pv->transport->n_key;
-	return self->pv->transport->key;
 }
 
 static gboolean
@@ -501,8 +437,6 @@ display_dummy_prompt (GkuPrompt *self, const gchar *response)
 static void
 clear_prompt_data (GkuPrompt *self)
 {
-	TransportCrypto *transport;
-
 	if (self->pv->input)
 		g_key_file_free (self->pv->input);
 	self->pv->input = NULL;
@@ -530,20 +464,6 @@ clear_prompt_data (GkuPrompt *self)
 	if (self->pv->io_tag)
 		g_source_remove (self->pv->io_tag);
 	self->pv->io_tag = 0;
-
-	if (self->pv->transport) {
-		transport = self->pv->transport;
-		if (transport->prime)
-			gcry_mpi_release (transport->prime);
-		if (transport->private)
-			gcry_mpi_release (transport->private);
-		if (transport->key) {
-			egg_secure_clear (transport->key, transport->n_key);
-			egg_secure_free (transport->key);
-		}
-		g_slice_free (TransportCrypto, transport);
-		self->pv->transport = NULL;
-	}
 }
 
 /* -----------------------------------------------------------------------------
@@ -563,16 +483,15 @@ gku_prompt_real_completed (GkuPrompt *self)
 	/* Nothing to do */
 }
 
-static GObject*
-gku_prompt_constructor (GType type, guint n_props, GObjectConstructParam *props)
+static void
+gku_prompt_constructed (GObject *obj)
 {
-	GkuPrompt *self = GKU_PROMPT (G_OBJECT_CLASS (gku_prompt_parent_class)->constructor(type, n_props, props));
-	g_return_val_if_fail (self, NULL);
+	GkuPrompt *self = GKU_PROMPT (obj);
+
+	G_OBJECT_CLASS (gku_prompt_parent_class)->constructed (obj);
 
 	if (!self->pv->executable)
 		self->pv->executable = g_strdup (PROMPTEXEC);
-
-	return G_OBJECT (self);
 }
 
 static void
@@ -583,12 +502,51 @@ gku_prompt_init (GkuPrompt *self)
 }
 
 static void
+gku_prompt_set_property (GObject *obj,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+	GkuPrompt *self = GKU_PROMPT (obj);
+
+	switch (prop_id) {
+	case PROP_EXCHANGE:
+		g_return_if_fail (self->pv->exchange == NULL);
+		self->pv->exchange = g_value_dup_object (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gku_prompt_get_property (GObject *obj,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+	GkuPrompt *self = GKU_PROMPT (obj);
+
+	switch (prop_id) {
+	case PROP_EXCHANGE:
+		g_value_set_object (value, self->pv->exchange);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
 gku_prompt_dispose (GObject *obj)
 {
 	GkuPrompt *self = GKU_PROMPT (obj);
 
 	kill_process (self);
 	clear_prompt_data (self);
+
+	g_clear_object (&self->pv->exchange);
 
 	G_OBJECT_CLASS (gku_prompt_parent_class)->dispose (obj);
 }
@@ -605,7 +563,7 @@ gku_prompt_finalize (GObject *obj)
 	g_assert (!self->pv->out_data);
 	g_assert (!self->pv->err_data);
 	g_assert (!self->pv->io_tag);
-	g_assert (!self->pv->transport);
+	g_assert (!self->pv->exchange);
 
 	g_free (self->pv->executable);
 	self->pv->executable = NULL;
@@ -618,7 +576,9 @@ gku_prompt_class_init (GkuPromptClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	gobject_class->constructor = gku_prompt_constructor;
+	gobject_class->constructed = gku_prompt_constructed;
+	gobject_class->get_property = gku_prompt_get_property;
+	gobject_class->set_property = gku_prompt_set_property;
 	gobject_class->dispose = gku_prompt_dispose;
 	gobject_class->finalize = gku_prompt_finalize;
 
@@ -626,6 +586,10 @@ gku_prompt_class_init (GkuPromptClass *klass)
 	klass->completed = gku_prompt_real_completed;
 
 	g_type_class_add_private (klass, sizeof (GkuPromptPrivate));
+
+	g_object_class_install_property (gobject_class, PROP_EXCHANGE,
+	           g_param_spec_object ("exchange", "Exchange", "Secret Exchange",
+	                                GCR_TYPE_SECRET_EXCHANGE, G_PARAM_READWRITE));
 
 	signals[COMPLETED] = g_signal_new ("completed", GKU_TYPE_PROMPT,
 	                                   G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkuPromptClass, completed),
@@ -735,41 +699,31 @@ gku_prompt_get_response (GkuPrompt *self)
 	return ret;
 }
 
-gchar*
-gku_prompt_get_password (GkuPrompt *self, const gchar *password_type)
+gchar *
+gku_prompt_get_password (GkuPrompt *self,
+                         const gchar *password_type)
 {
-	gchar *result;
-	gpointer data;
-	gsize n_data;
-	gconstpointer key;
-	gsize n_key;
-	gpointer parameter;
-	gsize n_parameter;
+	gchar *received;
+	gboolean receive_success;
 
 	g_return_val_if_fail (GKU_IS_PROMPT (self), NULL);
 
-	if (!gku_prompt_get_transport_password (self, password_type,
-	                                        &parameter, &n_parameter,
-	                                        &data, &n_data))
+	received = g_key_file_get_string (self->pv->output, password_type, "value", NULL);
+	if (received == NULL)
 		return NULL;
 
-	/* Parse the encryption params and figure out a key */
-	if (n_parameter) {
-		key = calculate_transport_key (self, &n_key);
-		g_return_val_if_fail (key, NULL);
-		result = gku_prompt_util_decrypt_text (key, n_key,
-		                                       parameter, n_parameter,
-		                                       data, n_data);
+	/* Not encrypted */
+	if (!g_key_file_get_boolean (self->pv->output, password_type, "encrypted", NULL))
+		return received;
 
-	/* A non-encrypted password */
-	} else {
-		result = egg_secure_alloc (n_data + 1);
-		memcpy (result, data, n_data);
-	}
+	g_return_val_if_fail (self->pv->exchange, NULL);
+	receive_success = gcr_secret_exchange_receive (self->pv->exchange, received);
+	g_free (received);
 
-	g_free (parameter);
-	g_free (data);
-	return result;
+	if (!receive_success)
+		return NULL;
+
+	return egg_secure_strdup (gcr_secret_exchange_get_secret (self->pv->exchange, NULL));
 }
 
 gboolean
@@ -835,65 +789,6 @@ gku_prompt_reset (GkuPrompt *self, gboolean hard)
 
 	clear_prompt_data (self);
 	self->pv->input = input;
-}
-
-
-void
-gku_prompt_set_transport_param (GkuPrompt *self, const gchar *name,
-                                gconstpointer value, gsize n_value)
-{
-	g_return_if_fail (GKU_IS_PROMPT (self));
-	g_return_if_fail (self->pv->input);
-	g_return_if_fail (name);
-	gku_prompt_util_encode_hex (self->pv->input, "transport", name, value, n_value);
-}
-
-gpointer
-gku_prompt_get_transport_param (GkuPrompt *self, const gchar *name, gsize *n_value)
-{
-	g_return_val_if_fail (GKU_IS_PROMPT (self), NULL);
-	g_return_val_if_fail (name, NULL);
-	g_return_val_if_fail (n_value, NULL);
-
-	if (self->pv->failure)
-		return NULL;
-
-	g_return_val_if_fail (self->pv->output, NULL);
-	return gku_prompt_util_decode_hex (self->pv->output, "transport", name, n_value);
-
-}
-
-gboolean
-gku_prompt_get_transport_password (GkuPrompt *self, const gchar *password_type,
-                                   gpointer *parameter, gsize *n_parameter,
-                                   gpointer *value, gsize *n_value)
-{
-	if (!password_type)
-		password_type = "password";
-
-	g_return_val_if_fail (parameter, FALSE);
-	g_return_val_if_fail (n_parameter, FALSE);
-	g_return_val_if_fail (value, FALSE);
-	g_return_val_if_fail (n_value, FALSE);
-
-	if (self->pv->failure)
-		return FALSE;
-
-	g_return_val_if_fail (self->pv->output, FALSE);
-
-	/* Parse out an IV */
-	*parameter = gku_prompt_util_decode_hex (self->pv->output, password_type,
-	                                         "parameter", n_parameter);
-	if (*parameter == NULL)
-		*n_parameter = 0;
-
-	/* Parse out the password */
-	*value = gku_prompt_util_decode_hex (self->pv->output, password_type,
-	                                     "value", n_value);
-	if (*value == NULL)
-		*n_value = 0;
-
-	return TRUE;
 }
 
 const gchar*
@@ -1256,42 +1151,31 @@ gku_prompt_dummy_queue_response (const gchar *response)
 void
 gku_prompt_dummy_queue_ok_password (const gchar *password)
 {
-	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n";
-	gchar *value;
+	const static gchar *RESPONSE = "[password]\nencrypted=FALSE\nvalue=%s\n[prompt]\nresponse=ok\n";
 
 	g_return_if_fail (password);
-	value = egg_hex_encode ((const guchar*)password, strlen (password));
-	queue_dummy_response (g_strdup_printf (RESPONSE, value));
-	g_free (value);
+	queue_dummy_response (g_strdup_printf (RESPONSE, password));
 }
 
 void
 gku_prompt_dummy_queue_ok_passwords (const gchar *original, const gchar *password)
 {
-	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n"
-	                               "[original]\nparameter=\nvalue=%s\n"
+	const static gchar *RESPONSE = "[password]\nencrypted=FALSE\nvalue=%s\n"
+	                               "[original]\nencrypted=FALSE\nvalue=%s\n"
 	                               "[prompt]\nresponse=ok\n";
-	gchar *value, *ovalue;
 
 	g_return_if_fail (password);
-	value = egg_hex_encode ((const guchar*)password, strlen (password));
-	ovalue = egg_hex_encode ((const guchar*)original, strlen (original));
-	queue_dummy_response (g_strdup_printf (RESPONSE, value, ovalue));
-	g_free (value);
-	g_free (ovalue);
+	queue_dummy_response (g_strdup_printf (RESPONSE, password, original));
 }
 
 void
 gku_prompt_dummy_queue_auto_password (const gchar *password)
 {
-	const static gchar *RESPONSE = "[password]\nparameter=\nvalue=%s\n[prompt]\nresponse=ok\n"
+	const static gchar *RESPONSE = "[password]\nencrypted=FALSE\nvalue=%s\n[prompt]\nresponse=ok\n"
 	                               "[unlock-options]\nchoice=always\n";
-	gchar *value;
 
 	g_return_if_fail (password);
-	value = egg_hex_encode ((const guchar*)password, strlen (password));
-	queue_dummy_response (g_strdup_printf (RESPONSE, value));
-	g_free (value);
+	queue_dummy_response (g_strdup_printf (RESPONSE, password));
 }
 
 void
