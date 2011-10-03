@@ -49,12 +49,17 @@
 enum {
 	PROP_0,
 	PROP_MODULE,
-	PROP_HANDLE
+	PROP_HANDLE,
+	PROP_INTERACTION
 };
 
 struct _GckSlotPrivate {
 	GckModule *module;
 	CK_SLOT_ID handle;
+
+	/* Changable data locked by mutex */
+	GMutex *mutex;
+	GTlsInteraction *interaction;
 };
 
 G_DEFINE_TYPE (GckSlot, gck_slot, G_TYPE_OBJECT);
@@ -64,7 +69,9 @@ G_DEFINE_TYPE (GckSlot, gck_slot, G_TYPE_OBJECT);
  */
 
 static GckSession*
-make_session_object (GckSlot *self, guint options, CK_SESSION_HANDLE handle)
+make_session_object (GckSlot *self,
+                     GckSessionOptions options,
+                     CK_SESSION_HANDLE handle)
 {
 	GckSession *session;
 	GckModule *module;
@@ -89,6 +96,7 @@ static void
 gck_slot_init (GckSlot *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_SLOT, GckSlotPrivate);
+	self->pv->mutex = g_mutex_new ();
 }
 
 static void
@@ -103,6 +111,12 @@ gck_slot_get_property (GObject *obj, guint prop_id, GValue *value,
 		break;
 	case PROP_HANDLE:
 		g_value_set_ulong (value, gck_slot_get_handle (self));
+		break;
+	case PROP_INTERACTION:
+		g_value_take_object (value, gck_slot_get_interaction (self));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
 	}
 }
@@ -126,12 +140,22 @@ gck_slot_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_assert (!self->pv->handle);
 		self->pv->handle = g_value_get_ulong (value);
 		break;
+	case PROP_INTERACTION:
+		gck_slot_set_interaction (self, g_value_get_object (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
 	}
 }
 
 static void
 gck_slot_dispose (GObject *obj)
 {
+	GckSlot *self = GCK_SLOT (obj);
+
+	gck_slot_set_interaction (self, NULL);
+
 	G_OBJECT_CLASS (gck_slot_parent_class)->dispose (obj);
 }
 
@@ -139,15 +163,15 @@ static void
 gck_slot_finalize (GObject *obj)
 {
 	GckSlot *self = GCK_SLOT (obj);
-	self->pv->handle = 0;
 
-	if (self->pv->module)
-		g_object_unref (self->pv->module);
-	self->pv->module = NULL;
+	g_assert (self->pv->interaction == NULL);
+
+	self->pv->handle = 0;
+	g_clear_object (&self->pv->module);
+	g_mutex_free (self->pv->mutex);
 
 	G_OBJECT_CLASS (gck_slot_parent_class)->finalize (obj);
 }
-
 
 static void
 gck_slot_class_init (GckSlotClass *klass)
@@ -177,6 +201,17 @@ gck_slot_class_init (GckSlotClass *klass)
 	g_object_class_install_property (gobject_class, PROP_HANDLE,
 		g_param_spec_ulong ("handle", "Handle", "PKCS11 Slot ID",
 		                   0, G_MAXULONG, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	/**
+	 * GckSlot:interaction:
+	 *
+	 * Interaction object used to ask the user for pins when opening
+	 * sessions. Used if the session_options of the enumerator have
+	 * %GCK_SESSION_LOGIN_USER or %GCK_SESSION_AUTHENTICATE
+	 */
+	g_object_class_install_property (gobject_class, PROP_INTERACTION,
+		g_param_spec_object ("interaction", "Interaction", "Interaction asking for pins",
+		                     G_TYPE_TLS_INTERACTION, G_PARAM_READWRITE));
 
 	g_type_class_add_private (gobject_class, sizeof (GckSlotPrivate));
 }
@@ -909,6 +944,62 @@ gck_slot_has_flags (GckSlot *self, gulong flags)
 }
 
 /**
+ * gck_slot_get_interaction:
+ * @self: the slot
+ *
+ * Get the interaction used when a pin is needed
+ *
+ * Returns: (transfer full) (allow-none): the interaction or %NULL
+ */
+GTlsInteraction *
+gck_slot_get_interaction (GckSlot *self)
+{
+	GTlsInteraction *result = NULL;
+
+	g_return_val_if_fail (GCK_IS_SLOT (self), NULL);
+
+	g_mutex_lock (self->pv->mutex);
+
+		if (self->pv->interaction)
+			result = g_object_ref (self->pv->interaction);
+
+	g_mutex_unlock (self->pv->mutex);
+
+	return result;
+}
+
+/**
+ * gck_slot_set_interaction:
+ * @self: the slot
+ * @interaction: (allow-none): the interaction or %NULL
+ *
+ * Set the interaction used when a pin is needed
+ */
+void
+gck_slot_set_interaction (GckSlot *self,
+                          GTlsInteraction *interaction)
+{
+	GTlsInteraction *previous = NULL;
+
+	g_return_if_fail (GCK_IS_SLOT (self));
+	g_return_if_fail (interaction == NULL || G_IS_TLS_INTERACTION (interaction));
+
+	g_mutex_lock (self->pv->mutex);
+
+		if (interaction != self->pv->interaction) {
+			previous = self->pv->interaction;
+			self->pv->interaction = interaction;
+			if (interaction)
+				g_object_ref (interaction);
+		}
+
+	g_mutex_unlock (self->pv->mutex);
+
+	g_clear_object (&previous);
+	g_object_notify (G_OBJECT (self), "interaction");
+}
+
+/**
  * gck_slots_enumerate_objects:
  * @slots: (element-type Gck.Slot): a list of #GckSlot to enumerate objects on.
  * @attrs: Attributes that the objects must have, or empty for all objects.
@@ -938,6 +1029,7 @@ gck_slots_enumerate_objects (GList *slots,
 
 typedef struct OpenSession {
 	GckArguments base;
+	GTlsInteraction *interaction;
 	GckSlot *slot;
 	gulong flags;
 	gpointer app_data;
@@ -950,9 +1042,8 @@ typedef struct OpenSession {
 static CK_RV
 perform_open_session (OpenSession *args)
 {
-	CK_SESSION_INFO info;
+	GTlsInteraction *interaction;
 	CK_RV rv = CKR_OK;
-	CK_ULONG pin_len;
 
 	/* Can be called multiple times */
 
@@ -965,52 +1056,26 @@ perform_open_session (OpenSession *args)
 	if (rv != CKR_OK || !args->auto_login)
 		return rv;
 
-	/* Step two, check if session is logged in */
-	rv = (args->base.pkcs11->C_GetSessionInfo) (args->session, &info);
-	if (rv != CKR_OK)
-		return rv;
+	/* Compatibility, hook into GckModule signals if no interaction set */
+	if (args->interaction)
+		interaction = g_object_ref (args->interaction);
+	else
+		interaction = _gck_interaction_new (args->slot);
 
-	/* Already logged in? */
-	if (info.state != CKS_RO_PUBLIC_SESSION && info.state != CKS_RW_PUBLIC_SESSION)
-		return CKR_OK;
+	rv = _gck_session_authenticate_token (args->base.pkcs11, args->session,
+	                                      args->slot, interaction, NULL);
 
-	/* Try to login */
-	pin_len = args->password ? strlen (args->password) : 0;
-	return (args->base.pkcs11->C_Login) (args->session, CKU_USER,
-	                                     (CK_UTF8CHAR_PTR)args->password, pin_len);
-}
+	g_object_unref (interaction);
 
-static gboolean
-complete_open_session (OpenSession *args, CK_RV result)
-{
-	GckModule *module;
-	gboolean ret = TRUE;
-
-	g_free (args->password);
-	args->password = NULL;
-
-	/* Ask the token for a password */
-	module = gck_slot_get_module (args->slot);
-
-	if (args->auto_login && result == CKR_PIN_INCORRECT) {
-
-		ret = _gck_module_fire_authenticate_slot (module, args->slot, NULL, &args->password);
-
-		/* If authenticate returns TRUE then call is not complete */
-		ret = !ret;
-	}
-
-	g_object_unref (module);
-
-	return ret;
+	return rv;
 }
 
 static void
 free_open_session (OpenSession *args)
 {
+	g_clear_object (&args->interaction);
+	g_clear_object (&args->slot);
 	g_assert (!args->password);
-	if (args->slot)
-		g_object_unref (args->slot);
 	g_free (args);
 }
 
@@ -1055,8 +1120,13 @@ gck_slot_open_session (GckSlot *self,
  * Returns: (transfer full): a new session or %NULL if an error occurs
  **/
 GckSession *
-gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, gpointer app_data,
-                            CK_NOTIFY notify, GCancellable *cancellable, GError **error)
+gck_slot_open_session_full (GckSlot *self,
+                            GckSessionOptions options,
+                            gulong pkcs11_flags,
+                            gpointer app_data,
+                            CK_NOTIFY notify,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	OpenSession args = { GCK_ARGUMENTS_INIT, 0,  };
 	GckSession *session = NULL;
@@ -1072,6 +1142,7 @@ gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, g
 	args.notify = notify;
 	args.password = NULL;
 	args.session = 0;
+	args.interaction = gck_slot_get_interaction (self);
 
 	args.auto_login = ((options & GCK_SESSION_LOGIN_USER) == GCK_SESSION_LOGIN_USER);
 
@@ -1079,9 +1150,10 @@ gck_slot_open_session_full (GckSlot *self, guint options, gulong pkcs11_flags, g
 	if ((options & GCK_SESSION_READ_WRITE) == GCK_SESSION_READ_WRITE)
 		args.flags |= CKF_RW_SESSION;
 
-	if (_gck_call_sync (self, perform_open_session, complete_open_session, &args, cancellable, error))
+	if (_gck_call_sync (self, perform_open_session, NULL, &args, cancellable, error))
 		session = make_session_object (self, options, args.session);
 
+	g_clear_object (&args.interaction);
 	g_object_unref (module);
 	g_object_unref (self);
 
@@ -1128,20 +1200,26 @@ gck_slot_open_session_async (GckSlot *self,
  * This call will return immediately and complete asynchronously.
  **/
 void
-gck_slot_open_session_full_async (GckSlot *self, guint options, gulong pkcs11_flags, gpointer app_data,
-                                  CK_NOTIFY notify, GCancellable *cancellable,
-                                  GAsyncReadyCallback callback, gpointer user_data)
+gck_slot_open_session_full_async (GckSlot *self,
+                                  GckSessionOptions options,
+                                  gulong pkcs11_flags,
+                                  gpointer app_data,
+                                  CK_NOTIFY notify,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	OpenSession *args;
 
 	g_object_ref (self);
 
-	args =  _gck_call_async_prep (self, self, perform_open_session, complete_open_session,
+	args =  _gck_call_async_prep (self, self, perform_open_session, NULL,
 	                              sizeof (*args), free_open_session);
 
 	args->app_data = app_data;
 	args->notify = notify;
 	args->slot = g_object_ref (self);
+	args->interaction = gck_slot_get_interaction (self);
 
 	args->auto_login = ((options & GCK_SESSION_LOGIN_USER) == GCK_SESSION_LOGIN_USER);
 

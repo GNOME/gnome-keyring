@@ -306,6 +306,8 @@ main (int argc, char **argv)
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 
+	g_set_prgname ("test-gck-session");
+
 	g_test_add ("/gck/session/session_props", Test, NULL, setup, test_session_props, teardown);
 	g_test_add ("/gck/session/session_info", Test, NULL, setup, test_session_info, teardown);
 	g_test_add ("/gck/session/open_close_session", Test, NULL, setup, test_open_close_session, teardown);

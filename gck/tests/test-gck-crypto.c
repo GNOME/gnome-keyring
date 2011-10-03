@@ -631,6 +631,8 @@ main (int argc, char **argv)
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 
+	g_set_prgname ("test-gck-crypto");
+
 	g_test_add ("/gck/crypto/encrypt", Test, NULL, setup, test_encrypt, teardown);
 	g_test_add ("/gck/crypto/decrypt", Test, NULL, setup, test_decrypt, teardown);
 	g_test_add ("/gck/crypto/login_context_specific", Test, NULL, setup, test_login_context_specific, teardown);

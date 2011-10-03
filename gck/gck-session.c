@@ -77,6 +77,7 @@ enum {
 	PROP_0,
 	PROP_MODULE,
 	PROP_HANDLE,
+	PROP_INTERACTION,
 	PROP_SLOT,
 	PROP_OPTIONS,
 };
@@ -85,7 +86,8 @@ struct _GckSessionPrivate {
 	GckSlot *slot;
 	GckModule *module;
 	CK_SESSION_HANDLE handle;
-	guint options;
+	GTlsInteraction *interaction;
+	GckSessionOptions options;
 
 	/* Modified atomically */
 	gint discarded;
@@ -148,6 +150,12 @@ gck_session_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_OPTIONS:
 		g_value_set_uint (value, gck_session_get_options (self));
 		break;
+	case PROP_INTERACTION:
+		g_value_take_object (value, self->pv->interaction);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
 	}
 }
 
@@ -169,6 +177,10 @@ gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 		g_return_if_fail (!self->pv->handle);
 		self->pv->handle = g_value_get_ulong (value);
 		break;
+	case PROP_INTERACTION:
+		g_return_if_fail (self->pv->interaction == NULL);
+		self->pv->interaction = g_value_dup_object (value);
+		break;
 	case PROP_SLOT:
 		g_return_if_fail (!self->pv->slot);
 		self->pv->slot = g_value_dup_object (value);
@@ -176,7 +188,10 @@ gck_session_set_property (GObject *obj, guint prop_id, const GValue *value,
 		break;
 	case PROP_OPTIONS:
 		g_return_if_fail (!self->pv->options);
-		self->pv->options = g_value_get_uint (value);
+		self->pv->options = g_value_get_flags (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
 	}
 }
@@ -210,13 +225,9 @@ gck_session_finalize (GObject *obj)
 
 	g_assert (g_atomic_int_get (&self->pv->discarded) != 0);
 
-	if (self->pv->slot)
-		g_object_unref (self->pv->slot);
-	self->pv->slot = NULL;
-
-	if (self->pv->module)
-		g_object_unref (self->pv->module);
-	self->pv->module = NULL;
+	g_clear_object (&self->pv->interaction);
+	g_clear_object (&self->pv->slot);
+	g_clear_object (&self->pv->module);
 
 	G_OBJECT_CLASS (gck_session_parent_class)->finalize (obj);
 }
@@ -267,8 +278,20 @@ gck_session_class_init (GckSessionClass *klass)
 	 * The options this session was opened with.
 	 */
 	g_object_class_install_property (gobject_class, PROP_OPTIONS,
-		g_param_spec_uint ("options", "Session Options", "Session Options",
-		                   0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		g_param_spec_flags ("options", "Session Options", "Session Options",
+		                    GCK_TYPE_SESSION_OPTIONS, GCK_SESSION_READ_ONLY,
+		                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	/**
+	 * GckSession:interaction:
+	 *
+	 * Interaction object used to ask the user for pins when opening
+	 * sessions. Used if the session_options of the enumerator have
+	 * %GCK_SESSION_LOGIN_USER
+	 */
+	g_object_class_install_property (gobject_class, PROP_INTERACTION,
+		g_param_spec_object ("interaction", "Interaction", "Interaction asking for pins",
+		                     G_TYPE_TLS_INTERACTION, G_PARAM_READWRITE));
 
 	/**
 	 * GckSession::discard-handle:
@@ -364,21 +387,27 @@ gck_session_info_free (GckSessionInfo *session_info)
 GckSession *
 gck_session_from_handle (GckSlot *slot,
                          gulong session_handle,
-                         guint options)
+                         GckSessionOptions options)
 {
+	GTlsInteraction *interaction;
 	GckModule *module;
 	GckSession *session;
 
 	g_return_val_if_fail (GCK_IS_SLOT (slot), NULL);
 
 	module = gck_slot_get_module (slot);
+	interaction = gck_slot_get_interaction (slot);
+
 	session = g_object_new (GCK_TYPE_SESSION,
 	                        "module", module,
+	                        "interaction", interaction,
 	                        "handle", session_handle,
 	                        "slot", slot,
 	                        "options", options,
 	                        NULL);
+
 	g_object_unref (module);
+	g_clear_object (&interaction);
 
 	return session;
 }
@@ -518,11 +547,31 @@ gck_session_get_state (GckSession *self)
  *
  * Return value: The session options.
  **/
-guint
+GckSessionOptions
 gck_session_get_options (GckSession *self)
 {
 	g_return_val_if_fail (GCK_IS_SESSION (self), 0);
 	return self->pv->options;
+}
+
+/**
+ * gck_session_get_interaction:
+ * @self: the session
+ *
+ * Get the interaction object set on this session, which is used to prompt
+ * for pins and the like.
+ *
+ * Returns: (transfer full) (allow-none): the interaction object, or %NULL
+ */
+GTlsInteraction *
+gck_session_get_interaction (GckSession *self)
+{
+	g_return_val_if_fail (GCK_IS_SESSION (self), NULL);
+
+	if (self->pv->interaction)
+		return g_object_ref (self->pv->interaction);
+
+	return NULL;
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -1913,190 +1962,19 @@ gck_session_derive_key_finish (GckSession *self, GAsyncResult *result, GError **
 }
 
 /* --------------------------------------------------------------------------------------------------
- * AUTHENTICATE
- */
-
-typedef enum _AuthenticateState {
-	AUTHENTICATE_NONE,
-	AUTHENTICATE_CAN,
-	AUTHENTICATE_WANT,
-	AUTHENTICATE_PERFORM
-} AuthenticateState;
-
-typedef struct _Authenticate {
-	AuthenticateState state;
-	gboolean protected_auth;
-	GckModule *module;
-	GckObject *object;
-	gchar *label;
-	gchar *password;
-} Authenticate;
-
-static CK_RV
-authenticate_perform (Authenticate *args, GckArguments *base)
-{
-	CK_ATTRIBUTE attributes[2];
-	CK_OBJECT_HANDLE handle;
-	CK_ULONG pin_len;
-	CK_BBOOL bvalue;
-	CK_RV rv;
-
-	g_assert (args);
-	g_assert (base);
-
-	switch (args->state) {
-
-	/*
-	 * Cannot authenticate for whatever reason, perhaps not
-	 * enabled, or failed incomprehensibly etc.
-	 *
-	 */
-	case AUTHENTICATE_NONE:
-		return CKR_OK;
-
-	/*
-	 * Can authenticate but haven't seen if we should, yet
-	 * check out the object in question.
-	 */
-	case AUTHENTICATE_CAN:
-
-		handle = gck_object_get_handle (args->object);
-
-		attributes[0].type = CKA_LABEL;
-		attributes[0].pValue = NULL;
-		attributes[0].ulValueLen = 0;
-		attributes[1].type = CKA_ALWAYS_AUTHENTICATE;
-		attributes[1].pValue = &bvalue;
-		attributes[1].ulValueLen = sizeof (bvalue);
-
-		rv = (base->pkcs11->C_GetAttributeValue) (base->handle, handle, attributes, 2);
-		if (rv == CKR_ATTRIBUTE_TYPE_INVALID)
-			bvalue = CK_FALSE;
-		else if (rv != CKR_OK)
-			return rv;
-
-		/* No authentication needed, on this object */
-		if (bvalue != CK_TRUE) {
-			args->state = AUTHENTICATE_NONE;
-			return CKR_OK;
-		}
-
-		/* Protected authentication path, just go to perform */
-		if (args->protected_auth) {
-			args->state = AUTHENTICATE_PERFORM;
-			return authenticate_perform (args, base);
-		}
-
-		/* Get the label for a prompt */
-		g_assert (!args->label);
-		if (attributes[0].ulValueLen) {
-			attributes[0].pValue = g_malloc0 (attributes[0].ulValueLen + 1);
-			rv = (base->pkcs11->C_GetAttributeValue) (base->handle, handle, attributes, 2);
-			if (rv == CKR_OK) {
-				g_assert (!args->label);
-				args->label = attributes[0].pValue;
-				args->label[attributes[0].ulValueLen] = 0;
-			} else {
-				g_free (attributes[0].pValue);
-			}
-		}
-
-		/* Need a password */
-		args->state = AUTHENTICATE_WANT;
-		return CKR_USER_NOT_LOGGED_IN;
-
-	/*
-	 * This state should be handled in verify_authenticate.
-	 */
-	case AUTHENTICATE_WANT:
-		g_assert (FALSE);
-		return CKR_GENERAL_ERROR;
-
-	/*
-	 * Do the actual login authentication.
-	 */
-	case AUTHENTICATE_PERFORM:
-		pin_len = args->password ? strlen (args->password) : 0;
-		rv = (base->pkcs11->C_Login) (base->handle, CKU_CONTEXT_SPECIFIC,
-		                              (CK_UTF8CHAR_PTR)args->password, pin_len);
-		if (rv == CKR_PIN_INCORRECT && !args->protected_auth)
-			args->state = AUTHENTICATE_WANT;
-		else
-			args->state = AUTHENTICATE_NONE;
-		return rv;
-
-	default:
-		g_assert_not_reached ();
-		return CKR_GENERAL_ERROR;
-	}
-}
-
-static gboolean
-authenticate_complete (Authenticate *auth, GckArguments *base, CK_RV result)
-{
-	g_assert (auth);
-	g_assert (base);
-
-	/* We're done here if not in this state */
-	if (auth->state == AUTHENTICATE_WANT) {
-
-		g_assert (GCK_IS_MODULE (auth->module));
-		g_assert (GCK_IS_OBJECT (auth->object));
-
-		g_free (auth->password);
-		auth->password = NULL;
-
-		if (_gck_module_fire_authenticate_object (auth->module, auth->object, auth->label, &auth->password)) {
-			auth->state = AUTHENTICATE_PERFORM;
-			return FALSE; /* Want to continue processing this call */
-		}
-	}
-
-	/* Free up various memory */
-	if (auth->module)
-		g_object_unref (auth->module);
-	if (auth->object)
-		g_object_unref (auth->object);
-	g_free (auth->label);
-	g_free (auth->password);
-
-	/* The call is complete */
-	return TRUE;
-}
-
-static void
-authenticate_init (Authenticate *auth, GckSlot *slot, GckObject *object, guint options)
-{
-	GckModule *module;
-
-	g_assert (GCK_IS_SLOT (slot));
-	g_assert (GCK_IS_OBJECT (object));
-
-	module = gck_slot_get_module (slot);
-	if ((options & GCK_SESSION_AUTHENTICATE) == GCK_SESSION_AUTHENTICATE) {
-		auth->state = AUTHENTICATE_CAN;
-		auth->protected_auth = gck_slot_has_flags (slot, CKF_PROTECTED_AUTHENTICATION_PATH);
-		auth->module = module;
-		auth->object = g_object_ref (object);
-	} else {
-		auth->state = AUTHENTICATE_NONE;
-		g_object_unref (module);
-	}
-}
-
-/* --------------------------------------------------------------------------------------------------
  * COMMON CRYPTO ROUTINES
  */
 
 typedef struct _Crypt {
 	GckArguments base;
 
-	/* Authenticator */
-	Authenticate auth;
-
 	/* Functions to call */
 	CK_C_EncryptInit init_func;
 	CK_C_Encrypt complete_func;
+
+	/* Interaction */
+	GckObject *key_object;
+	GTlsInteraction *interaction;
 
 	/* Input */
 	CK_OBJECT_HANDLE key;
@@ -2113,6 +1991,7 @@ typedef struct _Crypt {
 static CK_RV
 perform_crypt (Crypt *args)
 {
+	GTlsInteraction *interaction;
 	CK_RV rv;
 
 	g_assert (args);
@@ -2126,7 +2005,17 @@ perform_crypt (Crypt *args)
 	if (rv != CKR_OK)
 		return rv;
 
-	rv = authenticate_perform (&args->auth, &args->base);
+	/* Compatibility, hook into GckModule signals if no interaction set */
+	if (args->interaction)
+		interaction = g_object_ref (args->interaction);
+	else
+		interaction = _gck_interaction_new (args->key_object);
+
+	rv = _gck_session_authenticate_key (args->base.pkcs11, args->base.handle,
+	                                    args->key_object, interaction, NULL);
+
+	g_object_unref (interaction);
+
 	if (rv != CKR_OK)
 		return rv;
 
@@ -2140,19 +2029,12 @@ perform_crypt (Crypt *args)
 	return (args->complete_func) (args->base.handle, args->input, args->n_input, args->result, &args->n_result);
 }
 
-static gboolean
-complete_crypt (Crypt *args, CK_RV result)
-{
-	if (!authenticate_complete (&args->auth, &args->base, result))
-		return FALSE;
-
-	/* Call is complete */
-	return TRUE;
-}
-
 static void
 free_crypt (Crypt *args)
 {
+	g_clear_object (&args->interaction);
+	g_clear_object (&args->key_object);
+
 	g_free (args->input);
 	g_free (args->result);
 	g_free (args);
@@ -2164,7 +2046,6 @@ crypt_sync (GckSession *self, GckObject *key, GckMechanism *mechanism, const guc
             CK_C_EncryptInit init_func, CK_C_Encrypt complete_func)
 {
 	Crypt args;
-	GckSlot *slot;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (key), NULL);
 	g_return_val_if_fail (mechanism, NULL);
@@ -2185,11 +2066,10 @@ crypt_sync (GckSession *self, GckObject *key, GckMechanism *mechanism, const guc
 	args.init_func = init_func;
 	args.complete_func = complete_func;
 
-	slot = gck_session_get_slot (self);
-	authenticate_init (&args.auth, slot, key, self->pv->options);
-	g_object_unref (slot);
+	args.key_object = key;
+	args.interaction = self->pv->interaction;
 
-	if (!_gck_call_sync (self, perform_crypt, complete_crypt, &args, cancellable, error)) {
+	if (!_gck_call_sync (self, perform_crypt, NULL, &args, cancellable, error)) {
 		g_free (args.result);
 		return NULL;
 	}
@@ -2203,8 +2083,7 @@ crypt_async (GckSession *self, GckObject *key, GckMechanism *mechanism, const gu
              gsize n_input, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data,
              CK_C_EncryptInit init_func, CK_C_Encrypt complete_func)
 {
-	Crypt *args = _gck_call_async_prep (self, self, perform_crypt, complete_crypt, sizeof (*args), free_crypt);
-	GckSlot *slot;
+	Crypt *args = _gck_call_async_prep (self, self, perform_crypt, NULL, sizeof (*args), free_crypt);
 
 	g_return_if_fail (GCK_IS_OBJECT (key));
 	g_return_if_fail (mechanism);
@@ -2223,9 +2102,8 @@ crypt_async (GckSession *self, GckObject *key, GckMechanism *mechanism, const gu
 	args->init_func = init_func;
 	args->complete_func = complete_func;
 
-	slot = gck_session_get_slot (self);
-	authenticate_init (&args->auth, slot, key, self->pv->options);
-	g_object_unref (slot);
+	args->key_object = g_object_ref (key);
+	args->interaction = gck_session_get_interaction (self);
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
 }
@@ -2614,8 +2492,9 @@ gck_session_sign_finish (GckSession *self, GAsyncResult *result,
 typedef struct _Verify {
 	GckArguments base;
 
-	/* Authenticator */
-	Authenticate auth;
+	/* Interaction */
+	GckObject *key_object;
+	GTlsInteraction *interaction;
 
 	/* Input */
 	CK_OBJECT_HANDLE key;
@@ -2630,6 +2509,7 @@ typedef struct _Verify {
 static CK_RV
 perform_verify (Verify *args)
 {
+	GTlsInteraction *interaction;
 	CK_RV rv;
 
 	/* Initialize the crypt operation */
@@ -2637,7 +2517,18 @@ perform_verify (Verify *args)
 	if (rv != CKR_OK)
 		return rv;
 
-	rv = authenticate_perform (&args->auth, &args->base);
+	/* Compatibility, hook into GckModule signals if no interaction set */
+	if (args->interaction)
+		interaction = g_object_ref (args->interaction);
+	else
+		interaction = _gck_interaction_new (args->key_object);
+
+
+	rv = _gck_session_authenticate_key (args->base.pkcs11, args->base.handle,
+	                                    args->key_object, interaction, NULL);
+
+	g_object_unref (interaction);
+
 	if (rv != CKR_OK)
 		return rv;
 
@@ -2646,19 +2537,12 @@ perform_verify (Verify *args)
 	                                      args->signature, args->n_signature);
 }
 
-static gboolean
-complete_verify (Verify *args, CK_RV result)
-{
-	if (!authenticate_complete (&args->auth, &args->base, result))
-		return FALSE;
-
-	/* Call is complete */
-	return TRUE;
-}
-
 static void
 free_verify (Verify *args)
 {
+	g_clear_object (&args->interaction);
+	g_clear_object (&args->key_object);
+
 	g_free (args->input);
 	g_free (args->signature);
 	g_free (args);
@@ -2713,7 +2597,6 @@ gck_session_verify_full (GckSession *self, GckObject *key, GckMechanism *mechani
                           gsize n_signature, GCancellable *cancellable, GError **error)
 {
 	Verify args;
-	GckSlot *slot;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (key), FALSE);
 	g_return_val_if_fail (mechanism, FALSE);
@@ -2731,11 +2614,10 @@ gck_session_verify_full (GckSession *self, GckObject *key, GckMechanism *mechani
 	args.signature = (guchar*)signature;
 	args.n_signature = n_signature;
 
-	slot = gck_session_get_slot (self);
-	authenticate_init (&args.auth, slot, key, self->pv->options);
-	g_object_unref (slot);
+	args.key_object = key;
+	args.interaction = self->pv->interaction;
 
-	return _gck_call_sync (self, perform_verify, complete_verify, &args, cancellable, error);
+	return _gck_call_sync (self, perform_verify, NULL, &args, cancellable, error);
 }
 
 /**
@@ -2760,8 +2642,7 @@ gck_session_verify_async (GckSession *self, GckObject *key, GckMechanism *mechan
                            gsize n_signature, GCancellable *cancellable,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	Verify *args = _gck_call_async_prep (self, self, perform_verify, complete_verify, sizeof (*args), free_verify);
-	GckSlot *slot;
+	Verify *args = _gck_call_async_prep (self, self, perform_verify, NULL, sizeof (*args), free_verify);
 
 	g_return_if_fail (GCK_IS_OBJECT (key));
 	g_return_if_fail (mechanism);
@@ -2777,9 +2658,8 @@ gck_session_verify_async (GckSession *self, GckObject *key, GckMechanism *mechan
 	args->signature = signature && n_signature ? g_memdup (signature, n_signature) : NULL;
 	args->n_signature = n_signature;
 
-	slot = gck_session_get_slot (self);
-	authenticate_init (&args->auth, slot, key, self->pv->options);
-	g_object_unref (slot);
+	args->key_object = g_object_ref (key);
+	args->interaction = gck_session_get_interaction (self);
 
 	_gck_call_async_ready_go (args, cancellable, callback, user_data);
 }
@@ -2798,4 +2678,303 @@ gboolean
 gck_session_verify_finish (GckSession *self, GAsyncResult *result, GError **error)
 {
 	return _gck_call_basic_finish (result, error);
+}
+
+static void
+update_password_for_token (GTlsPassword *password,
+                           CK_TOKEN_INFO *token_info,
+                           gboolean request_retry)
+{
+	GTlsPasswordFlags flags;
+	gchar *label;
+
+	label = gck_string_from_chars (token_info->label, sizeof (token_info->label));
+	g_tls_password_set_description (password, label);
+	g_free (label);
+
+	flags = 0;
+	if (request_retry)
+		flags |= G_TLS_PASSWORD_RETRY;
+	if (token_info && token_info->flags & CKF_USER_PIN_COUNT_LOW)
+		flags |= G_TLS_PASSWORD_MANY_TRIES;
+	if (token_info && token_info->flags & CKF_USER_PIN_FINAL_TRY)
+		flags |= G_TLS_PASSWORD_FINAL_TRY;
+	g_tls_password_set_flags (password, flags);
+}
+
+CK_RV
+_gck_session_authenticate_token (CK_FUNCTION_LIST_PTR funcs,
+                                 CK_SESSION_HANDLE session,
+                                 GckSlot *token,
+                                 GTlsInteraction *interaction,
+                                 GCancellable *cancellable)
+{
+	CK_SESSION_INFO session_info;
+	GTlsPassword *password = NULL;
+	CK_TOKEN_INFO token_info;
+	GTlsInteractionResult res;
+	gboolean request_retry;
+	CK_SLOT_ID slot_id;
+	CK_BYTE_PTR pin;
+	CK_ULONG n_pin;
+	CK_RV rv = CKR_OK;
+	GError *error = NULL;
+
+	g_assert (funcs != NULL);
+	g_assert (GCK_IS_SLOT (token));
+
+	slot_id = gck_slot_get_handle (token);
+	request_retry = FALSE;
+
+	do {
+		if (g_cancellable_is_cancelled (cancellable)) {
+			rv = CKR_FUNCTION_CANCELED;
+			break;
+		}
+
+		rv = (funcs->C_GetTokenInfo) (slot_id, &token_info);
+		if (rv != CKR_OK) {
+			g_warning ("couldn't get token info when logging in: %s",
+			           gck_message_from_rv (rv));
+			break;
+		}
+
+		/* No login necessary? */
+		if ((token_info.flags & CKF_LOGIN_REQUIRED) == 0) {
+			_gck_debug ("no login required for token, skipping login");
+			rv = CKR_OK;
+			break;
+		}
+
+		/* Next check if session is logged in? */
+		rv = (funcs->C_GetSessionInfo) (session, &session_info);
+		if (rv != CKR_OK) {
+			g_warning ("couldn't get session info when logging in: %s",
+			           gck_message_from_rv (rv));
+			break;
+		}
+
+		/* Already logged in? */
+		if (session_info.state == CKS_RW_USER_FUNCTIONS ||
+		    session_info.state == CKS_RO_USER_FUNCTIONS ||
+		    session_info.state == CKS_RW_SO_FUNCTIONS) {
+			_gck_debug ("already logged in, skipping login");
+			rv = CKR_OK;
+			break;
+		}
+
+		if (token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH) {
+			_gck_debug ("trying to log into session: protected authentication path, no password");
+
+			/* No password passed for PAP */
+			pin = NULL;
+			n_pin = 0;
+
+
+		/* Not protected auth path */
+		} else {
+			_gck_debug ("trying to log into session: want password %s",
+			            request_retry ? "login was incorrect" : "");
+
+			if (password == NULL)
+				password = g_object_new (GCK_TYPE_PASSWORD, "token", token, NULL);
+
+			update_password_for_token (password, &token_info, request_retry);
+
+			if (interaction == NULL)
+				res = G_TLS_INTERACTION_UNHANDLED;
+
+			else
+				res = g_tls_interaction_invoke_ask_password (interaction,
+				                                             G_TLS_PASSWORD (password),
+				                                             NULL, &error);
+
+			if (res == G_TLS_INTERACTION_FAILED) {
+				g_message ("interaction couldn't ask password: %s", error->message);
+				rv = _gck_rv_from_error (error, CKR_USER_NOT_LOGGED_IN);
+				g_clear_error (&error);
+				break;
+
+			} else if (res == G_TLS_INTERACTION_UNHANDLED) {
+				g_message ("couldn't authenticate: no interaction handler");
+				rv = CKR_USER_NOT_LOGGED_IN;
+				break;
+			}
+
+			pin = (CK_BYTE_PTR)g_tls_password_get_value (password, &n_pin);
+		}
+
+		/* Try to log in */
+		rv = (funcs->C_Login) (session, CKU_USER, (CK_BYTE_PTR)pin, n_pin);
+
+		/* Only one C_Login call if protected auth path */
+		if (token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH)
+			break;
+
+		request_retry = TRUE;
+	} while (rv == CKR_PIN_INCORRECT);
+
+	g_clear_object (&password);
+
+	return rv;
+}
+
+static void
+update_password_for_key (GTlsPassword *password,
+                         CK_TOKEN_INFO *token_info,
+                         gboolean request_retry)
+{
+	GTlsPasswordFlags flags;
+
+	flags = 0;
+	if (request_retry)
+		flags |= G_TLS_PASSWORD_RETRY;
+	if (token_info && token_info->flags & CKF_USER_PIN_COUNT_LOW)
+		flags |= G_TLS_PASSWORD_MANY_TRIES;
+	if (token_info && token_info->flags & CKF_USER_PIN_FINAL_TRY)
+		flags |= G_TLS_PASSWORD_FINAL_TRY;
+	g_tls_password_set_flags (password, flags);
+}
+
+CK_RV
+_gck_session_authenticate_key (CK_FUNCTION_LIST_PTR funcs,
+                               CK_SESSION_HANDLE session,
+                               GckObject *key,
+                               GTlsInteraction *interaction,
+                               GCancellable *cancellable)
+{
+	CK_ATTRIBUTE attrs[2];
+	CK_SESSION_INFO session_info;
+	CK_TOKEN_INFO token_info;
+	GTlsPassword *password = NULL;
+	CK_OBJECT_HANDLE handle;
+	GTlsInteractionResult res;
+	gboolean request_retry;
+	GError *error = NULL;
+	CK_BYTE_PTR pin;
+	gsize pin_len;
+	CK_BBOOL bvalue;
+	gboolean got_label;
+	CK_RV rv;
+
+	g_assert (funcs != NULL);
+
+	handle = gck_object_get_handle (key);
+
+	attrs[0].type = CKA_LABEL;
+	attrs[0].pValue = NULL;
+	attrs[0].ulValueLen = 0;
+	attrs[1].type = CKA_ALWAYS_AUTHENTICATE;
+	attrs[1].pValue = &bvalue;
+	attrs[1].ulValueLen = sizeof (bvalue);
+
+	rv = (funcs->C_GetAttributeValue) (session, handle, attrs, 2);
+	if (rv == CKR_ATTRIBUTE_TYPE_INVALID) {
+		bvalue = CK_FALSE;
+
+	} else if (rv != CKR_OK) {
+		g_message ("couldn't check whether key requires authentication, assuming it doesn't: %s",
+		           gck_message_from_rv (rv));
+		return CKR_OK;
+	}
+
+	/* No authentication needed, on this object */
+	if (bvalue != CK_TRUE) {
+		_gck_debug ("key does not require authentication");
+		return CKR_OK;
+	}
+
+	got_label = FALSE;
+	request_retry = FALSE;
+
+	do {
+		if (g_cancellable_is_cancelled (cancellable)) {
+			rv = CKR_FUNCTION_CANCELED;
+			break;
+		}
+
+		rv = (funcs->C_GetSessionInfo) (session, &session_info);
+		if (rv != CKR_OK) {
+			g_warning ("couldn't get session info when authenticating key: %s",
+			           gck_message_from_rv (rv));
+			return rv;
+		}
+
+		rv = (funcs->C_GetTokenInfo) (session_info.slotID, &token_info);
+		if (rv != CKR_OK) {
+			g_warning ("couldn't get token info when authenticating key: %s",
+			           gck_message_from_rv (rv));
+			return rv;
+		}
+
+		/* Protected authentication path, just use NULL passwords */
+		if (token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH) {
+
+			password = NULL;
+			pin = NULL;
+			pin_len = 0;
+
+		/* Need to prompt for a password */
+		} else {
+			_gck_debug ("trying to log into session: want password %s",
+			            request_retry ? "login was incorrect" : "");
+
+			if (password == NULL)
+				password = g_object_new (GCK_TYPE_PASSWORD, "key", key, NULL);
+
+			/* Set the password */
+			update_password_for_key (password, &token_info, request_retry);
+
+			/* Set the label properly */
+			if (!got_label) {
+				if (attrs[0].ulValueLen && attrs[0].ulValueLen != GCK_INVALID) {
+					attrs[0].pValue = g_malloc0 (attrs[0].ulValueLen + 1);
+					rv = (funcs->C_GetAttributeValue) (session, handle, attrs, 1);
+					if (rv == CKR_OK) {
+						((gchar *)attrs[0].pValue)[attrs[0].ulValueLen] = 0;
+						g_tls_password_set_description (password, attrs[0].pValue);
+					}
+					g_free (attrs[0].pValue);
+					attrs[0].pValue = NULL;
+				}
+
+				got_label = TRUE;
+			}
+
+			if (interaction == NULL)
+				res = G_TLS_INTERACTION_UNHANDLED;
+
+			else
+				res = g_tls_interaction_invoke_ask_password (interaction,
+				                                             G_TLS_PASSWORD (password),
+				                                             NULL, &error);
+
+			if (res == G_TLS_INTERACTION_FAILED) {
+				g_message ("interaction couldn't ask password: %s", error->message);
+				rv = _gck_rv_from_error (error, CKR_USER_NOT_LOGGED_IN);
+				g_clear_error (&error);
+				break;
+
+			} else if (res == G_TLS_INTERACTION_UNHANDLED) {
+				g_message ("couldn't authenticate: no interaction handler");
+				rv = CKR_USER_NOT_LOGGED_IN;
+				break;
+			}
+
+			pin = (CK_BYTE_PTR)g_tls_password_get_value (G_TLS_PASSWORD (password), &pin_len);
+		}
+
+		/* Try to log in */
+		rv = (funcs->C_Login) (session, CKU_CONTEXT_SPECIFIC, pin, pin_len);
+
+		/* Only one C_Login call if protected auth path */
+		if (token_info.flags & CKF_PROTECTED_AUTHENTICATION_PATH)
+			break;
+
+		request_retry = TRUE;
+	} while (rv == CKR_PIN_INCORRECT);
+
+	g_clear_object (&password);
+
+	return rv;
 }

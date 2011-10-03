@@ -53,11 +53,13 @@ gck_attributes_new_empty
 gck_attributes_new_full
 gck_attributes_ref
 gck_attributes_unref
+gck_enumerator_get_interaction
 gck_enumerator_get_type
 gck_enumerator_next
 gck_enumerator_next_async
 gck_enumerator_next_finish
 gck_enumerator_next_n
+gck_enumerator_set_interaction
 gck_error_get_quark
 gck_error_get_type
 gck_get_error_quark
@@ -122,6 +124,10 @@ gck_object_set_template
 gck_object_set_template_async
 gck_object_set_template_finish
 gck_objects_from_handle_array
+gck_password_get_key
+gck_password_get_module
+gck_password_get_token
+gck_password_get_type
 gck_session_create_object
 gck_session_create_object_async
 gck_session_create_object_finish
@@ -147,6 +153,7 @@ gck_session_generate_key_pair_finish
 gck_session_generate_key_pair_full
 gck_session_get_handle
 gck_session_get_info
+gck_session_get_interaction
 gck_session_get_module
 gck_session_get_options
 gck_session_get_slot
@@ -188,6 +195,7 @@ gck_slot_equal
 gck_slot_from_handle
 gck_slot_get_handle
 gck_slot_get_info
+gck_slot_get_interaction
 gck_slot_get_mechanism_info
 gck_slot_get_mechanisms
 gck_slot_get_module
@@ -204,6 +212,7 @@ gck_slot_open_session_async
 gck_slot_open_session_finish
 gck_slot_open_session_full
 gck_slot_open_session_full_async
+gck_slot_set_interaction
 gck_slots_enumerate_objects
 gck_string_from_chars
 gck_string_to_chars

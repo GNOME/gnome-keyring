@@ -43,6 +43,11 @@
  * gck_enumerator_next_async() functions.
  */
 
+enum {
+	PROP_0,
+	PROP_INTERACTION
+};
+
 /**
  * GckEnumerator:
  * @parent: derived from this.
@@ -57,7 +62,6 @@ typedef gpointer (*GckEnumeratorFunc) (GckEnumeratorState *args, gboolean forwar
 struct _GckEnumeratorState {
 	/* For the current call */
 	gint want_objects;
-	gboolean want_password;
 
 	/* The state we're currently in */
 	GckEnumeratorFunc handler;
@@ -65,9 +69,8 @@ struct _GckEnumeratorState {
 	/* Input to enumerator */
 	GList *modules;
 	GckUriData *match;
-	guint session_options;
-	gboolean authenticate;
-	gchar *password;
+	GckSessionOptions session_options;
+	GTlsInteraction *interaction;
 
 	/* state_slots */
 	GList *slots;
@@ -88,9 +91,9 @@ struct _GckEnumeratorState {
 };
 
 struct _GckEnumeratorPrivate {
-	/* Data here is set atomically */
-	gpointer state;
-	gint mode;
+	GMutex *mutex;
+	GckEnumeratorState *the_state;
+	GTlsInteraction *interaction;
 };
 
 G_DEFINE_TYPE (GckEnumerator, gck_enumerator, G_TYPE_OBJECT);
@@ -152,11 +155,7 @@ cleanup_state (GckEnumeratorState *args)
 	gck_list_unref_free (args->modules);
 	args->modules = NULL;
 
-	/* TODO: Can we use secure memory here? */
-	if (args->password) {
-		g_free (args->password);
-		args->password  = NULL;
-	}
+	g_clear_object (&args->interaction);
 
 	if (args->match) {
 		if (args->match->attributes)
@@ -321,65 +320,38 @@ state_slot (GckEnumeratorState *args, gboolean forward)
 static gpointer
 state_session (GckEnumeratorState *args, gboolean forward)
 {
-	GckSessionInfo *sinfo;
-	CK_ULONG n_pin;
+	GTlsInteraction *interaction;
 	CK_RV rv;
 
 	g_assert (args->funcs);
 	g_assert (args->session);
-	g_assert (!args->want_password);
 	g_assert (args->token_info);
 
 	/* session to authenticated state */
 	if (forward) {
 
 		/* Don't want to authenticate? */
-		if (!args->authenticate) {
+		if ((args->session_options & GCK_SESSION_LOGIN_USER) == 0) {
 			_gck_debug ("no authentication necessary, skipping");
 			return state_authenticated;
 		}
 
-		/* No login necessary */
-		if ((args->token_info->flags & CKF_LOGIN_REQUIRED) == 0) {
-			_gck_debug ("no login required, skipping");
-			return state_authenticated;
-		}
+		/* Compatibility, hook into GckModule signals if no interaction set */
+		if (args->interaction)
+			interaction = g_object_ref (args->interaction);
+		else
+			interaction = _gck_interaction_new (args->slot);
 
-		/* Next check if session is logged in */
-		sinfo = gck_session_get_info (args->session);
-		if (sinfo == NULL) {
-			g_message ("couldn't get session info when enumerating");
-			return rewind_state (args, state_slots);
-		}
+		rv = _gck_session_authenticate_token (args->funcs,
+		                                      gck_session_get_handle (args->session),
+		                                      args->slot, interaction, NULL);
 
-		/* Already logged in? */
-		if (sinfo->state == CKS_RW_USER_FUNCTIONS ||
-		    sinfo->state == CKS_RO_USER_FUNCTIONS ||
-		    sinfo->state == CKS_RW_SO_FUNCTIONS) {
-			gck_session_info_free (sinfo);
-			_gck_debug ("already logged in, skipping");
-			return state_authenticated;
-		}
+		g_object_unref (interaction);
 
-		gck_session_info_free (sinfo);
-		_gck_debug ("trying to log into session");
-
-		/* Try to log in */
-		n_pin = args->password ? strlen (args->password) : 0;
-		rv = (args->funcs->C_Login) (gck_session_get_handle (args->session), CKU_USER,
-		                             (CK_BYTE_PTR)args->password, n_pin);
-
-		/* Authentication failed, ask for a password */
-		if (rv == CKR_PIN_INCORRECT) {
-			_gck_debug ("login was incorrect, want password");
-			args->want_password = TRUE;
-			return NULL;
-
-		/* Any other failure continue without authentication */
-		} else if (rv != CKR_OK) {
+		if (rv != CKR_OK)
 			g_message ("couldn't authenticate when enumerating: %s", gck_message_from_rv (rv));
-		}
 
+		/* We try to proceed anyway with the enumeration */
 		return state_authenticated;
 
 	/* Session to slot state */
@@ -406,7 +378,6 @@ state_authenticated (GckEnumeratorState *args, gboolean forward)
 	/* This is where we do the actual searching */
 
 	g_assert (args->session);
-	g_assert (!args->want_password);
 	g_assert (args->want_objects);
 	g_assert (args->funcs);
 
@@ -506,38 +477,95 @@ state_results (GckEnumeratorState *args, gboolean forward)
 static void
 gck_enumerator_init (GckEnumerator *self)
 {
-	GckEnumeratorState *args;
-
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCK_TYPE_ENUMERATOR, GckEnumeratorPrivate);
-	args = g_new0 (GckEnumeratorState, 1);
-	g_atomic_pointer_set (&self->pv->state, args);
+	self->pv->mutex = g_mutex_new ();
+	self->pv->the_state = g_new0 (GckEnumeratorState, 1);
+}
+
+static void
+gck_enumerator_get_property (GObject *obj,
+                             guint prop_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+	GckEnumerator *self = GCK_ENUMERATOR (obj);
+
+	switch (prop_id) {
+	case PROP_INTERACTION:
+		g_value_take_object (value, gck_enumerator_get_interaction (self));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gck_enumerator_set_property (GObject *obj,
+                             guint prop_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
+{
+	GckEnumerator *self = GCK_ENUMERATOR (obj);
+
+	switch (prop_id) {
+	case PROP_INTERACTION:
+		gck_enumerator_set_interaction (self, g_value_get_object (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gck_enumerator_dispose (GObject *obj)
+{
+	GckEnumerator *self = GCK_ENUMERATOR (obj);
+
+	gck_enumerator_set_interaction (self, NULL);
+
+	G_OBJECT_CLASS (gck_enumerator_parent_class)->dispose (obj);
 }
 
 static void
 gck_enumerator_finalize (GObject *obj)
 {
 	GckEnumerator *self = GCK_ENUMERATOR (obj);
-	GckEnumeratorState *state = g_atomic_pointer_get (&self->pv->state);
 
-	if (!g_atomic_pointer_compare_and_exchange (&self->pv->state, state, NULL))
-		g_assert_not_reached ();
+	g_assert (self->pv->interaction == NULL);
 
-	g_assert (state);
-	cleanup_state (state);
-	g_free (state);
+	g_assert (self->pv->the_state != NULL);
+	cleanup_state (self->pv->the_state);
+	g_free (self->pv->the_state);
+
+	g_mutex_free (self->pv->mutex);
 
 	G_OBJECT_CLASS (gck_enumerator_parent_class)->finalize (obj);
 }
-
 
 static void
 gck_enumerator_class_init (GckEnumeratorClass *klass)
 {
 	GObjectClass *gobject_class = (GObjectClass*)klass;
-	gck_enumerator_parent_class = g_type_class_peek_parent (klass);
 
+	gobject_class->get_property = gck_enumerator_get_property;
+	gobject_class->set_property = gck_enumerator_set_property;
+	gobject_class->dispose = gck_enumerator_dispose;
 	gobject_class->finalize = gck_enumerator_finalize;
+
 	g_type_class_add_private (klass, sizeof (GckEnumeratorPrivate));
+
+	/**
+	 * GckEnumerator:interaction:
+	 *
+	 * Interaction object used to ask the user for pins when opening
+	 * sessions. Used if the session_options of the enumerator have
+	 * %GCK_SESSION_LOGIN_USER
+	 */
+	g_object_class_install_property (gobject_class, PROP_INTERACTION,
+		g_param_spec_object ("interaction", "Interaction", "Interaction asking for pins",
+		                     G_TYPE_TLS_INTERACTION, G_PARAM_READWRITE));
 }
 
 /* ----------------------------------------------------------------------------
@@ -545,14 +573,15 @@ gck_enumerator_class_init (GckEnumeratorClass *klass)
  */
 
 GckEnumerator*
-_gck_enumerator_new (GList *modules_or_slots, guint session_options,
+_gck_enumerator_new (GList *modules_or_slots,
+                     GckSessionOptions session_options,
                      GckUriData *uri_data)
 {
 	GckEnumerator *self;
 	GckEnumeratorState *state;
 
 	self = g_object_new (GCK_TYPE_ENUMERATOR, NULL);
-	state = g_atomic_pointer_get (&self->pv->state);
+	state = self->pv->the_state;
 
 	state->session_options = session_options;
 
@@ -596,7 +625,6 @@ perform_enumerate_next (EnumerateNext *args)
 	g_assert (args->state);
 	state = args->state;
 
-	g_assert (!state->want_password);
 	g_assert (state->handler);
 
 	for (;;) {
@@ -610,36 +638,6 @@ perform_enumerate_next (EnumerateNext *args)
 	return CKR_OK;
 }
 
-static gboolean
-complete_enumerate_next (EnumerateNext *args, CK_RV result)
-{
-	GckEnumeratorState *state;
-	GckModule *module;
-	gboolean ret = TRUE;
-
-	g_assert (args->state);
-	state = args->state;
-
-	if (state->want_password) {
-		g_assert (state->slot);
-
-		_gck_debug ("wants password, emitting authenticate-slot");
-
-		/* TODO: Should we be using secure memory here? */
-		g_free (state->password);
-		state->password = NULL;
-
-		module = gck_slot_get_module (state->slot);
-		ret = _gck_module_fire_authenticate_slot (module, state->slot, NULL, &state->password);
-		g_object_unref (module);
-
-		/* If authenticate returns TRUE then call is not complete */
-		ret = !ret;
-	}
-
-	return ret;
-}
-
 static void
 free_enumerate_next (EnumerateNext *args)
 {
@@ -647,6 +645,98 @@ free_enumerate_next (EnumerateNext *args)
 	g_assert (!args->state);
 
 	g_free (args);
+}
+
+/**
+ * gck_enumerator_get_interaction:
+ * @self: the enumerator
+ *
+ * Get the interaction used when a pin is needed
+ *
+ * Returns: (transfer full) (allow-none): the interaction or %NULL
+ */
+GTlsInteraction *
+gck_enumerator_get_interaction (GckEnumerator *self)
+{
+	GTlsInteraction *result = NULL;
+
+	g_return_val_if_fail (GCK_IS_ENUMERATOR (self), NULL);
+
+	g_mutex_lock (self->pv->mutex);
+
+		if (self->pv->interaction)
+			result = g_object_ref (self->pv->interaction);
+
+	g_mutex_unlock (self->pv->mutex);
+
+	return result;
+}
+
+/**
+ * gck_enumerator_set_interaction:
+ * @self: the enumerator
+ * @interaction: (allow-none): the interaction or %NULL
+ *
+ * Set the interaction used when a pin is needed
+ */
+void
+gck_enumerator_set_interaction (GckEnumerator *self,
+                                GTlsInteraction *interaction)
+{
+	GTlsInteraction *previous = NULL;
+
+	g_return_if_fail (GCK_IS_ENUMERATOR (self));
+	g_return_if_fail (interaction == NULL || G_IS_TLS_INTERACTION (interaction));
+
+	g_mutex_lock (self->pv->mutex);
+
+		if (interaction != self->pv->interaction) {
+			previous = self->pv->interaction;
+			self->pv->interaction = interaction;
+			if (interaction)
+				g_object_ref (interaction);
+		}
+
+	g_mutex_unlock (self->pv->mutex);
+
+	g_clear_object (&previous);
+	g_object_notify (G_OBJECT (self), "interaction");
+}
+
+static GckEnumeratorState *
+check_out_enumerator_state (GckEnumerator *self)
+{
+	GckEnumeratorState *state = NULL;
+
+	g_mutex_lock (self->pv->mutex);
+
+		if (self->pv->the_state) {
+			state = self->pv->the_state;
+			self->pv->the_state = NULL;
+
+			g_clear_object (&state->interaction);
+			if (self->pv->interaction)
+				state->interaction = g_object_ref (self->pv->interaction);
+		}
+
+	g_mutex_unlock (self->pv->mutex);
+
+	if (state == NULL)
+		g_warning ("this enumerator is already running a next operation");
+
+	return state;
+}
+
+static void
+check_in_enumerator_state (GckEnumerator *self,
+                           GckEnumeratorState *state)
+{
+	g_mutex_lock (self->pv->mutex);
+
+		g_assert (self->pv->the_state == NULL);
+		self->pv->the_state = state;
+
+	g_mutex_unlock (self->pv->mutex);
 }
 
 /**
@@ -672,12 +762,8 @@ gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **er
 	g_return_val_if_fail (GCK_IS_ENUMERATOR (self), NULL);
 	g_return_val_if_fail (!error || !*error, NULL);
 
-	/* Remove the state and own it ourselves */
-	args.state = g_atomic_pointer_get (&self->pv->state);
-	if (!args.state || !g_atomic_pointer_compare_and_exchange (&self->pv->state, args.state, NULL)) {
-		g_warning ("this enumerator is already running a next operation");
-		return NULL;
-	}
+	args.state = check_out_enumerator_state (self);
+	g_return_val_if_fail (args.state != NULL, NULL);
 
 	/* A result from a previous run? */
 	result = extract_result (args.state);
@@ -685,7 +771,7 @@ gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **er
 		args.state->want_objects = 1;
 
 		/* Run the operation and steal away the results */
-		if (_gck_call_sync (NULL, perform_enumerate_next, complete_enumerate_next, &args, cancellable, error)) {
+		if (_gck_call_sync (NULL, perform_enumerate_next, NULL, &args, cancellable, error)) {
 			if (args.state->results) {
 				g_assert (g_list_length (args.state->results) == 1);
 				result = g_object_ref (args.state->results->data);
@@ -698,8 +784,7 @@ gck_enumerator_next (GckEnumerator *self, GCancellable *cancellable, GError **er
 	}
 
 	/* Put the state back */
-	if (!g_atomic_pointer_compare_and_exchange (&self->pv->state, NULL, args.state))
-		g_assert_not_reached ();
+	check_in_enumerator_state (self, args.state);
 
 	return result;
 }
@@ -733,16 +818,13 @@ gck_enumerator_next_n (GckEnumerator *self, gint max_objects, GCancellable *canc
 	g_return_val_if_fail (!error || !*error, NULL);
 
 	/* Remove the state and own it ourselves */
-	args.state = g_atomic_pointer_get (&self->pv->state);
-	if (!args.state || !g_atomic_pointer_compare_and_exchange (&self->pv->state, args.state, NULL)) {
-		g_warning ("this enumerator is already running a next operation");
-		return NULL;
-	}
+	args.state = check_out_enumerator_state (self);
+	g_return_val_if_fail (args.state != NULL, NULL);
 
 	args.state->want_objects = max_objects <= 0 ? G_MAXINT : max_objects;
 
 	/* Run the operation and steal away the results */
-	if (_gck_call_sync (NULL, perform_enumerate_next, complete_enumerate_next, &args, cancellable, error)) {
+	if (_gck_call_sync (NULL, perform_enumerate_next, NULL, &args, cancellable, error)) {
 		results = args.state->results;
 		args.state->results = NULL;
 	}
@@ -750,8 +832,7 @@ gck_enumerator_next_n (GckEnumerator *self, gint max_objects, GCancellable *canc
 	args.state->want_objects = 0;
 
 	/* Put the state back */
-	if (!g_atomic_pointer_compare_and_exchange (&self->pv->state, NULL, args.state))
-		g_assert_not_reached ();
+	check_in_enumerator_state (self, args.state);
 
 	return results;
 }
@@ -782,14 +863,11 @@ gck_enumerator_next_async (GckEnumerator *self, gint max_objects, GCancellable *
 	g_object_ref (self);
 
 	/* Remove the state and own it ourselves */
-	state = g_atomic_pointer_get (&self->pv->state);
-	if (!state || !g_atomic_pointer_compare_and_exchange (&self->pv->state, state, NULL)) {
-		g_warning ("this enumerator is already running a next operation");
-		return;
-	}
+	state = check_out_enumerator_state (self);
+	g_return_if_fail (state != NULL);
 
 	state->want_objects = max_objects <= 0 ? G_MAXINT : max_objects;
-	args =  _gck_call_async_prep (NULL, self, perform_enumerate_next, complete_enumerate_next,
+	args =  _gck_call_async_prep (NULL, self, perform_enumerate_next, NULL,
 	                               sizeof (*args), free_enumerate_next);
 
 	args->state = state;
@@ -831,8 +909,7 @@ gck_enumerator_next_finish (GckEnumerator *self, GAsyncResult *result, GError **
 	}
 
 	/* Put the state back */
-	if (!g_atomic_pointer_compare_and_exchange (&self->pv->state, NULL, state))
-		g_assert_not_reached ();
+	check_in_enumerator_state (self, state);
 
 	g_object_unref (self);
 

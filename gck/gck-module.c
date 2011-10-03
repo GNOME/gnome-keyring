@@ -106,76 +106,6 @@ G_DEFINE_TYPE (GckModule, gck_module, G_TYPE_OBJECT);
 static guint signals[LAST_SIGNAL] = { 0 };
 
 /* ----------------------------------------------------------------------------
- * INTERNAL
- */
-
-gboolean
-_gck_module_fire_authenticate_slot (GckModule *self, GckSlot *slot, gchar *label, gchar **password)
-{
-	GckTokenInfo *info;
-	gchar *allocated = NULL;
-	gboolean ret;
-
-	g_assert (GCK_IS_MODULE (self));
-
-	info = gck_slot_get_token_info (slot);
-	if (info != NULL) {
-
-		/*
-		 * We'll have tried to login at least once at this point,
-		 * with NULL password. This means that CKF_PROTECTED_AUTHENTICATION_PATH
-		 * tokens have had their chance and we don't need to prompt for it.
-		 */
-
-		if (info->flags & CKF_PROTECTED_AUTHENTICATION_PATH)
-			return FALSE;
-
-		if (label == NULL)
-			label = allocated = g_strdup (info->label);
-
-		gck_token_info_free (info);
-	}
-
-	g_signal_emit (self, signals[AUTHENTICATE_SLOT], 0, slot, label, password, &ret);
-	g_free (allocated);
-	return ret;
-}
-
-gboolean
-_gck_module_fire_authenticate_object (GckModule *self, GckObject *object,
-                                      gchar *label, gchar **password)
-{
-	GckTokenInfo *info;
-	GckSession *session;
-	GckSlot *slot;
-	gboolean ret;
-
-	g_assert (GCK_IS_MODULE (self));
-	g_assert (GCK_IS_OBJECT (object));
-	g_assert (password);
-
-	session = gck_object_get_session (object);
-	slot = gck_session_get_slot (session);
-	g_object_unref (session);
-
-	info = gck_slot_get_token_info (slot);
-	g_object_unref (slot);
-
-	if (info != NULL) {
-		if (info->flags & CKF_PROTECTED_AUTHENTICATION_PATH) {
-			gck_token_info_free (info);
-			*password = NULL;
-			return TRUE;
-		}
-
-		gck_token_info_free (info);
-	}
-
-	g_signal_emit (self, signals[AUTHENTICATE_OBJECT], 0, object, label, password, &ret);
-	return ret;
-}
-
-/* ----------------------------------------------------------------------------
  * OBJECT
  */
 
@@ -321,11 +251,9 @@ gck_module_class_init (GckModuleClass *klass)
 	 * @string: A displayable label which describes the object.
 	 * @password: A gchar** where a password should be returned.
 	 *
-	 * This signal is emitted when a password is needed to authenticate a PKCS&num;11
-	 * slot. If the module prompts for passwords itself, then this signal will
-	 * not be emitted.
+	 * Use gck_slot_set_interaction() instead of connecting to this signal.
 	 *
-	 * Returns: FALSE if the user cancelled, TRUE if we should proceed.
+	 * Deprecated: Since 3.4
 	 */
 	signals[AUTHENTICATE_SLOT] = g_signal_new ("authenticate-slot", GCK_TYPE_MODULE,
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GckModuleClass, authenticate_slot),
@@ -339,11 +267,9 @@ gck_module_class_init (GckModuleClass *klass)
 	 * @label: A displayable label which describes the object.
 	 * @password: A gchar** where a password should be returned.
 	 *
-	 * This signal is emitted when a password is needed to authenticate a PKCS&num;11
-	 * object like a key. If the module prompts for passwords itself, then this signal will
-	 * not be emitted.
+	 * Use gck_slot_set_interaction() instead of connecting to this signal.
 	 *
-	 * Returns: FALSE if the user cancelled, TRUE if we should proceed.
+	 * Deprecated: Since 3.4
 	 */
 	signals[AUTHENTICATE_OBJECT] = g_signal_new ("authenticate-object", GCK_TYPE_MODULE,
 			G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GckModuleClass, authenticate_object),

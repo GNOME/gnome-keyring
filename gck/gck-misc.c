@@ -218,6 +218,21 @@ _gck_stringize_rv (CK_RV rv)
 	}
 }
 
+CK_RV
+_gck_rv_from_error (GError *error,
+                    CK_RV catch_all_code)
+{
+	g_return_val_if_fail (error != NULL, CKR_GENERAL_ERROR);
+
+	if (error->domain == GCK_ERROR)
+		return error->code;
+
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+		return CKR_FUNCTION_CANCELED;
+
+	return catch_all_code;
+}
+
 /**
  * SECTION:gck-misc
  * @title: Miscellaneous Functions

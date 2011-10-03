@@ -124,6 +124,8 @@ gck_slot_hash
 gck_slot_get_module
 gck_slot_get_handle
 gck_slot_get_info
+gck_slot_get_interaction
+gck_slot_set_interaction
 gck_slot_match
 gck_slot_get_token_info
 gck_slot_get_mechanisms
@@ -172,6 +174,7 @@ gck_session_get_module
 gck_session_get_slot
 gck_session_get_handle
 gck_session_get_info
+gck_session_get_interaction
 gck_session_login
 gck_session_login_async
 gck_session_login_finish
@@ -319,6 +322,8 @@ gck_uri_flags_get_type
 <SECTION>
 <FILE>gck-enumerator</FILE>
 GckEnumerator
+gck_enumerator_get_interaction
+gck_enumerator_set_interaction
 gck_enumerator_next
 gck_enumerator_next_async
 gck_enumerator_next_finish
@@ -333,6 +338,24 @@ GCK_ENUMERATOR_GET_CLASS
 GCK_IS_ENUMERATOR
 GCK_IS_ENUMERATOR_CLASS
 GCK_TYPE_ENUMERATOR
+</SECTION>
+
+<SECTION>
+<FILE>gck-password</FILE>
+GckPassword
+GckPasswordClass
+gck_password_get_key
+gck_password_get_module
+gck_password_get_token
+<SUBSECTION Private>
+gck_password_get_type
+GckPasswordPrivate
+GCK_IS_PASSWORD
+GCK_IS_PASSWORD_CLASS
+GCK_PASSWORD
+GCK_PASSWORD_CLASS
+GCK_PASSWORD_GET_CLASS
+GCK_TYPE_PASSWORD
 </SECTION>
 
 <SECTION>

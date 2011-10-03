@@ -341,7 +341,9 @@ gck_modules_tokens_for_uri (GList *modules,
  * g_object_unref(), or %NULL if no matching object was found.
  */
 GckObject*
-gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_options,
+gck_modules_object_for_uri (GList *modules,
+                            const gchar *uri,
+                            GckSessionOptions session_options,
                             GError **error)
 {
 	GckEnumerator *en;
@@ -377,7 +379,9 @@ gck_modules_object_for_uri (GList *modules, const gchar *uri, guint session_opti
  * was found.
  */
 GList*
-gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_options,
+gck_modules_objects_for_uri (GList *modules,
+                             const gchar *uri,
+                             GckSessionOptions session_options,
                              GError **error)
 {
 	GckEnumerator *en;
@@ -411,7 +415,9 @@ gck_modules_objects_for_uri (GList *modules, const gchar *uri, guint session_opt
  * Returns: (transfer full): A new #GckEnumerator, or %NULL if an error occurs.
  */
 GckEnumerator*
-gck_modules_enumerate_uri (GList *modules, const gchar *uri, guint session_options,
+gck_modules_enumerate_uri (GList *modules,
+                           const gchar *uri,
+                           GckSessionOptions session_options,
                            GError **error)
 {
 	GckUriData *uri_data;

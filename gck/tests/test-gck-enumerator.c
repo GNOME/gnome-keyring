@@ -28,6 +28,8 @@
 #include "gck/gck-private.h"
 #include "gck/gck-test.h"
 
+#include "mock-interaction.h"
+
 #include "egg/egg-testing.h"
 
 #include <glib.h>
@@ -242,6 +244,76 @@ test_attributes (Test *test, gconstpointer unused)
 }
 
 static void
+test_authenticate_interaction (Test *test,
+                               gconstpointer unused)
+{
+	GTlsInteraction *interaction;
+	GTlsInteraction *check;
+	GckUriData *uri_data;
+	GError *error = NULL;
+	GckEnumerator *en;
+	GckObject *obj;
+
+	uri_data = gck_uri_data_new ();
+	en = _gck_enumerator_new (test->modules, GCK_SESSION_LOGIN_USER, uri_data);
+	g_assert (GCK_IS_ENUMERATOR (en));
+
+	interaction = mock_interaction_new ("booo");
+	g_object_set (en, "interaction", interaction, NULL);
+
+	check = NULL;
+	g_object_get (en, "interaction", &check, NULL);
+	g_assert (interaction == check);
+	g_object_unref (interaction);
+
+	obj = gck_enumerator_next (en, NULL, &error);
+	g_assert (GCK_IS_OBJECT (obj));
+
+	g_object_unref (obj);
+	g_object_unref (en);
+}
+
+static gboolean
+on_authenticate_token (GckModule *module,
+                       GckSlot *slot,
+                       gchar *label,
+                       gchar **password,
+                       gpointer unused)
+{
+	g_assert (unused == GUINT_TO_POINTER (35));
+	g_assert (password != NULL);
+	g_assert (*password == NULL);
+	g_assert (GCK_IS_MODULE (module));
+	g_assert (GCK_IS_SLOT (slot));
+
+	*password = g_strdup ("booo");
+	return TRUE;
+}
+
+static void
+test_authenticate_compat (Test *test,
+                          gconstpointer unused)
+{
+	GckUriData *uri_data;
+	GError *error = NULL;
+	GckEnumerator *en;
+	GckObject *obj;
+
+	g_signal_connect (test->modules->data, "authenticate-slot",
+	                  G_CALLBACK (on_authenticate_token), GUINT_TO_POINTER (35));
+
+	uri_data = gck_uri_data_new ();
+	en = _gck_enumerator_new (test->modules, GCK_SESSION_LOGIN_USER, uri_data);
+	g_assert (GCK_IS_ENUMERATOR (en));
+
+	obj = gck_enumerator_next (en, NULL, &error);
+	g_assert (GCK_IS_OBJECT (obj));
+
+	g_object_unref (obj);
+	g_object_unref (en);
+}
+
+static void
 test_token_match (Test *test, gconstpointer unused)
 {
 	GckUriData *uri_data;
@@ -269,6 +341,8 @@ main (int argc, char **argv)
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 
+	g_set_prgname ("test-gck-enumerator");
+
 	g_test_add ("/gck/enumerator/create", Test, NULL, setup, test_create, teardown);
 	g_test_add ("/gck/enumerator/create_slots", Test, NULL, setup, test_create_slots, teardown);
 	g_test_add ("/gck/enumerator/next", Test, NULL, setup, test_next, teardown);
@@ -276,6 +350,8 @@ main (int argc, char **argv)
 	g_test_add ("/gck/enumerator/next_and_resume", Test, NULL, setup, test_next_and_resume, teardown);
 	g_test_add ("/gck/enumerator/next_n", Test, NULL, setup, test_next_n, teardown);
 	g_test_add ("/gck/enumerator/next_async", Test, NULL, setup, test_next_async, teardown);
+	g_test_add ("/gck/enumerator/authenticate-interaction", Test, NULL, setup, test_authenticate_interaction, teardown);
+	g_test_add ("/gck/enumerator/authenticate-compat", Test, NULL, setup, test_authenticate_compat, teardown);
 	g_test_add ("/gck/enumerator/attributes", Test, NULL, setup, test_attributes, teardown);
 	g_test_add ("/gck/enumerator/token_match", Test, NULL, setup, test_token_match, teardown);
 

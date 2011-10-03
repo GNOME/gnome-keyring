@@ -27,6 +27,10 @@ TEST_PROGS = \
 	test-gck-enumerator \
 	test-gck-modules
 
+test_gck_enumerator_SOURCES = \
+	test-gck-enumerator.c \
+	mock-interaction.c mock-interaction.h
+
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)

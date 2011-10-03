@@ -62,21 +62,14 @@ gboolean            _gck_ulong_equal                       (gconstpointer v1,
 
 const gchar *       _gck_stringize_rv                      (CK_RV rv);
 
+CK_RV               _gck_rv_from_error                     (GError *error,
+                                                            CK_RV catch_all_code);
+
 /* ----------------------------------------------------------------------------
  * MODULE
  */
 
 GckModule*          _gck_module_new_initialized            (CK_FUNCTION_LIST_PTR funcs);
-
-gboolean            _gck_module_fire_authenticate_slot     (GckModule *module,
-                                                             GckSlot *slot,
-                                                             gchar *label,
-                                                             gchar **password);
-
-gboolean            _gck_module_fire_authenticate_object   (GckModule *module,
-                                                             GckObject *object,
-                                                             gchar *label,
-                                                             gchar **password);
 
 GckModuleInfo*      _gck_module_info_from_pkcs11            (CK_INFO_PTR info);
 
@@ -91,7 +84,7 @@ gboolean            _gck_module_info_match                  (GckModuleInfo *matc
  */
 
 GckEnumerator*      _gck_enumerator_new                     (GList *modules,
-                                                             guint session_options,
+                                                             GckSessionOptions session_options,
                                                              GckUriData *uri_data);
 
 /* ----------------------------------------------------------------------------
@@ -105,6 +98,39 @@ void               _gck_token_info_to_pkcs11                (GckTokenInfo *token
 
 gboolean           _gck_token_info_match                    (GckTokenInfo *match,
                                                              GckTokenInfo *info);
+
+CK_RV              _gck_session_authenticate_token          (CK_FUNCTION_LIST_PTR funcs,
+                                                             CK_SESSION_HANDLE session,
+                                                             GckSlot *token,
+                                                             GTlsInteraction *interaction,
+                                                             GCancellable *cancellable);
+
+CK_RV              _gck_session_authenticate_key            (CK_FUNCTION_LIST_PTR funcs,
+                                                             CK_SESSION_HANDLE session,
+                                                             GckObject *key,
+                                                             GTlsInteraction *interaction,
+                                                             GCancellable *cancellable);
+
+/* ----------------------------------------------------------------------------
+ * PASSWORD
+ */
+
+void               _gck_password_update                     (GckPassword *self,
+                                                             gboolean request_retry);
+
+/* ----------------------------------------------------------------------------
+ * INTERACTION
+ */
+
+#define GCK_TYPE_INTERACTION    (_gck_interaction_get_type ())
+#define GCK_INTERACTION(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCK_TYPE_INTERACTION, GckInteraction))
+#define GCK_IS_INTERACTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCK_TYPE_INTERACTION))
+
+typedef struct _GckInteraction GckInteraction;
+
+GType               _gck_interaction_get_type               (void) G_GNUC_CONST;
+
+GTlsInteraction *   _gck_interaction_new                    (gpointer token_or_key);
 
 /* ----------------------------------------------------------------------------
  * CALL

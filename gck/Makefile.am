@@ -39,6 +39,7 @@ PUBLIC_FILES = \
 	gck-module.c \
 	gck-modules.c \
 	gck-object.c \
+	gck-password.c \
 	gck-session.c \
 	gck-slot.c \
 	gck-uri.c
@@ -47,6 +48,7 @@ INTERNAL_FILES = \
 	gck-call.c \
 	gck-debug.c gck-debug.h \
 	gck-deprecated.h \
+	gck-interaction.c \
 	gck-private.h \
 	pkcs11.h
 
