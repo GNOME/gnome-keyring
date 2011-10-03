@@ -6,7 +6,8 @@ INCLUDES = -I. \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	-I$(top_srcdir)/pkcs11 \
-	$(GCR_BASE_CFLAGS)
+	$(GCR_BASE_CFLAGS) \
+	-DGCR_API_SUBJECT_TO_CHANGE
 
 # ------------------------------------------------------------------------------
 # The code

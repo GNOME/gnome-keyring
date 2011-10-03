@@ -24,11 +24,17 @@
 
 #include "gkd-secret-types.h"
 
+#include <glib.h>
+
 #include <dbus/dbus.h>
 
-DBusMessage*      gkd_secret_error_no_such_object                       (DBusMessage *message);
+DBusMessage *     gkd_secret_error_no_such_object             (DBusMessage *message);
 
-DBusMessage*      gkd_secret_error_to_reply                             (DBusMessage *message,
-                                                                         DBusError *derr);
+DBusMessage *     gkd_secret_propagate_error                  (DBusMessage *message,
+                                                               const gchar *description,
+                                                               GError *error);
+
+DBusMessage *     gkd_secret_error_to_reply                   (DBusMessage *message,
+                                                               DBusError *derr);
 
 #endif /* __GKD_SECRET_ERROR_H__ */

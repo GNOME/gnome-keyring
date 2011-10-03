@@ -197,11 +197,11 @@ fi
 # GCR and GCK libraries
 
 PKG_CHECK_MODULES(GCK, gck-1 >= 3.3.3)
-PKG_CHECK_MODULES(GCR, gcr-3 >= 3.3.1)
-PKG_CHECK_MODULES(GCR_BASE, gcr-base-3 >= 3.3.1)
+PKG_CHECK_MODULES(GCR, gcr-3 >= 3.3.3)
+PKG_CHECK_MODULES(GCR_BASE, gcr-base-3 >= 3.3.3)
 
 DAEMON_CFLAGS="$DAEMON_CFLAGS $GCK_CFLAGS $GCR_BASE_CFLAGS"
-DAEMON_LIBS="$DAEMON_LIBS $GCK_LIBS $GCR_BASE_CFLAGS"
+DAEMON_LIBS="$DAEMON_LIBS $GCK_LIBS $GCR_BASE_LIBS"
 
 AC_SUBST(GCK_CFLAGS)
 AC_SUBST(GCR_CFLAGS)
@@ -713,7 +713,6 @@ daemon/gpg-agent/Makefile
 daemon/login/Makefile
 daemon/ssh-agent/Makefile
 docs/Makefile
-docs/gnome-keyring-daemon/Makefile
 egg/Makefile
 egg/tests/Makefile
 pam/Makefile
@@ -738,9 +737,6 @@ po/Makefile.in
 schema/Makefile
 testing/Makefile
 tool/Makefile
-ui/Makefile
-ui/gnome-keyring-prompt.desktop.in
-ui/tests/Makefile
 ])
 
 # ------------------------------------------------------------------------------

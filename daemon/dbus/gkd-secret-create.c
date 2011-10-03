@@ -45,6 +45,12 @@
 #include <string.h>
 
 enum {
+	STATE_BEGIN,
+	STATE_PROMPTING,
+	STATE_PROMPTED
+};
+
+enum {
 	PROP_0,
 	PROP_PKCS11_ATTRIBUTES,
 	PROP_ALIAS
@@ -52,52 +58,50 @@ enum {
 
 struct _GkdSecretCreate {
 	GkdSecretPrompt parent;
-	GckAttributes *pkcs11_attrs;
-	gchar *alias;
+	GckAttributes *attributes;
+	GkdSecretSecret *master;
 	gchar *result_path;
+	gchar *alias;
+	gboolean confirmed;
 };
+
+static void    perform_prompting     (GkdSecretCreate *self);
 
 G_DEFINE_TYPE (GkdSecretCreate, gkd_secret_create, GKD_SECRET_TYPE_PROMPT);
 
-/* -----------------------------------------------------------------------------
- * INTERNAL
- */
-
 static void
-prepare_create_prompt (GkdSecretCreate *self)
+setup_password_prompt (GkdSecretCreate *self)
 {
-	GkuPrompt *prompt;
 	gchar *label;
 	gchar *text;
 
-	g_assert (GKD_SECRET_IS_CREATE (self));
-	g_assert (self->pkcs11_attrs);
-
-	prompt = GKU_PROMPT (self);
-
-	if (!gck_attributes_find_string (self->pkcs11_attrs, CKA_LABEL, &label))
+	if (!gck_attributes_find_string (self->attributes, CKA_LABEL, &label))
 		label = g_strdup (_("Unnamed"));
 
-	gku_prompt_reset (prompt, TRUE);
-
-	gku_prompt_set_title (prompt, _("New Keyring Password"));
-	gku_prompt_set_primary_text (prompt, _("Choose password for new keyring"));
-
-	text = g_markup_printf_escaped (_("An application wants to create a new keyring called '%s'. "
-	                                  "Choose the password you want to use for it."), label);
-	gku_prompt_set_secondary_text (prompt, text);
-	g_free (text);
-
-	gku_prompt_show_widget (prompt, "password_area");
-	gku_prompt_show_widget (prompt, "confirm_area");
-
+	text = g_strdup_printf (_("An application wants to create a new keyring called '%s'. "
+	                          "Choose the password you want to use for it."), label);
 	g_free (label);
+
+	gcr_prompt_set_message (GCR_PROMPT (self), _("Choose password for new keyring"));
+	gcr_prompt_set_description (GCR_PROMPT (self), text);
+	gcr_prompt_set_password_new (GCR_PROMPT (self), TRUE);
+
+	g_free (text);
+}
+
+static void
+setup_confirmation_prompt (GkdSecretCreate *self)
+{
+	gcr_prompt_set_message (GCR_PROMPT (self), _("Store passwords unencrypted?"));
+	gcr_prompt_set_description (GCR_PROMPT (self),
+	                            _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
+	                              "They will be accessible by anyone with access to your files."));
 }
 
 static gboolean
 create_collection_with_secret (GkdSecretCreate *self, GkdSecretSecret *master)
 {
-	DBusError derr = DBUS_ERROR_INIT;
+	GError *error = NULL;
 	GkdSecretService *service;
 	gchar *identifier;
 
@@ -105,11 +109,11 @@ create_collection_with_secret (GkdSecretCreate *self, GkdSecretSecret *master)
 	g_assert (master);
 	g_assert (!self->result_path);
 
-	self->result_path = gkd_secret_create_with_secret (self->pkcs11_attrs, master, &derr);
+	self->result_path = gkd_secret_create_with_secret (self->attributes, master, &error);
 
 	if (!self->result_path) {
-		g_warning ("couldn't create new collection: %s", derr.message);
-		dbus_error_free (&derr);
+		g_warning ("couldn't create new collection: %s", error->message);
+		g_error_free (error);
 		return FALSE;
 	}
 
@@ -191,39 +195,98 @@ unlock_or_complete_this_prompt (GkdSecretCreate *self)
 	g_object_unref (self);
 }
 
-/* -----------------------------------------------------------------------------
- * OBJECT
- */
+static void
+on_prompt_password_complete (GObject *source,
+                             GAsyncResult *result,
+                             gpointer user_data)
+{
+	GkdSecretCreate *self = GKD_SECRET_CREATE (source);
+	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
+	GError *error = NULL;
+
+	gcr_prompt_password_finish (GCR_PROMPT (source), result, &error);
+
+	if (error != NULL) {
+		gkd_secret_prompt_dismiss_with_error (prompt, error);
+		g_error_free (error);
+		return;
+	}
+
+	self->master = gkd_secret_prompt_take_secret (prompt);
+	if (self->master == NULL) {
+		gkd_secret_prompt_dismiss (prompt);
+		return;
+	}
+
+	/* If the password strength is greater than zero, then don't confirm */
+	if (gcr_prompt_get_password_strength (GCR_PROMPT (source)) > 0)
+		self->confirmed = TRUE;
+
+	perform_prompting (self);
+}
+
+static void
+on_prompt_confirmation_complete (GObject *source,
+                                 GAsyncResult *result,
+                                 gpointer user_data)
+{
+	GkdSecretCreate *self = GKD_SECRET_CREATE (source);
+	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
+	GError *error = NULL;
+
+	self->confirmed = gcr_prompt_confirm_finish (GCR_PROMPT (source), result, &error);
+	if (error != NULL) {
+		gkd_secret_prompt_dismiss_with_error (prompt, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* If not confirmed, then prompt again */
+	if (!self->confirmed) {
+		gkd_secret_secret_free (self->master);
+		self->master = NULL;
+	}
+
+	perform_prompting (self);
+}
+
+static void
+perform_prompting (GkdSecretCreate *self)
+{
+	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (self);
+
+	/* Does the alias exist? */
+	if (locate_alias_collection_if_exists (self)) {
+		unlock_or_complete_this_prompt (self);
+
+	/* Have we gotten a password yet? */
+	} else if (self->master == NULL) {
+		setup_password_prompt (self);
+		gcr_prompt_password_async (GCR_PROMPT (self),
+		                           gkd_secret_prompt_get_cancellable (prompt),
+		                           on_prompt_password_complete, NULL);
+
+	/* Check that the password is not empty */
+	} else if (!self->confirmed) {
+		setup_confirmation_prompt (self);
+		gcr_prompt_confirm_async (GCR_PROMPT (self),
+		                          gkd_secret_prompt_get_cancellable (prompt),
+		                          on_prompt_confirmation_complete, NULL);
+
+	/* Actually create the keyring */
+	} else  if (create_collection_with_secret (self, self->master)) {
+		gkd_secret_prompt_complete (prompt);
+
+	/* Failed */
+	} else {
+		gkd_secret_prompt_dismiss (prompt);
+	}
+}
 
 static void
 gkd_secret_create_prompt_ready (GkdSecretPrompt *prompt)
 {
-	GkdSecretCreate *self = GKD_SECRET_CREATE (prompt);
-	GkdSecretSecret *master;
-
-	if (!gku_prompt_has_response (GKU_PROMPT (prompt))) {
-
-		/* Does the alias exist? */
-		if (locate_alias_collection_if_exists (self))
-			unlock_or_complete_this_prompt (self);
-
-		/* Otherwise we're going to prompt */
-		else
-			prepare_create_prompt (self);
-
-		return;
-	}
-
-	/* Already prompted, create collection */
-	g_return_if_fail (gku_prompt_get_response (GKU_PROMPT (prompt)) == GKU_RESPONSE_OK);
-	master = gkd_secret_prompt_get_secret (prompt, "password");
-
-	if (master && create_collection_with_secret (self, master))
-		gkd_secret_prompt_complete (prompt);
-	else
-		gkd_secret_prompt_dismiss (prompt);
-
-	gkd_secret_secret_free (master);
+	perform_prompting (GKD_SECRET_CREATE (prompt));
 }
 
 static void
@@ -242,7 +305,7 @@ gkd_secret_create_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
 static void
 gkd_secret_create_init (GkdSecretCreate *self)
 {
-
+	gcr_prompt_set_title (GCR_PROMPT (self), _("New Keyring Password"));
 }
 
 static void
@@ -250,7 +313,8 @@ gkd_secret_create_finalize (GObject *obj)
 {
 	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
 
-	gck_attributes_unref (self->pkcs11_attrs);
+	gkd_secret_secret_free (self->master);
+	gck_attributes_unref (self->attributes);
 	g_free (self->result_path);
 	g_free (self->alias);
 
@@ -265,9 +329,9 @@ gkd_secret_create_set_property (GObject *obj, guint prop_id, const GValue *value
 
 	switch (prop_id) {
 	case PROP_PKCS11_ATTRIBUTES:
-		g_return_if_fail (!self->pkcs11_attrs);
-		self->pkcs11_attrs = g_value_dup_boxed (value);
-		g_return_if_fail (self->pkcs11_attrs);
+		g_return_if_fail (!self->attributes);
+		self->attributes = g_value_dup_boxed (value);
+		g_return_if_fail (self->attributes);
 		break;
 	case PROP_ALIAS:
 		g_return_if_fail (!self->alias);
@@ -287,7 +351,7 @@ gkd_secret_create_get_property (GObject *obj, guint prop_id, GValue *value,
 
 	switch (prop_id) {
 	case PROP_PKCS11_ATTRIBUTES:
-		g_value_set_boxed (value, self->pkcs11_attrs);
+		g_value_set_boxed (value, self->attributes);
 		break;
 	case PROP_ALIAS:
 		g_value_set_string (value, self->alias);
@@ -358,15 +422,15 @@ gkd_secret_create_with_credential (GckSession *session, GckAttributes *attrs,
 }
 
 gchar*
-gkd_secret_create_with_secret (GckAttributes *attrs, GkdSecretSecret *master,
-                               DBusError *derr)
+gkd_secret_create_with_secret (GckAttributes *attrs,
+                               GkdSecretSecret *master,
+                               GError **error)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *atts;
 	GckObject *cred;
 	GckObject *collection;
 	GckSession *session;
-	GError *error = NULL;
 	gpointer identifier;
 	gsize n_identifier;
 	gboolean token;
@@ -384,33 +448,26 @@ gkd_secret_create_with_secret (GckAttributes *attrs, GkdSecretSecret *master,
 
 	/* Create ourselves some credentials */
 	atts = gck_attributes_ref_sink (gck_builder_end (&builder));
-	cred = gkd_secret_session_create_credential (master->session, session, atts, master, derr);
+	cred = gkd_secret_session_create_credential (master->session, session,
+	                                             atts, master, error);
 	gck_attributes_unref (atts);
 
 	if (cred == NULL)
 		return FALSE;
 
-	collection = gkd_secret_create_with_credential (session, attrs, cred, &error);
+	collection = gkd_secret_create_with_credential (session, attrs, cred, error);
 
 	gck_attributes_unref (atts);
 	g_object_unref (cred);
 
-	if (collection == NULL) {
-		g_warning ("couldn't create collection: %s", egg_error_message (error));
-		g_clear_error (&error);
-		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't create new collection");
+	if (collection == NULL)
 		return FALSE;
-	}
 
-	identifier = gck_object_get_data (collection, CKA_ID, NULL, &n_identifier, &error);
+	identifier = gck_object_get_data (collection, CKA_ID, NULL, &n_identifier, error);
 	g_object_unref (collection);
 
-	if (!identifier) {
-		g_warning ("couldn't lookup new collection identifier: %s", egg_error_message (error));
-		g_clear_error (&error);
-		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't find new collection just created");
+	if (!identifier)
 		return FALSE;
-	}
 
 	path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
 	g_free (identifier);

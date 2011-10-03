@@ -712,18 +712,19 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
 }
 
 GckObject*
-gkd_secret_session_create_credential (GkdSecretSession *self, GckSession *session,
-                                      GckAttributes *attrs, GkdSecretSecret *secret,
-                                      DBusError *derr)
+gkd_secret_session_create_credential (GkdSecretSession *self,
+                                      GckSession *session,
+                                      GckAttributes *attrs,
+                                      GkdSecretSecret *secret,
+                                      GError **error)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *alloc = NULL;
 	GckMechanism mech;
 	GckObject *object;
-	GError *error = NULL;
 
 	g_assert (GCK_IS_OBJECT (self->key));
-	g_assert (attrs);
+	g_assert (attrs != NULL);
 
 	if (session == NULL)
 		session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
@@ -740,25 +741,9 @@ gkd_secret_session_create_credential (GkdSecretSession *self, GckSession *sessio
 	mech.n_parameter = secret->n_parameter;
 
 	object = gck_session_unwrap_key_full (session, self->key, &mech, secret->value,
-	                                      secret->n_value, attrs, NULL, &error);
+	                                      secret->n_value, attrs, NULL, error);
 
 	gck_attributes_unref (alloc);
-
-	if (object == NULL) {
-		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
-			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");
-		} else if (g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_INVALID) ||
-		           g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
-		           g_error_matches (error, GCK_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
-			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
-			                      "The secret was transferred or encrypted in an invalid way.");
-		} else {
-			g_message ("couldn't unwrap credential: %s", egg_error_message (error));
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't use credentials");
-		}
-		g_clear_error (&error);
-		return NULL;
-	}
 
 	return object;
 }

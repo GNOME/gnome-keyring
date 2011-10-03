@@ -24,25 +24,11 @@
 
 #include <glib-object.h>
 
-#include "ui/gku-prompt.h"
-
 #include "pkcs11/pkcs11.h"
 
-#define GKM_WRAP_TYPE_PROMPT               (gkm_wrap_prompt_get_type ())
-#define GKM_WRAP_PROMPT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKM_WRAP_TYPE_PROMPT, GkmWrapPrompt))
-#define GKM_WRAP_PROMPT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKM_WRAP_TYPE_PROMPT, GkmWrapPromptClass))
-#define GKM_WRAP_IS_PROMPT(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GKM_WRAP_TYPE_PROMPT))
-#define GKM_WRAP_IS_PROMPT_CLASS(klass)    (G_TYPE_CHECK_CLASS_TYPE ((klass), GKM_WRAP_TYPE_PROMPT))
-#define GKM_WRAP_PROMPT_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GKM_WRAP_TYPE_PROMPT, GkmWrapPromptClass))
-
 typedef struct _GkmWrapPrompt GkmWrapPrompt;
-typedef struct _GkmWrapPromptClass GkmWrapPromptClass;
 
-struct _GkmWrapPromptClass {
-	GkuPromptClass parent_class;
-};
-
-GType               gkm_wrap_prompt_get_type                (void);
+void                gkm_wrap_prompt_set_prompter_name       (const gchar *prompter_name);
 
 GkmWrapPrompt*      gkm_wrap_prompt_for_credential          (CK_FUNCTION_LIST_PTR module,
                                                              CK_SESSION_HANDLE session,

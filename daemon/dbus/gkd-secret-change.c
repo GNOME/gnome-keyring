@@ -37,6 +37,7 @@
 #include <glib/gi18n.h>
 
 #include <gck/gck.h>
+#include <gcr/gcr-base.h>
 
 #include <string.h>
 
@@ -48,25 +49,31 @@ enum {
 struct _GkdSecretChange {
 	GkdSecretPrompt parent;
 	gchar *collection_path;
+	GckSession *session;
+	GkdSecretSecret *master;
+	gboolean unlocked;
+	gboolean confirmed;
 };
 
-G_DEFINE_TYPE (GkdSecretChange, gkd_secret_change, GKD_SECRET_TYPE_PROMPT);
+struct _GkdSecretChangeClass {
+	GkdSecretPromptClass parent_class;
+};
 
-/* -----------------------------------------------------------------------------
- * INTERNAL
- */
+static void      perform_prompting     (GkdSecretChange *self,
+                                        GckObject *collection);
+
+G_DEFINE_TYPE (GkdSecretChange, gkd_secret_change, GCR_TYPE_SYSTEM_PROMPT);
 
 static void
-prepare_change_prompt (GkdSecretChange *self, GckObject *collection, gboolean first)
+setup_original_prompt (GkdSecretChange *self,
+                       GckObject *collection)
 {
+	GcrPrompt *prompt = GCR_PROMPT (self);
 	GError *error = NULL;
-	GkuPrompt *prompt;
 	gpointer data;
 	gsize n_data;
 	gchar *label;
 	gchar *text;
-
-	prompt = GKU_PROMPT (self);
 
 	data = gck_object_get_data (collection, CKA_LABEL, NULL, &n_data, &error);
 	if (!data) {
@@ -80,86 +87,249 @@ prepare_change_prompt (GkdSecretChange *self, GckObject *collection, gboolean fi
 		label = g_strndup (data, n_data);
 	g_free (data);
 
-	/* Hard reset on first prompt, soft thereafter */
-	gku_prompt_reset (prompt, first);
-
-	gku_prompt_set_title (prompt, _("Change Keyring Password"));
-
-	text = g_markup_printf_escaped (_("Choose a new password for the '%s' keyring"), label);
-	gku_prompt_set_primary_text (prompt, text);
+	text = g_strdup_printf (_("Enter the old password for the '%s' keyring"), label);
+	gcr_prompt_set_message (prompt, text);
 	g_free (text);
 
-	text = g_markup_printf_escaped (_("An application wants to change the password for the '%s' keyring. "
-	                                  "Choose the new password you want to use for it."), label);
-	gku_prompt_set_secondary_text (prompt, text);
+	text = g_strdup_printf (_("An application wants to change the password for the '%s' keyring. "
+	                          "Enter the old password for it."), label);
+	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
-	gku_prompt_hide_widget (prompt, "name_area");
-	gku_prompt_hide_widget (prompt, "details_area");
+	gcr_prompt_set_password_new (prompt, FALSE);
+}
 
-	gku_prompt_show_widget (prompt, "password_area");
-	gku_prompt_show_widget (prompt, "original_area");
-	gku_prompt_show_widget (prompt, "confirm_area");
+static void
+setup_password_prompt (GkdSecretChange *self,
+                       GckObject *collection)
+{
+	GcrPrompt *prompt = GCR_PROMPT (self);
+	GError *error = NULL;
+	gpointer data;
+	gsize n_data;
+	gchar *label;
+	gchar *text;
 
-	g_free (label);
+	data = gck_object_get_data (collection, CKA_LABEL, NULL, &n_data, &error);
+	if (!data) {
+		g_warning ("couldn't get label for collection: %s", egg_error_message (error));
+		g_clear_error (&error);
+	}
+
+	if (!data || !n_data)
+		label = g_strdup (_("Unnamed"));
+	else
+		label = g_strndup (data, n_data);
+	g_free (data);
+
+	text = g_strdup_printf (_("Choose a new password for the '%s' keyring"), label);
+	gcr_prompt_set_message (prompt, text);
+	g_free (text);
+
+	text = g_strdup_printf (_("An application wants to change the password for the '%s' keyring. "
+	                          "Choose the new password you want to use for it."), label);
+	gcr_prompt_set_description (prompt, text);
+	g_free (text);
+
+	gcr_prompt_set_password_new (prompt, TRUE);
+}
+
+static void
+setup_confirmation_prompt (GkdSecretChange *self)
+{
+	gcr_prompt_set_message (GCR_PROMPT (self), _("Store passwords unencrypted?"));
+	gcr_prompt_set_description (GCR_PROMPT (self),
+	                            _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
+	                              "They will be accessible by anyone with access to your files."));
 }
 
 static void
 set_warning_wrong (GkdSecretChange *self)
 {
-	g_assert (GKD_SECRET_IS_CHANGE (self));
-	gku_prompt_set_warning (GKU_PROMPT (self), _("The original password was incorrect"));
+	gcr_prompt_set_warning (GCR_PROMPT (self), _("The original password was incorrect"));
 }
 
-/* -----------------------------------------------------------------------------
- * OBJECT
- */
+static void
+on_prompt_original_complete (GObject *source,
+                             GAsyncResult *result,
+                             gpointer user_data)
+{
+	GkdSecretChange *self = GKD_SECRET_CHANGE (source);
+	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
+	GckBuilder builder = GCK_BUILDER_INIT;
+	gboolean continue_prompting = TRUE;
+	GkdSecretSecret *original;
+	GckAttributes *attrs;
+	GError *error = NULL;
+	GckObject *collection;
+	GckObject *cred;
+
+	gcr_prompt_password_finish (GCR_PROMPT (source), result, &error);
+	if (error != NULL) {
+		gkd_secret_prompt_dismiss_with_error (prompt, error);
+		g_error_free (error);
+		return;
+	}
+
+	collection = gkd_secret_prompt_lookup_collection (prompt, self->collection_path);
+	if (collection != NULL) {
+		gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+		gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
+		gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (collection));
+
+		attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
+		original = gkd_secret_prompt_take_secret (prompt);
+
+		/* Create the original credential, in order to make sure we can unlock the collection */
+		cred = gkd_secret_session_create_credential (original->session,
+		                                             self->session, attrs,
+		                                             original, &error);
+
+		gck_attributes_unref (attrs);
+		gkd_secret_secret_free (original);
+
+		/* The unlock failed because password was bad */
+		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
+			set_warning_wrong (self);
+			g_error_free (error);
+
+		/* The unlock failed for some other reason */
+		} else if (error != NULL) {
+			continue_prompting = FALSE;
+			gkd_secret_prompt_dismiss_with_error (prompt, error);
+			g_error_free (error);
+
+		/* The unlock succeeded */
+		} else {
+			if (self->session == NULL)
+				self->session = gck_object_get_session (cred);
+			gck_object_destroy (cred, NULL, NULL);
+			self->unlocked = TRUE;
+		}
+	}
+
+	if (continue_prompting)
+		perform_prompting (self, collection);
+
+	g_clear_object (&cred);
+	g_clear_object (&collection);
+}
+
+static void
+on_prompt_password_complete (GObject *source,
+                             GAsyncResult *result,
+                             gpointer user_data)
+{
+	GkdSecretChange *self = GKD_SECRET_CHANGE (source);
+	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
+	GError *error = NULL;
+	GckObject *collection;
+
+	gcr_prompt_password_finish (GCR_PROMPT (source), result, &error);
+	if (error != NULL) {
+		gkd_secret_prompt_dismiss_with_error (prompt, error);
+		g_error_free (error);
+		return;
+	}
+
+	self->master = gkd_secret_prompt_take_secret (prompt);
+	if (self->master == NULL) {
+		gkd_secret_prompt_dismiss (prompt);
+		return;
+	}
+
+	/* If the password strength is greater than zero, then don't confirm */
+	if (gcr_prompt_get_password_strength (GCR_PROMPT (source)) > 0)
+		self->confirmed = TRUE;
+
+	collection = gkd_secret_prompt_lookup_collection (prompt, self->collection_path);
+	perform_prompting (self, collection);
+	g_clear_object (&collection);
+}
+
+static void
+on_prompt_confirmation_complete (GObject *source,
+                                 GAsyncResult *result,
+                                 gpointer user_data)
+{
+	GkdSecretChange *self = GKD_SECRET_CHANGE (source);
+	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
+	GError *error = NULL;
+	GckObject *collection;
+
+	self->confirmed = gcr_prompt_confirm_finish (GCR_PROMPT (source), result, &error);
+	if (error != NULL) {
+		gkd_secret_prompt_dismiss_with_error (prompt, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* If not confirmed, then prompt again */
+	if (!self->confirmed) {
+		gkd_secret_secret_free (self->master);
+		self->master = NULL;
+	}
+
+	collection = gkd_secret_prompt_lookup_collection (prompt, self->collection_path);
+	perform_prompting (self, collection);
+	g_clear_object (&collection);
+}
+
+static void
+perform_prompting (GkdSecretChange *self,
+                   GckObject *collection)
+{
+	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (self);
+	GError *error = NULL;
+
+	/* Collection doesn't exist, just go away */
+	if (collection == NULL) {
+		gkd_secret_prompt_dismiss (prompt);
+
+	/* Get the original password and unlock */
+	} else if (self->unlocked) {
+		setup_original_prompt (self, collection);
+		gcr_prompt_password_async (GCR_PROMPT (self),
+		                           gkd_secret_prompt_get_cancellable (prompt),
+		                           on_prompt_original_complete, NULL);
+
+	/* Get the new password */
+	} else if (self->master == NULL) {
+		setup_password_prompt (self, collection);
+		gcr_prompt_password_async (GCR_PROMPT (self),
+		                           gkd_secret_prompt_get_cancellable (prompt),
+		                           on_prompt_password_complete, NULL);
+
+	/* Check that the password is not empty */
+	} else if (!self->confirmed) {
+		setup_confirmation_prompt (self);
+		gcr_prompt_confirm_async (GCR_PROMPT (self),
+		                          gkd_secret_prompt_get_cancellable (prompt),
+		                          on_prompt_confirmation_complete, NULL);
+
+	/* Actually create the keyring */
+	} else if (gkd_secret_change_with_secrets (collection, self->session,
+	                                           NULL, self->master, &error)) {
+		gkd_secret_prompt_complete (prompt);
+
+	/* Failed */
+	} else {
+		gkd_secret_prompt_dismiss_with_error (prompt, error);
+		g_error_free (error);
+	}
+
+	g_object_unref (collection);
+}
 
 static void
 gkd_secret_change_prompt_ready (GkdSecretPrompt *prompt)
 {
 	GkdSecretChange *self = GKD_SECRET_CHANGE (prompt);
-	GkdSecretSecret *original, *master;
-	DBusError derr = DBUS_ERROR_INIT;
 	GckObject *collection;
-	gboolean result;
 
 	collection = gkd_secret_prompt_lookup_collection (prompt, self->collection_path);
-
-	/* No more prompt, just go away */
-	if (collection == NULL) {
-		gkd_secret_prompt_dismiss (prompt);
-		return;
-	}
-
-	if (!gku_prompt_has_response (GKU_PROMPT (prompt))) {
-		prepare_change_prompt (self, collection, TRUE);
-		return;
-	}
-
-	original = gkd_secret_prompt_get_secret (prompt, "original");
-	master = gkd_secret_prompt_get_secret (prompt, "password");
-
-	result = gkd_secret_change_with_secrets (collection, original, master, &derr);
-
-	gkd_secret_secret_free (original);
-	gkd_secret_secret_free (master);
-
-	/* The change succeeded, yay */
-	if (result) {
-		gkd_secret_prompt_complete (prompt);
-
-	/* The original password was incorrect */
-	} else if (dbus_error_has_name (&derr, INTERNAL_ERROR_DENIED)) {
-		prepare_change_prompt (self, collection, FALSE);
-		set_warning_wrong (self);
-
-	/* Other failures */
-	} else {
-		gkd_secret_prompt_dismiss (prompt);
-	}
-
-	g_object_unref (collection);
+	perform_prompting (self, collection);
+	g_clear_object (&collection);
 }
 
 static void
@@ -176,7 +346,7 @@ gkd_secret_change_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
 static void
 gkd_secret_change_init (GkdSecretChange *self)
 {
-
+	gcr_prompt_set_title (GCR_PROMPT (self), _("Change Keyring Password"));
 }
 
 static void
@@ -262,21 +432,28 @@ gkd_secret_change_new (GkdSecretService *service, const gchar *caller,
 }
 
 gboolean
-gkd_secret_change_with_secrets (GckObject *collection, GkdSecretSecret *original,
-                                GkdSecretSecret *master, DBusError *derr)
+gkd_secret_change_with_secrets (GckObject *collection,
+                                GckSession *session,
+                                GkdSecretSecret *original,
+                                GkdSecretSecret *master,
+                                GError **error)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
-	GError *error = NULL;
 	GckAttributes *attrs = NULL;
 	gboolean result = FALSE;
 	GckObject *ocred = NULL;
 	GckObject *mcred = NULL;
 
+	g_assert (GCK_IS_OBJECT (collection));
+	g_assert (session == NULL || GCK_IS_SESSION (session));
+	g_assert (master != NULL);
+	g_assert (error == NULL || *error == NULL);
+
 	/* Create the new credential */
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
 	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
 	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
-	mcred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, derr);
+	mcred = gkd_secret_session_create_credential (master->session, session, attrs, master, error);
 	if (mcred == NULL)
 		goto cleanup;
 
@@ -284,17 +461,19 @@ gkd_secret_change_with_secrets (GckObject *collection, GkdSecretSecret *original
 	gck_attributes_unref (attrs);
 
 	/* Create the original credential, in order to make sure we can the collection */
-	gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (collection));
-	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
-	ocred = gkd_secret_session_create_credential (original->session, NULL, attrs, original, derr);
-	if (ocred == NULL)
-		goto cleanup;
+	if (original) {
+		gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (collection));
+		attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
+		ocred = gkd_secret_session_create_credential (original->session, session, attrs, original, error);
+		if (ocred == NULL)
+			goto cleanup;
+	}
 
 	gck_attributes_unref (attrs);
 	gck_builder_add_ulong (&builder, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
 
 	/* Now set the collection credentials to the first one */
-	result = gck_object_set (collection, attrs, NULL, &error);
+	result = gck_object_set (collection, attrs, NULL, error);
 
 cleanup:
 	if (ocred) {
@@ -310,17 +489,5 @@ cleanup:
 	}
 
 	gck_attributes_unref (attrs);
-
-	if (!result && error) {
-		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN))
-			dbus_set_error (derr, INTERNAL_ERROR_DENIED, "The original password was invalid");
-		else
-			g_warning ("failure occurred while changing password: %s", egg_error_message (error));
-	}
-
-	if (!result && !dbus_error_is_set (derr))
-		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't change master password");
-
-	g_clear_error (&error);
 	return result;
 }

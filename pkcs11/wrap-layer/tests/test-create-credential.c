@@ -21,14 +21,17 @@
 
 #include "config.h"
 
+#include "wrap-layer/gkm-wrap-layer.h"
+#include "wrap-layer/gkm-wrap-prompt.h"
+
 #include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
 
 #include "egg/egg-testing.h"
 
-#include "wrap-layer/gkm-wrap-layer.h"
+#include <gcr/gcr-base.h>
 
-#include "ui/gku-prompt.h"
+#include <glib-object.h>
 
 #include <string.h>
 
@@ -45,6 +48,7 @@ setup (Test *test, gconstpointer unused)
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
+	const gchar *prompter;
 	CK_ULONG count;
 	CK_RV rv;
 
@@ -62,7 +66,8 @@ setup (Test *test, gconstpointer unused)
 	gkm_wrap_layer_add_module (&test->functions);
 	test->module = gkm_wrap_layer_get_functions ();
 
-	gku_prompt_dummy_prepare_response ();
+	prompter = gcr_mock_prompter_start ();
+	gkm_wrap_prompt_set_prompter_name (prompter);
 
 	/* Open a test->session */
 	rv = (test->module->C_Initialize) (NULL);
@@ -92,7 +97,8 @@ teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	g_assert (!gku_prompt_dummy_have_response ());
+	g_assert (!gcr_mock_prompter_is_expecting ());
+	gcr_mock_prompter_stop ();
 
 	rv = (test->module->C_CloseSession) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
@@ -114,7 +120,7 @@ test_ok_password (Test *test, gconstpointer unused)
 	CK_OBJECT_HANDLE cred = 0;
 	CK_RV rv;
 
-	gku_prompt_dummy_queue_ok_password ("booo");
+	gcr_mock_prompter_expect_password_ok ("booo", NULL);
 
 	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
@@ -134,8 +140,8 @@ test_bad_password_then_cancel (Test *test, gconstpointer unused)
 	CK_OBJECT_HANDLE cred = 0;
 	CK_RV rv;
 
-	gku_prompt_dummy_queue_ok_password ("bad password");
-	gku_prompt_dummy_queue_no ();
+	gcr_mock_prompter_expect_password_ok ("bad password", NULL);
+	gcr_mock_prompter_expect_password_cancel ();
 
 	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);
@@ -154,7 +160,7 @@ test_cancel_immediately (Test *test, gconstpointer unused)
 	CK_OBJECT_HANDLE cred = 0;
 	CK_RV rv;
 
-	gku_prompt_dummy_queue_no ();
+	gcr_mock_prompter_expect_password_cancel ();
 
 	rv = (test->module->C_CreateObject) (test->session, attrs, G_N_ELEMENTS (attrs), &cred);
 	gkm_assert_cmprv (rv, ==, CKR_PIN_INCORRECT);

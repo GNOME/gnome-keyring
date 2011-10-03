@@ -5,13 +5,14 @@ INCLUDES = \
 	-I$(top_srcdir)/pkcs11 \
 	-DSRCDIR="\"@abs_srcdir@\"" \
 	-DWITH_TESTABLE \
+	-DGCR_API_SUBJECT_TO_CHANGE \
+	$(GCR_BASE_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 LDADD = \
 	$(top_builddir)/pkcs11/wrap-layer/libgkm-wrap-layer.la \
 	libgkm-mock-secret-store.a \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
-	$(top_builddir)/ui/libgku-prompt-testable.la \
 	$(top_builddir)/egg/libegg.la \
 	$(GCR_BASE_LIBS) \
 	$(GLIB_LIBS)

@@ -21,9 +21,13 @@
 
 #include "config.h"
 
-#include <glib.h>
-
 #include "gkd-secret-error.h"
+
+#include "egg/egg-error.h"
+
+#include <gck/gck.h>
+
+#include <glib.h>
 
 DBusMessage*
 gkd_secret_error_no_such_object (DBusMessage *message)
@@ -45,4 +49,31 @@ gkd_secret_error_to_reply (DBusMessage *message, DBusError *derr)
 	reply = dbus_message_new_error (message, derr->name, derr->message);
 	dbus_error_free (derr);
 	return reply;
+}
+
+DBusMessage *
+gkd_secret_propagate_error (DBusMessage *message,
+                            const gchar *description,
+                            GError *error)
+{
+	DBusError derr = DBUS_ERROR_INIT;
+
+	g_return_val_if_fail (error != NULL, NULL);
+
+	if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
+		dbus_set_error (&derr, INTERNAL_ERROR_DENIED, "The password was invalid");
+
+	} else if (g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_INVALID) ||
+	           g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
+	           g_error_matches (error, GCK_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
+		dbus_set_error_const (&derr, DBUS_ERROR_INVALID_ARGS,
+		                      "The secret was transferred or encrypted in an invalid way.");
+
+	} else {
+		g_warning ("%s: %s", description, egg_error_message (error));
+		dbus_set_error (&derr, DBUS_ERROR_FAILED, "Couldn't create new collection");
+	}
+
+	g_error_free (error);
+	return gkd_secret_error_to_reply (message, &derr);
 }

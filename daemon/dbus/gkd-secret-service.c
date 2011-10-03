@@ -670,6 +670,7 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 	DBusMessage *reply = NULL;
 	GkdSecretSecret *secret = NULL;
 	GckAttributes *attrs = NULL;
+	GError *error = NULL;
 	gchar *path;
 
 	/* Parse the incoming message */
@@ -692,12 +693,12 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 
 	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
 	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
-	path = gkd_secret_create_with_secret (attrs, secret, &derr);
+	path = gkd_secret_create_with_secret (attrs, secret, &error);
 	gck_attributes_unref (attrs);
 	gkd_secret_secret_free (secret);
 
 	if (path == NULL)
-		return gkd_secret_error_to_reply (message, &derr);
+		return gkd_secret_propagate_error (message, "Couldn't create collection", error);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
@@ -714,6 +715,7 @@ service_method_change_with_master_password (GkdSecretService *self, DBusMessage 
 	GckObject *collection;
 	DBusMessageIter iter;
 	DBusMessage *reply;
+	GError *error = NULL;
 	const gchar *path;
 
 	/* Parse the incoming message */
@@ -744,12 +746,12 @@ service_method_change_with_master_password (GkdSecretService *self, DBusMessage 
 		                                "The collection does not exist");
 
 	/* Success */
-	else if (gkd_secret_change_with_secrets (collection, original, master, &derr))
+	else if (gkd_secret_change_with_secrets (collection, NULL, original, master, &error))
 		reply = dbus_message_new_method_return (message);
 
 	/* Failure */
 	else
-		reply = gkd_secret_error_to_reply (message, &derr);
+		reply = gkd_secret_propagate_error (message, "Couldn't change collection password", error);
 
 	gkd_secret_secret_free (original);
 	gkd_secret_secret_free (master);
@@ -765,6 +767,7 @@ service_method_unlock_with_master_password (GkdSecretService *self, DBusMessage 
 {
 	DBusError derr = DBUS_ERROR_INIT;
 	GkdSecretSecret *master;
+	GError *error = NULL;
 	GckObject *collection;
 	DBusMessageIter iter;
 	DBusMessage *reply;
@@ -792,12 +795,12 @@ service_method_unlock_with_master_password (GkdSecretService *self, DBusMessage 
 		                                "The collection does not exist");
 
 	/* Success */
-	else if (gkd_secret_unlock_with_secret (collection, master, &derr))
+	else if (gkd_secret_unlock_with_secret (collection, master, &error))
 		reply = dbus_message_new_method_return (message);
 
 	/* Failure */
 	else
-		reply = gkd_secret_error_to_reply (message, &derr);
+		reply = gkd_secret_propagate_error (message, "Couldn't unlock collection", error);
 
 	gkd_secret_secret_free (master);
 

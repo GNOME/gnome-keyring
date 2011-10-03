@@ -56,6 +56,6 @@ GckObject*          gkd_secret_create_with_credential         (GckSession *sessi
 
 gchar*              gkd_secret_create_with_secret             (GckAttributes *attrs,
                                                                GkdSecretSecret *master,
-                                                               DBusError *derr);
+                                                               GError **error);
 
 #endif /* __GKD_SECRET_CREATE_H__ */

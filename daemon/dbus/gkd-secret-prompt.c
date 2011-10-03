@@ -33,9 +33,8 @@
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
 
-#include "ui/gku-prompt.h"
-
 #include "egg/egg-dh.h"
+#include "egg/egg-error.h"
 
 #include <string.h>
 
@@ -50,6 +49,7 @@ struct _GkdSecretPromptPrivate {
 	gchar *object_path;
 	GkdSecretService *service;
 	GkdSecretExchange *exchange;
+	GCancellable *cancellable;
 	gboolean prompted;
 	gboolean completed;
 	gchar *caller;
@@ -58,29 +58,10 @@ struct _GkdSecretPromptPrivate {
 };
 
 static void gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface);
-G_DEFINE_TYPE_WITH_CODE (GkdSecretPrompt, gkd_secret_prompt, GKU_TYPE_PROMPT,
+G_DEFINE_TYPE_WITH_CODE (GkdSecretPrompt, gkd_secret_prompt, GCR_TYPE_SYSTEM_PROMPT,
                          G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
 
 static guint unique_prompt_number = 0;
-
-/* -----------------------------------------------------------------------------
- * INTERNAL
- */
-
-static GkuPrompt*
-on_prompt_attention (gpointer user_data)
-{
-	GkdSecretPrompt *self = user_data;
-
-	/* Check with the derived class */
-	g_return_val_if_fail (GKD_SECRET_PROMPT_GET_CLASS (self)->prompt_ready, NULL);
-	GKD_SECRET_PROMPT_GET_CLASS (self)->prompt_ready (self);
-
-	if (self->pv->completed)
-		return NULL;
-
-	return g_object_ref (self);
-}
 
 static void
 emit_completed (GkdSecretPrompt *self, gboolean dismissed)
@@ -104,12 +85,31 @@ emit_completed (GkdSecretPrompt *self, gboolean dismissed)
 	dbus_message_unref (signal);
 }
 
-/* -----------------------------------------------------------------------------
- * DBUS
- */
+static void
+on_system_prompt_inited (GObject *source,
+                         GAsyncResult *result,
+                         gpointer user_data)
+{
+	GkdSecretPrompt *self = GKD_SECRET_PROMPT (source);
+	GkdSecretPromptClass *klass;
+	GError *error = NULL;
+
+	if (g_async_initable_init_finish (G_ASYNC_INITABLE (source), result, &error)) {
+		klass = GKD_SECRET_PROMPT_GET_CLASS (self);
+		g_assert (klass->prompt_ready);
+		(klass->prompt_ready) (self);
+	} else {
+		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			g_message ("couldn't initialize prompt: %s", error->message);
+		g_error_free (error);
+		if (!self->pv->completed)
+			gkd_secret_prompt_dismiss (self);
+	}
+}
 
 static DBusMessage*
-prompt_method_prompt (GkdSecretPrompt *self, DBusMessage *message)
+prompt_method_prompt (GkdSecretPrompt *self,
+                      DBusMessage *message)
 {
 	DBusMessage *reply;
 	const char *window_id;
@@ -127,10 +127,12 @@ prompt_method_prompt (GkdSecretPrompt *self, DBusMessage *message)
 		return dbus_message_new_error (message, SECRET_ERROR_ALREADY_EXISTS,
 		                               "This prompt has already been shown.");
 
-	gku_prompt_set_window_id (GKU_PROMPT (self), window_id);
-	gku_prompt_request_attention_async (window_id, on_prompt_attention,
-	                                    g_object_ref (self), g_object_unref);
 	self->pv->prompted = TRUE;
+
+	gcr_prompt_set_caller_window (GCR_PROMPT (self), window_id);
+
+	g_async_initable_init_async (G_ASYNC_INITABLE (self), G_PRIORITY_DEFAULT,
+	                             self->pv->cancellable, on_system_prompt_inited, NULL);
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
@@ -156,35 +158,8 @@ prompt_method_dismiss (GkdSecretPrompt *self, DBusMessage *message)
 	return reply;
 }
 
-/* -----------------------------------------------------------------------------
- * OBJECT
- */
-
-static gboolean
-gkd_secret_prompt_responded (GkuPrompt *base)
-{
-	GkdSecretPrompt *self = GKD_SECRET_PROMPT (base);
-	gint res;
-
-	res = gku_prompt_get_response (GKU_PROMPT (self));
-	if (res <= GKU_RESPONSE_NO) {
-		gkd_secret_prompt_dismiss (self);
-		return FALSE;
-	}
-
-	/* Check with the prompt ready guys */
-	g_return_val_if_fail (GKD_SECRET_PROMPT_GET_CLASS (self)->prompt_ready, TRUE);
-	GKD_SECRET_PROMPT_GET_CLASS (self)->prompt_ready (self);
-
-	/* Not yet done, will display again */
-	if (!self->pv->completed)
-		return TRUE;
-
-	return FALSE;
-}
-
 static void
-gkd_secret_prompt_real_ready (GkdSecretPrompt *self)
+gkd_secret_prompt_real_prompt_ready (GkdSecretPrompt *self)
 {
 	/* Default implementation, unused */
 	g_return_if_reached ();
@@ -245,19 +220,22 @@ gkd_secret_prompt_constructed (GObject *obj)
 	self->pv->exchange = gkd_secret_exchange_new (self->pv->service, self->pv->caller);
 
 	/* Set the exchange for the prompt */
-	g_object_set (self, "exchange", self->pv->exchange, NULL);
+	g_object_set (self, "secret-exchange", self->pv->exchange, NULL);
 }
 
 static void
 gkd_secret_prompt_init (GkdSecretPrompt *self)
 {
 	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKD_SECRET_TYPE_PROMPT, GkdSecretPromptPrivate);
+	self->pv->cancellable = g_cancellable_new ();
 }
 
 static void
 gkd_secret_prompt_dispose (GObject *obj)
 {
 	GkdSecretPrompt *self = GKD_SECRET_PROMPT (obj);
+
+	g_cancellable_cancel (self->pv->cancellable);
 
 	g_free (self->pv->object_path);
 	self->pv->object_path = NULL;
@@ -283,6 +261,8 @@ gkd_secret_prompt_finalize (GObject *obj)
 
 	g_free (self->pv->caller);
 	self->pv->caller = NULL;
+
+	g_clear_object (&self->pv->cancellable);
 
 	G_OBJECT_CLASS (gkd_secret_prompt_parent_class)->finalize (obj);
 }
@@ -337,7 +317,6 @@ static void
 gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GkuPromptClass *prompt_class = GKU_PROMPT_CLASS (klass);
 
 	gobject_class->constructed = gkd_secret_prompt_constructed;
 	gobject_class->dispose = gkd_secret_prompt_dispose;
@@ -345,10 +324,8 @@ gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 	gobject_class->set_property = gkd_secret_prompt_set_property;
 	gobject_class->get_property = gkd_secret_prompt_get_property;
 
-	prompt_class->responded = gkd_secret_prompt_responded;
-
 	klass->encode_result = gkd_secret_prompt_real_encode_result;
-	klass->prompt_ready = gkd_secret_prompt_real_ready;
+	klass->prompt_ready = gkd_secret_prompt_real_prompt_ready;
 
 	g_type_class_add_private (klass, sizeof (GkdSecretPromptPrivate));
 
@@ -420,6 +397,9 @@ gkd_secret_prompt_complete (GkdSecretPrompt *self)
 	g_return_if_fail (!self->pv->completed);
 	self->pv->completed = TRUE;
 	emit_completed (self, FALSE);
+
+	/* Make this object go away */
+	g_object_run_dispose (G_OBJECT (self));
 }
 
 void
@@ -429,6 +409,17 @@ gkd_secret_prompt_dismiss (GkdSecretPrompt *self)
 	g_return_if_fail (!self->pv->completed);
 	self->pv->completed = TRUE;
 	emit_completed (self, TRUE);
+
+	/* Make this object go away */
+	g_object_run_dispose (G_OBJECT (self));
+}
+
+void
+gkd_secret_prompt_dismiss_with_error (GkdSecretPrompt *self,
+                                      GError *error)
+{
+	g_warning ("prompting failed: %s", egg_error_message (error));
+	gkd_secret_prompt_dismiss (self);
 }
 
 GckObject*
@@ -444,13 +435,17 @@ gkd_secret_prompt_lookup_collection (GkdSecretPrompt *self, const gchar *path)
 }
 
 GkdSecretSecret *
-gkd_secret_prompt_get_secret (GkdSecretPrompt *self, const gchar *password_type)
+gkd_secret_prompt_take_secret (GkdSecretPrompt *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
 
-	/* Ignore the result of this, since GkdSecretExchange doesn't decrypt */
-	gku_prompt_get_password (GKU_PROMPT (self), password_type);
-
 	/* ... instead it stashes away the raw cipher text, and makes it available here */
 	return gkd_secret_exchange_take_last_secret (self->pv->exchange);
+}
+
+GCancellable *
+gkd_secret_prompt_get_cancellable (GkdSecretPrompt *self)
+{
+	g_return_val_if_fail (GKD_SECRET_IS_PROMPT (self), NULL);
+	return self->pv->cancellable;
 }

@@ -29,8 +29,6 @@
 
 #include "wrap-layer/gkm-wrap-layer.h"
 
-#include "ui/gku-prompt.h"
-
 static guint secret_identifier = 8800;
 
 EGG_SECURE_GLIB_DEFINITIONS ();

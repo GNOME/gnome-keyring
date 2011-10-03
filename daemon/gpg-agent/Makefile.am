@@ -4,6 +4,7 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
 	-DGCK_API_SUBJECT_TO_CHANGE \
+	-DGCR_API_SUBJECT_TO_CHANGE \
 	$(DAEMON_CFLAGS)
 
 # ------------------------------------------------------------------------------
@@ -28,6 +29,5 @@ gkd_gpg_agent_standalone_SOURCES = \
 
 gkd_gpg_agent_standalone_LDADD = \
 	libgkd-gpg-agent.la \
-	$(top_builddir)/ui/libgku-prompt.la \
 	$(top_builddir)/egg/libegg.la \
 	$(DAEMON_LIBS)

@@ -71,7 +71,7 @@ GckObject*          gkd_secret_session_create_credential       (GkdSecretSession
                                                                 GckSession *session,
                                                                 GckAttributes *attrs,
                                                                 GkdSecretSecret *secret,
-                                                                DBusError *derr);
+                                                                GError **error);
 
 DBusMessage*        gkd_secret_session_handle_open             (GkdSecretSession *self,
                                                                 DBusMessage *message);

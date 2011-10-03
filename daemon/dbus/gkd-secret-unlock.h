@@ -62,7 +62,7 @@ void                gkd_secret_unlock_call_prompt             (GkdSecretUnlock *
 
 gboolean            gkd_secret_unlock_with_secret             (GckObject *collection,
                                                                GkdSecretSecret *master,
-                                                               DBusError *derr);
+                                                               GError **error);
 
 gboolean            gkd_secret_unlock_with_password           (GckObject *collection,
                                                                const guchar *password,

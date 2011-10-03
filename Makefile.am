@@ -9,7 +9,6 @@ endif
 SUBDIRS = \
 	. \
 	egg \
-	ui \
 	pkcs11 \
 	schema \
 	daemon \

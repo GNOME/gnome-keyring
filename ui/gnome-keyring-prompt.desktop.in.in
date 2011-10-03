@@ -1,8 +1,0 @@
-[Desktop Entry]
-_Name=Keyring Access
-_Comment=Unlock access to passwords and other secrets
-Icon=security-medium
-Exec=@LIBEXECDIR@/gnome-keyring-prompt-@GCR_MAJOR@
-Terminal=false
-Type=Application
-NoDisplay=true

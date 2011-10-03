@@ -38,10 +38,6 @@
 
 typedef struct _GkdSecretChangeClass GkdSecretChangeClass;
 
-struct _GkdSecretChangeClass {
-	GkdSecretPromptClass parent_class;
-};
-
 GType               gkd_secret_change_get_type                (void);
 
 GkdSecretChange*    gkd_secret_change_new                     (GkdSecretService *service,
@@ -49,8 +45,9 @@ GkdSecretChange*    gkd_secret_change_new                     (GkdSecretService 
                                                                const gchar *path);
 
 gboolean            gkd_secret_change_with_secrets            (GckObject *collection,
+                                                               GckSession *session,
                                                                GkdSecretSecret *original,
                                                                GkdSecretSecret *master,
-                                                               DBusError *derr);
+                                                               GError **error);
 
 #endif /* __GKD_SECRET_CHANGE_H__ */

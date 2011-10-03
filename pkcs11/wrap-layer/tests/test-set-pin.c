@@ -21,14 +21,17 @@
 
 #include "config.h"
 
+#include "wrap-layer/gkm-wrap-layer.h"
+#include "wrap-layer/gkm-wrap-prompt.h"
+
 #include "egg/egg-testing.h"
 
 #include "gkm/gkm-mock.h"
 #include "gkm/gkm-test.h"
 
-#include "wrap-layer/gkm-wrap-layer.h"
+#include <gcr/gcr-base.h>
 
-#include "ui/gku-prompt.h"
+#include <glib-object.h>
 
 typedef struct {
 	CK_FUNCTION_LIST functions;
@@ -42,6 +45,7 @@ setup (Test *test, gconstpointer unused)
 	CK_FUNCTION_LIST_PTR funcs;
 	CK_SLOT_ID slot_id;
 	CK_ULONG n_slots = 1;
+	const gchar *prompter;
 	CK_RV rv;
 
 	/* Always start off with test test->functions */
@@ -53,7 +57,8 @@ setup (Test *test, gconstpointer unused)
 	gkm_wrap_layer_add_module (&test->functions);
 	test->module = gkm_wrap_layer_get_functions ();
 
-	gku_prompt_dummy_prepare_response ();
+	prompter = gcr_mock_prompter_start ();
+	gkm_wrap_prompt_set_prompter_name (prompter);
 
 	/* Open a test->session */
 	rv = (test->module->C_Initialize) (NULL);
@@ -71,7 +76,8 @@ teardown (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	g_assert (!gku_prompt_dummy_have_response ());
+	g_assert (!gcr_mock_prompter_is_expecting ());
+	gcr_mock_prompter_stop ();
 
 	rv = (test->module->C_CloseSession) (test->session);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
@@ -87,7 +93,8 @@ test_ok_passwords (Test *test, gconstpointer unused)
 {
 	CK_RV rv;
 
-	gku_prompt_dummy_queue_ok_passwords ("booo", "new");
+	gcr_mock_prompter_expect_password_ok ("booo", NULL);
+	gcr_mock_prompter_expect_password_ok ("new", NULL);
 
 	rv = (test->module->C_SetPIN) (test->session, NULL, 0, NULL, 0);
 	gkm_assert_cmprv (rv, ==, CKR_OK);

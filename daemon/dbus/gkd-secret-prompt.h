@@ -26,9 +26,8 @@
 
 #include "gkd-secret-types.h"
 
-#include "ui/gku-prompt.h"
-
 #include <gck/gck.h>
+#include <gcr/gcr-base.h>
 
 #include <dbus/dbus.h>
 
@@ -43,19 +42,20 @@ typedef struct _GkdSecretPromptClass GkdSecretPromptClass;
 typedef struct _GkdSecretPromptPrivate GkdSecretPromptPrivate;
 
 struct _GkdSecretPrompt {
-	GkuPrompt parent;
+	GcrSystemPrompt parent;
 	GkdSecretPromptPrivate *pv;
 };
 
 struct _GkdSecretPromptClass {
-	GkuPromptClass parent_class;
+	GcrSystemPromptClass parent_class;
 
-	/* virtual methods */
-	void (*prompt_ready) (GkdSecretPrompt *self);
-	void (*encode_result) (GkdSecretPrompt *self, DBusMessageIter *iter);
+	void       (*prompt_ready)       (GkdSecretPrompt *self);
+
+	void       (*encode_result)      (GkdSecretPrompt *self,
+	                                  DBusMessageIter *iter);
 };
 
-GType               gkd_secret_prompt_get_type                (void);
+GType               gkd_secret_prompt_get_type                (void) G_GNUC_CONST;
 
 const gchar*        gkd_secret_prompt_get_caller              (GkdSecretPrompt *self);
 
@@ -67,8 +67,9 @@ GkdSecretService*   gkd_secret_prompt_get_service             (GkdSecretPrompt *
 
 GkdSecretObjects*   gkd_secret_prompt_get_objects             (GkdSecretPrompt *self);
 
-GkdSecretSecret*    gkd_secret_prompt_get_secret              (GkdSecretPrompt *self,
-                                                               const gchar *password_type);
+GCancellable *      gkd_secret_prompt_get_cancellable         (GkdSecretPrompt *self);
+
+GkdSecretSecret *   gkd_secret_prompt_take_secret             (GkdSecretPrompt *self);
 
 GckObject*          gkd_secret_prompt_lookup_collection       (GkdSecretPrompt *self,
                                                                const gchar *path);
@@ -76,5 +77,8 @@ GckObject*          gkd_secret_prompt_lookup_collection       (GkdSecretPrompt *
 void                gkd_secret_prompt_complete                (GkdSecretPrompt *self);
 
 void                gkd_secret_prompt_dismiss                 (GkdSecretPrompt *self);
+
+void                gkd_secret_prompt_dismiss_with_error      (GkdSecretPrompt *self,
+                                                               GError *error);
 
 #endif /* __GKD_SECRET_PROMPT_H__ */
