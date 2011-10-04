@@ -1621,6 +1621,49 @@ _gck_format_assertion_type (GString *output,
 	X (CKT_X_UNTRUSTED_CERTIFICATE)
 	X (CKT_X_PINNED_CERTIFICATE)
 	X (CKT_X_ANCHORED_CERTIFICATE)
+	#undef X
+	}
+
+	if (string != NULL)
+		g_string_append (output, string);
+	else
+		g_string_append_printf (output, "0x%08lX", type);
+}
+
+static void
+_gck_format_key_type (GString *output,
+                      CK_KEY_TYPE type)
+{
+	const gchar *string = NULL;
+
+	switch (type) {
+	#define X(x) case x: string = #x; break;
+	X (CKK_RSA)
+	X (CKK_DSA)
+	X (CKK_DH)
+	/* X (CKK_ECDSA) */
+	X (CKK_EC)
+	X (CKK_X9_42_DH)
+	X (CKK_KEA)
+	X (CKK_GENERIC_SECRET)
+	X (CKK_RC2)
+	X (CKK_RC4)
+	X (CKK_DES)
+	X (CKK_DES2)
+	X (CKK_DES3)
+	X (CKK_CAST)
+	X (CKK_CAST3)
+	X (CKK_CAST128)
+	X (CKK_RC5)
+	X (CKK_IDEA)
+	X (CKK_SKIPJACK)
+	X (CKK_BATON)
+	X (CKK_JUNIPER)
+	X (CKK_CDMF)
+	X (CKK_AES)
+	X (CKK_BLOWFISH)
+	X (CKK_TWOFISH)
+	#undef X
 	}
 
 	if (string != NULL)
@@ -1812,6 +1855,8 @@ _gck_format_attributes (GString *output,
 			_gck_format_assertion_type (output, *((CK_X_ASSERTION_TYPE *)attr->value));
 		} else if (_gck_attribute_is_ulong_of_type (attr, CKA_CERTIFICATE_TYPE)) {
 			_gck_format_certificate_type (output, *((CK_CERTIFICATE_TYPE *)attr->value));
+		} else if (_gck_attribute_is_ulong_of_type (attr, CKA_KEY_TYPE)) {
+			_gck_format_key_type (output, *((CK_KEY_TYPE *)attr->value));
 		} else if (_gck_attribute_is_sensitive (attr)) {
 			g_string_append_printf (output, " (%lu) NOT-PRINTED", attr->length);
 		} else {
