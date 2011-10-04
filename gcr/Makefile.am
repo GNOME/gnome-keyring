@@ -7,7 +7,7 @@ SUBDIRS = . icons tests
 uidir = $(datadir)/gcr-@GCR_MAJOR@/ui/
 
 ui_DATA = \
-	gcr-import-dialog.ui \
+	gcr-pkcs11-import-dialog.ui \
 	gcr-unlock-options-widget.ui
 
 # ------------------------------------------------------------------
@@ -22,6 +22,7 @@ HEADER_BASE_FILES = \
 	gcr-deprecated-base.h \
 	gcr-icons.h \
 	gcr-importer.h \
+	gcr-import-interaction.h \
 	gcr-library.h \
 	gcr-parser.h \
 	gcr-pkcs11-certificate.h \
@@ -107,6 +108,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-util.c gcr-gnupg-util.h \
 	gcr-icons.c gcr-icons.h \
 	gcr-importer.c gcr-importer.h \
+	gcr-import-interaction.c gcr-import-interaction.h \
 	gcr-internal.h \
 	gcr-library.c gcr-library.h \
 	gcr-memory.c \
@@ -137,6 +139,7 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-collection-model.c gcr-collection-model.h \
 	gcr-combo-selector.c gcr-combo-selector.h \
 	gcr-debug.c gcr-debug.h \
+	gcr-dialog-util.c gcr-dialog-util.h \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-display-view.c gcr-display-view.h \
 	gcr-failure-renderer.c gcr-failure-renderer.h \
@@ -144,7 +147,6 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-gnupg-renderer.c gcr-gnupg-renderer.h \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-import-button.c gcr-import-button.h \
-	gcr-import-dialog.c gcr-import-dialog.h \
 	gcr-key-renderer.c gcr-key-renderer.h \
 	gcr-key-widget.c gcr-key-widget.h \
 	gcr-list-selector.c gcr-list-selector.h gcr-list-selector-private.h \
@@ -152,6 +154,8 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-memory.c \
 	gcr-memory-icon.c gcr-memory-icon.h \
 	gcr-menu-button.c gcr-menu-button.h \
+	gcr-pkcs11-import-interaction.c gcr-pkcs11-import-interaction.h \
+	gcr-pkcs11-import-dialog.c gcr-pkcs11-import-dialog.h \
 	gcr-record.c gcr-record.h \
 	gcr-renderer.c gcr-renderer.h \
 	gcr-tree-selector.c gcr-tree-selector.h \

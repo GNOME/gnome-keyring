@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "gcr-base.h"
+#include "gcr-deprecated-base.h"
 #include "gcr-importer.h"
 #include "gcr-internal.h"
 #include "gcr-marshal.h"
@@ -74,7 +74,7 @@
 
 typedef GcrImporterIface GcrImporterInterface;
 
-G_DEFINE_INTERFACE (GcrImporter, gcr_importer, 0);
+G_DEFINE_INTERFACE (GcrImporter, gcr_importer, G_TYPE_OBJECT);
 
 typedef struct _GcrRegistered {
 	GckAttributes *attrs;
@@ -108,6 +108,16 @@ gcr_importer_default_init (GcrImporterIface *iface)
 		g_object_interface_install_property (iface,
 		         g_param_spec_object ("icon", "Icon", "The icon for the importer",
 		                              G_TYPE_ICON, G_PARAM_READABLE));
+
+		/**
+		 * GcrImporter:interaction:
+		 *
+		 * The interaction for the importer.
+		 */
+		g_object_interface_install_property (iface,
+		         g_param_spec_object ("interaction", "Interaction",
+		                              "Interaction for prompts",
+		                              G_TYPE_TLS_INTERACTION, G_PARAM_READWRITE));
 
 		g_once_init_leave (&initialized, 1);
 	}
@@ -463,6 +473,46 @@ gcr_importer_import_finish (GcrImporter *importer,
 	g_return_val_if_fail (iface->import_finish != NULL, FALSE);
 
 	return (iface->import_finish) (importer, result, error);
+}
+
+/**
+ * gcr_importer_get_interaction:
+ * @importer: the importer
+ *
+ * Get the interaction used to prompt the user when needed by this
+ * importer.
+ *
+ * Returns: (transfer none) (allow-none): the interaction or %NULL
+ */
+GTlsInteraction *
+gcr_importer_get_interaction (GcrImporter *importer)
+{
+	GTlsInteraction *interaction = NULL;
+
+	g_return_val_if_fail (GCR_IS_IMPORTER (importer), NULL);
+
+	g_object_get (importer, "interaction", &interaction, NULL);
+
+	if (interaction != NULL)
+		g_object_unref (interaction);
+
+	return interaction;
+}
+
+/**
+ * gcr_importer_set_interaction:
+ * @importer: the importer
+ * @interaction: the interaction used by the importer
+ *
+ * Set the interaction used to prompt the user when needed by this
+ * importer.
+ */
+void
+gcr_importer_set_interaction (GcrImporter *importer,
+                              GTlsInteraction *interaction)
+{
+	g_return_if_fail (GCR_IS_IMPORTER (importer));
+	g_object_set (importer, "interaction", interaction, NULL);
 }
 
 /**

@@ -24,7 +24,6 @@
 #include "gck/gck.h"
 
 #include "gcr-internal.h"
-#include "gcr-importer.h"
 #include "gcr-marshal.h"
 #include "gcr-oids.h"
 #include "gcr-openpgp.h"

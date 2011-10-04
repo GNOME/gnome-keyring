@@ -21,28 +21,22 @@
  * Author: Stef Walter <stefw@collabora.co.uk>
  */
 
-#if !defined (__GCR_INSIDE_HEADER__) && !defined (GCR_COMPILATION)
-#error "Only <gcr/gcr.h> or <gcr/gcr-base.h> can be included directly."
-#endif
+#ifndef GCR_DIALOG_UTIL_H
+#define GCR_DIALOG_UTIL_H
 
-#ifndef GCR_DEPRECATED_H_
-#define GCR_DEPRECATED_H_
-#ifndef GCR_DISABLE_DEPRECATED
-#ifndef __GI_SCANNER__
-
-#include <glib.h>
-
-#include "gcr-certificate-basics-widget.h"
-#include "gcr-certificate-details-widget.h"
-#include "gcr-viewer.h"
+#include <gtk/gtk.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
-void              gcr_renderer_render                         (GcrRenderer *self,
-                                                               GcrViewer *viewer);
+void     _gcr_dialog_util_run_async       (GtkDialog *dialog,
+                                           GCancellable *cancellable,
+                                           GAsyncReadyCallback callback,
+                                           gpointer user_data);
+
+gint     _gcr_dialog_util_run_finish      (GtkDialog *dialog,
+                                           GAsyncResult *result);
 
 G_END_DECLS
 
-#endif /* __GI_SCANNER__ */
-#endif /* GCR_DISABLE_DEPRECATED */
-#endif /* GCRTYPES_H_ */
+#endif /* __GCR_TOKEN_MANAGER_H__ */

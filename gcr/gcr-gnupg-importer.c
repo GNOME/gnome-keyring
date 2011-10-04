@@ -34,12 +34,14 @@ enum {
 	PROP_LABEL,
 	PROP_ICON,
 	PROP_IMPORTED,
-	PROP_DIRECTORY
+	PROP_DIRECTORY,
+	PROP_INTERACTION
 };
 
 struct _GcrGnupgImporterPrivate {
 	GcrGnupgProcess *process;
 	GMemoryInputStream *packets;
+	GTlsInteraction *interaction;
 	GArray *imported;
 };
 
@@ -66,6 +68,7 @@ _gcr_gnupg_importer_dispose (GObject *obj)
 		g_object_run_dispose (G_OBJECT (self->pv->process));
 	g_clear_object (&self->pv->process);
 	g_clear_object (&self->pv->packets);
+	g_clear_object (&self->pv->interaction);
 
 	G_OBJECT_CLASS (_gcr_gnupg_importer_parent_class)->dispose (obj);
 }
@@ -140,6 +143,10 @@ _gcr_gnupg_importer_set_property (GObject *obj,
 		_gcr_gnupg_process_set_input_stream (self->pv->process, G_INPUT_STREAM (self->pv->packets));
 		g_signal_connect (self->pv->process, "status-record", G_CALLBACK (on_process_status_record), self);
 		break;
+	case PROP_INTERACTION:
+		g_clear_object (&self->pv->interaction);
+		self->pv->interaction = g_value_dup_object (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -167,6 +174,9 @@ _gcr_gnupg_importer_get_property (GObject *obj,
 	case PROP_DIRECTORY:
 		g_value_set_string (value, _gcr_gnupg_process_get_directory (self->pv->process));
 		break;
+	case PROP_INTERACTION:
+		g_value_set_object (value, self->pv->interaction);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -189,6 +199,8 @@ _gcr_gnupg_importer_class_init (GcrGnupgImporterClass *klass)
 	g_object_class_override_property (gobject_class, PROP_LABEL, "label");
 
 	g_object_class_override_property (gobject_class, PROP_ICON, "icon");
+
+	g_object_class_override_property (gobject_class, PROP_INTERACTION, "interaction");
 
 	g_object_class_install_property (gobject_class, PROP_IMPORTED,
 	           g_param_spec_boxed ("imported", "Imported", "Fingerprints of imported keys",

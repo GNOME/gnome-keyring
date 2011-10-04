@@ -27,6 +27,7 @@
 #include "gcr-internal.h"
 #include "gcr-marshal.h"
 #include "gcr-parser.h"
+#include "gcr-pkcs11-import-interaction.h"
 
 #include <glib/gi18n-lib.h>
 
@@ -300,11 +301,22 @@ static void
 begin_import (GcrImportButton *self,
               GcrImporter *importer)
 {
+	GTlsInteraction *interaction;
+	GtkWindow *window;
+
 	g_return_if_fail (self->pv->importing == FALSE);
 
 	self->pv->importing = TRUE;
 	g_free (self->pv->imported);
 	self->pv->imported = NULL;
+
+	/* TODO: Hack. Need to figure out how to pair these up... */
+	if (g_strcmp0 (G_OBJECT_TYPE_NAME (importer), "GcrPkcs11Importer") == 0) {
+		window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self)));
+		interaction = _gcr_pkcs11_import_interaction_new (window);
+		gcr_importer_set_interaction (importer, interaction);
+		g_object_unref (interaction);
+	}
 
 	gcr_importer_import_async (importer,
 	                           self->pv->cancellable,

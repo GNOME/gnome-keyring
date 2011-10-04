@@ -27,6 +27,7 @@
 #include "gcr-base.h"
 #include "gcr-internal.h"
 #include "gcr-library.h"
+#include "gcr-import-interaction.h"
 #include "gcr-internal.h"
 #include "gcr-parser.h"
 #include "gcr-pkcs11-importer.h"
@@ -39,16 +40,26 @@ enum {
 	PROP_0,
 	PROP_LABEL,
 	PROP_ICON,
+	PROP_INTERACTION,
 	PROP_SLOT,
-	PROP_IMPORTED
+	PROP_IMPORTED,
+	PROP_QUEUED
 };
 
-struct _GcrPkcs11ImporterPrivate {
+typedef struct _GcrPkcs11ImporterClass GcrPkcs11ImporterClass;
+
+struct _GcrPkcs11Importer {
+	GObject parent;
 	GckSlot *slot;
 	GList *objects;
 	GckSession *session;
 	GQueue queue;
+	GTlsInteraction *interaction;
 	gboolean any_private;
+};
+
+struct _GcrPkcs11ImporterClass {
+	GObjectClass parent_class;
 };
 
 typedef struct  {
@@ -66,6 +77,9 @@ static void   state_complete                   (GSimpleAsyncResult *res,
                                                 gboolean async);
 
 static void   state_create_object              (GSimpleAsyncResult *res,
+                                                gboolean async);
+
+static void   state_supplement                 (GSimpleAsyncResult *res,
                                                 gboolean async);
 
 static void   state_open_session               (GSimpleAsyncResult *res,
@@ -111,6 +125,13 @@ static void
 state_complete (GSimpleAsyncResult *res,
                 gboolean async)
 {
+	GcrImporterData *data = g_simple_async_result_get_op_res_gpointer (res);
+	GcrPkcs11Importer *self = data->importer;
+
+	/* Disconnect from the interaction */
+	if (data->importer->interaction && GCR_IS_IMPORT_INTERACTION (self->interaction))
+		gcr_import_interaction_set_importer (GCR_IMPORT_INTERACTION (self->interaction), NULL);
+
 	g_simple_async_result_complete (res);
 }
 
@@ -146,7 +167,7 @@ complete_create_object (GSimpleAsyncResult *res,
 		next_state (res, state_complete);
 
 	} else {
-		self->pv->objects = g_list_append (self->pv->objects, object);
+		self->objects = g_list_append (self->objects, object);
 		next_state (res, state_create_object);
 	}
 }
@@ -176,28 +197,83 @@ state_create_object (GSimpleAsyncResult *res,
 	GError *error = NULL;
 
 	/* No more objects */
-	if (g_queue_is_empty (&self->pv->queue)) {
+	if (g_queue_is_empty (&self->queue)) {
 		next_state (res, state_complete);
 
 	} else {
 
 		/* Pop first one off the list */
-		attrs = g_queue_pop_head (&self->pv->queue);
+		attrs = g_queue_pop_head (&self->queue);
 		g_assert (attrs != NULL);
 
 		gck_attributes_add_boolean (attrs, CKA_TOKEN, CK_TRUE);
 
 		if (async) {
-			gck_session_create_object_async (self->pv->session, attrs,
+			gck_session_create_object_async (self->session, attrs,
 			                                 data->cancellable, on_create_object,
 			                                 g_object_ref (res));
 		} else {
-			object = gck_session_create_object (self->pv->session, attrs,
+			object = gck_session_create_object (self->session, attrs,
 			                                    data->cancellable, &error);
 			complete_create_object (res, object, error);
 		}
 
 		gck_attributes_unref (attrs);
+	}
+}
+
+/* ---------------------------------------------------------------------------------
+ * PROMPTING
+ */
+
+static void
+complete_supplement (GSimpleAsyncResult *res,
+                      GError *error)
+{
+	if (error == NULL) {
+		next_state (res, state_create_object);
+	} else {
+		g_simple_async_result_take_error (res, error);
+		next_state (res, state_complete);
+	}
+}
+
+static void
+on_supplement_done (GObject *source,
+                    GAsyncResult *result,
+                    gpointer user_data)
+{
+	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+	GcrImporterData *data = g_simple_async_result_get_op_res_gpointer (res);
+	GcrPkcs11Importer *self = data->importer;
+	GError *error = NULL;
+
+	gcr_import_interaction_supplement_finish (GCR_IMPORT_INTERACTION (self->interaction),
+	                                          result, &error);
+	complete_supplement (res, error);
+	g_object_unref (res);
+}
+
+static void
+state_supplement (GSimpleAsyncResult *res,
+                  gboolean async)
+{
+	GcrImporterData *data = g_simple_async_result_get_op_res_gpointer (res);
+	GcrPkcs11Importer *self = data->importer;
+	GError *error = NULL;
+
+	if (self->interaction == NULL || !GCR_IS_IMPORT_INTERACTION (self->interaction)) {
+		complete_supplement (res, NULL);
+
+	} else if (async) {
+		gcr_import_interaction_supplement_async (GCR_IMPORT_INTERACTION (self->interaction),
+		                                         data->cancellable, on_supplement_done,
+		                                         g_object_ref (res));
+
+	} else {
+		gcr_import_interaction_supplement (GCR_IMPORT_INTERACTION (self->interaction),
+		                                   data->cancellable, &error);
+		complete_supplement (res, error);
 	}
 }
 
@@ -218,9 +294,9 @@ complete_open_session (GSimpleAsyncResult *res,
 		next_state (res, state_complete);
 
 	} else {
-		g_clear_object (&self->pv->session);
-		self->pv->session = session;
-		next_state (res, state_create_object);
+		g_clear_object (&self->session);
+		self->session = session;
+		next_state (res, state_supplement);
 	}
 }
 
@@ -244,19 +320,16 @@ state_open_session (GSimpleAsyncResult *res,
 {
 	GcrImporterData *data = g_simple_async_result_get_op_res_gpointer (res);
 	GcrPkcs11Importer *self = data->importer;
-	guint options = GCK_SESSION_READ_WRITE;
+	guint options = GCK_SESSION_READ_WRITE | GCK_SESSION_LOGIN_USER;
 	GckSession *session;
 	GError *error = NULL;
 
-	if (self->pv->any_private)
-		options |= GCK_SESSION_LOGIN_USER;
-
 	if (async) {
-		gck_slot_open_session_async (self->pv->slot, options,
+		gck_slot_open_session_async (self->slot, options,
 		                             data->cancellable, on_open_session,
 		                             g_object_ref (res));
 	} else {
-		session = gck_slot_open_session_full (self->pv->slot, options, 0,
+		session = gck_slot_open_session_full (self->slot, options, 0,
 		                                      NULL, NULL, data->cancellable, &error);
 		complete_open_session (res, session, error);
 	}
@@ -265,8 +338,7 @@ state_open_session (GSimpleAsyncResult *res,
 static void
 _gcr_pkcs11_importer_init (GcrPkcs11Importer *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GCR_TYPE_PKCS11_IMPORTER, GcrPkcs11ImporterPrivate);
-	g_queue_init (&self->pv->queue);
+	g_queue_init (&self->queue);
 }
 
 static void
@@ -274,12 +346,13 @@ _gcr_pkcs11_importer_dispose (GObject *obj)
 {
 	GcrPkcs11Importer *self = GCR_PKCS11_IMPORTER (obj);
 
-	gck_list_unref_free (self->pv->objects);
-	self->pv->objects = NULL;
-	g_clear_object (&self->pv->session);
+	gck_list_unref_free (self->objects);
+	self->objects = NULL;
+	g_clear_object (&self->session);
+	g_clear_object (&self->interaction);
 
-	while (!g_queue_is_empty (&self->pv->queue))
-		gck_attributes_unref (g_queue_pop_head (&self->pv->queue));
+	while (!g_queue_is_empty (&self->queue))
+		gck_attributes_unref (g_queue_pop_head (&self->queue));
 
 	G_OBJECT_CLASS (_gcr_pkcs11_importer_parent_class)->dispose (obj);
 }
@@ -289,7 +362,7 @@ _gcr_pkcs11_importer_finalize (GObject *obj)
 {
 	GcrPkcs11Importer *self = GCR_PKCS11_IMPORTER (obj);
 
-	g_clear_object (&self->pv->slot);
+	g_clear_object (&self->slot);
 
 	G_OBJECT_CLASS (_gcr_pkcs11_importer_parent_class)->finalize (obj);
 }
@@ -304,8 +377,13 @@ _gcr_pkcs11_importer_set_property (GObject *obj,
 
 	switch (prop_id) {
 	case PROP_SLOT:
-		self->pv->slot = g_value_dup_object (value);
-		g_return_if_fail (self->pv->slot);
+		self->slot = g_value_dup_object (value);
+		g_return_if_fail (self->slot);
+		break;
+	case PROP_INTERACTION:
+		g_clear_object (&self->interaction);
+		self->interaction = g_value_dup_object (value);
+		g_object_notify (G_OBJECT (self), "interaction");
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -319,7 +397,7 @@ calculate_label (GcrPkcs11Importer *self)
 	GckTokenInfo *info;
 	gchar *result;
 
-	info = gck_slot_get_token_info (self->pv->slot);
+	info = gck_slot_get_token_info (self->slot);
 	result = g_strdup (info->label);
 	gck_token_info_free (info);
 
@@ -334,7 +412,7 @@ calculate_icon (GcrPkcs11Importer *self,
 	GIcon *result;
 
 	if (token_info == NULL)
-		info = token_info = gck_slot_get_token_info (self->pv->slot);
+		info = token_info = gck_slot_get_token_info (self->slot);
 	result = gcr_icon_for_token (token_info);
 	gck_token_info_free (info);
 
@@ -360,7 +438,13 @@ _gcr_pkcs11_importer_get_property (GObject *obj,
 		g_value_set_object (value, _gcr_pkcs11_importer_get_slot (self));
 		break;
 	case PROP_IMPORTED:
-		g_value_set_boxed (value, _gcr_pkcs11_importer_get_imported (self));
+		g_value_take_boxed (value, _gcr_pkcs11_importer_get_imported (self));
+		break;
+	case PROP_QUEUED:
+		g_value_set_pointer (value, _gcr_pkcs11_importer_get_queued (self));
+		break;
+	case PROP_INTERACTION:
+		g_value_set_object (value, self->interaction);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -379,11 +463,11 @@ _gcr_pkcs11_importer_class_init (GcrPkcs11ImporterClass *klass)
 	gobject_class->set_property = _gcr_pkcs11_importer_set_property;
 	gobject_class->get_property = _gcr_pkcs11_importer_get_property;
 
-	g_type_class_add_private (gobject_class, sizeof (GcrPkcs11ImporterPrivate));
-
 	g_object_class_override_property (gobject_class, PROP_LABEL, "label");
 
 	g_object_class_override_property (gobject_class, PROP_ICON, "icon");
+
+	g_object_class_override_property (gobject_class, PROP_INTERACTION, "interaction");
 
 	g_object_class_install_property (gobject_class, PROP_SLOT,
 	           g_param_spec_object ("slot", "Slot", "PKCS#11 slot to import data into",
@@ -392,6 +476,10 @@ _gcr_pkcs11_importer_class_init (GcrPkcs11ImporterClass *klass)
 	g_object_class_install_property (gobject_class, PROP_IMPORTED,
 	           g_param_spec_boxed ("imported", "Imported", "Imported objects",
 	                               GCK_TYPE_LIST, G_PARAM_READABLE));
+
+	g_object_class_install_property (gobject_class, PROP_QUEUED,
+	           g_param_spec_pointer ("queued", "Queued", "Queued attributes",
+	                                 G_PARAM_READABLE));
 
 	registered = gck_attributes_new ();
 	gck_attributes_add_ulong (registered, CKA_CLASS, CKO_CERTIFICATE);
@@ -493,16 +581,10 @@ _gcr_pkcs11_importer_queue_for_parsed (GcrImporter *importer,
 {
 	GcrPkcs11Importer *self = GCR_PKCS11_IMPORTER (importer);
 	GckAttributes *attrs;
-	gboolean is_private;
 
 	attrs = gcr_parsed_get_attributes (parsed);
+	_gcr_pkcs11_importer_queue (self, attrs);
 
-	if (!gck_attributes_find_boolean (attrs, CKA_PRIVATE, &is_private))
-		is_private = FALSE;
-	if (is_private)
-		self->pv->any_private = TRUE;
-
-	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
 	return TRUE;
 }
 
@@ -512,6 +594,7 @@ _gcr_pkcs11_importer_import_async (GcrImporter *importer,
                                    GAsyncReadyCallback callback,
                                    gpointer user_data)
 {
+	GcrPkcs11Importer *self = GCR_PKCS11_IMPORTER (importer);
 	GSimpleAsyncResult *res;
 	GcrImporterData *data;
 
@@ -522,6 +605,11 @@ _gcr_pkcs11_importer_import_async (GcrImporter *importer,
 	data->importer = g_object_ref (importer);
 	data->cancellable = cancellable ? g_object_ref (cancellable) : NULL;
 	g_simple_async_result_set_op_res_gpointer (res, data, gcr_importer_data_free);
+
+	if (GCR_IS_IMPORT_INTERACTION (self->interaction))
+		gcr_import_interaction_set_importer (GCR_IMPORT_INTERACTION (self->interaction),
+		                                     GCR_IMPORTER (self));
+	gck_slot_set_interaction (self->slot, self->interaction);
 
 	next_state (res, state_open_session);
 	g_object_unref (res);
@@ -569,29 +657,29 @@ GckSlot *
 _gcr_pkcs11_importer_get_slot (GcrPkcs11Importer *self)
 {
 	g_return_val_if_fail (GCR_IS_PKCS11_IMPORTER (self), NULL);
-	return self->pv->slot;
+	return self->slot;
 }
 
 GList *
 _gcr_pkcs11_importer_get_imported (GcrPkcs11Importer *self)
 {
 	g_return_val_if_fail (GCR_IS_PKCS11_IMPORTER (self), NULL);
-	return self->pv->objects;
+	return g_list_copy (self->objects);
+}
+
+GList *
+_gcr_pkcs11_importer_get_queued (GcrPkcs11Importer *self)
+{
+	g_return_val_if_fail (GCR_IS_PKCS11_IMPORTER (self), NULL);
+	return g_list_copy (self->queue.head);
 }
 
 void
 _gcr_pkcs11_importer_queue (GcrPkcs11Importer *self,
                             GckAttributes *attrs)
 {
-	gboolean is_private;
-
 	g_return_if_fail (GCR_IS_PKCS11_IMPORTER (self));
 	g_return_if_fail (attrs != NULL);
 
-	if (!gck_attributes_find_boolean (attrs, CKA_PRIVATE, &is_private))
-		is_private = FALSE;
-	if (is_private)
-		self->pv->any_private = TRUE;
-
-	g_queue_push_tail (&self->pv->queue, gck_attributes_ref (attrs));
+	g_queue_push_tail (&self->queue, gck_attributes_ref (attrs));
 }

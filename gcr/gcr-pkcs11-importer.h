@@ -41,19 +41,7 @@ G_BEGIN_DECLS
 #define GCR_PKCS11_IMPORTER_GET_CLASS(obj)     (G_TYPE_INSTANCE_GET_CLASS ((obj), GCR_TYPE_PKCS11_IMPORTER, GcrPkcs11ImporterClass))
 
 typedef struct _GcrPkcs11Importer GcrPkcs11Importer;
-typedef struct _GcrPkcs11ImporterClass GcrPkcs11ImporterClass;
-typedef struct _GcrPkcs11ImporterPrivate GcrPkcs11ImporterPrivate;
 
-struct _GcrPkcs11Importer {
-	GObject parent;
-
-	/*< private >*/
-	GcrPkcs11ImporterPrivate *pv;
-};
-
-struct _GcrPkcs11ImporterClass {
-	GObjectClass parent_class;
-};
 
 GType                     _gcr_pkcs11_importer_get_type        (void);
 
@@ -63,6 +51,8 @@ void                      _gcr_pkcs11_importer_queue           (GcrPkcs11Importe
                                                                 GckAttributes *attrs);
 
 GckSlot *                 _gcr_pkcs11_importer_get_slot        (GcrPkcs11Importer *self);
+
+GList *                   _gcr_pkcs11_importer_get_queued      (GcrPkcs11Importer *self);
 
 GList *                   _gcr_pkcs11_importer_get_imported    (GcrPkcs11Importer *self);
 

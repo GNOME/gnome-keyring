@@ -21,28 +21,25 @@
  * Author: Stef Walter <stefw@collabora.co.uk>
  */
 
-#if !defined (__GCR_INSIDE_HEADER__) && !defined (GCR_COMPILATION)
-#error "Only <gcr/gcr.h> or <gcr/gcr-base.h> can be included directly."
-#endif
+#ifndef __GCR_PKCS11_IMPORT_INTERACTION_H__
+#define __GCR_PKCS11_IMPORT_INTERACTION_H__
 
-#ifndef GCR_DEPRECATED_H_
-#define GCR_DEPRECATED_H_
-#ifndef GCR_DISABLE_DEPRECATED
-#ifndef __GI_SCANNER__
+#include "gcr.h"
 
-#include <glib.h>
-
-#include "gcr-certificate-basics-widget.h"
-#include "gcr-certificate-details-widget.h"
-#include "gcr-viewer.h"
+#include "gcr-pkcs11-import-dialog.h"
 
 G_BEGIN_DECLS
 
-void              gcr_renderer_render                         (GcrRenderer *self,
-                                                               GcrViewer *viewer);
+#define GCR_TYPE_PKCS11_IMPORT_INTERACTION               (_gcr_pkcs11_import_interaction_get_type ())
+#define GCR_PKCS11_IMPORT_INTERACTION(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCR_TYPE_PKCS11_IMPORT_INTERACTION, GcrPkcs11ImportInteraction))
+#define GCR_IS_PKCS11_IMPORT_INTERACTION(obj)            (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCR_TYPE_PKCS11_IMPORT_INTERACTION))
+
+typedef struct _GcrPkcs11ImportInteraction GcrPkcs11ImportInteraction;
+
+GType               _gcr_pkcs11_import_interaction_get_type     (void) G_GNUC_CONST;
+
+GTlsInteraction *   _gcr_pkcs11_import_interaction_new          (GtkWindow *parent_window);
 
 G_END_DECLS
 
-#endif /* __GI_SCANNER__ */
-#endif /* GCR_DISABLE_DEPRECATED */
-#endif /* GCRTYPES_H_ */
+#endif /* __GCR_PKCS11_IMPORT_INTERACTION_H__ */
