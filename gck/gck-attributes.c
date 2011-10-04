@@ -958,6 +958,34 @@ gck_attributes_add_boolean (GckAttributes *attrs, gulong attr_type, gboolean val
 }
 
 /**
+ * gck_attributes_set_boolean:
+ * @attrs: the attributes
+ * @attr_type: the type of attribute to set
+ * @value: boolean value to set
+ *
+ * Set the attribute of attr_type in the attribute array to the given value.
+ * If no such value exists, then add one.
+ */
+void
+gck_attributes_set_boolean (GckAttributes *attrs,
+                            gulong attr_type,
+                            gboolean value)
+{
+	GckAttribute *attr;
+
+	g_return_if_fail (attrs != NULL);
+	g_return_if_fail (!attrs->locked);
+
+	attr = gck_attributes_find (attrs, attr_type);
+	if (attr == NULL) {
+		gck_attributes_add_boolean (attrs, attr_type, value);
+	} else {
+		attribute_clear (attr, attrs->allocator);
+		attribute_init_boolean (attr, attr_type, value, attrs->allocator);
+	}
+}
+
+/**
  * gck_attributes_add_string:
  * @attrs: The attributes array to add to.
  * @attr_type: The type of attribute to add.
@@ -978,6 +1006,34 @@ gck_attributes_add_string (GckAttributes *attrs, gulong attr_type, const gchar *
 	added = attributes_push (attrs);
 	attribute_init_string (added, attr_type, value, attrs->allocator);
 	return added;
+}
+
+/**
+ * gck_attributes_set_string:
+ * @attrs: the attributes
+ * @attr_type: the type of attribute to set
+ * @value: null terminated string value to set
+ *
+ * Set the attribute of attr_type in the attribute array to the given value.
+ * If no such value exists, then add one.
+ */
+void
+gck_attributes_set_string (GckAttributes *attrs,
+                           gulong attr_type,
+                           const gchar *value)
+{
+	GckAttribute *attr;
+
+	g_return_if_fail (attrs != NULL);
+	g_return_if_fail (!attrs->locked);
+
+	attr = gck_attributes_find (attrs, attr_type);
+	if (attr == NULL) {
+		gck_attributes_add_string (attrs, attr_type, value);
+	} else {
+		attribute_clear (attr, attrs->allocator);
+		attribute_init_string (attr, attr_type, value, attrs->allocator);
+	}
 }
 
 /**
@@ -1004,6 +1060,34 @@ gck_attributes_add_date (GckAttributes *attrs, gulong attr_type, const GDate *va
 }
 
 /**
+ * gck_attributes_set_date:
+ * @attrs: the attributes
+ * @attr_type: the type of attribute to set
+ * @value: date value to set
+ *
+ * Set the attribute of attr_type in the attribute array to the given value.
+ * If no such value exists, then add one.
+ */
+void
+gck_attributes_set_date (GckAttributes *attrs,
+                         gulong attr_type,
+                         const GDate *value)
+{
+	GckAttribute *attr;
+
+	g_return_if_fail (attrs != NULL);
+	g_return_if_fail (!attrs->locked);
+
+	attr = gck_attributes_find (attrs, attr_type);
+	if (attr == NULL) {
+		gck_attributes_add_date (attrs, attr_type, value);
+	} else {
+		attribute_clear (attr, attrs->allocator);
+		attribute_init_date (attr, attr_type, value, attrs->allocator);
+	}
+}
+
+/**
  * gck_attributes_add_ulong:
  * @attrs: The attributes array to add to.
  * @attr_type: The type of attribute to add.
@@ -1024,6 +1108,34 @@ gck_attributes_add_ulong (GckAttributes *attrs, gulong attr_type, gulong value)
 	added = attributes_push (attrs);
 	attribute_init_ulong (added, attr_type, value, attrs->allocator);
 	return added;
+}
+
+/**
+ * gck_attributes_set_ulong:
+ * @attrs: the attributes
+ * @attr_type: the type of attribute to set
+ * @value: gulong value to set
+ *
+ * Set the attribute of attr_type in the attribute array to the given value.
+ * If no such value exists, then add one.
+ */
+void
+gck_attributes_set_ulong (GckAttributes *attrs,
+                          gulong attr_type,
+                          gulong value)
+{
+	GckAttribute *attr;
+
+	g_return_if_fail (attrs != NULL);
+	g_return_if_fail (!attrs->locked);
+
+	attr = gck_attributes_find (attrs, attr_type);
+	if (attr == NULL) {
+		gck_attributes_add_ulong (attrs, attr_type, value);
+	} else {
+		attribute_clear (attr, attrs->allocator);
+		attribute_init_ulong (attr, attr_type, value, attrs->allocator);
+	}
 }
 
 /**

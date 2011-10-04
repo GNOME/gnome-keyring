@@ -253,6 +253,22 @@ gboolean            gck_attributes_find_date                (GckAttributes *attr
                                                              gulong attr_type,
                                                              GDate *value);
 
+void                gck_attributes_set_boolean              (GckAttributes *attrs,
+                                                             gulong attr_type,
+                                                             gboolean value);
+
+void                gck_attributes_set_ulong                (GckAttributes *attrs,
+                                                             gulong attr_type,
+                                                             gulong value);
+
+void                gck_attributes_set_string               (GckAttributes *attrs,
+                                                             gulong attr_type,
+                                                             const gchar *value);
+
+void                gck_attributes_set_date                 (GckAttributes *attrs,
+                                                             gulong attr_type,
+                                                             const GDate *value);
+
 gulong              gck_attributes_count                    (GckAttributes *attrs);
 
 GckAttributes*      gck_attributes_ref                      (GckAttributes *attrs);

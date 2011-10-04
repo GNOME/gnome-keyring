@@ -52,6 +52,10 @@ gck_attributes_new
 gck_attributes_new_empty
 gck_attributes_new_full
 gck_attributes_ref
+gck_attributes_set_boolean
+gck_attributes_set_date
+gck_attributes_set_string
+gck_attributes_set_ulong
 gck_attributes_unref
 gck_enumerator_get_interaction
 gck_enumerator_get_type

@@ -46,6 +46,10 @@ gck_attributes_add_string
 gck_attributes_add_date
 gck_attributes_add_ulong
 gck_attributes_add_all
+gck_attributes_set_boolean
+gck_attributes_set_string
+gck_attributes_set_date
+gck_attributes_set_ulong
 gck_attributes_find
 gck_attributes_find_boolean
 gck_attributes_find_ulong
