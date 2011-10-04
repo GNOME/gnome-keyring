@@ -495,6 +495,27 @@ _gcr_pkcs11_importer_class_init (GcrPkcs11ImporterClass *klass)
 	_gcr_initialize_library ();
 }
 
+static gint
+on_sort_by_private_key_first (gconstpointer a,
+                              gconstpointer b,
+                              gpointer user_data)
+{
+	gulong class_a, class_b;
+
+	if (!gck_attributes_find_ulong ((GckAttributes *)a, CKA_CLASS, &class_a))
+		class_a = 0;
+	if (!gck_attributes_find_ulong ((GckAttributes *)b, CKA_CLASS, &class_b))
+		class_b = 0;
+
+	if (class_a == class_b)
+		return 0;
+	if (class_a == CKO_PRIVATE_KEY)
+		return -1;
+	if (class_b == CKO_PRIVATE_KEY)
+		return 1;
+	return 0;
+}
+
 static GList *
 list_all_slots (void)
 {
@@ -681,5 +702,6 @@ _gcr_pkcs11_importer_queue (GcrPkcs11Importer *self,
 	g_return_if_fail (GCR_IS_PKCS11_IMPORTER (self));
 	g_return_if_fail (attrs != NULL);
 
-	g_queue_push_tail (&self->queue, gck_attributes_ref (attrs));
+	g_queue_insert_sorted (&self->queue, gck_attributes_ref (attrs),
+	                       on_sort_by_private_key_first, NULL);
 }
