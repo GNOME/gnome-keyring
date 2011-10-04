@@ -89,7 +89,7 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 	GNode *asn, *cert, *choice, *ref;
 	GNode *issuer, *serial;
 	gchar *data, *result;
-	gpointer value;
+	gconstpointer value;
 	gconstpointer element;
 	gsize n_data, n_result, n_element, n_value;
 
@@ -122,8 +122,8 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 	if (!egg_asn1x_set_raw_element (egg_asn1x_node (choice, "issuer", NULL),
 	                                g_memdup (element, n_element), n_element, g_free))
 		g_return_if_reached ();
-	value = egg_asn1x_get_integer_as_raw (serial, NULL, &n_value);
-	if (!egg_asn1x_set_integer_as_raw (egg_asn1x_node (choice, "serialNumber", NULL), value, n_value, g_free))
+	value = egg_asn1x_get_integer_as_raw (serial, &n_value);
+	if (!egg_asn1x_set_integer_as_raw (egg_asn1x_node (choice, "serialNumber", NULL), value, n_value, NULL))
 		g_return_if_reached ();
 
 	result = egg_asn1x_encode (asn, NULL, &n_result);

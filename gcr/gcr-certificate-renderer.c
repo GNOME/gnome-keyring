@@ -569,6 +569,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	const gchar *text;
 	GcrCertificate *cert;
 	gpointer raw;
+	gconstpointer number;
 	gulong version;
 	guint bits, index;
 	gchar *display;
@@ -646,10 +647,9 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 	_gcr_display_view_append_value (view, renderer, _("Version"), display, FALSE);
 	g_free (display);
 
-	raw = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "tbsCertificate", "serialNumber", NULL), NULL, &n_raw);
-	g_return_if_fail (raw);
-	_gcr_display_view_append_hex (view, renderer, _("Serial Number"), raw, n_raw);
-	g_free (raw);
+	number = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "tbsCertificate", "serialNumber", NULL), &n_raw);
+	g_return_if_fail (number != NULL);
+	_gcr_display_view_append_hex (view, renderer, _("Serial Number"), number, n_raw);
 
 	display = g_malloc0 (128);
 	if (egg_asn1x_get_time_as_date (egg_asn1x_node (asn, "tbsCertificate", "validity", "notBefore", NULL), &date)) {

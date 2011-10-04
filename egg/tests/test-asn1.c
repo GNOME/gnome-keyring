@@ -37,6 +37,7 @@
 extern const ASN1_ARRAY_TYPE test_asn1_tab[];
 
 const gchar I33[] =           "\x02\x01\x2A";
+const gchar I253[] =           "\x02\x02\x00\xFD";
 const gchar BFALSE[] =        "\x01\x01\x00";
 const gchar BTRUE[] =         "\x01\x01\xFF";
 const gchar SFARNSWORTH[] =   "\x04\x0A""farnsworth";
@@ -144,6 +145,57 @@ test_integer (void)
 		g_assert_not_reached ();
 
 	egg_asn1x_destroy (asn);
+}
+
+static void
+test_unsigned (void)
+{
+	GNode *asn;
+	gulong value;
+	guchar *check;
+	gsize n_check;
+	guchar val;
+	gconstpointer usg;
+	gsize n_usg;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestInteger");
+	g_assert (asn);
+
+	/* Check with ulong */
+	if (!egg_asn1x_decode (asn, I253, XL (I253)))
+		g_assert_not_reached ();
+	if (!egg_asn1x_get_integer_as_ulong (asn, &value))
+		g_assert_not_reached ();
+	g_assert (value == 253);
+
+	egg_asn1x_clear (asn);
+
+	if (!egg_asn1x_set_integer_as_ulong (asn, 253))
+		g_assert_not_reached ();
+
+	check = egg_asn1x_encode (asn, NULL, &n_check);
+	egg_assert_cmpmem (check, n_check, ==, I253, XL (I253));
+
+	/* Now check with usg */
+	if (!egg_asn1x_decode (asn, I253, XL (I253)))
+		g_assert_not_reached ();
+	g_free (check);
+
+	val = 0xFD; /* == 253 */
+	usg = egg_asn1x_get_integer_as_usg (asn, &n_usg);
+	egg_assert_cmpmem (&val, 1, ==, usg, n_usg);
+
+	egg_asn1x_clear (asn);
+
+	if (!egg_asn1x_set_integer_as_usg (asn, &val, 1, NULL))
+		g_assert_not_reached ();
+
+	check = egg_asn1x_encode (asn, NULL, &n_check);
+	egg_assert_cmpsize (n_check, ==, XL (I253));
+	egg_assert_cmpmem (check, n_check, ==, I253, XL (I253));
+
+	egg_asn1x_destroy (asn);
+	g_free (check);
 }
 
 static void
@@ -1156,6 +1208,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/asn1/boolean", test_boolean);
 	g_test_add_func ("/asn1/null", test_null);
 	g_test_add_func ("/asn1/integer", test_integer);
+	g_test_add_func ("/asn1/unsigned", test_unsigned);
 	g_test_add_func ("/asn1/octet_string", test_octet_string);
 	g_test_add_func ("/asn1/generalized_time", test_generalized_time);
 	g_test_add_func ("/asn1/implicit", test_implicit);

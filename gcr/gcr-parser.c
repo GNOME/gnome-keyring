@@ -225,12 +225,12 @@ parsed_attribute (GcrParsed *parsed,
 }
 
 static gboolean
-parsed_asn1_attribute (GcrParsed *parsed,
-                       GNode *asn,
-                       const guchar *data,
-                       gsize n_data,
-                       const gchar *part,
-                       CK_ATTRIBUTE_TYPE type)
+parsed_asn1_number (GcrParsed *parsed,
+                    GNode *asn,
+                    const guchar *data,
+                    gsize n_data,
+                    const gchar *part,
+                    CK_ATTRIBUTE_TYPE type)
 {
 	const guchar *value;
 	gsize n_value;
@@ -239,11 +239,10 @@ parsed_asn1_attribute (GcrParsed *parsed,
 	g_assert (data);
 	g_assert (parsed);
 
-	value = egg_asn1x_get_raw_value (egg_asn1x_node (asn, part, NULL), &n_value);
+	value = egg_asn1x_get_integer_as_usg (egg_asn1x_node (asn, part, NULL), &n_value);
 	if (value == NULL)
 		return FALSE;
 
-	/* TODO: Convert to USG FROM STD */
 	parsed_attribute (parsed, type, value, n_value);
 	return TRUE;
 }
@@ -470,12 +469,12 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 		goto done;
 	}
 
-	if (!parsed_asn1_attribute (parsed, asn, data, n_data, "modulus", CKA_MODULUS) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "publicExponent", CKA_PUBLIC_EXPONENT) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "privateExponent", CKA_PRIVATE_EXPONENT) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "prime1", CKA_PRIME_1) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "prime2", CKA_PRIME_2) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "coefficient", CKA_COEFFICIENT))
+	if (!parsed_asn1_number (parsed, asn, data, n_data, "modulus", CKA_MODULUS) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "publicExponent", CKA_PUBLIC_EXPONENT) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "privateExponent", CKA_PRIVATE_EXPONENT) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "prime1", CKA_PRIME_1) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "prime2", CKA_PRIME_2) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "coefficient", CKA_COEFFICIENT))
 		goto done;
 
 	parsed_fire (self, parsed);
@@ -513,10 +512,10 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 	parsed_boolean_attribute (parsed, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
-	if (!parsed_asn1_attribute (parsed, asn, data, n_data, "p", CKA_PRIME) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "q", CKA_SUBPRIME) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "g", CKA_BASE) ||
-	    !parsed_asn1_attribute (parsed, asn, data, n_data, "priv", CKA_VALUE))
+	if (!parsed_asn1_number (parsed, asn, data, n_data, "p", CKA_PRIME) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "q", CKA_SUBPRIME) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "g", CKA_BASE) ||
+	    !parsed_asn1_number (parsed, asn, data, n_data, "priv", CKA_VALUE))
 		goto done;
 
 	parsed_fire (self, parsed);
@@ -552,10 +551,10 @@ parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n
 	parsed_boolean_attribute (parsed, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
-	if (!parsed_asn1_attribute (parsed, asn_params, params, n_params, "p", CKA_PRIME) ||
-	    !parsed_asn1_attribute (parsed, asn_params, params, n_params, "q", CKA_SUBPRIME) ||
-	    !parsed_asn1_attribute (parsed, asn_params, params, n_params, "g", CKA_BASE) ||
-	    !parsed_asn1_attribute (parsed, asn_key, keydata, n_keydata, NULL, CKA_VALUE))
+	if (!parsed_asn1_number (parsed, asn_params, params, n_params, "p", CKA_PRIME) ||
+	    !parsed_asn1_number (parsed, asn_params, params, n_params, "q", CKA_SUBPRIME) ||
+	    !parsed_asn1_number (parsed, asn_params, params, n_params, "g", CKA_BASE) ||
+	    !parsed_asn1_number (parsed, asn_key, keydata, n_keydata, NULL, CKA_VALUE))
 		goto done;
 
 	parsed_fire (self, parsed);

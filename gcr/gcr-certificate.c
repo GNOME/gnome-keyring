@@ -886,6 +886,7 @@ guchar *
 gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 {
 	GcrCertificateInfo *info;
+	const guchar *serial;
 
 	g_return_val_if_fail (GCR_IS_CERTIFICATE (self), NULL);
 	g_return_val_if_fail (n_length != NULL, NULL);
@@ -893,7 +894,8 @@ gcr_certificate_get_serial_number (GcrCertificate *self, gsize *n_length)
 	info = certificate_info_load (self);
 	g_return_val_if_fail (info, NULL);
 
-	return egg_asn1x_get_integer_as_raw (egg_asn1x_node (info->asn1, "tbsCertificate", "serialNumber", NULL), NULL, n_length);
+	serial = egg_asn1x_get_integer_as_raw (egg_asn1x_node (info->asn1, "tbsCertificate", "serialNumber", NULL), n_length);
+	return g_memdup (serial, *n_length);
 }
 
 /**

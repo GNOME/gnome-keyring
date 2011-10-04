@@ -127,7 +127,7 @@ static CK_RV
 trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 {
 	GNode *node;
-	gpointer integer;
+	gconstpointer integer;
 	gsize n_integer;
 	CK_RV rv;
 
@@ -140,11 +140,10 @@ trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 	if (!egg_asn1x_have (node))
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
-	integer = egg_asn1x_get_integer_as_raw (node, NULL, &n_integer);
+	integer = egg_asn1x_get_integer_as_raw (node, &n_integer);
 	g_return_val_if_fail (integer, CKR_GENERAL_ERROR);
 
 	rv = gkm_attribute_set_data (attr, integer, n_integer);
-	g_free (integer);
 
 	return rv;
 }

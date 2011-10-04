@@ -50,7 +50,7 @@ static void
 dump_certificate_reference (GNode *asn)
 {
 	gchar *issuer, *serial;
-	gpointer data;
+	gconstpointer data;
 	gsize n_data;
 	GNode *name;
 	gconstpointer element;
@@ -67,10 +67,9 @@ dump_certificate_reference (GNode *asn)
 	issuer = egg_dn_read (name);
 	g_return_if_fail (issuer);
 
-	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL), NULL, &n_data);
+	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL), &n_data);
 	g_return_if_fail (data && n_data);
 	serial = egg_hex_encode (data, n_data);
-	g_free (data);
 
 	g_print ("Reference\n");
 	g_print ("    issuer: %s\n", issuer);
@@ -78,7 +77,6 @@ dump_certificate_reference (GNode *asn)
 
 	egg_asn1x_destroy (name);
 
-	g_free (data);
 	g_free (serial);
 	g_free (issuer);
 }
@@ -89,7 +87,7 @@ dump_certificate_complete (GNode *asn)
 	GNode *cert;
 	gchar *issuer, *serial, *subject;
 	gconstpointer element;
-	gpointer data;
+	gconstpointer data;
 	gsize n_data, n_element;
 
 	/* Parse the certificate out */
@@ -106,10 +104,9 @@ dump_certificate_complete (GNode *asn)
 	subject = egg_dn_read (egg_asn1x_node (asn, "subject", NULL));
 	g_return_if_fail (subject);
 
-	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL), NULL, &n_data);
+	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL), &n_data);
 	g_return_if_fail (data && n_data);
 	serial = egg_hex_encode (data, n_data);
-	g_free (data);
 
 	g_print ("Complete\n");
 	g_print ("    issuer: %s\n", issuer);
@@ -118,7 +115,6 @@ dump_certificate_complete (GNode *asn)
 
 	egg_asn1x_destroy (cert);
 
-	g_free (data);
 	g_free (serial);
 	g_free (issuer);
 	g_free (subject);

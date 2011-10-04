@@ -1492,6 +1492,33 @@ anode_encoder_simple (gpointer user_data, guchar *data, gsize n_data)
 }
 
 static gboolean
+anode_encoder_unsigned (gpointer user_data,
+                        guchar *data,
+                        gsize n_data)
+{
+	gboolean sign;
+	gchar *p;
+
+	/*
+	 * If top bit is set, the result would be negative in two's complement
+	 * but since we want an unsigned integer, add a zero byte. That zero
+	 * byte is already calculated into n_data, see egg_asn1x_set_integer_as_usg
+	 */
+
+	p = user_data;
+	sign = !!(p[0] & 0x80);
+	if (sign) {
+		g_assert (n_data > 1);
+		data[0] = 0;
+		data++;
+		n_data--;
+	}
+
+	memcpy (data, p, n_data);
+	return TRUE;
+}
+
+static gboolean
 anode_encoder_structured (gpointer user_data, guchar *data, gsize n_data)
 {
 	GNode *node = user_data;
@@ -2050,6 +2077,8 @@ anode_write_integer_ulong (gulong value, guchar *data, gsize *n_data)
 {
 	guchar buf[sizeof (gulong)];
 	gint bytes, i, off;
+	guchar *at;
+	gboolean sign;
 
 	for (i = 0; i < sizeof (gulong); ++i) {
 		off = sizeof (gulong) - (i + 1);
@@ -2064,11 +2093,20 @@ anode_write_integer_ulong (gulong value, guchar *data, gsize *n_data)
 	if (bytes == 0)
 		bytes = 1;
 
+	/* If the first byte would make this negative, then add a zero */
+	at = buf + (sizeof (gulong) - bytes);
+	sign = !!(at[0] & 0x80);
+
 	if (data) {
-		g_assert (*n_data >= bytes);
-		memcpy (data, buf + (sizeof (gulong) - bytes), bytes);
+		g_assert (*n_data >= bytes + 1);
+		if (sign) {
+			data[0] = 0;
+			data++;
+		}
+		memcpy (data, at, bytes);
 	}
-	*n_data = bytes;
+
+	*n_data = bytes + (sign ? 1 : 0);
 	return TRUE;
 }
 
@@ -2510,7 +2548,7 @@ egg_asn1x_set_enumerated (GNode *node, GQuark value)
 	val = anode_def_value_as_ulong (opt);
 	g_return_val_if_fail (val != G_MAXULONG, FALSE);
 
-	n_data = sizeof (gulong);
+	n_data = sizeof (gulong) + 1;
 	data = g_malloc0 (n_data);
 	if (!anode_write_integer_ulong (val, data, &n_data))
 		return FALSE;
@@ -2569,7 +2607,7 @@ egg_asn1x_set_integer_as_ulong (GNode *node, gulong value)
 
 	/* TODO: Handle default values */
 
-	n_data = sizeof (gulong);
+	n_data = sizeof (gulong) + 1;
 	data = g_malloc0 (n_data);
 	if (!anode_write_integer_ulong (value, data, &n_data))
 		return FALSE;
@@ -2577,30 +2615,54 @@ egg_asn1x_set_integer_as_ulong (GNode *node, gulong value)
 	return TRUE;
 }
 
-gpointer
-egg_asn1x_get_integer_as_raw (GNode *node, EggAllocator allocator, gsize *n_data)
+gconstpointer
+egg_asn1x_get_integer_as_raw (GNode *node, gsize *n_data)
 {
 	Atlv *tlv;
-	gpointer data;
 
 	g_return_val_if_fail (node, FALSE);
 	g_return_val_if_fail (n_data, FALSE);
 	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
 
-	if (!allocator)
-		allocator = g_realloc;
-
 	tlv = anode_get_tlv_data (node);
 	if (tlv == NULL || tlv->buf == NULL)
 		return NULL;
 
-	data = (allocator) (NULL, tlv->len);
-	if (data == NULL)
-		return NULL;
-
-	memcpy (data, tlv->buf + tlv->off, tlv->len);
 	*n_data = tlv->len;
-	return data;
+	return tlv->buf + tlv->off;
+}
+
+gconstpointer
+egg_asn1x_get_integer_as_usg (GNode *node,
+                              gsize *n_data)
+{
+	const guchar *p;
+	gboolean sign;
+	gsize len;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (n_data, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
+
+	p = egg_asn1x_get_integer_as_raw (node, &len);
+	sign = !!(p[0] & 0x80);
+	if (sign) {
+		g_warning ("invalid two's complement integer is negative, but expected unsigned");
+		return NULL;
+	}
+
+	*n_data = len;
+
+	/* Strip off the extra zero byte that was preventing it from being negative */
+	if (p[0] == 0 && len > 1) {
+		sign = !!(p[1] & 0x80);
+		if (sign) {
+			p++;
+			*n_data = len - 1;
+		}
+	}
+
+	return p;
 }
 
 gboolean
@@ -2623,6 +2685,37 @@ egg_asn1x_set_integer_as_raw (GNode *node, gconstpointer data, gsize n_data, GDe
 	}
 
 	anode_encode_tlv_and_enc (node, n_data, anode_encoder_simple, (gpointer)data, destroy);
+	return TRUE;
+}
+
+gboolean
+egg_asn1x_set_integer_as_usg (GNode *node,
+                              gconstpointer data,
+                              gsize n_data,
+                              GDestroyNotify destroy)
+{
+	gboolean sign;
+	guchar *p;
+
+	g_return_val_if_fail (node, FALSE);
+	g_return_val_if_fail (data, FALSE);
+	g_return_val_if_fail (n_data > 0, FALSE);
+	g_return_val_if_fail (anode_def_type (node) == TYPE_INTEGER, FALSE);
+
+	/* Make sure the integer is properly encoded in twos complement*/
+	p = (guchar*)data;
+	sign = !!(p[0] & 0x80);
+
+	/*
+	 * If in two's complement this would be negative, add a zero byte so
+	 * that it isn't. Here we just note that the result will be one byte
+	 * longer. In anode_encoder_unsigned we actually add the zero byte.
+	 */
+	if (sign)
+		n_data += 1;
+
+	anode_encode_tlv_and_enc (node, n_data, anode_encoder_unsigned,
+	                          (gpointer)data, destroy);
 	return TRUE;
 }
 

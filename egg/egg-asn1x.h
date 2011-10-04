@@ -102,11 +102,18 @@ gboolean            egg_asn1x_get_integer_as_ulong   (GNode *node,
 gboolean            egg_asn1x_set_integer_as_ulong   (GNode *node,
                                                       gulong value);
 
-gpointer            egg_asn1x_get_integer_as_raw     (GNode *node,
-                                                      EggAllocator allocator,
+gconstpointer       egg_asn1x_get_integer_as_raw     (GNode *node,
                                                       gsize *n_data);
 
 gboolean            egg_asn1x_set_integer_as_raw     (GNode *node,
+                                                      gconstpointer data,
+                                                      gsize n_data,
+                                                      GDestroyNotify destroy);
+
+gconstpointer       egg_asn1x_get_integer_as_usg     (GNode *node,
+                                                      gsize *n_data);
+
+gboolean            egg_asn1x_set_integer_as_usg     (GNode *node,
                                                       gconstpointer data,
                                                       gsize n_data,
                                                       GDestroyNotify destroy);

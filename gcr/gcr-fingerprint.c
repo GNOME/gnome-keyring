@@ -76,12 +76,12 @@ rsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 
 	attr = gck_attributes_find (attrs, CKA_MODULUS);
 	g_return_val_if_fail (attr, FALSE);
-	egg_asn1x_set_integer_as_raw (egg_asn1x_node (key_asn, "modulus", NULL),
+	egg_asn1x_set_integer_as_usg (egg_asn1x_node (key_asn, "modulus", NULL),
 	                              attr->value, attr->length, NULL);
 
 	attr = gck_attributes_find (attrs, CKA_PUBLIC_EXPONENT);
 	g_return_val_if_fail (attr, FALSE);
-	egg_asn1x_set_integer_as_raw (egg_asn1x_node (key_asn, "publicExponent", NULL),
+	egg_asn1x_set_integer_as_usg (egg_asn1x_node (key_asn, "publicExponent", NULL),
 	                              attr->value, attr->length, NULL);
 
 	key = egg_asn1x_encode (key_asn, g_realloc, &n_key);
@@ -128,7 +128,7 @@ dsa_subject_public_key_from_private (GNode *key_asn, GckAttribute *ap,
 	g_return_val_if_fail (my, FALSE);
 	gcry_mpi_powm (my, mg, mx, mp);
 
-	gcry = gcry_mpi_aprint (GCRYMPI_FMT_USG, &buffer, &n_buffer, my);
+	gcry = gcry_mpi_aprint (GCRYMPI_FMT_STD, &buffer, &n_buffer, my);
 	g_return_val_if_fail (gcry == 0, FALSE);
 	egg_asn1x_set_integer_as_raw (key_asn, buffer, n_buffer, gcry_free);
 
@@ -163,15 +163,15 @@ dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 
 	p = gck_attributes_find (attrs, CKA_PRIME);
 	g_return_val_if_fail (p, FALSE);
-	egg_asn1x_set_integer_as_raw (egg_asn1x_node (params_asn, "p", NULL), p->value, p->length, NULL);
+	egg_asn1x_set_integer_as_usg (egg_asn1x_node (params_asn, "p", NULL), p->value, p->length, NULL);
 
 	q = gck_attributes_find (attrs, CKA_SUBPRIME);
 	g_return_val_if_fail (q, FALSE);
-	egg_asn1x_set_integer_as_raw (egg_asn1x_node (params_asn, "q", NULL), q->value, q->length, NULL);
+	egg_asn1x_set_integer_as_usg (egg_asn1x_node (params_asn, "q", NULL), q->value, q->length, NULL);
 
 	g = gck_attributes_find (attrs, CKA_BASE);
 	g_return_val_if_fail (g, FALSE);
-	egg_asn1x_set_integer_as_raw (egg_asn1x_node (params_asn, "g", NULL), g->value, g->length, NULL);
+	egg_asn1x_set_integer_as_usg (egg_asn1x_node (params_asn, "g", NULL), g->value, g->length, NULL);
 
 	value = gck_attributes_find (attrs, CKA_VALUE);
 	g_return_val_if_fail (value, FALSE);
@@ -184,7 +184,7 @@ dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 			g_return_val_if_reached (FALSE);
 
 	} else if (klass == CKO_PUBLIC_KEY) {
-		egg_asn1x_set_integer_as_raw (key_asn, value->value, value->length, NULL);
+		egg_asn1x_set_integer_as_usg (key_asn, value->value, value->length, NULL);
 	}
 
 	key = egg_asn1x_encode (key_asn, g_realloc, &n_key);
