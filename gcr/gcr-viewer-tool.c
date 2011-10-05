@@ -72,12 +72,12 @@ on_idle_load_files (gpointer user_data)
 	return FALSE; /* Don't run this again */
 }
 
-static gboolean
-on_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer unused)
+static void
+on_window_destroy (GtkWidget *widget,
+                   gpointer unused)
 {
-	gtk_main_quit ();
 	gtk_widget_hide (widget);
-	return TRUE;
+	gtk_main_quit ();
 }
 
 int
@@ -123,9 +123,8 @@ main (int argc, char *argv[])
 	gtk_widget_show (GTK_WIDGET (window));
 
 	g_idle_add (on_idle_load_files, window);
-	g_signal_connect (window, "delete-event", G_CALLBACK (on_window_delete_event), NULL);
+	g_signal_connect (window, "destroy", G_CALLBACK (on_window_destroy), NULL);
 	gtk_main ();
 
-	gtk_widget_destroy (GTK_WIDGET (window));
 	return 0;
 }
