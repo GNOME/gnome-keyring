@@ -43,6 +43,11 @@ gcr_icon_for_token (GckTokenInfo *token_info)
 
 	if (g_strcmp0 (token_info->manufacturer_id, "Gnome Keyring") == 0)
 		icon = g_themed_icon_new (GCR_ICON_HOME_DIRECTORY);
+
+	else if (g_strcmp0 (token_info->manufacturer_id, "Mozilla Foundation") == 0 &&
+	         g_strcmp0 (token_info->model, "NSS 3") == 0)
+		icon = g_themed_icon_new (GCR_ICON_HOME_DIRECTORY);
+
 	else
 		icon = g_themed_icon_new (GCR_ICON_SMART_CARD);
 
