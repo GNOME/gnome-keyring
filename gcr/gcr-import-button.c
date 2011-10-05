@@ -102,6 +102,7 @@ update_import_button (GcrImportButton *self)
 	/* Initializing, set a spinner */
 	if (self->pv->queued && !self->pv->ready) {
 		gtk_widget_show (self->pv->spinner);
+		gtk_spinner_start (GTK_SPINNER (self->pv->spinner));
 		gtk_widget_hide (self->pv->arrow);
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Initializing..."));
@@ -109,12 +110,14 @@ update_import_button (GcrImportButton *self)
 	/* Importing, set a spinner */
 	} else if (self->pv->importing) {
 		gtk_widget_show (self->pv->spinner);
+		gtk_spinner_start (GTK_SPINNER (self->pv->spinner));
 		gtk_widget_hide (self->pv->arrow);
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("Import is in progress..."));
 
 	} else if (self->pv->imported) {
 		gtk_widget_hide (self->pv->spinner);
+		gtk_spinner_stop (GTK_SPINNER (self->pv->spinner));
 		gtk_widget_hide (self->pv->arrow);
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
 		message = g_strdup_printf (_("Imported to: %s"), self->pv->imported);
@@ -125,6 +128,7 @@ update_import_button (GcrImportButton *self)
 	} else if (self->pv->importers) {
 
 		gtk_widget_hide (self->pv->spinner);
+		gtk_spinner_stop (GTK_SPINNER (self->pv->spinner));
 		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
 
 		/* More than one importer */
@@ -145,6 +149,7 @@ update_import_button (GcrImportButton *self)
 	/* No importers, none compatible */
 	} else if (self->pv->created) {
 		gtk_widget_hide (self->pv->spinner);
+		gtk_spinner_stop (GTK_SPINNER (self->pv->spinner));
 		gtk_widget_hide (self->pv->arrow);
 
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
@@ -153,6 +158,7 @@ update_import_button (GcrImportButton *self)
 	/* No importers yet added */
 	} else {
 		gtk_widget_hide (self->pv->spinner);
+		gtk_spinner_stop (GTK_SPINNER (self->pv->spinner));
 		gtk_widget_hide (self->pv->arrow);
 
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
