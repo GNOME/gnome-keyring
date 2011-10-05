@@ -161,6 +161,16 @@ on_dialog_run_async (GObject *source,
                      gpointer user_data)
 {
 	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+	GckAttributes *attributes = g_simple_async_result_get_op_res_gpointer (res);
+
+	if (_gcr_pkcs11_import_dialog_run_finish (GCR_PKCS11_IMPORT_DIALOG (source), result)) {
+		_gcr_pkcs11_import_dialog_get_supplements (GCR_PKCS11_IMPORT_DIALOG  (source), attributes);
+
+	} else {
+		g_simple_async_result_set_error (res, G_IO_ERROR, G_IO_ERROR_CANCELLED,
+		                                 _("The user cancelled the operation"));
+	}
+
 	g_simple_async_result_complete (res);
 	g_object_unref (res);
 }
@@ -201,25 +211,16 @@ _gcr_pkcs11_import_interaction_supplement_finish (GcrImportInteraction *interact
                                                   GError **error)
 {
 	GcrPkcs11ImportInteraction *self = GCR_PKCS11_IMPORT_INTERACTION (interaction);
-	GckAttributes *attributes;
 
 	g_return_val_if_fail (self->dialog != NULL, G_TLS_INTERACTION_UNHANDLED);
 	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (interaction),
 	                      _gcr_pkcs11_import_interaction_supplement_async), G_TLS_INTERACTION_UNHANDLED);
 
-	attributes = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-
-	/* Didn't show the dialog */
-	if (attributes == NULL)
-		return G_TLS_INTERACTION_HANDLED;
-
-	if (_gcr_pkcs11_import_dialog_run_finish (self->dialog, result)) {
-		_gcr_pkcs11_import_dialog_get_supplements (self->dialog, attributes);
-		return G_TLS_INTERACTION_HANDLED;
-	} else {
-		g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("The user cancelled the operation"));
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return G_TLS_INTERACTION_FAILED;
-	}
+
+	return G_TLS_INTERACTION_HANDLED;
+
 }
 
 static void

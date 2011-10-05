@@ -801,9 +801,11 @@ _gcr_pkcs11_importer_queue_for_parsed (GcrImporter *importer,
 {
 	GcrPkcs11Importer *self = GCR_PKCS11_IMPORTER (importer);
 	GckAttributes *attrs;
+	const gchar *label;
 
 	attrs = gcr_parsed_get_attributes (parsed);
-	_gcr_pkcs11_importer_queue (self, attrs);
+	label = gcr_parsed_get_label (parsed);
+	_gcr_pkcs11_importer_queue (self, label, attrs);
 
 	return TRUE;
 }
@@ -894,10 +896,14 @@ _gcr_pkcs11_importer_get_queued (GcrPkcs11Importer *self)
 
 void
 _gcr_pkcs11_importer_queue (GcrPkcs11Importer *self,
+                            const gchar *label,
                             GckAttributes *attrs)
 {
 	g_return_if_fail (GCR_IS_PKCS11_IMPORTER (self));
 	g_return_if_fail (attrs != NULL);
+
+	if (label != NULL && !gck_attributes_find (attrs, CKA_LABEL))
+		gck_attributes_add_string (attrs, CKA_LABEL, label);
 
 	g_queue_push_tail (self->queue, gck_attributes_ref (attrs));
 }

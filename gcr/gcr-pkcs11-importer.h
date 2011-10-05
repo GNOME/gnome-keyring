@@ -48,6 +48,7 @@ GType                     _gcr_pkcs11_importer_get_type        (void);
 GcrImporter *             _gcr_pkcs11_importer_new             (GckSlot *slot);
 
 void                      _gcr_pkcs11_importer_queue           (GcrPkcs11Importer *self,
+                                                                const gchar *label,
                                                                 GckAttributes *attrs);
 
 GckSlot *                 _gcr_pkcs11_importer_get_slot        (GcrPkcs11Importer *self);
