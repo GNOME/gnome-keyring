@@ -227,8 +227,6 @@ parsed_attribute (GcrParsed *parsed,
 static gboolean
 parsed_asn1_number (GcrParsed *parsed,
                     GNode *asn,
-                    const guchar *data,
-                    gsize n_data,
                     const gchar *part,
                     CK_ATTRIBUTE_TYPE type)
 {
@@ -236,10 +234,29 @@ parsed_asn1_number (GcrParsed *parsed,
 	gsize n_value;
 
 	g_assert (asn);
-	g_assert (data);
 	g_assert (parsed);
 
 	value = egg_asn1x_get_integer_as_usg (egg_asn1x_node (asn, part, NULL), &n_value);
+	if (value == NULL)
+		return FALSE;
+
+	parsed_attribute (parsed, type, value, n_value);
+	return TRUE;
+}
+
+static gboolean
+parsed_asn1_element (GcrParsed *parsed,
+                     GNode *asn,
+                     const gchar *part,
+                     CK_ATTRIBUTE_TYPE type)
+{
+	const guchar *value;
+	gsize n_value;
+
+	g_assert (asn);
+	g_assert (parsed);
+
+	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, part, NULL), &n_value);
 	if (value == NULL)
 		return FALSE;
 
@@ -469,12 +486,12 @@ parse_der_private_key_rsa (GcrParser *self, const guchar *data, gsize n_data)
 		goto done;
 	}
 
-	if (!parsed_asn1_number (parsed, asn, data, n_data, "modulus", CKA_MODULUS) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "publicExponent", CKA_PUBLIC_EXPONENT) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "privateExponent", CKA_PRIVATE_EXPONENT) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "prime1", CKA_PRIME_1) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "prime2", CKA_PRIME_2) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "coefficient", CKA_COEFFICIENT))
+	if (!parsed_asn1_number (parsed, asn, "modulus", CKA_MODULUS) ||
+	    !parsed_asn1_number (parsed, asn, "publicExponent", CKA_PUBLIC_EXPONENT) ||
+	    !parsed_asn1_number (parsed, asn, "privateExponent", CKA_PRIVATE_EXPONENT) ||
+	    !parsed_asn1_number (parsed, asn, "prime1", CKA_PRIME_1) ||
+	    !parsed_asn1_number (parsed, asn, "prime2", CKA_PRIME_2) ||
+	    !parsed_asn1_number (parsed, asn, "coefficient", CKA_COEFFICIENT))
 		goto done;
 
 	parsed_fire (self, parsed);
@@ -512,10 +529,10 @@ parse_der_private_key_dsa (GcrParser *self, const guchar *data, gsize n_data)
 	parsed_boolean_attribute (parsed, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
-	if (!parsed_asn1_number (parsed, asn, data, n_data, "p", CKA_PRIME) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "q", CKA_SUBPRIME) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "g", CKA_BASE) ||
-	    !parsed_asn1_number (parsed, asn, data, n_data, "priv", CKA_VALUE))
+	if (!parsed_asn1_number (parsed, asn, "p", CKA_PRIME) ||
+	    !parsed_asn1_number (parsed, asn, "q", CKA_SUBPRIME) ||
+	    !parsed_asn1_number (parsed, asn, "g", CKA_BASE) ||
+	    !parsed_asn1_number (parsed, asn, "priv", CKA_VALUE))
 		goto done;
 
 	parsed_fire (self, parsed);
@@ -551,10 +568,10 @@ parse_der_private_key_dsa_parts (GcrParser *self, const guchar *keydata, gsize n
 	parsed_boolean_attribute (parsed, CKA_PRIVATE, CK_TRUE);
 	ret = GCR_ERROR_FAILURE;
 
-	if (!parsed_asn1_number (parsed, asn_params, params, n_params, "p", CKA_PRIME) ||
-	    !parsed_asn1_number (parsed, asn_params, params, n_params, "q", CKA_SUBPRIME) ||
-	    !parsed_asn1_number (parsed, asn_params, params, n_params, "g", CKA_BASE) ||
-	    !parsed_asn1_number (parsed, asn_key, keydata, n_keydata, NULL, CKA_VALUE))
+	if (!parsed_asn1_number (parsed, asn_params, "p", CKA_PRIME) ||
+	    !parsed_asn1_number (parsed, asn_params, "q", CKA_SUBPRIME) ||
+	    !parsed_asn1_number (parsed, asn_params, "g", CKA_BASE) ||
+	    !parsed_asn1_number (parsed, asn_key, NULL, CKA_VALUE))
 		goto done;
 
 	parsed_fire (self, parsed);
@@ -774,8 +791,9 @@ static gint
 parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 {
 	gchar *name = NULL;
-	GNode *asn;
 	GcrParsed *parsed;
+	GNode *node;
+	GNode *asn;
 
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data, n_data);
 	if (asn == NULL)
@@ -787,10 +805,11 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 	parsing_object (parsed, CKO_CERTIFICATE);
 	parsed_ulong_attribute (parsed, CKA_CERTIFICATE_TYPE, CKC_X_509);
 
-	if (gcr_parser_get_parsed_label (self) == NULL)
-		name = egg_dn_read_part (egg_asn1x_node (asn, "tbsCertificate", "subject", "rdnSequence", NULL), "CN");
+	node = egg_asn1x_node (asn, "tbsCertificate", NULL);
+	g_return_val_if_fail (node != NULL, GCR_ERROR_FAILURE);
 
-	egg_asn1x_destroy (asn);
+	if (gcr_parser_get_parsed_label (self) == NULL)
+		name = egg_dn_read_part (egg_asn1x_node (node, "subject", "rdnSequence", NULL), "CN");
 
 	if (name != NULL) {
 		parsed_label (parsed, name);
@@ -798,7 +817,12 @@ parse_der_certificate (GcrParser *self, const guchar *data, gsize n_data)
 	}
 
 	parsed_attribute (parsed, CKA_VALUE, data, n_data);
+	parsed_asn1_element (parsed, node, "subject", CKA_SUBJECT);
+	parsed_asn1_element (parsed, node, "issuer", CKA_ISSUER);
+	parsed_asn1_number (parsed, node, "serialNumber", CKA_SERIAL_NUMBER);
 	parsed_fire (self, parsed);
+
+	egg_asn1x_destroy (asn);
 
 	pop_parsed (self, parsed);
 	return SUCCESS;
