@@ -44,7 +44,6 @@ enum {
 
 struct _GcrPkcs11ImportDialog {
 	GtkDialog parent;
-	GcrImporter *importer;
 	GtkBuilder *builder;
 	GtkWidget *password_area;
 	GtkLabel *token_label;
@@ -70,18 +69,6 @@ on_label_changed (GtkEditable *editable,
 	self->label_changed = TRUE;
 }
 
-static GList *
-pkcs11_importer_get_queued (GcrImporter *importer)
-{
-	GList *queued = NULL;
-
-	/* TODO: This is ugly */
-
-	g_object_get (importer, "queued", &queued, NULL);
-
-	return queued;
-}
-
 static void
 _gcr_pkcs11_import_dialog_constructed (GObject *obj)
 {
@@ -90,9 +77,6 @@ _gcr_pkcs11_import_dialog_constructed (GObject *obj)
 	GtkEntryBuffer *buffer;
 	GtkWidget *widget;
 	GtkBox *contents;
-	GList *queued, *l;
-	gchar *label = NULL;
-	gchar *value;
 
 	G_OBJECT_CLASS (_gcr_pkcs11_import_dialog_parent_class)->constructed (obj);
 
@@ -125,27 +109,6 @@ _gcr_pkcs11_import_dialog_constructed (GObject *obj)
 	g_signal_connect (self->label_entry, "changed", G_CALLBACK (on_label_changed), self);
 	gtk_entry_set_activates_default (self->label_entry, TRUE);
 
-	queued = pkcs11_importer_get_queued (self->importer);
-	for (l = queued; l != NULL; l = g_list_next (l)) {
-		if (!gck_attributes_find_string (l->data, CKA_LABEL, &value))
-			value = NULL;
-		if (l == queued) {
-			label = value;
-			value = NULL;
-		} else if (g_strcmp0 (label, value) != 0) {
-			g_free (label);
-			label = NULL;
-		}
-		g_free (value);
-	}
-	g_list_free (queued);
-
-	if (label == NULL)
-		gtk_entry_set_placeholder_text (self->label_entry, _("Automatically chosen"));
-	else
-		gtk_entry_set_text (self->label_entry, label);
-	g_free (label);
-
 	/* Add our various buttons */
 	gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_OK, GTK_RESPONSE_OK);
@@ -166,46 +129,8 @@ _gcr_pkcs11_import_dialog_finalize (GObject *obj)
 	GcrPkcs11ImportDialog *self = GCR_PKCS11_IMPORT_DIALOG (obj);
 
 	g_object_unref (self->builder);
-	g_clear_object (&self->importer);
 
 	G_OBJECT_CLASS (_gcr_pkcs11_import_dialog_parent_class)->finalize (obj);
-}
-
-static void
-_gcr_pkcs11_import_dialog_set_property (GObject *obj,
-                                        guint prop_id,
-                                        const GValue *value,
-                                        GParamSpec *pspec)
-{
-	GcrPkcs11ImportDialog *self = GCR_PKCS11_IMPORT_DIALOG (obj);
-
-	switch (prop_id) {
-	case PROP_IMPORTER:
-		g_return_if_fail (self->importer == NULL);
-		self->importer = g_value_dup_object (value);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
-	}
-}
-
-static void
-_gcr_pkcs11_import_dialog_get_property (GObject *obj,
-                                        guint prop_id,
-                                        GValue *value,
-                                        GParamSpec *pspec)
-{
-	GcrPkcs11ImportDialog *self = GCR_PKCS11_IMPORT_DIALOG (obj);
-
-	switch (prop_id) {
-	case PROP_IMPORTER:
-		g_value_set_object (value, self->importer);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
-	}
 }
 
 static void
@@ -215,45 +140,54 @@ _gcr_pkcs11_import_dialog_class_init (GcrPkcs11ImportDialogClass *klass)
 
 	gobject_class->constructed = _gcr_pkcs11_import_dialog_constructed;
 	gobject_class->finalize = _gcr_pkcs11_import_dialog_finalize;
-	gobject_class->set_property = _gcr_pkcs11_import_dialog_set_property;
-	gobject_class->get_property = _gcr_pkcs11_import_dialog_get_property;
-
-	g_object_class_install_property (gobject_class, PROP_IMPORTER,
-	           g_param_spec_object ("importer", "Importer", "The PKCS#11 importer",
-	                                GCR_TYPE_IMPORTER,
-	                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 GcrPkcs11ImportDialog *
-_gcr_pkcs11_import_dialog_new (GcrImporter *importer,
-                               GtkWindow *parent)
+_gcr_pkcs11_import_dialog_new (GtkWindow *parent)
 {
 	GcrPkcs11ImportDialog *dialog;
 
-	g_return_val_if_fail (GCR_IS_IMPORTER (importer), NULL);
 	g_return_val_if_fail (parent == NULL || GTK_IS_WINDOW (parent), NULL);
 
 	dialog = g_object_new (GCR_TYPE_PKCS11_IMPORT_DIALOG,
-	                       "importer", importer,
 	                       "transient-for", parent,
 	                       NULL);
 
 	return g_object_ref_sink (dialog);
 }
 
-static void
-update_importer_labels (GcrPkcs11ImportDialog *self)
+void
+_gcr_pkcs11_import_dialog_get_supplements (GcrPkcs11ImportDialog *self,
+                                           GckAttributes *attributes)
 {
 	const gchar *label;
-	GList *queued, *l;
+
+	g_return_if_fail (GCR_IS_PKCS11_IMPORT_DIALOG (self));
+	g_return_if_fail (attributes != NULL);
 
 	label = gtk_entry_get_text (self->label_entry);
-	if (self->label_changed && label != NULL && label[0]) {
-		queued = pkcs11_importer_get_queued (self->importer);
-		for (l = queued; l != NULL; l = g_list_next (l))
-			gck_attributes_set_string (l->data, CKA_LABEL, label);
-		g_list_free (queued);
-	}
+	if (self->label_changed && label != NULL && label[0])
+		gck_attributes_set_string (attributes, CKA_LABEL, label);
+}
+
+void
+_gcr_pkcs11_import_dialog_set_supplements (GcrPkcs11ImportDialog *self,
+                                           GckAttributes *attributes)
+{
+	gchar *label;
+
+	g_return_if_fail (GCR_IS_PKCS11_IMPORT_DIALOG (self));
+	g_return_if_fail (attributes != NULL);
+
+	if (!gck_attributes_find_string (attributes, CKA_LABEL, &label))
+		label = NULL;
+
+	if (label == NULL)
+		gtk_entry_set_placeholder_text (self->label_entry, _("Automatically chosen"));
+	gtk_entry_set_text (self->label_entry, label == NULL ? "" : label);
+	g_free (label);
+
+	self->label_changed = FALSE;
 }
 
 gboolean
@@ -264,7 +198,6 @@ _gcr_pkcs11_import_dialog_run (GcrPkcs11ImportDialog *self)
 	g_return_val_if_fail (GCR_IS_PKCS11_IMPORT_DIALOG (self), FALSE);
 
 	if (gtk_dialog_run (GTK_DIALOG (self)) == GTK_RESPONSE_OK) {
-		update_importer_labels (self);
 		ret = TRUE;
 	}
 
@@ -296,12 +229,7 @@ _gcr_pkcs11_import_dialog_run_finish (GcrPkcs11ImportDialog *self,
 
 	gtk_widget_hide (GTK_WIDGET (self));
 
-	if (response == GTK_RESPONSE_OK) {
-		update_importer_labels (self);
-		return TRUE;
-	}
-
-	return FALSE;
+	return (response == GTK_RESPONSE_OK) ? TRUE : FALSE;
 }
 
 GTlsInteractionResult

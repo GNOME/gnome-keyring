@@ -77,6 +77,8 @@ IGNORE_HFILES= \
 	gcr-menu-button.h \
 	gcr-openpgp.h \
 	gcr-pkcs11-importer.h \
+	gcr-pkcs11-import-interaction.h \
+	gcr-pkcs11-import-dialog.h \
 	gcr-pkcs11-renderer.h \
 	gcr-record.h \
 	gcr-single-collection.h \

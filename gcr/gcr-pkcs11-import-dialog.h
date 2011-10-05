@@ -39,8 +39,13 @@ typedef struct _GcrPkcs11ImportDialog GcrPkcs11ImportDialog;
 
 GType                   _gcr_pkcs11_import_dialog_get_type          (void) G_GNUC_CONST;
 
-GcrPkcs11ImportDialog * _gcr_pkcs11_import_dialog_new               (GcrImporter *importer,
-                                                                     GtkWindow *parent);
+GcrPkcs11ImportDialog * _gcr_pkcs11_import_dialog_new               (GtkWindow *parent);
+
+void                    _gcr_pkcs11_import_dialog_get_supplements   (GcrPkcs11ImportDialog *self,
+                                                                     GckAttributes *attributes);
+
+void                    _gcr_pkcs11_import_dialog_set_supplements   (GcrPkcs11ImportDialog *self,
+                                                                     GckAttributes *attributes);
 
 gboolean                _gcr_pkcs11_import_dialog_run               (GcrPkcs11ImportDialog *self);
 

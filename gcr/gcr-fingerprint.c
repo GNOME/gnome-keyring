@@ -354,8 +354,8 @@ gcr_fingerprint_from_attributes (GckAttributes *attrs,
 }
 
 /**
- * gcr_fingerprint_from_attributes:
- * @attrs: attributes for key or certificate
+ * gcr_fingerprint_from_certificate_public_key:
+ * @certificate: the certificate
  * @checksum_type: the type of fingerprint to create
  * @n_fingerprint: the length of fingerprint returned
  *

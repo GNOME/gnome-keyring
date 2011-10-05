@@ -74,6 +74,7 @@ typedef struct  {
 	GCancellable *cancellable;
 	gboolean prompted;
 	gboolean async;
+	GckAttributes *supplement;
 } GcrImporterData;
 
 /* State forward declarations */
@@ -132,13 +133,6 @@ static void
 state_complete (GSimpleAsyncResult *res,
                 gboolean async)
 {
-	GcrImporterData *data = g_simple_async_result_get_op_res_gpointer (res);
-	GcrPkcs11Importer *self = data->importer;
-
-	/* Disconnect from the interaction */
-	if (data->importer->interaction && GCR_IS_IMPORT_INTERACTION (self->interaction))
-		gcr_import_interaction_set_importer (GCR_IMPORT_INTERACTION (self->interaction), NULL);
-
 	g_simple_async_result_complete (res);
 }
 
@@ -237,6 +231,20 @@ typedef struct {
 } CertificateKeyPair;
 
 static void
+supplement_with_attributes (GckAttributes *attrs,
+                            GckAttributes *supplements)
+{
+	GckAttribute *supplement;
+	gint i;
+
+	for (i = 0; i < gck_attributes_count (supplements); i++) {
+		supplement = gck_attributes_at (supplements, i);
+		if (!gck_attribute_is_invalid (supplement) && supplement->length != 0)
+			gck_attributes_add (attrs, supplement);
+	}
+}
+
+static void
 supplement_id_for_data (GckAttributes *attrs,
                         guchar *nonce,
                         gsize n_once,
@@ -263,11 +271,13 @@ supplement_id_for_data (GckAttributes *attrs,
 }
 
 static void
-supplement_attributes (GcrPkcs11Importer *self)
+supplement_attributes (GcrPkcs11Importer *self,
+                       GckAttributes *supplements)
 {
 	GHashTable *pairs;
 	GHashTable *paired;
 	CertificateKeyPair *pair;
+	gboolean supplemented = FALSE;
 	GckAttributes *attrs;
 	gulong klass;
 	guchar *finger;
@@ -343,14 +353,21 @@ supplement_attributes (GcrPkcs11Importer *self)
 			 * Generate a CKA_ID based on the fingerprint and nonce,
 			 * and do the same CKA_ID for both private key and certificate.
 			 */
+
+			supplement_with_attributes (pair->private_key, supplements);
 			supplement_id_for_data (pair->private_key, nonce, sizeof (nonce),
 			                        fingerprint, strlen (fingerprint));
 			g_queue_push_tail (queue, pair->private_key);
 			g_hash_table_insert (paired, pair->private_key, "present");
+
+			supplement_with_attributes (pair->private_key, supplements);
 			supplement_id_for_data (pair->certificate, nonce, sizeof (nonce),
 			                        fingerprint, strlen (fingerprint));
 			g_queue_push_tail (queue, pair->certificate);
 			g_hash_table_insert (paired, pair->certificate, "present");
+
+			/* Used the suplements for the pairs, don't use for unpaired stuff */
+			supplemented = TRUE;
 		}
 	}
 
@@ -358,6 +375,9 @@ supplement_attributes (GcrPkcs11Importer *self)
 	for (l = self->queue->head; l != NULL; l = g_list_next (l)) {
 		attrs = l->data;
 		if (!g_hash_table_lookup (paired, attrs)) {
+			if (!supplemented)
+				supplement_with_attributes (attrs, supplements);
+
 			/*
 			 * Generate a CKA_ID based on the location of attrs in,
 			 * memory, since this together with the nonce should
@@ -365,6 +385,7 @@ supplement_attributes (GcrPkcs11Importer *self)
 			 */
 			supplement_id_for_data (attrs, nonce, sizeof (nonce),
 			                        &attrs, sizeof (gpointer));
+
 			g_queue_push_tail (queue, l->data);
 		}
 	}
@@ -384,7 +405,7 @@ complete_supplement (GSimpleAsyncResult *res,
 	GcrImporterData *data = g_simple_async_result_get_op_res_gpointer (res);
 
 	if (error == NULL) {
-		supplement_attributes (data->importer);
+		supplement_attributes (data->importer, data->supplement);
 		next_state (res, state_create_object);
 	} else {
 		g_simple_async_result_take_error (res, error);
@@ -421,14 +442,49 @@ state_supplement (GSimpleAsyncResult *res,
 
 	} else if (async) {
 		gcr_import_interaction_supplement_async (GCR_IMPORT_INTERACTION (self->interaction),
-		                                         data->cancellable, on_supplement_done,
-		                                         g_object_ref (res));
+		                                         data->supplement, data->cancellable,
+		                                         on_supplement_done, g_object_ref (res));
 
 	} else {
 		gcr_import_interaction_supplement (GCR_IMPORT_INTERACTION (self->interaction),
-		                                   data->cancellable, &error);
+		                                   data->supplement, data->cancellable, &error);
 		complete_supplement (res, error);
 	}
+}
+
+static void
+supplement_prep (GSimpleAsyncResult *res)
+{
+	GcrImporterData *data = g_simple_async_result_get_op_res_gpointer (res);
+	GcrPkcs11Importer *self = data->importer;
+	GckAttribute *the_label = NULL;
+	GckAttribute *attr;
+	gboolean first = TRUE;
+	GList *l;
+
+	if (data->supplement)
+		gck_attributes_unref (data->supplement);
+	data->supplement = gck_attributes_new ();
+
+	/* Do we have a consistent label across all objects? */
+	for (l = self->queue->head; l != NULL; l = g_list_next (l)) {
+		attr = gck_attributes_find (l->data, CKA_LABEL);
+		if (first)
+			the_label = attr;
+		else if (!gck_attribute_equal (the_label, attr))
+			the_label = NULL;
+		first = FALSE;
+	}
+
+	/* If consistent label, set that in supplement data */
+	if (the_label != NULL)
+		gck_attributes_add (data->supplement, the_label);
+	else
+		gck_attributes_add_empty (data->supplement, CKA_LABEL);
+
+	if (GCR_IS_IMPORT_INTERACTION (self->interaction))
+		gcr_import_interaction_supplement_prep (GCR_IMPORT_INTERACTION (self->interaction),
+		                                        data->supplement);
 }
 
 /* ---------------------------------------------------------------------------------
@@ -770,9 +826,7 @@ _gcr_pkcs11_importer_import_async (GcrImporter *importer,
 	data->cancellable = cancellable ? g_object_ref (cancellable) : NULL;
 	g_simple_async_result_set_op_res_gpointer (res, data, gcr_importer_data_free);
 
-	if (GCR_IS_IMPORT_INTERACTION (self->interaction))
-		gcr_import_interaction_set_importer (GCR_IMPORT_INTERACTION (self->interaction),
-		                                     GCR_IMPORTER (self));
+	supplement_prep (res);
 	gck_slot_set_interaction (self->slot, self->interaction);
 
 	next_state (res, state_open_session);

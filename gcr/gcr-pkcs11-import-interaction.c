@@ -33,7 +33,6 @@
 
 enum {
 	PROP_0,
-	PROP_IMPORTER,
 	PROP_PARENT_WINDOW
 };
 
@@ -41,8 +40,7 @@ typedef struct _GcrPkcs11ImportInteractionClass GcrPkcs11ImportInteractionClass;
 
 struct _GcrPkcs11ImportInteraction {
 	GTlsInteraction parent;
-	GcrImporter *importer;
-	gboolean dialog_shown;
+	gboolean supplemented;
 	GtkWindow *parent_window;
 	GcrPkcs11ImportDialog *dialog;
 };
@@ -59,7 +57,7 @@ G_DEFINE_TYPE_WITH_CODE(GcrPkcs11ImportInteraction, _gcr_pkcs11_import_interacti
 static void
 _gcr_pkcs11_import_interaction_init (GcrPkcs11ImportInteraction *self)
 {
-
+	self->dialog = _gcr_pkcs11_import_dialog_new (self->parent_window);
 }
 
 static void
@@ -81,17 +79,9 @@ _gcr_pkcs11_import_interaction_set_property (GObject *obj,
 	GcrPkcs11ImportInteraction *self = GCR_PKCS11_IMPORT_INTERACTION (obj);
 
 	switch (prop_id) {
-	case PROP_IMPORTER:
-		g_clear_object (&self->dialog);
-		g_clear_object (&self->importer);
-		self->importer = g_value_dup_object (value);
-		self->dialog_shown = FALSE;
-		if (self->importer != NULL)
-			self->dialog = _gcr_pkcs11_import_dialog_new (self->importer, self->parent_window);
-		break;
 	case PROP_PARENT_WINDOW:
-		g_clear_object (&self->parent_window);
-		self->parent_window = g_value_dup_object (value);
+		gtk_window_set_transient_for (GTK_WINDOW (self->dialog),
+		                              g_value_get_object (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -108,11 +98,8 @@ _gcr_pkcs11_import_interaction_get_property (GObject *obj,
 	GcrPkcs11ImportInteraction *self = GCR_PKCS11_IMPORT_INTERACTION (obj);
 
 	switch (prop_id) {
-	case PROP_IMPORTER:
-		g_value_set_object (value, self->importer);
-		break;
 	case PROP_PARENT_WINDOW:
-		g_value_set_object (value, self->parent_window);
+		g_value_set_object (value, gtk_window_get_transient_for (GTK_WINDOW (self->dialog)));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -130,12 +117,23 @@ _gcr_pkcs11_import_interaction_ask_password (GTlsInteraction *interaction,
 
 	g_return_val_if_fail (self->dialog != NULL, G_TLS_INTERACTION_UNHANDLED);
 
-	self->dialog_shown = TRUE;
+	self->supplemented = TRUE;
 	return _gcr_pkcs11_import_dialog_run_ask_password (self->dialog, password, cancellable, error);
+}
+
+static void
+_gcr_pkcs11_import_interaction_supplement_prep (GcrImportInteraction *interaction,
+                                                GckAttributes *attributes)
+{
+	GcrPkcs11ImportInteraction *self = GCR_PKCS11_IMPORT_INTERACTION (interaction);
+
+	self->supplemented = FALSE;
+	_gcr_pkcs11_import_dialog_set_supplements (self->dialog, attributes);
 }
 
 static GTlsInteractionResult
 _gcr_pkcs11_import_interaction_supplement (GcrImportInteraction *interaction,
+                                           GckAttributes *attributes,
                                            GCancellable *cancellable,
                                            GError **error)
 {
@@ -143,11 +141,12 @@ _gcr_pkcs11_import_interaction_supplement (GcrImportInteraction *interaction,
 
 	g_return_val_if_fail (self->dialog != NULL, G_TLS_INTERACTION_UNHANDLED);
 
-	if (self->dialog_shown)
+	if (self->supplemented)
 		return G_TLS_INTERACTION_HANDLED;
 
-	self->dialog_shown = TRUE;
+	self->supplemented = TRUE;
 	if (_gcr_pkcs11_import_dialog_run (self->dialog)) {
+		_gcr_pkcs11_import_dialog_get_supplements (self->dialog, attributes);
 		return G_TLS_INTERACTION_HANDLED;
 
 	} else {
@@ -157,7 +156,18 @@ _gcr_pkcs11_import_interaction_supplement (GcrImportInteraction *interaction,
 }
 
 static void
+on_dialog_run_async (GObject *source,
+                     GAsyncResult *result,
+                     gpointer user_data)
+{
+	GSimpleAsyncResult *res = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_simple_async_result_complete (res);
+	g_object_unref (res);
+}
+
+static void
 _gcr_pkcs11_import_interaction_supplement_async (GcrImportInteraction *interaction,
+                                                 GckAttributes *attributes,
                                                  GCancellable *cancellable,
                                                  GAsyncReadyCallback callback,
                                                  gpointer user_data)
@@ -167,17 +177,22 @@ _gcr_pkcs11_import_interaction_supplement_async (GcrImportInteraction *interacti
 
 	g_return_if_fail (self->dialog != NULL);
 
+	res = g_simple_async_result_new (G_OBJECT (interaction), callback, user_data,
+	                                 _gcr_pkcs11_import_interaction_supplement_async);
+
 	/* If dialog was already shown, then short circuit */
-	if (self->dialog_shown) {
-		res = g_simple_async_result_new (G_OBJECT (interaction), callback, user_data,
-		                                 _gcr_pkcs11_import_interaction_supplement_async);
+	if (self->supplemented) {
 		g_simple_async_result_complete_in_idle (res);
-		g_object_unref (res);
 
 	} else {
-		self->dialog_shown = TRUE;
-		_gcr_pkcs11_import_dialog_run_async (self->dialog, cancellable, callback, user_data);
+		self->supplemented = TRUE;
+		g_simple_async_result_set_op_res_gpointer (res, gck_attributes_ref (attributes),
+		                                           (GDestroyNotify)gck_attributes_unref);
+		_gcr_pkcs11_import_dialog_run_async (self->dialog, cancellable,
+		                                     on_dialog_run_async, g_object_ref (res));
 	}
+
+	g_object_unref (res);
 }
 
 static GTlsInteractionResult
@@ -186,17 +201,21 @@ _gcr_pkcs11_import_interaction_supplement_finish (GcrImportInteraction *interact
                                                   GError **error)
 {
 	GcrPkcs11ImportInteraction *self = GCR_PKCS11_IMPORT_INTERACTION (interaction);
+	GckAttributes *attributes;
 
 	g_return_val_if_fail (self->dialog != NULL, G_TLS_INTERACTION_UNHANDLED);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (interaction),
+	                      _gcr_pkcs11_import_interaction_supplement_async), G_TLS_INTERACTION_UNHANDLED);
 
-	/* If it was short circuited without a dialog */
-	if (g_simple_async_result_is_valid (result, G_OBJECT (interaction),
-	                                    _gcr_pkcs11_import_interaction_supplement_async)) {
+	attributes = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+	/* Didn't show the dialog */
+	if (attributes == NULL)
 		return G_TLS_INTERACTION_HANDLED;
 
-	} else if (_gcr_pkcs11_import_dialog_run_finish (self->dialog, result)) {
+	if (_gcr_pkcs11_import_dialog_run_finish (self->dialog, result)) {
+		_gcr_pkcs11_import_dialog_get_supplements (self->dialog, attributes);
 		return G_TLS_INTERACTION_HANDLED;
-
 	} else {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("The user cancelled the operation"));
 		return G_TLS_INTERACTION_FAILED;
@@ -206,6 +225,7 @@ _gcr_pkcs11_import_interaction_supplement_finish (GcrImportInteraction *interact
 static void
 _gcr_pkcs11_import_interaction_iface_init (GcrImportInteractionIface *iface)
 {
+	iface->supplement_prep = _gcr_pkcs11_import_interaction_supplement_prep;
 	iface->supplement = _gcr_pkcs11_import_interaction_supplement;
 	iface->supplement_async = _gcr_pkcs11_import_interaction_supplement_async;
 	iface->supplement_finish = _gcr_pkcs11_import_interaction_supplement_finish;
@@ -222,8 +242,6 @@ _gcr_pkcs11_import_interaction_class_init (GcrPkcs11ImportInteractionClass *klas
 	gobject_class->get_property = _gcr_pkcs11_import_interaction_get_property;
 
 	interaction_class->ask_password = _gcr_pkcs11_import_interaction_ask_password;
-
-	g_object_class_override_property (gobject_class, PROP_IMPORTER, "importer");
 
 	g_object_class_install_property (gobject_class, PROP_PARENT_WINDOW,
 	              g_param_spec_object ("parent-window", "Parent Window", "Prompt Parent Window",

@@ -74,77 +74,90 @@ gcr_import_interaction_default_init (GcrImportInteractionIface *iface)
 	static volatile gsize initialized = 0;
 
 	if (g_once_init_enter (&initialized)) {
-
-		/**
-		 * GcrImportInteraction:importer:
-		 *
-		 * The importer being imported to
-		 */
-		g_object_interface_install_property (iface,
-		         g_param_spec_object ("importer", "Importer", "The imported imported to",
-		                              GCR_TYPE_IMPORTER, G_PARAM_READWRITE));
-
 		g_once_init_leave (&initialized, 1);
 	}
 }
 
 /**
- * gcr_import_interaction_get_importer:
+ * gcr_import_interaction_supplement_prep:
  * @interaction: the interaction
+ * @attributes: attributes to supplement
  *
- * Get the importer that's using this interaction.
+ * Prepare for supplementing the given attributes before import. This means
+ * prompting the user for things like labels and the like. The attributes
+ * will contain attributes for values that the importer needs, either empty
+ * or prefilled with suggested values.
  *
- * Returns: (transfer full):
+ * This method does not prompt the user, but rather just prepares the
+ * interaction that these are the attributes that are needed.
  */
-GcrImporter *
-gcr_import_interaction_get_importer (GcrImportInteraction *interaction)
+void
+gcr_import_interaction_supplement_prep (GcrImportInteraction *interaction,
+                                        GckAttributes *attributes)
 {
-	GcrImporter *importer = NULL;
+	GcrImportInteractionIface *iface;
 
-	g_return_val_if_fail (GCR_IS_IMPORT_INTERACTION (interaction), NULL);
+	g_return_if_fail (GCR_IS_IMPORT_INTERACTION (interaction));
+	g_return_if_fail (attributes != NULL);
 
-	g_object_get (interaction, "importer", &importer, NULL);
-
-	if (importer != NULL)
-		g_object_unref (importer);
-
-	return importer;
+	iface = GCR_IMPORT_INTERACTION_GET_INTERFACE (interaction);
+	if (iface->supplement != NULL)
+		(iface->supplement_prep) (interaction, attributes);
 }
 
 /**
- * gcr_import_interaction_set_importer:
+ * gcr_import_interaction_supplement:
  * @interaction: the interaction
- * @importer: (allow-none): the importer or %NULL
+ * @attributes: supplemented attributes
+ * @cancellable: optional cancellable object
+ * @error: location to store error on failure
  *
- * Set the importer that's using this interaction.
+ * Supplement attributes before import. This means prompting the user for
+ * things like labels and the like. The needed attributes will have been passed
+ * to gcr_import_interaction_supplement_prep().
+ *
+ * This method prompts the user and fills in the attributes. If the user or
+ * cancellable cancels the operation the error should be set with %G_IO_ERROR_CANCELLED.
+ *
+ * Returns: %G_TLS_INTERACTION_HANDLED if successful or %G_TLS_INTERACTION_FAILED
  */
-void
-gcr_import_interaction_set_importer (GcrImportInteraction *interaction,
-                                     GcrImporter *importer)
-{
-	g_return_if_fail (GCR_IS_IMPORT_INTERACTION (interaction));
-	g_object_set (interaction, "importer", importer, NULL);
-}
-
 GTlsInteractionResult
 gcr_import_interaction_supplement (GcrImportInteraction *interaction,
+                                   GckAttributes *attributes,
                                    GCancellable *cancellable,
                                    GError **error)
 {
 	GcrImportInteractionIface *iface;
 
 	g_return_val_if_fail (GCR_IS_IMPORT_INTERACTION (interaction), G_TLS_INTERACTION_UNHANDLED);
+	g_return_val_if_fail (attributes != NULL, G_TLS_INTERACTION_UNHANDLED);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), G_TLS_INTERACTION_UNHANDLED);
 	g_return_val_if_fail (error == NULL || *error == NULL, G_TLS_INTERACTION_UNHANDLED);
 
 	iface = GCR_IMPORT_INTERACTION_GET_INTERFACE (interaction);
 	g_return_val_if_fail (iface->supplement != NULL, G_TLS_INTERACTION_UNHANDLED);
 
-	return (iface->supplement) (interaction, cancellable, error);
+	return (iface->supplement) (interaction, attributes, cancellable, error);
 }
 
+
+/**
+ * gcr_import_interaction_supplement_async:
+ * @interaction: the interaction
+ * @attributes: supplemented attributes
+ * @cancellable: optional cancellable object
+ * @callback: called when the operation completes
+ * @user_data: data to be passed to the callback
+ *
+ * Asynchronously supplement attributes before import. This means prompting the
+ * user for things like labels and the like. The needed attributes will have
+ * been passed to gcr_import_interaction_supplement_prep().
+ *
+ * This method prompts the user and fills in the attributes.
+ */
 void
 gcr_import_interaction_supplement_async (GcrImportInteraction *interaction,
+                                         GckAttributes *attributes,
                                          GCancellable *cancellable,
                                          GAsyncReadyCallback callback,
                                          gpointer user_data)
@@ -152,14 +165,28 @@ gcr_import_interaction_supplement_async (GcrImportInteraction *interaction,
 	GcrImportInteractionIface *iface;
 
 	g_return_if_fail (GCR_IS_IMPORT_INTERACTION (interaction));
+	g_return_if_fail (attributes != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	iface = GCR_IMPORT_INTERACTION_GET_INTERFACE (interaction);
 	g_return_if_fail (iface->supplement != NULL);
 
-	(iface->supplement_async) (interaction, cancellable, callback, user_data);
+	(iface->supplement_async) (interaction, attributes, cancellable, callback, user_data);
 }
 
+/**
+ * gcr_import_interaction_supplement_finish:
+ * @interaction: the interaction
+ * @result: the asynchronous result
+ * @error: location to place an error on failure
+ *
+ * Complete operation to asynchronously supplement attributes before import.
+ *
+ * If the user or cancellable cancels the operation the error should be set
+ * with %G_IO_ERROR_CANCELLED.
+ *
+ * Returns: %G_TLS_INTERACTION_HANDLED if successful or %G_TLS_INTERACTION_FAILED
+ */
 GTlsInteractionResult
 gcr_import_interaction_supplement_finish (GcrImportInteraction *interaction,
                                           GAsyncResult *result,

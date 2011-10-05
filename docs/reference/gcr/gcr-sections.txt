@@ -92,6 +92,8 @@ GcrGeneralNameType
 <FILE>gcr-importer</FILE>
 GcrImporter
 GcrImporterIface
+gcr_importer_get_interaction
+gcr_importer_set_interaction
 gcr_importer_import
 gcr_importer_import_async
 gcr_importer_import_finish
@@ -100,13 +102,23 @@ gcr_importer_register_well_known
 gcr_importer_create_for_parsed
 gcr_importer_queue_for_parsed
 gcr_importer_queue_and_filter_for_parsed
+gcr_import_interaction_supplement_prep
+gcr_import_interaction_supplement
+gcr_import_interaction_supplement_async
+gcr_import_interaction_supplement_finish
 <SUBSECTION Standard>
 GCR_IMPORTER
 GCR_IS_IMPORTER
 GCR_TYPE_IMPORTER
 gcr_importer_get_type
 GCR_IMPORTER_GET_INTERFACE
-<SUBSECTION Private>
+GCR_IMPORT_INTERACTION
+GCR_IMPORT_INTERACTION_GET_INTERFACE
+GCR_IS_IMPORT_INTERACTION
+GCR_TYPE_IMPORT_INTERACTION
+GcrImportInteraction
+GcrImportInteractionIface
+gcr_import_interaction_get_type
 </SECTION>
 
 <SECTION>
