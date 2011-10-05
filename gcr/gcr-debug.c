@@ -41,6 +41,7 @@ static GDebugKey keys[] = {
 	{ "parse", GCR_DEBUG_PARSE },
 	{ "gnupg", GCR_DEBUG_GNUPG },
 	{ "trust", GCR_DEBUG_TRUST },
+	{ "import", GCR_DEBUG_IMPORT },
 	{ 0, }
 };
 
