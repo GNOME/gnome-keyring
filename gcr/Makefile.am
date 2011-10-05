@@ -20,6 +20,7 @@ HEADER_BASE_FILES = \
 	gcr-collection.h \
 	gcr-comparable.h \
 	gcr-deprecated-base.h \
+	gcr-fingerprint.h \
 	gcr-icons.h \
 	gcr-importer.h \
 	gcr-import-interaction.h \
@@ -100,6 +101,7 @@ libgcr_base_@GCR_MAJOR@_la_SOURCES = \
 	gcr-collection.c gcr-collection.h \
 	gcr-comparable.c gcr-comparable.h \
 	gcr-debug.c gcr-debug.h \
+	gcr-fingerprint.c gcr-fingerprint.h \
 	gcr-gnupg-collection.c gcr-gnupg-collection.h \
 	gcr-gnupg-importer.c gcr-gnupg-importer.h \
 	gcr-gnupg-key.c gcr-gnupg-key.h \
@@ -143,7 +145,6 @@ libgcr_@GCR_MAJOR@_la_SOURCES = \
 	gcr-display-scrolled.c gcr-display-scrolled.h \
 	gcr-display-view.c gcr-display-view.h \
 	gcr-failure-renderer.c gcr-failure-renderer.h \
-	gcr-fingerprint.c gcr-fingerprint.h \
 	gcr-gnupg-renderer.c gcr-gnupg-renderer.h \
 	gcr-gnupg-records.c gcr-gnupg-records.h \
 	gcr-import-button.c gcr-import-button.h \

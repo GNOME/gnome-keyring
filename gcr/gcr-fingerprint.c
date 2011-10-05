@@ -32,10 +32,39 @@
 #include <glib.h>
 #include <gcrypt.h>
 
-gpointer
-_gcr_fingerprint_from_subject_public_key_info (gconstpointer key_info, gsize n_key_info,
-                                               GChecksumType checksum_type,
-                                               gsize *n_fingerprint)
+/**
+ * SECTION:gcr-fingerprint
+ * @title: Key Fingerprints
+ * @short_description: Fingerprints for public and private keys
+ *
+ * These functions generate key fingerprints for public keys, certificates and
+ * key data. The fingerprints are created so that they they will be identical
+ * for a key and its corresponding certificate.
+ *
+ * Note that in the case of certificates these are not fingerprints of the
+ * actual certificate data, but rather of the public key contained in a
+ * certificate.
+ *
+ * These fingerprints are created using the subjectPublicKeyInfo ASN.1 structure.
+ */
+
+/**
+ * gcr_fingerprint_from_subject_public_key_info:
+ * @key_info: (array length=n_key_info): DER encoded subjectPublicKeyInfo structure
+ * @n_key_info: length of DER encoded structure
+ * @checksum_type: the type of fingerprint to create
+ * @n_fingerprint: the length of fingerprint returned
+ *
+ * Create a key fingerprint for a DER encoded subjectPublicKeyInfo.
+ *
+ * Returns: (transfer full) (allow-none) (array length=n_fingerprint): the
+ *          fingerprint or %NULL if the input was invalid.
+ */
+guchar *
+gcr_fingerprint_from_subject_public_key_info (const guchar *key_info,
+                                              gsize n_key_info,
+                                              GChecksumType checksum_type,
+                                              gsize *n_fingerprint)
 {
 	GChecksum *check;
 	guint8 *fingerprint;
@@ -60,7 +89,8 @@ _gcr_fingerprint_from_subject_public_key_info (gconstpointer key_info, gsize n_k
 static gboolean
 rsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 {
-	GckAttribute *attr;
+	GckAttribute *modulus;
+	GckAttribute *exponent;
 	GNode *key_asn;
 	GNode *params_asn;
 	gpointer key, params;
@@ -68,21 +98,22 @@ rsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 
 	_gcr_oids_init ();
 
+	modulus = gck_attributes_find (attrs, CKA_MODULUS);
+	exponent = gck_attributes_find (attrs, CKA_PUBLIC_EXPONENT);
+	if (modulus == NULL || exponent == NULL)
+		return FALSE;
+
 	key_asn = egg_asn1x_create (pk_asn1_tab, "RSAPublicKey");
 	g_return_val_if_fail (key_asn, FALSE);
 
 	params_asn = egg_asn1x_create (pk_asn1_tab, "RSAParameters");
 	g_return_val_if_fail (params_asn, FALSE);
 
-	attr = gck_attributes_find (attrs, CKA_MODULUS);
-	g_return_val_if_fail (attr, FALSE);
 	egg_asn1x_set_integer_as_usg (egg_asn1x_node (key_asn, "modulus", NULL),
-	                              attr->value, attr->length, NULL);
+	                              modulus->value, modulus->length, NULL);
 
-	attr = gck_attributes_find (attrs, CKA_PUBLIC_EXPONENT);
-	g_return_val_if_fail (attr, FALSE);
 	egg_asn1x_set_integer_as_usg (egg_asn1x_node (key_asn, "publicExponent", NULL),
-	                              attr->value, attr->length, NULL);
+	                              exponent->value, exponent->length, NULL);
 
 	key = egg_asn1x_encode (key_asn, g_realloc, &n_key);
 	egg_asn1x_destroy (key_asn);
@@ -142,15 +173,24 @@ dsa_subject_public_key_from_private (GNode *key_asn, GckAttribute *ap,
 }
 
 static gboolean
-dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
+dsa_subject_public_key_from_attributes (GckAttributes *attrs,
+                                        gulong klass,
+                                        GNode *info_asn)
 {
 	GckAttribute *value, *g, *q, *p;
 	GNode *key_asn, *params_asn;
 	gpointer key, params;
 	gsize n_key, n_params;
-	gulong klass;
 
 	_gcr_oids_init ();
+
+	p = gck_attributes_find (attrs, CKA_PRIME);
+	q = gck_attributes_find (attrs, CKA_SUBPRIME);
+	g = gck_attributes_find (attrs, CKA_BASE);
+	value = gck_attributes_find (attrs, CKA_VALUE);
+
+	if (p == NULL || q == NULL || g == NULL || value == NULL)
+		return FALSE;
 
 	key_asn = egg_asn1x_create (pk_asn1_tab, "DSAPublicPart");
 	g_return_val_if_fail (key_asn, FALSE);
@@ -158,23 +198,9 @@ dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 	params_asn = egg_asn1x_create (pk_asn1_tab, "DSAParameters");
 	g_return_val_if_fail (params_asn, FALSE);
 
-	if (!gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
-		klass = CKO_PUBLIC_KEY;
-
-	p = gck_attributes_find (attrs, CKA_PRIME);
-	g_return_val_if_fail (p, FALSE);
 	egg_asn1x_set_integer_as_usg (egg_asn1x_node (params_asn, "p", NULL), p->value, p->length, NULL);
-
-	q = gck_attributes_find (attrs, CKA_SUBPRIME);
-	g_return_val_if_fail (q, FALSE);
 	egg_asn1x_set_integer_as_usg (egg_asn1x_node (params_asn, "q", NULL), q->value, q->length, NULL);
-
-	g = gck_attributes_find (attrs, CKA_BASE);
-	g_return_val_if_fail (g, FALSE);
 	egg_asn1x_set_integer_as_usg (egg_asn1x_node (params_asn, "g", NULL), g->value, g->length, NULL);
-
-	value = gck_attributes_find (attrs, CKA_VALUE);
-	g_return_val_if_fail (value, FALSE);
 
 	/* Are these attributes for a public or private key? */
 	if (klass == CKO_PRIVATE_KEY) {
@@ -185,6 +211,9 @@ dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 
 	} else if (klass == CKO_PUBLIC_KEY) {
 		egg_asn1x_set_integer_as_usg (key_asn, value->value, value->length, NULL);
+
+	} else {
+		g_assert_not_reached ();
 	}
 
 	key = egg_asn1x_encode (key_asn, g_realloc, &n_key);
@@ -203,9 +232,11 @@ dsa_subject_public_key_from_attributes (GckAttributes *attrs, GNode *info_asn)
 	return TRUE;
 }
 
-gpointer
-_gcr_fingerprint_from_attributes (GckAttributes *attrs, GChecksumType checksum_type,
-                                  gsize *n_fingerprint)
+static gpointer
+fingerprint_from_key_attributes (GckAttributes *attrs,
+                                 gulong klass,
+                                 GChecksumType checksum_type,
+                                 gsize *n_fingerprint)
 {
 	gpointer fingerprint = NULL;
 	gboolean ret = FALSE;
@@ -214,32 +245,140 @@ _gcr_fingerprint_from_attributes (GckAttributes *attrs, GChecksumType checksum_t
 	gulong key_type;
 	gsize n_info;
 
-	g_return_val_if_fail (attrs, FALSE);
-	g_return_val_if_fail (n_fingerprint, FALSE);
-
 	if (!gck_attributes_find_ulong (attrs, CKA_KEY_TYPE, &key_type))
-		g_return_val_if_reached (FALSE);
+		return NULL;
 
 	info_asn = egg_asn1x_create (pkix_asn1_tab, "SubjectPublicKeyInfo");
-	g_return_val_if_fail (info_asn, FALSE);
+	g_return_val_if_fail (info_asn, NULL);
 
 	if (key_type == CKK_RSA)
 		ret = rsa_subject_public_key_from_attributes (attrs, info_asn);
 
 	else if (key_type == CKK_DSA)
-		ret = dsa_subject_public_key_from_attributes (attrs, info_asn);
+		ret = dsa_subject_public_key_from_attributes (attrs, klass, info_asn);
 
 	else
-		g_return_val_if_reached (FALSE);
+		ret = FALSE;
 
 	if (ret) {
 		info = egg_asn1x_encode (info_asn, g_realloc, &n_info);
-		fingerprint = _gcr_fingerprint_from_subject_public_key_info (info, n_info,
-		                                                             checksum_type,
-		                                                             n_fingerprint);
+		fingerprint = gcr_fingerprint_from_subject_public_key_info (info, n_info,
+		                                                            checksum_type,
+		                                                            n_fingerprint);
 		g_free (info);
 	}
 
 	egg_asn1x_destroy (info_asn);
 	return fingerprint;
+}
+
+static guchar *
+fingerprint_from_cert_value (const guchar *der_data,
+                             gsize n_der_data,
+                             GChecksumType checksum_type,
+                             gsize *n_fingerprint)
+{
+	guchar *fingerprint;
+	GNode *cert_asn;
+	gconstpointer info;
+	gsize n_info;
+
+	cert_asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate",
+	                                        der_data, n_der_data);
+	if (cert_asn == NULL)
+		return NULL;
+
+	info = egg_asn1x_get_raw_element (egg_asn1x_node (cert_asn, "tbsCertificate", "subjectPublicKeyInfo", NULL), &n_info);
+	g_return_val_if_fail (info != NULL, NULL);
+
+	fingerprint = gcr_fingerprint_from_subject_public_key_info (info, n_info,
+	                                                            checksum_type,
+	                                                            n_fingerprint);
+
+	egg_asn1x_destroy (cert_asn);
+	return fingerprint;
+}
+
+static guchar *
+fingerprint_from_cert_attributes (GckAttributes *attrs,
+                                  GChecksumType checksum_type,
+                                  gsize *n_fingerprint)
+{
+	GckAttribute *attr;
+
+	attr = gck_attributes_find (attrs, CKA_VALUE);
+	if (attr == NULL)
+		return NULL;
+
+	return fingerprint_from_cert_value (attr->value, attr->length, checksum_type,
+	                                    n_fingerprint);
+}
+
+/**
+ * gcr_fingerprint_from_attributes:
+ * @attrs: attributes for key or certificate
+ * @checksum_type: the type of fingerprint to create
+ * @n_fingerprint: the length of fingerprint returned
+ *
+ * Create a key fingerprint for a certificate, public key or private key.
+ * Note that this is not a fingerprint of certificate data, which you would
+ * use gcr_certificate_get_fingerprint() for.
+ *
+ * Returns: (transfer full) (allow-none) (array length=n_fingerprint): the
+ *          fingerprint or %NULL if the input was invalid.
+ */
+guchar *
+gcr_fingerprint_from_attributes (GckAttributes *attrs,
+                                  GChecksumType checksum_type,
+                                  gsize *n_fingerprint)
+{
+	gulong klass;
+
+	g_return_val_if_fail (attrs, FALSE);
+	g_return_val_if_fail (n_fingerprint, FALSE);
+
+	if (!gck_attributes_find_ulong (attrs, CKA_CLASS, &klass))
+		return NULL;
+
+	if (klass == CKO_CERTIFICATE)
+		return fingerprint_from_cert_attributes (attrs, checksum_type,
+		                                         n_fingerprint);
+
+	else if (klass == CKO_PUBLIC_KEY || klass == CKO_PRIVATE_KEY)
+		return fingerprint_from_key_attributes (attrs, klass,
+		                                        checksum_type,
+		                                        n_fingerprint);
+
+	else
+		return NULL;
+}
+
+/**
+ * gcr_fingerprint_from_attributes:
+ * @attrs: attributes for key or certificate
+ * @checksum_type: the type of fingerprint to create
+ * @n_fingerprint: the length of fingerprint returned
+ *
+ * Create a key fingerprint for a certificate's public key. Note that this is
+ * not a fingerprint of certificate data, which you would use
+ * gcr_certificate_get_fingerprint() for.
+ *
+ * Returns: (transfer full) (allow-none) (array length=n_fingerprint): the
+ *          fingerprint or %NULL if the input was invalid.
+ */
+guchar *
+gcr_fingerprint_from_certificate_public_key (GcrCertificate *certificate,
+                                             GChecksumType checksum_type,
+                                             gsize *n_fingerprint)
+{
+	const guchar *der_data;
+	gsize n_der_data;
+
+	g_return_val_if_fail (GCR_IS_CERTIFICATE (certificate), NULL);
+
+	der_data = gcr_certificate_get_der_data (certificate, &n_der_data);
+	g_return_val_if_fail (der_data != NULL, NULL);
+
+	return fingerprint_from_cert_value (der_data, n_der_data, checksum_type,
+	                                    n_fingerprint);
 }

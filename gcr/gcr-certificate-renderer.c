@@ -708,7 +708,7 @@ gcr_certificate_renderer_render (GcrRenderer *renderer, GcrViewer *viewer)
 
 	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "tbsCertificate",
 	                                                   "subjectPublicKeyInfo", NULL), &n_value);
-	raw = _gcr_fingerprint_from_subject_public_key_info (value, n_value, G_CHECKSUM_SHA1, &n_raw);
+	raw = gcr_fingerprint_from_subject_public_key_info (value, n_value, G_CHECKSUM_SHA1, &n_raw);
 	_gcr_display_view_append_hex (view, renderer, _("Key SHA1 Fingerprint"), raw, n_raw);
 	g_free (raw);
 

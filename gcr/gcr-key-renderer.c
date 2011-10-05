@@ -323,14 +323,14 @@ gcr_key_renderer_real_render (GcrRenderer *renderer, GcrViewer *viewer)
 	/* Fingerprints */
 	_gcr_display_view_append_heading (view, renderer, _("Fingerprints"));
 
-	fingerprint = _gcr_fingerprint_from_attributes (self->pv->attributes,
-	                                                G_CHECKSUM_SHA1, &n_fingerprint);
+	fingerprint = gcr_fingerprint_from_attributes (self->pv->attributes,
+	                                               G_CHECKSUM_SHA1, &n_fingerprint);
 	if (fingerprint) {
 		_gcr_display_view_append_hex (view, renderer, _("SHA1"), fingerprint, n_fingerprint);
 		g_free (fingerprint);
 	}
-	fingerprint = _gcr_fingerprint_from_attributes (self->pv->attributes,
-	                                                G_CHECKSUM_SHA256, &n_fingerprint);
+	fingerprint = gcr_fingerprint_from_attributes (self->pv->attributes,
+	                                               G_CHECKSUM_SHA256, &n_fingerprint);
 	if (fingerprint) {
 		_gcr_display_view_append_hex (view, renderer, _("SHA256"), fingerprint, n_fingerprint);
 		g_free (fingerprint);

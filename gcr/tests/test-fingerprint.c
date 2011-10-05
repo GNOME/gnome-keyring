@@ -113,6 +113,20 @@ parse_attributes_for_key (gpointer data, gsize n_data)
 	return attrs;
 }
 
+static GckAttributes *
+build_attributes_for_cert (guchar *data,
+                           gsize n_data)
+{
+	GckAttributes *attrs;
+
+	attrs = gck_attributes_new ();
+	gck_attributes_add_data (attrs, CKA_VALUE, data, n_data);
+	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_CERTIFICATE);
+	gck_attributes_add_ulong (attrs, CKA_CERTIFICATE_TYPE, CKC_X_509);
+
+	return attrs;
+}
+
 static gconstpointer
 parse_subject_public_key_info_for_cert (gpointer data, gsize n_data, gsize *n_info)
 {
@@ -132,45 +146,57 @@ parse_subject_public_key_info_for_cert (gpointer data, gsize n_data, gsize *n_in
 static void
 test_rsa (Test *test, gconstpointer unused)
 {
-	GckAttributes *key;
+	GckAttributes *key, *cert;
 	gconstpointer info;
 	gsize n_info;
-	gpointer fingerprint1, fingerprint2;
-	gsize n_fingerprint1, n_fingerprint2;
+	guchar *fingerprint1, *fingerprint2, *fingerprint3;
+	gsize n_fingerprint1, n_fingerprint2, n_fingerprint3;
 
 	key = parse_attributes_for_key (test->key_rsa, test->n_key_rsa);
 	info = parse_subject_public_key_info_for_cert (test->cert_rsa, test->n_cert_rsa, &n_info);
+	cert = build_attributes_for_cert (test->cert_rsa, test->n_cert_rsa);
 
-	fingerprint1 = _gcr_fingerprint_from_subject_public_key_info (info, n_info, G_CHECKSUM_SHA1, &n_fingerprint1);
-	fingerprint2 = _gcr_fingerprint_from_attributes (key, G_CHECKSUM_SHA1, &n_fingerprint2);
+	fingerprint1 = gcr_fingerprint_from_subject_public_key_info (info, n_info, G_CHECKSUM_SHA1, &n_fingerprint1);
+	fingerprint2 = gcr_fingerprint_from_attributes (key, G_CHECKSUM_SHA1, &n_fingerprint2);
+	fingerprint3 = gcr_fingerprint_from_attributes (cert, G_CHECKSUM_SHA1, &n_fingerprint3);
 
 	egg_assert_cmpmem (fingerprint1, n_fingerprint1, ==, fingerprint2, n_fingerprint2);
+	egg_assert_cmpmem (fingerprint1, n_fingerprint1, ==, fingerprint3, n_fingerprint3);
 
 	g_free (fingerprint1);
 	g_free (fingerprint2);
+	g_free (fingerprint3);
+
 	gck_attributes_unref (key);
+	gck_attributes_unref (cert);
 }
 
 static void
 test_dsa (Test *test, gconstpointer unused)
 {
-	GckAttributes *key;
+	GckAttributes *key, *cert;
 	gconstpointer info;
 	gsize n_info;
-	gpointer fingerprint1, fingerprint2;
-	gsize n_fingerprint1, n_fingerprint2;
+	guchar *fingerprint1, *fingerprint2, *fingerprint3;
+	gsize n_fingerprint1, n_fingerprint2, n_fingerprint3;
 
 	key = parse_attributes_for_key (test->key_dsa, test->n_key_dsa);
 	info = parse_subject_public_key_info_for_cert (test->cert_dsa, test->n_cert_dsa, &n_info);
+	cert = build_attributes_for_cert (test->cert_dsa, test->n_cert_dsa);
 
-	fingerprint1 = _gcr_fingerprint_from_subject_public_key_info (info, n_info, G_CHECKSUM_SHA1, &n_fingerprint1);
-	fingerprint2 = _gcr_fingerprint_from_attributes (key, G_CHECKSUM_SHA1, &n_fingerprint2);
+	fingerprint1 = gcr_fingerprint_from_subject_public_key_info (info, n_info, G_CHECKSUM_SHA1, &n_fingerprint1);
+	fingerprint2 = gcr_fingerprint_from_attributes (key, G_CHECKSUM_SHA1, &n_fingerprint2);
+	fingerprint3 = gcr_fingerprint_from_attributes (cert, G_CHECKSUM_SHA1, &n_fingerprint3);
 
 	egg_assert_cmpmem (fingerprint1, n_fingerprint1, ==, fingerprint2, n_fingerprint2);
+	egg_assert_cmpmem (fingerprint1, n_fingerprint1, ==, fingerprint3, n_fingerprint3);
 
 	g_free (fingerprint1);
 	g_free (fingerprint2);
+	g_free (fingerprint3);
+
 	gck_attributes_unref (key);
+	gck_attributes_unref (cert);
 }
 
 int
