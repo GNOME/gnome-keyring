@@ -20,12 +20,16 @@
  * 02111-1307, USA.
  */
 
+#if !defined (__GCR_INSIDE_HEADER__) && !defined (GCR_COMPILATION)
+#error "Only <gcr/gcr.h> or <gcr/gcr-base.h> can be included directly."
+#endif
+
 #ifndef __GCR_ICONS_H__
 #define __GCR_ICONS_H__
 
-#include "gcr-internal.h"
-
 #include <gck/gck.h>
+
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
