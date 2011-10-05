@@ -20,6 +20,7 @@ gnome_keyring_@GCR_MAJOR@_CFLAGS = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
 
 gnome_keyring_@GCR_MAJOR@_LDADD = \
+	$(top_builddir)/gcr/libgcr-base-@GCR_MAJOR@.la \
 	$(top_builddir)/gcr/libgcr-@GCR_MAJOR@.la \
 	$(top_builddir)/egg/libegg.la \
 	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
