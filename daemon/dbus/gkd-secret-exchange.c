@@ -28,7 +28,7 @@
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
 
-#include "gcr/gcr-secret-exchange.h"
+#include <gcr/gcr-base.h>
 
 #include <glib/gi18n.h>
 

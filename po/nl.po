@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 21:49+0200\n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2011-08-18 21:54+0200\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Naamloos"
@@ -106,36 +106,35 @@ msgstr "Gnome-sleutelbos: GPG-agent"
 msgid "GPG Password Agent"
 msgstr "GPG-wachtwoordagent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP-sleutel: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "Voer wachtwoordzin in"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "Dit wachtwoord vergeten na inactiviteit van"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "Dit wachtwoord vergeten na"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "Dit wachtwoord vergeten bij afmelden"
 
 # Onvertaald gelaten (Wouter Bolsterlee)
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Login"
 
@@ -179,7 +178,7 @@ msgstr "Algemene naam"
 msgid "Surname"
 msgstr "Achternaam"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:650
+#: ../egg/egg-oid.c:69
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -237,7 +236,7 @@ msgstr "DN Qualifier"
 msgid "Pseudonym"
 msgstr "Pseudoniem"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
+#: ../egg/egg-oid.c:98
 msgid "RSA"
 msgstr "RSA"
 
@@ -253,7 +252,7 @@ msgstr "MD5 met RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 met RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:309
+#: ../egg/egg-oid.c:103
 msgid "DSA"
 msgstr "DSA"
 
@@ -294,493 +293,6 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Onverwachte fout in waitpid(): %s"
 
-#. later
-#. later
-#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
-msgctxt "column"
-msgid "Name"
-msgstr "Naam"
-
-#: ../gcr/gcr-certificate.c:390
-msgctxt "column"
-msgid "Issued By"
-msgstr "Uitgegeven door"
-
-#. later
-#: ../gcr/gcr-certificate.c:392
-msgctxt "column"
-msgid "Expires"
-msgstr "Verloopt op"
-
-#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:254
-msgid "Certificate"
-msgstr "Certificaat"
-
-#: ../gcr/gcr-certificate-exporter.c:224
-msgid ""
-"<b>A file already exists with this name.</b>\n"
-"\n"
-"Do you want to replace it with a new file?"
-msgstr ""
-"<b>Er bestaat al een bestand met deze naam.</b>\n"
-"\n"
-"Wilt u het overschrijven met een nieuw bestand?"
-
-#: ../gcr/gcr-certificate-exporter.c:227
-msgid "_Replace"
-msgstr "_Vervangen"
-
-#: ../gcr/gcr-certificate-exporter.c:257
-#, c-format
-msgid "The operation was cancelled."
-msgstr "De bewerking is geannuleerd."
-
-#: ../gcr/gcr-certificate-exporter.c:301
-msgid "Export certificate"
-msgstr "Certificaat exporteren"
-
-#: ../gcr/gcr-certificate-exporter.c:313
-msgid "Certificate files"
-msgstr "Certificaatbestanden"
-
-#: ../gcr/gcr-certificate-exporter.c:324
-msgid "PEM files"
-msgstr "PEM-bestanden"
-
-#: ../gcr/gcr-certificate-extensions.c:141
-msgid "Other Name"
-msgstr "Andere naam"
-
-#: ../gcr/gcr-certificate-extensions.c:150
-msgid "XMPP Addr"
-msgstr "XMPP-adres"
-
-#: ../gcr/gcr-certificate-extensions.c:154
-msgid "DNS SRV"
-msgstr "DNS SRV"
-
-#: ../gcr/gcr-certificate-extensions.c:166
-msgid "Email"
-msgstr "E-mail"
-
-#: ../gcr/gcr-certificate-extensions.c:174
-msgid "DNS"
-msgstr "DNS"
-
-#: ../gcr/gcr-certificate-extensions.c:182
-msgid "X400 Address"
-msgstr "X400-adres"
-
-#: ../gcr/gcr-certificate-extensions.c:189
-msgid "Directory Name"
-msgstr "Mapnaam"
-
-#: ../gcr/gcr-certificate-extensions.c:197
-msgid "EDI Party Name"
-msgstr "EDI-partijnaam"
-
-#: ../gcr/gcr-certificate-extensions.c:204
-msgid "URI"
-msgstr "URI"
-
-#: ../gcr/gcr-certificate-extensions.c:212
-msgid "IP Address"
-msgstr "IP-adres"
-
-#: ../gcr/gcr-certificate-extensions.c:220
-msgid "Registered ID"
-msgstr "Geregistreerd ID"
-
-#: ../gcr/gcr-certificate-renderer.c:116
-msgid "Basic Constraints"
-msgstr "Basisbeperkingen"
-
-#: ../gcr/gcr-certificate-renderer.c:118
-msgid "Certificate Authority"
-msgstr "Certificaatauthoriteit"
-
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
-msgid "Yes"
-msgstr "Ja"
-
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
-msgid "No"
-msgstr "Nee"
-
-#: ../gcr/gcr-certificate-renderer.c:122
-msgid "Max Path Length"
-msgstr "Maximale padlengte"
-
-#: ../gcr/gcr-certificate-renderer.c:123
-msgid "Unlimited"
-msgstr "Onbeperkt"
-
-#: ../gcr/gcr-certificate-renderer.c:142
-msgid "Extended Key Usage"
-msgstr "Uitgebreid sleutelgebruik"
-
-#: ../gcr/gcr-certificate-renderer.c:153
-msgid "Allowed Purposes"
-msgstr "Toegestane doeleinden"
-
-# Subject Key Identifier is jargon en dus niet iets als "onderwerpsleutel" (Wouter Bolsterlee)
-#: ../gcr/gcr-certificate-renderer.c:173
-msgid "Subject Key Identifier"
-msgstr "Identificatie van ‘subject key’"
-
-#: ../gcr/gcr-certificate-renderer.c:174
-msgid "Key Identifier"
-msgstr "Sleutel-identificatie"
-
-#: ../gcr/gcr-certificate-renderer.c:185
-msgid "Digital signature"
-msgstr "Digitale handtekening"
-
-#: ../gcr/gcr-certificate-renderer.c:186
-msgid "Key encipherment"
-msgstr "Sleutelcodering"
-
-#: ../gcr/gcr-certificate-renderer.c:187
-msgid "Data encipherment"
-msgstr "Gegevensversleuteling"
-
-#: ../gcr/gcr-certificate-renderer.c:188
-msgid "Key agreement"
-msgstr "Sleutelovereenkomst"
-
-#: ../gcr/gcr-certificate-renderer.c:189
-msgid "Certificate signature"
-msgstr "Certificaatondertekening"
-
-#: ../gcr/gcr-certificate-renderer.c:190
-msgid "Revocation list signature"
-msgstr "Intrekkingslijstondertekening"
-
-#: ../gcr/gcr-certificate-renderer.c:215
-msgid "Key Usage"
-msgstr "Sleutelgebruik"
-
-#: ../gcr/gcr-certificate-renderer.c:216
-msgid "Usages"
-msgstr "Gebruik"
-
-#: ../gcr/gcr-certificate-renderer.c:236
-msgid "Subject Alternative Names"
-msgstr "Alternatieve namen voor subject"
-
-#: ../gcr/gcr-certificate-renderer.c:261
-msgid "Extension"
-msgstr "Extensie"
-
-#: ../gcr/gcr-certificate-renderer.c:265
-msgid "Identifier"
-msgstr "Identificatie"
-
-#: ../gcr/gcr-certificate-renderer.c:266
-msgid "Value"
-msgstr "Waarde"
-
-#: ../gcr/gcr-certificate-renderer.c:313
-msgid "Critical"
-msgstr "Kritiek"
-
-#: ../gcr/gcr-certificate-renderer.c:386
-msgid "Couldn't export the certificate."
-msgstr "Kon het certificaat niet exporteren."
-
-#: ../gcr/gcr-certificate-renderer.c:611
-msgid "Identity"
-msgstr "Identiteit"
-
-#: ../gcr/gcr-certificate-renderer.c:615
-msgid "Verified by"
-msgstr "Geverifieerd door"
-
-#: ../gcr/gcr-certificate-renderer.c:622
-msgid "Expires"
-msgstr "Verloopt op"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:632
-msgid "Subject Name"
-msgstr "Subject Name"
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:636
-msgid "Issuer Name"
-msgstr "Naam uitgever"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:640
-msgid "Issued Certificate"
-msgstr "Uitgegeven certificaat"
-
-#: ../gcr/gcr-certificate-renderer.c:645
-msgid "Version"
-msgstr "Versie"
-
-#: ../gcr/gcr-certificate-renderer.c:657
-msgid "Not Valid Before"
-msgstr "Niet geldig voor"
-
-#: ../gcr/gcr-certificate-renderer.c:662
-msgid "Not Valid After"
-msgstr "Niet geldig na"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:667
-msgid "Certificate Fingerprints"
-msgstr "Vingerafdrukken van certificaat"
-
-#. Signature
-#: ../gcr/gcr-certificate-renderer.c:673 ../gcr/gcr-certificate-renderer.c:685
-msgid "Signature"
-msgstr "Ondertekening"
-
-#: ../gcr/gcr-certificate-renderer.c:677
-msgid "Signature Algorithm"
-msgstr "Algoritme voor ondertekening"
-
-#: ../gcr/gcr-certificate-renderer.c:681
-msgid "Signature Parameters"
-msgstr "Parameters voor ondertekening"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:689
-msgid "Public Key Info"
-msgstr "Publieke sleutelinformatie"
-
-#: ../gcr/gcr-certificate-renderer.c:694
-msgid "Key Algorithm"
-msgstr "Sleutelalgoritme"
-
-#: ../gcr/gcr-certificate-renderer.c:699
-msgid "Key Parameters"
-msgstr "Sleutelparameters"
-
-#: ../gcr/gcr-certificate-renderer.c:704
-msgid "Key Size"
-msgstr "Sleutelgrootte"
-
-#: ../gcr/gcr-certificate-renderer.c:711
-msgid "Key SHA1 Fingerprint"
-msgstr "SHA1-vingerafdruk van sleutel"
-
-#: ../gcr/gcr-certificate-renderer.c:717 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:257
-msgid "Public Key"
-msgstr "Publieke sleutel"
-
-#: ../gcr/gcr-display-view.c:270
-msgid "_Details"
-msgstr "_Details"
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "Certificaten en sleutels importeren"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "Importeren naar:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "Wachtwoord:"
-
-#: ../gcr/gcr-gnupg-key.c:251
-msgid "PGP Key"
-msgstr "PGP-sleutel"
-
-#: ../gcr/gcr-gnupg-key.c:631
-msgctxt "column"
-msgid "Key ID"
-msgstr "Sleutel-ID"
-
-#: ../gcr/gcr-gnupg-process.c:632
-#, c-format
-msgid "Gnupg process exited with code: %d"
-msgstr "Gnupg-proces is beëindigd met code: %d"
-
-#: ../gcr/gcr-gnupg-process.c:639
-#, c-format
-msgid "Gnupg process was terminated with signal: %d"
-msgstr "Gnupg-proces is beëindigd met signaal:%d"
-
-#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1698 ../gcr/gcr-parser.c:1937
-msgid "The operation was cancelled"
-msgstr "De bewerking werd geannuleerd."
-
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Voer uw wachtwoord in voor ontgrendelen van de privé-sleutel"
-
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Voer uw wachtwoord in voor ontgrendelen van het certificaat"
-
-#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Voer wachtwoord in voor ontgrendelen"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:185
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Om de privé-sleutel te importeren, moet deze ontgrendeld worden"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:188
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Om het certificaat te importeren, moet deze ontgrendeld worden"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:191
-msgid "In order to import the data, it must be unlocked"
-msgstr "Om de gegevens te importeren, moet deze ontgrendeld worden"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:196
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Om de privé-sleutel ‘%s’ te importeren, moet deze ontgrendeld worden"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:199
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Om het certificaat ‘%s’ te importeren, moet deze ontgrendeld worden"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:202
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Om de ‘%s’ te importeren, moet deze ontgrendeld worden"
-
-#: ../gcr/gcr-importer.c:386
-#, c-format
-msgid "No location available to import to"
-msgstr "Geen locatie beschikbaar om naartoe te importeren"
-
-#: ../gcr/gcr-importer.c:537
-msgid "Import Certificates/Keys"
-msgstr "Certificaten of sleutels importeren"
-
-#: ../gcr/gcr-importer.c:544
-msgid "Choose a location to store the imported certificates/keys."
-msgstr ""
-"Kies een locatie om de geïmporteerde certificaten of sleutels op te slaan"
-
-#: ../gcr/gcr-key-renderer.c:82
-msgid "Key"
-msgstr "Sleutel"
-
-#: ../gcr/gcr-key-renderer.c:280
-msgid "Private RSA Key"
-msgstr "Privé-sleutel (RSA)"
-
-#: ../gcr/gcr-key-renderer.c:282
-msgid "Private DSA Key"
-msgstr "Privé-sleutel (DSA)"
-
-#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:251
-msgid "Private Key"
-msgstr "Privé-sleutel"
-
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
-msgid "Public DSA Key"
-msgstr "Publieke DSA-sleutel"
-
-#: ../gcr/gcr-key-renderer.c:298
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bit"
-msgstr[1] "%d bits"
-
-#: ../gcr/gcr-key-renderer.c:299
-msgid "Strength"
-msgstr "Sterkte"
-
-#: ../gcr/gcr-key-renderer.c:312
-msgid "Algorithm"
-msgstr "Algoritme"
-
-#: ../gcr/gcr-key-renderer.c:319
-msgid "Size"
-msgstr "Grootte"
-
-#. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
-msgid "Fingerprints"
-msgstr "Vingerafdrukken"
-
-#: ../gcr/gcr-key-renderer.c:328
-msgid "SHA1"
-msgstr "SHA1"
-
-#: ../gcr/gcr-key-renderer.c:334
-msgid "SHA256"
-msgstr "SHA256"
-
-#: ../gcr/gcr-parser.c:1701
-msgid "Unrecognized or unsupported data."
-msgstr "Onherkenbare of niet ondersteunde gegevens."
-
-#: ../gcr/gcr-parser.c:1704
-msgid "Could not parse invalid or corrupted data."
-msgstr "Kon ongeldige of kapotte gegevens niet verwerken."
-
-#: ../gcr/gcr-parser.c:1707
-msgid "The data is locked"
-msgstr "De gegevens zijn vergrendeld"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Kon geen locatie vinden om het ‘pinned’ certificaat op te slaan"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Deze sleutelbos automatisch ontgrendelen bij aanmelden"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "Deze sleutelbos vergrendelen na"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "Deze sleutelbos vergrendelen na inactiviteit van"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "Deze sleutelbos automatisch vergrendelen bij afmelden"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "minuten"
-
-#: ../gck/gck-uri.c:173
-#, c-format
-msgid "The URI has invalid encoding."
-msgstr "De URI heeft ongeldige codering."
-
-#: ../gck/gck-uri.c:177
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "De URI heeft niet het ‘pkcs11’-schema."
-
-#: ../gck/gck-uri.c:181
-msgid "The URI has bad syntax."
-msgstr "De URI heeft ongeldige syntaxis."
-
-#: ../gck/gck-uri.c:185
-msgid "The URI has a bad version number."
-msgstr "De URI heeft een ongeldig versienummer."
-
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Onbenoemd certificaat"
@@ -790,7 +302,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "Kon de publieke sleutel voor Secure Shell niet verwerken"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Wachtwoord voor ontgrendelen van ‘%s’"
@@ -854,9 +366,21 @@ msgstr "Publieke sleutel ontgrendelen"
 msgid "Unlock"
 msgstr "Ontgrendelen"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Voer uw wachtwoord in voor ontgrendelen van de privé-sleutel"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Voer uw wachtwoord in voor ontgrendelen van het certificaat"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Voer wachtwoord in voor ontgrendelen van de publieke sleutel"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Voer wachtwoord in voor ontgrendelen"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
@@ -952,11 +476,11 @@ msgstr "opdrachten: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "Wachtwoorden zonder versleuteling opslaan?"
 
-#: ../ui/gku-prompt-tool.c:595
+#: ../ui/gku-prompt-tool.c:592
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -966,15 +490,15 @@ msgstr ""
 "veilig bewaard. Iedereen met toegang tot uw bestanden kan deze wachtwoorden "
 "achterhalen."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "Onveilige opslag gebruiken"
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "Wachtwoorden komen niet overeen."
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "Wachtwoord mag niet leeg zijn"
 
@@ -1013,308 +537,3 @@ msgstr "_Oud wachtwoord:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Wachtwoord:"
-
-#~ msgid "Unable to initialize the random number generator"
-#~ msgstr "Kon de ‘random number generator’ niet initialiseren"
-
-#~ msgid "Unknown error"
-#~ msgstr "Onbekende fout"
-
-#~ msgid "The signature request was rejected by the user"
-#~ msgstr "De ondertekening is door de gebruiker geweigerd"
-
-#~ msgid "The data cannot be locked"
-#~ msgstr "Kan gegevens niet vergrendelen"
-
-#~ msgid "Cannot lock data"
-#~ msgstr "Kan gegevens niet vergrendelen"
-
-#~ msgid "The module has already been initialized"
-#~ msgstr "De module is reeds geïnitialiseerd"
-
-#~ msgid "The module has not been initialized"
-#~ msgstr "De module is niet geïnitialiseerd"
-
-#~ msgid "The state cannot be saved"
-#~ msgstr "De status kan niet opgeslagen worden"
-
-#~ msgid "The information is sensitive and cannot be revealed"
-#~ msgstr "De informatie is gevoelig en kan niet getoond worden"
-
-#~ msgid "The saved state is invalid"
-#~ msgstr "De opgeslagen status is ongeldig"
-
-#~ msgid "The crypto mechanism has an invalid parameter"
-#~ msgstr "Het crypto-mechanisme heeft een ongeldige parameter"
-
-#~ msgid "No random number generator available"
-#~ msgstr "Geen ‘random number generator’ beschikbaar"
-
-#~ msgid "Cannot export because the key is invalid"
-#~ msgstr "Kan niet exporteren want de sleutel is ongeldig"
-
-#~ msgid "Cannot import a key of the wrong size"
-#~ msgstr "Kan geen sleutels van de onjuiste grootte importeren"
-
-#~ msgid "Cannot import an invalid key"
-#~ msgstr "Kan geen ongeldige sleutels importeren"
-
-#~ msgid "Too many users of different types logged in"
-#~ msgstr "Er zijn teveel verschillende gebruikerstypes ingelogd"
-
-#~ msgid "The user is of an invalid type"
-#~ msgstr "Het type gebruiker is ongeldig"
-
-#~ msgid "The user's password or PIN is not set"
-#~ msgstr "Het wachtwoord of de PIN is niet ingesteld"
-
-#~ msgid "Cannot import because the key is of the wrong size"
-#~ msgstr "Importeren mislukt, want de sleutel heeft een onjuiste lengte"
-
-#~ msgid "Cannot import because the key is invalid"
-#~ msgstr "Importeren mislukt, want de sleutel is ongeldig"
-
-#~ msgid "The device is write protected"
-#~ msgstr "Het apparaat is beveiligd tegen schrijven"
-
-#~ msgid "The device is invalid or unrecognizable"
-#~ msgstr "Het apparaat is ongeldig of kan niet herkend worden"
-
-#~ msgid "The device is not present or unplugged"
-#~ msgstr "Het apparaat is niet aanwezig of losgekoppeld"
-
-#~ msgid "Certain fields have invalid values"
-#~ msgstr "Bepaalde velden hebben een ongeldige waarde"
-
-#~ msgid "Certain required fields are missing"
-#~ msgstr "Bepaalde verplichte velden ontbreken"
-
-#~ msgid "The signature is unrecognized or corrupted"
-#~ msgstr "De ondertekening wordt niet herkend of is ongeldig"
-
-#~ msgid "The signature is bad or corrupted"
-#~ msgstr "De ondertekening is onjuist of ongeldig"
-
-#~ msgid "An administrator session exists"
-#~ msgstr "Er is een beheerderssessie"
-
-#~ msgid "An open session exists"
-#~ msgstr "Er is een open sessie"
-
-#~ msgid "The session is invalid"
-#~ msgstr "De sessie is ongeldig"
-
-#~ msgid "Too many sessions are active"
-#~ msgstr "Er zijn teveel actieve sessies"
-
-#~ msgid "The session is closed"
-#~ msgstr "De sessie is gesloten"
-
-#~ msgid "The password or PIN is locked"
-#~ msgstr "Het wachtwoord of de PIN is vergrendeld"
-
-#~ msgid "The password or PIN has expired"
-#~ msgstr "Het wachtwoord of de PIN is verlopen"
-
-#~ msgid "The password or PIN is of an invalid length"
-#~ msgstr "Het wachtwoord of de PIN heeft een ongeldig lengte"
-
-#~ msgid "The password or PIN is invalid"
-#~ msgstr "Het wachtwoord of de PIN is ongeldig"
-
-#~ msgid "The password or PIN is incorrect"
-#~ msgstr "Het wachtwoord of de PIN is onjuist"
-
-#~ msgid "No operation is taking place"
-#~ msgstr "Er is geen actieve bewerking"
-
-#~ msgid "Another operation is already taking place"
-#~ msgstr "Een andere bewerking is reeds bezig"
-
-#~ msgid "The crypto mechanism has an invalid argument"
-#~ msgstr "Het crypto-mechanisme heeft een ongeldig argument"
-
-#~ msgid "The crypto mechanism is invalid or unrecognized"
-#~ msgstr "Het crypto-mechanisme is ongeldig of wordt niet herkend"
-
-#~ msgid "Cannot export this key"
-#~ msgstr "Kan deze sleutel niet exporteren"
-
-#~ msgid "The key cannot be wrapped"
-#~ msgstr "De sleutel kan niet ingepakt worden"
-
-#~ msgid "This operation cannot be done with this key"
-#~ msgstr "Deze bewerking kan niet zonder deze sleutel uitgevoerd worden"
-
-#~ msgid "Cannot include the key in digest"
-#~ msgstr "Kan sleutel niet in ‘digest’ opnemen"
-
-#~ msgid "A key is needed"
-#~ msgstr "Er is een sleutel nodig"
-
-#~ msgid "The key is different than before"
-#~ msgstr "De sleutel is anders dan voorheen"
-
-#~ msgid "No key is needed"
-#~ msgstr "Er is geen sleutel nodig"
-
-#~ msgid "The key is the wrong size"
-#~ msgstr "De sleutel heeft een onjuiste grootte"
-
-#~ msgid "The key is missing or invalid"
-#~ msgstr "De sleutel ontbreekt of is ongeldig"
-
-#~ msgid "This operation is not supported"
-#~ msgstr "Deze bewerking wordt niet ondersteund"
-
-#~ msgid "The encrypted data is too long"
-#~ msgstr "De versleutelde gegevens zijn te groot"
-
-#~ msgid "The encrypted data is not valid or unrecognized"
-#~ msgstr "De versleutelde gegevens zijn ongeldig of worden niet herkend"
-
-#~ msgid "The device was removed or unplugged"
-#~ msgstr "Het apparaat is verwijderd of losgekoppeld"
-
-#~ msgid "Insufficient memory available on device"
-#~ msgstr "Onvoldoende geheugen beschikbaar op apparaat"
-
-#~ msgid "An error occurred on the device"
-#~ msgstr "Er is een fout op het apparaat opgetreden"
-
-#~ msgid "The data is too long"
-#~ msgstr "De gegevens zijn te groot"
-
-#~ msgid "The data is not valid or unrecognized"
-#~ msgstr "De gegevens zijn ongeldig of worden niet herkend"
-
-#~ msgid "Invalid value for field"
-#~ msgstr "Ongeldige waarde voor veld"
-
-#~ msgid "The field is invalid or does not exist"
-#~ msgstr "Het veld is ongeldig of bestaat niet"
-
-#~ msgid "The field is sensitive and cannot be revealed"
-#~ msgstr "Het veld bevat gevoelige informatie en kan niet getoond worden"
-
-#~ msgid "The module cannot lock data properly"
-#~ msgstr "De module kan gegevens niet op een juiste manier vergrendelen"
-
-#~ msgid "Invalid arguments"
-#~ msgstr "Ongeldige argumenten"
-
-#~ msgid "The operation failed"
-#~ msgstr "De bewerking is mislukt"
-
-#~ msgid "Internal error"
-#~ msgstr "Interne fout"
-
-#~ msgid "The specified slot ID is not valid"
-#~ msgstr "Het opgegeven slot-ID is ongeldig"
-
-#~ msgid "Insufficient memory available"
-#~ msgstr "Onvoldoende geheugen beschikbaar"
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>Geen onderdeel van certificaat</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>onbekend</i>"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Geen onderdeel van certificaat>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Vingeradrukken</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Uitgegeven door</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Uitgegeven aan</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>Dit certificaat is geverifieerd voor het volgende gebruik:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Geldigheid</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Common Name (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "E-mailontvangst-certificaat"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "E-mailondertekening-certificaat"
-
-#~ msgid "Expires On"
-#~ msgstr "Verloopt op"
-
-#~ msgid "Issued On"
-#~ msgstr "Uitgegeven op"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5-vingerafdruk"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organisatie (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Organisatieonderdeel (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1-vingerafdruk"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL-client-certificaat"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL-server-certificaat"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Certificaten en sleutels importeren</"
-#~ "span>"
-
-#~ msgid "The key is different from before"
-#~ msgstr "De sleutel is anders dan voorheen"
-
-#~ msgid "The module cannot create needed threads"
-#~ msgstr "De module kan de benodigde threads niet aanmaken"
-
-#~ msgid "The field is read-only"
-#~ msgstr "Het veld is ‘alleen lezen’"
-
-#~ msgid "The key is of the wrong type"
-#~ msgstr "Het type van de sleutel is onjuist"
-
-#~ msgid "The object is missing or invalid"
-#~ msgstr "Het object ontbreekt of is ongeldig"
-
-#~ msgid "The session is read-only"
-#~ msgstr "De sessie is ‘alleen lezen’"
-
-#~ msgid "A read-only session exists"
-#~ msgstr "Er is een ‘alleen-lezen’-sessie"
-
-#~ msgid "Cannot import because the key is of the wrong type"
-#~ msgstr "Importeren mislukt, want het type sleutel is onjuist"
-
-#~ msgid "You are already logged in"
-#~ msgstr "U bent al aangemeld"
-
-#~ msgid "No user has logged in"
-#~ msgstr "Er is geen gebruiker aangemeld"
-
-#~ msgid "Another user is already logged in"
-#~ msgstr "Er is al een andere gebruiker aangemeld"
-
-#~ msgid "Cannot export because the key is of the wrong size"
-#~ msgstr "Kan niet exporteren want de grootte van de sleutel is onjuist"
-
-#~ msgid "Cannot export because the key is of the wrong type"
-#~ msgstr "Kan niet exporteren want het type sleutel is onjuist"
-
-#~ msgid "Not enough space to store the result"
-#~ msgstr "Niet genoeg ruimte om het resultaat op te slaan"

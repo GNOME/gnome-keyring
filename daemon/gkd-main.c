@@ -60,6 +60,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib-object.h>
 
 #include <gcrypt.h>
 

@@ -1,8 +1,0 @@
-# Commit these files if you edit them
-*-decl-list.txt
-*-decl.txt
-*.args
-*.hierarchy
-*.interfaces
-*.prerequisites
-*.signals

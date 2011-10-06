@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-13 19:50+0530\n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2011-09-13 19:52+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
@@ -19,8 +19,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\\n"
-"\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\\n\n"
 "\n"
 "\n"
 "X-Generator: Lokalize 1.1\n"
@@ -28,7 +27,7 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "பெயரில்லாதது"
@@ -104,35 +103,34 @@ msgstr "GNOME கீரிங்: ஜிபிஜி முகவர்"
 msgid "GPG Password Agent"
 msgstr "ஜிபிஜி கடவுச்சொல்லின் பலம்"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
-#: ../gcr/gcr-key-renderer.c:319
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "தெரியாத"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP விசை: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "கடவுச்சொற்களை உள்ளிடவும்"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "இவ்வளவு நேரம் சும்மாயிருப்பின் விசை கடவுச்சொல்லை மறக்கவும்"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "இவ்வளவு நேரம் கடந்தபின் கடவுச்சொல்லை மறக்கவும்"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "நான் வெளி செல்லும்போது இந்த கடவுச்சொல்லை மறக்கவும்"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "உள்நுழை"
 
@@ -176,7 +174,7 @@ msgstr "பொதுவான பெயர்"
 msgid "Surname"
 msgstr "புனைப்பெயர்"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
+#: ../egg/egg-oid.c:69
 msgid "Serial Number"
 msgstr "வரிசை எண்"
 
@@ -232,7 +230,7 @@ msgstr "DN தகுதியாளர்"
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
+#: ../egg/egg-oid.c:98
 msgid "RSA"
 msgstr "RSA"
 
@@ -248,7 +246,7 @@ msgstr "MD5 உடன் RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 உடன் RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
+#: ../egg/egg-oid.c:103
 msgid "DSA"
 msgstr "DSA"
 
@@ -287,585 +285,6 @@ msgstr "select()ல் சேய் செயல்பாட்டிலிர�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() ல் எதிர்பாராத பிழை(%s)"
 
-#: ../gck/gck-module.c:396
-#, c-format
-msgid "Error loading PKCS#11 module: %s"
-msgstr "பிகேசிஎச்(PKCS)#11 ஐ ஏற்றும்போது பிழை: %s"
-
-#: ../gck/gck-module.c:403
-#, c-format
-msgid "Invalid PKCS#11 module: %s"
-msgstr "பிகேசிஎச்(PKCS)#11 நிரல்கூறு செல்லுபடியாகாதது: %s"
-
-#: ../gck/gck-module.c:412
-#, c-format
-msgid "Couldn't setup PKCS#11 module: %s"
-msgstr "பிகேசிஎச்(PKCS)#11 நிரல்கூறு ஐ அமைக்க முடியவில்லை: %s"
-
-#: ../gck/gck-module.c:428
-#, c-format
-msgid "Couldn't initialize PKCS#11 module: %s"
-msgstr "பிகேசிஎச்(PKCS)#11 நிரல்கூறு ஐ துவக்க முடியவில்லை: %s"
-
-#: ../gck/gck-modules.c:67
-#, c-format
-msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr "பதிவு செய்த பிகேசிஎச்(registered PKCS)#11 நிரல்கூறு ஐ துவக்க முடியவில்லை: %s"
-
-#. later
-#. later
-#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
-msgctxt "column"
-msgid "Name"
-msgstr "பெயர்"
-
-#: ../gcr/gcr-certificate.c:390
-msgctxt "column"
-msgid "Issued By"
-msgstr "வழங்கியவர்"
-
-#. later
-#: ../gcr/gcr-certificate.c:392
-msgctxt "column"
-msgid "Expires"
-msgstr "காலாவதியானது "
-
-#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
-msgid "Certificate"
-msgstr "சான்றிதழ்"
-
-#: ../gcr/gcr-certificate-exporter.c:224
-msgid ""
-"<b>A file already exists with this name.</b>\n"
-"\n"
-"Do you want to replace it with a new file?"
-msgstr ""
-"<b>இந்த பெயருடன் ஒரு கோப்பு இருப்பில் உள்ளது.</b>\n"
-"\n"
-"புதிய கோப்பால் அதை நீக்க வேண்டுமா?"
-
-#: ../gcr/gcr-certificate-exporter.c:227
-msgid "_Replace"
-msgstr "மாற்று (_R)"
-
-#: ../gcr/gcr-certificate-exporter.c:257
-#, c-format
-msgid "The operation was cancelled."
-msgstr "செயல் ரத்து செய்யப்பட்டது."
-
-#: ../gcr/gcr-certificate-exporter.c:301
-msgid "Export certificate"
-msgstr "சான்றிதழ் ஏற்றுமதி செய்க"
-
-#: ../gcr/gcr-certificate-exporter.c:313
-msgid "Certificate files"
-msgstr "சான்றிதழ் கோப்புகள்"
-
-#: ../gcr/gcr-certificate-exporter.c:324
-msgid "PEM files"
-msgstr "PEM கோப்புகள்"
-
-#: ../gcr/gcr-certificate-extensions.c:141
-msgid "Other Name"
-msgstr "வேறு பெயர்"
-
-#: ../gcr/gcr-certificate-extensions.c:150
-msgid "XMPP Addr"
-msgstr "எக்ஸ்எம்பிபி முகவரி"
-
-#: ../gcr/gcr-certificate-extensions.c:154
-msgid "DNS SRV"
-msgstr "டிஎன்எஸ் எஸ்ஆர்வி"
-
-#: ../gcr/gcr-certificate-extensions.c:166
-msgid "Email"
-msgstr "மின்னஞ்சல்"
-
-#: ../gcr/gcr-certificate-extensions.c:174
-msgid "DNS"
-msgstr "DNS"
-
-#: ../gcr/gcr-certificate-extensions.c:182
-msgid "X400 Address"
-msgstr "X400 முகவரி"
-
-#: ../gcr/gcr-certificate-extensions.c:189
-msgid "Directory Name"
-msgstr "அடைவின் பெயர்"
-
-#: ../gcr/gcr-certificate-extensions.c:197
-msgid "EDI Party Name"
-msgstr "ஈடிஐ நபரின் பெயர் "
-
-#: ../gcr/gcr-certificate-extensions.c:204
-msgid "URI"
-msgstr "யூஆர்ஐ"
-
-#: ../gcr/gcr-certificate-extensions.c:212
-msgid "IP Address"
-msgstr "IP முகவரி"
-
-#: ../gcr/gcr-certificate-extensions.c:220
-msgid "Registered ID"
-msgstr "பதிவு செய்த ஐடி"
-
-#: ../gcr/gcr-certificate-renderer.c:116
-msgid "Basic Constraints"
-msgstr "அடிப்படை கட்டுப்பாடுகள்"
-
-#: ../gcr/gcr-certificate-renderer.c:118
-msgid "Certificate Authority"
-msgstr "சான்றிதழ் ஆணையம்"
-
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
-msgid "Yes"
-msgstr "ஆம்"
-
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
-msgid "No"
-msgstr "இல்லை"
-
-#: ../gcr/gcr-certificate-renderer.c:122
-msgid "Max Path Length"
-msgstr "அதிக பட்ச நீளம்"
-
-#: ../gcr/gcr-certificate-renderer.c:123
-msgid "Unlimited"
-msgstr "வரையில்லாதது"
-
-#: ../gcr/gcr-certificate-renderer.c:142
-msgid "Extended Key Usage"
-msgstr "நீட்டித்த விசை பயன்பாடு"
-
-#: ../gcr/gcr-certificate-renderer.c:153
-msgid "Allowed Purposes"
-msgstr "அனுமதித்த நோக்கங்கள்"
-
-#: ../gcr/gcr-certificate-renderer.c:173
-msgid "Subject Key Identifier"
-msgstr "பொருள் விசை அடையாளம் காட்டி"
-
-#: ../gcr/gcr-certificate-renderer.c:174
-msgid "Key Identifier"
-msgstr "விசை அடையாளம் காட்டி"
-
-#: ../gcr/gcr-certificate-renderer.c:185
-msgid "Digital signature"
-msgstr "மின்னெண் கையொப்பம்"
-
-#: ../gcr/gcr-certificate-renderer.c:186
-msgid "Key encipherment"
-msgstr "விசை குறியாக்கம்"
-
-#: ../gcr/gcr-certificate-renderer.c:187
-msgid "Data encipherment"
-msgstr "தரவு குறியாக்கம்"
-
-#: ../gcr/gcr-certificate-renderer.c:188
-msgid "Key agreement"
-msgstr "விசை ஒத்திசைவு"
-
-#: ../gcr/gcr-certificate-renderer.c:189
-msgid "Certificate signature"
-msgstr "சான்றிதழ் கையொப்பம்"
-
-#: ../gcr/gcr-certificate-renderer.c:190
-msgid "Revocation list signature"
-msgstr "திருப்பிப்பெற்ற பட்டியல் கையொப்பம்"
-
-#: ../gcr/gcr-certificate-renderer.c:215
-msgid "Key Usage"
-msgstr "விசை பயன்பாடு"
-
-#: ../gcr/gcr-certificate-renderer.c:216
-msgid "Usages"
-msgstr "பயன்பாடுகள்"
-
-#: ../gcr/gcr-certificate-renderer.c:236
-msgid "Subject Alternative Names"
-msgstr "பொருளின் மாற்று பெயர்கள்"
-
-#: ../gcr/gcr-certificate-renderer.c:261
-msgid "Extension"
-msgstr "நீட்சி"
-
-#: ../gcr/gcr-certificate-renderer.c:265
-msgid "Identifier"
-msgstr "அடையாளம் காட்டுபவர்"
-
-#: ../gcr/gcr-certificate-renderer.c:266
-msgid "Value"
-msgstr "மதிப்பு"
-
-#: ../gcr/gcr-certificate-renderer.c:313
-msgid "Critical"
-msgstr "அவசரம்"
-
-#: ../gcr/gcr-certificate-renderer.c:386
-msgid "Couldn't export the certificate."
-msgstr "சான்றிதழ் ஏற்றுமதி செய்ய முடியவில்லை "
-
-#: ../gcr/gcr-certificate-renderer.c:613
-msgid "Identity"
-msgstr "அடையாளம் "
-
-#: ../gcr/gcr-certificate-renderer.c:617
-msgid "Verified by"
-msgstr "உறுதிப்படுத்தியது "
-
-#: ../gcr/gcr-certificate-renderer.c:624
-msgid "Expires"
-msgstr "காலாவதி தேதி"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:634
-msgid "Subject Name"
-msgstr "பொருளின் பெயர்"
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:638
-msgid "Issuer Name"
-msgstr "வழங்குபவரின் பெயர்"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:642
-msgid "Issued Certificate"
-msgstr "தரப்பட்ட சான்றிதழ்"
-
-#: ../gcr/gcr-certificate-renderer.c:647
-msgid "Version"
-msgstr "பதிப்பு"
-
-#: ../gcr/gcr-certificate-renderer.c:659
-msgid "Not Valid Before"
-msgstr "இதற்கு முன் செல்லுபடியாகாது"
-
-#: ../gcr/gcr-certificate-renderer.c:664
-msgid "Not Valid After"
-msgstr "அதற்கு பின் செல்லுபடியாகாது"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:669
-msgid "Certificate Fingerprints"
-msgstr "சான்றிதழ் கைரேகைகள்"
-
-#. Signature
-#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
-msgid "Signature"
-msgstr "கையொப்பம்"
-
-#: ../gcr/gcr-certificate-renderer.c:679
-msgid "Signature Algorithm"
-msgstr "கையொப்ப கணிமுறை"
-
-#: ../gcr/gcr-certificate-renderer.c:683
-msgid "Signature Parameters"
-msgstr "கையொப்ப பாராமீட்டர்கள்"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:691
-msgid "Public Key Info"
-msgstr "பொது விசை தகவல்"
-
-#: ../gcr/gcr-certificate-renderer.c:696
-msgid "Key Algorithm"
-msgstr "விசை கணிமுறை"
-
-#: ../gcr/gcr-certificate-renderer.c:701
-msgid "Key Parameters"
-msgstr "விசை பாராமீட்டர்கள்"
-
-#: ../gcr/gcr-certificate-renderer.c:706
-msgid "Key Size"
-msgstr "விசை அளவு"
-
-#: ../gcr/gcr-certificate-renderer.c:713
-msgid "Key SHA1 Fingerprint"
-msgstr "விசை SHA1 கைரேகை"
-
-#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:263
-msgid "Public Key"
-msgstr "பொது விசை"
-
-#: ../gcr/gcr-display-view.c:308
-msgid "_Details"
-msgstr "விவரங்கள் (_D)"
-
-#: ../gcr/gcr-failure-renderer.c:163
-#, c-format
-msgid "Could not display '%s'"
-msgstr "'%s' ஐ காட்ட முடியவில்லை'"
-
-#: ../gcr/gcr-failure-renderer.c:165
-msgid "Could not display file"
-msgstr "கோப்பினை காட்ட முடியவில்லை"
-
-#: ../gcr/gcr-failure-renderer.c:170
-msgid "Reason"
-msgstr "காரணம்"
-
-#: ../gcr/gcr-failure-renderer.c:203
-#, c-format
-msgid "Cannot display a file of this type."
-msgstr "இந்த வகை கோப்பை காட்ட இயலாது."
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "சான்றிதழ்கள் மற்றும் விசைகளை இறக்குமதி செய்"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "இதில் இறக்குமதி செய்:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "கடவுச்சொல்:"
-
-#: ../gcr/gcr-gnupg-key.c:251
-msgid "PGP Key"
-msgstr "PGP விசை"
-
-#: ../gcr/gcr-gnupg-key.c:631
-msgctxt "column"
-msgid "Key ID"
-msgstr "விசை ஐடி"
-
-#: ../gcr/gcr-gnupg-process.c:632
-#, c-format
-msgid "Gnupg process exited with code: %d"
-msgstr "ஜிஎன்யுபிஜி செயல் இந்த கோட் உடன் வெளியேறியது: %d"
-
-#: ../gcr/gcr-gnupg-process.c:639
-#, c-format
-msgid "Gnupg process was terminated with signal: %d"
-msgstr "ஜிஎன்யுபிஜி செயல் சமிக்ஞையால் முடிக்கப்பட்டது: %d"
-
-#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
-msgid "The operation was cancelled"
-msgstr "செயல் ரத்து செய்யப்பட்டது."
-
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:185
-msgid "In order to import the private key, it must be unlocked"
-msgstr "தனிப்பட்ட விசையை இறக்க, அது பூட்டுநீக்கப்பட வேண்டும்."
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:188
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "சான்றிதழை இறக்க அது பூட்டு நீக்கப்பட வேண்டும்"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:191
-msgid "In order to import the data, it must be unlocked"
-msgstr "தரவை இறக்க, அது பூட்டு நீக்கப்படவேண்டும்"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:196
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "தனிபட்ட விசை '%s' யை இறக்க, அது பூட்ட நீக்கப்பட வேண்டும்."
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:199
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "சான்றிதழ்  '%s' ஐ இறக்க, அது பூட்டு நீக்கப்பட வேண்டும்."
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:202
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s'யை இறக்க, அது பூட்டு நீக்கப்பட வேண்டும்."
-
-#: ../gcr/gcr-importer.c:386
-#, c-format
-msgid "No location available to import to"
-msgstr "இறக்க இடம் எதுவும் இல்லை"
-
-#: ../gcr/gcr-importer.c:537
-msgid "Import Certificates/Keys"
-msgstr "சான்றிதழைகளை இறக்குமதி செய்/ விசைகள்"
-
-#: ../gcr/gcr-importer.c:544
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "இறக்குமதி செய்யப்பட்ட சான்றிதழ்களையும்/விசைகளையும் சேமிக்க ஒரு இடத்தை தேர்ந்தெடு."
-
-#: ../gcr/gcr-key-renderer.c:82
-msgid "Key"
-msgstr "விசை"
-
-#: ../gcr/gcr-key-renderer.c:283
-msgid "Private RSA Key"
-msgstr "அந்தரங்க ஆர்எஸ்ஏ விசை"
-
-#: ../gcr/gcr-key-renderer.c:285
-msgid "Private DSA Key"
-msgstr "அந்தரங்க டிஎஸ்ஏ விசை"
-
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
-msgid "Private Key"
-msgstr "அந்தரங்க விசை"
-
-#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
-msgid "Public DSA Key"
-msgstr "பொது டிஎஸ்ஏ விசை"
-
-#: ../gcr/gcr-key-renderer.c:301
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d பிட்"
-msgstr[1] "%d பிட்கள்"
-
-#: ../gcr/gcr-key-renderer.c:302
-msgid "Strength"
-msgstr "பலம்"
-
-#: ../gcr/gcr-key-renderer.c:315
-msgid "Algorithm"
-msgstr "அல்கரிதம்"
-
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Size"
-msgstr "அளவு"
-
-#. Fingerprints
-#: ../gcr/gcr-key-renderer.c:326
-msgid "Fingerprints"
-msgstr "கைரேகைகள்"
-
-#: ../gcr/gcr-key-renderer.c:331
-msgid "SHA1"
-msgstr "எஸ்ஹெச்ஏ1"
-
-#: ../gcr/gcr-key-renderer.c:337
-msgid "SHA256"
-msgstr "எஸ்ஹெச்ஏ256"
-
-#: ../gcr/gcr-parser.c:1922
-msgid "Unrecognized or unsupported data."
-msgstr "இனம் காணாத அல்லது ஆதரவு இல்லா தரவு."
-
-#: ../gcr/gcr-parser.c:1925
-msgid "Could not parse invalid or corrupted data."
-msgstr "பகுக்க செல்லுபடியாகாத அல்லது சிதைந்த தரவு."
-
-#: ../gcr/gcr-parser.c:1928
-msgid "The data is locked"
-msgstr "தரவு பூட்டப்பட்டுள்ளது"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:377
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "பிணைக்கப்பட்ட சான்றிதழ்களை சேமிக்க ஒரு இடத்தை கண்டுபிடிக்க முடியவில்லை"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசை வளையத்தை பூட்டு திறக்கவும்."
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "இவ்வளவு நேரம் கழிந்த பின் விசை வளையத்தை பூட்டவும்"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "இவ்வளவு நேரம் சும்மாயிருப்பின் விசை வளையத்தை பூட்டவும்"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "நான் வெளி செல்லும்போது இந்த விசை வளையத்தை பூட்டவும்."
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "நிமிடங்கள்"
-
-#: ../gcr/gcr-unlock-renderer.c:63
-#, c-format
-msgid "Unlock: %s"
-msgstr "பூட்டை திற:%s"
-
-#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "பூட்டை திற"
-
-#: ../gcr/gcr-unlock-renderer.c:135
-msgid "The password was incorrect"
-msgstr "கடவுச்சொல் தவறானது."
-
-#: ../gcr/gcr-unlock-renderer.c:173
-msgid "Password"
-msgstr "கடவுச்சொல்"
-
-#: ../gcr/gcr-unlock-renderer.c:324
-#, c-format
-msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter the "
-"correct password."
-msgstr "'%s' இன் உள்ளடக்கங்கள் பூட்டப்பட்டன. அவற்றை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
-
-#: ../gcr/gcr-unlock-renderer.c:327
-msgid ""
-"The contents are locked. In order to view the contents, enter the correct "
-"password."
-msgstr "உள்ளடக்கங்கள் பூட்டப்பட்டன. அவற்றை காண சரியான கடவுச்சொல்லை உள்ளிடவும்."
-
-#: ../gcr/gcr-viewer-tool.c:41
-msgid "GCR Certificate and Key Viewer"
-msgstr "சிஜிஆர் சான்றிதழ்/விசை காட்டி"
-
-#: ../gcr/gcr-viewer-tool.c:48
-msgid "Show the application's version"
-msgstr "இப்பயன்பாட்டின் பதிப்பைக் காட்டு"
-
-#: ../gcr/gcr-viewer-tool.c:50
-msgid "[file...]"
-msgstr "[file...]"
-
-#: ../gcr/gcr-viewer-tool.c:104
-msgid "- View certificate and key files"
-msgstr "-சான்றிதழ் மற்றும் விசை கோப்புகள் ஐ காண்"
-
-#: ../gcr/gcr-viewer-tool.c:118
-msgid "Certificate Viewer"
-msgstr "சான்றிதழ் காட்டி"
-
-#: ../gck/gck-uri.c:173
-#, c-format
-msgid "The URI has invalid encoding."
-msgstr "யூஆர் ஐ க்கு செல்லுபடியாகாத குறியாக்கம் உள்ளது"
-
-#: ../gck/gck-uri.c:177
-msgid "The URI does not have the 'pkcs11' scheme."
-msgstr "யூஆர்ஐ ´pkcs11´  திட்டத்தை கொண்டிருக்கவில்லை."
-
-#: ../gck/gck-uri.c:181
-msgid "The URI has bad syntax."
-msgstr "யூஆர்ஐ க்கு மோசமான வழிமுறைத் தொடரமைப்பு உள்ளது"
-
-#: ../gck/gck-uri.c:185
-msgid "The URI has a bad version number."
-msgstr "யூஆர்ஐ க்கு மோசமான பதிப்பு எண் உள்ளது"
-
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "பெயரிடப்படாத சான்றிதழ்"
@@ -875,7 +294,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "பொது SSH விசையை பகுக்க முடியாது"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "இவருக்கு விசை வளையத்தை திறக்க கடவுச்சொல்: %s"
@@ -902,7 +321,8 @@ msgstr ""
 "பொருந்தவில்லை."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid "The login keyring did not get unlocked when you logged into your computer."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "நீங்கள் உங்கள் கணினியில் உள்நுழைந்த போது உள்நுழைவு விசை வளையம் தானியங்கியாக பூட்டு "
 "நீக்கப்படவில்லை."
@@ -935,9 +355,25 @@ msgstr "சான்றிதழின் பூட்டை திற"
 msgid "Unlock public key"
 msgstr "பொது விசையின் பூட்டை திற"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "பூட்டை திற"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "பொது விசையின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
@@ -998,7 +434,8 @@ msgstr "சேமிப்பை பாதுகாக்க புதிய க
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr "'%s'ஐ சான்றிதழ்கள் அல்லது விசைகளுக்கு சேமிப்பகமாக்க ஒரு கடவுச்சொல் தேவைப்படுகிறது"
+msgstr ""
+"'%s'ஐ சான்றிதழ்கள் அல்லது விசைகளுக்கு சேமிப்பகமாக்க ஒரு கடவுச்சொல் தேவைப்படுகிறது"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
@@ -1010,7 +447,8 @@ msgstr "சேமிப்பை பாதுகாக்க கடவுச்�
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid "To change the password for '%s', the original and new passwords are required"
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
 msgstr "'%s' க்கு கடவுச்சொல் மாற்ற பழைய கடவுச்சொல்லும் புதிய கடவுச்சொல்லும் தேவை"
 
 #: ../tool/gkr-tool.c:102
@@ -1027,11 +465,11 @@ msgstr "கட்டளைகள்: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "கடவுச்சொற்களை சுருக்க குறியாக்கம் செய்யாமலே சேமிக்கவா? "
 
-#: ../ui/gku-prompt-tool.c:595
+#: ../ui/gku-prompt-tool.c:592
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1040,15 +478,15 @@ msgstr ""
 "ஒரு வெற்று கடவுச்சொல்லை தேர்ந்தெடுப்பதால் உங்கள் சேமிக்கப்பட்ட கடவுச்சொறகள் மறையாக்கம் "
 "செய்யப்படவில்லை. உங்கள் கோப்பை யாரால் அணூக முடியுமோ அவர் இதை பார்க்கலாம்."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "பாதுகாப்பு இல்லாத கிடங்கை பயன்படுத்து."
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "கடவுச்சொற்கள் பொருந்தவில்லை"
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "கடவுச்சொல் வெறுமையாக இருக்க முடியாது"
 
@@ -1087,641 +525,3 @@ msgstr "பழைய கடவுச்சொல் (_O):"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "கடவுச்சொல் (_P):"
-
-#~ msgid "Fingerprint"
-#~ msgstr "கைரேகை"
-
-#~ msgid "Insufficient memory available"
-#~ msgstr "போதிய நினைவகம் இல்லை"
-
-#~ msgid "The specified slot ID is not valid"
-#~ msgstr "குறிக்கப்பட்ட அடையாள இடம் செல்லுபடியாகாதது"
-
-#~ msgid "Internal error"
-#~ msgstr "உள்ளமை பிழை"
-
-#~ msgid "The operation failed"
-#~ msgstr "செயல் தோல்வியடைந்தது"
-
-#~ msgid "Invalid arguments"
-#~ msgstr "செல்லாத அளவுருக்கள்"
-
-#~ msgid "The module cannot create needed threads"
-#~ msgstr "இந்த கூறு தேவையான இழைகளை உருவாக்க இயலாது."
-
-#~ msgid "The module cannot lock data properly"
-#~ msgstr "இந்த கூறு தரவை சரியாக பூட்ட முடியாது."
-
-#~ msgid "The field is read-only"
-#~ msgstr "புலம் படிக்க மட்டுமே"
-
-#~ msgid "The field is sensitive and cannot be revealed"
-#~ msgstr "புலம் பாதுகாக்க படுவது. ஆகையால் காட்டஇயலாது"
-
-#~ msgid "The field is invalid or does not exist"
-#~ msgstr "புலம் செல்லுபடியாகாதது அல்லது இருப்பில் இல்லை"
-
-#~ msgid "Invalid value for field"
-#~ msgstr "புலது்துக செல்லுபடியாகாத மதிப்பு்கு"
-
-#~ msgid "The data is not valid or unrecognized"
-#~ msgstr "தரவு செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது."
-
-#~ msgid "The data is too long"
-#~ msgstr "தரவு மிகப் பெரியது"
-
-#~ msgid "An error occurred on the device"
-#~ msgstr "சாதனத்தில் தவறு நிகழ்ந்தது"
-
-#~ msgid "Insufficient memory available on the device"
-#~ msgstr "சாதனத்தில் போதிய றினைவகம் இல்லை"
-
-#~ msgid "The device was removed or unplugged"
-#~ msgstr "சாதனம் நீக்கப்பட்டது அல்லது இணைப்பு துண்டிக்கப்பட்டது"
-
-#~ msgid "The encrypted data is not valid or unrecognized"
-#~ msgstr "சுருக்கி குறியாக்கம் செய்த தரவு செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது"
-
-#~ msgid "The encrypted data is too long"
-#~ msgstr "சுருக்கி குறியாக்கம் செய்த தரவு மிக நீளமானது."
-
-#~ msgid "This operation is not supported"
-#~ msgstr "இந்த செயலுக்கு ஆதரவு இல்லை"
-
-#~ msgid "The key is missing or invalid"
-#~ msgstr "விசை காணவில்லை அல்லது செல்லுபடியாகாதது"
-
-#~ msgid "The key is the wrong size"
-#~ msgstr "விசை தவறான அளவு உடையது"
-
-#~ msgid "The key is of the wrong type"
-#~ msgstr "விசை தவறான வகையானது"
-
-#~ msgid "No key is needed"
-#~ msgstr "விசை தேவை இல்லை"
-
-#~ msgid "The key is different than before"
-#~ msgstr "விசை முன்னை விட மாறானது"
-
-#~ msgid "A key is needed"
-#~ msgstr "ஒரு விசை தேவை"
-
-#~ msgid "Cannot include the key in the digest"
-#~ msgstr "விசையை தொகுப்பில் சேர்க்க முடியாது"
-
-#~ msgid "This operation cannot be done with this key"
-#~ msgstr "இந்த செெயலை இந்த்த விசையால் செய்ய முடியாது"
-
-#~ msgid "The key cannot be wrapped"
-#~ msgstr "விசைக்கு உறையிட முடியாது"
-
-#~ msgid "Cannot export this key"
-#~ msgstr "விசையை ஏற்றுமதி செய்ய முடியாது"
-
-#~ msgid "The crypto mechanism is invalid or unrecognized"
-#~ msgstr "சுருக்க குறியாக்கம் செல்லுபடியாகாதது அல்லது இனம் காண முடியாதது."
-
-#~ msgid "The crypto mechanism has an invalid argument"
-#~ msgstr "சுருக்க குறியாக்கத்தில் செல்லுபடியாகாத அளவுரு உள்ளது"
-
-#~ msgid "The object is missing or invalid"
-#~ msgstr "பொருள் காணவில்லை அல்லது செல்லுபடியாகாதது"
-
-#~ msgid "Another operation is already taking place"
-#~ msgstr "இன்னொரு செயல் ஏற்கெனவே நிகழ்கிறது்"
-
-#~ msgid "No operation is taking place"
-#~ msgstr "செயல் ஏதும் நிகழவில்லை"
-
-#~ msgid "The password or PIN is incorrect"
-#~ msgstr "கடவுச்சொல் அல்லது 'பின்' தவறானது."
-
-#~ msgid "The password or PIN is invalid"
-#~ msgstr "கடவுச்சொல் அல்லது 'பின்' செல்லுபடியாகாதது"
-
-#~ msgid "The password or PIN is of an invalid length"
-#~ msgstr "கடவுச்சொல் அல்லது 'பின்' செல்லுபடியாகாத நீளம்"
-
-#~ msgid "The password or PIN has expired"
-#~ msgstr "கடவுச்சொல் அல்லது 'பின்' காலாவதியாகிவிட்டது"
-
-#~ msgid "The password or PIN is locked"
-#~ msgstr "கடவுச்சொல் அல்லது 'பின்' பூட்டப்பட்டு உள்ளது"
-
-#~ msgid "The session is closed"
-#~ msgstr "அமர்வு முடிந்துவிட்டது"
-
-#~ msgid "Too many sessions are active"
-#~ msgstr "மிக அதிக அமர்வுகள் செயலில் உள்ளன"
-
-#~ msgid "The session is invalid"
-#~ msgstr "அமர்வு செல்லுபடியாகாதது"
-
-#~ msgid "The session is read-only"
-#~ msgstr "அமர்வு படிக்க மட்டும்"
-
-#~ msgid "An open session exists"
-#~ msgstr "திறந்த அமர்வு உள்ளது"
-
-#~ msgid "A read-only session exists"
-#~ msgstr "படிக்க மட்டும் அமர்வு உள்ளது"
-
-#~ msgid "An administrator session exists"
-#~ msgstr "நிர்வாகி அமர்வு ு உள்ளது"
-
-#~ msgid "The signature is bad or corrupted"
-#~ msgstr "கையொப்பம் தவறு அல்லது சிதைந்தது"
-
-#~ msgid "The signature is unrecognized or corrupted"
-#~ msgstr "கையொப்பத்தை இனம் காண இயலவில்லை அல்லது சிதைந்தது"
-
-#~ msgid "Certain required fields are missing"
-#~ msgstr "தேவையான சில புலங்கள் காணப்படவில்லை"
-
-#~ msgid "Certain fields have invalid values"
-#~ msgstr "சில புலங்களில் செல்லுபடியாகாத மதிப்பு உள்ளது"
-
-#~ msgid "The device is not present or unplugged"
-#~ msgstr "சாதனம் இல்லை அல்லது இணைப்பு நீக்கப்பட்டது"
-
-#~ msgid "The device is invalid or unrecognizable"
-#~ msgstr "சாதனம் செல்லுபடியாகாதது அல்லது இனம் காண இயலவில்லை "
-
-#~ msgid "The device is write protected"
-#~ msgstr "சாதனத்தில்  எழுததல் தடை செய்யப்பட்டுள்ளதுு"
-
-#~ msgid "Cannot import because the key is invalid"
-#~ msgstr "விசை செல்லுபடியாகாதது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது"
-
-#~ msgid "Cannot import because the key is of the wrong size"
-#~ msgstr "விசை  அளவு தவறானது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது"
-
-#~ msgid "Cannot import because the key is of the wrong type"
-#~ msgstr "விசை வகை தவறானது. ஆகையால் இறக்குமதி  செய்யப்பட இயலாது "
-
-#~ msgid "You are already logged in"
-#~ msgstr "நீங்கள் ஏற்கெனவே உள் நுழைந்து உள்ளீர்"
-
-#~ msgid "No user has logged in"
-#~ msgstr "பயனர் யாரும் உள் நுழையவில்லை"
-
-#~ msgid "The user's password or PIN is not set"
-#~ msgstr "பயனர் கடவுச்சொல் அல்லது 'பின்' அமைக்கப்படவில்லை"
-
-#~ msgid "The user is of an invalid type"
-#~ msgstr "பயனர் செல்லுபடியாகாத வகையினர்"
-
-#~ msgid "Another user is already logged in"
-#~ msgstr "இன்னொரு பயனர் ஏற்கெனவே உள் நுழைந்து உள்ளார்"
-
-#~ msgid "Too many users of different types are logged in"
-#~ msgstr "வேறு பல்வகை பயனர்கள் ஏற்கெனவே உள் நுழைந்து உள்ளனர்"
-
-#~ msgid "Cannot import an invalid key"
-#~ msgstr "செல்லுபடியாகாத விசையை இறக்குமதி செய்ய இயலாது"
-
-#~ msgid "Cannot import a key of the wrong size"
-#~ msgstr "தவறான அளவு விசையை இறக்குமதி செய்ய இயலாது"
-
-#~ msgid "Cannot export because the key is invalid"
-#~ msgstr " செல்லுபடியாகாத விசையை ஏற்றுமதி செய்ய இயலாது"
-
-#~ msgid "Cannot export because the key is of the wrong size"
-#~ msgstr "தவறான அளவு விசையை ஏற்றுமதி செய்ய இயலாது"
-
-#~ msgid "Cannot export because the key is of the wrong type"
-#~ msgstr "விசை வகை தவறானது. ஆகையால் ஏற்றுமதி செய்ய இயலாது"
-
-#~ msgid "Unable to initialize the random number generator"
-#~ msgstr "தற்போக்கு எண் உருவாக்கியை துவக்க இயலவில்லை"
-
-#~ msgid "No random number generator available"
-#~ msgstr "தற்போக்கு எண் உருவாக்கி ஏதும் இல்லை "
-
-#~ msgid "The crypto mechanism has an invalid parameter"
-#~ msgstr "மறையாக்க இயந்திரம்  செல்லுபடியாகாத அளபுரு கொண்டது"
-
-#~ msgid "Not enough space to store the result"
-#~ msgstr "விடையை சேமிக்க போதுமான இடைவெளி இல்லை"
-
-#~ msgid "The saved state is invalid"
-#~ msgstr "சேமித்த நிலை செல்லுபடியாகாதது."
-
-#~ msgid "The information is sensitive and cannot be revealed"
-#~ msgstr "தகவல் அந்தரங்கமானது; காட்ட இயலாதது"
-
-#~ msgid "The state cannot be saved"
-#~ msgstr "இந்த நிலையை சேமிக்க முடியாது"
-
-#~ msgid "The module has not been initialized"
-#~ msgstr "இந்த கூறு துவக்கப்பட முடியாது."
-
-#~ msgid "The module has already been initialized"
-#~ msgstr "கூறு ஏற்கெனவே துவக்கப்பட்டு விட்டது."
-
-#~ msgid "Cannot lock data"
-#~ msgstr "தரவை பூட்ட முடியாது"
-
-#~ msgid "The data cannot be locked"
-#~ msgstr "தரவை பூட்ட முடியாது"
-
-#~ msgid "The signature request was rejected by the user"
-#~ msgstr "பயனர் கையெழுத்து வேண்டுதலை நிராகரித்தார்."
-
-#~ msgid "Unknown error"
-#~ msgstr "தெரியாத பிழை "
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>சான்றிதழலில் பங்கு இல்லை</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>தெரியாத</i>"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Not Part of Certificate>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>கைரேகைகள்</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>வழங்கியது</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>வழங்கப்பட்டது</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>இந்த சான்றிதழ் பின்வரும் பயன்களுக்காக சரிபார்க்கப்பட்டது:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>மதிப்பளவு</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "பொதுவான பெயர் (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "மின்னஞ்சல் பெறுநர் சான்றிதழ்"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "மின்னஞ்சல் கையொப்ப சான்றிதழ்"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5 கைரேகை"
-
-#~ msgid "Organization (O)"
-#~ msgstr "நிறுவனம் (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "நிறுவனத்தின் அலகு (OU)"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>சான்றிதழ்களையும் விசைகளையும் இறக்கவும்</span>"
-
-#~ msgid ""
-#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#~ "only takes effect during startup with gnome-session, (ie: when the user "
-#~ "logs in). This setting may be overridden when certain command line "
-#~ "arguments are passed to the daemon."
-#~ msgstr ""
-#~ "இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் PKCS#11 கூறால் பயன்படுத்தப்படுகிறது. இது  க்னோம் "
-#~ "துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு "
-#~ "கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
-
-#~ msgid ""
-#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
-#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
-#~ "This setting may be overridden when certain command line arguments are "
-#~ "passed to the daemon."
-#~ msgstr ""
-#~ "இந்த தேர்வு க்னோம் ரிங் SSH முகவரால் பயன்படுத்தப்படுகிறது. இது அந்த கிங்கரன் "
-#~ "துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த அமைப்பு "
-#~ "கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
-
-#~ msgid ""
-#~ "This option enables the secret service component in the gnome-keyring "
-#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
-#~ "the user logs in). This setting may be overridden when certain command "
-#~ "line arguments are passed to the daemon."
-#~ msgstr ""
-#~ "இந்த தேர்வு க்னோம் ரிங் கிங்கரனின் ரகசிய சேவை கூறால் பயன்படுத்தப்படுகிறது. இது "
-#~ "க்னோம்துவங்கும்போது மட்டுமே செயலுக்கு வரும். (அதாவது பயனர் உள்நுழையும் போது) இந்த "
-#~ "அமைப்பு கிங்கரனுக்கு தரும் சில கட்டளை வரி மதிப்பால் மாற்ற இயலும்."
-
-#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-#~ msgstr "க்னோம் விசை வளைய அடக்கம் PKCS#11 செயற்படுத்தப் பட வேண்டுமா"
-
-#~ msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgstr "க்னோம் விசை வளைய SSH முகவர் செயற்படுத்தி உள்ளதா"
-
-#~ msgid "Whether the gnome-keyring secret service is enabled."
-#~ msgstr "க்னோம் விசை வளைய  ரகசிய சேவைசெயற்படுத்தி உள்ளதா"
-
-#~ msgid "Automatically unlock secure storage when I log in."
-#~ msgstr "நான் உள்நுழையும்போது தானாக பாதுகாப்பு சேமிப்பகம் பூட்டு நீக்கப்பட வேண்டும்."
-
-#~ msgid ""
-#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
-#~ "to unlock</span>\n"
-#~ "\n"
-#~ "An application wants access to the keyring 'xxx', but it is locked."
-#~ msgstr ""
-#~ "<span size=\"large\" weight=\"bold\">பூட்டை திறக்க விசை வளைய உள் நுழைவுக்கு "
-#~ "கடவுச்சொல் உள்ளிடுக</span>\n"
-#~ "\n"
-#~ "ஒரு பயன்பாடு இயல்பான விசை வளையம் ''xxx'  ஐ அணுக முயற்சிக்கிறது ஆனால் அது "
-#~ "பூட்டப்பட்டுள்ளது."
-
-#~ msgid "Prompt me for each application that accesses this keyring."
-#~ msgstr "பயன்பாடுகள் விசை வளையத்தை அணுகினால் என்னை அனுமதி கேட்கவும்"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தில் '<object prop='name'/>' க்கான  "
-#~ "கடவுச்சொல்லை அணுக விரும்புகிறது"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக "
-#~ "விரும்புகிறது"
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' இயல்பான விசை வளையத்தில் '<object prop='name'/>' இன்  கடவுச்சொல்லை "
-#~ "அணுக விரும்புகிறது"
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' '%s' இல் உள்ள '<object prop='name'/>' இன்  கடவுச்சொல்லை அணுக "
-#~ "விரும்புகிறது"
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "தெரியாத பயன்பாடு '<object prop='name'/>' க்கு கடவுச்சொல்லை இயல்பான விசை "
-#~ "வளையத்திலிருந்து அணுக விரும்புகிறது"
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "தெரியாத பயன்பாடு '<object prop='name'/>' க்கு %s இல் உள்ள கடவுச்சொல்லை அணுக "
-#~ "விரும்புகிறது"
-
-#~ msgid "Allow access"
-#~ msgstr "அணுக அனுமதிக்கவும்"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது "
-#~ "பூட்டப்பட்டுள்ளது."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
-#~ "பூட்டப்பட்டுள்ளது."
-
-#~ msgid ""
-#~ "The application '%s' wants access to the default keyring, but it is locked"
-#~ msgstr ""
-#~ "பயன்பாடு '%s' இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது, ஆனால் அது "
-#~ "பூட்டப்பட்டுள்ளது."
-
-#~ msgid ""
-#~ "The application '%s' wants access to the keyring '%s', but it is locked"
-#~ msgstr ""
-#~ "பயன்பாடு '%s' விசை வளையம்  '%s' ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
-
-#~ msgid ""
-#~ "An unknown application wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "தெரியாத பயன்பாடு இயல்பான விசை வளையத்தை அணுக முயற்சிக்கிறது ஆனால் அது "
-#~ "பூட்டப்பட்டுள்ளது."
-
-#~ msgid "Enter password for default keyring to unlock"
-#~ msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
-#~ "have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் "
-#~ "பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new default keyring. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் "
-#~ "பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new keyring called '%s'. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' புதிய விசை வளையம் '%s' ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
-#~ "விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s'  புதிய இயல்பான விசை  ஐ உருவாக்க முயற்சிக்கிறது. நீங்கள் பயன்படுத்த "
-#~ "விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#~ msgid ""
-#~ "An unknown application wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "தெரியாத பயன்பாடு புதிய இயல்பான விசை வளையத்தை உருவாக்க முயற்சிக்கிறது. நீங்கள் "
-#~ "பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the '%s' "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
-#~ "அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற "
-#~ "விரும்புகிறது. அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the '%s' keyring. "
-#~ "You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
-#~ "கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
-#~ "அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#~ msgid ""
-#~ "An unknown application wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "தெரியாத பயன்பாடு முன்னிருப்பு விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. "
-#~ "அதற்கான கடவுச்சொல்லை தேர்ந்தெடுக்கவும்."
-
-#~ msgid "Choose a new password for the default keyring."
-#~ msgstr "முன்னிருப்பு விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to store a password, but there is no "
-#~ "default keyring. To create one, you need to choose the password you wish "
-#~ "to use for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' (%s) கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான விசை வளையம் "
-#~ "இல்லை. அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
-
-#~ msgid ""
-#~ "The application '%s' wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "பயன்பாடு '%s' கடவுச்சொல்லை சேமிக்க விரும்புகிறது ஆனால் இயல்பான கடவுச்சொல் இல்லை. "
-#~ "உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
-
-#~ msgid ""
-#~ "An unknown application wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "தெரியாத பயன்பாடு கடவுச்சொல்லை சேமிக்க விரும்புகிறதும் ஆனால் இயல்பான கடவுச்சொல் "
-#~ "இல்லை. அதை உருவாக்க நீங்கள் பயன்படுத்த விரும்பும் கடவுச்சொல்லை உள்ளிடவும்"
-
-#~ msgid "Create Default Keyring"
-#~ msgstr "புதிய இயல்பான விசை வளையத்தை உருவாக்கவும்"
-
-#~ msgid "Choose password for default keyring"
-#~ msgstr "இயல்பான விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
-
-#~ msgid "Create Login Keyring"
-#~ msgstr "உள்நுழைவு விசை வளையத்தை உருவாக்கவும்"
-
-#~ msgid "Enter your login password"
-#~ msgstr "உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
-
-#~ msgid ""
-#~ "Your login keyring was not automatically created when you logged into "
-#~ "this computer. It will now be created."
-#~ msgstr ""
-#~ "உங்கள் உள் நுழைவு விசை வளையம் நீங்கள் இந்த கணினியுள் நுழைந்த போது தானியங்கியாக "
-#~ "உருவாக்கப்ப டசு"
-
-#~ msgid "Automatically unlock this private key when I log in."
-#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த அந்தரங்க விசையை பூட்டு திறக்கவும்."
-
-#~ msgid "Automatically unlock this certificate when I log in."
-#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த சான்றிதழை பூட்டு திறக்கவும்."
-
-#~ msgid "Automatically unlock this public key when I log in."
-#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த பொது விசையை பூட்டு திறக்கவும்."
-
-#~ msgid "Automatically unlock this when I log in"
-#~ msgstr "நான் உள்நுழையும்போது தானியங்கியாக இதைை பூட்டு திறக்கவும்."
-
-#~ msgid ""
-#~ "<b><big>Could not grab your mouse.</big></b>\n"
-#~ "\n"
-#~ "A malicious client may be eavesdropping on your session or you may have "
-#~ "just clicked a menu or some application just decided to get focus.\n"
-#~ "\n"
-#~ "Try again."
-#~ msgstr ""
-#~ "<b><big>உங்கள் சுட்டியை எடுக்க வேண்டாம்.</big></b>\n"
-#~ "\n"
-#~ "ஒரு தவறான கிளையன் உங்கள் அமர்வை eavesdropping செய்யலாம் அல்லது நீங்கள் ஒரு மெனு "
-#~ "அல்லது சில பயன்பாட்டை சொடுக்கி ஃபோகஸ் பெற தீர்மானிக்கலாம்.\n"
-#~ "\n"
-#~ "மீண்டும் முயற்சி செய்."
-
-#~ msgid ""
-#~ "<b><big>Could not grab your keyboard.</big></b>\n"
-#~ "\n"
-#~ "A malicious client may be eavesdropping on your session or you may have "
-#~ "just clicked a menu or some application just decided to get focus.\n"
-#~ "\n"
-#~ "Try again."
-#~ msgstr ""
-#~ "<b><big>உங்கள் விசைப்பலகையை எடுக்க வேண்டாம்.</big></b>\n"
-#~ "\n"
-#~ "ஒரு தவறான கிளையன் உங்கள் அமர்வை eavesdropping செய்யலாம் அல்லது நீங்கள் ஒரு மெனு "
-#~ "அல்லது சில பயன்பாட்டை சொடுக்கி ஃபோகஸ் பெற தீர்மானிக்கலாம்.\n"
-#~ "\n"
-#~ "மீண்டும் முயற்சி செய்."
-
-#~ msgid "_Deny"
-#~ msgstr "மறுக்கவும் (_D)"
-
-#~ msgid "C_reate"
-#~ msgstr "(_r) உருவாக்கு"
-
-#~ msgid "C_hange"
-#~ msgstr "(_h) மாற்றுக"
-
-#~ msgid "Allow _Once"
-#~ msgstr "(_O) ஒரு முறை அனுமதி"
-
-#~ msgid "_Always Allow"
-#~ msgstr "(_A)எப்போதும் அனுமதி"
-
-#~ msgid "Removable Disk: %s"
-#~ msgstr "நீக்கக்கூடிய வட்டு: %s"
-
-#~ msgid "Removable Disk"
-#~ msgstr "நீக்கக்கூடிய வட்டு"
-
-#~ msgid "Home"
-#~ msgstr "இல்லம்"
-
-#~ msgid "The disk or drive this file is located on is not present"
-#~ msgstr "இந்த கோப்பு இருக்கும் வட்டு அல்லது இயக்கி இப்போது இல்லை"
-
-#~ msgid "Couldn't create directory: %s"
-#~ msgstr "அடைவு  %s ஐ உருவாக்க முடியவில்லை"
-
-#~ msgid "Access Denied"
-#~ msgstr "அணுகல் மறுக்கப்பட்டது"
-
-#~ msgid "The gnome-keyring-daemon application is not running."
-#~ msgstr "க்னோம் விசை வளைய கிங்கரன் இயங்கவில்லை"
-
-#~ msgid "Error communicating with gnome-keyring-daemon"
-#~ msgstr "க்னோம் விசை வளைய கிங்கரன் உடன் தொடர்பு கொள்வதில் பிழை"
-
-#~ msgid "A keyring with that name already exists"
-#~ msgstr "அந்த பெயருடன் விசை வளையம் ஏற்கெனவே இருப்பில் உள்ளது."
-
-#~ msgid "Programmer error: The application sent invalid data."
-#~ msgstr "நிரல் பிழை: நிரல் பிழையான தரவை அனுப்பியது."
-
-#~ msgid "No matching results"
-#~ msgstr "பொருத்தமான விடைகள் இல்லை"
-
-#~ msgid "A keyring with that name does not exist."
-#~ msgstr "அந்த பெயருடன் விசை வளையம்  இருப்பில் இல்லை"
-
-#~ msgid "The keyring has already been unlocked."
-#~ msgstr "விசைவளைய ஏற்கெனவே பூட்டு திறக்கப்பட்டு விட்டது."

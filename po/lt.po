@@ -7,23 +7,23 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-19 08:45+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2011-09-24 01:26+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lt\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Virtaal 0.5.2\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Nepavadinta"
@@ -39,8 +39,12 @@ msgstr "Pasirinkite naują raktinės „%s“ slaptažodį"
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "Programa ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti jai naudotiną slaptažodį."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Programa ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti jai "
+"naudotiną slaptažodį."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -56,8 +60,12 @@ msgstr "Pasirinkite naujos raktinės slaptažodį"
 
 #: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
-msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "Programa nori sukurti naują raktinę pavadinimu „%s“. Turite pasirinkti jai naudotiną slaptažodį."
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Programa nori sukurti naują raktinę pavadinimu „%s“. Turite pasirinkti jai "
+"naudotiną slaptažodį."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -91,36 +99,34 @@ msgstr "GNOME raktinė: GPG agentas"
 msgid "GPG Password Agent"
 msgstr "GPG slaptažodžių agentas"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
-#: ../gcr/gcr-key-renderer.c:314
-#: ../gcr/gcr-key-renderer.c:319
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Nežinoma"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP raktas: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "Įveskite slaptafrazę"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "Užmiršti šį slaptažodį, jei nenaudojama"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "Užmiršti šį slaptažodį po"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "Užmiršti šį slaptažodį, kai atsijungiu"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Prisijungimas"
 
@@ -165,7 +171,6 @@ msgid "Surname"
 msgstr "Pavardė"
 
 #: ../egg/egg-oid.c:69
-#: ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Serijos numeris"
 
@@ -222,7 +227,6 @@ msgid "Pseudonym"
 msgstr "Slapyvardis"
 
 #: ../egg/egg-oid.c:98
-#: ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -239,7 +243,6 @@ msgid "SHA1 with RSA"
 msgstr "MD2 su RSA"
 
 #: ../egg/egg-oid.c:103
-#: ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -271,613 +274,14 @@ msgstr "Laiko žymos"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proceso (%s)"
+msgstr ""
+"Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proceso "
+"(%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Netikėta klaida funkcijoje waitpid() (%s)"
-
-#: ../gck/gck-module.c:396
-#, c-format
-msgid "Error loading PKCS#11 module: %s"
-msgstr "Klaida įkeliant PKCS#11 modulį: %s"
-
-#: ../gck/gck-module.c:403
-#, c-format
-msgid "Invalid PKCS#11 module: %s"
-msgstr "Netinkamas PKCS#11 modulis: %s"
-
-#: ../gck/gck-module.c:412
-#, c-format
-msgid "Couldn't setup PKCS#11 module: %s"
-msgstr "Nepavyko nustatyti PKCS#11 modulio: %s"
-
-#: ../gck/gck-module.c:428
-#, c-format
-msgid "Couldn't initialize PKCS#11 module: %s"
-msgstr "Nepavyko inicijuoti PKCS#11 modulio: %s"
-
-#: ../gck/gck-modules.c:67
-#, c-format
-msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr "Nepavyko inicijuoti registruotų PKCS#11 modulių: %s"
-
-#. later
-#. later
-#: ../gcr/gcr-certificate.c:388
-#: ../gcr/gcr-gnupg-key.c:629
-msgctxt "column"
-msgid "Name"
-msgstr "Vardas"
-
-#: ../gcr/gcr-certificate.c:390
-msgctxt "column"
-msgid "Issued By"
-msgstr "Išdavė"
-
-#. later
-#: ../gcr/gcr-certificate.c:392
-msgctxt "column"
-msgid "Expires"
-msgstr "Galioja iki"
-
-#: ../gcr/gcr-certificate.c:1060
-#: ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101
-#: ../gcr/gcr-parser.c:260
-msgid "Certificate"
-msgstr "Liudijimas"
-
-#: ../gcr/gcr-certificate-exporter.c:224
-msgid ""
-"<b>A file already exists with this name.</b>\n"
-"\n"
-"Do you want to replace it with a new file?"
-msgstr ""
-"<b>Failas šiuo pavadinimu jau yra.</b>\n"
-"\n"
-"Ar norite jį pakeisti nauju failu?"
-
-#: ../gcr/gcr-certificate-exporter.c:227
-msgid "_Replace"
-msgstr "Pa_keisti"
-
-#: ../gcr/gcr-certificate-exporter.c:257
-#, c-format
-msgid "The operation was cancelled."
-msgstr "Operacija nutraukta."
-
-#: ../gcr/gcr-certificate-exporter.c:301
-msgid "Export certificate"
-msgstr "Eksportuoti liudijimą"
-
-#: ../gcr/gcr-certificate-exporter.c:313
-msgid "Certificate files"
-msgstr "Liudijimo failai"
-
-#: ../gcr/gcr-certificate-exporter.c:324
-msgid "PEM files"
-msgstr "PEM failai"
-
-#: ../gcr/gcr-certificate-extensions.c:141
-msgid "Other Name"
-msgstr "Kitas vardas"
-
-#: ../gcr/gcr-certificate-extensions.c:150
-#| msgid "IP Address"
-msgid "XMPP Addr"
-msgstr "XMPP adresas"
-
-#: ../gcr/gcr-certificate-extensions.c:154
-#| msgid "DNS"
-msgid "DNS SRV"
-msgstr "DNS SRV"
-
-#: ../gcr/gcr-certificate-extensions.c:166
-msgid "Email"
-msgstr "El. paštas"
-
-#: ../gcr/gcr-certificate-extensions.c:174
-msgid "DNS"
-msgstr "DNS"
-
-#: ../gcr/gcr-certificate-extensions.c:182
-msgid "X400 Address"
-msgstr "X400 adresas"
-
-#: ../gcr/gcr-certificate-extensions.c:189
-msgid "Directory Name"
-msgstr "Katalogo pavadinimas"
-
-#: ../gcr/gcr-certificate-extensions.c:197
-msgid "EDI Party Name"
-msgstr "EDI šalies pavadinimas"
-
-#: ../gcr/gcr-certificate-extensions.c:204
-msgid "URI"
-msgstr "URI"
-
-#: ../gcr/gcr-certificate-extensions.c:212
-msgid "IP Address"
-msgstr "IP adresas"
-
-#: ../gcr/gcr-certificate-extensions.c:220
-msgid "Registered ID"
-msgstr "Registracijos ID"
-
-#: ../gcr/gcr-certificate-renderer.c:116
-msgid "Basic Constraints"
-msgstr "Pagrindiniai ribojimai"
-
-#: ../gcr/gcr-certificate-renderer.c:118
-msgid "Certificate Authority"
-msgstr "Liudijimo įstaiga"
-
-#: ../gcr/gcr-certificate-renderer.c:119
-#: ../gcr/gcr-certificate-renderer.c:314
-msgid "Yes"
-msgstr "Taip"
-
-#: ../gcr/gcr-certificate-renderer.c:119
-#: ../gcr/gcr-certificate-renderer.c:314
-msgid "No"
-msgstr "Ne"
-
-#: ../gcr/gcr-certificate-renderer.c:122
-msgid "Max Path Length"
-msgstr "Didžiausias kelio ilgis"
-
-#: ../gcr/gcr-certificate-renderer.c:123
-msgid "Unlimited"
-msgstr "Neribojamas"
-
-#: ../gcr/gcr-certificate-renderer.c:142
-msgid "Extended Key Usage"
-msgstr "Išplėstinis rakto naudojimas"
-
-#: ../gcr/gcr-certificate-renderer.c:153
-msgid "Allowed Purposes"
-msgstr "Leidžiami tikslai"
-
-#: ../gcr/gcr-certificate-renderer.c:173
-msgid "Subject Key Identifier"
-msgstr "Subjekto rakto identifikatorius"
-
-#: ../gcr/gcr-certificate-renderer.c:174
-msgid "Key Identifier"
-msgstr "Rakto identifikatorius"
-
-#: ../gcr/gcr-certificate-renderer.c:185
-msgid "Digital signature"
-msgstr "Skaitmeninis parašas"
-
-#: ../gcr/gcr-certificate-renderer.c:186
-msgid "Key encipherment"
-msgstr "Rakto šifravimas"
-
-#: ../gcr/gcr-certificate-renderer.c:187
-msgid "Data encipherment"
-msgstr "Duomenų šifravimas"
-
-#: ../gcr/gcr-certificate-renderer.c:188
-msgid "Key agreement"
-msgstr "Rakto sutartis"
-
-#: ../gcr/gcr-certificate-renderer.c:189
-msgid "Certificate signature"
-msgstr "Liudijimo parašas"
-
-#: ../gcr/gcr-certificate-renderer.c:190
-msgid "Revocation list signature"
-msgstr "Panaikinimų sąrašo parašas"
-
-#: ../gcr/gcr-certificate-renderer.c:215
-msgid "Key Usage"
-msgstr "Rakto naudojimas"
-
-#: ../gcr/gcr-certificate-renderer.c:216
-msgid "Usages"
-msgstr "Naudojimai"
-
-#: ../gcr/gcr-certificate-renderer.c:236
-msgid "Subject Alternative Names"
-msgstr "Subjekto alternatyvūs vardai"
-
-#: ../gcr/gcr-certificate-renderer.c:261
-msgid "Extension"
-msgstr "Plėtinys"
-
-#: ../gcr/gcr-certificate-renderer.c:265
-msgid "Identifier"
-msgstr "Identifikatorius"
-
-#: ../gcr/gcr-certificate-renderer.c:266
-msgid "Value"
-msgstr "Reikšmė"
-
-#: ../gcr/gcr-certificate-renderer.c:313
-msgid "Critical"
-msgstr "Kritinis"
-
-#: ../gcr/gcr-certificate-renderer.c:386
-msgid "Couldn't export the certificate."
-msgstr "Nepavyko eksportuoti sertifikato."
-
-#: ../gcr/gcr-certificate-renderer.c:613
-msgid "Identity"
-msgstr "Tapatybė"
-
-#: ../gcr/gcr-certificate-renderer.c:617
-msgid "Verified by"
-msgstr "Patikrino"
-
-#: ../gcr/gcr-certificate-renderer.c:624
-msgid "Expires"
-msgstr "Galioja iki"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:634
-msgid "Subject Name"
-msgstr "Kam išduotas"
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:638
-msgid "Issuer Name"
-msgstr "Kas išdavė"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:642
-msgid "Issued Certificate"
-msgstr "Išduotasis liudijimas"
-
-#: ../gcr/gcr-certificate-renderer.c:647
-msgid "Version"
-msgstr "Versija"
-
-#: ../gcr/gcr-certificate-renderer.c:659
-msgid "Not Valid Before"
-msgstr "Negalioja iki"
-
-#: ../gcr/gcr-certificate-renderer.c:664
-msgid "Not Valid After"
-msgstr "Negalioja po "
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:669
-msgid "Certificate Fingerprints"
-msgstr "Sertifikato kontroliniai kodai"
-
-#. Signature
-#: ../gcr/gcr-certificate-renderer.c:675
-#: ../gcr/gcr-certificate-renderer.c:687
-msgid "Signature"
-msgstr "Parašas"
-
-#: ../gcr/gcr-certificate-renderer.c:679
-msgid "Signature Algorithm"
-msgstr "Parašo algoritmas"
-
-#: ../gcr/gcr-certificate-renderer.c:683
-msgid "Signature Parameters"
-msgstr "Parašo parametrai"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:691
-msgid "Public Key Info"
-msgstr "Viešojo rakto informacija"
-
-#: ../gcr/gcr-certificate-renderer.c:696
-msgid "Key Algorithm"
-msgstr "Viešojo rakto algoritmas"
-
-#: ../gcr/gcr-certificate-renderer.c:701
-msgid "Key Parameters"
-msgstr "Rakto parametrai"
-
-#: ../gcr/gcr-certificate-renderer.c:706
-msgid "Key Size"
-msgstr "Rakto dydis"
-
-#: ../gcr/gcr-certificate-renderer.c:713
-msgid "Key SHA1 Fingerprint"
-msgstr "Rakto SHA1 kontrolinis kodas"
-
-#: ../gcr/gcr-certificate-renderer.c:719
-#: ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:263
-msgid "Public Key"
-msgstr "Viešasis raktas"
-
-#: ../gcr/gcr-display-view.c:308
-msgid "_Details"
-msgstr "_Išsami informacija"
-
-#: ../gcr/gcr-failure-renderer.c:163
-#, c-format
-msgid "Could not display '%s'"
-msgstr "Nepavyko parodyti „%s“"
-
-#: ../gcr/gcr-failure-renderer.c:165
-msgid "Could not display file"
-msgstr "Nepavyko parodyti failo"
-
-#: ../gcr/gcr-failure-renderer.c:170
-#| msgid "Version"
-msgid "Reason"
-msgstr "Priežastis"
-
-#: ../gcr/gcr-failure-renderer.c:203
-#, c-format
-msgid "Cannot display a file of this type."
-msgstr "Nepavyksta parodyti šio tipo failo."
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "Importuoti liudijimus ir raktus"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "Importuoti į:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "Slaptažodis:"
-
-#: ../gcr/gcr-gnupg-key.c:251
-msgid "PGP Key"
-msgstr "PGP raktas"
-
-#: ../gcr/gcr-gnupg-key.c:631
-msgctxt "column"
-msgid "Key ID"
-msgstr "Rakto ID"
-
-#: ../gcr/gcr-gnupg-process.c:632
-#, c-format
-msgid "Gnupg process exited with code: %d"
-msgstr "Gnupg procesas baigėsi su kodu: %d"
-
-#: ../gcr/gcr-gnupg-process.c:639
-#, c-format
-msgid "Gnupg process was terminated with signal: %d"
-msgstr "Gnupg procesas baigėsi su signalu: %d"
-
-#: ../gcr/gcr-gnupg-process.c:695
-#: ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1919
-#: ../gcr/gcr-parser.c:2177
-msgid "The operation was cancelled"
-msgstr "Operacija nutraukta"
-
-#: ../gcr/gcr-importer.c:172
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Įveskite slaptažodį, kad atrakintumėte privatų raktą"
-
-#: ../gcr/gcr-importer.c:174
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Įveskite slaptažodį, kad atrakintumėte liudijimą"
-
-#: ../gcr/gcr-importer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Įveskite atrakinimo slaptažodį"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:185
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Norint importuoti privatųjį raktą „%s“, jį reiks atrakinti"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:188
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Norint importuoti liudijimą, jį reiks atrakinti"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:191
-msgid "In order to import the data, it must be unlocked"
-msgstr "Norint importuoti duomenis, juos reiks atrakinti"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:196
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Norint importuoti privatųjį raktą „%s“, jį reiks atrakinti"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:199
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Norint importuoti liudijimą „%s“, jį reiks atrakinti"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:202
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Norint importuoti „%s“, jį reiks atrakinti"
-
-#: ../gcr/gcr-importer.c:386
-#, c-format
-msgid "No location available to import to"
-msgstr "Neprieinama vieta, į kurią importuoti"
-
-#: ../gcr/gcr-importer.c:537
-msgid "Import Certificates/Keys"
-msgstr "Importuoti liudijimus/raktus"
-
-#: ../gcr/gcr-importer.c:544
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Pasirinkite vietą importuotų liudijimų/raktų saugojimui."
-
-#: ../gcr/gcr-key-renderer.c:82
-msgid "Key"
-msgstr "Raktas"
-
-#: ../gcr/gcr-key-renderer.c:283
-msgid "Private RSA Key"
-msgstr "Privatus RSA raktas"
-
-#: ../gcr/gcr-key-renderer.c:285
-msgid "Private DSA Key"
-msgstr "Privatus DSA raktas"
-
-#: ../gcr/gcr-key-renderer.c:287
-#: ../gcr/gcr-parser.c:257
-msgid "Private Key"
-msgstr "Privatus raktas"
-
-#: ../gcr/gcr-key-renderer.c:290
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Public DSA Key"
-msgstr "Viešasis DSA raktas"
-
-#: ../gcr/gcr-key-renderer.c:301
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bitas"
-msgstr[1] "%d bitai"
-msgstr[2] "%d bitų"
-
-#: ../gcr/gcr-key-renderer.c:302
-msgid "Strength"
-msgstr "Stiprumas"
-
-#: ../gcr/gcr-key-renderer.c:315
-msgid "Algorithm"
-msgstr "Algoritmas"
-
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Size"
-msgstr "Dydis"
-
-#. Fingerprints
-#: ../gcr/gcr-key-renderer.c:326
-msgid "Fingerprints"
-msgstr "Kontroliniai kodai"
-
-#: ../gcr/gcr-key-renderer.c:331
-msgid "SHA1"
-msgstr "SHA1"
-
-#: ../gcr/gcr-key-renderer.c:337
-msgid "SHA256"
-msgstr "SHA256"
-
-#: ../gcr/gcr-parser.c:1922
-msgid "Unrecognized or unsupported data."
-msgstr "Duomenys netaisyklingi arba neatpažinti"
-
-#: ../gcr/gcr-parser.c:1925
-msgid "Could not parse invalid or corrupted data."
-msgstr "Nepavyko apdoroti netaisyklingų arba sugadintų duomenų."
-
-#: ../gcr/gcr-parser.c:1928
-msgid "The data is locked"
-msgstr "Duomenys užrakinti"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:377
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Nepavyksta rasti vietos prisegto sertifikato įrašymui"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Automatiškai atrakinti šią raktinę, kai prisijungiu"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "Užrakinti šią raktinę po"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "Užrakinti šią raktinę, jei nenaudojama"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "Užrakinti šią raktinę, kai atsijungiu"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "minučių"
-
-#: ../gcr/gcr-unlock-renderer.c:63
-#, c-format
-#| msgid "Unlock"
-msgid "Unlock: %s"
-msgstr "Atrakinti: %s"
-
-#: ../gcr/gcr-unlock-renderer.c:65
-#: ../gcr/gcr-unlock-renderer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Atrakinti"
-
-#: ../gcr/gcr-unlock-renderer.c:135
-#| msgid "The unlock password was incorrect"
-msgid "The password was incorrect"
-msgstr "Slaptažodis neteisingas"
-
-#: ../gcr/gcr-unlock-renderer.c:173
-#| msgid "Password:"
-msgid "Password"
-msgstr "Slaptažodis"
-
-#: ../gcr/gcr-unlock-renderer.c:324
-#, c-format
-msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
-msgstr "„%s“ turinys užrakintas. Norėdami pamatyti turinį, įveskite teisingą slaptažodį."
-
-#: ../gcr/gcr-unlock-renderer.c:327
-msgid "The contents are locked. In order to view the contents, enter the correct password."
-msgstr "Turinys užrakintas. Norėdami pamatyti turinį, įveskite teisingą slaptažodį."
-
-#: ../gcr/gcr-viewer-tool.c:41
-#| msgid "Certificate and Key Storage"
-msgid "GCR Certificate and Key Viewer"
-msgstr "GCR liudijimų ir raktų žiūryklė"
-
-#: ../gcr/gcr-viewer-tool.c:48
-msgid "Show the application's version"
-msgstr "Rodyti programos versiją"
-
-#: ../gcr/gcr-viewer-tool.c:50
-msgid "[file...]"
-msgstr "[failas...]"
-
-#: ../gcr/gcr-viewer-tool.c:104
-#| msgid "Certificate files"
-msgid "- View certificate and key files"
-msgstr "- žiūrėti liudijimų ir raktų failus"
-
-#: ../gcr/gcr-viewer-tool.c:118
-#| msgid "Certificate files"
-msgid "Certificate Viewer"
-msgstr "Liudijimų žiūryklė"
-
-#: ../gck/gck-uri.c:173
-#, c-format
-#| msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgid "The URI has invalid encoding."
-msgstr "Bloga URI koduotė."
-
-#: ../gck/gck-uri.c:177
-msgid "The URI does not have the 'pkcs11' scheme."
-msgstr "URI neturi „pkcs11“ schemos."
-
-#: ../gck/gck-uri.c:181
-msgid "The URI has bad syntax."
-msgstr "Bloga URI sintaksė."
-
-#: ../gck/gck-uri.c:185
-msgid "The URI has a bad version number."
-msgstr "Blogas URI versijos numeris."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -888,7 +292,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "Nepavyko apdoroti viešojo SSH rakto"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "„%s“ atrakinimo slaptažodis"
@@ -907,12 +311,19 @@ msgid "Enter password to unlock your login keyring"
 msgstr "Įveskite slaptažodį norėdami atrakinti savo prisijungimo raktinę"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid "The password you use to log in to your computer no longer matches that of your login keyring."
-msgstr "Slaptažodis, kurį naudojate prisijungdami prie kompiuterio, nebeatitinka jūsų prisijungimo raktinės slaptažodžio."
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Slaptažodis, kurį naudojate prisijungdami prie kompiuterio, nebeatitinka "
+"jūsų prisijungimo raktinės slaptažodžio."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid "The login keyring did not get unlocked when you logged into your computer."
-msgstr "Prisijungimo raktinė nebuvo automatiškai atrakinta, kai prisijungėte prie savo kompiuterio."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Prisijungimo raktinė nebuvo automatiškai atrakinta, kai prisijungėte prie "
+"savo kompiuterio."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
@@ -940,27 +351,49 @@ msgstr "Atrakinti liudijimą"
 msgid "Unlock public key"
 msgstr "Atrakinti viešąjį raktą"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Atrakinti"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Įveskite slaptažodį, kad atrakintumėte privatų raktą"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Įveskite slaptažodį, kad atrakintumėte liudijimą"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Įveskite slaptažodį, kad atrakintumėte viešąjį raktą"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Įveskite atrakinimo slaptažodį"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Nežinoma programa nori gauti prieigą prie privataus rakto „%s“, tačiau jis užrakintas"
+msgstr ""
+"Nežinoma programa nori gauti prieigą prie privataus rakto „%s“, tačiau jis "
+"užrakintas"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Nežinoma programa nori gauti prieigą prie liudijimo „%s“, tačiau jis užrakintas"
+msgstr ""
+"Nežinoma programa nori gauti prieigą prie liudijimo „%s“, tačiau jis "
+"užrakintas"
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Nežinoma programa nori gauti prieigą prie viešojo rakto „%s“, tačiau jis užrakintas"
+msgstr ""
+"Nežinoma programa nori gauti prieigą prie viešojo rakto „%s“, tačiau jis "
+"užrakintas"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
@@ -979,8 +412,12 @@ msgstr "Įveskite slaptažodį liudijimų/raktų saugyklos atrakinimui"
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
-msgid "An application wants access to the certificate/key storage '%s', but it is locked"
-msgstr "Programa nori gauti prieigą prie liudijimų/raktų saugyklos „%s“, bet pastaroji užrakinta"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Programa nori gauti prieigą prie liudijimų/raktų saugyklos „%s“, bet "
+"pastaroji užrakinta"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
@@ -992,8 +429,12 @@ msgstr "Įveskite saugyklos saugos slaptažodį"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
-msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
-msgstr "Norint paruošti saugyklą „%s“ liudijimų ar raktų saugojimui, reiks slaptažodžio"
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Norint paruošti saugyklą „%s“ liudijimų ar raktų saugojimui, reiks "
+"slaptažodžio"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
@@ -1005,8 +446,11 @@ msgstr "Pakeisti saugios saugyklos slaptažodį"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid "To change the password for '%s', the original and new passwords are required"
-msgstr "Norėdami pakeisti „%s“ slaptažodį, reikia įvesti originalų ir naują slaptažodžius"
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
+msgstr ""
+"Norėdami pakeisti „%s“ slaptažodį, reikia įvesti originalų ir naują "
+"slaptažodžius"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -1022,23 +466,28 @@ msgstr "komandos:"
 msgid "          "
 msgstr "         "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "Saugoti nešifruotus slaptažodžius?"
 
-#: ../ui/gku-prompt-tool.c:595
-msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "Jei pasirinksite tuščią slaptažodį, saugomi slaptažodžiai nebus saugiai užšifruoti. Jie bus prieinami visiems, kas gali skaityti Jūsų failus."
+#: ../ui/gku-prompt-tool.c:592
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Jei pasirinksite tuščią slaptažodį, saugomi slaptažodžiai nebus saugiai "
+"užšifruoti. Jie bus prieinami visiems, kas gali skaityti Jūsų failus."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "Naudoti nesaugią saugyklą"
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "Slaptažodžiai nesutampa."
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "Slaptažodis negali būti tuščias"
 
@@ -1077,45 +526,3 @@ msgstr "_Senas slaptažodis:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Slaptažodis:"
-
-#~ msgid "Insufficient memory available"
-#~ msgstr "Nepakanka laisvos atminties"
-
-#~ msgid "The specified slot ID is not valid"
-#~ msgstr "Nurodytas lizdo id netaisyklingas"
-
-#~ msgid "Internal error"
-#~ msgstr "Vidinė klaida"
-
-#~ msgid "The operation failed"
-#~ msgstr "Operacija nesėkminga"
-
-#~ msgid "Invalid arguments"
-#~ msgstr "Netaisyklingi argumentai"
-
-#~ msgid "The module cannot create needed threads"
-#~ msgstr "Modulis negali sukurti reikalingų gijų"
-
-#~ msgid "The module cannot lock data properly"
-#~ msgstr "Modulis negali užrakinti duomenų"
-
-#~ msgid "The field is read-only"
-#~ msgstr "Laukas tik skaitymui"
-
-#~ msgid "The field is sensitive and cannot be revealed"
-#~ msgstr "Laukas slaptas ir negali būti parodytas"
-
-#~ msgid "The field is invalid or does not exist"
-#~ msgstr "Laukas netaisyklingas arba neegzistuoja"
-
-#~ msgid "Invalid value for field"
-#~ msgstr "Netaisyklinga lauko reikšmė"
-
-#~ msgid "The data is not valid or unrecognized"
-#~ msgstr "Duomenys netaisyklingi arba neatpažinti"
-
-#~ msgid "The data is too long"
-#~ msgstr "Duomenys per ilgi"
-
-#~ msgid "An error occurred on the device"
-#~ msgstr "Įrenginyje įvyko klaida"

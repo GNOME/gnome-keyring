@@ -3,10 +3,11 @@ SUBDIRS = . tests
 
 INCLUDES= \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DPROMPTEXEC=\""$(libexecdir)/gnome-keyring-prompt-@GCR_MAJOR@"\" \
+	-DPROMPTEXEC=\""$(libexecdir)/gnome-keyring-prompt-@GKR_MAJOR@"\" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
+	$(GCR_BASE_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS)
 
@@ -14,7 +15,7 @@ INCLUDES= \
 # UI BUILDER
 #
 
-uidir = $(datadir)/gnome-keyring-@GCR_MAJOR@/ui/
+uidir = $(datadir)/gnome-keyring-@GKR_MAJOR@/ui/
 
 ui_DATA = \
 	gku-prompt.ui
@@ -32,7 +33,7 @@ libgku_prompt_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libgku_prompt_la_LIBADD = \
-	$(top_builddir)/gcr/libgcr-base-@GCR_MAJOR@.la \
+	$(GCR_BASE_LIBS) \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 
@@ -55,29 +56,27 @@ EXTRA_DIST = \
 #
 
 libexec_PROGRAMS= \
-	gnome-keyring-prompt-@GCR_MAJOR@
+	gnome-keyring-prompt-@GKR_MAJOR@
 
-gnome_keyring_prompt_@GCR_MAJOR@_SOURCES = \
+gnome_keyring_prompt_@GKR_MAJOR@_SOURCES = \
 	gku-prompt-tool.c
 
-gnome_keyring_prompt_@GCR_MAJOR@_LDADD = \
+gnome_keyring_prompt_@GKR_MAJOR@_LDADD = \
 	$(top_builddir)/egg/libegg-entry-buffer.la \
 	$(top_builddir)/egg/libegg-prompt.la \
-	$(top_builddir)/gcr/libgcr-base-@GCR_MAJOR@.la \
-	$(top_builddir)/gcr/libgcr-@GCR_MAJOR@.la \
-	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
+	$(GCR_LIBS) \
 	$(LIBGCRYPT_LIBS) \
 	$(GTK_LIBS)
 
-gnome_keyring_prompt_@GCR_MAJOR@_CFLAGS = \
+gnome_keyring_prompt_@GKR_MAJOR@_CFLAGS = \
 	-DUIDIR=\""$(uidir)"\" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	$(LIBGCRYPT_CFLAGS) \
 	$(GTK_CFLAGS)
 
-# Install a link from gnome-keyring-prompt -> gnome-keyring-prompt-@GCR_MAJOR@ to maintain compatibility
+# Install a link from gnome-keyring-prompt -> gnome-keyring-prompt-@GKR_MAJOR@ to maintain compatibility
 install-exec-hook:
-	@test -e "$(DESTDIR)$(libexecdir)/gnome-keyring-prompt" || (cd $(DESTDIR)$(libexecdir) && $(LN_S) gnome-keyring-prompt-@GCR_MAJOR@ gnome-keyring-prompt)
+	@test -e "$(DESTDIR)$(libexecdir)/gnome-keyring-prompt" || (cd $(DESTDIR)$(libexecdir) && $(LN_S) gnome-keyring-prompt-@GKR_MAJOR@ gnome-keyring-prompt)
 
 @INTLTOOL_DESKTOP_RULE@
 desktopdir= $(datadir)/applications

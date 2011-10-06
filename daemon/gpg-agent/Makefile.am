@@ -5,7 +5,9 @@ INCLUDES = \
 	-I$(top_srcdir)/pkcs11 \
 	-DGCK_API_SUBJECT_TO_CHANGE \
 	$(GOBJECT_CFLAGS) \
+	$(GCR_BASE_CFLAGS) \
 	$(GIO_CFLAGS) \
+	$(GCK_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 # ------------------------------------------------------------------------------
@@ -31,8 +33,8 @@ gkd_gpg_agent_standalone_SOURCES = \
 gkd_gpg_agent_standalone_LDADD = \
 	libgkd-gpg-agent.la \
 	$(top_builddir)/ui/libgku-prompt.la \
-	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
 	$(top_builddir)/egg/libegg.la \
+	$(GCK_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GIO_LIBS) \

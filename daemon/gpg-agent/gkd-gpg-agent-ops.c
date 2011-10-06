@@ -27,7 +27,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gcr/gcr-unlock-options.h"
+#include <gcr/gcr-unlock-options.h>
 
 #include "pkcs11/pkcs11i.h"
 

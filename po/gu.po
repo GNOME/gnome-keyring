@@ -8,11 +8,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gu\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&component=general\n"
-"POT-Creation-Date: 2011-03-10 08:08+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2011-04-01 17:02+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,7 +30,7 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "નામ થયેલ નથી"
@@ -40,15 +41,11 @@ msgstr "કીરીંગ પાસવર્ડ બદલો"
 
 #: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
-#| msgid "Choose a new password for the '%s' keyring."
 msgid "Choose a new password for the '%s' keyring"
 msgstr "'%s' કીરીંગ માટે નવાં પાસવર્ડને પસંદ કરો"
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, fuzzy, c-format
-#| msgid ""
-#| "An unknown application wants to change the password for the '%s' keyring. "
-#| "You have to choose the password you want to use for it."
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
@@ -57,7 +54,6 @@ msgstr ""
 "પાસવર્ડ પસંદ કરવો પડશે."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
-#| msgid "The password or PIN is incorrect"
 msgid "The original password was incorrect"
 msgstr "મૂળભૂત પાસવર્ડ અયોગ્ય છે"
 
@@ -71,9 +67,6 @@ msgstr "નવી કીરીંગ માટે પાસવર્ડ પસ�
 
 #: ../daemon/dbus/gkd-secret-create.c:86
 #, fuzzy, c-format
-#| msgid ""
-#| "An unknown application wants to create a new keyring called '%s'. You "
-#| "have to choose the password you want to use for it."
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
@@ -82,17 +75,14 @@ msgstr ""
 "પાસવર્ડ દાખલ કરવો પડશે."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-#| msgid "Unlock certificate/key storage"
 msgid "Certificate and Key Storage"
 msgstr "પ્રમાણપત્ર અને કી સંગ્રહ"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
-#| msgid "GNOME Keyring Daemon"
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME કીરીંગ: PKCS#11 ઘટક"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-#| msgid "GNOME Keyring Daemon"
 msgid "GNOME Keyring: Secret Service"
 msgstr "GNOME કીરીંગ: ખાનગી સેવા"
 
@@ -101,7 +91,6 @@ msgid "Secret Storage Service"
 msgstr "ખાનગી સંગ્રહ સેવા"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-#| msgid "GNOME Keyring Daemon"
 msgid "GNOME Keyring: SSH Agent"
 msgstr "GNOME કીરીંગ: SSH ઍજન્ટ"
 
@@ -110,45 +99,41 @@ msgid "SSH Key Agent"
 msgstr "SSH કી ઍજન્ટ"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-#| msgid "GNOME Keyring Daemon"
 msgid "GNOME Keyring: GPG Agent"
 msgstr "GNOME કીરીંગ: GPG ઍજન્ટ"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#| msgid "New password strength"
 msgid "GPG Password Agent"
 msgstr "GPG પાસવર્જ ઍજન્ટ"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-key-renderer.c:296
-#| msgid "Unknown error"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "અજ્ઞાત"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:199
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP કી: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:348
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "પાસફ્રેજને દાખલ કરો"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "જો તેની માટે નિષ્ક્રિય હોય તો આ પાસવર્ડને ભૂલી જાઓ"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "પછીથી પાસવર્ડને ભૂલી જાઓ"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:385
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "જ્યારે હું બહાર નીકળુ ત્યારે આ પાસવર્ડને ભૂલી જાઓ"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "પ્રવેશ"
 
@@ -192,7 +177,7 @@ msgstr "સામાન્ય નામ"
 msgid "Surname"
 msgstr "અટક"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:379
+#: ../egg/egg-oid.c:69
 msgid "Serial Number"
 msgstr "ક્રમાંક નંબર"
 
@@ -248,29 +233,50 @@ msgstr "DN Qualifier"
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:287
+#: ../egg/egg-oid.c:98
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "RSA સાથે MD2"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "RSA સાથે MD5"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "RSA સાથે SHA1 "
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:289
+#: ../egg/egg-oid.c:103
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "DSA સાથે SHA1"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr ""
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr ""
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr ""
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr ""
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr ""
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -282,621 +288,6 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() માં અનિચ્છિત ભૂલ (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:82 ../gcr/gcr-parser.c:201
-msgid "Certificate"
-msgstr "પ્રમાણપત્ર"
-
-#: ../gcr/gcr-certificate-renderer.c:107
-msgid "Extension"
-msgstr "એક્સટેન્શન"
-
-#: ../gcr/gcr-certificate-renderer.c:112
-msgid "Identifier"
-msgstr "ઓળખનાર"
-
-#: ../gcr/gcr-certificate-renderer.c:120
-msgid "Value"
-msgstr "કિંમત"
-
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Critical"
-msgstr "સંકટમય"
-
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Yes"
-msgstr "હા"
-
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "No"
-msgstr "ના"
-
-#: ../gcr/gcr-certificate-renderer.c:339
-#| msgid "Identifier"
-msgid "Identity"
-msgstr "ઓળખણ"
-
-#: ../gcr/gcr-certificate-renderer.c:343
-msgid "Verified by"
-msgstr "દ્દારા ચકાસેલ છે"
-
-#: ../gcr/gcr-certificate-renderer.c:350
-#| msgid "Expires On"
-msgid "Expires"
-msgstr "નિવૃત્ત"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:360
-msgid "Subject Name"
-msgstr "વિષય નામ"
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:364
-msgid "Issuer Name"
-msgstr "પ્રકાશિત કરનારનું નામ"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:368
-msgid "Issued Certificate"
-msgstr "મોકલેલ પ્રમાણપત્ર"
-
-#: ../gcr/gcr-certificate-renderer.c:373
-msgid "Version"
-msgstr "આવૃત્તિ"
-
-#: ../gcr/gcr-certificate-renderer.c:387
-msgid "Not Valid Before"
-msgstr "પહેલા યોગ્ય નથી"
-
-#: ../gcr/gcr-certificate-renderer.c:392
-msgid "Not Valid After"
-msgstr "પછી યોગ્ય નથી"
-
-#: ../gcr/gcr-certificate-renderer.c:401
-msgid "Signature Algorithm"
-msgstr "હસ્તાક્ષરનાં ઍલ્ગરિધમ"
-
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Signature Parameters"
-msgstr "હસ્તાક્ષરનાં પરિમાણો"
-
-#: ../gcr/gcr-certificate-renderer.c:413
-msgid "Signature"
-msgstr "હસ્તાક્ષર"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:418
-msgid "Public Key Info"
-msgstr "સાર્વજનિક કી જાણકારી"
-
-#: ../gcr/gcr-certificate-renderer.c:423
-msgid "Key Algorithm"
-msgstr "કી ઍલ્ગરિધમ"
-
-#: ../gcr/gcr-certificate-renderer.c:429
-msgid "Key Parameters"
-msgstr "કી પરિમાણો"
-
-#: ../gcr/gcr-certificate-renderer.c:436
-msgid "Key Size"
-msgstr "કી માપ"
-
-#: ../gcr/gcr-certificate-renderer.c:444 ../gcr/gcr-key-renderer.c:271
-#: ../gcr/gcr-parser.c:204
-msgid "Public Key"
-msgstr "સાર્વજનિક કી"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:449
-msgid "Fingerprints"
-msgstr "ફિંગરપ્રિંટો"
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-#| msgid "Import Certificates/Keys"
-msgid "Import Certificates and Keys"
-msgstr "પ્રમાણપત્રો અને કીઓ ને આયાત કરો"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "માં આયાત કરો:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "પાસવર્ડ:"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-#, fuzzy
-#| msgid "Automatically unlock this keyring when I log in."
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "જ્યારે હું પ્રવેશ કરું ત્યારે આ કીરીંગ આપોઆપ ખોલો."
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "પછીથી આ કીરીંગને તાળુ મારો"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "જો તેની માટે નિષ્ક્રિય હોય તો આ કીરીંગને તાળુ મારો"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-#| msgid "Automatically unlock this keyring when I log in."
-msgid "Lock this keyring when I log out"
-msgstr "જ્યારે હું બહાર નીકળુ ત્યારે આ કીરીંગનું તાળુ મારો"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "મિનિટ"
-
-#: ../gcr/gcr-importer.c:133 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "ખાનગી કીનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
-
-#: ../gcr/gcr-importer.c:135 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "પ્રમાણપત્રનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
-
-#: ../gcr/gcr-importer.c:137 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:146
-msgid "In order to import the private key, it must be unlocked"
-msgstr "ખાનગી કી ને આયાત કરવા માટે ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:149
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "પ્રમાણપત્ર ને આયાત કરવાનું ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:152
-msgid "In order to import the data, it must be unlocked"
-msgstr "માહિતી ને આયાત કરવા માટે ક્રમમાં, તેને તાળુ ખોલેલ જ હોવુ જોઇએ"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:157
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "ખાનગી કી '%s' ને આયાત કરવા માટે ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:160
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "પ્રમાણપત્ર '%s' ને આયાત કરવાનું ક્રમમાં, તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:163
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s' આયાત કરવા માટે ક્રમમાં. તેનું તાળુ ખોલેલ હોવુ જ જોઇએ"
-
-#: ../gcr/gcr-importer.c:254 ../gcr/gcr-parser.c:1566 ../gcr/gcr-parser.c:1757
-#: ../gck/gck-misc.c:98
-msgid "The operation was cancelled"
-msgstr "પ્રક્રિયા રદ કરી દીધી હતી"
-
-#: ../gcr/gcr-importer.c:346
-#, c-format
-msgid "No location available to import to"
-msgstr "આયાત કરવા માટે ઉપલ્બધ સ્થાન નથી"
-
-#: ../gcr/gcr-importer.c:495
-msgid "Import Certificates/Keys"
-msgstr "પ્રમાણપત્રો/કીઓ ને આયાત કરો"
-
-#: ../gcr/gcr-importer.c:502
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "આયાત કરેલ પ્રમાણપત્રો/કીઓ ને સંગ્રહ કરવા માટે સ્થાન ને પસંદ કરો."
-
-#: ../gcr/gcr-key-renderer.c:69
-msgid "Key"
-msgstr "કી"
-
-#: ../gcr/gcr-key-renderer.c:260
-#| msgid "Private Key"
-msgid "Private RSA Key"
-msgstr "ખાનગી RSA કી"
-
-#: ../gcr/gcr-key-renderer.c:262
-#| msgid "Private Key"
-msgid "Private DSA Key"
-msgstr "ખાનગી DSA કી"
-
-#: ../gcr/gcr-key-renderer.c:264 ../gcr/gcr-parser.c:198
-msgid "Private Key"
-msgstr "ખાનગી કી"
-
-#: ../gcr/gcr-key-renderer.c:267 ../gcr/gcr-key-renderer.c:269
-#| msgid "Public Key"
-msgid "Public DSA Key"
-msgstr "સાર્વજનિક DSA કી"
-
-#: ../gcr/gcr-key-renderer.c:278
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d બીટ"
-msgstr[1] "%d બીટ"
-
-#: ../gcr/gcr-key-renderer.c:279
-#| msgid "Street"
-msgid "Strength"
-msgstr "તાકાત"
-
-#: ../gcr/gcr-key-renderer.c:292
-#| msgid "Key Algorithm"
-msgid "Algorithm"
-msgstr "ઍલ્ગરિધમ"
-
-#: ../gcr/gcr-key-renderer.c:299
-#| msgid "Key Size"
-msgid "Size"
-msgstr "માપ"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:303
-#| msgid "Fingerprints"
-msgid "Fingerprint"
-msgstr "આંગળીની છાપ"
-
-#: ../gcr/gcr-parser.c:1569
-msgid "Unrecognized or unsupported data."
-msgstr "ઓળખાતી નથી અથવા આધારિત માહિતી નથી."
-
-#: ../gcr/gcr-parser.c:1572
-msgid "Could not parse invalid or corrupted data."
-msgstr "અયોગ્ય અથવા બગડેલ માહિતી ને પદચ્છેદન કરી શકાયુ નહિં."
-
-#: ../gcr/gcr-parser.c:1575
-msgid "The data is locked"
-msgstr "માહિતી ને તાળુ મારેલ છે"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, fuzzy, c-format
-#| msgid "Choose a location to store the imported certificates/keys."
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "આયાત કરેલ પ્રમાણપત્રો/કીઓ ને સંગ્રહ કરવા માટે સ્થાન ને પસંદ કરો."
-
-#: ../gck/gck-uri.c:124 ../gck/gck-uri.c:181 ../gck/gck-uri.c:216
-#: ../gck/gck-uri.c:248
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr "URI પાસે અયોગ્ય સિન્ટેક્ષ છે. '%s' ક્ષેત્ર સંગ્રહપદ્દતિ અયોગ્ય છે."
-
-#: ../gck/gck-uri.c:287
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr "URI પાસે 'pkcs11' યોજના નથી."
-
-#: ../gck/gck-misc.c:101
-msgid "Insufficient memory available"
-msgstr "અપર્યાપ્ત મેમરી ઉપલ્બધ છે"
-
-#: ../gck/gck-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "સ્પષ્ટ થયેલ સ્લૉટ ID એ યોગ્ય નથી"
-
-#: ../gck/gck-misc.c:105
-msgid "Internal error"
-msgstr "આંતરિક ભૂલ"
-
-#: ../gck/gck-misc.c:107
-msgid "The operation failed"
-msgstr "કાર્ય નિષ્ફળ થયેલ છે"
-
-#: ../gck/gck-misc.c:109
-msgid "Invalid arguments"
-msgstr "અયોગ્ય દલીલો"
-
-#: ../gck/gck-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "મોડ્યુલ એ જરૂરિયાત થ્રેડો ને બનાવી શકતા નથી"
-
-#: ../gck/gck-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "મોડ્યુલ એ બરાબર રીતે માહિતી ને તાળુ મારી શકતા નથી"
-
-#: ../gck/gck-misc.c:115
-msgid "The field is read-only"
-msgstr "ક્ષેત્ર એ ફક્ત વંચાય છે"
-
-#: ../gck/gck-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "ક્ષેત્ર એ સંવેદનશીલ છે અને બતાવી શકાતુ નથી"
-
-#: ../gck/gck-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "ક્ષેત્ર એ અયોગ્ય છે અથવા અસ્તિત્વ ધરાવતુ નથી"
-
-#: ../gck/gck-misc.c:121
-msgid "Invalid value for field"
-msgstr "ક્ષેત્ર માટે અયોગ્ય કિંમત"
-
-#: ../gck/gck-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "માહિતી એ યોગ્ય અથવા ઓળખી ન શકાય તેવુ છે"
-
-#: ../gck/gck-misc.c:125
-msgid "The data is too long"
-msgstr "માહિતી ઘણી લાંબી છે"
-
-#: ../gck/gck-misc.c:127
-msgid "An error occurred on the device"
-msgstr "ભૂલ એ ઉપકરણ પર ઉત્પન્ન થયેલ છે"
-
-#: ../gck/gck-misc.c:129
-#| msgid "Insufficient memory available on device"
-msgid "Insufficient memory available on the device"
-msgstr "ઉપકરણ પર અપર્યાપ્ત મેમરી ઉપલ્બધ છે"
-
-#: ../gck/gck-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "ઉપકરણ એ દૂર કરેલ અને પલ્ગ થયેલ ન હતુ"
-
-#: ../gck/gck-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "એનક્રિપ્ટ થયેલ માહિતી એ યોગ્ય અથવા ઓળખી શકાય તેમ નથી"
-
-#: ../gck/gck-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "એન્ક્રિપ્ટ થયેલ માહિતી ઘણી લાંબી છે"
-
-#: ../gck/gck-misc.c:137
-msgid "This operation is not supported"
-msgstr "આ પ્રક્રિયા આધારભૂત નથી"
-
-#: ../gck/gck-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "કી એ ગુમ થયેલ અથવા અયોગ્ય છે"
-
-#: ../gck/gck-misc.c:141
-msgid "The key is the wrong size"
-msgstr "કી એ ખોટી માપની છે"
-
-#: ../gck/gck-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "કી એ ખોટા પ્રકારની છે"
-
-#: ../gck/gck-misc.c:145
-msgid "No key is needed"
-msgstr "કી ની જરૂરિયાત નથી"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is different than before"
-msgstr "કી એ પહેલા કરતા જુદી છે"
-
-#: ../gck/gck-misc.c:149
-msgid "A key is needed"
-msgstr "કી ની જરૂરિયાત છે"
-
-#: ../gck/gck-misc.c:151
-#, fuzzy
-#| msgid "Cannot include the key in digest"
-msgid "Cannot include the key in the digest"
-msgstr "સંક્ષેપ માં કી ને સમાવી શકાતુ નથી"
-
-#: ../gck/gck-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "આ ક્રિયા ને આ કી સાથએ પૂરુ કરી શકાતુ નથી"
-
-#: ../gck/gck-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "કી ને વીંટાળી શકાતી નથી"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot export this key"
-msgstr "આ કી ને નિકાસ કરી શકાતી નથી"
-
-#: ../gck/gck-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "ક્રિપ્ટો કાર્યપદ્દતિ એ અયોગ્ય અથવા ઓળખી ન શકાય તેવુ છે"
-
-#: ../gck/gck-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "ક્રિપ્ટો કાર્યપદ્દતિ પાસે અયોગ્ય દલીલ છે"
-
-#: ../gck/gck-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "ઓબ્જેક્ટ એ ગુમ થયેલ અથવા અયોગ્ય છે"
-
-#: ../gck/gck-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "બીજુ કાર્ય એ પહેલેથી જ જગ્યા પર છે"
-
-#: ../gck/gck-misc.c:167
-msgid "No operation is taking place"
-msgstr "કાર્ય ને સ્થાન પર લવાતુ નથી"
-
-#: ../gck/gck-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "પાસવર્ડ અથવા PIN એ અચોક્કસ છે"
-
-#: ../gck/gck-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "પાસવર્ડ અથવા PIN એ અયોગ્ય છે"
-
-#: ../gck/gck-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "પાસવર્ડ અથવા PIN એ અયોગ્ય લંબાઇની છે"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "પાસવર્ડ અથવા PIN એ નિવૃત્ત થયેલ છે"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "પાસવર્ડ અથવા PIN ને તાળુ મારેલ છે"
-
-#: ../gck/gck-misc.c:179
-msgid "The session is closed"
-msgstr "સત્ર બંધ થયેલ છે"
-
-#: ../gck/gck-misc.c:181
-msgid "Too many sessions are active"
-msgstr "ઘણાબધા સત્રો સક્રિય છે"
-
-#: ../gck/gck-misc.c:183
-msgid "The session is invalid"
-msgstr "સત્ર એ અયોગ્ય છે"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is read-only"
-msgstr "સત્ર ને ફક્ત વંચાય છે"
-
-#: ../gck/gck-misc.c:187
-msgid "An open session exists"
-msgstr "ખુલ્લુ સત્ર એ અસ્તિત્વ ધરાવે છે"
-
-#: ../gck/gck-misc.c:189
-msgid "A read-only session exists"
-msgstr "ફક્ત વાંચી શકાય તેવુ સત્ર અસ્તિત્વ ધરાવે છે"
-
-#: ../gck/gck-misc.c:191
-msgid "An administrator session exists"
-msgstr "વહીવટકર્તા સત્ર અસ્તિત્વ ધરાવે છે"
-
-#: ../gck/gck-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "હસ્તાક્ષર એ ખરાબ છે અથવા બગડેલ છે"
-
-#: ../gck/gck-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "હસ્તાક્ષર એ ઓળખી ન શકાય અથવા બગડેલ છે"
-
-#: ../gck/gck-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "અમુક જરૂરી ક્ષેત્રો એ ગુમ થયેલ છે"
-
-#: ../gck/gck-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "અમુક ક્ષેત્રો ની પાસે અયોગ્ય કિંમતો છે"
-
-#: ../gck/gck-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "ઉપકરણ એ હાલમાં અથવા પ્લગ થયેલ નથી"
-
-#: ../gck/gck-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "ઉપકરણ એ અયોગ્ય છે અથવા ઓળખી શકાય તેવુ નથી"
-
-#: ../gck/gck-misc.c:205
-msgid "The device is write protected"
-msgstr "ઉપકરણ એ લખાણ થી સુરક્ષિત થયેલ છે"
-
-#: ../gck/gck-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "આયાત કરી શકાતુ નથી કારણ કે કી અયોગ્ય છે"
-
-#: ../gck/gck-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "આયાત કરી શકાતુ નથી કારણ કે કી એ ખોટી માપની છે"
-
-#: ../gck/gck-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "આયાત કરી શકાતુ નથી કારણ કે કી એ ખોટા પ્રકારની છે"
-
-#: ../gck/gck-misc.c:213
-msgid "You are already logged in"
-msgstr "તમે પહેલેથી દાખલ થયેલ છે"
-
-#: ../gck/gck-misc.c:215
-msgid "No user has logged in"
-msgstr "વપરાશકર્તા પ્રવેશેલ નથી"
-
-#: ../gck/gck-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "વપરાશકર્તા નો પાસવર્ડ અથવા PIN સુયોજિત નથી"
-
-#: ../gck/gck-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "વપરાશકર્તા અયોગ્ય પ્રકારનો છે"
-
-#: ../gck/gck-misc.c:221
-msgid "Another user is already logged in"
-msgstr "બીજો વપરાશકર્તા એ પહેલેથી જ દાખલ થયેલ છે"
-
-#: ../gck/gck-misc.c:223
-#, fuzzy
-#| msgid "Too many users of different types logged in"
-msgid "Too many users of different types are logged in"
-msgstr "વિવિધ પ્રકારનાં ઘણાબધા વપરાશકર્તાઓ દાખલ થયેલ છે"
-
-#: ../gck/gck-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "અયોગ્ય કી આયાત કરી શકાતી નથી"
-
-#: ../gck/gck-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "ખોટા માપની કી આયાત કરી શકાતી નથી"
-
-#: ../gck/gck-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "નિકાસ કરી શકાતી નથી કારણ કે કી અયોગ્ય છે"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "નિકાસ કરી શકાતુ નથી કારણ કે કી ખોટા માપની છે"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "નિકાસ કરી શકાતી નથી કારણ કે કી ખોટા પ્રકારની છે"
-
-#: ../gck/gck-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "રેન્ડમ નંબર બનાવનારનો આરંભ કરવામાં અસમર્થ"
-
-#: ../gck/gck-misc.c:237
-msgid "No random number generator available"
-msgstr "કોઈ રેન્ડમ નંબર બનાવનાર ઉપલબ્ધ નથી"
-
-#: ../gck/gck-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "ક્રિપ્ટો કાર્યપદ્દતિ ની પાસે અયોગ્ય પરિમાણ છે"
-
-#: ../gck/gck-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "પરિણામને સંગ્રહ કરવા માટે પૂરતી જગ્યા નથી"
-
-#: ../gck/gck-misc.c:243
-msgid "The saved state is invalid"
-msgstr "સંગ્રહ થયેલ સ્થિતિ એ અયોગ્ય છે"
-
-#: ../gck/gck-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "જાણકારી સંવેદનશીલ છે અને ખોલી શકાતી નથી"
-
-#: ../gck/gck-misc.c:247
-msgid "The state cannot be saved"
-msgstr "સ્થિતિ નો સંગ્રહ કરી શકાતો નથી"
-
-#: ../gck/gck-misc.c:249
-msgid "The module has not been initialized"
-msgstr "મોડ્યુલની શરૂઆત કરી દેવામાં આવી નથી"
-
-#: ../gck/gck-misc.c:251
-msgid "The module has already been initialized"
-msgstr "મોડ્યુલ પહેલાથી જ શરૂ કરી દેવામાં આવેલ છે"
-
-#: ../gck/gck-misc.c:253
-msgid "Cannot lock data"
-msgstr "માહિતીને તાળુ મારી શકાતુ નથી"
-
-#: ../gck/gck-misc.c:255
-msgid "The data cannot be locked"
-msgstr "માહિતીને તાળુ મારી શકાતુ નથી"
-
-#: ../gck/gck-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "સહી અરજી વપરાશકર્તા દ્વારા રદ કરવામાં આવી હતી"
-
-#: ../gck/gck-misc.c:261
-msgid "Unknown error"
-msgstr "અજાણી ભૂલ"
-
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "નામ ન થયેલ પ્રમાણપત્ર"
@@ -906,16 +297,14 @@ msgid "Couldn't parse public SSH key"
 msgstr "સાર્વજનિક SSH કી નું પદચ્છેદન કરી શકાયુ નહિં"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
-#| msgid "Unlock password for %s keyring"
 msgid "Unlock password for: %s"
 msgstr "તેની માટે પાસવર્ડનું તાળુ ખોલો: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
 #, fuzzy
-#| msgid "The password or PIN is incorrect"
 msgid "The unlock password was incorrect"
 msgstr "પાસવર્ડ અથવા PIN એ અચોક્કસ છે"
 
@@ -925,7 +314,6 @@ msgstr "કીરીંગનો પ્રવેશ માટે તાળુ �
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 #, fuzzy
-#| msgid "Enter login password to unlock keyring"
 msgid "Enter password to unlock your login keyring"
 msgstr "કીરીંગનું તાળુ ખોલવા માટે પ્રવેશ માટે પાસવર્ડને દાખલ કરો"
 
@@ -937,10 +325,8 @@ msgstr ""
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 #, fuzzy
-#| msgid ""
-#| "Your login keyring was not automatically unlocked when you logged into "
-#| "this computer."
-msgid "The login keyring did not get unlocked when you logged into your computer."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr "તમારા પ્રવેશ કીરીંગને આપોઆપ તાળું મરાયેલ નથી જ્યારે તમે આ કમ્પ્યૂટરમાં પ્રવેશ્યા."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
@@ -954,8 +340,6 @@ msgstr "કીરીંગ '%s' નું તાળુ ખોલવા માટ
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, fuzzy, c-format
-#| msgid ""
-#| "An unknown application wants access to the keyring '%s', but it is locked"
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "એક અજ્ઞાત કાર્યક્રમ કીરીંગ '%s' ને ચલાવવા માંગે છે, પરંતુ તે તાળુ મરાયેલ છે"
 
@@ -975,9 +359,21 @@ msgstr "સાર્વજનિક કીનું તાળુ ખોલો"
 msgid "Unlock"
 msgstr "તાળુ ખોલો"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "ખાનગી કીનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "પ્રમાણપત્રનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "સાર્વજનિક કી ને તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
@@ -1035,18 +431,17 @@ msgid ""
 msgstr "પ્રમાણપત્રો કે કીઓના સંગ્રહ માટે '%s' તેયાર કરવા માટે, પાસવર્ડ જરૂરી છે"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-#| msgid "Change Keyring Password"
 msgid "Change Password"
 msgstr "પાસવર્ડ બદલો"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-#| msgid "New password required for secure storage"
 msgid "Change password for secure storage"
 msgstr "સુરક્ષિત સંગ્રહ માટે પાસવર્ડ બદલો"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid "To change the password for '%s', the original and new passwords are required"
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
 msgstr "'%s' માટે પાસવર્ડને બદલવા માટે, જૂનાં અને નવાં પાસવર્ડો જરૂરી છે"
 
 #: ../tool/gkr-tool.c:102
@@ -1063,11 +458,11 @@ msgstr "આદેશો: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "એનક્રિપ્ટ ન થયેલા પાસવર્ડો ને સંગ્રહો?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:592
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1076,15 +471,15 @@ msgstr ""
 "ખાલી પાસવર્ડ વાપરવાનું પસંદ કરીને, તમારા સંગ્રહાયેલ પાસવર્ડો સુરક્ષિત રીતે એનક્રિપ્ટ થશે "
 "નહિં. તેઓ તમારી ફાઈલોના વપરાશ સાથે કોઈપણના દ્વારા સુલભ થશે."
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "અસુરક્ષિત સંગ્રહ વાપરો"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "પાસવર્ડો બંધબેસતા નથી."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "પાસવર્ડ ખાલી હોઈ શકે નહિં"
 
@@ -1101,12 +496,10 @@ msgid "New password strength"
 msgstr "નવા પાસવર્ડની મજબૂતાઈ"
 
 #: ../ui/gku-prompt.ui.h:2
-#| msgid "_Location:"
 msgid "_Application:"
 msgstr "કાર્યક્રમ (_A):"
 
 #: ../ui/gku-prompt.ui.h:3
-#| msgid "_Confirm password:"
 msgid "_Confirm:"
 msgstr "ખાતરી કરો (_C):"
 
@@ -1119,11 +512,9 @@ msgid "_Name:"
 msgstr "નામ (_N):"
 
 #: ../ui/gku-prompt.ui.h:6
-#| msgid "_Old password:"
 msgid "_Old Password:"
 msgstr "જૂનો પાસવર્ડ (_O):"
 
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "પાસવર્ડ (_P):"
-

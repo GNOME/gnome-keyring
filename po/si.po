@@ -7,330 +7,508 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.si\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-07 03:28+0100\n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2007-05-29 15:53+0530\n"
 "Last-Translator: Danishka Navin <snavin@redhat.com>\n"
 "Language-Team: Sinhala <en@li.org>\n"
+"Language: si\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../daemon/gnome-keyring-ask.c:241
-msgid "_Old password:"
-msgstr "පැරණි රහස්පදය: (_O)"
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+msgid "Unnamed"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:262
-msgid "_Password:"
-msgstr "රහස්පදය: (__P)"
+#: ../daemon/dbus/gkd-secret-change.c:86
+msgid "Change Keyring Password"
+msgstr "Keyring රහස්පදය වෙනස් කරන්න"
 
-#: ../daemon/gnome-keyring-ask.c:284
-msgid "_Confirm new password:"
-msgstr "නව රහස්පදය ස්ථිර කරන්න: (_C)"
+#: ../daemon/dbus/gkd-secret-change.c:88
+#, fuzzy, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "'%s' keyring සඳහා නව රහස්පදයක් තොරන්න."
 
-#. Strength bar:
-#: ../daemon/gnome-keyring-ask.c:303
-msgid "<span weight=\"bold\">Password strength meter:</span>"
-msgstr "<span weight=\"bold\">රහස්පදයේ ශක්තිමත් බවේ දර්ශකය:</span>"
+#: ../daemon/dbus/gkd-secret-change.c:92
+#, fuzzy, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"keyring ප්‍රකෘතියේ තුළ ූ'%s' සඳහා වූ රහස්පදය ලබා ගැනීමට නොදන්නා යෙදුමකට අවශ්‍යව ඇත."
 
-#: ../daemon/gnome-keyring-ask.c:329
-msgid "Old password cannot be blank."
-msgstr "පරණ රහස්පදය හිස්ව තැබිය නොහැක."
+#: ../daemon/dbus/gkd-secret-change.c:111
+msgid "The original password was incorrect"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:340
-msgid "Password cannot be blank."
-msgstr "රහස්පදය හිස්ව තැබිය නොහැක."
+#: ../daemon/dbus/gkd-secret-create.c:83
+msgid "New Keyring Password"
+msgstr "නව Keyring රහස්පදය"
 
-#: ../daemon/gnome-keyring-ask.c:348
-msgid "Passwords do not match."
-msgstr "රහස්පද ගැල පෙන්නේ නැත."
+#: ../daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "නව Keyring සඳහා රහස්පදයක් තෝරා ගන්න"
 
-#: ../daemon/gnome-keyring-ask.c:407
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
 msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr "%s' (%s) යෙදුමට keyring ප්‍රකෘතිය භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:411
-#, c-format
-msgid "The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr "%s' (%s) යෙදුමට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr ""
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:416
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr ""
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr ""
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr ""
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr ""
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr ""
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr ""
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
+msgid "Unknown"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
+msgid "PGP Key: %s"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+msgid "Enter Passphrase"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+msgid "Forget this password if idle for"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
+msgid "Forget this password after"
+msgstr ""
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
+msgid "Forget this password when I log out"
+msgstr ""
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:149
+msgid "Login"
+msgstr ""
+
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr ""
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr ""
+
+#: ../egg/egg-oid.c:46
+msgid "Email Address"
+msgstr ""
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr ""
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr ""
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr ""
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr ""
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr ""
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr ""
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr ""
+
+#: ../egg/egg-oid.c:69
+msgid "Serial Number"
+msgstr ""
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr ""
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr ""
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr ""
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr ""
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr ""
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr ""
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr ""
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr ""
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr ""
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr ""
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr ""
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr ""
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr ""
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr ""
+
+#: ../egg/egg-oid.c:99
+msgid "MD2 with RSA"
+msgstr ""
+
+#: ../egg/egg-oid.c:100
+msgid "MD5 with RSA"
+msgstr ""
+
+#: ../egg/egg-oid.c:101
+msgid "SHA1 with RSA"
+msgstr ""
+
+#: ../egg/egg-oid.c:103
+msgid "DSA"
+msgstr ""
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with DSA"
+msgstr ""
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr ""
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr ""
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr ""
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr ""
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr ""
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr ""
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr ""
+
+#: ../pkcs11/gkm/gkm-certificate.c:572
+msgid "Unnamed Certificate"
+msgstr ""
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+msgid "Couldn't parse public SSH key"
+msgstr ""
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
+msgid "The unlock password was incorrect"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#, fuzzy
+msgid "Unlock Login Keyring"
+msgstr "Keyring අගුලු අරින්න"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#, fuzzy
+msgid "Enter password to unlock your login keyring"
+msgstr "නව Keyring සඳහා රහස්පදයක් තෝරා ගන්න"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid ""
-"The application '%s' (%s) wants access to an unknown keyring, but it is "
-"locked"
-msgstr "%s' (%s) යෙදුමට නොදන්නා keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:422 ../daemon/gnome-keyring-ask.c:436
-#, c-format
-msgid "The application '%s' wants access to the default keyring, but it is locked"
-msgstr "%s' යෙදුමට keyring ප්‍රකෘතිය භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:426 ../daemon/gnome-keyring-ask.c:441
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr "%s' යෙදුමට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Unlock Keyring"
+msgstr "Keyring අගුලු අරින්න"
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:430 ../daemon/gnome-keyring-ask.c:446
-#, c-format
-msgid "The application '%s' wants access to an unknown keyring, but it is locked"
-msgstr "%s' යෙදුමට නොදන්නා keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
-
-#: ../daemon/gnome-keyring-ask.c:452
-msgid "An unknown application wants access to the default keyring, but it is locked"
-msgstr "නොදන්නා යෙදුමකට keyring ප්‍රකෘතිය භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
-
-#: ../daemon/gnome-keyring-ask.c:456
-#, c-format
-msgid "An unknown application wants access to the keyring '%s', but it is locked"
-msgstr "නොදන්නා යෙදුමකට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
-
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:461
-msgid "An unknown application wants access to an unknown keyring, but it is locked"
-msgstr "නොදන්නා යෙදුමකට නොදන්නා keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
-
-#: ../daemon/gnome-keyring-ask.c:468
-msgid "Enter password for default keyring to unlock"
-msgstr "අගුලු විවෘත කිරීම සඳහා keyring ප්‍රකෘතිය සඳහා රහස්පදය ඇතුලත් කරන්න"
-
-#: ../daemon/gnome-keyring-ask.c:470
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "අගුලු විවෘත කිරීම සඳහා '%s' keyring සඳහා රහස්පදය ඇතුලත් කරන්න"
 
-#: ../daemon/gnome-keyring-ask.c:474
-msgid "Unlock Keyring"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#, fuzzy, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "නොදන්නා යෙදුමකට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+msgid "Unlock private key"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#, fuzzy
+msgid "Unlock certificate"
 msgstr "Keyring අගුලු අරින්න"
 
-#: ../daemon/gnome-keyring-ask.c:479 ../daemon/gnome-keyring-ask.c:563
-#: ../daemon/gnome-keyring-ask.c:655 ../daemon/gnome-keyring-ask.c:711
-#: ../daemon/gnome-keyring-ask.c:798
-msgid "_Deny"
-msgstr "අත්හිටු වීම (_D)"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+msgid "Unlock public key"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:517
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, fuzzy
+msgid "Unlock"
+msgstr "Keyring අගුලු අරින්න"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#, fuzzy
+msgid "Enter password to unlock the private key"
+msgstr "අගුලු විවෘත කිරීම සඳහා keyring ප්‍රකෘතිය සඳහා රහස්පදය ඇතුලත් කරන්න"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#, fuzzy
+msgid "Enter password to unlock the public key"
+msgstr "අගුලු විවෘත කිරීම සඳහා keyring ප්‍රකෘතිය සඳහා රහස්පදය ඇතුලත් කරන්න"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#, fuzzy
+msgid "Enter password to unlock"
+msgstr "අගුලු විවෘත කිරීම සඳහා '%s' keyring සඳහා රහස්පදය ඇතුලත් කරන්න"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#, fuzzy, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "නොදන්නා යෙදුමකට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#, fuzzy, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "නොදන්නා යෙදුමකට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#, fuzzy, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "නොදන්නා යෙදුමකට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#, fuzzy, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "නොදන්නා යෙදුමකට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+msgid "Unlock certificate/key storage"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#, fuzzy, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "නොදන්නා යෙදුමකට '%s' keyring භාවිතා කිරීමට අවශ්‍යව ඇත, නමුත් එය අගුලු දමා ඇත"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New Password Required"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+msgid "New password required for secure storage"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
 msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:521
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:527 ../daemon/gnome-keyring-ask.c:537
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:531 ../daemon/gnome-keyring-ask.c:541
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:547
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:551
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:558
-msgid "New Keyring Password"
-msgstr "නව Keyring රහස්පදය"
-
-#: ../daemon/gnome-keyring-ask.c:559
-msgid "Choose password for new keyring"
-msgstr "නව Keyring සඳහා රහස්පදයක් තෝරා ගන්න"
-
-#: ../daemon/gnome-keyring-ask.c:602
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:606
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:612 ../daemon/gnome-keyring-ask.c:622
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:616 ../daemon/gnome-keyring-ask.c:626
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:632
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:636
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gnome-keyring-ask.c:643
-#, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr "'%s' keyring සඳහා නව රහස්පදයක් තොරන්න."
-
-#: ../daemon/gnome-keyring-ask.c:645
-msgid "Choose a new password for the default keyring. "
-msgstr "keyring ප්‍රකෘතිය සඳහා නව රහස්පදයක් තොරන්න."
-
-#: ../daemon/gnome-keyring-ask.c:650
-msgid "Change Keyring Password"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#, fuzzy
+msgid "Change Password"
 msgstr "Keyring රහස්පදය වෙනස් කරන්න"
 
-#: ../daemon/gnome-keyring-ask.c:689
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#, fuzzy
+msgid "Change password for secure storage"
+msgstr "නව Keyring සඳහා රහස්පදයක් තෝරා ගන්න"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+"To change the password for '%s', the original and new passwords are required"
 msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:693 ../daemon/gnome-keyring-ask.c:697
+#: ../tool/gkr-tool.c:102
 #, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+msgid "usage: gnome-keyring command [options]\n"
 msgstr ""
 
-#. app == APPLICATION_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:701
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
 msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:706
-msgid "Create Default Keyring"
-msgstr "Keyring ප්‍රකෘතිය නිර්මාණය කරන්න"
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:707
-msgid "Choose password for default keyring"
-msgstr "keyring ප්‍රකෘතිය සඳහා රහස්පදයක් තෝරාගන්න"
+#: ../ui/gku-prompt-tool.c:591
+msgid "Store passwords unencrypted?"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:747
-msgid "Allow application access to keyring?"
-msgstr "යෙදුම් සඳහා keyring භාවිතය ඉඩ දෙන්නට?"
-
-#: ../daemon/gnome-keyring-ask.c:750
-#, c-format
-msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
-msgstr "'%s' (%s) යෙදුමට %s සඳහා %s තුල ඇති රහස්පදය ලබා ගැනීමට අවශ්‍යව ඇත."
-
-#: ../daemon/gnome-keyring-ask.c:753
-#, c-format
+#: ../ui/gku-prompt-tool.c:592
 msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in the "
-"default keyring."
-msgstr "keyring ප්‍රකෘතිය තුළ'%s' සඳහා වූ රහස්පදය ලබා ගැනීමට '%s' (%s) යෙදුමට අවශ්‍යව ඇත."
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:756
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to access the password for '%s' in an "
-"unknown keyring."
-msgstr "නොදන්නා keyring තුළ'%s' සඳහා වූ රහස්පදය ලබා ගැනීමට '%s' (%s) යෙදුමට අවශ්‍යව ඇත."
+#: ../ui/gku-prompt-tool.c:599
+msgid "Use Unsafe Storage"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:761 ../daemon/gnome-keyring-ask.c:772
-#, c-format
-msgid "The application '%s' wants to access the password for '%s' in %s."
-msgstr "'%s' යෙදුමට %s සඳහා %s තුල ඇති රහස්පදය ලබා ගැනීමට අවශ්‍යව ඇත."
+#: ../ui/gku-prompt-tool.c:639
+msgid "Passwords do not match."
+msgstr "රහස්පද ගැල පෙන්නේ නැත."
 
-#: ../daemon/gnome-keyring-ask.c:764 ../daemon/gnome-keyring-ask.c:775
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in the default "
-"keyring."
-msgstr "keyring ප්‍රකෘතිය තුළ'%s' සඳහා වූ රහස්පදය ලබා ගැනීමට '%s' යෙදුමට අවශ්‍යව ඇත."
+#: ../ui/gku-prompt-tool.c:649
+#, fuzzy
+msgid "Password cannot be blank"
+msgstr "රහස්පදය හිස්ව තැබිය නොහැක."
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:767 ../daemon/gnome-keyring-ask.c:778
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr "නොදන්නා keyring තුළ'%s' සඳහා වූ රහස්පදය ලබා ගැනීමට '%s' යෙදුමට අවශ්‍යව ඇත."
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:783
-#, c-format
-msgid "An unknown application wants to access the password for '%s' in %s."
-msgstr "නොදන්නා යෙදුමකට '%s'සඳහා %s තුල ඇති රහස්පදය ලබා ගැනීමට අවශ්‍යව ඇත."
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:786
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in the default "
-"keyring."
-msgstr "keyring ප්‍රකෘතියේ තුළ ූ'%s' සඳහා වූ රහස්පදය ලබා ගැනීමට නොදන්නා යෙදුමකට අවශ්‍යව ඇත."
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr ""
 
-#. keyring == KEYRING_NAME_UNKNOWN
-#: ../daemon/gnome-keyring-ask.c:789
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '%s' in an unknown "
-"keyring."
-msgstr "නොදන්නා keyring තුළ'%s' සඳහා වූ රහස්පදය ලබා ගැනීමට සනොදන්නා යෙදුමකට අවශ්‍යව ඇත."
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:794
-msgid "Allow access"
-msgstr "පිවිසීමට ඉඩදෙන්න"
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:799
-msgid "Allow _Once"
-msgstr "එක් වරක් ඉඩදෙන්න (_O)"
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:800
-msgid "_Always Allow"
-msgstr "සැමවිටම ඉඩදෙන්න (_A)"
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr ""
 
-#: ../daemon/gnome-keyring-ask.c:840
-msgid "You must specify the type of request to run\n"
-msgstr "ක්‍රියාත්මක කිරිමට ඔබ ඉල්ලීම් ආකාරය දැක්විය යුතුම වේ\n"
+#: ../ui/gku-prompt.ui.h:6
+#, fuzzy
+msgid "_Old Password:"
+msgstr "පැරණි රහස්පදය: (_O)"
 
-#: ../daemon/gnome-keyring-ask.c:857
-msgid "Unknown request type\n"
-msgstr "නොදන්නා ඉල්ලීම් ආකාරයක්\n"
-
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "රහස්පදය: (__P)"

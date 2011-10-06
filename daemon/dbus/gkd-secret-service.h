@@ -24,7 +24,7 @@
 
 #include "gkd-secret-types.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 #include <dbus/dbus.h>
 

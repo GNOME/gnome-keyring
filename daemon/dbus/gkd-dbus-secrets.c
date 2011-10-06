@@ -32,7 +32,7 @@
 #include "egg/egg-cleanup.h"
 #include "egg/egg-error.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 static DBusConnection *dbus_conn = NULL;
 static GkdSecretService *secrets_service = NULL;
