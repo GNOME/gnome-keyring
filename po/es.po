@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-10 09:12+0000\n"
-"PO-Revision-Date: 2011-09-14 17:33+0200\n"
+"POT-Creation-Date: 2011-10-05 08:20+0000\n"
+"PO-Revision-Date: 2011-10-07 10:23+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Sin nombre"
@@ -102,30 +102,31 @@ msgstr "Depósito de claves de GNOME: agente GPG"
 msgid "GPG Password Agent"
 msgstr "Agente de contraseñas GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
-#: ../gcr/gcr-key-renderer.c:319
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106 ../gcr/gcr-gnupg-renderer.c:256
+#: ../gcr/gcr-gnupg-renderer.c:415 ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:317
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Clave GPG: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "Introducir la contraseña"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "Olvidar esta contraseña si se está inactivo durante"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "Olvidar esta contraseña después de"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "Olvidar esta contraseña al salir de la sesión"
 
@@ -138,7 +139,8 @@ msgstr "Inicio de sesión"
 msgid "Domain Component"
 msgstr "Componente del dominio"
 
-#: ../egg/egg-oid.c:43
+#: ../egg/egg-oid.c:43 ../gcr/gcr-gnupg-renderer.c:411
+#: ../gcr/gcr-gnupg-renderer.c:580
 msgid "User ID"
 msgstr "ID del usuario"
 
@@ -230,7 +232,8 @@ msgstr "Calificador del nombre de dominio"
 msgid "Pseudonym"
 msgstr "Seudónimo"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
+#: ../egg/egg-oid.c:98 ../gcr/gcr-gnupg-renderer.c:202
+#: ../gcr/gcr-key-renderer.c:308
 msgid "RSA"
 msgstr "RSA"
 
@@ -246,7 +249,8 @@ msgstr "MD5 con RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 con RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
+#: ../egg/egg-oid.c:103 ../gcr/gcr-gnupg-renderer.c:206
+#: ../gcr/gcr-key-renderer.c:310
 msgid "DSA"
 msgstr "DSA"
 
@@ -285,22 +289,22 @@ msgstr "Error inesperado en select() al leer los datos de un proceso hijo (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Error inesperado en waitpid() (%s)"
 
-#: ../gck/gck-module.c:396
+#: ../gck/gck-module.c:353
 #, c-format
 msgid "Error loading PKCS#11 module: %s"
 msgstr "Error al cargar el módulo PKCS#11: %s"
 
-#: ../gck/gck-module.c:403
+#: ../gck/gck-module.c:360
 #, c-format
 msgid "Invalid PKCS#11 module: %s"
 msgstr "Módulos PKCS#11 no válido: %s"
 
-#: ../gck/gck-module.c:412
+#: ../gck/gck-module.c:369
 #, c-format
 msgid "Couldn't setup PKCS#11 module: %s"
 msgstr "No se pudo configurar el módulo PKCS#11: %s"
 
-#: ../gck/gck-module.c:428
+#: ../gck/gck-module.c:385
 #, c-format
 msgid "Couldn't initialize PKCS#11 module: %s"
 msgstr "No se pudo inicializar el módulo PKCS#11: %s"
@@ -310,30 +314,37 @@ msgstr "No se pudo inicializar el módulo PKCS#11: %s"
 msgid "Couldn't initialize registered PKCS#11 modules: %s"
 msgstr "No se pudieron inicializar los módulos PKCS#11 registrados: %s"
 
+#: ../gcr/gcr-callback-output-stream.c:64
+#: ../gcr/gcr-callback-output-stream.c:81
+#, c-format
+#| msgid "The session is closed"
+msgid "The stream was closed"
+msgstr "Se cerró el flujo"
+
 #. later
 #. later
-#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+#: ../gcr/gcr-certificate.c:378 ../gcr/gcr-gnupg-key.c:521
 msgctxt "column"
 msgid "Name"
 msgstr "Nombre"
 
-#: ../gcr/gcr-certificate.c:390
+#: ../gcr/gcr-certificate.c:380
 msgctxt "column"
 msgid "Issued By"
 msgstr "Emitido por"
 
 #. later
-#: ../gcr/gcr-certificate.c:392
+#: ../gcr/gcr-certificate.c:382
 msgctxt "column"
 msgid "Expires"
 msgstr "Caduca"
 
-#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
+#: ../gcr/gcr-certificate.c:1067 ../gcr/gcr-certificate-exporter.c:463
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:299
 msgid "Certificate"
 msgstr "Certificado"
 
-#: ../gcr/gcr-certificate-exporter.c:224
+#: ../gcr/gcr-certificate-exporter.c:225
 msgid ""
 "<b>A file already exists with this name.</b>\n"
 "\n"
@@ -343,24 +354,24 @@ msgstr ""
 "\n"
 "¿Quiere reemplazarlo por uno nuevo?"
 
-#: ../gcr/gcr-certificate-exporter.c:227
+#: ../gcr/gcr-certificate-exporter.c:228
 msgid "_Replace"
 msgstr "_Reemplazar"
 
-#: ../gcr/gcr-certificate-exporter.c:257
+#: ../gcr/gcr-certificate-exporter.c:258
 #, c-format
 msgid "The operation was cancelled."
 msgstr "Se canceló la operación."
 
-#: ../gcr/gcr-certificate-exporter.c:301
+#: ../gcr/gcr-certificate-exporter.c:302
 msgid "Export certificate"
 msgstr "Exportar certificado"
 
-#: ../gcr/gcr-certificate-exporter.c:313
+#: ../gcr/gcr-certificate-exporter.c:314
 msgid "Certificate files"
 msgstr "Archivos de certificados"
 
-#: ../gcr/gcr-certificate-exporter.c:324
+#: ../gcr/gcr-certificate-exporter.c:325
 msgid "PEM files"
 msgstr "Archivos PEM"
 
@@ -376,7 +387,8 @@ msgstr "Dirección XMPP"
 msgid "DNS SRV"
 msgstr "Servidor de DNS"
 
-#: ../gcr/gcr-certificate-extensions.c:166
+#: ../gcr/gcr-certificate-extensions.c:166 ../gcr/gcr-gnupg-renderer.c:424
+#: ../gcr/gcr-gnupg-renderer.c:706
 msgid "Email"
 msgstr "Correo-e"
 
@@ -492,7 +504,8 @@ msgstr "Extensión"
 msgid "Identifier"
 msgstr "Identificador"
 
-#: ../gcr/gcr-certificate-renderer.c:266
+#: ../gcr/gcr-certificate-renderer.c:266 ../gcr/gcr-gnupg-renderer.c:415
+#: ../gcr/gcr-gnupg-renderer.c:432
 msgid "Value"
 msgstr "Valor"
 
@@ -512,7 +525,7 @@ msgstr "Identidad"
 msgid "Verified by"
 msgstr "Verificado por"
 
-#: ../gcr/gcr-certificate-renderer.c:624
+#: ../gcr/gcr-certificate-renderer.c:624 ../gcr/gcr-gnupg-renderer.c:720
 msgid "Expires"
 msgstr "Caduca"
 
@@ -535,238 +548,524 @@ msgstr "Certificado emitido"
 msgid "Version"
 msgstr "Versión"
 
-#: ../gcr/gcr-certificate-renderer.c:659
+#: ../gcr/gcr-certificate-renderer.c:658
 msgid "Not Valid Before"
 msgstr "No es válido antes de"
 
-#: ../gcr/gcr-certificate-renderer.c:664
+#: ../gcr/gcr-certificate-renderer.c:663
 msgid "Not Valid After"
 msgstr "No es válido después de"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:669
+#: ../gcr/gcr-certificate-renderer.c:668
 msgid "Certificate Fingerprints"
 msgstr "Huellas de certificados"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
+#: ../gcr/gcr-certificate-renderer.c:674 ../gcr/gcr-certificate-renderer.c:686
+#: ../gcr/gcr-gnupg-renderer.c:561
 msgid "Signature"
 msgstr "Firma"
 
-#: ../gcr/gcr-certificate-renderer.c:679
+#: ../gcr/gcr-certificate-renderer.c:678
 msgid "Signature Algorithm"
 msgstr "Algoritmo de firma"
 
-#: ../gcr/gcr-certificate-renderer.c:683
+#: ../gcr/gcr-certificate-renderer.c:682
 msgid "Signature Parameters"
 msgstr "Parámetros de la firma"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:691
+#: ../gcr/gcr-certificate-renderer.c:690
 msgid "Public Key Info"
 msgstr "Información de la clave pública"
 
-#: ../gcr/gcr-certificate-renderer.c:696
+#: ../gcr/gcr-certificate-renderer.c:695
 msgid "Key Algorithm"
 msgstr "Clave del algoritmo"
 
-#: ../gcr/gcr-certificate-renderer.c:701
+#: ../gcr/gcr-certificate-renderer.c:700
 msgid "Key Parameters"
 msgstr "Parámetros de la clave"
 
-#: ../gcr/gcr-certificate-renderer.c:706
+#: ../gcr/gcr-certificate-renderer.c:705 ../gcr/gcr-gnupg-renderer.c:354
 msgid "Key Size"
 msgstr "Tamaño de la clave"
 
-#: ../gcr/gcr-certificate-renderer.c:713
+#: ../gcr/gcr-certificate-renderer.c:712
 msgid "Key SHA1 Fingerprint"
 msgstr "Huella de la clave SHA1"
 
-#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:263
+#: ../gcr/gcr-certificate-renderer.c:718 ../gcr/gcr-gnupg-renderer.c:739
+#: ../gcr/gcr-key-renderer.c:292 ../gcr/gcr-parser.c:302
 msgid "Public Key"
 msgstr "Clave privada"
 
-#: ../gcr/gcr-display-view.c:308
+#: ../gcr/gcr-display-view.c:319
 msgid "_Details"
 msgstr "_Detalles"
 
-#: ../gcr/gcr-failure-renderer.c:163
+#: ../gcr/gcr-failure-renderer.c:161
 #, c-format
 msgid "Could not display '%s'"
 msgstr "No se pudo mostrar «%s»"
 
-#: ../gcr/gcr-failure-renderer.c:165
+#: ../gcr/gcr-failure-renderer.c:163
 msgid "Could not display file"
 msgstr "No se pudo mostrar el archivo"
 
-#: ../gcr/gcr-failure-renderer.c:170
+#: ../gcr/gcr-failure-renderer.c:168
 msgid "Reason"
 msgstr "Razón"
 
-#: ../gcr/gcr-failure-renderer.c:203
+#: ../gcr/gcr-failure-renderer.c:218
 #, c-format
 msgid "Cannot display a file of this type."
 msgstr "No se pueden mostrar los archivos de este tipo."
 
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "Importar certificados y claves"
+#: ../gcr/gcr-gnupg-importer.c:93
+#| msgid "Unlock Keyring"
+msgid "GnuPG Keyring"
+msgstr "Depósito de claves GnuPG"
 
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "Importar en:"
+#: ../gcr/gcr-gnupg-importer.c:95
+#, c-format
+#| msgid "PGP Key: %s"
+msgid "GnuPG Keyring: %s"
+msgstr "Depósito de claves GnuPG: %s"
 
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "Contraseña:"
-
-#: ../gcr/gcr-gnupg-key.c:251
+#: ../gcr/gcr-gnupg-key.c:234 ../gcr/gcr-gnupg-renderer.c:88
+#: ../gcr/gcr-parser.c:305
 msgid "PGP Key"
 msgstr "Clave GPG"
 
-#: ../gcr/gcr-gnupg-key.c:631
+#: ../gcr/gcr-gnupg-key.c:523
 msgctxt "column"
 msgid "Key ID"
 msgstr "ID de la clave"
 
-#: ../gcr/gcr-gnupg-process.c:632
+#: ../gcr/gcr-gnupg-process.c:860
 #, c-format
 msgid "Gnupg process exited with code: %d"
 msgstr "El proceso Gnupg finalizó con el código: %d"
 
-#: ../gcr/gcr-gnupg-process.c:639
+#: ../gcr/gcr-gnupg-process.c:867
 #, c-format
 msgid "Gnupg process was terminated with signal: %d"
 msgstr "El proceso Gnupg terminó con la señal: %d"
 
-#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1786 ../gcr/gcr-parser.c:2044
+#: ../gcr/gcr-gnupg-process.c:921 ../gcr/gcr-parser.c:2153
+#: ../gcr/gcr-parser.c:2657
 msgid "The operation was cancelled"
 msgstr "Se canceló la operación"
 
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Introduzca la contraseña para desbloquear la clave privada"
+#: ../gcr/gcr-gnupg-renderer.c:204
+#| msgid "Email"
+msgid "Elgamal"
+msgstr "Elgamal"
 
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Introduzca la contraseña para desbloquear el certificado"
+#: ../gcr/gcr-gnupg-renderer.c:217
+msgid "Encrypt"
+msgstr "Cifrar"
 
-#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Introduzca la contraseña para desbloquearlo"
+#: ../gcr/gcr-gnupg-renderer.c:219
+#| msgid "Signature"
+msgid "Sign"
+msgstr "Firmar"
 
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:185
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Para poder importar la clave privada, se debe desbloquear"
+#: ../gcr/gcr-gnupg-renderer.c:221
+#| msgid "Certificate"
+msgid "Certify"
+msgstr "Certificar"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:188
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Para poder importar el certificado, se debe desbloquear"
+#: ../gcr/gcr-gnupg-renderer.c:223
+#| msgid "Server Authentication"
+msgid "Authenticate"
+msgstr "Autenticar"
 
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:191
-msgid "In order to import the data, it must be unlocked"
-msgstr "Para poder importar los datos, se debe desbloquear"
+#: ../gcr/gcr-gnupg-renderer.c:225 ../gcr/gcr-gnupg-renderer.c:260
+msgid "Disabled"
+msgstr "Desactivado"
 
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:196
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Para poder importar la clave privada «%s», se debe desbloquear"
+#: ../gcr/gcr-gnupg-renderer.c:258
+msgid "Invalid"
+msgstr "No válido"
 
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:199
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Para poder impotar el certificado «%s», se debe desbloquear"
+#: ../gcr/gcr-gnupg-renderer.c:262
+msgid "Revoked"
+msgstr "Revocado"
 
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:202
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Para poder importar «%s», se debe desbloquear"
+#: ../gcr/gcr-gnupg-renderer.c:264
+#| msgid "Expires"
+msgid "Expired"
+msgstr "Caducado"
 
-#: ../gcr/gcr-importer.c:386
-#, c-format
-msgid "No location available to import to"
-msgstr "No existe una ubicación disponible en la que importar"
-
-#: ../gcr/gcr-importer.c:537
-msgid "Import Certificates/Keys"
-msgstr "Importar certificados/claves"
-
-#: ../gcr/gcr-importer.c:544
-msgid "Choose a location to store the imported certificates/keys."
+#: ../gcr/gcr-gnupg-renderer.c:266
+msgid "Undefined trust"
 msgstr ""
-"Elija una ubicación donde almacenar los certificados/claves importados."
+
+#: ../gcr/gcr-gnupg-renderer.c:268
+msgid "Distrusted"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:270
+msgid "Marginally trusted"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:272
+msgid "Fully trusted"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:274
+msgid "Ultimately trusted"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:288
+#, fuzzy
+#| msgid "The information is sensitive and cannot be revealed"
+msgid "The information in this key has not yet been verified"
+msgstr "La información es sensible y no se puede revelar"
+
+#: ../gcr/gcr-gnupg-renderer.c:291
+#| msgid "The session is invalid"
+msgid "This key is invalid"
+msgstr "Esta clave no es válida"
+
+#: ../gcr/gcr-gnupg-renderer.c:294
+#| msgid "The module has not been initialized"
+msgid "This key has been disabled"
+msgstr "Esta clave se ha desactivado"
+
+#: ../gcr/gcr-gnupg-renderer.c:297
+#| msgid "The keyring has already been unlocked."
+msgid "This key has been revoked"
+msgstr "Esta clave se ha revocado"
+
+#: ../gcr/gcr-gnupg-renderer.c:300
+#| msgid "The password or PIN has expired"
+msgid "This key has expired"
+msgstr "Esta clave ha caducado"
+
+#: ../gcr/gcr-gnupg-renderer.c:305
+msgid "This key is distrusted"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:308
+msgid "This key is marginally trusted"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:311
+#, fuzzy
+#| msgid "The key is of the wrong type"
+msgid "This key is fully trusted"
+msgstr "La clave es de tipo erróneo"
+
+#: ../gcr/gcr-gnupg-renderer.c:314
+msgid "This key is ultimately trusted"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:339 ../gcr/gcr-gnupg-renderer.c:565
+#| msgctxt "column"
+#| msgid "Key ID"
+msgid "Key ID"
+msgstr "ID de la clave"
+
+#: ../gcr/gcr-gnupg-renderer.c:347 ../gcr/gcr-gnupg-renderer.c:573
+#: ../gcr/gcr-gnupg-renderer.c:620 ../gcr/gcr-key-renderer.c:313
+msgid "Algorithm"
+msgstr "Algoritmo"
+
+#: ../gcr/gcr-gnupg-renderer.c:362 ../gcr/gcr-gnupg-renderer.c:439
+#: ../gcr/gcr-gnupg-renderer.c:482
+#, fuzzy
+#| msgid "C_reate"
+msgid "Created"
+msgstr "C_rear"
+
+#: ../gcr/gcr-gnupg-renderer.c:371 ../gcr/gcr-gnupg-renderer.c:448
+#: ../gcr/gcr-gnupg-renderer.c:491
+#, fuzzy
+#| msgid "Expires"
+msgid "Expiry"
+msgstr "Caduca"
+
+#: ../gcr/gcr-gnupg-renderer.c:380
+msgid "Capabilities"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:393
+msgid "Owner trust"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:421
+#| msgctxt "column"
+#| msgid "Name"
+msgid "Name"
+msgstr "Nombre"
+
+#: ../gcr/gcr-gnupg-renderer.c:427 ../gcr/gcr-gnupg-renderer.c:709
+msgid "Comment"
+msgstr "Comentario"
+
+#: ../gcr/gcr-gnupg-renderer.c:467
+msgid "User Attribute"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:474 ../gcr/gcr-key-renderer.c:320
+msgid "Size"
+msgstr "Tamaño"
+
+#: ../gcr/gcr-gnupg-renderer.c:509
+#| msgid "Signature Parameters"
+msgid "Signature of a binary document"
+msgstr "Firma de un documento binario"
+
+#: ../gcr/gcr-gnupg-renderer.c:511
+msgid "Signature of a canonical text document"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:513
+#, fuzzy
+#| msgid "Digital signature"
+msgid "Standalone signature"
+msgstr "Firma digital"
+
+#: ../gcr/gcr-gnupg-renderer.c:515
+#, fuzzy
+#| msgid "Unlock certificate"
+msgid "Generic certification of key"
+msgstr "Desbloquear el certificado"
+
+#: ../gcr/gcr-gnupg-renderer.c:517
+msgid "Persona certification of key"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:519
+msgid "Casual certification of key"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:521
+msgid "Positive certification of key"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:523
+msgid "Subkey binding signature"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:525
+msgid "Primary key binding signature"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:527
+#, fuzzy
+#| msgid "Signature Parameters"
+msgid "Signature directly on key"
+msgstr "Parámetros de la firma"
+
+#: ../gcr/gcr-gnupg-renderer.c:529
+#, fuzzy
+#| msgid "Revocation list signature"
+msgid "Key revocation signature"
+msgstr "Firma de la lista de revocación"
+
+#: ../gcr/gcr-gnupg-renderer.c:531
+#, fuzzy
+#| msgid "Revocation list signature"
+msgid "Subkey revocation signature"
+msgstr "Firma de la lista de revocación"
+
+#: ../gcr/gcr-gnupg-renderer.c:533
+#, fuzzy
+#| msgid "Certificate signature"
+msgid "Certification revocation signature"
+msgstr "Firma del certificado"
+
+#: ../gcr/gcr-gnupg-renderer.c:535
+#, fuzzy
+#| msgid "Digital signature"
+msgid "Timestamp signature"
+msgstr "Firma digital"
+
+#: ../gcr/gcr-gnupg-renderer.c:537
+msgid "Third-party confirmation signature"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:590 ../gcr/gcr-gnupg-renderer.c:598
+msgid "Class"
+msgstr "Clase"
+
+#: ../gcr/gcr-gnupg-renderer.c:592 ../gcr/gcr-gnupg-renderer.c:594
+msgid "Type"
+msgstr "Tipo"
+
+#: ../gcr/gcr-gnupg-renderer.c:592
+#, fuzzy
+#| msgid "Locality"
+msgid "Local only"
+msgstr "Localidad"
+
+#: ../gcr/gcr-gnupg-renderer.c:594
+msgid "Exportable"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-renderer.c:612
+#, fuzzy
+#| msgid "Revocation list signature"
+msgid "Revocation Key"
+msgstr "Firma de la lista de revocación"
+
+#: ../gcr/gcr-gnupg-renderer.c:626 ../gcr/gcr-gnupg-renderer.c:650
+#: ../gcr/gcr-gnupg-renderer.c:652
+msgid "Fingerprint"
+msgstr "Huella"
+
+#: ../gcr/gcr-gnupg-renderer.c:741
+#, fuzzy
+#| msgid "Public Key"
+msgid "Public Subkey"
+msgstr "Clave privada"
+
+#: ../gcr/gcr-gnupg-renderer.c:743
+msgid "Secret Key"
+msgstr "Clave secreta"
+
+#: ../gcr/gcr-gnupg-renderer.c:745
+msgid "Secret Subkey"
+msgstr "Subclave secreta"
+
+#: ../gcr/gcr-import-button.c:107
+#, fuzzy
+#| msgid "Initials"
+msgid "Initializing..."
+msgstr "Iniciales"
+
+#: ../gcr/gcr-import-button.c:114
+msgid "Import is in progress..."
+msgstr ""
+
+#: ../gcr/gcr-import-button.c:120
+#, fuzzy, c-format
+#| msgid "Import Into:"
+msgid "Imported to: %s"
+msgstr "Importar en:"
+
+#: ../gcr/gcr-import-button.c:139
+#, c-format
+#| msgid "Import Into:"
+msgid "Import to: %s"
+msgstr "Importar a: %s"
+
+#: ../gcr/gcr-import-button.c:151
+#, fuzzy
+#| msgid "Cannot import because the key is of the wrong type"
+msgid "Cannot import because there are no compatible importers"
+msgstr "No se puede importar porque la clave es de tipo erróneo"
+
+#: ../gcr/gcr-import-button.c:159
+#, fuzzy
+#| msgid "No location available to import to"
+msgid "No data to import"
+msgstr "No existe una ubicación disponible en la que importar"
 
 #: ../gcr/gcr-key-renderer.c:82
 msgid "Key"
 msgstr "Clave"
 
-#: ../gcr/gcr-key-renderer.c:283
+#: ../gcr/gcr-key-renderer.c:281
 msgid "Private RSA Key"
 msgstr "Clave privada RSA"
 
-#: ../gcr/gcr-key-renderer.c:285
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private DSA Key"
 msgstr "Clave privada DSA"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+#: ../gcr/gcr-key-renderer.c:285 ../gcr/gcr-parser.c:296
 msgid "Private Key"
 msgstr "Clave privada"
 
-#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+#: ../gcr/gcr-key-renderer.c:288 ../gcr/gcr-key-renderer.c:290
 msgid "Public DSA Key"
 msgstr "Clave pública DSA"
 
-#: ../gcr/gcr-key-renderer.c:301
+#: ../gcr/gcr-key-renderer.c:299
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d bit"
 msgstr[1] "%d bits"
 
-#: ../gcr/gcr-key-renderer.c:302
+#: ../gcr/gcr-key-renderer.c:300
 msgid "Strength"
 msgstr "Fortaleza"
 
-#: ../gcr/gcr-key-renderer.c:315
-msgid "Algorithm"
-msgstr "Algoritmo"
-
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Size"
-msgstr "Tamaño"
-
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:326
+#: ../gcr/gcr-key-renderer.c:324
 msgid "Fingerprints"
 msgstr "Huellas"
 
-#: ../gcr/gcr-key-renderer.c:331
+#: ../gcr/gcr-key-renderer.c:329
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:337
+#: ../gcr/gcr-key-renderer.c:335
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1789
+#: ../gcr/gcr-parser.c:2156
 msgid "Unrecognized or unsupported data."
 msgstr "Datos no reconocidos o no soportados."
 
-#: ../gcr/gcr-parser.c:1792
+#: ../gcr/gcr-parser.c:2159
 msgid "Could not parse invalid or corrupted data."
 msgstr "No se pudo analizar los datos no válidos o corruptos."
 
-#: ../gcr/gcr-parser.c:1795
+#: ../gcr/gcr-parser.c:2162
 msgid "The data is locked"
 msgstr "Los datos están bloqueados"
+
+#: ../gcr/gcr-pkcs11-import-dialog.c:186
+#, fuzzy
+#| msgid "Automatically unlock this when I log in"
+msgid "Automatically chosen"
+msgstr "Desbloquear esto automáticamente al iniciar sesión"
+
+#: ../gcr/gcr-pkcs11-import-dialog.c:270
+#: ../gcr/gcr-pkcs11-import-interaction.c:153
+#: ../gcr/gcr-pkcs11-import-interaction.c:220
+#, c-format
+msgid "The user cancelled the operation"
+msgstr ""
+
+#: ../gcr/gcr-pkcs11-import-dialog.ui.h:1
+msgid "<b>Import settings</b>"
+msgstr ""
+
+#: ../gcr/gcr-pkcs11-import-dialog.ui.h:2
+#| msgid "Unlock"
+msgid "<b>Unlock</b>"
+msgstr "<b>Desbloquear</b>"
+
+#: ../gcr/gcr-pkcs11-import-dialog.ui.h:3
+#, fuzzy
+#| msgid "In order to import '%s', it must be unlocked"
+msgid "In order to import, please enter the password."
+msgstr "Para poder importar «%s», se debe desbloquear"
+
+#: ../gcr/gcr-pkcs11-import-dialog.ui.h:4
+msgid "Label"
+msgstr "Etiqueta"
+
+#: ../gcr/gcr-pkcs11-import-dialog.ui.h:5
+msgid "Label:"
+msgstr "Etiqueta:"
+
+#: ../gcr/gcr-pkcs11-import-dialog.ui.h:6
+msgid "Password:"
+msgstr "Contraseña:"
+
+#: ../gcr/gcr-pkcs11-import-dialog.ui.h:7
+msgid "Token:"
+msgstr ""
 
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
@@ -797,25 +1096,21 @@ msgstr "Bloquear este depósito de claves al cerrar la sesión"
 msgid "minutes"
 msgstr "minutos"
 
-#: ../gcr/gcr-unlock-renderer.c:63
+#: ../gcr/gcr-unlock-renderer.c:70
 #, c-format
 msgid "Unlock: %s"
 msgstr "Desbloquear: %s"
 
-#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../gcr/gcr-unlock-renderer.c:72 ../gcr/gcr-unlock-renderer.c:129
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 msgid "Unlock"
 msgstr "Desbloquear"
 
-#: ../gcr/gcr-unlock-renderer.c:135
-msgid "The password was incorrect"
-msgstr "La contraseña era incorrecta"
-
-#: ../gcr/gcr-unlock-renderer.c:173
+#: ../gcr/gcr-unlock-renderer.c:126
 msgid "Password"
 msgstr "Contraseña"
 
-#: ../gcr/gcr-unlock-renderer.c:324
+#: ../gcr/gcr-unlock-renderer.c:279
 #, c-format
 msgid ""
 "The contents of '%s' are locked. In order to view the contents, enter the "
@@ -824,7 +1119,7 @@ msgstr ""
 "El contenido de «%s» está bloqueado. Para poder ver el contenido debe "
 "introducir la contraseña correcta."
 
-#: ../gcr/gcr-unlock-renderer.c:327
+#: ../gcr/gcr-unlock-renderer.c:282
 msgid ""
 "The contents are locked. In order to view the contents, enter the correct "
 "password."
@@ -852,20 +1147,39 @@ msgstr ": ver certificados y archivos de claves"
 msgid "Certificate Viewer"
 msgstr "Visor de certificados"
 
-#: ../gck/gck-uri.c:173
+#: ../gcr/gcr-viewer-widget.c:191
+msgid "The password was incorrect"
+msgstr "La contraseña era incorrecta"
+
+#: ../gcr/gcr-viewer-window.c:68
+#, fuzzy
+#| msgid "Import"
+msgid "Imported"
+msgstr "Importar"
+
+#: ../gcr/gcr-viewer-window.c:72
+#| msgid "Import"
+msgid "Import failed"
+msgstr "Falló la importación"
+
+#: ../gcr/gcr-viewer-window.c:103
+msgid "Import"
+msgstr "Importar"
+
+#: ../gck/gck-uri.c:223
 #, c-format
 msgid "The URI has invalid encoding."
 msgstr "El URI tiene una codificación no válida."
 
-#: ../gck/gck-uri.c:177
+#: ../gck/gck-uri.c:227
 msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "El URI no tiene el esquema «pkcs11»."
 
-#: ../gck/gck-uri.c:181
+#: ../gck/gck-uri.c:231
 msgid "The URI has bad syntax."
 msgstr "El URI tiene una sintaxis incorrecta."
 
-#: ../gck/gck-uri.c:185
+#: ../gck/gck-uri.c:235
 msgid "The URI has a bad version number."
 msgstr "El URI tiene un número de versión incorrecto."
 
@@ -878,7 +1192,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "No se pudo analizar la clave SSH pública"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Contraseña de desbloqueo para %s"
@@ -940,9 +1254,21 @@ msgstr "Desbloquear el certificado"
 msgid "Unlock public key"
 msgstr "Desbloquear la clave pública"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Introduzca la contraseña para desbloquear la clave privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Introduzca la contraseña para desbloquear el certificado"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Introduzca la contraseña para desbloquear la clave pública"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Introduzca la contraseña para desbloquearlo"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
@@ -1036,11 +1362,11 @@ msgstr "comandos: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "¿Almacenar sus contraseñan sin cifrarlas?"
 
-#: ../ui/gku-prompt-tool.c:595
+#: ../ui/gku-prompt-tool.c:592
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1050,15 +1376,15 @@ msgstr ""
 "estarán cifradas de forma segura. Serán accesibles por cualquiera que tenga "
 "acceso a sus archivos."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "Usar depósito inseguro"
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "Las contraseñas no coinciden."
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "La contraseña no puede estar vacía"
 
@@ -1097,6 +1423,31 @@ msgstr "Contraseña _antigua:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Contraseña:"
+
+#~ msgid "Import Certificates and Keys"
+#~ msgstr "Importar certificados y claves"
+
+#~ msgid "In order to import the private key, it must be unlocked"
+#~ msgstr "Para poder importar la clave privada, se debe desbloquear"
+
+#~ msgid "In order to import the certificate, it must be unlocked"
+#~ msgstr "Para poder importar el certificado, se debe desbloquear"
+
+#~ msgid "In order to import the data, it must be unlocked"
+#~ msgstr "Para poder importar los datos, se debe desbloquear"
+
+#~ msgid "In order to import the private key '%s', it must be unlocked"
+#~ msgstr "Para poder importar la clave privada «%s», se debe desbloquear"
+
+#~ msgid "In order to import the certificate '%s', it must be unlocked"
+#~ msgstr "Para poder impotar el certificado «%s», se debe desbloquear"
+
+#~ msgid "Import Certificates/Keys"
+#~ msgstr "Importar certificados/claves"
+
+#~ msgid "Choose a location to store the imported certificates/keys."
+#~ msgstr ""
+#~ "Elija una ubicación donde almacenar los certificados/claves importados."
 
 #~ msgid "Insufficient memory available"
 #~ msgstr "No hay suficiente memoria disponible"
@@ -1161,9 +1512,6 @@ msgstr "_Contraseña:"
 #~ msgid "The key is the wrong size"
 #~ msgstr "La clave tiene un tamaño incorrecto"
 
-#~ msgid "The key is of the wrong type"
-#~ msgstr "La clave es de tipo erróneo"
-
 #~ msgid "No key is needed"
 #~ msgstr "No se necesita clave"
 
@@ -1209,20 +1557,11 @@ msgstr "_Contraseña:"
 #~ msgid "The password or PIN is of an invalid length"
 #~ msgstr "La contraseña o PIN es de una longitud no válida"
 
-#~ msgid "The password or PIN has expired"
-#~ msgstr "La contraseña o PIN ha caducado"
-
 #~ msgid "The password or PIN is locked"
 #~ msgstr "La contraseña o PIN está bloqueada"
 
-#~ msgid "The session is closed"
-#~ msgstr "La sesión está cerrada"
-
 #~ msgid "Too many sessions are active"
 #~ msgstr "Hay demasiadas sesiones activas"
-
-#~ msgid "The session is invalid"
-#~ msgstr "La sesión no es válida"
 
 #~ msgid "The session is read-only"
 #~ msgstr "La sesión es de sólo lectura"
@@ -1262,9 +1601,6 @@ msgstr "_Contraseña:"
 
 #~ msgid "Cannot import because the key is of the wrong size"
 #~ msgstr "No se puede importar porque la clave es de tamaño erróneo"
-
-#~ msgid "Cannot import because the key is of the wrong type"
-#~ msgstr "No se puede importar porque la clave es de tipo erróneo"
 
 #~ msgid "You are already logged in"
 #~ msgstr "Ya ha iniciado sesión"
@@ -1314,14 +1650,8 @@ msgstr "_Contraseña:"
 #~ msgid "The saved state is invalid"
 #~ msgstr "El estado guardado no es válido"
 
-#~ msgid "The information is sensitive and cannot be revealed"
-#~ msgstr "La información es sensible y no se puede revelar"
-
 #~ msgid "The state cannot be saved"
 #~ msgstr "El estado no se puede guardar"
-
-#~ msgid "The module has not been initialized"
-#~ msgstr "El módulo no se ha inicializado"
 
 #~ msgid "The module has already been initialized"
 #~ msgstr "El módulo ya se ha inicializado"
@@ -1337,9 +1667,6 @@ msgstr "_Contraseña:"
 
 #~ msgid "Unknown error"
 #~ msgstr "Error desconocido"
-
-#~ msgid "Fingerprint"
-#~ msgstr "Huella"
 
 #~ msgid "Insufficient memory available on device"
 #~ msgstr "No hay memoria suficiente en el dispositivo"
@@ -1679,9 +2006,6 @@ msgstr "_Contraseña:"
 #~ msgid "Automatically unlock this public key when I log in."
 #~ msgstr "Desbloquear esta clave pública automáticamente al iniciar sesión."
 
-#~ msgid "Automatically unlock this when I log in"
-#~ msgstr "Desbloquear esto automáticamente al iniciar sesión"
-
 #~ msgid ""
 #~ "<b><big>Could not grab your mouse.</big></b>\n"
 #~ "\n"
@@ -1714,9 +2038,6 @@ msgstr "_Contraseña:"
 
 #~ msgid "_Deny"
 #~ msgstr "_Denegar"
-
-#~ msgid "C_reate"
-#~ msgstr "C_rear"
 
 #~ msgid "C_hange"
 #~ msgstr "Ca_mbiar"
@@ -1764,9 +2085,6 @@ msgstr "_Contraseña:"
 #~ msgid "A keyring with that name does not exist."
 #~ msgstr "No existe un depósito de claves con ese nombre."
 
-#~ msgid "The keyring has already been unlocked."
-#~ msgstr "El depósito de claves ya se ha desbloqueado."
-
 #~ msgid ""
 #~ "A list of paths to PKCS#11 modules to load. No modules are currently "
 #~ "listed by default, as this is still an experimental feature. This is used "
@@ -1782,9 +2100,6 @@ msgstr "_Contraseña:"
 
 #~ msgid "Import public key"
 #~ msgstr "Importar clave pública"
-
-#~ msgid "Import"
-#~ msgstr "Importar"
 
 #~ msgid "The system wants to import the private key '%s', but it is locked"
 #~ msgstr ""
