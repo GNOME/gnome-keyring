@@ -1,0 +1,1437 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Asturian translation for gnome-keyring
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the gnome-keyring package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# Xandru Armesto <xandru@softastur.org>, 2010, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&component=general\n"
+"POT-Creation-Date: 2009-12-14 20:12+0000\n"
+"PO-Revision-Date: 2011-10-08 08:48+0200\n"
+"Last-Translator: Xandru Armesto <xandru@softastur.org>\n"
+"Language-Team: Softastur <alministradores@softastur.org>\n"
+"Language: ast\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Virtaal 0.5.2\n"
+"X-Launchpad-Export-Date: 2011-09-28 17:49+0000\n"
+"X-Poedit-Language: Asturian\n"
+
+#: ../gnome-keyring-ask.c:241
+msgid "_Old password:"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:262
+msgid "_Password:"
+msgstr "_Contraseña:"
+
+#: ../gnome-keyring-ask.c:284
+msgid "_Confirm new password:"
+msgstr ""
+
+#. Strength bar:
+#: ../gnome-keyring-ask.c:303
+msgid "<span weight=\"bold\">Password strength meter:</span>"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:329
+msgid "Old password cannot be blank."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:340
+msgid "Password cannot be blank."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:348
+msgid "Passwords do not match."
+msgstr "Les contraseñes nun coinciden."
+
+#: ../gnome-keyring-ask.c:407
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the default keyring, but it is "
+"locked"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:411
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
+msgstr ""
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:416
+#, c-format
+msgid ""
+"The application '%s' (%s) wants access to an unknown keyring, but it is "
+"locked"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:422 ../gnome-keyring-ask.c:436
+#, c-format
+msgid ""
+"The application '%s' wants access to the default keyring, but it is locked"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:426 ../gnome-keyring-ask.c:441
+#, c-format
+msgid "The application '%s' wants access to the keyring '%s', but it is locked"
+msgstr ""
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:430 ../gnome-keyring-ask.c:446
+#, c-format
+msgid ""
+"The application '%s' wants access to an unknown keyring, but it is locked"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:452
+#, c-format
+msgid ""
+"An unknown application wants access to the default keyring, but it is locked"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:456
+#, c-format
+msgid ""
+"An unknown application wants access to the keyring '%s', but it is locked"
+msgstr ""
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:461
+#, c-format
+msgid ""
+"An unknown application wants access to an unknown keyring, but it is locked"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:468
+msgid "Enter password for default keyring to unlock"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:470
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduz una contraseña p'abrir l'aniellu de claves '%s'"
+
+#: ../gnome-keyring-ask.c:474
+msgid "Unlock Keyring"
+msgstr "Abrir l'aniellu de claves"
+
+#: ../gnome-keyring-ask.c:479 ../gnome-keyring-ask.c:563
+#: ../gnome-keyring-ask.c:655 ../gnome-keyring-ask.c:711
+#: ../gnome-keyring-ask.c:798
+msgid "_Deny"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:517
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new keyring called '%s'. You "
+"have to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:521
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:527 ../gnome-keyring-ask.c:537
+#, c-format
+msgid ""
+"The application '%s' wants to create a new keyring called '%s'. You have to "
+"choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:531 ../gnome-keyring-ask.c:541
+#, c-format
+msgid ""
+"The application '%s' wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:547
+#, c-format
+msgid ""
+"An unknown application wants to create a new keyring called '%s'. You have "
+"to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:551
+#, c-format
+msgid ""
+"An unknown application wants to create a new default keyring. You have to "
+"choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:558
+msgid "New Keyring Password"
+msgstr "Contraseña nueva pal depósitu de claves"
+
+#: ../gnome-keyring-ask.c:559
+msgid "Choose password for new keyring"
+msgstr "Escoye una contraseña pal nuéu aniellu de claves"
+
+#: ../gnome-keyring-ask.c:602
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:606
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to change the password for the default "
+"keyring. You have to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:612 ../gnome-keyring-ask.c:622
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the '%s' keyring. You "
+"have to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:616 ../gnome-keyring-ask.c:626
+#, c-format
+msgid ""
+"The application '%s' wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:632
+#, c-format
+msgid ""
+"An unknown application wants to change the password for the '%s' keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:636
+#, c-format
+msgid ""
+"An unknown application wants to change the password for the default keyring. "
+"You have to choose the password you want to use for it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:643
+#, c-format
+msgid "Choose a new password for the '%s' keyring. "
+msgstr ""
+
+#: ../gnome-keyring-ask.c:645
+#, c-format
+msgid "Choose a new password for the default keyring. "
+msgstr ""
+
+#: ../gnome-keyring-ask.c:650
+msgid "Change Keyring Password"
+msgstr "Camuda la contraseña del depósitu de claves"
+
+#: ../gnome-keyring-ask.c:689
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:693 ../gnome-keyring-ask.c:697
+#, c-format
+msgid ""
+"The application '%s' wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+
+#. app == APPLICATION_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:701
+#, c-format
+msgid ""
+"An unknown application wants to store a password, but there is no default "
+"keyring. To create one, you need to choose the password you wish to use for "
+"it."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:706
+msgid "Create Default Keyring"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:707
+msgid "Choose password for default keyring"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:747
+msgid "Allow application access to keyring?"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:750
+#, c-format
+msgid "The application '%s' (%s) wants to access the password for '%s' in %s."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:753
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in the "
+"default keyring."
+msgstr ""
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:756
+#, c-format
+msgid ""
+"The application '%s' (%s) wants to access the password for '%s' in an "
+"unknown keyring."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:761 ../gnome-keyring-ask.c:772
+#, c-format
+msgid "The application '%s' wants to access the password for '%s' in %s."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:764 ../gnome-keyring-ask.c:775
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:767 ../gnome-keyring-ask.c:778
+#, c-format
+msgid ""
+"The application '%s' wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:783
+#, c-format
+msgid "An unknown application wants to access the password for '%s' in %s."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:786
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in the default "
+"keyring."
+msgstr ""
+
+#. keyring == KEYRING_NAME_UNKNOWN
+#: ../gnome-keyring-ask.c:789
+#, c-format
+msgid ""
+"An unknown application wants to access the password for '%s' in an unknown "
+"keyring."
+msgstr ""
+
+#: ../gnome-keyring-ask.c:794
+msgid "Allow access"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:799
+msgid "Allow _Once"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:800
+msgid "_Always Allow"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:840
+#, c-format
+msgid "You must specify the type of request to run\n"
+msgstr ""
+
+#: ../gnome-keyring-ask.c:857
+#, c-format
+msgid "Unknown request type\n"
+msgstr ""
+
+#~ msgid "New password strength"
+#~ msgstr "Fortaleza de la nueva contraseña"
+
+#~ msgid "Unlock Login Keyring"
+#~ msgstr "Desbloquiar el depósitu d'aniciu"
+
+#~ msgid "Unlock private key"
+#~ msgstr "Desbloquiar la clave privada"
+
+#~ msgid "Unlock certificate"
+#~ msgstr "Desbloquiar el certificáu"
+
+#~ msgid "Unlock public key"
+#~ msgstr "Desbloquiar la clave pública"
+
+#~ msgid "Unlock"
+#~ msgstr "Desbloquiar"
+
+#~ msgid "Enter password to unlock the private key"
+#~ msgstr "Introduz la contraseña pa desbloquiar la clave privada"
+
+#~ msgid "Enter password to unlock the certificate"
+#~ msgstr "Introduz la contraseña pa desbloquiar el certificáu"
+
+#~ msgid "Enter password to unlock the public key"
+#~ msgstr "Introduz la contraseña pa desbloquiar la clave pública"
+
+#~ msgid "Enter password to unlock"
+#~ msgstr "Introduz la contraseña pa desbloquialu"
+
+#, c-format
+#~ msgid "An application wants access to the private key '%s', but it is locked"
+#~ msgstr "Una aplicación quier acceder a la clave privada «%s», pero ta bloquiada"
+
+#, c-format
+#~ msgid "An application wants access to the certificate '%s', but it is locked"
+#~ msgstr "Una aplicación quier acceder al certificáu «%s», pero ta bloquiáu"
+
+#, c-format
+#~ msgid "An application wants access to the public key '%s', but it is locked"
+#~ msgstr "Una aplicación quier acceder a la clave pública «%s», pero ta bloquiada"
+
+#, c-format
+#~ msgid "An application wants access to '%s', but it is locked"
+#~ msgstr "Una aplicación quier acceder «%s», pero ta bloquiáu"
+
+#~ msgid "Store passwords unencrypted?"
+#~ msgstr "¿Atroxar les sos contraseñes ensin cifrales?"
+
+#~ msgid ""
+#~ "By choosing to use a blank password, your stored passwords will not be "
+#~ "safely encrypted. They will be accessible by anyone with access to your "
+#~ "files."
+#~ msgstr ""
+#~ "Al escoyer usar una contraseña en blancu, les sos contraseñes atroxaes nun "
+#~ "tarán cifraes de miente seguro. Sedrán accesibles por cualesquier que tenga "
+#~ "accesu a los sos archivos."
+
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "Usar atroxamientu inseguru"
+
+#~ msgid "Password cannot be blank"
+#~ msgstr "La contraseña nun pue tar erma"
+
+#~ msgid "Certificate"
+#~ msgstr "Certificáu"
+
+#~ msgid "Private Key"
+#~ msgstr "Clave privada"
+
+#~ msgid "Public Key"
+#~ msgstr "Clave pública"
+
+#~ msgid "The operation was cancelled"
+#~ msgstr "La operación encaboxose"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "Nun hai disponible memoria bastante"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "La ID de slot conseñada nun ye válida"
+
+#~ msgid "Internal error"
+#~ msgstr "Fallu internu"
+
+#~ msgid "The operation failed"
+#~ msgstr "Falló la operación"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "Argumentos inválidos"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "El módulu nun puede crear los filos necesarios"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "El módulu nun puede bloquiar los datos de mou afayadizu"
+
+#~ msgid "The field is read-only"
+#~ msgstr "El campu ye de namái llectura"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "Ye un campu sensible y nun puede revelase"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "El campu nun ye válidu o nun esiste"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "Valor inválidu pal campu"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "El datu nun ye válidu o reconocible"
+
+#~ msgid "The data is too long"
+#~ msgstr "El datu ye enforma llargu"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "Hebo un fallu nel preséu"
+
+#~ msgid "Insufficient memory available on device"
+#~ msgstr "Nun hai memoria bastante nel preséu"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "Quitóse o desconeutóse'l preséu"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "El datu cifráu nun ye válidu o reconocible"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "El datu cifráu ye demasiao llargu"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "Esta operación nun ta sofitada"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "Falta la clave o nun ye válida"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "La clave tien un tamañu incorreutu"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "La clave ye de tipu equivocáu"
+
+#~ msgid "No key is needed"
+#~ msgstr "Nun se necesita clave"
+
+#~ msgid "The key is different than before"
+#~ msgstr "La clave ye diferente de l'anterior"
+
+#~ msgid "A key is needed"
+#~ msgstr "Necesítase una clave"
+
+#~ msgid "Cannot include the key in digest"
+#~ msgstr "Nun puede incluyise la clave nel resume"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "Esta operación nun puede facese con esta clave"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "La clave nun puede envolvese"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "Esta clave nun puede esportase"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "El mecanismu de cifráu ye inválidu o nun se reconoz"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "El mecanismu de cifráu tien un argumentu inválidu"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "Falta l'oxetu o nun ye válidu"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "Yá hai otra operación executándose"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "Nun ta executándose denguna operación"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "La contraseña o PIN ye incorreuta"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "La contraseña o PIN ye inválida"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "La contraseña o PIN tien un llargor inválidu"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "La contraseña o PIN caducó"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "La contraseña o PIN ta bloquiada"
+
+#~ msgid "The session is closed"
+#~ msgstr "La sesión ta zarrada"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "Hai abondes sesiones actives"
+
+#~ msgid "The session is invalid"
+#~ msgstr "La sesión ye inválida"
+
+#~ msgid "The session is read-only"
+#~ msgstr "La sesión ye de namái llectura"
+
+#~ msgid "An open session exists"
+#~ msgstr "Esiste una sesión abierta"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "Esiste una sesión de namái llectura"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "Esiste una sesión d'alministrador"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "La robla ye mala o ta corrompida"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "La robla nun ye reconocible o ta corrompida"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "Falten ciertos campos requeríos"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "Ciertos campos tienen valores inválidos"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "El preséu nun ta presente o ta desconeutáu"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "El preséu ye inválidu o irreconocible"
+
+#~ msgid "The device is write protected"
+#~ msgstr "El preséu ta protexíu escontra escritures"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "Nun puede importase porque la clave ye inválida"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "Nun puede importase porque la clave tien un tamañu equivocáu"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "Nun puede importase porque la clave ye de tipu equivocáu"
+
+#~ msgid "You are already logged in"
+#~ msgstr "Yá aniciaste sesión"
+
+#~ msgid "No user has logged in"
+#~ msgstr "Dengún usuariu anició sesión"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "Dengún usuariu anició sesión"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "L'usuariu ye de tipu inválidu"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "Yá anició sesión otru usuariu"
+
+#~ msgid "Too many users of different types logged in"
+#~ msgstr "Hai abondos usuarios de tipos diferentes con sesión aniciada"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "Nun puede importase una clave inválida"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "Nun puede importase una clave de tamañu incorreutu"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "Nun puede esportase porque la clave ye inválida"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "Nun puede esportase porque la clave ye de tamañu incorreutu"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "Nun puede esportase porque la clave ye de tipu equivocáu"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "Nun pudo aniciase'l xenerador de númberos al débalu"
+
+#~ msgid "No random number generator available"
+#~ msgstr "Nun ta disponible un xenerador de númberos al débalu"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "El mecanismu de cifráu tien un parámetru inválidu"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "Nun hai espaciu bastante p'atroxar el resultáu"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "L'estáu guardáu ye inválidu"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "Esa ye información sensible y nun puede revelase"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "L'estáu nun puede guardase"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "El módulu nun s'anició"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "El módulu yá s'anició"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "Nun pueden bloquiase los datos"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "Los datos nun pueden bloquiase"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "Petición de robla refugada pol usuariu"
+
+#~ msgid "Unknown error"
+#~ msgstr "Fallu desconocíu"
+
+#~ msgid "Unlock certificate/key storage"
+#~ msgstr "Desbloquiar el depósitu de certificaos/claves"
+
+#~ msgid "Enter password to unlock the certificate/key storage"
+#~ msgstr "Escribir la contraseña pa desbloquiar el depósitu de certificaos/claves"
+
+#, c-format
+#~ msgid ""
+#~ "An application wants access to the certificate/key storage '%s', but it is "
+#~ "locked"
+#~ msgstr ""
+#~ "Una aplicación quier acceder al depósitu de certificaos/claves «%s», pero ta "
+#~ "bloquiáu"
+
+#~ msgid "New Password Required"
+#~ msgstr "Requier una contraseña nueva"
+
+#~ msgid "New password required for secure storage"
+#~ msgstr "Requierse una contraseña nueva pal almacén seguru"
+
+#, c-format
+#~ msgid ""
+#~ "In order to prepare '%s' for storage of certificates or keys, a password is "
+#~ "required"
+#~ msgstr ""
+#~ "Requierse una contraseña col envís de preparar «%s» p'atroxar certificaos o "
+#~ "claves"
+
+#~ msgid "Domain Component"
+#~ msgstr "Componente de dominiu"
+
+#~ msgid "User ID"
+#~ msgstr "ID del usuariu"
+
+#~ msgid "Email"
+#~ msgstr "Corréu electrónicu"
+
+#~ msgid "Date of Birth"
+#~ msgstr "Data de nacencia"
+
+#~ msgid "Place of Birth"
+#~ msgstr "Llugar de nacencia"
+
+#~ msgid "Gender"
+#~ msgstr "Xéneru"
+
+#~ msgid "Country of Citizenship"
+#~ msgstr "País de nacionalidá"
+
+#~ msgid "Country of Residence"
+#~ msgstr "País de residencia"
+
+#~ msgid "Common Name"
+#~ msgstr "Nome común"
+
+#~ msgid "Surname"
+#~ msgstr "Apellíu"
+
+#~ msgid "Serial Number"
+#~ msgstr "Númberu de serie"
+
+#~ msgid "Country"
+#~ msgstr "País"
+
+#~ msgid "Locality"
+#~ msgstr "Llocalidá"
+
+#~ msgid "State"
+#~ msgstr "Estáu"
+
+#~ msgid "Street"
+#~ msgstr "Cai"
+
+#~ msgid "Organization"
+#~ msgstr "Organización"
+
+#~ msgid "Organizational Unit"
+#~ msgstr "Unidá d'organización"
+
+#~ msgid "Title"
+#~ msgstr "Títulu"
+
+#~ msgid "Telephone Number"
+#~ msgstr "Númberu de teléfonu"
+
+#~ msgid "Given Name"
+#~ msgstr "Nome de pila"
+
+#~ msgid "Initials"
+#~ msgstr "Iniciales"
+
+#~ msgid "Generation Qualifier"
+#~ msgstr "Calificador de Xeneración"
+
+#~ msgid "DN Qualifier"
+#~ msgstr "Calificador del nome de dominiu"
+
+#~ msgid "Pseudonym"
+#~ msgstr "Nomatu"
+
+#~ msgid "RSA"
+#~ msgstr "RSA"
+
+#~ msgid "MD2 with RSA"
+#~ msgstr "MD2 con RSA"
+
+#~ msgid "MD5 with RSA"
+#~ msgstr "MD5 con RSA"
+
+#~ msgid "SHA1 with RSA"
+#~ msgstr "SHA1 con RSA"
+
+#~ msgid "DSA"
+#~ msgstr "DSA"
+
+#~ msgid "SHA1 with DSA"
+#~ msgstr "SHA1 con DSA"
+
+#~ msgid "<i>Not Part of Certificate</i>"
+#~ msgstr "<i>Nun ye parte del certificáu</i>"
+
+#~ msgid "<i>unknown</i>"
+#~ msgstr "<i>desconocíu</i>"
+
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<Nun ye parte del certificáu>"
+
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>Buelgues</b>"
+
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>Emitíu por</b>"
+
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>Emitíu pa</b>"
+
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr "<b>Esti certificáu verificose pa los siguientes usos:</b>"
+
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>Validez</b>"
+
+#~ msgid "Common Name (CN)"
+#~ msgstr "Nome común (CN)"
+
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "Certificáu de destinatariu de corréu electrónicu"
+
+#~ msgid "Email Signer Certificate"
+#~ msgstr "Certificáu de roblador de corréu electrónicu"
+
+#~ msgid "Expires On"
+#~ msgstr "Caduca el"
+
+#~ msgid "Issued On"
+#~ msgstr "Emitíu el"
+
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "Buelga MD5"
+
+#~ msgid "Organization (O)"
+#~ msgstr "Organización (O)"
+
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "Unidá organizativa (OU)"
+
+#~ msgid "SHA1 Fingerprint"
+#~ msgstr "Buelga SHA1"
+
+#~ msgid "SSL Client Certificate"
+#~ msgstr "Certificáu de veceru SSL"
+
+#~ msgid "SSL Server Certificate"
+#~ msgstr "Certificáu de sirvidor SSL"
+
+#~ msgid "Extension"
+#~ msgstr "Estensión"
+
+#~ msgid "Identifier"
+#~ msgstr "Identificador"
+
+#~ msgid "Value"
+#~ msgstr "Valor"
+
+#~ msgid "Yes"
+#~ msgstr "Sí"
+
+#~ msgid "No"
+#~ msgstr "Non"
+
+#~ msgid "Critical"
+#~ msgstr "Críticu"
+
+#~ msgid "Subject Name"
+#~ msgstr "Nome del asuntu"
+
+#~ msgid "Issuer Name"
+#~ msgstr "Nome del emisor"
+
+#~ msgid "Issued Certificate"
+#~ msgstr "Certificáu emitíu"
+
+#~ msgid "Version"
+#~ msgstr "Versión"
+
+#~ msgid "Not Valid Before"
+#~ msgstr "Nun ye válidu enantes de"
+
+#~ msgid "Not Valid After"
+#~ msgstr "Nun ye válidu dempués de"
+
+#~ msgid "Signature"
+#~ msgstr "Robla"
+
+#~ msgid "Signature Algorithm"
+#~ msgstr "Algoritmu de robla"
+
+#~ msgid "Signature Parameters"
+#~ msgstr "Parámetros de la robla"
+
+#~ msgid "Public Key Info"
+#~ msgstr "Información de la clave pública"
+
+#~ msgid "Key Algorithm"
+#~ msgstr "Algoritmu de la clave"
+
+#~ msgid "Key Parameters"
+#~ msgstr "Parámetros de la clave"
+
+#~ msgid "Key Size"
+#~ msgstr "Tamañu de la clave"
+
+#~ msgid "Fingerprints"
+#~ msgstr "Buelgues"
+
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
+#~ msgstr "<span size='large' weight='bold'>Importar certificaos y claves</span>"
+
+#~ msgid "Import Into:"
+#~ msgstr "Importar en:"
+
+#~ msgid "Password:"
+#~ msgstr "Contraseña:"
+
+#, c-format
+#~ msgid "No location available to import to"
+#~ msgstr "Dengún allugamientu disponible nel que importar"
+
+#~ msgid "Import Certificates/Keys"
+#~ msgstr "Importar certificaos/claves"
+
+#~ msgid "Choose a location to store the imported certificates/keys."
+#~ msgstr "Escueyi un llugar p'atroxar los certificaos/claves importaos."
+
+#~ msgid "In order to import the private key, it must be unlocked"
+#~ msgstr "Pa poder importar la clave privada, hai que desbloquiala"
+
+#~ msgid "In order to import the certificate, it must be unlocked"
+#~ msgstr "Pa poder importar el certificáu, hai de desbloquialu"
+
+#~ msgid "In order to import the data, it must be unlocked"
+#~ msgstr "Pa poder importar los datos, hai de desbloquialos"
+
+#, c-format
+#~ msgid "In order to import the private key '%s', it must be unlocked"
+#~ msgstr "Pa poder importar la clave privada «%s», hai que desbloquiala"
+
+#, c-format
+#~ msgid "In order to import the certificate '%s', it must be unlocked"
+#~ msgstr "Pa poder importar el certificáu «%s», hai que desbloquialu"
+
+#, c-format
+#~ msgid "In order to import '%s', it must be unlocked"
+#~ msgstr "Pa poder importar «%s», hai de desbloquialu"
+
+#~ msgid "Unrecognized or unsupported data."
+#~ msgstr "Datos non reconocíos o non sofitaos."
+
+#~ msgid "Could not parse invalid or corrupted data."
+#~ msgstr "Nun pudieron analizase datos inválidos o toyíos."
+
+#~ msgid "The data is locked"
+#~ msgstr "Los datos tan bloquiaos"
+
+#~ msgid "Unnamed Certificate"
+#~ msgstr "Certificáu ensin nome"
+
+#~ msgid "Couldn't parse public SSH key"
+#~ msgstr "Nun pudo analizase la clave pública SSH"
+
+#~ msgid "Unnamed"
+#~ msgstr "Ensin nome"
+
+#, c-format
+#~ msgid "Choose a new password for the '%s' keyring"
+#~ msgstr "Escueyi una contraseña nueva pal depósitu de claves «%s»."
+
+#, c-format
+#~ msgid ""
+#~ "An application wants to change the password for the '%s' keyring. Choose the "
+#~ "new password you want to use for it."
+#~ msgstr ""
+#~ "Una aplicación quier camudar la contraseña pal depósitu de claves «%"
+#~ "s».Escueyi la nueva contraseña que quies usar pa él."
+
+#~ msgid "The original password was incorrect"
+#~ msgstr "La contraseña orixinal yera incorreuta"
+
+#, c-format
+#~ msgid ""
+#~ "An application wants to create a new keyring called '%s'. Choose the "
+#~ "password you want to use for it."
+#~ msgstr ""
+#~ "Una aplicación quier crear un depósitu de claves nuevu denomáu «%s».Escueyi "
+#~ "la contraseña que quies usar pa él."
+
+#~ msgid "Enter password for to unlock your login keyring"
+#~ msgstr "Introduz la contraseña d'aniciu pa desbloquiar el depósitu"
+
+#~ msgid ""
+#~ "The password you use to log in to your computer no longer matches that of "
+#~ "your login keyring."
+#~ msgstr ""
+#~ "La contraseña qu'uses p'aniciar sesión nel equipu yá nun concasa cola "
+#~ "contraseña d'aniciu del depósitu."
+
+#~ msgid ""
+#~ "The login keyring did not get unlocked when you logged into your computer."
+#~ msgstr ""
+#~ "El depósitu d'aniciu de sesión nun se desbloquió cuando aniciaste sesión nel "
+#~ "equipu."
+
+#, c-format
+#~ msgid "An application wants access to the keyring '%s', but it is locked"
+#~ msgstr ""
+#~ "Una aplicación quier acceder al depósitu de claves «%s», pero ta bloquiáu"
+
+#~ msgid "The unlock password was incorrect"
+#~ msgstr "La contraseña de desbloquéu yera incorreuta"
+
+#~ msgid "Certificate and Key Storage"
+#~ msgstr "Certificaos y almacenamientu de claves"
+
+#~ msgid "GNOME Keyring: PKCS#11 Component"
+#~ msgstr "Depósitu de claves de GNOME: Componente PKCS#11"
+
+#~ msgid "GNOME Keyring: Secret Service"
+#~ msgstr "Depósitu de claves de GNOME: Serviciu de secretos"
+
+#~ msgid "Secret Storage Service"
+#~ msgstr "Serviciu d'almacenamientu de secretos"
+
+#~ msgid "GNOME Keyring: SSH Agent"
+#~ msgstr "Depósitu de claves de GNOME: axente SSH"
+
+#~ msgid "SSH Key Agent"
+#~ msgstr "Axente de claves SSH"
+
+#~ msgid "Login"
+#~ msgstr "Aniciu de sesión"
+
+#, c-format
+#~ msgid "Unlock password for: %s"
+#~ msgstr "Contraseña de desbloquéu pa %s"
+
+#~ msgid "Automatically unlock this keyring whenever I'm logged in"
+#~ msgstr "Desbloquiar esti depósitu de claves siempres qu'anicie sesión"
+
+#~ msgid "_Application:"
+#~ msgstr "_Aplicación:"
+
+#~ msgid "_Confirm:"
+#~ msgstr "_Confirmar:"
+
+#~ msgid "_Details:"
+#~ msgstr "_Detalles:"
+
+#~ msgid "_Name:"
+#~ msgstr "N_ome:"
+
+#~ msgid "_Old Password:"
+#~ msgstr "Contraseña _vieya:"
+
+#, c-format
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr ""
+#~ "Ocurrió un fallu inesperáu en select() lleendo datos dende'l procesu fíu (%"
+#~ "s)"
+
+#, c-format
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Ocurrió un fallu inesperáu en waitpid() (%s)"
+
+#~ msgid "Lock this keyring after"
+#~ msgstr "Bloquiar dempués esti depósitu"
+
+#~ msgid "Lock this keyring if idle for"
+#~ msgstr "Bloquiar esti depósitu si ta inactivu durante"
+
+#~ msgid "Lock this keyring when I log out"
+#~ msgstr "Bloquiar esti depósitu al zarrar la sesión"
+
+#~ msgid "minutes"
+#~ msgstr "minutos"
+
+#~ msgid "GNOME Keyring: GPG Agent"
+#~ msgstr "Aniellu de claves de GNOME: Axente GPG"
+
+#~ msgid "GPG Password Agent"
+#~ msgstr "Axente de contraseñes GPG"
+
+#~ msgid "Unknown"
+#~ msgstr "Desconocíu"
+
+#, c-format
+#~ msgid "PGP Key: %s"
+#~ msgstr "Clave PGP: %s"
+
+#~ msgid "Enter Passphrase"
+#~ msgstr "Escribi la contraseña"
+
+#~ msgid "Forget this password if idle for"
+#~ msgstr "Escaecer esta contraseña si ta inactivu"
+
+#~ msgid "Forget this password after"
+#~ msgstr "Escaecer esta contraseña tres"
+
+#~ msgid "Forget this password when I log out"
+#~ msgstr "Escaecer esta contraseña cuando me desconeute"
+
+#~ msgid "The key is different from before"
+#~ msgstr "La clave ye distinta de la anterior"
+
+#~ msgid "Enter password to unlock your login keyring"
+#~ msgstr "Introduz la contraseña d'aniciu pa desbloquiar el depósitu"
+
+#~ msgid "Change Password"
+#~ msgstr "Camudar la contraseña"
+
+#~ msgid "Change password for secure storage"
+#~ msgstr "Camudar la contraseña d'atroxamientu seguru"
+
+#, c-format
+#~ msgid ""
+#~ "To change the password for '%s', the original and new passwords are required"
+#~ msgstr ""
+#~ "Pa camudar la contraseña de «%s», necesitense la contraseña orixinal y la "
+#~ "nueva"
+
+#~ msgid "Email Address"
+#~ msgstr "Direición de corréu-e"
+
+#~ msgid "Identity"
+#~ msgstr "Identidá"
+
+#~ msgid "Verified by"
+#~ msgstr "Verificáu por"
+
+#~ msgid "Expires"
+#~ msgstr "Espira"
+
+#~ msgid "Import Certificates and Keys"
+#~ msgstr "Importar certificaos y claves"
+
+#~ msgid "Key"
+#~ msgstr "Clave"
+
+#~ msgid "Private RSA Key"
+#~ msgstr "Clave privada RSA"
+
+#~ msgid "Private DSA Key"
+#~ msgstr "Clave privada DSA"
+
+#~ msgid "Public DSA Key"
+#~ msgstr "Clave pública DSA"
+
+#, c-format
+#~ msgid "%d bit"
+#~ msgid_plural "%d bits"
+#~ msgstr[0] "%d bit"
+#~ msgstr[1] "%d bits"
+
+#~ msgid "Strength"
+#~ msgstr "Fortaleza"
+
+#~ msgid "Algorithm"
+#~ msgstr "Algoritmu"
+
+#~ msgid "Size"
+#~ msgstr "Tamañu"
+
+#~ msgid "Fingerprint"
+#~ msgstr "Buelga"
+
+#, c-format
+#~ msgid "Couldn't find a place to store the pinned certificate"
+#~ msgstr "Nun pudo alcontrase un llugar p'almacenar el certificáu importáu"
+
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "Memory disponible nel preséu insuficiente"
+
+#, c-format
+#~ msgid "usage: gnome-keyring command [options]\n"
+#~ msgstr "usu: gnome-keyring comandu [opciones]\n"
+
+#~ msgid "commands: "
+#~ msgstr "comandos: "
+
+#~ msgid "Keyring Access"
+#~ msgstr "Accesu al depósitu de claves"
+
+#~ msgid "Unlock access to passwords and other secrets"
+#~ msgstr "Desbloquia l'accesu a contraseñes y a otros secretos"
+
+#~ msgid "Server Authentication"
+#~ msgstr "Autentificación Sirvidor"
+
+#~ msgid "Client Authentication"
+#~ msgstr "Identificación del veceru"
+
+#~ msgid "Code Signing"
+#~ msgstr "Robláu de códigu"
+
+#~ msgid "Email Protection"
+#~ msgstr "Proteición de corréu-e"
+
+#~ msgid "Time Stamping"
+#~ msgstr "Selláu de tiempu"
+
+#, c-format
+#~ msgid "Error loading PKCS#11 module: %s"
+#~ msgstr "Fallu al cargar el módulu PKCS#11: %s"
+
+#, c-format
+#~ msgid "Invalid PKCS#11 module: %s"
+#~ msgstr "Módulu PKCS#11 inválidu: %s"
+
+#, c-format
+#~ msgid "Couldn't setup PKCS#11 module: %s"
+#~ msgstr "Nun se pudo configurar el módulu PKCS#11: %s"
+
+#, c-format
+#~ msgid "Couldn't initialize PKCS#11 module: %s"
+#~ msgstr "Nun se pudo arrancar el módulu PKCS#11: %s"
+
+#, c-format
+#~ msgid "Couldn't initialize registered PKCS#11 modules: %s"
+#~ msgstr "Nun pudieron anicializase los módulos PKCS#11 rexistraos: %s"
+
+#~ msgctxt "column"
+#~ msgid "Name"
+#~ msgstr "Nome"
+
+#~ msgctxt "column"
+#~ msgid "Issued By"
+#~ msgstr "Asoleyáu por"
+
+#~ msgid ""
+#~ "<b>A file already exists with this name.</b>\n"
+#~ "\n"
+#~ "Do you want to replace it with a new file?"
+#~ msgstr ""
+#~ "<b>Yá hai un ficheru con esti nome.</b>\n"
+#~ "\n"
+#~ "¿Quies trocalu por uno nuevu?"
+
+#~ msgid "_Replace"
+#~ msgstr "_Trocar"
+
+#, c-format
+#~ msgid "The operation was cancelled."
+#~ msgstr "La operación encaboxóse."
+
+#~ msgid "Export certificate"
+#~ msgstr "Esportar certificáu"
+
+#~ msgid "Certificate files"
+#~ msgstr "Ficheros de certificaos"
+
+#~ msgid "PEM files"
+#~ msgstr "Ficheros PEM"
+
+#~ msgid "Other Name"
+#~ msgstr "Otru nome"
+
+#~ msgid "XMPP Addr"
+#~ msgstr "Direición XMPP"
+
+#~ msgid "DNS SRV"
+#~ msgstr "DNS SRV"
+
+#~ msgid "DNS"
+#~ msgstr "DNS"
+
+#~ msgid "X400 Address"
+#~ msgstr "Direición X400"
+
+#~ msgid "Directory Name"
+#~ msgstr "Nome del direutoriu"
+
+#~ msgid "EDI Party Name"
+#~ msgstr "Nome de parte EDI"
+
+#~ msgid "URI"
+#~ msgstr "URI"
+
+#~ msgid "IP Address"
+#~ msgstr "Direición IP"
+
+#~ msgid "Registered ID"
+#~ msgstr "ID rexistráu"
+
+#~ msgid "Basic Constraints"
+#~ msgstr "Restricciones básiques"
+
+#~ msgid "Certificate Authority"
+#~ msgstr "Autoridá de certificación"
+
+#~ msgid "Max Path Length"
+#~ msgstr "Llonxitú máxima del camín"
+
+#~ msgid "Unlimited"
+#~ msgstr "Illimitao"
+
+#~ msgid "Extended Key Usage"
+#~ msgstr "Usu estendíu de la clave"
+
+#~ msgid "Allowed Purposes"
+#~ msgstr "Propósitos permitíos"
+
+#~ msgid "Subject Key Identifier"
+#~ msgstr "Identificador del asuntu de la clave"
+
+#~ msgid "Key Identifier"
+#~ msgstr "Identificador de clave"
+
+#~ msgid "Digital signature"
+#~ msgstr "Robla dixital"
+
+#~ msgid "Key encipherment"
+#~ msgstr "Cifráu de la clave"
+
+#~ msgid "Data encipherment"
+#~ msgstr "Cifráu de los datos"
+
+#~ msgid "Key agreement"
+#~ msgstr "Alcuerdu de la clave"
+
+#~ msgid "Certificate signature"
+#~ msgstr "Robla del certificáu"
+
+#~ msgid "Revocation list signature"
+#~ msgstr "Robla de la llista de revocación"
+
+#~ msgid "Key Usage"
+#~ msgstr "Usu de la clave"
+
+#~ msgid "Usages"
+#~ msgstr "Usos"
+
+#~ msgid "Subject Alternative Names"
+#~ msgstr "Nomes alternativos del asuntu"
+
+#~ msgid "Couldn't export the certificate."
+#~ msgstr "Nun pudo esportase'l certificáu."
+
+#~ msgid "Certificate Fingerprints"
+#~ msgstr "Buelgues de certificaos"
+
+#~ msgid "Key SHA1 Fingerprint"
+#~ msgstr "Buelga de la clave SHA1"
+
+#~ msgid "_Details"
+#~ msgstr "_Detalles"
+
+#, c-format
+#~ msgid "Could not display '%s'"
+#~ msgstr "Nun pudo amosase «%s»"
+
+#~ msgid "Could not display file"
+#~ msgstr "Nun pudo amosase'l ficheru"
+
+#~ msgid "Reason"
+#~ msgstr "Motivu"
+
+#, c-format
+#~ msgid "Cannot display a file of this type."
+#~ msgstr "Nun pue amosase un ficheru d'esta triba."
+
+#~ msgid "PGP Key"
+#~ msgstr "Clave PGP"
+
+#~ msgctxt "column"
+#~ msgid "Key ID"
+#~ msgstr "ID de la clave"
+
+#, c-format
+#~ msgid "Gnupg process exited with code: %d"
+#~ msgstr "El procesu Gnupg finó col códigu: %d"
+
+#, c-format
+#~ msgid "Gnupg process was terminated with signal: %d"
+#~ msgstr "El procesu Gnupg finó cola señal: %d"
+
+#~ msgid "SHA1"
+#~ msgstr "SHA1"
+
+#~ msgid "SHA256"
+#~ msgstr "SHA256"
+
+#, c-format
+#~ msgid "Unlock: %s"
+#~ msgstr "Desbloquiar: %s"
+
+#~ msgid "The password was incorrect"
+#~ msgstr "La contraseña foi incorreuta"
+
+#~ msgid "Password"
+#~ msgstr "Contraseña"
+
+#, c-format
+#~ msgid ""
+#~ "The contents of '%s' are locked. In order to view the contents, enter the "
+#~ "correct password."
+#~ msgstr ""
+#~ "El conteníu de «%s» ta bloquiáu. Pa ver el conteníu, escribi la contraseña "
+#~ "correuta."
+
+#~ msgid ""
+#~ "The contents are locked. In order to view the contents, enter the correct "
+#~ "password."
+#~ msgstr ""
+#~ "El conteníu ta bloquiáu. Pa ver el conteníu, escribi la contraseña correuta."
+
+#~ msgid "GCR Certificate and Key Viewer"
+#~ msgstr "Visor de claves y certificaos GCR"
+
+#~ msgid "Show the application's version"
+#~ msgstr "Amosar la versión de l'aplicación"
+
+#~ msgid "[file...]"
+#~ msgstr "[ficheru...]"
+
+#~ msgid "- View certificate and key files"
+#~ msgstr "- Ver certificaos y claves"
+
+#~ msgid "Certificate Viewer"
+#~ msgstr "Visor de certificaos"
+
+#, c-format
+#~ msgid "The URI has invalid encoding."
+#~ msgstr "El URI tien una codificación non válida."
+
+#~ msgid "The URI does not have the 'pkcs11' scheme."
+#~ msgstr "La URI nun tien l'esquema «pkcs11»."
+
+#~ msgid "The URI has bad syntax."
+#~ msgstr "El URI tien una sintaxis incorreuta."
+
+#~ msgid "The URI has a bad version number."
+#~ msgstr "El URI tien un númberu de versión incorreutu."
+
+#~ msgid "          "
+#~ msgstr "          "
