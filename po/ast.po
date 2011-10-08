@@ -9,73 +9,26 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&component=general\n"
-"POT-Creation-Date: 2010-03-20 16:19+0000\n"
-"PO-Revision-Date: 2010-03-21 12:14+0200\n"
-"Last-Translator: Xandru Armesto <xandru@softastur.org>\n"
-"Language-Team: Asturian Team alministradores@softastur.org\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-28 07:28+0000\n"
+"PO-Revision-Date: 2011-09-28 19:54+0100\n"
+"Last-Translator: ivarela <ivarela@softastur.org>\n"
+"Language-Team: Asturian Team <alministradores@softastur.org>\n"
 "Language: ast\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Virtaal 0.5.2\n"
-"X-Launchpad-Export-Date: 2009-02-09 14:52+0000\n"
-"X-Poedit-Language: asturian\n"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect during startup with gnome-session, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-"Esta opción activa'l componente PKCS11 nel degorriu del Depósitu de claves. "
-"Namái toma efectu cuando s'anicia gnome-session, (ex: cuando l'usuariu entra "
-"nel sistema). Esti axuste pue sobroscribise al pasar ciertos parámetros al "
-"degorriu al traviés de la llinia de comandos."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-"Esta opción activa l'axente SSH nel demoniu del Depósitu de claves. Namái "
-"toma efeutu cuando s'anicia gnome-keyring-daemon, (ex: cuando l'usuariu "
-"entra nel sistema). Esti axuste pue sobreescribisae al pasar ciertos "
-"parámetros al demoniu a traviés de la llinia de comandos."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:3
-msgid ""
-"This option enables the secret service component in the gnome-keyring "
-"daemon. It only takes effect during startup with gnome-session, (ie: when "
-"the user logs in). This setting may be overridden when certain command line "
-"arguments are passed to the daemon."
-msgstr ""
-"Esta opción activa'l componente de serviciu de secretos nel degorriu del "
-"Depósitu de claves. Namái toma efectu cuando s'anicia gnome-session, (ex: "
-"cuando l'usuariu entra nel sistema). Esti axuste pue sobroscribise al pasar "
-"ciertos parámetros al degorriu al traviés de la llinia de comandos."
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr "Conseña si'l componente PKCS#11 del depósitu de claves ta activáu"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:5
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr "Conseña si l'axente SSH del depósitu de claves ta activáu"
-
-#: ../daemon/data/gnome-keyring.schemas.in.h:6
-msgid "Whether the gnome-keyring secret service is enabled."
-msgstr "Indica si'l serviciu de secretos del depósitu de claves ta activáu."
+"X-Launchpad-Export-Date: 2011-09-28 17:49+0000\n"
+"X-Generator: Launchpad (build 14049)\n"
+"X-Poedit-Language: Asturian\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:74
-#: ../daemon/dbus/gkd-secret-unlock.c:120 ../daemon/login/gkd-login.c:590
-#: ../pkcs11/secret-store/gck-secret-collection.c:322
+#: ../daemon/dbus/gkd-secret-change.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Ensin nome"
 
@@ -86,79 +39,29 @@ msgstr "Camuda la contraseña del depósitu de claves"
 #: ../daemon/dbus/gkd-secret-change.c:88
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "Escueyi una contraseña nueva pal depósitu de claves «%s». "
+msgstr "Escueyi una contraseña nueva pal depósitu de claves «%s»."
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
-msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
-"new password you want to use for it."
-msgstr ""
-"Una aplicación quier camudar la contraseña pal depósitu de claves «%"
-"s».Escueyi la nueva contraseña que quies usar pa él."
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "Una aplicación quier camudar la contraseña pal depósitu de claves «%s».Escueyi la nueva contraseña que quies usar pa él."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
 msgstr "La contraseña orixinal yera incorreuta"
 
-#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../daemon/dbus/gkd-secret-create.c:83
 msgid "New Keyring Password"
 msgstr "Contraseña nueva pal depósitu de claves"
 
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Escoye una contraseña pal nuéu aniellu de claves"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"Una aplicación quier crear un depósitu de claves nuevu denomáu «%s».Escueyi "
-"la contraseña que quies usar pa él."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:135
-msgid "Unlock Login Keyring"
-msgstr "Desbloquiar el depósitu d'aniciu"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:137
-msgid "Enter password for to unlock your login keyring"
-msgstr "Introduz la contraseña d'aniciu pa desbloquiar el depósitu"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:141
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"La contraseña qu'uses p'aniciar sesión nel equipu yá nun concasa cola "
-"contraseña d'aniciu del depósitu."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:143
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"El depósitu d'aniciu de sesión nun se desbloquió cuando aniciaste sesión nel "
-"equipu."
-
-#: ../daemon/dbus/gkd-secret-unlock.c:184
-msgid "Unlock Keyring"
-msgstr "Abrir l'aniellu de claves"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:186
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Introduz una contraseña p'abrir l'aniellu de claves '%s'"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:190
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Una aplicación quier acceder al depósitu de claves «%s», pero ta bloquiáu"
-
-#: ../daemon/dbus/gkd-secret-unlock.c:221
-msgid "The unlock password was incorrect"
-msgstr "La contraseña de desbloquéu yera incorreuta"
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "Una aplicación quier crear un depósitu de claves nuevu denomáu «%s».Escueyi la contraseña que quies usar pa él."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -174,7 +77,7 @@ msgstr "Depósitu de claves de GNOME: Serviciu de secretos"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
-msgstr "Serviciu d'almacenamiento de secretos"
+msgstr "Serviciu d'almacenamientu de secretos"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "GNOME Keyring: SSH Agent"
@@ -184,164 +87,46 @@ msgstr "Depósitu de claves de GNOME: axente SSH"
 msgid "SSH Key Agent"
 msgstr "Axente de claves SSH"
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Aniellu de claves de GNOME: Axente GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "Axente de contraseñes GPG"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
+#: ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
+msgid "Unknown"
+msgstr "Desconocíu"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#, c-format
+msgid "PGP Key: %s"
+msgstr "Clave PGP: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+msgid "Enter Passphrase"
+msgstr "Escribi la contraseña"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+msgid "Forget this password if idle for"
+msgstr "Escaecer esta contraseña si ta inactivu"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+msgid "Forget this password after"
+msgstr "Escaecer esta contraseña tres"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+msgid "Forget this password when I log out"
+msgstr "Escaecer esta contraseña cuando me desconeute"
+
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:175
+#: ../daemon/login/gkd-login.c:147
 msgid "Login"
 msgstr "Aniciu de sesión"
-
-#: ../daemon/login/gkd-login.c:602
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Contraseña de desbloquéu pa %s"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:294
-msgid "New Password Required"
-msgstr "Requier una contraseña nueva"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:295
-msgid "New password required for secure storage"
-msgstr "Requierse una contraseña nueva pal almacén seguru"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:297
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Requierse una contraseña col envís de preparar «%s» p'atroxar certificaos o "
-"claves"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:360
-msgid "Unlock private key"
-msgstr "Desbloquiar la clave privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:362
-msgid "Unlock certificate"
-msgstr "Desbloquiar el certificáu"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:364
-msgid "Unlock public key"
-msgstr "Desbloquiar la clave pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:366
-msgid "Unlock"
-msgstr "Desbloquiar"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:375 ../gcr/gcr-importer.c:436
-msgid "Enter password to unlock the private key"
-msgstr "Introduza la contraseña pa desbloquiar la clave privada"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:377 ../gcr/gcr-importer.c:438
-msgid "Enter password to unlock the certificate"
-msgstr "Introduza la contraseña pa desbloquiar el certificáu"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:379
-msgid "Enter password to unlock the public key"
-msgstr "Introduza la contraseña pa desbloquiar la clave pública"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:381 ../gcr/gcr-importer.c:440
-msgid "Enter password to unlock"
-msgstr "Introduza la contraseña pa desbloquialu"
-
-#. TRANSLATORS: The private key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:391
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Una aplicación quier acceder a la clave privada «%s», pero ta bloquiada"
-
-#. TRANSLATORS: The certificate is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:394
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Una aplicación quier acceder al certificáu «%s», pero ta bloquiáu"
-
-#. TRANSLATORS: The public key is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:397
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Una aplicación quier acceder a la clave pública «%s», pero ta bloquiada"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:400
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Una aplicación quier acceder «%s», pero ta bloquiáu"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:595
-msgid "Unlock certificate/key storage"
-msgstr "Desbloquiar el depósitu de certificaos/claves"
-
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:596
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Escribir la contraseña pa desbloquiar el depósitu de certificaos/claves"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../daemon/pkcs11/gkd-pkcs11-auth.c:599
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Una aplicación quier acceder al depósitu de certificaos/claves «%s», pero ta "
-"bloquiáu"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:393
-msgid "Store passwords unencrypted?"
-msgstr "¿Atroxar les sos contraseñes ensin cifrales?"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:394
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Al escoyer usar una contraseña en blancu, les sos contraseñes atroxaes nun "
-"tarán cifraes de miente seguro. Sedrán accesibles por cualesquier que tenga "
-"accesu a los sos archivos."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:401
-msgid "Use Unsafe Storage"
-msgstr "Usar atroxamientu inseguru"
-
-#: ../daemon/prompt/gkd-prompt-tool.c:431
-msgid "Passwords do not match."
-msgstr "Les contraseñes nun coinciden."
-
-#: ../daemon/prompt/gkd-prompt-tool.c:441
-msgid "Password cannot be blank"
-msgstr "La contraseña nun pue tar erma"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Desbloquiar esti depósitu de claves siempres qu'anicie sesión"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:2
-msgid "New password strength"
-msgstr "Fortaleza de la nueva contraseña"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:3
-msgid "_Application:"
-msgstr "_Aplicación:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:4
-msgid "_Confirm:"
-msgstr "_Confirmar:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:5
-msgid "_Details:"
-msgstr "_Detalles:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:6
-msgid "_Name:"
-msgstr "N_ome:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:7
-msgid "_Old Password:"
-msgstr "Contraseña _vieya:"
-
-#: ../daemon/prompt/gkd-prompt.ui.h:8
-msgid "_Password:"
-msgstr "_Contraseña:"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -352,8 +137,8 @@ msgid "User ID"
 msgstr "ID del usuariu"
 
 #: ../egg/egg-oid.c:46
-msgid "Email"
-msgstr "Corréu electrónicu"
+msgid "Email Address"
+msgstr "Direición de corréu-e"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -383,8 +168,8 @@ msgstr "Nome común"
 msgid "Surname"
 msgstr "Apellíu"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-basics-widget.ui.h:18
-#: ../gcr/gcr-certificate-details-widget.c:322
+#: ../egg/egg-oid.c:69
+#: ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Númberu de serie"
 
@@ -441,211 +226,396 @@ msgid "Pseudonym"
 msgstr "Nomatu"
 
 #: ../egg/egg-oid.c:98
+#: ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 con RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 con RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 con RSA"
 
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:103
+#: ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 con DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Autentificación Sirvidor"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Identificación del veceru"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Robláu de códigu"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "Proteición de corréu-e"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Selláu de tiempu"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Ocurrió un fallu inesperáu en select() lleendo datos dende'l procesu fíu (%"
-"s)"
+msgstr "Ocurrió un fallu inesperáu en select() lleendo datos dende'l procesu fíu (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Ocurrió un fallu inesperáu en waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-basics-widget.c:59
-msgid "<i>Not Part of Certificate</i>"
-msgstr "<i>Nun ye parte del certificáu</i>"
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Fallu al cargar el módulu PKCS#11: %s"
 
-#: ../gcr/gcr-certificate-basics-widget.c:80
-msgid "<i>unknown</i>"
-msgstr "<i>desconocíu</i>"
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Módulu PKCS#11 inválidu: %s"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:1
-msgid "<Not Part of Certificate>"
-msgstr "<Nun ye parte del certificáu>"
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Nun se pudo configurar el módulu PKCS#11: %s"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:2
-msgid "<b>Fingerprints</b>"
-msgstr "<b>Buelgues</b>"
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Nun se pudo arrancar el módulu PKCS#11: %s"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:3
-msgid "<b>Issued By</b>"
-msgstr "<b>Emitíu por</b>"
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Nun pudieron anicializase los módulos PKCS#11 rexistraos: %s"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:4
-msgid "<b>Issued To</b>"
-msgstr "<b>Emitíu pa</b>"
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388
+#: ../gcr/gcr-gnupg-key.c:629
+msgctxt "column"
+msgid "Name"
+msgstr "Nome"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:5
-msgid "<b>This certificate has been verified for the following uses:</b>"
-msgstr "<b>Esti certificáu verificose pa los siguientes usos:</b>"
+#: ../gcr/gcr-certificate.c:390
+msgctxt "column"
+msgid "Issued By"
+msgstr "Asoleyáu por"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:6
-msgid "<b>Validity</b>"
-msgstr "<b>Validez</b>"
+#. later
+#: ../gcr/gcr-certificate.c:392
+msgctxt "column"
+msgid "Expires"
+msgstr "Espira"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:7
-msgid "Common Name (CN)"
-msgstr "Nome común (CN)"
+#: ../gcr/gcr-certificate.c:1060
+#: ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101
+#: ../gcr/gcr-parser.c:260
+msgid "Certificate"
+msgstr "Certificáu"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:8
-msgid "Email Recipient Certificate"
-msgstr "Certificáu de destinatariu de corréu electrónicu"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
+"<b>Yá hai un ficheru con esti nome.</b>\n"
+"\n"
+"¿Quies trocalu por uno nuevu?"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:9
-msgid "Email Signer Certificate"
-msgstr "Certificáu de roblador de corréu electrónicu"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr "_Trocar"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:10
-msgid "Expires On"
-msgstr "Caduca el"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, c-format
+msgid "The operation was cancelled."
+msgstr "La operación encaboxóse."
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:11
-msgid "Issued On"
-msgstr "Emitíu el"
+#: ../gcr/gcr-certificate-exporter.c:301
+msgid "Export certificate"
+msgstr "Esportar certificáu"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:12
-msgid "MD5 Fingerprint"
-msgstr "Buelga MD5"
+#: ../gcr/gcr-certificate-exporter.c:313
+msgid "Certificate files"
+msgstr "Ficheros de certificaos"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:13
-msgid "Organization (O)"
-msgstr "Organización (O)"
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr "Ficheros PEM"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:14
-msgid "Organizational Unit (OU)"
-msgstr "Unidá organizativa (OU)"
+#: ../gcr/gcr-certificate-extensions.c:141
+msgid "Other Name"
+msgstr "Otru nome"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:15
-msgid "SHA1 Fingerprint"
-msgstr "Buelga SHA1"
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr "Direición XMPP"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:16
-msgid "SSL Client Certificate"
-msgstr "Certificáu de veceru SSL"
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr "DNS SRV"
 
-#: ../gcr/gcr-certificate-basics-widget.ui.h:17
-msgid "SSL Server Certificate"
-msgstr "Certificáu de sirvidor SSL"
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "Corréu electrónicu"
 
-#: ../gcr/gcr-certificate-details-widget.c:207
-msgid "Extension"
-msgstr "Estensión"
+#: ../gcr/gcr-certificate-extensions.c:174
+msgid "DNS"
+msgstr "DNS"
 
-#: ../gcr/gcr-certificate-details-widget.c:212
-msgid "Identifier"
-msgstr "Identificador"
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr "Direición X400"
 
-#: ../gcr/gcr-certificate-details-widget.c:222
-msgid "Value"
-msgstr "Valor"
+#: ../gcr/gcr-certificate-extensions.c:189
+msgid "Directory Name"
+msgstr "Nome del direutoriu"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
-msgid "Critical"
-msgstr "Críticu"
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr "Nome de parte EDI"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr "URI"
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr "Direición IP"
+
+#: ../gcr/gcr-certificate-extensions.c:220
+msgid "Registered ID"
+msgstr "ID rexistráu"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr "Restricciones básiques"
+
+#: ../gcr/gcr-certificate-renderer.c:118
+msgid "Certificate Authority"
+msgstr "Autoridá de certificación"
+
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "Sí"
 
-#: ../gcr/gcr-certificate-details-widget.c:229
+#: ../gcr/gcr-certificate-renderer.c:119
+#: ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "Non"
 
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr "Llonxitú máxima del camín"
+
+#: ../gcr/gcr-certificate-renderer.c:123
+msgid "Unlimited"
+msgstr "Illimitao"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr "Usu estendíu de la clave"
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr "Propósitos permitíos"
+
+#: ../gcr/gcr-certificate-renderer.c:173
+msgid "Subject Key Identifier"
+msgstr "Identificador del asuntu de la clave"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+msgid "Key Identifier"
+msgstr "Identificador de clave"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+msgid "Digital signature"
+msgstr "Robla dixital"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr "Cifráu de la clave"
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr "Cifráu de los datos"
+
+#: ../gcr/gcr-certificate-renderer.c:188
+msgid "Key agreement"
+msgstr "Alcuerdu de la clave"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+msgid "Certificate signature"
+msgstr "Robla del certificáu"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr "Robla de la llista de revocación"
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr "Usu de la clave"
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr "Usos"
+
+#: ../gcr/gcr-certificate-renderer.c:236
+msgid "Subject Alternative Names"
+msgstr "Nomes alternativos del asuntu"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "Estensión"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "Identificador"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "Valor"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "Críticu"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+msgid "Couldn't export the certificate."
+msgstr "Nun pudo esportase'l certificáu."
+
+#: ../gcr/gcr-certificate-renderer.c:613
+msgid "Identity"
+msgstr "Identidá"
+
+#: ../gcr/gcr-certificate-renderer.c:617
+msgid "Verified by"
+msgstr "Verificáu por"
+
+#: ../gcr/gcr-certificate-renderer.c:624
+msgid "Expires"
+msgstr "Espira"
+
 #. The subject
-#: ../gcr/gcr-certificate-details-widget.c:303
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Nome del asuntu"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-details-widget.c:307
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Nome del emisor"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-details-widget.c:311
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Certificáu emitíu"
 
-#: ../gcr/gcr-certificate-details-widget.c:316
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Versión"
 
-#: ../gcr/gcr-certificate-details-widget.c:329
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Nun ye válidu enantes de"
 
-#: ../gcr/gcr-certificate-details-widget.c:334
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Nun ye válidu dempués de"
 
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+msgid "Certificate Fingerprints"
+msgstr "Buelgues de certificaos"
+
 #. Signature
-#: ../gcr/gcr-certificate-details-widget.c:339
-#: ../gcr/gcr-certificate-details-widget.c:355
+#: ../gcr/gcr-certificate-renderer.c:675
+#: ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Robla"
 
-#: ../gcr/gcr-certificate-details-widget.c:343
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "Algoritmu de robla"
 
-#: ../gcr/gcr-certificate-details-widget.c:348
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "Parámetros de la robla"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-details-widget.c:359
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Información de la clave pública"
 
-#: ../gcr/gcr-certificate-details-widget.c:363
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Algoritmu de la clave"
 
-#: ../gcr/gcr-certificate-details-widget.c:368
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Parámetros de la clave"
 
-#: ../gcr/gcr-certificate-details-widget.c:375
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Tamañu de la clave"
 
-#: ../gcr/gcr-certificate-details-widget.c:382 ../gcr/gcr-parser.c:202
+#: ../gcr/gcr-certificate-renderer.c:713
+msgid "Key SHA1 Fingerprint"
+msgstr "Buelga de la clave SHA1"
+
+#: ../gcr/gcr-certificate-renderer.c:719
+#: ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Clave pública"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-details-widget.c:386
-msgid "Fingerprints"
-msgstr "Buelgues"
+#: ../gcr/gcr-display-view.c:308
+msgid "_Details"
+msgstr "_Detalles"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Nun pudo amosase «%s»"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Nun pudo amosase'l ficheru"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Motivu"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Nun pue amosase un ficheru d'esta triba."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
-msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-msgstr "<span size='large' weight='bold'>Importar certificaos y claves</span>"
+msgid "Import Certificates and Keys"
+msgstr "Importar certificaos y claves"
 
 #: ../gcr/gcr-import-dialog.ui.h:2
 msgid "Import Into:"
@@ -655,681 +625,655 @@ msgstr "Importar en:"
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Lock this keyring after"
-msgstr "Bloquiar dempués esti depósitu"
+#: ../gcr/gcr-gnupg-key.c:251
+msgid "PGP Key"
+msgstr "Clave PGP"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring if idle for"
-msgstr "Bloquiar esti depósitu si ta inactivu durante"
+#: ../gcr/gcr-gnupg-key.c:631
+msgctxt "column"
+msgid "Key ID"
+msgstr "ID de la clave"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring when I log out"
-msgstr "Bloquiar esti depósitu al zarrar la sesión"
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr "El procesu Gnupg finó col códigu: %d"
 
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "minutes"
-msgstr "minutos"
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr "El procesu Gnupg finó cola señal: %d"
 
-#: ../gcr/gcr-importer.c:163 ../gcr/gcr-parser.c:1573 ../gp11/gp11-misc.c:98
+#: ../gcr/gcr-gnupg-process.c:695
+#: ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919
+#: ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "La operación encaboxose"
 
-#: ../gcr/gcr-importer.c:255
-#, c-format
-msgid "No location available to import to"
-msgstr "Dengún allugamientu disponible nel que importar"
+#: ../gcr/gcr-importer.c:172
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Introduz la contraseña pa desbloquiar la clave privada"
 
-#: ../gcr/gcr-importer.c:404
-msgid "Import Certificates/Keys"
-msgstr "Importar certificaos/claves"
+#: ../gcr/gcr-importer.c:174
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Introduz la contraseña pa desbloquiar el certificáu"
 
-#: ../gcr/gcr-importer.c:411
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Escueyi un llugar p'atroxar los certificaos/claves importaos."
+#: ../gcr/gcr-importer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Introduz la contraseña pa desbloquialu"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:449
+#: ../gcr/gcr-importer.c:185
 msgid "In order to import the private key, it must be unlocked"
 msgstr "Pa poder importar la clave privada, hai que desbloquiala"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:452
+#: ../gcr/gcr-importer.c:188
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "Pa poder importar el certificáu, hai de desbloquialu"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:455
+#: ../gcr/gcr-importer.c:191
 msgid "In order to import the data, it must be unlocked"
 msgstr "Pa poder importar los datos, hai de desbloquialos"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:460
+#: ../gcr/gcr-importer.c:196
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "Pa poder importar la clave privada «%s», hai que desbloquiala"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:463
+#: ../gcr/gcr-importer.c:199
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "Pa poder importar el certificáu «%s», hai que desbloquialu"
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:466
+#: ../gcr/gcr-importer.c:202
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "Pa poder importar «%s», hai de desbloquialu"
 
-#: ../gcr/gcr-parser.c:196
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "Dengún allugamientu disponible nel que importar"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "Importar certificaos/claves"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "Escueyi un llugar p'atroxar los certificaos/claves importaos."
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr "Clave"
+
+#: ../gcr/gcr-key-renderer.c:283
+msgid "Private RSA Key"
+msgstr "Clave privada RSA"
+
+#: ../gcr/gcr-key-renderer.c:285
+msgid "Private DSA Key"
+msgstr "Clave privada DSA"
+
+#: ../gcr/gcr-key-renderer.c:287
+#: ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Clave privada"
 
-#: ../gcr/gcr-parser.c:199
-msgid "Certificate"
-msgstr "Certificáu"
+#: ../gcr/gcr-key-renderer.c:290
+#: ../gcr/gcr-key-renderer.c:292
+msgid "Public DSA Key"
+msgstr "Clave pública DSA"
 
-#: ../gcr/gcr-parser.c:1576
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] "%d bit"
+msgstr[1] "%d bits"
+
+#: ../gcr/gcr-key-renderer.c:302
+msgid "Strength"
+msgstr "Fortaleza"
+
+#: ../gcr/gcr-key-renderer.c:315
+msgid "Algorithm"
+msgstr "Algoritmu"
+
+#: ../gcr/gcr-key-renderer.c:322
+msgid "Size"
+msgstr "Tamañu"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "Buelgues"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Datos non reconocíos o non sofitaos."
 
-#: ../gcr/gcr-parser.c:1579
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Nun pudieron analizase datos inválidos o toyíos."
 
-#: ../gcr/gcr-parser.c:1582
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "Los datos tan bloquiaos"
 
-#: ../gp11/gp11-misc.c:101
-msgid "Insufficient memory available"
-msgstr "Nun hai disponible memoria bastante"
-
-#: ../gp11/gp11-misc.c:103
-msgid "The specified slot ID is not valid"
-msgstr "La ID de slot conseñada nun ye válida"
-
-#: ../gp11/gp11-misc.c:105
-msgid "Internal error"
-msgstr "Fallu internu"
-
-#: ../gp11/gp11-misc.c:107
-msgid "The operation failed"
-msgstr "Falló la operación"
-
-#: ../gp11/gp11-misc.c:109
-msgid "Invalid arguments"
-msgstr "Argumentos inválidos"
-
-#: ../gp11/gp11-misc.c:111
-msgid "The module cannot create needed threads"
-msgstr "El módulu nun puede crear los filos necesarios"
-
-#: ../gp11/gp11-misc.c:113
-msgid "The module cannot lock data properly"
-msgstr "El módulu nun puede bloquiar los datos de mou afayadizu"
-
-#: ../gp11/gp11-misc.c:115
-msgid "The field is read-only"
-msgstr "El campu ye de namái llectura"
-
-#: ../gp11/gp11-misc.c:117
-msgid "The field is sensitive and cannot be revealed"
-msgstr "Ye un campu sensible y nun puede revelase"
-
-#: ../gp11/gp11-misc.c:119
-msgid "The field is invalid or does not exist"
-msgstr "El campu nun ye válidu o nun esiste"
-
-#: ../gp11/gp11-misc.c:121
-msgid "Invalid value for field"
-msgstr "Valor inválidu pal campu"
-
-#: ../gp11/gp11-misc.c:123
-msgid "The data is not valid or unrecognized"
-msgstr "El datu nun ye válidu o reconocible"
-
-#: ../gp11/gp11-misc.c:125
-msgid "The data is too long"
-msgstr "El datu ye enforma llargu"
-
-#: ../gp11/gp11-misc.c:127
-msgid "An error occurred on the device"
-msgstr "Hebo un fallu nel preséu"
-
-#: ../gp11/gp11-misc.c:129
-msgid "Insufficient memory available on device"
-msgstr "Nun hai memoria bastante nel preséu"
-
-#: ../gp11/gp11-misc.c:131
-msgid "The device was removed or unplugged"
-msgstr "Quitóse o desconeutóse'l preséu"
-
-#: ../gp11/gp11-misc.c:133
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "El datu cifráu nun ye válidu o reconocible"
-
-#: ../gp11/gp11-misc.c:135
-msgid "The encrypted data is too long"
-msgstr "El datu cifráu ye demasiao llargu"
-
-#: ../gp11/gp11-misc.c:137
-msgid "This operation is not supported"
-msgstr "Esta operación nun ta sofitada"
-
-#: ../gp11/gp11-misc.c:139
-msgid "The key is missing or invalid"
-msgstr "Falta la clave o nun ye válida"
-
-#: ../gp11/gp11-misc.c:141
-msgid "The key is the wrong size"
-msgstr "La clave tien un tamañu incorreutu"
-
-#: ../gp11/gp11-misc.c:143
-msgid "The key is of the wrong type"
-msgstr "La clave ye de tipu equivocáu"
-
-#: ../gp11/gp11-misc.c:145
-msgid "No key is needed"
-msgstr "Nun se necesita clave"
-
-#: ../gp11/gp11-misc.c:147
-msgid "The key is different than before"
-msgstr "La clave ye diferente de l'anterior"
-
-#: ../gp11/gp11-misc.c:149
-msgid "A key is needed"
-msgstr "Necesítase una clave"
-
-#: ../gp11/gp11-misc.c:151
-msgid "Cannot include the key in digest"
-msgstr "Nun puede incluyise la clave nel resume"
-
-#: ../gp11/gp11-misc.c:153
-msgid "This operation cannot be done with this key"
-msgstr "Esta operación nun puede facese con esta clave"
-
-#: ../gp11/gp11-misc.c:155
-msgid "The key cannot be wrapped"
-msgstr "La clave nun puede envolvese"
-
-#: ../gp11/gp11-misc.c:157
-msgid "Cannot export this key"
-msgstr "Esta clave nun puede esportase"
-
-#: ../gp11/gp11-misc.c:159
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "El mecanismu de cifráu ye inválidu o nun se reconoz"
-
-#: ../gp11/gp11-misc.c:161
-msgid "The crypto mechanism has an invalid argument"
-msgstr "El mecanismu de cifráu tien un argumentu inválidu"
-
-#: ../gp11/gp11-misc.c:163
-msgid "The object is missing or invalid"
-msgstr "Falta l'oxetu o nun ye válidu"
-
-#: ../gp11/gp11-misc.c:165
-msgid "Another operation is already taking place"
-msgstr "Yá hai otra operación executándose"
-
-#: ../gp11/gp11-misc.c:167
-msgid "No operation is taking place"
-msgstr "Nun ta executándose denguna operación"
-
-#: ../gp11/gp11-misc.c:169
-msgid "The password or PIN is incorrect"
-msgstr "La contraseña o PIN ye incorreuta"
-
-#: ../gp11/gp11-misc.c:171
-msgid "The password or PIN is invalid"
-msgstr "La contraseña o PIN ye inválida"
-
-#: ../gp11/gp11-misc.c:173
-msgid "The password or PIN is of an invalid length"
-msgstr "La contraseña o PIN tien un llargor inválidu"
-
-#: ../gp11/gp11-misc.c:175
-msgid "The password or PIN has expired"
-msgstr "La contraseña o PIN caducó"
-
-#: ../gp11/gp11-misc.c:177
-msgid "The password or PIN is locked"
-msgstr "La contraseña o PIN ta bloquiada"
-
-#: ../gp11/gp11-misc.c:179
-msgid "The session is closed"
-msgstr "La sesión ta zarrada"
-
-#: ../gp11/gp11-misc.c:181
-msgid "Too many sessions are active"
-msgstr "Hai abondes sesiones actives"
-
-#: ../gp11/gp11-misc.c:183
-msgid "The session is invalid"
-msgstr "La sesión ye inválida"
-
-#: ../gp11/gp11-misc.c:185
-msgid "The session is read-only"
-msgstr "La sesión ye de namái llectura"
-
-#: ../gp11/gp11-misc.c:187
-msgid "An open session exists"
-msgstr "Esiste una sesión abierta"
-
-#: ../gp11/gp11-misc.c:189
-msgid "A read-only session exists"
-msgstr "Esiste una sesión de namái llectura"
-
-#: ../gp11/gp11-misc.c:191
-msgid "An administrator session exists"
-msgstr "Esiste una sesión d'alministrador"
-
-#: ../gp11/gp11-misc.c:193
-msgid "The signature is bad or corrupted"
-msgstr "La robla ye mala o ta corrompida"
-
-#: ../gp11/gp11-misc.c:195
-msgid "The signature is unrecognized or corrupted"
-msgstr "La robla nun ye reconocible o ta corrompida"
-
-#: ../gp11/gp11-misc.c:197
-msgid "Certain required fields are missing"
-msgstr "Falten ciertos campos requeríos"
-
-#: ../gp11/gp11-misc.c:199
-msgid "Certain fields have invalid values"
-msgstr "Ciertos campos tienen valores inválidos"
-
-#: ../gp11/gp11-misc.c:201
-msgid "The device is not present or unplugged"
-msgstr "El preséu nun ta presente o ta desconeutáu"
-
-#: ../gp11/gp11-misc.c:203
-msgid "The device is invalid or unrecognizable"
-msgstr "El preséu ye inválidu o irreconocible"
-
-#: ../gp11/gp11-misc.c:205
-msgid "The device is write protected"
-msgstr "El preséu ta protexíu escontra escritures"
-
-#: ../gp11/gp11-misc.c:207
-msgid "Cannot import because the key is invalid"
-msgstr "Nun puede importase porque la clave ye inválida"
-
-#: ../gp11/gp11-misc.c:209
-msgid "Cannot import because the key is of the wrong size"
-msgstr "Nun puede importase porque la clave tien un tamañu equivocáu"
-
-#: ../gp11/gp11-misc.c:211
-msgid "Cannot import because the key is of the wrong type"
-msgstr "Nun puede importase porque la clave ye de tipu equivocáu"
-
-#: ../gp11/gp11-misc.c:213
-msgid "You are already logged in"
-msgstr "Yá aniciaste sesión"
-
-#: ../gp11/gp11-misc.c:215
-msgid "No user has logged in"
-msgstr "Dengún usuariu anició sesión"
-
-#: ../gp11/gp11-misc.c:217
-msgid "The user's password or PIN is not set"
-msgstr "Dengún usuariu anició sesión"
-
-#: ../gp11/gp11-misc.c:219
-msgid "The user is of an invalid type"
-msgstr "L'usuariu ye de tipu inválidu"
-
-#: ../gp11/gp11-misc.c:221
-msgid "Another user is already logged in"
-msgstr "Yá anició sesión otru usuariu"
-
-#: ../gp11/gp11-misc.c:223
-msgid "Too many users of different types logged in"
-msgstr "Hai abondos usuarios de tipos diferentes con sesión aniciada"
-
-#: ../gp11/gp11-misc.c:225
-msgid "Cannot import an invalid key"
-msgstr "Nun puede importase una clave inválida"
-
-#: ../gp11/gp11-misc.c:227
-msgid "Cannot import a key of the wrong size"
-msgstr "Nun puede importase una clave de tamañu incorreutu"
-
-#: ../gp11/gp11-misc.c:229
-msgid "Cannot export because the key is invalid"
-msgstr "Nun puede esportase porque la clave ye inválida"
-
-#: ../gp11/gp11-misc.c:231
-msgid "Cannot export because the key is of the wrong size"
-msgstr "Nun puede esportase porque la clave ye de tamañu incorreutu"
-
-#: ../gp11/gp11-misc.c:233
-msgid "Cannot export because the key is of the wrong type"
-msgstr "Nun puede esportase porque la clave ye de tipu equivocáu"
-
-#: ../gp11/gp11-misc.c:235
-msgid "Unable to initialize the random number generator"
-msgstr "Nun pudo aniciase'l xenerador de númberos al débalu"
-
-#: ../gp11/gp11-misc.c:237
-msgid "No random number generator available"
-msgstr "Nun ta disponible un xenerador de númberos al débalu"
-
-#: ../gp11/gp11-misc.c:239
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "El mecanismu de cifráu tien un parámetru inválidu"
-
-#: ../gp11/gp11-misc.c:241
-msgid "Not enough space to store the result"
-msgstr "Nun hai espaciu bastante p'atroxar el resultáu"
-
-#: ../gp11/gp11-misc.c:243
-msgid "The saved state is invalid"
-msgstr "L'estáu guardáu ye inválidu"
-
-#: ../gp11/gp11-misc.c:245
-msgid "The information is sensitive and cannot be revealed"
-msgstr "Esa ye información sensible y nun puede revelase"
-
-#: ../gp11/gp11-misc.c:247
-msgid "The state cannot be saved"
-msgstr "L'estáu nun puede guardase"
-
-#: ../gp11/gp11-misc.c:249
-msgid "The module has not been initialized"
-msgstr "El módulu nun s'anició"
-
-#: ../gp11/gp11-misc.c:251
-msgid "The module has already been initialized"
-msgstr "El módulu yá s'anició"
-
-#: ../gp11/gp11-misc.c:253
-msgid "Cannot lock data"
-msgstr "Nun pueden bloquiase los datos"
-
-#: ../gp11/gp11-misc.c:255
-msgid "The data cannot be locked"
-msgstr "Los datos nun pueden bloquiase"
-
-#: ../gp11/gp11-misc.c:257
-msgid "The signature request was rejected by the user"
-msgstr "Petición de robla refugada pol usuariu"
-
-#: ../gp11/gp11-misc.c:261
-msgid "Unknown error"
-msgstr "Fallu desconocíu"
-
-#: ../pkcs11/gck/gck-certificate.c:740
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "Nun pudo alcontrase un llugar p'almacenar el certificáu importáu"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:1
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Desbloquiar esti depósitu de claves siempres qu'anicie sesión"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:2
+msgid "Lock this keyring after"
+msgstr "Bloquiar dempués esti depósitu"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:3
+msgid "Lock this keyring if idle for"
+msgstr "Bloquiar esti depósitu si ta inactivu durante"
+
+#: ../gcr/gcr-unlock-options-widget.ui.h:4
+msgid "Lock this keyring when I log out"
+msgstr "Bloquiar esti depósitu al zarrar la sesión"
+
+#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
+#: ../gcr/gcr-unlock-options-widget.ui.h:6
+msgid "minutes"
+msgstr "minutos"
+
+#: ../gcr/gcr-unlock-renderer.c:63
+#, c-format
+msgid "Unlock: %s"
+msgstr "Desbloquiar: %s"
+
+#: ../gcr/gcr-unlock-renderer.c:65
+#: ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Desbloquiar"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "La contraseña foi incorreuta"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Contraseña"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
+msgstr "El conteníu de «%s» ta bloquiáu. Pa ver el conteníu, escribi la contraseña correuta."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid "The contents are locked. In order to view the contents, enter the correct password."
+msgstr "El conteníu ta bloquiáu. Pa ver el conteníu, escribi la contraseña correuta."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "Visor de claves y certificaos GCR"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "Amosar la versión de l'aplicación"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[ficheru...]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "- Ver certificaos y claves"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Visor de certificaos"
+
+#: ../gck/gck-uri.c:173
+#, c-format
+msgid "The URI has invalid encoding."
+msgstr "El URI tien una codificación non válida."
+
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr "La URI nun tien l'esquema «pkcs11»."
+
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr "El URI tien una sintaxis incorreuta."
+
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr "El URI tien un númberu de versión incorreutu."
+
+#: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Certificáu ensin nome"
 
-#: ../pkcs11/ssh-store/gck-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
 msgstr "Nun pudo analizase la clave pública SSH"
 
-#~ msgid "Removable Disk: %s"
-#~ msgstr "Discu estrayíble: %s"
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Contraseña de desbloquéu pa %s"
 
-#~ msgid "Removable Disk"
-#~ msgstr "Discu estrayíble"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
+msgid "The unlock password was incorrect"
+msgstr "La contraseña de desbloquéu yera incorreuta"
 
-#~ msgid "Home"
-#~ msgstr "Home"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid "Unlock Login Keyring"
+msgstr "Desbloquiar el depósitu d'aniciu"
 
-#~ msgid "The disk or drive this file is located on is not present"
-#~ msgstr "El discu o la unidá na que s'alluga esti archivu nun ta presente"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+msgid "Enter password to unlock your login keyring"
+msgstr "Introduz la contraseña d'aniciu pa desbloquiar el depósitu"
 
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "La contraseña qu'uses p'aniciar sesión nel equipu yá nun concasa cola contraseña d'aniciu del depósitu."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "El depósitu d'aniciu de sesión nun se desbloquió cuando aniciaste sesión nel equipu."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Unlock Keyring"
+msgstr "Abrir l'aniellu de claves"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Introduz una contraseña p'abrir l'aniellu de claves '%s'"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Una aplicación quier acceder al depósitu de claves «%s», pero ta bloquiáu"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+msgid "Unlock private key"
+msgstr "Desbloquiar la clave privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+msgid "Unlock certificate"
+msgstr "Desbloquiar el certificáu"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+msgid "Unlock public key"
+msgstr "Desbloquiar la clave pública"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+msgid "Enter password to unlock the public key"
+msgstr "Introduz la contraseña pa desbloquiar la clave pública"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Una aplicación quier acceder a la clave privada «%s», pero ta bloquiada"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Una aplicación quier acceder al certificáu «%s», pero ta bloquiáu"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Una aplicación quier acceder a la clave pública «%s», pero ta bloquiada"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Una aplicación quier acceder «%s», pero ta bloquiáu"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+msgid "Unlock certificate/key storage"
+msgstr "Desbloquiar el depósitu de certificaos/claves"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Escribir la contraseña pa desbloquiar el depósitu de certificaos/claves"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#, c-format
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "Una aplicación quier acceder al depósitu de certificaos/claves «%s», pero ta bloquiáu"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New Password Required"
+msgstr "Requier una contraseña nueva"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+msgid "New password required for secure storage"
+msgstr "Requierse una contraseña nueva pal almacén seguru"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#, c-format
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "Requierse una contraseña col envís de preparar «%s» p'atroxar certificaos o claves"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+msgid "Change Password"
+msgstr "Camudar la contraseña"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+msgid "Change password for secure storage"
+msgstr "Camudar la contraseña d'atroxamientu seguru"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#, c-format
+msgid "To change the password for '%s', the original and new passwords are required"
+msgstr "Pa camudar la contraseña de «%s», necesitense la contraseña orixinal y la nueva"
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "usu: gnome-keyring comandu [opciones]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "comandos: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "          "
+
+#: ../ui/gku-prompt-tool.c:594
+msgid "Store passwords unencrypted?"
+msgstr "¿Atroxar les sos contraseñes ensin cifrales?"
+
+#: ../ui/gku-prompt-tool.c:595
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Al escoyer usar una contraseña en blancu, les sos contraseñes atroxaes nun tarán cifraes de miente seguro. Sedrán accesibles por cualesquier que tenga accesu a los sos archivos."
+
+#: ../ui/gku-prompt-tool.c:602
+msgid "Use Unsafe Storage"
+msgstr "Usar atroxamientu inseguru"
+
+#: ../ui/gku-prompt-tool.c:642
+msgid "Passwords do not match."
+msgstr "Les contraseñes nun coinciden."
+
+#: ../ui/gku-prompt-tool.c:652
+msgid "Password cannot be blank"
+msgstr "La contraseña nun pue tar erma"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Accesu al depósitu de claves"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Desbloquia l'accesu a contraseñes y a otros secretos"
+
+#: ../ui/gku-prompt.ui.h:1
+msgid "New password strength"
+msgstr "Fortaleza de la nueva contraseña"
+
+#: ../ui/gku-prompt.ui.h:2
+msgid "_Application:"
+msgstr "_Aplicación:"
+
+#: ../ui/gku-prompt.ui.h:3
+msgid "_Confirm:"
+msgstr "_Confirmar:"
+
+#: ../ui/gku-prompt.ui.h:4
+msgid "_Details:"
+msgstr "_Detalles:"
+
+#: ../ui/gku-prompt.ui.h:5
+msgid "_Name:"
+msgstr "N_ome:"
+
+#: ../ui/gku-prompt.ui.h:6
+msgid "_Old Password:"
+msgstr "Contraseña _vieya:"
+
+#: ../ui/gku-prompt.ui.h:7
+msgid "_Password:"
+msgstr "_Contraseña:"
+
+#~ msgid "<i>unknown</i>"
+#~ msgstr "<i>desconocíu</i>"
+#~ msgid "<i>Not Part of Certificate</i>"
+#~ msgstr "<i>Nun ye parte del certificáu</i>"
+#~ msgid "<b>Issued By</b>"
+#~ msgstr "<b>Emitíu por</b>"
+#~ msgid "<b>Fingerprints</b>"
+#~ msgstr "<b>Buelgues</b>"
+#~ msgid "<Not Part of Certificate>"
+#~ msgstr "<Nun ye parte del certificáu>"
+#~ msgid "MD5 Fingerprint"
+#~ msgstr "Buelga MD5"
+#~ msgid "Organization (O)"
+#~ msgstr "Organización (O)"
+#~ msgid "Expires On"
+#~ msgstr "Caduca el"
+#~ msgid "Email Recipient Certificate"
+#~ msgstr "Certificáu de destinatariu de corréu electrónicu"
+#~ msgid "Email Signer Certificate"
+#~ msgstr "Certificáu de roblador de corréu electrónicu"
+#~ msgid "<b>Validity</b>"
+#~ msgstr "<b>Validez</b>"
+#~ msgid "Common Name (CN)"
+#~ msgstr "Nome común (CN)"
+#~ msgid "<b>This certificate has been verified for the following uses:</b>"
+#~ msgstr "<b>Esti certificáu verificose pa los siguientes usos:</b>"
+#~ msgid "<b>Issued To</b>"
+#~ msgstr "<b>Emitíu pa</b>"
+#~ msgid "Issued On"
+#~ msgstr "Emitíu el"
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "Unidá organizativa (OU)"
+#~ msgid "SHA1 Fingerprint"
+#~ msgstr "Buelga SHA1"
+#~ msgid "SSL Server Certificate"
+#~ msgstr "Certificáu de sirvidor SSL"
+#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr ""
-#~ "L'aplicación «%s» (%s) quier acceder a la contraseña pa «<object "
-#~ "prop='name'/>» nel depósitu de claves predetermináu."
+#~ "<span size='large' weight='bold'>Importar certificaos y claves</span>"
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "El módulu nun puede crear los filos necesarios"
+#~ msgid "Insufficient memory available"
+#~ msgstr "Nun hai disponible memoria bastante"
+#~ msgid "The operation failed"
+#~ msgstr "Falló la operación"
+#~ msgid "Invalid arguments"
+#~ msgstr "Argumentos inválidos"
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "La ID de slot conseñada nun ye válida"
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "El datu cifráu nun ye válidu o reconocible"
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "El campu nun ye válidu o nun esiste"
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "Ye un campu sensible y nun puede revelase"
+#~ msgid "The data is too long"
+#~ msgstr "El datu ye enforma llargu"
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "El datu nun ye válidu o reconocible"
+#~ msgid "Invalid value for field"
+#~ msgstr "Valor inválidu pal campu"
+#~ msgid "Insufficient memory available on device"
+#~ msgstr "Nun hai memoria bastante nel preséu"
+#~ msgid "No key is needed"
+#~ msgstr "Nun se necesita clave"
+#~ msgid "The key is different than before"
+#~ msgstr "La clave ye diferente de l'anterior"
+#~ msgid "The encrypted data is too long"
+#~ msgstr "El datu cifráu ye demasiao llargu"
+#~ msgid "This operation is not supported"
+#~ msgstr "Esta operación nun ta sofitada"
+#~ msgid "The key is of the wrong type"
+#~ msgstr "La clave ye de tipu equivocáu"
+#~ msgid "The key is missing or invalid"
+#~ msgstr "Falta la clave o nun ye válida"
+#~ msgid "Cannot include the key in digest"
+#~ msgstr "Nun puede incluyise la clave nel resume"
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "Esta operación nun puede facese con esta clave"
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "La contraseña o PIN tien un llargor inválidu"
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "La contraseña o PIN ye inválida"
+#~ msgid "The object is missing or invalid"
+#~ msgstr "Falta l'oxetu o nun ye válidu"
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "El mecanismu de cifráu tien un argumentu inválidu"
+#~ msgid "No operation is taking place"
+#~ msgstr "Nun ta executándose denguna operación"
+#~ msgid "Another operation is already taking place"
+#~ msgstr "Yá hai otra operación executándose"
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "La clave nun puede envolvese"
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "El mecanismu de cifráu ye inválidu o nun se reconoz"
+#~ msgid "Cannot export this key"
+#~ msgstr "Esta clave nun puede esportase"
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "La contraseña o PIN ye incorreuta"
+#~ msgid "An open session exists"
+#~ msgstr "Esiste una sesión abierta"
+#~ msgid "The session is invalid"
+#~ msgstr "La sesión ye inválida"
+#~ msgid "The password or PIN is locked"
+#~ msgstr "La contraseña o PIN ta bloquiada"
+#~ msgid "The session is closed"
+#~ msgstr "La sesión ta zarrada"
+#~ msgid "The password or PIN has expired"
+#~ msgstr "La contraseña o PIN caducó"
+#~ msgid "An administrator session exists"
+#~ msgstr "Esiste una sesión d'alministrador"
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "La robla ye mala o ta corrompida"
+#~ msgid "The device is write protected"
+#~ msgstr "El preséu ta protexíu escontra escritures"
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "Nun puede importase porque la clave ye de tipu equivocáu"
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "Nun puede importase porque la clave tien un tamañu equivocáu"
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "Nun puede importase porque la clave ye inválida"
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "El preséu ye inválidu o irreconocible"
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "El preséu nun ta presente o ta desconeutáu"
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "Ciertos campos tienen valores inválidos"
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "La robla nun ye reconocible o ta corrompida"
+#~ msgid "No user has logged in"
+#~ msgstr "Dengún usuariu anició sesión"
+#~ msgid "The user is of an invalid type"
+#~ msgstr "L'usuariu ye de tipu inválidu"
+#~ msgid "Another user is already logged in"
+#~ msgstr "Yá anició sesión otru usuariu"
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "Nun puede importase una clave inválida"
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "Nun puede importase una clave de tamañu incorreutu"
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "Nun puede esportase porque la clave ye inválida"
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "Nun puede esportase porque la clave ye de tamañu incorreutu"
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "Nun puede esportase porque la clave ye de tipu equivocáu"
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "Esa ye información sensible y nun puede revelase"
+#~ msgid "The module has not been initialized"
+#~ msgstr "El módulu nun s'anició"
+#~ msgid "The state cannot be saved"
+#~ msgstr "L'estáu nun puede guardase"
+#~ msgid "The module has already been initialized"
+#~ msgstr "El módulu yá s'anició"
+#~ msgid "Cannot lock data"
+#~ msgstr "Nun pueden bloquiase los datos"
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "Nun pudo aniciase'l xenerador de númberos al débalu"
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "El mecanismu de cifráu tien un parámetru inválidu"
+#~ msgid "No random number generator available"
+#~ msgstr "Nun ta disponible un xenerador de númberos al débalu"
+#~ msgid "The saved state is invalid"
+#~ msgstr "L'estáu guardáu ye inválidu"
+#~ msgid "Not enough space to store the result"
+#~ msgstr "Nun hai espaciu bastante p'atroxar el resultáu"
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "Petición de robla refugada pol usuariu"
+#~ msgid "The data cannot be locked"
+#~ msgstr "Los datos nun pueden bloquiase"
+#~ msgid "SSL Client Certificate"
+#~ msgstr "Certificáu de veceru SSL"
+#~ msgid "Internal error"
+#~ msgstr "Fallu internu"
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "El módulu nun puede bloquiar los datos de mou afayadizu"
+#~ msgid "The field is read-only"
+#~ msgstr "El campu ye de namái llectura"
+#~ msgid "An error occurred on the device"
+#~ msgstr "Hebo un fallu nel preséu"
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "Quitóse o desconeutóse'l preséu"
+#~ msgid "The key is the wrong size"
+#~ msgstr "La clave tien un tamañu incorreutu"
+#~ msgid "A key is needed"
+#~ msgstr "Necesítase una clave"
+#~ msgid "Too many sessions are active"
+#~ msgstr "Hai abondes sesiones actives"
+#~ msgid "The session is read-only"
+#~ msgstr "La sesión ye de namái llectura"
+#~ msgid "A read-only session exists"
+#~ msgstr "Esiste una sesión de namái llectura"
+#~ msgid "Certain required fields are missing"
+#~ msgstr "Falten ciertos campos requeríos"
+#~ msgid "You are already logged in"
+#~ msgstr "Yá aniciaste sesión"
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "Dengún usuariu anició sesión"
+#~ msgid "Too many users of different types logged in"
+#~ msgstr "Hai abondos usuarios de tipos diferentes con sesión aniciada"
+#~ msgid "Unknown error"
+#~ msgstr "Fallu desconocíu"
+#~ msgid "The key is different from before"
+#~ msgstr "La clave ye distinta de la anterior"
+#~ msgid "Enter password for to unlock your login keyring"
+#~ msgstr "Introduz la contraseña d'aniciu pa desbloquiar el depósitu"
 
-#~ msgid ""
-#~ "The application '%s' (%s) wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "L'aplicación «%s» (%s) quier acceder a la contraseña pa «<object "
-#~ "prop='name'/>» en %s."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "L'aplicación «%s» quier acceder a la contraseña pa «<object prop='name'/>» "
-#~ "nel depósitu predetermináu."
-
-#~ msgid ""
-#~ "The application '%s' wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "L'aplicación «%s» quier acceder a la contraseña pa «<object prop='name'/>» "
-#~ "en %s."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in the default keyring."
-#~ msgstr ""
-#~ "Una aplicación desconocía quier acceder a la contraseña pa «<object "
-#~ "prop='name'/>» nel depósitu de claves predetermináu."
-
-#~ msgid ""
-#~ "An unknown application wants to access the password for '<object "
-#~ "prop='name'/>' in %s."
-#~ msgstr ""
-#~ "Una aplicación desconocía quier acceder a la contraseña pa «<object "
-#~ "prop='name'/>» en %s."
-
-#~ msgid "Allow access"
-#~ msgstr "Permitir l'accesu"
-
-#~ msgid "Allow application access to keyring?"
-#~ msgstr "¿Permitir a l'aplicación acceder a l'aniellu claves?"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "L'aplicación '%s' (%s) quier acceder al depósitu de claves predetermináu, "
-#~ "pero ta peslláu"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants access to the keyring '%s', but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "L'aplicación '%s' (%s) quier acceder al depósitu de claves %s', pero ta "
-#~ "peslláu"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the default keyring, but it is locked"
-#~ msgstr ""
-#~ "L'aplicación '%s' quier acceder a l'aniellu de claves predetermináu, pero "
-#~ "ta peslláu"
-
-#~ msgid ""
-#~ "The application '%s' wants access to the keyring '%s', but it is locked"
-#~ msgstr ""
-#~ "L'aplicación '%s' quier acceder a l'aniellu de claves '%s', pero ta "
-#~ "peslláu"
-
-#~ msgid ""
-#~ "An unknown application wants access to the default keyring, but it is "
-#~ "locked"
-#~ msgstr ""
-#~ "Una aplicación desconocida quier acceder al depósitu de claves "
-#~ "predeterminau, pero ta peslláu"
-
-#~ msgid "Enter password for default keyring to unlock"
-#~ msgstr "Introduz una contraseña p'abrir el depósitu de claves predetermináu"
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new keyring called '%s'. You "
-#~ "have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación '%s' (%s) quier crear un nueu depósitu de claves nomáu '%s'. "
-#~ "Tienes qu'escoyer la contraseña que quieras usar con ella."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to create a new default keyring. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación '%s' (%s) quier crear un nueu depósitu de claves "
-#~ "predetermináu. Tienes qu'escoyer la contraseña que quieras usar con ella."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new keyring called '%s'. You have "
-#~ "to choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación '%s' quier crear un nueu depósitu de claves nomáu '%s'. "
-#~ "Tienes qu'escoyer la contraseña que quieras usar con ella."
-
-#~ msgid ""
-#~ "The application '%s' wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación '%s' quier crear un nueu depósitu de claves predetermináu. "
-#~ "Tienes qu'escoyer la contraseña que quieras usar con ella."
-
-#~ msgid ""
-#~ "An unknown application wants to create a new default keyring. You have to "
-#~ "choose the password you want to use for it."
-#~ msgstr ""
-#~ "Una aplicación desconocida quier criar un depósitu de claves "
-#~ "predetermináu nuevu. Tien d'elexir la contraseña que quier usar con él."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the '%s' "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación «%s» (%s) quier camudar la contraseña pal depósitu de claves «%"
-#~ "s». Tien d'elexir la contraseña que quier usar con él."
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación «%s» (%s) quier camudar la contraseña pal depósitu de claves "
-#~ "predetermináu. Tien d'elexir la contraseña que quier usar con él."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the '%s' keyring. "
-#~ "You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación '%s' quier camudar la contraseña pal depósitu de claves '%"
-#~ "s'. Tien d'elexir la contraseña que quier usar con él."
-
-#~ msgid ""
-#~ "The application '%s' wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "L'aplicación «%s» quier camudar la contraseña pal depósito de claves "
-#~ "predetermináu. Tien d'elexir la contraseña que quier usar con él."
-
-#~ msgid ""
-#~ "An unknown application wants to change the password for the default "
-#~ "keyring. You have to choose the password you want to use for it."
-#~ msgstr ""
-#~ "Una aplicación desconocía quier camudar la contraseña pal depósitu de "
-#~ "claves predetermináu nuevu. Tien d'elexir la contraseña que quier usar "
-#~ "con él."
-
-#~ msgid "Choose a new password for the default keyring. "
-#~ msgstr "Escueya una contraseña nueva pal depósitu de claves predetermináu "
-
-#~ msgid ""
-#~ "The application '%s' (%s) wants to store a password, but there is no "
-#~ "default keyring. To create one, you need to choose the password you wish "
-#~ "to use for it."
-#~ msgstr ""
-#~ "L'aplicación '%s' (%s) quier almacenar una contraseña, pero nun hai "
-#~ "aniellu o depósitu de claves predetermináu. Pa crear unu, tiene "
-#~ "qu'escoyer la contraseña que quieras usar con él."
-
-#~ msgid ""
-#~ "The application '%s' wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "L'aplicación '%s' quier almacenar una contraseña, pero nun hai aniellu de "
-#~ "claves predetermináu. Pa crear unu, tienes qu'escoyer la contraseña que "
-#~ "quieras usar con él."
-
-#~ msgid ""
-#~ "An unknown application wants to store a password, but there is no default "
-#~ "keyring. To create one, you need to choose the password you wish to use "
-#~ "for it."
-#~ msgstr ""
-#~ "Una aplicación desconocía quier almacenar una contraseña, pero nun hai "
-#~ "aniellu de claves predetermináu. Pa crear unu, tienes qu'escoyer la "
-#~ "contraseña que quieras usar con él."
-
-#~ msgid "Create Default Keyring"
-#~ msgstr "Criar un aniellu de claves predetermináu"
-
-#~ msgid "Choose password for default keyring"
-#~ msgstr "Escueye una contraseña pa l'aniellu de claves predetermináu"
-
-#~ msgid "Create Login Keyring"
-#~ msgstr "Criar depósitu d'aniciu"
-
-#~ msgid "Enter your login password"
-#~ msgstr "Introduza la so contraseña d'aniciu"
-
-#~ msgid ""
-#~ "Your login keyring was not automatically created when you logged into "
-#~ "this computer. It will now be created."
-#~ msgstr ""
-#~ "Al aniciar sesión nesti equipu nun se crió automáticamente el so depósitu "
-#~ "d'aniciu. Criaráse agora."
-
-#~ msgid "Automatically unlock this private key when I log in."
-#~ msgstr "Desbloquiar esta clave privada automáticamente al aniciar sesión."
-
-#~ msgid "Automatically unlock this certificate when I log in."
-#~ msgstr "Desbloquear esti certificáu automáticamente al aniciar sesión."
-
-#~ msgid "Automatically unlock this public key when I log in."
-#~ msgstr "Desbloquiar esta clave pública automáticamente al aniciar sesión."
-
-#~ msgid "Automatically unlock this when I log in"
-#~ msgstr "Desbloquiar esto automáticamente al aniciar sesión"
-
-#, fuzzy
-#~ msgid "Automatically unlock secure storage when I log in."
-#~ msgstr "Desbloquear esti certificáu automáticamente al aniciar sesión."
-
-#~ msgid "Allow _Once"
-#~ msgstr "Permitir _una vegada"
-
-#~ msgid "_Always Allow"
-#~ msgstr "Permitir _siempres"
-
-#~ msgid "Access Denied"
-#~ msgstr "Accesu denegáu"
-
-#~ msgid "The gnome-keyring-daemon application is not running."
-#~ msgstr "L'aplicación gnome-keyring-daemon nun se ta executando."
-
-#~ msgid "Error communicating with gnome-keyring-daemon"
-#~ msgstr "Erru al comunicase con gnome-keyring-daemon"
-
-#~ msgid "A keyring with that name already exists"
-#~ msgstr "Yá existe un depósito de claves con ese nombre"
-
-#~ msgid "Programmer error: The application sent invalid data."
-#~ msgstr "Erru de programación: L'aplicación unvió datos non válidos."
-
-#~ msgid "No matching results"
-#~ msgstr "Nun s'alcontró dengún resultáu coincidente"
-
-#~ msgid "A keyring with that name does not exist."
-#~ msgstr "Nun esiste un depósitu de claves con esi nome."
-
-#~ msgid "The keyring has already been unlocked."
-#~ msgstr "El depósity de claves yá se desbloquió."
-
-#~ msgid "The system wants to import the public key '%s', but it is locked"
-#~ msgstr "El sistema quier importar la clave privada «%s», pero ta bloquiada"
