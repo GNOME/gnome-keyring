@@ -7,8 +7,6 @@ endif
 SUBDIRS = \
 	. \
 	egg \
-	gck \
-	gcr \
 	ui \
 	pkcs11 \
 	schema \
@@ -72,9 +70,4 @@ coverage:
 clear-coverage:
 	$(LCOV) --directory . --zerocounters
 
-endif
-
-if WITH_GNU_MAKE
-# Include this local file if it exists
--include Makefile.local
 endif

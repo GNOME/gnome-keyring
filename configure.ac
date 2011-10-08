@@ -5,35 +5,8 @@ AM_CONFIG_HEADER(config.h)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 dnl ****************************************************************************
-dnl Library package and libtool versioning
-dnl
-dnl Updating the libtool versions, follow these instructions sequentially:
-dnl  1. If the library source code has changed at all since the last update, then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
-dnl  2. If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
-dnl  3. If any interfaces have been added since the last public release, then increment age.
-dnl  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 
-# GCK package versioning
-GCK_MAJOR=1
-GCK_MINOR=0
-GCK_MICRO=0
-
-# GCK libtool versioning
-GCK_CURRENT=0
-GCK_REVISION=0
-GCK_AGE=0
-
-# GCR package versioning
-GCR_MAJOR=3
-GCR_MINOR=0
-GCR_MICRO=0
-
-# GCR libtool versioning
-GCR_CURRENT=1
-GCR_REVISION=0
-GCR_AGE=0
-
-dnl ****************************************************************************
+GKR_MAJOR=3
 
 version_bits=`echo $VERSION | tr '.' ' '`
 full_version=`printf %03d%03d%03d $version_bits`
@@ -59,8 +32,6 @@ AC_TYPE_PID_T
 AC_TYPE_SIGNAL
 AC_TYPE_SIZE_T
 AC_TYPE_UID_T
-
-GOBJECT_INTROSPECTION_CHECK([1.29])
 
 GTK_DOC_CHECK(1.9)
 DISTCHECK_CONFIGURE_FLAGS="--enable-gtk-doc"
@@ -97,7 +68,6 @@ AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
-AC_PATH_PROG(GLIB_MKENUMS, glib-mkenums)
 
 GLIB_GSETTINGS
 
@@ -220,6 +190,23 @@ if test $have_socket = no; then
 fi
 
 # --------------------------------------------------------------------
+# GCR and GCK libraries
+
+PKG_CHECK_MODULES(GCK, gck-1 >= 3.3.1)
+PKG_CHECK_MODULES(GCR, gcr-3 >= 3.3.1)
+PKG_CHECK_MODULES(GCR_BASE, gcr-base-3 >= 3.3.1)
+
+DAEMON_CFLAGS="$DAEMON_CFLAGS $GCK_CFLAGS $GCR_BASE_CFLAGS"
+DAEMON_LIBS="$DAEMON_LIBS $GCK_LIBS $GCR_BASE_CFLAGS"
+
+AC_SUBST(GCK_CFLAGS)
+AC_SUBST(GCR_CFLAGS)
+AC_SUBST(GCR_BASE_CFLAGS)
+AC_SUBST(GCK_LIBS)
+AC_SUBST(GCR_LIBS)
+AC_SUBST(GCR_BASE_LIBS)
+
+# --------------------------------------------------------------------
 # DBus Checks
 #
 
@@ -283,10 +270,6 @@ AC_SUBST(DL_LIBS)
 
 # --------------------------------------------------------------------
 # p11-kit
-
-PKG_CHECK_MODULES([P11_KIT], p11-kit-1 >= 0.6)
-AC_SUBST(P11_KIT_CFLAGS)
-AC_SUBST(P11_KIT_LIBS)
 
 AC_MSG_CHECKING([where to put pkcs11 module configuration])
 P11_SYSTEM_CONFIG_MODULES=$($PKG_CONFIG p11-kit-1 --variable=p11_system_config_modules)
@@ -367,12 +350,6 @@ fi
 AM_CONDITIONAL(WITH_GPG, test "$enable_gpg_agent" != "no")
 
 # --------------------------------------------------------------------
-# GPG support
-
-AC_PATH_PROGS([GNUPG], [gpg gpg2], ["gpg"])
-AC_DEFINE_UNQUOTED([GPG_EXECUTABLE], ["$GNUPG"], [Path to gpg executable.])
-
-# --------------------------------------------------------------------
 # Trusted Root Certificates Directory
 #
 
@@ -406,13 +383,6 @@ else
 fi
 
 # --------------------------------------------------------------------
-# Check for /dev/random
-#
-
-AC_CHECK_FILE(/dev/random, AC_DEFINE(HAVE_DEVRANDOM,1,[Have /dev/random]))
-
-
-# --------------------------------------------------------------------
 # libgcrypt
 #
 
@@ -440,13 +410,6 @@ AC_SUBST([LIBGCRYPT_LIBS])
 #
 
 GKR_LIBTASN1_VERSION=0.3.4
-
-PKG_CHECK_MODULES(LIBTASN1,libtasn1 >= $GKR_LIBTASN1_VERSION)
-AC_SUBST([LIBTASN1_LIBS])
-AC_SUBST([LIBTASN1_CFLAGS])
-
-DAEMON_CFLAGS="$DAEMON_CFLAGS $LIBTASN1_CFLAGS"
-DAEMON_LIBS="$DAEMON_LIBS"
 
 AC_PATH_PROG(ASN1PARSER, asn1Parser, no)
 if test "$ASN1PARSER" = "no" ; then
@@ -519,14 +482,6 @@ AM_CONDITIONAL(WITH_P11_TESTS, test "$p11_tests_status" = "yes")
 if test "$p11_tests_status" = "yes"; then
 	AC_DEFINE_UNQUOTED(WITH_P11_TESTS, 1, [Run p11-tests module testing])
 fi
-
-# ----------------------------------------------------------------------
-# mime-database
-
-AC_ARG_ENABLE(update-mime,
-	AC_HELP_STRING([--disable-update-mime],
-	[don't run update-mime-database utility (useful for packages) ]))
-AM_CONDITIONAL(WITH_UPDATE_MIME, test "$enable_update_mime" != "no")
 
 # --------------------------------------------------------------------
 # Compilation and linking options
@@ -700,24 +655,13 @@ fi
 
 # ----------------------------------------------------------------------
 
-GCK_LT_RELEASE=$GCK_CURRENT:$GCK_REVISION:$GCK_AGE
-AC_SUBST(GCK_LT_RELEASE)
-AC_SUBST(GCK_MAJOR)
-AC_SUBST(GCK_MINOR)
-
-GCR_LT_RELEASE=$GCR_CURRENT:$GCR_REVISION:$GCR_AGE
-AC_SUBST(GCR_LT_RELEASE)
-AC_SUBST(GCR_MAJOR)
-AC_SUBST(GCR_MINOR)
+AC_SUBST(GKR_MAJOR)
 
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
 AC_SUBST(P11_TESTS_CFLAGS)
 AC_SUBST(P11_TESTS_LIBS)
-
-# Are we running with GNU Make?
-AM_CONDITIONAL([WITH_GNU_MAKE], [make --version | grep -q 'GNU Make' > /dev/null])
 
 # HACK: Because autoconf is nasty
 if test "${prefix}" = "NONE"; then
@@ -750,28 +694,8 @@ daemon/gpg-agent/Makefile
 daemon/login/Makefile
 daemon/ssh-agent/Makefile
 docs/Makefile
-docs/reference/Makefile
-docs/reference/gck/Makefile
-docs/reference/gck/version.xml
-docs/reference/gcr/Makefile
-docs/reference/gcr/version.xml
 egg/Makefile
 egg/tests/Makefile
-gck/gck.pc
-gck/Makefile
-gck/tests/Makefile
-gcr/gcr.pc
-gcr/gcr-base.pc
-gcr/gcr-viewer.desktop.in
-gcr/Makefile
-gcr/icons/Makefile
-gcr/icons/16x16/Makefile
-gcr/icons/22x22/Makefile
-gcr/icons/24x24/Makefile
-gcr/icons/32x32/Makefile
-gcr/icons/48x48/Makefile
-gcr/icons/256x256/Makefile
-gcr/tests/Makefile
 pam/Makefile
 pkcs11/Makefile
 pkcs11/gkm/Makefile
@@ -817,7 +741,6 @@ echo
 echo "BUILD"
 echo "  Debug Build:          $debug_status"
 echo "  Strict Compilation:   $strict_status"
-echo "  Introspection:        $found_introspection"
 echo "  Valgrind:             $valgrind_status"
 echo "  PKCS#11 Tests         $p11_tests_status"
 echo "  Test Coverage:        $enable_coverage"

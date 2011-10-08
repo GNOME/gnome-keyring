@@ -29,8 +29,6 @@
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-types.h"
 
-#include "gck/gck.h"
-
 #define GKD_TYPE_SECRET_EXCHANGE               (gkd_secret_exchange_get_type ())
 #define GKD_SECRET_EXCHANGE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_TYPE_SECRET_EXCHANGE, GkdSecretExchange))
 #define GKD_SECRET_EXCHANGE_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_TYPE_SECRET_EXCHANGE, GkdSecretExchangeClass))

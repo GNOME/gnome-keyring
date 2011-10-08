@@ -7,9 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-09 06:52+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2011-04-09 19:30+0200\n"
 "Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
 "Language-Team: Esperanto <ubuntu-l10n-eo@lists.launchpad.net>\n"
@@ -24,7 +23,7 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Sennome"
@@ -96,35 +95,34 @@ msgstr ""
 msgid "GPG Password Agent"
 msgstr ""
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:305
-#: ../gcr/gcr-key-renderer.c:310
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Nekonate"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP-ŝlosilo: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "Enigi pasfrazon"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "Forgesi ĉi tiun pasvorton se senokupite post"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "Forgesi ĉi tiun pasvorton post"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "Forgesi ĉi tiun pasvorton kiam mi elsalutas"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Ensaluti"
 
@@ -168,7 +166,7 @@ msgstr "Komuna nomo"
 msgid "Surname"
 msgstr "Familinomo"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:398
+#: ../egg/egg-oid.c:69
 msgid "Serial Number"
 msgstr "Seria numero"
 
@@ -224,29 +222,50 @@ msgstr ""
 msgid "Pseudonym"
 msgstr "Pseŭdonimo"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:301
+#: ../egg/egg-oid.c:98
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "MD2 kun RSA"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "MD5 kun RSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "SHA1 kun RSA"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:303
+#: ../egg/egg-oid.c:103
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "SHA1 kun DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr ""
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr ""
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr ""
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr ""
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr ""
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -258,602 +277,6 @@ msgstr "Neatendita eraro en select() dum datumlegado de procezido (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Neatendita eraro en waitpid() (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:96 ../gcr/gcr-parser.c:275
-msgid "Certificate"
-msgstr "Atestilo"
-
-#: ../gcr/gcr-certificate-renderer.c:121
-msgid "Extension"
-msgstr "Etendaĵo"
-
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Identifier"
-msgstr "Identigilo"
-
-#: ../gcr/gcr-certificate-renderer.c:134
-msgid "Value"
-msgstr "Valoro"
-
-#: ../gcr/gcr-certificate-renderer.c:140
-msgid "Critical"
-msgstr "Kritike"
-
-#: ../gcr/gcr-certificate-renderer.c:140
-msgid "Yes"
-msgstr "Jes"
-
-#: ../gcr/gcr-certificate-renderer.c:140
-msgid "No"
-msgstr "Ne"
-
-#: ../gcr/gcr-certificate-renderer.c:358
-msgid "Identity"
-msgstr "Identeco"
-
-#: ../gcr/gcr-certificate-renderer.c:362
-msgid "Verified by"
-msgstr ""
-
-#: ../gcr/gcr-certificate-renderer.c:369
-msgid "Expires"
-msgstr "Senvalidiĝos"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:379
-msgid "Subject Name"
-msgstr ""
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:383
-msgid "Issuer Name"
-msgstr "Nomo de la eldoninto"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:387
-msgid "Issued Certificate"
-msgstr "Atestilo de la eldoninto"
-
-#: ../gcr/gcr-certificate-renderer.c:392
-msgid "Version"
-msgstr "Versio"
-
-#: ../gcr/gcr-certificate-renderer.c:406
-msgid "Not Valid Before"
-msgstr "Ne valida antaŭe"
-
-#: ../gcr/gcr-certificate-renderer.c:411
-msgid "Not Valid After"
-msgstr "Ne valida poste"
-
-#: ../gcr/gcr-certificate-renderer.c:420
-msgid "Signature Algorithm"
-msgstr ""
-
-#: ../gcr/gcr-certificate-renderer.c:425
-msgid "Signature Parameters"
-msgstr ""
-
-#: ../gcr/gcr-certificate-renderer.c:432
-msgid "Signature"
-msgstr "Subskribo"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:437
-msgid "Public Key Info"
-msgstr ""
-
-#: ../gcr/gcr-certificate-renderer.c:442
-msgid "Key Algorithm"
-msgstr ""
-
-#: ../gcr/gcr-certificate-renderer.c:448
-msgid "Key Parameters"
-msgstr ""
-
-#: ../gcr/gcr-certificate-renderer.c:455
-msgid "Key Size"
-msgstr "Ŝlosilgrando"
-
-#: ../gcr/gcr-certificate-renderer.c:463 ../gcr/gcr-key-renderer.c:285
-#: ../gcr/gcr-parser.c:278
-msgid "Public Key"
-msgstr "Publika ŝlosilo"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:468
-msgid "Fingerprints"
-msgstr "Fingropremaĵoj"
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "Importi atestilojn kaj ŝlosilojn"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "Importi en:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "Pasvorto:"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr ""
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr ""
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr ""
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr ""
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "minutoj"
-
-#: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Enigi pasvorton por malŝlosi la privatan ŝlosilon"
-
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Enigi pasvorton por malŝlosi la atestilon"
-
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Enigi pasvorton por malŝlosi"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:183
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Por importi la privatan ŝlosilon, ĝi devas esti malŝlosita"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:186
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Por importi la atestilon, ĝi devas esti malŝlosita"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:189
-msgid "In order to import the data, it must be unlocked"
-msgstr "Por importi la datumon, ĝi devas esti malŝlosita"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:194
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Por importi la privatan ŝlosilon '%s', ĝi devas esti malŝlosita"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:197
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Por importi la atestilon '%s', ĝi devas esti malŝlosita"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:200
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Por importi '%s', ĝi devas esti malŝlosita"
-
-#: ../gcr/gcr-importer.c:291 ../gcr/gcr-parser.c:1708 ../gcr/gcr-parser.c:1947
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "La ago estis nuligita"
-
-#: ../gcr/gcr-importer.c:383
-#, c-format
-msgid "No location available to import to"
-msgstr ""
-
-#: ../gcr/gcr-importer.c:532
-msgid "Import Certificates/Keys"
-msgstr "Importi atestilojn/ŝlosilon"
-
-#: ../gcr/gcr-importer.c:539
-msgid "Choose a location to store the imported certificates/keys."
-msgstr ""
-
-#: ../gcr/gcr-key-renderer.c:83
-msgid "Key"
-msgstr ""
-
-#: ../gcr/gcr-key-renderer.c:274
-msgid "Private RSA Key"
-msgstr "Privata RSA-ŝlosilo"
-
-#: ../gcr/gcr-key-renderer.c:276
-msgid "Private DSA Key"
-msgstr "Privata DSA-ŝlosilo"
-
-#: ../gcr/gcr-key-renderer.c:278 ../gcr/gcr-parser.c:272
-msgid "Private Key"
-msgstr "Privata ŝlosilo"
-
-#: ../gcr/gcr-key-renderer.c:281 ../gcr/gcr-key-renderer.c:283
-msgid "Public DSA Key"
-msgstr "Publika DSA-ŝlosilo"
-
-#: ../gcr/gcr-key-renderer.c:292
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../gcr/gcr-key-renderer.c:293
-msgid "Strength"
-msgstr "Forto"
-
-#: ../gcr/gcr-key-renderer.c:306
-msgid "Algorithm"
-msgstr ""
-
-#: ../gcr/gcr-key-renderer.c:313
-msgid "Size"
-msgstr "Grando"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:317
-msgid "Fingerprint"
-msgstr "Fingropremaĵo"
-
-#: ../gcr/gcr-parser.c:1711
-msgid "Unrecognized or unsupported data."
-msgstr "Nekonataj aŭ nesubtenataj datumoj."
-
-#: ../gcr/gcr-parser.c:1714
-msgid "Could not parse invalid or corrupted data."
-msgstr ""
-
-#: ../gcr/gcr-parser.c:1717
-msgid "The data is locked"
-msgstr "La datumoj estas ŝlositaj"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr ""
-
-#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
-#, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgstr ""
-
-#: ../gck/gck-uri.c:292
-msgid "The URI has does not have the 'pkcs11' scheme."
-msgstr ""
-
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr ""
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr ""
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "Interna eraro"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "La ago fiaskis"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "Nevalidaj argumentoj"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr ""
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr ""
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "La kampo estas nurlega"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr ""
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "La kampo ne validas aŭ ne ekzistas"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "Nevalida valoro por la kampo"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr ""
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "La datumo estas tro longa"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "Eraro okazis en la aparato"
-
-#: ../gck/gck-misc.c:135
-msgid "Insufficient memory available on the device"
-msgstr ""
-
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr ""
-
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr ""
-
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr ""
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "La ago ne estas subtenata"
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "La ŝlosilo mankas aŭ ne validas"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr ""
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr ""
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr ""
-
-#: ../gck/gck-misc.c:153
-msgid "The key is different than before"
-msgstr ""
-
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "Ŝlosilo estas bezonata"
-
-#: ../gck/gck-misc.c:157
-msgid "Cannot include the key in the digest"
-msgstr ""
-
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr ""
-
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr ""
-
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "Ne eblas eksporti la ŝlosilon"
-
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr ""
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr ""
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr ""
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr ""
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr ""
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr ""
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr ""
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr ""
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr ""
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr ""
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "La seanco estas fermita"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "Tro multaj seancoj estas aktivaj"
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "La seanco estas nevalida"
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "La seanco estas nurlega"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "Malfermita seanco jam ekzistas"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "Nurlega seanco jam ekzistas"
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "Seanco kiel administranto jam ekzistas"
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr ""
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr ""
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "Kelkaj bezonataj kampoj mankas"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "Kelkaj kampoj enhavas nevalidajn valorojn"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr ""
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr ""
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr ""
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr ""
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr ""
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr ""
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "Vi estas jam ensalutita"
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "Neniu uzanto estas ensalutita"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr ""
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr ""
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "Alia uzanto estas jam ensalutita"
-
-#: ../gck/gck-misc.c:229
-msgid "Too many users of different types are logged in"
-msgstr "Tro multaj uzantoj de malsamaj tipoj ensalutis"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "Ne eblas importi nevalidan ŝlosilon"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr ""
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "Ne eblas eksporti ĉar la ŝlosilo ne validas"
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr ""
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr ""
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr ""
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr ""
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr ""
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr ""
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr ""
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr ""
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr ""
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr ""
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr ""
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr ""
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr ""
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr ""
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "Nekonata eraro"
-
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Nenomata atestilo"
@@ -863,7 +286,7 @@ msgid "Couldn't parse public SSH key"
 msgstr ""
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Malŝlospasvorto por: %s"
@@ -922,9 +345,21 @@ msgstr "Malŝlosi publikan ŝlosilon"
 msgid "Unlock"
 msgstr "Malŝlosi"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Enigi pasvorton por malŝlosi la privatan ŝlosilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Enigi pasvorton por malŝlosi la atestilon"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Enigi pasvorton por malŝlosi publikan ŝlosilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Enigi pasvorton por malŝlosi"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
@@ -1012,26 +447,26 @@ msgstr ""
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "Ĉu memori neĉifritajn pasvortojn?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:592
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "Uzi nesekuran memorejon"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "Pasvortoj ne kongruas."
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "Pasvortoj ne povas esti malplenaj"
 
@@ -1070,43 +505,3 @@ msgstr "Maln_ova pasvorto:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Pasvorto:"
-
-#~ msgid "Email"
-#~ msgstr "Retpoŝtadreso"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>nekonate</i>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Fingropremaĵoj</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Eldonite de</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Eldonite al</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Valideco</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Komuna nomo (KN)"
-
-#~ msgid "Issued On"
-#~ msgstr "Eldonite je"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "MD5-Fingropremaĵo"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organizo (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Organiza unuo (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1-Fingropremaĵo"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Importi atestilojn kaj ŝlosilojn</span>"

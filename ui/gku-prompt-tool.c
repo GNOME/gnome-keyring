@@ -30,7 +30,7 @@
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gcr/gcr.h"
+#include <gcr/gcr.h>
 
 #include <glib/gi18n.h>
 

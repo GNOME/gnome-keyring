@@ -12,8 +12,8 @@ LDADD = \
 	libgkm-mock-secret-store.a \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/ui/libgku-prompt-testable.la \
-	$(top_builddir)/gcr/libgcr-base-@GCR_MAJOR@.la \
 	$(top_builddir)/egg/libegg.la \
+	$(GCR_BASE_LIBS) \
 	$(GLIB_LIBS)
 
 TEST_PROGS = \

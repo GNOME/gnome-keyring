@@ -12,36 +12,6 @@ daemon/login/gkd-login.c
 daemon/org.gnome.keyring.service.in
 egg/egg-oid.c
 egg/egg-spawn.c
-gck/gck-module.c
-gck/gck-modules.c
-gcr/gcr-callback-output-stream.c
-gcr/gcr-certificate.c
-gcr/gcr-certificate-exporter.c
-gcr/gcr-certificate-extensions.c
-gcr/gcr-certificate-renderer.c
-gcr/gcr-certificate-widget.c
-gcr/gcr-display-view.c
-gcr/gcr-failure-renderer.c
-gcr/gcr-gnupg-importer.c
-gcr/gcr-gnupg-key.c
-gcr/gcr-gnupg-process.c
-gcr/gcr-gnupg-renderer.c
-gcr/gcr-importer.c
-gcr/gcr-import-button.c
-gcr/gcr-library.c
-gcr/gcr-key-renderer.c
-gcr/gcr-parser.c
-gcr/gcr-pkcs11-import-dialog.c
-[type: gettext/glade]gcr/gcr-pkcs11-import-dialog.ui
-gcr/gcr-pkcs11-import-interaction.c
-gcr/gcr-trust.c
-[type: gettext/glade]gcr/gcr-unlock-options-widget.ui
-gcr/gcr-unlock-renderer.c
-gcr/gcr-viewer-tool.c
-gcr/gcr-viewer-widget.c
-gcr/gcr-viewer-window.c
-gck/gck-uri.c
-gck/gck-misc.c
 pkcs11/gkm/gkm-certificate.c
 pkcs11/ssh-store/gkm-ssh-private-key.c
 pkcs11/secret-store/gkm-secret-collection.c

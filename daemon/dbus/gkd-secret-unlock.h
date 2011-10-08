@@ -26,6 +26,8 @@
 
 #include "gkd-secret-types.h"
 
+#include <gck/gck.h>
+
 #define GKD_SECRET_TYPE_UNLOCK               (gkd_secret_unlock_get_type ())
 #define GKD_SECRET_UNLOCK(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRET_TYPE_UNLOCK, GkdSecretUnlock))
 #define GKD_SECRET_UNLOCK_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_SECRET_TYPE_UNLOCK, GkdSecretUnlockClass))

@@ -24,7 +24,7 @@
 
 #include "gkd-secret-types.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 #include <glib-object.h>
 

@@ -27,7 +27,7 @@
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-types.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 #define GKD_SECRET_TYPE_CREATE               (gkd_secret_create_get_type ())
 #define GKD_SECRET_CREATE(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRET_TYPE_CREATE, GkdSecretCreate))

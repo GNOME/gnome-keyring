@@ -1,14 +1,9 @@
 
-# TODO: Are we sure this is the best location for these headers?
-incdir = $(includedir)/gck-@GCK_MAJOR@/gck
-
-inc_HEADERS = \
+EXTRA_DIST = \
+	pkcs11i.h \
 	pkcs11.h \
 	pkcs11n.h \
 	pkcs11x.h
-
-EXTRA_DIST = \
-	pkcs11i.h
 
 SUBDIRS = . \
 	gkm \

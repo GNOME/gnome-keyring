@@ -18,7 +18,6 @@ TEST_PROGS = \
 	test-asn1 \
 	test-dn \
 	test-cleanup \
-	test-decimal \
 	test-hex \
 	test-hkdf \
 	test-oid \

@@ -24,7 +24,7 @@
 
 #include "gkd-ssh-agent-private.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 #include "pkcs11/pkcs11.h"
 #include "pkcs11/pkcs11i.h"

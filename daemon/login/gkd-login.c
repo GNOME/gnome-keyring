@@ -31,6 +31,8 @@
 #include "pkcs11/pkcs11i.h"
 #include "pkcs11/wrap-layer/gkm-wrap-layer.h"
 
+#include <gck/gck.h>
+
 #include <glib/gi18n.h>
 
 #include <string.h>

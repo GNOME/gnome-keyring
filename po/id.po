@@ -7,11 +7,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-19 08:45+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2011-09-25 14:50+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,10 +22,9 @@ msgstr ""
 "X-Poedit-Country: Indonesia\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "TanpaNama"
@@ -40,8 +40,12 @@ msgstr "Pilih sandi baru bagi ring kunci '%s'"
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "Sebuah aplikasi ingin mengubah sandi bagi ring kunci '%s'. Pilih sandi baru yang ingin Anda pakai untuknya."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Sebuah aplikasi ingin mengubah sandi bagi ring kunci '%s'. Pilih sandi baru "
+"yang ingin Anda pakai untuknya."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -57,8 +61,12 @@ msgstr "Pilih password untuk ring kunci baru"
 
 #: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
-msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "Sebuah aplikasi ingin membuat sebuah ring kunci baru bernama '%s'. Pilih sandi yang ingin Anda pakai baginya."
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Sebuah aplikasi ingin membuat sebuah ring kunci baru bernama '%s'. Pilih "
+"sandi yang ingin Anda pakai baginya."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -92,36 +100,34 @@ msgstr "Ring Kunci GNOME: Agen GPG"
 msgid "GPG Password Agent"
 msgstr "Agen Sandi GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
-#: ../gcr/gcr-key-renderer.c:314
-#: ../gcr/gcr-key-renderer.c:319
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Tak dikenal"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Kunci PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "Masukkan Frasa Sandi"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "Lupakan sandi ini bila menganggur selama"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "Lupakan sandi ini setelah"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "Lupakan sandi ini ketika saya log keluar"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Log masuk"
 
@@ -166,7 +172,6 @@ msgid "Surname"
 msgstr "Nama Keluarga"
 
 #: ../egg/egg-oid.c:69
-#: ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Nomor Seri"
 
@@ -223,7 +228,6 @@ msgid "Pseudonym"
 msgstr "Pseudonim"
 
 #: ../egg/egg-oid.c:98
-#: ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -240,7 +244,6 @@ msgid "SHA1 with RSA"
 msgstr "SHA1 dengan RSA"
 
 #: ../egg/egg-oid.c:103
-#: ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -272,607 +275,13 @@ msgstr "Penandaan Waktu"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "Galat yang tak diharapkan di select() saat membaca data dari proses anak (%s)"
+msgstr ""
+"Galat yang tak diharapkan di select() saat membaca data dari proses anak (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Galat yang tak diharapkan di waitpid() (%s)"
-
-#: ../gck/gck-module.c:396
-#, c-format
-msgid "Error loading PKCS#11 module: %s"
-msgstr "Galat saat memuat modul PKCS#11: %s"
-
-#: ../gck/gck-module.c:403
-#, c-format
-msgid "Invalid PKCS#11 module: %s"
-msgstr "Modul PKCS#11 tak valid: %s"
-
-#: ../gck/gck-module.c:412
-#, c-format
-msgid "Couldn't setup PKCS#11 module: %s"
-msgstr "Tak bisa menyiapkan modul PKCS#11: %s"
-
-#: ../gck/gck-module.c:428
-#, c-format
-msgid "Couldn't initialize PKCS#11 module: %s"
-msgstr "Tak bisa menginisiasi modul PKCS#11: %s"
-
-#: ../gck/gck-modules.c:67
-#, c-format
-msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr "Tak bisa menginisiasi modul PKCS#11 yang terdaftar: %s"
-
-#. later
-#. later
-#: ../gcr/gcr-certificate.c:388
-#: ../gcr/gcr-gnupg-key.c:629
-msgctxt "column"
-msgid "Name"
-msgstr "Nama"
-
-#: ../gcr/gcr-certificate.c:390
-msgctxt "column"
-msgid "Issued By"
-msgstr "Diterbitkan Oleh"
-
-#. later
-#: ../gcr/gcr-certificate.c:392
-msgctxt "column"
-msgid "Expires"
-msgstr "Kadaluarsa"
-
-#: ../gcr/gcr-certificate.c:1060
-#: ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101
-#: ../gcr/gcr-parser.c:260
-msgid "Certificate"
-msgstr "Sertifikat"
-
-#: ../gcr/gcr-certificate-exporter.c:224
-msgid ""
-"<b>A file already exists with this name.</b>\n"
-"\n"
-"Do you want to replace it with a new file?"
-msgstr ""
-"<b>Telah ada berkas dengan nama ini.</b>\n"
-"\n"
-"Anda ingin menimpanya dengan suatu berkas baru?"
-
-#: ../gcr/gcr-certificate-exporter.c:227
-msgid "_Replace"
-msgstr "_Timpa"
-
-#: ../gcr/gcr-certificate-exporter.c:257
-#, c-format
-msgid "The operation was cancelled."
-msgstr "Operasi dibatalkan."
-
-#: ../gcr/gcr-certificate-exporter.c:301
-msgid "Export certificate"
-msgstr "Ekspor sertifikat"
-
-#: ../gcr/gcr-certificate-exporter.c:313
-msgid "Certificate files"
-msgstr "Berkas sertifikat"
-
-#: ../gcr/gcr-certificate-exporter.c:324
-msgid "PEM files"
-msgstr "Berkas PEM"
-
-#: ../gcr/gcr-certificate-extensions.c:141
-msgid "Other Name"
-msgstr "Nama Lain"
-
-#: ../gcr/gcr-certificate-extensions.c:150
-msgid "XMPP Addr"
-msgstr "Alamat XMPP"
-
-#: ../gcr/gcr-certificate-extensions.c:154
-msgid "DNS SRV"
-msgstr "DNS SRV"
-
-#: ../gcr/gcr-certificate-extensions.c:166
-msgid "Email"
-msgstr "Surel"
-
-#: ../gcr/gcr-certificate-extensions.c:174
-msgid "DNS"
-msgstr "DNS"
-
-#: ../gcr/gcr-certificate-extensions.c:182
-msgid "X400 Address"
-msgstr "Alamat X400"
-
-#: ../gcr/gcr-certificate-extensions.c:189
-msgid "Directory Name"
-msgstr "Nama Direktori"
-
-#: ../gcr/gcr-certificate-extensions.c:197
-msgid "EDI Party Name"
-msgstr "Nama Partai EDI"
-
-#: ../gcr/gcr-certificate-extensions.c:204
-msgid "URI"
-msgstr "URI"
-
-#: ../gcr/gcr-certificate-extensions.c:212
-msgid "IP Address"
-msgstr "Alamat IP"
-
-#: ../gcr/gcr-certificate-extensions.c:220
-msgid "Registered ID"
-msgstr "ID Terdaftar"
-
-#: ../gcr/gcr-certificate-renderer.c:116
-msgid "Basic Constraints"
-msgstr "Kendala Dasar"
-
-#: ../gcr/gcr-certificate-renderer.c:118
-msgid "Certificate Authority"
-msgstr "Otoritas Pengelola Sertifikat"
-
-#: ../gcr/gcr-certificate-renderer.c:119
-#: ../gcr/gcr-certificate-renderer.c:314
-msgid "Yes"
-msgstr "Ya"
-
-#: ../gcr/gcr-certificate-renderer.c:119
-#: ../gcr/gcr-certificate-renderer.c:314
-msgid "No"
-msgstr "Tidak"
-
-#: ../gcr/gcr-certificate-renderer.c:122
-msgid "Max Path Length"
-msgstr "Panjang Path Maks"
-
-#: ../gcr/gcr-certificate-renderer.c:123
-msgid "Unlimited"
-msgstr "Tanpa batas"
-
-#: ../gcr/gcr-certificate-renderer.c:142
-msgid "Extended Key Usage"
-msgstr "Penggunaan Kunci yang Diperluas"
-
-#: ../gcr/gcr-certificate-renderer.c:153
-msgid "Allowed Purposes"
-msgstr "Penggunaan yang Dibolehkan"
-
-#: ../gcr/gcr-certificate-renderer.c:173
-msgid "Subject Key Identifier"
-msgstr "Pengenal Kunci Subjek"
-
-#: ../gcr/gcr-certificate-renderer.c:174
-msgid "Key Identifier"
-msgstr "Pengenal Kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:185
-msgid "Digital signature"
-msgstr "Tanda tangan digital"
-
-#: ../gcr/gcr-certificate-renderer.c:186
-msgid "Key encipherment"
-msgstr "Enkripsi kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:187
-msgid "Data encipherment"
-msgstr "Enkripsi data"
-
-#: ../gcr/gcr-certificate-renderer.c:188
-msgid "Key agreement"
-msgstr "Perjanjian kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:189
-msgid "Certificate signature"
-msgstr "Tanda tangan sertifikat"
-
-#: ../gcr/gcr-certificate-renderer.c:190
-msgid "Revocation list signature"
-msgstr "Tanda tangan daftar pencabutan"
-
-#: ../gcr/gcr-certificate-renderer.c:215
-msgid "Key Usage"
-msgstr "Penggunaan Kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:216
-msgid "Usages"
-msgstr "Penggunaan"
-
-#: ../gcr/gcr-certificate-renderer.c:236
-msgid "Subject Alternative Names"
-msgstr "Nama Alternatif Subjek"
-
-#: ../gcr/gcr-certificate-renderer.c:261
-msgid "Extension"
-msgstr "Ekstensi"
-
-#: ../gcr/gcr-certificate-renderer.c:265
-msgid "Identifier"
-msgstr "Identifair"
-
-#: ../gcr/gcr-certificate-renderer.c:266
-msgid "Value"
-msgstr "Nilai"
-
-#: ../gcr/gcr-certificate-renderer.c:313
-msgid "Critical"
-msgstr "Kritis"
-
-#: ../gcr/gcr-certificate-renderer.c:386
-msgid "Couldn't export the certificate."
-msgstr "Tak bisa mengekspor sertifikat."
-
-#: ../gcr/gcr-certificate-renderer.c:613
-msgid "Identity"
-msgstr "Identitas"
-
-#: ../gcr/gcr-certificate-renderer.c:617
-msgid "Verified by"
-msgstr "Diverfikasi oleh"
-
-#: ../gcr/gcr-certificate-renderer.c:624
-msgid "Expires"
-msgstr "Kadaluwarsa"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:634
-msgid "Subject Name"
-msgstr "Nama Subjek"
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:638
-msgid "Issuer Name"
-msgstr "Nama Penerbit"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:642
-msgid "Issued Certificate"
-msgstr "Sertifikat Yang Diterbitkan"
-
-#: ../gcr/gcr-certificate-renderer.c:647
-msgid "Version"
-msgstr "Versi"
-
-#: ../gcr/gcr-certificate-renderer.c:659
-msgid "Not Valid Before"
-msgstr "Tak Valid Sebelum"
-
-#: ../gcr/gcr-certificate-renderer.c:664
-msgid "Not Valid After"
-msgstr "Tak Valid Setelah"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:669
-msgid "Certificate Fingerprints"
-msgstr "Sidik Jari Sertifikat"
-
-#. Signature
-#: ../gcr/gcr-certificate-renderer.c:675
-#: ../gcr/gcr-certificate-renderer.c:687
-msgid "Signature"
-msgstr "Tanda Tangan"
-
-#: ../gcr/gcr-certificate-renderer.c:679
-msgid "Signature Algorithm"
-msgstr "Algoritma Tanda Tangan"
-
-#: ../gcr/gcr-certificate-renderer.c:683
-msgid "Signature Parameters"
-msgstr "Parameter Tanda Tangan"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:691
-msgid "Public Key Info"
-msgstr "Info Kunci Publik"
-
-#: ../gcr/gcr-certificate-renderer.c:696
-msgid "Key Algorithm"
-msgstr "Algoritma Kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:701
-msgid "Key Parameters"
-msgstr "Parameter Kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:706
-msgid "Key Size"
-msgstr "Ukuran Kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:713
-msgid "Key SHA1 Fingerprint"
-msgstr "Sidik Jari SHA1 Kunci"
-
-#: ../gcr/gcr-certificate-renderer.c:719
-#: ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:263
-msgid "Public Key"
-msgstr "Kunci Publik"
-
-#: ../gcr/gcr-display-view.c:308
-msgid "_Details"
-msgstr "_Detail"
-
-#: ../gcr/gcr-failure-renderer.c:163
-#, c-format
-msgid "Could not display '%s'"
-msgstr "Tak bisa menampilkan '%s'"
-
-#: ../gcr/gcr-failure-renderer.c:165
-msgid "Could not display file"
-msgstr "Tak bisa menampilkan berkas"
-
-#: ../gcr/gcr-failure-renderer.c:170
-msgid "Reason"
-msgstr "Alasan"
-
-#: ../gcr/gcr-failure-renderer.c:203
-#, c-format
-msgid "Cannot display a file of this type."
-msgstr "Tak bisa menampilkan berkas jenis ini."
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "Impor Sertifikat dan Kunci"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "Impor Ke:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "Sandi:"
-
-#: ../gcr/gcr-gnupg-key.c:251
-msgid "PGP Key"
-msgstr "Kunci PGP"
-
-#: ../gcr/gcr-gnupg-key.c:631
-msgctxt "column"
-msgid "Key ID"
-msgstr "ID Kunci"
-
-#: ../gcr/gcr-gnupg-process.c:632
-#, c-format
-msgid "Gnupg process exited with code: %d"
-msgstr "Proses gnupg keluar dengan kode: %d"
-
-#: ../gcr/gcr-gnupg-process.c:639
-#, c-format
-msgid "Gnupg process was terminated with signal: %d"
-msgstr "Proses gnupg diakhiri dengan sinyal: %d"
-
-#: ../gcr/gcr-gnupg-process.c:695
-#: ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1919
-#: ../gcr/gcr-parser.c:2177
-msgid "The operation was cancelled"
-msgstr "Operasi dibatalkan"
-
-#: ../gcr/gcr-importer.c:172
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Masukkan sandi untuk membuka kunci privat"
-
-#: ../gcr/gcr-importer.c:174
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Masukkan sandi untuk membuka sertifikat"
-
-#: ../gcr/gcr-importer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Masukkan sandi untuk membuka kunci"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:185
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Kunci privat mesti dibuka kuncinya agar dapat diimpor"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:188
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Sertifikat mesti dibuka kuncinya agar dapat diimpor"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:191
-msgid "In order to import the data, it must be unlocked"
-msgstr "Data mesti dibuka kuncinya agar dapat diimpor"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:196
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Kunci privat '%s' mesti dibuka kuncinya agar dapat diimpor"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:199
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Sertifikat '%s' mesti dibuka kuncinya agar dapat diimpor"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:202
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s' mesti dibuka kuncinya agar dapat diimpor"
-
-#: ../gcr/gcr-importer.c:386
-#, c-format
-msgid "No location available to import to"
-msgstr "Tak ada lokasi yang tersedia untuk diimpor kesana"
-
-#: ../gcr/gcr-importer.c:537
-msgid "Import Certificates/Keys"
-msgstr "Impor Sertifikat/Kunci"
-
-#: ../gcr/gcr-importer.c:544
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Pilih lokasi untuk menyimpan sertifikat/kunci yang diimpor."
-
-#: ../gcr/gcr-key-renderer.c:82
-msgid "Key"
-msgstr "Kunci"
-
-#: ../gcr/gcr-key-renderer.c:283
-msgid "Private RSA Key"
-msgstr "Kunci Privat RSA"
-
-#: ../gcr/gcr-key-renderer.c:285
-msgid "Private DSA Key"
-msgstr "Kunci Privat DSA"
-
-#: ../gcr/gcr-key-renderer.c:287
-#: ../gcr/gcr-parser.c:257
-msgid "Private Key"
-msgstr "Kunci Pribadi"
-
-#: ../gcr/gcr-key-renderer.c:290
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Public DSA Key"
-msgstr "Kunci Publik DSA"
-
-#: ../gcr/gcr-key-renderer.c:301
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bit"
-
-#: ../gcr/gcr-key-renderer.c:302
-msgid "Strength"
-msgstr "Kekuatan"
-
-#: ../gcr/gcr-key-renderer.c:315
-msgid "Algorithm"
-msgstr "Algoritma"
-
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Size"
-msgstr "Ukuran"
-
-#. Fingerprints
-#: ../gcr/gcr-key-renderer.c:326
-msgid "Fingerprints"
-msgstr "Sidik Jari"
-
-#: ../gcr/gcr-key-renderer.c:331
-msgid "SHA1"
-msgstr "SHA1"
-
-#: ../gcr/gcr-key-renderer.c:337
-msgid "SHA256"
-msgstr "SHA256"
-
-#: ../gcr/gcr-parser.c:1922
-msgid "Unrecognized or unsupported data."
-msgstr "Data tak dikenali atau tak didukung."
-
-#: ../gcr/gcr-parser.c:1925
-msgid "Could not parse invalid or corrupted data."
-msgstr "Tak bisa mengurai data tak valid atau rusak."
-
-#: ../gcr/gcr-parser.c:1928
-msgid "The data is locked"
-msgstr "Data dikunci"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:377
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Tak bisa menemukan tempat untuk menyimpan sertifikat yang dipin"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Otomatis buka ring kunci ini ketika saya log masuk"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "Mengunci ring kunci ini setelah"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "Mengunci ring kunci ini bila menganggur selama"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "Mengunci ring kunci ini ketika saya log keluar"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "menit"
-
-#: ../gcr/gcr-unlock-renderer.c:63
-#, c-format
-msgid "Unlock: %s"
-msgstr "Buka kunci: %s"
-
-#: ../gcr/gcr-unlock-renderer.c:65
-#: ../gcr/gcr-unlock-renderer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Buka Kunci"
-
-#: ../gcr/gcr-unlock-renderer.c:135
-msgid "The password was incorrect"
-msgstr "Sandi salah"
-
-#: ../gcr/gcr-unlock-renderer.c:173
-msgid "Password"
-msgstr "Sandi"
-
-#: ../gcr/gcr-unlock-renderer.c:324
-#, c-format
-#| msgid ""
-#| "The contents of '%s' are locked. In order to view the contents, enter a "
-#| "the correct password."
-msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
-msgstr "Isi '%s' terkunci. Untuk melihat isi, masukkan sandi yang benar."
-
-#: ../gcr/gcr-unlock-renderer.c:327
-#| msgid ""
-#| "The contents are locked. In order to view the contents, enter a the "
-#| "correct password."
-msgid "The contents are locked. In order to view the contents, enter the correct password."
-msgstr "Isi terkunci. Untuk melihat isi, masukkan sandi yang benar."
-
-#: ../gcr/gcr-viewer-tool.c:41
-msgid "GCR Certificate and Key Viewer"
-msgstr "Sertifikat GCR dan Penilik Kunci"
-
-#: ../gcr/gcr-viewer-tool.c:48
-msgid "Show the application's version"
-msgstr "Tampilkan versi aplikasi"
-
-#: ../gcr/gcr-viewer-tool.c:50
-msgid "[file...]"
-msgstr "[berkas...]"
-
-#: ../gcr/gcr-viewer-tool.c:104
-msgid "- View certificate and key files"
-msgstr "- Tilik berkas kunci dan sertifikat"
-
-#: ../gcr/gcr-viewer-tool.c:118
-msgid "Certificate Viewer"
-msgstr "Penilik Sertifikat"
-
-#: ../gck/gck-uri.c:173
-#, c-format
-msgid "The URI has invalid encoding."
-msgstr "URI memiliki pengkodean yang tak valid."
-
-#: ../gck/gck-uri.c:177
-msgid "The URI does not have the 'pkcs11' scheme."
-msgstr "URI tak memiliki skema 'pkcs11'."
-
-#: ../gck/gck-uri.c:181
-msgid "The URI has bad syntax."
-msgstr "URI memiliki sintaks salah."
-
-#: ../gck/gck-uri.c:185
-msgid "The URI has a bad version number."
-msgstr "URI memiliki nomor versi yang salah."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -883,7 +292,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "Tak bisa mengurai kunci publik SSH"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Buka sandi bagi: %s"
@@ -902,12 +311,18 @@ msgid "Enter password to unlock your login keyring"
 msgstr "Masukkan sandi untuk membuka ring kunci log masuk"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid "The password you use to log in to your computer no longer matches that of your login keyring."
-msgstr "Sandi yang Anda pakai untuk log masuk ke komputer Anda tak cocok lagi dengan yang ada di ring kunci log masuk Anda."
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Sandi yang Anda pakai untuk log masuk ke komputer Anda tak cocok lagi dengan "
+"yang ada di ring kunci log masuk Anda."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid "The login keyring did not get unlocked when you logged into your computer."
-msgstr "Ring kunci log masuk tak terbuka ketika Anda log masuk ke komputer Anda."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Ring kunci log masuk tak terbuka ketika Anda log masuk ke komputer Anda."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
@@ -935,9 +350,25 @@ msgstr "Buka kunci sertifikat"
 msgid "Unlock public key"
 msgstr "Buka kunci publik"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Buka Kunci"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Masukkan sandi untuk membuka kunci privat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Masukkan sandi untuk membuka sertifikat"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Masukkan sandi untuk membuka kunci publik"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Masukkan sandi untuk membuka kunci"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
@@ -974,8 +405,12 @@ msgstr "Masukkan sandi untuk membuka penyimpanan sertifikat/kunci"
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
-msgid "An application wants access to the certificate/key storage '%s', but it is locked"
-msgstr "Sebuah aplikasi ingin mengakses penyimpanan sertifikat/kunci '%s', tapi itu terkunci"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Sebuah aplikasi ingin mengakses penyimpanan sertifikat/kunci '%s', tapi itu "
+"terkunci"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
@@ -987,8 +422,11 @@ msgstr "Perlu sandi baru untuk penyimpanan yang aman"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
-msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
-msgstr "Perlu sandi untuk menyiapkan '%s' bagi penyimpanan sertifikat atau kunci"
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Perlu sandi untuk menyiapkan '%s' bagi penyimpanan sertifikat atau kunci"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
@@ -1000,7 +438,8 @@ msgstr "Ubah sandi bagi penyimpanan aman"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid "To change the password for '%s', the original and new passwords are required"
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
 msgstr "Untuk mengubah sandi bagi '%s', diperlukan sandi lama dan baru"
 
 #: ../tool/gkr-tool.c:102
@@ -1017,23 +456,29 @@ msgstr "perintah:"
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "Simpan sandi tak terenkripsi?"
 
-#: ../ui/gku-prompt-tool.c:595
-msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "Dengan memilih suatu sandi kosong, sandi Anda yang tersimpan tak akan terenkripsi dengan aman. Mereka akan dapat diakses oleh siapapun yang bisa mengakses berkas Anda."
+#: ../ui/gku-prompt-tool.c:592
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Dengan memilih suatu sandi kosong, sandi Anda yang tersimpan tak akan "
+"terenkripsi dengan aman. Mereka akan dapat diakses oleh siapapun yang bisa "
+"mengakses berkas Anda."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "Pakai Penyimpanan Yang Tak Aman"
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "Sandi tak cocok."
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "Sandi tak boleh kosong"
 
@@ -1072,4 +517,3 @@ msgstr "Sandi _Lama:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Sandi:"
-

@@ -11,22 +11,23 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring trunk\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-15 09:51+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-06 12:59+0200\n"
 "PO-Revision-Date: 2011-09-17 15:10+0300\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.0\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78
-#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Безымянный"
@@ -42,8 +43,12 @@ msgstr "Выберите новый пароль для связки ключе�
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "Приложение хочет изменить пароль для связки ключей «%s». Укажите новый пароль, который хотите использовать."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Приложение хочет изменить пароль для связки ключей «%s». Укажите новый "
+"пароль, который хотите использовать."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -59,8 +64,12 @@ msgstr "Выберите пароль для новой связки ключе�
 
 #: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
-msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "Приложение хочет создать новую связку ключей с именем «%s». Необходимо выбрать пароль для этой связки ключей."
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Приложение хочет создать новую связку ключей с именем «%s». Необходимо "
+"выбрать пароль для этой связки ключей."
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -94,36 +103,34 @@ msgstr "Связка ключей GNOME: GPG-агент"
 msgid "GPG Password Agent"
 msgstr "Агент пароля GPG"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104
-#: ../gcr/gcr-key-renderer.c:314
-#: ../gcr/gcr-key-renderer.c:319
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Ключ PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
 msgid "Enter Passphrase"
 msgstr "Введите идентификационную фразу"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password if idle for"
 msgstr "Забыть этот пароль, если простаивает в течение"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password after"
 msgstr "Забыть этот пароль после"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password when I log out"
 msgstr "Забыть этот пароль при выходе из системы"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Вход"
 
@@ -168,7 +175,6 @@ msgid "Surname"
 msgstr "Фамилия"
 
 #: ../egg/egg-oid.c:69
-#: ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Серийный номер"
 
@@ -225,7 +231,6 @@ msgid "Pseudonym"
 msgstr "Псевдоним"
 
 #: ../egg/egg-oid.c:98
-#: ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -242,7 +247,6 @@ msgid "SHA1 with RSA"
 msgstr "SHA1 с RSA"
 
 #: ../egg/egg-oid.c:103
-#: ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -274,609 +278,13 @@ msgstr "Проставление отметки времени"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "Неизвестная ошибка в select() при чтении данных из дочернего процесса (%s)"
+msgstr ""
+"Неизвестная ошибка в select() при чтении данных из дочернего процесса (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Неизвестная ошибка в waitpid() (%s)"
-
-#: ../gck/gck-module.c:396
-#, c-format
-msgid "Error loading PKCS#11 module: %s"
-msgstr "Ошибка при загрузке модуля PKCS#11: %s"
-
-#: ../gck/gck-module.c:403
-#, c-format
-msgid "Invalid PKCS#11 module: %s"
-msgstr "Некорректный модуль PKCS#11: %s"
-
-#: ../gck/gck-module.c:412
-#, c-format
-msgid "Couldn't setup PKCS#11 module: %s"
-msgstr "Невозможно настроить модуль PKCS#11: %s"
-
-#: ../gck/gck-module.c:428
-#, c-format
-msgid "Couldn't initialize PKCS#11 module: %s"
-msgstr "Невозможно инициализировать модуль PKCS#11: %s"
-
-#: ../gck/gck-modules.c:67
-#, c-format
-msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr "Невозможно инициализировать зарегистрированные модули PKCS#11: %s"
-
-#. later
-#. later
-#: ../gcr/gcr-certificate.c:388
-#: ../gcr/gcr-gnupg-key.c:629
-msgctxt "column"
-msgid "Name"
-msgstr "Имя"
-
-#: ../gcr/gcr-certificate.c:390
-msgctxt "column"
-msgid "Issued By"
-msgstr "Выдан"
-
-#. later
-#: ../gcr/gcr-certificate.c:392
-msgctxt "column"
-msgid "Expires"
-msgstr "Истекает"
-
-#: ../gcr/gcr-certificate.c:1060
-#: ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101
-#: ../gcr/gcr-parser.c:260
-msgid "Certificate"
-msgstr "Сертификат"
-
-#: ../gcr/gcr-certificate-exporter.c:224
-msgid ""
-"<b>A file already exists with this name.</b>\n"
-"\n"
-"Do you want to replace it with a new file?"
-msgstr ""
-"<b>Файл с таким именем уже существует.</b>\n"
-"\n"
-"Хотите заменить его новым файлом?"
-
-#: ../gcr/gcr-certificate-exporter.c:227
-msgid "_Replace"
-msgstr "_Заменить"
-
-#: ../gcr/gcr-certificate-exporter.c:257
-#, c-format
-msgid "The operation was cancelled."
-msgstr "Действие было отменено."
-
-#: ../gcr/gcr-certificate-exporter.c:301
-msgid "Export certificate"
-msgstr "Экспортировать сертификат"
-
-#: ../gcr/gcr-certificate-exporter.c:313
-msgid "Certificate files"
-msgstr "Файлы сертификата"
-
-#: ../gcr/gcr-certificate-exporter.c:324
-msgid "PEM files"
-msgstr "Файлы PEM"
-
-#: ../gcr/gcr-certificate-extensions.c:141
-msgid "Other Name"
-msgstr "Другое имя"
-
-#: ../gcr/gcr-certificate-extensions.c:150
-msgid "XMPP Addr"
-msgstr "XMPP Addr"
-
-#: ../gcr/gcr-certificate-extensions.c:154
-msgid "DNS SRV"
-msgstr "DNS SRV"
-
-#: ../gcr/gcr-certificate-extensions.c:166
-msgid "Email"
-msgstr "Электронная почта"
-
-#: ../gcr/gcr-certificate-extensions.c:174
-msgid "DNS"
-msgstr "DNS"
-
-#: ../gcr/gcr-certificate-extensions.c:182
-msgid "X400 Address"
-msgstr "Адрес X400"
-
-#: ../gcr/gcr-certificate-extensions.c:189
-msgid "Directory Name"
-msgstr "Название каталога"
-
-#: ../gcr/gcr-certificate-extensions.c:197
-msgid "EDI Party Name"
-msgstr "Название части EDI"
-
-#: ../gcr/gcr-certificate-extensions.c:204
-msgid "URI"
-msgstr "URI"
-
-#: ../gcr/gcr-certificate-extensions.c:212
-msgid "IP Address"
-msgstr "IP-адрес"
-
-#: ../gcr/gcr-certificate-extensions.c:220
-msgid "Registered ID"
-msgstr "Зарегистрированный ID"
-
-#: ../gcr/gcr-certificate-renderer.c:116
-msgid "Basic Constraints"
-msgstr "Основные ограничения"
-
-#: ../gcr/gcr-certificate-renderer.c:118
-msgid "Certificate Authority"
-msgstr "Удостоверяющий центр"
-
-#: ../gcr/gcr-certificate-renderer.c:119
-#: ../gcr/gcr-certificate-renderer.c:314
-msgid "Yes"
-msgstr "Да"
-
-#: ../gcr/gcr-certificate-renderer.c:119
-#: ../gcr/gcr-certificate-renderer.c:314
-msgid "No"
-msgstr "Нет"
-
-#: ../gcr/gcr-certificate-renderer.c:122
-msgid "Max Path Length"
-msgstr "Максимальная длина пути"
-
-#: ../gcr/gcr-certificate-renderer.c:123
-msgid "Unlimited"
-msgstr "Неограниченный"
-
-#: ../gcr/gcr-certificate-renderer.c:142
-msgid "Extended Key Usage"
-msgstr "Расширенное использование ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:153
-msgid "Allowed Purposes"
-msgstr "Допустимые цели"
-
-#: ../gcr/gcr-certificate-renderer.c:173
-msgid "Subject Key Identifier"
-msgstr "Идентификатор ключа получателя"
-
-#: ../gcr/gcr-certificate-renderer.c:174
-msgid "Key Identifier"
-msgstr "Идентификатор ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:185
-msgid "Digital signature"
-msgstr "Цифровая подпись"
-
-#: ../gcr/gcr-certificate-renderer.c:186
-msgid "Key encipherment"
-msgstr "Шифрование ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:187
-msgid "Data encipherment"
-msgstr "Данные шифрования"
-
-#: ../gcr/gcr-certificate-renderer.c:188
-msgid "Key agreement"
-msgstr "Согласование ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:189
-msgid "Certificate signature"
-msgstr "Подпись сертификата"
-
-#: ../gcr/gcr-certificate-renderer.c:190
-msgid "Revocation list signature"
-msgstr "Аннулирование списка подписей"
-
-#: ../gcr/gcr-certificate-renderer.c:215
-msgid "Key Usage"
-msgstr "Использование ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:216
-msgid "Usages"
-msgstr "Назначения"
-
-#: ../gcr/gcr-certificate-renderer.c:236
-msgid "Subject Alternative Names"
-msgstr "Альтернативные имена получателя"
-
-#: ../gcr/gcr-certificate-renderer.c:261
-msgid "Extension"
-msgstr "Расширение"
-
-#: ../gcr/gcr-certificate-renderer.c:265
-msgid "Identifier"
-msgstr "Идентификатор"
-
-#: ../gcr/gcr-certificate-renderer.c:266
-msgid "Value"
-msgstr "Значение"
-
-#: ../gcr/gcr-certificate-renderer.c:313
-msgid "Critical"
-msgstr "Критический"
-
-#: ../gcr/gcr-certificate-renderer.c:386
-msgid "Couldn't export the certificate."
-msgstr "Не удалось экспортировать сертификат."
-
-#: ../gcr/gcr-certificate-renderer.c:613
-msgid "Identity"
-msgstr "Подлинность"
-
-#: ../gcr/gcr-certificate-renderer.c:617
-msgid "Verified by"
-msgstr "Проверен"
-
-#: ../gcr/gcr-certificate-renderer.c:624
-msgid "Expires"
-msgstr "Истекает"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:634
-msgid "Subject Name"
-msgstr "Имя получателя"
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:638
-msgid "Issuer Name"
-msgstr "Имя выдающего"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:642
-msgid "Issued Certificate"
-msgstr "Выданный сертификат"
-
-#: ../gcr/gcr-certificate-renderer.c:647
-msgid "Version"
-msgstr "Версия"
-
-#: ../gcr/gcr-certificate-renderer.c:659
-msgid "Not Valid Before"
-msgstr "Не действителен до"
-
-#: ../gcr/gcr-certificate-renderer.c:664
-msgid "Not Valid After"
-msgstr "Не действителен после"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:669
-msgid "Certificate Fingerprints"
-msgstr "Отпечатки сертификата"
-
-#. Signature
-#: ../gcr/gcr-certificate-renderer.c:675
-#: ../gcr/gcr-certificate-renderer.c:687
-msgid "Signature"
-msgstr "Подпись"
-
-#: ../gcr/gcr-certificate-renderer.c:679
-msgid "Signature Algorithm"
-msgstr "Алгоритм подписи"
-
-#: ../gcr/gcr-certificate-renderer.c:683
-msgid "Signature Parameters"
-msgstr "Параметры подписи"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:691
-msgid "Public Key Info"
-msgstr "Информация об открытом ключе"
-
-#: ../gcr/gcr-certificate-renderer.c:696
-msgid "Key Algorithm"
-msgstr "Алгоритм ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:701
-msgid "Key Parameters"
-msgstr "Параметры ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:706
-msgid "Key Size"
-msgstr "Размер ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:713
-msgid "Key SHA1 Fingerprint"
-msgstr "Отпечаток SHA1 для ключа"
-
-#: ../gcr/gcr-certificate-renderer.c:719
-#: ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:263
-msgid "Public Key"
-msgstr "Открытый ключ"
-
-#: ../gcr/gcr-display-view.c:308
-msgid "_Details"
-msgstr "_Подробности"
-
-#: ../gcr/gcr-failure-renderer.c:163
-#, c-format
-msgid "Could not display '%s'"
-msgstr "Не удалось показать «%s»"
-
-#: ../gcr/gcr-failure-renderer.c:165
-msgid "Could not display file"
-msgstr "Не удалось показать файл"
-
-#: ../gcr/gcr-failure-renderer.c:170
-msgid "Reason"
-msgstr "Причина"
-
-#: ../gcr/gcr-failure-renderer.c:203
-#, c-format
-msgid "Cannot display a file of this type."
-msgstr "Не удалось показать файл этого типа."
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "Импортировать ключи и сертификаты"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "Импортировать в:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "Пароль:"
-
-#: ../gcr/gcr-gnupg-key.c:251
-msgid "PGP Key"
-msgstr "Ключ PGP"
-
-#: ../gcr/gcr-gnupg-key.c:631
-msgctxt "column"
-msgid "Key ID"
-msgstr "Идентификатор ключа"
-
-#: ../gcr/gcr-gnupg-process.c:632
-#, c-format
-msgid "Gnupg process exited with code: %d"
-msgstr "Процесс GnuPG завершился с кодом: %d"
-
-#: ../gcr/gcr-gnupg-process.c:639
-#, c-format
-msgid "Gnupg process was terminated with signal: %d"
-msgstr "Процесс GnuPG был прерван сигналом: %d"
-
-#: ../gcr/gcr-gnupg-process.c:695
-#: ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1919
-#: ../gcr/gcr-parser.c:2177
-msgid "The operation was cancelled"
-msgstr "Действие было отменено"
-
-#: ../gcr/gcr-importer.c:172
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Введите пароль для разблокирования секретного ключа"
-
-#: ../gcr/gcr-importer.c:174
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Введите пароль для разблокирования сертификата"
-
-#: ../gcr/gcr-importer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Введите пароль для разблокирования"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:185
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Необходимо разблокировать секретный ключ, чтобы импортировать его"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:188
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Необходимо разблокировать сертификат, чтобы импортировать его"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:191
-msgid "In order to import the data, it must be unlocked"
-msgstr "Необходимо разблокировать данные, чтобы импортировать их"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:196
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Необходимо разблокировать секретный ключ «%s», чтобы импортировать его"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:199
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Необходимо разблокировать сертификат «%s», чтобы импортировать его"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:202
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Чтобы импортировать «%s», нужно разблокировать его"
-
-#: ../gcr/gcr-importer.c:386
-#, c-format
-msgid "No location available to import to"
-msgstr "Нет хранилища для импорта"
-
-#: ../gcr/gcr-importer.c:537
-msgid "Import Certificates/Keys"
-msgstr "Импортировать ключи/сертификаты"
-
-#: ../gcr/gcr-importer.c:544
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Выберите место для хранения импортированных ключей и сертификатов."
-
-#: ../gcr/gcr-key-renderer.c:82
-msgid "Key"
-msgstr "Ключ"
-
-#: ../gcr/gcr-key-renderer.c:283
-msgid "Private RSA Key"
-msgstr "Секретный ключ RSA"
-
-#: ../gcr/gcr-key-renderer.c:285
-msgid "Private DSA Key"
-msgstr "Секретный ключ DSA"
-
-#: ../gcr/gcr-key-renderer.c:287
-#: ../gcr/gcr-parser.c:257
-msgid "Private Key"
-msgstr "Секретный ключ"
-
-#: ../gcr/gcr-key-renderer.c:290
-#: ../gcr/gcr-key-renderer.c:292
-msgid "Public DSA Key"
-msgstr "Открытый ключ DSA"
-
-#: ../gcr/gcr-key-renderer.c:301
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d бит"
-msgstr[1] "%d бита"
-msgstr[2] "%d бит"
-
-#: ../gcr/gcr-key-renderer.c:302
-msgid "Strength"
-msgstr "Надёжность"
-
-#: ../gcr/gcr-key-renderer.c:315
-msgid "Algorithm"
-msgstr "Алгоритм"
-
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Size"
-msgstr "Размер"
-
-#. Fingerprints
-#: ../gcr/gcr-key-renderer.c:326
-msgid "Fingerprints"
-msgstr "Отпечатки"
-
-#: ../gcr/gcr-key-renderer.c:331
-msgid "SHA1"
-msgstr "SHA1"
-
-#: ../gcr/gcr-key-renderer.c:337
-msgid "SHA256"
-msgstr "SHA256"
-
-#: ../gcr/gcr-parser.c:1922
-msgid "Unrecognized or unsupported data."
-msgstr "Нераспознанные или неподдерживаемые данные."
-
-#: ../gcr/gcr-parser.c:1925
-msgid "Could not parse invalid or corrupted data."
-msgstr "Не удалось разобрать неверные или повреждённые данные."
-
-#: ../gcr/gcr-parser.c:1928
-msgid "The data is locked"
-msgstr "Данные заблокированы"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:377
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Не удалось найти место для хранения закреплённого сертификата"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Автоматически разблокировать эту связку ключей после входа в систему"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "Блокировать данную связку ключей после"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "Блокировать данную связку ключей, если простаивает в течении"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "Автоматически блокировать связку ключей после выхода из системы"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "мин"
-
-#: ../gcr/gcr-unlock-renderer.c:63
-#, c-format
-msgid "Unlock: %s"
-msgstr "Разблокировать: %s"
-
-#: ../gcr/gcr-unlock-renderer.c:65
-#: ../gcr/gcr-unlock-renderer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Разблокирование"
-
-#: ../gcr/gcr-unlock-renderer.c:135
-msgid "The password was incorrect"
-msgstr "Пароль был неверен"
-
-#: ../gcr/gcr-unlock-renderer.c:173
-msgid "Password"
-msgstr "Пароль"
-
-#: ../gcr/gcr-unlock-renderer.c:324
-#, c-format
-#| msgid ""
-#| "The contents of '%s' are locked. In order to view the contents, enter a "
-#| "the correct password."
-msgid "The contents of '%s' are locked. In order to view the contents, enter the correct password."
-msgstr "Содержимое «%s» заблокировано. Чтобы просмотреть содержимое, введите пароль."
-
-#: ../gcr/gcr-unlock-renderer.c:327
-#| msgid ""
-#| "The contents are locked. In order to view the contents, enter a the "
-#| "correct password."
-msgid "The contents are locked. In order to view the contents, enter the correct password."
-msgstr "Содержимое заблокировано. Чтобы просмотреть содержимое, введите пароль."
-
-#: ../gcr/gcr-viewer-tool.c:41
-msgid "GCR Certificate and Key Viewer"
-msgstr "Просмотрщик ключей и сертификатов GCR"
-
-#: ../gcr/gcr-viewer-tool.c:48
-msgid "Show the application's version"
-msgstr "Показать версию приложения"
-
-#: ../gcr/gcr-viewer-tool.c:50
-msgid "[file...]"
-msgstr "[файл…]"
-
-#: ../gcr/gcr-viewer-tool.c:104
-msgid "- View certificate and key files"
-msgstr "— показать файлы сертификата и ключа"
-
-#: ../gcr/gcr-viewer-tool.c:118
-msgid "Certificate Viewer"
-msgstr "Просмотрщик сертификатов"
-
-#: ../gck/gck-uri.c:173
-#, c-format
-msgid "The URI has invalid encoding."
-msgstr "Недопустимая кодировка URI."
-
-#: ../gck/gck-uri.c:177
-msgid "The URI does not have the 'pkcs11' scheme."
-msgstr "В URI отсутствует схема «pkcs11»."
-
-#: ../gck/gck-uri.c:181
-msgid "The URI has bad syntax."
-msgstr "Недопустимый синтаксис URI."
-
-#: ../gck/gck-uri.c:185
-msgid "The URI has a bad version number."
-msgstr "Недопустимая версия URI."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -887,7 +295,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "Не удалось разобрать открытый ключ SSH"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Пароль для разблокирования: %s"
@@ -906,12 +314,19 @@ msgid "Enter password to unlock your login keyring"
 msgstr "Введите пароль для разблокировки связки ключей для входа в систему"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid "The password you use to log in to your computer no longer matches that of your login keyring."
-msgstr "Пароль, который вы используете для входа, больше не соответствует паролю связки ключей для входа в систему"
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Пароль, который вы используете для входа, больше не соответствует паролю "
+"связки ключей для входа в систему"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid "The login keyring did not get unlocked when you logged into your computer."
-msgstr "Ваша связка ключей для входа в систему не была разблокирована, когда вы зарегистрировались в компьютере."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Ваша связка ключей для входа в систему не была разблокирована, когда вы "
+"зарегистрировались в компьютере."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Unlock Keyring"
@@ -925,7 +340,8 @@ msgstr "Введите пароль для разблокирования свя
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к связке ключей «%s», но она заблокирована"
+msgstr ""
+"Приложение хочет получить доступ к связке ключей «%s», но она заблокирована"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 msgid "Unlock private key"
@@ -939,27 +355,46 @@ msgstr "Разблокирование сертификата"
 msgid "Unlock public key"
 msgstr "Разблокирование открытого ключа"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Разблокирование"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "Введите пароль для разблокирования секретного ключа"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "Введите пароль для разблокирования сертификата"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
 msgstr "Введите пароль для разблокирования открытого ключа"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "Введите пароль для разблокирования"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к секретному ключу «%s», но он заблокирован"
+msgstr ""
+"Приложение хочет получить доступ к секретному ключу «%s», но он заблокирован"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к сертификату «%s», но он заблокирован"
+msgstr ""
+"Приложение хочет получить доступ к сертификату «%s», но он заблокирован"
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к открытому ключу «%s», но он заблокирован"
+msgstr ""
+"Приложение хочет получить доступ к открытому ключу «%s», но он заблокирован"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
@@ -978,8 +413,12 @@ msgstr "Введите пароль для разблокирования хра
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
-msgid "An application wants access to the certificate/key storage '%s', but it is locked"
-msgstr "Приложение хочет получить доступ к хранилищу сертификатов/ключей «%s», но оно заблокировано"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Приложение хочет получить доступ к хранилищу сертификатов/ключей «%s», но "
+"оно заблокировано"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
@@ -991,8 +430,12 @@ msgstr "Требуется новый пароль для хранилища"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
-msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
-msgstr "Чтобы подготовить «%s» для хранения сертификатов и ключей необходимо задать пароль"
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Чтобы подготовить «%s» для хранения сертификатов и ключей необходимо задать "
+"пароль"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
@@ -1004,7 +447,8 @@ msgstr "Изменить пароль для хранилища"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid "To change the password for '%s', the original and new passwords are required"
+msgid ""
+"To change the password for '%s', the original and new passwords are required"
 msgstr "Чтобы изменить пароль для «%s», требуется текущий и новый пароль"
 
 #: ../tool/gkr-tool.c:102
@@ -1021,23 +465,28 @@ msgstr "команды: "
 msgid "          "
 msgstr "         "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "Хранить пароли незашифрованными?"
 
-#: ../ui/gku-prompt-tool.c:595
-msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "Если ввести пустой пароль, то ваши хранимые пароли не будут надёжно зашифрованы. Они будут доступны любому, кто имеет доступ к вашим файлам."
+#: ../ui/gku-prompt-tool.c:592
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Если ввести пустой пароль, то ваши хранимые пароли не будут надёжно "
+"зашифрованы. Они будут доступны любому, кто имеет доступ к вашим файлам."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:599
 msgid "Use Unsafe Storage"
 msgstr "Использовать небезопасное хранилище"
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:639
 msgid "Passwords do not match."
 msgstr "Пароли не совпадают."
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:649
 msgid "Password cannot be blank"
 msgstr "Пароль не может быть пустым"
 
@@ -1076,4 +525,3 @@ msgstr "_Старый пароль:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Пароль:"
-

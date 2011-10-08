@@ -5,7 +5,8 @@ noinst_LTLIBRARIES = \
 INCLUDES = -I. \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	-I$(top_srcdir)/pkcs11
+	-I$(top_srcdir)/pkcs11 \
+	$(GCR_BASE_CFLAGS)
 
 # ------------------------------------------------------------------------------
 # The code

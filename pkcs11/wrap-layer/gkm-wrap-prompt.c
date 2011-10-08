@@ -26,7 +26,7 @@
 
 #include "egg/egg-secure-memory.h"
 
-#include "gcr/gcr-unlock-options.h"
+#include <gcr/gcr-unlock-options.h>
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-util.h"

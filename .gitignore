@@ -80,12 +80,6 @@ run-tests
 /junk
 /TODO.tasks
 
-# Old directories
-/gp11
-/docs/reference/gp11
-/docs/reference/gck/version.xml
-/docs/reference/gcr/version.xml
-
 /egg/tests/test-asn1
 /egg/tests/test-cleanup
 /egg/tests/test-decimal
@@ -104,49 +98,6 @@ run-tests
 /daemon/control/tests/frob-control-init
 /daemon/control/tests/frob-control-quit
 /daemon/control/tests/frob-control-unlock
-
-/gck/gck-enum-types.[ch]
-
-/gck/tests/test-gck-attributes
-/gck/tests/test-gck-crypto
-/gck/tests/test-gck-enumerator
-/gck/tests/test-gck-module
-/gck/tests/test-gck-modules
-/gck/tests/test-gck-object
-/gck/tests/test-gck-session
-/gck/tests/test-gck-slot
-/gck/tests/test-gck-uri
-
-/gcr/gcr-oids.[ch]
-/gcr/gcr-enum-types.[ch]
-/gcr/gcr-enum-types-base.[ch]
-/gcr/tests/frob-certificate
-/gcr/tests/frob-key
-/gcr/tests/frob-gnupg-selector
-/gcr/tests/frob-selector
-/gcr/tests/frob-combo-selector
-/gcr/tests/frob-tree-selector
-/gcr/tests/frob-unlock-options
-/gcr/tests/frob-openpgp
-/gcr/tests/frob-parser
-/gcr/tests/frob-unlock
-/gcr/tests/test-certificate
-/gcr/tests/test-certificate-chain
-/gcr/tests/test-colons
-/gcr/tests/test-fingerprint
-/gcr/tests/test-gnupg-collection
-/gcr/tests/test-gnupg-key
-/gcr/tests/test-gnupg-process
-/gcr/tests/test-memory-icon
-/gcr/tests/test-openpgp
-/gcr/tests/test-openssh
-/gcr/tests/test-parser
-/gcr/tests/test-pkcs11-certificate
-/gcr/tests/test-record
-/gcr/tests/test-secret-exchange
-/gcr/tests/test-simple-certificate
-/gcr/tests/test-trust
-/gcr/tests/test-util
 
 /pkcs11/gkm/tests/test-attributes
 /pkcs11/gkm/tests/test-credential
@@ -198,8 +149,6 @@ run-tests
 /pkcs11/xdg-store/tests/test-xdg-module
 /pkcs11/xdg-store/tests/test-xdg-trust
 
-/gcr/gcr-viewer
-
 /daemon/dbus/tests/test-secret-util
 
 /ui/gnome-keyring-prompt.desktop
@@ -208,4 +157,3 @@ run-tests
 
 /docs/reference/*/*-scan
 /docs/reference/*/*-scan.c
-/docs/reference/*/gcr-shooter

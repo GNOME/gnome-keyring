@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-util.c: Test gck-util.c
+/* unit-test-util.c: Test hex routines
 
    Copyright (C) 2007 Stefan Walter
 

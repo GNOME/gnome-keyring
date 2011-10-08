@@ -28,7 +28,7 @@
 
 #include "ui/gku-prompt.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 #include <dbus/dbus.h>
 

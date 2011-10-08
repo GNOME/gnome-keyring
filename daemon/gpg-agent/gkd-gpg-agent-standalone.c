@@ -27,7 +27,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 #include <glib.h>
 #include <glib-object.h>

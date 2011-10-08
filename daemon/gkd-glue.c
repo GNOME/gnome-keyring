@@ -61,7 +61,7 @@ gkd_daemon_startup_ssh (void)
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_ssh_client, NULL);
 	g_io_channel_unref (channel);
 
-	/* gck-ssh-agent sets the environment variable */
+	/* ssh-agent sets the environment variable */
 	gkd_util_push_environment ("SSH_AUTH_SOCK", g_getenv ("SSH_AUTH_SOCK"));
 
 	egg_cleanup_register (pkcs11_ssh_cleanup, NULL);
@@ -101,7 +101,7 @@ gkd_daemon_startup_gpg (void)
 	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_gpg_client, NULL);
 	g_io_channel_unref (channel);
 
-	/* gck-gpg-agent sets the environment variable */
+	/* gpg-agent sets the environment variable */
 	gkd_util_push_environment ("GPG_AGENT_INFO", g_getenv ("GPG_AGENT_INFO"));
 
 	egg_cleanup_register (pkcs11_gpg_cleanup, NULL);

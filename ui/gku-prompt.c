@@ -33,7 +33,7 @@
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-spawn.h"
 
-#include "gcr/gcr-base.h"
+#include <gcr/gcr-base.h>
 
 #include "pkcs11/pkcs11i.h"
 

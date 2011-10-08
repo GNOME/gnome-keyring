@@ -41,7 +41,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-unix-credentials.h"
 
-#include "gck/gck.h"
+#include <gck/gck.h>
 
 #include "pkcs11/pkcs11i.h"
 
