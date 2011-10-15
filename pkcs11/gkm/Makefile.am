@@ -28,6 +28,7 @@ libgkm_la_SOURCES = \
 	gkm-data-asn1.c gkm-data-asn1.h \
 	gkm-data-der.c gkm-data-der.h \
 	gkm-data-types.h \
+	gkm-debug.c gkm-debug.h \
 	gkm-dh-key.c gkm-dh-key.h \
 	gkm-dh-mechanism.c gkm-dh-mechanism.h \
 	gkm-dh-private-key.c gkm-dh-private-key.h \
