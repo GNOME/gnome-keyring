@@ -113,7 +113,8 @@ run-tests
 /pkcs11/gkm/tests/test-transaction
 
 /pkcs11/gnome2-store/tests/frob-gnome2-file
-/pkcs11/gnome2-store/tests/test-gnome2-file
+/pkcs11/gnome2-store/tests/test-*
+!/pkcs11/gnome2-store/tests/test-*.c
 /pkcs11/gnome2-store/tests/check-gnome2-module
 /pkcs11/gnome2-store/tests/check-module
 

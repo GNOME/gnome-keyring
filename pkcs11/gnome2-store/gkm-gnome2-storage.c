@@ -27,6 +27,8 @@
 #include "gkm-gnome2-storage.h"
 
 #include "gkm/gkm-certificate.h"
+#define DEBUG_FLAG GKM_DEBUG_STORAGE
+#include "gkm/gkm-debug.h"
 #include "gkm/gkm-data-asn1.h"
 #include "gkm/gkm-manager.h"
 #include "gkm/gkm-module.h"
@@ -218,12 +220,65 @@ type_from_identifier (const gchar *identifier)
 	return type_from_extension (ext);
 }
 
+static gint
+lock_and_open_file (const gchar *filename,
+                    gint flags)
+{
+	guint tries = 0;
+	gint fd = -1;
+
+	/*
+	 * In this function we don't actually put the object into a 'write' state,
+	 * that's the callers job if necessary.
+	 */
+
+	/* File lock retry loop */
+	for (tries = 0; TRUE; ++tries) {
+		if (tries > MAX_LOCK_TRIES) {
+			g_message ("couldn't write to store file: %s: file is locked", filename);
+			return -1;
+		}
+
+		fd = open (filename, flags, S_IRUSR | S_IWUSR);
+		if (fd == -1) {
+			if ((errno != ENOENT) || (flags & O_CREAT))
+				g_message ("couldn't open store file: %s: %s",
+				           filename, g_strerror (errno));
+			return -1;
+		}
+
+		if (flock (fd, LOCK_EX | LOCK_NB) < 0) {
+			if (errno != EWOULDBLOCK) {
+				g_message ("couldn't lock store file: %s: %s",
+				           filename, g_strerror (errno));
+				close (fd);
+				return -1;
+			}
+
+			gkm_debug ("waiting for locked file: %s", filename);
+			close (fd);
+			fd = -1;
+			g_usleep (200000);
+			continue;
+		}
+
+		gkm_debug ("successfully opened: %s", filename);
+
+		/* Successfully opened file */;
+		return fd;
+	}
+
+	g_assert_not_reached ();
+}
+
 static gboolean
 complete_lock_file (GkmTransaction *transaction, GObject *object, gpointer data)
 {
+	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (object);
 	int fd = GPOINTER_TO_INT (data);
 
 	/* This also unlocks the file */
+	gkm_debug ("closing: %s", self->filename);
 	close (fd);
 
 	/* Completed successfully */
@@ -233,8 +288,7 @@ complete_lock_file (GkmTransaction *transaction, GObject *object, gpointer data)
 static gint
 begin_lock_file (GkmGnome2Storage *self, GkmTransaction *transaction)
 {
-	guint tries = 0;
-	gint fd = -1;
+	gint fd;
 
 	/*
 	 * In this function we don't actually put the object into a 'write' state,
@@ -245,42 +299,17 @@ begin_lock_file (GkmGnome2Storage *self, GkmTransaction *transaction)
 	g_assert (GKM_IS_TRANSACTION (transaction));
 
 	g_return_val_if_fail (!gkm_transaction_get_failed (transaction), -1);
+	gkm_debug ("modifying: %s", self->filename);
 
-	/* File lock retry loop */
-	for (tries = 0; TRUE; ++tries) {
-		if (tries > MAX_LOCK_TRIES) {
-			g_message ("couldn't write to store file: %s: file is locked", self->filename);
-			gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
-			return -1;
-		}
-
-		fd = open (self->filename, O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
-		if (fd == -1) {
-			g_message ("couldn't open store file: %s: %s", self->filename, g_strerror (errno));
-			gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
-			return -1;
-		}
-
-		if (flock (fd, LOCK_EX | LOCK_NB) < 0) {
-			if (errno != EWOULDBLOCK) {
-				g_message ("couldn't lock store file: %s: %s", self->filename, g_strerror (errno));
-				close (fd);
-				gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
-				return -1;
-			}
-
-			close (fd);
-			fd = -1;
-			g_usleep (200000);
-			continue;
-		}
-
-		/* Successfully opened file */;
-		gkm_transaction_add (transaction, self, complete_lock_file, GINT_TO_POINTER (fd));
+	fd = lock_and_open_file (self->filename, O_RDONLY | O_CREAT);
+	if (fd == -1) {
+		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
 		return fd;
 	}
 
-	g_assert_not_reached ();
+	/* Successfully opened file */;
+	gkm_transaction_add (transaction, self, complete_lock_file, GINT_TO_POINTER (fd));
+	return fd;
 }
 
 static gboolean
@@ -388,6 +417,12 @@ begin_modification_state (GkmGnome2Storage *self, GkmTransaction *transaction)
 	GkmDataResult res;
 	struct stat sb;
 	CK_RV rv = CKR_OK;
+
+	/* Already in write state for this transaction? */
+	if (self->transaction != NULL) {
+		g_return_val_if_fail (self->transaction == transaction, FALSE);
+		return TRUE;
+	}
 
 	if (!begin_write_state (self, transaction))
 		return FALSE;
@@ -713,9 +748,10 @@ refresh_with_login (GkmGnome2Storage *self, GkmSecret *login)
 	int fd;
 
 	g_assert (GKM_GNOME2_STORAGE (self));
+	gkm_debug ("refreshing: %s", self->filename);
 
 	/* Open the file for reading */
-	fd = open (self->filename, O_RDONLY, 0);
+	fd = lock_and_open_file (self->filename, O_RDONLY);
 	if (fd == -1) {
 		/* No file, no worries */
 		if (errno == ENOENT)
@@ -753,7 +789,9 @@ refresh_with_login (GkmGnome2Storage *self, GkmSecret *login)
 	if (rv == CKR_FUNCTION_FAILED)
 		self->last_mtime = 0;
 
+	gkm_debug ("closing: %s", self->filename);
 	close (fd);
+
 	return rv;
 }
 
@@ -822,6 +860,9 @@ gkm_gnome2_storage_real_write_value (GkmStore *base, GkmTransaction *transaction
 		gkm_transaction_fail (transaction, CKR_ATTRIBUTE_READ_ONLY);
 		return;
 	}
+
+	if (!begin_modification_state (self, transaction))
+		return;
 
 	if (self->last_mtime == 0) {
 		rv = gkm_gnome2_storage_refresh (self);

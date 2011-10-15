@@ -77,6 +77,8 @@ static const CK_TOKEN_INFO user_module_token_info = {
 
 G_DEFINE_TYPE (GkmGnome2Module, gkm_gnome2_module, GKM_TYPE_MODULE);
 
+GkmModule *  _gkm_gnome2_store_get_module_for_testing (void);
+
 /* -----------------------------------------------------------------------------
  * ACTUAL PKCS#11 Module Implementation
  */
@@ -347,4 +349,10 @@ gkm_gnome2_store_get_functions (void)
 {
 	gkm_crypto_initialize ();
 	return gkm_gnome2_module_function_list;
+}
+
+GkmModule *
+_gkm_gnome2_store_get_module_for_testing (void)
+{
+	return pkcs11_module;
 }

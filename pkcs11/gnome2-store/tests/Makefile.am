@@ -21,7 +21,12 @@ CHECK_PROGS =
 endif
 
 TEST_PROGS = \
-	test-gnome2-file
+	test-gnome2-file \
+	test-gnome2-storage
+
+test_gnome2_storage_SOURCES = \
+	test-gnome2-storage.c \
+	mock-gnome2-module.c mock-gnome2-module.h
 
 check_PROGRAMS = $(TEST_PROGS)
 
