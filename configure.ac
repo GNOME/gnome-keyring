@@ -1,6 +1,6 @@
 AC_INIT(daemon/gkd-main.c)
 
-AM_INIT_AUTOMAKE(gnome-keyring, 3.2.0)
+AM_INIT_AUTOMAKE(gnome-keyring, 3.2.1)
 AM_CONFIG_HEADER(config.h)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
@@ -287,13 +287,20 @@ AC_SUBST(P11_KIT_CFLAGS)
 AC_SUBST(P11_KIT_LIBS)
 
 AC_MSG_CHECKING([where to put pkcs11 module configuration])
-P11_SYSTEM_CONFIG_MODULES=$($PKG_CONFIG p11-kit-1 --variable=p11_system_config_modules)
-AC_MSG_RESULT($P11_SYSTEM_CONFIG_MODULES)
-AC_SUBST(P11_SYSTEM_CONFIG_MODULES)
-
+AC_ARG_WITH(pkcs11-config, [
+            AC_HELP_STRING([--with-pkcs11-config=<dir>],
+                           [directory to install PKCS#11 config])
+            ])
+if test -z "$with_pkcs11_config" ; then
+	P11_SYSTEM_CONFIG_MODULES=$($PKG_CONFIG p11-kit-1 --variable=p11_system_config_modules)
+else
+	P11_SYSTEM_CONFIG_MODULES="$with_pkcs11_config"
+fi
 if test "$P11_SYSTEM_CONFIG_MODULES" = ""; then
 	AC_MSG_ERROR([Could not find location for pkcs11 module config])
 fi
+AC_MSG_RESULT($P11_SYSTEM_CONFIG_MODULES)
+AC_SUBST(P11_SYSTEM_CONFIG_MODULES)
 
 AC_MSG_CHECKING([module path to install pkcs11 modules])
 AC_ARG_WITH(pkcs11-modules, [
