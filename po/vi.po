@@ -1,16 +1,16 @@
 # Vietnamese translation of GNOME Keyring.
 # Copyright © 2010 GNOME i18n Project for Vietnamese.
-# Nguyễn Thái Ngọc Duy <pclouds@vnlinux.org>, 2004,2008,2011.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2004,2008,2011.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
-#
+# Nguyen Vu Hung <vuhung16plus@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 2.26.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-10-17 20:25+0000\n"
-"PO-Revision-Date: 2011-04-03 14:55+0700\n"
-"Last-Translator: Nguyen Vu Hung <vuhung16plus@gmail.com>\n"
+"PO-Revision-Date: 2011-10-19 18:49+1100\n"
+"Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -251,28 +251,26 @@ msgstr "SHA1 với mã hoá DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
-#, fuzzy
 #| msgid "SSL Server Certificate"
 msgid "Server Authentication"
-msgstr "Chứng nhận trình phục vụ SSL"
+msgstr "Xác thực máy chủ"
 
 #: ../egg/egg-oid.c:108
-#, fuzzy
 #| msgid "SSL Client Certificate"
 msgid "Client Authentication"
-msgstr "Chứng nhận ứng dụng khách SSL"
+msgstr "Xác thực máy khách"
 
 #: ../egg/egg-oid.c:109
 msgid "Code Signing"
-msgstr ""
+msgstr "Ký mã"
 
 #: ../egg/egg-oid.c:110
 msgid "Email Protection"
-msgstr ""
+msgstr "Bảo vệ thư"
 
 #: ../egg/egg-oid.c:111
 msgid "Time Stamping"
-msgstr ""
+msgstr "Tem thời gian"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -289,47 +287,44 @@ msgstr "Gặp lỗi bất thường trong « waitpid() » (%s)"
 #: ../gck/gck-module.c:396
 #, c-format
 msgid "Error loading PKCS#11 module: %s"
-msgstr ""
+msgstr "Lỗi nạp môđun PKCS#11: %s"
 
 #: ../gck/gck-module.c:403
 #, c-format
 msgid "Invalid PKCS#11 module: %s"
-msgstr ""
+msgstr "Môđun PKCS#11 không hợp lệ: %s"
 
 #: ../gck/gck-module.c:412
 #, c-format
 msgid "Couldn't setup PKCS#11 module: %s"
-msgstr ""
+msgstr "Không thể nạp môđun PKCS#11: %s"
 
 #: ../gck/gck-module.c:428
 #, c-format
 msgid "Couldn't initialize PKCS#11 module: %s"
-msgstr ""
+msgstr "Không thể khởi động môđun PKCS#11: %s"
 
 #: ../gck/gck-modules.c:67
 #, c-format
 msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr ""
+msgstr "Không thể khởi động môđun PKCS#11 đã đăng ký: %s"
 
 #. later
 #. later
 #: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
-#, fuzzy
 #| msgid "_Name:"
 msgctxt "column"
 msgid "Name"
-msgstr "Tê_n:"
+msgstr "Tên"
 
 #: ../gcr/gcr-certificate.c:390
-#, fuzzy
 #| msgid "Issued On"
 msgctxt "column"
 msgid "Issued By"
-msgstr "Cấp vào"
+msgstr "Cấp lúc"
 
 #. later
 #: ../gcr/gcr-certificate.c:392
-#, fuzzy
 #| msgid "Expires"
 msgctxt "column"
 msgid "Expires"
@@ -346,68 +341,65 @@ msgid ""
 "\n"
 "Do you want to replace it with a new file?"
 msgstr ""
+"<b>Đã có tập tin cùng tên.</b>\n"
+"\n"
+"Bạn có muốn thay bằng tập tin mới không?"
 
 #: ../gcr/gcr-certificate-exporter.c:227
 msgid "_Replace"
-msgstr ""
+msgstr "_Thay thế"
 
 #: ../gcr/gcr-certificate-exporter.c:257
-#, fuzzy, c-format
+#, c-format
 #| msgid "The operation was cancelled"
 msgid "The operation was cancelled."
-msgstr "Thao tác bị huỷ"
+msgstr "Thao tác bị huỷ."
 
 #: ../gcr/gcr-certificate-exporter.c:301
-#, fuzzy
 #| msgid "Unlock certificate"
 msgid "Export certificate"
-msgstr "Mở chứng nhận"
+msgstr "Xuất chứng nhận"
 
 #: ../gcr/gcr-certificate-exporter.c:313
-#, fuzzy
 #| msgid "Certificate"
 msgid "Certificate files"
-msgstr "Chứng nhận"
+msgstr "Tập tin chứng nhận"
 
 #: ../gcr/gcr-certificate-exporter.c:324
 msgid "PEM files"
-msgstr ""
+msgstr "Tập tin PEM"
 
 #: ../gcr/gcr-certificate-extensions.c:141
-#, fuzzy
 #| msgid "Issuer Name"
 msgid "Other Name"
-msgstr "Tên nhà cấp"
+msgstr "Tên khác"
 
 #: ../gcr/gcr-certificate-extensions.c:150
 msgid "XMPP Addr"
-msgstr ""
+msgstr "Địa chỉ XMPP"
 
 #: ../gcr/gcr-certificate-extensions.c:154
 msgid "DNS SRV"
-msgstr ""
+msgstr "DNS SRV"
 
 #: ../gcr/gcr-certificate-extensions.c:166
 msgid "Email"
 msgstr "Địa chỉ thư"
 
 #: ../gcr/gcr-certificate-extensions.c:174
-#, fuzzy
 #| msgid "DSA"
 msgid "DNS"
-msgstr "DSA"
+msgstr "DNS"
 
 #: ../gcr/gcr-certificate-extensions.c:182
-#, fuzzy
 #| msgid "Email Address"
 msgid "X400 Address"
-msgstr "Thư điện tử"
+msgstr "Địa chỉ X400"
 
 #: ../gcr/gcr-certificate-extensions.c:189
-#, fuzzy
 #| msgid "Subject Name"
 msgid "Directory Name"
-msgstr "Tên chủ đề"
+msgstr "Tên thư mục"
 
 #: ../gcr/gcr-certificate-extensions.c:197
 msgid "EDI Party Name"
@@ -415,29 +407,26 @@ msgstr ""
 
 #: ../gcr/gcr-certificate-extensions.c:204
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
 #: ../gcr/gcr-certificate-extensions.c:212
-#, fuzzy
 #| msgid "Email Address"
 msgid "IP Address"
-msgstr "Thư điện tử"
+msgstr "Địa chỉ IP"
 
 #: ../gcr/gcr-certificate-extensions.c:220
-#, fuzzy
 #| msgid "User ID"
 msgid "Registered ID"
-msgstr "Mã số người dùng"
+msgstr "ID đăng ký"
 
 #: ../gcr/gcr-certificate-renderer.c:116
 msgid "Basic Constraints"
-msgstr ""
+msgstr "Ràng buộc cơ bản"
 
 #: ../gcr/gcr-certificate-renderer.c:118
-#, fuzzy
 #| msgid "Certificate"
 msgid "Certificate Authority"
-msgstr "Chứng nhận"
+msgstr "Nhà cầm quyền chứng nhận (CA)"
 
 #: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
@@ -449,77 +438,70 @@ msgstr "Không"
 
 #: ../gcr/gcr-certificate-renderer.c:122
 msgid "Max Path Length"
-msgstr ""
+msgstr "Độ dài đường dẫn tối đa"
 
 #: ../gcr/gcr-certificate-renderer.c:123
-#, fuzzy
 #| msgid "Unnamed"
 msgid "Unlimited"
-msgstr "Không tên"
+msgstr "Không giới hạn"
 
 #: ../gcr/gcr-certificate-renderer.c:142
 msgid "Extended Key Usage"
-msgstr ""
+msgstr "Dùng khoá mở rộng"
 
 #: ../gcr/gcr-certificate-renderer.c:153
 msgid "Allowed Purposes"
-msgstr ""
+msgstr "Mục đích được phép"
 
 #: ../gcr/gcr-certificate-renderer.c:173
-#, fuzzy
 #| msgid "Identifier"
 msgid "Subject Key Identifier"
-msgstr "Dấu nhận diện"
+msgstr "Dấu nhận diện khoá chủ đề"
 
 #: ../gcr/gcr-certificate-renderer.c:174
-#, fuzzy
 #| msgid "Identifier"
 msgid "Key Identifier"
-msgstr "Dấu nhận diện"
+msgstr "Dấu nhận diện khoá"
 
 #: ../gcr/gcr-certificate-renderer.c:185
-#, fuzzy
 #| msgid "Signature"
 msgid "Digital signature"
-msgstr "Chữ ký"
+msgstr "Chữ ký điện tử"
 
 #: ../gcr/gcr-certificate-renderer.c:186
 msgid "Key encipherment"
-msgstr ""
+msgstr "Mật mã hoá khoá"
 
 #: ../gcr/gcr-certificate-renderer.c:187
 msgid "Data encipherment"
-msgstr ""
+msgstr "Mật mã hoá dữ liệu"
 
 #: ../gcr/gcr-certificate-renderer.c:188
-#, fuzzy
 #| msgid "Key Parameters"
 msgid "Key agreement"
-msgstr "Tham số Khoá"
+msgstr ""
 
 #: ../gcr/gcr-certificate-renderer.c:189
-#, fuzzy
 #| msgid "Certificate"
 msgid "Certificate signature"
-msgstr "Chứng nhận"
+msgstr "Chữ ký chứng nhận"
 
 #: ../gcr/gcr-certificate-renderer.c:190
 msgid "Revocation list signature"
-msgstr ""
+msgstr "Chữ ký danh sách thu hồi"
 
 #: ../gcr/gcr-certificate-renderer.c:215
 msgid "Key Usage"
-msgstr ""
+msgstr "Cách dùng khoá"
 
 #: ../gcr/gcr-certificate-renderer.c:216
 msgid "Usages"
-msgstr ""
+msgstr "Cách dùng"
 
 #: ../gcr/gcr-certificate-renderer.c:236
-#, fuzzy
 #| msgid "Subject Name"
 msgid "Subject Alternative Names"
-msgstr "Tên chủ đề"
+msgstr "Tên thay thế chủ đề"
 
 #: ../gcr/gcr-certificate-renderer.c:261
 msgid "Extension"
@@ -538,10 +520,9 @@ msgid "Critical"
 msgstr "Tới hạn"
 
 #: ../gcr/gcr-certificate-renderer.c:386
-#, fuzzy
 #| msgid "Couldn't find a place to store the pinned certificate"
 msgid "Couldn't export the certificate."
-msgstr "Không tìm thấy vị trí lưu chứng nhận/khoá được nhập."
+msgstr "Không thể xuất chứng nhận."
 
 #: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
@@ -584,10 +565,9 @@ msgstr "Không đúng đắn sau"
 
 #. Fingerprints
 #: ../gcr/gcr-certificate-renderer.c:669
-#, fuzzy
 #| msgid "Fingerprints"
 msgid "Certificate Fingerprints"
-msgstr "Vân tay"
+msgstr "Vân tay chứng nhận"
 
 #. Signature
 #: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
@@ -620,10 +600,9 @@ msgid "Key Size"
 msgstr "Cỡ khoá"
 
 #: ../gcr/gcr-certificate-renderer.c:713
-#, fuzzy
 #| msgid "SHA1 Fingerprint"
 msgid "Key SHA1 Fingerprint"
-msgstr "Vân tay SHA1"
+msgstr "Vân tay khoá SHA1"
 
 #: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
 #: ../gcr/gcr-parser.c:263
@@ -631,30 +610,28 @@ msgid "Public Key"
 msgstr "Khoá công khai"
 
 #: ../gcr/gcr-display-view.c:308
-#, fuzzy
 #| msgid "_Details:"
 msgid "_Details"
-msgstr "Ch_i tiết:"
+msgstr "_Chi tiết"
 
 #: ../gcr/gcr-failure-renderer.c:163
 #, c-format
 msgid "Could not display '%s'"
-msgstr ""
+msgstr "Không thể hiển thị '%s'"
 
 #: ../gcr/gcr-failure-renderer.c:165
 msgid "Could not display file"
-msgstr ""
+msgstr "Không thể hiển thị tập tin"
 
 #: ../gcr/gcr-failure-renderer.c:170
-#, fuzzy
 #| msgid "Version"
 msgid "Reason"
-msgstr "Phiên bản"
+msgstr "Nguyên nhân"
 
 #: ../gcr/gcr-failure-renderer.c:203
 #, c-format
 msgid "Cannot display a file of this type."
-msgstr ""
+msgstr "Không thể hiển thị tập tin loại này."
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -669,27 +646,25 @@ msgid "Password:"
 msgstr "Mật khẩu:"
 
 #: ../gcr/gcr-gnupg-key.c:251
-#, fuzzy
 #| msgid "PGP Key: %s"
 msgid "PGP Key"
-msgstr "Khóa PGP: %s"
+msgstr "Khóa PGP"
 
 #: ../gcr/gcr-gnupg-key.c:631
-#, fuzzy
 #| msgid "Key"
 msgctxt "column"
 msgid "Key ID"
-msgstr "Khóa"
+msgstr "ID Khóa"
 
 #: ../gcr/gcr-gnupg-process.c:632
 #, c-format
 msgid "Gnupg process exited with code: %d"
-msgstr ""
+msgstr "Tiến trình gnupg kết thúc với mã: %d"
 
 #: ../gcr/gcr-gnupg-process.c:639
 #, c-format
 msgid "Gnupg process was terminated with signal: %d"
-msgstr ""
+msgstr "Tiến trình gnupg kết thúc với tín hiệu: %d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
 #: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
@@ -799,11 +774,11 @@ msgstr "Vân tay"
 
 #: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
-msgstr ""
+msgstr "SHA1"
 
 #: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
-msgstr ""
+msgstr "SHA256"
 
 #: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
@@ -848,10 +823,10 @@ msgid "minutes"
 msgstr "phút"
 
 #: ../gcr/gcr-unlock-renderer.c:63
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unlock"
 msgid "Unlock: %s"
-msgstr "Mở khoá"
+msgstr "Mở khoá: %s"
 
 #: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
@@ -859,75 +834,69 @@ msgid "Unlock"
 msgstr "Mở khoá"
 
 #: ../gcr/gcr-unlock-renderer.c:135
-#, fuzzy
 #| msgid "The unlock password was incorrect"
 msgid "The password was incorrect"
-msgstr "Bạn đã gõ sai mật khẩu gỡ khoá"
+msgstr "Mật khẩu không đúng"
 
 #: ../gcr/gcr-unlock-renderer.c:173
-#, fuzzy
 #| msgid "Password:"
 msgid "Password"
-msgstr "Mật khẩu:"
+msgstr "Mật khẩu"
 
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
 msgid ""
 "The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
-msgstr ""
+msgstr "Nội dung '%s' đang bị khoá. Nhập mật khẩu để xem."
 
 #: ../gcr/gcr-unlock-renderer.c:327
 msgid ""
 "The contents are locked. In order to view the contents, enter the correct "
 "password."
-msgstr ""
+msgstr "Nội dung bị khoá. Nhập mật khẩu để xem."
 
 #: ../gcr/gcr-viewer-tool.c:41
-#, fuzzy
 #| msgid "Certificate and Key Storage"
 msgid "GCR Certificate and Key Viewer"
-msgstr "Lưu trữ Chứng nhận và Khoá"
+msgstr "Trình xem chứng nhận và khoá GCR"
 
 #: ../gcr/gcr-viewer-tool.c:48
 msgid "Show the application's version"
-msgstr ""
+msgstr "Hiện phiên bản ứng dụng"
 
 #: ../gcr/gcr-viewer-tool.c:50
 msgid "[file...]"
-msgstr ""
+msgstr "[tập-tin...]"
 
 #: ../gcr/gcr-viewer-tool.c:104
-#, fuzzy
 #| msgid "Certificate and Key Storage"
 msgid "- View certificate and key files"
-msgstr "Lưu trữ Chứng nhận và Khoá"
+msgstr "- Xem tập tin chứng nhận và khoá"
 
 #: ../gcr/gcr-viewer-tool.c:118
-#, fuzzy
 #| msgid "Certificate"
 msgid "Certificate Viewer"
-msgstr "Chứng nhận"
+msgstr "Bộ xem chứng nhận"
 
 #: ../gck/gck-uri.c:173
-#, fuzzy, c-format
+#, c-format
 #| msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
 msgid "The URI has invalid encoding."
-msgstr "URI sai cú pháp. Trường '%s' sai."
+msgstr "URI sai cách mã hoá."
 
 #: ../gck/gck-uri.c:177
-#, fuzzy
 #| msgid "The URI has does not have the 'pkcs11' scheme."
 msgid "The URI does not have the 'pkcs11' scheme."
-msgstr "URI không có 'pkcs11'."
+msgstr "URI không tuân theo 'pkcs11'."
 
 #: ../gck/gck-uri.c:181
 msgid "The URI has bad syntax."
-msgstr ""
+msgstr "URI sai cú pháp."
 
 #: ../gck/gck-uri.c:185
 msgid "The URI has a bad version number."
-msgstr ""
+msgstr "URI sai phiên bản."
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
