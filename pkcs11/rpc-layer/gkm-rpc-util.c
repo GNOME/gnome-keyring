@@ -50,7 +50,7 @@ gkm_rpc_warn (const char* msg, ...)
 {
 	va_list va;
 	va_start (va, msg);
-	do_log ("WARNING", msg, va);
+	do_log ("WARNING: gnome-keyring:", msg, va);
 	va_end (va);
 }
 
@@ -59,7 +59,7 @@ gkm_rpc_debug (const char* msg, ...)
 {
 	va_list va;
 	va_start (va, msg);
-	do_log ("DEBUG", msg, va);
+	do_log ("DEBUG: gnome-keyring:", msg, va);
 	va_end (va);
 }
 
