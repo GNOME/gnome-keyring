@@ -31,6 +31,7 @@
 
 #include "gkm/gkm-session.h"
 #include "gkm/gkm-transaction.h"
+#include "gkm/gkm-test.h"
 
 #include "pkcs11/pkcs11i.h"
 
@@ -360,6 +361,77 @@ test_for_collection_no_match (Test *test, gconstpointer unused)
 	g_object_unref (ocoll);
 }
 
+static void
+test_order (Test *test,
+            gconstpointer unused)
+{
+	CK_ATTRIBUTE attrs[] = {
+	        { CKA_G_FIELDS, "test\0value", 11 },
+	        { CKA_G_COLLECTION, "other-collection", 16 },
+	};
+
+	GkmObject *object = NULL;
+	GkmSecretCollection *collection;
+	GkmSecretItem *item;
+	GHashTable *fields;
+	gulong *matched;
+	gsize vsize;
+	gchar *identifier;
+	glong modified;
+	glong last;
+	gint i;
+	CK_RV rv;
+
+	collection = g_object_new (GKM_TYPE_SECRET_COLLECTION,
+	                           "module", test->module,
+	                           "manager", gkm_session_get_manager (test->session),
+	                           "identifier", "other-collection",
+	                           NULL);
+
+	gkm_object_expose (GKM_OBJECT (collection), TRUE);
+
+	/* Add a bunch of items */
+	for (i = 0; i < 2000; i++) {
+		identifier = g_strdup_printf ("item-%d", i);
+		item = gkm_secret_collection_new_item (collection, identifier);
+		g_free (identifier);
+
+		/* Make it match, but remember, wrong collection*/
+		fields = gkm_secret_fields_new ();
+		gkm_secret_fields_add (fields, "test", "value");
+		gkm_secret_item_set_fields (item, fields);
+		g_hash_table_unref (fields);
+
+		gkm_secret_object_set_modified (GKM_SECRET_OBJECT (item),
+		                                (glong)g_random_int ());
+		gkm_object_expose (GKM_OBJECT (item), TRUE);
+	}
+
+	object = gkm_session_create_object_for_factory (test->session, test->factory, NULL, attrs, 2);
+	g_assert (object != NULL);
+	g_assert (GKM_IS_SECRET_SEARCH (object));
+
+	/* No objects matched */
+	matched = gkm_object_get_attribute_data (object, test->session, CKA_G_MATCHED, &vsize);
+	g_assert (matched != NULL);
+	gkm_assert_cmpulong (vsize, ==, sizeof (gulong) * 2000);
+
+	last = G_MAXLONG;
+	for (i = 0; i < vsize / sizeof (gulong); i++) {
+		rv = gkm_session_lookup_readable_object (test->session, matched[i], (GkmObject **)&item);
+		gkm_assert_cmprv (rv, ==, CKR_OK);
+
+		modified = gkm_secret_object_get_modified (GKM_SECRET_OBJECT (item));
+		g_assert (last > modified);
+		last = modified;
+	}
+
+	g_free (matched);
+
+	g_object_unref (object);
+	g_object_unref (collection);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -375,6 +447,7 @@ main (int argc, char **argv)
 	g_test_add ("/secret-store/search/for_bad_collection", Test, NULL, setup, test_for_bad_collection, teardown);
 	g_test_add ("/secret-store/search/for_collection", Test, NULL, setup, test_for_collection, teardown);
 	g_test_add ("/secret-store/search/for_collection_no_match", Test, NULL, setup, test_for_collection_no_match, teardown);
+	g_test_add ("/secret-store/search/order", Test, NULL, setup, test_order, teardown);
 
 	return g_test_run ();
 }
