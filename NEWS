@@ -1,3 +1,9 @@
+Changes in version 3.3.1 are:
+ * Return most recent secret first when searching
+ * Split the Gcr and Gck libraries out of gnome-keyring
+ * Build fixes
+ * Updated translations
+
 Changes in version 3.2.1 are:
  * Fix debugging output, and erroneous warnings
  * Updated translations
