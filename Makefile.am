@@ -1,3 +1,5 @@
+NULL =
+
 if WITH_PAM
 PAM_DIR = pam
 else
@@ -31,7 +33,9 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-strict \
 	--disable-coverage \
 	--disable-update-mime \
-	--with-pkcs11-modules=$(abs_srcdir)/$(top_distdir)/_inst/lib/
+	--with-pkcs11-modules=$(abs_srcdir)/$(top_distdir)/_inst/lib \
+	--with-pkcs11-config=$(abs_srcdir)/$(top_distdir)/_inst/etc/pkcs11 \
+	$(NULL)
 
 DISTCLEANFILES = \
 	intltool-extract \

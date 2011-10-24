@@ -48,14 +48,10 @@ struct _GkmSecretSearch {
 	gchar *collection_id;
 	GHashTable *fields;
 	GList *managers;
-	GHashTable *handles;
+	GHashTable *objects;
 };
 
 G_DEFINE_TYPE (GkmSecretSearch, gkm_secret_search, GKM_TYPE_OBJECT);
-
-/* -----------------------------------------------------------------------------
- * INTERNAL
- */
 
 static gboolean
 match_object_against_criteria (GkmSecretSearch *self, GkmObject *object)
@@ -89,17 +85,13 @@ static void
 on_manager_added_object (GkmManager *manager, GkmObject *object, gpointer user_data)
 {
 	GkmSecretSearch *self = user_data;
-	CK_OBJECT_HANDLE handle;
 
 	g_return_if_fail (GKM_IS_SECRET_SEARCH (self));
 
-	handle = gkm_object_get_handle (object);
-	g_return_if_fail (handle);
-
-	g_return_if_fail (g_hash_table_lookup (self->handles, &handle) == NULL);
+	g_return_if_fail (g_hash_table_lookup (self->objects, object) == NULL);
 
 	if (match_object_against_criteria (self, object)) {
-		g_hash_table_replace (self->handles, gkm_util_ulong_alloc (handle), "unused");
+		g_hash_table_replace (self->objects, g_object_ref (object), "unused");
 		gkm_object_notify_attribute (GKM_OBJECT (self), CKA_G_MATCHED);
 	}
 }
@@ -108,17 +100,11 @@ static void
 on_manager_removed_object (GkmManager *manager, GkmObject *object, gpointer user_data)
 {
 	GkmSecretSearch *self = user_data;
-	CK_OBJECT_HANDLE handle;
 
 	g_return_if_fail (GKM_IS_SECRET_SEARCH (self));
 
-	handle = gkm_object_get_handle (object);
-	g_return_if_fail (handle);
-
-	if (g_hash_table_lookup (self->handles, &handle) != NULL) {
-		g_hash_table_remove (self->handles, &handle);
+	if (g_hash_table_remove (self->objects, object))
 		gkm_object_notify_attribute (GKM_OBJECT (self), CKA_G_MATCHED);
-	}
 }
 
 static void
@@ -138,17 +124,15 @@ on_manager_changed_object (GkmManager *manager, GkmObject *object,
 
 	/* Should we have this object? */
 	if (match_object_against_criteria (self, object)) {
-		if (g_hash_table_lookup (self->handles, &handle) == NULL) {
-			g_hash_table_replace (self->handles, gkm_util_ulong_alloc (handle), "unused");
+		if (g_hash_table_lookup (self->objects, object) == NULL) {
+			g_hash_table_replace (self->objects, g_object_ref (object), "unused");
 			gkm_object_notify_attribute (GKM_OBJECT (self), CKA_G_MATCHED);
 		}
 
 	/* Should we not have this object? */
 	} else {
-		if (g_hash_table_lookup (self->handles, &handle) != NULL) {
-			g_hash_table_remove (self->handles, &handle);
+		if (g_hash_table_remove (self->objects, object))
 			gkm_object_notify_attribute (GKM_OBJECT (self), CKA_G_MATCHED);
-		}
 	}
 }
 
@@ -250,34 +234,57 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	return GKM_OBJECT (search);
 }
 
-static void
-add_each_handle_to_array (gpointer key, gpointer value, gpointer user_data)
+static gint
+on_matched_sort_modified (gconstpointer a,
+                          gconstpointer b)
 {
-	GArray *array = user_data;
-	CK_OBJECT_HANDLE *handle = key;
-	g_array_append_val (array, *handle);
+	glong modified_a;
+	glong modified_b;
+
+	/* Sorting in reverse order */
+
+	modified_a = gkm_secret_object_get_modified (GKM_SECRET_OBJECT (a));
+	modified_b = gkm_secret_object_get_modified (GKM_SECRET_OBJECT (b));
+
+	if (modified_a < modified_b)
+		return 1;
+	if (modified_a > modified_b)
+		return -1;
+
+	return 0;
 }
 
 static CK_RV
-attribute_set_handles (GHashTable *handles, CK_ATTRIBUTE_PTR attr)
+attribute_set_handles (GHashTable *objects,
+                       CK_ATTRIBUTE_PTR attr)
 {
+	GList *list, *l;
 	GArray *array;
+	gulong handle;
 	CK_RV rv;
 
-	g_assert (handles);
+	g_assert (objects);
 	g_assert (attr);
 
 	/* Want the length */
 	if (!attr->pValue) {
-		attr->ulValueLen = sizeof (CK_OBJECT_HANDLE) * g_hash_table_size (handles);
+		attr->ulValueLen = sizeof (CK_OBJECT_HANDLE) * g_hash_table_size (objects);
 		return CKR_OK;
 	}
 
 	/* Get the actual values */
+	list = g_list_sort (g_hash_table_get_keys (objects), on_matched_sort_modified);
 	array = g_array_new (FALSE, TRUE, sizeof (CK_OBJECT_HANDLE));
-	g_hash_table_foreach (handles, add_each_handle_to_array, array);
+
+	for (l = list; l != NULL; l = g_list_next (l)) {
+		handle = gkm_object_get_handle (l->data);
+		g_array_append_val (array, handle);
+	}
+
 	rv = gkm_attribute_set_data (attr, array->data, array->len * sizeof (CK_OBJECT_HANDLE));
 	g_array_free (array, TRUE);
+	g_list_free (list);
+
 	return rv;
 }
 
@@ -302,7 +309,7 @@ gkm_secret_search_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 	case CKA_G_FIELDS:
 		return gkm_secret_fields_serialize (attr, self->fields);
 	case CKA_G_MATCHED:
-		return attribute_set_handles (self->handles, attr);
+		return attribute_set_handles (self->objects, attr);
 	}
 
 	return GKM_OBJECT_CLASS (gkm_secret_search_parent_class)->get_attribute (base, session, attr);
@@ -312,7 +319,7 @@ gkm_secret_search_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 static void
 gkm_secret_search_init (GkmSecretSearch *self)
 {
-	self->handles = g_hash_table_new_full (gkm_util_ulong_hash, gkm_util_ulong_equal, gkm_util_ulong_free, NULL);
+	self->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
 }
 
 static GObject*
@@ -384,6 +391,8 @@ gkm_secret_search_dispose (GObject *obj)
 	g_free (self->collection_id);
 	self->collection_id = NULL;
 
+	g_hash_table_remove_all (self->objects);
+
 	G_OBJECT_CLASS (gkm_secret_search_parent_class)->dispose (obj);
 }
 
@@ -397,6 +406,8 @@ gkm_secret_search_finalize (GObject *obj)
 	if (self->fields)
 		g_hash_table_destroy (self->fields);
 	self->fields = NULL;
+
+	g_hash_table_destroy (self->objects);
 
 	G_OBJECT_CLASS (gkm_secret_search_parent_class)->finalize (obj);
 }
