@@ -584,7 +584,7 @@ gkm_secret_binary_write (GkmSecretCollection *collection, GkmSecretData *sdata,
 	egg_buffer_init_full (&buffer, 256, g_realloc);
 
 	/* Prepare the keyring for encryption */
-	hash_iterations = 1000 + (int) (1000.0 * rand() / (RAND_MAX + 1.0));
+	hash_iterations = g_random_int_range (1000, 4096);
 	gcry_create_nonce (salt, sizeof (salt));
 
 	egg_buffer_append (&buffer, (guchar*)KEYRING_FILE_HEADER, KEYRING_FILE_HEADER_LEN);
