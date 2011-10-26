@@ -30,7 +30,7 @@ EXTRA_DIST = \
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
-	--enable-strict \
+	--disable-strict \
 	--disable-coverage \
 	--disable-update-mime \
 	--with-pkcs11-modules=$(abs_srcdir)/$(top_distdir)/_inst/lib \
