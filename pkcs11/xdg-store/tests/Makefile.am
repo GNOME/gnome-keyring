@@ -13,6 +13,7 @@ LDADD = \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/egg/libegg.la \
 	$(GLIB_LIBS) \
+	$(GTHREAD_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
 if WITH_P11_TESTS
