@@ -3,8 +3,7 @@ INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
-	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS) \
+	$(DAEMON_CFLAGS) \
 	-DGCK_API_SUBJECT_TO_CHANGE
 
 # ------------------------------------------------------------------------------
@@ -33,7 +32,4 @@ gkd_ssh_agent_standalone_LDADD = \
 	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-secure.la \
-	$(GOBJECT_LIBS) \
-	$(GTHREAD_LIBS) \
-	$(LIBGCRYPT_LIBS) \
-	$(GLIB_LIBS)
+	$(DAEMON_LIBS)

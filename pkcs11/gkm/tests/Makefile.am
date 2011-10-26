@@ -11,6 +11,7 @@ LDADD = \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/egg/libegg.la \
 	$(GLIB_LIBS) \
+	$(GTHREAD_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
 noinst_LIBRARIES = libgkm-mock.a
@@ -20,7 +21,7 @@ BUILT_SOURCES = \
 
 libgkm_mock_a_SOURCES = \
 	mock-module.c mock-module.h \
-	mock-locked-object.c mock-locked-object.h
+	mock-locked-object.c mock-locked-object.h \
 	$(BUILT_SOURCES)
 
 TEST_PROGS = \

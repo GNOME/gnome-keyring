@@ -17,10 +17,6 @@ INCLUDES=	\
 	-I$(top_srcdir)/daemon 				\
 	-I$(top_builddir) 				\
 	$(DAEMON_CFLAGS)				\
-	$(GOBJECT_CFLAGS)				\
-	$(GTHREAD_CFLAGS)				\
-	$(GIO_CFLAGS)					\
-	$(GLIB_CFLAGS) 					\
 	-DGCK_API_SUBJECT_TO_CHANGE
 
 gnome_keyring_daemon_SOURCES = \
@@ -47,13 +43,7 @@ gnome_keyring_daemon_LDADD = \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(top_builddir)/gck/libgck-@GCK_MAJOR@.la \
 	$(top_builddir)/egg/libegg-dbus.la \
-	$(DAEMON_LIBS) \
-	$(GOBJECT_LIBS) \
-	$(GTHREAD_LIBS) \
-	$(GIO_LIBS) \
-	$(DAEMON_LIBS) \
-	$(GOBJECT_LIBS) \
-	$(GLIB_LIBS)
+	$(DAEMON_LIBS)
 
 service_in_files = \
 	org.gnome.keyring.service.in \
