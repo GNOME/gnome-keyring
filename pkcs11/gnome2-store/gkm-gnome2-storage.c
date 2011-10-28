@@ -36,6 +36,7 @@
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-util.h"
 
+#include "egg/dotlock.h"
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
 #include "egg/egg-dn.h"
@@ -86,51 +87,9 @@ struct _GkmGnome2Storage {
 
 G_DEFINE_TYPE (GkmGnome2Storage, gkm_gnome2_storage, GKM_TYPE_STORE);
 
-#define MAX_LOCK_TRIES 20
+#define LOCK_TIMEOUT  4000  /*(4 seconds)*/
 
 #define UNWANTED_IDENTIFIER_CHARS  ":/\\<>|\t\n\r\v "
-
-/* -----------------------------------------------------------------------------
- * HELPERS
- */
-
-#ifndef HAVE_FLOCK
-#define LOCK_SH 1
-#define LOCK_EX 2
-#define LOCK_NB 4
-#define LOCK_UN 8
-
-static int flock(int fd, int operation)
-{
-	struct flock flock;
-
-	switch (operation & ~LOCK_NB) {
-	case LOCK_SH:
-		flock.l_type = F_RDLCK;
-		break;
-	case LOCK_EX:
-		flock.l_type = F_WRLCK;
-		break;
-	case LOCK_UN:
-		flock.l_type = F_UNLCK;
-		break;
-	default:
-		errno = EINVAL;
-		return -1;
-	}
-
-	flock.l_whence = 0;
-	flock.l_start = 0;
-	flock.l_len = 0;
-
-	return fcntl (fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &flock);
-}
-#endif /* !HAVE_FLOCK */
-
-/* -----------------------------------------------------------------------------
- * INTERNAL
- */
-
 
 static gchar*
 name_for_subject (const guchar *subject, gsize n_subject)
@@ -220,11 +179,11 @@ type_from_identifier (const gchar *identifier)
 	return type_from_extension (ext);
 }
 
-static gint
+static dotlock_t
 lock_and_open_file (const gchar *filename,
                     gint flags)
 {
-	guint tries = 0;
+	dotlock_t lockh;
 	gint fd = -1;
 
 	/*
@@ -232,53 +191,54 @@ lock_and_open_file (const gchar *filename,
 	 * that's the callers job if necessary.
 	 */
 
-	/* File lock retry loop */
-	for (tries = 0; TRUE; ++tries) {
-		if (tries > MAX_LOCK_TRIES) {
-			g_message ("couldn't write to store file: %s: file is locked", filename);
-			return -1;
-		}
-
-		fd = open (filename, flags, S_IRUSR | S_IWUSR);
-		if (fd == -1) {
-			if ((errno != ENOENT) || (flags & O_CREAT))
-				g_message ("couldn't open store file: %s: %s",
-				           filename, g_strerror (errno));
-			return -1;
-		}
-
-		if (flock (fd, LOCK_EX | LOCK_NB) < 0) {
-			if (errno != EWOULDBLOCK) {
-				g_message ("couldn't lock store file: %s: %s",
-				           filename, g_strerror (errno));
-				close (fd);
-				return -1;
-			}
-
-			gkm_debug ("waiting for locked file: %s", filename);
-			close (fd);
-			fd = -1;
-			g_usleep (200000);
-			continue;
-		}
-
-		gkm_debug ("successfully opened: %s", filename);
-
-		/* Successfully opened file */;
-		return fd;
+	fd = open (filename, O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
+	if (fd == -1) {
+		g_message ("couldn't open store file: %s: %s",
+		           filename, g_strerror (errno));
+		return NULL;
 	}
 
-	g_assert_not_reached ();
+	lockh = dotlock_create (filename, 0);
+	if (!lockh) {
+		g_message ("couldn't create lock for store file: %s: %s",
+		           filename, g_strerror (errno));
+		close (fd);
+		return NULL;
+	}
+
+	if (dotlock_take (lockh, LOCK_TIMEOUT)) {
+		if (errno == EACCES)
+			g_message ("couldn't write to store file:"
+			           " %s: file is locked", filename);
+		else
+			g_message ("couldn't lock store file: %s: %s",
+			           filename, g_strerror (errno));
+		dotlock_destroy (lockh);
+		close (fd);
+		return NULL;
+	}
+
+	/* Successfully opened file */;
+	dotlock_set_fd (lockh, fd);
+	return lockh;
 }
 
 static gboolean
 complete_lock_file (GkmTransaction *transaction, GObject *object, gpointer data)
 {
 	GkmGnome2Storage *self = GKM_GNOME2_STORAGE (object);
-	int fd = GPOINTER_TO_INT (data);
+	dotlock_t lockh = data;
+	int fd = dotlock_get_fd (lockh);
 
-	/* This also unlocks the file */
 	gkm_debug ("closing: %s", self->filename);
+
+	/*
+	 * Note that there is no error checking for release and
+	 * destroy.  These functions will log errors anyway and we
+	 * can't do much else than logging those errors.
+	 */
+	dotlock_release (lockh);
+	dotlock_destroy (lockh);
 	close (fd);
 
 	/* Completed successfully */
@@ -288,7 +248,7 @@ complete_lock_file (GkmTransaction *transaction, GObject *object, gpointer data)
 static gint
 begin_lock_file (GkmGnome2Storage *self, GkmTransaction *transaction)
 {
-	gint fd;
+	dotlock_t lockh;
 
 	/*
 	 * In this function we don't actually put the object into a 'write' state,
@@ -301,15 +261,15 @@ begin_lock_file (GkmGnome2Storage *self, GkmTransaction *transaction)
 	g_return_val_if_fail (!gkm_transaction_get_failed (transaction), -1);
 	gkm_debug ("modifying: %s", self->filename);
 
-	fd = lock_and_open_file (self->filename, O_RDONLY | O_CREAT);
-	if (fd == -1) {
+	lockh = lock_and_open_file (self->filename, O_RDONLY | O_CREAT);
+	if (!lockh) {
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
-		return fd;
+		return -1;
 	}
 
 	/* Successfully opened file */;
-	gkm_transaction_add (transaction, self, complete_lock_file, GINT_TO_POINTER (fd));
-	return fd;
+	gkm_transaction_add (transaction, self, complete_lock_file, lockh);
+	return dotlock_get_fd (lockh);
 }
 
 static gboolean
@@ -739,6 +699,7 @@ static CK_RV
 refresh_with_login (GkmGnome2Storage *self, GkmSecret *login)
 {
 	GkmDataResult res;
+	dotlock_t lockh;
 	struct stat sb;
 	CK_RV rv;
 	int fd;
@@ -747,14 +708,16 @@ refresh_with_login (GkmGnome2Storage *self, GkmSecret *login)
 	gkm_debug ("refreshing: %s", self->filename);
 
 	/* Open the file for reading */
-	fd = lock_and_open_file (self->filename, O_RDONLY);
-	if (fd == -1) {
+	lockh = lock_and_open_file (self->filename, O_RDONLY);
+	if (!lockh) {
 		/* No file, no worries */
 		if (errno == ENOENT)
 			return login ? CKR_USER_PIN_NOT_INITIALIZED : CKR_OK;
 		g_message ("couldn't open store file: %s: %s", self->filename, g_strerror (errno));
 		return CKR_FUNCTION_FAILED;
 	}
+
+	fd = dotlock_get_fd (lockh);
 
 	/* Try and update the last read time */
 	if (fstat (fd, &sb) >= 0)
@@ -786,6 +749,14 @@ refresh_with_login (GkmGnome2Storage *self, GkmSecret *login)
 		self->last_mtime = 0;
 
 	gkm_debug ("closing: %s", self->filename);
+
+	/*
+	 * Note that there is no error checking for release and
+	 * destroy.  These functions will log errors anyway and we
+	 * can't do much else than logging those errors.
+	 */
+	dotlock_release (lockh);
+	dotlock_destroy (lockh);
 	close (fd);
 
 	return rv;

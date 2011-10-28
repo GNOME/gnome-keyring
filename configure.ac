@@ -474,6 +474,14 @@ AC_SUBST(LIBSELINUX)
 AM_CONDITIONAL([HAVE_LIBSELINUX], [test ! -z "$LIBSELINUX"])
 
 # ----------------------------------------------------------------------
+# dotlock.c support
+
+AC_DEFINE(DOTLOCK_USE_PTHREAD,1,[Define if POSIX threads are in use.])
+AC_DEFINE(DOTLOCK_GLIB_LOGGING,1,[Define this to use Glib logging functions.])
+AC_DEFINE_UNQUOTED(DOTLOCK_EXT_SYM_PREFIX,[_gkm_],
+                  [Prefix used for external functions of dotlock.])
+
+# ----------------------------------------------------------------------
 # p11-tests
 
 AC_ARG_ENABLE(p11_tests,
