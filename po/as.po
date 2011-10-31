@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: as\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-19 07:40+0000\n"
-"PO-Revision-Date: 2011-08-18 18:04+0530\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-22 10:45+0000\n"
+"PO-Revision-Date: 2011-09-22 23:19+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "নাম নহোৱা"
@@ -97,30 +97,30 @@ msgstr "GNOME Keyring: GPG সহায়ক"
 msgid "GPG Password Agent"
 msgstr "GPG পাছৱাৰ্ড সহায়ক"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106 ../gcr/gcr-key-renderer.c:314
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
 #: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "অজ্ঞাত"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP চাবি: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
 msgid "Enter Passphrase"
 msgstr "Passphrase সোমাওক"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
 msgid "Forget this password if idle for"
 msgstr "এই পাছৱাৰ্ড পাহৰি যাওক যদি অলস থাকে"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
 msgid "Forget this password after"
 msgstr "এই পাছৱাৰ্ড পাহৰি যাওক"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
 msgid "Forget this password when I log out"
 msgstr "মই লগআউট কৰিলে এই পাছৱাৰ্ড পাহৰি যাব"
 
@@ -292,28 +292,28 @@ msgstr "waitpid() (%s) -ত অপ্ৰত্যাশিত ত্ৰুটি
 #: ../gck/gck-module.c:396
 #, c-format
 msgid "Error loading PKCS#11 module: %s"
-msgstr ""
+msgstr "PKCS#11 মডিউল ল'ড কৰোতে ত্ৰুটি: %s"
 
 #: ../gck/gck-module.c:403
 #, c-format
 msgid "Invalid PKCS#11 module: %s"
-msgstr ""
+msgstr "অবৈধ PKCS#11 মডিউল: %s"
 
 #: ../gck/gck-module.c:412
-#, fuzzy, c-format
+#, c-format
 #| msgid "Couldn't delete the file: %s"
 msgid "Couldn't setup PKCS#11 module: %s"
-msgstr "চিহ্নিত নথিপত্ৰ আঁতৰুৱা নাযায়: %s"
+msgstr "PKCS#11 মডিউল সংহতি কৰিব নোৱাৰি: %s"
 
 #: ../gck/gck-module.c:428
 #, c-format
 msgid "Couldn't initialize PKCS#11 module: %s"
-msgstr ""
+msgstr "PKCS#11 মডিউল আৰম্ভ কৰিব নোৱাৰি: %s"
 
 #: ../gck/gck-modules.c:67
 #, c-format
 msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr ""
+msgstr "ৰেজিস্টাৰ কৰা PKCS#11 মডিউল আৰম্ভ কৰিব নোৱাৰি: %s"
 
 #. later
 #. later
@@ -335,7 +335,7 @@ msgstr "অৱসান ঘটিব"
 
 #
 #: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:262
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "প্ৰমাণপত্ৰ"
 
@@ -597,7 +597,7 @@ msgstr "Key SHA1 ফিংগাৰপ্ৰিন্ট"
 
 #
 #: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:265
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "ৰাজহুৱা চাবি"
 
@@ -608,25 +608,22 @@ msgstr "বিৱৰণসমূহ (_D)"
 #: ../gcr/gcr-failure-renderer.c:163
 #, c-format
 msgid "Could not display '%s'"
-msgstr ""
+msgstr "'%s' প্ৰদৰ্শন কৰিব নোৱাৰি"
 
 #: ../gcr/gcr-failure-renderer.c:165
-#, fuzzy
 #| msgid "Couldn't delete the file: %s"
 msgid "Could not display file"
-msgstr "চিহ্নিত নথিপত্ৰ আঁতৰুৱা নাযায়: %s"
+msgstr "নথিপত্ৰ প্ৰদৰ্শন কৰিব নোৱাৰি"
 
-#
 #: ../gcr/gcr-failure-renderer.c:170
-#, fuzzy
 #| msgid "Version"
 msgid "Reason"
-msgstr "সংস্কৰণ"
+msgstr "কাৰণ"
 
 #: ../gcr/gcr-failure-renderer.c:203
 #, c-format
 msgid "Cannot display a file of this type."
-msgstr ""
+msgstr "এই ধৰণৰ নথিপত্ৰ প্ৰদৰ্শন কৰিব নোৱাৰি।"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -661,7 +658,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "Gnupg প্ৰক্ৰিয়া সংকেত: %d দ্বাৰা অন্ত পেলোৱা হৈছে"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1921 ../gcr/gcr-parser.c:2179
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "কৰ্ম বাতিল কৰা হৈছে"
 
@@ -736,7 +733,7 @@ msgid "Private DSA Key"
 msgstr "ব্যক্তিগত DSA চাবি"
 
 #
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:259
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "ব্যক্তিগত চাবি"
 
@@ -776,15 +773,15 @@ msgstr "SHA1"
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1924
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "অপৰিচিত অথবা অসমৰ্থিত তথ্য।"
 
-#: ../gcr/gcr-parser.c:1927
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "অবৈধ অথবা ক্ষতিগ্ৰস্ত তথ্য বিশ্লেষণ কৰিব ব্যৰ্থ।"
 
-#: ../gcr/gcr-parser.c:1930
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "তথ্য লক কৰা আছে"
 
@@ -818,10 +815,10 @@ msgid "minutes"
 msgstr "মিনিটসমূহ"
 
 #: ../gcr/gcr-unlock-renderer.c:63
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unlock"
 msgid "Unlock: %s"
-msgstr "আনলক কৰক"
+msgstr "আনলক কৰক: %s"
 
 #: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
@@ -829,58 +826,51 @@ msgid "Unlock"
 msgstr "আনলক কৰক"
 
 #: ../gcr/gcr-unlock-renderer.c:135
-#, fuzzy
 #| msgid "The unlock password was incorrect"
 msgid "The password was incorrect"
 msgstr "আনলক কৰা পাছৱাৰ্ড সঠিক নাছিল"
 
-#
 #: ../gcr/gcr-unlock-renderer.c:173
-#, fuzzy
 #| msgid "Password:"
 msgid "Password"
-msgstr "পাছৱাৰ্ড:"
+msgstr "পাছৱাৰ্ড"
 
 #: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
 msgid ""
 "The contents of '%s' are locked. In order to view the contents, enter the "
 "correct password."
-msgstr ""
+msgstr "'%s' -ৰ সমলসমূহ লক কৰা আছে। সমলসমূহ দৰ্শন কৰিবলে, সঠিক পাছৱাৰ্ড সোমাওক।"
 
 #: ../gcr/gcr-unlock-renderer.c:327
 msgid ""
 "The contents are locked. In order to view the contents, enter the correct "
 "password."
-msgstr ""
+msgstr "সমলসমূহ লক কৰা আছে। সমলসমূহ দৰ্শন কৰিবলে, সঠিক পাছৱাৰ্ড সোমাওক।"
 
 #: ../gcr/gcr-viewer-tool.c:41
-#, fuzzy
 #| msgid "Certificate and Key Storage"
 msgid "GCR Certificate and Key Viewer"
-msgstr "প্ৰমাণপত্ৰ আৰু চাবি সংৰক্ষণ"
+msgstr "GCR প্ৰমাণপত্ৰ আৰু চাবি দৰ্শক"
 
 #: ../gcr/gcr-viewer-tool.c:48
-#, fuzzy
 #| msgid "Allow application access to keyring?"
 msgid "Show the application's version"
-msgstr "অনুপ্ৰয়োগক keyring ব্যৱহাৰৰ অনুমতি প্ৰদান কৰা হ'ব নেকি ?"
+msgstr "অনুপ্ৰয়োগৰ সংস্কৰণ দেখুৱাওক"
 
 #: ../gcr/gcr-viewer-tool.c:50
 msgid "[file...]"
-msgstr ""
+msgstr "[নথিপত্ৰ...]"
 
 #: ../gcr/gcr-viewer-tool.c:104
-#, fuzzy
 #| msgid "Certificate files"
 msgid "- View certificate and key files"
-msgstr "নথিপত্ৰসমূহ এক্সপোৰ্ট কৰক"
+msgstr "-প্ৰমাণপত্ৰ আৰু চাবি নথিপত্ৰসমূহ দৰ্শন কৰক"
 
 #: ../gcr/gcr-viewer-tool.c:118
-#, fuzzy
 #| msgid "Certificate files"
 msgid "Certificate Viewer"
-msgstr "নথিপত্ৰসমূহ এক্সপোৰ্ট কৰক"
+msgstr "প্ৰমাণপত্ৰ দৰ্শক"
 
 #: ../gck/gck-uri.c:173
 #, c-format
@@ -888,10 +878,9 @@ msgid "The URI has invalid encoding."
 msgstr "URI টোৰ অবৈধ এনকোডিং আছে।"
 
 #: ../gck/gck-uri.c:177
-#, fuzzy
 #| msgid "The URI has does not have the 'pkcs11' scheme."
 msgid "The URI does not have the 'pkcs11' scheme."
-msgstr "URI -ৰ  'pkcs11' আঁচনি নাই।"
+msgstr "URI -ৰ 'pkcs11' আচনি নাই।"
 
 #: ../gck/gck-uri.c:181
 msgid "The URI has bad syntax."
@@ -910,7 +899,7 @@ msgid "Couldn't parse public SSH key"
 msgstr "ৰাজহুৱা SSH-চাবি বিশ্লেষণ কৰিব ব্যৰ্থ"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "%s -ৰ বাবে পাছৱাৰ্ড আনলক কৰক"
@@ -937,8 +926,7 @@ msgstr ""
 "সৈতে মিল নাখায়।"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
+msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr "আপুনি কমপিউটাৰত লগিন কৰোতে লগিন keyring আনলক নহল।"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
@@ -1028,8 +1016,7 @@ msgstr "সংৰক্ষণ সুৰক্ষিত ৰাখিবলে প
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr ""
-"প্ৰমাণপত্ৰ আৰু চাবি সংগ্ৰহৰ বাবে '%s' প্ৰস্তুত কৰাৰ বাবে এটা পাছৱাৰ্ড লিখা আবশ্যক"
+msgstr "প্ৰমাণপত্ৰ আৰু চাবি সংগ্ৰহৰ বাবে '%s' প্ৰস্তুত কৰাৰ বাবে এটা পাছৱাৰ্ড লিখা আবশ্যক"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
 msgid "Change Password"
@@ -1041,8 +1028,7 @@ msgstr "সুৰক্ষিত সংৰক্ষণৰ বাবে পাছ
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
+msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "'%s' -ৰ বাবে পাছৱাৰ্ড সলনি কৰিবলে, প্ৰকৃত আৰু নতুন পাছৱাৰ্ডসমূহৰ প্ৰয়োজন"
 
 #: ../tool/gkr-tool.c:102
@@ -1059,11 +1045,11 @@ msgstr "কমান্ডসমূহ: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:596
+#: ../ui/gku-prompt-tool.c:594
 msgid "Store passwords unencrypted?"
 msgstr "এনক্ৰিপশন বিনা পাছৱাৰ্ড সংৰক্ষণ কৰা হ'ব নেকি ?"
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:595
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1073,15 +1059,15 @@ msgstr ""
 "সম্ভব নহব। আপোনাৰ নথিপত্ৰসমূহ পঢ়োতে অনুমোদিত যি কোনো ব্যবহাৰকাৰী দ্বাৰা এইবোৰ "
 "প্ৰয়োগ কৰা সম্ভব হ'ব।"
 
-#: ../ui/gku-prompt-tool.c:604
+#: ../ui/gku-prompt-tool.c:602
 msgid "Use Unsafe Storage"
 msgstr "অসুৰক্ষিত সংৰক্ষণ ব্যবহাৰ কৰক"
 
-#: ../ui/gku-prompt-tool.c:644
+#: ../ui/gku-prompt-tool.c:642
 msgid "Passwords do not match."
 msgstr "পাছৱাৰ্ডসমূহ মিল নাখায়।"
 
-#: ../ui/gku-prompt-tool.c:654
+#: ../ui/gku-prompt-tool.c:652
 msgid "Password cannot be blank"
 msgstr "পাছৱাৰ্ড ৰিক্ত ৰাখিব নোৱাৰি"
 
