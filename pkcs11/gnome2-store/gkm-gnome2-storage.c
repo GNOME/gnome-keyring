@@ -415,7 +415,6 @@ static gboolean
 begin_modification_state (GkmGnome2Storage *self, GkmTransaction *transaction)
 {
 	GkmDataResult res;
-	struct stat sb;
 	CK_RV rv = CKR_OK;
 
 	/* Already in write state for this transaction? */
@@ -428,33 +427,30 @@ begin_modification_state (GkmGnome2Storage *self, GkmTransaction *transaction)
 		return FALSE;
 
 	/* See if file needs updating */
-	if (fstat (self->read_fd, &sb) >= 0 && sb.st_mtime != self->last_mtime) {
+	res = gkm_gnome2_file_read_fd (self->file, self->read_fd, self->login);
+	switch (res) {
+	case GKM_DATA_FAILURE:
+		g_message ("failure updating user store file: %s", self->filename);
+		rv = CKR_FUNCTION_FAILED;
+		break;
+	case GKM_DATA_LOCKED:
+		rv = CKR_USER_NOT_LOGGED_IN;
+		break;
+	case GKM_DATA_UNRECOGNIZED:
+		g_message ("unrecognized or invalid user store file: %s", self->filename);
+		rv = CKR_FUNCTION_FAILED;
+		break;
+	case GKM_DATA_SUCCESS:
+		rv = CKR_OK;
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
 
-		res = gkm_gnome2_file_read_fd (self->file, self->read_fd, self->login);
-		switch (res) {
-		case GKM_DATA_FAILURE:
-			g_message ("failure updating user store file: %s", self->filename);
-			rv = CKR_FUNCTION_FAILED;
-			break;
-		case GKM_DATA_LOCKED:
-			rv = CKR_USER_NOT_LOGGED_IN;
-			break;
-		case GKM_DATA_UNRECOGNIZED:
-			g_message ("unrecognized or invalid user store file: %s", self->filename);
-			rv = CKR_FUNCTION_FAILED;
-			break;
-		case GKM_DATA_SUCCESS:
-			rv = CKR_OK;
-			break;
-		default:
-			g_assert_not_reached ();
-			break;
-		}
-
-		if (rv != CKR_OK) {
-			gkm_transaction_fail (transaction, rv);
-			return FALSE;
-		}
+	if (rv != CKR_OK) {
+		gkm_transaction_fail (transaction, rv);
+		return FALSE;
 	}
 
 	/* Write out the data once completed with modifications */
@@ -813,15 +809,15 @@ gkm_gnome2_storage_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIB
 	g_return_val_if_fail (GKM_IS_OBJECT (object), CKR_GENERAL_ERROR);
 	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
 
-	identifier = g_hash_table_lookup (self->object_to_identifier, object);
-	if (!identifier)
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-
 	if (self->last_mtime == 0) {
 		rv = gkm_gnome2_storage_refresh (self);
 		if (rv != CKR_OK)
 			return rv;
 	}
+
+	identifier = g_hash_table_lookup (self->object_to_identifier, object);
+	if (!identifier)
+		return CKR_ATTRIBUTE_TYPE_INVALID;
 
 	res = gkm_gnome2_file_read_value (self->file, identifier, attr->type, &value, &n_value);
 	switch (res) {
@@ -855,21 +851,13 @@ gkm_gnome2_storage_real_write_value (GkmStore *base, GkmTransaction *transaction
 	g_return_if_fail (!gkm_transaction_get_failed (transaction));
 	g_return_if_fail (attr);
 
+	if (!begin_modification_state (self, transaction))
+		return;
+
 	identifier = g_hash_table_lookup (self->object_to_identifier, object);
 	if (!identifier) {
 		gkm_transaction_fail (transaction, CKR_ATTRIBUTE_READ_ONLY);
 		return;
-	}
-
-	if (!begin_modification_state (self, transaction))
-		return;
-
-	if (self->last_mtime == 0) {
-		rv = gkm_gnome2_storage_refresh (self);
-		if (rv != CKR_OK) {
-			gkm_transaction_fail (transaction, rv);
-			return;
-		}
 	}
 
 	res = gkm_gnome2_file_write_value (self->file, identifier, attr->type, attr->pValue, attr->ulValueLen);

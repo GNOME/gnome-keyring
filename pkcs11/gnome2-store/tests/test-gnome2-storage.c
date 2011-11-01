@@ -53,6 +53,8 @@ typedef struct {
 	GkmObject *old_object;
 } Test;
 
+#define MSEC(x) ((x) * 1000)
+
 static void
 copy_scratch_file (Test *test,
                    const gchar *name)
@@ -269,8 +271,110 @@ test_write_value (Test *test,
 }
 
 static void
-test_lock_contention (Test *test,
-                      gconstpointer unused)
+test_locking_transaction (Test *test,
+                          gconstpointer unused)
+{
+	guint iterations = 30;
+	guint i;
+	pid_t pid;
+
+	/* Fork before setting up the model, as it may start threads */
+	pid = fork ();
+	g_assert (pid >= 0);
+
+	/*
+	 * This is the child. It initializes, writes a value, waits 100 ms,
+	 * writes a second value, and then writes another value.
+	 */
+	if (pid == 0) {
+		CK_ATTRIBUTE attr;
+		GkmTransaction *transaction;
+		gchar *string;
+
+		setup_module (test, unused);
+
+		for (i = 0; i < iterations; i++) {
+			g_printerr ("c");
+
+			transaction = gkm_transaction_new ();
+
+			string = g_strdup_printf ("%d", i);
+
+			attr.type = CKA_LABEL;
+			attr.pValue = string;
+			attr.ulValueLen = strlen (string);
+
+			gkm_store_write_value (GKM_STORE (test->storage), transaction,
+			                       test->old_object, &attr);
+			gkm_assert_cmprv (gkm_transaction_get_result (transaction), ==, CKR_OK);
+
+			g_usleep (100 * 1000);
+
+			attr.type = CKA_URL;
+			attr.pValue = string;
+			attr.ulValueLen = strlen (string);
+
+			gkm_store_write_value (GKM_STORE (test->storage), transaction,
+			                       test->old_object, &attr);
+			gkm_assert_cmprv (gkm_transaction_get_result (transaction), ==, CKR_OK);
+
+			g_free (string);
+
+			gkm_transaction_complete_and_unref (transaction);
+
+			g_usleep (10 * 1000);
+		}
+
+		teardown_module (test, unused);
+		_exit (0);
+		g_assert_not_reached ();
+
+	/*
+	 * This is the parent. it initializes, waits 100 ms, writes a value that
+	 * should override the one from the child, because the file is locked
+	 * when it tries to write, so it waits for the child to finish. The other
+	 * attribute from the child (the label) should come through.
+	 */
+	} else {
+		gchar *string1;
+		gchar *string2;
+		pid_t wpid;
+		int status;
+		CK_RV rv;
+
+		g_assert (pid != -1);
+
+		setup_module (test, unused);
+
+		for (i = 0; i < iterations; i++) {
+			g_printerr ("p");
+
+			string1 = gkm_store_read_string (GKM_STORE (test->storage), test->old_object, CKA_URL);
+
+			g_usleep (g_random_int_range (1, 200) * 1000);
+
+			string2 = gkm_store_read_string (GKM_STORE (test->storage), test->old_object, CKA_LABEL);
+
+			g_assert_cmpstr (string1, ==, string2);
+			g_free (string1);
+			g_free (string2);
+
+			rv = gkm_gnome2_storage_refresh (test->storage);
+			gkm_assert_cmprv (rv, ==, CKR_OK);
+		}
+
+		/* wait for the child to finish */
+		wpid = waitpid (pid, &status, 0);
+		g_assert_cmpint (wpid, ==, pid);
+		g_assert_cmpint (status, ==, 0);
+
+		teardown_module (test, unused);
+	}
+}
+
+static void
+test_lock_writes (Test *test,
+                  gconstpointer unused)
 {
 	pid_t pid;
 
@@ -283,8 +387,8 @@ test_lock_contention (Test *test,
 	 * writes a second value, and then writes another value.
 	 */
 	if (pid == 0) {
-		CK_ATTRIBUTE label = { CKA_LABEL, "Hello", 5 };
-		CK_ATTRIBUTE url = { CKA_URL, "http://example.com", 18 };
+		CK_ATTRIBUTE label = { CKA_LABEL, "Hello from child", 16 };
+		CK_ATTRIBUTE url = { CKA_URL, "http://child.example.com", 24 };
 		GkmTransaction *transaction;
 
 		setup_module (test, unused);
@@ -295,7 +399,7 @@ test_lock_contention (Test *test,
 		                       test->old_object, &label);
 		gkm_assert_cmprv (gkm_transaction_get_result (transaction), ==, CKR_OK);
 
-		g_usleep (300 * 1000);
+		g_usleep (MSEC (100));
 
 		gkm_store_write_value (GKM_STORE (test->storage), transaction,
 		                       test->old_object, &url);
@@ -319,12 +423,20 @@ test_lock_contention (Test *test,
 		gchar *string;
 		pid_t wpid;
 		int status;
+		CK_RV rv;
 
 		g_assert (pid != -1);
 
-		g_usleep (100 * 1000);
-
 		setup_module (test, unused);
+
+		/* Refresh the store, and check values are not set */
+		string = gkm_store_read_string (GKM_STORE (test->storage), test->old_object, CKA_URL);
+		g_assert (string == NULL);
+
+		string = gkm_store_read_string (GKM_STORE (test->storage), test->old_object, CKA_LABEL);
+		g_assert (string == NULL);
+
+		g_usleep (MSEC (1000));
 
 		transaction = gkm_transaction_new ();
 
@@ -332,23 +444,37 @@ test_lock_contention (Test *test,
 		                       test->old_object, &url);
 		gkm_assert_cmprv (gkm_transaction_get_result (transaction), ==, CKR_OK);
 
-		gkm_transaction_complete_and_unref (transaction);
-
 		/* wait for the child to finish */
 		wpid = waitpid (pid, &status, 0);
 		g_assert_cmpint (wpid, ==, pid);
 		g_assert_cmpint (status, ==, 0);
+
+		gkm_transaction_complete_and_unref (transaction);
+
+		g_usleep (MSEC (1000));
+
+		rv = gkm_gnome2_storage_refresh (test->storage);
+		gkm_assert_cmprv (rv, ==, CKR_OK);
 
 		string = gkm_store_read_string (GKM_STORE (test->storage), test->old_object, CKA_URL);
 		g_assert_cmpstr (string, ==, "http://parent.example.com");
 		g_free (string);
 
 		string = gkm_store_read_string (GKM_STORE (test->storage), test->old_object, CKA_LABEL);
-		g_assert_cmpstr (string, ==, "Hello");
+		g_assert_cmpstr (string, ==, "Hello from child");
 		g_free (string);
 
 		teardown_module (test, unused);
 	}
+}
+
+static void
+null_log_handler (const gchar *log_domain,
+                  GLogLevelFlags log_level,
+                  const gchar *message,
+                  gpointer user_data)
+{
+
 }
 
 int
@@ -359,6 +485,10 @@ main (int argc, char **argv)
 
 	egg_libgcrypt_initialize ();
 
+	/* Suppress these messages in tests */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE,
+	                   null_log_handler, NULL);
+
 	g_test_add ("/gnome2-store/storage/create", Test, NULL,
 	            setup_all, test_create, teardown_all);
 	g_test_add ("/gnome2-store/storage/create_and_fail", Test, NULL,
@@ -366,9 +496,12 @@ main (int argc, char **argv)
 	g_test_add ("/gnome2-store/storage/write_value", Test, NULL,
 	            setup_all, test_write_value, teardown_all);
 
-	if (g_test_thorough ())
-		g_test_add ("/gnome2-store/storage/lock_contention", Test, NULL,
-		            setup_directory, test_lock_contention, teardown_directory);
+	if (!g_test_quick ()) {
+		g_test_add ("/gnome2-store/storage/locking_transaction", Test, NULL,
+		            setup_directory, test_locking_transaction, teardown_directory);
+		g_test_add ("/gnome2-store/storage/lock_writes", Test, NULL,
+		            setup_directory, test_lock_writes, teardown_directory);
+	}
 
 	return g_test_run ();
 }
