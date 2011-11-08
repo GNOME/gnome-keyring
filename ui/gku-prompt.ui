@@ -45,7 +45,7 @@
 An application wants access to the keyring 'xxx', but it is locked.</property>
                         <property name="use_markup">True</property>
                         <property name="wrap">True</property>
-                        <property name="selectable">True</property>
+                        <property name="selectable">False</property>
                       </object>
                       <packing>
                         <property name="position">0</property>
@@ -53,7 +53,7 @@ An application wants access to the keyring 'xxx', but it is locked.</property>
                     </child>
                     <child>
                       <object class="GtkLabel" id="warning_label">
-                        <property name="selectable">True</property>
+                        <property name="selectable">False</property>
                       </object>
                       <packing>
                         <property name="position">1</property>
