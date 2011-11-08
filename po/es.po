@@ -6,21 +6,22 @@
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # 
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2009, 2010, 2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011
+# 
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-05 08:20+0000\n"
-"PO-Revision-Date: 2011-10-07 10:23+0200\n"
+"POT-Creation-Date: 2011-11-06 15:10+0000\n"
+"PO-Revision-Date: 2011-11-08 11:33+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -71,6 +72,14 @@ msgstr ""
 "Una aplicación quiere crear un depósito de claves nuevo llamado «%s». Elija "
 "la contraseña que quiere usar para él."
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Depósito de claves de GNOME: agente GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "Agente de contraseñas GPG"
+
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Certificados y almacenamiento de claves"
@@ -94,14 +103,6 @@ msgstr "Depósito de claves de GNOME: agente SSH"
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "SSH Key Agent"
 msgstr "Agente de claves SSH"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Depósito de claves de GNOME: agente GPG"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "Agente de contraseñas GPG"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
@@ -133,6 +134,48 @@ msgstr "Olvidar esta contraseña al salir de la sesión"
 #: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Inicio de sesión"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "falló al crear el archivo temporal «%s»: %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "error al escribir en «%s»: %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "no se pudo crear «%s»: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "quitando el bloqueo sin usar del archivo (creado por %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "esperando el bloqueo (mantenido por %d%s) %s…\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(¿bloqueo mutuo?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "bloqueo «%s» no realizado: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "esperando el bloqueo de %s…\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -285,10 +328,6 @@ msgstr "Error inesperado en select() al leer los datos de un proceso hijo (%s)"
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Error inesperado en waitpid() (%s)"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Desbloquear"
-
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Certificado sin nombre"
@@ -359,6 +398,10 @@ msgstr "Desbloquear el certificado"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Desbloquear la clave pública"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Desbloquear"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
@@ -494,14 +537,6 @@ msgstr "Las contraseñas no coinciden."
 msgid "Password cannot be blank"
 msgstr "La contraseña no puede estar vacía"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "Acceso al depósito de claves"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "Desbloquear el acceso a contraseñas y otros secretos"
-
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
 msgstr "Fortaleza de la nueva contraseña"
@@ -529,3 +564,11 @@ msgstr "Contraseña _antigua:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Contraseña:"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Acceso al depósito de claves"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Desbloquear el acceso a contraseñas y otros secretos"
