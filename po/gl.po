@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2011-09-12 21:33+0200\n"
+"POT-Creation-Date: 2011-11-10 00:09+0100\n"
+"PO-Revision-Date: 2011-11-10 00:11+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -71,6 +71,14 @@ msgstr ""
 "Un aplicativo quere crear un anel de chaves novo chamado «%s». Escolla o "
 "contrasinal que quere usar para el."
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Anel de chaves de GNOME: axente GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "Axente de contrasinais GPG"
+
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Almacenamento de chave ou certificado"
@@ -94,14 +102,6 @@ msgstr "GNOME Keyring: Axente SSH"
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "SSH Key Agent"
 msgstr "Axente de chave SSH"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Anel de chaves de GNOME: axente GPG"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "Axente de contrasinais GPG"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
@@ -133,6 +133,48 @@ msgstr "Esquecer este contrasinal ao saír da sesión"
 #: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Inicio de sesión"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "produciuse un fallo ao crear o ficheiro temporal «%s»: %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "produciuse un erro ao escribir en «%s»: %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "non é posíbel crear «%s»: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "quitando o bloqueo sen usar do ficheiro (creado por %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "agardando o bloqueo (mantido por %d%s) %s…\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(bloqueo mútuo?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "bloqueo «%s» non realizado: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "agardando o bloqueo de %s…\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -493,14 +535,6 @@ msgstr "Os contrasinais non coinciden."
 msgid "Password cannot be blank"
 msgstr "O contrasinal non pode estar en branco"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "Acceso ao anel de chaves"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "Desbloquear o acceso aos contrasinais e outros segredos"
-
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
 msgstr "Forza do novo contrasinal"
@@ -529,3 +563,11 @@ msgstr "_Contrasinal antigo:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Contrasinal:"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Acceso ao anel de chaves"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Desbloquear o acceso aos contrasinais e outros segredos"
