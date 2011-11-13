@@ -6,10 +6,10 @@
 # Torstein Adolf Winterseth <kvikende@fsfe.org>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring 3.1.x\n"
+"Project-Id-Version: gnome-keyring 3.3.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2011-09-12 20:52+0200\n"
+"POT-Creation-Date: 2011-11-13 10:54+0100\n"
+"PO-Revision-Date: 2011-11-13 10:55+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -66,6 +66,14 @@ msgstr ""
 "Et program ønsker å opprette en ny nøkkelring kalt «%s». Du må velge "
 "passordet du ønsker å bruke for denne."
 
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME nøkkelring: GPG-agent"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "GPG passordagent"
+
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Lager for sertifikat/nøkkel"
@@ -89,14 +97,6 @@ msgstr "GNOME nøkkelring: SSH-agent"
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "SSH Key Agent"
 msgstr "SSH-nøkkelagent"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME nøkkelring: GPG-agent"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "GPG passordagent"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
@@ -128,6 +128,48 @@ msgstr "Glem dette passordet når jeg logger ut"
 #: ../daemon/login/gkd-login.c:149
 msgid "Login"
 msgstr "Pålogging"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "klarte ikke å lage midlertidig fil «%s»: %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "feil ved skriving til «%s»: %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "kan ikke lage «%s»: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "fjerner gammel låsfil (laget av %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "venter på lås (holdt av %d%s) %s …\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr ""
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "lås «%s» ikke laget: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "venter på lås %s …\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -480,14 +522,6 @@ msgstr "Passordene er ikke like."
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "Tilgang til nøkkelring"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "Lås opp tilgang til passord og andre hemmeligheter"
-
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
 msgstr "Styrke for nytt passord"
@@ -515,3 +549,11 @@ msgstr "Gammelt pass_ord:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_Passord:"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "Tilgang til nøkkelring"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "Lås opp tilgang til passord og andre hemmeligheter"
