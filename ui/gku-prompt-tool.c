@@ -62,6 +62,14 @@ static gsize n_the_key = 0;
 #define LOG_ERRORS 1
 #define GRAB_KEYBOARD 1
 
+static gboolean     grab_keyboard         (GtkWidget *win,
+                                           GdkEvent *event,
+                                           gpointer unused);
+
+static gboolean     ungrab_keyboard       (GtkWidget *win,
+                                           GdkEvent *event,
+                                           gpointer unused);
+
 /**
 * SECTION: gku-prompt-tool.c
 * @short_description: Displays a propmt for 3rd party programs (ssh, gnupg)
@@ -108,9 +116,7 @@ grab_status_message (GdkGrabStatus status)
 static gboolean
 on_grab_broken (GtkWidget * widget, GdkEventGrabBroken * event)
 {
-	if (grabbed_device && event->keyboard)
-		grabbed_device = NULL;
-
+	ungrab_keyboard (widget, (GdkEvent *)event, NULL);
 	return TRUE;
 }
 
@@ -145,11 +151,11 @@ grab_keyboard (GtkWidget *win, GdkEvent *event, gpointer unused)
 
 	at = event ? gdk_event_get_time (event) : GDK_CURRENT_TIME;
 	status = gdk_device_grab (device, gtk_widget_get_window (win),
-				  GDK_OWNERSHIP_WINDOW, TRUE,
-				  GDK_KEY_PRESS | GDK_KEY_RELEASE, NULL, at);
+	                          GDK_OWNERSHIP_APPLICATION, TRUE,
+	                          GDK_KEY_PRESS | GDK_KEY_RELEASE, NULL, at);
 	if (status == GDK_GRAB_SUCCESS) {
 		grab_broken_id = g_signal_connect (win, "grab-broken-event",
-						   G_CALLBACK (on_grab_broken), NULL);
+		                                   G_CALLBACK (on_grab_broken), NULL);
 		gtk_device_grab_add (win, device, TRUE);
 		grabbed_device = device;
 	} else {
