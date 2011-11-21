@@ -1,3 +1,10 @@
+Changes in version 3.3.2 are:
+ * Do not make label selectionnable in prompt dialog
+ * Fix deadlock in the 'unsafe storage' prompt
+ * Better locking for the old gnome2-store
+ * Updated translations
+ * Build fixes
+
 Changes in version 3.3.1.1 are:
  * Build correctly against glib 2.31
 
