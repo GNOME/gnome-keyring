@@ -5,20 +5,21 @@
 # Satoru SATOH <ss@gnome.gr.jp>, 2006.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2010.
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2010.
+# IWAI, Masaharu <iwaim.sub@gmail.com>, 2011.
 #  	   
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring gnome-2-32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-09 20:04+0000\n"
-"PO-Revision-Date: 2010-09-20 16:01+0900\n"
-"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"POT-Creation-Date: 2011-06-07 14:37+0000\n"
+"PO-Revision-Date: 2011-06-04 05:34+0900\n"
+"Last-Translator: IWAI, Masaharu <iwaim.sub@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
@@ -391,7 +392,7 @@ msgstr "ログインしたら、このキーリングのロックを自動的に
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
-msgstr "このキーリングを以下の時間経過したらロック:"
+msgstr "このキーリングを以下の時間経過したらロックする:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
@@ -399,73 +400,73 @@ msgstr "このキーリングを以下の時間アイドルだったらロック
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
-msgstr "ログアウトしたら、このキーリングの自動的にロックする"
+msgstr "ログアウトしたら、このキーリングをロックする"
 
 #. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
 #: ../gcr/gcr-unlock-options-widget.ui.h:6
 msgid "minutes"
 msgstr "分"
 
-#: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 msgid "Enter password to unlock the private key"
 msgstr "パスワードを入力して秘密鍵を解除してください"
 
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
 msgid "Enter password to unlock the certificate"
 msgstr "パスワードを入力して証明書によるロックを解除してください"
 
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
 msgid "Enter password to unlock"
 msgstr "パスワードを入力してロックを解除してください"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:183
+#: ../gcr/gcr-importer.c:185
 msgid "In order to import the private key, it must be unlocked"
 msgstr "秘密鍵をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:186
+#: ../gcr/gcr-importer.c:188
 msgid "In order to import the certificate, it must be unlocked"
 msgstr "証明書をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:189
+#: ../gcr/gcr-importer.c:191
 msgid "In order to import the data, it must be unlocked"
 msgstr "データをインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:194
+#: ../gcr/gcr-importer.c:196
 #, c-format
 msgid "In order to import the private key '%s', it must be unlocked"
 msgstr "秘密鍵の '%s' をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:197
+#: ../gcr/gcr-importer.c:199
 #, c-format
 msgid "In order to import the certificate '%s', it must be unlocked"
 msgstr "証明書の '%s' をインポートする場合はロックを解除してください"
 
 #. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:200
+#: ../gcr/gcr-importer.c:202
 #, c-format
 msgid "In order to import '%s', it must be unlocked"
 msgstr "'%s' をインポートする場合はロックを解除してください"
 
-#: ../gcr/gcr-importer.c:291 ../gcr/gcr-parser.c:1708 ../gcr/gcr-parser.c:1947
+#: ../gcr/gcr-importer.c:293 ../gcr/gcr-parser.c:1719 ../gcr/gcr-parser.c:1958
 #: ../gck/gck-misc.c:104
 msgid "The operation was cancelled"
 msgstr "処理をキャンセルしました"
 
-#: ../gcr/gcr-importer.c:383
+#: ../gcr/gcr-importer.c:386
 #, c-format
 msgid "No location available to import to"
 msgstr "インポート先として妥当な場所ではありません"
 
-#: ../gcr/gcr-importer.c:532
+#: ../gcr/gcr-importer.c:537
 msgid "Import Certificates/Keys"
 msgstr "証明書/鍵のインポート"
 
-#: ../gcr/gcr-importer.c:539
+#: ../gcr/gcr-importer.c:544
 msgid "Choose a location to store the imported certificates/keys."
 msgstr "インポートした証明書/鍵を保存する場所を選択してください"
 
@@ -520,15 +521,15 @@ msgstr "鍵のサイズ"
 msgid "Fingerprint"
 msgstr "指紋"
 
-#: ../gcr/gcr-parser.c:1711
+#: ../gcr/gcr-parser.c:1722
 msgid "Unrecognized or unsupported data."
 msgstr "認識できないまたはサポートしていないデータです"
 
-#: ../gcr/gcr-parser.c:1714
+#: ../gcr/gcr-parser.c:1725
 msgid "Could not parse invalid or corrupted data."
 msgstr "データが不正または壊れているため解析できませんでした"
 
-#: ../gcr/gcr-parser.c:1717
+#: ../gcr/gcr-parser.c:1728
 msgid "The data is locked"
 msgstr "データにはロックがかかっています"
 
@@ -1048,11 +1049,11 @@ msgstr ""
 msgid "          "
 msgstr ""
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:618
 msgid "Store passwords unencrypted?"
 msgstr "暗号化していないパスワードを保存しますか?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:619
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1061,15 +1062,15 @@ msgstr ""
 "空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されま"
 "せん。他の人達がこれらのパスワードを利用する可能性があります。"
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:626
 msgid "Use Unsafe Storage"
 msgstr "安全ではないストレージを使う"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:666
 msgid "Passwords do not match."
 msgstr "パスワードが一致しません。"
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:676
 msgid "Password cannot be blank"
 msgstr "パスワードを空にしないでください"
 
