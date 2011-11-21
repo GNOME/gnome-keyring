@@ -7,6 +7,15 @@ Changes in version 3.3.1 are:
  * Build fixes
  * Updated translations
 
+Changes in version 3.2.2 are:
+ * Fix problem with 'unsafe storage' prompt deadlocking
+ * Remove XFCE & LXDE from OnlyShowIn for autostart files
+ * Use g_random_int_range() for pseudo-random hash iteration count
+ * Return password results with the most recent result first
+ * Make clear source of warnings from the rpc module
+ * Updated translations
+ * Build fixes
+
 Changes in version 3.2.1 are:
  * Fix debugging output, and erroneous warnings
  * Updated translations

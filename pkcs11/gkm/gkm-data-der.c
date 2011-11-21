@@ -968,7 +968,7 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 		g_return_val_if_reached (NULL);
 
 	/* Randomize some input for the password based secret */
-	iterations = 1000 + (int) (1000.0 * rand () / (RAND_MAX + 1.0));
+	iterations = g_random_int_range (1000, 4096);
 	gcry_create_nonce (salt, sizeof (salt));
 
 	/* Allocate space for the key and iv */
