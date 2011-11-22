@@ -5,20 +5,21 @@
 # Satoru SATOH <ss@gnome.gr.jp>, 2006.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2010.
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2010.
-#  	   
+# IWAI, Masaharu <iwaim.sub@gmail.com>, 2011.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring gnome-2-32\n"
+"Project-Id-Version: gnome-keyring gnome-3-2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-09 20:04+0000\n"
-"PO-Revision-Date: 2010-09-20 16:01+0900\n"
-"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"POT-Creation-Date: 2011-11-14 10:44+0000\n"
+"PO-Revision-Date: 2011-06-04 05:34+0900\n"
+"Last-Translator: IWAI, Masaharu <iwaim.sub@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
@@ -100,8 +101,8 @@ msgstr "GNOME キーリング: GPG エージェント"
 msgid "GPG Password Agent"
 msgstr "GPG パスワードエージェント"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:305
-#: ../gcr/gcr-key-renderer.c:310
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "不明"
 
@@ -174,7 +175,7 @@ msgstr "一般名"
 msgid "Surname"
 msgstr "あだ名"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:398
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "シリアル番号"
 
@@ -230,29 +231,54 @@ msgstr "DN 修飾子"
 msgid "Pseudonym"
 msgstr "仮名"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:301
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
 msgstr "RSA 付きの MD2"
 
-#: ../egg/egg-oid.c:102
+#: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
 msgstr "RSA 付きの MD5"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
 msgstr "RSA 付きの SHA1"
 
-#: ../egg/egg-oid.c:107 ../gcr/gcr-key-renderer.c:303
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
 msgstr "DSA 付きの SHA1"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+#, fuzzy
+#| msgid "SSL Server Certificate"
+msgid "Server Authentication"
+msgstr "SSL サーバ証明書"
+
+#: ../egg/egg-oid.c:108
+#, fuzzy
+#| msgid "SSL Client Certificate"
+msgid "Client Authentication"
+msgstr "SSL クライアント証明書"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr ""
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr ""
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr ""
 
 #: ../egg/egg-spawn.c:273
 #, c-format
@@ -264,113 +290,371 @@ msgstr "select() が子プロセスからデータ読み込み中に予期しな
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() での予期しないエラー (%s)"
 
-#: ../gcr/gcr-certificate-renderer.c:96 ../gcr/gcr-parser.c:275
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr ""
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr ""
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr ""
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr ""
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr ""
+
+#. later
+#. later
+#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
+#, fuzzy
+#| msgid "_Name:"
+msgctxt "column"
+msgid "Name"
+msgstr "名前(_N):"
+
+#: ../gcr/gcr-certificate.c:390
+#, fuzzy
+#| msgid "Issued On"
+msgctxt "column"
+msgid "Issued By"
+msgstr "発行元"
+
+#. later
+#: ../gcr/gcr-certificate.c:392
+#, fuzzy
+msgctxt "column"
+msgid "Expires"
+msgstr "有効期限"
+
+#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "証明書"
 
-#: ../gcr/gcr-certificate-renderer.c:121
-msgid "Extension"
-msgstr "拡張"
+#: ../gcr/gcr-certificate-exporter.c:224
+msgid ""
+"<b>A file already exists with this name.</b>\n"
+"\n"
+"Do you want to replace it with a new file?"
+msgstr ""
 
-#: ../gcr/gcr-certificate-renderer.c:126
-msgid "Identifier"
-msgstr "識別子"
+#: ../gcr/gcr-certificate-exporter.c:227
+msgid "_Replace"
+msgstr ""
 
-#: ../gcr/gcr-certificate-renderer.c:134
-msgid "Value"
-msgstr "値"
+#: ../gcr/gcr-certificate-exporter.c:257
+#, fuzzy, c-format
+#| msgid "The operation was cancelled"
+msgid "The operation was cancelled."
+msgstr "処理をキャンセルしました"
 
-#: ../gcr/gcr-certificate-renderer.c:140
-msgid "Critical"
-msgstr "重大"
+#: ../gcr/gcr-certificate-exporter.c:301
+#, fuzzy
+#| msgid "Unlock certificate"
+msgid "Export certificate"
+msgstr "証明書の解除"
 
-#: ../gcr/gcr-certificate-renderer.c:140
+#: ../gcr/gcr-certificate-exporter.c:313
+#, fuzzy
+#| msgid "Certificate"
+msgid "Certificate files"
+msgstr "証明書"
+
+#: ../gcr/gcr-certificate-exporter.c:324
+msgid "PEM files"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:141
+#, fuzzy
+#| msgid "Issuer Name"
+msgid "Other Name"
+msgstr "発行者の名前"
+
+#: ../gcr/gcr-certificate-extensions.c:150
+msgid "XMPP Addr"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:154
+msgid "DNS SRV"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:166
+msgid "Email"
+msgstr "E-メール"
+
+#: ../gcr/gcr-certificate-extensions.c:174
+#, fuzzy
+#| msgid "DSA"
+msgid "DNS"
+msgstr "DSA"
+
+#: ../gcr/gcr-certificate-extensions.c:182
+msgid "X400 Address"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:189
+#, fuzzy
+#| msgid "Subject Name"
+msgid "Directory Name"
+msgstr "サブジェクト名"
+
+#: ../gcr/gcr-certificate-extensions.c:197
+msgid "EDI Party Name"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:204
+msgid "URI"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:212
+msgid "IP Address"
+msgstr ""
+
+#: ../gcr/gcr-certificate-extensions.c:220
+#, fuzzy
+#| msgid "User ID"
+msgid "Registered ID"
+msgstr "ユーザ ID"
+
+#: ../gcr/gcr-certificate-renderer.c:116
+msgid "Basic Constraints"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:118
+#, fuzzy
+#| msgid "Certificate"
+msgid "Certificate Authority"
+msgstr "証明書"
+
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "Yes"
 msgstr "はい"
 
-#: ../gcr/gcr-certificate-renderer.c:140
+#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
 msgid "No"
 msgstr "いいえ"
 
-#: ../gcr/gcr-certificate-renderer.c:358
+#: ../gcr/gcr-certificate-renderer.c:122
+msgid "Max Path Length"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:123
+#, fuzzy
+#| msgid "Unnamed"
+msgid "Unlimited"
+msgstr "名前なし"
+
+#: ../gcr/gcr-certificate-renderer.c:142
+msgid "Extended Key Usage"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:153
+msgid "Allowed Purposes"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:173
+#, fuzzy
+#| msgid "Identifier"
+msgid "Subject Key Identifier"
+msgstr "識別子"
+
+#: ../gcr/gcr-certificate-renderer.c:174
+#, fuzzy
+#| msgid "Identifier"
+msgid "Key Identifier"
+msgstr "識別子"
+
+#: ../gcr/gcr-certificate-renderer.c:185
+#, fuzzy
+#| msgid "Signature"
+msgid "Digital signature"
+msgstr "署名"
+
+#: ../gcr/gcr-certificate-renderer.c:186
+msgid "Key encipherment"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:187
+msgid "Data encipherment"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:188
+#, fuzzy
+#| msgid "Key Parameters"
+msgid "Key agreement"
+msgstr "鍵のパラメータ"
+
+#: ../gcr/gcr-certificate-renderer.c:189
+#, fuzzy
+#| msgid "Certificate"
+msgid "Certificate signature"
+msgstr "証明書"
+
+#: ../gcr/gcr-certificate-renderer.c:190
+msgid "Revocation list signature"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:215
+msgid "Key Usage"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:216
+msgid "Usages"
+msgstr ""
+
+#: ../gcr/gcr-certificate-renderer.c:236
+#, fuzzy
+#| msgid "Subject Name"
+msgid "Subject Alternative Names"
+msgstr "サブジェクト名"
+
+#: ../gcr/gcr-certificate-renderer.c:261
+msgid "Extension"
+msgstr "拡張"
+
+#: ../gcr/gcr-certificate-renderer.c:265
+msgid "Identifier"
+msgstr "識別子"
+
+#: ../gcr/gcr-certificate-renderer.c:266
+msgid "Value"
+msgstr "値"
+
+#: ../gcr/gcr-certificate-renderer.c:313
+msgid "Critical"
+msgstr "重大"
+
+#: ../gcr/gcr-certificate-renderer.c:386
+#, fuzzy
+msgid "Couldn't export the certificate."
+msgstr "インポートした証明書/鍵を保存する場所を選択してください"
+
+#: ../gcr/gcr-certificate-renderer.c:613
 #, fuzzy
 msgid "Identity"
 msgstr "識別子"
 
-#: ../gcr/gcr-certificate-renderer.c:362
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr ""
 
-#: ../gcr/gcr-certificate-renderer.c:369
+#: ../gcr/gcr-certificate-renderer.c:624
 #, fuzzy
 msgid "Expires"
 msgstr "有効期限"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:379
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "サブジェクト名"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:383
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "発行者の名前"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:387
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "発行済の証明書"
 
-#: ../gcr/gcr-certificate-renderer.c:392
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "版"
 
-#: ../gcr/gcr-certificate-renderer.c:406
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "次より古い日付は妥当ではない"
 
-#: ../gcr/gcr-certificate-renderer.c:411
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "次より新しい日付は妥当ではない"
 
-#: ../gcr/gcr-certificate-renderer.c:420
-msgid "Signature Algorithm"
-msgstr "署名アルゴリズム"
+#. Fingerprints
+#: ../gcr/gcr-certificate-renderer.c:669
+#, fuzzy
+#| msgid "Fingerprints"
+msgid "Certificate Fingerprints"
+msgstr "指紋"
 
-#: ../gcr/gcr-certificate-renderer.c:425
-msgid "Signature Parameters"
-msgstr "署名のパラメータ"
-
-#: ../gcr/gcr-certificate-renderer.c:432
+#. Signature
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "署名"
 
+#: ../gcr/gcr-certificate-renderer.c:679
+msgid "Signature Algorithm"
+msgstr "署名アルゴリズム"
+
+#: ../gcr/gcr-certificate-renderer.c:683
+msgid "Signature Parameters"
+msgstr "署名のパラメータ"
+
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:437
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "公開鍵の情報"
 
-#: ../gcr/gcr-certificate-renderer.c:442
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "鍵のアルゴリズム"
 
-#: ../gcr/gcr-certificate-renderer.c:448
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "鍵のパラメータ"
 
-#: ../gcr/gcr-certificate-renderer.c:455
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "鍵のサイズ"
 
-#: ../gcr/gcr-certificate-renderer.c:463 ../gcr/gcr-key-renderer.c:285
-#: ../gcr/gcr-parser.c:278
+#: ../gcr/gcr-certificate-renderer.c:713
+#, fuzzy
+#| msgid "SHA1 Fingerprint"
+msgid "Key SHA1 Fingerprint"
+msgstr "SHA1 指紋"
+
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "公開鍵"
 
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:468
-msgid "Fingerprints"
-msgstr "指紋"
+#: ../gcr/gcr-display-view.c:308
+#, fuzzy
+#| msgid "_Details:"
+msgid "_Details"
+msgstr "詳細(_D):"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr ""
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr ""
+
+#: ../gcr/gcr-failure-renderer.c:170
+#, fuzzy
+#| msgid "Version"
+msgid "Reason"
+msgstr "版"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr ""
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 #, fuzzy
@@ -385,13 +669,177 @@ msgstr "インポート先:"
 msgid "Password:"
 msgstr "パスワード:"
 
+#: ../gcr/gcr-gnupg-key.c:251
+#, fuzzy
+#| msgid "PGP Key: %s"
+msgid "PGP Key"
+msgstr "PGP 鍵: %s"
+
+#: ../gcr/gcr-gnupg-key.c:631
+#, fuzzy
+#| msgid "User ID"
+msgctxt "column"
+msgid "Key ID"
+msgstr "ユーザ ID"
+
+#: ../gcr/gcr-gnupg-process.c:632
+#, c-format
+msgid "Gnupg process exited with code: %d"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-process.c:639
+#, c-format
+msgid "Gnupg process was terminated with signal: %d"
+msgstr ""
+
+#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
+msgid "The operation was cancelled"
+msgstr "処理をキャンセルしました"
+
+#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+msgid "Enter password to unlock the private key"
+msgstr "パスワードを入力して秘密鍵を解除してください"
+
+#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+msgid "Enter password to unlock the certificate"
+msgstr "パスワードを入力して証明書によるロックを解除してください"
+
+#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+msgid "Enter password to unlock"
+msgstr "パスワードを入力してロックを解除してください"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:185
+msgid "In order to import the private key, it must be unlocked"
+msgstr "秘密鍵をインポートする場合はロックを解除してください"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:188
+msgid "In order to import the certificate, it must be unlocked"
+msgstr "証明書をインポートする場合はロックを解除してください"
+
+#. TRANSLATORS: The data is locked.
+#: ../gcr/gcr-importer.c:191
+msgid "In order to import the data, it must be unlocked"
+msgstr "データをインポートする場合はロックを解除してください"
+
+#. TRANSLATORS: The key is locked.
+#: ../gcr/gcr-importer.c:196
+#, c-format
+msgid "In order to import the private key '%s', it must be unlocked"
+msgstr "秘密鍵の '%s' をインポートする場合はロックを解除してください"
+
+#. TRANSLATORS: The certificate is locked.
+#: ../gcr/gcr-importer.c:199
+#, c-format
+msgid "In order to import the certificate '%s', it must be unlocked"
+msgstr "証明書の '%s' をインポートする場合はロックを解除してください"
+
+#. TRANSLATORS: The object '%s' is locked.
+#: ../gcr/gcr-importer.c:202
+#, c-format
+msgid "In order to import '%s', it must be unlocked"
+msgstr "'%s' をインポートする場合はロックを解除してください"
+
+#: ../gcr/gcr-importer.c:386
+#, c-format
+msgid "No location available to import to"
+msgstr "インポート先として妥当な場所ではありません"
+
+#: ../gcr/gcr-importer.c:537
+msgid "Import Certificates/Keys"
+msgstr "証明書/鍵のインポート"
+
+#: ../gcr/gcr-importer.c:544
+msgid "Choose a location to store the imported certificates/keys."
+msgstr "インポートした証明書/鍵を保存する場所を選択してください"
+
+#: ../gcr/gcr-key-renderer.c:82
+msgid "Key"
+msgstr ""
+
+#: ../gcr/gcr-key-renderer.c:283
+#, fuzzy
+msgid "Private RSA Key"
+msgstr "秘密鍵"
+
+#: ../gcr/gcr-key-renderer.c:285
+#, fuzzy
+msgid "Private DSA Key"
+msgstr "秘密鍵"
+
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
+msgid "Private Key"
+msgstr "秘密鍵"
+
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
+#, fuzzy
+msgid "Public DSA Key"
+msgstr "公開鍵"
+
+#: ../gcr/gcr-key-renderer.c:301
+#, c-format
+msgid "%d bit"
+msgid_plural "%d bits"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../gcr/gcr-key-renderer.c:302
+#, fuzzy
+msgid "Strength"
+msgstr "通り"
+
+#: ../gcr/gcr-key-renderer.c:315
+#, fuzzy
+msgid "Algorithm"
+msgstr "鍵のアルゴリズム"
+
+#: ../gcr/gcr-key-renderer.c:322
+#, fuzzy
+msgid "Size"
+msgstr "鍵のサイズ"
+
+#. Fingerprints
+#: ../gcr/gcr-key-renderer.c:326
+msgid "Fingerprints"
+msgstr "指紋"
+
+#: ../gcr/gcr-key-renderer.c:331
+msgid "SHA1"
+msgstr ""
+
+#: ../gcr/gcr-key-renderer.c:337
+msgid "SHA256"
+msgstr ""
+
+#: ../gcr/gcr-parser.c:1922
+msgid "Unrecognized or unsupported data."
+msgstr "認識できないまたはサポートしていないデータです"
+
+#: ../gcr/gcr-parser.c:1925
+msgid "Could not parse invalid or corrupted data."
+msgstr "データが不正または壊れているため解析できませんでした"
+
+#: ../gcr/gcr-parser.c:1928
+msgid "The data is locked"
+msgstr "データにはロックがかかっています"
+
+#. Translators: A pinned certificate is an exception which
+#. trusts a given certificate explicitly for a purpose and
+#. communication with a certain peer.
+#: ../gcr/gcr-trust.c:377
+#, fuzzy, c-format
+msgid "Couldn't find a place to store the pinned certificate"
+msgstr "インポートした証明書/鍵を保存する場所を選択してください"
+
 #: ../gcr/gcr-unlock-options-widget.ui.h:1
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "ログインしたら、このキーリングのロックを自動的に解除する"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:2
 msgid "Lock this keyring after"
-msgstr "このキーリングを以下の時間経過したらロック:"
+msgstr "このキーリングを以下の時間経過したらロックする:"
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:3
 msgid "Lock this keyring if idle for"
@@ -399,480 +847,91 @@ msgstr "このキーリングを以下の時間アイドルだったらロック
 
 #: ../gcr/gcr-unlock-options-widget.ui.h:4
 msgid "Lock this keyring when I log out"
-msgstr "ログアウトしたら、このキーリングの自動的にロックする"
+msgstr "ログアウトしたら、このキーリングをロックする"
 
 #. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
 #: ../gcr/gcr-unlock-options-widget.ui.h:6
 msgid "minutes"
 msgstr "分"
 
-#: ../gcr/gcr-importer.c:170 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "パスワードを入力して秘密鍵を解除してください"
-
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "パスワードを入力して証明書によるロックを解除してください"
-
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "パスワードを入力してロックを解除してください"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:183
-msgid "In order to import the private key, it must be unlocked"
-msgstr "秘密鍵をインポートする場合はロックを解除してください"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:186
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "証明書をインポートする場合はロックを解除してください"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:189
-msgid "In order to import the data, it must be unlocked"
-msgstr "データをインポートする場合はロックを解除してください"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:194
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "秘密鍵の '%s' をインポートする場合はロックを解除してください"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:197
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "証明書の '%s' をインポートする場合はロックを解除してください"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:200
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "'%s' をインポートする場合はロックを解除してください"
-
-#: ../gcr/gcr-importer.c:291 ../gcr/gcr-parser.c:1708 ../gcr/gcr-parser.c:1947
-#: ../gck/gck-misc.c:104
-msgid "The operation was cancelled"
-msgstr "処理をキャンセルしました"
-
-#: ../gcr/gcr-importer.c:383
-#, c-format
-msgid "No location available to import to"
-msgstr "インポート先として妥当な場所ではありません"
-
-#: ../gcr/gcr-importer.c:532
-msgid "Import Certificates/Keys"
-msgstr "証明書/鍵のインポート"
-
-#: ../gcr/gcr-importer.c:539
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "インポートした証明書/鍵を保存する場所を選択してください"
-
-#: ../gcr/gcr-key-renderer.c:83
-msgid "Key"
-msgstr ""
-
-#: ../gcr/gcr-key-renderer.c:274
-#, fuzzy
-msgid "Private RSA Key"
-msgstr "秘密鍵"
-
-#: ../gcr/gcr-key-renderer.c:276
-#, fuzzy
-msgid "Private DSA Key"
-msgstr "秘密鍵"
-
-#: ../gcr/gcr-key-renderer.c:278 ../gcr/gcr-parser.c:272
-msgid "Private Key"
-msgstr "秘密鍵"
-
-#: ../gcr/gcr-key-renderer.c:281 ../gcr/gcr-key-renderer.c:283
-#, fuzzy
-msgid "Public DSA Key"
-msgstr "公開鍵"
-
-#: ../gcr/gcr-key-renderer.c:292
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../gcr/gcr-key-renderer.c:293
-#, fuzzy
-msgid "Strength"
-msgstr "通り"
-
-#: ../gcr/gcr-key-renderer.c:306
-#, fuzzy
-msgid "Algorithm"
-msgstr "鍵のアルゴリズム"
-
-#: ../gcr/gcr-key-renderer.c:313
-#, fuzzy
-msgid "Size"
-msgstr "鍵のサイズ"
-
-#. TODO: We need to have consistent key fingerprints.
-#: ../gcr/gcr-key-renderer.c:317
-#, fuzzy
-msgid "Fingerprint"
-msgstr "指紋"
-
-#: ../gcr/gcr-parser.c:1711
-msgid "Unrecognized or unsupported data."
-msgstr "認識できないまたはサポートしていないデータです"
-
-#: ../gcr/gcr-parser.c:1714
-msgid "Could not parse invalid or corrupted data."
-msgstr "データが不正または壊れているため解析できませんでした"
-
-#: ../gcr/gcr-parser.c:1717
-msgid "The data is locked"
-msgstr "データにはロックがかかっています"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-unlock-renderer.c:63
 #, fuzzy, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "インポートした証明書/鍵を保存する場所を選択してください"
+#| msgid "Unlock"
+msgid "Unlock: %s"
+msgstr "ロックの解除"
 
-#: ../gck/gck-uri.c:129 ../gck/gck-uri.c:186 ../gck/gck-uri.c:221
-#: ../gck/gck-uri.c:253
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "ロックの解除"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+#, fuzzy
+#| msgid "The unlock password was incorrect"
+msgid "The password was incorrect"
+msgstr "解除パスワードが間違っています"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+#, fuzzy
+#| msgid "Password:"
+msgid "Password"
+msgstr "パスワード:"
+
+#: ../gcr/gcr-unlock-renderer.c:324
 #, c-format
-msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
 msgstr ""
 
-#: ../gck/gck-uri.c:292
-msgid "The URI has does not have the 'pkcs11' scheme."
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
 msgstr ""
 
-#: ../gck/gck-misc.c:107
-msgid "Insufficient memory available"
-msgstr "利用できるメモリが足りません"
-
-#: ../gck/gck-misc.c:109
-msgid "The specified slot ID is not valid"
-msgstr "指定したスロットの ID は無効です"
-
-#: ../gck/gck-misc.c:111
-msgid "Internal error"
-msgstr "内部エラー"
-
-#: ../gck/gck-misc.c:113
-msgid "The operation failed"
-msgstr "処理を実行できませんでした"
-
-#: ../gck/gck-misc.c:115
-msgid "Invalid arguments"
-msgstr "引数が無効です"
-
-#: ../gck/gck-misc.c:117
-msgid "The module cannot create needed threads"
-msgstr "モジュールで必要となるスレッドを生成できませんでした"
-
-#: ../gck/gck-misc.c:119
-msgid "The module cannot lock data properly"
-msgstr "モジュールでデータを正しくロックできませんでした"
-
-#: ../gck/gck-misc.c:121
-msgid "The field is read-only"
-msgstr "そのフィールドは読み込み専用です"
-
-#: ../gck/gck-misc.c:123
-msgid "The field is sensitive and cannot be revealed"
-msgstr "そのフィールドには個人情報が含まれているため開示できません"
-
-#: ../gck/gck-misc.c:125
-msgid "The field is invalid or does not exist"
-msgstr "そのフィールドのデータが間違っているか存在していません"
-
-#: ../gck/gck-misc.c:127
-msgid "Invalid value for field"
-msgstr "そのフィールドの値が間違っています"
-
-#: ../gck/gck-misc.c:129
-msgid "The data is not valid or unrecognized"
-msgstr "データが間違っているかまたは解読できません"
-
-#: ../gck/gck-misc.c:131
-msgid "The data is too long"
-msgstr "データが長すぎます"
-
-#: ../gck/gck-misc.c:133
-msgid "An error occurred on the device"
-msgstr "デバイスでエラーが発生しました"
-
-#: ../gck/gck-misc.c:135
+#: ../gcr/gcr-viewer-tool.c:41
 #, fuzzy
-msgid "Insufficient memory available on the device"
-msgstr "デバイス上で利用できるメモリが足りません"
+#| msgid "Certificate and Key Storage"
+msgid "GCR Certificate and Key Viewer"
+msgstr "証明書および鍵を格納するストレージ"
 
-#: ../gck/gck-misc.c:137
-msgid "The device was removed or unplugged"
-msgstr "デバイスが削除されたか抜き取られました"
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr ""
 
-#: ../gck/gck-misc.c:139
-msgid "The encrypted data is not valid or unrecognized"
-msgstr "暗号化したデータが間違っているかまたは解読できません"
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr ""
 
-#: ../gck/gck-misc.c:141
-msgid "The encrypted data is too long"
-msgstr "暗号化したデータが長すぎます"
-
-#: ../gck/gck-misc.c:143
-msgid "This operation is not supported"
-msgstr "この操作はサポートされていません"
-
-#: ../gck/gck-misc.c:145
-msgid "The key is missing or invalid"
-msgstr "鍵が存在しないかまたは間違っています"
-
-#: ../gck/gck-misc.c:147
-msgid "The key is the wrong size"
-msgstr "鍵のサイズが間違っています"
-
-#: ../gck/gck-misc.c:149
-msgid "The key is of the wrong type"
-msgstr "鍵の種類が間違っています"
-
-#: ../gck/gck-misc.c:151
-msgid "No key is needed"
-msgstr "鍵は必要ありません"
-
-#: ../gck/gck-misc.c:153
+#: ../gcr/gcr-viewer-tool.c:104
 #, fuzzy
-msgid "The key is different than before"
-msgstr "以前の鍵と同じではありません"
+#| msgid "Certificate and Key Storage"
+msgid "- View certificate and key files"
+msgstr "証明書および鍵を格納するストレージ"
 
-#: ../gck/gck-misc.c:155
-msgid "A key is needed"
-msgstr "鍵が必要です"
-
-#: ../gck/gck-misc.c:157
+#: ../gcr/gcr-viewer-tool.c:118
 #, fuzzy
-msgid "Cannot include the key in the digest"
-msgstr "ダイジェストの中に鍵を含めることができません"
+#| msgid "Certificate"
+msgid "Certificate Viewer"
+msgstr "証明書"
 
-#: ../gck/gck-misc.c:159
-msgid "This operation cannot be done with this key"
-msgstr "この鍵でその操作を実行することはできません"
+#: ../gck/gck-uri.c:173
+#, c-format
+msgid "The URI has invalid encoding."
+msgstr ""
 
-#: ../gck/gck-misc.c:161
-msgid "The key cannot be wrapped"
-msgstr "鍵をラップできません"
+#: ../gck/gck-uri.c:177
+msgid "The URI does not have the 'pkcs11' scheme."
+msgstr ""
 
-#: ../gck/gck-misc.c:163
-msgid "Cannot export this key"
-msgstr "この鍵をエクスポートできません"
+#: ../gck/gck-uri.c:181
+msgid "The URI has bad syntax."
+msgstr ""
 
-#: ../gck/gck-misc.c:165
-msgid "The crypto mechanism is invalid or unrecognized"
-msgstr "Crypto のメカニズムが間違っているかまたは解読できません"
-
-#: ../gck/gck-misc.c:167
-msgid "The crypto mechanism has an invalid argument"
-msgstr "Crypto のメカニズムに無効な引数があります"
-
-#: ../gck/gck-misc.c:169
-msgid "The object is missing or invalid"
-msgstr "オブジェクトが存在しないかまたは間違っています"
-
-#: ../gck/gck-misc.c:171
-msgid "Another operation is already taking place"
-msgstr "別の操作が既に実行中です"
-
-#: ../gck/gck-misc.c:173
-msgid "No operation is taking place"
-msgstr "何も実行していません"
-
-#: ../gck/gck-misc.c:175
-msgid "The password or PIN is incorrect"
-msgstr "パスワードまたは PIN の一部が間違っています"
-
-#: ../gck/gck-misc.c:177
-msgid "The password or PIN is invalid"
-msgstr "パスワードまたは PIN が間違っています"
-
-#: ../gck/gck-misc.c:179
-msgid "The password or PIN is of an invalid length"
-msgstr "パスワードまたは PIN の長さが妥当ではありません"
-
-#: ../gck/gck-misc.c:181
-msgid "The password or PIN has expired"
-msgstr "パスワードまたは PIN の有効期限が過ぎています"
-
-#: ../gck/gck-misc.c:183
-msgid "The password or PIN is locked"
-msgstr "パスワードまたは PIN がロックされています"
-
-#: ../gck/gck-misc.c:185
-msgid "The session is closed"
-msgstr "セッションをクローズしました"
-
-#: ../gck/gck-misc.c:187
-msgid "Too many sessions are active"
-msgstr "非常にたくさんのセッションを実行しています"
-
-#: ../gck/gck-misc.c:189
-msgid "The session is invalid"
-msgstr "無効なセッションです"
-
-#: ../gck/gck-misc.c:191
-msgid "The session is read-only"
-msgstr "そのセッションは読み込み専用です"
-
-#: ../gck/gck-misc.c:193
-msgid "An open session exists"
-msgstr "オープンしているセッションがあります"
-
-#: ../gck/gck-misc.c:195
-msgid "A read-only session exists"
-msgstr "読み込み専用のセッションがあります"
-
-#: ../gck/gck-misc.c:197
-msgid "An administrator session exists"
-msgstr "管理者用のセッションがあります"
-
-#: ../gck/gck-misc.c:199
-msgid "The signature is bad or corrupted"
-msgstr "署名が間違っているかまたは壊れています"
-
-#: ../gck/gck-misc.c:201
-msgid "The signature is unrecognized or corrupted"
-msgstr "署名を解読できないかまたは壊れています"
-
-#: ../gck/gck-misc.c:203
-msgid "Certain required fields are missing"
-msgstr "必須のフィールドが足りません"
-
-#: ../gck/gck-misc.c:205
-msgid "Certain fields have invalid values"
-msgstr "フィールドの値が間違っています"
-
-#: ../gck/gck-misc.c:207
-msgid "The device is not present or unplugged"
-msgstr "デバイスが存在しないかまたは抜き取られています"
-
-#: ../gck/gck-misc.c:209
-msgid "The device is invalid or unrecognizable"
-msgstr "デバイスが間違っているかまたは認識できません"
-
-#: ../gck/gck-misc.c:211
-msgid "The device is write protected"
-msgstr "そのデバイスには書き込みできません"
-
-#: ../gck/gck-misc.c:213
-msgid "Cannot import because the key is invalid"
-msgstr "その鍵が無効なためインポートできません"
-
-#: ../gck/gck-misc.c:215
-msgid "Cannot import because the key is of the wrong size"
-msgstr "鍵のサイズが間違っているためインポートできません"
-
-#: ../gck/gck-misc.c:217
-msgid "Cannot import because the key is of the wrong type"
-msgstr "鍵の種類が間違っているためインポートできません"
-
-#: ../gck/gck-misc.c:219
-msgid "You are already logged in"
-msgstr "あなたは既にログインしています"
-
-#: ../gck/gck-misc.c:221
-msgid "No user has logged in"
-msgstr "誰もログインしていません"
-
-#: ../gck/gck-misc.c:223
-msgid "The user's password or PIN is not set"
-msgstr "ユーザのパスワードまたは PIN が指定されていません"
-
-#: ../gck/gck-misc.c:225
-msgid "The user is of an invalid type"
-msgstr "ユーザの種類が間違っています"
-
-#: ../gck/gck-misc.c:227
-msgid "Another user is already logged in"
-msgstr "別のユーザが既にログインしています"
-
-#: ../gck/gck-misc.c:229
-#, fuzzy
-msgid "Too many users of different types are logged in"
-msgstr "いろいろな種類のユーザが大量にログインしています"
-
-#: ../gck/gck-misc.c:231
-msgid "Cannot import an invalid key"
-msgstr "無効な鍵はインポートできません"
-
-#: ../gck/gck-misc.c:233
-msgid "Cannot import a key of the wrong size"
-msgstr "間違ったサイズの鍵はインポートできません"
-
-#: ../gck/gck-misc.c:235
-msgid "Cannot export because the key is invalid"
-msgstr "無効な鍵はエクスポートできません"
-
-#: ../gck/gck-misc.c:237
-msgid "Cannot export because the key is of the wrong size"
-msgstr "鍵のサイズが間違っているためエクスポートできません"
-
-#: ../gck/gck-misc.c:239
-msgid "Cannot export because the key is of the wrong type"
-msgstr "鍵の種類が間違っているためエクスポートできません"
-
-#: ../gck/gck-misc.c:241
-msgid "Unable to initialize the random number generator"
-msgstr "乱数発生器を初期化できません"
-
-#: ../gck/gck-misc.c:243
-msgid "No random number generator available"
-msgstr "利用可能な乱数発生器はありません"
-
-#: ../gck/gck-misc.c:245
-msgid "The crypto mechanism has an invalid parameter"
-msgstr "Crypto のメカニズムに無効な引数があります"
-
-#: ../gck/gck-misc.c:247
-msgid "Not enough space to store the result"
-msgstr "結果を保存しておく容量が足りません"
-
-#: ../gck/gck-misc.c:249
-msgid "The saved state is invalid"
-msgstr "保管した状態が間違っています"
-
-#: ../gck/gck-misc.c:251
-msgid "The information is sensitive and cannot be revealed"
-msgstr "その情報には個人情報が含まれているため開示できません"
-
-#: ../gck/gck-misc.c:253
-msgid "The state cannot be saved"
-msgstr "状態を保存できません"
-
-#: ../gck/gck-misc.c:255
-msgid "The module has not been initialized"
-msgstr "モジュールが初期化されていません"
-
-#: ../gck/gck-misc.c:257
-msgid "The module has already been initialized"
-msgstr "既にモジュールは初期化済です"
-
-#: ../gck/gck-misc.c:259
-msgid "Cannot lock data"
-msgstr "データをロックできません"
-
-#: ../gck/gck-misc.c:261
-msgid "The data cannot be locked"
-msgstr "データをロックできません"
-
-#: ../gck/gck-misc.c:263
-msgid "The signature request was rejected by the user"
-msgstr "署名への要求がユーザによって拒否されました"
-
-#: ../gck/gck-misc.c:267
-msgid "Unknown error"
-msgstr "原因不明のエラー"
+#: ../gck/gck-uri.c:185
+msgid "The URI has a bad version number."
+msgstr ""
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
@@ -943,10 +1002,6 @@ msgstr "証明書の解除"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "公開鍵の解除"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "ロックの解除"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -1048,11 +1103,11 @@ msgstr ""
 msgid "          "
 msgstr ""
 
-#: ../ui/gku-prompt-tool.c:597
+#: ../ui/gku-prompt-tool.c:600
 msgid "Store passwords unencrypted?"
 msgstr "暗号化していないパスワードを保存しますか?"
 
-#: ../ui/gku-prompt-tool.c:598
+#: ../ui/gku-prompt-tool.c:601
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -1061,15 +1116,15 @@ msgstr ""
 "空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されま"
 "せん。他の人達がこれらのパスワードを利用する可能性があります。"
 
-#: ../ui/gku-prompt-tool.c:605
+#: ../ui/gku-prompt-tool.c:608
 msgid "Use Unsafe Storage"
 msgstr "安全ではないストレージを使う"
 
-#: ../ui/gku-prompt-tool.c:643
+#: ../ui/gku-prompt-tool.c:648
 msgid "Passwords do not match."
 msgstr "パスワードが一致しません。"
 
-#: ../ui/gku-prompt-tool.c:653
+#: ../ui/gku-prompt-tool.c:658
 msgid "Password cannot be blank"
 msgstr "パスワードを空にしないでください"
 
@@ -1109,8 +1164,253 @@ msgstr "古いパスワード(_O):"
 msgid "_Password:"
 msgstr "パスワード(_P):"
 
-#~ msgid "Email"
-#~ msgstr "E-メール"
+#, fuzzy
+#~ msgid "Fingerprint"
+#~ msgstr "指紋"
+
+#~ msgid "Insufficient memory available"
+#~ msgstr "利用できるメモリが足りません"
+
+#~ msgid "The specified slot ID is not valid"
+#~ msgstr "指定したスロットの ID は無効です"
+
+#~ msgid "Internal error"
+#~ msgstr "内部エラー"
+
+#~ msgid "The operation failed"
+#~ msgstr "処理を実行できませんでした"
+
+#~ msgid "Invalid arguments"
+#~ msgstr "引数が無効です"
+
+#~ msgid "The module cannot create needed threads"
+#~ msgstr "モジュールで必要となるスレッドを生成できませんでした"
+
+#~ msgid "The module cannot lock data properly"
+#~ msgstr "モジュールでデータを正しくロックできませんでした"
+
+#~ msgid "The field is read-only"
+#~ msgstr "そのフィールドは読み込み専用です"
+
+#~ msgid "The field is sensitive and cannot be revealed"
+#~ msgstr "そのフィールドには個人情報が含まれているため開示できません"
+
+#~ msgid "The field is invalid or does not exist"
+#~ msgstr "そのフィールドのデータが間違っているか存在していません"
+
+#~ msgid "Invalid value for field"
+#~ msgstr "そのフィールドの値が間違っています"
+
+#~ msgid "The data is not valid or unrecognized"
+#~ msgstr "データが間違っているかまたは解読できません"
+
+#~ msgid "The data is too long"
+#~ msgstr "データが長すぎます"
+
+#~ msgid "An error occurred on the device"
+#~ msgstr "デバイスでエラーが発生しました"
+
+#, fuzzy
+#~ msgid "Insufficient memory available on the device"
+#~ msgstr "デバイス上で利用できるメモリが足りません"
+
+#~ msgid "The device was removed or unplugged"
+#~ msgstr "デバイスが削除されたか抜き取られました"
+
+#~ msgid "The encrypted data is not valid or unrecognized"
+#~ msgstr "暗号化したデータが間違っているかまたは解読できません"
+
+#~ msgid "The encrypted data is too long"
+#~ msgstr "暗号化したデータが長すぎます"
+
+#~ msgid "This operation is not supported"
+#~ msgstr "この操作はサポートされていません"
+
+#~ msgid "The key is missing or invalid"
+#~ msgstr "鍵が存在しないかまたは間違っています"
+
+#~ msgid "The key is the wrong size"
+#~ msgstr "鍵のサイズが間違っています"
+
+#~ msgid "The key is of the wrong type"
+#~ msgstr "鍵の種類が間違っています"
+
+#~ msgid "No key is needed"
+#~ msgstr "鍵は必要ありません"
+
+#, fuzzy
+#~ msgid "The key is different than before"
+#~ msgstr "以前の鍵と同じではありません"
+
+#~ msgid "A key is needed"
+#~ msgstr "鍵が必要です"
+
+#, fuzzy
+#~ msgid "Cannot include the key in the digest"
+#~ msgstr "ダイジェストの中に鍵を含めることができません"
+
+#~ msgid "This operation cannot be done with this key"
+#~ msgstr "この鍵でその操作を実行することはできません"
+
+#~ msgid "The key cannot be wrapped"
+#~ msgstr "鍵をラップできません"
+
+#~ msgid "Cannot export this key"
+#~ msgstr "この鍵をエクスポートできません"
+
+#~ msgid "The crypto mechanism is invalid or unrecognized"
+#~ msgstr "Crypto のメカニズムが間違っているかまたは解読できません"
+
+#~ msgid "The crypto mechanism has an invalid argument"
+#~ msgstr "Crypto のメカニズムに無効な引数があります"
+
+#~ msgid "The object is missing or invalid"
+#~ msgstr "オブジェクトが存在しないかまたは間違っています"
+
+#~ msgid "Another operation is already taking place"
+#~ msgstr "別の操作が既に実行中です"
+
+#~ msgid "No operation is taking place"
+#~ msgstr "何も実行していません"
+
+#~ msgid "The password or PIN is incorrect"
+#~ msgstr "パスワードまたは PIN の一部が間違っています"
+
+#~ msgid "The password or PIN is invalid"
+#~ msgstr "パスワードまたは PIN が間違っています"
+
+#~ msgid "The password or PIN is of an invalid length"
+#~ msgstr "パスワードまたは PIN の長さが妥当ではありません"
+
+#~ msgid "The password or PIN has expired"
+#~ msgstr "パスワードまたは PIN の有効期限が過ぎています"
+
+#~ msgid "The password or PIN is locked"
+#~ msgstr "パスワードまたは PIN がロックされています"
+
+#~ msgid "The session is closed"
+#~ msgstr "セッションをクローズしました"
+
+#~ msgid "Too many sessions are active"
+#~ msgstr "非常にたくさんのセッションを実行しています"
+
+#~ msgid "The session is invalid"
+#~ msgstr "無効なセッションです"
+
+#~ msgid "The session is read-only"
+#~ msgstr "そのセッションは読み込み専用です"
+
+#~ msgid "An open session exists"
+#~ msgstr "オープンしているセッションがあります"
+
+#~ msgid "A read-only session exists"
+#~ msgstr "読み込み専用のセッションがあります"
+
+#~ msgid "An administrator session exists"
+#~ msgstr "管理者用のセッションがあります"
+
+#~ msgid "The signature is bad or corrupted"
+#~ msgstr "署名が間違っているかまたは壊れています"
+
+#~ msgid "The signature is unrecognized or corrupted"
+#~ msgstr "署名を解読できないかまたは壊れています"
+
+#~ msgid "Certain required fields are missing"
+#~ msgstr "必須のフィールドが足りません"
+
+#~ msgid "Certain fields have invalid values"
+#~ msgstr "フィールドの値が間違っています"
+
+#~ msgid "The device is not present or unplugged"
+#~ msgstr "デバイスが存在しないかまたは抜き取られています"
+
+#~ msgid "The device is invalid or unrecognizable"
+#~ msgstr "デバイスが間違っているかまたは認識できません"
+
+#~ msgid "The device is write protected"
+#~ msgstr "そのデバイスには書き込みできません"
+
+#~ msgid "Cannot import because the key is invalid"
+#~ msgstr "その鍵が無効なためインポートできません"
+
+#~ msgid "Cannot import because the key is of the wrong size"
+#~ msgstr "鍵のサイズが間違っているためインポートできません"
+
+#~ msgid "Cannot import because the key is of the wrong type"
+#~ msgstr "鍵の種類が間違っているためインポートできません"
+
+#~ msgid "You are already logged in"
+#~ msgstr "あなたは既にログインしています"
+
+#~ msgid "No user has logged in"
+#~ msgstr "誰もログインしていません"
+
+#~ msgid "The user's password or PIN is not set"
+#~ msgstr "ユーザのパスワードまたは PIN が指定されていません"
+
+#~ msgid "The user is of an invalid type"
+#~ msgstr "ユーザの種類が間違っています"
+
+#~ msgid "Another user is already logged in"
+#~ msgstr "別のユーザが既にログインしています"
+
+#, fuzzy
+#~ msgid "Too many users of different types are logged in"
+#~ msgstr "いろいろな種類のユーザが大量にログインしています"
+
+#~ msgid "Cannot import an invalid key"
+#~ msgstr "無効な鍵はインポートできません"
+
+#~ msgid "Cannot import a key of the wrong size"
+#~ msgstr "間違ったサイズの鍵はインポートできません"
+
+#~ msgid "Cannot export because the key is invalid"
+#~ msgstr "無効な鍵はエクスポートできません"
+
+#~ msgid "Cannot export because the key is of the wrong size"
+#~ msgstr "鍵のサイズが間違っているためエクスポートできません"
+
+#~ msgid "Cannot export because the key is of the wrong type"
+#~ msgstr "鍵の種類が間違っているためエクスポートできません"
+
+#~ msgid "Unable to initialize the random number generator"
+#~ msgstr "乱数発生器を初期化できません"
+
+#~ msgid "No random number generator available"
+#~ msgstr "利用可能な乱数発生器はありません"
+
+#~ msgid "The crypto mechanism has an invalid parameter"
+#~ msgstr "Crypto のメカニズムに無効な引数があります"
+
+#~ msgid "Not enough space to store the result"
+#~ msgstr "結果を保存しておく容量が足りません"
+
+#~ msgid "The saved state is invalid"
+#~ msgstr "保管した状態が間違っています"
+
+#~ msgid "The information is sensitive and cannot be revealed"
+#~ msgstr "その情報には個人情報が含まれているため開示できません"
+
+#~ msgid "The state cannot be saved"
+#~ msgstr "状態を保存できません"
+
+#~ msgid "The module has not been initialized"
+#~ msgstr "モジュールが初期化されていません"
+
+#~ msgid "The module has already been initialized"
+#~ msgstr "既にモジュールは初期化済です"
+
+#~ msgid "Cannot lock data"
+#~ msgstr "データをロックできません"
+
+#~ msgid "The data cannot be locked"
+#~ msgstr "データをロックできません"
+
+#~ msgid "The signature request was rejected by the user"
+#~ msgstr "署名への要求がユーザによって拒否されました"
+
+#~ msgid "Unknown error"
+#~ msgstr "原因不明のエラー"
 
 #~ msgid "<i>Not Part of Certificate</i>"
 #~ msgstr "<i>証明書には記述されていません</i>"
@@ -1145,9 +1445,6 @@ msgstr "パスワード(_P):"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "メールの署名者の証明書"
 
-#~ msgid "Issued On"
-#~ msgstr "発行元"
-
 #~ msgid "MD5 Fingerprint"
 #~ msgstr "MD5 指紋"
 
@@ -1156,15 +1453,6 @@ msgstr "パスワード(_P):"
 
 #~ msgid "Organizational Unit (OU)"
 #~ msgstr "組織の部署 (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "SHA1 指紋"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "SSL クライアント証明書"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "SSL サーバ証明書"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
 #~ msgstr "<span size='large' weight='bold'>証明書と鍵のインポート</span>"
