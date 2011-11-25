@@ -1138,7 +1138,7 @@ egg_secure_free_full (void *memory, int flags)
 
 #ifdef WITH_VALGRIND
 		/* We like valgrind's warnings, so give it a first whack at checking for errors */
-		if (block != NULL || !(flags & GKR_SECURE_USE_FALLBACK))
+		if (block != NULL || !(flags & EGG_SECURE_USE_FALLBACK))
 			VALGRIND_FREELIKE_BLOCK (memory, sizeof (word_t));
 #endif
 
