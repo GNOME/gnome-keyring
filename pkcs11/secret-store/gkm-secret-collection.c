@@ -306,9 +306,9 @@ factory_create_collection (GkmSession *session, GkmTransaction *transaction,
 			return NULL;
 		}
 
-		/* No identifier? Try to use label */
+		/* No identifier? Use label */
 		if (identifier == NULL)
-			identifier = g_utf8_strdown (label, -1);
+			identifier = g_strdup (label);
 	}
 
 	if (!identifier || !identifier[0]) {
