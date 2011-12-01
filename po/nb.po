@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.3.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-13 10:54+0100\n"
-"PO-Revision-Date: 2011-11-13 10:55+0100\n"
+"POT-Creation-Date: 2011-12-01 19:11+0100\n"
+"PO-Revision-Date: 2011-12-01 19:11+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -159,7 +159,7 @@ msgstr "venter på lås (holdt av %d%s) %s …\n"
 
 #: ../egg/dotlock.c:1085
 msgid "(deadlock?) "
-msgstr ""
+msgstr "(låst)? "
 
 #: ../egg/dotlock.c:1124
 #, c-format
@@ -496,11 +496,11 @@ msgstr "kommandoer: "
 msgid "          "
 msgstr "            "
 
-#: ../ui/gku-prompt-tool.c:591
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "Lagre passord ukryptert?"
 
-#: ../ui/gku-prompt-tool.c:592
+#: ../ui/gku-prompt-tool.c:598
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -510,15 +510,15 @@ msgstr ""
 "krypteres på en trygg måte. De vil være tilgjengelig for alle som har "
 "tilgang til dine filer."
 
-#: ../ui/gku-prompt-tool.c:599
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "Bruk utrygg lagring"
 
-#: ../ui/gku-prompt-tool.c:639
+#: ../ui/gku-prompt-tool.c:645
 msgid "Passwords do not match."
 msgstr "Passordene er ikke like."
 
-#: ../ui/gku-prompt-tool.c:649
+#: ../ui/gku-prompt-tool.c:655
 msgid "Password cannot be blank"
 msgstr "Passordet kan ikke være tomt"
 
