@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 21:49+0200\n"
-"PO-Revision-Date: 2011-08-18 21:54+0200\n"
+"POT-Creation-Date: 2011-12-03 21:06+0100\n"
+"PO-Revision-Date: 2011-12-03 21:06+0100\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "Language: nl\n"
@@ -106,8 +106,8 @@ msgstr "Gnome-sleutelbos: GPG-agent"
 msgid "GPG Password Agent"
 msgstr "GPG-wachtwoordagent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:311
-#: ../gcr/gcr-key-renderer.c:316
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
+#: ../gcr/gcr-key-renderer.c:319
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -179,7 +179,7 @@ msgstr "Algemene naam"
 msgid "Surname"
 msgstr "Achternaam"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:650
+#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
 msgid "Serial Number"
 msgstr "Serienummer"
 
@@ -237,7 +237,7 @@ msgstr "DN Qualifier"
 msgid "Pseudonym"
 msgstr "Pseudoniem"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:307
+#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
 msgid "RSA"
 msgstr "RSA"
 
@@ -253,7 +253,7 @@ msgstr "MD5 met RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 met RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:309
+#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
 msgid "DSA"
 msgstr "DSA"
 
@@ -294,6 +294,31 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Onverwachte fout in waitpid(): %s"
 
+#: ../gck/gck-module.c:396
+#, c-format
+msgid "Error loading PKCS#11 module: %s"
+msgstr "Fout bij laden van PKCS#11-module: %s"
+
+#: ../gck/gck-module.c:403
+#, c-format
+msgid "Invalid PKCS#11 module: %s"
+msgstr "Ongeldige PKCS#11-module: %s"
+
+#: ../gck/gck-module.c:412
+#, c-format
+msgid "Couldn't setup PKCS#11 module: %s"
+msgstr "Kon PKCS#11-module niet instellen: %s"
+
+#: ../gck/gck-module.c:428
+#, c-format
+msgid "Couldn't initialize PKCS#11 module: %s"
+msgstr "Kon PKCS#11-module niet initialiseren: %s"
+
+#: ../gck/gck-modules.c:67
+#, c-format
+msgid "Couldn't initialize registered PKCS#11 modules: %s"
+msgstr "Kon geregistreerde PKCS#11-modules niet initialiseren: %s"
+
 #. later
 #. later
 #: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
@@ -313,7 +338,7 @@ msgid "Expires"
 msgstr "Verloopt op"
 
 #: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:254
+#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
 msgid "Certificate"
 msgstr "Certificaat"
 
@@ -489,92 +514,110 @@ msgstr "Kritiek"
 msgid "Couldn't export the certificate."
 msgstr "Kon het certificaat niet exporteren."
 
-#: ../gcr/gcr-certificate-renderer.c:611
+#: ../gcr/gcr-certificate-renderer.c:613
 msgid "Identity"
 msgstr "Identiteit"
 
-#: ../gcr/gcr-certificate-renderer.c:615
+#: ../gcr/gcr-certificate-renderer.c:617
 msgid "Verified by"
 msgstr "Geverifieerd door"
 
-#: ../gcr/gcr-certificate-renderer.c:622
+#: ../gcr/gcr-certificate-renderer.c:624
 msgid "Expires"
 msgstr "Verloopt op"
 
 #. The subject
-#: ../gcr/gcr-certificate-renderer.c:632
+#: ../gcr/gcr-certificate-renderer.c:634
 msgid "Subject Name"
 msgstr "Subject Name"
 
 #. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:636
+#: ../gcr/gcr-certificate-renderer.c:638
 msgid "Issuer Name"
 msgstr "Naam uitgever"
 
 #. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:640
+#: ../gcr/gcr-certificate-renderer.c:642
 msgid "Issued Certificate"
 msgstr "Uitgegeven certificaat"
 
-#: ../gcr/gcr-certificate-renderer.c:645
+#: ../gcr/gcr-certificate-renderer.c:647
 msgid "Version"
 msgstr "Versie"
 
-#: ../gcr/gcr-certificate-renderer.c:657
+#: ../gcr/gcr-certificate-renderer.c:659
 msgid "Not Valid Before"
 msgstr "Niet geldig voor"
 
-#: ../gcr/gcr-certificate-renderer.c:662
+#: ../gcr/gcr-certificate-renderer.c:664
 msgid "Not Valid After"
 msgstr "Niet geldig na"
 
 #. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:667
+#: ../gcr/gcr-certificate-renderer.c:669
 msgid "Certificate Fingerprints"
 msgstr "Vingerafdrukken van certificaat"
 
 #. Signature
-#: ../gcr/gcr-certificate-renderer.c:673 ../gcr/gcr-certificate-renderer.c:685
+#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
 msgid "Signature"
 msgstr "Ondertekening"
 
-#: ../gcr/gcr-certificate-renderer.c:677
+#: ../gcr/gcr-certificate-renderer.c:679
 msgid "Signature Algorithm"
 msgstr "Algoritme voor ondertekening"
 
-#: ../gcr/gcr-certificate-renderer.c:681
+#: ../gcr/gcr-certificate-renderer.c:683
 msgid "Signature Parameters"
 msgstr "Parameters voor ondertekening"
 
 #. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:689
+#: ../gcr/gcr-certificate-renderer.c:691
 msgid "Public Key Info"
 msgstr "Publieke sleutelinformatie"
 
-#: ../gcr/gcr-certificate-renderer.c:694
+#: ../gcr/gcr-certificate-renderer.c:696
 msgid "Key Algorithm"
 msgstr "Sleutelalgoritme"
 
-#: ../gcr/gcr-certificate-renderer.c:699
+#: ../gcr/gcr-certificate-renderer.c:701
 msgid "Key Parameters"
 msgstr "Sleutelparameters"
 
-#: ../gcr/gcr-certificate-renderer.c:704
+#: ../gcr/gcr-certificate-renderer.c:706
 msgid "Key Size"
 msgstr "Sleutelgrootte"
 
-#: ../gcr/gcr-certificate-renderer.c:711
+#: ../gcr/gcr-certificate-renderer.c:713
 msgid "Key SHA1 Fingerprint"
 msgstr "SHA1-vingerafdruk van sleutel"
 
-#: ../gcr/gcr-certificate-renderer.c:717 ../gcr/gcr-key-renderer.c:291
-#: ../gcr/gcr-parser.c:257
+#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
+#: ../gcr/gcr-parser.c:263
 msgid "Public Key"
 msgstr "Publieke sleutel"
 
-#: ../gcr/gcr-display-view.c:270
+#: ../gcr/gcr-display-view.c:308
 msgid "_Details"
 msgstr "_Details"
+
+#: ../gcr/gcr-failure-renderer.c:163
+#, c-format
+msgid "Could not display '%s'"
+msgstr "Kon ‘%s’ niet tonen"
+
+#: ../gcr/gcr-failure-renderer.c:165
+msgid "Could not display file"
+msgstr "Kon bestand niet tonen"
+
+#: ../gcr/gcr-failure-renderer.c:170
+msgid "Reason"
+msgstr "Reden"
+
+#: ../gcr/gcr-failure-renderer.c:203
+#, c-format
+msgid "Cannot display a file of this type."
+msgstr "Kan bestanden van dit type niet tonen"
 
 #: ../gcr/gcr-import-dialog.ui.h:1
 msgid "Import Certificates and Keys"
@@ -608,7 +651,7 @@ msgid "Gnupg process was terminated with signal: %d"
 msgstr "Gnupg-proces is beëindigd met signaal:%d"
 
 #: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1698 ../gcr/gcr-parser.c:1937
+#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
 msgid "The operation was cancelled"
 msgstr "De bewerking werd geannuleerd."
 
@@ -675,70 +718,70 @@ msgstr ""
 msgid "Key"
 msgstr "Sleutel"
 
-#: ../gcr/gcr-key-renderer.c:280
+#: ../gcr/gcr-key-renderer.c:283
 msgid "Private RSA Key"
 msgstr "Privé-sleutel (RSA)"
 
-#: ../gcr/gcr-key-renderer.c:282
+#: ../gcr/gcr-key-renderer.c:285
 msgid "Private DSA Key"
 msgstr "Privé-sleutel (DSA)"
 
-#: ../gcr/gcr-key-renderer.c:284 ../gcr/gcr-parser.c:251
+#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
 msgid "Private Key"
 msgstr "Privé-sleutel"
 
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-key-renderer.c:289
+#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
 msgid "Public DSA Key"
 msgstr "Publieke DSA-sleutel"
 
-#: ../gcr/gcr-key-renderer.c:298
+#: ../gcr/gcr-key-renderer.c:301
 #, c-format
 msgid "%d bit"
 msgid_plural "%d bits"
 msgstr[0] "%d bit"
 msgstr[1] "%d bits"
 
-#: ../gcr/gcr-key-renderer.c:299
+#: ../gcr/gcr-key-renderer.c:302
 msgid "Strength"
 msgstr "Sterkte"
 
-#: ../gcr/gcr-key-renderer.c:312
+#: ../gcr/gcr-key-renderer.c:315
 msgid "Algorithm"
 msgstr "Algoritme"
 
-#: ../gcr/gcr-key-renderer.c:319
+#: ../gcr/gcr-key-renderer.c:322
 msgid "Size"
 msgstr "Grootte"
 
 #. Fingerprints
-#: ../gcr/gcr-key-renderer.c:323
+#: ../gcr/gcr-key-renderer.c:326
 msgid "Fingerprints"
 msgstr "Vingerafdrukken"
 
-#: ../gcr/gcr-key-renderer.c:328
+#: ../gcr/gcr-key-renderer.c:331
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../gcr/gcr-key-renderer.c:334
+#: ../gcr/gcr-key-renderer.c:337
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../gcr/gcr-parser.c:1701
+#: ../gcr/gcr-parser.c:1922
 msgid "Unrecognized or unsupported data."
 msgstr "Onherkenbare of niet ondersteunde gegevens."
 
-#: ../gcr/gcr-parser.c:1704
+#: ../gcr/gcr-parser.c:1925
 msgid "Could not parse invalid or corrupted data."
 msgstr "Kon ongeldige of kapotte gegevens niet verwerken."
 
-#: ../gcr/gcr-parser.c:1707
+#: ../gcr/gcr-parser.c:1928
 msgid "The data is locked"
 msgstr "De gegevens zijn vergrendeld"
 
 #. Translators: A pinned certificate is an exception which
 #. trusts a given certificate explicitly for a purpose and
 #. communication with a certain peer.
-#: ../gcr/gcr-trust.c:420
+#: ../gcr/gcr-trust.c:377
 #, c-format
 msgid "Couldn't find a place to store the pinned certificate"
 msgstr "Kon geen locatie vinden om het ‘pinned’ certificaat op te slaan"
@@ -764,13 +807,68 @@ msgstr "Deze sleutelbos automatisch vergrendelen bij afmelden"
 msgid "minutes"
 msgstr "minuten"
 
+#: ../gcr/gcr-unlock-renderer.c:63
+#, c-format
+msgid "Unlock: %s"
+msgstr "Ontgrendelen: %s"
+
+#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+msgid "Unlock"
+msgstr "Ontgrendelen"
+
+#: ../gcr/gcr-unlock-renderer.c:135
+msgid "The password was incorrect"
+msgstr "Het wachtwoord was onjuist"
+
+#: ../gcr/gcr-unlock-renderer.c:173
+msgid "Password"
+msgstr "Wachtwoord:"
+
+#: ../gcr/gcr-unlock-renderer.c:324
+#, c-format
+msgid ""
+"The contents of '%s' are locked. In order to view the contents, enter the "
+"correct password."
+msgstr ""
+"De inhoud van ‘%s’ is vergrendeld. Om de inhoud te bekijken, dient u het "
+"juiste wachtwoord te geven."
+
+#: ../gcr/gcr-unlock-renderer.c:327
+msgid ""
+"The contents are locked. In order to view the contents, enter the correct "
+"password."
+msgstr ""
+"De inhoud is vergrendeld. Om de inhoud te bekijken, dient u het juiste "
+"wachtwoord te geven."
+
+#: ../gcr/gcr-viewer-tool.c:41
+msgid "GCR Certificate and Key Viewer"
+msgstr "GCR-certificaat- en sleutelweergave"
+
+#: ../gcr/gcr-viewer-tool.c:48
+msgid "Show the application's version"
+msgstr "De versie van de toepassing tonen"
+
+#: ../gcr/gcr-viewer-tool.c:50
+msgid "[file...]"
+msgstr "[bestand…]"
+
+#: ../gcr/gcr-viewer-tool.c:104
+msgid "- View certificate and key files"
+msgstr "— Certificaat- en sleutelbestanden weergeven"
+
+#: ../gcr/gcr-viewer-tool.c:118
+msgid "Certificate Viewer"
+msgstr "Certificaat-viewer"
+
 #: ../gck/gck-uri.c:173
 #, c-format
 msgid "The URI has invalid encoding."
 msgstr "De URI heeft ongeldige codering."
 
 #: ../gck/gck-uri.c:177
-msgid "The URI has does not have the 'pkcs11' scheme."
+msgid "The URI does not have the 'pkcs11' scheme."
 msgstr "De URI heeft niet het ‘pkcs11’-schema."
 
 #: ../gck/gck-uri.c:181
@@ -849,10 +947,6 @@ msgstr "Certificaat ontgrendelen"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 msgid "Unlock public key"
 msgstr "Publieke sleutel ontgrendelen"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Ontgrendelen"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Enter password to unlock the public key"
@@ -952,11 +1046,11 @@ msgstr "opdrachten: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:594
+#: ../ui/gku-prompt-tool.c:600
 msgid "Store passwords unencrypted?"
 msgstr "Wachtwoorden zonder versleuteling opslaan?"
 
-#: ../ui/gku-prompt-tool.c:595
+#: ../ui/gku-prompt-tool.c:601
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -966,15 +1060,15 @@ msgstr ""
 "veilig bewaard. Iedereen met toegang tot uw bestanden kan deze wachtwoorden "
 "achterhalen."
 
-#: ../ui/gku-prompt-tool.c:602
+#: ../ui/gku-prompt-tool.c:608
 msgid "Use Unsafe Storage"
 msgstr "Onveilige opslag gebruiken"
 
-#: ../ui/gku-prompt-tool.c:642
+#: ../ui/gku-prompt-tool.c:648
 msgid "Passwords do not match."
 msgstr "Wachtwoorden komen niet overeen."
 
-#: ../ui/gku-prompt-tool.c:652
+#: ../ui/gku-prompt-tool.c:658
 msgid "Password cannot be blank"
 msgstr "Wachtwoord mag niet leeg zijn"
 
