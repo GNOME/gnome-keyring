@@ -265,6 +265,7 @@ gboolean
 gkd_secret_change_with_secrets (GckObject *collection, GkdSecretSecret *original,
                                 GkdSecretSecret *master, DBusError *derr)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
 	GckAttributes *attrs = NULL;
 	gboolean result = FALSE;
@@ -272,22 +273,25 @@ gkd_secret_change_with_secrets (GckObject *collection, GkdSecretSecret *original
 	GckObject *mcred = NULL;
 
 	/* Create the new credential */
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 	mcred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, derr);
 	if (mcred == NULL)
 		goto cleanup;
 
+	gck_builder_add_all (&builder, attrs);
+	gck_attributes_unref (attrs);
+
 	/* Create the original credential, in order to make sure we can the collection */
-	gck_attributes_add_ulong (attrs, CKA_G_OBJECT, gck_object_get_handle (collection));
+	gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (collection));
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 	ocred = gkd_secret_session_create_credential (original->session, NULL, attrs, original, derr);
 	if (ocred == NULL)
 		goto cleanup;
 
 	gck_attributes_unref (attrs);
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
+	gck_builder_add_ulong (&builder, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
 
 	/* Now set the collection credentials to the first one */
 	result = gck_object_set (collection, attrs, NULL, &error);

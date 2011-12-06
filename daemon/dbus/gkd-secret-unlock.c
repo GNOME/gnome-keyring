@@ -117,12 +117,13 @@ check_locked_collection (GckObject *collection, gboolean *locked)
 }
 
 static void
-common_unlock_attributes (GckAttributes *attrs, GckObject *collection)
+common_unlock_attributes (GckBuilder *builder,
+                          GckObject *collection)
 {
-	g_assert (attrs);
+	g_assert (builder != NULL);
 	g_assert (GCK_IS_OBJECT (collection));
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
-	gck_attributes_add_ulong (attrs, CKA_G_OBJECT, gck_object_get_handle (collection));
+	gck_builder_add_ulong (builder, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_builder_add_ulong (builder, CKA_G_OBJECT, gck_object_get_handle (collection));
 }
 
 static gboolean
@@ -224,8 +225,8 @@ on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 static void
 perform_next_unlock (GkdSecretUnlock *self)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckObject *collection;
-	GckAttributes *template;
 	GckSession *session;
 	gboolean locked;
 	gboolean proceed;
@@ -268,14 +269,13 @@ perform_next_unlock (GkdSecretUnlock *self)
 		 * pops us back off the unlock prompt queue
 		 */
 		if (proceed) {
-			template = gck_attributes_new ();
-			common_unlock_attributes (template, collection);
-			gck_attributes_add_data (template, CKA_VALUE, NULL, 0);
+			common_unlock_attributes (&builder, collection);
+			gck_builder_add_data (&builder, CKA_VALUE, NULL, 0);
 
 			session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
-			gck_session_create_object_async (session, template, self->cancellable, on_unlock_complete,
-							 g_object_ref (self));
-			gck_attributes_unref (template);
+			gck_session_create_object_async (session, gck_builder_end (&builder),
+			                                 self->cancellable, on_unlock_complete,
+			                                 g_object_ref (self));
 			self->current = objpath;
 			break;
 		}
@@ -628,6 +628,7 @@ gboolean
 gkd_secret_unlock_with_secret (GckObject *collection, GkdSecretSecret *master,
                                DBusError *derr)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	GckObject *cred;
 	gboolean locked;
@@ -639,10 +640,10 @@ gkd_secret_unlock_with_secret (GckObject *collection, GkdSecretSecret *master,
 	if (check_locked_collection (collection, &locked) && !locked)
 		return TRUE;
 
-	attrs = gck_attributes_new ();
-	common_unlock_attributes (attrs, collection);
-	gck_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	common_unlock_attributes (&builder, collection);
+	gck_builder_add_boolean (&builder, CKA_GNOME_TRANSIENT, TRUE);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	cred = gkd_secret_session_create_credential (master->session, NULL, attrs, master, derr);
 
@@ -657,7 +658,7 @@ gboolean
 gkd_secret_unlock_with_password (GckObject *collection, const guchar *password,
                                  gsize n_password, DBusError *derr)
 {
-	GckAttributes *attrs;
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
 	GckSession *session;
 	GckObject *cred;
@@ -672,13 +673,13 @@ gkd_secret_unlock_with_password (GckObject *collection, const guchar *password,
 	session = gck_object_get_session (collection);
 	g_return_val_if_fail (session, FALSE);
 
-	attrs = gck_attributes_new_full (egg_secure_realloc);
-	common_unlock_attributes (attrs, collection);
-	gck_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-	gck_attributes_add_data (attrs, CKA_VALUE, password, n_password);
+	gck_builder_init_full (&builder, GCK_BUILDER_SECURE_MEMORY);
+	common_unlock_attributes (&builder, collection);
+	gck_builder_add_boolean (&builder, CKA_GNOME_TRANSIENT, TRUE);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
+	gck_builder_add_data (&builder, CKA_VALUE, password, n_password);
 
-	cred = gck_session_create_object (session, attrs, NULL, &error);
+	cred = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
 	if (cred == NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");

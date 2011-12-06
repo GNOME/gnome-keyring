@@ -196,7 +196,7 @@ fi
 # --------------------------------------------------------------------
 # GCR and GCK libraries
 
-PKG_CHECK_MODULES(GCK, gck-1 >= 3.3.1)
+PKG_CHECK_MODULES(GCK, gck-1 >= 3.3.3)
 PKG_CHECK_MODULES(GCR, gcr-3 >= 3.3.1)
 PKG_CHECK_MODULES(GCR_BASE, gcr-base-3 >= 3.3.1)
 

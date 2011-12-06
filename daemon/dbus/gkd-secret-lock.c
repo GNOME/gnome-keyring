@@ -33,21 +33,19 @@
 gboolean
 gkd_secret_lock (GckObject *collection, DBusError *derr)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
 	GList *objects, *l;
-	GckAttributes *atts;
 	GckSession *session;
 
-	atts = gck_attributes_new ();
-	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_CREDENTIAL);
-	gck_attributes_add_ulong (atts, CKA_G_OBJECT, gck_object_get_handle (collection));
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (collection));
 
 	session = gck_object_get_session (collection);
 	g_return_val_if_fail (session, FALSE);
 
-	objects = gck_session_find_objects (session, atts, NULL, &error);
+	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 
-	gck_attributes_unref (atts);
 	g_object_unref (session);
 
 	if (error != NULL) {

@@ -52,7 +52,7 @@ imported_object (GckObject *object,
 {
 	gulong attr_types[3];
 	GckAttributes *attrs;
-	GckAttribute *id;
+	const GckAttribute *id;
 	CK_OBJECT_CLASS klass;
 	const gchar *message;
 	GError *err = NULL;

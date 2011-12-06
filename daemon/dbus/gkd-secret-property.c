@@ -148,11 +148,12 @@ attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, Dat
 	return TRUE;
 }
 
-typedef void (*IterAppendFunc) (DBusMessageIter*, GckAttribute*);
-typedef gboolean (*IterGetFunc) (DBusMessageIter*, GckAttribute*);
+typedef void (*IterAppendFunc) (DBusMessageIter*, const GckAttribute *);
+typedef gboolean (*IterGetFunc) (DBusMessageIter*, gulong, GckBuilder *);
 
 static void
-iter_append_string (DBusMessageIter *iter, GckAttribute *attr)
+iter_append_string (DBusMessageIter *iter,
+                    const GckAttribute *attr)
 {
 	gchar *value;
 
@@ -170,23 +171,26 @@ iter_append_string (DBusMessageIter *iter, GckAttribute *attr)
 }
 
 static gboolean
-iter_get_string (DBusMessageIter *iter, GckAttribute* attr)
+iter_get_string (DBusMessageIter *iter,
+                 gulong attr_type,
+                 GckBuilder *builder)
 {
 	const char *value;
 
-	g_assert (iter);
-	g_assert (attr);
+	g_assert (iter != NULL);
+	g_assert (builder != NULL);
 
 	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRING, FALSE);
 	dbus_message_iter_get_basic (iter, &value);
 	if (value == NULL)
 		value = "";
-	gck_attribute_init_string (attr, attr->type, value);
+	gck_builder_add_string (builder, attr_type, value);
 	return TRUE;
 }
 
 static void
-iter_append_bool (DBusMessageIter *iter, GckAttribute *attr)
+iter_append_bool (DBusMessageIter *iter,
+                  const GckAttribute *attr)
 {
 	dbus_bool_t value;
 
@@ -198,21 +202,25 @@ iter_append_bool (DBusMessageIter *iter, GckAttribute *attr)
 }
 
 static gboolean
-iter_get_bool (DBusMessageIter *iter, GckAttribute* attr)
+iter_get_bool (DBusMessageIter *iter,
+               gulong attr_type,
+               GckBuilder *builder)
 {
 	dbus_bool_t value;
 
-	g_assert (iter);
-	g_assert (attr);
+	g_assert (iter != NULL);
+	g_assert (builder != NULL);
 
 	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_BOOLEAN, FALSE);
 	dbus_message_iter_get_basic (iter, &value);
-	gck_attribute_init_boolean (attr, attr->type, value ? TRUE : FALSE);
+
+	gck_builder_add_boolean (builder, attr_type, value ? TRUE : FALSE);
 	return TRUE;
 }
 
 static void
-iter_append_time (DBusMessageIter *iter, GckAttribute *attr)
+iter_append_time (DBusMessageIter *iter,
+                  const GckAttribute *attr)
 {
 	gint64 value;
 	struct tm tm;
@@ -250,20 +258,22 @@ iter_append_time (DBusMessageIter *iter, GckAttribute *attr)
 }
 
 static gboolean
-iter_get_time (DBusMessageIter *iter, GckAttribute* attr)
+iter_get_time (DBusMessageIter *iter,
+               gulong attr_type,
+               GckBuilder *builder)
 {
 	time_t time;
 	struct tm tm;
 	gchar buf[20];
 	gint64 value;
 
-	g_assert (iter);
-	g_assert (attr);
+	g_assert (iter != NULL);
+	g_assert (builder != NULL);
 
 	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_INT64, FALSE);
 	dbus_message_iter_get_basic (iter, &value);
 	if (value < 0) {
-		gck_attribute_init_empty (attr, attr->type);
+		gck_builder_add_empty (builder, attr_type);
 		return TRUE;
 	}
 
@@ -274,12 +284,13 @@ iter_get_time (DBusMessageIter *iter, GckAttribute* attr)
 	if (!strftime (buf, sizeof (buf), "%Y%m%d%H%M%S00", &tm))
 		g_return_val_if_reached (FALSE);
 
-	gck_attribute_init (attr, attr->type, (const guchar *)buf, 16);
+	gck_builder_add_data (builder, attr_type, (const guchar *)buf, 16);
 	return TRUE;
 }
 
 static void
-iter_append_fields (DBusMessageIter *iter, GckAttribute *attr)
+iter_append_fields (DBusMessageIter *iter,
+                    const GckAttribute *attr)
 {
 	DBusMessageIter array;
 	DBusMessageIter dict;
@@ -334,14 +345,17 @@ iter_append_fields (DBusMessageIter *iter, GckAttribute *attr)
 }
 
 static gboolean
-iter_get_fields (DBusMessageIter *iter, GckAttribute* attr)
+iter_get_fields (DBusMessageIter *iter,
+                 gulong attr_type,
+                 GckBuilder *builder)
 {
 	DBusMessageIter array;
 	DBusMessageIter dict;
 	GString *result;
 	const gchar *string;
 
-	g_assert (iter);
+	g_assert (iter != NULL);
+	g_assert (builder != NULL);
 
 	result = g_string_new ("");
 
@@ -368,13 +382,15 @@ iter_get_fields (DBusMessageIter *iter, GckAttribute* attr)
 		dbus_message_iter_next (&array);
 	}
 
-	gck_attribute_init (attr, attr->type, (const guchar *)result->str, result->len);
+	gck_builder_add_data (builder, attr_type, (const guchar *)result->str, result->len);
 	g_string_free (result, TRUE);
 	return TRUE;
 }
 
 static void
-iter_append_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
+iter_append_variant (DBusMessageIter *iter,
+                     DataType data_type,
+                     const GckAttribute *attr)
 {
 	DBusMessageIter sub;
 	IterAppendFunc func = NULL;
@@ -411,7 +427,10 @@ iter_append_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *at
 }
 
 static gboolean
-iter_get_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
+iter_get_variant (DBusMessageIter *iter,
+                  DataType data_type,
+                  gulong attr_type,
+                  GckBuilder *builder)
 {
 	DBusMessageIter variant;
 	IterGetFunc func = NULL;
@@ -419,8 +438,8 @@ iter_get_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
 	const gchar *sig = NULL;
 	char *signature;
 
-	g_assert (iter);
-	g_assert (attr);
+	g_assert (iter != NULL);
+	g_assert (builder != NULL);
 
 	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_VARIANT, FALSE);
 	dbus_message_iter_recurse (iter, &variant);
@@ -455,7 +474,7 @@ iter_get_variant (DBusMessageIter *iter, DataType data_type, GckAttribute *attr)
 	if (ret == FALSE)
 		return FALSE;
 
-	return (func) (&variant, attr);
+	return (func) (&variant, attr_type, builder);
 }
 
 /* -----------------------------------------------------------------------------
@@ -474,17 +493,17 @@ gkd_secret_property_get_type (const gchar *property, CK_ATTRIBUTE_TYPE *type)
 }
 
 gboolean
-gkd_secret_property_parse_all (DBusMessageIter *array, const gchar *interface,
-                               GckAttributes *attrs)
+gkd_secret_property_parse_all (DBusMessageIter *array,
+                               const gchar *interface,
+                               GckBuilder *builder)
 {
 	DBusMessageIter dict;
 	CK_ATTRIBUTE_TYPE attr_type;
-	GckAttribute *attr;
 	const char *name;
 	DataType data_type;
 
-	g_return_val_if_fail (array, FALSE);
-	g_return_val_if_fail (attrs, FALSE);
+	g_return_val_if_fail (array != NULL, FALSE);
+	g_return_val_if_fail (builder != NULL, FALSE);
 
 	while (dbus_message_iter_get_arg_type (array) == DBUS_TYPE_DICT_ENTRY) {
 		dbus_message_iter_recurse (array, &dict);
@@ -499,8 +518,7 @@ gkd_secret_property_parse_all (DBusMessageIter *array, const gchar *interface,
 
 		/* Property value */
 		g_return_val_if_fail (dbus_message_iter_get_arg_type (&dict) == DBUS_TYPE_VARIANT, FALSE);
-		attr = gck_attributes_add_empty (attrs, attr_type);
-		if (!iter_get_variant (&dict, data_type, attr))
+		if (!iter_get_variant (&dict, data_type, attr_type, builder))
 			return FALSE;
 
 		dbus_message_iter_next (array);
@@ -513,7 +531,7 @@ gboolean
 gkd_secret_property_append_all (DBusMessageIter *array, GckAttributes *attrs)
 {
 	DBusMessageIter dict;
-	GckAttribute *attr;
+	const GckAttribute *attr;
 	DataType data_type;
 	const gchar *name;
 	gulong num, i;
@@ -537,7 +555,8 @@ gkd_secret_property_append_all (DBusMessageIter *array, GckAttributes *attrs)
 }
 
 gboolean
-gkd_secret_property_append_variant (DBusMessageIter *iter, GckAttribute *attr)
+gkd_secret_property_append_variant (DBusMessageIter *iter,
+                                    const GckAttribute *attr)
 {
 	const gchar *property;
 	DataType data_type;
@@ -552,29 +571,29 @@ gkd_secret_property_append_variant (DBusMessageIter *iter, GckAttribute *attr)
 }
 
 gboolean
-gkd_secret_property_parse_variant (DBusMessageIter *iter, const gchar *property,
-                                   GckAttribute *attr)
+gkd_secret_property_parse_variant (DBusMessageIter *iter,
+                                   const gchar *property,
+                                   GckBuilder *builder)
 {
 	CK_ATTRIBUTE_TYPE attr_type;
 	DataType data_type;
 
-	g_return_val_if_fail (attr, FALSE);
 	g_return_val_if_fail (iter, FALSE);
 	g_return_val_if_fail (property, FALSE);
+	g_return_val_if_fail (builder != NULL, FALSE);
 
 	if (!property_to_attribute (property, NULL, &attr_type, &data_type))
 		return FALSE;
 
-	attr->type = attr_type;
-	return iter_get_variant (iter, data_type, attr);
+	return iter_get_variant (iter, data_type, attr_type, builder);
 }
 
 gboolean
-gkd_secret_property_parse_fields (DBusMessageIter *iter, GckAttribute *attr)
+gkd_secret_property_parse_fields (DBusMessageIter *iter,
+                                  GckBuilder *builder)
 {
-	g_return_val_if_fail (attr, FALSE);
-	g_return_val_if_fail (iter, FALSE);
+	g_return_val_if_fail (iter != NULL, FALSE);
+	g_return_val_if_fail (builder != NULL, FALSE);
 
-	attr->type = CKA_G_FIELDS;
-	return iter_get_fields (iter, attr);
+	return iter_get_fields (iter, CKA_G_FIELDS, builder);
 }

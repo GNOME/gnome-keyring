@@ -394,6 +394,7 @@ service_method_open_session (GkdSecretService *self, DBusMessage *message)
 static DBusMessage*
 service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	DBusMessageIter iter, array;
 	GckAttributes *attrs;
 	GkdSecretCreate *create;
@@ -408,10 +409,9 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
-	attrs = gck_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
-	if (!gkd_secret_property_parse_all (&array, SECRET_COLLECTION_INTERFACE, attrs)) {
-		gck_attributes_unref (attrs);
+	if (!gkd_secret_property_parse_all (&array, SECRET_COLLECTION_INTERFACE, &builder)) {
+		gck_builder_clear (&builder);
 		return dbus_message_new_error_printf (message, DBUS_ERROR_INVALID_ARGS,
 		                                      "Invalid properties");
 	}
@@ -424,13 +424,14 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 		if (!alias[0]) {
 			alias = NULL;
 		} else if (!g_str_equal (alias, "default")) {
-			gck_attributes_unref (attrs);
+			gck_builder_clear (&builder);
 			return dbus_message_new_error (message, DBUS_ERROR_NOT_SUPPORTED,
 			                               "Only the 'default' alias is supported");
 		}
 	}
 
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	/* Create the prompt object, for the password */
 	caller = dbus_message_get_sender (message);
@@ -663,6 +664,7 @@ service_method_set_alias (GkdSecretService *self, DBusMessage *message)
 static DBusMessage*
 service_method_create_with_master_password (GkdSecretService *self, DBusMessage *message)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	DBusError derr = DBUS_ERROR_INIT;
 	DBusMessageIter iter, array;
 	DBusMessage *reply = NULL;
@@ -675,21 +677,21 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 		return NULL;
 	if (!dbus_message_iter_init (message, &iter))
 		g_return_val_if_reached (NULL);
-	attrs = gck_attributes_new ();
 	dbus_message_iter_recurse (&iter, &array);
-	if (!gkd_secret_property_parse_all (&array, SECRET_COLLECTION_INTERFACE, attrs)) {
-		gck_attributes_unref (attrs);
+	if (!gkd_secret_property_parse_all (&array, SECRET_COLLECTION_INTERFACE, &builder)) {
+		gck_builder_clear (&builder);
 		return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
 		                               "Invalid properties argument");
 	}
 	dbus_message_iter_next (&iter);
 	secret = gkd_secret_secret_parse (self, message, &iter, &derr);
 	if (secret == NULL) {
-		gck_attributes_unref (attrs);
+		gck_builder_clear (&builder);
 		return gkd_secret_error_to_reply (message, &derr);
 	}
 
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 	path = gkd_secret_create_with_secret (attrs, secret, &derr);
 	gck_attributes_unref (attrs);
 	gkd_secret_secret_free (secret);

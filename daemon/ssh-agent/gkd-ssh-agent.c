@@ -377,7 +377,7 @@ gkd_ssh_agent_initialize_with_module (GckModule *module)
 {
 	GckSession *session = NULL;
 	GList *slots, *l;
-	GckMechanisms *mechs;
+	GArray *mechs;
 	GError *error = NULL;
 
 	g_assert (GCK_IS_MODULE (module));
@@ -398,7 +398,7 @@ gkd_ssh_agent_initialize_with_module (GckModule *module)
 			}
 		}
 
-		gck_mechanisms_free (mechs);
+		g_array_unref (mechs);
 	}
 
 	gck_list_unref_free (slots);

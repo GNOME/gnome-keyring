@@ -340,32 +340,28 @@ GckObject*
 gkd_secret_create_with_credential (GckSession *session, GckAttributes *attrs,
                                    GckObject *cred, GError **error)
 {
-	GckAttributes *atts;
-	GckAttribute *attr;
-	GckObject *collection;
+	GckBuilder builder = GCK_BUILDER_INIT;
+	const GckAttribute *attr;
 	gboolean token;
 
-	atts = gck_attributes_new ();
-	gck_attributes_add_ulong (atts, CKA_G_CREDENTIAL, gck_object_get_handle (cred));
-	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_COLLECTION);
+	gck_builder_add_ulong (&builder, CKA_G_CREDENTIAL, gck_object_get_handle (cred));
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_COLLECTION);
 
 	attr = gck_attributes_find (attrs, CKA_LABEL);
 	if (attr != NULL)
-		gck_attributes_add (atts, attr);
+		gck_builder_add_owned (&builder, attr);
 	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
-	gck_attributes_add_boolean (atts, CKA_TOKEN, token);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, token);
 
-	collection = gck_session_create_object (session, atts, NULL, error);
-	gck_attributes_unref (atts);
-
-	return collection;
+	return gck_session_create_object (session, gck_builder_end (&builder), NULL, error);
 }
 
 gchar*
 gkd_secret_create_with_secret (GckAttributes *attrs, GkdSecretSecret *master,
                                DBusError *derr)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *atts;
 	GckObject *cred;
 	GckObject *collection;
@@ -379,15 +375,15 @@ gkd_secret_create_with_secret (GckAttributes *attrs, GkdSecretSecret *master,
 	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
 
-	atts = gck_attributes_new ();
-	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_CREDENTIAL);
-	gck_attributes_add_boolean (atts, CKA_GNOME_TRANSIENT, TRUE);
-	gck_attributes_add_boolean (atts, CKA_TOKEN, token);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_builder_add_boolean (&builder, CKA_GNOME_TRANSIENT, TRUE);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, token);
 
 	session = gkd_secret_session_get_pkcs11_session (master->session);
 	g_return_val_if_fail (session, NULL);
 
 	/* Create ourselves some credentials */
+	atts = gck_attributes_ref_sink (gck_builder_end (&builder));
 	cred = gkd_secret_session_create_credential (master->session, session, atts, master, derr);
 	gck_attributes_unref (atts);
 

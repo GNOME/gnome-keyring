@@ -49,16 +49,18 @@ EGG_SECURE_DECLARE (ssh_agent_ops);
 
 
 static void
-copy_attribute (GckAttributes *original, CK_ATTRIBUTE_TYPE type, GckAttributes *dest)
+copy_attribute (GckAttributes *original,
+                CK_ATTRIBUTE_TYPE type,
+                GckBuilder *dest)
 {
-	GckAttribute *attr;
+	const GckAttribute *attr;
 
 	g_assert (original);
 	g_assert (dest);
 
 	attr = gck_attributes_find (original, type);
 	if (attr)
-		gck_attributes_add (dest, attr);
+		gck_builder_add_owned (dest, attr);
 }
 
 static gboolean
@@ -84,7 +86,7 @@ login_session (GckSession *session)
 static GckAttributes*
 build_like_attributes (GckAttributes *attrs, CK_OBJECT_CLASS klass)
 {
-	GckAttributes *search;
+	GckBuilder builder = GCK_BUILDER_INIT;
 	gulong key_type;
 
 	g_assert (attrs);
@@ -93,22 +95,21 @@ build_like_attributes (GckAttributes *attrs, CK_OBJECT_CLASS klass)
 	if (!gck_attributes_find_ulong (attrs, CKA_KEY_TYPE, &key_type))
 		g_return_val_if_reached (NULL);
 
-	search = gck_attributes_new ();
-	gck_attributes_add_ulong (search, CKA_CLASS, klass);
-	copy_attribute (attrs, CKA_KEY_TYPE, search);
-	copy_attribute (attrs, CKA_TOKEN, search);
+	gck_builder_add_ulong (&builder, CKA_CLASS, klass);
+	copy_attribute (attrs, CKA_KEY_TYPE, &builder);
+	copy_attribute (attrs, CKA_TOKEN, &builder);
 
 	switch (key_type) {
 	case CKK_RSA:
-		copy_attribute (attrs, CKA_MODULUS, search);
-		copy_attribute (attrs, CKA_PUBLIC_EXPONENT, search);
+		copy_attribute (attrs, CKA_MODULUS, &builder);
+		copy_attribute (attrs, CKA_PUBLIC_EXPONENT, &builder);
 		break;
 
 	case CKK_DSA:
-		copy_attribute (attrs, CKA_PRIME, search);
-		copy_attribute (attrs, CKA_SUBPRIME, search);
-		copy_attribute (attrs, CKA_BASE, search);
-		copy_attribute (attrs, CKA_VALUE, search);
+		copy_attribute (attrs, CKA_PRIME, &builder);
+		copy_attribute (attrs, CKA_SUBPRIME, &builder);
+		copy_attribute (attrs, CKA_BASE, &builder);
+		copy_attribute (attrs, CKA_VALUE, &builder);
 		break;
 
 	default:
@@ -116,7 +117,7 @@ build_like_attributes (GckAttributes *attrs, CK_OBJECT_CLASS klass)
 		break;
 	}
 
-	return search;
+	return gck_attributes_ref_sink (gck_builder_end (&builder));
 }
 
 static void
@@ -205,13 +206,13 @@ static gboolean
 return_private_matching (GckObject *object, gpointer user_data)
 {
 	GckObject **result = (GckObject**)user_data;
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckSession *session;
 	GckAttributes *attrs;
-	GckAttribute *attr;
+	const GckAttribute *attr;
 	gboolean token;
 	GList *objects;
 	GError *error = NULL;
-	GckAttributes *atts;
 
 	g_return_val_if_fail (GCK_IS_OBJECT (object), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
@@ -238,14 +239,12 @@ return_private_matching (GckObject *object, gpointer user_data)
 	if (!login_session (session))
 		return FALSE;
 
-	atts = gck_attributes_new ();
-	gck_attributes_add (atts, attr);
-	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_PRIVATE_KEY);
-	gck_attributes_add_boolean (atts, CKA_TOKEN, token);
+	gck_builder_add_owned (&builder, attr);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_PRIVATE_KEY);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, token);
 
 	/* Search for the matching private key */
-	objects = gck_session_find_objects (session, atts, NULL, NULL);
-	gck_attributes_unref (atts);
+	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, NULL);
 	gck_attributes_unref (attrs);
 
 	/* Keep searching, not found */
@@ -296,7 +295,7 @@ static gboolean
 load_identity_v2_attributes (GckObject *object, gpointer user_data)
 {
 	GckAttributes *attrs;
-	GckAttribute *attr;
+	const GckAttribute *attr;
 	GError *error = NULL;
 	gboolean valid = TRUE;
 	gboolean token;
@@ -372,7 +371,7 @@ remove_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 static void
 lock_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 {
-	GckAttributes *atts;
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
 	GList *objects, *l;
 
@@ -383,13 +382,11 @@ lock_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 	if (!login_session (session))
 		return;
 
-	atts = gck_attributes_new ();
-	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_CREDENTIAL);
-	gck_attributes_add_ulong (atts, CKA_G_OBJECT, gck_object_get_handle (priv));
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (priv));
 
 	/* Delete any authenticator objects */
-	objects = gck_session_find_objects (session, atts, NULL, &error);
-	gck_attributes_unref (atts);
+	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 
 	if (error) {
 		g_warning ("couldn't search for authenticator objects: %s", egg_error_message (error));
@@ -410,6 +407,7 @@ lock_key_pair (GckSession *session, GckObject *priv, GckObject *pub)
 static void
 remove_by_public_key (GckSession *session, GckObject *pub, gboolean exclude_v1)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	GError *error = NULL;
 	GList *objects;
@@ -444,9 +442,11 @@ remove_by_public_key (GckSession *session, GckObject *pub, gboolean exclude_v1)
 		token = FALSE;
 
 	/* Search for exactly the same attributes but with a private key class */
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-	objects = gck_session_find_objects (session, attrs, NULL, &error);
+	gck_builder_add_all (&builder, attrs);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_PRIVATE_KEY);
 	gck_attributes_unref (attrs);
+
+	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 
 	if (error) {
 		g_warning ("couldn't search for related key: %s", egg_error_message (error));
@@ -521,33 +521,41 @@ destroy_replaced_keys (GckSession *session, GList *keys)
 }
 
 static gboolean
-replace_key_pair (GckSession *session, GckAttributes *priv, GckAttributes *pub)
+replace_key_pair (GckSession *session,
+                  GckBuilder *priv,
+                  GckBuilder *pub)
 {
 	GList *priv_prev, *pub_prev;
+	GckAttributes *priv_atts, *pub_atts;
 
 	g_assert (GCK_IS_SESSION (session));
-	g_assert (priv);
-	g_assert (pub);
+	g_assert (priv != NULL);
+	g_assert (pub != NULL);
 
 	if (!login_session (session))
 		return FALSE;
 
-	gck_attributes_add_boolean (priv, CKA_TOKEN, FALSE);
-	gck_attributes_add_boolean (pub, CKA_TOKEN, FALSE);
+	gck_builder_set_boolean (priv, CKA_TOKEN, FALSE);
+	priv_atts = gck_attributes_ref_sink (gck_builder_end (priv));
+
+	gck_builder_set_boolean (pub, CKA_TOKEN, FALSE);
+	pub_atts = gck_attributes_ref_sink (gck_builder_end (pub));
 
 	/* Find the previous keys that match the same description */
 	priv_prev = pub_prev = NULL;
-	search_keys_like_attributes (NULL, session, priv, CKO_PRIVATE_KEY, list_all_matching, &priv_prev);
-	search_keys_like_attributes (NULL, session, priv, CKO_PUBLIC_KEY, list_all_matching, &pub_prev);
+	search_keys_like_attributes (NULL, session, priv_atts, CKO_PRIVATE_KEY, list_all_matching, &priv_prev);
+	search_keys_like_attributes (NULL, session, pub_atts, CKO_PUBLIC_KEY, list_all_matching, &pub_prev);
 
 	/* Now try and create the new keys */
-	if (create_key_pair (session, priv, pub)) {
+	if (create_key_pair (session, priv_atts, pub_atts)) {
 
 		/* Delete the old keys */
 		destroy_replaced_keys (session, priv_prev);
 		destroy_replaced_keys (session, pub_prev);
 	}
 
+	gck_attributes_unref (priv_atts);
+	gck_attributes_unref (pub_atts);
 	gck_list_unref_free (priv_prev);
 	gck_list_unref_free (pub_prev);
 
@@ -555,8 +563,11 @@ replace_key_pair (GckSession *session, GckAttributes *priv, GckAttributes *pub)
 }
 
 static gboolean
-load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
-                 GckAttributes *priv, GckAttributes *pub)
+load_contraints (EggBuffer *buffer,
+                 gsize offset,
+                 gsize *next_offset,
+                 GckBuilder *priv,
+                 GckBuilder *pub)
 {
 	guchar constraint;
 	guint32 lifetime;
@@ -575,8 +586,8 @@ load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
 			if (!egg_buffer_get_uint32 (buffer, offset, &offset, &lifetime))
 				return FALSE;
 
-			gck_attributes_add_ulong (pub, CKA_G_DESTRUCT_AFTER, lifetime);
-			gck_attributes_add_ulong (priv, CKA_G_DESTRUCT_AFTER, lifetime);
+			gck_builder_add_ulong (pub, CKA_G_DESTRUCT_AFTER, lifetime);
+			gck_builder_add_ulong (priv, CKA_G_DESTRUCT_AFTER, lifetime);
 			break;
 
 		case GKD_SSH_FLAG_CONSTRAIN_CONFIRM:
@@ -601,8 +612,8 @@ load_contraints (EggBuffer *buffer, gsize offset, gsize *next_offset,
 static gboolean
 op_add_identity (GkdSshAgentCall *call)
 {
-	GckAttributes *pub;
-	GckAttributes *priv;
+	GckBuilder pub;
+	GckBuilder priv;
 	GckSession *session;
 	gchar *stype = NULL;
 	gchar *comment = NULL;
@@ -621,15 +632,15 @@ op_add_identity (GkdSshAgentCall *call)
 	}
 
 	g_free (stype);
-	priv = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
-	pub = gck_attributes_new_full (g_realloc);
+	gck_builder_init_full (&pub, GCK_BUILDER_SECURE_MEMORY);
+	gck_builder_init_full (&priv, GCK_BUILDER_NONE);
 
 	switch (algo) {
 	case CKK_RSA:
-		ret = gkd_ssh_agent_proto_read_pair_rsa (call->req, &offset, priv, pub);
+		ret = gkd_ssh_agent_proto_read_pair_rsa (call->req, &offset, &priv, &pub);
 		break;
 	case CKK_DSA:
-		ret = gkd_ssh_agent_proto_read_pair_dsa (call->req, &offset, priv, pub);
+		ret = gkd_ssh_agent_proto_read_pair_dsa (call->req, &offset, &priv, &pub);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -638,26 +649,26 @@ op_add_identity (GkdSshAgentCall *call)
 
 	if (!ret) {
 		g_warning ("couldn't read incoming SSH private key");
-		gck_attributes_unref (pub);
-		gck_attributes_unref (priv);
+		gck_builder_clear (&pub);
+		gck_builder_clear (&priv);
 		return FALSE;
 	}
 
 	/* Get the comment */
 	if (!egg_buffer_get_string (call->req, offset, &offset, &comment, (EggBufferAllocator)g_realloc)) {
-		gck_attributes_unref (pub);
-		gck_attributes_unref (priv);
+		gck_builder_clear (&pub);
+		gck_builder_clear (&priv);
 		return FALSE;
 	}
 
-	gck_attributes_add_string (pub, CKA_LABEL, comment);
-	gck_attributes_add_string (priv, CKA_LABEL, comment);
+	gck_builder_add_string (&pub, CKA_LABEL, comment);
+	gck_builder_add_string (&priv, CKA_LABEL, comment);
 	g_free (comment);
 
 	/* Any constraints on loading the key */
-	if (!load_contraints (call->req, offset, &offset, priv, pub)) {
-		gck_attributes_unref (pub);
-		gck_attributes_unref (priv);
+	if (!load_contraints (call->req, offset, &offset, &priv, &pub)) {
+		gck_builder_clear (&pub);
+		gck_builder_clear (&priv);
 		return FALSE;
 	}
 
@@ -669,12 +680,12 @@ op_add_identity (GkdSshAgentCall *call)
 	session = gkd_ssh_agent_checkout_main_session ();
 	g_return_val_if_fail (session, FALSE);
 
-	ret = replace_key_pair (session, priv, pub);
+	ret = replace_key_pair (session, &priv, &pub);
 
 	gkd_ssh_agent_checkin_main_session (session);
 
-	gck_attributes_unref (priv);
-	gck_attributes_unref (pub);
+	gck_builder_clear (&priv);
+	gck_builder_clear (&pub);
 
 	egg_buffer_add_byte (call->resp, ret ? GKD_SSH_RES_SUCCESS : GKD_SSH_RES_FAILURE);
 	return TRUE;
@@ -683,7 +694,7 @@ op_add_identity (GkdSshAgentCall *call)
 static gboolean
 op_v1_add_identity (GkdSshAgentCall *call)
 {
-	GckAttributes *pub, *priv;
+	GckBuilder pub, priv;
 	GckSession *session;
 	gchar *comment = NULL;
 	gboolean ret;
@@ -693,32 +704,32 @@ op_v1_add_identity (GkdSshAgentCall *call)
 	if (!egg_buffer_get_uint32 (call->req, offset, &offset, &unused))
 		return FALSE;
 
-	priv = gck_attributes_new_full ((GckAllocator)egg_secure_realloc);
-	pub = gck_attributes_new_full (g_realloc);
+	gck_builder_init_full (&priv, GCK_BUILDER_SECURE_MEMORY);
+	gck_builder_init_full (&pub, GCK_BUILDER_NONE);
 
-	if (!gkd_ssh_agent_proto_read_pair_v1 (call->req, &offset, priv, pub)) {
+	if (!gkd_ssh_agent_proto_read_pair_v1 (call->req, &offset, &priv, &pub)) {
 		g_warning ("couldn't read incoming SSH private key");
-		gck_attributes_unref (pub);
-		gck_attributes_unref (priv);
+		gck_builder_clear (&pub);
+		gck_builder_clear (&priv);
 		return FALSE;
 	}
 
 	/* Get the comment */
 	if (!egg_buffer_get_string (call->req, offset, &offset, &comment, (EggBufferAllocator)g_realloc)) {
-		gck_attributes_unref (pub);
-		gck_attributes_unref (priv);
+		gck_builder_clear (&pub);
+		gck_builder_clear (&priv);
 		return FALSE;
 	}
 
 	g_free (comment);
 
-	gck_attributes_add_string (priv, CKA_LABEL, V1_LABEL);
-	gck_attributes_add_string (pub, CKA_LABEL, V1_LABEL);
+	gck_builder_add_string (&priv, CKA_LABEL, V1_LABEL);
+	gck_builder_add_string (&pub, CKA_LABEL, V1_LABEL);
 
 	/* Any constraints on loading the key */
-	if (!load_contraints (call->req, offset, &offset, priv, pub)) {
-		gck_attributes_unref (pub);
-		gck_attributes_unref (priv);
+	if (!load_contraints (call->req, offset, &offset, &priv, &pub)) {
+		gck_builder_clear (&pub);
+		gck_builder_clear (&priv);
 		return FALSE;
 	}
 
@@ -730,12 +741,12 @@ op_v1_add_identity (GkdSshAgentCall *call)
 	session = gkd_ssh_agent_checkout_main_session ();
 	g_return_val_if_fail (session, FALSE);
 
-	ret = replace_key_pair (session, priv, pub);
+	ret = replace_key_pair (session, &priv, &pub);
 
 	gkd_ssh_agent_checkin_main_session (session);
 
-	gck_attributes_unref (priv);
-	gck_attributes_unref (pub);
+	gck_builder_clear (&pub);
+	gck_builder_clear (&priv);
 
 	egg_buffer_add_byte (call->resp, ret ? GKD_SSH_RES_SUCCESS : GKD_SSH_RES_FAILURE);
 	return TRUE;
@@ -744,6 +755,7 @@ op_v1_add_identity (GkdSshAgentCall *call)
 static gboolean
 op_request_identities (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckEnumerator *en;
 	GckObject *obj;
 	GError *error = NULL;
@@ -753,12 +765,11 @@ op_request_identities (GkdSshAgentCall *call)
 	gchar *comment;
 
 	/* TODO: Check SSH purpose */
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_PUBLIC_KEY);
 
 	/* Find all the keys (we filter out v1 later) */
-	en = gck_modules_enumerate_objects (call->modules, attrs, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
-	gck_attributes_unref (attrs);
+	en = gck_modules_enumerate_objects (call->modules, gck_builder_end (&builder),
+	                                    GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
 	g_return_val_if_fail (en, FALSE);
 
 	all_attrs = NULL;
@@ -811,6 +822,7 @@ op_request_identities (GkdSshAgentCall *call)
 static gboolean
 op_v1_request_identities (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GList *all_attrs, *l;
 	GckAttributes *attrs;
 	GError *error = NULL;
@@ -818,15 +830,13 @@ op_v1_request_identities (GkdSshAgentCall *call)
 	GckObject *obj;
 
 	/* TODO: Check SSH purpose */
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
-	gck_attributes_add_string (attrs, CKA_LABEL, V1_LABEL);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
+	gck_builder_add_string (&builder, CKA_LABEL, V1_LABEL);
 
 	/* Find all the keys not on token, and are V1 */
-	en = gck_modules_enumerate_objects (call->modules, attrs, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
-	gck_attributes_unref (attrs);
-	g_return_val_if_fail (en, FALSE);
+	en = gck_modules_enumerate_objects (call->modules, gck_builder_end (&builder),
+	                                    GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
 
 	all_attrs = NULL;
 	do {
@@ -936,6 +946,7 @@ static guchar*
 unlock_and_sign (GckSession *session, GckObject *key, gulong mech_type, const guchar *input,
                  gsize n_input, gsize *n_result, GError **err)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	GckObject *cred;
 	gboolean always;
@@ -952,14 +963,12 @@ unlock_and_sign (GckSession *session, GckObject *key, gulong mech_type, const gu
 	gck_attributes_unref (attrs);
 
 	if (always == TRUE) {
-		attrs = gck_attributes_new ();
-		gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
-		gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
-		gck_attributes_add_empty (attrs, CKA_VALUE);
-		gck_attributes_add_ulong (attrs, CKA_G_OBJECT, gck_object_get_handle (key));
+		gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+		gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
+		gck_builder_add_empty (&builder, CKA_VALUE);
+		gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (key));
 
-		cred = gck_session_create_object (session, attrs, NULL, err);
-		gck_attributes_unref (attrs);
+		cred = gck_session_create_object (session, gck_builder_end (&builder), NULL, err);
 
 		if (cred == NULL)
 			return NULL;
@@ -974,6 +983,7 @@ unlock_and_sign (GckSession *session, GckObject *key, gulong mech_type, const gu
 static gboolean
 op_sign_request (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	GError *error = NULL;
 	GckObject *key = NULL;
@@ -998,9 +1008,12 @@ op_sign_request (GkdSshAgentCall *call)
 		return FALSE;
 
 	/* The key itself */
-	attrs = gck_attributes_new ();
-	if (!gkd_ssh_agent_proto_read_public (call->req, &offset, attrs, &algo))
+	if (!gkd_ssh_agent_proto_read_public (call->req, &offset, &builder, &algo)) {
+		gck_builder_clear (&builder);
 		return FALSE;
+	}
+
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	/* Validate the key type / mechanism */
 	if (algo == CKK_RSA)
@@ -1090,6 +1103,7 @@ op_sign_request (GkdSshAgentCall *call)
 static gboolean
 op_v1_challenge (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	gsize offset, n_data, n_result, n_hash;
 	GckSession *session;
 	GckAttributes *attrs;
@@ -1106,11 +1120,12 @@ op_v1_challenge (GkdSshAgentCall *call)
 
 	offset = 5;
 
-	attrs = gck_attributes_new ();
-	if (!gkd_ssh_agent_proto_read_public_v1 (call->req, &offset, attrs)) {
-		gck_attributes_unref (attrs);
+	if (!gkd_ssh_agent_proto_read_public_v1 (call->req, &offset, &builder)) {
+		gck_builder_clear (&builder);
 		return FALSE;
 	}
+
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	/* Read the entire challenge */
 	data = gkd_ssh_agent_proto_read_challenge_v1 (call->req, &offset, &n_data);
@@ -1187,6 +1202,7 @@ op_v1_challenge (GkdSshAgentCall *call)
 static gboolean
 op_remove_identity (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	GckSession *session;
 	GckObject *key = NULL;
@@ -1200,11 +1216,12 @@ op_remove_identity (GkdSshAgentCall *call)
 		return FALSE;
 
 	/* The public key itself */
-	attrs = gck_attributes_new ();
-	if (!gkd_ssh_agent_proto_read_public (call->req, &offset, attrs, NULL)) {
-		gck_attributes_unref (attrs);
+	if (!gkd_ssh_agent_proto_read_public (call->req, &offset, &builder, NULL)) {
+		gck_builder_clear (&builder);
 		return FALSE;
 	}
+
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	/*
 	 * This is the session that owns these objects. Only
@@ -1232,6 +1249,7 @@ op_remove_identity (GkdSshAgentCall *call)
 static gboolean
 op_v1_remove_identity (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckSession *session;
 	GckAttributes *attrs;
 	GckObject *key = NULL;
@@ -1239,11 +1257,12 @@ op_v1_remove_identity (GkdSshAgentCall *call)
 
 	offset = 5;
 
-	attrs = gck_attributes_new ();
-	if (!gkd_ssh_agent_proto_read_public_v1 (call->req, &offset, attrs)) {
-		gck_attributes_unref (attrs);
+	if (!gkd_ssh_agent_proto_read_public_v1 (call->req, &offset, &builder)) {
+		gck_builder_clear (&builder);
 		return FALSE;
 	}
+
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	/*
 	 * This is the session that owns these objects. Only
@@ -1270,6 +1289,7 @@ op_v1_remove_identity (GkdSshAgentCall *call)
 static gboolean
 op_remove_all_identities (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckSession *session;
 	GList *objects, *l;
 	GError *error = NULL;
@@ -1284,8 +1304,8 @@ op_remove_all_identities (GkdSshAgentCall *call)
 	g_return_val_if_fail (session, FALSE);
 
 	/* Find all session SSH public keys */
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_PUBLIC_KEY);
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	objects = gck_session_find_objects (session, attrs, NULL, &error);
 	gck_attributes_unref (attrs);
@@ -1309,6 +1329,7 @@ op_remove_all_identities (GkdSshAgentCall *call)
 static gboolean
 op_v1_remove_all_identities (GkdSshAgentCall *call)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckSession *session;
 	GList *objects, *l;
 	GError *error = NULL;
@@ -1323,10 +1344,10 @@ op_v1_remove_all_identities (GkdSshAgentCall *call)
 	g_return_val_if_fail (session, FALSE);
 
 	/* Find all session SSH v1 public keys */
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, FALSE);
-	gck_attributes_add_string (attrs, CKA_LABEL, V1_LABEL);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
+	gck_builder_add_string (&builder, CKA_LABEL, V1_LABEL);
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 	objects = gck_session_find_objects (session, attrs, NULL, &error);
 	gck_attributes_unref (attrs);

@@ -98,7 +98,7 @@ lookup_login_session (GList *modules)
 static GckObject*
 lookup_login_keyring (GckSession *session)
 {
-	GckAttributes *atts;
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
 	GckObject *login = NULL;
 	GList *objects;
@@ -106,13 +106,11 @@ lookup_login_keyring (GckSession *session)
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 
-	atts = gck_attributes_new ();
-	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_COLLECTION);
-	gck_attributes_add_boolean (atts, CKA_TOKEN, TRUE);
-	gck_attributes_add_string (atts, CKA_ID, "login");
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_COLLECTION);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
+	gck_builder_add_string (&builder, CKA_ID, "login");
 
-	objects = gck_session_find_objects (session, atts, NULL, &error);
-	gck_attributes_unref (atts);
+	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 
 	if (error) {
 		g_warning ("couldn't search for login keyring: %s", egg_error_message (error));
@@ -133,33 +131,27 @@ lookup_login_keyring (GckSession *session)
 static GckObject*
 create_login_keyring (GckSession *session, GckObject *cred, GError **error)
 {
-	GckObject *login;
-	GckAttributes *atts;
+	GckBuilder builder = GCK_BUILDER_INIT;
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 	g_return_val_if_fail (GCK_IS_OBJECT (cred), NULL);
 
-	atts = gck_attributes_new ();
-	gck_attributes_add_ulong (atts, CKA_CLASS, CKO_G_COLLECTION);
-	gck_attributes_add_string (atts, CKA_ID, "login");
-	gck_attributes_add_ulong (atts, CKA_G_CREDENTIAL, gck_object_get_handle (cred));
-	gck_attributes_add_boolean (atts, CKA_TOKEN, TRUE);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_COLLECTION);
+	gck_builder_add_string (&builder, CKA_ID, "login");
+	gck_builder_add_ulong (&builder, CKA_G_CREDENTIAL, gck_object_get_handle (cred));
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
 
 	/* TRANSLATORS: This is the display label for the login keyring */
-	gck_attributes_add_string (atts, CKA_LABEL, _("Login"));
+	gck_builder_add_string (&builder, CKA_LABEL, _("Login"));
 
-	login = gck_session_create_object (session, atts, NULL, error);
-	gck_attributes_unref (atts);
-
-	return login;
+	return gck_session_create_object (session, gck_builder_end (&builder), NULL, error);
 }
 
 static GckObject*
 create_credential (GckSession *session, GckObject *object,
                    const gchar *secret, GError **error)
 {
-	GckAttributes *attrs;
-	GckObject *cred;
+	GckBuilder builder = GCK_BUILDER_INIT;
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 	g_return_val_if_fail (!object || GCK_IS_OBJECT (object), NULL);
@@ -167,20 +159,16 @@ create_credential (GckSession *session, GckObject *object,
 	if (!secret)
 		secret = "";
 
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_CREDENTIAL);
-	gck_attributes_add_string (attrs, CKA_VALUE, secret);
-	gck_attributes_add_boolean (attrs, CKA_GNOME_TRANSIENT, TRUE);
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_builder_add_string (&builder, CKA_VALUE, secret);
+	gck_builder_add_boolean (&builder, CKA_GNOME_TRANSIENT, TRUE);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
 
 	if (object)
-		gck_attributes_add_ulong (attrs, CKA_G_OBJECT,
-		                          gck_object_get_handle (object));
+		gck_builder_add_ulong (&builder, CKA_G_OBJECT,
+		                       gck_object_get_handle (object));
 
-	cred = gck_session_create_object (session, attrs, NULL, error);
-	gck_attributes_unref (attrs);
-
-	return cred;
+	return gck_session_create_object (session, gck_builder_end (&builder), NULL, error);
 }
 
 static gboolean
@@ -289,13 +277,13 @@ gkd_login_unlock (const gchar *master)
 static gboolean
 change_or_create_login (GList *modules, const gchar *original, const gchar *master)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
 	GckSession *session;
 	GckObject *login = NULL;
 	GckObject *ocred = NULL;
 	GckObject *mcred = NULL;
 	gboolean success = FALSE;
-	GckAttributes *atts;
 
 	g_return_val_if_fail (original, FALSE);
 	g_return_val_if_fail (master, FALSE);
@@ -338,15 +326,13 @@ change_or_create_login (GList *modules, const gchar *original, const gchar *mast
 
 	/* Change the master password */
 	} else if (login && ocred && mcred) {
-		atts = gck_attributes_new ();
-		gck_attributes_add_ulong (atts, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
-		if (!gck_object_set (login, atts, NULL, &error)) {
+		gck_builder_add_ulong (&builder, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
+		if (!gck_object_set (login, gck_builder_end (&builder), NULL, &error)) {
 			g_warning ("couldn't change login master password: %s", egg_error_message (error));
 			g_clear_error (&error);
 		} else {
 			success = TRUE;
 		}
-		gck_attributes_unref (atts);
 	}
 
 	if (ocred) {

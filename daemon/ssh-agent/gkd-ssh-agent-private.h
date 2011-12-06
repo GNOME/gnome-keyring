@@ -107,12 +107,12 @@ const gchar*          gkd_ssh_agent_proto_algo_to_keytype           (gulong algo
 
 gboolean              gkd_ssh_agent_proto_read_mpi                  (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *attrs,
+                                                                     GckBuilder *attrs,
                                                                      CK_ATTRIBUTE_TYPE type);
 
 gboolean              gkd_ssh_agent_proto_read_mpi_v1               (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *attrs,
+                                                                     GckBuilder *attrs,
                                                                      CK_ATTRIBUTE_TYPE type);
 
 const guchar*         gkd_ssh_agent_proto_read_challenge_v1         (EggBuffer *req,
@@ -120,42 +120,42 @@ const guchar*         gkd_ssh_agent_proto_read_challenge_v1         (EggBuffer *
                                                                      gsize *n_challenge);
 
 gboolean              gkd_ssh_agent_proto_write_mpi                 (EggBuffer *resp,
-                                                                     GckAttribute *attr);
+                                                                     const GckAttribute *attr);
 
 gboolean              gkd_ssh_agent_proto_write_mpi_v1              (EggBuffer *resp,
-                                                                     GckAttribute *attr);
+                                                                     const GckAttribute *attr);
 
 gboolean              gkd_ssh_agent_proto_read_public               (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *attrs,
+                                                                     GckBuilder *attrs,
                                                                      gulong *algo);
 
 gboolean              gkd_ssh_agent_proto_read_public_rsa           (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *attrs);
+                                                                     GckBuilder *attrs);
 
 gboolean              gkd_ssh_agent_proto_read_public_dsa           (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *attrs);
+                                                                     GckBuilder *attrs);
 
 gboolean              gkd_ssh_agent_proto_read_public_v1            (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *attrs);
+                                                                     GckBuilder *attrs);
 
 gboolean              gkd_ssh_agent_proto_read_pair_rsa             (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *priv_attrs,
-                                                                     GckAttributes *pub_attrs);
+                                                                     GckBuilder *priv,
+                                                                     GckBuilder *pub);
 
 gboolean              gkd_ssh_agent_proto_read_pair_dsa             (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *priv_attrs,
-                                                                     GckAttributes *pub_attrs);
+                                                                     GckBuilder *priv,
+                                                                     GckBuilder *pub);
 
 gboolean              gkd_ssh_agent_proto_read_pair_v1              (EggBuffer *req,
                                                                      gsize *offset,
-                                                                     GckAttributes *priv_attrs,
-                                                                     GckAttributes *pub_attrs);
+                                                                     GckBuilder *priv,
+                                                                     GckBuilder *pub);
 
 gboolean              gkd_ssh_agent_proto_write_public              (EggBuffer *resp,
                                                                      GckAttributes *attrs);

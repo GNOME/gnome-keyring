@@ -51,7 +51,8 @@ EGG_SECURE_DECLARE (gpg_agent_ops);
  */
 
 static void
-keyid_to_field_attribute (const gchar *keyid, GckAttributes *attrs)
+keyid_to_field_attribute (const gchar *keyid,
+                          GckBuilder *attrs)
 {
 	GString *fields = g_string_sized_new (128);
 
@@ -70,7 +71,7 @@ keyid_to_field_attribute (const gchar *keyid, GckAttributes *attrs)
 	g_string_append (fields, "gnome-keyring:gpg-agent");
 	g_string_append_c (fields, '\0');
 
-	gck_attributes_add_data (attrs, CKA_G_FIELDS, (const guchar *)fields->str, fields->len);
+	gck_builder_add_data (attrs, CKA_G_FIELDS, (const guchar *)fields->str, fields->len);
 	g_string_free (fields, TRUE);
 }
 
@@ -111,29 +112,26 @@ calculate_label_for_key (const gchar *keyid, const gchar *description)
 static GList*
 find_saved_items (GckSession *session, GckAttributes *attrs)
 {
-	GckAttributes *template;
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
-	GckAttribute *attr;
+	const GckAttribute *attr;
 	GckObject *search;
 	GList *results;
 	gpointer data;
 	gsize n_data;
 
-	template = gck_attributes_new ();
-	gck_attributes_add_ulong (template, CKA_CLASS, CKO_G_SEARCH);
-	gck_attributes_add_boolean (template, CKA_TOKEN, FALSE);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_SEARCH);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
 
 	attr = gck_attributes_find (attrs, CKA_G_COLLECTION);
 	if (attr != NULL)
-		gck_attributes_add (template, attr);
+		gck_builder_add_owned (&builder, attr);
 
 	attr = gck_attributes_find (attrs, CKA_G_FIELDS);
 	g_return_val_if_fail (attr != NULL, NULL);
-	gck_attributes_add (template, attr);
+	gck_builder_add_owned (&builder, attr);
 
-	search = gck_session_create_object (session, template, NULL, &error);
-	gck_attributes_unref (template);
-
+	search = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
 	if (search == NULL) {
 		g_warning ("couldn't perform search for gpg agent stored passphrases: %s",
 		           egg_error_message (error));
@@ -162,6 +160,7 @@ static void
 do_save_password (GckSession *session, const gchar *keyid, const gchar *description,
                   const gchar *password, GckAttributes *options)
 {
+	GckBuilder builder;
 	GckAttributes *attrs;
 	gpointer identifier;
 	gsize n_identifier;
@@ -179,37 +178,40 @@ do_save_password (GckSession *session, const gchar *keyid, const gchar *descript
 		return;
 
 	/* Sending a password, needs to be secure */
-	attrs = gck_attributes_new_full (egg_secure_realloc);
+	gck_builder_init_full (&builder, GCK_BUILDER_SECURE_MEMORY);
 
 	/* Build up basic set of attributes */
-	gck_attributes_add_boolean (attrs, CKA_TOKEN, TRUE);
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
-	keyid_to_field_attribute (keyid, attrs);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, TRUE);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
+	keyid_to_field_attribute (keyid, &builder);
 
 	/* Bring in all the unlock options */
 	for (i = 0; options && i < gck_attributes_count (options); ++i)
-		gck_attributes_add (attrs, gck_attributes_at (options, i));
+		gck_builder_add_owned (&builder, gck_attributes_at (options, i));
 
 	/* Find a previously stored object like this, and replace if so */
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 	previous = find_saved_items (session, attrs);
 	if (previous) {
 		identifier = gck_object_get_data (previous->data, CKA_ID, NULL, &n_identifier, NULL);
 		if (identifier != NULL)
-			gck_attributes_add_data (attrs, CKA_ID, identifier, n_identifier);
+			gck_builder_add_data (&builder, CKA_ID, identifier, n_identifier);
 		g_free (identifier);
 		gck_list_unref_free (previous);
 	}
+
+	gck_attributes_unref (attrs);
 
 	text = calculate_label_for_key (keyid, description);
 	label = g_strdup_printf (_("PGP Key: %s"), text);
 	g_free (text);
 
 	/* Put in the remainder of the attributes */
-	gck_attributes_add_string (attrs, CKA_VALUE, password);
-	gck_attributes_add_string (attrs, CKA_LABEL, label);
+	gck_builder_add_string (&builder, CKA_VALUE, password);
+	gck_builder_add_string (&builder, CKA_LABEL, label);
 	g_free (label);
 
-	item = gck_session_create_object (session, attrs, NULL, &error);
+	item = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
 	if (item == NULL) {
 		g_warning ("couldn't store gpg agent password: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -217,20 +219,20 @@ do_save_password (GckSession *session, const gchar *keyid, const gchar *descript
 
 	if (item != NULL)
 		g_object_unref (item);
-	gck_attributes_unref (attrs);
 }
 
 static gboolean
 do_clear_password (GckSession *session, const gchar *keyid)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	GList *objects, *l;
 	GError *error = NULL;
 
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
-	keyid_to_field_attribute (keyid, attrs);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
+	keyid_to_field_attribute (keyid, &builder);
 
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 	objects = find_saved_items (session, attrs);
 	gck_attributes_unref (attrs);
 
@@ -255,6 +257,7 @@ do_clear_password (GckSession *session, const gchar *keyid)
 static gchar*
 do_lookup_password (GckSession *session, const gchar *keyid)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	GList *objects, *l;
 	GError *error = NULL;
@@ -264,10 +267,10 @@ do_lookup_password (GckSession *session, const gchar *keyid)
 	if (keyid == NULL)
 		return NULL;
 
-	attrs = gck_attributes_new ();
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_SECRET_KEY);
-	keyid_to_field_attribute (keyid, attrs);
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
+	keyid_to_field_attribute (keyid, &builder);
 
+	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 	objects = find_saved_items (session, attrs);
 	gck_attributes_unref (attrs);
 
@@ -343,11 +346,11 @@ static GkuPrompt*
 prepare_password_prompt (GckSession *session, const gchar *keyid, const gchar *errmsg,
                          const gchar *prompt_text, const gchar *description, gboolean confirm)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GkuPrompt *prompt;
 	GError *error = NULL;
 	gboolean auto_unlock;
 	GList *objects;
-	GckAttributes *attrs;
 
 	g_assert (GCK_IS_SESSION (session));
 
@@ -377,14 +380,12 @@ prepare_password_prompt (GckSession *session, const gchar *keyid, const gchar *e
 
 		auto_unlock = FALSE;
 
-		attrs = gck_attributes_new ();
-		gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_G_COLLECTION);
-		gck_attributes_add_string (attrs, CKA_ID, "login");
-		gck_attributes_add_boolean (attrs, CKA_G_LOCKED, FALSE);
+		gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_COLLECTION);
+		gck_builder_add_string (&builder, CKA_ID, "login");
+		gck_builder_add_boolean (&builder, CKA_G_LOCKED, FALSE);
 
 		/* Check if the login keyring is usable */
-		objects = gck_session_find_objects (session, attrs, NULL, &error);
-		gck_attributes_unref (attrs);
+		objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 
 		if (error) {
 			g_warning ("gpg agent couldn't lookup for login keyring: %s", egg_error_message (error));
@@ -417,6 +418,7 @@ static gchar*
 do_get_password (GckSession *session, const gchar *keyid, const gchar *errmsg,
                  const gchar *prompt_text, const gchar *description, gboolean confirm)
 {
+	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs;
 	gchar *password = NULL;
 	GkuPrompt *prompt;
@@ -441,24 +443,23 @@ do_get_password (GckSession *session, const gchar *keyid, const gchar *errmsg,
 		g_return_val_if_fail (password, NULL);
 
 		if (keyid != NULL) {
-			attrs = gck_attributes_new ();
-
 			/* Load up the save options */
 			choice = gku_prompt_get_unlock_choice (prompt);
 			ttl = gku_prompt_get_unlock_ttl (prompt);
 
 			if (g_str_equal (choice, GCR_UNLOCK_OPTION_ALWAYS))
-				gck_attributes_add_string (attrs, CKA_G_COLLECTION, "login");
+				gck_builder_add_string (&builder, CKA_G_COLLECTION, "login");
 			else
-				gck_attributes_add_string (attrs, CKA_G_COLLECTION, "session");
+				gck_builder_add_string (&builder, CKA_G_COLLECTION, "session");
 
 			if (g_str_equal (choice, GCR_UNLOCK_OPTION_IDLE))
-				gck_attributes_add_ulong (attrs, CKA_G_DESTRUCT_IDLE, ttl);
+				gck_builder_add_ulong (&builder, CKA_G_DESTRUCT_IDLE, ttl);
 
 			else if (g_str_equal (choice, GCR_UNLOCK_OPTION_TIMEOUT))
-				gck_attributes_add_ulong (attrs, CKA_G_DESTRUCT_AFTER, ttl);
+				gck_builder_add_ulong (&builder, CKA_G_DESTRUCT_AFTER, ttl);
 
 			/* Now actually save the password */
+			attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 			do_save_password (session, keyid, description, password, attrs);
 			gck_attributes_unref (attrs);
 

@@ -32,20 +32,20 @@ gboolean               gkd_secret_property_get_type               (const gchar *
                                                                    CK_ATTRIBUTE_TYPE *type);
 
 gboolean               gkd_secret_property_append_variant         (DBusMessageIter *iter,
-                                                                   GckAttribute *attr);
+                                                                   const GckAttribute *attr);
 
 gboolean               gkd_secret_property_append_all             (DBusMessageIter *array,
                                                                    GckAttributes *attrs);
 
 gboolean               gkd_secret_property_parse_variant          (DBusMessageIter *iter,
                                                                    const gchar *property,
-                                                                   GckAttribute *attr);
+                                                                   GckBuilder *builder);
 
 gboolean               gkd_secret_property_parse_fields           (DBusMessageIter *iter,
-                                                                   GckAttribute *attr);
+                                                                   GckBuilder *builder);
 
 gboolean               gkd_secret_property_parse_all              (DBusMessageIter *array,
                                                                    const gchar *interface,
-                                                                   GckAttributes *attrs);
+                                                                   GckBuilder *builder);
 
 #endif /* __GKD_SECRET_PROPERTY_H__ */

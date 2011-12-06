@@ -54,7 +54,8 @@ gkd_ssh_agent_proto_algo_to_keytype (gulong algo)
 }
 
 gboolean
-gkd_ssh_agent_proto_read_mpi (EggBuffer *req, gsize *offset, GckAttributes *attrs,
+gkd_ssh_agent_proto_read_mpi (EggBuffer *req, gsize *offset,
+                              GckBuilder *builder,
                               CK_ATTRIBUTE_TYPE type)
 {
 	const guchar *data;
@@ -69,12 +70,14 @@ gkd_ssh_agent_proto_read_mpi (EggBuffer *req, gsize *offset, GckAttributes *attr
 		--len;
 	}
 
-	gck_attributes_add_data (attrs, type, data, len);
+	gck_builder_add_data (builder, type, data, len);
 	return TRUE;
 }
 
 gboolean
-gkd_ssh_agent_proto_read_mpi_v1 (EggBuffer *req, gsize *offset, GckAttributes *attrs,
+gkd_ssh_agent_proto_read_mpi_v1 (EggBuffer *req,
+                                 gsize *offset,
+                                 GckBuilder *attrs,
                                  CK_ATTRIBUTE_TYPE type)
 {
 	const guchar *data;
@@ -96,12 +99,13 @@ gkd_ssh_agent_proto_read_mpi_v1 (EggBuffer *req, gsize *offset, GckAttributes *a
 	data = req->buf + *offset;
 	*offset += bytes;
 
-	gck_attributes_add_data (attrs, type, data, bytes);
+	gck_builder_add_data (attrs, type, data, bytes);
 	return TRUE;
 }
 
 gboolean
-gkd_ssh_agent_proto_write_mpi (EggBuffer *resp, GckAttribute *attr)
+gkd_ssh_agent_proto_write_mpi (EggBuffer *resp,
+                               const GckAttribute *attr)
 {
 	const guchar *value;
 	guchar *data;
@@ -126,7 +130,8 @@ gkd_ssh_agent_proto_write_mpi (EggBuffer *resp, GckAttribute *attr)
 }
 
 gboolean
-gkd_ssh_agent_proto_write_mpi_v1 (EggBuffer *resp, GckAttribute *attr)
+gkd_ssh_agent_proto_write_mpi_v1 (EggBuffer *resp,
+                                  const GckAttribute *attr)
 {
 	guchar *data;
 
@@ -168,7 +173,10 @@ gkd_ssh_agent_proto_read_challenge_v1 (EggBuffer *req, gsize *offset, gsize *n_c
 }
 
 gboolean
-gkd_ssh_agent_proto_read_public (EggBuffer *req, gsize *offset, GckAttributes* attrs, gulong *algo)
+gkd_ssh_agent_proto_read_public (EggBuffer *req,
+                                 gsize *offset,
+                                 GckBuilder *attrs,
+                                 gulong *algo)
 {
 	gboolean ret;
 	gchar *stype;
@@ -212,10 +220,12 @@ gkd_ssh_agent_proto_read_public (EggBuffer *req, gsize *offset, GckAttributes* a
 }
 
 gboolean
-gkd_ssh_agent_proto_read_pair_rsa (EggBuffer *req, gsize *offset,
-                                   GckAttributes *priv_attrs, GckAttributes *pub_attrs)
+gkd_ssh_agent_proto_read_pair_rsa (EggBuffer *req,
+                                   gsize *offset,
+                                   GckBuilder *priv_attrs,
+                                   GckBuilder *pub_attrs)
 {
-	GckAttribute *attr;
+	const GckAttribute *attr;
 
 	g_assert (req);
 	g_assert (offset);
@@ -231,25 +241,27 @@ gkd_ssh_agent_proto_read_pair_rsa (EggBuffer *req, gsize *offset,
 		return FALSE;
 
 	/* Copy attributes to the public key */
-	attr = gck_attributes_find (priv_attrs, CKA_MODULUS);
-	gck_attributes_add (pub_attrs, attr);
-	attr = gck_attributes_find (priv_attrs, CKA_PUBLIC_EXPONENT);
-	gck_attributes_add (pub_attrs, attr);
+	attr = gck_builder_find (priv_attrs, CKA_MODULUS);
+	gck_builder_add_owned (pub_attrs, attr);
+	attr = gck_builder_find (priv_attrs, CKA_PUBLIC_EXPONENT);
+	gck_builder_add_owned (pub_attrs, attr);
 
 	/* Add in your basic other required attributes */
-	gck_attributes_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-	gck_attributes_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_RSA);
-	gck_attributes_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_RSA);
+	gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gck_builder_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_RSA);
+	gck_builder_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_RSA);
 
 	return TRUE;
 }
 
 gboolean
-gkd_ssh_agent_proto_read_pair_v1 (EggBuffer *req, gsize *offset,
-                                  GckAttributes *priv_attrs, GckAttributes *pub_attrs)
+gkd_ssh_agent_proto_read_pair_v1 (EggBuffer *req,
+                                  gsize *offset,
+                                  GckBuilder *priv_attrs,
+                                  GckBuilder *pub_attrs)
 {
-	GckAttribute *attr;
+	const GckAttribute *attr;
 
 	g_assert (req);
 	g_assert (offset);
@@ -265,22 +277,24 @@ gkd_ssh_agent_proto_read_pair_v1 (EggBuffer *req, gsize *offset,
 		return FALSE;
 
 	/* Copy attributes to the public key */
-	attr = gck_attributes_find (priv_attrs, CKA_MODULUS);
-	gck_attributes_add (pub_attrs, attr);
-	attr = gck_attributes_find (priv_attrs, CKA_PUBLIC_EXPONENT);
-	gck_attributes_add (pub_attrs, attr);
+	attr = gck_builder_find (priv_attrs, CKA_MODULUS);
+	gck_builder_add_owned (pub_attrs, attr);
+	attr = gck_builder_find (priv_attrs, CKA_PUBLIC_EXPONENT);
+	gck_builder_add_owned (pub_attrs, attr);
 
 	/* Add in your basic other required attributes */
-	gck_attributes_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-	gck_attributes_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_RSA);
-	gck_attributes_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_RSA);
+	gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gck_builder_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_RSA);
+	gck_builder_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_RSA);
 
 	return TRUE;
 }
 
 gboolean
-gkd_ssh_agent_proto_read_public_rsa (EggBuffer *req, gsize *offset, GckAttributes *attrs)
+gkd_ssh_agent_proto_read_public_rsa (EggBuffer *req,
+                                     gsize *offset,
+                                     GckBuilder *attrs)
 {
 	g_assert (req);
 	g_assert (offset);
@@ -291,14 +305,16 @@ gkd_ssh_agent_proto_read_public_rsa (EggBuffer *req, gsize *offset, GckAttribute
 		return FALSE;
 
 	/* Add in your basic other required attributes */
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_RSA);
+	gck_builder_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (attrs, CKA_KEY_TYPE, CKK_RSA);
 
 	return TRUE;
 }
 
 gboolean
-gkd_ssh_agent_proto_read_public_v1 (EggBuffer *req, gsize *offset, GckAttributes *attrs)
+gkd_ssh_agent_proto_read_public_v1 (EggBuffer *req,
+                                    gsize *offset,
+                                    GckBuilder *attrs)
 {
 	guint32 bits;
 
@@ -314,17 +330,19 @@ gkd_ssh_agent_proto_read_public_v1 (EggBuffer *req, gsize *offset, GckAttributes
 		return FALSE;
 
 	/* Add in your basic other required attributes */
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_RSA);
+	gck_builder_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (attrs, CKA_KEY_TYPE, CKK_RSA);
 
 	return TRUE;
 }
 
 gboolean
-gkd_ssh_agent_proto_read_pair_dsa (EggBuffer *req, gsize *offset,
-                                   GckAttributes *priv_attrs, GckAttributes *pub_attrs)
+gkd_ssh_agent_proto_read_pair_dsa (EggBuffer *req,
+                                   gsize *offset,
+                                   GckBuilder *priv_attrs,
+                                   GckBuilder *pub_attrs)
 {
-	GckAttribute *attr;
+	const GckAttribute *attr;
 
 	g_assert (req);
 	g_assert (offset);
@@ -339,24 +357,26 @@ gkd_ssh_agent_proto_read_pair_dsa (EggBuffer *req, gsize *offset,
 		return FALSE;
 
 	/* Copy attributes to the public key */
-	attr = gck_attributes_find (priv_attrs, CKA_PRIME);
-	gck_attributes_add (pub_attrs, attr);
-	attr = gck_attributes_find (priv_attrs, CKA_SUBPRIME);
-	gck_attributes_add (pub_attrs, attr);
-	attr = gck_attributes_find (priv_attrs, CKA_BASE);
-	gck_attributes_add (pub_attrs, attr);
+	attr = gck_builder_find (priv_attrs, CKA_PRIME);
+	gck_builder_add_owned (pub_attrs, attr);
+	attr = gck_builder_find (priv_attrs, CKA_SUBPRIME);
+	gck_builder_add_owned (pub_attrs, attr);
+	attr = gck_builder_find (priv_attrs, CKA_BASE);
+	gck_builder_add_owned (pub_attrs, attr);
 
 	/* Add in your basic other required attributes */
-	gck_attributes_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-	gck_attributes_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_DSA);
-	gck_attributes_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_DSA);
+	gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
+	gck_builder_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_DSA);
+	gck_builder_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_DSA);
 
 	return TRUE;
 }
 
 gboolean
-gkd_ssh_agent_proto_read_public_dsa (EggBuffer *req, gsize *offset, GckAttributes *attrs)
+gkd_ssh_agent_proto_read_public_dsa (EggBuffer *req,
+                                     gsize *offset,
+                                     GckBuilder *attrs)
 {
 	g_assert (req);
 	g_assert (offset);
@@ -369,8 +389,8 @@ gkd_ssh_agent_proto_read_public_dsa (EggBuffer *req, gsize *offset, GckAttribute
 		return FALSE;
 
 	/* Add in your basic other required attributes */
-	gck_attributes_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-	gck_attributes_add_ulong (attrs, CKA_KEY_TYPE, CKK_DSA);
+	gck_builder_add_ulong (attrs, CKA_CLASS, CKO_PUBLIC_KEY);
+	gck_builder_add_ulong (attrs, CKA_KEY_TYPE, CKK_DSA);
 
 	return TRUE;
 }
@@ -412,7 +432,7 @@ gkd_ssh_agent_proto_write_public (EggBuffer *resp, GckAttributes *attrs)
 gboolean
 gkd_ssh_agent_proto_write_public_rsa (EggBuffer *resp, GckAttributes *attrs)
 {
-	GckAttribute *attr;
+	const GckAttribute *attr;
 
 	g_assert (resp);
 	g_assert (attrs);
@@ -435,7 +455,7 @@ gkd_ssh_agent_proto_write_public_rsa (EggBuffer *resp, GckAttributes *attrs)
 gboolean
 gkd_ssh_agent_proto_write_public_dsa (EggBuffer *resp, GckAttributes *attrs)
 {
-	GckAttribute *attr;
+	const GckAttribute *attr;
 
 	g_assert (resp);
 	g_assert (attrs);
@@ -470,7 +490,7 @@ gkd_ssh_agent_proto_write_public_dsa (EggBuffer *resp, GckAttributes *attrs)
 gboolean
 gkd_ssh_agent_proto_write_public_v1 (EggBuffer *resp, GckAttributes *attrs)
 {
-	GckAttribute *attr;
+	const GckAttribute *attr;
 	gulong bits;
 
 	g_assert (resp);
