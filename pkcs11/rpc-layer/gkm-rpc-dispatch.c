@@ -2229,7 +2229,11 @@ gkm_rpc_layer_accept (void)
 
 	ds->socket = new_fd;
 
+#if GLIB_CHECK_VERSION(2,31,3)
+	ds->thread = g_thread_new ("dispatch", run_dispatch_thread, &(ds->socket));
+#else
 	ds->thread = g_thread_create (run_dispatch_thread, &(ds->socket), TRUE, &error);
+#endif
 	if (!ds->thread) {
 		gkm_rpc_warn ("couldn't start thread: %s", egg_error_message (error));
 		close (new_fd);

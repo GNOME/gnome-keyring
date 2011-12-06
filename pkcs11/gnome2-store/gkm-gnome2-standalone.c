@@ -43,8 +43,6 @@ C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 		return CKR_ARGUMENTS_BAD;
 
 	g_type_init ();
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
 
 	*list = gkm_gnome2_store_get_functions ();
 	return CKR_OK;

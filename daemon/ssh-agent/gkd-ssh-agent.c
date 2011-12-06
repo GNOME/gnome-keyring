@@ -284,7 +284,11 @@ gkd_ssh_agent_accept (void)
 	client->sock = new_fd;
 
 	/* And create a new thread/process */
+#if GLIB_CHECK_VERSION(2,31,3)
+	client->thread = g_thread_new ("ssh-agent", run_client_thread, &client->sock);
+#else
 	client->thread = g_thread_create (run_client_thread, &client->sock, TRUE, &error);
+#endif
 	if (!client->thread) {
 		g_warning ("couldn't create thread SSH agent connection: %s",
 		           egg_error_message (error));
@@ -340,8 +344,15 @@ gkd_ssh_agent_uninitialize (void)
 		pkcs11_main_session = NULL;
 
 	g_mutex_unlock (pkcs11_main_mutex);
+#if GLIB_CHECK_VERSION(2,31,3)
+	g_mutex_clear (pkcs11_main_mutex);
+	g_free (pkcs11_main_mutex);
+	g_cond_clear (pkcs11_main_cond);
+	g_free (pkcs11_main_cond);
+#else
 	g_mutex_free (pkcs11_main_mutex);
 	g_cond_free (pkcs11_main_cond);
+#endif
 
 	gck_list_unref_free (pkcs11_modules);
 	pkcs11_modules = NULL;
@@ -400,8 +411,15 @@ gkd_ssh_agent_initialize_with_module (GckModule *module)
 	g_assert (!pkcs11_modules);
 	pkcs11_modules = g_list_append (NULL, g_object_ref (module));
 
+#if GLIB_CHECK_VERSION(2,31,3)
+	pkcs11_main_mutex = g_new0 (GMutex, 1);
+	g_mutex_init (pkcs11_main_mutex);
+	pkcs11_main_cond = g_new0 (GCond, 1);
+	g_cond_init (pkcs11_main_cond);
+#else
 	pkcs11_main_mutex = g_mutex_new ();
 	pkcs11_main_cond = g_cond_new ();
+#endif
 	pkcs11_main_checked = FALSE;
 	pkcs11_main_session = session;
 

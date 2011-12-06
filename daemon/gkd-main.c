@@ -882,7 +882,6 @@ main (int argc, char *argv[])
 #endif
 
 	g_type_init ();
-	g_thread_init (NULL);
 
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */

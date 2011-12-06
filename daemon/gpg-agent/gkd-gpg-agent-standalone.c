@@ -79,9 +79,6 @@ main(int argc, char *argv[])
 
 	g_type_init ();
 
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
-
 	if (argc <= 1) {
 		g_message ("specify pkcs11 module on the command line");
 		return 1;

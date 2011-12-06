@@ -116,8 +116,7 @@ main (int argc, char *argv[])
 	int ret = -1;
 	
 	g_type_init ();
-	g_thread_init (NULL);
-	
+
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */
 	setlocale (LC_ALL, "");

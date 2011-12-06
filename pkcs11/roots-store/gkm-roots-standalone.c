@@ -59,9 +59,6 @@ C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 
 	g_type_init ();
 
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
-
 	gkm_crypto_initialize ();
 
 	*list = gkm_roots_store_get_functions ();

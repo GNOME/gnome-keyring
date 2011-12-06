@@ -1093,7 +1093,15 @@ gku_prompt_request_attention_sync (const gchar *window_id, GkuPromptAttentionFun
                                    gpointer user_data, GDestroyNotify destroy_notify)
 {
 	AttentionReq *att = prepare_attention_req (window_id, callback, user_data, destroy_notify);
-	GCond *cond = g_cond_new ();
+	GCond *cond;
+
+#if GLIB_CHECK_VERSION(2,31,3)
+	GCond condition;
+	g_cond_init (&condition);
+	cond = &condition;
+#else
+	cond = g_cond_new ();
+#endif
 
 	g_return_if_fail (att);
 	att->cond = cond;
@@ -1106,7 +1114,11 @@ gku_prompt_request_attention_sync (const gchar *window_id, GkuPromptAttentionFun
 		g_cond_wait (cond, g_static_mutex_get_mutex (&attention_mutex));
 	g_static_mutex_unlock (&attention_mutex);
 
+#if GLIB_CHECK_VERSION(2,31,3)
+	g_cond_clear (&condition);
+#else
 	g_cond_free (cond);
+#endif
 }
 
 #ifdef WITH_TESTABLE
