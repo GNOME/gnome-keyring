@@ -131,6 +131,7 @@ run-tests
 /pkcs11/secret-store/tests/test-secret-object
 /pkcs11/secret-store/tests/test-secret-search
 /pkcs11/secret-store/tests/test-secret-textual
+/pkcs11/secret-store/tests/dump-keyring0-format
 
 /pkcs11/ssh-store/tests/check-ssh-module
 /pkcs11/ssh-store/tests/test-private-key

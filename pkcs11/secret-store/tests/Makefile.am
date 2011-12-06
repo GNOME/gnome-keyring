@@ -20,6 +20,8 @@ noinst_LIBRARIES = libgkm-mock-secret-module.a
 libgkm_mock_secret_module_a_SOURCES = \
 	mock-secret-module.c mock-secret-module.h
 
+noinst_PROGRAMS = dump-keyring0-format
+
 TEST_PROGS = \
 	test-secret-compat \
 	test-secret-fields \
