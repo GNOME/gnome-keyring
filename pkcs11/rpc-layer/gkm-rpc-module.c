@@ -750,6 +750,7 @@ proto_read_byte_array (GkmRpcMessage *msg, CK_BYTE_PTR arr,
 {
 	const unsigned char *val;
 	unsigned char valid;
+	uint32_t length;
 	size_t vlen;
 
 	assert (len);
@@ -764,10 +765,10 @@ proto_read_byte_array (GkmRpcMessage *msg, CK_BYTE_PTR arr,
 
 	/* If not valid, then just the length is encoded, this can signify CKR_BUFFER_TOO_SMALL */
 	if (!valid) {
-		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, (uint32_t *)&vlen))
+		if (!egg_buffer_get_uint32 (&msg->buffer, msg->parsed, &msg->parsed, &length))
 			return PARSE_ERROR;
 
-		*len = vlen;
+		*len = length;
 
 		if (arr)
 			return CKR_BUFFER_TOO_SMALL;
