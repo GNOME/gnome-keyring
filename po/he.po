@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2011-09-30 14:08+0200\n"
+"POT-Creation-Date: 2011-12-10 11:00+0200\n"
+"PO-Revision-Date: 2011-12-10 11:00+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -23,7 +23,8 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:78
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
@@ -41,12 +42,8 @@ msgstr "יש לבחור ססמה חדשה עבור קבוצת הססמאות '%s
 
 #: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
-msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
-"new password you want to use for it."
-msgstr ""
-"אחד מהיישומים מנסה לשנות את הססמה עבור קבוצת הססמאות '%s'. נא לבחור בססמה "
-"החדשה שתגן עליה."
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "אחד מהיישומים מנסה לשנות את הססמה עבור קבוצת הססמאות '%s'. נא לבחור בססמה החדשה שתגן עליה."
 
 #: ../daemon/dbus/gkd-secret-change.c:111
 msgid "The original password was incorrect"
@@ -62,11 +59,16 @@ msgstr "יש לבחור ססמה עבור קבוצת הססמאות החדשה"
 
 #: ../daemon/dbus/gkd-secret-create.c:86
 #, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"אחד היישומים מנסה ליצור קבוצת ססמאות חדשה בשם '%s'. נא לבחור בססמה שתגן עליה."
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "אחד היישומים מנסה ליצור קבוצת ססמאות חדשה בשם '%s'. נא לבחור בססמה שתגן עליה."
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "קבוצת מפתחות GNOME: סוכן GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "סוכן ססמאות ה־PGP"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -92,44 +94,78 @@ msgstr "קבוצת מפתחות של GNOME: סוכן SSH"
 msgid "SSH Key Agent"
 msgstr "סוכן מפתחות SSH"
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "קבוצת מפתחות GNOME: סוכן GPG"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "סוכן ססמאות ה־PGP"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:107
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:206
 #, c-format
 msgid "PGP Key: %s"
 msgstr "מפתח PGP:‏ %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:359
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
 msgid "Enter Passphrase"
 msgstr "יש להזין מילת צופן"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
 msgid "Forget this password if idle for"
 msgstr "מחיקת ססמה זו אם אין פעילות במשך"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
 msgid "Forget this password after"
 msgstr "מחיקת ססמה זו לאחר"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:402
 msgid "Forget this password when I log out"
 msgstr "מחיקת ססמה זו בעת היציאה"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
 msgstr "כניסה"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "failed to create temporary file `%s': %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "error writing to `%s': %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "can't create `%s': %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "removing stale lockfile (created by %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "waiting for lock (held by %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(deadlock?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "lock `%s' not made: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "waiting for lock %s...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -310,15 +346,11 @@ msgid "Enter password to unlock your login keyring"
 msgstr "יש להזין ססמה כדי לשחרר את קבוצת מפתחות הכניסה שלך"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"הססמה המשמשת אותך לכניסה למחשבך אינה תואמת עוד לססמת קבוצת ססמאות הכניסה."
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "הססמה המשמשת אותך לכניסה למחשבך אינה תואמת עוד לססמת קבוצת ססמאות הכניסה."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
+msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr "קבוצת ססמאות הכניסה לא שוחררה בעת שנכנסת למחשב."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
@@ -402,9 +434,7 @@ msgstr "יש להזין ססמה כדי לנעול את אחסון המפתח/ת
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
 #, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
 msgstr "יישום מנסה לגשת אל אחסון התעודה/מפתח '%s', אך הם נעולים"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
@@ -417,9 +447,7 @@ msgstr "נדרשת ססמה חדשה עבור אחסון מאובטח"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "כדי להכין את '%s' לאחסון של תעודות או מפתחות נדרשת ססמה"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
@@ -432,8 +460,7 @@ msgstr "שינוי ססמה עבור אחסון מאובטח"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
+msgid "To change the password for '%s', the original and new passwords are required"
 msgstr "כדי לשנות את הססמה עבור  '%s', נדרשות הססמאות המקורית והחדשה"
 
 #: ../tool/gkr-tool.c:102
@@ -450,38 +477,25 @@ msgstr "commands: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:591
+#: ../ui/gku-prompt-tool.c:597
 msgid "Store passwords unencrypted?"
 msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
 
-#: ../ui/gku-prompt-tool.c:592
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל "
-"בעל גישה לקבצים שלך."
+#: ../ui/gku-prompt-tool.c:598
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל בעל גישה לקבצים שלך."
 
-#: ../ui/gku-prompt-tool.c:599
+#: ../ui/gku-prompt-tool.c:605
 msgid "Use Unsafe Storage"
 msgstr "שימוש באחסון בלתי מאובטח"
 
-#: ../ui/gku-prompt-tool.c:639
+#: ../ui/gku-prompt-tool.c:645
 msgid "Passwords do not match."
 msgstr "הססמאות אינן תואמות."
 
-#: ../ui/gku-prompt-tool.c:649
+#: ../ui/gku-prompt-tool.c:655
 msgid "Password cannot be blank"
 msgstr "הססמה אינה יכולה להיות ריקה"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "גישה לקבוצת המפתחות"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "שחרור הגישה לססמאות ולסודות אחרים"
 
 #: ../ui/gku-prompt.ui.h:1
 msgid "New password strength"
@@ -510,3 +524,12 @@ msgstr "הססמה ה_קודמת:"
 #: ../ui/gku-prompt.ui.h:7
 msgid "_Password:"
 msgstr "_ססמה:"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
+msgid "Keyring Access"
+msgstr "גישה לקבוצת המפתחות"
+
+#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
+msgid "Unlock access to passwords and other secrets"
+msgstr "שחרור הגישה לססמאות ולסודות אחרים"
+
