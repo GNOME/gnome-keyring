@@ -923,6 +923,10 @@ gkm_secret_binary_read (GkmSecretCollection *collection, GkmSecretData *sdata,
 	if (crypto_size % 16 != 0)
 		goto bail;
 
+	/* Ensure the file is large enough to hold all the data (in case it got truncated) */
+	if (buffer.len < offset + crypto_size)
+		goto bail;
+
 	/* Copy the data into to_decrypt into non-pageable memory */
 	egg_buffer_set_allocator (&to_decrypt, egg_secure_realloc);
 	egg_buffer_reserve (&to_decrypt, crypto_size);
