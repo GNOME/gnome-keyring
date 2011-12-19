@@ -51,19 +51,21 @@ servicedir       = $(DBUS_SERVICES_DIR)
 service_DATA     = $(service_in_files:.service.in=.service)
 service_PATH     = $(VALGRIND_RUN)$(bindir)
 
-desktop_in_files = \
-	gnome-keyring-pkcs11.desktop.in \
-	gnome-keyring-secrets.desktop.in \
-	gnome-keyring-ssh.desktop.in \
-	gnome-keyring-gpg.desktop.in
+desktop_in_in_files = \
+	gnome-keyring-pkcs11.desktop.in.in \
+	gnome-keyring-secrets.desktop.in.in \
+	gnome-keyring-ssh.desktop.in.in \
+	gnome-keyring-gpg.desktop.in.in
+desktop_in_files = $(desktop_in_in_files:.desktop.in.in=.desktop.in)
 desktopdir       = $(sysconfdir)/xdg/autostart
 desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
 
 EXTRA_DIST = \
 	$(service_in_files) \
-	$(desktop_in_files)
+	$(desktop_in_in_files)
 
 CLEANFILES = \
+	$(desktop_in_files) \
 	$(service_DATA) \
 	$(desktop_DATA)
 
