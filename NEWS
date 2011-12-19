@@ -1,3 +1,13 @@
+Changes in version 3.3.3 are:
+ * Distribute correct desktop autostart files
+ * Use GcrPrompt and GcrSystemPrompt for prompting
+ * Do not crash when reading a truncated keyring file
+ * Add test tool for dumping the keyring format
+ * Update for GckBuilder changes in libgck
+ * Fix for deprecations in glib 2.31.x
+ * Fix ReadAlias() returning null when 'login' keyring exists
+ * Build fixes, bug fixes
+
 Changes in version 3.3.2 are:
  * Do not make label selectionnable in prompt dialog
  * Fix deadlock in the 'unsafe storage' prompt
