@@ -199,15 +199,15 @@ do_save_password (GckSession *session, const gchar *keyid, const gchar *descript
 		gck_list_unref_free (previous);
 	}
 
-	gck_attributes_unref (attrs);
-
 	text = calculate_label_for_key (keyid, description);
 	label = g_strdup_printf (_("PGP Key: %s"), text);
 	g_free (text);
 
 	/* Put in the remainder of the attributes */
+	gck_builder_add_all (&builder, attrs);
 	gck_builder_add_string (&builder, CKA_VALUE, password);
 	gck_builder_add_string (&builder, CKA_LABEL, label);
+	gck_attributes_unref (attrs);
 	g_free (label);
 
 	item = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);

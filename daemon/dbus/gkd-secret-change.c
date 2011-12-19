@@ -454,26 +454,27 @@ gkd_secret_change_with_secrets (GckObject *collection,
 	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
 	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 	mcred = gkd_secret_session_create_credential (master->session, session, attrs, master, error);
-	if (mcred == NULL)
-		goto cleanup;
-
 	gck_builder_add_all (&builder, attrs);
 	gck_attributes_unref (attrs);
+
+	if (mcred == NULL)
+		goto cleanup;
 
 	/* Create the original credential, in order to make sure we can the collection */
 	if (original) {
 		gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (collection));
 		attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 		ocred = gkd_secret_session_create_credential (original->session, session, attrs, original, error);
+		gck_attributes_unref (attrs);
+
 		if (ocred == NULL)
 			goto cleanup;
 	}
 
-	gck_attributes_unref (attrs);
 	gck_builder_add_ulong (&builder, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
 
 	/* Now set the collection credentials to the first one */
-	result = gck_object_set (collection, attrs, NULL, error);
+	result = gck_object_set (collection, gck_builder_end (&builder), NULL, error);
 
 cleanup:
 	if (ocred) {
@@ -488,6 +489,6 @@ cleanup:
 		g_object_unref (mcred);
 	}
 
-	gck_attributes_unref (attrs);
+	gck_builder_clear (&builder);
 	return result;
 }

@@ -457,7 +457,6 @@ gkd_secret_create_with_secret (GckAttributes *attrs,
 
 	collection = gkd_secret_create_with_credential (session, attrs, cred, error);
 
-	gck_attributes_unref (atts);
 	g_object_unref (cred);
 
 	if (collection == NULL)
