@@ -20,11 +20,13 @@ libgkm_wrap_layer_la_SOURCES = \
 libgkm_wrap_layer_la_LIBADD = \
 	$(top_builddir)/pkcs11/gkm/libgkm.la \
 	$(GTHREAD_LIBS) \
-	$(GLIB_LIBS)
+	$(GLIB_LIBS) \
+	$(GIO_LIBS)
 
 libgkm_wrap_layer_la_CFLAGS = \
 	$(GTHREAD_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(GIO_CFLAGS)
 
 # ------------------------------------------------------------------------------
 
