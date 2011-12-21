@@ -1,3 +1,8 @@
+Changes in version 3.3.3.1 are:
+ * No message in gnome-keyring-pkcs11.so module, when no daemon running
+ * Updated translations
+ * Build fixes
+
 Changes in version 3.3.3 are:
  * Distribute correct desktop autostart files
  * Use GcrPrompt and GcrSystemPrompt for prompting
