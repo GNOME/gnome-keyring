@@ -124,11 +124,11 @@ find_saved_items (GckSession *session, GckAttributes *attrs)
 
 	attr = gck_attributes_find (attrs, CKA_G_COLLECTION);
 	if (attr != NULL)
-		gck_builder_add_owned (&builder, attr);
+		gck_builder_add_attribute (&builder, attr);
 
 	attr = gck_attributes_find (attrs, CKA_G_FIELDS);
 	g_return_val_if_fail (attr != NULL, NULL);
-	gck_builder_add_owned (&builder, attr);
+	gck_builder_add_attribute (&builder, attr);
 
 	search = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
 	if (search == NULL) {
@@ -186,7 +186,7 @@ do_save_password (GckSession *session, const gchar *keyid, const gchar *descript
 
 	/* Bring in all the unlock options */
 	for (i = 0; options && i < gck_attributes_count (options); ++i)
-		gck_builder_add_owned (&builder, gck_attributes_at (options, i));
+		gck_builder_add_attribute (&builder, gck_attributes_at (options, i));
 
 	/* Find a previously stored object like this, and replace if so */
 	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));

@@ -515,7 +515,7 @@ collection_find_matching_item (GkdSecretObjects *self,
 	gsize n_data;
 
 	/* Find items matching the collection and fields */
-	gck_builder_add_owned (&builder, fields);
+	gck_builder_add_attribute (&builder, fields);
 	gck_builder_add_string (&builder, CKA_G_COLLECTION, identifier);
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_SEARCH);
 	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);

@@ -60,7 +60,7 @@ copy_attribute (GckAttributes *original,
 
 	attr = gck_attributes_find (original, type);
 	if (attr)
-		gck_builder_add_owned (dest, attr);
+		gck_builder_add_attribute (dest, attr);
 }
 
 static gboolean
@@ -239,7 +239,7 @@ return_private_matching (GckObject *object, gpointer user_data)
 	if (!login_session (session))
 		return FALSE;
 
-	gck_builder_add_owned (&builder, attr);
+	gck_builder_add_attribute (&builder, attr);
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_PRIVATE_KEY);
 	gck_builder_add_boolean (&builder, CKA_TOKEN, token);
 

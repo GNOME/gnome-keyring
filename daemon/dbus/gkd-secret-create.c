@@ -413,7 +413,7 @@ gkd_secret_create_with_credential (GckSession *session, GckAttributes *attrs,
 
 	attr = gck_attributes_find (attrs, CKA_LABEL);
 	if (attr != NULL)
-		gck_builder_add_owned (&builder, attr);
+		gck_builder_add_attribute (&builder, attr);
 	if (!gck_attributes_find_boolean (attrs, CKA_TOKEN, &token))
 		token = FALSE;
 	gck_builder_add_boolean (&builder, CKA_TOKEN, token);

@@ -242,9 +242,9 @@ gkd_ssh_agent_proto_read_pair_rsa (EggBuffer *req,
 
 	/* Copy attributes to the public key */
 	attr = gck_builder_find (priv_attrs, CKA_MODULUS);
-	gck_builder_add_owned (pub_attrs, attr);
+	gck_builder_add_attribute (pub_attrs, attr);
 	attr = gck_builder_find (priv_attrs, CKA_PUBLIC_EXPONENT);
-	gck_builder_add_owned (pub_attrs, attr);
+	gck_builder_add_attribute (pub_attrs, attr);
 
 	/* Add in your basic other required attributes */
 	gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
@@ -278,9 +278,9 @@ gkd_ssh_agent_proto_read_pair_v1 (EggBuffer *req,
 
 	/* Copy attributes to the public key */
 	attr = gck_builder_find (priv_attrs, CKA_MODULUS);
-	gck_builder_add_owned (pub_attrs, attr);
+	gck_builder_add_attribute (pub_attrs, attr);
 	attr = gck_builder_find (priv_attrs, CKA_PUBLIC_EXPONENT);
-	gck_builder_add_owned (pub_attrs, attr);
+	gck_builder_add_attribute (pub_attrs, attr);
 
 	/* Add in your basic other required attributes */
 	gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
@@ -358,11 +358,11 @@ gkd_ssh_agent_proto_read_pair_dsa (EggBuffer *req,
 
 	/* Copy attributes to the public key */
 	attr = gck_builder_find (priv_attrs, CKA_PRIME);
-	gck_builder_add_owned (pub_attrs, attr);
+	gck_builder_add_attribute (pub_attrs, attr);
 	attr = gck_builder_find (priv_attrs, CKA_SUBPRIME);
-	gck_builder_add_owned (pub_attrs, attr);
+	gck_builder_add_attribute (pub_attrs, attr);
 	attr = gck_builder_find (priv_attrs, CKA_BASE);
-	gck_builder_add_owned (pub_attrs, attr);
+	gck_builder_add_attribute (pub_attrs, attr);
 
 	/* Add in your basic other required attributes */
 	gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
