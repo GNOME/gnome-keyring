@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-10 11:00+0200\n"
-"PO-Revision-Date: 2011-12-10 11:00+0200\n"
+"POT-Creation-Date: 2011-12-30 11:00+0200\n"
+"PO-Revision-Date: 2011-12-30 11:07+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -23,44 +23,65 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:120
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
 msgid "Unnamed"
 msgstr "ללא שם"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "שינוי הססמה של קבוצת הססמאות"
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "נא להזין את הססמה הישנה עבור קבוצת הססמאות '%s' "
 
-#: ../daemon/dbus/gkd-secret-change.c:88
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, c-format
+msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
+msgstr "אחד מהיישומים מנסה לשנות את הססמה עבור קבוצת הססמאות '%s'. יש להזין את הססמה הישנה של פריט זה."
+
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "יש לבחור ססמה חדשה עבור קבוצת הססמאות '%s' "
 
-#: ../daemon/dbus/gkd-secret-change.c:92
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
 msgstr "אחד מהיישומים מנסה לשנות את הססמה עבור קבוצת הססמאות '%s'. נא לבחור בססמה החדשה שתגן עליה."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
+#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
+
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל בעל גישה לקבצים שלך."
+
+#: ../daemon/dbus/gkd-secret-change.c:149
 msgid "The original password was incorrect"
 msgstr "הססמה המקורית שגויה"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "ססמה עבור קבוצת ססמאות חדשה"
+#: ../daemon/dbus/gkd-secret-change.c:349
+msgid "Change Keyring Password"
+msgstr "שינוי הססמה של קבוצת הססמאות"
 
-#: ../daemon/dbus/gkd-secret-create.c:84
-msgid "Choose password for new keyring"
-msgstr "יש לבחור ססמה עבור קבוצת הססמאות החדשה"
-
-#: ../daemon/dbus/gkd-secret-create.c:86
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
 msgstr "אחד היישומים מנסה ליצור קבוצת ססמאות חדשה בשם '%s'. נא לבחור בססמה שתגן עליה."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
+msgid "Choose password for new keyring"
+msgstr "יש לבחור ססמה עבור קבוצת הססמאות החדשה"
+
+#: ../daemon/dbus/gkd-secret-create.c:308
+msgid "New Keyring Password"
+msgstr "ססמה עבור קבוצת ססמאות חדשה"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
 msgid "GNOME Keyring: GPG Agent"
@@ -94,31 +115,23 @@ msgstr "קבוצת מפתחות של GNOME: סוכן SSH"
 msgid "SSH Key Agent"
 msgstr "סוכן מפתחות SSH"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:107
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:206
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
 msgstr "מפתח PGP:‏ %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:359
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
 msgid "Enter Passphrase"
 msgstr "יש להזין מילת צופן"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password if idle for"
-msgstr "מחיקת ססמה זו אם אין פעילות במשך"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password after"
-msgstr "מחיקת ססמה זו לאחר"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:402
-msgid "Forget this password when I log out"
-msgstr "מחיקת ססמה זו בעת היציאה"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "יש לשחרר מפתח זה, בכל פעם שאני נכנס למחשב"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:145
@@ -332,136 +345,165 @@ msgstr "לא ניתן לנתח את מפתח ה־SSH הציבורי"
 msgid "Unlock password for: %s"
 msgstr "ססמת שחרור עבור: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "ססמת השחרור שגויה"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "שחרור קבוצת ססמאות הכניסה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
 msgstr "יש להזין ססמה כדי לשחרר את קבוצת מפתחות הכניסה שלך"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid "The password you use to log in to your computer no longer matches that of your login keyring."
 msgstr "הססמה המשמשת אותך לכניסה למחשבך אינה תואמת עוד לססמת קבוצת ססמאות הכניסה."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
 msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr "קבוצת ססמאות הכניסה לא שוחררה בעת שנכנסת למחשב."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
 msgid "Unlock Keyring"
 msgstr "שחרור קבוצת הססמאות"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "יש להזין ססמה לשחרור קבוצת הססמאות '%s'"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "יישום מנסה לגשת אל קבוצת הססמאות '%s', אך היא נעולה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "יש לשחרר קבוצת מפתחות זו אוטומטית בכל פעם שאני מבצע כניסה למחשב"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
 msgid "Unlock private key"
 msgstr "פתח מפתח פרטי"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock certificate"
 msgstr "פתח תעודה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock public key"
 msgstr "פתח מפתח ציבורי"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock"
 msgstr "פתח"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Enter password to unlock the private key"
 msgstr "יש להזין ססמה לשחרור המפתח הפרטי"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the certificate"
 msgstr "יש להזין ססמה לשחרור התעודה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the public key"
 msgstr "יש להזין ססמה לפתיחת המפתח הציבורי"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock"
 msgstr "יש להזין ססמה לשחרור"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "יש לשחרר מפתח זה אוטומטית בכל פעם שאני מבצע כניסה"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "יש לשחרר אישור זה בכל פעם שאני מבצע כניסה למחשב"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "יש לשחרר אוטומטית בכל פעם שאני מבצע כניסה למחשב"
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "יישום מנסה לגשת למפתח הפרטי '%s', אך הוא נעול"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "יישום מנסה לגשת לתעודה '%s', אך היא נעולה"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "יישום מנסה לגשת למפתח הציבורי '%s', אך הוא נעול"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "יישום מנסה ל-'%s', אך הוא נעול"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+msgid "The unlock password was incorrect"
+msgstr "ססמת השחרור שגויה"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
 msgid "Unlock certificate/key storage"
 msgstr "שחרור אחסון מפתח/תעודה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "יש להזין ססמה כדי לנעול את אחסון המפתח/תעודה"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 #, c-format
 msgid "An application wants access to the certificate/key storage '%s', but it is locked"
 msgstr "יישום מנסה לגשת אל אחסון התעודה/מפתח '%s', אך הם נעולים"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
 msgid "New Password Required"
 msgstr "נדרשת ססמה חדשה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
 msgid "New password required for secure storage"
 msgstr "נדרשת ססמה חדשה עבור אחסון מאובטח"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
 #, c-format
 msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
 msgstr "כדי להכין את '%s' לאחסון של תעודות או מפתחות נדרשת ססמה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Change Password"
 msgstr "שינוי ססמה"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+msgid "Original password for secure storage"
+msgstr "הססמה המקורית עבור אחסון מאובטח"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr "כדי לשנות את הססמה עבור '%s', נדרשת הססמה המקורית"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
 msgid "Change password for secure storage"
 msgstr "שינוי ססמה עבור אחסון מאובטח"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
 #, c-format
-msgid "To change the password for '%s', the original and new passwords are required"
-msgstr "כדי לשנות את הססמה עבור  '%s', נדרשות הססמאות המקורית והחדשה"
+msgid "Type a new password for '%s'"
+msgstr "יש לבחור בססמה חדשה עבור '%s' "
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -477,59 +519,47 @@ msgstr "commands: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
-msgid "Store passwords unencrypted?"
-msgstr "האם לשמור ססמאות בצורה בלתי מוצפנת?"
+#~ msgid "Forget this password if idle for"
+#~ msgstr "מחיקת ססמה זו אם אין פעילות במשך"
 
-#: ../ui/gku-prompt-tool.c:598
-msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "על ידי בחירה בססמה ריקה הססמאות שאוחסנו לא יוצפנו בבטחה. הן יהיו נגישות לכל בעל גישה לקבצים שלך."
+#~ msgid "Forget this password after"
+#~ msgstr "מחיקת ססמה זו לאחר"
 
-#: ../ui/gku-prompt-tool.c:605
-msgid "Use Unsafe Storage"
-msgstr "שימוש באחסון בלתי מאובטח"
+#~ msgid "Forget this password when I log out"
+#~ msgstr "מחיקת ססמה זו בעת היציאה"
 
-#: ../ui/gku-prompt-tool.c:645
-msgid "Passwords do not match."
-msgstr "הססמאות אינן תואמות."
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "שימוש באחסון בלתי מאובטח"
 
-#: ../ui/gku-prompt-tool.c:655
-msgid "Password cannot be blank"
-msgstr "הססמה אינה יכולה להיות ריקה"
+#~ msgid "Passwords do not match."
+#~ msgstr "הססמאות אינן תואמות."
 
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "חוזק הססמה החדשה"
+#~ msgid "Password cannot be blank"
+#~ msgstr "הססמה אינה יכולה להיות ריקה"
 
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "_יישום:"
+#~ msgid "New password strength"
+#~ msgstr "חוזק הססמה החדשה"
 
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "_אימות:"
+#~ msgid "_Application:"
+#~ msgstr "_יישום:"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr "_פרטים:"
+#~ msgid "_Confirm:"
+#~ msgstr "_אימות:"
 
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "_שםך"
+#~ msgid "_Details:"
+#~ msgstr "_פרטים:"
 
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "הססמה ה_קודמת:"
+#~ msgid "_Name:"
+#~ msgstr "_שםך"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_ססמה:"
+#~ msgid "_Old Password:"
+#~ msgstr "הססמה ה_קודמת:"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "גישה לקבוצת המפתחות"
+#~ msgid "_Password:"
+#~ msgstr "_ססמה:"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "שחרור הגישה לססמאות ולסודות אחרים"
+#~ msgid "Keyring Access"
+#~ msgstr "גישה לקבוצת המפתחות"
 
+#~ msgid "Unlock access to passwords and other secrets"
+#~ msgstr "שחרור הגישה לססמאות ולסודות אחרים"
