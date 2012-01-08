@@ -1,6 +1,7 @@
 
 INCLUDES = \
 	-I$(top_builddir) \
+	-I$(top_builddir)/pkcs11 \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/pkcs11 \
 	$(GOBJECT_CFLAGS) \
