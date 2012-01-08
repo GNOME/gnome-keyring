@@ -10,522 +10,538 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.mk\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2008-09-25 18:22+0200\n"
-"Last-Translator: Jovan Naumovski <jovan@lugola.net>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-12-19 07:52+0000\n"
+"PO-Revision-Date: 2012-01-08 16:44+0100\n"
+"Last-Translator: Jovan N\n"
 "Language-Team: Macedonian <mkde-l10n@lists.sourceforge.net>\n"
-"Language: mk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1\n"
+"Language: mk\n"
+"Plural-Forms: nplurals=2; plural= n==1 || n%10==1 ? 0 : 1\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
 msgid "Unnamed"
-msgstr ""
+msgstr "Неименуван"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Внесете ја старата лозинка за привезокот „%s“"
+
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, c-format
+msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
+msgstr "Некоја апликација сака да ја смени лозинката за приврзокот „%s“. Внесете ја старата лозинка."
+
+#: ../daemon/dbus/gkd-secret-change.c:125
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Изберете нова лозинка за приврзокот „%s“"
+
+#: ../daemon/dbus/gkd-secret-change.c:129
+#, c-format
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "Некоја апликација сака да ја смени лозинката за привезокот „%s“. Треба да изберете лозинка која што сакате да ја користите."
+
+#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "Да ги зачувувам лозинките не-енкриптирани?"
+
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Со избирање на празна лозинка, Вашите зачувани лозинки нема да бидат енкриптирани. Тие ќе му бидат достапни на секој кој што има пристап до Вашите датотеки."
+
+#: ../daemon/dbus/gkd-secret-change.c:149
+msgid "The original password was incorrect"
+msgstr "Старата лозинка беше грешна"
+
+#: ../daemon/dbus/gkd-secret-change.c:349
 msgid "Change Keyring Password"
 msgstr "Смени ја лозинката за привезокот"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
-#, fuzzy, c-format
-msgid "Choose a new password for the '%s' keyring"
-msgstr "Изберете нова лозинка за привезокот „%s“. "
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "Некоја апликација сака да креира нов приврзок кој што ќе се вика „%s“. Треба да ја изберете лозинката која што сакате да ја користите."
 
-#: ../daemon/dbus/gkd-secret-change.c:92
-#, fuzzy, c-format
-msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
-"new password you want to use for it."
-msgstr ""
-"Непозната апликација сака да ја смени лозинката за привезокот „%s“. Треба да "
-"изберете лозинка која што сакате да ја користите."
-
-#: ../daemon/dbus/gkd-secret-change.c:111
-#, fuzzy
-msgid "The original password was incorrect"
-msgstr "Лозинката или PIN-от не е точен"
-
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Нова лозинка за привезок"
-
-#: ../daemon/dbus/gkd-secret-create.c:84
+#: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
 msgstr "Изберете лозинка за новиот привезок"
 
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, fuzzy, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"Непозната апликација сака да креира нов привезок кој што ќе се вика „%s“. "
-"Треба да ја изберете лозинката која што сакате да ја користите."
-
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-msgid "Certificate and Key Storage"
-msgstr ""
-
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
-msgid "GNOME Keyring: PKCS#11 Component"
-msgstr ""
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr ""
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
-msgid "Secret Storage Service"
-msgstr ""
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr ""
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
-msgid "SSH Key Agent"
-msgstr ""
+#: ../daemon/dbus/gkd-secret-create.c:308
+msgid "New Keyring Password"
+msgstr "Нова лозинка за привезок"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
 msgid "GNOME Keyring: GPG Agent"
-msgstr ""
+msgstr "Приврзок за GNOME: GPG агент"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#, fuzzy
 msgid "GPG Password Agent"
-msgstr "Нова јачина на лозинка"
+msgstr "Агент за лозинки за GPG"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Склад на клучеви и сертификати"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "Приврзок на GNOME: PKCS#11 компонента"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "Приврзок на GNOME: таен сервис"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "Сервис за склад на тајни"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Приврзок на GNOME: SSH агент"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "Агент за SSH клучеви"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-#, fuzzy
 msgid "Unknown"
-msgstr "Непозната грешка"
+msgstr "Непознато"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:205
 #, c-format
 msgid "PGP Key: %s"
-msgstr ""
+msgstr "PGP клуч: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
 msgid "Enter Passphrase"
-msgstr ""
+msgstr "Внесете тајна фраза"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr ""
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "Автоматски отклучи го овој клуч кога ќе сум најавен"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
-msgstr ""
+msgstr "Најава"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "не успеав да ја креирам привремената датотека „%s“: %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "грешка при запишувањето во „%s“: %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "не можев да го креирам „%s“: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "ја отстранувам старата датотека за заклучување (креирана од %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "чекам клуч (го држи %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(застој?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "клучот „%s“ не беше креиран: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "чекам клуч %s...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
-msgstr ""
+msgstr "Компонента на домен"
 
 #: ../egg/egg-oid.c:43
 msgid "User ID"
-msgstr ""
+msgstr "ID на корисник"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr ""
+msgstr "Адреса за е-пошта"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
-msgstr ""
+msgstr "Датум на раѓање"
 
 #: ../egg/egg-oid.c:56
 msgid "Place of Birth"
-msgstr ""
+msgstr "Место на раѓање"
 
 #: ../egg/egg-oid.c:58
 msgid "Gender"
-msgstr ""
+msgstr "Пол"
 
 #: ../egg/egg-oid.c:60
 msgid "Country of Citizenship"
-msgstr ""
+msgstr "Државјанство"
 
 #: ../egg/egg-oid.c:62
 msgid "Country of Residence"
-msgstr ""
+msgstr "Држава на престој"
 
 #: ../egg/egg-oid.c:65
 msgid "Common Name"
-msgstr ""
+msgstr "Име"
 
 #: ../egg/egg-oid.c:67
 msgid "Surname"
-msgstr ""
+msgstr "Презиме"
 
 #: ../egg/egg-oid.c:69
 msgid "Serial Number"
-msgstr ""
+msgstr "Сериски број"
 
 #: ../egg/egg-oid.c:71
 msgid "Country"
-msgstr ""
+msgstr "Држава"
 
 #: ../egg/egg-oid.c:73
 msgid "Locality"
-msgstr ""
+msgstr "Локал"
 
 #: ../egg/egg-oid.c:75
 msgid "State"
-msgstr ""
+msgstr "Држава"
 
 #: ../egg/egg-oid.c:77
 msgid "Street"
-msgstr ""
+msgstr "Улица"
 
 #: ../egg/egg-oid.c:79
 msgid "Organization"
-msgstr ""
+msgstr "Организација"
 
 #: ../egg/egg-oid.c:81
 msgid "Organizational Unit"
-msgstr ""
+msgstr "Организациска единица"
 
 #: ../egg/egg-oid.c:83
 msgid "Title"
-msgstr ""
+msgstr "Титула"
 
 #: ../egg/egg-oid.c:85
 msgid "Telephone Number"
-msgstr ""
+msgstr "Телефоснки број"
 
 #: ../egg/egg-oid.c:87
 msgid "Given Name"
-msgstr ""
+msgstr "Име"
 
 #: ../egg/egg-oid.c:89
 msgid "Initials"
-msgstr ""
+msgstr "Иницијали"
 
 #: ../egg/egg-oid.c:91
-#, fuzzy
 msgid "Generation Qualifier"
-msgstr "Операцијата не успеа"
+msgstr "Квалификатор за генерирање"
 
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr ""
+msgstr "DN квалификатор"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
-msgstr ""
+msgstr "Псевдоним"
 
 #: ../egg/egg-oid.c:98
 msgid "RSA"
-msgstr ""
+msgstr "RSA"
 
 #: ../egg/egg-oid.c:99
 msgid "MD2 with RSA"
-msgstr ""
+msgstr "MD2 со RSA"
 
 #: ../egg/egg-oid.c:100
 msgid "MD5 with RSA"
-msgstr ""
+msgstr "MD5 со RSA"
 
 #: ../egg/egg-oid.c:101
 msgid "SHA1 with RSA"
-msgstr ""
+msgstr "SHA1 со RSA"
 
 #: ../egg/egg-oid.c:103
 msgid "DSA"
-msgstr ""
+msgstr "DSA"
 
 #: ../egg/egg-oid.c:104
 msgid "SHA1 with DSA"
-msgstr ""
+msgstr "SHA1 со DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
 msgid "Server Authentication"
-msgstr ""
+msgstr "Автентикација на сервер"
 
 #: ../egg/egg-oid.c:108
 msgid "Client Authentication"
-msgstr ""
+msgstr "Автентикација на клиент"
 
 #: ../egg/egg-oid.c:109
 msgid "Code Signing"
-msgstr ""
+msgstr "Потпишување на код"
 
 #: ../egg/egg-oid.c:110
 msgid "Email Protection"
-msgstr ""
+msgstr "Заштита на е-пошта"
 
 #: ../egg/egg-oid.c:111
 msgid "Time Stamping"
-msgstr ""
+msgstr "Ставање временски ознаки"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
+msgstr "Неочекувана грешка во select() при читање на податоци од детето процес (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr ""
+msgstr "Неочекувана грешка во waitpid() (%s)"
 
 #: ../pkcs11/gkm/gkm-certificate.c:572
-#, fuzzy
 msgid "Unnamed Certificate"
-msgstr "Сертификат"
+msgstr "Неименуван сертификат"
 
 #: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
-#, fuzzy
 msgid "Couldn't parse public SSH key"
-msgstr "Не можам да го енкодирам јавниот клуч за безбедна школка."
+msgstr "Не можам да го парсирам јавниот SSH клуч"
 
 #. Get the label ready
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, fuzzy, c-format
+#, c-format
 msgid "Unlock password for: %s"
-msgstr "Изберете лозинка за новиот привезок за %s"
+msgstr "Лозинка за отклучување за: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-#, fuzzy
-msgid "The unlock password was incorrect"
-msgstr "Лозинката или PIN-от не е точен"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Отклучи привезок за најава."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
-msgstr "Изберете лозинка за отклучување на привезокот"
+msgstr "Внесете лозинка за отклучување на Вашиот приврзок за најава"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "Лозинката која ја користите за најава на Вашиот компјутер веќе не се совпаѓа со таа што се користи од приврзокот за најава."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-#, fuzzy
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr "Вашиот привезок не беше автоматски отклучен кога се најавивте."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "Вашиот приврзок не беше автоматски отклучен кога се најавивте."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
 msgid "Unlock Keyring"
 msgstr "Отклучи привезок"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Внесете лозинка за отклучување на привезокот „%s“"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
-#, fuzzy, c-format
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Непозната апликација бара пристап до привезокот „%s“ но тој е заклучен"
+msgstr "Некоја апликација бара пристап до приврзокот „%s“, но тој е заклучен"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Автоматски отклучи го овој приврзок кога ќе се најавам"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
 msgid "Unlock private key"
 msgstr "Отклучи приватен клуч"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock certificate"
 msgstr "Отклучи сертификат"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock public key"
 msgstr "Отклучи јавен клуч"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock"
 msgstr "Отклучи"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Enter password to unlock the private key"
 msgstr "Внесете лозинка за отклучување на приватниот клуч"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the certificate"
 msgstr "Внесете лозинка за отклучување на сертификатот"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the public key"
 msgstr "Внесете лозинка за отклучување на јавниот клуч"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock"
 msgstr "Внесете лозинка за отклучување"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "Автоматски отклучи го овој клуч кога ќе се најавам"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "Автоматски отклучи го овој сертификат кога ќе се најавам"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "Автоматски отклучи кога ќе се најавам"
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Апликација бара пристап до приватниот клуч %s, но тој е заклучен"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Апликација бара пристап до сертификатот %s, но тој е заклучен"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Апликација бара пристап до јавниот клуч %s, но тој е заклучен"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Апликација бара пристап до %s, но тој е заклучен."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
-#, fuzzy
-msgid "Unlock certificate/key storage"
-msgstr "Отклучи сертификат"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+msgid "The unlock password was incorrect"
+msgstr "Лозинката за отклучување не беше точна"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
-#, fuzzy
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
+msgid "Unlock certificate/key storage"
+msgstr "Отклучи го складот на сертификати/клучеви"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "Внесете лозинка за отклучување на сертификатот"
+msgstr "Внесете лозинка за отклучување на складот на сертификати/клучеви"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
-#, fuzzy, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr "Апликација бара пристап до сертификатот %s, но тој е заклучен"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#, c-format
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "Некоја апликација бара пристап до складот на сертификати/клучеви %s, но тој е заклучен."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
 msgid "New Password Required"
-msgstr "Нова јачина на лозинка"
+msgstr "Потребна е нова лозинка"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
 msgid "New password required for secure storage"
-msgstr "Внесете лозинка за заштита на складирани податоци"
+msgstr "Потребна е нова лозинка за заштита на складирани податоци"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
 #, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "За да го подготвам „%s“ за склад на сертификати и клучеви, потребна е лозинка"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Change Password"
-msgstr "Смени ја лозинката за привезокот"
+msgstr "Смени ја лозинката"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-#, fuzzy
-msgid "Change password for secure storage"
-msgstr "Изберете лозинка за заштита на складираните податоци"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+msgid "Original password for secure storage"
+msgstr "Оригинална лозинка за заштита на складираните податоци"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr ""
+msgid "To change the password for '%s', the original password is required"
+msgstr "За да ја сменам лозинката на „%s“, потребна е старата лозинка"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+msgid "Change password for secure storage"
+msgstr "Промени ја лозинката за заштита на складираните податоци"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#, c-format
+msgid "Type a new password for '%s'"
+msgstr "Изберете нова лозинка за привезокот „%s“"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr ""
+msgstr "користење: gnome-keyring команда [опции]\n"
 
 #: ../tool/gkr-tool.c:104
 msgid "commands: "
-msgstr ""
+msgstr "команди:"
 
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr ""
+msgstr "        "
 
-#: ../ui/gku-prompt-tool.c:591
-msgid "Store passwords unencrypted?"
-msgstr "Да ги зачувувам лозинките не-енкриптирани?"
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "Користи несигурен склад"
 
-#: ../ui/gku-prompt-tool.c:592
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Со избирање на празна лозинка, Вашите зачувани лозинки нема да бидат "
-"енкриптирани. Тие ќе му бидат достапни на секој кој што има пристап до "
-"Вашите датотеки."
+#~ msgid "Passwords do not match."
+#~ msgstr "Лозинките не се совпаѓаат."
 
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
-msgstr "Користи несигурен склад"
+#~ msgid "Password cannot be blank"
+#~ msgstr "Лозинката не може да биде празна"
 
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "Лозинките не се совпаѓаат."
+#~ msgid "New password strength"
+#~ msgstr "Нова јачина на лозинка"
 
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
-msgstr "Лозинката не може да биде празна"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr ""
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Нова јачина на лозинка"
-
-#: ../ui/gku-prompt.ui.h:2
 #, fuzzy
-msgid "_Application:"
-msgstr "_Локација:"
+#~ msgid "_Application:"
+#~ msgstr "_Локација:"
 
-#: ../ui/gku-prompt.ui.h:3
 #, fuzzy
-msgid "_Confirm:"
-msgstr "_Потврди лозинка:"
+#~ msgid "_Confirm:"
+#~ msgstr "_Потврди лозинка:"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:6
 #, fuzzy
-msgid "_Old Password:"
-msgstr "_Стара лозинка:"
+#~ msgid "_Old Password:"
+#~ msgstr "_Стара лозинка:"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Лозинка:"
+#~ msgid "_Password:"
+#~ msgstr "_Лозинка:"
