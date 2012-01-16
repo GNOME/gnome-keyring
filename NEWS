@@ -1,3 +1,7 @@
+Changes in version 3.3.4 are:
+ * Updated translations
+ * Build fixes
+
 Changes in version 3.3.3.1 are:
  * No message in gnome-keyring-pkcs11.so module, when no daemon running
  * Updated translations
