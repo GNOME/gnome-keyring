@@ -60,7 +60,8 @@ gkd_secret_propagate_error (DBusMessage *message,
 
 	g_return_val_if_fail (error != NULL, NULL);
 
-	if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
+	if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN) ||
+	    g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 		dbus_set_error (&derr, INTERNAL_ERROR_DENIED, "The password was invalid");
 
 	} else if (g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_INVALID) ||
