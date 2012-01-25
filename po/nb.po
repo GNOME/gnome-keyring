@@ -2,14 +2,14 @@
 # Copyright (C) 2003 Red Hat Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 #
-# Kjartan Maraas <kmaraas@gnome.org>, 2003-2011.
+# Kjartan Maraas <kmaraas@gnome.org>, 2003-2012.
 # Torstein Adolf Winterseth <kvikende@fsfe.org>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.3.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-22 07:56+0100\n"
-"PO-Revision-Date: 2011-12-22 07:59+0100\n"
+"POT-Creation-Date: 2012-01-25 13:16+0100\n"
+"PO-Revision-Date: 2012-01-25 13:17+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -38,7 +38,9 @@ msgstr "Oppgi gammelt passord for nøkkelring «%s»"
 msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
-msgstr "Et program ønsker å bytte passord for nøkkelring «%s». Oppgi det gamle passordet for denne."
+msgstr ""
+"Et program ønsker å bytte passord for nøkkelring «%s». Oppgi det gamle "
+"passordet for denne."
 
 #: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
