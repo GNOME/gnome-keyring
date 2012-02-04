@@ -1,6 +1,6 @@
 AC_INIT(daemon/gkd-main.c)
 
-AM_INIT_AUTOMAKE(gnome-keyring, 3.3.4)
+AM_INIT_AUTOMAKE(gnome-keyring, 3.3.5)
 
 AM_CONFIG_HEADER(config.h)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
