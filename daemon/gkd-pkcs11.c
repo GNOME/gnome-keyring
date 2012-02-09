@@ -92,9 +92,7 @@ gkd_pkcs11_initialize (void)
 
 	/* Add all of those into the wrapper layer */
 	gkm_wrap_layer_add_module (ssh_store);
-#ifdef ROOT_CERTIFICATES
 	gkm_wrap_layer_add_module (roots_store);
-#endif
 	gkm_wrap_layer_add_module (secret_store);
 	gkm_wrap_layer_add_module (gnome2_store);
 	gkm_wrap_layer_add_module (xdg_store);

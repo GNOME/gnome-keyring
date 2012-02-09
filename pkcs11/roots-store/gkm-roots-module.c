@@ -36,9 +36,10 @@
 
 struct _GkmRootsModule {
 	GkmModule parent;
-	GkmFileTracker *tracker;
 	GHashTable *certificates;
-	gchar *directory;
+	GkmFileTracker *tracker;
+	gboolean is_directory;
+	gchar *path;
 };
 
 static const CK_SLOT_INFO gkm_roots_module_slot_info = {
@@ -266,8 +267,14 @@ gkm_roots_module_real_parse_argument (GkmModule *base, const gchar *name, const 
 {
 	GkmRootsModule *self = GKM_ROOTS_MODULE (base);
 	if (g_str_equal (name, "directory")) {
-		g_free (self->directory);
-		self->directory = g_strdup (value);
+		g_free (self->path);
+		self->path = g_strdup (value);
+		self->is_directory = TRUE;
+
+	} else if (g_str_equal (name, "file")) {
+		g_free (self->path);
+		self->path = g_strdup (value);
+		self->is_directory = FALSE;
 	}
 }
 
@@ -280,37 +287,61 @@ gkm_roots_module_real_refresh_token (GkmModule *base)
 	return CKR_OK;
 }
 
-static GObject*
-gkm_roots_module_constructor (GType type, guint n_props, GObjectConstructParam *props)
+static void
+gkm_roots_module_constructed (GObject *obj)
 {
-	GkmRootsModule *self = GKM_ROOTS_MODULE (G_OBJECT_CLASS (gkm_roots_module_parent_class)->constructor(type, n_props, props));
+	GkmRootsModule *self;
+	const gchar *exclude;
 	GkmManager *manager;
+	gchar *directory;
+	gchar *basename;
 
-	g_return_val_if_fail (self, NULL);
+	G_OBJECT_CLASS (gkm_roots_module_parent_class)->constructed (obj);
 
-#ifdef ROOT_CERTIFICATES
-	if (!self->directory)
-		self->directory = g_strdup (ROOT_CERTIFICATES);
+	self = GKM_ROOTS_MODULE (obj);
+
+#ifdef ROOT_CA_FILE
+	if (!self->path) {
+		self->path = g_strdup (ROOT_CA_FILE);
+		self->is_directory = FALSE;
+	}
 #endif
-	if (self->directory) {
-		self->tracker = gkm_file_tracker_new (self->directory, "*", "*.0");
+#ifdef ROOT_CA_DIRECTORY
+	if (!self->path) {
+		self->path = g_strdup (ROOT_CA_DIRECTORY);
+		self->is_directory = TRUE;
+	}
+#endif
+
+	if (self->path) {
+		if (self->is_directory) {
+			directory = g_strdup (self->path);
+			basename = g_strdup ("*");
+			exclude = "*.0";
+		} else {
+			directory = g_path_get_dirname (self->path);
+			basename = g_path_get_basename (self->path);
+			exclude = NULL;
+		}
+
+		self->tracker = gkm_file_tracker_new (directory, basename, exclude);
 		g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
 		g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
 		g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
+
+		g_free (directory);
+		g_free (basename);
 	}
 
 	manager = gkm_module_get_manager (GKM_MODULE (self));
 	gkm_manager_add_property_index (manager, "unique", TRUE);
 	gkm_manager_add_property_index (manager, "path", FALSE);
-
-	return G_OBJECT (self);
 }
 
 static void
 gkm_roots_module_init (GkmRootsModule *self)
 {
 	self->certificates = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
-
 }
 
 static void
@@ -337,8 +368,8 @@ gkm_roots_module_finalize (GObject *obj)
 	g_hash_table_destroy (self->certificates);
 	self->certificates = NULL;
 
-	g_free (self->directory);
-	self->directory = NULL;
+	g_free (self->path);
+	self->path = NULL;
 
 	G_OBJECT_CLASS (gkm_roots_module_parent_class)->finalize (obj);
 }
@@ -349,7 +380,7 @@ gkm_roots_module_class_init (GkmRootsModuleClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmModuleClass *module_class = GKM_MODULE_CLASS (klass);
 
-	gobject_class->constructor = gkm_roots_module_constructor;
+	gobject_class->constructed = gkm_roots_module_constructed;
 	gobject_class->dispose = gkm_roots_module_dispose;
 	gobject_class->finalize = gkm_roots_module_finalize;
 

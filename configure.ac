@@ -365,33 +365,46 @@ AM_CONDITIONAL(WITH_GPG, test "$enable_gpg_agent" != "no")
 #
 
 AC_MSG_CHECKING([location of system Certificate Authority list])
+
 AC_ARG_WITH(root-certs,
-		[AC_HELP_STRING([--with-root-certs=@<:@path@:>@],
-			[path to system Certificate Authority list])])
-if test "$with_root_certs" = "no"; then
-	AC_MSG_RESULT([disabled])
-	root_status="none"
-	with_root_certs="no"
+            [AC_HELP_STRING([--with-root-certs=@<:@path@:>@],
+                            [directory for system Certificate Authorities])])
+
+AC_ARG_WITH(ca-certificates,
+            [AC_HELP_STRING([--with-ca-certificates=@<:@path@:>@],
+                            [file for system Certificate Authorities])])
+
+# Explicitly disabled root certificate authority list
+if test "$with_root_certs" = "no" -o "$with_ca_certificates" = "no"; then
+	root_status="disabled"
+
+# A directory specified for the root certificate authority list
+elif test -n "$with_root_certs"; then
+	AC_DEFINE_UNQUOTED(ROOT_CA_DIRECTORY, ["$with_root_certs"], [Directory path for CA list])
+	root_status="directory: $with_root_certs"
+
+# A file specified for the root certificate list
+elif test -n "$with_ca_certificates"; then
+	AC_DEFINE_UNQUOTED(ROOT_CA_FILE, ["$with_ca_certificates"], [File path for CA list])
+	root_status="file: $with_ca_certificates"
+
+# Automatically find certificate authority list
 else
-	if test -z "$with_root_certs"; then
-		for f in /etc/pki/tls/certs /etc/ssl/certs; do
-			if test -d "$f"; then
-				with_root_certs="$f"
-			fi
-		done
-		if test -z "$with_root_certs"; then
-			AC_MSG_ERROR([could not find. Use --with-root-certs=path to set, or --without-root-certs to disable])
+	for f in /etc/pki/tls/certs/ca-bundle.crt \
+	         /etc/ssl/certs/ca-certificates.crt; do
+		if test -f "$f"; then
+			with_ca_certificates="$f"
 		fi
+	done
+	if test -z "$with_ca_certificates"; then
+		AC_MSG_ERROR([could not find. Use --with-ca-certificates=path to set, or --without-ca-certificates to disable])
 	fi
 
-	AC_MSG_RESULT($with_root_certs)
-	if ! test -d "$with_root_certs"; then
-		AC_MSG_ERROR([No such directory '$with_root_certs'. Use --with-root-certs=path to set, or --without-root-certs to disable])
-	fi
-
-	root_status="yes ($with_root_certs)"
-	AC_DEFINE_UNQUOTED([ROOT_CERTIFICATES], ["$with_root_certs"], [path to system Certificate Authority list])
+	AC_DEFINE_UNQUOTED(ROOT_CA_FILE, ["$with_ca_certificates"], [File path for CA list])
+	root_status="file: $with_ca_certificates"
 fi
+
+AC_MSG_RESULT(["$root_status"])
 
 # --------------------------------------------------------------------
 # libgcrypt
