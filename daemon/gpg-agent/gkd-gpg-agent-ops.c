@@ -422,7 +422,7 @@ do_get_password (GckSession *session, const gchar *keyid, const gchar *errmsg,
 	if (prompt != NULL) {
 		password = egg_secure_strdup (gcr_prompt_password (prompt, NULL, &error));
 		if (password == NULL) {
-			if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 				g_warning ("couldn't prompt for password: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
