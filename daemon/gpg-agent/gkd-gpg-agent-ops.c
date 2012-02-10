@@ -362,6 +362,7 @@ open_password_prompt (GckSession *session,
 	gcr_prompt_set_description (prompt, description);
 
 	gcr_prompt_set_password_new (prompt, confirm);
+	gcr_prompt_set_continue_label (prompt, _("Unlock"));
 
 	if (errmsg)
 		gcr_prompt_set_warning (prompt, errmsg);

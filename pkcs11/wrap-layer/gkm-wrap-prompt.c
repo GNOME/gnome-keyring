@@ -599,6 +599,7 @@ setup_unlock_keyring_login (GkmWrapPrompt *self)
 	gcr_prompt_set_description (prompt, text);
 
 	gcr_prompt_set_choice_label (prompt, NULL);
+	gcr_prompt_set_continue_label (prompt, _("Unlock"));
 }
 
 static void
@@ -626,6 +627,7 @@ setup_unlock_keyring_other (GkmWrapPrompt *self,
 	if (gkm_wrap_login_is_usable ())
 		choice = _("Automatically unlock this keyring whenever I'm logged in");
 	gcr_prompt_set_choice_label (prompt, choice);
+	gcr_prompt_set_continue_label (prompt, _("Unlock"));
 }
 
 
@@ -716,6 +718,7 @@ setup_unlock_object (GkmWrapPrompt *self,
 	if (gkm_wrap_login_is_usable ())
 		choice = calc_unlock_object_choice (klass);
 	gcr_prompt_set_choice_label (prompt, choice);
+	gcr_prompt_set_continue_label (prompt, _("Unlock"));
 }
 
 static void
@@ -760,6 +763,8 @@ setup_unlock_prompt (GkmWrapPrompt *self,
 
 	if (!first)
 		gcr_prompt_set_warning (prompt, _("The unlock password was incorrect"));
+
+	gcr_prompt_set_continue_label (prompt, _("Unlock"));
 }
 
 static void
@@ -790,6 +795,8 @@ setup_unlock_token (GkmWrapPrompt *self,
 	if (gkm_wrap_login_is_usable ())
 		choice = _("Automatically unlock whenever I'm logged in");
 	gcr_prompt_set_choice_label (prompt, choice);
+
+	gcr_prompt_set_continue_label (prompt, _("Unlock"));
 
 	g_free (label);
 }
@@ -1133,6 +1140,8 @@ setup_init_token (GkmWrapPrompt *self,
 		choice = _("Automatically unlock whenever I'm logged in");
 	gcr_prompt_set_choice_label (prompt, choice);
 
+	gcr_prompt_set_continue_label (prompt, _("Continue"));
+
 	g_free (label);
 }
 
@@ -1243,6 +1252,7 @@ setup_set_token_original (GkmWrapPrompt *self,
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
+	gcr_prompt_set_continue_label (prompt, _("Continue"));
 	gcr_prompt_set_choice_label (prompt, NULL);
 	g_free (label);
 }
@@ -1276,6 +1286,8 @@ setup_set_token_password (GkmWrapPrompt *self,
 	choice = NULL;
 	if (gkm_wrap_login_is_usable ())
 		choice = _("Automatically unlock whenever I'm logged in");
+
+	gcr_prompt_set_continue_label (prompt, _("Continue"));
 	gcr_prompt_set_choice_label (prompt, choice);
 
 	g_free (label);

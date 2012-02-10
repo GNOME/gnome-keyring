@@ -97,6 +97,7 @@ setup_original_prompt (GkdSecretChange *self,
 	g_free (text);
 
 	gcr_prompt_set_password_new (prompt, FALSE);
+	gcr_prompt_set_continue_label (prompt, _("Continue"));
 }
 
 static void
@@ -132,6 +133,7 @@ setup_password_prompt (GkdSecretChange *self,
 	g_free (text);
 
 	gcr_prompt_set_password_new (prompt, TRUE);
+	gcr_prompt_set_continue_label (prompt, _("Continue"));
 }
 
 static void
@@ -141,6 +143,7 @@ setup_confirmation_prompt (GkdSecretChange *self)
 	gcr_prompt_set_description (GCR_PROMPT (self),
 	                            _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
 	                              "They will be accessible by anyone with access to your files."));
+	gcr_prompt_set_continue_label (GCR_PROMPT (self), _("Continue"));
 }
 
 static void
