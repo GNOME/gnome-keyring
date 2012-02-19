@@ -1,14 +1,14 @@
 # Swedish messages for gnome-keyring.
-# Copyright (C) 2003-2011 Free Software Foundation, Inc.
+# Copyright (C) 2003-2012 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2003, 2004.
-# Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008, 2009, 2010, 2011.
+# Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008, 2009, 2010, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2011-09-12 20:56+0100\n"
+"POT-Creation-Date: 2012-02-19 10:53+0100\n"
+"PO-Revision-Date: 2012-02-19 10:59+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -18,51 +18,73 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
 msgid "Unnamed"
 msgstr "Namnlös"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "Ändra lösenord för nyckelring"
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Ange det gamla lösenordet för nyckelringen \"%s\""
 
-#: ../daemon/dbus/gkd-secret-change.c:88
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, c-format
+msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
+msgstr "Ett okänt program vill ändra lösenordet för nyckelringen \"%s\". Ange det gamla lösenordet för den."
+
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Välj ett nytt lösenord för nyckelringen \"%s\""
 
-#: ../daemon/dbus/gkd-secret-change.c:92
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
-msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
-"new password you want to use for it."
-msgstr ""
-"Ett okänt program vill ändra lösenordet för nyckelringen \"%s\". Välj ett "
-"nytt lösenord som du vill använda för den."
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "Ett okänt program vill ändra lösenordet för nyckelringen \"%s\". Välj ett nytt lösenord som du vill använda för den."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
+#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "Lagra lösenord okrypterade?"
+
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga för alla som har tillgång till dina filer."
+
+#: ../daemon/dbus/gkd-secret-change.c:149
 msgid "The original password was incorrect"
 msgstr "Det ursprungliga lösenordet var felaktigt"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Lösenord för ny nyckelring"
+#: ../daemon/dbus/gkd-secret-change.c:349
+msgid "Change Keyring Password"
+msgstr "Ändra lösenord för nyckelring"
 
-#: ../daemon/dbus/gkd-secret-create.c:84
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "Ett okänt program vill skapa en ny nyckelring med namnet \"%s\". Välj ett lösenord som du vill använda för den."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
 msgstr "Välj lösenord för den nya nyckelringen"
 
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"Ett okänt program vill skapa en ny nyckelring med namnet \"%s\". Välj ett "
-"lösenord som du vill använda för den."
+#: ../daemon/dbus/gkd-secret-create.c:308
+msgid "New Keyring Password"
+msgstr "Lösenord för ny nyckelring"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GPG Password Agent"
+msgstr "GPG-lösenordsagent"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME-nyckelring: GPG-agent"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -73,59 +95,85 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME-nyckelring: PKCS#11-komponent"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME-nyckelring: Hemlighetstjänst"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "Lagringstjänst för hemligheter"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME-nyckelring: SSH-agent"
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME-nyckelring: Hemlighetstjänst"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr "SSH-nyckelagent"
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME-nyckelring: GPG-agent"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "GPG-lösenordsagent"
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME-nyckelring: SSH-agent"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP-nyckel: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
 msgid "Enter Passphrase"
 msgstr "Ange lösenfras"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr "Glöm detta lösenord om inaktiv i"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr "Glöm detta lösenord efter"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr "Glöm detta lösenord när jag loggar ut"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "Lås automatiskt denna nyckel när jag är inloggad"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
 msgstr "Inloggning"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "misslyckades med att skapa temporärfilen \"%s\": %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "fel vid skrivning till \"%s\": %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "kan inte skapa \"%s\": %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "tar bort gammal låsningsfil (skapad av %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "väntar på låsning (hålls kvar av %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(dödläge?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "låset \"%s\" inte skapad: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "väntar på låset %s...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -292,152 +340,165 @@ msgstr "Kunde inte tolka publik SSH-nyckel"
 msgid "Unlock password for: %s"
 msgstr "Lås upp lösenordet för: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "Upplåsningslösenordet var felaktigt"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Lås upp inloggningsnyckelring"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
 msgstr "Ange lösenordet för att låsa upp din inloggningsnyckelring"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Lösenordet som du använde för att logga in i din dator matchar inte längre "
-"det i din inloggningsnyckelring."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "Lösenordet som du använde för att logga in i din dator matchar inte längre det i din inloggningsnyckelring."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Din inloggningsnyckelring låstes inte upp när du loggade in på din dator."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "Din inloggningsnyckelring låstes inte upp när du loggade in på din dator."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
 msgid "Unlock Keyring"
 msgstr "Lås upp nyckelringen"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Ange lösenord för att låsa upp nyckelringen \"%s\""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Ett program vill komma åt nyckelringen \"%s\", men den är låst"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Lås automatiskt upp denna nyckelring när jag är inloggad"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
 msgid "Unlock private key"
 msgstr "Lås upp privat nyckel"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock certificate"
 msgstr "Lås upp certifikat"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock public key"
 msgstr "Lås upp publik nyckel"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock"
 msgstr "Lås upp"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Enter password to unlock the private key"
 msgstr "Ange lösenordet för att låsa upp privata nyckeln"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the certificate"
 msgstr "Ange lösenordet för att låsa upp certifikatet"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the public key"
 msgstr "Ange lösenordet för att låsa upp publika nyckeln"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock"
 msgstr "Ange lösenordet för att låsa upp"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "Lås automatiskt upp denna nyckel när jag är inloggad"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "Lås automatiskt upp detta certifikat när jag är inloggad"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "Lås automatiskt upp när jag är inloggad"
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Ett program vill komma åt privata nyckeln \"%s\", men den är låst"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Ett program vill komma åt certifikatet \"%s\", men det är låst"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Ett program vill komma åt den publika nyckeln \"%s\", men den är låst"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Ett program vill komma åt \"%s\", men den är låst"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+msgid "The unlock password was incorrect"
+msgstr "Upplåsningslösenordet var felaktigt"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
 msgid "Unlock certificate/key storage"
 msgstr "Lås upp certifikat/nyckellager"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Ange lösenordet för att låsa upp certifikatet/nyckellagret"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 #, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Ett program vill komma åt certifikatet/nyckellagret \"%s\", men det är låst"
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "Ett program vill komma åt certifikatet/nyckellagret \"%s\", men det är låst"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
 msgid "New Password Required"
 msgstr "Nytt lösenord krävs"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
 msgid "New password required for secure storage"
 msgstr "Nytt lösenord krävs för säker lagring"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
 #, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Ett lösenord krävs för att förbereda \"%s\" för lagring av certifikat eller "
-"nycklar"
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "Ett lösenord krävs för att förbereda \"%s\" för lagring av certifikat eller nycklar"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Change Password"
 msgstr "Ändra lösenord"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+msgid "Original password for secure storage"
+msgstr "Ursprungligt lösenord för säker lagring"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr "Det ursprungliga lösenordet krävs för att ändra lösenordet för \"%s\""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
 msgid "Change password for secure storage"
 msgstr "Ändra lösenordet för säker lagring"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr ""
-"För att ändra lösenordet för \"%s\" så krävs det ursprungliga och det nya "
-"lösenordet"
+msgid "Type a new password for '%s'"
+msgstr "Ange ett nytt lösenord för \"%s\""
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -453,64 +514,47 @@ msgstr "kommandon: "
 msgid "          "
 msgstr "           "
 
-#: ../ui/gku-prompt-tool.c:591
-msgid "Store passwords unencrypted?"
-msgstr "Lagra lösenord okrypterade?"
+#~ msgid "Forget this password if idle for"
+#~ msgstr "Glöm detta lösenord om inaktiv i"
 
-#: ../ui/gku-prompt-tool.c:592
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Genom att välja att använda ett blankt lösenord kommer dina lagrade lösenord "
-"inte att vara krypterade på ett säkert sätt. De kommer att vara åtkomliga "
-"för alla som har tillgång till dina filer."
+#~ msgid "Forget this password after"
+#~ msgstr "Glöm detta lösenord efter"
 
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
-msgstr "Använd osäker lagring"
+#~ msgid "Forget this password when I log out"
+#~ msgstr "Glöm detta lösenord när jag loggar ut"
 
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "Lösenorden stämde inte överens."
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "Använd osäker lagring"
 
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
-msgstr "Lösenord får inte vara blanka"
+#~ msgid "Passwords do not match."
+#~ msgstr "Lösenorden stämde inte överens."
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "Nyckelringsåtkomst"
+#~ msgid "Password cannot be blank"
+#~ msgstr "Lösenord får inte vara blanka"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "Lås upp åtkomst till lösenord och andra hemligheter"
+#~ msgid "Keyring Access"
+#~ msgstr "Nyckelringsåtkomst"
 
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Styrka för nytt lösenord"
+#~ msgid "Unlock access to passwords and other secrets"
+#~ msgstr "Lås upp åtkomst till lösenord och andra hemligheter"
 
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "P_rogram:"
+#~ msgid "New password strength"
+#~ msgstr "Styrka för nytt lösenord"
 
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "_Bekräfta:"
+#~ msgid "_Application:"
+#~ msgstr "P_rogram:"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr "_Detaljer:"
+#~ msgid "_Confirm:"
+#~ msgstr "_Bekräfta:"
 
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "_Namn:"
+#~ msgid "_Details:"
+#~ msgstr "_Detaljer:"
 
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "_Gammalt lösenord:"
+#~ msgid "_Name:"
+#~ msgstr "_Namn:"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Lösenord:"
+#~ msgid "_Old Password:"
+#~ msgstr "_Gammalt lösenord:"
+
+#~ msgid "_Password:"
+#~ msgstr "_Lösenord:"
