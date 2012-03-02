@@ -7,39 +7,43 @@
 #
 # Ivar Smolin <okul linux ee>, 2005–2011.
 # Priit Laes <plaes plaes org>, 2005, 2006, 2009.
+# Mattias Põldaru <mahfiaz@gmail.com>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring MASTER\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2011-03-10 08:00+0200\n"
-"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
-"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-02-28 11:10+0000\n"
+"PO-Revision-Date: 2012-03-02 12:35+0200\n"
+"Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
+"Language-Team: Estonian <>\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Transfer-Encoding: 8bits\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 msgid "Unnamed"
 msgstr "Nimetu"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "Võtmerõnga parooli vahetamine"
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Sisesta '%s' võtmerõnga vana parool"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr ""
+"Rakendus tahab muuta võtmerõnga '%s' parooli. Sisesta selle võtmerõnga vana "
+"parool."
+
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Määra võtmerõngale '%s' uus parool"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -48,421 +52,9 @@ msgstr ""
 "Rakendus tahab muuta võtmerõnga '%s' parooli. Määra selle võtmerõnga jaoks "
 "uus parool."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
-msgid "The original password was incorrect"
-msgstr "Algne parool ei ole korrektne"
-
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Uue võtmerõnga parool"
-
-#: ../daemon/dbus/gkd-secret-create.c:84
-msgid "Choose password for new keyring"
-msgstr "Sisesta uue võtmerõnga parool"
-
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"Rakendus tahab luua uut võtmerõngast nimega '%s'. Määra selle võtmerõnga "
-"jaoks parool."
-
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-msgid "Certificate and Key Storage"
-msgstr "Sertifikaadi- ja võtmehoidla"
-
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
-msgid "GNOME Keyring: PKCS#11 Component"
-msgstr "GNOME võtmerõngas: PKCS#11 komponent"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME võtmerõngas: saladuste teenus"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
-msgid "Secret Storage Service"
-msgstr "Saladuste hoidmise teenus"
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME võtmerõngas: SSH-agent"
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
-msgid "SSH Key Agent"
-msgstr "SSH-võtmete agent"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME võtmerõngas: GPG-agent"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "GPG-võtmete agent"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-msgid "Unknown"
-msgstr "Tundmatu"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
-#, c-format
-msgid "PGP Key: %s"
-msgstr "PGP-võti: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
-msgid "Enter Passphrase"
-msgstr "Sisesta parool"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr "See parool tuleb unustada, kui ma olen jõude"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr "See parool unustatakse pärast"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr "See parool tuleb minu väljalogimisel unustada"
-
-# Kas see peaks olema "Sisselogimisel"?
-#. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
-msgid "Login"
-msgstr "Sisselogimine"
-
-#: ../egg/egg-oid.c:41
-msgid "Domain Component"
-msgstr "Domeeni osa"
-
-#: ../egg/egg-oid.c:43
-msgid "User ID"
-msgstr "Kasutaja ID"
-
-#: ../egg/egg-oid.c:46
-msgid "Email Address"
-msgstr "E-posti aadress"
-
-#: ../egg/egg-oid.c:54
-msgid "Date of Birth"
-msgstr "Sünniaeg"
-
-#: ../egg/egg-oid.c:56
-msgid "Place of Birth"
-msgstr "Sünnikoht"
-
-#: ../egg/egg-oid.c:58
-msgid "Gender"
-msgstr "Sugu"
-
-#: ../egg/egg-oid.c:60
-msgid "Country of Citizenship"
-msgstr "Koduriik"
-
-#: ../egg/egg-oid.c:62
-msgid "Country of Residence"
-msgstr "Asukohariik"
-
-#: ../egg/egg-oid.c:65
-msgid "Common Name"
-msgstr "Üldine nimi"
-
-#: ../egg/egg-oid.c:67
-msgid "Surname"
-msgstr "Perekonnanimi"
-
-#: ../egg/egg-oid.c:69
-msgid "Serial Number"
-msgstr "Seerianumber"
-
-#: ../egg/egg-oid.c:71
-msgid "Country"
-msgstr "Riik"
-
-#: ../egg/egg-oid.c:73
-msgid "Locality"
-msgstr "Paikkond"
-
-#: ../egg/egg-oid.c:75
-msgid "State"
-msgstr "Maakond"
-
-#: ../egg/egg-oid.c:77
-msgid "Street"
-msgstr "Tänav"
-
-#: ../egg/egg-oid.c:79
-msgid "Organization"
-msgstr "Organisatsioon"
-
-#: ../egg/egg-oid.c:81
-msgid "Organizational Unit"
-msgstr "Organisatsiooni üksus"
-
-#: ../egg/egg-oid.c:83
-msgid "Title"
-msgstr "Tiitel"
-
-#: ../egg/egg-oid.c:85
-msgid "Telephone Number"
-msgstr "Telefoni number"
-
-#: ../egg/egg-oid.c:87
-msgid "Given Name"
-msgstr "Eesnimi"
-
-#: ../egg/egg-oid.c:89
-msgid "Initials"
-msgstr "Initsiaalid"
-
-#: ../egg/egg-oid.c:91
-msgid "Generation Qualifier"
-msgstr "Põlvkonna eraldaja"
-
-#: ../egg/egg-oid.c:93
-msgid "DN Qualifier"
-msgstr "Eraldusnime (DN) eraldaja"
-
-#: ../egg/egg-oid.c:95
-msgid "Pseudonym"
-msgstr "Pseudonüüm"
-
-#: ../egg/egg-oid.c:98
-msgid "RSA"
-msgstr "RSA"
-
-#: ../egg/egg-oid.c:99
-msgid "MD2 with RSA"
-msgstr "MD2 koos RSA-ga"
-
-#: ../egg/egg-oid.c:100
-msgid "MD5 with RSA"
-msgstr "MD5 koos RSA-ga"
-
-#: ../egg/egg-oid.c:101
-msgid "SHA1 with RSA"
-msgstr "SHA1 koos RSA-ga"
-
-#: ../egg/egg-oid.c:103
-msgid "DSA"
-msgstr "DSA"
-
-#: ../egg/egg-oid.c:104
-msgid "SHA1 with DSA"
-msgstr "SHA1 koos DSA-ga"
-
-#. Extended Key Usages
-#: ../egg/egg-oid.c:107
-msgid "Server Authentication"
-msgstr ""
-
-#: ../egg/egg-oid.c:108
-msgid "Client Authentication"
-msgstr ""
-
-#: ../egg/egg-oid.c:109
-msgid "Code Signing"
-msgstr ""
-
-#: ../egg/egg-oid.c:110
-msgid "Email Protection"
-msgstr ""
-
-#: ../egg/egg-oid.c:111
-msgid "Time Stamping"
-msgstr ""
-
-#: ../egg/egg-spawn.c:273
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Ootamatu viga alamprotsessilt andmete lugemisel funktsiooniga select() (%s)"
-
-#: ../egg/egg-spawn.c:320
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Ootamatu viga waitpid() funktsioonis (%s)"
-
-#: ../pkcs11/gkm/gkm-certificate.c:572
-msgid "Unnamed Certificate"
-msgstr "Nimetu sertifikaat"
-
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
-msgid "Couldn't parse public SSH key"
-msgstr "Avalikku SSH võtit pole võimalik analüüsida"
-
-#. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Luku avamise parool võtmerõngale: %s"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "Lukust lahtivõtmise parool ei ole korrektne"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
-msgid "Unlock Login Keyring"
-msgstr "Sisselogimise võtmerõnga lukust lahtivõtmine"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
-msgid "Enter password to unlock your login keyring"
-msgstr "Sisesta sisselogimise võtmerõnga luku avamise parool"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Sinu arvutisse sisselogimiseks kasutatud parool ei ühti enam sinu "
-"sisselogimise võtmerõnga parooliga."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Sisselogimise võtmerõngast ei võetud automaatselt lukust lahti, kui sa "
-"sellesse arvutisse sisse logisid."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
-msgid "Unlock Keyring"
-msgstr "Võtmerõnga avamine"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Sisesta parool võtmerõnga '%s' avamiseks"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Rakendus tahab kasutada võtmerõngast '%s', kuid see on lukus"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
-msgid "Unlock private key"
-msgstr "Võta salajane võti lukust lahti"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
-msgid "Unlock certificate"
-msgstr "Võta sertifikaat lukust lahti"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
-msgid "Unlock public key"
-msgstr "Võta avalik võti lukust lahti"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Võta lukust lahti"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Sisesta salajase võtme luku avamise parool"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Sisesta sertifikaadi luku avamise parool"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
-msgid "Enter password to unlock the public key"
-msgstr "Sisesta avaliku võtme luku avamise parool"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Sisesta luku avamise parool"
-
-#. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Rakendus tahab kasutada salajast võtit '%s', kuid see on lukus"
-
-#. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Rakendus tahab kasutada sertifikaati '%s', kuid see on lukus"
-
-#. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Rakendus tahab kasutada avalikku võtit '%s', kuid see on lukus"
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Rakendus tahab kasutada '%s', kuid see on lukus"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
-msgid "Unlock certificate/key storage"
-msgstr "Võta sertifikaadi-/võtmehoidla lukust lahti"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Sisesta sertifikaadi-/võtmehoidla luku avamise parool"
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
-#, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Rakendus tahab kasutada sertifikaadi-/võtmehoidlat '%s', kuid see on lukus"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
-msgid "New Password Required"
-msgstr "Vajalik uus parool"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-msgid "New password required for secure storage"
-msgstr "Turvahoidla jaoks on vaja uut parooli"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"'%s' sertide ja võtmete hoidmise jaoks ettevalmistamiseks on vaja parooli"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-msgid "Change Password"
-msgstr "Parooli vahetamine"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-msgid "Change password for secure storage"
-msgstr "Turvalise hoidla parooli vahetamine"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
-#, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr "'%s' parooli muutmiseks on vaja nii endist kui uut parooli"
-
-#: ../tool/gkr-tool.c:102
-#, c-format
-msgid "usage: gnome-keyring command [options]\n"
-msgstr "kasutamine: gnome-keyring käsk [valikud]\n"
-
-#: ../tool/gkr-tool.c:104
-msgid "commands: "
-msgstr "käsud: "
-
-#. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
-msgid "          "
-msgstr "       "
-
-#: ../ui/gku-prompt-tool.c:591
 msgid "Store passwords unencrypted?"
 msgstr "Kas salvestada paroolid krüptimata kujul?"
 
-#: ../ui/gku-prompt-tool.c:592
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -471,50 +63,369 @@ msgstr ""
 "Tühja parooli valimise korral pole sul võimalik salvestatud paroole ohtult "
 "kaitsta. Need jäävad avatuks igaühele, kel on sinu failidele ligipääs."
 
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
-msgstr "Kasuta ebaturvalist hoidlat"
+msgid "The original password was incorrect"
+msgstr "Algne parool ei ole korrektne"
 
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "Paroolid pole vastavuses."
+msgid "Change Keyring Password"
+msgstr "Võtmerõnga parooli vahetamine"
 
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
-msgstr "Parool ei tohi olla tühi"
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Rakendus tahab luua uut võtmerõngast nimega '%s'. Määra selle võtmerõnga "
+"jaoks parool."
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "Ligipääs võtmerõngale"
+msgid "Choose password for new keyring"
+msgstr "Sisesta uue võtmerõnga parool"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "Paroolidele ja teistele saladustele ligipääsu võimaldamine"
+msgid "New Keyring Password"
+msgstr "Uue võtmerõnga parool"
 
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Uue parooli tugevus"
+msgid "GPG Password Agent"
+msgstr "GPG-võtmete agent"
 
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "_Rakendus:"
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME võtmerõngas: GPG-agent"
 
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "_Kinnitus:"
+msgid "Certificate and Key Storage"
+msgstr "Sertifikaadi- ja võtmehoidla"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr "_Üksikasjad:"
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME võtmerõngas: PKCS#11 komponent"
 
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "_Nimi:"
+msgid "Secret Storage Service"
+msgstr "Saladuste hoidmise teenus"
 
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "_Vana parool:"
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME võtmerõngas: saladuste teenus"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Parool:"
+msgid "SSH Key Agent"
+msgstr "SSH-võtmete agent"
+
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME võtmerõngas: SSH-agent"
+
+msgid "Unknown"
+msgstr "Tundmatu"
+
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP-võti: %s"
+
+msgid "Enter Passphrase"
+msgstr "Sisesta parool"
+
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "See võti võetakse minu sisselogimisel automaatselt lukust lahti"
+
+# Kas see peaks olema "Sisselogimisel"?
+#. TRANSLATORS: This is the display label for the login keyring
+msgid "Login"
+msgstr "Sisselogimine"
+
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "Ajutise faili '%s' loomine nurjus: %s\n"
+
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "viga faili '%s' kirjutamisel: %s\n"
+
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "'%s' pole võimalik luua: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "seisma jäänud lukufaili eemaldamine (selle lõi %d)\n"
+
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "luku järel ootamine (seda hoiab %d%s) %s...\n"
+
+msgid "(deadlock?) "
+msgstr "(ummik?)"
+
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "lukku '%s' polnud võimalik luua: %s\n"
+
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "%s luku järel ootamine...\n"
+
+msgid "Domain Component"
+msgstr "Domeeni osa"
+
+msgid "User ID"
+msgstr "Kasutaja ID"
+
+msgid "Email Address"
+msgstr "E-posti aadress"
+
+msgid "Date of Birth"
+msgstr "Sünniaeg"
+
+msgid "Place of Birth"
+msgstr "Sünnikoht"
+
+msgid "Gender"
+msgstr "Sugu"
+
+msgid "Country of Citizenship"
+msgstr "Koduriik"
+
+msgid "Country of Residence"
+msgstr "Asukohariik"
+
+msgid "Common Name"
+msgstr "Üldine nimi"
+
+msgid "Surname"
+msgstr "Perekonnanimi"
+
+msgid "Serial Number"
+msgstr "Seerianumber"
+
+msgid "Country"
+msgstr "Riik"
+
+msgid "Locality"
+msgstr "Paikkond"
+
+msgid "State"
+msgstr "Maakond"
+
+msgid "Street"
+msgstr "Tänav"
+
+msgid "Organization"
+msgstr "Organisatsioon"
+
+msgid "Organizational Unit"
+msgstr "Organisatsiooni üksus"
+
+msgid "Title"
+msgstr "Tiitel"
+
+msgid "Telephone Number"
+msgstr "Telefoni number"
+
+msgid "Given Name"
+msgstr "Eesnimi"
+
+msgid "Initials"
+msgstr "Initsiaalid"
+
+msgid "Generation Qualifier"
+msgstr "Põlvkonna eraldaja"
+
+msgid "DN Qualifier"
+msgstr "Eraldusnime (DN) eraldaja"
+
+msgid "Pseudonym"
+msgstr "Pseudonüüm"
+
+msgid "RSA"
+msgstr "RSA"
+
+msgid "MD2 with RSA"
+msgstr "MD2 koos RSA-ga"
+
+msgid "MD5 with RSA"
+msgstr "MD5 koos RSA-ga"
+
+msgid "SHA1 with RSA"
+msgstr "SHA1 koos RSA-ga"
+
+msgid "DSA"
+msgstr "DSA"
+
+msgid "SHA1 with DSA"
+msgstr "SHA1 koos DSA-ga"
+
+#. Extended Key Usages
+msgid "Server Authentication"
+msgstr "Serveri autentimine"
+
+msgid "Client Authentication"
+msgstr "Kliendi autentimine"
+
+msgid "Code Signing"
+msgstr "Koodi allkirjastamine"
+
+msgid "Email Protection"
+msgstr "E-kirjade kaitse"
+
+msgid "Time Stamping"
+msgstr "Ajatempli lisamine"
+
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr ""
+"Ootamatu viga alamprotsessilt andmete lugemisel funktsiooniga select() (%s)"
+
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Ootamatu viga waitpid() funktsioonis (%s)"
+
+msgid "Unnamed Certificate"
+msgstr "Nimetu sertifikaat"
+
+msgid "Couldn't parse public SSH key"
+msgstr "Avalikku SSH võtit pole võimalik analüüsida"
+
+#. Get the label ready
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Luku avamise parool võtmerõngale: %s"
+
+msgid "Unlock Login Keyring"
+msgstr "Sisselogimise võtmerõnga lukust lahtivõtmine"
+
+msgid "Enter password to unlock your login keyring"
+msgstr "Sisesta sisselogimise võtmerõnga luku avamise parool"
+
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Sinu arvutisse sisselogimiseks kasutatud parool ei ühti enam sinu "
+"sisselogimise võtmerõnga parooliga."
+
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Sisselogimise võtmerõngast ei võetud automaatselt lukust lahti, kui sa "
+"sellesse arvutisse sisse logisid."
+
+msgid "Unlock Keyring"
+msgstr "Võtmerõnga avamine"
+
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Sisesta parool võtmerõnga '%s' avamiseks"
+
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Rakendus tahab kasutada võtmerõngast '%s', kuid see on lukus"
+
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "See võtmerõngas võetakse minu sisselogimisel automaatselt lukust lahti"
+
+msgid "Unlock private key"
+msgstr "Võta salajane võti lukust lahti"
+
+msgid "Unlock certificate"
+msgstr "Võta sertifikaat lukust lahti"
+
+msgid "Unlock public key"
+msgstr "Võta avalik võti lukust lahti"
+
+msgid "Unlock"
+msgstr "Võta lukust lahti"
+
+msgid "Enter password to unlock the private key"
+msgstr "Sisesta salajase võtme luku avamise parool"
+
+msgid "Enter password to unlock the certificate"
+msgstr "Sisesta sertifikaadi luku avamise parool"
+
+msgid "Enter password to unlock the public key"
+msgstr "Sisesta avaliku võtme luku avamise parool"
+
+msgid "Enter password to unlock"
+msgstr "Sisesta luku avamise parool"
+
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "See võti võetakse minu sisselogimisel automaatselt lukust lahti"
+
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "See sertifikaat võetakse minu sisselogimisel automaatselt lukust lahti"
+
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "See võetakse minu sisselogimisel automaatselt lukust lahti"
+
+#. TRANSLATORS: The private key is locked
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Rakendus tahab kasutada salajast võtit '%s', kuid see on lukus"
+
+#. TRANSLATORS: The certificate is locked
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Rakendus tahab kasutada sertifikaati '%s', kuid see on lukus"
+
+#. TRANSLATORS: The public key is locked
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Rakendus tahab kasutada avalikku võtit '%s', kuid see on lukus"
+
+#. TRANSLATORS: The object '%s' is locked
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Rakendus tahab kasutada '%s', kuid see on lukus"
+
+msgid "The unlock password was incorrect"
+msgstr "Lukust lahtivõtmise parool ei ole korrektne"
+
+#. Build up the prompt
+msgid "Unlock certificate/key storage"
+msgstr "Võta sertifikaadi-/võtmehoidla lukust lahti"
+
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Sisesta sertifikaadi-/võtmehoidla luku avamise parool"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Rakendus tahab kasutada sertifikaadi-/võtmehoidlat '%s', kuid see on lukus"
+
+msgid "New Password Required"
+msgstr "Vajalik uus parool"
+
+msgid "New password required for secure storage"
+msgstr "Turvahoidla jaoks on vaja uut parooli"
+
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"'%s' sertide ja võtmete hoidmise jaoks ettevalmistamiseks on vaja parooli"
+
+msgid "Change Password"
+msgstr "Parooli vahetamine"
+
+msgid "Original password for secure storage"
+msgstr "Turvalise hoidla endine parool"
+
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr "'%s' parooli muutmiseks on vaja endist parooli"
+
+msgid "Change password for secure storage"
+msgstr "Turvalise hoidla parooli vahetamine"
+
+#, c-format
+msgid "Type a new password for '%s'"
+msgstr "Sisesta '%s' uus parool"
+
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "kasutamine: gnome-keyring käsk [valikud]\n"
+
+msgid "commands: "
+msgstr "käsud: "
+
+#. Translators: keep same length as translated message "commands: "
+msgid "          "
+msgstr "       "
