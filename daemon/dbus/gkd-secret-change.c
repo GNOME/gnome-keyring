@@ -62,7 +62,7 @@ struct _GkdSecretChangeClass {
 static void      perform_prompting     (GkdSecretChange *self,
                                         GckObject *collection);
 
-G_DEFINE_TYPE (GkdSecretChange, gkd_secret_change, GCR_TYPE_SYSTEM_PROMPT);
+G_DEFINE_TYPE (GkdSecretChange, gkd_secret_change, GKD_SECRET_TYPE_PROMPT);
 
 static void
 setup_original_prompt (GkdSecretChange *self,
@@ -174,6 +174,13 @@ on_prompt_original_complete (GObject *source,
 		return;
 	}
 
+	/* The prompt was cancelled */
+	original = gkd_secret_prompt_take_secret (prompt);
+	if (original == NULL) {
+		gkd_secret_prompt_dismiss (prompt);
+		return;
+	}
+
 	collection = gkd_secret_prompt_lookup_collection (prompt, self->collection_path);
 	if (collection != NULL) {
 		gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
@@ -181,7 +188,6 @@ on_prompt_original_complete (GObject *source,
 		gck_builder_add_ulong (&builder, CKA_G_OBJECT, gck_object_get_handle (collection));
 
 		attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
-		original = gkd_secret_prompt_take_secret (prompt);
 
 		/* Create the original credential, in order to make sure we can unlock the collection */
 		cred = gkd_secret_session_create_credential (original->session,
@@ -189,7 +195,6 @@ on_prompt_original_complete (GObject *source,
 		                                             original, &error);
 
 		gck_attributes_unref (attrs);
-		gkd_secret_secret_free (original);
 
 		/* The unlock failed because password was bad */
 		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
@@ -214,6 +219,7 @@ on_prompt_original_complete (GObject *source,
 	if (continue_prompting)
 		perform_prompting (self, collection);
 
+	gkd_secret_secret_free (original);
 	g_clear_object (&cred);
 	g_clear_object (&collection);
 }
@@ -290,7 +296,7 @@ perform_prompting (GkdSecretChange *self,
 		gkd_secret_prompt_dismiss (prompt);
 
 	/* Get the original password and unlock */
-	} else if (self->unlocked) {
+	} else if (!self->unlocked) {
 		setup_original_prompt (self, collection);
 		gcr_prompt_password_async (GCR_PROMPT (self),
 		                           gkd_secret_prompt_get_cancellable (prompt),
@@ -320,8 +326,6 @@ perform_prompting (GkdSecretChange *self,
 		gkd_secret_prompt_dismiss_with_error (prompt, error);
 		g_error_free (error);
 	}
-
-	g_object_unref (collection);
 }
 
 static void
@@ -474,6 +478,7 @@ gkd_secret_change_with_secrets (GckObject *collection,
 			goto cleanup;
 	}
 
+	gck_builder_clear (&builder);
 	gck_builder_add_ulong (&builder, CKA_G_CREDENTIAL, gck_object_get_handle (mcred));
 
 	/* Now set the collection credentials to the first one */
