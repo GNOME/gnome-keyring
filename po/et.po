@@ -14,14 +14,14 @@ msgstr ""
 "Project-Id-Version: gnome-keyring MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-28 11:10+0000\n"
-"PO-Revision-Date: 2012-03-02 12:35+0200\n"
+"POT-Creation-Date: 2012-03-08 22:27+0000\n"
+"PO-Revision-Date: 2012-03-09 11:08+0200\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
@@ -39,6 +39,9 @@ msgid ""
 msgstr ""
 "Rakendus tahab muuta võtmerõnga '%s' parooli. Sisesta selle võtmerõnga vana "
 "parool."
+
+msgid "Continue"
+msgstr "Jätka"
 
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
@@ -116,6 +119,9 @@ msgstr "PGP-võti: %s"
 
 msgid "Enter Passphrase"
 msgstr "Sisesta parool"
+
+msgid "Unlock"
+msgstr "Võta lukust lahti"
 
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "See võti võetakse minu sisselogimisel automaatselt lukust lahti"
@@ -326,9 +332,6 @@ msgstr "Võta sertifikaat lukust lahti"
 
 msgid "Unlock public key"
 msgstr "Võta avalik võti lukust lahti"
-
-msgid "Unlock"
-msgstr "Võta lukust lahti"
 
 msgid "Enter password to unlock the private key"
 msgstr "Sisesta salajase võtme luku avamise parool"
