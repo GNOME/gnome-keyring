@@ -85,7 +85,7 @@ test_cancel (Test* test, gconstpointer unused)
 	timer = gkm_timer_start (test->module, 2, timer_callback, &timer);
 
 	mock_module_leave ();
-	egg_test_wait_until (500);
+	egg_test_wait_until (50);
 	mock_module_enter ();
 
 	gkm_timer_cancel (timer);
@@ -164,12 +164,12 @@ main (int argc, char **argv)
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/gkm/secret/extra_initialize", Test, NULL, setup, test_extra_initialize, teardown);
-	g_test_add ("/gkm/secret/simple", Test, NULL, setup, test_simple, teardown);
-	g_test_add ("/gkm/secret/cancel", Test, NULL, setup, test_cancel, teardown);
-	g_test_add ("/gkm/secret/immediate", Test, NULL, setup, test_immediate, teardown);
-	g_test_add ("/gkm/secret/multiple", Test, NULL, setup, test_multiple, teardown);
-	g_test_add ("/gkm/secret/outstanding", Test, NULL, setup, test_outstanding, teardown);
+	g_test_add ("/gkm/timer/extra_initialize", Test, NULL, setup, test_extra_initialize, teardown);
+	g_test_add ("/gkm/timer/simple", Test, NULL, setup, test_simple, teardown);
+	g_test_add ("/gkm/timer/cancel", Test, NULL, setup, test_cancel, teardown);
+	g_test_add ("/gkm/timer/immediate", Test, NULL, setup, test_immediate, teardown);
+	g_test_add ("/gkm/timer/multiple", Test, NULL, setup, test_multiple, teardown);
+	g_test_add ("/gkm/timer/outstanding", Test, NULL, setup, test_outstanding, teardown);
 
 	return egg_tests_run_in_thread_with_loop ();
 }

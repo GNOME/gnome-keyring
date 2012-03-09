@@ -1,3 +1,10 @@
+Changes in version 3.3.91 are:
+ * Fix regression in changing a keyring master password
+ * Set better button labels for the prompts
+ * Fix assertion when cancelling a unlock prompt
+ * Use a single CA certificates file by default
+ * Updated translations
+
 Changes in version 3.3.5 are:
  * Updated translations
  * Fix introspection data for SearchItems()
