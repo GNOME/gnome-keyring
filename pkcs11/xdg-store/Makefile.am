@@ -1,3 +1,12 @@
+include $(top_srcdir)/Makefile.decl
+
+ASN_FILES = \
+	xdg.asn
+
+ASN_SRCS = $(ASN_FILES:.asn=.asn.h)
+
+BUILT_SOURCES = \
+	$(ASN_SRCS)
 
 INCLUDES = \
 	-I$(top_builddir) \
@@ -14,21 +23,16 @@ INCLUDES = \
 noinst_LTLIBRARIES = \
 	libgkm-xdg-store.la
 
-BUILT_SOURCES = \
-	asn1-def-xdg.c
-
 libgkm_xdg_store_la_SOURCES = \
 	gkm-xdg-store.h \
+	gkm-xdg-asn1-defs.c gkm-xdg-asn1-defs.h \
 	gkm-xdg-assertion.c gkm-xdg-assertion.h \
 	gkm-xdg-module.c gkm-xdg-module.h \
 	gkm-xdg-trust.c gkm-xdg-trust.h \
 	$(BUILT_SOURCES)
 
-asn1-def-xdg.c: xdg.asn
-	$(ASN1PARSER) -o asn1-def-xdg.c $(srcdir)/xdg.asn
-
 EXTRA_DIST = \
-	xdg.asn
+	$(ASN_FILES)
 
 # ------------------------------------------------------------------------------
 # The standalone module

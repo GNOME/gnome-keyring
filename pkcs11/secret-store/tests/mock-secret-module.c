@@ -42,7 +42,7 @@
 
 #include <string.h>
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static GMutex *mutex = NULL;
 static gchar *directory = NULL;

@@ -53,8 +53,7 @@ enum {
 struct _GkmCertificatePrivate {
 	GkmCertificateKey *key;
 	GNode *asn1;
-	guchar *data;
-	gsize n_data;
+	EggBytes *der;
 	gchar *label;
 };
 
@@ -122,6 +121,8 @@ factory_create_certificate (GkmSession *session, GkmTransaction *transaction,
 {
 	CK_ATTRIBUTE_PTR attr;
 	GkmCertificate *cert;
+	EggBytes *bytes;
+	gboolean ret;
 
 	g_return_val_if_fail (GKM_IS_TRANSACTION (transaction), NULL);
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
@@ -139,7 +140,11 @@ factory_create_certificate (GkmSession *session, GkmTransaction *transaction,
 	                     NULL);
 
 	/* Load the certificate from the data specified */
-	if (!gkm_serializable_load (GKM_SERIALIZABLE (cert), NULL, attr->pValue, attr->ulValueLen)) {
+	bytes = egg_bytes_new (attr->pValue, attr->ulValueLen);
+	ret = gkm_serializable_load (GKM_SERIALIZABLE (cert), NULL, bytes);
+	egg_bytes_unref (bytes);
+
+	if(!ret) {
 		gkm_transaction_fail (transaction, CKR_ATTRIBUTE_VALUE_INVALID);
 		g_object_unref (cert);
 		return NULL;
@@ -162,7 +167,7 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
 	CK_ULONG category;
-	const guchar *cdata;
+	EggBytes *cdata;
 	guchar *data;
 	gsize n_data;
 	time_t when;
@@ -191,11 +196,13 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 		return gkm_attribute_set_ulong (attr, category);
 
 	case CKA_CHECK_VALUE:
-		g_return_val_if_fail (self->pv->data, CKR_GENERAL_ERROR);
+		g_return_val_if_fail (self->pv->der != NULL, CKR_GENERAL_ERROR);
 		n_data = gcry_md_get_algo_dlen (GCRY_MD_SHA1);
 		g_return_val_if_fail (n_data && n_data > 3, CKR_GENERAL_ERROR);
 		data = g_new0 (guchar, n_data);
-		gcry_md_hash_buffer (GCRY_MD_SHA1, data, self->pv->data, self->pv->n_data);
+		gcry_md_hash_buffer (GCRY_MD_SHA1, data,
+		                     egg_bytes_get_data (self->pv->der),
+		                     egg_bytes_get_size (self->pv->der));
 		rv = gkm_attribute_set_data (attr, data, 3);
 		g_free (data);
 		return rv;
@@ -213,9 +220,11 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 
 	case CKA_SUBJECT:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = egg_asn1x_get_raw_element (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "subject", NULL), &n_data);
+		cdata = egg_asn1x_get_element_raw (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "subject", NULL));
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
-		return gkm_attribute_set_data (attr, cdata, n_data);
+		rv = gkm_attribute_set_bytes (attr, cdata);
+		egg_bytes_unref (cdata);
+		return rv;
 
 	case CKA_ID:
 		if (!self->pv->key)
@@ -224,19 +233,23 @@ gkm_certificate_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 
 	case CKA_ISSUER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = egg_asn1x_get_raw_element (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "issuer", NULL), &n_data);
+		cdata = egg_asn1x_get_element_raw (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "issuer", NULL));
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
-		return gkm_attribute_set_data (attr, cdata, n_data);
+		rv = gkm_attribute_set_bytes (attr, cdata);
+		egg_bytes_unref (cdata);
+		return rv;
 
 	case CKA_SERIAL_NUMBER:
 		g_return_val_if_fail (self->pv->asn1, CKR_GENERAL_ERROR);
-		cdata = egg_asn1x_get_raw_element (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "serialNumber", NULL), &n_data);
+		cdata = egg_asn1x_get_element_raw (egg_asn1x_node (self->pv->asn1, "tbsCertificate", "serialNumber", NULL));
 		g_return_val_if_fail (cdata, CKR_GENERAL_ERROR);
-		return gkm_attribute_set_data (attr, cdata, n_data);
+		rv = gkm_attribute_set_bytes (attr, cdata);
+		egg_bytes_unref (cdata);
+		return rv;
 
 	case CKA_VALUE:
-		g_return_val_if_fail (self->pv->data, CKR_GENERAL_ERROR);
-		return gkm_attribute_set_data (attr, self->pv->data, self->pv->n_data);
+		g_return_val_if_fail (self->pv->der != NULL, CKR_GENERAL_ERROR);
+		return gkm_attribute_set_bytes (attr, self->pv->der);
 
 	/* These are only used for strange online certificates which we don't support */
 	case CKA_URL:
@@ -287,7 +300,8 @@ gkm_certificate_finalize (GObject *obj)
 	GkmCertificate *self = GKM_CERTIFICATE (obj);
 
 	g_assert (!self->pv->key);
-	g_free (self->pv->data);
+	if (self->pv->der)
+		egg_bytes_unref (self->pv->der);
 	g_free (self->pv->label);
 	egg_asn1x_destroy (self->pv->asn1);
 
@@ -358,40 +372,36 @@ gkm_certificate_class_init (GkmCertificateClass *klass)
 }
 
 static gboolean
-gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer data, gsize n_data)
+gkm_certificate_real_load (GkmSerializable *base,
+                           GkmSecret *login,
+                           EggBytes *data)
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
 	GNode *asn1 = NULL;
 	GkmDataResult res;
-	guchar *copy, *keydata;
-	gsize n_keydata;
+	EggBytes *keydata;
 	gcry_sexp_t sexp;
 	GkmSexp *wrapper;
 
-	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), FALSE);
-
-	if (!data || !n_data) {
+	if (egg_bytes_get_size (data) == 0) {
 		g_message ("cannot load empty certificate file");
 		return FALSE;
 	}
 
-	copy = g_memdup (data, n_data);
-
 	/* Parse the ASN1 data */
-	res = gkm_data_der_read_certificate (copy, n_data, &asn1);
+	res = gkm_data_der_read_certificate (data, &asn1);
 	if (res != GKM_DATA_SUCCESS) {
 		g_message ("couldn't parse certificate data");
-		g_free (copy);
 		return FALSE;
 	}
 
 	/* Generate a raw public key from our certificate */
-	keydata = egg_asn1x_encode (egg_asn1x_node (asn1, "tbsCertificate", "subjectPublicKeyInfo", NULL), NULL, &n_keydata);
+	keydata = egg_asn1x_encode (egg_asn1x_node (asn1, "tbsCertificate", "subjectPublicKeyInfo", NULL), NULL);
 	g_return_val_if_fail (keydata, FALSE);
 
 	/* Now create us a nice public key with that identifier */
-	res = gkm_data_der_read_public_key_info (keydata, n_keydata, &sexp);
-	g_free (keydata);
+	res = gkm_data_der_read_public_key_info (keydata, &sexp);
+	egg_bytes_unref (keydata);
 
 	switch (res) {
 
@@ -417,7 +427,6 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointe
 	case GKM_DATA_FAILURE:
 	case GKM_DATA_LOCKED:
 		g_warning ("couldn't parse certificate key data");
-		g_free (copy);
 		egg_asn1x_destroy (asn1);
 		return FALSE;
 
@@ -426,9 +435,10 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointe
 		break;
 	}
 
-	g_free (self->pv->data);
-	self->pv->data = copy;
-	self->pv->n_data = n_data;
+	egg_bytes_ref (data);
+	if (self->pv->der)
+		egg_bytes_unref (self->pv->der);
+	self->pv->der = data;
 
 	egg_asn1x_destroy (self->pv->asn1);
 	self->pv->asn1 = asn1;
@@ -436,18 +446,15 @@ gkm_certificate_real_load (GkmSerializable *base, GkmSecret *login, gconstpointe
 	return TRUE;
 }
 
-static gboolean
-gkm_certificate_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
+static EggBytes *
+gkm_certificate_real_save (GkmSerializable *base,
+                           GkmSecret *login)
 {
 	GkmCertificate *self = GKM_CERTIFICATE (base);
 
 	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
 
-	*n_data = self->pv->n_data;
-	*data = g_memdup (self->pv->data, self->pv->n_data);
-	return TRUE;
+	return egg_bytes_ref (self->pv->der);
 }
 
 static void
@@ -465,9 +472,8 @@ gkm_certificate_serializable (GkmSerializableIface *iface)
 gboolean
 gkm_certificate_calc_category (GkmCertificate *self, GkmSession *session, CK_ULONG* category)
 {
-	const guchar *extension;
+	EggBytes *extension;
 	GkmManager *manager;
-	gsize n_extension;
 	GkmDataResult res;
 	gboolean is_ca;
 	GkmObject *object;
@@ -486,9 +492,9 @@ gkm_certificate_calc_category (GkmCertificate *self, GkmSession *session, CK_ULO
 	}
 
 	/* Read in the Basic Constraints section */
-	extension = gkm_certificate_get_extension (self, OID_BASIC_CONSTRAINTS, &n_extension, NULL);
+	extension = gkm_certificate_get_extension (self, OID_BASIC_CONSTRAINTS, NULL);
 	if (extension != NULL) {
-		res = gkm_data_der_read_basic_constraints (extension, n_extension, &is_ca, NULL);
+		res = gkm_data_der_read_basic_constraints (extension, &is_ca, NULL);
 
 		if (res != GKM_DATA_SUCCESS)
 			return FALSE;
@@ -512,9 +518,9 @@ gkm_certificate_get_public_key (GkmCertificate *self)
 	return self->pv->key;
 }
 
-const guchar*
+EggBytes *
 gkm_certificate_get_extension (GkmCertificate *self, GQuark oid,
-                               gsize *n_extension, gboolean *critical)
+                               gboolean *critical)
 {
 	guchar *val;
 	gsize n_val;
@@ -523,7 +529,6 @@ gkm_certificate_get_extension (GkmCertificate *self, GQuark oid,
 	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), NULL);
 	g_return_val_if_fail (self->pv->asn1, NULL);
 	g_return_val_if_fail (oid, NULL);
-	g_return_val_if_fail (n_extension, NULL);
 
 	index = find_certificate_extension (self, oid);
 	if (index <= 0)
@@ -548,7 +553,7 @@ gkm_certificate_get_extension (GkmCertificate *self, GQuark oid,
 
 	/* And the extension value */
 	return egg_asn1x_get_raw_value (egg_asn1x_node (self->pv->asn1, "tbsCertificate",
-	                                "extensions", index, "extnValue", NULL), n_extension);
+	                                "extensions", index, "extnValue", NULL));
 }
 
 const gchar*
@@ -593,14 +598,15 @@ gkm_certificate_hash (GkmCertificate *self, int hash_algo, gsize *n_hash)
 	guchar *hash;
 
 	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (self->pv->data, NULL);
+	g_return_val_if_fail (self->pv->der != NULL, NULL);
 	g_return_val_if_fail (n_hash, NULL);
 
 	*n_hash = gcry_md_get_algo_dlen (hash_algo);
 	g_return_val_if_fail (*n_hash > 0, NULL);
 
 	hash = g_malloc0 (*n_hash);
-	gcry_md_hash_buffer (hash_algo, hash, self->pv->data, self->pv->n_data);
+	gcry_md_hash_buffer (hash_algo, hash, egg_bytes_get_data (self->pv->der),
+	                     egg_bytes_get_size (self->pv->der));
 
 	return hash;
 }
@@ -609,11 +615,11 @@ gconstpointer
 gkm_certificate_der_data (GkmCertificate *self, gsize *n_data)
 {
 	g_return_val_if_fail (GKM_IS_CERTIFICATE (self), NULL);
-	g_return_val_if_fail (self->pv->data, NULL);
+	g_return_val_if_fail (self->pv->der != NULL, NULL);
 	g_return_val_if_fail (n_data, NULL);
 
-	*n_data = self->pv->n_data;
-	return self->pv->data;
+	*n_data = egg_bytes_get_size (self->pv->der);
+	return egg_bytes_get_data (self->pv->der);
 }
 
 GkmFactory*

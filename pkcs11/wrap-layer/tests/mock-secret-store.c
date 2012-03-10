@@ -31,7 +31,7 @@
 
 static guint secret_identifier = 8800;
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static CK_RV
 mock_secret_C_Initialize (CK_VOID_PTR pInitArgs)

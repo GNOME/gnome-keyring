@@ -93,8 +93,9 @@ GKM_DEFINE_MODULE (gkm_roots_module, GKM_TYPE_ROOTS_MODULE);
  */
 
 static GkmCertificate*
-add_certificate_for_data (GkmRootsModule *self, const guchar *data,
-                          gsize n_data, const gchar *path)
+add_certificate_for_data (GkmRootsModule *self,
+                          EggBytes *data,
+                          const gchar *path)
 {
 	GkmCertificate *cert;
 	GkmManager *manager;
@@ -108,7 +109,9 @@ add_certificate_for_data (GkmRootsModule *self, const guchar *data,
 	g_return_val_if_fail (manager, NULL);
 
 	/* Hash the certificate */
-	hash = g_compute_checksum_for_data (G_CHECKSUM_MD5, data, n_data);
+	hash = g_compute_checksum_for_data (G_CHECKSUM_MD5,
+	                                    egg_bytes_get_data (data),
+	                                    egg_bytes_get_size (data));
 	unique = g_strdup_printf ("%s:%s", path, hash);
 	g_free (hash);
 
@@ -123,7 +126,7 @@ add_certificate_for_data (GkmRootsModule *self, const guchar *data,
 	cert = GKM_CERTIFICATE (gkm_roots_certificate_new (GKM_MODULE (self), unique, path));
 	g_free (unique);
 
-	if (!gkm_serializable_load (GKM_SERIALIZABLE (cert), NULL, data, n_data)) {
+	if (!gkm_serializable_load (GKM_SERIALIZABLE (cert), NULL, data)) {
 		g_message ("couldn't parse certificate(s): %s", path);
 		g_object_unref (cert);
 		return NULL;
@@ -139,10 +142,8 @@ add_certificate_for_data (GkmRootsModule *self, const guchar *data,
 
 static void
 parsed_pem_block (GQuark type,
-                  const guchar *data,
-                  gsize n_data,
-                  const gchar *outer,
-                  gsize n_outer,
+                  EggBytes *data,
+                  EggBytes *outer,
                   GHashTable *headers,
                   gpointer user_data)
 {
@@ -161,7 +162,7 @@ parsed_pem_block (GQuark type,
 	}
 
 	if (type == PEM_CERTIFICATE) {
-		cert = add_certificate_for_data (ctx->module, data, n_data, ctx->path);
+		cert = add_certificate_for_data (ctx->module, data, ctx->path);
 		if (cert != NULL) {
 			g_hash_table_remove (ctx->checks, cert);
 			++ctx->count;
@@ -184,6 +185,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 	ParsePrivate ctx;
 	GkmManager *manager;
 	GkmCertificate *cert;
+	EggBytes *bytes;
 	guchar *data;
 	GList *objects, *l;
 	GError *error = NULL;
@@ -211,12 +213,14 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 		g_hash_table_insert (ctx.checks, l->data, l->data);
 	g_list_free (objects);
 
+	bytes = egg_bytes_new_take (data, n_data);
+
 	/* Try and parse the PEM */
-	egg_armor_parse (data, n_data, parsed_pem_block, &ctx);
+	egg_armor_parse (bytes, parsed_pem_block, &ctx);
 
 	/* If no PEM data, try to parse directly as DER  */
 	if (ctx.count == 0) {
-		cert = add_certificate_for_data (self, data, n_data, path);
+		cert = add_certificate_for_data (self, bytes, path);
 		if (cert != NULL)
 			g_hash_table_remove (ctx.checks, cert);
 	}
@@ -224,7 +228,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 	g_hash_table_foreach (ctx.checks, remove_each_certificate, self);
 	g_hash_table_destroy (ctx.checks);
 
-	g_free (data);
+	egg_bytes_unref (data);
 }
 
 static void

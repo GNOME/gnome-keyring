@@ -39,30 +39,32 @@
  * must be defined somewhere, and provide appropriate locking for 
  * secure memory between threads:
  */
- 
-extern void   egg_memory_lock (void);
 
-extern void   egg_memory_unlock (void);
+typedef struct {
+	void       (* lock)        (void);
+	void       (* unlock)      (void);
+	void *     (* fallback)    (void *pointer,
+	                            size_t length);
+	void *        pool_data;
+	const char *  pool_version;
+} egg_secure_glob;
 
-/*
- * Allocation Fallbacks
- * 
- * If we cannot allocate secure memory, then this function
- * (defined elsewhere) will be called which has a chance to 
- * allocate other memory abort or do whatever.
- * 
- * Same call semantics as realloc with regard to NULL and zeros 
- */
-extern void*  egg_memory_fallback (void *p, size_t length);
+#define EGG_SECURE_POOL_VER_STR             "1.0"
+#define EGG_SECURE_GLOBALS SECMEM_pool_data_v1_0
 
-#define EGG_SECURE_GLIB_DEFINITIONS() \
+#define EGG_SECURE_DEFINE_GLOBALS(lock, unlock, fallback) \
+	egg_secure_glob EGG_SECURE_GLOBALS = { \
+		lock, unlock, fallback, NULL, EGG_SECURE_POOL_VER_STR };
+
+#define EGG_SECURE_DEFINE_GLIB_GLOBALS() \
 	static GStaticMutex memory_mutex = G_STATIC_MUTEX_INIT; \
-	void egg_memory_lock (void) \
+	static void egg_memory_lock (void) \
 		{ g_static_mutex_lock (&memory_mutex); } \
-	void egg_memory_unlock (void) \
+	static void egg_memory_unlock (void) \
 		{ g_static_mutex_unlock (&memory_mutex); } \
-	void* egg_memory_fallback (void *p, size_t sz) \
-		{ return g_realloc (p, sz); } \
+	EGG_SECURE_DEFINE_GLOBALS (egg_memory_lock, egg_memory_unlock, g_realloc);
+
+extern egg_secure_glob EGG_SECURE_GLOBALS;
 
 /* 
  * Main functionality

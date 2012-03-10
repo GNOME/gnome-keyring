@@ -26,7 +26,6 @@
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
-#include "egg/egg-byte-array.h"
 
 #include "gkm/gkm-assertion.h"
 #include "gkm/gkm-attributes.h"
@@ -45,15 +44,13 @@
 
 #include <glib/gi18n.h>
 
+extern const struct _EggAsn1xDef xdg_asn1_tab[];
+
 struct _GkmXdgTrustPrivate {
 	GHashTable *assertions;
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
+	EggBytes *bytes;
 };
-
-/* From asn1-def-xdg.c */
-extern const ASN1_ARRAY_TYPE xdg_asn1_tab[];
 
 static void gkm_xdg_trust_serializable (GkmSerializableIface *iface);
 
@@ -107,28 +104,7 @@ static CK_RV
 trust_get_der (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 {
 	GNode *node;
-	gconstpointer element;
-	gsize n_element;
-
-	g_assert (GKM_XDG_IS_TRUST (self));
-
-	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", part, NULL);
-	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
-
-	/* If the assertion doesn't contain this info ... */
-	if (!egg_asn1x_have (node))
-		return CKR_ATTRIBUTE_TYPE_INVALID;
-
-	element = egg_asn1x_get_raw_element (node, &n_element);
-	return gkm_attribute_set_data (attr, element, n_element);
-}
-
-static CK_RV
-trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
-{
-	GNode *node;
-	gconstpointer integer;
-	gsize n_integer;
+	EggBytes *element;
 	CK_RV rv;
 
 	g_assert (GKM_XDG_IS_TRUST (self));
@@ -140,10 +116,34 @@ trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 	if (!egg_asn1x_have (node))
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
-	integer = egg_asn1x_get_integer_as_raw (node, &n_integer);
+	element = egg_asn1x_get_element_raw (node);
+	rv = gkm_attribute_set_bytes (attr, element);
+	egg_bytes_unref (element);
+
+	return rv;
+}
+
+static CK_RV
+trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
+{
+	GNode *node;
+	EggBytes *integer;
+	CK_RV rv;
+
+	g_assert (GKM_XDG_IS_TRUST (self));
+
+	node = egg_asn1x_node (self->pv->asn, "reference", "certReference", part, NULL);
+	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
+
+	/* If the assertion doesn't contain this info ... */
+	if (!egg_asn1x_have (node))
+		return CKR_ATTRIBUTE_TYPE_INVALID;
+
+	integer = egg_asn1x_get_integer_as_raw (node);
 	g_return_val_if_fail (integer, CKR_GENERAL_ERROR);
 
-	rv = gkm_attribute_set_data (attr, integer, n_integer);
+	rv = gkm_attribute_set_bytes (attr, integer);
+	egg_bytes_unref (integer);
 
 	return rv;
 }
@@ -152,8 +152,8 @@ static CK_RV
 trust_get_hash (GkmXdgTrust *self, GChecksumType ctype, CK_ATTRIBUTE_PTR attr)
 {
 	GNode *cert;
-	gconstpointer element;
-	gsize n_element;
+	EggBytes *element;
+	CK_RV rv;
 
 	cert = egg_asn1x_node (self->pv->asn, "reference", "certComplete", NULL);
 	g_return_val_if_fail (cert, CKR_GENERAL_ERROR);
@@ -162,18 +162,23 @@ trust_get_hash (GkmXdgTrust *self, GChecksumType ctype, CK_ATTRIBUTE_PTR attr)
 	if (!egg_asn1x_have (cert))
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
-	element = egg_asn1x_get_raw_element (cert, &n_element);
-	g_return_val_if_fail (element, CKR_GENERAL_ERROR);
+	element = egg_asn1x_get_element_raw (cert);
+	g_return_val_if_fail (element != NULL, CKR_GENERAL_ERROR);
 
-	return gkm_attribute_set_checksum (attr, ctype, element, n_element);
+	rv = gkm_attribute_set_checksum (attr, ctype,
+	                                 egg_bytes_get_data (element),
+	                                 egg_bytes_get_size (element));
+
+	egg_bytes_unref (element);
+	return rv;
 }
 
 static CK_RV
 trust_get_complete (GkmXdgTrust *self, CK_ATTRIBUTE_PTR attr)
 {
 	GNode *cert;
-	gconstpointer element;
-	gsize n_element;
+	EggBytes *element;
+	CK_RV rv;
 
 	cert = egg_asn1x_node (self->pv->asn, "reference", "certComplete", NULL);
 	g_return_val_if_fail (cert, CKR_GENERAL_ERROR);
@@ -182,10 +187,13 @@ trust_get_complete (GkmXdgTrust *self, CK_ATTRIBUTE_PTR attr)
 	if (!egg_asn1x_have (cert))
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
-	element = egg_asn1x_get_raw_element (cert, &n_element);
-	g_return_val_if_fail (element, CKR_GENERAL_ERROR);
+	element = egg_asn1x_get_element_raw (cert);
+	g_return_val_if_fail (element != NULL, CKR_GENERAL_ERROR);
 
-	return gkm_attribute_set_data (attr, element, n_element);
+	rv = gkm_attribute_set_bytes (attr, element);
+	egg_bytes_unref (element);
+
+	return rv;
 }
 
 
@@ -194,6 +202,7 @@ validate_der (CK_ATTRIBUTE_PTR attr, const gchar *asn_type)
 {
 	GNode *asn;
 	gboolean valid = TRUE;
+	EggBytes *data;
 
 	if (!attr->pValue || attr->ulValueLen == (CK_ULONG)-1)
 		return FALSE;
@@ -201,7 +210,10 @@ validate_der (CK_ATTRIBUTE_PTR attr, const gchar *asn_type)
 	asn = egg_asn1x_create (pkix_asn1_tab, asn_type);
 	g_return_val_if_fail (asn, FALSE);
 
-	valid = egg_asn1x_decode (asn, attr->pValue, attr->ulValueLen);
+	data = egg_bytes_new_static (attr->pValue, attr->ulValueLen);
+	valid = egg_asn1x_decode (asn, data);
+	egg_bytes_unref (data);
+
 	if (!valid)
 		g_message ("failed to parse certificate passed to trust assertion: %s",
 		           egg_asn1x_message (asn));
@@ -262,8 +274,8 @@ check_and_unref_assertion (gpointer data)
 static GHashTable*
 create_assertions (void)
 {
-	return g_hash_table_new_full (egg_byte_array_hash, egg_byte_array_equal,
-	                              (GDestroyNotify)g_byte_array_unref,
+	return g_hash_table_new_full (egg_bytes_hash, egg_bytes_equal,
+	                              (GDestroyNotify)egg_bytes_unref,
 	                              check_and_unref_assertion);
 }
 
@@ -311,41 +323,44 @@ create_assertion (GkmXdgTrust *self, GNode *asn)
 	return assertion;
 }
 
-static GByteArray*
-create_assertion_key (const gchar *purpose, const gchar *peer)
+static EggBytes *
+create_assertion_key (const gchar *purpose,
+                      const gchar *peer)
 {
-	GByteArray *key;
+	GString *string;
+	gsize len;
 
 	g_return_val_if_fail (purpose, NULL);
 
-	key = g_byte_array_new ();
-	g_byte_array_append (key, (void*)purpose, strlen (purpose));
+	string = g_string_sized_new (32);
+	g_string_append (string, purpose);
 
 	if (peer != NULL) {
-		g_byte_array_append (key, (void*)"\0", 1);
-		g_byte_array_append (key, (void*)peer, strlen (peer));
+		g_string_append_len (string, "\0", 1);
+		g_string_append (string, peer);
 	}
 
-	return key;
+	len = string->len;
+	return egg_bytes_new_take (g_string_free (string, FALSE), len);
 }
 
-static GByteArray*
+static EggBytes *
 lookup_assertion_key (GkmAssertion *assertion)
 {
 	return g_object_get_qdata (G_OBJECT (assertion), QDATA_ASSERTION_KEY);
 }
 
-static GByteArray*
+static EggBytes *
 lookup_or_create_assertion_key (GkmAssertion *assertion)
 {
-	GByteArray *key;
+	EggBytes *key;
 
 	key = lookup_assertion_key (assertion);
 	if (key == NULL) {
 		key = create_assertion_key (gkm_assertion_get_purpose (assertion),
 		                            gkm_assertion_get_peer (assertion));
 		g_object_set_qdata_full (G_OBJECT (assertion), QDATA_ASSERTION_KEY,
-		                         g_byte_array_ref (key), (GDestroyNotify)g_byte_array_unref);
+		                         egg_bytes_ref (key), (GDestroyNotify)egg_bytes_unref);
 	}
 
 	return key;
@@ -368,12 +383,12 @@ static void
 add_assertion_to_trust (GkmXdgTrust *self, GkmAssertion *assertion,
                         GkmTransaction *transaction)
 {
-	GByteArray *key;
+	EggBytes *key;
 
 	key = lookup_or_create_assertion_key (assertion);
-	g_assert (key);
+	g_assert (key != NULL);
 
-	g_hash_table_insert (self->pv->assertions, g_byte_array_ref (key), g_object_ref (assertion));
+	g_hash_table_insert (self->pv->assertions, egg_bytes_ref (key), g_object_ref (assertion));
 	gkm_object_expose (GKM_OBJECT (assertion), gkm_object_is_exposed (GKM_OBJECT (self)));
 
 	if (transaction != NULL)
@@ -399,10 +414,10 @@ static void
 remove_assertion_from_trust (GkmXdgTrust *self, GkmAssertion *assertion,
                              GkmTransaction *transaction)
 {
-	GByteArray *key;
+	EggBytes *key;
 
 	key = lookup_assertion_key (assertion);
-	g_assert (key);
+	g_assert (key != NULL);
 
 	gkm_object_expose (GKM_OBJECT (assertion), FALSE);
 
@@ -419,11 +434,9 @@ remove_assertion_from_trust (GkmXdgTrust *self, GkmAssertion *assertion,
 static gboolean
 load_assertions (GkmXdgTrust *self, GNode *asn)
 {
-	gconstpointer element;
 	GHashTable *assertions;
 	GkmAssertion *assertion;
-	gsize n_element;
-	GByteArray *key;
+	EggBytes *key;
 	GNode *node;
 	guint count, i;
 
@@ -437,15 +450,11 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 
 	for (i = 0; i < count; ++i) {
 		node = egg_asn1x_node (asn, "assertions", i + 1, NULL);
-		g_return_val_if_fail (node, FALSE);
+		g_return_val_if_fail (node != NULL, FALSE);
 
 		/* We use the raw DER encoding as an assertion */
-		element = egg_asn1x_get_raw_element (node, &n_element);
-		g_return_val_if_fail (node, FALSE);
-
-		/* Double check that this is valid, because it's how we hash */
-		key = g_byte_array_new ();
-		g_byte_array_append (key, element, n_element);
+		key = egg_asn1x_get_element_raw (node);
+		g_return_val_if_fail (key != NULL, FALSE);
 
 		/* Already have this assertion? */
 		assertion = g_hash_table_lookup (assertions, key);
@@ -459,7 +468,7 @@ load_assertions (GkmXdgTrust *self, GNode *asn)
 		}
 
 		add_assertion_to_trust (self, assertion, NULL);
-		g_byte_array_unref (key);
+		egg_bytes_unref (key);
 		g_object_unref (assertion);
 	}
 
@@ -522,6 +531,7 @@ create_trust_for_reference (GkmModule *module, GkmManager *manager,
 {
 	GkmXdgTrust *trust;
 	GNode *asn, *ref, *node;
+	EggBytes *bytes;
 
 	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
 	g_return_val_if_fail (asn, NULL);
@@ -530,20 +540,20 @@ create_trust_for_reference (GkmModule *module, GkmManager *manager,
 	node = egg_asn1x_node (ref, "certReference", NULL);
 
 	egg_asn1x_set_choice (ref, node);
-	egg_asn1x_set_integer_as_raw (egg_asn1x_node (node, "serialNumber", NULL),
-	                              g_memdup (serial->pValue, serial->ulValueLen),
-	                              serial->ulValueLen, g_free);
+	bytes = egg_bytes_new (serial->pValue, serial->ulValueLen);
+	egg_asn1x_set_integer_as_raw (egg_asn1x_node (node, "serialNumber", NULL), bytes);
+	egg_bytes_unref (bytes);
 
-	egg_asn1x_set_raw_element (egg_asn1x_node (node, "issuer", NULL),
-	                           g_memdup (issuer->pValue, issuer->ulValueLen),
-	                           issuer->ulValueLen, g_free);
+	bytes = egg_bytes_new (issuer->pValue, issuer->ulValueLen);
+	egg_asn1x_set_element_raw (egg_asn1x_node (node, "issuer", NULL), bytes);
+	egg_bytes_unref (bytes);
 
 	trust = g_object_new (GKM_XDG_TYPE_TRUST, "module", module, "manager", manager, NULL);
 	trust->pv->asn = asn;
 
 	/* Encode it, so we have read access to all the data */
-	trust->pv->data = egg_asn1x_encode (asn, NULL, &trust->pv->n_data);
-	if (!trust->pv->data) {
+	trust->pv->bytes = egg_asn1x_encode (asn, NULL);
+	if (!trust->pv->bytes) {
 		g_warning ("created invalid trust object: %s", egg_asn1x_message (asn));
 		return NULL;
 	}
@@ -557,6 +567,7 @@ create_trust_for_complete (GkmModule *module, GkmManager *manager,
 {
 	GkmXdgTrust *trust;
 	GNode *asn, *ref, *node;
+	EggBytes *bytes;
 
 	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
 	g_return_val_if_fail (asn, NULL);
@@ -565,15 +576,16 @@ create_trust_for_complete (GkmModule *module, GkmManager *manager,
 	node = egg_asn1x_node (ref, "certComplete", NULL);
 
 	egg_asn1x_set_choice (ref, node);
-	egg_asn1x_set_raw_element (node, g_memdup (cert->pValue, cert->ulValueLen),
-	                           cert->ulValueLen, g_free);
+	bytes = egg_bytes_new (cert->pValue, cert->ulValueLen);
+	egg_asn1x_set_element_raw (node, bytes);
+	egg_bytes_unref (bytes);
 
 	trust = g_object_new (GKM_XDG_TYPE_TRUST, "module", module, "manager", manager, NULL);
 	trust->pv->asn = asn;
 
 	/* Encode it, which validates, and so we have read access to all the data */
-	trust->pv->data = egg_asn1x_encode (asn, NULL, &trust->pv->n_data);
-	if (!trust->pv->data) {
+	trust->pv->bytes = egg_asn1x_encode (asn, NULL);
+	if (!trust->pv->bytes) {
 		g_warning ("created invalid trust object: %s", egg_asn1x_message (asn));
 		return NULL;
 	}
@@ -642,12 +654,12 @@ gkm_xdg_trust_get_level (GkmTrust *base, const gchar *purpose)
 {
 	GkmXdgTrust *self = GKM_XDG_TRUST (base);
 	GkmAssertion *assertion;
-	GByteArray *key;
+	EggBytes *key;
 	gulong type;
 
 	key = create_assertion_key (purpose, NULL);
 	assertion = g_hash_table_lookup (self->pv->assertions, key);
-	g_byte_array_unref (key);
+	egg_bytes_unref (key);
 
 	if (!assertion)
 		return GKM_TRUST_UNKNOWN;
@@ -705,74 +717,64 @@ gkm_xdg_trust_class_init (GkmXdgTrustClass *klass)
 }
 
 static gboolean
-gkm_xdg_trust_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer data, gsize n_data)
+gkm_xdg_trust_real_load (GkmSerializable *base,
+                         GkmSecret *login,
+                         EggBytes *data)
 {
 	GkmXdgTrust *self = GKM_XDG_TRUST (base);
 	GNode *asn = NULL;
-	gpointer copy;
 
-	g_return_val_if_fail (GKM_XDG_IS_TRUST (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-
-	if (n_data == 0)
+	if (egg_bytes_get_size (data) == 0)
 		return FALSE;
-
-	copy = g_memdup (data, n_data);
 
 	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
 	g_return_val_if_fail (asn, FALSE);
 
-	if (!egg_asn1x_decode (asn, copy, n_data)) {
+	if (!egg_asn1x_decode (asn, data)) {
 		g_warning ("couldn't parse trust data: %s", egg_asn1x_message (asn));
 		egg_asn1x_destroy (asn);
-		g_free (copy);
 		return FALSE;
 	}
 
 	/* Next parse out all the pairs */
 	if (!load_assertions (self, asn)) {
 		egg_asn1x_destroy (asn);
-		g_free (copy);
 		return FALSE;
 	}
 
 	/* Take ownership of this new data */
-	g_free (self->pv->data);
-	self->pv->data = copy;
-	self->pv->n_data = n_data;
+	if (self->pv->bytes)
+		egg_bytes_unref (self->pv->bytes);
+	self->pv->bytes = egg_bytes_ref (data);
 	egg_asn1x_destroy (self->pv->asn);
 	self->pv->asn = asn;
 
 	return TRUE;
 }
 
-static gboolean
-gkm_xdg_trust_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
+static EggBytes *
+gkm_xdg_trust_real_save (GkmSerializable *base, GkmSecret *login)
 {
 	GkmXdgTrust *self = GKM_XDG_TRUST (base);
+	EggBytes *bytes;
 
 	g_return_val_if_fail (GKM_XDG_IS_TRUST (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
 	g_return_val_if_fail (self->pv->asn, FALSE);
 
 	if (!save_assertions (self, self->pv->asn))
 		return FALSE;
 
-	*data = egg_asn1x_encode (self->pv->asn, NULL, n_data);
-	if (*data == NULL) {
+	bytes = egg_asn1x_encode (self->pv->asn, NULL);
+	if (bytes == NULL) {
 		g_warning ("encoding trust failed: %s", egg_asn1x_message (self->pv->asn));
 		return FALSE;
 	}
 
-	/* ASN.1 now refers to this data, take ownership */
-	g_free (self->pv->data);
-	self->pv->data = *data;
-	self->pv->n_data = *n_data;
+	if (self->pv->bytes)
+		egg_bytes_unref (self->pv->bytes);
+	self->pv->bytes = bytes;
 
-	/* Return a duplicate, since we own encoded */
-	*data = g_memdup (*data, *n_data);
-	return TRUE;
+	return egg_bytes_ref (bytes);
 }
 
 static void
@@ -847,7 +849,7 @@ gkm_xdg_trust_replace_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
                              GkmTransaction *transaction)
 {
 	GkmAssertion *previous;
-	GByteArray *key;
+	EggBytes *key;
 
 	g_return_if_fail (GKM_XDG_IS_TRUST (self));
 	g_return_if_fail (GKM_IS_ASSERTION (assertion));
@@ -862,14 +864,14 @@ gkm_xdg_trust_replace_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
 		remove_assertion_from_trust (self, previous, transaction);
 	add_assertion_to_trust (self, assertion, transaction);
 
-	g_byte_array_unref (key);
+	egg_bytes_unref (key);
 }
 
 void
 gkm_xdg_trust_remove_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
                                 GkmTransaction *transaction)
 {
-	GByteArray *key;
+	EggBytes *key;
 
 	g_return_if_fail (GKM_XDG_IS_TRUST (self));
 	g_return_if_fail (GKM_IS_ASSERTION (assertion));

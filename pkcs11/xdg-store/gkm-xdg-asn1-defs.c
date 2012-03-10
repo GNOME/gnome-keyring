@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkm-gnome2-standalone.h - The user-store PKCS#11 code as a standalone module
+/* egg-asn1-defs.c - ASN.1 definitions
 
-   Copyright (C) 2008, Stef Walter
+   Copyright (C) 2011 Collabora Ltd.
 
    The Gnome Keyring Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,32 +18,15 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Stef Walter <stef@memberwebs.com>
+   Author: Stef Walter <stefw@collabora.co.uk>
 */
 
 #include "config.h"
 
-#include "gkm-gnome2-store.h"
+#include "gkm-xdg-asn1-defs.h"
 
-#include "gkm/gkm-crypto.h"
+#include <stdlib.h>
 
-#include "egg/egg-secure-memory.h"
+typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
 
-#include "pkcs11/pkcs11.h"
-
-#include <glib-object.h>
-
-/* Module callbacks for secure memory */
-EGG_SECURE_DEFINE_GLIB_GLOBALS ();
-
-CK_RV
-C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
-{
-	if (!list)
-		return CKR_ARGUMENTS_BAD;
-
-	g_type_init ();
-
-	*list = gkm_gnome2_store_get_functions ();
-	return CKR_OK;
-}
+#include "xdg.asn.h"

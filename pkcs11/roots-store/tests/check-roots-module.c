@@ -34,7 +34,7 @@
 
 static int failures = 0;
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS();
 
 static void
 on_p11_tests_log (int level, const char *section, const char *message)

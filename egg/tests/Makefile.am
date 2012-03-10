@@ -1,6 +1,12 @@
+include $(top_srcdir)/Makefile.decl
 
-asn1-def-test.c: test.asn
-	$(ASN1PARSER) -o asn1-def-test.c $(srcdir)/test.asn
+ASN_FILES = \
+	test.asn
+
+ASN_SRCS = $(ASN_FILES:.asn=.asn.h)
+
+BUILT_SOURCES = \
+	$(ASN_SRCS)
 
 INCLUDES = \
 	-I$(top_builddir) \
@@ -30,7 +36,7 @@ TEST_PROGS = \
 
 test_asn1_SOURCES = \
 	test-asn1.c \
-	asn1-def-test.c
+	$(ASN_SRCS)
 
 check_PROGRAMS = $(TEST_PROGS)
 
@@ -42,11 +48,11 @@ check-local: test
 all-local: $(check_PROGRAMS)
 
 EXTRA_DIST = \
-	test.asn \
+	$(ASN_FILES) \
 	files
 
 DISTCLEANFILES = \
-	asn1-def-test.c
+	$(ASN_SRCS)
 
 # ------------------------------------------------------------------------------
 

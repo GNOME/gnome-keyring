@@ -24,9 +24,13 @@
 #ifndef EGG_ASN1_DEFS_H_
 #define EGG_ASN1_DEFS_H_
 
-#include <libtasn1.h>
+struct _EggAsn1xDef {
+	const char *name;
+	unsigned int type;
+	const void *value;
+};
 
-extern const ASN1_ARRAY_TYPE pkix_asn1_tab[];
-extern const ASN1_ARRAY_TYPE pk_asn1_tab[];
+extern const struct _EggAsn1xDef pkix_asn1_tab[];
+extern const struct _EggAsn1xDef pk_asn1_tab[];
 
-#endif /*EGG_ASN1_DEFS_H_*/
+#endif /* EGG_ASN1_DEFS_H_ */

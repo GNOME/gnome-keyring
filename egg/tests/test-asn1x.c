@@ -64,32 +64,37 @@ build_personal_name (void)
 #endif
 
 static void
-test_some_asn1_stuff (const ASN1_ARRAY_TYPE *defs, const gchar *file, const gchar *identifier)
+test_some_asn1_stuff (const EggAsn1xDef *defs,
+                      const gchar *file,
+                      const gchar *identifier)
 {
 	GNode *asn;
-	gpointer data, encoded;
-	gsize n_data, n_encoded;
+	EggBytes *encoded;
+	gpointer data;
+	gsize n_data;
+	EggBytes *bytes;
 
 	if (!g_file_get_contents (file, (gchar**)&data, &n_data, NULL))
 		g_assert_not_reached ();
+	bytes = egg_bytes_new_take (data, n_data);
 	asn = egg_asn1x_create (defs, identifier);
 	egg_asn1x_dump (asn);
 
-	if (!egg_asn1x_decode (asn, data, n_data))
+	if (!egg_asn1x_decode (asn, bytes))
 		g_warning ("decode of %s failed: %s", identifier, egg_asn1x_message (asn));
 
-	encoded = egg_asn1x_encode (asn, NULL, &n_encoded);
+	encoded = egg_asn1x_encode (asn, NULL);
 	if (encoded == NULL)
 		g_warning ("encode of %s failed: %s", identifier, egg_asn1x_message (asn));
 
 	/* Decode the encoding */
-	if (!egg_asn1x_decode (asn, encoded, n_encoded))
+	if (!egg_asn1x_decode (asn, encoded))
 		g_warning ("decode of encoded %s failed: %s", identifier, egg_asn1x_message (asn));
 
 	egg_asn1x_clear (asn);
 	egg_asn1x_destroy (asn);
-	g_free (encoded);
-	g_free (data);
+	egg_bytes_unref (bytes);
+	egg_bytes_unref (encoded);
 }
 
 int

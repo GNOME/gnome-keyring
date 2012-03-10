@@ -46,9 +46,7 @@ enum {
 struct _GkmGnome2PrivateKey {
 	GkmPrivateXsaKey parent;
 
-	guchar *private_data;
-	gsize n_private_data;
-
+	EggBytes *private_bytes;
 	GkmSexp *private_sexp;
 	gboolean is_encrypted;
 	GkmSecret *login;
@@ -122,8 +120,7 @@ gkm_gnome2_private_key_real_acquire_crypto_sexp (GkmSexpKey *base, GkmSession *u
 	g_return_val_if_fail (self->is_encrypted, NULL);
 
 	password = gkm_secret_get_password (self->login, &n_password);
-	res = gkm_data_der_read_private_pkcs8 (self->private_data, self->n_private_data,
-	                                       password, n_password, &sexp);
+	res = gkm_data_der_read_private_pkcs8 (self->private_bytes, password, n_password, &sexp);
 	g_return_val_if_fail (res == GKM_DATA_SUCCESS, NULL);
 
 	return gkm_sexp_new (sexp);
@@ -154,8 +151,8 @@ gkm_gnome2_private_key_finalize (GObject *obj)
 
 	g_assert (self->login == NULL);
 
-	g_free (self->private_data);
-	self->private_data = NULL;
+	if (self->private_bytes)
+		egg_bytes_unref (self->private_bytes);
 
 	if (self->private_sexp)
 		gkm_sexp_unref (self->private_sexp);
@@ -204,7 +201,9 @@ gkm_gnome2_private_key_class_init (GkmGnome2PrivateKeyClass *klass)
 }
 
 static gboolean
-gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer data, gsize n_data)
+gkm_gnome2_private_key_real_load (GkmSerializable *base,
+                                  GkmSecret *login,
+                                  EggBytes *data)
 {
 	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	GkmDataResult res;
@@ -213,10 +212,10 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, gcons
 	const gchar *password;
 	gsize n_password;
 
-	g_return_val_if_fail (GKM_IS_GNOME2_PRIVATE_KEY (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
+	if (egg_bytes_get_size (data) == 0)
+		return FALSE;
 
-	res = gkm_data_der_read_private_pkcs8 (data, n_data, NULL, 0, &sexp);
+	res = gkm_data_der_read_private_pkcs8 (data, NULL, 0, &sexp);
 
 	/* An unencrypted pkcs8 file */
 	if (res == GKM_DATA_SUCCESS) {
@@ -232,7 +231,7 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, gcons
 		}
 
 		password = gkm_secret_get_password (login, &n_password);
-		res = gkm_data_der_read_private_pkcs8 (data, n_data, password, n_password, &sexp);
+		res = gkm_data_der_read_private_pkcs8 (data, password, n_password, &sexp);
 	}
 
 	switch (res) {
@@ -262,9 +261,9 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, gcons
 
 	/* Encrypted private key, keep login and data */
 	if (self->is_encrypted) {
-		g_free (self->private_data);
-		self->n_private_data = n_data;
-		self->private_data = g_memdup (data, n_data);
+		if (self->private_bytes)
+			egg_bytes_unref (self->private_bytes);
+		self->private_bytes = egg_bytes_ref (data);
 
 		g_object_ref (login);
 		if (self->login)
@@ -289,18 +288,16 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base, GkmSecret *login, gcons
 	return TRUE;
 }
 
-static gboolean
-gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
+static EggBytes *
+gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login)
 {
 	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	const gchar *password = NULL;
 	gsize n_password;
 	GkmSexp *sexp;
-	guchar *key;
+	EggBytes *result;
 
 	g_return_val_if_fail (GKM_IS_GNOME2_PRIVATE_KEY (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
 
 	sexp = gkm_gnome2_private_key_real_acquire_crypto_sexp (GKM_SEXP_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
@@ -308,21 +305,14 @@ gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login, gpoin
 	if (login != NULL)
 		password = gkm_secret_get_password (login, &n_password);
 	if (password == NULL) {
-		key = gkm_data_der_write_private_pkcs8_plain (gkm_sexp_get (sexp), n_data);
-
-		/*
-		 * Caller is expecting normal memory buffer, which makes sense since
-		 * this is being written to disk, and won't be 'secure' anyway.
-		 */
-		*data = g_memdup (key, *n_data);
-		egg_secure_free (key);
+		result = gkm_data_der_write_private_pkcs8_plain (gkm_sexp_get (sexp));
 	} else {
-		*data = gkm_data_der_write_private_pkcs8_crypted (gkm_sexp_get (sexp), password,
-		                                                  n_password, n_data);
+		result = gkm_data_der_write_private_pkcs8_crypted (gkm_sexp_get (sexp), password,
+		                                                   n_password);
 	}
 
 	gkm_sexp_unref (sexp);
-	return *data != NULL;
+	return result;
 }
 
 static void

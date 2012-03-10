@@ -28,6 +28,8 @@
 
 #include "pkcs11/pkcs11.h"
 
+#include "egg/egg-bytes.h"
+
 CK_RV                 gkm_attribute_get_bool                           (CK_ATTRIBUTE_PTR attr,
                                                                         gboolean *value);
 
@@ -66,6 +68,9 @@ CK_RV                 gkm_attribute_set_time                           (CK_ATTRI
 CK_RV                 gkm_attribute_set_data                           (CK_ATTRIBUTE_PTR attr,
                                                                         gconstpointer value,
                                                                         gsize n_value);
+
+CK_RV                 gkm_attribute_set_bytes                          (CK_ATTRIBUTE_PTR attr,
+                                                                        EggBytes *value);
 
 CK_RV                 gkm_attribute_set_mpi                            (CK_ATTRIBUTE_PTR attr,
                                                                         gcry_mpi_t mpi);

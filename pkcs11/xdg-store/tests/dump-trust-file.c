@@ -33,8 +33,7 @@
 #include <stdlib.h>
 
 /* Bring in the relevant definitions */
-#include "../asn1-def-xdg.c"
-
+#include "xdg-store/gkm-xdg-asn1-defs.h"
 
 static void
 barf_and_die (const char *msg, const char *detail)
@@ -50,26 +49,25 @@ static void
 dump_certificate_reference (GNode *asn)
 {
 	gchar *issuer, *serial;
-	gconstpointer data;
-	gsize n_data;
+	EggBytes *data;
 	GNode *name;
-	gconstpointer element;
-	gsize n_element;
+	EggBytes *element;
 
 	/* Parse the name out */
 	name = egg_asn1x_create (pkix_asn1_tab, "Name");
 	g_return_if_fail (name);
-	element = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "issuer", NULL), &n_element);
+	element = egg_asn1x_get_element_raw (egg_asn1x_node (asn, "issuer", NULL));
 	g_return_if_fail (element);
-	if (!egg_asn1x_decode (name, element, n_element))
+	if (!egg_asn1x_decode (name, element))
 		barf_and_die ("couldn't parse certificate", egg_asn1x_message (name));
+	egg_bytes_unref (element);
 
 	issuer = egg_dn_read (name);
 	g_return_if_fail (issuer);
 
-	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL), &n_data);
-	g_return_if_fail (data && n_data);
-	serial = egg_hex_encode (data, n_data);
+	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL));
+	g_return_if_fail (data != NULL);
+	serial = egg_hex_encode (egg_bytes_get_data (data), egg_bytes_get_size (data));
 
 	g_print ("Reference\n");
 	g_print ("    issuer: %s\n", issuer);
@@ -86,17 +84,18 @@ dump_certificate_complete (GNode *asn)
 {
 	GNode *cert;
 	gchar *issuer, *serial, *subject;
-	gconstpointer element;
-	gconstpointer data;
-	gsize n_data, n_element;
+	EggBytes *element;
+	EggBytes *data;
 
 	/* Parse the certificate out */
 	cert = egg_asn1x_create (pkix_asn1_tab, "Certificate");
 	g_return_if_fail (cert);
-	element = egg_asn1x_get_raw_element (asn, &n_element);
+
+	element = egg_asn1x_get_element_raw (asn);
 	g_return_if_fail (element);
-	if (!egg_asn1x_decode (cert, element, n_element))
+	if (!egg_asn1x_decode (cert, element))
 		barf_and_die ("couldn't parse certificate", egg_asn1x_message (cert));
+	egg_bytes_unref (element);
 
 	issuer = egg_dn_read (egg_asn1x_node (asn, "issuer", NULL));
 	g_return_if_fail (issuer);
@@ -104,9 +103,10 @@ dump_certificate_complete (GNode *asn)
 	subject = egg_dn_read (egg_asn1x_node (asn, "subject", NULL));
 	g_return_if_fail (subject);
 
-	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL), &n_data);
-	g_return_if_fail (data && n_data);
-	serial = egg_hex_encode (data, n_data);
+	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL));
+	g_return_if_fail (data != NULL);
+	serial = egg_hex_encode (egg_bytes_get_data (data), egg_bytes_get_size (data));
+	egg_bytes_unref (data);
 
 	g_print ("Complete\n");
 	g_print ("    issuer: %s\n", issuer);
@@ -155,6 +155,7 @@ main(int argc, char* argv[])
 	gchar *contents;
 	gsize n_contents;
 	GNode *asn, *node;
+	EggBytes *bytes;
 	gint i, count;
 
 	if (argc != 2) {
@@ -168,8 +169,10 @@ main(int argc, char* argv[])
 	asn = egg_asn1x_create (xdg_asn1_tab, "trust-1");
 	g_return_val_if_fail (asn, 1);
 
-	if (!egg_asn1x_decode (asn, contents, n_contents))
+	bytes = egg_bytes_new_take (contents, n_contents);
+	if (!egg_asn1x_decode (asn, bytes))
 		barf_and_die ("couldn't parse file", egg_asn1x_message (asn));
+	egg_bytes_unref (bytes);
 
 	/* Print out the certificate we refer to first */
 	node = egg_asn1x_node (asn, "reference", "certReference", NULL);

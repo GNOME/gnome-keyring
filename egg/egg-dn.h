@@ -26,6 +26,8 @@
 
 #include <glib.h>
 
+#include "egg/egg-bytes.h"
+
 gchar*             egg_dn_read                            (GNode *node);
 
 gchar*             egg_dn_read_part                       (GNode *node,
@@ -33,8 +35,7 @@ gchar*             egg_dn_read_part                       (GNode *node,
 
 typedef void       (*EggDnCallback)                       (guint index,
                                                            GQuark oid,
-                                                           const guchar *value,
-                                                           gsize n_value,
+                                                           EggBytes *value,
                                                            gpointer user_data);
 
 gboolean           egg_dn_parse                           (GNode *node,
@@ -42,7 +43,10 @@ gboolean           egg_dn_parse                           (GNode *node,
                                                            gpointer user_data);
 
 gchar*             egg_dn_print_value                     (GQuark oid,
-                                                           const guchar *value,
-                                                           gsize n_value);
+                                                           EggBytes *value);
+
+void               egg_dn_add_string_part                 (GNode *node,
+                                                           GQuark oid,
+                                                           const gchar *string);
 
 #endif /* EGG_DN_H_ */

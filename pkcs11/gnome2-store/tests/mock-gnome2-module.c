@@ -31,7 +31,7 @@
 
 #include "gnome2-store/gkm-gnome2-store.h"
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static GMutex *mutex = NULL;
 

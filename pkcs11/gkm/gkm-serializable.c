@@ -63,17 +63,18 @@ gkm_serializable_get_type (void)
 }
 
 gboolean
-gkm_serializable_load (GkmSerializable *self, GkmSecret *login, gconstpointer data, gsize n_data)
+gkm_serializable_load (GkmSerializable *self, GkmSecret *login, EggBytes *data)
 {
 	g_return_val_if_fail (GKM_IS_SERIALIZABLE (self), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
 	g_return_val_if_fail (GKM_SERIALIZABLE_GET_INTERFACE (self)->load, FALSE);
-	return GKM_SERIALIZABLE_GET_INTERFACE (self)->load (self, login, data, n_data);
+	return GKM_SERIALIZABLE_GET_INTERFACE (self)->load (self, login, data);
 }
 
-gboolean
-gkm_serializable_save (GkmSerializable *self, GkmSecret *login, gpointer *data, gsize *n_data)
+EggBytes *
+gkm_serializable_save (GkmSerializable *self, GkmSecret *login)
 {
 	g_return_val_if_fail (GKM_IS_SERIALIZABLE (self), FALSE);
 	g_return_val_if_fail (GKM_SERIALIZABLE_GET_INTERFACE (self)->save, FALSE);
-	return GKM_SERIALIZABLE_GET_INTERFACE (self)->save (self, login, data, n_data);
+	return GKM_SERIALIZABLE_GET_INTERFACE (self)->save (self, login);
 }

@@ -6,7 +6,7 @@
 #include <pwd.h>
 #include <unistd.h>
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 int
 main (int argc, char *argv[])

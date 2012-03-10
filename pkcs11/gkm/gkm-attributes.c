@@ -247,6 +247,13 @@ gkm_attribute_set_data (CK_ATTRIBUTE_PTR attr, gconstpointer value, gsize n_valu
 }
 
 CK_RV
+gkm_attribute_set_bytes (CK_ATTRIBUTE_PTR attr,
+                         EggBytes *value)
+{
+	return gkm_attribute_set_data (attr, egg_bytes_get_data (value), egg_bytes_get_size (value));
+}
+
+CK_RV
 gkm_attribute_set_mpi (CK_ATTRIBUTE_PTR attr, gcry_mpi_t mpi)
 {
 	gsize len;

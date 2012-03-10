@@ -36,11 +36,12 @@
 #include <string.h>
 #include <unistd.h>
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+#include <egg/egg-bytes.h>
+
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 typedef struct {
-	guchar *input;
-	gsize n_input;
+	EggBytes *input;
 	GQuark reftype;
 	guchar *refenc;
 	guchar *refdata;
@@ -52,14 +53,19 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	if (!g_file_get_contents (SRCDIR "/files/pem-rsa-enc.key", (gchar**)&test->input, &test->n_input, NULL))
+	gchar *contents;
+	gsize length;
+
+	if (!g_file_get_contents (SRCDIR "/files/pem-rsa-enc.key", &contents, &length, NULL))
 		g_assert_not_reached ();
+
+	test->input = egg_bytes_new_take (contents, length);
 }
 
 static void
 teardown (Test *test, gconstpointer unused)
 {
-	g_free (test->input);
+	egg_bytes_unref (test->input);
 	g_free (test->refenc);
 	egg_secure_free (test->refdata);
 	g_hash_table_destroy (test->refheaders);
@@ -73,24 +79,21 @@ copy_each_key_value (gpointer key, gpointer value, gpointer user_data)
 
 static void
 parse_reference (GQuark type,
-                 const guchar *data,
-                 gsize n_data,
-                 const gchar *outer,
-                 gsize n_outer,
+                 EggBytes *data,
+                 EggBytes *outer,
                  GHashTable *headers,
                  gpointer user_data)
 {
 	Test *test = user_data;
-	gboolean res;
 	const gchar *dekinfo;
 
 	g_assert (type);
 	test->reftype = type;
 
 	g_assert ("no data in PEM callback" && data != NULL);
-	g_assert ("no data in PEM callback" && n_data > 0);
-	test->refenc = g_memdup (data, n_data);
-	test->n_refenc = n_data;
+	g_assert ("no data in PEM callback" && egg_bytes_get_size (data) > 0);
+	test->refenc = g_memdup (egg_bytes_get_data (data), egg_bytes_get_size (data));
+	test->n_refenc = egg_bytes_get_size (data);
 
 	g_assert ("no headers present in file" && headers != NULL);
 	g_assert (!test->refheaders);
@@ -99,10 +102,9 @@ parse_reference (GQuark type,
 	dekinfo = egg_openssl_get_dekinfo (headers);
 	g_assert ("no dekinfo in headers" && dekinfo != NULL);
 
-	res = egg_openssl_decrypt_block (dekinfo, "booo", 4, data, n_data, &test->refdata, &test->n_refdata);
-	g_assert ("couldn't openssl decrypt block" && res == TRUE);
+	test->refdata = egg_openssl_decrypt_block (dekinfo, "booo", 4, data, &test->n_refdata);
 	g_assert ("no data returned from openssl decrypt" && test->refdata != NULL);
-	g_assert ("invalid amount of data returned from openssl decrypt" && test->n_refdata == n_data);
+	g_assert ("invalid amount of data returned from openssl decrypt" && test->n_refdata == egg_bytes_get_size (data));
 }
 
 static void
@@ -110,7 +112,7 @@ test_parse_reference (Test *test, gconstpointer unused)
 {
 	guint num;
 
-	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
 	g_assert ("parse_reference() wasn't called" && test->refdata != NULL);
@@ -122,22 +124,26 @@ test_write_reference (Test *test, gconstpointer unused)
 	const gchar *dekinfo;
 	guchar *encrypted;
 	gsize n_encrypted;
-	gboolean ret;
+	EggBytes *data;
 	guint num;
 
-	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
 	dekinfo = egg_openssl_get_dekinfo (test->refheaders);
 	g_assert ("no dekinfo in headers" && dekinfo != NULL);
 
-	ret = egg_openssl_encrypt_block (dekinfo, "booo", 4, test->refdata, test->n_refdata, &encrypted, &n_encrypted);
-	g_assert ("couldn't openssl encrypt block" && ret == TRUE);
+	data = egg_bytes_new_static (test->refdata, test->n_refdata);
+	encrypted = egg_openssl_encrypt_block (dekinfo, "booo", 4, data, &n_encrypted);
+	egg_bytes_unref (data);
+
 	g_assert ("no data returned from openssl encrypt" && encrypted != NULL);
 	g_assert ("invalid amount of data returned from openssl encrypt" && test->n_refdata <= n_encrypted);
 
 	g_assert ("data length doesn't match input length" && n_encrypted == test->n_refenc);
 	g_assert ("data doesn't match input" && memcmp (encrypted, test->refenc, n_encrypted) == 0);
+
+	g_free (encrypted);
 }
 
 static void
@@ -147,7 +153,7 @@ test_write_exactly_same (Test *test, gconstpointer unused)
 	gsize n_result;
 	guint num;
 
-	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
 	result = egg_armor_write (test->refenc, test->n_refenc, test->reftype,
@@ -159,7 +165,7 @@ test_write_exactly_same (Test *test, gconstpointer unused)
 	 * and line endings.
 	 */
 
-	egg_assert_cmpmem (test->input, test->n_input, ==, result, n_result);
+	egg_assert_cmpbytes (test->input, ==, result, n_result);
 	g_free (result);
 }
 
@@ -171,25 +177,28 @@ static void
 test_openssl_roundtrip (Test *test, gconstpointer unused)
 {
 	const gchar *dekinfo;
-	gboolean res;
-	gboolean ret;
 	guchar *encrypted, *decrypted;
 	gsize n_encrypted, n_decrypted;
+	EggBytes *data;
 	int i;
 	guint num;
 
-	num = egg_armor_parse (test->input, test->n_input, parse_reference, test);
+	num = egg_armor_parse (test->input, parse_reference, test);
 	g_assert ("couldn't PEM block in reference data" && num == 1);
 
 	dekinfo = egg_openssl_prep_dekinfo (test->refheaders);
 
-	ret = egg_openssl_encrypt_block (dekinfo, "password", -1, TEST_DATA, TEST_DATA_L, &encrypted, &n_encrypted);
-	g_assert ("couldn't openssl encrypt block" && ret == TRUE);
+	data = egg_bytes_new_static (TEST_DATA, TEST_DATA_L);
+	encrypted = egg_openssl_encrypt_block (dekinfo, "password", -1, data, &n_encrypted);
+	egg_bytes_unref (data);
+
 	g_assert ("no data returned from openssl encrypt" && encrypted != NULL);
 	g_assert ("invalid amount of data returned from openssl encrypt" && TEST_DATA_L <= n_encrypted);
 
-	res = egg_openssl_decrypt_block (dekinfo, "password", 8, encrypted, n_encrypted, &decrypted, &n_decrypted);
-	g_assert ("couldn't openssl decrypt block" && res == TRUE);
+	data = egg_bytes_new_with_free_func (encrypted, n_encrypted, egg_secure_free, encrypted);
+	decrypted = egg_openssl_decrypt_block (dekinfo, "password", 8, data, &n_decrypted);
+	egg_bytes_unref (data);
+
 	g_assert ("no data returned from openssl decrypt" && decrypted != NULL);
 
 	/* Check that the data was decrypted properly */
@@ -199,6 +208,8 @@ test_openssl_roundtrip (Test *test, gconstpointer unused)
 	/* Check that the remainder is all zeros */
 	for (i = TEST_DATA_L; i < n_decrypted; ++i)
 		g_assert ("non null byte in padding" && decrypted[i] == 0);
+
+	egg_secure_free (decrypted);
 }
 
 int

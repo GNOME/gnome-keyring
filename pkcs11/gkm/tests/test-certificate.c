@@ -40,8 +40,7 @@
 typedef struct {
 	GkmModule *module;
 	GkmSession *session;
-	gpointer certificate_data;
-	gsize n_certificate_data;
+	EggBytes *certificate_data;
 	GkmCertificate *certificate;
 } Test;
 
@@ -58,21 +57,20 @@ setup_basic (Test* test,
 	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &data, &length, NULL))
 		g_assert_not_reached ();
 
-	test->certificate_data = data;
-	test->n_certificate_data = length;
+	test->certificate_data = egg_bytes_new_take (data, length);
 }
 
 static void
 teardown_basic (Test* test,
                 gconstpointer unused)
 {
-	g_free (test->certificate_data);
+	egg_bytes_unref (test->certificate_data);
 	mock_module_leave_and_finalize ();
 }
 
 static GkmCertificate *
 create_certificate_object (GkmSession *session,
-                           gpointer data, gsize length)
+                           EggBytes *data)
 {
 	GkmCertificate *certificate;
 
@@ -82,7 +80,7 @@ create_certificate_object (GkmSession *session,
 	                            "manager", gkm_session_get_manager (session),
 	                            NULL);
 
-	if (!gkm_serializable_load (GKM_SERIALIZABLE (certificate), NULL, data, length))
+	if (!gkm_serializable_load (GKM_SERIALIZABLE (certificate), NULL, data))
 		g_assert_not_reached ();
 
 	return certificate;
@@ -93,7 +91,7 @@ setup (Test *test,
        gconstpointer unused)
 {
 	setup_basic (test, unused);
-	test->certificate = create_certificate_object (test->session, test->certificate_data, test->n_certificate_data);
+	test->certificate = create_certificate_object (test->session, test->certificate_data);
 }
 
 static void
@@ -171,9 +169,8 @@ test_attribute_value (Test* test,
 	data = gkm_object_get_attribute_data (GKM_OBJECT (test->certificate),
 	                                      test->session, CKA_VALUE, &n_data);
 
-	raw = test->certificate_data;
-	n_raw = test->n_certificate_data
-			;
+	raw = egg_bytes_get_data (test->certificate_data);
+	n_raw = egg_bytes_get_size (test->certificate_data);
 	egg_assert_cmpmem (data, n_data, ==, raw, n_raw);
 	g_free (data);
 }

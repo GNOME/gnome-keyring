@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static const gchar *PRIVATE_FILES[] = {
 	SRCDIR "/files/id_rsa_encrypted",
@@ -95,6 +95,7 @@ test_parse_private (void)
 	gsize n_data;
 	int algorithm;
 	gboolean is_private;
+	EggBytes *bytes;
 	guint i;
 	GkmDataResult res;
 
@@ -104,7 +105,10 @@ test_parse_private (void)
 		if (!g_file_get_contents (PRIVATE_FILES[i], &data, &n_data, NULL))
 			g_assert_not_reached ();
 
-		res = gkm_ssh_openssh_parse_private_key (data, n_data, "password", 8, &sexp);
+		bytes = egg_bytes_new_take (data, n_data);
+		res = gkm_ssh_openssh_parse_private_key (bytes, "password", 8, &sexp);
+		egg_bytes_unref (bytes);
+
 		if (res != GKM_DATA_SUCCESS) {
 			g_warning ("couldn't parse private key: %s", PRIVATE_FILES[i]);
 			g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
@@ -116,7 +120,6 @@ test_parse_private (void)
 		g_assert_cmpint (algorithm, !=, 0);
 		g_assert (is_private);
 
-		g_free (data);
 		gcry_sexp_release (sexp);
 	}
 }

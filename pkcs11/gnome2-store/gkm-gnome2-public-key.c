@@ -120,17 +120,19 @@ gkm_gnome2_public_key_class_init (GkmGnome2PublicKeyClass *klass)
 
 
 static gboolean
-gkm_gnome2_public_key_real_load (GkmSerializable *base, GkmSecret *login, gconstpointer data, gsize n_data)
+gkm_gnome2_public_key_real_load (GkmSerializable *base,
+                                 GkmSecret *login,
+                                 EggBytes *data)
 {
 	GkmGnome2PublicKey *self = GKM_GNOME2_PUBLIC_KEY (base);
 	GkmDataResult res;
 	GkmSexp *wrapper;
 	gcry_sexp_t sexp;
 
-	g_return_val_if_fail (GKM_IS_GNOME2_PUBLIC_KEY (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
+	if (egg_bytes_get_size (data) == 0)
+		return FALSE;
 
-	res = gkm_data_der_read_public_key (data, n_data, &sexp);
+	res = gkm_data_der_read_public_key (data, &sexp);
 
 	switch (res) {
 	case GKM_DATA_LOCKED:
@@ -155,21 +157,18 @@ gkm_gnome2_public_key_real_load (GkmSerializable *base, GkmSecret *login, gconst
 	return TRUE;
 }
 
-static gboolean
-gkm_gnome2_public_key_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
+static EggBytes *
+gkm_gnome2_public_key_real_save (GkmSerializable *base, GkmSecret *login)
 {
 	GkmGnome2PublicKey *self = GKM_GNOME2_PUBLIC_KEY (base);
 	GkmSexp *wrapper;
 
 	g_return_val_if_fail (GKM_IS_GNOME2_PUBLIC_KEY (self), FALSE);
-	g_return_val_if_fail (data, FALSE);
-	g_return_val_if_fail (n_data, FALSE);
 
 	wrapper = gkm_sexp_key_get_base (GKM_SEXP_KEY (self));
 	g_return_val_if_fail (wrapper, FALSE);
 
-	*data = gkm_data_der_write_public_key (gkm_sexp_get (wrapper), n_data);
-	return *data != NULL;
+	return gkm_data_der_write_public_key (gkm_sexp_get (wrapper));
 }
 
 static void

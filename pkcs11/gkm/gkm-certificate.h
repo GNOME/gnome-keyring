@@ -27,6 +27,8 @@
 #include "gkm-object.h"
 #include "gkm-types.h"
 
+#include "egg/egg-bytes.h"
+
 #define GKM_FACTORY_CERTIFICATE            (gkm_certificate_get_factory ())
 
 #define GKM_TYPE_CERTIFICATE               (gkm_certificate_get_type ())
@@ -58,9 +60,8 @@ gboolean                   gkm_certificate_calc_category          (GkmCertificat
 
 GkmCertificateKey*         gkm_certificate_get_public_key         (GkmCertificate *self);
 
-const guchar*              gkm_certificate_get_extension          (GkmCertificate *self,
+EggBytes *                 gkm_certificate_get_extension          (GkmCertificate *self,
                                                                    GQuark oid,
-                                                                   gsize *n_extension,
                                                                    gboolean *critical);
 
 const gchar*               gkm_certificate_get_label              (GkmCertificate *self);

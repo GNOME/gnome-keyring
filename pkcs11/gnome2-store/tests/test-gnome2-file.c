@@ -48,7 +48,7 @@ typedef struct {
 	GkmSecret *login;
 } Test;
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static void
 setup (Test *test, gconstpointer unused)

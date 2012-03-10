@@ -38,6 +38,7 @@
 #include "gkm/gkm-session.h"
 #include "gkm/gkm-test.h"
 
+#include "egg/egg-bytes.h"
 #include "egg/egg-testing.h"
 
 #include "pkcs11i.h"
@@ -45,8 +46,7 @@
 typedef struct {
 	GkmModule *module;
 	GkmSession *session;
-	gpointer key_data;
-	gsize n_key_data;
+	EggBytes *key_data;
 	GkmGnome2PrivateKey *key;
 } Test;
 
@@ -63,15 +63,14 @@ setup_basic (Test* test,
 	if (!g_file_get_contents (SRCDIR "/files/der-key-v2-des3.p8", &data, &length, NULL))
 		g_assert_not_reached ();
 
-	test->key_data = data;
-	test->n_key_data = length;
+	test->key_data = egg_bytes_new_take (data, length);
 }
 
 static void
 teardown_basic (Test* test,
                 gconstpointer unused)
 {
-	g_free (test->key_data);
+	egg_bytes_unref (test->key_data);
 	mock_gnome2_module_leave_and_finalize ();
 }
 
@@ -90,7 +89,7 @@ setup (Test *test,
 	                          NULL);
 
 	login = gkm_secret_new_from_password ("booo");
-	if (!gkm_serializable_load (GKM_SERIALIZABLE (test->key), login, test->key_data, test->n_key_data))
+	if (!gkm_serializable_load (GKM_SERIALIZABLE (test->key), login, test->key_data))
 		g_assert_not_reached ();
 	g_object_unref (login);
 }
@@ -117,11 +116,11 @@ test_load_private_key (Test *test,
 	                    NULL);
 
 	/* It's encrypted, this should fail */
-	if (gkm_serializable_load (GKM_SERIALIZABLE (key), NULL, test->key_data, test->n_key_data))
+	if (gkm_serializable_load (GKM_SERIALIZABLE (key), NULL, test->key_data))
 		g_assert_not_reached ();
 
 	login = gkm_secret_new_from_password ("booo");
-	if (!gkm_serializable_load (GKM_SERIALIZABLE (key), login, test->key_data, test->n_key_data))
+	if (!gkm_serializable_load (GKM_SERIALIZABLE (key), login, test->key_data))
 		g_assert_not_reached ();
 	g_object_unref (login);
 
@@ -133,25 +132,22 @@ test_save_private_key (Test *test,
                        gconstpointer unused)
 {
 	GkmSecret *login;
-	gpointer data;
-	gsize n_data;
+	EggBytes *data;
 	gcry_sexp_t sexp;
 
 	/* Save unencrypted */
-	if (!gkm_serializable_save (GKM_SERIALIZABLE (test->key), NULL, &data, &n_data))
-		g_assert_not_reached ();
+	data = gkm_serializable_save (GKM_SERIALIZABLE (test->key), NULL);
 	g_assert (data != NULL);
-	g_assert (gkm_data_der_read_private_pkcs8_plain (data, n_data, &sexp) == GKM_DATA_SUCCESS);
-	g_free (data);
+	g_assert (gkm_data_der_read_private_pkcs8_plain (data, &sexp) == GKM_DATA_SUCCESS);
+	egg_bytes_unref (data);
 	gcry_sexp_release (sexp);
 
 	/* Save encrypted */
 	login = gkm_secret_new_from_password ("booo");
-	if (!gkm_serializable_save (GKM_SERIALIZABLE (test->key), login, &data, &n_data))
-		g_assert_not_reached ();
+	data = gkm_serializable_save (GKM_SERIALIZABLE (test->key), login);
 	g_assert (data != NULL);
-	g_assert (gkm_data_der_read_private_pkcs8_crypted (data, n_data, "booo", 4, &sexp) == GKM_DATA_SUCCESS);
-	g_free (data);
+	g_assert (gkm_data_der_read_private_pkcs8_crypted (data, "booo", 4, &sexp) == GKM_DATA_SUCCESS);
+	egg_bytes_unref (data);
 	gcry_sexp_release (sexp);
 	g_object_unref (login);
 }

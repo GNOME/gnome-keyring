@@ -162,14 +162,14 @@ armor_find_end (const gchar *data,
 	/* Next comes the type string */
 	stype = g_quark_to_string (type);
 	n_type = strlen (stype);
-	if (strncmp ((gchar*)data, stype, n_type) != 0)
+	if (n_type > n_data || strncmp ((gchar*)data, stype, n_type) != 0)
 		return NULL;
 
 	n_data -= n_type;
 	data += n_type;
 
 	/* Next comes the suffix */
-	if (strncmp ((gchar*)data, ARMOR_SUFF, ARMOR_SUFF_L) != 0)
+	if (ARMOR_SUFF_L > n_data && strncmp ((gchar*)data, ARMOR_SUFF, ARMOR_SUFF_L) != 0)
 		return NULL;
 
 	/*
@@ -269,48 +269,52 @@ egg_armor_headers_new (void)
 }
 
 guint
-egg_armor_parse (gconstpointer data,
-                 gsize n_data,
+egg_armor_parse (EggBytes *data,
                  EggArmorCallback callback,
                  gpointer user_data)
 {
-	const gchar *beg, *end;
+	const gchar *beg, *end, *at;
 	const gchar *outer_beg, *outer_end;
 	guint nfound = 0;
 	guchar *decoded = NULL;
 	gsize n_decoded = 0;
 	GHashTable *headers = NULL;
+	EggBytes *dec;
+	EggBytes *outer;
 	GQuark type;
+	gsize n_at;
 
-	g_return_val_if_fail (data, 0);
-	g_return_val_if_fail (n_data, 0);
+	g_return_val_if_fail (data != NULL, 0);
+	at = egg_bytes_get_data (data);
+	n_at = egg_bytes_get_size (data);
 
-	while (n_data > 0) {
+	while (n_at > 0) {
 
 		/* This returns the first character after the PEM BEGIN header */
-		beg = armor_find_begin ((const gchar*)data, n_data, &type, &outer_beg);
+		beg = armor_find_begin (at, n_at, &type, &outer_beg);
 		if (beg == NULL)
 			break;
 
 		g_assert (type);
 
 		/* This returns the character position before the PEM END header */
-		end = armor_find_end ((const gchar*)beg,
-		                      n_data - ((const gchar*)beg - (const gchar *)data),
-		                      type, &outer_end);
+		end = armor_find_end (beg, n_at - (beg - at), type, &outer_end);
 		if (end == NULL)
 			break;
 
 		if (beg != end) {
 			if (armor_parse_block (beg, end - beg, &decoded, &n_decoded, &headers)) {
 				g_assert (outer_end > outer_beg);
-				if (callback != NULL)
-					(callback) (type,
-					            decoded, n_decoded,
-					            outer_beg, outer_end - outer_beg,
-					            headers, user_data);
+				dec = egg_bytes_new_with_free_func (decoded, n_decoded,
+				                                    egg_secure_free, decoded);
+				if (callback != NULL) {
+					outer = egg_bytes_new_with_free_func (outer_beg, outer_end - outer_beg,
+					                                      egg_bytes_unref, egg_bytes_ref (data));
+					(callback) (type, dec, outer, headers, user_data);
+					egg_bytes_unref (outer);
+				}
+				egg_bytes_unref (dec);
 				++nfound;
-				egg_secure_free (decoded);
 				if (headers)
 					g_hash_table_remove_all (headers);
 			}
@@ -318,8 +322,8 @@ egg_armor_parse (gconstpointer data,
 
 		/* Try for another block */
 		end += ARMOR_SUFF_L;
-		n_data -= (const gchar*)end - (const gchar*)data;
-		data = end;
+		n_at -= (const gchar*)end - (const gchar*)at;
+		at = end;
 	}
 
 	if (headers)

@@ -33,13 +33,15 @@
 static const char HEXC[] = "0123456789ABCDEF";
 
 static gchar*
-dn_print_hex_value (const guchar *data, gsize len)
+dn_print_hex_value (EggBytes *val)
 {
-	GString *result = g_string_sized_new (len * 2 + 1);
+	const gchar *data = egg_bytes_get_data (val);
+	gsize size = egg_bytes_get_size (val);
+	GString *result = g_string_sized_new (size * 2 + 1);
 	gsize i;
 
 	g_string_append_c (result, '#');
-	for (i = 0; i < len; ++i) {
+	for (i = 0; i < size; ++i) {
 		g_string_append_c (result, HEXC[data[i] >> 4 & 0xf]);
 		g_string_append_c (result, HEXC[data[i] & 0xf]);
 	}
@@ -48,20 +50,22 @@ dn_print_hex_value (const guchar *data, gsize len)
 }
 
 static gchar*
-dn_print_oid_value_parsed (GQuark oid, guint flags, const guchar *data, gsize len)
+dn_print_oid_value_parsed (GQuark oid,
+                           guint flags,
+                           EggBytes *val)
 {
 	GNode *asn1, *node;
-	gconstpointer value;
-	gsize n_value;
+	EggBytes *value;
+	const gchar *data;
+	gsize size;
 	gchar *result;
 
-	g_assert (data);
-	g_assert (len);
+	g_assert (val != NULL);
 
 	asn1 = egg_asn1x_create_quark (pkix_asn1_tab, oid);
 	g_return_val_if_fail (asn1, NULL);
 
-	if (!egg_asn1x_decode (asn1, data, len)) {
+	if (!egg_asn1x_decode (asn1, val)) {
 		g_message ("couldn't decode value for OID: %s: %s",
 		           g_quark_to_string (oid), egg_asn1x_message (asn1));
 		egg_asn1x_destroy (asn1);
@@ -77,7 +81,9 @@ dn_print_oid_value_parsed (GQuark oid, guint flags, const guchar *data, gsize le
 	else
 		node = asn1;
 
-	value = egg_asn1x_get_raw_value (node, &n_value);
+	value = egg_asn1x_get_raw_value (node);
+	data = egg_bytes_get_data (value);
+	size = egg_bytes_get_size (value);
 
 	/*
 	 * Now we make sure it's UTF-8.
@@ -87,33 +93,35 @@ dn_print_oid_value_parsed (GQuark oid, guint flags, const guchar *data, gsize le
 		g_message ("couldn't read value for OID: %s", g_quark_to_string (oid));
 		result = NULL;
 
-	} else if (!g_utf8_validate (value, n_value, NULL)) {
-		result = dn_print_hex_value ((guchar*)value, n_value);
+	} else if (!g_utf8_validate (data, size, NULL)) {
+		result = dn_print_hex_value (value);
 
 	} else {
-		result = g_strndup (value, n_value);
+		result = g_strndup (data, size);
 	}
 
+	egg_bytes_unref (value);
 	egg_asn1x_destroy (asn1);
 
 	return result;
 }
 
 static gchar*
-dn_print_oid_value (GQuark oid, guint flags, const guchar *data, gsize len)
+dn_print_oid_value (GQuark oid,
+                    guint flags,
+                    EggBytes *val)
 {
 	gchar *value;
 
-	g_assert (data);
-	g_assert (len);
+	g_assert (val != NULL);
 
 	if (flags & EGG_OID_PRINTABLE) {
-		value = dn_print_oid_value_parsed (oid, flags, data, len);
+		value = dn_print_oid_value_parsed (oid, flags, val);
 		if (value != NULL)
 			return value;
 	}
 
-	return dn_print_hex_value (data, len);
+	return dn_print_hex_value (val);
 }
 
 static gchar*
@@ -122,8 +130,7 @@ dn_parse_rdn (GNode *asn)
 	const gchar *name;
 	guint flags;
 	GQuark oid;
-	gconstpointer value;
-	gsize n_value;
+	EggBytes *value;
 	gchar *display;
 	gchar *result;
 
@@ -135,14 +142,15 @@ dn_parse_rdn (GNode *asn)
 	flags = egg_oid_get_flags (oid);
 	name = egg_oid_get_name (oid);
 
-	value = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "value", NULL), &n_value);
+	value = egg_asn1x_get_element_raw (egg_asn1x_node (asn, "value", NULL));
 	g_return_val_if_fail (value, NULL);
 
-	display = dn_print_oid_value (oid, flags, value, n_value);
+	display = dn_print_oid_value (oid, flags, value);
 	result = g_strconcat ((flags & EGG_OID_PRINTABLE) ? name : g_quark_to_string (oid),
 	                      "=", display, NULL);
 	g_free (display);
 
+	egg_bytes_unref (value);
 	return result;
 }
 
@@ -193,11 +201,11 @@ egg_dn_read_part (GNode *asn, const gchar *match)
 {
 	gboolean done = FALSE;
 	const gchar *name;
-	gconstpointer value;
-	gsize n_value;
+	EggBytes *value;
 	GNode *node;
 	GQuark oid;
 	gint i, j;
+	gchar *result;
 
 	g_return_val_if_fail (asn, NULL);
 	g_return_val_if_fail (match, NULL);
@@ -226,10 +234,12 @@ egg_dn_read_part (GNode *asn, const gchar *match)
 			node = egg_asn1x_node (asn, i, j, "value", NULL);
 			g_return_val_if_fail (node, NULL);
 
-			value = egg_asn1x_get_raw_element (node, &n_value);
+			value = egg_asn1x_get_element_raw (node);
 			g_return_val_if_fail (value, NULL);
 
-			return dn_print_oid_value (oid, egg_oid_get_flags (oid), value, n_value);
+			result = dn_print_oid_value (oid, egg_oid_get_flags (oid), value);
+			egg_bytes_unref (value);
+			return result;
 		}
 	}
 
@@ -241,8 +251,7 @@ egg_dn_parse (GNode *asn, EggDnCallback callback, gpointer user_data)
 {
 	gboolean done = FALSE;
 	GNode *node;
-	gconstpointer value;
-	gsize n_value;
+	EggBytes *value;
 	GQuark oid;
 	guint i, j;
 
@@ -271,21 +280,109 @@ egg_dn_parse (GNode *asn, EggDnCallback callback, gpointer user_data)
 				break;
 			}
 
-			value = egg_asn1x_get_raw_element (node, &n_value);
+			value = egg_asn1x_get_element_raw (node);
 
 			if (callback)
-				(callback) (i, oid, value, n_value, user_data);
+				(callback) (i, oid, value, user_data);
+
+			egg_bytes_unref (value);
 		}
 	}
 
 	return i > 1;
 }
 
-gchar*
-egg_dn_print_value (GQuark oid, const guchar *value, gsize n_value)
+gchar *
+egg_dn_print_value (GQuark oid,
+                    EggBytes *value)
 {
-	g_return_val_if_fail (oid, NULL);
-	g_return_val_if_fail (value || !n_value, NULL);
+	g_return_val_if_fail (oid != 0, NULL);
+	g_return_val_if_fail (value != NULL, NULL);
 
-	return dn_print_oid_value (oid, egg_oid_get_flags (oid), value, n_value);
+	return dn_print_oid_value (oid, egg_oid_get_flags (oid), value);
+}
+
+static gboolean
+is_ascii_string (const gchar *string)
+{
+	const gchar *p = string;
+
+	g_return_val_if_fail (string != NULL, FALSE);
+
+	for (p = string; *p != '\0'; p++) {
+		if (!g_ascii_isspace (*p) && *p < ' ')
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+is_printable_string (const gchar *string)
+{
+	const gchar *p = string;
+
+	g_return_val_if_fail (string != NULL, FALSE);
+
+	for (p = string; *p != '\0'; p++) {
+		if (!g_ascii_isalnum (*p) && !strchr (" '()+,-./:=?", *p))
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+void
+egg_dn_add_string_part (GNode *asn,
+                        GQuark oid,
+                        const gchar *string)
+{
+	EggBytes *bytes;
+	GNode *node;
+	GNode *value;
+	GNode *val;
+	guint flags;
+
+	g_return_if_fail (asn != NULL);
+	g_return_if_fail (oid != 0);
+	g_return_if_fail (string != NULL);
+
+	flags = egg_oid_get_flags (oid);
+	g_return_if_fail (flags & EGG_OID_PRINTABLE);
+
+	/* Add the RelativeDistinguishedName */
+	node = egg_asn1x_append (asn);
+
+	/* Add the AttributeTypeAndValue */
+	node = egg_asn1x_append (node);
+
+	egg_asn1x_set_oid_as_quark (egg_asn1x_node (node, "type", NULL), oid);
+
+	value = egg_asn1x_create_quark (pkix_asn1_tab, oid);
+
+	if (egg_asn1x_type (value) == EGG_ASN1X_CHOICE) {
+		if (is_printable_string (string))
+			val = egg_asn1x_node (value, "printableString", NULL);
+		else if (is_ascii_string (string))
+			val = egg_asn1x_node (value, "ia5String", NULL);
+		else
+			val = egg_asn1x_node (value, "utf8String", NULL);
+		egg_asn1x_set_choice (value, val);
+	} else {
+		val = value;
+	}
+
+	egg_asn1x_set_string_as_utf8 (val, g_strdup (string), g_free);
+
+	bytes = egg_asn1x_encode (value, NULL);
+	if (bytes == NULL) {
+		g_warning ("couldn't build dn string value: %s", egg_asn1x_message (value));
+		return;
+	}
+
+	if (!egg_asn1x_set_element_raw (egg_asn1x_node (node, "value", NULL), bytes))
+		g_return_if_reached ();
+
+	egg_asn1x_destroy (value);
+	egg_bytes_unref (bytes);
 }

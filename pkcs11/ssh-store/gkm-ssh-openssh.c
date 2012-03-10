@@ -155,31 +155,34 @@ read_public (EggBuffer *req, gsize *offset, gcry_sexp_t *key, int *algo)
 }
 
 static GkmDataResult
-load_encrypted_key (const guchar *data, gsize n_data, const gchar *dekinfo,
-                    const gchar *password, gssize n_password, gcry_sexp_t *skey)
+load_encrypted_key (EggBytes *data,
+                    const gchar *dekinfo,
+                    const gchar *password,
+                    gssize n_password,
+                    gcry_sexp_t *skey)
 {
 	guchar *decrypted = NULL;
 	gsize n_decrypted = 0;
+	EggBytes *bytes;
 	GkmDataResult ret;
-	gboolean res;
 	gint length;
 
 	/* Decrypt, this will result in garble if invalid password */
-	res = egg_openssl_decrypt_block (dekinfo, password, n_password,
-	                                      data, n_data, &decrypted, &n_decrypted);
-	if (!res)
+	decrypted = egg_openssl_decrypt_block (dekinfo, password, n_password,
+	                                       data, &n_decrypted);
+	if (!decrypted)
 		return FALSE;
-
-	g_assert (decrypted);
 
 	/* Unpad the DER data */
 	length = egg_asn1x_element_length (decrypted, n_decrypted);
 	if (length > 0)
 		n_decrypted = length;
 
+	bytes = egg_bytes_new_with_free_func (decrypted, n_decrypted, egg_secure_free, decrypted);
+
 	/* Try to parse */
-	ret = gkm_data_der_read_private_key (decrypted, n_decrypted, skey);
-	egg_secure_free (decrypted);
+	ret = gkm_data_der_read_private_key (bytes, skey);
+	egg_bytes_unref (bytes);
 
 	if (ret != GKM_DATA_UNRECOGNIZED)
 		return ret;
@@ -207,10 +210,8 @@ is_private_key_type (GQuark type)
 
 static void
 parsed_pem_block (GQuark type,
-                  const guchar *data,
-                  gsize n_data,
-                  const gchar *outer,
-                  gsize n_outer,
+                  EggBytes *data,
+                  EggBytes *outer,
                   GHashTable *headers,
                   gpointer user_data)
 {
@@ -229,21 +230,19 @@ parsed_pem_block (GQuark type,
 	/* If it's encrypted ... */
 	dekinfo = egg_openssl_get_dekinfo (headers);
 	if (dekinfo) {
-		ctx->result = load_encrypted_key (data, n_data, dekinfo, ctx->password,
+		ctx->result = load_encrypted_key (data, dekinfo, ctx->password,
 		                                  ctx->n_password, &ctx->sexp);
 
 	/* not encryted, just load the data */
 	} else {
-		ctx->result = gkm_data_der_read_private_key (data, n_data, &ctx->sexp);
+		ctx->result = gkm_data_der_read_private_key (data, &ctx->sexp);
 	}
 }
 
 static void
 digest_pem_block (GQuark type,
-                  const guchar *data,
-                  gsize n_data,
-                  const gchar *outer,
-                  gsize n_outer,
+                  EggBytes *data,
+                  EggBytes *outer,
                   GHashTable *headers,
                   gpointer user_data)
 {
@@ -258,7 +257,9 @@ digest_pem_block (GQuark type,
 	if (*result != NULL)
 		return;
 
-	*result = g_compute_checksum_for_data (G_CHECKSUM_SHA1, data, n_data);
+	*result = g_compute_checksum_for_data (G_CHECKSUM_SHA1,
+	                                       egg_bytes_get_data (data),
+	                                       egg_bytes_get_size (data));
 }
 
 /* ------------------------------------------------------------------------------
@@ -372,8 +373,9 @@ gkm_ssh_openssh_parse_public_key (gconstpointer input, gsize n_data,
 }
 
 GkmDataResult
-gkm_ssh_openssh_parse_private_key (gconstpointer data, gsize n_data,
-                                   const gchar *password, gssize n_password,
+gkm_ssh_openssh_parse_private_key (EggBytes *data,
+                                   const gchar *password,
+                                   gssize n_password,
                                    gcry_sexp_t *sexp)
 {
 	ParsePrivate ctx;
@@ -386,7 +388,7 @@ gkm_ssh_openssh_parse_private_key (gconstpointer data, gsize n_data,
 	ctx.password = password;
 	ctx.n_password = n_password;
 
-	num = egg_armor_parse (data, n_data, parsed_pem_block, &ctx);
+	num = egg_armor_parse (data, parsed_pem_block, &ctx);
 
 	/* Didn't find any private key there */
 	if (num == 0 || !ctx.seen) {
@@ -398,10 +400,10 @@ gkm_ssh_openssh_parse_private_key (gconstpointer data, gsize n_data,
 	return ctx.result;
 }
 
-gchar*
-gkm_ssh_openssh_digest_private_key (const guchar *data, gsize n_data)
+gchar *
+gkm_ssh_openssh_digest_private_key (EggBytes *data)
 {
 	gchar *result = NULL;
-	egg_armor_parse (data, n_data, digest_pem_block, &result);
+	egg_armor_parse (data, digest_pem_block, &result);
 	return result;
 }

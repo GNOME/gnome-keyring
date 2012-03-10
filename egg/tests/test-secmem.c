@@ -32,7 +32,7 @@
 #include <string.h>
 
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 /* Declared in egg-secure-memory.c */
 extern int egg_secure_warnings;

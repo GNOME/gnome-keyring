@@ -46,12 +46,6 @@
 #include <valgrind/memcheck.h>
 #endif
 
-/*
- * Use this to force all memory through malloc
- * for use with valgrind and the like 
- */
-#define FORCE_FALLBACK_MEMORY 0
-
 #define DEBUG_SECURE_MEMORY 0
 
 #if DEBUG_SECURE_MEMORY 
@@ -72,12 +66,12 @@
 #endif
 
 #define DO_LOCK() \
-	egg_memory_lock (); 
-	
-#define DO_UNLOCK() \
-	egg_memory_unlock ();
+	EGG_SECURE_GLOBALS.lock ();
 
-static int lock_warning = 1;
+#define DO_UNLOCK() \
+	EGG_SECURE_GLOBALS.unlock ();
+
+static int show_warning = 1;
 int egg_secure_warnings = 1;
 
 /* 
@@ -169,17 +163,25 @@ typedef struct _Pool {
 	Item items[1];         /* Actual items hang off here */
 } Pool;
 
-static Pool *all_pools = NULL;
-
-static void*
+static void *
 pool_alloc (void)
 {
 	Pool *pool;
 	void *pages, *item;
 	size_t len, i;
-	
+
+	if (!EGG_SECURE_GLOBALS.pool_version ||
+	    strcmp (EGG_SECURE_GLOBALS.pool_version, EGG_SECURE_POOL_VER_STR) != 0) {
+		if (show_warning && egg_secure_warnings)
+			fprintf (stderr, "the secure memory pool version does not match the code '%s' != '%s'\n",
+			         EGG_SECURE_GLOBALS.pool_version ? EGG_SECURE_GLOBALS.pool_version : "(null)",
+			         EGG_SECURE_POOL_VER_STR);
+		show_warning = 0;
+		return NULL;
+	}
+
 	/* A pool with an available item */
-	for (pool = all_pools; pool; pool = pool->next) {
+	for (pool = EGG_SECURE_GLOBALS.pool_data; pool; pool = pool->next) {
 		if (unused_peek (&pool->unused))
 			break;
 	}
@@ -193,8 +195,8 @@ pool_alloc (void)
 
 		/* Fill in the block header, and inlude in block list */
 		pool = pages;
-		pool->next = all_pools;
-		all_pools = pool;
+		pool->next = EGG_SECURE_GLOBALS.pool_data;
+		EGG_SECURE_GLOBALS.pool_data = pool;
 		pool->length = len;
 		pool->used = 0;
 		pool->unused = NULL;
@@ -212,11 +214,11 @@ pool_alloc (void)
 	++pool->used;
 	ASSERT (unused_peek (&pool->unused));
 	item = unused_pop (&pool->unused);
-	
+
 #ifdef WITH_VALGRIND
 	VALGRIND_MEMPOOL_ALLOC (pool, item, sizeof (Item));
 #endif
-	
+
 	return memset (item, 0, sizeof (Item));
 }
 
@@ -229,7 +231,8 @@ pool_free (void* item)
 	ptr = item;
 	
 	/* Find which block this one belongs to */
-	for (at = &all_pools, pool = *at; pool; at = &pool->next, pool = *at) {
+	for (at = (Pool **)&EGG_SECURE_GLOBALS.pool_data, pool = *at;
+	     pool != NULL; at = &pool->next, pool = *at) {
 		beg = (char*)pool->items;
 		end = (char*)pool + pool->length - sizeof (Item);
 		if (ptr >= beg && ptr <= end) {
@@ -246,20 +249,20 @@ pool_free (void* item)
 	/* No more meta cells used in this block, remove from list, destroy */
 	if (pool->used == 1) {
 		*at = pool->next;
-		
+
 #ifdef WITH_VALGRIND
 		VALGRIND_DESTROY_MEMPOOL (pool);
 #endif
-		
+
 		munmap (pool, pool->length);
 		return;
 	}
-	
+
 #ifdef WITH_VALGRIND
 	VALGRIND_MEMPOOL_FREE (pool, item);
 	VALGRIND_MAKE_MEM_UNDEFINED (item, sizeof (Item));
 #endif
-	
+
 	--pool->used;
 	memset (item, 0xCD, sizeof (Item));
 	unused_push (&pool->unused, item);
@@ -276,7 +279,7 @@ pool_valid (void* item)
 	ptr = item;
 	
 	/* Find which block this one belongs to */
-	for (pool = all_pools; pool; pool = pool->next) {
+	for (pool = EGG_SECURE_GLOBALS.pool_data; pool; pool = pool->next) {
 		beg = (char*)pool->items;
 		end = (char*)pool + pool->length - sizeof (Item);
 		if (ptr >= beg && ptr <= end) 
@@ -404,12 +407,33 @@ sec_is_valid_word (Block *block, word_t *word)
 	return (word >= block->words && word < block->words + block->n_words);
 }
 
-static inline void*
-sec_clear_memory (void *memory, size_t from, size_t to)
+static inline void
+sec_clear_undefined (void *memory,
+                     size_t from,
+                     size_t to)
 {
+	char *ptr = memory;
 	ASSERT (from <= to);
-	memset ((char*)memory + from, 0, to - from);
-	return memory;
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_UNDEFINED (ptr + from, to - from);
+#endif
+	memset (ptr + from, 0, to - from);
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_UNDEFINED (ptr + from, to - from);
+#endif
+}
+static inline void
+sec_clear_noaccess (void *memory, size_t from, size_t to)
+{
+	char *ptr = memory;
+	ASSERT (from <= to);
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_UNDEFINED (ptr + from, to - from);
+#endif
+	memset (ptr + from, 0, to - from);
+#ifdef WITH_VALGRIND
+	VALGRIND_MAKE_MEM_NOACCESS (ptr + from, to - from);
+#endif
 }
 
 static Cell*
@@ -567,7 +591,7 @@ sec_free (Block *block, void *memory)
 #endif
 
 	sec_check_guards (cell);
-	sec_clear_memory (memory, 0, cell->requested);
+	sec_clear_noaccess (memory, 0, cell->requested);
 
 	sec_check_guards (cell);
 	ASSERT (cell->requested > 0);
@@ -609,6 +633,34 @@ sec_free (Block *block, void *memory)
         cell->requested = 0;
         --block->n_used;
         return NULL;
+}
+
+static void
+memcpy_with_vbits (void *dest,
+                   void *src,
+                   size_t length)
+{
+#ifdef WITH_VALGRIND
+	int vbits_setup = 0;
+	void *vbits = NULL;
+
+	if (RUNNING_ON_VALGRIND) {
+		vbits = malloc (length);
+		if (vbits != NULL)
+			vbits_setup = VALGRIND_GET_VBITS (src, vbits, length);
+		VALGRIND_MAKE_MEM_DEFINED (src, length);
+	}
+#endif
+
+	memcpy (dest, src, length);
+
+#ifdef WITH_VALGRIND
+	if (vbits_setup == 1) {
+		VALGRIND_SET_VBITS (dest, vbits, length);
+		VALGRIND_SET_VBITS (src, vbits, length);
+	}
+	free (vbits);
+#endif
 }
 
 static void*
@@ -658,19 +710,15 @@ sec_realloc (Block *block,
 		cell->requested = length;
 		alloc = sec_cell_to_memory (cell);
 
-#ifdef WITH_VALGRIND
-		VALGRIND_MAKE_MEM_DEFINED (alloc, length);
-#endif
-		
 		/* 
 		 * Even though we may be reusing the same cell, that doesn't
 		 * mean that the allocation is shrinking. It could have shrunk
 		 * and is now expanding back some. 
 		 */ 
 		if (length < valid)
-			return sec_clear_memory (alloc, length, valid);
-		else
-			return alloc;
+			sec_clear_undefined (alloc, length, valid);
+
+		return alloc;
 	}
 	
 	/* Need braaaaaiiiiiinsss... */
@@ -702,18 +750,14 @@ sec_realloc (Block *block,
 		cell->requested = length;
 		cell->tag = tag;
 		alloc = sec_cell_to_memory (cell);
-
-#ifdef WITH_VALGRIND
-		VALGRIND_MAKE_MEM_DEFINED (alloc, length);
-#endif
-		
-		return sec_clear_memory (alloc, valid, length);
+		sec_clear_undefined (alloc, valid, length);
+		return alloc;
 	}
 
 	/* That didn't work, try alloc/free */
 	alloc = sec_alloc (block, tag, length);
 	if (alloc) {
-		memcpy (alloc, memory, valid);
+		memcpy_with_vbits (alloc, memory, valid);
 		sec_free (block, memory);
 	}
 	
@@ -758,7 +802,12 @@ sec_validate (Block *block)
 {
 	Cell *cell;
 	word_t *word, *last;
-	
+
+#ifdef WITH_VALGRIND
+	if (RUNNING_ON_VALGRIND)
+		return;
+#endif
+
 	word = block->words;
 	last = word + block->n_words;
 
@@ -781,7 +830,7 @@ sec_validate (Block *block)
 			ASSERT (cell->prev->next == cell);
 			ASSERT (cell->requested <= (cell->n_words - 2) * sizeof (word_t));
 		
-			/* An unused block */
+		/* An unused block */
 		} else {
 			ASSERT (cell->tag == NULL);
 			ASSERT (cell->next != NULL);
@@ -818,18 +867,18 @@ sec_acquire_pages (size_t *sz,
 #if defined(HAVE_MLOCK)
 	pages = mmap (0, *sz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
 	if (pages == MAP_FAILED) {
-		if (lock_warning && egg_secure_warnings)
+		if (show_warning && egg_secure_warnings)
 			fprintf (stderr, "couldn't map %lu bytes of memory (%s): %s\n",
 			         (unsigned long)*sz, during_tag, strerror (errno));
-		lock_warning = 0;
+		show_warning = 0;
 		return NULL;
 	}
 	
 	if (mlock (pages, *sz) < 0) {
-		if (lock_warning && egg_secure_warnings && errno != EPERM) {
+		if (show_warning && egg_secure_warnings && errno != EPERM) {
 			fprintf (stderr, "couldn't lock %lu bytes of memory (%s): %s\n",
 			         (unsigned long)*sz, during_tag, strerror (errno));
-			lock_warning = 0;
+			show_warning = 0;
 		}
 		munmap (pages, *sz);
 		return NULL;
@@ -837,13 +886,13 @@ sec_acquire_pages (size_t *sz,
 	
 	DEBUG_ALLOC ("gkr-secure-memory: new block ", *sz);
 	
-	lock_warning = 1;
+	show_warning = 1;
 	return pages;
 	
 #else
-	if (lock_warning && egg_secure_warnings)
+	if (show_warning && egg_secure_warnings)
 		fprintf (stderr, "your system does not support private memory");
-	lock_warning = 0;
+	show_warning = 0;
 	return NULL;
 #endif
 
@@ -884,11 +933,10 @@ sec_block_create (size_t size,
 
 	ASSERT (during_tag);
 
-#if FORCE_FALLBACK_MEMORY
 	/* We can force all all memory to be malloced */
-	return NULL;
-#endif
-	
+	if (getenv ("SECMEM_FORCE_FALLBACK"))
+		return NULL;
+
 	block = pool_alloc ();
 	if (!block)
 		return NULL;
@@ -1011,8 +1059,8 @@ egg_secure_alloc_full (const char *tag,
 	
 	DO_UNLOCK ();
 
-	if (!memory && (flags & EGG_SECURE_USE_FALLBACK)) {
-		memory = egg_memory_fallback (NULL, length);
+	if (!memory && (flags & EGG_SECURE_USE_FALLBACK) && EGG_SECURE_GLOBALS.fallback != NULL) {
+		memory = EGG_SECURE_GLOBALS.fallback (NULL, length);
 		if (memory) /* Our returned memory is always zeroed */
 			memset (memory, 0, length);
 	}
@@ -1085,17 +1133,17 @@ egg_secure_realloc_full (const char *tag,
 	DO_UNLOCK ();		
 	
 	if (!block) {
-		if ((flags & EGG_SECURE_USE_FALLBACK)) {
+		if ((flags & EGG_SECURE_USE_FALLBACK) && EGG_SECURE_GLOBALS.fallback) {
 			/* 
 			 * In this case we can't zero the returned memory, 
 			 * because we don't know what the block size was.
 			 */
-			return egg_memory_fallback (memory, length);
+			return EGG_SECURE_GLOBALS.fallback (memory, length);
 		} else {
 			if (egg_secure_warnings)
-				fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
+				fprintf (stderr, "memory does not belong to secure memory pool: 0x%08lx\n",
 				         (unsigned long)memory);
-			ASSERT (0 && "memory does does not belong to gnome-keyring");
+			ASSERT (0 && "memory does does not belong to secure memory pool");
 			return NULL;
 		}
 	}
@@ -1103,7 +1151,7 @@ egg_secure_realloc_full (const char *tag,
 	if (donew) {
 		alloc = egg_secure_alloc_full (tag, length, flags);
 		if (alloc) {
-			memcpy (alloc, memory, previous);
+			memcpy_with_vbits (alloc, memory, previous);
 			egg_secure_free_full (memory, flags);
 		}
 	}
@@ -1151,13 +1199,13 @@ egg_secure_free_full (void *memory, int flags)
 	DO_UNLOCK ();
 	
 	if (!block) {
-		if ((flags & EGG_SECURE_USE_FALLBACK)) {
-			egg_memory_fallback (memory, 0);
+		if ((flags & EGG_SECURE_USE_FALLBACK) && EGG_SECURE_GLOBALS.fallback) {
+			EGG_SECURE_GLOBALS.fallback (memory, 0);
 		} else {
 			if (egg_secure_warnings)
-				fprintf (stderr, "memory does not belong to gnome-keyring: 0x%08lx\n", 
+				fprintf (stderr, "memory does not belong to secure memory pool: 0x%08lx\n",
 				         (unsigned long)memory);
-			ASSERT (0 && "memory does does not belong to gnome-keyring");
+			ASSERT (0 && "memory does does not belong to secure memory pool");
 		}
 	}
 } 

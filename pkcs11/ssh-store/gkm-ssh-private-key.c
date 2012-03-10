@@ -46,9 +46,8 @@ struct _GkmSshPrivateKey {
 	GkmPrivateXsaKey parent;
 
 	GkmSshPublicKey *pubkey;
+	EggBytes *private_bytes;
 	gchar *label;
-	guchar *private_data;
-	gsize n_private_data;
 
 	gboolean is_encrypted;
 };
@@ -69,8 +68,7 @@ unlock_private_key (GkmSshPrivateKey *self, const gchar *password,
 
 	g_assert (GKM_IS_SSH_PRIVATE_KEY (self));
 
-	res = gkm_ssh_openssh_parse_private_key (self->private_data,
-	                                         self->n_private_data,
+	res = gkm_ssh_openssh_parse_private_key (self->private_bytes,
 	                                         password, n_password, &sexp);
 
 	switch (res) {
@@ -99,8 +97,10 @@ unlock_private_key (GkmSshPrivateKey *self, const gchar *password,
 }
 
 static void
-realize_and_take_data (GkmSshPrivateKey *self, gcry_sexp_t sexp, gchar *comment,
-                       guchar *private_data, gsize n_private_data)
+realize_and_take_data (GkmSshPrivateKey *self,
+                       gcry_sexp_t sexp,
+                       gchar *comment,
+                       EggBytes *private_data)
 {
 	GkmSexp *wrapper;
 
@@ -118,9 +118,9 @@ realize_and_take_data (GkmSshPrivateKey *self, gcry_sexp_t sexp, gchar *comment,
 	g_free (comment);
 
 	/* Own the data */
-	g_free (self->private_data);
-	self->private_data = private_data;
-	self->n_private_data = n_private_data;
+	if (self->private_bytes)
+		egg_bytes_unref (self->private_bytes);
+	self->private_bytes = private_data;
 
 	/* Try to parse the private data, and note if it's not actually encrypted */
 	self->is_encrypted = TRUE;
@@ -148,9 +148,9 @@ gkm_ssh_private_key_get_attribute (GkmObject *base, GkmSession *session, CK_ATTR
 
 	/* COMPAT: Previous versions of gnome-keyring used this to save unlock passwords */
 	case CKA_GNOME_INTERNAL_SHA1:
-		if (!self->private_data)
+		if (!self->private_bytes)
 			return CKR_ATTRIBUTE_TYPE_INVALID;
-		digest = gkm_ssh_openssh_digest_private_key (self->private_data, self->n_private_data);
+		digest = gkm_ssh_openssh_digest_private_key (self->private_bytes);
 		rv = gkm_attribute_set_string (attr, digest);
 		g_free (digest);
 		return rv;
@@ -231,11 +231,9 @@ gkm_ssh_private_key_finalize (GObject *obj)
 
 	g_assert (self->pubkey == NULL);
 
-	g_free (self->private_data);
-	self->private_data = NULL;
-
+	if (self->private_bytes)
+		egg_bytes_unref (self->private_bytes);
 	g_free (self->label);
-	self->label = NULL;
 
 	G_OBJECT_CLASS (gkm_ssh_private_key_parent_class)->finalize (obj);
 }
@@ -350,7 +348,7 @@ gkm_ssh_private_key_parse (GkmSshPrivateKey *self, const gchar *public_path,
 	if (comment == NULL)
 		comment = g_path_get_basename (private_path);
 
-	realize_and_take_data (self, sexp, comment, private_data, n_private_data);
+	realize_and_take_data (self, sexp, comment, egg_bytes_new_take (private_data, n_private_data));
 	return TRUE;
 }
 

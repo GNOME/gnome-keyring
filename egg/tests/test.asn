@@ -18,6 +18,8 @@ TestImplicit ::= [5] IMPLICIT OCTET STRING
 
 TestExplicit ::= [5] EXPLICIT OCTET STRING
 
+TestUniversal ::= [UNIVERSAL 5] IMPLICIT OCTET STRING
+
 TestBitString ::= BIT STRING
 
 TestIntegers ::= SEQUENCE {

@@ -26,6 +26,8 @@
 
 #include "gkm-types.h"
 
+#include "egg/egg-bytes.h"
+
 G_BEGIN_DECLS
 
 #define GKM_TYPE_SERIALIZABLE                 (gkm_serializable_get_type())
@@ -41,22 +43,22 @@ struct _GkmSerializableIface {
 
 	const gchar *extension;
 
-	gboolean (*load) (GkmSerializable *self, GkmSecret *login, gconstpointer data, gsize n_data);
+	gboolean   (*load) (GkmSerializable *self,
+	                    GkmSecret *login,
+	                    EggBytes *data);
 
-	gboolean (*save) (GkmSerializable *self, GkmSecret *login, gpointer *data, gsize *n_data);
+	EggBytes * (*save) (GkmSerializable *self,
+	                    GkmSecret *login);
 };
 
 GType                  gkm_serializable_get_type                          (void) G_GNUC_CONST;
 
 gboolean               gkm_serializable_load                              (GkmSerializable *self,
                                                                            GkmSecret *login,
-                                                                           gconstpointer data,
-                                                                           gsize n_data);
+                                                                           EggBytes *data);
 
-gboolean                gkm_serializable_save                             (GkmSerializable *self,
-                                                                           GkmSecret *login,
-                                                                           gpointer *data,
-                                                                           gsize *n_data);
+EggBytes *             gkm_serializable_save                              (GkmSerializable *self,
+                                                                           GkmSecret *login);
 
 G_END_DECLS
 

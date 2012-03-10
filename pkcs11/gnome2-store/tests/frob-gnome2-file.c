@@ -39,7 +39,7 @@
 #include <string.h>
 #include <unistd.h>
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static void G_GNUC_NORETURN
 failure (const gchar* message, ...)

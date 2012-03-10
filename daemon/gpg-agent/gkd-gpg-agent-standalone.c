@@ -36,7 +36,7 @@
 #include <string.h>
 #include <unistd.h>
 
-EGG_SECURE_GLIB_DEFINITIONS();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static gboolean
 accept_client (GIOChannel *channel, GIOCondition cond, gpointer unused)

@@ -92,16 +92,20 @@ G_DEFINE_TYPE (GkmGnome2Storage, gkm_gnome2_storage, GKM_TYPE_STORE);
 #define UNWANTED_IDENTIFIER_CHARS  ":/\\<>|\t\n\r\v "
 
 static gchar*
-name_for_subject (const guchar *subject, gsize n_subject)
+name_for_subject (const guchar *subject,
+                  gsize n_subject)
 {
 	GNode *asn;
 	gchar *name;
+	EggBytes *bytes;
 
 	g_assert (subject);
 	g_assert (n_subject);
 
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Name", subject, n_subject);
-	g_return_val_if_fail (asn, NULL);
+	bytes = egg_bytes_new (subject, n_subject);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Name", bytes);
+	g_return_val_if_fail (asn != NULL, NULL);
+	egg_bytes_unref (bytes);
 
 	name = egg_dn_read_part (egg_asn1x_node (asn, "rdnSequence", NULL), "CN");
 	egg_asn1x_destroy (asn);
@@ -495,6 +499,7 @@ data_file_entry_added (GkmGnome2File *store, const gchar *identifier, GkmGnome2S
 {
 	GError *error = NULL;
 	GkmObject *object;
+	EggBytes *bytes;
 	gboolean ret;
 	guchar *data;
 	gsize n_data;
@@ -531,6 +536,7 @@ data_file_entry_added (GkmGnome2File *store, const gchar *identifier, GkmGnome2S
 	/* Make sure that the object wasn't tampered with */
 	if (!check_object_hash (self, identifier, data, n_data)) {
 		g_message ("file in user store doesn't match hash: %s", identifier);
+		g_free (data);
 		return;
 	}
 
@@ -540,13 +546,15 @@ data_file_entry_added (GkmGnome2File *store, const gchar *identifier, GkmGnome2S
 	g_return_if_fail (GKM_IS_SERIALIZABLE (object));
 	g_return_if_fail (GKM_SERIALIZABLE_GET_INTERFACE (object)->extension);
 
+	bytes = egg_bytes_new_take (data, n_data);
+
 	/* And load the data into it */
-	if (gkm_serializable_load (GKM_SERIALIZABLE (object), self->login, data, n_data))
+	if (gkm_serializable_load (GKM_SERIALIZABLE (object), self->login, bytes))
 		take_object_ownership (self, identifier, object);
 	else
 		g_message ("failed to load file in user store: %s", identifier);
 
-	g_free (data);
+	egg_bytes_unref (bytes);
 	g_object_unref (object);
 }
 
@@ -587,6 +595,7 @@ relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar 
 {
 	GError *error = NULL;
 	GkmObject *object;
+	EggBytes *bytes;
 	gpointer data;
 	gsize n_data;
 	GType type;
@@ -628,23 +637,26 @@ relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar 
 	if (!check_object_hash (self, identifier, data, n_data)) {
 		g_message ("file in data store doesn't match hash: %s", identifier);
 		gkm_transaction_fail (transaction, CKR_GENERAL_ERROR);
+		g_free (data);
 		return;
 	}
 
+	bytes = egg_bytes_new_take (data, n_data);
+
 	/* Load it into our temporary object */
-	if (!gkm_serializable_load (GKM_SERIALIZABLE (object), old_login, data, n_data)) {
+	if (!gkm_serializable_load (GKM_SERIALIZABLE (object), old_login, bytes)) {
 		g_message ("unrecognized or invalid user store file: %s", identifier);
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
-		g_free (data);
+		egg_bytes_unref (bytes);
 		g_object_unref (object);
 		return;
 	}
 
-	g_free (data);
-	data = NULL;
+	egg_bytes_unref (bytes);
 
 	/* Read it out of our temporary object */
-	if (!gkm_serializable_save (GKM_SERIALIZABLE (object), new_login, &data, &n_data)) {
+	bytes = gkm_serializable_save (GKM_SERIALIZABLE (object), new_login);
+	if (bytes == NULL) {
 		g_warning ("unable to serialize data with new login: %s", identifier);
 		gkm_transaction_fail (transaction, CKR_GENERAL_ERROR);
 		g_object_unref (object);
@@ -661,8 +673,7 @@ relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar 
 	if (!gkm_transaction_get_failed (transaction))
 		store_object_hash (self, transaction, identifier, data, n_data);
 
-	g_free (data);
-
+	egg_bytes_unref (bytes);
 }
 
 typedef struct _RelockArgs {
@@ -1045,8 +1056,7 @@ gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, 
 	gboolean is_private;
 	GkmDataResult res;
 	gchar *identifier;
-	gpointer data;
-	gsize n_data;
+	EggBytes *data;
 	gchar *path;
 
 	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
@@ -1113,17 +1123,23 @@ gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, 
 	}
 
 	/* Serialize the object in question */
-	if (!gkm_serializable_save (GKM_SERIALIZABLE (object), is_private ? self->login : NULL, &data, &n_data)) {
+	data = gkm_serializable_save (GKM_SERIALIZABLE (object), is_private ? self->login : NULL);
+
+	if (data == NULL) {
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
 		g_return_if_reached ();
 	}
 
 	path = g_build_filename (self->directory, identifier, NULL);
-	gkm_transaction_write_file (transaction, path, data, n_data);
+	gkm_transaction_write_file (transaction, path,
+	                            egg_bytes_get_data (data),
+	                            egg_bytes_get_size (data));
 
 	/* Make sure we write in the object hash */
 	if (!gkm_transaction_get_failed (transaction))
-		store_object_hash (self, transaction, identifier, data, n_data);
+		store_object_hash (self, transaction, identifier,
+		                   egg_bytes_get_data (data),
+		                   egg_bytes_get_size (data));
 
 	/* Now we decide to own the object */
 	if (!gkm_transaction_get_failed (transaction))
@@ -1131,7 +1147,7 @@ gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, 
 
 	g_free (identifier);
 	g_free (path);
-	g_free (data);
+	egg_bytes_unref (data);
 }
 
 void

@@ -1,3 +1,12 @@
+include $(top_srcdir)/Makefile.decl
+
+ASN_FILES = \
+	test.asn
+
+ASN_SRCS = $(ASN_FILES:.asn=.asn.h)
+
+BUILT_SOURCES = \
+	$(ASN_SRCS)
 
 INCLUDES = \
 	-I$(top_builddir) \
@@ -15,9 +24,6 @@ LDADD = \
 	$(LIBGCRYPT_LIBS)
 
 noinst_LIBRARIES = libgkm-mock.a
-
-BUILT_SOURCES = \
-	asn1-def-test.h
 
 libgkm_mock_a_SOURCES = \
 	mock-module.c mock-module.h \
@@ -72,11 +78,8 @@ check-local: test
 
 all-local: $(check_PROGRAMS)
 
-asn1-def-test.h: test.asn
-	$(ASN1PARSER) -o asn1-def-test.h $(srcdir)/test.asn
-
 EXTRA_DIST = \
-	test.asn \
+	$(ASN_FILES) \
 	files
 
 DISTCLEANFILES = \

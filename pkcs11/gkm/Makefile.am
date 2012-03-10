@@ -1,4 +1,3 @@
-
 INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
@@ -13,8 +12,7 @@ noinst_LTLIBRARIES = \
 	libgkm.la
 
 BUILT_SOURCES = \
-	gkm-marshal.c gkm-marshal.h \
-	asn1-def-pk.h asn1-def-pkix.h
+	gkm-marshal.c gkm-marshal.h
 
 libgkm_la_SOURCES = \
 	gkm-aes-key.c gkm-aes-key.h \
@@ -83,16 +81,8 @@ gkm-marshal.c: gkm-marshal.list $(GLIB_GENMARSHAL)
 	echo "#include \"gkm-marshal.h\"" > $@ && \
 	$(GLIB_GENMARSHAL) $< --body --prefix=gkm_marshal >> $@
 
-asn1-def-pk.h: pk.asn
-	$(ASN1PARSER) -o asn1-def-pk.h $<
-
-asn1-def-pkix.h: pkix.asn
-	$(ASN1PARSER) -o asn1-def-pkix.h $<
-
 EXTRA_DIST = \
-	gkm-marshal.list \
-	pkix.asn \
-	pk.asn
+	gkm-marshal.list
 
 # -------------------------------------------------------------------------------
 

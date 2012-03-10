@@ -206,19 +206,19 @@ static gboolean do_warning = TRUE;
 
 G_LOCK_DEFINE_STATIC (memory_mutex);
 
-void
+static void
 egg_memory_lock (void)
 {
 	G_LOCK (memory_mutex);
 }
 
-void
+static void
 egg_memory_unlock (void)
 {
 	G_UNLOCK (memory_mutex);
 }
 
-void*
+static void *
 egg_memory_fallback (void *p, size_t sz)
 {
 	const gchar *env;
@@ -253,6 +253,8 @@ egg_memory_fallback (void *p, size_t sz)
 
 	return g_realloc (p, sz);
 }
+
+EGG_SECURE_DEFINE_GLOBALS (egg_memory_lock, egg_memory_unlock, egg_memory_fallback);
 
 /* -----------------------------------------------------------------------------
  * LOGS

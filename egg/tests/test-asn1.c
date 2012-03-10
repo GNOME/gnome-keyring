@@ -28,13 +28,13 @@
 #include "egg/egg-testing.h"
 
 #include <glib.h>
-#include <libtasn1.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-extern const ASN1_ARRAY_TYPE test_asn1_tab[];
+typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
+#include "test.asn.h"
 
 const gchar I33[] =           "\x02\x01\x2A";
 const gchar I253[] =           "\x02\x02\x00\xFD";
@@ -42,7 +42,8 @@ const gchar BFALSE[] =        "\x01\x01\x00";
 const gchar BTRUE[] =         "\x01\x01\xFF";
 const gchar SFARNSWORTH[] =   "\x04\x0A""farnsworth";
 const gchar SIMPLICIT[] =     "\x85\x08""implicit";
-const gchar SEXPLICIT[] =     "\xE5\x0A\x04\x08""explicit";
+const gchar SEXPLICIT[] =     "\xA5\x0A\x04\x08""explicit";
+const gchar SUNIVERSAL[] =    "\x05\x09""universal";
 const gchar TGENERALIZED[] =  "\x18\x0F""20070725130528Z";
 const gchar BITS_TEST[] =  "\x03\x04\x06\x6e\x5d\xc0";
 const gchar BITS_BAD[] =  "\x03\x04\x06\x6e\x5d\xc1";
@@ -60,31 +61,38 @@ const gchar ENUM_THREE[] =           "\x0A\x01\x03";
 static void
 test_boolean (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
 	gboolean value;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBoolean");
 	g_assert (asn);
 
+	g_assert_cmpint (EGG_ASN1X_BOOLEAN, ==, egg_asn1x_type (asn));
+
 	/* Shouldn't succeed */
 	if (egg_asn1x_get_boolean (asn, &value))
 		g_assert_not_reached ();
 
 	/* Decode a false */
-	if (!egg_asn1x_decode (asn, BFALSE, XL (BFALSE)))
+	bytes = egg_bytes_new_static (BFALSE, XL (BFALSE));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
 	value = TRUE;
 	if (!egg_asn1x_get_boolean (asn, &value))
 		g_assert_not_reached ();
 	g_assert (value == FALSE);
+	egg_bytes_unref (bytes);
 
 	/* Decode a true */
-	if (!egg_asn1x_decode (asn, BTRUE, XL (BTRUE)))
+	bytes = egg_bytes_new_static (BTRUE, XL (BTRUE));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
 	value = FALSE;
 	if (!egg_asn1x_get_boolean (asn, &value))
 		g_assert_not_reached ();
 	g_assert (value == TRUE);
+	egg_bytes_unref (bytes);
 
 	egg_asn1x_clear (asn);
 
@@ -99,23 +107,24 @@ static void
 test_null (void)
 {
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
+	EggBytes *data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestNull");
 	g_assert (asn);
 
+	g_assert_cmpint (EGG_ASN1X_NULL, ==, egg_asn1x_type (asn));
+
 	if (!egg_asn1x_set_null (asn))
 		g_assert_not_reached ();
 
-	data = egg_asn1x_encode (asn, g_realloc, &n_data);
-	egg_assert_cmpmem (NULL_TEST, XL (NULL_TEST), ==, data, n_data);
+	data = egg_asn1x_encode (asn, g_realloc);
+	egg_assert_cmpmem (NULL_TEST, XL (NULL_TEST), ==, egg_bytes_get_data (data), egg_bytes_get_size (data));
 
-	if (!egg_asn1x_decode (asn, data, n_data))
+	if (!egg_asn1x_decode (asn, data))
 		g_assert_not_reached ();
 
 	egg_asn1x_destroy (asn);
-	g_free (data);
+	egg_bytes_unref (data);
 }
 
 static void
@@ -123,20 +132,25 @@ test_integer (void)
 {
 	GNode *asn;
 	gulong value;
+	EggBytes *bytes;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestInteger");
 	g_assert (asn);
+
+	g_assert_cmpint (EGG_ASN1X_INTEGER, ==, egg_asn1x_type (asn));
 
 	/* Shouldn't succeed */
 	if (egg_asn1x_get_integer_as_ulong (asn, &value))
 		g_assert_not_reached ();
 
 	/* Should suceed now */
-	if (!egg_asn1x_decode (asn, I33, XL (I33)))
+	bytes = egg_bytes_new_static (I33, XL (I33));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
 	if (!egg_asn1x_get_integer_as_ulong (asn, &value))
 		g_assert_not_reached ();
 	g_assert (value == 42);
+	egg_bytes_unref (bytes);
 
 	egg_asn1x_clear (asn);
 
@@ -152,50 +166,55 @@ test_unsigned (void)
 {
 	GNode *asn;
 	gulong value;
-	guchar *check;
-	gsize n_check;
+	EggBytes *check;
 	guchar val;
-	gconstpointer usg;
-	gsize n_usg;
+	EggBytes *bytes;
+	EggBytes *usg;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestInteger");
 	g_assert (asn);
 
+	g_assert_cmpint (EGG_ASN1X_INTEGER, ==, egg_asn1x_type (asn));
+
 	/* Check with ulong */
-	if (!egg_asn1x_decode (asn, I253, XL (I253)))
+	bytes = egg_bytes_new_static (I253, XL (I253));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
 	if (!egg_asn1x_get_integer_as_ulong (asn, &value))
 		g_assert_not_reached ();
 	g_assert (value == 253);
+	egg_bytes_unref (bytes);
 
 	egg_asn1x_clear (asn);
 
 	if (!egg_asn1x_set_integer_as_ulong (asn, 253))
 		g_assert_not_reached ();
 
-	check = egg_asn1x_encode (asn, NULL, &n_check);
-	egg_assert_cmpmem (check, n_check, ==, I253, XL (I253));
+	check = egg_asn1x_encode (asn, NULL);
+	egg_assert_cmpmem (I253, XL (I253), ==, egg_bytes_get_data (check), egg_bytes_get_size (check));
+	egg_bytes_unref (check);
 
 	/* Now check with usg */
-	if (!egg_asn1x_decode (asn, I253, XL (I253)))
+	bytes = egg_bytes_new_static (I253, XL (I253));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
-	g_free (check);
+	egg_bytes_unref (bytes);
 
 	val = 0xFD; /* == 253 */
-	usg = egg_asn1x_get_integer_as_usg (asn, &n_usg);
-	egg_assert_cmpmem (&val, 1, ==, usg, n_usg);
+	usg = egg_asn1x_get_integer_as_usg (asn);
+	egg_assert_cmpmem (&val, 1, ==, egg_bytes_get_data (usg), egg_bytes_get_size (usg));
+	egg_bytes_unref (usg);
 
 	egg_asn1x_clear (asn);
 
-	if (!egg_asn1x_set_integer_as_usg (asn, &val, 1, NULL))
-		g_assert_not_reached ();
+	egg_asn1x_take_integer_as_usg (asn, egg_bytes_new_static (&val, 1));
 
-	check = egg_asn1x_encode (asn, NULL, &n_check);
-	egg_assert_cmpsize (n_check, ==, XL (I253));
-	egg_assert_cmpmem (check, n_check, ==, I253, XL (I253));
+	check = egg_asn1x_encode (asn, NULL);
+	egg_assert_cmpsize (egg_bytes_get_size (check), ==, XL (I253));
+	egg_assert_cmpmem (I253, XL (I253), ==, egg_bytes_get_data (check), egg_bytes_get_size (check));
+	egg_bytes_unref (check);
 
 	egg_asn1x_destroy (asn);
-	g_free (check);
 }
 
 static void
@@ -203,17 +222,23 @@ test_octet_string (void)
 {
 	GNode *asn;
 	gchar *value;
+	EggBytes *bytes;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestOctetString");
 	g_assert (asn);
+
+	g_assert_cmpint (EGG_ASN1X_OCTET_STRING, ==, egg_asn1x_type (asn));
 
 	/* Shouldn't succeed */
 	if (egg_asn1x_get_string_as_utf8 (asn, NULL))
 		g_assert_not_reached ();
 
 	/* Should work */
-	if (!egg_asn1x_decode (asn, SFARNSWORTH, XL (SFARNSWORTH)))
+	bytes = egg_bytes_new_static (SFARNSWORTH, XL (SFARNSWORTH));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
+
 	value = egg_asn1x_get_string_as_utf8 (asn, NULL);
 	g_assert_cmpstr (value, ==, "farnsworth");
 	g_free (value);
@@ -230,19 +255,24 @@ test_octet_string (void)
 static void
 test_generalized_time (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
 	glong value;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestGeneralized");
 	g_assert (asn);
 
+	g_assert_cmpint (EGG_ASN1X_TIME, ==, egg_asn1x_type (asn));
+
 	/* Shouldn't succeed */
 	value = egg_asn1x_get_time_as_long (asn);
 	g_assert (value == -1);
 
 	/* Should work */
-	if (!egg_asn1x_decode (asn, TGENERALIZED, XL (TGENERALIZED)))
+	bytes = egg_bytes_new_static (TGENERALIZED, XL (TGENERALIZED));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 	value = egg_asn1x_get_time_as_long (asn);
 	g_assert (value == 1185368728);
 
@@ -256,8 +286,9 @@ test_generalized_time (void)
 }
 
 static void
-test_implicit (void)
+test_implicit_encode (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
 	gchar *value;
 
@@ -265,8 +296,10 @@ test_implicit (void)
 	g_assert (asn);
 
 	/* Should work */
-	if (!egg_asn1x_decode (asn, SIMPLICIT, XL (SIMPLICIT)))
+	bytes = egg_bytes_new_static (SIMPLICIT, XL (SIMPLICIT));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 	value = egg_asn1x_get_string_as_utf8 (asn, NULL);
 	g_assert_cmpstr (value, ==, "implicit");
 	g_free (value);
@@ -275,8 +308,28 @@ test_implicit (void)
 }
 
 static void
-test_explicit (void)
+test_implicit_decode (void)
 {
+	EggBytes *bytes;
+	GNode *asn;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestImplicit");
+	g_assert (asn);
+
+	if (!egg_asn1x_set_string_as_utf8 (asn, g_strdup ("implicit"), g_free))
+		g_assert_not_reached ();
+
+	bytes = egg_asn1x_encode (asn, NULL);
+	egg_assert_cmpbytes (bytes, ==, SIMPLICIT, XL (SIMPLICIT));
+
+	egg_asn1x_destroy (asn);
+	egg_bytes_unref (bytes);
+}
+
+static void
+test_explicit_decode (void)
+{
+	EggBytes *bytes;
 	GNode *asn;
 	gchar *value;
 
@@ -284,8 +337,11 @@ test_explicit (void)
 	g_assert (asn);
 
 	/* Should work */
-	if (!egg_asn1x_decode (asn, SEXPLICIT, XL (SEXPLICIT)))
+	bytes = egg_bytes_new_static (SEXPLICIT, XL (SEXPLICIT));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
+
 	value = egg_asn1x_get_string_as_utf8 (asn, NULL);
 	g_assert_cmpstr (value, ==, "explicit");
 	g_free (value);
@@ -294,41 +350,112 @@ test_explicit (void)
 }
 
 static void
+test_explicit_encode (void)
+{
+	EggBytes *bytes;
+	GNode *asn;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestExplicit");
+	g_assert (asn);
+
+	if (!egg_asn1x_set_string_as_utf8 (asn, g_strdup ("explicit"), g_free))
+		g_assert_not_reached ();
+
+	bytes = egg_asn1x_encode (asn, NULL);
+	egg_assert_cmpbytes (bytes, ==, SEXPLICIT, XL (SEXPLICIT));
+
+	egg_asn1x_destroy (asn);
+	egg_bytes_unref (bytes);
+}
+
+static void
+test_universal_decode (void)
+{
+	EggBytes *bytes;
+	GNode *asn;
+	gchar *value;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestUniversal");
+	g_assert (asn);
+
+	/* Should work */
+	bytes = egg_bytes_new_static (SUNIVERSAL, XL (SUNIVERSAL));
+	if (!egg_asn1x_decode (asn, bytes))
+		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
+
+	value = egg_asn1x_get_string_as_utf8 (asn, NULL);
+	g_assert_cmpstr (value, ==, "universal");
+	g_free (value);
+
+	egg_asn1x_destroy (asn);
+}
+
+static void
+test_universal_encode (void)
+{
+	EggBytes *bytes;
+	GNode *asn;
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestUniversal");
+	g_assert (asn);
+
+	if (!egg_asn1x_set_string_as_utf8 (asn, g_strdup ("universal"), g_free))
+		g_assert_not_reached ();
+
+	bytes = egg_asn1x_encode (asn, NULL);
+	egg_assert_cmpbytes (bytes, ==, SUNIVERSAL, XL (SUNIVERSAL));
+
+	egg_asn1x_destroy (asn);
+	egg_bytes_unref (bytes);
+}
+
+static void
 test_bit_string_decode (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
-	guchar *bits;
+	EggBytes *bits;
 	guint n_bits;
+	const guchar *data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
 	g_assert (asn);
 
+	g_assert_cmpint (EGG_ASN1X_BIT_STRING, ==, egg_asn1x_type (asn));
+
 	/* Should work */
-	if (!egg_asn1x_decode (asn, BITS_TEST, XL (BITS_TEST)))
+	bytes = egg_bytes_new_static (BITS_TEST, XL (BITS_TEST));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 
-	bits = egg_asn1x_get_bits_as_raw (asn, NULL, &n_bits);
-	g_assert (bits);
+	bits = egg_asn1x_get_bits_as_raw (asn, &n_bits);
+	g_assert (bits != NULL);
 	g_assert_cmpuint (n_bits, ==, 18);
-	g_assert_cmpint (bits[0], ==, 0x6e);
-	g_assert_cmpint (bits[1], ==, 0x5d);
-	g_assert_cmpint (bits[2], ==, 0xc0);
+	data = egg_bytes_get_data (bits);
+	g_assert_cmpint (data[0], ==, 0x6e);
+	g_assert_cmpint (data[1], ==, 0x5d);
+	g_assert_cmpint (data[2], ==, 0xc0);
 
-	g_free (bits);
+	egg_bytes_unref (bits);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_bit_string_decode_bad (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
 	g_assert (asn);
 
 	/* Should not work */
-	if (egg_asn1x_decode (asn, BITS_BAD, XL (BITS_BAD)))
+	bytes = egg_bytes_new_static (BITS_BAD, XL (BITS_BAD));
+	if (egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 
 	egg_asn1x_destroy (asn);
 }
@@ -336,6 +463,7 @@ test_bit_string_decode_bad (void)
 static void
 test_bit_string_decode_ulong (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
 	gulong bits;
 	guint n_bits;
@@ -344,8 +472,10 @@ test_bit_string_decode_ulong (void)
 	g_assert (asn);
 
 	/* Should work */
-	if (!egg_asn1x_decode (asn, BITS_TEST, XL (BITS_TEST)))
+	bytes = egg_bytes_new_static (BITS_TEST, XL (BITS_TEST));
+	if (!egg_asn1x_decode (asn, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 
 	if (!egg_asn1x_get_bits_as_ulong (asn, &bits, &n_bits))
 		g_assert_not_reached ();
@@ -359,46 +489,46 @@ test_bit_string_decode_ulong (void)
 static void
 test_bit_string_encode_decode (void)
 {
+	EggBytes *data;
 	GNode *asn;
 	guchar bits[] = { 0x5d, 0x6e, 0x83 };
-	guchar *check;
-	guint n_check, n_bits = 17;
-	gpointer data;
-	gsize n_data;
+	EggBytes *check;
+	const guchar *ch;
+	guint n_bits = 17;
+	guint n_check;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
 	g_assert (asn);
 
-	if (!egg_asn1x_set_bits_as_raw (asn, bits, n_bits, NULL))
-		g_assert_not_reached ();
+	egg_asn1x_take_bits_as_raw (asn, egg_bytes_new (bits, 3), n_bits);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
+	data = egg_asn1x_encode (asn, NULL);
 	g_assert (data);
 
-	if (!egg_asn1x_decode (asn, data, n_data))
+	if (!egg_asn1x_decode (asn, data))
 		g_assert_not_reached ();
 
-	check = egg_asn1x_get_bits_as_raw (asn, NULL, &n_check);
-	g_assert (check);
+	egg_bytes_unref (data);
+
+	check = egg_asn1x_get_bits_as_raw (asn, &n_check);
+	g_assert (check != NULL);
 	g_assert_cmpuint (n_check, ==, 17);
-	g_assert_cmpint (check[0], ==, 0x5d);
-	g_assert_cmpint (check[1], ==, 0x6e);
-	g_assert_cmpint (check[2], ==, 0x80);
+	ch = egg_bytes_get_data (check);
+	g_assert_cmpint (ch[0], ==, 0x5d);
+	g_assert_cmpint (ch[1], ==, 0x6e);
+	g_assert_cmpint (ch[2], ==, 0x80);
 
-	g_free (check);
-
-	g_free (data);
+	egg_bytes_unref (check);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_bit_string_encode_decode_ulong (void)
 {
+	EggBytes *data;
 	GNode *asn;
 	gulong check, bits = 0x0101b977;
 	guint n_check, n_bits = 18;
-	gpointer data;
-	gsize n_data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
 	g_assert (asn);
@@ -406,11 +536,13 @@ test_bit_string_encode_decode_ulong (void)
 	if (!egg_asn1x_set_bits_as_ulong (asn, bits, n_bits))
 		g_assert_not_reached ();
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
+	data = egg_asn1x_encode (asn, NULL);
 	g_assert (data);
 
-	if (!egg_asn1x_decode (asn, data, n_data))
+	if (!egg_asn1x_decode (asn, data))
 		g_assert_not_reached ();
+
+	egg_bytes_unref (data);
 
 	if (!egg_asn1x_get_bits_as_ulong (asn, &check, &n_check))
 		g_assert_not_reached ();
@@ -418,39 +550,34 @@ test_bit_string_encode_decode_ulong (void)
 	g_assert_cmpuint (n_check, ==, 18);
 	g_assert_cmphex (check, ==, 0x1b977);
 
-	g_free (data);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_bit_string_encode_decode_zero (void)
 {
+	EggBytes *data;
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBitString");
 	g_assert (asn);
 
-	if (!egg_asn1x_set_bits_as_raw (asn, (guchar*)"", 0, NULL))
-		g_assert_not_reached ();
+	egg_asn1x_take_bits_as_raw (asn, egg_bytes_new_static ("", 0), 0);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
+	data = egg_asn1x_encode (asn, NULL);
 	g_assert (data);
 
-	egg_assert_cmpsize (n_data, ==, XL (BITS_ZERO));
-	g_assert (memcmp (data, BITS_ZERO, n_data) == 0);
+	egg_assert_cmpmem (egg_bytes_get_data (data), egg_bytes_get_size (data), ==, BITS_ZERO, XL (BITS_ZERO));
 
-	g_free (data);
+	egg_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_have (void)
 {
+	EggBytes *data;
 	GNode *asn;
-	guchar *data;
-	gsize n_data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBoolean");
 	g_assert (asn);
@@ -462,12 +589,12 @@ test_have (void)
 
 	g_assert (!egg_asn1x_have (asn));
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
+	data = egg_asn1x_encode (asn, NULL);
 	g_assert (data);
 
 	g_assert (egg_asn1x_have (asn));
 
-	g_free (data);
+	egg_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
@@ -483,10 +610,10 @@ test_is_freed (gpointer unused)
 static void
 test_any_set_raw (void)
 {
+	EggBytes *bytes;
 	GNode *asn, *node;
-	guchar *data;
-	const guchar *check;
-	gsize n_data, n_check;
+	EggBytes *data;
+	EggBytes *check;
 
 	/* ENCODED SEQUENCE ANY with OCTET STRING */
 	const gchar SEQ_ENCODING[] =  "\x30\x0C\x04\x0A""farnsworth";
@@ -498,22 +625,24 @@ test_any_set_raw (void)
 	node = egg_asn1x_node (asn, "contents", NULL);
 	g_assert (node);
 
-	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+	bytes = egg_bytes_new_with_free_func (SFARNSWORTH, XL (SFARNSWORTH),
+	                                      test_is_freed, NULL);
+	if (!egg_asn1x_set_element_raw (node, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data != NULL);
 
-	egg_assert_cmpsize (n_data, ==, XL (SEQ_ENCODING));
-	g_assert (memcmp (data, SEQ_ENCODING, n_data) == 0);
+	egg_assert_cmpbytes (data, ==, SEQ_ENCODING, XL (SEQ_ENCODING));
 
-	check = egg_asn1x_get_raw_element (node, &n_check);
+	check = egg_asn1x_get_element_raw (node);
 	g_assert (check);
 
-	egg_assert_cmpsize (n_check, ==, XL (SFARNSWORTH));
-	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+	egg_assert_cmpbytes (check, ==, SFARNSWORTH, XL (SFARNSWORTH));
 
-	g_free (data);
+	egg_bytes_unref (data);
+	egg_bytes_unref (check);
 	egg_asn1x_destroy (asn);
 	g_assert (is_freed);
 }
@@ -521,10 +650,10 @@ test_any_set_raw (void)
 static void
 test_any_set_raw_explicit (void)
 {
+	EggBytes *bytes;
 	GNode *asn, *node;
-	guchar *data;
-	const guchar *check;
-	gsize n_data, n_check;
+	EggBytes *data;
+	EggBytes *check;
 
 	/* ENCODED SEQUENCE [89] ANY with OCTET STRING */
 	const gchar SEQ_ENCODING[] =  "\x30\x0F\xBF\x59\x0C\x04\x0A""farnsworth";
@@ -536,22 +665,23 @@ test_any_set_raw_explicit (void)
 	node = egg_asn1x_node (asn, "contents", NULL);
 	g_assert (node);
 
-	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+	bytes = egg_bytes_new_with_free_func (SFARNSWORTH, XL (SFARNSWORTH), test_is_freed, NULL);
+	if (!egg_asn1x_set_element_raw (node, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data != NULL);
 
-	egg_assert_cmpsize (n_data, ==, XL (SEQ_ENCODING));
-	g_assert (memcmp (data, SEQ_ENCODING, n_data) == 0);
+	egg_assert_cmpbytes (data, ==, SEQ_ENCODING, XL (SEQ_ENCODING));
 
-	check = egg_asn1x_get_raw_element (node, &n_check);
+	check = egg_asn1x_get_element_raw (node);
 	g_assert (check);
 
-	g_assert (n_check == XL (SFARNSWORTH));
-	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+	egg_assert_cmpbytes (check, ==, SFARNSWORTH, XL (SFARNSWORTH));
 
-	g_free (data);
+	egg_bytes_unref (data);
+	egg_bytes_unref (check);
 	egg_asn1x_destroy (asn);
 	g_assert (is_freed);
 }
@@ -559,22 +689,26 @@ test_any_set_raw_explicit (void)
 static void
 test_choice_not_chosen (void)
 {
+	EggBytes *bytes;
 	GNode *asn, *node;
-	guchar *data;
-	gsize n_data;
+	EggBytes *data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestAnyChoice");
 	g_assert (asn);
 
+	g_assert_cmpint (EGG_ASN1X_CHOICE, ==, egg_asn1x_type (asn));
+
 	node = egg_asn1x_node (asn, "choiceShortTag", NULL);
 	g_assert (node);
 
-	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), NULL))
+	bytes = egg_bytes_new_static (SFARNSWORTH, XL (SFARNSWORTH));
+	if (!egg_asn1x_set_element_raw (node, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 
 	/* egg_asn1x_set_choice() was not called */
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (!data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data == NULL);
 	g_assert (egg_asn1x_message (asn));
 	g_assert (strstr (egg_asn1x_message (asn), "TestAnyChoice") != NULL);
 
@@ -584,13 +718,15 @@ test_choice_not_chosen (void)
 static void
 perform_asn1_any_choice_set_raw (const gchar *choice, const gchar *encoding, gsize n_encoding)
 {
+	EggBytes *bytes;
 	GNode *asn, *node;
-	guchar *data;
-	const guchar *check;
-	gsize n_data, n_check;
+	EggBytes *data;
+	EggBytes *check;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestAnyChoice");
 	g_assert (asn);
+
+	g_assert_cmpint (EGG_ASN1X_CHOICE, ==, egg_asn1x_type (asn));
 
 	is_freed = FALSE;
 	node = egg_asn1x_node (asn, choice, NULL);
@@ -599,26 +735,27 @@ perform_asn1_any_choice_set_raw (const gchar *choice, const gchar *encoding, gsi
 	if (!egg_asn1x_set_choice (asn, node))
 		g_assert_not_reached ();
 
-	if (!egg_asn1x_set_raw_element (node, (guchar*)SFARNSWORTH, XL (SFARNSWORTH), test_is_freed))
+	bytes = egg_bytes_new_with_free_func (SFARNSWORTH, XL (SFARNSWORTH), test_is_freed, NULL);
+	if (!egg_asn1x_set_element_raw (node, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	if (!data) {
+	data = egg_asn1x_encode (asn, NULL);
+	if (data == NULL) {
 		g_printerr ("%s\n", egg_asn1x_message (asn));
 		g_assert_not_reached ();
 	}
-	g_assert (data);
+	g_assert (data != NULL);
 
-	egg_assert_cmpsize (n_data, ==, n_encoding);
-	g_assert (memcmp (data, encoding, n_data) == 0);
+	egg_assert_cmpbytes (data, ==, encoding, n_encoding);
 
-	check = egg_asn1x_get_raw_element (node, &n_check);
-	g_assert (check);
+	check = egg_asn1x_get_element_raw (node);
+	g_assert (check != NULL);
 
-	g_assert (n_check == XL (SFARNSWORTH));
-	g_assert (memcmp (check, SFARNSWORTH, n_check) == 0);
+	egg_assert_cmpbytes (check, ==, SFARNSWORTH, XL (SFARNSWORTH));
 
-	g_free (data);
+	egg_bytes_unref (data);
+	egg_bytes_unref (check);
 	egg_asn1x_destroy (asn);
 	g_assert (is_freed);
 }
@@ -640,10 +777,10 @@ test_any_choice_set_raw_long_tag (void)
 static void
 test_append (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
 	GNode *child;
-	gpointer data;
-	gsize n_data;
+	EggBytes *data;
 
 	/* SEQUENCE OF with one INTEGER = 1 */
 	const gchar SEQOF_ONE[] =  "\x30\x03\x02\x01\x01";
@@ -651,8 +788,12 @@ test_append (void)
 	/* SEQUENCE OF with two INTEGER = 1, 2 */
 	const gchar SEQOF_TWO[] =  "\x30\x06\x02\x01\x01\x02\x01\x02";
 
-	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSeqOf", SEQOF_ONE, XL (SEQOF_ONE));
+	bytes = egg_bytes_new_static (SEQOF_ONE, XL (SEQOF_ONE));
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSeqOf", bytes);
 	g_assert (asn);
+	egg_bytes_unref (bytes);
+
+	g_assert_cmpint (EGG_ASN1X_SEQUENCE_OF, ==, egg_asn1x_type (asn));
 
 	child = egg_asn1x_append (asn);
 	g_assert (child);
@@ -661,22 +802,20 @@ test_append (void)
 	if (!egg_asn1x_set_integer_as_ulong (child, 2))
 		g_assert_not_reached ();
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data != NULL);
 
-	g_assert (n_data == XL (SEQOF_TWO));
-	g_assert (memcmp (data, SEQOF_TWO, n_data) == 0);
+	egg_assert_cmpbytes (data, ==, SEQOF_TWO, XL (SEQOF_TWO));
 
-	g_free (data);
+	egg_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_append_and_clear (void)
 {
+	EggBytes *data;
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestSeqOf");
 	g_assert (asn);
@@ -690,8 +829,8 @@ test_append_and_clear (void)
 
 	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data != NULL);
 
 	g_assert_cmpuint (egg_asn1x_count (asn), ==, 2);
 
@@ -699,15 +838,15 @@ test_append_and_clear (void)
 	g_assert_cmpuint (egg_asn1x_count (asn), ==, 0);
 
 	egg_asn1x_destroy (asn);
-	g_free (data);
+	egg_bytes_unref (data);
 }
 
 static void
 test_setof (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
+	EggBytes *data;
 
 	/* SEQUENCE OF with one INTEGER = 3 */
 	const gchar SETOF_ONE[] =  "\x31\x03\x02\x01\x03";
@@ -715,8 +854,12 @@ test_setof (void)
 	/* SET OF with two INTEGER = 1, 3, 8 */
 	const gchar SETOF_THREE[] =  "\x31\x09\x02\x01\x01\x02\x01\x03\x02\x01\x08";
 
-	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSetOf", SETOF_ONE, XL (SETOF_ONE));
-	g_assert (asn);
+	bytes = egg_bytes_new_static (SETOF_ONE, XL (SETOF_ONE));
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestSetOf", bytes);
+	g_assert (asn != NULL);
+	egg_bytes_unref (bytes);
+
+	g_assert_cmpint (EGG_ASN1X_SET_OF, ==, egg_asn1x_type (asn));
 
 	/* Add integer 1, in SET OF DER should sort to front */
 	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 1))
@@ -726,25 +869,23 @@ test_setof (void)
 	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_append (asn), 8))
 		g_assert_not_reached ();
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	if (!data) {
+	data = egg_asn1x_encode (asn, NULL);
+	if (data == NULL) {
 		g_printerr ("%s\n", egg_asn1x_message (asn));
 		g_assert_not_reached ();
 	}
 
-	g_assert (n_data == XL (SETOF_THREE));
-	g_assert (memcmp (data, SETOF_THREE, n_data) == 0);
+	egg_assert_cmpbytes (data, ==, SETOF_THREE, XL (SETOF_THREE));
 
-	g_free (data);
+	egg_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_setof_empty (void)
 {
+	EggBytes *data;
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
 
 	/* SEQUENCE OF with nothing */
 	const gchar SETOF_NONE[] =  "\x31\x00";
@@ -752,29 +893,32 @@ test_setof_empty (void)
 	asn = egg_asn1x_create (test_asn1_tab, "TestSetOf");
 	g_assert (asn);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	if (!data) {
+	data = egg_asn1x_encode (asn, NULL);
+	if (data == NULL) {
 		g_printerr ("%s\n", egg_asn1x_message (asn));
 		g_assert_not_reached ();
 	}
 
-	g_assert (n_data == XL (SETOF_NONE));
-	g_assert (memcmp (data, SETOF_NONE, n_data) == 0);
+	egg_assert_cmpbytes (data, ==, SETOF_NONE, XL (SETOF_NONE));
 
-	g_free (data);
+	egg_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_enumerated (void)
 {
+	EggBytes *bytes;
 	GNode *asn;
-	gpointer data;
-	gsize n_data;
+	EggBytes *data;
 	GQuark value;
 
-	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestEnumerated", ENUM_TWO, XL (ENUM_TWO));
-	g_assert (asn);
+	bytes = egg_bytes_new_static (ENUM_TWO, XL (ENUM_TWO));
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestEnumerated", bytes);
+	g_assert (asn != NULL);
+	egg_bytes_unref (bytes);
+
+	g_assert_cmpint (EGG_ASN1X_ENUMERATED, ==, egg_asn1x_type (asn));
 
 	value = egg_asn1x_get_enumerated (asn);
 	g_assert (value);
@@ -783,13 +927,12 @@ test_enumerated (void)
 	if (!egg_asn1x_set_enumerated (asn, g_quark_from_static_string ("valueThree")))
 		g_assert_not_reached ();
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data != NULL);
 
-	g_assert (n_data == XL (ENUM_THREE));
-	g_assert (memcmp (data, ENUM_THREE, n_data) == 0);
+	egg_assert_cmpbytes (data, ==, ENUM_THREE, XL (ENUM_THREE));
 
-	g_free (data);
+	egg_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
@@ -802,6 +945,8 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
+	EggBytes *bytes;
+
 	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der",
 	                          (gchar**)&test->data, &test->n_data, NULL))
 		g_assert_not_reached ();
@@ -809,8 +954,10 @@ setup (Test *test, gconstpointer unused)
 	test->asn1 = egg_asn1x_create (pkix_asn1_tab, "Certificate");
 	g_assert (test->asn1 != NULL);
 
-	if (!egg_asn1x_decode (test->asn1, test->data, test->n_data))
+	bytes = egg_bytes_new_static (test->data, test->n_data);
+	if (!egg_asn1x_decode (test->asn1, bytes))
 		g_assert_not_reached ();
+	egg_bytes_unref (bytes);
 }
 
 static void
@@ -829,9 +976,8 @@ test_node_name (Test* test, gconstpointer unused)
 static void
 test_asn1_integers (Test* test, gconstpointer unused)
 {
+	EggBytes *data;
 	GNode *asn;
-	guchar *data;
-	gsize n_data;
 	gboolean ret;
 	gulong val;
 
@@ -848,13 +994,13 @@ test_asn1_integers (Test* test, gconstpointer unused)
 	g_assert ("couldn't write integer" && ret);
 
 	/* Now encode the whole caboodle */
-	data = egg_asn1x_encode (asn, NULL, &n_data);
+	data = egg_asn1x_encode (asn, NULL);
 	g_assert ("encoding asn1 didn't work" && data != NULL);
 
 	egg_asn1x_destroy (asn);
 
 	/* Now decode it all nicely */
-	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestIntegers", data, n_data);
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestIntegers", data);
 	g_return_if_fail (asn != NULL);
 
 	/* And get out the values */
@@ -870,16 +1016,16 @@ test_asn1_integers (Test* test, gconstpointer unused)
 	g_assert ("couldn't read integer from asn1" && ret);
 	g_assert_cmpuint (val, ==, 209384022);
 
-	g_free (data);
+	egg_asn1x_destroy (asn);
+	egg_bytes_unref (data);
 }
 
 static void
 test_boolean_seq (Test* test, gconstpointer unused)
 {
+	EggBytes *data;
 	GNode *asn = NULL;
 	gboolean value, ret;
-	gpointer data;
-	gsize n_data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestBooleanSeq");
 	g_assert ("asn test structure is null" && asn != NULL);
@@ -893,8 +1039,8 @@ test_boolean_seq (Test* test, gconstpointer unused)
 	ret = egg_asn1x_set_boolean (egg_asn1x_node (asn, "boolean", NULL), TRUE);
 	g_assert (ret == TRUE);
 
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data != NULL);
 
 	ret = egg_asn1x_get_boolean (egg_asn1x_node (asn, "boolean", NULL), &value);
 	g_assert (ret);
@@ -903,26 +1049,25 @@ test_boolean_seq (Test* test, gconstpointer unused)
 	ret = egg_asn1x_set_boolean (egg_asn1x_node (asn, "boolean", NULL), FALSE);
 	g_assert (ret == TRUE);
 
-	g_free (data);
-	data = egg_asn1x_encode (asn, NULL, &n_data);
-	g_assert (data);
+	egg_bytes_unref (data);
+	data = egg_asn1x_encode (asn, NULL);
+	g_assert (data != NULL);
 
 	ret = egg_asn1x_get_boolean (egg_asn1x_node (asn, "boolean", NULL), &value);
 	g_assert (ret);
 	g_assert (value == FALSE);
 
-	g_free (data);
+	egg_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_write_value (Test* test, gconstpointer unused)
 {
+	EggBytes *encoded;
 	GNode *asn = NULL;
 	guchar *data;
 	gsize n_data;
-	guchar *encoded;
-	gsize n_encoded;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestData");
 	g_assert ("asn test structure is null" && asn != NULL);
@@ -930,7 +1075,7 @@ test_write_value (Test* test, gconstpointer unused)
 	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "data", NULL), (guchar*)"SOME DATA", 9, NULL))
 		g_assert_not_reached ();
 
-	encoded = egg_asn1x_encode (asn, NULL, &n_encoded);
+	encoded = egg_asn1x_encode (asn, NULL);
 	g_assert (encoded);
 
 	data = egg_asn1x_get_string_as_raw (egg_asn1x_node (asn, "data", NULL), NULL, &n_data);
@@ -939,18 +1084,17 @@ test_write_value (Test* test, gconstpointer unused)
 	g_assert (memcmp (data, "SOME DATA", 9) == 0);
 	g_free (data);
 
-	g_free (encoded);
+	egg_bytes_unref (encoded);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_element_length_content (Test* test, gconstpointer unused)
 {
+	EggBytes *buffer;
 	GNode *asn = NULL;
-	gchar *buffer;
 	const guchar *content;
 	gsize n_content;
-	gsize n_buffer;
 	gssize length;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestData");
@@ -959,15 +1103,17 @@ test_element_length_content (Test* test, gconstpointer unused)
 	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "data", NULL), (guchar*)"SOME DATA", 9, NULL))
 		g_assert_not_reached ();
 
-	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	buffer = egg_asn1x_encode (asn, NULL);
 	g_assert (buffer != NULL);
 
 	/* Now the real test */
-	length = egg_asn1x_element_length (buffer, n_buffer + 1024);
+	length = egg_asn1x_element_length (egg_bytes_get_data (buffer),
+	                                   egg_bytes_get_size (buffer) + 1024);
 	g_assert_cmpint (length, ==, 13);
 
-	content = egg_asn1x_element_content (buffer, length, &n_content);
-	g_assert (content);
+	content = egg_asn1x_element_content (egg_bytes_get_data (buffer),
+	                                     length, &n_content);
+	g_assert (content != NULL);
 	g_assert_cmpuint (n_content, ==, 11);
 
 	content = egg_asn1x_element_content (content, n_content, &n_content);
@@ -975,26 +1121,24 @@ test_element_length_content (Test* test, gconstpointer unused)
 	g_assert_cmpuint (n_content, ==, 9);
 	g_assert (memcmp (content, "SOME DATA", 9) == 0);
 
-	const char *BAD_ASN_TAG = "\x00";
+	const guchar *BAD_ASN_TAG = (guchar *)"\x00";
 	content = egg_asn1x_element_content (BAD_ASN_TAG, 1, &n_content);
 	g_assert (content == NULL);
 
-	const char *BAD_ASN_LENGTH = "\x30\x80";
+	const guchar *BAD_ASN_LENGTH = (guchar *)"\x30\x80";
 	content = egg_asn1x_element_content (BAD_ASN_LENGTH, 2, &n_content);
 	g_assert (content == NULL);
 
 	egg_asn1x_destroy (asn);
-	g_free (buffer);
+	egg_bytes_unref (buffer);
 }
 
 static void
 test_read_element (Test* test, gconstpointer unused)
 {
+	EggBytes *buffer;
 	GNode *asn = NULL;
-	guchar *buffer;
-	gconstpointer data;
-	gsize n_data;
-	gsize n_buffer;
+	EggBytes *data;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestData");
 	g_assert ("asn test structure is null" && asn != NULL);
@@ -1002,38 +1146,42 @@ test_read_element (Test* test, gconstpointer unused)
 	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn, "data", NULL), (guchar*)"SOME DATA", 9, NULL))
 		g_assert_not_reached ();
 
-	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	buffer = egg_asn1x_encode (asn, NULL);
 	g_assert (buffer != NULL);
 
 	/* Now the real test */
-	data = egg_asn1x_get_raw_element (egg_asn1x_node (asn, "data", NULL), &n_data);
+	data = egg_asn1x_get_element_raw (egg_asn1x_node (asn, "data", NULL));
 	g_assert (data != NULL);
-	g_assert_cmpint (n_data, ==, 11);
+	g_assert_cmpint (egg_bytes_get_size (data), ==, 11);
+	egg_bytes_unref (data);
 
-	data = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "data", NULL), &n_data);
-	g_assert (data);
-	g_assert_cmpuint (n_data, ==, 9);
-	g_assert (memcmp (data, "SOME DATA", 9) == 0);
+	data = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "data", NULL));
+	g_assert (data != NULL);
+	egg_assert_cmpbytes (data, ==, "SOME DATA", 9);
+	egg_bytes_unref (data);
 
 	egg_asn1x_destroy (asn);
-	g_free (buffer);
+	egg_bytes_unref (buffer);
 }
 
 static void
 test_oid (Test* test, gconstpointer unused)
 {
+	EggBytes *buffer;
 	GNode *asn = NULL;
+	GNode *node;
 	GQuark oid, check;
-	guchar *buffer;
-	gsize n_buffer;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestOid");
 	g_assert ("asn test structure is null" && asn != NULL);
 
-	if (!egg_asn1x_set_oid_as_string (egg_asn1x_node (asn, "oid", NULL), "1.2.34567.89"))
+	node = egg_asn1x_node (asn, "oid", NULL);
+	g_assert_cmpint (EGG_ASN1X_OBJECT_ID, ==, egg_asn1x_type (node));
+
+	if (!egg_asn1x_set_oid_as_string (node, "1.2.34567.89"))
 		g_assert_not_reached ();
 
-	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	buffer = egg_asn1x_encode (asn, NULL);
 	g_assert (buffer != NULL);
 
 	/* Now a quark has been defined */
@@ -1047,15 +1195,15 @@ test_oid (Test* test, gconstpointer unused)
 	if (!egg_asn1x_set_oid_as_quark (egg_asn1x_node (asn, "oid", NULL), g_quark_from_static_string ("5.4.3.2.1678")))
 		g_assert_not_reached ();
 
-	g_free (buffer);
-	buffer = egg_asn1x_encode (asn, NULL, &n_buffer);
+	egg_bytes_unref (buffer);
+	buffer = egg_asn1x_encode (asn, NULL);
 	g_assert (buffer != NULL);
 
 	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "oid", NULL));
 	g_assert (oid);
 	g_assert_cmpstr (g_quark_to_string (oid), ==, "5.4.3.2.1678");
 
-	g_free (buffer);
+	egg_bytes_unref (buffer);
 	egg_asn1x_destroy (asn);
 }
 
@@ -1211,8 +1359,12 @@ main (int argc, char **argv)
 	g_test_add_func ("/asn1/unsigned", test_unsigned);
 	g_test_add_func ("/asn1/octet_string", test_octet_string);
 	g_test_add_func ("/asn1/generalized_time", test_generalized_time);
-	g_test_add_func ("/asn1/implicit", test_implicit);
-	g_test_add_func ("/asn1/explicit", test_explicit);
+	g_test_add_func ("/asn1/implicit/decode", test_implicit_decode);
+	g_test_add_func ("/asn1/implicit/encode", test_implicit_encode);
+	g_test_add_func ("/asn1/explicit/decode", test_explicit_decode);
+	g_test_add_func ("/asn1/explicit/encode", test_explicit_encode);
+	g_test_add_func ("/asn1/universal/decode", test_universal_decode);
+	g_test_add_func ("/asn1/universal/encode", test_universal_encode);
 	g_test_add_func ("/asn1/bit_string_decode", test_bit_string_decode);
 	g_test_add_func ("/asn1/bit_string_decode_bad", test_bit_string_decode_bad);
 	g_test_add_func ("/asn1/bit_string_decode_ulong", test_bit_string_decode_ulong);

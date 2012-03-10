@@ -203,6 +203,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 	GkmManager *manager;
 	gboolean added = FALSE;
 	GError *error = NULL;
+	EggBytes *bytes;
 	GType type;
 	guchar *data;
 	gsize n_data;
@@ -243,9 +244,12 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 		g_object_unref (object);
 		g_clear_error (&error);
 		return;
+	}
+
+	bytes = egg_bytes_new_take (data, n_data);
 
 	/* And load the data into it */
-	} else if (gkm_serializable_load (GKM_SERIALIZABLE (object), NULL, data, n_data)) {
+	if (gkm_serializable_load (GKM_SERIALIZABLE (object), NULL, bytes)) {
 		if (added)
 			add_object_to_module (self, object, path, NULL);
 		gkm_object_expose (object, TRUE);
@@ -258,6 +262,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 		}
 	}
 
+	egg_bytes_unref (bytes);
 	g_object_unref (object);
 }
 
@@ -275,16 +280,19 @@ file_remove (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 }
 
 static gchar*
-name_for_subject (gconstpointer subject, gsize n_subject)
+name_for_subject (gconstpointer data,
+                  gsize n_data)
 {
+	EggBytes *subject;
 	GNode *asn;
 	gchar *name;
 
-	g_assert (subject);
-	g_assert (n_subject);
+	g_assert (data != NULL);
 
-	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Name", subject, n_subject);
-	g_return_val_if_fail (asn, NULL);
+	subject = egg_bytes_new (data, n_data);
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Name", subject);
+	g_return_val_if_fail (asn != NULL, NULL);
+	egg_bytes_unref (subject);
 
 	name = egg_dn_read_part (egg_asn1x_node (asn, "rdnSequence", NULL), "CN");
 	egg_asn1x_destroy (asn);
@@ -430,10 +438,9 @@ gkm_xdg_module_real_store_token_object (GkmModule *module, GkmTransaction *trans
                                         GkmObject *object)
 {
 	GkmXdgModule *self = GKM_XDG_MODULE (module);
-	GkmTrust *trust;
 	const gchar *filename;
-	gpointer data;
-	gsize n_data;
+	EggBytes *bytes;
+	GkmTrust *trust;
 
 	/* Always serialize the trust object for each assertion */
 	if (GKM_XDG_IS_ASSERTION (object)) {
@@ -449,7 +456,9 @@ gkm_xdg_module_real_store_token_object (GkmModule *module, GkmTransaction *trans
 	}
 
 	/* Serialize the object in question */
-	if (!gkm_serializable_save (GKM_SERIALIZABLE (object), NULL, &data, &n_data)) {
+	bytes = gkm_serializable_save (GKM_SERIALIZABLE (object), NULL);
+
+	if (bytes == NULL) {
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
 		g_return_if_reached ();
 	}
@@ -458,8 +467,10 @@ gkm_xdg_module_real_store_token_object (GkmModule *module, GkmTransaction *trans
 	g_return_if_fail (filename != NULL);
 	g_return_if_fail (g_hash_table_lookup (self->objects_by_path, filename) == object);
 
-	gkm_transaction_write_file (transaction, filename, data, n_data);
-	g_free (data);
+	gkm_transaction_write_file (transaction, filename,
+	                            egg_bytes_get_data (bytes),
+	                            egg_bytes_get_size (bytes));
+	egg_bytes_unref (bytes);
 }
 
 static void

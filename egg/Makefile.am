@@ -1,3 +1,4 @@
+include $(top_srcdir)/Makefile.decl
 
 noinst_LTLIBRARIES = \
 	libegg.la \
@@ -11,8 +12,14 @@ noinst_LTLIBRARIES = \
 	libegg-hex.la \
 	libegg-test.la
 
+ASN_FILES = \
+	pk.asn \
+	pkix.asn
+
+ASN_SRCS = $(ASN_FILES:.asn=.asn.h)
+
 BUILT_SOURCES = \
-	asn1-def-pk.c asn1-def-pkix.c
+	$(ASN_SRCS)
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -26,8 +33,10 @@ libegg_la_SOURCES = \
 	dotlock.c dotlock.h \
 	egg-armor.c egg-armor.h \
 	egg-asn1x.c egg-asn1x.h \
+	egg-asn1-defs.c egg-asn1-defs.h \
 	egg-buffer.c egg-buffer.h \
 	egg-byte-array.c egg-byte-array.h \
+	egg-bytes.c egg-bytes.h \
 	egg-cleanup.c egg-cleanup.h \
 	egg-dh.c egg-dh.h \
 	egg-dn.c egg-dn.h \
@@ -48,15 +57,8 @@ libegg_la_SOURCES = \
 	egg-asn1-defs.h \
 	$(BUILT_SOURCES)
 
-asn1-def-pk.c: pk.asn
-	$(ASN1PARSER) -o asn1-def-pk.c $(srcdir)/pk.asn
-
-asn1-def-pkix.c: pkix.asn
-	$(ASN1PARSER) -o asn1-def-pkix.c $(srcdir)/pkix.asn
-
 EXTRA_DIST = \
-	pkix.asn \
-	pk.asn
+	$(ASN_FILES)
 
 DISTCLEANFILES = \
 	$(BUILT_SOURCES)
@@ -66,6 +68,8 @@ DISTCLEANFILES = \
 
 libegg_asn1x_la_SOURCES = \
 	egg-asn1x.c egg-asn1x.h \
+	egg-asn1-defs.c egg-asn1-defs.h \
+	egg-bytes.c egg-bytes.h \
 	$(BUILT_SOURCES)
 
 libegg_asn1x_la_CFLAGS = \

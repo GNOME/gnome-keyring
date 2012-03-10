@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static const struct {
 	const gchar *password;
@@ -138,6 +138,8 @@ test_generate_key_simple (void)
 		               gcry_cipher_get_algo_keylen (all_generation_tests[i].cipher_algo)) == 0);
 
 		g_assert (ret && "invalid simple key generated");
+
+		egg_secure_free (key);
 	}
 }
 
@@ -165,6 +167,8 @@ test_generate_key_pkcs12 (void)
 			        gcry_cipher_get_algo_keylen (all_generation_tests[i].cipher_algo)) == 0);
 
 		g_assert ("invalid pkcs12 key generated" && ret);
+
+		egg_secure_free (key);
 	}
 }
 
@@ -192,6 +196,8 @@ test_generate_key_pbkdf2 (void)
 			        gcry_cipher_get_algo_keylen (all_generation_tests[i].cipher_algo)) == 0);
 
 		g_assert ("invalid pbkdf2 key generated" && ret);
+
+		egg_secure_free (key);
 	}
 }
 
@@ -220,6 +226,7 @@ test_generate_key_pbe (void)
 
 		g_assert ("invalid pbe key generated" && ret);
 
+		egg_secure_free (key);
 	}
 }
 

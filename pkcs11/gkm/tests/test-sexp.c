@@ -34,7 +34,7 @@
 
 #include <gcrypt.h>
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 #define TEST_RSA \
 "(private-key (rsa " \

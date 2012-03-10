@@ -33,7 +33,7 @@ GKM_DEFINE_MODULE (test_module, GKM_TYPE_MODULE);
 
 #include "gkm/gkm-certificate.h"
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 GkmModule*
 mock_module_initialize_and_enter (void)

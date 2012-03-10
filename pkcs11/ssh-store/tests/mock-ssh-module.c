@@ -31,7 +31,7 @@
 
 #include "ssh-store/gkm-ssh-store.h"
 
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static GMutex *mutex = NULL;
 

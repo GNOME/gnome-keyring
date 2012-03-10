@@ -30,21 +30,23 @@
  * locking for memory between threads
  */ 
 
-void
+static void
 egg_memory_lock (void)
 {
 	/* No threads in PAM, no locking */
 }
 
-void 
+static void
 egg_memory_unlock (void)
 {
 	/* No threads in PAM, no locking */
 }
 
-void*
+static void *
 egg_memory_fallback (void *p, size_t sz)
 {
 	/* Handles allocation, reallocation and freeing */
 	return realloc (p, sz);
 }
+
+EGG_SECURE_DEFINE_GLOBALS (egg_memory_lock, egg_memory_unlock, egg_memory_fallback);

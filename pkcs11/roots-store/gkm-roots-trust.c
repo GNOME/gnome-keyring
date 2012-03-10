@@ -126,20 +126,18 @@ full_certificate (GkmRootsTrust *self, CK_ATTRIBUTE_PTR result)
 static GQuark*
 lookup_extended_usages (GkmRootsTrust *self)
 {
-	gconstpointer extension;
-	gsize n_extension;
+	EggBytes *extension;
 	GQuark *usages = NULL;
 	GkmDataResult res;
 
 	extension = gkm_certificate_get_extension (self->pv->certificate,
-	                                           OID_ENHANCED_USAGE,
-	                                           &n_extension, NULL);
+	                                           OID_ENHANCED_USAGE, NULL);
 
 	if (!extension)
 		return NULL;
 
 	/* Returns null terminated set of OID quarks */
-	res = gkm_data_der_read_enhanced_usage (extension, n_extension, &usages);
+	res = gkm_data_der_read_enhanced_usage (extension, &usages);
 
 	/* Failure: An empty set means nothing is trusted */
 	if (res != GKM_DATA_SUCCESS) {
@@ -147,6 +145,7 @@ lookup_extended_usages (GkmRootsTrust *self)
 		usages = g_new0 (GQuark, 1);
 	}
 
+	egg_bytes_unref (extension);
 	return usages;
 }
 

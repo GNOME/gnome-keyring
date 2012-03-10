@@ -30,94 +30,97 @@
 #include "gkm-data-types.h"
 
 #include "egg/egg-asn1x.h"
+#include "egg/egg-bytes.h"
 
 /* -----------------------------------------------------------------------------
  * PRIVATE KEYS
  */
 
-GkmDataResult      gkm_data_der_read_private_key_rsa         (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_private_key_rsa         (EggBytes *data,
                                                               gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_private_key_dsa         (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_private_key_dsa         (EggBytes *data,
                                                               gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_private_key_dsa_parts   (gconstpointer keydata, gsize n_keydata,
-                                                              gconstpointer params, gsize n_params,
+GkmDataResult      gkm_data_der_read_private_key_dsa_parts   (EggBytes *keydata,
+                                                              EggBytes *params,
                                                               gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_private_key             (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_private_key             (EggBytes *data,
                                                               gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_private_pkcs8           (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_private_pkcs8           (EggBytes *data,
+                                                              const gchar *password,
+                                                              gsize n_password,
+                                                              gcry_sexp_t *s_key);
+
+GkmDataResult      gkm_data_der_read_private_pkcs8_plain     (EggBytes *data,
+                                                              gcry_sexp_t *s_key);
+
+GkmDataResult      gkm_data_der_read_private_pkcs8_crypted   (EggBytes *data,
                                                               const gchar *password, gsize n_password,
                                                               gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_private_pkcs8_plain     (gconstpointer data, gsize n_data,
-                                                              gcry_sexp_t *s_key);
+EggBytes *         gkm_data_der_write_private_key_rsa        (gcry_sexp_t s_key);
 
-GkmDataResult      gkm_data_der_read_private_pkcs8_crypted   (gconstpointer data, gsize n_data,
-                                                              const gchar *password, gsize n_password,
-                                                              gcry_sexp_t *s_key);
+EggBytes *         gkm_data_der_write_private_key_dsa        (gcry_sexp_t s_key);
 
-gpointer           gkm_data_der_write_private_key_rsa        (gcry_sexp_t s_key, gsize *n_data);
+EggBytes *         gkm_data_der_write_private_key_dsa_part   (gcry_sexp_t skey);
 
-gpointer           gkm_data_der_write_private_key_dsa        (gcry_sexp_t s_key, gsize *len);
+EggBytes *         gkm_data_der_write_private_key_dsa_params (gcry_sexp_t skey);
 
-gpointer           gkm_data_der_write_private_key_dsa_part   (gcry_sexp_t skey, gsize *n_key);
+EggBytes *         gkm_data_der_write_private_key            (gcry_sexp_t s_key);
 
-gpointer           gkm_data_der_write_private_key_dsa_params (gcry_sexp_t skey, gsize *n_params);
+EggBytes *         gkm_data_der_write_private_pkcs8_plain    (gcry_sexp_t skey);
 
-gpointer           gkm_data_der_write_private_key            (gcry_sexp_t s_key, gsize *n_data);
-
-gpointer           gkm_data_der_write_private_pkcs8_plain    (gcry_sexp_t skey, gsize *n_data);
-
-gpointer           gkm_data_der_write_private_pkcs8_crypted  (gcry_sexp_t skey, const gchar *password,
-                                                              gsize n_password, gsize *n_data);
+EggBytes *         gkm_data_der_write_private_pkcs8_crypted  (gcry_sexp_t skey,
+                                                              const gchar *password,
+                                                              gsize n_password);
 
 /* -----------------------------------------------------------------------------
  * PUBLIC KEYS
  */
 
-GkmDataResult      gkm_data_der_read_public_key_rsa        (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_public_key_rsa        (EggBytes *data,
                                                             gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_public_key_dsa        (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_public_key_dsa        (EggBytes *data,
                                                             gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_public_key_dsa_parts  (gconstpointer keydata, gsize n_keydata,
-                                                            gconstpointer params, gsize n_params,
+GkmDataResult      gkm_data_der_read_public_key_dsa_parts  (EggBytes *keydata,
+                                                            EggBytes *params,
                                                             gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_public_key            (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_public_key            (EggBytes *data,
                                                             gcry_sexp_t *s_key);
 
-GkmDataResult      gkm_data_der_read_public_key_info       (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_public_key_info       (EggBytes *data,
                                                             gcry_sexp_t *s_key);
 
-gpointer           gkm_data_der_write_public_key_rsa       (gcry_sexp_t s_key, gsize *len);
+EggBytes *         gkm_data_der_write_public_key_rsa       (gcry_sexp_t s_key);
 
-gpointer           gkm_data_der_write_public_key_dsa       (gcry_sexp_t s_key, gsize *len);
+EggBytes *         gkm_data_der_write_public_key_dsa       (gcry_sexp_t s_key);
 
-gpointer           gkm_data_der_write_public_key           (gcry_sexp_t s_key, gsize *len);
+EggBytes *         gkm_data_der_write_public_key           (gcry_sexp_t s_key);
 
 
 /* -----------------------------------------------------------------------------
  * CERTIFICATES
  */
 
-GkmDataResult      gkm_data_der_read_certificate           (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_certificate           (EggBytes *data,
                                                             GNode **asn1);
 
-GkmDataResult      gkm_data_der_read_basic_constraints     (gconstpointer data, gsize n_data,
-                                                            gboolean *is_ca, gint *path_len);
+GkmDataResult      gkm_data_der_read_basic_constraints     (EggBytes *data,
+                                                            gboolean *is_ca,
+                                                            gint *path_len);
 
-GkmDataResult      gkm_data_der_read_key_usage             (gconstpointer data,
-                                                            gsize n_data,
+GkmDataResult      gkm_data_der_read_key_usage             (EggBytes *data,
                                                             gulong *key_usage);
 
-GkmDataResult      gkm_data_der_read_enhanced_usage        (gconstpointer data, gsize n_data,
+GkmDataResult      gkm_data_der_read_enhanced_usage        (EggBytes *data,
                                                             GQuark **oids);
 
-gpointer           gkm_data_der_write_certificate          (GNode *asn1, gsize *n_data);
+EggBytes *         gkm_data_der_write_certificate          (GNode *asn1);
 
 #endif /*GKRPKIXDER_H_*/

@@ -35,7 +35,7 @@
 #include <gmodule.h>
 
 /* Module callbacks for secure memory */
-EGG_SECURE_GLIB_DEFINITIONS ();
+EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 const gchar* g_module_check_init (GModule *module);
 
