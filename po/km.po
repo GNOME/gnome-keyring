@@ -1,0 +1,549 @@
+# translation of gnome-keyring.master.po to Khmer
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Khoem Sokhem <khoemsokhem@khmeros.info>, 2012.
+# Morn Met <mornmet@khmeros.info>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring.master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-01-09 16:11+0000\n"
+"PO-Revision-Date: 2012-03-01 09:39+0700\n"
+"Last-Translator: Morn Met <mornmet@khmeros.info>\n"
+"Language-Team: Khmer <support@khmeros.info>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: WordForge 0.8 RC1\n"
+"X-Language: km-KH\n"
+
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
+msgid "Unnamed"
+msgstr "គ្មាន​ឈ្មោះ"
+
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "បញ្ចូល​ពាក្យ​សម្ងាត់​ចាស់សម្រាប់ '%s' keyring"
+
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr ""
+"កម្មវិធី​ចង់​ផ្លាស់ប្ដូរ​ពាក្យសម្ងាត់​សម្រាប់ '%s' keyring ។ "
+"បញ្ចូល​ពាក្យសម្ងាត់​ចាស់​សម្រាប់​វា ។"
+
+#: ../daemon/dbus/gkd-secret-change.c:125
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "ជ្រើស​ពាក្យសម្ងាត់​ថ្មី​សម្រាប់ '%s' keyring"
+
+#: ../daemon/dbus/gkd-secret-change.c:129
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"កម្មវិធី​ចង់​ផ្លាស់ប្ដូរ​ពាក្យសម្ងាត់​សម្រាប់ '%s' keyring ។ "
+"ជ្រើស​ពាក្យសម្ងាត់​ថ្មី ដែល​អ្នក​ចង់​ប្រើ​សម្រាប់​វា ។"
+
+#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "រក្សាទុក​ពាក្យសម្ងាត់​ដែល​មិន​បាន​អ៊ិនគ្រីបឬ ?"
+
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"ដោយ​ការ​ជ្រើស​ប្រើ​ពាក្យសម្ងាត់​ទទេ "
+"ពាក្យសម្ងាត់​ដែល​បាន​រក្សាទុក​នឹង​មិន​ត្រូវ​បាន​អ៊ិនគ្រីប​ដោយ​សុវត្ថិភាព​ទេ "
+"។ អ្នក​ផ្សេង​នឹង​អាច​ប្រើ​ពួកវា ដើម្បី​ចូល​ទៅកាន់​ឯកសារ​របស់​អ្នកបាន ។"
+
+#: ../daemon/dbus/gkd-secret-change.c:149
+msgid "The original password was incorrect"
+msgstr "ពាក្យសម្ងាត់​ដើម​មិន​ត្រឹមត្រូវ"
+
+#: ../daemon/dbus/gkd-secret-change.c:349
+msgid "Change Keyring Password"
+msgstr "ផ្លាស់ប្ដូរ​ពាក្យសម្ងាត់ Keyring"
+
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"កម្មវិធី​ចង់​បង្កើត keyring ថ្មី​ដែល​មាន​ឈ្មោះ '%s' ។ "
+"ជ្រើស​ពាក្យសម្ងាត់​ដែល​អ្នក​ចង់​ប្រើ​សម្រាប់​វា ។"
+
+#: ../daemon/dbus/gkd-secret-create.c:85
+msgid "Choose password for new keyring"
+msgstr "ជ្រើស​ពាក្យសម្ងាត់​សម្រាប់ keyring ថ្មី"
+
+#: ../daemon/dbus/gkd-secret-create.c:308
+msgid "New Keyring Password"
+msgstr "ពាក្យសម្ងាត់ Keyring ថ្មី"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME Keyring ៖ ភ្នាក់ងារ GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GPG Password Agent"
+msgstr "ភ្នាក់ងារ​ពាក្យសម្ងាត់​របស់ GPG"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "វិញ្ញាបនបត្រ និងការ​ផ្ទុកសោ"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME Keyring ៖ សមាសភាគ PKCS#11"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME Keyring ៖ សេវា​សម្ងាត់"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "Secret Storage Service"
+msgstr "សេវា​ផ្ទុក​សម្ងាត់"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME Keyring ៖ ភ្នាក់ងារ SSH"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "SSH Key Agent"
+msgstr "ភ្នាក់ងារ​សោ SSH"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
+msgid "Unknown"
+msgstr "មិន​ស្គាល់"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
+#, c-format
+msgid "PGP Key: %s"
+msgstr "សោ PGP ៖ %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
+msgid "Enter Passphrase"
+msgstr "បញ្ចូល​ឃ្លា​សម្ងាត់"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "ដោះ​សោ​នេះ​ដោយ​ស្វ័យប្រវត្តិ នៅ​ពេល​ដែល​ខ្ញុំ​ចូល"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:145
+msgid "Login"
+msgstr "ចូល"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "បាន​បរាជ័យ​ក្នុង​ការ​បង្កើត​ឯកសារ​បណ្ដោះអាសន្ន `%s' ៖ %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "កំហុស​ក្នុង​ការ​សរសេរ​ទៅកាន់ `%s' ៖ %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "មិន​អាច​បង្កើត `%s' ៖ %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "យក​ឯកសារ​សោ​ចាស់ៗ​ចេញ (បាន​បង្កើត​ដោយ %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "រង់​ចាំ​ចាក់សោ (រង់ចាំ​ដោយ %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(ជាប់​គាំង​ឬ?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "ការ​ចាក់សោ `%s' មិន​ត្រូវ​បាន​ធ្វើ​ឡើង ៖ %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "រង់ចាំ​ចាក់សោ %s...\n"
+
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "សមាសភាគ​ដែន"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "លេខ​សម្គាល់​អ្នកប្រើ"
+
+#: ../egg/egg-oid.c:46
+msgid "Email Address"
+msgstr "អាសយដ្ឋាន​អ៊ីមែល"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "ថ្ងៃខែ​ឆ្នាំ​កំណើត"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "ទីកន្លែង​កំណើត"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "ភេទ"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "ប្រទេស​ដែល​ផ្ដល់​សញ្ជាតិ"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "ប្រទេស​ដែល​ស្នាក់នៅ"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "ឈ្មោះ​ធម្មតា"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "នាម​ត្រកូល"
+
+#: ../egg/egg-oid.c:69
+msgid "Serial Number"
+msgstr "លេខ​សម្គាល់"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "ប្រទេស"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "តំបន់"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "រដ្ឋ"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "ផ្លូវ"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "ស្ថាប័ន"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "អង្គភាព"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "តួនាទី"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "លេខ​ទូរស័ព្ទ"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "នាម​ខ្លួន"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "អាទិ​សង្កេត"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "កម្មវិធី​វាស់​គុណសម្បត្តិ​ក្នុង​ការ​បង្កើត"
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "កម្មវិធី​វាស់​គុណសម្បត្តិ DN"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "រហស្សនាម"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:99
+msgid "MD2 with RSA"
+msgstr "MD2 ដែលមាន RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD5 with RSA"
+msgstr "MD5 ដែល​មាន RSA"
+
+#: ../egg/egg-oid.c:101
+msgid "SHA1 with RSA"
+msgstr "SHA1 ដែល​មាន RSA"
+
+#: ../egg/egg-oid.c:103
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with DSA"
+msgstr "SHA1 ដែល​មាន DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវ​អំពី​ម៉ាស៊ីន​បម្រើ"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "ការ​ផ្ទៀងផ្ទាត់​ភាព​​ត្រឹមត្រូវ​អំពី​កម្មវិធី"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "ការ​ចុះ​ហត្ថលេខា​កូដ"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "ការ​ការពារ​អ៊ីមែល"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "ការ​បោះត្រា​ពេលវេលា"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr "មិន​រំពឹង​កំហុស​នៅ​ក្នុង select() ការ​អាន​ទិន្នន័យ​ពី​ដំណើរការ​រង (%s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "មិន​រំពឹង​កំហុស​នៅ​ក្នុង waitpid() (%s)"
+
+#: ../pkcs11/gkm/gkm-certificate.c:572
+msgid "Unnamed Certificate"
+msgstr "វិញ្ញាបនបត្រ​គ្មាន​ឈ្មោះ"
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+msgid "Couldn't parse public SSH key"
+msgstr "មិន​អាច​ញែក​សោ SSH សាធារណៈ"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "ដោះ​សោ​ពាក្យសម្ងាត់ ៖ %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+msgid "Unlock Login Keyring"
+msgstr "ដោះ​សោ​ Keyring សម្រាប់​ចូល"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+msgid "Enter password to unlock your login keyring"
+msgstr "បញ្ចូល​ពាក្យសម្ងាត់ ដើម្បី​ដោះ​សោ keyring សម្រាប់​ចូល"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"ពាក្យសម្ងាត់​ដែល​អ្នកប្រើ "
+"ដើម្បី​ចូល​ទៅ​ក្នុង​កុំព្យូទ័រ​របស់​អ្នក​មិន​ផ្គូផ្គង​នឹង​ keyring "
+"សម្រាប់​ចូល​ទៀត​ឡើយ ។"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"keyring សម្រាប់​ចូល​មិន​ត្រូវ​បាន​ដោះ​សោ "
+"នៅ​ពេល​ដែល​អ្នក​បាន​ចូល​ទៅ​ក្នុង​កុំព្យូទ័រ​ទេ ។"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+msgid "Unlock Keyring"
+msgstr "ដោះសោ Keyring"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "បញ្ចូល​ពាក្យសម្ងាត់ keyring '%s' ដើម្បី​ដោះ​សោ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "កម្មវិធី​ចង់​ចូល​ប្រើ keyring '%s' ប៉ុន្តែ​វា​ជាប់សោ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "ដោះ​សោ keyring នេះ​ដោយ​ស្វ័យប្រវត្តិ ពេល​ដែល​ខ្ញុំ​ចូល"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+msgid "Unlock private key"
+msgstr "ដោះ​សោ​ឯកជន"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+msgid "Unlock certificate"
+msgstr "ដោះ​សោ​វិញ្ញាបនបត្រ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+msgid "Unlock public key"
+msgstr "ដោះ​សោ​សាធារណៈ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
+msgid "Unlock"
+msgstr "ដោះ​សោ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+msgid "Enter password to unlock the private key"
+msgstr "បញ្ចូល​ពាក្យសម្ងាត់ ដើម្បី​ដោះ​សោ​ឯកជន"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+msgid "Enter password to unlock the certificate"
+msgstr "បញ្ចូល​ពាក្យសម្ងាត់ ដើម្បី​ដោះ​សោ​វិញ្ញាបនបត្រ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+msgid "Enter password to unlock the public key"
+msgstr "បញ្ចូល​ពាក្យសម្ងាត់ ដើម្បី​ដោះ​សោ​សាធារណៈ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+msgid "Enter password to unlock"
+msgstr "បញ្ចូល​ពាក្យសម្ងាត់ ដើម្បី​ដោះសោ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "ដោះ​សោ​នេះ​ដោយ​ស្វ័យប្រវត្តិ នៅ​ពេល​ដែល​ខ្ញុំ​ចូល"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "ដោះ​សោ​វិញ្ញាបនបត្រ​នេះ​ដោយ​ស្វ័យប្រវត្តិ នៅ​ពេល​ដែល​ខ្ញុំ​ចូល"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "ដោះ​សោ​ដោយ​ស្វ័យប្រវត្តិ នៅ​ពេល​ដែល​ខ្ញុំ​ចូល"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "កម្មវិធី​ចង់​ចូល​ដំណើរការ​សោ​ឯកជន '%s' ប៉ុន្តែ​វា​ជាប់សោ"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "កម្មវិធី​ចង់​ចូល​ដំណើរការ​វិញ្ញាបនបត្រ '%s' ប៉ុន្តែ​វា​ជាប់សោ"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "កម្មវិធី​ចង់​ចូល​ដំណើរការ​សោ​សាធារណៈ '%s' ប៉ុន្តែ​វា​ជាប់សោ"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "កម្មវិធី​ចង់​ចូល​ដំណើរការ '%s' ប៉ុន្តែ​វា​ជាប់​សោ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+msgid "The unlock password was incorrect"
+msgstr "ពាក្យសម្ងាត់​សម្រាប់​ដោះ​សោ​មិន​ត្រឹមត្រូវ"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
+msgid "Unlock certificate/key storage"
+msgstr "ដោះ​សោ​វិញ្ញាបនបត្រ/ការ​ផ្ទុក​សោ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "បញ្ចូល​ពាក្យសម្ងាត់ ដើម្បី​ដោះ​សោ​វិញ្ញាបនបត្រ/ការ​ផ្ទុក​សោ"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"កម្មវិធី​ចង់​ចូល​ដំណើរការ​វិញ្ញាបនបត្រ/ការ​ផ្ទុក​សោ '%s' ប៉ុន្តែ​វា​ជាប់សោ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
+msgid "New Password Required"
+msgstr "ទាមទារ​ពាក្យសម្ងាត់​ថ្មី"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
+msgid "New password required for secure storage"
+msgstr "ទាមទារ​ពាក្យសម្ងាត់​ថ្មី​សម្រាប់​ការ​ផ្ទុក​ដែល​មាន​សុវត្ថិភាព"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"ដើម្បី​រៀបចំ '%s' សម្រាប់​ផ្ទុក​វិញ្ញាបនបត្រ ឬ​សោ​ ត្រូវតែ​ប្រើ​ពាក្យសម្ងាត់"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+msgid "Change Password"
+msgstr "ផ្លាស់ប្ដូរ​ពាក្យ​សម្ងាត់"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+msgid "Original password for secure storage"
+msgstr "ពាក្យសម្ងាត់​ដើម​សម្រាប់​ការ​ផ្ទុក​ដែល​មាន​សុវត្ថិភាព"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr ""
+"ដើម្បី​ផ្លាស់ប្ដូរ​ពាក្យសម្ងាត់​សម្រាប់ '%s'  ត្រូវតែ​ប្រើ​ពាក្យសម្ងាត់​ដើម"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+msgid "Change password for secure storage"
+msgstr "ផ្លាស់ប្ដូរ​ពាក្យសម្ងាត់​សម្រាប់​ការ​ផ្ទុក​ដែល​មាន​សុវត្ថិភាព"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#, c-format
+msgid "Type a new password for '%s'"
+msgstr "វាយ​បញ្ចូល​ពាក្យសម្ងាត់​ថ្មី​សម្រាប់ '%s'"
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "ការ​ប្រើប្រាស់ ៖ ពាក្យ​បញ្ជា​របស់ gnome-keyring [options]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "ពាក្យ​បញ្ជា ៖"
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "          "
+
