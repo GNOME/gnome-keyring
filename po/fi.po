@@ -7,68 +7,94 @@
 #
 # Sanastoa:
 # keyring = avainnippu
+# Gnome 2012-03 Finnish translation sprint participants:
+# Flammie Pirinen
 msgid ""
 msgstr ""
+""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2011-09-08 13:38+0300\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-12-19 07:52+0000\n"
+"PO-Revision-Date: 2012-03-12 08:37:02+0000\n"
 "Last-Translator: Tommi Vainikainen <Unknown>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
-"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2011-09-08 09:16+0000\n"
-"X-Generator: Launchpad (build 13891)\n"
+"X-Generator: MediaWiki 1.20alpha (r113129); Translate 2012-03-02\n"
+"X-POT-Import-Date: 2012-02-19 15:16:10+0000\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
 msgid "Unnamed"
 msgstr "Nimetön"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "Vaihda avainnipun salasana"
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Anna vanha salasana avainnipulle ”%s”"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, c-format
+msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
+msgstr "Sovellus haluaa vaihtaa avainnipun ”%s\" salasanan. Anna avainnipun vanha salasana."
+
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Valitse uusi salasana avainnipulle ”%s”"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
-msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
-"new password you want to use for it."
-msgstr ""
-"Sovellus haluaa vaihtaa avainnipun ”%s” salasanan. Sinun täytyy valita "
-"avainnipulle käytettävä salasana."
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "Sovellus haluaa vaihtaa avainnipun ”%s” salasanan. Sinun täytyy valita avainnipulle käytettävä salasana."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
+#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "Tallennetaanko salasanat salaamattomassa muodossa?"
+
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Jos valitse tyhjän salasanan, tallennettuja salasanoja ei salata turvallisesti. Kuka tahansa, joka pääsee käsiksi tiedostoihisi, pääsee käsiksi myös salasanoihin."
+
+#: ../daemon/dbus/gkd-secret-change.c:149
 msgid "The original password was incorrect"
 msgstr "Alkuperäinen salasana oli väärä"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Uuden avainnipun salasana"
+#: ../daemon/dbus/gkd-secret-change.c:349
+msgid "Change Keyring Password"
+msgstr "Vaihda avainnipun salasana"
 
-#: ../daemon/dbus/gkd-secret-create.c:84
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "Sovellus haluaa luoda uuden avainnipun nimellä ”%s”. Sinun täytyy valita avainnipulle salasana."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
 msgstr "Valitse uuden avainnipun salasana"
 
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"Sovellus haluaa luoda uuden avainnipun nimellä ”%s”. Sinun täytyy valita "
-"avainnipulle salasana."
+#: ../daemon/dbus/gkd-secret-create.c:308
+msgid "New Keyring Password"
+msgstr "Uuden avainnipun salasana"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GPG Password Agent"
+msgstr "GPG-salasanojen agentti"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Gnomen avainnippu: GPG-agentti"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -79,59 +105,85 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "Gnomen avainnippu: PKCS#11-komponentti"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "Gnomen avainnippu: Salainen palvelu"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "Salaisuuksien säilöntäpalvelu"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "Gnomen avainnippu: SSH-agentti"
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "Gnomen avainnippu: Salainen palvelu"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr "SSH-avainten agentti"
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Gnomen avainnippu: GPG-agentti"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "GPG-salasanojen agentti"
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Gnomen avainnippu: SSH-agentti"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP-avain: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
 msgid "Enter Passphrase"
 msgstr "Syötä salasana"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr "Unohda tämä salasana, kun kirjaudun ulos"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
 msgstr "Sisäänkirjautuminen"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr ""
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr ""
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr ""
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -277,8 +329,7 @@ msgstr ""
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Odottamaton virhe select()-kutsussa luettaessa dataa lapsiprosessista (%s)"
+msgstr "Odottamaton virhe select()-kutsussa luettaessa dataa lapsiprosessista (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
@@ -299,155 +350,166 @@ msgstr "SSH-avaimen julkista osaa ei voitu tulkita."
 msgid "Unlock password for: %s"
 msgstr "Avaava salasana kohteelle: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "Avaussalasana oli väärä"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Avaa oletusavainnippu"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
 msgstr "Syötä salasana avataksesi sisäänkirjautumisten avainnipun"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"Salasana, jolla kirjauduit tietokoneeseesi ei enää täsmää siihen, joka on "
-"sisäänkirjautumistesi avainnipulla."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "Salasana, jolla kirjauduit tietokoneeseesi ei enää täsmää siihen, joka on sisäänkirjautumistesi avainnipulla."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"Sisäänkirjautumisten avainnippua ei avattu automaattisesti kun kirjauduit "
-"sisään tälle tietokoneelle."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "Sisäänkirjautumisten avainnippua ei avattu automaattisesti kun kirjauduit sisään tälle tietokoneelle."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
 msgid "Unlock Keyring"
 msgstr "Avaa avainnippu"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Avaa avainnipun ”%s” lukitus syöttämällä salasana"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Sovellus haluaa päästä käsiksi avainnippuun ”%s”, mutta avainnippu on lukittu"
+msgstr "Sovellus haluaa päästä käsiksi avainnippuun ”%s”, mutta avainnippu on lukittu"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
 msgid "Unlock private key"
 msgstr "Avaa salainen avain"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock certificate"
 msgstr "Avaa varmenne"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock public key"
 msgstr "Avaa julkinen avain"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock"
 msgstr "Avaa lukitus"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Enter password to unlock the private key"
 msgstr "Avaa salaisen avaimen lukitus syöttämällä salasana"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the certificate"
 msgstr "Avaa varmenteen lukitus syöttämällä salasana"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the public key"
 msgstr "Avaa julkisen avaimen lukitus syöttämällä salasana"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock"
 msgstr "Avaa syöttämällä salasana"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+msgid "Automatically unlock whenever I'm logged in"
+msgstr ""
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Sovellus haluaa päästä käsiksi salaiseen avaimeen ”%s”, mutta se on lukittu"
+msgstr "Sovellus haluaa päästä käsiksi salaiseen avaimeen ”%s”, mutta se on lukittu"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Sovellus haluaa päästä käsiksi varmenteeseen ”%s”, mutta se on lukittu"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"Sovellus haluaa päästä käsiksi julkiseen avaimeen ”%s”, mutta se on lukittu"
+msgstr "Sovellus haluaa päästä käsiksi julkiseen avaimeen ”%s”, mutta se on lukittu"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Sovellus haluaa päästä käsiksi kohteeseen ”%s”, mutta se on lukittu"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+msgid "The unlock password was incorrect"
+msgstr "Avaussalasana oli väärä"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
 msgid "Unlock certificate/key storage"
 msgstr "Avaa varmenne- tai avainsäilö"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Avaa varmenne- tai avainsäilön lukitus syöttämällä salasana"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 #, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Sovellus haluaa päästä käsiksi varmenteeseen tai avainsäilöön  ”%s”, mutta "
-"se on lukittu"
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "Sovellus haluaa päästä käsiksi varmenteeseen tai avainsäilöön  ”%s”, mutta se on lukittu"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
 msgid "New Password Required"
 msgstr "Uusi salasana vaaditaan"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
 msgid "New password required for secure storage"
 msgstr "Turvallinen säilö vaatii uuden salasanan"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
 #, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"Jotta ”%s” voidaan valmistella varmenteiden tai avainten tallennusta varten, "
-"tarvitaan salasana."
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "Jotta ”%s” voidaan valmistella varmenteiden tai avainten tallennusta varten, tarvitaan salasana."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Change Password"
 msgstr "Vaihda salasana"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+#, fuzzy
+msgid "Original password for secure storage"
+msgstr "Turvallinen säilö vaatii uuden salasanan"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
 msgid "Change password for secure storage"
 msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
-#, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr ""
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#, c-format, fuzzy
+msgid "Type a new password for '%s'"
+msgstr "Valitse uusi salasana avainnipulle ”%s”"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -463,64 +525,3 @@ msgstr "komennot: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:591
-msgid "Store passwords unencrypted?"
-msgstr "Tallennetaanko salasanat salaamattomassa muodossa?"
-
-#: ../ui/gku-prompt-tool.c:592
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Jos valitse tyhjän salasanan, tallennettuja salasanoja ei salata "
-"turvallisesti. Kuka tahansa, joka pääsee käsiksi tiedostoihisi, pääsee "
-"käsiksi myös salasanoihin."
-
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
-msgstr "Käytä turvatonta tallennusta"
-
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "Salasanat eivät täsmää."
-
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
-msgstr "Salasana ei voi olla tyhjä"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr ""
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Uuden salasanan vahvuus"
-
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "_Sovellus:"
-
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "_Vahvista:"
-
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr "_Yksityiskohdat:"
-
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "_Nimi:"
-
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "_Vanha salasana:"
-
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Salasana:"
