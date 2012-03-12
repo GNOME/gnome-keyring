@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-19 07:52+0000\n"
-"PO-Revision-Date: 2012-03-08 21:49+0530\n"
+"POT-Creation-Date: 2012-03-08 19:47+0000\n"
+"PO-Revision-Date: 2012-03-12 11:52+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,25 +20,21 @@ msgstr ""
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
 msgstr "নাম নহোৱা"
 
 #: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
-#| msgid "Choose a new password for the '%s' keyring"
 msgid "Enter the old password for the '%s' keyring"
 msgstr "'%s' keyring -ৰ বাবে পুৰনি পাছৱাৰ্ড সুমুৱাওক"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
-#| msgid ""
-#| "An application wants to change the password for the '%s' keyring. Choose "
-#| "the new password you want to use for it."
 msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
@@ -46,12 +42,21 @@ msgstr ""
 "এটা অনুপ্ৰয়োগে '%s' keyring -ৰ বাবে পাছৱাৰ্ড সলনি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
 "পুৰনি পাছৱাৰ্ড সুমুৱাওক।"
 
-#: ../daemon/dbus/gkd-secret-change.c:125
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+msgid "Continue"
+msgstr "চলাই নিয়ক"
+
+#: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "'%s' keyring -ৰ বাবে এটা নতুন পাছৱাৰ্ড বাছক"
 
-#: ../daemon/dbus/gkd-secret-change.c:129
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -60,12 +65,12 @@ msgstr ""
 "এটা অনুপ্ৰয়োগে '%s' keyring -ৰ বাবে পাছৱাৰ্ড সলনি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
 "ব্যৱহাৰ কৰিব বিচৰা নতুন পাছৱাৰ্ড বাছক।"
 
-#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-change.c:142
 #: ../daemon/dbus/gkd-secret-create.c:95
 msgid "Store passwords unencrypted?"
 msgstr "এনক্ৰিপশন বিনা পাছৱাৰ্ড সংৰক্ষণ কৰা হ'ব নেকি ?"
 
-#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:97
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
@@ -76,11 +81,11 @@ msgstr ""
 "সম্ভব নহব। আপোনাৰ নথিপত্ৰসমূহ পঢ়োতে অনুমোদিত যি কোনো ব্যবহাৰকাৰী দ্বাৰা এইবোৰ "
 "প্ৰয়োগ কৰা সম্ভব হ'ব।"
 
-#: ../daemon/dbus/gkd-secret-change.c:149
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "প্ৰকৃত পাছৱাৰ্ড সঠিক নাছিল"
 
-#: ../daemon/dbus/gkd-secret-change.c:349
+#: ../daemon/dbus/gkd-secret-change.c:352
 msgid "Change Keyring Password"
 msgstr "keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰক"
 
@@ -102,12 +107,12 @@ msgid "New Keyring Password"
 msgstr "নতুন keyring পাছৱাৰ্ড"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME Keyring: GPG সহায়ক"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
 msgid "GPG Password Agent"
 msgstr "GPG পাছৱাৰ্ড সহায়ক"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME Keyring: GPG সহায়ক"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -118,26 +123,26 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME Keyring: PKCS#11 উপাদান"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME Keyring: গুপ্ত সেৱা"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "গুপ্ত সংৰক্ষণ সেৱা"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME Keyring: SSH সহায়ক"
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME Keyring: গুপ্ত সেৱা"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr "SSH চাবি সহায়ক"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME Keyring: SSH সহায়ক"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "অজ্ঞাত"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:205
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP চাবি: %s"
@@ -147,8 +152,17 @@ msgstr "PGP চাবি: %s"
 msgid "Enter Passphrase"
 msgstr "Passphrase সোমাওক"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
-#| msgid "Automatically unlock this keyring whenever I'm logged in"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "আনলক কৰক"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো, এই কি স্বচালিতভাৱে আনলক কৰক"
 
@@ -393,115 +407,108 @@ msgstr ""
 msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr "আপুনি কমপিউটাৰত লগিন কৰোতে লগিন keyring আনলক নহল।"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "keyring আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' keyring আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "এটা অনুপ্ৰয়োগে '%s' keyring লে অভিগম বিচাৰে, কিন্তু ই লক আছে"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো স্বচালিতভাৱে এই keyring আনলক কৰিব"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock private key"
 msgstr "ব্যক্তিগত-চাবি আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock certificate"
 msgstr "প্ৰমাণপত্ৰ আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock public key"
 msgstr "ৰাজহুৱা-চাবি আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock"
-msgstr "আনলক কৰক"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the private key"
 msgstr "ব্যক্তিগত চাবি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the certificate"
 msgstr "প্ৰমাণপত্ৰ আনলক কৰাৰ বাবে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock the public key"
 msgstr "ৰাজহুৱা চাবি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Enter password to unlock"
 msgstr "আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
-#| msgid "Automatically unlock this keyring whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
 msgid "Automatically unlock this key whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো এই কি স্বচালিতভাৱে আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
-#| msgid "Automatically unlock this certificate when I log in."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
 msgid "Automatically unlock this certificate whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো, এই প্ৰমাণপত্ৰ স্বচালিতভাৱে আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
-#| msgid "Automatically unlock this keyring whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
 msgid "Automatically unlock whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো স্বচালিতভাৱে আনলক কৰিব"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
 "এটা অনুপ্ৰয়োগ, %s ব্যক্তিগত-চাবি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "এটা অনুপ্ৰয়োগ, %s প্ৰমাণপত্ৰ ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "এটা অনুপ্ৰয়োগ, %s ৰাজহুৱা-চাবি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "এটা অনুপ্ৰয়োগ, %s ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
 msgid "The unlock password was incorrect"
 msgstr "আনলক কৰা পাছৱাৰ্ড সঠিক নাছিল"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Unlock certificate/key storage"
 msgstr "প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ আনলক কৰাৰ বাবে পাছৱাৰ্ড লিখক"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -510,46 +517,41 @@ msgstr ""
 "এটা অনুপ্ৰয়োগ, %s প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ ব্যবহাৰ কৰিব ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা "
 "আছে"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "নতুন পাছৱাৰ্ড আবশ্যক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New password required for secure storage"
 msgstr "সংৰক্ষণ সুৰক্ষিত ৰাখিবলে পাছৱাৰ্ড লিখা আবশ্যক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr "প্ৰমাণপত্ৰ আৰু চাবি সংগ্ৰহৰ বাবে '%s' প্ৰস্তুত কৰাৰ বাবে এটা পাছৱাৰ্ড লিখা আবশ্যক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
 msgid "Change Password"
 msgstr "পাছৱাৰ্ড সলনি কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
-#| msgid "Change password for secure storage"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
 msgid "Original password for secure storage"
 msgstr "সুৰক্ষিত সংৰক্ষণৰ বাবে পুৰনি পাছৱাৰ্ড"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
 #, c-format
-#| msgid ""
-#| "To change the password for '%s', the original and new passwords are "
-#| "required"
 msgid "To change the password for '%s', the original password is required"
 msgstr "'%s' -ৰ বাবে পাছৱাৰ্ড সলনি কৰিবলে, প্ৰকৃত পাছৱাৰ্ডৰ প্ৰয়োজন"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change password for secure storage"
 msgstr "সুৰক্ষিত সংৰক্ষণৰ বাবে পাছৱাৰ্ড সলনি কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
 #, c-format
-#| msgid "Choose a new password for the '%s' keyring"
 msgid "Type a new password for '%s'"
 msgstr "'%s' ৰ বাবে এটা নতুন পাছৱাৰ্ড টাইপ কৰক"
 
