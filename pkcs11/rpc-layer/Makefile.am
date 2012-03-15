@@ -23,12 +23,12 @@ libgkm_rpc_layer_la_LIBADD = \
 	$(top_builddir)/egg/libegg-buffer.la \
 	$(top_builddir)/egg/libegg-creds.la \
 	$(GOBJECT_LIBS) \
-    	$(GTHREAD_LIBS) \
+	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS)
 
 libgkm_rpc_layer_la_CFLAGS = \
 	$(GOBJECT_CFLAGS) \
-    	$(GTHREAD_CFLAGS) \
+	$(GTHREAD_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 # ------------------------------------------------------------------------------
@@ -67,4 +67,8 @@ gkm_rpc_daemon_standalone_SOURCES = \
 	gkm-rpc-daemon-standalone.c
 
 gkm_rpc_daemon_standalone_LDADD = \
-	$(DL_LIBS) libgkm-rpc-layer.la
+	$(DL_LIBS) libgkm-rpc-layer.la \
+	$(GLIB_LIBS)
+
+gkm_rpc_daemon_standalone_CFLAGS = \
+	$(GLIB_CFLAGS)
