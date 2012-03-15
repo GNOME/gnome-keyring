@@ -205,7 +205,7 @@ msgstr "ਸਟਾਲ ਲਾਕ-ਫਾਇਲ ਹਟਾਈ ਜਾ ਰਹੀ ਹੈ
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr "%s ਲਾਕ ਦੀ ਉਡੀਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ (%d%s ਵਲੋਂ ਰੋਕਿਆ)...\n"
+msgstr "%3$s ਲਾਕ ਦੀ ਉਡੀਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ (%1$d%2$s ਵਲੋਂ ਰੋਕਿਆ)...\n"
 
 #: ../egg/dotlock.c:1085
 msgid "(deadlock?) "
