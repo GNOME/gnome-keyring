@@ -9,39 +9,35 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-19 07:52+0000\n"
-"PO-Revision-Date: 2012-03-03 19:37+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-16 12:27+0100\n"
+"PO-Revision-Date: 2012-03-16 12:35+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
 msgstr "Névtelen"
 
 #: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
-#| msgid "Choose a new password for the '%s' keyring"
 msgid "Enter the old password for the '%s' keyring"
 msgstr "Adja meg a régi jelszót a(z) „%s” kulcstartóhoz"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
-#| msgid ""
-#| "An application wants to change the password for the '%s' keyring. Choose "
-#| "the new password you want to use for it."
 msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
@@ -49,12 +45,21 @@ msgstr ""
 "Egy alkalmazás módosítani akarja a(z) „%s” kulcstartó jelszavát. Adja meg a "
 "régi jelszót."
 
-#: ../daemon/dbus/gkd-secret-change.c:125
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+msgid "Continue"
+msgstr "Folytatás"
+
+#: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Válasszon új jelszót a(z) „%s” kulcstartóhoz"
 
-#: ../daemon/dbus/gkd-secret-change.c:129
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -63,12 +68,12 @@ msgstr ""
 "Egy alkalmazás módosítani akarja a(z) „%s” kulcstartó jelszavát. Válassza ki "
 "az ehhez használandó új jelszót."
 
-#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-change.c:142
 #: ../daemon/dbus/gkd-secret-create.c:95
 msgid "Store passwords unencrypted?"
 msgstr "A jelszavak tárolása titkosítás nélkül?"
 
-#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:97
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
@@ -78,11 +83,11 @@ msgstr ""
 "Ha üres jelszót választ, az eltárolt jelszavai nem lesznek biztonságosan "
 "titkosítva. Bárki számára elérhetőek lesznek, aki hozzáfér a fájljaihoz."
 
-#: ../daemon/dbus/gkd-secret-change.c:149
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Az eredeti jelszó helytelen"
 
-#: ../daemon/dbus/gkd-secret-change.c:349
+#: ../daemon/dbus/gkd-secret-change.c:356
 msgid "Change Keyring Password"
 msgstr "Kulcstartó jelszavának módosítása"
 
@@ -139,7 +144,7 @@ msgstr "SSH-kulcs ügynök"
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:205
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP kulcs: %s"
@@ -149,7 +154,17 @@ msgstr "PGP kulcs: %s"
 msgid "Enter Passphrase"
 msgstr "Adja meg a jelmondatot"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "Feloldás"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "Ezen kulcs automatikus feloldása amikor bejelentkezem"
 
@@ -387,85 +402,81 @@ msgstr ""
 "A bejelentkezési kulcstartó nem lett feloldva a számítógépére történt "
 "bejelentkezésekor."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "Kulcstartó nyitása"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Adja meg a jelszót a(z) „%s” kulcstartó nyitásához"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Egy alkalmazás hozzá akar férni a(z) „%s” kulcstartóhoz, de az zárolva van"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "Ezen kulcstartó automatikus feloldása, ha bejelentkeztem"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
-msgid "Unlock private key"
-msgstr "Magánkulcs feloldása"
-
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+msgid "Unlock private key"
+msgstr "Személyes kulcs feloldása"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock certificate"
 msgstr "Tanúsítvány feloldása"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock public key"
 msgstr "Nyilvános kulcs feloldása"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock"
-msgstr "Feloldás"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
-msgid "Enter password to unlock the private key"
-msgstr "Adja meg a jelszót a magánkulcs feloldásához"
-
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+msgid "Enter password to unlock the private key"
+msgstr "Adja meg a jelszót a személyes kulcs feloldásához"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the certificate"
 msgstr "Adja meg a jelszót a tanúsítvány feloldásához"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock the public key"
 msgstr "Adja meg a jelszót a nyilvános kulcs feloldásához"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Enter password to unlock"
 msgstr "Adja meg a jelszót a feloldáshoz"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
 msgid "Automatically unlock this key whenever I'm logged in"
 msgstr "Ezen kulcs automatikus feloldása amikor bejelentkezem"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
 msgid "Automatically unlock this certificate whenever I'm logged in"
 msgstr "Ezen tanúsítvány automatikus feloldása amikor bejelentkezem"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
 msgid "Automatically unlock whenever I'm logged in"
 msgstr "Automatikus feloldás amikor bejelentkezem"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” magánkulcshoz, de az zárolva van"
+msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” személyes kulcshoz, de az zárolva van"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz, de az zárolva van"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
@@ -473,26 +484,26 @@ msgstr ""
 "van"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Egy alkalmazás hozzá kíván férni a(z) „%s” elemhez, de az zárolva van"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
 msgid "The unlock password was incorrect"
 msgstr "A feloldási jelszó helytelen"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Unlock certificate/key storage"
 msgstr "Tanúsítvány/kulcstároló feloldása"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Adja meg a jelszót a tanúsítvány/kulcstároló feloldásához"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -501,15 +512,15 @@ msgstr ""
 "Egy alkalmazás hozzá kíván férni a(z) „%s” tanúsítványhoz/kulcstárolóhoz, de "
 "az zárolva van"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Új jelszó szükséges"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New password required for secure storage"
 msgstr "Új jelszó szükséges a biztonságos tárolóhoz"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -518,31 +529,26 @@ msgstr ""
 "„%s” felkészítéséhez tanúsítványok vagy kulcsok tárolásához egy jelszó "
 "szükséges"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
 msgid "Change Password"
 msgstr "Jelszó megváltoztatása"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
-#| msgid "Change password for secure storage"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
 msgid "Original password for secure storage"
 msgstr "Eredeti jelszó a biztonságos tárolóhoz"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
 #, c-format
-#| msgid ""
-#| "To change the password for '%s', the original and new passwords are "
-#| "required"
 msgid "To change the password for '%s', the original password is required"
 msgstr "„%s” jelszavának módosításához az eredeti jelszó szükséges"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change password for secure storage"
 msgstr "Jelszó módosítása a biztonságos tárolóhoz"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
 #, c-format
-#| msgid "Choose a new password for the '%s' keyring"
 msgid "Type a new password for '%s'"
 msgstr "Írja be az új jelszót a következőhöz: „%s”"
 
