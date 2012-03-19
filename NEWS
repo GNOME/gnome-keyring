@@ -1,3 +1,9 @@
+Changes in version 3.3.92 are:
+ * Use runtime dir instead of /tmp for sockets
+ * Updated translations
+ * Fix copyright headers
+ * Build fixes
+
 Changes in version 3.3.91 are:
  * Fix regression in changing a keyring master password
  * Set better button labels for the prompts
