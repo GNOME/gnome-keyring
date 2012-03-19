@@ -1,19 +1,22 @@
 # Telugu translation of gnome-keyring.
 # Copyright (C) 2011 Gnome Telugu Contributors
+# Copyright (C) 2007,2012 Swecha Telugu Localisation Team <localization@swecha.net>
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Bharat Kumar <jonnalagaddabharat@gmail.com>, 2007.
 # Krishna Babu K <kkrothap@redhat.com>, 2009.
 # Praveen Illa <mail2ipn@gmail.com>, 2011.
+# Bhuvan Krishna <bhuvan@swecha.net>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master.te\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-11-25 20:24+0000\n"
-"PO-Revision-Date: 2011-12-01 01:10+0530\n"
-"Last-Translator: Praveen Illa <mail2ipn@gmail.com>\n"
-"Language-Team: తెలుగు <indlinux-telugu@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-03-08 19:47+0000\n"
+"PO-Revision-Date: 2012-03-20 00:38+0530\n"
+"Last-Translator: Bhuvan Krishna <bhuvan@swecha.net>\n"
+"Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,52 +25,103 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
 msgstr "పేరుపెట్టనిది"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "కీరింగు సంకేతపదాన్ని మార్చు"
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, c-format
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Enter the old password for the '%s' keyring"
+msgstr "'%s' కీరింగు కొరకు ఒక కొత్త సంకేతపదమును ఎంచుకొడి"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, c-format
+#| msgid ""
+#| "An application wants to change the password for the '%s' keyring. Choose "
+#| "the new password you want to use for it."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr ""
+"ఒక అనువర్తనం '%s' కీరింగుకు సంకేతపదాన్ని మార్చాలనుకుంటుంది. దీనికి మీరు ఉపయోగించాలనుకుంటున్న "
+"కొత్త సంకేతపదాన్ని ఎంచుకోండి."
+
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+msgid "Continue"
+msgstr "కొనసాగు"
+
+#: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "'%s' కీరింగు కొరకు ఒక కొత్త సంకేతపదమును ఎంచుకొను"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "ఒక అనువర్తనం '%s' కీరింగుకు సంకేతపదాన్ని మార్చాలనుకుంటుంది. దీనికి మీరు ఉపయోగించాలనుకుంటున్న కొత్త సంకేతపదాన్ని ఎంచుకోండి."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"ఒక అనువర్తనం '%s' కీరింగుకు సంకేతపదాన్ని మార్చాలనుకుంటుంది. దీనికి మీరు ఉపయోగించాలనుకుంటున్న "
+"కొత్త సంకేతపదాన్ని ఎంచుకోండి."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "ఎన్‌క్రిప్టుచేయని సంకేతపదాలను నిల్వవుంచాలా?"
+
+#: ../daemon/dbus/gkd-secret-change.c:144
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"ఖాళీ సంకేతపదమును వాడాలనుకోవడంవలన, మీ యొక్క నిల్వవుంచిన సంకేతపదములు సురక్షితముగా ఎన్‌క్రిప్టు "
+"చేయబడవు. మీ ఫైళ్ళను వాడగలిగిన ఎవరైనా వాటిని వాడుటకు అందుబాటులో ఉంటాయి."
+
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "అసలు సంకేతపదము తప్పు"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "కొత్త కీరింగు సంకేతపదము"
+#: ../daemon/dbus/gkd-secret-change.c:352
+msgid "Change Keyring Password"
+msgstr "కీరింగు సంకేతపదాన్ని మార్చు"
 
-#: ../daemon/dbus/gkd-secret-create.c:84
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"ఒక అనువర్తనం కొత్త '%s' కీరింగును సృష్టించాలనుకుంటుంది. దీనికి ఉపయోగించాలనుకుంటున్న సంకేతపదాన్ని "
+"ఎంచుకోండి."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
 msgstr "కొత్త కీరింగు సంకేతపదాన్ని ఎంచుకొను"
 
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, c-format
-msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "ఒక అనువర్తనం కొత్త '%s' కీరింగును సృష్టించాలనుకుంటుంది. దీనికి ఉపయోగించాలనుకుంటున్న సంకేతపదాన్ని ఎంచుకోండి."
+#: ../daemon/dbus/gkd-secret-create.c:308
+msgid "New Keyring Password"
+msgstr "కొత్త కీరింగు సంకేతపదము"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME కీరింగ్: GPG వాహకం"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
 msgid "GPG Password Agent"
 msgstr "GPG సంకేతపదం వాహకం"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME కీరింగ్: GPG వాహకం"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -78,49 +132,51 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME కీరింగ్: PKCS#11 అంశం"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME కీరింగ్: రహస్య సేవ"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "రహస్య నిల్వ సేవ"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME కీరింగ్: SSH వాహకం"
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME కీరింగ్: రహస్య సేవ"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr "SSH కీ వాహకము"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME కీరింగ్: SSH వాహకం"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "తెలియదు"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
 msgstr "PGP కీ: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
 msgid "Enter Passphrase"
 msgstr "సంకేతపదసముదాయాన్ని ప్రవేశపెట్టండి"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr "ఇంత సమయం వాడుకలో లేకుంటే సంకేతపదమును మర్చిపోమ్ము"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "అన్‌లాక్"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr "ఇంత తరువాత సంకేతపదాన్ని మర్చిపోవు"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr "నేను నిష్క్రమించిన తరువాత సంకేతపదాన్ని మరిచిపోమ్ము"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "నేను ప్రవేశించినపుదు స్వయం చాలకంగ బయల్పరచు ఇ తాళం"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
 msgstr "ప్రవేశించు"
 
@@ -331,136 +387,177 @@ msgstr "పబ్లిక్ SSH కీను పార్శ్ చేయల�
 msgid "Unlock password for: %s"
 msgstr "సంకేతపదమును ఇంతసేపు అన్‌లాక్ చేయి: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "అన్‌లాక్ సంకేతపదము తప్పు"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "లాగిన్ కీరింగును అన్‌లాక్ చేయి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
 msgstr "మీ కీరింగును అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టండి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid "The password you use to log in to your computer no longer matches that of your login keyring."
-msgstr "మీ కంప్యూటరులోనికి ప్రవేశించుటకు మీరు వాడే సంకేతపదము ఇక ఏమాత్రం మీ లాగిన్ కీరింగుతో సరిపోలడం లేదు."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"మీ కంప్యూటరులోనికి ప్రవేశించుటకు మీరు వాడే సంకేతపదము ఇక ఏమాత్రం మీ లాగిన్ కీరింగుతో సరిపోలడం లేదు."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid "The login keyring did not get unlocked when you logged into your computer."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr "ఈ కంప్యూటర్‌లోనికి ప్రవేశించినపుడు లాగిన్ కీరింగ్ స్వయంచాలకంగా అన్‌లాక్ చేయబడదు."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "కీరింగును తెరవండి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' కీరింగును తెరుచుటకు సంకేతపదాన్ని ప్రవేశపెట్టండి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "ఒక తెలియని అనువర్తనం  '%s' కీరింగునకు ప్రవేశసౌలభ్యతని కోరుచున్నది, కాని కీరింగు లాక్ చేయబడివుంది"
+msgstr ""
+"ఒక తెలియని అనువర్తనం  '%s' కీరింగునకు ప్రవేశసౌలభ్యతని కోరుచున్నది, కాని కీరింగు లాక్ చేయబడివుంది"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "నేను ప్రవేశించినపుదు స్వయం చాలకంగ బయల్పరచు ఇ కీ రింగ్ను"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock private key"
 msgstr "వ్యక్తిగత కీను అన్‌లాక్ చేయి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock certificate"
 msgstr "ధృవీకరణపత్నాన్ని అన్‌లాక్ చేయి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock public key"
 msgstr "పబ్లిక్ కీను అన్‌లాక్ చేయి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "అన్‌లాక్"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the private key"
 msgstr "వ్యక్తిగత కీను అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టు"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the certificate"
 msgstr "ధృవీకరణపత్రాన్ని అన్‌లాక్ చేయుటకు సంకేతపదాన్ని ప్రవేశపెట్టండి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock the public key"
 msgstr "పబ్లిక్ కీను అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టు"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Enter password to unlock"
 msgstr "అన్‌లాక్ చేయుటకు సంకేతపదాన్ని ప్రవేశపెట్టండి"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "నేను ప్రవేశించినపుదు స్వయం చాలకంగ బయల్పరచు ఇ తాళంని"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "నేను ప్రవేశించినపుదు స్వయం చాలకం గ బయల్పరచు ఇ ధృవీకరణ పత్రాని"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "నేను ప్రవేశించ్చినపుడు అయినప్పుదు స్వయం చాలకంగ అన్లాక్ చ్యే."
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "ఒక అనువర్తనము వ్యక్తిగత కీ '%s'కు ప్రవేశసౌలభ్యతను కోరుతున్నది, కాని ఇది లాక్‌చేయబడింది"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "ఒక అనువర్తనము ధృవీకరణపత్రం '%s'కు ప్రవేశసౌలభ్యతను కోరుతున్నది, కాని ఇది లాక్ చేయబడివుంది"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "ఒక అనువర్తనము పబ్లిక్‌కీ '%s'కు ప్రవేశసౌలభ్యతను కోరుతున్నది, కాని ఇది లాక్ చేయబడివుంది"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "ఒక అనువర్తనము '%s'కు ప్రవేశసౌలభ్యతను కోరుతున్నది, కాని ఇది లాక్ చేయబడివుంది"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+msgid "The unlock password was incorrect"
+msgstr "అన్‌లాక్ సంకేతపదము తప్పు"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Unlock certificate/key storage"
 msgstr "ధృవీకరణపత్రం/కీ నిల్వను అన్‌లాక్ చేయి"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "ధృవీకరణపత్రం/కీ నిల్వను అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టండి"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
 #, c-format
-msgid "An application wants access to the certificate/key storage '%s', but it is locked"
-msgstr "ఒక అనువర్తనము ధృవీకరణపత్రం/కీ నిల్వ '%s'కు ప్రవేశసౌలభ్యతను కోరుతున్నది, అయితే యిది లాకైవుంది"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"ఒక అనువర్తనము ధృవీకరణపత్రం/కీ నిల్వ '%s'కు ప్రవేశసౌలభ్యతను కోరుతున్నది, అయితే యిది లాకైవుంది"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "కొత్త సంకేతపదం అవసరం"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New password required for secure storage"
 msgstr "సురక్షిత నిల్వకు కొత్త సంకేతపదము అవసరం"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
-msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
-msgstr "ధృవీకరణపత్రముల లేదా కీల యొక్క నిల్వ కొరకు '%s'ను సమాయత్త పరచుటకు, ఒక సంకేతపదము అవసరము."
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"ధృవీకరణపత్రముల లేదా కీల యొక్క నిల్వ కొరకు '%s'ను సమాయత్త పరచుటకు, ఒక సంకేతపదము అవసరము."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
 msgid "Change Password"
 msgstr "సంకేతపదాన్ని మార్చు"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#| msgid "Change password for secure storage"
+msgid "Original password for secure storage"
+msgstr "రక్షణ నిల్వకు సంకేతపదాన్ని మార్చు"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#, c-format
+#| msgid ""
+#| "To change the password for '%s', the original and new passwords are "
+#| "required"
+msgid "To change the password for '%s', the original password is required"
+msgstr "'%s'కి సంకేతపదాన్ని మార్చడానికి, అసలు మరియు కొత్త సంకేతపదాలు అవసరం"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change password for secure storage"
 msgstr "రక్షణ నిల్వకు సంకేతపదాన్ని మార్చు"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
 #, c-format
-msgid "To change the password for '%s', the original and new passwords are required"
-msgstr "'%s'కి సంకేతపదాన్ని మార్చడానికి, అసలు మరియు కొత్త సంకేతపదాలు అవసరం"
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Type a new password for '%s'"
+msgstr "'%s' కీరింగు కొరకు ఒక కొత్త సంకేతపదమును ఎంచుకొను"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -476,59 +573,47 @@ msgstr "ఆదేశాలు: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:597
-msgid "Store passwords unencrypted?"
-msgstr "ఎన్‌క్రిప్టుచేయని సంకేతపదాలను నిల్వవుంచాలా?"
+#~ msgid "Forget this password if idle for"
+#~ msgstr "ఇంత సమయం వాడుకలో లేకుంటే సంకేతపదమును మర్చిపోమ్ము"
 
-#: ../ui/gku-prompt-tool.c:598
-msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "ఖాళీ సంకేతపదమును వాడాలనుకోవడంవలన, మీ యొక్క నిల్వవుంచిన సంకేతపదములు సురక్షితముగా ఎన్‌క్రిప్టు చేయబడవు. మీ ఫైళ్ళను వాడగలిగిన ఎవరైనా వాటిని వాడుటకు అందుబాటులో ఉంటాయి."
+#~ msgid "Forget this password after"
+#~ msgstr "ఇంత తరువాత సంకేతపదాన్ని మర్చిపోవు"
 
-#: ../ui/gku-prompt-tool.c:605
-msgid "Use Unsafe Storage"
-msgstr "రక్షణలేని నిల్వను ఉపయోగించు"
+#~ msgid "Forget this password when I log out"
+#~ msgstr "నేను నిష్క్రమించిన తరువాత సంకేతపదాన్ని మరిచిపోమ్ము"
 
-#: ../ui/gku-prompt-tool.c:645
-msgid "Passwords do not match."
-msgstr "సంకేతపదాలు  సరిపోలడంలేదు."
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "రక్షణలేని నిల్వను ఉపయోగించు"
 
-#: ../ui/gku-prompt-tool.c:655
-msgid "Password cannot be blank"
-msgstr "సంకేతపదము ఖాళీగా ఉండకూడదు"
+#~ msgid "Passwords do not match."
+#~ msgstr "సంకేతపదాలు  సరిపోలడంలేదు."
 
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "కొత్త సంకేతపదం ధృడత్వం"
+#~ msgid "Password cannot be blank"
+#~ msgstr "సంకేతపదము ఖాళీగా ఉండకూడదు"
 
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "అనువర్తనం (_A):"
+#~ msgid "New password strength"
+#~ msgstr "కొత్త సంకేతపదం ధృడత్వం"
 
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "నిర్ధారించు (_C):"
+#~ msgid "_Application:"
+#~ msgstr "అనువర్తనం (_A):"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr "వివరాలు (_D):"
+#~ msgid "_Confirm:"
+#~ msgstr "నిర్ధారించు (_C):"
 
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "పేరు (_N):"
+#~ msgid "_Details:"
+#~ msgstr "వివరాలు (_D):"
 
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "పాత సంకేతపదం (_O):"
+#~ msgid "_Name:"
+#~ msgstr "పేరు (_N):"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "సంకేతపదము (_P):"
+#~ msgid "_Old Password:"
+#~ msgstr "పాత సంకేతపదం (_O):"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "కీరింగు ప్రవేశసౌలభ్యత"
+#~ msgid "_Password:"
+#~ msgstr "సంకేతపదము (_P):"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "సంకేతపదాలకు మరియు ఇతర రహస్యాల ప్రవేశసౌలభ్యతకు తాళం తీసివేయి"
+#~ msgid "Keyring Access"
+#~ msgstr "కీరింగు ప్రవేశసౌలభ్యత"
 
+#~ msgid "Unlock access to passwords and other secrets"
+#~ msgstr "సంకేతపదాలకు మరియు ఇతర రహస్యాల ప్రవేశసౌలభ్యతకు తాళం తీసివేయి"
