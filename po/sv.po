@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-12 18:18+0100\n"
-"PO-Revision-Date: 2012-03-12 18:18+0100\n"
+"POT-Creation-Date: 2012-03-24 13:05+0100\n"
+"PO-Revision-Date: 2012-03-24 13:05+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -232,7 +232,7 @@ msgstr "Common Name"
 
 #: ../egg/egg-oid.c:67
 msgid "Surname"
-msgstr "Förnamn"
+msgstr "Efternamn"
 
 #: ../egg/egg-oid.c:69
 msgid "Serial Number"
