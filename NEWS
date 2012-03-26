@@ -1,3 +1,6 @@
+Changes in version 3.4.0 are:
+ * Updated translations
+
 Changes in version 3.3.92 are:
  * Use runtime dir instead of /tmp for sockets
  * Updated translations
