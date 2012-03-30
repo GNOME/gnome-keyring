@@ -695,29 +695,9 @@ AC_SUBST(DAEMON_LIBS)
 AC_SUBST(P11_TESTS_CFLAGS)
 AC_SUBST(P11_TESTS_LIBS)
 
-# HACK: Because autoconf is nasty
-if test "${prefix}" = "NONE"; then
-    prefix=/usr/local
-fi
-if test "${exec_prefix}" = "NONE"; then
-    exec_prefix=$prefix
-fi
-
-eval BINDIR="$bindir"
-AC_SUBST(BINDIR)
-
-eval LIBEXECDIR="$libexecdir"
-AC_SUBST(LIBEXECDIR)
-
 AC_OUTPUT([
 Makefile
 daemon/Makefile
-daemon/gnome-keyring-gpg.desktop.in
-daemon/gnome-keyring-pkcs11.desktop.in
-daemon/gnome-keyring-secrets.desktop.in
-daemon/gnome-keyring-ssh.desktop.in
-daemon/org.gnome.keyring.service
-daemon/org.freedesktop.secrets.service
 daemon/control/Makefile
 daemon/control/tests/Makefile
 daemon/dbus/Makefile

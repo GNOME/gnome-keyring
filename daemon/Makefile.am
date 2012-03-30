@@ -1,3 +1,5 @@
+include $(top_srcdir)/Makefile.decl
+
 SUBDIRS = \
 	login \
 	control \
@@ -76,5 +78,3 @@ install-exec-hook:
 	setcap cap_ipc_lock=ep $(DESTDIR)$(bindir)/gnome-keyring-daemon || true
 
 endif
-
-@INTLTOOL_DESKTOP_RULE@
