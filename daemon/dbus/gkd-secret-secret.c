@@ -158,7 +158,7 @@ gkd_secret_secret_parse (GkdSecretService *service, DBusMessage *message,
 void
 gkd_secret_secret_append (GkdSecretSecret *secret, DBusMessageIter *iter)
 {
-	const gchar *content_type = "application/octet-stream";
+	const gchar *content_type = "text/plain";
 	DBusMessageIter struc, array;
 	const gchar *path;
 	int length;
