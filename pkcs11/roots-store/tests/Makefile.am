@@ -1,3 +1,4 @@
+include $(top_srcdir)/Makefile.decl
 
 INCLUDES = \
 	-I$(top_builddir) \
@@ -20,19 +21,25 @@ else
 CHECK_PROGS =
 endif
 
-test: $(TEST_PROGS) $(CHECK_PROGS)
+CHECK_FILES = \
+	p11-tests.conf
+
+test: $(TEST_PROGS) $(CHECK_PROGS) $(CHECK_FILES)
 	@for prog in $(CHECK_PROGS); do SRCDIR='.' ./$$prog || exit 1; done
 
 check-local: test
 
 all-local: $(check_PROGRAMS)
 
-EXTRA_DIST = \
-	p11-tests.conf \
-	files
-
 noinst_PROGRAMS = \
 	$(CHECK_PROGS)
 
 check_roots_module_CFLAGS = $(P11_TESTS_CFLAGS)
 check_roots_module_LDADD = $(P11_TESTS_LIBS) $(LDADD)
+
+EXTRA_DIST = \
+	p11-tests.conf.in \
+	files
+
+CLEAN_FILES = \
+	$(CHECK_FILES)

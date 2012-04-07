@@ -21,6 +21,8 @@ SED_SUBST = sed \
 	-e 's,[@]bindir[@],$(bindir),g' \
 	-e 's,[@]exec_prefix[@],$(exec_prefix),g' \
 	-e 's,[@]prefix[@],$(prefix),g' \
+	-e 's,[@]abs_srcdir[@],$(abs_srcdir),g' \
+	-e 's,[@]srcdir[@],$(srcdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]VERSION[@],$(VERSION),g' \
 	-e 's,[@]VALGRIND_RUN[@],$(VALGRIND_RUN),g' \
@@ -34,4 +36,8 @@ SED_SUBST = sed \
 .service.in.service:
 	$(V_SED) $(SED_SUBST) $< > $@
 
-SUFFIXES = .asn .asn.h .desktop.in .desktop.in.in .service .service.in
+.conf.in.conf:
+	$(V_SED) $(SED_SUBST) $< > $@
+
+SUFFIXES = .asn .asn.h .conf .conf.in .desktop.in .desktop.in.in .service .service.in
+

@@ -32,6 +32,7 @@ TEST_PROGS = \
 	test-file-tracker \
 	test-memory-store \
 	test-object \
+	test-certificate \
 	test-secret \
 	test-sexp \
 	test-store \
@@ -47,6 +48,10 @@ test_memory_store_LDADD = \
 	$(LDADD)
 
 test_object_LDADD = \
+	libgkm-mock.a \
+	$(LDADD)
+
+test_certificate_LDADD = \
 	libgkm-mock.a \
 	$(LDADD)
 

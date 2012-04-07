@@ -293,7 +293,7 @@ static gboolean
 gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login, gpointer *data, gsize *n_data)
 {
 	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
-	const gchar *password;
+	const gchar *password = NULL;
 	gsize n_password;
 	GkmSexp *sexp;
 	guchar *key;
@@ -305,7 +305,8 @@ gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login, gpoin
 	sexp = gkm_gnome2_private_key_real_acquire_crypto_sexp (GKM_SEXP_KEY (self), NULL);
 	g_return_val_if_fail (sexp, FALSE);
 
-	password = gkm_secret_get_password (login, &n_password);
+	if (login != NULL)
+		password = gkm_secret_get_password (login, &n_password);
 	if (password == NULL) {
 		key = gkm_data_der_write_private_pkcs8_plain (gkm_sexp_get (sexp), n_data);
 

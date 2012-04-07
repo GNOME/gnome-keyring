@@ -1,3 +1,4 @@
+include $(top_srcdir)/Makefile.decl
 
 INCLUDES = \
 	-I$(top_builddir) \
@@ -21,23 +22,22 @@ else
 CHECK_PROGS =
 endif
 
+CHECK_FILES = \
+	p11-tests.conf
+
 TEST_PROGS = \
 	test-ssh-openssh \
 	test-private-key
 
 check_PROGRAMS = $(TEST_PROGS)
 
-test: $(TEST_PROGS) $(CHECK_PROGS)
+test: $(TEST_PROGS) $(CHECK_PROGS) $(CHECK_FILES)
 	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
 	@for prog in $(CHECK_PROGS); do SRCDIR='.' ./$$prog || exit 1; done
 
 check-local: test
 
 all-local: $(check_PROGRAMS)
-
-EXTRA_DIST = \
-	p11-tests.conf \
-	files
 
 noinst_PROGRAMS = \
 	$(CHECK_PROGS)
@@ -49,3 +49,10 @@ noinst_LIBRARIES = libgkm-mock-ssh-module.a
 
 libgkm_mock_ssh_module_a_SOURCES = \
 	mock-ssh-module.c mock-ssh-module.h
+
+EXTRA_DIST = \
+	p11-tests.conf.in \
+	files
+
+CLEAN_FILES = \
+	$(CHECK_FILES)

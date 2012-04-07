@@ -1234,6 +1234,7 @@ gkm_gnome2_storage_relock (GkmGnome2Storage *self, GkmTransaction *transaction,
 	args.transaction = transaction;
 	args.old_login = old_login;
 	args.new_login = new_login;
+	args.self = self;
 	gkm_gnome2_file_foreach_entry (file, relock_each_object, &args);
 
 	if (!gkm_transaction_get_failed (transaction) && self->login) {

@@ -40,6 +40,7 @@ run-tests
 *.pc
 *.gir
 *.typelib
+p11-tests.conf
 
 /compile
 /ABOUT-NLS
@@ -103,6 +104,7 @@ run-tests
 /daemon/control/tests/frob-control-unlock
 
 /pkcs11/gkm/tests/test-attributes
+/pkcs11/gkm/tests/test-certificate
 /pkcs11/gkm/tests/test-credential
 /pkcs11/gkm/tests/test-data-asn1
 /pkcs11/gkm/tests/test-data-der

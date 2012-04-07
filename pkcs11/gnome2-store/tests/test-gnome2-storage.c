@@ -469,6 +469,25 @@ test_lock_writes (Test *test,
 }
 
 static void
+test_relock (Test *test,
+             gconstpointer unused)
+{
+	GkmTransaction *transaction;
+	GkmSecret *old_login;
+	GkmSecret *new_login;
+
+	transaction = gkm_transaction_new ();
+
+	old_login = NULL;
+	new_login = gkm_secret_new_from_password ("blah");
+
+	gkm_gnome2_storage_relock (test->storage, transaction, old_login, new_login);
+	gkm_assert_cmprv (gkm_transaction_complete_and_unref (transaction), ==, CKR_OK);
+
+	g_object_unref (new_login);
+}
+
+static void
 null_log_handler (const gchar *log_domain,
                   GLogLevelFlags log_level,
                   const gchar *message,
@@ -495,6 +514,8 @@ main (int argc, char **argv)
 	            setup_all, test_create_and_fail, teardown_all);
 	g_test_add ("/gnome2-store/storage/write_value", Test, NULL,
 	            setup_all, test_write_value, teardown_all);
+	g_test_add ("/gnome2-store/storage/relock", Test, NULL,
+	            setup_all, test_relock, teardown_all);
 
 	if (!g_test_quick ()) {
 		g_test_add ("/gnome2-store/storage/locking_transaction", Test, NULL,
