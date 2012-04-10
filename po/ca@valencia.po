@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the gnome-keyring package.
 # Jordi Mallach <jordi@sindominio.net>, 2004, 2006.
 # Joan Duran <jodufi@gmail.com>, 2008-2012.
+# Jordi Serratosa <jordis@softcatala.cat>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-19 01:17+0100\n"
+"POT-Creation-Date: 2012-04-11 00:16+0200\n"
 "PO-Revision-Date: 2012-03-17 10:37+0100\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -54,7 +55,7 @@ msgstr "Continua"
 #: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "Escolliu una contrasenya nova per a l'anell de claus «%s»"
+msgstr "Trieu una contrasenya nova per a l'anell de claus «%s»"
 
 #: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
@@ -77,9 +78,9 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
-"Si escolliu utilitzar una contrasenya en blanc, les contrasenyes "
-"emmagatzemades no es xifraran amb seguretat. Estes seran accessibles per "
-"qualsevol que tinga accés als vostres fitxers."
+"Si trieu utilitzar una contrasenya en blanc, les contrasenyes emmagatzemades "
+"no es xifraran amb seguretat. Estes seran accessibles per qualsevol que "
+"tinga accés als vostres fitxers."
 
 #: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
@@ -124,7 +125,7 @@ msgstr "Anell de claus del GNOME: component PKCS#11"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
 msgid "Secret Storage Service"
-msgstr "Servei d'emmagatzemament de secrets"
+msgstr "Servei d'emmagatzematge de secrets"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "GNOME Keyring: Secret Service"
@@ -223,7 +224,7 @@ msgstr "Identificador d'usuari"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr "Adreça de correu electrònic"
+msgstr "Adreça electrònica"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
