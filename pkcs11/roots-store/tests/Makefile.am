@@ -41,5 +41,5 @@ EXTRA_DIST = \
 	p11-tests.conf.in \
 	files
 
-CLEAN_FILES = \
+CLEANFILES = \
 	$(CHECK_FILES)
