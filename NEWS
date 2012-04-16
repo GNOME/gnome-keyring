@@ -1,3 +1,11 @@
+Changes in version 3.4.1 are:
+ * Set 'text/plain' content type on secrets returned from daemon
+ * Use correct XDG_RUNTIME_DIR when started from PAM
+ * Updated translations
+ * License fix
+ * More tests
+ * Build fixes
+
 Changes in version 3.4.0 are:
  * Updated translations
 
