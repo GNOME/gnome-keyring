@@ -890,8 +890,9 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "Lock"))
 		return service_method_lock (self, message);
 
-	/* org.gnome.keyring.Service.ChangeLock() */
-	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "ChangeLock"))
+	/* org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.ChangeWithPrompt() */
+	if (dbus_message_is_method_call (message, INTERNAL_SERVICE_INTERFACE, "ChangeWithPrompt") ||
+	    dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "ChangeLock"))
 		return service_method_change_lock (self, message);
 
 	/* org.freedesktop.Secret.Service.ReadAlias() */
