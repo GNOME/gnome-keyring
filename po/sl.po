@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-03-08 19:47+0000\n"
-"PO-Revision-Date: 2012-03-08 21:37+0100\n"
-"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"PO-Revision-Date: 2012-04-28 20:24+0200\n"
+"Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -367,7 +367,7 @@ msgstr "Geslo odklepanja za: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
-msgstr "Odklenite prijavno zbirko ključev"
+msgstr "Odklep prijavne zbirke ključev"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
@@ -383,7 +383,7 @@ msgstr "Prijavna zbirka ključev ni bila samodejno odklenjena ob prijavi."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
-msgstr "Odklenite zbirko ključev"
+msgstr "Odklep zbirke ključev"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
