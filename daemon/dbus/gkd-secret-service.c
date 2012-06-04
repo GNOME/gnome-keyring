@@ -849,7 +849,7 @@ service_introspect (GkdSecretService *self,
 
 	g_ptr_array_add (names, NULL);
 
-	reply = gkd_dbus_introspect_handle (message, gkd_secret_introspect_collection,
+	reply = gkd_dbus_introspect_handle (message, gkd_secret_introspect_service,
 	                                    (const gchar **)names->pdata);
 
 	g_ptr_array_unref (names);
