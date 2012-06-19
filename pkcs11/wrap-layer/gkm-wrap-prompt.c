@@ -28,6 +28,7 @@
 #include "egg/egg-secure-memory.h"
 
 #include "gkm/gkm-attributes.h"
+#include "gkm/gkm-log.h"
 #include "gkm/gkm-util.h"
 
 #include "pkcs11/pkcs11.h"
@@ -426,7 +427,7 @@ get_unlock_options_from_object (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 	if (rv != CKR_OK) {
 		if (rv != CKR_ATTRIBUTE_TYPE_INVALID)
 			g_warning ("couldn't get credential template for prompt: %s",
-			           gkm_util_rv_to_string (rv));
+			           gkm_log_rv (rv));
 		return NULL;
 	}
 
@@ -438,7 +439,7 @@ get_unlock_options_from_object (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 	rv = (self->module->C_GetAttributeValue) (self->session, self->object, &attr, 1);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't read credential template for prompt: %s",
-		           gkm_util_rv_to_string (rv));
+		           gkm_log_rv (rv));
 		return NULL;
 	}
 
@@ -452,7 +453,7 @@ get_unlock_options_from_object (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 	rv = (self->module->C_GetAttributeValue) (self->session, self->object, &attr, 1);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't retrieve credential template for prompt: %s",
-		           gkm_util_rv_to_string (rv));
+		           gkm_log_rv (rv));
 		return NULL;
 	}
 
@@ -477,7 +478,7 @@ set_unlock_options_on_object (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR options, CK_
 	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID) {
 		if (rv != CKR_TOKEN_WRITE_PROTECTED)
 			g_warning ("Couldn't set credential template for prompt: %s",
-			           gkm_util_rv_to_string (rv));
+			           gkm_log_rv (rv));
 	}
 }
 
@@ -545,7 +546,7 @@ get_attributes_from_object (GkmWrapPrompt *self, CK_ULONG *n_attrs)
 	rv = (self->module->C_GetAttributeValue) (self->session, self->object, attrs, G_N_ELEMENTS (attrs));
 	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID) {
 		g_warning ("Couldn't retrieve information about object to unlock: %s",
-		           gkm_util_rv_to_string (rv));
+		           gkm_log_rv (rv));
 		return NULL;
 	}
 
@@ -559,7 +560,7 @@ get_attributes_from_object (GkmWrapPrompt *self, CK_ULONG *n_attrs)
 	rv = (self->module->C_GetAttributeValue) (self->session, self->object, attrs, G_N_ELEMENTS (attrs));
 	if (rv != CKR_OK && rv != CKR_ATTRIBUTE_TYPE_INVALID) {
 		g_warning ("couldn't retrieve credential template for prompt: %s",
-		           gkm_util_rv_to_string (rv));
+		           gkm_log_rv (rv));
 		return NULL;
 	}
 
@@ -841,7 +842,7 @@ fix_login_keyring_if_unlock_failed (GkmWrapPrompt *self, const gchar *password)
 
 	if (rv != CKR_OK) {
 		g_warning ("couldn't create credential to fix login password: %s",
-		           gkm_util_rv_to_string (rv));
+		           gkm_log_rv (rv));
 		return;
 	}
 
@@ -853,7 +854,7 @@ fix_login_keyring_if_unlock_failed (GkmWrapPrompt *self, const gchar *password)
 	rv = (self->module->C_SetAttributeValue) (self->session, self->object, attrs, 1);
 	if (rv != CKR_OK) {
 		g_warning ("couldn't change credential to fix login keyring password: %s",
-		           gkm_util_rv_to_string (rv));
+		           gkm_log_rv (rv));
 		return;
 	}
 

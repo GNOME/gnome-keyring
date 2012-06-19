@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include "gkm-log.h"
+
 #include <glib.h>
 
 G_BEGIN_DECLS

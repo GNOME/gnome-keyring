@@ -25,6 +25,7 @@
 #include "gkm-wrap-login.h"
 
 #include "gkm/gkm-attributes.h"
+#include "gkm/gkm-log.h"
 #include "gkm/gkm-util.h"
 
 #include "egg/egg-secure-memory.h"
@@ -255,7 +256,7 @@ find_login_keyring_item (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE session,
 	gkm_template_free (attrs);
 
 	if (rv != CKR_OK) {
-		g_warning ("couldn't create search for login keyring: %s", gkm_util_rv_stringize (rv));
+		g_warning ("couldn't create search for login keyring: %s", gkm_log_rv (rv));
 		return 0;
 	}
 
@@ -357,7 +358,7 @@ gkm_wrap_login_attach_secret (const gchar *label, const gchar *secret,
 	rv = (module->C_CreateObject) (session, ((CK_ATTRIBUTE_PTR)template->data),
 	                               template->len, &item);
 	if (rv != CKR_OK)
-		g_warning ("couldn't store secret in login keyring: %s", gkm_util_rv_stringize (rv));
+		g_warning ("couldn't store secret in login keyring: %s", gkm_log_rv (rv));
 
 	/* Before freeing, truncate our password attribute we tacked on the end */
 	g_array_set_size (template, original_len);
@@ -421,7 +422,7 @@ gkm_wrap_login_lookup_secret (const gchar *first, ...)
 			} else {
 				if (rv != CKR_OBJECT_HANDLE_INVALID)
 					g_warning ("couldn't read stored secret from login keyring: %s",
-					           gkm_util_rv_stringize (rv));
+					           gkm_log_rv (rv));
 				egg_secure_free (password);
 				password = NULL;
 			}
@@ -429,7 +430,7 @@ gkm_wrap_login_lookup_secret (const gchar *first, ...)
 		/* Failure. Remember object can go away due to race */
 		} else if (rv != CKR_OK && rv != CKR_OBJECT_HANDLE_INVALID) {
 			g_warning ("couldn't get stored secret from login keyring: %s",
-			           gkm_util_rv_stringize (rv));
+			           gkm_log_rv (rv));
 		}
 	}
 
@@ -472,7 +473,7 @@ gkm_wrap_login_remove_secret (const gchar *first, ...)
 		rv = (module->C_DestroyObject) (session, item);
 		if (rv != CKR_OK && rv != CKR_OBJECT_HANDLE_INVALID)
 			g_warning ("couldn't remove stored secret from login keyring: %s",
-			           gkm_util_rv_stringize (rv));
+			           gkm_log_rv (rv));
 	}
 
 	(module->C_CloseSession) (session);

@@ -36,6 +36,7 @@ libgkm_la_SOURCES = \
 	gkm-file-tracker.c gkm-file-tracker.h \
 	gkm-generic-key.c gkm-generic-key.h \
 	gkm-hkdf-mechanism.c gkm-hkdf-mechanism.h \
+	gkm-log.c gkm-log.h \
 	gkm-manager.c gkm-manager.h \
 	gkm-memory-store.c gkm-memory-store.h \
 	gkm-mock.c gkm-mock.h \

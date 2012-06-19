@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "gkm-attributes.h"
+#include "gkm-log.h"
 #include "gkm-test.h"
 #include "gkm-util.h"
 
@@ -37,12 +38,9 @@ gkm_assertion_message_cmprv (const gchar *domain, const gchar *file, gint line,
                              const gchar *func, const gchar *expr,
                              CK_RV arg1, const gchar *cmp, CK_RV arg2)
 {
-	gchar *a1, *a2, *s;
-	a1 = gkm_util_rv_to_string (arg1);
-	a2 = gkm_util_rv_to_string (arg2);
-	s = g_strdup_printf ("assertion failed (%s): (%s %s %s)", expr, a1, cmp, a2);
-	g_free (a1);
-	g_free (a2);
+	gchar *s;
+	s = g_strdup_printf ("assertion failed (%s): (%s %s %s)", expr,
+	                     gkm_log_rv (arg1), cmp, gkm_log_rv (arg2));
 	g_assertion_message (domain, file, line, func, s);
 	g_free (s);
 }

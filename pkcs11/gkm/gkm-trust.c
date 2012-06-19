@@ -24,6 +24,7 @@
 #include "gkm-trust.h"
 
 #include "gkm-attributes.h"
+#include "gkm-log.h"
 #include "gkm-object.h"
 #include "gkm-oids.h"
 
@@ -129,7 +130,8 @@ gkm_trust_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_PTR 
 	case CKA_ISSUER:
 	case CKA_CERT_MD5_HASH:
 	case CKA_CERT_SHA1_HASH:
-		g_warning ("derived class should have provided these attributes");
+		g_warning ("derived class should have provided %s attribute",
+		           gkm_log_attr_type (attr->type));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
 	default:
