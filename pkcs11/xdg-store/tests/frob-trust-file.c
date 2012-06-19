@@ -28,7 +28,6 @@
 #include "egg/egg-error.h"
 #include "egg/egg-asn1-defs.h"
 
-#include <libtasn1.h>
 #include <stdlib.h>
 
 #include "xdg-store/gkm-xdg-asn1-defs.h"

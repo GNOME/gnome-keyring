@@ -29,7 +29,6 @@
 #include "egg/egg-error.h"
 #include "egg/egg-hex.h"
 
-#include <libtasn1.h>
 #include <stdlib.h>
 
 /* Bring in the relevant definitions */

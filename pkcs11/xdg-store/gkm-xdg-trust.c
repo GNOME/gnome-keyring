@@ -40,8 +40,6 @@
 #include "pkcs11/pkcs11n.h"
 #include "pkcs11/pkcs11x.h"
 
-#include <libtasn1.h>
-
 #include <glib/gi18n.h>
 
 extern const struct _EggAsn1xDef xdg_asn1_tab[];
