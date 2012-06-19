@@ -145,8 +145,10 @@ factory_create_certificate (GkmSession *session, GkmTransaction *transaction,
 		return NULL;
 	}
 
-	/* Note that we ignore the subject */
-	gkm_attributes_consume (attrs, n_attrs, CKA_VALUE, CKA_SUBJECT, G_MAXULONG);
+	/* We calculate these attributes automatically */
+	gkm_attributes_consume (attrs, n_attrs,
+	                        CKA_VALUE, CKA_SUBJECT, CKA_SERIAL_NUMBER, CKA_ID,
+	                        G_MAXULONG);
 
 	gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (cert),
 	                                      TRUE, attrs, n_attrs);
