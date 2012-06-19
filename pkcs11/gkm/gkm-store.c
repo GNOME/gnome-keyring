@@ -22,6 +22,8 @@
 #include "config.h"
 
 #include "gkm-attributes.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-object.h"
 #include "gkm-store.h"
 #include "gkm-transaction.h"
@@ -203,11 +205,17 @@ gkm_store_get_attribute (GkmStore *self, GkmObject *object, CK_ATTRIBUTE_PTR att
 	g_assert (GKM_STORE_GET_CLASS (self)->read_value);
 
 	schema = g_hash_table_lookup (self->pv->schemas, &(attr->type));
-	if (schema == NULL)
+	if (schema == NULL) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s not in schema",
+		           gkm_log_attr_type (attr->type));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
-	if (schema->flags & GKM_STORE_IS_INTERNAL)
+	if (schema->flags & GKM_STORE_IS_INTERNAL) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s is an internal attribute",
+		           gkm_log_attr_type (attr->type));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	if (schema->flags & GKM_STORE_IS_SENSITIVE)
 		return CKR_ATTRIBUTE_SENSITIVE;
@@ -250,6 +258,8 @@ gkm_store_write_value (GkmStore *self, GkmTransaction *transaction,
 
 	schema = g_hash_table_lookup (self->pv->schemas, &(attr->type));
 	if (schema == NULL) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s not in schema",
+		           gkm_log_attr_type (attr->type));
 		gkm_transaction_fail (transaction, CKR_ATTRIBUTE_TYPE_INVALID);
 		return;
 	}
@@ -273,12 +283,17 @@ gkm_store_set_attribute (GkmStore *self, GkmTransaction *transaction,
 	g_assert (GKM_STORE_GET_CLASS (self)->write_value);
 
 	schema = g_hash_table_lookup (self->pv->schemas, &(attr->type));
-	if (schema == NULL)
+	if (schema == NULL) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s not in schema",
+		           gkm_log_attr_type (attr->type));
 		rv = CKR_ATTRIBUTE_TYPE_INVALID;
-	else if (schema->flags & GKM_STORE_IS_INTERNAL)
+	} else if (schema->flags & GKM_STORE_IS_INTERNAL) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s is internal",
+		           gkm_log_attr_type (attr->type));
 		rv = CKR_ATTRIBUTE_TYPE_INVALID;
-	else if (schema->validator)
+	} else if (schema->validator) {
 		rv = (schema->validator) (object, attr);
+	}
 
 	if (rv != CKR_OK) {
 		gkm_transaction_fail (transaction, rv);

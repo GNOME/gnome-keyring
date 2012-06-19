@@ -25,6 +25,8 @@
 
 #include "gkm-attributes.h"
 #include "gkm-crypto.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-secret-key.h"
 #include "gkm-session.h"
 #include "gkm-util.h"
@@ -80,7 +82,11 @@ gkm_secret_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTR
 		return gkm_attribute_set_bool (attr, FALSE);
 
 	case CKA_WRAP_TEMPLATE:
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no CKA_WRAP_TEMPLATE on key");
+		return CKR_ATTRIBUTE_TYPE_INVALID;
+
 	case CKA_UNWRAP_TEMPLATE:
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no CKA_UNWRAP_TEMPLATE on key");
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
 	case CKA_START_DATE:

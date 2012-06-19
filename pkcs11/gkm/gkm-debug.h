@@ -31,6 +31,7 @@ G_BEGIN_DECLS
 /* Please keep this enum in sync with #keys in gcr-debug.c */
 typedef enum {
 	GKM_DEBUG_STORAGE = 1 << 1,
+	GKM_DEBUG_OBJECT = 1 << 2,
 } GkmDebugFlags;
 
 gboolean           gkm_debug_flag_is_set              (GkmDebugFlags flag);

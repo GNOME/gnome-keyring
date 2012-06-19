@@ -26,6 +26,8 @@
 
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-credential.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm/gkm-debug.h"
 #include "gkm/gkm-manager.h"
 #include "gkm/gkm-module.h"
 #include "gkm/gkm-object.h"
@@ -148,8 +150,11 @@ gkm_ssh_private_key_get_attribute (GkmObject *base, GkmSession *session, CK_ATTR
 
 	/* COMPAT: Previous versions of gnome-keyring used this to save unlock passwords */
 	case CKA_GNOME_INTERNAL_SHA1:
-		if (!self->private_bytes)
+		if (!self->private_bytes) {
+			gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no CKA_GNOME_INTERNAL_SHA1 attribute");
 			return CKR_ATTRIBUTE_TYPE_INVALID;
+		}
+
 		digest = gkm_ssh_openssh_digest_private_key (self->private_bytes);
 		rv = gkm_attribute_set_string (attr, digest);
 		g_free (digest);

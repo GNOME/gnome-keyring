@@ -24,6 +24,8 @@
 #include "pkcs11/pkcs11.h"
 
 #include "gkm-attributes.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-dsa-mechanism.h"
 #include "gkm-rsa-mechanism.h"
 #include "gkm-sexp-key.h"
@@ -240,6 +242,8 @@ gkm_sexp_key_set_part (GkmSexpKey *self, int algo, const char *part, CK_ATTRIBUT
 
 	if (algorithm != algo) {
 		gcry_sexp_release (numbers);
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: attribute %s not valid for key algorithm: %s",
+		           gkm_log_attr_type (attr->type), gcry_pk_algo_name (algo));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	}
 

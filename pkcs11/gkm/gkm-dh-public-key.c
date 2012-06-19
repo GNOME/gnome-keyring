@@ -25,6 +25,8 @@
 
 #include "gkm-attributes.h"
 #include "gkm-crypto.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-factory.h"
 #include "gkm-dh-public-key.h"
 #include "gkm-session.h"
@@ -111,6 +113,7 @@ gkm_dh_public_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_A
 		return gkm_attribute_set_bool (attr, FALSE);
 
 	case CKA_WRAP_TEMPLATE:
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no CKA_WRAP_TEMPLATE attribute");
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
 	case CKA_VALUE:

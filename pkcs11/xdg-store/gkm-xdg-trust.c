@@ -29,6 +29,8 @@
 
 #include "gkm/gkm-assertion.h"
 #include "gkm/gkm-attributes.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm/gkm-debug.h"
 #include "gkm/gkm-object.h"
 #include "gkm/gkm-oids.h"
 #include "gkm/gkm-serializable.h"
@@ -111,8 +113,11 @@ trust_get_der (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
 
 	/* If the assertion doesn't contain this info ... */
-	if (!egg_asn1x_have (node))
+	if (!egg_asn1x_have (node)) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s wants %s which is not part of assertion",
+		           gkm_log_attr_type (attr->type), part);
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	element = egg_asn1x_get_element_raw (node);
 	rv = gkm_attribute_set_bytes (attr, element);
@@ -134,8 +139,11 @@ trust_get_integer (GkmXdgTrust *self, const gchar *part, CK_ATTRIBUTE_PTR attr)
 	g_return_val_if_fail (node, CKR_GENERAL_ERROR);
 
 	/* If the assertion doesn't contain this info ... */
-	if (!egg_asn1x_have (node))
+	if (!egg_asn1x_have (node)) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s wants %s which is not part of assertion",
+		           gkm_log_attr_type (attr->type), part);
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	integer = egg_asn1x_get_integer_as_raw (node);
 	g_return_val_if_fail (integer, CKR_GENERAL_ERROR);
@@ -157,8 +165,11 @@ trust_get_hash (GkmXdgTrust *self, GChecksumType ctype, CK_ATTRIBUTE_PTR attr)
 	g_return_val_if_fail (cert, CKR_GENERAL_ERROR);
 
 	/* If it's not stored, then this attribute is not present */
-	if (!egg_asn1x_have (cert))
+	if (!egg_asn1x_have (cert)) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s wants certComplete which is not part of assertion",
+		           gkm_log_attr_type (attr->type));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	element = egg_asn1x_get_element_raw (cert);
 	g_return_val_if_fail (element != NULL, CKR_GENERAL_ERROR);
@@ -182,8 +193,11 @@ trust_get_complete (GkmXdgTrust *self, CK_ATTRIBUTE_PTR attr)
 	g_return_val_if_fail (cert, CKR_GENERAL_ERROR);
 
 	/* If it's not stored, then this attribute is not present */
-	if (!egg_asn1x_have (cert))
+	if (!egg_asn1x_have (cert)) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: %s wants certComplete which is not part of assertion",
+		           gkm_log_attr_type (attr->type));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	element = egg_asn1x_get_element_raw (cert);
 	g_return_val_if_fail (element != NULL, CKR_GENERAL_ERROR);

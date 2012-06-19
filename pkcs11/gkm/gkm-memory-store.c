@@ -22,6 +22,8 @@
 #include "config.h"
 
 #include "gkm-attributes.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-object.h"
 #include "gkm-memory-store.h"
 #include "gkm-transaction.h"
@@ -123,12 +125,17 @@ gkm_memory_store_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIBUT
 	CK_ATTRIBUTE_PTR at;
 
 	attributes = g_hash_table_lookup (self->entries, object);
-	if (attributes == NULL)
+	if (attributes == NULL) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no object");
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	at = g_hash_table_lookup (attributes, &(attr->type));
-	if (at == NULL)
+	if (at == NULL) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no attribute: %s",
+		           gkm_log_attr_type (attr->type));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	g_assert (at->type == attr->type);
 

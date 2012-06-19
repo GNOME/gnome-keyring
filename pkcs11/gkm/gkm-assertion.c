@@ -23,6 +23,8 @@
 
 #include "gkm-assertion.h"
 #include "gkm-attributes.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-object.h"
 #include "gkm-trust.h"
 #include "gkm-util.h"
@@ -78,8 +80,10 @@ gkm_assertion_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUTE_
 	case CKA_X_PURPOSE:
 		return gkm_attribute_set_string (attr, self->pv->purpose);
 	case CKA_X_PEER:
-		if (!self->pv->peer)
+		if (!self->pv->peer) {
+			gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no CKA_X_PEER on assertion");
 			return CKR_ATTRIBUTE_TYPE_INVALID;
+		}
 		return gkm_attribute_set_string (attr, self->pv->peer);
 
 	/* Certificate reference values */

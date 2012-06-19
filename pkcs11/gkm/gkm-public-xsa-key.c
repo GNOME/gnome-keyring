@@ -24,6 +24,8 @@
 #include "pkcs11/pkcs11.h"
 
 #include "gkm-attributes.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-factory.h"
 #include "gkm-public-xsa-key.h"
 #include "gkm-session.h"
@@ -51,6 +53,7 @@ return_modulus_bits (GkmPublicXsaKey *self, CK_ATTRIBUTE_PTR attr)
 
 	if (algorithm != GCRY_PK_RSA) {
 		gcry_sexp_release (numbers);
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: CKA_MODULUS_BITS not valid for non-RSA keys");
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	}
 
@@ -195,6 +198,7 @@ gkm_public_xsa_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_
 		return gkm_attribute_set_bool (attr, FALSE);
 
 	case CKA_WRAP_TEMPLATE:
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no CKA_WRAP_TEMPLATE on key");
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 
 	case CKA_MODULUS_BITS:

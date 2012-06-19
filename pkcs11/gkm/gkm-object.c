@@ -26,6 +26,8 @@
 
 #include "gkm-attributes.h"
 #include "gkm-credential.h"
+#define DEBUG_FLAG GKM_DEBUG_OBJECT
+#include "gkm-debug.h"
 #include "gkm-manager.h"
 #include "gkm-object.h"
 #include "gkm-transaction.h"
@@ -235,6 +237,7 @@ gkm_object_real_get_attribute (GkmObject *self, GkmSession *session, CK_ATTRIBUT
 	case CKA_GNOME_UNIQUE:
 		if (self->pv->unique)
 			return gkm_attribute_set_string (attr, self->pv->unique);
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no CKA_GNOME_UNIQUE on object");
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	case CKA_GNOME_TRANSIENT:
 		return gkm_attribute_set_bool (attr, self->pv->transient ? TRUE : FALSE);
@@ -262,6 +265,7 @@ gkm_object_real_get_attribute (GkmObject *self, GkmSession *session, CK_ATTRIBUT
 		return gkm_attribute_set_data (attr, "", 0);
 	}
 
+	gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: no %s attribute", gkm_log_attr_type (attr->type));
 	return CKR_ATTRIBUTE_TYPE_INVALID;
 }
 

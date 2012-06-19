@@ -798,14 +798,18 @@ gkm_gnome2_storage_real_read_value (GkmStore *base, GkmObject *object, CK_ATTRIB
 	}
 
 	identifier = g_hash_table_lookup (self->object_to_identifier, object);
-	if (!identifier)
+	if (!identifier) {
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: object not stored in gnome2 storage");
 		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
 
 	res = gkm_gnome2_file_read_value (self->file, identifier, attr->type, &value, &n_value);
 	switch (res) {
 	case GKM_DATA_FAILURE:
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 	case GKM_DATA_UNRECOGNIZED:
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: attribute %s not present",
+		           gkm_log_attr_type (attr->type));
 		return CKR_ATTRIBUTE_TYPE_INVALID;
 	case GKM_DATA_LOCKED:
 		return CKR_USER_NOT_LOGGED_IN;

@@ -34,6 +34,7 @@ static GkmDebugFlags current_flags = 0;
 
 static GDebugKey keys[] = {
 	{ "storage", GKM_DEBUG_STORAGE },
+	{ "object", GKM_DEBUG_OBJECT },
 	{ 0, }
 };
 
