@@ -63,6 +63,7 @@ libgkm_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libgkm_la_CFLAGS = \
+	-DG_LOG_DOMAIN=\"Gkm\" \
 	$(GOBJECT_CFLAGS) \
 	$(LIBGCRYPT_CFLAGS) \
 	$(LIBTASN1_CFLAGS) \
