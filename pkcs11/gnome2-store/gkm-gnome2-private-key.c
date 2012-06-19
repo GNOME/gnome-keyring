@@ -83,6 +83,11 @@ factory_create_private_key (GkmSession *session, GkmTransaction *transaction,
 
 	gkm_sexp_unref (sexp);
 
+	/* TODO: We don't support setting these yet, so ignore them */
+	gkm_attributes_consume (attrs, n_attrs,
+	                        CKA_SIGN_RECOVER, CKA_UNWRAP, CKA_ID,
+	                        G_MAXULONG);
+
 	gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (key),
 	                                      TRUE, attrs, n_attrs);
 	return GKM_OBJECT (key);
