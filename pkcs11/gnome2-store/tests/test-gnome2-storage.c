@@ -176,6 +176,7 @@ teardown_directory (Test *test,
 		filename = g_build_filename (test->directory, name, NULL);
 		if (g_unlink (filename) < 0)
 			g_assert_not_reached ();
+		g_free (filename);
 	}
 
 	g_dir_close (dir);

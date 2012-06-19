@@ -100,6 +100,9 @@ struct _GkmModuleClass {
 		{ return g_object_new ((type), "initialize-args", args, "mutex", mutex, NULL); } \
 	const CK_FUNCTION_LIST_PTR prefix ## _function_list = &gkm_module_function_list;
 
+/* Our slot identifier is 1 */
+#define GKM_SLOT_ID  1
+
 GType                  gkm_module_get_type                        (void);
 
 GkmManager*            gkm_module_get_manager                     (GkmModule *self);

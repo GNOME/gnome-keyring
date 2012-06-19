@@ -85,9 +85,6 @@ typedef struct _Apartment {
 	CK_USER_TYPE logged_in;
 } Apartment;
 
-/* Our slot identifier is 1 */
-#define GKM_SLOT_ID  1
-
 G_DEFINE_TYPE (GkmModule, gkm_module, G_TYPE_OBJECT);
 
 /* These info blocks are used unless derived class overrides */

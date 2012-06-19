@@ -27,7 +27,8 @@ CHECK_FILES = \
 TEST_PROGS = \
 	test-gnome2-file \
 	test-gnome2-storage \
-	test-gnome2-private-key
+	test-gnome2-private-key \
+	test-import
 
 test_gnome2_storage_SOURCES = \
 	test-gnome2-storage.c \
@@ -36,6 +37,9 @@ test_gnome2_storage_SOURCES = \
 test_gnome2_private_key_SOURCES = \
 	test-gnome2-private-key.c \
 	mock-gnome2-module.c mock-gnome2-module.h
+
+test_import_CFLAGS = $(GCR_BASE_CFLAGS) $(GCK_CFLAGS)
+test_import_LDADD = $(GCR_BASE_LIBS) $(GCK_LIBS) $(LDADD)
 
 check_PROGRAMS = $(TEST_PROGS)
 
