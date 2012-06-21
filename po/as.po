@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: as\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
-"cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-08 19:47+0000\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-06-19 11:56+0000\n"
 "PO-Revision-Date: 2012-03-12 11:52+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
@@ -23,15 +23,15 @@ msgstr ""
 #: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
 msgstr "নাম নহোৱা"
 
 #: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
-msgstr "'%s' keyring -ৰ বাবে পুৰনি পাছৱাৰ্ড সুমুৱাওক"
+msgstr "'%s' keyring ৰ বাবে পুৰনি পাছৱাৰ্ড সুমুৱাওক"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
@@ -39,22 +39,22 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
 msgstr ""
-"এটা অনুপ্ৰয়োগে '%s' keyring -ৰ বাবে পাছৱাৰ্ড সলনি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
+"এটা অনুপ্ৰয়োগে '%s' keyring ৰ বাবে পাছৱাৰ্ড সলনি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
 "পুৰনি পাছৱাৰ্ড সুমুৱাওক।"
 
 #: ../daemon/dbus/gkd-secret-change.c:100
 #: ../daemon/dbus/gkd-secret-change.c:136
 #: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "চলাই নিয়ক"
 
 #: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "'%s' keyring -ৰ বাবে এটা নতুন পাছৱাৰ্ড বাছক"
+msgstr "'%s' keyring ৰ বাবে এটা নতুন পাছৱাৰ্ড বাছক"
 
 #: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
@@ -62,7 +62,7 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"এটা অনুপ্ৰয়োগে '%s' keyring -ৰ বাবে পাছৱাৰ্ড সলনি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
+"এটা অনুপ্ৰয়োগে '%s' keyring ৰ বাবে পাছৱাৰ্ড সলনি কৰিব বিচাৰে। আপুনি ইয়াৰ বাবে "
 "ব্যৱহাৰ কৰিব বিচৰা নতুন পাছৱাৰ্ড বাছক।"
 
 #: ../daemon/dbus/gkd-secret-change.c:142
@@ -85,9 +85,9 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "প্ৰকৃত পাছৱাৰ্ড সঠিক নাছিল"
 
-#: ../daemon/dbus/gkd-secret-change.c:352
+#: ../daemon/dbus/gkd-secret-change.c:356
 msgid "Change Keyring Password"
-msgstr "keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰক"
+msgstr "keyring ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰক"
 
 #: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
@@ -100,7 +100,7 @@ msgstr ""
 
 #: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
-msgstr "নতুন keyring -ৰ বাবে পাছৱাৰ্ড নিৰ্বাচন কৰক"
+msgstr "নতুন keyring ৰ বাবে পাছৱাৰ্ড নিৰ্বাচন কৰক"
 
 #: ../daemon/dbus/gkd-secret-create.c:308
 msgid "New Keyring Password"
@@ -116,7 +116,7 @@ msgstr "GNOME Keyring: GPG সহায়ক"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
-msgstr "প্ৰমাণপত্ৰ আৰু চাবি সংৰক্ষণ"
+msgstr "প্ৰমাণপত্ৰ আৰু কি সংৰক্ষণ"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
 msgid "GNOME Keyring: PKCS#11 Component"
@@ -132,7 +132,7 @@ msgstr "GNOME Keyring: গুপ্ত সেৱা"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
-msgstr "SSH চাবি সহায়ক"
+msgstr "SSH কি সহায়ক"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "GNOME Keyring: SSH Agent"
@@ -145,20 +145,20 @@ msgstr "অজ্ঞাত"
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
-msgstr "PGP চাবি: %s"
+msgstr "PGP কি: %s"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
 msgid "Enter Passphrase"
-msgstr "Passphrase সোমাওক"
+msgstr "Passphrase সুমুৱাওক"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
 msgid "Unlock"
 msgstr "আনলক কৰক"
 
@@ -192,7 +192,7 @@ msgstr "`%s' সৃষ্টি কৰিব নোৱাৰি: %s\n"
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr "পুৰনি লকনথিপত্ৰ আতৰোৱা হৈছে (%d দ্বাৰা সৃষ্টি কৰা)\n"
+msgstr "পুৰনি লক নথিপত্ৰ আতৰোৱা হৈছে (%d দ্বাৰা সৃষ্টি কৰা)\n"
 
 #: ../egg/dotlock.c:1084
 #, c-format
@@ -353,7 +353,7 @@ msgstr "ক্লাএন্ট প্ৰমাণীকৰণ"
 
 #: ../egg/egg-oid.c:109
 msgid "Code Signing"
-msgstr "কোড স্বাক্ষৰণ"
+msgstr "ক'ড স্বাক্ষৰণ"
 
 #: ../egg/egg-oid.c:110
 msgid "Email Protection"
@@ -366,191 +366,192 @@ msgstr "সময় মোহৰকৰণ"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "এটা ছাইল্ড প্ৰক্ৰিয়া (%s) -ৰ পৰা select() তথ্য পঢ়োতে অপ্ৰত্যাশিত ত্ৰুটি"
+msgstr "এটা ছাইল্ড প্ৰক্ৰিয়া (%s) ৰ পৰা select() তথ্য পঢ়োতে অপ্ৰত্যাশিত ত্ৰুটি"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr "waitpid() (%s) -ত অপ্ৰত্যাশিত ত্ৰুটি"
+msgstr "waitpid() (%s) ত অপ্ৰত্যাশিত ত্ৰুটি"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:579
 msgid "Unnamed Certificate"
 msgstr "নামবিহীন প্ৰমাণপত্ৰ"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
-msgstr "ৰাজহুৱা SSH-চাবি বিশ্লেষণ কৰিব ব্যৰ্থ"
+msgstr "ৰাজহুৱা SSH-কি বিশ্লেষণ কৰিব ব্যৰ্থ"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
 #, c-format
 msgid "Unlock password for: %s"
-msgstr "%s -ৰ বাবে পাছৱাৰ্ড আনলক কৰক"
+msgstr "%s ৰ বাবে পাছৱাৰ্ড আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "keyring আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 msgid "Enter password to unlock your login keyring"
-msgstr "আপোনাৰ লগিন keyring আনলক কৰিবলে পাছৱাৰ্ড সোমাওক"
+msgstr "আপোনাৰ লগিন keyring আনলক কৰিবলে পাছৱাৰ্ড সুমুৱাওক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
-"আপুনি আপোনাৰ কমপিউটাৰত লগিন কৰিবলে ব্যৱহাৰ কৰা পাছৱাৰ্ড আপোনাৰ লগিন keyring -ৰ "
+"আপুনি আপোনাৰ কমপিউটাৰত লগিন কৰিবলে ব্যৱহাৰ কৰা পাছৱাৰ্ড আপোনাৰ লগিন keyring ৰ "
 "সৈতে মিল নাখায়।"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
-msgid "The login keyring did not get unlocked when you logged into your computer."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr "আপুনি কমপিউটাৰত লগিন কৰোতে লগিন keyring আনলক নহল।"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "keyring আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' keyring আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "এটা অনুপ্ৰয়োগে '%s' keyring লে অভিগম বিচাৰে, কিন্তু ই লক আছে"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো স্বচালিতভাৱে এই keyring আনলক কৰিব"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
-msgstr "ব্যক্তিগত-চাবি আনলক কৰক"
+msgstr "ব্যক্তিগত-কি আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "প্ৰমাণপত্ৰ আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
-msgstr "ৰাজহুৱা-চাবি আনলক কৰক"
+msgstr "ৰাজহুৱা-কি আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
-msgstr "ব্যক্তিগত চাবি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
+msgstr "ব্যক্তিগত কি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "প্ৰমাণপত্ৰ আনলক কৰাৰ বাবে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
-msgstr "ৰাজহুৱা চাবি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
+msgstr "ৰাজহুৱা কি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 msgid "Automatically unlock this key whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো এই কি স্বচালিতভাৱে আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
 msgid "Automatically unlock this certificate whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো, এই প্ৰমাণপত্ৰ স্বচালিতভাৱে আনলক কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I'm logged in"
 msgstr "যেতিয়ায় মই লগিন কৰো স্বচালিতভাৱে আনলক কৰিব"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
-"এটা অনুপ্ৰয়োগ, %s ব্যক্তিগত-চাবি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
+"এটা অনুপ্ৰয়োগ, %s ব্যক্তিগত-কি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "এটা অনুপ্ৰয়োগ, %s প্ৰমাণপত্ৰ ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
-"এটা অনুপ্ৰয়োগ, %s ৰাজহুৱা-চাবি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
+"এটা অনুপ্ৰয়োগ, %s ৰাজহুৱা-কি ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "এটা অনুপ্ৰয়োগ, %s ব্যৱহাৰ কৰিবলে ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা আছে"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "The unlock password was incorrect"
 msgstr "আনলক কৰা পাছৱাৰ্ড সঠিক নাছিল"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
-msgid "Unlock certificate/key storage"
-msgstr "প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ আনলক কৰক"
-
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+msgid "Unlock certificate/key storage"
+msgstr "প্ৰমাণপত্ৰ/কি সংৰক্ষণ আনলক কৰক"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ আনলক কৰাৰ বাবে পাছৱাৰ্ড লিখক"
+msgstr "প্ৰমাণপত্ৰ/কি সংৰক্ষণ আনলক কৰাৰ বাবে পাছৱাৰ্ড লিখক"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"এটা অনুপ্ৰয়োগ, %s প্ৰমাণপত্ৰ/চাবি সংৰক্ষণ ব্যবহাৰ কৰিব ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা "
+"এটা অনুপ্ৰয়োগ, %s প্ৰমাণপত্ৰ/কি সংৰক্ষণ ব্যবহাৰ কৰিব ইচ্ছুক, কিন্তু বৰ্তমানে ই লক কৰা "
 "আছে"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "নতুন পাছৱাৰ্ড আবশ্যক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "সংৰক্ষণ সুৰক্ষিত ৰাখিবলে পাছৱাৰ্ড লিখা আবশ্যক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
-msgstr "প্ৰমাণপত্ৰ আৰু চাবি সংগ্ৰহৰ বাবে '%s' প্ৰস্তুত কৰাৰ বাবে এটা পাছৱাৰ্ড লিখা আবশ্যক"
+msgstr "প্ৰমাণপত্ৰ আৰু কি সংগ্ৰহৰ বাবে '%s' প্ৰস্তুত কৰাৰ বাবে এটা পাছৱাৰ্ড লিখা আবশ্যক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "পাছৱাৰ্ড সলনি কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
 msgid "Original password for secure storage"
 msgstr "সুৰক্ষিত সংৰক্ষণৰ বাবে পুৰনি পাছৱাৰ্ড"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for '%s', the original password is required"
-msgstr "'%s' -ৰ বাবে পাছৱাৰ্ড সলনি কৰিবলে, প্ৰকৃত পাছৱাৰ্ডৰ প্ৰয়োজন"
+msgstr "'%s' ৰ বাবে পাছৱাৰ্ড সলনি কৰিবলে, প্ৰকৃত পাছৱাৰ্ডৰ প্ৰয়োজন"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 msgid "Change password for secure storage"
 msgstr "সুৰক্ষিত সংৰক্ষণৰ বাবে পাছৱাৰ্ড সলনি কৰক"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for '%s'"
 msgstr "'%s' ৰ বাবে এটা নতুন পাছৱাৰ্ড টাইপ কৰক"
@@ -688,28 +689,28 @@ msgstr "          "
 #~ msgstr "অসীমিত"
 
 #~ msgid "Extended Key Usage"
-#~ msgstr "প্ৰসাৰিত চাবি ব্যৱহাৰ"
+#~ msgstr "প্ৰসাৰিত কি ব্যৱহাৰ"
 
 #~ msgid "Allowed Purposes"
 #~ msgstr "অনুমোদিত কাৰণসমূহ"
 
 #~ msgid "Subject Key Identifier"
-#~ msgstr "বিষয় চাবি পৰিচয়ক"
+#~ msgstr "বিষয় কি পৰিচয়ক"
 
 #~ msgid "Key Identifier"
-#~ msgstr "চাবি পৰিচয়ক"
+#~ msgstr "কি পৰিচয়ক"
 
 #~ msgid "Digital signature"
 #~ msgstr "অঙ্কীয় স্বাক্ষৰ"
 
 #~ msgid "Key encipherment"
-#~ msgstr "চাবি ইনচিফাৰমেন্ট"
+#~ msgstr "কি ইনচিফাৰমেন্ট"
 
 #~ msgid "Data encipherment"
 #~ msgstr "তথ্য ইনচিফাৰমেন্ট"
 
 #~ msgid "Key agreement"
-#~ msgstr "চাবি চুক্তি"
+#~ msgstr "কি চুক্তি"
 
 #~ msgid "Certificate signature"
 #~ msgstr "প্ৰমাণপত্ৰ স্বাক্ষৰ"
@@ -718,7 +719,7 @@ msgstr "          "
 #~ msgstr "প্ৰত্যাৱৰ্তন তালিকা স্বাক্ষৰ"
 
 #~ msgid "Key Usage"
-#~ msgstr "চাবি ব্যৱহাৰ"
+#~ msgstr "কি ব্যৱহাৰ"
 
 #~ msgid "Usages"
 #~ msgstr "ব্যৱহাৰসমূহ"
@@ -786,23 +787,23 @@ msgstr "          "
 #~ msgstr "স্বাক্ষৰৰ প্ৰাচলসমূহ"
 
 #~ msgid "Public Key Info"
-#~ msgstr "ৰাজহুৱা চাবি তথ্য"
+#~ msgstr "ৰাজহুৱা কি তথ্য"
 
 #~ msgid "Key Algorithm"
-#~ msgstr "চাবিৰ এলগৰিথম"
+#~ msgstr "কিৰ এলগৰিথম"
 
 #~ msgid "Key Parameters"
-#~ msgstr "চাবিৰ প্ৰাচলসমূহ"
+#~ msgstr "কিৰ প্ৰাচলসমূহ"
 
 #~ msgid "Key Size"
-#~ msgstr "চাবিৰ আকাৰ"
+#~ msgstr "কিৰ আকাৰ"
 
 #~ msgid "Key SHA1 Fingerprint"
 #~ msgstr "Key SHA1 ফিংগাৰপ্ৰিন্ট"
 
 #
 #~ msgid "Public Key"
-#~ msgstr "ৰাজহুৱা চাবি"
+#~ msgstr "ৰাজহুৱা কি"
 
 #~ msgid "_Details"
 #~ msgstr "বিৱৰণসমূহ (_D)"
@@ -822,7 +823,7 @@ msgstr "          "
 #~ msgstr "এই ধৰণৰ নথিপত্ৰ প্ৰদৰ্শন কৰিব নোৱাৰি।"
 
 #~ msgid "Import Certificates and Keys"
-#~ msgstr "প্ৰমাণপত্ৰসমূহ আৰু চাবিসমূহ ইমপোৰ্ট কৰক"
+#~ msgstr "প্ৰমাণপত্ৰসমূহ আৰু কিসমূহ ইমপোৰ্ট কৰক"
 
 #~ msgid "Import Into:"
 #~ msgstr "চিহ্নিত স্থানত ইমপোৰ্ট কৰক:"
@@ -832,14 +833,14 @@ msgstr "          "
 #~ msgstr "পাছৱাৰ্ড:"
 
 #~ msgid "PGP Key"
-#~ msgstr "PGP চাবি"
+#~ msgstr "PGP কি"
 
 #~ msgctxt "column"
 #~ msgid "Key ID"
-#~ msgstr "চাবি ID"
+#~ msgstr "কি ID"
 
 #~ msgid "Gnupg process exited with code: %d"
-#~ msgstr "Gnupg প্ৰক্ৰিয়া কোড: %d -ৰ সৈতে প্ৰস্থান কৰিছে"
+#~ msgstr "Gnupg প্ৰক্ৰিয়া ক'ড: %d ৰ সৈতে প্ৰস্থান কৰিছে"
 
 #~ msgid "Gnupg process was terminated with signal: %d"
 #~ msgstr "Gnupg প্ৰক্ৰিয়া সংকেত: %d দ্বাৰা অন্ত পেলোৱা হৈছে"
@@ -848,7 +849,7 @@ msgstr "          "
 #~ msgstr "কৰ্ম বাতিল কৰা হৈছে"
 
 #~ msgid "In order to import the private key, it must be unlocked"
-#~ msgstr "ব্যক্তিগত চাবি ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
+#~ msgstr "ব্যক্তিগত কি ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #~ msgid "In order to import the certificate, it must be unlocked"
 #~ msgstr "প্ৰমাণপত্ৰ ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
@@ -857,7 +858,7 @@ msgstr "          "
 #~ msgstr "তথ্য ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #~ msgid "In order to import the private key '%s', it must be unlocked"
-#~ msgstr "'%s' ব্যক্তিগত চাবি ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
+#~ msgstr "'%s' ব্যক্তিগত কি ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
 
 #~ msgid "In order to import the certificate '%s', it must be unlocked"
 #~ msgstr "'%s' প্ৰমাণপত্ৰ ইমপোৰ্ট কৰিব হলে, সেইটো আনলক কৰা আবশ্যক"
@@ -869,26 +870,26 @@ msgstr "          "
 #~ msgstr "ইমপোৰ্ট কৰাৰ বাবে কোনো স্থান চিহ্নিত কৰা হোৱা নাই"
 
 #~ msgid "Import Certificates/Keys"
-#~ msgstr "প্ৰমাণপত্ৰ/চাবি ইমপোৰ্ট কৰক"
+#~ msgstr "প্ৰমাণপত্ৰ/কি ইমপোৰ্ট কৰক"
 
 #~ msgid "Choose a location to store the imported certificates/keys."
-#~ msgstr "ইমপোৰ্ট কৰা প্ৰমাণপত্ৰ/চাবি সংৰক্ষণেৰ বাবে এটা স্থান নিৰ্বাচন কৰক।"
+#~ msgstr "ইমপোৰ্ট কৰা প্ৰমাণপত্ৰ/কি সংৰক্ষণেৰ বাবে এটা স্থান নিৰ্বাচন কৰক।"
 
 #~ msgid "Key"
-#~ msgstr "চাবি"
+#~ msgstr "কি"
 
 #~ msgid "Private RSA Key"
-#~ msgstr "ব্যক্তিগত RSA চাবি"
+#~ msgstr "ব্যক্তিগত RSA কি"
 
 #~ msgid "Private DSA Key"
-#~ msgstr "ব্যক্তিগত DSA চাবি"
+#~ msgstr "ব্যক্তিগত DSA কি"
 
 #
 #~ msgid "Private Key"
-#~ msgstr "ব্যক্তিগত চাবি"
+#~ msgstr "ব্যক্তিগত কি"
 
 #~ msgid "Public DSA Key"
-#~ msgstr "ৰাজহুৱা DSA চাবি"
+#~ msgstr "ৰাজহুৱা DSA কি"
 
 #~ msgid "%d bit"
 #~ msgid_plural "%d bits"
@@ -952,16 +953,16 @@ msgstr "          "
 #~ msgid ""
 #~ "The contents of '%s' are locked. In order to view the contents, enter the "
 #~ "correct password."
-#~ msgstr "'%s' -ৰ সমলসমূহ লক কৰা আছে। সমলসমূহ দৰ্শন কৰিবলে, সঠিক পাছৱাৰ্ড সোমাওক।"
+#~ msgstr "'%s' ৰ সমলসমূহ লক কৰা আছে। সমলসমূহ দৰ্শন কৰিবলে, সঠিক পাছৱাৰ্ড সুমুৱাওক।"
 
 #~ msgid ""
 #~ "The contents are locked. In order to view the contents, enter the correct "
 #~ "password."
-#~ msgstr "সমলসমূহ লক কৰা আছে। সমলসমূহ দৰ্শন কৰিবলে, সঠিক পাছৱাৰ্ড সোমাওক।"
+#~ msgstr "সমলসমূহ লক কৰা আছে। সমলসমূহ দৰ্শন কৰিবলে, সঠিক পাছৱাৰ্ড সুমুৱাওক।"
 
 #~| msgid "Certificate and Key Storage"
 #~ msgid "GCR Certificate and Key Viewer"
-#~ msgstr "GCR প্ৰমাণপত্ৰ আৰু চাবি দৰ্শক"
+#~ msgstr "GCR প্ৰমাণপত্ৰ আৰু কি দৰ্শক"
 
 #~| msgid "Allow application access to keyring?"
 #~ msgid "Show the application's version"
@@ -972,7 +973,7 @@ msgstr "          "
 
 #~| msgid "Certificate files"
 #~ msgid "- View certificate and key files"
-#~ msgstr "-প্ৰমাণপত্ৰ আৰু চাবি নথিপত্ৰসমূহ দৰ্শন কৰক"
+#~ msgstr "-প্ৰমাণপত্ৰ আৰু কি নথিপত্ৰসমূহ দৰ্শন কৰক"
 
 #~| msgid "Certificate files"
 #~ msgid "Certificate Viewer"
@@ -983,13 +984,13 @@ msgstr "          "
 
 #~| msgid "The URI has does not have the 'pkcs11' scheme."
 #~ msgid "The URI does not have the 'pkcs11' scheme."
-#~ msgstr "URI -ৰ 'pkcs11' আচনি নাই।"
+#~ msgstr "URI ৰ 'pkcs11' আচনি নাই।"
 
 #~ msgid "The URI has bad syntax."
-#~ msgstr "URI -ৰ বেয়া বাক্যবিন্যাস আছে।"
+#~ msgstr "URI ৰ বেয়া বাক্যবিন্যাস আছে।"
 
 #~ msgid "The URI has a bad version number."
-#~ msgstr "URl -ৰ এটা বেয়া সংস্কৰণ আছে।"
+#~ msgstr "URl ৰ এটা বেয়া সংস্কৰণ আছে।"
 
 #~ msgid "Use Unsafe Storage"
 #~ msgstr "অসুৰক্ষিত সংৰক্ষণ ব্যবহাৰ কৰক"
@@ -1046,7 +1047,7 @@ msgstr "          "
 #~ "The application '%s' wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
 #~ msgstr ""
-#~ "'%s' অনুপ্ৰয়োগ, অবিকল্পিত চাবি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ পাছৱাৰ্ড "
+#~ "'%s' অনুপ্ৰয়োগ, অবিকল্পিত কি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ পাছৱাৰ্ড "
 #~ "ব্যৱহাৰ কৰিবলে ইচ্ছুক।"
 
 #~ msgid ""
@@ -1060,7 +1061,7 @@ msgstr "          "
 #~ "An unknown application wants to access the password for '<object "
 #~ "prop='name'/>' in the default keyring."
 #~ msgstr ""
-#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ অবিকল্পিত চাবি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ "
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ অবিকল্পিত কি ৰিঙত অৱস্থিত '<object prop='name'/>' ৰ "
 #~ "পাছৱাৰ্ড ব্যৱহাৰ কৰিবলে ইচ্ছুক।"
 
 #~ msgid ""
@@ -1148,36 +1149,36 @@ msgstr "          "
 #~ "The application '%s' (%s) wants to change the password for the '%s' "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "'%s' (%s) অনুপ্ৰয়োগ '%s' keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "'%s' (%s) অনুপ্ৰয়োগ '%s' keyring ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
 #~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
 
 #~ msgid ""
 #~ "The application '%s' (%s) wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "'%s' (%s) অনুপ্ৰয়োগ অবিকল্পিত keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই "
-#~ "কামত ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+#~ "'%s' (%s) অনুপ্ৰয়োগ অবিকল্পিত keyring ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
 
 #~ msgid ""
 #~ "The application '%s' wants to change the password for the '%s' keyring. "
 #~ "You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "'%s' অনুপ্ৰয়োগ '%s' keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "'%s' অনুপ্ৰয়োগ '%s' keyring ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
 #~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
 
 #~ msgid ""
 #~ "The application '%s' wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "'%s' অনুপ্ৰয়োগ অবিকল্পিত keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "'%s' অনুপ্ৰয়োগ অবিকল্পিত keyring ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
 #~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
 
 #~ msgid ""
 #~ "An unknown application wants to change the password for the default "
 #~ "keyring. You have to choose the password you want to use for it."
 #~ msgstr ""
-#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ অবিকল্পিত keyring -ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই "
-#~ "কামত ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
+#~ "এটা অজ্ঞাত অনুপ্ৰয়োগ অবিকল্পিত keyring ৰ পাছৱাৰ্ড পৰিবৰ্তন কৰিবলে ইচ্ছুক। এই কামত "
+#~ "ব্যৱহাৰযোগ্য পাছৱাৰ্ড নিৰ্বাচন কৰা আবশ্যক।"
 
 #~| msgid "Choose a new password for the default keyring. "
 #~ msgid "Choose a new password for the default keyring."
@@ -1214,7 +1215,7 @@ msgstr "          "
 #~ msgstr "অবিকল্পিত keyring সৃষ্টি কৰক"
 
 #~ msgid "Choose password for default keyring"
-#~ msgstr "অবিকল্পিত keyring -ৰ বাবে পাছৱাৰ্ড নিৰ্বাচন কৰক"
+#~ msgstr "অবিকল্পিত keyring ৰ বাবে পাছৱাৰ্ড নিৰ্বাচন কৰক"
 
 #~ msgid ""
 #~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
@@ -1239,10 +1240,10 @@ msgstr "          "
 #~ "উল্লেখ কৰা হলে এই বৈশিষ্ট্য উপেক্ষা কৰা যাবে।"
 
 #~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-#~ msgstr "gnome-keyring PKCS#11 সামগ্ৰী সক্ৰিয় চাবি না।"
+#~ msgstr "gnome-keyring PKCS#11 সামগ্ৰী সক্ৰিয় কি না।"
 
 #~ msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgstr "gnome-keyring SSH agent সক্ৰিয় চাবি না।"
+#~ msgstr "gnome-keyring SSH agent সক্ৰিয় কি না।"
 
 #~ msgid "Create Login Keyring"
 #~ msgstr "লগ-ইন keyring সৃষ্টি কৰক"
@@ -1258,10 +1259,10 @@ msgstr "          "
 #~ "কৰা হোৱা নাই। ই এখন নিৰ্মাণ কৰা হ'ব।"
 
 #~ msgid "Automatically unlock this private key when I log in."
-#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই ব্যক্তিগত-চাবি আনলক কৰা হ'ব।"
+#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই ব্যক্তিগত-কি আনলক কৰা হ'ব।"
 
 #~ msgid "Automatically unlock this public key when I log in."
-#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই ৰাজহুৱা-চাবি আনলক কৰা হ'ব।"
+#~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে এই ৰাজহুৱা-কি আনলক কৰা হ'ব।"
 
 #~ msgid "Automatically unlock this when I log in"
 #~ msgstr "লগ-ইন কৰাৰ সময় স্বয়ংক্ৰিয়ৰূপে ই আনলক কৰা হ'ব।"
@@ -1386,7 +1387,7 @@ msgstr "          "
 #~ msgstr "প্ৰাতিষ্ঠানিক বিভাগ (OU)"
 
 #~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr "<span size='large' weight='bold'>প্ৰমাণপত্ৰ আৰু চাবি ইমপোৰ্ট কৰক</span>"
+#~ msgstr "<span size='large' weight='bold'>প্ৰমাণপত্ৰ আৰু কি ইমপোৰ্ট কৰক</span>"
 
 #~ msgid "Insufficient memory available"
 #~ msgstr "পৰ্যাপ্ত মেমৰি উপলব্ধ নেই"
@@ -1447,34 +1448,34 @@ msgstr "          "
 #~ msgstr "এই কৰ্ম সমৰ্থিত নহয়"
 
 #~ msgid "The key is missing or invalid"
-#~ msgstr "চাবি অনুপস্থিত অথবা বৈধ নহয়"
+#~ msgstr "কি অনুপস্থিত অথবা বৈধ নহয়"
 
 #~ msgid "The key is the wrong size"
-#~ msgstr "চাবিৰ আকাৰ সঠিক নহয়"
+#~ msgstr "কিৰ আকাৰ সঠিক নহয়"
 
 #~ msgid "The key is of the wrong type"
-#~ msgstr "চাবিৰ ধৰন সঠিক নহয়"
+#~ msgstr "কিৰ ধৰন সঠিক নহয়"
 
 #~ msgid "No key is needed"
-#~ msgstr "কোনো চাবিৰ প্ৰয়োজন নেই"
+#~ msgstr "কোনো কিৰ প্ৰয়োজন নেই"
 
 #~ msgid "The key is different than before"
 #~ msgstr "কি-টি পূৰ্ববৰ্তী অবস্থা থেকে পৰিবৰ্তিত হৈছে"
 
 #~ msgid "A key is needed"
-#~ msgstr "এটা চাবি আবশ্যক"
+#~ msgstr "এটা কি আবশ্যক"
 
 #~ msgid "Cannot include the key in digest"
-#~ msgstr "ডাইজেস্টেৰ মধ্যে চাবি অন্তৰ্ভুক্ত কৰা যাবে না"
+#~ msgstr "ডাইজেস্টেৰ মধ্যে কি অন্তৰ্ভুক্ত কৰা যাবে না"
 
 #~ msgid "This operation cannot be done with this key"
-#~ msgstr "এই চাবি সহযোগে এই কৰ্ম কৰা সম্ভব নহয়"
+#~ msgstr "এই কি সহযোগে এই কৰ্ম কৰা সম্ভব নহয়"
 
 #~ msgid "The key cannot be wrapped"
 #~ msgstr "কি-ৰি ৰ্‌যাপ কৰা সম্ভব নয়"
 
 #~ msgid "Cannot export this key"
-#~ msgstr "চিহ্নিত চাবি এক্সপোৰ্ট কৰা সম্ভব নহয়"
+#~ msgstr "চিহ্নিত কি এক্সপোৰ্ট কৰা সম্ভব নহয়"
 
 #~ msgid "The crypto mechanism is invalid or unrecognized"
 #~ msgstr "ক্ৰিপ্টো ব্যৱস্থা বৈধ নহয় অথবা অপৰিচিত"
@@ -1546,13 +1547,13 @@ msgstr "          "
 #~ msgstr "ডিভাইসটি লিখাৰ বাবে অনুমোদিত নহয়"
 
 #~ msgid "Cannot import because the key is invalid"
-#~ msgstr "অবৈধ হওয়াৰ ফলত চাবি ইমপোৰ্ট কৰা যাবে না"
+#~ msgstr "অবৈধ হওয়াৰ ফলত কি ইমপোৰ্ট কৰা যাবে না"
 
 #~ msgid "Cannot import because the key is of the wrong size"
-#~ msgstr "ভুল মাপেৰ হওয়াৰ ফলত চাবি ইমপোৰ্ট কৰা যাবে না"
+#~ msgstr "ভুল মাপেৰ হওয়াৰ ফলত কি ইমপোৰ্ট কৰা যাবে না"
 
 #~ msgid "Cannot import because the key is of the wrong type"
-#~ msgstr "ভুল ধৰনেৰ হওয়াৰ ফলত চাবি ইমপোৰ্ট কৰা যাবে না"
+#~ msgstr "ভুল ধৰনেৰ হওয়াৰ ফলত কি ইমপোৰ্ট কৰা যাবে না"
 
 #~ msgid "You are already logged in"
 #~ msgstr "আপনি লগ-ইন কৰা অবস্থায় আছে"
@@ -1573,19 +1574,19 @@ msgstr "          "
 #~ msgstr "বিভিন্ন ধৰনেৰ অত্যাধিক সংখ্যক ব্যৱহাৰকাৰী লগ-ইন কৰেছেন"
 
 #~ msgid "Cannot import an invalid key"
-#~ msgstr "এটা অবৈধ-চাবি ইমপোৰ্ট কৰা যাবে না"
+#~ msgstr "এটা অবৈধ-কি ইমপোৰ্ট কৰা যাবে না"
 
 #~ msgid "Cannot import a key of the wrong size"
-#~ msgstr "ভুল মাপেৰ চাবি ইমপোৰ্ট কৰা যাবে না"
+#~ msgstr "ভুল মাপেৰ কি ইমপোৰ্ট কৰা যাবে না"
 
 #~ msgid "Cannot export because the key is invalid"
-#~ msgstr "চাবি অবৈধ হওয়াৰ ফলত চাবি এক্সপোৰ্ট কৰা যাবে না"
+#~ msgstr "কি অবৈধ হওয়াৰ ফলত কি এক্সপোৰ্ট কৰা যাবে না"
 
 #~ msgid "Cannot export because the key is of the wrong size"
-#~ msgstr "ভুল মাপেৰ হওয়াৰ ফলত চাবি এক্সপোৰ্ট কৰা যাবে না"
+#~ msgstr "ভুল মাপেৰ হওয়াৰ ফলত কি এক্সপোৰ্ট কৰা যাবে না"
 
 #~ msgid "Cannot export because the key is of the wrong type"
-#~ msgstr "ভুল ধৰনেৰ হওয়াৰ ফলত চাবি এক্সপোৰ্ট কৰা যাবে না"
+#~ msgstr "ভুল ধৰনেৰ হওয়াৰ ফলত কি এক্সপোৰ্ট কৰা যাবে না"
 
 #~ msgid "Unable to initialize the random number generator"
 #~ msgstr "ৰ্‌যান্ডম নম্বৰ নিৰ্মাণ ব্যবস্থা আৰম্ভ কৰিব ব্যৰ্থ"
