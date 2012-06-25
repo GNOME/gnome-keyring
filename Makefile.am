@@ -74,3 +74,6 @@ clear-coverage:
 	$(LCOV) --directory . --zerocounters
 
 endif
+
+upload-release: $(DIST_ARCHIVES)
+		scp $(DIST_ARCHIVES) master.gnome.org:

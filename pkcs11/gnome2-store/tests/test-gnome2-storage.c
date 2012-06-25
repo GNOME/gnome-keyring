@@ -94,7 +94,6 @@ static void
 setup_module (Test *test,
               gconstpointer unused)
 {
-	CK_ATTRIBUTE label = { CKA_LABEL, NULL, 0 };
 	CK_ATTRIBUTE url = { CKA_URL, NULL, 0 };
 	gchar *contents;
 	gsize length;
@@ -116,8 +115,8 @@ setup_module (Test *test,
 	rv = gkm_gnome2_storage_refresh (test->storage);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
+	/* We already have the CKA_LABEL attribute */
 	gkm_store_register_schema (GKM_STORE (test->storage), &url, NULL, 0);
-	gkm_store_register_schema (GKM_STORE (test->storage), &label, NULL, 0);
 
 	/*
 	 * Create a new object that hasn't yet been stored in the storage.

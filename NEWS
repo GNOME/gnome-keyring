@@ -1,3 +1,10 @@
+Changes in version 3.5.3 are:
+ * Return correct introspect data for Secret Service
+ * Fix the gnome2-store for gcr importer, and test
+ * Debug and logging fixes
+ * Updated translations
+ * Build fixes
+
 Changes in version 3.4.1 are:
  * Set 'text/plain' content type on secrets returned from daemon
  * Use correct XDG_RUNTIME_DIR when started from PAM
