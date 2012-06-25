@@ -194,7 +194,7 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	}
 
 	/* Parse the fields, into our internal representation */
-	rv = gkm_secret_fields_parse (attr, &fields);
+	rv = gkm_secret_fields_parse (attr, &fields, NULL);
 	gkm_attribute_consume (attr);
 	if (rv != CKR_OK) {
 		gkm_transaction_fail (transaction, rv);
@@ -307,7 +307,7 @@ gkm_secret_search_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 			return gkm_attribute_set_empty (attr);
 		return gkm_attribute_set_string (attr, self->collection_id);
 	case CKA_G_FIELDS:
-		return gkm_secret_fields_serialize (attr, self->fields);
+		return gkm_secret_fields_serialize (attr, self->fields, NULL);
 	case CKA_G_MATCHED:
 		return attribute_set_handles (self->objects, attr);
 	}

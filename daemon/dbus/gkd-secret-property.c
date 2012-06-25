@@ -83,6 +83,7 @@ property_to_attribute (const gchar *prop_name, const gchar *interface,
 		*attr_type = CKA_LABEL;
 		*data_type = DATA_TYPE_STRING;
 
+	/* Non-standard property for type schema */
 	} else if (g_str_equal (prop_name, "Type")) {
 		*attr_type = CKA_G_SCHEMA;
 		*data_type = DATA_TYPE_STRING;
@@ -121,6 +122,7 @@ attribute_to_property (CK_ATTRIBUTE_TYPE attr_type, const gchar **prop_name, Dat
 		*prop_name = "Label";
 		*data_type = DATA_TYPE_STRING;
 		break;
+	/* Non-standard property for type schema */
 	case CKA_G_SCHEMA:
 		*prop_name = "Type";
 		*data_type = DATA_TYPE_STRING;

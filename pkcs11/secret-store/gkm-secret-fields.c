@@ -145,7 +145,9 @@ gkm_secret_fields_new (void)
 }
 
 CK_RV
-gkm_secret_fields_parse (CK_ATTRIBUTE_PTR attr, GHashTable **fields)
+gkm_secret_fields_parse (CK_ATTRIBUTE_PTR attr,
+                         GHashTable **fields,
+                         gchar **schema_name)
 {
 	GHashTable *result;
 	const gchar *name;
@@ -201,48 +203,62 @@ gkm_secret_fields_parse (CK_ATTRIBUTE_PTR attr, GHashTable **fields)
 		g_hash_table_replace (result, g_strndup (name, n_name), g_strndup (value, n_value));
 	}
 
+	if (schema_name)
+		*schema_name = g_strdup (g_hash_table_lookup (result, "xdg:schema"));
+
 	*fields = result;
 	return CKR_OK;
 }
 
-static void
-each_field_append (gpointer key, gpointer value, gpointer user_data)
-{
-	GString *result = user_data;
-	g_string_append (result, key);
-	g_string_append_c (result, '\0');
-	g_string_append (result, value);
-	g_string_append_c (result, '\0');
-}
-
-static void
-each_field_length (gpointer key, gpointer value, gpointer user_data)
-{
-	gsize *length = user_data;
-	*length += strlen (key);
-	*length += strlen (value);
-	*length += 2;
-}
-
 CK_RV
-gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr, GHashTable *fields)
+gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
+                             GHashTable *fields,
+                             const gchar *schema_name)
 {
+	GHashTableIter iter;
+	gboolean saw_schema;
+	gpointer key;
+	gpointer value;
 	GString *result;
-	gsize length;
 	CK_RV rv;
 
-	g_assert (attr);
-	g_assert (fields);
+	g_assert (attr != NULL);
+	g_assert (fields != NULL);
 
 	if (!attr->pValue) {
-		length = 0;
-		g_hash_table_foreach (fields, each_field_length, &length);
-		attr->ulValueLen = length;
+		attr->ulValueLen = 0;
+		g_hash_table_iter_init (&iter, fields);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			if (g_str_equal (key, "xdg:schema"))
+				saw_schema = TRUE;
+			attr->ulValueLen += strlen (key);
+			attr->ulValueLen += strlen (value);
+			attr->ulValueLen += 2;
+		}
+		if (schema_name && !saw_schema) {
+			attr->ulValueLen += strlen ("xdg:schema");
+			attr->ulValueLen += strlen (schema_name);
+			attr->ulValueLen += 2;
+		}
 		return CKR_OK;
 	}
 
 	result = g_string_sized_new (256);
-	g_hash_table_foreach (fields, each_field_append, result);
+	g_hash_table_iter_init (&iter, fields);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		if (g_str_equal (key, "xdg:schema"))
+			saw_schema = TRUE;
+		g_string_append (result, key);
+		g_string_append_c (result, '\0');
+		g_string_append (result, value);
+		g_string_append_c (result, '\0');
+	}
+	if (schema_name && !saw_schema) {
+		g_string_append (result, "xdg:schema");
+		g_string_append_c (result, '\0');
+		g_string_append (result, schema_name);
+		g_string_append_c (result, '\0');
+	}
 
 	rv = gkm_attribute_set_data (attr, result->str, result->len);
 	g_string_free (result, TRUE);

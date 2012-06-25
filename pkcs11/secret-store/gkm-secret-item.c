@@ -235,7 +235,7 @@ gkm_secret_item_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 	case CKA_G_FIELDS:
 		if (!self->fields)
 			return gkm_attribute_set_data (attr, NULL, 0);
-		return gkm_secret_fields_serialize (attr, self->fields);
+		return gkm_secret_fields_serialize (attr, self->fields, self->schema);
 
 	case CKA_G_SCHEMA:
 		return gkm_attribute_set_string (attr, self->schema);
@@ -252,6 +252,7 @@ gkm_secret_item_real_set_attribute (GkmObject *base, GkmSession *session,
 	const gchar *identifier;
 	GkmSecretData *sdata;
 	GHashTable *fields;
+	gchar *schema_name;
 	GkmSecret *secret;
 	gchar *schema;
 	CK_RV rv;
@@ -281,11 +282,14 @@ gkm_secret_item_real_set_attribute (GkmObject *base, GkmSession *session,
 		return;
 
 	case CKA_G_FIELDS:
-		rv = gkm_secret_fields_parse (attr, &fields);
-		if (rv != CKR_OK)
+		rv = gkm_secret_fields_parse (attr, &fields, &schema_name);
+		if (rv != CKR_OK) {
 			gkm_transaction_fail (transaction, rv);
-		else
+		} else {
 			begin_set_fields (self, transaction, fields);
+			if (schema_name)
+				begin_set_schema (self, transaction, schema_name);
+		}
 		return;
 
 	case CKA_G_SCHEMA:

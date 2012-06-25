@@ -74,11 +74,12 @@ static void
 test_parse (void)
 {
 	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0value1\0two\0value2\0three\0value3\0", 35 };
+	gchar *schema_name;
 	GHashTable *fields;
 	const gchar *value;
 	CK_RV rv;
 
-	rv = gkm_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields, &schema_name);
 	g_assert (rv == CKR_OK);
 
 	g_assert_cmpuint (g_hash_table_size (fields), ==, 3);
@@ -89,6 +90,34 @@ test_parse (void)
 	value = g_hash_table_lookup (fields, "three");
 	g_assert_cmpstr (value, ==, "value3");
 
+	g_assert (schema_name == NULL);
+
+	g_hash_table_unref (fields);
+}
+
+static void
+test_parse_schema (void)
+{
+	CK_ATTRIBUTE attr = { CKA_G_FIELDS, "one\0value1\0two\0valu\0xdg:schema\0xxx\0", 35 };
+	gchar *schema_name;
+	GHashTable *fields;
+	const gchar *value;
+	CK_RV rv;
+
+	rv = gkm_secret_fields_parse (&attr, &fields, &schema_name);
+	g_assert (rv == CKR_OK);
+
+	g_assert_cmpuint (g_hash_table_size (fields), ==, 3);
+	value = g_hash_table_lookup (fields, "one");
+	g_assert_cmpstr (value, ==, "value1");
+	value = g_hash_table_lookup (fields, "two");
+	g_assert_cmpstr (value, ==, "valu");
+	value = g_hash_table_lookup (fields, "xdg:schema");
+	g_assert_cmpstr (value, ==, "xxx");
+
+	g_assert_cmpstr (schema_name, ==, "xxx");
+
+	g_free (schema_name);
 	g_hash_table_unref (fields);
 }
 
@@ -99,7 +128,7 @@ test_parse_empty (void)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gkm_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields, NULL);
 	g_assert (rv == CKR_OK);
 
 	g_assert_cmpuint (g_hash_table_size (fields), == , 0);
@@ -114,7 +143,7 @@ test_parse_null_invalid (void)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gkm_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields, NULL);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -125,7 +154,7 @@ test_parse_missing_value (void)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gkm_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields, NULL);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -136,7 +165,7 @@ test_parse_missing_terminator (void)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gkm_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields, NULL);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -147,7 +176,7 @@ test_parse_not_utf8 (void)
 	GHashTable *fields;
 	CK_RV rv;
 
-	rv = gkm_secret_fields_parse (&attr, &fields);
+	rv = gkm_secret_fields_parse (&attr, &fields, NULL);
 	g_assert (rv == CKR_ATTRIBUTE_VALUE_INVALID);
 }
 
@@ -162,10 +191,48 @@ test_serialize (void)
 	fields = gkm_secret_fields_new ();
 	gkm_secret_fields_add (fields, "one", "value1");
 
-	rv = gkm_secret_fields_serialize (&attr, fields);
+	rv = gkm_secret_fields_serialize (&attr, fields, NULL);
 	g_assert (rv == CKR_OK);
 	g_assert (attr.ulValueLen == 11);
 	g_assert (memcmp (buffer, "one\0value1\0", 11) == 0);
+
+	g_hash_table_unref (fields);
+}
+
+static void
+test_serialize_schema (void)
+{
+	gchar buffer[32];
+	CK_ATTRIBUTE attr = { CKA_G_FIELDS, buffer, 32 };
+	GHashTable *fields;
+	CK_RV rv;
+
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add (fields, "one", "value1");
+
+	rv = gkm_secret_fields_serialize (&attr, fields, "xxx");
+	g_assert (rv == CKR_OK);
+	g_assert_cmpint (attr.ulValueLen, ==, 26);
+	g_assert (memcmp (buffer, "one\0value1\0xdg:schema\0xxx\0", 26) == 0);
+
+	g_hash_table_unref (fields);
+}
+
+static void
+test_serialize_schema_already (void)
+{
+	gchar buffer[32];
+	CK_ATTRIBUTE attr = { CKA_G_FIELDS, buffer, 32 };
+	GHashTable *fields;
+	CK_RV rv;
+
+	fields = gkm_secret_fields_new ();
+	gkm_secret_fields_add (fields, "xdg:schema", "yyy");
+
+	rv = gkm_secret_fields_serialize (&attr, fields, "xxx");
+	g_assert (rv == CKR_OK);
+	g_assert (attr.ulValueLen == 15);
+	g_assert (memcmp (buffer, "xdg:schema\0yyy\0", 15) == 0);
 
 	g_hash_table_unref (fields);
 }
@@ -180,7 +247,7 @@ test_serialize_length (void)
 	fields = gkm_secret_fields_new ();
 	gkm_secret_fields_add (fields, "one", "value1");
 
-	rv = gkm_secret_fields_serialize (&attr, fields);
+	rv = gkm_secret_fields_serialize (&attr, fields, NULL);
 	g_assert (rv == CKR_OK);
 	g_assert (attr.ulValueLen == 11);
 
@@ -416,12 +483,15 @@ main (int argc, char **argv)
 	g_test_add_func ("/secret-store/fields/boxed", test_boxed);
 	g_test_add_func ("/secret-store/fields/add_get_values", test_add_get_values);
 	g_test_add_func ("/secret-store/fields/parse", test_parse);
+	g_test_add_func ("/secret-store/fields/parse_schema", test_parse_schema);
 	g_test_add_func ("/secret-store/fields/parse_empty", test_parse_empty);
 	g_test_add_func ("/secret-store/fields/parse_null_invalid", test_parse_null_invalid);
 	g_test_add_func ("/secret-store/fields/parse_missing_value", test_parse_missing_value);
 	g_test_add_func ("/secret-store/fields/parse_missing_terminator", test_parse_missing_terminator);
 	g_test_add_func ("/secret-store/fields/parse_not_utf8", test_parse_not_utf8);
 	g_test_add_func ("/secret-store/fields/serialize", test_serialize);
+	g_test_add_func ("/secret-store/fields/serialize_schema", test_serialize_schema);
+	g_test_add_func ("/secret-store/fields/serialize_schema_already", test_serialize_schema_already);
 	g_test_add_func ("/secret-store/fields/serialize_length", test_serialize_length);
 	g_test_add_func ("/secret-store/fields/add_get_compat_uint32", test_add_get_compat_uint32);
 	g_test_add_func ("/secret-store/fields/get_compat_uint32_fail", test_get_compat_uint32_fail);

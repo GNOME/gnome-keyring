@@ -65,10 +65,12 @@ const gchar*    gkm_secret_fields_get                         (GHashTable *field
                                                                const gchar *name);
 
 CK_RV           gkm_secret_fields_parse                       (CK_ATTRIBUTE_PTR attr,
-                                                               GHashTable **fields);
+                                                               GHashTable **fields,
+                                                               gchar **schema_name);
 
 CK_RV           gkm_secret_fields_serialize                   (CK_ATTRIBUTE_PTR attr,
-                                                               GHashTable *fields);
+                                                               GHashTable *fields,
+                                                               const gchar *schema_name);
 
 gboolean        gkm_secret_fields_match                       (GHashTable *haystack,
                                                                GHashTable *needle);
