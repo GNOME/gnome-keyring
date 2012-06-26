@@ -38,9 +38,7 @@ struct _GkmTimer {
 static GStaticMutex timer_mutex = G_STATIC_MUTEX_INIT;
 static GQueue *timer_queue = NULL;
 static GThread *timer_thread = NULL;
-#if GLIB_CHECK_VERSION(2,31,3)
 static GCond timer_condition;
-#endif
 static GCond *timer_cond = NULL;
 static gboolean timer_run = FALSE;
 static gint timer_refs = 0;
@@ -73,25 +71,12 @@ timer_thread_func (gpointer unused)
 		}
 
 		if (timer->when) {
-#if GLIB_CHECK_VERSION(2,31,3)
 			gint64 when = ((gint64)timer->when) * G_TIME_SPAN_SECOND;
 			gint64 offset = when - g_get_real_time ();
 			if (offset > 0) {
 				g_cond_wait_until (timer_cond, mutex, g_get_monotonic_time () + offset);
 				continue;
 			}
-#else
-			GTimeVal tv;
-			g_get_current_time (&tv);
-
-			/* We have to wait until the next timer? */
-			if (tv.tv_sec < timer->when) {
-				tv.tv_sec = timer->when;
-				tv.tv_usec = 0;
-				g_cond_timed_wait (timer_cond, mutex, &tv);
-				continue;
-			}
-#endif
 		}
 
 		/* Leave our thread mutex, and enter the module */
@@ -123,22 +108,14 @@ gkm_timer_initialize (void)
 		g_atomic_int_inc (&timer_refs);
 		if (!timer_thread) {
 			timer_run = TRUE;
-#if GLIB_CHECK_VERSION(2,31,3)
 			timer_thread = g_thread_new ("timer", timer_thread_func, NULL);
-#else
-			timer_thread = g_thread_create (timer_thread_func, NULL, TRUE, &error);
-#endif
 			if (timer_thread) {
 				g_assert (timer_queue == NULL);
 				timer_queue = g_queue_new ();
 
 				g_assert (timer_cond == NULL);
-#if GLIB_CHECK_VERSION(2,31,3)
 				timer_cond = &timer_condition;
 				g_cond_init (timer_cond);
-#else
-				timer_cond = g_cond_new ();
-#endif
 			} else {
 				g_warning ("could not create timer thread: %s",
 				           egg_error_message (error));
@@ -178,11 +155,7 @@ gkm_timer_shutdown (void)
 		g_queue_free (timer_queue);
 		timer_queue = NULL;
 
-#if GLIB_CHECK_VERSION(2,31,3)
 		g_cond_clear (timer_cond);
-#else
-		g_cond_free (timer_cond);
-#endif
 		timer_cond = NULL;
 	}
 }

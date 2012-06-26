@@ -329,11 +329,7 @@ gkd_gpg_agent_accept (void)
 	client->sock = new_fd;
 
 	/* And create a new thread/process */
-#if GLIB_CHECK_VERSION(2,31,2)
 	client->thread = g_thread_new ("gpg-agent", run_client_thread, &client->sock);
-#else
-	client->thread = g_thread_create (run_client_thread, &client->sock, TRUE, &error);
-#endif
 	if (!client->thread) {
 		g_warning ("couldn't create thread GPG agent connection: %s",
 		           error && error->message ? error->message : "");
@@ -389,15 +385,10 @@ gkd_gpg_agent_uninitialize (void)
 		pkcs11_main_session = NULL;
 
 	g_mutex_unlock (pkcs11_main_mutex);
-#if GLIB_CHECK_VERSION(2,31,2)
 	g_mutex_clear (pkcs11_main_mutex);
 	g_free (pkcs11_main_mutex);
 	g_cond_clear (pkcs11_main_cond);
 	g_free (pkcs11_main_cond);
-#else
-	g_mutex_free (pkcs11_main_mutex);
-	g_cond_free (pkcs11_main_cond);
-#endif
 
 	g_assert (pkcs11_module);
 	g_object_unref (pkcs11_module);
@@ -457,15 +448,10 @@ gkd_gpg_agent_initialize_with_module (GckModule *module)
 
 	pkcs11_module = g_object_ref (module);
 
-#if GLIB_CHECK_VERSION(2,31,2)
 	pkcs11_main_mutex = g_new0 (GMutex, 1);
 	g_mutex_init (pkcs11_main_mutex);
 	pkcs11_main_cond = g_new0 (GCond, 1);
 	g_cond_init (pkcs11_main_cond);
-#else
-	pkcs11_main_mutex = g_mutex_new ();
-	pkcs11_main_cond = g_cond_new ();
-#endif
 	pkcs11_main_checked = FALSE;
 	pkcs11_main_session = session;
 

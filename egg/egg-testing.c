@@ -28,15 +28,9 @@
 #include <errno.h>
 #include <unistd.h>
 
-#if GLIB_CHECK_VERSION(2,31,3)
 static GCond wait_condition;
 static GCond wait_start;
 static GMutex wait_mutex;
-#else
-static GCond *wait_condition = NULL;
-static GCond *wait_start = NULL;
-static GMutex *wait_mutex = NULL;
-#endif
 
 static gboolean wait_waiting = FALSE;
 
@@ -89,34 +83,16 @@ egg_assertion_message_cmpmem (const char     *domain,
 void
 egg_test_wait_stop (void)
 {
-#if GLIB_CHECK_VERSION(2,31,3)
 	g_mutex_lock (&wait_mutex);
-#else
-	g_assert (wait_mutex);
-	g_assert (wait_condition);
-	g_mutex_lock (wait_mutex);
-#endif
 
 	if (!wait_waiting) {
-#if GLIB_CHECK_VERSION(2,31,3)
 		gint64 time = g_get_monotonic_time () + 1 * G_TIME_SPAN_SECOND;
 		g_cond_wait_until (&wait_start, &wait_mutex, time);
-#else
-		GTimeVal tv;
-		g_get_current_time (&tv);
-		g_time_val_add (&tv, 1000);
-		g_cond_timed_wait (wait_start, wait_mutex, &tv);
-#endif
 	}
 	g_assert (wait_waiting);
 
-#if GLIB_CHECK_VERSION(2,31,3)
 	g_cond_broadcast (&wait_condition);
 	g_mutex_unlock (&wait_mutex);
-#else
-	g_cond_broadcast (wait_condition);
-	g_mutex_unlock (wait_mutex);
-#endif
 }
 
 gboolean
@@ -124,38 +100,20 @@ egg_test_wait_until (int timeout)
 {
 	gboolean ret;
 
-#if GLIB_CHECK_VERSION(2,31,3)
 	g_mutex_lock (&wait_mutex);
-#else
-	g_assert (wait_mutex);
-	g_assert (wait_condition);
-	g_mutex_lock (wait_mutex);
-#endif
 
 	g_assert (!wait_waiting);
 	wait_waiting = TRUE;
 
 	{
-#if GLIB_CHECK_VERSION(2,31,3)
 		gint64 time = g_get_monotonic_time () + ((timeout + 1000) * G_TIME_SPAN_MILLISECOND);
 		g_cond_broadcast (&wait_start);
 		ret = g_cond_wait_until (&wait_start, &wait_mutex, time);
-#else
-		GTimeVal tv;
-		g_get_current_time (&tv);
-		g_time_val_add (&tv, timeout * 1000);
-		g_cond_broadcast (wait_start);
-		ret = g_cond_timed_wait (wait_condition, wait_mutex, &tv);
-#endif
 	}
 
 	g_assert (wait_waiting);
 	wait_waiting = FALSE;
-#if GLIB_CHECK_VERSION(2,31,3)
 	g_mutex_unlock (&wait_mutex);
-#else
-	g_mutex_unlock (wait_mutex);
-#endif
 
 	return ret;
 }
@@ -176,22 +134,11 @@ egg_tests_run_in_thread_with_loop (void)
 	GMainLoop *loop;
 	gpointer ret;
 
-#if !GLIB_CHECK_VERSION(2,31,3)
-	g_thread_init (NULL);
-#endif
-
 	loop = g_main_loop_new (NULL, FALSE);
-#if GLIB_CHECK_VERSION(2,31,3)
 	g_cond_init (&wait_condition);
 	g_cond_init (&wait_start);
 	g_mutex_init (&wait_mutex);
 	thread = g_thread_new ("testing", testing_thread, loop);
-#else
-	wait_condition = g_cond_new ();
-	wait_start = g_cond_new ();
-	wait_mutex = g_mutex_new ();
-	thread = g_thread_create (testing_thread, loop, TRUE, NULL);
-#endif
 
 	g_assert (thread);
 
@@ -199,13 +146,8 @@ egg_tests_run_in_thread_with_loop (void)
 	ret = g_thread_join (thread);
 	g_main_loop_unref (loop);
 
-#if GLIB_CHECK_VERSION(2,31,2)
 	g_cond_clear (&wait_condition);
 	g_mutex_clear (&wait_mutex);
-#else
-	g_cond_free (wait_condition);
-	g_mutex_free (wait_mutex);
-#endif
 
 	return GPOINTER_TO_INT (ret);
 }
