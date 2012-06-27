@@ -27,6 +27,8 @@
 #include "gkm-crypto.h"
 #include "gkm-data-asn1.h"
 #include "gkm-data-der.h"
+#define DEBUG_FLAG GKM_DEBUG_STORAGE
+#include "gkm-debug.h"
 #include "gkm-factory.h"
 #include "gkm-sexp-key.h"
 #include "gkm-manager.h"
@@ -386,14 +388,14 @@ gkm_certificate_real_load (GkmSerializable *base,
 	GkmSexp *wrapper;
 
 	if (egg_bytes_get_size (data) == 0) {
-		g_message ("cannot load empty certificate file");
+		gkm_debug ("cannot load empty certificate file");
 		return FALSE;
 	}
 
 	/* Parse the ASN1 data */
 	res = gkm_data_der_read_certificate (data, &asn1);
 	if (res != GKM_DATA_SUCCESS) {
-		g_message ("couldn't parse certificate data");
+		gkm_debug ("couldn't parse certificate data");
 		return FALSE;
 	}
 

@@ -34,6 +34,8 @@
 
 #include "gkm/gkm-assertion.h"
 #include "gkm/gkm-certificate.h"
+#define DEBUG_FLAG GKM_DEBUG_STORAGE
+#include "gkm/gkm-debug.h"
 #include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-transaction.h"
@@ -220,7 +222,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 		/* Figure out what type of object we're dealing with */
 		type = type_from_path (path);
 		if (type == 0) {
-			g_message ("don't know how to load file in key store: %s", path);
+			gkm_debug ("don't know how to load file in key store: %s", path);
 			return;
 		}
 

@@ -25,6 +25,8 @@
 #include "gkm-roots-module.h"
 #include "gkm-roots-certificate.h"
 
+#define DEBUG_FLAG GKM_DEBUG_STORAGE
+#include "gkm/gkm-debug.h"
 #include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-serializable.h"
 
@@ -127,7 +129,7 @@ add_certificate_for_data (GkmRootsModule *self,
 	g_free (unique);
 
 	if (!gkm_serializable_load (GKM_SERIALIZABLE (cert), NULL, data)) {
-		g_message ("couldn't parse certificate(s): %s", path);
+		gkm_debug ("couldn't parse certificate(s): %s", path);
 		g_object_unref (cert);
 		return NULL;
 	}

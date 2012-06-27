@@ -45,7 +45,8 @@ early_error (const char *err_string)
 static void
 early_warning (const char *warn_string)
 {
-	fprintf (stderr, "gnome-keyring-daemon: %s\n", warn_string);
+	if (!getenv ("GNOME_KEYRING_TEST_SERVICE"))
+		fprintf (stderr, "gnome-keyring-daemon: %s\n", warn_string);
 }
 
 #endif /* HAVE_LIPCAPNG */
