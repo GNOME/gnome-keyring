@@ -1439,17 +1439,31 @@ gkd_secret_service_get_alias (GkdSecretService *self, const gchar *alias)
 	g_return_val_if_fail (alias != NULL, NULL);
 
 	identifier =  g_hash_table_lookup (self->aliases, alias);
-	if (!identifier && g_str_equal (alias, "default")) {
-		update_default (self, TRUE);
-		identifier = g_hash_table_lookup (self->aliases, alias);
+	if (!identifier) {
+		if (g_str_equal (alias, "default")) {
+			update_default (self, TRUE);
+			identifier = g_hash_table_lookup (self->aliases, alias);
 
-		/* Default to to 'login' if no default keyring */
-		if (identifier == NULL) {
+			/* Default to to 'login' if no default keyring */
+			if (identifier == NULL) {
+				identifier = "login";
+				g_hash_table_replace (self->aliases, g_strdup (alias),
+				                      g_strdup (identifier));
+			}
+
+		} else if (g_str_equal (alias, "session")) {
+			identifier = "session";
+			g_hash_table_replace (self->aliases, g_strdup (alias),
+			                      g_strdup (identifier));
+
+		/* TODO: We should be using CKA_G_LOGIN_COLLECTION */
+		} else if (g_str_equal (alias, "login")) {
 			identifier = "login";
 			g_hash_table_replace (self->aliases, g_strdup (alias),
 			                      g_strdup (identifier));
 		}
 	}
+
 	return identifier;
 }
 
