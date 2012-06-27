@@ -131,6 +131,7 @@ libegg_hex_la_LIBS = \
 	$(GLIB_LIBS)
 
 libegg_test_la_SOURCES = \
+	egg-mkdtemp.c egg-mkdtemp.h \
 	egg-testing.c egg-testing.h
 
 libegg_test_la_CFLAGS = \

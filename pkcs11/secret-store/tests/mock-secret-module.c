@@ -35,8 +35,8 @@
 #include "secret-store/gkm-secret-object.h"
 #include "secret-store/gkm-secret-store.h"
 
-#include "egg/egg-mkdtemp.h"
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include <glib.h>
 
@@ -50,26 +50,6 @@ static gchar *directory = NULL;
 GkmModule*  _gkm_secret_store_get_module_for_testing (void);
 GMutex* _gkm_module_get_scary_mutex_that_you_should_not_touch (GkmModule *module);
 
-static void
-copy_file_to_directory (const gchar *from, const gchar *directory)
-{
-	gchar *filename;
-	gchar *basename;
-	gchar *data;
-	gsize n_data;
-
-	if (!g_file_get_contents (from, &data, &n_data, NULL))
-		g_error ("couldn't read: %s", from);
-
-	basename = g_path_get_basename (from);
-	filename = g_build_filename (directory, basename, NULL);
-	if (!g_file_set_contents (filename, data, n_data, NULL))
-		g_error ("couldn't write: %s", filename);
-	g_free (filename);
-	g_free (basename);
-	g_free (data);
-}
-
 GkmModule*
 test_secret_module_initialize_and_enter (void)
 {
@@ -79,17 +59,16 @@ test_secret_module_initialize_and_enter (void)
 	gchar *string;
 	CK_RV rv;
 
-	directory = egg_mkdtemp (g_strdup ("/tmp/mock-secret-XXXXXX"));
+	directory = egg_tests_create_scratch_directory (
+		SRCDIR "/files/encrypted.keyring",
+		SRCDIR "/files/plain.keyring",
+		NULL);
 
 	/* Setup test directory to work in */
 	memset (&args, 0, sizeof (args));
 	string = g_strdup_printf ("directory='%s'", directory);
 	args.pReserved = string;
 	args.flags = CKF_OS_LOCKING_OK;
-
-	/* Copy files from test-data to scratch */
-	copy_file_to_directory (SRCDIR "/files/encrypted.keyring", directory);
-	copy_file_to_directory (SRCDIR "/files/plain.keyring", directory);
 
 	funcs = gkm_secret_store_get_functions ();
 	rv = (funcs->C_Initialize) (&args);

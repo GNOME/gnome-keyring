@@ -56,4 +56,9 @@ gboolean   egg_test_wait_until                 (int timeout);
 
 gint       egg_tests_run_in_thread_with_loop   (void);
 
-#endif /* EGG_DH_H_ */
+gchar *    egg_tests_create_scratch_directory  (const gchar *file_to_copy,
+                                                ...) G_GNUC_NULL_TERMINATED;
+
+void       egg_tests_remove_scratch_directory  (const gchar *directory);
+
+#endif /* EGG_TESTS_H_ */

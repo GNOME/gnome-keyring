@@ -23,7 +23,10 @@
 
 #include "config.h"
 
+#include "egg-mkdtemp.h"
 #include "egg-testing.h"
+
+#include <glib/gstdio.h>
 
 #include <errno.h>
 #include <unistd.h>
@@ -150,4 +153,80 @@ egg_tests_run_in_thread_with_loop (void)
 	g_mutex_clear (&wait_mutex);
 
 	return GPOINTER_TO_INT (ret);
+}
+
+static void
+copy_scratch_file (const gchar *filename,
+                   const gchar *directory)
+{
+	GError *error = NULL;
+	gchar *basename;
+	gchar *contents;
+	gchar *destination;
+	gsize length;
+
+	g_assert (directory);
+
+	g_file_get_contents (filename, &contents, &length, &error);
+	g_assert_no_error (error);
+
+	basename = g_path_get_basename (filename);
+	destination = g_build_filename (directory, basename, NULL);
+	g_free (basename);
+
+	g_file_set_contents (destination, contents, length, &error);
+	g_assert_no_error (error);
+	g_free (destination);
+	g_free (contents);
+}
+
+gchar *
+egg_tests_create_scratch_directory (const gchar *file_to_copy,
+                                    ...)
+{
+	gchar *basename;
+	gchar *directory;
+	va_list va;
+
+	basename = g_path_get_basename (g_get_prgname ());
+	directory = g_strdup_printf ("/tmp/scratch-%s.XXXXXX", basename);
+	g_free (basename);
+
+	if (!egg_mkdtemp (directory))
+		g_assert_not_reached ();
+
+	va_start (va, file_to_copy);
+
+	while (file_to_copy != NULL) {
+		copy_scratch_file (file_to_copy, directory);
+		file_to_copy = va_arg (va, const gchar *);
+	}
+
+	va_end (va);
+
+	return directory;
+}
+
+void
+egg_tests_remove_scratch_directory (const gchar *directory)
+{
+	GDir *dir;
+	GError *error = NULL;
+	const gchar *name;
+	gchar *filename;
+
+	dir = g_dir_open (directory, 0, &error);
+	g_assert_no_error (error);
+
+	while ((name = g_dir_read_name (dir)) != NULL) {
+		filename = g_build_filename (directory, name, NULL);
+		if (g_unlink (filename) < 0)
+			g_assert_not_reached ();
+		g_free (filename);
+	}
+
+	g_dir_close (dir);
+
+	if (g_rmdir (directory) < 0)
+		g_assert_not_reached ();
 }

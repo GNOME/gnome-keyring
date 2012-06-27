@@ -33,7 +33,7 @@
 #include "gkm/gkm-test.h"
 
 #include "egg/egg-libgcrypt.h"
-#include "egg/egg-mkdtemp.h"
+#include "egg/egg-testing.h"
 
 #include <glib/gstdio.h>
 
@@ -56,38 +56,13 @@ typedef struct {
 #define MSEC(x) ((x) * 1000)
 
 static void
-copy_scratch_file (Test *test,
-                   const gchar *name)
-{
-	GError *error = NULL;
-	gchar *filename;
-	gchar *contents;
-	gsize length;
-
-	g_assert (test->directory);
-
-	filename = g_build_filename (SRCDIR, "files", name, NULL);
-	g_file_get_contents (filename, &contents, &length, &error);
-	g_assert_no_error (error);
-	g_free (filename);
-
-	filename = g_build_filename (test->directory, name, NULL);
-	g_file_set_contents (filename, contents, length, &error);
-	g_assert_no_error (error);
-	g_free (filename);
-}
-
-static void
 setup_directory (Test *test,
                  gconstpointer unused)
 {
-	test->directory = g_strdup ("/tmp/gkd-test.XXXXXX");
-	if (!egg_mkdtemp (test->directory))
-		g_assert_not_reached ();
-
-	/* Copy in a valid set of storage data */
-	copy_scratch_file (test, "Thawte_Personal_Premium_CA.cer");
-	copy_scratch_file (test, "user.keystore");
+	test->directory = egg_tests_create_scratch_directory (
+		SRCDIR "/files/Thawte_Personal_Premium_CA.cer",
+		SRCDIR "/files/user.keystore",
+		NULL);
 }
 
 static void
@@ -163,26 +138,7 @@ static void
 teardown_directory (Test *test,
                     gconstpointer unused)
 {
-	GDir *dir;
-	GError *error = NULL;
-	const gchar *name;
-	gchar *filename;
-
-	dir = g_dir_open (test->directory, 0, &error);
-	g_assert_no_error (error);
-
-	while ((name = g_dir_read_name (dir)) != NULL) {
-		filename = g_build_filename (test->directory, name, NULL);
-		if (g_unlink (filename) < 0)
-			g_assert_not_reached ();
-		g_free (filename);
-	}
-
-	g_dir_close (dir);
-
-	if (g_rmdir (test->directory) < 0)
-		g_assert_not_reached ();
-
+	egg_tests_remove_scratch_directory (test->directory);
 	g_free (test->directory);
 }
 

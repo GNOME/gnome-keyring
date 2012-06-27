@@ -28,8 +28,8 @@
 
 #include "xdg-store/gkm-xdg-store.h"
 
-#include "egg/egg-mkdtemp.h"
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include "gkm/gkm-session.h"
 #include "gkm/gkm-module.h"
@@ -48,26 +48,6 @@ static gchar *directory = NULL;
 
 GkmModule*  _gkm_xdg_store_get_module_for_testing (void);
 GMutex* _gkm_module_get_scary_mutex_that_you_should_not_touch (GkmModule *module);
-
-static void
-copy_file_to_directory (const gchar *from, const gchar *directory)
-{
-	gchar *filename;
-	gchar *basename;
-	gchar *data;
-	gsize n_data;
-
-	if (!g_file_get_contents (from, &data, &n_data, NULL))
-		g_error ("couldn't read: %s", from);
-
-	basename = g_path_get_basename (from);
-	filename = g_build_filename (directory, basename, NULL);
-	if (!g_file_set_contents (filename, data, n_data, NULL))
-		g_error ("couldn't write: %s", filename);
-	g_free (filename);
-	g_free (basename);
-	g_free (data);
-}
 
 void
 mock_xdg_module_remove_file (const gchar *name)
@@ -129,7 +109,10 @@ mock_xdg_module_initialize_and_enter (void)
 	gchar *string;
 	CK_RV rv;
 
-	directory = egg_mkdtemp (g_strdup ("/tmp/mock-secret-XXXXXX"));
+	directory = egg_tests_create_scratch_directory (
+		SRCDIR "/files/test-refer-1.trust",
+		SRCDIR "/files/test-certificate-1.cer",
+		NULL);
 
 	/* Setup test directory to work in */
 	memset (&args, 0, sizeof (args));
@@ -138,9 +121,7 @@ mock_xdg_module_initialize_and_enter (void)
 	args.flags = CKF_OS_LOCKING_OK;
 
 	/* Copy files from test-data to scratch */
-	copy_file_to_directory (SRCDIR "/files/test-refer-1.trust", directory);
-	copy_file_to_directory (SRCDIR "/files/test-certificate-1.cer", directory);
-	mock_xdg_module_empty_file  ("invalid-without-ext");
+	mock_xdg_module_empty_file ("invalid-without-ext");
 	mock_xdg_module_empty_file ("test-file.unknown");
 	mock_xdg_module_empty_file ("test-invalid.trust");
 
@@ -171,6 +152,7 @@ mock_xdg_module_leave_and_finalize (void)
 	rv = (funcs->C_Finalize) (NULL);
 	g_return_if_fail (rv == CKR_OK);
 
+	egg_tests_remove_scratch_directory (directory);
 	g_free (directory);
 	directory = NULL;
 }

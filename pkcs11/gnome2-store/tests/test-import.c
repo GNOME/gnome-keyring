@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#include "egg/egg-mkdtemp.h"
+#include "egg/egg-testing.h"
 
 #include "gkm/gkm-module.h"
 #include "gkm/gkm-test.h"
@@ -57,9 +57,7 @@ setup (Test *test,
 	GList *modules;
 	CK_RV rv;
 
-	test->directory = g_strdup ("/tmp/gkd-test.XXXXXX");
-	if (!egg_mkdtemp (test->directory))
-		g_assert_not_reached ();
+	test->directory = egg_tests_create_scratch_directory (NULL, NULL);
 
 	memset (&args, 0, sizeof (args));
 	args.flags = CKF_OS_LOCKING_OK;
@@ -93,10 +91,6 @@ static void
 teardown (Test *test,
           gconstpointer unused)
 {
-	GError *error = NULL;
-	const gchar *name;
-	gchar *filename;
-	GDir *dir;
 	CK_RV rv;
 
 	g_list_free_full (test->importers, g_object_unref);
@@ -107,17 +101,7 @@ teardown (Test *test,
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* Cleanup the directory */
-	dir = g_dir_open (test->directory, 0, &error);
-	g_assert_no_error (error);
-	while ((name = g_dir_read_name (dir)) != NULL) {
-		filename = g_build_filename (test->directory, name, NULL);
-		if (g_unlink (filename) < 0)
-			g_assert_not_reached ();
-		g_free (filename);
-	}
-	g_dir_close (dir);
-	if (g_rmdir (test->directory) < 0)
-		g_assert_not_reached ();
+	egg_tests_remove_scratch_directory (test->directory);
 	g_free (test->directory);
 }
 
