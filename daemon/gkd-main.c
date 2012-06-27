@@ -846,6 +846,13 @@ on_login_timeout (gpointer data)
 	return FALSE;
 }
 
+static gboolean
+on_idle_initialize (gpointer data)
+{
+	gkr_daemon_initialize_steps (run_components);
+	return FALSE; /* don't run again */
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -967,9 +974,8 @@ main (int argc, char *argv[])
 	prepare_logging();
 
 	/* Remainder initialization after forking, if initialization not delayed */
-	if (!run_for_login) {
-		gkr_daemon_initialize_steps (run_components);
-	}
+	if (!run_for_login)
+		g_idle_add (on_idle_initialize, NULL);
 
 	g_main_loop_run (loop);
 
