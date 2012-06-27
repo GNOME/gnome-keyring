@@ -31,12 +31,6 @@
 #include <errno.h>
 #include <unistd.h>
 
-static GCond wait_condition;
-static GCond wait_start;
-static GMutex wait_mutex;
-
-static gboolean wait_waiting = FALSE;
-
 static const char HEXC[] = "0123456789ABCDEF";
 
 static gchar*
@@ -83,8 +77,30 @@ egg_assertion_message_cmpmem (const char     *domain,
   g_free (s);
 }
 
+static void (*wait_stop_impl) (void);
+static gboolean (*wait_until_impl) (int timeout);
+static gboolean wait_waiting = FALSE;
+
 void
 egg_test_wait_stop (void)
+{
+	g_assert (wait_stop_impl != NULL);
+	(wait_stop_impl) ();
+}
+
+gboolean
+egg_test_wait_until (int timeout)
+{
+	g_assert (wait_until_impl != NULL);
+	return (wait_until_impl) (timeout);
+}
+
+static GCond wait_condition;
+static GCond wait_start;
+static GMutex wait_mutex;
+
+static void
+thread_wait_stop (void)
 {
 	g_mutex_lock (&wait_mutex);
 
@@ -98,8 +114,8 @@ egg_test_wait_stop (void)
 	g_mutex_unlock (&wait_mutex);
 }
 
-gboolean
-egg_test_wait_until (int timeout)
+static gboolean
+thread_wait_until (int timeout)
 {
 	gboolean ret;
 
@@ -141,8 +157,11 @@ egg_tests_run_in_thread_with_loop (void)
 	g_cond_init (&wait_condition);
 	g_cond_init (&wait_start);
 	g_mutex_init (&wait_mutex);
-	thread = g_thread_new ("testing", testing_thread, loop);
 
+	wait_stop_impl = thread_wait_stop;
+	wait_until_impl = thread_wait_until;
+
+	thread = g_thread_new ("testing", testing_thread, loop);
 	g_assert (thread);
 
 	g_main_loop_run (loop);
@@ -153,6 +172,64 @@ egg_tests_run_in_thread_with_loop (void)
 	g_mutex_clear (&wait_mutex);
 
 	return GPOINTER_TO_INT (ret);
+}
+
+static GMainLoop *wait_loop = NULL;
+
+static void
+loop_wait_stop (void)
+{
+	g_assert (wait_loop != NULL);
+	g_main_loop_quit (wait_loop);
+}
+
+static gboolean
+on_loop_wait_timeout (gpointer data)
+{
+	gboolean *timed_out = data;
+	*timed_out = TRUE;
+
+	g_assert (wait_loop != NULL);
+	g_main_loop_quit (wait_loop);
+
+	return TRUE; /* we remove this source later */
+}
+
+static gboolean
+loop_wait_until (int timeout)
+{
+	gboolean timed_out = FALSE;
+	guint source;
+
+	g_assert (wait_loop == NULL);
+	wait_loop = g_main_loop_new (g_main_context_get_thread_default (), FALSE);
+
+	source = g_timeout_add (timeout, on_loop_wait_timeout, &timed_out);
+
+	g_main_loop_run (wait_loop);
+
+	g_source_remove (source);
+	g_main_loop_unref (wait_loop);
+	wait_loop = NULL;
+	return !timed_out;
+}
+
+gint
+egg_tests_run_with_loop (void)
+{
+	gint ret;
+
+	wait_stop_impl = loop_wait_stop;
+	wait_until_impl = loop_wait_until;
+
+	ret = g_test_run ();
+
+	wait_stop_impl = NULL;
+	wait_until_impl = NULL;
+
+	while (g_main_context_iteration (NULL, FALSE));
+
+	return ret;
 }
 
 static void
