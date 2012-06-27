@@ -427,14 +427,18 @@ GkdSecretChange*
 gkd_secret_change_new (GkdSecretService *service, const gchar *caller,
                        const gchar *path)
 {
+	const gchar *prompter_name;
+
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (caller, NULL);
 	g_return_val_if_fail (path, NULL);
 
+	prompter_name = g_getenv ("GNOME_KEYRING_TEST_PROMPTER");
 	return g_object_new (GKD_SECRET_TYPE_CHANGE,
 	                     "service", service,
 	                     "caller", caller,
 	                     "collection-path", path,
+	                     "bus-name", prompter_name,
 	                     NULL);
 }
 

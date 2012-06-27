@@ -392,11 +392,15 @@ GkdSecretCreate*
 gkd_secret_create_new (GkdSecretService *service, const gchar *caller,
                        GckAttributes *attrs, const gchar *alias)
 {
+	const gchar *prompter_name;
+
+	prompter_name = g_getenv ("GNOME_KEYRING_TEST_PROMPTER");
 	return g_object_new (GKD_SECRET_TYPE_CREATE,
 	                     "service", service,
 	                     "caller", caller,
 	                     "pkcs11-attributes", attrs,
 	                     "alias", alias,
+	                     "bus-name", prompter_name,
 	                     NULL);
 }
 

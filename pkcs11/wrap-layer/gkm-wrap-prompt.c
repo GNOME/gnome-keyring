@@ -974,7 +974,7 @@ gkm_wrap_prompt_for_credential (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE s
 
 	self = g_object_new (GKM_TYPE_WRAP_PROMPT,
 	                     "timeout-seconds", -1,
-	                     "bus-name", the_prompter_name,
+	                     "bus-name", gkm_wrap_prompt_get_prompter_name (),
 	                     NULL);
 
 	/* Build up the prompt */
@@ -1159,7 +1159,7 @@ gkm_wrap_prompt_for_init_pin (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE ses
 
 	self = g_object_new (GKM_TYPE_WRAP_PROMPT,
 	                     "timeout-seconds", -1,
-	                     "bus-name", the_prompter_name,
+	                     "bus-name", gkm_wrap_prompt_get_prompter_name (),
 	                     NULL);
 
 	/* Build up the prompt */
@@ -1309,7 +1309,7 @@ gkm_wrap_prompt_for_set_pin (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE sess
 
 	self = g_object_new (GKM_TYPE_WRAP_PROMPT,
 	                     "timeout-seconds", -1,
-	                     "bus-name", the_prompter_name,
+	                     "bus-name", gkm_wrap_prompt_get_prompter_name (),
 	                     NULL);
 
 	/* Build up the prompt */
@@ -1424,7 +1424,7 @@ login_prompt_for_specific (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE sessio
 
 	self = g_object_new (GKM_TYPE_WRAP_PROMPT,
 	                     "timeout-seconds", -1,
-	                     "bus-name", the_prompter_name,
+	                     "bus-name", gkm_wrap_prompt_get_prompter_name (),
 	                     NULL);
 
 	/* Build up the prompt */
@@ -1496,7 +1496,7 @@ login_prompt_for_user (CK_FUNCTION_LIST_PTR module, CK_SESSION_HANDLE session)
 
 	self = g_object_new (GKM_TYPE_WRAP_PROMPT,
 	                     "timeout-seconds", -1,
-	                     "bus-name", the_prompter_name,
+	                     "bus-name", gkm_wrap_prompt_get_prompter_name (),
 	                     NULL);
 
 	/* Build up the prompt */
@@ -1610,6 +1610,21 @@ gkm_wrap_prompt_done_login (GkmWrapPrompt *self, CK_USER_TYPE user_type, CK_RV c
 		login_prompt_done_user (self, call_result);
 		break;
 	}
+}
+
+const gchar *
+gkm_wrap_prompt_get_prompter_name (void)
+{
+	const gchar *prompter_name;
+
+	if (the_prompter_name)
+		return the_prompter_name;
+
+	prompter_name = g_getenv ("GNOME_KEYRING_TEST_PROMPTER");
+	if (prompter_name)
+		return prompter_name;
+
+	return NULL;
 }
 
 void

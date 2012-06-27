@@ -28,6 +28,8 @@
 
 typedef struct _GkmWrapPrompt GkmWrapPrompt;
 
+const gchar *       gkm_wrap_prompt_get_prompter_name       (void);
+
 void                gkm_wrap_prompt_set_prompter_name       (const gchar *prompter_name);
 
 GkmWrapPrompt*      gkm_wrap_prompt_for_credential          (CK_FUNCTION_LIST_PTR module,
