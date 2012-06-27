@@ -39,7 +39,7 @@ typedef enum _DataType {
 
 	/*
 	 * The attribute is in the format: "%Y%m%d%H%M%S00"
-	 * Property is DBUS_TYPE_INT64 since 1970 epoch.
+	 * Property is DBUS_TYPE_UINT64 since 1970 epoch.
 	 */
 	DATA_TYPE_TIME,
 
@@ -224,19 +224,20 @@ static void
 iter_append_time (DBusMessageIter *iter,
                   const GckAttribute *attr)
 {
-	gint64 value;
+	guint64 value;
 	struct tm tm;
 	gchar buf[15];
+	time_t time;
 
 	g_assert (iter);
 	g_assert (attr);
 
 	if (attr->length == 0) {
-		value = -1;
+		value = 0;
 
 	} else if (!attr->value || attr->length != 16) {
 		g_warning ("invalid length of time attribute");
-		value = -1;
+		value = 0;
 
 	} else {
 		memset (&tm, 0, sizeof (tm));
@@ -245,18 +246,20 @@ iter_append_time (DBusMessageIter *iter,
 
 		if (!strptime(buf, "%Y%m%d%H%M%S", &tm)) {
 			g_warning ("invalid format of time attribute");
-			value = -1;
-		}
-
-		/* Convert to seconds since epoch */
-		value = timegm (&tm);
-		if (value < 0) {
-			g_warning ("invalid time attribute");
-			value = -1;
+			value = 0;
+		} else {
+			/* Convert to seconds since epoch */
+			time = timegm (&tm);
+			if (time < 0) {
+				g_warning ("invalid time attribute");
+				value = 0;
+			} else {
+				value = time;
+			}
 		}
 	}
 
-	dbus_message_iter_append_basic (iter, DBUS_TYPE_INT64, &value);
+	dbus_message_iter_append_basic (iter, DBUS_TYPE_UINT64, &value);
 }
 
 static gboolean
@@ -267,14 +270,14 @@ iter_get_time (DBusMessageIter *iter,
 	time_t time;
 	struct tm tm;
 	gchar buf[20];
-	gint64 value;
+	guint64 value;
 
 	g_assert (iter != NULL);
 	g_assert (builder != NULL);
 
-	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_INT64, FALSE);
+	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_UINT64, FALSE);
 	dbus_message_iter_get_basic (iter, &value);
-	if (value < 0) {
+	if (value == 0) {
 		gck_builder_add_empty (builder, attr_type);
 		return TRUE;
 	}
@@ -412,7 +415,7 @@ iter_append_variant (DBusMessageIter *iter,
 		break;
 	case DATA_TYPE_TIME:
 		func = iter_append_time;
-		sig = DBUS_TYPE_INT64_AS_STRING;
+		sig = DBUS_TYPE_UINT64_AS_STRING;
 		break;
 	case DATA_TYPE_FIELDS:
 		func = iter_append_fields;
@@ -457,7 +460,7 @@ iter_get_variant (DBusMessageIter *iter,
 		break;
 	case DATA_TYPE_TIME:
 		func = iter_get_time;
-		sig = DBUS_TYPE_INT64_AS_STRING;
+		sig = DBUS_TYPE_UINT64_AS_STRING;
 		break;
 	case DATA_TYPE_FIELDS:
 		func = iter_get_fields;
