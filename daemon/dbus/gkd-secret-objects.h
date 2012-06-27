@@ -90,4 +90,23 @@ GckObject*          gkd_secret_objects_lookup_item               (GkdSecretObjec
                                                                   const gchar *caller,
                                                                   const gchar *path);
 
+void                gkd_secret_objects_emit_collection_locked    (GkdSecretObjects *self,
+                                                                  GckObject *collection);
+
+void                gkd_secret_objects_emit_collection_changed   (GkdSecretObjects *self,
+                                                                  GckObject *collection,
+                                                                  ...) G_GNUC_NULL_TERMINATED;
+
+void                gkd_secret_objects_emit_item_created         (GkdSecretObjects *self,
+                                                                  GckObject *collection,
+                                                                  GckObject *item);
+
+void                gkd_secret_objects_emit_item_changed         (GkdSecretObjects *self,
+                                                                  GckObject *item,
+                                                                  ...) G_GNUC_NULL_TERMINATED;
+
+void                gkd_secret_objects_emit_item_deleted         (GkdSecretObjects *self,
+                                                                  GckObject *collection,
+                                                                  const gchar *item_path);
+
 #endif /* __GKD_SECRET_OBJECTS_H__ */

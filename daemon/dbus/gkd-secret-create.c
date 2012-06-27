@@ -117,13 +117,17 @@ create_collection_with_secret (GkdSecretCreate *self, GkdSecretSecret *master)
 		return FALSE;
 	}
 
+	service = gkd_secret_prompt_get_service (GKD_SECRET_PROMPT (self));
+
 	if (self->alias) {
 		if (!gkd_secret_util_parse_path (self->result_path, &identifier, NULL))
 			g_assert_not_reached ();
-		service = gkd_secret_prompt_get_service (GKD_SECRET_PROMPT (self));
 		gkd_secret_service_set_alias (service, self->alias, identifier);
 		g_free (identifier);
 	}
+
+	/* Notify the callers that a collection was created */
+	gkd_secret_service_emit_collection_created (service, self->result_path);
 
 	return TRUE;
 }

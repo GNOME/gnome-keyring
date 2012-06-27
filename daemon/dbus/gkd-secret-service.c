@@ -334,15 +334,31 @@ service_property_set (GkdSecretService *self, DBusMessage *message)
 	return NULL; /* TODO: Need to implement */
 }
 
+static void
+service_append_all_properties (GkdSecretService *self,
+                               DBusMessageIter *iter)
+{
+	DBusMessageIter array;
+	DBusMessageIter dict;
+	const gchar *name;
+
+	dbus_message_iter_open_container (iter, DBUS_TYPE_ARRAY, "{sv}", &array);
+
+	name = "Collections";
+	dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
+	dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
+	gkd_secret_objects_append_collection_paths (self->objects, &dict, NULL);
+	dbus_message_iter_close_container (&array, &dict);
+
+	dbus_message_iter_close_container (iter, &array);
+}
+
 static DBusMessage*
 service_property_getall (GkdSecretService *self, DBusMessage *message)
 {
 	DBusMessage *reply = NULL;
-	DBusMessageIter array;
-	DBusMessageIter dict;
 	DBusMessageIter iter;
 	const gchar *interface;
-	const gchar *name;
 
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID))
 		return NULL;
@@ -354,16 +370,7 @@ service_property_getall (GkdSecretService *self, DBusMessage *message)
 
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &array);
-
-	name = "Collections";
-	dbus_message_iter_open_container (&array, DBUS_TYPE_DICT_ENTRY, NULL, &dict);
-	dbus_message_iter_append_basic (&dict, DBUS_TYPE_STRING, &name);
-	gkd_secret_objects_append_collection_paths (self->objects, &dict, message);
-	dbus_message_iter_close_container (&array, &dict);
-
-	dbus_message_iter_close_container (&iter, &array);
-
+	service_append_all_properties (self, &iter);
 	return reply;
 }
 
@@ -529,8 +536,11 @@ service_method_lock (GkdSecretService *self, DBusMessage *message)
 	for (i = 0; i < n_objpaths; ++i) {
 		collection = gkd_secret_objects_lookup_collection (self->objects, caller, objpaths[i]);
 		if (collection != NULL) {
-			if (gkd_secret_lock (collection, NULL))
+			if (gkd_secret_lock (collection, NULL)) {
 				g_ptr_array_add (array, objpaths[i]);
+				gkd_secret_objects_emit_collection_locked (self->objects,
+				                                           collection);
+			}
 			g_object_unref (collection);
 		}
 	}
@@ -700,6 +710,9 @@ service_method_create_with_master_password (GkdSecretService *self, DBusMessage 
 	if (path == NULL)
 		return gkd_secret_propagate_error (message, "Couldn't create collection", error);
 
+	/* Notify the callers that a collection was created */
+	gkd_secret_service_emit_collection_created (self, path);
+
 	reply = dbus_message_new_method_return (message);
 	dbus_message_append_args (reply, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID);
 	g_free (path);
@@ -790,17 +803,19 @@ service_method_unlock_with_master_password (GkdSecretService *self, DBusMessage 
 	                                                   path);
 
 	/* No such collection */
-	if (collection == NULL)
+	if (collection == NULL) {
 		reply = dbus_message_new_error (message, SECRET_ERROR_NO_SUCH_OBJECT,
 		                                "The collection does not exist");
 
 	/* Success */
-	else if (gkd_secret_unlock_with_secret (collection, master, &error))
+	} else if (gkd_secret_unlock_with_secret (collection, master, &error)) {
 		reply = dbus_message_new_method_return (message);
+		gkd_secret_objects_emit_collection_locked (self->objects, collection);
 
 	/* Failure */
-	else
+	} else {
 		reply = gkd_secret_propagate_error (message, "Couldn't unlock collection", error);
+	}
 
 	gkd_secret_secret_free (master);
 
@@ -1468,4 +1483,71 @@ gkd_secret_service_publish_dispatch (GkdSecretService *self, const gchar *caller
 	path = gkd_secret_dispatch_get_object_path (object);
 	g_return_if_fail (!g_hash_table_lookup (client->dispatch, path));
 	g_hash_table_replace (client->dispatch, (gpointer)path, g_object_ref (object));
+}
+
+static void
+emit_collections_properties_changed (GkdSecretService *self)
+{
+	const gchar *iface = SECRET_SERVICE_INTERFACE;
+	DBusMessage *message;
+	DBusMessageIter array;
+	DBusMessageIter iter;
+
+	message = dbus_message_new_signal (SECRET_SERVICE_PATH,
+	                                   DBUS_INTERFACE_PROPERTIES,
+	                                   "PropertiesChanged");
+
+	dbus_message_iter_init_append (message, &iter);
+	dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &iface);
+	service_append_all_properties (self, &iter);
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &array);
+	dbus_message_iter_close_container (&iter, &array);
+
+	if (!dbus_connection_send (self->connection, message, NULL))
+		g_return_if_reached ();
+	dbus_message_unref (message);
+}
+
+void
+gkd_secret_service_emit_collection_created (GkdSecretService *self,
+                                            const gchar *collection_path)
+{
+	DBusMessage *message;
+
+	g_return_if_fail (GKD_SECRET_IS_SERVICE (self));
+	g_return_if_fail (collection_path != NULL);
+
+	message = dbus_message_new_signal (SECRET_SERVICE_PATH,
+	                                   SECRET_SERVICE_INTERFACE,
+	                                   "CollectionCreated");
+	dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &collection_path,
+	                          DBUS_TYPE_INVALID);
+
+	if (!dbus_connection_send (self->connection, message, NULL))
+		g_return_if_reached ();
+	dbus_message_unref (message);
+
+	emit_collections_properties_changed (self);
+}
+
+void
+gkd_secret_service_emit_collection_deleted (GkdSecretService *self,
+                                            const gchar *collection_path)
+{
+	DBusMessage *message;
+
+	g_return_if_fail (GKD_SECRET_IS_SERVICE (self));
+	g_return_if_fail (collection_path != NULL);
+
+	message = dbus_message_new_signal (SECRET_SERVICE_PATH,
+	                                   SECRET_SERVICE_INTERFACE,
+	                                   "CollectionDeleted");
+	dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &collection_path,
+	                          DBUS_TYPE_INVALID);
+
+	if (!dbus_connection_send (self->connection, message, NULL))
+		g_return_if_reached ();
+	dbus_message_unref (message);
+
+	emit_collections_properties_changed (self);
 }

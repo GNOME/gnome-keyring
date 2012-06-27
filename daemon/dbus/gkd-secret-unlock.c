@@ -96,6 +96,21 @@ lookup_collection (GkdSecretUnlock *self, const gchar *path)
 	return gkd_secret_objects_lookup_collection (objects, self->caller, path);
 }
 
+static void
+emit_collection_unlocked (GkdSecretUnlock *self,
+                          const gchar *path)
+{
+	GkdSecretObjects *objects;
+	GckObject *collection;
+
+	objects = gkd_secret_service_get_objects (self->service);
+	collection = gkd_secret_objects_lookup_collection (objects, self->caller, path);
+	if (collection != NULL) {
+		gkd_secret_objects_emit_collection_locked (objects, collection);
+		g_object_unref (collection);
+	}
+}
+
 static gboolean
 check_locked_collection (GckObject *collection, gboolean *locked)
 {
@@ -195,6 +210,7 @@ on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 	/* Successfully authentication */
 	if (cred) {
 		g_object_unref (cred);
+		emit_collection_unlocked (self, self->current);
 		g_array_append_val (self->results, self->current);
 		self->current = NULL;
 		perform_next_unlock (self);

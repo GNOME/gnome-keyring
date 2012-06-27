@@ -79,4 +79,10 @@ void                    gkd_secret_service_publish_dispatch        (GkdSecretSer
                                                                     const gchar *caller,
                                                                     GkdSecretDispatch *object);
 
+void                    gkd_secret_service_emit_collection_created (GkdSecretService *self,
+                                                                    const gchar *collection_path);
+
+void                    gkd_secret_service_emit_collection_deleted (GkdSecretService *self,
+                                                                    const gchar *collection_path);
+
 #endif /* ___SECRET_SERVICE_H__ */

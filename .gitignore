@@ -104,6 +104,8 @@ p11-tests.conf
 /daemon/control/tests/frob-control-quit
 /daemon/control/tests/frob-control-unlock
 
+/daemon/dbus/tests/test-secret-signals
+
 /pkcs11/gkm/tests/test-attributes
 /pkcs11/gkm/tests/test-certificate
 /pkcs11/gkm/tests/test-credential
