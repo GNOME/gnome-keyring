@@ -280,7 +280,8 @@ do_lookup_password (GckSession *session, const gchar *keyid)
 	for (l = objects; l; l = g_list_next (l)) {
 		data = gck_object_get_data_full (l->data, CKA_VALUE, egg_secure_realloc, NULL, &n_data, &error);
 		if (error) {
-			g_warning ("couldn't lookup gpg agent password: %s", egg_error_message (error));
+			if (!g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN))
+				g_warning ("couldn't lookup gpg agent password: %s", egg_error_message (error));
 			g_clear_error (&error);
 			data = NULL;
 		} else {
