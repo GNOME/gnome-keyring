@@ -1302,6 +1302,7 @@ gkd_secret_service_get_pkcs11_slot (GkdSecretService *self)
 static gboolean
 log_into_pkcs11_session (GckSession *session, GError **error)
 {
+	GckSessionInfo *sess;
 	GckTokenInfo *info;
 	GckSlot *slot;
 	gboolean login;
@@ -1312,6 +1313,14 @@ log_into_pkcs11_session (GckSession *session, GError **error)
 	login = info && (info->flags & CKF_LOGIN_REQUIRED);
 	gck_token_info_free (info);
 	g_object_unref (slot);
+
+	if (login) {
+		sess = gck_session_get_info (session);
+		if (sess->state == CKS_RO_USER_FUNCTIONS ||
+		    sess->state == CKS_RW_USER_FUNCTIONS)
+			login = FALSE;
+		gck_session_info_free (sess);
+	}
 
 	if (login && !gck_session_login (session, CKU_USER, NULL, 0, NULL, error))
 		return FALSE;
