@@ -662,12 +662,12 @@ read_cipher_pkcs5_pbe (int cipher_algo,
                        int hash_algo,
                        const gchar *password,
                        gsize n_password,
-                       EggBytes *data,
+                       GBytes *data,
                        gcry_cipher_hd_t *cih)
 {
 	GNode *asn = NULL;
 	gcry_error_t gcry;
-	EggBytes *salt = NULL;
+	GBytes *salt = NULL;
 	gsize n_block, n_key;
 	gulong iterations;
 	guchar *key = NULL;
@@ -703,7 +703,7 @@ read_cipher_pkcs5_pbe (int cipher_algo,
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
 
 	if (!egg_symkey_generate_pbe (cipher_algo, hash_algo, password, n_password,
-	                              egg_bytes_get_data (salt), egg_bytes_get_size (salt),
+	                              g_bytes_get_data (salt, NULL), g_bytes_get_size (salt),
 	                              iterations, &key, n_block > 1 ? &iv : NULL))
 		goto done;
 
@@ -722,7 +722,7 @@ read_cipher_pkcs5_pbe (int cipher_algo,
 done:
 	g_free (iv);
 	if (salt != NULL)
-		egg_bytes_unref (salt);
+		g_bytes_unref (salt);
 	egg_secure_free (key);
 	egg_asn1x_destroy (asn);
 
@@ -730,12 +730,12 @@ done:
 }
 
 static gboolean
-setup_pkcs5_rc2_params (EggBytes *data,
+setup_pkcs5_rc2_params (GBytes *data,
                         gcry_cipher_hd_t cih)
 {
 	GNode *asn = NULL;
 	gcry_error_t gcry;
-	EggBytes *iv = NULL;
+	GBytes *iv = NULL;
 	gulong version;
 	gboolean ret = FALSE;
 
@@ -754,9 +754,9 @@ setup_pkcs5_rc2_params (EggBytes *data,
 	if (!iv)
 		goto done;
 
-	gcry = gcry_cipher_setiv (cih, egg_bytes_get_data (iv), egg_bytes_get_size (iv));
+	gcry = gcry_cipher_setiv (cih, g_bytes_get_data (iv, NULL), g_bytes_get_size (iv));
 	if (gcry != 0) {
-		g_message ("couldn't set %lu byte iv on cipher", (gulong)egg_bytes_get_size (iv));
+		g_message ("couldn't set %lu byte iv on cipher", (gulong)g_bytes_get_size (iv));
 		goto done;
 	}
 
@@ -764,18 +764,18 @@ setup_pkcs5_rc2_params (EggBytes *data,
 
 done:
 	if (iv != NULL)
-		egg_bytes_unref (iv);
+		g_bytes_unref (iv);
 	egg_asn1x_destroy (asn);
 	return ret;
 }
 
 static gboolean
-setup_pkcs5_des_params (EggBytes *data,
+setup_pkcs5_des_params (GBytes *data,
                         gcry_cipher_hd_t cih)
 {
 	GNode *asn = NULL;
 	gcry_error_t gcry;
-	EggBytes *iv;
+	GBytes *iv;
 	gboolean ret;
 
 	g_assert (data);
@@ -792,22 +792,22 @@ setup_pkcs5_des_params (EggBytes *data,
 	if (!iv)
 		return FALSE;
 
-	gcry = gcry_cipher_setiv (cih, egg_bytes_get_data (iv), egg_bytes_get_size (iv));
+	gcry = gcry_cipher_setiv (cih, g_bytes_get_data (iv, NULL), g_bytes_get_size (iv));
 	if (gcry != 0) {
-		g_message ("couldn't set %lu byte iv on cipher", (gulong)egg_bytes_get_size (iv));
+		g_message ("couldn't set %lu byte iv on cipher", (gulong)g_bytes_get_size (iv));
 		ret = FALSE;
 	} else {
 		ret = TRUE;
 	}
 
-	egg_bytes_unref (iv);
+	g_bytes_unref (iv);
 	return ret;
 }
 
 static gboolean
 setup_pkcs5_pbkdf2_params (const gchar *password,
                            gsize n_password,
-                           EggBytes *data,
+                           GBytes *data,
                            int cipher_algo,
                            gcry_cipher_hd_t cih)
 {
@@ -815,7 +815,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password,
 	gboolean ret;
 	gcry_error_t gcry;
 	guchar *key = NULL;
-	EggBytes *salt = NULL;
+	GBytes *salt = NULL;
 	gsize n_key;
 	gulong iterations;
 
@@ -835,7 +835,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password,
 		goto done;
 
 	if (!egg_symkey_generate_pbkdf2 (cipher_algo, GCRY_MD_SHA1, password, n_password,
-	                                 egg_bytes_get_data (salt), egg_bytes_get_size (salt),
+	                                 g_bytes_get_data (salt, NULL), g_bytes_get_size (salt),
 	                                 iterations, &key, NULL))
 		goto done;
 
@@ -852,7 +852,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password,
 
 done:
 	if (salt != NULL)
-		egg_bytes_unref (salt);
+		g_bytes_unref (salt);
 	egg_secure_free (key);
 	egg_asn1x_destroy (asn);
 	return ret;
@@ -861,13 +861,13 @@ done:
 static gboolean
 read_cipher_pkcs5_pbes2 (const gchar *password,
                          gsize n_password,
-                         EggBytes *data,
+                         GBytes *data,
                          gcry_cipher_hd_t *cih)
 {
 	GNode *asn = NULL;
 	gboolean r, ret;
 	GQuark key_deriv_algo, enc_oid;
-	EggBytes *params = NULL;
+	GBytes *params = NULL;
 	gcry_error_t gcry;
 	int algo, mode;
 
@@ -941,7 +941,7 @@ read_cipher_pkcs5_pbes2 (const gchar *password,
 		goto done;
 	}
 
-	egg_bytes_unref (params);
+	g_bytes_unref (params);
 	params = egg_asn1x_get_element_raw (egg_asn1x_node (asn, "keyDerivationFunc", "parameters", NULL));
 	if (!params)
 		goto done;
@@ -955,7 +955,7 @@ done:
 	}
 
 	if (params != NULL)
-		egg_bytes_unref (params);
+		g_bytes_unref (params);
 	egg_asn1x_destroy (asn);
 	return ret;
 }
@@ -965,13 +965,13 @@ read_cipher_pkcs12_pbe (int cipher_algo,
                         int cipher_mode,
                         const gchar *password,
                         gsize n_password,
-                        EggBytes *data,
+                        GBytes *data,
                         gcry_cipher_hd_t *cih)
 {
 	GNode *asn = NULL;
 	gcry_error_t gcry;
 	gboolean ret;
-	EggBytes *salt = NULL;
+	GBytes *salt = NULL;
 	gsize n_block, n_key;
 	gulong iterations;
 	guchar *key = NULL;
@@ -1003,7 +1003,7 @@ read_cipher_pkcs12_pbe (int cipher_algo,
 
 	/* Generate IV and key using salt read above */
 	if (!egg_symkey_generate_pkcs12 (cipher_algo, GCRY_MD_SHA1, password, n_password,
-	                                 egg_bytes_get_data (salt), egg_bytes_get_size (salt),
+	                                 g_bytes_get_data (salt, NULL), g_bytes_get_size (salt),
 	                                 iterations, &key, n_block > 1 ? &iv : NULL))
 		goto done;
 
@@ -1026,7 +1026,7 @@ done:
 	}
 
 	if (salt != NULL)
-		egg_bytes_unref (salt);
+		g_bytes_unref (salt);
 	g_free (iv);
 	egg_secure_free (key);
 	egg_asn1x_destroy (asn);
@@ -1037,7 +1037,7 @@ static gboolean
 read_mac_pkcs12_pbe (int hash_algo,
                      const gchar *password,
                      gsize n_password,
-                     EggBytes *data,
+                     GBytes *data,
                      gcry_md_hd_t *mdh,
                      gsize *digest_len)
 {
@@ -1045,7 +1045,7 @@ read_mac_pkcs12_pbe (int hash_algo,
 	gcry_error_t gcry;
 	gboolean ret;
 	gsize n_key;
-	EggBytes *salt = NULL;
+	GBytes *salt = NULL;
 	gulong iterations;
 	guchar *key = NULL;
 
@@ -1074,7 +1074,7 @@ read_mac_pkcs12_pbe (int hash_algo,
 
 	/* Generate IV and key using salt read above */
 	if (!egg_symkey_generate_pkcs12_mac (hash_algo, password, n_password,
-	                                     egg_bytes_get_data (salt), egg_bytes_get_size (salt),
+	                                     g_bytes_get_data (salt, NULL), g_bytes_get_size (salt),
 	                                     iterations, &key))
 		goto done;
 
@@ -1097,7 +1097,7 @@ done:
 	}
 
 	if (salt != NULL)
-		egg_bytes_unref (salt);
+		g_bytes_unref (salt);
 	egg_secure_free (key);
 	egg_asn1x_destroy (asn);
 	return ret;
@@ -1107,7 +1107,7 @@ gboolean
 egg_symkey_read_cipher (GQuark oid_scheme,
                         const gchar *password,
                         gsize n_password,
-                        EggBytes *data,
+                        GBytes *data,
                         gcry_cipher_hd_t *cih)
 {
 	gboolean ret = FALSE;
@@ -1175,7 +1175,7 @@ gboolean
 egg_symkey_read_mac (GQuark oid_scheme,
                      const gchar *password,
                      gsize n_password,
-                     EggBytes *data,
+                     GBytes *data,
                      gcry_md_hd_t *mdh,
                      gsize *digest_len)
 {

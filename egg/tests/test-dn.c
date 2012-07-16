@@ -45,7 +45,7 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	EggBytes *bytes;
+	GBytes *bytes;
 
 	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der",
 	                          (gchar**)&test->data, &test->n_data, NULL))
@@ -54,10 +54,10 @@ setup (Test *test, gconstpointer unused)
 	test->asn1 = egg_asn1x_create (pkix_asn1_tab, "Certificate");
 	g_assert (test->asn1 != NULL);
 
-	bytes = egg_bytes_new_static (test->data, test->n_data);
+	bytes = g_bytes_new_static (test->data, test->n_data);
 	if (!egg_asn1x_decode (test->asn1, bytes))
 		g_assert_not_reached ();
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 }
 
 static void
@@ -84,23 +84,23 @@ test_dn_value (Test* test, gconstpointer unused)
 {
 	const guchar value[] = { 0x13, 0x1a, 0x54, 0x68, 0x61, 0x77, 0x74, 0x65, 0x20, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x20, 0x50, 0x72, 0x65, 0x6d, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x41 };
 	gsize n_value = 28;
-	EggBytes *bytes;
+	GBytes *bytes;
 	GQuark oid;
 	gchar *text;
 
 	/* Some printable strings */
 	oid = g_quark_from_static_string ("2.5.4.3");
-	bytes = egg_bytes_new_static (value, n_value);
+	bytes = g_bytes_new_static (value, n_value);
 	text = egg_dn_print_value (oid, bytes);
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 	g_assert_cmpstr (text, ==, "Thawte Personal Premium CA");
 	g_free (text);
 
 	/* Unknown oid */
 	oid = g_quark_from_static_string ("1.1.1.1.1.1");
-	bytes = egg_bytes_new_static (value, n_value);
+	bytes = g_bytes_new_static (value, n_value);
 	text = egg_dn_print_value (oid, bytes);
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 	g_assert_cmpstr (text, ==, "#131A54686177746520506572736F6E616C205072656D69756D204341");
 	g_free (text);
 }
@@ -110,7 +110,7 @@ static int last_index = 0;
 static void
 concatenate_dn (guint index,
                 GQuark oid,
-                EggBytes *value,
+                GBytes *value,
                 gpointer user_data)
 {
 	GString *dn = user_data;
@@ -118,7 +118,7 @@ concatenate_dn (guint index,
 
 	g_assert (oid);
 	g_assert (value != NULL);
-	g_assert (egg_bytes_get_size (value) != 0);
+	g_assert (g_bytes_get_size (value) != 0);
 
 	g_assert (index == last_index);
 	++last_index;
@@ -180,8 +180,8 @@ static void
 test_add_dn_part (Test *test,
                   gconstpointer unused)
 {
-	EggBytes *check;
-	EggBytes *dn;
+	GBytes *check;
+	GBytes *dn;
 	GNode *check_dn;
 	GNode *asn;
 	GNode *node;
@@ -207,10 +207,10 @@ test_add_dn_part (Test *test,
 	check = egg_asn1x_encode (check_dn, NULL);
 	egg_asn1x_destroy (asn);
 
-	egg_assert_cmpbytes (dn, ==, egg_bytes_get_data (check), egg_bytes_get_size (check));
+	egg_assert_cmpbytes (dn, ==, g_bytes_get_data (check, NULL), g_bytes_get_size (check));
 
-	egg_bytes_unref (dn);
-	egg_bytes_unref (check);
+	g_bytes_unref (dn);
+	g_bytes_unref (check);
 }
 
 int

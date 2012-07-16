@@ -206,7 +206,7 @@ guchar *
 egg_openssl_decrypt_block (const gchar *dekinfo,
                            const gchar *password,
                            gssize n_password,
-                           EggBytes *data,
+                           GBytes *data,
                            gsize *n_decrypted)
 {
 	gcry_cipher_hd_t ch;
@@ -245,12 +245,12 @@ egg_openssl_decrypt_block (const gchar *dekinfo,
 	g_free (iv);
 
 	/* Allocate output area */
-	*n_decrypted = egg_bytes_get_size (data);
+	*n_decrypted = g_bytes_get_size (data);
 	decrypted = egg_secure_alloc (*n_decrypted);
 
 	gcry = gcry_cipher_decrypt (ch, decrypted, *n_decrypted,
-	                            egg_bytes_get_data (data),
-	                            egg_bytes_get_size (data));
+	                            g_bytes_get_data (data, NULL),
+	                            g_bytes_get_size (data));
 	if (gcry) {
 		egg_secure_free (decrypted);
 		g_return_val_if_reached (NULL);
@@ -265,7 +265,7 @@ guchar *
 egg_openssl_encrypt_block (const gchar *dekinfo,
                            const gchar *password,
                            gssize n_password,
-                           EggBytes *data,
+                           GBytes *data,
                            gsize *n_encrypted)
 {
 	gsize n_overflow, n_batch, n_padding;
@@ -305,8 +305,7 @@ egg_openssl_encrypt_block (const gchar *dekinfo,
 	g_return_val_if_fail (!gcry, NULL);
 	g_free (iv);
 
-	dat = egg_bytes_get_data (data);
-	n_data = egg_bytes_get_size (data);
+	dat = g_bytes_get_data (data, &n_data);
 
 	/* Allocate output area */
 	n_overflow = (n_data % ivlen);

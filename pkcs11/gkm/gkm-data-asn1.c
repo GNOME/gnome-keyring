@@ -31,7 +31,7 @@ gboolean
 gkm_data_asn1_read_mpi (GNode *asn, gcry_mpi_t *mpi)
 {
 	gcry_error_t gcry;
-	EggBytes *buf;
+	GBytes *buf;
 	gsize sz;
 
 	g_return_val_if_fail (asn, FALSE);
@@ -42,8 +42,8 @@ gkm_data_asn1_read_mpi (GNode *asn, gcry_mpi_t *mpi)
 		return FALSE;
 
 	/* Automatically stores in secure memory if DER data is secure */
-	sz = egg_bytes_get_size (buf);
-	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, egg_bytes_get_data (buf), sz, &sz);
+	sz = g_bytes_get_size (buf);
+	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, g_bytes_get_data (buf, NULL), sz, &sz);
 	if (gcry != 0)
 		return FALSE;
 
@@ -54,7 +54,7 @@ gboolean
 gkm_data_asn1_write_mpi (GNode *asn, gcry_mpi_t mpi)
 {
 	gcry_error_t gcry;
-	EggBytes *bytes;
+	GBytes *bytes;
 	gsize len;
 	guchar *buf;
 
@@ -71,9 +71,9 @@ gkm_data_asn1_write_mpi (GNode *asn, gcry_mpi_t mpi)
 	gcry = gcry_mpi_print (GCRYMPI_FMT_STD, buf, len, &len, mpi);
 	g_return_val_if_fail (gcry == 0, FALSE);
 
-	bytes = egg_bytes_new_with_free_func (buf, len, gcry_free, buf);
+	bytes = g_bytes_new_with_free_func (buf, len, gcry_free, buf);
 	egg_asn1x_set_integer_as_raw (asn, bytes);
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	return TRUE;
 }

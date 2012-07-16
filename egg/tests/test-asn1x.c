@@ -69,14 +69,14 @@ test_some_asn1_stuff (const EggAsn1xDef *defs,
                       const gchar *identifier)
 {
 	GNode *asn;
-	EggBytes *encoded;
+	GBytes *encoded;
 	gpointer data;
 	gsize n_data;
-	EggBytes *bytes;
+	GBytes *bytes;
 
 	if (!g_file_get_contents (file, (gchar**)&data, &n_data, NULL))
 		g_assert_not_reached ();
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 	asn = egg_asn1x_create (defs, identifier);
 	egg_asn1x_dump (asn);
 
@@ -93,8 +93,8 @@ test_some_asn1_stuff (const EggAsn1xDef *defs,
 
 	egg_asn1x_clear (asn);
 	egg_asn1x_destroy (asn);
-	egg_bytes_unref (bytes);
-	egg_bytes_unref (encoded);
+	g_bytes_unref (bytes);
+	g_bytes_unref (encoded);
 }
 
 int

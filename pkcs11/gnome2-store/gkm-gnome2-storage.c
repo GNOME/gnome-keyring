@@ -97,15 +97,15 @@ name_for_subject (const guchar *subject,
 {
 	GNode *asn;
 	gchar *name;
-	EggBytes *bytes;
+	GBytes *bytes;
 
 	g_assert (subject);
 	g_assert (n_subject);
 
-	bytes = egg_bytes_new (subject, n_subject);
+	bytes = g_bytes_new (subject, n_subject);
 	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "Name", bytes);
 	g_return_val_if_fail (asn != NULL, NULL);
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	name = egg_dn_read_part (egg_asn1x_node (asn, "rdnSequence", NULL), "CN");
 	egg_asn1x_destroy (asn);
@@ -499,7 +499,7 @@ data_file_entry_added (GkmGnome2File *store, const gchar *identifier, GkmGnome2S
 {
 	GError *error = NULL;
 	GkmObject *object;
-	EggBytes *bytes;
+	GBytes *bytes;
 	gboolean ret;
 	guchar *data;
 	gsize n_data;
@@ -546,7 +546,7 @@ data_file_entry_added (GkmGnome2File *store, const gchar *identifier, GkmGnome2S
 	g_return_if_fail (GKM_IS_SERIALIZABLE (object));
 	g_return_if_fail (GKM_SERIALIZABLE_GET_INTERFACE (object)->extension);
 
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 
 	/* And load the data into it */
 	if (gkm_serializable_load (GKM_SERIALIZABLE (object), self->login, bytes))
@@ -554,7 +554,7 @@ data_file_entry_added (GkmGnome2File *store, const gchar *identifier, GkmGnome2S
 	else
 		g_message ("failed to load file in user store: %s", identifier);
 
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 	g_object_unref (object);
 }
 
@@ -595,7 +595,7 @@ relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar 
 {
 	GError *error = NULL;
 	GkmObject *object;
-	EggBytes *bytes;
+	GBytes *bytes;
 	gpointer data;
 	gsize n_data;
 	GType type;
@@ -641,18 +641,18 @@ relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar 
 		return;
 	}
 
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 
 	/* Load it into our temporary object */
 	if (!gkm_serializable_load (GKM_SERIALIZABLE (object), old_login, bytes)) {
 		g_message ("unrecognized or invalid user store file: %s", identifier);
 		gkm_transaction_fail (transaction, CKR_FUNCTION_FAILED);
-		egg_bytes_unref (bytes);
+		g_bytes_unref (bytes);
 		g_object_unref (object);
 		return;
 	}
 
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	/* Read it out of our temporary object */
 	bytes = gkm_serializable_save (GKM_SERIALIZABLE (object), new_login);
@@ -673,7 +673,7 @@ relock_object (GkmGnome2Storage *self, GkmTransaction *transaction, const gchar 
 	if (!gkm_transaction_get_failed (transaction))
 		store_object_hash (self, transaction, identifier, data, n_data);
 
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 }
 
 typedef struct _RelockArgs {
@@ -1069,7 +1069,7 @@ gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, 
 	gboolean is_private;
 	GkmDataResult res;
 	gchar *identifier;
-	EggBytes *data;
+	GBytes *data;
 	gchar *path;
 
 	g_return_if_fail (GKM_IS_GNOME2_STORAGE (self));
@@ -1145,14 +1145,14 @@ gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, 
 
 	path = g_build_filename (self->directory, identifier, NULL);
 	gkm_transaction_write_file (transaction, path,
-	                            egg_bytes_get_data (data),
-	                            egg_bytes_get_size (data));
+	                            g_bytes_get_data (data, NULL),
+	                            g_bytes_get_size (data));
 
 	/* Make sure we write in the object hash */
 	if (!gkm_transaction_get_failed (transaction))
 		store_object_hash (self, transaction, identifier,
-		                   egg_bytes_get_data (data),
-		                   egg_bytes_get_size (data));
+		                   g_bytes_get_data (data, NULL),
+		                   g_bytes_get_size (data));
 
 	/* Now we decide to own the object */
 	if (!gkm_transaction_get_failed (transaction))
@@ -1160,7 +1160,7 @@ gkm_gnome2_storage_create (GkmGnome2Storage *self, GkmTransaction *transaction, 
 
 	g_free (identifier);
 	g_free (path);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 }
 
 void

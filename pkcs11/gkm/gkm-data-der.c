@@ -77,7 +77,7 @@ init_quarks (void)
 	"    (e %m)))"
 
 GkmDataResult
-gkm_data_der_read_public_key_rsa (EggBytes *data,
+gkm_data_der_read_public_key_rsa (GBytes *data,
                                   gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
@@ -126,7 +126,7 @@ done:
 	"    (u %m)))"
 
 GkmDataResult
-gkm_data_der_read_private_key_rsa (EggBytes *data,
+gkm_data_der_read_private_key_rsa (GBytes *data,
                                    gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
@@ -204,7 +204,7 @@ done:
 	"    (y %m)))"
 
 GkmDataResult
-gkm_data_der_read_public_key_dsa (EggBytes *data,
+gkm_data_der_read_public_key_dsa (GBytes *data,
                                   gcry_sexp_t *s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
@@ -247,8 +247,8 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_public_key_dsa_parts (EggBytes *keydata,
-                                        EggBytes *params,
+gkm_data_der_read_public_key_dsa_parts (GBytes *keydata,
+                                        GBytes *params,
                                         gcry_sexp_t *s_key)
 {
 	gcry_mpi_t p, q, g, y;
@@ -305,7 +305,7 @@ done:
 	"    (x %m)))"
 
 GkmDataResult
-gkm_data_der_read_private_key_dsa (EggBytes *data,
+gkm_data_der_read_private_key_dsa (GBytes *data,
                                    gcry_sexp_t *s_key)
 {
 	gcry_mpi_t p, q, g, y, x;
@@ -350,8 +350,8 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_private_key_dsa_parts (EggBytes *keydata,
-                                         EggBytes *params,
+gkm_data_der_read_private_key_dsa_parts (GBytes *keydata,
+                                         GBytes *params,
                                          gcry_sexp_t *s_key)
 {
 	gcry_mpi_t p, q, g, y, x;
@@ -404,7 +404,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_public_key (EggBytes *data, gcry_sexp_t *s_key)
+gkm_data_der_read_public_key (GBytes *data, gcry_sexp_t *s_key)
 {
 	GkmDataResult res;
 
@@ -416,14 +416,14 @@ gkm_data_der_read_public_key (EggBytes *data, gcry_sexp_t *s_key)
 }
 
 GkmDataResult
-gkm_data_der_read_public_key_info (EggBytes *data,
+gkm_data_der_read_public_key_info (GBytes *data,
                                    gcry_sexp_t* s_key)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
 	GQuark oid;
 	GNode *asn = NULL;
-	EggBytes *params;
-	EggBytes *key = NULL;
+	GBytes *params;
+	GBytes *key = NULL;
 	guint n_bits;
 
 	init_quarks ();
@@ -458,7 +458,7 @@ gkm_data_der_read_public_key_info (EggBytes *data,
 		if (!params)
 			goto done;
 		ret = gkm_data_der_read_public_key_dsa_parts (key, params, s_key);
-		egg_bytes_unref (params);
+		g_bytes_unref (params);
 
 	} else {
 		g_message ("unsupported key algorithm in certificate: %s", g_quark_to_string (oid));
@@ -469,7 +469,7 @@ gkm_data_der_read_public_key_info (EggBytes *data,
 done:
 	egg_asn1x_destroy (asn);
 	if (key)
-		egg_bytes_unref (key);
+		g_bytes_unref (key);
 
 	if (ret == GKM_DATA_FAILURE)
 		g_message ("invalid subject public-key info");
@@ -478,7 +478,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_private_key (EggBytes *data,
+gkm_data_der_read_private_key (GBytes *data,
                                gcry_sexp_t *s_key)
 {
 	GkmDataResult res;
@@ -491,15 +491,15 @@ gkm_data_der_read_private_key (EggBytes *data,
 }
 
 GkmDataResult
-gkm_data_der_read_private_pkcs8_plain (EggBytes *data,
+gkm_data_der_read_private_pkcs8_plain (GBytes *data,
                                        gcry_sexp_t *s_key)
 {
 	GNode *asn = NULL;
 	GkmDataResult ret;
 	int algorithm;
 	GQuark key_algo;
-	EggBytes *keydata = NULL;
-	EggBytes *params = NULL;
+	GBytes *keydata = NULL;
+	GBytes *params = NULL;
 
 	ret = GKM_DATA_UNRECOGNIZED;
 
@@ -558,15 +558,15 @@ done:
 	}
 
 	if (params)
-		egg_bytes_unref (params);
+		g_bytes_unref (params);
 	if (keydata)
-		egg_bytes_unref (keydata);
+		g_bytes_unref (keydata);
 	egg_asn1x_destroy (asn);
 	return ret;
 }
 
 GkmDataResult
-gkm_data_der_read_private_pkcs8_crypted (EggBytes *data,
+gkm_data_der_read_private_pkcs8_crypted (GBytes *data,
                                          const gchar *password,
                                          gsize n_password,
                                          gcry_sexp_t *s_key)
@@ -577,8 +577,8 @@ gkm_data_der_read_private_pkcs8_crypted (EggBytes *data,
 	GkmDataResult ret, r;
 	GQuark scheme;
 	guchar *crypted = NULL;
-	EggBytes *params;
-	EggBytes *bytes;
+	GBytes *params;
+	GBytes *bytes;
 	gsize n_crypted;
 	gint l;
 
@@ -605,7 +605,7 @@ gkm_data_der_read_private_pkcs8_crypted (EggBytes *data,
 	 * Parse the encryption stuff into a cipher.
 	 */
 	r = egg_symkey_read_cipher (scheme, password, n_password, params, &cih);
-	egg_bytes_unref (params);
+	g_bytes_unref (params);
 
 	if (r == GKM_DATA_UNRECOGNIZED) {
 		ret = GKM_DATA_FAILURE;
@@ -637,12 +637,12 @@ gkm_data_der_read_private_pkcs8_crypted (EggBytes *data,
 	}
 	n_crypted = l;
 
-	bytes = egg_bytes_new_with_free_func (crypted, n_crypted, egg_secure_free, crypted);
+	bytes = g_bytes_new_with_free_func (crypted, n_crypted, egg_secure_free, crypted);
 	crypted = NULL;
 
 	/* Try to parse the resulting key */
 	ret = gkm_data_der_read_private_pkcs8_plain (bytes, s_key);
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	/* If unrecognized we assume bad password */
 	if (ret == GKM_DATA_UNRECOGNIZED)
@@ -658,7 +658,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_private_pkcs8 (EggBytes *data,
+gkm_data_der_read_private_pkcs8 (GBytes *data,
                                  const gchar *password,
                                  gsize n_password,
                                  gcry_sexp_t *s_key)
@@ -672,12 +672,12 @@ gkm_data_der_read_private_pkcs8 (EggBytes *data,
 	return res;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_public_key_rsa (gcry_sexp_t s_key)
 {
 	GNode *asn = NULL;
 	gcry_mpi_t n, e;
-	EggBytes *result = NULL;
+	GBytes *result = NULL;
 
 	n = e = NULL;
 
@@ -704,12 +704,12 @@ done:
 	return result;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_private_key_rsa (gcry_sexp_t s_key)
 {
 	GNode *asn = NULL;
 	gcry_mpi_t n, e, d, p, q, u, e1, e2, tmp;
-	EggBytes *result = NULL;
+	GBytes *result = NULL;
 
 	n = e = d = p = q = u = e1 = e2 = tmp = NULL;
 
@@ -770,12 +770,12 @@ done:
 	return result;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_public_key_dsa (gcry_sexp_t s_key)
 {
 	GNode *asn = NULL;
 	gcry_mpi_t p, q, g, y;
-	EggBytes *result = NULL;
+	GBytes *result = NULL;
 
 	p = q = g = y = NULL;
 
@@ -811,12 +811,12 @@ done:
 	return result;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_private_key_dsa_part (gcry_sexp_t skey)
 {
 	GNode *asn = NULL;
 	gcry_mpi_t x;
-	EggBytes *result = NULL;
+	GBytes *result = NULL;
 
 	x = NULL;
 
@@ -840,12 +840,12 @@ done:
 	return result;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_private_key_dsa_params (gcry_sexp_t skey)
 {
 	GNode *asn = NULL;
 	gcry_mpi_t p, q, g;
-	EggBytes *result = NULL;
+	GBytes *result = NULL;
 
 	p = q = g = NULL;
 
@@ -875,12 +875,12 @@ done:
 	return result;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_private_key_dsa (gcry_sexp_t s_key)
 {
 	GNode *asn = NULL;
 	gcry_mpi_t p, q, g, y, x;
-	EggBytes *result = NULL;
+	GBytes *result = NULL;
 
 	p = q = g = y = x = NULL;
 
@@ -919,7 +919,7 @@ done:
 	return result;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_public_key (gcry_sexp_t s_key)
 {
 	gboolean is_priv;
@@ -942,7 +942,7 @@ gkm_data_der_write_public_key (gcry_sexp_t s_key)
 	}
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_private_key (gcry_sexp_t s_key)
 {
 	gboolean is_priv;
@@ -974,7 +974,7 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	guchar salt[8];
 	gcry_error_t gcry;
 	guchar *key, *iv;
-	EggBytes *portion;
+	GBytes *portion;
 	gsize n_key;
 	int iterations;
 
@@ -1019,7 +1019,7 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	if (!egg_asn1x_set_element_raw (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL),
 	                                portion))
 		g_return_val_if_reached (NULL);
-	egg_bytes_unref (portion);
+	g_bytes_unref (portion);
 
 	/* Now make a cipher that matches what we wrote out */
 	gcry = gcry_cipher_open (&cih, GCRY_CIPHER_3DES, GCRY_CIPHER_MODE_CBC, 0);
@@ -1036,16 +1036,16 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	return cih;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey)
 {
 	GNode *asn = NULL;
 	int algorithm;
 	gboolean is_priv;
 	GQuark oid;
-	EggBytes *params;
-	EggBytes *key;
-	EggBytes *data;
+	GBytes *params;
+	GBytes *key;
+	GBytes *data;
 
 	init_quarks ();
 
@@ -1092,14 +1092,14 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey)
 		if (!egg_asn1x_set_element_raw (egg_asn1x_node (asn, "privateKeyAlgorithm", "parameters", NULL),
 		                                params))
 			g_return_val_if_reached (NULL);
-		egg_bytes_unref (params);
+		g_bytes_unref (params);
 	}
 
 	/* Write out the key portion */
 	if (!egg_asn1x_set_string_as_bytes (egg_asn1x_node (asn, "privateKey", NULL), key))
 		g_return_val_if_reached (NULL);
 
-	egg_bytes_unref (key);
+	g_bytes_unref (key);
 
 	data = egg_asn1x_encode (asn, egg_secure_realloc);
 	if (data == NULL)
@@ -1109,7 +1109,7 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey)
 	return data;
 }
 
-EggBytes *
+GBytes *
 gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey,
                                           const gchar *password,
                                           gsize n_password)
@@ -1117,7 +1117,7 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey,
 	gcry_error_t gcry;
 	gcry_cipher_hd_t cih;
 	GNode *asn = NULL;
-	EggBytes *key, *data;
+	GBytes *key, *data;
 	guchar *raw;
 	gsize n_raw, n_key;
 	gsize block = 0;
@@ -1134,7 +1134,7 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey,
 	cih = prepare_and_encode_pkcs8_cipher (asn, password, n_password, &block);
 	g_return_val_if_fail (cih, NULL);
 
-	n_key = egg_bytes_get_size (key);
+	n_key = g_bytes_get_size (key);
 
 	/* Pad the block of data */
 	if(block > 1) {
@@ -1142,29 +1142,29 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey,
 		if (n_pad == 0)
 			n_pad = block;
 		raw = egg_secure_alloc (n_key + n_pad);
-		memcpy (raw, egg_bytes_get_data (key), n_key);
+		memcpy (raw, g_bytes_get_data (key, NULL), n_key);
 		memset (raw + n_key, (int)n_pad, n_pad);
 		n_raw = n_key + n_pad;
 
 	/* No padding, probably stream cipher */
 	} else {
 		raw = egg_secure_alloc (n_key);
-		memcpy (raw, egg_bytes_get_data (key), n_key);
+		memcpy (raw, g_bytes_get_data (key, NULL), n_key);
 		n_raw = n_key;
 	}
 
-	egg_bytes_unref (key);
+	g_bytes_unref (key);
 
 	gcry = gcry_cipher_encrypt (cih, raw, n_raw, NULL, 0);
 	g_return_val_if_fail (gcry == 0, NULL);
 
 	gcry_cipher_close (cih);
-	key = egg_bytes_new_with_free_func (raw, n_raw, egg_secure_free, raw);
+	key = g_bytes_new_with_free_func (raw, n_raw, egg_secure_free, raw);
 
 	if (!egg_asn1x_set_string_as_bytes (egg_asn1x_node (asn, "encryptedData", NULL), key))
 		g_return_val_if_reached (NULL);
 
-	egg_bytes_unref (key);
+	g_bytes_unref (key);
 
 	data = egg_asn1x_encode (asn, NULL);
 	if (data == NULL)
@@ -1179,7 +1179,7 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey,
  */
 
 GkmDataResult
-gkm_data_der_read_certificate (EggBytes *data,
+gkm_data_der_read_certificate (GBytes *data,
                                GNode **asn1)
 {
 	*asn1 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data);
@@ -1190,7 +1190,7 @@ gkm_data_der_read_certificate (EggBytes *data,
 }
 
 GkmDataResult
-gkm_data_der_read_basic_constraints (EggBytes *data,
+gkm_data_der_read_basic_constraints (GBytes *data,
                                      gboolean *is_ca,
                                      gint *path_len)
 {
@@ -1234,7 +1234,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_key_usage (EggBytes *data,
+gkm_data_der_read_key_usage (GBytes *data,
                              gulong *key_usage)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
@@ -1258,7 +1258,7 @@ done:
 }
 
 GkmDataResult
-gkm_data_der_read_enhanced_usage (EggBytes *data,
+gkm_data_der_read_enhanced_usage (GBytes *data,
                                   GQuark **usage_oids)
 {
 	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
@@ -1293,10 +1293,10 @@ done:
 }
 
 
-EggBytes *
+GBytes *
 gkm_data_der_write_certificate (GNode *asn1)
 {
-	EggBytes *result;
+	GBytes *result;
 
 	g_return_val_if_fail (asn1, NULL);
 

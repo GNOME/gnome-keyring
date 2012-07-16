@@ -95,14 +95,14 @@ compare_keys (gcry_sexp_t key, gcry_sexp_t sexp)
 static void
 test_der_public (gcry_sexp_t key)
 {
-	EggBytes *data;
+	GBytes *data;
 	GkmDataResult ret;
 	gcry_sexp_t sexp;
 
 	/* Encode it */
 	data = gkm_data_der_write_public_key (key);
 	g_assert ("couldn't encode public key" && data != NULL);
-	g_assert ("encoding is empty" && egg_bytes_get_size (data) > 0);
+	g_assert ("encoding is empty" && g_bytes_get_size (data) > 0);
 
 	/* Now parse it */
 	ret = gkm_data_der_read_public_key (data, &sexp);
@@ -112,28 +112,28 @@ test_der_public (gcry_sexp_t key)
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (key, sexp));
 
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 }
 
 static void
 setup (Test *test, gconstpointer unused)
 {
-	EggBytes *data;
+	GBytes *data;
 
 	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
 		g_assert_not_reached ();
 
-	data = egg_bytes_new (test->certificate_data, test->n_certificate_data);
+	data = g_bytes_new (test->certificate_data, test->n_certificate_data);
 	test->certificate = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data);
 	g_assert (test->certificate != NULL);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 
 	if (!g_file_get_contents (SRCDIR "/files/test-certificate-2.der", &test->certificate2_data, &test->n_certificate2_data, NULL))
 		g_assert_not_reached ();
-	data = egg_bytes_new (test->certificate2_data, test->n_certificate2_data);
+	data = g_bytes_new (test->certificate2_data, test->n_certificate2_data);
 	test->certificate2 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data);
 	g_assert (test->certificate2 != NULL);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 }
 
 static void
@@ -172,14 +172,14 @@ test_der_dsa_public (Test *test, gconstpointer unused)
 static void
 test_der_private (gcry_sexp_t key)
 {
-	EggBytes *data;
+	GBytes *data;
 	GkmDataResult ret;
 	gcry_sexp_t sexp;
 
 	/* Encode it */
 	data = gkm_data_der_write_private_key (key);
 	g_assert ("couldn't encode private key" && data != NULL);
-	g_assert ("encoding is empty" && egg_bytes_get_size (data) > 0);
+	g_assert ("encoding is empty" && g_bytes_get_size (data) > 0);
 
 	/* Now parse it */
 	ret = gkm_data_der_read_private_key (data, &sexp);
@@ -189,7 +189,7 @@ test_der_private (gcry_sexp_t key)
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (key, sexp));
 
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 }
 
 static void
@@ -219,7 +219,7 @@ test_der_dsa_private (Test *test, gconstpointer unused)
 static void
 test_der_dsa_private_parts (Test *test, gconstpointer unused)
 {
-	EggBytes *params, *key;
+	GBytes *params, *key;
 	gcry_sexp_t skey, pkey;
 	gcry_error_t gcry;
 	GkmDataResult result;
@@ -241,8 +241,8 @@ test_der_dsa_private_parts (Test *test, gconstpointer unused)
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (skey, pkey));
 
-	egg_bytes_unref (params);
-	egg_bytes_unref (key);
+	g_bytes_unref (params);
+	g_bytes_unref (key);
 }
 
 const gchar *certpub = "(public-key (rsa " \
@@ -252,7 +252,7 @@ const gchar *certpub = "(public-key (rsa " \
 static void
 test_read_public_key_info (Test *test, gconstpointer unused)
 {
-	EggBytes *data;
+	GBytes *data;
 	guchar hash[20];
 	GkmDataResult res;
 	gcry_sexp_t sexp, match;
@@ -275,7 +275,7 @@ test_read_public_key_info (Test *test, gconstpointer unused)
 
 	gcry_sexp_release (sexp);
 	gcry_sexp_release (match);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 }
 
 static void
@@ -283,38 +283,38 @@ test_read_certificate (Test *test, gconstpointer unused)
 {
 	GNode *asn = NULL;
 	GkmDataResult res;
-	EggBytes *data;
+	GBytes *data;
 
-	data = egg_bytes_new (test->certificate_data, test->n_certificate_data);
+	data = g_bytes_new (test->certificate_data, test->n_certificate_data);
 	res = gkm_data_der_read_certificate (data, &asn);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (asn != NULL);
 
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 	egg_asn1x_destroy (asn);
 }
 
 static void
 test_write_certificate (Test *test, gconstpointer unused)
 {
-	EggBytes *data;
+	GBytes *data;
 
 	data = gkm_data_der_write_certificate (test->certificate);
-	g_assert (egg_bytes_get_size (data) == test->n_certificate_data);
-	g_assert (memcmp (egg_bytes_get_data (data), test->certificate_data, egg_bytes_get_size (data)) == 0);
-	egg_bytes_unref (data);
+	g_assert (g_bytes_get_size (data) == test->n_certificate_data);
+	g_assert (memcmp (g_bytes_get_data (data, NULL), test->certificate_data, g_bytes_get_size (data)) == 0);
+	g_bytes_unref (data);
 }
 
 static void
 on_ca_certificate_public_key_info (GQuark type,
-                                   EggBytes *data,
-                                   EggBytes *outer,
+                                   GBytes *data,
+                                   GBytes *outer,
                                    GHashTable *headers,
                                    gpointer user_data)
 {
 	GNode *asn1 = NULL;
 	GkmDataResult res;
-	EggBytes *keydata;
+	GBytes *keydata;
 	gcry_sexp_t sexp;
 
 	g_assert (g_quark_try_string ("CERTIFICATE") == type);
@@ -333,29 +333,29 @@ on_ca_certificate_public_key_info (GQuark type,
 
 	if (res == GKM_DATA_SUCCESS)
 		gcry_sexp_release (sexp);
-	egg_bytes_unref (keydata);
+	g_bytes_unref (keydata);
 }
 
 static void
 test_read_ca_certificates_public_key_info (Test *test, gconstpointer unused)
 {
-	EggBytes *bytes;
+	GBytes *bytes;
 	gchar *data;
 	gsize n_data;
 
 	if (!g_file_get_contents (SRCDIR "/files/ca-certificates.crt", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 	egg_armor_parse (bytes, on_ca_certificate_public_key_info, NULL);
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 }
 
-static EggBytes *
+static GBytes *
 find_extension (GNode *asn,
                 const gchar *oid)
 {
-	EggBytes *value;
+	GBytes *value;
 	GNode *node = NULL;
 	gchar *exoid;
 	guint index;
@@ -387,7 +387,7 @@ find_extension (GNode *asn,
 static void
 test_read_basic_constraints (Test *test, gconstpointer unused)
 {
-	EggBytes *extension;
+	GBytes *extension;
 	gboolean is_ca;
 	gint path_len;
 	GkmDataResult res;
@@ -400,13 +400,13 @@ test_read_basic_constraints (Test *test, gconstpointer unused)
 	g_assert (is_ca == TRUE);
 	g_assert (path_len == -1);
 
-	egg_bytes_unref (extension);
+	g_bytes_unref (extension);
 }
 
 static void
 test_read_key_usage (Test *test, gconstpointer unused)
 {
-	EggBytes *extension;
+	GBytes *extension;
 	gulong key_usage;
 	GkmDataResult res;
 
@@ -417,13 +417,13 @@ test_read_key_usage (Test *test, gconstpointer unused)
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert_cmpuint (key_usage, ==, 0x01);
 
-	egg_bytes_unref (extension);
+	g_bytes_unref (extension);
 }
 
 static void
 test_read_enhanced_usage (Test *test, gconstpointer unused)
 {
-	EggBytes *extension;
+	GBytes *extension;
 	GQuark *usages;
 	GkmDataResult res;
 
@@ -433,14 +433,14 @@ test_read_enhanced_usage (Test *test, gconstpointer unused)
 	res = gkm_data_der_read_enhanced_usage (extension, &usages);
 	g_assert (res == GKM_DATA_SUCCESS);
 
-	egg_bytes_unref (extension);
+	g_bytes_unref (extension);
 	g_free (usages);
 }
 
 static void
 test_read_all_pkcs8 (Test *test, gconstpointer unused)
 {
-	EggBytes *bytes;
+	GBytes *bytes;
 	gcry_sexp_t sexp;
 	GkmDataResult res;
 	GDir *dir;
@@ -465,10 +465,10 @@ test_read_all_pkcs8 (Test *test, gconstpointer unused)
 			g_assert_not_reached ();
 		g_free (path);
 
-		bytes = egg_bytes_new_take (data, n_data);
+		bytes = g_bytes_new_take (data, n_data);
 		res = gkm_data_der_read_private_pkcs8 (bytes, "booo", 4, &sexp);
 		g_assert (res == GKM_DATA_SUCCESS);
-		egg_bytes_unref (bytes);
+		g_bytes_unref (bytes);
 
 		g_assert (gkm_sexp_parse_key (sexp, NULL, NULL, NULL));
 		gcry_sexp_release (sexp);
@@ -482,18 +482,18 @@ test_read_pkcs8_bad_password (Test *test, gconstpointer unused)
 {
 	gcry_sexp_t sexp;
 	GkmDataResult res;
-	EggBytes *bytes;
+	GBytes *bytes;
 	gchar *data;
 	gsize n_data;
 
 	if (!g_file_get_contents (SRCDIR "/files/der-key-encrypted-pkcs5.p8", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 	res = gkm_data_der_read_private_pkcs8 (bytes, "wrong password", 4, &sexp);
 	g_assert (res == GKM_DATA_LOCKED);
 
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 }
 
 static void
@@ -502,7 +502,7 @@ test_write_pkcs8_plain (Test *test, gconstpointer unused)
 	gcry_sexp_t sexp, check;
 	gcry_error_t gcry;
 	GkmDataResult res;
-	EggBytes *data;
+	GBytes *data;
 
 	/* RSA */
 
@@ -513,7 +513,7 @@ test_write_pkcs8_plain (Test *test, gconstpointer unused)
 	g_assert (data != NULL);
 
 	res = gkm_data_der_read_private_pkcs8_plain (data, &check);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (check != NULL);
 
@@ -531,7 +531,7 @@ test_write_pkcs8_plain (Test *test, gconstpointer unused)
 	g_assert (data != NULL);
 
 	res = gkm_data_der_read_private_pkcs8_plain (data, &check);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (check != NULL);
 
@@ -547,7 +547,7 @@ test_write_pkcs8_encrypted (Test *test, gconstpointer unused)
 	gcry_sexp_t sexp, check;
 	gcry_error_t gcry;
 	GkmDataResult res;
-	EggBytes *data;
+	GBytes *data;
 
 	/* RSA */
 
@@ -558,7 +558,7 @@ test_write_pkcs8_encrypted (Test *test, gconstpointer unused)
 	g_assert (data != NULL);
 
 	res = gkm_data_der_read_private_pkcs8_crypted (data, "testo", 5, &check);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (check != NULL);
 
@@ -576,7 +576,7 @@ test_write_pkcs8_encrypted (Test *test, gconstpointer unused)
 	g_assert (data != NULL);
 
 	res = gkm_data_der_read_private_pkcs8_crypted (data, "testo", 5, &check);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 	g_assert (res == GKM_DATA_SUCCESS);
 	g_assert (check != NULL);
 

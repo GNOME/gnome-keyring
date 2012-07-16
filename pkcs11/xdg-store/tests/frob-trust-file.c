@@ -47,7 +47,7 @@ create_trust_file_for_certificate (const gchar *filename, const gchar *certifica
 {
 	GError *err = NULL;
 	GNode *asn, *cert, *choice, *ref;
-	EggBytes *bytes, *result;
+	GBytes *bytes, *result;
 	gchar *data;
 	gsize n_data;
 
@@ -58,7 +58,7 @@ create_trust_file_for_certificate (const gchar *filename, const gchar *certifica
 	cert = egg_asn1x_create (pkix_asn1_tab, "Certificate");
 	g_return_if_fail (cert);
 
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 	if (!egg_asn1x_decode (cert, bytes))
 		barf_and_die ("couldn't parse der certificate file", egg_asn1x_message (cert));
 
@@ -71,7 +71,7 @@ create_trust_file_for_certificate (const gchar *filename, const gchar *certifica
 	if (!egg_asn1x_set_choice (ref, choice) || !egg_asn1x_set_element_raw (choice, bytes))
 		g_return_if_reached ();
 
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	result = egg_asn1x_encode (asn, NULL);
 	if (result == NULL)
@@ -80,11 +80,11 @@ create_trust_file_for_certificate (const gchar *filename, const gchar *certifica
 	egg_asn1x_destroy (asn);
 	egg_asn1x_destroy (cert);
 
-	if (!g_file_set_contents (filename, egg_bytes_get_data (result),
-	                          egg_bytes_get_size (result), &err))
+	if (!g_file_set_contents (filename, g_bytes_get_data (result, NULL),
+	                          g_bytes_get_size (result), &err))
 		barf_and_die ("couldn't write trust file", egg_error_message (err));
 
-	egg_bytes_unref (result);
+	g_bytes_unref (result);
 }
 
 static void
@@ -94,11 +94,11 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 	GNode *asn, *cert, *choice, *ref;
 	GNode *issuer, *serial;
 	gchar *data;
-	EggBytes *result;
-	EggBytes *value;
-	EggBytes *element;
+	GBytes *result;
+	GBytes *value;
+	GBytes *element;
 	gsize n_data;
-	EggBytes *bytes;
+	GBytes *bytes;
 
 	if (!g_file_get_contents (certificate, &data, &n_data, &err))
 		barf_and_die ("couldn't read certificate file", egg_error_message (err));
@@ -107,10 +107,10 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 	cert = egg_asn1x_create (pkix_asn1_tab, "Certificate");
 	g_return_if_fail (cert);
 
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 	if (!egg_asn1x_decode (cert, bytes))
 		barf_and_die ("couldn't parse der certificate file", egg_asn1x_message (cert));
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	/* Dig out the issuer and serial */
 	issuer = egg_asn1x_node (cert, "tbsCertificate", "issuer", NULL);
@@ -131,11 +131,11 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 	element = egg_asn1x_get_element_raw (issuer);
 	if (!egg_asn1x_set_element_raw (egg_asn1x_node (choice, "issuer", NULL), element))
 		g_return_if_reached ();
-	egg_bytes_unref (element);
+	g_bytes_unref (element);
 
 	value = egg_asn1x_get_integer_as_raw (serial);
 	egg_asn1x_set_integer_as_raw (egg_asn1x_node (choice, "serialNumber", NULL), value);
-	egg_bytes_unref (value);
+	g_bytes_unref (value);
 
 	result = egg_asn1x_encode (asn, NULL);
 	if (result == NULL)
@@ -145,11 +145,11 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 	egg_asn1x_destroy (cert);
 	egg_asn1x_destroy (asn);
 
-	if (!g_file_set_contents (filename, egg_bytes_get_data (result),
-	                          egg_bytes_get_size (result), &err))
+	if (!g_file_set_contents (filename, g_bytes_get_data (result, NULL),
+	                          g_bytes_get_size (result), &err))
 		barf_and_die ("couldn't write trust file", egg_error_message (err));
 
-	egg_bytes_unref (result);
+	g_bytes_unref (result);
 }
 
 static void
@@ -157,10 +157,10 @@ add_trust_purpose_to_file (const gchar *filename, const gchar *purpose)
 {
 	GError *err = NULL;
 	gchar *data;
-	EggBytes *result;
+	GBytes *result;
 	gsize n_data;
 	GNode *asn, *assertion;
-	EggBytes *bytes;
+	GBytes *bytes;
 
 	if (!g_file_get_contents (filename, &data, &n_data, &err))
 		barf_and_die ("couldn't read trust file", egg_error_message (err));
@@ -170,10 +170,10 @@ add_trust_purpose_to_file (const gchar *filename, const gchar *purpose)
 	g_return_if_fail (asn);
 
 	/* And parse it */
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 	if (!egg_asn1x_decode (asn, bytes))
 		barf_and_die ("couldn't parse trust file", egg_asn1x_message (asn));
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	assertion = egg_asn1x_append (egg_asn1x_node (asn, "assertions", NULL));
 	g_return_if_fail (assertion);
@@ -189,8 +189,8 @@ add_trust_purpose_to_file (const gchar *filename, const gchar *purpose)
 	g_free (data);
 	egg_asn1x_destroy (asn);
 
-	if (!g_file_set_contents (filename, egg_bytes_get_data (result),
-	                          egg_bytes_get_size (result), &err))
+	if (!g_file_set_contents (filename, g_bytes_get_data (result, NULL),
+	                          g_bytes_get_size (result), &err))
 		barf_and_die ("couldn't write trust file", egg_error_message (err));
 
 	g_free (result);

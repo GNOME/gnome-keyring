@@ -95,7 +95,7 @@ test_parse_private (void)
 	gsize n_data;
 	int algorithm;
 	gboolean is_private;
-	EggBytes *bytes;
+	GBytes *bytes;
 	guint i;
 	GkmDataResult res;
 
@@ -105,9 +105,9 @@ test_parse_private (void)
 		if (!g_file_get_contents (PRIVATE_FILES[i], &data, &n_data, NULL))
 			g_assert_not_reached ();
 
-		bytes = egg_bytes_new_take (data, n_data);
+		bytes = g_bytes_new_take (data, n_data);
 		res = gkm_ssh_openssh_parse_private_key (bytes, "password", 8, &sexp);
-		egg_bytes_unref (bytes);
+		g_bytes_unref (bytes);
 
 		if (res != GKM_DATA_SUCCESS) {
 			g_warning ("couldn't parse private key: %s", PRIVATE_FILES[i]);

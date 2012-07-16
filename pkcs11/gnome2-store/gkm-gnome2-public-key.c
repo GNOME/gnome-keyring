@@ -122,14 +122,14 @@ gkm_gnome2_public_key_class_init (GkmGnome2PublicKeyClass *klass)
 static gboolean
 gkm_gnome2_public_key_real_load (GkmSerializable *base,
                                  GkmSecret *login,
-                                 EggBytes *data)
+                                 GBytes *data)
 {
 	GkmGnome2PublicKey *self = GKM_GNOME2_PUBLIC_KEY (base);
 	GkmDataResult res;
 	GkmSexp *wrapper;
 	gcry_sexp_t sexp;
 
-	if (egg_bytes_get_size (data) == 0)
+	if (g_bytes_get_size (data) == 0)
 		return FALSE;
 
 	res = gkm_data_der_read_public_key (data, &sexp);
@@ -157,7 +157,7 @@ gkm_gnome2_public_key_real_load (GkmSerializable *base,
 	return TRUE;
 }
 
-static EggBytes *
+static GBytes *
 gkm_gnome2_public_key_real_save (GkmSerializable *base, GkmSecret *login)
 {
 	GkmGnome2PublicKey *self = GKM_GNOME2_PUBLIC_KEY (base);

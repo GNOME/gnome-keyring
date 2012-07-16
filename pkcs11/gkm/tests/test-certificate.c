@@ -40,7 +40,7 @@
 typedef struct {
 	GkmModule *module;
 	GkmSession *session;
-	EggBytes *certificate_data;
+	GBytes *certificate_data;
 	GkmCertificate *certificate;
 } Test;
 
@@ -57,20 +57,20 @@ setup_basic (Test* test,
 	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &data, &length, NULL))
 		g_assert_not_reached ();
 
-	test->certificate_data = egg_bytes_new_take (data, length);
+	test->certificate_data = g_bytes_new_take (data, length);
 }
 
 static void
 teardown_basic (Test* test,
                 gconstpointer unused)
 {
-	egg_bytes_unref (test->certificate_data);
+	g_bytes_unref (test->certificate_data);
 	mock_module_leave_and_finalize ();
 }
 
 static GkmCertificate *
 create_certificate_object (GkmSession *session,
-                           EggBytes *data)
+                           GBytes *data)
 {
 	GkmCertificate *certificate;
 
@@ -169,8 +169,8 @@ test_attribute_value (Test* test,
 	data = gkm_object_get_attribute_data (GKM_OBJECT (test->certificate),
 	                                      test->session, CKA_VALUE, &n_data);
 
-	raw = egg_bytes_get_data (test->certificate_data);
-	n_raw = egg_bytes_get_size (test->certificate_data);
+	raw = g_bytes_get_data (test->certificate_data, NULL);
+	n_raw = g_bytes_get_size (test->certificate_data);
 	egg_assert_cmpmem (data, n_data, ==, raw, n_raw);
 	g_free (data);
 }

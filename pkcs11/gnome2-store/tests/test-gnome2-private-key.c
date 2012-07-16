@@ -38,7 +38,6 @@
 #include "gkm/gkm-session.h"
 #include "gkm/gkm-test.h"
 
-#include "egg/egg-bytes.h"
 #include "egg/egg-testing.h"
 
 #include "pkcs11i.h"
@@ -46,7 +45,7 @@
 typedef struct {
 	GkmModule *module;
 	GkmSession *session;
-	EggBytes *key_data;
+	GBytes *key_data;
 	GkmGnome2PrivateKey *key;
 } Test;
 
@@ -63,14 +62,14 @@ setup_basic (Test* test,
 	if (!g_file_get_contents (SRCDIR "/files/der-key-v2-des3.p8", &data, &length, NULL))
 		g_assert_not_reached ();
 
-	test->key_data = egg_bytes_new_take (data, length);
+	test->key_data = g_bytes_new_take (data, length);
 }
 
 static void
 teardown_basic (Test* test,
                 gconstpointer unused)
 {
-	egg_bytes_unref (test->key_data);
+	g_bytes_unref (test->key_data);
 	mock_gnome2_module_leave_and_finalize ();
 }
 
@@ -132,14 +131,14 @@ test_save_private_key (Test *test,
                        gconstpointer unused)
 {
 	GkmSecret *login;
-	EggBytes *data;
+	GBytes *data;
 	gcry_sexp_t sexp;
 
 	/* Save unencrypted */
 	data = gkm_serializable_save (GKM_SERIALIZABLE (test->key), NULL);
 	g_assert (data != NULL);
 	g_assert (gkm_data_der_read_private_pkcs8_plain (data, &sexp) == GKM_DATA_SUCCESS);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 	gcry_sexp_release (sexp);
 
 	/* Save encrypted */
@@ -147,7 +146,7 @@ test_save_private_key (Test *test,
 	data = gkm_serializable_save (GKM_SERIALIZABLE (test->key), login);
 	g_assert (data != NULL);
 	g_assert (gkm_data_der_read_private_pkcs8_crypted (data, "booo", 4, &sexp) == GKM_DATA_SUCCESS);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 	gcry_sexp_release (sexp);
 	g_object_unref (login);
 }

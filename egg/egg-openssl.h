@@ -26,20 +26,18 @@
 
 #include <glib.h>
 
-#include <egg/egg-bytes.h>
-
 int              egg_openssl_parse_algo        (const gchar *name, int *mode);
 
 guchar *         egg_openssl_encrypt_block     (const gchar *dekinfo,
                                                 const gchar *password,
                                                 gssize n_password,
-                                                EggBytes *data,
+                                                GBytes *data,
                                                 gsize *n_encrypted);
 
 guchar *         egg_openssl_decrypt_block     (const gchar *dekinfo,
                                                 const gchar *password,
                                                 gssize n_password,
-                                                EggBytes *data,
+                                                GBytes *data,
                                                 gsize *n_decrypted);
 
 const gchar*     egg_openssl_get_dekinfo       (GHashTable *headers);

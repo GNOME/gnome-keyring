@@ -36,7 +36,6 @@ libegg_la_SOURCES = \
 	egg-asn1-defs.c egg-asn1-defs.h \
 	egg-buffer.c egg-buffer.h \
 	egg-byte-array.c egg-byte-array.h \
-	egg-bytes.c egg-bytes.h \
 	egg-cleanup.c egg-cleanup.h \
 	egg-dh.c egg-dh.h \
 	egg-dn.c egg-dn.h \
@@ -69,7 +68,6 @@ DISTCLEANFILES = \
 libegg_asn1x_la_SOURCES = \
 	egg-asn1x.c egg-asn1x.h \
 	egg-asn1-defs.c egg-asn1-defs.h \
-	egg-bytes.c egg-bytes.h \
 	$(BUILT_SOURCES)
 
 libegg_asn1x_la_CFLAGS = \

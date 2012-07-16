@@ -39,10 +39,10 @@
 
 #define egg_assert_cmpbytes(a, cmp, b, nb) \
 	do { gpointer __p1 = (gpointer)(a); gconstpointer __p2 = (b); gsize __n2 = (nb); \
-	     if (egg_bytes_get_size (__p1) cmp __n2 && memcmp (egg_bytes_get_data (__p1), __p2, __n2) cmp 0) ; else \
+	     if (g_bytes_get_size (__p1) cmp __n2 && memcmp (g_bytes_get_data (__p1, NULL), __p2, __n2) cmp 0) ; else \
 	        egg_assertion_message_cmpmem (G_LOG_DOMAIN, __FILE__, __LINE__, \
 	            G_STRFUNC, #a " " #cmp " " #b, \
-                    egg_bytes_get_data (__p1), egg_bytes_get_size(__p1), #cmp, __p2, __n2); } while (0)
+	            g_bytes_get_data (__p1, NULL), g_bytes_get_size(__p1), #cmp, __p2, __n2); } while (0)
 
 void       egg_assertion_message_cmpmem        (const char *domain, const char *file,
                                                 int line, const char *func,

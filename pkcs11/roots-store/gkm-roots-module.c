@@ -96,7 +96,7 @@ GKM_DEFINE_MODULE (gkm_roots_module, GKM_TYPE_ROOTS_MODULE);
 
 static GkmCertificate*
 add_certificate_for_data (GkmRootsModule *self,
-                          EggBytes *data,
+                          GBytes *data,
                           const gchar *path)
 {
 	GkmCertificate *cert;
@@ -112,8 +112,8 @@ add_certificate_for_data (GkmRootsModule *self,
 
 	/* Hash the certificate */
 	hash = g_compute_checksum_for_data (G_CHECKSUM_MD5,
-	                                    egg_bytes_get_data (data),
-	                                    egg_bytes_get_size (data));
+	                                    g_bytes_get_data (data, NULL),
+	                                    g_bytes_get_size (data));
 	unique = g_strdup_printf ("%s:%s", path, hash);
 	g_free (hash);
 
@@ -144,8 +144,8 @@ add_certificate_for_data (GkmRootsModule *self,
 
 static void
 parsed_pem_block (GQuark type,
-                  EggBytes *data,
-                  EggBytes *outer,
+                  GBytes *data,
+                  GBytes *outer,
                   GHashTable *headers,
                   gpointer user_data)
 {
@@ -187,7 +187,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 	ParsePrivate ctx;
 	GkmManager *manager;
 	GkmCertificate *cert;
-	EggBytes *bytes;
+	GBytes *bytes;
 	guchar *data;
 	GList *objects, *l;
 	GError *error = NULL;
@@ -215,7 +215,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 		g_hash_table_insert (ctx.checks, l->data, l->data);
 	g_list_free (objects);
 
-	bytes = egg_bytes_new_take (data, n_data);
+	bytes = g_bytes_new_take (data, n_data);
 
 	/* Try and parse the PEM */
 	egg_armor_parse (bytes, parsed_pem_block, &ctx);
@@ -230,7 +230,7 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmRootsModule *self)
 	g_hash_table_foreach (ctx.checks, remove_each_certificate, self);
 	g_hash_table_destroy (ctx.checks);
 
-	egg_bytes_unref (data);
+	g_bytes_unref (bytes);
 }
 
 static void

@@ -48,7 +48,7 @@ struct _GkmSshPrivateKey {
 	GkmPrivateXsaKey parent;
 
 	GkmSshPublicKey *pubkey;
-	EggBytes *private_bytes;
+	GBytes *private_bytes;
 	gchar *label;
 
 	gboolean is_encrypted;
@@ -102,7 +102,7 @@ static void
 realize_and_take_data (GkmSshPrivateKey *self,
                        gcry_sexp_t sexp,
                        gchar *comment,
-                       EggBytes *private_data)
+                       GBytes *private_data)
 {
 	GkmSexp *wrapper;
 
@@ -121,7 +121,7 @@ realize_and_take_data (GkmSshPrivateKey *self,
 
 	/* Own the data */
 	if (self->private_bytes)
-		egg_bytes_unref (self->private_bytes);
+		g_bytes_unref (self->private_bytes);
 	self->private_bytes = private_data;
 
 	/* Try to parse the private data, and note if it's not actually encrypted */
@@ -237,7 +237,7 @@ gkm_ssh_private_key_finalize (GObject *obj)
 	g_assert (self->pubkey == NULL);
 
 	if (self->private_bytes)
-		egg_bytes_unref (self->private_bytes);
+		g_bytes_unref (self->private_bytes);
 	g_free (self->label);
 
 	G_OBJECT_CLASS (gkm_ssh_private_key_parent_class)->finalize (obj);
@@ -353,7 +353,7 @@ gkm_ssh_private_key_parse (GkmSshPrivateKey *self, const gchar *public_path,
 	if (comment == NULL)
 		comment = g_path_get_basename (private_path);
 
-	realize_and_take_data (self, sexp, comment, egg_bytes_new_take (private_data, n_private_data));
+	realize_and_take_data (self, sexp, comment, g_bytes_new_take (private_data, n_private_data));
 	return TRUE;
 }
 

@@ -46,17 +46,17 @@ typedef struct {
 static void
 setup (Test *test, gconstpointer unused)
 {
-	EggBytes *data;
+	GBytes *data;
 	gchar *contents;
 	gsize length;
 
 	if (!g_file_get_contents (SRCDIR "/files/test-certificate-1.der", &contents, &length, NULL))
 		g_assert_not_reached ();
 
-	data = egg_bytes_new_take (contents, length);
+	data = g_bytes_new_take (contents, length);
 	test->asn1_cert = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data);
 	g_assert (test->asn1_cert);
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 }
 
 static void
@@ -70,7 +70,7 @@ test_asn1_integers (Test *test, gconstpointer unused)
 {
 	GNode *asn;
 	gcry_mpi_t mpi, mpt;
-	EggBytes *data;
+	GBytes *data;
 	gboolean ret;
 
 	asn = egg_asn1x_create (test_asn1_tab, "TestIntegers");
@@ -99,7 +99,7 @@ test_asn1_integers (Test *test, gconstpointer unused)
 	g_assert ("mpi returned is null" && mpt != NULL);
 	g_assert ("mpi is wrong number" && gcry_mpi_cmp (mpi, mpt) == 0);
 
-	egg_bytes_unref (data);
+	g_bytes_unref (data);
 }
 
 int

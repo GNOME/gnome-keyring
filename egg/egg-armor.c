@@ -269,7 +269,7 @@ egg_armor_headers_new (void)
 }
 
 guint
-egg_armor_parse (EggBytes *data,
+egg_armor_parse (GBytes *data,
                  EggArmorCallback callback,
                  gpointer user_data)
 {
@@ -279,14 +279,13 @@ egg_armor_parse (EggBytes *data,
 	guchar *decoded = NULL;
 	gsize n_decoded = 0;
 	GHashTable *headers = NULL;
-	EggBytes *dec;
-	EggBytes *outer;
+	GBytes *dec;
+	GBytes *outer;
 	GQuark type;
 	gsize n_at;
 
 	g_return_val_if_fail (data != NULL, 0);
-	at = egg_bytes_get_data (data);
-	n_at = egg_bytes_get_size (data);
+	at = g_bytes_get_data (data, &n_at);
 
 	while (n_at > 0) {
 
@@ -305,15 +304,16 @@ egg_armor_parse (EggBytes *data,
 		if (beg != end) {
 			if (armor_parse_block (beg, end - beg, &decoded, &n_decoded, &headers)) {
 				g_assert (outer_end > outer_beg);
-				dec = egg_bytes_new_with_free_func (decoded, n_decoded,
+				dec = g_bytes_new_with_free_func (decoded, n_decoded,
 				                                    egg_secure_free, decoded);
 				if (callback != NULL) {
-					outer = egg_bytes_new_with_free_func (outer_beg, outer_end - outer_beg,
-					                                      egg_bytes_unref, egg_bytes_ref (data));
+					outer = g_bytes_new_with_free_func (outer_beg, outer_end - outer_beg,
+					                                    (GDestroyNotify)g_bytes_unref,
+					                                    g_bytes_ref (data));
 					(callback) (type, dec, outer, headers, user_data);
-					egg_bytes_unref (outer);
+					g_bytes_unref (outer);
 				}
-				egg_bytes_unref (dec);
+				g_bytes_unref (dec);
 				++nfound;
 				if (headers)
 					g_hash_table_remove_all (headers);

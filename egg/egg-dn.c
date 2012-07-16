@@ -33,10 +33,10 @@
 static const char HEXC[] = "0123456789ABCDEF";
 
 static gchar*
-dn_print_hex_value (EggBytes *val)
+dn_print_hex_value (GBytes *val)
 {
-	const gchar *data = egg_bytes_get_data (val);
-	gsize size = egg_bytes_get_size (val);
+	const gchar *data = g_bytes_get_data (val, NULL);
+	gsize size = g_bytes_get_size (val);
 	GString *result = g_string_sized_new (size * 2 + 1);
 	gsize i;
 
@@ -52,10 +52,10 @@ dn_print_hex_value (EggBytes *val)
 static gchar*
 dn_print_oid_value_parsed (GQuark oid,
                            guint flags,
-                           EggBytes *val)
+                           GBytes *val)
 {
 	GNode *asn1, *node;
-	EggBytes *value;
+	GBytes *value;
 	const gchar *data;
 	gsize size;
 	gchar *result;
@@ -82,8 +82,7 @@ dn_print_oid_value_parsed (GQuark oid,
 		node = asn1;
 
 	value = egg_asn1x_get_raw_value (node);
-	data = egg_bytes_get_data (value);
-	size = egg_bytes_get_size (value);
+	data = g_bytes_get_data (value, &size);
 
 	/*
 	 * Now we make sure it's UTF-8.
@@ -100,7 +99,7 @@ dn_print_oid_value_parsed (GQuark oid,
 		result = g_strndup (data, size);
 	}
 
-	egg_bytes_unref (value);
+	g_bytes_unref (value);
 	egg_asn1x_destroy (asn1);
 
 	return result;
@@ -109,7 +108,7 @@ dn_print_oid_value_parsed (GQuark oid,
 static gchar*
 dn_print_oid_value (GQuark oid,
                     guint flags,
-                    EggBytes *val)
+                    GBytes *val)
 {
 	gchar *value;
 
@@ -130,7 +129,7 @@ dn_parse_rdn (GNode *asn)
 	const gchar *name;
 	guint flags;
 	GQuark oid;
-	EggBytes *value;
+	GBytes *value;
 	gchar *display;
 	gchar *result;
 
@@ -150,7 +149,7 @@ dn_parse_rdn (GNode *asn)
 	                      "=", display, NULL);
 	g_free (display);
 
-	egg_bytes_unref (value);
+	g_bytes_unref (value);
 	return result;
 }
 
@@ -201,7 +200,7 @@ egg_dn_read_part (GNode *asn, const gchar *match)
 {
 	gboolean done = FALSE;
 	const gchar *name;
-	EggBytes *value;
+	GBytes *value;
 	GNode *node;
 	GQuark oid;
 	gint i, j;
@@ -238,7 +237,7 @@ egg_dn_read_part (GNode *asn, const gchar *match)
 			g_return_val_if_fail (value, NULL);
 
 			result = dn_print_oid_value (oid, egg_oid_get_flags (oid), value);
-			egg_bytes_unref (value);
+			g_bytes_unref (value);
 			return result;
 		}
 	}
@@ -251,7 +250,7 @@ egg_dn_parse (GNode *asn, EggDnCallback callback, gpointer user_data)
 {
 	gboolean done = FALSE;
 	GNode *node;
-	EggBytes *value;
+	GBytes *value;
 	GQuark oid;
 	guint i, j;
 
@@ -285,7 +284,7 @@ egg_dn_parse (GNode *asn, EggDnCallback callback, gpointer user_data)
 			if (callback)
 				(callback) (i, oid, value, user_data);
 
-			egg_bytes_unref (value);
+			g_bytes_unref (value);
 		}
 	}
 
@@ -294,7 +293,7 @@ egg_dn_parse (GNode *asn, EggDnCallback callback, gpointer user_data)
 
 gchar *
 egg_dn_print_value (GQuark oid,
-                    EggBytes *value)
+                    GBytes *value)
 {
 	g_return_val_if_fail (oid != 0, NULL);
 	g_return_val_if_fail (value != NULL, NULL);
@@ -337,7 +336,7 @@ egg_dn_add_string_part (GNode *asn,
                         GQuark oid,
                         const gchar *string)
 {
-	EggBytes *bytes;
+	GBytes *bytes;
 	GNode *node;
 	GNode *value;
 	GNode *val;
@@ -384,5 +383,5 @@ egg_dn_add_string_part (GNode *asn,
 		g_return_if_reached ();
 
 	egg_asn1x_destroy (value);
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 }

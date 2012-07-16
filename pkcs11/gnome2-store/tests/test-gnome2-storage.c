@@ -72,7 +72,7 @@ setup_module (Test *test,
 	CK_ATTRIBUTE url = { CKA_URL, NULL, 0 };
 	gchar *contents;
 	gsize length;
-	EggBytes *bytes;
+	GBytes *bytes;
 	GkmManager *manager;
 	GError *error = NULL;
 	GkmSession *session;
@@ -105,10 +105,10 @@ setup_module (Test *test,
 	g_file_get_contents (SRCDIR "/files/test-certificate.cer", &contents, &length, &error);
 	g_assert_no_error (error);
 
-	bytes = egg_bytes_new_take (contents, length);
+	bytes = g_bytes_new_take (contents, length);
 	if (!gkm_serializable_load (GKM_SERIALIZABLE (test->new_object), NULL, bytes))
 		g_assert_not_reached ();
-	egg_bytes_unref (bytes);
+	g_bytes_unref (bytes);
 
 	/* We happen to know this certificate will get named */
 	test->new_filename = g_build_filename (test->directory, "CA_Cert_Signing_Authority.cer", NULL);

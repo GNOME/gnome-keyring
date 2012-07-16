@@ -126,7 +126,7 @@ full_certificate (GkmRootsTrust *self, CK_ATTRIBUTE_PTR result)
 static GQuark*
 lookup_extended_usages (GkmRootsTrust *self)
 {
-	EggBytes *extension;
+	GBytes *extension;
 	GQuark *usages = NULL;
 	GkmDataResult res;
 
@@ -145,7 +145,7 @@ lookup_extended_usages (GkmRootsTrust *self)
 		usages = g_new0 (GQuark, 1);
 	}
 
-	egg_bytes_unref (extension);
+	g_bytes_unref (extension);
 	return usages;
 }
 

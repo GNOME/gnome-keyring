@@ -26,17 +26,15 @@
 
 #include <glib.h>
 
-#include <egg/egg-bytes.h>
-
 typedef void (*EggArmorCallback) (GQuark type,
-                                  EggBytes *data,
-                                  EggBytes *outer,
+                                  GBytes *data,
+                                  GBytes *outer,
                                   GHashTable *headers,
                                   gpointer user_data);
 
 GHashTable*      egg_armor_headers_new   (void);
 
-guint            egg_armor_parse         (EggBytes *data,
+guint            egg_armor_parse         (GBytes *data,
                                           EggArmorCallback callback,
                                           gpointer user_data);
 

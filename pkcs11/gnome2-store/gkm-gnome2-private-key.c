@@ -46,7 +46,7 @@ enum {
 struct _GkmGnome2PrivateKey {
 	GkmPrivateXsaKey parent;
 
-	EggBytes *private_bytes;
+	GBytes *private_bytes;
 	GkmSexp *private_sexp;
 	gboolean is_encrypted;
 	GkmSecret *login;
@@ -157,7 +157,7 @@ gkm_gnome2_private_key_finalize (GObject *obj)
 	g_assert (self->login == NULL);
 
 	if (self->private_bytes)
-		egg_bytes_unref (self->private_bytes);
+		g_bytes_unref (self->private_bytes);
 
 	if (self->private_sexp)
 		gkm_sexp_unref (self->private_sexp);
@@ -208,7 +208,7 @@ gkm_gnome2_private_key_class_init (GkmGnome2PrivateKeyClass *klass)
 static gboolean
 gkm_gnome2_private_key_real_load (GkmSerializable *base,
                                   GkmSecret *login,
-                                  EggBytes *data)
+                                  GBytes *data)
 {
 	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	GkmDataResult res;
@@ -217,7 +217,7 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base,
 	const gchar *password;
 	gsize n_password;
 
-	if (egg_bytes_get_size (data) == 0)
+	if (g_bytes_get_size (data) == 0)
 		return FALSE;
 
 	res = gkm_data_der_read_private_pkcs8 (data, NULL, 0, &sexp);
@@ -267,8 +267,8 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base,
 	/* Encrypted private key, keep login and data */
 	if (self->is_encrypted) {
 		if (self->private_bytes)
-			egg_bytes_unref (self->private_bytes);
-		self->private_bytes = egg_bytes_ref (data);
+			g_bytes_unref (self->private_bytes);
+		self->private_bytes = g_bytes_ref (data);
 
 		g_object_ref (login);
 		if (self->login)
@@ -293,14 +293,14 @@ gkm_gnome2_private_key_real_load (GkmSerializable *base,
 	return TRUE;
 }
 
-static EggBytes *
+static GBytes *
 gkm_gnome2_private_key_real_save (GkmSerializable *base, GkmSecret *login)
 {
 	GkmGnome2PrivateKey *self = GKM_GNOME2_PRIVATE_KEY (base);
 	const gchar *password = NULL;
 	gsize n_password;
 	GkmSexp *sexp;
-	EggBytes *result;
+	GBytes *result;
 
 	g_return_val_if_fail (GKM_IS_GNOME2_PRIVATE_KEY (self), FALSE);
 

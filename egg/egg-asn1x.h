@@ -26,8 +26,6 @@
 
 #include <glib.h>
 
-#include "egg-bytes.h"
-
 #ifndef HAVE_EGG_ALLOCATOR
 typedef void* (*EggAllocator) (void* p, gsize);
 #define HAVE_EGG_ALLOCATOR
@@ -68,22 +66,22 @@ GNode*              egg_asn1x_create_quark           (const EggAsn1xDef *defs,
 
 GNode*              egg_asn1x_create_and_decode      (const EggAsn1xDef *defs,
                                                       const gchar *type,
-                                                      EggBytes *data);
+                                                      GBytes *data);
 
 void                egg_asn1x_dump                   (GNode *asn);
 
 void                egg_asn1x_clear                  (GNode *asn);
 
 gboolean            egg_asn1x_decode                 (GNode *asn,
-                                                      EggBytes *data);
+                                                      GBytes *data);
 
 gboolean            egg_asn1x_decode_no_validate     (GNode *asn,
-                                                      EggBytes *data);
+                                                      GBytes *data);
 
 gboolean            egg_asn1x_validate               (GNode *asn,
                                                       gboolean strict);
 
-EggBytes *          egg_asn1x_encode                 (GNode *asn,
+GBytes *            egg_asn1x_encode                 (GNode *asn,
                                                       EggAllocator allocator);
 
 const gchar*        egg_asn1x_message                (GNode *asn);
@@ -125,28 +123,28 @@ gboolean            egg_asn1x_get_integer_as_ulong   (GNode *node,
 gboolean            egg_asn1x_set_integer_as_ulong   (GNode *node,
                                                       gulong value);
 
-EggBytes *          egg_asn1x_get_integer_as_raw     (GNode *node);
+GBytes *            egg_asn1x_get_integer_as_raw     (GNode *node);
 
 void                egg_asn1x_set_integer_as_raw     (GNode *node,
-                                                      EggBytes *value);
+                                                      GBytes *value);
 
 void                egg_asn1x_take_integer_as_raw    (GNode *node,
-                                                      EggBytes *value);
+                                                      GBytes *value);
 
-EggBytes *          egg_asn1x_get_integer_as_usg     (GNode *node);
+GBytes *            egg_asn1x_get_integer_as_usg     (GNode *node);
 
 void                egg_asn1x_set_integer_as_usg     (GNode *node,
-                                                      EggBytes *value);
+                                                      GBytes *value);
 
 void                egg_asn1x_take_integer_as_usg    (GNode *node,
-                                                      EggBytes *value);
+                                                      GBytes *value);
 
-EggBytes *          egg_asn1x_get_raw_value          (GNode *node);
+GBytes *            egg_asn1x_get_raw_value          (GNode *node);
 
-EggBytes *          egg_asn1x_get_element_raw        (GNode *node);
+GBytes *            egg_asn1x_get_element_raw        (GNode *node);
 
 gboolean            egg_asn1x_set_element_raw        (GNode *node,
-                                                      EggBytes *value);
+                                                      GBytes *value);
 
 guchar*             egg_asn1x_get_string_as_raw      (GNode *node,
                                                       EggAllocator allocator,
@@ -157,20 +155,20 @@ gboolean            egg_asn1x_set_string_as_raw      (GNode *node,
                                                       gsize n_data,
                                                       GDestroyNotify destroy);
 
-EggBytes *          egg_asn1x_get_string_as_bytes    (GNode *node);
+GBytes *            egg_asn1x_get_string_as_bytes    (GNode *node);
 
 gboolean            egg_asn1x_set_string_as_bytes    (GNode *node,
-                                                      EggBytes *data);
+                                                      GBytes *data);
 
-EggBytes *          egg_asn1x_get_bits_as_raw        (GNode *node,
+GBytes *            egg_asn1x_get_bits_as_raw        (GNode *node,
                                                       guint *n_bits);
 
 void                egg_asn1x_set_bits_as_raw        (GNode *node,
-                                                      EggBytes *value,
+                                                      GBytes *value,
                                                       guint n_bits);
 
 void                egg_asn1x_take_bits_as_raw       (GNode *node,
-                                                      EggBytes *value,
+                                                      GBytes *value,
                                                       guint n_bits);
 
 gboolean            egg_asn1x_get_bits_as_ulong      (GNode *node,
