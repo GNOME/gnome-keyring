@@ -29,9 +29,11 @@ TEST_PROGS = \
 	test-secret-object \
 	test-secret-collection \
 	test-secret-item \
+	test-secret-schema \
 	test-secret-search \
 	test-secret-textual \
-	test-secret-binary
+	test-secret-binary \
+	test-secret-schema
 
 check_PROGRAMS = $(TEST_PROGS)
 

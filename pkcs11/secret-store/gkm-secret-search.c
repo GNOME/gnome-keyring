@@ -40,13 +40,15 @@
 enum {
 	PROP_0,
 	PROP_COLLECTION_ID,
-	PROP_FIELDS
+	PROP_FIELDS,
+	PROP_SCHEMA_NAME
 };
 
 struct _GkmSecretSearch {
 	GkmObject parent;
 	gchar *collection_id;
 	GHashTable *fields;
+	gchar *schema_name;
 	GList *managers;
 	GHashTable *objects;
 };
@@ -60,6 +62,7 @@ match_object_against_criteria (GkmSecretSearch *self, GkmObject *object)
 	GkmSecretItem *item;
 	GHashTable *fields;
 	const gchar *identifier;
+	const gchar *schema;
 
 	if (!GKM_IS_SECRET_ITEM (object))
 		return FALSE;
@@ -76,8 +79,25 @@ match_object_against_criteria (GkmSecretSearch *self, GkmObject *object)
 			return FALSE;
 	}
 
-	/* Fields should match using our special algorithm */
 	fields = gkm_secret_item_get_fields (item);
+
+	/* Match the schema, if we have one */
+	if (self->schema_name) {
+		schema = gkm_secret_item_get_schema (item);
+
+		/* Does the item has a schema set from the item type? */
+		if (schema != NULL) {
+			if (!g_str_equal (schema, self->schema_name))
+				return FALSE;
+
+		/* See if the item has a schema set in the attributes */
+		} else {
+			if (!gkm_secret_fields_match_one (fields, GKM_SECRET_FIELD_SCHEMA, self->schema_name))
+				return FALSE;
+		}
+	}
+
+	/* Fields should match using our special algorithm */
 	return gkm_secret_fields_match (fields, self->fields);
 }
 
@@ -180,6 +200,7 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	gchar *identifier = NULL;
 	CK_ATTRIBUTE *attr;
 	GHashTable *fields;
+	gchar *schema_name;
 	GkmModule *module;
 	CK_RV rv;
 
@@ -194,12 +215,15 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	}
 
 	/* Parse the fields, into our internal representation */
-	rv = gkm_secret_fields_parse (attr, &fields, NULL);
+	rv = gkm_secret_fields_parse (attr, &fields, &schema_name);
 	gkm_attribute_consume (attr);
 	if (rv != CKR_OK) {
 		gkm_transaction_fail (transaction, rv);
 		return NULL;
 	}
+
+	/* Remove the schema name from the search fields, handle that separately */
+	g_hash_table_remove (fields, GKM_SECRET_FIELD_SCHEMA);
 
 	s_manager = gkm_session_get_manager (session);
 	module = gkm_session_get_module (session);
@@ -210,6 +234,7 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	if (attr) {
 		rv = gkm_attribute_get_string (attr, &identifier);
 		if (rv != CKR_OK) {
+			g_free (schema_name);
 			g_hash_table_unref (fields);
 			gkm_transaction_fail (transaction, rv);
 			return NULL;
@@ -220,6 +245,7 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	                       "module", module,
 	                       "manager", s_manager,
 	                       "fields", fields,
+	                       "schema-name", schema_name,
 	                       "collection-id", identifier,
 	                       NULL);
 
@@ -231,6 +257,10 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 
 	gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (search),
 	                                      TRUE, attrs, n_attrs);
+
+	g_hash_table_unref (fields);
+	g_free (schema_name);
+
 	return GKM_OBJECT (search);
 }
 
@@ -307,7 +337,7 @@ gkm_secret_search_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 			return gkm_attribute_set_empty (attr);
 		return gkm_attribute_set_string (attr, self->collection_id);
 	case CKA_G_FIELDS:
-		return gkm_secret_fields_serialize (attr, self->fields, NULL);
+		return gkm_secret_fields_serialize (attr, self->fields, self->schema_name);
 	case CKA_G_MATCHED:
 		return attribute_set_handles (self->objects, attr);
 	}
@@ -348,6 +378,10 @@ gkm_secret_search_set_property (GObject *obj, guint prop_id, const GValue *value
 		self->fields = g_value_dup_boxed (value);
 		g_return_if_fail (self->fields);
 		break;
+	case PROP_SCHEMA_NAME:
+		g_return_if_fail (self->schema_name == NULL);
+		self->schema_name = g_value_dup_string (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
 		break;
@@ -366,6 +400,9 @@ gkm_secret_search_get_property (GObject *obj, guint prop_id, GValue *value,
 	case PROP_FIELDS:
 		g_return_if_fail (self->fields);
 		g_value_set_boxed (value, gkm_secret_search_get_fields (self));
+		break;
+	case PROP_SCHEMA_NAME:
+		g_value_set_string (value, self->schema_name);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -403,6 +440,9 @@ gkm_secret_search_finalize (GObject *obj)
 
 	g_assert (!self->managers);
 
+	g_free (self->schema_name);
+	self->schema_name = NULL;
+
 	if (self->fields)
 		g_hash_table_destroy (self->fields);
 	self->fields = NULL;
@@ -435,6 +475,10 @@ gkm_secret_search_class_init (GkmSecretSearchClass *klass)
 	g_object_class_install_property (gobject_class, PROP_FIELDS,
 	           g_param_spec_boxed ("fields", "Fields", "Item's fields",
 	                               GKM_BOXED_SECRET_FIELDS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (gobject_class, PROP_SCHEMA_NAME,
+	           g_param_spec_string ("schema_name", "Schema Name", "Schema name to match",
+	                                NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -466,6 +510,13 @@ gkm_secret_search_get_fields (GkmSecretSearch *self)
 {
 	g_return_val_if_fail (GKM_IS_SECRET_SEARCH (self), NULL);
 	return self->fields;
+}
+
+const gchar *
+gkm_secret_search_get_schema_name (GkmSecretSearch *self)
+{
+	g_return_val_if_fail (GKM_IS_SECRET_SEARCH (self), NULL);
+	return self->schema_name;
 }
 
 const gchar*

@@ -51,4 +51,6 @@ GHashTable*          gkm_secret_search_get_fields      (GkmSecretSearch *self);
 
 const gchar*      gkm_secret_search_get_collection_id  (GkmSecretSearch *self);
 
+const gchar *        gkm_secret_search_get_schema_name (GkmSecretSearch *self);
+
 #endif /* __GKM_SECRET_SEARCH_H__ */

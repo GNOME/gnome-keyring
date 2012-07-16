@@ -138,6 +138,7 @@ p11-tests.conf
 /pkcs11/secret-store/tests/test-secret-item
 /pkcs11/secret-store/tests/test-secret-object
 /pkcs11/secret-store/tests/test-secret-search
+/pkcs11/secret-store/tests/test-secret-schema
 /pkcs11/secret-store/tests/test-secret-textual
 /pkcs11/secret-store/tests/dump-keyring0-format
 

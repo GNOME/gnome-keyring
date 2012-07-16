@@ -47,6 +47,8 @@
  * of xxxx.
  */
 
+#define         GKM_SECRET_FIELD_SCHEMA                       "xdg:schema"
+
 #define         GKM_BOXED_SECRET_FIELDS                       (gkm_secret_fields_boxed_type ())
 
 GType           gkm_secret_fields_boxed_type                  (void);
@@ -74,6 +76,10 @@ CK_RV           gkm_secret_fields_serialize                   (CK_ATTRIBUTE_PTR 
 
 gboolean        gkm_secret_fields_match                       (GHashTable *haystack,
                                                                GHashTable *needle);
+
+gboolean        gkm_secret_fields_match_one                   (GHashTable *haystack,
+                                                               const gchar *needle_key,
+                                                               const gchar *needle_value);
 
 GList*          gkm_secret_fields_get_names                   (GHashTable *fields);
 

@@ -112,7 +112,7 @@ test_parse_schema (void)
 	g_assert_cmpstr (value, ==, "value1");
 	value = g_hash_table_lookup (fields, "two");
 	g_assert_cmpstr (value, ==, "valu");
-	value = g_hash_table_lookup (fields, "xdg:schema");
+	value = g_hash_table_lookup (fields, GKM_SECRET_FIELD_SCHEMA);
 	g_assert_cmpstr (value, ==, "xxx");
 
 	g_assert_cmpstr (schema_name, ==, "xxx");
@@ -227,7 +227,7 @@ test_serialize_schema_already (void)
 	CK_RV rv;
 
 	fields = gkm_secret_fields_new ();
-	gkm_secret_fields_add (fields, "xdg:schema", "yyy");
+	gkm_secret_fields_add (fields, GKM_SECRET_FIELD_SCHEMA, "yyy");
 
 	rv = gkm_secret_fields_serialize (&attr, fields, "xxx");
 	g_assert (rv == CKR_OK);

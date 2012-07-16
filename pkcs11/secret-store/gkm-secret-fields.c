@@ -204,7 +204,7 @@ gkm_secret_fields_parse (CK_ATTRIBUTE_PTR attr,
 	}
 
 	if (schema_name)
-		*schema_name = g_strdup (g_hash_table_lookup (result, "xdg:schema"));
+		*schema_name = g_strdup (g_hash_table_lookup (result, GKM_SECRET_FIELD_SCHEMA));
 
 	*fields = result;
 	return CKR_OK;
@@ -229,14 +229,14 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 		attr->ulValueLen = 0;
 		g_hash_table_iter_init (&iter, fields);
 		while (g_hash_table_iter_next (&iter, &key, &value)) {
-			if (g_str_equal (key, "xdg:schema"))
+			if (g_str_equal (key, GKM_SECRET_FIELD_SCHEMA))
 				saw_schema = TRUE;
 			attr->ulValueLen += strlen (key);
 			attr->ulValueLen += strlen (value);
 			attr->ulValueLen += 2;
 		}
 		if (schema_name && !saw_schema) {
-			attr->ulValueLen += strlen ("xdg:schema");
+			attr->ulValueLen += strlen (GKM_SECRET_FIELD_SCHEMA);
 			attr->ulValueLen += strlen (schema_name);
 			attr->ulValueLen += 2;
 		}
@@ -246,7 +246,7 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 	result = g_string_sized_new (256);
 	g_hash_table_iter_init (&iter, fields);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		if (g_str_equal (key, "xdg:schema"))
+		if (g_str_equal (key, GKM_SECRET_FIELD_SCHEMA))
 			saw_schema = TRUE;
 		g_string_append (result, key);
 		g_string_append_c (result, '\0');
@@ -254,7 +254,7 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 		g_string_append_c (result, '\0');
 	}
 	if (schema_name && !saw_schema) {
-		g_string_append (result, "xdg:schema");
+		g_string_append (result, GKM_SECRET_FIELD_SCHEMA);
 		g_string_append_c (result, '\0');
 		g_string_append (result, schema_name);
 		g_string_append_c (result, '\0');
@@ -267,13 +267,64 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 }
 
 gboolean
-gkm_secret_fields_match (GHashTable *haystack, GHashTable *needle)
+gkm_secret_fields_match_one (GHashTable *haystack,
+                             const gchar *needle_key,
+                             const gchar *needle_value)
+{
+	const gchar *hay;
+	gchar *other_key, *hashed;
+	guint32 number;
+	gboolean match;
+
+	g_return_val_if_fail (haystack != NULL, FALSE);
+	g_return_val_if_fail (needle_key != NULL, FALSE);
+	g_return_val_if_fail (needle_value != NULL, FALSE);
+
+	/* Compat attributes in the needle make no difference */
+	if (is_compat_name (needle_key))
+		return TRUE;
+
+	/* A direct match? */
+	if (g_hash_table_lookup_extended (haystack, needle_key, NULL, (gpointer*)&hay))
+		return string_ptr_equal (hay, needle_value);
+
+	/* Try to find a hashed value? */
+	other_key = make_compat_hashed_name (needle_key);
+	match = g_hash_table_lookup_extended (haystack, other_key, NULL, (gpointer*)&hay);
+	g_free (other_key);
+
+	if (!match)
+		return FALSE;
+
+	/*
+	 * Now since the old keyring code would hash in two different
+	 * ways depending on whether it was a uint32 or string,
+	 * we need to do the same here.
+	 */
+
+	other_key = make_compat_uint32_name (needle_key);
+	if (g_hash_table_lookup (haystack, other_key)) {
+		hashed = NULL;
+		if (compat_hash_value_as_uint32 (needle_value, &number))
+			hashed = format_uint32 (number);
+	} else {
+		hashed = compat_hash_value_as_string (needle_value);
+	}
+	g_free (other_key);
+
+	/* Does the incoming hashed value match our hashed value? */
+	match = string_ptr_equal (hay, hashed);
+	g_free (hashed);
+
+	return match;
+}
+
+gboolean
+gkm_secret_fields_match (GHashTable *haystack,
+                         GHashTable *needle)
 {
 	GHashTableIter iter;
-	const gchar *key, *value, *hay;
-	gchar *other_key, *hashed;
-	gboolean match;
-	guint32 number;
+	const gchar *key, *value;
 
 	g_return_val_if_fail (haystack, FALSE);
 	g_return_val_if_fail (needle, FALSE);
@@ -282,47 +333,7 @@ gkm_secret_fields_match (GHashTable *haystack, GHashTable *needle)
 	while (g_hash_table_iter_next (&iter, (gpointer*)&key, (gpointer*)&value)) {
 		g_assert (key && value);
 
-		/* Compat attributes in the needle make no difference */
-		if (is_compat_name (key))
-			continue;
-
-		/* A direct match? */
-		if (g_hash_table_lookup_extended (haystack, key, NULL, (gpointer*)&hay)) {
-			match = string_ptr_equal (hay, value);
-			if (!match)
-				return FALSE;
-			continue;
-		}
-
-		/* Try to find a hashed value? */
-		other_key = make_compat_hashed_name (key);
-		match = g_hash_table_lookup_extended (haystack, other_key, NULL, (gpointer*)&hay);
-		g_free (other_key);
-
-		if (!match)
-			return FALSE;
-
-		/*
-		 * Now since the old keyring code would hash in two different
-		 * ways depending on whether it was a uint32 or string,
-		 * we need to do the same here.
-		 */
-
-		other_key = make_compat_uint32_name (key);
-		if (g_hash_table_lookup (haystack, other_key)) {
-			hashed = NULL;
-			if (compat_hash_value_as_uint32 (value, &number))
-				hashed = format_uint32 (number);
-		} else {
-			hashed = compat_hash_value_as_string (value);
-		}
-		g_free (other_key);
-
-		/* Does the incoming hashed value match our hashed value? */
-		match = string_ptr_equal (hay, hashed);
-		g_free (hashed);
-
-		if (!match)
+		if (!gkm_secret_fields_match_one (haystack, key, value))
 			return FALSE;
 	}
 
