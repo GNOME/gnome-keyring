@@ -4,6 +4,7 @@ INCLUDES = \
 	-I$(top_srcdir)/daemon/dbus \
 	-DSRCDIR="\"@abs_srcdir@\"" \
 	-DTOP_SRCDIR="\"@abs_top_srcdir@\"" \
+	-DTOP_BUILDDIR="\"@abs_top_builddir@\"" \
 	-DGCR_API_SUBJECT_TO_CHANGE \
 	$(DAEMON_CFLAGS) \
 	$(GCR_BASE_CFLAGS) \
@@ -22,6 +23,8 @@ TEST_PROGS = \
 	test-secret-signals
 
 check_PROGRAMS = $(TEST_PROGS)
+
+EXTRA_DIST = files
 
 test: $(TEST_PROGS)
 	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)

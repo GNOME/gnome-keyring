@@ -291,7 +291,7 @@ setup (Test *test,
 	GVariant *output;
 
 	gchar *args[] = {
-		TOP_SRCDIR "/daemon/gnome-keyring-daemon",
+		TOP_BUILDDIR "/daemon/gnome-keyring-daemon",
 		"--foreground",
 		"--control-directory",
 		"/tmp/keyring-test",
