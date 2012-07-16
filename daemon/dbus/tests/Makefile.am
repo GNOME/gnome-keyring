@@ -1,5 +1,6 @@
 
 INCLUDES = \
+	-I$(top_srcdir) \
 	-I$(top_srcdir)/daemon/dbus \
 	-DSRCDIR="\"@abs_srcdir@\"" \
 	-DTOP_SRCDIR="\"@abs_top_srcdir@\"" \

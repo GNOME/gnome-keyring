@@ -216,7 +216,7 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
                              const gchar *schema_name)
 {
 	GHashTableIter iter;
-	gboolean saw_schema;
+	gboolean saw_schema = FALSE;
 	gpointer key;
 	gpointer value;
 	GString *result;

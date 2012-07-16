@@ -1,3 +1,13 @@
+Changes in version 3.5.4 are:
+ * Support the xdg:schema attribute on secret items
+ * Update to newer glib dependency and remove redundant code
+ * Encode passwords correctly for gpg2 in the gpg-agent
+ * Fix types of the DBus Created and Modified properties
+ * Expose the 'session' and 'login' keyrings as aliases
+ * Emit Secret Service signals when collections/items change
+ * Fix some spurious warnings
+ * Testing fixes
+
 Changes in version 3.5.3 are:
  * Return correct introspect data for Secret Service
  * Fix the gnome2-store for gcr importer, and test
