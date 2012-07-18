@@ -679,6 +679,13 @@ fork_and_print_environment (void)
 
 	if (run_daemonized) {
 
+		/*
+		 * Become session leader of a new session, process group leader of a new
+		 * process group, and detach from the controlling TTY, so that SIGHUP is
+		 * not sent to this process when the previous session leader dies
+		 */
+		setsid ();
+
 		/* Double fork if need to daemonize properly */
 		pid = fork ();
 
