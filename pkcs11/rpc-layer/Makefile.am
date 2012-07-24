@@ -58,7 +58,7 @@ gnome_keyring_pkcs11_la_LDFLAGS = \
 configdir = $(P11_SYSTEM_CONFIG_MODULES)
 
 config_DATA = \
-	gnome-keyring-module
+	gnome-keyring.module
 
 # -----------------------------------------------------------------------------
 # The test daemon

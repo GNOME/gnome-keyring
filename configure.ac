@@ -717,7 +717,7 @@ pkcs11/gnome2-store/tests/Makefile
 pkcs11/roots-store/Makefile
 pkcs11/roots-store/tests/Makefile
 pkcs11/rpc-layer/Makefile
-pkcs11/rpc-layer/gnome-keyring-module
+pkcs11/rpc-layer/gnome-keyring.module
 pkcs11/secret-store/Makefile
 pkcs11/secret-store/tests/Makefile
 pkcs11/ssh-store/Makefile
