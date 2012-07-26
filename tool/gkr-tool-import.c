@@ -182,6 +182,11 @@ gkr_tool_import (int argc, char *argv[])
 		return 2;
 	}
 
+	if (!gcr_pkcs11_initialize (NULL, &error)) {
+		gkr_tool_handle_error (&error, "couldn't initialize pkcs11 modules");
+		return 1;
+	}
+
 	parser = gcr_parser_new ();
 	closure = g_new0 (ImportClosure, 1);
 	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), closure);
