@@ -31,6 +31,10 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifndef O_BINARY
+# define O_BINARY 0
+#endif
+
 enum {
 	PROP_0,
 	PROP_COMPLETED,
@@ -168,10 +172,93 @@ complete_link_temporary (GkmTransaction *self, GObject *unused, gpointer user_da
 	return ret;
 }
 
+
+/* Copy the file SRCNAME to the file DSTNAME.  If DSTNAME already
+   exists -1 is returned and ERRNO set to EEXIST.  Returns 0 on
+   success. */
+static int
+copy_to_temp_file (const char *dstname, const char *srcname)
+{
+	int dstfd, srcfd;
+	int nread, nwritten;
+	int saveerr;
+	char *bufp;
+	char buffer[512]; /* If you change this size, please also adjust */
+	                  /* test-transaction.c:test_write_large_file.   */
+
+	do {
+		srcfd = g_open (srcname, (O_RDONLY | O_BINARY));
+	} while (srcfd == -1 && errno == EINTR);
+	if (srcfd == -1) {
+		saveerr = errno;
+		g_warning ("couldn't open file to make temporary copy from: %s: %s",
+		           srcname, g_strerror (saveerr));
+		errno = saveerr;
+		return -1;
+	}
+
+	do {
+		dstfd = g_open (dstname,
+		                (O_WRONLY | O_CREAT | O_EXCL | O_BINARY),
+		                (S_IRUSR | S_IWUSR));
+	} while (dstfd == -1 && errno == EINTR);
+	if (dstfd == -1) {
+		saveerr = errno;
+		close (srcfd);
+		errno = saveerr;
+		return -1;
+	}
+
+	while ((nread = read (srcfd, buffer, sizeof buffer))) {
+		if (nread == -1 && errno == EINTR)
+			continue;
+		if (nread == -1) {
+			saveerr = errno;
+			g_warning ("error reading file to make temporary copy from: %s: %s",
+			           srcname, g_strerror (saveerr));
+			goto failure;
+		}
+
+		bufp = buffer;
+		do {
+			do {
+				nwritten = write (dstfd, bufp, nread);
+			} while (nwritten == -1 && errno == EINTR);
+			if (nwritten == -1) {
+				saveerr = errno;
+				g_warning ("error wrinting to temporary file: %s: %s",
+				           dstname, g_strerror (saveerr));
+				goto failure;
+			}
+			g_return_val_if_fail (nwritten <= nread, -1);
+			nread -= nwritten;
+			bufp += nwritten;
+		} while (nread > 0);
+	}
+	/* EOF reached.  */
+	if (close (dstfd)) {
+		saveerr = errno;
+		g_warning ("error closing temporary file: %s: %s",
+		           dstname, g_strerror (saveerr));
+		goto failure;
+	}
+	close (srcfd);
+	return 0;
+
+failure:
+	close (dstfd);  /* (Doesn't harm if we try a second time.) */
+	if (g_unlink (dstname))
+		g_warning ("couldn't remove temporary file: %s: %s",
+		           dstname, g_strerror (saveerr));
+	close (srcfd);
+	errno = saveerr;
+	return -1;
+}
+
+
 static gboolean
 begin_link_temporary_if_exists (GkmTransaction *self, const gchar *filename, gboolean *exists)
 {
-	gchar *result;
 	guint i = 0;
 
 	g_assert (GKM_IS_TRANSACTION (self));
@@ -180,27 +267,64 @@ begin_link_temporary_if_exists (GkmTransaction *self, const gchar *filename, gbo
 	g_assert (exists);
 
 	for (i = 0; i < MAX_TRIES; ++i) {
+		struct stat sb;
+		unsigned int nlink;
+		int stat_failed = 0;
 
 		*exists = TRUE;
 
-		/* Try to link to random temporary file names */
-		result = g_strdup_printf ("%s.temp-%d", filename, g_random_int_range (0, G_MAXINT));
-		if (link (filename, result) == 0) {
-			gkm_transaction_add (self, NULL, complete_link_temporary, result);
-			return TRUE;
+		/* Try to link to random temporary file names.  We try
+		 * to use a hardlink to create a copy but if that
+		 * fails (i.e. not supported by the FS), we copy the
+		 * entire file.  The result should be the same except
+		 * that the file times will change if we need to
+		 * rollback the transaction. */
+		if (stat (filename, &sb)) {
+			stat_failed = 1;
+		} else {
+			gchar *result;
+
+			result = g_strdup_printf ("%s.temp-%d", filename,
+			                          g_random_int_range (0, G_MAXINT));
+			nlink = (unsigned int)sb.st_nlink;
+			/* The result code of link(2) is not reliable.
+			 * Unless it fails with EEXIST we stat the
+			 * file to check for success.  Note that there
+			 * is a race here: If another process adds a
+			 * link to the source file between link and
+			 * stat, the check on the increased link count
+			 * will fail.  Fortunately the case for
+			 * hardlinks are not working solves it.  */
+			if (link (filename, result) && errno == EEXIST) {
+				/* This is probably a valid error.
+				 * Let us try another temporary file.  */
+			} else if (stat (filename, &sb)) {
+				stat_failed = 1;
+			} else {
+				if ((sb.st_nlink == nlink + 1)
+				    || !copy_to_temp_file (result, filename)) {
+					/* Either the link worked or
+					 * the copy succeeded.  */
+					gkm_transaction_add (self, NULL,
+					                     complete_link_temporary,
+					                     result);
+					return TRUE;
+				}
+			}
+
+			g_free (result);
 		}
 
-		g_free (result);
-
-		/* The original file does not exist */
-		if (errno == ENOENT || errno == ENOTDIR) {
+		if (stat_failed && (errno == ENOENT || errno == ENOTDIR)) {
+			/* The original file does not exist */
 			*exists = FALSE;
 			return TRUE;
 		}
 
 		/* If exists, try again, otherwise fail */
 		if (errno != EEXIST) {
-			g_warning ("couldn't create temporary file for: %s: %s", filename, g_strerror (errno));
+			g_warning ("couldn't create temporary file for: %s: %s",
+			           filename, g_strerror (errno));
 			gkm_transaction_fail (self, CKR_DEVICE_ERROR);
 			return FALSE;
 		}
