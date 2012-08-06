@@ -1,3 +1,9 @@
+Changes in version 3.5.5 are:
+ * Initialize PKCS#11 correctly in gnome-keyring tool
+ * Rename the p11-kit module file
+ * Use setsid() to become a process leader when daemonizing
+ * Build fixes
+
 Changes in version 3.5.4 are:
  * Support the xdg:schema attribute on secret items
  * Update to newer glib dependency and remove redundant code
