@@ -17,7 +17,7 @@ main (int argc, char *argv[])
 	directory = g_getenv ("GNOME_KEYRING_CONTROL");
 	g_return_val_if_fail (directory, 1);
 
-	if (!gkd_control_quit (directory))
+	if (!gkd_control_quit (directory, 0))
 		return 1;
 
 	g_printerr ("success quitting daemon\n");

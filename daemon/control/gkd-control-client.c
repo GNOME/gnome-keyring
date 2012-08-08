@@ -39,7 +39,8 @@
 EGG_SECURE_DECLARE (control_client);
 
 static int
-control_connect (const gchar *path)
+control_connect (const gchar *path,
+                 GkdControlFlags flags)
 {
 	struct sockaddr_un addr;
 	struct stat st;
@@ -47,7 +48,8 @@ control_connect (const gchar *path)
 
 	/* First a bunch of checks to make sure nothing funny is going on */
 	if (lstat (path, &st) < 0) {
-		g_message ("couldn't access conrol socket: %s: %s", path, g_strerror (errno));
+		if (!(flags & GKD_CONTROL_QUIET_IF_NO_PEER) || errno != ENOENT)
+			g_message ("couldn't access conrol socket: %s: %s", path, g_strerror (errno));
 		return -1;
 
 	} else if (st.st_uid != geteuid ()) {
@@ -74,8 +76,9 @@ control_connect (const gchar *path)
 	fcntl (sock, F_SETFD, 1);
 
 	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
-		g_message ("couldn't connect to control socket at: %s: %s",
-		           addr.sun_path, g_strerror (errno));
+		if (!(flags & GKD_CONTROL_QUIET_IF_NO_PEER) || errno != ECONNREFUSED)
+			g_message ("couldn't connect to control socket at: %s: %s",
+			           addr.sun_path, g_strerror (errno));
 		close (sock);
 		return -1;
 	}
@@ -163,14 +166,16 @@ control_read (int fd, EggBuffer *buffer)
 }
 
 static gboolean
-control_chat (const gchar *directory, EggBuffer *buffer)
+control_chat (const gchar *directory,
+              GkdControlFlags flags,
+              EggBuffer *buffer)
 {
 	gboolean ret;
 	gchar *path;
 	int sock;
 
 	path = g_strdup_printf ("%s/control", directory);
-	sock = control_connect (path);
+	sock = control_connect (path, flags);
 	g_free (path);
 
 	if (sock < 0)
@@ -201,7 +206,7 @@ gkd_control_initialize (const gchar *directory, const gchar *components,
 
 	g_return_val_if_fail (!egg_buffer_has_error (&buffer), FALSE);
 
-	ret = control_chat (directory, &buffer);
+	ret = control_chat (directory, 0, &buffer);
 
 	if (ret)
 		ret = egg_buffer_get_uint32 (&buffer, offset, &offset, &res);
@@ -232,7 +237,7 @@ gkd_control_unlock (const gchar *directory, const gchar *password)
 
 	g_return_val_if_fail (!egg_buffer_has_error (&buffer), FALSE);
 
-	ret = control_chat (directory, &buffer);
+	ret = control_chat (directory, 0, &buffer);
 
 	if (ret)
 		ret = egg_buffer_get_uint32 (&buffer, offset, &offset, &res);
@@ -265,7 +270,7 @@ gkd_control_change_lock (const gchar *directory, const gchar *original,
 
 	g_return_val_if_fail (!egg_buffer_has_error (&buffer), FALSE);
 
-	ret = control_chat (directory, &buffer);
+	ret = control_chat (directory, 0, &buffer);
 
 	if (ret)
 		ret = egg_buffer_get_uint32 (&buffer, offset, &offset, &res);
@@ -281,7 +286,8 @@ gkd_control_change_lock (const gchar *directory, const gchar *original,
 }
 
 gboolean
-gkd_control_quit (const gchar *directory)
+gkd_control_quit (const gchar *directory,
+                  GkdControlFlags flags)
 {
 	EggBuffer buffer;
 	gsize offset = 4;
@@ -295,7 +301,7 @@ gkd_control_quit (const gchar *directory)
 
 	g_return_val_if_fail (!egg_buffer_has_error (&buffer), FALSE);
 
-	ret = control_chat (directory, &buffer);
+	ret = control_chat (directory, flags, &buffer);
 
 	if (ret)
 		ret = egg_buffer_get_uint32 (&buffer, offset, &offset, &res);
@@ -303,7 +309,8 @@ gkd_control_quit (const gchar *directory)
 	egg_buffer_uninit (&buffer);
 
 	if (!ret || res != GKD_CONTROL_RESULT_OK) {
-		g_message ("couldn't quit running keyring daemon");
+		if (!(flags & GKD_CONTROL_QUIET_IF_NO_PEER))
+			g_message ("couldn't quit running keyring daemon");
 		return FALSE;
 	}
 

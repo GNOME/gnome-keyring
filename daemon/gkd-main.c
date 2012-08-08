@@ -588,7 +588,7 @@ replace_daemon_at (const gchar *directory)
 
 	g_free (control_directory);
 	control_directory = g_strdup (directory);
-	ret = gkd_control_quit (directory);
+	ret = gkd_control_quit (directory, GKD_CONTROL_QUIET_IF_NO_PEER);
 
 	/*
 	 * If we quit, wait a short time before initializing so the other

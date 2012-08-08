@@ -24,6 +24,10 @@
 
 #include <glib.h>
 
+typedef enum {
+	GKD_CONTROL_QUIET_IF_NO_PEER = 1 << 0,
+} GkdControlFlags;
+
 gboolean          gkd_control_listen        (void);
 
 gchar**           gkd_control_initialize    (const gchar *directory,
@@ -37,6 +41,7 @@ gboolean          gkd_control_change_lock   (const gchar *directory,
                                              const gchar *original,
                                              const gchar *password);
 
-gboolean          gkd_control_quit          (const gchar *directory);
+gboolean          gkd_control_quit          (const gchar *directory,
+                                             GkdControlFlags flags);
 
 #endif /* __GKD_CONTROL_H__ */
