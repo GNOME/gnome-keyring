@@ -224,6 +224,7 @@ gkm_secret_item_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATT
 		identifier = gkm_secret_object_get_identifier (GKM_SECRET_OBJECT (self));
 		secret = gkm_secret_data_get_raw (sdata, identifier, &n_secret);
 		rv = gkm_attribute_set_data (attr, secret, n_secret);
+		gkm_object_mark_used (base);
 		g_object_unref (sdata);
 		return rv;
 
