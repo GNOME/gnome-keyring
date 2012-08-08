@@ -586,8 +586,13 @@ replace_daemon_at (const gchar *directory)
 {
 	gboolean ret;
 
-	g_free (control_directory);
-	control_directory = g_strdup (directory);
+	/*
+	 * The first control_directory is the environment one, always
+	 * prefer that since it's the one that ssh and gpg will connect to
+	 */
+	if (control_directory == NULL)
+		control_directory = g_strdup (directory);
+
 	ret = gkd_control_quit (directory, GKD_CONTROL_QUIET_IF_NO_PEER);
 
 	/*
@@ -946,7 +951,9 @@ main (int argc, char *argv[])
 	} else if (run_for_replace) {
 		discover_other_daemon (replace_daemon_at, FALSE);
 		if (control_directory)
-			g_message ("replacing daemon at: %s", control_directory);
+			g_message ("Replacing daemon, using directory: %s", control_directory);
+		else
+			g_message ("Could not find daemon to replace, staring normally");
 	}
 
 	/* Initialize the main directory */
