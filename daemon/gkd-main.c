@@ -602,7 +602,13 @@ replace_daemon_at (const gchar *directory)
 	if (ret == TRUE)
 		g_usleep (200 * 1000); /* 200 ms in us */
 
-	return ret;
+	/*
+	 * Note that we don't return TRUE, since we want to quit all the
+	 * running daemons (for this session) that may have been started
+	 * by dbus or elsewhere.
+	 */
+
+	return FALSE;
 }
 
 typedef gboolean (*DiscoverFunc) (const gchar *control_directory);
