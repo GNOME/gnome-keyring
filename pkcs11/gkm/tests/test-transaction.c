@@ -300,7 +300,7 @@ test_remove_file_non_exist (Test* test, gconstpointer unused)
 }
 
 static void
-test_write_file (Test* test, gconstpointer unused)
+do_test_write_file (Test* test)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	const gchar *filename = "/tmp/transaction-test";
@@ -326,7 +326,56 @@ test_write_file (Test* test, gconstpointer unused)
 }
 
 static void
-test_write_file_abort_gone (Test* test, gconstpointer unused)
+test_write_file (Test* test, gconstpointer unused)
+{
+	/* Run it two times so that that the second one works on an
+	   existing file "/tmp/transaction-test".  */
+	do_test_write_file (test);
+	do_test_write_file (test);
+}
+
+static void
+test_write_large_file (Test* test, gconstpointer test_data)
+{
+	guint buffersize = GPOINTER_TO_UINT (test_data);
+	GkmTransaction *transaction = gkm_transaction_new ();
+	const gchar *filename = "/tmp/transaction-test";
+	gchar *data;
+	gsize n_data;
+	guchar *buffer;
+	int i;
+
+	buffer = g_malloc (buffersize);
+
+	for (i=0; i < buffersize; i++)
+		buffer[i] = i;
+
+	gkm_transaction_write_file (transaction, filename,
+				    buffer, buffersize);
+	g_assert (!gkm_transaction_get_failed (transaction));
+
+	g_assert (g_file_get_contents (filename, &data, &n_data, NULL));
+	g_assert_cmpuint (n_data, ==, buffersize);
+	for (i=0; i < buffersize; i++)
+		g_assert_cmpuint (buffer[i], ==, ((guchar*)data)[i]);
+	g_free (data);
+
+	gkm_transaction_complete (transaction);
+
+	g_assert (g_file_get_contents (filename, &data, &n_data, NULL));
+	g_assert_cmpuint (n_data, ==, buffersize);
+	for (i=0; i < buffersize; i++)
+		g_assert_cmpuint (buffer[i], ==, ((guchar*)data)[i]);
+	g_free (data);
+
+	g_object_unref (transaction);
+
+	g_free (buffer);
+}
+
+
+static void
+do_test_write_file_abort_gone (Test* test)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	const gchar *filename = "/tmp/transaction-test";
@@ -352,7 +401,14 @@ test_write_file_abort_gone (Test* test, gconstpointer unused)
 }
 
 static void
-test_write_file_abort_revert (Test* test, gconstpointer unused)
+test_write_file_abort_gone (Test* test, gconstpointer unused)
+{
+	do_test_write_file_abort_gone (test);
+	do_test_write_file_abort_gone (test);
+}
+
+static void
+do_test_write_file_abort_revert (Test* test)
 {
 	GkmTransaction *transaction = gkm_transaction_new ();
 	const gchar *filename = "/tmp/transaction-test";
@@ -375,6 +431,13 @@ test_write_file_abort_revert (Test* test, gconstpointer unused)
 	g_free (data);
 
 	g_object_unref (transaction);
+}
+
+static void
+test_write_file_abort_revert (Test* test, gconstpointer unused)
+{
+	do_test_write_file_abort_revert (test);
+	do_test_write_file_abort_revert (test);
 }
 
 static void
@@ -467,6 +530,22 @@ main (int argc, char **argv)
 	g_test_add ("/gkm/transaction/remove_file_abort", Test, NULL, setup, test_remove_file_abort, teardown);
 	g_test_add ("/gkm/transaction/remove_file_non_exist", Test, NULL, setup, test_remove_file_non_exist, teardown);
 	g_test_add ("/gkm/transaction/write_file", Test, NULL, setup, test_write_file, teardown);
+
+	{
+		/* Several test runs at different sizes.  Note that
+		   the copy function, used if hardlinks do not work,
+		   uses a 512 byte buffer.  */
+		guint buffersizes[] = {
+			2000, 1024, 510, 511, 512, 513, 514, 0
+		};
+		int i;
+
+		for (i = 0; buffersizes[i]; i++)
+			g_test_add ("/gkm/transaction/write_large_file",
+				    Test, GUINT_TO_POINTER (buffersizes[i]),
+				    setup, test_write_large_file, teardown);
+	}
+
 	g_test_add ("/gkm/transaction/write_file_abort_gone", Test, NULL, setup, test_write_file_abort_gone, teardown);
 	g_test_add ("/gkm/transaction/write_file_abort_revert", Test, NULL, setup, test_write_file_abort_revert, teardown);
 	g_test_add ("/gkm/transaction/unique_file_conflict", Test, NULL, setup, test_unique_file_conflict, teardown);
