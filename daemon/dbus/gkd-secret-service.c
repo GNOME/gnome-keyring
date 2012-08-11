@@ -61,6 +61,7 @@ struct _GkdSecretService {
 	GkdSecretObjects *objects;
 	GHashTable *aliases;
 	GckSession *internal_session;
+	gchar *alias_directory;
 };
 
 typedef struct _ServiceClient {
@@ -82,9 +83,30 @@ G_DEFINE_TYPE (GkdSecretService, gkd_secret_service, G_TYPE_OBJECT);
  */
 
 static gchar*
-default_path (void)
+default_path (GkdSecretService *self)
 {
-	return g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", "default", NULL);
+	gchar *old_directory;
+	gchar *new_directory;
+
+	if (self->alias_directory == NULL) {
+		new_directory = g_build_filename (g_get_user_data_dir (), "keyrings", NULL);
+		old_directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
+
+		if (!g_file_test (new_directory, G_FILE_TEST_IS_DIR) &&
+		    g_file_test (old_directory, G_FILE_TEST_IS_DIR)) {
+			self->alias_directory = old_directory;
+			old_directory = NULL;
+		} else {
+			self->alias_directory = new_directory;
+			new_directory = NULL;
+		}
+
+		g_free (old_directory);
+		g_free (new_directory);
+		g_debug ("keyring alias directory: %s", self->alias_directory);
+	}
+
+	return g_build_filename (self->alias_directory, "default", NULL);
 }
 
 static void
@@ -100,7 +122,7 @@ update_default (GkdSecretService *self, gboolean force)
 			return;
 	}
 
-	path = default_path ();
+	path = default_path (self);
 	if (g_file_get_contents (path, &contents, NULL, NULL)) {
 		g_strstrip (contents);
 		if (!contents[0]) {
@@ -124,7 +146,7 @@ store_default (GkdSecretService *self)
 	if (!identifier)
 		return;
 
-	path = default_path ();
+	path = default_path (self);
 	if (!g_file_set_contents (path, identifier, -1, &error))
 		g_message ("couldn't store default keyring: %s", egg_error_message (error));
 	g_free (path);

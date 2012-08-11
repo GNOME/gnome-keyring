@@ -29,6 +29,8 @@
 
 #include "gkm/gkm-certificate.h"
 #include "gkm/gkm-data-asn1.h"
+#define DEBUG_FLAG GKM_DEBUG_STORAGE
+#include "gkm/gkm-debug.h"
 #include "gkm/gkm-manager.h"
 #include "gkm/gkm-secret.h"
 #include "gkm/gkm-transaction.h"
@@ -264,10 +266,13 @@ static GObject*
 gkm_gnome2_module_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
 	GkmGnome2Module *self = GKM_GNOME2_MODULE (G_OBJECT_CLASS (gkm_gnome2_module_parent_class)->constructor(type, n_props, props));
+
 	g_return_val_if_fail (self, NULL);
 
 	if (!self->directory)
-		self->directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
+		self->directory = gkm_util_locate_keyrings_directory ();
+	gkm_debug ("gnome2 module directory: %s", self->directory);
+
 	self->storage = gkm_gnome2_storage_new (GKM_MODULE (self), self->directory);
 
 	return G_OBJECT (self);

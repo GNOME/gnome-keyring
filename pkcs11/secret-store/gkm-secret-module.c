@@ -28,8 +28,11 @@
 #include "gkm-secret-store.h"
 
 #include "gkm/gkm-credential.h"
+#define DEBUG_FLAG GKM_DEBUG_STORAGE
+#include "gkm/gkm-debug.h"
 #include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-transaction.h"
+#include "gkm/gkm-util.h"
 
 #include <glib/gstdio.h>
 
@@ -391,11 +394,9 @@ gkm_secret_module_constructor (GType type, guint n_props, GObjectConstructParam 
 
 	g_return_val_if_fail (self, NULL);
 
-	if (!self->directory) {
-		self->directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
-		if (g_mkdir_with_parents (self->directory, S_IRWXU) < 0)
-			g_warning ("unable to create keyring dir: %s", self->directory);
-	}
+	if (!self->directory)
+		self->directory = gkm_util_locate_keyrings_directory ();
+	gkm_debug ("secret store directory: %s", self->directory);
 
 	self->tracker = gkm_file_tracker_new (self->directory, "*.keyring", NULL);
 	g_signal_connect (self->tracker, "file-added", G_CALLBACK (on_file_load), self);

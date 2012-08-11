@@ -64,4 +64,6 @@ CK_ULONG              gkm_util_next_handle                        (void);
 
 void                  gkm_util_dispose_unref                      (gpointer object);
 
+gchar *               gkm_util_locate_keyrings_directory          (void);
+
 #endif /* GKM_UTIL_H_ */

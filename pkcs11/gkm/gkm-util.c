@@ -60,7 +60,10 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <glib/gstdio.h>
 
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -134,4 +137,38 @@ gkm_util_dispose_unref (gpointer object)
 	g_return_if_fail (G_IS_OBJECT (object));
 	g_object_run_dispose (G_OBJECT (object));
 	g_object_unref (object);
+}
+
+gchar *
+gkm_util_locate_keyrings_directory (void)
+{
+	gchar *old_directory;
+	gchar *new_directory;
+	gchar *directory;
+
+	old_directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
+	new_directory = g_build_filename (g_get_user_data_dir (), "keyrings", NULL);
+
+	/*
+	 * If the new XDG directory doesn't exist, and the old one does,
+	 * use the old one, otherwise create/use the new XDG location.
+	 */
+
+	if (!g_file_test (new_directory, G_FILE_TEST_IS_DIR) &&
+	    g_file_test (old_directory, G_FILE_TEST_IS_DIR)) {
+		directory = old_directory;
+		old_directory = NULL;
+
+		g_message ("using old keyring directory: %s", directory);
+	} else {
+		directory = new_directory;
+		new_directory = NULL;
+
+		if (g_mkdir_with_parents (directory, S_IRWXU) < 0)
+			g_warning ("unable to create keyring dir: %s", directory);
+	}
+
+	g_free (old_directory);
+	g_free (new_directory);
+	return directory;
 }
