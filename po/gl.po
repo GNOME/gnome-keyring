@@ -1,36 +1,38 @@
-# translation of gnome-keyring.master.po to Galician
-# This file is distributed under the same license as the PACKAGE package.
+# Galician translation of gnome-keyring.
+# This file is distributed under the same license as the gnome-keyring package.
 # Copyright (C) 2010 Fran Diéguez.
+#
+# Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
+# colaborar connosco, podes atopar máis información en http://www.trasno.net
 #
 # Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2005, 2006.
 # Ignacio Casal Quinteiro <icq@svn.gnome.org>, 2007, 2008.
 # Mancomún - Centro de Referencia e Servizos de Software Libre <g11n@mancomun.org>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009.
-# Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011.
-# Fran Dieguez <frandieguez@gnome.org>, 2010, 2011, 2012.
-#
+# Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
+# Leandro Regueiro <leandro.regueiro@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-08 23:26+0100\n"
-"PO-Revision-Date: 2012-03-08 23:27+0100\n"
-"Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
+"POT-Creation-Date: 2012-08-17 23:39+0200\n"
+"PO-Revision-Date: 2012-08-17 12:50+0200\n"
+"Last-Translator: Leandro Regueiro <leandro.regueiro@gmail.com>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:85
 #: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
 msgstr "Sen nome"
 
@@ -51,9 +53,9 @@ msgstr ""
 #: ../daemon/dbus/gkd-secret-change.c:100
 #: ../daemon/dbus/gkd-secret-change.c:136
 #: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "Continuar"
 
@@ -108,7 +110,7 @@ msgstr ""
 msgid "Choose password for new keyring"
 msgstr "Escolla o contrasinal para o anel de chaves novo"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:312
 msgid "New Keyring Password"
 msgstr "Contrasinal novo do anel de chaves"
 
@@ -153,22 +155,22 @@ msgstr "Descoñecido"
 msgid "PGP Key: %s"
 msgstr "Chave GPG: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
 msgid "Enter Passphrase"
-msgstr "Introducir o contrasinal"
+msgstr "Introducir a frase de paso"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
 msgid "Unlock"
 msgstr "Desbloquear"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "Desbloquear esta chave automaticamente sempre que inicie a sesión"
 
@@ -180,7 +182,7 @@ msgstr "Inicio de sesión"
 #: ../egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr "produciuse un fallo ao crear o ficheiro temporal «%s»: %s\n"
+msgstr "produciuse un erro ao crear o ficheiro temporal «%s»: %s\n"
 
 #: ../egg/dotlock.c:718
 #, c-format
@@ -198,7 +200,7 @@ msgstr "non é posíbel crear «%s»: %s\n"
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr "quitando o bloqueo sen usar do ficheiro (creado por %d)\n"
+msgstr "retirando o bloqueo sen usar do ficheiro (creado por %d)\n"
 
 #: ../egg/dotlock.c:1084
 #, c-format
@@ -372,30 +374,30 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Produciuse un erro non esperado en waitpid() (%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:581
 msgid "Unnamed Certificate"
 msgstr "Certificado sen nome"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
 msgstr "Non foi posíbel analizar a chave pública SSH"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Desbloquear o contrasinal para: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "Desbloquear o anel de inicio de sesión"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 msgid "Enter password to unlock your login keyring"
 msgstr ""
 "Introduza o contrasinal para desbloquear o anel de chaves de inicio de sesión"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -403,116 +405,116 @@ msgstr ""
 "O contrasinal que usa para iniciar a sesión no seu computador non coincide "
 "co do seu anel de chaves de inicio de sesión."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "O seu anel de chaves de inicio de sesión non foi desbloqueado "
 "automaticamente ao iniciar a sesión neste computador."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "Desbloquear o anel de chaves"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Introduza o contrasinal para desbloquear o anel de chaves «%s»"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Un aplicativo quere acceder ao anel de chaves «%s» mais está bloqueado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr ""
 "Desbloquear este anel de chaves automaticamente sempre que inicie a sesión"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
 msgstr "Desbloquear a chave privada"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "Desbloquear o certificado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
 msgstr "Desbloquear a chave pública"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
 msgstr "Introduza o contrasinal para desbloquear a chave privada"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "Introduza o contrasinal para desbloquear o certificado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
 msgstr "Introduza o contrasinal para desbloquear a chave pública"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "Introduza o contrasinal para desbloquear"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 msgid "Automatically unlock this key whenever I'm logged in"
 msgstr "Desbloquear esta chave automaticamente sempre que inicie sesión"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
 msgid "Automatically unlock this certificate whenever I'm logged in"
 msgstr "Desbloquear este certificado automaticamente sempre que inicie sesión"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I'm logged in"
 msgstr "Desbloquear automaticamente sempre que inicie sesión"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Un aplicativo quere acceder á chave privada «%s», mais está bloqueada"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Un aplicativo quere acceder ao certificado «%s», mais está bloqueado"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Un aplicativo quere acceder á chave pública «%s», mais está bloqueada"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Un aplicativo quere acceder a «%s», mais está bloqueado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "The unlock password was incorrect"
 msgstr "O contrasinal de desbloqueo é incorrecto"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Unlock certificate/key storage"
 msgstr "Desbloquear o almacenamento de chave ou certificado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "Introduza o contrasinal para desbloquear o almacenamento da chave ou "
 "certificado"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -521,15 +523,15 @@ msgstr ""
 "Un aplicativo quere acceder ao almacenamento da chave ou certificado «%s», "
 "mais está bloqueado"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "Requírese un contrasinal novo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "Requírese un contrasinal novo para o almacenamento seguro"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -538,25 +540,25 @@ msgstr ""
 "Para preparar «%s» para almacenar chaves ou certificados, é necesario un "
 "contrasinal"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Cambiar o contrasinal"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
 msgid "Original password for secure storage"
 msgstr "Contrasinal orxinal para o almacén seguro"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for '%s', the original password is required"
 msgstr "Para cambiar o contrasinal de «%s», requírense o contrasinal orixinal"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 msgid "Change password for secure storage"
 msgstr "Cambie o contrasinal para ter un almacenamento seguro"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for '%s'"
 msgstr "Escriba un contrasinal novo para «%s»"
