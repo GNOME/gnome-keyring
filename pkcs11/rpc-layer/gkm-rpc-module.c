@@ -251,8 +251,13 @@ call_connect (CallState *cs)
 
 	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
 		close (sock);
-		warning (("couldn't connect to: %s: %s", pkcs11_socket_path, strerror (errno)));
-		return CKR_DEVICE_ERROR;
+		if (errno == ENOENT) {
+			debug (("couldn't connect to: %s: %s", pkcs11_socket_path, strerror (errno)));
+			return CKR_DEVICE_REMOVED;
+		} else {
+			warning (("couldn't connect to: %s: %s", pkcs11_socket_path, strerror (errno)));
+			return CKR_DEVICE_ERROR;
+		}
 	}
 
 	if (egg_unix_credentials_write (sock) < 0) {
@@ -1208,6 +1213,10 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 				if (ret == CKR_OK)
 					ret = call_run (cs);
 				call_done (cs, ret);
+
+			/* No daemon available */
+			} else if (ret == CKR_DEVICE_REMOVED) {
+				ret = CKR_OK;
 			}
 		}
 
@@ -1248,7 +1257,12 @@ rpc_C_Finalize (CK_VOID_PTR reserved)
 				if (ret == CKR_OK)
 					ret = call_run (cs);
 				call_done (cs, ret);
+
+			/* No daemon available */
+			} else if (ret == CKR_DEVICE_REMOVED) {
+				ret = CKR_OK;
 			}
+
 
 			if (ret != CKR_OK)
 				warning (("finalizing the daemon returned an error: %d", ret));
