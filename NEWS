@@ -1,3 +1,10 @@
+Changes in version 3.5.90 are:
+ * Use the XDG directories for storing keys
+ * Updated translations
+ * Better handling of the --replace argument to gnome-keyring-daemon
+ * Fix ability to store keyring files without using hardlinks
+ * Make the GPG agent password caching options work correctly
+
 Changes in version 3.5.5 are:
  * Initialize PKCS#11 correctly in gnome-keyring tool
  * Rename the p11-kit module file
