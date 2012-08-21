@@ -81,8 +81,8 @@ static GPollFunc orig_poll_func = NULL;		/* The system poll function, which we w
 static gint async_source_id = 0;              	/* Our GSource id for the main loop */
 static GQueue *done_queue = NULL;		/* The queue of completed worker threads */ 
 static GHashTable *running_workers = NULL;	/* A set of running worker threads */
-static gint waiting_on_lock = 0;		/* Number of threads waiting on lock */ 
-static gint waiting_on_poll = 0;		/* Whether we're waiting on the poll or not */
+static volatile gint waiting_on_lock = 0;	/* Number of threads waiting on lock */
+static volatile gint waiting_on_poll = 0;	/* Whether we're waiting on the poll or not */
 
 static void cleanup_done_threads (void);
 
