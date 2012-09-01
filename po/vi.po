@@ -1,6 +1,6 @@
 # Vietnamese translation of GNOME Keyring.
 # Copyright © 2010 GNOME i18n Project for Vietnamese.
-# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2004,2008,2011.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2004,2008,2011-2012.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
 # Nguyen Vu Hung <vuhung16plus@gmail.com>, 2011.
 msgid ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-03-08 19:47+0000\n"
-"PO-Revision-Date: 2012-09-01 17:14+0700\n"
+"PO-Revision-Date: 2012-09-01 17:12+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -29,13 +29,13 @@ msgid "Unnamed"
 msgstr "Không tên"
 
 #: ../daemon/dbus/gkd-secret-change.c:90
-#, fuzzy, c-format
+#, c-format
 #| msgid "Choose a new password for the '%s' keyring"
 msgid "Enter the old password for the '%s' keyring"
-msgstr "Hãy chọn một mật khẩu mới cho vòng khóa « %s »"
+msgstr "Nhập mật khẩu cũ cho vòng khóa '%s'"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "An application wants to change the password for the '%s' keyring. Choose "
 #| "the new password you want to use for it."
@@ -43,8 +43,8 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
 msgstr ""
-"Một ứng dụng muốn thay đổi mật khẫu cho vòng khoá « %s ». Hãy chọn mật khẩu "
-"cần sử dụng với nó."
+"Một ứng dụng muốn thay đổi mật khẫu cho vòng khoá '%s'. Nhập mật khẩu cũ của "
+"nó."
 
 #: ../daemon/dbus/gkd-secret-change.c:100
 #: ../daemon/dbus/gkd-secret-change.c:136
@@ -53,12 +53,12 @@ msgstr ""
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
 msgid "Continue"
-msgstr ""
+msgstr "Tiếp tục"
 
 #: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "Hãy chọn một mật khẩu mới cho vòng khóa « %s »"
+msgstr "Hãy chọn một mật khẩu mới cho vòng khóa '%s'"
 
 #: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
@@ -66,7 +66,7 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Một ứng dụng muốn thay đổi mật khẫu cho vòng khoá « %s ». Hãy chọn mật khẩu "
+"Một ứng dụng muốn thay đổi mật khẫu cho vòng khoá '%s'. Hãy chọn mật khẩu "
 "cần sử dụng với nó."
 
 #: ../daemon/dbus/gkd-secret-change.c:142
@@ -98,7 +98,7 @@ msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
-"Một ứng dụng muốn tạo một vòng khóa mới tên « %s ». Hãy chọn mật khẩu cần sử "
+"Một ứng dụng muốn tạo một vòng khóa mới tên '%s'. Hãy chọn mật khẩu cần sử "
 "dụng với nó."
 
 #: ../daemon/dbus/gkd-secret-create.c:85
@@ -166,10 +166,9 @@ msgid "Unlock"
 msgstr "Mở khoá"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
-#, fuzzy
 #| msgid "Automatically unlock this keyring whenever I'm logged in"
 msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+msgstr "Tự động gỡ khoá khoá này khi nào tôi đã đăng nhập"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:145
@@ -179,17 +178,17 @@ msgstr "Đăng nhập"
 #: ../egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr ""
+msgstr "lỗi tạo tập tin tạm `%s': %s\n"
 
 #: ../egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
-msgstr ""
+msgstr "lỗi ghi vào `%s': %s\n"
 
 #: ../egg/dotlock.c:782
 #, c-format
 msgid "can't create `%s': %s\n"
-msgstr ""
+msgstr "lỗi tạo `%s': %s\n"
 
 #. Note: It is unlikley that we get a race here unless a pid is
 #. reused too fast or a new process with the same pid as the one
@@ -197,12 +196,12 @@ msgstr ""
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr ""
+msgstr "bỏ tập tin khoá không còn dùng (tạo bởi %d)\n"
 
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr ""
+msgstr "chờ khoá (giữ bởi %d%s) %s...\n"
 
 #: ../egg/dotlock.c:1085
 msgid "(deadlock?) "
@@ -211,12 +210,12 @@ msgstr ""
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr ""
+msgstr "khoá `%s' chưa được tạo: %s\n"
 
 #: ../egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr ""
+msgstr "chờ khoá %s...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -414,12 +413,12 @@ msgstr "Mở vòng"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Hãy nhập mật khẩu cho vòng khóa « %s » để mở vòng khóa"
+msgstr "Hãy nhập mật khẩu cho vòng khóa '%s' để mở vòng khóa"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Một ứng dụng muốn truy cập đến vòng khóa « %s », còn nó bị khoá"
+msgstr "Một ứng dụng muốn truy cập đến vòng khóa '%s', còn nó bị khoá"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -454,25 +453,22 @@ msgid "Enter password to unlock"
 msgstr "Gõ mật khẩu để gỡ khoá"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
-#, fuzzy
 #| msgid "Automatically unlock this keyring whenever I'm logged in"
 msgid "Automatically unlock this key whenever I'm logged in"
-msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+msgstr "Tự động gỡ khoá khoá này khi nào tôi đã đăng nhập"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-#, fuzzy
 #| msgid "Automatically unlock this keyring whenever I'm logged in"
 msgid "Automatically unlock this certificate whenever I'm logged in"
-msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+msgstr "Tự động gỡ khoá chứng nhận này khi nào tôi đã đăng nhập"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
-#, fuzzy
 #| msgid "Automatically unlock this keyring whenever I'm logged in"
 msgid "Automatically unlock whenever I'm logged in"
-msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+msgstr "Tự động mở khoá khi tôi đăng nhập"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
@@ -496,7 +492,7 @@ msgstr "Ứng dụng muốn truy cập đến khoá công khai %s, nhưng nó đ
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "Ứng dụng muốn truy cập đến « %s », nhưng nó bị khóa"
+msgstr "Ứng dụng muốn truy cập đến '%s', nhưng nó bị khóa"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
 msgid "The unlock password was incorrect"
@@ -518,8 +514,8 @@ msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"Một ứng dụng muốn truy cập đến kho lưu chứng nhận/khoá « %s », nhưng nó vẫn "
-"bị khóa"
+"Một ứng dụng muốn truy cập đến kho lưu chứng nhận/khoá '%s', nhưng nó vẫn bị "
+"khóa"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
@@ -542,28 +538,27 @@ msgid "Change Password"
 msgstr "Đổi mật khẩu"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
-#, fuzzy
 #| msgid "Change password for secure storage"
 msgid "Original password for secure storage"
-msgstr "Thay đổi mật khẩu mới để lưu trữ bảo mật"
+msgstr "Mật khẩu gốc để lưu trữ bảo mật"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "To change the password for '%s', the original and new passwords are "
 #| "required"
 msgid "To change the password for '%s', the original password is required"
-msgstr "Cần nhập mật khẩu cũ và mới để đổi mật khẩu cho '%s'"
+msgstr "Cần mật khẩu gốc để đổi mật khẩu cho '%s'"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change password for secure storage"
 msgstr "Thay đổi mật khẩu mới để lưu trữ bảo mật"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
-#, fuzzy, c-format
+#, c-format
 #| msgid "Choose a new password for the '%s' keyring"
 msgid "Type a new password for '%s'"
-msgstr "Hãy chọn một mật khẩu mới cho vòng khóa « %s »"
+msgstr "Nhập mật khẩu mới cho '%s'"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -874,13 +869,13 @@ msgstr "          "
 #~ msgstr "Để nhập dữ liệu, nó phải được mở khoá"
 
 #~ msgid "In order to import the private key '%s', it must be unlocked"
-#~ msgstr "Để nhập khoá riêng « %s » thì nó phải được mở khoá"
+#~ msgstr "Để nhập khoá riêng '%s' thì nó phải được mở khoá"
 
 #~ msgid "In order to import the certificate '%s', it must be unlocked"
-#~ msgstr "Để nhập chứng nhận « %s » thì nó phải được mở khoá"
+#~ msgstr "Để nhập chứng nhận '%s' thì nó phải được mở khoá"
 
 #~ msgid "In order to import '%s', it must be unlocked"
-#~ msgstr "Để nhập « %s » thì nó phải được mở khoá"
+#~ msgstr "Để nhập '%s' thì nó phải được mở khoá"
 
 #~ msgid "No location available to import to"
 #~ msgstr "Không có vị trí vào đó có thể nhập dữ liệu"
