@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring 2.26.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-17 20:25+0000\n"
-"PO-Revision-Date: 2011-10-19 18:49+1100\n"
+"POT-Creation-Date: 2012-03-08 19:47+0000\n"
+"PO-Revision-Date: 2012-09-01 17:14+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,23 +19,48 @@ msgstr ""
 "X-Generator: LocFactoryEditor 1.8\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:121
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
 msgstr "Không tên"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "Đổi mật khẩu vòng khóa"
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, fuzzy, c-format
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Hãy chọn một mật khẩu mới cho vòng khóa « %s »"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, fuzzy, c-format
+#| msgid ""
+#| "An application wants to change the password for the '%s' keyring. Choose "
+#| "the new password you want to use for it."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr ""
+"Một ứng dụng muốn thay đổi mật khẫu cho vòng khoá « %s ». Hãy chọn mật khẩu "
+"cần sử dụng với nó."
+
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+msgid "Continue"
+msgstr ""
+
+#: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Hãy chọn một mật khẩu mới cho vòng khóa « %s »"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -44,19 +69,30 @@ msgstr ""
 "Một ứng dụng muốn thay đổi mật khẫu cho vòng khoá « %s ». Hãy chọn mật khẩu "
 "cần sử dụng với nó."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "Lưu mật khẩu không mật mã không?"
+
+#: ../daemon/dbus/gkd-secret-change.c:144
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Dùng một mật khẩu trắng thì mật khẩu đã lưu sẽ không thể được mã hoá an "
+"toàn. Mọi người đều có thể truy cập vào tập tin của bạn."
+
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Bạn đã gõ sai mật khẩu gốc"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Mật khẩu vòng khóa mới"
+#: ../daemon/dbus/gkd-secret-change.c:352
+msgid "Change Keyring Password"
+msgstr "Đổi mật khẩu vòng khóa"
 
-#: ../daemon/dbus/gkd-secret-create.c:84
-msgid "Choose password for new keyring"
-msgstr "Hãy chọn mật khẩu cho vòng khóa mới"
-
-#: ../daemon/dbus/gkd-secret-create.c:86
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
@@ -64,6 +100,22 @@ msgid ""
 msgstr ""
 "Một ứng dụng muốn tạo một vòng khóa mới tên « %s ». Hãy chọn mật khẩu cần sử "
 "dụng với nó."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
+msgid "Choose password for new keyring"
+msgstr "Hãy chọn mật khẩu cho vòng khóa mới"
+
+#: ../daemon/dbus/gkd-secret-create.c:308
+msgid "New Keyring Password"
+msgstr "Mật khẩu vòng khóa mới"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GPG Password Agent"
+msgstr "Agent cho mật khẩu GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Vòng Khoá GNOME: GPG Agent"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -74,60 +126,97 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "Vòng Khoá GNOME: thành phần PKCS#11"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "Vòng Khoá GNOME: dịch vụ mật"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "Dịch vụ lưu trữ mật"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "Vòng Khoá GNOME: SSH Agent"
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "Vòng Khoá GNOME: dịch vụ mật"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr "Tác nhân khoá SSH"
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Vòng Khoá GNOME: GPG Agent"
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Vòng Khoá GNOME: SSH Agent"
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "Agent cho mật khẩu GPG"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:104 ../gcr/gcr-key-renderer.c:314
-#: ../gcr/gcr-key-renderer.c:319
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
 msgstr "Không biết"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Khóa PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
 msgid "Enter Passphrase"
 msgstr "Nhập mật mã"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:397
-msgid "Forget this password if idle for"
-msgstr "Quên mật khẩu này nếu không dùng trong"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "Mở khoá"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:398
-msgid "Forget this password after"
-msgstr "Quên mật khẩu sau"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password when I log out"
-msgstr "Quên mật khẩu sau khi đăng xuất"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
+#, fuzzy
+#| msgid "Automatically unlock this keyring whenever I'm logged in"
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:147
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
 msgstr "Đăng nhập"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr ""
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr ""
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr ""
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -169,7 +258,7 @@ msgstr "Tên chung"
 msgid "Surname"
 msgstr "Họ"
 
-#: ../egg/egg-oid.c:69 ../gcr/gcr-certificate-renderer.c:652
+#: ../egg/egg-oid.c:69
 msgid "Serial Number"
 msgstr "Số thứ tự"
 
@@ -225,7 +314,7 @@ msgstr "Tên miền dè dặt"
 msgid "Pseudonym"
 msgstr "Biệt hiệu"
 
-#: ../egg/egg-oid.c:98 ../gcr/gcr-key-renderer.c:310
+#: ../egg/egg-oid.c:98
 msgid "RSA"
 msgstr "RSA"
 
@@ -241,7 +330,7 @@ msgstr "MD5 với mã hoá RSA"
 msgid "SHA1 with RSA"
 msgstr "SHA1 với mã hoá RSA"
 
-#: ../egg/egg-oid.c:103 ../gcr/gcr-key-renderer.c:312
+#: ../egg/egg-oid.c:103
 msgid "DSA"
 msgstr "DSA"
 
@@ -251,12 +340,10 @@ msgstr "SHA1 với mã hoá DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
-#| msgid "SSL Server Certificate"
 msgid "Server Authentication"
 msgstr "Xác thực máy chủ"
 
 #: ../egg/egg-oid.c:108
-#| msgid "SSL Client Certificate"
 msgid "Client Authentication"
 msgstr "Xác thực máy khách"
 
@@ -284,620 +371,6 @@ msgstr ""
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Gặp lỗi bất thường trong « waitpid() » (%s)"
 
-#: ../gck/gck-module.c:396
-#, c-format
-msgid "Error loading PKCS#11 module: %s"
-msgstr "Lỗi nạp môđun PKCS#11: %s"
-
-#: ../gck/gck-module.c:403
-#, c-format
-msgid "Invalid PKCS#11 module: %s"
-msgstr "Môđun PKCS#11 không hợp lệ: %s"
-
-#: ../gck/gck-module.c:412
-#, c-format
-msgid "Couldn't setup PKCS#11 module: %s"
-msgstr "Không thể nạp môđun PKCS#11: %s"
-
-#: ../gck/gck-module.c:428
-#, c-format
-msgid "Couldn't initialize PKCS#11 module: %s"
-msgstr "Không thể khởi động môđun PKCS#11: %s"
-
-#: ../gck/gck-modules.c:67
-#, c-format
-msgid "Couldn't initialize registered PKCS#11 modules: %s"
-msgstr "Không thể khởi động môđun PKCS#11 đã đăng ký: %s"
-
-#. later
-#. later
-#: ../gcr/gcr-certificate.c:388 ../gcr/gcr-gnupg-key.c:629
-#| msgid "_Name:"
-msgctxt "column"
-msgid "Name"
-msgstr "Tên"
-
-#: ../gcr/gcr-certificate.c:390
-#| msgid "Issued On"
-msgctxt "column"
-msgid "Issued By"
-msgstr "Cấp lúc"
-
-#. later
-#: ../gcr/gcr-certificate.c:392
-#| msgid "Expires"
-msgctxt "column"
-msgid "Expires"
-msgstr "Hết hạn"
-
-#: ../gcr/gcr-certificate.c:1060 ../gcr/gcr-certificate-exporter.c:462
-#: ../gcr/gcr-certificate-renderer.c:101 ../gcr/gcr-parser.c:260
-msgid "Certificate"
-msgstr "Chứng nhận"
-
-#: ../gcr/gcr-certificate-exporter.c:224
-msgid ""
-"<b>A file already exists with this name.</b>\n"
-"\n"
-"Do you want to replace it with a new file?"
-msgstr ""
-"<b>Đã có tập tin cùng tên.</b>\n"
-"\n"
-"Bạn có muốn thay bằng tập tin mới không?"
-
-#: ../gcr/gcr-certificate-exporter.c:227
-msgid "_Replace"
-msgstr "_Thay thế"
-
-#: ../gcr/gcr-certificate-exporter.c:257
-#, c-format
-#| msgid "The operation was cancelled"
-msgid "The operation was cancelled."
-msgstr "Thao tác bị huỷ."
-
-#: ../gcr/gcr-certificate-exporter.c:301
-#| msgid "Unlock certificate"
-msgid "Export certificate"
-msgstr "Xuất chứng nhận"
-
-#: ../gcr/gcr-certificate-exporter.c:313
-#| msgid "Certificate"
-msgid "Certificate files"
-msgstr "Tập tin chứng nhận"
-
-#: ../gcr/gcr-certificate-exporter.c:324
-msgid "PEM files"
-msgstr "Tập tin PEM"
-
-#: ../gcr/gcr-certificate-extensions.c:141
-#| msgid "Issuer Name"
-msgid "Other Name"
-msgstr "Tên khác"
-
-#: ../gcr/gcr-certificate-extensions.c:150
-msgid "XMPP Addr"
-msgstr "Địa chỉ XMPP"
-
-#: ../gcr/gcr-certificate-extensions.c:154
-msgid "DNS SRV"
-msgstr "DNS SRV"
-
-#: ../gcr/gcr-certificate-extensions.c:166
-msgid "Email"
-msgstr "Địa chỉ thư"
-
-#: ../gcr/gcr-certificate-extensions.c:174
-#| msgid "DSA"
-msgid "DNS"
-msgstr "DNS"
-
-#: ../gcr/gcr-certificate-extensions.c:182
-#| msgid "Email Address"
-msgid "X400 Address"
-msgstr "Địa chỉ X400"
-
-#: ../gcr/gcr-certificate-extensions.c:189
-#| msgid "Subject Name"
-msgid "Directory Name"
-msgstr "Tên thư mục"
-
-#: ../gcr/gcr-certificate-extensions.c:197
-msgid "EDI Party Name"
-msgstr ""
-
-#: ../gcr/gcr-certificate-extensions.c:204
-msgid "URI"
-msgstr "URI"
-
-#: ../gcr/gcr-certificate-extensions.c:212
-#| msgid "Email Address"
-msgid "IP Address"
-msgstr "Địa chỉ IP"
-
-#: ../gcr/gcr-certificate-extensions.c:220
-#| msgid "User ID"
-msgid "Registered ID"
-msgstr "ID đăng ký"
-
-#: ../gcr/gcr-certificate-renderer.c:116
-msgid "Basic Constraints"
-msgstr "Ràng buộc cơ bản"
-
-#: ../gcr/gcr-certificate-renderer.c:118
-#| msgid "Certificate"
-msgid "Certificate Authority"
-msgstr "Nhà cầm quyền chứng nhận (CA)"
-
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
-msgid "Yes"
-msgstr "Có"
-
-#: ../gcr/gcr-certificate-renderer.c:119 ../gcr/gcr-certificate-renderer.c:314
-msgid "No"
-msgstr "Không"
-
-#: ../gcr/gcr-certificate-renderer.c:122
-msgid "Max Path Length"
-msgstr "Độ dài đường dẫn tối đa"
-
-#: ../gcr/gcr-certificate-renderer.c:123
-#| msgid "Unnamed"
-msgid "Unlimited"
-msgstr "Không giới hạn"
-
-#: ../gcr/gcr-certificate-renderer.c:142
-msgid "Extended Key Usage"
-msgstr "Dùng khoá mở rộng"
-
-#: ../gcr/gcr-certificate-renderer.c:153
-msgid "Allowed Purposes"
-msgstr "Mục đích được phép"
-
-#: ../gcr/gcr-certificate-renderer.c:173
-#| msgid "Identifier"
-msgid "Subject Key Identifier"
-msgstr "Dấu nhận diện khoá chủ đề"
-
-#: ../gcr/gcr-certificate-renderer.c:174
-#| msgid "Identifier"
-msgid "Key Identifier"
-msgstr "Dấu nhận diện khoá"
-
-#: ../gcr/gcr-certificate-renderer.c:185
-#| msgid "Signature"
-msgid "Digital signature"
-msgstr "Chữ ký điện tử"
-
-#: ../gcr/gcr-certificate-renderer.c:186
-msgid "Key encipherment"
-msgstr "Mật mã hoá khoá"
-
-#: ../gcr/gcr-certificate-renderer.c:187
-msgid "Data encipherment"
-msgstr "Mật mã hoá dữ liệu"
-
-#: ../gcr/gcr-certificate-renderer.c:188
-#| msgid "Key Parameters"
-msgid "Key agreement"
-msgstr ""
-
-#: ../gcr/gcr-certificate-renderer.c:189
-#| msgid "Certificate"
-msgid "Certificate signature"
-msgstr "Chữ ký chứng nhận"
-
-#: ../gcr/gcr-certificate-renderer.c:190
-msgid "Revocation list signature"
-msgstr "Chữ ký danh sách thu hồi"
-
-#: ../gcr/gcr-certificate-renderer.c:215
-msgid "Key Usage"
-msgstr "Cách dùng khoá"
-
-#: ../gcr/gcr-certificate-renderer.c:216
-msgid "Usages"
-msgstr "Cách dùng"
-
-#: ../gcr/gcr-certificate-renderer.c:236
-#| msgid "Subject Name"
-msgid "Subject Alternative Names"
-msgstr "Tên thay thế chủ đề"
-
-#: ../gcr/gcr-certificate-renderer.c:261
-msgid "Extension"
-msgstr "Phần mở rộng"
-
-#: ../gcr/gcr-certificate-renderer.c:265
-msgid "Identifier"
-msgstr "Dấu nhận diện"
-
-#: ../gcr/gcr-certificate-renderer.c:266
-msgid "Value"
-msgstr "Giá trị"
-
-#: ../gcr/gcr-certificate-renderer.c:313
-msgid "Critical"
-msgstr "Tới hạn"
-
-#: ../gcr/gcr-certificate-renderer.c:386
-#| msgid "Couldn't find a place to store the pinned certificate"
-msgid "Couldn't export the certificate."
-msgstr "Không thể xuất chứng nhận."
-
-#: ../gcr/gcr-certificate-renderer.c:613
-msgid "Identity"
-msgstr "Nhận diện"
-
-#: ../gcr/gcr-certificate-renderer.c:617
-msgid "Verified by"
-msgstr "Kiểm chứng bởi"
-
-#: ../gcr/gcr-certificate-renderer.c:624
-msgid "Expires"
-msgstr "Hết hạn"
-
-#. The subject
-#: ../gcr/gcr-certificate-renderer.c:634
-msgid "Subject Name"
-msgstr "Tên chủ đề"
-
-#. The Issuer
-#: ../gcr/gcr-certificate-renderer.c:638
-msgid "Issuer Name"
-msgstr "Tên nhà cấp"
-
-#. The Issued Parameters
-#: ../gcr/gcr-certificate-renderer.c:642
-msgid "Issued Certificate"
-msgstr "Chứng nhận đã cấp"
-
-#: ../gcr/gcr-certificate-renderer.c:647
-msgid "Version"
-msgstr "Phiên bản"
-
-#: ../gcr/gcr-certificate-renderer.c:659
-msgid "Not Valid Before"
-msgstr "Không đúng đắn trước"
-
-#: ../gcr/gcr-certificate-renderer.c:664
-msgid "Not Valid After"
-msgstr "Không đúng đắn sau"
-
-#. Fingerprints
-#: ../gcr/gcr-certificate-renderer.c:669
-#| msgid "Fingerprints"
-msgid "Certificate Fingerprints"
-msgstr "Vân tay chứng nhận"
-
-#. Signature
-#: ../gcr/gcr-certificate-renderer.c:675 ../gcr/gcr-certificate-renderer.c:687
-msgid "Signature"
-msgstr "Chữ ký"
-
-#: ../gcr/gcr-certificate-renderer.c:679
-msgid "Signature Algorithm"
-msgstr "Thuật toán chữ ký"
-
-#: ../gcr/gcr-certificate-renderer.c:683
-msgid "Signature Parameters"
-msgstr "Tham số Chữ ký"
-
-#. Public Key Info
-#: ../gcr/gcr-certificate-renderer.c:691
-msgid "Public Key Info"
-msgstr "Thông tin khoá công khai"
-
-#: ../gcr/gcr-certificate-renderer.c:696
-msgid "Key Algorithm"
-msgstr "Thuật toán khoá"
-
-#: ../gcr/gcr-certificate-renderer.c:701
-msgid "Key Parameters"
-msgstr "Tham số Khoá"
-
-#: ../gcr/gcr-certificate-renderer.c:706
-msgid "Key Size"
-msgstr "Cỡ khoá"
-
-#: ../gcr/gcr-certificate-renderer.c:713
-#| msgid "SHA1 Fingerprint"
-msgid "Key SHA1 Fingerprint"
-msgstr "Vân tay khoá SHA1"
-
-#: ../gcr/gcr-certificate-renderer.c:719 ../gcr/gcr-key-renderer.c:294
-#: ../gcr/gcr-parser.c:263
-msgid "Public Key"
-msgstr "Khoá công khai"
-
-#: ../gcr/gcr-display-view.c:308
-#| msgid "_Details:"
-msgid "_Details"
-msgstr "_Chi tiết"
-
-#: ../gcr/gcr-failure-renderer.c:163
-#, c-format
-msgid "Could not display '%s'"
-msgstr "Không thể hiển thị '%s'"
-
-#: ../gcr/gcr-failure-renderer.c:165
-msgid "Could not display file"
-msgstr "Không thể hiển thị tập tin"
-
-#: ../gcr/gcr-failure-renderer.c:170
-#| msgid "Version"
-msgid "Reason"
-msgstr "Nguyên nhân"
-
-#: ../gcr/gcr-failure-renderer.c:203
-#, c-format
-msgid "Cannot display a file of this type."
-msgstr "Không thể hiển thị tập tin loại này."
-
-#: ../gcr/gcr-import-dialog.ui.h:1
-msgid "Import Certificates and Keys"
-msgstr "Nhập chứng nhận/khoá"
-
-#: ../gcr/gcr-import-dialog.ui.h:2
-msgid "Import Into:"
-msgstr "Nhập vào:"
-
-#: ../gcr/gcr-import-dialog.ui.h:3
-msgid "Password:"
-msgstr "Mật khẩu:"
-
-#: ../gcr/gcr-gnupg-key.c:251
-#| msgid "PGP Key: %s"
-msgid "PGP Key"
-msgstr "Khóa PGP"
-
-#: ../gcr/gcr-gnupg-key.c:631
-#| msgid "Key"
-msgctxt "column"
-msgid "Key ID"
-msgstr "ID Khóa"
-
-#: ../gcr/gcr-gnupg-process.c:632
-#, c-format
-msgid "Gnupg process exited with code: %d"
-msgstr "Tiến trình gnupg kết thúc với mã: %d"
-
-#: ../gcr/gcr-gnupg-process.c:639
-#, c-format
-msgid "Gnupg process was terminated with signal: %d"
-msgstr "Tiến trình gnupg kết thúc với tín hiệu: %d"
-
-#: ../gcr/gcr-gnupg-process.c:695 ../gcr/gcr-importer.c:293
-#: ../gcr/gcr-parser.c:1919 ../gcr/gcr-parser.c:2177
-msgid "The operation was cancelled"
-msgstr "Thao tác bị huỷ"
-
-#: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Gõ mật khẩu để mở khoá cá nhân"
-
-#: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Gõ mật khẩu để mở chứng nhận"
-
-#: ../gcr/gcr-importer.c:176 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr "Gõ mật khẩu để gỡ khoá"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:185
-msgid "In order to import the private key, it must be unlocked"
-msgstr "Để nhập khoá riêng thì nó phải được mở khoá"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:188
-msgid "In order to import the certificate, it must be unlocked"
-msgstr "Để nhập chứng nhận thì nó phải được mở khoá"
-
-#. TRANSLATORS: The data is locked.
-#: ../gcr/gcr-importer.c:191
-msgid "In order to import the data, it must be unlocked"
-msgstr "Để nhập dữ liệu, nó phải được mở khoá"
-
-#. TRANSLATORS: The key is locked.
-#: ../gcr/gcr-importer.c:196
-#, c-format
-msgid "In order to import the private key '%s', it must be unlocked"
-msgstr "Để nhập khoá riêng « %s » thì nó phải được mở khoá"
-
-#. TRANSLATORS: The certificate is locked.
-#: ../gcr/gcr-importer.c:199
-#, c-format
-msgid "In order to import the certificate '%s', it must be unlocked"
-msgstr "Để nhập chứng nhận « %s » thì nó phải được mở khoá"
-
-#. TRANSLATORS: The object '%s' is locked.
-#: ../gcr/gcr-importer.c:202
-#, c-format
-msgid "In order to import '%s', it must be unlocked"
-msgstr "Để nhập « %s » thì nó phải được mở khoá"
-
-#: ../gcr/gcr-importer.c:386
-#, c-format
-msgid "No location available to import to"
-msgstr "Không có vị trí vào đó có thể nhập dữ liệu"
-
-#: ../gcr/gcr-importer.c:537
-msgid "Import Certificates/Keys"
-msgstr "Nhập các chứng nhận/khoá"
-
-#: ../gcr/gcr-importer.c:544
-msgid "Choose a location to store the imported certificates/keys."
-msgstr "Hãy chọn một vị trí vào đó cần lưu các chứng nhận/khoá được nhập."
-
-#: ../gcr/gcr-key-renderer.c:82
-msgid "Key"
-msgstr "Khóa"
-
-#: ../gcr/gcr-key-renderer.c:283
-msgid "Private RSA Key"
-msgstr "Khoá cá nhân RSA"
-
-#: ../gcr/gcr-key-renderer.c:285
-msgid "Private DSA Key"
-msgstr "Khoá cá nhân DSA"
-
-#: ../gcr/gcr-key-renderer.c:287 ../gcr/gcr-parser.c:257
-msgid "Private Key"
-msgstr "Khoá cá nhân"
-
-#: ../gcr/gcr-key-renderer.c:290 ../gcr/gcr-key-renderer.c:292
-msgid "Public DSA Key"
-msgstr "Khoá công khai DSA"
-
-#: ../gcr/gcr-key-renderer.c:301
-#, c-format
-msgid "%d bit"
-msgid_plural "%d bits"
-msgstr[0] "%d bit"
-
-#: ../gcr/gcr-key-renderer.c:302
-msgid "Strength"
-msgstr "Độ mạnh"
-
-#: ../gcr/gcr-key-renderer.c:315
-msgid "Algorithm"
-msgstr "Thuật toán"
-
-#: ../gcr/gcr-key-renderer.c:322
-msgid "Size"
-msgstr "Cỡ"
-
-#. Fingerprints
-#: ../gcr/gcr-key-renderer.c:326
-msgid "Fingerprints"
-msgstr "Vân tay"
-
-#: ../gcr/gcr-key-renderer.c:331
-msgid "SHA1"
-msgstr "SHA1"
-
-#: ../gcr/gcr-key-renderer.c:337
-msgid "SHA256"
-msgstr "SHA256"
-
-#: ../gcr/gcr-parser.c:1922
-msgid "Unrecognized or unsupported data."
-msgstr "Dữ liệu không được nhận ra hay không được hỗ trợ."
-
-#: ../gcr/gcr-parser.c:1925
-msgid "Could not parse invalid or corrupted data."
-msgstr ""
-"Không thể phân tích cú pháp của dữ liệu không hợp lệ hay dữ liệu bị hỏng."
-
-#: ../gcr/gcr-parser.c:1928
-msgid "The data is locked"
-msgstr "Dữ liệu bị khoá"
-
-#. Translators: A pinned certificate is an exception which
-#. trusts a given certificate explicitly for a purpose and
-#. communication with a certain peer.
-#: ../gcr/gcr-trust.c:377
-#, c-format
-msgid "Couldn't find a place to store the pinned certificate"
-msgstr "Không tìm thấy vị trí lưu chứng nhận/khoá được nhập."
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:1
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:2
-msgid "Lock this keyring after"
-msgstr "Khoá vòng khoá này sau"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:3
-msgid "Lock this keyring if idle for"
-msgstr "Khoá vòng khoá này nếu vẫn nghỉ sau"
-
-#: ../gcr/gcr-unlock-options-widget.ui.h:4
-msgid "Lock this keyring when I log out"
-msgstr "Khoá vòng khoá này khi tôi đang xuất"
-
-#. Translators: The 'minutes' from 'Lock this keyring if idle for x minutes'.
-#: ../gcr/gcr-unlock-options-widget.ui.h:6
-msgid "minutes"
-msgstr "phút"
-
-#: ../gcr/gcr-unlock-renderer.c:63
-#, c-format
-#| msgid "Unlock"
-msgid "Unlock: %s"
-msgstr "Mở khoá: %s"
-
-#: ../gcr/gcr-unlock-renderer.c:65 ../gcr/gcr-unlock-renderer.c:176
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Mở khoá"
-
-#: ../gcr/gcr-unlock-renderer.c:135
-#| msgid "The unlock password was incorrect"
-msgid "The password was incorrect"
-msgstr "Mật khẩu không đúng"
-
-#: ../gcr/gcr-unlock-renderer.c:173
-#| msgid "Password:"
-msgid "Password"
-msgstr "Mật khẩu"
-
-#: ../gcr/gcr-unlock-renderer.c:324
-#, c-format
-msgid ""
-"The contents of '%s' are locked. In order to view the contents, enter the "
-"correct password."
-msgstr "Nội dung '%s' đang bị khoá. Nhập mật khẩu để xem."
-
-#: ../gcr/gcr-unlock-renderer.c:327
-msgid ""
-"The contents are locked. In order to view the contents, enter the correct "
-"password."
-msgstr "Nội dung bị khoá. Nhập mật khẩu để xem."
-
-#: ../gcr/gcr-viewer-tool.c:41
-#| msgid "Certificate and Key Storage"
-msgid "GCR Certificate and Key Viewer"
-msgstr "Trình xem chứng nhận và khoá GCR"
-
-#: ../gcr/gcr-viewer-tool.c:48
-msgid "Show the application's version"
-msgstr "Hiện phiên bản ứng dụng"
-
-#: ../gcr/gcr-viewer-tool.c:50
-msgid "[file...]"
-msgstr "[tập-tin...]"
-
-#: ../gcr/gcr-viewer-tool.c:104
-#| msgid "Certificate and Key Storage"
-msgid "- View certificate and key files"
-msgstr "- Xem tập tin chứng nhận và khoá"
-
-#: ../gcr/gcr-viewer-tool.c:118
-#| msgid "Certificate"
-msgid "Certificate Viewer"
-msgstr "Bộ xem chứng nhận"
-
-#: ../gck/gck-uri.c:173
-#, c-format
-#| msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-msgid "The URI has invalid encoding."
-msgstr "URI sai cách mã hoá."
-
-#: ../gck/gck-uri.c:177
-#| msgid "The URI has does not have the 'pkcs11' scheme."
-msgid "The URI does not have the 'pkcs11' scheme."
-msgstr "URI không tuân theo 'pkcs11'."
-
-#: ../gck/gck-uri.c:181
-msgid "The URI has bad syntax."
-msgstr "URI sai cú pháp."
-
-#: ../gck/gck-uri.c:185
-msgid "The URI has a bad version number."
-msgstr "URI sai phiên bản."
-
 #: ../pkcs11/gkm/gkm-certificate.c:572
 msgid "Unnamed Certificate"
 msgstr "Chứng nhận không tên"
@@ -907,25 +380,20 @@ msgid "Couldn't parse public SSH key"
 msgstr "Không thể phân tích cú pháp của khoá SSH công khai"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:343
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Mật khẩu gỡ khoá cho: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "Bạn đã gõ sai mật khẩu gỡ khoá"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Gỡ khoá vòng khoá đăng nhập"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
 msgstr "Nhập mật khẩu để gỡ khoá vòng khoá đăng nhập"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -933,76 +401,118 @@ msgstr ""
 "Bạn đang sử dụng một mật khẩu để đăng nhập vào máy tính mà không còn tương "
 "ứng với mật khẩu của vòng khoá đăng nhập."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Vòng khoá đăng nhập đã không được gỡ khoá khi bạn đăng nhập vào máy tính này."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "Mở vòng"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "Hãy nhập mật khẩu cho vòng khóa « %s » để mở vòng khóa"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr "Một ứng dụng muốn truy cập đến vòng khóa « %s », còn nó bị khoá"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock private key"
 msgstr "Mở khoá cá nhân"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock certificate"
 msgstr "Mở chứng nhận"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock public key"
 msgstr "Mở khoá công khai"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+msgid "Enter password to unlock the private key"
+msgstr "Gõ mật khẩu để mở khoá cá nhân"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+msgid "Enter password to unlock the certificate"
+msgstr "Gõ mật khẩu để mở chứng nhận"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock the public key"
 msgstr "Gõ mật khẩu để mở khoá công khai"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Enter password to unlock"
+msgstr "Gõ mật khẩu để gỡ khoá"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#, fuzzy
+#| msgid "Automatically unlock this keyring whenever I'm logged in"
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#, fuzzy
+#| msgid "Automatically unlock this keyring whenever I'm logged in"
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
+#, fuzzy
+#| msgid "Automatically unlock this keyring whenever I'm logged in"
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "Tự động gỡ khoá vòng khoá này khi nào tôi đã đăng nhập"
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr "Ứng dụng muốn truy cập đến khoá cá nhân %s, nhưng nó đang bị khóa"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr "Ứng dụng muốn truy cập đến chứng nhận %s, nhưng nó đang bị khóa"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "Ứng dụng muốn truy cập đến khoá công khai %s, nhưng nó đang bị khóa"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "Ứng dụng muốn truy cập đến « %s », nhưng nó bị khóa"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+msgid "The unlock password was incorrect"
+msgstr "Bạn đã gõ sai mật khẩu gỡ khoá"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Unlock certificate/key storage"
 msgstr "Mở khoá lưu trữ chứng nhận/khoá"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Nhập mật khẩu để mở khoá kho lưu chứng nhận/khoá"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -1011,34 +521,49 @@ msgstr ""
 "Một ứng dụng muốn truy cập đến kho lưu chứng nhận/khoá « %s », nhưng nó vẫn "
 "bị khóa"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Yêu cầu mật khẩu mới"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New password required for secure storage"
 msgstr "Yêu cầu mật khẩu mới để lưu trữ bảo mật"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr "Cần có mật khẩu để chuẩn bị '%s'để lưu trữ chứng nhận hay khoá"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
 msgid "Change Password"
 msgstr "Đổi mật khẩu"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#, fuzzy
+#| msgid "Change password for secure storage"
+msgid "Original password for secure storage"
+msgstr "Thay đổi mật khẩu mới để lưu trữ bảo mật"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#, fuzzy, c-format
+#| msgid ""
+#| "To change the password for '%s', the original and new passwords are "
+#| "required"
+msgid "To change the password for '%s', the original password is required"
+msgstr "Cần nhập mật khẩu cũ và mới để đổi mật khẩu cho '%s'"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change password for secure storage"
 msgstr "Thay đổi mật khẩu mới để lưu trữ bảo mật"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
-#, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr "Cần nhập mật khẩu cũ và mới để đổi mật khẩu cho '%s'"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#, fuzzy, c-format
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Type a new password for '%s'"
+msgstr "Hãy chọn một mật khẩu mới cho vòng khóa « %s »"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
@@ -1054,66 +579,469 @@ msgstr "lệnh: "
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:594
-msgid "Store passwords unencrypted?"
-msgstr "Lưu mật khẩu không mật mã không?"
+#~ msgid "Forget this password if idle for"
+#~ msgstr "Quên mật khẩu này nếu không dùng trong"
 
-#: ../ui/gku-prompt-tool.c:595
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Dùng một mật khẩu trắng thì mật khẩu đã lưu sẽ không thể được mã hoá an "
-"toàn. Mọi người đều có thể truy cập vào tập tin của bạn."
+#~ msgid "Forget this password after"
+#~ msgstr "Quên mật khẩu sau"
 
-#: ../ui/gku-prompt-tool.c:602
-msgid "Use Unsafe Storage"
-msgstr "Lưu không an toàn"
+#~ msgid "Forget this password when I log out"
+#~ msgstr "Quên mật khẩu sau khi đăng xuất"
 
-#: ../ui/gku-prompt-tool.c:642
-msgid "Passwords do not match."
-msgstr "Mật khẩu không khớp."
+#~ msgid "Error loading PKCS#11 module: %s"
+#~ msgstr "Lỗi nạp môđun PKCS#11: %s"
 
-#: ../ui/gku-prompt-tool.c:652
-msgid "Password cannot be blank"
-msgstr "Không cho phép mật khẩu trắng"
+#~ msgid "Invalid PKCS#11 module: %s"
+#~ msgstr "Môđun PKCS#11 không hợp lệ: %s"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr "Truy cập vòng khoá"
+#~ msgid "Couldn't setup PKCS#11 module: %s"
+#~ msgstr "Không thể nạp môđun PKCS#11: %s"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr "Bỏ khoá truy cập mật khẩu và những bí mật khác"
+#~ msgid "Couldn't initialize PKCS#11 module: %s"
+#~ msgstr "Không thể khởi động môđun PKCS#11: %s"
 
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Độ mạnh của mật khẩu mới"
+#~ msgid "Couldn't initialize registered PKCS#11 modules: %s"
+#~ msgstr "Không thể khởi động môđun PKCS#11 đã đăng ký: %s"
 
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "Ứn_g dụng:"
+#~| msgid "_Name:"
+#~ msgctxt "column"
+#~ msgid "Name"
+#~ msgstr "Tên"
 
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "Xá_c nhận:"
+#~| msgid "Issued On"
+#~ msgctxt "column"
+#~ msgid "Issued By"
+#~ msgstr "Cấp lúc"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr "Ch_i tiết:"
+#~| msgid "Expires"
+#~ msgctxt "column"
+#~ msgid "Expires"
+#~ msgstr "Hết hạn"
 
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "Tê_n:"
+#~ msgid "Certificate"
+#~ msgstr "Chứng nhận"
 
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "Mật khẩu _cũ:"
+#~ msgid ""
+#~ "<b>A file already exists with this name.</b>\n"
+#~ "\n"
+#~ "Do you want to replace it with a new file?"
+#~ msgstr ""
+#~ "<b>Đã có tập tin cùng tên.</b>\n"
+#~ "\n"
+#~ "Bạn có muốn thay bằng tập tin mới không?"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Mật khẩu:"
+#~ msgid "_Replace"
+#~ msgstr "_Thay thế"
+
+#~| msgid "The operation was cancelled"
+#~ msgid "The operation was cancelled."
+#~ msgstr "Thao tác bị huỷ."
+
+#~| msgid "Unlock certificate"
+#~ msgid "Export certificate"
+#~ msgstr "Xuất chứng nhận"
+
+#~| msgid "Certificate"
+#~ msgid "Certificate files"
+#~ msgstr "Tập tin chứng nhận"
+
+#~ msgid "PEM files"
+#~ msgstr "Tập tin PEM"
+
+#~| msgid "Issuer Name"
+#~ msgid "Other Name"
+#~ msgstr "Tên khác"
+
+#~ msgid "XMPP Addr"
+#~ msgstr "Địa chỉ XMPP"
+
+#~ msgid "DNS SRV"
+#~ msgstr "DNS SRV"
+
+#~ msgid "Email"
+#~ msgstr "Địa chỉ thư"
+
+#~| msgid "DSA"
+#~ msgid "DNS"
+#~ msgstr "DNS"
+
+#~| msgid "Email Address"
+#~ msgid "X400 Address"
+#~ msgstr "Địa chỉ X400"
+
+#~| msgid "Subject Name"
+#~ msgid "Directory Name"
+#~ msgstr "Tên thư mục"
+
+#~ msgid "URI"
+#~ msgstr "URI"
+
+#~| msgid "Email Address"
+#~ msgid "IP Address"
+#~ msgstr "Địa chỉ IP"
+
+#~| msgid "User ID"
+#~ msgid "Registered ID"
+#~ msgstr "ID đăng ký"
+
+#~ msgid "Basic Constraints"
+#~ msgstr "Ràng buộc cơ bản"
+
+#~| msgid "Certificate"
+#~ msgid "Certificate Authority"
+#~ msgstr "Nhà cầm quyền chứng nhận (CA)"
+
+#~ msgid "Yes"
+#~ msgstr "Có"
+
+#~ msgid "No"
+#~ msgstr "Không"
+
+#~ msgid "Max Path Length"
+#~ msgstr "Độ dài đường dẫn tối đa"
+
+#~| msgid "Unnamed"
+#~ msgid "Unlimited"
+#~ msgstr "Không giới hạn"
+
+#~ msgid "Extended Key Usage"
+#~ msgstr "Dùng khoá mở rộng"
+
+#~ msgid "Allowed Purposes"
+#~ msgstr "Mục đích được phép"
+
+#~| msgid "Identifier"
+#~ msgid "Subject Key Identifier"
+#~ msgstr "Dấu nhận diện khoá chủ đề"
+
+#~| msgid "Identifier"
+#~ msgid "Key Identifier"
+#~ msgstr "Dấu nhận diện khoá"
+
+#~| msgid "Signature"
+#~ msgid "Digital signature"
+#~ msgstr "Chữ ký điện tử"
+
+#~ msgid "Key encipherment"
+#~ msgstr "Mật mã hoá khoá"
+
+#~ msgid "Data encipherment"
+#~ msgstr "Mật mã hoá dữ liệu"
+
+#~| msgid "Certificate"
+#~ msgid "Certificate signature"
+#~ msgstr "Chữ ký chứng nhận"
+
+#~ msgid "Revocation list signature"
+#~ msgstr "Chữ ký danh sách thu hồi"
+
+#~ msgid "Key Usage"
+#~ msgstr "Cách dùng khoá"
+
+#~ msgid "Usages"
+#~ msgstr "Cách dùng"
+
+#~| msgid "Subject Name"
+#~ msgid "Subject Alternative Names"
+#~ msgstr "Tên thay thế chủ đề"
+
+#~ msgid "Extension"
+#~ msgstr "Phần mở rộng"
+
+#~ msgid "Identifier"
+#~ msgstr "Dấu nhận diện"
+
+#~ msgid "Value"
+#~ msgstr "Giá trị"
+
+#~ msgid "Critical"
+#~ msgstr "Tới hạn"
+
+#~| msgid "Couldn't find a place to store the pinned certificate"
+#~ msgid "Couldn't export the certificate."
+#~ msgstr "Không thể xuất chứng nhận."
+
+#~ msgid "Identity"
+#~ msgstr "Nhận diện"
+
+#~ msgid "Verified by"
+#~ msgstr "Kiểm chứng bởi"
+
+#~ msgid "Expires"
+#~ msgstr "Hết hạn"
+
+#~ msgid "Subject Name"
+#~ msgstr "Tên chủ đề"
+
+#~ msgid "Issuer Name"
+#~ msgstr "Tên nhà cấp"
+
+#~ msgid "Issued Certificate"
+#~ msgstr "Chứng nhận đã cấp"
+
+#~ msgid "Version"
+#~ msgstr "Phiên bản"
+
+#~ msgid "Not Valid Before"
+#~ msgstr "Không đúng đắn trước"
+
+#~ msgid "Not Valid After"
+#~ msgstr "Không đúng đắn sau"
+
+#~| msgid "Fingerprints"
+#~ msgid "Certificate Fingerprints"
+#~ msgstr "Vân tay chứng nhận"
+
+#~ msgid "Signature"
+#~ msgstr "Chữ ký"
+
+#~ msgid "Signature Algorithm"
+#~ msgstr "Thuật toán chữ ký"
+
+#~ msgid "Signature Parameters"
+#~ msgstr "Tham số Chữ ký"
+
+#~ msgid "Public Key Info"
+#~ msgstr "Thông tin khoá công khai"
+
+#~ msgid "Key Algorithm"
+#~ msgstr "Thuật toán khoá"
+
+#~ msgid "Key Parameters"
+#~ msgstr "Tham số Khoá"
+
+#~ msgid "Key Size"
+#~ msgstr "Cỡ khoá"
+
+#~| msgid "SHA1 Fingerprint"
+#~ msgid "Key SHA1 Fingerprint"
+#~ msgstr "Vân tay khoá SHA1"
+
+#~ msgid "Public Key"
+#~ msgstr "Khoá công khai"
+
+#~| msgid "_Details:"
+#~ msgid "_Details"
+#~ msgstr "_Chi tiết"
+
+#~ msgid "Could not display '%s'"
+#~ msgstr "Không thể hiển thị '%s'"
+
+#~ msgid "Could not display file"
+#~ msgstr "Không thể hiển thị tập tin"
+
+#~| msgid "Version"
+#~ msgid "Reason"
+#~ msgstr "Nguyên nhân"
+
+#~ msgid "Cannot display a file of this type."
+#~ msgstr "Không thể hiển thị tập tin loại này."
+
+#~ msgid "Import Certificates and Keys"
+#~ msgstr "Nhập chứng nhận/khoá"
+
+#~ msgid "Import Into:"
+#~ msgstr "Nhập vào:"
+
+#~ msgid "Password:"
+#~ msgstr "Mật khẩu:"
+
+#~| msgid "PGP Key: %s"
+#~ msgid "PGP Key"
+#~ msgstr "Khóa PGP"
+
+#~| msgid "Key"
+#~ msgctxt "column"
+#~ msgid "Key ID"
+#~ msgstr "ID Khóa"
+
+#~ msgid "Gnupg process exited with code: %d"
+#~ msgstr "Tiến trình gnupg kết thúc với mã: %d"
+
+#~ msgid "Gnupg process was terminated with signal: %d"
+#~ msgstr "Tiến trình gnupg kết thúc với tín hiệu: %d"
+
+#~ msgid "The operation was cancelled"
+#~ msgstr "Thao tác bị huỷ"
+
+#~ msgid "In order to import the private key, it must be unlocked"
+#~ msgstr "Để nhập khoá riêng thì nó phải được mở khoá"
+
+#~ msgid "In order to import the certificate, it must be unlocked"
+#~ msgstr "Để nhập chứng nhận thì nó phải được mở khoá"
+
+#~ msgid "In order to import the data, it must be unlocked"
+#~ msgstr "Để nhập dữ liệu, nó phải được mở khoá"
+
+#~ msgid "In order to import the private key '%s', it must be unlocked"
+#~ msgstr "Để nhập khoá riêng « %s » thì nó phải được mở khoá"
+
+#~ msgid "In order to import the certificate '%s', it must be unlocked"
+#~ msgstr "Để nhập chứng nhận « %s » thì nó phải được mở khoá"
+
+#~ msgid "In order to import '%s', it must be unlocked"
+#~ msgstr "Để nhập « %s » thì nó phải được mở khoá"
+
+#~ msgid "No location available to import to"
+#~ msgstr "Không có vị trí vào đó có thể nhập dữ liệu"
+
+#~ msgid "Import Certificates/Keys"
+#~ msgstr "Nhập các chứng nhận/khoá"
+
+#~ msgid "Choose a location to store the imported certificates/keys."
+#~ msgstr "Hãy chọn một vị trí vào đó cần lưu các chứng nhận/khoá được nhập."
+
+#~ msgid "Key"
+#~ msgstr "Khóa"
+
+#~ msgid "Private RSA Key"
+#~ msgstr "Khoá cá nhân RSA"
+
+#~ msgid "Private DSA Key"
+#~ msgstr "Khoá cá nhân DSA"
+
+#~ msgid "Private Key"
+#~ msgstr "Khoá cá nhân"
+
+#~ msgid "Public DSA Key"
+#~ msgstr "Khoá công khai DSA"
+
+#~ msgid "%d bit"
+#~ msgid_plural "%d bits"
+#~ msgstr[0] "%d bit"
+
+#~ msgid "Strength"
+#~ msgstr "Độ mạnh"
+
+#~ msgid "Algorithm"
+#~ msgstr "Thuật toán"
+
+#~ msgid "Size"
+#~ msgstr "Cỡ"
+
+#~ msgid "Fingerprints"
+#~ msgstr "Vân tay"
+
+#~ msgid "SHA1"
+#~ msgstr "SHA1"
+
+#~ msgid "SHA256"
+#~ msgstr "SHA256"
+
+#~ msgid "Unrecognized or unsupported data."
+#~ msgstr "Dữ liệu không được nhận ra hay không được hỗ trợ."
+
+#~ msgid "Could not parse invalid or corrupted data."
+#~ msgstr ""
+#~ "Không thể phân tích cú pháp của dữ liệu không hợp lệ hay dữ liệu bị hỏng."
+
+#~ msgid "The data is locked"
+#~ msgstr "Dữ liệu bị khoá"
+
+#~ msgid "Couldn't find a place to store the pinned certificate"
+#~ msgstr "Không tìm thấy vị trí lưu chứng nhận/khoá được nhập."
+
+#~ msgid "Lock this keyring after"
+#~ msgstr "Khoá vòng khoá này sau"
+
+#~ msgid "Lock this keyring if idle for"
+#~ msgstr "Khoá vòng khoá này nếu vẫn nghỉ sau"
+
+#~ msgid "Lock this keyring when I log out"
+#~ msgstr "Khoá vòng khoá này khi tôi đang xuất"
+
+#~ msgid "minutes"
+#~ msgstr "phút"
+
+#~| msgid "Unlock"
+#~ msgid "Unlock: %s"
+#~ msgstr "Mở khoá: %s"
+
+#~| msgid "The unlock password was incorrect"
+#~ msgid "The password was incorrect"
+#~ msgstr "Mật khẩu không đúng"
+
+#~| msgid "Password:"
+#~ msgid "Password"
+#~ msgstr "Mật khẩu"
+
+#~ msgid ""
+#~ "The contents of '%s' are locked. In order to view the contents, enter the "
+#~ "correct password."
+#~ msgstr "Nội dung '%s' đang bị khoá. Nhập mật khẩu để xem."
+
+#~ msgid ""
+#~ "The contents are locked. In order to view the contents, enter the correct "
+#~ "password."
+#~ msgstr "Nội dung bị khoá. Nhập mật khẩu để xem."
+
+#~| msgid "Certificate and Key Storage"
+#~ msgid "GCR Certificate and Key Viewer"
+#~ msgstr "Trình xem chứng nhận và khoá GCR"
+
+#~ msgid "Show the application's version"
+#~ msgstr "Hiện phiên bản ứng dụng"
+
+#~ msgid "[file...]"
+#~ msgstr "[tập-tin...]"
+
+#~| msgid "Certificate and Key Storage"
+#~ msgid "- View certificate and key files"
+#~ msgstr "- Xem tập tin chứng nhận và khoá"
+
+#~| msgid "Certificate"
+#~ msgid "Certificate Viewer"
+#~ msgstr "Bộ xem chứng nhận"
+
+#~| msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
+#~ msgid "The URI has invalid encoding."
+#~ msgstr "URI sai cách mã hoá."
+
+#~| msgid "The URI has does not have the 'pkcs11' scheme."
+#~ msgid "The URI does not have the 'pkcs11' scheme."
+#~ msgstr "URI không tuân theo 'pkcs11'."
+
+#~ msgid "The URI has bad syntax."
+#~ msgstr "URI sai cú pháp."
+
+#~ msgid "The URI has a bad version number."
+#~ msgstr "URI sai phiên bản."
+
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "Lưu không an toàn"
+
+#~ msgid "Passwords do not match."
+#~ msgstr "Mật khẩu không khớp."
+
+#~ msgid "Password cannot be blank"
+#~ msgstr "Không cho phép mật khẩu trắng"
+
+#~ msgid "Keyring Access"
+#~ msgstr "Truy cập vòng khoá"
+
+#~ msgid "Unlock access to passwords and other secrets"
+#~ msgstr "Bỏ khoá truy cập mật khẩu và những bí mật khác"
+
+#~ msgid "New password strength"
+#~ msgstr "Độ mạnh của mật khẩu mới"
+
+#~ msgid "_Application:"
+#~ msgstr "Ứn_g dụng:"
+
+#~ msgid "_Confirm:"
+#~ msgstr "Xá_c nhận:"
+
+#~ msgid "_Details:"
+#~ msgstr "Ch_i tiết:"
+
+#~ msgid "_Name:"
+#~ msgstr "Tê_n:"
+
+#~ msgid "_Old Password:"
+#~ msgstr "Mật khẩu _cũ:"
+
+#~ msgid "_Password:"
+#~ msgstr "_Mật khẩu:"
 
 #~ msgid "Fingerprint"
 #~ msgstr "Vân tay"
