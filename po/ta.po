@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-28 16:19+0530\n"
-"PO-Revision-Date: 2012-02-28 16:39+0530\n"
+"POT-Creation-Date: 2012-09-02 17:53+0530\n"
+"PO-Revision-Date: 2012-09-02 18:02+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -27,11 +27,11 @@ msgstr ""
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
 msgstr "பெயரில்லாதது"
 
@@ -46,15 +46,24 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
 msgstr ""
-"ஒரு பயன்பாடு '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
-"பழைய கடவுச்சொல்லை நீங்கள் தேர்ந்தெடுக்க வேண்டும்."
+"ஒரு பயன்பாடு '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான பழைய "
+"கடவுச்சொல்லை நீங்கள் தேர்ந்தெடுக்க வேண்டும்."
 
-#: ../daemon/dbus/gkd-secret-change.c:125
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+msgid "Continue"
+msgstr "தொடர்க"
+
+#: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "'%s' விசை வளையத்திற்கு ஒரு புதிய கடவுச்சொல்லை தேர்ந்தெடுக்கவும். "
 
-#: ../daemon/dbus/gkd-secret-change.c:129
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -63,12 +72,12 @@ msgstr ""
 "ஒரு பயன்பாடு '%s' விசை வளையத்திற்கு கடவுச்சொல்லை மாற்ற விரும்புகிறது. அதற்கான "
 "கடவுச்சொல்லை நீங்கள் தேர்ந்தெடுக்க வேண்டும்."
 
-#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-change.c:142
 #: ../daemon/dbus/gkd-secret-create.c:95
 msgid "Store passwords unencrypted?"
 msgstr "கடவுச்சொற்களை சுருக்க குறியாக்கம் செய்யாமலே சேமிக்கவா? "
 
-#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:97
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
@@ -78,11 +87,11 @@ msgstr ""
 "ஒரு வெற்று கடவுச்சொல்லை தேர்ந்தெடுப்பதால் உங்கள் சேமிக்கப்பட்ட கடவுச்சொறகள் மறையாக்கம் "
 "செய்யப்படவில்லை. உங்கள் கோப்பை யாரால் அணூக முடியுமோ அவர் இதை பார்க்கலாம்."
 
-#: ../daemon/dbus/gkd-secret-change.c:149
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "அசல் கடவுச்சொல் தவறானது."
 
-#: ../daemon/dbus/gkd-secret-change.c:349
+#: ../daemon/dbus/gkd-secret-change.c:356
 msgid "Change Keyring Password"
 msgstr "விசை வளைய கடவுச்சொல்லை மாற்றவும்"
 
@@ -99,7 +108,7 @@ msgstr ""
 msgid "Choose password for new keyring"
 msgstr "புதிய விசை வளையத்திற்கான கடவுச்சொல்லை தேர்வு செய்யவும்"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:312
 msgid "New Keyring Password"
 msgstr "புதிய விசை வளைய கடவுச்சொல்"
 
@@ -144,12 +153,22 @@ msgstr "தெரியாத"
 msgid "PGP Key: %s"
 msgstr "PGP விசை: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
 msgid "Enter Passphrase"
 msgstr "கடவுச்சொற்களை உள்ளிடவும்"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+msgid "Unlock"
+msgstr "பூட்டை திற"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசையை பூட்டு திறக்கவும்."
 
@@ -351,29 +370,29 @@ msgstr "select()ல் சேய் செயல்பாட்டிலிர�
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() ல் எதிர்பாராத பிழை(%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:581
 msgid "Unnamed Certificate"
 msgstr "பெயரிடப்படாத சான்றிதழ்"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
 msgstr "பொது SSH விசையை பகுக்க முடியாது"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "இவருக்கு விசை வளையத்தை திறக்க கடவுச்சொல்: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "விசை வளையத்தின் பூட்டை திற"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 msgid "Enter password to unlock your login keyring"
 msgstr "உங்கள் விசை வளையத்தை திறக்க உள்நுழைவு கடவுச்சொல்லை உள்ளிடுக"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -381,81 +400,77 @@ msgstr ""
 "உங்கள் கணினியில்   உள்நுழைய நீங்கள் பயன்படுத்தும் கடவுச்சொல் உங்கள் விசை வளையத்துடன் "
 "பொருந்தவில்லை."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
 msgid "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "நீங்கள் உங்கள் கணினியில் உள்நுழைந்த போது உள்நுழைவு விசை வளையம் தானியங்கியாக பூட்டு "
 "நீக்கப்படவில்லை."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "விசை வளையத்தின் பூட்டை திற"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "பூட்டைத்திறக்க '%s' விசை வளையத்தின் கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
 "ஒரு பயன்பாடு இயல்பான விசை வளையம் '%s', ஐ அணுக முயற்சிக்கிறது ஆனால் அது "
 "பூட்டப்பட்டுள்ளது."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசை வளையத்தை பூட்டு திறக்கவும்."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
 msgstr "அந்தரங்க விசையின் பூட்டை திற"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "சான்றிதழின் பூட்டை திற"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
 msgstr "பொது விசையின் பூட்டை திற"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock"
-msgstr "பூட்டை திற"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
 msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "சான்றிதழின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
 msgstr "பொது விசையின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 msgid "Automatically unlock this key whenever I'm logged in"
 msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த விசையை பூட்டு திறக்கவும்."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
 msgid "Automatically unlock this certificate whenever I'm logged in"
 msgstr "நான் உள்நுழையும்போது தானியங்கியாக இந்த சான்றிதழின் பூட்டு திறக்கவும்."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I'm logged in"
 msgstr "நான் உள்நுழையும்போது தானியங்கியாக பூட்டு திறக்கவும்."
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -463,40 +478,40 @@ msgstr ""
 "பூட்டப்பட்டுள்ளது."
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
 "ஒரு பயன்பாடு உங்கள் சான்றிதழ் '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
 "ஒரு பயன்பாடு உங்கள் பொது விசை '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "ஒரு பயன்பாடு '%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது பூட்டப்பட்டுள்ளது."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "The unlock password was incorrect"
 msgstr "திறவு கடவுச்சொல் தவறானது."
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Unlock certificate/key storage"
 msgstr "பூட்டப்படாத சான்றிதழ்/விசை சேமிப்பகம்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "சான்றிதழ்/விசை சேமிப்பக பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -505,40 +520,40 @@ msgstr ""
 "ஒரு பயன்பாடு உங்கள் சான்றிதழ்/விசை சேமிப்பக'%s', ஐ அணுக முயற்சிக்கிறது, ஆனால் அது "
 "பூட்டப்பட்டுள்ளது."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "புதிய கடவுச்சொல் தேவைப்படுகிறது"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "சேமிப்பை பாதுகாக்க புதிய கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr "'%s'ஐ சான்றிதழ்கள் அல்லது விசைகளுக்கு சேமிப்பகமாக்க ஒரு கடவுச்சொல் தேவைப்படுகிறது"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "கடவுச்சொல்லை மாற்றவும்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
 msgid "Original password for secure storage"
 msgstr "பாதுகாப்பான சேமிப்புக்கு பழைய கடவுச்சொல்"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for '%s', the original password is required"
 msgstr "'%s' க்கு கடவுச்சொல் மாற்ற பழைய கடவுச்சொல் தேவை"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 msgid "Change password for secure storage"
 msgstr "சேமிப்பை பாதுகாக்க கடவுச்சொல்லை மாற்றுக"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for '%s'"
 msgstr "'%s' க்கு ஒரு புதிய கடவுச்சொல்லை உள்ளிடுக"
