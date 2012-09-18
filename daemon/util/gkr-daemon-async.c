@@ -41,7 +41,7 @@
 #define DO_LOCK(mtx) G_STMT_START { \
 		g_printerr ("%s LOCK %s\n", __func__, G_STRINGIFY(mtx));  \
 		g_atomic_int_inc (&waiting_on_lock); \
-		if (g_atomic_int_get (&waiting_on_poll)) g_main_context_wakeup (main_ctx); \
+		g_main_context_wakeup (main_ctx); \
 		g_mutex_lock (mtx);  \
 		g_atomic_int_add (&waiting_on_lock, -1); \
         } G_STMT_END
@@ -52,7 +52,7 @@
 #else
 #define DO_LOCK(mtx) G_STMT_START { \
 		g_atomic_int_inc (&waiting_on_lock); \
-		if (g_atomic_int_get (&waiting_on_poll)) g_main_context_wakeup (main_ctx); \
+		g_main_context_wakeup (main_ctx); \
 		g_mutex_lock (mtx); \
 		g_atomic_int_add (&waiting_on_lock, -1); \
 	} G_STMT_END
