@@ -1254,6 +1254,13 @@ rpc_C_Finalize (CK_VOID_PTR reserved)
 				warning (("finalizing the daemon returned an error: %d", ret));
 		}
 
+		/* Cleanup the call state pool */
+		while (call_state_pool) {
+			cs = call_state_pool;
+			call_state_pool = cs->next;
+			call_destroy (cs);
+		}
+
 		/* This should stop all other calls in */
 		pkcs11_initialized = 0;
 		pkcs11_initialized_pid = 0;
