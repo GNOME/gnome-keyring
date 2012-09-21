@@ -783,6 +783,10 @@ gkr_daemon_initialize_steps (const gchar *components)
 	 */
 
 	if (!initialization_completed) {
+
+		/* The LANG environment variable may have changed */
+		setlocale (LC_ALL, "");
+
 		initialization_completed = TRUE;
 		if (timeout_id)
 			g_source_remove (timeout_id);
