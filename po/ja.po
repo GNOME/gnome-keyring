@@ -6,28 +6,29 @@
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2012.
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2010.
 # Hideki Yamane <henrich@debian.org>, 2011.
-#  	   
+# Noriko Mizumoto <noriko@fedoraproject.org>, 2012.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-01-05 12:16+0000\n"
-"PO-Revision-Date: 2012-01-03 15:19+0900\n"
-"Last-Translator: Hideki Yamane <henrich@debian.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-09-20 06:17+0000\n"
+"PO-Revision-Date: 2012-09-24 11:47+0000\n"
+"Last-Translator: Noriko Mizumoto <noriko@fedoraproject.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
 msgstr "名前なし"
 
@@ -38,74 +39,66 @@ msgstr "キーリング '%s' の元のパスワードを入力してください
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
-msgid ""
-"An application wants to change the password for the '%s' keyring. Enter the "
-"old password for it."
-msgstr ""
-"アプリケーションが '%s' というキーリングのパスワードを変更しようとしていま"
-"す。このキーリングの元のパスワードを指定してください。"
+msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
+msgstr "アプリケーションが '%s' というキーリングのパスワードを変更しようとしています。このキーリングの元のパスワードを指定してください。"
 
-#: ../daemon/dbus/gkd-secret-change.c:125
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+msgid "Continue"
+msgstr "続ける"
+
+#: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "キーリング '%s' の新しいパスワードを入力してください"
 
-#: ../daemon/dbus/gkd-secret-change.c:129
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
-msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
-"new password you want to use for it."
-msgstr ""
-"アプリケーションが '%s' というキーリングのパスワードを変更しようとしていま"
-"す。このキーリングで使用する新しいパスワードを指定してください。"
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "アプリケーションが '%s' というキーリングのパスワードを変更しようとしています。このキーリングで使用する新しいパスワードを指定してください。"
 
-#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-change.c:142
 #: ../daemon/dbus/gkd-secret-create.c:95
 msgid "Store passwords unencrypted?"
 msgstr "暗号化していないパスワードを保存しますか?"
 
-#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:97
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されま"
-"せん。他の人達がこれらのパスワードを利用する可能性があります。"
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "空のパスワードを利用する場合、保存しておいたパスワードは完全には暗号化されません。他の人達がこれらのパスワードを利用する可能性があります。"
 
-#: ../daemon/dbus/gkd-secret-change.c:149
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "元のパスワードが違います"
 
-#: ../daemon/dbus/gkd-secret-change.c:349
+#: ../daemon/dbus/gkd-secret-change.c:356
 msgid "Change Keyring Password"
 msgstr "キーリングのパスワードの変更"
 
 #: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"アプリケーションが '%s' という新しいキーリングを生成しようとしています。この"
-"キーリングで使用するパスワードを指定してください。"
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "アプリケーションが '%s' という新しいキーリングを生成しようとしています。このキーリングで使用するパスワードを指定してください。"
 
 #: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
 msgstr "新しいキーリングのパスワード指定"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:312
 msgid "New Keyring Password"
 msgstr "新しいキーリングのパスワード"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME キーリング: GPG エージェント"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
 msgid "GPG Password Agent"
 msgstr "GPG パスワードエージェント"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME キーリング: GPG エージェント"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -115,22 +108,22 @@ msgstr "証明書および鍵を格納するストレージ"
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME キーリング: PKCS#11 コンポーネント"
 
-# FIXME: シークレットサービス、でいいか
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME キーリング: シークレットサービス"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "シークレットストレージサービス"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME キーリング: SSH エージェント"
+# FIXME: シークレットサービス、でいいか
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME キーリング: シークレットサービス"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr "SSH 鍵エージェント"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME キーリング: SSH エージェント"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
@@ -141,12 +134,22 @@ msgstr "不明"
 msgid "PGP Key: %s"
 msgstr "PGP 鍵: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
 msgid "Enter Passphrase"
 msgstr "パスフレーズを入力してください"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+msgid "Unlock"
+msgstr "ロックの解除"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "ログイン中はいつでもこの鍵のロックを自動的に解除"
 
@@ -181,7 +184,7 @@ msgstr "stale したロックファイルを削除中 (%d により作成)\n"
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr ""
+msgstr "ロックを待機中 (%d%s が保持) %s...\n"
 
 #: ../egg/dotlock.c:1085
 msgid "(deadlock?) "
@@ -190,12 +193,12 @@ msgstr "(デッドロック?)"
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr ""
+msgstr "`%s' のロックは実行されませんでした: %s\n"
 
 #: ../egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr ""
+msgstr "%s のロックを待機中...\n"
 
 # 参考: インターネットX.509 PKI: 証明書と CRL のプロファイル
 # http://www.ipa.go.jp/security/rfc/RFC5280-04JA.html
@@ -350,201 +353,172 @@ msgstr "select() が子プロセスからデータ読み込み中に予期しな
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() での予期しないエラー (%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:581
 msgid "Unnamed Certificate"
 msgstr "名前なしの証明書"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
 msgstr "SSH の公開鍵を解析できませんでした"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "パスワードのロックを解除: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "ログインのキーリングのロック解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 msgid "Enter password to unlock your login keyring"
 msgstr "パスワードを入力してログインのキーリングのロックを解除してください"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-"コンピューターへのログインに使用するパスワードが、もはやログインキーリングの"
-"パスワードと一致しなくなっています。"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "コンピューターへのログインに使用するパスワードが、もはやログインキーリングのパスワードと一致しなくなっています。"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-"コンピューターにログインする際、ログインキーリングがロックを解除しませんでし"
-"た。"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "コンピューターにログインする際、ログインキーリングがロックを解除しませんでした。"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "キーリングのロック解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "キーリング '%s' のロックを解除するパスワードを入力してください"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"アプリケーションがキーリング '%s' へアクセスしようとしましたが、ロックがか"
-"かっていました。"
+msgstr "アプリケーションがキーリング '%s' へアクセスしようとしましたが、ロックがかかっていました。"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
 msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr "ログイン中はいつでもこのキーリングのロックを自動的に解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
 msgstr "秘密鍵のロック解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "証明書のロック解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
 msgstr "公開鍵のロック解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock"
-msgstr "ロックの解除"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
 msgstr "パスワードを入力して秘密鍵のロックを解除してください"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "パスワードを入力して証明書のロックを解除してください"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
 msgstr "パスワードを入力して公開鍵のロックを解除してください"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "パスワードを入力してロックを解除してください"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 msgid "Automatically unlock this key whenever I'm logged in"
 msgstr "ログイン中はいつでもこの鍵のロックを自動的に解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
 msgid "Automatically unlock this certificate whenever I'm logged in"
 msgstr "ログイン中はいつでもこの証明書のロックを自動的に解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I'm logged in"
 msgstr "ログイン中は自動的にロックを解除"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"アプリケーションが秘密鍵 '%s' にアクセスしようとしましたが、ロックがかかって"
-"いました。"
-
-#. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-"アプリケーションが証明書 '%s' にアクセスしようとしましたが、ロックがかかって"
-"いました。"
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "アプリケーションが秘密鍵 '%s' にアクセスしようとしましたが、ロックがかかっていました。"
 
-#. TRANSLATORS: The public key is locked
+#. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-"アプリケーションが公開鍵 '%s' にアクセスしようとしましたが、ロックがかかって"
-"いました。"
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "アプリケーションが証明書 '%s' にアクセスしようとしましたが、ロックがかかっていました。"
 
-#. TRANSLATORS: The object '%s' is locked
+#. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr ""
-"アプリケーションが '%s' にアクセスしようとしましたが、ロックがかかっていまし"
-"た。"
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "アプリケーションが公開鍵 '%s' にアクセスしようとしましたが、ロックがかかっていました。"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "アプリケーションが '%s' にアクセスしようとしましたが、ロックがかかっていました。"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "The unlock password was incorrect"
 msgstr "解除パスワードが間違っています"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Unlock certificate/key storage"
 msgstr "証明書/鍵を格納したストレージのロック解除"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"パスワードを入力して証明書/鍵を格納したストレージのロックを解除してください"
+msgstr "パスワードを入力して証明書/鍵を格納したストレージのロックを解除してください"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"アプリケーションが証明書/鍵を格納したストレージ ('%s') にアクセスしようとしま"
-"したが、ロックがかかっていました。"
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "アプリケーションが証明書/鍵を格納したストレージ ('%s') にアクセスしようとしましたが、ロックがかかっていました。"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "新しいパスワードが必要です"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "セキュアなストレージにするには新しいパスワードが必要です"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-"'%s' を証明書またはキーを格納するストレージにするにはパスワードが必要です"
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "'%s' を証明書またはキーを格納するストレージにするにはパスワードが必要です"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "パスワードの変更"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
 msgid "Original password for secure storage"
 msgstr "セキュアストレージの元のパスワード"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for '%s', the original password is required"
 msgstr "'%s' のパスワードを変更するには、元のパスワードが必要です"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 msgid "Change password for secure storage"
 msgstr "セキュアストレージのパスワードを変更"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for '%s'"
 msgstr "'%s' の新しいパスワードを入力してください"
