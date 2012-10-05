@@ -2,23 +2,23 @@
 # translation of gnome-keyring.HEAD.ml.po to
 # This file is distributed under the same license as the gnome-keyring package.
 # Copyright (C) 2006-2008 gnome-keyring'S COPYRIGHT HOLDER.
-# Ani Peter <apeter@redhat.com>, 2006, 2009, 2012.
+# Ani Peter <apeter@redhat.com>, 2006, 2009.
 # ashik salahudeen <aashiks@gmail.com>, 2008.
 # Reviewed by Praveen Arimbrathodiyil <pravi.a@gmail.com>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master.ml\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
-"cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-06-19 08:09+0000\n"
-"PO-Revision-Date: 2012-09-18 23:39+0000\n"
-"Last-Translator: Ani Peter <apeter@redhat.com>\n"
-"Language-Team: Malayalam <discuss@lists.smc.org.in>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-08-08 15:59+0000\n"
+"PO-Revision-Date: 2009-09-12 18:27+0530\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
@@ -26,15 +26,15 @@ msgstr ""
 #: ../daemon/dbus/gkd-secret-change.c:121
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
-msgstr "പേരിടാത്ത"
+msgstr "പേരില്ലാത്തത്"
 
 #: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
-msgstr "'%s' എന്ന ചാവിക്കൂട്ടത്തിനുള്ള പഴയ രഹസ്യവാക്ക് നല്‍കുക"
+msgstr "'%s' എന്ന ചാവിക്കൂട്ടത്തിനായി പഴയ രഹസ്യവാക്ക് നല്‍കുക"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
@@ -42,15 +42,15 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
 msgstr ""
-"ഒരു പ്രയോഗത്തിനു് '%s' എന്ന ചാവിക്കൂട്ടത്തിന്റെ രഹസ്യവാക്ക് മാറ്റണമെന്നുണ്ട് . "
-"ഇതിനായി പഴയ രഹസ്യവാക്ക് നല്‍കുക."
+"ഒരു പ്രയോഗത്തിന് '%s' എന്ന ചാവിക്കൂട്ടത്തിന്റെ അടയാളവാക്കു് മാറ്റണമെന്നുണ്ട് . അതിനായി പഴയ "
+"രഹസ്യവാക്ക് നല്‍കുക."
 
 #: ../daemon/dbus/gkd-secret-change.c:100
 #: ../daemon/dbus/gkd-secret-change.c:136
 #: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "തുടരുക"
 
@@ -65,8 +65,8 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"ഒരു പ്രയോഗത്തിനു് '%s' എന്ന ചാവിക്കൂട്ടത്തിന്റെ രഹസ്യവാക്ക് മാറ്റണമെന്നുണ്ടു്."
-"അതിനായി പുതിയ രഹസ്യവാക്ക് നല്‍കുക."
+"ഒരു പ്രയോഗത്തിന് '%s' എന്ന ചാവിക്കൂട്ടത്തിന്റെ അടയാളവാക്കു് മാറ്റണമെന്നുണ്ട് . അതിനായി "
+"ഉപയോഗിക്കേണ്ട പുതിയ രഹസ്യവാക്ക് നല്‍കുക."
 
 #: ../daemon/dbus/gkd-secret-change.c:142
 #: ../daemon/dbus/gkd-secret-create.c:95
@@ -84,8 +84,9 @@ msgstr ""
 "നിങ്ങളുടെ ഫയലുകളുടെ നിയന്ത്രണം ഉള്ള ആര്‍ക്കും ഉപയോഗിക്കാന്‍ കഴിയും"
 
 #: ../daemon/dbus/gkd-secret-change.c:152
+#, fuzzy
 msgid "The original password was incorrect"
-msgstr "യഥാര്‍ത്ഥ രഹസ്യവാക്ക് തെറ്റാണു്"
+msgstr "അടയാളവാക്കു് അല്ലെങ്കില്‍ PIN തെറ്റാണ്"
 
 #: ../daemon/dbus/gkd-secret-change.c:356
 msgid "Change Keyring Password"
@@ -97,96 +98,102 @@ msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
-"ഒരു പ്രയോഗത്തിന്  '%s' എന്ന് പേരുള്ള ഒരു ചാവിക്കൂട്ടം ഉണ്ടാക്കണമെന്നുണ്ട്. അതിനായി "
-"ഒരു രഹസ്യവാക്ക് നല്‍കുക."
+"ഒരു പ്രയോഗത്തിന്  '%s' എന്ന് പേരുള്ള ഒരു ചാവിക്കൂട്ടം ഉണ്ടാക്കണമെന്നുണ്ട്. അതിനായി ഉപയോഗിക്കേണ്ട "
+"രഹസ്യവാക്ക് നല്‍കുക"
 
 #: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
 msgstr "പുതിയ ചാവിക്കൂട്ടത്തിനായുള്ള അടയാളവാക്കു് തെരഞ്ഞെടുക്കുക"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:312
 msgid "New Keyring Password"
 msgstr "പുതിയ ചാവിക്കൂട്ടത്തിനുള്ള അടയാളവാക്കു്"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+#, fuzzy
 msgid "GPG Password Agent"
-msgstr "ജിപിജി പാസ്‌വേര്‍ഡ് ഏജന്റ്"
+msgstr "പുതിയ അടയാളവാക്യത്തിന്റെ ശക്തി"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+#, fuzzy
 msgid "GNOME Keyring: GPG Agent"
-msgstr "ഗ്നോം കീറിങ്: ജിപിജി ഏജന്റ്"
+msgstr "ഗ്നോം കീറിങ് ഡെമണ്‍"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+#, fuzzy
 msgid "Certificate and Key Storage"
-msgstr "സാക്ഷ്യപത്രവും കീ സംഭരണവും"
+msgstr "സാക്ഷ്യപത്രത്തിന്റെ/കീ സ്റ്റോറേജിന്റെ പൂട്ടു തുറക്കുക"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+#, fuzzy
 msgid "GNOME Keyring: PKCS#11 Component"
-msgstr "ഗ്നോം കീറിങ്: PKCS#11 ഘടകം"
+msgstr "ഗ്നോം കീറിങ് ഡെമണ്‍"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
 msgid "Secret Storage Service"
-msgstr "രഹസ്യ സംഭരണ സേവനം"
+msgstr ""
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+#, fuzzy
 msgid "GNOME Keyring: Secret Service"
-msgstr "ഗ്നോം കീറിങ്: രഹസ്യ സേവനം"
+msgstr "ഗ്നോം കീറിങ് ഡെമണ്‍"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
-msgstr "എസ്എസ്എച് കീ ഏജന്റ്"
+msgstr ""
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#, fuzzy
 msgid "GNOME Keyring: SSH Agent"
-msgstr "ഗ്നോം കീറിങ്: എസ്എസ്എച് ഏജന്റ്"
+msgstr "ഗ്നോം കീറിങ് ഡെമണ്‍"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
-msgstr "അപരിചിതം"
+msgstr "അജ്ഞാതമായത്"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
-msgstr "പിജിപി കീ: %s"
+msgstr ""
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
 msgid "Enter Passphrase"
-msgstr "പാസ്‌ഫ്രെയിസ് നല്‍കുക"
+msgstr ""
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
 msgid "Unlock"
 msgstr "പൂട്ടു തുറക്കുക"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "പ്രവേശിയ്ക്കുമ്പോള്‍, ഓട്ടോമാറ്റിയ്ക്കായി ഈ കീ തുറക്കുക."
+msgstr ""
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:145
 msgid "Login"
-msgstr "പ്രവേശിയ്ക്കുക"
+msgstr "പ്രവേശിക്കുക"
 
 #: ../egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr "താല്‍ക്കാലിക ഫയല്‍ `%s' തയ്യാറാക്കുന്നതില്‍ പരാജയം: %s\n"
+msgstr "താല്കാലിക ഫൈല്‍ `%s'നിര്‍മിക്കുന്നതില്‍ പരാജയപ്പെട്ടു : %s\n"
 
 #: ../egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
-msgstr "`%s'-ലേക്കു് സൂക്ഷിയ്ക്കുന്നതില്‍ പിശക്: %s\n"
+msgstr "`%s'ഇലോട്ട് എഴുതുന്നതില്‍ പിശക്: %s\n"
 
 #: ../egg/dotlock.c:782
 #, c-format
 msgid "can't create `%s': %s\n"
-msgstr "`%s' തയ്യാറാക്കുവാന്‍ സാധ്യമല്ല: %s\n"
+msgstr "`%s' നിര്‍മ്മുക്കുവാന്‍ സാധിക്കുന്നില്ല: %s\n"
 
 #. Note: It is unlikley that we get a race here unless a pid is
 #. reused too fast or a new process with the same pid as the one
@@ -194,26 +201,26 @@ msgstr "`%s' തയ്യാറാക്കുവാന്‍ സാധ്യമ
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr "സ്റ്റേല്‍ ലോക്ക്ഫയല്‍ നീക്കം ചെയ്യുവാന്‍ സാധ്യമല്ല (തയ്യാറാക്കിയതു് %d)\n"
+msgstr ""
 
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr "പൂട്ടിനായി കാത്തിരിയ്ക്കുന്നു (%d%s സൂക്ഷിയ്ക്കുന്നു) %s...\n"
+msgstr ""
 
 #: ../egg/dotlock.c:1085
 msgid "(deadlock?) "
-msgstr "(ഡെഡ്‌ലോക്ക്?) "
+msgstr ""
 
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr "`%s' പൂട്ട് തയ്യാറല്ല: %s\n"
+msgstr ""
 
 #: ../egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr "%s പൂട്ടിനായി കാത്തിരിയ്ക്കുന്നു...\n"
+msgstr ""
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -225,7 +232,7 @@ msgstr "ഉപയോക്തൃ ID"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr "ഈമെയില്‍ വിലാസം"
+msgstr "ഇമെയ്ല്‍ വിലാസം"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -337,139 +344,139 @@ msgstr "DSA-യ്ക്കൊപ്പം SHA1"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
+#, fuzzy
 msgid "Server Authentication"
-msgstr "സര്‍വര്‍ ഓഥന്റിക്കേഷന്‍"
+msgstr "SSL സര്‍വര്‍ സാക്ഷ്യപത്രം"
 
 #: ../egg/egg-oid.c:108
+#, fuzzy
 msgid "Client Authentication"
-msgstr "ക്ലയന്റ് ഓഥന്റിക്കേഷന്‍"
+msgstr "SSL ക്ലൈന്റ് സാക്ഷ്യപത്രം"
 
 #: ../egg/egg-oid.c:109
 msgid "Code Signing"
-msgstr "കോഡ് ഒപ്പിടല്‍"
+msgstr ""
 
 #: ../egg/egg-oid.c:110
 msgid "Email Protection"
-msgstr "ഈമെയില്‍ സുരക്ഷ"
+msgstr ""
 
 #: ../egg/egg-oid.c:111
 msgid "Time Stamping"
-msgstr "ടൈം സ്റ്റാമ്പിങ്"
+msgstr ""
 
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
-"ഒരു ചൈള്‍ഡ് പ്രക്രിയ (%s)-ല്‍ നിന്നും ഡേറ്റാ ലഭ്യമാക്കുന്നതില്‍, select()-ല്‍ അപ്രതീക്ഷിതമായ "
-"പിശക് "
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr "waitpid()-ല്‍ അപ്രതീക്ഷിതമായ പിശക് (%s)"
+msgstr ""
 
-#: ../pkcs11/gkm/gkm-certificate.c:577
+#: ../pkcs11/gkm/gkm-certificate.c:581
 msgid "Unnamed Certificate"
 msgstr "പേരില്ലാത്ത സാക്ഷ്യപത്രം"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:337
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
 msgstr "പബ്ളിക് SSH കീ പാഴ്സ് ചെയ്യുവാന്‍ സാധിച്ചില്ല"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, c-format
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#, fuzzy, c-format
 msgid "Unlock password for: %s"
-msgstr "പൂട്ട് തുറക്കുന്നതിനുള്ള രഹസ്യവാക്ക്: %s"
+msgstr "%s എന്ന ചാവിക്കൂട്ടത്തിന്റെ പൂട്ടു തുറക്കുന്നതിനായുള്ള അടയാളവാക്കു് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "ലോഗിന്‍ ചാവിക്കൂട്ടത്തിന്റെ പൂട്ടു തുറക്കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
+#, fuzzy
 msgid "Enter password to unlock your login keyring"
-msgstr "നിങ്ങളുടെ പ്രവേശന ചാവിക്കൂട്ടം തുറക്കാനായി രഹസ്യവാക്ക് നല്‍കുക"
+msgstr "ചാവിക്കൂട്ടത്തിന്റെ പൂട്ടു തുറക്കാനായി നിങ്ങളുടെ ലോഗിന്‍ അടയാളവാക്ക് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
-"നിങ്ങളുടെ കമ്പ്യൂട്ടറിലേക്കു് പ്രവേശിയ്ക്കുന്നതിനുള്ള രഹസ്യവാക്ക്, നിങ്ങളുടെ പ്രവേശന "
-"ചാവിക്കൂട്ടവുമായി "
-"പൊരുത്തപ്പെടുന്നില്ല."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
-msgid "The login keyring did not get unlocked when you logged into your computer."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
+#, fuzzy
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"നിങ്ങള്‍ ഈ കമ്പ്യൂട്ടറില്‍ ലോഗിന്‍ ചെയ്തപ്പോള്‍, നിങ്ങളുടെ ലോഗിന്‍ ചാവിക്കൂട്ടത്തിന്റെ പൂട്ട് "
+"നിങ്ങളുടെ ലോഗിന്‍ ചാവിക്കൂട്ടത്തിന്റെ പൂട്ട് നിങ്ങള്‍ ഈ കമ്പ്യൂട്ടറില്‍ ലോഗിന്‍ ചെയ്തപ്പോള്‍ "
 "തുറക്കപ്പെട്ടില്ല"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "ചാവിക്കൂട്ടം തുറക്കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' എന്ന ചാവിക്കൂട്ടം തുറക്കുന്നതിനായുള്ള അടയാളവാക്കു് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
-#, c-format
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
+#, fuzzy, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"ഒരു പ്രയോഗത്തിന്  '%s' എന്ന ചാവിക്കൂട്ടത്തിലേയ്ക്കു് പ്രവേശനം ആവശ്യമുണ്ടു്  പക്ഷെ അതു്"
+"അജ്ഞാതമായ ഒരു പ്രയോഗത്തിന്  '%s' എന്ന ചാവിക്കൂട്ടത്തിലേയ്ക്കു് പ്രവേശനം ആവശ്യമുണ്ട്  പക്ഷെ അത് "
 "പൂട്ടിയിരിയ്ക്കുന്നു"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
 msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "പ്രവേശിയ്ക്കുമ്പോള്‍ ഓട്ടോമാറ്റിയ്ക്കായി ഈ കീറിങിന്റെ പൂട്ട് തുറക്കുക"
+msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
 msgstr "പ്രൈവറ്റ് കീയുടെ പൂട്ടു തുറക്കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "സാക്ഷ്യപത്രത്തിന്റെ പൂട്ടു തുറക്കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
 msgstr "പബ്ളിക് കീയുടെ പൂട്ടു തുറക്കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
 msgstr "പ്രൈവറ്റ് കീയുടെ പൂട്ടു തുറക്കുന്നതിനായി അടയാളവാക്കു് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "സാക്ഷ്യപത്രത്തിന്റെ പൂട്ടു തുറക്കുന്നതിനായി അടയാളവാക്കു് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
-msgstr "പബ്ളിക് കീയുടെ പൂട്ടു തുറക്കുന്നതിനായി രഹസ്യവാക്ക് നല്‍കുക"
+msgstr "പബ്ളിക് കീയുടെ പൂട്ടു തുറക്കുന്നതിനായി അടയാളവാക്കു് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
-msgstr "പൂട്ടു തുറക്കുന്നതിനായി രഹസ്യവാക്ക് നല്‍കുക"
+msgstr "പൂട്ടു തുറക്കുന്നതിനായി അടയാളവാക്കു് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 msgid "Automatically unlock this key whenever I'm logged in"
-msgstr "പ്രവേശിയ്ക്കുമ്പോള്‍ ഓട്ടോമാറ്റിയ്ക്കായി ഈ കീയുടെ പൂട്ട് തുറക്കുക"
+msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
 msgid "Automatically unlock this certificate whenever I'm logged in"
-msgstr "പ്രവേശിയ്ക്കുമ്പോള്‍ ഈ സമ്മതപത്രത്തിന്റെ പൂട്ടു് ഓട്ടോമാറ്റിയ്ക്കായി തുറക്കുക"
+msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I'm logged in"
-msgstr "പ്രവേശിയ്ക്കുമ്പോള്‍ ഓട്ടോമാറ്റിയ്ക്കായി പൂട്ട് തുറക്കുക"
+msgstr ""
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -478,7 +485,7 @@ msgstr ""
 
 # c-format
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
@@ -486,33 +493,34 @@ msgstr ""
 "പൂട്ടിയിരിക്കുന്നു "
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr "അജ്ഞാതമായ ഒരു പ്രയോഗത്തിന് '%s' പ്രവേശനം ആവശ്യമാണ്, പക്ഷേ അത് പൂട്ടിയിരിക്കുന്നു "
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr "അജ്ഞാതമായ ഒരു പ്രയോഗത്തിന് '%s'ലേക്ക് പ്രവേശനം ആവശ്യമാണ്, പക്ഷേ അത് പൂട്ടിയിരിക്കുന്നു "
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#, fuzzy
 msgid "The unlock password was incorrect"
-msgstr "പൂട്ട് തുറക്കുന്നതിനുള്ള രഹസ്യവാക്ക് തെറ്റാണു്"
+msgstr "അടയാളവാക്കു് അല്ലെങ്കില്‍ PIN തെറ്റാണ്"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Unlock certificate/key storage"
 msgstr "സാക്ഷ്യപത്രത്തിന്റെ/കീ സ്റ്റോറേജിന്റെ പൂട്ടു തുറക്കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "സാക്ഷ്യപത്രത്തിന്റെ പൂട്ടു തുറക്കുന്നതിനായി അടയാളവാക്കു്/കീ സ്റ്റോറേജ് നല്‍കുക"
 
 # c-format
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -521,57 +529,59 @@ msgstr ""
 "ഒരു പ്രയോഗത്തിന് '%s' എന്ന സാക്ഷ്യപത്രം/കീ സ്റ്റോറേജ് ലഭ്യമാക്കുവാന്‍ അനുവാദം വേണം, പക്ഷേ  അത് "
 "പൂട്ടിയിരിക്കുന്നു "
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "പുതിയ അടയാളവാക്കു് ആവശ്യമുണ്ടു്"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "സ്റ്റോറേജ് സംരക്ഷിക്കുവാനായുള്ള പുതിയ അടയാളവാക്ക് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr "'%s'-നുള്ള സാക്ഷ്യപത്രങ്ങളും കീകളും സൂക്ഷിക്കുന്നതിനായി, ഒരു അടയാളവാക്കു് ആവശ്യമാണു്."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "രഹസ്യവാക്ക് മാറ്റുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+#, fuzzy
 msgid "Original password for secure storage"
-msgstr "സ്റ്റോറേജ് സംരക്ഷിക്കുന്നതിനുള്ള ശരിയായ രഹസ്യവാക്ക്"
+msgstr "സ്റ്റോറേജ് സംരക്ഷിക്കുവാനായുള്ള പുതിയ അടയാളവാക്ക് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for '%s', the original password is required"
-msgstr "'%s'-നുള്ള രഹസ്യവാക്ക് മാറ്റുന്നതിനായി, ശരിയായ രഹസ്യവാക്ക് ആവശ്യമാകുന്നു"
+msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+#, fuzzy
 msgid "Change password for secure storage"
-msgstr "സ്റ്റോറേജ് സംരക്ഷിക്കുന്നതിനായി രഹസ്യവാക്ക മാറ്റുക"
+msgstr "സ്റ്റോറേജ് സംരക്ഷിക്കുവാനായുള്ള പുതിയ അടയാളവാക്ക് നല്‍കുക"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for '%s'"
-msgstr "'%s'-നുള്ളൊരു പുതിയ രഹസ്യവാക്ക് തെരഞ്ഞെടുക്കുക."
+msgstr "'%s' ഇനായി പുതിയ ഒരു രഹസ്യവാക്ക് തെരഞ്ഞെടുക്കുക."
 
 #: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr "ഉപയോഗിയ്ക്കേണ്ടവിധം: gnome-keyring കമാന്‍ഡ് [ഐച്ഛികങ്ങള്‍]\n"
+msgstr ""
 
 #: ../tool/gkr-tool.c:104
 msgid "commands: "
-msgstr "കമാന്‍ഡുകള്‍: "
+msgstr "ആജ്ഞകള്‍: "
 
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr "          "
+msgstr "       "
 
 #~ msgid "Use Unsafe Storage"
 #~ msgstr "സുരക്ഷിതമല്ലാത്ത സ്റ്റോറേജ് ഉപയോഗിക്കുക"
