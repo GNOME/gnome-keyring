@@ -738,15 +738,18 @@ static void
 setup_item_from_info (GkmSecretItem *item, GkmSecretData *data, ItemInfo *info)
 {
 	GkmSecretObject *obj = GKM_SECRET_OBJECT (item);
+	const gchar *schema_name;
 	GkmSecret *secret;
-	const gchar *type;
 
 	gkm_secret_object_set_label (obj, info->display_name);
 	gkm_secret_object_set_created (obj, info->ctime);
 	gkm_secret_object_set_modified (obj, info->mtime);
 
-	type = gkm_secret_compat_format_item_type (info->type);
-	gkm_secret_item_set_schema (item, type);
+	schema_name = g_hash_table_lookup (info->attributes, GKM_SECRET_FIELD_SCHEMA);
+	if (schema_name == NULL)
+		schema_name = gkm_secret_compat_format_item_type (info->type);
+	gkm_secret_item_set_schema (item, schema_name);
+
 	gkm_secret_item_set_fields (item, info->attributes);
 
 	/* Collection is locked */

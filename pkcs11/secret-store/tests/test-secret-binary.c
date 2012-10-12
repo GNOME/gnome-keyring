@@ -225,6 +225,26 @@ test_read_created_on_rhel (Test *test, gconstpointer unused)
 	g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
 }
 
+static void
+test_read_with_schema (Test *test,
+                       gconstpointer unused)
+{
+	GkmDataResult res;
+	GkmSecret *master;
+	GkmSecretItem *item;
+
+	master = gkm_secret_new_from_password ("test");
+	gkm_secret_data_set_master (test->sdata, master);
+	g_object_unref (master);
+	res = check_read_keyring_file (test, SRCDIR "/files/encrypted-with-schema.keyring");
+	g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
+
+	item = gkm_secret_collection_get_item (test->collection, "1");
+	g_assert (item != NULL);
+
+	g_assert_cmpstr (gkm_secret_item_get_schema (item), ==, "se.lostca.is.rishi.secret");
+}
+
 int
 main (int argc, char **argv)
 {
@@ -239,6 +259,7 @@ main (int argc, char **argv)
 	g_test_add ("/secret-store/binary/remove_unavailable", Test, NULL, setup, test_remove_unavailable, teardown);
 	g_test_add ("/secret-store/binary/created_on_rhel", Test, NULL, setup, test_read_created_on_rhel, teardown);
 	g_test_add ("/secret-store/binary/created_on_solaris_opencsw", Test, NULL, setup, test_read_created_on_solaris_opencsw, teardown);
+	g_test_add ("/secret-store/binary/read_with_schema", Test, NULL, setup, test_read_with_schema, teardown);
 
 	return g_test_run ();
 }

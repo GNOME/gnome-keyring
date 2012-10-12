@@ -122,7 +122,10 @@ generate_attributes (GKeyFile *file, GkmSecretItem *item)
 }
 
 static void
-parse_attributes (GKeyFile *file, GkmSecretItem *item, const gchar **groups)
+parse_attributes (GKeyFile *file,
+                  GkmSecretItem *item,
+                  const gchar **groups,
+                  gint compat_type)
 {
 	GHashTable *attributes;
 	const gchar *identifier;
@@ -130,6 +133,7 @@ parse_attributes (GKeyFile *file, GkmSecretItem *item, const gchar **groups)
 	gchar *prefix;
 	gchar *name, *type;
 	guint64 number;
+	const gchar *schema_name;
 
 	/* Now do the attributes */
 
@@ -163,6 +167,12 @@ parse_attributes (GKeyFile *file, GkmSecretItem *item, const gchar **groups)
 	}
 
 	gkm_secret_item_set_fields (item, attributes);
+
+	schema_name = g_hash_table_lookup (attributes, GKM_SECRET_FIELD_SCHEMA);
+	if (schema_name == NULL)
+		schema_name = gkm_secret_compat_format_item_type (compat_type);
+	gkm_secret_item_set_schema (item, schema_name);
+
 	g_hash_table_unref (attributes);
 	g_free (prefix);
 }
@@ -331,7 +341,6 @@ parse_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata,
 		g_clear_error (&err);
 		type = 0;
 	}
-	gkm_secret_item_set_schema (item, gkm_secret_compat_format_item_type (type));
 
 	val = g_key_file_get_string (file, identifier, "display-name", NULL);
 	gkm_secret_object_set_label (obj, val);
@@ -374,7 +383,7 @@ parse_item (GKeyFile *file, GkmSecretItem *item, GkmSecretData *sdata,
 		gkm_secret_object_set_created (obj, num);
 
 	/* Now the other stuff */
-	parse_attributes (file, item, groups);
+	parse_attributes (file, item, groups, type);
 	parse_acl (file, item, groups);
 }
 

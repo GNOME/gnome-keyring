@@ -189,6 +189,28 @@ test_remove_unavailable (Test *test, gconstpointer unused)
 	g_free (data);
 }
 
+static void
+test_read_with_schema (Test *test,
+                             gconstpointer unused)
+{
+	GkmDataResult res;
+	GkmSecretItem *item;
+	gchar *data;
+	gsize n_data;
+
+	if (!g_file_get_contents (SRCDIR "/files/plain-with-schema.keyring", &data, &n_data, NULL))
+		g_assert_not_reached ();
+	res = gkm_secret_textual_read (test->collection, test->sdata, data, n_data);
+	g_assert (res == GKM_DATA_SUCCESS);
+
+	item = gkm_secret_collection_get_item (test->collection, "1");
+	g_assert (item != NULL);
+
+	g_assert_cmpstr (gkm_secret_item_get_schema (item), ==, "se.lostca.is.rishi.secret");
+
+	g_free (data);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -200,6 +222,7 @@ main (int argc, char **argv)
 	g_test_add ("/secret-store/search/read_bad_number", Test, NULL, setup, test_read_bad_number, teardown);
 	g_test_add ("/secret-store/search/write", Test, NULL, setup, test_write, teardown);
 	g_test_add ("/secret-store/search/remove_unavailable", Test, NULL, setup, test_remove_unavailable, teardown);
+	g_test_add ("/secret-store/search/read-with-schema", Test, NULL, setup, test_read_with_schema, teardown);
 
 	return g_test_run ();
 }

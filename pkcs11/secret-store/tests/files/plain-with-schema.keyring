@@ -1,0 +1,23 @@
+[keyring]
+display-name=test
+ctime=0
+mtime=0
+lock-on-idle=false
+lock-after=false
+
+[1]
+item-type=0
+display-name=Secret Test Credentials
+secret=pa$$w0rd
+mtime=1350055423
+ctime=0
+
+[1:attribute0]
+name=rishi-identity
+type=string
+value=rishi-identity
+
+[1:attribute1]
+name=xdg:schema
+type=string
+value=se.lostca.is.rishi.secret
