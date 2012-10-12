@@ -8,7 +8,6 @@ noinst_LTLIBRARIES = \
 	libegg-dbus.la \
 	libegg-secure.la \
 	libegg-prompt.la \
-	libegg-entry-buffer.la \
 	libegg-hex.la \
 	libegg-test.la
 
@@ -76,14 +75,6 @@ libegg_asn1x_la_CFLAGS = \
 
 libegg_secure_la_SOURCES = \
 	egg-secure-memory.c egg-secure-memory.h
-
-libegg_entry_buffer_la_SOURCES = \
-	egg-entry-buffer.c egg-entry-buffer.h
-
-libegg_entry_buffer_la_CFLAGS = \
-	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
 
 libegg_buffer_la_SOURCES = \
 	egg-buffer.c egg-buffer.h 

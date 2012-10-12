@@ -2,12 +2,10 @@ INCLUDES= \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	-I$(top_srcdir)/daemon \
-	$(GTK_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 LIBS = \
 	$(GLIB_LIBS) \
-	$(GTK_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(P11_TESTS_LIBS)
 

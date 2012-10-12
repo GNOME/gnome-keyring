@@ -26,7 +26,6 @@ gnome_keyring_@GKR_MAJOR@_LDADD = \
 	$(GCK_LIBS) \
 	$(GCR_LIBS) \
 	$(GTHREAD_LIBS) \
-	$(GTK_LIBS) \
 	$(GCRYPT_LIBS) \
 	$(DAEMON_LIBS)
 
