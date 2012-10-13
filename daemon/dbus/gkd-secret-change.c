@@ -51,6 +51,7 @@ struct _GkdSecretChange {
 	gchar *collection_path;
 	GckSession *session;
 	GkdSecretSecret *master;
+	GckObject *ocred;
 	gboolean unlocked;
 	gboolean confirmed;
 };
@@ -165,7 +166,6 @@ on_prompt_original_complete (GObject *source,
 	GckAttributes *attrs;
 	GError *error = NULL;
 	GckObject *collection;
-	GckObject *cred;
 
 	gcr_prompt_password_finish (GCR_PROMPT (source), result, &error);
 	if (error != NULL) {
@@ -190,9 +190,9 @@ on_prompt_original_complete (GObject *source,
 		attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 
 		/* Create the original credential, in order to make sure we can unlock the collection */
-		cred = gkd_secret_session_create_credential (original->session,
-		                                             self->session, attrs,
-		                                             original, &error);
+		self->ocred = gkd_secret_session_create_credential (original->session,
+		                                                    self->session, attrs,
+		                                                    original, &error);
 
 		gck_attributes_unref (attrs);
 
@@ -210,8 +210,7 @@ on_prompt_original_complete (GObject *source,
 		/* The unlock succeeded */
 		} else {
 			if (self->session == NULL)
-				self->session = gck_object_get_session (cred);
-			gck_object_destroy (cred, NULL, NULL);
+				self->session = gck_object_get_session (self->ocred);
 			self->unlocked = TRUE;
 		}
 	}
@@ -220,7 +219,6 @@ on_prompt_original_complete (GObject *source,
 		perform_prompting (self, collection);
 
 	gkd_secret_secret_free (original);
-	g_clear_object (&cred);
 	g_clear_object (&collection);
 }
 
@@ -357,12 +355,29 @@ gkd_secret_change_init (GkdSecretChange *self)
 }
 
 static void
+gkd_secret_change_dispose (GObject *obj)
+{
+	GkdSecretChange *self = GKD_SECRET_CHANGE (obj);
+
+	if (self->ocred) {
+		gck_object_destroy (self->ocred, NULL, NULL);
+		g_object_unref (self->ocred);
+		self->ocred = NULL;
+	}
+
+	G_OBJECT_CLASS (gkd_secret_change_parent_class)->dispose (obj);
+}
+
+static void
 gkd_secret_change_finalize (GObject *obj)
 {
 	GkdSecretChange *self = GKD_SECRET_CHANGE (obj);
 
 	g_free (self->collection_path);
-	self->collection_path = NULL;
+	if (self->master)
+		gkd_secret_secret_free (self->master);
+	if (self->session)
+		g_object_unref (self->session);
 
 	G_OBJECT_CLASS (gkd_secret_change_parent_class)->finalize (obj);
 }
@@ -407,6 +422,7 @@ gkd_secret_change_class_init (GkdSecretChangeClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkdSecretPromptClass *prompt_class = GKD_SECRET_PROMPT_CLASS (klass);
 
+	gobject_class->dispose = gkd_secret_change_dispose;
 	gobject_class->finalize = gkd_secret_change_finalize;
 	gobject_class->get_property = gkd_secret_change_get_property;
 	gobject_class->set_property = gkd_secret_change_set_property;
