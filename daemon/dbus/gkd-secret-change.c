@@ -512,9 +512,8 @@ cleanup:
 		g_object_unref (ocred);
 	}
 	if (mcred) {
-		/* Destroy the master credential if failed */
-		if (!result)
-			gck_object_destroy (mcred, NULL, NULL);
+		/* Always destroy the master credential */
+		gck_object_destroy (mcred, NULL, NULL);
 		g_object_unref (mcred);
 	}
 
