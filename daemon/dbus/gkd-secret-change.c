@@ -135,6 +135,7 @@ setup_password_prompt (GkdSecretChange *self,
 
 	gcr_prompt_set_password_new (prompt, TRUE);
 	gcr_prompt_set_continue_label (prompt, _("Continue"));
+	gcr_prompt_set_warning (prompt, NULL);
 }
 
 static void
