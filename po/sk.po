@@ -1,17 +1,19 @@
 # Slovak translation for gnome-keyring.
-# Copyright (C) 2004, 2005, 2007, 2009 Free Software Foundation, Inc. 
+# Copyright (C) 2004, 2005, 2007, 2009, 2012 Free Software Foundation, Inc. 
 # This file is distributed under the same license as the gnome-keyring package.
 # Marcel Telka <marcel@telka.sk>, 2004, 2005.
 # Peter Tuharsky <tuharsky@misbb.sk>, 2007.
 # Mário Buči <mario.buci@gmail.com>, 2009.
+# Marián Čavojský <cavo+gnomel10n@cavo.sk>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2010-12-14 10:33+0100\n"
-"Last-Translator: Mário Buči <mario.buci@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-08-08 15:59+0000\n"
+"PO-Revision-Date: 2012-03-09 18:08+0100\n"
+"Last-Translator: Marián Čavojský <cavo+gnomel10n@cavo.sk>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
@@ -20,121 +22,198 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:121
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
+msgstr "Bez názvu"
+
+#: ../daemon/dbus/gkd-secret-change.c:90
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Zadajte staré heslo pre zväzok kľúčov „%s“"
+
+#: ../daemon/dbus/gkd-secret-change.c:94
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
 msgstr ""
+"Aplikácia chce zmeniť heslo pre zväzok kľúčov „%s“. Zadajte jeho staré heslo."
 
-# PŠ: keďže to je titulok okna, skôr "Zmena hesla zväzku kľúčov"
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "Zmeniť heslo zväzku kľúčov"
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+msgid "Continue"
+msgstr "Pokračovať"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
+#: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "Zvoľte si nové heslo pre zväzok kľúčov '%s'"
+msgstr "Zvoľte si nové heslo pre zväzok kľúčov „%s“"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Aplikácia chce zmeniť heslo pre zväzok kľúčov '%s'. Zvoľte si nové heslo, "
+"Aplikácia chce zmeniť heslo pre zväzok kľúčov „%s“. Zvoľte si nové heslo, "
 "ktorým ho chcete chrániť."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
+#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "Uchovávať heslá bez šifrovania?"
+
+#: ../daemon/dbus/gkd-secret-change.c:144
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Ak použijete prázdne heslo, nebudú vaše uložené heslá bezpečne šifrované. "
+"Budú prístupné komukoľvek, kto má prístup k vašim súborom."
+
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Pôvodné heslo bolo nesprávne"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Nové heslo zväzku kľúčov"
+#: ../daemon/dbus/gkd-secret-change.c:356
+msgid "Change Keyring Password"
+msgstr "Zmena hesla zväzku kľúčov"
 
-#: ../daemon/dbus/gkd-secret-create.c:84
-msgid "Choose password for new keyring"
-msgstr "Zvoľte si heslo pre nový zväzok kľúčov"
-
-#: ../daemon/dbus/gkd-secret-create.c:86
+#: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
-"Aplikácia chce vytvoriť nový zväzok kľúčov nazvaný '%s'. Zvoľte si heslo, "
+"Aplikácia chce vytvoriť nový zväzok kľúčov nazvaný „%s“. Zvoľte si heslo, "
 "ktorým ho chcete chrániť."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
+msgid "Choose password for new keyring"
+msgstr "Zvoľte si heslo pre nový zväzok kľúčov"
+
+#: ../daemon/dbus/gkd-secret-create.c:312
+msgid "New Keyring Password"
+msgstr "Nové heslo zväzku kľúčov"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GPG Password Agent"
+msgstr "Agent hesiel GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GPG agent zväzku kľúčov GNOME"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
 msgstr "Úložisko certifikátov a kľúčov"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
-#, fuzzy
 msgid "GNOME Keyring: PKCS#11 Component"
-msgstr "Démon zväzku kľúčov GNOME"
+msgstr "Modul PKCS#11 zväzku kľúčov GNOME"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-#, fuzzy
-msgid "GNOME Keyring: Secret Service"
-msgstr "Démon zväzku kľúčov GNOME"
+msgid "Secret Storage Service"
+msgstr "Služba utajeného úložiska"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
-msgid "Secret Storage Service"
-msgstr ""
+msgid "GNOME Keyring: Secret Service"
+msgstr "Služba utajenia zväzku kľúčov GNOME"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-#, fuzzy
-msgid "GNOME Keyring: SSH Agent"
-msgstr "Démon zväzku kľúčov GNOME"
+msgid "SSH Key Agent"
+msgstr "Agent kľúčov SSH"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
-msgid "SSH Key Agent"
-msgstr ""
+msgid "GNOME Keyring: SSH Agent"
+msgstr "SSH agent zväzku kľúčov GNOME"
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-#, fuzzy
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Démon zväzku kľúčov GNOME"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#, fuzzy
-msgid "GPG Password Agent"
-msgstr "Sila nového hesla"
-
+# MČ: "PGP Key: %s" %s -> Neznámy
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-#, fuzzy
 msgid "Unknown"
-msgstr "Neznáma chyba"
+msgstr "Neznámy"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
-msgstr ""
+msgstr "PGP kľúč: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
 msgid "Enter Passphrase"
-msgstr ""
+msgstr "Zadajte heslo"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr ""
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+msgid "Unlock"
+msgstr "Odomknúť"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr ""
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "Automaticky odomknúť tento kľúč zakaždým keď sa prihlásim"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
-msgstr ""
+msgstr "Prihlasovacie meno"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "zlyhalo vytvorenie dočasného súboru „%s“: %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "chyba zápisu do „%s“: %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "nedá sa vytvoriť „%s“: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "odstraňuje sa zastaraný uzamykací súbor (vytvorený %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "čaká sa na zámok (držaný %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(zaseknutie?)"
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "zámok „%s“ nebol vytvorený: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "čaká sa na zámok %s...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -142,11 +221,11 @@ msgstr "Komponent domény"
 
 #: ../egg/egg-oid.c:43
 msgid "User ID"
-msgstr "Idetifikátor používateľa"
+msgstr "Identifikátor používateľa"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr ""
+msgstr "Emailová adresa"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -222,13 +301,15 @@ msgstr "Krstné meno"
 msgid "Initials"
 msgstr "Iniciály"
 
+# MČ: http://www.alvestrand.no/objectid/2.5.4.44.html
 #: ../egg/egg-oid.c:91
 msgid "Generation Qualifier"
-msgstr ""
+msgstr "Kvalifikátor vytvorenia"
 
+# MČ: http://www.alvestrand.no/objectid/2.5.4.46.html
 #: ../egg/egg-oid.c:93
 msgid "DN Qualifier"
-msgstr ""
+msgstr "Kvalifikátor DN"
 
 #: ../egg/egg-oid.c:95
 msgid "Pseudonym"
@@ -260,164 +341,181 @@ msgstr "SHA1 s DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
-#, fuzzy
 msgid "Server Authentication"
-msgstr "SSL certifikát servera"
+msgstr "Overenie totožnosti servera"
 
 #: ../egg/egg-oid.c:108
-#, fuzzy
 msgid "Client Authentication"
-msgstr "SSL certifikát klienta"
+msgstr "Overenie totožnosti klienta"
 
 #: ../egg/egg-oid.c:109
 msgid "Code Signing"
-msgstr ""
+msgstr "Podpisovanie údajov"
 
 #: ../egg/egg-oid.c:110
 msgid "Email Protection"
-msgstr ""
+msgstr "Ochrana emailov"
 
 #: ../egg/egg-oid.c:111
 msgid "Time Stamping"
-msgstr ""
+msgstr "Časové pečiatkovanie"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
+"Neočakávaná chyba vo funkcii select() pri čítaní údajov z dcérskeho procesu "
+"(%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr ""
+msgstr "Neočakávaná chyba vo funkcii waitpid() (%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:581
 msgid "Unnamed Certificate"
 msgstr "Nepomenovaný certifikát"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
 msgstr "Nepodarilo sa analyzovať verejný SSH kľúč"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Odomknúť heslo pre: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "Heslo na odomknutie bolo nesprávne"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "Odomknúť prihlasovací zväzok kľúčov"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 msgid "Enter password to unlock your login keyring"
 msgstr "Zadajte heslo na odomknutie prihlasovacieho zväzku kľúčov"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
+"Heslo použité na prihlásenie ku vášmu počítaču sa už nezhoduje s tým ku "
+"prihlasovaciemu zväzku kľúčov."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Prihlasovací zväzok kľúčov sa neodomkol, keď ste sa prihlásili do počítača."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "Odomknúť zväzok kľúčov"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Zadajte heslo na odomknutie zväzku kľúčov '%s'"
+msgstr "Zadajte heslo na odomknutie zväzku kľúčov „%s“"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Aplikácia požaduje prístup ku zväzku kľúčov '%s', ten je ale uzamknutý"
+msgstr "Aplikácia požaduje prístup ku zväzku kľúčov „%s“, ten je ale uzamknutý"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Automaticky odomknúť tento zväzok kľúčov zakaždým keď sa prihlásim"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
 msgstr "Odomknúť súkromný kľúč"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "Odomknúť certifikát"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
 msgstr "Odomknúť verejný kľúč"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "Odomknúť"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
 msgstr "Zadajte heslo na odomknutie súkromného kľúča"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "Zadajte heslo na odomknutie certifikátu"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
 msgstr "Zadajte heslo na odomknutie verejného kľúča"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "Zadajte heslo na odomknutie"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "Automaticky odomknúť tento kľúč zakaždým keď sa prihlásim"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "Automaticky odomknúť tento certifikát zakaždým keď sa prihlásim"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "Automaticky odomknúť zakaždým keď sa prihlásim"
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
-"Aplikácia požaduje prístup k súkromnému kľúču '%s', ten je ale uzamknutý"
+"Aplikácia požaduje prístup k súkromnému kľúču „%s“, ten je ale uzamknutý"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Aplikácia požaduje prístup k certifikátu '%s', ten je ale uzamknutý"
+msgstr "Aplikácia požaduje prístup k certifikátu „%s“, ten je ale uzamknutý"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
-"Aplikácia požaduje prístup k verejnému kľúču '%s', ten je ale uzamknutý"
+"Aplikácia požaduje prístup k verejnému kľúču „%s“, ten je ale uzamknutý"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "Aplikácia požaduje prístup k '%s', ale je uzamknutý"
+msgstr "Aplikácia požaduje prístup k objektu „%s“, ten je ale uzamknutý"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+msgid "The unlock password was incorrect"
+msgstr "Heslo na odomknutie bolo nesprávne"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Unlock certificate/key storage"
 msgstr "Odomknúť úložisko certifikátov/kľúčov"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Zadajte heslo na odomknutie úložiska certifikátov/kľúčov"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"Aplikácia požaduje prístup k úložisku certifikátov/kľúčov '%s', to je ale "
+"Aplikácia požaduje prístup k úložisku certifikátov/kľúčov „%s“, to je ale "
 "uzamknuté"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
@@ -434,93 +532,41 @@ msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"Pri príprave '%s' na ukladanie certifikátov alebo kľúčov je vyžadované heslo"
+"Pri príprave „%s“ na ukladanie certifikátov alebo kľúčov je vyžadované heslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Zmeniť heslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Original password for secure storage"
+msgstr "Pôvodné heslo pre zabezpečené úložisko"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr "Ku zmene hesla pre „%s“ je vyžadované pôvodné heslo"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 msgid "Change password for secure storage"
 msgstr "Zmeniť heslo pre zabezpečené úložisko"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr ""
+msgid "Type a new password for '%s'"
+msgstr "Napíšte nové heslo pre „%s“"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr ""
+msgstr "použitie: gnome-keyring príkaz [voľby]\n"
 
 #: ../tool/gkr-tool.c:104
 msgid "commands: "
-msgstr ""
+msgstr "príkazy: "
 
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr ""
-
-#: ../ui/gku-prompt-tool.c:591
-msgid "Store passwords unencrypted?"
-msgstr "Uchovávať heslá bez šifrovania?"
-
-#: ../ui/gku-prompt-tool.c:592
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"Ak použijete prázdne heslo, nebudú vaše uložené heslá bezpečne šifrované. "
-"Budú prístupné komukoľvek, kto má prístup k vašim súborom."
-
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
-msgstr "Použiť nezabezpečené úložisko"
-
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "Heslá nie sú rovnaké."
-
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
-msgstr "Heslo nemôže byť prázdne"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr ""
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Sila nového hesla"
-
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "_Aplikácia:"
-
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "Po_tvrdiť:"
-
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "_Staré heslo:"
-
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Heslo:"
+msgstr "         "
