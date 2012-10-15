@@ -1,3 +1,11 @@
+Changes in version 3.6.1 are:
+ * Fix regressions with keyring master password changing
+ * Load schema for secret items correctly, prevents storing multiple times
+   for items stored via libsecret
+ * Setup translations properly when daemon starts
+ * Fix memory leak in PKCS#11 module
+ * Updated translations
+
 Changes in version 3.6.0 are:
  * Updated translations
 
