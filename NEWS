@@ -1,3 +1,7 @@
+Changes in version 3.7.1 are:
+ * Remove dependency on GTK+
+ * Build fixes
+
 Changes in version 3.6.1 are:
  * Fix regressions with keyring master password changing
  * Load schema for secret items correctly, prevents storing multiple times
