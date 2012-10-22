@@ -517,7 +517,9 @@ test_unique_file_no_conflict (Test* test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
+#endif
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/gkm/transaction/transaction_empty", Test, NULL, setup, test_transaction_empty, teardown);

@@ -52,7 +52,9 @@ on_p11_tests_log (int level, const char *section, const char *message)
 int
 main (int argc, const char *argv[])
 {
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
+#endif
 
 	p11_tests_set_log_func (on_p11_tests_log);
 	p11_tests_set_unexpected (1);

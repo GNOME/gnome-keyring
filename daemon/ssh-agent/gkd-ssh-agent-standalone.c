@@ -78,7 +78,9 @@ main(int argc, char *argv[])
 	gboolean ret;
 	int sock;
 
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
+#endif
 
 	if (argc <= 1) {
 		g_message ("specify pkcs11 module on the command line");

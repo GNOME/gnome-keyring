@@ -114,8 +114,10 @@ main (int argc, char *argv[])
 {
 	CommandInfo *cmd;
 	int ret = -1;
-	
+
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
+#endif
 
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */

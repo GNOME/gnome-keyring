@@ -912,7 +912,9 @@ main (int argc, char *argv[])
 		g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
 #endif
 
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
+#endif
 
 #ifdef HAVE_LOCALE_H
 	/* internationalisation */

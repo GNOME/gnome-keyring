@@ -42,7 +42,9 @@ C_GetFunctionList (CK_FUNCTION_LIST_PTR_PTR list)
 	if (!list)
 		return CKR_ARGUMENTS_BAD;
 
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
+#endif
 
 	*list = gkm_gnome2_store_get_functions ();
 	return CKR_OK;
