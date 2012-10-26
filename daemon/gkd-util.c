@@ -67,6 +67,7 @@ const gchar *GKD_UTIL_IN_ENVIRONMENT[] = {
 	"XDG_SESSION_COOKIE",
 	"LOGNAME",
 	"USERNAME",
+	"XDG_DATA_HOME",
 	NULL
 };
 
