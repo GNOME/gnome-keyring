@@ -33,7 +33,8 @@ TestData ::= SEQUENCE {
 }
 
 TestBooleanSeq ::= SEQUENCE {
-	boolean                 BOOLEAN DEFAULT FALSE
+	boolean                 BOOLEAN DEFAULT FALSE,
+	boolean2                BOOLEAN
 }
 
 TestOid ::= SEQUENCE {

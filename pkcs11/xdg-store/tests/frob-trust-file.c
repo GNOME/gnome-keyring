@@ -68,7 +68,7 @@ create_trust_file_for_certificate (const gchar *filename, const gchar *certifica
 	ref = egg_asn1x_node (asn, "reference", NULL);
 	choice = egg_asn1x_node (ref, "certComplete", NULL);
 
-	if (!egg_asn1x_set_choice (ref, choice) || !egg_asn1x_set_element_raw (choice, bytes))
+	if (!egg_asn1x_set_choice (ref, choice) || !egg_asn1x_set_any_raw (choice, bytes))
 		g_return_if_reached ();
 
 	g_bytes_unref (bytes);
@@ -129,7 +129,7 @@ create_trust_file_for_issuer_and_serial (const gchar *filename, const gchar *cer
 
 	/* Copy over the serial and issuer */
 	element = egg_asn1x_get_element_raw (issuer);
-	if (!egg_asn1x_set_element_raw (egg_asn1x_node (choice, "issuer", NULL), element))
+	if (!egg_asn1x_set_any_raw (egg_asn1x_node (choice, "issuer", NULL), element))
 		g_return_if_reached ();
 	g_bytes_unref (element);
 
@@ -178,9 +178,9 @@ add_trust_purpose_to_file (const gchar *filename, const gchar *purpose)
 	assertion = egg_asn1x_append (egg_asn1x_node (asn, "assertions", NULL));
 	g_return_if_fail (assertion);
 
-	if (!egg_asn1x_set_string_as_utf8 (egg_asn1x_node (assertion, "purpose", NULL), g_strdup (purpose), g_free) ||
-	    !egg_asn1x_set_enumerated (egg_asn1x_node (assertion, "level", NULL), g_quark_from_string ("trusted")))
+	if (!egg_asn1x_set_string_as_utf8 (egg_asn1x_node (assertion, "purpose", NULL), g_strdup (purpose), g_free))
 		g_return_if_reached ();
+	egg_asn1x_set_enumerated (egg_asn1x_node (assertion, "level", NULL), g_quark_from_string ("trusted"));
 
 	result = egg_asn1x_encode (asn, NULL);
 	if (result == NULL)

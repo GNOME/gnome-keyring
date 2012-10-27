@@ -33,7 +33,7 @@ gchar*             egg_dn_read_part                       (GNode *node,
 
 typedef void       (*EggDnCallback)                       (guint index,
                                                            GQuark oid,
-                                                           GBytes *value,
+                                                           GNode *value,
                                                            gpointer user_data);
 
 gboolean           egg_dn_parse                           (GNode *node,
@@ -41,7 +41,7 @@ gboolean           egg_dn_parse                           (GNode *node,
                                                            gpointer user_data);
 
 gchar*             egg_dn_print_value                     (GQuark oid,
-                                                           GBytes *value);
+                                                           GNode *value);
 
 void               egg_dn_add_string_part                 (GNode *node,
                                                            GQuark oid,

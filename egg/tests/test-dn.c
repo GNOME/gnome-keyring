@@ -85,24 +85,30 @@ test_dn_value (Test* test, gconstpointer unused)
 	const guchar value[] = { 0x13, 0x1a, 0x54, 0x68, 0x61, 0x77, 0x74, 0x65, 0x20, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x20, 0x50, 0x72, 0x65, 0x6d, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x41 };
 	gsize n_value = 28;
 	GBytes *bytes;
+	GNode *asn;
 	GQuark oid;
 	gchar *text;
 
+	bytes = g_bytes_new_static (value, n_value);
+
+	asn = egg_asn1x_create_and_decode (pkix_asn1_tab, "AttributeValue", bytes);
+	g_assert (asn != NULL);
+
 	/* Some printable strings */
 	oid = g_quark_from_static_string ("2.5.4.3");
-	bytes = g_bytes_new_static (value, n_value);
-	text = egg_dn_print_value (oid, bytes);
-	g_bytes_unref (bytes);
+	text = egg_dn_print_value (oid, asn);
 	g_assert_cmpstr (text, ==, "Thawte Personal Premium CA");
 	g_free (text);
 
 	/* Unknown oid */
 	oid = g_quark_from_static_string ("1.1.1.1.1.1");
 	bytes = g_bytes_new_static (value, n_value);
-	text = egg_dn_print_value (oid, bytes);
-	g_bytes_unref (bytes);
+	text = egg_dn_print_value (oid, asn);
 	g_assert_cmpstr (text, ==, "#131A54686177746520506572736F6E616C205072656D69756D204341");
 	g_free (text);
+
+	egg_asn1x_destroy (asn);
+	g_bytes_unref (bytes);
 }
 
 static int last_index = 0;
@@ -110,7 +116,7 @@ static int last_index = 0;
 static void
 concatenate_dn (guint index,
                 GQuark oid,
-                GBytes *value,
+                GNode *value,
                 gpointer user_data)
 {
 	GString *dn = user_data;
@@ -118,7 +124,6 @@ concatenate_dn (guint index,
 
 	g_assert (oid);
 	g_assert (value != NULL);
-	g_assert (g_bytes_get_size (value) != 0);
 
 	g_assert (index == last_index);
 	++last_index;

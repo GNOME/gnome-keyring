@@ -556,8 +556,8 @@ gkm_certificate_get_extension (GkmCertificate *self, GQuark oid,
 	}
 
 	/* And the extension value */
-	return egg_asn1x_get_raw_value (egg_asn1x_node (self->pv->asn1, "tbsCertificate",
-	                                "extensions", index, "extnValue", NULL));
+	return egg_asn1x_get_string_as_bytes (egg_asn1x_node (self->pv->asn1, "tbsCertificate",
+	                                      "extensions", index, "extnValue", NULL));
 }
 
 const gchar*

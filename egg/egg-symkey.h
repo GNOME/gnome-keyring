@@ -2,8 +2,8 @@
  * gnome-keyring
  *
  * Copyright (C) 2008 Stefan Walter
- * 
- * This program is free software; you can redistribute it and/or modify 
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
@@ -12,8 +12,8 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *  
- * You should have received a copy of the GNU Lesser General 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.
@@ -77,13 +77,13 @@ gboolean                 egg_symkey_generate_pbkdf2             (int cipher_algo
 gboolean                 egg_symkey_read_cipher                 (GQuark oid_scheme,
                                                                  const gchar *password,
                                                                  gsize n_password,
-                                                                 GBytes *data,
+                                                                 GNode *params,
                                                                  gcry_cipher_hd_t *cih);
 
 gboolean                 egg_symkey_read_mac                    (GQuark oid_scheme,
                                                                  const gchar *password,
                                                                  gsize n_password,
-                                                                 GBytes *data,
+                                                                 GNode *params,
                                                                  gcry_md_hd_t *mdh,
                                                                  gsize *digest_len);
 

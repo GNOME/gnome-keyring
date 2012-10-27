@@ -503,9 +503,9 @@ save_assertion (GNode *asn, GkmAssertion *assertion)
 	peer = gkm_assertion_get_peer (assertion);
 
 	if (!egg_asn1x_set_string_as_utf8 (egg_asn1x_node (asn, "purpose", NULL),
-	                                   g_strdup (purpose), g_free) ||
-	    !egg_asn1x_set_enumerated (egg_asn1x_node (asn, "level", NULL), level))
+	                                   g_strdup (purpose), g_free))
 		g_return_val_if_reached (FALSE);
+	egg_asn1x_set_enumerated (egg_asn1x_node (asn, "level", NULL), level);
 
 	if (peer && !egg_asn1x_set_string_as_utf8 (egg_asn1x_node (asn, "peer", NULL),
 	                                           g_strdup (peer), g_free))
@@ -557,7 +557,7 @@ create_trust_for_reference (GkmModule *module, GkmManager *manager,
 	g_bytes_unref (bytes);
 
 	bytes = g_bytes_new (issuer->pValue, issuer->ulValueLen);
-	egg_asn1x_set_element_raw (egg_asn1x_node (node, "issuer", NULL), bytes);
+	egg_asn1x_set_any_raw (egg_asn1x_node (node, "issuer", NULL), bytes);
 	g_bytes_unref (bytes);
 
 	trust = g_object_new (GKM_XDG_TYPE_TRUST, "module", module, "manager", manager, NULL);
@@ -589,7 +589,7 @@ create_trust_for_complete (GkmModule *module, GkmManager *manager,
 
 	egg_asn1x_set_choice (ref, node);
 	bytes = g_bytes_new (cert->pValue, cert->ulValueLen);
-	egg_asn1x_set_element_raw (node, bytes);
+	egg_asn1x_set_any_raw (node, bytes);
 	g_bytes_unref (bytes);
 
 	trust = g_object_new (GKM_XDG_TYPE_TRUST, "module", module, "manager", manager, NULL);

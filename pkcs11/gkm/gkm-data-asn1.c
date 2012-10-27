@@ -37,7 +37,7 @@ gkm_data_asn1_read_mpi (GNode *asn, gcry_mpi_t *mpi)
 	g_return_val_if_fail (asn, FALSE);
 	g_return_val_if_fail (mpi, FALSE);
 
-	buf = egg_asn1x_get_raw_value (asn);
+	buf = egg_asn1x_get_integer_as_raw (asn);
 	if (!buf)
 		return FALSE;
 

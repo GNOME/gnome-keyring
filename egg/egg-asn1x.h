@@ -58,6 +58,10 @@ typedef enum {
 	EGG_ASN1X_GENERALSTRING = 27
 } EggAsn1xType;
 
+enum {
+	EGG_ASN1X_NO_STRICT = 0x01,
+} EggAsn1xFlags;
+
 GNode*              egg_asn1x_create                 (const EggAsn1xDef *defs,
                                                       const gchar *type);
 
@@ -68,6 +72,11 @@ GNode*              egg_asn1x_create_and_decode      (const EggAsn1xDef *defs,
                                                       const gchar *type,
                                                       GBytes *data);
 
+GNode*              egg_asn1x_create_and_decode_full (const EggAsn1xDef *defs,
+                                                      const gchar *type,
+                                                      GBytes *data,
+                                                      gint options);
+
 void                egg_asn1x_dump                   (GNode *asn);
 
 void                egg_asn1x_clear                  (GNode *asn);
@@ -75,8 +84,34 @@ void                egg_asn1x_clear                  (GNode *asn);
 gboolean            egg_asn1x_decode                 (GNode *asn,
                                                       GBytes *data);
 
-gboolean            egg_asn1x_decode_no_validate     (GNode *asn,
-                                                      GBytes *data);
+gboolean            egg_asn1x_decode_full            (GNode *asn,
+                                                      GBytes *data,
+                                                      gint options);
+
+void                egg_asn1x_set_any_from           (GNode *node,
+                                                      GNode *from);
+
+gboolean            egg_asn1x_set_any_raw            (GNode *node,
+                                                      GBytes *raw);
+
+gboolean            egg_asn1x_get_any_into           (GNode *node,
+                                                      GNode *into);
+
+gboolean            egg_asn1x_get_any_into_full      (GNode *node,
+                                                      GNode *into,
+                                                      gint options);
+
+GNode *             egg_asn1x_get_any_as             (GNode *node,
+                                                      const EggAsn1xDef *defs,
+                                                      const gchar *type);
+
+GNode *             egg_asn1x_get_any_as_full        (GNode *node,
+                                                      const EggAsn1xDef *defs,
+                                                      const gchar *type,
+                                                      gint options);
+
+GBytes *            egg_asn1x_get_any_raw            (GNode *node,
+                                                      EggAllocator allocator);
 
 gboolean            egg_asn1x_validate               (GNode *asn,
                                                       gboolean strict);
@@ -107,20 +142,20 @@ gboolean            egg_asn1x_set_choice             (GNode *node,
 gboolean            egg_asn1x_get_boolean            (GNode *node,
                                                       gboolean *value);
 
-gboolean            egg_asn1x_set_boolean            (GNode *node,
+void                egg_asn1x_set_boolean            (GNode *node,
                                                       gboolean value);
 
-gboolean            egg_asn1x_set_null               (GNode *node);
+void                egg_asn1x_set_null               (GNode *node);
 
 GQuark              egg_asn1x_get_enumerated         (GNode *node);
 
-gboolean            egg_asn1x_set_enumerated         (GNode *node,
+void                egg_asn1x_set_enumerated         (GNode *node,
                                                       GQuark value);
 
 gboolean            egg_asn1x_get_integer_as_ulong   (GNode *node,
                                                       gulong *value);
 
-gboolean            egg_asn1x_set_integer_as_ulong   (GNode *node,
+void                egg_asn1x_set_integer_as_ulong   (GNode *node,
                                                       gulong value);
 
 GBytes *            egg_asn1x_get_integer_as_raw     (GNode *node);
@@ -139,26 +174,23 @@ void                egg_asn1x_set_integer_as_usg     (GNode *node,
 void                egg_asn1x_take_integer_as_usg    (GNode *node,
                                                       GBytes *value);
 
-GBytes *            egg_asn1x_get_raw_value          (GNode *node);
+GBytes *            egg_asn1x_get_value_raw          (GNode *node);
 
 GBytes *            egg_asn1x_get_element_raw        (GNode *node);
-
-gboolean            egg_asn1x_set_element_raw        (GNode *node,
-                                                      GBytes *value);
 
 guchar*             egg_asn1x_get_string_as_raw      (GNode *node,
                                                       EggAllocator allocator,
                                                       gsize *n_string);
 
-gboolean            egg_asn1x_set_string_as_raw      (GNode *node,
+void                egg_asn1x_set_string_as_raw      (GNode *node,
                                                       guchar *data,
                                                       gsize n_data,
                                                       GDestroyNotify destroy);
 
 GBytes *            egg_asn1x_get_string_as_bytes    (GNode *node);
 
-gboolean            egg_asn1x_set_string_as_bytes    (GNode *node,
-                                                      GBytes *data);
+void                egg_asn1x_set_string_as_bytes    (GNode *node,
+                                                      GBytes *bytes);
 
 GBytes *            egg_asn1x_get_bits_as_raw        (GNode *node,
                                                       guint *n_bits);
@@ -175,7 +207,7 @@ gboolean            egg_asn1x_get_bits_as_ulong      (GNode *node,
                                                       gulong *value,
                                                       guint *n_bits);
 
-gboolean            egg_asn1x_set_bits_as_ulong      (GNode *node,
+void                egg_asn1x_set_bits_as_ulong      (GNode *node,
                                                       gulong value,
                                                       guint n_bits);
 

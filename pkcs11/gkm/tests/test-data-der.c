@@ -373,7 +373,7 @@ find_extension (GNode *asn,
 		if (strcmp (exoid, oid) == 0) {
 			g_free (exoid);
 			node = egg_asn1x_node (asn, "tbsCertificate", "extensions", index, "extnValue", NULL);
-			value = egg_asn1x_get_raw_value (node);
+			value = egg_asn1x_get_any_raw (node, NULL);
 			g_assert (value);
 			return value;
 		}
@@ -392,7 +392,7 @@ test_read_basic_constraints (Test *test, gconstpointer unused)
 	gint path_len;
 	GkmDataResult res;
 
-	extension = egg_asn1x_get_raw_value (egg_asn1x_node (test->certificate, "tbsCertificate", "extensions", 1, "extnValue", NULL));
+	extension = egg_asn1x_get_any_raw (egg_asn1x_node (test->certificate, "tbsCertificate", "extensions", 1, "extnValue", NULL), NULL);
 	g_assert (extension != NULL);
 
 	res = gkm_data_der_read_basic_constraints (extension, &is_ca, &path_len);

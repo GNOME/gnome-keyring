@@ -525,7 +525,7 @@ gkm_data_der_read_private_pkcs8_plain (GBytes *data,
 		goto done;
 	}
 
-	keydata = egg_asn1x_get_raw_value (egg_asn1x_node (asn, "privateKey", NULL));
+	keydata = egg_asn1x_get_string_as_bytes (egg_asn1x_node (asn, "privateKey", NULL));
 	if (!keydata)
 		goto done;
 
@@ -577,7 +577,7 @@ gkm_data_der_read_private_pkcs8_crypted (GBytes *data,
 	GkmDataResult ret, r;
 	GQuark scheme;
 	guchar *crypted = NULL;
-	GBytes *params;
+	GNode *params;
 	GBytes *bytes;
 	gsize n_crypted;
 	gint l;
@@ -597,7 +597,7 @@ gkm_data_der_read_private_pkcs8_crypted (GBytes *data,
 	if (!scheme)
 		goto done;
 
-	params = egg_asn1x_get_element_raw (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL));
+	params = egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL);
 	if (!params)
 		goto done;
 
@@ -605,7 +605,6 @@ gkm_data_der_read_private_pkcs8_crypted (GBytes *data,
 	 * Parse the encryption stuff into a cipher.
 	 */
 	r = egg_symkey_read_cipher (scheme, password, n_password, params, &cih);
-	g_bytes_unref (params);
 
 	if (r == GKM_DATA_UNRECOGNIZED) {
 		ret = GKM_DATA_FAILURE;
@@ -747,8 +746,7 @@ gkm_data_der_write_private_key_rsa (gcry_sexp_t s_key)
 		goto done;
 
 	/* Write out the version */
-	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
-		goto done;
+	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0);
 
 	result = egg_asn1x_encode (asn, egg_secure_realloc);
 	if (result == NULL)
@@ -794,8 +792,7 @@ gkm_data_der_write_public_key_dsa (gcry_sexp_t s_key)
 	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "Y", NULL), y))
 		goto done;
 
-	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
-		goto done;
+	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0);
 
 	result = egg_asn1x_encode (asn, NULL);
 	if (result == NULL)
@@ -901,8 +898,7 @@ gkm_data_der_write_private_key_dsa (gcry_sexp_t s_key)
 	    !gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "priv", NULL), x))
 		goto done;
 
-	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
-		goto done;
+	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0);
 
 	result = egg_asn1x_encode (asn, egg_secure_realloc);
 	if (result == NULL)
@@ -974,7 +970,6 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	guchar salt[8];
 	gcry_error_t gcry;
 	guchar *key, *iv;
-	GBytes *portion;
 	gsize n_key;
 	int iterations;
 
@@ -1006,20 +1001,9 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	/* Now write out the parameters */
 	asn1_params = egg_asn1x_create (pkix_asn1_tab, "pkcs-12-PbeParams");
 	g_return_val_if_fail (asn1_params, NULL);
-	if (!egg_asn1x_set_string_as_raw (egg_asn1x_node (asn1_params, "salt", NULL), salt, sizeof (salt), NULL))
-		g_return_val_if_reached (NULL);
-	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn1_params, "iterations", NULL), iterations))
-		g_return_val_if_reached (NULL);
-	portion = egg_asn1x_encode (asn1_params, NULL);
-	if (portion == NULL) {
-		g_warning ("couldn't encode pkcs8 params key: %s", egg_asn1x_message (asn1_params));
-		g_return_val_if_reached (NULL);
-	}
-
-	if (!egg_asn1x_set_element_raw (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL),
-	                                portion))
-		g_return_val_if_reached (NULL);
-	g_bytes_unref (portion);
+	egg_asn1x_set_string_as_raw (egg_asn1x_node (asn1_params, "salt", NULL), salt, sizeof (salt), NULL);
+	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn1_params, "iterations", NULL), iterations);
+	egg_asn1x_set_any_from (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL), asn1_params);
 
 	/* Now make a cipher that matches what we wrote out */
 	gcry = gcry_cipher_open (&cih, GCRY_CIPHER_3DES, GCRY_CIPHER_MODE_CBC, 0);
@@ -1058,8 +1042,7 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey)
 	g_return_val_if_fail (asn, NULL);
 
 	/* Write out the version */
-	if (!egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0))
-		g_return_val_if_reached (NULL);
+	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 0);
 
 	/* Per algorithm differences */
 	switch (algorithm)
@@ -1089,16 +1072,12 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey)
 
 	/* Write out the parameters */
 	if (params) {
-		if (!egg_asn1x_set_element_raw (egg_asn1x_node (asn, "privateKeyAlgorithm", "parameters", NULL),
-		                                params))
-			g_return_val_if_reached (NULL);
+		egg_asn1x_set_any_raw (egg_asn1x_node (asn, "privateKeyAlgorithm", "parameters", NULL), params);
 		g_bytes_unref (params);
 	}
 
 	/* Write out the key portion */
-	if (!egg_asn1x_set_string_as_bytes (egg_asn1x_node (asn, "privateKey", NULL), key))
-		g_return_val_if_reached (NULL);
-
+	egg_asn1x_set_string_as_bytes (egg_asn1x_node (asn, "privateKey", NULL), key);
 	g_bytes_unref (key);
 
 	data = egg_asn1x_encode (asn, egg_secure_realloc);
@@ -1161,8 +1140,7 @@ gkm_data_der_write_private_pkcs8_crypted (gcry_sexp_t skey,
 	gcry_cipher_close (cih);
 	key = g_bytes_new_with_free_func (raw, n_raw, egg_secure_free, raw);
 
-	if (!egg_asn1x_set_string_as_bytes (egg_asn1x_node (asn, "encryptedData", NULL), key))
-		g_return_val_if_reached (NULL);
+	egg_asn1x_set_string_as_bytes (egg_asn1x_node (asn, "encryptedData", NULL), key);
 
 	g_bytes_unref (key);
 
