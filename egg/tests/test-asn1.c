@@ -1331,6 +1331,51 @@ test_count (Test* test, gconstpointer unused)
 	g_assert_cmpuint (egg_asn1x_count (node), ==, 7);
 }
 
+static void
+test_nested_fails_with_extra (void)
+{
+	gboolean ret;
+	GBytes *bytes;
+	GNode *asn;
+
+	const gchar SEQ_NESTED[] =  "\x30\x0C"
+	                                 "\x04\x03""one"
+	                                 "\x04\x05""extra";
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestData");
+	g_assert ("asn test structure is null" && asn != NULL);
+
+	bytes = g_bytes_new_static (SEQ_NESTED, XL (SEQ_NESTED));
+	ret = egg_asn1x_decode (asn, bytes);
+	egg_asn1x_assert (ret == FALSE, asn);
+	egg_asn1x_assert (strstr (egg_asn1x_message (asn), "encountered extra tag"), asn);
+	g_bytes_unref (bytes);
+
+	egg_asn1x_destroy (asn);
+}
+
+static void
+test_nested_unexpected (void)
+{
+	gboolean ret;
+	GBytes *bytes;
+	GNode *asn;
+
+	const gchar SEQ_NESTED[] =  "\x30\x03"
+	                                 "\x02\x01\x2A";
+
+	asn = egg_asn1x_create (test_asn1_tab, "TestData");
+	g_assert ("asn test structure is null" && asn != NULL);
+
+	bytes = g_bytes_new_static (SEQ_NESTED, XL (SEQ_NESTED));
+	ret = egg_asn1x_decode (asn, bytes);
+	egg_asn1x_assert (ret == FALSE, asn);
+	egg_asn1x_assert (strstr (egg_asn1x_message (asn), "decoded tag did not match expected"), asn);
+	g_bytes_unref (bytes);
+
+	egg_asn1x_destroy (asn);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1365,6 +1410,8 @@ main (int argc, char **argv)
 	g_test_add_func ("/asn1/setof", test_setof);
 	g_test_add_func ("/asn1/setof_empty", test_setof_empty);
 	g_test_add_func ("/asn1/enumerated", test_enumerated);
+	g_test_add_func ("/asn1/nested-fails-with-extra", test_nested_fails_with_extra);
+	g_test_add_func ("/asn1/nested-unexpected", test_nested_unexpected);
 	g_test_add ("/asn1/node_name", Test, NULL, setup, test_node_name, teardown);
 	g_test_add ("/asn1/asn1_integers", Test, NULL, setup, test_asn1_integers, teardown);
 	g_test_add ("/asn1/boolean_seq", Test, NULL, setup, test_boolean_seq, teardown);

@@ -1181,11 +1181,17 @@ static gboolean
 anode_decode_anything (GNode *node,
                        Atlv *tlv)
 {
+	GNode *prev = NULL;
 	GNode *next;
 	gulong tag;
 	gint flags;
 
+	g_assert (node != NULL);
+
 	while (tlv != NULL) {
+		if (node == NULL)
+			return anode_failure (prev, "encountered extra tag");
+
 		flags = anode_def_flags (node);
 		tag = anode_calc_tag_for_flags (node, flags);
 
@@ -1205,6 +1211,7 @@ anode_decode_anything (GNode *node,
 			if (next == NULL)
 				return anode_failure (node, "decoded tag did not match expected");
 
+			prev = node;
 			node = next;
 			continue;
 		}
@@ -1213,6 +1220,7 @@ anode_decode_anything (GNode *node,
 			return FALSE;
 
 		/* Next node and tag */
+		prev = node;
 		node = g_node_next_sibling (node);
 		tlv = tlv->next;
 	}
