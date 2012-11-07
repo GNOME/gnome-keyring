@@ -78,7 +78,6 @@ static const Fixture parse_test_fixtures[] = {
 	{ pkix_asn1_tab, SRCDIR "/files/test-certificate-1.der", "Certificate" },
 	{ pkix_asn1_tab, SRCDIR "/files/test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo" },
 	{ pk_asn1_tab, SRCDIR "/files/test-rsakey-1.der", "RSAPrivateKey" },
-	{ pkix_asn1_tab, SRCDIR "/files/test-personalname-1.der", "PersonalName" },
 	{ pkix_asn1_tab, SRCDIR "/files/test-pkcs7-1.der", "pkcs-7-ContentInfo" },
 	{ pkix_asn1_tab, SRCDIR "/files/test-pkcs7-2.der", "pkcs-7-ContentInfo" },
 };
@@ -120,31 +119,22 @@ test_decode_encode (Test *test,
 	const Fixture *fixture = data;
 	GNode *asn;
 	GBytes *encoded;
+	gboolean ret;
 
 	asn = egg_asn1x_create (fixture->defs, fixture->identifier);
 
 	if (g_test_verbose ())
 		egg_asn1x_dump (asn);
 
-	if (!egg_asn1x_decode (asn, test->data)) {
-		g_warning ("decode of %s failed: %s", fixture->identifier,
-		           egg_asn1x_message (asn));
-		g_assert_not_reached ();
-	}
+	ret = egg_asn1x_decode (asn, test->data);
+	egg_asn1x_assert (ret == TRUE, asn);
 
 	encoded = egg_asn1x_encode (asn, NULL);
-	if (encoded == NULL) {
-		g_warning ("encode of %s failed: %s", fixture->identifier,
-		           egg_asn1x_message (asn));
-		g_assert_not_reached ();
-	}
+	egg_asn1x_assert (encoded != NULL, asn);
 
 	/* Decode the encoding */
-	if (!egg_asn1x_decode (asn, encoded)) {
-		g_warning ("decode of encoded %s failed: %s", fixture->identifier,
-		           egg_asn1x_message (asn));
-		g_assert_not_reached ();
-	}
+	ret = egg_asn1x_decode (asn, encoded);
+	egg_asn1x_assert (ret == TRUE, asn);
 
 	egg_asn1x_clear (asn);
 	egg_asn1x_destroy (asn);
@@ -152,21 +142,38 @@ test_decode_encode (Test *test,
 }
 
 static void
+test_personal_name_invalid (Test *test,
+                            gconstpointer unused)
+{
+	GNode *asn;
+	gboolean ret;
+
+	asn = egg_asn1x_create (pkix_asn1_tab, "PersonalName");
+
+	if (g_test_verbose ())
+		egg_asn1x_dump (asn);
+
+	ret = egg_asn1x_decode (asn, test->data);
+	g_assert (ret == FALSE);
+	g_assert (strstr (egg_asn1x_message (asn), "content size is out of bounds") != NULL);
+
+	egg_asn1x_destroy (asn);
+}
+
+static void
 test_pkcs12_decode (Test *test,
                     gconstpointer unused)
 {
 	GNode *asn;
+	gboolean ret;
 
 	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-12-PFX");
 
 	if (g_test_verbose ())
 		egg_asn1x_dump (asn);
 
-	if (!egg_asn1x_decode (asn, test->data)) {
-		g_warning ("decode of indefinite pkcs-12-PFX failed: %s",
-		           egg_asn1x_message (asn));
-		g_assert_not_reached ();
-	}
+	ret = egg_asn1x_decode (asn, test->data);
+	egg_asn1x_assert (ret == TRUE, asn);
 
 	egg_asn1x_destroy (asn);
 }
@@ -179,11 +186,6 @@ main (int argc, char **argv)
 
 	g_test_init (&argc, &argv, NULL);
 
-#if 0
-	/* Build up a personal name, which is a set */
-	build_personal_name ();
-#endif
-
 	for (i = 0; i < G_N_ELEMENTS (parse_test_fixtures); i++) {
 		name = g_strdup_printf ("/asn1x/encode-decode-%s", parse_test_fixtures[i].identifier);
 		g_test_add (name, Test, &parse_test_fixtures[i], setup_parsing, test_decode_encode, teardown);
@@ -192,8 +194,8 @@ main (int argc, char **argv)
 
 	g_test_add ("/asn1x/pkcs12-decode/1", Test, SRCDIR "/files/test-pkcs12-1.der",
 	            setup, test_pkcs12_decode, teardown);
-	g_test_add ("/asn1x/pkcs12-decode/2", Test, SRCDIR "/files/test-pkcs12-2.der",
-	            setup, test_pkcs12_decode, teardown);
+	g_test_add ("/asn1x/pkcs5-personal-name/invalid", Test, SRCDIR "/files/test-personalname-invalid.der",
+	            setup, test_personal_name_invalid, teardown);
 
 	return g_test_run ();
 }

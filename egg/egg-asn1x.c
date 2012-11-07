@@ -217,8 +217,7 @@ bytes_new_with_allocator (EggAllocator allocator,
 
 	if (allocator) {
 		*data = (allocator) (NULL, length + 1);
-		if (allocator == NULL)
-			return NULL;
+		g_return_val_if_fail (*data != NULL, NULL);
 		closure = g_slice_new (AllocatorClosure);
 		closure->allocated = *data;
 		closure->allocator = allocator;
@@ -522,6 +521,7 @@ anode_failure (GNode *node, const gchar *failure)
 
 	g_free (an->failure);
 	an->failure = g_strdup_printf ("%s: %s", prefix, failure);
+	g_debug ("egg-asn1: %s", an->failure);
 	return FALSE; /* So this can be chained */
 }
 
@@ -734,14 +734,11 @@ atlv_parse_length (const guchar *at,
 
 	g_assert (at != NULL);
 	g_assert (end != NULL);
-	g_assert (end >= at);
+	g_assert (end > at);
 	g_assert (off != NULL);
 
 	*off = 0;
 	n_data = end - at;
-
-	if (n_data == 0)
-		return 0;
 
 	/* short form */
 	if (!(at[0] & 128)) {
@@ -834,8 +831,7 @@ atlv_parse_der_tag (guchar cls,
 	end = bytes_get_end (data);
 	g_assert (*at <= end);
 
-	if (*at + off + len > end)
-		return "invalid length of tlv";
+	g_return_val_if_fail (*at + off + len <= end, "invalid length of tlv");
 	if (len < 0 && !(cls & ASN1_CLASS_STRUCTURED))
 		return "indefinite length on non-structured type";
 
@@ -992,10 +988,6 @@ anode_decode_sequence_or_set_of (GNode *node,
 	child = node->children;
 	g_return_val_if_fail (child, FALSE);
 
-	/* Remove all the other children */
-	while (child->next)
-		anode_destroy (child->next);
-
 	for (ctlv = tlv->child, i = 0; ctlv != NULL; ctlv = ctlv->next, i++) {
 
 		/* Tag must have same tag as top */
@@ -1085,7 +1077,7 @@ anode_decode_primitive (GNode *node,
 		return anode_decode_choice (node, tlv);
 
 	default:
-		return anode_failure (node, "primitive value of an unexpected type");
+		return anode_failure (node, "primitive value of an unexpected type"); /* UNREACHABLE: tag validation? */
 	}
 }
 
@@ -1114,7 +1106,7 @@ anode_decode_structured (GNode *node,
 		return anode_decode_sequence_or_set_of (node, tlv);
 
 	default:
-		return anode_failure (node, "structured value of an unexpected type");
+		return anode_failure (node, "structured value of an unexpected type"); /* UNREACHABLE: tag validation? */
 	}
 }
 
@@ -1454,8 +1446,7 @@ atlv_unparse_to_bytes (Atlv *tlv,
 	g_return_val_if_fail (len != 0, NULL);
 
 	bytes = bytes_new_with_allocator (allocator, &data, len);
-	if (data == NULL)
-		return NULL;
+	g_return_val_if_fail (bytes != NULL, NULL);
 
 	at = data;
 	atlv_unparse_der (tlv, &at, data + len);
@@ -1498,8 +1489,7 @@ atlv_sort_perform (Atlv *tlv,
 	pairs = NULL;
 	for (ctlv = tlv->child; ctlv != NULL; ctlv = ctlv->next) {
 		bytes = atlv_unparse_to_bytes (ctlv, allocator);
-		if (bytes == NULL)
-			break;
+		g_return_if_fail (bytes != NULL);
 
 		pair = g_slice_new0 (SortPair);
 		pair->bytes = bytes;
@@ -1690,8 +1680,9 @@ anode_build_choice (GNode *node,
 	g_assert (anode_def_type (node) == EGG_ASN1X_CHOICE);
 
 	child = egg_asn1x_get_choice (node);
-	if (!child)
-		return FALSE;
+
+	/* Should have been checked by a previous validate */
+	g_return_val_if_fail (child != NULL, NULL);
 
 	return anode_build_anything (child, want);
 }
@@ -1738,7 +1729,7 @@ anode_build_structured (GNode *node,
 				atlv_free (tlv);
 				return NULL;
 			}
-		} else {
+		} else if (!want) {
 			atlv_free (tlv);
 			return NULL;
 		}
@@ -1846,10 +1837,9 @@ egg_asn1x_encode (GNode *asn,
 		return NULL;
 
 	tlv = anode_build_anything (asn, TRUE);
-	if (tlv == NULL) {
-		anode_failure (asn, "missing value(s)");
-		return NULL;
-	}
+
+	/* The above validate should cause build not to return NULL */
+	g_return_val_if_fail (tlv != NULL, NULL);
 
 	atlv_sort_perform (tlv, allocator);
 
@@ -2288,8 +2278,8 @@ anode_read_string_struct (GNode *node,
 		}
 	}
 
-	if (value && remaining < 0)
-		return FALSE;
+	if (value)
+		g_return_val_if_fail (remaining >= 0, FALSE);
 
 	return TRUE;
 }
@@ -2308,10 +2298,7 @@ anode_read_string_simple (GNode *node,
 
 	buf = g_bytes_get_data (data, &len);
 	if (value) {
-		if (*n_value < len) {
-			*n_value = len;
-			return FALSE;
-		}
+		g_return_val_if_fail (*n_value >= len, FALSE);
 		memcpy (value, buf, len);
 	}
 
@@ -2332,14 +2319,13 @@ anode_read_boolean (GNode *node,
 	g_assert (value != NULL);
 
 	buf = g_bytes_get_data (data, &len);
-	if (len != 1)
-		return FALSE;
+	g_return_val_if_fail (len == 1, FALSE);
 	if (buf[0] == 0x00)
 		*value = FALSE;
 	else if (buf[0] == 0xFF)
 		*value = TRUE;
 	else
-		return FALSE;
+		g_return_val_if_reached (FALSE);
 	return TRUE;
 }
 
@@ -2436,7 +2422,7 @@ anode_read_object_id (GNode *node,
 
 	if (k < len) {
 		if (result)
-			g_string_free (result, TRUE);
+			g_string_free (result, TRUE); /* UNREACHABLE: caught by validation */
 		return FALSE;
 	}
 
@@ -2719,10 +2705,8 @@ egg_asn1x_get_enumerated (GNode *node)
 	if (data == NULL)
 		return 0;
 
-	/* TODO: Signed values */
-
 	if (!anode_read_integer_ulong (node, data, &val))
-		return 0;
+		g_return_val_if_reached (0);
 
 	/* Format that as a string */
 	if (g_snprintf (buf, sizeof (buf), "%lu", val) < 0)
@@ -2835,9 +2819,10 @@ egg_asn1x_get_integer_as_raw (GNode *node)
 
 	an = node->data;
 	if (an->guarantee_unsigned) {
-		g_warning ("cannot read integer set with egg_asn1x_set_integer_as_raw() "
-		           "via egg_asn1x_get_integer_as_raw()");
-		return NULL;
+		g_warning ("cannot read integer set with "        /* UNREACHABLE: */
+		           "egg_asn1x_set_integer_as_raw() "      /* UNREACHABLE: */
+		           "via egg_asn1x_get_integer_as_raw()"); /* UNREACHABLE: */
+		return NULL;  /* UNREACHABLE: unreachable by coverage testing */
 	}
 
 	raw = anode_get_value (node);
@@ -2866,8 +2851,8 @@ egg_asn1x_get_integer_as_usg (GNode *node)
 	if (!an->guarantee_unsigned) {
 		sign = !!(p[0] & 0x80);
 		if (sign) {
-			g_warning ("invalid two's complement integer is negative, but expected unsigned");
-			return NULL;
+			g_warning ("invalid two's complement integer"); /* UNREACHABLE: */
+			return NULL; /* UNREACHABLE: by coverage testing */
 		}
 
 		/* Strip off the extra zero byte that was preventing it from being negative */
@@ -2911,8 +2896,8 @@ egg_asn1x_take_integer_as_raw (GNode *node,
 
 	sign = !!(p[0] & 0x80);
 	if (sign) {
-		g_warning ("integer in egg_asn1x_set_integer_as_raw is not two's complement");
-		return;
+		g_warning ("integer is not two's complement"); /* UNREACHABLE: */
+		return; /* UNREACHABLE: unless warning */
 	}
 
 	anode_clr_value (node);
@@ -3009,8 +2994,7 @@ egg_asn1x_get_any_into_full (GNode *node,
 	/* If this node is explicit, then just get the contents */
 	if (anode_calc_explicit_for_flags (node, anode_def_flags (node), NULL)) {
 		tlv = tlv->child;
-		if (tlv == NULL)
-			return FALSE;
+		g_return_val_if_fail (tlv != NULL, FALSE);
 	}
 
 	if (!anode_decode_anything (into, tlv))
@@ -3153,16 +3137,14 @@ egg_asn1x_get_string_as_raw (GNode *node,
 	data = anode_get_value (node);
 	if (data != NULL) {
 		if (!anode_read_string_simple (node, data, NULL, &length))
-			return NULL;
+			g_return_val_if_reached (NULL);
 
 		string = (allocator) (NULL, length + 1);
 		if (string == NULL)
-			return NULL;
+			return NULL; /* UNREACHABLE: unless odd allocator */
 
-		if (!anode_read_string_simple (node, data, string, &length)) {
-			(allocator) (string, 0);
-			return NULL;
-		}
+		if (!anode_read_string_simple (node, data, string, &length))
+			g_return_val_if_reached (NULL);
 
 		/* Courtesy null termination, string must however be validated! */
 		string[length] = 0;
@@ -3177,12 +3159,10 @@ egg_asn1x_get_string_as_raw (GNode *node,
 
 		string = (allocator) (NULL, length + 1);
 		if (string == NULL)
-			return NULL;
+			return NULL; /* UNREACHABLE: unless odd allocator */
 
-		if (!anode_read_string_struct (node, tlv, string, &length)) {
-			(allocator) (string, 0);
-			return NULL;
-		}
+		if (!anode_read_string_struct (node, tlv, string, &length))
+			g_return_val_if_reached (NULL); /* should have failed above */
 
 		/* Courtesy null termination, string must however be validated! */
 		string[length] = 0;
@@ -3468,7 +3448,7 @@ egg_asn1x_get_time_as_long (GNode *node)
 		return -1;
 
 	if (!anode_read_time (node, data, &when, &time))
-		return -1;
+		g_return_val_if_reached (-1); /* already validated */
 	return time;
 }
 
@@ -3500,7 +3480,7 @@ egg_asn1x_get_time_as_date (GNode *node,
 		return FALSE;
 
 	if (!anode_read_time (node, data, &when, &time))
-		return FALSE;
+		g_return_val_if_reached (FALSE); /* already validated */
 
 	g_date_set_dmy (date, when.tm_mday, when.tm_mon + 1, when.tm_year + 1900);
 	return TRUE;
@@ -3520,7 +3500,7 @@ egg_asn1x_get_oid_as_string (GNode *node)
 		return NULL;
 
 	if (!anode_read_object_id (node, data, &oid))
-		return NULL;
+		g_return_val_if_reached (NULL); /* should have been validated */
 
 	return oid;
 }
@@ -3731,16 +3711,13 @@ anode_validate_enumerated (GNode *node,
 
 	g_assert (value != NULL);
 
-	if (!anode_validate_integer (node, value))
-		return FALSE;
-
 	buf = g_bytes_get_data (value, &length);
-	g_assert (length > 0); /* Checked above */
 
 	/* Enumerated must be positive */
-	if (buf[0] & 0x80)
+	if (length > 0 && (buf[0] & 0x80))
 		return anode_failure (node, "enumerated must be positive");
-	return TRUE;
+
+	return anode_validate_integer (node, value);
 }
 
 static gboolean
@@ -3778,7 +3755,7 @@ anode_validate_string (GNode *node,
 	gsize length;
 
 	if (!anode_read_string_simple (node, value, NULL, &length))
-		return anode_failure (node, "string content is invalid");
+		g_return_val_if_reached (FALSE);
 
 	return anode_validate_size (node, (gulong)length);
 }
@@ -3839,12 +3816,16 @@ anode_validate_sequence_or_set (GNode *node,
 {
 	GNode *child;
 
+	/* If this is optional, and has no values, then that's all good */
+	if (anode_def_flags (node) & FLAG_OPTION) {
+		if (!egg_asn1x_have (node))
+			return TRUE;
+	}
+
 	/* All of the children must validate properly */
 	for (child = node->children; child; child = child->next) {
-		if (egg_asn1x_have (child)) {
-			if (!anode_validate_anything (child, strict))
-				return FALSE;
-		}
+		if (!anode_validate_anything (child, strict))
+			return FALSE;
 	}
 
 	return TRUE;
@@ -3868,6 +3849,9 @@ anode_validate_sequence_or_set_of (GNode *node,
 		}
 	}
 
+	if (count == 0 && anode_def_flags (node) & FLAG_OPTION)
+		return TRUE;
+
 	return anode_validate_size (node, count);
 }
 
@@ -3878,8 +3862,10 @@ anode_validate_anything (GNode *node,
 	GBytes *value;
 	Atlv *tlv;
 	gint type;
+	gint flags;
 
 	type = anode_def_type (node);
+	flags = anode_def_flags (node);
 
 	/* Handle these specially */
 	switch (type) {
@@ -3911,13 +3897,12 @@ anode_validate_anything (GNode *node,
 		case EGG_ASN1X_BIT_STRING:
 			return anode_validate_bit_string (node, value);
 		case EGG_ASN1X_OCTET_STRING:
+		case EGG_ASN1X_GENERALSTRING:
 			return anode_validate_string (node, value);
 		case EGG_ASN1X_OBJECT_ID:
 			return anode_validate_object_id (node, value);
 		case EGG_ASN1X_NULL:
 			return anode_validate_null (node, value);
-		case EGG_ASN1X_GENERALSTRING:
-			return anode_validate_string (node, value);
 		case EGG_ASN1X_TIME:
 			return anode_validate_time (node, value);
 		default:
@@ -3934,13 +3919,13 @@ anode_validate_anything (GNode *node,
 		case EGG_ASN1X_OCTET_STRING:
 			return TRUE;
 		default:
-			break;
+			break; /* UNREACHABLE: fix compiler warning */
 		}
 	}
 
-	if (anode_def_flags (node) & FLAG_OPTION)
+	if (flags & FLAG_OPTION)
 		return TRUE;
-	if (anode_def_flags (node) & FLAG_DEFAULT)
+	if (flags & FLAG_DEFAULT)
 		return TRUE;
 	return anode_failure (node, "missing value");
 }

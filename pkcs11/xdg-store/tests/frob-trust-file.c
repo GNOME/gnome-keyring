@@ -186,14 +186,13 @@ add_trust_purpose_to_file (const gchar *filename, const gchar *purpose)
 	if (result == NULL)
 		barf_and_die ("couldn't encode trust file", egg_asn1x_message (asn));
 
-	g_free (data);
 	egg_asn1x_destroy (asn);
 
 	if (!g_file_set_contents (filename, g_bytes_get_data (result, NULL),
 	                          g_bytes_get_size (result), &err))
 		barf_and_die ("couldn't write trust file", egg_error_message (err));
 
-	g_free (result);
+	g_bytes_unref (result);
 }
 
 /* --------------------------------------------------------------------------------

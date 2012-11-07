@@ -22,6 +22,7 @@ LDADD =  \
 
 TEST_PROGS = \
 	test-asn1 \
+	test-asn1x \
 	test-dn \
 	test-cleanup \
 	test-hex \
@@ -38,6 +39,10 @@ test_asn1_SOURCES = \
 	test-asn1.c \
 	$(ASN_SRCS)
 
+test_asn1x_LDADD = \
+	$(top_builddir)/egg/libegg-asn1x.la \
+	$(LDADD)
+
 check_PROGRAMS = $(TEST_PROGS)
 
 test: $(TEST_PROGS)
@@ -53,16 +58,3 @@ EXTRA_DIST = \
 
 DISTCLEANFILES = \
 	$(ASN_SRCS)
-
-# ------------------------------------------------------------------------------
-
-noinst_PROGRAMS = \
-	test-asn1x
-
-test_asn1x_SOURCES = \
-	test-asn1x.c
-
-test_asn1x_LDADD = \
-	$(top_builddir)/egg/libegg-asn1x.la \
-	$(LIBTASN1_LIBS) \
-	$(LDADD)

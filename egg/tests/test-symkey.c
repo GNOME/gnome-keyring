@@ -300,8 +300,6 @@ static const ReadCipher cipher_tests[] = {
 				"\x04\x08\x73\x61\x6c\x74\x73\x61\x6c\x74",
 		8, "plaintex", "\xB7\x7B\x54\xBF\x29\x4D\x31\x7D"
 	}
-
-
 };
 
 typedef struct {
@@ -636,7 +634,7 @@ main (int argc, char **argv)
 	egg_libgcrypt_initialize ();
 
 	/* Suppress these messages in tests */
-	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO,
 	                   null_log_handler, NULL);
 
 	g_test_add_func ("/symkey/generate_key_simple", test_generate_key_simple);

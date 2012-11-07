@@ -61,10 +61,10 @@ dump_certificate_reference (GNode *asn)
 		barf_and_die ("couldn't parse certificate", egg_asn1x_message (name));
 	g_bytes_unref (element);
 
-	issuer = egg_dn_read (name);
+	issuer = egg_dn_read (egg_asn1x_node (name, "rdnSequence", NULL));
 	g_return_if_fail (issuer);
 
-	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL));
+	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serialNumber", NULL));
 	g_return_if_fail (data != NULL);
 	serial = egg_hex_encode (g_bytes_get_data (data, NULL), g_bytes_get_size (data));
 
@@ -96,13 +96,13 @@ dump_certificate_complete (GNode *asn)
 		barf_and_die ("couldn't parse certificate", egg_asn1x_message (cert));
 	g_bytes_unref (element);
 
-	issuer = egg_dn_read (egg_asn1x_node (asn, "issuer", NULL));
+	issuer = egg_dn_read (egg_asn1x_node (cert, "tbsCertificate", "issuer", "rdnSequence", NULL));
 	g_return_if_fail (issuer);
 
-	subject = egg_dn_read (egg_asn1x_node (asn, "subject", NULL));
+	subject = egg_dn_read (egg_asn1x_node (cert, "tbsCertificate", "subject", "rdnSequence", NULL));
 	g_return_if_fail (subject);
 
-	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (asn, "serial", NULL));
+	data = egg_asn1x_get_integer_as_raw (egg_asn1x_node (cert, "tbsCertificate", "serialNumber", NULL));
 	g_return_if_fail (data != NULL);
 	serial = egg_hex_encode (g_bytes_get_data (data, NULL), g_bytes_get_size (data));
 	g_bytes_unref (data);
@@ -193,7 +193,6 @@ main(int argc, char* argv[])
 	}
 
 	egg_asn1x_destroy (asn);
-	g_free (contents);
 
 	return 0;
 }

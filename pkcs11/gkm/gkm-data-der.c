@@ -967,7 +967,8 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 {
 	GNode *asn1_params = NULL;
 	gcry_cipher_hd_t cih;
-	guchar salt[8];
+	guchar *salt;
+	gsize n_salt;
 	gcry_error_t gcry;
 	guchar *key, *iv;
 	gsize n_key;
@@ -986,7 +987,9 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 
 	/* Randomize some input for the password based secret */
 	iterations = g_random_int_range (1000, 4096);
-	gcry_create_nonce (salt, sizeof (salt));
+	n_salt = 8;
+	salt = g_malloc (n_salt);
+	gcry_create_nonce (salt, n_salt);
 
 	/* Allocate space for the key and iv */
 	n_key = gcry_cipher_get_algo_keylen (GCRY_CIPHER_3DES);
@@ -1001,7 +1004,7 @@ prepare_and_encode_pkcs8_cipher (GNode *asn, const gchar *password,
 	/* Now write out the parameters */
 	asn1_params = egg_asn1x_create (pkix_asn1_tab, "pkcs-12-PbeParams");
 	g_return_val_if_fail (asn1_params, NULL);
-	egg_asn1x_set_string_as_raw (egg_asn1x_node (asn1_params, "salt", NULL), salt, sizeof (salt), NULL);
+	egg_asn1x_set_string_as_raw (egg_asn1x_node (asn1_params, "salt", NULL), salt, n_salt, g_free);
 	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn1_params, "iterations", NULL), iterations);
 	egg_asn1x_set_any_from (egg_asn1x_node (asn, "encryptionAlgorithm", "parameters", NULL), asn1_params);
 

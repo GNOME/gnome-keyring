@@ -24,11 +24,19 @@ TestUniversal ::= [UNIVERSAL 5] IMPLICIT OCTET STRING
 
 TestBitString ::= BIT STRING
 
+test-integers-id OBJECT IDENTIFIER ::= {1 5 13}
+
 TestIntegers ::= SEQUENCE {
 	uint1                   INTEGER,
 	uint2			INTEGER,
-	uint3			INTEGER
+	uint3			INTEGER DEFAULT 8888
 }
+
+TestConstant ::= SEQUENCE {
+     version         TestVersion DEFAULT v3
+}
+
+TestVersion  ::=  INTEGER  {  v1(1), v2(2), v3(3)  }
 
 TestData ::= SEQUENCE {
 	data                    OCTET STRING
@@ -39,8 +47,16 @@ TestBooleanSeq ::= SEQUENCE {
 	boolean2                BOOLEAN
 }
 
+TestBooleanDefault ::= SEQUENCE {
+	boolean                 BOOLEAN DEFAULT TRUE
+}
+
 TestOid ::= SEQUENCE {
 	oid                     OBJECT IDENTIFIER
+}
+
+TestOidOptional ::= SEQUENCE {
+	oid                     OBJECT IDENTIFIER OPTIONAL
 }
 
 TestAnySeq ::= SEQUENCE {
@@ -56,9 +72,25 @@ TestAnyChoice ::= CHOICE {
 	choiceLongTag           [31] ANY
 }
 
+TestSet ::= SET {
+	one            [1] INTEGER,
+	two            [2] INTEGER,
+	three          [3] INTEGER
+}
+
+TestTagLong ::= [1234] EXPLICIT INTEGER
+
 TestSeqOf ::= SEQUENCE OF INTEGER
 
 TestSetOf ::= SET OF INTEGER
+
+TestSeqOfSeq ::= SEQUENCE OF TestIntegers
+
+TestSeqOfAny ::= SEQUENCE OF ANY
+
+TestSeqOptional ::= SEQUENCE {
+	integers                TestIntegers OPTIONAL
+}
 
 TestEnumerated ::= ENUMERATED {
 	valueZero         (0),
