@@ -1,22 +1,24 @@
-/* 
+/*
  * gnome-keyring
- * 
+ *
  * Copyright (C) 2008 Stefan Walter
- * 
- * This program is free software; you can redistribute it and/or modify 
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *  
- * You should have received a copy of the GNU Lesser General 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.  
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA
+ *
+ * Author: Stef Walter <stefw@thewalter.net>
  */
 
 #include "config.h"
@@ -128,18 +130,18 @@ egg_hex_encode_full (gconstpointer data, gsize n_data,
 
 	result = g_string_sized_new (n_data * 2 + 1);
 	bytes = 0;
-	
+
 	while (n_data > 0) {
-		
+
 		if (group && bytes && (bytes % group) == 0)
 			g_string_append_c (result, delim);
 
 		j = *(input) >> 4 & 0xf;
 		g_string_append_c (result, hexc[j]);
-		
+
 		j = *(input++) & 0xf;
 		g_string_append_c (result, hexc[j]);
-    
+
 		++bytes;
 		--n_data;
 	}

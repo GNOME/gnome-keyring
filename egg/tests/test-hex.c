@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* unit-test-util.c: Test hex routines
+/* unit-test-util.c: Test gck-util.c
 
    Copyright (C) 2007 Stefan Walter
 
@@ -41,6 +41,8 @@ test_encode (void)
 	hex = egg_hex_encode (TEST_DATA, sizeof (TEST_DATA));
 	g_assert (hex);
 	g_assert_cmpstr (hex, ==, TEST_HEX);
+
+	g_free (hex);
 }
 
 static void
@@ -53,10 +55,14 @@ test_encode_spaces (void)
 	g_assert (hex);
 	g_assert_cmpstr (hex, ==, TEST_HEX);
 
+	g_free (hex);
+
 	/* Encode with spaces */
 	hex = egg_hex_encode_full (TEST_DATA, sizeof (TEST_DATA), TRUE, ' ', 1);
 	g_assert (hex);
 	g_assert_cmpstr (hex, ==, TEST_HEX_DELIM);
+
+	g_free (hex);
 }
 
 static void
