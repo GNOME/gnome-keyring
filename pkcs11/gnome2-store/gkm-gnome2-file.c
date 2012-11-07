@@ -1014,7 +1014,7 @@ dump_attributes (gpointer key, gpointer value, gpointer user_data)
 	if (attr->pValue == NULL)
 		text = g_strdup ("NULL");
 	else
-		text = egg_hex_encode_full (attr->pValue, attr->ulValueLen, TRUE, ' ', 1);
+		text = egg_hex_encode_full (attr->pValue, attr->ulValueLen, TRUE, " ", 1);
 
 	g_print ("\t0x%08x: %s\n", (guint)*type, text);
 	g_free (text);

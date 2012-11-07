@@ -32,7 +32,7 @@ gpointer              egg_hex_decode                         (const gchar *data,
 
 gpointer              egg_hex_decode_full                    (const gchar *data,
                                                               gssize n_data,
-                                                              gchar delim,
+                                                              const gchar *delim,
                                                               guint group,
                                                               gsize *n_decoded);
 
@@ -42,7 +42,7 @@ gchar*                egg_hex_encode                         (gconstpointer data
 gchar*                egg_hex_encode_full                    (gconstpointer data,
                                                               gsize n_data,
                                                               gboolean upper_case,
-                                                              gchar delim,
+                                                              const gchar *delim,
                                                               guint group);
 
 #endif /* EGG_HEX_H_ */
