@@ -669,6 +669,7 @@ atlv_parse_cls_tag (const guchar *at,
 {
 	gint punt, ris, last;
 	gint n_data;
+	guchar val;
 
 	g_assert (end >= at);
 	g_assert (cls != NULL);
@@ -690,23 +691,27 @@ atlv_parse_cls_tag (const guchar *at,
 	} else {
 		punt = 1;
 		ris = 0;
-		while (punt <= n_data && at[punt] & 128) {
-			int last = ris;
-			ris = ris * 128 + (at[punt++] & 0x7F);
+		while (punt <= n_data) {
+			val = at[punt++];
+			last = ris;
+			ris = ris * 128;
 
 			/* wrapper around, and no bignums... */
 			if (ris < last)
 				return FALSE;
+
+			last = ris;
+			ris += (val & 0x7F);
+
+			/* wrapper around, and no bignums... */
+			if (ris < last)
+				return FALSE;
+
+			if ((val & 0x7F) == val)
+				break;
 		}
 
 		if (punt >= n_data)
-			return FALSE;
-
-		last = ris;
-		ris = ris * 128 + (at[punt++] & 0x7F);
-
-		/* wrapper around, and no bignums... */
-		if (ris < last)
 			return FALSE;
 
 		*off = punt;
@@ -753,7 +758,14 @@ atlv_parse_length (const guchar *at,
 			ans = 0;
 			while (punt <= k && punt < n_data) {
 				last = ans;
-				ans = ans * 256 + at[punt++];
+				ans = ans * 256;
+
+				/* we wrapped around, no bignum support... */
+				if (ans < last)
+					return -2;
+
+				last = ans;
+				ans += at[punt++];
 
 				/* we wrapped around, no bignum support... */
 				if (ans < last)
