@@ -693,10 +693,9 @@ read_cipher_pkcs5_pbe (int cipher_algo,
 		goto done;
 
 	salt = egg_asn1x_get_string_as_bytes (egg_asn1x_node (asn, "salt", NULL));
-	if (!salt)
-		goto done;
+	g_return_val_if_fail (salt != NULL, FALSE);
 	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "iterationCount", NULL), &iterations))
-		iterations = 1;
+		g_return_val_if_reached (FALSE);
 
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
 	g_return_val_if_fail (n_key > 0, FALSE);
@@ -729,6 +728,7 @@ done:
 	return ret;
 }
 
+#if NOT_SUPPORTED
 static gboolean
 setup_pkcs5_rc2_params (GNode *any,
                         gcry_cipher_hd_t cih)
@@ -766,6 +766,7 @@ done:
 	egg_asn1x_destroy (asn);
 	return ret;
 }
+#endif
 
 static gboolean
 setup_pkcs5_des_params (GNode *any,
@@ -827,7 +828,7 @@ setup_pkcs5_pbkdf2_params (const gchar *password,
 		goto done;
 
 	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "iterationCount", NULL), &iterations))
-		iterations = 1;
+		g_return_val_if_reached (FALSE);
 	salt = egg_asn1x_get_string_as_bytes (egg_asn1x_node (asn, "salt", "specified", NULL));
 	if (!salt)
 		goto done;
@@ -892,7 +893,7 @@ read_cipher_pkcs5_pbes2 (const gchar *password,
 	else if (enc_oid == OID_DES_CBC)
 		algo = GCRY_CIPHER_DES;
 	else if (enc_oid == OID_DES_RC2_CBC)
-		algo = GCRY_CIPHER_RFC2268_128;
+		/* GCRY_CIPHER_RFC2268_128 isn't actually implemented in libgcrypt (yet?) */;
 	else if (enc_oid == OID_DES_RC5_CBC)
 		/* RC5 doesn't exist in libgcrypt */;
 
@@ -903,23 +904,24 @@ read_cipher_pkcs5_pbes2 (const gchar *password,
 	/* Instantiate our cipher */
 	gcry = gcry_cipher_open (cih, algo, GCRY_CIPHER_MODE_CBC, 0);
 	if (gcry != 0) {
-		g_warning ("couldn't create cipher: %s", gcry_cipher_algo_name (algo));
-		goto done;
+		g_warning ("couldn't create cipher: %s", gcry_cipher_algo_name (algo)); /* UNREACHABLE: */
+		goto done; /* UNREACHABLE: with normal libgcrypt behavior */
 	}
 
-	/* Read out the parameters */
+	/* Read out the parameters. OPTIONAL, but will always find node */
 	params = egg_asn1x_node (asn, "encryptionScheme", "parameters", NULL);
-	if (!params)
-		goto done;
+	g_return_val_if_fail (params != NULL, FALSE);
 
 	switch (algo) {
 	case GCRY_CIPHER_3DES:
 	case GCRY_CIPHER_DES:
 		r = setup_pkcs5_des_params (params, *cih);
 		break;
+#if 0
 	case GCRY_CIPHER_RFC2268_128:
 		r = setup_pkcs5_rc2_params (params, *cih);
 		break;
+#endif
 	default:
 		/* Should have been caught on the oid check above */
 		g_assert_not_reached ();
@@ -939,9 +941,9 @@ read_cipher_pkcs5_pbes2 (const gchar *password,
 		goto done;
 	}
 
+	/* parameters is OPTIONAL, but will always find node */
 	params = egg_asn1x_node (asn, "keyDerivationFunc", "parameters", NULL);
-	if (!params)
-		goto done;
+	g_return_val_if_fail (params != NULL, FALSE);
 
 	ret = setup_pkcs5_pbkdf2_params (password, n_password, params, algo, *cih);
 
@@ -988,10 +990,9 @@ read_cipher_pkcs12_pbe (int cipher_algo,
 		goto done;
 
 	salt = egg_asn1x_get_string_as_bytes (egg_asn1x_node (asn, "salt", NULL));
-	if (!salt)
-		goto done;
+	g_return_val_if_fail (salt != NULL, FALSE);
 	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (asn, "iterations", NULL), &iterations))
-		goto done;
+		g_return_val_if_reached (FALSE);
 
 	n_block = gcry_cipher_get_algo_blklen (cipher_algo);
 	n_key = gcry_cipher_get_algo_keylen (cipher_algo);
@@ -1053,7 +1054,7 @@ read_mac_pkcs12_pbe (int hash_algo,
 
 	/* Check if we can use this algorithm */
 	if (gcry_md_algo_info (hash_algo, GCRYCTL_TEST_ALGO, NULL, 0) != 0)
-		goto done;
+		goto done; /* UNREACHABLE: unless libgcrypt changes behavior */
 
 	if (egg_asn1x_type (data) == EGG_ASN1X_ANY) {
 		asn = egg_asn1x_get_any_as (data, pkix_asn1_tab, "pkcs-12-MacData");
@@ -1064,9 +1065,9 @@ read_mac_pkcs12_pbe (int hash_algo,
 
 	salt = egg_asn1x_get_string_as_bytes (egg_asn1x_node (data, "macSalt", NULL));
 	if (!salt)
-		goto done;
+		g_return_val_if_reached (FALSE);
 	if (!egg_asn1x_get_integer_as_ulong (egg_asn1x_node (data, "iterations", NULL), &iterations))
-		goto done;
+		g_return_val_if_reached (FALSE);
 
 	n_key = gcry_md_get_algo_dlen (hash_algo);
 

@@ -23,9 +23,15 @@
 
 #include "config.h"
 
+#include "egg/egg-asn1x.h"
+#include "egg/egg-asn1-defs.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-symkey.h"
+#include "egg/egg-testing.h"
+
+typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
+#include "test.asn.h"
 
 #include <gcrypt.h>
 
@@ -230,16 +236,435 @@ test_generate_key_pbe (void)
 	}
 }
 
+typedef struct {
+	const gchar *name;
+	const gchar *scheme;
+
+	/* Info to use with cipher */
+	const gchar *password;
+	const gchar *salt;
+	gsize iterations;
+
+	/* DER representation of cipher */
+	gsize n_der;
+	const gchar *der;
+
+	/* Data to encrypt and test with */
+	gsize n_text_length;
+	const gchar *plain_text;
+	const gchar *cipher_text;
+} ReadCipher;
+
+static const ReadCipher cipher_tests[] = {
+	{
+		"pbe-sha1-des-cbc", "1.2.840.113549.1.5.10",
+		"password", "saltsalt", 33,
+		15, "\x30\x0D"
+			"\x04\x08""saltsalt"
+			"\x02\x01\x2A",
+		8, "plaintex", "\x69\xe2\x88\x4c\x31\xcf\x0e\x2a"
+	},
+	{
+		"pkcs12-pbe-3des-sha1", "1.2.840.113549.1.12.1.3",
+		"password", "saltsalt", 33,
+		15, "\x30\x0D"
+			"\x04\x08""saltsalt"
+			"\x02\x01\x2A",
+		8, "plaintex", "\xcf\xfb\x49\x2e\x42\x75\x15\x56"
+	},
+	{
+		"pkcs5-pbes2", "1.2.840.113549.1.5.13",
+		"password", "salt", 33,
+		48, "\x30\x2e"
+			"\x30\x16"
+				"\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x05\x0c"
+				"\x30\x09"
+					"\x04\x04\x73\x61\x6c\x74"
+					"\x02\x01\x21"
+			"\x30\x14"
+				"\x06\x08\x2a\x86\x48\x86\xf7\x0d\x03\x07"
+				"\x04\x08\x73\x61\x6c\x74\x73\x61\x6c\x74",
+		8, "plaintex", "\x46\x1A\x3A\x39\xD0\xF5\x21\x5C"
+	},
+	{
+		"pkcs5-pbes2-des-cbc", "1.2.840.113549.1.5.13",
+		"password", "salt", 33,
+		0x2d, "\x30\x2b"
+			"\x30\x16"
+				"\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x05\x0c"
+				"\x30\x09"
+					"\x04\x04\x73\x61\x6c\x74"
+					"\x02\x01\x21"
+			"\x30\x11"
+				"\x06\x05\x2b\x0e\x03\x02\x07"
+				"\x04\x08\x73\x61\x6c\x74\x73\x61\x6c\x74",
+		8, "plaintex", "\xB7\x7B\x54\xBF\x29\x4D\x31\x7D"
+	}
+
+
+};
+
+typedef struct {
+	const gchar *name;
+	const gchar *scheme;
+
+	/* Info to use with cipher */
+	const gchar *password;
+
+	/* DER representation of cipher */
+	gsize n_der;
+	const gchar *der;
+} InvalidCipher;
+
+#if 0
+#include "egg/egg-hex.h"
+
+static void
+create_pkcs5_pbes2 (void)
+{
+	GNode *asn;
+	GNode *param;
+	GBytes *bytes;
+	gconstpointer data;
+	gsize size;
+
+	asn = egg_asn1x_create (pkix_asn1_tab, "pkcs-5-PBES2-params");
+
+	egg_asn1x_set_oid_as_string (egg_asn1x_node (asn, "keyDerivationFunc", "algorithm", NULL), "1.2.840.113549.1.5.12");
+	param = egg_asn1x_create (pkix_asn1_tab, "pkcs-5-PBKDF2-params");
+	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (param, "iterationCount", NULL), 33);
+#if 1
+	egg_asn1x_set_choice (egg_asn1x_node (param, "salt", NULL), egg_asn1x_node (param, "salt", "specified", NULL));
+	egg_asn1x_set_string_as_raw (egg_asn1x_node (param, "salt", "specified", NULL), (guchar *)"salt", 4, NULL);
+#else
+	egg_asn1x_set_choice (egg_asn1x_node (param, "salt", NULL), egg_asn1x_node (param, "salt", "otherSource", NULL)); */
+	egg_asn1x_set_oid_as_string (egg_asn1x_node (param, "salt", "otherSource", "algorithm", NULL), "1.2.1"); */
+#endif
+	egg_asn1x_set_any_from (egg_asn1x_node (asn, "keyDerivationFunc", "parameters", NULL), param);
+	egg_asn1x_destroy (param);
+
+	egg_asn1x_set_oid_as_string (egg_asn1x_node (asn, "encryptionScheme", "algorithm", NULL), "1.3.14.3.2.7");
+	param = egg_asn1x_create (pkix_asn1_tab, "pkcs-5-des-EDE3-CBC-params");
+	egg_asn1x_set_string_as_raw (param, (guchar *)"saltsalt", 8, NULL);
+	egg_asn1x_set_any_from (egg_asn1x_node (asn, "encryptionScheme", "parameters", NULL), param);
+	egg_asn1x_destroy (param);
+
+	bytes = egg_asn1x_encode (asn, NULL);
+	egg_asn1x_assert (bytes != NULL, asn);
+	egg_asn1x_destroy (asn);
+
+	data = g_bytes_get_data (bytes, &size);
+	g_printerr ("%s: \\x%s\n", __FUNCTION__, egg_hex_encode_full (data, size, FALSE, "\\x", 1));
+	g_bytes_unref (bytes);
+}
+#endif
+
+static void
+test_read_cipher (gconstpointer data)
+{
+	const ReadCipher *test = data;
+	gcry_cipher_hd_t cih;
+	gcry_error_t gcry;
+	GNode *asn;
+	gboolean ret;
+	GBytes *bytes;
+	gpointer block;
+
+	bytes = g_bytes_new_static (test->der, test->n_der);
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestAny", bytes);
+	g_assert (asn != NULL);
+	g_bytes_unref (bytes);
+
+	ret = egg_symkey_read_cipher (g_quark_from_static_string (test->scheme),
+	                              test->password, strlen (test->password),
+	                              asn, &cih);
+
+	egg_asn1x_destroy (asn);
+	g_assert (ret == TRUE);
+
+	block = g_memdup (test->plain_text, test->n_text_length);
+	gcry = gcry_cipher_encrypt (cih, block, test->n_text_length, NULL, 0);
+	g_assert_cmpint (gcry, ==, 0);
+
+	egg_assert_cmpmem (test->cipher_text, test->n_text_length, ==,
+	                   block, test->n_text_length);
+
+	gcry_cipher_close (cih);
+	g_free (block);
+}
+
+static const InvalidCipher cipher_invalid[] = {
+	{
+		"pbe-bad-der", "1.2.840.113549.1.12.1.3",
+		"password",
+		/* Valid DER, but not pkcs-12-PbeParams */
+		11, "\x30\x09\x04\x07""invalid"
+	},
+	{
+		"pkcs5-pbe-bad-der", "1.2.840.113549.1.5.10",
+		"password",
+		/* Valid DER, but not pkcs-5-PBE-params */
+		11, "\x30\x09\x04\x07""invalid"
+	},
+	{
+		"pkcs5-pbes2-bad-der", "1.2.840.113549.1.5.13",
+		"password",
+		/* Valid DER, but not pkcs-5-PBES2-params */
+		11, "\x30\x09\x04\x07""invalid"
+	},
+	{
+		"pkcs5-pbes2-missing-key-parameters", "1.2.840.113549.1.5.13",
+		"password",
+		0x25, "\x30\x23"
+			"\x30\x0b"
+				"\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x05\x0c"
+				/* Missing OPTIONAL parameters here */
+			"\x30\x14"
+				"\x06\x08\x2a\x86\x48\x86\xf7\x0d\x03\x07"
+				"\x04\x08\x73\x61\x6c\x74\x73\x61\x6c\x74",
+	},
+	{
+		"pkcs5-pbes2-missing-scheme-parameters", "1.2.840.113549.1.5.13",
+		"password",
+		0x26, "\x30\x24"
+			"\x30\x16"
+				"\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x05\x0c"
+				"\x30\x09"
+					"\x04\x04\x73\x61\x6c\x74"
+					"\x02\x01\x21"
+			"\x30\x0a"
+				"\x06\x08\x2a\x86\x48\x86\xf7\x0d\x03\x07"
+				/* Missing OPTIONAL parameters here */
+	},
+	{
+		"pkcs5-pbes2-bad-key-derivation-algo", "1.2.840.113549.1.5.13",
+		"password",
+		48, "\x30\x2e"
+			"\x30\x16" /* An unsupported keyDerivation algorithm oid */
+				"\x06\x09\x2a\x86\x48\x86\xf7\x0c\x01\x04\x0b"
+				"\x30\x09"
+					"\x04\x04\x73\x61\x6c\x74"
+					"\x02\x01\x21"
+			"\x30\x14"
+				"\x06\x08\x2a\x86\x48\x86\xf7\x0d\x03\x07"
+				"\x04\x08\x73\x61\x6c\x74\x73\x61\x6c\x74",
+	},
+	{
+		"pkcs5-pbes2-salt-not-specified", "1.2.840.113549.1.5.13",
+		"password",
+		0x30, "\x30\x2e"
+			"\x30\x16"
+				"\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x05\x0c"
+				"\x30\x09"
+					"\x30\x04"
+						"\x06\x02\x2a\x01"
+					"\x02\x01\x21"
+			"\x30\x14"
+				"\x06\x08\x2a\x86\x48\x86\xf7\x0d\x03\x07"
+				"\x04\x08\x73\x61\x6c\x74\x73\x61\x6c\x74"
+	},
+	{
+		"pkcs5-pbes2-unsupported-des-rc5-cbc", "1.2.840.113549.1.5.13",
+		"password",
+		0x30, "\x30\x2e"
+			"\x30\x16"
+				"\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x05\x0c"
+				"\x30\x09"
+					"\x04\x04\x73\x61\x6c\x74"
+					"\x02\x01\x21"
+			"\x30\x14"
+				"\x06\x08\x2a\x86\x48\x86\xf7\x0d\x03\x09"
+				"\x04\x08\x73\x61\x6c\x74\x73\x61\x6c\x74"
+	}
+};
+
+static void
+test_read_cipher_invalid (gconstpointer data)
+{
+	const InvalidCipher *test = data;
+	gcry_cipher_hd_t cih;
+	GNode *asn;
+	gboolean ret;
+	GBytes *bytes;
+
+	bytes = g_bytes_new_static (test->der, test->n_der);
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestAny", bytes);
+	g_assert (asn != NULL);
+	g_bytes_unref (bytes);
+
+	ret = egg_symkey_read_cipher (g_quark_from_static_string (test->scheme),
+	                              test->password, strlen (test->password),
+	                              asn, &cih);
+
+	egg_asn1x_destroy (asn);
+	g_assert (ret == FALSE);
+}
+
+static void
+test_read_cipher_unsupported_pbe (void)
+{
+	gcry_cipher_hd_t cih;
+	GNode *asn;
+	gboolean ret;
+	GBytes *bytes;
+
+	/*
+	 * On many test systems RC2 is no longer supported by libgcrypt, but
+	 * in case these tests are run elsewhere, double check.
+	 */
+	if (gcry_cipher_algo_info (GCRY_CIPHER_RFC2268_128, GCRYCTL_TEST_ALGO, NULL, 0) == 0)
+		return;
+
+	bytes = g_bytes_new_static ("\x30\x09\x04\x07""invalid", 11);
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestAny", bytes);
+	g_assert (asn != NULL);
+	g_bytes_unref (bytes);
+
+	ret = egg_symkey_read_cipher (g_quark_from_static_string ("1.2.840.113549.1.12.1.5"),
+	                              "blah", 4, asn, &cih);
+
+	g_assert (ret == FALSE);
+
+	egg_asn1x_destroy (asn);
+}
+
+typedef struct {
+	const gchar *name;
+	const gchar *scheme;
+	gsize digest_len;
+
+	/* Info to use with cipher */
+	const gchar *password;
+	const gchar *salt;
+	gsize iterations;
+
+	/* DER representation of cipher */
+	gsize n_der;
+	const gchar *der;
+
+	/* Data to encrypt and test with */
+	gsize n_plain_length;
+	const gchar *plain_text;
+	const gchar *digest;
+} ReadMac;
+
+static const ReadMac mac_tests[] = {
+	{
+		"sha1", "1.3.14.3.2.26", 20,
+		"password", "saltsalt", 33,
+		31, "\x30\x1d"
+			"\x30\x12"
+				"\x30\x07"
+					"\x06\x05\x2b\x0e\x03\x02\x1a"
+				"\x04\x07""invalid"
+			"\x04\x04""salt"
+			"\x02\x01\x21",
+		8, "plaintex", "\x8b\x96\x7f\xa2\xf4\x4f\x2d\x70\xcb\x59\x7e\x8f\xad\xf3\x92\x18\x70\x08\x5c\x57"
+	}
+};
+
+static void
+test_read_mac (gconstpointer data)
+{
+	const ReadMac *test = data;
+	gcry_md_hd_t mdh;
+	gpointer digest;
+	gsize digest_len;
+	GNode *asn;
+	gboolean ret;
+	GBytes *bytes;
+
+	bytes = g_bytes_new_static (test->der, test->n_der);
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestAny", bytes);
+	g_assert (asn != NULL);
+	g_bytes_unref (bytes);
+
+	ret = egg_symkey_read_mac (g_quark_from_static_string (test->scheme),
+	                           test->password, strlen (test->password),
+	                           asn, &mdh, &digest_len);
+
+	g_assert_cmpint (digest_len, ==, test->digest_len);
+
+	egg_asn1x_destroy (asn);
+	g_assert (ret == TRUE);
+
+	gcry_md_write (mdh, test->plain_text, test->n_plain_length);
+	digest = gcry_md_read (mdh, 0);
+
+	egg_assert_cmpmem (test->digest, digest_len, ==,
+	                   digest, digest_len);
+
+	gcry_md_close (mdh);
+}
+
+static void
+test_read_mac_invalid (void)
+{
+	gcry_md_hd_t mdh;
+	gsize digest_len;
+	GNode *asn;
+	gboolean ret;
+	GBytes *bytes;
+
+	bytes = g_bytes_new_static ("\x30\x09\x04\x07""invalid", 11);
+	asn = egg_asn1x_create_and_decode (test_asn1_tab, "TestAny", bytes);
+	g_assert (asn != NULL);
+	g_bytes_unref (bytes);
+
+	ret = egg_symkey_read_mac (g_quark_from_static_string ("1.3.14.3.2.26"),
+	                           "blah", 4, asn, &mdh, &digest_len);
+
+	g_assert (ret == FALSE);
+
+	egg_asn1x_destroy (asn);
+}
+
+static void
+null_log_handler (const gchar *log_domain, GLogLevelFlags log_level,
+                  const gchar *message, gpointer user_data)
+{
+
+}
+
 int
 main (int argc, char **argv)
 {
+	gchar *name;
+	gint i;
+
 	g_test_init (&argc, &argv, NULL);
 	egg_libgcrypt_initialize ();
+
+	/* Suppress these messages in tests */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+	                   null_log_handler, NULL);
 
 	g_test_add_func ("/symkey/generate_key_simple", test_generate_key_simple);
 	g_test_add_func ("/symkey/generate_key_pkcs12", test_generate_key_pkcs12);
 	g_test_add_func ("/symkey/generate_key_pbkdf2", test_generate_key_pbkdf2);
 	g_test_add_func ("/symkey/generate_key_pbe", test_generate_key_pbe);
+
+	for (i = 0; i < G_N_ELEMENTS (cipher_tests); i++) {
+		name = g_strdup_printf ("/symkey/read-cipher/%s", cipher_tests[i].name);
+		g_test_add_data_func (name, cipher_tests + i, test_read_cipher);
+		g_free (name);
+	}
+
+	for (i = 0; i < G_N_ELEMENTS (cipher_invalid); i++) {
+		name = g_strdup_printf ("/symkey/read-cipher-invalid/%s", cipher_invalid[i].name);
+		g_test_add_data_func (name, cipher_invalid + i, test_read_cipher_invalid);
+		g_free (name);
+	}
+
+	g_test_add_func ("/symkey/read-cipher-unsupported/pbe", test_read_cipher_unsupported_pbe);
+
+	for (i = 0; i < G_N_ELEMENTS (mac_tests); i++) {
+		name = g_strdup_printf ("/symkey/read-mac/%s", mac_tests[i].name);
+		g_test_add_data_func (name, mac_tests + i, test_read_mac);
+		g_free (name);
+	}
+
+	g_test_add_func ("/symkey/read-mac-invalid", test_read_mac_invalid);
 
 	return g_test_run ();
 }

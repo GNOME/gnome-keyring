@@ -10,6 +10,8 @@ TestBoolean ::= BOOLEAN
 
 TestNull ::= NULL
 
+TestAny ::= ANY
+
 TestOctetString ::= OCTET STRING
 
 TestGeneralized ::= GeneralizedTime
