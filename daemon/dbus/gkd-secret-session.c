@@ -605,7 +605,7 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
 	g_assert (GCK_IS_OBJECT (self->key));
 
 	session = gck_object_get_session (item);
-	g_return_val_if_fail (session, FALSE);
+	g_return_val_if_fail (session, NULL);
 
 	if (self->mech_type == CKM_AES_CBC_PAD) {
 		n_iv = 16;
@@ -623,7 +623,7 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
 	value = gck_session_wrap_key_full (session, self->key, &mech, item, &n_value,
 	                                   NULL, &error);
 
-	if (value == NULL) {
+	if (error != NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
 			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
 			                      "Cannot get secret of a locked object");
