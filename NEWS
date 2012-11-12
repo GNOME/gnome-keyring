@@ -1,3 +1,7 @@
+Changes in version 3.6.2 are:
+ * Accept XDG_DATA_HOME environment variable during initialization
+ * Handle empty secrets correctly
+
 Changes in version 3.6.1 are:
  * Fix regressions with keyring master password changing
  * Load schema for secret items correctly, prevents storing multiple times
