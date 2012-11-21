@@ -1,3 +1,12 @@
+Changes in version 3.7.2 are:
+ * Bring over DER parsing fixes from GCR library
+ * Fix corner case where long DER length overflows
+ * Fix crash when parsing invalid DER files
+ * Handle empty secrets correctly
+ * Only print debug message if no pkcs11 socket
+ * Other minor fixes
+ * More complete test coverage
+
 Changes in version 3.7.1 are:
  * Remove dependency on GTK+
  * Build fixes
