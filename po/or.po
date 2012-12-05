@@ -3,20 +3,21 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2006.
-# Manoj Kumar Giri <mgiri@redhat.com>, 2009, 2010.
+# Manoj Kumar Giri <mgiri@redhat.com>, 2009, 2010, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master.or\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2010-05-12 12:41+0530\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-10-17 09:26+0000\n"
+"PO-Revision-Date: 2012-12-05 13:55+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
-"Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
+"Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "Language: or\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "\n"
 "\n"
@@ -29,123 +30,204 @@ msgstr ""
 "\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
+#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:122
+#: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
 msgstr "ନାମହୀନ"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "କି-ରିଙ୍ଗ ପ୍ରବଶ ସଙ୍କେତକୁ ବଦଳାନ୍ତୁ"
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "'%s' କି-ରିଙ୍ଗ ପାଇଁ ପୁରୁଣା ପ୍ରବେଶ ସଙ୍କେତକୁ ଚୟନ କରନ୍ତୁ"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
-#, fuzzy, c-format
+#: ../daemon/dbus/gkd-secret-change.c:95
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr ""
+"ଗୋଟିଏ ପ୍ରୟୋଗ '%s' କି-ରିଙ୍ଗ ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତକୁ ବଦଳାଇ ପାଇଁ ଚାହୁଁଅଛି। ଏହା ପାଇଁ"
+"ପୁରୁଣା ପ୍ରବେଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ।"
+
+#: ../daemon/dbus/gkd-secret-change.c:101
+#: ../daemon/dbus/gkd-secret-change.c:137
+#: ../daemon/dbus/gkd-secret-change.c:148
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+msgid "Continue"
+msgstr "ଆଗକୁ ବଢନ୍ତୁ"
+
+#: ../daemon/dbus/gkd-secret-change.c:127
+#, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "'%s' କି-ରିଙ୍ଗ ପାଇଁ ଗୋଟିଏ ନୂତନ ପ୍ରବେଶ ସଙ୍କେତକୁ ଚୟନ କରନ୍ତୁ।"
+msgstr "'%s' କି-ରିଙ୍ଗ ପାଇଁ ଗୋଟିଏ ନୂତନ ପ୍ରବେଶ ସଙ୍କେତ ବାଛନ୍ତୁ"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
-#, fuzzy, c-format
+#: ../daemon/dbus/gkd-secret-change.c:131
+#, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ '%s' କି-ରିଙ୍ଗ ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତକୁ ବଦଳାଇ ପାଇଁ ଚାହୁଁଅଛି। ଏଥିରେ ବ୍ଯବହାର "
-"କରିବା ପାଇଁ ଚାହୁଁଥିବା ପ୍ରବେଶ ସଙ୍କେତକୁ ଆପଣ ଚୟନ କରିବା ଉଚିତ।"
+"ଗୋଟିଏ ପ୍ରୟୋଗ '%s' କି-ରିଙ୍ଗ ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତକୁ ବଦଳାଇ ପାଇଁ ଚାହୁଁଅଛି। ଏଥିରେ "
+"ବ୍ଯବହାର "
+"କରିବା ପାଇଁ ଚାହୁଁଥିବା ନୂତନ ପ୍ରବେଶ ସଙ୍କେତ ବାଛନ୍ତୁ।"
 
-#: ../daemon/dbus/gkd-secret-change.c:111
-#, fuzzy
+#: ../daemon/dbus/gkd-secret-change.c:144
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "ପ୍ରବେଶ ସଂକେତକୁ ଅସଂଗୁପ୍ତ ଭାବରେ ସଞ୍ଚୟ କରିବେ କି?"
+
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"ଗୋଟିଏ ଖାଲି ପ୍ରବେଶ ସଂକେତକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ବାଛିବା ଦ୍ୱାରା, ଆପଣଙ୍କର ସଂରକ୍ଷିତ "
+"ପ୍ରବେଶ ସଂକେତ "
+"ସୁରକ୍ଷିତ ଭାବରେ ସଂଗୁପ୍ତ ହେବ ନାହିଁ। ସେଗୁଡ଼ିକୁ ଆପଣଙ୍କ ଫାଇଲଗୁଡ଼ିକୁ ପ୍ରବେଶାନୁମତି "
+"ଥିବା ଯେକୌଣସି ବ୍ୟକ୍ତି "
+"ଦ୍ୱାରା ଅଭିଗମ୍ୟ ହୋଇପାରିବ।"
+
+#: ../daemon/dbus/gkd-secret-change.c:154
 msgid "The original password was incorrect"
-msgstr "ପ୍ରବେଶ ସଂକେତ କିମ୍ବା PIN ଟି ଭୁଲ ଅଛି"
+msgstr "ପ୍ରକୃତ ପ୍ରବେଶ ସଂକେତଟି ଭୁଲ ଅଛି"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "ନୂତନ କି-ରିଙ୍ଗ ପ୍ରବେଶ ସଙ୍କେତ"
+#: ../daemon/dbus/gkd-secret-change.c:355
+msgid "Change Keyring Password"
+msgstr "କି-ରିଙ୍ଗ ପ୍ରବଶ ସଙ୍କେତକୁ ବଦଳାନ୍ତୁ"
 
-#: ../daemon/dbus/gkd-secret-create.c:84
-msgid "Choose password for new keyring"
-msgstr "ନୂତନ କି-ରିଙ୍ଗ ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତ ଚୟନ କରନ୍ତୁ"
-
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, fuzzy, c-format
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
-"ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ %s ନାମ ବିଶିଷ୍ଟ ଗୋଟିଏ ନୂତନ କି-ରିଙ୍ଗକୁ ସ୍ରୁଷ୍ଟି କରିବା ପାଇଁ ଚାହୁଁଅଛି। ଏଥିରେ ବ୍ଯବହାର "
-"କରିବା ପାଇଁ ଚାହୁଁଥିବା ପ୍ରବେଶ ସଙ୍କେତକୁ ଆପଣ ଚୟନ କରିବା ଉଚିତ।"
+"ଗୋଟିଏ ପ୍ରୟୋଗ '%s' ନାମକ ନୂତନ କି-ରିଙ୍ଗକୁ ସୃଷ୍ଟି କରିବା ପାଇଁ ଚାହୁଁଅଛି। ଏଥିରେ "
+"ବ୍ଯବହାର "
+"କରିବା ପାଇଁ ଚାହୁଁଥିବା ପ୍ରବେଶ ସଙ୍କେତକୁ ବାଛନ୍ତୁ।"
 
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-#, fuzzy
-msgid "Certificate and Key Storage"
-msgstr "ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟକୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
+#: ../daemon/dbus/gkd-secret-create.c:85
+msgid "Choose password for new keyring"
+msgstr "ନୂତନ କି-ରିଙ୍ଗ ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତ ଚୟନ କରନ୍ତୁ"
 
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
-#, fuzzy
-msgid "GNOME Keyring: PKCS#11 Component"
-msgstr "GNOME କି-ରିଙ୍ଗ ଡେମନ"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-#, fuzzy
-msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME କି-ରିଙ୍ଗ ଡେମନ"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
-msgid "Secret Storage Service"
-msgstr ""
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-#, fuzzy
-msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME କି-ରିଙ୍ଗ ଡେମନ"
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
-msgid "SSH Key Agent"
-msgstr ""
+#: ../daemon/dbus/gkd-secret-create.c:312
+msgid "New Keyring Password"
+msgstr "ନୂତନ କି-ରିଙ୍ଗ ପ୍ରବେଶ ସଙ୍କେତ"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-#, fuzzy
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME କି-ରିଙ୍ଗ ଡେମନ"
+msgid "GPG Password Agent"
+msgstr "GPG ପ୍ରବେଶ ସଂକେତ ସଦସ୍ୟ"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#, fuzzy
-msgid "GPG Password Agent"
-msgstr "ନୂତନ ପ୍ରବେଶ ସଂକେତ ଶକ୍ତି"
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME କି ରିଙ୍ଗ: GPG ସଦସ୍ୟ"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "ପ୍ରମାଣପତ୍ର ଏବଂ କି ସଂରକ୍ଷଣ"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME କି ରିଙ୍ଗ: PKCS#11 ଉପାଦାନ"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "Secret Storage Service"
+msgstr "ଗୁପ୍ତ ସଂରକ୍ଷଣ ସର୍ଭିସ"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME କି ରିଙ୍ଗ: ଗୁପ୍ତ ସଂରକ୍ଷଣ"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "SSH Key Agent"
+msgstr "SSH କି ସଦସ୍ୟ"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME କି ରିଙ୍ଗ: SSH ସଦସ୍ୟ"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-#, fuzzy
 msgid "Unknown"
-msgstr "ଅଜଣା ତ୍ରୁଟି"
+msgstr "ଅଜଣା"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
 #, c-format
 msgid "PGP Key: %s"
-msgstr ""
+msgstr "PGP କି: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
 msgid "Enter Passphrase"
-msgstr ""
+msgstr "ପ୍ରବେଶ ସଙ୍କେତ ବାକ୍ୟାଂଶ ଭରଣ କରନ୍ତୁ"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr ""
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+msgid "Unlock"
+msgstr "ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-#, fuzzy
-msgid "Forget this password when I log out"
-msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି କିରିଙ୍ଗକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଅପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "ମୁଁ ଲଗଇନ କଲାମାତ୍ରେ, ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଏହି କି କୁ ଖୋଲନ୍ତୁ"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:145
 msgid "Login"
 msgstr "ଲଗଇନ"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "`%s' ଅସ୍ଥାୟୀ ଫାଇଲକୁ ସୃଷ୍ଟି କରିବାରେ ବିଫଳ: %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "`%s' ରେ ଲେଖିବାରେ ବିଫଳ: %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "`%s' କୁ ନିର୍ମାଣ କରିପାରିବେ ନାହିଁ: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "ପୁରୁଣା ଅପରିବର୍ତ୍ତନୀୟ ଫାଇଲକୁ ବାହାର କରୁଅଛି (%d ଦ୍ୱାରା ନିର୍ମିତ)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr ""
+"ଅପରିବର୍ତ୍ତନୀୟ ହେବା ପାଇଁ ଅପେକ୍ଷା କରିଅଛି (%d%s ଦ୍ୱାରା ଧାରଣ ହୋଇଥିବା) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(ଗତିରୋଧ ହୋଇଛି କି?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "`%s' ଅପରିବର୍ତ୍ତନୀୟ ପ୍ରସ୍ତୁତ ହୋଇନାହିଁ: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "%s ଅପରିବର୍ତ୍ତନୀୟ ହେବା ପାଇଁ ଅପେକ୍ଷା କରିଅଛି...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -157,7 +239,7 @@ msgstr "ଉପୟୋଗକର୍ତ୍ତା ID"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr ""
+msgstr "ଇମେଲ ଠିକଣା"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
@@ -269,168 +351,189 @@ msgstr "DSA ସହିତ SHA1"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:107
-#, fuzzy
 msgid "Server Authentication"
-msgstr "SSL ସେବକ"
+msgstr "ସର୍ଭର ବୈଧିକରଣ"
 
 #: ../egg/egg-oid.c:108
-#, fuzzy
 msgid "Client Authentication"
-msgstr "SSL ଗ୍ରାହକ"
+msgstr "କ୍ଲାଏଣ୍ଟ ବୈଧିକରଣ"
 
 #: ../egg/egg-oid.c:109
 msgid "Code Signing"
-msgstr ""
+msgstr "ସଂକେତ ହସ୍ତାକ୍ଷର"
 
 #: ../egg/egg-oid.c:110
 msgid "Email Protection"
-msgstr ""
+msgstr "ଇମେଲ ସୁରକ୍ଷା"
 
 #: ../egg/egg-oid.c:111
 msgid "Time Stamping"
-msgstr ""
+msgstr "ସମୟ ମାପ"
 
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
+msgstr "ନିର୍ଭରକ ପ୍ରକ୍ରିୟାରୁ ତଥ୍ଯ ପଢିବାରେ select()ରେ ଅପ୍ରତ୍ଯାଶିତ ତ୍ରୁଟି (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr ""
+msgstr "waitpid()ରେ ଅପ୍ରତ୍ଯାଶିତ ତ୍ରୁଟି (%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:581
 msgid "Unnamed Certificate"
 msgstr "ବେନାମୀ ପ୍ରମାଣପତ୍ର"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
 msgstr "ସାର୍ବଜନୀକ SSH କି କୁ ବିଶ୍ଳେଷଣ କରିପାରିଲା ନାହିଁ"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, fuzzy, c-format
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#, c-format
 msgid "Unlock password for: %s"
-msgstr "%s କି-ରିଙ୍ଗ ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତକୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
+msgstr "ଏହା ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତକୁ ଖୋଲନ୍ତୁ: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-#, fuzzy
-msgid "The unlock password was incorrect"
-msgstr "ପ୍ରବେଶ ସଂକେତ କିମ୍ବା PIN ଟି ଭୁଲ ଅଛି"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "ଲଗଇନ କି-ରିଙ୍ଗକୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 msgid "Enter password to unlock your login keyring"
-msgstr "କି-ରିଙ୍ଗକୁ ଖୋଲିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
+msgstr "ଆପଣଙ୍କର ଲଗଇନ କି-ରିଙ୍ଗକୁ ଖୋଲିବା ପାଇଁ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
+"ଆପଣ କମ୍ପୁଟରରେ ଲଗଇନ କରିବା ପାଇଁ ବ୍ୟବହାର କରୁଥିବା ପ୍ରବେଶ ସଂକେତ ଲଗଇନ "
+"କି ରିଙ୍ଗ ସହିତ ସମାନ ନୁହଁ।"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"ଆପଣଙ୍କର ଲଗଇନ କିରିଙ୍ଗଟି ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଅପରିବର୍ତ୍ତନୀୟ ହୋଇନଥିଲା ଯେତେବେଳେ ଆପଣ ଏହି କମ୍ପୁଟର "
-"ମଧ୍ଯରେ ଲଗଇନ ହୋଇଥିଲେ।"
+"ଆପଣଙ୍କର ଲଗଇନ କି ରିଙ୍ଗଟି ଏହି କମ୍ପୁଟରରେ ଲଗଇନ ହୋଇଥିବା ସମୟରେ ଅପରିବର୍ତ୍ତନୀୟ "
+"ହୋଇନଥିଲା।"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "କି-ରିଙ୍ଗକୁ ଅାନଲକ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' କି-ରିଙ୍ଗକୁ ଅାନଲକ କରିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
-#, fuzzy, c-format
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
+#, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "ଗୋଟିଏ ଅଜଣା ପ୍ରୟୋଗ, '%s' କି-ରିଙ୍ଗକୁ ଅଭିଗମ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ତାଳକିତ ଅଟେ"
+msgstr ""
+"ଗୋଟିଏ ପ୍ରୟୋଗ  '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ "
+"ଅଛି"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି କି ରିଙ୍ଗକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଖୋଲନ୍ତୁ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
 msgstr "ବ୍ୟକ୍ତିଗତ କି କୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "ପ୍ରମାଣପତ୍ରକୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
 msgstr "ସାର୍ବଜନିକ କିକୁ ଅପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr "ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
 msgstr "ବ୍ୟକ୍ତିଗତ କି କୁ ଖୋଲିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "ପ୍ରମାଣପତ୍ରକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ପ୍ରବେଶସଂକେତ ଭରଣ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
 msgstr "ଜାଗତିକ କି କୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ପ୍ରବେଶ ସଂକେତ ଭରଣ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "ପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି କି କୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଖୋଲନ୍ତୁ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି ପ୍ରମାଣପତ୍ରକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଖୋଲନ୍ତୁ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଖୋଲନ୍ତୁ"
+
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
-"ଗୋଟିଏ ପ୍ରୟୋଗ, ବ୍ୟକ୍ତିଗତ କି '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
+"ଗୋଟିଏ ପ୍ରୟୋଗ, ବ୍ୟକ୍ତିଗତ କି '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା "
+"ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "ଗୋଟିଏ ପ୍ରୟୋଗ ପ୍ରମାଣପତ୍ର '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
+msgstr ""
+"ଗୋଟିଏ ପ୍ରୟୋଗ ପ୍ରମାଣପତ୍ର '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା "
+"ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
-"ଗୋଟିଏ ପ୍ରୟୋଗ ସାର୍ବଜନିକ କି '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
+"ଗୋଟିଏ ପ୍ରୟୋଗ ସାର୍ବଜନିକ କି '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା "
+"ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "ଗୋଟିଏ ପ୍ରୟୋଗ '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
+msgstr ""
+"ଗୋଟିଏ ପ୍ରୟୋଗ '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+msgid "The unlock password was incorrect"
+msgstr "ଖୋଲିବା ପାଇଁ ଥିବା ପ୍ରବେଶ ସଂକେତଟି ଭୁଲ ଅଛି"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Unlock certificate/key storage"
 msgstr "ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟକୁ ପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ପ୍ରବେଶ ସଂକେତ ଭରଣ କରନ୍ତୁ"
+msgstr ""
+"ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟକୁ ପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ପ୍ରବେଶ ସଂକେତ ଭରଣ କରନ୍ତୁ"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
-"ଗୋଟିଏ ପ୍ରୟୋଗ ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟ '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, କିନ୍ତୁ ଏହା "
+"ଗୋଟିଏ ପ୍ରୟୋଗ ପ୍ରମାଣପତ୍ର/କି ସଂଗ୍ରହାଳୟ '%s' କୁ ଅଭିଗମ୍ୟ କରିବା ପାଇଁ ଚାହୁଁଅଛି, "
+"କିନ୍ତୁ ଏହା "
 "ଅପରିବର୍ତ୍ତନୀୟ ଅଛି"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
@@ -447,99 +550,77 @@ msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"ପ୍ରମାଣପତ୍ର କିମ୍ବା କିଗୁଡ଼ିକର ସଂଗ୍ରହାଳୟ ପାଇଁ '%s' କୁ ପ୍ରସ୍ତୁତ କରିବାକୁ , ଗୋଟିଏ ପ୍ରବେଶ ସଂକେତ ଆବଶ୍ୟକ"
+"ପ୍ରମାଣପତ୍ର କିମ୍ବା କିଗୁଡ଼ିକର ସଂଗ୍ରହାଳୟ ପାଇଁ '%s' କୁ ପ୍ରସ୍ତୁତ କରିବାକୁ , ଗୋଟିଏ "
+"ପ୍ରବେଶ ସଂକେତ ଆବଶ୍ୟକ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
-msgstr "କି-ରିଙ୍ଗ ପ୍ରବଶ ସଙ୍କେତକୁ ବଦଳାନ୍ତୁ"
+msgstr "ପ୍ରବେଶ ସଂକେତ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-#, fuzzy
-msgid "Change password for secure storage"
-msgstr "ସୁରକ୍ଷିତ ସଂଗ୍ରହାଳୟ ପାଇଁ ନୂତନ ପ୍ରବେଶ ସଂକେତ ଆବଶ୍ୟକ"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Original password for secure storage"
+msgstr "ସୁରକ୍ଷିତ ସଂରକ୍ଷଣ ପାଇଁ ପ୍ରକୃତ ପ୍ରବେଶ ସଂକେତ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
+msgid "To change the password for '%s', the original password is required"
 msgstr ""
+"'%s' ପାଇଁ ପ୍ରବେଶ ସଂକେତ ପରିବର୍ତ୍ତନ କରିବାକୁ, ପ୍ରକୃତ ପ୍ରବେଶ ସଂକେତ ଆବଶ୍ୟକ ହୋଇଥାଏ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password for secure storage"
+msgstr "ସୁରକ୍ଷିତ ସଂରକ୍ଷଣ ପାଇଁ ପ୍ରବେଶ ସଂକେତ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
+#, c-format
+msgid "Type a new password for '%s'"
+msgstr "'%s' ପାଇଁ ଗୋଟିଏ ନୂତନ ପ୍ରବେଶ ସଙ୍କେତ ଲେଖନ୍ତୁ"
 
 #: ../tool/gkr-tool.c:102
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr ""
+msgstr "ବ୍ୟବହାର ବିଧି: gnome-keyring ନିର୍ଦ୍ଦେଶ [ବିକଳ୍ପଗୁଡ଼ିକ]\n"
 
 #: ../tool/gkr-tool.c:104
 msgid "commands: "
-msgstr ""
+msgstr "ନିର୍ଦ୍ଦେଶ:"
 
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:108
 msgid "          "
-msgstr ""
+msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:591
-msgid "Store passwords unencrypted?"
-msgstr "ପ୍ରବେଶ ସଂକେତକୁ ଅସଂଗୁପ୍ତ ଭାବରେ ସଞ୍ଚୟ କରିବେ କି?"
-
-#: ../ui/gku-prompt-tool.c:592
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
-"ଗୋଟିଏ ଖାଲି ପ୍ରବେଶ ସଂକେତକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ବାଛିବା ଦ୍ୱାରା, ଆପଣଙ୍କର ସଂରକ୍ଷିତ ପ୍ରବେଶ ସଂକେତ "
-"ସୁରକ୍ଷିତ ଭାବରେ ସଂଗୁପ୍ତ ହେବ ନାହିଁ। ସେଗୁଡ଼ିକୁ ଆପଣଙ୍କ ଫାଇଲଗୁଡ଼ିକୁ ପ୍ରବେଶାନୁମତି ଥିବା ଯେକୌଣସି ବ୍ୟକ୍ତି "
-"ଦ୍ୱାରା ଅଭିଗମ୍ୟ ହୋଇପାରିବ।"
-
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
-msgstr "ଅସୁରକ୍ଷିତ ସଂଗ୍ରହାଳୟ ବ୍ୟବହାର କରନ୍ତୁ"
-
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "ପ୍ରବେଶ ସଙ୍କେତ ଦ୍ବୟ ମିଶୁ ନାହାଁନ୍ତି।"
-
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
-msgstr "ପ୍ରବେଶ ସଙ୍କେତଟି ଖାଲି ହୋଇ ପାରିବ ନାହିଁ"
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr ""
-
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "ନୂତନ ପ୍ରବେଶ ସଂକେତ ଶକ୍ତି"
-
-#: ../ui/gku-prompt.ui.h:2
 #, fuzzy
-msgid "_Application:"
-msgstr "ଅବସ୍ଥାନ (_L):"
+#~ msgid "Forget this password when I log out"
+#~ msgstr "ମୁଁ ଲଗଇନ ହେବା ସମୟରେ ଏହି କିରିଙ୍ଗକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଅପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ।"
 
-#: ../ui/gku-prompt.ui.h:3
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "ଅସୁରକ୍ଷିତ ସଂଗ୍ରହାଳୟ ବ୍ୟବହାର କରନ୍ତୁ"
+
+#~ msgid "Passwords do not match."
+#~ msgstr "ପ୍ରବେଶ ସଙ୍କେତ ଦ୍ବୟ ମିଶୁ ନାହାଁନ୍ତି।"
+
+#~ msgid "Password cannot be blank"
+#~ msgstr "ପ୍ରବେଶ ସଙ୍କେତଟି ଖାଲି ହୋଇ ପାରିବ ନାହିଁ"
+
+#~ msgid "New password strength"
+#~ msgstr "ନୂତନ ପ୍ରବେଶ ସଂକେତ ଶକ୍ତି"
+
 #, fuzzy
-msgid "_Confirm:"
-msgstr "ପ୍ରବଶ ସଙ୍କେତକୁ ନିଶ୍ଚିତ କରନ୍ତୁ (_C):"
+#~ msgid "_Application:"
+#~ msgstr "ଅବସ୍ଥାନ (_L):"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr ""
-
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "ନାମ (_N):"
-
-#: ../ui/gku-prompt.ui.h:6
 #, fuzzy
-msgid "_Old Password:"
-msgstr "ପୁରୁଣା ପ୍ରବଶ ସଙ୍କେତ (_O):"
+#~ msgid "_Confirm:"
+#~ msgstr "ପ୍ରବଶ ସଙ୍କେତକୁ ନିଶ୍ଚିତ କରନ୍ତୁ (_C):"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "ପ୍ରବେଶ ସଂଙ୍କେତ (_P):"
+#~ msgid "_Name:"
+#~ msgstr "ନାମ (_N):"
+
+#, fuzzy
+#~ msgid "_Old Password:"
+#~ msgstr "ପୁରୁଣା ପ୍ରବଶ ସଙ୍କେତ (_O):"
+
+#~ msgid "_Password:"
+#~ msgstr "ପ୍ରବେଶ ସଂଙ୍କେତ (_P):"
