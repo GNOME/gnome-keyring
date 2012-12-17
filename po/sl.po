@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-03-08 19:47+0000\n"
-"PO-Revision-Date: 2012-04-28 20:24+0200\n"
+"PO-Revision-Date: 2012-12-17 13:45+0100\n"
 "Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -69,7 +69,7 @@ msgstr "Ali naj bodo shranjena gesla nešifrirana?"
 #: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:97
 msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop to takih gesel ima vsak, ki ima tudi dostop do računalnika."
+msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop do takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
 # Tukaj govorimo o menjavi gesla, zato je izvorno geslo pravzaprav staro. To je smiselno zato, ker je sicer v programu seahorse vedno omenjeno staro geslo.
 #: ../daemon/dbus/gkd-secret-change.c:152
@@ -379,7 +379,7 @@ msgstr "Geslo, ki  se uporabi ob prijavi v sistem, se ne sklada z geslom zbirke 
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
 msgid "The login keyring did not get unlocked when you logged into your computer."
-msgstr "Prijavna zbirka ključev ni bila samodejno odklenjena ob prijavi."
+msgstr "Prijavna zbirka ključev ob prijavi ni bila samodejno odklenjena."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
