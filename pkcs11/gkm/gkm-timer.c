@@ -35,7 +35,7 @@ struct _GkmTimer {
 	gpointer user_data;
 };
 
-static GStaticMutex timer_mutex = G_STATIC_MUTEX_INIT;
+static GMutex timer_mutex = { 0, };
 static GQueue *timer_queue = NULL;
 static GThread *timer_thread = NULL;
 static GCond timer_condition;
@@ -56,17 +56,16 @@ compare_timers (gconstpointer a, gconstpointer b, gpointer user_data)
 static gpointer
 timer_thread_func (gpointer unused)
 {
-	GMutex *mutex = g_static_mutex_get_mutex (&timer_mutex);
 	GkmTimer *timer;
 
-	g_mutex_lock (mutex);
+	g_mutex_lock (&timer_mutex);
 
 	while (timer_run) {
 		timer = g_queue_peek_head (timer_queue);
 
 		/* Nothing in the queue, wait until we have action */
 		if (!timer) {
-			g_cond_wait (timer_cond, mutex);
+			g_cond_wait (timer_cond, &timer_mutex);
 			continue;
 		}
 
@@ -74,13 +73,13 @@ timer_thread_func (gpointer unused)
 			gint64 when = ((gint64)timer->when) * G_TIME_SPAN_SECOND;
 			gint64 offset = when - g_get_real_time ();
 			if (offset > 0) {
-				g_cond_wait_until (timer_cond, mutex, g_get_monotonic_time () + offset);
+				g_cond_wait_until (timer_cond, &timer_mutex, g_get_monotonic_time () + offset);
 				continue;
 			}
 		}
 
 		/* Leave our thread mutex, and enter the module */
-		g_mutex_unlock (mutex);
+		g_mutex_unlock (&timer_mutex);
 		g_mutex_lock (timer->mutex);
 
 			if (timer->callback)
@@ -88,14 +87,14 @@ timer_thread_func (gpointer unused)
 
 		/* Leave the module, and go back into our thread mutex */
 		g_mutex_unlock (timer->mutex);
-		g_mutex_lock (mutex);
+		g_mutex_lock (&timer_mutex);
 
 		/* There's a chance that the timer may no longer be at head of queue */
 		g_queue_remove (timer_queue, timer);
 		g_slice_free (GkmTimer, timer);
 	}
 
-	g_mutex_unlock (mutex);
+	g_mutex_unlock (&timer_mutex);
 	return NULL;
 }
 
@@ -103,7 +102,7 @@ void
 gkm_timer_initialize (void)
 {
 	GError *error = NULL;
-	g_static_mutex_lock (&timer_mutex);
+	g_mutex_lock (&timer_mutex);
 
 		g_atomic_int_inc (&timer_refs);
 		if (!timer_thread) {
@@ -122,7 +121,7 @@ gkm_timer_initialize (void)
 			}
 		}
 
-	g_static_mutex_unlock (&timer_mutex);
+	g_mutex_unlock (&timer_mutex);
 }
 
 void
@@ -132,13 +131,13 @@ gkm_timer_shutdown (void)
 
 	if (g_atomic_int_dec_and_test (&timer_refs)) {
 
-		g_static_mutex_lock (&timer_mutex);
+		g_mutex_lock (&timer_mutex);
 
 			timer_run = FALSE;
 			g_assert (timer_cond);
 			g_cond_broadcast (timer_cond);
 
-		g_static_mutex_unlock (&timer_mutex);
+		g_mutex_unlock (&timer_mutex);
 
 		g_assert (timer_thread);
 		g_thread_join (timer_thread);
@@ -182,14 +181,14 @@ gkm_timer_start (GkmModule *module, glong seconds, GkmTimerFunc callback, gpoint
 	timer->mutex = _gkm_module_get_scary_mutex_that_you_should_not_touch (module);
 	g_return_val_if_fail (timer->mutex, NULL);
 
-	g_static_mutex_lock (&timer_mutex);
+	g_mutex_lock (&timer_mutex);
 
 		g_assert (timer_queue);
 		g_queue_insert_sorted (timer_queue, timer, compare_timers, NULL);
 		g_assert (timer_cond);
 		g_cond_broadcast (timer_cond);
 
-	g_static_mutex_unlock (&timer_mutex);
+	g_mutex_unlock (&timer_mutex);
 
 	/*
 	 * Note that the timer thread could not already completed this timer.
@@ -207,7 +206,7 @@ gkm_timer_cancel (GkmTimer *timer)
 
 	g_return_if_fail (timer_queue);
 
-	g_static_mutex_lock (&timer_mutex);
+	g_mutex_lock (&timer_mutex);
 
 		g_assert (timer_queue);
 
@@ -231,5 +230,5 @@ gkm_timer_cancel (GkmTimer *timer)
 			g_cond_broadcast (timer_cond);
 		}
 
-	g_static_mutex_unlock (&timer_mutex);
+	g_mutex_unlock (&timer_mutex);
 }
