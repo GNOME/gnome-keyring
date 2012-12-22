@@ -63,13 +63,13 @@ mock_module_leave_and_finalize (void)
 void
 mock_module_leave (void)
 {
-	g_static_mutex_unlock (&pkcs11_module_mutex);
+	g_mutex_unlock (&pkcs11_module_mutex);
 }
 
 void
 mock_module_enter (void)
 {
-	g_static_mutex_lock (&pkcs11_module_mutex);
+	g_mutex_lock (&pkcs11_module_mutex);
 }
 
 GkmSession*
