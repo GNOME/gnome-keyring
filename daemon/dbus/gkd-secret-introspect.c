@@ -63,7 +63,7 @@ const gchar *gkd_secret_introspect_collection =
 	"	<interface name='org.freedesktop.Secret.Collection'>\n"
 	"		<property name='Items' type='ao' access='read'/>\n"
 	"		<property name='Label' type='s' access='readwrite'/>\n"
-	"		<property name='Locked' type='s' access='read'/>\n"
+	"		<property name='Locked' type='b' access='read'/>\n"
 	"		<property name='Created' type='t' access='read'/>\n"
 	"		<property name='Modified' type='t' access='read'/>\n"
 	"		<method name='Delete'>\n"
