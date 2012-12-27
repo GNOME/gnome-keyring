@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+
 #include "gkd-dbus-private.h"
 #include "gkd-util.h"
 
@@ -50,7 +51,10 @@ on_setenv_reply (DBusPendingCall *pending, void *user_data)
 	g_return_if_fail (reply);
 
 	if (dbus_set_error_from_message (&derr, reply)) {
-		if (!dbus_error_has_name (&derr, "org.gnome.SessionManager.NotInInitialization"))
+		if (dbus_error_has_name (&derr, "org.gnome.SessionManager.NotInInitialization") ||
+		    dbus_error_has_name (&derr, DBUS_ERROR_SERVICE_UNKNOWN))
+			g_debug ("couldn't set environment variable in session: %s", derr.message);
+		else
 			g_message ("couldn't set environment variable in session: %s", derr.message);
 		dbus_error_free (&derr);
 	}
