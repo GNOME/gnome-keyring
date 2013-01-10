@@ -31,6 +31,7 @@ TEST_PROGS = \
 	test-secmem \
 	test-padding \
 	test-symkey \
+	test-armor \
 	test-openssl \
 	test-dh \
 	test-spawn

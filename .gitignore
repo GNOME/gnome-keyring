@@ -85,6 +85,7 @@ p11-tests.conf
 /docs/*/html/
 /docs/gnome-keyring-daemon/prompter.xml
 
+/egg/tests/test-armor
 /egg/tests/test-asn1
 /egg/tests/test-cleanup
 /egg/tests/test-decimal

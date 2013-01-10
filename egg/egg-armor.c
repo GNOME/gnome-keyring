@@ -104,18 +104,20 @@ armor_find_begin (const gchar *data,
                   const gchar **outer)
 {
 	const gchar *pref, *suff;
+	const gchar *at;
 	gchar *stype;
+	gsize len;
 
 	/* Look for a prefix */
 	pref = g_strstr_len ((gchar*)data, n_data, ARMOR_PREF_BEGIN);
 	if (!pref)
 		return NULL;
 
-	n_data -= (pref - data) + ARMOR_PREF_BEGIN_L;
-	data = pref + ARMOR_PREF_BEGIN_L;
+	len = n_data - ((pref - data) + ARMOR_PREF_BEGIN_L);
+	at = pref + ARMOR_PREF_BEGIN_L;
 
 	/* Look for the end of that begin */
-	suff = g_strstr_len ((gchar*)data, n_data, ARMOR_SUFF);
+	suff = g_strstr_len ((gchar *)at, len, ARMOR_SUFF);
 	if (!suff)
 		return NULL;
 
@@ -149,6 +151,8 @@ armor_find_end (const gchar *data,
 	const gchar *stype;
 	const gchar *pref;
 	const gchar *line;
+	const gchar *at;
+	gsize len;
 	gsize n_type;
 
 	/* Look for a prefix */
@@ -156,20 +160,20 @@ armor_find_end (const gchar *data,
 	if (!pref)
 		return NULL;
 
-	n_data -= (pref - data) + ARMOR_PREF_END_L;
-	data = pref + ARMOR_PREF_END_L;
+	len = n_data - ((pref - data) + ARMOR_PREF_END_L);
+	at = pref + ARMOR_PREF_END_L;
 
 	/* Next comes the type string */
 	stype = g_quark_to_string (type);
 	n_type = strlen (stype);
-	if (n_type > n_data || strncmp ((gchar*)data, stype, n_type) != 0)
+	if (n_type > len || strncmp ((gchar*)at, stype, n_type) != 0)
 		return NULL;
 
-	n_data -= n_type;
-	data += n_type;
+	len -= n_type;
+	at += n_type;
 
 	/* Next comes the suffix */
-	if (ARMOR_SUFF_L > n_data && strncmp ((gchar*)data, ARMOR_SUFF, ARMOR_SUFF_L) != 0)
+	if (ARMOR_SUFF_L > len && strncmp ((gchar*)at, ARMOR_SUFF, ARMOR_SUFF_L) != 0)
 		return NULL;
 
 	/*
@@ -182,10 +186,10 @@ armor_find_end (const gchar *data,
 		pref = line;
 
 	if (outer != NULL) {
-		data += ARMOR_SUFF_L;
-		if (isspace (data[0]))
-			data++;
-		*outer = data;
+		at += ARMOR_SUFF_L;
+		if (isspace (at[0]))
+			at++;
+		*outer = at;
 	}
 
 	/* The end of the data */
