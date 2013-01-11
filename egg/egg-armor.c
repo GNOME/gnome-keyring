@@ -173,7 +173,7 @@ armor_find_end (const gchar *data,
 	at += n_type;
 
 	/* Next comes the suffix */
-	if (ARMOR_SUFF_L > len && strncmp ((gchar*)at, ARMOR_SUFF, ARMOR_SUFF_L) != 0)
+	if (ARMOR_SUFF_L > len || strncmp ((gchar *)at, ARMOR_SUFF, ARMOR_SUFF_L) != 0)
 		return NULL;
 
 	/*

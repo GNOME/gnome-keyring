@@ -148,6 +148,11 @@ main (int argc, char **argv)
 	g_test_add_data_func ("/armor/invalid-suffix",
 	                      "-----BEGIN TEST-----\n"
 	                      "Z29vZCBtb3JuaW5nIGV2ZXJ5b25lCg==\n"
+	                      "-----END TEST--xxxxxxxx\n",
+	                      test_invalid);
+	g_test_add_data_func ("/armor/invalid-truncated",
+	                      "-----BEGIN TEST-----\n"
+	                      "Z29vZCBtb3JuaW5nIGV2ZXJ5b25lCg==\n"
 	                      "-----END TEST--\n",
 	                      test_invalid);
 
