@@ -1,54 +1,604 @@
-# Uyghur translation for libgnome-keyring
+# Uyghur translation for gnome-keyring.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Gheyret Kenji <gheyret@yahoo.com>, 2010.
+# Gheyret Kenji<gheyret@yahoo.com>,2010.
+# Sahran <sahran.ug@gmail.com>, 2010.
+# Zeper <zeper@msn.com>, 2010.
+# Oghlan Temkin <temkin119@gmail.com>,2011
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnome-keyring\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=libgnome-keyring\n"
-"POT-Creation-Date: 2012-08-06 16:01+0000\n"
-"PO-Revision-Date: 2010-08-12 19:40+0000\n"
-"Last-Translator: Gheyret Kenji <gheyret@yahoo.com>\n"
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-12-17 20:22+0000\n"
+"PO-Revision-Date: 2011-04-26 09:25+0600\n"
+"Last-Translator: Sahran <sahran.ug@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../library/gnome-keyring-utils.c:180
-msgid "Access Denied"
-msgstr "زىيارەت رەت قىلىندى"
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:122
+#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
+msgid "Unnamed"
+msgstr "ئاتسىز"
 
-#: ../library/gnome-keyring-utils.c:182
-msgid "The gnome-keyring-daemon application is not running."
-msgstr "gnome-keyring-daemon پروگرامما ئىجرا قىلىنمايۋاتىدۇ."
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Enter the old password for the '%s' keyring"
+msgstr "ئاچقۇچ ھالقىسى ‹%s› نىڭ كونا ئىمىنى كىرگۈزۈڭ"
 
-#: ../library/gnome-keyring-utils.c:184
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr "gnome-keyring-daemon بىلەن ئالاقىلەشكەندە خاتالىق كۆرۈلدى"
+#: ../daemon/dbus/gkd-secret-change.c:95
+#, c-format
+#| msgid ""
+#| "An application wants to change the password for the '%s' keyring. Choose "
+#| "the new password you want to use for it."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr "بىر پروگرامما ئاچقۇچ ھالقىسى ‹%s› نىڭ كونا ئىمىنى ئۆزگەرتمەكچى. ئۇنىڭ كونا ئىمىنى كىرگۈزۈڭ."
 
-#: ../library/gnome-keyring-utils.c:186
-msgid "A keyring with that name already exists"
-msgstr "ئوخشاش ئاتتىكى شىفىرلىق ئاچقۇچ ھالقىسى مەۋجۇت"
+#: ../daemon/dbus/gkd-secret-change.c:101
+#: ../daemon/dbus/gkd-secret-change.c:137
+#: ../daemon/dbus/gkd-secret-change.c:148
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+msgid "Continue"
+msgstr "داۋاملاشتۇر"
 
-#: ../library/gnome-keyring-utils.c:188
-msgid "Programmer error: The application sent invalid data."
-msgstr "پروگرامما خاتالىقى: پروگرامما ئىناۋەتسىز سانلىق-مەلۇمات يوللىدى."
+#: ../daemon/dbus/gkd-secret-change.c:127
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "‹%s› نىڭ  ئاچقۇچ ھالقىسى ئۈچۈن  يېڭى ئىم تاللاڭ"
 
-#: ../library/gnome-keyring-utils.c:190
-msgid "No matching results"
-msgstr "ماس كېلىدىغان نەتىجە يوق"
+#: ../daemon/dbus/gkd-secret-change.c:131
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr "بىر پروگرامما ‹%s› دېگەن ئاچقۇچ ھالقىسىنىڭ ئىمىنى ئۆزگەرتمەكچى. ئۇنىڭغا يېڭى ئىم تاللاڭ."
 
-#: ../library/gnome-keyring-utils.c:192
-msgid "A keyring with that name does not exist."
-msgstr "بۇ ئاتتىكى شىفىرلىق ئاچقۇچ ھالقىسى مەۋجۇت ئەمەس."
+#: ../daemon/dbus/gkd-secret-change.c:144
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "ئىمنى شىفىرلىماي ساقلامدۇ؟"
 
-#: ../library/gnome-keyring-utils.c:199
-msgid "The keyring has already been unlocked."
-msgstr "بۇ شىفىرلىق ئاچقۇچ ھالقىسىنىڭ قۇلۇپى ئېچىلغان."
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr "بوش ئىم ئىشلەتسىڭىز، ساقلانغان ئىم بىخەتەر ھالدا مەخپىيلەشتۈرۈلمەيدۇ، باشقىلار سىزنىڭ ھۆججىتىڭىزنى خالىغانچە زىيارەت قىلالايدۇ."
 
-#. TRANSLATORS: This is the name of an automatically created default keyring.
-#: ../library/gnome-keyring.c:3037
-msgid "Default"
-msgstr "كۆڭۈلدىكى"
+#: ../daemon/dbus/gkd-secret-change.c:154
+msgid "The original password was incorrect"
+msgstr "ئەسلى ئىم توغرا ئەمەس"
+
+#: ../daemon/dbus/gkd-secret-change.c:355
+msgid "Change Keyring Password"
+msgstr "ئاچقۇچ ھالقىسى ئىمىنى ئۆزگەرت"
+
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr "بىر پروگرامما يېڭىدىن ‹%s› دېگەن ئاچقۇچ ھالقىسىنى قۇرماقچى. ئۇنىڭغا ئىم تاللاڭ."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
+msgid "Choose password for new keyring"
+msgstr "يېڭى ئاچقۇچ ھالقىسى ئۈچۈن ئىم تاللاڭ"
+
+#: ../daemon/dbus/gkd-secret-create.c:312
+msgid "New Keyring Password"
+msgstr "يېڭى ئاچقۇچ ھالقىسى (Keyring) ئىمى"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GPG Password Agent"
+msgstr "GPG ئىم ياردەمچىسى"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "گىنوم ئاچقۇچ ھالقىسى：GPG ياردەمچىسى"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "گۇۋاھنامە ۋە شىفىرلىق ئاچقۇچ ئامبىرى"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "گىنوم ئاچقۇچ ھالقىسى：PKCS#11 دېتالى"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "Secret Storage Service"
+msgstr "مەخپىي ساقلاش مۇلازىمىتى"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "گىنوم ئاچقۇچ ھالقىسى：مەخپىيەت مۇلازىمىتى"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "SSH Key Agent"
+msgstr "SSH  ئاچقۇچ ياردەمچىسى"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "گىنوم ئاچقۇچ ھالقىسى：SSH  ياردەمچىسى"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
+msgid "Unknown"
+msgstr "نامەلۇم"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
+#, c-format
+msgid "PGP Key: %s"
+msgstr "PGP ئاچقۇچ: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
+msgid "Enter Passphrase"
+msgstr "ئىم كىرگۈزۈڭ"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+msgid "Unlock"
+msgstr "قۇلۇپسىزلا"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "تىزىمغا كىرگەن ۋاقتىمدا بۇ ئاچقۇچ ھەمىشە قۇلۇپسىزلانسۇن"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:145
+msgid "Login"
+msgstr "كىرىش"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "ۋاقىتلىق ھۆججەت ‹%s› نى قۇرۇش مەغلۇپ بولدى: %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "‹%s› غا يېزىۋاتقاندا خاتالىق كۆرۈلدى: %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "‹%s› نى قۇرغىلى بولمىدى: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "چىرىك(stale) قۇلۇپ ھۆججىتى(lockfile) نى ئۆچۈرۈۋاتىدۇ(ياسىغۇچى %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "قۇلۇپنى كۈتۈۋاتىدۇ (%d%s نىڭ قولىدا ئىكەن) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(deadlock?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "‹%s› نىڭ قۇلۇپى ياسالمىدى. %s\n"
+"\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "%s نىڭ قۇلۇپىنى كۈتۈۋاتىدۇ…\n"
+
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "دائىرە دېتالى"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "ئىشلەتكۈچى ID"
+
+#: ../egg/egg-oid.c:46
+msgid "Email Address"
+msgstr "ئېلخەت ئادرېسلىرى"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "تۇغۇلغان ۋاقتى"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "تۇغۇلغان ئورنى"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "جىنسى"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "دۆلەت تەۋەلىكى"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "تۇرۇۋاتقان دۆلىتى"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "ئادەتتىكى ئات"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "تەگات"
+
+#: ../egg/egg-oid.c:69
+msgid "Serial Number"
+msgstr "تەرتىپ نومۇرى"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "دۆلەت"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "ئورۇن"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "ھالەت"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "كوچا"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "ئورگان"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "ئىدارىسى"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "ماۋزۇ"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "تېلېفون نومۇرى"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "بېرىلگەن ئاتى"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "قىسقارتىلمىسى"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "مەشغۇلات چەكلىگۈچى"
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "DN چەكلىگۈچى"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "تەخەللۇسى"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:99
+msgid "MD2 with RSA"
+msgstr "MD2 بىلەن شىفىرلانغانRSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD5 with RSA"
+msgstr "MD5 بىلەن شىفىرلانغانRSA"
+
+#: ../egg/egg-oid.c:101
+msgid "SHA1 with RSA"
+msgstr "SHA1 بىلەن شىفىرلانغانRSA"
+
+#: ../egg/egg-oid.c:103
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with DSA"
+msgstr "SHA1 بىلەن شىفىرلانغانDSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "مۇلازىمېتىر ئىسپاتنامىسى"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "خېرىدار ئىسپاتنامىسى‏"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "كود ئىمزاسى"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "ئېلخەت قوغداش"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "ۋاقىت تامغىسى"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr "ئىجرا (%s) دىن سانلىق-مەلۇمات ئوقۇۋاتقاندا select() دا تاسادىپىي خاتالىق كۆرۈلدى"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "waitpid() دا تاسادىپىي خاتالىق كۆرۈلدى (%s)"
+
+#: ../pkcs11/gkm/gkm-certificate.c:581
+msgid "Unnamed Certificate"
+msgstr "ئات قويۇلمىغان گۇۋاھنامە"
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
+msgid "Couldn't parse public SSH key"
+msgstr "ئاممىۋى SSH ئاچقۇچىنى تەھلىل قىلالمىدى"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "%s نىڭ قۇلۇپسىزلاش ئىمى"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+msgid "Unlock Login Keyring"
+msgstr "ئاچقۇچ ھالقىسىغا كىرىشنى قۇلۇپسىزلا"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
+msgid "Enter password to unlock your login keyring"
+msgstr "ئاچقۇچ ھالقىسىنى قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr "كومپيۇتېرغا تىزىمغا كىرىش ئۈچۈن ئىشلىتىدىغان ئىم بىلەن ئاچقۇچ ھالقىسىغا تىزىمغا كىرىدىغان ئىم ماسلاشتۇرۇلمايدۇ."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr "كومپيۇتېرغا تىزىمغا كىرگەندە ئاچقۇچ ھالقىسىغا تىزىملىتىش قۇلۇپسىزلانمايدۇ."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+msgid "Unlock Keyring"
+msgstr "ئاچقۇچ ھالقىسى(Keyring)نى قۇلۇپسىزلا"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "قۇلۇپسىزلاش ئۈچۈن ئاچقۇچ ھالقىسى ‹%s› نىڭ ئىمىنى كىرگۈزۈڭ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "بىر پروگرامما keyring ‹%s› نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "تىزىمغا كىرگەن ۋاقتىمدا بۇ ئاچقۇچ  ھالقىسى ھەمىشە قۇلۇپسىزلانسۇن"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock private key"
+msgstr "شەخسىي ئاچقۇچنى قۇلۇپسىزلا"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock certificate"
+msgstr "گۇۋاھنامىنى قۇلۇپسىزلا"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+msgid "Unlock public key"
+msgstr "ئاممىۋى ئاچقۇچنى قۇلۇپسىزلا"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the private key"
+msgstr "خۇسۇسىي ئاچقۇچنى قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the certificate"
+msgstr "ئىسپاتنامىنى قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
+msgid "Enter password to unlock the public key"
+msgstr "ئاممىۋى ئاچقۇچنى قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+msgid "Enter password to unlock"
+msgstr "قۇلۇپسىزلاش ئۈچۈن ئىم كىرگۈزۈڭ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "تىزىمغا كىرگەن ۋاقتىمدا بۇ ئاچقۇچ ھەمىشە قۇلۇپسىزلانسۇن"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "تىزىمغا كىرگەن ۋاقتىمدا بۇ ئىسپاتنامە ھەمىشە قۇلۇپسىزلانسۇن"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "تىزىمغا كىرگەن ۋاقتىمدا ھەمىشە قۇلۇپسىزلانسۇن"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "بىر پروگرامما مەخپىي ئاچقۇچ ‹%s› نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "بىر پروگرامما گۇۋاھنامە ‹%s› نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "بىر پروگرامما ئاممىۋى ئاچقۇچ ‹%s› نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "بىر پروگرامما ‹%s› نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+msgid "The unlock password was incorrect"
+msgstr "قۇلۇپسىزلاش ئىمى توغرا ئەمەس"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+msgid "Unlock certificate/key storage"
+msgstr "گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ ساقلىغۇچ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ ساقلىغۇچ ئۈچۈن ئىم كىرگۈزۈڭ"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr "بىر پروگرامما  گۇۋاھنامە قۇلۇپسىزلاش/شىفىرلىق ئاچقۇچ ساقلىغۇچ ‹%s› نى زىيارەت قىلماقچى ئىدى، بىراق ئۇ قۇلۇپلاقلىق ئىكەن"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New Password Required"
+msgstr "يېڭى ئىم كېرەك"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+msgid "New password required for secure storage"
+msgstr "بىخەتەر ساقلىغۇچنى قوغداش ئۈچۈن يېڭى ئىم كېرەك"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr "بۇ %s گە گۇۋاھنامە ياكى شىفىرلىق ئاچقۇچ ساقلاش ئۈچۈن چوقۇم بىر ئىم بولۇشى كېرەك"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+msgid "Change Password"
+msgstr "ئىم ئۆزگەرتىش"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+#| msgid "Change password for secure storage"
+msgid "Original password for secure storage"
+msgstr "بىخەتەر ساقلىغۇچنىڭ ئەسلى ئىمى"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
+#, c-format
+#| msgid ""
+#| "To change the password for '%s', the original and new passwords are "
+#| "required"
+msgid "To change the password for '%s', the original password is required"
+msgstr "‹%s› نىڭ ئىمىنى ئۆزگەرتىش ئۈچۈن، ئەسلى ئىم زۆرۈر"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password for secure storage"
+msgstr "بىخەتەر ساقلىغۇچنىڭ ئەسلى ئىمىنى ئۆزگەرت"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
+#, c-format
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Type a new password for '%s'"
+msgstr "‹%s› نىڭ ئىمىنى كىرگۈزۈڭ"
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "ئىشلىتىلىشى: gnome-keyring بۇيرۇقى [تاللانما]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "بۇيرۇقلار: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "          "
+
+#~ msgid "Forget this password if idle for"
+#~ msgstr "بوش قالغان ۋاقتى بۇ ۋاقىتتىن ھالقىپ كەتسە ئىمنى ئۇنتۇپ كەت"
+
+#~ msgid "Forget this password after"
+#~ msgstr "بۇ ئىمنى ئاخىرىدا ئۇنتۇپ كەت"
+
+#~ msgid "Forget this password when I log out"
+#~ msgstr "تىزىمدىن چىققان ۋاقتىمدا بۇ ئىمنى ئۇنتۇپ كەت"
+
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "ئىختىيارى ساقلىغۇچ ئىشلەت"
+
+#~ msgid "Passwords do not match."
+#~ msgstr "ئىم ماس كەلمىدى."
+
+#~ msgid "Password cannot be blank"
+#~ msgstr "ئىم قۇرۇق بولسا بولمايدۇ"
+
+#~ msgid "Keyring Access"
+#~ msgstr "ئاچقۇچ ھالقىسى زىيارەت"
+
+#~ msgid "Unlock access to passwords and other secrets"
+#~ msgstr "قۇلۇپ ئاچىدىغان ئاچقۇچ ھالقىسى ئىم ئوقۇش ۋە باشقا بىخەتەرلىك ھوقۇقى"
+
+#~ msgid "New password strength"
+#~ msgstr "يېڭى ئىم كۈچلۈكلۈكى"
+
+#~ msgid "_Application:"
+#~ msgstr "پروگرامما(_A):"
+
+#~ msgid "_Confirm:"
+#~ msgstr "جەزملە(_C):"
+
+#~ msgid "_Details:"
+#~ msgstr "تەپسىلاتى(_D):"
+
+#~ msgid "_Name:"
+#~ msgstr "ئاتى(_N):"
+
+#~ msgid "_Old Password:"
+#~ msgstr "كونا ئىم(_O):"
+
+#~ msgid "_Password:"
+#~ msgstr "ئىم(_P):"
