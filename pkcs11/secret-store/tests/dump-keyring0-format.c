@@ -1,8 +1,14 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkm-secret-binary.c - The binary encrypted format of a keyring
+
+/* Dump the  binary encrypted format of a keyring
+
+   Build like this:
+
+   $ gcc -o dump-keyring0-format $(pkg-config --cflags --libs glib-2.0) \
+        -lgcrypt dump-keyring0-format.c
 
    Copyright (C) 2003 Red Hat, Inc
    Copyright (C) 2007, 2009 Stefan Walter
+   Copyright (C) 2013 Red Hat, Inc
 
    Gnome keyring is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,13 +27,6 @@
    Author: Alexander Larsson <alexl@redhat.com>
    Author: Stef Walter <stef@memberwebs.com>
 */
-
-#include "config.h"
-
-#include "egg/egg-buffer.h"
-#include "egg/egg-hex.h"
-#include "egg/egg-symkey.h"
-#include "egg/egg-secure-memory.h"
 
 #include <glib.h>
 
@@ -55,13 +54,117 @@ enum {
 	ACCESS_REMOVE = 1 << 2
 };
 
-EGG_SECURE_DEFINE_GLIB_GLOBALS ();
-
 #define KEYRING_FILE_HEADER "GnomeKeyring\n\r\0\n"
 #define KEYRING_FILE_HEADER_LEN 16
 
+typedef gpointer (* BufferAllocator) (gpointer, gsize);
+
+#define DEFAULT_ALLOCATOR  ((BufferAllocator)realloc)
+
+typedef struct _Buffer {
+	unsigned char *buf;
+	gsize len;
+	gsize allocated_len;
+	int failures;
+	BufferAllocator allocator;
+} Buffer;
+
+#define BUFFER_EMPTY { NULL, 0, 0, 0, NULL }
+
+static gint
+buffer_init_full (Buffer *buffer,
+                  gsize reserve,
+                  BufferAllocator allocator)
+{
+	memset (buffer, 0, sizeof (*buffer));
+
+	if (!allocator)
+		allocator = DEFAULT_ALLOCATOR;
+	if (reserve == 0)
+		reserve = 64;
+
+	buffer->buf = (allocator) (NULL, reserve);
+	if (!buffer->buf) {
+		buffer->failures++;
+		return 0;
+	}
+
+	buffer->len = 0;
+	buffer->allocated_len = reserve;
+	buffer->failures = 0;
+	buffer->allocator = allocator;
+
+	return 1;
+}
+
+static gint
+buffer_init (Buffer *buffer,
+             gsize reserve)
+{
+	return buffer_init_full (buffer, reserve, NULL);
+}
+
+
+static void
+buffer_init_static (Buffer* buffer,
+                    const guchar *buf,
+                    gsize len)
+{
+	memset (buffer, 0, sizeof (*buffer));
+
+	buffer->buf = (unsigned char*)buf;
+	buffer->len = len;
+	buffer->allocated_len = len;
+	buffer->failures = 0;
+
+	/* A null allocator, and the buffer can't change in size */
+	buffer->allocator = NULL;
+}
+
+static void
+buffer_uninit (Buffer *buffer)
+{
+	if (!buffer)
+		return;
+
+	/*
+	 * Free the memory block using allocator. If no allocator,
+	 * then this memory is ownerd elsewhere and not to be freed.
+	 */
+	if (buffer->buf && buffer->allocator)
+		(buffer->allocator) (buffer->buf, 0);
+
+	memset (buffer, 0, sizeof (*buffer));
+}
+
+static guint32
+buffer_decode_uint32 (guchar* ptr)
+{
+	guint32 val = ptr[0] << 24 | ptr[1] << 16 | ptr[2] << 8 | ptr[3];
+	return val;
+}
+
+static int
+buffer_get_uint32 (Buffer *buffer,
+                   gsize offset,
+                   gsize *next_offset,
+                   guint32 *val)
+{
+	unsigned char *ptr;
+	if (buffer->len < 4 || offset > buffer->len - 4) {
+		buffer->failures++;
+		return 0;
+	}
+	ptr = (unsigned char*)buffer->buf + offset;
+	if (val != NULL)
+		*val = buffer_decode_uint32 (ptr);
+	if (next_offset != NULL)
+		*next_offset = offset + 4;
+	return 1;
+}
+
 static gboolean
-buffer_get_bytes (EggBuffer *buffer,
+buffer_get_bytes (Buffer *buffer,
                   gsize offset,
                   gsize *next_offset,
                   guchar *out,
@@ -75,7 +178,7 @@ buffer_get_bytes (EggBuffer *buffer,
 }
 
 static gboolean
-buffer_get_time (EggBuffer *buffer,
+buffer_get_time (Buffer *buffer,
                  gsize offset,
                  gsize *next_offset,
                  glong *time)
@@ -83,8 +186,8 @@ buffer_get_time (EggBuffer *buffer,
 	guint32 a, b;
 	guint64 val;
 
-	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &a) ||
-	    !egg_buffer_get_uint32 (buffer, offset, &offset, &b))
+	if (!buffer_get_uint32 (buffer, offset, &offset, &a) ||
+	    !buffer_get_uint32 (buffer, offset, &offset, &b))
 		return FALSE;
 
 	val = ((guint64)a) << 32 | b;
@@ -93,8 +196,55 @@ buffer_get_time (EggBuffer *buffer,
 	return TRUE;
 }
 
+static int
+buffer_get_string (Buffer *buffer,
+                   gsize offset,
+                   gsize *next_offset,
+                   gchar **str_ret,
+                   BufferAllocator allocator)
+{
+	guint32 len;
+
+	if (!allocator)
+		allocator = buffer->allocator;
+	if (!allocator)
+		allocator = DEFAULT_ALLOCATOR;
+
+	if (!buffer_get_uint32 (buffer, offset, &offset, &len)) {
+		return 0;
+	}
+	if (len == 0xffffffff) {
+		*next_offset = offset;
+		*str_ret = NULL;
+		return 1;
+	} else if (len >= 0x7fffffff) {
+		return 0;
+	}
+
+	if (buffer->len < len ||
+	    offset > buffer->len - len) {
+		return 0;
+	}
+
+	/* Make sure no null characters in string */
+	if (memchr (buffer->buf + offset, 0, len) != NULL)
+		return 0;
+
+	/* The passed allocator may be for non-pageable memory */
+	*str_ret = (allocator) (NULL, len + 1);
+	if (!*str_ret)
+		return 0;
+	memcpy (*str_ret, buffer->buf + offset, len);
+
+	/* Always zero terminate */
+	(*str_ret)[len] = 0;
+	*next_offset = offset + len;
+
+	return 1;
+}
+
 static gboolean
-buffer_get_utf8_string (EggBuffer *buffer,
+buffer_get_utf8_string (Buffer *buffer,
                         gsize offset,
                         gsize *next_offset,
                         char **str_ret)
@@ -102,8 +252,8 @@ buffer_get_utf8_string (EggBuffer *buffer,
 	gsize len;
 	char *str;
 
-	if (!egg_buffer_get_string (buffer, offset, &offset, &str,
-	                            (EggBufferAllocator)g_realloc))
+	if (!buffer_get_string (buffer, offset, &offset, &str,
+	                        (BufferAllocator)g_realloc))
 		return FALSE;
 	len = str ? strlen (str) : 0;
 
@@ -125,8 +275,47 @@ buffer_get_utf8_string (EggBuffer *buffer,
 	return TRUE;
 }
 
+static gint
+buffer_get_byte_array (Buffer *buffer,
+                       gsize offset,
+                       gsize *next_offset,
+                       const guchar **val,
+                       gsize *vlen)
+{
+	guint32 len;
+	if (!buffer_get_uint32 (buffer, offset, &offset, &len))
+		return 0;
+	if (len == 0xffffffff) {
+		if (next_offset)
+			*next_offset = offset;
+		if (val)
+			*val = NULL;
+		if (vlen)
+			*vlen = 0;
+		return 1;
+	} else if (len >= 0x7fffffff) {
+		buffer->failures++;
+		return 0;
+	}
+
+	if (buffer->len < len || offset > buffer->len - len) {
+		buffer->failures++;
+		return 0;
+	}
+
+	if (val)
+		*val = buffer->buf + offset;
+	if (vlen)
+		*vlen = len;
+	if (next_offset)
+		*next_offset = offset + len;
+
+	return 1;
+}
+
+
 static gboolean
-read_attributes (EggBuffer *buffer,
+read_attributes (Buffer *buffer,
                  gsize offset,
                  gsize *next_offset,
                  const gchar *identifier,
@@ -141,7 +330,7 @@ read_attributes (EggBuffer *buffer,
 	guint32 val;
 	int i;
 
-	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
+	if (!buffer_get_uint32 (buffer, offset, &offset, &list_size)) {
 		g_message ("couldn't read number of attributes");
 		goto bail;
 	}
@@ -158,7 +347,7 @@ read_attributes (EggBuffer *buffer,
 			g_key_file_set_string (file, group, "name", name);
 		g_free (name);
 
-		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &type)) {
+		if (!buffer_get_uint32 (buffer, offset, &offset, &type)) {
 			g_message ("couldn't read attribute type");
 			goto bail;
 		}
@@ -177,7 +366,7 @@ read_attributes (EggBuffer *buffer,
 			break;
 
 		case 1: /* A uint32 */
-			if (!egg_buffer_get_uint32 (buffer, offset, &offset, &val)) {
+			if (!buffer_get_uint32 (buffer, offset, &offset, &val)) {
 				g_message ("couldn't read number attribute value");
 				goto bail;
 			}
@@ -198,7 +387,118 @@ bail:
 }
 
 static gboolean
-decrypt_buffer (EggBuffer *buffer,
+symkey_generate_simple (int cipher_algo,
+                        int hash_algo,
+                        const gchar *password,
+                        gssize n_password,
+                        const guchar *salt,
+                        gsize n_salt,
+                        int iterations,
+                        guchar **key,
+                        guchar **iv)
+{
+	gcry_md_hd_t mdh;
+	gcry_error_t gcry;
+	guchar *digest;
+	guchar *digested;
+	guint n_digest;
+	gint pass, i;
+	gint needed_iv, needed_key;
+	guchar *at_iv, *at_key;
+
+	g_assert (cipher_algo);
+	g_assert (hash_algo);
+
+	g_return_val_if_fail (iterations >= 1, FALSE);
+
+	if (!password)
+		n_password = 0;
+	if (n_password == -1)
+		n_password = strlen (password);
+
+	/*
+	 * If cipher algo needs more bytes than hash algo has available
+	 * then the entire hashing process is done again (with the previous
+	 * hash bytes as extra input), and so on until satisfied.
+	 */
+
+	needed_key = gcry_cipher_get_algo_keylen (cipher_algo);
+	needed_iv = gcry_cipher_get_algo_blklen (cipher_algo);
+
+	gcry = gcry_md_open (&mdh, hash_algo, 0);
+	if (gcry) {
+		g_warning ("couldn't create '%s' hash context: %s",
+			   gcry_md_algo_name (hash_algo), gcry_strerror (gcry));
+		return FALSE;
+	}
+
+	n_digest = gcry_md_get_algo_dlen (hash_algo);
+	g_return_val_if_fail (n_digest > 0, FALSE);
+
+	digest = g_malloc (n_digest);
+	g_return_val_if_fail (digest, FALSE);
+	if (key) {
+		*key = g_malloc (needed_key);
+		g_return_val_if_fail (*key, FALSE);
+	}
+	if (iv)
+		*iv = g_new0 (guchar, needed_iv);
+
+	at_key = key ? *key : NULL;
+	at_iv = iv ? *iv : NULL;
+
+	for (pass = 0; TRUE; ++pass) {
+		gcry_md_reset (mdh);
+
+		/* Hash in the previous buffer on later passes */
+		if (pass > 0)
+			gcry_md_write (mdh, digest, n_digest);
+
+		if (password)
+			gcry_md_write (mdh, password, n_password);
+		if (salt && n_salt)
+			gcry_md_write (mdh, salt, n_salt);
+		gcry_md_final (mdh);
+		digested = gcry_md_read (mdh, 0);
+		g_return_val_if_fail (digested, FALSE);
+		memcpy (digest, digested, n_digest);
+
+		for (i = 1; i < iterations; ++i) {
+			gcry_md_reset (mdh);
+			gcry_md_write (mdh, digest, n_digest);
+			gcry_md_final (mdh);
+			digested = gcry_md_read (mdh, 0);
+			g_return_val_if_fail (digested, FALSE);
+			memcpy (digest, digested, n_digest);
+		}
+
+		/* Copy as much as possible into the destinations */
+		i = 0;
+		while (needed_key && i < n_digest) {
+			if (at_key)
+				*(at_key++) = digest[i];
+			needed_key--;
+			i++;
+		}
+		while (needed_iv && i < n_digest) {
+			if (at_iv)
+				*(at_iv++) = digest[i];
+			needed_iv--;
+			i++;
+		}
+
+		if (needed_key == 0 && needed_iv == 0)
+			break;
+	}
+
+	g_free (digest);
+	gcry_md_close (mdh);
+
+	return TRUE;
+}
+
+static gboolean
+decrypt_buffer (Buffer *buffer,
                 const gchar *password,
                 guchar salt[8],
                 int iterations)
@@ -207,7 +507,7 @@ decrypt_buffer (EggBuffer *buffer,
 	gcry_error_t gerr;
 	guchar *key, *iv;
 	gsize n_password = 0;
-	size_t pos;
+	gsize pos;
 
 	g_assert (buffer->len % 16 == 0);
 	g_assert (16 == gcry_cipher_get_algo_blklen (GCRY_CIPHER_AES128));
@@ -219,15 +519,15 @@ decrypt_buffer (EggBuffer *buffer,
 	else
 		n_password = strlen (password);
 
-	if (!egg_symkey_generate_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256,
-	                                 password, n_password, salt, 8, iterations, &key, &iv))
+	if (!symkey_generate_simple (GCRY_CIPHER_AES128, GCRY_MD_SHA256,
+	                             password, n_password, salt, 8, iterations, &key, &iv))
 		return FALSE;
 
 	gerr = gcry_cipher_open (&cih, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
 	if (gerr) {
 		g_warning ("couldn't create aes cipher context: %s",
 		           gcry_strerror (gerr));
-		egg_secure_free (key);
+		g_free (key);
 		g_free (iv);
 		return FALSE;
 	}
@@ -235,7 +535,7 @@ decrypt_buffer (EggBuffer *buffer,
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setkey (cih, key, 16);
 	g_return_val_if_fail (!gerr, FALSE);
-	egg_secure_free (key);
+	g_free (key);
 
 	/* 16 = 128 bits */
 	gerr = gcry_cipher_setiv (cih, iv, 16);
@@ -254,7 +554,7 @@ decrypt_buffer (EggBuffer *buffer,
 }
 
 static gboolean
-verify_decrypted_buffer (EggBuffer *buffer)
+verify_decrypted_buffer (Buffer *buffer)
 {
 	guchar digest[16];
 
@@ -268,7 +568,7 @@ verify_decrypted_buffer (EggBuffer *buffer)
 }
 
 static gboolean
-read_acl (EggBuffer *buffer,
+read_acl (Buffer *buffer,
           gsize offset,
           gsize *offset_out,
           const gchar *identifier,
@@ -281,7 +581,7 @@ read_acl (EggBuffer *buffer,
 	int i;
 	char *name, *path, *reserved;
 
-	if (!egg_buffer_get_uint32 (buffer, offset, &offset, &num_acs)) {
+	if (!buffer_get_uint32 (buffer, offset, &offset, &num_acs)) {
 		g_message ("couldn't read number of acls");
 		return FALSE;
 	}
@@ -290,7 +590,7 @@ read_acl (EggBuffer *buffer,
 		g_free (group);
 		group = g_strdup_printf ("%s:acl%d", identifier, i);
 
-		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &x)) {
+		if (!buffer_get_uint32 (buffer, offset, &offset, &x)) {
 			g_message ("couldn't read acl types allowed");
 			goto bail;
 		}
@@ -319,7 +619,7 @@ read_acl (EggBuffer *buffer,
 		}
 		g_free (reserved);
 
-		if (!egg_buffer_get_uint32 (buffer, offset, &offset, &y)) {
+		if (!buffer_get_uint32 (buffer, offset, &offset, &y)) {
 			g_message ("couldn't read acl reserved integer");
 			goto bail;
 		}
@@ -334,7 +634,7 @@ bail:
 }
 
 static gboolean
-read_hashed_item_info (EggBuffer *buffer,
+read_hashed_item_info (Buffer *buffer,
                        gsize *offset,
                        guint n_items,
                        GKeyFile *file,
@@ -350,14 +650,14 @@ read_hashed_item_info (EggBuffer *buffer,
 	g_assert (items);
 
 	for (i = 0; i < n_items; i++) {
-		if (!egg_buffer_get_uint32 (buffer, *offset, offset, &id)) {
+		if (!buffer_get_uint32 (buffer, *offset, offset, &id)) {
 			g_message ("couldn't read item id");
 			return FALSE;
 		}
 		identifier = g_strdup_printf ("%u", id);
 		g_ptr_array_add (items, identifier);
 
-		if (!egg_buffer_get_uint32 (buffer, *offset, offset, &type)) {
+		if (!buffer_get_uint32 (buffer, *offset, offset, &type)) {
 			g_message ("couldn't read item type");
 			return FALSE;
 		}
@@ -374,7 +674,7 @@ read_hashed_item_info (EggBuffer *buffer,
 }
 
 static gboolean
-read_full_item_info (EggBuffer *buffer,
+read_full_item_info (Buffer *buffer,
                      gsize *offset,
                      guint n_items,
                      GKeyFile *file,
@@ -382,7 +682,7 @@ read_full_item_info (EggBuffer *buffer,
 {
 	const gchar *identifier;
 	const unsigned char *ptr_secret;
-	size_t n_secret;
+	gsize n_secret;
 	gchar *value;
 	guint32 tmp;
 	time_t ctime, mtime;
@@ -404,14 +704,14 @@ read_full_item_info (EggBuffer *buffer,
 		g_free (value);
 
 		/* The secret */
-		if (!egg_buffer_get_byte_array (buffer, *offset, offset, &ptr_secret, &n_secret)) {
+		if (!buffer_get_byte_array (buffer, *offset, offset, &ptr_secret, &n_secret)) {
 			g_message ("couldn't read item secret");
 			return FALSE;
 		}
 		if (g_utf8_validate ((gchar *)ptr_secret, n_secret, NULL))
 			value = g_strndup ((gchar *)ptr_secret, n_secret);
 		else
-			value = egg_hex_encode (ptr_secret, n_secret);
+			value = g_base64_encode (ptr_secret, n_secret);
 		g_key_file_set_string (file, identifier, "secret", value);
 		g_free (value);
 
@@ -435,7 +735,7 @@ read_full_item_info (EggBuffer *buffer,
 		}
 		g_free (value);
 		for (j = 0; j < 4; j++) {
-			if (!egg_buffer_get_uint32 (buffer, *offset, offset, &tmp)) {
+			if (!buffer_get_uint32 (buffer, *offset, offset, &tmp)) {
 				g_message ("couldn't read item reserved integer");
 				return FALSE;
 			}
@@ -458,7 +758,7 @@ transform_keyring_binary_to_text (gconstpointer data,
                                   const gchar *password,
                                   GKeyFile *file)
 {
-	EggBuffer to_decrypt = EGG_BUFFER_EMPTY;
+	Buffer to_decrypt = BUFFER_EMPTY;
 	guchar major, minor, crypto, hash;
 	guint32 flags;
 	guint32 lock_timeout;
@@ -468,7 +768,7 @@ transform_keyring_binary_to_text (gconstpointer data,
 	guint32 crypto_size;
 	guint32 hash_iterations;
 	guchar salt[8];
-	EggBuffer buffer;
+	Buffer buffer;
 	GPtrArray *items = NULL;
 	gboolean res = FALSE;
 	gsize offset;
@@ -476,11 +776,11 @@ transform_keyring_binary_to_text (gconstpointer data,
 	int i;
 
 	/* The buffer we read from */
-	egg_buffer_init_static (&buffer, data, n_data);
+	buffer_init_static (&buffer, data, n_data);
 
 	if (buffer.len < KEYRING_FILE_HEADER_LEN ||
 	    memcmp (buffer.buf, KEYRING_FILE_HEADER, KEYRING_FILE_HEADER_LEN) != 0) {
-		egg_buffer_uninit (&buffer);
+		buffer_uninit (&buffer);
 		return FALSE;
 	}
 
@@ -499,7 +799,7 @@ transform_keyring_binary_to_text (gconstpointer data,
 
 	if (major != 0 || minor != 0) {
 		g_message ("unknown version: %d.%d", (gint)major, (gint)minor);
-		egg_buffer_uninit (&buffer);
+		buffer_uninit (&buffer);
 		return FALSE;
 	}
 
@@ -522,20 +822,20 @@ transform_keyring_binary_to_text (gconstpointer data,
 	}
 	g_key_file_set_int64 (file, "keyring", "mtime", mtime);
 
-	if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &flags)) {
+	if (!buffer_get_uint32 (&buffer, offset, &offset, &flags)) {
 		g_message ("couldn't read keyring flags");
 		goto bail;
 	}
 	g_key_file_set_boolean (file, "keyring", "lock-on-idle", flags & LOCK_ON_IDLE_FLAG);
 	g_key_file_set_boolean (file, "keyring", "lock-after", flags & LOCK_AFTER_FLAG);
 
-	if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &lock_timeout)) {
+	if (!buffer_get_uint32 (&buffer, offset, &offset, &lock_timeout)) {
 		g_message ("couldn't read lock timeout");
 		goto bail;
 	}
 	g_key_file_set_integer (file, "keyring", "lock-timeout", lock_timeout);
 
-	if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &hash_iterations)) {
+	if (!buffer_get_uint32 (&buffer, offset, &offset, &hash_iterations)) {
 		g_message ("couldn't read hash iterations");
 		goto bail;
 	}
@@ -545,16 +845,16 @@ transform_keyring_binary_to_text (gconstpointer data,
 		g_message ("couldn't read salt");
 		goto bail;
 	}
-	value = egg_hex_encode (salt, 8);
+	value = g_base64_encode (salt, 8);
 	g_key_file_set_string (file, "keyring", "x-salt", value);
 	g_free (value);
 
 	for (i = 0; i < 4; i++) {
-		if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &tmp))
+		if (!buffer_get_uint32 (&buffer, offset, &offset, &tmp))
 			goto bail;
 	}
 
-	if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &num_items)) {
+	if (!buffer_get_uint32 (&buffer, offset, &offset, &num_items)) {
 		g_message ("couldn't read number of items");
 		goto bail;
 	}
@@ -566,7 +866,7 @@ transform_keyring_binary_to_text (gconstpointer data,
 		goto bail;
 	}
 
-	if (!egg_buffer_get_uint32 (&buffer, offset, &offset, &crypto_size)) {
+	if (!buffer_get_uint32 (&buffer, offset, &offset, &crypto_size)) {
 		g_message ("couldn't read size of encrypted data");
 		goto bail;
 	}
@@ -584,7 +884,7 @@ transform_keyring_binary_to_text (gconstpointer data,
 	}
 
 	/* Copy the data into to_decrypt into non-pageable memory */
-	egg_buffer_init (&to_decrypt, crypto_size);
+	buffer_init (&to_decrypt, crypto_size);
 	memcpy (to_decrypt.buf, buffer.buf + offset, crypto_size);
 	to_decrypt.len = crypto_size;
 
@@ -600,7 +900,7 @@ transform_keyring_binary_to_text (gconstpointer data,
 
 bail:
 	g_ptr_array_free (items, TRUE);
-	egg_buffer_uninit (&to_decrypt);
+	buffer_uninit (&to_decrypt);
 	return res;
 }
 
@@ -618,6 +918,7 @@ main (int argc,
 	gsize length;
 
 	g_set_prgname ("dump-keyring0-format");
+	gcry_check_version (GCRYPT_VERSION);
 
 	if (argc < 2 || argc > 3) {
 		g_printerr ("usage: %s file.keyring [output]\n", g_get_prgname ());
