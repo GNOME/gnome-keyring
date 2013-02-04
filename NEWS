@@ -1,3 +1,10 @@
+Changes in version 3.7.5 are:
+ * Set correct type for Collection's "Locked" property
+ * Don't warn if the GNOME session manager is not available
+ * Updated Translations
+ * Fix crasher in armor code
+ * Build fixes
+
 Changes in version 3.7.2 are:
  * Bring over DER parsing fixes from GCR library
  * Fix corner case where long DER length overflows
