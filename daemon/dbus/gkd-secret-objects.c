@@ -424,6 +424,9 @@ item_cleanup_search_results (GckSession *session, GList *items,
 
 		g_free (value);
 	}
+
+	*locked = g_list_reverse (*locked);
+	*unlocked = g_list_reverse (*unlocked);
 }
 
 static DBusMessage*
