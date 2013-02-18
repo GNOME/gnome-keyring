@@ -28,6 +28,7 @@
 #include <stdlib.h>
 
 typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
+typedef struct _EggAsn1xDef asn1_static_node;
 
 #include "pk.asn.h"
 #include "pkix.asn.h"

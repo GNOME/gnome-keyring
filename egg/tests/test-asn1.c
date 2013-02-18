@@ -34,6 +34,7 @@
 #include <string.h>
 
 typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
+typedef struct _EggAsn1xDef asn1_static_node;
 #include "test.asn.h"
 
 const gchar I33[] =           "\x02\x01\x2A";
