@@ -1,3 +1,7 @@
+Changes in version 3.6.3 are:
+ * Don't reverse the order of items returned from SearchItems()
+ * Updated translations
+
 Changes in version 3.6.2 are:
  * Accept XDG_DATA_HOME environment variable during initialization
  * Handle empty secrets correctly
