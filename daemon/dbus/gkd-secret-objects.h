@@ -55,7 +55,8 @@ DBusMessage*        gkd_secret_objects_dispatch                  (GkdSecretObjec
 
 DBusMessage*        gkd_secret_objects_handle_search_items       (GkdSecretObjects *self,
                                                                   DBusMessage *message,
-                                                                  const gchar *base);
+                                                                  const gchar *base,
+                                                                  gboolean separate_locked);
 
 DBusMessage*        gkd_secret_objects_handle_get_secrets        (GkdSecretObjects *self,
                                                                   DBusMessage *message);

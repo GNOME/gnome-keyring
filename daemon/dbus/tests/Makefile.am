@@ -20,6 +20,7 @@ LDADD =  \
 
 TEST_PROGS = \
 	test-secret-util \
+	test-secret-search \
 	test-secret-signals
 
 check_PROGRAMS = $(TEST_PROGS)

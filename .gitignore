@@ -105,7 +105,8 @@ p11-tests.conf
 /daemon/control/tests/frob-control-quit
 /daemon/control/tests/frob-control-unlock
 
-/daemon/dbus/tests/test-secret-signals
+/daemon/dbus/tests/test-secret-*
+!/daemon/dbus/tests/test-secret-*.c
 
 /pkcs11/gkm/tests/test-attributes
 /pkcs11/gkm/tests/test-certificate
@@ -161,8 +162,6 @@ p11-tests.conf
 /pkcs11/xdg-store/tests/frob-trust-file
 /pkcs11/xdg-store/tests/test-xdg-module
 /pkcs11/xdg-store/tests/test-xdg-trust
-
-/daemon/dbus/tests/test-secret-util
 
 /ui/gnome-keyring-prompt.desktop
 /ui/gnome-keyring-prompt.desktop.in
