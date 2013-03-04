@@ -542,7 +542,7 @@ collection_property_getall (GkdSecretObjects *self, GckObject *object, DBusMessa
 static DBusMessage*
 collection_method_search_items (GkdSecretObjects *self, GckObject *object, DBusMessage *message)
 {
-	return gkd_secret_objects_handle_search_items (self, message, dbus_message_get_path (message));
+	return gkd_secret_objects_handle_search_items (self, message, dbus_message_get_path (message), FALSE);
 }
 
 static GckObject*
@@ -1314,8 +1314,10 @@ gkd_secret_objects_append_collection_paths (GkdSecretObjects *self,
 }
 
 DBusMessage*
-gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *message,
-                                        const gchar *base)
+gkd_secret_objects_handle_search_items (GkdSecretObjects *self,
+                                        DBusMessage *message,
+                                        const gchar *base,
+                                        gboolean separate_locked)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	DBusMessageIter iter;
@@ -1385,23 +1387,31 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self, DBusMessage *mes
 	items = gck_objects_from_handle_array (session, data, n_data / sizeof (CK_OBJECT_HANDLE));
 	g_free (data);
 
-	/* Filter out the locked items */
-	item_cleanup_search_results (session, items, &locked, &unlocked);
-
 	/* Prepare the reply message */
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "o", &array);
-	objects_foreach_item (self, unlocked, NULL, on_object_path_append_to_iter, &array);
-	dbus_message_iter_close_container (&iter, &array);
+	/* Filter out the locked items */
+	if (separate_locked) {
+		item_cleanup_search_results (session, items, &locked, &unlocked);
 
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "o", &array);
-	objects_foreach_item (self, locked, NULL, on_object_path_append_to_iter, &array);
-	dbus_message_iter_close_container (&iter, &array);
+		dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "o", &array);
+		objects_foreach_item (self, unlocked, NULL, on_object_path_append_to_iter, &array);
+		dbus_message_iter_close_container (&iter, &array);
 
-	g_list_free (locked);
-	g_list_free (unlocked);
+		dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "o", &array);
+		objects_foreach_item (self, locked, NULL, on_object_path_append_to_iter, &array);
+		dbus_message_iter_close_container (&iter, &array);
+
+		g_list_free (locked);
+		g_list_free (unlocked);
+
+	} else {
+		dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "o", &array);
+		objects_foreach_item (self, items, NULL, on_object_path_append_to_iter, &array);
+		dbus_message_iter_close_container (&iter, &array);
+	}
+
 	gck_list_unref_free (items);
 
 	return reply;

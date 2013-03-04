@@ -913,7 +913,7 @@ service_message_handler (GkdSecretService *self, DBusMessage *message)
 
 	/* org.freedesktop.Secret.Service.SearchItems() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "SearchItems"))
-		return gkd_secret_objects_handle_search_items (self->objects, message, NULL);
+		return gkd_secret_objects_handle_search_items (self->objects, message, NULL, TRUE);
 
 	/* org.freedesktop.Secret.Service.GetSecrets() */
 	if (dbus_message_is_method_call (message, SECRET_SERVICE_INTERFACE, "GetSecrets"))
