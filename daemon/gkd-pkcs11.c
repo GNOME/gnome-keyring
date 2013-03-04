@@ -27,7 +27,6 @@
 #include "egg/egg-cleanup.h"
 
 #include "pkcs11/wrap-layer/gkm-wrap-layer.h"
-#include "pkcs11/roots-store/gkm-roots-store.h"
 #include "pkcs11/rpc-layer/gkm-rpc-layer.h"
 #include "pkcs11/secret-store/gkm-secret-store.h"
 #include "pkcs11/ssh-store/gkm-ssh-store.h"
@@ -66,7 +65,6 @@ pkcs11_daemon_cleanup (gpointer unused)
 gboolean
 gkd_pkcs11_initialize (void)
 {
-	CK_FUNCTION_LIST_PTR roots_store;
 	CK_FUNCTION_LIST_PTR secret_store;
 	CK_FUNCTION_LIST_PTR ssh_store;
 	CK_FUNCTION_LIST_PTR gnome2_store;
@@ -81,9 +79,6 @@ gkd_pkcs11_initialize (void)
 	/* SSH storage */
 	ssh_store = gkm_ssh_store_get_functions ();
 
-	/* Root certificates */
-	roots_store = gkm_roots_store_get_functions ();
-
 	/* Old User certificates */
 	gnome2_store = gkm_gnome2_store_get_functions ();
 
@@ -92,7 +87,6 @@ gkd_pkcs11_initialize (void)
 
 	/* Add all of those into the wrapper layer */
 	gkm_wrap_layer_add_module (ssh_store);
-	gkm_wrap_layer_add_module (roots_store);
 	gkm_wrap_layer_add_module (secret_store);
 	gkm_wrap_layer_add_module (gnome2_store);
 	gkm_wrap_layer_add_module (xdg_store);

@@ -8,7 +8,6 @@ EXTRA_DIST = \
 SUBDIRS = . \
 	gkm \
 	wrap-layer \
-	roots-store \
 	rpc-layer \
 	secret-store \
 	ssh-store \

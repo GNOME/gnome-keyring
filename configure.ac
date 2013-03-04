@@ -349,52 +349,6 @@ fi
 AM_CONDITIONAL(WITH_GPG, test "$enable_gpg_agent" != "no")
 
 # --------------------------------------------------------------------
-# Trusted Root Certificates Directory
-#
-
-AC_MSG_CHECKING([location of system Certificate Authority list])
-
-AC_ARG_WITH(root-certs,
-            [AC_HELP_STRING([--with-root-certs=@<:@path@:>@],
-                            [directory for system Certificate Authorities])])
-
-AC_ARG_WITH(ca-certificates,
-            [AC_HELP_STRING([--with-ca-certificates=@<:@path@:>@],
-                            [file for system Certificate Authorities])])
-
-# Explicitly disabled root certificate authority list
-if test "$with_root_certs" = "no" -o "$with_ca_certificates" = "no"; then
-	root_status="disabled"
-
-# A directory specified for the root certificate authority list
-elif test -n "$with_root_certs"; then
-	AC_DEFINE_UNQUOTED(ROOT_CA_DIRECTORY, ["$with_root_certs"], [Directory path for CA list])
-	root_status="directory: $with_root_certs"
-
-# A file specified for the root certificate list
-elif test -n "$with_ca_certificates"; then
-	AC_DEFINE_UNQUOTED(ROOT_CA_FILE, ["$with_ca_certificates"], [File path for CA list])
-	root_status="file: $with_ca_certificates"
-
-# Automatically find certificate authority list
-else
-	for f in /etc/pki/tls/certs/ca-bundle.crt \
-	         /etc/ssl/certs/ca-certificates.crt; do
-		if test -f "$f"; then
-			with_ca_certificates="$f"
-		fi
-	done
-	if test -z "$with_ca_certificates"; then
-		AC_MSG_ERROR([could not find. Use --with-ca-certificates=path to set, or --without-ca-certificates to disable])
-	fi
-
-	AC_DEFINE_UNQUOTED(ROOT_CA_FILE, ["$with_ca_certificates"], [File path for CA list])
-	root_status="file: $with_ca_certificates"
-fi
-
-AC_MSG_RESULT(["$root_status"])
-
-# --------------------------------------------------------------------
 # libgcrypt
 #
 
@@ -701,8 +655,6 @@ pkcs11/gkm/Makefile
 pkcs11/gkm/tests/Makefile
 pkcs11/gnome2-store/Makefile
 pkcs11/gnome2-store/tests/Makefile
-pkcs11/roots-store/Makefile
-pkcs11/roots-store/tests/Makefile
 pkcs11/rpc-layer/Makefile
 pkcs11/rpc-layer/gnome-keyring.module
 pkcs11/secret-store/Makefile
