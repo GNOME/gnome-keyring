@@ -1,3 +1,9 @@
+Changes in version 3.7.91 are:
+ * Remove the roots-store module replaced by p11-kit 0.16+ trust module
+ * Only return one object path list from Collection.SearchItems() [#695115]
+ * Fix order of items returned from SearchItems() [#693884]
+ * Build fixes
+
 Changes in version 3.7.5 are:
  * Set correct type for Collection's "Locked" property
  * Don't warn if the GNOME session manager is not available
