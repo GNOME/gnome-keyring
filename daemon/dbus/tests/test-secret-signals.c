@@ -23,6 +23,8 @@
 
 #include "config.h"
 
+#include "test-service.h"
+
 #include "gkd-secret-types.h"
 
 #include "egg/egg-testing.h"
@@ -43,67 +45,10 @@ typedef struct {
 } ReceivedSignal;
 
 typedef struct {
-	GDBusConnection *connection;
-	gchar *service_name;
-	const gchar *mock_prompter;
-	GPid service_pid;
-	gboolean service_available;
-	gchar *service_session;
-	guint watch_id;
+	TestService service;
 	guint signal_id;
-	gchar *directory;
 	GList *received_signals;
 } Test;
-
-static void
-on_test_service_appeared (GDBusConnection *connection,
-                          const gchar *name,
-                          const gchar *name_owner,
-                          gpointer user_data)
-{
-	Test *test = user_data;
-	if (!test->connection)
-		test->connection = g_object_ref (connection);
-	test->service_available = TRUE;
-	egg_test_wait_stop ();
-}
-
-static void
-on_test_service_vanished (GDBusConnection *connection,
-                          const gchar *name,
-                          gpointer user_data)
-{
-	Test *test = user_data;
-	if (test->service_available) {
-		test->service_available = FALSE;
-		egg_test_wait_stop ();
-	}
-}
-
-static void
-on_service_spawned (gpointer user_data)
-{
-	Test *test = user_data;
-	int fd;
-
-	g_setenv ("GNOME_KEYRING_TEST_PATH", test->directory, TRUE);
-	g_setenv ("GNOME_KEYRING_TEST_SERVICE", test->service_name, TRUE);
-	g_setenv ("GNOME_KEYRING_TEST_PROMPTER", test->mock_prompter, TRUE);
-
-	fd = g_open ("/dev/null", O_WRONLY, 0);
-	if (fd != -1)
-		dup2 (fd, 1);
-}
-
-static GVariant *
-build_secret_value (Test *test,
-                     const gchar *value)
-{
-	return g_variant_new ("(o@ay@ays)", test->service_session,
-	                      g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE, "", 0, 1),
-	                      g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE, value, strlen (value), 1),
-	                      "text/plain");
-}
 
 static void
 on_signal_received (GDBusConnection *connection,
@@ -259,8 +204,8 @@ dbus_call_perform (Test *test,
 	 * arrive before the method result.
 	 */
 
-	g_dbus_connection_call (test->connection,
-	                        test->service_name,
+	g_dbus_connection_call (test->service.connection,
+	                        test->service.bus_name,
 	                        object_path,
 	                        interface,
 	                        member,
@@ -275,7 +220,7 @@ dbus_call_perform (Test *test,
 	egg_test_wait ();
 	g_assert (result != NULL);
 
-	retval = g_dbus_connection_call_finish (test->connection,
+	retval = g_dbus_connection_call_finish (test->service.connection,
 	                                        result, error);
 	g_object_unref (result);
 
@@ -288,78 +233,21 @@ setup (Test *test,
 {
 	GError *error = NULL;
 	GVariant *retval;
-	GVariant *output;
 
-	gchar *args[] = {
-		TOP_BUILDDIR "/daemon/gnome-keyring-daemon",
-		"--foreground",
-		"--control-directory",
-		"/tmp/keyring-test",
-		"--components",
-		"secrets",
-		NULL,
-	};
+	test->service.mock_prompter = gcr_mock_prompter_start ();
+	g_assert (test->service.mock_prompter != NULL);
 
-	test->service_name = g_strdup_printf ("org.gnome.keyring.Test.t%d", getpid ());
-
-	test->watch_id = g_bus_watch_name (G_BUS_TYPE_SESSION, test->service_name,
-	                                   G_BUS_NAME_WATCHER_FLAGS_NONE,
-	                                   on_test_service_appeared,
-	                                   on_test_service_vanished,
-	                                   test, NULL);
-
-	test->mock_prompter = gcr_mock_prompter_start ();
-	g_assert (test->mock_prompter != NULL);
-
-	test->directory = egg_tests_create_scratch_directory (
-		SRCDIR "/files/test.keyring",
-		NULL);
-
-	if (!g_spawn_async (NULL, args, NULL,
-	                    G_SPAWN_LEAVE_DESCRIPTORS_OPEN | G_SPAWN_DO_NOT_REAP_CHILD,
-	                    on_service_spawned, test, &test->service_pid, &error)) {
-		g_error ("couldn't start gnome-keyring-daemon for testing: %s", error->message);
-		g_assert_not_reached ();
-	}
-
-	if (!test->service_available) {
-		egg_test_wait ();
-
-		if (!test->service_available) {
-			g_warning ("Couldn't start gnome-keyring-daemon test service. ");
-			g_assert_not_reached ();
-		}
-	}
-
-	/* Set by on_test_service_appeared */
-	g_assert (test->connection != NULL);
-
-	/* Establish a plain session with the daemon */
-	retval = g_dbus_connection_call_sync (test->connection,
-	                                      test->service_name,
-	                                      SECRET_SERVICE_PATH,
-	                                      SECRET_SERVICE_INTERFACE,
-	                                      "OpenSession",
-	                                      g_variant_new ("(s@v)", "plain",
-	                                                     g_variant_new_variant (g_variant_new_string (""))),
-	                                      G_VARIANT_TYPE ("(vo)"),
-	                                      G_DBUS_CALL_FLAGS_NO_AUTO_START,
-	                                      -1, NULL, &error);
-	g_assert_no_error (error);
-
-	g_variant_get (retval, "(@vo)", &output, &test->service_session);
-	g_variant_unref (output);
-	g_variant_unref (retval);
+	test_service_setup (&test->service);
 
 	/* Unlock the test collection */
-	retval = g_dbus_connection_call_sync (test->connection,
-	                                      test->service_name,
+	retval = g_dbus_connection_call_sync (test->service.connection,
+	                                      test->service.bus_name,
 	                                      SECRET_SERVICE_PATH,
 	                                      INTERNAL_SERVICE_INTERFACE,
 	                                      "UnlockWithMasterPassword",
 	                                      g_variant_new ("(o@(oayays))",
 	                                                     "/org/freedesktop/secrets/collection/test",
-	                                                     build_secret_value (test, "booo")),
+	                                                     test_service_build_secret (&test->service, "booo")),
 	                                      G_VARIANT_TYPE ("()"),
 	                                      G_DBUS_CALL_FLAGS_NO_AUTO_START,
 	                                      -1, NULL, &error);
@@ -367,15 +255,14 @@ setup (Test *test,
 	g_variant_unref (retval);
 
 	/* Wait for the prompt's completed signal */
-	test->signal_id = g_dbus_connection_signal_subscribe (test->connection,
-	                                                      test->service_name,
+	test->signal_id = g_dbus_connection_signal_subscribe (test->service.connection,
+	                                                      test->service.bus_name,
 	                                                      NULL, NULL, NULL, NULL,
 	                                                      G_DBUS_SIGNAL_FLAGS_NONE,
 	                                                      on_signal_received,
 	                                                      test, NULL);
 
 	received_signals_flush (test);
-
 }
 
 static void
@@ -418,34 +305,12 @@ teardown (Test *test,
 {
 	received_signals_flush (test);
 
-	g_dbus_connection_signal_unsubscribe (test->connection, test->signal_id);
+	g_dbus_connection_signal_unsubscribe (test->service.connection, test->signal_id);
 
-	if (test->service_pid)
-		kill (test->service_pid, SIGTERM);
-
-	if (test->service_available) {
-		egg_test_wait ();
-		if (test->service_available) {
-			g_warning ("Couldn't stop gnome-keyring-daemon test service.");
-			g_assert_not_reached ();
-		}
-	}
-
-	if (test->watch_id)
-		g_bus_unwatch_name (test->watch_id);
-
-	g_free (test->service_name);
-	g_free (test->service_session);
-
-	if (test->connection)
-		g_object_unref (test->connection);
+	test_service_teardown (&test->service);
 
 	gcr_mock_prompter_stop ();
-
-	egg_tests_remove_scratch_directory (test->directory);
-	g_free (test->directory);
 }
-
 
 static void
 on_prompt_completed (GDBusConnection *connection,
@@ -491,8 +356,8 @@ prompt_password_perform (Test *test,
 	gcr_mock_prompter_expect_password_ok (password, NULL);
 
 	/* Wait for the prompt's completed signal */
-	sig = g_dbus_connection_signal_subscribe (test->connection,
-	                                          test->service_name,
+	sig = g_dbus_connection_signal_subscribe (test->service.connection,
+	                                          test->service.bus_name,
 	                                          SECRET_PROMPT_INTERFACE,
 	                                          "Completed",
 	                                          prompt_path,
@@ -503,8 +368,8 @@ prompt_password_perform (Test *test,
 	                                          NULL);
 
 	/* Perform the prompt, this will use the mock prompter */
-	retval = g_dbus_connection_call_sync (test->connection,
-	                                      test->service_name,
+	retval = g_dbus_connection_call_sync (test->service.connection,
+	                                      test->service.bus_name,
 	                                      prompt_path,
 	                                      SECRET_PROMPT_INTERFACE,
 	                                      "Prompt",
@@ -518,7 +383,7 @@ prompt_password_perform (Test *test,
 	egg_test_wait ();
 
 	/* Done, now stop waiting for the prompts signal, make sure mock was used */
-	g_dbus_connection_signal_unsubscribe (test->connection, sig);
+	g_dbus_connection_signal_unsubscribe (test->service.connection, sig);
 	g_assert (!gcr_mock_prompter_is_expecting ());
 
 	/* Check prompt result for right type */
@@ -597,7 +462,7 @@ test_collection_created_no_prompt (Test *test,
 	                            "CreateWithMasterPassword",
 	                            g_variant_new ("(@a{sv}@(oayays))",
 	                                           properties,
-	                                           build_secret_value (test, "booo")),
+	                                           test_service_build_secret (&test->service, "booo")),
 	                            G_VARIANT_TYPE ("(o)"),
 	                            &error);
 	g_assert_no_error (error);
@@ -767,7 +632,7 @@ test_collection_unlock_no_prompt (Test *test,
 	                            "UnlockWithMasterPassword",
 	                            g_variant_new ("(o@(oayays))",
 	                                           "/org/freedesktop/secrets/collection/test",
-	                                           build_secret_value (test, "booo")),
+	                                           test_service_build_secret (&test->service, "booo")),
 	                            G_VARIANT_TYPE ("()"),
 	                            &error);
 	g_assert_no_error (error);
@@ -808,7 +673,7 @@ test_item_created (Test *test,
 	                            "CreateItem",
 	                            g_variant_new ("(@a{sv}@(oayays)b)",
 	                                           properties,
-	                                           build_secret_value (test, "booo"),
+	                                           test_service_build_secret (&test->service, "booo"),
 	                                           FALSE),
 	                            G_VARIANT_TYPE ("(oo)"),
 	                            &error);

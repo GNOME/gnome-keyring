@@ -11,7 +11,14 @@ INCLUDES = \
 	$(GIO_CFLAGS) \
 	$(GLIB_CFLAGS)
 
+noinst_LTLIBRARIES = \
+	libtestservice.la
+
+libtestservice_la_SOURCES = \
+	test-service.c test-service.h
+
 LDADD =  \
+	$(builddir)/libtestservice.la \
 	$(top_builddir)/daemon/dbus/libgkd-dbus.la \
 	$(top_builddir)/egg/libegg-test.la \
 	$(GCR_BASE_LIBS) \
