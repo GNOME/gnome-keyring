@@ -129,9 +129,15 @@ test_modified_prop (Test *test, gconstpointer unused)
 static void
 test_was_modified (Test *test, gconstpointer unused)
 {
+	GkmTransaction *transaction;
 	GTimeVal tv;
+
 	g_get_current_time (&tv);
-	gkm_secret_object_was_modified (test->object);
+
+	transaction = gkm_transaction_new ();
+	gkm_secret_object_begin_modified (test->object, transaction);
+	g_assert_cmpuint (gkm_transaction_complete_and_unref (transaction), ==, CKR_OK);
+
 	g_assert (tv.tv_sec == gkm_secret_object_get_modified (test->object));
 }
 

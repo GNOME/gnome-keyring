@@ -334,6 +334,7 @@ factory_create_collection (GkmSession *session, GkmTransaction *transaction,
 	                           "label", label,
 	                           NULL);
 
+	gkm_secret_object_mark_created (GKM_SECRET_OBJECT (collection));
 	g_free (identifier);
 	g_free (label);
 
@@ -795,6 +796,7 @@ gkm_secret_collection_create_item (GkmSecretCollection *self, GkmTransaction *tr
 
 	g_free (identifier);
 	add_item (self, transaction, item);
+	gkm_secret_object_mark_created (GKM_SECRET_OBJECT (item));
 	g_object_unref (item);
 	return item;
 }

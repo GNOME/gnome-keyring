@@ -64,7 +64,6 @@ complete_set_label (GkmTransaction *transaction, GObject *obj, gpointer user_dat
 	} else {
 		gkm_object_notify_attribute (GKM_OBJECT (obj), CKA_LABEL);
 		g_object_notify (G_OBJECT (obj), "label");
-		gkm_secret_object_was_modified (self);
 		g_free (old_label);
 	}
 
@@ -77,6 +76,7 @@ begin_set_label (GkmSecretObject *self, GkmTransaction *transaction, gchar *labe
 	g_assert (GKM_IS_SECRET_OBJECT (self));
 	g_assert (!gkm_transaction_get_failed (transaction));
 
+	gkm_secret_object_begin_modified (GKM_SECRET_OBJECT (self), transaction);
 	gkm_transaction_add (transaction, self, complete_set_label, self->pv->label);
 	self->pv->label = label;
 }
@@ -361,9 +361,28 @@ gkm_secret_object_get_created (GkmSecretObject *self)
 void
 gkm_secret_object_set_created (GkmSecretObject *self, glong when)
 {
+	GTimeVal tv;
+
 	g_return_if_fail (GKM_IS_SECRET_OBJECT (self));
+
+	if (when < 0) {
+		g_get_current_time (&tv);
+		when = tv.tv_sec;
+	}
+
 	self->pv->created = when;
 	g_object_notify (G_OBJECT (self), "created");
+}
+
+void
+gkm_secret_object_mark_created (GkmSecretObject *self)
+{
+	GTimeVal tv;
+
+	g_return_if_fail (GKM_IS_SECRET_OBJECT (self));
+
+	g_get_current_time (&tv);
+	gkm_secret_object_set_created (self, tv.tv_sec);
 }
 
 glong
@@ -381,13 +400,38 @@ gkm_secret_object_set_modified (GkmSecretObject *self, glong when)
 	g_object_notify (G_OBJECT (self), "modified");
 }
 
+static gboolean
+complete_set_modified (GkmTransaction *transaction,
+                       GObject *obj,
+                       gpointer user_data)
+{
+	GkmSecretObject *self = GKM_SECRET_OBJECT (obj);
+	glong *old_modified = user_data;
+
+	if (gkm_transaction_get_failed (transaction)) {
+		self->pv->modified = *old_modified;
+
+	} else {
+		gkm_object_notify_attribute (GKM_OBJECT (obj), CKA_G_MODIFIED);
+		g_object_notify (G_OBJECT (obj), "modified");
+	}
+
+	g_free (old_modified);
+	return TRUE;
+}
+
 void
-gkm_secret_object_was_modified (GkmSecretObject *self)
+gkm_secret_object_begin_modified (GkmSecretObject *self,
+                                  GkmTransaction *transaction)
 {
 	GTimeVal tv;
-	g_return_if_fail (GKM_IS_SECRET_OBJECT (self));
+
+	g_return_if_fail (!gkm_transaction_get_failed (transaction));
+	gkm_transaction_add (transaction, self, complete_set_modified,
+	                     g_memdup (&self->pv->modified, sizeof (gulong)));
+
 	g_get_current_time (&tv);
-	gkm_secret_object_set_modified (self, tv.tv_sec);
+	self->pv->modified = tv.tv_sec;
 }
 
 gboolean

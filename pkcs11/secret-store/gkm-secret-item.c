@@ -67,7 +67,6 @@ complete_set_schema (GkmTransaction *transaction, GObject *obj, gpointer user_da
 	} else {
 		gkm_object_notify_attribute (GKM_OBJECT (obj), CKA_G_SCHEMA);
 		g_object_notify (G_OBJECT (obj), "schema");
-		gkm_secret_object_was_modified (GKM_SECRET_OBJECT (self));
 		g_free (old_schema);
 	}
 
@@ -81,6 +80,7 @@ begin_set_schema (GkmSecretItem *self, GkmTransaction *transaction, gchar *schem
 	g_assert (!gkm_transaction_get_failed (transaction));
 
 	if (self->schema != schema) {
+		gkm_secret_object_begin_modified (GKM_SECRET_OBJECT (self), transaction);
 		gkm_transaction_add (transaction, self, complete_set_schema, self->schema);
 		self->schema = schema;
 	}
@@ -89,11 +89,8 @@ begin_set_schema (GkmSecretItem *self, GkmTransaction *transaction, gchar *schem
 static gboolean
 complete_set_secret (GkmTransaction *transaction, GObject *obj, gpointer user_data)
 {
-	GkmSecretItem *self = GKM_SECRET_ITEM (obj);
-
 	if (!gkm_transaction_get_failed (transaction)) {
 		gkm_object_notify_attribute (GKM_OBJECT (obj), CKA_VALUE);
-		gkm_secret_object_was_modified (GKM_SECRET_OBJECT (self));
 	}
 
 	return TRUE;
@@ -112,7 +109,6 @@ complete_set_fields (GkmTransaction *transaction, GObject *obj, gpointer user_da
 	} else {
 		gkm_object_notify_attribute (GKM_OBJECT (obj), CKA_G_FIELDS);
 		g_object_notify (G_OBJECT (obj), "fields");
-		gkm_secret_object_was_modified (GKM_SECRET_OBJECT (self));
 		if (old_fields)
 			g_hash_table_unref (old_fields);
 	}
@@ -126,6 +122,7 @@ begin_set_fields (GkmSecretItem *self, GkmTransaction *transaction, GHashTable *
 	g_assert (GKM_IS_SECRET_OBJECT (self));
 	g_assert (!gkm_transaction_get_failed (transaction));
 
+	gkm_secret_object_begin_modified (GKM_SECRET_OBJECT (self), transaction);
 	gkm_transaction_add (transaction, self, complete_set_fields, self->fields);
 	self->fields = fields;
 }
@@ -278,6 +275,7 @@ gkm_secret_item_real_set_attribute (GkmObject *base, GkmSession *session,
 		gkm_secret_data_set_transacted (sdata, transaction, identifier, secret);
 		g_object_unref (secret);
 		g_object_unref (sdata);
+		gkm_secret_object_begin_modified (GKM_SECRET_OBJECT (self), transaction);
 		if (!gkm_transaction_get_failed (transaction))
 			gkm_transaction_add (transaction, self, complete_set_secret, NULL);
 		return;

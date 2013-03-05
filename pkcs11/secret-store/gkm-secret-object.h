@@ -64,12 +64,15 @@ glong                gkm_secret_object_get_created     (GkmSecretObject *self);
 void                 gkm_secret_object_set_created     (GkmSecretObject *self,
                                                         glong value);
 
+void                 gkm_secret_object_mark_created    (GkmSecretObject *self);
+
 glong                gkm_secret_object_get_modified    (GkmSecretObject *self);
 
 void                 gkm_secret_object_set_modified    (GkmSecretObject *self,
                                                         glong value);
 
-void                 gkm_secret_object_was_modified    (GkmSecretObject *self);
+void                 gkm_secret_object_begin_modified  (GkmSecretObject *self,
+                                                        GkmTransaction *transaction);
 
 gboolean             gkm_secret_object_is_locked       (GkmSecretObject *self,
                                                         GkmSession *session);
