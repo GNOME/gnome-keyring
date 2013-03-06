@@ -37,6 +37,7 @@
 #include "egg/egg-asn1-defs.h"
 
 typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
+typedef struct _EggAsn1xDef asn1_static_node;
 #include "test.asn.h"
 
 typedef struct {
