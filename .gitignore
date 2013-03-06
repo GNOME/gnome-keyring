@@ -128,8 +128,6 @@ p11-tests.conf
 /pkcs11/gnome2-store/tests/check-gnome2-module
 /pkcs11/gnome2-store/tests/check-module
 
-/pkcs11/roots-store/tests/check-roots-module
-
 /pkcs11/rpc-layer/gnome-keyring-module
 /pkcs11/rpc-layer/gnome-keyring.module
 

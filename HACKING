@@ -68,9 +68,6 @@ pkcs11
 pkcs11/gck
    A base library for implementing our internal PKCS#11 modules.
    
-pkcs11/roots-store
-   A PKCS#11 module that exposes Root CA certificates from a directory like /etc/ssl/certs
-   
 pkcs11/rpc-layer
    A PKCS#11 module that calls into the daemon. This is the module that apps actually use.
    
