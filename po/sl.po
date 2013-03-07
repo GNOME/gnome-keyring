@@ -8,19 +8,20 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-03-08 19:47+0000\n"
-"PO-Revision-Date: 2012-12-17 13:45+0100\n"
-"Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
+"PO-Revision-Date: 2012-12-18 08:12+0100\n"
+"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
-"Language: \n"
+"Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
-"X-Poedit-Language: Slovenian\n"
-"X-Poedit-Country: SLOVENIA\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:85
@@ -39,8 +40,12 @@ msgstr "Vnesite staro geslo za zbirko ključev '%s'"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
-msgstr "Program želi spremeniti geslo za zbirko ključev '%s'. Vpisati je treba staro geslo."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr ""
+"Program želi spremeniti geslo za zbirko ključev '%s'. Vpisati je treba staro "
+"geslo."
 
 #: ../daemon/dbus/gkd-secret-change.c:100
 #: ../daemon/dbus/gkd-secret-change.c:136
@@ -58,8 +63,12 @@ msgstr "Izberite novo geslo za zbirko ključev '%s'"
 
 #: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "Program želi spremeniti geslo za zbirko ključev '%s'. Izbrati je treba novo geslo za to zbirko."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Program želi spremeniti geslo za zbirko ključev '%s'. Izbrati je treba novo "
+"geslo za to zbirko."
 
 #: ../daemon/dbus/gkd-secret-change.c:142
 #: ../daemon/dbus/gkd-secret-create.c:95
@@ -68,8 +77,13 @@ msgstr "Ali naj bodo shranjena gesla nešifrirana?"
 
 #: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:97
-msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "Z uporabo praznega polja gesla, onemogočite šifriranje ostalih gesel. Dostop do takih gesel ima vsak, ki ima tudi dostop do računalnika."
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Z uporabo praznega polja gesla onemogočite šifriranje ostalih gesel. Dostop "
+"do takih gesel ima vsak, ki ima tudi dostop do računalnika."
 
 # Tukaj govorimo o menjavi gesla, zato je izvorno geslo pravzaprav staro. To je smiselno zato, ker je sicer v programu seahorse vedno omenjeno staro geslo.
 #: ../daemon/dbus/gkd-secret-change.c:152
@@ -82,8 +96,12 @@ msgstr "Spremeni geslo zbirke ključev"
 
 #: ../daemon/dbus/gkd-secret-create.c:81
 #, c-format
-msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati je treba geslo za novo zbirko."
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Program želi ustvariti novo zbirko ključev z imenom '%s'. Izbrati je treba "
+"geslo za novo zbirko."
 
 #: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
@@ -95,11 +113,11 @@ msgstr "Novo geslo zbirke ključev"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
 msgid "GPG Password Agent"
-msgstr "GPG agent gesel"
+msgstr "Agent gesel GPG"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
 msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME zbirka ključev: GPG agent"
+msgstr "Zbirka ključev GNOME: agent GPG"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -107,7 +125,7 @@ msgstr "Hranjenje potrdil in ključev"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
 msgid "GNOME Keyring: PKCS#11 Component"
-msgstr "GNOME zbirka ključev: PKCS#11 enota"
+msgstr "Zbirka ključev GNOME: enota PKCS#11"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
 msgid "Secret Storage Service"
@@ -115,15 +133,15 @@ msgstr "Shranjevanje skritih storitev"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME zbirka ključev: skrite storitve"
+msgstr "Zbirka ključev GNOME: skrite storitve"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
-msgstr "SSH Agent ključev"
+msgstr "Agent ključev SSH"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME zbirka ključev: SSH agent"
+msgstr "Zbirka ključev GNOME: agent SSH"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
@@ -179,7 +197,8 @@ msgstr "ni mogoče ustvariti `%s': %s\n"
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr "odstranjevanje zastarane datoteke zaklepa (ustvarjene s programom %d)\n"
+msgstr ""
+"odstranjevanje zastarane datoteke zaklepa (ustvarjene s programom %d)\n"
 
 #: ../egg/dotlock.c:1084
 #, c-format
@@ -344,7 +363,9 @@ msgstr "Vstavljanje časovnega žiga"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "Nepričakovana napaka v select() med branjem podatkov procesa podrejenega predmeta (%s)"
+msgstr ""
+"Nepričakovana napaka v select() med branjem podatkov procesa podrejenega "
+"predmeta (%s)"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
@@ -357,7 +378,7 @@ msgstr "Neimenovano potrdilo"
 
 #: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
 msgid "Couldn't parse public SSH key"
-msgstr "Ni mogoče razčleniti SSH ključa."
+msgstr "Ni mogoče razčleniti javnega ključa SSH."
 
 #. Get the label ready
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
@@ -374,11 +395,16 @@ msgid "Enter password to unlock your login keyring"
 msgstr "Vnesite geslo za odklepanje prijavnih ključev"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
-msgid "The password you use to log in to your computer no longer matches that of your login keyring."
-msgstr "Geslo, ki  se uporabi ob prijavi v sistem, se ne sklada z geslom zbirke ključev."
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Geslo, ki  se uporabi ob prijavi v sistem, se ne sklada z geslom zbirke "
+"ključev."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
-msgid "The login keyring did not get unlocked when you logged into your computer."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr "Prijavna zbirka ključev ob prijavi ni bila samodejno odklenjena."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
@@ -388,12 +414,13 @@ msgstr "Odklep zbirke ključev"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Vnesite geslo za dostop do '%s' zbirke ključev"
+msgstr "Vnesite geslo za dostop do '%s' zbirke ključev."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Program zahteva dostop do zbirke ključev '%s', vendar je ta zaklenjena."
+msgstr ""
+"Program zahteva dostop do zbirke ključev '%s', vendar je ta zaklenjena."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -446,25 +473,26 @@ msgstr "Samodejno odkleni ob prijavi."
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Program zahteva dostop do osebnega ključa '%s', vendar je ta zaklenjen"
+msgstr ""
+"Program zahteva dostop do osebnega ključa '%s', vendar je ta zaklenjen."
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Program zahteva dostop do potrdila '%s', vendar je to zaklenjeno"
+msgstr "Program zahteva dostop do potrdila '%s', vendar je to zaklenjeno."
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Program zahteva dostop do javnega ključa '%s', vendar je ta zaklenjen"
+msgstr "Program zahteva dostop do javnega ključa '%s', vendar je ta zaklenjen."
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "Program želi dostop do '%s', vendar je ta zaklenjen"
+msgstr "Program zahteva dostop do '%s', vendar je ta zaklenjen."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
 msgid "The unlock password was incorrect"
@@ -482,21 +510,27 @@ msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
 #, c-format
-msgid "An application wants access to the certificate/key storage '%s', but it is locked"
-msgstr "Program zahteva dostop do potrdila ali ključa '%s', vendar je ta zaklenjen."
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Program zahteva dostop do potrdila ali ključa '%s', vendar je ta zaklenjen."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
-msgstr "Zahtevano novo geslo"
+msgstr "Zahtevano je novo geslo"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New password required for secure storage"
-msgstr "Zahtevano novo geslo za varno shranjevanje"
+msgstr "Za varno shranjevanje je zahtevano novo geslo"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
-msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
-msgstr "Za pripravo '%s' za shranjevanje potrdil in ključev, mora biti določeno geslo"
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Za pripravo '%s' za shranjevanje potrdil in ključev, mora biti določeno geslo"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
@@ -514,7 +548,7 @@ msgstr "Za spreminjanje gesla za '%s', je zahtevano prvotno geslo"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change password for secure storage"
-msgstr "Spremeni geslo varno shranjevanje"
+msgstr "Spremeni geslo za varno shranjevanje"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
 #, c-format
@@ -597,16 +631,16 @@ msgstr "             "
 
 #~ msgid "The stream was closed"
 #~ msgstr "Pretok je zaprt"
-#~ msgctxt "column"
 
+#~ msgctxt "column"
 #~ msgid "Name"
 #~ msgstr "Ime"
-#~ msgctxt "column"
 
+#~ msgctxt "column"
 #~ msgid "Issued By"
 #~ msgstr "Izdal"
-#~ msgctxt "column"
 
+#~ msgctxt "column"
 #~ msgid "Expires"
 #~ msgstr "Preteče"
 
@@ -822,8 +856,8 @@ msgstr "             "
 
 #~ msgid "PGP Key"
 #~ msgstr "Ključ PGP"
-#~ msgctxt "column"
 
+#~ msgctxt "column"
 #~ msgid "Key ID"
 #~ msgstr "ID ključa"
 
@@ -1063,7 +1097,6 @@ msgstr "             "
 #~ msgstr "Javni ključ DSA"
 
 #~ msgid "%d bit"
-
 #~ msgid_plural "%d bits"
 #~ msgstr[0] "%d bitov"
 #~ msgstr[1] "%d bit"
