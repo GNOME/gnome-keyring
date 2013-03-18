@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Shankar Prasad <svenkate@redhat.com>, 2008, 2009, 2012.
+# Shankar Prasad <svenkate@redhat.com>, 2008, 2009, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.master.kn\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-10-17 09:26+0000\n"
-"PO-Revision-Date: 2012-11-27 15:06+0530\n"
+"POT-Creation-Date: 2013-03-17 00:28+0000\n"
+"PO-Revision-Date: 2013-03-18 14:30+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
 "Language: kn\n"
@@ -64,7 +64,8 @@ msgid ""
 "new password you want to use for it."
 msgstr ""
 "ಒಂದು ಅಜ್ಞಾತ ಅನ್ವಯವು '%s' ಕೀಲಿಗೊಂಚಲಿನ ಗುಪ್ತಪದವನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸಿದೆ. ಅದಕ್ಕಾಗಿ "
-"ನೀವು ಬಳಸಲು ಬಯಸುವ ಹೊಸ ಗುಪ್ತಪದವನ್ನು ಆರಿಸಿ."
+"ನೀವು "
+"ಬಳಸಲು ಬಯಸುವ ಹೊಸ ಗುಪ್ತಪದವನ್ನು ಆರಿಸಿ."
 
 #: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:95
@@ -226,7 +227,7 @@ msgstr "ಬಳಕೆದಾರ ID"
 
 #: ../egg/egg-oid.c:46
 msgid "Email Address"
-msgstr "ಇಮೈಲ್ ವಿಳಾಸ"
+msgstr "ವಿಅಂಚೆ ವಿಳಾಸ"
 
 #: ../egg/egg-oid.c:54
 msgid "Date of Birth"
