@@ -361,8 +361,7 @@ msgstr "ಸಮಯಮುದ್ರೆ ನೀಡಿಕೆ"
 #: ../egg/egg-spawn.c:273
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"ಉಪ ಪ್ರಕ್ರಿಯೆಯಿಂದ  (%s) ದತ್ತಾಂಶವನ್ನು ಓದುವಾಗ select() ನಲ್ಲಿ ಅನಪೇಕ್ಷಿತ ದೋಷ"
+msgstr "ಉಪ ಪ್ರಕ್ರಿಯೆಯಿಂದ (%s) ದತ್ತಾಂಶವನ್ನು ಓದುವಾಗ select() ನಲ್ಲಿ ಅನಪೇಕ್ಷಿತ ದೋಷ"
 
 #: ../egg/egg-spawn.c:320
 #, c-format
