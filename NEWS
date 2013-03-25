@@ -1,3 +1,6 @@
+Changes in version 3.8.0 are:
+ * Updated translations
+
 Changes in version 3.7.92 are:
  * Update introspection data of Collection.SearchItems() [#695115]
  * Update the Item.Created and Item.Modified properties correctly [#695052]
