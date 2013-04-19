@@ -1,13 +1,5 @@
 include $(top_srcdir)/Makefile.decl
 
-ASN_FILES = \
-	test.asn
-
-ASN_SRCS = $(ASN_FILES:.asn=.asn.h)
-
-BUILT_SOURCES = \
-	$(ASN_SRCS)
-
 INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
@@ -28,7 +20,7 @@ noinst_LIBRARIES = libgkm-mock.a
 libgkm_mock_a_SOURCES = \
 	mock-module.c mock-module.h \
 	mock-locked-object.c mock-locked-object.h \
-	$(BUILT_SOURCES)
+	test.asn.h
 
 TEST_PROGS = \
 	test-attributes \
@@ -79,8 +71,9 @@ check-local: test
 all-local: $(check_PROGRAMS)
 
 EXTRA_DIST = \
-	$(ASN_FILES) \
+	test.asn \
 	files
 
-DISTCLEANFILES = \
-	$(BUILT_SOURCES)
+asn:
+	asn1Parser -o test.asn.h test.asn
+	sed -i 's|#include.*|/* \0 */|' test.asn.h

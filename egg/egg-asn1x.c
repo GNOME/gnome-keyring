@@ -76,7 +76,15 @@ enum {
 	ASN1_TAG_OBJECT_ID = 0x06,
 	ASN1_TAG_ENUMERATED = 0x0A,
 	ASN1_TAG_NULL = 0x05,
-	ASN1_TAG_GENERALSTRING = 0x1B,
+	ASN1_TAG_GENERAL_STRING = 0x1B,
+	ASN1_TAG_NUMERIC_STRING = 0x12,
+	ASN1_TAG_IA5_STRING = 0x16,
+	ASN1_TAG_TELETEX_STRING = 0x14,
+	ASN1_TAG_PRINTABLE_STRING = 0x13,
+	ASN1_TAG_UNIVERSAL_STRING = 0x1C,
+	ASN1_TAG_BMP_STRING = 0x1E,
+	ASN1_TAG_UTF8_STRING = 0x0C,
+	ASN1_TAG_VISIBLE_STRING = 0x1A,
 };
 
 /* From libtasn1's int.h */
@@ -273,9 +281,19 @@ anode_def_type_is_real (GNode *node)
 	case EGG_ASN1X_OCTET_STRING:
 	case EGG_ASN1X_OBJECT_ID:
 	case EGG_ASN1X_TIME:
+	case EGG_ASN1X_UTC_TIME:
+	case EGG_ASN1X_GENERALIZED_TIME:
 	case EGG_ASN1X_NULL:
 	case EGG_ASN1X_ENUMERATED:
-	case EGG_ASN1X_GENERALSTRING:
+	case EGG_ASN1X_GENERAL_STRING:
+	case EGG_ASN1X_NUMERIC_STRING:
+	case EGG_ASN1X_IA5_STRING:
+	case EGG_ASN1X_TELETEX_STRING:
+	case EGG_ASN1X_PRINTABLE_STRING:
+	case EGG_ASN1X_UNIVERSAL_STRING:
+	case EGG_ASN1X_BMP_STRING:
+	case EGG_ASN1X_UTF8_STRING:
+	case EGG_ASN1X_VISIBLE_STRING:
 		return TRUE;
 	case EGG_ASN1X_SEQUENCE:
 	case EGG_ASN1X_SEQUENCE_OF:
@@ -292,9 +310,9 @@ anode_def_type_is_real (GNode *node)
 	case EGG_ASN1X_DEFINITIONS:
 	case EGG_ASN1X_IMPORTS:
 		return FALSE;
-	default:
-		g_return_val_if_reached (FALSE);
 	}
+
+	g_return_val_if_reached (FALSE);
 }
 
 static int
@@ -521,7 +539,7 @@ anode_failure (GNode *node, const gchar *failure)
 
 	g_free (an->failure);
 	an->failure = g_strdup_printf ("%s: %s", prefix, failure);
-	g_debug ("egg-asn1: %s", an->failure);
+	g_debug ("%s %s", prefix, an->failure);
 	return FALSE; /* So this can be chained */
 }
 
@@ -588,8 +606,24 @@ anode_calc_tag_for_flags (GNode *node, gint flags)
 		return ASN1_TAG_OBJECT_ID;
 	case EGG_ASN1X_NULL:
 		return ASN1_TAG_NULL;
-	case EGG_ASN1X_GENERALSTRING:
-		return ASN1_TAG_GENERALSTRING;
+	case EGG_ASN1X_GENERAL_STRING:
+		return ASN1_TAG_GENERAL_STRING;
+	case EGG_ASN1X_NUMERIC_STRING:
+		return ASN1_TAG_NUMERIC_STRING;
+	case EGG_ASN1X_IA5_STRING:
+		return ASN1_TAG_IA5_STRING;
+	case EGG_ASN1X_TELETEX_STRING:
+		return ASN1_TAG_TELETEX_STRING;
+	case EGG_ASN1X_PRINTABLE_STRING:
+		return ASN1_TAG_PRINTABLE_STRING;
+	case EGG_ASN1X_UNIVERSAL_STRING:
+		return ASN1_TAG_UNIVERSAL_STRING;
+	case EGG_ASN1X_BMP_STRING:
+		return ASN1_TAG_BMP_STRING;
+	case EGG_ASN1X_UTF8_STRING:
+		return ASN1_TAG_UTF8_STRING;
+	case EGG_ASN1X_VISIBLE_STRING:
+		return ASN1_TAG_VISIBLE_STRING;
 	case EGG_ASN1X_TIME:
 		if (flags & FLAG_GENERALIZED)
 			return ASN1_TAG_GENERALIZED_TIME;
@@ -597,6 +631,10 @@ anode_calc_tag_for_flags (GNode *node, gint flags)
 			return ASN1_TAG_UTC_TIME;
 		else
 			g_return_val_if_reached (G_MAXULONG);
+	case EGG_ASN1X_UTC_TIME:
+		return ASN1_TAG_UTC_TIME;
+	case EGG_ASN1X_GENERALIZED_TIME:
+		return ASN1_TAG_GENERALIZED_TIME;
 	case EGG_ASN1X_SEQUENCE:
 	case EGG_ASN1X_SEQUENCE_OF:
 		return ASN1_TAG_SEQUENCE;
@@ -618,11 +656,9 @@ anode_calc_tag_for_flags (GNode *node, gint flags)
 	case EGG_ASN1X_DEFINITIONS:
 	case EGG_ASN1X_IMPORTS:
 		g_return_val_if_reached (G_MAXULONG);
-
-	/* Unknown value */
-	default:
-		g_return_val_if_reached (G_MAXULONG);
 	}
+
+	g_return_val_if_reached (G_MAXULONG);
 }
 
 static gulong
@@ -1064,8 +1100,18 @@ anode_decode_primitive (GNode *node,
 	case EGG_ASN1X_OCTET_STRING:
 	case EGG_ASN1X_OBJECT_ID:
 	case EGG_ASN1X_NULL:
-	case EGG_ASN1X_GENERALSTRING:
 	case EGG_ASN1X_TIME:
+	case EGG_ASN1X_UTC_TIME:
+	case EGG_ASN1X_GENERALIZED_TIME:
+	case EGG_ASN1X_GENERAL_STRING:
+	case EGG_ASN1X_NUMERIC_STRING:
+	case EGG_ASN1X_IA5_STRING:
+	case EGG_ASN1X_TELETEX_STRING:
+	case EGG_ASN1X_PRINTABLE_STRING:
+	case EGG_ASN1X_UNIVERSAL_STRING:
+	case EGG_ASN1X_BMP_STRING:
+	case EGG_ASN1X_UTF8_STRING:
+	case EGG_ASN1X_VISIBLE_STRING:
 		anode_set_value (node, tlv->value);
 		return TRUE;
 
@@ -1075,10 +1121,9 @@ anode_decode_primitive (GNode *node,
 
 	case EGG_ASN1X_CHOICE:
 		return anode_decode_choice (node, tlv);
-
-	default:
-		return anode_failure (node, "primitive value of an unexpected type"); /* UNREACHABLE: tag validation? */
 	}
+
+	return anode_failure (node, "primitive value of an unexpected type"); /* UNREACHABLE: tag validation? */
 }
 
 static gboolean
@@ -1090,8 +1135,16 @@ anode_decode_structured (GNode *node,
 
 	/* Just use the 'parsed' which is automatically set */
 	case EGG_ASN1X_ANY:
-	case EGG_ASN1X_GENERALSTRING:
+	case EGG_ASN1X_GENERAL_STRING:
 	case EGG_ASN1X_OCTET_STRING:
+	case EGG_ASN1X_NUMERIC_STRING:
+	case EGG_ASN1X_IA5_STRING:
+	case EGG_ASN1X_TELETEX_STRING:
+	case EGG_ASN1X_PRINTABLE_STRING:
+	case EGG_ASN1X_UNIVERSAL_STRING:
+	case EGG_ASN1X_BMP_STRING:
+	case EGG_ASN1X_UTF8_STRING:
+	case EGG_ASN1X_VISIBLE_STRING:
 		return TRUE;
 
 	case EGG_ASN1X_CHOICE:
@@ -1543,8 +1596,18 @@ anode_build_cls_tag_len (GNode *node,
 	case EGG_ASN1X_OCTET_STRING:
 	case EGG_ASN1X_OBJECT_ID:
 	case EGG_ASN1X_TIME:
+	case EGG_ASN1X_UTC_TIME:
+	case EGG_ASN1X_GENERALIZED_TIME:
 	case EGG_ASN1X_ENUMERATED:
-	case EGG_ASN1X_GENERALSTRING:
+	case EGG_ASN1X_GENERAL_STRING:
+	case EGG_ASN1X_NUMERIC_STRING:
+	case EGG_ASN1X_IA5_STRING:
+	case EGG_ASN1X_TELETEX_STRING:
+	case EGG_ASN1X_PRINTABLE_STRING:
+	case EGG_ASN1X_UNIVERSAL_STRING:
+	case EGG_ASN1X_BMP_STRING:
+	case EGG_ASN1X_UTF8_STRING:
+	case EGG_ASN1X_VISIBLE_STRING:
 	case EGG_ASN1X_NULL:
 		tlv->cls = ASN1_CLASS_UNIVERSAL;
 		break;
@@ -1783,8 +1846,18 @@ anode_build_anything_for_flags (GNode *node,
 	case EGG_ASN1X_OCTET_STRING:
 	case EGG_ASN1X_OBJECT_ID:
 	case EGG_ASN1X_TIME:
+	case EGG_ASN1X_UTC_TIME:
+	case EGG_ASN1X_GENERALIZED_TIME:
 	case EGG_ASN1X_ENUMERATED:
-	case EGG_ASN1X_GENERALSTRING:
+	case EGG_ASN1X_GENERAL_STRING:
+	case EGG_ASN1X_NUMERIC_STRING:
+	case EGG_ASN1X_IA5_STRING:
+	case EGG_ASN1X_TELETEX_STRING:
+	case EGG_ASN1X_PRINTABLE_STRING:
+	case EGG_ASN1X_UNIVERSAL_STRING:
+	case EGG_ASN1X_BMP_STRING:
+	case EGG_ASN1X_UTF8_STRING:
+	case EGG_ASN1X_VISIBLE_STRING:
 	case EGG_ASN1X_NULL:
 		tlv = anode_build_value (node);
 		break;
@@ -2115,6 +2188,7 @@ anode_read_time (GNode *node,
 	gboolean ret;
 	gint offset = 0;
 	gint flags;
+	gint type;
 	gsize len;
 
 	g_assert (data != NULL);
@@ -2122,9 +2196,14 @@ anode_read_time (GNode *node,
 	g_assert (value != NULL);
 
 	flags = anode_def_flags (node);
+	type = anode_def_type (node);
 	buf = g_bytes_get_data (data, &len);
 
-	if (flags & FLAG_GENERALIZED)
+	if (type == EGG_ASN1X_GENERALIZED_TIME)
+		ret = parse_general_time (buf, len, when, &offset);
+	else if (type == EGG_ASN1X_UTC_TIME)
+		ret = parse_utc_time (buf, len, when, &offset);
+	else if (flags & FLAG_GENERALIZED)
 		ret = parse_general_time (buf, len, when, &offset);
 	else if (flags & FLAG_UTC)
 		ret = parse_utc_time (buf, len, when, &offset);
@@ -3132,7 +3211,15 @@ egg_asn1x_get_string_as_raw (GNode *node,
 
 	type = anode_def_type (node);
 	g_return_val_if_fail (type == EGG_ASN1X_OCTET_STRING ||
-	                      type == EGG_ASN1X_GENERALSTRING, NULL);
+	                      type == EGG_ASN1X_GENERAL_STRING ||
+	                      type == EGG_ASN1X_NUMERIC_STRING ||
+	                      type == EGG_ASN1X_IA5_STRING ||
+	                      type == EGG_ASN1X_TELETEX_STRING ||
+	                      type == EGG_ASN1X_PRINTABLE_STRING ||
+	                      type == EGG_ASN1X_UNIVERSAL_STRING ||
+	                      type == EGG_ASN1X_BMP_STRING ||
+	                      type == EGG_ASN1X_UTF8_STRING ||
+	                      type == EGG_ASN1X_VISIBLE_STRING, NULL);
 
 	data = anode_get_value (node);
 	if (data != NULL) {
@@ -3185,7 +3272,16 @@ egg_asn1x_set_string_as_raw (GNode *node,
 	g_return_if_fail (data != NULL);
 
 	type = anode_def_type (node);
-	g_return_if_fail (type == EGG_ASN1X_OCTET_STRING || type == EGG_ASN1X_GENERALSTRING);
+	g_return_if_fail (type == EGG_ASN1X_OCTET_STRING ||
+	                  type == EGG_ASN1X_GENERAL_STRING ||
+	                  type == EGG_ASN1X_NUMERIC_STRING ||
+	                  type == EGG_ASN1X_IA5_STRING ||
+	                  type == EGG_ASN1X_TELETEX_STRING ||
+	                  type == EGG_ASN1X_PRINTABLE_STRING ||
+	                  type == EGG_ASN1X_UNIVERSAL_STRING ||
+	                  type == EGG_ASN1X_BMP_STRING ||
+	                  type == EGG_ASN1X_UTF8_STRING ||
+	                  type == EGG_ASN1X_VISIBLE_STRING);
 
 	anode_set_value (node, g_bytes_new_with_free_func (data, n_data,
 	                                                   destroy, data));
@@ -3201,7 +3297,16 @@ egg_asn1x_set_string_as_bytes (GNode *node,
 	g_return_if_fail (bytes != NULL);
 
 	type = anode_def_type (node);
-	g_return_if_fail (type == EGG_ASN1X_OCTET_STRING || type == EGG_ASN1X_GENERALSTRING);
+	g_return_if_fail (type == EGG_ASN1X_OCTET_STRING ||
+	                  type == EGG_ASN1X_GENERAL_STRING ||
+	                  type == EGG_ASN1X_NUMERIC_STRING ||
+	                  type == EGG_ASN1X_IA5_STRING ||
+	                  type == EGG_ASN1X_TELETEX_STRING ||
+	                  type == EGG_ASN1X_PRINTABLE_STRING ||
+	                  type == EGG_ASN1X_UNIVERSAL_STRING ||
+	                  type == EGG_ASN1X_BMP_STRING ||
+	                  type == EGG_ASN1X_UTF8_STRING ||
+	                  type == EGG_ASN1X_VISIBLE_STRING);
 
 	anode_set_value (node, g_bytes_ref (bytes));
 }
@@ -3437,11 +3542,15 @@ egg_asn1x_get_time_as_long (GNode *node)
 		node = egg_asn1x_get_choice (node);
 		if (node == NULL)
 			return -1;
-		g_return_val_if_fail (anode_def_type (node) == EGG_ASN1X_TIME, -1);
+		g_return_val_if_fail (anode_def_type (node) == EGG_ASN1X_TIME ||
+		                      anode_def_type (node) == EGG_ASN1X_UTC_TIME ||
+		                      anode_def_type (node) == EGG_ASN1X_GENERALIZED_TIME, -1);
 		return egg_asn1x_get_time_as_long (node);
 	}
 
-	g_return_val_if_fail (type == EGG_ASN1X_TIME, -1);
+	g_return_val_if_fail (type == EGG_ASN1X_TIME ||
+	                      type == EGG_ASN1X_UTC_TIME ||
+	                      type == EGG_ASN1X_GENERALIZED_TIME, -1);
 
 	data = anode_get_value (node);
 	if (data == NULL)
@@ -3469,11 +3578,15 @@ egg_asn1x_get_time_as_date (GNode *node,
 		node = egg_asn1x_get_choice (node);
 		if (node == NULL)
 			return FALSE;
-		g_return_val_if_fail (anode_def_type (node) == EGG_ASN1X_TIME, FALSE);
+		g_return_val_if_fail (anode_def_type (node) == EGG_ASN1X_TIME ||
+		                      anode_def_type (node) == EGG_ASN1X_UTC_TIME ||
+		                      anode_def_type (node) == EGG_ASN1X_GENERALIZED_TIME, FALSE);
 		return egg_asn1x_get_time_as_date (node, date);
 	}
 
-	g_return_val_if_fail (type == EGG_ASN1X_TIME, FALSE);
+	g_return_val_if_fail (type == EGG_ASN1X_TIME ||
+	                      type == EGG_ASN1X_UTC_TIME ||
+	                      type == EGG_ASN1X_GENERALIZED_TIME, FALSE);
 
 	data = anode_get_value (node);
 	if (data == NULL)
@@ -3897,13 +4010,24 @@ anode_validate_anything (GNode *node,
 		case EGG_ASN1X_BIT_STRING:
 			return anode_validate_bit_string (node, value);
 		case EGG_ASN1X_OCTET_STRING:
-		case EGG_ASN1X_GENERALSTRING:
+		case EGG_ASN1X_GENERAL_STRING:
+		case EGG_ASN1X_NUMERIC_STRING:
+		case EGG_ASN1X_IA5_STRING:
+		case EGG_ASN1X_TELETEX_STRING:
+		case EGG_ASN1X_PRINTABLE_STRING:
+		case EGG_ASN1X_UTF8_STRING:
+		case EGG_ASN1X_VISIBLE_STRING:
 			return anode_validate_string (node, value);
+		case EGG_ASN1X_BMP_STRING:
+		case EGG_ASN1X_UNIVERSAL_STRING:
+			return TRUE; /* TODO: Need to validate strings more completely */
 		case EGG_ASN1X_OBJECT_ID:
 			return anode_validate_object_id (node, value);
 		case EGG_ASN1X_NULL:
 			return anode_validate_null (node, value);
 		case EGG_ASN1X_TIME:
+		case EGG_ASN1X_UTC_TIME:
+		case EGG_ASN1X_GENERALIZED_TIME:
 			return anode_validate_time (node, value);
 		default:
 			g_assert_not_reached ();
@@ -3915,8 +4039,16 @@ anode_validate_anything (GNode *node,
 	if (tlv) {
 		switch (type) {
 		case EGG_ASN1X_ANY:
-		case EGG_ASN1X_GENERALSTRING:
+		case EGG_ASN1X_GENERAL_STRING:
 		case EGG_ASN1X_OCTET_STRING:
+		case EGG_ASN1X_NUMERIC_STRING:
+		case EGG_ASN1X_IA5_STRING:
+		case EGG_ASN1X_TELETEX_STRING:
+		case EGG_ASN1X_PRINTABLE_STRING:
+		case EGG_ASN1X_UTF8_STRING:
+		case EGG_ASN1X_VISIBLE_STRING:
+		case EGG_ASN1X_BMP_STRING:
+		case EGG_ASN1X_UNIVERSAL_STRING:
 			return TRUE;
 		default:
 			break; /* UNREACHABLE: fix compiler warning */
@@ -4350,8 +4482,10 @@ dump_append_type (GString *output, gint type)
 	#define XX(x) if (type == EGG_ASN1X_##x) g_string_append (output, #x " ")
 	XX(CONSTANT); XX(IDENTIFIER); XX(INTEGER); XX(BOOLEAN); XX(SEQUENCE); XX(BIT_STRING);
 	XX(OCTET_STRING); XX(TAG); XX(DEFAULT); XX(SIZE); XX(SEQUENCE_OF); XX(OBJECT_ID); XX(ANY);
-	XX(SET); XX(SET_OF); XX(DEFINITIONS); XX(TIME); XX(CHOICE); XX(IMPORTS); XX(NULL);
-	XX(ENUMERATED); XX(GENERALSTRING);
+	XX(SET); XX(SET_OF); XX(DEFINITIONS); XX(TIME); XX(UTC_TIME); XX(GENERALIZED_TIME); XX(CHOICE); XX(IMPORTS); XX(NULL);
+	XX(ENUMERATED); XX(GENERAL_STRING); XX(NUMERIC_STRING); XX(IA5_STRING); XX(TELETEX_STRING);
+	XX(PRINTABLE_STRING); XX(UNIVERSAL_STRING); XX(BMP_STRING); XX(UTF8_STRING); XX(VISIBLE_STRING);
+
 	if (output->len == 0)
 		g_string_printf (output, "%d ", (int)type);
 	#undef XX

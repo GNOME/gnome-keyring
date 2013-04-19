@@ -1,13 +1,5 @@
 include $(top_srcdir)/Makefile.decl
 
-ASN_FILES = \
-	xdg.asn
-
-ASN_SRCS = $(ASN_FILES:.asn=.asn.h)
-
-BUILT_SOURCES = \
-	$(ASN_SRCS)
-
 INCLUDES = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
@@ -29,10 +21,12 @@ libgkm_xdg_store_la_SOURCES = \
 	gkm-xdg-assertion.c gkm-xdg-assertion.h \
 	gkm-xdg-module.c gkm-xdg-module.h \
 	gkm-xdg-trust.c gkm-xdg-trust.h \
-	$(BUILT_SOURCES)
+	xdg.asn.h \
+	$(NULL)
 
 EXTRA_DIST = \
-	$(ASN_FILES)
+	xdg.asn \
+	$(NULL)
 
 # ------------------------------------------------------------------------------
 # The standalone module
@@ -62,3 +56,7 @@ gkm_xdg_store_standalone_la_LIBADD = \
 # -------------------------------------------------------------------------------
 
 SUBDIRS = . tests
+
+asn:
+	asn1Parser -o xdg.asn.h xdg.asn
+	sed -i 's|#include.*|/* \0 */|' xdg.asn.h
