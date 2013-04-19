@@ -372,17 +372,6 @@ AC_SUBST([LIBGCRYPT_CFLAGS])
 AC_SUBST([LIBGCRYPT_LIBS])
 
 # -------------------------------------------------------------------
-# libtasn1
-#
-
-GKR_LIBTASN1_VERSION=0.3.4
-
-AC_PATH_PROG(ASN1PARSER, asn1Parser, no)
-if test "$ASN1PARSER" = "no" ; then
-	AC_MSG_ERROR([asn1Parser tool is not installed, try libtasn1 or a related package])
-fi
-
-# -------------------------------------------------------------------
 # libcap-ng
 #
 

@@ -25,13 +25,6 @@ coverage:
 clear-coverage:
 	$(LCOV) --directory . --zerocounters
 
-V_ASN1 = $(V_ASN1_$(V))
-V_ASN1_ = $(V_ASN1_$(AM_DEFAULT_VERBOSITY))
-V_ASN1_0 = @echo "  ASN1  " $@;
-
-.asn.asn.h:
-	$(V_ASN1) $(ASN1PARSER) -o $@ $< && sed -i 's|#include.*|/* \0 */|' $@
-
 V_SED = $(V_SED_$(V))
 V_SED_ = $(V_SED_$(AM_DEFAULT_VERBOSITY))
 V_SED_0 = @echo "  SED   " $@;
@@ -64,4 +57,4 @@ SED_SUBST = sed \
 .conf.in.conf:
 	$(V_SED) $(SED_SUBST) $< > $@
 
-SUFFIXES = .asn .asn.h .conf .conf.in .desktop.in .desktop.in.in .service .service.in
+SUFFIXES = .conf .conf.in .desktop.in .desktop.in.in .service .service.in

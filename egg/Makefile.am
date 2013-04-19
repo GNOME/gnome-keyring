@@ -11,15 +11,6 @@ noinst_LTLIBRARIES = \
 	libegg-hex.la \
 	libegg-test.la
 
-ASN_FILES = \
-	pk.asn \
-	pkix.asn
-
-ASN_SRCS = $(ASN_FILES:.asn=.asn.h)
-
-BUILT_SOURCES = \
-	$(ASN_SRCS)
-
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) 
@@ -53,13 +44,13 @@ libegg_la_SOURCES = \
 	egg-testing.c egg-testing.h \
 	egg-timegm.c egg-timegm.h \
 	egg-asn1-defs.h \
-	$(BUILT_SOURCES)
+	pk.asn.h pkix.asn.h \
+	$(NULL)
 
 EXTRA_DIST = \
-	$(ASN_FILES)
-
-DISTCLEANFILES = \
-	$(BUILT_SOURCES)
+	pk.asn \
+	pkix.asn \
+	$(NULL)
 	
 # --------------------------------------------------------------------
 # COMMON STUFF COMPILED INTO SMALLER COMPONENTS
@@ -132,3 +123,8 @@ libegg_test_la_LIBS = \
 # -------------------------------------------------------------------
 
 SUBDIRS = . tests
+
+asn:
+	asn1Parser -o pk.asn.h pk.asn
+	asn1Parser -o pkix.asn.h pkix.asn
+	sed -i 's|#include.*|/* \0 */|' pk.asn.h pkix.asn.h
