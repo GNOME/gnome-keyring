@@ -270,6 +270,7 @@ perform_next_unlock (GkdSecretUnlock *self)
 		 */
 		if (proceed) {
 			common_unlock_attributes (&builder, collection);
+			gck_builder_add_boolean (&builder, CKA_GNOME_TRANSIENT, TRUE);
 			gck_builder_add_data (&builder, CKA_VALUE, NULL, 0);
 
 			session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);

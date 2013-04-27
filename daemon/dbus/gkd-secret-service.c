@@ -456,10 +456,20 @@ service_method_create_collection (GkdSecretService *self, DBusMessage *message)
 static DBusMessage*
 service_method_lock_service (GkdSecretService *self, DBusMessage *message)
 {
+	DBusError derr = DBUS_ERROR_INIT;
+	GckSession *session;
+	const char *caller;
+
 	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
 		return NULL;
 
-	/* TODO: Need to implement */
+	caller = dbus_message_get_sender (message);
+	session = gkd_secret_service_get_pkcs11_session (self, caller);
+	g_return_val_if_fail (session != NULL, NULL);
+
+	if (!gkd_secret_lock_all (session, &derr))
+		return gkd_secret_error_to_reply (message, &derr);
+
 	return dbus_message_new_method_return (message);
 }
 
