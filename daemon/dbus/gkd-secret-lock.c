@@ -65,3 +65,53 @@ gkd_secret_lock (GckObject *collection, DBusError *derr)
 	gck_list_unref_free (objects);
 	return TRUE;
 }
+
+gboolean
+gkd_secret_lock_all (GckSession *session,
+                     DBusError *derr)
+{
+	GckBuilder builder = GCK_BUILDER_INIT;
+	GError *error = NULL;
+	GList *objects, *l;
+
+	/* Lock all the main collections */
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
+	gck_builder_add_boolean (&builder, CKA_GNOME_TRANSIENT, TRUE);
+
+	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
+	if (error != NULL) {
+		g_warning ("couldn't search for credential objects: %s", egg_error_message (error));
+		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't lock service");
+		g_clear_error (&error);
+		return FALSE;
+	}
+
+	for (l = objects; l; l = g_list_next (l)) {
+		if (!gck_object_destroy (l->data, NULL, &error)) {
+			g_warning ("couldn't destroy credential object: %s", egg_error_message (error));
+			g_clear_error (&error);
+		}
+	}
+
+	/* Now delete all session objects */
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
+	gck_builder_add_string (&builder, CKA_G_COLLECTION, "session");
+
+	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
+	if (error != NULL) {
+		g_warning ("couldn't search for session items: %s", egg_error_message (error));
+		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't lock service");
+		g_clear_error (&error);
+		return FALSE;
+	}
+
+	for (l = objects; l; l = g_list_next (l)) {
+		if (!gck_object_destroy (l->data, NULL, &error)) {
+			g_warning ("couldn't destroy session item: %s", egg_error_message (error));
+			g_clear_error (&error);
+		}
+	}
+
+	gck_list_unref_free (objects);
+	return TRUE;
+}
