@@ -29,7 +29,8 @@ TEST_PROGS = \
 	test-secret-util \
 	test-secret-search \
 	test-secret-items \
-	test-secret-signals
+	test-secret-signals \
+	test-secret-lock
 
 check_PROGRAMS = $(TEST_PROGS)
 
