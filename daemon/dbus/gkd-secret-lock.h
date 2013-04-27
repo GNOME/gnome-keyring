@@ -31,4 +31,7 @@
 gboolean            gkd_secret_lock                (GckObject *collection,
                                                     DBusError *derr);
 
+gboolean            gkd_secret_lock_all            (GckSession *session,
+                                                    DBusError *derr);
+
 #endif /* __GKD_SECRET_LOCK_H__ */
