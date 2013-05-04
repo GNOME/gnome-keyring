@@ -1,3 +1,8 @@
+Changes in version 3.8.2 are:
+ * Fix implementation of LockService dbus method [#690466]
+ * Update for recent changes in libtasn1
+ * Build fixes
+
 Changes in version 3.8.1 are:
  * Updated translations
 
