@@ -49,7 +49,7 @@ control_connect (const gchar *path,
 	/* First a bunch of checks to make sure nothing funny is going on */
 	if (lstat (path, &st) < 0) {
 		if (!(flags & GKD_CONTROL_QUIET_IF_NO_PEER) || errno != ENOENT)
-			g_message ("couldn't access conrol socket: %s: %s", path, g_strerror (errno));
+			g_message ("couldn't access control socket: %s: %s", path, g_strerror (errno));
 		return -1;
 
 	} else if (st.st_uid != geteuid ()) {
