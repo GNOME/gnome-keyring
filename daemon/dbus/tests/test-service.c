@@ -82,6 +82,7 @@ test_service_setup (TestService *test)
 	GError *error = NULL;
 	GVariant *retval;
 	GVariant *output;
+	gchar **env;
 
 	gchar *args[] = {
 		TOP_BUILDDIR "/daemon/gnome-keyring-daemon",
@@ -105,12 +106,18 @@ test_service_setup (TestService *test)
 		SRCDIR "/files/test.keyring",
 		NULL);
 
-	if (!g_spawn_async (NULL, args, NULL,
+	/* The schema directory */
+	env = g_get_environ ();
+	env = g_environ_setenv (env, "GSETTINGS_SCHEMA_DIR", TOP_BUILDDIR "/schema", TRUE);
+
+	if (!g_spawn_async (NULL, args, env,
 	                    G_SPAWN_LEAVE_DESCRIPTORS_OPEN | G_SPAWN_DO_NOT_REAP_CHILD,
 	                    on_service_spawned, test, &test->pid, &error)) {
 		g_error ("couldn't start gnome-keyring-daemon for testing: %s", error->message);
 		g_assert_not_reached ();
 	}
+
+	g_strfreev (env);
 
 	if (!test->available) {
 		egg_test_wait ();

@@ -10,6 +10,14 @@ convert_DATA = \
 convertdir = \
 	$(datarootdir)/GConf/gsettings
 
+all-local: gschemas.compiled
+
+gschemas.compiled: $(gsettings_SCHEMAS)
+	glib-compile-schemas --strict .
+
+DISTCLEAN = \
+	gschemas.compiled
+
 EXTRA_DIST = \
 	$(convert_DATA) \
 	$(gsettings_SCHEMAS)

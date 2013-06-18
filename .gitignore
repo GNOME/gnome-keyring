@@ -160,6 +160,8 @@ p11-tests.conf
 /pkcs11/xdg-store/tests/test-xdg-module
 /pkcs11/xdg-store/tests/test-xdg-trust
 
+/schema/gschemas.compiled
+
 /ui/gnome-keyring-prompt.desktop
 /ui/gnome-keyring-prompt.desktop.in
 /ui/tests/test-util
