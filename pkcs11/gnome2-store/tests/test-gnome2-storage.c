@@ -89,6 +89,7 @@ setup_module (Test *test,
 	test->storage = gkm_gnome2_storage_new (test->module, test->directory);
 	rv = gkm_gnome2_storage_refresh (test->storage);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
+	g_object_add_weak_pointer (G_OBJECT (test->storage), (gpointer *)&test->storage);
 
 	/* We already have the CKA_LABEL attribute */
 	gkm_store_register_schema (GKM_STORE (test->storage), &url, NULL, 0);
@@ -151,7 +152,7 @@ teardown_module (Test *test,
 	g_object_unref (test->new_object);
 	g_object_unref (test->old_object);
 	g_object_unref (test->storage);
-	g_assert (!G_IS_OBJECT (test->storage));
+	g_assert (test->storage == NULL);
 
 	mock_gnome2_module_leave_and_finalize ();
 
