@@ -63,13 +63,7 @@ on_test_service_vanished (GDBusConnection *connection,
 static void
 on_service_spawned (gpointer user_data)
 {
-	TestService *test = user_data;
 	int fd;
-
-	g_setenv ("GNOME_KEYRING_TEST_PATH", test->directory, TRUE);
-	g_setenv ("GNOME_KEYRING_TEST_SERVICE", test->bus_name, TRUE);
-	if (test->mock_prompter)
-		g_setenv ("GNOME_KEYRING_TEST_PROMPTER", test->mock_prompter, TRUE);
 
 	fd = g_open ("/dev/null", O_WRONLY, 0);
 	if (fd != -1)
@@ -109,6 +103,10 @@ test_service_setup (TestService *test)
 	/* The schema directory */
 	env = g_get_environ ();
 	env = g_environ_setenv (env, "GSETTINGS_SCHEMA_DIR", TOP_BUILDDIR "/schema", TRUE);
+	env = g_environ_setenv (env, "GNOME_KEYRING_TEST_PATH", test->directory, TRUE);
+	env = g_environ_setenv (env, "GNOME_KEYRING_TEST_SERVICE", test->bus_name, TRUE);
+	if (test->mock_prompter)
+		env = g_environ_setenv (env, "GNOME_KEYRING_TEST_PROMPTER", test->mock_prompter, TRUE);
 
 	if (!g_spawn_async (NULL, args, env,
 	                    G_SPAWN_LEAVE_DESCRIPTORS_OPEN | G_SPAWN_DO_NOT_REAP_CHILD,
