@@ -181,7 +181,7 @@ static gboolean
 buffer_get_time (Buffer *buffer,
                  gsize offset,
                  gsize *next_offset,
-                 glong *time)
+                 time_t *time)
 {
 	guint32 a, b;
 	guint64 val;

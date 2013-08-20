@@ -106,7 +106,7 @@ buffer_add_time (EggBuffer *buffer, glong time)
 }
 
 static gboolean
-buffer_get_time (EggBuffer *buffer, gsize offset, gsize *next_offset, glong *time)
+buffer_get_time (EggBuffer *buffer, gsize offset, gsize *next_offset, time_t *time)
 {
 	guint32 a, b;
 	guint64 val;
