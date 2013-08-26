@@ -1,3 +1,7 @@
+Changes in version 3.9.90 are:
+ * Fix running gnome-keyring-daemon under test harness
+ * Test fixes [#702367]
+
 Changes in version 3.9.1 are:
  * Fix implementation of LockService dbus method [#690466]
  * Updated translations [nl]
