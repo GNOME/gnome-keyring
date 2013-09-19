@@ -510,7 +510,7 @@ read_login_password (int fd)
 	int r, len = 0;
 
 	for (;;) {
-		r = read (fd, buf, sizeof (buf));
+		r = read (fd, buf, MAX_BLOCK);
 		if (r < 0) {
 			if (errno == EAGAIN)
 				continue;
