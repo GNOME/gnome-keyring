@@ -31,6 +31,8 @@
 
 #include <glib.h>
 
+gkd_ssh_agent_process_new
+
 typedef struct _GkdSshAgentCall {
 	int sock;
 	GList *modules;
