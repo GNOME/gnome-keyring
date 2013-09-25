@@ -7,56 +7,64 @@
 # Görkem Çetin <gorkem@gorkemcetin.com>, 2004.
 # Serdar CICEK <serdar@nerd.com.tr>, 2008.
 # Baris Cicek <baris@teamforce.name.tr>, 2008, 2009.
-# Muhammet Kara <muhammet.k@gmail.com>, 2011.
+# Osman Karagöz <osmank3@gmail.com>, 2013.
+# Muhammet Kara <muhammetk@gmail.com>, 2011, 2013.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-30 09:08+0000\n"
-"PO-Revision-Date: 2011-12-30 16:56+0200\n"
-"Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
-"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"POT-Creation-Date: 2013-08-26 16:32+0000\n"
+"PO-Revision-Date: 2013-09-01 13:11+0300\n"
+"Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
+"Language-Team: Türkçe <gnome-turk@gnome.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:122
 #: ../daemon/dbus/gkd-secret-create.c:79
 #: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:750
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
 msgid "Unnamed"
 msgstr "Adsız"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:91
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
 msgstr "'%s' anahtarlığı için eski parolayı girin"
 
-#: ../daemon/dbus/gkd-secret-change.c:94
-#, fuzzy, c-format
-#| msgid ""
-#| "An application wants to change the password for the '%s' keyring. Choose "
-#| "the new password you want to use for it."
+#: ../daemon/dbus/gkd-secret-change.c:95
+#, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
 msgstr ""
 "Bir uygulama '%s' anahtarlığının parolasını değiştirmek istiyor. Bu "
-"anahtarlık için kullanmak istediğiniz yeni parolayı seçin."
+"anahtarlık için eski parolayı girin."
 
-#: ../daemon/dbus/gkd-secret-change.c:125
+#: ../daemon/dbus/gkd-secret-change.c:101
+#: ../daemon/dbus/gkd-secret-change.c:137
+#: ../daemon/dbus/gkd-secret-change.c:148
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+msgid "Continue"
+msgstr "Devam"
+
+#: ../daemon/dbus/gkd-secret-change.c:127
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "'%s' anahtarlığı için yeni bir parola belirleyin"
 
-#: ../daemon/dbus/gkd-secret-change.c:129
+#: ../daemon/dbus/gkd-secret-change.c:131
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -65,12 +73,12 @@ msgstr ""
 "Bir uygulama '%s' anahtarlığının parolasını değiştirmek istiyor. Bu "
 "anahtarlık için kullanmak istediğiniz yeni parolayı seçin."
 
-#: ../daemon/dbus/gkd-secret-change.c:140
+#: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:95
 msgid "Store passwords unencrypted?"
 msgstr "Parolalar şifrelenmeden depolansın mı?"
 
-#: ../daemon/dbus/gkd-secret-change.c:142
+#: ../daemon/dbus/gkd-secret-change.c:146
 #: ../daemon/dbus/gkd-secret-create.c:97
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
@@ -80,11 +88,11 @@ msgstr ""
 "Parolayı boş kullanmak seçildiğinde, depolanan parolalarınız güvenli olarak "
 "şifrelenmeyecek. Parolalarınıza dosyalarınıza erişebilen kişiler erişecek."
 
-#: ../daemon/dbus/gkd-secret-change.c:149
+#: ../daemon/dbus/gkd-secret-change.c:154
 msgid "The original password was incorrect"
 msgstr "Asıl parola yanlış"
 
-#: ../daemon/dbus/gkd-secret-change.c:349
+#: ../daemon/dbus/gkd-secret-change.c:355
 msgid "Change Keyring Password"
 msgstr "Anahtarlık Parolası Değiştir"
 
@@ -101,17 +109,17 @@ msgstr ""
 msgid "Choose password for new keyring"
 msgstr "Yeni anahtarlık için parola seçin"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:312
 msgid "New Keyring Password"
 msgstr "Yeni Anahtarlık Parolası"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME Anahtarlığı: GPG Aracı"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
 msgid "GPG Password Agent"
 msgstr "GPG Parola Aracı"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "GNOME Anahtarlığı: GPG Aracı"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -122,20 +130,20 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME Anahtarlığı: PKCS#11 Bileşeni"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "GNOME Anahtarlığı: Gizli Hizmet"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "Gizli Depolama Hizmeti"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "GNOME Anahtarlığı: SSH Aracı"
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME Anahtarlığı: Gizli Hizmet"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr "SSH Anahtar Aracı"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME Anahtarlığı: SSH Aracı"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
 msgid "Unknown"
@@ -146,12 +154,22 @@ msgstr "Bilinmeyen"
 msgid "PGP Key: %s"
 msgstr "PGP Anahtarı: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
 msgid "Enter Passphrase"
 msgstr "Parola Metnini Girin"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:393
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+msgid "Unlock"
+msgstr "Kilidini kaldır"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "Her oturum açtığımda, bu anahtarın kilidini otomatik olarak aç"
 
@@ -181,26 +199,27 @@ msgstr "`%s' oluşturulamıyor: %s\n"
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr ""
+msgstr "bayat kilit dosyası siliniyor (%d tarafından oluşturulmuş)\n"
 
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr ""
+msgstr "kilit bekleniyor (%d%s tarafından oluşturulan) %s...\n"
 
 #: ../egg/dotlock.c:1085
+#, fuzzy
 msgid "(deadlock?) "
-msgstr ""
+msgstr "(ölü anahtar?)"
 
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr ""
+msgstr "`%s' kilidi yapılamadı: %s\n"
 
 #: ../egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr ""
+msgstr "%s kilidi bekleniyor...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -344,38 +363,38 @@ msgid "Time Stamping"
 msgstr "Zaman Damgalama"
 
 #: ../egg/egg-spawn.c:273
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr "Alt süreçten bilgi okurken select()'te beklenmeyen hata oluştu (%s)"
 
 #: ../egg/egg-spawn.c:320
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr "waitpid() için beklenmedik hata (%s)"
+msgstr "waitpid()'de beklenmedik hata oluştu(%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:581
 msgid "Unnamed Certificate"
 msgstr "İsimlendirilmemiş Sertifika"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
 msgid "Couldn't parse public SSH key"
 msgstr "Genel SSH anahtarı ayrıştırılamadı"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Şunun için kilit açma şifresi: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Unlock Login Keyring"
 msgstr "Giriş Anahtarlık Kilidini Kaldır"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 msgid "Enter password to unlock your login keyring"
 msgstr "Giriş anahtarlığınızı açmak için parolayı girin"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
 #, fuzzy
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
@@ -384,80 +403,75 @@ msgstr ""
 "Bilgisayarınıza giriş yamak için kullandığınız şifre artık giriş "
 "anahtarlığınızla uyuşmuyor."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
-#, fuzzy
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr "Giriş anahtarlığı, bilgisayarınıza giriş yaptığınızda açılmadı."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 msgid "Unlock Keyring"
 msgstr "Anahtarlık Kilidini Aç"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
 msgstr "'%s' anahtarlık kilidini açmak için parola girin"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
-#, fuzzy, c-format
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
+#, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Bir uygulama '%s' anahtarlığına erişmek istiyor, ancak anahtarlık kilitli."
+"Bir uygulama '%s' anahtarlığına erişmek istiyor, ancak anahtarlık kilitli"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
 msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr ""
+msgstr "Her oturum açtığımda, bu anahtarlığın kilidini otomatik olarak aç"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:637
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
 msgid "Unlock private key"
 msgstr "Özel anahtarın kilidini kaldır"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
 msgid "Unlock certificate"
 msgstr "Sertifikanın kilidini kaldır"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
 msgid "Unlock public key"
 msgstr "Genel anahtarın kilidini kaldır"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock"
-msgstr "Kilidini kaldır"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
 msgid "Enter password to unlock the private key"
 msgstr "Özel anahtarlık kilidini açmak için parola girin"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
 msgid "Enter password to unlock the certificate"
 msgstr "Sertifikanın kilidini açmak için parola girin"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock the public key"
 msgstr "Genel anahtarlık kilidini açmak için parola girin"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "Kilidini açmak için parola girin"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 msgid "Automatically unlock this key whenever I'm logged in"
-msgstr ""
+msgstr "Her oturum açtığımda, bu anahtarın kilidini otomatik olarak aç"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
 msgid "Automatically unlock this certificate whenever I'm logged in"
-msgstr ""
+msgstr "Her oturum açtığımda, bu sertifikanın kilidini otomatik olarak aç"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1278
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I'm logged in"
-msgstr ""
+msgstr "Her oturum açtığımda, kilidi otomatik olarak aç"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:683
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
@@ -465,7 +479,7 @@ msgstr ""
 "anahtarlık kilitli"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
 msgstr ""
@@ -473,7 +487,7 @@ msgstr ""
 "kilitli"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
@@ -481,28 +495,28 @@ msgstr ""
 "anahtarlık kilitli"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
 msgstr ""
 "Bilinmeyen bir uygulama '%s' anahtarlığa ulaşmak istiyor, fakat anahtarlık "
 "kilitli"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:762
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "The unlock password was incorrect"
 msgstr "Kilit açma parolası hatalı"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:781
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Unlock certificate/key storage"
 msgstr "Sertifika/anahtar deposu kilidini aç"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:782
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Sertifika/anahtar deposu kilidini açmak için parolanızı girin"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
@@ -510,15 +524,15 @@ msgid ""
 msgstr ""
 "Bir uygulama sertifika/anahtar deposu '%s' için erişim istiyor, ancak kilitli"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1124
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
 msgid "New Password Required"
 msgstr "Yeni Parola Gerekli"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1125
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
 msgid "New password required for secure storage"
 msgstr "Güvenli depolama için yeni parola gerekli"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1127
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -526,25 +540,25 @@ msgid ""
 msgstr ""
 "'%s' parola ya da anahtar depolamaya hazırlamak için bir parola gereklidir"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1239
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Parolayı Değiştir"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1240
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
 msgid "Original password for secure storage"
 msgstr "Güvenli depolama için asıl parola"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1242
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for '%s', the original password is required"
 msgstr "'%s' parolasını değiştirmek için, asıl parola gereklidir"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 msgid "Change password for secure storage"
 msgstr "Güvenli depolama için parolayı değiştir"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for '%s'"
 msgstr "'%s' için yeni bir parola yazın"
