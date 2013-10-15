@@ -96,7 +96,8 @@
 			<para>The daemon should later be initialized with a
 				<command>gnome-keyring-daemon</command>&nbsp;<option>--start</option>
 				invocation.</para>
-			<para>This option may not be used together with either the
+			<para>This option implies <option>--unlock</option>. It
+				may not be used together with either the
 				<option>--replace</option> or <option>--start</option>
 				arguments.</para>
 			</listitem>
@@ -123,6 +124,14 @@
 			<para>This option may not be used together with either the
 				<option>--login</option> or <option>--replace</option>
 				arguments.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--unlock</option></term>
+			<listitem>
+			<para>Read a password from stdin, and use it to unlock the
+				login keyring or create it if the login keyring does not
+				exist.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>

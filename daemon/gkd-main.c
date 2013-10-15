@@ -118,6 +118,7 @@ static gboolean run_foreground = FALSE;
 static gboolean run_daemonized = FALSE;
 static gboolean run_version = FALSE;
 static gboolean run_for_login = FALSE;
+static gboolean perform_unlock = FALSE;
 static gboolean run_for_start = FALSE;
 static gboolean run_for_replace = FALSE;
 static gchar* login_password = NULL;
@@ -138,6 +139,8 @@ static GOptionEntry option_entries[] = {
 	  "Run as a daemon", NULL },
 	{ "login", 'l', 0, G_OPTION_ARG_NONE, &run_for_login,
 	  "Run by PAM for a user login. Read login password from stdin", NULL },
+	{ "unlock", 0, 0, G_OPTION_ARG_NONE, &perform_unlock,
+	  "Prompt for login keyring password, or read from stdin", NULL },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
 	  "The optional components to run", DEFAULT_COMPONENTS },
 	{ "control-directory", 'C', 0, G_OPTION_ARG_FILENAME, &control_directory,
@@ -183,6 +186,14 @@ parse_arguments (int *argc, char** argv[])
 		g_printerr ("gnome-keyring-daemon: The --replace option is incompatible with --start\n");
 		run_for_start = FALSE;
 	}
+
+	if (run_for_start && perform_unlock) {
+		g_printerr ("gnome-keyring-daemon: The --start option is incompatible with --unlock");
+		perform_unlock = FALSE;
+	}
+
+	if (run_for_login)
+		perform_unlock = TRUE;
 
 	g_option_context_free (context);
 }
@@ -978,10 +989,13 @@ main (int argc, char *argv[])
 	if (!gkd_control_listen ())
 		return FALSE;
 
-	/* The --login option. Delayed initialization */
-	if (run_for_login) {
+	if (perform_unlock) {
 		login_password = read_login_password (STDIN);
 		atexit (clear_login_password);
+	}
+
+	/* The --login option. Delayed initialization */
+	if (run_for_login) {
 		timeout_id = g_timeout_add_seconds (LOGIN_TIMEOUT, (GSourceFunc) on_login_timeout, NULL);
 
 	/* Not a login daemon. Startup stuff now.*/
