@@ -34,8 +34,7 @@ AC_TYPE_SIGNAL
 AC_TYPE_SIZE_T
 AC_TYPE_UID_T
 
-GTK_DOC_CHECK(1.9)
-DISTCHECK_CONFIGURE_FLAGS="--enable-gtk-doc"
+DISTCHECK_CONFIGURE_FLAGS="--enable-doc"
 AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.32.0)
@@ -447,6 +446,37 @@ if test "$p11_tests_status" = "yes"; then
 fi
 
 # --------------------------------------------------------------------
+# Documentation options
+
+AC_MSG_CHECKING([whether to build documentation])
+AC_ARG_ENABLE(doc,
+              AC_HELP_STRING([--enable-doc],
+                             [Disable building documentation])
+             )
+
+if test "$enable_doc" = "no"; then
+	AC_MSG_RESULT($enable_doc)
+
+else
+	if test "$enable_doc" = ""; then
+		disable_msg="(perhaps --disable-doc)"
+	fi
+
+	enable_doc="yes"
+	AC_MSG_RESULT($enable_doc)
+
+	AC_PATH_PROG([XSLTPROC], [xsltproc], [no])
+	if test "$XSLTPROC" = "no"; then
+		AC_MSG_ERROR([the xsltproc command was not found $disable_msg])
+	fi
+
+	AC_SUBST(XSLTPROC)
+fi
+
+AM_CONDITIONAL([ENABLE_DOC], [test "$enable_doc" = "yes"])
+doc_status=$enable_doc
+
+# --------------------------------------------------------------------
 # Compilation and linking options
 #
 
@@ -482,10 +512,6 @@ if test "$GCC" = "yes"; then
 	-Wnested-externs -Wpointer-arith \
 	-Wcast-align -Wsign-compare \
 	$CFLAGS"
-
-	# Disable -Werror for now, because of issues with
-	# strange gtk-doc programs not building cleanly.
-	# -Werror \
 
 	for option in -Wno-strict-aliasing -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"

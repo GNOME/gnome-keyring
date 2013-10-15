@@ -137,7 +137,7 @@ static GOptionEntry option_entries[] = {
 	{ "daemonize", 'd', 0, G_OPTION_ARG_NONE, &run_daemonized,
 	  "Run as a daemon", NULL },
 	{ "login", 'l', 0, G_OPTION_ARG_NONE, &run_for_login,
-	  "Run for a user login. Read login password from stdin", NULL },
+	  "Run by PAM for a user login. Read login password from stdin", NULL },
 	{ "components", 'c', 0, G_OPTION_ARG_STRING, &run_components,
 	  "The optional components to run", DEFAULT_COMPONENTS },
 	{ "control-directory", 'C', 0, G_OPTION_ARG_FILENAME, &control_directory,

@@ -1,0 +1,160 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+	"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+
+<refentry id="adcli">
+
+<refentryinfo>
+	<title>gnome-keyring-daemon</title>
+	<productname>gnome-keyring</productname>
+	<authorgroup>
+		<author>
+			<contrib>Maintainer</contrib>
+			<firstname>Stef</firstname>
+			<surname>Walter</surname>
+			<email>stefw@redhat.com</email>
+		</author>
+	</authorgroup>
+</refentryinfo>
+
+<refmeta>
+	<refentrytitle>gnome-keyring-daemon</refentrytitle>
+	<manvolnum>1</manvolnum>
+	<refmiscinfo class="manual">User Commands</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+	<refname>gnome-keyring-daemon</refname>
+	<refpurpose>The gnome-keyring daemon</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+	<cmdsynopsis>
+		<command>gnome-keyring</command>
+		<arg choice="opt">--replace</arg>
+		<arg choice="opt">--unlock</arg>
+	</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+	<title>Description</title>
+	<para>The <command>gnome-keyring-daemon</command> is a service that stores
+	your passwords and secrets. It is normally started automatically when
+	a user logs into a desktop session.</para>
+
+	<para>The <command>gnome-keyring-daemon</command> implements the DBus
+	Secret Service API, and you can use tools like <command>seahorse</command>
+	or <command>secret-tool</command> to interact with it.</para>
+
+	<para>The daemon also implements a GnuPG and SSH agent both of which
+	automatically load the user's keys, and prompt for passwords when necessary.</para>
+
+	<para>The daemon will print out various environment variables which should
+	be set in the user's environment, in order to interact with the daemon.</para>
+</refsect1>
+
+<refsect1>
+	<title>Options</title>
+
+	<para>The various startup arguments below can be used:</para>
+
+	<variablelist>
+		<varlistentry>
+			<term><option>--components=<parameter>ssh,secrets,gpg,pkcs11</parameter></option></term>
+			<listitem>
+			<para>Ask the daemon to only initialize certain components. Valid
+				components are <literal>ssh</literal>, <literal>gpg</literal>,
+				<literal>secrets</literal>, <literal>pkcs11</literal>.</para>
+			<para>By default all components are initialized.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--control-directory=<parameter>/path/to/directory</parameter></option></term>
+			<listitem>
+			<para>Use this directory for creating communication sockets. By default
+				a temporary directory is automatically created.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--daemonize</option></term>
+			<listitem>
+			<para>Run as a real daemon, disconnected from the terminal.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--foreground</option></term>
+			<listitem>
+			<para>Run in the foreground, and do not fork or become
+				a daemon.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--login</option></term>
+			<listitem>
+			<para>This argument tells the daemon it is being run by PAM. It
+				reads all of stdin (including any newlines) as a login
+				password and does not complete actual initialization.</para>
+			<para>The daemon should later be initialized with a
+				<command>gnome-keyring-daemon</command>&nbsp;<option>--start</option>
+				invocation.</para>
+			<para>This option may not be used together with either the
+				<option>--replace</option> or <option>--start</option>
+				arguments.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--replace</option></term>
+			<listitem>
+			<para>Try to replace a running keyring daemon, and assume its
+				environment avriables. A successful replacement depends
+				on the <literal>GNOMKE_KEYRING_CONTROL</literal>
+				environment variable being set by an earlier daemon.</para>
+			<para>This option may not be used together with either the
+				<option>--login</option> or <option>--start</option>
+				arguments.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--start</option></term>
+			<listitem>
+			<para>Connect to an already running daemon and  initialize it.
+				This is often used to complete initialization of a daemon
+				that was started by PAM using the <option>--login</option>
+				argument.</para>
+			<para>This option may not be used together with either the
+				<option>--login</option> or <option>--replace</option>
+				arguments.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>--version</option></term>
+			<listitem>
+			<para>Print out the gnome-keyring version and then exit.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+
+</refsect1>
+
+<refsect1>
+	<title>Bugs</title>
+	<para>
+		Please send bug reports to either the distribution bug tracker
+		or the upstream bug tracker at
+		<ulink url="https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring">https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring</ulink>
+	</para>
+</refsect1>
+
+<refsect1>
+	<title>See also</title>
+	<simplelist type="inline">
+		<member><citerefentry><refentrytitle>secret-tool</refentrytitle><manvolnum>1</manvolnum></citerefentry></member>
+		<member><citerefentry><refentrytitle>seahorse</refentrytitle><manvolnum>1</manvolnum></citerefentry></member>
+	</simplelist>
+	<para>
+		Further details available in the realmd online documentation at
+		<ulink url="http://standards.freedesktop.org/secret-service/">http://standards.freedesktop.org/secret-service/</ulink>
+	</para>
+</refsect1>
+
+</refentry>

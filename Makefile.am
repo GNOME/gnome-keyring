@@ -15,8 +15,7 @@ SUBDIRS = \
 	tool \
 	testing \
 	$(PAM_DIR) \
-	po \
-	docs
+	po
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
@@ -28,7 +27,7 @@ EXTRA_DIST = \
 	HACKING
 
 DISTCHECK_CONFIGURE_FLAGS = \
-	--enable-gtk-doc \
+	--enable-doc \
 	--disable-strict \
 	--disable-coverage \
 	--disable-update-mime \
@@ -73,6 +72,18 @@ coverage:
 clear-coverage:
 	$(LCOV) --directory . --zerocounters
 
+endif
+
+if ENABLE_DOC
+SUBDIRS += docs
+
+distcheck-hook:
+	@true
+
+else
+distcheck-hook:
+	@echo "*** doc must be enabled  (with --enable-doc) in order to make distcheck"
+	@false
 endif
 
 upload-release: $(DIST_ARCHIVES)
