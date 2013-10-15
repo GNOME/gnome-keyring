@@ -157,7 +157,7 @@ parse_arguments (int *argc, char** argv[])
 	g_option_context_add_main_entries (context, option_entries, GETTEXT_PACKAGE);
 
 	if (!g_option_context_parse (context, argc, argv, &err)) {
-		g_printerr ("gnome-keyring-daemon: %s", egg_error_message (err));
+		g_printerr ("gnome-keyring-daemon: %s\n", egg_error_message (err));
 		g_clear_error (&err);
 	}
 
@@ -170,17 +170,17 @@ parse_arguments (int *argc, char** argv[])
 
 	/* Check the arguments */
 	if (run_for_login && run_for_start) {
-		g_printerr ("gnome-keyring-daemon: The --start option is incompatible with --login");
+		g_printerr ("gnome-keyring-daemon: The --start option is incompatible with --login\n");
 		run_for_login = FALSE;
 	}
 
 	if (run_for_login && run_for_replace) {
-		g_printerr ("gnome-keyring-daemon: The --replace option is incompatible with --login");
+		g_printerr ("gnome-keyring-daemon: The --replace option is incompatible with --login\n");
 		run_for_login = FALSE;
 	}
 
 	if (run_for_start && run_for_replace) {
-		g_printerr ("gnome-keyring-daemon: The --replace option is incompatible with --start");
+		g_printerr ("gnome-keyring-daemon: The --replace option is incompatible with --start\n");
 		run_for_start = FALSE;
 	}
 
