@@ -321,7 +321,7 @@ cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
 #include  <selinux/flask.h>
 #include  <selinux/selinux.h>
 /* Attempt to set SELinux Context. We are ignoring failure and just going
-   with default behaviour default behaviour
+   with default behaviour
 */
 static void setup_selinux_context(const char *command) {
 	security_context_t fcon = NULL, newcon = NULL, execcon = NULL;
@@ -574,7 +574,7 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 	
 	/* Failure from process */
 	if (failed) {
-		syslog (GKR_LOG_ERR, "gkr-pam: gnome-keyring-daemon didn't start properly properly");
+		syslog (GKR_LOG_ERR, "gkr-pam: gnome-keyring-daemon didn't start properly");
 		goto done;
 	}
 		
