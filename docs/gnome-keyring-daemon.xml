@@ -30,9 +30,8 @@
 
 <refsynopsisdiv>
 	<cmdsynopsis>
-		<command>gnome-keyring</command>
-		<arg choice="opt">--replace</arg>
-		<arg choice="opt">--unlock</arg>
+		<command>gnome-keyring-daemon</command>
+		<arg choice="opt" rep="repeat">OPTION</arg>
 	</cmdsynopsis>
 </refsynopsisdiv>
 
@@ -60,7 +59,7 @@
 
 	<variablelist>
 		<varlistentry>
-			<term><option>--components=<parameter>ssh,secrets,gpg,pkcs11</parameter></option></term>
+			<term><option>-c</option>, <option>--components=<parameter>ssh,secrets,gpg,pkcs11</parameter></option></term>
 			<listitem>
 			<para>Ask the daemon to only initialize certain components. Valid
 				components are <literal>ssh</literal>, <literal>gpg</literal>,
@@ -69,27 +68,27 @@
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>--control-directory=<parameter>/path/to/directory</parameter></option></term>
+			<term><option>-C</option>, <option>--control-directory=<parameter>/path/to/directory</parameter></option></term>
 			<listitem>
 			<para>Use this directory for creating communication sockets. By default
 				a temporary directory is automatically created.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>--daemonize</option></term>
+			<term><option>-d</option>, <option>--daemonize</option></term>
 			<listitem>
 			<para>Run as a real daemon, disconnected from the terminal.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>--foreground</option></term>
+			<term><option>-f</option>, <option>--foreground</option></term>
 			<listitem>
 			<para>Run in the foreground, and do not fork or become
 				a daemon.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>--login</option></term>
+			<term><option>-l</option>, <option>--login</option></term>
 			<listitem>
 			<para>This argument tells the daemon it is being run by PAM. It
 				reads all of stdin (including any newlines) as a login
@@ -103,7 +102,7 @@
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>--replace</option></term>
+			<term><option>-r</option>, <option>--replace</option></term>
 			<listitem>
 			<para>Try to replace a running keyring daemon, and assume its
 				environment avriables. A successful replacement depends
@@ -115,7 +114,7 @@
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>--start</option></term>
+			<term><option>-s</option>, <option>--start</option></term>
 			<listitem>
 			<para>Connect to an already running daemon and  initialize it.
 				This is often used to complete initialization of a daemon
@@ -127,9 +126,15 @@
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>--version</option></term>
+			<term><option>-V</option>, <option>--version</option></term>
 			<listitem>
 			<para>Print out the gnome-keyring version and then exit.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>-h</option>, <option>--help</option></term>
+			<listitem>
+			<para>Show help options and exit.</para>
 			</listitem>
 		</varlistentry>
 	</variablelist>
@@ -152,7 +157,9 @@
 		<member><citerefentry><refentrytitle>seahorse</refentrytitle><manvolnum>1</manvolnum></citerefentry></member>
 	</simplelist>
 	<para>
-		Further details available in the realmd online documentation at
+		Further details available in the gnome-keyring online documentation at
+		<ulink url="https://wiki.gnome.org/GnomeKeyring">https://wiki.gnome.org/GnomeKeyring</ulink>
+		and in the secret-service online documentation at
 		<ulink url="http://standards.freedesktop.org/secret-service/">http://standards.freedesktop.org/secret-service/</ulink>
 	</para>
 </refsect1>
