@@ -1,0 +1,95 @@
+<?xml version='1.0'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+	"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+
+<refentry id="adcli">
+
+<refentryinfo>
+	<title>gnome-keyring</title>
+	<productname>gnome-keyring</productname>
+	<authorgroup>
+		<author>
+			<contrib>Maintainer</contrib>
+			<firstname>Stef</firstname>
+			<surname>Walter</surname>
+			<email>stefw@redhat.com</email>
+		</author>
+	</authorgroup>
+</refentryinfo>
+
+<refmeta>
+	<refentrytitle>gnome-keyring</refentrytitle>
+	<manvolnum>1</manvolnum>
+	<refmiscinfo class="manual">User Commands</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+	<refname>gnome-keyring</refname>
+	<refpurpose>The gnome-keyring commandline tool</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+	<cmdsynopsis>
+		<command>gnome-keyring import <arg choice="plain">FILE</arg></command>
+	</cmdsynopsis>
+	<cmdsynopsis>
+		<command>gnome-keyring certificate-exception</command>
+	</cmdsynopsis>
+	<cmdsynopsis>
+		<command>gnome-keyring version</command>
+	</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+	<title>Description</title>
+	<para>The <command>gnome-keyring</command> tool can be used to
+	interact with gnome-keyring-daemon.</para>
+</refsect1>
+
+<refsect1>
+	<title>Commands</title>
+
+	<para>The following commands can be used:</para>
+
+	<variablelist>
+		<varlistentry>
+			<term><command>import <arg choice="plain">FILE</arg></command></term>
+			<listitem>
+			<para>Import keys or certificates from a PKCS file.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><command>certificate-exception</command></term>
+			<listitem>
+			<para>Not implemented.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><command>version</command></term>
+			<listitem>
+			<para>Print the version number and exit.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+
+</refsect1>
+
+<refsect1>
+	<title>Bugs</title>
+	<para>
+		Please send bug reports to either the distribution bug tracker
+		or the upstream bug tracker at
+		<ulink url="https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring">https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring</ulink>
+	</para>
+</refsect1>
+
+<refsect1>
+	<title>See also</title>
+	<simplelist type="inline">
+		<member><citerefentry><refentrytitle>secret-tool</refentrytitle><manvolnum>1</manvolnum></citerefentry></member>
+		<member><citerefentry><refentrytitle>seahorse</refentrytitle><manvolnum>1</manvolnum></citerefentry></member>
+		<member><citerefentry><refentrytitle>gnome-keyring-daemon</refentrytitle><manvolnum>1</manvolnum></citerefentry></member>
+	</simplelist>
+</refsect1>
+
+</refentry>

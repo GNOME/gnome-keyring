@@ -1,6 +1,7 @@
 
 man1_MANS = \
-	gnome-keyring-daemon.1
+	gnome-keyring-daemon.1 \
+	gnome-keyring.1 \
 	$(NULL)
 
 MAN_IN_FILES = \
