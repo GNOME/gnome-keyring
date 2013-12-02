@@ -4,8 +4,8 @@ AM_INIT_AUTOMAKE(gnome-keyring, 3.10.1)
 dnl ****************************************************************************
 dnl Dependency versions
 
-GLIB_REQ=2.32.0
-GLIB_MIN=GLIB_VERSION_2_32
+GLIB_REQ=2.38.0
+GLIB_MIN=GLIB_VERSION_2_38
 GLIB_MAX=GLIB_VERSION_2_38
 
 GCK_REQ=3.3.4

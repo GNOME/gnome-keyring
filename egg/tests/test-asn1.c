@@ -384,6 +384,16 @@ test_integer_raw (void)
 static void
 test_integer_raw_not_twos_complement (void)
 {
+	/* Ugh ... g_test_trap_subprocess */
+	g_test_trap_subprocess ("/asn1/integer/raw-not-twos-complement/subprocess", 0,
+	                        G_TEST_SUBPROCESS_INHERIT_STDOUT);
+	g_test_trap_assert_failed ();
+	g_test_trap_assert_stderr ("*not two's complement*");
+}
+
+static void
+test_integer_raw_not_twos_complement_subprocess (void)
+{
 	GNode *asn;
 	GBytes *bytes;
 
@@ -392,14 +402,7 @@ test_integer_raw_not_twos_complement (void)
 
 	bytes = g_bytes_new_static ("\x81\x02\x03", 3);
 
-	if (g_test_trap_fork (0, G_TEST_TRAP_SILENCE_STDERR)) {
-		egg_asn1x_set_integer_as_raw (asn, bytes); /* UNREACHABLE: */
-		exit(0); /* UNREACHABLE: for code coverage */
-	}
-
-	g_test_trap_assert_failed ();
-	g_test_trap_assert_stderr ("*not two's complement*");
-
+	egg_asn1x_set_integer_as_raw (asn, bytes); /* UNREACHABLE: */
 	g_bytes_unref (bytes);
 	egg_asn1x_destroy (asn);
 }
@@ -2468,6 +2471,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/asn1/integer-zero-length", test_integer_zero_length);
 	g_test_add_func ("/asn1/integer/raw", test_integer_raw);
 	g_test_add_func ("/asn1/integer/raw-not-twos-complement", test_integer_raw_not_twos_complement);
+	g_test_add_func ("/asn1/integer/raw-not-twos-complement/subprocess", test_integer_raw_not_twos_complement_subprocess);
 	g_test_add_func ("/asn1/unsigned", test_unsigned);
 	g_test_add_func ("/asn1/unsigned/not-set", test_unsigned_not_set);
 	g_test_add_func ("/asn1/unsigned/default", test_unsigned_default);
