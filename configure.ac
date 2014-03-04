@@ -1,5 +1,8 @@
-AC_INIT(daemon/gkd-main.c)
-AM_INIT_AUTOMAKE(gnome-keyring, 3.10.1)
+AC_INIT(gnome-keyring,
+        3.11.91,
+        [gnome-keyring-list@gnome.org],
+        [gnome-keyring],
+        [https://wiki.gnome.org/Projects/GnomeKeyring])
 
 dnl ****************************************************************************
 dnl Dependency versions
@@ -25,6 +28,8 @@ full_version=`printf %03d%03d%03d $version_bits`
 AC_DEFINE_UNQUOTED(GKR_VERSION, $full_version, [The gnome-keyring version as a number])
 
 AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_SRCDIR([daemon/gkd-main.c])
+AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 no-dist-gzip])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AM_SANITY_CHECK
