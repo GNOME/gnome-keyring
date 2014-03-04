@@ -2,12 +2,17 @@
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/daemon \
+	-I$(top_srcdir)/daemon/dbus \
 	-I$(top_builddir) \
 	$(DAEMON_CFLAGS) \
+	$(GCR_BASE_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	-DGCK_API_SUBJECT_TO_CHANGE \
-	-DGCR_API_SUBJECT_TO_CHANGE
+	-DGCR_API_SUBJECT_TO_CHANGE \
+	-DSRCDIR="\"@abs_srcdir@\"" \
+	-DTOP_SRCDIR="\"@abs_top_srcdir@\"" \
+	-DTOP_BUILDDIR="\"@abs_top_builddir@\""
 
 noinst_LTLIBRARIES = libgkd-dbus.la
 
@@ -40,5 +45,36 @@ libgkd_dbus_la_LIBADD = \
 	$(GOBJECT_LIBS)
 
 # -------------------------------------------------------------------
+# TESTS
 
-SUBDIRS = . tests
+noinst_LTLIBRARIES += \
+	libtestservice.la
+
+libtestservice_la_SOURCES = \
+	test-service.c test-service.h
+
+LDADD =  \
+	$(builddir)/libtestservice.la \
+	$(top_builddir)/daemon/dbus/libgkd-dbus.la \
+	$(top_builddir)/egg/libegg-test.la \
+	$(GCR_BASE_LIBS) \
+	$(GIO_LIBS) \
+	$(GLIB_LIBS)
+
+TEST_PROGS = \
+	test-secret-util \
+	test-secret-search \
+	test-secret-items \
+	test-secret-signals \
+	test-secret-lock
+
+check_PROGRAMS = $(TEST_PROGS)
+
+EXTRA_DIST = fixtures
+
+test: $(TEST_PROGS)
+	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+
+check-local: test
+
+all-local: $(check_PROGRAMS)

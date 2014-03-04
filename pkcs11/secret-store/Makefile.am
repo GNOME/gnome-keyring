@@ -3,6 +3,7 @@ INCLUDES = \
 	-I$(top_builddir) \
     	-I$(top_srcdir) \
     	-I$(top_srcdir)/pkcs11 \
+	-DSRCDIR="\"@abs_srcdir@\"" \
     	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GMODULE_CFLAGS)
@@ -52,5 +53,44 @@ gkm_secret_store_standalone_la_LIBADD = \
 	$(LIBGCRYPT_LIBS)
 
 # -------------------------------------------------------------------------------
+# TESTS
 
-SUBDIRS = . tests
+LDADD = \
+	libgkm-mock-secret-module.a \
+	$(top_builddir)/pkcs11/secret-store/libgkm-secret-store.la \
+	$(top_builddir)/pkcs11/gkm/libgkm.la \
+	$(top_builddir)/egg/libegg.la \
+	$(GLIB_LIBS) \
+	$(LIBGCRYPT_LIBS)
+
+noinst_LIBRARIES = libgkm-mock-secret-module.a
+
+libgkm_mock_secret_module_a_SOURCES = \
+	mock-secret-module.c mock-secret-module.h
+
+noinst_PROGRAMS = dump-keyring0-format
+
+TEST_PROGS = \
+	test-secret-compat \
+	test-secret-fields \
+	test-secret-data \
+	test-secret-object \
+	test-secret-collection \
+	test-secret-item \
+	test-secret-schema \
+	test-secret-search \
+	test-secret-textual \
+	test-secret-binary \
+	test-secret-schema
+
+check_PROGRAMS = $(TEST_PROGS)
+
+test: $(TEST_PROGS)
+	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+
+check-local: test
+
+all-local: $(check_PROGRAMS)
+
+EXTRA_DIST = \
+	fixtures
