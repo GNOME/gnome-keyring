@@ -28,8 +28,6 @@
 
 #include "egg/egg-testing.h"
 
-#include <gcr/gcr-base.h>
-
 #include <glib/gstdio.h>
 
 #include <fcntl.h>
@@ -78,7 +76,7 @@ test_service_setup (TestService *test)
 	gchar **env;
 
 	gchar *args[] = {
-		TOP_BUILDDIR "/daemon/gnome-keyring-daemon",
+		BUILDDIR "/gnome-keyring-daemon",
 		"--foreground",
 		"--control-directory",
 		"/tmp/keyring-test",
@@ -96,12 +94,12 @@ test_service_setup (TestService *test)
 	                                   test, NULL);
 
 	test->directory = egg_tests_create_scratch_directory (
-		SRCDIR "/fixtures/test.keyring",
+		SRCDIR "/daemon/dbus/fixtures/test.keyring",
 		NULL);
 
 	/* The schema directory */
 	env = g_get_environ ();
-	env = g_environ_setenv (env, "GSETTINGS_SCHEMA_DIR", TOP_BUILDDIR "/schema", TRUE);
+	env = g_environ_setenv (env, "GSETTINGS_SCHEMA_DIR", BUILDDIR "/schema", TRUE);
 	env = g_environ_setenv (env, "GNOME_KEYRING_TEST_PATH", test->directory, TRUE);
 	env = g_environ_setenv (env, "GNOME_KEYRING_TEST_SERVICE", test->bus_name, TRUE);
 	if (test->mock_prompter)

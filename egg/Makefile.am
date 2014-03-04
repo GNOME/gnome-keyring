@@ -1,6 +1,5 @@
-include $(top_srcdir)/Makefile.decl
 
-noinst_LTLIBRARIES = \
+noinst_LTLIBRARIES += \
 	libegg.la \
 	libegg-asn1x.la \
 	libegg-buffer.la \
@@ -11,72 +10,65 @@ noinst_LTLIBRARIES = \
 	libegg-hex.la \
 	libegg-test.la
 
-INCLUDES = \
-	-I$(top_builddir) \
-	-I$(top_srcdir) \
-	-DSRCDIR="\"@abs_srcdir@\"" \
-	$(GLIB_CFLAGS)
-
 libegg_la_CFLAGS = \
 	$(LIBTASN1_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 libegg_la_SOURCES = \
-	dotlock.c dotlock.h \
-	egg-armor.c egg-armor.h \
-	egg-asn1x.c egg-asn1x.h \
-	egg-asn1-defs.c egg-asn1-defs.h \
-	egg-buffer.c egg-buffer.h \
-	egg-byte-array.c egg-byte-array.h \
-	egg-cleanup.c egg-cleanup.h \
-	egg-dh.c egg-dh.h \
-	egg-dn.c egg-dn.h \
-	egg-error.h \
-	egg-hex.c egg-hex.h \
-	egg-hkdf.c egg-hkdf.h \
-	egg-libgcrypt.c egg-libgcrypt.h \
-	egg-mkdtemp.c egg-mkdtemp.h \
-	egg-oid.c egg-oid.h \
-	egg-padding.c egg-padding.h \
-	egg-openssl.c egg-openssl.h \
-	egg-unix-credentials.c egg-unix-credentials.h \
-	egg-secure-memory.c egg-secure-memory.h \
-	egg-spawn.c egg-spawn.h \
-	egg-symkey.c egg-symkey.h \
-	egg-testing.c egg-testing.h \
-	egg-timegm.c egg-timegm.h \
-	egg-asn1-defs.h \
-	pk.asn.h pkix.asn.h \
+	egg/dotlock.c egg/dotlock.h \
+	egg/egg-armor.c egg/egg-armor.h \
+	egg/egg-asn1x.c egg/egg-asn1x.h \
+	egg/egg-asn1-defs.c egg/egg-asn1-defs.h \
+	egg/egg-buffer.c egg/egg-buffer.h \
+	egg/egg-byte-array.c egg/egg-byte-array.h \
+	egg/egg-cleanup.c egg/egg-cleanup.h \
+	egg/egg-dh.c egg/egg-dh.h \
+	egg/egg-dn.c egg/egg-dn.h \
+	egg/egg-error.h \
+	egg/egg-hex.c egg/egg-hex.h \
+	egg/egg-hkdf.c egg/egg-hkdf.h \
+	egg/egg-libgcrypt.c egg/egg-libgcrypt.h \
+	egg/egg-mkdtemp.c egg/egg-mkdtemp.h \
+	egg/egg-oid.c egg/egg-oid.h \
+	egg/egg-padding.c egg/egg-padding.h \
+	egg/egg-openssl.c egg/egg-openssl.h \
+	egg/egg-unix-credentials.c egg/egg-unix-credentials.h \
+	egg/egg-secure-memory.c egg/egg-secure-memory.h \
+	egg/egg-spawn.c egg/egg-spawn.h \
+	egg/egg-symkey.c egg/egg-symkey.h \
+	egg/egg-testing.c egg/egg-testing.h \
+	egg/egg-timegm.c egg/egg-timegm.h \
+	egg/egg-asn1-defs.h \
+	egg/pk.asn.h egg/pkix.asn.h \
 	$(NULL)
 
-EXTRA_DIST = \
-	pk.asn \
-	pkix.asn \
+ASN1_FILES += \
+	egg/pk.asn \
+	egg/pkix.asn \
 	$(NULL)
 	
 # --------------------------------------------------------------------
 # COMMON STUFF COMPILED INTO SMALLER COMPONENTS
 
 libegg_asn1x_la_SOURCES = \
-	egg-asn1x.c egg-asn1x.h \
-	egg-asn1-defs.c egg-asn1-defs.h \
-	$(BUILT_SOURCES)
+	egg/egg-asn1x.c egg/egg-asn1x.h \
+	egg/egg-asn1-defs.c egg/egg-asn1-defs.h
 
 libegg_asn1x_la_CFLAGS = \
 	$(LIBTASN1_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 libegg_secure_la_SOURCES = \
-	egg-secure-memory.c egg-secure-memory.h
+	egg/egg-secure-memory.c egg/egg-secure-memory.h
 
 libegg_buffer_la_SOURCES = \
-	egg-buffer.c egg-buffer.h 
+	egg/egg-buffer.c egg/egg-buffer.h
 
 libegg_creds_la_SOURCES = \
-	egg-unix-credentials.c egg-unix-credentials.h	
+	egg/egg-unix-credentials.c egg/egg-unix-credentials.h
 
 libegg_dbus_la_SOURCES = \
-	egg-dbus.c egg-dbus.h
+	egg/egg-dbus.c egg/egg-dbus.h
 
 libegg_dbus_la_CFLAGS = \
 	$(DBUS_CFLAGS) \
@@ -87,12 +79,12 @@ libegg_dbus_la_LIBADD = \
 	$(GLIB_LIBS)
 
 libegg_prompt_la_SOURCES = \
-	egg-dh.c egg-dh.h \
-	egg-hex.c egg-hex.h \
-	egg-hkdf.c egg-hkdf.h \
-	egg-libgcrypt.c egg-libgcrypt.h \
-	egg-padding.c egg-padding.h \
-	egg-secure-memory.c egg-secure-memory.h
+	egg/egg-dh.c egg/egg-dh.h \
+	egg/egg-hex.c egg/egg-hex.h \
+	egg/egg-hkdf.c egg/egg-hkdf.h \
+	egg/egg-libgcrypt.c egg/egg-libgcrypt.h \
+	egg/egg-padding.c egg/egg-padding.h \
+	egg/egg-secure-memory.c egg/egg-secure-memory.h
 
 libegg_prompt_la_CFLAGS = \
 	-DEGG_DH_NO_ASN1=1 \
@@ -104,7 +96,7 @@ libegg_prompt_la_LIBS = \
 	$(GLIB_LIBS)
 
 libegg_hex_la_SOURCES = \
-	egg-hex.c egg-hex.h
+	egg/egg-hex.c egg/egg-hex.h
 
 libegg_hex_la_CFLAGS = \
 	$(GLIB_CFLAGS)
@@ -113,8 +105,8 @@ libegg_hex_la_LIBS = \
 	$(GLIB_LIBS)
 
 libegg_test_la_SOURCES = \
-	egg-mkdtemp.c egg-mkdtemp.h \
-	egg-testing.c egg-testing.h
+	egg/egg-mkdtemp.c egg/egg-mkdtemp.h \
+	egg/egg-testing.c egg/egg-testing.h
 
 libegg_test_la_CFLAGS = \
 	$(GLIB_CFLAGS)
@@ -122,23 +114,23 @@ libegg_test_la_CFLAGS = \
 libegg_test_la_LIBS = \
 	$(GLIB_LIBS)
 
-asn:
-	asn1Parser -o pk.asn.h pk.asn
-	asn1Parser -o pkix.asn.h pkix.asn
-	sed -i 's|#include.*|/* \0 */|' pk.asn.h pkix.asn.h
-	asn1Parser -o test.asn.h test.asn
-	sed -i 's|#include.*|/* \0 */|' test.asn.h
+ASN1_FILES += \
+	egg/pk.asn \
+	egg/pkix.asn \
+	egg/test.asn
 
 # -------------------------------------------------------------------
 # TESTS
 
-LDADD =  \
-	$(top_builddir)/egg/libegg.la \
+EXTRA_DIST += egg/fixtures
+
+egg_LIBS =  \
+	libegg.la \
 	$(LIBGCRYPT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS)
 
-TEST_PROGS = \
+TEST_PROGS += \
 	test-asn1 \
 	test-asn1x \
 	test-dn \
@@ -154,23 +146,44 @@ TEST_PROGS = \
 	test-dh \
 	test-spawn
 
-test_asn1_SOURCES = \
-	test-asn1.c \
-	test.asn.h
+test_asn1_SOURCES = egg/test-asn1.c egg/test.asn.h
+test_asn1_LDADD = $(egg_LIBS)
 
-test_asn1x_LDADD = \
-	$(top_builddir)/egg/libegg-asn1x.la \
-	$(LDADD)
+test_asn1x_SOURCES = egg/test-asn1x.c
+test_asn1x_LDADD = libegg-asn1x.la $(egg_LIBS)
 
-check_PROGRAMS = $(TEST_PROGS)
+test_dn_SOURCES = egg/test-dn.c
+test_dn_LDADD = $(egg_LIBS)
 
-test: $(TEST_PROGS)
-	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+test_cleanup_SOURCES = egg/test-cleanup.c
+test_cleanup_LDADD = $(egg_LIBS)
 
-check-local: test
+test_hex_SOURCES = egg/test-hex.c
+test_hex_LDADD = $(egg_LIBS)
 
-all-local: $(check_PROGRAMS)
+test_hkdf_SOURCES = egg/test-hkdf.c
+test_hkdf_LDADD = $(egg_LIBS)
 
-EXTRA_DIST += \
-	test.asn \
-	fixtures
+test_oid_SOURCES = egg/test-oid.c
+test_oid_LDADD = $(egg_LIBS)
+
+test_secmem_SOURCES = egg/test-secmem.c
+test_secmem_LDADD = $(egg_LIBS)
+
+test_padding_SOURCES = egg/test-padding.c
+test_padding_LDADD = $(egg_LIBS)
+
+test_symkey_SOURCES = egg/test-symkey.c
+test_symkey_LDADD = $(egg_LIBS)
+
+test_armor_SOURCES = egg/test-armor.c
+test_armor_LDADD = $(egg_LIBS)
+
+test_openssl_SOURCES = egg/test-openssl.c
+test_openssl_LDADD = $(egg_LIBS)
+
+test_dh_SOURCES = egg/test-dh.c
+test_dh_LDADD = $(egg_LIBS)
+
+test_spawn_SOURCES = egg/test-spawn.c
+test_spawn_LDADD = $(egg_LIBS)

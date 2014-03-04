@@ -1,5 +1,5 @@
 
-#include "control/gkd-control.h"
+#include "gkd-control.h"
 
 #include "egg/egg-secure-memory.h"
 

@@ -59,8 +59,8 @@ setup_directory (Test *test,
                  gconstpointer unused)
 {
 	test->directory = egg_tests_create_scratch_directory (
-		SRCDIR "/fixtures/Thawte_Personal_Premium_CA.cer",
-		SRCDIR "/fixtures/user.keystore",
+		SRCDIR "/pkcs11/gnome2-store/fixtures/Thawte_Personal_Premium_CA.cer",
+		SRCDIR "/pkcs11/gnome2-store/fixtures/user.keystore",
 		NULL);
 }
 
@@ -102,7 +102,7 @@ setup_module (Test *test,
 	                                 "module", test->module,
 	                                 "manager", manager,
 	                                 NULL);
-	g_file_get_contents (SRCDIR "/fixtures/test-certificate.cer", &contents, &length, &error);
+	g_file_get_contents (SRCDIR "/pkcs11/gnome2-store/fixtures/test-certificate.cer", &contents, &length, &error);
 	g_assert_no_error (error);
 
 	bytes = g_bytes_new_take (contents, length);

@@ -52,8 +52,8 @@ EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 static void
 setup (Test *test, gconstpointer unused)
 {
-	test->public_filename = g_build_filename (SRCDIR "/fixtures", "data-file-public.store", NULL);
-	test->private_filename = g_build_filename (SRCDIR "/fixtures", "data-file-private.store", NULL);
+	test->public_filename = g_build_filename (SRCDIR "/pkcs11/gnome2-store/fixtures", "data-file-public.store", NULL);
+	test->private_filename = g_build_filename (SRCDIR "/pkcs11/gnome2-store/fixtures", "data-file-private.store", NULL);
 	test->write_filename = g_build_filename ("/tmp", "unit-test-file.store", NULL);
 
 	test->data_file = gkm_gnome2_file_new ();

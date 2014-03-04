@@ -1747,7 +1747,7 @@ setup (Test *test, gconstpointer unused)
 {
 	GBytes *bytes;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/test-certificate-1.der",
+	if (!g_file_get_contents (SRCDIR "/egg/fixtures/test-certificate-1.der",
 	                          (gchar**)&test->data, &test->n_data, NULL))
 		g_assert_not_reached ();
 

@@ -34,7 +34,7 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
-#include "login/gkd-login.h"
+#include "daemon/login/gkd-login.h"
 
 #include "pkcs11/pkcs11i.h"
 

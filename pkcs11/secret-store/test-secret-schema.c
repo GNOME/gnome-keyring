@@ -72,7 +72,7 @@ setup (Test *test,
 	 */
 
 	gkm_secret_collection_set_filename (test->collection,
-	                                    SRCDIR "/fixtures/schema1.keyring");
+	                                    SRCDIR "/pkcs11/secret-store/fixtures/schema1.keyring");
 
 	/* Load the collection */
 	res = gkm_secret_collection_load (test->collection);

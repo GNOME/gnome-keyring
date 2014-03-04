@@ -128,7 +128,7 @@ setup (Test *test, gconstpointer unused)
 	rv = gkm_module_C_Login (test->module, gkm_session_get_handle (test->session), CKU_USER, NULL, 0);
 	g_assert (rv == CKR_OK);
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/test-certificate-2.cer", &test->cert_data, &test->n_cert_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/xdg-store/fixtures/test-certificate-2.cer", &test->cert_data, &test->n_cert_data, NULL))
 		g_assert_not_reached ();
 }
 

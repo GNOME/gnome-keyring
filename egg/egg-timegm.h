@@ -15,6 +15,7 @@
    You should have received a copy of the GNU Library General Public
    License along with the GNU C Library; see the file COPYING.LIB.  If not,
    <http://www.gnu.org/licenses/>.
+*/
 
 /* Extracted from misc/mkdtemp.c and sysdeps/posix/tempname.c.  */
 

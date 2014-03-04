@@ -23,15 +23,15 @@
 #include "gkd-control.h"
 #include "gkd-control-codes.h"
 
-#include "gkd-main.h"
-#include "gkd-util.h"
+#include "daemon/gkd-main.h"
+#include "daemon/gkd-util.h"
 
 #include "egg/egg-buffer.h"
 #include "egg/egg-cleanup.h"
 #include "egg/egg-secure-memory.h"
 #include "egg/egg-unix-credentials.h"
 
-#include "login/gkd-login.h"
+#include "daemon/login/gkd-login.h"
 
 #include <errno.h>
 #include <fcntl.h>

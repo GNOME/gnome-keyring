@@ -1,23 +1,21 @@
 
 gsettings_SCHEMAS = \
-	org.gnome.crypto.cache.gschema.xml
+	schema/org.gnome.crypto.cache.gschema.xml
 
 @GSETTINGS_RULES@
 
+convertdir = $(datarootdir)/GConf/gsettings
 convert_DATA = \
-	org.gnome.crypto.cache.convert
+	schema/org.gnome.crypto.cache.convert
 
-convertdir = \
-	$(datarootdir)/GConf/gsettings
-
-all-local: gschemas.compiled
+noinst_DATA += gschemas.compiled
 
 gschemas.compiled: $(gsettings_SCHEMAS)
-	glib-compile-schemas --strict .
+	$(AM_V_GEN) glib-compile-schemas --strict .
 
-DISTCLEAN = \
+CLEANFILES += \
 	gschemas.compiled
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	$(convert_DATA) \
 	$(gsettings_SCHEMAS)

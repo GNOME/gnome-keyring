@@ -50,7 +50,7 @@ setup (Test *test, gconstpointer unused)
 	gchar *contents;
 	gsize length;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/test-certificate-1.der", &contents, &length, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/gkm/fixtures/test-certificate-1.der", &contents, &length, NULL))
 		g_assert_not_reached ();
 
 	data = g_bytes_new_take (contents, length);

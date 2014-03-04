@@ -53,7 +53,7 @@ setup (Test *test, gconstpointer unused)
 	gchar *contents;
 	gsize length;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/pem-rsa-enc.key", &contents, &length, NULL))
+	if (!g_file_get_contents (SRCDIR "/egg/fixtures/pem-rsa-enc.key", &contents, &length, NULL))
 		g_assert_not_reached ();
 
 	test->input = g_bytes_new_take (contents, length);

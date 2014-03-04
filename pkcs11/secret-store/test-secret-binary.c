@@ -99,7 +99,7 @@ test_read_encrypted (Test *test, gconstpointer unused)
 {
 	GkmDataResult res;
 
-	res = check_read_keyring_file (test, SRCDIR "/fixtures/encrypted.keyring");
+	res = check_read_keyring_file (test, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 	g_assert (res == GKM_DATA_SUCCESS);
 
 	test_secret_collection_validate (test->collection, test->sdata);
@@ -110,7 +110,7 @@ test_read_wrong_format (Test *test, gconstpointer unused)
 {
 	GkmDataResult res;
 
-	res = check_read_keyring_file (test, SRCDIR "/fixtures/plain.keyring");
+	res = check_read_keyring_file (test, SRCDIR "/pkcs11/secret-store/fixtures/plain.keyring");
 	g_assert (res == GKM_DATA_UNRECOGNIZED);
 }
 
@@ -124,7 +124,7 @@ test_read_wrong_master (Test *test, gconstpointer unused)
 	gkm_secret_data_set_master (test->sdata, master);
 	g_object_unref (master);
 
-	res = check_read_keyring_file (test, SRCDIR "/fixtures/encrypted.keyring");
+	res = check_read_keyring_file (test, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
@@ -135,7 +135,7 @@ test_read_sdata_but_no_master (Test *test, gconstpointer unused)
 
 	gkm_secret_data_set_master (test->sdata, NULL);
 
-	res = check_read_keyring_file (test, SRCDIR "/fixtures/encrypted.keyring");
+	res = check_read_keyring_file (test, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 	g_assert (res == GKM_DATA_LOCKED);
 }
 
@@ -166,7 +166,7 @@ test_remove_unavailable (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/encrypted.keyring", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring", &data, &n_data, NULL))
 		g_assert_not_reached ();
 	res = gkm_secret_binary_read (test->collection, test->sdata, data, n_data);
 	g_assert (res == GKM_DATA_SUCCESS);
@@ -206,7 +206,7 @@ test_read_created_on_solaris_opencsw (Test *test, gconstpointer unused)
 	gkm_secret_data_set_master (test->sdata, master);
 	g_object_unref (master);
 
-	res = check_read_keyring_file (test, SRCDIR "/fixtures/created-on-solaris-opencsw.keyring");
+	res = check_read_keyring_file (test, SRCDIR "/pkcs11/secret-store/fixtures/created-on-solaris-opencsw.keyring");
 	g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
 }
 
@@ -220,7 +220,7 @@ test_read_created_on_rhel (Test *test, gconstpointer unused)
 	gkm_secret_data_set_master (test->sdata, master);
 	g_object_unref (master);
 
-	res = check_read_keyring_file (test, SRCDIR "/fixtures/created-on-rhel.keyring");
+	res = check_read_keyring_file (test, SRCDIR "/pkcs11/secret-store/fixtures/created-on-rhel.keyring");
 	g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
 }
 
@@ -235,7 +235,7 @@ test_read_with_schema (Test *test,
 	master = gkm_secret_new_from_password ("test");
 	gkm_secret_data_set_master (test->sdata, master);
 	g_object_unref (master);
-	res = check_read_keyring_file (test, SRCDIR "/fixtures/encrypted-with-schema.keyring");
+	res = check_read_keyring_file (test, SRCDIR "/pkcs11/secret-store/fixtures/encrypted-with-schema.keyring");
 	g_assert_cmpint (res, ==, GKM_DATA_SUCCESS);
 
 	item = gkm_secret_collection_get_item (test->collection, "1");

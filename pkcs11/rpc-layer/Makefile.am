@@ -1,31 +1,25 @@
 
-noinst_LTLIBRARIES = \
+noinst_LTLIBRARIES += \
 	libgkm-rpc-layer.la
 
-noinst_PROGRAMS = \
+noinst_PROGRAMS += \
 	gkm-rpc-daemon-standalone
-
-INCLUDES = -I. \
-	-I$(top_srcdir) \
-	-I$(top_builddir)
 
 # ------------------------------------------------------------------------------
 # The dispatch code
 
 libgkm_rpc_layer_la_SOURCES = \
-	gkm-rpc-dispatch.c \
-	gkm-rpc-layer.h \
-	gkm-rpc-message.c \
-	gkm-rpc-private.h \
-	gkm-rpc-util.c
-
+	pkcs11/rpc-layer/gkm-rpc-dispatch.c \
+	pkcs11/rpc-layer/gkm-rpc-layer.h \
+	pkcs11/rpc-layer/gkm-rpc-message.c \
+	pkcs11/rpc-layer/gkm-rpc-private.h \
+	pkcs11/rpc-layer/gkm-rpc-util.c
 libgkm_rpc_layer_la_LIBADD = \
-	$(top_builddir)/egg/libegg-buffer.la \
-	$(top_builddir)/egg/libegg-creds.la \
+	libegg-buffer.la \
+	libegg-creds.la \
 	$(GOBJECT_LIBS) \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS)
-
 libgkm_rpc_layer_la_CFLAGS = \
 	$(GOBJECT_CFLAGS) \
 	$(GTHREAD_CFLAGS) \
@@ -35,40 +29,35 @@ libgkm_rpc_layer_la_CFLAGS = \
 # The module code, built as the public gnome-keyring module
 
 # This is the location that some older software looks for modules
-moduledir = $(P11_MODULE_PATH)
-
-module_LTLIBRARIES = \
+pkcs11moduledir = $(P11_MODULE_PATH)
+pkcs11module_LTLIBRARIES = \
 	gnome-keyring-pkcs11.la
 
 gnome_keyring_pkcs11_la_SOURCES = \
-	gkm-rpc-private.h \
-	gkm-rpc-module.c \
-	gkm-rpc-message.c \
-	gkm-rpc-util.c
-
+	pkcs11/rpc-layer/gkm-rpc-private.h \
+	pkcs11/rpc-layer/gkm-rpc-module.c \
+	pkcs11/rpc-layer/gkm-rpc-message.c \
+	pkcs11/rpc-layer/gkm-rpc-util.c
 gnome_keyring_pkcs11_la_LIBADD = \
-	$(top_builddir)/egg/libegg-buffer.la \
-	$(top_builddir)/egg/libegg-creds.la
-
+	libegg-buffer.la \
+	libegg-creds.la
 gnome_keyring_pkcs11_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
 # This is the configuration file that p11-kit uses to load the module
-configdir = $(P11_SYSTEM_CONFIG_MODULES)
-
-config_DATA = \
-	gnome-keyring.module
+pkcs11configdir = $(P11_SYSTEM_CONFIG_MODULES)
+pkcs11config_DATA = \
+	pkcs11/rpc-layer/gnome-keyring.module
 
 # -----------------------------------------------------------------------------
 # The test daemon
 
 gkm_rpc_daemon_standalone_SOURCES = \
-	gkm-rpc-daemon-standalone.c
-
+	pkcs11/rpc-layer/gkm-rpc-daemon-standalone.c
 gkm_rpc_daemon_standalone_LDADD = \
-	$(DL_LIBS) libgkm-rpc-layer.la \
+	$(DL_LIBS) \
+	libgkm-rpc-layer.la \
 	$(GLIB_LIBS)
-
 gkm_rpc_daemon_standalone_CFLAGS = \
 	$(GLIB_CFLAGS)

@@ -28,8 +28,6 @@
 
 #include "egg/egg-testing.h"
 
-#include <gcr/gcr-base.h>
-
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>

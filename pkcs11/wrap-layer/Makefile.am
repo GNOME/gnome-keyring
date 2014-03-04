@@ -1,30 +1,24 @@
 
-noinst_LTLIBRARIES = \
+noinst_LTLIBRARIES += \
 	libgkm-wrap-layer.la
-
-INCLUDES = -I. \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	-I$(top_srcdir)/pkcs11 \
-	-DSRCDIR="\"@abs_srcdir@\"" \
-	$(GCR_BASE_CFLAGS) \
-	-DGCR_API_SUBJECT_TO_CHANGE
 
 # ------------------------------------------------------------------------------
 # The code
 
 libgkm_wrap_layer_la_SOURCES = \
-	gkm-wrap-layer.c gkm-wrap-layer.h \
-	gkm-wrap-login.c gkm-wrap-login.h \
-	gkm-wrap-prompt.c gkm-wrap-prompt.h
-
+	pkcs11/wrap-layer/gkm-wrap-layer.c \
+	pkcs11/wrap-layer/gkm-wrap-layer.h \
+	pkcs11/wrap-layer/gkm-wrap-login.c \
+	pkcs11/wrap-layer/gkm-wrap-login.h \
+	pkcs11/wrap-layer/gkm-wrap-prompt.c \
+	pkcs11/wrap-layer/gkm-wrap-prompt.h
 libgkm_wrap_layer_la_LIBADD = \
-	$(top_builddir)/pkcs11/gkm/libgkm.la \
+	libgkm.la \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS) \
 	$(GIO_LIBS)
-
 libgkm_wrap_layer_la_CFLAGS = \
+	$(GCR_BASE_CFLAGS) \
 	$(GTHREAD_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GIO_CFLAGS)
@@ -32,15 +26,18 @@ libgkm_wrap_layer_la_CFLAGS = \
 # ------------------------------------------------------------------------------
 # TESTS
 
-LDADD = \
-	$(top_builddir)/pkcs11/wrap-layer/libgkm-wrap-layer.la \
+wrap_layer_CFLAGS = \
+	$(GCR_BASE_CFLAGS)
+
+wrap_layer_LIBS = \
+	libgkm-wrap-layer.la \
 	libgkm-mock-secret-store.a \
-	$(top_builddir)/pkcs11/gkm/libgkm.la \
-	$(top_builddir)/egg/libegg.la \
+	libgkm.la \
+	libegg.la \
 	$(GCR_BASE_LIBS) \
 	$(GLIB_LIBS)
 
-TEST_PROGS = \
+TEST_PROGS += \
 	test-create-credential \
 	test-init-pin \
 	test-login-auto \
@@ -50,16 +47,37 @@ TEST_PROGS = \
 	test-login-user \
 	test-set-pin
 
-check_PROGRAMS = $(TEST_PROGS)
+test_create_credential_SOURCES = pkcs11/wrap-layer/test-create-credential.c
+test_create_credential_LDADD = $(wrap_layer_LIBS)
+test_create_credential_CFLAGS = $(wrap_layer_CFLAGS)
 
-test: $(TEST_PROGS) $(CHECK_PROGS)
-	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+test_init_pin_SOURCES = pkcs11/wrap-layer/test-init-pin.c
+test_init_pin_LDADD = $(wrap_layer_LIBS)
+test_init_pin_CFLAGS = $(wrap_layer_CFLAGS)
 
-check-local: test
+test_login_auto_SOURCES = pkcs11/wrap-layer/test-login-auto.c
+test_login_auto_LDADD = $(wrap_layer_LIBS)
+test_login_auto_CFLAGS = $(wrap_layer_CFLAGS)
 
-all-local: $(check_PROGRAMS)
+test_login_hints_SOURCES = pkcs11/wrap-layer/test-login-hints.c
+test_login_hints_LDADD = $(wrap_layer_LIBS)
 
-noinst_LIBRARIES = libgkm-mock-secret-store.a
+test_login_keyring_SOURCES = pkcs11/wrap-layer/test-login-keyring.c
+test_login_keyring_LDADD = $(wrap_layer_LIBS)
+
+test_login_specific_SOURCES = pkcs11/wrap-layer/test-login-specific.c
+test_login_specific_LDADD = $(wrap_layer_LIBS)
+test_login_specific_CFLAGS = $(wrap_layer_CFLAGS)
+
+test_login_user_SOURCES = pkcs11/wrap-layer/test-login-user.c
+test_login_user_LDADD = $(wrap_layer_LIBS)
+test_login_user_CFLAGS = $(wrap_layer_CFLAGS)
+
+test_set_pin_SOURCES = pkcs11/wrap-layer/test-set-pin.c
+test_set_pin_LDADD = $(wrap_layer_LIBS)
+test_set_pin_CFLAGS = $(wrap_layer_CFLAGS)
+
+noinst_LIBRARIES += libgkm-mock-secret-store.a
 
 libgkm_mock_secret_store_a_SOURCES = \
-	mock-secret-store.c
+	pkcs11/wrap-layer/mock-secret-store.c

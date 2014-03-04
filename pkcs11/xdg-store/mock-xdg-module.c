@@ -109,8 +109,8 @@ mock_xdg_module_initialize_and_enter (void)
 	CK_RV rv;
 
 	directory = egg_tests_create_scratch_directory (
-		SRCDIR "/fixtures/test-refer-1.trust",
-		SRCDIR "/fixtures/test-certificate-1.cer",
+		SRCDIR "/pkcs11/xdg-store/fixtures/test-refer-1.trust",
+		SRCDIR "/pkcs11/xdg-store/fixtures/test-certificate-1.cer",
 		NULL);
 
 	/* Setup test directory to work in */

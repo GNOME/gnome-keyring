@@ -74,11 +74,11 @@ typedef struct {
 } Fixture;
 
 static const Fixture parse_test_fixtures[] = {
-	{ pkix_asn1_tab, SRCDIR "/fixtures/test-certificate-1.der", "Certificate" },
-	{ pkix_asn1_tab, SRCDIR "/fixtures/test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo" },
-	{ pk_asn1_tab, SRCDIR "/fixtures/test-rsakey-1.der", "RSAPrivateKey" },
-	{ pkix_asn1_tab, SRCDIR "/fixtures/test-pkcs7-1.der", "pkcs-7-ContentInfo" },
-	{ pkix_asn1_tab, SRCDIR "/fixtures/test-pkcs7-2.der", "pkcs-7-ContentInfo" },
+	{ pkix_asn1_tab, SRCDIR "/egg/fixtures/test-certificate-1.der", "Certificate" },
+	{ pkix_asn1_tab, SRCDIR "/egg/fixtures/test-pkcs8-1.der", "pkcs-8-PrivateKeyInfo" },
+	{ pk_asn1_tab, SRCDIR "/egg/fixtures/test-rsakey-1.der", "RSAPrivateKey" },
+	{ pkix_asn1_tab, SRCDIR "/egg/fixtures/test-pkcs7-1.der", "pkcs-7-ContentInfo" },
+	{ pkix_asn1_tab, SRCDIR "/egg/fixtures/test-pkcs7-2.der", "pkcs-7-ContentInfo" },
 };
 
 static void
@@ -191,9 +191,9 @@ main (int argc, char **argv)
 		g_free (name);
 	}
 
-	g_test_add ("/asn1x/pkcs12-decode/1", Test, SRCDIR "/fixtures/test-pkcs12-1.der",
+	g_test_add ("/asn1x/pkcs12-decode/1", Test, SRCDIR "/egg/fixtures/test-pkcs12-1.der",
 	            setup, test_pkcs12_decode, teardown);
-	g_test_add ("/asn1x/pkcs5-personal-name/invalid", Test, SRCDIR "/fixtures/test-personalname-invalid.der",
+	g_test_add ("/asn1x/pkcs5-personal-name/invalid", Test, SRCDIR "/egg/fixtures/test-personalname-invalid.der",
 	            setup, test_personal_name_invalid, teardown);
 
 	return g_test_run ();

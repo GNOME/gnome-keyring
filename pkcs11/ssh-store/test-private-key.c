@@ -66,8 +66,8 @@ setup (Test *test,
 	test->key = gkm_ssh_private_key_new (test->module, "my-unique");
 	g_assert (GKM_IS_SSH_PRIVATE_KEY (test->key));
 
-	ret = gkm_ssh_private_key_parse (test->key, SRCDIR "/fixtures/id_dsa_encrypted.pub",
-	                                 SRCDIR "/fixtures/id_dsa_encrypted", NULL);
+	ret = gkm_ssh_private_key_parse (test->key, SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted.pub",
+	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted", NULL);
 	g_assert (ret == TRUE);
 }
 
@@ -88,8 +88,8 @@ test_parse_plain (Test *test, gconstpointer unused)
 	key = gkm_ssh_private_key_new (test->module, "my-unique");
 	g_assert (GKM_IS_SSH_PRIVATE_KEY (key));
 
-	ret = gkm_ssh_private_key_parse (key, SRCDIR "/fixtures/id_dsa_plain.pub",
-	                                 SRCDIR "/fixtures/id_dsa_plain", NULL);
+	ret = gkm_ssh_private_key_parse (key, SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_plain.pub",
+	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_plain", NULL);
 	g_assert (ret == TRUE);
 
 	g_object_unref (key);

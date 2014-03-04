@@ -1,25 +1,16 @@
 
-INCLUDES= \
-	-DPREFIX=\""$(prefix)"\" \
-	-DBINDIR=\""$(bindir)"\" \
-	-DLIBEXECDIR=\""$(libexecdir)"\" \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/daemon \
-	-I$(top_builddir) \
-	$(GCK_CFLAGS) \
-	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS) \
-	-DGCK_API_SUBJECT_TO_CHANGE
-
 # ------------------------------------------------------------------
 # DAEMON CODE
 
-noinst_LTLIBRARIES = libgkd-login.la
+noinst_LTLIBRARIES += libgkd-login.la
 
 libgkd_login_la_SOURCES = \
-	gkd-login.c gkd-login.h
-
+	daemon/login/gkd-login.c \
+	daemon/login/gkd-login.h \
+	$(NULL)
+libgkd_login_la_CFLAGS = \
+	$(GCK_CFLAGS) \
+	$(GOBJECT_CFLAGS)
 libgkd_login_la_LIBADD = \
 	$(GCK_LIBS) \
 	$(GOBJECT_LIBS) \

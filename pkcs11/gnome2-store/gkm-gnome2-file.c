@@ -25,8 +25,9 @@
 #include "gkm/gkm-attributes.h"
 #include "gkm/gkm-crypto.h"
 #include "gkm/gkm-data-types.h"
-#include "gkm/gkm-marshal.h"
 #include "gkm/gkm-util.h"
+
+#include "gkm-marshal.h"
 
 #include "egg/egg-buffer.h"
 #include "egg/egg-hex.h"

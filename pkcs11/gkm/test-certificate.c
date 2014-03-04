@@ -53,7 +53,7 @@ setup_basic (Test* test,
 	test->module = mock_module_initialize_and_enter ();
 	test->session = mock_module_open_session (TRUE);
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/test-certificate-1.der", &data, &length, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/gkm/fixtures/test-certificate-1.der", &data, &length, NULL))
 		g_assert_not_reached ();
 
 	test->certificate_data = g_bytes_new_take (data, length);

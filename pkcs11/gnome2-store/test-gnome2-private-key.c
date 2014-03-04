@@ -58,7 +58,7 @@ setup_basic (Test* test,
 	test->module = mock_gnome2_module_initialize_and_enter ();
 	test->session = mock_gnome2_module_open_session (TRUE);
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/der-key-v2-des3.p8", &data, &length, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/gnome2-store/fixtures/der-key-v2-des3.p8", &data, &length, NULL))
 		g_assert_not_reached ();
 
 	test->key_data = g_bytes_new_take (data, length);

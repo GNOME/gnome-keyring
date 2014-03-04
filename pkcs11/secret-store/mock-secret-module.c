@@ -59,8 +59,8 @@ test_secret_module_initialize_and_enter (void)
 	CK_RV rv;
 
 	directory = egg_tests_create_scratch_directory (
-		SRCDIR "/fixtures/encrypted.keyring",
-		SRCDIR "/fixtures/plain.keyring",
+		SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring",
+		SRCDIR "/pkcs11/secret-store/fixtures/plain.keyring",
 		NULL);
 
 	/* Setup test directory to work in */

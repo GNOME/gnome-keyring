@@ -36,15 +36,15 @@
 EGG_SECURE_DEFINE_GLIB_GLOBALS ();
 
 static const gchar *PRIVATE_FILES[] = {
-	SRCDIR "/fixtures/id_rsa_encrypted",
-	SRCDIR "/fixtures/id_rsa_plain",
-	SRCDIR "/fixtures/id_dsa_encrypted",
-	SRCDIR "/fixtures/id_dsa_plain"
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_encrypted",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_plain",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_plain"
 };
 
 static const gchar *PUBLIC_FILES[] = {
-	SRCDIR "/fixtures/id_rsa_test.pub",
-	SRCDIR "/fixtures/id_dsa_test.pub"
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_test.pub",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_test.pub"
 };
 
 #define COMMENT "A public key comment"

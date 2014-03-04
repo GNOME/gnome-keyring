@@ -29,8 +29,6 @@
 
 #include "gnome2-store/gkm-gnome2-store.h"
 
-#define GCR_API_SUBJECT_TO_CHANGE
-#define GCK_API_SUBJECT_TO_CHANGE
 #include <gck/gck.h>
 #include <gcr/gcr-base.h>
 
@@ -133,7 +131,7 @@ test_pkcs12_import (Test *test,
 	gsize length;
 	GList *l;
 
-	g_file_get_contents (SRCDIR "/fixtures/personal.p12", &contents, &length, &error);
+	g_file_get_contents (SRCDIR "/pkcs11/gnome2-store/fixtures/personal.p12", &contents, &length, &error);
 	g_assert_no_error (error);
 
 	/* Parse the pkcs12 file */

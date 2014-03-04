@@ -181,7 +181,7 @@ test_create_and_add_object (Test *test, gconstpointer unused)
 		{ CKA_CERTIFICATE_TYPE, &ctype, sizeof (ctype) }
 	};
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/test-certificate-2.cer", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/xdg-store/fixtures/test-certificate-2.cer", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
 	attrs[0].pValue = data;

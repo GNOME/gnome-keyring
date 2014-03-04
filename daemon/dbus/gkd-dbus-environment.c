@@ -22,9 +22,9 @@
 
 #include "config.h"
 
-
 #include "gkd-dbus-private.h"
-#include "gkd-util.h"
+
+#include "daemon/gkd-util.h"
 
 #include <dbus/dbus.h>
 

@@ -171,7 +171,7 @@ test_load_unlock_plain (Test *test, gconstpointer unused)
 	GkmDataResult res;
 	CK_RV rv;
 
-	gkm_secret_collection_set_filename (test->collection, SRCDIR "/fixtures/plain.keyring");
+	gkm_secret_collection_set_filename (test->collection, SRCDIR "/pkcs11/secret-store/fixtures/plain.keyring");
 
 	/* Load the data in the file */
 	res = gkm_secret_collection_load (test->collection);
@@ -197,7 +197,7 @@ test_load_unlock_encrypted (Test *test, gconstpointer unused)
 	GkmDataResult res;
 	CK_RV rv;
 
-	gkm_secret_collection_set_filename (test->collection, SRCDIR "/fixtures/encrypted.keyring");
+	gkm_secret_collection_set_filename (test->collection, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 
 	/* Load the data in the file */
 	res = gkm_secret_collection_load (test->collection);
@@ -223,7 +223,7 @@ test_load_unlock_bad_password (Test *test, gconstpointer unused)
 	GkmDataResult res;
 	CK_RV rv;
 
-	gkm_secret_collection_set_filename (test->collection, SRCDIR "/fixtures/encrypted.keyring");
+	gkm_secret_collection_set_filename (test->collection, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 
 	/* Load the data in the file */
 	res = gkm_secret_collection_load (test->collection);
@@ -242,7 +242,7 @@ test_unlock_without_load (Test *test, gconstpointer unused)
 	GkmSecretData *sdata;
 	CK_RV rv;
 
-	gkm_secret_collection_set_filename (test->collection, SRCDIR "/fixtures/encrypted.keyring");
+	gkm_secret_collection_set_filename (test->collection, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 
 	/* Unlock the keyring, which should load it */
 	rv = gkm_credential_create (test->module, gkm_session_get_manager (test->session), GKM_OBJECT (test->collection),
@@ -264,7 +264,7 @@ test_twice_unlock (Test *test, gconstpointer unused)
 	GkmSecretData *sdata;
 	CK_RV rv;
 
-	gkm_secret_collection_set_filename (test->collection, SRCDIR "/fixtures/encrypted.keyring");
+	gkm_secret_collection_set_filename (test->collection, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 
 	/* Unlock the keyring, which should load */
 	rv = gkm_credential_create (test->module, gkm_session_get_manager (test->session), GKM_OBJECT (test->collection),
@@ -293,7 +293,7 @@ test_twice_unlock_bad_password (Test *test, gconstpointer unused)
 	GkmSecretData *sdata;
 	CK_RV rv;
 
-	gkm_secret_collection_set_filename (test->collection, SRCDIR "/fixtures/encrypted.keyring");
+	gkm_secret_collection_set_filename (test->collection, SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring");
 
 	/* Unlock the keyring, which should load */
 	rv = gkm_credential_create (test->module, gkm_session_get_manager (test->session), GKM_OBJECT (test->collection),

@@ -81,7 +81,7 @@ test_read (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/plain.keyring", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/secret-store/fixtures/plain.keyring", &data, &n_data, NULL))
 		g_assert_not_reached ();
 	res = gkm_secret_textual_read (test->collection, test->sdata, data, n_data);
 	g_free (data);
@@ -98,7 +98,7 @@ test_read_wrong_format (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/encrypted.keyring", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/secret-store/fixtures/encrypted.keyring", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
 	res = gkm_secret_textual_read (test->collection, test->sdata, data, n_data);
@@ -116,7 +116,7 @@ test_read_bad_number (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/plain-bad-number.keyring", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/secret-store/fixtures/plain-bad-number.keyring", &data, &n_data, NULL))
 		g_assert_not_reached ();
 	res = gkm_secret_textual_read (test->collection, test->sdata, data, n_data);
 	g_free (data);
@@ -158,7 +158,7 @@ test_remove_unavailable (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/plain.keyring", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/secret-store/fixtures/plain.keyring", &data, &n_data, NULL))
 		g_assert_not_reached ();
 	res = gkm_secret_textual_read (test->collection, test->sdata, data, n_data);
 	g_assert (res == GKM_DATA_SUCCESS);
@@ -197,7 +197,7 @@ test_read_with_schema (Test *test,
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/plain-with-schema.keyring", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/secret-store/fixtures/plain-with-schema.keyring", &data, &n_data, NULL))
 		g_assert_not_reached ();
 	res = gkm_secret_textual_read (test->collection, test->sdata, data, n_data);
 	g_assert (res == GKM_DATA_SUCCESS);

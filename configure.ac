@@ -222,6 +222,9 @@ AC_SUBST(GCK_LIBS)
 AC_SUBST(GCR_LIBS)
 AC_SUBST(GCR_BASE_LIBS)
 
+AC_DEFINE(GCK_API_SUBJECT_TO_CHANGE, 1, [Nod nod])
+AC_DEFINE(GCR_API_SUBJECT_TO_CHANGE, 1, [Nod nod])
+
 # --------------------------------------------------------------------
 # DBus Checks
 #
@@ -617,27 +620,6 @@ valgrind_status="yes"
 
 AM_CONDITIONAL(WITH_VALGRIND, test "$enable_valgrind" = "run")
 
-# Run gnome-keyring-daemon under valgrind as default
-if test "$enable_valgrind" = "run"; then
-	AC_PATH_PROG(VALGRIND, valgrind, no)
-	if test "$VALGRIND" = "no" ; then
-		AC_MSG_ERROR(valgrind tool is not installed)
-	fi
-
-	VALGRIND_ARG="--log-file=/tmp/gkr-valgrind.log.%p"
-	VALGRIND_RUN="$VALGRIND $VALGRIND_ARG "
-
-	AC_DEFINE_UNQUOTED(VALGRIND, "$VALGRIND", [Path to valgrind executable])
-	AC_DEFINE_UNQUOTED(VALGRIND_ARG, "$VALGRIND_ARG", [Valgrind arguments])
-
-	enable_valgrind="yes"
-	valgrind_status="run"
-fi
-
-AC_SUBST(VALGRIND)
-AC_SUBST(VALGRIND_ARG)
-AC_SUBST(VALGRIND_RUN)
-
 # Build valgrind support into code
 if test "$enable_valgrind" = "yes"; then
 	AC_CHECK_HEADER([valgrind/valgrind.h], have_valgrind=yes, have_valgrind=no)
@@ -666,28 +648,8 @@ AC_SUBST(P11_TESTS_LIBS)
 
 AC_OUTPUT([
 Makefile
-daemon/Makefile
-daemon/control/Makefile
-daemon/dbus/Makefile
-daemon/gpg-agent/Makefile
-daemon/login/Makefile
-daemon/ssh-agent/Makefile
-docs/Makefile
-egg/Makefile
-pam/Makefile
-pkcs11/Makefile
-pkcs11/gkm/Makefile
-pkcs11/gnome2-store/Makefile
-pkcs11/rpc-layer/Makefile
 pkcs11/rpc-layer/gnome-keyring.module
-pkcs11/secret-store/Makefile
-pkcs11/ssh-store/Makefile
-pkcs11/wrap-layer/Makefile
-pkcs11/xdg-store/Makefile
 po/Makefile.in
-schema/Makefile
-testing/Makefile
-tool/Makefile
 ])
 
 # ------------------------------------------------------------------------------

@@ -25,7 +25,7 @@
 #include "gkd-dbus.h"
 #include "gkd-dbus-private.h"
 
-#include "gkd-util.h"
+#include "daemon/gkd-util.h"
 
 #include "egg/egg-cleanup.h"
 #include "egg/egg-dbus.h"

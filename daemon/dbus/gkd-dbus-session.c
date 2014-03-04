@@ -23,7 +23,8 @@
 #include "config.h"
 
 #include "gkd-dbus-private.h"
-#include "gkd-main.h"
+
+#include "daemon/gkd-main.h"
 
 #include <dbus/dbus.h>
 

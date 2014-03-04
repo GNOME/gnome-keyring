@@ -119,7 +119,7 @@ setup (Test *test, gconstpointer unused)
 {
 	GBytes *data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/gkm/fixtures/test-certificate-1.der", &test->certificate_data, &test->n_certificate_data, NULL))
 		g_assert_not_reached ();
 
 	data = g_bytes_new (test->certificate_data, test->n_certificate_data);
@@ -127,7 +127,7 @@ setup (Test *test, gconstpointer unused)
 	g_assert (test->certificate != NULL);
 	g_bytes_unref (data);
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/test-certificate-2.der", &test->certificate2_data, &test->n_certificate2_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/gkm/fixtures/test-certificate-2.der", &test->certificate2_data, &test->n_certificate2_data, NULL))
 		g_assert_not_reached ();
 	data = g_bytes_new (test->certificate2_data, test->n_certificate2_data);
 	test->certificate2 = egg_asn1x_create_and_decode (pkix_asn1_tab, "Certificate", data);
@@ -342,7 +342,7 @@ test_read_ca_certificates_public_key_info (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/ca-certificates.crt", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/gkm/fixtures/ca-certificates.crt", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
 	bytes = g_bytes_new_take (data, n_data);
@@ -448,7 +448,7 @@ test_read_all_pkcs8 (Test *test, gconstpointer unused)
 	gsize n_data;
 	gchar *path;
 
-	dir = g_dir_open (SRCDIR "/fixtures", 0, NULL);
+	dir = g_dir_open (SRCDIR "/pkcs11/gkm/fixtures", 0, NULL);
 	g_assert (dir);
 
 	for(;;) {
@@ -459,7 +459,7 @@ test_read_all_pkcs8 (Test *test, gconstpointer unused)
 		if (!g_pattern_match_simple ("der-key-*", name))
 			continue;
 
-		path = g_build_filename (SRCDIR "/fixtures", name, NULL);
+		path = g_build_filename (SRCDIR "/pkcs11/gkm/fixtures", name, NULL);
 		if (!g_file_get_contents (path, &data, &n_data, NULL))
 			g_assert_not_reached ();
 		g_free (path);
@@ -485,7 +485,7 @@ test_read_pkcs8_bad_password (Test *test, gconstpointer unused)
 	gchar *data;
 	gsize n_data;
 
-	if (!g_file_get_contents (SRCDIR "/fixtures/der-key-encrypted-pkcs5.p8", &data, &n_data, NULL))
+	if (!g_file_get_contents (SRCDIR "/pkcs11/gkm/fixtures/der-key-encrypted-pkcs5.p8", &data, &n_data, NULL))
 		g_assert_not_reached ();
 
 	bytes = g_bytes_new_take (data, n_data);

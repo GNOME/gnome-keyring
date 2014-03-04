@@ -175,7 +175,7 @@ test_sync (void)
 	data.parent_pid = getpid();
 	data.index = 80;
 
-	ret = egg_spawn_sync_with_callbacks (SRCDIR "/fixtures",
+	ret = egg_spawn_sync_with_callbacks (SRCDIR "/egg/fixtures",
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     &exit_status, &error);
@@ -196,7 +196,7 @@ test_sync_error (void)
 	GError *error = NULL;
 	gboolean ret;
 
-	ret = egg_spawn_sync_with_callbacks (SRCDIR "/fixtures",
+	ret = egg_spawn_sync_with_callbacks (SRCDIR "/egg/fixtures",
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);
@@ -219,7 +219,7 @@ test_async (void)
 	data.index = 80;
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (SRCDIR "/fixtures",
+	ret = egg_spawn_async_with_callbacks (SRCDIR "/egg/fixtures",
 	                                     echo_argv, NULL, 0, &pid,
 	                                     &echo_callbacks, &data,
 	                                     NULL, &error);
@@ -246,7 +246,7 @@ test_async_none (void)
 	data.parent_pid = getpid();
 	data.is_async = TRUE;
 
-	ret = egg_spawn_async_with_callbacks (SRCDIR "/fixtures",
+	ret = egg_spawn_async_with_callbacks (SRCDIR "/egg/fixtures",
 	                                     echo_argv, NULL, 0, NULL,
 	                                     &null_callbacks, &data,
 	                                     NULL, &error);
@@ -267,7 +267,7 @@ test_async_error (void)
 	GError *error = NULL;
 	guint ret;
 
-	ret = egg_spawn_async_with_callbacks (SRCDIR "/fixtures",
+	ret = egg_spawn_async_with_callbacks (SRCDIR "/egg/fixtures",
 	                                     error_argv, NULL, 0, NULL,
 	                                     NULL, NULL,
 	                                     NULL, &error);

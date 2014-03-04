@@ -1,33 +1,30 @@
 
-INCLUDES = \
-	-I$(top_builddir) \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/pkcs11 \
-	-DGCK_API_SUBJECT_TO_CHANGE \
-	-DGCR_API_SUBJECT_TO_CHANGE \
-	$(DAEMON_CFLAGS)
-
 # ------------------------------------------------------------------------------
 # The ssh-agent component code
 
-noinst_LTLIBRARIES = \
+noinst_LTLIBRARIES += \
 	libgkd-gpg-agent.la
 
 libgkd_gpg_agent_la_SOURCES = \
-	gkd-gpg-agent.c gkd-gpg-agent.h \
-	gkd-gpg-agent-private.h \
-	gkd-gpg-agent-ops.c
+	daemon/gpg-agent/gkd-gpg-agent.c \
+	daemon/gpg-agent/gkd-gpg-agent.h \
+	daemon/gpg-agent/gkd-gpg-agent-private.h \
+	daemon/gpg-agent/gkd-gpg-agent-ops.c
+libgkd_gpg_agent_la_CFLAGS = \
+	$(GCK_CFLAGS) \
+	$(GCR_CFLAGS)
 
 # ------------------------------------------------------------------------------
 # Standalone binary
 
-noinst_PROGRAMS = \
+noinst_PROGRAMS += \
 	gkd-gpg-agent-standalone
 
 gkd_gpg_agent_standalone_SOURCES = \
-	gkd-gpg-agent-standalone.c
-
+	daemon/gpg-agent/gkd-gpg-agent-standalone.c
+gkd_gpg_agent_standalone_CFLAGS = \
+	$(GCK_CFLAGS)
 gkd_gpg_agent_standalone_LDADD = \
 	libgkd-gpg-agent.la \
-	$(top_builddir)/egg/libegg.la \
+	libegg.la \
 	$(DAEMON_LIBS)
