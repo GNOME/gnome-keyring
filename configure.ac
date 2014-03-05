@@ -27,6 +27,8 @@ version_bits=`echo $VERSION | tr '.' ' '`
 full_version=`printf %03d%03d%03d $version_bits`
 AC_DEFINE_UNQUOTED(GKR_VERSION, $full_version, [The gnome-keyring version as a number])
 
+AC_CONFIG_MACRO_DIR([build/m4])
+AC_CONFIG_AUX_DIR([build])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_SRCDIR([daemon/gkd-main.c])
 AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 no-dist-gzip])
