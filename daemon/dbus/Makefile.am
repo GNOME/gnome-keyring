@@ -75,7 +75,7 @@ daemon_dbus_LIBS = \
 	$(GIO_LIBS) \
 	$(GLIB_LIBS)
 
-TEST_PROGS += \
+daemon_dbus_TESTS = \
 	test-dbus-util \
 	test-dbus-search \
 	test-dbus-items \
@@ -98,3 +98,6 @@ test_dbus_signals_CFLAGS = $(daemon_dbus_CFLAGS)
 
 test_dbus_lock_SOURCES = daemon/dbus/test-dbus-lock.c
 test_dbus_lock_LDADD = $(daemon_dbus_LIBS)
+
+check_PROGRAMS += $(daemon_dbus_TESTS)
+TESTS += $(daemon_dbus_TESTS)

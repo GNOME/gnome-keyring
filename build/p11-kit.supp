@@ -1,0 +1,6 @@
+{
+   _p11_library_get_thread_local
+   Memcheck:Leak
+   ...
+   fun:_p11_library_get_thread_local
+}

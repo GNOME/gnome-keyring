@@ -4,14 +4,7 @@ SUBDIRS = \
 	. \
 	po
 
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
-
-EXTRA_DIST = \
-	intltool-extract.in \
-	intltool-merge.in \
-	intltool-update.in \
-	ChangeLog.old \
-	HACKING
+ACLOCAL_AMFLAGS = -I build/m4 ${ACLOCAL_FLAGS}
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-doc \
@@ -70,27 +63,32 @@ asn1-reparse:
 		sed -i 's|#include.*|/* \0 */|' $$a.h \
 	done
 
-test: $(TEST_PROGS)
-	gtester --verbose -m $(TEST_MODE) --g-fatal-warnings $(TEST_PROGS)
+# Default executable tests
+LOG_DRIVER = $(srcdir)/build/tap-driver
+LOG_DRIVER_FLAGS = --format=tap
+LOG_COMPILER = $(srcdir)/build/tap-gtester
 
-check-local: test
+VALGRIND_ARGS = --trace-children=no --quiet --error-exitcode=33 \
+	--suppressions=valgrind-suppressions --gen-suppressions=all \
+	--num-callers=16
+VALGRIND_SUPPRESSIONS = \
+	build/gcr.supp \
+	build/gcrypt.supp \
+	build/glib.supp \
+	build/glibc.supp \
+	build/p11-kit.supp \
+	build/pthread.supp \
+	build/unknown.supp
 
-all-local: $(check_PROGRAMS)
+valgrind-suppressions: $(VALGRIND_SUPPRESSIONS)
+	$(AM_V_GEN) cat $^ > $@
 
-TEST_ARGS =
-
-TEST_SUPPRESSIONS = $(top_builddir)/build/valgrind-suppressions
-
-perform-memcheck: $(TEST_PROGS)
-	make -C $(top_builddir)/build all
-	@for test in $(TEST_PROGS); do \
-		G_SLICE=always-malloc libtool --mode=execute \
-			valgrind --trace-children=no --gen-suppressions=all \
-			--suppressions=$(TEST_SUPPRESSIONS) \
-			--leak-check=full --show-reachable=yes --num-callers=16 \
-			--quiet --error-exitcode=3 \
-			$(builddir)/$$test $(TEST_ARGS) || exit 3; \
-	done
+check-memory: valgrind-suppressions
+	$(MAKE) LOG_FLAGS="-- libtool --mode=execute valgrind $(VALGRIND_ARGS)" \
+		$(AM_MAKEFLAGS) check
+recheck-memory: valgrind-suppressions
+	$(MAKE) LOG_FLAGS="-- libtool --mode=execute valgrind $(VALGRIND_ARGS)" \
+		$(AM_MAKEFLAGS) recheck
 
 coverage:
 	mkdir -p $(top_builddir)/build/coverage
@@ -162,22 +160,31 @@ AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)
 
 bin_PROGRAMS =
-check_PROGRAMS = $(TEST_PROGS)
+check_PROGRAMS =
 noinst_DATA =
 noinst_LIBRARIES =
 noinst_LTLIBRARIES =
-noinst_PROGRAMS =
+noinst_PROGRAMS = $(check_PROGRAMS)
+TESTS =
 
 ASN1_FILES =
 BUILT_SOURCES = prep-builddir
 CLEANFILES = $(BUILT_SOURCES)
-TEST_PROGS =
 
 moduledir = $(pkcs11standalonedir)
 module_LTLIBRARIES =
 
-EXTRA_DIST += \
-	$(ASN1_FILES)
+EXTRA_DIST = \
+	intltool-extract.in \
+	intltool-merge.in \
+	intltool-update.in \
+	ChangeLog.old \
+	HACKING \
+	$(ASN1_FILES) \
+	build/tap-driver \
+	build/tap-gtester \
+	$(VALGRIND_SUPPRESSIONS) \
+	$(NULL)
 
 include egg/Makefile.am
 include daemon/Makefile.am

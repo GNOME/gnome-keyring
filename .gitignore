@@ -57,7 +57,7 @@ config.status
 config.status.lineno
 config.sub
 /configure
-/install-sh
+install-sh
 /intltool-extract
 /intltool-extract.in
 /intltool-merge
@@ -81,8 +81,15 @@ depcomp
 /junk
 /TODO.tasks
 
-/build/
+/test-*
+/frob-*
+/dump-*
+/*-standalone
+/gnome-keyring-3
+/valgrind-suppressions
+
 /build/coverage
+/build/test-driver
 
 /docs/*/html/
 /docs/gnome-keyring-daemon/prompter.xml

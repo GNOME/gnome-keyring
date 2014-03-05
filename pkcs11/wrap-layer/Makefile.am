@@ -37,7 +37,7 @@ wrap_layer_LIBS = \
 	$(GCR_BASE_LIBS) \
 	$(GLIB_LIBS)
 
-TEST_PROGS += \
+wrap_layer_TESTS = \
 	test-create-credential \
 	test-init-pin \
 	test-login-auto \
@@ -76,6 +76,9 @@ test_login_user_CFLAGS = $(wrap_layer_CFLAGS)
 test_set_pin_SOURCES = pkcs11/wrap-layer/test-set-pin.c
 test_set_pin_LDADD = $(wrap_layer_LIBS)
 test_set_pin_CFLAGS = $(wrap_layer_CFLAGS)
+
+check_PROGRAMS += $(wrap_layer_TESTS)
+TESTS += $(wrap_layer_TESTS)
 
 noinst_LIBRARIES += libgkm-mock-secret-store.a
 

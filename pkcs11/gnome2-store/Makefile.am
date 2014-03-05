@@ -56,7 +56,7 @@ gnome2_store_LIBS = \
 # check_gnome2_module_LDADD = $(P11_TESTS_LIBS) $(LDADD)
 # endif
 
-TEST_PROGS += \
+gnome2_store_TESTS = \
 	test-gnome2-file \
 	test-gnome2-storage \
 	test-gnome2-private-key \
@@ -80,6 +80,9 @@ test_gnome2_private_key_LDADD = $(gnome2_store_LIBS)
 test_import_SOURCES = pkcs11/gnome2-store/test-import.c
 test_import_CFLAGS = $(GCR_BASE_CFLAGS) $(GCK_CFLAGS)
 test_import_LDADD = $(GCR_BASE_LIBS) $(GCK_LIBS) $(gnome2_store_LIBS)
+
+check_PROGRAMS += $(gnome2_store_TESTS)
+TESTS += $(gnome2_store_TESTS)
 
 noinst_PROGRAMS += \
 	frob-gnome2-file

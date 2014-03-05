@@ -76,7 +76,7 @@ dump_keyring0_format_SOURCES = \
 	pkcs11/secret-store/dump-keyring0-format.c
 dump_keyring0_format_LDADD = $(secret_store_LIBS)
 
-TEST_PROGS += \
+secret_store_TESTS = \
 	test-secret-compat \
 	test-secret-fields \
 	test-secret-data \
@@ -119,3 +119,6 @@ test_secret_binary_SOURCES = pkcs11/secret-store/test-secret-binary.c
 test_secret_binary_LDADD = $(secret_store_LIBS)
 
 EXTRA_DIST += pkcs11/secret-store/fixtures
+
+check_PROGRAMS += $(secret_store_TESTS)
+TESTS += $(secret_store_TESTS)

@@ -62,7 +62,7 @@ xdg_store_LIBS = \
 # check_xdg_module_CFLAGS = $(P11_TESTS_CFLAGS)
 # check_xdg_module_LDADD = $(P11_TESTS_LIBS) $(LDADD)
 
-TEST_PROGS += \
+xdg_store_TESTS = \
 	test-xdg-module \
 	test-xdg-trust
 
@@ -72,8 +72,10 @@ test_xdg_module_LDADD = $(xdg_store_LIBS)
 test_xdg_trust_SOURCES = pkcs11/xdg-store/test-xdg-trust.c
 test_xdg_trust_LDADD = $(xdg_store_LIBS)
 
-EXTRA_DIST += \
-	pkcs11/xdg-store/fixtures
+check_PROGRAMS += $(xdg_store_TESTS)
+TESTS += $(xdg_store_TESTS)
+
+EXTRA_DIST += pkcs11/xdg-store/fixtures
 
 noinst_PROGRAMS += \
 	frob-trust-file \

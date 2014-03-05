@@ -146,7 +146,7 @@ gkm_LIBS = \
 	$(GTHREAD_LIBS) \
 	$(LIBGCRYPT_LIBS)
 
-TEST_PROGS += \
+gkm_TESTS = \
 	test-attributes \
 	test-credential \
 	test-data-asn1 \
@@ -201,3 +201,6 @@ test_transaction_SOURCES = pkcs11/gkm/test-transaction.c
 test_transaction_LDADD = $(gkm_LIBS)
 
 ASN1_FILES += pkcs11/gkm/test.asn
+
+check_PROGRAMS += $(gkm_TESTS)
+TESTS += $(gkm_TESTS)

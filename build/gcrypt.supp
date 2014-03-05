@@ -1,0 +1,39 @@
+{
+   gpg_err_init
+   Memcheck:Leak
+   ...
+   fun:gpg_err_init
+}
+{
+   _gcry_module_add
+   Memcheck:Leak
+   ...
+   fun:_gcry_module_add
+}
+{
+   _gcry_rngcsprng_create_nonce
+   Memcheck:Leak
+   ...
+   fun:_gcry_malloc
+   ...
+   fun:initialize
+   fun:_gcry_rngcsprng_create_nonce
+}
+{
+   _gcry_rngcsprng_create_nonce
+   Memcheck:Leak
+   ...
+   fun:_gcry_malloc
+   ...
+   fun:initialize
+   fun:_gcry_rngcsprng_randomize
+}
+{
+   gcry_control__init
+   Memcheck:Leak
+   ...
+   fun:glib_thread_mutex_init
+   ...
+   fun:_gcry_vcontrol
+   fun:gcry_control
+}

@@ -130,7 +130,7 @@ egg_LIBS =  \
 	$(GTHREAD_LIBS) \
 	$(GLIB_LIBS)
 
-TEST_PROGS += \
+egg_TESTS = \
 	test-asn1 \
 	test-asn1x \
 	test-dn \
@@ -187,3 +187,6 @@ test_dh_LDADD = $(egg_LIBS)
 
 test_spawn_SOURCES = egg/test-spawn.c
 test_spawn_LDADD = $(egg_LIBS)
+
+check_PROGRAMS += $(egg_TESTS)
+TESTS += $(egg_TESTS)

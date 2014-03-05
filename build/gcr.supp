@@ -1,0 +1,14 @@
+{
+   gcr_pkcs11_set_trust_store_uri
+   Memcheck:Leak
+   ...
+   fun:g_strdup
+   fun:gcr_pkcs11_set_trust_store_uri
+}
+{
+   gcr_pkcs11_set_trust_lookup_uris
+   Memcheck:Leak
+   ...
+   fun:g_strdupv
+   fun:gcr_pkcs11_set_trust_lookup_uris
+}

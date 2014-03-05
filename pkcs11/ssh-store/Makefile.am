@@ -54,7 +54,7 @@ ssh_store_LIBS = \
 # check_ssh_module_LDADD = $(P11_TESTS_LIBS) $(LDADD)
 # p11-tests.conf.in
 
-TEST_PROGS += \
+ssh_store_TESTS = \
 	test-ssh-openssh \
 	test-private-key
 
@@ -64,11 +64,13 @@ test_ssh_openssh_LDADD = $(ssh_store_LIBS)
 test_private_key_SOURCES = pkcs11/ssh-store/test-private-key.c
 test_private_key_LDADD = $(ssh_store_LIBS)
 
+check_PROGRAMS += $(ssh_store_TESTS)
+TESTS += $(ssh_store_TESTS)
+
 noinst_LIBRARIES += libgkm-mock-ssh-module.a
 
 libgkm_mock_ssh_module_a_SOURCES = \
 	pkcs11/ssh-store/mock-ssh-module.c \
 	pkcs11/ssh-store/mock-ssh-module.h
 
-EXTRA_DIST += \
-	pkcs11/ssh-store/fixtures
+EXTRA_DIST += pkcs11/ssh-store/fixtures
