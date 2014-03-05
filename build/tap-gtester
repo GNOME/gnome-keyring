@@ -74,10 +74,11 @@ class GTestCompiler(NullCompiler):
                self.test_remaining.remove(self.test_name)
                self.test_num += 1
            elif cmd == "result":
-               if data == "OK":
-                   print "ok %d %s" % (self.test_num, self.test_name)
-               if data == "FAIL":
-                   print "not ok %d %s", (self.test_num, self.test_name)
+               if self.test_name:
+                   if data == "OK":
+                       print "ok %d %s" % (self.test_num, self.test_name)
+                   if data == "FAIL":
+                       print "not ok %d %s", (self.test_num, self.test_name)
                self.test_name = None
            elif cmd == "skipping":
                if "/subprocess" not in data:
@@ -150,6 +151,8 @@ def main(argv):
     format = args.format
     cmd = args.command
     proc = None
+
+    os.environ['HARNESS_ACTIVE'] = '1'
 
     if format in ["auto", "gtest"]:
         list_cmd = cmd + ["-l", "--verbose"]
