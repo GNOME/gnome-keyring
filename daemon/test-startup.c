@@ -177,6 +177,38 @@ test_control_badperm (Test *test,
 	g_free (directory);
 }
 
+static void
+test_control_xdghome (Test *test,
+                     gconstpointer unused)
+{
+	const gchar *argv[] = {
+		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		"--components=", NULL
+	};
+
+	gchar *directory;
+	gchar *expected;
+	GPid pid;
+	gchar **output;
+	gint status;
+
+	directory = g_build_filename (test->directory, "different", NULL);
+	output = gkd_test_launch_daemon (test->directory, argv, &pid,
+	                                 "XDG_RUNTIME_DIR", directory,
+	                                 NULL);
+
+	expected = g_build_filename (directory, "/keyring", NULL);
+	g_assert_cmpstr (g_environ_getenv (output, "GNOME_KEYRING_CONTROL"), ==, expected);
+	g_strfreev (output);
+
+	g_assert (gkd_control_quit (expected, 0));
+	g_assert_cmpint (waitpid (pid, &status, 0), ==, pid);
+	g_assert_cmpint (status, ==, 0);
+
+	g_free (directory);
+	g_free (expected);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -190,6 +222,8 @@ main (int argc, char **argv)
 	            setup, test_control_noaccess, teardown);
 	g_test_add ("/daemon/startup/control/badperm", Test, NULL,
 	            setup, test_control_badperm, teardown);
+	g_test_add ("/daemon/startup/control/xdghome", Test, NULL,
+	            setup, test_control_xdghome, teardown);
 
 	return g_test_run ();
 }

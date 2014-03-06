@@ -84,48 +84,70 @@ uninit_master_directory (gpointer data)
 	master_directory = NULL;
 }
 
+static gboolean
+validate_master_directory (const gchar *directory,
+                           gboolean *exists)
+{
+	struct stat st;
+
+	if (lstat (directory, &st) < 0) {
+		if (errno == ENOTDIR || errno == ENOENT) {
+			*exists = FALSE;
+			return TRUE;
+		}
+		g_message ("The gnome-keyring control directory cannot be accessed: %s: %s",
+		           directory, g_strerror (errno));
+		return FALSE;
+	} else if (st.st_uid != geteuid ()) {
+		g_message ("The gnome-keyring control directory is not owned with the same "
+		           "credentials as the user login: %s", directory);
+		return FALSE;
+	} else if ((st.st_mode & 0777) != 0700) {
+		g_message ("The gnome-keyring control directory has invalid permissions. It "
+		           "must be only be accessible by its owner (ie: 0700): %s", directory);
+		return FALSE;
+	} else {
+		*exists = TRUE;
+		return TRUE;
+	}
+}
+
 void
 gkd_util_init_master_directory (const gchar *replace)
 {
 	gboolean exists = FALSE;
-	gboolean valid = FALSE;
-	struct stat st;
 
-	if (replace) {
-		exists = TRUE;
-		if (lstat (replace, &st) < 0) {
-			if (errno == ENOTDIR || errno == ENOENT) {
-				exists = FALSE;
-				valid = TRUE;
-			}
-		} else if (st.st_uid != geteuid ()) {
-			g_message ("The gnome-keyring control directory is not owned with the same "
-			           "credentials as the user login: %s", replace);
-		} else if ((st.st_mode & 0777) != 0700) {
-			g_message ("The gnome-keyring control directory has invalid permissions. It "
-			           "must be only be accessible by its owner (ie: 0700): %s", replace);
-		} else {
-			valid = TRUE;
+	g_free (master_directory);
+	master_directory = NULL;
+
+	if (replace && validate_master_directory (replace, &exists)) {
+		master_directory = g_strdup (replace);
+
+	/* Only use default directory if it has an predictable explicit path */
+	} else if (g_getenv ("XDG_RUNTIME_DIR")) {
+		master_directory = g_build_filename (g_get_user_runtime_dir (), "keyring", NULL);
+		if (!validate_master_directory (master_directory, &exists)) {
+			g_free (master_directory);
+			master_directory = NULL;
 		}
 	}
 
-	/* Generate a new directory */
-	if (!valid) {
+	/* No directory yet, make one up */
+	if (!master_directory) {
 		master_directory = g_build_filename (g_get_user_runtime_dir (), "keyring-XXXXXX", NULL);
-		if (g_mkdtemp (master_directory) == NULL)
-			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
+		if (g_mkdtemp (master_directory) == NULL) {
+			g_warning ("couldn't create socket directory: %s: %s",
+			           master_directory, g_strerror (errno));
+		}
+		exists = TRUE;
+	}
 
 	/* A directory was supplied, but doesn't exist yet */
-	} else if (!exists) {
-		g_assert (replace);
-		master_directory = g_strdup (replace);
-		if (g_mkdir_with_parents (master_directory, 0700) < 0)
-			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
-
-	/* A valid existing directory was supplied */
-	} else {
-		g_assert (replace);
-		master_directory = g_strdup (replace);
+	if (!exists) {
+		if (g_mkdir_with_parents (master_directory, 0700) < 0) {
+			g_warning ("couldn't create socket directory: %s: %s",
+			           master_directory, g_strerror (errno));
+		}
 	}
 
 	gkd_util_push_environment (GKD_UTIL_ENV_CONTROL, master_directory);
