@@ -169,10 +169,14 @@ TESTS =
 
 ASN1_FILES =
 BUILT_SOURCES = prep-builddir
-CLEANFILES = $(BUILT_SOURCES)
 
 moduledir = $(pkcs11standalonedir)
 module_LTLIBRARIES =
+
+CLEANFILES = \
+	$(BUILT_SOURCES) \
+	*.gcno \
+	*.gcda
 
 EXTRA_DIST = \
 	intltool-extract.in \
