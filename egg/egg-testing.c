@@ -230,9 +230,9 @@ egg_tests_run_with_loop (void)
 	return ret;
 }
 
-static void
-copy_scratch_file (const gchar *filename,
-                   const gchar *directory)
+void
+egg_tests_copy_scratch_file (const gchar *directory,
+                             const gchar *filename)
 {
 	GError *error = NULL;
 	gchar *basename;
@@ -273,7 +273,7 @@ egg_tests_create_scratch_directory (const gchar *file_to_copy,
 	va_start (va, file_to_copy);
 
 	while (file_to_copy != NULL) {
-		copy_scratch_file (file_to_copy, directory);
+		egg_tests_copy_scratch_file (directory, file_to_copy);
 		file_to_copy = va_arg (va, const gchar *);
 	}
 
