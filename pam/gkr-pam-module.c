@@ -347,17 +347,23 @@ err:
 #endif
 
 static void
-setup_child (int inp[2], int outp[2], int errp[2], pam_handle_t *ph, struct passwd *pwd)
+setup_child (int inp[2],
+             int outp[2],
+             int errp[2],
+             pam_handle_t *ph,
+             struct passwd *pwd,
+             const char *argument)
 {
 	const char* display;
 	int i, ret;
 
-#ifdef VALGRIND 	
-	char *args[] = { VALGRIND, VALGRIND_ARG, GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
-#else
-	char *args[] = { GNOME_KEYRING_DAEMON, "--daemonize", "--login", NULL};
-#endif
-	
+	char *args[] = {
+		GNOME_KEYRING_DAEMON,
+		"--daemonize",
+		(char *)argument,
+		NULL
+	};
+
 #ifdef WITH_SELINUX
 	setup_selinux_context(GNOME_KEYRING_DAEMON);
 #endif
@@ -521,7 +527,8 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 		
 	/* This is the child */
 	case 0:
-		setup_child (inp, outp, errp, ph, pwd);
+		setup_child (inp, outp, errp, ph, pwd,
+		             password ? "--login" : NULL);
 		/* Should never be reached */
 		break;
 		
@@ -1053,9 +1060,11 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 	/* 
 	 * We always start the daemon here, and don't respect the auto_start
 	 * argument. Because if the password is being changed, then making 
-	 * the 'login' keyring match it is a priority. 
+	 * the 'login' keyring match it is a priority.
+	 *
+	 * Note that we don't pass in an unlock password, that happens below.
 	 */
-	ret = start_daemon_if_necessary (ph, pwd, original, &started_daemon);
+	ret = start_daemon_if_necessary (ph, pwd, NULL, &started_daemon);
 	if (ret != PAM_SUCCESS)
 		return ret;
 	
