@@ -90,6 +90,18 @@ ui
    Prompting the user, asking for passwords.
 
 
+TESTING
+----------
+
+Significant new code should be testable via:
+
+$ make check
+
+You check for memory errors by doing:
+
+$ make check-memory
+
+
 ----------------------------------------------------------------------------------
   CODING STYLE
 ----------------------------------------------------------------------------------
