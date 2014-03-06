@@ -51,7 +51,7 @@ pkcs11config_DATA = \
 	pkcs11/rpc-layer/gnome-keyring.module
 
 # -----------------------------------------------------------------------------
-# The test daemon
+# The tests
 
 gkm_rpc_daemon_standalone_SOURCES = \
 	pkcs11/rpc-layer/gkm-rpc-daemon-standalone.c
@@ -61,3 +61,22 @@ gkm_rpc_daemon_standalone_LDADD = \
 	$(GLIB_LIBS)
 gkm_rpc_daemon_standalone_CFLAGS = \
 	$(GLIB_CFLAGS)
+
+rpc_layer_CFLAGS = \
+	$(GCK_CFLAGS)
+
+rpc_layer_LIBS = \
+	libegg-test.la \
+	$(GCK_LIBS) \
+	$(GIO_LIBS) \
+	$(GLIB_LIBS)
+
+rpc_layer_TESTS = \
+	test-initialize
+
+test_initialize_SOURCES = pkcs11/rpc-layer/test-initialize.c
+test_initialize_LDADD = $(daemon_LIBS)
+test_initialize_CFLAGS = $(daemon_CFLAGS)
+
+check_PROGRAMS += $(rpc_layer_TESTS)
+TESTS += $(rpc_layer_TESTS)
