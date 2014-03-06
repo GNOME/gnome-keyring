@@ -37,13 +37,21 @@
 typedef struct {
   GSource source;             /* the parent GSource */
   DBusConnection *connection; /* the connection to dispatch */
+  GDestroyNotify closed_cb;   /* Callback when closed */
 } DBusGMessageQueue;
 
 static gboolean
 message_queue_prepare (GSource *source, gint *timeout)
 {
-	DBusConnection *connection = ((DBusGMessageQueue *)source)->connection;  
+	DBusGMessageQueue *queue = ((DBusGMessageQueue *)source);
+	DBusConnection *connection = queue->connection;
 	*timeout = -1;
+	if (queue->closed_cb) {
+		if (!dbus_connection_get_is_connected (connection)) {
+			(queue->closed_cb) (connection);
+			queue->closed_cb = NULL;
+		}
+	}
 	return (dbus_connection_get_dispatch_status (connection) == DBUS_DISPATCH_DATA_REMAINS);  
 }
 
@@ -95,7 +103,9 @@ typedef struct {
 } TimeoutHandler;
 
 static ConnectionSetup*
-connection_setup_new (GMainContext *context, DBusConnection *connection)
+connection_setup_new (GMainContext *context,
+                      DBusConnection *connection,
+                      GDestroyNotify closed_cb)
 {
 	ConnectionSetup *cs = g_new0 (ConnectionSetup, 1);
 	g_assert (context != NULL);
@@ -108,6 +118,7 @@ connection_setup_new (GMainContext *context, DBusConnection *connection)
 		cs->message_queue_source = g_source_new ((GSourceFuncs *) &message_queue_funcs,
 		                                         sizeof (DBusGMessageQueue));
 		((DBusGMessageQueue*)cs->message_queue_source)->connection = connection;
+		((DBusGMessageQueue*)cs->message_queue_source)->closed_cb = closed_cb;
 		g_source_attach (cs->message_queue_source, cs->context);
 	}
   
@@ -368,13 +379,15 @@ wakeup_main (void *data)
 }
 
 void
-egg_dbus_connect_with_mainloop (DBusConnection *connection, GMainContext *context)
+egg_dbus_connect_with_mainloop (DBusConnection *connection,
+                                GMainContext *context,
+                                GDestroyNotify close_callback)
 {
 	ConnectionSetup *cs;
   
 	if (context == NULL)
 		context = g_main_context_default ();
-	cs = connection_setup_new (context, connection);
+	cs = connection_setup_new (context, connection, close_callback);
 	the_setup = cs;
   
 	if (!dbus_connection_set_watch_functions (connection, add_watch,

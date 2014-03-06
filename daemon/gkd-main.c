@@ -81,6 +81,8 @@ typedef int socklen_t;
 
 EGG_SECURE_DECLARE (daemon_main);
 
+static GMainLoop *loop = NULL;
+
 /* -----------------------------------------------------------------------------
  * COMMAND LINE
  */
@@ -902,8 +904,6 @@ on_idle_initialize (gpointer data)
 int
 main (int argc, char *argv[])
 {
-	GMainLoop *loop;
-
 	/*
 	 * The gnome-keyring startup is not as simple as I wish it could be.
 	 *

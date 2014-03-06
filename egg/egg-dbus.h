@@ -27,7 +27,9 @@
 #include <glib.h>
 #include <dbus/dbus.h>
 
-void egg_dbus_connect_with_mainloop (DBusConnection *connection, GMainContext *context);
+void    egg_dbus_connect_with_mainloop     (DBusConnection *connection,
+                                            GMainContext *context,
+                                            GDestroyNotify close_callback);
 
 void egg_dbus_disconnect_from_mainloop (DBusConnection *connection, GMainContext *context);
 

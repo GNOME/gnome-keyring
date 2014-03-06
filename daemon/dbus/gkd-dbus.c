@@ -25,6 +25,7 @@
 #include "gkd-dbus.h"
 #include "gkd-dbus-private.h"
 
+#include "daemon/gkd-main.h"
 #include "daemon/gkd-util.h"
 
 #include "egg/egg-cleanup.h"
@@ -54,6 +55,13 @@ cleanup_session_bus (gpointer unused)
 	dbus_conn = NULL;
 }
 
+static void
+on_connection_close (gpointer user_data)
+{
+	g_debug ("dbus connection closed, exiting");
+	gkd_main_quit ();
+}
+
 static gboolean
 connect_to_session_bus (void)
 {
@@ -72,7 +80,7 @@ connect_to_session_bus (void)
 		return FALSE;
 	}
 
-	egg_dbus_connect_with_mainloop (dbus_conn, NULL);
+	egg_dbus_connect_with_mainloop (dbus_conn, NULL, on_connection_close);
 	dbus_connection_set_exit_on_disconnect (dbus_conn, FALSE);
 	egg_cleanup_register (cleanup_session_bus, NULL);
 	return TRUE;

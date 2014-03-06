@@ -76,11 +76,16 @@ daemon_LIBS = \
 	$(GLIB_LIBS)
 
 daemon_TESTS = \
-	test-startup
+	test-startup \
+	test-shutdown
 
 test_startup_SOURCES = daemon/test-startup.c
 test_startup_LDADD = $(daemon_LIBS)
 test_statrup_CFLAGS = $(daemon_CFLAGS)
+
+test_shutdown_SOURCES = daemon/test-shutdown.c
+test_shutdown_LDADD = $(daemon_LIBS)
+test_shutdown_CFLAGS = $(daemon_CFLAGS)
 
 check_PROGRAMS += $(daemon_TESTS)
 TESTS += $(daemon_TESTS)
