@@ -296,7 +296,7 @@ log_handler (const gchar *log_domain, GLogLevelFlags log_level,
 		level = LOG_INFO;
 		break;
 	case G_LOG_LEVEL_DEBUG:
-		level = LOG_DEBUG;
+		level = -1;
 		break;
 	default:
 		level = LOG_ERR;
@@ -304,10 +304,12 @@ log_handler (const gchar *log_domain, GLogLevelFlags log_level,
 	}
 
 	/* Log to syslog first */
-	if (log_domain)
-		syslog (level, "%s: %s", log_domain, message);
-	else
-		syslog (level, "%s", message);
+	if (level != -1) {
+		if (log_domain)
+			syslog (level, "%s: %s", log_domain, message);
+		else
+			syslog (level, "%s", message);
+	}
 
 	/* And then to default handler for aborting and stuff like that */
 	g_log_default_handler (log_domain, log_level, message, user_data);
