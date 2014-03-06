@@ -152,8 +152,6 @@ AC_CHECK_FUNCS(flock, AC_DEFINE(HAVE_FLOCK,1,[Have flock]))
 
 AC_CHECK_FUNCS(timegm, AC_DEFINE(HAVE_TIMEGM,1,[Have timegm]))
 
-dnl mkdtemp replacement from gettext
-AC_REPLACE_FUNCS(mkdtemp)
 AC_STAT_MACROS_BROKEN
   AC_CACHE_CHECK([for inttypes.h], jm_ac_cv_header_inttypes_h,
   [AC_TRY_COMPILE(

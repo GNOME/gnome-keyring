@@ -22,7 +22,6 @@
 
 #include "config.h"
 
-#include "egg-mkdtemp.h"
 #include "egg-testing.h"
 
 #include <glib/gstdio.h>
@@ -268,7 +267,7 @@ egg_tests_create_scratch_directory (const gchar *file_to_copy,
 	directory = g_strdup_printf ("/tmp/scratch-%s.XXXXXX", basename);
 	g_free (basename);
 
-	if (!egg_mkdtemp (directory))
+	if (!g_mkdtemp (directory))
 		g_assert_not_reached ();
 
 	va_start (va, file_to_copy);

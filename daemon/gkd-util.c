@@ -25,7 +25,6 @@
 #include "gkd-util.h"
 
 #include "egg/egg-cleanup.h"
-#include "egg/egg-mkdtemp.h"
 #include "egg/egg-unix-credentials.h"
 
 #include <glib.h>
@@ -113,7 +112,7 @@ gkd_util_init_master_directory (const gchar *replace)
 	/* Generate a new directory */
 	if (!valid) {
 		master_directory = g_build_filename (g_get_user_runtime_dir (), "keyring-XXXXXX", NULL);
-		if (egg_mkdtemp (master_directory) == NULL)
+		if (g_mkdtemp (master_directory) == NULL)
 			g_warning ("couldn't create socket directory: %s", g_strerror (errno));
 
 	/* A directory was supplied, but doesn't exist yet */

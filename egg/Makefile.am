@@ -28,7 +28,6 @@ libegg_la_SOURCES = \
 	egg/egg-hex.c egg/egg-hex.h \
 	egg/egg-hkdf.c egg/egg-hkdf.h \
 	egg/egg-libgcrypt.c egg/egg-libgcrypt.h \
-	egg/egg-mkdtemp.c egg/egg-mkdtemp.h \
 	egg/egg-oid.c egg/egg-oid.h \
 	egg/egg-padding.c egg/egg-padding.h \
 	egg/egg-openssl.c egg/egg-openssl.h \
@@ -105,7 +104,6 @@ libegg_hex_la_LIBS = \
 	$(GLIB_LIBS)
 
 libegg_test_la_SOURCES = \
-	egg/egg-mkdtemp.c egg/egg-mkdtemp.h \
 	egg/egg-testing.c egg/egg-testing.h
 
 libegg_test_la_CFLAGS = \

@@ -17,8 +17,6 @@
    <http://www.gnu.org/licenses/>.
 */
 
-/* Extracted from misc/mkdtemp.c and sysdeps/posix/tempname.c.  */
-
 #ifndef EGG_TIMEGM_H_
 #define EGG_TIMEGM_H_
 
