@@ -52,3 +52,35 @@ EXTRA_DIST += \
 CLEANFILES += \
 	$(service_DATA) \
 	$(desktop_DATA)
+
+# -------------------------------------------------------------------
+# TESTS
+
+noinst_LTLIBRARIES += libgkd-test.la
+
+libgkd_test_la_SOURCES = \
+	daemon/gkd-test.c \
+	daemon/gkd-test.h
+
+daemon_CFLAGS = \
+	$(DBUS_CFLAGS) \
+	$(GCR_CFLAGS)
+
+daemon_LIBS = \
+	libgkd-control-client.la \
+	libgkd-test.la \
+	libegg.la \
+	libegg-test.la \
+	$(GCR_BASE_LIBS) \
+	$(GIO_LIBS) \
+	$(GLIB_LIBS)
+
+daemon_TESTS = \
+	test-startup
+
+test_startup_SOURCES = daemon/test-startup.c
+test_startup_LDADD = $(daemon_LIBS)
+test_statrup_CFLAGS = $(daemon_CFLAGS)
+
+check_PROGRAMS += $(daemon_TESTS)
+TESTS += $(daemon_TESTS)

@@ -26,6 +26,8 @@
 
 #include "gkd-secret-types.h"
 
+#include "daemon/gkd-test.h"
+
 #include "egg/egg-testing.h"
 
 #include <glib/gstdio.h>
@@ -57,16 +59,6 @@ on_test_service_vanished (GDBusConnection *connection,
 	}
 }
 
-static void
-on_service_spawned (gpointer user_data)
-{
-	int fd;
-
-	fd = g_open ("/dev/null", O_WRONLY, 0);
-	if (fd != -1)
-		dup2 (fd, 1);
-}
-
 void
 test_service_setup (TestService *test)
 {
@@ -75,7 +67,7 @@ test_service_setup (TestService *test)
 	GVariant *output;
 	gchar **env;
 
-	gchar *args[] = {
+	const gchar *args[] = {
 		BUILDDIR "/gnome-keyring-daemon",
 		"--foreground",
 		"--control-directory",
@@ -97,21 +89,10 @@ test_service_setup (TestService *test)
 		SRCDIR "/daemon/dbus/fixtures/test.keyring",
 		NULL);
 
-	/* The schema directory */
-	env = g_get_environ ();
-	env = g_environ_setenv (env, "GSETTINGS_SCHEMA_DIR", BUILDDIR "/schema", TRUE);
-	env = g_environ_setenv (env, "GNOME_KEYRING_TEST_PATH", test->directory, TRUE);
-	env = g_environ_setenv (env, "GNOME_KEYRING_TEST_SERVICE", test->bus_name, TRUE);
-	if (test->mock_prompter)
-		env = g_environ_setenv (env, "GNOME_KEYRING_TEST_PROMPTER", test->mock_prompter, TRUE);
-
-	if (!g_spawn_async (NULL, args, env,
-	                    G_SPAWN_LEAVE_DESCRIPTORS_OPEN | G_SPAWN_DO_NOT_REAP_CHILD,
-	                    on_service_spawned, test, &test->pid, &error)) {
-		g_error ("couldn't start gnome-keyring-daemon for testing: %s", error->message);
-		g_assert_not_reached ();
-	}
-
+	env = gkd_test_launch_daemon (test->directory, args, &test->pid,
+	                              "GNOME_KEYRING_TEST_SERVICE", test->bus_name,
+	                              test->mock_prompter ? "GNOME_KEYRING_TEST_PROMPTER" : NULL, test->mock_prompter,
+	                              NULL);
 	g_strfreev (env);
 
 	if (!test->available) {

@@ -70,6 +70,7 @@ daemon_dbus_CFLAGS = \
 daemon_dbus_LIBS = \
 	libtestservice.la \
 	libgkd-dbus.la \
+	libgkd-test.la \
 	libegg-test.la \
 	$(GCR_BASE_LIBS) \
 	$(GIO_LIBS) \
