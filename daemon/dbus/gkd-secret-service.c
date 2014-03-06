@@ -87,6 +87,16 @@ default_path (GkdSecretService *self)
 	gchar *old_directory;
 	gchar *new_directory;
 
+#if WITH_DEBUG
+	if (self->alias_directory == NULL) {
+		const gchar *path = g_getenv ("GNOME_KEYRING_TEST_PATH");
+		if (path && path[0]) {
+			self->alias_directory = g_strdup (path);
+			g_debug ("Alias directory was overridden by tests: %s", path);
+		}
+	}
+#endif
+
 	if (self->alias_directory == NULL) {
 		new_directory = g_build_filename (g_get_user_data_dir (), "keyrings", NULL);
 		old_directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
