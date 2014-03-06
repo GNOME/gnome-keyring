@@ -811,25 +811,6 @@ on_login_timeout (gpointer data)
 	return FALSE;
 }
 
-static gboolean
-on_idle_initialize (gpointer data)
-{
-	gkr_daemon_initialize_steps (run_components);
-
-	/*
-	 * Close stdout and so that the caller knows that we're
-	 * all initialized, (when run in foreground mode).
-	 *
-	 * However since some logging goes to stdout, redirect that
-	 * to stderr. We don't want the caller confusing that with
-	 * valid output anyway.
-	 */
-	if (dup2 (2, 1) < 1)
-		g_warning ("couldn't redirect stdout to stderr");
-
-	return FALSE; /* don't run again */
-}
-
 int
 main (int argc, char *argv[])
 {
@@ -960,8 +941,22 @@ main (int argc, char *argv[])
 	prepare_logging();
 
 	/* Remainder initialization after forking, if initialization not delayed */
-	if (!run_for_login)
-		g_idle_add (on_idle_initialize, NULL);
+	if (!run_for_login) {
+		gkr_daemon_initialize_steps (run_components);
+
+		/*
+		 * Close stdout and so that the caller knows that we're
+		 * all initialized, (when run in foreground mode).
+		 *
+		 * However since some logging goes to stdout, redirect that
+		 * to stderr. We don't want the caller confusing that with
+		 * valid output anyway.
+		 */
+		if (dup2 (2, 1) < 1)
+			g_warning ("couldn't redirect stdout to stderr");
+
+		g_debug ("initialization complete");
+	}
 
 	g_main_loop_run (loop);
 
