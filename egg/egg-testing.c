@@ -285,23 +285,15 @@ egg_tests_create_scratch_directory (const gchar *file_to_copy,
 void
 egg_tests_remove_scratch_directory (const gchar *directory)
 {
-	GDir *dir;
+	gchar *argv[] = { "rm", "-r", (gchar *)directory, NULL };
 	GError *error = NULL;
-	const gchar *name;
-	gchar *filename;
+	gint rm_status;
 
-	dir = g_dir_open (directory, 0, &error);
+	g_assert_cmpstr (directory, !=, "");
+	g_assert_cmpstr (directory, !=, "/");
+
+	g_spawn_sync (NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL,
+	              NULL, NULL, NULL, &rm_status, &error);
 	g_assert_no_error (error);
-
-	while ((name = g_dir_read_name (dir)) != NULL) {
-		filename = g_build_filename (directory, name, NULL);
-		if (g_unlink (filename) < 0)
-			g_assert_not_reached ();
-		g_free (filename);
-	}
-
-	g_dir_close (dir);
-
-	if (g_rmdir (directory) < 0)
-		g_assert_not_reached ();
+	g_assert_cmpint (rm_status, ==, 0);
 }
