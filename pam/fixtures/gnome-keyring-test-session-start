@@ -1,0 +1,8 @@
+auth        required      @abs_builddir@/.libs/pam_mock.so
+auth        required      @abs_builddir@/.libs/pam_gnome_keyring.so
+
+password    required      @abs_builddir@/.libs/pam_mock.so
+password    required      @abs_builddir@/.libs/pam_gnome_keyring.so use_authtok
+
+session     required      @abs_builddir@/.libs/pam_mock.so
+session     required      @abs_builddir@/.libs/pam_gnome_keyring.so auto_start

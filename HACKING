@@ -101,6 +101,12 @@ You check for memory errors by doing:
 
 $ make check-memory
 
+To test the pam code, you must first place some custom PAM configuration
+in your /etc/pam.d. This will not be used by anything else. To do this:
+
+$ sudo make enable-pam-tests
+$ sudo make disable-pam-tests
+
 
 ----------------------------------------------------------------------------------
   CODING STYLE

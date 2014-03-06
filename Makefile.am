@@ -129,6 +129,8 @@ SED_SUBST = sed \
 	-e 's,[@]prefix[@],$(prefix),g' \
 	-e 's,[@]abs_srcdir[@],$(abs_srcdir),g' \
 	-e 's,[@]srcdir[@],$(srcdir),g' \
+	-e 's,[@]builddir[@],$(builddir),g' \
+	-e 's,[@]abs_builddir[@],$(abs_builddir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]VERSION[@],$(VERSION),g' \
 	$(NULL)
