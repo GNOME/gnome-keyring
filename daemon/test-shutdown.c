@@ -72,6 +72,36 @@ teardown (Test *test,
 }
 
 static void
+test_sigterm (Test *test,
+              gconstpointer unused)
+{
+	const gchar *argv[] = {
+		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		"--components=secrets,pkcs11", NULL
+	};
+
+	const gchar *control;
+	gchar **output;
+	gint status;
+	GPid pid;
+
+	output = gkd_test_launch_daemon (test->directory, argv, &pid, NULL);
+
+	control = g_environ_getenv (output, "GNOME_KEYRING_CONTROL");
+	g_assert_cmpstr (control, !=, NULL);
+
+	g_assert (gkd_control_unlock (control, "booo"));
+	g_strfreev (output);
+
+	/* Terminate the daemon */
+	g_assert_cmpint (kill (pid, SIGTERM), ==, 0);
+
+	/* Daemon should exit cleanly */
+	g_assert_cmpint (waitpid (pid, &status, 0), ==, pid);
+	g_assert_cmpint (status, ==, 0);
+}
+
+static void
 test_close_connection (Test *test,
                        gconstpointer unused)
 {
@@ -110,6 +140,8 @@ main (int argc, char **argv)
 
 	g_test_add ("/daemon/shutdown/dbus-connection", Test, NULL,
 	            setup, test_close_connection, teardown);
+	g_test_add ("/daemon/shutdown/sigterm", Test, NULL,
+	            setup, test_sigterm, teardown);
 
 	return g_test_run ();
 }

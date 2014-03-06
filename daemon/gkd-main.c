@@ -61,6 +61,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
+#include <glib-unix.h>
 
 #include <gcrypt.h>
 
@@ -80,8 +81,6 @@ typedef int socklen_t;
 #define GKD_COMP_GPG        "gpg"
 
 EGG_SECURE_DECLARE (daemon_main);
-
-static GMainLoop *loop = NULL;
 
 /* -----------------------------------------------------------------------------
  * COMMAND LINE
@@ -127,8 +126,7 @@ static gchar* login_password = NULL;
 static gchar* control_directory = NULL;
 static guint timeout_id = 0;
 static gboolean initialization_completed = FALSE;
-static gboolean sig_thread_valid = FALSE;
-static pthread_t sig_thread;
+static GMainLoop *loop = NULL;
 
 static GOptionEntry option_entries[] = {
 	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
@@ -396,96 +394,27 @@ dump_diagnostics (void)
  * SIGNALS
  */
 
-static sigset_t signal_set;
-static gint signal_quitting = 0;
-
-static gpointer
-signal_thread (gpointer user_data)
-{
-	GMainLoop *loop = user_data;
-	int sig, err;
-
-	for (;;) {
-		err = sigwait (&signal_set, &sig);
-		if (err != EINTR && err != 0) {
-			g_warning ("couldn't wait for signals: %s", g_strerror (err));
-			return NULL;
-		}
-
-		switch (sig) {
-		case SIGUSR1:
-#ifdef WITH_DEBUG
-			dump_diagnostics ();
-#endif /* WITH_DEBUG */
-			break;
-		case SIGPIPE:
-			/* Ignore */
-			break;
-		case SIGHUP:
-		case SIGTERM:
-			g_atomic_int_set (&signal_quitting, 1);
-			g_main_loop_quit (loop);
-			return NULL;
-		default:
-			g_warning ("received unexpected signal when waiting for signals: %d", sig);
-			break;
-		}
-	}
-
-	g_assert_not_reached ();
-	return NULL;
-}
-
-static void
-setup_signal_handling (GMainLoop *loop)
-{
-	int res;
-
-	/*
-	 * Block these signals for this thread, and any threads
-	 * started up after this point (so essentially all threads).
-	 *
-	 * We also start a signal handling thread which uses signal_set
-	 * to catch the various signals we're interested in.
-	 */
-
-	sigemptyset (&signal_set);
-	sigaddset (&signal_set, SIGPIPE);
-	sigaddset (&signal_set, SIGHUP);
-	sigaddset (&signal_set, SIGTERM);
-	sigaddset (&signal_set, SIGUSR1);
-	pthread_sigmask (SIG_BLOCK, &signal_set, NULL);
-
-	res = pthread_create (&sig_thread, NULL, signal_thread, loop);
-	if (res == 0) {
-		sig_thread_valid = TRUE;
-	} else {
-		g_warning ("couldn't startup thread for signal handling: %s",
-		           g_strerror (res));
-	}
-}
-
 void
 gkd_main_quit (void)
 {
-	/*
-	 * Send a signal to terminate our signal thread,
-	 * which in turn runs stops the main loop and that
-	 * starts the shutdown process.
-	 */
-
-	if (sig_thread_valid)
-		pthread_kill (sig_thread, SIGTERM);
-	else
-		raise (SIGTERM);
+	g_main_loop_quit (loop);
 }
 
-static void
-cleanup_signal_handling (void)
+static gboolean
+on_signal_term (gpointer user_data)
 {
-	/* The thread is not joinable, so cleans itself up */
-	if (!g_atomic_int_get (&signal_quitting))
-		g_warning ("gkr_daemon_quit() was not used to shutdown the daemon");
+	gkd_main_quit ();
+	g_debug ("received signal, terminating");
+	return FALSE;
+}
+
+static gboolean
+on_signal_usr1 (gpointer user_data)
+{
+#ifdef WITH_DEBUG
+	dump_diagnostics ();
+#endif
+	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------
@@ -1018,10 +947,14 @@ main (int argc, char *argv[])
 			cleanup_and_exit (1);
 	}
 
+	signal (SIGPIPE, SIG_IGN);
+
 	/* The whole forking and daemonizing dance starts here. */
 	fork_and_print_environment();
 
-	setup_signal_handling (loop);
+	g_unix_signal_add (SIGTERM, on_signal_term, loop);
+	g_unix_signal_add (SIGHUP, on_signal_term, loop);
+	g_unix_signal_add (SIGUSR1, on_signal_usr1, loop);
 
 	/* Prepare logging a second time, since we may be in a different process */
 	prepare_logging();
@@ -1035,10 +968,8 @@ main (int argc, char *argv[])
 	/* This wraps everything up in order */
 	egg_cleanup_perform ();
 
-	/* Wrap up signal handling here */
-	cleanup_signal_handling ();
-
 	g_free (control_directory);
 
+	g_debug ("exiting cleanly");
 	return 0;
 }

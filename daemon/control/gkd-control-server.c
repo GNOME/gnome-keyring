@@ -241,8 +241,19 @@ control_process (EggBuffer *req, GIOChannel *channel)
 	if (cdata) {
 		g_return_if_fail (!egg_buffer_has_error (&cdata->buffer));
 		egg_buffer_set_uint32 (&cdata->buffer, 0, cdata->buffer.len);
-		g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, G_IO_OUT | G_IO_HUP,
-		                     control_output, cdata, control_data_free);
+
+		/* Can't send response in main loop, send here */
+		if (op == GKD_CONTROL_OP_QUIT) {
+			if (write (g_io_channel_unix_get_fd (channel),
+			           cdata->buffer.buf, cdata->buffer.len) != cdata->buffer.len)
+				g_message ("couldn't write response to close control request");
+			control_data_free (cdata);
+
+		/* Any other response, send in the main loop */
+		} else {
+			g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, G_IO_OUT | G_IO_HUP,
+			                     control_output, cdata, control_data_free);
+		}
 	}
 }
 
