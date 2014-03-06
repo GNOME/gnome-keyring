@@ -43,9 +43,13 @@ calculate_secrets_slot (void)
 	GckModule *module;
 	GList *modules;
 	GError *err = NULL;
+	CK_FUNCTION_LIST_PTR funcs;
 
 	/* TODO: Should we be handling just one module here? */
-	module = gck_module_new (gkd_pkcs11_get_functions ());
+	funcs = gkd_pkcs11_get_functions ();
+	g_return_val_if_fail (funcs != NULL, NULL);
+
+	module = gck_module_new (funcs);
 	g_return_val_if_fail (module, NULL);
 
 	modules = g_list_prepend (NULL, module);
