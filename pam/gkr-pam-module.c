@@ -605,35 +605,6 @@ done:
 }
 
 static int
-start_daemon_if_necessary (pam_handle_t *ph, struct passwd *pwd, 
-                           const char *password, int* started)
-{
-	const char *control;
-	int ret;
-
-	*started = 0;
-
-	/* See if it's already running, and transfer env variables */
-	control = get_any_env (ph, ENV_CONTROL);
-	if (control) {
-		ret = setup_pam_env (ph, ENV_CONTROL, control);
-		if (ret != PAM_SUCCESS) {
-			syslog (GKR_LOG_ERR, "gkr-pam: couldn't set environment variables: %s",
-			        pam_strerror (ph, ret));
-			return ret;
-		}
-		
-		/* Daemon is already running */
-		return PAM_SUCCESS;
-	}
-
-	/* Not running, start process */
-	ret = start_daemon (ph, pwd, password);
-	*started = (ret == PAM_SUCCESS);
-	return ret;
-}
-
-static int
 stop_daemon (pam_handle_t *ph, struct passwd *pwd)
 {
 	const char *spid = NULL;
@@ -675,7 +646,10 @@ done:
 }
 
 static int
-unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
+unlock_keyring (pam_handle_t *ph,
+                struct passwd *pwd,
+                const char *password,
+                int *need_daemon)
 {
 	const char *control;
 	int res;
@@ -685,18 +659,15 @@ unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 	assert (password);
 
 	control = get_any_env (ph, ENV_CONTROL);
-	if (!control) {
-		syslog (GKR_LOG_WARN, "gkr-pam: couldn't unlock login keyring: %s",
-		        "gnome-keyring-daemon is not running");
-		return PAM_SERVICE_ERR;
-	}
-	
 	argv[0] = password;
 
 	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_UNLOCK, 1, argv);
-
 	/* An error unlocking */
-	if (res == GKD_CONTROL_RESULT_DENIED) {
+	if (res == GKD_CONTROL_RESULT_NO_DAEMON) {
+		if (need_daemon)
+			*need_daemon = 1;
+		return PAM_SERVICE_ERR;
+	} else if (res == GKD_CONTROL_RESULT_DENIED) {
 		syslog (GKR_LOG_ERR, "gkr-pam: the password for the login keyring was invalid.");
 		return PAM_SERVICE_ERR;
 	} else if (res != GKD_CONTROL_RESULT_OK) {
@@ -709,8 +680,11 @@ unlock_keyring (pam_handle_t *ph, struct passwd *pwd, const char *password)
 }
 
 static int
-change_keyring_password (pam_handle_t *ph, struct passwd *pwd, 
-                         const char *password, const char *original)
+change_keyring_password (pam_handle_t *ph,
+                         struct passwd *pwd,
+                         const char *password,
+                         const char *original,
+                         int *need_daemon)
 {
 	const char *control;
 	const char *argv[3];
@@ -721,19 +695,17 @@ change_keyring_password (pam_handle_t *ph, struct passwd *pwd,
 	assert (original);
 
 	control = get_any_env (ph, ENV_CONTROL);
-	if (!control) {
-		syslog (GKR_LOG_WARN, "gkr-pam: couldn't change password on login keyring: %s",
-		        "gnome-keyring-daemon is not running");
-		return PAM_SERVICE_ERR;
-	}
-	
 	argv[0] = original;
 	argv[1] = password;
 	
 	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_CHANGE, 2, argv);
 
+	if (res == GKD_CONTROL_RESULT_NO_DAEMON) {
+		if (need_daemon)
+			*need_daemon = 1;
+		return PAM_SERVICE_ERR;
 	/* No keyring, not an error. Will be created at initial authenticate. */
-	if (res == GKD_CONTROL_RESULT_DENIED) {
+	} else if (res == GKD_CONTROL_RESULT_DENIED) {
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't change password for the login keyring: the passwords didn't match.");
 		return PAM_SERVICE_ERR;
 	} else if (res != GKD_CONTROL_RESULT_OK) {
@@ -835,8 +807,7 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 {
 	struct passwd *pwd;
 	const char *user, *password;
-	const char *control;
-	int started_daemon;
+	int need_daemon = 0;
 	uint args;
 	int ret;
 	
@@ -870,36 +841,24 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 		return PAM_SUCCESS;
 	}
 
-	started_daemon = 0;
+	ret = unlock_keyring (ph, pwd, password, &need_daemon);
+	if (ret != PAM_SUCCESS && need_daemon) {
+		if (args & ARG_AUTO_START) {
+			/* If we started the daemon, its already unlocked, since we passed the password */
+			ret = start_daemon (ph, pwd, password);
 
-	/* Should we start the daemon? */
-	if (args & ARG_AUTO_START) {
-		ret = start_daemon_if_necessary (ph, pwd, password, &started_daemon);
-		if (ret != PAM_SUCCESS)
-			return ret;
-	}
-
-	control = get_any_env (ph, ENV_CONTROL);
-
-	/* If gnome keyring is running, then unlock now */
-	if (control) {
-		/* If we started the daemon, its already unlocked, since we passed the password */
-		if (!started_daemon) {
-			ret = unlock_keyring (ph, pwd, password);
-			if (ret != PAM_SUCCESS)
-				return ret;
-		}
-		
-	/* Otherwise start later in open session, store password */
-	} else {
-		if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
-		                  cleanup_free_password) != PAM_SUCCESS) {
+		/* Otherwise start later in open session, store password */
+		} else if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
+		                         cleanup_free_password) != PAM_SUCCESS) {
 			syslog (GKR_LOG_ERR, "gkr-pam: error storing authtok");
 			return PAM_AUTHTOK_RECOVER_ERR;
-		}
- 	}
 
-	return PAM_SUCCESS;
+		} else {
+			ret = PAM_SUCCESS;
+		}
+	}
+
+	return ret;
 }
 
 PAM_EXTERN int
@@ -909,7 +868,7 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 	struct passwd *pwd;
 	int ret;
 	uint args;
-	int started_daemon;
+	int need_daemon = 0;
 
 	args = parse_args (ph, argc, argv);
 
@@ -942,23 +901,12 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 		password = NULL;
 	}
 	
-	started_daemon = 0;
-	
-	/* Should we start the daemon? */
-	if (args & ARG_AUTO_START) {
-		ret = start_daemon_if_necessary (ph, pwd, password, &started_daemon);
-		if (ret != PAM_SUCCESS)
-			return ret;
+	if (args & ARG_AUTO_START || password) {
+		ret = unlock_keyring (ph, pwd, password, &need_daemon);
+		if (ret != PAM_SUCCESS && need_daemon && (args & ARG_AUTO_START))
+			ret = start_daemon (ph, pwd, password);
 	}
 
-	/* If gnome keyring is running, but we didn't start it here, then unlock now */
-	if (get_any_env (ph, ENV_CONTROL) != NULL) {
-		if (!started_daemon && password != NULL) {
-			if (unlock_keyring (ph, pwd, password) != PAM_SUCCESS)
-				return PAM_SERVICE_ERR;
-		}
-	}
-	
 	return PAM_SUCCESS;
 }
 
@@ -1022,7 +970,8 @@ static int
 pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 {
 	const char *password, *original;
-	int ret, started_daemon = 0;
+	int need_daemon = 0;
+	int ret;
 	
 	ret = pam_get_item (ph, PAM_OLDAUTHTOK, (const void**)&original);
 	if (ret != PAM_SUCCESS || original == NULL) {
@@ -1056,29 +1005,29 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 			return PAM_AUTHTOK_RECOVER_ERR;
 		}
 	}
-	
-	/* 
-	 * We always start the daemon here, and don't respect the auto_start
-	 * argument. Because if the password is being changed, then making 
-	 * the 'login' keyring match it is a priority.
-	 *
-	 * Note that we don't pass in an unlock password, that happens below.
-	 */
-	ret = start_daemon_if_necessary (ph, pwd, NULL, &started_daemon);
-	if (ret != PAM_SUCCESS)
-		return ret;
-	
-	ret = change_keyring_password (ph, pwd, password, original);
 
-	/* if not auto_start, kill the daemon if we started it: we don't want
-	 * it to stay */
-	if (started_daemon && !(args & ARG_AUTO_START))
-		stop_daemon (ph, pwd);
+	ret = change_keyring_password (ph, pwd, password, original, &need_daemon);
+	if (ret != PAM_SUCCESS && need_daemon) {
 
-	if (ret != PAM_SUCCESS)
-		return ret;
-		
-	return PAM_SUCCESS;
+		/*
+		 * We always start the daemon here, and don't respect the auto_start
+		 * argument. Because if the password is being changed, then making
+		 * the 'login' keyring match it is a priority.
+		 *
+		 * Note that we don't pass in an unlock password, that happens below.
+		 */
+		ret = start_daemon (ph, pwd, NULL);
+		if (ret == PAM_SUCCESS) {
+			ret = change_keyring_password (ph, pwd, password, original, NULL);
+
+			/* if not auto_start, kill the daemon if we started it: we don't want
+			 * it to stay */
+			if (!(args & ARG_AUTO_START))
+				stop_daemon (ph, pwd);
+		}
+	}
+
+	return ret;
 }
 
 PAM_EXTERN int

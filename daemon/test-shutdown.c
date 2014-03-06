@@ -77,20 +77,17 @@ test_sigterm (Test *test,
 {
 	const gchar *argv[] = {
 		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		"--control-directory", test->directory,
 		"--components=secrets,pkcs11", NULL
 	};
 
-	const gchar *control;
 	gchar **output;
 	gint status;
 	GPid pid;
 
 	output = gkd_test_launch_daemon (test->directory, argv, &pid, NULL);
 
-	control = g_environ_getenv (output, "GNOME_KEYRING_CONTROL");
-	g_assert_cmpstr (control, !=, NULL);
-
-	g_assert (gkd_control_unlock (control, "booo"));
+	g_assert (gkd_control_unlock (test->directory, "booo"));
 	g_strfreev (output);
 
 	/* Terminate the daemon */
@@ -107,20 +104,17 @@ test_close_connection (Test *test,
 {
 	const gchar *argv[] = {
 		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		"--control-directory", test->directory,
 		"--components=secrets,pkcs11", NULL
 	};
 
-	const gchar *control;
 	gchar **output;
 	gint status;
 	GPid pid;
 
 	output = gkd_test_launch_daemon (test->directory, argv, &pid, NULL);
 
-	control = g_environ_getenv (output, "GNOME_KEYRING_CONTROL");
-	g_assert_cmpstr (control, !=, NULL);
-
-	g_assert (gkd_control_unlock (control, "booo"));
+	g_assert (gkd_control_unlock (test->directory, "booo"));
 	g_strfreev (output);
 
 	/* Now close the dbus connection */

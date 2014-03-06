@@ -1198,6 +1198,17 @@ rpc_C_Initialize (CK_VOID_PTR init_args)
 					goto done;
 				}
 				sprintf (pkcs11_socket_path, "%s/pkcs11", path);
+			} else {
+				path = getenv ("XDG_RUNTIME_DIR");
+				if (path) {
+					pkcs11_socket_path = malloc (strlen (path) + strlen ("/keyring/pkcs11") + 1);
+					if (pkcs11_socket_path == NULL) {
+						warning (("can't malloc memory"));
+						ret = CKR_HOST_MEMORY;
+						goto done;
+					}
+					sprintf (pkcs11_socket_path, "%s/keyring/pkcs11", path);
+				}
 			}
 		}
 

@@ -116,6 +116,7 @@ void
 gkd_util_init_master_directory (const gchar *replace)
 {
 	gboolean exists = FALSE;
+	gboolean is_default = FALSE;
 
 	g_free (master_directory);
 	master_directory = NULL;
@@ -126,7 +127,9 @@ gkd_util_init_master_directory (const gchar *replace)
 	/* Only use default directory if it has an predictable explicit path */
 	} else if (g_getenv ("XDG_RUNTIME_DIR")) {
 		master_directory = g_build_filename (g_get_user_runtime_dir (), "keyring", NULL);
-		if (!validate_master_directory (master_directory, &exists)) {
+		if (validate_master_directory (master_directory, &exists)) {
+			is_default = TRUE;
+		} else {
 			g_free (master_directory);
 			master_directory = NULL;
 		}
@@ -150,7 +153,8 @@ gkd_util_init_master_directory (const gchar *replace)
 		}
 	}
 
-	gkd_util_push_environment (GKD_UTIL_ENV_CONTROL, master_directory);
+	if (!is_default)
+		gkd_util_push_environment (GKD_UTIL_ENV_CONTROL, master_directory);
 	egg_cleanup_register (uninit_master_directory, NULL);
 }
 

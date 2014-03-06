@@ -192,13 +192,14 @@ test_control_xdghome (Test *test,
 	gchar **output;
 	gint status;
 
+	/* Control directory not printed when default */
 	directory = g_build_filename (test->directory, "different", NULL);
 	output = gkd_test_launch_daemon (test->directory, argv, &pid,
 	                                 "XDG_RUNTIME_DIR", directory,
 	                                 NULL);
 
 	expected = g_build_filename (directory, "/keyring", NULL);
-	g_assert_cmpstr (g_environ_getenv (output, "GNOME_KEYRING_CONTROL"), ==, expected);
+	g_assert_cmpstr (g_environ_getenv (output, "GNOME_KEYRING_CONTROL"), ==, NULL);
 	g_strfreev (output);
 
 	g_assert (gkd_control_quit (expected, 0));
@@ -207,6 +208,41 @@ test_control_xdghome (Test *test,
 
 	g_free (directory);
 	g_free (expected);
+}
+
+static void
+test_daemon_replace (Test *test,
+                     gconstpointer unused)
+{
+	const gchar *argv[] = {
+		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		"--components=", NULL
+	};
+
+	const gchar *replace[] = {
+		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		"--replace", "--components=", NULL
+	};
+
+	gchar **output;
+	gint status;
+	GPid pid;
+
+	/* Start the first daemon */
+	output = gkd_test_launch_daemon (test->directory, argv, &pid,
+	                                 "XDG_RUNTIME_DIR", "/tmp/keyring-test-two",
+	                                 NULL);
+	g_free (output);
+
+	/* Replace with the second daemon */
+	output = gkd_test_launch_daemon (test->directory, replace, &test->pid,
+	                                 "XDG_RUNTIME_DIR", "/tmp/keyring-test-two",
+	                                 NULL);
+	g_free (output);
+
+	/* The first daemon should have exited cleanly here */
+	g_assert_cmpint (waitpid (pid, &status, 0), ==, pid);
+	g_assert_cmpint (status, ==, 0);
 }
 
 int
@@ -224,6 +260,9 @@ main (int argc, char **argv)
 	            setup, test_control_badperm, teardown);
 	g_test_add ("/daemon/startup/control/xdghome", Test, NULL,
 	            setup, test_control_xdghome, teardown);
+
+	g_test_add ("/daemon/startup/replace", Test, NULL,
+	            setup, test_daemon_replace, teardown);
 
 	return g_test_run ();
 }

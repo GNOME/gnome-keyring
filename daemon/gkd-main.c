@@ -577,6 +577,16 @@ discover_other_daemon (DiscoverFunc callback, gboolean acquire)
 			return TRUE;
 	}
 
+	/* Or the default location when no evironment variable */
+	control_env = g_getenv ("XDG_RUNTIME_DIR");
+	if (control_env) {
+		control = g_build_filename (control_env, "keyring", NULL);
+		ret = (callback) (control);
+		g_free (control);
+		if (ret == TRUE)
+			return TRUE;
+	}
+
 	/* See if we can contact a daemon running, that didn't set an env variable */
 	if (acquire && !gkd_dbus_singleton_acquire (&acquired))
 		return FALSE;

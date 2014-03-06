@@ -48,6 +48,9 @@ setup (Test *test,
 	g_test_dbus_up (test->dbus);
 
 	test->directory = egg_tests_create_scratch_directory (NULL, NULL);
+
+	g_unsetenv ("GNOME_KEYRING_CONTROL");
+	g_setenv ("XDG_RUNTIME_DIR", test->directory, TRUE);
 }
 
 static void
@@ -87,7 +90,41 @@ test_initialize_normal (Test *test,
 	/* Start the first daemon */
 	output = gkd_test_launch_daemon (test->directory, argv, &test->pid, NULL);
 	control = g_environ_getenv (output, "GNOME_KEYRING_CONTROL");
-	g_assert_cmpstr (control, !=, NULL);
+	g_assert_cmpstr (control, ==, NULL);
+	g_strfreev (output);
+
+	module = gck_module_initialize (BUILDDIR "/.libs/gnome-keyring-pkcs11.so",
+	                                NULL, &error);
+	g_assert_no_error (error);
+
+	info = gck_module_get_info (module);
+	g_assert (info != NULL);
+	g_assert_cmpstr (info->library_description, ==, "GNOME Keyring Daemon Core");
+	gck_module_info_free (info);
+
+	g_object_unref (module);
+}
+
+static void
+test_initialize_control (Test *test,
+                         gconstpointer unused)
+{
+	const gchar *argv[] = {
+		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		"--control-directory", test->directory,
+		"--components=pkcs11", NULL
+	};
+
+	const gchar *control;
+	gchar **output;
+	GckModule *module;
+	GckModuleInfo *info;
+	GError *error = NULL;
+
+	/* Start the first daemon */
+	output = gkd_test_launch_daemon (test->directory, argv, &test->pid, NULL);
+	control = g_environ_getenv (output, "GNOME_KEYRING_CONTROL");
+	g_assert_cmpstr (control, ==, test->directory);
 	g_setenv ("GNOME_KEYRING_CONTROL", control, TRUE);
 	g_strfreev (output);
 
@@ -113,6 +150,7 @@ test_initialize_no_daemon (Test *test,
 
 	/* No daemon to connect to */
 	g_unsetenv ("GNOME_KEYRING_CONTROL");
+	g_unsetenv ("XDG_RUNTIME_DIR");
 
 	module = gck_module_initialize (BUILDDIR "/.libs/gnome-keyring-pkcs11.so",
 	                                NULL, &error);
@@ -133,6 +171,8 @@ main (int argc, char **argv)
 
 	g_test_add ("/pkcs11/rpc-layer/initialize/normal", Test, NULL,
 	            setup, test_initialize_normal, teardown);
+	g_test_add ("/pkcs11/rpc-layer/initialize/control", Test, NULL,
+	            setup, test_initialize_control, teardown);
 	g_test_add ("/pkcs11/rpc-layer/initialize/no-daemon", Test, NULL,
 	            setup, test_initialize_no_daemon, teardown);
 

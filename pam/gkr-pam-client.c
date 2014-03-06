@@ -142,73 +142,100 @@ write_credentials_byte (int sock)
 }
 
 static int
-connect_to_daemon (const char *control)
+lookup_daemon (const char *control,
+               struct sockaddr_un *addr)
 {
-	struct sockaddr_un addr;
 	struct stat st;
-	int sock;
+	const char *suffix;
 
-	addr.sun_family = AF_UNIX;
-	if (strlen (control) + strlen ("/control") + 1 > sizeof (addr.sun_path)) {
-		syslog (GKR_LOG_ERR, "gkr-pam: address is too long for unix socket path: %s/control",
-		        control);
-		return -1;
+	if (control == NULL) {
+		control = getenv ("XDG_RUNTIME_DIR");
+		if (control == NULL)
+			return GKD_CONTROL_RESULT_NO_DAEMON;
+		suffix = "/keyring/control";
+	} else {
+		suffix = "/control";
 	}
 
-	strcpy (addr.sun_path, control);
-	strcat (addr.sun_path, "/control");
+	if (strlen (control) + strlen (suffix) + 1 > sizeof (addr->sun_path)) {
+		syslog (GKR_LOG_ERR, "gkr-pam: address is too long for unix socket path: %s/%s",
+		        control, suffix);
+		return GKD_CONTROL_RESULT_FAILED;
+	}
+
+	memset (addr, 0, sizeof (*addr));
+	addr->sun_family = AF_UNIX;
+	strcpy (addr->sun_path, control);
+	strcat (addr->sun_path, suffix);
 
 	/* A bunch of checks to make sure nothing funny is going on */
-	if (lstat (addr.sun_path, &st) < 0) {
+	if (lstat (addr->sun_path, &st) < 0) {
+		if (errno == ENOENT)
+			return GKD_CONTROL_RESULT_NO_DAEMON;
+
 		syslog (GKR_LOG_ERR, "Couldn't access gnome keyring socket: %s: %s",
-		        addr.sun_path, strerror (errno));
-		return -1;
+		        addr->sun_path, strerror (errno));
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 	
 	if (st.st_uid != geteuid ()) {
 		syslog (GKR_LOG_ERR, "The gnome keyring socket is not owned with the same "
-		        "credentials as the user login: %s", addr.sun_path);
-		return -1;
+		        "credentials as the user login: %s", addr->sun_path);
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 	
 	if (S_ISLNK(st.st_mode) || !S_ISSOCK(st.st_mode)) {
 		syslog (GKR_LOG_ERR, "The gnome keyring socket is not a valid simple "
 		        "non-linked socket");
-		return -1;
+		return GKD_CONTROL_RESULT_FAILED;
 	}
+
+	return GKD_CONTROL_RESULT_OK;
+}
+
+static int
+connect_daemon (struct sockaddr_un *addr,
+                int *out_sock)
+{
+	int sock;
 
 	/* Now we connect */
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
 		syslog (GKR_LOG_ERR, "couldn't create control socket: %s", strerror (errno));
-		return -1;
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 
 	/* close on exec */
 	fcntl (sock, F_SETFD, 1);
 
-	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
+	if (connect (sock, (struct sockaddr *)addr, sizeof (*addr)) < 0) {
+		if (errno == ECONNREFUSED) {
+			close (sock);
+			return GKD_CONTROL_RESULT_NO_DAEMON;
+		}
 		syslog (GKR_LOG_ERR, "couldn't connect to gnome-keyring-daemon socket at: %s: %s",
-		        addr.sun_path, strerror (errno));
+		        addr->sun_path, strerror (errno));
 		close (sock);
-		return -1;
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 
 	/* Verify the server is running as the right user */
 	
 	if (check_peer_same_uid (sock) <= 0) {
 		close (sock);
-		return -1;
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 	
 	/* This lets the server verify us */
 	
 	if (write_credentials_byte (sock) < 0) {
 		close (sock);
-		return -1;
+		return GKD_CONTROL_RESULT_FAILED;
 	}
 	
-	return sock;
+	*out_sock = sock;
+	return GKD_CONTROL_RESULT_OK;
 }
 
 static void
@@ -266,14 +293,17 @@ read_part (int fd, unsigned char *data, int len)
 }
 
 static int
-keyring_daemon_op (const char *control, int op, int argc, const char* argv[])
+keyring_daemon_op (struct sockaddr_un *addr,
+                   int op,
+                   int argc,
+                   const char *argv[])
 {
 	int ret = GKD_CONTROL_RESULT_OK;
 	unsigned char buf[4];
 	int i, sock = -1;
 	uint oplen, l;
 
-	assert (control);
+	assert (addr);
 
 	/* 
 	 * We only support operations with zero or more strings
@@ -282,11 +312,9 @@ keyring_daemon_op (const char *control, int op, int argc, const char* argv[])
 	 
 	assert (op == GKD_CONTROL_OP_CHANGE || op == GKD_CONTROL_OP_UNLOCK);
 
-	sock = connect_to_daemon (control);
-	if (sock < 0) {
-		ret = -1;
+	ret = connect_daemon (addr, &sock);
+	if (ret != GKD_CONTROL_RESULT_OK)
 		goto done;
-	}
 
 	/* Calculate the packet length */
 	oplen = 8; /* The packet size, and op code */
@@ -346,6 +374,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
                               int op, int argc, const char* argv[])
 {
 	struct sigaction ignpipe, oldpipe, defchld, oldchld;
+	struct sockaddr_un addr;
 	int res;
 	pid_t pid;
 	int status;
@@ -361,11 +390,15 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 	defchld.sa_handler = SIG_DFL;
 	sigaction (SIGCHLD, &defchld, &oldchld);
 
+	res = lookup_daemon (control, &addr);
+	if (res != GKD_CONTROL_RESULT_OK)
+		return res;
+
 	if (pwd->pw_uid == getuid () && pwd->pw_gid == getgid () && 
 	    pwd->pw_uid == geteuid () && pwd->pw_gid == getegid ()) {
 
 		/* Already running as the right user, simple */
-		res = keyring_daemon_op (control, op, argc, argv);
+		res = keyring_daemon_op (&addr, op, argc, argv);
 		
 	} else {
 		
@@ -386,7 +419,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 				exit (GKD_CONTROL_RESULT_FAILED);
 			}
 	
-			res = keyring_daemon_op (control, op, argc, argv);
+			res = keyring_daemon_op (&addr, op, argc, argv);
 			exit (res);
 			return 0; /* Never reached */
 			

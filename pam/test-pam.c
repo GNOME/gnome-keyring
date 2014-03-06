@@ -155,12 +155,12 @@ setup (Test *test,
 
 	g_assert_no_error (error);
 
-	test->dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
-	g_test_dbus_up (test->dbus);
-
 	test->directory = egg_tests_create_scratch_directory (NULL, NULL);
 
 	g_setenv ("XDG_RUNTIME_DIR", test->directory, TRUE);
+
+	test->dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
+	g_test_dbus_up (test->dbus);
 
 	test->conv.conv = conv_func;
 	test->conv.appdata_ptr = test;
@@ -368,7 +368,7 @@ static void
 test_auth_running_unlocks (Test *test,
                            gconstpointer user_data)
 {
-	const gchar *control;
+	gchar *control;
 	gchar **env;
 	GPid pid;
 
@@ -382,10 +382,6 @@ test_auth_running_unlocks (Test *test,
 	egg_tests_copy_scratch_file (test->directory, SRCDIR "/pam/fixtures/login.keyring");
 
 	env = gkd_test_launch_daemon (test->directory, argv, &pid, NULL);
-	g_assert_cmpstr (g_environ_getenv (env, "GNOME_KEYRING_CONTROL"), !=, NULL);
-
-	control = g_environ_getenv (env, "GNOME_KEYRING_CONTROL");
-	g_setenv ("GNOME_KEYRING_CONTROL", control, TRUE);
 
 	g_assert (check_if_login_keyring_locked (test) == TRUE);
 
@@ -396,6 +392,7 @@ test_auth_running_unlocks (Test *test,
 	g_assert (check_if_login_keyring_locked (test) == FALSE);
 	g_assert (check_if_login_item_1_exists (test) == TRUE);
 
+	control = g_strdup_printf ("%s/keyring", test->directory);
 	g_assert (gkd_control_quit (control, 0));
 	g_assert_cmpint (waitpid (pid, NULL, 0), ==, pid);
 
@@ -406,7 +403,7 @@ static void
 test_password_changes_running (Test *test,
                                gconstpointer user_data)
 {
-	const gchar *control;
+	gchar *control;
 	gchar **env;
 	GPid pid;
 
@@ -418,11 +415,10 @@ test_password_changes_running (Test *test,
 		return;
 
 	egg_tests_copy_scratch_file (test->directory, SRCDIR "/pam/fixtures/login.keyring");
+	control = g_strdup_printf ("%s/keyring", test->directory);
 
 	env = gkd_test_launch_daemon (test->directory, argv, &pid, NULL);
-	g_assert_cmpstr (g_environ_getenv (env, "GNOME_KEYRING_CONTROL"), !=, NULL);
-	control = g_environ_getenv (env, "GNOME_KEYRING_CONTROL");
-	g_setenv ("GNOME_KEYRING_CONTROL", control, TRUE);
+	g_strfreev (env);
 
 	test->password = "booo";
 	test->new_password = "changed";
@@ -431,25 +427,23 @@ test_password_changes_running (Test *test,
 	/* Quit the daemon */
 	g_assert (gkd_control_quit (control, 0));
 	g_assert_cmpint (waitpid (pid, NULL, 0), ==, pid);
-	g_strfreev (env);
 
 	/* Start it again */
 	env = gkd_test_launch_daemon (test->directory, argv, &pid, NULL);
-	control = g_environ_getenv (env, "GNOME_KEYRING_CONTROL");
-	g_setenv ("GNOME_KEYRING_CONTROL", control, TRUE);
+	g_strfreev (env);
 
 	g_assert (gkd_control_unlock (control, "changed"));
 	g_assert (gkd_control_quit (control, 0));
 	g_assert_cmpint (waitpid (pid, NULL, 0), ==, pid);
 
-	g_strfreev (env);
+	g_free (control);
 }
 
 static void
 test_password_changes_starts (Test *test,
                               gconstpointer user_data)
 {
-	const gchar *control;
+	gchar *control;
 	gchar **env;
 	GPid pid;
 
@@ -461,6 +455,7 @@ test_password_changes_starts (Test *test,
 		return;
 
 	egg_tests_copy_scratch_file (test->directory, SRCDIR "/pam/fixtures/login.keyring");
+	control = g_strdup_printf ("%s/keyring", test->directory);
 
 	test->password = "booo";
 	test->new_password = "changed";
@@ -470,14 +465,13 @@ test_password_changes_starts (Test *test,
 	env = gkd_test_launch_daemon (test->directory, argv, &pid,
 	                              "GNOME_KEYRING_TEST_SERVICE", "another.Bus.Name",
 	                              NULL);
-	control = g_environ_getenv (env, "GNOME_KEYRING_CONTROL");
-	g_setenv ("GNOME_KEYRING_CONTROL", control, TRUE);
 
 	g_assert (gkd_control_unlock (control, "changed"));
 	g_assert (gkd_control_quit (control, 0));
 	g_assert_cmpint (waitpid (pid, NULL, 0), ==, pid);
 
 	g_strfreev (env);
+	g_free (control);
 }
 
 int
