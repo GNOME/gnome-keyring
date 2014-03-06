@@ -310,7 +310,9 @@ keyring_daemon_op (struct sockaddr_un *addr,
 	 * and an empty (only result code) return. 
 	 */
 	 
-	assert (op == GKD_CONTROL_OP_CHANGE || op == GKD_CONTROL_OP_UNLOCK);
+	assert (op == GKD_CONTROL_OP_CHANGE ||
+	        op == GKD_CONTROL_OP_UNLOCK ||
+	        op == GKD_CONTROL_OP_QUIT);
 
 	ret = connect_daemon (addr, &sock);
 	if (ret != GKD_CONTROL_RESULT_OK)

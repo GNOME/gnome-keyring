@@ -66,7 +66,6 @@ enum {
 };
 
 #define ENV_CONTROL             "GNOME_KEYRING_CONTROL"
-#define ENV_PID                 "GNOME_KEYRING_PID"
 
 /* read & write ends of a pipe */
 #define  READ_END   0
@@ -305,12 +304,6 @@ get_any_env (pam_handle_t *ph, const char *name)
 }
 
 static void
-cleanup_free (pam_handle_t *ph, void *data, int pam_end_status)
-{
-	free_safe (data);
-}
-
-static void
 cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
 {
 	free_password (data);
@@ -449,7 +442,6 @@ static int
 setup_environment (char *line, void *arg)
 {
 	pam_handle_t *ph = (pam_handle_t*)arg;
-	char *x;
 	int ret;
 	
 	/* 
@@ -466,19 +458,14 @@ setup_environment (char *line, void *arg)
 			
 	line = strbtrim (line);
 	ret = pam_putenv (ph, line);
-	
-	/* If it's the PID line then we're interested in it */
-	if (strncmp (line, ENV_PID, strlen (ENV_PID)) == 0) { 
-		x = line + strlen (ENV_PID);
-		if (x[0] == '=')
-			pam_set_data (ph, "gkr-pam-pid", strdup (x + 1), cleanup_free);
-	}
-	
+
 	return ret;
 }
 
 static int
-start_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
+start_daemon (pam_handle_t *ph,
+              struct passwd *pwd,
+              const char *password)
 {
 	struct sigaction defsact, oldsact, ignpipe, oldpipe;
 	int inp[2] = { -1, -1 };
@@ -573,8 +560,9 @@ start_daemon (pam_handle_t *ph, struct passwd *pwd, const char *password)
 		        strerror (errno));
 		goto done;
 	}
-	
+
 	failed = !WIFEXITED (status) || WEXITSTATUS (status) != 0;
+
 	if (outerr && outerr[0])
 		foreach_line (outerr, log_problem, &failed);
 	
@@ -605,43 +593,28 @@ done:
 }
 
 static int
-stop_daemon (pam_handle_t *ph, struct passwd *pwd)
+stop_daemon (pam_handle_t *ph,
+             struct passwd *pwd)
 {
-	const char *spid = NULL;
-	char *apid = NULL;
-	pid_t pid;
-	
+	const char *control;
+	int res;
+
 	assert (pwd);
 
-	pam_get_data (ph, "gkr-pam-pid", (const void**)&spid);
-	
-	/* 
-	 * No pid, no worries, maybe we didn't start gnome-keyring-daemon
-	 * Or this the calling (PAM using) application is hopeless and 
-	 * wants to call different PAM callbacks from different processes.
-	 * 
-	 * In any case we live and let live.
-	 */
-	if (!spid)
-		goto done;
-	
-	/* Make sure it parses out nicely */
-	pid = (pid_t)atoi (spid);
-	if (pid <= 0) {
-		syslog (GKR_LOG_ERR, "gkr-pam: invalid gnome-keyring-daemon process id: %s", spid);
-		goto done;
-	}
-	
-    	if (kill (pid, SIGTERM) < 0 && errno != ESRCH) {
-    		syslog (GKR_LOG_ERR, "gkr-pam: couldn't kill gnome-keyring-daemon process %d: %s", 
-    		        (int)pid, strerror (errno));
-    		goto done;
-    	}    		
+	control = get_any_env (ph, ENV_CONTROL);
 
-done:
-	free_safe (apid);
-	
-	/* Don't bother user when daemon can't be stopped */
+	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_QUIT, 0, NULL);
+
+	/* Daemon had already gone away */
+	if (res == GKD_CONTROL_RESULT_NO_DAEMON) {
+		return PAM_SUCCESS;
+
+	} else if (res != GKD_CONTROL_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: couldn't stop the daemon");
+		return PAM_SERVICE_ERR;
+	}
+
+	syslog (GKR_LOG_NOTICE, "gkr-pam: stopped the daemon");
 	return PAM_SUCCESS;
 }
 
@@ -716,7 +689,7 @@ change_keyring_password (pam_handle_t *ph,
 	syslog (GKR_LOG_NOTICE, "gkr-pam: changed password for login keyring");
 	return PAM_SUCCESS;
 }
- 
+
 /* -----------------------------------------------------------------------------
  * PAM STUFF
  */
@@ -908,32 +881,6 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 	}
 
 	return PAM_SUCCESS;
-}
-
-PAM_EXTERN int
-pam_sm_close_session (pam_handle_t *ph, int flags, int argc, const char **argv)
-{
-	struct passwd *pwd;
-	const char *user;
-	int ret;
-	
-	ret = pam_get_user (ph, &user, NULL);
-	if (ret != PAM_SUCCESS) {
-		syslog (GKR_LOG_ERR, "gkr-pam: couldn't get user from pam: %s", 
-		        pam_strerror (ph, ret));
-		return PAM_SERVICE_ERR;
-	}
-	
-	pwd = getpwnam (user);
-	if (!pwd) {
-		syslog (GKR_LOG_ERR, "gkr-pam: error looking up user information for: %s", user);
-		return PAM_SERVICE_ERR;
-	}
-
-	stop_daemon (ph, pwd);
-	
-	/* Don't bother user when daemon can't be stopped */
-	return PAM_SUCCESS; 
 }
 
 PAM_EXTERN int

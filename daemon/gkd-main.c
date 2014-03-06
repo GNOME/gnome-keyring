@@ -493,13 +493,11 @@ clear_login_password (void)
 }
 
 static void
-print_environment (pid_t pid)
+print_environment (void)
 {
 	const gchar **env;
 	for (env = gkd_util_get_environment (); *env; ++env)
 		printf ("%s\n", *env);
-	if (pid)
-		printf ("GNOME_KEYRING_PID=%d\n", (gint)pid);
 	fflush (stdout);
 }
 
@@ -614,7 +612,7 @@ fork_and_print_environment (void)
 	int fd, i;
 
 	if (run_foreground) {
-		print_environment (getpid ());
+		print_environment ();
 		return;
 	}
 
@@ -635,8 +633,8 @@ fork_and_print_environment (void)
 				exit (WEXITSTATUS (status));
 
 		} else {
-			/* Not double forking, we know the PID */
-			print_environment (pid);
+			/* Not double forking */
+			print_environment ();
 		}
 
 		/* The initial process exits successfully */
@@ -666,8 +664,8 @@ fork_and_print_environment (void)
 			if (pid == -1)
 				exit (1);
 
-			/* We've done two forks. Now we know the PID */
-			print_environment (pid);
+			/* We've done two forks. */
+			print_environment ();
 
 			/* The intermediate child exits */
 			exit (0);
@@ -899,7 +897,7 @@ main (int argc, char *argv[])
 			 * Another daemon was initialized, print out environment
 			 * for any callers, and quit or go comatose.
 			 */
-			print_environment (0);
+			print_environment ();
 			if (run_foreground)
 				while (sleep(0x08000000) == 0);
 			cleanup_and_exit (0);
