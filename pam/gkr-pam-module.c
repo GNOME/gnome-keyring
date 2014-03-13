@@ -978,6 +978,13 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 }
 
 PAM_EXTERN int
+pam_sm_close_session (pam_handle_t *ph, int flags, int argc, const char **argv)
+{
+	/* Nothing to do, but we have to have this function exported */
+	return PAM_SUCCESS;
+}
+
+PAM_EXTERN int
 pam_sm_chauthtok (pam_handle_t *ph, int flags, int argc, const char **argv)
 {
 	const char *user;
