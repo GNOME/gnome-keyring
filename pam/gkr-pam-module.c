@@ -629,7 +629,6 @@ unlock_keyring (pam_handle_t *ph,
 	const char *argv[2];
 	
 	assert (pwd);
-	assert (password);
 
 	control = get_any_env (ph, ENV_CONTROL);
 	argv[0] = password;

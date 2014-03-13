@@ -309,6 +309,32 @@ test_starts_creates (Test *test,
 }
 
 static void
+test_starts_only_session (Test *test,
+		          gconstpointer user_data)
+{
+	const char *pam_conf = user_data;
+	const gchar *control;
+	gchar *login_keyring;
+
+	if (test->skipping)
+		return;
+
+	/* This is the PAM config that starts the daemon from session handler */
+	g_assert (strstr (pam_conf, "session-start") != NULL);
+
+	login_keyring = g_build_filename (test->directory, "login.keyring", NULL);
+	g_assert (!g_file_test (login_keyring, G_FILE_TEST_EXISTS));
+
+	g_assert_cmpint (pam_open_session (test->ph, 0), ==, PAM_SUCCESS);
+
+	g_assert (pam_getenv (test->ph, "GNOME_KEYRING_CONTROL") != NULL);
+	control = pam_getenv (test->ph, "GNOME_KEYRING_CONTROL");
+
+	/* These verify that the daemon was started */
+	g_assert (gkd_control_quit (control, 0));
+}
+
+static void
 test_starts_exists (Test *test,
                     gconstpointer user_data)
 {
@@ -496,6 +522,10 @@ main (int argc, char **argv)
 	g_test_add ("/pam/session-starts-unlocks-existing", Test,
 	            "gnome-keyring-test-session-start",
 	            setup, test_starts_exists, teardown);
+
+	g_test_add ("/pam/session-starts-without-auth", Test,
+	            "gnome-keyring-test-session-start",
+	            setup, test_starts_only_session, teardown);
 
 	g_test_add ("/pam/auth-running-unlocks-existing", Test,
 	            "gnome-keyring-test-no-start",
