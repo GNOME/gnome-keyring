@@ -780,6 +780,19 @@ parse_args (pam_handle_t *ph, int argc, const char **argv)
 	return args;
 }
 
+static int
+stash_password_for_session (pam_handle_t *ph,
+                            const char *password)
+{
+	if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
+	                  cleanup_free_password) != PAM_SUCCESS) {
+		syslog (GKR_LOG_ERR, "gkr-pam: error stashing password for session");
+		return PAM_AUTHTOK_RECOVER_ERR;
+	}
+
+	return PAM_SUCCESS;
+}
+
 PAM_EXTERN int
 pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 {
@@ -821,19 +834,13 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 
 	ret = unlock_keyring (ph, pwd, password, &need_daemon);
 	if (ret != PAM_SUCCESS && need_daemon) {
-		if (args & ARG_AUTO_START) {
-			/* If we started the daemon, its already unlocked, since we passed the password */
+		/* If we started the daemon, its already unlocked, since we passed the password */
+		if (args & ARG_AUTO_START)
 			ret = start_daemon (ph, pwd, password);
 
 		/* Otherwise start later in open session, store password */
-		} else if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
-		                         cleanup_free_password) != PAM_SUCCESS) {
-			syslog (GKR_LOG_ERR, "gkr-pam: error storing authtok");
-			return PAM_AUTHTOK_RECOVER_ERR;
-
-		} else {
-			ret = PAM_SUCCESS;
-		}
+		else
+			ret = stash_password_for_session (ph, password);
 	}
 
 	return ret;
@@ -924,17 +931,19 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 	const char *password, *original;
 	int need_daemon = 0;
 	int ret;
-	
+
+	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
+	if (ret != PAM_SUCCESS)
+		password = NULL;
+
 	ret = pam_get_item (ph, PAM_OLDAUTHTOK, (const void**)&original);
 	if (ret != PAM_SUCCESS || original == NULL) {
 		syslog (GKR_LOG_WARN, "gkr-pam: couldn't update the login keyring password: %s",
 		        "no old password was entered");
+		if (password)
+			stash_password_for_session (ph, password);
 		return PAM_IGNORE;
 	}
-		
-	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
-	if (ret != PAM_SUCCESS)
-		password = NULL;
 		
 	if (password == NULL) {
 		/* No password was set, and we can't prompt for it */
@@ -978,6 +987,13 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 				stop_daemon (ph, pwd);
 		}
 	}
+
+	/*
+	 * Likely the daemon is being started later in the session if we weren't
+	 * allowed to autostart it here. Store the password for our session handler
+	 */
+	if (!(args & ARG_AUTO_START))
+		stash_password_for_session (ph, password);
 
 	return ret;
 }

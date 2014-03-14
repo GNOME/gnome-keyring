@@ -509,6 +509,47 @@ test_password_changes_starts (Test *test,
 	g_free (control);
 }
 
+static void
+test_password_change_start_in_session (Test *test,
+                                       gconstpointer user_data)
+{
+	const char *pam_conf = user_data;
+	gchar *control;
+
+	if (test->skipping)
+		return;
+
+	/* This is the PAM config that starts the daemon from session handler */
+	g_assert (strstr (pam_conf, "session-start") != NULL);
+
+	egg_tests_copy_scratch_file (test->directory, SRCDIR "/pam/fixtures/login.keyring");
+	control = g_strdup_printf ("%s/keyring", test->directory);
+
+	/* First we authenticate, but don't start the keyring here */
+	test->password = "booo";
+	g_assert_cmpint (pam_authenticate (test->ph, 0), ==, PAM_SUCCESS);
+
+	test->password = "booo";
+	test->new_password = "changed";
+	g_assert_cmpint (pam_chauthtok (test->ph, 0), ==, PAM_SUCCESS);
+
+	/* No daemon should be running, chauthtok started/stopped it */
+	g_assert (gkd_control_quit (control, GKD_CONTROL_QUIET_IF_NO_PEER) == FALSE);
+
+	/* Now session should be able to start and unlock the keyring */
+	g_assert_cmpint (pam_open_session (test->ph, 0), ==, PAM_SUCCESS);
+
+	/* Initialize the daemon */
+	g_assert (gkd_control_initialize (control, "secrets", PASS_ENVIRON));
+
+	/* Lookup the item */
+	g_assert (check_if_login_keyring_locked (test) == FALSE);
+	g_assert (check_if_login_item_1_exists (test) == TRUE);
+
+	g_assert (gkd_control_quit (control, 0));
+	g_free (control);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -546,6 +587,10 @@ main (int argc, char **argv)
 	g_test_add ("/pam/password-changes-starts", Test,
 	            "gnome-keyring-test-no-start",
 	            setup, test_password_changes_starts, teardown);
+
+	g_test_add ("/pam/password-change-start-in-session", Test,
+	            "gnome-keyring-test-session-start",
+	            setup, test_password_change_start_in_session, teardown);
 
 	return g_test_run ();
 }
