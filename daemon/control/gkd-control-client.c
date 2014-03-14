@@ -181,6 +181,11 @@ control_chat (const gchar *directory,
 		return FALSE;
 
 	ret = control_write (sock, buffer) && control_read (sock, buffer);
+
+	if (flags & GKD_CONTROL_WAIT_FOR_CLOSE) {
+		while (read (sock, &path, sizeof (path)) < 0);
+	}
+
 	close (sock);
 	return ret;
 }

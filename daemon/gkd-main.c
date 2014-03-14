@@ -399,6 +399,8 @@ dump_diagnostics (void)
 void
 gkd_main_quit (void)
 {
+	/* Always stop accepting control connections immediately */
+	gkd_control_stop ();
 	g_main_loop_quit (loop);
 }
 

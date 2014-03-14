@@ -25,9 +25,12 @@
 
 typedef enum {
 	GKD_CONTROL_QUIET_IF_NO_PEER = 1 << 0,
+	GKD_CONTROL_WAIT_FOR_CLOSE = 1 << 1,
 } GkdControlFlags;
 
 gboolean          gkd_control_listen        (void);
+
+void              gkd_control_stop          (void);
 
 gchar**           gkd_control_initialize    (const gchar *directory,
                                              const gchar *components,

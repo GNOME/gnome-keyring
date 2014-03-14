@@ -265,7 +265,10 @@ write_part (int fd, const unsigned char *data, int len, int *res)
 }
 
 static int 
-read_part (int fd, unsigned char *data, int len) 
+read_part (int fd,
+           unsigned char *data,
+           int len,
+           int disconnect_ok)
 {
 	int r, all;
 	
@@ -275,11 +278,15 @@ read_part (int fd, unsigned char *data, int len)
 		if (r < 0) {
 			if (errno == EAGAIN)
 				continue;
+			if (errno == ECONNRESET && disconnect_ok)
+				return 0;
 			syslog (GKR_LOG_ERR, "couldn't read data from gnome-keyring-daemon: %s",
 			        strerror (errno));
 			return -1;
 		} 
-		if (r == 0) { 
+		if (r == 0) {
+			if (disconnect_ok)
+				return 0;
 			syslog (GKR_LOG_ERR, "couldn't read data from gnome-keyring-daemon: %s",
 			        "unexpected end of data");
 			return -1;
@@ -300,6 +307,7 @@ keyring_daemon_op (struct sockaddr_un *addr,
 {
 	int ret = GKD_CONTROL_RESULT_OK;
 	unsigned char buf[4];
+	int want_disconnect;
 	int i, sock = -1;
 	uint oplen, l;
 
@@ -343,9 +351,14 @@ keyring_daemon_op (struct sockaddr_un *addr,
 	
 	if (ret != GKD_CONTROL_RESULT_OK)
 		goto done;
-	    	
+	/*
+	 * If we're asking the daemon to quit, then we expect
+	 * disconnects after we send the initial request
+	 */
+	want_disconnect = (op == GKD_CONTROL_OP_QUIT);
+
 	/* Read the response length */
-	if (read_part (sock, buf, 4) != 4) {
+	if (read_part (sock, buf, 4, want_disconnect) != 4) {
 		ret = GKD_CONTROL_RESULT_FAILED;
 		goto done;
 	}
@@ -358,12 +371,20 @@ keyring_daemon_op (struct sockaddr_un *addr,
 		goto done;
 	}
 
-	if (read_part (sock, buf, 4) != 4) {
+	if (read_part (sock, buf, 4, want_disconnect) != 4) {
 		ret = GKD_CONTROL_RESULT_FAILED;
 		goto done;
 	}
 	ret = egg_buffer_decode_uint32 (buf);
-	
+
+	/*
+	 * If we asked the daemon to quit, wait for it to disconnect
+	 * by waiting until the socket disconnects from the other end.
+	 */
+	if (want_disconnect) {
+		while (read (sock, buf, 4) > 0);
+	}
+
 done:
 	if (sock >= 0)
 		close (sock);
