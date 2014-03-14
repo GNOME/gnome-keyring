@@ -348,6 +348,7 @@ setup_child (int inp[2],
              const char *argument)
 {
 	const char* display;
+	const char *runtime;
 	int i, ret;
 
 	char *args[] = {
@@ -404,7 +405,12 @@ setup_child (int inp[2],
 		if (display)
 			ret = setup_pam_env (ph, "DISPLAY", display);
 	}
-	
+	if (ret == PAM_SUCCESS && !pam_getenv (ph, "XDG_RUNTIME_DIR")) {
+		runtime = getenv ("XDG_RUNTIME_DIR");
+		if (runtime)
+			ret = setup_pam_env (ph, "XDG_RUNTIME_DIR", runtime);
+	}
+
 	/* Make sure that worked */
 	if (ret != PAM_SUCCESS) {
 		syslog (GKR_LOG_ERR, "gkr-pam: couldn't setup environment: %s", 

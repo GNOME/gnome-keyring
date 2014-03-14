@@ -278,6 +278,9 @@ test_starts_creates (Test *test,
 	if (test->skipping)
 		return;
 
+	/* We're testing that we create the directory appropriately */
+	g_unsetenv ("XDG_RUNTIME_DIR");
+
 	start_in_session = (strstr (pam_conf, "session") != NULL);
 
 	login_keyring = g_build_filename (test->directory, "login.keyring", NULL);
@@ -322,6 +325,9 @@ test_starts_only_session (Test *test,
 	/* This is the PAM config that starts the daemon from session handler */
 	g_assert (strstr (pam_conf, "session-start") != NULL);
 
+	/* We're testing that we create the directory appropriately */
+	g_unsetenv ("XDG_RUNTIME_DIR");
+
 	login_keyring = g_build_filename (test->directory, "login.keyring", NULL);
 	g_assert (!g_file_test (login_keyring, G_FILE_TEST_EXISTS));
 
@@ -344,6 +350,9 @@ test_starts_exists (Test *test,
 
 	if (test->skipping)
 		return;
+
+	/* We're testing that we create the directory appropriately */
+	g_unsetenv ("XDG_RUNTIME_DIR");
 
 	start_in_session = (strstr (pam_conf, "session") != NULL);
 
