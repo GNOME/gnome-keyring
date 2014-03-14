@@ -824,6 +824,19 @@ parse_args (pam_handle_t *ph, int argc, const char **argv)
 	return args;
 }
 
+static int
+stash_password_for_session (pam_handle_t *ph,
+                            const char *password)
+{
+	if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
+	                  cleanup_free_password) != PAM_SUCCESS) {
+		syslog (GKR_LOG_ERR, "gkr-pam: error stashing password for session");
+		return PAM_AUTHTOK_RECOVER_ERR;
+	}
+
+	return PAM_SUCCESS;
+}
+
 PAM_EXTERN int
 pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 {
@@ -886,11 +899,9 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 		
 	/* Otherwise start later in open session, store password */
 	} else {
-		if (pam_set_data (ph, "gkr_system_authtok", strdup (password),
-		                  cleanup_free_password) != PAM_SUCCESS) {
-			syslog (GKR_LOG_ERR, "gkr-pam: error storing authtok");
+		ret = stash_password_for_session (ph, password);
+		if (ret != PAM_SUCCESS)
 			return PAM_AUTHTOK_RECOVER_ERR;
-		}
  	}
 
 	return PAM_SUCCESS;
@@ -1017,17 +1028,19 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 {
 	const char *password, *original;
 	int ret, started_daemon = 0;
-	
+
+	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
+	if (ret != PAM_SUCCESS)
+		password = NULL;
+
 	ret = pam_get_item (ph, PAM_OLDAUTHTOK, (const void**)&original);
 	if (ret != PAM_SUCCESS || original == NULL) {
 		syslog (GKR_LOG_WARN, "gkr-pam: couldn't update the login keyring password: %s",
 		        "no old password was entered");
+		if (password)
+			stash_password_for_session (ph, password);
 		return PAM_IGNORE;
 	}
-		
-	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
-	if (ret != PAM_SUCCESS)
-		password = NULL;
 		
 	if (password == NULL) {
 		/* No password was set, and we can't prompt for it */
@@ -1064,8 +1077,15 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 
 	/* if not auto_start, kill the daemon if we started it: we don't want
 	 * it to stay */
-	if (started_daemon && !(args & ARG_AUTO_START))
+	if (started_daemon && !(args & ARG_AUTO_START)) {
 		stop_daemon (ph, pwd);
+
+		/*
+		 * Likely the daemon is being started later in the session if we weren't
+		 * allowed to autostart it here. Store the password for our session handler
+		 */
+		stash_password_for_session (ph, password);
+	}
 
 	if (ret != PAM_SUCCESS)
 		return ret;
