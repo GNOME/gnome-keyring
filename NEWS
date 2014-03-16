@@ -1,3 +1,21 @@
+Changes in version 3.11.92 are:
+ * Use $XDG_RUNTIME_DIR to create keyring socket directory [#725801]
+ * Stop exporting the $GNOME_KEYRING_CONTROL env variable [#725801]
+ * Stop exposing a GNOME_KEYRING_PID variable [#725801]
+ * Pass XDG_RUNTIME_DIR to new gnome-keyring-daemon process [#726196]
+ * Fix issue with changed password not unlocking keyring [#726196]
+ * Add new --unlock option to prompt for login password [#710187]
+ * When in foreground mode, close stdout when done initializing
+ * Exit gnome-keyring-daemon when the DBus connection closes [#708765]
+ * Don't initialize in an idle handler, this is racy
+ * Don't log debug messages to syslog [#711537]
+ * Documentation fixes [#711581 ...]
+ * License fixes [#721549]
+ * Dependency on GLib 2.38+
+ * Updated translations
+ * Modernize autotools setup and other build fixes
+ * Parallel testing and add new tests
+
 Changes in version 3.10.1 are:
  * Build fix on OpenBSD [#706405]
  * Add manual page
