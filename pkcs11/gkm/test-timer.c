@@ -90,7 +90,7 @@ test_cancel (Test* test, gconstpointer unused)
 	gkm_timer_cancel (timer);
 
 	mock_module_leave ();
-	egg_test_wait_until (2000);
+	egg_test_wait_until (3000);
 	mock_module_enter ();
 
 	/* The callback should not have been called */
