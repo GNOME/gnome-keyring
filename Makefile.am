@@ -8,9 +8,11 @@ ACLOCAL_AMFLAGS = -I build/m4 ${ACLOCAL_FLAGS}
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-doc \
+	--enable-pam \
+	--enable-ssh-agent \
+	--enable-gpg-agent \
 	--disable-strict \
 	--disable-coverage \
-	--disable-update-mime \
 	--disable-silent-rules \
 	--with-pkcs11-modules=$(abs_srcdir)/$(top_distdir)/_inst/lib \
 	--with-pkcs11-config=$(abs_srcdir)/$(top_distdir)/_inst/etc/pkcs11 \
@@ -210,6 +212,6 @@ include pkcs11/xdg-store/Makefile.am
 include schema/Makefile.am
 include tool/Makefile.am
 
-#ifdef WITH_PAM
+if WITH_PAM
 include pam/Makefile.am
-#endif
+endif
