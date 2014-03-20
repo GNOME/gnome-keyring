@@ -1,0 +1,533 @@
+# Gaelic; Scottish translation for gnome-keyring
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the gnome-keyring package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-08-26 16:32+0000\n"
+"PO-Revision-Date: 2013-09-19 15:43+0100\n"
+"Last-Translator: GunChleoc <fios@foramnagaidhlig.net>\n"
+"Language-Team: Gaelic; Scottish <gd@li.org>\n"
+"Language: gd\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3;\n"
+"X-Launchpad-Export-Date: 2013-09-19 08:01+0000\n"
+"X-Generator: Launchpad (build 16765)\n"
+
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:86
+#: ../daemon/dbus/gkd-secret-change.c:122
+#: ../daemon/dbus/gkd-secret-create.c:79
+#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
+msgid "Unnamed"
+msgstr "Gun ainm"
+
+#: ../daemon/dbus/gkd-secret-change.c:91
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Cuir a-steach an seann fhacal-faire airson an dul-iuchrach \"%s\""
+
+#: ../daemon/dbus/gkd-secret-change.c:95
+#, c-format
+msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
+msgstr "Tha aplacaid airson am facal-faire aig an dul-iuchrach \"%s\" atharrachadh. Cuir an seann fhacal-faire air a shon a-steach."
+
+#: ../daemon/dbus/gkd-secret-change.c:101
+#: ../daemon/dbus/gkd-secret-change.c:137
+#: ../daemon/dbus/gkd-secret-change.c:148
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+msgid "Continue"
+msgstr "Lean air adhart"
+
+#: ../daemon/dbus/gkd-secret-change.c:127
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Tagh facal-faire ùr airson an dul-iuchrach \"%s\""
+
+#: ../daemon/dbus/gkd-secret-change.c:131
+#, c-format
+msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
+msgstr "Tha aplacaid airson am facal-faire aig an dul-iuchrach \"%s\" atharrachadh. Tagh am facal-faire ùr air a shon."
+
+#: ../daemon/dbus/gkd-secret-change.c:144
+#: ../daemon/dbus/gkd-secret-create.c:95
+msgid "Store passwords unencrypted?"
+msgstr "A bheil thu airson nam faclan-faire a stòradh gun chrioptachadh?"
+
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../daemon/dbus/gkd-secret-create.c:97
+msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
+msgstr "Ma thaghas tu facal-faire bàn, cha dèid na faclan-faire agad a chrioptachadh is chan e stòras sàbhailte a tha sin. 'S urrainn do dhuine sam bith inntrigeadh a dhèanamh dhaibh aig a bheil cothrom air na faidhlichean agad."
+
+#: ../daemon/dbus/gkd-secret-change.c:154
+msgid "The original password was incorrect"
+msgstr "Cha robh am facal-faire tùsail ceart"
+
+#: ../daemon/dbus/gkd-secret-change.c:355
+msgid "Change Keyring Password"
+msgstr "Atharraich facal-faire an dul-iuchrach"
+
+#: ../daemon/dbus/gkd-secret-create.c:81
+#, c-format
+msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
+msgstr "Tha aplacaid ag iarraidh dul-iuchrach ùr a chruthachadh air am bi \"%s\". Tagh am facal-faire a bu mhath leat cleachdadh air a shon."
+
+#: ../daemon/dbus/gkd-secret-create.c:85
+msgid "Choose password for new keyring"
+msgstr "Tagh facal-faire ùr airson an dul-iuchrach ùir"
+
+#: ../daemon/dbus/gkd-secret-create.c:312
+msgid "New Keyring Password"
+msgstr "Facal-faire an dul-iuchrach ùir"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GPG Password Agent"
+msgstr "Àidseant facal-faire GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Dul-iuchrach GNOME: Àidseant GPG"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Teisteanas agus stòras na h-iuchrach"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "Dul-iuchrach GNOME: Co-phàirt PKCS#11"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "Secret Storage Service"
+msgstr "Seirbheis stòrais dhìomhair"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "Dul-iuchrach GNOME: Seirbheis dhìomhair"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "SSH Key Agent"
+msgstr "Àidseant iuchair SSH"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Dul-iuchrach: Àidseant SSH"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
+msgid "Unknown"
+msgstr "Chan eil fhios"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
+#, c-format
+msgid "PGP Key: %s"
+msgstr "Iuchair PGP: %s"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
+msgid "Enter Passphrase"
+msgstr "Cuir an abairt-fhaire a-steach"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
+msgid "Unlock"
+msgstr "Thoir a' ghlas dheth"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "Thoir a' ghlas far na h-iuchrach seo gu fèin-obrachail gach turas a chlàraicheas mi a-steach"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:145
+msgid "Login"
+msgstr "Clàraich a-steach"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "dh'fhàillig cruthachadh an fhaidhle shealaich \"%s\": %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "mearachd a' sgrìobhadh ann an \"%s\": %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "cha ghabh \"%s\" a chruthachadh: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "a' toirt air falbh an stale lockfile (air a chruthachadh le %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "a' feitheamh ris a' ghlas ('ga chumail le %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(ana-gèill?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "cha deach a' ghlas \"%s\"a dhèanamh: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "a' feitheamh ris a' ghlas %s...\n"
+
+#: ../egg/egg-oid.c:41
+msgid "Domain Component"
+msgstr "Co-phàirt àrainne-lìn"
+
+#: ../egg/egg-oid.c:43
+msgid "User ID"
+msgstr "ID a' chleachdaiche"
+
+#: ../egg/egg-oid.c:46
+msgid "Email Address"
+msgstr "Seòladh puist-d"
+
+#: ../egg/egg-oid.c:54
+msgid "Date of Birth"
+msgstr "Latha-breith"
+
+#: ../egg/egg-oid.c:56
+msgid "Place of Birth"
+msgstr "Àite-breith"
+
+#: ../egg/egg-oid.c:58
+msgid "Gender"
+msgstr "Gnè"
+
+#: ../egg/egg-oid.c:60
+msgid "Country of Citizenship"
+msgstr "Dùthaich na saoranachd"
+
+#: ../egg/egg-oid.c:62
+msgid "Country of Residence"
+msgstr "Dùthaich na còmhnaidhe"
+
+#: ../egg/egg-oid.c:65
+msgid "Common Name"
+msgstr "Ainm coitcheann"
+
+#: ../egg/egg-oid.c:67
+msgid "Surname"
+msgstr "Sloinneadh"
+
+#: ../egg/egg-oid.c:69
+msgid "Serial Number"
+msgstr "An àireamh shreathach"
+
+#: ../egg/egg-oid.c:71
+msgid "Country"
+msgstr "Dùthaich"
+
+#: ../egg/egg-oid.c:73
+msgid "Locality"
+msgstr "Ionad"
+
+#: ../egg/egg-oid.c:75
+msgid "State"
+msgstr "Siorrachd/Còigeamh/Stàit"
+
+#: ../egg/egg-oid.c:77
+msgid "Street"
+msgstr "Sràid"
+
+#: ../egg/egg-oid.c:79
+msgid "Organization"
+msgstr "Buidheann"
+
+#: ../egg/egg-oid.c:81
+msgid "Organizational Unit"
+msgstr "Aonad a' bhuidhinn"
+
+#: ../egg/egg-oid.c:83
+msgid "Title"
+msgstr "Tiotal"
+
+#: ../egg/egg-oid.c:85
+msgid "Telephone Number"
+msgstr "Àireamh fòn"
+
+#: ../egg/egg-oid.c:87
+msgid "Given Name"
+msgstr "Ainm"
+
+#: ../egg/egg-oid.c:89
+msgid "Initials"
+msgstr "Tùs-litrichean"
+
+#: ../egg/egg-oid.c:91
+msgid "Generation Qualifier"
+msgstr "Comharra a' ghinealaich"
+
+#: ../egg/egg-oid.c:93
+msgid "DN Qualifier"
+msgstr "DN Qualifier"
+
+#: ../egg/egg-oid.c:95
+msgid "Pseudonym"
+msgstr "Ainm-brèige"
+
+#: ../egg/egg-oid.c:98
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:99
+msgid "MD2 with RSA"
+msgstr "MD2 le RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "MD5 with RSA"
+msgstr "MD5 le RSA"
+
+#: ../egg/egg-oid.c:101
+msgid "SHA1 with RSA"
+msgstr "SHA1 le RSA"
+
+#: ../egg/egg-oid.c:103
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:104
+msgid "SHA1 with DSA"
+msgstr "SHA1 le DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:107
+msgid "Server Authentication"
+msgstr "Dearbhadh an fhrithealaiche"
+
+#: ../egg/egg-oid.c:108
+msgid "Client Authentication"
+msgstr "Dearbhadh a' chliaint"
+
+#: ../egg/egg-oid.c:109
+msgid "Code Signing"
+msgstr "Soidhneadh a' chòd"
+
+#: ../egg/egg-oid.c:110
+msgid "Email Protection"
+msgstr "Dìon puist-d"
+
+#: ../egg/egg-oid.c:111
+msgid "Time Stamping"
+msgstr "Stampadh ama"
+
+#: ../egg/egg-spawn.c:273
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
+msgstr "Mearachd ris nach robh dùil ann an select() a' leughadh dàta o phròiseas a' phàiste (%s)"
+
+#: ../egg/egg-spawn.c:320
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Mearachd ris nach robh dùil ann an waitpid() (%s)"
+
+#: ../pkcs11/gkm/gkm-certificate.c:581
+msgid "Unnamed Certificate"
+msgstr "Teisteanas gun ainm"
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
+msgid "Couldn't parse public SSH key"
+msgstr "Cha b' urrainn dhuinn an iuchair SSH phoblach a pharsadh"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Thoir a' ghlas far an fhacail-fhaire airson: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+msgid "Unlock Login Keyring"
+msgstr "Thoir a' ghlas o dhul-iuchrach a' chlàraidh a-steach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
+msgid "Enter password to unlock your login keyring"
+msgstr "Cuir a-steach am facal-faire gus a' ghlas a thoirt far dul-iuchrach a' chlàraidh a-steach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
+msgid "The password you use to log in to your computer no longer matches that of your login keyring."
+msgstr "Chan eil am facal-faire a chleachdas tu gus clàradh a-steach air a' choimpiutair agad co-ionnan ri dul-iuchrach a' chlàraidh a-steach tuilleadh."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
+msgid "The login keyring did not get unlocked when you logged into your computer."
+msgstr "Cha deach a' ghlas a thoirt far dul-iuchrach a' chlàraidh a-steach nuair a chlàraich thu a-steach air a' choimpiutair agad."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+msgid "Unlock Keyring"
+msgstr "Thoir a' ghlas far an dul-iuchrach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Cuir a-steach am facal-faire airson an dul-iuchrach \"%s\" gus a' ghlas a thoirt dheth"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Tha aplacaid airson cothrom fhaighinn air an dul-iuchrach \"%s\" ach tha e glaiste"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Thoir a' ghlas far an dul-iuchrach seo gu fèin-obrachail uair sam bith a bhios mi clàraichte a-staigh"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock private key"
+msgstr "Thoir a' ghlas far na h-iuchrach phrìobhaideach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock certificate"
+msgstr "Thoir a' ghlas far an teisteanais"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+msgid "Unlock public key"
+msgstr "Thoir a' ghlas far na h-iuchrach phoblach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the private key"
+msgstr "Cuir a-steach am facal-faire gus a' ghlas a thoirt far na h-iuchrach phrìobhaideach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the certificate"
+msgstr "Cuir a-steach am facal-faire gus a' ghlas a thoirt far an teisteanais"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
+msgid "Enter password to unlock the public key"
+msgstr "Cuir a-steach am facal-faire gus a' ghlas a thoirt far na h-iuchrach phoblach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
+msgid "Enter password to unlock"
+msgstr "Cuir a-steach am facal-faire gus a' ghlas a thoirt dheth"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "Thoir a' ghlas far na h-iuchrach seo gu fèin-obrachail uair sam bith a bhios mi clàraichte a-staigh"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "Thoir a' ghlas far an teisteanais seo gu fèin-obrachail uair sam bith a bhios mi clàraichte a-staigh"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "Thoir a' ghlas dheth gu fèin-obrachail uair sam bith a bhios mi clàraichte a-staigh"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
+msgstr "Tha aplacaid airson cothrom fhaighinn air an iuchair phrìobhaideach \"%s\" ach tha e glaiste"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Tha aplacaid airson cothrom fhaighinn air an teisteanas \"%s\" ach tha e glaiste"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Tha aplacaid airson cothrom fhaighinn air an iuchair phoblach \"%s\" ach tha e glaiste"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Tha aplacaid airson cothrom fhaighinn air \"%s\" ach tha e glaiste"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+msgid "The unlock password was incorrect"
+msgstr "Bha thu airson a' ghlas a thoirt dheth ach bha am facal-faire cearr"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+msgid "Unlock certificate/key storage"
+msgstr "Thoir a' ghlas far stòras nan teisteanasan/iuchraichean"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Cuir am facal-faire a-steach gus a' ghlas a thoirt far stòras nan teisteanasan/iuchraichean"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#, c-format
+msgid "An application wants access to the certificate/key storage '%s', but it is locked"
+msgstr "Tha aplacaid airson cothrom fhaighinn air stòras nan teisteanasan/iuchraichean \"%s\" ach tha e glaiste"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New Password Required"
+msgstr "Tha feum air facal-faire ùr"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+msgid "New password required for secure storage"
+msgstr "Tha feum air facal-faire ùr gus a stòradh gu tèarainte"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#, c-format
+msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
+msgstr "Mar ullachadh a chum stòradh theisteanasan no iuchraichean, feumaidh \"%s\" facal-faire"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+msgid "Change Password"
+msgstr "Atharraich am facal-faire"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Original password for secure storage"
+msgstr "Am facal-faire tùsail airson an stòrais thèarainte"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr "Gus am facal-faire airson \"%s\" atharrachadh, feumaidh tu am facal-faire tùsail a chur a-steach"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password for secure storage"
+msgstr "Atharraich am facal-faire airson an stòrais thrèarainte"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
+#, c-format
+msgid "Type a new password for '%s'"
+msgstr "Cuir a-steach facal-faire ùr airson \"%s\""
+
+#: ../tool/gkr-tool.c:102
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "cleachdadh: gnome-keyring command [options]\n"
+
+#: ../tool/gkr-tool.c:104
+msgid "commands: "
+msgstr "àitheantan: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:108
+msgid "          "
+msgstr "          "
+
