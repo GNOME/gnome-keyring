@@ -1,3 +1,6 @@
+Changes in version 3.12.0 are:
+ * Build and testing fixes
+
 Changes in version 3.11.92 are:
  * Use $XDG_RUNTIME_DIR to create keyring socket directory [#725801]
  * Stop exporting the $GNOME_KEYRING_CONTROL env variable [#725801]
