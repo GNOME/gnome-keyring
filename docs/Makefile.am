@@ -5,13 +5,14 @@ generated_mans = \
 	$(NULL)
 
 man1_MANS = $(generated_mans) \
-	gnome-keyring-3.1 \
+	docs/gnome-keyring-3.1 \
 	$(NULL)
 
 MAN_IN_FILES = \
-	$(generated_mans:.1=.xml)
+	docs/gnome-keyring-daemon.xml \
+	docs/gnome-keyring.xml
 
-CLEANFILES = \
+CLEANFILES += \
 	$(generated_mans)
 
 XSLTPROC_FLAGS = \
@@ -28,10 +29,11 @@ XSLTPROC_MAN = \
 .xml.1:
 	$(AM_V_GEN) $(XSLTPROC_MAN) $<
 
-EXTRA_DIST = \
-	file-format.txt \
-	keyring-intro.txt \
-	gnome-keyring.svg \
+EXTRA_DIST += \
+	docs/file-format.txt \
+	docs/keyring-intro.txt \
+	docs/gnome-keyring.svg \
+	$(generated_mans) \
 	$(MAN_IN_FILES) \
-	gnome-keyring-3.1 \
+	docs/gnome-keyring-3.1 \
 	$(NULL)

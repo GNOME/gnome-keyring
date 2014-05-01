@@ -194,6 +194,7 @@ EXTRA_DIST = \
 	$(VALGRIND_SUPPRESSIONS) \
 	$(NULL)
 
+include docs/Makefile.am
 include egg/Makefile.am
 include daemon/Makefile.am
 include daemon/control/Makefile.am
