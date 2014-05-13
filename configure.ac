@@ -672,4 +672,5 @@ echo "  Strict Compilation:   $strict_status"
 echo "  Valgrind:             $valgrind_status"
 echo "  PKCS#11 Tests         $p11_tests_status"
 echo "  Test Coverage:        $enable_coverage"
+echo "  Documentation:        $doc_status"
 echo

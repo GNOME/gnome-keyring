@@ -194,7 +194,6 @@ EXTRA_DIST = \
 	$(VALGRIND_SUPPRESSIONS) \
 	$(NULL)
 
-include docs/Makefile.am
 include egg/Makefile.am
 include daemon/Makefile.am
 include daemon/control/Makefile.am
@@ -212,6 +211,10 @@ include pkcs11/wrap-layer/Makefile.am
 include pkcs11/xdg-store/Makefile.am
 include schema/Makefile.am
 include tool/Makefile.am
+
+if ENABLE_DOC
+include docs/Makefile.am
+endif
 
 if WITH_PAM
 include pam/Makefile.am
