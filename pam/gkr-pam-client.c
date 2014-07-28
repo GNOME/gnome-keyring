@@ -57,7 +57,8 @@
 #endif
 
 static int
-check_peer_same_uid (int sock)
+check_peer_same_uid (struct passwd *pwd,
+                     int sock)
 {
 	uid_t uid = -1;
 	
@@ -109,12 +110,12 @@ check_peer_same_uid (int sock)
 #else
 	syslog (GKR_LOG_WARN, "Cannot verify that the process to which we are passing the login"
 	        " password is genuinely running as the same user login: not supported on this OS.");
-	uid = geteuid ();
+	uid = pwd->pw_uid;
 	
 	
 #endif
 
-	if (uid != geteuid ()) {
+	if (uid != pwd->pw_uid) {
 		syslog (GKR_LOG_ERR, "The gnome keyring socket is not running with the same "
 		        "credentials as the user login. Disconnecting.");
 		return 0;
@@ -142,7 +143,8 @@ write_credentials_byte (int sock)
 }
 
 static int
-lookup_daemon (const char *control,
+lookup_daemon (struct passwd *pwd,
+               const char *control,
                struct sockaddr_un *addr)
 {
 	struct stat st;
@@ -178,7 +180,7 @@ lookup_daemon (const char *control,
 		return GKD_CONTROL_RESULT_FAILED;
 	}
 	
-	if (st.st_uid != geteuid ()) {
+	if (st.st_uid != pwd->pw_uid) {
 		syslog (GKR_LOG_ERR, "The gnome keyring socket is not owned with the same "
 		        "credentials as the user login: %s", addr->sun_path);
 		return GKD_CONTROL_RESULT_FAILED;
@@ -194,7 +196,8 @@ lookup_daemon (const char *control,
 }
 
 static int
-connect_daemon (struct sockaddr_un *addr,
+connect_daemon (struct passwd *pwd,
+                struct sockaddr_un *addr,
                 int *out_sock)
 {
 	int sock;
@@ -222,7 +225,7 @@ connect_daemon (struct sockaddr_un *addr,
 
 	/* Verify the server is running as the right user */
 	
-	if (check_peer_same_uid (sock) <= 0) {
+	if (check_peer_same_uid (pwd, sock) <= 0) {
 		close (sock);
 		return GKD_CONTROL_RESULT_FAILED;
 	}
@@ -300,7 +303,8 @@ read_part (int fd,
 }
 
 static int
-keyring_daemon_op (struct sockaddr_un *addr,
+keyring_daemon_op (struct passwd *pwd,
+                   struct sockaddr_un *addr,
                    int op,
                    int argc,
                    const char *argv[])
@@ -322,7 +326,7 @@ keyring_daemon_op (struct sockaddr_un *addr,
 	        op == GKD_CONTROL_OP_UNLOCK ||
 	        op == GKD_CONTROL_OP_QUIT);
 
-	ret = connect_daemon (addr, &sock);
+	ret = connect_daemon (pwd, addr, &sock);
 	if (ret != GKD_CONTROL_RESULT_OK)
 		goto done;
 
@@ -413,7 +417,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 	defchld.sa_handler = SIG_DFL;
 	sigaction (SIGCHLD, &defchld, &oldchld);
 
-	res = lookup_daemon (control, &addr);
+	res = lookup_daemon (pwd, control, &addr);
 	if (res != GKD_CONTROL_RESULT_OK)
 		return res;
 
@@ -421,7 +425,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 	    pwd->pw_uid == geteuid () && pwd->pw_gid == getegid ()) {
 
 		/* Already running as the right user, simple */
-		res = keyring_daemon_op (&addr, op, argc, argv);
+		res = keyring_daemon_op (pwd, &addr, op, argc, argv);
 		
 	} else {
 		
@@ -442,7 +446,7 @@ gkr_pam_client_run_operation (struct passwd *pwd, const char *control,
 				exit (GKD_CONTROL_RESULT_FAILED);
 			}
 	
-			res = keyring_daemon_op (&addr, op, argc, argv);
+			res = keyring_daemon_op (pwd, &addr, op, argc, argv);
 			exit (res);
 			return 0; /* Never reached */
 			
