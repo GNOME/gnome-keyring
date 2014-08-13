@@ -7,23 +7,24 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-02 13:41+0300\n"
-"PO-Revision-Date: 2012-05-02 13:41+0300\n"
-"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-07-09 06:49+0000\n"
+"PO-Revision-Date: 2014-08-13 15:33+0200\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.6.1\n"
+"X-Generator: Poedit 1.6.5\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:85
 #: ../daemon/dbus/gkd-secret-change.c:121
-#: ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
@@ -32,7 +33,7 @@ msgstr "Χωρίς όνομα"
 #: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
-msgstr "Εισάγετε τον παλιό κωδικό πρόσβαης για την κλειδοθήκη '%s'"
+msgstr "Εισάγετε τον παλιό κωδικό πρόσβασης για την κλειδοθήκη '%s'"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
@@ -40,12 +41,12 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
 msgstr ""
-"Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό για την κλειδοθήκη '%s'. Εισάγετε "
-"τον παλιό κωδικό πρόσβασης για αυτό."
+"Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό πρόσβασης για την κλειδοθήκη "
+"'%s'. Εισάγετε τον παλιό κωδικό πρόσβασης για αυτό."
 
 #: ../daemon/dbus/gkd-secret-change.c:100
 #: ../daemon/dbus/gkd-secret-change.c:136
-#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../daemon/dbus/gkd-secret-change.c:147
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
@@ -55,7 +56,7 @@ msgstr "Συνέχεια"
 #: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "Επιλέξτε νέο κωδικό για την κλειδοθήκη '%s'"
+msgstr "Επιλέξτε νέο κωδικό πρόσβασης για την κλειδοθήκη '%s'"
 
 #: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
@@ -63,57 +64,57 @@ msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό για την κλειδοθήκη '%s'. "
-"Επιλέξετε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+"Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό πρόσβασης για την κλειδοθήκη "
+"'%s'. Επιλέξετε τον κωδικό πρόσβασης που θέλετε να χρησιμοποιήσετε για αυτό."
 
-#: ../daemon/dbus/gkd-secret-change.c:142
-#: ../daemon/dbus/gkd-secret-create.c:95
+#: ../daemon/dbus/gkd-secret-change.c:143
+#: ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
-msgstr "Αποθήκευση κωδικών χωρίς κρυπτογράφηση;"
+msgstr "Αποθήκευση κωδικών πρόσβασης χωρίς κρυπτογράφηση;"
 
-#: ../daemon/dbus/gkd-secret-change.c:144
-#: ../daemon/dbus/gkd-secret-create.c:97
+#: ../daemon/dbus/gkd-secret-change.c:145
+#: ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
-"Αν επιλέξετε την χρήση ενός κενού κωδικού, δεν θα κρυπτογραφηθούν με "
-"ασφάλεια οι αποθηκευμένοι σας κωδικοί. Θα είναι προσβάσιμοι στον καθένα που "
-"έχει πρόσβαση στα αρχεία σας."
+"Αν επιλέξετε την χρήση ενός κενού κωδικού πρόσβασης, δεν θα κρυπτογραφηθούν "
+"με ασφάλεια οι αποθηκευμένοι σας κωδικοί πρόσβασης. Θα είναι προσβάσιμοι "
+"στον καθένα που έχει πρόσβαση στα αρχεία σας."
 
-#: ../daemon/dbus/gkd-secret-change.c:152
+#: ../daemon/dbus/gkd-secret-change.c:153
 msgid "The original password was incorrect"
-msgstr "Ο αρχικός κωδικός ήταν λάθος"
+msgstr "Ο αρχικός κωδικός πρόσβασξς ήταν λάθος"
 
-#: ../daemon/dbus/gkd-secret-change.c:356
+#: ../daemon/dbus/gkd-secret-change.c:354
 msgid "Change Keyring Password"
-msgstr "Αλλαγή κωδικού κλειδοθήκης"
+msgstr "Αλλαγή κωδικού πρόσβασης κλειδοθήκης"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
 msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
 "Μια εφαρμογή επιθυμεί να δημιουργήσει μια νέα κλειδοθήκη με το όνομα '%s'. "
-"Επιλέξτε τον κωδικό που θέλετε να χρησιμοποιήσετε για αυτό."
+"Επιλέξτε τον κωδικό πρόσβασης που θέλετε να χρησιμοποιήσετε για αυτό."
 
-#: ../daemon/dbus/gkd-secret-create.c:85
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
-msgstr "Επιλέξτε κωδικό για νέα κλειδοθήκη"
+msgstr "Επιλέξτε κωδικό πρόσβασης για νέα κλειδοθήκη"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:311
 msgid "New Keyring Password"
-msgstr "Νέος κωδικός κλειδοθήκης"
+msgstr "Νέος κωδικός πρόσβασης κλειδοθήκης"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Κλειδοθήκη GNOME: Πράκτορας (agent) GPG"
+msgid "GPG Password Agent"
+msgstr "Πράκτορας κωδικού πρόσβασης GPG"
 
 #: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr "Πρόγραμμα κωδικού GPG"
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Κλειδοθήκη GNOME: Πράκτορας GPG"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -121,39 +122,39 @@ msgstr "Αποθήκη πιστοποιητικών και κλειδιών"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
 msgid "GNOME Keyring: PKCS#11 Component"
-msgstr "Κλειδοθήκη GNOME: Συνιστώσα PKCS#11"
+msgstr "Κλειδοθήκη GNOME: Συστατικό στοιχείο PKCS#11"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr "Κλειδοθήκη GNOME: Κρυφή υπηρεσία"
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "Υπηρεσία κρυφής αποθήκευσης"
 
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "Κλειδοθήκη GNOME: Κρυφή υπηρεσία"
+
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr "Κλειδοθήκη GNOME: Πράκτορας (agent) SSH"
+msgid "SSH Key Agent"
+msgstr "Πράκτορας κλειδιού SSH"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
-msgid "SSH Key Agent"
-msgstr "Πράκτορας (agent) κλειδιού SSH"
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Κλειδοθήκη GNOME: Πράκτορας SSH"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:105
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
 #, c-format
 msgid "PGP Key: %s"
 msgstr "Κλειδί PGP: %s"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
 msgid "Enter Passphrase"
-msgstr "Εισάγετε την κωδική φράση"
+msgstr "Εισάγετε συνθηματικό"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
@@ -163,12 +164,12 @@ msgstr "Εισάγετε την κωδική φράση"
 msgid "Unlock"
 msgstr "Ξεκλείδωμα"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
 msgid "Automatically unlock this key, whenever I'm logged in"
 msgstr "Αυτόματο ξεκλείδωμα αυτού του κλειδιού, όποτε συνδέομαι"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:145
+#: ../daemon/login/gkd-login.c:150
 msgid "Login"
 msgstr "Σύνδεση"
 
@@ -214,164 +215,164 @@ msgstr "δεν έγινε το κλείδωμα `%s': %s\n"
 msgid "waiting for lock %s...\n"
 msgstr "αναμονή για κλείδωμα %s...\n"
 
-#: ../egg/egg-oid.c:41
+#: ../egg/egg-oid.c:40
 msgid "Domain Component"
-msgstr "Συστατικό τομέα"
+msgstr "Συστατικό στοιχείο τομέα"
 
-#: ../egg/egg-oid.c:43
+#: ../egg/egg-oid.c:42
 msgid "User ID"
-msgstr "ID Χρήστη"
+msgstr "Ταυτότητα χρήστη"
 
-#: ../egg/egg-oid.c:46
+#: ../egg/egg-oid.c:45
 msgid "Email Address"
-msgstr "Διεύθυνση ηλεκτρονικού ταχυδρομείου"
+msgstr "Διεύθυνση ηλ. αλληλογραφίας"
 
-#: ../egg/egg-oid.c:54
+#: ../egg/egg-oid.c:53
 msgid "Date of Birth"
 msgstr "Ημερομηνία γέννησης"
 
-#: ../egg/egg-oid.c:56
+#: ../egg/egg-oid.c:55
 msgid "Place of Birth"
 msgstr "Τοποθεσία γέννησης"
 
-#: ../egg/egg-oid.c:58
+#: ../egg/egg-oid.c:57
 msgid "Gender"
 msgstr "Φύλο"
 
-#: ../egg/egg-oid.c:60
+#: ../egg/egg-oid.c:59
 msgid "Country of Citizenship"
 msgstr "Χώρα υπηκοότητας"
 
-#: ../egg/egg-oid.c:62
+#: ../egg/egg-oid.c:61
 msgid "Country of Residence"
 msgstr "Χώρα διαμονής"
 
-#: ../egg/egg-oid.c:65
+#: ../egg/egg-oid.c:64
 msgid "Common Name"
 msgstr "Όνομα, υποκοριστικό"
 
-#: ../egg/egg-oid.c:67
+#: ../egg/egg-oid.c:66
 msgid "Surname"
 msgstr "Επώνυμο"
 
-#: ../egg/egg-oid.c:69
+#: ../egg/egg-oid.c:68
 msgid "Serial Number"
 msgstr "Σειριακός αριθμός"
 
-#: ../egg/egg-oid.c:71
+#: ../egg/egg-oid.c:70
 msgid "Country"
 msgstr "Χώρα"
 
-#: ../egg/egg-oid.c:73
+#: ../egg/egg-oid.c:72
 msgid "Locality"
 msgstr "Περιοχή"
 
-#: ../egg/egg-oid.c:75
+#: ../egg/egg-oid.c:74
 msgid "State"
 msgstr "Πολιτεία"
 
-#: ../egg/egg-oid.c:77
+#: ../egg/egg-oid.c:76
 msgid "Street"
 msgstr "Οδός"
 
-#: ../egg/egg-oid.c:79
+#: ../egg/egg-oid.c:78
 msgid "Organization"
 msgstr "Οργανισμός"
 
-#: ../egg/egg-oid.c:81
+#: ../egg/egg-oid.c:80
 msgid "Organizational Unit"
 msgstr "Μονάδα οργανισμού"
 
-#: ../egg/egg-oid.c:83
+#: ../egg/egg-oid.c:82
 msgid "Title"
 msgstr "Τίτλος"
 
-#: ../egg/egg-oid.c:85
+#: ../egg/egg-oid.c:84
 msgid "Telephone Number"
 msgstr "Τηλέφωνο"
 
-#: ../egg/egg-oid.c:87
+#: ../egg/egg-oid.c:86
 msgid "Given Name"
 msgstr "Όνομα, βαφτιστικό"
 
-#: ../egg/egg-oid.c:89
+#: ../egg/egg-oid.c:88
 msgid "Initials"
 msgstr "Αρχικά"
 
-#: ../egg/egg-oid.c:91
+#: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
 msgstr "Προσδιοριστικό γενιάς"
 
-#: ../egg/egg-oid.c:93
+#: ../egg/egg-oid.c:92
 msgid "DN Qualifier"
 msgstr "Προσδιοριστικό DN"
 
-#: ../egg/egg-oid.c:95
+#: ../egg/egg-oid.c:94
 msgid "Pseudonym"
 msgstr "Ψευδώνυμο"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:97
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:99
+#: ../egg/egg-oid.c:98
 msgid "MD2 with RSA"
 msgstr "MD2 με RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD5 with RSA"
 msgstr "MD5 με RSA"
 
-#: ../egg/egg-oid.c:101
+#: ../egg/egg-oid.c:100
 msgid "SHA1 with RSA"
 msgstr "SHA1 με RSA"
 
-#: ../egg/egg-oid.c:103
+#: ../egg/egg-oid.c:102
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:103
 msgid "SHA1 with DSA"
 msgstr "SHA1 με DSA"
 
 #. Extended Key Usages
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:106
 msgid "Server Authentication"
-msgstr "Πιστοποίηση εξυπηρετητή"
+msgstr "Πιστοποίηση διακομιστή"
 
-#: ../egg/egg-oid.c:108
+#: ../egg/egg-oid.c:107
 msgid "Client Authentication"
 msgstr "Πιστοποίηση πελάτη"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:108
 msgid "Code Signing"
 msgstr "Υπογραφή κώδικα"
 
-#: ../egg/egg-oid.c:110
+#: ../egg/egg-oid.c:109
 msgid "Email Protection"
-msgstr "Προστασία λεκτρονικής διεύθυνσης"
+msgstr "Προστασία ηλεκτρονικής διεύθυνσης"
 
-#: ../egg/egg-oid.c:111
+#: ../egg/egg-oid.c:110
 msgid "Time Stamping"
-msgstr "Σήμανση χρόνου"
+msgstr "Χρονική σήμαναση"
 
-#: ../egg/egg-spawn.c:273
+#: ../egg/egg-spawn.c:272
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
 "Απρόσμενο σφάλμα στο select() ανάγνωσης δεδομένων από μια θυγατρική "
 "διεργασία (%s)"
 
-#: ../egg/egg-spawn.c:320
+#: ../egg/egg-spawn.c:319
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Απρόσμενο σφάλμα στο waitpid() (%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:577
+#: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Ανώνυμο πιστοποιητικό"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:337
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
 msgid "Couldn't parse public SSH key"
 msgstr "Αδυναμία ανάλυσης δημόσιου κλειδιού SSH"
 
@@ -379,7 +380,7 @@ msgstr "Αδυναμία ανάλυσης δημόσιου κλειδιού SSH"
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
-msgstr "Ξεκλείδωμα κωδικού για: %s"
+msgstr "Ξεκλείδωμα κωδικού πρόσβασης για: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
@@ -387,15 +388,15 @@ msgstr "Ξεκλείδωμα κλειδοθήκης εισόδου"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
-msgstr "Εισαγωγή κωδικού για ξεκλείδωμα της κλειδοθήκης εισόδου"
+msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα της κλειδοθήκης εισόδου"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
-"Ο κωδικός που χρησιμοποιείτε για να συνδεθείτε στον υπολογιστή σας δεν "
-"ταιριάζει πλέον με αυτό της κλειδοθήκης εισόδου."
+"Ο κωδικός πρόσβασης που χρησιμοποιείτε για να συνδεθείτε στον υπολογιστή σας "
+"δεν ταιριάζει πλέον με αυτό της κλειδοθήκης εισόδου."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
 msgid ""
@@ -411,13 +412,13 @@ msgstr "Ξεκλείδωμα κλειδοθήκης"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "Εισάγετε κωδικό για την κλειδοθήκη '%s' για ξεκλείδωμα"
+msgstr "Εισάγετε κωδικό πρόσβασης για την κλειδοθήκη '%s' για ξεκλείδωμα"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
-"Μια εφαρμογή επιθυμεί πρόσβαση στη κλειδοθήκη '%s', αλλά είναι κλειδωμένο"
+"Μια εφαρμογή επιθυμεί πρόσβαση στη κλειδοθήκη '%s', αλλά είναι κλειδωμένη"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
@@ -437,15 +438,15 @@ msgstr "Ξεκλείδωμα δημοσίου κλειδιού"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the private key"
-msgstr "Εισάγετε κωδικό για το ξεκλείδωμα του ιδιωτικού κλειδιού"
+msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του ιδιωτικού κλειδιού"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the certificate"
-msgstr "Εισάγετε κωδικό για το ξεκλείδωμα του πιστοποιητικού"
+msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του πιστοποιητικού"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock the public key"
-msgstr "Εισάγετε κωδικό για το ξεκλείδωμα του δημόσιου κλειδιού"
+msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του δημόσιου κλειδιού"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Enter password to unlock"
@@ -471,7 +472,7 @@ msgstr "Αυτόματο ξεκλείδωμα όποτε συνδέομαι"
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
-"Μια  εφαρμογή  επιθυμεί πρόσβαση στο ιδιωτικό κλειδί '%s', αλλά είναι "
+"Μια εφαρμογή επιθυμεί πρόσβαση στο ιδιωτικό κλειδί '%s', αλλά είναι "
 "κλειδωμένο"
 
 #. TRANSLATORS: The certificate is locked
@@ -492,11 +493,11 @@ msgstr ""
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr "Μια εφαρμογή  επιθυμεί πρόσβαση στο '%s', αλλά είναι κλειδωμένο"
+msgstr "Μια εφαρμογή επιθυμεί πρόσβαση στο '%s', αλλά είναι κλειδωμένο"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
 msgid "The unlock password was incorrect"
-msgstr "Ο κωδικός ξεκλειδώματος είναι λάθος"
+msgstr "Ο κωδικός πρόσβασης ξεκλειδώματος είναι λάθος"
 
 #. Build up the prompt
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
@@ -506,7 +507,8 @@ msgstr "Ξεκλείδωμα πιστοποιητικού/αποθήκης κλ�
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
-"Εισάγετε κωδικό για το ξεκλείδωμα του πιστοποιητικού/της αποθήκης κλειδιών"
+"Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του πιστοποιητικού/της αποθήκης "
+"κλειδιών"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
@@ -532,7 +534,7 @@ msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"Απαιτείται κωδικός για την προετοιμασία του '%s' για αποθήκευση "
+"Απαιτείται κωδικός πρόσβασης για την προετοιμασία του '%s' για αποθήκευση "
 "πιστοποιητικών ή κλειδιών"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
@@ -553,24 +555,24 @@ msgstr ""
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change password for secure storage"
-msgstr "Αλλαγή κωδικού για ασφαλή αποθήκευση"
+msgstr "Αλλαγή κωδικού πρόσβασης για ασφαλή αποθήκευση"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
 #, c-format
 msgid "Type a new password for '%s'"
-msgstr "Πληκτρολογείστε έναν νέο κωδικό πρόσβασης για '%s'"
+msgstr "Πληκτρολογήστε έναν νέο κωδικό πρόσβασης για '%s'"
 
-#: ../tool/gkr-tool.c:102
+#: ../tool/gkr-tool.c:101
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "χρήση: gnome-keyring εντολή [επιλογές]\n"
 
-#: ../tool/gkr-tool.c:104
+#: ../tool/gkr-tool.c:103
 msgid "commands: "
 msgstr "εντολές:"
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
+#: ../tool/gkr-tool.c:107
 msgid "          "
 msgstr "          "
 
