@@ -42,7 +42,7 @@ GType                gkd_ssh_agent_client_get_type            (void);
 
 GkdSshAgentClient *  gkd_ssh_agent_client_connect             (void);
 
-gboolean             gkd_ssh_agent_client_call                (GkdSshAgentClient *self,
+gboolean             gkd_ssh_agent_client_transact            (GkdSshAgentClient *self,
 							       EggBuffer *req,
 							       EggBuffer *resp);
 

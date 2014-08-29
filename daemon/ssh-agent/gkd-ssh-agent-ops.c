@@ -174,7 +174,7 @@ preload_key_if_necessary (GkdSshAgentClient *agent,
 	blob = g_bytes_get_data (priv, &length);
 	egg_buffer_add_byte_array (&buf, blob, length);
 
-	if (gkd_ssh_agent_client_call (agent, &buf, &buf)) {
+	if (gkd_ssh_agent_client_transact (agent, &buf, &buf)) {
 		if (!egg_buffer_get_byte (&buf, 4, NULL, &code) || code != GKD_SSH_RES_SUCCESS) {
 			comment = gkd_ssh_agent_client_preload_comment (agent, key);
 			g_warning ("couldn't add private key '%s' to ssh-agent", comment);
