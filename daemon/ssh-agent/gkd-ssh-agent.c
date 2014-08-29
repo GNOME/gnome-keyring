@@ -134,6 +134,12 @@ gkd_ssh_agent_write_packet (gint fd,
 	return write_all (fd, buffer->buf, buffer->len);
 }
 
+gboolean
+gkd_ssh_agent_relay (GkdSshAgentCall *call)
+{
+	return gkd_ssh_agent_client_transact (call->agent, call->req, call->resp);
+}
+
 static gpointer
 run_client_thread (gpointer data)
 {
