@@ -104,36 +104,46 @@ write_all (int fd, const guchar *buf, int len)
 	return TRUE;
 }
 
-static gboolean
-read_packet_with_size (GkdSshAgentCall *call)
+gboolean
+gkd_ssh_agent_read_packet (gint fd,
+                           EggBuffer *buffer)
 {
-	int fd;
 	guint32 packet_size;
 
-	fd = call->sock;
-
-	egg_buffer_resize (call->req, 4);
-	if (!read_all (fd, call->req->buf, 4))
+	egg_buffer_reset (buffer);
+	egg_buffer_resize (buffer, 4);
+	if (!read_all (fd, buffer->buf, 4))
 		return FALSE;
 
-	if (!egg_buffer_get_uint32 (call->req, 0, NULL, &packet_size) ||
+	if (!egg_buffer_get_uint32 (buffer, 0, NULL, &packet_size) ||
 	    packet_size < 1) {
 		g_warning ("invalid packet size from client");
 		return FALSE;
 	}
 
-	egg_buffer_resize (call->req, packet_size + 4);
-	if (!read_all (fd, call->req->buf + 4, packet_size))
+	egg_buffer_resize (buffer, packet_size + 4);
+	if (!read_all (fd, buffer->buf + 4, packet_size))
 		return FALSE;
 
 	return TRUE;
 }
 
+gboolean
+gkd_ssh_agent_write_packet (gint fd,
+                            EggBuffer *buffer)
+{
+	if (!egg_buffer_set_uint32 (buffer, 0, buffer->len - 4))
+		g_return_val_if_reached (FALSE);
+	return write_all (fd, buffer->buf, buffer->len);
+}
+
 static gpointer
 run_client_thread (gpointer data)
 {
-	gint *socket = data;
+	gint *socket = xxxx;
+	gint *agent = xxxx;
 	GkdSshAgentCall call;
+	GkdSshAgentOperation func;
 	EggBuffer req;
 	EggBuffer resp;
 	guchar op;
@@ -146,90 +156,44 @@ run_client_thread (gpointer data)
 	egg_buffer_init_full (&resp, 128, (EggBufferAllocator)g_realloc);
 	call.req = &req;
 	call.resp = &resp;
-	call.modules = gck_list_ref_copy (pkcs11_modules);
+
+	call.agent = gkd_ssh_agent_client_connect ();
+	if (!call.agent)
+		goto out;
 
 	for (;;) {
 
-		egg_buffer_reset (call.req);
-
 		/* 1. Read in the request */
-		if (!read_packet_with_size (&call))
+		if (!gkd_ssh_agent_read_packet (call.sock, &call.req))
 			break;
 
 		/* 2. Now decode the operation */
 		if (!egg_buffer_get_byte (call.req, 4, NULL, &op))
 			break;
-		if (op >= GKD_SSH_OP_MAX)
-			break;
-		g_assert (gkd_ssh_agent_operations[op]);
 
 		/* 3. Execute the right operation */
 		egg_buffer_reset (call.resp);
 		egg_buffer_add_uint32 (call.resp, 0);
-		if (!(gkd_ssh_agent_operations[op]) (&call))
-			break;
-		if (!egg_buffer_set_uint32 (call.resp, 0, call.resp->len - 4))
+		if (op >= GKD_SSH_OP_MAX || gkd_ssh_agent_operations[op])
+			func = gkd_ssh_agent_operations[op];
+		else
+			func = gkd_ssh_agent_relay;
+		if (!func (&call))
 			break;
 
 		/* 4. Write the reply back out */
-		if (!write_all (call.sock, call.resp->buf, call.resp->len))
+		if (!gkd_ssh_agent_write_packet (call.sock, call.resp))
 			break;
 	}
 
+out:
 	egg_buffer_uninit (&req);
 	egg_buffer_uninit (&resp);
-	gck_list_unref_free (call.modules);
-	call.modules = NULL;
 
 	close (call.sock);
 	g_atomic_int_set (socket, -1);
 
 	return NULL;
-}
-
-/* --------------------------------------------------------------------------------------
- * SESSION MANAGEMENT
- */
-
-/* The main PKCS#11 session that owns objects, and the mutex/cond for waiting on it */
-static GckSession *pkcs11_main_session = NULL;
-static gboolean pkcs11_main_checked = FALSE;
-static GMutex *pkcs11_main_mutex = NULL;
-static GCond *pkcs11_main_cond = NULL;
-
-GckSession*
-gkd_ssh_agent_checkout_main_session (void)
-{
-	GckSession *result;
-
-	g_mutex_lock (pkcs11_main_mutex);
-
-		g_assert (GCK_IS_SESSION (pkcs11_main_session));
-		while (pkcs11_main_checked)
-			g_cond_wait (pkcs11_main_cond, pkcs11_main_mutex);
-		pkcs11_main_checked = TRUE;
-		result = g_object_ref (pkcs11_main_session);
-
-	g_mutex_unlock (pkcs11_main_mutex);
-
-	return result;
-}
-
-void
-gkd_ssh_agent_checkin_main_session (GckSession *session)
-{
-	g_assert (GCK_IS_SESSION (session));
-
-	g_mutex_lock (pkcs11_main_mutex);
-
-		g_assert (session == pkcs11_main_session);
-		g_assert (pkcs11_main_checked);
-
-		g_object_unref (session);
-		pkcs11_main_checked = FALSE;
-		g_cond_signal (pkcs11_main_cond);
-
-	g_mutex_unlock (pkcs11_main_mutex);
 }
 
 /* --------------------------------------------------------------------------------------
@@ -239,6 +203,7 @@ gkd_ssh_agent_checkin_main_session (GckSession *session)
 typedef struct _Client {
 	GThread *thread;
 	gint sock;
+	gint agent;
 } Client;
 
 /* Each client thread in this list */
@@ -280,18 +245,19 @@ gkd_ssh_agent_accept (void)
 		return;
 	}
 
-	client = g_slice_new0 (Client);
-	client->sock = new_fd;
-
-	/* And create a new thread/process */
-	client->thread = g_thread_new ("ssh-agent", run_client_thread, &client->sock);
-	if (!client->thread) {
-		g_warning ("couldn't create thread SSH agent connection: %s",
-		           egg_error_message (error));
-		g_slice_free (Client, client);
+	real_agent = gkd_ssh_agent_process_connect ();
+	if (real_agent < 0) {
+		/* Warning already printed */
+		close (new_fd);
 		return;
 	}
 
+	client = g_slice_new0 (Client);
+	client->sock = new_fd;
+	client->agent = real_agent;
+
+	/* And create a new thread/process */
+	client->thread = g_thread_new ("ssh-agent", run_client_thread, &client->sock);
 	socket_clients = g_list_append (socket_clients, client);
 }
 
@@ -312,8 +278,10 @@ gkd_ssh_agent_shutdown (void)
 		client = l->data;
 
 		/* Forcibly shutdown the connection */
-		if (client->sock != -1)
+		if (client->sock != -1) {
 			shutdown (client->sock, SHUT_RDWR);
+			shutdown (client->agent, SHUT_RDWR);
+		}
 		g_thread_join (client->thread);
 
 		/* This is always closed by client thread */
@@ -323,93 +291,8 @@ gkd_ssh_agent_shutdown (void)
 
 	g_list_free (socket_clients);
 	socket_clients = NULL;
-}
 
-void
-gkd_ssh_agent_uninitialize (void)
-{
-	gboolean ret;
-
-	g_assert (pkcs11_main_mutex);
-	ret = g_mutex_trylock (pkcs11_main_mutex);
-	g_assert (ret);
-
-		g_assert (GCK_IS_SESSION (pkcs11_main_session));
-		g_assert (!pkcs11_main_checked);
-		g_object_unref (pkcs11_main_session);
-		pkcs11_main_session = NULL;
-
-	g_mutex_unlock (pkcs11_main_mutex);
-	g_mutex_clear (pkcs11_main_mutex);
-	g_free (pkcs11_main_mutex);
-	g_cond_clear (pkcs11_main_cond);
-	g_free (pkcs11_main_cond);
-
-	gck_list_unref_free (pkcs11_modules);
-	pkcs11_modules = NULL;
-}
-
-int
-gkd_ssh_agent_initialize (CK_FUNCTION_LIST_PTR funcs)
-{
-	GckModule *module;
-	gboolean ret;
-
-	g_return_val_if_fail (funcs, -1);
-
-	module = gck_module_new (funcs);
-	ret = gkd_ssh_agent_initialize_with_module (module);
-	g_object_unref (module);
-	return ret;
-}
-
-gboolean
-gkd_ssh_agent_initialize_with_module (GckModule *module)
-{
-	GckSession *session = NULL;
-	GList *slots, *l;
-	GArray *mechs;
-	GError *error = NULL;
-
-	g_assert (GCK_IS_MODULE (module));
-
-	/* Find a good slot for our session keys */
-	slots = gck_module_get_slots (module, TRUE);
-	for (l = slots; session == NULL && l; l = g_list_next (l)) {
-
-		/* Check that it has the mechanisms we need */
-		mechs = gck_slot_get_mechanisms (l->data);
-		if (gck_mechanisms_check (mechs, CKM_RSA_PKCS, CKM_DSA, GCK_INVALID)) {
-
-			/* Try and open a session */
-			session = gck_slot_open_session (l->data, GCK_SESSION_AUTHENTICATE, NULL, &error);
-			if (!session) {
-				g_warning ("couldn't create pkcs#11 session: %s", egg_error_message (error));
-				g_clear_error (&error);
-			}
-		}
-
-		g_array_unref (mechs);
-	}
-
-	gck_list_unref_free (slots);
-
-	if (!session) {
-		g_warning ("couldn't select a usable pkcs#11 slot for the ssh agent to use");
-		return FALSE;
-	}
-
-	g_assert (!pkcs11_modules);
-	pkcs11_modules = g_list_append (NULL, g_object_ref (module));
-
-	pkcs11_main_mutex = g_new0 (GMutex, 1);
-	g_mutex_init (pkcs11_main_mutex);
-	pkcs11_main_cond = g_new0 (GCond, 1);
-	g_cond_init (pkcs11_main_cond);
-	pkcs11_main_checked = FALSE;
-	pkcs11_main_session = session;
-
-	return TRUE;
+	gkd_ssh_agent_process_cleanup ();
 }
 
 int
