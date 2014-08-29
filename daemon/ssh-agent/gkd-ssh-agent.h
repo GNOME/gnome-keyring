@@ -33,8 +33,4 @@ void              gkd_ssh_agent_accept                  (void);
 
 void              gkd_ssh_agent_shutdown                (void);
 
-gboolean          gkd_ssh_agent_initialize              (CK_FUNCTION_LIST_PTR funcs);
-
-void              gkd_ssh_agent_uninitialize            (void);
-
 #endif /* GKDSSHAGENT_H_ */

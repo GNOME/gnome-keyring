@@ -26,6 +26,8 @@
 
 #include <glib-object.h>
 
+#include "egg/egg-buffer.h"
+
 #define GKD_TYPE_SSH_AGENT_CLIENT               (gkm_ssh_agent_client_get_type ())
 #define GKD_SSH_AGENT_CLIENT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_TYPE_SSH_AGENT_CLIENT, GkdSshAgentClient))
 #define GKD_SSH_AGENT_CLIENT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_TYPE_SSH_AGENT_CLIENT, GkdSshAgentClientClass))
@@ -38,9 +40,25 @@ typedef struct _GkdSshAgentClientClass GkdSshAgentClientClass;
 
 GType                gkd_ssh_agent_client_get_type            (void);
 
-GList *              gkd_ssh_agent_client_get_preload_keys    (GkdSshAgentClient *self);
+GkdSshAgentClient *  gkd_ssh_agent_client_connect             (void);
 
-void                 gkd_ssh_agent_client_clear_preload       (GkdSshAgentClient *self,
+gboolean             gkd_ssh_agent_client_call                (GkdSshAgentClient *self,
+							       EggBuffer *req,
+							       EggBuffer *resp);
+
+GList *              gkd_ssh_agent_client_preload_keys        (GkdSshAgentClient *self);
+
+gchar *              gkd_ssh_agent_client_preload_comment     (GkdSshAgentClient *self,
                                                                GBytes *key);
+
+GBytes *             gkd_ssh_agent_client_preload_unlock      (GkdSshAgentClient *self,
+							       GBytes *key);
+
+void                 gkd_ssh_agent_client_preload_clear       (GkdSshAgentClient *self,
+                                                               GBytes *key);
+
+void                 gkd_ssh_agent_client_preload_clear_all   (GkdSshAgentClient *self);
+
+void                 gkd_ssh_agent_client_cleanup             (void);
 
 #endif /* __GKD_SSH_AGENT_CLIENT_H__ */

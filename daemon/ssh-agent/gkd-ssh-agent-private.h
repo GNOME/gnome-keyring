@@ -95,4 +95,6 @@ gboolean              gkd_ssh_agent_read_packet                     (gint fd,
 gboolean              gkd_ssh_agent_write_packet                    (gint fd,
                                                                      EggBuffer *buffer);
 
+gboolean              gkd_ssh_agent_relay                           (GkdSshAgentCall *call);
+
 #endif /*GKDSSHPRIVATE_H_*/

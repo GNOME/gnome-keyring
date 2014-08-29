@@ -44,9 +44,6 @@
 typedef int socklen_t;
 #endif
 
-/* The loaded PKCS#11 modules */
-static GList *pkcs11_modules = NULL;
-
 EGG_SECURE_DECLARE (ssh_agent);
 
 static gboolean
@@ -140,8 +137,7 @@ gkd_ssh_agent_write_packet (gint fd,
 static gpointer
 run_client_thread (gpointer data)
 {
-	gint *socket = xxxx;
-	gint *agent = xxxx;
+	gint *socket = data;
 	GkdSshAgentCall call;
 	GkdSshAgentOperation func;
 	EggBuffer req;
@@ -164,7 +160,7 @@ run_client_thread (gpointer data)
 	for (;;) {
 
 		/* 1. Read in the request */
-		if (!gkd_ssh_agent_read_packet (call.sock, &call.req))
+		if (!gkd_ssh_agent_read_packet (call.sock, call.req))
 			break;
 
 		/* 2. Now decode the operation */
@@ -203,7 +199,6 @@ out:
 typedef struct _Client {
 	GThread *thread;
 	gint sock;
-	gint agent;
 } Client;
 
 /* Each client thread in this list */
@@ -221,7 +216,6 @@ gkd_ssh_agent_accept (void)
 	Client *client;
 	struct sockaddr_un addr;
 	socklen_t addrlen;
-	GError *error = NULL;
 	GList *l;
 	int new_fd;
 
@@ -245,16 +239,8 @@ gkd_ssh_agent_accept (void)
 		return;
 	}
 
-	real_agent = gkd_ssh_agent_process_connect ();
-	if (real_agent < 0) {
-		/* Warning already printed */
-		close (new_fd);
-		return;
-	}
-
 	client = g_slice_new0 (Client);
 	client->sock = new_fd;
-	client->agent = real_agent;
 
 	/* And create a new thread/process */
 	client->thread = g_thread_new ("ssh-agent", run_client_thread, &client->sock);
@@ -278,10 +264,8 @@ gkd_ssh_agent_shutdown (void)
 		client = l->data;
 
 		/* Forcibly shutdown the connection */
-		if (client->sock != -1) {
+		if (client->sock != -1)
 			shutdown (client->sock, SHUT_RDWR);
-			shutdown (client->agent, SHUT_RDWR);
-		}
 		g_thread_join (client->thread);
 
 		/* This is always closed by client thread */
@@ -292,7 +276,7 @@ gkd_ssh_agent_shutdown (void)
 	g_list_free (socket_clients);
 	socket_clients = NULL;
 
-	gkd_ssh_agent_process_cleanup ();
+	gkd_ssh_agent_client_cleanup ();
 }
 
 int
