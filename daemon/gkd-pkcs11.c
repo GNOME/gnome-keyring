@@ -49,7 +49,6 @@ pkcs11_daemon_cleanup (gpointer unused)
 
 	g_assert (pkcs11_roof);
 
-	gkd_ssh_agent_uninitialize ();
 	gkm_rpc_layer_uninitialize ();
 	rv = (pkcs11_roof->C_Finalize) (NULL);
 
@@ -113,10 +112,7 @@ gkd_pkcs11_initialize (void)
 
 	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
 
-	ret = gkd_ssh_agent_initialize (pkcs11_roof) &&
-	      gkm_rpc_layer_initialize (pkcs11_roof);
-
-	return ret;
+	return gkm_rpc_layer_initialize (pkcs11_roof);
 }
 
 static void

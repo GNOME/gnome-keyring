@@ -97,8 +97,6 @@ gboolean              gkd_ssh_agent_read_packet                     (gint fd,
 gboolean              gkd_ssh_agent_write_packet                    (gint fd,
                                                                      EggBuffer *buffer);
 
-gboolean              gkd_ssh_agent_proto_write_signature_ecdsa     (EggBuffer *resp,
-                                                                     CK_BYTE_PTR signature,
-                                                                     CK_ULONG n_signature);
+gboolean              gkd_ssh_agent_relay                           (GkdSshAgentCall *call);
 
 #endif /*GKDSSHPRIVATE_H_*/
