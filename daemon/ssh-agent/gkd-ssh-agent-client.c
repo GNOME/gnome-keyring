@@ -20,10 +20,12 @@
 
 #include "config.h"
 
-gint
+#include "gkd-ssh-agent-client.h"
+
+static gint
 agent_start (const char *socket)
 {
-	gchar *argv[] = { SSH_AGENT, "-a", socket, NULL };
+	const gchar *argv[] = { SSH_AGENT, "-d", "-a", socket, NULL };
 	gchar *standard_error = NULL;
 	gchar *standard_output = NULL;
 	GError *error = NULL;
@@ -31,8 +33,10 @@ agent_start (const char *socket)
 	gint ret = 0;
 	gchar *cmd;
 
-	if (!g_spawn_sync ("/", argv, NULL, NULL, NULL, &standard_output,
-	                   &standard_error, &exit_status, &error) ||
+	if (!g_spawn_async ("/", argv, G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_STDOUT_TO_DEV_NULL,
+	                    NULL, NULL, 
+	                    NULL, NULL, &standard_output,
+	                    &standard_error, &exit_status, &error) ||
 	    !g_spawn_check_exit_status (exit_status, NULL)) {
 		cmd = g_strjoinv (" ", argv);
 		if (error != NULL) {
@@ -100,8 +104,8 @@ G_LOCK (ssh_agent_process);
 static gchar *ssh_agent_path = NULL;
 static gint ssh_agent_pid;
 
-GIOStream *
-gkd_ssh_agent_process_connect (void)
+GkdSshAgentClient *
+gkd_ssh_agent_client_connect (void)
 {
 	GSocketConnection *connection;
 	GSocketAddress *address;
@@ -150,7 +154,7 @@ gkd_ssh_agent_process_connect (void)
 }
 
 void
-gkd_ssh_agent_process_cleanup (void)
+gkd_ssh_agent_client_cleanup (void)
 {
 	G_LOCK (ssh_agent_process);
 
@@ -162,4 +166,12 @@ gkd_ssh_agent_process_cleanup (void)
 	ssh_agent_path = NULL;
 
 	G_UNLOCK (ssh_agent_process);
+}
+
+gboolean
+gkd_ssh_agent_client_transact (GkdSshAgentClient *self,
+                               EggBuffer *req,
+                               EggBuffer *resp)
+{
+
 }

@@ -43,22 +43,22 @@ GType                gkd_ssh_agent_client_get_type            (void);
 GkdSshAgentClient *  gkd_ssh_agent_client_connect             (void);
 
 gboolean             gkd_ssh_agent_client_transact            (GkdSshAgentClient *self,
-							       EggBuffer *req,
-							       EggBuffer *resp);
+                                                               EggBuffer *req,
+                                                               EggBuffer *resp);
 
-GList *              gkd_ssh_agent_client_preload_keys        (GkdSshAgentClient *self);
+GList *              gkd_ssh_agent_preload_keys               (GkdSshAgentClient *self);
 
-gchar *              gkd_ssh_agent_client_preload_comment     (GkdSshAgentClient *self,
+gchar *              gkd_ssh_agent_preload_comment            (GkdSshAgentClient *self,
                                                                GBytes *key);
 
-GBytes *             gkd_ssh_agent_client_preload_unlock      (GkdSshAgentClient *self,
-							       GBytes *key);
-
-void                 gkd_ssh_agent_client_preload_clear       (GkdSshAgentClient *self,
+GBytes *             gkd_ssh_agent_preload_unlock             (GkdSshAgentClient *self,
                                                                GBytes *key);
 
-void                 gkd_ssh_agent_client_preload_clear_all   (GkdSshAgentClient *self);
+void                 gkd_ssh_agent_preload_clear              (GkdSshAgentClient *self,
+                                                               GBytes *key);
 
-void                 gkd_ssh_agent_client_cleanup             (void);
+void                 gkd_ssh_agent_preload_clear_all          (GkdSshAgentClient *self);
+
+void                 gkd_ssh_agent_preload_cleanup            (void);
 
 #endif /* __GKD_SSH_AGENT_CLIENT_H__ */
