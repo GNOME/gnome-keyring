@@ -21,13 +21,22 @@
  * Author: Stef Walter <stef@thewalter.net>
  */
 
-#ifndef __GKD_SSH_AGENT_CLIENT_H__
-#define __GKD_SSH_AGENT_CLIENT_H__
+#ifndef __GKD_SSH_AGENT_PRELOAD_H__
+#define __GKD_SSH_AGENT_PRELOAD_H__
 
 #include <glib.h>
 
-gint                 gkd_ssh_agent_client_connect             (void);
+GList *              gkd_ssh_agent_preload_keys               (void);
 
-void                 gkd_ssh_agent_client_cleanup             (void);
+gchar *              gkd_ssh_agent_preload_comment            (GBytes *key);
 
-#endif /* __GKD_SSH_AGENT_CLIENT_H__ */
+GBytes *             gkd_ssh_agent_preload_private            (GBytes *key);
+
+void                 gkd_ssh_agent_preload_clear              (GBytes *key);
+
+void                 gkd_ssh_agent_preload_clear_all          (void);
+
+void                 gkd_ssh_agent_preload_cleanup            (void);
+
+#endif /* __GKD_SSH_AGENT_PRELOAD_H__ */
+

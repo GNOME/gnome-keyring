@@ -10,6 +10,8 @@ libgkd_ssh_agent_la_SOURCES = \
 	daemon/ssh-agent/gkd-ssh-agent.h \
 	daemon/ssh-agent/gkd-ssh-agent-client.h \
 	daemon/ssh-agent/gkd-ssh-agent-client.c \
+	daemon/ssh-agent/gkd-ssh-agent-preload.h \
+	daemon/ssh-agent/gkd-ssh-agent-preload.c \
 	daemon/ssh-agent/gkd-ssh-agent-private.h \
 	daemon/ssh-agent/gkd-ssh-agent-ops.c
 libgkd_ssh_agent_la_CFLAGS = \

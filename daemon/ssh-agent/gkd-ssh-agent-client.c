@@ -22,141 +22,116 @@
 
 #include "gkd-ssh-agent-client.h"
 
-static gint
-agent_start (const char *socket)
+#include "daemon/gkd-util.h"
+
+#include <sys/socket.h>
+#include <sys/un.h>
+
+#include <errno.h>
+#include <unistd.h>
+
+static gchar *ssh_agent_path = NULL;
+static GPid ssh_agent_pid;
+static GMutex ssh_agent_mutex;
+
+static void
+on_child_watch (GPid pid,
+                gint status,
+                gpointer user_data)
 {
-	const gchar *argv[] = { SSH_AGENT, "-d", "-a", socket, NULL };
-	gchar *standard_error = NULL;
-	gchar *standard_output = NULL;
 	GError *error = NULL;
-	gint exit_status = 0;
-	gint ret = 0;
-	gchar *cmd;
 
-	if (!g_spawn_async ("/", argv, G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_STDOUT_TO_DEV_NULL,
-	                    NULL, NULL, 
-	                    NULL, NULL, &standard_output,
-	                    &standard_error, &exit_status, &error) ||
-	    !g_spawn_check_exit_status (exit_status, NULL)) {
-		cmd = g_strjoinv (" ", argv);
-		if (error != NULL) {
-			g_warning ("couldn't run: %s: %s", cmd, error->message);
-			g_error_free (error);
-		} else {
-			g_warning ("failed to run: %s", cmd);
-		}
-		g_free (cmd);
+	if (pid != ssh_agent_pid)
+		return;
 
-	/* Sucessfully running, pull out the PID */
-	} else {
-		lines = g_strsplit (standard_output, "\n", -1);
-		for (i = 0; lines[i] != NULL; i++) {
-			g_strstrip (lines[i]);
-			if (g_str_has_prefix (lines[i], "SSH_AGENT_PID=")) {
-				pid = lines[i] + 16;
-				pos = strchr (pid, ';');
-				if (pos != NULL)
-					pos[0] = '\0';
-				ret = (int)strtol (pid, 10, &endptr);
-				if (!endptr || endptr != '\0') {
-					g_warning ("invalid pid received from ssh-agent: %s", pid);
-					ret = 0;
-				}
-				break;
-			}
-		}
-		g_strfreev (lines);
+	g_mutex_lock (&ssh_agent_mutex);
+
+	ssh_agent_pid = 0;
+
+	if (!g_spawn_check_exit_status (status, &error)) {
+		g_message ("ssh-agent: %s", error->message);
+		g_error_free (error);
 	}
 
-	if (standard_error) {
-		lines = g_strsplit (standard_error, "\n", -1);
-		for (i = 0; lines[i] != NULL; i++)
-			g_warning ("%s", g_strchomp (lines[0]));
-		g_strfreev (lines);
-	}
-
-	g_free (standard_error);
-	g_free (standard_output);
-	return ret;
+	g_mutex_unlock (&ssh_agent_mutex);
 }
 
-gboolean
-agent_check (gint pid)
+static gboolean
+agent_start_inlock (const char *socket)
+{
+	const gchar *argv[] = { SSH_AGENT, "-d", "-a", socket, NULL };
+	GError *error = NULL;
+	GPid pid;
+
+	if (!g_spawn_async ("/", (gchar **)argv, NULL,
+	                    G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_STDOUT_TO_DEV_NULL,
+	                    NULL, NULL, &pid, &error)) {
+		g_warning ("couldn't run %s: %s", SSH_AGENT, error->message);
+		g_error_free (error);
+		return FALSE;
+	}
+
+	ssh_agent_pid = pid;
+	g_child_watch_add (ssh_agent_pid, on_child_watch, NULL);
+	return TRUE;
+}
+
+static gboolean
+agent_check (GPid pid)
 {
 	return pid && (kill (pid, 0) == 0);
 }
 
-void
+static void
 agent_terminate (gint pid)
 {
 	kill (pid, SIGTERM);
 }
 
-static gchar *
-agent_make_path (void)
-{
-	const char *directory;
-
-	directory = gkd_util_master_directory ();
-}
-
-G_LOCK (ssh_agent_process);
-static gchar *ssh_agent_path = NULL;
-static gint ssh_agent_pid;
-
-GkdSshAgentClient *
+gint
 gkd_ssh_agent_client_connect (void)
 {
-	GSocketConnection *connection;
-	GSocketAddress *address;
+	struct sockaddr_un addr;
 	const gchar *directory;
-	GError *error = NULL;
-	GSocket *sock;
 	gboolean ready;
+	gint sock;
 
-	G_LOCK (ssh_agent_process);
+	g_mutex_lock (&ssh_agent_mutex);
 
-	if (ssh_agent_path) {
-		directory = gkd_util_master_directory ();
-		ssh_agent_path = g_build_filename (directory, "ssh-actual", NULL);
+	if (!ssh_agent_path) {
+		directory = gkd_util_get_master_directory ();
+		ssh_agent_path = g_build_filename (directory, "ssh-agent-real", NULL);
 	}
 
 	ready = agent_check (ssh_agent_pid);
-	if (!ready) {
-		ssh_agent_pid = agent_start (ssh_agent_path);
-		ready = (ssh_agent_pid != 0);
-	}
+	if (!ready)
+		ready = agent_start_inlock (ssh_agent_path);
 
-	G_UNLOCK (ssh_agent_pid);
+	addr.sun_family = AF_UNIX;
+	g_strlcpy (addr.sun_path, ssh_agent_path, sizeof (addr.sun_path));
+
+	g_mutex_unlock (&ssh_agent_mutex);
 
 	if (!ready)
-		return NULL;
+		return -1;
 
-	sock = g_socket_new (G_SOCKET_FAMILY_UNIX, G_SOCKET_TYPE_STREAM,
-	                     G_SOCKET_PROTOCOL_DEFAULT);
-	g_return_val_if_fail (sock != NULL, NULL);
+	sock = socket (AF_UNIX, SOCK_STREAM, 0);
+	g_return_val_if_fail (sock >= 0, -1);
 
-	connection = g_socket_connection_factory_create_connection (sock);
-	g_return_val_if_fail (connection != NULL, NULL);
-	g_object_unref (sock);
-
-	address = g_unix_socket_address_new (ssh_agent_path);
-	g_return_val_if_fail (address != NULL, NULL);
-
-	if (!g_socket_connection_connect (connection, address, NULL, &error)) {
-		g_warning ("couldn't connect to ssh-agent: %s", error->message);
-		g_object_unref (connection);
-		connection = NULL;
+	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
+		g_message ("couldn't connect to ssh-agent socket at: %s: %s",
+		           addr.sun_path, g_strerror (errno));
+		close (sock);
+		sock = -1;
 	}
 
-	g_object_unref (address);
-	return connection;
+	return sock;
 }
 
 void
 gkd_ssh_agent_client_cleanup (void)
 {
-	G_LOCK (ssh_agent_process);
+	g_mutex_lock (&ssh_agent_mutex);
 
 	if (ssh_agent_pid)
 		agent_terminate (ssh_agent_pid);
@@ -165,13 +140,5 @@ gkd_ssh_agent_client_cleanup (void)
 	g_free (ssh_agent_path);
 	ssh_agent_path = NULL;
 
-	G_UNLOCK (ssh_agent_process);
-}
-
-gboolean
-gkd_ssh_agent_client_transact (GkdSshAgentClient *self,
-                               EggBuffer *req,
-                               EggBuffer *resp)
-{
-
+	g_mutex_unlock (&ssh_agent_mutex);
 }

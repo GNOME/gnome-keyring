@@ -33,7 +33,7 @@ typedef struct _GkdSshAgentCall {
 	int sock;
 	EggBuffer *req;
 	EggBuffer *resp;
-	GkdSshAgentClient *agent;
+	gint ssh_agent;
 } GkdSshAgentCall;
 
 /* -----------------------------------------------------------------------------
