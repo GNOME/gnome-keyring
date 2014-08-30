@@ -25,6 +25,7 @@ libegg_la_SOURCES = \
 	egg/egg-dh.c egg/egg-dh.h \
 	egg/egg-dn.c egg/egg-dn.h \
 	egg/egg-error.h \
+	egg/egg-file-tracker.c egg/egg-file-tracker.h \
 	egg/egg-hex.c egg/egg-hex.h \
 	egg/egg-hkdf.c egg/egg-hkdf.h \
 	egg/egg-libgcrypt.c egg/egg-libgcrypt.h \
@@ -126,6 +127,7 @@ egg_LIBS =  \
 	libegg.la \
 	$(LIBGCRYPT_LIBS) \
 	$(GTHREAD_LIBS) \
+	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)
 
 egg_TESTS = \
@@ -142,6 +144,7 @@ egg_TESTS = \
 	test-armor \
 	test-openssl \
 	test-dh \
+	test-file-tracker \
 	test-spawn
 
 test_asn1_SOURCES = egg/test-asn1.c egg/test.asn.h
@@ -155,6 +158,9 @@ test_dn_LDADD = $(egg_LIBS)
 
 test_cleanup_SOURCES = egg/test-cleanup.c
 test_cleanup_LDADD = $(egg_LIBS)
+
+test_file_tracker_SOURCES = egg/test-file-tracker.c
+test_file_tracker_LDADD = $(egg_LIBS)
 
 test_hex_SOURCES = egg/test-hex.c
 test_hex_LDADD = $(egg_LIBS)

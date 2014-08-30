@@ -46,8 +46,6 @@ libgkm_la_SOURCES = \
 	pkcs11/gkm/gkm-dsa-mechanism.h \
 	pkcs11/gkm/gkm-factory.c \
 	pkcs11/gkm/gkm-factory.h \
-	pkcs11/gkm/gkm-file-tracker.c \
-	pkcs11/gkm/gkm-file-tracker.h \
 	pkcs11/gkm/gkm-generic-key.c \
 	pkcs11/gkm/gkm-generic-key.h \
 	pkcs11/gkm/gkm-hkdf-mechanism.c \
@@ -151,7 +149,6 @@ gkm_TESTS = \
 	test-credential \
 	test-data-asn1 \
 	test-data-der \
-	test-file-tracker \
 	test-memory-store \
 	test-object \
 	test-certificate \
@@ -172,9 +169,6 @@ test_data_asn1_LDADD = $(gkm_LIBS)
 
 test_data_der_SOURCES = pkcs11/gkm/test-data-der.c
 test_data_der_LDADD = $(gkm_LIBS)
-
-test_file_tracker_SOURCES = pkcs11/gkm/test-file-tracker.c
-test_file_tracker_LDADD = $(gkm_LIBS)
 
 test_memory_store_SOURCES = pkcs11/gkm/test-memory-store.c
 test_memory_store_LDADD = $(gkm_LIBS)

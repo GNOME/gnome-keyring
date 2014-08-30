@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* gkm-file-tracker.c - Watch for changes in a directory
+/* egg-file-tracker.c - Watch for changes in a directory
 
    Copyright (C) 2008 Stefan Walter
 
@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include "gkm-file-tracker.h"
+#include "egg-file-tracker.h"
 
 #include "egg/egg-error.h"
 
@@ -34,11 +34,11 @@
 #include <unistd.h>
 
 typedef struct _UpdateDescendants {
-	GkmFileTracker *tracker;
+	EggFileTracker *tracker;
 	GHashTable *checks;
 } UpdateDescendants;
 
-struct _GkmFileTracker {
+struct _EggFileTracker {
 	GObject parent;
 
 	/* Specification */
@@ -60,7 +60,7 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (GkmFileTracker, gkm_file_tracker, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EggFileTracker, egg_file_tracker, G_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * HELPERS
@@ -76,14 +76,14 @@ copy_key_string (gpointer key, gpointer value, gpointer data)
 static void
 remove_files (gpointer key, gpointer value, gpointer data)
 {
-	GkmFileTracker *self = GKM_FILE_TRACKER (data);
+	EggFileTracker *self = EGG_FILE_TRACKER (data);
 
 	g_hash_table_remove (self->files, key);
 	g_signal_emit (self, signals[FILE_REMOVED], 0, key);
 }
 
 static gboolean
-update_file (GkmFileTracker *self, gboolean force_all, const gchar *path)
+update_file (EggFileTracker *self, gboolean force_all, const gchar *path)
 {
 	time_t old_mtime;
 	struct stat sb;
@@ -116,7 +116,7 @@ update_each_file (gpointer key, gpointer unused, gpointer data)
 }
 
 static void
-update_directory (GkmFileTracker *self, gboolean force_all, GHashTable *checks)
+update_directory (EggFileTracker *self, gboolean force_all, GHashTable *checks)
 {
 	UpdateDescendants uctx;
 	struct stat sb;
@@ -127,7 +127,7 @@ update_directory (GkmFileTracker *self, gboolean force_all, GHashTable *checks)
 	int ret, lasterr;
 
 	g_assert (checks);
-	g_assert (GKM_IS_FILE_TRACKER (self));
+	g_assert (EGG_IS_FILE_TRACKER (self));
 
 	if (!self->directory_path)
 		return;
@@ -208,15 +208,15 @@ update_directory (GkmFileTracker *self, gboolean force_all, GHashTable *checks)
  */
 
 static void
-gkm_file_tracker_init (GkmFileTracker *self)
+egg_file_tracker_init (EggFileTracker *self)
 {
 	self->files = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 static void
-gkm_file_tracker_finalize (GObject *obj)
+egg_file_tracker_finalize (GObject *obj)
 {
-	GkmFileTracker *self = GKM_FILE_TRACKER (obj);
+	EggFileTracker *self = EGG_FILE_TRACKER (obj);
 
 	if (self->include)
 		g_pattern_spec_free (self->include);
@@ -226,43 +226,43 @@ gkm_file_tracker_finalize (GObject *obj)
 
 	g_hash_table_destroy (self->files);
 
-	G_OBJECT_CLASS (gkm_file_tracker_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (egg_file_tracker_parent_class)->finalize (obj);
 }
 
 static void
-gkm_file_tracker_class_init (GkmFileTrackerClass *klass)
+egg_file_tracker_class_init (EggFileTrackerClass *klass)
 {
 	GObjectClass *gobject_class;
 	gobject_class = (GObjectClass*) klass;
 
-	gkm_file_tracker_parent_class = g_type_class_peek_parent (klass);
-	gobject_class->finalize = gkm_file_tracker_finalize;
+	egg_file_tracker_parent_class = g_type_class_peek_parent (klass);
+	gobject_class->finalize = egg_file_tracker_finalize;
 
-	signals[FILE_ADDED] = g_signal_new ("file-added", GKM_TYPE_FILE_TRACKER,
-			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmFileTrackerClass, file_added),
+	signals[FILE_ADDED] = g_signal_new ("file-added", EGG_TYPE_FILE_TRACKER,
+			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (EggFileTrackerClass, file_added),
 			NULL, NULL, g_cclosure_marshal_VOID__STRING,
 			G_TYPE_NONE, 1, G_TYPE_STRING);
 
-	signals[FILE_CHANGED] = g_signal_new ("file-changed", GKM_TYPE_FILE_TRACKER,
-			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmFileTrackerClass, file_changed),
+	signals[FILE_CHANGED] = g_signal_new ("file-changed", EGG_TYPE_FILE_TRACKER,
+			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (EggFileTrackerClass, file_changed),
 			NULL, NULL, g_cclosure_marshal_VOID__STRING,
 			G_TYPE_NONE, 1, G_TYPE_STRING);
 
-	signals[FILE_REMOVED] = g_signal_new ("file-removed", GKM_TYPE_FILE_TRACKER,
-			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GkmFileTrackerClass, file_removed),
+	signals[FILE_REMOVED] = g_signal_new ("file-removed", EGG_TYPE_FILE_TRACKER,
+			G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (EggFileTrackerClass, file_removed),
 			NULL, NULL, g_cclosure_marshal_VOID__STRING,
 			G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
-GkmFileTracker*
-gkm_file_tracker_new (const gchar *directory, const gchar *include, const gchar *exclude)
+EggFileTracker*
+egg_file_tracker_new (const gchar *directory, const gchar *include, const gchar *exclude)
 {
-	GkmFileTracker *self;
+	EggFileTracker *self;
 	const gchar *homedir;
 
 	g_return_val_if_fail (directory, NULL);
 
-	self = g_object_new (GKM_TYPE_FILE_TRACKER, NULL);
+	self = g_object_new (EGG_TYPE_FILE_TRACKER, NULL);
 
 	/* TODO: Use properties */
 
@@ -284,11 +284,11 @@ gkm_file_tracker_new (const gchar *directory, const gchar *include, const gchar 
 }
 
 void
-gkm_file_tracker_refresh (GkmFileTracker *self, gboolean force_all)
+egg_file_tracker_refresh (EggFileTracker *self, gboolean force_all)
 {
 	GHashTable *checks;
 
-	g_return_if_fail (GKM_IS_FILE_TRACKER (self));
+	g_return_if_fail (EGG_IS_FILE_TRACKER (self));
 
 	/* Copy into our check set */
 	checks = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);

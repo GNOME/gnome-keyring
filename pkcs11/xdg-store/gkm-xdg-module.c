@@ -29,13 +29,13 @@
 #include "egg/egg-asn1-defs.h"
 #include "egg/egg-dn.h"
 #include "egg/egg-error.h"
+#include "egg/egg-file-tracker.h"
 #include "egg/egg-hex.h"
 
 #include "gkm/gkm-assertion.h"
 #include "gkm/gkm-certificate.h"
 #define DEBUG_FLAG GKM_DEBUG_STORAGE
 #include "gkm/gkm-debug.h"
-#include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-serializable.h"
 #include "gkm/gkm-transaction.h"
 #include "gkm/gkm-util.h"
@@ -48,7 +48,7 @@ struct _GkmXdgModule {
 	GkmModule parent;
 	gchar *directory;
 	GHashTable *objects_by_path;
-	GkmFileTracker *tracker;
+	EggFileTracker *tracker;
 	CK_TOKEN_INFO token_info;
 };
 
@@ -198,7 +198,9 @@ remove_object_from_module (GkmXdgModule *self, GkmObject *object,
 }
 
 static void
-file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
+file_load (EggFileTracker *tracker,
+           const gchar *path,
+           GkmXdgModule *self)
 {
 	GkmObject *object;
 	GkmManager *manager;
@@ -268,7 +270,9 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
 }
 
 static void
-file_remove (GkmFileTracker *tracker, const gchar *path, GkmXdgModule *self)
+file_remove (EggFileTracker *tracker,
+             const gchar *path,
+             GkmXdgModule *self)
 {
 	GkmObject *object;
 
@@ -385,7 +389,7 @@ static CK_RV
 gkm_xdg_module_real_refresh_token (GkmModule *base)
 {
 	GkmXdgModule *self = GKM_XDG_MODULE (base);
-	gkm_file_tracker_refresh (self->tracker, FALSE);
+	egg_file_tracker_refresh (self->tracker, FALSE);
 	return CKR_OK;
 }
 
@@ -513,7 +517,7 @@ gkm_xdg_module_constructor (GType type, guint n_props, GObjectConstructParam *pr
 	if (!self->directory)
 		self->directory = g_build_filename (g_get_user_data_dir (), "keystore", NULL);
 
-	self->tracker = gkm_file_tracker_new (self->directory, "*.*", NULL);
+	self->tracker = egg_file_tracker_new (self->directory, "*.*", NULL);
 	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
 	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
 	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);

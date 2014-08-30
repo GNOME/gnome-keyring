@@ -27,7 +27,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "gkm/gkm-file-tracker.h"
+#include "egg/egg-file-tracker.h"
 
 #include <glib/gstdio.h>
 
@@ -36,7 +36,7 @@
 #define WILDCARD "*.woo?"
 
 typedef struct {
-	GkmFileTracker *the_tracker;
+	EggFileTracker *the_tracker;
 	gchar *test_dir;
 	gchar *test_file;
 	guint n_files_added;
@@ -48,7 +48,9 @@ typedef struct {
 } Test;
 
 static void
-file_added (GkmFileTracker *tracker, const gchar *path, gpointer user_data)
+file_added (EggFileTracker *tracker,
+            const gchar *path,
+            gpointer user_data)
 {
 	Test *test = user_data;
 
@@ -60,7 +62,9 @@ file_added (GkmFileTracker *tracker, const gchar *path, gpointer user_data)
 }
 
 static void
-file_changed (GkmFileTracker *tracker, const gchar *path, gpointer user_data)
+file_changed (EggFileTracker *tracker,
+              const gchar *path,
+              gpointer user_data)
 {
 	Test *test = user_data;
 
@@ -72,7 +76,9 @@ file_changed (GkmFileTracker *tracker, const gchar *path, gpointer user_data)
 }
 
 static void
-file_removed (GkmFileTracker *tracker, const gchar *path, gpointer user_data)
+file_removed (EggFileTracker *tracker,
+              const gchar *path,
+              gpointer user_data)
 {
 	Test *test = user_data;
 
@@ -99,7 +105,7 @@ setup (Test *test, gconstpointer unused)
 	/* Make a test directory */
 	test->test_dir = g_build_filename ("/tmp", SUBDIR, NULL);
 
-	test->the_tracker = gkm_file_tracker_new (test->test_dir, WILDCARD, NULL);
+	test->the_tracker = egg_file_tracker_new (test->test_dir, WILDCARD, NULL);
 	g_signal_connect (test->the_tracker, "file-added", G_CALLBACK (file_added), test);
 	g_signal_connect (test->the_tracker, "file-removed", G_CALLBACK (file_removed), test);
 	g_signal_connect (test->the_tracker, "file-changed", G_CALLBACK (file_changed), test);
@@ -124,7 +130,7 @@ static void
 test_file_watch (Test *test, gconstpointer unused)
 {
 	/* A watch for an non-existant directory, should have no responses */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 
 	g_assert_cmpint (0, ==, test->n_files_added);
 	g_assert_cmpint (0, ==, test->n_files_changed);
@@ -133,7 +139,7 @@ test_file_watch (Test *test, gconstpointer unused)
 	g_mkdir_with_parents (test->test_dir, 0700);
 
 	/* Should still have no responses even though it exists */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 
 	g_assert_cmpint (0, ==, test->n_files_added);
 	g_assert_cmpint (0, ==, test->n_files_changed);
@@ -146,7 +152,7 @@ test_watch_file (Test *test, gconstpointer unused)
 	gboolean ret;
 
 	/* Make sure things are clean */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 
 	test->n_files_added = test->n_files_changed = test->n_files_removed = 0;
 	test->last_file_added = test->last_file_changed = test->last_file_removed = 0;
@@ -155,7 +161,7 @@ test_watch_file (Test *test, gconstpointer unused)
 	g_assert (ret);
 
 	/* Now make sure that file is located */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 
 	g_assert_cmpint (1, ==, test->n_files_added);
 	g_assert_cmpint (0, ==, test->n_files_changed);
@@ -168,13 +174,13 @@ test_watch_file (Test *test, gconstpointer unused)
 	sleep (1);
 
 	/* Shouldn't find the file again */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 	g_assert_cmpint (0, ==, test->n_files_added);
 	g_assert_cmpint (0, ==, test->n_files_changed);
 	g_assert_cmpint (0, ==, test->n_files_removed);
 
 	/* But we should find the file if forced to */
-	gkm_file_tracker_refresh (test->the_tracker, TRUE);
+	egg_file_tracker_refresh (test->the_tracker, TRUE);
 	g_assert_cmpint (0, ==, test->n_files_added);
 	g_assert_cmpint (1, ==, test->n_files_changed);
 	g_assert_cmpint (0, ==, test->n_files_removed);
@@ -186,7 +192,7 @@ test_watch_file (Test *test, gconstpointer unused)
 	g_assert (ret);
 
 	/* File was updated */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 	g_assert_cmpint (0, ==, test->n_files_added);
 	g_assert_cmpint (1, ==, test->n_files_changed);
 	g_assert_cmpint (0, ==, test->n_files_removed);
@@ -196,7 +202,7 @@ test_watch_file (Test *test, gconstpointer unused)
 	g_unlink (test->test_file);
 
 	/* Now file should be removed */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 
 	g_assert_cmpint (0, ==, test->n_files_added);
 	g_assert_cmpint (0, ==, test->n_files_changed);
@@ -219,7 +225,7 @@ test_nomatch (Test *test, gconstpointer unused)
 	file_reset_stats (test);
 
 	/* Now make sure that file is not located */
-	gkm_file_tracker_refresh (test->the_tracker, FALSE);
+	egg_file_tracker_refresh (test->the_tracker, FALSE);
 
 	g_assert_cmpint (0, ==, test->n_files_added);
 	g_assert_cmpint (0, ==, test->n_files_changed);
@@ -237,9 +243,9 @@ main (int argc, char **argv)
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/gkm/file-tracker/file_watch", Test, NULL, setup, test_file_watch, teardown);
-	g_test_add ("/gkm/file-tracker/watch_file", Test, NULL, setup, test_watch_file, teardown);
-	g_test_add ("/gkm/file-tracker/nomatch", Test, NULL, setup, test_nomatch, teardown);
+	g_test_add ("/egg/file-tracker/file_watch", Test, NULL, setup, test_file_watch, teardown);
+	g_test_add ("/egg/file-tracker/watch_file", Test, NULL, setup, test_watch_file, teardown);
+	g_test_add ("/egg/file-tracker/nomatch", Test, NULL, setup, test_nomatch, teardown);
 
 	return g_test_run ();
 }

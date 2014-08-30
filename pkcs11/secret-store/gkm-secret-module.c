@@ -29,9 +29,10 @@
 #include "gkm/gkm-credential.h"
 #define DEBUG_FLAG GKM_DEBUG_STORAGE
 #include "gkm/gkm-debug.h"
-#include "gkm/gkm-file-tracker.h"
 #include "gkm/gkm-transaction.h"
 #include "gkm/gkm-util.h"
+
+#include "egg/egg-file-tracker.h"
 
 #include <glib/gstdio.h>
 
@@ -41,7 +42,7 @@
 
 struct _GkmSecretModule {
 	GkmModule parent;
-	GkmFileTracker *tracker;
+	EggFileTracker *tracker;
 	GHashTable *collections;
 	gchar *directory;
 	GkmCredential *session_credential;
@@ -198,7 +199,9 @@ identifier_to_new_filename (GkmSecretModule *self, const gchar *identifier)
 
 
 static void
-on_file_load (GkmFileTracker *tracker, const gchar *path, GkmSecretModule *self)
+on_file_load (EggFileTracker *tracker,
+              const gchar *path,
+              GkmSecretModule *self)
 {
 	GkmSecretCollection *collection;
 	GkmManager *manager;
@@ -252,7 +255,9 @@ on_file_load (GkmFileTracker *tracker, const gchar *path, GkmSecretModule *self)
 }
 
 static void
-on_file_remove (GkmFileTracker *tracker, const gchar *path, GkmSecretModule *self)
+on_file_remove (EggFileTracker *tracker,
+                const gchar *path,
+                GkmSecretModule *self)
 {
 	GkmSecretCollection *collection;
 
@@ -295,7 +300,7 @@ gkm_secret_module_real_refresh_token (GkmModule *base)
 {
 	GkmSecretModule *self = GKM_SECRET_MODULE (base);
 	if (self->tracker)
-		gkm_file_tracker_refresh (self->tracker, FALSE);
+		egg_file_tracker_refresh (self->tracker, FALSE);
 	return CKR_OK;
 }
 
@@ -397,7 +402,7 @@ gkm_secret_module_constructor (GType type, guint n_props, GObjectConstructParam 
 		self->directory = gkm_util_locate_keyrings_directory ();
 	gkm_debug ("secret store directory: %s", self->directory);
 
-	self->tracker = gkm_file_tracker_new (self->directory, "*.keyring", NULL);
+	self->tracker = egg_file_tracker_new (self->directory, "*.keyring", NULL);
 	g_signal_connect (self->tracker, "file-added", G_CALLBACK (on_file_load), self);
 	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (on_file_load), self);
 	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (on_file_remove), self);

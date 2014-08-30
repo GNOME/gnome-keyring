@@ -25,14 +25,13 @@
 #include "gkm-ssh-public-key.h"
 
 #include "egg/egg-error.h"
-
-#include "gkm/gkm-file-tracker.h"
+#include "egg/egg-file-tracker.h"
 
 #include <string.h>
 
 struct _GkmSshModule {
 	GkmModule parent;
-	GkmFileTracker *tracker;
+	EggFileTracker *tracker;
 	gchar *directory;
 	GHashTable *keys_by_path;
 };
@@ -98,7 +97,9 @@ private_path_for_public (const gchar *public_path)
 }
 
 static void
-file_load (GkmFileTracker *tracker, const gchar *path, GkmSshModule *self)
+file_load (EggFileTracker *tracker,
+           const gchar *path,
+           GkmSshModule *self)
 {
 	GkmSshPrivateKey *key;
 	gchar *private_path;
@@ -142,7 +143,9 @@ file_load (GkmFileTracker *tracker, const gchar *path, GkmSshModule *self)
 }
 
 static void
-file_remove (GkmFileTracker *tracker, const gchar *path, GkmSshModule *self)
+file_remove (EggFileTracker *tracker,
+             const gchar *path,
+             GkmSshModule *self)
 {
 	g_return_if_fail (path);
 	g_return_if_fail (GKM_IS_SSH_MODULE (self));
@@ -180,7 +183,7 @@ static CK_RV
 gkm_ssh_module_real_refresh_token (GkmModule *base)
 {
 	GkmSshModule *self = GKM_SSH_MODULE (base);
-	gkm_file_tracker_refresh (self->tracker, FALSE);
+	egg_file_tracker_refresh (self->tracker, FALSE);
 	return CKR_OK;
 }
 
@@ -192,7 +195,7 @@ gkm_ssh_module_constructor (GType type, guint n_props, GObjectConstructParam *pr
 
 	if (!self->directory)
 		self->directory = g_strdup ("~/.ssh");
-	self->tracker = gkm_file_tracker_new (self->directory, "*.pub", NULL);
+	self->tracker = egg_file_tracker_new (self->directory, "*.pub", NULL);
 	g_signal_connect (self->tracker, "file-added", G_CALLBACK (file_load), self);
 	g_signal_connect (self->tracker, "file-changed", G_CALLBACK (file_load), self);
 	g_signal_connect (self->tracker, "file-removed", G_CALLBACK (file_remove), self);
