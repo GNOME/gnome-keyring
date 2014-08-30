@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "gkd-ssh-agent-client.h"
+#include "gkd-ssh-agent-preload.h"
 #include "gkd-ssh-agent-private.h"
 
 #include "egg/egg-error.h"
@@ -59,14 +60,14 @@ op_add_identity (GkdSshAgentCall *call)
 	 * initial bytes as the public key we've loaded.
 	 */
 
-	keys = gkd_ssh_agent_client_preload_keys (call->agent);
+	keys = gkd_ssh_agent_preload_keys ();
 
 	offset = 5;
 	for (l = keys; l != NULL; l = g_list_next (l)) {
 		blob = g_bytes_get_data (l->data, &length);
 		if (call->req->len >= length + offset &&
 		    memcmp (call->req->buf + offset, blob, length) == 0) {
-			gkd_ssh_agent_client_preload_clear (call->agent, l->data);
+			gkd_ssh_agent_preload_clear (l->data);
 			break;
 		}
 	}
@@ -133,13 +134,13 @@ op_request_identities (GkdSshAgentCall *call)
 	added = 0;
 
 	/* Add any preloaded keys not already in answer */
-	keys = gkd_ssh_agent_client_preload_keys (call->agent);
+	keys = gkd_ssh_agent_preload_keys ();
 	for (l = keys; l != NULL; l = g_list_next (l)) {
 		if (g_hash_table_lookup (answer, l->data))
 			continue;
 		blob = g_bytes_get_data (l->data, &length);
 		egg_buffer_add_byte_array (call->resp, blob, length);
-		comment = gkd_ssh_agent_client_preload_comment (call->agent, l->data);
+		comment = gkd_ssh_agent_preload_comment (l->data);
 		egg_buffer_add_string (call->resp, comment ? comment : "");
 		g_free (comment);
 		added++;
@@ -155,7 +156,7 @@ op_request_identities (GkdSshAgentCall *call)
 }
 
 static void
-preload_key_if_necessary (GkdSshAgentClient *agent,
+preload_key_if_necessary (gint ssh_agent,
                           GBytes *key)
 {
 	EggBuffer buf;
@@ -165,7 +166,7 @@ preload_key_if_necessary (GkdSshAgentClient *agent,
 	GBytes *priv;
 	guchar code;
 
-	priv = gkd_ssh_agent_client_preload_unlock (agent, key);
+	priv = gkd_ssh_agent_preload_private (key);
 	if (!priv)
 		return;
 
@@ -175,15 +176,16 @@ preload_key_if_necessary (GkdSshAgentClient *agent,
 	blob = g_bytes_get_data (priv, &length);
 	egg_buffer_add_byte_array (&buf, blob, length);
 
-	if (gkd_ssh_agent_client_transact (agent, &buf, &buf)) {
+	if (gkd_ssh_agent_write_packet (ssh_agent, &buf) &&
+	    gkd_ssh_agent_read_packet (ssh_agent, &buf)) {
 		if (!egg_buffer_get_byte (&buf, 4, NULL, &code) || code != GKD_SSH_RES_SUCCESS) {
-			comment = gkd_ssh_agent_client_preload_comment (agent, key);
+			comment = gkd_ssh_agent_preload_comment (key);
 			g_warning ("couldn't add private key '%s' to ssh-agent", comment);
 			g_free (comment);
 		}
 	}
 
-	gkd_ssh_agent_client_preload_clear (agent, key);
+	gkd_ssh_agent_preload_clear (key);
 }
 
 static gboolean
@@ -197,7 +199,7 @@ op_sign_request (GkdSshAgentCall *call)
 	/* If parsing the request fails, just pass through */
 	if (egg_buffer_get_byte_array (call->resp, offset, &offset, &blob, &length)) {
 		key = g_bytes_new (blob, length);
-		preload_key_if_necessary (call->agent, key);
+		preload_key_if_necessary (call->ssh_agent, key);
 		g_bytes_unref (key);
 	} else {
 		g_warning ("got unparseable sign request for ssh-agent");
@@ -217,7 +219,7 @@ op_remove_identity (GkdSshAgentCall *call)
 	/* If parsing the request fails, just pass through */
 	if (egg_buffer_get_byte_array (call->resp, offset, &offset, &blob, &length)) {
 		key = g_bytes_new (blob, length);
-		gkd_ssh_agent_client_preload_clear (call->agent, key);
+		gkd_ssh_agent_preload_clear (key);
 		g_bytes_unref (key);
 	} else {
 		g_warning ("got unparseable remove request for ssh-agent");
@@ -230,7 +232,7 @@ op_remove_identity (GkdSshAgentCall *call)
 static gboolean
 op_remove_all_identities (GkdSshAgentCall *call)
 {
-	gkd_ssh_agent_client_preload_clear_all (call->agent);
+	gkd_ssh_agent_preload_clear_all ();
 	return gkd_ssh_agent_relay (call);
 }
 

@@ -137,7 +137,8 @@ gkd_ssh_agent_write_packet (gint fd,
 gboolean
 gkd_ssh_agent_relay (GkdSshAgentCall *call)
 {
-	return gkd_ssh_agent_client_transact (call->agent, call->req, call->resp);
+	return gkd_ssh_agent_write_packet (call->ssh_agent, call->req) &&
+	       gkd_ssh_agent_read_packet (call->ssh_agent, call->resp);
 }
 
 static gpointer
@@ -159,8 +160,8 @@ run_client_thread (gpointer data)
 	call.req = &req;
 	call.resp = &resp;
 
-	call.agent = gkd_ssh_agent_client_connect ();
-	if (!call.agent)
+	call.ssh_agent = gkd_ssh_agent_client_connect ();
+	if (call.ssh_agent < 0)
 		goto out;
 
 	for (;;) {
