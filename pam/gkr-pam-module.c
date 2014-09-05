@@ -45,6 +45,7 @@
 #include <fcntl.h>
 #include <pwd.h>
 #include <signal.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -471,6 +472,7 @@ setup_environment (char *line, void *arg)
 static int
 start_daemon (pam_handle_t *ph,
               struct passwd *pwd,
+              bool is_user_login,
               const char *password)
 {
 	struct sigaction defsact, oldsact, ignpipe, oldpipe;
@@ -521,7 +523,7 @@ start_daemon (pam_handle_t *ph,
 	/* This is the child */
 	case 0:
 		setup_child (inp, outp, errp, ph, pwd,
-		             password ? "--login" : NULL);
+		             is_user_login ? "--login" : NULL);
 		/* Should never be reached */
 		break;
 		
@@ -836,7 +838,7 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 	if (ret != PAM_SUCCESS && need_daemon) {
 		/* If we started the daemon, its already unlocked, since we passed the password */
 		if (args & ARG_AUTO_START)
-			ret = start_daemon (ph, pwd, password);
+			ret = start_daemon (ph, pwd, true, password);
 
 		/* Otherwise start later in open session, store password */
 		else
@@ -889,7 +891,7 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 	if (args & ARG_AUTO_START || password) {
 		ret = unlock_keyring (ph, pwd, password, &need_daemon);
 		if (ret != PAM_SUCCESS && need_daemon && (args & ARG_AUTO_START))
-			ret = start_daemon (ph, pwd, password);
+			ret = start_daemon (ph, pwd, true, password);
 	}
 
 	return PAM_SUCCESS;
@@ -977,7 +979,7 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 		 *
 		 * Note that we don't pass in an unlock password, that happens below.
 		 */
-		ret = start_daemon (ph, pwd, NULL);
+		ret = start_daemon (ph, pwd, false, NULL);
 		if (ret == PAM_SUCCESS) {
 			ret = change_keyring_password (ph, pwd, password, original, NULL);
 
