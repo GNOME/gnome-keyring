@@ -373,7 +373,7 @@ msgstr "ログインのキーリングのロック解除"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
-msgstr "パスワードを入力してログインのキーリングのロックを解除してください"
+msgstr "ログインキーリングのパスワードを入力してください"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid "The password you use to log in to your computer no longer matches that of your login keyring."
@@ -390,7 +390,7 @@ msgstr "キーリングのロック解除"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr "キーリング '%s' のロックを解除するパスワードを入力してください"
+msgstr "キーリング '%s' のパスワードを入力してください"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
@@ -479,7 +479,7 @@ msgstr "証明書/鍵を格納したストレージのロック解除"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Enter password to unlock the certificate/key storage"
-msgstr "パスワードを入力して証明書/鍵を格納したストレージのロックを解除してください"
+msgstr "証明書/鍵のストレージのパスワードを入力してください"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
