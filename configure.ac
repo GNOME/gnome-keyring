@@ -31,7 +31,7 @@ AC_CONFIG_MACRO_DIR([build/m4])
 AC_CONFIG_AUX_DIR([build])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_SRCDIR([daemon/gkd-main.c])
-AM_INIT_AUTOMAKE([1.12 foreign dist-bzip2 no-dist-gzip parallel-tests])
+AM_INIT_AUTOMAKE([1.12 foreign dist-bzip2 no-dist-gzip parallel-tests subdir-objects])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AM_SANITY_CHECK
