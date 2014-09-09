@@ -34,10 +34,14 @@
 
 #include "egg/egg-asn1x.h"
 #include "egg/egg-asn1-defs.h"
+#include "egg/egg-libgcrypt.h"
+#include "egg/egg-secure-memory.h"
 
 typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
 typedef struct _EggAsn1xDef asn1_static_node;
 #include "test.asn.h"
+
+EGG_SECURE_DEFINE_GLIB_GLOBALS();
 
 typedef struct {
 	GNode *asn1_cert;
@@ -108,6 +112,8 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_libgcrypt_initialize();
+
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/gkm/data-asn1/integers", Test, NULL, setup, test_asn1_integers, teardown);
