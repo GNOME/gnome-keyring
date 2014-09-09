@@ -1,3 +1,9 @@
+Changes in version 3.13.91 are:
+ * Initialize correctly with empty passwords during login [#736085]
+ * Don't use geteuid() to get UID for user in PAM module [#733418]
+ * Fix for libgcrypt 1.6+
+ * Build fixes
+
 Changes in version 3.12.2 are:
  * Build fixes
 
