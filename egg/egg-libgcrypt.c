@@ -28,6 +28,7 @@
 #include <gcrypt.h>
 
 #include <errno.h>
+#include <pthread.h>
 
 EGG_SECURE_DECLARE (libgcrypt);
 
