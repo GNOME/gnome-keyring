@@ -363,31 +363,24 @@ create_cipher (GkmSecret *login, int calgo, int halgo, const guchar *salt,
 	n_block = gcry_cipher_get_algo_blklen (calgo);
 	g_return_val_if_fail (n_block, FALSE);
 
-	/* Allocate memory for the keys */
-	key = gcry_malloc_secure (n_key);
-	g_return_val_if_fail (key, FALSE);
-	iv = g_malloc0 (n_block);
-
 	password = gkm_secret_get_password (login, &n_password);
 
 	if (!egg_symkey_generate_simple (calgo, halgo, password, n_password,
 	                                 salt, n_salt, iterations, &key, &iv)) {
-		gcry_free (key);
-		g_free (iv);
 		return FALSE;
 	}
 
 	gcry = gcry_cipher_open (cipher, calgo, GCRY_CIPHER_MODE_CBC, 0);
 	if (gcry) {
 		g_warning ("couldn't create cipher context: %s", gcry_strerror (gcry));
-		gcry_free (key);
+		egg_secure_free (key);
 		g_free (iv);
 		return FALSE;
 	}
 
 	gcry = gcry_cipher_setkey (*cipher, key, n_key);
 	g_return_val_if_fail (!gcry, FALSE);
-	gcry_free (key);
+	egg_secure_free (key);
 
 	gcry = gcry_cipher_setiv (*cipher, iv, n_block);
 	g_return_val_if_fail (!gcry, FALSE);
