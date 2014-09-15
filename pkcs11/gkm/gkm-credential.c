@@ -209,6 +209,10 @@ gkm_credential_dispose (GObject *obj)
 		g_object_weak_unref (G_OBJECT (self->pv->object), object_went_away, self);
 	self->pv->object = NULL;
 
+	if (self->pv->secret)
+		g_object_unref (G_OBJECT (self->pv->secret));
+	self->pv->secret = NULL;
+
 	clear_data (self);
 
 	G_OBJECT_CLASS (gkm_credential_parent_class)->dispose (obj);
