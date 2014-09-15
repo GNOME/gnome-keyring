@@ -139,6 +139,7 @@ search_keys_like_attributes (GList *modules, GckSession *session, GckAttributes 
 		en = gck_modules_enumerate_objects (modules, search, GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
 
 		for (;;) {
+			gboolean done;
 			object = gck_enumerator_next (en, NULL, &error);
 			if (!object) {
 				if (error) {
@@ -148,7 +149,9 @@ search_keys_like_attributes (GList *modules, GckSession *session, GckAttributes 
 				break;
 			}
 
-			if (!(func) (object, user_data))
+			done = !(func) (object, user_data);
+			g_object_unref (object);
+			if (done)
 				break;
 		}
 
