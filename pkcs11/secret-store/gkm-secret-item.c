@@ -391,6 +391,9 @@ gkm_secret_item_finalize (GObject *obj)
 		g_hash_table_unref (self->fields);
 	self->fields = NULL;
 
+	g_free (self->schema);
+	self->schema = NULL;
+
 	G_OBJECT_CLASS (gkm_secret_item_parent_class)->finalize (obj);
 }
 
