@@ -309,6 +309,7 @@ validate_buffer (EggBuffer *buffer, gsize *offset)
 	gsize n_hash, hash_offset;
 	guint32 length;
 	int algo;
+	gboolean valid;
 
 	g_assert (buffer);
 	g_assert (offset);
@@ -337,10 +338,10 @@ validate_buffer (EggBuffer *buffer, gsize *offset)
 
 	check = g_malloc0 (n_hash);
 	gcry_md_hash_buffer (algo, check, buffer->buf, length);
-	if (memcmp (check, hash, n_hash) != 0)
-		return FALSE;
+	valid = (memcmp (check, hash, n_hash) == 0);
+	g_free (check);
 
-	return TRUE;
+	return valid;
 }
 
 static gboolean
