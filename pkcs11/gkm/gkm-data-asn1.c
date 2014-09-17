@@ -43,6 +43,7 @@ gkm_data_asn1_read_mpi (GNode *asn, gcry_mpi_t *mpi)
 	/* Automatically stores in secure memory if DER data is secure */
 	sz = g_bytes_get_size (buf);
 	gcry = gcry_mpi_scan (mpi, GCRYMPI_FMT_STD, g_bytes_get_data (buf, NULL), sz, &sz);
+	g_bytes_unref (buf);
 	if (gcry != 0)
 		return FALSE;
 
