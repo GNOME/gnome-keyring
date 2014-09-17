@@ -99,11 +99,14 @@ test_asn1_integers (Test *test, gconstpointer unused)
 	g_assert (asn != NULL);
 
 	ret = gkm_data_asn1_read_mpi (egg_asn1x_node (asn, "mpi", NULL), &mpt);
+	egg_asn1x_destroy (asn);
 	g_assert ("couldn't read mpi from asn1" && ret);
 	g_assert ("mpi returned is null" && mpt != NULL);
 	g_assert ("mpi is wrong number" && gcry_mpi_cmp (mpi, mpt) == 0);
 
 	g_bytes_unref (data);
+	gcry_mpi_release (mpi);
+	gcry_mpi_release (mpt);
 }
 
 int
