@@ -159,8 +159,10 @@ test_created_modified_properties (Test *test,
 	g_assert_cmpuint (modified, >, (g_get_real_time () / G_TIME_SPAN_SECOND) - 10);
 	g_assert_cmpuint (created, ==, modified);
 
-	if (!g_test_thorough ())
+	if (!g_test_thorough ()) {
+		g_free (item);
 		return;
+	}
 
 	/* Unfortunately have to wait 1.25 seconds here */
 	g_usleep (G_TIME_SPAN_SECOND + (G_TIME_SPAN_SECOND / 4));
