@@ -127,7 +127,7 @@ attributes_new (void)
 static GHashTable*
 entries_new (void)
 {
-	return g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify)g_hash_table_unref);
+	return g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify)g_free, (GDestroyNotify)g_hash_table_unref);
 }
 
 static gboolean
