@@ -98,6 +98,7 @@ test_dn_value (Test* test, gconstpointer unused)
 	text = egg_dn_print_value (oid, asn);
 	g_assert_cmpstr (text, ==, "Thawte Personal Premium CA");
 	g_free (text);
+	g_bytes_unref (bytes);
 
 	/* Unknown oid */
 	oid = g_quark_from_static_string ("1.1.1.1.1.1");
