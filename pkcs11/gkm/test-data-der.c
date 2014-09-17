@@ -111,6 +111,7 @@ test_der_public (gcry_sexp_t key)
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (key, sexp));
 
+	gcry_sexp_release (sexp);
 	g_bytes_unref (data);
 }
 
@@ -154,6 +155,8 @@ test_der_rsa_public (Test *test, gconstpointer unused)
 	g_return_if_fail (gcry == 0);
 
 	test_der_public (key);
+
+	gcry_sexp_release (key);
 }
 
 static void
@@ -166,6 +169,8 @@ test_der_dsa_public (Test *test, gconstpointer unused)
 	g_return_if_fail (gcry == 0);
 
 	test_der_public (key);
+
+	gcry_sexp_release (key);
 }
 
 static void
@@ -188,6 +193,7 @@ test_der_private (gcry_sexp_t key)
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (key, sexp));
 
+	gcry_sexp_release (sexp);
 	g_bytes_unref (data);
 }
 
@@ -201,6 +207,8 @@ test_der_rsa_private (Test *test, gconstpointer unused)
 	g_return_if_fail (gcry == 0);
 
 	test_der_private (key);
+
+	gcry_sexp_release (key);
 }
 
 static void
@@ -213,6 +221,8 @@ test_der_dsa_private (Test *test, gconstpointer unused)
 	g_return_if_fail (gcry == 0);
 
 	test_der_private (key);
+
+	gcry_sexp_release (key);
 }
 
 static void
@@ -240,6 +250,7 @@ test_der_dsa_private_parts (Test *test, gconstpointer unused)
 	/* Now compare them */
 	g_assert ("key parsed differently" && compare_keys (skey, pkey));
 
+	gcry_sexp_release (skey);
 	g_bytes_unref (params);
 	g_bytes_unref (key);
 }
@@ -332,6 +343,8 @@ on_ca_certificate_public_key_info (GQuark type,
 
 	if (res == GKM_DATA_SUCCESS)
 		gcry_sexp_release (sexp);
+
+	egg_asn1x_destroy (asn1);
 	g_bytes_unref (keydata);
 }
 
