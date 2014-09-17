@@ -52,6 +52,7 @@ egg_cleanup_unregister (GDestroyNotify notify, gpointer user_data)
 		cleanup = (EggCleanup*)l->data;
 		if (cleanup->notify == notify && cleanup->user_data == user_data) {
 			registered_cleanups = g_slist_remove (registered_cleanups, cleanup);
+			g_free (cleanup);
 			break;
 		}
 	}
