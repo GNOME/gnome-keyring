@@ -190,6 +190,7 @@ test_create_and_add_object (Test *test, gconstpointer unused)
 	rv = gkm_session_C_CreateObject (test->session, attrs, G_N_ELEMENTS (attrs), &object);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 	gkm_assert_cmpulong (object, !=, 0);
+	g_free (data);
 }
 
 static void
