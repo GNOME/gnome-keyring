@@ -679,9 +679,12 @@ gkm_mock_C_SetPIN (CK_SESSION_HANDLE hSession, CK_UTF8CHAR_PTR pOldPin,
 	g_return_val_if_fail (session, CKR_SESSION_HANDLE_INVALID);
 
 	old = g_strndup ((gchar*)pOldPin, ulOldLen);
-	if (!old || !g_str_equal (old, the_pin))
+	if (!old || !g_str_equal (old, the_pin)) {
+		g_free (old);
 		return CKR_PIN_INCORRECT;
+	}
 
+	g_free (old);
 	g_free (the_pin);
 	the_pin = g_strndup ((gchar*)pNewPin, ulNewLen);
 	n_the_pin = ulNewLen;
