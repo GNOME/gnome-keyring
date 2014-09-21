@@ -950,7 +950,7 @@ gkm_wrap_prompt_class_init (GkmWrapPromptClass *klass)
 typedef struct _CredentialPrompt {
 	GArray *template;
 	CK_ULONG n_template;
-	const gchar *password;
+	gchar *password;
 } CredentialPrompt;
 
 static void
@@ -958,6 +958,7 @@ credential_prompt_free (gpointer user_data)
 {
 	CredentialPrompt *data = user_data;
 	g_array_free (data->template, TRUE);
+	egg_secure_strfree (data->password);
 	g_slice_free (CredentialPrompt, data);
 }
 
@@ -1033,6 +1034,7 @@ gkm_wrap_prompt_do_credential (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR *template,
 	attrs = get_attributes_from_object (self, &n_attrs);
 	g_return_val_if_fail (attrs, FALSE);
 
+	egg_secure_strfree (data->password);
 	data->password = NULL;
 
 	if (self->iteration == 0) {
@@ -1044,6 +1046,7 @@ gkm_wrap_prompt_do_credential (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR *template,
 	}
 
 	if (!data->password) {
+		const char *password;
 		setup_unlock_prompt (self, attrs, n_attrs, self->iteration == 1);
 
 		/* Now load up the unlock options into the prompt*/
@@ -1055,14 +1058,15 @@ gkm_wrap_prompt_do_credential (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR *template,
 
 		++(self->iteration);
 
-		data->password = gkm_wrap_prompt_request_password (self);
-		if (data->password == NULL) {
+		password = gkm_wrap_prompt_request_password (self);
+		if (password == NULL) {
 			if (error != NULL) {
 				g_warning ("couldn't prompt for password: %s", egg_error_message (error));
 				g_error_free (error);
 			}
 			return FALSE;
 		}
+		data->password = egg_secure_strdup (password);
 	}
 
 	/* Truncate any extra options off the end of template */
