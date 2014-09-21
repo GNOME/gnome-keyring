@@ -706,6 +706,10 @@ gkm_xdg_trust_finalize (GObject *obj)
 		g_hash_table_destroy (self->pv->assertions);
 	self->pv->assertions = NULL;
 
+	if (self->pv->bytes)
+		g_bytes_unref (self->pv->bytes);
+	self->pv->bytes = NULL;
+
 	G_OBJECT_CLASS (gkm_xdg_trust_parent_class)->finalize (obj);
 }
 
