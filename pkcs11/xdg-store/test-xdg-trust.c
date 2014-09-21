@@ -656,6 +656,7 @@ _assert_positive_netscape (Test *test, CK_X_ASSERTION_TYPE assertion_type, const
 	n_checksum = sizeof (checksum);
 	g_checksum_get_digest (md, checksum, &n_checksum);
 	g_assert (n_checksum == sizeof (checksum));
+	g_checksum_free (md);
 
 	rv = gkm_session_C_FindObjectsInit (test->session, lookup, G_N_ELEMENTS (lookup));
 	gkm_assert_cmprv (rv, ==, CKR_OK);

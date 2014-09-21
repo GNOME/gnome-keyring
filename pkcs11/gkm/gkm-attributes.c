@@ -359,6 +359,7 @@ gkm_attribute_set_checksum (CK_ATTRIBUTE_PTR attr, GChecksumType ctype,
 	g_checksum_update (checksum, data, n_data);
 	result = attr->ulValueLen;
 	g_checksum_get_digest (checksum, attr->pValue, &result);
+	g_checksum_free (checksum);
 	attr->ulValueLen = result;
 	return CKR_OK;
 }
