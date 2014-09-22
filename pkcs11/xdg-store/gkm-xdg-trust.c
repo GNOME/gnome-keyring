@@ -879,7 +879,6 @@ gkm_xdg_trust_replace_assertion (GkmXdgTrust *self, GkmAssertion *assertion,
 		remove_assertion_from_trust (self, previous, transaction);
 	add_assertion_to_trust (self, assertion, transaction);
 
-	g_bytes_unref (key);
 }
 
 void
