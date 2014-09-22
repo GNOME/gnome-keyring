@@ -439,6 +439,7 @@ remove_assertion_from_trust (GkmXdgTrust *self, GkmAssertion *assertion,
 		if (!g_hash_table_steal (self->pv->assertions, key))
 			g_return_if_reached ();
 		gkm_transaction_add (transaction, self, complete_remove_assertion, assertion);
+		g_bytes_unref (key);
 	}
 }
 
