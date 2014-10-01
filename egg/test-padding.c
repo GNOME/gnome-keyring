@@ -114,6 +114,7 @@ test_pkcs1_two_padding (void)
 	g_assert (result[5] == 0x00);
 	g_assert (result[6] == 'T');
 	g_assert (result[7] == 'E');
+	g_free (vesult);
 }
 
 static void
