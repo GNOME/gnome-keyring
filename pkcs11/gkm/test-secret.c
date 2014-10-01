@@ -185,6 +185,9 @@ test_equal (void)
 	g_object_unref (one);
 	one = gkm_secret_new_from_password ("other");
 	g_assert (!gkm_secret_equal (one, two));
+
+	g_object_unref (one);
+	g_object_unref (two);
 }
 
 int
