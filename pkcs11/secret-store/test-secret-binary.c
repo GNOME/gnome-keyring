@@ -156,6 +156,7 @@ test_write (Test *test, gconstpointer unused)
 	/* Try parsing it again */
 	res = gkm_secret_binary_read (test->collection, test->sdata, data, n_data);
 	g_assert (res == GKM_DATA_SUCCESS);
+	g_free (data);
 }
 
 static void
