@@ -95,10 +95,12 @@ test_parse_key (Test *test, gconstpointer unused)
 	g_assert (algorithm == GCRY_PK_RSA);
 	g_assert (is_priv == TRUE);
 	g_assert (sexp != NULL);
+	gcry_sexp_release (sexp);
 
 	ret = gkm_sexp_extract_mpi (test->rsakey, &mpi, "p", NULL);
 	g_assert (ret);
 	g_assert (mpi != NULL);
+	gcry_mpi_release (mpi);
 }
 
 static void
