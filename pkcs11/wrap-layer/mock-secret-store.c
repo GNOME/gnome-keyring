@@ -207,7 +207,7 @@ mock_secret_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTempla
 	rv = gkm_mock_C_CreateObject (hSession, pTemplate, ulCount, phObject);
 
 	if (template)
-		g_array_free (template, TRUE);
+		gkm_template_free (template);
 
 	return rv;
 }
