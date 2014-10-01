@@ -188,6 +188,8 @@ test_sync (void)
 	g_assert (data.completed);
 	g_assert_cmpstr (data.output, ==, "80 81 82 83 84\n");
 	g_assert_cmpstr (data.error, ==, "1\n2\n3\n4\n5\n");
+	g_free (data.error);
+	g_free (data.output);
 }
 
 static void
@@ -233,6 +235,8 @@ test_async (void)
 	g_assert (data.completed);
 	g_assert_cmpstr (data.output, ==, "80 81 82 83 84\n");
 	g_assert_cmpstr (data.error, ==, "1\n2\n3\n4\n5\n");
+	g_free (data.error);
+	g_free (data.output);
 }
 
 static void
@@ -259,6 +263,8 @@ test_async_none (void)
 	g_assert (data.finalized);
 	g_assert (data.completed);
 	g_assert (!data.output);
+	g_free (data.error);
+	g_free (data.output);
 }
 
 static void
