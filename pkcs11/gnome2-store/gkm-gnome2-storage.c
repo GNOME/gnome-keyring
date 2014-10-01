@@ -916,6 +916,10 @@ gkm_gnome2_storage_dispose (GObject *obj)
 		g_object_unref (self->manager);
 	self->manager = NULL;
 
+	if (self->login)
+		g_object_unref (self->login);
+	self->login = NULL;
+
 	g_signal_handlers_disconnect_by_func (self->file, data_file_entry_added, self);
 	g_signal_handlers_disconnect_by_func (self->file, data_file_entry_changed, self);
 	g_signal_handlers_disconnect_by_func (self->file, data_file_entry_removed, self);
