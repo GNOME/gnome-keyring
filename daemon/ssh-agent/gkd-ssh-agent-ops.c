@@ -843,10 +843,10 @@ op_v1_request_identities (GkdSshAgentCall *call)
 	                                    GCK_SESSION_AUTHENTICATE | GCK_SESSION_READ_WRITE);
 
 	all_attrs = NULL;
-	do {
-		obj = gck_enumerator_next (en, NULL, &error);
-	} while (obj && load_identity_v1_attributes (obj, &all_attrs));
-
+	while ((obj = gck_enumerator_next (en, NULL, &error))) {
+		load_identity_v1_attributes (obj, &all_attrs);
+		g_object_unref (obj);
+	}
 	g_object_unref (en);
 
 	if (error) {
