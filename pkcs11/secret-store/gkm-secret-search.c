@@ -247,6 +247,7 @@ factory_create_search (GkmSession *session, GkmTransaction *transaction,
 	                       "schema-name", schema_name,
 	                       "collection-id", identifier,
 	                       NULL);
+	g_free (identifier);
 
 	/* Load any new items or collections */
 	gkm_module_refresh_token (module);
