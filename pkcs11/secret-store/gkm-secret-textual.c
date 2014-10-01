@@ -118,6 +118,7 @@ generate_attributes (GKeyFile *file, GkmSecretItem *item)
 		g_free (groupname);
 		++index;
 	}
+	g_list_free (names);
 }
 
 static void
