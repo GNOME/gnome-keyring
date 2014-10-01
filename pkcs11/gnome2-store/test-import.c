@@ -62,6 +62,7 @@ setup (Test *test,
 
 	test->funcs = gkm_gnome2_store_get_functions ();
 	rv = (test->funcs->C_Initialize) (&args);
+	g_free (args.pReserved);
 	gkm_assert_cmprv (rv, ==, CKR_OK);
 
 	/* And now need to log in */
