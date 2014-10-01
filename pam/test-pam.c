@@ -149,6 +149,7 @@ setup (Test *test,
 			return;
 		}
 	} else if (g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+		g_error_free (error);
 		skip_test (test, "missing test pam config");
 		return;
 	}
