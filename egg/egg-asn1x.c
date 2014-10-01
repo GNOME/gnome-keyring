@@ -3151,6 +3151,7 @@ egg_asn1x_set_any_raw (GNode *node,
 
 	/* A failure, set the message manually so it doesn't get a prefix */
 	} else {
+		atlv_free (tlv);
 		an = node->data;
 		g_free (an->failure);
 		an->failure = g_strdup (msg);
