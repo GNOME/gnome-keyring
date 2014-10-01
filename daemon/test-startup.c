@@ -232,13 +232,13 @@ test_daemon_replace (Test *test,
 	output = gkd_test_launch_daemon (test->directory, argv, &pid,
 	                                 "XDG_RUNTIME_DIR", "/tmp/keyring-test-two",
 	                                 NULL);
-	g_free (output);
+	g_strfreev (output);
 
 	/* Replace with the second daemon */
 	output = gkd_test_launch_daemon (test->directory, replace, &test->pid,
 	                                 "XDG_RUNTIME_DIR", "/tmp/keyring-test-two",
 	                                 NULL);
-	g_free (output);
+	g_strfreev (output);
 
 	/* The first daemon should have exited cleanly here */
 	g_assert_cmpint (waitpid (pid, &status, 0), ==, pid);
