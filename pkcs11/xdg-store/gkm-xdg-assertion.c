@@ -173,6 +173,8 @@ factory_create_assertion (GkmSession *session, GkmTransaction *transaction,
 	                          "purpose", purpose,
 	                          "peer", peer,
 	                          NULL);
+	g_free (purpose);
+	g_free (peer);
 
 	/* Add the assertion to the trust object */
 	if (!gkm_transaction_get_failed (transaction)) {
