@@ -102,6 +102,7 @@ egg_hkdf_perform (const gchar *hash_algo, gconstpointer input, gsize n_input,
 			break;
 	}
 
+	gcry_md_close (md2);
 	g_free (alloc);
 	gcry_free (buffer);
 	return TRUE;
