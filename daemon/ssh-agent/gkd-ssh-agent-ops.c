@@ -435,6 +435,7 @@ remove_by_public_key (GckSession *session, GckObject *pub, gboolean exclude_v1)
 			g_free (label);
 			return;
 		}
+		g_free (label);
 	}
 
 	/* Lock token objects, remove session objects */
