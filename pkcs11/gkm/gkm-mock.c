@@ -72,6 +72,7 @@ typedef struct _Session {
 static guint unique_identifier = 100;
 static GHashTable *the_sessions = NULL;
 static GHashTable *the_objects = NULL;
+static GArray *the_credential_template = NULL;
 
 enum {
 	PRIVATE_KEY_CAPITALIZE = 3,
@@ -260,6 +261,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	n_the_pin = strlen (the_pin);
 	the_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_session);
 	the_objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)gkm_template_free);
+	the_credential_template = gkm_template_new (NULL, 0);
 
 	/* Our token object */
 	attrs = gkm_template_new (NULL, 0);
@@ -336,6 +338,9 @@ gkm_mock_C_Finalize (CK_VOID_PTR pReserved)
 
 	g_hash_table_destroy (the_sessions);
 	the_sessions = NULL;
+
+	gkm_template_free (the_credential_template);
+	the_credential_template = NULL;
 
 	g_free (the_pin);
 	return CKR_OK;
@@ -867,6 +872,10 @@ gkm_mock_C_GetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObje
 
 	for (i = 0; i < ulCount; ++i) {
 		result = pTemplate + i;
+		if (result->type == CKA_G_CREDENTIAL_TEMPLATE) {
+			gkm_attribute_set_template (result, the_credential_template);
+			continue;
+		}
 		attr = gkm_template_find (attrs, result->type);
 		if (!attr) {
 			result->ulValueLen = (CK_ULONG)-1;
@@ -910,8 +919,22 @@ gkm_mock_C_SetAttributeValue (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObje
 		return CKR_OBJECT_HANDLE_INVALID;
 	}
 
-	for (i = 0; i < ulCount; ++i)
-		gkm_template_set (attrs, pTemplate + i);
+	for (i = 0; i < ulCount; ++i) {
+		CK_ATTRIBUTE_PTR attr = pTemplate + i;
+
+		if (attr->type == CKA_G_CREDENTIAL_TEMPLATE) {
+			CK_RV rv;
+			GArray *template;
+
+			rv = gkm_attribute_get_template (attr, &template);
+			if (rv != CKR_OK)
+				return CKR_OBJECT_HANDLE_INVALID;
+			gkm_template_free(the_credential_template);
+			the_credential_template = template;
+		} else {
+			gkm_template_set (attrs, attr);
+		}
+	}
 
 	return CKR_OK;
 }
