@@ -207,6 +207,7 @@ run_client_thread (gpointer data)
 	}
 
 	g_io_channel_shutdown (call.channel, FALSE, NULL);
+	g_io_channel_unref (call.channel);
 	g_object_unref (call.module);
 
 	close (call.sock);
