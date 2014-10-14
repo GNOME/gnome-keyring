@@ -1245,6 +1245,9 @@ gkd_secret_service_finalize (GObject *obj)
 	g_hash_table_destroy (self->aliases);
 	self->aliases = NULL;
 
+	g_free (self->alias_directory);
+	self->alias_directory = NULL;
+
 	G_OBJECT_CLASS (gkd_secret_service_parent_class)->finalize (obj);
 }
 
