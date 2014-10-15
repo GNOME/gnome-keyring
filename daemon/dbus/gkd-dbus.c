@@ -103,7 +103,6 @@ message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
 
 		const gchar **env;
 		DBusMessageIter items, entry;
-		gchar **parts;
 
 		env = gkd_util_get_environment ();
 		g_return_val_if_fail (env, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
@@ -114,13 +113,17 @@ message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
 		if (!dbus_message_iter_open_container (&args, DBUS_TYPE_ARRAY, "{ss}", &items))
 			g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
 		while (*env) {
+			gchar **parts;
 			parts = g_strsplit (*env, "=", 2);
 			g_return_val_if_fail (parts && parts[0] && parts[1], DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 			if (!dbus_message_iter_open_container (&items, DBUS_TYPE_DICT_ENTRY, NULL, &entry) ||
 			    !dbus_message_iter_append_basic (&entry, DBUS_TYPE_STRING, &parts[0]) ||
 			    !dbus_message_iter_append_basic (&entry, DBUS_TYPE_STRING, &parts[1]) ||
-			    !dbus_message_iter_close_container (&items, &entry))
+			    !dbus_message_iter_close_container (&items, &entry)) {
+				g_strfreev (parts);
 				g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
+			}
+			g_strfreev (parts);
 			++env;
 		}
 		if (!dbus_message_iter_close_container (&args, &items))
