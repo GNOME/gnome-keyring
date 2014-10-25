@@ -159,33 +159,41 @@ static void
 preload_key_if_necessary (gint ssh_agent,
                           GBytes *key)
 {
-	EggBuffer buf;
-	const guchar *blob;
-	gchar *comment;
-	gsize length;
-	GBytes *priv;
-	guchar code;
+	GcrPrompt *prompt;
+	GcrSshAskpass *askpass;
+	GError *error = NULL;
+	gchar *filename;
+	gint status;
 
-	priv = gkd_ssh_agent_preload_private (key);
-	if (!priv)
+	gchar *argv[] = {
+		SSH_ADD,
+		NULL,
+		NULL
+	};
+
+	argv[1] = filename = gkd_ssh_agent_preload_path (key);
+	if (!filename)
 		return;
 
-	egg_buffer_init_full (&buf, 128, egg_secure_realloc);
-	egg_buffer_add_uint32 (&buf, 0); /* length */
-	egg_buffer_add_byte (&buf, GKD_SSH_OP_ADD_IDENTITY);
-	blob = g_bytes_get_data (priv, &length);
-	egg_buffer_add_byte_array (&buf, blob, length);
+	prompt = gcr_system_prompt_new ();
+	askpass = gcr_ssh_askpass_new (G_TLS_INTERACTION (prompt));
+	g_object_unref (interaction);
 
-	if (gkd_ssh_agent_write_packet (ssh_agent, &buf) &&
-	    gkd_ssh_agent_read_packet (ssh_agent, &buf)) {
-		if (!egg_buffer_get_byte (&buf, 4, NULL, &code) || code != GKD_SSH_RES_SUCCESS) {
-			comment = gkd_ssh_agent_preload_comment (key);
-			g_warning ("couldn't add private key '%s' to ssh-agent", comment);
-			g_free (comment);
-		}
+	if (!g_spawn_sync (NULL, argv, NULL, G_SPAWN_DEFAULT,
+	                   gcr_ssh_askpass_setup, askpass,
+	                   NULL, NULL, &status, &error)) {
+		g_warning ("cannot run %s: %s", argv[0], error->message);
+
+	} else if (!g_spawn_check_exit_status (status, &error)) {
+		g_message ("the %s command failed: %s", error->message);
+
+	} else {
+		gkd_ssh_agent_preload_clear (key);
 	}
 
-	gkd_ssh_agent_preload_clear (key);
+	g_clear_error (&error);
+	g_object_unref (askpass);
+	g_free (filename);
 }
 
 static gboolean

@@ -177,7 +177,7 @@ gkd_ssh_agent_preload_keys (void)
 	preload_lock_and_update ();
 
 	g_hash_table_iter_init (&iter, preloads_by_key);
-	while (g_hash_table_iter_next (&iter, NULL, (gpointer *)preload)) {
+	while (g_hash_table_iter_next (&iter, NULL, (gpointer *)&preload)) {
 		if (preload->private_file)
 			keys = g_list_prepend (keys, g_bytes_ref (preload->public_key));
 	}
@@ -204,129 +204,6 @@ gkd_ssh_agent_preload_comment (GBytes *key)
 	return comment;
 }
 
-gboolean
-gkd_ssh_agent_proto_write_pair_rsa (EggBuffer *req,
-                                    gsize *offset,
-                                    GckAttributes *priv_attrs,
-                                    GckAttributes *pub_attrs)
-{
-       const GckAttribute *attr;
-
-       g_assert (req);
-       g_assert (offset);
-       g_assert (priv_attrs);
-       g_assert (pub_attrs);
-
-       if (!gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_MODULUS) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PUBLIC_EXPONENT) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIVATE_EXPONENT) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_COEFFICIENT) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIME_1) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIME_2))
-               return FALSE;
-
-       /* Copy attributes to the public key */
-       attr = gck_builder_find (priv_attrs, CKA_MODULUS);
-       gck_builder_add_attribute (pub_attrs, attr);
-       attr = gck_builder_find (priv_attrs, CKA_PUBLIC_EXPONENT);
-       gck_builder_add_attribute (pub_attrs, attr);
-
-       /* Add in your basic other required attributes */
-       gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-       gck_builder_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_RSA);
-       gck_builder_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-       gck_builder_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_RSA);
-
-       return TRUE;
-}
-
-gboolean
-gkd_ssh_agent_proto_read_pair_dsa (EggBuffer *req,
-                                   gsize *offset,
-                                   GckBuilder *priv_attrs,
-                                   GckBuilder *pub_attrs)
-{
-       const GckAttribute *attr;
-
-       g_assert (req);
-       g_assert (offset);
-       g_assert (priv_attrs);
-       g_assert (pub_attrs);
-
-       if (!gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_PRIME) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_SUBPRIME) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_BASE) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, pub_attrs, CKA_VALUE) ||
-           !gkd_ssh_agent_proto_read_mpi (req, offset, priv_attrs, CKA_VALUE))
-               return FALSE;
-
-       /* Copy attributes to the public key */
-       attr = gck_builder_find (priv_attrs, CKA_PRIME);
-       gck_builder_add_attribute (pub_attrs, attr);
-       attr = gck_builder_find (priv_attrs, CKA_SUBPRIME);
-       gck_builder_add_attribute (pub_attrs, attr);
-       attr = gck_builder_find (priv_attrs, CKA_BASE);
-       gck_builder_add_attribute (pub_attrs, attr);
-
-       /* Add in your basic other required attributes */
-       gck_builder_add_ulong (priv_attrs, CKA_CLASS, CKO_PRIVATE_KEY);
-       gck_builder_add_ulong (priv_attrs, CKA_KEY_TYPE, CKK_DSA);
-       gck_builder_add_ulong (pub_attrs, CKA_CLASS, CKO_PUBLIC_KEY);
-       gck_builder_add_ulong (pub_attrs, CKA_KEY_TYPE, CKK_DSA);
-
-       return TRUE;
-}
-
-static GBytes *
-encode_key_pair ()
-{
-
-}
-
-GBytes *
-gkd_ssh_agent_preload_private (GBytes *key)
-{
-	GcrParsed *parsed = NULL;
-	gchar *comment = NULL;
-	GBytes *contents = NULL;
-	GcrParser *parser;
-	Preload *preload;
-
-	preload_lock_and_update ();
-
-	preload = g_hash_table_lookup (preloads_by_key, key);
-	if (preload) {
-		if (preload->private_file)
-			contents = g_bytes_ref (preload->private_file);
-		comments = g_strdup (preload->comment);
-	}
-
-	preload_unlock ();
-
-	if (!contents)
-		return NULL;
-
-	parser = gcr_parser_new ();
-	gcr_parser_format_disable (parser, GCR_FORMAT_ALL);
-	gcr_parser_format_enable (parser, GCR_FORMAT_PEM);
-	g_signal_connect (parser, "authenticate", G_CALLBACK (on_parser_authenticate), comment);
-	g_signal_connect (parser, "parsed", G_CALLBACK (on_parser_parsed), &parsed);
-
-	if (!gcr_parser_parse_bytes (parser, contents, &error))
-		g_message ("couldn't parse private key: %s: %s", comment, error->message);
-
-	g_free (comment);
-	g_bytes_unref (contents);
-
-	if (parsed) {
-		gcr_parsed_get_attributes ();
-	}
-
-
-	g_object_unref (parser);
-	/* TODO */
-}
-
 void
 gkd_ssh_agent_preload_clear (GBytes *key)
 {
@@ -351,7 +228,7 @@ gkd_ssh_agent_preload_clear_all (void)
 
 	preload_lock_and_update ();
 
-	g_hash_table_iter_init (&iter, preloads_key_key);
+	g_hash_table_iter_init (&iter, preloads_by_key);
 	while (g_hash_table_iter_next (&iter, NULL, (gpointer *)&preload)) {
 		if (preload->private_file) {
 			g_bytes_unref (preload->private_file);
@@ -368,7 +245,7 @@ gkd_ssh_agent_preload_cleanup (void)
 	g_mutex_lock (&preload_mutex);
 
 	if (preloads_by_key)
-		g_hash_table_destroy (prelodas_by_key);
+		g_hash_table_destroy (preloads_by_key);
 	preloads_by_key = NULL;
 
 	if (preloads_by_filename)
