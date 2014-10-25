@@ -10,6 +10,7 @@
 *.Plo
 *.prj
 *.pws
+*.swp
 *.tmp
 *.anjuta
 .anjuta*
