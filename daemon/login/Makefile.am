@@ -10,6 +10,7 @@ libgkd_login_la_SOURCES = \
 	$(NULL)
 libgkd_login_la_CFLAGS = \
 	$(GCK_CFLAGS) \
+	$(GCR_CFLAGS) \
 	$(GOBJECT_CFLAGS)
 libgkd_login_la_LIBADD = \
 	$(GCK_LIBS) \

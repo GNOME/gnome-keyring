@@ -23,9 +23,29 @@
 
 #include <glib.h>
 
+typedef struct _GckSession GckSession;
+
 gboolean          gkd_login_unlock                   (const gchar *master);
 
 gboolean          gkd_login_change_lock              (const gchar *original,
                                                       const gchar *master);
+
+gboolean          gkd_login_available                (GckSession *session);
+
+gchar *           gkd_login_lookup_password          (GckSession *session,
+						      const gchar *field,
+						      ...) G_GNUC_NULL_TERMINATED;
+
+void              gkd_login_clear_password           (GckSession *session,
+						      const gchar *field,
+						      ...) G_GNUC_NULL_TERMINATED;
+
+gboolean          gkd_login_store_password           (GckSession *session,
+						      const gchar *password,
+						      const gchar *label,
+						      const gchar *method,
+						      gint lifetime,
+						      const gchar *field,
+						      ...) G_GNUC_NULL_TERMINATED;
 
 #endif /* __GKD_LOGIN_H__ */
