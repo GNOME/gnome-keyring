@@ -30,6 +30,8 @@
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
 
+#include <gcr/gcr-base.h>
+
 #include <glib.h>
 
 #include <ctype.h>
@@ -156,6 +158,20 @@ op_request_identities (GkdSshAgentCall *call)
 }
 
 static void
+on_ssh_add_prompting (GcrSystemInteraction *interaction,
+                      GcrPrompt *prompt,
+                      gint prompt_type,
+                      gpointer user_data)
+{
+	if (prompt_type == 1) {
+		choice = NULL;
+		if (gkd_login_available ())
+			choice = _("Automatically unlock this key, whenever I'm logged in");
+		gcr_prompt_set_choice_label (prompt, choice);
+	}
+}
+
+static void
 preload_key_if_necessary (gint ssh_agent,
                           GBytes *key)
 {
@@ -175,8 +191,9 @@ preload_key_if_necessary (gint ssh_agent,
 	if (!filename)
 		return;
 
-	prompt = gcr_system_prompt_new ();
-	askpass = gcr_ssh_askpass_new (G_TLS_INTERACTION (prompt));
+	interaction = gcr_system_interaction_new (_("Secure Shell Key"));
+	g_signal_connect (intercation, "prompting", G_CALLBACK (on_ssh_add_prompting), NULL);
+	askpass = gcr_ssh_askpass_new (interaction);
 	g_object_unref (interaction);
 
 	if (!g_spawn_sync (NULL, argv, NULL, G_SPAWN_DEFAULT,
@@ -185,7 +202,7 @@ preload_key_if_necessary (gint ssh_agent,
 		g_warning ("cannot run %s: %s", argv[0], error->message);
 
 	} else if (!g_spawn_check_exit_status (status, &error)) {
-		g_message ("the %s command failed: %s", error->message);
+		g_message ("the %s command failed: %s", argv[0], error->message);
 
 	} else {
 		gkd_ssh_agent_preload_clear (key);

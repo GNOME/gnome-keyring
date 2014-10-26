@@ -30,6 +30,8 @@ GList *              gkd_ssh_agent_preload_keys               (void);
 
 gchar *              gkd_ssh_agent_preload_comment            (GBytes *key);
 
+gchar *              gkd_ssh_agent_preload_path               (GBytes *key);
+
 GBytes *             gkd_ssh_agent_preload_private            (GBytes *key);
 
 void                 gkd_ssh_agent_preload_clear              (GBytes *key);
