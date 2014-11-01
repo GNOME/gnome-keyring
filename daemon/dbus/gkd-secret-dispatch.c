@@ -54,14 +54,6 @@ gkd_secret_dispatch_get_type (void)
 	return type;
 }
 
-DBusMessage*
-gkd_secret_dispatch_message (GkdSecretDispatch *self, DBusMessage *message)
-{
-	g_return_val_if_fail (GKD_SECRET_IS_DISPATCH (self), NULL);
-	g_return_val_if_fail (GKD_SECRET_DISPATCH_GET_INTERFACE (self)->dispatch_message, NULL);
-	return GKD_SECRET_DISPATCH_GET_INTERFACE (self)->dispatch_message (self, message);
-}
-
 const gchar*
 gkd_secret_dispatch_get_object_path (GkdSecretDispatch *self)
 {

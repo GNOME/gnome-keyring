@@ -23,8 +23,6 @@
 
 #include "gkd-secret-types.h"
 
-#include <dbus/dbus.h>
-
 #include <glib-object.h>
 
 G_BEGIN_DECLS
@@ -40,15 +38,11 @@ struct _GkdSecretDispatchIface {
 	GTypeInterface parent;
 
 	const gchar* (*get_path) (GkdSecretDispatch *self);
-	DBusMessage* (*dispatch_message) (GkdSecretDispatch *self, DBusMessage *message);
 };
 
 GType                  gkd_secret_dispatch_get_type                          (void) G_GNUC_CONST;
 
 const gchar*           gkd_secret_dispatch_get_object_path                   (GkdSecretDispatch *self);
-
-DBusMessage*           gkd_secret_dispatch_message                           (GkdSecretDispatch *self,
-                                                                              DBusMessage *message);
 
 G_END_DECLS
 

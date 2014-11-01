@@ -66,6 +66,6 @@ gboolean            gkd_secret_unlock_with_secret             (GckObject *collec
 gboolean            gkd_secret_unlock_with_password           (GckObject *collection,
                                                                const guchar *password,
                                                                gsize n_password,
-                                                               DBusError *derr);
+                                                               GError **error);
 
 #endif /* __GKD_SECRET_UNLOCK_H__ */

@@ -21,13 +21,13 @@
 #include "config.h"
 
 #include "gkd-secret-dispatch.h"
-#include "gkd-secret-introspect.h"
+#include "gkd-secret-error.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
 #include "gkd-secret-util.h"
-#include "gkd-dbus-util.h"
+#include "gkd-secrets-generated.h"
 
 #include "egg/egg-dh.h"
 #include "egg/egg-error.h"
@@ -50,6 +50,7 @@ struct _GkdSecretSession {
 	/* Information about this object */
 	gchar *object_path;
 	GkdSecretService *service;
+	GkdOrgFreedesktopSecretSession *skeleton;
 	gchar *caller_exec;
 	gchar *caller;
 
@@ -166,24 +167,31 @@ aes_derive_key (GckSession *session, GckObject *priv_key,
 	return TRUE;
 }
 
-static DBusMessage*
-aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input, gsize n_input)
+static gboolean
+aes_negotiate (GkdSecretSession *self,
+	       GVariant *input_variant,
+	       GVariant **output_variant,
+	       gchar **result,
+	       GError **error_out)
 {
-	DBusMessageIter iter, variant, array;
 	GckSession *session;
 	GckObject *pub, *priv, *key;
 	GError *error = NULL;
-	DBusMessage *reply;
 	gpointer output;
 	gsize n_output;
+        const gchar *input;
+        gsize n_input;
 	gboolean ret;
 
 	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
-	g_return_val_if_fail (session, NULL);
+	g_return_val_if_fail (session, FALSE);
 
-	if (!aes_create_dh_keys (session, "ietf-ike-grp-modp-1024", &pub, &priv))
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                       "Failed to create necessary crypto keys.");
+	if (!aes_create_dh_keys (session, "ietf-ike-grp-modp-1024", &pub, &priv)) {
+		g_set_error_literal (error_out, G_DBUS_ERROR,
+				     G_DBUS_ERROR_FAILED,
+				     "Failed to create necessary crypto keys.");
+		return FALSE;
+	}
 
 	/* Get the output data */
 	output = gck_object_get_data (pub, CKA_VALUE, NULL, &n_output, &error);
@@ -194,10 +202,13 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 		g_warning ("couldn't get public key DH value: %s", egg_error_message (error));
 		g_clear_error (&error);
 		g_object_unref (priv);
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Failed to retrieve necessary crypto keys.");
+		g_set_error_literal (error_out, G_DBUS_ERROR,
+				     G_DBUS_ERROR_FAILED,
+				     "Failed to retrieve necessary crypto keys.");
+		return FALSE;
 	}
 
+        input = g_variant_get_fixed_array (input_variant, &n_input, sizeof (guint8));
 	ret = aes_derive_key (session, priv, input, n_input, &key);
 
 	gck_object_destroy (priv, NULL, NULL);
@@ -205,38 +216,44 @@ aes_negotiate (GkdSecretSession *self, DBusMessage *message, gconstpointer input
 
 	if (ret == FALSE) {
 		g_free (output);
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                       "Failed to create necessary crypto key.");
+		g_set_error_literal (error_out, G_DBUS_ERROR,
+				     G_DBUS_ERROR_FAILED,
+				     "Failed to create necessary crypto key.");
+		return FALSE;
 	}
 
 	take_session_key (self, key, CKM_AES_CBC_PAD);
 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &iter);
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_VARIANT, "ay", &variant);
-	dbus_message_iter_open_container (&variant, DBUS_TYPE_ARRAY, "y", &array);
-	dbus_message_iter_append_fixed_array (&array, DBUS_TYPE_BYTE, &output, n_output);
-	dbus_message_iter_close_container (&variant, &array);
-	dbus_message_iter_close_container (&iter, &variant);
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &self->object_path);
+	if (output_variant != NULL) {
+		GVariantBuilder builder;
+
+		g_variant_builder_init (&builder, G_VARIANT_TYPE ("ay"));
+		g_variant_builder_add (&builder, "y", (const gchar *) output);
+		*output_variant = g_variant_new_variant (g_variant_builder_end (&builder));
+	}
+
+	if (result != NULL) {
+		*result = g_strdup (self->object_path);
+	}
 
 	g_free (output);
-	return reply;
+
+	return TRUE;
 }
 
-static DBusMessage*
-plain_negotiate (GkdSecretSession *self, DBusMessage *message)
+static gboolean
+plain_negotiate (GkdSecretSession *self,
+		 GVariant **output,
+		 gchar **result,
+		 GError **error_out)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
-	DBusMessageIter iter, variant;
 	GError *error = NULL;
-	const char *output = "";
-	DBusMessage *reply;
 	GckObject *key;
 	GckSession *session;
 
 	session = gkd_secret_service_get_pkcs11_session (self->service, self->caller);
-	g_return_val_if_fail (session, NULL);
+	g_return_val_if_fail (session, FALSE);
 
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
 	gck_builder_add_ulong (&builder, CKA_KEY_TYPE, CKK_G_NULL);
@@ -246,76 +263,47 @@ plain_negotiate (GkdSecretSession *self, DBusMessage *message)
 	if (key == NULL) {
 		g_warning ("couldn't create null key: %s", egg_error_message (error));
 		g_clear_error (&error);
-		return dbus_message_new_error_printf (message, DBUS_ERROR_FAILED,
-		                                      "Failed to create necessary plain keys.");
+		g_set_error_literal (error_out, G_DBUS_ERROR,
+				     G_DBUS_ERROR_FAILED,
+				     "Failed to create necessary plain keys.");
+		return FALSE;
 	}
 
 	take_session_key (self, key, CKM_G_NULL);
 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &iter);
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_VARIANT, "s", &variant);
-	dbus_message_iter_append_basic (&variant, DBUS_TYPE_STRING, &output);
-	dbus_message_iter_close_container (&iter, &variant);
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &self->object_path);
-	return reply;
+	if (output != NULL) {
+		*output = g_variant_new_variant (g_variant_new_string (""));
+	}
+
+	if (result != NULL) {
+		*result = g_strdup (self->object_path);
+	}
+
+	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------
  * DBUS
  */
-
-static DBusMessage*
-session_method_close (GkdSecretSession *self, DBusMessage *message)
+static gboolean
+session_method_close (GkdOrgFreedesktopSecretSession *skeleton,
+		      GDBusMethodInvocation *invocation,
+		      GkdSecretSession *self)
 {
-	DBusMessage *reply;
-
-	g_return_val_if_fail (self->service, NULL);
-
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
-		return NULL;
-
 	gkd_secret_service_close_session (self->service, self);
+	gkd_org_freedesktop_secret_session_complete_close (skeleton, invocation);
 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
-	return reply;
+	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
-
-static DBusMessage*
-gkd_secret_session_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *message)
-{
-	const gchar *caller;
-	GkdSecretSession *self;
-
-	g_return_val_if_fail (message, NULL);
-	g_return_val_if_fail (GKD_SECRET_IS_SESSION (base), NULL);
-	self = GKD_SECRET_SESSION (base);
-
-	/* This should already have been caught elsewhere */
-	caller = dbus_message_get_sender (message);
-	if (!caller || !g_str_equal (caller, self->caller))
-		g_return_val_if_reached (NULL);
-
-	/* org.freedesktop.Secret.Session.Close() */
-	else if (dbus_message_is_method_call (message, SECRET_SESSION_INTERFACE, "Close"))
-		return session_method_close (self, message);
-
-	/* org.freedesktop.DBus.Introspectable.Introspect() */
-	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_session, NULL);
-
-	return NULL;
-}
-
 static GObject*
 gkd_secret_session_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
 	GkdSecretSession *self = GKD_SECRET_SESSION (G_OBJECT_CLASS (gkd_secret_session_parent_class)->constructor(type, n_props, props));
+	GError *error = NULL;
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->caller, NULL);
@@ -323,6 +311,19 @@ gkd_secret_session_constructor (GType type, guint n_props, GObjectConstructParam
 
 	/* Setup the path for the object */
 	self->object_path = g_strdup_printf (SECRET_SESSION_PREFIX "/s%d", ++unique_session_number);
+
+	self->skeleton = gkd_org_freedesktop_secret_session_skeleton_new ();
+	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->skeleton),
+					  gkd_secret_service_get_connection (self->service),
+					  self->object_path, &error);
+
+	if (error != NULL) {
+		g_warning ("could not register secret session on session bus: %s", error->message);
+		g_error_free (error);
+	}
+
+	g_signal_connect (self->skeleton, "handle-close",
+			  G_CALLBACK (session_method_close), self);
 
 	return G_OBJECT (self);
 }
@@ -340,6 +341,11 @@ gkd_secret_session_dispose (GObject *obj)
 
 	g_free (self->object_path);
 	self->object_path = NULL;
+
+	if (self->skeleton) {
+		g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->skeleton));
+		g_clear_object (&self->skeleton);
+	}
 
 	if (self->service) {
 		g_object_remove_weak_pointer (G_OBJECT (self->service),
@@ -457,7 +463,6 @@ gkd_secret_session_class_init (GkdSecretSessionClass *klass)
 static void
 gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface)
 {
-	iface->dispatch_message = gkd_secret_session_real_dispatch_message;
 }
 
 /* -----------------------------------------------------------------------------
@@ -526,47 +531,49 @@ gkd_secret_session_complete (GkdSecretSession *self, gconstpointer peer,
 	return TRUE;
 }
 
-DBusMessage*
-gkd_secret_session_handle_open (GkdSecretSession *self, DBusMessage *message)
+gboolean
+gkd_secret_session_handle_open (GkdSecretSession *self,
+				const gchar *algorithm,
+				GVariant *input,
+				GVariant **output,
+				gchar **result,
+				GError **error)
 {
-	DBusMessage *reply;
-	const char *algorithm;
-	DBusMessageIter iter, variant, array;
-	gconstpointer input;
-	int n_input;
+	const GVariantType *variant_type;
 
-	/* Parse the incoming message */
-	if (!dbus_message_has_signature (message, "sv"))
-		return NULL;
-	if (!dbus_message_iter_init (message, &iter))
-		g_return_val_if_reached (NULL);
-	dbus_message_iter_get_basic (&iter, &algorithm);
-	g_return_val_if_fail (algorithm, NULL);
-	if (!dbus_message_iter_next (&iter))
-		g_return_val_if_reached (NULL);
-	dbus_message_iter_recurse (&iter, &variant);
+	variant_type = g_variant_get_type (input);
 
 	/* Plain transfers? just remove our session key */
 	if (g_str_equal (algorithm, "plain")) {
-		if (!g_str_equal ("s", dbus_message_iter_get_signature (&variant)))
-			return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
-			                               "The session algorithm input argument was invalid");
-		reply = plain_negotiate (self, message);
+		if (!g_variant_type_equal (variant_type, G_VARIANT_TYPE_STRING)) {
+			g_set_error (error, G_DBUS_ERROR,
+				     G_DBUS_ERROR_INVALID_ARGS,
+				     "The session algorithm input argument (%s) was invalid",
+				     algorithm);
+			return FALSE;
+		}
+
+		return plain_negotiate (self, output, result, error);
 
 	} else if (g_str_equal (algorithm, "dh-ietf1024-sha256-aes128-cbc-pkcs7")) {
-		if (!g_str_equal ("ay", dbus_message_iter_get_signature (&variant)))
-			return dbus_message_new_error (message, DBUS_ERROR_INVALID_ARGS,
-			                               "The session algorithm input argument was invalid");
-		dbus_message_iter_recurse (&variant, &array);
-		dbus_message_iter_get_fixed_array (&array, &input, &n_input);
-		reply = aes_negotiate (self, message, input, n_input);
+		if (!g_variant_type_equal (variant_type, G_VARIANT_TYPE_BYTESTRING)) {
+			g_set_error (error, G_DBUS_ERROR,
+                                     G_DBUS_ERROR_INVALID_ARGS,
+                                     "The session algorithm input argument (%s) was invalid",
+                                     algorithm);
+			return FALSE;
+		}
+
+		return aes_negotiate (self, input, output, result, error);
 
 	} else {
-		reply = dbus_message_new_error_printf (message, DBUS_ERROR_NOT_SUPPORTED,
-		                                       "The algorithm '%s' is not supported", algorithm);
+		g_set_error (error, G_DBUS_ERROR,
+			     G_DBUS_ERROR_NOT_SUPPORTED,
+			     "The algorithm '%s' is not supported", algorithm);
+		return FALSE;
 	}
 
-	return reply;
+	g_assert_not_reached ();
 }
 
 
@@ -593,7 +600,7 @@ gkd_secret_session_get_pkcs11_session (GkdSecretSession *self)
 
 GkdSecretSecret*
 gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
-                                    DBusError *derr)
+				    GError **error_out)
 {
 	GckMechanism mech = { 0UL, NULL, 0 };
 	GckSession *session;
@@ -624,12 +631,14 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
 
 	if (error != NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
-			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
-			                      "Cannot get secret of a locked object");
+			g_set_error_literal (error_out, GKD_SECRET_ERROR,
+					     GKD_SECRET_ERROR_IS_LOCKED,
+					     "Cannot get secret of a locked object");
 		} else {
 			g_message ("couldn't wrap item secret: %s", egg_error_message (error));
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED,
-			                      "Couldn't get item secret");
+			g_set_error_literal (error_out, G_DBUS_ERROR,
+					     G_DBUS_ERROR_FAILED,
+					     "Couldn't get item secret");
 		}
 		g_clear_error (&error);
 		g_free (iv);
@@ -641,7 +650,7 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
 
 gboolean
 gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
-                                    GkdSecretSecret *secret, DBusError *derr)
+                                    GkdSecretSecret *secret, GError **error_out)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckMechanism mech;
@@ -663,8 +672,9 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
 
 	attrs = gck_object_get (item, NULL, &error, CKA_ID, CKA_G_COLLECTION, GCK_INVALID);
 	if (attrs == NULL) {
-		g_message ("couldn't get item attributes: %s", egg_error_message (error));
-		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
+		g_set_error_literal (error_out, G_DBUS_ERROR,
+				     G_DBUS_ERROR_FAILED,
+				     "Couldn't set item secret");
 		g_clear_error (&error);
 		return FALSE;
 	}
@@ -684,16 +694,20 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
 
 	if (object == NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
-			dbus_set_error_const (derr, SECRET_ERROR_IS_LOCKED,
-			                      "Cannot set secret of a locked item");
+			g_set_error_literal (error_out, GKD_SECRET_ERROR,
+					     GKD_SECRET_ERROR_IS_LOCKED,
+					     "Cannot set secret of a locked item");
 		} else if (g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_INVALID) ||
 		           g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
 		           g_error_matches (error, GCK_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
-			dbus_set_error_const (derr, DBUS_ERROR_INVALID_ARGS,
-			                      "The secret was transferred or encrypted in an invalid way.");
+			g_set_error_literal (error_out, G_DBUS_ERROR,
+					     G_DBUS_ERROR_INVALID_ARGS,
+					     "The secret was transferred or encrypted in an invalid way.");
 		} else {
 			g_message ("couldn't unwrap item secret: %s", egg_error_message (error));
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
+			g_set_error_literal (error_out, G_DBUS_ERROR,
+					     G_DBUS_ERROR_FAILED,
+					     "Couldn't set item secret");
 		}
 		g_clear_error (&error);
 		return FALSE;
@@ -701,7 +715,9 @@ gkd_secret_session_set_item_secret (GkdSecretSession *self, GckObject *item,
 
 	if (!gck_object_equal (object, item)) {
 		g_warning ("unwrapped secret went to new object, instead of item");
-		dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't set item secret");
+		g_set_error_literal (error_out, G_DBUS_ERROR,
+				     G_DBUS_ERROR_FAILED,
+				     "Couldn't set item secret");
 		g_object_unref (object);
 		return FALSE;
 	}

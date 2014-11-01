@@ -1,0 +1,25 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node name="/org/gnome/keyring/InternalUnsupportedGuiltRiddenInterface">
+  <interface name="org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface">
+    <method name="ChangeWithMasterPassword">
+      <arg name="collection" type="o" direction="in"/>
+      <arg name="original" type="(oayays)" direction="in"/>
+      <arg name="master" type="(oayays)" direction="in"/>
+    </method>
+    <method name="ChangeWithPrompt">
+      <arg name="collection" type="o" direction="in"/>
+      <arg name="prompt" type="o" direction="out"/>
+    </method>
+    <method name="CreateWithMasterPassword">
+      <arg name="attributes" type="a{sv}" direction="in"/>
+      <arg name="master" type="(oayays)" direction="in"/>
+      <arg name="collection" type="o" direction="out"/>
+    </method>
+    <method name="UnlockWithMasterPassword">
+      <arg name="collection" type="o" direction="in"/>
+      <arg name="master" type="(oayays)" direction="in"/>
+    </method>
+  </interface>
+</node>

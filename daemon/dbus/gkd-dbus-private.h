@@ -24,22 +24,22 @@
 #define GKD_DBUS_PRIVATE_H
 
 #include <glib.h>
-#include <dbus/dbus.h>
+#include <gio/gio.h>
 
 /* DBus environment variables sent to session */
-void   gkd_dbus_environment_init        (DBusConnection *conn);
-void   gkd_dbus_environment_cleanup     (DBusConnection *conn);
+void   gkd_dbus_environment_init        (GDBusConnection *conn);
+void   gkd_dbus_environment_cleanup     (GDBusConnection *conn);
 
 /* The gnome-keyring Dbus service, very simple */
-void   gkd_dbus_service_init            (DBusConnection *conn);
-void   gkd_dbus_service_cleanup         (DBusConnection *conn);
+void   gkd_dbus_service_init            (GDBusConnection *conn);
+void   gkd_dbus_service_cleanup         (GDBusConnection *conn);
 
 /* DBus desktop session interaction */
-void   gkd_dbus_session_init            (DBusConnection *conn);
-void   gkd_dbus_session_cleanup         (DBusConnection *conn);
+void   gkd_dbus_session_init            (GDBusConnection *conn);
+void   gkd_dbus_session_cleanup         (GDBusConnection *conn);
 
 /* DBus secrets API */
-void   gkd_dbus_secrets_init            (DBusConnection *conn);
-void   gkd_dbus_secrets_cleanup         (DBusConnection *conn);
+void   gkd_dbus_secrets_init            (GDBusConnection *conn);
+void   gkd_dbus_secrets_cleanup         (GDBusConnection *conn);
 
 #endif /* GKD_DBUS_PRIVATE_H */

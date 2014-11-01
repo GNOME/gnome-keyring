@@ -25,8 +25,6 @@
 
 #include <gck/gck.h>
 
-#include <dbus/dbus.h>
-
 #include <glib-object.h>
 
 #define GKD_SECRET_TYPE_SERVICE               (gkd_secret_service_get_type ())
@@ -44,7 +42,7 @@ struct _GkdSecretServiceClass {
 
 GType                   gkd_secret_service_get_type                (void);
 
-DBusConnection*         gkd_secret_service_get_connection          (GkdSecretService *self);
+GDBusConnection*        gkd_secret_service_get_connection          (GkdSecretService *self);
 
 GckSlot*                gkd_secret_service_get_pkcs11_slot         (GkdSecretService *self);
 
@@ -64,9 +62,6 @@ GkdSecretSession*       gkd_secret_service_lookup_session          (GkdSecretSer
 void                    gkd_secret_service_close_session           (GkdSecretService *self,
                                                                     GkdSecretSession *sess);
 
-void                    gkd_secret_service_send                    (GkdSecretService *self,
-                                                                    DBusMessage *message);
-
 const gchar*            gkd_secret_service_get_alias               (GkdSecretService *self,
                                                                     const gchar *alias);
 
@@ -83,5 +78,10 @@ void                    gkd_secret_service_emit_collection_created (GkdSecretSer
 
 void                    gkd_secret_service_emit_collection_deleted (GkdSecretService *self,
                                                                     const gchar *collection_path);
+
+void                    gkd_secret_service_emit_collection_changed (GkdSecretService *self,
+                                                                    const gchar *collection_path);
+
+gchar **                gkd_secret_service_get_collections         (GkdSecretService *self);
 
 #endif /* ___SECRET_SERVICE_H__ */

@@ -26,7 +26,6 @@
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
 #include "gkd-secret-types.h"
-#include "gkd-secret-util.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
@@ -337,15 +336,10 @@ gkd_secret_change_prompt_ready (GkdSecretPrompt *prompt)
 	g_clear_object (&collection);
 }
 
-static void
-gkd_secret_change_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
+static GVariant *
+gkd_secret_change_encode_result (GkdSecretPrompt *base)
 {
-	DBusMessageIter variant;
-	const gchar *string = "";
-
-	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "s", &variant);
-	dbus_message_iter_append_basic (&variant, DBUS_TYPE_STRING, &string);
-	dbus_message_iter_close_container (iter, &variant);
+        return g_variant_new_variant (g_variant_new_string (""));
 }
 
 static void

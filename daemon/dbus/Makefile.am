@@ -1,15 +1,46 @@
 
 noinst_LTLIBRARIES += libgkd-dbus.la
 
+daemon/dbus/gkd-secrets-generated.h: daemon/dbus/org.freedesktop.Secrets.xml Makefile.am
+	$(AM_V_GEN) gdbus-codegen --interface-prefix org.freedesktop.Secrets. \
+	--generate-c-code $(srcdir)/daemon/dbus/gkd-secrets-generated \
+	--c-namespace Gkd \
+	$(srcdir)/daemon/dbus/org.freedesktop.Secrets.xml
+daemon/dbus/gkd-secrets-generated.c: daemon/dbus/gkd-secrets-generated.h
+	@: # generated as a side-effect
+
+daemon/dbus/gkd-daemon-generated.h: daemon/dbus/org.gnome.keyring.Daemon.xml Makefile.am
+	$(AM_V_GEN) gdbus-codegen --interface-prefix org.gnome.keyring.Daemon. \
+	--generate-c-code $(srcdir)/daemon/dbus/gkd-daemon-generated \
+	--c-namespace Gkd \
+	$(srcdir)/daemon/dbus/org.gnome.keyring.Daemon.xml
+daemon/dbus/gkd-daemon-generated.c: daemon/dbus/gkd-daemon-generated.h
+	@: # generated as a side-effect
+
+daemon/dbus/gkd-internal-generated.h: daemon/dbus/org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.xml Makefile.am
+	$(AM_V_GEN) gdbus-codegen --interface-prefix org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface. \
+	--generate-c-code $(srcdir)/daemon/dbus/gkd-internal-generated \
+	--c-namespace Gkd \
+	$(srcdir)/daemon/dbus/org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.xml
+daemon/dbus/gkd-internal-generated.c: daemon/dbus/gkd-internal-generated.h
+	@: # generated as a side-effect
+
+BUILT_SOURCES += \
+	daemon/dbus/gkd-daemon-generated.c \
+	daemon/dbus/gkd-daemon-generated.h \
+	daemon/dbus/gkd-internal-generated.c \
+	daemon/dbus/gkd-internal-generated.h \
+	daemon/dbus/gkd-secrets-generated.c \
+	daemon/dbus/gkd-secrets-generated.h
+
 libgkd_dbus_la_SOURCES = \
+	$(BUILT_SOURCES) \
 	daemon/dbus/gkd-dbus.c \
 	daemon/dbus/gkd-dbus.h \
 	daemon/dbus/gkd-dbus-environment.c \
 	daemon/dbus/gkd-dbus-private.h \
 	daemon/dbus/gkd-dbus-secrets.c \
 	daemon/dbus/gkd-dbus-session.c \
-	daemon/dbus/gkd-dbus-util.c \
-	daemon/dbus/gkd-dbus-util.h \
 	daemon/dbus/gkd-secret-change.c \
 	daemon/dbus/gkd-secret-change.h \
 	daemon/dbus/gkd-secret-create.c \
@@ -20,8 +51,6 @@ libgkd_dbus_la_SOURCES = \
 	daemon/dbus/gkd-secret-error.h \
 	daemon/dbus/gkd-secret-exchange.c \
 	daemon/dbus/gkd-secret-exchange.h \
-	daemon/dbus/gkd-secret-introspect.c \
-	daemon/dbus/gkd-secret-introspect.h \
 	daemon/dbus/gkd-secret-lock.c \
 	daemon/dbus/gkd-secret-lock.h \
 	daemon/dbus/gkd-secret-objects.c \
@@ -44,12 +73,14 @@ libgkd_dbus_la_SOURCES = \
 	$(NULL)
 
 libgkd_dbus_la_LIBADD = \
+	$(GIO_LIBS) \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 
 libgkd_dbus_la_CFLAGS = \
 	$(DAEMON_CFLAGS) \
 	$(GCR_BASE_CFLAGS) \
+	$(GIO_CFLAGS) \
 	$(GOBJECT_CFLAGS)
 
 # -------------------------------------------------------------------

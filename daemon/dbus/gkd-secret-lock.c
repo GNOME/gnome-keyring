@@ -30,7 +30,8 @@
 #include <gck/gck.h>
 
 gboolean
-gkd_secret_lock (GckObject *collection, DBusError *derr)
+gkd_secret_lock (GckObject *collection,
+                 GError **error_out)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
@@ -49,7 +50,9 @@ gkd_secret_lock (GckObject *collection, DBusError *derr)
 
 	if (error != NULL) {
 		g_warning ("couldn't search for credential objects: %s", egg_error_message (error));
-		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't lock collection");
+                g_set_error_literal (error_out, G_DBUS_ERROR,
+                                     G_DBUS_ERROR_FAILED,
+                                     "Couldn't lock collection");
 		g_clear_error (&error);
 		return FALSE;
 	}
@@ -67,7 +70,7 @@ gkd_secret_lock (GckObject *collection, DBusError *derr)
 
 gboolean
 gkd_secret_lock_all (GckSession *session,
-                     DBusError *derr)
+                     GError **error_out)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
@@ -80,7 +83,7 @@ gkd_secret_lock_all (GckSession *session,
 	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 	if (error != NULL) {
 		g_warning ("couldn't search for credential objects: %s", egg_error_message (error));
-		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't lock service");
+                g_set_error (error_out, G_DBUS_ERROR, G_DBUS_ERROR_FAILED, "Couldn't lock service");
 		g_clear_error (&error);
 		return FALSE;
 	}
@@ -99,7 +102,7 @@ gkd_secret_lock_all (GckSession *session,
 	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 	if (error != NULL) {
 		g_warning ("couldn't search for session items: %s", egg_error_message (error));
-		dbus_set_error (derr, DBUS_ERROR_FAILED, "Couldn't lock service");
+                g_set_error (error_out, G_DBUS_ERROR, G_DBUS_ERROR_FAILED, "Couldn't lock service");
 		g_clear_error (&error);
 		return FALSE;
 	}

@@ -59,12 +59,12 @@ GckSession*         gkd_secret_session_get_pkcs11_session      (GkdSecretSession
 
 GkdSecretSecret*    gkd_secret_session_get_item_secret         (GkdSecretSession *self,
                                                                 GckObject *item,
-                                                                DBusError *derr);
+                                                                GError **error);
 
 gboolean            gkd_secret_session_set_item_secret         (GkdSecretSession *self,
                                                                 GckObject *item,
                                                                 GkdSecretSecret *secret,
-                                                                DBusError *derr);
+                                                                GError **error);
 
 GckObject*          gkd_secret_session_create_credential       (GkdSecretSession *self,
                                                                 GckSession *session,
@@ -72,7 +72,11 @@ GckObject*          gkd_secret_session_create_credential       (GkdSecretSession
                                                                 GkdSecretSecret *secret,
                                                                 GError **error);
 
-DBusMessage*        gkd_secret_session_handle_open             (GkdSecretSession *self,
-                                                                DBusMessage *message);
+gboolean            gkd_secret_session_handle_open             (GkdSecretSession *self,
+                                                                const gchar *algorithm,
+                                                                GVariant *input,
+                                                                GVariant **output,
+                                                                gchar **result,
+                                                                GError **error);
 
 #endif /* __GKD_SECRET_SESSION_H__ */

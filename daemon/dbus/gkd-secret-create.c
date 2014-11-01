@@ -292,17 +292,14 @@ gkd_secret_create_prompt_ready (GkdSecretPrompt *prompt)
 	perform_prompting (GKD_SECRET_CREATE (prompt));
 }
 
-static void
-gkd_secret_create_encode_result (GkdSecretPrompt *base, DBusMessageIter *iter)
+static GVariant *
+gkd_secret_create_encode_result (GkdSecretPrompt *base)
 {
 	GkdSecretCreate *self = GKD_SECRET_CREATE (base);
-	DBusMessageIter variant;
 	const gchar *path;
 
-	dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT, "o", &variant);
 	path = self->result_path ? self->result_path : "/";
-	dbus_message_iter_append_basic (&variant, DBUS_TYPE_OBJECT_PATH, &path);
-	dbus_message_iter_close_container (iter, &variant);
+        return g_variant_new_variant (g_variant_new_object_path (path));
 }
 
 static void

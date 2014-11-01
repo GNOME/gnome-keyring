@@ -28,8 +28,6 @@
 #include <gck/gck.h>
 #include <gcr/gcr-base.h>
 
-#include <dbus/dbus.h>
-
 #define GKD_SECRET_TYPE_PROMPT               (gkd_secret_prompt_get_type ())
 #define GKD_SECRET_PROMPT(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRET_TYPE_PROMPT, GkdSecretPrompt))
 #define GKD_SECRET_PROMPT_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_SECRET_TYPE_PROMPT, GkdSecretPromptClass))
@@ -50,8 +48,7 @@ struct _GkdSecretPromptClass {
 
 	void       (*prompt_ready)       (GkdSecretPrompt *self);
 
-	void       (*encode_result)      (GkdSecretPrompt *self,
-	                                  DBusMessageIter *iter);
+	GVariant * (*encode_result)      (GkdSecretPrompt *self);
 };
 
 GType               gkd_secret_prompt_get_type                (void) G_GNUC_CONST;

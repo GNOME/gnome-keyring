@@ -1,0 +1,13 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node name="/org/gnome/keyring/daemon">
+  <interface name="org.gnome.keyring.Daemon">
+    <method name="GetEnvironment">
+      <arg name="Environment" type="a{ss}" direction="out"/>
+    </method>
+    <method name="GetControlDirectory">
+      <arg name="ControlDirectory" type="s" direction="out"/>
+    </method>
+  </interface>
+</node>

@@ -25,8 +25,6 @@
 
 #include <glib.h>
 
-#include <dbus/dbus.h>
-
 struct _GkdSecretSecret {
 	GkdSecretSession *session;
 
@@ -52,12 +50,11 @@ GkdSecretSecret*       gkd_secret_secret_new_take_memory          (GkdSecretSess
                                                                    gsize n_value);
 
 GkdSecretSecret*       gkd_secret_secret_parse                    (GkdSecretService *service,
-                                                                   DBusMessage *message,
-                                                                   DBusMessageIter *iter,
-                                                                   DBusError *derr);
+                                                                   const char *sender,
+                                                                   GVariant *variant,
+                                                                   GError **error);
 
-void                   gkd_secret_secret_append                   (GkdSecretSecret *secret,
-                                                                   DBusMessageIter *iter);
+GVariant *             gkd_secret_secret_append                   (GkdSecretSecret *secret);
 
 void                   gkd_secret_secret_free                     (gpointer data);
 

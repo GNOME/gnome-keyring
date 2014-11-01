@@ -20,9 +20,8 @@
 
 #include "config.h"
 
-#include "gkd-dbus-util.h"
 #include "gkd-secret-dispatch.h"
-#include "gkd-secret-introspect.h"
+#include "gkd-secret-error.h"
 #include "gkd-secret-objects.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-session.h"
@@ -30,6 +29,7 @@
 #include "gkd-secret-types.h"
 #include "gkd-secret-unlock.h"
 #include "gkd-secret-util.h"
+#include "gkd-secrets-generated.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
@@ -62,6 +62,7 @@ struct _GkdSecretUnlock {
 	GObject parent;
 	gchar *object_path;
 	GkdSecretService *service;
+	GkdOrgFreedesktopSecretPrompt *skeleton;
 	gchar *caller;
 	gchar *window_id;
 	GQueue *queued;
@@ -144,39 +145,23 @@ static gboolean
 mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 {
 	GkdSecretUnlock *other;
-	DBusMessage *signal;
-	DBusMessageIter iter;
-	dbus_bool_t bval;
-	DBusMessageIter variant;
-	DBusMessageIter array;
 	const char *value;
 	gint i;
+	GVariantBuilder builder;
 
 	if (self->completed)
 		return FALSE;
 	self->completed = TRUE;
 
-	signal = dbus_message_new_signal (self->object_path, SECRET_PROMPT_INTERFACE,
-	                                  "Completed");
-	dbus_message_set_destination (signal, self->caller);
-	dbus_message_iter_init_append (signal, &iter);
-
-	bval = dismissed;
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &bval);
-
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_VARIANT, "ao", &variant);
-	dbus_message_iter_open_container (&variant, DBUS_TYPE_ARRAY, "o", &array);
-
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("ao"));
 	for (i = 0; i < self->results->len; ++i) {
 		value = g_array_index (self->results, gchar*, i);
-		dbus_message_iter_append_basic (&array, DBUS_TYPE_OBJECT_PATH, &value);
+		g_variant_builder_add (&builder, "o", value);
 	}
 
-	dbus_message_iter_close_container (&variant, &array);
-	dbus_message_iter_close_container (&iter, &variant);
-
-	gkd_secret_service_send (self->service, signal);
-	dbus_message_unref (signal);
+	gkd_org_freedesktop_secret_prompt_emit_completed (self->skeleton,
+							  dismissed,
+							  g_variant_new_variant (g_variant_builder_end (&builder)));
 
 	/* Fire off the next item in the unlock prompt queue */
 	other = g_queue_pop_head (&unlock_prompt_queue);
@@ -313,86 +298,50 @@ perform_next_unlock (GkdSecretUnlock *self)
  * DBUS
  */
 
-static DBusMessage*
-prompt_method_prompt (GkdSecretUnlock *self, DBusMessage *message)
+static gboolean
+prompt_method_prompt (GkdOrgFreedesktopSecretPrompt *skeleton,
+		      GDBusMethodInvocation *invocation,
+		      gchar *window_id,
+		      GkdSecretUnlock *self)
 {
-	DBusMessage *reply;
-	const char *window_id;
-
 	/* Act as if this object no longer exists */
 	if (self->completed)
-		return NULL;
-
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING,
-	                            &window_id, DBUS_TYPE_INVALID))
-		return NULL;
+		return FALSE;
 
 	/* Prompt can only be called once */
-	if (self->prompted)
-		return dbus_message_new_error (message, SECRET_ERROR_ALREADY_EXISTS,
-		                               "This prompt has already been shown.");
+	if (self->prompted) {
+		g_dbus_method_invocation_return_error_literal (invocation,
+                                                               GKD_SECRET_ERROR,
+                                                               GKD_SECRET_ERROR_ALREADY_EXISTS,
+                                                               "This prompt has already been shown.");
+		return TRUE;
+	}
 
 	gkd_secret_unlock_call_prompt (self, window_id);
 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
-	return reply;
+	gkd_org_freedesktop_secret_prompt_complete_prompt (skeleton, invocation);
+	return TRUE;
 }
 
-static DBusMessage*
-prompt_method_dismiss (GkdSecretUnlock *self, DBusMessage *message)
+static gboolean
+prompt_method_dismiss (GkdOrgFreedesktopSecretPrompt *skeleton,
+		       GDBusMethodInvocation *invocation,
+		       GkdSecretUnlock *self)
 {
-	DBusMessage *reply;
-
 	/* Act as if this object no longer exists */
 	if (self->completed)
-		return NULL;
-
-	if (!dbus_message_get_args (message, NULL, DBUS_TYPE_INVALID))
-		return NULL;
+		return FALSE;
 
 	g_cancellable_cancel (self->cancellable);
 	mark_as_complete (self, TRUE);
 
-	reply = dbus_message_new_method_return (message);
-	dbus_message_append_args (reply, DBUS_TYPE_INVALID);
-	return reply;
+	gkd_org_freedesktop_secret_prompt_complete_dismiss (skeleton, invocation);
+	return TRUE;
 }
 
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
-
-static DBusMessage*
-gkd_secret_unlock_real_dispatch_message (GkdSecretDispatch *base, DBusMessage *message)
-{
-	DBusMessage *reply = NULL;
-	GkdSecretUnlock *self;
-	const gchar *caller;
-
-	g_return_val_if_fail (message, NULL);
-	g_return_val_if_fail (GKD_SECRET_IS_UNLOCK (base), NULL);
-	self = GKD_SECRET_UNLOCK (base);
-
-	/* This should already have been caught elsewhere */
-	caller = dbus_message_get_sender (message);
-	if (!caller || !g_str_equal (caller, self->caller))
-		g_return_val_if_reached (NULL);
-
-	/* org.freedesktop.Secret.Prompt.Prompt() */
-	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Prompt"))
-		reply = prompt_method_prompt (self, message);
-
-	/* org.freedesktop.Secret.Prompt.Negotiate() */
-	else if (dbus_message_is_method_call (message, SECRET_PROMPT_INTERFACE, "Dismiss"))
-		reply = prompt_method_dismiss (self, message);
-
-	/* org.freedesktop.DBus.Introspectable.Introspect() */
-	else if (dbus_message_has_interface (message, DBUS_INTERFACE_INTROSPECTABLE))
-		return gkd_dbus_introspect_handle (message, gkd_secret_introspect_prompt, NULL);
-
-	return reply;
-}
 
 static void
 gkd_secret_unlock_init (GkdSecretUnlock *self)
@@ -406,6 +355,7 @@ static GObject*
 gkd_secret_unlock_constructor (GType type, guint n_props, GObjectConstructParam *props)
 {
 	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (G_OBJECT_CLASS (gkd_secret_unlock_parent_class)->constructor(type, n_props, props));
+        GError *error = NULL;
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->caller, NULL);
@@ -415,6 +365,21 @@ gkd_secret_unlock_constructor (GType type, guint n_props, GObjectConstructParam 
 	if (!self->object_path)
 		self->object_path = g_strdup_printf (SECRET_PROMPT_PREFIX "/u%d", ++unique_prompt_number);
 
+        self->skeleton = gkd_org_freedesktop_secret_prompt_skeleton_new ();
+        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->skeleton),
+                                          gkd_secret_service_get_connection (self->service), self->object_path,
+                                          &error);
+
+        if (error != NULL) {
+		g_warning ("could not register secret prompt on session bus: %s", error->message);
+		g_error_free (error);
+	}
+
+	g_signal_connect (self->skeleton, "handle-dismiss",
+			  G_CALLBACK (prompt_method_dismiss), self);
+	g_signal_connect (self->skeleton, "handle-prompt",
+			  G_CALLBACK (prompt_method_prompt), self);
+
 	return G_OBJECT (self);
 }
 
@@ -422,6 +387,11 @@ static void
 gkd_secret_unlock_dispose (GObject *obj)
 {
 	GkdSecretUnlock *self = GKD_SECRET_UNLOCK (obj);
+
+	if (self->skeleton) {
+		g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->skeleton));
+		g_clear_object (&self->skeleton);
+	}
 
 	if (self->service) {
 		g_object_remove_weak_pointer (G_OBJECT (self->service),
@@ -552,7 +522,6 @@ gkd_secret_unlock_class_init (GkdSecretUnlockClass *klass)
 static void
 gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface)
 {
-	iface->dispatch_message = gkd_secret_unlock_real_dispatch_message;
 }
 
 /* -----------------------------------------------------------------------------
@@ -674,7 +643,7 @@ gkd_secret_unlock_with_secret (GckObject *collection,
 
 gboolean
 gkd_secret_unlock_with_password (GckObject *collection, const guchar *password,
-                                 gsize n_password, DBusError *derr)
+                                 gsize n_password, GError **error_out)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
@@ -700,10 +669,14 @@ gkd_secret_unlock_with_password (GckObject *collection, const guchar *password,
 	cred = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
 	if (cred == NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
-			dbus_set_error_const (derr, INTERNAL_ERROR_DENIED, "The password was incorrect.");
+			g_set_error_literal (error_out, GKD_SECRET_DAEMON_ERROR,
+					     GKD_SECRET_DAEMON_ERROR_DENIED,
+					     "The password was incorrect.");
 		} else {
 			g_message ("couldn't create credential: %s", egg_error_message (error));
-			dbus_set_error_const (derr, DBUS_ERROR_FAILED, "Couldn't use credentials");
+			g_set_error_literal (error_out, G_DBUS_ERROR,
+					     G_DBUS_ERROR_FAILED,
+					     "Couldn't use credentials");
 		}
 		g_clear_error (&error);
 		return FALSE;

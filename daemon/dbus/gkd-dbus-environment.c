@@ -26,8 +26,6 @@
 
 #include "daemon/gkd-util.h"
 
-#include <dbus/dbus.h>
-
 #include <string.h>
 
 #define SERVICE_SESSION_MANAGER	"org.gnome.SessionManager"
@@ -35,38 +33,36 @@
 #define IFACE_SESSION_MANAGER   "org.gnome.SessionManager"
 
 void
-gkd_dbus_environment_cleanup (DBusConnection *conn)
+gkd_dbus_environment_cleanup (GDBusConnection *conn)
 {
 	/* Nothing to do here */
 }
 
 static void
-on_setenv_reply (DBusPendingCall *pending, void *user_data)
+on_setenv_reply (GObject *source,
+		 GAsyncResult *result,
+		 gpointer user_data)
 {
-	DBusMessage *reply;
-	DBusError derr = DBUS_ERROR_INIT;
+	GError *error = NULL;
 
-	reply = dbus_pending_call_steal_reply (pending);
-	g_return_if_fail (reply);
+	g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
 
-	if (dbus_set_error_from_message (&derr, reply)) {
-		if (dbus_error_has_name (&derr, "org.gnome.SessionManager.NotInInitialization") ||
-		    dbus_error_has_name (&derr, DBUS_ERROR_SERVICE_UNKNOWN))
-			g_debug ("couldn't set environment variable in session: %s", derr.message);
+	if (error != NULL) {
+		gchar *dbus_error;
+		dbus_error = g_dbus_error_get_remote_error (error);
+		if (g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN) ||
+		    g_strcmp0 (dbus_error, "org.gnome.SessionManager.NotInInitialization"))
+			g_debug ("couldn't set environment variable in session: %s", error->message);
 		else
-			g_message ("couldn't set environment variable in session: %s", derr.message);
-		dbus_error_free (&derr);
+			g_message ("couldn't set environment variable in session: %s", error->message);
+		g_error_free (error);
+		g_free (dbus_error);
 	}
-
-	dbus_message_unref (reply);
 }
 
 static void
-setenv_request (DBusConnection *conn, const gchar *env)
+setenv_request (GDBusConnection *conn, const gchar *env)
 {
-	DBusPendingCall *pending = NULL;
-	DBusError derr = DBUS_ERROR_INIT;
-	DBusMessage *msg;
 	const gchar *value;
 	gchar *name;
 
@@ -78,43 +74,31 @@ setenv_request (DBusConnection *conn, const gchar *env)
 	name = g_strndup (env, value - env);
 	++value;
 
-	msg = dbus_message_new_method_call (SERVICE_SESSION_MANAGER,
-	                                    PATH_SESSION_MANAGER,
-	                                    IFACE_SESSION_MANAGER,
-	                                    "Setenv");
-	g_return_if_fail (msg);
-
-	if (!dbus_message_append_args (msg, DBUS_TYPE_STRING, &name,
-	                               DBUS_TYPE_STRING, &value,
-	                               DBUS_TYPE_INVALID))
-		g_return_if_reached ();
+	g_dbus_connection_call (conn,
+				SERVICE_SESSION_MANAGER,
+				PATH_SESSION_MANAGER,
+				IFACE_SESSION_MANAGER,
+				"Setenv",
+				g_variant_new ("(ss)",
+					       name,
+					       value),
+				NULL, G_DBUS_CALL_FLAGS_NONE,
+				-1, NULL,
+				on_setenv_reply, NULL);
 
 	g_free (name);
-	value = name = NULL;
-
-	/* Send message and get a handle for a reply */
-	dbus_connection_send_with_reply (conn, msg, &pending, -1);
-	dbus_message_unref (msg);
-	if (pending) {
-		dbus_pending_call_set_notify (pending, on_setenv_reply, NULL, NULL);
-		dbus_pending_call_unref (pending);
-	} else {
-		g_warning ("couldn't send dbus message: %s",
-		           derr.message ? derr.message : "");
-		dbus_error_free (&derr);
-	}
 }
 
 static void
 on_watch_environment (gpointer data, gpointer user_data)
 {
-	DBusConnection *conn = user_data;
+	GDBusConnection *conn = user_data;
 	const gchar *env = data;
 	setenv_request (conn, env);
 }
 
 void
-gkd_dbus_environment_init (DBusConnection *conn)
+gkd_dbus_environment_init (GDBusConnection *conn)
 {
 	const gchar **envp;
 
@@ -127,6 +111,6 @@ gkd_dbus_environment_init (DBusConnection *conn)
 	for (; *envp; ++envp)
 		setenv_request (conn, *envp);
 
-	gkd_util_watch_environment (on_watch_environment, dbus_connection_ref (conn),
-	                            (GDestroyNotify)dbus_connection_unref);
+	gkd_util_watch_environment (on_watch_environment, g_object_ref (conn),
+	                            (GDestroyNotify) g_object_unref);
 }

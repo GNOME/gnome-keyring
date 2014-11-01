@@ -25,8 +25,6 @@
 
 #include <glib.h>
 
-#include <dbus/dbus.h>
-
 gboolean          gkd_secret_util_parse_path                            (const gchar *path,
                                                                          gchar **collection,
                                                                          gchar **item);

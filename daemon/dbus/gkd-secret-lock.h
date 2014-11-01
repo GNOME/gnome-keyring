@@ -25,12 +25,10 @@
 
 #include <gck/gck.h>
 
-#include <dbus/dbus.h>
-
 gboolean            gkd_secret_lock                (GckObject *collection,
-                                                    DBusError *derr);
+                                                    GError **error);
 
 gboolean            gkd_secret_lock_all            (GckSession *session,
-                                                    DBusError *derr);
+                                                    GError **error);
 
 #endif /* __GKD_SECRET_LOCK_H__ */

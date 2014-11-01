@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include "gkd-daemon-generated.h"
 #include "gkd-dbus.h"
 #include "gkd-dbus-private.h"
 
@@ -32,10 +33,9 @@
 #include "egg/egg-dbus.h"
 
 #include <glib.h>
+#include <gio/gio.h>
 
-#include <dbus/dbus.h>
-
-static DBusConnection *dbus_conn = NULL;
+static GDBusConnection *dbus_conn = NULL;
 static gboolean object_registered = FALSE;
 static gboolean acquired_asked = FALSE;
 static gboolean acquired_service = FALSE;
@@ -50,9 +50,7 @@ cleanup_session_bus (gpointer unused)
 	if (!dbus_conn)
 		return;
 
-	egg_dbus_disconnect_from_mainloop (dbus_conn, NULL);
-	dbus_connection_unref (dbus_conn);
-	dbus_conn = NULL;
+	g_clear_object (&dbus_conn);
 }
 
 static void
@@ -65,115 +63,78 @@ on_connection_close (gpointer user_data)
 static gboolean
 connect_to_session_bus (void)
 {
-	DBusError derr = { 0 };
+	GError *error = NULL;
 
 	if (dbus_conn)
 		return TRUE;
 
-	dbus_error_init (&derr);
-
-	/* Get the dbus bus and hook up */
-	dbus_conn = dbus_bus_get (DBUS_BUS_SESSION, &derr);
+	dbus_conn = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
 	if (!dbus_conn) {
-		g_message ("couldn't connect to dbus session bus: %s", derr.message);
-		dbus_error_free (&derr);
+		g_message ("couldn't connect to dbus session bus: %s", error->message);
+		g_error_free (error);
 		return FALSE;
 	}
 
-	egg_dbus_connect_with_mainloop (dbus_conn, NULL, on_connection_close);
-	dbus_connection_set_exit_on_disconnect (dbus_conn, FALSE);
+	g_signal_connect (dbus_conn, "closed",
+			  G_CALLBACK (on_connection_close), NULL);
 	egg_cleanup_register (cleanup_session_bus, NULL);
 	return TRUE;
 }
 
-static DBusHandlerResult
-message_handler_cb (DBusConnection *conn, DBusMessage *message, void *user_data)
+static gboolean
+handle_get_environment (GkdOrgGnomeKeyringDaemon *skeleton,
+			GDBusMethodInvocation *invocation,
+			gpointer user_data)
 {
-	/*
-	 * Here we handle the requests to our own gnome-keyring DBus interfaces
-	 */
+	const gchar **env;
+	gchar **parts;
+	GVariantBuilder builder;
 
-	DBusMessageIter args;
-	DBusMessage *reply = NULL;
+	env = gkd_util_get_environment ();
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
 
-	/* GetEnvironment */
-	if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL &&
-	    dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetEnvironment") &&
-	    g_str_equal (dbus_message_get_signature (message), "")) {
-
-		const gchar **env;
-		DBusMessageIter items, entry;
-
-		env = gkd_util_get_environment ();
-		g_return_val_if_fail (env, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-
-		/* Setup the result */
-		reply = dbus_message_new_method_return (message);
-		dbus_message_iter_init_append (reply, &args);
-		if (!dbus_message_iter_open_container (&args, DBUS_TYPE_ARRAY, "{ss}", &items))
-			g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
-		while (*env) {
-			gchar **parts;
-			parts = g_strsplit (*env, "=", 2);
-			g_return_val_if_fail (parts && parts[0] && parts[1], DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-			if (!dbus_message_iter_open_container (&items, DBUS_TYPE_DICT_ENTRY, NULL, &entry) ||
-			    !dbus_message_iter_append_basic (&entry, DBUS_TYPE_STRING, &parts[0]) ||
-			    !dbus_message_iter_append_basic (&entry, DBUS_TYPE_STRING, &parts[1]) ||
-			    !dbus_message_iter_close_container (&items, &entry)) {
-				g_strfreev (parts);
-				g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
-			}
-			g_strfreev (parts);
-			++env;
-		}
-		if (!dbus_message_iter_close_container (&args, &items))
-			g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
-
-	/* GetControlDirectory */
-	} else if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL &&
-	           dbus_message_is_method_call (message, GNOME_KEYRING_DAEMON_INTERFACE, "GetControlDirectory") &&
-	           g_str_equal (dbus_message_get_signature (message), "")) {
-
-		/* Setup the result */
-		const gchar *directory = gkd_util_get_master_directory ();
-		reply = dbus_message_new_method_return (message);
-		dbus_message_append_args (reply, DBUS_TYPE_STRING, &directory, DBUS_TYPE_INVALID);
-
-	/* Unknown call */
-	} else {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	while (*env) {
+		parts = g_strsplit (*env, "=", 2);
+		g_variant_builder_add (&builder, "{ss}", parts[0], parts[1]);
+		g_strfreev (parts);
 	}
 
-	/* Send the reply */
-	if (!dbus_connection_send (conn, reply, NULL))
-		g_return_val_if_reached (DBUS_HANDLER_RESULT_NEED_MEMORY);
-	dbus_connection_flush (conn);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
+	gkd_org_gnome_keyring_daemon_complete_get_environment (skeleton, invocation,
+							       g_variant_builder_end (&builder));
+	return TRUE;
 }
 
-static DBusObjectPathVTable object_vtable  = {
-	NULL,
-	message_handler_cb,
-	NULL,
-};
+static gboolean
+handle_get_control_directory (GkdOrgGnomeKeyringDaemon *skeleton,
+			      GDBusMethodInvocation *invocation,
+			      gpointer user_data)
+{
+	gkd_org_gnome_keyring_daemon_complete_get_control_directory (skeleton, invocation,
+								     gkd_util_get_master_directory ());
+	return TRUE;
+}
 
 static void
-cleanup_singleton (gpointer unused)
+cleanup_singleton (gpointer user_data)
 {
+	GkdOrgGnomeKeyringDaemon *skeleton = user_data;
+
 	g_return_if_fail (dbus_conn);
-	if (object_registered)
-		dbus_connection_unregister_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH);
+	if (object_registered) {
+		g_dbus_interface_skeleton_unexport_from_connection (G_DBUS_INTERFACE_SKELETON (skeleton), dbus_conn);
+		g_object_unref (skeleton);
+	}
 	object_registered = FALSE;
 }
 
 gboolean
 gkd_dbus_singleton_acquire (gboolean *acquired)
 {
-	DBusError derr = DBUS_ERROR_INIT;
-	dbus_uint32_t res = 0;
 	const gchar *service = NULL;
-	unsigned int flags = 0;
+	GBusNameOwnerFlags flags = G_BUS_NAME_OWNER_FLAGS_NONE;
+	GVariant *acquire_variant;
+	guint res;
+	GError *error = NULL;
 
 	g_assert (acquired);
 
@@ -182,63 +143,88 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 
 	/* First register the object */
 	if (!object_registered) {
-		if (dbus_connection_register_object_path (dbus_conn, GNOME_KEYRING_DAEMON_PATH,
-		                                          &object_vtable, NULL)) {
+		GError *error = NULL;
+		GkdOrgGnomeKeyringDaemon *skeleton = gkd_org_gnome_keyring_daemon_skeleton_new ();
+
+		g_signal_connect (skeleton, "handle-get-control-directory",
+				  G_CALLBACK (handle_get_control_directory), NULL);
+		g_signal_connect (skeleton, "handle-get-environment",
+				  G_CALLBACK (handle_get_environment), NULL);
+
+		g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (skeleton), dbus_conn,
+						  GNOME_KEYRING_DAEMON_PATH, &error);
+
+		if (error == NULL) {
 			object_registered = TRUE;
-			egg_cleanup_register (cleanup_singleton, NULL);
+			egg_cleanup_register (cleanup_singleton, skeleton);
 		} else {
-			g_message ("couldn't register dbus object path");
+			g_message ("couldn't register dbus object path: %s", error->message);
+			g_error_free (error);
 		}
 	}
 
 	/* Try and grab our name */
 	if (!acquired_asked) {
-
 #ifdef WITH_DEBUG
 		service = g_getenv ("GNOME_KEYRING_TEST_SERVICE");
 		if (service && service[0])
-			flags = DBUS_NAME_FLAG_ALLOW_REPLACEMENT | DBUS_NAME_FLAG_REPLACE_EXISTING;
+			flags = G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT | G_BUS_NAME_OWNER_FLAGS_REPLACE;
 		else
 #endif
 			service = GNOME_KEYRING_DAEMON_SERVICE;
 
-		res = dbus_bus_request_name (dbus_conn, service, flags, &derr);
-		if (dbus_error_is_set (&derr)) {
-			g_message ("couldn't request name '%s' on session bus: %s", service, derr.message);
-			dbus_error_free (&derr);
+		/* attempt to acquire the name */
+		acquire_variant = g_dbus_connection_call_sync (dbus_conn,
+							       "org.freedesktop.DBus",  /* bus name */
+							       "/org/freedesktop/DBus", /* object path */
+							       "org.freedesktop.DBus",  /* interface name */
+							       "RequestName",           /* method name */
+							       g_variant_new ("(su)",
+									      service,
+									      flags),
+							       G_VARIANT_TYPE ("(u)"),
+							       G_DBUS_CALL_FLAGS_NONE,
+							       -1, NULL, &error);
+
+		if (error != NULL) {
+			g_message ("couldn't request name '%s' on session bus: %s", service, error->message);
+			g_error_free (error);
 			return FALSE;
 		}
 
 		acquired_asked = TRUE;
+		g_variant_get (acquire_variant, "(u)", &res);
+		g_variant_unref (acquire_variant);
+
 		switch (res) {
-		/* We acquired the service name */
-		case DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
-		case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
-			acquired_service = TRUE;
-			break;
-			/* Another daemon is running */
-		case DBUS_REQUEST_NAME_REPLY_IN_QUEUE:
-		case DBUS_REQUEST_NAME_REPLY_EXISTS:
-			acquired_service = FALSE;
-			break;
-		default:
-			acquired_service = FALSE;
-			g_return_val_if_reached (FALSE);
-			break;
-		};
+               /* We acquired the service name */
+		case 1: /* DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER */
+		case 4: /* DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER */
+                       acquired_service = TRUE;
+                       break;
+               /* Another daemon is running */
+		case 2: /* DBUS_REQUEST_NAME_REPLY_IN_QUEUE */
+		case 3: /* DBUS_REQUEST_NAME_REPLY_EXISTS */
+                       acquired_service = FALSE;
+                       break;
+               default:
+                       acquired_service = FALSE;
+                       g_return_val_if_reached (FALSE);
+                       break;
+               };
 	}
 
 	*acquired = acquired_service;
+
 	return TRUE;
 }
 
 gchar*
 gkd_dbus_singleton_control (void)
 {
-	DBusError derr = DBUS_ERROR_INIT;
-	DBusMessage *msg, *reply;
 	gchar *control = NULL;
-	const char *path;
+	GError *error = NULL;
+	GVariant *control_variant;
 
 	/* If tried to aquire the service must have failed */
 	g_return_val_if_fail (!acquired_service, NULL);
@@ -246,34 +232,25 @@ gkd_dbus_singleton_control (void)
 	if (!connect_to_session_bus ())
 		return NULL;
 
-	msg = dbus_message_new_method_call (GNOME_KEYRING_DAEMON_SERVICE,
-	                                    GNOME_KEYRING_DAEMON_PATH,
-	                                    GNOME_KEYRING_DAEMON_INTERFACE,
-	                                    "GetControlDirectory");
-	g_return_val_if_fail (msg, NULL);
-	dbus_message_set_auto_start (msg, FALSE);
+	control_variant = g_dbus_connection_call_sync (dbus_conn,
+						       GNOME_KEYRING_DAEMON_SERVICE,
+						       GNOME_KEYRING_DAEMON_PATH,
+						       GNOME_KEYRING_DAEMON_INTERFACE,
+						       "GetControlDirectory",
+						       NULL, NULL,
+						       G_DBUS_CALL_FLAGS_NO_AUTO_START,
+						       1000, NULL, &error);
 
-	/* Send message and get a handle for a reply */
-	reply = dbus_connection_send_with_reply_and_block (dbus_conn, msg, 1000, &derr);
-	dbus_message_unref (msg);
-
-	if (!reply) {
-		if (!dbus_error_has_name (&derr, "org.freedesktop.DBus.Error.NameHasNoOwner"))
-			g_message ("couldn't communicate with already running daemon: %s", derr.message);
-		dbus_error_free (&derr);
+	if (error != NULL) {
+		if (!g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER))
+			g_message ("couldn't communicate with already running daemon: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	/* Get out our client path */
-	if (!dbus_message_get_args (reply, &derr, DBUS_TYPE_STRING, &path, DBUS_TYPE_INVALID)) {
-		g_message ("couldn't parse response from already running daemon: %s", derr.message);
-		dbus_error_free (&derr);
-		control = NULL;
-	} else {
-		control = g_strdup (path);
-	}
+	g_variant_get (control_variant, "(s)", &control);
+	g_variant_unref (control_variant);
 
-	dbus_message_unref (reply);
 	return control;
 }
 

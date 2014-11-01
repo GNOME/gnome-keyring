@@ -22,7 +22,6 @@
 #define __GKD_SECRET_TYPES_H__
 
 #define INTERNAL_SERVICE_INTERFACE     "org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface"
-#define INTERNAL_ERROR_DENIED          "org.gnome.keyring.Error.Denied"
 
 #define SECRET_COLLECTION_INTERFACE    "org.freedesktop.Secret.Collection"
 #define SECRET_ITEM_INTERFACE          "org.freedesktop.Secret.Item"
@@ -39,10 +38,8 @@
 #define SECRET_PROMPT_PREFIX           "/org/freedesktop/secrets/prompt"
 #define SECRET_ALIAS_PREFIX            "/org/freedesktop/secrets/aliases"
 
-#define SECRET_ERROR_ALREADY_EXISTS    "org.freedesktop.Secret.Error.AlreadyExists"
-#define SECRET_ERROR_IS_LOCKED         "org.freedesktop.Secret.Error.IsLocked"
-#define SECRET_ERROR_NO_SESSION        "org.freedesktop.Secret.Error.NoSession"
-#define SECRET_ERROR_NO_SUCH_OBJECT    "org.freedesktop.Secret.Error.NoSuchObject"
+typedef enum _GkdSecretDaemonError GkdSecretDaemonError;
+typedef enum _GkdSecretError GkdSecretError;
 
 typedef struct _GkdSecretCollection GkdSecretCollection;
 typedef struct _GkdSecretChange GkdSecretChange;

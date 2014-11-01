@@ -27,8 +27,6 @@
 
 #include <glib-object.h>
 
-#include <dbus/dbus.h>
-
 #define GKD_SECRET_TYPE_OBJECTS               (gkd_secret_objects_get_type ())
 #define GKD_SECRET_OBJECTS(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), GKD_SECRET_TYPE_OBJECTS, GkdSecretObjects))
 #define GKD_SECRET_OBJECTS_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GKD_SECRET_TYPE_OBJECTS, GkdSecretObjectsClass))
@@ -49,36 +47,30 @@ typedef void        (*GkdSecretObjectsForeach)                  (GkdSecretObject
 
 GType               gkd_secret_objects_get_type                 (void);
 
-DBusMessage*        gkd_secret_objects_dispatch                  (GkdSecretObjects *self,
-                                                                  DBusMessage *message);
-
-DBusMessage*        gkd_secret_objects_handle_search_items       (GkdSecretObjects *self,
-                                                                  DBusMessage *message,
+gboolean            gkd_secret_objects_handle_search_items       (GkdSecretObjects *self,
+                                                                  GDBusMethodInvocation *invocation,
+                                                                  GVariant *attributes,
                                                                   const gchar *base,
                                                                   gboolean separate_locked);
 
-DBusMessage*        gkd_secret_objects_handle_get_secrets        (GkdSecretObjects *self,
-                                                                  DBusMessage *message);
+gboolean            gkd_secret_objects_handle_get_secrets        (GkdSecretObjects *self,
+                                                                  GDBusMethodInvocation *invocation,
+                                                                  const gchar **paths,
+                                                                  const gchar *session_path);
 
 void                gkd_secret_objects_foreach_collection        (GkdSecretObjects *self,
-                                                                  DBusMessage *message,
+                                                                  const gchar *caller,
                                                                   GkdSecretObjectsForeach callback,
                                                                   gpointer user_data);
 
 void                gkd_secret_objects_foreach_item              (GkdSecretObjects *self,
-                                                                  DBusMessage *message,
+                                                                  const gchar *caller,
                                                                   const gchar *base,
                                                                   GkdSecretObjectsForeach callback,
                                                                   gpointer user_data);
 
-void                gkd_secret_objects_append_collection_paths   (GkdSecretObjects *self,
-                                                                  DBusMessageIter *iter,
-                                                                  DBusMessage *message);
-
-void                gkd_secret_objects_append_item_paths         (GkdSecretObjects *self,
-                                                                  const gchar *base,
-                                                                  DBusMessageIter *iter,
-                                                                  DBusMessage *message);
+GVariant*           gkd_secret_objects_append_collection_paths   (GkdSecretObjects *self,
+                                                                  const gchar *caller);
 
 GckSlot*            gkd_secret_objects_get_pkcs11_slot           (GkdSecretObjects *self);
 
@@ -93,20 +85,21 @@ GckObject*          gkd_secret_objects_lookup_item               (GkdSecretObjec
 void                gkd_secret_objects_emit_collection_locked    (GkdSecretObjects *self,
                                                                   GckObject *collection);
 
-void                gkd_secret_objects_emit_collection_changed   (GkdSecretObjects *self,
-                                                                  GckObject *collection,
-                                                                  ...) G_GNUC_NULL_TERMINATED;
-
 void                gkd_secret_objects_emit_item_created         (GkdSecretObjects *self,
                                                                   GckObject *collection,
-                                                                  GckObject *item);
+                                                                  const gchar *item_path);
 
 void                gkd_secret_objects_emit_item_changed         (GkdSecretObjects *self,
-                                                                  GckObject *item,
-                                                                  ...) G_GNUC_NULL_TERMINATED;
+                                                                  GckObject *item);
 
 void                gkd_secret_objects_emit_item_deleted         (GkdSecretObjects *self,
                                                                   GckObject *collection,
                                                                   const gchar *item_path);
+
+void                gkd_secret_objects_register_collection       (GkdSecretObjects *self,
+                                                                  const gchar *collection_path);
+
+void                gkd_secret_objects_unregister_collection     (GkdSecretObjects *self,
+                                                                  const gchar *collection_path);
 
 #endif /* __GKD_SECRET_OBJECTS_H__ */

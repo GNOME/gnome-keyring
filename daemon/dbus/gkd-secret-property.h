@@ -25,25 +25,23 @@
 
 #include <gck/gck.h>
 
-#include <dbus/dbus.h>
+#include <gio/gio.h>
 
 gboolean               gkd_secret_property_get_type               (const gchar *property,
                                                                    CK_ATTRIBUTE_TYPE *type);
 
-gboolean               gkd_secret_property_append_variant         (DBusMessageIter *iter,
-                                                                   const GckAttribute *attr);
+GVariant *             gkd_secret_property_append_variant         (const GckAttribute *attr);
 
-gboolean               gkd_secret_property_append_all             (DBusMessageIter *array,
-                                                                   GckAttributes *attrs);
+GVariant *             gkd_secret_property_append_all             (GckAttributes *attrs);
 
-gboolean               gkd_secret_property_parse_variant          (DBusMessageIter *iter,
+gboolean               gkd_secret_property_parse_variant          (GVariant *variant,
                                                                    const gchar *property,
                                                                    GckBuilder *builder);
 
-gboolean               gkd_secret_property_parse_fields           (DBusMessageIter *iter,
+gboolean               gkd_secret_property_parse_fields           (GVariant *variant,
                                                                    GckBuilder *builder);
 
-gboolean               gkd_secret_property_parse_all              (DBusMessageIter *array,
+gboolean               gkd_secret_property_parse_all              (GVariant *variant,
                                                                    const gchar *interface,
                                                                    GckBuilder *builder);
 

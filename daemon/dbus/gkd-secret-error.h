@@ -25,15 +25,27 @@
 
 #include <glib.h>
 
-#include <dbus/dbus.h>
+#include <gio/gio.h>
 
-DBusMessage *     gkd_secret_error_no_such_object             (DBusMessage *message);
+enum _GkdSecretDaemonError {
+  GKD_SECRET_DAEMON_ERROR_DENIED
+};
 
-DBusMessage *     gkd_secret_propagate_error                  (DBusMessage *message,
+enum _GkdSecretError {
+  GKD_SECRET_ERROR_ALREADY_EXISTS,
+  GKD_SECRET_ERROR_IS_LOCKED,
+  GKD_SECRET_ERROR_NO_SESSION,
+  GKD_SECRET_ERROR_NO_SUCH_OBJECT
+};
+
+#define GKD_SECRET_DAEMON_ERROR gkd_secret_daemon_error_quark ()
+GQuark            gkd_secret_daemon_error_quark (void);
+
+#define GKD_SECRET_ERROR gkd_secret_error_quark ()
+GQuark            gkd_secret_error_quark (void);
+
+void              gkd_secret_propagate_error                  (GDBusMethodInvocation *invocation,
                                                                const gchar *description,
                                                                GError *error);
-
-DBusMessage *     gkd_secret_error_to_reply                   (DBusMessage *message,
-                                                               DBusError *derr);
 
 #endif /* __GKD_SECRET_ERROR_H__ */

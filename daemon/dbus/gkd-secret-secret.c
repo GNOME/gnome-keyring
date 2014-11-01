@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include "gkd-secret-dispatch.h"
+#include "gkd-secret-error.h"
 #include "gkd-secret-secret.h"
 #include "gkd-secret-service.h"
 #include "gkd-secret-session.h"
@@ -76,112 +77,74 @@ gkd_secret_secret_new_take_memory (GkdSecretSession *session,
 }
 
 GkdSecretSecret*
-gkd_secret_secret_parse (GkdSecretService *service, DBusMessage *message,
-                         DBusMessageIter *iter, DBusError *derr)
+gkd_secret_secret_parse (GkdSecretService *service,
+                         const char *sender,
+                         GVariant *variant,
+                         GError **error)
 {
-	GkdSecretSecret *secret;
+	GkdSecretSecret *secret = NULL;
 	GkdSecretSession *session;
-	DBusMessageIter struc, array;
-	void *parameter, *value;
-	int n_value, n_parameter;
-	char *path, *content_type;
+	const char *parameter, *value, *path, *content_type;
+        gsize n_parameter, n_value;
+        GVariant *parameter_variant, *value_variant;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (service), NULL);
-	g_return_val_if_fail (message, NULL);
-	g_return_val_if_fail (iter, NULL);
+	g_return_val_if_fail (variant, NULL);
+	g_return_val_if_fail (sender, NULL);
 
-	g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRUCT, NULL);
-	dbus_message_iter_recurse (iter, &struc);
+        g_variant_get (variant, "(&o^&ay^&ay&s)", &path, NULL, NULL, &content_type);
 
-	/* Get the path */
-	if (dbus_message_iter_get_arg_type (&struc) != DBUS_TYPE_OBJECT_PATH) {
-		dbus_set_error (derr, DBUS_ERROR_INVALID_ARGS, "Invalid secret argument");
-		return NULL;
-	}
-	dbus_message_iter_get_basic (&struc, &path);
+        /* parameter */
+        parameter_variant = g_variant_get_child_value (variant, 1);
+        parameter = g_variant_get_fixed_array (parameter_variant, &n_parameter, sizeof (guint8));
 
-	/* Get the parameter */
-	if (!dbus_message_iter_next (&struc) ||
-	    dbus_message_iter_get_arg_type (&struc) != DBUS_TYPE_ARRAY ||
-	    dbus_message_iter_get_element_type(&struc) != DBUS_TYPE_BYTE) {
-		dbus_set_error (derr, DBUS_ERROR_INVALID_ARGS, "Invalid secret argument");
-		return NULL;
-	}
-	dbus_message_iter_recurse (&struc, &array);
-	dbus_message_iter_get_fixed_array (&array, &parameter, &n_parameter);
-
-	/* Get the value */
-	if (!dbus_message_iter_next (&struc) ||
-	    dbus_message_iter_get_arg_type (&struc) != DBUS_TYPE_ARRAY ||
-	    dbus_message_iter_get_element_type(&struc) != DBUS_TYPE_BYTE) {
-		dbus_set_error (derr, DBUS_ERROR_INVALID_ARGS, "Invalid secret argument");
-		return NULL;
-	}
-	dbus_message_iter_recurse (&struc, &array);
-	dbus_message_iter_get_fixed_array (&array, &value, &n_value);
-
-	/*
-	 * TODO: We currently don't do anythinrg with the content type, because
-	 * we have nowhere to store it.
-	 */
-	if (!dbus_message_iter_next (&struc) ||
-	    dbus_message_iter_get_arg_type (&struc) != DBUS_TYPE_STRING) {
-		dbus_set_error (derr, DBUS_ERROR_INVALID_ARGS, "Invalid content type argument");
-		return NULL;
-	}
-	dbus_message_iter_get_basic (&struc, &content_type);
+        /* value */
+        value_variant = g_variant_get_child_value (variant, 2);
+        value = g_variant_get_fixed_array (value_variant, &n_value, sizeof (guint8));
 
 	/* Try to lookup the session */
-	session = gkd_secret_service_lookup_session (service, path,
-	                                             dbus_message_get_sender (message));
-
+	session = gkd_secret_service_lookup_session (service, path, sender);
 	if (session == NULL) {
-		dbus_set_error (derr, SECRET_ERROR_NO_SESSION,
-		                "The session wrapping the secret does not exist");
-		return NULL;
+		g_set_error_literal (error, GKD_SECRET_ERROR,
+                                     GKD_SECRET_ERROR_NO_SESSION,
+				     "The session wrapping the secret does not exist");
+		goto out;
 	}
 
 	secret = g_slice_new0 (GkdSecretSecret);
 	secret->session = g_object_ref (session);
-	secret->parameter = parameter;
+	secret->parameter = g_strndup (parameter, n_parameter);
 	secret->n_parameter = n_parameter;
-	secret->value = value;
+	secret->value = g_strndup (value, n_value);
 	secret->n_value = n_value;
 
-	/* All the memory is owned by the message */
-	secret->destroy_data = dbus_message_ref (message);
-	secret->destroy_func = (GDestroyNotify)dbus_message_unref;
+ out:
+        g_variant_unref (parameter_variant);
+        g_variant_unref (value_variant);
+
 	return secret;
 }
 
-void
-gkd_secret_secret_append (GkdSecretSecret *secret, DBusMessageIter *iter)
+GVariant *
+gkd_secret_secret_append (GkdSecretSecret *secret)
 {
+	GVariantBuilder builder;
 	const gchar *content_type = "text/plain";
-	DBusMessageIter struc, array;
 	const gchar *path;
-	int length;
+	GVariant *parameter, *value;
 
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (secret->session));
-	g_return_if_fail (path);
+	g_return_val_if_fail (path, NULL);
 
-	dbus_message_iter_open_container (iter, DBUS_TYPE_STRUCT, NULL, &struc);
-	dbus_message_iter_append_basic (&struc, DBUS_TYPE_OBJECT_PATH, &path);
-	dbus_message_iter_open_container (&struc, DBUS_TYPE_ARRAY, "y", &array);
-	length = secret->n_parameter;
-	dbus_message_iter_append_fixed_array (&array, DBUS_TYPE_BYTE, &(secret->parameter), length);
-	dbus_message_iter_close_container (&struc, &array);
-	dbus_message_iter_open_container (&struc, DBUS_TYPE_ARRAY, "y", &array);
-	length = secret->n_value;
-	dbus_message_iter_append_fixed_array (&array, DBUS_TYPE_BYTE, &(secret->value), length);
-	dbus_message_iter_close_container (&struc, &array);
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("ay"));
+	g_variant_builder_add (&builder, "y", secret->parameter);
+	parameter = g_variant_builder_end (&builder);
 
-	/*
-	 * TODO: We're just putting a place holder value here for now.
-	 */
-	dbus_message_iter_append_basic (&struc, DBUS_TYPE_STRING, &content_type);
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("ay"));
+	g_variant_builder_add (&builder, "y", secret->value);
+	value = g_variant_builder_end (&builder);
 
-	dbus_message_iter_close_container (iter, &struc);
+	return g_variant_new ("(o@ay@ays)", path, parameter, value, content_type);
 }
 
 void
