@@ -14,8 +14,6 @@ GLIB_MAX=GLIB_VERSION_2_38
 GCK_REQ=3.3.4
 GCR_REQ=3.5.3
 
-DBUS_REQ=1.1.1
-
 GCRYPT_REQ=1.2.2
 GCRYPT_LIBVER=1
 
@@ -228,11 +226,6 @@ AC_DEFINE(GCR_API_SUBJECT_TO_CHANGE, 1, [Nod nod])
 # --------------------------------------------------------------------
 # DBus Checks
 #
-
-PKG_CHECK_MODULES([DBUS], dbus-1 >= $DBUS_REQ)
-
-DAEMON_CFLAGS="$DAEMON_CFLAGS $DBUS_CFLAGS"
-DAEMON_LIBS="$DAEMON_LIBS $DBUS_LIBS"
 
 AC_ARG_WITH(dbus-services,
 		  [AC_HELP_STRING([--with-dbus-services=<dir>],
