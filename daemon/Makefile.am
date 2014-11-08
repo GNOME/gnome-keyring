@@ -26,7 +26,6 @@ gnome_keyring_daemon_LDADD = \
 	libgkm-gnome2-store.la \
 	libgkm-xdg-store.la \
 	libgkm.la \
-	libegg-dbus.la \
 	$(DAEMON_LIBS)
 
 service_in_files = \

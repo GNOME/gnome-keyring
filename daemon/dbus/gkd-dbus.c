@@ -30,7 +30,6 @@
 #include "daemon/gkd-util.h"
 
 #include "egg/egg-cleanup.h"
-#include "egg/egg-dbus.h"
 
 #include <glib.h>
 #include <gio/gio.h>

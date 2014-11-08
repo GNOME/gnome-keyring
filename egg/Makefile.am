@@ -4,7 +4,6 @@ noinst_LTLIBRARIES += \
 	libegg-asn1x.la \
 	libegg-buffer.la \
 	libegg-creds.la \
-	libegg-dbus.la \
 	libegg-secure.la \
 	libegg-prompt.la \
 	libegg-hex.la \
@@ -46,7 +45,7 @@ ASN1_FILES += \
 	egg/pk.asn \
 	egg/pkix.asn \
 	$(NULL)
-	
+
 # --------------------------------------------------------------------
 # COMMON STUFF COMPILED INTO SMALLER COMPONENTS
 
@@ -66,17 +65,6 @@ libegg_buffer_la_SOURCES = \
 
 libegg_creds_la_SOURCES = \
 	egg/egg-unix-credentials.c egg/egg-unix-credentials.h
-
-libegg_dbus_la_SOURCES = \
-	egg/egg-dbus.c egg/egg-dbus.h
-
-libegg_dbus_la_CFLAGS = \
-	$(DBUS_CFLAGS) \
-	$(GLIB_CFLAGS)
-
-libegg_dbus_la_LIBADD = \
-	$(DBUS_LIBS) \
-	$(GLIB_LIBS)
 
 libegg_prompt_la_SOURCES = \
 	egg/egg-dh.c egg/egg-dh.h \
