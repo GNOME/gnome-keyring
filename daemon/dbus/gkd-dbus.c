@@ -134,6 +134,7 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 	GVariant *acquire_variant;
 	guint res;
 	GError *error = NULL;
+	GkdOrgGnomeKeyringDaemon *skeleton;
 
 	g_assert (acquired);
 
@@ -142,8 +143,7 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 
 	/* First register the object */
 	if (!object_registered) {
-		GError *error = NULL;
-		GkdOrgGnomeKeyringDaemon *skeleton = gkd_org_gnome_keyring_daemon_skeleton_new ();
+		skeleton = gkd_org_gnome_keyring_daemon_skeleton_new ();
 
 		g_signal_connect (skeleton, "handle-get-control-directory",
 				  G_CALLBACK (handle_get_control_directory), NULL);
@@ -158,7 +158,7 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 			egg_cleanup_register (cleanup_singleton, skeleton);
 		} else {
 			g_message ("couldn't register dbus object path: %s", error->message);
-			g_error_free (error);
+			g_clear_error (&error);
 		}
 	}
 
