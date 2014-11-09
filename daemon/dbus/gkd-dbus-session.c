@@ -167,10 +167,10 @@ gkd_dbus_session_init (GDBusConnection *conn)
 	 * Now we register for DBus signals on that client session path
 	 * These are fired specifically for us.
 	 */
-	g_dbus_connection_signal_subscribe (conn,
-					    NULL,
-					    "org.gnome.SessionManager.ClientPrivate", NULL,
-					    client_session_path, NULL,
-					    G_DBUS_SIGNAL_FLAGS_NONE,
-					    signal_filter, NULL, NULL);
+	client_session_signal_id = g_dbus_connection_signal_subscribe (conn,
+								       NULL,
+								       "org.gnome.SessionManager.ClientPrivate", NULL,
+								       client_session_path, NULL,
+								       G_DBUS_SIGNAL_FLAGS_NONE,
+								       signal_filter, NULL, NULL);
 }
