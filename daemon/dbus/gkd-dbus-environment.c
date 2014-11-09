@@ -44,8 +44,9 @@ on_setenv_reply (GObject *source,
 		 gpointer user_data)
 {
 	GError *error = NULL;
+	GVariant *res;
 
-	g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
+	res = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
 
 	if (error != NULL) {
 		gchar *dbus_error;
@@ -58,6 +59,8 @@ on_setenv_reply (GObject *source,
 		g_error_free (error);
 		g_free (dbus_error);
 	}
+
+	g_clear_pointer (&res, g_variant_unref);
 }
 
 static void
