@@ -127,6 +127,7 @@ struct _GkdSecretService {
 	GkdOrgFreedesktopSecretService *skeleton;
 	GkdOrgGnomeKeyringInternalUnsupportedGuiltRiddenInterface *internal_skeleton;
 	guint name_owner_id;
+	guint filter_id;
 
 	GHashTable *clients;
 	GkdSecretObjects *objects;
@@ -137,8 +138,6 @@ struct _GkdSecretService {
 
 typedef struct _ServiceClient {
 	gchar *caller_peer;
-	gchar *caller_exec;
-	pid_t caller_pid;
 	CK_G_APPLICATION app;
 	GckSession *pkcs11_session;
 	GHashTable *dispatch;
@@ -263,7 +262,6 @@ free_client (gpointer data)
 
 	/* Info about our client */
 	g_free (client->caller_peer);
-	g_free (client->caller_exec);
 
 	/* The session we use for accessing as our client */
 	if (client->pkcs11_session) {
@@ -283,64 +281,80 @@ static void
 initialize_service_client (GkdSecretService *self,
 			   const gchar *caller)
 {
-	GError *error = NULL;
-	guint32 caller_pid;
-	GVariant *variant;
 	ServiceClient *client;
 
 	g_assert (GKD_SECRET_IS_SERVICE (self));
 	g_assert (caller);
 
-	variant = g_dbus_connection_call_sync (self->connection,
-					       "org.freedesktop.DBus",
-					       "/org/freedesktop/DBus",
-					       "org.freedesktop.DBus",
-					       "GetConnectionUnixProcessID",
-					       g_variant_new ("(s)", caller),
-					       G_VARIANT_TYPE ("(u)"),
-					       G_DBUS_CALL_FLAGS_NONE,
-					       2000,
-					       NULL, &error);
+	/* Initialize the client object */
+	client = g_new0 (ServiceClient, 1);
+	client->caller_peer = g_strdup (caller);
+	client->app.applicationData = client;
+	client->dispatch = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, dispose_and_unref);
 
-	/* An error returned from GetConnectionUnixProcessID */
-	if (error != NULL) {
-		g_message ("couldn't get the caller's unix process id: %s", error->message);
-		caller_pid = 0;
-		g_error_free (error);
+	g_hash_table_replace (self->clients, client->caller_peer, client);
 
-	/* A PID was returned from GetConnectionUnixProcessID */
-	} else {
-		g_variant_get (variant, "(u)", &caller_pid);
-		g_variant_unref (variant);
-
-		/* Initialize the client object */
-		client = g_new0 (ServiceClient, 1);
-		client->caller_peer = g_strdup (caller);
-		client->caller_pid = caller_pid;
-		if (caller_pid != 0)
-			client->caller_exec = egg_unix_credentials_executable (caller_pid);
-		client->app.applicationData = client;
-		client->dispatch = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, dispose_and_unref);
-
-		g_hash_table_replace (self->clients, client->caller_peer, client);
-
-		/* Update default collection each time someone connects */
-		update_default (self, TRUE);
-	}
+	/* Update default collection each time someone connects */
+	update_default (self, TRUE);
 }
 
 static void
 gkd_secret_service_ensure_client (GkdSecretService *self,
-                                  GDBusMethodInvocation *invocation)
+				  const gchar *caller)
 {
 	ServiceClient *client;
-        const gchar *caller;
 
-        caller = g_dbus_method_invocation_get_sender (invocation);
 	client = g_hash_table_lookup (self->clients, caller);
 	if (client == NULL) {
 		initialize_service_client (self, caller);
 	}
+}
+
+typedef struct {
+	GkdSecretService *service;
+	GDBusMessage *message;
+} MessageFilterData;
+
+static gboolean
+ensure_client_for_sender (gpointer user_data)
+{
+	MessageFilterData *data = user_data;
+	const gchar *sender;
+
+	/* Ensure clients for our incoming connections */
+	sender = g_dbus_message_get_sender (data->message);
+	gkd_secret_service_ensure_client (data->service, sender);
+
+	g_clear_object (&data->service);
+	g_clear_object (&data->message);
+	g_slice_free (MessageFilterData, data);
+
+	return FALSE;
+}
+
+static GDBusMessage *
+service_message_filter (GDBusConnection *connection,
+                        GDBusMessage *message,
+                        gboolean incoming,
+                        gpointer user_data)
+{
+	GkdSecretService *self = user_data;
+	MessageFilterData *data;
+
+	if (!incoming)
+		return message;
+
+	data = g_slice_new0 (MessageFilterData);
+	data->service = g_object_ref (self);
+	data->message = g_object_ref (message);
+
+	/* We use G_PRIORITY_HIGH to make sure this timeout is
+	 * scheduled before the actual method call.
+	 */
+	g_idle_add_full (G_PRIORITY_HIGH, ensure_client_for_sender,
+			 data, NULL);
+
+	return message;
 }
 
 /* -----------------------------------------------------------------------------
@@ -361,7 +375,6 @@ service_method_open_session (GkdOrgFreedesktopSecretService *skeleton,
 	const gchar *caller;
         GVariant *input_payload;
 
-        gkd_secret_service_ensure_client (self, invocation);
 	caller = g_dbus_method_invocation_get_sender (invocation);
 
 	/* Now we can create a session with this information */
@@ -391,7 +404,6 @@ service_method_search_items (GkdOrgFreedesktopSecretService *skeleton,
 			     GVariant *attributes,
 			     GkdSecretService *self)
 {
-	gkd_secret_service_ensure_client (self, invocation);
 	return gkd_secret_objects_handle_search_items (self->objects, invocation,
 						       attributes, NULL, TRUE);
 }
@@ -403,7 +415,6 @@ service_method_get_secrets (GkdOrgFreedesktopSecretService *skeleton,
 			    gchar *session,
 			    GkdSecretService *self)
 {
-	gkd_secret_service_ensure_client (self, invocation);
 	return gkd_secret_objects_handle_get_secrets (self->objects, invocation,
 						      (const gchar **) items, session);
 }
@@ -420,8 +431,6 @@ service_method_create_collection (GkdOrgFreedesktopSecretService *skeleton,
 	GkdSecretCreate *create;
 	const gchar *path;
 	const char *caller;
-
-	gkd_secret_service_ensure_client (self, invocation);
 
 	if (!gkd_secret_property_parse_all (properties, SECRET_COLLECTION_INTERFACE, &builder)) {
 		gck_builder_clear (&builder);
@@ -470,8 +479,6 @@ service_method_lock_service (GkdOrgFreedesktopSecretService *skeleton,
 	GckSession *session;
 	const char *caller;
 
-	gkd_secret_service_ensure_client (self, invocation);
-
 	caller = g_dbus_method_invocation_get_sender (invocation);
 	session = gkd_secret_service_get_pkcs11_session (self, caller);
 	g_return_val_if_fail (session != NULL, FALSE);
@@ -495,8 +502,6 @@ service_method_unlock (GkdOrgFreedesktopSecretService *skeleton,
 	const gchar *path;
 	int i, n_unlocked;
 	gchar **unlocked;
-
-	gkd_secret_service_ensure_client (self, invocation);
 
 	caller = g_dbus_method_invocation_get_sender (invocation);
 	unlock = gkd_secret_unlock_new (self, caller, NULL);
@@ -535,8 +540,6 @@ service_method_lock (GkdOrgFreedesktopSecretService *skeleton,
 	int i;
 	char **locked;
 	GPtrArray *array;
-
-	gkd_secret_service_ensure_client (self, invocation);
 
 	caller = g_dbus_method_invocation_get_sender (invocation);
 	array = g_ptr_array_new ();
@@ -601,7 +604,6 @@ service_method_change_lock (GkdOrgFreedesktopSecretService *skeleton,
 			    gchar *collection_path,
 			    GkdSecretService *self)
 {
-	gkd_secret_service_ensure_client (self, invocation);
 	return method_change_lock_internal (self, invocation, collection_path);
 }
 
@@ -611,7 +613,6 @@ service_method_change_with_prompt (GkdOrgGnomeKeyringInternalUnsupportedGuiltRid
 				   gchar *collection_path,
 				   GkdSecretService *self)
 {
-	gkd_secret_service_ensure_client (self, invocation);
 	return method_change_lock_internal (self, invocation, collection_path);
 }
 
@@ -624,8 +625,6 @@ service_method_read_alias (GkdOrgFreedesktopSecretService *skeleton,
 	gchar *path = NULL;
 	const gchar *identifier;
 	GckObject  *collection = NULL;
-
-	gkd_secret_service_ensure_client (self, invocation);
 
 	identifier = gkd_secret_service_get_alias (self, alias);
 	if (identifier)
@@ -661,8 +660,6 @@ service_method_set_alias (GkdOrgFreedesktopSecretService *skeleton,
 {
 	GckObject *collection;
 	gchar *identifier;
-
-	gkd_secret_service_ensure_client (self, invocation);
 
 	if (!g_str_equal (alias, "default")) {
 		g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
@@ -721,8 +718,6 @@ service_method_create_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
 	gchar *path;
 	const gchar *caller;
 
-	gkd_secret_service_ensure_client (self, invocation);
-
 	if (!gkd_secret_property_parse_all (attributes, SECRET_COLLECTION_INTERFACE, &builder)) {
 		gck_builder_clear (&builder);
 		g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
@@ -775,8 +770,6 @@ service_method_change_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
 	GckObject *collection;
 	GError *error = NULL;
 	const gchar *sender;
-
-	gkd_secret_service_ensure_client (self, invocation);
 
 	sender = g_dbus_method_invocation_get_sender (invocation);
 
@@ -835,8 +828,6 @@ service_method_unlock_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
 	GError *error = NULL;
 	GckObject *collection;
 	const gchar *sender;
-
-	gkd_secret_service_ensure_client (self, invocation);
 
 	sender = g_dbus_method_invocation_get_sender (invocation);
 
@@ -996,6 +987,10 @@ gkd_secret_service_constructor (GType type,
 								  service_name_owner_changed,
 								  self, NULL);
 
+        self->filter_id = g_dbus_connection_add_filter (self->connection,
+                                                        service_message_filter,
+                                                        self, NULL);
+
         gkd_secret_service_init_collections (self);
 
 	return G_OBJECT (self);
@@ -1016,6 +1011,11 @@ gkd_secret_service_dispose (GObject *obj)
 	if (self->name_owner_id) {
 		g_dbus_connection_signal_unsubscribe (self->connection, self->name_owner_id);
 		self->name_owner_id = 0;
+	}
+
+	if (self->filter_id) {
+		g_dbus_connection_remove_filter (self->connection, self->filter_id);
+		self->filter_id = 0;
 	}
 
 	/* Closes all the clients */
