@@ -33,6 +33,7 @@ run-tests
 *-marshal.[ch]
 .libs
 .deps
+.dirstamp
 .anjuta*
 *.gcov
 *.gcno
@@ -118,6 +119,12 @@ depcomp
 
 /daemon/dbus/tests/test-secret-*
 !/daemon/dbus/tests/test-secret-*.c
+/daemon/dbus/gkd-daemon-generated.c
+/daemon/dbus/gkd-daemon-generated.h
+/daemon/dbus/gkd-internal-generated.c
+/daemon/dbus/gkd-internal-generated.h
+/daemon/dbus/gkd-secrets-generated.c
+/daemon/dbus/gkd-secrets-generated.h
 
 /pkcs11/gkm/tests/test-attributes
 /pkcs11/gkm/tests/test-certificate
