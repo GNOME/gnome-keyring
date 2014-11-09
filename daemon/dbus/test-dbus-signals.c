@@ -47,6 +47,7 @@ typedef struct {
 	TestService service;
 	guint signal_id;
 	GList *received_signals;
+	gboolean expecting_properties;
 } Test;
 
 static void
@@ -72,6 +73,12 @@ on_signal_received (GDBusConnection *connection,
 	sig->name = g_strdup (signal_name);
 	sig->parameters = g_variant_ref (parameters);
 	test->received_signals = g_list_prepend (test->received_signals, sig);
+
+	if (test->expecting_properties &&
+	    g_str_equal ("org.freedesktop.DBus.Properties", interface_name) &&
+	    g_str_equal ("PropertiesChanged", signal_name)) {
+		egg_test_wait_stop ();
+	}
 }
 
 static void
@@ -130,11 +137,11 @@ expect_signal_with_path (Test *test,
 	            signal_name, signal_iface, signal_path);
 }
 
-static void
-expect_property_changed (Test *test,
-                         const gchar *signal_path,
-                         const gchar *property_iface,
-                         const gchar *property_name)
+static gboolean
+has_property_changed (Test *test,
+		      const gchar *signal_path,
+		      const gchar *property_iface,
+		      const gchar *property_name)
 {
 	ReceivedSignal *sig;
 	const gchar *iface;
@@ -166,12 +173,37 @@ expect_property_changed (Test *test,
 			g_variant_unref (invalidated);
 
 			if (value != NULL)
-				return;
+				return TRUE;
 		}
 	}
 
-	g_critical ("didn't receive PropertiesChanged for %s property on interface %s at object %s",
-	            property_name, property_iface, signal_path);
+	return FALSE;
+}
+
+static void
+expect_property_changed (Test *test,
+                         const gchar *signal_path,
+                         const gchar *property_iface,
+                         const gchar *property_name)
+{
+	/* GDBus queues property change signal emissions in an idle,
+	 * so we cannot rely on PropertiesChanged to have arrived by
+	 * the time we have returned from the method call - but we cannot
+	 * rely on it *not* having arrived either!
+	 * If the property notification hasn't been received, we set up
+	 * ourselves to wake up at every property change.
+	 * Eventually, if we don't receive any that match our arguments,
+	 * we're going to fail.
+	 */
+	while (!has_property_changed (test, signal_path, property_iface, property_name)) {
+		test->expecting_properties = TRUE;
+		egg_test_wait_until (2000);
+		test->expecting_properties = FALSE;
+	}
+
+	if (!has_property_changed (test, signal_path, property_iface, property_name))
+		g_critical ("didn't receive PropertiesChanged for %s property on interface %s at object %s",
+			    property_name, property_iface, signal_path);
 }
 
 static void
