@@ -88,7 +88,7 @@ gkd_secret_propagate_error (GDBusMethodInvocation *invocation,
 		g_dbus_method_invocation_return_error_literal (invocation,
                                                                G_DBUS_ERROR,
                                                                G_DBUS_ERROR_FAILED,
-                                                               "Couldn't create new collection");
+							       description);
 	}
 
 	g_error_free (error);
