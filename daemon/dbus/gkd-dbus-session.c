@@ -43,31 +43,36 @@ send_end_session_response (GDBusConnection *conn)
 	const gchar *reason = "";
 	gboolean is_ok = TRUE;
 	GError *error = NULL;
+	GVariant *res;
 
 	g_return_if_fail (client_session_path);
 
-	g_dbus_connection_call_sync (conn,
-				     SERVICE_SESSION_MANAGER,
-				     client_session_path,
-				     IFACE_SESSION_PRIVATE,
-				     "EndSessionResponse",
-				     g_variant_new ("(bs)",
-						    is_ok,
-						    reason),
-				     NULL,
-				     G_DBUS_CALL_FLAGS_NONE, 1000,
-				     NULL, &error);
+	res = g_dbus_connection_call_sync (conn,
+					   SERVICE_SESSION_MANAGER,
+					   client_session_path,
+					   IFACE_SESSION_PRIVATE,
+					   "EndSessionResponse",
+					   g_variant_new ("(bs)",
+							  is_ok,
+							  reason),
+					   NULL,
+					   G_DBUS_CALL_FLAGS_NONE, 1000,
+					   NULL, &error);
 
 	if (error != NULL) {
 		g_message ("dbus failure responding to ending session: %s", error->message);
 		g_error_free (error);
 		return;
 	}
+
+	g_variant_unref (res);
 }
 
 static void
 unregister_daemon_in_session (GDBusConnection *conn)
 {
+	GVariant *res;
+
 	if (client_session_signal_id) {
 		g_dbus_connection_signal_unsubscribe (conn, client_session_signal_id);
 		client_session_signal_id = 0;
@@ -76,17 +81,19 @@ unregister_daemon_in_session (GDBusConnection *conn)
 	if (!client_session_path)
 		return;
 
-	g_dbus_connection_call_sync (conn,
-				     SERVICE_SESSION_MANAGER,
-				     PATH_SESSION_MANAGER,
-				     IFACE_SESSION_MANAGER,
-				     "UnregisterClient",
-				     g_variant_new ("(o)", client_session_path),
-				     NULL, G_DBUS_CALL_FLAGS_NONE,
-				     -1, NULL, NULL);
+	res = g_dbus_connection_call_sync (conn,
+					   SERVICE_SESSION_MANAGER,
+					   PATH_SESSION_MANAGER,
+					   IFACE_SESSION_MANAGER,
+					   "UnregisterClient",
+					   g_variant_new ("(o)", client_session_path),
+					   NULL, G_DBUS_CALL_FLAGS_NONE,
+					   -1, NULL, NULL);
 
 	g_free (client_session_path);
 	client_session_path = NULL;
+
+	g_clear_pointer (&res, g_variant_unref);
 }
 
 static void

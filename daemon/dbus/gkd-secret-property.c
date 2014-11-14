@@ -457,14 +457,18 @@ gkd_secret_property_parse_all (GVariant *array,
 
         g_variant_iter_init (&iter, array);
 
-	while (g_variant_iter_loop (&iter, "{sv}", &name, &variant)) {
+	while (g_variant_iter_next (&iter, "{&sv}", &name, &variant)) {
 		/* Property interface.name */
 		if (!property_to_attribute (name, interface, &attr_type, &data_type))
 			return FALSE;
 
 		/* Property value */
-		if (!iter_get_variant (variant, data_type, attr_type, builder))
+		if (!iter_get_variant (variant, data_type, attr_type, builder)) {
+			g_variant_unref (variant);
 			return FALSE;
+		}
+
+		g_variant_unref (variant);
 	}
 
 	return TRUE;
