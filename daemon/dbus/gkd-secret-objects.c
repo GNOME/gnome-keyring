@@ -128,7 +128,7 @@ object_property_set (GkdSecretObjects *objects,
 	/* What type of property is it? */
 	if (!gkd_secret_property_get_type (prop_name, &attr_type)) {
 		g_set_error (error_out, G_DBUS_ERROR,
-			     G_DBUS_ERROR_FAILED,
+			     G_DBUS_ERROR_UNKNOWN_PROPERTY,
 			     "Object does not have the '%s' property",
 			     prop_name);
 		return FALSE;
@@ -138,7 +138,7 @@ object_property_set (GkdSecretObjects *objects,
 	if (!gkd_secret_property_parse_variant (value, prop_name, &builder)) {
 		gck_builder_clear (&builder);
                 g_set_error (error_out, G_DBUS_ERROR,
-                             G_DBUS_ERROR_FAILED,
+                             G_DBUS_ERROR_INVALID_ARGS,
                              "The property type or value was invalid: %s",
                              prop_name);
 		return FALSE;
@@ -177,7 +177,7 @@ object_property_get (GkdSecretObjects *objects,
 
 	if (!gkd_secret_property_get_type (prop_name, &attr.type)) {
 		g_set_error (error_out, G_DBUS_ERROR,
-			     G_DBUS_ERROR_FAILED,
+			     G_DBUS_ERROR_UNKNOWN_PROPERTY,
 			     "Object does not have the '%s' property",
 			     prop_name);
 		return NULL;
