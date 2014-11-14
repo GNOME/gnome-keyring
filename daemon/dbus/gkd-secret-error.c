@@ -68,6 +68,8 @@ gkd_secret_propagate_error (GDBusMethodInvocation *invocation,
                             const gchar *description,
                             GError *error)
 {
+	g_return_if_fail (error != NULL);
+
 	if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN) ||
 	    g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 		g_dbus_method_invocation_return_error_literal (invocation,
