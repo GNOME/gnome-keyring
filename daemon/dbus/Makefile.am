@@ -3,7 +3,7 @@ noinst_LTLIBRARIES += libgkd-dbus.la
 
 daemon/dbus/gkd-secrets-generated.h: daemon/dbus/org.freedesktop.Secrets.xml Makefile.am
 	$(AM_V_GEN) gdbus-codegen --interface-prefix org.freedesktop.Secrets. \
-	--generate-c-code $(srcdir)/daemon/dbus/gkd-secrets-generated \
+	--generate-c-code daemon/dbus/gkd-secrets-generated \
 	--c-namespace Gkd \
 	$(srcdir)/daemon/dbus/org.freedesktop.Secrets.xml
 daemon/dbus/gkd-secrets-generated.c: daemon/dbus/gkd-secrets-generated.h
@@ -11,7 +11,7 @@ daemon/dbus/gkd-secrets-generated.c: daemon/dbus/gkd-secrets-generated.h
 
 daemon/dbus/gkd-daemon-generated.h: daemon/dbus/org.gnome.keyring.Daemon.xml Makefile.am
 	$(AM_V_GEN) gdbus-codegen --interface-prefix org.gnome.keyring.Daemon. \
-	--generate-c-code $(srcdir)/daemon/dbus/gkd-daemon-generated \
+	--generate-c-code daemon/dbus/gkd-daemon-generated \
 	--c-namespace Gkd \
 	$(srcdir)/daemon/dbus/org.gnome.keyring.Daemon.xml
 daemon/dbus/gkd-daemon-generated.c: daemon/dbus/gkd-daemon-generated.h
@@ -19,7 +19,7 @@ daemon/dbus/gkd-daemon-generated.c: daemon/dbus/gkd-daemon-generated.h
 
 daemon/dbus/gkd-internal-generated.h: daemon/dbus/org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.xml Makefile.am
 	$(AM_V_GEN) gdbus-codegen --interface-prefix org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface. \
-	--generate-c-code $(srcdir)/daemon/dbus/gkd-internal-generated \
+	--generate-c-code daemon/dbus/gkd-internal-generated \
 	--c-namespace Gkd \
 	$(srcdir)/daemon/dbus/org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.xml
 daemon/dbus/gkd-internal-generated.c: daemon/dbus/gkd-internal-generated.h
