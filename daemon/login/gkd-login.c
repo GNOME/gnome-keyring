@@ -611,7 +611,7 @@ gkd_login_clear_password (GckSession *session,
 
 	va_start (va, field);
 	if (!fields_to_attribute (&builder, field, va))
-		g_return_val_if_reached (FALSE);
+		g_return_if_reached ();
 	va_end (va);
 
 	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
