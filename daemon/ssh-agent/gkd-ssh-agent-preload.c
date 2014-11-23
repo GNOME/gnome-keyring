@@ -204,6 +204,23 @@ gkd_ssh_agent_preload_comment (GBytes *key)
 	return comment;
 }
 
+gchar *
+gkd_ssh_agent_preload_path (GBytes *key)
+{
+	gchar *path = NULL;
+	Preload *preload;
+
+	preload_lock_and_update ();
+
+	preload = g_hash_table_lookup (preloads_by_key, key);
+	if (preload)
+		path = g_strdup (preload->filename);
+
+	preload_unlock ();
+
+	return path;
+}
+
 void
 gkd_ssh_agent_preload_clear (GBytes *key)
 {

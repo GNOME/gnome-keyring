@@ -26,6 +26,7 @@
 #include "gkd-ssh-agent-client.h"
 #include "gkd-ssh-agent-preload.h"
 #include "gkd-ssh-agent-private.h"
+#include "gkd-ssh-interaction.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-secure-memory.h"
@@ -157,24 +158,10 @@ op_request_identities (GkdSshAgentCall *call)
 }
 
 static void
-on_ssh_add_prompting (GcrSystemInteraction *interaction,
-                      GcrPrompt *prompt,
-                      gint prompt_type,
-                      gpointer user_data)
-{
-	if (prompt_type == 1) {
-		choice = NULL;
-		if (gkd_login_available ())
-			choice = _("Automatically unlock this key, whenever I'm logged in");
-		gcr_prompt_set_choice_label (prompt, choice);
-	}
-}
-
-static void
 preload_key_if_necessary (gint ssh_agent,
                           GBytes *key)
 {
-	GcrPrompt *prompt;
+	GTlsInteraction *interaction;
 	GcrSshAskpass *askpass;
 	GError *error = NULL;
 	gchar *filename;
@@ -190,13 +177,12 @@ preload_key_if_necessary (gint ssh_agent,
 	if (!filename)
 		return;
 
-	interaction = gcr_system_interaction_new (_("Secure Shell Key"));
-	g_signal_connect (intercation, "prompting", G_CALLBACK (on_ssh_add_prompting), NULL);
+	interaction = gkd_ssh_interaction_new (key);
 	askpass = gcr_ssh_askpass_new (interaction);
 	g_object_unref (interaction);
 
 	if (!g_spawn_sync (NULL, argv, NULL, G_SPAWN_DEFAULT,
-	                   gcr_ssh_askpass_setup, askpass,
+	                   gcr_ssh_askpass_child_setup, askpass,
 	                   NULL, NULL, &status, &error)) {
 		g_warning ("cannot run %s: %s", argv[0], error->message);
 

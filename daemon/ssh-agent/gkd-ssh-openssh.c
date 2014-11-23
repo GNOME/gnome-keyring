@@ -1,10 +1,7 @@
 
-#include "gkm-ssh-openssh.h"
+#include "gkd-ssh-openssh.h"
 
-#include "gkm/gkm-data-asn1.h"
-#include "gkm/gkm-data-der.h"
-#include "gkm/gkm-data-types.h"
-
+#if 0
 #include "egg/egg-armor.h"
 #include "egg/egg-asn1x.h"
 #include "egg/egg-buffer.h"
@@ -407,3 +404,4 @@ gkm_ssh_openssh_digest_private_key (GBytes *data)
 	egg_armor_parse (data, digest_pem_block, &result);
 	return result;
 }
+#endif
