@@ -1,3 +1,9 @@
+Changes in version 3.15.90 are:
+ * Fix leaks [#738508]
+ * Refactoring
+ * Build fixes [#740190]
+ * Updated translations
+
 Changes in version 3.14.0 are:
  * Remove residual GTK+ usage
  * Updated translations
