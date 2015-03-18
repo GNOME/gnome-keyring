@@ -286,8 +286,8 @@ complete_write_state (GkmTransaction *transaction, GObject *object, gpointer unu
 	g_return_val_if_fail (GKM_IS_TRANSACTION (transaction), FALSE);
 	g_return_val_if_fail (self->transaction == transaction, FALSE);
 
-	/* Transaction succeeded, overwrite the old with the new */
 	if (!gkm_transaction_get_failed (transaction)) {
+		/* Transaction succeeded, overwrite the old with the new */
 
 		if (g_rename (self->write_path, self->filename) == -1) {
 			g_warning ("couldn't rename temporary store file: %s", self->write_path);
@@ -296,6 +296,10 @@ complete_write_state (GkmTransaction *transaction, GObject *object, gpointer unu
 			if (fstat (self->write_fd, &sb) >= 0)
 				self->last_mtime = sb.st_mtime;
 		}
+	} else {
+		/* Transaction failed, remove temporary file */
+		if (g_unlink (self->write_path) == -1)
+			g_warning ("couldn't delete temporary store file: %s", self->write_path);
 	}
 
 	/* read_fd is closed by complete_lock_file */
