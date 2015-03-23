@@ -227,7 +227,7 @@ egg_dn_read_part (GNode *asn, const gchar *match)
 			/* Does it match either the OID or the displayable? */
 			if (g_ascii_strcasecmp (g_quark_to_string (oid), match) != 0) {
 				name = egg_oid_get_name (oid);
-				if (!g_ascii_strcasecmp (name, match) == 0)
+				if (g_ascii_strcasecmp (name, match) == 0)
 					continue;
 			}
 

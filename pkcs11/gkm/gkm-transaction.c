@@ -628,7 +628,7 @@ gkm_transaction_unique_file (GkmTransaction *self, const gchar *directory,
 	g_return_val_if_fail (basename, NULL);
 	g_return_val_if_fail (!gkm_transaction_get_failed (self), NULL);
 
-	if (!g_mkdir_with_parents (directory, S_IRWXU) < 0) {
+	if (g_mkdir_with_parents (directory, S_IRWXU) < 0) {
 		g_warning ("couldn't create directory: %s: %s", directory, g_strerror (errno));
 		gkm_transaction_fail (self, CKR_DEVICE_ERROR);
 		return NULL;

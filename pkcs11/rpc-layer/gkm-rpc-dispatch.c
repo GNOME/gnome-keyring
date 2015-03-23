@@ -2087,7 +2087,7 @@ run_dispatch_loop (int sock)
 
 	assert (sock != -1);
 
-	if (!egg_unix_credentials_read (sock, &pid, &uid) < 0) {
+	if (egg_unix_credentials_read (sock, &pid, &uid) < 0) {
 		gkm_rpc_warn ("couldn't read socket credentials");
 		return;
 	}

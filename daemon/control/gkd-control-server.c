@@ -431,7 +431,7 @@ gkd_control_listen (void)
 		return FALSE;
 	}
 
-	if (!egg_unix_credentials_setup (sock) < 0) {
+	if (egg_unix_credentials_setup (sock) < 0) {
 		close (sock);
 		return FALSE;
 	}
