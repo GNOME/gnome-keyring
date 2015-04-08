@@ -312,8 +312,7 @@ remove_object (GkmSession *self, GkmTransaction *transaction, GkmObject *object)
 	g_object_ref (object);
 
 	gkm_object_expose_full (object, transaction, FALSE);
-	if (!g_hash_table_remove (self->pv->objects, object))
-		g_return_if_reached ();
+	g_hash_table_remove (self->pv->objects, object);
 	g_object_set (object, "store", NULL, NULL);
 
 	if (transaction)
