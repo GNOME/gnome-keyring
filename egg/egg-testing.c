@@ -285,7 +285,7 @@ egg_tests_create_scratch_directory (const gchar *file_to_copy,
 void
 egg_tests_remove_scratch_directory (const gchar *directory)
 {
-	gchar *argv[] = { "rm", "-r", (gchar *)directory, NULL };
+	gchar *argv[] = { "rm", "-rf", (gchar *)directory, NULL };
 	GError *error = NULL;
 	gint rm_status;
 
