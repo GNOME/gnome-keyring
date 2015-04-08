@@ -1,3 +1,7 @@
+Changes in version 3.16.0 are:
+ * Fix build issues highlighted by GCC 5.x
+ * Updated translations
+
 Changes in version 3.15.92 are:
  * pam: Make sure to never block SIGCHLD [#745673]
  * Revert "ssh-agent: Fix leak in seach_keys_like_attributes()"
