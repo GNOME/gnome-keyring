@@ -50,18 +50,18 @@ struct _GkdSecretObjects {
  */
 
 typedef struct {
-	GkdOrgFreedesktopSecretCollectionSkeleton parent;
+	GkdExportedCollectionSkeleton parent;
 	GkdSecretObjects *objects;
 } GkdSecretCollectionSkeleton;
 typedef struct {
-	GkdOrgFreedesktopSecretCollectionSkeletonClass parent_class;
+	GkdExportedCollectionSkeletonClass parent_class;
 } GkdSecretCollectionSkeletonClass;
 typedef struct {
-	GkdOrgFreedesktopSecretItemSkeleton parent;
+	GkdExportedItemSkeleton parent;
 	GkdSecretObjects *objects;
 } GkdSecretItemSkeleton;
 typedef struct {
-	GkdOrgFreedesktopSecretItemSkeletonClass parent_class;
+	GkdExportedItemSkeletonClass parent_class;
 } GkdSecretItemSkeletonClass;
 
 static GckObject * secret_objects_lookup_gck_object_for_path (GkdSecretObjects *self,
@@ -70,9 +70,9 @@ static GckObject * secret_objects_lookup_gck_object_for_path (GkdSecretObjects *
 							      GError **error);
 
 GType gkd_secret_collection_skeleton_get_type (void);
-G_DEFINE_TYPE (GkdSecretCollectionSkeleton, gkd_secret_collection_skeleton, GKD_TYPE_ORG_FREEDESKTOP_SECRET_COLLECTION_SKELETON)
+G_DEFINE_TYPE (GkdSecretCollectionSkeleton, gkd_secret_collection_skeleton, GKD_TYPE_EXPORTED_COLLECTION_SKELETON)
 GType gkd_secret_item_skeleton_get_type (void);
-G_DEFINE_TYPE (GkdSecretItemSkeleton, gkd_secret_item_skeleton, GKD_TYPE_ORG_FREEDESKTOP_SECRET_ITEM_SKELETON)
+G_DEFINE_TYPE (GkdSecretItemSkeleton, gkd_secret_item_skeleton, GKD_TYPE_EXPORTED_ITEM_SKELETON)
 
 static void
 on_object_path_append_to_builder (GkdSecretObjects *self,
@@ -225,8 +225,8 @@ gkd_secret_collection_skeleton_set_property_dbus (GDBusConnection *connection,
 	}
 
 	if (g_strcmp0 (property_name, "Label") == 0) {
-		gkd_org_freedesktop_secret_collection_set_label (GKD_ORG_FREEDESKTOP_SECRET_COLLECTION (self),
-								 g_variant_get_string (value, NULL));
+		gkd_exported_collection_set_label (GKD_EXPORTED_COLLECTION (self),
+						   g_variant_get_string (value, NULL));
 	}
 
 	gkd_secret_service_emit_collection_changed (self->objects->service, object_path);
@@ -289,10 +289,10 @@ gkd_secret_collection_skeleton_init (GkdSecretCollectionSkeleton *self)
 {
 }
 
-static GkdOrgFreedesktopSecretCollection *
+static GkdExportedCollection *
 gkd_secret_collection_skeleton_new (GkdSecretObjects *objects)
 {
-	GkdOrgFreedesktopSecretCollection *self = g_object_new (gkd_secret_collection_skeleton_get_type (), NULL);
+	GkdExportedCollection *self = g_object_new (gkd_secret_collection_skeleton_get_type (), NULL);
 	((GkdSecretCollectionSkeleton *) self)->objects = objects;
 	return self;
 }
@@ -320,11 +320,11 @@ gkd_secret_item_skeleton_set_property_dbus (GDBusConnection *connection,
 	}
 
 	if (g_strcmp0 (property_name, "Attributes") == 0) {
-		gkd_org_freedesktop_secret_item_set_attributes (GKD_ORG_FREEDESKTOP_SECRET_ITEM (self),
-								g_variant_get_variant (value));
+		gkd_exported_item_set_attributes (GKD_EXPORTED_ITEM (self),
+						  g_variant_get_variant (value));
 	} else if (g_strcmp0 (property_name, "Label") == 0) {
-		gkd_org_freedesktop_secret_item_set_label (GKD_ORG_FREEDESKTOP_SECRET_ITEM (self),
-							   g_variant_get_string (value, NULL));
+		gkd_exported_item_set_label (GKD_EXPORTED_ITEM (self),
+					     g_variant_get_string (value, NULL));
 	}
 
 	gkd_secret_objects_emit_item_changed (self->objects, object);
@@ -383,10 +383,10 @@ gkd_secret_item_skeleton_init (GkdSecretItemSkeleton *self)
 {
 }
 
-static GkdOrgFreedesktopSecretItem *
+static GkdExportedItem *
 gkd_secret_item_skeleton_new (GkdSecretObjects *objects)
 {
-	GkdOrgFreedesktopSecretItem *self = g_object_new (gkd_secret_item_skeleton_get_type (), NULL);
+	GkdExportedItem *self = g_object_new (gkd_secret_item_skeleton_get_type (), NULL);
 	((GkdSecretItemSkeleton *) self)->objects = objects;
 	return self;
 }
@@ -517,7 +517,7 @@ secret_objects_lookup_gck_object_for_invocation (GkdSecretObjects *self,
 }
 
 static gboolean
-item_method_delete (GkdOrgFreedesktopSecretItem *skeleton,
+item_method_delete (GkdExportedItem *skeleton,
 		    GDBusMethodInvocation *invocation,
 		    GkdSecretObjects *self)
 {
@@ -543,7 +543,7 @@ item_method_delete (GkdOrgFreedesktopSecretItem *skeleton,
 		}
 
 		/* No prompt necessary */
-		gkd_org_freedesktop_secret_item_complete_delete (skeleton, invocation, "/");
+		gkd_exported_item_complete_delete (skeleton, invocation, "/");
 
 	} else {
 		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN))
@@ -567,7 +567,7 @@ item_method_delete (GkdOrgFreedesktopSecretItem *skeleton,
 }
 
 static gboolean
-item_method_get_secret (GkdOrgFreedesktopSecretItem *skeleton,
+item_method_get_secret (GkdExportedItem *skeleton,
 			GDBusMethodInvocation *invocation,
 			gchar *path,
 			GkdSecretObjects *self)
@@ -597,8 +597,8 @@ item_method_get_secret (GkdOrgFreedesktopSecretItem *skeleton,
 		goto cleanup;
 	}
 
-	gkd_org_freedesktop_secret_item_complete_get_secret (skeleton, invocation,
-							     gkd_secret_secret_append (secret));
+	gkd_exported_item_complete_get_secret (skeleton, invocation,
+					       gkd_secret_secret_append (secret));
 	gkd_secret_secret_free (secret);
 
  cleanup:
@@ -607,7 +607,7 @@ item_method_get_secret (GkdOrgFreedesktopSecretItem *skeleton,
 }
 
 static gboolean
-item_method_set_secret (GkdOrgFreedesktopSecretItem *skeleton,
+item_method_set_secret (GkdExportedItem *skeleton,
 			GDBusMethodInvocation *invocation,
 			GVariant *secret_variant,
 			GkdSecretObjects *self)
@@ -639,7 +639,7 @@ item_method_set_secret (GkdOrgFreedesktopSecretItem *skeleton,
 	if (error != NULL) {
 		g_dbus_method_invocation_take_error (invocation, error);
 	} else {
-		gkd_org_freedesktop_secret_item_complete_set_secret (skeleton, invocation);
+		gkd_exported_item_complete_set_secret (skeleton, invocation);
 	}
 
 	g_object_unref (item);
@@ -682,7 +682,7 @@ item_cleanup_search_results (GckSession *session, GList *items,
 }
 
 static gboolean
-collection_method_search_items (GkdOrgFreedesktopSecretCollection *skeleton,
+collection_method_search_items (GkdExportedCollection *skeleton,
 				GDBusMethodInvocation *invocation,
 				GVariant *attributes,
 				GkdSecretObjects *self)
@@ -803,7 +803,7 @@ object_path_for_collection (GckObject *collection)
 }
 
 static gboolean
-collection_method_create_item (GkdOrgFreedesktopSecretCollection *skeleton,
+collection_method_create_item (GkdExportedCollection *skeleton,
 			       GDBusMethodInvocation *invocation,
 			       GVariant *properties,
 			       GVariant *secret_variant,
@@ -886,7 +886,7 @@ collection_method_create_item (GkdOrgFreedesktopSecretCollection *skeleton,
 	path = object_path_for_item (base, item);
 	gkd_secret_objects_emit_item_created (self, object, path);
 
-	gkd_org_freedesktop_secret_collection_complete_create_item (skeleton, invocation, path, "/");
+	gkd_exported_collection_complete_create_item (skeleton, invocation, path, "/");
 
 cleanup:
 	if (error) {
@@ -915,7 +915,7 @@ cleanup:
 }
 
 static gboolean
-collection_method_delete (GkdOrgFreedesktopSecretCollection *skeleton,
+collection_method_delete (GkdExportedCollection *skeleton,
 			  GDBusMethodInvocation *invocation,
 			  GkdSecretObjects *self)
 {
@@ -943,7 +943,7 @@ collection_method_delete (GkdOrgFreedesktopSecretCollection *skeleton,
 
 	/* Notify the callers that a collection was deleted */
 	gkd_secret_service_emit_collection_deleted (self->service, path);
-	gkd_org_freedesktop_secret_collection_complete_delete (skeleton, invocation, "/");
+	gkd_exported_collection_complete_delete (skeleton, invocation, "/");
 
  cleanup:
 	g_free (path);
@@ -1465,7 +1465,7 @@ on_each_item_emit_locked (GkdSecretObjects *self,
                           GckObject *object,
                           gpointer user_data)
 {
-	GkdOrgFreedesktopSecretItem *skeleton;
+	GkdExportedItem *skeleton;
 	GVariant *value;
 	GError *error = NULL;
 
@@ -1483,7 +1483,7 @@ on_each_item_emit_locked (GkdSecretObjects *self,
 		return;
 	}
 
-	gkd_org_freedesktop_secret_item_set_locked (skeleton, g_variant_get_boolean (value));
+	gkd_exported_item_set_locked (skeleton, g_variant_get_boolean (value));
 	g_variant_unref (value);
 
         gkd_secret_objects_emit_item_changed (self, object);
@@ -1494,7 +1494,7 @@ gkd_secret_objects_emit_collection_locked (GkdSecretObjects *self,
                                            GckObject *collection)
 {
 	gchar *collection_path;
-	GkdOrgFreedesktopSecretCollection *skeleton;
+	GkdExportedCollection *skeleton;
 	GVariant *value;
 	GError *error = NULL;
 
@@ -1516,7 +1516,7 @@ gkd_secret_objects_emit_collection_locked (GkdSecretObjects *self,
 		return;
 	}
 
-	gkd_org_freedesktop_secret_collection_set_locked (skeleton, g_variant_get_boolean (value));
+	gkd_exported_collection_set_locked (skeleton, g_variant_get_boolean (value));
 	g_variant_unref (value);
 
 	gkd_secret_service_emit_collection_changed (self->service, collection_path);
@@ -1527,7 +1527,7 @@ static void
 gkd_secret_objects_register_item (GkdSecretObjects *self,
 				  const gchar *item_path)
 {
-	GkdOrgFreedesktopSecretItem *skeleton;
+	GkdExportedItem *skeleton;
 	GError *error = NULL;
 
 	skeleton = g_hash_table_lookup (self->items_to_skeletons, item_path);
@@ -1570,7 +1570,7 @@ gkd_secret_objects_emit_item_created (GkdSecretObjects *self,
                                       GckObject *collection,
                                       const gchar *item_path)
 {
-	GkdOrgFreedesktopSecretCollection *skeleton;
+	GkdExportedCollection *skeleton;
 	gchar *collection_path;
 	gchar **items;
 
@@ -1583,10 +1583,10 @@ gkd_secret_objects_emit_item_created (GkdSecretObjects *self,
 	g_return_if_fail (skeleton != NULL);
 
 	gkd_secret_objects_register_item (self, item_path);
-	gkd_org_freedesktop_secret_collection_emit_item_created (skeleton, item_path);
+	gkd_exported_collection_emit_item_created (skeleton, item_path);
 
 	items = gkd_secret_objects_get_collection_items (self, collection_path);
-	gkd_org_freedesktop_secret_collection_set_items (skeleton, (const gchar **) items);
+	gkd_exported_collection_set_items (skeleton, (const gchar **) items);
 
 	g_free (collection_path);
 	g_strfreev (items);
@@ -1596,7 +1596,7 @@ void
 gkd_secret_objects_emit_item_changed (GkdSecretObjects *self,
                                       GckObject *item)
 {
-	GkdOrgFreedesktopSecretCollection *skeleton;
+	GkdExportedCollection *skeleton;
 	gchar *collection_path;
 	gchar *item_path;
 
@@ -1608,7 +1608,7 @@ gkd_secret_objects_emit_item_changed (GkdSecretObjects *self,
 	g_return_if_fail (skeleton != NULL);
 
 	item_path = object_path_for_item (collection_path, item);
-	gkd_org_freedesktop_secret_collection_emit_item_changed (skeleton, item_path);
+	gkd_exported_collection_emit_item_changed (skeleton, item_path);
 
 	g_free (item_path);
 	g_free (collection_path);
@@ -1619,7 +1619,7 @@ gkd_secret_objects_emit_item_deleted (GkdSecretObjects *self,
                                       GckObject *collection,
                                       const gchar *item_path)
 {
-	GkdOrgFreedesktopSecretCollection *skeleton;
+	GkdExportedCollection *skeleton;
 	gchar *collection_path;
 	gchar **items;
 
@@ -1632,10 +1632,10 @@ gkd_secret_objects_emit_item_deleted (GkdSecretObjects *self,
 	g_return_if_fail (skeleton != NULL);
 
 	gkd_secret_objects_unregister_item (self, item_path);
-	gkd_org_freedesktop_secret_collection_emit_item_deleted (skeleton, item_path);
+	gkd_exported_collection_emit_item_deleted (skeleton, item_path);
 
 	items = gkd_secret_objects_get_collection_items (self, collection_path);
-	gkd_org_freedesktop_secret_collection_set_items (skeleton, (const gchar **) items);
+	gkd_exported_collection_set_items (skeleton, (const gchar **) items);
 
 	g_strfreev (items);
 	g_free (collection_path);
@@ -1659,7 +1659,7 @@ void
 gkd_secret_objects_register_collection (GkdSecretObjects *self,
 					const gchar *collection_path)
 {
-	GkdOrgFreedesktopSecretCollection *skeleton;
+	GkdExportedCollection *skeleton;
 	GError *error = NULL;
 
 	skeleton = g_hash_table_lookup (self->collections_to_skeletons, collection_path);

@@ -48,7 +48,7 @@ struct _GkdSecretPromptPrivate {
 	gchar *object_path;
 	GkdSecretService *service;
 	GkdSecretExchange *exchange;
-	GkdOrgFreedesktopSecretPrompt *skeleton;
+	GkdExportedPrompt *skeleton;
 	GCancellable *cancellable;
 	gboolean prompted;
 	gboolean completed;
@@ -71,8 +71,8 @@ emit_completed (GkdSecretPrompt *self, gboolean dismissed)
 	g_return_if_fail (GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result);
 	variant = GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result (self);
 
-	gkd_org_freedesktop_secret_prompt_emit_completed (self->pv->skeleton,
-							  dismissed, variant);
+	gkd_exported_prompt_emit_completed (self->pv->skeleton,
+					    dismissed, variant);
 }
 
 static void
@@ -98,7 +98,7 @@ on_system_prompt_inited (GObject *source,
 }
 
 static gboolean
-prompt_method_prompt (GkdOrgFreedesktopSecretPrompt *skeleton,
+prompt_method_prompt (GkdExportedPrompt *skeleton,
 		      GDBusMethodInvocation *invocation,
 		      gchar *window_id,
 		      GkdSecretPrompt *self)
@@ -122,12 +122,12 @@ prompt_method_prompt (GkdOrgFreedesktopSecretPrompt *skeleton,
 	g_async_initable_init_async (G_ASYNC_INITABLE (self), G_PRIORITY_DEFAULT,
 	                             self->pv->cancellable, on_system_prompt_inited, NULL);
 
-	gkd_org_freedesktop_secret_prompt_complete_prompt (skeleton, invocation);
+	gkd_exported_prompt_complete_prompt (skeleton, invocation);
 	return TRUE;
 }
 
 static gboolean
-prompt_method_dismiss (GkdOrgFreedesktopSecretPrompt *skeleton,
+prompt_method_dismiss (GkdExportedPrompt *skeleton,
 		       GDBusMethodInvocation *invocation,
 		       GkdSecretPrompt *self)
 {
@@ -137,7 +137,7 @@ prompt_method_dismiss (GkdOrgFreedesktopSecretPrompt *skeleton,
 
 	gkd_secret_prompt_dismiss (self);
 
-	gkd_org_freedesktop_secret_prompt_complete_dismiss (skeleton, invocation);
+	gkd_exported_prompt_complete_dismiss (skeleton, invocation);
 	return TRUE;
 }
 
@@ -174,7 +174,7 @@ gkd_secret_prompt_constructed (GObject *obj)
 	/* Set the exchange for the prompt */
 	g_object_set (self, "secret-exchange", self->pv->exchange, NULL);
 
-        self->pv->skeleton = gkd_org_freedesktop_secret_prompt_skeleton_new ();
+        self->pv->skeleton = gkd_exported_prompt_skeleton_new ();
         g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->pv->skeleton),
                                           gkd_secret_service_get_connection (self->pv->service), self->pv->object_path,
                                           &error);

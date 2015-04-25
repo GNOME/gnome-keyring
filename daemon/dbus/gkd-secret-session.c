@@ -50,7 +50,7 @@ struct _GkdSecretSession {
 	/* Information about this object */
 	gchar *object_path;
 	GkdSecretService *service;
-	GkdOrgFreedesktopSecretSession *skeleton;
+	GkdExportedSession *skeleton;
 	gchar *caller_exec;
 	gchar *caller;
 
@@ -286,12 +286,12 @@ plain_negotiate (GkdSecretSession *self,
  * DBUS
  */
 static gboolean
-session_method_close (GkdOrgFreedesktopSecretSession *skeleton,
+session_method_close (GkdExportedSession *skeleton,
 		      GDBusMethodInvocation *invocation,
 		      GkdSecretSession *self)
 {
 	gkd_secret_service_close_session (self->service, self);
-	gkd_org_freedesktop_secret_session_complete_close (skeleton, invocation);
+	gkd_exported_session_complete_close (skeleton, invocation);
 
 	return TRUE;
 }
@@ -312,7 +312,7 @@ gkd_secret_session_constructor (GType type, guint n_props, GObjectConstructParam
 	/* Setup the path for the object */
 	self->object_path = g_strdup_printf (SECRET_SESSION_PREFIX "/s%d", ++unique_session_number);
 
-	self->skeleton = gkd_org_freedesktop_secret_session_skeleton_new ();
+	self->skeleton = gkd_exported_session_skeleton_new ();
 	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->skeleton),
 					  gkd_secret_service_get_connection (self->service),
 					  self->object_path, &error);

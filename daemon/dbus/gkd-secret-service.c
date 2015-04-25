@@ -51,15 +51,15 @@
  * SKELETON
  */
 typedef struct {
-	GkdOrgFreedesktopSecretServiceSkeleton parent;
+	GkdExportedServiceSkeleton parent;
 	GkdSecretService *service;
 } GkdSecretServiceSkeleton;
 typedef struct {
-	GkdOrgFreedesktopSecretServiceSkeletonClass parent_class;
+	GkdExportedServiceSkeletonClass parent_class;
 } GkdSecretServiceSkeletonClass;
 
 GType gkd_secret_service_skeleton_get_type (void);
-G_DEFINE_TYPE (GkdSecretServiceSkeleton, gkd_secret_service_skeleton, GKD_TYPE_ORG_FREEDESKTOP_SECRET_SERVICE_SKELETON)
+G_DEFINE_TYPE (GkdSecretServiceSkeleton, gkd_secret_service_skeleton, GKD_TYPE_EXPORTED_SERVICE_SKELETON)
 
 enum {
 	PROP_COLLECTIONS = 1
@@ -98,7 +98,7 @@ gkd_secret_service_skeleton_class_init (GkdSecretServiceSkeletonClass *klass)
 	GObjectClass *oclass = G_OBJECT_CLASS (klass);
 	oclass->get_property = gkd_secret_service_skeleton_get_property;
         oclass->set_property = gkd_secret_service_skeleton_set_property;
-	gkd_org_freedesktop_secret_service_override_properties (oclass, PROP_COLLECTIONS);
+	gkd_exported_service_override_properties (oclass, PROP_COLLECTIONS);
 }
 
 static void
@@ -106,10 +106,10 @@ gkd_secret_service_skeleton_init (GkdSecretServiceSkeleton *self)
 {
 }
 
-static GkdOrgFreedesktopSecretService *
+static GkdExportedService *
 gkd_secret_service_skeleton_new (GkdSecretService *service)
 {
-	GkdOrgFreedesktopSecretService *skeleton = g_object_new (gkd_secret_service_skeleton_get_type (), NULL);
+	GkdExportedService *skeleton = g_object_new (gkd_secret_service_skeleton_get_type (), NULL);
 	((GkdSecretServiceSkeleton *) skeleton)->service = service;
 	return skeleton;
 }
@@ -124,8 +124,8 @@ struct _GkdSecretService {
 	GObject parent;
 
 	GDBusConnection *connection;
-	GkdOrgFreedesktopSecretService *skeleton;
-	GkdOrgGnomeKeyringInternalUnsupportedGuiltRiddenInterface *internal_skeleton;
+	GkdExportedService *skeleton;
+	GkdExportedInternal *internal_skeleton;
 	guint name_owner_id;
 	guint filter_id;
 
@@ -362,7 +362,7 @@ service_message_filter (GDBusConnection *connection,
  */
 
 static gboolean
-service_method_open_session (GkdOrgFreedesktopSecretService *skeleton,
+service_method_open_session (GkdExportedService *skeleton,
 			     GDBusMethodInvocation *invocation,
 			     gchar *algorithm,
 			     GVariant *input,
@@ -390,7 +390,7 @@ service_method_open_session (GkdOrgFreedesktopSecretService *skeleton,
 	} else {
 		gkd_secret_service_publish_dispatch (self, caller,
 		                                     GKD_SECRET_DISPATCH (session));
-		gkd_org_freedesktop_secret_service_complete_open_session (skeleton, invocation, output, result);
+		gkd_exported_service_complete_open_session (skeleton, invocation, output, result);
 		g_free (result);
 	}
 
@@ -399,7 +399,7 @@ service_method_open_session (GkdOrgFreedesktopSecretService *skeleton,
 }
 
 static gboolean
-service_method_search_items (GkdOrgFreedesktopSecretService *skeleton,
+service_method_search_items (GkdExportedService *skeleton,
 			     GDBusMethodInvocation *invocation,
 			     GVariant *attributes,
 			     GkdSecretService *self)
@@ -409,7 +409,7 @@ service_method_search_items (GkdOrgFreedesktopSecretService *skeleton,
 }
 
 static gboolean
-service_method_get_secrets (GkdOrgFreedesktopSecretService *skeleton,
+service_method_get_secrets (GkdExportedService *skeleton,
 			    GDBusMethodInvocation *invocation,
 			    gchar **items,
 			    gchar *session,
@@ -420,7 +420,7 @@ service_method_get_secrets (GkdOrgFreedesktopSecretService *skeleton,
 }
 
 static gboolean
-service_method_create_collection (GkdOrgFreedesktopSecretService *skeleton,
+service_method_create_collection (GkdExportedService *skeleton,
 				  GDBusMethodInvocation *invocation,
 				  GVariant *properties,
 				  gchar *alias,
@@ -465,13 +465,13 @@ service_method_create_collection (GkdOrgFreedesktopSecretService *skeleton,
 	gkd_secret_service_publish_dispatch (self, caller,
 	                                     GKD_SECRET_DISPATCH (create));
 
-	gkd_org_freedesktop_secret_service_complete_create_collection (skeleton, invocation,
-                                                                       "/", path);
+	gkd_exported_service_complete_create_collection (skeleton, invocation,
+							 "/", path);
 	return TRUE;
 }
 
 static gboolean
-service_method_lock_service (GkdOrgFreedesktopSecretService *skeleton,
+service_method_lock_service (GkdExportedService *skeleton,
 			     GDBusMethodInvocation *invocation,
 			     GkdSecretService *self)
 {
@@ -486,13 +486,13 @@ service_method_lock_service (GkdOrgFreedesktopSecretService *skeleton,
 	if (!gkd_secret_lock_all (session, &error))
 		g_dbus_method_invocation_take_error (invocation, error);
 	else
-		gkd_org_freedesktop_secret_service_complete_lock_service (skeleton, invocation);
+		gkd_exported_service_complete_lock_service (skeleton, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-service_method_unlock (GkdOrgFreedesktopSecretService *skeleton,
+service_method_unlock (GkdExportedService *skeleton,
 		       GDBusMethodInvocation *invocation,
 		       gchar **objpaths,
 		       GkdSecretService *self)
@@ -520,8 +520,8 @@ service_method_unlock (GkdOrgFreedesktopSecretService *skeleton,
 	}
 
 	unlocked = gkd_secret_unlock_get_results (unlock, &n_unlocked);
-	gkd_org_freedesktop_secret_service_complete_unlock (skeleton, invocation,
-							    (const gchar **) unlocked, path);
+	gkd_exported_service_complete_unlock (skeleton, invocation,
+					      (const gchar **) unlocked, path);
 
 	gkd_secret_unlock_reset_results (unlock);
 	g_object_unref (unlock);
@@ -530,7 +530,7 @@ service_method_unlock (GkdOrgFreedesktopSecretService *skeleton,
 }
 
 static gboolean
-service_method_lock (GkdOrgFreedesktopSecretService *skeleton,
+service_method_lock (GkdExportedService *skeleton,
 		     GDBusMethodInvocation *invocation,
 		     gchar **objpaths,
 		     GkdSecretService *self)
@@ -558,8 +558,8 @@ service_method_lock (GkdOrgFreedesktopSecretService *skeleton,
 	g_ptr_array_add (array, NULL);
 
 	locked = (gchar **) g_ptr_array_free (array, FALSE);
-	gkd_org_freedesktop_secret_service_complete_lock (skeleton, invocation,
-							  (const gchar **) locked, "/");
+	gkd_exported_service_complete_lock (skeleton, invocation,
+					    (const gchar **) locked, "/");
 
 	return TRUE;
 }
@@ -599,7 +599,7 @@ method_change_lock_internal (GkdSecretService *self,
 }
 
 static gboolean
-service_method_change_lock (GkdOrgFreedesktopSecretService *skeleton,
+service_method_change_lock (GkdExportedService *skeleton,
 			    GDBusMethodInvocation *invocation,
 			    gchar *collection_path,
 			    GkdSecretService *self)
@@ -608,7 +608,7 @@ service_method_change_lock (GkdOrgFreedesktopSecretService *skeleton,
 }
 
 static gboolean
-service_method_change_with_prompt (GkdOrgGnomeKeyringInternalUnsupportedGuiltRiddenInterface *skeleton,
+service_method_change_with_prompt (GkdExportedInternal *skeleton,
 				   GDBusMethodInvocation *invocation,
 				   gchar *collection_path,
 				   GkdSecretService *self)
@@ -617,7 +617,7 @@ service_method_change_with_prompt (GkdOrgGnomeKeyringInternalUnsupportedGuiltRid
 }
 
 static gboolean
-service_method_read_alias (GkdOrgFreedesktopSecretService *skeleton,
+service_method_read_alias (GkdExportedService *skeleton,
 			   GDBusMethodInvocation *invocation,
 			   gchar *alias,
 			   GkdSecretService *self)
@@ -645,14 +645,14 @@ service_method_read_alias (GkdOrgFreedesktopSecretService *skeleton,
 	if (path == NULL)
 		path = g_strdup ("/");
 
-	gkd_org_freedesktop_secret_service_complete_read_alias (skeleton, invocation, path);
+	gkd_exported_service_complete_read_alias (skeleton, invocation, path);
 	g_free (path);
 
 	return TRUE;
 }
 
 static gboolean
-service_method_set_alias (GkdOrgFreedesktopSecretService *skeleton,
+service_method_set_alias (GkdExportedService *skeleton,
 			  GDBusMethodInvocation *invocation,
 			  gchar *alias,
 			  gchar *path,
@@ -699,13 +699,13 @@ service_method_set_alias (GkdOrgFreedesktopSecretService *skeleton,
 	gkd_secret_service_set_alias (self, alias, identifier);
 	g_free (identifier);
 
-	gkd_org_freedesktop_secret_service_complete_set_alias (skeleton, invocation);
+	gkd_exported_service_complete_set_alias (skeleton, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-service_method_create_with_master_password (GkdOrgGnomeKeyringInternalUnsupportedGuiltRiddenInterface *skeleton,
+service_method_create_with_master_password (GkdExportedInternal *skeleton,
 					    GDBusMethodInvocation *invocation,
 					    GVariant *attributes,
 					    GVariant *master,
@@ -751,7 +751,7 @@ service_method_create_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
         g_message ("emit collection_Created");
 	gkd_secret_service_emit_collection_created (self, path);
 
-	gkd_org_gnome_keyring_internal_unsupported_guilt_ridden_interface_complete_create_with_master_password
+	gkd_exported_internal_complete_create_with_master_password
 		(skeleton, invocation, path);
 	g_free (path);
 
@@ -759,7 +759,7 @@ service_method_create_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
 }
 
 static gboolean
-service_method_change_with_master_password (GkdOrgGnomeKeyringInternalUnsupportedGuiltRiddenInterface *skeleton,
+service_method_change_with_master_password (GkdExportedInternal *skeleton,
 					    GDBusMethodInvocation *invocation,
 					    gchar *path,
 					    GVariant *original_variant,
@@ -801,7 +801,7 @@ service_method_change_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
 
 	/* Success */
 	else if (gkd_secret_change_with_secrets (collection, NULL, original, master, &error))
-		gkd_org_gnome_keyring_internal_unsupported_guilt_ridden_interface_complete_change_with_master_password
+		gkd_exported_internal_complete_change_with_master_password
 			(skeleton, invocation);
 
 	/* Failure */
@@ -818,7 +818,7 @@ service_method_change_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
 }
 
 static gboolean
-service_method_unlock_with_master_password (GkdOrgGnomeKeyringInternalUnsupportedGuiltRiddenInterface *skeleton,
+service_method_unlock_with_master_password (GkdExportedInternal *skeleton,
 					    GDBusMethodInvocation *invocation,
 					    gchar *path,
 					    GVariant *master_variant,
@@ -850,7 +850,7 @@ service_method_unlock_with_master_password (GkdOrgGnomeKeyringInternalUnsupporte
 	/* Success */
 	} else if (gkd_secret_unlock_with_secret (collection, master, &error)) {
 		gkd_secret_objects_emit_collection_locked (self->objects, collection);
-		gkd_org_gnome_keyring_internal_unsupported_guilt_ridden_interface_complete_unlock_with_master_password
+		gkd_exported_internal_complete_unlock_with_master_password
 			(skeleton, invocation);
 
 	/* Failure */
@@ -959,7 +959,7 @@ gkd_secret_service_constructor (GType type,
 	g_signal_connect (self->skeleton, "handle-unlock",
 			  G_CALLBACK (service_method_unlock), self);
 
-        self->internal_skeleton = gkd_org_gnome_keyring_internal_unsupported_guilt_ridden_interface_skeleton_new ();
+        self->internal_skeleton = gkd_exported_internal_skeleton_new ();
 	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->internal_skeleton),
                                           self->connection,
 					  SECRET_SERVICE_PATH, &error);
@@ -1377,8 +1377,8 @@ gkd_secret_service_emit_collection_created (GkdSecretService *self,
 	gkd_secret_objects_register_collection (self->objects, collection_path);
 
 	collections = gkd_secret_service_get_collections (self);
-	gkd_org_freedesktop_secret_service_set_collections (self->skeleton, (const gchar **) collections);
-	gkd_org_freedesktop_secret_service_emit_collection_created (self->skeleton, collection_path);
+	gkd_exported_service_set_collections (self->skeleton, (const gchar **) collections);
+	gkd_exported_service_emit_collection_created (self->skeleton, collection_path);
 
 	g_strfreev (collections);
 }
@@ -1395,8 +1395,8 @@ gkd_secret_service_emit_collection_deleted (GkdSecretService *self,
 	gkd_secret_objects_unregister_collection (self->objects, collection_path);
 
 	collections = gkd_secret_service_get_collections (self);
-	gkd_org_freedesktop_secret_service_set_collections (self->skeleton, (const gchar **) collections);
-	gkd_org_freedesktop_secret_service_emit_collection_deleted (self->skeleton, collection_path);
+	gkd_exported_service_set_collections (self->skeleton, (const gchar **) collections);
+	gkd_exported_service_emit_collection_deleted (self->skeleton, collection_path);
 
 	g_strfreev (collections);
 }
@@ -1408,5 +1408,5 @@ gkd_secret_service_emit_collection_changed (GkdSecretService *self,
 	g_return_if_fail (GKD_SECRET_IS_SERVICE (self));
 	g_return_if_fail (collection_path != NULL);
 
-	gkd_org_freedesktop_secret_service_emit_collection_changed (self->skeleton, collection_path);
+	gkd_exported_service_emit_collection_changed (self->skeleton, collection_path);
 }

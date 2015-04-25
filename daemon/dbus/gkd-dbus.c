@@ -81,7 +81,7 @@ connect_to_session_bus (void)
 }
 
 static gboolean
-handle_get_environment (GkdOrgGnomeKeyringDaemon *skeleton,
+handle_get_environment (GkdExportedDaemon *skeleton,
 			GDBusMethodInvocation *invocation,
 			gpointer user_data)
 {
@@ -98,25 +98,25 @@ handle_get_environment (GkdOrgGnomeKeyringDaemon *skeleton,
 		g_strfreev (parts);
 	}
 
-	gkd_org_gnome_keyring_daemon_complete_get_environment (skeleton, invocation,
-							       g_variant_builder_end (&builder));
+	gkd_exported_daemon_complete_get_environment (skeleton, invocation,
+						      g_variant_builder_end (&builder));
 	return TRUE;
 }
 
 static gboolean
-handle_get_control_directory (GkdOrgGnomeKeyringDaemon *skeleton,
+handle_get_control_directory (GkdExportedDaemon *skeleton,
 			      GDBusMethodInvocation *invocation,
 			      gpointer user_data)
 {
-	gkd_org_gnome_keyring_daemon_complete_get_control_directory (skeleton, invocation,
-								     gkd_util_get_master_directory ());
+	gkd_exported_daemon_complete_get_control_directory (skeleton, invocation,
+							    gkd_util_get_master_directory ());
 	return TRUE;
 }
 
 static void
 cleanup_singleton (gpointer user_data)
 {
-	GkdOrgGnomeKeyringDaemon *skeleton = user_data;
+	GkdExportedDaemon *skeleton = user_data;
 
 	g_return_if_fail (dbus_conn);
 	if (object_registered) {
@@ -134,7 +134,7 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 	GVariant *acquire_variant;
 	guint res;
 	GError *error = NULL;
-	GkdOrgGnomeKeyringDaemon *skeleton;
+	GkdExportedDaemon *skeleton;
 
 	g_assert (acquired);
 
@@ -143,7 +143,7 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 
 	/* First register the object */
 	if (!object_registered) {
-		skeleton = gkd_org_gnome_keyring_daemon_skeleton_new ();
+		skeleton = gkd_exported_daemon_skeleton_new ();
 
 		g_signal_connect (skeleton, "handle-get-control-directory",
 				  G_CALLBACK (handle_get_control_directory), NULL);

@@ -62,7 +62,7 @@ struct _GkdSecretUnlock {
 	GObject parent;
 	gchar *object_path;
 	GkdSecretService *service;
-	GkdOrgFreedesktopSecretPrompt *skeleton;
+	GkdExportedPrompt *skeleton;
 	gchar *caller;
 	gchar *window_id;
 	GQueue *queued;
@@ -159,9 +159,9 @@ mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 		g_variant_builder_add (&builder, "o", value);
 	}
 
-	gkd_org_freedesktop_secret_prompt_emit_completed (self->skeleton,
-							  dismissed,
-							  g_variant_new_variant (g_variant_builder_end (&builder)));
+	gkd_exported_prompt_emit_completed (self->skeleton,
+					    dismissed,
+					    g_variant_new_variant (g_variant_builder_end (&builder)));
 
 	/* Fire off the next item in the unlock prompt queue */
 	other = g_queue_pop_head (&unlock_prompt_queue);
@@ -299,7 +299,7 @@ perform_next_unlock (GkdSecretUnlock *self)
  */
 
 static gboolean
-prompt_method_prompt (GkdOrgFreedesktopSecretPrompt *skeleton,
+prompt_method_prompt (GkdExportedPrompt *skeleton,
 		      GDBusMethodInvocation *invocation,
 		      gchar *window_id,
 		      GkdSecretUnlock *self)
@@ -319,12 +319,12 @@ prompt_method_prompt (GkdOrgFreedesktopSecretPrompt *skeleton,
 
 	gkd_secret_unlock_call_prompt (self, window_id);
 
-	gkd_org_freedesktop_secret_prompt_complete_prompt (skeleton, invocation);
+	gkd_exported_prompt_complete_prompt (skeleton, invocation);
 	return TRUE;
 }
 
 static gboolean
-prompt_method_dismiss (GkdOrgFreedesktopSecretPrompt *skeleton,
+prompt_method_dismiss (GkdExportedPrompt *skeleton,
 		       GDBusMethodInvocation *invocation,
 		       GkdSecretUnlock *self)
 {
@@ -335,7 +335,7 @@ prompt_method_dismiss (GkdOrgFreedesktopSecretPrompt *skeleton,
 	g_cancellable_cancel (self->cancellable);
 	mark_as_complete (self, TRUE);
 
-	gkd_org_freedesktop_secret_prompt_complete_dismiss (skeleton, invocation);
+	gkd_exported_prompt_complete_dismiss (skeleton, invocation);
 	return TRUE;
 }
 
@@ -365,7 +365,7 @@ gkd_secret_unlock_constructor (GType type, guint n_props, GObjectConstructParam 
 	if (!self->object_path)
 		self->object_path = g_strdup_printf (SECRET_PROMPT_PREFIX "/u%d", ++unique_prompt_number);
 
-        self->skeleton = gkd_org_freedesktop_secret_prompt_skeleton_new ();
+        self->skeleton = gkd_exported_prompt_skeleton_new ();
         g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->skeleton),
                                           gkd_secret_service_get_connection (self->service), self->object_path,
                                           &error);
