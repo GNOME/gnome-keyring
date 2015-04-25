@@ -59,13 +59,13 @@ struct _GkdSecretChangeClass {
 };
 
 static void      perform_prompting     (GkdSecretChange *self,
-                                        GckObject *collection);
+					GckObject *collection);
 
 G_DEFINE_TYPE (GkdSecretChange, gkd_secret_change, GKD_SECRET_TYPE_PROMPT);
 
 static void
 setup_original_prompt (GkdSecretChange *self,
-                       GckObject *collection)
+		       GckObject *collection)
 {
 	GcrPrompt *prompt = GCR_PROMPT (self);
 	GError *error = NULL;
@@ -91,7 +91,7 @@ setup_original_prompt (GkdSecretChange *self,
 	g_free (text);
 
 	text = g_strdup_printf (_("An application wants to change the password for the '%s' keyring. "
-	                          "Enter the old password for it."), label);
+				  "Enter the old password for it."), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
@@ -101,7 +101,7 @@ setup_original_prompt (GkdSecretChange *self,
 
 static void
 setup_password_prompt (GkdSecretChange *self,
-                       GckObject *collection)
+		       GckObject *collection)
 {
 	GcrPrompt *prompt = GCR_PROMPT (self);
 	GError *error = NULL;
@@ -127,7 +127,7 @@ setup_password_prompt (GkdSecretChange *self,
 	g_free (text);
 
 	text = g_strdup_printf (_("An application wants to change the password for the '%s' keyring. "
-	                          "Choose the new password you want to use for it."), label);
+				  "Choose the new password you want to use for it."), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
@@ -141,8 +141,8 @@ setup_confirmation_prompt (GkdSecretChange *self)
 {
 	gcr_prompt_set_message (GCR_PROMPT (self), _("Store passwords unencrypted?"));
 	gcr_prompt_set_description (GCR_PROMPT (self),
-	                            _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
-	                              "They will be accessible by anyone with access to your files."));
+				    _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
+				      "They will be accessible by anyone with access to your files."));
 	gcr_prompt_set_continue_label (GCR_PROMPT (self), _("Continue"));
 }
 
@@ -154,8 +154,8 @@ set_warning_wrong (GkdSecretChange *self)
 
 static void
 on_prompt_original_complete (GObject *source,
-                             GAsyncResult *result,
-                             gpointer user_data)
+			     GAsyncResult *result,
+			     gpointer user_data)
 {
 	GkdSecretChange *self = GKD_SECRET_CHANGE (source);
 	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
@@ -190,8 +190,8 @@ on_prompt_original_complete (GObject *source,
 
 		/* Create the original credential, in order to make sure we can unlock the collection */
 		self->ocred = gkd_secret_session_create_credential (original->session,
-		                                                    self->session, attrs,
-		                                                    original, &error);
+								    self->session, attrs,
+								    original, &error);
 
 		gck_attributes_unref (attrs);
 
@@ -223,8 +223,8 @@ on_prompt_original_complete (GObject *source,
 
 static void
 on_prompt_password_complete (GObject *source,
-                             GAsyncResult *result,
-                             gpointer user_data)
+			     GAsyncResult *result,
+			     gpointer user_data)
 {
 	GkdSecretChange *self = GKD_SECRET_CHANGE (source);
 	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
@@ -255,8 +255,8 @@ on_prompt_password_complete (GObject *source,
 
 static void
 on_prompt_confirmation_complete (GObject *source,
-                                 GAsyncResult *result,
-                                 gpointer user_data)
+				 GAsyncResult *result,
+				 gpointer user_data)
 {
 	GkdSecretChange *self = GKD_SECRET_CHANGE (source);
 	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
@@ -283,7 +283,7 @@ on_prompt_confirmation_complete (GObject *source,
 
 static void
 perform_prompting (GkdSecretChange *self,
-                   GckObject *collection)
+		   GckObject *collection)
 {
 	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (self);
 	GError *error = NULL;
@@ -296,26 +296,26 @@ perform_prompting (GkdSecretChange *self,
 	} else if (!self->unlocked) {
 		setup_original_prompt (self, collection);
 		gcr_prompt_password_async (GCR_PROMPT (self),
-		                           gkd_secret_prompt_get_cancellable (prompt),
-		                           on_prompt_original_complete, NULL);
+					   gkd_secret_prompt_get_cancellable (prompt),
+					   on_prompt_original_complete, NULL);
 
 	/* Get the new password */
 	} else if (self->master == NULL) {
 		setup_password_prompt (self, collection);
 		gcr_prompt_password_async (GCR_PROMPT (self),
-		                           gkd_secret_prompt_get_cancellable (prompt),
-		                           on_prompt_password_complete, NULL);
+					   gkd_secret_prompt_get_cancellable (prompt),
+					   on_prompt_password_complete, NULL);
 
 	/* Check that the password is not empty */
 	} else if (!self->confirmed) {
 		setup_confirmation_prompt (self);
 		gcr_prompt_confirm_async (GCR_PROMPT (self),
-		                          gkd_secret_prompt_get_cancellable (prompt),
-		                          on_prompt_confirmation_complete, NULL);
+					  gkd_secret_prompt_get_cancellable (prompt),
+					  on_prompt_confirmation_complete, NULL);
 
 	/* Actually create the keyring */
 	} else if (gkd_secret_change_with_secrets (collection, self->session,
-	                                           NULL, self->master, &error)) {
+						   NULL, self->master, &error)) {
 		gkd_secret_prompt_complete (prompt);
 
 	/* Failed */
@@ -339,7 +339,7 @@ gkd_secret_change_prompt_ready (GkdSecretPrompt *prompt)
 static GVariant *
 gkd_secret_change_encode_result (GkdSecretPrompt *base)
 {
-        return g_variant_new_variant (g_variant_new_string (""));
+	return g_variant_new_variant (g_variant_new_string (""));
 }
 
 static void
@@ -378,7 +378,7 @@ gkd_secret_change_finalize (GObject *obj)
 
 static void
 gkd_secret_change_set_property (GObject *obj, guint prop_id, const GValue *value,
-                                GParamSpec *pspec)
+				GParamSpec *pspec)
 {
 	GkdSecretChange *self = GKD_SECRET_CHANGE (obj);
 
@@ -396,7 +396,7 @@ gkd_secret_change_set_property (GObject *obj, guint prop_id, const GValue *value
 
 static void
 gkd_secret_change_get_property (GObject *obj, guint prop_id, GValue *value,
-                                GParamSpec *pspec)
+				GParamSpec *pspec)
 {
 	GkdSecretChange *self = GKD_SECRET_CHANGE (obj);
 
@@ -426,7 +426,7 @@ gkd_secret_change_class_init (GkdSecretChangeClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_COLLECTION_PATH,
 		g_param_spec_string ("collection-path", "Collection Path", "Collection Path",
-		                     "/", G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+				     "/", G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -435,7 +435,7 @@ gkd_secret_change_class_init (GkdSecretChangeClass *klass)
 
 GkdSecretChange*
 gkd_secret_change_new (GkdSecretService *service, const gchar *caller,
-                       const gchar *path)
+		       const gchar *path)
 {
 	const gchar *prompter_name;
 
@@ -445,19 +445,19 @@ gkd_secret_change_new (GkdSecretService *service, const gchar *caller,
 
 	prompter_name = g_getenv ("GNOME_KEYRING_TEST_PROMPTER");
 	return g_object_new (GKD_SECRET_TYPE_CHANGE,
-	                     "service", service,
-	                     "caller", caller,
-	                     "collection-path", path,
-	                     "bus-name", prompter_name,
-	                     NULL);
+			     "service", service,
+			     "caller", caller,
+			     "collection-path", path,
+			     "bus-name", prompter_name,
+			     NULL);
 }
 
 gboolean
 gkd_secret_change_with_secrets (GckObject *collection,
-                                GckSession *session,
-                                GkdSecretSecret *original,
-                                GkdSecretSecret *master,
-                                GError **error)
+				GckSession *session,
+				GkdSecretSecret *original,
+				GkdSecretSecret *master,
+				GError **error)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *attrs = NULL;

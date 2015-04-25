@@ -78,7 +78,7 @@ setup_password_prompt (GkdSecretCreate *self)
 		label = g_strdup (_("Unnamed"));
 
 	text = g_strdup_printf (_("An application wants to create a new keyring called '%s'. "
-	                          "Choose the password you want to use for it."), label);
+				  "Choose the password you want to use for it."), label);
 	g_free (label);
 
 	gcr_prompt_set_message (GCR_PROMPT (self), _("Choose password for new keyring"));
@@ -93,8 +93,8 @@ setup_confirmation_prompt (GkdSecretCreate *self)
 {
 	gcr_prompt_set_message (GCR_PROMPT (self), _("Store passwords unencrypted?"));
 	gcr_prompt_set_description (GCR_PROMPT (self),
-	                            _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
-	                              "They will be accessible by anyone with access to your files."));
+				    _("By choosing to use a blank password, your stored passwords will not be safely encrypted. "
+				      "They will be accessible by anyone with access to your files."));
 }
 
 static gboolean
@@ -178,8 +178,8 @@ unlock_or_complete_this_prompt (GkdSecretCreate *self)
 	prompt = GKD_SECRET_PROMPT (self);
 
 	unlock = gkd_secret_unlock_new (gkd_secret_prompt_get_service (prompt),
-	                                gkd_secret_prompt_get_caller (prompt),
-	                                gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (self)));
+					gkd_secret_prompt_get_caller (prompt),
+					gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (self)));
 	gkd_secret_unlock_queue (unlock, self->result_path);
 
 	/*
@@ -189,8 +189,8 @@ unlock_or_complete_this_prompt (GkdSecretCreate *self)
 	 */
 	if (gkd_secret_unlock_have_queued (unlock)) {
 		gkd_secret_service_publish_dispatch (gkd_secret_prompt_get_service (prompt),
-		                                     gkd_secret_prompt_get_caller (prompt),
-		                                     GKD_SECRET_DISPATCH (unlock));
+						     gkd_secret_prompt_get_caller (prompt),
+						     GKD_SECRET_DISPATCH (unlock));
 		gkd_secret_unlock_call_prompt (unlock, gkd_secret_prompt_get_window_id (prompt));
 	}
 
@@ -200,8 +200,8 @@ unlock_or_complete_this_prompt (GkdSecretCreate *self)
 
 static void
 on_prompt_password_complete (GObject *source,
-                             GAsyncResult *result,
-                             gpointer user_data)
+			     GAsyncResult *result,
+			     gpointer user_data)
 {
 	GkdSecretCreate *self = GKD_SECRET_CREATE (source);
 	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
@@ -230,8 +230,8 @@ on_prompt_password_complete (GObject *source,
 
 static void
 on_prompt_confirmation_complete (GObject *source,
-                                 GAsyncResult *result,
-                                 gpointer user_data)
+				 GAsyncResult *result,
+				 gpointer user_data)
 {
 	GkdSecretCreate *self = GKD_SECRET_CREATE (source);
 	GkdSecretPrompt *prompt = GKD_SECRET_PROMPT (source);
@@ -266,15 +266,15 @@ perform_prompting (GkdSecretCreate *self)
 	} else if (self->master == NULL) {
 		setup_password_prompt (self);
 		gcr_prompt_password_async (GCR_PROMPT (self),
-		                           gkd_secret_prompt_get_cancellable (prompt),
-		                           on_prompt_password_complete, NULL);
+					   gkd_secret_prompt_get_cancellable (prompt),
+					   on_prompt_password_complete, NULL);
 
 	/* Check that the password is not empty */
 	} else if (!self->confirmed) {
 		setup_confirmation_prompt (self);
 		gcr_prompt_confirm_async (GCR_PROMPT (self),
-		                          gkd_secret_prompt_get_cancellable (prompt),
-		                          on_prompt_confirmation_complete, NULL);
+					  gkd_secret_prompt_get_cancellable (prompt),
+					  on_prompt_confirmation_complete, NULL);
 
 	/* Actually create the keyring */
 	} else  if (create_collection_with_secret (self, self->master)) {
@@ -299,7 +299,7 @@ gkd_secret_create_encode_result (GkdSecretPrompt *base)
 	const gchar *path;
 
 	path = self->result_path ? self->result_path : "/";
-        return g_variant_new_variant (g_variant_new_object_path (path));
+	return g_variant_new_variant (g_variant_new_object_path (path));
 }
 
 static void
@@ -323,7 +323,7 @@ gkd_secret_create_finalize (GObject *obj)
 
 static void
 gkd_secret_create_set_property (GObject *obj, guint prop_id, const GValue *value,
-                                GParamSpec *pspec)
+				GParamSpec *pspec)
 {
 	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
 
@@ -345,7 +345,7 @@ gkd_secret_create_set_property (GObject *obj, guint prop_id, const GValue *value
 
 static void
 gkd_secret_create_get_property (GObject *obj, guint prop_id, GValue *value,
-                                GParamSpec *pspec)
+				GParamSpec *pspec)
 {
 	GkdSecretCreate *self = GKD_SECRET_CREATE (obj);
 
@@ -377,11 +377,11 @@ gkd_secret_create_class_init (GkdSecretCreateClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_PKCS11_ATTRIBUTES,
 		g_param_spec_boxed ("pkcs11-attributes", "PKCS11 Attributes", "PKCS11 Attributes",
-		                     GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+				     GCK_TYPE_ATTRIBUTES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_ALIAS,
 		g_param_spec_string ("alias", "Alias", "Collection Alias",
-		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+				     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -390,23 +390,23 @@ gkd_secret_create_class_init (GkdSecretCreateClass *klass)
 
 GkdSecretCreate*
 gkd_secret_create_new (GkdSecretService *service, const gchar *caller,
-                       GckAttributes *attrs, const gchar *alias)
+		       GckAttributes *attrs, const gchar *alias)
 {
 	const gchar *prompter_name;
 
 	prompter_name = g_getenv ("GNOME_KEYRING_TEST_PROMPTER");
 	return g_object_new (GKD_SECRET_TYPE_CREATE,
-	                     "service", service,
-	                     "caller", caller,
-	                     "pkcs11-attributes", attrs,
-	                     "alias", alias,
-	                     "bus-name", prompter_name,
-	                     NULL);
+			     "service", service,
+			     "caller", caller,
+			     "pkcs11-attributes", attrs,
+			     "alias", alias,
+			     "bus-name", prompter_name,
+			     NULL);
 }
 
 GckObject*
 gkd_secret_create_with_credential (GckSession *session, GckAttributes *attrs,
-                                   GckObject *cred, GError **error)
+				   GckObject *cred, GError **error)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	const GckAttribute *attr;
@@ -427,8 +427,8 @@ gkd_secret_create_with_credential (GckSession *session, GckAttributes *attrs,
 
 gchar*
 gkd_secret_create_with_secret (GckAttributes *attrs,
-                               GkdSecretSecret *master,
-                               GError **error)
+			       GkdSecretSecret *master,
+			       GError **error)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckAttributes *atts;
@@ -453,7 +453,7 @@ gkd_secret_create_with_secret (GckAttributes *attrs,
 	/* Create ourselves some credentials */
 	atts = gck_attributes_ref_sink (gck_builder_end (&builder));
 	cred = gkd_secret_session_create_credential (master->session, session,
-	                                             atts, master, error);
+						     atts, master, error);
 	gck_attributes_unref (atts);
 
 	if (cred == NULL)

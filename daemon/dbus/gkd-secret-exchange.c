@@ -61,9 +61,9 @@ gkd_secret_exchange_init (GkdSecretExchange *self)
 
 static void
 gkd_secret_exchange_set_property (GObject *obj,
-                                  guint prop_id,
-                                  const GValue *value,
-                                  GParamSpec *pspec)
+				  guint prop_id,
+				  const GValue *value,
+				  GParamSpec *pspec)
 {
 	GkdSecretExchange *self = GKD_SECRET_EXCHANGE (obj);
 
@@ -77,7 +77,7 @@ gkd_secret_exchange_set_property (GObject *obj,
 		self->service = g_value_get_object (value);
 		g_return_if_fail (self->service);
 		g_object_add_weak_pointer (G_OBJECT (self->service),
-		                           (gpointer*)&(self->service));
+					   (gpointer*)&(self->service));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -87,9 +87,9 @@ gkd_secret_exchange_set_property (GObject *obj,
 
 static void
 gkd_secret_exchange_get_property (GObject *obj,
-                                  guint prop_id,
-                                  GValue *value,
-                                  GParamSpec *pspec)
+				  guint prop_id,
+				  GValue *value,
+				  GParamSpec *pspec)
 {
 	GkdSecretExchange *self = GKD_SECRET_EXCHANGE (obj);
 
@@ -113,7 +113,7 @@ gkd_secret_exchange_finalize (GObject *obj)
 
 	if (self->service) {
 		g_object_remove_weak_pointer (G_OBJECT (self->service),
-		                              (gpointer*)&(self->service));
+					      (gpointer*)&(self->service));
 		self->service = NULL;
 	}
 
@@ -126,9 +126,9 @@ gkd_secret_exchange_finalize (GObject *obj)
 
 static gboolean
 gkd_secret_exchange_generate_exchange_key (GcrSecretExchange *exchange,
-                                           const gchar *scheme,
-                                           guchar **public_key,
-                                           gsize *n_public_key)
+					   const gchar *scheme,
+					   guchar **public_key,
+					   gsize *n_public_key)
 {
 	GkdSecretExchange *self = GKD_SECRET_EXCHANGE (exchange);
 
@@ -137,15 +137,15 @@ gkd_secret_exchange_generate_exchange_key (GcrSecretExchange *exchange,
 	g_clear_object (&self->session);
 	self->session = gkd_secret_session_new (self->service, self->caller);
 	*public_key = gkd_secret_session_begin (self->session,
-	                                        "ietf-ike-grp-modp-1536",
-	                                        n_public_key);
+						"ietf-ike-grp-modp-1536",
+						n_public_key);
 	return (*public_key != NULL) ? TRUE : FALSE;
 }
 
 static gboolean
 gkd_secret_exchange_derive_transport_key (GcrSecretExchange *exchange,
-                                          const guchar *peer,
-                                          gsize n_peer)
+					  const guchar *peer,
+					  gsize n_peer)
 {
 	GkdSecretExchange *self = GKD_SECRET_EXCHANGE (exchange);
 
@@ -154,13 +154,13 @@ gkd_secret_exchange_derive_transport_key (GcrSecretExchange *exchange,
 
 static gboolean
 gkd_secret_exchange_encrypt_transport_data (GcrSecretExchange *exchange,
-                                            GckAllocator allocator,
-                                            const guchar *plain_text,
-                                            gsize n_plain_text,
-                                            guchar **parameter,
-                                            gsize *n_parameter,
-                                            guchar **cipher_text,
-                                            gsize *n_cipher_text)
+					    GckAllocator allocator,
+					    const guchar *plain_text,
+					    gsize n_plain_text,
+					    guchar **parameter,
+					    gsize *n_parameter,
+					    guchar **cipher_text,
+					    gsize *n_cipher_text)
 {
 	g_warning ("Not implemented: a GkdSecretExchange was used to encrypt a secret");
 	return FALSE;
@@ -168,21 +168,21 @@ gkd_secret_exchange_encrypt_transport_data (GcrSecretExchange *exchange,
 
 static gboolean
 gkd_secret_exchange_decrypt_transport_data (GcrSecretExchange *exchange,
-                                            GckAllocator allocator,
-                                            const guchar *cipher_text,
-                                            gsize n_cipher_text,
-                                            const guchar *parameter,
-                                            gsize n_parameter,
-                                            guchar **plain_text,
-                                            gsize *n_plain_text)
+					    GckAllocator allocator,
+					    const guchar *cipher_text,
+					    gsize n_cipher_text,
+					    const guchar *parameter,
+					    gsize n_parameter,
+					    guchar **plain_text,
+					    gsize *n_plain_text)
 {
 	GkdSecretExchange *self = GKD_SECRET_EXCHANGE (exchange);
 
 	gkd_secret_secret_free (self->last_secret);
 
 	self->last_secret = gkd_secret_secret_new (self->session,
-	                                           parameter, n_parameter,
-	                                           cipher_text, n_cipher_text);
+						   parameter, n_parameter,
+						   cipher_text, n_cipher_text);
 
 	*plain_text = NULL;
 	*n_plain_text = 0;
@@ -206,21 +206,21 @@ gkd_secret_exchange_class_init (GkdSecretExchangeClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_CALLER,
 		g_param_spec_string ("caller", "Caller", "DBus caller name",
-		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
+				     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
 
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 		g_param_spec_object ("service", "Service", "Service which owns this session",
-		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+				     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 GkdSecretExchange *
 gkd_secret_exchange_new (GkdSecretService *service,
-                         const gchar *caller)
+			 const gchar *caller)
 {
 	return g_object_new (GKD_TYPE_SECRET_EXCHANGE,
-	                     "service", service,
-	                     "caller", caller,
-	                     NULL);
+			     "service", service,
+			     "caller", caller,
+			     NULL);
 }
 
 GkdSecretSecret *

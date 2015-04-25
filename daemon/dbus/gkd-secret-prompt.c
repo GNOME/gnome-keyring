@@ -59,7 +59,7 @@ struct _GkdSecretPromptPrivate {
 
 static void gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface);
 G_DEFINE_TYPE_WITH_CODE (GkdSecretPrompt, gkd_secret_prompt, GCR_TYPE_SYSTEM_PROMPT,
-                         G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
+			 G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
 
 static guint unique_prompt_number = 0;
 
@@ -77,8 +77,8 @@ emit_completed (GkdSecretPrompt *self, gboolean dismissed)
 
 static void
 on_system_prompt_inited (GObject *source,
-                         GAsyncResult *result,
-                         gpointer user_data)
+			 GAsyncResult *result,
+			 gpointer user_data)
 {
 	GkdSecretPrompt *self = GKD_SECRET_PROMPT (source);
 	GkdSecretPromptClass *klass;
@@ -120,7 +120,7 @@ prompt_method_prompt (GkdExportedPrompt *skeleton,
 	gcr_prompt_set_caller_window (GCR_PROMPT (self), window_id);
 
 	g_async_initable_init_async (G_ASYNC_INITABLE (self), G_PRIORITY_DEFAULT,
-	                             self->pv->cancellable, on_system_prompt_inited, NULL);
+				     self->pv->cancellable, on_system_prompt_inited, NULL);
 
 	gkd_exported_prompt_complete_prompt (skeleton, invocation);
 	return TRUE;
@@ -174,12 +174,12 @@ gkd_secret_prompt_constructed (GObject *obj)
 	/* Set the exchange for the prompt */
 	g_object_set (self, "secret-exchange", self->pv->exchange, NULL);
 
-        self->pv->skeleton = gkd_exported_prompt_skeleton_new ();
-        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->pv->skeleton),
-                                          gkd_secret_service_get_connection (self->pv->service), self->pv->object_path,
-                                          &error);
+	self->pv->skeleton = gkd_exported_prompt_skeleton_new ();
+	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->pv->skeleton),
+					  gkd_secret_service_get_connection (self->pv->service), self->pv->object_path,
+					  &error);
 
-        if (error != NULL) {
+	if (error != NULL) {
 		g_warning ("could not register secret prompt on session bus: %s", error->message);
 		g_error_free (error);
 	}
@@ -209,7 +209,7 @@ gkd_secret_prompt_dispose (GObject *obj)
 
 	if (self->pv->service) {
 		g_object_remove_weak_pointer (G_OBJECT (self->pv->service),
-		                              (gpointer*)&(self->pv->service));
+					      (gpointer*)&(self->pv->service));
 		self->pv->service = NULL;
 	}
 
@@ -236,7 +236,7 @@ gkd_secret_prompt_finalize (GObject *obj)
 
 static void
 gkd_secret_prompt_set_property (GObject *obj, guint prop_id, const GValue *value,
-                                GParamSpec *pspec)
+				GParamSpec *pspec)
 {
 	GkdSecretPrompt *self = GKD_SECRET_PROMPT (obj);
 
@@ -250,7 +250,7 @@ gkd_secret_prompt_set_property (GObject *obj, guint prop_id, const GValue *value
 		self->pv->service = g_value_get_object (value);
 		g_return_if_fail (self->pv->service);
 		g_object_add_weak_pointer (G_OBJECT (self->pv->service),
-		                           (gpointer*)&(self->pv->service));
+					   (gpointer*)&(self->pv->service));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -260,7 +260,7 @@ gkd_secret_prompt_set_property (GObject *obj, guint prop_id, const GValue *value
 
 static void
 gkd_secret_prompt_get_property (GObject *obj, guint prop_id, GValue *value,
-                                GParamSpec *pspec)
+				GParamSpec *pspec)
 {
 	GkdSecretPrompt *self = GKD_SECRET_PROMPT (obj);
 
@@ -298,15 +298,15 @@ gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_CALLER,
 		g_param_spec_string ("caller", "Caller", "DBus caller name",
-		                     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
+				     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
 
 	g_object_class_install_property (gobject_class, PROP_OBJECT_PATH,
-	        g_param_spec_pointer ("object-path", "Object Path", "DBus Object Path",
-		                      G_PARAM_READABLE));
+		g_param_spec_pointer ("object-path", "Object Path", "DBus Object Path",
+				      G_PARAM_READABLE));
 
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 		g_param_spec_object ("service", "Service", "Service which owns this prompt",
-		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+				     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -382,7 +382,7 @@ gkd_secret_prompt_dismiss (GkdSecretPrompt *self)
 
 void
 gkd_secret_prompt_dismiss_with_error (GkdSecretPrompt *self,
-                                      GError *error)
+				      GError *error)
 {
 	g_warning ("prompting failed: %s", egg_error_message (error));
 	gkd_secret_prompt_dismiss (self);

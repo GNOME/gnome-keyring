@@ -61,7 +61,7 @@ typedef enum _DataType {
 
 static gboolean
 property_to_attribute (const gchar *prop_name, const gchar *interface,
-                       CK_ATTRIBUTE_TYPE *attr_type, DataType *data_type)
+		       CK_ATTRIBUTE_TYPE *attr_type, DataType *data_type)
 {
 	g_return_val_if_fail (prop_name, FALSE);
 	g_assert (attr_type);
@@ -166,15 +166,15 @@ iter_append_string (const GckAttribute *attr)
 
 static gboolean
 iter_get_string (GVariant *variant,
-                 gulong attr_type,
-                 GckBuilder *builder)
+		 gulong attr_type,
+		 GckBuilder *builder)
 {
 	const char *value;
 
 	g_assert (variant != NULL);
 	g_assert (builder != NULL);
 
-        value = g_variant_get_string (variant, NULL);
+	value = g_variant_get_string (variant, NULL);
 	if (value == NULL)
 		value = "";
 	gck_builder_add_string (builder, attr_type, value);
@@ -191,15 +191,15 @@ iter_append_bool (const GckAttribute *attr)
 
 static gboolean
 iter_get_bool (GVariant *variant,
-               gulong attr_type,
-               GckBuilder *builder)
+	       gulong attr_type,
+	       GckBuilder *builder)
 {
 	gboolean value;
 
 	g_assert (variant != NULL);
 	g_assert (builder != NULL);
 
-        value = g_variant_get_boolean (variant);
+	value = g_variant_get_boolean (variant);
 	gck_builder_add_boolean (builder, attr_type, value);
 	return TRUE;
 }
@@ -246,8 +246,8 @@ iter_append_time (const GckAttribute *attr)
 
 static gboolean
 iter_get_time (GVariant *variant,
-               gulong attr_type,
-               GckBuilder *builder)
+	       gulong attr_type,
+	       GckBuilder *builder)
 {
 	time_t time;
 	struct tm tm;
@@ -257,7 +257,7 @@ iter_get_time (GVariant *variant,
 	g_assert (variant != NULL);
 	g_assert (builder != NULL);
 
-        value = g_variant_get_uint64 (variant);
+	value = g_variant_get_uint64 (variant);
 	if (value == 0) {
 		gck_builder_add_empty (builder, attr_type);
 		return TRUE;
@@ -325,12 +325,12 @@ iter_append_fields (const GckAttribute *attr)
 
 static gboolean
 iter_get_fields (GVariant *variant,
-                 gulong attr_type,
-                 GckBuilder *builder)
+		 gulong attr_type,
+		 GckBuilder *builder)
 {
 	GString *result;
 	const gchar *key, *value;
-        GVariantIter iter;
+	GVariantIter iter;
 
 	g_assert (variant != NULL);
 	g_assert (builder != NULL);
@@ -338,9 +338,9 @@ iter_get_fields (GVariant *variant,
 	g_return_val_if_fail (g_variant_type_is_array (g_variant_get_type (variant)), FALSE);
 
 	result = g_string_new ("");
-        g_variant_iter_init (&iter, variant);
+	g_variant_iter_init (&iter, variant);
 
-        while (g_variant_iter_next (&iter, "{&s&s}", &key, &value)) {
+	while (g_variant_iter_next (&iter, "{&s&s}", &key, &value)) {
 		/* Key */
 		g_string_append (result, key);
 		g_string_append_c (result, '\0');
@@ -357,7 +357,7 @@ iter_get_fields (GVariant *variant,
 
 static GVariant *
 iter_append_variant (DataType data_type,
-                     const GckAttribute *attr)
+		     const GckAttribute *attr)
 {
 	IterAppendFunc func = NULL;
 
@@ -386,13 +386,13 @@ iter_append_variant (DataType data_type,
 
 static gboolean
 iter_get_variant (GVariant *variant,
-                  DataType data_type,
-                  gulong attr_type,
-                  GckBuilder *builder)
+		  DataType data_type,
+		  gulong attr_type,
+		  GckBuilder *builder)
 {
 	IterGetFunc func = NULL;
 	gboolean ret;
-        const GVariantType *sig;
+	const GVariantType *sig;
 
 	g_assert (variant != NULL);
 	g_assert (builder != NULL);
@@ -400,26 +400,26 @@ iter_get_variant (GVariant *variant,
 	switch (data_type) {
 	case DATA_TYPE_STRING:
 		func = iter_get_string;
-                sig = G_VARIANT_TYPE_STRING;
+		sig = G_VARIANT_TYPE_STRING;
 		break;
 	case DATA_TYPE_BOOL:
 		func = iter_get_bool;
-                sig = G_VARIANT_TYPE_BOOLEAN;
+		sig = G_VARIANT_TYPE_BOOLEAN;
 		break;
 	case DATA_TYPE_TIME:
 		func = iter_get_time;
-                sig = G_VARIANT_TYPE_UINT64;
+		sig = G_VARIANT_TYPE_UINT64;
 		break;
 	case DATA_TYPE_FIELDS:
 		func = iter_get_fields;
-                sig = G_VARIANT_TYPE ("a{ss}");
+		sig = G_VARIANT_TYPE ("a{ss}");
 		break;
 	default:
 		g_assert (FALSE);
 		break;
 	}
 
-        ret = g_variant_type_equal (g_variant_get_type (variant), sig);
+	ret = g_variant_type_equal (g_variant_get_type (variant), sig);
 	if (ret == FALSE)
 		return FALSE;
 
@@ -443,19 +443,19 @@ gkd_secret_property_get_type (const gchar *property, CK_ATTRIBUTE_TYPE *type)
 
 gboolean
 gkd_secret_property_parse_all (GVariant *array,
-                               const gchar *interface,
-                               GckBuilder *builder)
+			       const gchar *interface,
+			       GckBuilder *builder)
 {
 	CK_ATTRIBUTE_TYPE attr_type;
 	const char *name;
 	DataType data_type;
-        GVariantIter iter;
-        GVariant *variant;
+	GVariantIter iter;
+	GVariant *variant;
 
 	g_return_val_if_fail (array != NULL, FALSE);
 	g_return_val_if_fail (builder != NULL, FALSE);
 
-        g_variant_iter_init (&iter, array);
+	g_variant_iter_init (&iter, array);
 
 	while (g_variant_iter_next (&iter, "{&sv}", &name, &variant)) {
 		/* Property interface.name */
@@ -517,8 +517,8 @@ gkd_secret_property_append_variant (const GckAttribute *attr)
 
 gboolean
 gkd_secret_property_parse_variant (GVariant *variant,
-                                   const gchar *property,
-                                   GckBuilder *builder)
+				   const gchar *property,
+				   GckBuilder *builder)
 {
 	CK_ATTRIBUTE_TYPE attr_type;
 	DataType data_type;
@@ -535,7 +535,7 @@ gkd_secret_property_parse_variant (GVariant *variant,
 
 gboolean
 gkd_secret_property_parse_fields (GVariant *variant,
-                                  GckBuilder *builder)
+				  GckBuilder *builder)
 {
 	g_return_val_if_fail (variant != NULL, FALSE);
 	g_return_val_if_fail (builder != NULL, FALSE);

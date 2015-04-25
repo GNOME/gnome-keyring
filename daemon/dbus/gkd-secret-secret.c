@@ -34,16 +34,16 @@
 
 GkdSecretSecret *
 gkd_secret_secret_new (GkdSecretSession *session,
-                       gconstpointer parameter,
-                       gsize n_parameter,
-                       gconstpointer value,
-                       gsize n_value)
+		       gconstpointer parameter,
+		       gsize n_parameter,
+		       gconstpointer value,
+		       gsize n_value)
 {
 	return gkd_secret_secret_new_take_memory (session,
-	                                          g_memdup (parameter, n_parameter),
-	                                          n_parameter,
-	                                          g_memdup (value, n_value),
-	                                          n_value);
+						  g_memdup (parameter, n_parameter),
+						  n_parameter,
+						  g_memdup (value, n_value),
+						  n_value);
 }
 
 static void
@@ -56,8 +56,8 @@ destroy_with_owned_memory (gpointer data)
 
 GkdSecretSecret*
 gkd_secret_secret_new_take_memory (GkdSecretSession *session,
-                                   gpointer parameter, gsize n_parameter,
-                                   gpointer value, gsize n_value)
+				   gpointer parameter, gsize n_parameter,
+				   gpointer value, gsize n_value)
 {
 	GkdSecretSecret *secret;
 
@@ -78,35 +78,35 @@ gkd_secret_secret_new_take_memory (GkdSecretSession *session,
 
 GkdSecretSecret*
 gkd_secret_secret_parse (GkdSecretService *service,
-                         const char *sender,
-                         GVariant *variant,
-                         GError **error)
+			 const char *sender,
+			 GVariant *variant,
+			 GError **error)
 {
 	GkdSecretSecret *secret = NULL;
 	GkdSecretSession *session;
 	const char *parameter, *value, *path, *content_type;
-        gsize n_parameter, n_value;
-        GVariant *parameter_variant, *value_variant;
+	gsize n_parameter, n_value;
+	GVariant *parameter_variant, *value_variant;
 
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (variant, NULL);
 	g_return_val_if_fail (sender, NULL);
 
-        g_variant_get (variant, "(&o^&ay^&ay&s)", &path, NULL, NULL, &content_type);
+	g_variant_get (variant, "(&o^&ay^&ay&s)", &path, NULL, NULL, &content_type);
 
-        /* parameter */
-        parameter_variant = g_variant_get_child_value (variant, 1);
-        parameter = g_variant_get_fixed_array (parameter_variant, &n_parameter, sizeof (guint8));
+	/* parameter */
+	parameter_variant = g_variant_get_child_value (variant, 1);
+	parameter = g_variant_get_fixed_array (parameter_variant, &n_parameter, sizeof (guint8));
 
-        /* value */
-        value_variant = g_variant_get_child_value (variant, 2);
-        value = g_variant_get_fixed_array (value_variant, &n_value, sizeof (guint8));
+	/* value */
+	value_variant = g_variant_get_child_value (variant, 2);
+	value = g_variant_get_fixed_array (value_variant, &n_value, sizeof (guint8));
 
 	/* Try to lookup the session */
 	session = gkd_secret_service_lookup_session (service, path, sender);
 	if (session == NULL) {
 		g_set_error_literal (error, GKD_SECRET_ERROR,
-                                     GKD_SECRET_ERROR_NO_SESSION,
+				     GKD_SECRET_ERROR_NO_SESSION,
 				     "The session wrapping the secret does not exist");
 		goto out;
 	}
@@ -119,8 +119,8 @@ gkd_secret_secret_parse (GkdSecretService *service,
 	secret->n_value = n_value;
 
  out:
-        g_variant_unref (parameter_variant);
-        g_variant_unref (value_variant);
+	g_variant_unref (parameter_variant);
+	g_variant_unref (value_variant);
 
 	return secret;
 }

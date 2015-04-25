@@ -196,21 +196,21 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 		g_variant_unref (acquire_variant);
 
 		switch (res) {
-               /* We acquired the service name */
+		/* We acquired the service name */
 		case 1: /* DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER */
 		case 4: /* DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER */
-                       acquired_service = TRUE;
-                       break;
-               /* Another daemon is running */
+		       acquired_service = TRUE;
+		       break;
+		/* Another daemon is running */
 		case 2: /* DBUS_REQUEST_NAME_REPLY_IN_QUEUE */
 		case 3: /* DBUS_REQUEST_NAME_REPLY_EXISTS */
-                       acquired_service = FALSE;
-                       break;
-               default:
-                       acquired_service = FALSE;
-                       g_return_val_if_reached (FALSE);
-                       break;
-               };
+		       acquired_service = FALSE;
+		       break;
+		default:
+		       acquired_service = FALSE;
+		       g_return_val_if_reached (FALSE);
+		       break;
+	       };
 	}
 
 	*acquired = acquired_service;

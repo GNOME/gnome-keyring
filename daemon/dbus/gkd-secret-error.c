@@ -29,22 +29,22 @@
 #include <glib.h>
 
 static const GDBusErrorEntry gkd_secret_error_entries[] = {
-        { GKD_SECRET_ERROR_ALREADY_EXISTS, SECRET_INTERFACE_PREFIX "Error.AlreadyExists" },
-        { GKD_SECRET_ERROR_IS_LOCKED, SECRET_INTERFACE_PREFIX "Error.IsLocked" },
-        { GKD_SECRET_ERROR_NO_SESSION, SECRET_INTERFACE_PREFIX "Error.NoSession" },
-        { GKD_SECRET_ERROR_NO_SUCH_OBJECT, SECRET_INTERFACE_PREFIX "Error.NoSuchObject" }
+	{ GKD_SECRET_ERROR_ALREADY_EXISTS, SECRET_INTERFACE_PREFIX "Error.AlreadyExists" },
+	{ GKD_SECRET_ERROR_IS_LOCKED, SECRET_INTERFACE_PREFIX "Error.IsLocked" },
+	{ GKD_SECRET_ERROR_NO_SESSION, SECRET_INTERFACE_PREFIX "Error.NoSession" },
+	{ GKD_SECRET_ERROR_NO_SUCH_OBJECT, SECRET_INTERFACE_PREFIX "Error.NoSuchObject" }
 };
 
 GQuark
 gkd_secret_error_quark (void)
 {
-        static volatile gsize quark_volatile = 0;
+	static volatile gsize quark_volatile = 0;
 
-        g_dbus_error_register_error_domain ("gkd_secret_error",
-                                            &quark_volatile,
-                                            gkd_secret_error_entries,
-                                            G_N_ELEMENTS (gkd_secret_error_entries));
-        return quark_volatile;
+	g_dbus_error_register_error_domain ("gkd_secret_error",
+					    &quark_volatile,
+					    gkd_secret_error_entries,
+					    G_N_ELEMENTS (gkd_secret_error_entries));
+	return quark_volatile;
 }
 
 static const GDBusErrorEntry gkd_secret_daemon_error_entries[] = {
@@ -54,40 +54,40 @@ static const GDBusErrorEntry gkd_secret_daemon_error_entries[] = {
 GQuark
 gkd_secret_daemon_error_quark (void)
 {
-        static volatile gsize quark_volatile = 0;
+	static volatile gsize quark_volatile = 0;
 
-        g_dbus_error_register_error_domain ("gkd_secret_daemon_error",
-                                            &quark_volatile,
-                                            gkd_secret_daemon_error_entries,
-                                            G_N_ELEMENTS (gkd_secret_daemon_error_entries));
-        return quark_volatile;
+	g_dbus_error_register_error_domain ("gkd_secret_daemon_error",
+					    &quark_volatile,
+					    gkd_secret_daemon_error_entries,
+					    G_N_ELEMENTS (gkd_secret_daemon_error_entries));
+	return quark_volatile;
 }
 
 void
 gkd_secret_propagate_error (GDBusMethodInvocation *invocation,
-                            const gchar *description,
-                            GError *error)
+			    const gchar *description,
+			    GError *error)
 {
 	g_return_if_fail (error != NULL);
 
 	if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN) ||
 	    g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 		g_dbus_method_invocation_return_error_literal (invocation,
-                                                               GKD_SECRET_DAEMON_ERROR,
+							       GKD_SECRET_DAEMON_ERROR,
 							       GKD_SECRET_DAEMON_ERROR_DENIED,
 							       "The password was invalid");
 	} else if (g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_INVALID) ||
-	           g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
-	           g_error_matches (error, GCK_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
+		   g_error_matches (error, GCK_ERROR, CKR_WRAPPED_KEY_LEN_RANGE) ||
+		   g_error_matches (error, GCK_ERROR, CKR_MECHANISM_PARAM_INVALID)) {
 		g_dbus_method_invocation_return_error_literal (invocation,
-                                                               G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_INVALID_ARGS,
-                                                               "The secret was transferred or encrypted in an invalid way.");
+							       G_DBUS_ERROR,
+							       G_DBUS_ERROR_INVALID_ARGS,
+							       "The secret was transferred or encrypted in an invalid way.");
 	} else {
 		g_warning ("%s: %s", description, egg_error_message (error));
 		g_dbus_method_invocation_return_error_literal (invocation,
-                                                               G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_FAILED,
+							       G_DBUS_ERROR,
+							       G_DBUS_ERROR_FAILED,
 							       description);
 	}
 

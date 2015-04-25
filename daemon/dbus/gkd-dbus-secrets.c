@@ -102,7 +102,7 @@ gkd_dbus_secrets_startup (void)
 
 	if (error != NULL) {
 		g_message ("couldn't request name '%s' on session bus: %s",
-		           service, error->message);
+			   service, error->message);
 		g_error_free (error);
 	} else {
 		g_variant_get (request_variant, "(u)", &res);
@@ -127,7 +127,7 @@ gkd_dbus_secrets_startup (void)
 
 	g_return_val_if_fail (!secrets_service, FALSE);
 	secrets_service = g_object_new (GKD_SECRET_TYPE_SERVICE,
-	                                "connection", dbus_conn, "pkcs11-slot", slot, NULL);
+					"connection", dbus_conn, "pkcs11-slot", slot, NULL);
 
 	g_object_unref (slot);
 	return TRUE;

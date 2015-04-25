@@ -87,7 +87,7 @@ on_object_path_append_to_builder (GkdSecretObjects *self,
 static GVariant *
 gkd_secret_objects_append_item_paths (GkdSecretObjects *self,
 				      const gchar *caller,
-                                      const gchar *base)
+				      const gchar *base)
 {
 	GVariantBuilder builder;
 
@@ -102,7 +102,7 @@ gkd_secret_objects_append_item_paths (GkdSecretObjects *self,
 
 static gchar **
 gkd_secret_objects_get_collection_items (GkdSecretObjects *self,
-                                         const gchar *collection_path)
+					 const gchar *collection_path)
 {
 	GVariant *items_variant;
 	gchar **items;
@@ -117,9 +117,9 @@ gkd_secret_objects_get_collection_items (GkdSecretObjects *self,
 static gboolean
 object_property_set (GkdSecretObjects *objects,
 		     GckObject *object,
-                     const gchar *prop_name,
-                     GVariant *value,
-                     GError **error_out)
+		     const gchar *prop_name,
+		     GVariant *value,
+		     GError **error_out)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
@@ -132,15 +132,15 @@ object_property_set (GkdSecretObjects *objects,
 			     "Object does not have the '%s' property",
 			     prop_name);
 		return FALSE;
-        }
+	}
 
 	/* Retrieve the actual attribute value */
 	if (!gkd_secret_property_parse_variant (value, prop_name, &builder)) {
 		gck_builder_clear (&builder);
-                g_set_error (error_out, G_DBUS_ERROR,
-                             G_DBUS_ERROR_INVALID_ARGS,
-                             "The property type or value was invalid: %s",
-                             prop_name);
+		g_set_error (error_out, G_DBUS_ERROR,
+			     G_DBUS_ERROR_INVALID_ARGS,
+			     "The property type or value was invalid: %s",
+			     prop_name);
 		return FALSE;
 	}
 
@@ -166,7 +166,7 @@ object_property_set (GkdSecretObjects *objects,
 static GVariant *
 object_property_get (GkdSecretObjects *objects,
 		     GckObject *object,
-                     const gchar *prop_name,
+		     const gchar *prop_name,
 		     GError **error_out)
 {
 	GError *error = NULL;
@@ -208,7 +208,7 @@ gkd_secret_collection_skeleton_set_property_dbus (GDBusConnection *connection,
 						  const gchar *object_path,
 						  const gchar *interface_name,
 						  const gchar *property_name,
-                                                  GVariant *value,
+						  GVariant *value,
 						  GError **error,
 						  gpointer user_data)
 {
@@ -314,7 +314,7 @@ gkd_secret_item_skeleton_set_property_dbus (GDBusConnection *connection,
 	if (!object)
 		return FALSE;
 
-        if (!object_property_set (self->objects, object, property_name, value, error)) {
+	if (!object_property_set (self->objects, object, property_name, value, error)) {
 		g_object_unref (object);
 		return FALSE;
 	}
@@ -398,7 +398,7 @@ enum {
 };
 
 static gchar *    object_path_for_item          (const gchar *base,
-                                                 GckObject *item);
+						 GckObject *item);
 
 static gchar *    object_path_for_collection    (GckObject *collection);
 
@@ -452,7 +452,7 @@ secret_objects_lookup_gck_object_for_path (GkdSecretObjects *self,
 	gchar *c_ident;
 	gchar *i_ident;
 	GckObject *object = NULL;
-        GError *error = NULL;
+	GError *error = NULL;
 
 	g_return_val_if_fail (path, FALSE);
 
@@ -648,7 +648,7 @@ item_method_set_secret (GkdExportedItem *skeleton,
 
 static void
 item_cleanup_search_results (GckSession *session, GList *items,
-                             GList **locked, GList **unlocked)
+			     GList **locked, GList **unlocked)
 {
 	GError *error = NULL;
 	gpointer value;
@@ -694,9 +694,9 @@ collection_method_search_items (GkdExportedCollection *skeleton,
 
 static GckObject*
 collection_find_matching_item (GkdSecretObjects *self,
-                               GckSession *session,
-                               const gchar *identifier,
-                               const GckAttribute *fields)
+			       GckSession *session,
+			       const gchar *identifier,
+			       const GckAttribute *fields)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckObject *result = NULL;
@@ -734,7 +734,7 @@ collection_find_matching_item (GkdSecretObjects *self,
 
 static gchar *
 object_path_for_item (const gchar *base,
-                      GckObject *item)
+		      GckObject *item)
 {
 	GError *error = NULL;
 	gpointer identifier;
@@ -935,8 +935,8 @@ collection_method_delete (GkdExportedCollection *skeleton,
 		g_dbus_method_invocation_return_error (invocation,
 						       G_DBUS_ERROR,
 						       G_DBUS_ERROR_FAILED,
-		                                       "Couldn't delete collection: %s",
-		                                       egg_error_message (error));
+						       "Couldn't delete collection: %s",
+						       egg_error_message (error));
 		g_clear_error (&error);
 		goto cleanup;
 	}
@@ -985,7 +985,7 @@ gkd_secret_objects_dispose (GObject *obj)
 
 	if (self->service) {
 		g_object_remove_weak_pointer (G_OBJECT (self->service),
-		                              (gpointer*)&(self->service));
+					      (gpointer*)&(self->service));
 		self->service = NULL;
 	}
 
@@ -1008,7 +1008,7 @@ gkd_secret_objects_finalize (GObject *obj)
 
 static void
 gkd_secret_objects_set_property (GObject *obj, guint prop_id, const GValue *value,
-                                 GParamSpec *pspec)
+				 GParamSpec *pspec)
 {
 	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
 
@@ -1023,7 +1023,7 @@ gkd_secret_objects_set_property (GObject *obj, guint prop_id, const GValue *valu
 		self->service = g_value_get_object (value);
 		g_return_if_fail (self->service);
 		g_object_add_weak_pointer (G_OBJECT (self->service),
-		                           (gpointer*)&(self->service));
+					   (gpointer*)&(self->service));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -1033,7 +1033,7 @@ gkd_secret_objects_set_property (GObject *obj, guint prop_id, const GValue *valu
 
 static void
 gkd_secret_objects_get_property (GObject *obj, guint prop_id, GValue *value,
-                                     GParamSpec *pspec)
+				     GParamSpec *pspec)
 {
 	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
 
@@ -1061,12 +1061,12 @@ gkd_secret_objects_class_init (GkdSecretObjectsClass *klass)
 	gobject_class->get_property = gkd_secret_objects_get_property;
 
 	g_object_class_install_property (gobject_class, PROP_PKCS11_SLOT,
-	        g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
-	                             GCK_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
+				     GCK_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 		g_param_spec_object ("service", "Service", "Service which owns this objects",
-		                     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+				     GKD_SECRET_TYPE_SERVICE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -1082,7 +1082,7 @@ gkd_secret_objects_get_pkcs11_slot (GkdSecretObjects *self)
 
 GckObject*
 gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *caller,
-                                      const gchar *path)
+				      const gchar *path)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckObject *object = NULL;
@@ -1125,7 +1125,7 @@ gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *calle
 
 GckObject*
 gkd_secret_objects_lookup_item (GkdSecretObjects *self, const gchar *caller,
-                                const gchar *path)
+				const gchar *path)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckObject *object = NULL;
@@ -1169,10 +1169,10 @@ gkd_secret_objects_lookup_item (GkdSecretObjects *self, const gchar *caller,
 
 static void
 objects_foreach_item (GkdSecretObjects *self,
-                      GList *items,
-                      const gchar *base,
-                      GkdSecretObjectsForeach callback,
-                      gpointer user_data)
+		      GList *items,
+		      const gchar *base,
+		      GkdSecretObjectsForeach callback,
+		      gpointer user_data)
 {
 	gchar *path;
 	GList *l;
@@ -1187,9 +1187,9 @@ objects_foreach_item (GkdSecretObjects *self,
 void
 gkd_secret_objects_foreach_item (GkdSecretObjects *self,
 				 const gchar *caller,
-                                 const gchar *base,
-                                 GkdSecretObjectsForeach callback,
-                                 gpointer user_data)
+				 const gchar *base,
+				 GkdSecretObjectsForeach callback,
+				 gpointer user_data)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckSession *session;
@@ -1231,8 +1231,8 @@ gkd_secret_objects_foreach_item (GkdSecretObjects *self,
 void
 gkd_secret_objects_foreach_collection (GkdSecretObjects *self,
 				       const gchar *caller,
-                                       GkdSecretObjectsForeach callback,
-                                       gpointer user_data)
+				       GkdSecretObjectsForeach callback,
+				       gpointer user_data)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckSession *session;
@@ -1297,10 +1297,10 @@ gkd_secret_objects_append_collection_paths (GkdSecretObjects *self,
 
 gboolean
 gkd_secret_objects_handle_search_items (GkdSecretObjects *self,
-                                        GDBusMethodInvocation *invocation,
-                                        GVariant *attributes,
-                                        const gchar *base,
-                                        gboolean separate_locked)
+					GDBusMethodInvocation *invocation,
+					GVariant *attributes,
+					const gchar *base,
+					gboolean separate_locked)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckObject *search;
@@ -1315,11 +1315,11 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self,
 
 	if (!gkd_secret_property_parse_fields (attributes, &builder)) {
 		gck_builder_clear (&builder);
-                g_dbus_method_invocation_return_error_literal (invocation,
-                                                               G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_FAILED,
-                                                               "Invalid data in attributes argument");
-                return TRUE;
+		g_dbus_method_invocation_return_error_literal (invocation,
+							       G_DBUS_ERROR,
+							       G_DBUS_ERROR_FAILED,
+							       "Invalid data in attributes argument");
+		return TRUE;
 	}
 
 	if (base != NULL) {
@@ -1343,8 +1343,8 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self,
 		g_dbus_method_invocation_return_error (invocation,
 						       G_DBUS_ERROR,
 						       G_DBUS_ERROR_FAILED,
-		                                       "Couldn't search for items: %s",
-		                                       egg_error_message (error));
+						       "Couldn't search for items: %s",
+						       egg_error_message (error));
 		g_clear_error (&error);
 		return TRUE;
 	}
@@ -1358,8 +1358,8 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self,
 		g_dbus_method_invocation_return_error (invocation,
 						       G_DBUS_ERROR,
 						       G_DBUS_ERROR_FAILED,
-		                                       "Couldn't retrieve matched items: %s",
-		                                       egg_error_message (error));
+						       "Couldn't retrieve matched items: %s",
+						       egg_error_message (error));
 		g_clear_error (&error);
 		return TRUE;
 	}
@@ -1461,9 +1461,9 @@ gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self,
 
 static void
 on_each_item_emit_locked (GkdSecretObjects *self,
-                          const gchar *path,
-                          GckObject *object,
-                          gpointer user_data)
+			  const gchar *path,
+			  GckObject *object,
+			  gpointer user_data)
 {
 	GkdExportedItem *skeleton;
 	GVariant *value;
@@ -1486,12 +1486,12 @@ on_each_item_emit_locked (GkdSecretObjects *self,
 	gkd_exported_item_set_locked (skeleton, g_variant_get_boolean (value));
 	g_variant_unref (value);
 
-        gkd_secret_objects_emit_item_changed (self, object);
+	gkd_secret_objects_emit_item_changed (self, object);
 }
 
 void
 gkd_secret_objects_emit_collection_locked (GkdSecretObjects *self,
-                                           GckObject *collection)
+					   GckObject *collection)
 {
 	gchar *collection_path;
 	GkdExportedCollection *skeleton;
@@ -1500,7 +1500,7 @@ gkd_secret_objects_emit_collection_locked (GkdSecretObjects *self,
 
 	collection_path = object_path_for_collection (collection);
 	gkd_secret_objects_foreach_item (self, NULL, collection_path,
-	                                 on_each_item_emit_locked, NULL);
+					 on_each_item_emit_locked, NULL);
 
 	skeleton = g_hash_table_lookup (self->collections_to_skeletons, collection_path);
 	if (skeleton == NULL) {
@@ -1520,7 +1520,7 @@ gkd_secret_objects_emit_collection_locked (GkdSecretObjects *self,
 	g_variant_unref (value);
 
 	gkd_secret_service_emit_collection_changed (self->service, collection_path);
-        g_free (collection_path);
+	g_free (collection_path);
 }
 
 static void
@@ -1567,8 +1567,8 @@ gkd_secret_objects_unregister_item (GkdSecretObjects *self,
 
 void
 gkd_secret_objects_emit_item_created (GkdSecretObjects *self,
-                                      GckObject *collection,
-                                      const gchar *item_path)
+				      GckObject *collection,
+				      const gchar *item_path)
 {
 	GkdExportedCollection *skeleton;
 	gchar *collection_path;
@@ -1594,7 +1594,7 @@ gkd_secret_objects_emit_item_created (GkdSecretObjects *self,
 
 void
 gkd_secret_objects_emit_item_changed (GkdSecretObjects *self,
-                                      GckObject *item)
+				      GckObject *item)
 {
 	GkdExportedCollection *skeleton;
 	gchar *collection_path;
@@ -1616,8 +1616,8 @@ gkd_secret_objects_emit_item_changed (GkdSecretObjects *self,
 
 void
 gkd_secret_objects_emit_item_deleted (GkdSecretObjects *self,
-                                      GckObject *collection,
-                                      const gchar *item_path)
+				      GckObject *collection,
+				      const gchar *item_path)
 {
 	GkdExportedCollection *skeleton;
 	gchar *collection_path;
@@ -1643,7 +1643,7 @@ gkd_secret_objects_emit_item_deleted (GkdSecretObjects *self,
 
 static void
 gkd_secret_objects_init_collection_items (GkdSecretObjects *self,
-                                          const gchar *collection_path)
+					  const gchar *collection_path)
 {
 	gchar **items;
 	gint idx;
@@ -1686,7 +1686,7 @@ gkd_secret_objects_register_collection (GkdSecretObjects *self,
 	g_signal_connect (skeleton, "handle-search-items",
 			  G_CALLBACK (collection_method_search_items), self);
 
-        gkd_secret_objects_init_collection_items (self, collection_path);
+	gkd_secret_objects_init_collection_items (self, collection_path);
 }
 
 void

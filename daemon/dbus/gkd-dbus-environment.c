@@ -115,5 +115,5 @@ gkd_dbus_environment_init (GDBusConnection *conn)
 		setenv_request (conn, *envp);
 
 	gkd_util_watch_environment (on_watch_environment, g_object_ref (conn),
-	                            (GDestroyNotify) g_object_unref);
+				    (GDestroyNotify) g_object_unref);
 }

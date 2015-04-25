@@ -97,7 +97,7 @@ gkd_secret_service_skeleton_class_init (GkdSecretServiceSkeletonClass *klass)
 {
 	GObjectClass *oclass = G_OBJECT_CLASS (klass);
 	oclass->get_property = gkd_secret_service_skeleton_get_property;
-        oclass->set_property = gkd_secret_service_skeleton_set_property;
+	oclass->set_property = gkd_secret_service_skeleton_set_property;
 	gkd_exported_service_override_properties (oclass, PROP_COLLECTIONS);
 }
 
@@ -334,9 +334,9 @@ ensure_client_for_sender (gpointer user_data)
 
 static GDBusMessage *
 service_message_filter (GDBusConnection *connection,
-                        GDBusMessage *message,
-                        gboolean incoming,
-                        gpointer user_data)
+			GDBusMessage *message,
+			gboolean incoming,
+			gpointer user_data)
 {
 	GkdSecretService *self = user_data;
 	MessageFilterData *data;
@@ -373,23 +373,23 @@ service_method_open_session (GkdExportedService *skeleton,
 	gchar *result = NULL;
 	GError *error = NULL;
 	const gchar *caller;
-        GVariant *input_payload;
+	GVariant *input_payload;
 
 	caller = g_dbus_method_invocation_get_sender (invocation);
 
 	/* Now we can create a session with this information */
 	session = gkd_secret_session_new (self, caller);
-        input_payload = g_variant_get_variant (input);
+	input_payload = g_variant_get_variant (input);
 	gkd_secret_session_handle_open (session, algorithm, input_payload,
 					&output, &result,
 					&error);
-        g_variant_unref (input_payload);
+	g_variant_unref (input_payload);
 
 	if (error != NULL) {
 		g_dbus_method_invocation_take_error (invocation, error);
 	} else {
 		gkd_secret_service_publish_dispatch (self, caller,
-		                                     GKD_SECRET_DISPATCH (session));
+						     GKD_SECRET_DISPATCH (session));
 		gkd_exported_service_complete_open_session (skeleton, invocation, output, result);
 		g_free (result);
 	}
@@ -463,7 +463,7 @@ service_method_create_collection (GkdExportedService *skeleton,
 
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (create));
 	gkd_secret_service_publish_dispatch (self, caller,
-	                                     GKD_SECRET_DISPATCH (create));
+					     GKD_SECRET_DISPATCH (create));
 
 	gkd_exported_service_complete_create_collection (skeleton, invocation,
 							 "/", path);
@@ -511,7 +511,7 @@ service_method_unlock (GkdExportedService *skeleton,
 	/* So do we need to prompt? */
 	if (gkd_secret_unlock_have_queued (unlock)) {
 		gkd_secret_service_publish_dispatch (self, caller,
-		                                     GKD_SECRET_DISPATCH (unlock));
+						     GKD_SECRET_DISPATCH (unlock));
 		path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (unlock));
 
 	/* No need to prompt */
@@ -549,7 +549,7 @@ service_method_lock (GkdExportedService *skeleton,
 			if (gkd_secret_lock (collection, NULL)) {
 				g_ptr_array_add (array, objpaths[i]);
 				gkd_secret_objects_emit_collection_locked (self->objects,
-				                                           collection);
+									   collection);
 			}
 			g_object_unref (collection);
 		}
@@ -580,8 +580,8 @@ method_change_lock_internal (GkdSecretService *self,
 	collection = gkd_secret_objects_lookup_collection (self->objects, caller, collection_path);
 	if (!collection) {
 		g_dbus_method_invocation_return_error_literal (invocation, GKD_SECRET_ERROR,
-                                                               GKD_SECRET_ERROR_NO_SUCH_OBJECT,
-                                                               "The collection does not exist");
+							       GKD_SECRET_ERROR_NO_SUCH_OBJECT,
+							       "The collection does not exist");
 		return TRUE;
 	}
 
@@ -590,7 +590,7 @@ method_change_lock_internal (GkdSecretService *self,
 	change = gkd_secret_change_new (self, caller, collection_path);
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (change));
 	gkd_secret_service_publish_dispatch (self, caller,
-	                                     GKD_SECRET_DISPATCH (change));
+					     GKD_SECRET_DISPATCH (change));
 
 	g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
 	g_object_unref (change);
@@ -633,7 +633,7 @@ service_method_read_alias (GkdExportedService *skeleton,
 	/* Make sure it actually exists */
 	if (path)
 		collection = gkd_secret_objects_lookup_collection (self->objects,
-		                                                   g_dbus_method_invocation_get_sender (invocation),
+								   g_dbus_method_invocation_get_sender (invocation),
 								   path);
 	if (collection == NULL) {
 		g_free (path);
@@ -688,8 +688,8 @@ service_method_set_alias (GkdExportedService *skeleton,
 		if (collection == NULL) {
 			g_free (identifier);
 			g_dbus_method_invocation_return_error_literal (invocation, GKD_SECRET_ERROR,
-                                                                       GKD_SECRET_ERROR_NO_SUCH_OBJECT,
-                                                                       "The collection does not exist");
+								       GKD_SECRET_ERROR_NO_SUCH_OBJECT,
+								       "The collection does not exist");
 			return TRUE;
 		}
 
@@ -721,8 +721,8 @@ service_method_create_with_master_password (GkdExportedInternal *skeleton,
 	if (!gkd_secret_property_parse_all (attributes, SECRET_COLLECTION_INTERFACE, &builder)) {
 		gck_builder_clear (&builder);
 		g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
-                                                               G_DBUS_ERROR_INVALID_ARGS,
-                                                               "Invalid properties argument");
+							       G_DBUS_ERROR_INVALID_ARGS,
+							       "Invalid properties argument");
 		return TRUE;
 	}
 
@@ -790,13 +790,13 @@ service_method_change_with_master_password (GkdExportedInternal *skeleton,
 
 	/* Make sure we have such a collection */
 	collection = gkd_secret_objects_lookup_collection (self->objects, sender,
-	                                                   path);
+							   path);
 
 	/* No such collection */
 	if (collection == NULL) {
-          g_dbus_method_invocation_return_error_literal (invocation, GKD_SECRET_ERROR,
-                                                         GKD_SECRET_ERROR_NO_SUCH_OBJECT,
-                                                         "The collection does not exist");
+	  g_dbus_method_invocation_return_error_literal (invocation, GKD_SECRET_ERROR,
+							 GKD_SECRET_ERROR_NO_SUCH_OBJECT,
+							 "The collection does not exist");
 	}
 
 	/* Success */
@@ -844,8 +844,8 @@ service_method_unlock_with_master_password (GkdExportedInternal *skeleton,
 	/* No such collection */
 	if (collection == NULL) {
 		g_dbus_method_invocation_return_error_literal (invocation, GKD_SECRET_ERROR,
-                                                               GKD_SECRET_ERROR_NO_SUCH_OBJECT,
-                                                               "The collection does not exist");
+							       GKD_SECRET_ERROR_NO_SUCH_OBJECT,
+							       "The collection does not exist");
 
 	/* Success */
 	} else if (gkd_secret_unlock_with_secret (collection, master, &error)) {
@@ -878,7 +878,7 @@ service_name_owner_changed (GDBusConnection *connection,
 	const gchar *object_name;
 	const gchar *old_owner;
 	const gchar *new_owner;
-        GkdSecretService *self = user_data;
+	GkdSecretService *self = user_data;
 
 	/* A peer is connecting or disconnecting from the bus,
 	 * remove any client info, when client gone.
@@ -896,10 +896,10 @@ service_name_owner_changed (GDBusConnection *connection,
 static void
 gkd_secret_service_init_collections (GkdSecretService *self)
 {
-        gchar **collections = gkd_secret_service_get_collections (self);
-        gint idx;
+	gchar **collections = gkd_secret_service_get_collections (self);
+	gint idx;
 
-        for (idx = 0; collections[idx] != NULL; idx++)
+	for (idx = 0; collections[idx] != NULL; idx++)
 		gkd_secret_objects_register_collection (self->objects, collections[idx]);
 
 	g_strfreev (collections);
@@ -907,8 +907,8 @@ gkd_secret_service_init_collections (GkdSecretService *self)
 
 static GObject*
 gkd_secret_service_constructor (GType type,
-                                guint n_props,
-                                GObjectConstructParam *props)
+				guint n_props,
+				GObjectConstructParam *props)
 {
 	GkdSecretService *self = GKD_SECRET_SERVICE (G_OBJECT_CLASS (gkd_secret_service_parent_class)->constructor(type, n_props, props));
 	GError *error = NULL;
@@ -927,11 +927,11 @@ gkd_secret_service_constructor (GType type,
 	/* Create our objects proxy */
 	g_return_val_if_fail (GCK_IS_SLOT (slot), NULL);
 	self->objects = g_object_new (GKD_SECRET_TYPE_OBJECTS,
-	                              "pkcs11-slot", slot, "service", self, NULL);
+				      "pkcs11-slot", slot, "service", self, NULL);
 
-        self->skeleton = gkd_secret_service_skeleton_new (self);
+	self->skeleton = gkd_secret_service_skeleton_new (self);
 	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->skeleton),
-                                          self->connection,
+					  self->connection,
 					  SECRET_SERVICE_PATH, &error);
 	if (error != NULL) {
 		g_warning ("could not register secret service on session bus: %s", error->message);
@@ -959,9 +959,9 @@ gkd_secret_service_constructor (GType type,
 	g_signal_connect (self->skeleton, "handle-unlock",
 			  G_CALLBACK (service_method_unlock), self);
 
-        self->internal_skeleton = gkd_exported_internal_skeleton_new ();
+	self->internal_skeleton = gkd_exported_internal_skeleton_new ();
 	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->internal_skeleton),
-                                          self->connection,
+					  self->connection,
 					  SECRET_SERVICE_PATH, &error);
 
 	if (error != NULL) {
@@ -987,11 +987,11 @@ gkd_secret_service_constructor (GType type,
 								  service_name_owner_changed,
 								  self, NULL);
 
-        self->filter_id = g_dbus_connection_add_filter (self->connection,
-                                                        service_message_filter,
-                                                        self, NULL);
+	self->filter_id = g_dbus_connection_add_filter (self->connection,
+							service_message_filter,
+							self, NULL);
 
-        gkd_secret_service_init_collections (self);
+	gkd_secret_service_init_collections (self);
 
 	return G_OBJECT (self);
 }
@@ -1058,7 +1058,7 @@ gkd_secret_service_finalize (GObject *obj)
 
 static void
 gkd_secret_service_set_property (GObject *obj, guint prop_id, const GValue *value,
-                                 GParamSpec *pspec)
+				 GParamSpec *pspec)
 {
 	GkdSecretService *self = GKD_SECRET_SERVICE (obj);
 
@@ -1079,7 +1079,7 @@ gkd_secret_service_set_property (GObject *obj, guint prop_id, const GValue *valu
 
 static void
 gkd_secret_service_get_property (GObject *obj, guint prop_id, GValue *value,
-                                 GParamSpec *pspec)
+				 GParamSpec *pspec)
 {
 	GkdSecretService *self = GKD_SECRET_SERVICE (obj);
 
@@ -1109,11 +1109,11 @@ gkd_secret_service_class_init (GkdSecretServiceClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_CONNECTION,
 		g_param_spec_object ("connection", "Connection", "DBus Connection",
-                                     G_TYPE_DBUS_CONNECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+				     G_TYPE_DBUS_CONNECTION, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (gobject_class, PROP_PKCS11_SLOT,
-	        g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
-	                             GCK_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+		g_param_spec_object ("pkcs11-slot", "Pkcs11 Slot", "PKCS#11 slot that we use for secrets",
+				     GCK_TYPE_SLOT, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 /* -----------------------------------------------------------------------------
@@ -1187,18 +1187,18 @@ gkd_secret_service_get_pkcs11_session (GkdSecretService *self, const gchar *call
 	if (!client->pkcs11_session) {
 		slot = gkd_secret_service_get_pkcs11_slot (self);
 		client->pkcs11_session = gck_slot_open_session_full (slot, GCK_SESSION_READ_WRITE,
-		                                                     CKF_G_APPLICATION_SESSION, &client->app,
-		                                                     NULL, NULL, &error);
+								     CKF_G_APPLICATION_SESSION, &client->app,
+								     NULL, NULL, &error);
 		if (!client->pkcs11_session) {
 			g_warning ("couldn't open pkcs11 session for secret service: %s",
-			           egg_error_message (error));
+				   egg_error_message (error));
 			g_clear_error (&error);
 			return NULL;
 		}
 
 		if (!log_into_pkcs11_session (client->pkcs11_session, &error)) {
 			g_warning ("couldn't log in to pkcs11 session for secret service: %s",
-			           egg_error_message (error));
+				   egg_error_message (error));
 			g_clear_error (&error);
 			g_object_unref (client->pkcs11_session);
 			client->pkcs11_session = NULL;
@@ -1222,17 +1222,17 @@ gkd_secret_service_internal_pkcs11_session (GkdSecretService *self)
 
 	slot = gkd_secret_service_get_pkcs11_slot (self);
 	self->internal_session = gck_slot_open_session_full (slot, GCK_SESSION_READ_WRITE,
-	                                                     0, NULL, NULL, NULL, &error);
+							     0, NULL, NULL, NULL, &error);
 	if (!self->internal_session) {
 		g_warning ("couldn't open pkcs11 session for secret service: %s",
-		           egg_error_message (error));
+			   egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
 	}
 
 	if (!log_into_pkcs11_session (self->internal_session, &error)) {
 		g_warning ("couldn't log in to pkcs11 session for secret service: %s",
-		           egg_error_message (error));
+			   egg_error_message (error));
 		g_clear_error (&error);
 		g_object_unref (self->internal_session);
 		self->internal_session = NULL;
@@ -1244,7 +1244,7 @@ gkd_secret_service_internal_pkcs11_session (GkdSecretService *self)
 
 GkdSecretSession*
 gkd_secret_service_lookup_session (GkdSecretService *self, const gchar *path,
-                                   const gchar *caller)
+				   const gchar *caller)
 {
 	ServiceClient *client;
 	gpointer object;
@@ -1299,19 +1299,19 @@ gkd_secret_service_get_alias (GkdSecretService *self, const gchar *alias)
 			if (identifier == NULL) {
 				identifier = "login";
 				g_hash_table_replace (self->aliases, g_strdup (alias),
-				                      g_strdup (identifier));
+						      g_strdup (identifier));
 			}
 
 		} else if (g_str_equal (alias, "session")) {
 			identifier = "session";
 			g_hash_table_replace (self->aliases, g_strdup (alias),
-			                      g_strdup (identifier));
+					      g_strdup (identifier));
 
 		/* TODO: We should be using CKA_G_LOGIN_COLLECTION */
 		} else if (g_str_equal (alias, "login")) {
 			identifier = "login";
 			g_hash_table_replace (self->aliases, g_strdup (alias),
-			                      g_strdup (identifier));
+					      g_strdup (identifier));
 		}
 	}
 
@@ -1320,7 +1320,7 @@ gkd_secret_service_get_alias (GkdSecretService *self, const gchar *alias)
 
 void
 gkd_secret_service_set_alias (GkdSecretService *self, const gchar *alias,
-                              const gchar *identifier)
+			      const gchar *identifier)
 {
 	g_return_if_fail (GKD_SECRET_IS_SERVICE (self));
 	g_return_if_fail (alias);
@@ -1333,7 +1333,7 @@ gkd_secret_service_set_alias (GkdSecretService *self, const gchar *alias,
 
 void
 gkd_secret_service_publish_dispatch (GkdSecretService *self, const gchar *caller,
-                                     GkdSecretDispatch *object)
+				     GkdSecretDispatch *object)
 {
 	ServiceClient *client;
 	const gchar *path;
@@ -1359,7 +1359,7 @@ gkd_secret_service_get_collections (GkdSecretService *self)
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
 
 	collections_variant = gkd_secret_objects_append_collection_paths (self->objects, NULL);
-        collections = g_variant_dup_objv (collections_variant, NULL);
+	collections = g_variant_dup_objv (collections_variant, NULL);
 	g_variant_unref (collections_variant);
 
 	return collections;
@@ -1367,7 +1367,7 @@ gkd_secret_service_get_collections (GkdSecretService *self)
 
 void
 gkd_secret_service_emit_collection_created (GkdSecretService *self,
-                                            const gchar *collection_path)
+					    const gchar *collection_path)
 {
 	gchar **collections;
 
@@ -1385,7 +1385,7 @@ gkd_secret_service_emit_collection_created (GkdSecretService *self,
 
 void
 gkd_secret_service_emit_collection_deleted (GkdSecretService *self,
-                                            const gchar *collection_path)
+					    const gchar *collection_path)
 {
 	gchar **collections;
 
@@ -1403,7 +1403,7 @@ gkd_secret_service_emit_collection_deleted (GkdSecretService *self,
 
 void
 gkd_secret_service_emit_collection_changed (GkdSecretService *self,
-                                            const gchar *collection_path)
+					    const gchar *collection_path)
 {
 	g_return_if_fail (GKD_SECRET_IS_SERVICE (self));
 	g_return_if_fail (collection_path != NULL);
