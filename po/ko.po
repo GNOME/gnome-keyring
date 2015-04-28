@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-03-08 19:47+0000\n"
-"PO-Revision-Date: 2012-03-27 01:31+0900\n"
+"PO-Revision-Date: 2015-04-28 16:22+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -32,16 +32,14 @@ msgstr "이름 없음"
 #: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
-msgstr "'%s' 키 모음에 대한 기존 암호를 입력하십시오"
+msgstr "'%s' 키 모음의 기존 암호를 입력하십시오"
 
 #: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
 "old password for it."
-msgstr ""
-"프로그램에서 '%s' 키 모음의 암호를 바꾸려고 합니다. 이에 대한 기존의 암호를 "
-"입력하십시오."
+msgstr "프로그램에서 '%s' 키 모음의 암호를 바꾸려고 합니다. 이 키 모음의 기존의 암호를 입력하십시오."
 
 #: ../daemon/dbus/gkd-secret-change.c:100
 #: ../daemon/dbus/gkd-secret-change.c:136
@@ -55,7 +53,7 @@ msgstr "계속"
 #: ../daemon/dbus/gkd-secret-change.c:126
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "'%s' 키 모음에 대한 새 암호를 지정하십시오"
+msgstr "'%s' 키 모음의 새 암호를 지정하십시오"
 
 #: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
@@ -69,7 +67,7 @@ msgstr ""
 #: ../daemon/dbus/gkd-secret-change.c:142
 #: ../daemon/dbus/gkd-secret-create.c:95
 msgid "Store passwords unencrypted?"
-msgstr "암호를 암호화하지 않은 상태로 저장하시겠습니까?"
+msgstr "암호를 암호화하지 않고 저장하시겠습니까?"
 
 #: ../daemon/dbus/gkd-secret-change.c:144
 #: ../daemon/dbus/gkd-secret-create.c:97
@@ -100,7 +98,7 @@ msgstr ""
 
 #: ../daemon/dbus/gkd-secret-create.c:85
 msgid "Choose password for new keyring"
-msgstr "새 키 모음에 대한 암호를 지정하십시오"
+msgstr "새 키 모음의 암호를 지정하십시오"
 
 #: ../daemon/dbus/gkd-secret-create.c:308
 msgid "New Keyring Password"
@@ -164,7 +162,7 @@ msgstr "잠금 풀기"
 
 #: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
 msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "로그인 여부와 관계 없이 이 키의 잠금을 자동으로 해제합니다"
+msgstr "로그인 상태에서는 이 키의 잠금을 자동으로 해제합니다"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:145
@@ -174,12 +172,12 @@ msgstr "로그인"
 #: ../egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr "임시 파일 `%s'을(를) 만드는 데 실패: %s\n"
+msgstr "`%s' 임시파일 만들기 실패: %s\n"
 
 #: ../egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
-msgstr "`%s'에 기록하는데 오류: %s\n"
+msgstr "`%s'에 기록 오류: %s\n"
 
 #: ../egg/dotlock.c:782
 #, c-format
@@ -192,12 +190,12 @@ msgstr "`%s'을(를) 만들 수 없습니다: %s\n"
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr "(%d이(가) 만든) 오래된 잠금 파일을 지우는 중\n"
+msgstr "오래된 잠금 파일을 지우는 중 (%d 만듦) \n"
 
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr "(%d%s이(가) 가진) 잠금 %s 기다리는 중...\n"
+msgstr "잠금 %3$s (%1$d%2$s 소유) 기다리는 중...\n"
 
 #: ../egg/dotlock.c:1085
 msgid "(deadlock?) "
@@ -206,12 +204,12 @@ msgstr "(데드록입니까?)"
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr "`%s' 잠금이 만들어지지 않았습니다: %s\n"
+msgstr "`%s' 잠금을 만들지 않았습니다: %s\n"
 
 #: ../egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr "잠금 %s 기다리는 중...\n"
+msgstr "%s 잠금 기다리는 중...\n"
 
 #: ../egg/egg-oid.c:41
 msgid "Domain Component"
@@ -416,7 +414,7 @@ msgstr ""
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "로그인 여부와 관계없이 이 키 모음의 잠금을 자동으로 해제합니다"
+msgstr "로그인 상태에서는 이 키 모음의 잠금을 자동으로 해제합니다"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock private key"
@@ -448,18 +446,18 @@ msgstr "잠금을 풀 암호를 입력하십시오"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
 msgid "Automatically unlock this key whenever I'm logged in"
-msgstr "로그인 여부와 관계없이 이 키의 잠금을 자동으로 해제합니다"
+msgstr "로그인 상태에서는 이 키의 잠금을 자동으로 해제합니다"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
 msgid "Automatically unlock this certificate whenever I'm logged in"
-msgstr "로그인 여부와 관계없이 이 인증의 잠금을 자동으로 해제합니다"
+msgstr "로그인 상태에서는 이 인증서의 잠금을 자동으로 해제합니다"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
 msgid "Automatically unlock whenever I'm logged in"
-msgstr "로그인 여부와 관계없이 자동으로 잠금해제합니다"
+msgstr "로그인 상태에서는 자동으로 잠금해제합니다"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
