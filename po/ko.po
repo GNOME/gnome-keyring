@@ -2,15 +2,15 @@
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Young-Ho Cha <ganadist@gmail.com>, 2006.
-# Changwoo Ryu <cwryu@debian.org>, 2004, 2006-2012.
 # Seong-ho Cho <darkcircle.0426@gmail.com>, 2012.
+# Changwoo Ryu <cwryu@debian.org>, 2004, 2006-2012, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-03-08 19:47+0000\n"
-"PO-Revision-Date: 2015-04-28 16:22+0900\n"
+"PO-Revision-Date: 2015-05-08 14:48+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
