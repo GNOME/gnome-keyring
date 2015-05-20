@@ -2,533 +2,572 @@
 # Occitan translation of gnomekeyring.
 # Copyright (C) 2004-2006, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-#
 # Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2006-2008
+# Cédric Valmary (Tot en òc) <cvalmary@yahoo.fr>, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-02 08:58+0200\n"
-"PO-Revision-Date: 2007-12-27 01:08+0100\n"
-"Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
-"Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
+"POT-Creation-Date: 2015-04-08 15:48+0000\n"
+"PO-Revision-Date: 2015-05-20 19:47+0200\n"
+"Last-Translator: Cédric Valmary (Tot en òc) <cvalmary@yahoo.fr>\n"
+"Language-Team: Tot en òc (totenoc.eu)\n"
+"Language: oci\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"X-Launchpad-Export-Date: 2015-05-20 16:44+0000\n"
 
-#: ../common/gkr-location.c:317
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: ../daemon/dbus/gkd-secret-change.c:85
+#: ../daemon/dbus/gkd-secret-change.c:121
+#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../pkcs11/secret-store/gkm-secret-collection.c:324
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+msgid "Unnamed"
+msgstr "Sens nom"
+
+#: ../daemon/dbus/gkd-secret-change.c:90
 #, c-format
-msgid "Removable Disk: %s"
-msgstr ""
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Picatz l'ancian senhal pel trossèl de claus « %s »"
 
-#: ../common/gkr-location.c:319
-msgid "Removable Disk"
-msgstr ""
-
-#: ../common/gkr-location.c:534 ../common/gkr-location.c:546
-msgid "Home"
-msgstr "Repertòri personal"
-
-#: ../common/gkr-location.c:1074 ../common/gkr-location.c:1097
-#: ../pkix/gkr-pkix-parser.c:514 ../pkix/gkr-pkix-serialize.c:58
-msgid "The disk or drive this file is located on is not present"
-msgstr ""
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:222
+#: ../daemon/dbus/gkd-secret-change.c:94
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in the default keyring."
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
 msgstr ""
+"Una aplicacion vòl modificar lo senhal del trossèl de claus « %s ». Picatz "
+"son ancian senhal."
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:226
+#: ../daemon/dbus/gkd-secret-change.c:100
+#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:147
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1311
+msgid "Continue"
+msgstr "Contunhar"
+
+#: ../daemon/dbus/gkd-secret-change.c:126
+#, c-format
+msgid "Choose a new password for the '%s' keyring"
+msgstr "Causissètz un senhal novèl pel trossèl de claus « %s »"
+
+#: ../daemon/dbus/gkd-secret-change.c:130
 #, c-format
 msgid ""
-"The application '%s' (%s) wants to access the password for '<object "
-"prop='name'/>' in %s."
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
 msgstr ""
+"Una aplicacion vòl modificar lo senhal del trossèl de claus « %s ». "
+"Causissètz lo senhal novèl que li volètz associar."
 
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:232 ../daemon/gkr-daemon-ops.c:242
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:236 ../daemon/gkr-daemon-ops.c:246
-#, c-format
-msgid ""
-"The application '%s' wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:252
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in the default keyring."
-msgstr ""
-
-#. TRANSLATORS: Don't translate text in markup (ie: HTML or XML tags)
-#: ../daemon/gkr-daemon-ops.c:255
-#, c-format
-msgid ""
-"An unknown application wants to access the password for '<object prop='name'/"
-">' in %s."
-msgstr ""
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:261
-msgid "Allow access"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:261
-msgid "Allow application access to keyring?"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:311
-#, c-format
-msgid "Unlock password for %s keyring"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:368
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the default keyring, but it is "
-"locked"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:372
-#, c-format
-msgid ""
-"The application '%s' (%s) wants access to the keyring '%s', but it is locked"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:378 ../daemon/gkr-daemon-ops.c:388
-#, c-format
-msgid ""
-"The application '%s' wants access to the default keyring, but it is locked"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:382 ../daemon/gkr-daemon-ops.c:393
-#, c-format
-msgid "The application '%s' wants access to the keyring '%s', but it is locked"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:399
-#, c-format
-msgid ""
-"An unknown application wants access to the default keyring, but it is locked"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:403
-#, c-format
-msgid ""
-"An unknown application wants access to the keyring '%s', but it is locked"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:410
-msgid "Enter password for default keyring to unlock"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:412
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr ""
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:416
-msgid "Unlock Keyring"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:428
-msgid "Automatically unlock this keyring when I log in."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:464
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new keyring called '%s'. You "
-"have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:468
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:474 ../daemon/gkr-daemon-ops.c:484
-#, c-format
-msgid ""
-"The application '%s' wants to create a new keyring called '%s'. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:478 ../daemon/gkr-daemon-ops.c:488
-#, c-format
-msgid ""
-"The application '%s' wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:494
-#, c-format
-msgid ""
-"An unknown application wants to create a new keyring called '%s'. You have "
-"to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:498
-#, c-format
-msgid ""
-"An unknown application wants to create a new default keyring. You have to "
-"choose the password you want to use for it."
-msgstr ""
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:504
-msgid "New Keyring Password"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:505
-msgid "Choose password for new keyring"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:552
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:556
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to change the password for the default "
-"keyring. You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:562 ../daemon/gkr-daemon-ops.c:572
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the '%s' keyring. You "
-"have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:566 ../daemon/gkr-daemon-ops.c:576
-#, c-format
-msgid ""
-"The application '%s' wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:582
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the '%s' keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:586
-#, c-format
-msgid ""
-"An unknown application wants to change the password for the default keyring. "
-"You have to choose the password you want to use for it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:596
-#, c-format
-msgid "Choose a new password for the '%s' keyring. "
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:598
-#, c-format
-msgid "Choose a new password for the default keyring. "
-msgstr ""
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:602
-msgid "Change Keyring Password"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:672
-#, c-format
-msgid ""
-"The application '%s' (%s) wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:676 ../daemon/gkr-daemon-ops.c:680
-#, c-format
-msgid ""
-"The application '%s' wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:684
-#, c-format
-msgid ""
-"An unknown application wants to store a password, but there is no default "
-"keyring. To create one, you need to choose the password you wish to use for "
-"it."
-msgstr ""
-
-#. And put together the ask request
-#: ../daemon/gkr-daemon-ops.c:689
-msgid "Create Default Keyring"
-msgstr ""
-
-#: ../daemon/gkr-daemon-ops.c:689
-msgid "Choose password for default keyring"
-msgstr ""
-
-#: ../data/gnome-keyring.schemas.in.h:1
-msgid ""
-"This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-"only takes effect as gnome-keyring-daemon starts, (ie: when the user logs "
-"in). This setting may be overridden when certain command line arguments are "
-"passed to the daemon."
-msgstr ""
-
-#: ../data/gnome-keyring.schemas.in.h:2
-msgid ""
-"This option enables the SSH agent in the gnome-keyring daemon. It only takes "
-"effect as gnome-keyring-daemon starts, (ie: when the user logs in). This "
-"setting may be overridden when certain command line arguments are passed to "
-"the daemon."
-msgstr ""
-
-#: ../data/gnome-keyring.schemas.in.h:3
-msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-msgstr ""
-
-#: ../data/gnome-keyring.schemas.in.h:4
-msgid "Whether the gnome-keyring SSH agent is enabled."
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:91
-msgid "Access Denied"
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:93
-msgid "The gnome-keyring-daemon application is not running."
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:95
-msgid "Error communicating with gnome-keyring-daemon"
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:97
-msgid "A keyring with that name already exists"
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:99
-msgid "Programmer error: The application sent invalid data."
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:101
-msgid "No matching results"
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:103
-msgid "A keyring with that name does not exist."
-msgstr ""
-
-#: ../library/gnome-keyring-utils.c:110
-msgid "The keyring has already been unlocked."
-msgstr ""
-
-#. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:98
-msgid "Unlock Login Keyring"
-msgstr ""
-
-#: ../keyrings/gkr-keyring-login.c:98
-msgid "Enter login password to unlock keyring"
-msgstr ""
-
-#: ../keyrings/gkr-keyring-login.c:100
-msgid ""
-"Your login keyring was not automatically unlocked when you logged into this "
-"computer."
-msgstr ""
-
-#. And put together the ask request
-#: ../keyrings/gkr-keyring-login.c:124
-msgid "Create Login Keyring"
-msgstr ""
-
-#: ../keyrings/gkr-keyring-login.c:124
-msgid "Enter your login password"
-msgstr ""
-
-#: ../keyrings/gkr-keyring-login.c:126
-msgid ""
-"Your login keyring was not automatically created when you logged into this "
-"computer. It will now be created."
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:100
-msgid "Unlock private key"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:102
-msgid "Unlock certificate"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:104
-msgid "Unlock public key"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:106
-msgid "Unlock"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:117
-msgid "Enter password to unlock the private key"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:119
-msgid "Enter password to unlock the certificate"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:121
-msgid "Enter password to unlock the public key"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:123
-msgid "Enter password to unlock"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:134
-msgid "Automatically unlock this private key when I log in."
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:136
-msgid "Automatically unlock this certificate when I log in."
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:138
-msgid "Automatically unlock this public key when I log in."
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:140
-msgid "Automatically unlock this when I log in"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:155
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:157
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:159
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:161
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:167
-#, c-format
-msgid "The system wants to import the private key '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:169
-#, c-format
-msgid "The system wants to import the certificate '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:171
-#, c-format
-msgid "The system wants to import the public key '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:173
-#, c-format
-msgid "The system wants to import '%s', but it is locked"
-msgstr ""
-
-#: ../pk/gkr-pk-object-storage.c:289
-#, c-format
-msgid "Unlock password for '%s'"
-msgstr ""
-
-#: ../pkix/gkr-pkix-parser.c:445
-msgid "Unrecognized or unsupported file."
-msgstr ""
-
-#: ../pkix/gkr-pkix-parser.c:449
-msgid "Could not parse invalid or corrupted file."
-msgstr ""
-
-#: ../ui/gkr-ask-tool.c:182
+#: ../daemon/dbus/gkd-secret-change.c:143
+#: ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
-msgstr ""
+msgstr "Emmagazinar los senhals d'un biais pas chifrat ?"
 
-#: ../ui/gkr-ask-tool.c:183
+#: ../daemon/dbus/gkd-secret-change.c:145
+#: ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
+"En causissent d'utilizar un senhal void, vòstres senhals emmagazinats seràn "
+"pas chifrats d'un biais segur. Seràn accessibles per qualque siá qu'aja un "
+"accès a vòstres fichièrs."
 
-#: ../ui/gkr-ask-tool.c:190
-msgid "Use Unsafe Storage"
+#: ../daemon/dbus/gkd-secret-change.c:153
+msgid "The original password was incorrect"
+msgstr "Lo senhal original es pas corrècte"
+
+#: ../daemon/dbus/gkd-secret-change.c:354
+msgid "Change Keyring Password"
+msgstr "Modificar lo senhal del trossèl de claus"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
 msgstr ""
+"Una aplicacion vòl crear un novèl trossèl de claus nomenat « %s ». "
+"Causissètz lo senhal novèl que li volètz associar."
 
-#: ../ui/gkr-ask-tool.c:413
-msgid "_Location:"
-msgstr "_Emplaçament :"
+#: ../daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "Causissètz lo senhal del novèl trossèl de claus"
 
-#: ../ui/gkr-ask-tool.c:426
-msgid "_Old password:"
+#: ../daemon/dbus/gkd-secret-create.c:311
+msgid "New Keyring Password"
+msgstr "Senhal del novèl trossèl de claus"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
+msgid "GPG Password Agent"
+msgstr "Agent de senhal GPG"
+
+#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
+msgid "GNOME Keyring: GPG Agent"
+msgstr "Trossèl de claus GNOME : agent GPG"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Emmagazinatge de certificats e de claus"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "Trossèl de claus GNOME : component PKCS#11"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "Secret Storage Service"
+msgstr "Servici d'emmagazinatge secret"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "Trossèl de claus GNOME : servici secret"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "SSH Key Agent"
+msgstr "Agent de claus SSH"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "Trossèl de claus GNOME : agent SSH"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:82
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:144
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:145
+msgid "Enter Passphrase"
+msgstr "Picatz la frasa secreta"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:149
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "Desvarrolhar"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:162
+msgid "Automatically unlock this key, whenever I'm logged in"
+msgstr "Desvarrolhar automaticament aquesta clau quand soi connectat"
+
+#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:225
+#, c-format
+msgid "PGP Key: %s"
+msgstr "Clau PGP : %s"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:158
+msgid "Login"
+msgstr "Connexion"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "fracàs de la creacion del fichièr temporari « %s » : %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "error d'escritura sus « %s » : %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "creacion de « %s » impossibla : %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "supression del fichièr de varrolhatge perimit (creat per %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "en espèra del varrolhatge (tengut per %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(blocatge ?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "varrolhatge « %s » pas realizat : %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "en espèra del varrolhatge %s...\n"
+
+#: ../egg/egg-oid.c:40
+msgid "Domain Component"
+msgstr "Component del domeni"
+
+#: ../egg/egg-oid.c:42
+msgid "User ID"
+msgstr "Numèro d'utilizaire"
+
+#: ../egg/egg-oid.c:45
+msgid "Email Address"
+msgstr "Adreça electronica"
+
+#: ../egg/egg-oid.c:53
+msgid "Date of Birth"
+msgstr "Data de naissença"
+
+#: ../egg/egg-oid.c:55
+msgid "Place of Birth"
+msgstr "Luòc de naissença"
+
+#: ../egg/egg-oid.c:57
+msgid "Gender"
+msgstr "Sèxe"
+
+#: ../egg/egg-oid.c:59
+msgid "Country of Citizenship"
+msgstr "País de ciutadanetat"
+
+#: ../egg/egg-oid.c:61
+msgid "Country of Residence"
+msgstr "País de residéncia"
+
+#: ../egg/egg-oid.c:64
+msgid "Common Name"
+msgstr "Nom corrent"
+
+#: ../egg/egg-oid.c:66
+msgid "Surname"
+msgstr "Nom d'Ostal"
+
+#: ../egg/egg-oid.c:68
+msgid "Serial Number"
+msgstr "Numèro de seria"
+
+#: ../egg/egg-oid.c:70
+msgid "Country"
+msgstr "País"
+
+#: ../egg/egg-oid.c:72
+msgid "Locality"
+msgstr "Localitat"
+
+#: ../egg/egg-oid.c:74
+msgid "State"
+msgstr "Estat"
+
+#: ../egg/egg-oid.c:76
+msgid "Street"
+msgstr "Carrièra"
+
+#: ../egg/egg-oid.c:78
+msgid "Organization"
+msgstr "Organizacion"
+
+#: ../egg/egg-oid.c:80
+msgid "Organizational Unit"
+msgstr "Unitat d'organizacion"
+
+#: ../egg/egg-oid.c:82
+msgid "Title"
+msgstr "Títol"
+
+#: ../egg/egg-oid.c:84
+msgid "Telephone Number"
+msgstr "Numèro de telefòn"
+
+#: ../egg/egg-oid.c:86
+msgid "Given Name"
+msgstr "Pichon nom"
+
+#: ../egg/egg-oid.c:88
+msgid "Initials"
+msgstr "Inicialas"
+
+#: ../egg/egg-oid.c:90
+msgid "Generation Qualifier"
+msgstr "Qualificatiu de generacion"
+
+#: ../egg/egg-oid.c:92
+msgid "DN Qualifier"
+msgstr "Qualificatiu DN"
+
+#: ../egg/egg-oid.c:94
+msgid "Pseudonym"
+msgstr "Escais"
+
+#: ../egg/egg-oid.c:97
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:98
+msgid "MD2 with RSA"
+msgstr "MD amb RSA"
+
+#: ../egg/egg-oid.c:99
+msgid "MD5 with RSA"
+msgstr "MD5 amb RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "SHA1 with RSA"
+msgstr "SHA+ amb RSA"
+
+#: ../egg/egg-oid.c:102
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:103
+msgid "SHA1 with DSA"
+msgstr "SHA1 amb DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:106
+msgid "Server Authentication"
+msgstr "Servidor d'autentificacion"
+
+#: ../egg/egg-oid.c:107
+msgid "Client Authentication"
+msgstr "Autentificacion de client"
+
+#: ../egg/egg-oid.c:108
+msgid "Code Signing"
+msgstr "Signatura de còde"
+
+#: ../egg/egg-oid.c:109
+msgid "Email Protection"
+msgstr "Proteccion de corrièl"
+
+#: ../egg/egg-oid.c:110
+msgid "Time Stamping"
+msgstr "Orodatatge"
+
+#: ../egg/egg-spawn.c:272
+#, c-format
+msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
+"Error inesperada dins select() al moment de la lectura de donadas que "
+"provenon del processus filh (%s)"
 
-#: ../ui/gkr-ask-tool.c:446
-msgid "_Password:"
-msgstr "Mot de _pas :"
+#: ../egg/egg-spawn.c:319
+#, c-format
+msgid "Unexpected error in waitpid() (%s)"
+msgstr "Error inesperada dins waitpid() (%s)"
 
-#: ../ui/gkr-ask-tool.c:468
-msgid "_Confirm password:"
+#: ../pkcs11/gkm/gkm-certificate.c:580
+msgid "Unnamed Certificate"
+msgstr "Certificat sens nom"
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn't parse public SSH key"
+msgstr "Impossible d'analisar la clau publica SSH"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Senhal de desvarrolhatge per : %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+msgid "Unlock Login Keyring"
+msgstr "Desvarrolhar lo trossèl de connexion"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+msgid "Enter password to unlock your login keyring"
+msgstr "Picatz vòstre senhal per desvarrolhar lo trossèl de connexion"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
 msgstr ""
+"Lo senhal qu'utilizatz per dobrir una sesilha sus aquel ordenador correspond "
+"pas pus a lo de vòstre trossèl de connexion."
 
-#: ../ui/gkr-ask-tool.c:488
-msgid "New password strength"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
+"Lo trossèl de connexion es pas estat desvarrolhat al moment de vòstra "
+"connexion a aquel ordenador."
 
-#: ../ui/gkr-ask-tool.c:546
-msgid "Passwords do not match."
-msgstr "Los mots de pas son pas los meteisses."
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+msgid "Unlock Keyring"
+msgstr "Desvarrolhar lo trossèl de claus"
 
-#: ../ui/gkr-ask-tool.c:562
-msgid "Password cannot be blank"
-msgstr "Lo mot de pas pòt pas èsser void"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Picatz lo senhal del trossèl de claus « %s » per lo desvarrolhar"
 
-#: ../ui/gkr-ask-tool.c:613
-msgid "Deny"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
 msgstr ""
+"Una aplicacion vòl accedir al trossèl de claus « %s », mas es varrolhat"
 
-#: ../ui/gkr-ask-tool.c:625
-msgid "Allow _Once"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Automatically unlock this keyring whenever I'm logged in"
 msgstr ""
+"Desvarrolhar automaticament aqueste trossèl de claus quand soi connectat"
 
-#: ../ui/gkr-ask-tool.c:629
-msgid "_Always Allow"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+msgid "Unlock private key"
+msgstr "Desvarrolhar una clau privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+msgid "Unlock certificate"
+msgstr "Desvarrolhar un certificat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
+msgid "Unlock public key"
+msgstr "Desvarrolhar una clau publica"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+msgid "Enter password to unlock the private key"
+msgstr "Picatz lo senhal per desvarrolhar la clau privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+msgid "Enter password to unlock the certificate"
+msgstr "Picatz lo senhal per desvarrolhar lo certificat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+msgid "Enter password to unlock the public key"
+msgstr "Picatz lo senhal per desvarrolhar la clau privada"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Enter password to unlock"
+msgstr "Picatz lo senhal per desvarrolhar"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "Desvarrolhar automaticament aquesta quand soi connectat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "Desvarrolhar automaticament aqueste certificat quand soi connectat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1309
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "Desvarrolhar automaticament quand soi connectat"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
+"Una aplicacion vòl accedir a la clau privada « %s », mas es varrolhada"
+
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Una aplicacion vòl accedir al certificat « %s », mas es varrolhat"
+
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr ""
+"Una aplicacion vòl accedir a la clau privada « %s », mas es varrolhada"
+
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Una aplicacion vòl accedir a « %s », mas es varrolhat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+msgid "The unlock password was incorrect"
+msgstr "Lo senhal de desvarrolhatge es pas corrècte"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+msgid "Unlock certificate/key storage"
+msgstr "Desvarrolhar l'emmagazinatge de certificats/claus"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+msgid "Enter password to unlock the certificate/key storage"
+msgstr ""
+"Picatz lo senhal per desvarrolhar l'espaci d'emmagazinatge de "
+"certificats/claus"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Una aplicacion vòl accedir a l'emmagazinatge de certificats/claus « %s », "
+"mas es varrolhat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
+msgid "New Password Required"
+msgstr "Senhal novèl necessari"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1152
+msgid "New password required for secure storage"
+msgstr "Un senhal novèl es necessari per l'espaci d'emmagazinatge securizat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1154
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Un senhal es necessari per preparar « %s » a l'emmagazinatge de certificats "
+"o de claus"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
+msgid "Change Password"
+msgstr "Modificacion del senhal"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+msgid "Original password for secure storage"
+msgstr "Senhal d'origina per l'espaci d'emmagazinatge securizat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr "Per modificar lo senhal per « %s », lo senhal d'origina es requesit"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1301
+msgid "Change password for secure storage"
+msgstr "Modificar lo senhal per l'espaci d'emmagazinatge securizat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1303
+#, c-format
+msgid "Type a new password for '%s'"
+msgstr "Picatz un senhal novèl per « %s »"
+
+#: ../tool/gkr-tool.c:100
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "utilizacion : comanda gnome-keyring [opcions]\n"
+
+#: ../tool/gkr-tool.c:102
+msgid "commands: "
+msgstr "comandas : "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:106
+msgid "          "
+msgstr "          "
