@@ -78,7 +78,6 @@ typedef int socklen_t;
 #define GKD_COMP_PKCS11     "pkcs11"
 #define GKD_COMP_SECRETS    "secrets"
 #define GKD_COMP_SSH        "ssh"
-#define GKD_COMP_GPG        "gpg"
 
 EGG_SECURE_DECLARE (daemon_main);
 
@@ -112,7 +111,6 @@ static gchar* run_components = DEFAULT_COMPONENTS;
 static gboolean pkcs11_started = FALSE;
 static gboolean secrets_started = FALSE;
 static gboolean ssh_started = FALSE;
-static gboolean gpg_started = FALSE;
 static gboolean dbus_started = FALSE;
 
 static gboolean run_foreground = FALSE;
@@ -533,7 +531,7 @@ replace_daemon_at (const gchar *directory)
 
 	/*
 	 * The first control_directory is the environment one, always
-	 * prefer that since it's the one that ssh and gpg will connect to
+	 * prefer that since it's the one that ssh will connect to
 	 */
 	if (control_directory == NULL)
 		control_directory = g_strdup (directory);
@@ -703,20 +701,6 @@ gkr_daemon_startup_steps (const gchar *components)
 			ssh_started = TRUE;
 			if (!gkd_daemon_startup_ssh ()) {
 				ssh_started = FALSE;
-				return FALSE;
-			}
-		}
-	}
-#endif
-
-#ifdef WITH_GPG
-	if (strstr (components, GKD_COMP_GPG)) {
-		if (gpg_started) {
-			g_message ("The GPG agent was already initialized");
-		} else {
-			gpg_started = TRUE;
-			if (!gkd_daemon_startup_gpg ()) {
-				gpg_started = FALSE;
 				return FALSE;
 			}
 		}

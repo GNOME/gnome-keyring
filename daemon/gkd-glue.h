@@ -26,6 +26,4 @@
 
 gboolean       gkd_daemon_startup_ssh      (void);
 
-gboolean       gkd_daemon_startup_gpg      (void);
-
 #endif /* GKD_GLUE_H_ */

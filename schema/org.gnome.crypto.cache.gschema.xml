@@ -13,10 +13,5 @@
 			<summary>Cache Time To Live</summary>
 			<description>The amount of time in seconds to cache passphrases when the 'idle' or 'timeout' gpg-cache-method are in use.</description>
 		</key>
-		<key name="gpg-cache-authorize" type="b">
-			<default>false</default>
-			<summary>Authorize Cache Access</summary>
-			<description>Not yet implemented.</description>
-		</key>
 	</schema>
 </schemalist>

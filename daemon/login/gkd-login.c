@@ -482,7 +482,7 @@ find_saved_items (GckSession *session,
 
 	search = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
 	if (search == NULL) {
-		g_warning ("couldn't perform search for gpg agent stored passphrases: %s",
+		g_warning ("couldn't perform search for stored passphrases: %s",
 		           egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
@@ -493,7 +493,7 @@ find_saved_items (GckSession *session,
 	g_object_unref (search);
 
 	if (data == NULL) {
-		g_warning ("couldn't retrieve list of gpg agent stored passphrases: %s",
+		g_warning ("couldn't retrieve list of stored passphrases: %s",
 		           egg_error_message (error));
 		g_clear_error (&error);
 		return NULL;
@@ -574,7 +574,7 @@ gkd_login_lookup_password (GckSession *session,
 		data = gck_object_get_data_full (l->data, CKA_VALUE, egg_secure_realloc, NULL, &length, &error);
 		if (error) {
 			if (!g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN))
-				g_warning ("couldn't lookup gpg agent password: %s", egg_error_message (error));
+				g_warning ("couldn't lookup password: %s", egg_error_message (error));
 			g_clear_error (&error);
 			data = NULL;
 		} else {
@@ -704,7 +704,7 @@ gkd_login_store_password (GckSession *session,
 
 	item = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
 	if (item == NULL) {
-		g_warning ("couldn't store gpg agent password: %s", egg_error_message (error));
+		g_warning ("couldn't store password: %s", egg_error_message (error));
 		g_clear_error (&error);
 		ret = FALSE;
 	} else {

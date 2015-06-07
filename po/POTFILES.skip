@@ -1,6 +1,5 @@
 daemon/gnome-keyring-secrets.desktop.in
 daemon/gnome-keyring-ssh.desktop.in
-daemon/gnome-keyring-gpg.desktop.in
 daemon/gnome-keyring-pkcs11.desktop.in
 daemon/org.freedesktop.secrets.service.in
 daemon/org.gnome.keyring.service.in

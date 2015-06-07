@@ -40,9 +40,6 @@ daemon/control
 daemon/dbus
    Various DBus bits of the daemon including the Secret Service API.
 
-daemon/gpg-agent
-   A GPG agent implementation that uses a PKCS#11 module for it's password storage.
-
 daemon/login
    Used to lock and unlock the daemon.
 

@@ -350,23 +350,6 @@ fi
 AM_CONDITIONAL(WITH_SSH, test "$enable_ssh_agent" != "no")
 
 # --------------------------------------------------------------------
-# GPG Agent support
-#
-
-AC_ARG_ENABLE([gpg-agent],
-		AC_HELP_STRING([--disable-gpg-agent],
-		[Don't include GPG agent in gnome-keyring]))
-
-if test "$enable_gpg_agent" != "no"; then
-	AC_DEFINE(WITH_GPG, 1, [Whether to build GPG agent or not])
-	gpg_status="yes"
-else
-	gpg_status="no"
-fi
-
-AM_CONDITIONAL(WITH_GPG, test "$enable_gpg_agent" != "no")
-
-# --------------------------------------------------------------------
 # libgcrypt
 #
 
@@ -664,7 +647,6 @@ echo "  SELinux:              $selinux_status"
 echo
 echo "CONFIGURATION"
 echo "  SSH Agent:            $ssh_status"
-echo "  GPG Agent:            $gpg_status"
 echo
 echo "BUILD"
 echo "  Debug Build:          $debug_status"

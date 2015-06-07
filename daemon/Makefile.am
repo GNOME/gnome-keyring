@@ -19,7 +19,6 @@ gnome_keyring_daemon_LDADD = \
 	libgkd-login.la \
 	libgkd-control.la \
 	libgkd-ssh-agent.la \
-	libgkd-gpg-agent.la \
 	libgkm-wrap-layer.la \
 	libgkm-rpc-layer.la \
 	libgkm-secret-store.la \
@@ -41,7 +40,7 @@ desktop_in_in_files = \
 	daemon/gnome-keyring-pkcs11.desktop.in.in \
 	daemon/gnome-keyring-secrets.desktop.in.in \
 	daemon/gnome-keyring-ssh.desktop.in.in \
-	daemon/gnome-keyring-gpg.desktop.in.in
+	$(NULL)
 desktop_in_files = $(desktop_in_in_files:.desktop.in.in=.desktop.in)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 

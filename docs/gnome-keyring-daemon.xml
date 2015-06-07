@@ -59,10 +59,10 @@
 
 	<variablelist>
 		<varlistentry>
-			<term><option>-c</option>, <option>--components=<parameter>ssh,secrets,gpg,pkcs11</parameter></option></term>
+			<term><option>-c</option>, <option>--components=<parameter>ssh,secrets,pkcs11</parameter></option></term>
 			<listitem>
 			<para>Ask the daemon to only initialize certain components. Valid
-				components are <literal>ssh</literal>, <literal>gpg</literal>,
+				components are <literal>ssh</literal>,
 				<literal>secrets</literal>, <literal>pkcs11</literal>.</para>
 			<para>By default all components are initialized.</para>
 			</listitem>
