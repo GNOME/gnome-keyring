@@ -32,6 +32,12 @@ daemon/dbus/gkd-internal-generated.h: daemon/dbus/org.gnome.keyring.InternalUnsu
 daemon/dbus/gkd-internal-generated.c: daemon/dbus/gkd-internal-generated.h
 	@: # generated as a side-effect
 
+EXTRA_DIST += \
+	daemon/dbus/org.freedesktop.Secrets.xml \
+	daemon/dbus/org.gnome.keyring.Daemon.xml \
+	daemon/dbus/org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.xml \
+	$(NULL)
+
 BUILT_SOURCES += \
 	daemon/dbus/gkd-daemon-generated.c \
 	daemon/dbus/gkd-daemon-generated.h \
