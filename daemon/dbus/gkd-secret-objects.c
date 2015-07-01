@@ -1450,7 +1450,7 @@ gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self,
 			}
 		}
 
-		g_variant_builder_add (&builder, "o@(oayays)", paths[i], gkd_secret_secret_append (secret));
+		g_variant_builder_add (&builder, "{o@(oayays)}", paths[i], gkd_secret_secret_append (secret));
 		gkd_secret_secret_free (secret);
 	}
 
