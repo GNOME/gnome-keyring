@@ -371,7 +371,7 @@ gkd_secret_unlock_constructor (GType type, guint n_props, GObjectConstructParam 
 					  &error);
 
 	if (error != NULL) {
-		g_warning ("could not register secret prompt on session bus: %s", error->message);
+		g_warning ("could not register secret unlock prompt on session bus: %s", error->message);
 		g_error_free (error);
 	}
 
