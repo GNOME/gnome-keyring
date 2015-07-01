@@ -1425,7 +1425,7 @@ gkd_secret_objects_handle_get_secrets (GkdSecretObjects *self,
 		return TRUE;
 	}
 
-	g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{o(oayays)"));
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{o(oayays)}"));
 
 	for (i = 0; paths[i] != NULL; ++i) {
 
