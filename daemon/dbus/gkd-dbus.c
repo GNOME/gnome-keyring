@@ -89,10 +89,9 @@ handle_get_environment (GkdExportedDaemon *skeleton,
 	gchar **parts;
 	GVariantBuilder builder;
 
-	env = gkd_util_get_environment ();
 	g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{ss}"));
 
-	while (*env) {
+	for (env = gkd_util_get_environment (); *env != NULL; env++) {
 		parts = g_strsplit (*env, "=", 2);
 		g_variant_builder_add (&builder, "{ss}", parts[0], parts[1]);
 		g_strfreev (parts);
