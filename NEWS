@@ -1,3 +1,9 @@
+Changes in version 3.17.4 are:
+ * Remove temporary files on failure [#746334]
+ * Migrate DBus code to GVariant and GDBus [#622905]
+ * Remove the GnuPG agent [#750514]
+ * Updated translations
+
 Changes in version 3.16.0 are:
  * Fix build issues highlighted by GCC 5.x
  * Updated translations
