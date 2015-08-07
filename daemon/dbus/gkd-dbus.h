@@ -23,6 +23,7 @@
 #ifndef GKD_DBUS_H
 #define GKD_DBUS_H
 
+#include <gio/gio.h>
 #include <glib.h>
 
 gboolean      gkd_dbus_setup                    (void);
@@ -32,5 +33,9 @@ gboolean  gkd_dbus_secrets_startup  (void);
 gboolean      gkd_dbus_singleton_acquire        (gboolean *acquired);
 
 gchar*        gkd_dbus_singleton_control        (void);
+
+/* DBus utils */
+gboolean      gkd_dbus_invocation_matches_caller (GDBusMethodInvocation *invocation,
+						  const char            *caller);
 
 #endif /* GKD_DBUS_H */

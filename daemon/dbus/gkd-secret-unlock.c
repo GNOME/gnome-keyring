@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+#include "gkd-dbus.h"
 #include "gkd-secret-dispatch.h"
 #include "gkd-secret-error.h"
 #include "gkd-secret-objects.h"
@@ -304,6 +305,9 @@ prompt_method_prompt (GkdExportedPrompt *skeleton,
 		      gchar *window_id,
 		      GkdSecretUnlock *self)
 {
+	if (!gkd_dbus_invocation_matches_caller (invocation, self->caller))
+		return FALSE;
+
 	/* Act as if this object no longer exists */
 	if (self->completed)
 		return FALSE;
@@ -328,6 +332,9 @@ prompt_method_dismiss (GkdExportedPrompt *skeleton,
 		       GDBusMethodInvocation *invocation,
 		       GkdSecretUnlock *self)
 {
+	if (!gkd_dbus_invocation_matches_caller (invocation, self->caller))
+		return FALSE;
+
 	/* Act as if this object no longer exists */
 	if (self->completed)
 		return FALSE;
