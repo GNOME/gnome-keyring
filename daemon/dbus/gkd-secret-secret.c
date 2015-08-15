@@ -96,11 +96,11 @@ gkd_secret_secret_parse (GkdSecretService *service,
 
 	/* parameter */
 	parameter_variant = g_variant_get_child_value (variant, 1);
-	parameter = g_variant_get_fixed_array (parameter_variant, &n_parameter, sizeof (guint8));
+	parameter = g_variant_get_fixed_array (parameter_variant, &n_parameter, sizeof (guchar));
 
 	/* value */
 	value_variant = g_variant_get_child_value (variant, 2);
-	value = g_variant_get_fixed_array (value_variant, &n_value, sizeof (guint8));
+	value = g_variant_get_fixed_array (value_variant, &n_value, sizeof (guchar));
 
 	/* Try to lookup the session */
 	session = gkd_secret_service_lookup_session (service, path, sender);

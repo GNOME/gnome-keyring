@@ -209,7 +209,7 @@ aes_negotiate (GkdSecretSession *self,
 		return FALSE;
 	}
 
-	input = g_variant_get_fixed_array (input_variant, &n_input, sizeof (guint8));
+	input = g_variant_get_fixed_array (input_variant, &n_input, sizeof (guchar));
 	ret = aes_derive_key (session, priv, input, n_input, &key);
 
 	gck_object_destroy (priv, NULL, NULL);
