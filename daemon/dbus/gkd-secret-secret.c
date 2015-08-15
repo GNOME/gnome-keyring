@@ -113,9 +113,9 @@ gkd_secret_secret_parse (GkdSecretService *service,
 
 	secret = g_slice_new0 (GkdSecretSecret);
 	secret->session = g_object_ref (session);
-	secret->parameter = g_strndup (parameter, n_parameter);
+	secret->parameter = g_memdup (parameter, n_parameter);
 	secret->n_parameter = n_parameter;
-	secret->value = g_strndup (value, n_value);
+	secret->value = g_memdup (value, n_value);
 	secret->n_value = n_value;
 
  out:
