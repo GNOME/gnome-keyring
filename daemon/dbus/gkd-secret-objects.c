@@ -410,36 +410,6 @@ G_DEFINE_TYPE (GkdSecretObjects, gkd_secret_objects, G_TYPE_OBJECT);
  * INTERNAL
  */
 
-static gboolean
-parse_object_path (GkdSecretObjects *self, const gchar *path, gchar **collection, gchar **item)
-{
-	const gchar *replace;
-
-	g_assert (self);
-	g_assert (path);
-	g_assert (collection);
-
-	if (!gkd_secret_util_parse_path (path, collection, item))
-		return FALSE;
-
-	if (g_str_has_prefix (path, SECRET_ALIAS_PREFIX)) {
-		replace = gkd_secret_service_get_alias (self->service, *collection);
-		if (!replace) {
-			g_free (*collection);
-			*collection = NULL;
-			if (item) {
-				g_free (*item);
-				*item = NULL;
-			}
-			return FALSE;
-		}
-		g_free (*collection);
-		*collection = g_strdup (replace);
-	}
-
-	return TRUE;
-}
-
 static GckObject *
 secret_objects_lookup_gck_object_for_path (GkdSecretObjects *self,
 					   const gchar *sender,
@@ -456,7 +426,7 @@ secret_objects_lookup_gck_object_for_path (GkdSecretObjects *self,
 
 	g_return_val_if_fail (path, FALSE);
 
-	if (!parse_object_path (self, path, &c_ident, &i_ident) || !c_ident)
+	if (!gkd_secret_util_parse_path (path, &c_ident, &i_ident) || !c_ident)
 		goto out;
 
 	/* The session we're using to access the object */
@@ -845,7 +815,7 @@ collection_method_create_item (GkdExportedCollection *skeleton,
 		goto cleanup;
 	}
 
-	if (!parse_object_path (self, base, &identifier, NULL))
+	if (!gkd_secret_util_parse_path (base, &identifier, NULL))
 		g_return_val_if_reached (FALSE);
 	g_return_val_if_fail (identifier, FALSE);
 
@@ -1094,7 +1064,7 @@ gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *calle
 	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
 	g_return_val_if_fail (path, NULL);
 
-	if (!parse_object_path (self, path, &identifier, NULL))
+	if (!gkd_secret_util_parse_path (path, &identifier, NULL))
 		return NULL;
 
 	/* The session we're using to access the object */
@@ -1139,7 +1109,7 @@ gkd_secret_objects_lookup_item (GkdSecretObjects *self, const gchar *caller,
 	g_return_val_if_fail (caller, NULL);
 	g_return_val_if_fail (path, NULL);
 
-	if (!parse_object_path (self, path, &collection, &identifier))
+	if (!gkd_secret_util_parse_path (path, &collection, &identifier))
 		return NULL;
 
 	/* The session we're using to access the object */
@@ -1208,7 +1178,7 @@ gkd_secret_objects_foreach_item (GkdSecretObjects *self,
 		session = gkd_secret_service_get_pkcs11_session (self->service, caller);
 	}
 
-	if (!parse_object_path (self, base, &identifier, NULL))
+	if (!gkd_secret_util_parse_path (base, &identifier, NULL))
 		g_return_if_reached ();
 
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
@@ -1323,7 +1293,7 @@ gkd_secret_objects_handle_search_items (GkdSecretObjects *self,
 	}
 
 	if (base != NULL) {
-		if (!parse_object_path (self, base, &identifier, NULL))
+		if (!gkd_secret_util_parse_path (base, &identifier, NULL))
 			g_return_val_if_reached (FALSE);
 		gck_builder_add_string (&builder, CKA_G_COLLECTION, identifier);
 		g_free (identifier);

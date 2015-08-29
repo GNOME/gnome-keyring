@@ -333,6 +333,59 @@ ensure_client_for_sender (gpointer user_data)
 }
 
 static GDBusMessage *
+rewrite_default_alias (GkdSecretService *self,
+                       GDBusMessage *message)
+{
+	const char *path = g_dbus_message_get_path (message);
+	const char *replace;
+	char *collection = NULL, *item = NULL;
+	char *collection_path, *item_path;
+	GDBusMessage *rewritten;
+	GError *error = NULL;
+
+	if (path == NULL)
+		return message;
+
+	if (!g_str_has_prefix (path, SECRET_ALIAS_PREFIX))
+		return message;
+
+	if (!gkd_secret_util_parse_path (path, &collection, &item))
+		return message;
+
+	replace = gkd_secret_service_get_alias (self, collection);
+	if (!replace) {
+		g_free (item);
+		g_free (collection);
+		return message;
+	}
+
+	rewritten = g_dbus_message_copy (message, &error);
+	if (error != NULL) {
+		g_error_free (error);
+		return message;
+	}
+
+	collection_path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX,
+						      replace, -1);
+
+	if (item != NULL) {
+		item_path = gkd_secret_util_build_path (collection_path,
+							item, -1);
+		g_dbus_message_set_path (rewritten, item_path);
+		g_free (item_path);
+	} else {
+		g_dbus_message_set_path (rewritten, collection_path);
+	}
+
+	g_free (collection_path);
+	g_free (item);
+	g_free (collection);
+	g_object_unref (message);
+
+	return rewritten;
+}
+
+static GDBusMessage *
 service_message_filter (GDBusConnection *connection,
 			GDBusMessage *message,
 			gboolean incoming,
@@ -340,13 +393,16 @@ service_message_filter (GDBusConnection *connection,
 {
 	GkdSecretService *self = user_data;
 	MessageFilterData *data;
+	GDBusMessage *filtered;
 
 	if (!incoming)
 		return message;
 
+	filtered = rewrite_default_alias (self, message);
+
 	data = g_slice_new0 (MessageFilterData);
 	data->service = g_object_ref (self);
-	data->message = g_object_ref (message);
+	data->message = g_object_ref (filtered);
 
 	/* We use G_PRIORITY_HIGH to make sure this timeout is
 	 * scheduled before the actual method call.
@@ -354,7 +410,7 @@ service_message_filter (GDBusConnection *connection,
 	g_idle_add_full (G_PRIORITY_HIGH, ensure_client_for_sender,
 			 data, NULL);
 
-	return message;
+	return filtered;
 }
 
 /* -----------------------------------------------------------------------------
