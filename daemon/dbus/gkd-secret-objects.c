@@ -320,8 +320,7 @@ gkd_secret_item_skeleton_set_property_dbus (GDBusConnection *connection,
 	}
 
 	if (g_strcmp0 (property_name, "Attributes") == 0) {
-		gkd_exported_item_set_attributes (GKD_EXPORTED_ITEM (self),
-						  g_variant_get_variant (value));
+		gkd_exported_item_set_attributes (GKD_EXPORTED_ITEM (self), value);
 	} else if (g_strcmp0 (property_name, "Label") == 0) {
 		gkd_exported_item_set_label (GKD_EXPORTED_ITEM (self),
 					     g_variant_get_string (value, NULL));
