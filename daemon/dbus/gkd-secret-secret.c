@@ -128,7 +128,6 @@ gkd_secret_secret_parse (GkdSecretService *service,
 GVariant *
 gkd_secret_secret_append (GkdSecretSecret *secret)
 {
-	GVariantBuilder builder;
 	const gchar *content_type = "text/plain";
 	const gchar *path;
 	GVariant *parameter, *value;
@@ -136,13 +135,12 @@ gkd_secret_secret_append (GkdSecretSecret *secret)
 	path = gkd_secret_dispatch_get_object_path (GKD_SECRET_DISPATCH (secret->session));
 	g_return_val_if_fail (path, NULL);
 
-	g_variant_builder_init (&builder, G_VARIANT_TYPE ("ay"));
-	g_variant_builder_add (&builder, "y", secret->parameter);
-	parameter = g_variant_builder_end (&builder);
-
-	g_variant_builder_init (&builder, G_VARIANT_TYPE ("ay"));
-	g_variant_builder_add (&builder, "y", secret->value);
-	value = g_variant_builder_end (&builder);
+	parameter = g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE,
+					       secret->parameter, secret->n_parameter,
+					       sizeof (guchar));
+	value = g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE,
+					   secret->value, secret->n_value,
+					   sizeof (guchar));
 
 	return g_variant_new ("(o@ay@ays)", path, parameter, value, content_type);
 }
