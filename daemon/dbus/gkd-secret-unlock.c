@@ -149,6 +149,7 @@ mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 	const char *value;
 	gint i;
 	GVariantBuilder builder;
+	GVariant *variant;
 
 	if (self->completed)
 		return FALSE;
@@ -160,9 +161,14 @@ mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 		g_variant_builder_add (&builder, "o", value);
 	}
 
-	gkd_exported_prompt_emit_completed (self->skeleton,
-					    dismissed,
-					    g_variant_new_variant (g_variant_builder_end (&builder)));
+	/* Emit signal manually, so that we can set the caller as destination */
+	variant = g_variant_new_variant (g_variant_builder_end (&builder));
+	g_dbus_connection_emit_signal (g_dbus_interface_skeleton_get_connection (G_DBUS_INTERFACE_SKELETON (self->skeleton)),
+				       self->caller,
+				       g_dbus_interface_skeleton_get_object_path (G_DBUS_INTERFACE_SKELETON (self->skeleton)),
+				       "org.freedesktop.Secret.Prompt", "Completed",
+				       g_variant_new ("(b@v)", dismissed, variant),
+				       NULL);
 
 	/* Fire off the next item in the unlock prompt queue */
 	other = g_queue_pop_head (&unlock_prompt_queue);

@@ -72,8 +72,13 @@ emit_completed (GkdSecretPrompt *self, gboolean dismissed)
 	g_return_if_fail (GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result);
 	variant = GKD_SECRET_PROMPT_GET_CLASS (self)->encode_result (self);
 
-	gkd_exported_prompt_emit_completed (self->pv->skeleton,
-					    dismissed, variant);
+	/* Emit signal manually, so that we can set the caller as destination */
+	g_dbus_connection_emit_signal (g_dbus_interface_skeleton_get_connection (G_DBUS_INTERFACE_SKELETON (self->pv->skeleton)),
+				       self->pv->caller,
+				       g_dbus_interface_skeleton_get_object_path (G_DBUS_INTERFACE_SKELETON (self->pv->skeleton)),
+				       "org.freedesktop.Secret.Prompt", "Completed",
+				       g_variant_new ("(b@v)", dismissed, variant),
+				       NULL);
 }
 
 static void
