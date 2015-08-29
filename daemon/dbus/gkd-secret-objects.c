@@ -1488,7 +1488,7 @@ gkd_secret_objects_register_item (GkdSecretObjects *self,
 
 	skeleton = g_hash_table_lookup (self->items_to_skeletons, item_path);
 	if (skeleton != NULL) {
-		g_warning ("asked to register item %p, but it's already registered", item_path);
+		g_warning ("asked to register item %s, but it's already registered", item_path);
 		return;
 	}
 
@@ -1516,7 +1516,7 @@ gkd_secret_objects_unregister_item (GkdSecretObjects *self,
 				    const gchar *item_path)
 {
 	if (!g_hash_table_remove (self->items_to_skeletons, item_path)) {
-		g_warning ("asked to unregister item %p, but it wasn't found", item_path);
+		g_warning ("asked to unregister item %s, but it wasn't found", item_path);
 		return;
 	}
 }
@@ -1620,7 +1620,7 @@ gkd_secret_objects_register_collection (GkdSecretObjects *self,
 
 	skeleton = g_hash_table_lookup (self->collections_to_skeletons, collection_path);
 	if (skeleton != NULL) {
-		g_warning ("asked to register collection %p, but it's already registered", collection_path);
+		g_warning ("asked to register collection %s, but it's already registered", collection_path);
 		return;
 	}
 
@@ -1650,7 +1650,7 @@ gkd_secret_objects_unregister_collection (GkdSecretObjects *self,
 					  const gchar *collection_path)
 {
 	if (!g_hash_table_remove (self->collections_to_skeletons, collection_path)) {
-		g_warning ("asked to unregister collection %p, but it wasn't found", collection_path);
+		g_warning ("asked to unregister collection %s, but it wasn't found", collection_path);
 		return;
 	}
 }
