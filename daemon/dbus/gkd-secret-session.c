@@ -40,7 +40,6 @@
 enum {
 	PROP_0,
 	PROP_CALLER,
-	PROP_CALLER_EXECUTABLE,
 	PROP_OBJECT_PATH,
 	PROP_SERVICE
 };
@@ -52,7 +51,6 @@ struct _GkdSecretSession {
 	gchar *object_path;
 	GkdSecretService *service;
 	GkdExportedSession *skeleton;
-	gchar *caller_exec;
 	gchar *caller;
 
 	/* While negotiating with a prompt, set to private key */
@@ -372,9 +370,6 @@ gkd_secret_session_finalize (GObject *obj)
 	g_assert (!self->service);
 	g_assert (!self->key);
 
-	g_free (self->caller_exec);
-	self->caller_exec = NULL;
-
 	g_free (self->caller);
 	self->caller = NULL;
 
@@ -391,10 +386,6 @@ gkd_secret_session_set_property (GObject *obj, guint prop_id, const GValue *valu
 	case PROP_CALLER:
 		g_return_if_fail (!self->caller);
 		self->caller = g_value_dup_string (value);
-		break;
-	case PROP_CALLER_EXECUTABLE:
-		g_return_if_fail (!self->caller_exec);
-		self->caller_exec = g_value_dup_string (value);
 		break;
 	case PROP_SERVICE:
 		g_return_if_fail (!self->service);
@@ -418,9 +409,6 @@ gkd_secret_session_get_property (GObject *obj, guint prop_id, GValue *value,
 	switch (prop_id) {
 	case PROP_CALLER:
 		g_value_set_string (value, gkd_secret_session_get_caller (self));
-		break;
-	case PROP_CALLER_EXECUTABLE:
-		g_value_set_string (value, gkd_secret_session_get_caller_executable (self));
 		break;
 	case PROP_OBJECT_PATH:
 		g_value_set_pointer (value, self->object_path);
@@ -447,10 +435,6 @@ gkd_secret_session_class_init (GkdSecretSessionClass *klass)
 
 	g_object_class_install_property (gobject_class, PROP_CALLER,
 		g_param_spec_string ("caller", "Caller", "DBus caller name",
-				     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
-
-	g_object_class_install_property (gobject_class, PROP_CALLER_EXECUTABLE,
-		g_param_spec_string ("caller-executable", "Caller Executable", "Executable of caller",
 				     NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY ));
 
 	g_object_class_install_property (gobject_class, PROP_OBJECT_PATH,
@@ -584,13 +568,6 @@ gkd_secret_session_get_caller (GkdSecretSession *self)
 {
 	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
 	return self->caller;
-}
-
-const gchar*
-gkd_secret_session_get_caller_executable (GkdSecretSession *self)
-{
-	g_return_val_if_fail (GKD_SECRET_IS_SESSION (self), NULL);
-	return self->caller_exec;
 }
 
 GckSession*

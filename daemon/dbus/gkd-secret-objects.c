@@ -965,17 +965,6 @@ gkd_secret_objects_dispose (GObject *obj)
 }
 
 static void
-gkd_secret_objects_finalize (GObject *obj)
-{
-	GkdSecretObjects *self = GKD_SECRET_OBJECTS (obj);
-
-	g_assert (!self->pkcs11_slot);
-	g_assert (!self->service);
-
-	G_OBJECT_CLASS (gkd_secret_objects_parent_class)->finalize (obj);
-}
-
-static void
 gkd_secret_objects_set_property (GObject *obj, guint prop_id, const GValue *value,
 				 GParamSpec *pspec)
 {
@@ -1025,7 +1014,6 @@ gkd_secret_objects_class_init (GkdSecretObjectsClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
 	gobject_class->dispose = gkd_secret_objects_dispose;
-	gobject_class->finalize = gkd_secret_objects_finalize;
 	gobject_class->set_property = gkd_secret_objects_set_property;
 	gobject_class->get_property = gkd_secret_objects_get_property;
 
@@ -1232,7 +1220,6 @@ gkd_secret_objects_foreach_collection (GkdSecretObjects *self,
 	}
 
 	for (l = collections; l; l = g_list_next (l)) {
-
 		identifier = gck_object_get_data (l->data, CKA_ID, NULL, &n_identifier, &error);
 		if (identifier == NULL) {
 			g_warning ("couldn't get collection identifier: %s", egg_error_message (error));
