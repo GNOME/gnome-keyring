@@ -226,11 +226,9 @@ aes_negotiate (GkdSecretSession *self,
 	take_session_key (self, key, CKM_AES_CBC_PAD);
 
 	if (output_variant != NULL) {
-		GVariantBuilder builder;
-
-		g_variant_builder_init (&builder, G_VARIANT_TYPE ("ay"));
-		g_variant_builder_add (&builder, "y", (const gchar *) output);
-		*output_variant = g_variant_new_variant (g_variant_builder_end (&builder));
+		*output_variant = g_variant_new_variant (g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE,
+										    output, n_output,
+										    sizeof (guchar)));
 	}
 
 	if (result != NULL) {
