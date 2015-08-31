@@ -187,17 +187,10 @@ default_path (GkdSecretService *self)
 }
 
 static void
-update_default (GkdSecretService *self, gboolean force)
+update_default (GkdSecretService *self)
 {
 	gchar *contents = NULL;
-	const gchar *identifier;
 	gchar *path;
-
-	if (!force) {
-		identifier = g_hash_table_lookup (self->aliases, "default");
-		if (identifier)
-			return;
-	}
 
 	path = default_path (self);
 	if (g_file_get_contents (path, &contents, NULL, NULL)) {
@@ -295,7 +288,7 @@ initialize_service_client (GkdSecretService *self,
 	g_hash_table_replace (self->clients, client->caller_peer, client);
 
 	/* Update default collection each time someone connects */
-	update_default (self, TRUE);
+	update_default (self);
 }
 
 static void
@@ -1348,7 +1341,7 @@ gkd_secret_service_get_alias (GkdSecretService *self, const gchar *alias)
 	identifier =  g_hash_table_lookup (self->aliases, alias);
 	if (!identifier) {
 		if (g_str_equal (alias, "default")) {
-			update_default (self, TRUE);
+			update_default (self);
 			identifier = g_hash_table_lookup (self->aliases, alias);
 
 			/* Default to to 'login' if no default keyring */
