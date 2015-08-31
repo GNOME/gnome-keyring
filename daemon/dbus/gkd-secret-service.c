@@ -133,7 +133,7 @@ struct _GkdSecretService {
 	GkdSecretObjects *objects;
 	GHashTable *aliases;
 	GckSession *internal_session;
-	gchar *alias_directory;
+	gchar *default_path;
 };
 
 typedef struct _ServiceClient {
@@ -150,57 +150,53 @@ G_DEFINE_TYPE (GkdSecretService, gkd_secret_service, G_TYPE_OBJECT);
  */
 
 static gchar*
-default_path (GkdSecretService *self)
+get_default_path (void)
 {
 	gchar *old_directory;
 	gchar *new_directory;
+	gchar *alias_directory = NULL;
 
 #if WITH_DEBUG
-	if (self->alias_directory == NULL) {
-		const gchar *path = g_getenv ("GNOME_KEYRING_TEST_PATH");
-		if (path && path[0]) {
-			self->alias_directory = g_strdup (path);
-			g_debug ("Alias directory was overridden by tests: %s", path);
-		}
+	const gchar *path = g_getenv ("GNOME_KEYRING_TEST_PATH");
+	if (path && path[0]) {
+		alias_directory = g_strdup (path);
+		g_debug ("Alias directory was overridden by tests: %s", path);
 	}
 #endif
 
-	if (self->alias_directory == NULL) {
+	if (alias_directory == NULL) {
 		new_directory = g_build_filename (g_get_user_data_dir (), "keyrings", NULL);
 		old_directory = g_build_filename (g_get_home_dir (), ".gnome2", "keyrings", NULL);
 
 		if (!g_file_test (new_directory, G_FILE_TEST_IS_DIR) &&
 		    g_file_test (old_directory, G_FILE_TEST_IS_DIR)) {
-			self->alias_directory = old_directory;
+			alias_directory = old_directory;
 			old_directory = NULL;
 		} else {
-			self->alias_directory = new_directory;
+			alias_directory = new_directory;
 			new_directory = NULL;
 		}
 
 		g_free (old_directory);
 		g_free (new_directory);
-		g_debug ("keyring alias directory: %s", self->alias_directory);
+		g_debug ("keyring alias directory: %s", alias_directory);
 	}
 
-	return g_build_filename (self->alias_directory, "default", NULL);
+	return g_build_filename (alias_directory, "default", NULL);
 }
 
 static void
 update_default (GkdSecretService *self)
 {
 	gchar *contents = NULL;
-	gchar *path;
 
-	path = default_path (self);
-	if (g_file_get_contents (path, &contents, NULL, NULL)) {
+	if (g_file_get_contents (self->default_path, &contents, NULL, NULL)) {
 		g_strstrip (contents);
 		if (!contents[0]) {
 			g_free (contents);
 			contents = NULL;
 		}
 	}
-	g_free (path);
 
 	g_hash_table_replace (self->aliases, g_strdup ("default"), contents);
 }
@@ -210,16 +206,13 @@ store_default (GkdSecretService *self)
 {
 	GError *error = NULL;
 	const gchar *identifier;
-	gchar *path;
 
 	identifier = g_hash_table_lookup (self->aliases, "default");
 	if (!identifier)
 		return;
 
-	path = default_path (self);
-	if (!g_file_set_contents (path, identifier, -1, &error))
+	if (!g_file_set_contents (self->default_path, identifier, -1, &error))
 		g_message ("couldn't store default keyring: %s", egg_error_message (error));
-	g_free (path);
 }
 
 static gboolean
@@ -1050,6 +1043,7 @@ gkd_secret_service_init (GkdSecretService *self)
 {
 	self->clients = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, free_client);
 	self->aliases = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	self->default_path = get_default_path ();
 }
 
 static void
@@ -1099,8 +1093,8 @@ gkd_secret_service_finalize (GObject *obj)
 	g_hash_table_destroy (self->aliases);
 	self->aliases = NULL;
 
-	g_free (self->alias_directory);
-	self->alias_directory = NULL;
+	g_free (self->default_path);
+	self->default_path = NULL;
 
 	G_OBJECT_CLASS (gkd_secret_service_parent_class)->finalize (obj);
 }
