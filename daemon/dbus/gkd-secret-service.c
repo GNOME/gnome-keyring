@@ -198,6 +198,9 @@ update_default (GkdSecretService *self)
 		}
 	}
 
+	/* Default to to 'login' if no default keyring */
+	if (contents == NULL)
+		contents = g_strdup ("login");
 	g_hash_table_replace (self->aliases, g_strdup ("default"), contents);
 }
 
@@ -947,6 +950,17 @@ gkd_secret_service_init_collections (GkdSecretService *self)
 	g_strfreev (collections);
 }
 
+static void
+gkd_secret_service_init_aliases (GkdSecretService *self)
+{
+	self->aliases = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	g_hash_table_insert (self->aliases, g_strdup ("session"), g_strdup ("session"));
+	/* TODO: We should be using CKA_G_LOGIN_COLLECTION */
+	g_hash_table_insert (self->aliases, g_strdup ("login"), g_strdup ("login"));
+
+	update_default (self);
+}
+
 static GObject*
 gkd_secret_service_constructor (GType type,
 				guint n_props,
@@ -1042,8 +1056,8 @@ static void
 gkd_secret_service_init (GkdSecretService *self)
 {
 	self->clients = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, free_client);
-	self->aliases = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->default_path = get_default_path ();
+	gkd_secret_service_init_aliases (self);
 }
 
 static void
@@ -1327,38 +1341,10 @@ gkd_secret_service_close_session (GkdSecretService *self, GkdSecretSession *sess
 const gchar*
 gkd_secret_service_get_alias (GkdSecretService *self, const gchar *alias)
 {
-	const gchar *identifier;
-
 	g_return_val_if_fail (GKD_SECRET_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (alias != NULL, NULL);
 
-	identifier =  g_hash_table_lookup (self->aliases, alias);
-	if (!identifier) {
-		if (g_str_equal (alias, "default")) {
-			update_default (self);
-			identifier = g_hash_table_lookup (self->aliases, alias);
-
-			/* Default to to 'login' if no default keyring */
-			if (identifier == NULL) {
-				identifier = "login";
-				g_hash_table_replace (self->aliases, g_strdup (alias),
-						      g_strdup (identifier));
-			}
-
-		} else if (g_str_equal (alias, "session")) {
-			identifier = "session";
-			g_hash_table_replace (self->aliases, g_strdup (alias),
-					      g_strdup (identifier));
-
-		/* TODO: We should be using CKA_G_LOGIN_COLLECTION */
-		} else if (g_str_equal (alias, "login")) {
-			identifier = "login";
-			g_hash_table_replace (self->aliases, g_strdup (alias),
-					      g_strdup (identifier));
-		}
-	}
-
-	return identifier;
+	return g_hash_table_lookup (self->aliases, alias);
 }
 
 void
