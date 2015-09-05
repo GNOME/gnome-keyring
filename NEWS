@@ -1,3 +1,7 @@
+Changes in version 3.17.91 are:
+ * More fixes for GDBus migration [#622905]
+ * Fix a memory leak [#752919]
+
 Changes in version 3.17.4 are:
  * Remove temporary files on failure [#746334]
  * Migrate DBus code to GVariant and GDBus [#622905]
