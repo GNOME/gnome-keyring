@@ -132,6 +132,7 @@ test_pkcs12_import (Test *test,
 	gsize length;
 	GList *l;
 
+	error = NULL;
 	g_file_get_contents (SRCDIR "/pkcs11/gnome2-store/fixtures/personal.p12", &contents, &length, &error);
 	g_assert_no_error (error);
 
