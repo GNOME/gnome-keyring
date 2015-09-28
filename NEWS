@@ -1,3 +1,6 @@
+Changes in version 3.18.0 are:
+ * Fix test crash [#731802]
+
 Changes in version 3.17.91 are:
  * More fixes for GDBus migration [#622905]
  * Fix a memory leak [#752919]
