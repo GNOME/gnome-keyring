@@ -186,7 +186,7 @@ main (int argc, char **argv)
 	g_test_init (&argc, &argv, NULL);
 
 	for (i = 0; i < G_N_ELEMENTS (parse_test_fixtures); i++) {
-		name = g_strdup_printf ("/asn1x/encode-decode-%s", parse_test_fixtures[i].identifier);
+		name = g_strdup_printf ("/asn1x/encode-decode-%d-%s", i, parse_test_fixtures[i].identifier);
 		g_test_add (name, Test, &parse_test_fixtures[i], setup_parsing, test_decode_encode, teardown);
 		g_free (name);
 	}
