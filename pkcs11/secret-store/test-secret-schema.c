@@ -230,7 +230,7 @@ main (int argc, char **argv)
 	            Test, NULL, setup, test_match_network_xdg_schema_without_schema_locked, teardown);
 	g_test_add ("/secret-store/schema/note-xdg-schema-without-schema-unlocked",
 	            Test, NULL, setup, test_match_note_xdg_schema_without_schema_unlocked, teardown);
-	g_test_add ("/secret-store/schema/unknown-schema-without-schema-locked",
+	g_test_add ("/secret-store/schema/note-xdg-schema-without-schema-locked",
 	            Test, NULL, setup, test_match_note_xdg_schema_without_schema_locked, teardown);
 	g_test_add ("/secret-store/schema/unknown-schema-without-schema-unlocked",
 	            Test, NULL, setup, test_match_unknown_xdg_schema_without_schema_unlocked, teardown);
