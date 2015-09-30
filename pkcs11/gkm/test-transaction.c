@@ -541,10 +541,13 @@ main (int argc, char **argv)
 		};
 		int i;
 
+		gchar test_name[39];
 		for (i = 0; buffersizes[i]; i++)
-			g_test_add ("/gkm/transaction/write_large_file",
-				    Test, GUINT_TO_POINTER (buffersizes[i]),
+		{
+			g_sprintf (test_name, "/gkm/transaction/write_large_file_%u", buffersizes[i]);
+			g_test_add (test_name, Test, GUINT_TO_POINTER (buffersizes[i]),
 				    setup, test_write_large_file, teardown);
+		}
 	}
 
 	g_test_add ("/gkm/transaction/write_file_abort_gone", Test, NULL, setup, test_write_file_abort_gone, teardown);
