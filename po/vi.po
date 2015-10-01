@@ -1,18 +1,19 @@
 # Vietnamese translation of GNOME Keyring.
-# Copyright © 2014 GNOME i18n Project for Vietnamese.
+# Bản dịch tiếng Việt dành cho GNOME Keyring.
+# Copyright © 2015 GNOME i18n Project for Vietnamese.
 # This file is distributed under the same license as the gnome-keyring package.
 # Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2004,2008,2011-2012.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
 # Nguyen Vu Hung <vuhung16plus@gmail.com>, 2011.
-# Trần Ngọc Quân <vnwildman@gmail.com>, 2014.
+# Trần Ngọc Quân <vnwildman@gmail.com>, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-11-20 20:13+0000\n"
-"PO-Revision-Date: 2014-11-21 14:15+0700\n"
+"POT-Creation-Date: 2015-09-30 19:51+0000\n"
+"PO-Revision-Date: 2015-10-01 07:47+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <gnome-vi-list@gnome.org>\n"
 "Language: vi\n"
@@ -20,24 +21,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:121
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
 #: ../daemon/dbus/gkd-secret-create.c:78
 #: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
-msgstr "Không tên"
+msgstr "Chưa đặt tên"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
 msgstr "Nhập mật khẩu cũ cho chùm chìa khóa “%s”"
 
-#: ../daemon/dbus/gkd-secret-change.c:94
+#: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
@@ -46,21 +46,20 @@ msgstr ""
 "Một ứng dụng muốn thay đổi mật khẩu cho chùm chìa khóa “%s”. Nhập mật khẩu "
 "cũ của nó."
 
-#: ../daemon/dbus/gkd-secret-change.c:100
-#: ../daemon/dbus/gkd-secret-change.c:136
-#: ../daemon/dbus/gkd-secret-change.c:147
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
+#: ../daemon/dbus/gkd-secret-change.c:146
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1311
 msgid "Continue"
 msgstr "Tiếp tục"
 
-#: ../daemon/dbus/gkd-secret-change.c:126
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Hãy chọn một mật khẩu mới cho chùm chìa khóa “%s”"
 
-#: ../daemon/dbus/gkd-secret-change.c:130
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -69,26 +68,24 @@ msgstr ""
 "Một ứng dụng muốn thay đổi mật khẫu cho chùm chìa khóa “%s”. Hãy chọn mật "
 "khẩu cần sử dụng với nó."
 
-#: ../daemon/dbus/gkd-secret-change.c:143
-#: ../daemon/dbus/gkd-secret-create.c:94
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Lưu mật khẩu không mã hóa không?"
 
-#: ../daemon/dbus/gkd-secret-change.c:145
-#: ../daemon/dbus/gkd-secret-create.c:96
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
-"Dùng một mật khẩu trắng thì mật khẩu đã lưu sẽ không được mã hoá an toàn. "
+"Dùng một mật khẩu trắng thì mật khẩu đã lưu sẽ không được mã hóa an toàn. "
 "Mọi người đều có thể truy cập vào tập tin của bạn."
 
-#: ../daemon/dbus/gkd-secret-change.c:153
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Bạn đã gõ sai mật khẩu gốc"
 
-#: ../daemon/dbus/gkd-secret-change.c:354
+#: ../daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
 msgstr "Đổi mật khẩu chùm chìa khóa"
 
@@ -105,17 +102,9 @@ msgstr ""
 msgid "Choose password for new keyring"
 msgstr "Hãy chọn mật khẩu cho chùm chìa khóa mới"
 
-#: ../daemon/dbus/gkd-secret-create.c:311
+#: ../daemon/dbus/gkd-secret-create.c:308
 msgid "New Keyring Password"
 msgstr "Mật khẩu chùm chìa khóa mới"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GPG Password Agent"
-msgstr "Agent cho mật khẩu GPG"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Chùm chìa khóa GNOME: Đại diện GPG"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -140,34 +129,6 @@ msgstr "Đại diện khóa SSH"
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "GNOME Keyring: SSH Agent"
 msgstr "Chùm chìa khóa GNOME: Đại diện SSH"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:82
-msgid "Unknown"
-msgstr "Không biết"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:144
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:145
-msgid "Enter Passphrase"
-msgstr "Nhập mật mã"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:149
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
-msgid "Unlock"
-msgstr "Mở khóa"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:162
-msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Tự động gỡ khóa khóa này khi nào tôi đã đăng nhập"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:225
-#, c-format
-msgid "PGP Key: %s"
-msgstr "Khóa PGP: %s"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:158
@@ -200,7 +161,7 @@ msgstr "xóa bỏ tập tin khóa đã hỏng (được tạo bởi %d)\n"
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr "chờ khóa (được giữ bởi %d%s) %s...\n"
+msgstr "đang chờ khóa (được giữ bởi %d%s) %s…\n"
 
 # http://vi.wikipedia.org/wiki/Deadlock
 # deadlock (Khóa chết) Là trạng thái xảy ra trong môi trường đa nhiệm (Muti-Threading) khi hai hoặc nhiều tiến trình đi vào vòng lặp chờ tài nguyên mãi mãi.
@@ -216,7 +177,7 @@ msgstr "khóa “%s” chưa được tạo: %s\n"
 #: ../egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr "chờ khóa %s...\n"
+msgstr "chờ khóa %s…\n"
 
 #: ../egg/egg-oid.c:40
 msgid "Domain Component"
@@ -288,7 +249,7 @@ msgstr "Đơn vị tổ chức"
 
 #: ../egg/egg-oid.c:82
 msgid "Title"
-msgstr "Tuổi tác"
+msgstr "Tước hiệu"
 
 #: ../egg/egg-oid.c:84
 msgid "Telephone Number"
@@ -304,11 +265,11 @@ msgstr "Tên viết tắt"
 
 #: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
-msgstr "Thế hệ dè dặt"
+msgstr "Hạn định phát sinh"
 
 #: ../egg/egg-oid.c:92
 msgid "DN Qualifier"
-msgstr "Tên miền dè dặt"
+msgstr "Hạn định tên miền"
 
 #: ../egg/egg-oid.c:94
 msgid "Pseudonym"
@@ -320,15 +281,15 @@ msgstr "RSA"
 
 #: ../egg/egg-oid.c:98
 msgid "MD2 with RSA"
-msgstr "MD2 với mã hoá RSA"
+msgstr "MD2 với mã hóa RSA"
 
 #: ../egg/egg-oid.c:99
 msgid "MD5 with RSA"
-msgstr "MD5 với mã hoá RSA"
+msgstr "MD5 với mã hóa RSA"
 
 #: ../egg/egg-oid.c:100
 msgid "SHA1 with RSA"
-msgstr "SHA1 với mã hoá RSA"
+msgstr "SHA1 với mã hóa RSA"
 
 #: ../egg/egg-oid.c:102
 msgid "DSA"
@@ -336,7 +297,7 @@ msgstr "DSA"
 
 #: ../egg/egg-oid.c:103
 msgid "SHA1 with DSA"
-msgstr "SHA1 với mã hoá DSA"
+msgstr "SHA1 với mã hóa DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:106
@@ -377,7 +338,7 @@ msgstr "Chứng nhận không tên"
 
 #: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
 msgid "Couldn't parse public SSH key"
-msgstr "Không thể phân tích cú pháp của khóa SSH công"
+msgstr "Không thể phân tích cú pháp của khóa công SSH"
 
 #. Get the label ready
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
@@ -407,6 +368,15 @@ msgid ""
 msgstr ""
 "Chùm chìa khóa đăng nhập đã không được gỡ khóa khi bạn đăng nhập vào máy "
 "tính này."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "Mở khóa"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
@@ -440,19 +410,19 @@ msgstr "Mở khóa công khai"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the private key"
-msgstr "Gõ mật khẩu để mở khóa riêng"
+msgstr "Nhập mật khẩu để mở khóa riêng"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the certificate"
-msgstr "Gõ mật khẩu để mở chứng nhận"
+msgstr "Nhập mật khẩu để mở chứng nhận"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock the public key"
-msgstr "Gõ mật khẩu để mở khóa công khai"
+msgstr "Nhập mật khẩu để mở khóa công khai"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Enter password to unlock"
-msgstr "Gõ mật khẩu để gỡ khóa"
+msgstr "Nhập mật khẩu để gỡ khóa"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
 msgid "Automatically unlock this key whenever I'm logged in"
@@ -557,7 +527,7 @@ msgstr "Nhập mật khẩu mới cho “%s”"
 #: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr "cách dùng: gnome-keyring lệnh [tuỳ chọn]\n"
+msgstr "cách dùng: gnome-keyring lệnh [các tùy chọn]\n"
 
 #: ../tool/gkr-tool.c:102
 msgid "commands: "
@@ -567,6 +537,24 @@ msgstr "lệnh: "
 #: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "      "
+
+#~ msgid "GPG Password Agent"
+#~ msgstr "Agent cho mật khẩu GPG"
+
+#~ msgid "GNOME Keyring: GPG Agent"
+#~ msgstr "Chùm chìa khóa GNOME: Đại diện GPG"
+
+#~ msgid "Unknown"
+#~ msgstr "Không biết"
+
+#~ msgid "Enter Passphrase"
+#~ msgstr "Nhập mật mã"
+
+#~ msgid "Automatically unlock this key, whenever I'm logged in"
+#~ msgstr "Tự động gỡ khóa khóa này khi nào tôi đã đăng nhập"
+
+#~ msgid "PGP Key: %s"
+#~ msgstr "Khóa PGP: %s"
 
 #~ msgid "Forget this password if idle for"
 #~ msgstr "Quên mật khẩu này nếu không dùng trong"
