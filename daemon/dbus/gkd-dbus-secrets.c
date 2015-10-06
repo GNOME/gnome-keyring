@@ -74,6 +74,7 @@ gkd_dbus_secrets_startup (void)
 	guint res;
 
 	g_return_val_if_fail (dbus_conn, FALSE);
+	g_return_val_if_fail (!secrets_service, FALSE);
 
 #ifdef WITH_DEBUG
 	service = g_getenv ("GNOME_KEYRING_TEST_SERVICE");
@@ -86,6 +87,9 @@ gkd_dbus_secrets_startup (void)
 	/* Figure out which slot to use */
 	slot = calculate_secrets_slot ();
 	g_return_val_if_fail (slot, FALSE);
+	secrets_service = g_object_new (GKD_SECRET_TYPE_SERVICE,
+					"connection", dbus_conn, "pkcs11-slot", slot, NULL);
+	g_object_unref (slot);
 
 	/* Try and grab our name */
 	request_variant = g_dbus_connection_call_sync (dbus_conn,
@@ -120,16 +124,12 @@ gkd_dbus_secrets_startup (void)
 			g_message ("another secret service is running");
 			break;
 		default:
+			g_clear_object (&secrets_service);
 			g_return_val_if_reached (FALSE);
 			break;
 		};
 	}
 
-	g_return_val_if_fail (!secrets_service, FALSE);
-	secrets_service = g_object_new (GKD_SECRET_TYPE_SERVICE,
-					"connection", dbus_conn, "pkcs11-slot", slot, NULL);
-
-	g_object_unref (slot);
 	return TRUE;
 }
 
