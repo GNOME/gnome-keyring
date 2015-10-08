@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-07-09 06:49+0000\n"
-"PO-Revision-Date: 2014-08-13 15:33+0200\n"
+"POT-Creation-Date: 2015-10-05 19:46+0000\n"
+"PO-Revision-Date: 2015-10-06 09:59+0300\n"
 "Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
@@ -18,11 +18,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.5\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:121
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
 #: ../daemon/dbus/gkd-secret-create.c:78
 #: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
@@ -30,12 +29,12 @@ msgstr ""
 msgid "Unnamed"
 msgstr "Χωρίς όνομα"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
 msgstr "Εισάγετε τον παλιό κωδικό πρόσβασης για την κλειδοθήκη '%s'"
 
-#: ../daemon/dbus/gkd-secret-change.c:94
+#: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Enter the "
@@ -44,21 +43,20 @@ msgstr ""
 "Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό πρόσβασης για την κλειδοθήκη "
 "'%s'. Εισάγετε τον παλιό κωδικό πρόσβασης για αυτό."
 
-#: ../daemon/dbus/gkd-secret-change.c:100
-#: ../daemon/dbus/gkd-secret-change.c:136
-#: ../daemon/dbus/gkd-secret-change.c:147
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1311
 msgid "Continue"
 msgstr "Συνέχεια"
 
-#: ../daemon/dbus/gkd-secret-change.c:126
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Επιλέξτε νέο κωδικό πρόσβασης για την κλειδοθήκη '%s'"
 
-#: ../daemon/dbus/gkd-secret-change.c:130
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
@@ -67,13 +65,11 @@ msgstr ""
 "Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό πρόσβασης για την κλειδοθήκη "
 "'%s'. Επιλέξετε τον κωδικό πρόσβασης που θέλετε να χρησιμοποιήσετε για αυτό."
 
-#: ../daemon/dbus/gkd-secret-change.c:143
-#: ../daemon/dbus/gkd-secret-create.c:94
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Αποθήκευση κωδικών πρόσβασης χωρίς κρυπτογράφηση;"
 
-#: ../daemon/dbus/gkd-secret-change.c:145
-#: ../daemon/dbus/gkd-secret-create.c:96
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -83,11 +79,11 @@ msgstr ""
 "με ασφάλεια οι αποθηκευμένοι σας κωδικοί πρόσβασης. Θα είναι προσβάσιμοι "
 "στον καθένα που έχει πρόσβαση στα αρχεία σας."
 
-#: ../daemon/dbus/gkd-secret-change.c:153
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
-msgstr "Ο αρχικός κωδικός πρόσβασξς ήταν λάθος"
+msgstr "Ο αρχικός κωδικός πρόσβασης ήταν λάθος"
 
-#: ../daemon/dbus/gkd-secret-change.c:354
+#: ../daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
 msgstr "Αλλαγή κωδικού πρόσβασης κλειδοθήκης"
 
@@ -104,17 +100,9 @@ msgstr ""
 msgid "Choose password for new keyring"
 msgstr "Επιλέξτε κωδικό πρόσβασης για νέα κλειδοθήκη"
 
-#: ../daemon/dbus/gkd-secret-create.c:311
+#: ../daemon/dbus/gkd-secret-create.c:308
 msgid "New Keyring Password"
 msgstr "Νέος κωδικός πρόσβασης κλειδοθήκης"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GPG Password Agent"
-msgstr "Πράκτορας κωδικού πρόσβασης GPG"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Κλειδοθήκη GNOME: Πράκτορας GPG"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -140,36 +128,8 @@ msgstr "Πράκτορας κλειδιού SSH"
 msgid "GNOME Keyring: SSH Agent"
 msgstr "Κλειδοθήκη GNOME: Πράκτορας SSH"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:105
-msgid "Unknown"
-msgstr "Άγνωστο"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
-#, c-format
-msgid "PGP Key: %s"
-msgstr "Κλειδί PGP: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
-msgid "Enter Passphrase"
-msgstr "Εισάγετε συνθηματικό"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
-msgid "Unlock"
-msgstr "Ξεκλείδωμα"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
-msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Αυτόματο ξεκλείδωμα αυτού του κλειδιού, όποτε συνδέομαι"
-
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:150
+#: ../daemon/login/gkd-login.c:158
 msgid "Login"
 msgstr "Σύνδεση"
 
@@ -405,6 +365,15 @@ msgstr ""
 "Η κλειδοθήκη εισόδου σας δεν ξεκλειδώθηκε όταν συνδεθήκατε σε αυτόν τον "
 "υπολογιστή."
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "Ξεκλείδωμα"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "Ξεκλείδωμα κλειδοθήκης"
@@ -462,8 +431,8 @@ msgstr "Αυτόματο ξεκλείδωμα αυτή της πιστοποίη
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1309
 msgid "Automatically unlock whenever I'm logged in"
 msgstr "Αυτόματο ξεκλείδωμα όποτε συνδέομαι"
 
@@ -520,15 +489,15 @@ msgstr ""
 "Μια εφαρμογή επιθυμεί πρόσβαση στο πιστοποιητικό/αποθήκη κλειδιών '%s', αλλά "
 "αυτό είναι κλειδωμένο"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New Password Required"
 msgstr "Απαιτείται νέος κωδικός πρόσβασης"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1152
 msgid "New password required for secure storage"
 msgstr "Απαιτείται νέος κωδικός πρόσβασης για την ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1154
 #, c-format
 msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
@@ -537,44 +506,62 @@ msgstr ""
 "Απαιτείται κωδικός πρόσβασης για την προετοιμασία του '%s' για αποθήκευση "
 "πιστοποιητικών ή κλειδιών"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change Password"
 msgstr "Αλλαγή κωδικού πρόσβασης"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
 msgid "Original password for secure storage"
 msgstr "Αρχικός κωδικός πρόσβασης για ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
 #, c-format
 msgid "To change the password for '%s', the original password is required"
 msgstr ""
 "Για να αλλάξετε τον κωδικό πρόσβασης για '%s', απαιτείται ο αρχικός κωδικός "
 "πρόσβασης"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1301
 msgid "Change password for secure storage"
 msgstr "Αλλαγή κωδικού πρόσβασης για ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1303
 #, c-format
 msgid "Type a new password for '%s'"
 msgstr "Πληκτρολογήστε έναν νέο κωδικό πρόσβασης για '%s'"
 
-#: ../tool/gkr-tool.c:101
+#: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "χρήση: gnome-keyring εντολή [επιλογές]\n"
 
-#: ../tool/gkr-tool.c:103
+#: ../tool/gkr-tool.c:102
 msgid "commands: "
 msgstr "εντολές:"
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:107
+#: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
+
+#~ msgid "GPG Password Agent"
+#~ msgstr "Πράκτορας κωδικού πρόσβασης GPG"
+
+#~ msgid "GNOME Keyring: GPG Agent"
+#~ msgstr "Κλειδοθήκη GNOME: Πράκτορας GPG"
+
+#~ msgid "Unknown"
+#~ msgstr "Άγνωστο"
+
+#~ msgid "PGP Key: %s"
+#~ msgstr "Κλειδί PGP: %s"
+
+#~ msgid "Enter Passphrase"
+#~ msgstr "Εισάγετε συνθηματικό"
+
+#~ msgid "Automatically unlock this key, whenever I'm logged in"
+#~ msgstr "Αυτόματο ξεκλείδωμα αυτού του κλειδιού, όποτε συνδέομαι"
 
 #~ msgid "Forget this password if idle for"
 #~ msgstr "Να ξεχαστεί αυτός ο κωδικός αν είναι αδρανής για"
