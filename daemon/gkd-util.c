@@ -53,15 +53,10 @@ const gchar *GKD_UTIL_OUT_ENVIRONMENT[] = {
  * early before these environment variables were set.
  */
 const gchar *GKD_UTIL_IN_ENVIRONMENT[] = {
-	"DISPLAY",
 	"DBUS_SESSION_BUS_ADDRESS",
 	"DESKTOP_AUTOSTART_ID",
-	"ICEAUTHORITY",
 	"LANG",
-	"XAUTHORITY",
-	"XAUTHLOCALHOSTNAME",
 	"XDG_RUNTIME_DIR",
-	"XDG_SESSION_COOKIE",
 	"LOGNAME",
 	"USERNAME",
 	NULL
