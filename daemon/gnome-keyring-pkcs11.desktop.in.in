@@ -4,7 +4,7 @@ _Name=Certificate and Key Storage
 _Comment=GNOME Keyring: PKCS#11 Component
 Exec=@bindir@/gnome-keyring-daemon --start --components=pkcs11
 OnlyShowIn=GNOME;Unity;MATE;
-X-GNOME-Autostart-Phase=Initialization
+X-GNOME-Autostart-Phase=PreDisplayServer
 X-GNOME-AutoRestart=false
 X-GNOME-Autostart-Notify=true
 X-GNOME-Bugzilla-Bugzilla=GNOME
