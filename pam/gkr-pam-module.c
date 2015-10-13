@@ -311,7 +311,6 @@ cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
 }
 
 #ifdef WITH_SELINUX
-#include  <selinux/flask.h>
 #include  <selinux/selinux.h>
 /* Attempt to set SELinux Context. We are ignoring failure and just going
    with default behaviour
@@ -327,7 +326,7 @@ static void setup_selinux_context(const char *command) {
 	ret = getfilecon(command, &fcon);
 	if (ret < 0) goto err;
 
-	ret = security_compute_create(execcon, fcon, SECCLASS_PROCESS, &newcon);
+	ret = security_compute_create(execcon, fcon, string_to_security_class ("process"), &newcon);
 	if (ret < 0) goto err;
 
 	setexeccon(newcon);
