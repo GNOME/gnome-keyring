@@ -955,8 +955,16 @@ main (int argc, char *argv[])
 			 * for any callers, and quit or go comatose.
 			 */
 			send_environment_and_finish_parent (parent_wakeup_fd);
-			if (run_foreground)
-				while (sleep(0x08000000) == 0);
+			if (run_foreground) {
+				GDBusConnection *connection;
+				connection = g_bus_get_sync (G_BUS_TYPE_SESSION,
+							     NULL,
+							     NULL);
+				loop = g_main_loop_new (NULL, FALSE);
+				g_main_loop_run (loop);
+				g_main_loop_unref (loop);
+				loop = NULL;
+			}
 			cleanup_and_exit (0);
 		}
 
