@@ -58,6 +58,8 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
+#include <gio/gunixinputstream.h>
+#include <gio/gunixoutputstream.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
@@ -125,6 +127,7 @@ static gchar* control_directory = NULL;
 static guint timeout_id = 0;
 static gboolean initialization_completed = FALSE;
 static GMainLoop *loop = NULL;
+static int parent_wakeup_fd = -1;
 
 static GOptionEntry option_entries[] = {
 	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
@@ -605,22 +608,43 @@ discover_other_daemon (DiscoverFunc callback, gboolean acquire)
 }
 
 static void
+redirect_fds_after_fork (void)
+{
+	int fd, i;
+
+	for (i = 0; i < 3; ++i) {
+		fd = open ("/dev/null", O_RDONLY);
+		sane_dup2 (fd, i);
+		close (fd);
+	}
+}
+
+static void
+block_on_fd (int fd)
+{
+	unsigned char dummy;
+	read (fd, &dummy, 1);
+}
+
+static int
 fork_and_print_environment (void)
 {
 	int status;
 	pid_t pid;
-	int fd, i;
+	int wakeup_fds[2] = { -1, -1 };
 
 	if (run_foreground) {
-		print_environment ();
-		return;
+		return -1;
 	}
+
+	if (!g_unix_open_pipe (wakeup_fds, FD_CLOEXEC, NULL))
+		exit (1);
 
 	pid = fork ();
 
 	if (pid != 0) {
-
 		/* Here we are in the initial process */
+		close (wakeup_fds[1]);
 
 		if (run_daemonized) {
 
@@ -633,8 +657,8 @@ fork_and_print_environment (void)
 				exit (WEXITSTATUS (status));
 
 		} else {
-			/* Not double forking */
-			print_environment ();
+			/* Not double forking, wait for child */
+			block_on_fd (wakeup_fds[0]);
 		}
 
 		/* The initial process exits successfully */
@@ -654,6 +678,7 @@ fork_and_print_environment (void)
 		pid = fork ();
 
 		if (pid != 0) {
+			close (wakeup_fds[1]);
 
 			/* Here we are in the intermediate child process */
 
@@ -665,7 +690,7 @@ fork_and_print_environment (void)
 				exit (1);
 
 			/* We've done two forks. */
-			print_environment ();
+			block_on_fd (wakeup_fds[0]);
 
 			/* The intermediate child exits */
 			exit (0);
@@ -674,12 +699,7 @@ fork_and_print_environment (void)
 	}
 
 	/* Here we are in the resulting daemon or background process. */
-
-	for (i = 0; i < 3; ++i) {
-		fd = open ("/dev/null", O_RDONLY);
-		sane_dup2 (fd, i);
-		close (fd);
-	}
+	return wakeup_fds[1];
 }
 
 static gboolean
@@ -876,14 +896,23 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
+	if (perform_unlock) {
+		login_password = read_login_password (STDIN);
+		atexit (clear_login_password);
+	}
+
+	/* The whole forking and daemonizing dance starts here. */
+	parent_wakeup_fd = fork_and_print_environment();
+
 	/* The --start option */
 	if (run_for_start) {
 		if (discover_other_daemon (initialize_daemon_at, TRUE)) {
 			/*
-			 * Another daemon was initialized, print out environment
-			 * for any callers, and quit or go comatose.
+			 * Another daemon was initialized, print out environment,
+			 * tell parent we're done, and quit or go comatose.
 			 */
 			print_environment ();
+			close (parent_wakeup_fd);
 			if (run_foreground)
 				while (sleep(0x08000000) == 0);
 			cleanup_and_exit (0);
@@ -908,11 +937,6 @@ main (int argc, char *argv[])
 	if (!gkd_control_listen ())
 		return FALSE;
 
-	if (perform_unlock) {
-		login_password = read_login_password (STDIN);
-		atexit (clear_login_password);
-	}
-
 	/* The --login option. Delayed initialization */
 	if (run_for_login) {
 		timeout_id = g_timeout_add_seconds (LOGIN_TIMEOUT, (GSourceFunc) on_login_timeout, NULL);
@@ -926,8 +950,12 @@ main (int argc, char *argv[])
 
 	signal (SIGPIPE, SIG_IGN);
 
-	/* The whole forking and daemonizing dance starts here. */
-	fork_and_print_environment();
+	/* Print the environment and tell the parent we're done */
+	print_environment ();
+	close (parent_wakeup_fd);
+
+	if (!run_foreground)
+		redirect_fds_after_fork ();
 
 	g_unix_signal_add (SIGTERM, on_signal_term, loop);
 	g_unix_signal_add (SIGHUP, on_signal_term, loop);
