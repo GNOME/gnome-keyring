@@ -827,6 +827,14 @@ on_login_timeout (gpointer data)
 	return FALSE;
 }
 
+static void
+on_vanished_quit_loop (GDBusConnection *connection,
+                       const gchar *name,
+                       gpointer user_data)
+{
+	g_main_loop_quit (user_data);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -849,6 +857,9 @@ main (int argc, char *argv[])
 	 * Without either of these options, we follow a more boring and
 	 * predictable startup.
 	 */
+
+	GDBusConnection *connection = NULL;
+	GError *error = NULL;
 
 	/*
 	 * Before we do ANYTHING, we drop privileges so we don't become
@@ -913,8 +924,20 @@ main (int argc, char *argv[])
 			 */
 			print_environment ();
 			close (parent_wakeup_fd);
-			if (run_foreground)
-				while (sleep(0x08000000) == 0);
+			if (run_foreground) {
+				connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+				if (error) {
+					g_warning ("Couldn't connect to session bus: %s", error->message);
+					g_clear_error (&error);
+				}
+				loop = g_main_loop_new (NULL, FALSE);
+				g_bus_watch_name (G_BUS_TYPE_SESSION, "org.gnome.keyring",
+				                  G_BUS_NAME_WATCHER_FLAGS_NONE,
+				                  NULL, on_vanished_quit_loop, loop, NULL);
+				g_main_loop_run (loop);
+				g_clear_pointer (&loop, g_main_loop_unref);
+				g_clear_object (&connection);
+			}
 			cleanup_and_exit (0);
 		}
 
