@@ -125,6 +125,7 @@ static gchar* control_directory = NULL;
 static guint timeout_id = 0;
 static gboolean initialization_completed = FALSE;
 static GMainLoop *loop = NULL;
+static int parent_wakeup_fd = -1;
 
 static GOptionEntry option_entries[] = {
 	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
@@ -501,6 +502,55 @@ print_environment (void)
 	fflush (stdout);
 }
 
+static void
+print_environment_from_fd (int fd)
+{
+	char *output;
+	gsize output_size;
+	gsize bytes_read;
+
+	bytes_read = read (fd, &output_size, sizeof (output_size));
+
+	if (bytes_read < sizeof (output_size))
+		exit (1);
+
+	output = g_malloc0 (output_size);
+	bytes_read = read (fd, output, output_size);
+
+	if (bytes_read < output_size)
+		exit (1);
+
+	printf ("%s\n", output);
+	fflush (stdout);
+	g_free (output);
+}
+
+static void
+send_environment_and_finish_parent (int fd)
+{
+	char *output;
+	gsize output_size;
+	gsize bytes_written;
+
+	if (fd < 0) {
+		print_environment ();
+		return;
+	}
+
+	output = g_strjoinv ("\n", (gchar **) gkd_util_get_environment ());
+	output_size = strlen (output) + 1;
+	bytes_written = write (fd, &output_size, sizeof (output_size));
+
+	if (bytes_written < sizeof (output_size))
+		exit (1);
+
+	bytes_written = write (fd, output, output_size);
+	if (bytes_written < output_size)
+		exit (1);
+
+	g_free (output);
+}
+
 static gboolean
 initialize_daemon_at (const gchar *directory)
 {
@@ -604,22 +654,18 @@ discover_other_daemon (DiscoverFunc callback, gboolean acquire)
 	return FALSE;
 }
 
-static void
+static int
 fork_and_print_environment (void)
 {
 	int status;
 	pid_t pid;
-	int fd, i;
+	int wakeup_fds[2] = { -1, -1 };
 
-	if (run_foreground) {
-		print_environment ();
-		return;
-	}
+	g_unix_open_pipe (wakeup_fds, FD_CLOEXEC, NULL);
 
 	pid = fork ();
 
 	if (pid != 0) {
-
 		/* Here we are in the initial process */
 
 		if (run_daemonized) {
@@ -634,7 +680,7 @@ fork_and_print_environment (void)
 
 		} else {
 			/* Not double forking */
-			print_environment ();
+			print_environment_from_fd (wakeup_fds[0]);
 		}
 
 		/* The initial process exits successfully */
@@ -665,7 +711,7 @@ fork_and_print_environment (void)
 				exit (1);
 
 			/* We've done two forks. */
-			print_environment ();
+			print_environment_from_fd (wakeup_fds[0]);
 
 			/* The intermediate child exits */
 			exit (0);
@@ -674,12 +720,7 @@ fork_and_print_environment (void)
 	}
 
 	/* Here we are in the resulting daemon or background process. */
-
-	for (i = 0; i < 3; ++i) {
-		fd = open ("/dev/null", O_RDONLY);
-		sane_dup2 (fd, i);
-		close (fd);
-	}
+	return wakeup_fds[1];
 }
 
 static gboolean
@@ -829,6 +870,7 @@ main (int argc, char *argv[])
 	 * Without either of these options, we follow a more boring and
 	 * predictable startup.
 	 */
+	int fd, i;
 
 	/*
 	 * Before we do ANYTHING, we drop privileges so we don't become
@@ -876,6 +918,9 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
+	/* The whole forking and daemonizing dance starts here. */
+	parent_wakeup_fd = fork_and_print_environment();
+
 	/* The --start option */
 	if (run_for_start) {
 		if (discover_other_daemon (initialize_daemon_at, TRUE)) {
@@ -883,7 +928,7 @@ main (int argc, char *argv[])
 			 * Another daemon was initialized, print out environment
 			 * for any callers, and quit or go comatose.
 			 */
-			print_environment ();
+			send_environment_and_finish_parent (parent_wakeup_fd);
 			if (run_foreground)
 				while (sleep(0x08000000) == 0);
 			cleanup_and_exit (0);
@@ -926,8 +971,13 @@ main (int argc, char *argv[])
 
 	signal (SIGPIPE, SIG_IGN);
 
-	/* The whole forking and daemonizing dance starts here. */
-	fork_and_print_environment();
+	for (i = 0; i < 3; ++i) {
+		fd = open ("/dev/null", O_RDONLY);
+		sane_dup2 (fd, i);
+		close (fd);
+	}
+
+	send_environment_and_finish_parent (parent_wakeup_fd);
 
 	g_unix_signal_add (SIGTERM, on_signal_term, loop);
 	g_unix_signal_add (SIGHUP, on_signal_term, loop);
