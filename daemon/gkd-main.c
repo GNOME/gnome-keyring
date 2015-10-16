@@ -504,67 +504,6 @@ print_environment (void)
 	fflush (stdout);
 }
 
-static void
-print_environment_from_fd (int fd)
-{
-	char *output;
-	gsize output_size;
-	GInputStream *stream;
-	gboolean res;
-
-	stream = g_unix_input_stream_new (fd, TRUE);
-	res = g_input_stream_read_all (stream,
-				       &output_size, sizeof (output_size),
-				       NULL, NULL, NULL);
-	if (!res)
-		exit (1);
-
-	output = g_malloc0 (output_size);
-	res = g_input_stream_read_all (stream,
-				       output, output_size,
-				       NULL, NULL, NULL);
-	if (!res)
-		exit (1);
-
-	printf ("%s\n", output);
-	fflush (stdout);
-	g_free (output);
-	g_object_unref (stream);
-}
-
-static void
-send_environment_and_finish_parent (int fd)
-{
-	char *output;
-	gsize output_size;
-	GOutputStream *stream;
-	gboolean res;
-
-	if (fd < 0) {
-		print_environment ();
-		return;
-	}
-
-	output = g_strjoinv ("\n", (gchar **) gkd_util_get_environment ());
-	output_size = strlen (output) + 1;
-
-	stream = g_unix_output_stream_new (fd, TRUE);
-	res = g_output_stream_write_all (stream,
-					 &output_size, sizeof (output_size),
-					 NULL, NULL, NULL);
-	if (!res)
-		exit (1);
-
-	res = g_output_stream_write_all (stream,
-					 output, output_size,
-					 NULL, NULL, NULL);
-	if (!res)
-		exit (1);
-
-	g_free (output);
-	g_object_unref (stream);
-}
-
 static gboolean
 initialize_daemon_at (const gchar *directory)
 {
@@ -680,6 +619,13 @@ redirect_fds_after_fork (void)
 	}
 }
 
+static void
+block_on_fd (int fd)
+{
+	unsigned char dummy;
+	read (fd, &dummy, 1);
+}
+
 static int
 fork_and_print_environment (void)
 {
@@ -698,6 +644,7 @@ fork_and_print_environment (void)
 
 	if (pid != 0) {
 		/* Here we are in the initial process */
+		close (wakeup_fds[1]);
 
 		if (run_daemonized) {
 
@@ -710,8 +657,8 @@ fork_and_print_environment (void)
 				exit (WEXITSTATUS (status));
 
 		} else {
-			/* Not double forking */
-			print_environment_from_fd (wakeup_fds[0]);
+			/* Not double forking, wait for child */
+			block_on_fd (wakeup_fds[0]);
 		}
 
 		/* The initial process exits successfully */
@@ -731,6 +678,7 @@ fork_and_print_environment (void)
 		pid = fork ();
 
 		if (pid != 0) {
+			close (wakeup_fds[1]);
 
 			/* Here we are in the intermediate child process */
 
@@ -742,7 +690,7 @@ fork_and_print_environment (void)
 				exit (1);
 
 			/* We've done two forks. */
-			print_environment_from_fd (wakeup_fds[0]);
+			block_on_fd (wakeup_fds[0]);
 
 			/* The intermediate child exits */
 			exit (0);
@@ -963,10 +911,11 @@ main (int argc, char *argv[])
 	if (run_for_start) {
 		if (discover_other_daemon (initialize_daemon_at, TRUE)) {
 			/*
-			 * Another daemon was initialized, print out environment
-			 * for any callers, and quit or go comatose.
+			 * Another daemon was initialized, print out environment,
+			 * tell parent we're done, and quit or go comatose.
 			 */
-			send_environment_and_finish_parent (parent_wakeup_fd);
+			print_environment ();
+			close (parent_wakeup_fd);
 			if (run_foreground) {
 				connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
 				if (error) {
@@ -1013,9 +962,12 @@ main (int argc, char *argv[])
 
 	signal (SIGPIPE, SIG_IGN);
 
+	/* Print the environment and tell the parent we're done */
+	print_environment ();
+	close (parent_wakeup_fd);
+
 	if (!run_foreground)
 		redirect_fds_after_fork ();
-	send_environment_and_finish_parent (parent_wakeup_fd);
 
 	g_unix_signal_add (SIGTERM, on_signal_term, loop);
 	g_unix_signal_add (SIGHUP, on_signal_term, loop);
