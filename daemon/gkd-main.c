@@ -902,6 +902,9 @@ main (int argc, char *argv[])
 	 * predictable startup.
 	 */
 
+	GDBusConnection *connection = NULL;
+	GError *error = NULL;
+
 	/*
 	 * Before we do ANYTHING, we drop privileges so we don't become
 	 * a security issue ourselves.
@@ -965,10 +968,11 @@ main (int argc, char *argv[])
 			 */
 			send_environment_and_finish_parent (parent_wakeup_fd);
 			if (run_foreground) {
-				GDBusConnection *connection;
-				connection = g_bus_get_sync (G_BUS_TYPE_SESSION,
-							     NULL,
-							     NULL);
+				connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+				if (error) {
+					g_warning ("Couldn't connect to session bus: %s", error->message);
+					g_clear_error (&error);
+				}
 				loop = g_main_loop_new (NULL, FALSE);
 				g_main_loop_run (loop);
 				g_clear_pointer (&loop, g_main_loop_unref);
