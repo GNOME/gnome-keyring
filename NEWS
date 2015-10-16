@@ -1,3 +1,9 @@
+Changes in version 3.18.1 are:
+ * Fix regression initializing gnome-keyring-daemon [#756059]
+ * Fix regression racing for DBus name during startup [#756006]
+ * Build and testing fixes [#755873]
+ * Updated translations
+
 Changes in version 3.18.0 are:
  * Fix test crash [#731802]
 
