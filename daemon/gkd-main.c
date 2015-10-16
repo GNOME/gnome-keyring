@@ -971,8 +971,8 @@ main (int argc, char *argv[])
 							     NULL);
 				loop = g_main_loop_new (NULL, FALSE);
 				g_main_loop_run (loop);
-				g_main_loop_unref (loop);
-				loop = NULL;
+				g_clear_pointer (&loop, g_main_loop_unref);
+				g_clear_object (&connection);
 			}
 			cleanup_and_exit (0);
 		}
