@@ -27,6 +27,8 @@ gnome_keyring_daemon_LDADD = \
 	libgkm-xdg-store.la \
 	libgkm.la \
 	$(DAEMON_LIBS)
+gnome_keyring_daemon_CFLAGS = \
+	$(DAEMON_CFLAGS)
 
 service_in_files = \
 	daemon/org.gnome.keyring.service.in \
@@ -61,7 +63,7 @@ libgkd_test_la_SOURCES = \
 	daemon/gkd-test.h
 
 daemon_CFLAGS = \
-	$(DBUS_CFLAGS) \
+	$(GIO_CFLAGS) \
 	$(GCR_CFLAGS)
 
 daemon_LIBS = \
