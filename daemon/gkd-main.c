@@ -58,6 +58,8 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
+#include <gio/gunixinputstream.h>
+#include <gio/gunixoutputstream.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
@@ -507,22 +509,27 @@ print_environment_from_fd (int fd)
 {
 	char *output;
 	gsize output_size;
-	gsize bytes_read;
+	GInputStream *stream;
+	gboolean res;
 
-	bytes_read = read (fd, &output_size, sizeof (output_size));
-
-	if (bytes_read < sizeof (output_size))
+	stream = g_unix_input_stream_new (fd, TRUE);
+	res = g_input_stream_read_all (stream,
+				       &output_size, sizeof (output_size),
+				       NULL, NULL, NULL);
+	if (!res)
 		exit (1);
 
 	output = g_malloc0 (output_size);
-	bytes_read = read (fd, output, output_size);
-
-	if (bytes_read < output_size)
+	res = g_input_stream_read_all (stream,
+				       output, output_size,
+				       NULL, NULL, NULL);
+	if (!res)
 		exit (1);
 
 	printf ("%s\n", output);
 	fflush (stdout);
 	g_free (output);
+	g_object_unref (stream);
 }
 
 static void
@@ -530,7 +537,8 @@ send_environment_and_finish_parent (int fd)
 {
 	char *output;
 	gsize output_size;
-	gsize bytes_written;
+	GOutputStream *stream;
+	gboolean res;
 
 	if (fd < 0) {
 		print_environment ();
@@ -539,16 +547,22 @@ send_environment_and_finish_parent (int fd)
 
 	output = g_strjoinv ("\n", (gchar **) gkd_util_get_environment ());
 	output_size = strlen (output) + 1;
-	bytes_written = write (fd, &output_size, sizeof (output_size));
 
-	if (bytes_written < sizeof (output_size))
+	stream = g_unix_output_stream_new (fd, TRUE);
+	res = g_output_stream_write_all (stream,
+					 &output_size, sizeof (output_size),
+					 NULL, NULL, NULL);
+	if (!res)
 		exit (1);
 
-	bytes_written = write (fd, output, output_size);
-	if (bytes_written < output_size)
+	res = g_output_stream_write_all (stream,
+					 output, output_size,
+					 NULL, NULL, NULL);
+	if (!res)
 		exit (1);
 
 	g_free (output);
+	g_object_unref (stream);
 }
 
 static gboolean
