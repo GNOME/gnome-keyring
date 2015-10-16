@@ -176,6 +176,7 @@ unlock_or_complete_this_prompt (GkdSecretCreate *self)
 
 	g_object_ref (self);
 	prompt = GKD_SECRET_PROMPT (self);
+	gkd_secret_prompt_unexport (prompt);
 
 	unlock = gkd_secret_unlock_new (gkd_secret_prompt_get_service (prompt),
 					gkd_secret_prompt_get_caller (prompt),

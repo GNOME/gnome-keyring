@@ -77,4 +77,7 @@ void                gkd_secret_prompt_dismiss                 (GkdSecretPrompt *
 void                gkd_secret_prompt_dismiss_with_error      (GkdSecretPrompt *self,
                                                                GError *error);
 
+/* Used by derived classes */
+void                gkd_secret_prompt_unexport                (GkdSecretPrompt *self);
+
 #endif /* __GKD_SECRET_PROMPT_H__ */
