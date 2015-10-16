@@ -654,6 +654,18 @@ discover_other_daemon (DiscoverFunc callback, gboolean acquire)
 	return FALSE;
 }
 
+static void
+redirect_fds_after_fork (void)
+{
+	int fd, i;
+
+	for (i = 0; i < 3; ++i) {
+		fd = open ("/dev/null", O_RDONLY);
+		sane_dup2 (fd, i);
+		close (fd);
+	}
+}
+
 static int
 fork_and_print_environment (void)
 {
@@ -871,7 +883,6 @@ main (int argc, char *argv[])
 	 * Without either of these options, we follow a more boring and
 	 * predictable startup.
 	 */
-	int fd, i;
 
 	/*
 	 * Before we do ANYTHING, we drop privileges so we don't become
@@ -972,12 +983,8 @@ main (int argc, char *argv[])
 
 	signal (SIGPIPE, SIG_IGN);
 
-	for (i = 0; i < 3; ++i) {
-		fd = open ("/dev/null", O_RDONLY);
-		sane_dup2 (fd, i);
-		close (fd);
-	}
-
+	if (!run_foreground)
+		redirect_fds_after_fork ();
 	send_environment_and_finish_parent (parent_wakeup_fd);
 
 	g_unix_signal_add (SIGTERM, on_signal_term, loop);
