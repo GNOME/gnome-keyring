@@ -948,6 +948,11 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
+	if (perform_unlock) {
+		login_password = read_login_password (STDIN);
+		atexit (clear_login_password);
+	}
+
 	/* The whole forking and daemonizing dance starts here. */
 	parent_wakeup_fd = fork_and_print_environment();
 
@@ -990,11 +995,6 @@ main (int argc, char *argv[])
 	/* Initialize our control socket */
 	if (!gkd_control_listen ())
 		return FALSE;
-
-	if (perform_unlock) {
-		login_password = read_login_password (STDIN);
-		atexit (clear_login_password);
-	}
 
 	/* The --login option. Delayed initialization */
 	if (run_for_login) {
