@@ -687,6 +687,10 @@ fork_and_print_environment (void)
 	pid_t pid;
 	int wakeup_fds[2] = { -1, -1 };
 
+	if (run_foreground) {
+		return -1;
+	}
+
 	if (!g_unix_open_pipe (wakeup_fds, FD_CLOEXEC, NULL))
 		exit (1);
 
