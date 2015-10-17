@@ -207,8 +207,6 @@ gkd_secret_prompt_unexport (GkdSecretPrompt *self)
 {
 	g_return_if_fail (self->pv->skeleton != NULL);
 	g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->pv->skeleton));
-	g_signal_handlers_disconnect_by_func (self->pv->skeleton, prompt_method_dismiss, self);
-	g_signal_handlers_disconnect_by_func (self->pv->skeleton, prompt_method_prompt, self);
 	g_clear_object (&self->pv->skeleton);
 }
 
