@@ -2219,7 +2219,7 @@ anode_read_time (GNode *node,
 	/* Convert to seconds since epoch */
 	} else {
 		*value = timegm (when);
-		g_return_val_if_fail (*time >= 0, FALSE);
+		g_return_val_if_fail (*value >= 0, FALSE);
 		*value += offset;
 	}
 
