@@ -1047,12 +1047,18 @@ gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *calle
 	GList *objects;
 	GckSession *session;
 	gchar *identifier;
+	const gchar *real_identifier;
 
 	g_return_val_if_fail (GKD_SECRET_IS_OBJECTS (self), NULL);
 	g_return_val_if_fail (path, NULL);
 
 	if (!gkd_secret_util_parse_path (path, &identifier, NULL))
 		return NULL;
+
+	if (g_str_has_prefix (path, SECRET_ALIAS_PREFIX))
+		real_identifier = gkd_secret_service_get_alias (self->service, identifier);
+	else
+		real_identifier = identifier;
 
 	/* The session we're using to access the object */
 	if (caller == NULL)
@@ -1062,7 +1068,7 @@ gkd_secret_objects_lookup_collection (GkdSecretObjects *self, const gchar *calle
 	g_return_val_if_fail (session, NULL);
 
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_COLLECTION);
-	gck_builder_add_string (&builder, CKA_ID, identifier);
+	gck_builder_add_string (&builder, CKA_ID, real_identifier);
 
 	objects = gck_session_find_objects (session, gck_builder_end (&builder), NULL, &error);
 
