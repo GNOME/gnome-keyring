@@ -106,8 +106,8 @@
 			<term><option>-r</option>, <option>--replace</option></term>
 			<listitem>
 			<para>Try to replace a running keyring daemon, and assume its
-				environment avriables. A successful replacement depends
-				on the <literal>GNOMKE_KEYRING_CONTROL</literal>
+				environment variables. A successful replacement depends
+				on the <literal>GNOME_KEYRING_CONTROL</literal>
 				environment variable being set by an earlier daemon.</para>
 			<para>This option may not be used together with either the
 				<option>--login</option> or <option>--start</option>
