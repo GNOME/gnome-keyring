@@ -4,98 +4,111 @@
 # Tomas Kuliavas <tokul@users.sourceforge.net>, 2004.
 # Žygimantas Beručka <zygis@gnome.org>, 2004-2007, 2010.
 # Gintautas Miliauskas <gintas@akl.lt>, 2008.
+# Aurimas Černius <aurisc4@gmail.com>, 2015.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-08 19:47+0000\n"
-"PO-Revision-Date: 2012-03-24 22:35+0300\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-10-25 09:14+0000\n"
+"PO-Revision-Date: 2015-10-25 21:41+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
-"Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
+"Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lt\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.5.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:121
-#: ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../daemon/dbus/gkd-secret-change.c:84
+#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
 msgstr "Nepavadinta"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
 msgid "Enter the old password for the '%s' keyring"
 msgstr "Įveskite seną raktinės „%s“ slaptažodį"
 
-#: ../daemon/dbus/gkd-secret-change.c:94
+#: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Enter the old password for it."
-msgstr "Programa ketina pakeisti raktinės „%s“ slaptažodį. Įveskite jai seną slaptažodį."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
+msgstr ""
+"Programa ketina pakeisti raktinės „%s“ slaptažodį. Įveskite jai seną "
+"slaptažodį."
 
-#: ../daemon/dbus/gkd-secret-change.c:100
-#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:99
+#: ../daemon/dbus/gkd-secret-change.c:135
 #: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1311
 msgid "Continue"
 msgstr "Tęsti"
 
-#: ../daemon/dbus/gkd-secret-change.c:126
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the '%s' keyring"
 msgstr "Pasirinkite naują raktinės „%s“ slaptažodį"
 
-#: ../daemon/dbus/gkd-secret-change.c:130
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
-msgid "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it."
-msgstr "Programa ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti jai naudotiną slaptažodį."
+msgid ""
+"An application wants to change the password for the '%s' keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Programa ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti jai "
+"naudotiną slaptažodį."
 
 #: ../daemon/dbus/gkd-secret-change.c:142
-#: ../daemon/dbus/gkd-secret-create.c:95
+#: ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Saugoti nešifruotus slaptažodžius?"
 
 #: ../daemon/dbus/gkd-secret-change.c:144
-#: ../daemon/dbus/gkd-secret-create.c:97
-msgid "By choosing to use a blank password, your stored passwords will not be safely encrypted. They will be accessible by anyone with access to your files."
-msgstr "Jei pasirinksite tuščią slaptažodį, saugomi slaptažodžiai nebus saugiai užšifruoti. Jie bus prieinami visiems, kas gali skaityti Jūsų failus."
+#: ../daemon/dbus/gkd-secret-create.c:96
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Jei pasirinksite tuščią slaptažodį, saugomi slaptažodžiai nebus saugiai "
+"užšifruoti. Jie bus prieinami visiems, kas gali skaityti Jūsų failus."
 
 #: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Pradinis slaptažodis buvo neteisingas"
 
-#: ../daemon/dbus/gkd-secret-change.c:352
+#: ../daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
 msgstr "Pakeiskite raktinės slaptažodį"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
-msgid "An application wants to create a new keyring called '%s'. Choose the password you want to use for it."
-msgstr "Programa nori sukurti naują raktinę pavadinimu „%s“. Turite pasirinkti jai naudotiną slaptažodį."
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
+msgstr ""
+"Programa nori sukurti naują raktinę pavadinimu „%s“. Turite pasirinkti jai "
+"naudotiną slaptažodį."
 
-#: ../daemon/dbus/gkd-secret-create.c:85
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Pasirinkite naujos raktinės slaptažodį"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
 msgstr "Naujas raktinės slaptažodis"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GPG Password Agent"
-msgstr "GPG slaptažodžių agentas"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME raktinė: GPG agentas"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -121,36 +134,8 @@ msgstr "SSH raktų tarnyba"
 msgid "GNOME Keyring: SSH Agent"
 msgstr "GNOME raktinė: SSH tarnyba"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-msgid "Unknown"
-msgstr "Nežinoma"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
-#, c-format
-msgid "PGP Key: %s"
-msgstr "PGP raktas: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
-msgid "Enter Passphrase"
-msgstr "Įveskite slaptafrazę"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
-msgid "Unlock"
-msgstr "Atrakinti"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
-msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Automatiškai atrakinti šį raktą, kai tik aš prisijungiu"
-
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:145
+#: ../daemon/login/gkd-login.c:158
 msgid "Login"
 msgstr "Prisijungimas"
 
@@ -196,162 +181,164 @@ msgstr "užraktas „%s“ nesukurtas: %s\n"
 msgid "waiting for lock %s...\n"
 msgstr "laukiama užrakto %s...\n"
 
-#: ../egg/egg-oid.c:41
+#: ../egg/egg-oid.c:40
 msgid "Domain Component"
 msgstr "Domeno komponentas"
 
-#: ../egg/egg-oid.c:43
+#: ../egg/egg-oid.c:42
 msgid "User ID"
 msgstr "Naudotojo ID"
 
-#: ../egg/egg-oid.c:46
+#: ../egg/egg-oid.c:45
 msgid "Email Address"
 msgstr "El. pašto adresas"
 
-#: ../egg/egg-oid.c:54
+#: ../egg/egg-oid.c:53
 msgid "Date of Birth"
 msgstr "Gimimo data"
 
-#: ../egg/egg-oid.c:56
+#: ../egg/egg-oid.c:55
 msgid "Place of Birth"
 msgstr "Gimimo vieta"
 
-#: ../egg/egg-oid.c:58
+#: ../egg/egg-oid.c:57
 msgid "Gender"
 msgstr "Lytis"
 
-#: ../egg/egg-oid.c:60
+#: ../egg/egg-oid.c:59
 msgid "Country of Citizenship"
 msgstr "Pilietybės šalis"
 
-#: ../egg/egg-oid.c:62
+#: ../egg/egg-oid.c:61
 msgid "Country of Residence"
 msgstr "Gyvenamoji šalis"
 
-#: ../egg/egg-oid.c:65
+#: ../egg/egg-oid.c:64
 msgid "Common Name"
 msgstr "Bendrinis vardas"
 
-#: ../egg/egg-oid.c:67
+#: ../egg/egg-oid.c:66
 msgid "Surname"
 msgstr "Pavardė"
 
-#: ../egg/egg-oid.c:69
+#: ../egg/egg-oid.c:68
 msgid "Serial Number"
 msgstr "Serijos numeris"
 
-#: ../egg/egg-oid.c:71
+#: ../egg/egg-oid.c:70
 msgid "Country"
 msgstr "Šalis"
 
-#: ../egg/egg-oid.c:73
+#: ../egg/egg-oid.c:72
 msgid "Locality"
 msgstr "Vieta"
 
-#: ../egg/egg-oid.c:75
+#: ../egg/egg-oid.c:74
 msgid "State"
 msgstr "Valstija"
 
-#: ../egg/egg-oid.c:77
+#: ../egg/egg-oid.c:76
 msgid "Street"
 msgstr "Gatvė"
 
-#: ../egg/egg-oid.c:79
+#: ../egg/egg-oid.c:78
 msgid "Organization"
 msgstr "Organizacija"
 
-#: ../egg/egg-oid.c:81
+#: ../egg/egg-oid.c:80
 msgid "Organizational Unit"
 msgstr "Padalinys"
 
-#: ../egg/egg-oid.c:83
+#: ../egg/egg-oid.c:82
 msgid "Title"
 msgstr "Antraštė"
 
-#: ../egg/egg-oid.c:85
+#: ../egg/egg-oid.c:84
 msgid "Telephone Number"
 msgstr "Telefono numeris"
 
-#: ../egg/egg-oid.c:87
+#: ../egg/egg-oid.c:86
 msgid "Given Name"
 msgstr "Vardas"
 
-#: ../egg/egg-oid.c:89
+#: ../egg/egg-oid.c:88
 msgid "Initials"
 msgstr "Slapyvardis"
 
-#: ../egg/egg-oid.c:91
+#: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
 msgstr "Kartos kvalifikatorius"
 
-#: ../egg/egg-oid.c:93
+#: ../egg/egg-oid.c:92
 msgid "DN Qualifier"
 msgstr "DN kvalifikatorius"
 
-#: ../egg/egg-oid.c:95
+#: ../egg/egg-oid.c:94
 msgid "Pseudonym"
 msgstr "Slapyvardis"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:97
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:99
+#: ../egg/egg-oid.c:98
 msgid "MD2 with RSA"
 msgstr "MD2 su RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD5 with RSA"
 msgstr "MD5 su RSA"
 
-#: ../egg/egg-oid.c:101
+#: ../egg/egg-oid.c:100
 msgid "SHA1 with RSA"
 msgstr "MD2 su RSA"
 
-#: ../egg/egg-oid.c:103
+#: ../egg/egg-oid.c:102
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:103
 msgid "SHA1 with DSA"
 msgstr "SHA1 su DSA"
 
 #. Extended Key Usages
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:106
 msgid "Server Authentication"
 msgstr "Serverio tapatybės patikrinimas"
 
-#: ../egg/egg-oid.c:108
+#: ../egg/egg-oid.c:107
 msgid "Client Authentication"
 msgstr "Kliento tapatybės patikrinimas"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:108
 msgid "Code Signing"
 msgstr "Kodo pasirašymas"
 
-#: ../egg/egg-oid.c:110
+#: ../egg/egg-oid.c:109
 msgid "Email Protection"
 msgstr "El. pašto apsauga"
 
-#: ../egg/egg-oid.c:111
+#: ../egg/egg-oid.c:110
 msgid "Time Stamping"
 msgstr "Laiko žymos"
 
-#: ../egg/egg-spawn.c:273
+#: ../egg/egg-spawn.c:272
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proceso (%s)"
+msgstr ""
+"Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proceso "
+"(%s)"
 
-#: ../egg/egg-spawn.c:320
+#: ../egg/egg-spawn.c:319
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Netikėta klaida funkcijoje waitpid() (%s)"
 
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Bevardis liudijimas"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
 msgid "Couldn't parse public SSH key"
 msgstr "Nepavyko apdoroti viešojo SSH rakto"
 
@@ -370,12 +357,28 @@ msgid "Enter password to unlock your login keyring"
 msgstr "Įveskite slaptažodį norėdami atrakinti savo prisijungimo raktinę"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
-msgid "The password you use to log in to your computer no longer matches that of your login keyring."
-msgstr "Slaptažodis, kurį naudojate prisijungdami prie kompiuterio, nebeatitinka jūsų prisijungimo raktinės slaptažodžio."
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Slaptažodis, kurį naudojate prisijungdami prie kompiuterio, nebeatitinka "
+"jūsų prisijungimo raktinės slaptažodžio."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
-msgid "The login keyring did not get unlocked when you logged into your computer."
-msgstr "Prisijungimo raktinė nebuvo automatiškai atrakinta, kai prisijungėte prie savo kompiuterio."
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"Prisijungimo raktinė nebuvo automatiškai atrakinta, kai prisijungėte prie "
+"savo kompiuterio."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "Atrakinti"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
@@ -393,7 +396,7 @@ msgstr "Programa nori gauti prieigą prie raktinės „%s“, tačiau ji užraki
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Automatiškai atrakinti šią raktinę, kai tik aš prisijungiu"
+msgstr "Automatiškai atrakinti šią raktinę prisijungiant"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock private key"
@@ -425,36 +428,42 @@ msgstr "Įveskite atrakinimo slaptažodį"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
 msgid "Automatically unlock this key whenever I'm logged in"
-msgstr "Automatiškai atrakinti šį raktą, kai tik aš prisijungiu"
+msgstr "Automatiškai atrakinti šį raktą prisijungiant"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
 msgid "Automatically unlock this certificate whenever I'm logged in"
-msgstr "Automatiškai atrakinti šį liudijimą, kai tik aš prisijungiu"
+msgstr "Automatiškai atrakinti šį liudijimą prisijungiant"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1309
 msgid "Automatically unlock whenever I'm logged in"
-msgstr "Automatiškai atrakinti, kai tik aš prisijungiu"
+msgstr "Automatiškai atrakinti prisijungiant"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Nežinoma programa nori gauti prieigą prie privataus rakto „%s“, tačiau jis užrakintas"
+msgstr ""
+"Nežinoma programa nori gauti prieigą prie privataus rakto „%s“, tačiau jis "
+"užrakintas"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Nežinoma programa nori gauti prieigą prie liudijimo „%s“, tačiau jis užrakintas"
+msgstr ""
+"Nežinoma programa nori gauti prieigą prie liudijimo „%s“, tačiau jis "
+"užrakintas"
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Nežinoma programa nori gauti prieigą prie viešojo rakto „%s“, tačiau jis užrakintas"
+msgstr ""
+"Nežinoma programa nori gauti prieigą prie viešojo rakto „%s“, tačiau jis "
+"užrakintas"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
@@ -478,56 +487,81 @@ msgstr "Įveskite slaptažodį liudijimų/raktų saugyklos atrakinimui"
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
 #, c-format
-msgid "An application wants access to the certificate/key storage '%s', but it is locked"
-msgstr "Programa nori gauti prieigą prie liudijimų/raktų saugyklos „%s“, bet pastaroji užrakinta"
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
+msgstr ""
+"Programa nori gauti prieigą prie liudijimų/raktų saugyklos „%s“, bet "
+"pastaroji užrakinta"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New Password Required"
 msgstr "Įveskite naują slaptažodį"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1152
 msgid "New password required for secure storage"
 msgstr "Įveskite saugyklos saugos slaptažodį"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1154
 #, c-format
-msgid "In order to prepare '%s' for storage of certificates or keys, a password is required"
-msgstr "Norint paruošti saugyklą „%s“ liudijimų ar raktų saugojimui, reiks slaptažodžio"
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Norint paruošti saugyklą „%s“ liudijimų ar raktų saugojimui, reiks "
+"slaptažodžio"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change Password"
 msgstr "Pakeisti slaptažodį"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
 msgid "Original password for secure storage"
 msgstr "Originalus slaptažodis saugiam laikymui"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
 #, c-format
 msgid "To change the password for '%s', the original password is required"
 msgstr "Norėdami pakeisti „%s“ slaptažodį, reikia įvesti originalų slaptažodį"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1301
 msgid "Change password for secure storage"
 msgstr "Pakeisti saugios saugyklos slaptažodį"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1303
 #, c-format
 msgid "Type a new password for '%s'"
 msgstr "Įveskite naują „%s“ slaptažodį"
 
-#: ../tool/gkr-tool.c:102
+#: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "naudojimas: gnome-keyring komanda [parinktys]\n"
 
-#: ../tool/gkr-tool.c:104
+#: ../tool/gkr-tool.c:102
 msgid "commands: "
 msgstr "komandos:"
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
+#: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "         "
 
+#~ msgid "GPG Password Agent"
+#~ msgstr "GPG slaptažodžių agentas"
+
+#~ msgid "GNOME Keyring: GPG Agent"
+#~ msgstr "GNOME raktinė: GPG agentas"
+
+#~ msgid "Unknown"
+#~ msgstr "Nežinoma"
+
+#~ msgid "PGP Key: %s"
+#~ msgstr "PGP raktas: %s"
+
+#~ msgid "Enter Passphrase"
+#~ msgstr "Įveskite slaptafrazę"
+
+#~ msgid "Automatically unlock this key, whenever I'm logged in"
+#~ msgstr "Automatiškai atrakinti šį raktą, kai tik aš prisijungiu"
