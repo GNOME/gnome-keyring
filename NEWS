@@ -1,3 +1,8 @@
+Changes in version 3.18.3 are:
+ * Fix regression looking up secrets in default keyring [#756865]
+ * Updated translations
+ * Fix manpage typos [#756812]
+
 Changes in version 3.18.2 are:
  * Fix regression in ported GDBus prompting [#756032]
  * Other minor fixes
