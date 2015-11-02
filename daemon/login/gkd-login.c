@@ -622,7 +622,7 @@ gkd_login_clear_password (GckSession *session,
 	for (l = objects; l; l = g_list_next (l)) {
 		if (gck_object_destroy (l->data, NULL, &error))
 			break; /* Only delete the first item */
-		g_warning ("couldn't clear assword: %s", error->message);
+		g_warning ("couldn't clear password: %s", error->message);
 		g_clear_error (&error);
 	}
 
