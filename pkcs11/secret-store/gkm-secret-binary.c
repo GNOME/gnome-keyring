@@ -846,7 +846,7 @@ free_item_info (ItemInfo *info)
 	gkm_secret_compat_acl_free (info->acl);
 }
 
-gint
+GkmDataResult
 gkm_secret_binary_read (GkmSecretCollection *collection, GkmSecretData *sdata,
                         gconstpointer data, gsize n_data)
 {
