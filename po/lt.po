@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-10-25 09:14+0000\n"
-"PO-Revision-Date: 2015-10-25 21:41+0200\n"
+"POT-Creation-Date: 2016-01-05 09:18+0000\n"
+"PO-Revision-Date: 2016-01-05 15:53+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -21,11 +21,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:84
-#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
 #: ../daemon/dbus/gkd-secret-create.c:78
 #: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
@@ -47,8 +46,7 @@ msgstr ""
 "Programa ketina pakeisti raktinės „%s“ slaptažodį. Įveskite jai seną "
 "slaptažodį."
 
-#: ../daemon/dbus/gkd-secret-change.c:99
-#: ../daemon/dbus/gkd-secret-change.c:135
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
 #: ../daemon/dbus/gkd-secret-change.c:146
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
@@ -70,13 +68,11 @@ msgstr ""
 "Programa ketina pakeisti raktinės „%s“ slaptažodį. Turite pasirinkti jai "
 "naudotiną slaptažodį."
 
-#: ../daemon/dbus/gkd-secret-change.c:142
-#: ../daemon/dbus/gkd-secret-create.c:94
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Saugoti nešifruotus slaptažodžius?"
 
-#: ../daemon/dbus/gkd-secret-change.c:144
-#: ../daemon/dbus/gkd-secret-create.c:96
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -322,18 +318,6 @@ msgstr "El. pašto apsauga"
 msgid "Time Stamping"
 msgstr "Laiko žymos"
 
-#: ../egg/egg-spawn.c:272
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proceso "
-"(%s)"
-
-#: ../egg/egg-spawn.c:319
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Netikėta klaida funkcijoje waitpid() (%s)"
-
 #: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Bevardis liudijimas"
@@ -537,7 +521,7 @@ msgstr "Įveskite naują „%s“ slaptažodį"
 #: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr "naudojimas: gnome-keyring komanda [parinktys]\n"
+msgstr "naudojimas: gnome-keyring komanda [parametrai]\n"
 
 #: ../tool/gkr-tool.c:102
 msgid "commands: "
@@ -547,6 +531,14 @@ msgstr "komandos:"
 #: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "         "
+
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr ""
+#~ "Netikėta klaida funkcijoje select() skaitant duomenis iš antrinio proceso "
+#~ "(%s)"
+
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Netikėta klaida funkcijoje waitpid() (%s)"
 
 #~ msgid "GPG Password Agent"
 #~ msgstr "GPG slaptažodžių agentas"
