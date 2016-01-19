@@ -1,3 +1,9 @@
+Changes in version 3.19.4 are:
+ * Fix up startup and initialization [#756324]
+ * Fix DBus "Type" property of org.freedesktop.Secret.Item [#759399]
+ * Build fixes [#753698]
+ * Updated translations
+
 Changes in version 3.18.3 are:
  * Fix regression looking up secrets in default keyring [#756865]
  * Updated translations
