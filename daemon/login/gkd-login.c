@@ -273,8 +273,8 @@ gkd_login_unlock (const gchar *master)
 	GList *modules;
 	gboolean result;
 
-	/* We don't support null or empty master passwords */
-	if (!master || !master[0])
+	/* We don't support null as master password */
+	if (!master)
 		return FALSE;
 
 	modules = module_instances ();
