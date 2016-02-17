@@ -1,3 +1,8 @@
+Changes in version 3.19.90 are:
+ * Accept empty passwords for --unlock [#762095]
+ * srcdir != builddir fixes
+ * Updated translations
+
 Changes in version 3.19.4 are:
  * Fix up startup and initialization [#756324]
  * Fix DBus "Type" property of org.freedesktop.Secret.Item [#759399]
