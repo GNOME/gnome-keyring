@@ -97,4 +97,9 @@ gboolean              gkd_ssh_agent_write_packet                    (gint fd,
 
 gboolean              gkd_ssh_agent_relay                           (GkdSshAgentCall *call);
 
+gboolean              gkd_ssh_agent_write_all                       (int fd,
+                                                                     const guchar *buf,
+                                                                     int len,
+                                                                     const gchar *where);
+
 #endif /*GKDSSHPRIVATE_H_*/
