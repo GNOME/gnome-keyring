@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include "gkd-ssh-agent-client.h"
+#include "gkd-ssh-agent-private.h"
 
 #include "daemon/gkd-util.h"
 
@@ -66,23 +67,39 @@ agent_watch_output (gint fd,
                     GIOCondition condition,
                     gpointer user_data)
 {
-	if (condition & G_IO_IN)
+	guint8 buf[1024];
+	gssize len;
+
+	if (condition & G_IO_IN) {
+g_message ("setting ready");
 		ssh_agent_ready = TRUE;
 
-	read xxxx;
+		len = read (fd, buf, sizeof (buf));
+		if (len < 0) {
+			if (errno != EAGAIN && errno != EINTR)
+				g_message ("couldn't read from ssh-agent stdout: %m");
+			condition |= G_IO_ERR;
+		} else if (len > 0) {
+			gkd_ssh_agent_write_all (1, buf, len, "stdout");
+		}
+	}
 
-	ssh_agent_watch = 0;
-	return FALSE;
+	if (condition & G_IO_HUP || condition & G_IO_ERR) {
+		ssh_agent_watch = 0;
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static gboolean
 agent_start_inlock (const char *socket)
 {
-	const gchar *argv[] = { SSH_AGENT, "-s", "-a", socket, NULL };
+	const gchar *argv[] = { SSH_AGENT, "-D", "-a", socket, NULL };
 	GError *error = NULL;
 	GPid pid;
 
-	if (!g_spawn_sync ("/", (gchar **)argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD,
+	if (!g_spawn_async_with_pipes ("/", (gchar **)argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD,
 	                               NULL, NULL, &pid, NULL, &ssh_agent_out, NULL, &error)) {
 		g_warning ("couldn't run %s: %s", SSH_AGENT, error->message);
 		g_error_free (error);
@@ -111,12 +128,23 @@ agent_terminate (gint pid)
 	kill (pid, SIGTERM);
 }
 
+static gboolean
+agent_ready_timeout (gpointer user_data)
+{
+	gboolean *timedout = user_data;
+g_message ("timed out");
+	*timedout = TRUE;
+	return TRUE;
+}
+
 gint
 gkd_ssh_agent_client_connect (void)
 {
 	gboolean started = FALSE;
 	struct sockaddr_un addr;
 	const gchar *directory;
+	gboolean timedout = FALSE;
+	guint source;
 	gint sock;
 
 	g_mutex_lock (&ssh_agent_mutex);
@@ -135,8 +163,15 @@ gkd_ssh_agent_client_connect (void)
 
 	g_mutex_unlock (&ssh_agent_mutex);
 
-	while (started && !ssh_agent_ready)
-		g_main_context_iteration (NULL, TRUE);
+	if (started && !ssh_agent_ready) {
+		source = g_timeout_add_seconds (5, agent_ready_timeout, &timedout);
+		while (started && !ssh_agent_ready && !timedout) {
+g_message ("waiting for agent: %u", (guint)timedout);
+			g_main_context_iteration (NULL, TRUE);
+		}
+		g_source_remove (source);
+g_message ("waited for agent");
+	}
 
 	if (!ssh_agent_ready)
 		return -1;
@@ -162,6 +197,15 @@ gkd_ssh_agent_client_cleanup (void)
 	if (ssh_agent_pid)
 		agent_terminate (ssh_agent_pid);
 	ssh_agent_pid = 0;
+
+	if (ssh_agent_watch)
+		g_source_remove (ssh_agent_watch);
+	ssh_agent_watch = 0;
+	ssh_agent_ready = FALSE;
+
+	if (ssh_agent_out != -1)
+		close (ssh_agent_out);
+	ssh_agent_out = -1;
 
 	g_free (ssh_agent_path);
 	ssh_agent_path = NULL;

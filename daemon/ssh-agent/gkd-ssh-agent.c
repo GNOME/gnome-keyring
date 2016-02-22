@@ -73,8 +73,11 @@ read_all (int fd, guchar *buf, int len)
 	return TRUE;
 }
 
-static gboolean
-write_all (int fd, const guchar *buf, int len)
+gboolean
+gkd_ssh_agent_write_all (int fd,
+                         const guchar *buf,
+                         int len,
+                         const gchar *where)
 {
 	int all = len;
 	int res;
@@ -85,12 +88,13 @@ write_all (int fd, const guchar *buf, int len)
 		if (res < 0) {
 			if (errno == EAGAIN || errno == EINTR)
 				continue;
-			if (errno != EPIPE)
-				g_warning ("couldn't write %u bytes to client: %s", all,
-				           g_strerror (errno));
+			if (errno != EPIPE) {
+				g_warning ("couldn't write %u bytes to %s: %s", all,
+				           where, g_strerror (errno));
+			}
 			return FALSE;
 		} else if (res == 0) {
-			g_warning ("couldn't write %u bytes to client", all);
+			g_warning ("couldn't write %u bytes to %s", all, where);
 			return FALSE;
 		} else  {
 			len -= res;
@@ -131,7 +135,7 @@ gkd_ssh_agent_write_packet (gint fd,
 {
 	if (!egg_buffer_set_uint32 (buffer, 0, buffer->len - 4))
 		g_return_val_if_reached (FALSE);
-	return write_all (fd, buffer->buf, buffer->len);
+	return gkd_ssh_agent_write_all (fd, buffer->buf, buffer->len, "client");
 }
 
 gboolean
