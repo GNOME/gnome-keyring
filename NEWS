@@ -1,3 +1,6 @@
+Changes in version 3.20.0 are:
+ * Updated translations
+
 Changes in version 3.19.90 are:
  * Accept empty passwords for --unlock [#762095]
  * srcdir != builddir fixes
