@@ -263,11 +263,26 @@ fi
 # --------------------------------------------------------------------
 # Find DL functionality
 
-AC_CHECK_LIB(c, dlopen, DL_LIBS="",
-	AC_CHECK_LIB(dl, dlopen, DL_LIBS="-ldl",
-		AC_MSG_ERROR([Could not find a library with the dlopen function])
-	)
-)
+dnl *** dlopen() and dlsym() in system libraries
+AS_IF([ test -z "$HAVE_DL"], [
+	AC_CHECK_FUNC(dlopen,
+		      [AC_CHECK_FUNC(dlsym,
+			             [HAVE_DL=c],[])],
+		      [])
+])
+
+dnl *** dlopen() and dlsym() in libdl
+AS_IF([ test -z "$HAVE_DL"], [
+	AC_CHECK_LIB(dl, dlopen,
+		     [AC_CHECK_LIB(dl, dlsym,
+			           [DL_LIBS=-ldl
+		                   HAVE_DL=dl],[])],
+		     [])
+])
+
+AS_IF([ test -z "$HAVE_DL"], [
+	AC_MSG_ERROR([Could not find a library with the dlopen and dlsym functions])
+])
 
 AC_SUBST(DL_LIBS)
 
