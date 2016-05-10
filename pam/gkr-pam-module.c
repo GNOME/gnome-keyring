@@ -640,7 +640,8 @@ unlock_keyring (pam_handle_t *ph,
 	control = get_any_env (ph, ENV_CONTROL);
 	argv[0] = password;
 
-	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_UNLOCK, 1, argv);
+	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_UNLOCK,
+					    (argv[0] == NULL) ? 0 : 1, argv);
 	/* An error unlocking */
 	if (res == GKD_CONTROL_RESULT_NO_DAEMON) {
 		if (need_daemon)
