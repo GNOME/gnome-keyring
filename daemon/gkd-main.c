@@ -128,6 +128,7 @@ static guint timeout_id = 0;
 static gboolean initialization_completed = FALSE;
 static GMainLoop *loop = NULL;
 static int parent_wakeup_fd = -1;
+static GDBusConnection *system_bus_connection = NULL;
 
 static GOptionEntry option_entries[] = {
 	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
@@ -835,6 +836,155 @@ on_vanished_quit_loop (GDBusConnection *connection,
 	g_main_loop_quit (user_data);
 }
 
+static void on_logind_session_property_get (GObject *connection,
+					    GAsyncResult *res,
+					    gpointer user_data G_GNUC_UNUSED)
+{
+	GError *error = NULL;
+	GVariant *result, *resultv;
+	const gchar *state;
+	gboolean should_quit;
+
+	result = g_dbus_connection_call_finish (G_DBUS_CONNECTION (connection), res, &error);
+
+	if (error) {
+		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			g_critical ("%s Couldn't get session state: %s", G_STRLOC, error->message);
+		g_error_free (error);
+		return;
+	}
+
+	g_variant_get (result, "(v)", &resultv, NULL);
+	state = g_variant_get_string (resultv, NULL);
+
+	should_quit = g_strcmp0 (state, "closing") == 0;
+
+	g_clear_pointer (&result, g_variant_unref);
+	g_clear_pointer (&resultv, g_variant_unref);
+
+	/* yes, the session is closing, so we'll quit now */
+	if (should_quit)
+		cleanup_and_exit (0);
+}
+
+static void on_logind_session_properties_changed (GDBusConnection *connection,
+						  const gchar *sender_name G_GNUC_UNUSED,
+						  const gchar *object_path,
+						  const gchar *interface_name G_GNUC_UNUSED,
+						  const gchar *signal_name G_GNUC_UNUSED,
+						  GVariant *parameters,
+						  gpointer user_data G_GNUC_UNUSED)
+{
+	const gchar *prop_iface;
+	gboolean active;
+	GVariant* changed_properties;
+
+	g_variant_get (parameters, "(&s@a{sv}^as)", &prop_iface, &changed_properties, NULL);
+
+	if (g_variant_lookup (changed_properties, "Active", "b", &active, NULL)) {
+		if (!active) {
+			/* ok, the session went inactive, let's see if that is because
+			 * it is closing */
+			g_dbus_connection_call (
+				connection,
+				"org.freedesktop.login1",
+				object_path,
+				"org.freedesktop.DBus.Properties",
+				"Get",
+				g_variant_new ("(ss)", prop_iface, "State"),
+				G_VARIANT_TYPE ("(v)"),
+				G_DBUS_CALL_FLAGS_NONE,
+				-1,
+				NULL,
+				on_logind_session_property_get,
+				NULL
+			);
+		}
+	}
+
+	g_variant_unref (changed_properties);
+}
+
+static void
+on_logind_object_path_get (GObject *connection,
+			   GAsyncResult *res,
+			   gpointer user_data G_GNUC_UNUSED)
+{
+	GError *error = NULL;
+	GVariant *result;
+	const gchar *object_path;
+	gchar *remote_error;
+	gboolean is_cancelled, is_name_has_no_owner;
+
+	result = g_dbus_connection_call_finish (G_DBUS_CONNECTION (connection), res, &error);
+
+	/* If there's an error we always want to quit - but we only tell the
+	 * user about it if something went wrong. Cancelling the operation or
+	 * not having logind available are okay. */
+	if (error) {
+		is_cancelled = g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+
+		remote_error = g_dbus_error_get_remote_error (error);
+		is_name_has_no_owner = g_strcmp0 (remote_error, "org.freedesktop.DBus.Error.NameHasNoOwner") == 0;
+
+		if (!is_cancelled && !is_name_has_no_owner)
+			g_critical ("%s Couldn't get object path: %s", G_STRLOC, error->message);
+
+		g_free (remote_error);
+		g_error_free (error);
+		return;
+	}
+
+	/* now we know which object path to look on, watch for
+	 * PropertiesChanged. Note that, per logind's documentation, we only
+	 * get notified for 'Active' changing */
+	g_variant_get (result, "(&o)", &object_path, NULL);
+
+	g_dbus_connection_signal_subscribe (
+		G_DBUS_CONNECTION (connection),
+		"org.freedesktop.login1",
+		"org.freedesktop.DBus.Properties",
+		"PropertiesChanged",
+		object_path,
+		NULL,
+		G_DBUS_SIGNAL_FLAGS_NONE,
+		on_logind_session_properties_changed,
+		NULL,
+		NULL
+	);
+
+	g_clear_pointer (&result, g_variant_unref);
+}
+
+static void
+start_watching_logind_for_session_closure ()
+{
+	g_return_if_fail (system_bus_connection != NULL);
+
+	const gchar *xdg_session_id;
+
+	xdg_session_id = g_getenv ("XDG_SESSION_ID");
+
+	if (!xdg_session_id)
+		return;
+
+	/* get the right object path */
+	g_dbus_connection_call (
+		system_bus_connection,
+		"org.freedesktop.login1",
+		"/org/freedesktop/login1",
+		"org.freedesktop.login1.Manager",
+		"GetSession",
+		g_variant_new ("(s)", xdg_session_id, NULL),
+		G_VARIANT_TYPE ("(o)"),
+		G_DBUS_CALL_FLAGS_NO_AUTO_START,
+		-1,
+		NULL,
+		on_logind_object_path_get,
+		NULL
+	);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -970,6 +1120,14 @@ main (int argc, char *argv[])
 		if (!gkr_daemon_startup_steps (run_components))
 			cleanup_and_exit (1);
 	}
+
+	/* if we can get a connection to the system bus, watch it and then kill
+	 * ourselves when our session closes */
+
+	system_bus_connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
+
+	if (system_bus_connection)
+		start_watching_logind_for_session_closure ();
 
 	signal (SIGPIPE, SIG_IGN);
 
