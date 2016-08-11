@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2016-07-23 18:14+0000\n"
-"PO-Revision-Date: 2016-08-11 15:33+0200\n"
+"PO-Revision-Date: 2016-08-11 15:46+0200\n"
 "Language-Team: Friulian <fur@li.org>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -152,110 +152,110 @@ msgstr "impussibil creâ `%s': %s\n"
 #: ../egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr ""
+msgstr "daûr a gjavâ il file di bloc (creât di %d)\n"
 
 #: ../egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr ""
+msgstr "in spiete dal bloc (tignût di %d%s) %s...\n"
 
 #: ../egg/dotlock.c:1085
 msgid "(deadlock?) "
-msgstr ""
+msgstr "(bloc muart?) "
 
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr ""
+msgstr "bloc «%s» no creât: %s\n"
 
 #: ../egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr ""
+msgstr "in spiete dal bloc di %s...\n"
 
 #: ../egg/egg-oid.c:40
 msgid "Domain Component"
-msgstr ""
+msgstr "Component domini"
 
 #: ../egg/egg-oid.c:42
 msgid "User ID"
-msgstr ""
+msgstr "ID utent"
 
 #: ../egg/egg-oid.c:45
 msgid "Email Address"
-msgstr ""
+msgstr "Direzion e-mail"
 
 #: ../egg/egg-oid.c:53
 msgid "Date of Birth"
-msgstr ""
+msgstr "Date di nassite"
 
 #: ../egg/egg-oid.c:55
 msgid "Place of Birth"
-msgstr ""
+msgstr "Lûc di nassite"
 
 #: ../egg/egg-oid.c:57
 msgid "Gender"
-msgstr ""
+msgstr "Gjenar"
 
 #: ../egg/egg-oid.c:59
 msgid "Country of Citizenship"
-msgstr ""
+msgstr "Paîs di citadinance"
 
 #: ../egg/egg-oid.c:61
 msgid "Country of Residence"
-msgstr ""
+msgstr "Paîs di residence"
 
 #: ../egg/egg-oid.c:64
 msgid "Common Name"
-msgstr ""
+msgstr "Non comun"
 
 #: ../egg/egg-oid.c:66
 msgid "Surname"
-msgstr ""
+msgstr "Cognon"
 
 #: ../egg/egg-oid.c:68
 msgid "Serial Number"
-msgstr ""
+msgstr "Numar seriâl"
 
 #: ../egg/egg-oid.c:70
 msgid "Country"
-msgstr ""
+msgstr "Paîs"
 
 #: ../egg/egg-oid.c:72
 msgid "Locality"
-msgstr ""
+msgstr "Localitât"
 
 #: ../egg/egg-oid.c:74
 msgid "State"
-msgstr ""
+msgstr "Stât"
 
 #: ../egg/egg-oid.c:76
 msgid "Street"
-msgstr ""
+msgstr "Strade"
 
 #: ../egg/egg-oid.c:78
 msgid "Organization"
-msgstr ""
+msgstr "Organizazion"
 
 #: ../egg/egg-oid.c:80
 msgid "Organizational Unit"
-msgstr ""
+msgstr "Unitât organizative"
 
 #: ../egg/egg-oid.c:82
 msgid "Title"
-msgstr ""
+msgstr "Titul"
 
 #: ../egg/egg-oid.c:84
 msgid "Telephone Number"
-msgstr ""
+msgstr "Numar di telefon"
 
 #: ../egg/egg-oid.c:86
 msgid "Given Name"
-msgstr ""
+msgstr "Non"
 
 #: ../egg/egg-oid.c:88
 msgid "Initials"
-msgstr ""
+msgstr "Iniziâi"
 
 #: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
@@ -267,31 +267,31 @@ msgstr ""
 
 #: ../egg/egg-oid.c:94
 msgid "Pseudonym"
-msgstr ""
+msgstr "Pseudonim"
 
 #: ../egg/egg-oid.c:97
 msgid "RSA"
-msgstr ""
+msgstr "RSA"
 
 #: ../egg/egg-oid.c:98
 msgid "MD2 with RSA"
-msgstr ""
+msgstr "MD2 cun RSA"
 
 #: ../egg/egg-oid.c:99
 msgid "MD5 with RSA"
-msgstr ""
+msgstr "MD5 cun RSA"
 
 #: ../egg/egg-oid.c:100
 msgid "SHA1 with RSA"
-msgstr ""
+msgstr "SHA1 cun RSA"
 
 #: ../egg/egg-oid.c:102
 msgid "DSA"
-msgstr ""
+msgstr "DSA"
 
 #: ../egg/egg-oid.c:103
 msgid "SHA1 with DSA"
-msgstr ""
+msgstr "SHA1 cun DSA"
 
 #. Extended Key Usages
 #: ../egg/egg-oid.c:106
