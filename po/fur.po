@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2016-07-23 18:14+0000\n"
-"PO-Revision-Date: 2016-08-11 15:46+0200\n"
+"PO-Revision-Date: 2016-08-11 18:52+0200\n"
 "Language-Team: Friulian <fur@li.org>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -259,11 +259,11 @@ msgstr "Iniziâi"
 
 #: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
-msgstr ""
+msgstr "Gjenerazion dal cualificadôr"
 
 #: ../egg/egg-oid.c:92
 msgid "DN Qualifier"
-msgstr ""
+msgstr "Cualificadôr dal non di domini"
 
 #: ../egg/egg-oid.c:94
 msgid "Pseudonym"
@@ -296,56 +296,60 @@ msgstr "SHA1 cun DSA"
 #. Extended Key Usages
 #: ../egg/egg-oid.c:106
 msgid "Server Authentication"
-msgstr ""
+msgstr "Autenticazion servidôr"
 
 #: ../egg/egg-oid.c:107
 msgid "Client Authentication"
-msgstr ""
+msgstr "Autenticazion client"
 
 #: ../egg/egg-oid.c:108
 msgid "Code Signing"
-msgstr ""
+msgstr "Firme codiç"
 
 #: ../egg/egg-oid.c:109
 msgid "Email Protection"
-msgstr ""
+msgstr "Protezion e-mail"
 
 #: ../egg/egg-oid.c:110
 msgid "Time Stamping"
-msgstr ""
+msgstr "Marcadure temporâl"
 
 #: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
-msgstr ""
+msgstr "Certificât cence non"
 
 #: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
 msgid "Couldn't parse public SSH key"
-msgstr ""
+msgstr "Impussibil analizâ la clâf publiche SSH"
 
 #. Get the label ready
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
-msgstr ""
+msgstr "Password di sbloc par: %s"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
-msgstr ""
+msgstr "Sbloche puarteclâfs di acès"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
-msgstr ""
+msgstr "Inserìs la password par sblocâ il puarteclâfs di acès"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
+"La password doprade par acedi al computer no corispuint plui cun chê dal "
+"puarteclâfs di acès."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
+"Il puarteclâfs di acès nol è stât sblocât cuant che si à fat l'acès a chest "
+"computer."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
@@ -354,105 +358,107 @@ msgstr ""
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
 msgid "Unlock"
-msgstr ""
+msgstr "Sbloche"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
-msgstr ""
+msgstr "Sbloche puarteclâfs"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #, c-format
 msgid "Enter password for keyring '%s' to unlock"
-msgstr ""
+msgstr "Inserìs la password dal puarteclâfs '%s' par sblocâlu"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
 #, c-format
 msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
+msgstr "Une aplicazion e vûl acedi al puarteclâfs '%s', ma al è blocât"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
 msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr ""
+msgstr "Sbloche in automatic chest puarteclâfs al acès"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
 msgid "Unlock private key"
-msgstr ""
+msgstr "Sbloche clâf privade"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
 msgid "Unlock certificate"
-msgstr ""
+msgstr "Sbloche certificât"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
 msgid "Unlock public key"
-msgstr ""
+msgstr "Sbloche clâf publiche"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 msgid "Enter password to unlock the private key"
-msgstr ""
+msgstr "Inserìs la password par sblocâ la clâf privade"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
 msgid "Enter password to unlock the certificate"
-msgstr ""
+msgstr "Inserìs la password par sblocâ il certificât"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
 msgid "Enter password to unlock the public key"
-msgstr ""
+msgstr "Inserìs la password par sblocâ la clâf publiche"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
 msgid "Enter password to unlock"
-msgstr ""
+msgstr "Inserìs la password par sblocâ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
 msgid "Automatically unlock this key whenever I'm logged in"
-msgstr ""
+msgstr "Sbloche in automatic cheste clâf al acès"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
 msgid "Automatically unlock this certificate whenever I'm logged in"
-msgstr ""
+msgstr "Sbloche in automatic chest certificât al acès"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1309
 msgid "Automatically unlock whenever I'm logged in"
-msgstr ""
+msgstr "Sbloche in automatic al acès"
 
 #. TRANSLATORS: The private key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
 #, c-format
 msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
+"Une aplicazion e vûl acedi ae clâf privade '%s', ma cheste e je blocade"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
 #, c-format
 msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
+msgstr "Une aplicazion e vûl acedi al certificât '%s', ma al è blocât"
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #, c-format
 msgid "An application wants access to the public key '%s', but it is locked"
 msgstr ""
+"Une aplicazion e vûl acedi ae clâf publiche '%s', ma cheste e je blocade"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
 #, c-format
 msgid "An application wants access to '%s', but it is locked"
-msgstr ""
+msgstr "Une aplicazion e vûl acedi a '%s', ma chest al è blocât"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
 msgid "The unlock password was incorrect"
-msgstr ""
+msgstr "La password di sbloc no jere juste"
 
 #. Build up the prompt
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Unlock certificate/key storage"
-msgstr ""
+msgstr "Sbloche archivi certificât/clâf"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
 msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
+msgstr "Inserìs la password par sblocâ l'archivi certificât/clâf"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
@@ -461,14 +467,16 @@ msgid ""
 "An application wants access to the certificate/key storage '%s', but it is "
 "locked"
 msgstr ""
+"Une aplicazion e vûl acedi al archivi certificât/clâf '%s', ma chest al è "
+"blocât"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New Password Required"
-msgstr ""
+msgstr "Gnove password necessarie"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1152
 msgid "New password required for secure storage"
-msgstr ""
+msgstr "E covente une gnove password pal archivi sigûr"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1154
 #, c-format
@@ -476,40 +484,42 @@ msgid ""
 "In order to prepare '%s' for storage of certificates or keys, a password is "
 "required"
 msgstr ""
+"Par podê preparâ '%s' par archiviâ certificâts o clâfs, e covente une "
+"password"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change Password"
-msgstr ""
+msgstr "Cambie password"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
 msgid "Original password for secure storage"
-msgstr ""
+msgstr "Password origjinâl pal archivi sigûr"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
 #, c-format
 msgid "To change the password for '%s', the original password is required"
-msgstr ""
+msgstr "Par cambiâ la password di '%s', e covente la password origjinâl"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1301
 msgid "Change password for secure storage"
-msgstr ""
+msgstr "Cambie la password pal archivi sigûr"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1303
 #, c-format
 msgid "Type a new password for '%s'"
-msgstr ""
+msgstr "Inserìs une gnove password par '%s'"
 
 #: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
-msgstr ""
+msgstr "ûs: gnome-keyring comant [opzions]\n"
 
 #: ../tool/gkr-tool.c:102
 msgid "commands: "
-msgstr ""
+msgstr "comants: "
 
 #. Translators: keep same length as translated message "commands: "
 #: ../tool/gkr-tool.c:106
 msgid "          "
-msgstr ""
+msgstr "         "
