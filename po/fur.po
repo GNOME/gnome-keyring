@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2016-07-23 18:14+0000\n"
-"PO-Revision-Date: 2016-08-11 14:32+0200\n"
+"PO-Revision-Date: 2016-08-11 15:33+0200\n"
 "Language-Team: Friulian <fur@li.org>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -65,7 +65,7 @@ msgstr ""
 
 #: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
-msgstr ""
+msgstr "Archiviâ lis password cence cifrâlis?"
 
 #: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
@@ -73,14 +73,17 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
+"Sielzint di doprâ une password vueide, lis propris password archiviadis no "
+"vegnaran cifradis in mût sigûr. A saran acessibilis di ducj chei che a "
+"puedin acedi ai tiei file."
 
 #: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
-msgstr ""
+msgstr "La password origjinâl no jere juste"
 
 #: ../daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
-msgstr ""
+msgstr "Cambi password puarteclâf"
 
 #: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
@@ -88,58 +91,60 @@ msgid ""
 "An application wants to create a new keyring called '%s'. Choose the "
 "password you want to use for it."
 msgstr ""
+"Une aplicazion e vûl creâ un gnûf puarteclâfs clamât '%s'. Sielç la password "
+"di doprâ par chel puarteclâfs."
 
 #: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
-msgstr ""
+msgstr "Sielç la password pal gnûf puarteclâfs"
 
 #: ../daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
-msgstr ""
+msgstr "Password dal gnûf puarteclâfs"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
-msgstr ""
+msgstr "Archivi certificâts e clâfs"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
 msgid "GNOME Keyring: PKCS#11 Component"
-msgstr ""
+msgstr "Puarteclâfs di GNOME: component PKCS#11"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
 msgid "Secret Storage Service"
-msgstr ""
+msgstr "Servizi archivi segret"
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "GNOME Keyring: Secret Service"
-msgstr ""
+msgstr "Puarteclâfs di GNOME: servizi segret"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
-msgstr ""
+msgstr "Agjent clâfs SSH"
 
 #: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
 msgid "GNOME Keyring: SSH Agent"
-msgstr ""
+msgstr "Puarteclâfs di GNOME: agjent SSH"
 
 #. TRANSLATORS: This is the display label for the login keyring
 #: ../daemon/login/gkd-login.c:158
 msgid "Login"
-msgstr ""
+msgstr "Acès"
 
 #: ../egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr ""
+msgstr "no si è rivâts a creâ il file temporani '%s': %s\n"
 
 #: ../egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
-msgstr ""
+msgstr "erôr tal scrivi su `%s': %s\n"
 
 #: ../egg/dotlock.c:782
 #, c-format
 msgid "can't create `%s': %s\n"
-msgstr ""
+msgstr "impussibil creâ `%s': %s\n"
 
 #. Note: It is unlikley that we get a race here unless a pid is
 #. reused too fast or a new process with the same pid as the one
