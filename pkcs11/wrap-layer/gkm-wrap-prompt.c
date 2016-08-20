@@ -615,9 +615,8 @@ setup_unlock_keyring_other (GkmWrapPrompt *self,
 
 	gcr_prompt_set_title (prompt, _("Unlock Keyring"));
 
-	text = g_markup_printf_escaped (_("Enter password for keyring '%s' to unlock"), label);
+	text = _("Enter password to unlock");
 	gcr_prompt_set_message (prompt, text);
-	g_free (text);
 
 	text = g_markup_printf_escaped (_("An application wants access to the keyring '%s', but it is locked"), label);
 	gcr_prompt_set_description (prompt, text);
