@@ -5,20 +5,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-03 22:19+0000\n"
+"POT-Creation-Date: 2016-08-18 17:11+0000\n"
 "PO-Revision-Date: 2012-04-11 11:28+0000\n"
 "Last-Translator: Miroslav Matejaš <silverspace@ubuntu-hr.org>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-07-23 11:44+0000\n"
-"X-Generator: Launchpad (build 18147)\n"
+"X-Launchpad-Export-Date: 2016-09-22 19:56+0000\n"
+"X-Generator: Launchpad (build 18204)\n"
 "Language: hr\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:84
-#: ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
 #: ../daemon/dbus/gkd-secret-create.c:78
 #: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
@@ -40,8 +39,7 @@ msgstr ""
 "Aplikacija želi promijeniti lozinku za '%s' skup ključeva. Upišite staru "
 "lozinku."
 
-#: ../daemon/dbus/gkd-secret-change.c:99
-#: ../daemon/dbus/gkd-secret-change.c:135
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
 #: ../daemon/dbus/gkd-secret-change.c:146
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
@@ -63,13 +61,11 @@ msgstr ""
 "Aplikacija želi promijeniti lozinku za '%s' skup ključeva. Odaberite novu "
 "lozinku."
 
-#: ../daemon/dbus/gkd-secret-change.c:142
-#: ../daemon/dbus/gkd-secret-create.c:94
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Spremite nešifriranu lozinku?"
 
-#: ../daemon/dbus/gkd-secret-change.c:144
-#: ../daemon/dbus/gkd-secret-create.c:96
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -315,17 +311,6 @@ msgstr "Zaštita e-pošte"
 msgid "Time Stamping"
 msgstr "Vremensko označavanje"
 
-#: ../egg/egg-spawn.c:272
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Neočekivana greška u select() čitanju podataka iz podređenog procesa (%s)"
-
-#: ../egg/egg-spawn.c:319
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Neočekivana greška u waitpid() (%s)"
-
 #: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Bezimena vjerodajnica"
@@ -535,21 +520,11 @@ msgstr "naredba: "
 msgid "          "
 msgstr "          "
 
-#~ msgid "Enter Passphrase"
-#~ msgstr "Upišite lozinku"
-
-#~ msgid "Unknown"
-#~ msgstr "Nepoznato"
-
-#~ msgid "GPG Password Agent"
-#~ msgstr "Agent GPG lozinke"
-
-#~ msgid "GNOME Keyring: GPG Agent"
-#~ msgstr "GNOME skup ključeva: GPG agent"
+#, c-format
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Neočekivana greška u waitpid() (%s)"
 
 #, c-format
-#~ msgid "PGP Key: %s"
-#~ msgstr "PGP ključ: %s"
-
-#~ msgid "Automatically unlock this key, whenever I'm logged in"
-#~ msgstr "Automatski otključaj ovaj ključ, uvijek kada sam prijavljen"
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr ""
+#~ "Neočekivana greška u select() čitanju podataka iz podređenog procesa (%s)"
