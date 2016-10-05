@@ -86,11 +86,11 @@ setup_original_prompt (GkdSecretChange *self,
 		label = g_strndup (data, n_data);
 	g_free (data);
 
-	text = g_strdup_printf (_("Enter the old password for the '%s' keyring"), label);
+	text = g_strdup_printf (_("Enter the old password for the “%s” keyring"), label);
 	gcr_prompt_set_message (prompt, text);
 	g_free (text);
 
-	text = g_strdup_printf (_("An application wants to change the password for the '%s' keyring. "
+	text = g_strdup_printf (_("An application wants to change the password for the “%s” keyring. "
 				  "Enter the old password for it."), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
@@ -122,11 +122,11 @@ setup_password_prompt (GkdSecretChange *self,
 		label = g_strndup (data, n_data);
 	g_free (data);
 
-	text = g_strdup_printf (_("Choose a new password for the '%s' keyring"), label);
+	text = g_strdup_printf (_("Choose a new password for the “%s” keyring"), label);
 	gcr_prompt_set_message (prompt, text);
 	g_free (text);
 
-	text = g_strdup_printf (_("An application wants to change the password for the '%s' keyring. "
+	text = g_strdup_printf (_("An application wants to change the password for the “%s” keyring. "
 				  "Choose the new password you want to use for it."), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);

@@ -77,7 +77,7 @@ setup_password_prompt (GkdSecretCreate *self)
 	if (!gck_attributes_find_string (self->attributes, CKA_LABEL, &label))
 		label = g_strdup (_("Unnamed"));
 
-	text = g_strdup_printf (_("An application wants to create a new keyring called '%s'. "
+	text = g_strdup_printf (_("An application wants to create a new keyring called “%s”. "
 				  "Choose the password you want to use for it."), label);
 	g_free (label);
 

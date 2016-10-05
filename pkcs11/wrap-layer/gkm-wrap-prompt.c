@@ -618,13 +618,13 @@ setup_unlock_keyring_other (GkmWrapPrompt *self,
 	text = _("Enter password to unlock");
 	gcr_prompt_set_message (prompt, text);
 
-	text = g_markup_printf_escaped (_("An application wants access to the keyring '%s', but it is locked"), label);
+	text = g_markup_printf_escaped (_("An application wants access to the keyring “%s”, but it is locked"), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
 	choice = NULL;
 	if (gkm_wrap_login_is_usable ())
-		choice = _("Automatically unlock this keyring whenever I'm logged in");
+		choice = _("Automatically unlock this keyring whenever I’m logged in");
 	gcr_prompt_set_choice_label (prompt, choice);
 	gcr_prompt_set_continue_label (prompt, _("Unlock"));
 }
@@ -666,11 +666,11 @@ calc_unlock_object_choice (CK_OBJECT_CLASS klass)
 	switch (klass) {
 	case CKO_PRIVATE_KEY:
 	case CKO_PUBLIC_KEY:
-		return _("Automatically unlock this key whenever I'm logged in");
+		return _("Automatically unlock this key whenever I’m logged in");
 	case CKO_CERTIFICATE:
-		return _("Automatically unlock this certificate whenever I'm logged in");
+		return _("Automatically unlock this certificate whenever I’m logged in");
 	default:
-		return _("Automatically unlock whenever I'm logged in");
+		return _("Automatically unlock whenever I’m logged in");
 	}
 }
 
@@ -681,16 +681,16 @@ calc_unlock_object_secondary (CK_OBJECT_CLASS klass,
 	switch (klass) {
 	case CKO_PRIVATE_KEY:
 		/* TRANSLATORS: The private key is locked */
-		return g_strdup_printf (_("An application wants access to the private key '%s', but it is locked"), label);
+		return g_strdup_printf (_("An application wants access to the private key “%s”, but it is locked"), label);
 	case CKO_CERTIFICATE:
 		/* TRANSLATORS: The certificate is locked */
-		return g_strdup_printf (_("An application wants access to the certificate '%s', but it is locked"), label);
+		return g_strdup_printf (_("An application wants access to the certificate “%s”, but it is locked"), label);
 	case CKO_PUBLIC_KEY:
 		/* TRANSLATORS: The public key is locked */
-		return g_strdup_printf (_("An application wants access to the public key '%s', but it is locked"), label);
+		return g_strdup_printf (_("An application wants access to the public key “%s”, but it is locked"), label);
 	default:
 		/* TRANSLATORS: The object '%s' is locked */
-		return g_strdup_printf (_("An application wants access to '%s', but it is locked"), label);
+		return g_strdup_printf (_("An application wants access to “%s”, but it is locked"), label);
 	}
 }
 
@@ -786,13 +786,13 @@ setup_unlock_token (GkmWrapPrompt *self,
 	gcr_prompt_set_message (prompt, _("Enter password to unlock the certificate/key storage"));
 
 	/* TRANSLATORS: The storage is locked, and needs unlocking before the application can use it. */
-	text = g_strdup_printf (_("An application wants access to the certificate/key storage '%s', but it is locked"), label);
+	text = g_strdup_printf (_("An application wants access to the certificate/key storage “%s”, but it is locked"), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
 	choice = NULL;
 	if (gkm_wrap_login_is_usable ())
-		choice = _("Automatically unlock whenever I'm logged in");
+		choice = _("Automatically unlock whenever I’m logged in");
 	gcr_prompt_set_choice_label (prompt, choice);
 
 	gcr_prompt_set_continue_label (prompt, _("Unlock"));
@@ -1150,13 +1150,13 @@ setup_init_token (GkmWrapPrompt *self,
 	gcr_prompt_set_title (prompt, _("New Password Required"));
 	gcr_prompt_set_message (prompt, _("New password required for secure storage"));
 
-	text = g_strdup_printf (_("In order to prepare '%s' for storage of certificates or keys, a password is required"), label);
+	text = g_strdup_printf (_("In order to prepare “%s” for storage of certificates or keys, a password is required"), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
 	choice = NULL;
 	if (gkm_wrap_login_is_usable ())
-		choice = _("Automatically unlock whenever I'm logged in");
+		choice = _("Automatically unlock whenever I’m logged in");
 	gcr_prompt_set_choice_label (prompt, choice);
 
 	gcr_prompt_set_continue_label (prompt, _("Continue"));
@@ -1268,7 +1268,7 @@ setup_set_token_original (GkmWrapPrompt *self,
 	gcr_prompt_set_title (prompt, _("Change Password"));
 	gcr_prompt_set_message (prompt, _("Original password for secure storage"));
 
-	text = g_strdup_printf (_("To change the password for '%s', the original password is required"), label);
+	text = g_strdup_printf (_("To change the password for “%s”, the original password is required"), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
@@ -1299,13 +1299,13 @@ setup_set_token_password (GkmWrapPrompt *self,
 	gcr_prompt_set_title (prompt, _("Change Password"));
 	gcr_prompt_set_message (prompt, _("Change password for secure storage"));
 
-	text = g_strdup_printf (_("Type a new password for '%s'"), label);
+	text = g_strdup_printf (_("Type a new password for “%s”"), label);
 	gcr_prompt_set_description (prompt, text);
 	g_free (text);
 
 	choice = NULL;
 	if (gkm_wrap_login_is_usable ())
-		choice = _("Automatically unlock whenever I'm logged in");
+		choice = _("Automatically unlock whenever I’m logged in");
 
 	gcr_prompt_set_continue_label (prompt, _("Continue"));
 	gcr_prompt_set_choice_label (prompt, choice);

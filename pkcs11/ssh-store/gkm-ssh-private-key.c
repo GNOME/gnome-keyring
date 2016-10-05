@@ -338,7 +338,7 @@ gkm_ssh_private_key_parse (GkmSshPrivateKey *self, const gchar *public_path,
 	if (res == GKM_DATA_UNRECOGNIZED) {
 		return FALSE;
 	} else if (res != GKM_DATA_SUCCESS) {
-		g_set_error_literal (error, GKM_DATA_ERROR, res, _("Couldn't parse public SSH key"));
+		g_set_error_literal (error, GKM_DATA_ERROR, res, _("Couldn’t parse public SSH key"));
 		return FALSE;
 	}
 
