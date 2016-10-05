@@ -5,516 +5,517 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2008-05-27 19:27+0000\n"
-"Last-Translator: Launchpad Translations Administrators <rosetta@launchpad."
-"net>\n"
+"POT-Creation-Date: 2016-08-18 17:11+0000\n"
+"PO-Revision-Date: 2012-04-11 11:28+0000\n"
+"Last-Translator: Miroslav Matejaš <silverspace@ubuntu-hr.org>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
-"Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2008-05-27 22:55+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2016-09-15 11:18+0000\n"
+"X-Generator: Launchpad (build 18186)\n"
+"Language: hr\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
 msgid "Unnamed"
+msgstr "Neimenovano"
+
+#: ../daemon/dbus/gkd-secret-change.c:89
+#, c-format
+msgid "Enter the old password for the '%s' keyring"
+msgstr "Upišite staru lozinku za '%s' skup ključeva"
+
+#: ../daemon/dbus/gkd-secret-change.c:93
+#, c-format
+msgid ""
+"An application wants to change the password for the '%s' keyring. Enter the "
+"old password for it."
 msgstr ""
+"Aplikacija želi promijeniti lozinku za '%s' skup ključeva. Upišite staru "
+"lozinku."
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "Promjena lozinka za skup ključeva"
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1311
+msgid "Continue"
+msgstr "Nastavi"
 
-#: ../daemon/dbus/gkd-secret-change.c:88
-#, fuzzy, c-format
+#: ../daemon/dbus/gkd-secret-change.c:125
+#, c-format
 msgid "Choose a new password for the '%s' keyring"
-msgstr "Odaberite novu lozinku za '%s' skup ključeva. "
+msgstr "Odaberite novu lozinku za '%s' skup ključeva"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
-#, fuzzy, c-format
+#: ../daemon/dbus/gkd-secret-change.c:129
+#, c-format
 msgid ""
 "An application wants to change the password for the '%s' keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Nepoznati program želi promjeniti lozinku za '%s' skup ključeva. Morate "
-"odabrati lozinku koju ćete koristiti."
+"Aplikacija želi promijeniti lozinku za '%s' skup ključeva. Odaberite novu "
+"lozinku."
 
-#: ../daemon/dbus/gkd-secret-change.c:111
-msgid "The original password was incorrect"
-msgstr ""
-
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Nova lozinka za privjesak"
-
-#: ../daemon/dbus/gkd-secret-create.c:84
-msgid "Choose password for new keyring"
-msgstr "Odaberite lozniku za novi privjesak."
-
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, fuzzy, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
-"Nepoznata aplikacija želi kreirati novi privjesak koji se zove '%s'. "
-"Odaberite lozinku za njega."
-
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
-msgid "Certificate and Key Storage"
-msgstr ""
-
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
-msgid "GNOME Keyring: PKCS#11 Component"
-msgstr ""
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr ""
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
-msgid "Secret Storage Service"
-msgstr ""
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
-msgstr ""
-
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
-msgid "SSH Key Agent"
-msgstr ""
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
-msgstr ""
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-#, fuzzy
-msgid "GPG Password Agent"
-msgstr "Snaga nove lozinke"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-msgid "Unknown"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
-#, c-format
-msgid "PGP Key: %s"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
-msgid "Enter Passphrase"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr ""
-
-#. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
-msgid "Login"
-msgstr ""
-
-#: ../egg/egg-oid.c:41
-msgid "Domain Component"
-msgstr ""
-
-#: ../egg/egg-oid.c:43
-msgid "User ID"
-msgstr ""
-
-#: ../egg/egg-oid.c:46
-msgid "Email Address"
-msgstr ""
-
-#: ../egg/egg-oid.c:54
-msgid "Date of Birth"
-msgstr ""
-
-#: ../egg/egg-oid.c:56
-msgid "Place of Birth"
-msgstr ""
-
-#: ../egg/egg-oid.c:58
-msgid "Gender"
-msgstr ""
-
-#: ../egg/egg-oid.c:60
-msgid "Country of Citizenship"
-msgstr ""
-
-#: ../egg/egg-oid.c:62
-msgid "Country of Residence"
-msgstr ""
-
-#: ../egg/egg-oid.c:65
-msgid "Common Name"
-msgstr ""
-
-#: ../egg/egg-oid.c:67
-msgid "Surname"
-msgstr ""
-
-#: ../egg/egg-oid.c:69
-msgid "Serial Number"
-msgstr ""
-
-#: ../egg/egg-oid.c:71
-msgid "Country"
-msgstr ""
-
-#: ../egg/egg-oid.c:73
-msgid "Locality"
-msgstr ""
-
-#: ../egg/egg-oid.c:75
-msgid "State"
-msgstr ""
-
-#: ../egg/egg-oid.c:77
-msgid "Street"
-msgstr ""
-
-#: ../egg/egg-oid.c:79
-msgid "Organization"
-msgstr ""
-
-#: ../egg/egg-oid.c:81
-msgid "Organizational Unit"
-msgstr ""
-
-#: ../egg/egg-oid.c:83
-msgid "Title"
-msgstr ""
-
-#: ../egg/egg-oid.c:85
-msgid "Telephone Number"
-msgstr ""
-
-#: ../egg/egg-oid.c:87
-msgid "Given Name"
-msgstr ""
-
-#: ../egg/egg-oid.c:89
-msgid "Initials"
-msgstr ""
-
-#: ../egg/egg-oid.c:91
-msgid "Generation Qualifier"
-msgstr ""
-
-#: ../egg/egg-oid.c:93
-msgid "DN Qualifier"
-msgstr ""
-
-#: ../egg/egg-oid.c:95
-msgid "Pseudonym"
-msgstr ""
-
-#: ../egg/egg-oid.c:98
-msgid "RSA"
-msgstr ""
-
-#: ../egg/egg-oid.c:99
-msgid "MD2 with RSA"
-msgstr ""
-
-#: ../egg/egg-oid.c:100
-msgid "MD5 with RSA"
-msgstr ""
-
-#: ../egg/egg-oid.c:101
-msgid "SHA1 with RSA"
-msgstr ""
-
-#: ../egg/egg-oid.c:103
-msgid "DSA"
-msgstr ""
-
-#: ../egg/egg-oid.c:104
-msgid "SHA1 with DSA"
-msgstr ""
-
-#. Extended Key Usages
-#: ../egg/egg-oid.c:107
-msgid "Server Authentication"
-msgstr ""
-
-#: ../egg/egg-oid.c:108
-msgid "Client Authentication"
-msgstr ""
-
-#: ../egg/egg-oid.c:109
-msgid "Code Signing"
-msgstr ""
-
-#: ../egg/egg-oid.c:110
-msgid "Email Protection"
-msgstr ""
-
-#: ../egg/egg-oid.c:111
-msgid "Time Stamping"
-msgstr ""
-
-#: ../egg/egg-spawn.c:273
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-
-#: ../egg/egg-spawn.c:320
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr ""
-
-#: ../pkcs11/gkm/gkm-certificate.c:572
-msgid "Unnamed Certificate"
-msgstr ""
-
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
-msgid "Couldn't parse public SSH key"
-msgstr ""
-
-#. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, fuzzy, c-format
-msgid "Unlock password for: %s"
-msgstr "Otključavanje lozinke za %s skup ključeva"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-#, fuzzy
-msgid "The unlock password was incorrect"
-msgstr "Otključavanje lozinke za %s skup ključeva"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
-msgid "Unlock Login Keyring"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
-#, fuzzy
-msgid "Enter password to unlock your login keyring"
-msgstr "Unesite lozinku za privjesak '%s' da bi ga otključali."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid ""
-"The password you use to log in to your computer no longer matches that of "
-"your login keyring."
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid ""
-"The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
-msgid "Unlock Keyring"
-msgstr "Otključaj privjesak"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Unesite lozinku za privjesak '%s' da bi ga otključali."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
-#, fuzzy, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Nepoznata aplikacija želi pristupiti privjesku '%s', ali taj je zaključan"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
-msgid "Unlock private key"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
-msgid "Unlock certificate"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
-msgid "Unlock public key"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
-msgid "Unlock"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
-msgid "Enter password to unlock the public key"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
-msgid "Enter password to unlock"
-msgstr ""
-
-#. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-
-#. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr ""
-
-#. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
-#, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr ""
-
-#. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
-#, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
-msgid "Unlock certificate/key storage"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
-#, fuzzy
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Unesite lozinku za privjesak '%s' da bi ga otključali."
-
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
-#, fuzzy, c-format
-msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
-"locked"
-msgstr ""
-"Nepoznata aplikacija želi pristupiti privjesku '%s', ali taj je zaključan"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
-#, fuzzy
-msgid "New Password Required"
-msgstr "Snaga nove lozinke"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
-#, fuzzy
-msgid "New password required for secure storage"
-msgstr "Odaberite lozniku za novi privjesak."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
-#, c-format
-msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
-"required"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
-#, fuzzy
-msgid "Change Password"
-msgstr "Promjena lozinka za skup ključeva"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
-#, fuzzy
-msgid "Change password for secure storage"
-msgstr "Odaberite lozniku za novi privjesak."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
-#, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr ""
-
-#: ../tool/gkr-tool.c:102
-#, c-format
-msgid "usage: gnome-keyring command [options]\n"
-msgstr ""
-
-#: ../tool/gkr-tool.c:104
-msgid "commands: "
-msgstr ""
-
-#. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
-msgid "          "
-msgstr ""
-
-#: ../ui/gku-prompt-tool.c:591
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
-msgstr ""
+msgstr "Spremite nešifriranu lozinku?"
 
-#: ../ui/gku-prompt-tool.c:592
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
+"Odabirom prazne lozinke, vaša spremljena lozinka neće biti sigurnosno "
+"šifrirana. Koristiti će ju svatko, tko ima pristup vašem računalu."
 
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
+#: ../daemon/dbus/gkd-secret-change.c:152
+msgid "The original password was incorrect"
+msgstr "Izvorna lozinka je neispravna"
+
+#: ../daemon/dbus/gkd-secret-change.c:348
+msgid "Change Keyring Password"
+msgstr "Promjena lozinka za skup ključeva"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called '%s'. Choose the "
+"password you want to use for it."
 msgstr ""
+"Aplikacija želi stvoriti novi skup ključeva '%s'. Odaberite lozinku koju "
+"želite koristiti."
 
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "Lozinke se ne podudaraju."
+#: ../daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "Odaberite lozniku za novi skup ključeva"
 
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
+#: ../daemon/dbus/gkd-secret-create.c:309
+msgid "New Keyring Password"
+msgstr "Nova lozinka za skup ključeva"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+msgid "Certificate and Key Storage"
+msgstr "Vjerodajnice i spremište ključeva"
+
+#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME skup ključeva: PKCS#11 komponena"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+msgid "Secret Storage Service"
+msgstr "Tajna usluga spremišta"
+
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME skup ključeva: Tajna usluga"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+msgid "SSH Key Agent"
+msgstr "Agent SSH ključa"
+
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME skup ključeva: SSH agent"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: ../daemon/login/gkd-login.c:158
+msgid "Login"
+msgstr "Prijava"
+
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "neuspjelo stvaranje privremene datoteke `%s': %s\n"
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "greška zapisivanja u `%s': %s\n"
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "ne stvaraj `%s': %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "uklanjanje neaktivne zaključane datoteke (stvorene od %d)\n"
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "čekanje zaključavanja (zadržava %d%s) %s...\n"
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(zastoj?) "
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "zaključano `%s' nije napravio: %s\n"
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "čekanje zaključavanja %s...\n"
+
+#: ../egg/egg-oid.c:40
+msgid "Domain Component"
+msgstr "Komponenta domene"
+
+#: ../egg/egg-oid.c:42
+msgid "User ID"
+msgstr "ID korisnika"
+
+#: ../egg/egg-oid.c:45
+msgid "Email Address"
+msgstr "Adresa e-pošte"
+
+#: ../egg/egg-oid.c:53
+msgid "Date of Birth"
+msgstr "Datum rođenja"
+
+#: ../egg/egg-oid.c:55
+msgid "Place of Birth"
+msgstr "Mjesto rođenja"
+
+#: ../egg/egg-oid.c:57
+msgid "Gender"
+msgstr "Spol"
+
+#: ../egg/egg-oid.c:59
+msgid "Country of Citizenship"
+msgstr "Zemlja državljanstva"
+
+#: ../egg/egg-oid.c:61
+msgid "Country of Residence"
+msgstr "Zemlja prebivališta"
+
+#: ../egg/egg-oid.c:64
+msgid "Common Name"
+msgstr "Uobičajeno ime"
+
+#: ../egg/egg-oid.c:66
+msgid "Surname"
+msgstr "Nadimak"
+
+#: ../egg/egg-oid.c:68
+msgid "Serial Number"
+msgstr "Serijski broj"
+
+#: ../egg/egg-oid.c:70
+msgid "Country"
+msgstr "Zemlja"
+
+#: ../egg/egg-oid.c:72
+msgid "Locality"
+msgstr "Mjesto"
+
+#: ../egg/egg-oid.c:74
+msgid "State"
+msgstr "Država"
+
+#: ../egg/egg-oid.c:76
+msgid "Street"
+msgstr "Ulica"
+
+#: ../egg/egg-oid.c:78
+msgid "Organization"
+msgstr "Organizacija"
+
+#: ../egg/egg-oid.c:80
+msgid "Organizational Unit"
+msgstr "Organizacijska jedinica"
+
+#: ../egg/egg-oid.c:82
+msgid "Title"
+msgstr "Naslov"
+
+#: ../egg/egg-oid.c:84
+msgid "Telephone Number"
+msgstr "Telefonski broj"
+
+#: ../egg/egg-oid.c:86
+msgid "Given Name"
+msgstr "Dano ime"
+
+#: ../egg/egg-oid.c:88
+msgid "Initials"
+msgstr "Inicijali"
+
+#: ../egg/egg-oid.c:90
+msgid "Generation Qualifier"
+msgstr "Podatak generacije"
+
+#: ../egg/egg-oid.c:92
+msgid "DN Qualifier"
+msgstr "DN podatak"
+
+#: ../egg/egg-oid.c:94
+msgid "Pseudonym"
+msgstr "Pseudonim"
+
+#: ../egg/egg-oid.c:97
+msgid "RSA"
+msgstr "RSA"
+
+#: ../egg/egg-oid.c:98
+msgid "MD2 with RSA"
+msgstr "MD2 sa RSA"
+
+#: ../egg/egg-oid.c:99
+msgid "MD5 with RSA"
+msgstr "MD5 sa RSA"
+
+#: ../egg/egg-oid.c:100
+msgid "SHA1 with RSA"
+msgstr "SHA1 sa RSA"
+
+#: ../egg/egg-oid.c:102
+msgid "DSA"
+msgstr "DSA"
+
+#: ../egg/egg-oid.c:103
+msgid "SHA1 with DSA"
+msgstr "SHA1 sa DSA"
+
+#. Extended Key Usages
+#: ../egg/egg-oid.c:106
+msgid "Server Authentication"
+msgstr "Ovjera poslužitelja"
+
+#: ../egg/egg-oid.c:107
+msgid "Client Authentication"
+msgstr "Ovjera klijenta"
+
+#: ../egg/egg-oid.c:108
+msgid "Code Signing"
+msgstr "Potpisivanje kôda"
+
+#: ../egg/egg-oid.c:109
+msgid "Email Protection"
+msgstr "Zaštita e-pošte"
+
+#: ../egg/egg-oid.c:110
+msgid "Time Stamping"
+msgstr "Vremensko označavanje"
+
+#: ../pkcs11/gkm/gkm-certificate.c:580
+msgid "Unnamed Certificate"
+msgstr "Bezimena vjerodajnica"
+
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn't parse public SSH key"
+msgstr "Nije moguće obraditi javni SSH ključ"
+
+#. Get the label ready
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Otključaj lozinku za: %s"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+msgid "Unlock Login Keyring"
+msgstr "Otključaj skup ključeva za prijavu"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+msgid "Enter password to unlock your login keyring"
+msgstr "Upišite lozinku za otključavanje skupa ključeva prijave"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
 msgstr ""
+"Lozinka koju koristite za prijavu na vaše računalo više se ne podudara s "
+"onom u vašem skupu ključeva."
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
+"Skup ključeva prijave nije se otključao kada ste se prijavili na vaše "
+"računalo."
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+msgid "Unlock"
+msgstr "Otključaj"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+msgid "Unlock Keyring"
+msgstr "Otključaj skup ključeva"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#, c-format
+msgid "Enter password for keyring '%s' to unlock"
+msgstr "Upišite lozinku za skup ključeva '%s' kako bi ga otključali."
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
+#, c-format
+msgid "An application wants access to the keyring '%s', but it is locked"
+msgstr "Aplikacija traži pristup '%s' skupu ključeva, ali je zaključan"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
+msgid "Automatically unlock this keyring whenever I'm logged in"
+msgstr "Automatski otključaj skup ključeva uvijek kada se prijavim"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
+msgid "Unlock private key"
+msgstr "Otključaj privatni ključ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+msgid "Unlock certificate"
+msgstr "Otključaj vjerodajnicu"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
+msgid "Unlock public key"
+msgstr "Otključaj javni ključ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+msgid "Enter password to unlock the private key"
+msgstr "Upišite lozinku kako bi otključali privatni ključ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
+msgid "Enter password to unlock the certificate"
+msgstr "Upišite lozinku kako bi otključali vjerodajnicu"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
+msgid "Enter password to unlock the public key"
+msgstr "Upišite lozinku kako bi otključali javni ključ"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+msgid "Enter password to unlock"
+msgstr "Upišite lozinku za otključavanje"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
+msgid "Automatically unlock this key whenever I'm logged in"
+msgstr "Automatski otključaj ovaj ključ uvijek kada se prijavim"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+msgid "Automatically unlock this certificate whenever I'm logged in"
+msgstr "Automatski otključaj ovu vjerodajnicu uvijek kada se prijavim"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1309
+msgid "Automatically unlock whenever I'm logged in"
+msgstr "Automatski otključaj uvijek kada se prijavim"
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#, c-format
+msgid "An application wants access to the private key '%s', but it is locked"
 msgstr ""
+"Aplikacija želi pristupiti privatnom ključu '%s', ali on je zaključan"
 
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Snaga nove lozinke"
+#. TRANSLATORS: The certificate is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#, c-format
+msgid "An application wants access to the certificate '%s', but it is locked"
+msgstr "Aplikacija želi pristupiti vjerodajnici '%s', ali ona je zaključana"
 
-#: ../ui/gku-prompt.ui.h:2
-#, fuzzy
-msgid "_Application:"
-msgstr "_Mjesto:"
+#. TRANSLATORS: The public key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#, c-format
+msgid "An application wants access to the public key '%s', but it is locked"
+msgstr "Aplikacija želi pristupiti javnom ključu '%s', ali on je zaključan"
 
-#: ../ui/gku-prompt.ui.h:3
-#, fuzzy
-msgid "_Confirm:"
-msgstr "_Potvrda lozinke:"
+#. TRANSLATORS: The object '%s' is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#, c-format
+msgid "An application wants access to '%s', but it is locked"
+msgstr "Aplikacija želi pristupiti '%s', ali je zaključano"
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+msgid "The unlock password was incorrect"
+msgstr "Lozinka otključavanja je netočna"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+msgid "Unlock certificate/key storage"
+msgstr "Spremište otključavanja vjerodajnica/ključeva"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "Upišie lozinku za otključavanje spremišta vjerodajnica/ključeva"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage '%s', but it is "
+"locked"
 msgstr ""
+"Aplikacija želi pristupiti spremištu vjerodajnica/ključeva %s', ali je "
+"zaključano"
 
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
+msgid "New Password Required"
+msgstr "Potrebna je nova lozinka"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1152
+msgid "New password required for secure storage"
+msgstr "Potrebna je nova lozinka za sigurno spremište"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1154
+#, c-format
+msgid ""
+"In order to prepare '%s' for storage of certificates or keys, a password is "
+"required"
 msgstr ""
+"Kako bi pripremili '%s' za spremište vjerodajnica ili ključeva, potrebna je "
+"lozinka"
 
-#: ../ui/gku-prompt.ui.h:6
-#, fuzzy
-msgid "_Old Password:"
-msgstr "_Stara lozinka:"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
+msgid "Change Password"
+msgstr "Promijeni lozinku"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Lozinka"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+msgid "Original password for secure storage"
+msgstr "Izvorna lozinka za sigurno spremište"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#, c-format
+msgid "To change the password for '%s', the original password is required"
+msgstr "Kako bi promijenili lozinku '%s', potrebna je izvorna lozinka"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1301
+msgid "Change password for secure storage"
+msgstr "Promijeni lozinku sigurnog spremišta"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1303
+#, c-format
+msgid "Type a new password for '%s'"
+msgstr "Upišite lozinku za '%s'"
+
+#: ../tool/gkr-tool.c:100
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "Upotreba: gnome-keyring naredba [mogućnosti]\n"
+
+#: ../tool/gkr-tool.c:102
+msgid "commands: "
+msgstr "naredba: "
+
+#. Translators: keep same length as translated message "commands: "
+#: ../tool/gkr-tool.c:106
+msgid "          "
+msgstr "          "
