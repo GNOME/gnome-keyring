@@ -5,7 +5,7 @@
 # Hendrik Richter <hendrikr@gnome.org>, 2006.
 # Philipp Kerling <k.philipp@gmail.com>, 2008.
 # Stefan Horning <stefan@hornings.de>, 2009.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2012.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2012, 2016.
 # Nathan-J. Hirschauer <nathanhirschauer@verfriemelt.org>, 2010.
 # Wolfgang Stöggl <c72578@yahoo.de>, 2010, 2011.
 # Christian Kirbach <Christian.Kirbach@googlemail.com>, 2008-2010, 2012.
@@ -15,73 +15,67 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-13 22:44+0000\n"
-"PO-Revision-Date: 2012-03-14 22:01+0100\n"
-"Last-Translator: Christian Kirbach <Christian.Kirbach@googlemail.com>\n"
+"POT-Creation-Date: 2016-10-18 09:37+0000\n"
+"PO-Revision-Date: 2016-10-18 12:06+0200\n"
+"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
-"Language: de\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:121
-#: ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:752
 msgid "Unnamed"
 msgstr "Unbenannt"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
-msgid "Enter the old password for the '%s' keyring"
+msgid "Enter the old password for the “%s” keyring"
 msgstr "Geben Sie das alte Passwort für den Schlüsselbund »%s« ein"
 
-#: ../daemon/dbus/gkd-secret-change.c:94
+#: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Enter the "
+"An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
 "Eine Anwendung versucht, das Passwort für den Schlüsselbund »%s« zu ändern. "
 "Sie müssen das alte Passwort eingeben."
 
-#: ../daemon/dbus/gkd-secret-change.c:100
-#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
 #: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
 msgid "Continue"
 msgstr "Fortsetzen"
 
-#: ../daemon/dbus/gkd-secret-change.c:126
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
-msgid "Choose a new password for the '%s' keyring"
-msgstr "Wählen Sie ein neues Passwort für den Schlüsselbund »%s«."
+msgid "Choose a new password for the “%s” keyring"
+msgstr "Wählen Sie ein neues Passwort für den Schlüsselbund »%s«"
 
-#: ../daemon/dbus/gkd-secret-change.c:130
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
+"An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Eine unbekannte Anwendung versucht, das Passwort für den Schlüsselbund »%s« "
-"zu ändern. Sie müssen ein Passwort festlegen, das für diesen verwendet "
-"werden soll."
+"Eine Anwendung versucht, das Passwort für den Schlüsselbund »%s« zu ändern. "
+"Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
 
-#: ../daemon/dbus/gkd-secret-change.c:142
-#: ../daemon/dbus/gkd-secret-create.c:95
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Passwörter unverschlüsselt speichern?"
 
-#: ../daemon/dbus/gkd-secret-change.c:144
-#: ../daemon/dbus/gkd-secret-create.c:97
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -95,34 +89,26 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Das ursprüngliche Passwort war nicht korrekt"
 
-#: ../daemon/dbus/gkd-secret-change.c:356
+#: ../daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
 msgstr "Passwort für Schlüsselbund ändern"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
 msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
+"An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
-"Eine unbekannte Anwendung versucht, den neuen Schlüsselbund »%s« anzulegen. "
-"Sie müssen ein Passwort festlegen, das für diesen verwendet werden soll."
+"Eine Anwendung versucht, den neuen Schlüsselbund »%s« anzulegen. Sie müssen "
+"ein Passwort festlegen, das für diesen verwendet werden soll."
 
-#: ../daemon/dbus/gkd-secret-create.c:85
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Legen Sie ein Passwort für den neuen Schlüsselbund fest"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
 msgstr "Passwort für neuen Schlüsselbund"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GPG Password Agent"
-msgstr "GPG-Passwort-Agent"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME-Schlüsselbunddienst: GPG-Agent"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -148,36 +134,8 @@ msgstr "SSH-Schlüsselagent"
 msgid "GNOME Keyring: SSH Agent"
 msgstr "GNOME-Schlüsselbunddienst: SSH-Agent"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
-#, c-format
-msgid "PGP Key: %s"
-msgstr "PGP-Schlüssel: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
-msgid "Enter Passphrase"
-msgstr "Kennwort eingeben"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
-msgid "Unlock"
-msgstr "Entsperren"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
-msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Diesen Schlüssel beim Anmelden automatisch entsperren"
-
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:145
+#: ../daemon/login/gkd-login.c:158
 msgid "Login"
 msgstr "Anmeldung"
 
@@ -223,164 +181,153 @@ msgstr "Sperre »%s« konnte nicht eingerichtet werden: %s\n"
 msgid "waiting for lock %s...\n"
 msgstr "Warten auf das Sperren von »%s« …\n"
 
-#: ../egg/egg-oid.c:41
+#: ../egg/egg-oid.c:40
 msgid "Domain Component"
 msgstr "Domänenkomponente"
 
-#: ../egg/egg-oid.c:43
+#: ../egg/egg-oid.c:42
 msgid "User ID"
 msgstr "Benutzerkennung"
 
-#: ../egg/egg-oid.c:46
+#: ../egg/egg-oid.c:45
 msgid "Email Address"
 msgstr "E-Mail-Adresse"
 
-#: ../egg/egg-oid.c:54
+#: ../egg/egg-oid.c:53
 msgid "Date of Birth"
 msgstr "Geburtsdatum"
 
-#: ../egg/egg-oid.c:56
+#: ../egg/egg-oid.c:55
 msgid "Place of Birth"
 msgstr "Geburtsort"
 
-#: ../egg/egg-oid.c:58
+#: ../egg/egg-oid.c:57
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: ../egg/egg-oid.c:60
+#: ../egg/egg-oid.c:59
 msgid "Country of Citizenship"
 msgstr "Staatsangehörigkeit"
 
-#: ../egg/egg-oid.c:62
+#: ../egg/egg-oid.c:61
 msgid "Country of Residence"
 msgstr "Aufenthaltsland"
 
-#: ../egg/egg-oid.c:65
+#: ../egg/egg-oid.c:64
 msgid "Common Name"
 msgstr "Vorname"
 
-#: ../egg/egg-oid.c:67
+#: ../egg/egg-oid.c:66
 msgid "Surname"
 msgstr "Nachname"
 
-#: ../egg/egg-oid.c:69
+#: ../egg/egg-oid.c:68
 msgid "Serial Number"
 msgstr "Seriennummer"
 
-#: ../egg/egg-oid.c:71
+#: ../egg/egg-oid.c:70
 msgid "Country"
 msgstr "Land"
 
-#: ../egg/egg-oid.c:73
+#: ../egg/egg-oid.c:72
 msgid "Locality"
 msgstr "Ort"
 
-#: ../egg/egg-oid.c:75
+#: ../egg/egg-oid.c:74
 msgid "State"
 msgstr "Staat"
 
-#: ../egg/egg-oid.c:77
+#: ../egg/egg-oid.c:76
 msgid "Street"
 msgstr "Straße"
 
-#: ../egg/egg-oid.c:79
+#: ../egg/egg-oid.c:78
 msgid "Organization"
 msgstr "Organisation"
 
-#: ../egg/egg-oid.c:81
+#: ../egg/egg-oid.c:80
 msgid "Organizational Unit"
 msgstr "Organisationseinheit"
 
-#: ../egg/egg-oid.c:83
+#: ../egg/egg-oid.c:82
 msgid "Title"
 msgstr "Titel"
 
-#: ../egg/egg-oid.c:85
+#: ../egg/egg-oid.c:84
 msgid "Telephone Number"
 msgstr "Telefonnummer"
 
-#: ../egg/egg-oid.c:87
+#: ../egg/egg-oid.c:86
 msgid "Given Name"
 msgstr "Vorname"
 
-#: ../egg/egg-oid.c:89
+#: ../egg/egg-oid.c:88
 msgid "Initials"
 msgstr "Initialen"
 
-#: ../egg/egg-oid.c:91
+#: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
 msgstr "Erstellungsvermerk"
 
-#: ../egg/egg-oid.c:93
+#: ../egg/egg-oid.c:92
 msgid "DN Qualifier"
 msgstr "DN-Kennzeichnung"
 
-#: ../egg/egg-oid.c:95
+#: ../egg/egg-oid.c:94
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:97
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:99
+#: ../egg/egg-oid.c:98
 msgid "MD2 with RSA"
 msgstr "MD2 mit RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD5 with RSA"
 msgstr "MD5 mit RSA"
 
-#: ../egg/egg-oid.c:101
+#: ../egg/egg-oid.c:100
 msgid "SHA1 with RSA"
 msgstr "SHA1 mit RSA"
 
-#: ../egg/egg-oid.c:103
+#: ../egg/egg-oid.c:102
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:103
 msgid "SHA1 with DSA"
 msgstr "SHA1 mit DSA"
 
 #. Extended Key Usages
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:106
 msgid "Server Authentication"
 msgstr "Server-Legitimierung"
 
-#: ../egg/egg-oid.c:108
+#: ../egg/egg-oid.c:107
 msgid "Client Authentication"
 msgstr "Client-Legitimierung"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:108
 msgid "Code Signing"
 msgstr "Code-Signatur"
 
-#: ../egg/egg-oid.c:110
+#: ../egg/egg-oid.c:109
 msgid "Email Protection"
 msgstr "E-Mail-Schutz"
 
-#: ../egg/egg-oid.c:111
+#: ../egg/egg-oid.c:110
 msgid "Time Stamping"
 msgstr "Zeitstempel"
 
-#: ../egg/egg-spawn.c:273
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Unerwarteter Fehler im select()-Datenlesevorgang aus einem Kindprozess (%s)"
-
-#: ../egg/egg-spawn.c:320
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Unerwarteter Fehler in waitpid() (%s)"
-
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Unbenanntes Zertifikat"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
-msgid "Couldn't parse public SSH key"
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn’t parse public SSH key"
 msgstr "Öffentlicher SSH-Schlüssel konnte nicht verarbeitet werden"
 
 #. Get the label ready
@@ -412,180 +359,214 @@ msgstr ""
 "Ihr Anmeldeschlüsselbund wurde nicht automatisch entsperrt, als Sie sich an "
 "diesem Rechner angemeldet haben."
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+msgid "Unlock"
+msgstr "Entsperren"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "Schlüsselbund entsperren"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr ""
-"Geben Sie das Passwort für den Schlüsselbund »%s« ein, um diesen zu "
-"entsperren."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Eine Anwendung versucht, auf den Schlüsselbund »%s« zuzugreifen, dieser ist "
-"jedoch gesperrt."
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Diesen Schlüsselbund beim Anmelden automatisch entsperren"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
-msgid "Unlock private key"
-msgstr "Privaten Schlüssel entsperren"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
-msgid "Unlock certificate"
-msgstr "Zertifikat entsperren"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock public key"
-msgstr "Öffentlichen Schlüssel entsperren"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
-msgstr "Geben Sie das Passwort zum Entsperren des privaten Schlüssels ein"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
-msgid "Enter password to unlock the certificate"
-msgstr "Geben Sie das Passwort zum Entsperren des Zertifikats ein"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
-msgid "Enter password to unlock the public key"
-msgstr "Geben Sie das Passwort zum Entsperren des öffentlichen Schlüssels ein"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock"
 msgstr "Geben Sie das Passwort zum Entsperren ein"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
-msgid "Automatically unlock this key whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#, c-format
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr ""
+"Eine Anwendung versucht, auf den Schlüsselbund »%s« zuzugreifen, dieser ist "
+"jedoch gesperrt"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr "Diesen Schlüsselbund beim Anmelden automatisch entsperren"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+msgid "Unlock private key"
+msgstr "Privaten Schlüssel entsperren"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock certificate"
+msgstr "Zertifikat entsperren"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock public key"
+msgstr "Öffentlichen Schlüssel entsperren"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
+msgid "Enter password to unlock the private key"
+msgstr "Geben Sie das Passwort zum Entsperren des privaten Schlüssels ein"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the certificate"
+msgstr "Geben Sie das Passwort zum Entsperren des Zertifikats ein"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the public key"
+msgstr "Geben Sie das Passwort zum Entsperren des öffentlichen Schlüssels ein"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+msgid "Automatically unlock this key whenever I’m logged in"
 msgstr "Diesen Schlüssel beim Anmelden automatisch entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-msgid "Automatically unlock this certificate whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Dieses Zertifikat beim Anmelden automatisch entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
-msgid "Automatically unlock whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+msgid "Automatically unlock whenever I’m logged in"
 msgstr "Beim Anmelden automatisch entsperren"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
+msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
 "Eine Anwendung versucht, auf den privaten Schlüssel »%s« zuzugreifen, dieser "
 "ist jedoch gesperrt"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:687
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
+msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr ""
 "Eine Anwendung versucht, auf das Zertifikat »%s« zuzugreifen, dieses ist "
 "jedoch gesperrt"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
+msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr ""
 "Eine Anwendung versucht, auf den öffentlichen Schlüssel »%s« zuzugreifen, "
 "dieser ist jedoch gesperrt"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
 #, c-format
-msgid "An application wants access to '%s', but it is locked"
+msgid "An application wants access to “%s”, but it is locked"
 msgstr ""
 "Eine Anwendung versucht, auf »%s« zuzugreifen, dieses ist jedoch gesperrt"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:764
 msgid "The unlock password was incorrect"
 msgstr "Das Passwort zum Entsperren war nicht korrekt"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 msgid "Unlock certificate/key storage"
 msgstr "Zertifikat-/Schlüsselverwahrung entsperren"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "Geben Sie das Passwort zum Entsperren der Zertifikat-/Schlüsselverwahrung ein"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 #, c-format
 msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
+"An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
 "Eine Anwendung versucht, auf die Zertifikat-/Schlüsselverwahrung »%s« "
 "zuzugreifen, diese ist jedoch gesperrt"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
 msgid "New Password Required"
 msgstr "Neues Passwort ist erforderlich"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New password required for secure storage"
 msgstr "Neues Passwort ist für den Sicherheitsdienst erforderlich"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
 #, c-format
 msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
+"In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
 "Ein Passwort ist zur Vorbereitung von »%s« zur Hinterlegung von Zertifikaten "
 "oder Schlüsseln erforderlich"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Original password for secure storage"
 msgstr "Ursprüngliches Passwort für sicheres Speichern"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
 #, c-format
-msgid "To change the password for '%s', the original password is required"
+msgid "To change the password for “%s”, the original password is required"
 msgstr ""
 "Um das Passwort für »%s« zu ändern, ist das bisherige Passwort erforderlich"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change password for secure storage"
 msgstr "Passwort für den Sicherheitsdienst ändern"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
 #, c-format
-msgid "Type a new password for '%s'"
-msgstr "Geben Sie ein neues Passwort für den Schlüsselbund »%s« ein"
+msgid "Type a new password for “%s”"
+msgstr "Geben Sie ein neues Passwort für »%s« ein"
 
-#: ../tool/gkr-tool.c:102
+#: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "Aufruf: gnome-keyring Befehl [Optionen]\n"
 
-#: ../tool/gkr-tool.c:104
+#: ../tool/gkr-tool.c:102
 msgid "commands: "
 msgstr "Befehle: "
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
+#: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "         "
+
+#~ msgid "GPG Password Agent"
+#~ msgstr "GPG-Passwort-Agent"
+
+#~ msgid "GNOME Keyring: GPG Agent"
+#~ msgstr "GNOME-Schlüsselbunddienst: GPG-Agent"
+
+#~ msgid "Unknown"
+#~ msgstr "Unbekannt"
+
+#~ msgid "PGP Key: %s"
+#~ msgstr "PGP-Schlüssel: %s"
+
+#~ msgid "Enter Passphrase"
+#~ msgstr "Kennwort eingeben"
+
+#~ msgid "Automatically unlock this key, whenever I'm logged in"
+#~ msgstr "Diesen Schlüssel beim Anmelden automatisch entsperren"
+
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr ""
+#~ "Unerwarteter Fehler im select()-Datenlesevorgang aus einem Kindprozess "
+#~ "(%s)"
+
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Unerwarteter Fehler in waitpid() (%s)"
+
+#~ msgid "Enter password for keyring '%s' to unlock"
+#~ msgstr ""
+#~ "Geben Sie das Passwort für den Schlüsselbund »%s« ein, um diesen zu "
+#~ "entsperren."
 
 #~ msgid "Forget this password if idle for"
 #~ msgstr "Dieses Passwort bei Untätigkeit vergessen nach"
