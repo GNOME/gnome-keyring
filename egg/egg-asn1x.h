@@ -67,7 +67,7 @@ typedef enum {
 	EGG_ASN1X_GENERALIZED_TIME = 37,
 } EggAsn1xType;
 
-enum {
+typedef enum {
 	EGG_ASN1X_NO_STRICT = 0x01,
 } EggAsn1xFlags;
 
