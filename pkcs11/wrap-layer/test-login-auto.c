@@ -139,7 +139,7 @@ test_specific (Test *test, gconstpointer unused)
 
 	/* Login with prompt */
 	gcr_mock_prompter_expect_password_ok ("booo",
-	                                      "choice-label", "Automatically unlock this key whenever I'm logged in",
+	                                      "choice-label", "Automatically unlock this key whenever I’m logged in",
 	                                      "choice-chosen", TRUE,
 	                                      NULL);
 
@@ -177,7 +177,7 @@ test_user_token (Test *test, gconstpointer unused)
 
 	/* Login with prompt */
 	gcr_mock_prompter_expect_password_ok ("booo",
-	                                      "choice-label", "Automatically unlock whenever I'm logged in",
+	                                      "choice-label", "Automatically unlock whenever I’m logged in",
 	                                      "choice-chosen", TRUE,
 	                                      NULL);
 
@@ -219,7 +219,7 @@ test_unlock_keyring (Test *test, gconstpointer unused)
 
 	/* Create credential with prompt */
 	gcr_mock_prompter_expect_password_ok ("booo",
-	                                      "choice-label", "Automatically unlock this keyring whenever I'm logged in",
+	                                      "choice-label", "Automatically unlock this keyring whenever I’m logged in",
 	                                      "choice-chosen", TRUE,
 	                                      NULL);
 
