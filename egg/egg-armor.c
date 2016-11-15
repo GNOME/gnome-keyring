@@ -180,7 +180,7 @@ armor_find_end (const gchar *data,
 	 * does not insist that we validate this line, and is more useful
 	 * for PGP messages, rather than the keys we usually see.
 	 */
-	line = memrchr (data, '\n', (pref - 1) - data);
+	line = g_strrstr_len (data, (pref - 1) - data, "\n");
 	if (line && line[1] == '=')
 		pref = line;
 
