@@ -1,77 +1,73 @@
 # Kazakh translation for gnome-keyring.
 # Copyright (C) 2014 gnome-keyring's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-keyring package.
-# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2014.
+# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2014-2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-10-28 07:44+0000\n"
-"PO-Revision-Date: 2014-10-28 17:27+0600\n"
+"POT-Creation-Date: 2016-10-18 09:37+0000\n"
+"PO-Revision-Date: 2016-11-27 18:41+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk@li.org>\n"
 "Language: kk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.9\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:121
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
 #: ../daemon/dbus/gkd-secret-create.c:78
 #: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:752
 msgid "Unnamed"
 msgstr "Атаусыз"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
-msgid "Enter the old password for the '%s' keyring"
-msgstr "'%s' кілттер бауы үшін ескі парольді енгізіңіз"
+msgid "Enter the old password for the “%s” keyring"
+msgstr "\"%s\" кілттер бауы үшін ескі парольді енгізіңіз"
 
-#: ../daemon/dbus/gkd-secret-change.c:94
+#: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Enter the "
+"An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
-"Қолданба '%s' кілттер бауы үшін парольді өзгерткісі келеді. Ол үшін ескі "
+"Қолданба \"%s\" кілттер бауы үшін парольді өзгерткісі келеді. Ол үшін ескі "
 "парольді енгізіңіз."
 
-#: ../daemon/dbus/gkd-secret-change.c:100
-#: ../daemon/dbus/gkd-secret-change.c:136
-#: ../daemon/dbus/gkd-secret-change.c:147
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
 msgid "Continue"
 msgstr "Жалғастыру"
 
-#: ../daemon/dbus/gkd-secret-change.c:126
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
-msgid "Choose a new password for the '%s' keyring"
-msgstr "'%s' кілттер бауы үшін жаңа парольді таңдаңыз"
+msgid "Choose a new password for the “%s” keyring"
+msgstr "\"%s\" кілттер бауы үшін жаңа парольді таңдаңыз"
 
-#: ../daemon/dbus/gkd-secret-change.c:130
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
+"An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Қолданба '%s' кілттер бауы үшін парольді өзгерткісі келеді. Қолданғыңыз "
+"Қолданба \"%s\" кілттер бауы үшін парольді өзгерткісі келеді. Қолданғыңыз "
 "келетін жаңа парольді енгізіңіз."
 
-#: ../daemon/dbus/gkd-secret-change.c:143
-#: ../daemon/dbus/gkd-secret-create.c:94
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Парольдерді шифрленбеген түрде сақтау керек пе?"
 
-#: ../daemon/dbus/gkd-secret-change.c:145
-#: ../daemon/dbus/gkd-secret-create.c:96
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -80,38 +76,30 @@ msgstr ""
 "Бос парольді таңдасаңыз, сақталған парольдер шифрленбейтін болады. Яғни, "
 "сіздің файлдарыңызды оқи алатын адам парольдеріңізді де оқи алатын болады."
 
-#: ../daemon/dbus/gkd-secret-change.c:153
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Бастапқы паролі қате болды"
 
-#: ../daemon/dbus/gkd-secret-change.c:354
+#: ../daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
 msgstr "Кілттер бауының паролін өзгерту"
 
 #: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
 msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
+"An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
-"Қолданба жаңа '%s' кілттер бауын жасағысы келеді. Қолданғыңыз келетін жаңа "
+"Қолданба жаңа \"%s\" кілттер бауын жасағысы келеді. Қолданғыңыз келетін жаңа "
 "парольді енгізіңіз."
 
 #: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Кілттер бауы үшін жаңа парольді таңдаңыз"
 
-#: ../daemon/dbus/gkd-secret-create.c:311
+#: ../daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
 msgstr "Кілттер бауының жаңа паролі"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GPG Password Agent"
-msgstr "GPG парольдер агенті"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GNOME Keyring: GPG Agent"
-msgstr "GNOME Keyring: GPG агенті"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -137,36 +125,8 @@ msgstr "SSH кілттер агенті"
 msgid "GNOME Keyring: SSH Agent"
 msgstr "GNOME Keyring: SSH агенті"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:105
-msgid "Unknown"
-msgstr "Белгісіз"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:202
-#, c-format
-msgid "PGP Key: %s"
-msgstr "PGP кілті: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:349
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
-msgid "Enter Passphrase"
-msgstr "Кілттік фразаны енгізіңіз"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:354
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
-msgid "Unlock"
-msgstr "Босату"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:383
-msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Мен жүйеге кірген кезде, бұл кілтті автобосату"
-
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:150
+#: ../daemon/login/gkd-login.c:158
 msgid "Login"
 msgstr "Кіру"
 
@@ -353,23 +313,12 @@ msgstr "Эл. поштаны қорғау"
 msgid "Time Stamping"
 msgstr "Уақыт белгісі қою"
 
-#: ../egg/egg-spawn.c:272
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Ұрпақ процестен мәліметті оқу кезінде select() ішіндегі күтпеген қате (%s)"
-
-#: ../egg/egg-spawn.c:319
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Күтпеген waitpid() қатесі (%s)"
-
 #: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Атаусыз сертификат"
 
 #: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
-msgid "Couldn't parse public SSH key"
+msgid "Couldn’t parse public SSH key"
 msgstr "Публикалық SSH кілтін талдау мүмкін емес"
 
 #. Get the label ready
@@ -400,162 +349,167 @@ msgid ""
 msgstr ""
 "Жүйеге кіру кілттер бауы сіз жүйеге кірген кезде блоктаудан босатылмады."
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+msgid "Unlock"
+msgstr "Босату"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "Кілттер бауын босату"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "'%s' кілттер бауын блоктаудан босату үшін парольді енгізіңіз"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Қолданба '%s' кілттер бауына қатынау талабын жасағысы келеді, бірақ, ол "
-"блокталған"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Мен жүйеге кірген кезде, бұл кілттер бауын автобосату"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
-msgid "Unlock private key"
-msgstr "Жеке кілтті блоктаудан босату"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
-msgid "Unlock certificate"
-msgstr "Сертификатты блоктаудан босату"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock public key"
-msgstr "Публикалық кілтті блоктаудан босату"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
-msgstr "Жеке кілтті блоктаудан босату үшін парольді енгізіңіз"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
-msgid "Enter password to unlock the certificate"
-msgstr "Сертификатты блоктаудан босату үшін парольді енгізіңіз"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
-msgid "Enter password to unlock the public key"
-msgstr "Публикалық кілтті босату үшін парольді енгізіңіз"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock"
 msgstr "Блоктаудан босату үшін парольді енгізіңіз"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
-msgid "Automatically unlock this key whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#, c-format
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr ""
+"Қолданба \"%s\" кілттер бауына қатынау талабын жасағысы келеді, бірақ, ол "
+"блокталған"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr "Мен жүйеге кірген кезде, бұл кілттер бауын автобосату"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+msgid "Unlock private key"
+msgstr "Жеке кілтті блоктаудан босату"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock certificate"
+msgstr "Сертификатты блоктаудан босату"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock public key"
+msgstr "Публикалық кілтті блоктаудан босату"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
+msgid "Enter password to unlock the private key"
+msgstr "Жеке кілтті блоктаудан босату үшін парольді енгізіңіз"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the certificate"
+msgstr "Сертификатты блоктаудан босату үшін парольді енгізіңіз"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the public key"
+msgstr "Публикалық кілтті босату үшін парольді енгізіңіз"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+msgid "Automatically unlock this key whenever I’m logged in"
 msgstr "Мен жүйеге кірген кезде, бұл кілтті автобосату"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-msgid "Automatically unlock this certificate whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Мен жүйеге кірген кезде, бұл сертификатты автобосату"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
-msgid "Automatically unlock whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+msgid "Automatically unlock whenever I’m logged in"
 msgstr "Мен жүйеге кірген кезде, автобосату"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
+msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
-"Қолданба '%s' жеке кілтіне қатынау талабын жасағысы келеді, бірақ, ол "
+"Қолданба \"%s\" жеке кілтіне қатынау талабын жасағысы келеді, бірақ, ол "
 "блокталған"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:687
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
+msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr ""
-"Қолданба '%s' сертификатына қатынау талабын жасағысы келеді, бірақ, ол "
+"Қолданба \"%s\" сертификатына қатынау талабын жасағысы келеді, бірақ, ол "
 "блокталған"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
+msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr ""
-"Қолданба '%s' публикалық кілтіне қатынау талабын жасағысы келеді, бірақ, ол "
-"блокталған"
+"Қолданба \"%s\" публикалық кілтіне қатынау талабын жасағысы келеді, бірақ, "
+"ол блокталған"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
 #, c-format
-msgid "An application wants access to '%s', but it is locked"
+msgid "An application wants access to “%s”, but it is locked"
 msgstr ""
-"Қолданба '%s' үшін қатынау талабын жасағысы келеді, бірақ, ол блокталған"
+"Қолданба \"%s\" үшін қатынау талабын жасағысы келеді, бірақ, ол блокталған"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:764
 msgid "The unlock password was incorrect"
 msgstr "Босату паролі қате болды"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 msgid "Unlock certificate/key storage"
 msgstr "Сертификаттар/кілттер қоймасын блоктаудан босату"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "Сертификаттар/кілттер қоймасын блоктаудан босату үшін парольді енгізіңіз"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 #, c-format
 msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
+"An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
-"Қолданба '%s' сертификаттар/кілттер қоймасына қатынау талабын жасағысы "
+"Қолданба \"%s\" сертификаттар/кілттер қоймасына қатынау талабын жасағысы "
 "келеді, бірақ, ол блокталған"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
 msgid "New Password Required"
 msgstr "Жаңа пароль керек"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New password required for secure storage"
 msgstr "Қауіпсіз қойма үшін жаңа пароль керек"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
 #, c-format
 msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
+"In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"'%s' ішіне сертификаттар не кілттерді сақтауға дайындау үшін пароль керек"
+"\"%s\" ішіне сертификаттар не кілттерді сақтауға дайындау үшін пароль керек"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
 msgid "Change Password"
 msgstr "Парольді өзгерту"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Original password for secure storage"
 msgstr "Қауіпсіз қойма үшін ескі паролі"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
 #, c-format
-msgid "To change the password for '%s', the original password is required"
-msgstr "'%s' паролін өзгерту үшін ескі паролі қажет"
+msgid "To change the password for “%s”, the original password is required"
+msgstr "\"%s\" паролін өзгерту үшін ескі паролі қажет"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change password for secure storage"
 msgstr "Қауіпсіз қойма үшін парольді өзгерту"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
 #, c-format
-msgid "Type a new password for '%s'"
-msgstr "'%s' үшін жаңа парольді енгізіңіз"
+msgid "Type a new password for “%s”"
+msgstr "\"%s\" үшін жаңа парольді енгізіңіз"
 
 #: ../tool/gkr-tool.c:100
 #, c-format
@@ -570,3 +524,31 @@ msgstr "командалар: "
 #: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "            "
+
+#~ msgid "GPG Password Agent"
+#~ msgstr "GPG парольдер агенті"
+
+#~ msgid "GNOME Keyring: GPG Agent"
+#~ msgstr "GNOME Keyring: GPG агенті"
+
+#~ msgid "Unknown"
+#~ msgstr "Белгісіз"
+
+#~ msgid "PGP Key: %s"
+#~ msgstr "PGP кілті: %s"
+
+#~ msgid "Enter Passphrase"
+#~ msgstr "Кілттік фразаны енгізіңіз"
+
+#~ msgid "Automatically unlock this key, whenever I'm logged in"
+#~ msgstr "Мен жүйеге кірген кезде, бұл кілтті автобосату"
+
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr ""
+#~ "Ұрпақ процестен мәліметті оқу кезінде select() ішіндегі күтпеген қате (%s)"
+
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Күтпеген waitpid() қатесі (%s)"
+
+#~ msgid "Enter password for keyring '%s' to unlock"
+#~ msgstr "'%s' кілттер бауын блоктаудан босату үшін парольді енгізіңіз"
