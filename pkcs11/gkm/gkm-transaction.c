@@ -347,8 +347,12 @@ write_sync_close (int fd, const guchar *data, gsize n_data)
 				close (fd);
 				return FALSE;
 			}
+			continue;
 		}
-		n_data -= MAX (res, n_data);
+		g_assert (res <= n_data);
+
+		data += res;
+		n_data -= res;
 	}
 
 #ifdef HAVE_FSYNC
