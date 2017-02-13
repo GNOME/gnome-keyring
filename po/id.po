@@ -10,73 +10,67 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-09-03 08:42+0000\n"
-"PO-Revision-Date: 2012-09-04 17:43+0700\n"
-"Last-Translator: Dirgita <dirgitadevina@yahoo.co.id>\n"
+"POT-Creation-Date: 2016-10-18 09:37+0000\n"
+"PO-Revision-Date: 2017-01-24 13:43+0700\n"
+"Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Poedit-Language: Indonesian\n"
-"X-Poedit-Country: Indonesia\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:121
-#: ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:754
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../pkcs11/secret-store/gkm-secret-collection.c:324
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:752
 msgid "Unnamed"
 msgstr "TanpaNama"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
-msgid "Enter the old password for the '%s' keyring"
-msgstr "Ketik sandi lama untuk ring kunci '%s'"
+msgid "Enter the old password for the “%s” keyring"
+msgstr "Ketik sandi lama untuk ring kunci \"%s\""
 
-#: ../daemon/dbus/gkd-secret-change.c:94
+#: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Enter the "
+"An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
-"Sebuah aplikasi ingin mengubah sandi untuk ring kunci '%s'. Ketikkan sandi "
+"Sebuah aplikasi ingin mengubah sandi untuk ring kunci \"%s\". Ketikkan sandi "
 "lama untuknya."
 
-#: ../daemon/dbus/gkd-secret-change.c:100
-#: ../daemon/dbus/gkd-secret-change.c:136
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
 #: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1144
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
 msgid "Continue"
 msgstr "Lanjutkan"
 
-#: ../daemon/dbus/gkd-secret-change.c:126
+#: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
-msgid "Choose a new password for the '%s' keyring"
-msgstr "Pilih sandi baru bagi ring kunci '%s'"
+msgid "Choose a new password for the “%s” keyring"
+msgstr "Pilih sandi baru bagi ring kunci \"%s\""
 
-#: ../daemon/dbus/gkd-secret-change.c:130
+#: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
+"An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Sebuah aplikasi ingin mengubah sandi bagi ring kunci '%s'. Pilih sandi baru "
-"yang ingin Anda pakai untuknya."
+"Sebuah aplikasi ingin mengubah sandi bagi ring kunci \"%s\". Pilih sandi "
+"baru yang ingin Anda pakai untuknya."
 
-#: ../daemon/dbus/gkd-secret-change.c:142
-#: ../daemon/dbus/gkd-secret-create.c:95
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Simpan sandi tak terenkripsi?"
 
-#: ../daemon/dbus/gkd-secret-change.c:144
-#: ../daemon/dbus/gkd-secret-create.c:97
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -90,34 +84,26 @@ msgstr ""
 msgid "The original password was incorrect"
 msgstr "Sandi asli salah"
 
-#: ../daemon/dbus/gkd-secret-change.c:356
+#: ../daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
 msgstr "Ubah Sandi Ring Kunci"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
 msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
+"An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
-"Sebuah aplikasi ingin membuat sebuah ring kunci baru bernama '%s'. Pilih "
+"Sebuah aplikasi ingin membuat sebuah ring kunci baru bernama \"%s\". Pilih "
 "sandi yang ingin Anda pakai baginya."
 
-#: ../daemon/dbus/gkd-secret-create.c:85
+#: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Pilih password untuk ring kunci baru"
 
-#: ../daemon/dbus/gkd-secret-create.c:312
+#: ../daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
 msgstr "Password Ring Kunci yang Baru"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GPG Password Agent"
-msgstr "Agen Sandi GPG"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Ring Kunci GNOME: Agen GPG"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -143,36 +129,8 @@ msgstr "Agen Kunci SSH"
 msgid "GNOME Keyring: SSH Agent"
 msgstr "Ring Kunci GNOME: Agen SSH"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-msgid "Unknown"
-msgstr "Tak dikenal"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
-#, c-format
-msgid "PGP Key: %s"
-msgstr "Kunci PGP: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:350
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:351
-msgid "Enter Passphrase"
-msgstr "Masukkan Frasa Sandi"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:355
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:603
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:631
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:646
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:722
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:768
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:800
-msgid "Unlock"
-msgstr "Buka Kunci"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:384
-msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Otomatis membuka kunci ini, saat saya log masuk"
-
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:145
+#: ../daemon/login/gkd-login.c:158
 msgid "Login"
 msgstr "Log masuk"
 
@@ -218,181 +176,170 @@ msgstr "penguncian `%s' tidak dibuat: %s\n"
 msgid "waiting for lock %s...\n"
 msgstr "menunggu untuk mengunci %s...\n"
 
-#: ../egg/egg-oid.c:41
+#: ../egg/egg-oid.c:40
 msgid "Domain Component"
 msgstr "Komponen Domain"
 
-#: ../egg/egg-oid.c:43
+#: ../egg/egg-oid.c:42
 msgid "User ID"
 msgstr "ID Pengguna"
 
-#: ../egg/egg-oid.c:46
+#: ../egg/egg-oid.c:45
 msgid "Email Address"
 msgstr "Alamat Surel"
 
-#: ../egg/egg-oid.c:54
+#: ../egg/egg-oid.c:53
 msgid "Date of Birth"
 msgstr "Tanggal Lahir"
 
-#: ../egg/egg-oid.c:56
+#: ../egg/egg-oid.c:55
 msgid "Place of Birth"
 msgstr "Tempat Lahir"
 
-#: ../egg/egg-oid.c:58
+#: ../egg/egg-oid.c:57
 msgid "Gender"
 msgstr "Gender"
 
-#: ../egg/egg-oid.c:60
+#: ../egg/egg-oid.c:59
 msgid "Country of Citizenship"
 msgstr "Kewarganegaraan"
 
-#: ../egg/egg-oid.c:62
+#: ../egg/egg-oid.c:61
 msgid "Country of Residence"
 msgstr "Negara Tempat Tinggal"
 
-#: ../egg/egg-oid.c:65
+#: ../egg/egg-oid.c:64
 msgid "Common Name"
 msgstr "Nama Umum"
 
-#: ../egg/egg-oid.c:67
+#: ../egg/egg-oid.c:66
 msgid "Surname"
 msgstr "Nama Keluarga"
 
-#: ../egg/egg-oid.c:69
+#: ../egg/egg-oid.c:68
 msgid "Serial Number"
 msgstr "Nomor Seri"
 
-#: ../egg/egg-oid.c:71
+#: ../egg/egg-oid.c:70
 msgid "Country"
 msgstr "Negara"
 
-#: ../egg/egg-oid.c:73
+#: ../egg/egg-oid.c:72
 msgid "Locality"
 msgstr "Lokalitas"
 
-#: ../egg/egg-oid.c:75
+#: ../egg/egg-oid.c:74
 msgid "State"
 msgstr "Negara Bagian"
 
-#: ../egg/egg-oid.c:77
+#: ../egg/egg-oid.c:76
 msgid "Street"
 msgstr "Jalan"
 
-#: ../egg/egg-oid.c:79
+#: ../egg/egg-oid.c:78
 msgid "Organization"
 msgstr "Organisasi"
 
-#: ../egg/egg-oid.c:81
+#: ../egg/egg-oid.c:80
 msgid "Organizational Unit"
 msgstr "Unit Organisasi"
 
-#: ../egg/egg-oid.c:83
+#: ../egg/egg-oid.c:82
 msgid "Title"
 msgstr "Jabatan"
 
-#: ../egg/egg-oid.c:85
+#: ../egg/egg-oid.c:84
 msgid "Telephone Number"
 msgstr "Nomor Telepon"
 
-#: ../egg/egg-oid.c:87
+#: ../egg/egg-oid.c:86
 msgid "Given Name"
 msgstr "Nama Depan"
 
-#: ../egg/egg-oid.c:89
+#: ../egg/egg-oid.c:88
 msgid "Initials"
 msgstr "Inisial"
 
-#: ../egg/egg-oid.c:91
+#: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
 msgstr "Nomor Generasi"
 
-#: ../egg/egg-oid.c:93
+#: ../egg/egg-oid.c:92
 msgid "DN Qualifier"
 msgstr "Kualifier DN"
 
-#: ../egg/egg-oid.c:95
+#: ../egg/egg-oid.c:94
 msgid "Pseudonym"
 msgstr "Pseudonim"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:97
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:99
+#: ../egg/egg-oid.c:98
 msgid "MD2 with RSA"
 msgstr "MD2 dengan RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD5 with RSA"
 msgstr "MD5 dengan RSA"
 
-#: ../egg/egg-oid.c:101
+#: ../egg/egg-oid.c:100
 msgid "SHA1 with RSA"
 msgstr "SHA1 dengan RSA"
 
-#: ../egg/egg-oid.c:103
+#: ../egg/egg-oid.c:102
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:103
 msgid "SHA1 with DSA"
 msgstr "SHA1 dengan DSA"
 
 #. Extended Key Usages
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:106
 msgid "Server Authentication"
 msgstr "Otentikasi Server"
 
-#: ../egg/egg-oid.c:108
+#: ../egg/egg-oid.c:107
 msgid "Client Authentication"
 msgstr "Otentikasi Klien"
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:108
 msgid "Code Signing"
 msgstr "Penandatanganan Kode Program"
 
-#: ../egg/egg-oid.c:110
+#: ../egg/egg-oid.c:109
 msgid "Email Protection"
 msgstr "Proteksi Surel"
 
-#: ../egg/egg-oid.c:111
+#: ../egg/egg-oid.c:110
 msgid "Time Stamping"
 msgstr "Penandaan Waktu"
 
-#: ../egg/egg-spawn.c:273
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Galat yang tak diharapkan di select() saat membaca data dari proses anak (%s)"
-
-#: ../egg/egg-spawn.c:320
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Galat yang tak diharapkan di waitpid() (%s)"
-
-#: ../pkcs11/gkm/gkm-certificate.c:581
+#: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Sertifikat Tanpa Nama"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:342
-msgid "Couldn't parse public SSH key"
-msgstr "Tak bisa mengurai kunci publik SSH"
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn’t parse public SSH key"
+msgstr "Tak bisa menguraikan kunci publik SSH"
 
 #. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:346
+#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Buka sandi bagi: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Buka Ring Kunci Log Masuk"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:593
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
 msgstr "Masukkan sandi untuk membuka ring kunci log masuk"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:597
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -400,170 +347,203 @@ msgstr ""
 "Sandi yang Anda pakai untuk log masuk ke komputer Anda tak cocok lagi dengan "
 "yang ada di ring kunci log masuk Anda."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:599
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Ring kunci log masuk tak terbuka ketika Anda log masuk ke komputer Anda."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+msgid "Unlock"
+msgstr "Buka Kunci"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
 msgid "Unlock Keyring"
 msgstr "Buka Keyring"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:619
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Masukkan password untuk keyring '%s' untuk membukanya"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:623
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr "Sebuah aplikasi ingin mengakses ring kunci '%s', tapi itu terkunci"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Otomatis buka ring kunci ini ketika saya log masuk"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-msgid "Unlock private key"
-msgstr "Buka kunci privat"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
-msgid "Unlock certificate"
-msgstr "Buka kunci sertifikat"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
-msgid "Unlock public key"
-msgstr "Buka kunci publik"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the private key"
-msgstr "Masukkan sandi untuk membuka kunci privat"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
-msgid "Enter password to unlock the certificate"
-msgstr "Masukkan sandi untuk membuka sertifikat"
-
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
-msgid "Enter password to unlock the public key"
-msgstr "Masukkan sandi untuk membuka kunci publik"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:661
 msgid "Enter password to unlock"
 msgstr "Masukkan sandi untuk membuka kunci"
 
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#, c-format
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr "Sebuah aplikasi ingin mengakses ring kunci \"%s\", tapi itu terkunci"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr "Otomatis buka ring kunci ini setiap kali saya log masuk"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+msgid "Unlock private key"
+msgstr "Buka kunci privat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock certificate"
+msgstr "Buka kunci sertifikat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock public key"
+msgstr "Buka kunci publik"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
+msgid "Enter password to unlock the private key"
+msgstr "Masukkan sandi untuk membuka kunci privat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the certificate"
+msgstr "Masukkan sandi untuk membuka sertifikat"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the public key"
+msgstr "Masukkan sandi untuk membuka kunci publik"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr "Otomatis membuka kunci ini setiap kali saya log masuk"
+
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
-msgid "Automatically unlock this key whenever I'm logged in"
-msgstr "Otomatis membuka kunci ini saat saya log masuk"
+msgid "Automatically unlock this certificate whenever I’m logged in"
+msgstr "Otomatis membuka sertifikat ini setiap kali saya log masuk"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
-msgid "Automatically unlock this certificate whenever I'm logged in"
-msgstr "Otomatis membuka sertifikat ini saat saya log masuk"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:675
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:797
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1141
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
-msgid "Automatically unlock whenever I'm logged in"
-msgstr "Otomatis membuka kunci saat saya log masuk"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+msgid "Automatically unlock whenever I’m logged in"
+msgstr "Otomatis membuka kunci setiap kali saya log masuk"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Sebuah aplikasi ingin mengakses kunci privat '%s', tapi itu terkunci"
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr "Sebuah aplikasi ingin mengakses kunci privat \"%s\", tapi itu terkunci"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:689
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:687
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Sebuah aplikasi ingin mengakses sertifikat '%s', tapi itu terkunci"
+msgid "An application wants access to the certificate “%s”, but it is locked"
+msgstr "Sebuah aplikasi ingin mengakses sertifikat \"%s\", tapi itu terkunci"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Sebuah aplikasi ingin mengakses kunci publik '%s', tapi itu terkunci"
+msgid "An application wants access to the public key “%s”, but it is locked"
+msgstr "Sebuah aplikasi ingin mengakses kunci publik \"%s\", tapi itu terkunci"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:695
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
 #, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Sebuah aplikasi ingin mengakses '%s', tapi itu terkunci"
+msgid "An application wants access to “%s”, but it is locked"
+msgstr "Sebuah aplikasi ingin mengakses \"%s\", tapi itu terkunci"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:764
 msgid "The unlock password was incorrect"
 msgstr "Sandi pembuka kunci salah"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 msgid "Unlock certificate/key storage"
 msgstr "Buka penyimpanan kunci/sertifikat"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:788
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Masukkan sandi untuk membuka penyimpanan sertifikat/kunci"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:791
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 #, c-format
 msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
+"An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
-"Sebuah aplikasi ingin mengakses penyimpanan sertifikat/kunci '%s', tapi itu "
-"terkunci"
+"Sebuah aplikasi ingin mengakses penyimpanan sertifikat/kunci \"%s\", tapi "
+"itu terkunci"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
 msgid "New Password Required"
 msgstr "Perlu Sandi Baru"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New password required for secure storage"
 msgstr "Perlu sandi baru untuk penyimpanan yang aman"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
 #, c-format
 msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
+"In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"Perlu sandi untuk menyiapkan '%s' bagi penyimpanan sertifikat atau kunci"
+"Perlu sandi untuk menyiapkan \"%s\" bagi penyimpanan sertifikat atau kunci"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
 msgid "Change Password"
 msgstr "Ubah Sandi"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Original password for secure storage"
 msgstr "Sandi lama untuk penyimpanan aman"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
 #, c-format
-msgid "To change the password for '%s', the original password is required"
-msgstr "Untuk mengubah sandi '%s', sandi yang lama diperlukan"
+msgid "To change the password for “%s”, the original password is required"
+msgstr "Untuk mengubah sandi \"%s\", sandi yang lama diperlukan"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change password for secure storage"
 msgstr "Ubah sandi bagi penyimpanan aman"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
 #, c-format
-msgid "Type a new password for '%s'"
-msgstr "Ketik sandi baru untuk ring kunci '%s'"
+msgid "Type a new password for “%s”"
+msgstr "Ketik sandi baru untuk ring kunci \"%s\""
 
-#: ../tool/gkr-tool.c:102
+#: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "cara pakai: gnome-keyring perintah [opsi]\n"
 
-#: ../tool/gkr-tool.c:104
+#: ../tool/gkr-tool.c:102
 msgid "commands: "
 msgstr "perintah: "
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
+#: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
 
+#~ msgid "GPG Password Agent"
+#~ msgstr "Agen Sandi GPG"
+
+#~ msgid "GNOME Keyring: GPG Agent"
+#~ msgstr "Ring Kunci GNOME: Agen GPG"
+
+#~ msgid "Unknown"
+#~ msgstr "Tak dikenal"
+
+#~ msgid "PGP Key: %s"
+#~ msgstr "Kunci PGP: %s"
+
+#~ msgid "Enter Passphrase"
+#~ msgstr "Masukkan Frasa Sandi"
+
+#~ msgid "Automatically unlock this key, whenever I'm logged in"
+#~ msgstr "Otomatis membuka kunci ini, saat saya log masuk"
+
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr ""
+#~ "Galat yang tak diharapkan di select() saat membaca data dari proses anak "
+#~ "(%s)"
+
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Galat yang tak diharapkan di waitpid() (%s)"
+
+#~ msgid "Enter password for keyring '%s' to unlock"
+#~ msgstr "Masukkan password untuk keyring '%s' untuk membukanya"
