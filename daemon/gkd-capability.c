@@ -80,11 +80,11 @@ gkd_capability_obtain_capability_and_drop_privileges (void)
 			early_error ("error getting process capabilities");
 			break;
 		case CAPNG_NONE:
-			early_warning ("insufficient process capabilities, unsecure memory might get used");
+			early_warning ("insufficient process capabilities, insecure memory might get used");
 			break;
 		case CAPNG_PARTIAL: /* File system based capabilities */
 			if (!capng_have_capability (CAPNG_EFFECTIVE, CAP_IPC_LOCK)) {
-				early_warning ("insufficient process capabilities, unsecure memory might get used");
+				early_warning ("insufficient process capabilities, insecure memory might get used");
 				/* Drop all capabilities */
 				capng_clear (CAPNG_SELECT_BOTH);
 				capng_apply (CAPNG_SELECT_BOTH);
