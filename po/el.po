@@ -7,63 +7,63 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-10-05 19:46+0000\n"
-"PO-Revision-Date: 2015-10-06 09:59+0300\n"
-"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
+"POT-Creation-Date: 2017-03-29 06:42+0000\n"
+"PO-Revision-Date: 2017-04-07 15:48+0300\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gnome.org>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
 #: ../daemon/dbus/gkd-secret-create.c:78
 #: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:752
 msgid "Unnamed"
 msgstr "Χωρίς όνομα"
 
 #: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
-msgid "Enter the old password for the '%s' keyring"
-msgstr "Εισάγετε τον παλιό κωδικό πρόσβασης για την κλειδοθήκη '%s'"
+msgid "Enter the old password for the “%s” keyring"
+msgstr "Εισάγετε τον παλιό κωδικό πρόσβασης για την κλειδοθήκη «%s»"
 
 #: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Enter the "
+"An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
 "Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό πρόσβασης για την κλειδοθήκη "
-"'%s'. Εισάγετε τον παλιό κωδικό πρόσβασης για αυτό."
+"«%s». Εισάγετε τον παλιό κωδικό πρόσβασης για αυτό."
 
 #: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
 #: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1163
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1276
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1311
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
 msgid "Continue"
 msgstr "Συνέχεια"
 
 #: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
-msgid "Choose a new password for the '%s' keyring"
-msgstr "Επιλέξτε νέο κωδικό πρόσβασης για την κλειδοθήκη '%s'"
+msgid "Choose a new password for the “%s” keyring"
+msgstr "Επιλέξτε νέο κωδικό πρόσβασης για την κλειδοθήκη «%s»"
 
 #: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
+"An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
 "Μια εφαρμογή επιθυμεί να αλλάξει το κωδικό πρόσβασης για την κλειδοθήκη "
-"'%s'. Επιλέξετε τον κωδικό πρόσβασης που θέλετε να χρησιμοποιήσετε για αυτό."
+"«%s». Επιλέξετε τον κωδικό πρόσβασης που θέλετε να χρησιμοποιήσετε για αυτό."
 
 #: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
@@ -90,17 +90,17 @@ msgstr "Αλλαγή κωδικού πρόσβασης κλειδοθήκης"
 #: ../daemon/dbus/gkd-secret-create.c:80
 #, c-format
 msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
+"An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
-"Μια εφαρμογή επιθυμεί να δημιουργήσει μια νέα κλειδοθήκη με το όνομα '%s'. "
+"Μια εφαρμογή επιθυμεί να δημιουργήσει μια νέα κλειδοθήκη με το όνομα «%s». "
 "Επιλέξτε τον κωδικό πρόσβασης που θέλετε να χρησιμοποιήσετε για αυτό."
 
 #: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Επιλέξτε κωδικό πρόσβασης για νέα κλειδοθήκη"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: ../daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
 msgstr "Νέος κωδικός πρόσβασης κλειδοθήκης"
 
@@ -136,17 +136,17 @@ msgstr "Σύνδεση"
 #: ../egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr "αποτυχία δημιουργίας ενός προσωρινού αρχείου `%s': %s\n"
+msgstr "αποτυχία δημιουργίας ενός προσωρινού αρχείου «%s»: %s\n"
 
 #: ../egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
-msgstr "Σφάλμα κατά την εγγραφή στο `%s': %s\n"
+msgstr "Σφάλμα κατά την εγγραφή στο «%s»: %s\n"
 
 #: ../egg/dotlock.c:782
 #, c-format
 msgid "can't create `%s': %s\n"
-msgstr "αδυναμία δημιουργίας `%s': %s\n"
+msgstr "αδυναμία δημιουργίας «%s»: %s\n"
 
 #. Note: It is unlikley that we get a race here unless a pid is
 #. reused too fast or a new process with the same pid as the one
@@ -168,7 +168,7 @@ msgstr "(αδιέξοδος;)"
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr "δεν έγινε το κλείδωμα `%s': %s\n"
+msgstr "δεν έγινε το κλείδωμα «%s»: %s\n"
 
 #: ../egg/dotlock.c:1150
 #, c-format
@@ -316,24 +316,12 @@ msgstr "Προστασία ηλεκτρονικής διεύθυνσης"
 msgid "Time Stamping"
 msgstr "Χρονική σήμαναση"
 
-#: ../egg/egg-spawn.c:272
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Απρόσμενο σφάλμα στο select() ανάγνωσης δεδομένων από μια θυγατρική "
-"διεργασία (%s)"
-
-#: ../egg/egg-spawn.c:319
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Απρόσμενο σφάλμα στο waitpid() (%s)"
-
 #: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Ανώνυμο πιστοποιητικό"
 
 #: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
-msgid "Couldn't parse public SSH key"
+msgid "Couldn’t parse public SSH key"
 msgstr "Αδυναμία ανάλυσης δημόσιου κλειδιού SSH"
 
 #. Get the label ready
@@ -366,11 +354,11 @@ msgstr ""
 "υπολογιστή."
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:798
 msgid "Unlock"
 msgstr "Ξεκλείδωμα"
 
@@ -379,157 +367,153 @@ msgid "Unlock Keyring"
 msgstr "Ξεκλείδωμα κλειδοθήκης"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Εισάγετε κωδικό πρόσβασης για την κλειδοθήκη '%s' για ξεκλείδωμα"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-"Μια εφαρμογή επιθυμεί πρόσβαση στη κλειδοθήκη '%s', αλλά είναι κλειδωμένη"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
-msgid "Automatically unlock this keyring whenever I'm logged in"
-msgstr "Αυτόματο ξεκλείδωμα αυτής της κλειδοθήκης όποτε συνδέομαι"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
-msgid "Unlock private key"
-msgstr "Ξεκλείδωμα ιδιωτικού κλειδιού"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
-msgid "Unlock certificate"
-msgstr "Ξεκλείδωμα πιστοποιητικού"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
-msgid "Unlock public key"
-msgstr "Ξεκλείδωμα δημοσίου κλειδιού"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
-msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του ιδιωτικού κλειδιού"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
-msgid "Enter password to unlock the certificate"
-msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του πιστοποιητικού"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
-msgid "Enter password to unlock the public key"
-msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του δημόσιου κλειδιού"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock"
 msgstr "Εισάγετε κωδικό πρόσβασης για ξεκλείδωμα"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
-msgid "Automatically unlock this key whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#, c-format
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr ""
+"Μια εφαρμογή επιθυμεί πρόσβαση στη κλειδοθήκη «%s», αλλά είναι κλειδωμένη"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr "Αυτόματο ξεκλείδωμα αυτής της κλειδοθήκης όποτε συνδέομαι"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+msgid "Unlock private key"
+msgstr "Ξεκλείδωμα ιδιωτικού κλειδιού"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock certificate"
+msgstr "Ξεκλείδωμα πιστοποιητικού"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock public key"
+msgstr "Ξεκλείδωμα δημοσίου κλειδιού"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
+msgid "Enter password to unlock the private key"
+msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του ιδιωτικού κλειδιού"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the certificate"
+msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του πιστοποιητικού"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the public key"
+msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του δημόσιου κλειδιού"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+msgid "Automatically unlock this key whenever I’m logged in"
 msgstr "Αυτόματο ξεκλείδωμα αυτού του κλειδιού όποτε συνδέομαι"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-msgid "Automatically unlock this certificate whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Αυτόματο ξεκλείδωμα αυτή της πιστοποίησης όποτε συνδέομαι"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1160
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1309
-msgid "Automatically unlock whenever I'm logged in"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+msgid "Automatically unlock whenever I’m logged in"
 msgstr "Αυτόματο ξεκλείδωμα όποτε συνδέομαι"
 
 #. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
+msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
-"Μια εφαρμογή επιθυμεί πρόσβαση στο ιδιωτικό κλειδί '%s', αλλά είναι "
+"Μια εφαρμογή επιθυμεί πρόσβαση στο ιδιωτικό κλειδί «%s», αλλά είναι "
 "κλειδωμένο"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:687
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
+msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr ""
-"Μια εφαρμογή επιθυμεί πρόσβαση στο πιστοποιητικό '%s', αλλά είναι κλειδωμένο"
+"Μια εφαρμογή επιθυμεί πρόσβαση στο πιστοποιητικό «%s», αλλά είναι κλειδωμένο"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
+msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr ""
-"Μια εφαρμογή επιθυμεί πρόσβαση στο δημόσιο κλειδί '%s', αλλά είναι κλειδωμένο"
+"Μια εφαρμογή επιθυμεί πρόσβαση στο δημόσιο κλειδί «%s», αλλά είναι κλειδωμένο"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
 #, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Μια εφαρμογή επιθυμεί πρόσβαση στο '%s', αλλά είναι κλειδωμένο"
+msgid "An application wants access to “%s”, but it is locked"
+msgstr "Μια εφαρμογή επιθυμεί πρόσβαση στο «%s», αλλά είναι κλειδωμένο"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:764
 msgid "The unlock password was incorrect"
 msgstr "Ο κωδικός πρόσβασης ξεκλειδώματος είναι λάθος"
 
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 msgid "Unlock certificate/key storage"
 msgstr "Ξεκλείδωμα πιστοποιητικού/αποθήκης κλειδιών"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Enter password to unlock the certificate/key storage"
 msgstr ""
 "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του πιστοποιητικού/της αποθήκης "
 "κλειδιών"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 #, c-format
 msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
+"An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
-"Μια εφαρμογή επιθυμεί πρόσβαση στο πιστοποιητικό/αποθήκη κλειδιών '%s', αλλά "
+"Μια εφαρμογή επιθυμεί πρόσβαση στο πιστοποιητικό/αποθήκη κλειδιών «%s», αλλά "
 "αυτό είναι κλειδωμένο"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
 msgid "New Password Required"
 msgstr "Απαιτείται νέος κωδικός πρόσβασης"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1152
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New password required for secure storage"
 msgstr "Απαιτείται νέος κωδικός πρόσβασης για την ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1154
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
 #, c-format
 msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
+"In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"Απαιτείται κωδικός πρόσβασης για την προετοιμασία του '%s' για αποθήκευση "
+"Απαιτείται κωδικός πρόσβασης για την προετοιμασία του «%s» για αποθήκευση "
 "πιστοποιητικών ή κλειδιών"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
 msgid "Change Password"
 msgstr "Αλλαγή κωδικού πρόσβασης"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1270
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
 msgid "Original password for secure storage"
 msgstr "Αρχικός κωδικός πρόσβασης για ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1272
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
 #, c-format
-msgid "To change the password for '%s', the original password is required"
+msgid "To change the password for “%s”, the original password is required"
 msgstr ""
-"Για να αλλάξετε τον κωδικό πρόσβασης για '%s', απαιτείται ο αρχικός κωδικός "
+"Για να αλλάξετε τον κωδικό πρόσβασης για «%s», απαιτείται ο αρχικός κωδικός "
 "πρόσβασης"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1301
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change password for secure storage"
 msgstr "Αλλαγή κωδικού πρόσβασης για ασφαλή αποθήκευση"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1303
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
 #, c-format
-msgid "Type a new password for '%s'"
-msgstr "Πληκτρολογήστε έναν νέο κωδικό πρόσβασης για '%s'"
+msgid "Type a new password for “%s”"
+msgstr "Πληκτρολογήστε έναν νέο κωδικό πρόσβασης για «%s»"
 
 #: ../tool/gkr-tool.c:100
 #, c-format
@@ -544,6 +528,17 @@ msgstr "εντολές:"
 #: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
+
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr ""
+#~ "Απρόσμενο σφάλμα στο select() ανάγνωσης δεδομένων από μια θυγατρική "
+#~ "διεργασία (%s)"
+
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Απρόσμενο σφάλμα στο waitpid() (%s)"
+
+#~ msgid "Enter password for keyring '%s' to unlock"
+#~ msgstr "Εισάγετε κωδικό πρόσβασης για την κλειδοθήκη '%s' για ξεκλείδωμα"
 
 #~ msgid "GPG Password Agent"
 #~ msgstr "Πράκτορας κωδικού πρόσβασης GPG"
