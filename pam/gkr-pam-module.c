@@ -894,6 +894,12 @@ pam_sm_open_session (pam_handle_t *ph, int flags, int argc, const char **argv)
 			ret = start_daemon (ph, pwd, true, password);
 	}
 
+	/* Destroy the stored authtok once it has been used */
+	if (password && pam_set_data (ph, "gkr_system_authtok", NULL, NULL) != PAM_SUCCESS) {
+		syslog (GKR_LOG_ERR, "gkr-pam: error destroying the password");
+		return PAM_SERVICE_ERR;
+	}
+
 	return PAM_SUCCESS;
 }
 
