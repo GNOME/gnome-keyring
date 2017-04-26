@@ -1133,10 +1133,11 @@ main (int argc, char *argv[])
 
 	/* Print the environment and tell the parent we're done */
 	print_environment ();
-	close (parent_wakeup_fd);
 
-	if (!run_foreground)
+	if (!run_foreground) {
+		close (parent_wakeup_fd);
 		redirect_fds_after_fork ();
+	}
 
 	g_unix_signal_add (SIGTERM, on_signal_term, loop);
 	g_unix_signal_add (SIGHUP, on_signal_term, loop);
