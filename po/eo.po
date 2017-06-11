@@ -1,67 +1,101 @@
-# Esperanto translation for gnome-keyring
-# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# Esperanto translation for gnome-keyring.
+# Copyright (C) 2011 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 # Michael MORONI, < >, 2011.
-# Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2011.
-#
+# Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2011, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:59+0200\n"
-"PO-Revision-Date: 2011-04-09 19:30+0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-02-26 07:38+0000\n"
+"PO-Revision-Date: 2017-06-11 03:51+0200\n"
 "Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
-"Language-Team: Esperanto <ubuntu-l10n-eo@lists.launchpad.net>\n"
+"Language-Team: Esperanto <gnome-eo-list@gnome.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-04-09 17:28+0000\n"
-"X-Generator: Launchpad (build 12757)\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"X-Project-Style: gnome\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:78 ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
+#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
+#: ../daemon/dbus/gkd-secret-create.c:78
+#: ../pkcs11/secret-store/gkm-secret-collection.c:324
 #: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:752
 msgid "Unnamed"
 msgstr "Sennome"
 
-#: ../daemon/dbus/gkd-secret-change.c:86
-msgid "Change Keyring Password"
-msgstr "Ŝanĝi pasvorton de la ŝlosilaro"
-
-#: ../daemon/dbus/gkd-secret-change.c:88
+#: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
-msgid "Choose a new password for the '%s' keyring"
-msgstr "Elekti pasvorton de la ŝlosilaro '%s'"
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Enter the old password for the “%s” keyring"
+msgstr "Enigu la malnovan pasvorton de la ŝlosilaro “%s”"
 
-#: ../daemon/dbus/gkd-secret-change.c:92
+#: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
+"An application wants to change the password for the “%s” keyring. Enter the "
+"old password for it."
+msgstr ""
+
+#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
+#: ../daemon/dbus/gkd-secret-change.c:146
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+msgid "Continue"
+msgstr "Daŭrigi"
+
+#: ../daemon/dbus/gkd-secret-change.c:125
+#, c-format
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Choose a new password for the “%s” keyring"
+msgstr "Elektu novan pasvorton por la ŝlosilaro “%s”"
+
+#: ../daemon/dbus/gkd-secret-change.c:129
+#, c-format
+msgid ""
+"An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
 
-#: ../daemon/dbus/gkd-secret-change.c:111
+#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
+msgid "Store passwords unencrypted?"
+msgstr "Ĉu memori neĉifritajn pasvortojn?"
+
+#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+
+#: ../daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "La origina pasvorto estas nekorekta"
 
-#: ../daemon/dbus/gkd-secret-create.c:83
-msgid "New Keyring Password"
-msgstr "Pasvorto por nova ŝlosilaro"
+#: ../daemon/dbus/gkd-secret-change.c:348
+msgid "Change Keyring Password"
+msgstr "Ŝanĝi pasvorton de la ŝlosilaro"
+
+#: ../daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called “%s”. Choose the "
+"password you want to use for it."
+msgstr ""
 
 #: ../daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Elekti pasvorton por la nova ŝlosilaro"
 
-#: ../daemon/dbus/gkd-secret-create.c:86
-#, c-format
-msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
-"password you want to use for it."
-msgstr ""
+#: ../daemon/dbus/gkd-secret-create.c:309
+msgid "New Keyring Password"
+msgstr "Pasvorto por nova ŝlosilaro"
 
 #: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
 msgid "Certificate and Key Storage"
@@ -72,217 +106,215 @@ msgid "GNOME Keyring: PKCS#11 Component"
 msgstr ""
 
 #: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
-msgid "GNOME Keyring: Secret Service"
-msgstr ""
-
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
 msgid "Secret Storage Service"
 msgstr "Servo pri sekreta memorejo"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
-msgid "GNOME Keyring: SSH Agent"
+#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+msgid "GNOME Keyring: Secret Service"
 msgstr ""
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
 msgid "SSH Key Agent"
 msgstr ""
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GNOME Keyring: GPG Agent"
+#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+msgid "GNOME Keyring: SSH Agent"
 msgstr ""
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GPG Password Agent"
-msgstr ""
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-msgid "Unknown"
-msgstr "Nekonate"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:204
-#, c-format
-msgid "PGP Key: %s"
-msgstr "PGP-ŝlosilo: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:356
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:357
-msgid "Enter Passphrase"
-msgstr "Enigi pasfrazon"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:399
-msgid "Forget this password if idle for"
-msgstr "Forgesi ĉi tiun pasvorton se senokupite post"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:400
-msgid "Forget this password after"
-msgstr "Forgesi ĉi tiun pasvorton post"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:401
-msgid "Forget this password when I log out"
-msgstr "Forgesi ĉi tiun pasvorton kiam mi elsalutas"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:149
+#: ../daemon/login/gkd-login.c:158
 msgid "Login"
 msgstr "Ensaluti"
 
-#: ../egg/egg-oid.c:41
+#: ../egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "ne eblas krei `%s': %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: ../egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr ""
+
+#: ../egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr ""
+
+#: ../egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr ""
+
+#: ../egg/egg-oid.c:40
 msgid "Domain Component"
 msgstr ""
 
-#: ../egg/egg-oid.c:43
+#: ../egg/egg-oid.c:42
 msgid "User ID"
 msgstr "Uzant-ID"
 
-#: ../egg/egg-oid.c:46
+#: ../egg/egg-oid.c:45
 msgid "Email Address"
 msgstr ""
 
-#: ../egg/egg-oid.c:54
+#: ../egg/egg-oid.c:53
 msgid "Date of Birth"
 msgstr "Naskiĝdato"
 
-#: ../egg/egg-oid.c:56
+#: ../egg/egg-oid.c:55
 msgid "Place of Birth"
 msgstr "Naskiĝloko"
 
-#: ../egg/egg-oid.c:58
+#: ../egg/egg-oid.c:57
 msgid "Gender"
 msgstr "Sekso"
 
-#: ../egg/egg-oid.c:60
+#: ../egg/egg-oid.c:59
 msgid "Country of Citizenship"
 msgstr "Civitlando"
 
-#: ../egg/egg-oid.c:62
+#: ../egg/egg-oid.c:61
 msgid "Country of Residence"
 msgstr "Loĝlando"
 
-#: ../egg/egg-oid.c:65
+#: ../egg/egg-oid.c:64
 msgid "Common Name"
 msgstr "Komuna nomo"
 
-#: ../egg/egg-oid.c:67
+#: ../egg/egg-oid.c:66
 msgid "Surname"
 msgstr "Familinomo"
 
-#: ../egg/egg-oid.c:69
+#: ../egg/egg-oid.c:68
 msgid "Serial Number"
 msgstr "Seria numero"
 
-#: ../egg/egg-oid.c:71
+#: ../egg/egg-oid.c:70
 msgid "Country"
 msgstr "Lando"
 
-#: ../egg/egg-oid.c:73
+#: ../egg/egg-oid.c:72
 msgid "Locality"
 msgstr "Urbo"
 
-#: ../egg/egg-oid.c:75
+#: ../egg/egg-oid.c:74
 msgid "State"
 msgstr "Ŝtato"
 
-#: ../egg/egg-oid.c:77
+#: ../egg/egg-oid.c:76
 msgid "Street"
 msgstr "Strato"
 
-#: ../egg/egg-oid.c:79
+#: ../egg/egg-oid.c:78
 msgid "Organization"
 msgstr "Organizo"
 
-#: ../egg/egg-oid.c:81
+#: ../egg/egg-oid.c:80
 msgid "Organizational Unit"
 msgstr "Organiza unuo"
 
-#: ../egg/egg-oid.c:83
+#: ../egg/egg-oid.c:82
 msgid "Title"
 msgstr "Titolo"
 
-#: ../egg/egg-oid.c:85
+#: ../egg/egg-oid.c:84
 msgid "Telephone Number"
 msgstr "Telefonnumero"
 
-#: ../egg/egg-oid.c:87
+#: ../egg/egg-oid.c:86
 msgid "Given Name"
 msgstr "Donita nomo"
 
-#: ../egg/egg-oid.c:89
+#: ../egg/egg-oid.c:88
 msgid "Initials"
 msgstr "Inicialoj"
 
-#: ../egg/egg-oid.c:91
+#: ../egg/egg-oid.c:90
 msgid "Generation Qualifier"
 msgstr ""
 
-#: ../egg/egg-oid.c:93
+#: ../egg/egg-oid.c:92
 msgid "DN Qualifier"
 msgstr ""
 
-#: ../egg/egg-oid.c:95
+#: ../egg/egg-oid.c:94
 msgid "Pseudonym"
 msgstr "Pseŭdonimo"
 
-#: ../egg/egg-oid.c:98
+#: ../egg/egg-oid.c:97
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:99
+#: ../egg/egg-oid.c:98
 msgid "MD2 with RSA"
 msgstr "MD2 kun RSA"
 
-#: ../egg/egg-oid.c:100
+#: ../egg/egg-oid.c:99
 msgid "MD5 with RSA"
 msgstr "MD5 kun RSA"
 
-#: ../egg/egg-oid.c:101
+#: ../egg/egg-oid.c:100
 msgid "SHA1 with RSA"
 msgstr "SHA1 kun RSA"
 
-#: ../egg/egg-oid.c:103
+#: ../egg/egg-oid.c:102
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:104
+#: ../egg/egg-oid.c:103
 msgid "SHA1 with DSA"
 msgstr "SHA1 kun DSA"
 
 #. Extended Key Usages
-#: ../egg/egg-oid.c:107
+#: ../egg/egg-oid.c:106
 msgid "Server Authentication"
 msgstr ""
 
-#: ../egg/egg-oid.c:108
+#: ../egg/egg-oid.c:107
 msgid "Client Authentication"
 msgstr ""
 
-#: ../egg/egg-oid.c:109
+#: ../egg/egg-oid.c:108
 msgid "Code Signing"
 msgstr ""
 
-#: ../egg/egg-oid.c:110
+#: ../egg/egg-oid.c:109
 msgid "Email Protection"
 msgstr ""
 
-#: ../egg/egg-oid.c:111
+#: ../egg/egg-oid.c:110
 msgid "Time Stamping"
 msgstr ""
 
-#: ../egg/egg-spawn.c:273
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "Neatendita eraro en select() dum datumlegado de procezido (%s)"
-
-#: ../egg/egg-spawn.c:320
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Neatendita eraro en waitpid() (%s)"
-
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: ../pkcs11/gkm/gkm-certificate.c:580
 msgid "Unnamed Certificate"
 msgstr "Nenomata atestilo"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
-msgid "Couldn't parse public SSH key"
+#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn’t parse public SSH key"
 msgstr ""
 
 #. Get the label ready
@@ -291,217 +323,259 @@ msgstr ""
 msgid "Unlock password for: %s"
 msgstr "Malŝlospasvorto por: %s"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:90
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:801
-msgid "The unlock password was incorrect"
-msgstr "Malŝlospasvorto estas nekorekta"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
 msgid "Enter password to unlock your login keyring"
 msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
-msgid "Unlock Keyring"
-msgstr "Malŝlosi ŝlosilaron"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:662
-#, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:666
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
-msgstr ""
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:686
-msgid "Unlock private key"
-msgstr "Malŝlosi privatan ŝlosilon"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
-msgid "Unlock certificate"
-msgstr "Malŝlosi atestilon"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
-msgid "Unlock public key"
-msgstr "Malŝlosi publikan ŝlosilon"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:692
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:798
 msgid "Unlock"
 msgstr "Malŝlosi"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
-msgstr "Enigi pasvorton por malŝlosi la privatan ŝlosilon"
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+msgid "Unlock Keyring"
+msgstr "Malŝlosi ŝlosilaron"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703
-msgid "Enter password to unlock the certificate"
-msgstr "Enigi pasvorton por malŝlosi la atestilon"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:705
-msgid "Enter password to unlock the public key"
-msgstr "Enigi pasvorton por malŝlosi publikan ŝlosilon"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:707
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
 msgid "Enter password to unlock"
 msgstr "Enigi pasvorton por malŝlosi"
 
-#. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:717
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
 #, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr "Aplikaĵo volas akiri la privatan ŝlosilon '%s' sed ĝi estas ŝlosita"
+#| msgid "An application wants access to the public key '%s', but it is locked"
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr "Aplikaĵo volas akiri la ŝlosilaron “%s”, sed ĝi estas ŝlosita"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+msgid "Unlock private key"
+msgstr "Malŝlosi privatan ŝlosilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock certificate"
+msgstr "Malŝlosi atestilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock public key"
+msgstr "Malŝlosi publikan ŝlosilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
+msgid "Enter password to unlock the private key"
+msgstr "Enigi pasvorton por malŝlosi la privatan ŝlosilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the certificate"
+msgstr "Enigi pasvorton por malŝlosi la atestilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the public key"
+msgstr "Enigi pasvorton por malŝlosi publikan ŝlosilon"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this certificate whenever I’m logged in"
+msgstr ""
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+msgid "Automatically unlock whenever I’m logged in"
+msgstr ""
+
+#. TRANSLATORS: The private key is locked
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#, c-format
+#| msgid ""
+#| "An application wants access to the private key '%s', but it is locked"
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr "Aplikaĵo volas akiri la privatan ŝlosilon “%s”, sed ĝi estas ŝlosita"
 
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:687
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
-msgstr "Aplikaĵo volas akiri la atestilon '%s' sed ĝi estas ŝlosita"
+#| msgid ""
+#| "An application wants access to the certificate '%s', but it is locked"
+msgid "An application wants access to the certificate “%s”, but it is locked"
+msgstr "Aplikaĵo volas akiri la atestilon “%s”, sed ĝi estas ŝlosita"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:723
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
-msgstr "Aplikaĵo volas akiri la publikan ŝlosilon '%s' sed ĝi estas ŝlosita"
+#| msgid "An application wants access to the public key '%s', but it is locked"
+msgid "An application wants access to the public key “%s”, but it is locked"
+msgstr "Aplikaĵo volas akiri la publikan ŝlosilon “%s”, sed ĝi estas ŝlosita"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:726
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
 #, c-format
-msgid "An application wants access to '%s', but it is locked"
-msgstr "Aplikaĵo volas akiri al '%s' sed ĝi estas ŝlosita"
+#| msgid "An application wants access to '%s', but it is locked"
+msgid "An application wants access to “%s”, but it is locked"
+msgstr "Aplikaĵo volas akiri al “%s”, sed ĝi estas ŝlosita"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:822
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:764
+msgid "The unlock password was incorrect"
+msgstr "Malŝlospasvorto estas nekorekta"
+
+#. Build up the prompt
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
 msgid "Unlock certificate/key storage"
 msgstr "Malŝlosi memorejon de atestiloj/ŝlosiloj"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:823
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
 msgid "Enter password to unlock the certificate/key storage"
 msgstr "Enigi pasvorton por malŝlosi la memorejon de atestiloj/ŝlosiloj"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:826
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
 #, c-format
+#| msgid ""
+#| "An application wants access to the certificate/key storage '%s', but it "
+#| "is locked"
 msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
+"An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
-"Aplikaĵo volas akiri memorejon de atestiloj/ŝlosiloj '%s' sed ĝi estas "
+"Aplikaĵo volas akiri memorejon de atestiloj/ŝlosiloj “%s”, sed ĝi estas "
 "ŝlosita"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
 msgid "New Password Required"
 msgstr "Nova pasvorto estas bezonata"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1133
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
 msgid "New password required for secure storage"
 msgstr "Nova pasvorto bezonatas por sekura memorejo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1135
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
 #, c-format
+#| msgid ""
+#| "In order to prepare '%s' for storage of certificates or keys, a password "
+#| "is required"
 msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
+"In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
-msgstr "Pasvorto bezonatas por pretigi '%s' por memorejo de atestiloj/ŝlosiloj"
+msgstr ""
+"Pasvorto bezonatas por pretigi “%s” por memorejo de atestiloj aŭ ŝlosiloj"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1258
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
 msgid "Change Password"
 msgstr "Ŝanĝi la pasvorton"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1259
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+#| msgid "Change password for secure storage"
+msgid "Original password for secure storage"
+msgstr "Originala pasvorton de la sekura memorejo"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
+#, c-format
+#| msgid ""
+#| "To change the password for '%s', the original and new passwords are "
+#| "required"
+msgid "To change the password for “%s”, the original password is required"
+msgstr "La originala pasvorto estas bezonata por ŝanĝi la pasvorton de “%s”"
+
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change password for secure storage"
 msgstr "Ŝanĝi la pasvorton de la sekura memorejo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1261
+#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
 #, c-format
-msgid ""
-"To change the password for '%s', the original and new passwords are required"
-msgstr ""
-"La originala kaj nova pasvortoj bezonatas por ŝanĝi la pasvorton de '%s'"
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Type a new password for “%s”"
+msgstr "Tajpu novan pasvorton por “%s”"
 
-#: ../tool/gkr-tool.c:102
+#: ../tool/gkr-tool.c:100
 #, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr ""
 
-#: ../tool/gkr-tool.c:104
+#: ../tool/gkr-tool.c:102
 msgid "commands: "
 msgstr ""
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
+#: ../tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
 
-#: ../ui/gku-prompt-tool.c:591
-msgid "Store passwords unencrypted?"
-msgstr "Ĉu memori neĉifritajn pasvortojn?"
+#~ msgid "Unknown"
+#~ msgstr "Nekonate"
 
-#: ../ui/gku-prompt-tool.c:592
-msgid ""
-"By choosing to use a blank password, your stored passwords will not be "
-"safely encrypted. They will be accessible by anyone with access to your "
-"files."
-msgstr ""
+#~ msgid "PGP Key: %s"
+#~ msgstr "PGP-ŝlosilo: %s"
 
-#: ../ui/gku-prompt-tool.c:599
-msgid "Use Unsafe Storage"
-msgstr "Uzi nesekuran memorejon"
+#~ msgid "Enter Passphrase"
+#~ msgstr "Enigi pasfrazon"
 
-#: ../ui/gku-prompt-tool.c:639
-msgid "Passwords do not match."
-msgstr "Pasvortoj ne kongruas."
+#~ msgid "Forget this password if idle for"
+#~ msgstr "Forgesi ĉi tiun pasvorton se senokupite post"
 
-#: ../ui/gku-prompt-tool.c:649
-msgid "Password cannot be blank"
-msgstr "Pasvortoj ne povas esti malplenaj"
+#~ msgid "Forget this password after"
+#~ msgstr "Forgesi ĉi tiun pasvorton post"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:1
-msgid "Keyring Access"
-msgstr ""
+#~ msgid "Forget this password when I log out"
+#~ msgstr "Forgesi ĉi tiun pasvorton kiam mi elsalutas"
 
-#: ../ui/gnome-keyring-prompt.desktop.in.in.h:2
-msgid "Unlock access to passwords and other secrets"
-msgstr ""
+#~ msgid "Unexpected error in select() reading data from a child process (%s)"
+#~ msgstr "Neatendita eraro en select() dum datumlegado de procezido (%s)"
 
-#: ../ui/gku-prompt.ui.h:1
-msgid "New password strength"
-msgstr "Nova pasvortforto"
+#~ msgid "Unexpected error in waitpid() (%s)"
+#~ msgstr "Neatendita eraro en waitpid() (%s)"
 
-#: ../ui/gku-prompt.ui.h:2
-msgid "_Application:"
-msgstr "_Aplikaĵo:"
+#~ msgid "Use Unsafe Storage"
+#~ msgstr "Uzi nesekuran memorejon"
 
-#: ../ui/gku-prompt.ui.h:3
-msgid "_Confirm:"
-msgstr "_Konfirmi:"
+#~ msgid "Passwords do not match."
+#~ msgstr "Pasvortoj ne kongruas."
 
-#: ../ui/gku-prompt.ui.h:4
-msgid "_Details:"
-msgstr "_Detaloj:"
+#~ msgid "Password cannot be blank"
+#~ msgstr "Pasvortoj ne rajtas esti malplenaj"
 
-#: ../ui/gku-prompt.ui.h:5
-msgid "_Name:"
-msgstr "_Nomo:"
+#~ msgid "New password strength"
+#~ msgstr "Nova pasvortforto"
 
-#: ../ui/gku-prompt.ui.h:6
-msgid "_Old Password:"
-msgstr "Maln_ova pasvorto:"
+#~ msgid "_Application:"
+#~ msgstr "_Aplikaĵo:"
 
-#: ../ui/gku-prompt.ui.h:7
-msgid "_Password:"
-msgstr "_Pasvorto:"
+#~ msgid "_Confirm:"
+#~ msgstr "_Konfirmi:"
+
+#~ msgid "_Details:"
+#~ msgstr "_Detaloj:"
+
+#~ msgid "_Name:"
+#~ msgstr "_Nomo:"
+
+#~ msgid "_Old Password:"
+#~ msgstr "Maln_ova pasvorto:"
+
+#~ msgid "_Password:"
+#~ msgstr "_Pasvorto:"
