@@ -1,3 +1,12 @@
+Changes in version 3.20.1 are:
+ * Fix boolean logic error in ssh-agent
+ * Pass the correct argc to gkr_pam_client_run_operation [#766222]
+ * Look for both dlopen and dlsym when configuring [#766221]
+ * Fix .so link in gnome-keyring-3 man page [#767095]
+ * Die if the XDG session we were started under goes away [#768943]
+ * Shorten unlock keyring dialog title [#770170]
+ * Updated translations
+
 Changes in version 3.20.0 are:
  * Updated translations
 
