@@ -3,7 +3,7 @@ stages:
   - deploy
 
 variables:
-  DEPENDENCIES: dbus-x11 gcc gnome-common gtk-doc make openssh python redhat-rpm-config lcov libasan libubsan
+  DEPENDENCIES: dbus-x11 gcc gnome-common gtk-doc make openssh python redhat-rpm-config lcov libasan libubsan systemd-devel
 
 .build:
   stage: build
@@ -14,6 +14,16 @@ variables:
     - dnf install -y $DEPENDENCIES
     - dbus-uuidgen --ensure
     - useradd user
+
+fedora:meson:
+  extends: .build
+  script:
+    - dnf install -y meson ninja-build
+    - mkdir _build
+    - chown user _build
+    - runuser -u user -- meson setup _build
+    - runuser -u user -- meson compile -C _build
+    - runuser -u user -- dbus-run-session -- meson test -C _build
 
 fedora:Werror:
   extends: .build

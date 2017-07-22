@@ -153,6 +153,8 @@ AM_CPPFLAGS = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DSRCDIR="\"@abs_srcdir@\"" \
 	-DBUILDDIR="\"@abs_builddir@\"" \
+	-DTEST_GKR_DAEMON_BIN="\"@abs_builddir@/gnome-keyring-daemon\"" \
+	-DTEST_GKR_PKCS11_MODULE="\"@abs_builddir@/.libs/gnome-keyring-pkcs11.so\"" \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	-I$(top_srcdir)/pkcs11 \

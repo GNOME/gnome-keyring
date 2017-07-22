@@ -78,7 +78,7 @@ test_control_valid (Test *test,
 	gchar *fixed = g_strdup_printf ("%s/xxxx", test->directory);
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--control-directory", fixed,
 		"--components=", NULL
 	};
@@ -106,7 +106,7 @@ test_control_creates (Test *test,
 	gchar *directory = g_build_filename (test->directory, "under", NULL);
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--control-directory", directory,
 		"--components=", NULL
 	};
@@ -129,7 +129,7 @@ test_control_noaccess (Test *test,
 	gchar *directory = g_build_filename (test->directory, "under", "subdir", NULL);
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--control-directory", directory,
 		"--components=", NULL
 	};
@@ -159,7 +159,7 @@ test_control_badperm (Test *test,
 	gchar *directory = g_build_filename (test->directory, "under", NULL);
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--control-directory", directory,
 		"--components=", NULL
 	};
@@ -182,7 +182,7 @@ test_control_xdghome (Test *test,
                      gconstpointer unused)
 {
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--components=", NULL
 	};
 
@@ -215,12 +215,12 @@ test_daemon_replace (Test *test,
                      gconstpointer unused)
 {
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--components=", NULL
 	};
 
 	const gchar *replace[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--replace", "--components=", NULL
 	};
 
@@ -253,7 +253,7 @@ test_ssh_agent (Test *test,
 	gchar *auth_sock = g_build_filename (test->directory, "keyring", "ssh", NULL);
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--components=ssh-agent", NULL
 	};
 

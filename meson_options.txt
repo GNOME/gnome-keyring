@@ -1,0 +1,47 @@
+option('ssh-agent',
+  type: 'boolean',
+  value: true,
+  description: 'Include SSH agent in gnome-keyring',
+)
+
+option('selinux',
+  type: 'feature',
+  value: 'auto',
+  description: 'Add support for SELinux',
+)
+
+option('systemd',
+  type: 'feature',
+  value: 'enabled',
+  description: 'Add support for systemd socket activation',
+)
+
+option('pam',
+  type: 'boolean',
+  value: true,
+  description: 'Build GNOME keyring PAM helper',
+)
+
+option('pkcs11-config',
+  type: 'string',
+  value: '',
+  description: 'Directory to install PKCS#11 config (if empty, the default value for p11-kit will be used)',
+)
+
+option('pkcs11-modules',
+  type: 'string',
+  value: '',
+  description: 'Directory to install PKCS#11 modules (if empty, the default value for p11-kit will be used)',
+)
+
+option('debug-mode',
+  type: 'boolean',
+  value: true,
+  description: 'Turn on/off debug mode',
+)
+
+option('manpage',
+  type: 'boolean',
+  value: true,
+  description: 'Build manpage',
+)
