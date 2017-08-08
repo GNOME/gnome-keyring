@@ -87,6 +87,8 @@ GBytes *           gkm_data_der_write_private_key_dsa_part   (gcry_sexp_t skey);
 
 GBytes *           gkm_data_der_write_private_key_dsa_params (gcry_sexp_t skey);
 
+GBytes *           gkm_data_der_write_private_key_ecdsa      (gcry_sexp_t s_key);
+
 GBytes *           gkm_data_der_write_private_key            (gcry_sexp_t s_key);
 
 GBytes *           gkm_data_der_write_private_pkcs8_plain    (gcry_sexp_t skey);
@@ -109,6 +111,9 @@ GkmDataResult      gkm_data_der_read_public_key_dsa_parts  (GBytes *keydata,
                                                             GBytes *params,
                                                             gcry_sexp_t *s_key);
 
+GkmDataResult      gkm_data_der_read_public_key_ecdsa      (GBytes *data,
+                                                            gcry_sexp_t *s_key);
+
 GkmDataResult      gkm_data_der_read_public_key            (GBytes *data,
                                                             gcry_sexp_t *s_key);
 
@@ -118,6 +123,8 @@ GkmDataResult      gkm_data_der_read_public_key_info       (GBytes *data,
 GBytes *           gkm_data_der_write_public_key_rsa       (gcry_sexp_t s_key);
 
 GBytes *           gkm_data_der_write_public_key_dsa       (gcry_sexp_t s_key);
+
+GBytes *           gkm_data_der_write_public_key_ecdsa     (gcry_sexp_t s_key);
 
 GBytes *           gkm_data_der_write_public_key           (gcry_sexp_t s_key);
 

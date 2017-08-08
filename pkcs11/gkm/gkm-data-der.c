@@ -565,12 +565,124 @@ done:
 	return ret;
 }
 
+#define SEXP_PUBLIC_ECDSA  \
+	"(public-key"   \
+	"  (ecdsa"         \
+	"    (curve %s)"     \
+	"    (q %b)))"
+
+GkmDataResult
+gkm_data_der_read_public_key_ecdsa (GBytes *data,
+                                     gcry_sexp_t *s_key)
+{
+	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
+	int res;
+	GNode *asn = NULL;
+	GBytes *q = NULL;
+	gsize q_bits;
+	GQuark oid;
+	const gchar *curve = NULL;
+
+	init_quarks ();
+
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "ECPublicKey", data);
+	if (!asn)
+		goto done;
+
+	ret = GKM_DATA_FAILURE;
+
+	if (!gkm_data_asn1_read_oid (egg_asn1x_node (asn, "parameters", "namedCurve", NULL), &oid) ||
+	    !gkm_data_asn1_read_bit_string (egg_asn1x_node (asn, "q", NULL), &q, &q_bits))
+		goto done;
+
+	curve = gkm_data_der_oid_to_curve (oid);
+	if (curve == NULL)
+		goto done;
+
+	res = gcry_sexp_build (s_key, NULL, SEXP_PUBLIC_ECDSA,
+                               curve,
+                               g_bytes_get_size(q), g_bytes_get_data(q, NULL));
+	if (res)
+		goto done;
+
+	g_assert (*s_key);
+	ret = GKM_DATA_SUCCESS;
+
+done:
+	egg_asn1x_destroy (asn);
+	g_bytes_unref (q);
+
+	if (ret == GKM_DATA_FAILURE)
+		g_message ("invalid ECDSA key");
+
+	return ret;
+}
+
+#define SEXP_PRIVATE_ECDSA  \
+	"(private-key"   \
+	"  (ecdsa"         \
+	"    (curve %s)"     \
+	"    (q %b)"     \
+	"    (d %m)))"
+
+GkmDataResult
+gkm_data_der_read_private_key_ecdsa (GBytes *data,
+                                     gcry_sexp_t *s_key)
+{
+	gcry_mpi_t d = NULL;
+	GkmDataResult ret = GKM_DATA_UNRECOGNIZED;
+	int res;
+	GNode *asn = NULL;
+	GBytes *q = NULL;
+	gsize q_bits;
+	GQuark oid;
+	const gchar *curve = NULL;
+
+	init_quarks ();
+
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "ECPrivateKey", data);
+	if (!asn)
+		goto done;
+
+	ret = GKM_DATA_FAILURE;
+
+	if (!gkm_data_asn1_read_string_mpi (egg_asn1x_node (asn, "d", NULL), &d) ||
+	    !gkm_data_asn1_read_oid (egg_asn1x_node (asn, "parameters", "namedCurve", NULL), &oid) ||
+	    !gkm_data_asn1_read_bit_string (egg_asn1x_node (asn, "q", NULL), &q, &q_bits))
+		goto done;
+
+	curve = gkm_data_der_oid_to_curve (oid);
+	if (curve == NULL)
+		goto done;
+
+	res = gcry_sexp_build (s_key, NULL, SEXP_PRIVATE_ECDSA,
+                               curve,
+                               g_bytes_get_size(q), g_bytes_get_data(q, NULL), d);
+	if (res)
+		goto done;
+
+	g_assert (*s_key);
+	ret = GKM_DATA_SUCCESS;
+
+done:
+	egg_asn1x_destroy (asn);
+	gcry_mpi_release (d);
+	g_bytes_unref (q);
+
+	if (ret == GKM_DATA_FAILURE)
+		g_message ("invalid ECDSA key");
+
+	return ret;
+}
+
 GkmDataResult
 gkm_data_der_read_public_key (GBytes *data, gcry_sexp_t *s_key)
 {
 	GkmDataResult res;
 
 	res = gkm_data_der_read_public_key_rsa (data, s_key);
+	if (res == GKM_DATA_UNRECOGNIZED)
+		res = gkm_data_der_read_public_key_ecdsa (data, s_key);
 	if (res == GKM_DATA_UNRECOGNIZED)
 		res = gkm_data_der_read_public_key_dsa (data, s_key);
 
@@ -622,6 +734,10 @@ gkm_data_der_read_public_key_info (GBytes *data,
 		ret = gkm_data_der_read_public_key_dsa_parts (key, params, s_key);
 		g_bytes_unref (params);
 
+	/* A ECDSA key */
+	} else if (oid == OID_PKIX1_ECDSA) {
+		ret = gkm_data_der_read_public_key_ecdsa (key, s_key);
+
 	} else {
 		g_message ("unsupported key algorithm in certificate: %s", g_quark_to_string (oid));
 		ret = GKM_DATA_UNRECOGNIZED;
@@ -648,6 +764,8 @@ gkm_data_der_read_private_key (GBytes *data,
 	res = gkm_data_der_read_private_key_rsa (data, s_key);
 	if (res == GKM_DATA_UNRECOGNIZED)
 		res = gkm_data_der_read_private_key_dsa (data, s_key);
+	if (res == GKM_DATA_UNRECOGNIZED)
+		res = gkm_data_der_read_private_key_ecdsa (data, s_key);
 
 	return res;
 }
@@ -710,6 +828,9 @@ done:
 			/* Otherwise try the two part format that everyone seems to like */
 			if (ret == GKM_DATA_UNRECOGNIZED && params)
 				ret = gkm_data_der_read_private_key_dsa_parts (keydata, params, s_key);
+			break;
+		case GCRY_PK_ECC:
+			ret = gkm_data_der_read_private_key_ecdsa (keydata, s_key);
 			break;
 		default:
 			g_message ("invalid or unsupported key type in PKCS#8 key");
@@ -1080,6 +1201,113 @@ done:
 }
 
 GBytes *
+gkm_data_der_write_public_key_ecdsa (gcry_sexp_t s_key)
+{
+	GNode *asn = NULL, *named_curve;
+	gcry_mpi_t d = NULL;
+	GBytes *result = NULL, *q = NULL;
+	gchar *q_data = NULL;
+	GQuark oid;
+	gchar *curve = NULL;
+	gsize q_size;
+
+	init_quarks ();
+
+	asn = egg_asn1x_create (pk_asn1_tab, "ECPublicKey");
+	g_return_val_if_fail (asn, NULL);
+
+	if (!gkm_sexp_extract_buffer (s_key, &q_data, &q_size, "ecdsa", "q", NULL) ||
+	    !gkm_sexp_extract_string (s_key, &curve, "ecdsa", "curve", NULL))
+		goto done;
+
+	oid = gkm_data_der_curve_to_oid (curve);
+	g_free (curve);
+	if (oid == 0)
+		goto done;
+
+	q = g_bytes_new_take (q_data, q_size);
+	if (q == NULL)
+		goto done;
+
+	named_curve = egg_asn1x_node (asn, "parameters", "namedCurve", NULL);
+
+	/* XXX the bit size does not have to match byte size * 8 exactly
+	 * it would be good to cover this with more tests
+	 */
+	if (!gkm_data_asn1_write_bit_string (egg_asn1x_node (asn, "q", NULL), q, q_size*8) ||
+	    !gkm_data_asn1_write_oid (named_curve, oid))
+		goto done;
+
+	if (!egg_asn1x_set_choice (egg_asn1x_node (asn, "parameters", NULL), named_curve))
+		goto done;
+
+	result = egg_asn1x_encode (asn, egg_secure_realloc);
+	if (result == NULL)
+		g_warning ("couldn't encode public ecdsa key: %s", egg_asn1x_message (asn));
+
+done:
+	egg_asn1x_destroy (asn);
+	gcry_mpi_release (d);
+	g_bytes_unref (q);
+
+	return result;
+}
+
+GBytes *
+gkm_data_der_write_private_key_ecdsa (gcry_sexp_t s_key)
+{
+	GNode *asn = NULL, *named_curve;
+	gcry_mpi_t d = NULL;
+	GBytes *result = NULL, *q = NULL;
+	gchar *q_data = NULL;
+	GQuark oid;
+	gchar *curve = NULL;
+	gsize q_size;
+
+	init_quarks ();
+
+	asn = egg_asn1x_create (pk_asn1_tab, "ECPrivateKey");
+	g_return_val_if_fail (asn, NULL);
+
+	if (!gkm_sexp_extract_mpi (s_key, &d, "ecdsa", "d", NULL) ||
+	    !gkm_sexp_extract_buffer (s_key, &q_data, &q_size, "ecdsa", "q", NULL) ||
+	    !gkm_sexp_extract_string (s_key, &curve, "ecdsa", "curve", NULL))
+		goto done;
+
+	oid = gkm_data_der_curve_to_oid (curve);
+	g_free (curve);
+	if (oid == 0)
+		goto done;
+
+	q = g_bytes_new_take (q_data, q_size);
+	if (q == NULL)
+		goto done;
+
+	named_curve = egg_asn1x_node (asn, "parameters", "namedCurve", NULL);
+
+	if (!gkm_data_asn1_write_string_mpi (egg_asn1x_node (asn, "d", NULL), d) ||
+	    !gkm_data_asn1_write_bit_string (egg_asn1x_node (asn, "q", NULL), q, q_size*8) ||
+	    !gkm_data_asn1_write_oid (named_curve, oid))
+		goto done;
+
+	if (!egg_asn1x_set_choice (egg_asn1x_node (asn, "parameters", NULL), named_curve))
+		goto done;
+
+	egg_asn1x_set_integer_as_ulong (egg_asn1x_node (asn, "version", NULL), 1);
+
+	result = egg_asn1x_encode (asn, egg_secure_realloc);
+	if (result == NULL)
+		g_warning ("couldn't encode private ecdsa key: %s", egg_asn1x_message (asn));
+
+done:
+	egg_asn1x_destroy (asn);
+	gcry_mpi_release (d);
+	g_bytes_unref (q);
+
+	return result;
+}
+
+GBytes *
 gkm_data_der_write_public_key (gcry_sexp_t s_key)
 {
 	gboolean is_priv;
@@ -1097,6 +1325,8 @@ gkm_data_der_write_public_key (gcry_sexp_t s_key)
 		return gkm_data_der_write_public_key_rsa (s_key);
 	case GCRY_PK_DSA:
 		return gkm_data_der_write_public_key_dsa (s_key);
+	case GCRY_PK_ECC:
+		return gkm_data_der_write_public_key_ecdsa (s_key);
 	default:
 		g_return_val_if_reached (NULL);
 	}
@@ -1120,6 +1350,8 @@ gkm_data_der_write_private_key (gcry_sexp_t s_key)
 		return gkm_data_der_write_private_key_rsa (s_key);
 	case GCRY_PK_DSA:
 		return gkm_data_der_write_private_key_dsa (s_key);
+	case GCRY_PK_ECC:
+		return gkm_data_der_write_private_key_ecdsa (s_key);
 	default:
 		g_return_val_if_reached (NULL);
 	}
@@ -1226,6 +1458,12 @@ gkm_data_der_write_private_pkcs8_plain (gcry_sexp_t skey)
 		oid = OID_PKIX1_DSA;
 		key = gkm_data_der_write_private_key_dsa_part (skey);
 		params = gkm_data_der_write_private_key_dsa_params (skey);
+		break;
+
+	case GCRY_PK_ECC:
+		oid = OID_PKIX1_ECDSA;
+		params = NULL;
+		key = gkm_data_der_write_private_key_ecdsa (skey);
 		break;
 
 	default:
