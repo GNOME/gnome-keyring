@@ -112,6 +112,11 @@ build_like_attributes (GckAttributes *attrs, CK_OBJECT_CLASS klass)
 		copy_attribute (attrs, CKA_VALUE, &builder);
 		break;
 
+	case CKK_EC:
+		copy_attribute (attrs, CKA_EC_PARAMS, &builder);
+		copy_attribute (attrs, CKA_EC_POINT, &builder);
+		break;
+
 	default:
 		g_return_val_if_reached (NULL);
 		break;
@@ -306,7 +311,8 @@ load_identity_v2_attributes (GckObject *object, gpointer user_data)
 
 	attrs = gck_object_get (object, NULL, &error, CKA_ID, CKA_LABEL, CKA_KEY_TYPE, CKA_MODULUS,
 	                        CKA_PUBLIC_EXPONENT, CKA_PRIME, CKA_SUBPRIME, CKA_BASE,
-	                        CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN, GCK_INVALID);
+	                        CKA_VALUE, CKA_CLASS, CKA_MODULUS_BITS, CKA_TOKEN,
+	                        CKA_EC_POINT, CKA_EC_PARAMS, GCK_INVALID);
 	if (error) {
 		g_warning ("error retrieving attributes for public key: %s", egg_error_message (error));
 		g_clear_error (&error);
@@ -642,6 +648,9 @@ op_add_identity (GkdSshAgentCall *call)
 		break;
 	case CKK_DSA:
 		ret = gkd_ssh_agent_proto_read_pair_dsa (call->req, &offset, &priv, &pub);
+		break;
+	case CKK_EC:
+		ret = gkd_ssh_agent_proto_read_pair_ecdsa (call->req, &offset, &priv, &pub);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -982,6 +991,7 @@ unlock_and_sign (GckSession *session, GckObject *key, gulong mech_type, const gu
 	return gck_session_sign (session, key, mech_type, input, n_input, n_result, NULL, err);
 }
 
+
 static gboolean
 op_sign_request (GkdSshAgentCall *call)
 {
@@ -1002,6 +1012,7 @@ op_sign_request (GkdSshAgentCall *call)
 	gulong algo, mech;
 	GChecksumType halgo;
 	gsize n_hash = 0;
+	GQuark oid = 0;
 
 	offset = 5;
 
@@ -1022,7 +1033,12 @@ op_sign_request (GkdSshAgentCall *call)
 		mech = CKM_RSA_PKCS;
 	else if (algo == CKK_DSA)
 		mech = CKM_DSA;
-	else
+	else if (algo == CKK_EC) {
+		mech = CKM_ECDSA;
+		oid = gkd_ssh_agent_proto_find_curve_oid (attrs);
+		if (!oid)
+			return FALSE;
+	} else
 		g_return_val_if_reached (FALSE);
 
 	if (!egg_buffer_get_byte_array (call->req, offset, &offset, &data, &n_data) ||
@@ -1040,11 +1056,20 @@ op_sign_request (GkdSshAgentCall *call)
 		return TRUE;
 	}
 
-	/* Usually we hash the data with SHA1 */
-	if (flags & GKD_SSH_FLAG_OLD_SIGNATURE)
+	if (mech == CKM_ECDSA) {
+		/* ECDSA is using SHA-2 hash algorithms based on key size */
+		gint ret = gkd_ssh_agent_proto_curve_oid_to_hash_algo (oid);
+		if (ret == -1) {
+			egg_buffer_add_byte (call->resp, GKD_SSH_RES_FAILURE);
+			return FALSE;
+		}
+		halgo = (GChecksumType) ret;
+	} else if (flags & GKD_SSH_FLAG_OLD_SIGNATURE) {
 		halgo = G_CHECKSUM_MD5;
-	else
+	} else {
+		/* Usually we hash the data with SHA1 */
 		halgo = G_CHECKSUM_SHA1;
+	}
 
 	/* Build the hash */
 	if (mech == CKM_RSA_PKCS)
@@ -1076,7 +1101,7 @@ op_sign_request (GkdSshAgentCall *call)
 	blobpos = call->resp->len;
 	egg_buffer_add_uint32 (call->resp, 0);
 
-	salgo = gkd_ssh_agent_proto_algo_to_keytype (algo);
+	salgo = gkd_ssh_agent_proto_algo_to_keytype (algo, oid);
 	g_assert (salgo);
 	egg_buffer_add_string (call->resp, salgo);
 
@@ -1087,6 +1112,10 @@ op_sign_request (GkdSshAgentCall *call)
 
 	case CKK_DSA:
 		ret = gkd_ssh_agent_proto_write_signature_dsa (call->resp, result, n_result);
+		break;
+
+	case CKK_EC:
+		ret = gkd_ssh_agent_proto_write_signature_ecdsa (call->resp, result, n_result);
 		break;
 
 	default:
