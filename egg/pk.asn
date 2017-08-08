@@ -101,5 +101,27 @@ DHParameter ::= SEQUENCE {
 	privateValueLength INTEGER OPTIONAL 
 }
 
+-- FROM New PKIX ASN.1 [RFC5912], RFC5915
+
+Parameters ::= CHOICE {
+	namedCurve    OBJECT IDENTIFIER,
+	implicitlyCA  NULL
+}
+
+-- bogus attribute used to encode Q into CKA_EC_POINT
+ECKeyQ ::= OCTET STRING
+
+ECPrivateKey ::= SEQUENCE {
+	version        INTEGER { ecPrivkeyVer1(1) }, -- should be 1
+	d     OCTET STRING, -- private key
+	parameters [0] Parameters OPTIONAL, -- OID
+	q  [1] BIT STRING OPTIONAL -- public key
+}
+
+-- can't find definition anywhere, but works
+ECPublicKey ::= SEQUENCE {
+	parameters [0] Parameters OPTIONAL, -- OID
+	q  [1] BIT STRING -- public key
+}
 
 END

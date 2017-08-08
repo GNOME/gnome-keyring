@@ -43,7 +43,11 @@ EGG_SECURE_DECLARE (data_der);
 
 static GQuark OID_PKIX1_RSA;
 static GQuark OID_PKIX1_DSA;
+static GQuark OID_PKIX1_ECDSA;
 static GQuark OID_PKCS12_PBE_3DES_SHA1;
+static GQuark OID_ANSI_SECP256R1;
+static GQuark OID_ANSI_SECP384R1;
+static GQuark OID_ANSI_SECP521R1;
 
 static void
 init_quarks (void)
@@ -57,12 +61,171 @@ init_quarks (void)
 
 		QUARK (OID_PKIX1_RSA, "1.2.840.113549.1.1.1");
 		QUARK (OID_PKIX1_DSA, "1.2.840.10040.4.1");
+		QUARK (OID_PKIX1_ECDSA, "1.2.840.10045.2.1");
 		QUARK (OID_PKCS12_PBE_3DES_SHA1, "1.2.840.113549.1.12.1.3");
+		QUARK (OID_ANSI_SECP256R1, "1.2.840.10045.3.1.7");
+		QUARK (OID_ANSI_SECP384R1, "1.3.132.0.34");
+		QUARK (OID_ANSI_SECP521R1, "1.3.132.0.35");
 
 		#undef QUARK
 
 		g_once_init_leave (&quarks_inited, 1);
 	}
+}
+
+const gchar *
+gkm_data_der_oid_to_curve (GQuark oid)
+{
+	if (oid == OID_ANSI_SECP256R1)
+		return "NIST P-256";
+	else if (oid == OID_ANSI_SECP384R1)
+		return "NIST P-384";
+	else if (oid == OID_ANSI_SECP521R1)
+		return "NIST P-521";
+	return NULL;
+}
+
+/*
+ * Convert ecc->curve values from libgcrypt representation to internal one.
+ * Ignore duplicates and alternative names, since S-expressions are created
+ * only by us throught this code.
+ */
+static GQuark
+gkm_data_der_curve_to_oid (const gchar *curve)
+{
+	if (g_str_equal (curve, "NIST P-256"))
+		return OID_ANSI_SECP256R1;
+	else if (g_str_equal (curve, "NIST P-384"))
+		return OID_ANSI_SECP384R1;
+	else if (g_str_equal (curve, "NIST P-521"))
+		return OID_ANSI_SECP521R1;
+	return 0;
+}
+
+
+GQuark
+gkm_data_der_oid_from_ec_params (GBytes *params)
+{
+	GNode *asn;
+	GQuark oid;
+
+	init_quarks ();
+
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "Parameters", params);
+	if (!asn)
+		return 0;
+
+	oid = egg_asn1x_get_oid_as_quark (egg_asn1x_node (asn, "namedCurve", NULL));
+
+	egg_asn1x_destroy (asn);
+	return oid;
+}
+
+GBytes *
+gkm_data_der_get_ec_params (GQuark oid)
+{
+	GNode *asn;
+	GBytes *params = NULL;
+	GNode *named_curve;
+
+	asn = egg_asn1x_create (pk_asn1_tab, "Parameters");
+	if (!asn)
+		goto done;
+
+	named_curve = egg_asn1x_node (asn, "namedCurve", NULL);
+
+	if (!egg_asn1x_set_oid_as_quark (named_curve, oid))
+		goto done;
+
+	if (!egg_asn1x_set_choice (asn, named_curve))
+		goto done;
+
+	params = egg_asn1x_encode (asn, NULL);
+
+done:
+	egg_asn1x_destroy (asn);
+	return params;
+}
+
+/* wrapper so we do not have to export the GQuark magic */
+GBytes *
+gkm_data_der_curve_to_ec_params (const gchar *curve_name)
+{
+	GQuark oid;
+
+	init_quarks ();
+
+	oid = gkm_data_der_curve_to_oid (curve_name);
+	if (oid == 0)
+		return NULL;
+
+	return gkm_data_der_get_ec_params (oid);
+}
+
+GBytes *
+gkm_data_der_encode_ecdsa_q_str (const guchar *data, gsize data_len)
+{
+	GNode *asn = NULL;
+	GBytes *bytes, *result = NULL;
+
+	asn = egg_asn1x_create (pk_asn1_tab, "ECKeyQ");
+	g_return_val_if_fail (asn, FALSE);
+
+	bytes = g_bytes_new_static (data, data_len);
+
+	/* "consumes" bytes */
+	if (!gkm_data_asn1_write_string (asn, bytes))
+		goto done;
+
+	result = egg_asn1x_encode (asn, g_realloc);
+	if (result == NULL)
+		g_warning ("couldn't encode Q into the PKCS#11 structure: %s", egg_asn1x_message (asn));
+done:
+	egg_asn1x_destroy (asn);
+	return result;
+}
+
+gboolean
+gkm_data_der_encode_ecdsa_q (gcry_mpi_t q, GBytes **result)
+{
+	gcry_error_t gcry;
+	guchar data[1024];
+	gsize data_len = 1024;
+	gboolean rv = TRUE;
+
+	g_assert (q);
+	g_assert (result);
+
+	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, data, data_len, &data_len, q);
+	g_return_val_if_fail (gcry == 0, FALSE);
+
+	*result = gkm_data_der_encode_ecdsa_q_str (data, data_len);
+	if (*result == NULL)
+		rv = FALSE;
+
+	return rv;
+}
+
+gboolean
+gkm_data_der_decode_ecdsa_q (GBytes *data, GBytes **result)
+{
+	GNode *asn = NULL;
+	gboolean rv = TRUE;
+
+	g_assert (data);
+	g_assert (result);
+
+	asn = egg_asn1x_create_and_decode (pk_asn1_tab, "ECKeyQ", data);
+	/* workaround a bug in gcr (not DER encoding the MPI) */
+	if (!asn) {
+		*result = data;
+		return rv;
+	}
+
+	rv = gkm_data_asn1_read_string (asn, result);
+
+	egg_asn1x_destroy (asn);
+	return rv;
 }
 
 /* -----------------------------------------------------------------------------
@@ -518,6 +681,8 @@ gkm_data_der_read_private_pkcs8_plain (GBytes *data,
 		algorithm = GCRY_PK_RSA;
 	else if (key_algo == OID_PKIX1_DSA)
 		algorithm = GCRY_PK_DSA;
+	else if (key_algo == OID_PKIX1_ECDSA)
+		algorithm = GCRY_PK_ECC;
 
 	if (!algorithm) {
 		ret = GKM_DATA_UNRECOGNIZED;

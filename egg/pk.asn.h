@@ -2,6 +2,7 @@
 # include "config.h"
 #endif
 
+/* Generated using  asn1Parser pk.asn -o pk.asn.h */
 /* #include <libtasn1.h> */
 
 const ASN1_ARRAY_TYPE pk_asn1_tab[] = {
@@ -63,9 +64,26 @@ const ASN1_ARRAY_TYPE pk_asn1_tab[] = {
   { "g", 1073741827, NULL },
   { "Y", 1073741827, NULL },
   { "priv", 3, NULL },
-  { "DHParameter", 536870917, NULL },
+  { "DHParameter", 1610612741, NULL },
   { "prime", 1073741827, NULL },
   { "base", 1073741827, NULL },
   { "privateValueLength", 16387, NULL },
+  { "Parameters", 1610612754, NULL },
+  { "namedCurve", 1073741836, NULL },
+  { "implicitlyCA", 20, NULL },
+  { "ECKeyQ", 1073741831, NULL },
+  { "ECPrivateKey", 1610612741, NULL },
+  { "version", 1610874883, NULL },
+  { "ecPrivkeyVer1", 1, "1"},
+  { "d", 1073741831, NULL },
+  { "parameters", 1610637314, "Parameters"},
+  { NULL, 2056, "0"},
+  { "q", 536895494, NULL },
+  { NULL, 2056, "1"},
+  { "ECPublicKey", 536870917, NULL },
+  { "parameters", 1610637314, "Parameters"},
+  { NULL, 2056, "0"},
+  { "q", 536879110, NULL },
+  { NULL, 2056, "1"},
   { NULL, 0, NULL }
 };
