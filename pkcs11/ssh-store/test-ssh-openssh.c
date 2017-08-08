@@ -39,12 +39,19 @@ static const gchar *PRIVATE_FILES[] = {
 	SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_encrypted",
 	SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_plain",
 	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted",
-	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_plain"
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_plain",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_encrypted",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_plain",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_384",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_521"
 };
 
 static const gchar *PUBLIC_FILES[] = {
 	SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_test.pub",
-	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_test.pub"
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_test.pub",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_test.pub",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_384.pub",
+	SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_521.pub"
 };
 
 #define COMMENT "A public key comment"

@@ -37,7 +37,9 @@
 typedef struct {
 	GkmModule *module;
 	GkmSession *session;
-	GkmSshPrivateKey *key;
+	GkmSshPrivateKey *rsakey;
+	GkmSshPrivateKey *dsakey;
+	GkmSshPrivateKey *ecdsakey;
 } Test;
 
 static void
@@ -63,24 +65,57 @@ setup (Test *test,
 
 	setup_basic (test, unused);
 
-	test->key = gkm_ssh_private_key_new (test->module, "my-unique");
-	g_assert (GKM_IS_SSH_PRIVATE_KEY (test->key));
+	/* RSA */
+	test->rsakey = gkm_ssh_private_key_new (test->module, "my-unique");
+	g_assert (GKM_IS_SSH_PRIVATE_KEY (test->rsakey));
 
-	ret = gkm_ssh_private_key_parse (test->key, SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted.pub",
-	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted", NULL);
+	ret = gkm_ssh_private_key_parse (test->rsakey, SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_encrypted.pub",
+	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_encrypted", NULL);
 	g_assert (ret == TRUE);
+
+	/* DSA */
+	test->dsakey = gkm_ssh_private_key_new (test->module, "my-unique");
+	g_assert (GKM_IS_SSH_PRIVATE_KEY (test->dsakey));
+
+	ret = gkm_ssh_private_key_parse (test->dsakey, SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted.pub",
+	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_encrypted", NULL);
+
+	/* ECDSA */
+	test->ecdsakey = gkm_ssh_private_key_new (test->module, "my-unique");
+	g_assert (GKM_IS_SSH_PRIVATE_KEY (test->ecdsakey));
+
+	ret = gkm_ssh_private_key_parse (test->ecdsakey, SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_encrypted.pub",
+	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_encrypted", NULL);
 }
 
 static void
 teardown (Test *test,
           gconstpointer unused)
 {
-	g_object_unref (test->key);
+	g_object_unref (test->rsakey);
+	g_object_unref (test->dsakey);
+	g_object_unref (test->ecdsakey);
 	teardown_basic (test, unused);
 }
 
 static void
-test_parse_plain (Test *test, gconstpointer unused)
+test_parse_plain_rsa (Test *test, gconstpointer unused)
+{
+	GkmSshPrivateKey *key;
+	gboolean ret;
+
+	key = gkm_ssh_private_key_new (test->module, "my-unique");
+	g_assert (GKM_IS_SSH_PRIVATE_KEY (key));
+
+	ret = gkm_ssh_private_key_parse (key, SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_plain.pub",
+	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_plain", NULL);
+	g_assert (ret == TRUE);
+
+	g_object_unref (key);
+}
+
+static void
+test_parse_plain_dsa (Test *test, gconstpointer unused)
 {
 	GkmSshPrivateKey *key;
 	gboolean ret;
@@ -96,13 +131,44 @@ test_parse_plain (Test *test, gconstpointer unused)
 }
 
 static void
+test_parse_plain_ecdsa (Test *test, gconstpointer unused)
+{
+	GkmSshPrivateKey *key;
+	gboolean ret;
+
+	key = gkm_ssh_private_key_new (test->module, "my-unique");
+	g_assert (GKM_IS_SSH_PRIVATE_KEY (key));
+
+	ret = gkm_ssh_private_key_parse (key, SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_plain.pub",
+	                                 SRCDIR "/pkcs11/ssh-store/fixtures/id_ecdsa_plain", NULL);
+	g_assert (ret == TRUE);
+
+	g_object_unref (key);
+}
+
+static void
 test_unlock (Test *test,
              gconstpointer unused)
 {
 	GkmCredential *cred;
 	CK_RV rv;
 
-	rv = gkm_credential_create (test->module, NULL, GKM_OBJECT (test->key),
+	/* RSA */
+	rv = gkm_credential_create (test->module, NULL, GKM_OBJECT (test->rsakey),
+	                            (guchar*)"password", 8, &cred);
+	g_assert (rv == CKR_OK);
+
+	g_object_unref (cred);
+
+	/* DSA */
+	rv = gkm_credential_create (test->module, NULL, GKM_OBJECT (test->dsakey),
+	                            (guchar*)"password", 8, &cred);
+	g_assert (rv == CKR_OK);
+
+	g_object_unref (cred);
+
+	/* ECDSA */
+	rv = gkm_credential_create (test->module, NULL, GKM_OBJECT (test->ecdsakey),
 	                            (guchar*)"password", 8, &cred);
 	g_assert (rv == CKR_OK);
 
@@ -116,7 +182,7 @@ test_internal_sha1_compat (Test *test,
 	gpointer data;
 	gsize n_data;
 
-	data = gkm_object_get_attribute_data (GKM_OBJECT (test->key), test->session,
+	data = gkm_object_get_attribute_data (GKM_OBJECT (test->dsakey), test->session,
 	                                      CKA_GNOME_INTERNAL_SHA1, &n_data);
 
 	egg_assert_cmpmem (data, n_data, ==, "\x33\x37\x31\x31\x64\x33\x33\x65\x61\x34\x31\x31\x33\x61\x35\x64\x32\x35\x38\x37\x63\x36\x66\x32\x35\x66\x39\x35\x35\x36\x39\x66\x65\x65\x38\x31\x38\x35\x39\x34", 40);
@@ -131,7 +197,9 @@ main (int argc, char **argv)
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ssh-store/private-key/parse_plain", Test, NULL, setup_basic, test_parse_plain, teardown_basic);
+	g_test_add ("/ssh-store/private-key/parse_plain_rsa", Test, NULL, setup_basic, test_parse_plain_rsa, teardown_basic);
+	g_test_add ("/ssh-store/private-key/parse_plain_dsa", Test, NULL, setup_basic, test_parse_plain_dsa, teardown_basic);
+	g_test_add ("/ssh-store/private-key/parse_plain_ecdsa", Test, NULL, setup_basic, test_parse_plain_ecdsa, teardown_basic);
 	g_test_add ("/ssh-store/private-key/unlock", Test, NULL, setup, test_unlock, teardown);
 	g_test_add ("/ssh-store/private-key/internal-sha1-compat", Test, NULL, setup, test_internal_sha1_compat, teardown);
 
