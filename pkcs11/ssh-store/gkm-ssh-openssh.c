@@ -31,7 +31,24 @@ keytype_to_algo (const gchar *salgo)
 		return GCRY_PK_RSA;
 	else if (strcmp (salgo, "ssh-dss") == 0)
 		return GCRY_PK_DSA;
+	else if ((strcmp (salgo, "ecdsa-sha2-nistp256") == 0)
+	    || (strcmp (salgo, "ecdsa-sha2-nistp384") == 0)
+	    || (strcmp (salgo, "ecdsa-sha2-nistp521") == 0))
+		return GCRY_PK_ECC;
 	return 0;
+}
+
+static const gchar *
+curve_to_gcry (const gchar *salgo)
+{
+	g_return_val_if_fail (salgo, 0);
+	if (strcmp (salgo, "nistp256") == 0)
+		return "NIST P-256";
+	else if (strcmp (salgo, "nistp384") == 0)
+		return "NIST P-384";
+	else if (strcmp (salgo, "nistp521") == 0)
+		return "NIST P-521";
+	return NULL;
 }
 
 static gboolean
@@ -81,6 +98,40 @@ read_public_dsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 	gcry_mpi_release (q);
 	gcry_mpi_release (g);
 	gcry_mpi_release (y);
+
+	return TRUE;
+}
+
+#define SEXP_PUBLIC_ECDSA  \
+	"(public-key"      \
+	"  (ecdsa"         \
+	"    (curve %s)"   \
+	"    (q %b)))"
+
+static gboolean
+read_public_ecdsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
+{
+	int gcry;
+	const gchar *curve_name = NULL;
+	const guchar *q = NULL;
+	size_t q_len;
+	gchar *curve = NULL;
+
+	if (!egg_buffer_get_string (req, *offset, offset, &curve, (EggBufferAllocator)g_realloc))
+		return FALSE;
+
+	if (!egg_buffer_get_byte_array (req, *offset, offset, &q, &q_len))
+		return FALSE;
+
+	curve_name = curve_to_gcry (curve);
+	g_return_val_if_fail (curve_name, FALSE);
+
+	gcry = gcry_sexp_build (sexp, NULL, SEXP_PUBLIC_ECDSA,
+                                curve_name, q_len, q);
+	if (gcry) {
+		g_warning ("couldn't parse incoming public ECDSA key: %s", gcry_strerror (gcry));
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -139,6 +190,9 @@ read_public (EggBuffer *req, gsize *offset, gcry_sexp_t *key, int *algo)
 	case GCRY_PK_DSA:
 		ret = read_public_dsa (req, offset, key);
 		break;
+	case GCRY_PK_ECC:
+		ret = read_public_ecdsa (req, offset, key);
+		break;
 	default:
 		g_assert_not_reached ();
 		return FALSE;
@@ -195,17 +249,21 @@ is_private_key_type (GQuark type)
 {
 	static GQuark PEM_RSA_PRIVATE_KEY;
 	static GQuark PEM_DSA_PRIVATE_KEY;
+	static GQuark PEM_ECDSA_PRIVATE_KEY;
 	static gsize quarks_inited = 0;
 
 	/* Initialize the first time through */
 	if (g_once_init_enter (&quarks_inited)) {
 		PEM_RSA_PRIVATE_KEY = g_quark_from_static_string ("RSA PRIVATE KEY");
 		PEM_DSA_PRIVATE_KEY = g_quark_from_static_string ("DSA PRIVATE KEY");
+		PEM_ECDSA_PRIVATE_KEY = g_quark_from_static_string ("EC PRIVATE KEY");
 		g_once_init_leave (&quarks_inited, 1);
 	}
 
 	/* Only handle SSHv2 private keys */
-	return (type == PEM_RSA_PRIVATE_KEY || type == PEM_DSA_PRIVATE_KEY);
+	return (type == PEM_RSA_PRIVATE_KEY ||
+		type == PEM_DSA_PRIVATE_KEY ||
+		type == PEM_ECDSA_PRIVATE_KEY);
 }
 
 static void
