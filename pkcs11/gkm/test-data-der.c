@@ -76,6 +76,25 @@ const gchar *dsaprv = "(private-key (dsa" \
 "  (y #54734451DB79D4EEDF0BBCEBD43BB6CBB7B8584603B957080075DD318EB5B0266D4B20DC5EFF376BDFC4EA2983B1F7F02A39ED4C619ED68712729FFF3B7C696ADD1B6D748F56A4B4BEC5C4385E528423A3B88AE65E6D5500F97839E7A486255982189C3B4FA8D94338C76F0E5CAFC9A30A1ED728BB9F2091D594E3250A09EA00#)" \
 "  (x #00876F84F709D51108DFB0CBFA1F1C569C09C413EC#)))";
 
+const gchar *ecdsaprv_256 =  "(private-key (ecdsa" \
+"  (curve \"NIST P-256\")" \
+"  (q #04A8EB59A5B601D839AC2373C3197440AD2DD72DFE0684E42BE15C5724722FECBF0EC3675695CEFD9D1D864A74B642C5C64559013803C7E5975FBD52EB235CCB9C#)" \
+"  (d #C616A320E3839BC6946E432E8E849A7CD72B83867E703ED86ACBF69DF17EFBBE#)))";
+
+const gchar *ecdsapub_256 =  "(public-key (ecdsa" \
+"  (curve \"NIST P-256\")" \
+"  (q #04A8EB59A5B601D839AC2373C3197440AD2DD72DFE0684E42BE15C5724722FECBF0EC3675695CEFD9D1D864A74B642C5C64559013803C7E5975FBD52EB235CCB9C#)))";
+
+const gchar *ecdsaprv_384 = "(private-key (ecdsa" \
+"  (curve \"NIST P-384\")" \
+"  (q #04686B8127CAEEF00BA418AF03EB3A48539637E67A7FE9176C7B2DFF92942A405F9C3AF4A01771B34F8839DC5E972479C7D0BAC7FF280F4A00C1505DAFDE4265E4C993A38625A414A4F3E139250C5D9E841844F37AE264597E24095A40E70591AD#)" \
+"  (d #4071072A7E023539CF6591CBAF0FBB505159A3236C35135DB610EEE8969179EB46A5BC093DFE186E7936690209771D1B#)))";
+
+const gchar *ecdsaprv_521 = "(private-key (ecdsa" \
+"  (curve \"NIST P-521\")" \
+"  (q #04012E0837D1EA2ED34C8F7D3DE5FCE5C6C887368EDE1A3FB3D40874021EBADE726EB4D44E00DEA68DC0F8FC472E0030231320B6407AD0755213E34BE3B7B02945923800103F5E970568E9247B5366BB32DE17BE694C39EF6F2D0A3238FD33EA17A00D751C34163023ED0D1242F4D097D0AA056EBC6DE1137015CAF72F18B4EFA91E756660#)" \
+"  (d #012CB68FE0D0DEEBFA4EEBD6C2F3147329C44A67F1C579B4A797A2187AB481BF5B974AE23084AE6CEB184551F79C502AC899961A0F0168781F296B90FAEAC8AA5ACC#)))";
+
 static gboolean
 compare_keys (gcry_sexp_t key, gcry_sexp_t sexp)
 {
@@ -174,6 +193,20 @@ test_der_dsa_public (Test *test, gconstpointer unused)
 }
 
 static void
+test_der_ecdsa_public (Test *test, gconstpointer unused)
+{
+	gcry_sexp_t key;
+	gcry_error_t gcry;
+
+	gcry = gcry_sexp_sscan (&key, NULL, ecdsapub_256, strlen (ecdsapub_256));
+	g_return_if_fail (gcry == 0);
+
+	test_der_public (key);
+
+	gcry_sexp_release (key);
+}
+
+static void
 test_der_private (gcry_sexp_t key)
 {
 	GBytes *data;
@@ -253,6 +286,20 @@ test_der_dsa_private_parts (Test *test, gconstpointer unused)
 	gcry_sexp_release (skey);
 	g_bytes_unref (params);
 	g_bytes_unref (key);
+}
+
+static void
+test_der_ecdsa_private (Test *test, gconstpointer unused)
+{
+	gcry_sexp_t key;
+	gcry_error_t gcry;
+
+	gcry = gcry_sexp_sscan (&key, NULL, ecdsaprv_256, strlen (ecdsaprv_256));
+	g_return_if_fail (gcry == 0);
+
+	test_der_private (key);
+
+	gcry_sexp_release (key);
 }
 
 const gchar *certpub = "(public-key (rsa " \
@@ -550,6 +597,24 @@ test_write_pkcs8_plain (Test *test, gconstpointer unused)
 	g_assert (compare_keys (sexp, check));
 	gcry_sexp_release (sexp);
 	gcry_sexp_release (check);
+
+
+	/* ECDSA */
+
+	gcry = gcry_sexp_sscan (&sexp, NULL, ecdsaprv_384, strlen (ecdsaprv_384));
+	g_return_if_fail (gcry == 0);
+
+	data = gkm_data_der_write_private_pkcs8_plain (sexp);
+	g_assert (data != NULL);
+
+	res = gkm_data_der_read_private_pkcs8_plain (data, &check);
+	g_bytes_unref (data);
+	g_assert (res == GKM_DATA_SUCCESS);
+	g_assert (check != NULL);
+
+	g_assert (compare_keys (sexp, check));
+	gcry_sexp_release (sexp);
+	gcry_sexp_release (check);
 }
 
 
@@ -595,6 +660,24 @@ test_write_pkcs8_encrypted (Test *test, gconstpointer unused)
 	g_assert (compare_keys (sexp, check));
 	gcry_sexp_release (sexp);
 	gcry_sexp_release (check);
+
+
+	/* ECDSA */
+
+	gcry = gcry_sexp_sscan (&sexp, NULL, ecdsaprv_521, strlen (ecdsaprv_521));
+	g_return_if_fail (gcry == 0);
+
+	data = gkm_data_der_write_private_pkcs8_crypted (sexp, "testo", 5);
+	g_assert (data != NULL);
+
+	res = gkm_data_der_read_private_pkcs8_crypted (data, "testo", 5, &check);
+	g_bytes_unref (data);
+	g_assert (res == GKM_DATA_SUCCESS);
+	g_assert (check != NULL);
+
+	g_assert (compare_keys (sexp, check));
+	gcry_sexp_release (sexp);
+	gcry_sexp_release (check);
 }
 
 int
@@ -607,9 +690,11 @@ main (int argc, char **argv)
 
 	g_test_add ("/gkm/data-der/der_rsa_public", Test, NULL, setup, test_der_rsa_public, teardown);
 	g_test_add ("/gkm/data-der/der_dsa_public", Test, NULL, setup, test_der_dsa_public, teardown);
+	g_test_add ("/gkm/data-der/der_ecdsa_public", Test, NULL, setup, test_der_ecdsa_public, teardown);
 	g_test_add ("/gkm/data-der/der_rsa_private", Test, NULL, setup, test_der_rsa_private, teardown);
 	g_test_add ("/gkm/data-der/der_dsa_private", Test, NULL, setup, test_der_dsa_private, teardown);
 	g_test_add ("/gkm/data-der/der_dsa_private_parts", Test, NULL, setup, test_der_dsa_private_parts, teardown);
+	g_test_add ("/gkm/data-der/der_ecdsa_private", Test, NULL, setup, test_der_ecdsa_private, teardown);
 	g_test_add ("/gkm/data-der/read_public_key_info", Test, NULL, setup, test_read_public_key_info, teardown);
 	g_test_add ("/gkm/data-der/read_certificate", Test, NULL, setup, test_read_certificate, teardown);
 	g_test_add ("/gkm/data-der/write_certificate", Test, NULL, setup, test_write_certificate, teardown);
