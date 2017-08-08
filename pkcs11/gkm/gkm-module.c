@@ -162,6 +162,12 @@ static const MechanismAndInfo mechanism_list[] = {
 	{ CKM_DH_PKCS_DERIVE, { 1, 255, CKF_DERIVE } },
 
 	/*
+	 * CKM_ECDSA
+	 * For ECDSA, min and max are the minimum and maximum modulus in bits
+	 */
+	{ CKM_ECDSA, { 256, 521, CKF_SIGN | CKF_VERIFY } },
+
+	/*
 	 * CKM_G_HKDF_DERIVE
 	 * For HKDF derivation the min and max are sizes of prime in bits.
 	 */

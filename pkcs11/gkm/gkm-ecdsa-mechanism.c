@@ -1,7 +1,9 @@
 /*
  * gnome-keyring
  *
- * Copyright (C) 2008 Stefan Walter
+ * Copyright (C) 2017 Red Hat, Inc.
+ *
+ * Author: Jakub Jelen <jjelen@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +23,7 @@
 #include "config.h"
 
 #include "gkm-crypto.h"
-#include "gkm-dsa-mechanism.h"
+#include "gkm-ecdsa-mechanism.h"
 #include "gkm-session.h"
 #include "gkm-sexp.h"
 #include "gkm-sexp-key.h"
@@ -34,36 +36,32 @@
  */
 
 CK_RV
-gkm_dsa_mechanism_sign (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
-                        CK_BYTE_PTR signature, CK_ULONG_PTR n_signature)
+gkm_ecdsa_mechanism_sign (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
+                          CK_BYTE_PTR signature, CK_ULONG_PTR n_signature)
 {
 	gcry_sexp_t ssig, splain;
 	gcry_error_t gcry;
-	gcry_mpi_t mpi;
-	CK_ULONG size;
+	CK_ULONG size, key_bytes, key_bits;
 	CK_RV rv;
 
 	g_return_val_if_fail (sexp, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (n_signature, CKR_ARGUMENTS_BAD);
 	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
 
-	if (n_data != 20)
-		return CKR_DATA_LEN_RANGE;
-
 	/* If no output, then don't process */
+	key_bits = gcry_pk_get_nbits(sexp);
+	key_bytes = (key_bits + 7)/8;
 	if (!signature) {
-		*n_signature = 40;
+		*n_signature = key_bytes * 2;
 		return CKR_OK;
-	} else if (*n_signature < 40) {
-		*n_signature = 40;
+	} else if (*n_signature < (key_bytes * 2)) {
+		*n_signature = key_bytes * 2;
 		return CKR_BUFFER_TOO_SMALL;
 	}
 
 	/* Prepare the input s-expression */
-	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, data, n_data, NULL);
-	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-	gcry = gcry_sexp_build (&splain, NULL, "(data (flags raw) (value %m))", mpi);
-	gcry_mpi_release (mpi);
+	gcry = gcry_sexp_build (&splain, NULL, "(data (flags raw) (value %b))",
+                                n_data, data);
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 
 	/* Do the magic */
@@ -76,16 +74,15 @@ gkm_dsa_mechanism_sign (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
 		return CKR_FUNCTION_FAILED;
 	}
 
-	g_assert (*n_signature >= 40);
-
-	size = 20;
-	rv = gkm_crypto_sexp_to_data (ssig, 20 * 8, signature, &size, NULL, "dsa", "r", NULL);
+	/* signature consists of two mpint values concatenated */
+	size = key_bytes;
+	rv = gkm_crypto_sexp_to_data (ssig, key_bits, signature, &size, NULL, "ecdsa", "r", NULL);
 	if (rv == CKR_OK) {
-		g_return_val_if_fail (size == 20, CKR_GENERAL_ERROR);
-		rv = gkm_crypto_sexp_to_data (ssig, 20 * 8, signature + 20, &size, NULL, "dsa", "s", NULL);
+		g_return_val_if_fail (size == key_bytes, CKR_GENERAL_ERROR);
+		rv = gkm_crypto_sexp_to_data (ssig, key_bits, signature + key_bytes, &size, NULL, "ecdsa", "s", NULL);
 		if (rv == CKR_OK) {
-			g_return_val_if_fail (size == 20, CKR_GENERAL_ERROR);
-			*n_signature = 40;
+			g_return_val_if_fail (size == key_bytes, CKR_GENERAL_ERROR);
+			*n_signature = key_bytes * 2;
 		}
 	}
 
@@ -94,36 +91,28 @@ gkm_dsa_mechanism_sign (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
 }
 
 CK_RV
-gkm_dsa_mechanism_verify (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
-                          CK_BYTE_PTR signature, CK_ULONG n_signature)
+gkm_ecdsa_mechanism_verify (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
+                            CK_BYTE_PTR signature, CK_ULONG n_signature)
 {
 	gcry_sexp_t ssig, splain;
 	gcry_error_t gcry;
-	gcry_mpi_t mpi, mpi2;
+	CK_ULONG key_bytes;
 
 	g_return_val_if_fail (sexp, CKR_GENERAL_ERROR);
 	g_return_val_if_fail (signature, CKR_ARGUMENTS_BAD);
 	g_return_val_if_fail (data, CKR_ARGUMENTS_BAD);
 
-	if (n_data != 20)
-		return CKR_DATA_LEN_RANGE;
-	if (n_signature != 40)
+	key_bytes = gcry_pk_get_nbits(sexp)/8;
+	if (n_signature != key_bytes*2)
 		return CKR_SIGNATURE_LEN_RANGE;
 
 	/* Prepare the input s-expressions */
-	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, data, n_data, NULL);
-	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-	gcry = gcry_sexp_build (&splain, NULL, "(data (flags raw) (value %m))", mpi);
-	gcry_mpi_release (mpi);
+	gcry = gcry_sexp_build (&splain, NULL, "(data (flags raw) (value %b))",
+                                n_data, data);
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 
-	gcry = gcry_mpi_scan (&mpi, GCRYMPI_FMT_USG, signature, 20, NULL);
-	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-	gcry = gcry_mpi_scan (&mpi2, GCRYMPI_FMT_USG, signature + 20, 20, NULL);
-	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-	gcry = gcry_sexp_build (&ssig, NULL, "(sig-val (dsa (r %m) (s %m)))", mpi, mpi2);
-	gcry_mpi_release (mpi);
-	gcry_mpi_release (mpi2);
+	gcry = gcry_sexp_build (&ssig, NULL, "(sig-val (ecdsa (r %b) (s %b)))",
+                                key_bytes, signature, key_bytes, signature + key_bytes);
 	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
 
 	/* Do the magic */
@@ -141,3 +130,4 @@ gkm_dsa_mechanism_verify (gcry_sexp_t sexp, CK_BYTE_PTR data, CK_ULONG n_data,
 
 	return CKR_OK;
 }
+

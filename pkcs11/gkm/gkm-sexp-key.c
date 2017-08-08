@@ -26,8 +26,10 @@
 #define DEBUG_FLAG GKM_DEBUG_OBJECT
 #include "gkm-debug.h"
 #include "gkm-dsa-mechanism.h"
+#include "gkm-ecdsa-mechanism.h"
 #include "gkm-rsa-mechanism.h"
 #include "gkm-sexp-key.h"
+#include "gkm-data-der.h"
 #include "gkm-util.h"
 
 enum {
@@ -63,6 +65,8 @@ gkm_sexp_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 				return gkm_attribute_set_ulong (attr, CKK_RSA);
 			case GCRY_PK_DSA:
 				return gkm_attribute_set_ulong (attr, CKK_DSA);
+			case GCRY_PK_ECC:
+				return gkm_attribute_set_ulong (attr, CKK_ECDSA);
 			default:
 				g_return_val_if_reached (CKR_GENERAL_ERROR);
 			};
@@ -100,6 +104,9 @@ gkm_sexp_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 		case GCRY_PK_DSA:
 			return gkm_attribute_set_data (attr, (CK_VOID_PTR)GKM_DSA_MECHANISMS,
 			                               sizeof (GKM_DSA_MECHANISMS));
+		case GCRY_PK_ECC:
+			return gkm_attribute_set_data (attr, (CK_VOID_PTR)GKM_ECDSA_MECHANISMS,
+			                               sizeof (GKM_ECDSA_MECHANISMS));
 		default:
 			g_return_val_if_reached (CKR_GENERAL_ERROR);
 		};
@@ -224,8 +231,9 @@ gkm_sexp_key_get_algorithm (GkmSexpKey *self)
 	return algorithm;
 }
 
-CK_RV
-gkm_sexp_key_set_part (GkmSexpKey *self, int algo, const char *part, CK_ATTRIBUTE_PTR attr)
+static CK_RV
+gkm_sexp_key_set_part_encode (GkmSexpKey *self, int algo, const char *part,
+                              CK_ATTRIBUTE_PTR attr, int der_encode)
 {
 	gcry_sexp_t numbers;
 	gcry_mpi_t mpi;
@@ -236,7 +244,7 @@ gkm_sexp_key_set_part (GkmSexpKey *self, int algo, const char *part, CK_ATTRIBUT
 	g_return_val_if_fail (self->pv->base_sexp, CKR_GENERAL_ERROR);
 
 	if (!gkm_sexp_parse_key (gkm_sexp_get (self->pv->base_sexp),
-	                                &algorithm, NULL, &numbers))
+				 &algorithm, NULL, &numbers))
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
 
 	if (algorithm != algo) {
@@ -248,9 +256,71 @@ gkm_sexp_key_set_part (GkmSexpKey *self, int algo, const char *part, CK_ATTRIBUT
 
 	if (!gkm_sexp_extract_mpi (numbers, &mpi, part, NULL))
 		g_return_val_if_reached (CKR_GENERAL_ERROR);
-	rv = gkm_attribute_set_mpi (attr, mpi);
+
+	if (der_encode) {
+		/* convert mpi to DER encoded OCTET string */
+		GBytes *data;
+
+		rv = gkm_data_der_encode_ecdsa_q (mpi, &data);
+		g_return_val_if_fail (rv, CKR_GENERAL_ERROR);
+
+		rv = gkm_attribute_set_bytes (attr, data);
+		g_bytes_unref (data);
+	} else {
+		rv = gkm_attribute_set_mpi (attr, mpi);
+	}
+
 	gcry_sexp_release (numbers);
 	gcry_mpi_release (mpi);
+
+	return rv;
+}
+
+CK_RV
+gkm_sexp_key_set_part (GkmSexpKey *self, int algo, const char *part, CK_ATTRIBUTE_PTR attr)
+{
+	return gkm_sexp_key_set_part_encode (self, algo, part, attr, 0);
+}
+
+CK_RV
+gkm_sexp_key_set_ec_q (GkmSexpKey *self, int algo, CK_ATTRIBUTE_PTR attr)
+{
+	return gkm_sexp_key_set_part_encode (self, algo, "q", attr, 1);
+}
+
+CK_RV
+gkm_sexp_key_set_ec_params (GkmSexpKey *self, int algo, CK_ATTRIBUTE_PTR attr)
+{
+	CK_RV rv;
+	gchar *curve_name;
+	GBytes *data;
+	int algorithm;
+	gcry_sexp_t numbers;
+
+	g_return_val_if_fail (GKM_IS_SEXP_KEY (self), CKR_GENERAL_ERROR);
+	g_return_val_if_fail (self->pv->base_sexp, CKR_GENERAL_ERROR);
+
+	if (!gkm_sexp_parse_key (gkm_sexp_get (self->pv->base_sexp),
+				 &algorithm, NULL, &numbers))
+		g_return_val_if_reached (CKR_GENERAL_ERROR);
+
+	if (algorithm != algo) {
+		gcry_sexp_release (numbers);
+		gkm_debug ("CKR_ATTRIBUTE_TYPE_INVALID: attribute %s not valid for key algorithm: %s",
+		           gkm_log_attr_type (attr->type), gcry_pk_algo_name (algo));
+		return CKR_ATTRIBUTE_TYPE_INVALID;
+	}
+
+	rv = gkm_sexp_extract_string (numbers, &curve_name, "curve", NULL);
+	g_return_val_if_fail (rv, CKR_GENERAL_ERROR);
+
+	data = gkm_data_der_curve_to_ec_params (curve_name);
+	g_return_val_if_fail (data != NULL, CKR_GENERAL_ERROR);
+
+	rv = gkm_attribute_set_bytes (attr, data);
+	g_bytes_unref (data);
+	gcry_sexp_release (numbers);
+	g_free (curve_name);
 
 	return rv;
 }

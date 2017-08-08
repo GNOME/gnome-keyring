@@ -44,6 +44,8 @@ libgkm_la_SOURCES = \
 	pkcs11/gkm/gkm-dh-public-key.h \
 	pkcs11/gkm/gkm-dsa-mechanism.c \
 	pkcs11/gkm/gkm-dsa-mechanism.h \
+	pkcs11/gkm/gkm-ecdsa-mechanism.c \
+	pkcs11/gkm/gkm-ecdsa-mechanism.h \
 	pkcs11/gkm/gkm-factory.c \
 	pkcs11/gkm/gkm-factory.h \
 	pkcs11/gkm/gkm-generic-key.c \

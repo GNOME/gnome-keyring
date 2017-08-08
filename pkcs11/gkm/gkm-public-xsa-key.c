@@ -27,6 +27,7 @@
 #include "gkm-debug.h"
 #include "gkm-factory.h"
 #include "gkm-public-xsa-key.h"
+#include "gkm-data-der.h"
 #include "gkm-session.h"
 #include "gkm-sexp.h"
 #include "gkm-transaction.h"
@@ -140,6 +141,49 @@ done:
 	return ret;
 }
 
+static CK_RV
+create_ecdsa_public (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	const gchar *curve_name, *q_data;
+	GBytes *q = NULL;
+	gsize q_size;
+	GQuark oid;
+	CK_RV ret;
+
+	if (!gkm_attributes_find_ecc_oid (attrs, n_attrs, &oid) ||
+	    !gkm_attributes_find_ecc_q (attrs, n_attrs, CKA_EC_POINT, &q)) {
+		ret = CKR_TEMPLATE_INCOMPLETE;
+		goto done;
+	}
+
+	curve_name = gkm_data_der_oid_to_curve (oid);
+	if (curve_name == NULL) {
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+
+	q_data = g_bytes_get_data (q, &q_size);
+
+	gcry = gcry_sexp_build (skey, NULL,
+	                        "(public-key (ecdsa (curve %s) (q %b)))",
+	                        curve_name, q_size, q_data);
+
+	if (gcry != 0) {
+		g_message ("couldn't create ECDSA key from passed attributes: %s", gcry_strerror (gcry));
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+
+	gkm_attributes_consume (attrs, n_attrs, CKA_EC_POINT, CKA_EC_PARAMS,
+	                        G_MAXULONG);
+	ret = CKR_OK;
+
+done:
+	g_bytes_unref (q);
+	return ret;
+}
+
 static GkmObject*
 factory_create_public_xsa_key (GkmSession *session, GkmTransaction *transaction,
                                CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
@@ -221,6 +265,12 @@ gkm_public_xsa_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_
 	/* DSA public value */
 	case CKA_VALUE:
 		return gkm_sexp_key_set_part (GKM_SEXP_KEY (self), GCRY_PK_DSA, "y", attr);
+
+	case CKA_EC_POINT:
+		return gkm_sexp_key_set_ec_q (GKM_SEXP_KEY (self), GCRY_PK_ECC, attr);
+
+	case CKA_EC_PARAMS:
+		return gkm_sexp_key_set_ec_params (GKM_SEXP_KEY (self), GCRY_PK_ECC, attr);
 	};
 
 	return GKM_OBJECT_CLASS (gkm_public_xsa_key_parent_class)->get_attribute (base, session, attr);
@@ -285,6 +335,9 @@ gkm_public_xsa_key_create_sexp (GkmSession *session, GkmTransaction *transaction
 		break;
 	case CKK_DSA:
 		ret = create_dsa_public (attrs, n_attrs, &sexp);
+		break;
+	case CKK_EC:
+		ret = create_ecdsa_public (attrs, n_attrs, &sexp);
 		break;
 	default:
 		ret = CKR_ATTRIBUTE_VALUE_INVALID;

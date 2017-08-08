@@ -194,6 +194,31 @@ done:
 	return pubkey;
 }
 
+static gcry_sexp_t
+ecdsa_numbers_to_public (gcry_sexp_t ecdsa)
+{
+	gchar *curve_name = NULL, *q = NULL;
+	gsize q_len;
+	gcry_sexp_t pubkey = NULL;
+	gcry_error_t gcry;
+
+	if (!gkm_sexp_extract_string (ecdsa, &curve_name, "curve", NULL) ||
+	    !gkm_sexp_extract_buffer (ecdsa, &q, &q_len, "q", NULL))
+		goto done;
+
+	gcry = gcry_sexp_build (&pubkey, NULL, "(public-key (ecdsa (curve %s) (q %b)))",
+	                        curve_name, q_len, q);
+	if (gcry)
+		goto done;
+	g_assert (pubkey);
+
+done:
+	g_free (curve_name);
+	g_free (q);
+
+	return pubkey;
+}
+
 gboolean
 gkm_sexp_key_to_public (gcry_sexp_t privkey, gcry_sexp_t *pubkey)
 {
@@ -209,6 +234,9 @@ gkm_sexp_key_to_public (gcry_sexp_t privkey, gcry_sexp_t *pubkey)
 		break;
 	case GCRY_PK_DSA:
 		*pubkey = dsa_numbers_to_public (numbers);
+		break;
+	case GCRY_PK_ECC:
+		*pubkey = ecdsa_numbers_to_public (numbers);
 		break;
 	default:
 		g_return_val_if_reached (FALSE);
@@ -238,6 +266,60 @@ gkm_sexp_extract_mpi (gcry_sexp_t sexp, gcry_mpi_t *mpi, ...)
 		gcry_sexp_release (at);
 
 	return (*mpi) ? TRUE : FALSE;
+}
+
+/* ECDSA s-exp lists the curve name as a string */
+gboolean
+gkm_sexp_extract_string (gcry_sexp_t sexp, gchar **buf, ...)
+{
+	gcry_sexp_t at = NULL;
+	va_list va;
+
+	g_assert (sexp);
+	g_assert (buf);
+
+	va_start (va, buf);
+	at = gkm_sexp_get_childv (sexp, va);
+	va_end (va);
+
+	*buf = NULL;
+	if (at) {
+		size_t len;
+		const char *data;
+
+		data = gcry_sexp_nth_data (at, 1, &len);
+		*buf = g_strndup (data, len);
+		gcry_sexp_release (at);
+	}
+
+	return (*buf) ? TRUE : FALSE;
+}
+
+gboolean
+gkm_sexp_extract_buffer (gcry_sexp_t sexp, gchar **buf, gsize *bufsize, ...)
+{
+	gcry_sexp_t at = NULL;
+	va_list va;
+
+	g_assert (sexp);
+	g_assert (buf);
+
+	va_start (va, bufsize);
+	at = gkm_sexp_get_childv (sexp, va);
+	va_end (va);
+
+	*buf = NULL;
+	if (at) {
+		size_t len;
+		const char *data;
+
+		data = gcry_sexp_nth_data (at, 1, &len);
+		*buf = g_memdup (data, len);
+		*bufsize = len;
+		gcry_sexp_release (at);
+	}
+
+	return (*buf) ? TRUE : FALSE;
 }
 
 gcry_sexp_t

@@ -28,6 +28,7 @@
 #include "gkm-debug.h"
 #include "gkm-factory.h"
 #include "gkm-private-xsa-key.h"
+#include "gkm-data-der.h"
 #include "gkm-session.h"
 #include "gkm-transaction.h"
 #include "gkm-util.h"
@@ -42,6 +43,47 @@ G_DEFINE_TYPE (GkmPrivateXsaKey, gkm_private_xsa_key, GKM_TYPE_SEXP_KEY);
  * INTERNAL
  */
 
+/* Can't be defined in gkm_attributes, because it does not know anything about
+ * DER encoding nor OIDs
+ */
+gboolean
+gkm_attributes_find_ecc_oid (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, GQuark *value)
+{
+	GBytes *bytes;
+	CK_ATTRIBUTE_PTR attr;
+	GQuark oid;
+
+	g_return_val_if_fail (attrs || !n_attrs, FALSE);
+
+	attr = gkm_attributes_find (attrs, n_attrs, CKA_EC_PARAMS);
+	if (attr == NULL)
+		return FALSE;
+
+	bytes = g_bytes_new (attr->pValue, attr->ulValueLen);
+	g_return_val_if_fail (bytes != NULL, FALSE);
+
+	oid = gkm_data_der_oid_from_ec_params (bytes);
+	g_return_val_if_fail (oid != 0, FALSE);
+	*value = oid;
+
+	g_bytes_unref (bytes);
+	return TRUE;
+}
+
+gboolean
+gkm_attributes_find_ecc_q (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
+                           CK_ATTRIBUTE_TYPE type, GBytes **value)
+{
+	GBytes *data;
+	gboolean rv;
+
+	rv = gkm_attributes_find_bytes (attrs, n_attrs, type, &data);
+	g_return_val_if_fail (rv, FALSE);
+
+	rv = gkm_data_der_decode_ecdsa_q (data, value);
+
+	return rv;
+}
 
 static CK_RV
 create_rsa_private (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
@@ -141,6 +183,52 @@ done:
 	gcry_mpi_release (g);
 	gcry_mpi_release (y);
 	gcry_mpi_release (value);
+	return ret;
+}
+
+static CK_RV
+create_ecdsa_private (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, gcry_sexp_t *skey)
+{
+	gcry_error_t gcry;
+	gcry_mpi_t d = NULL;
+	const gchar *curve_name, *q_data;
+	GBytes *q = NULL;
+	gsize q_size;
+	GQuark oid;
+	CK_RV ret;
+
+	if (!gkm_attributes_find_ecc_oid (attrs, n_attrs, &oid) ||
+	    !gkm_attributes_find_ecc_q (attrs, n_attrs, CKA_EC_POINT, &q) ||
+	    !gkm_attributes_find_mpi (attrs, n_attrs, CKA_VALUE, &d)) {
+		ret = CKR_TEMPLATE_INCOMPLETE;
+		goto done;
+	}
+
+	curve_name = gkm_data_der_oid_to_curve (oid);
+	if (curve_name == NULL) {
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+
+	q_data = g_bytes_get_data (q, &q_size);
+
+	gcry = gcry_sexp_build (skey, NULL,
+	                        "(private-key (ecdsa (curve %s) (q %b) (d %m)))",
+	                        curve_name, q_size, q_data, d);
+
+	if (gcry != 0) {
+		g_message ("couldn't create ECDSA key from passed attributes: %s", gcry_strerror (gcry));
+		ret = CKR_FUNCTION_FAILED;
+		goto done;
+	}
+
+	gkm_attributes_consume (attrs, n_attrs, CKA_EC_PARAMS,
+	                        CKA_EC_POINT, CKA_VALUE, G_MAXULONG);
+	ret = CKR_OK;
+
+done:
+	g_bytes_unref (q);
+	gcry_mpi_release (d);
 	return ret;
 }
 
@@ -272,7 +360,13 @@ gkm_private_xsa_key_real_get_attribute (GkmObject *base, GkmSession *session, CK
 	case CKA_BASE:
 		return gkm_sexp_key_set_part (GKM_SEXP_KEY (self), GCRY_PK_DSA, "g", attr);
 
-	/* DSA private parts */
+	case CKA_EC_POINT:
+		return gkm_sexp_key_set_ec_q (GKM_SEXP_KEY (self), GCRY_PK_ECC, attr);
+
+	case CKA_EC_PARAMS:
+		return gkm_sexp_key_set_ec_params (GKM_SEXP_KEY (self), GCRY_PK_ECC, attr);
+
+	/* (EC)DSA private parts */
 	case CKA_VALUE:
 		return CKR_ATTRIBUTE_SENSITIVE;
 	};
@@ -395,6 +489,9 @@ gkm_private_xsa_key_create_sexp (GkmSession *session, GkmTransaction *transactio
 		break;
 	case CKK_DSA:
 		ret = create_dsa_private (attrs, n_attrs, &sexp);
+		break;
+	case CKK_EC:
+		ret = create_ecdsa_private (attrs, n_attrs, &sexp);
 		break;
 	default:
 		ret = CKR_ATTRIBUTE_VALUE_INVALID;

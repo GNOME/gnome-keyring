@@ -63,4 +63,13 @@ GkmSexp*               gkm_private_xsa_key_create_sexp            (GkmSession *s
                                                                    CK_ATTRIBUTE_PTR attrs,
                                                                    CK_ULONG n_attrs);
 
+gboolean               gkm_attributes_find_ecc_oid                (CK_ATTRIBUTE_PTR attrs,
+                                                                   CK_ULONG n_attrs,
+                                                                   GQuark *value);
+
+gboolean               gkm_attributes_find_ecc_q                  (CK_ATTRIBUTE_PTR attrs,
+                                                                   CK_ULONG n_attrs,
+                                                                   CK_ATTRIBUTE_TYPE type,
+                                                                   GBytes **value);
+
 #endif /* __GKM_PRIVATE_XSA_KEY_H__ */

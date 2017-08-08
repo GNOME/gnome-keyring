@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include "gkm-attributes.h"
+#include "gkm-data-der.h"
 #include "gkm-util.h"
 
 #include "egg/egg-timegm.h"
@@ -114,6 +115,24 @@ gkm_attribute_get_string (CK_ATTRIBUTE_PTR attr, gchar **value)
 		return CKR_ATTRIBUTE_VALUE_INVALID;
 
 	*value = g_strndup (attr->pValue, attr->ulValueLen);
+	return CKR_OK;
+}
+
+CK_RV
+gkm_attribute_get_bytes (CK_ATTRIBUTE_PTR attr, GBytes **value)
+{
+	g_return_val_if_fail (attr, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (value, CKR_GENERAL_ERROR);
+
+	if (attr->ulValueLen == 0) {
+		*value = NULL;
+		return CKR_OK;
+	}
+
+	if (!attr->pValue)
+		return CKR_ATTRIBUTE_VALUE_INVALID;
+
+	*value = g_bytes_new (attr->pValue, attr->ulValueLen);
 	return CKR_OK;
 }
 
@@ -553,6 +572,22 @@ gkm_attributes_find_string (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
 		return FALSE;
 
 	return gkm_attribute_get_string (attr, value) == CKR_OK;
+}
+
+/* Need to get DER encoded EC parameters and point */
+gboolean
+gkm_attributes_find_bytes (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
+                           CK_ATTRIBUTE_TYPE type, GBytes **value)
+{
+	CK_ATTRIBUTE_PTR attr;
+
+	g_return_val_if_fail (attrs || !n_attrs, FALSE);
+
+	attr = gkm_attributes_find (attrs, n_attrs, type);
+	if (attr == NULL)
+		return FALSE;
+
+	return gkm_attribute_get_bytes (attr, value) == CKR_OK;
 }
 
 GArray*
