@@ -210,7 +210,7 @@ gkd_ssh_agent_proto_read_public (EggBuffer *req,
 	}
 
 	if (!ret) {
-		g_warning ("couldn't read incoming SSH private key");
+		g_warning ("couldn't read incoming SSH public key");
 		return FALSE;
 	}
 
