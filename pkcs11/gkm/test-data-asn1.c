@@ -87,6 +87,7 @@ test_asn1_integers (Test *test, gconstpointer unused)
 
 	/* Write the mpi out */
 	ret = gkm_data_asn1_write_mpi (egg_asn1x_node (asn, "mpi", NULL), mpi);
+	g_assert ("couldn't write mpi to asn1" && ret);
 
 	/* Now encode the whole caboodle */
 	data = egg_asn1x_encode (asn, NULL);
