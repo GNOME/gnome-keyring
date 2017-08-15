@@ -211,7 +211,7 @@ gkm_rsa_mechanism_verify (gcry_sexp_t sexp, EggPadding padding, CK_BYTE_PTR data
 	if (gcry_err_code (gcry) == GPG_ERR_BAD_SIGNATURE) {
 		return CKR_SIGNATURE_INVALID;
 	} else if (gcry) {
-		g_message ("signing of the data failed: %s", gcry_strerror (gcry));
+		g_message ("verifying of the data failed: %s", gcry_strerror (gcry));
 		return CKR_FUNCTION_FAILED;
 	}
 
