@@ -103,7 +103,7 @@ mock_module_object_new (GkmSession *session)
 	gchar *data;
 
 	CK_ATTRIBUTE attrs[] = {
-		{ CKA_VALUE, data, n_data },
+		{ CKA_VALUE, NULL, 0 },
 		{ CKA_TOKEN, &token, sizeof (token) },
 		{ CKA_CLASS, &klass, sizeof (klass) },
 		{ CKA_CERTIFICATE_TYPE, &type, sizeof (type) },
