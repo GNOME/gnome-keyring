@@ -107,7 +107,7 @@ gkm_crypto_sexp_to_data (gcry_sexp_t sexp, guint bits, CK_BYTE_PTR data,
 
 	/* Parse out the MPI */
 	mpi = gcry_sexp_nth_mpi (at, 1, GCRYMPI_FMT_USG);
-	g_return_val_if_fail (at != NULL, CKR_GENERAL_ERROR);
+	g_return_val_if_fail (mpi != NULL, CKR_GENERAL_ERROR);
 	gcry_sexp_release (at);
 
 	/* Print out the MPI into the end of a temporary buffer */
