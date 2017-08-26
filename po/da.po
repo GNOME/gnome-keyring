@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: "
-"http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-10-18 09:37+0000\n"
+"https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-07-10 11:50+0000\n"
 "PO-Revision-Date: 2012-03-18 17:28+0100\n"
 "Last-Translator: Kenneth Nielsen <k.nielsen81@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -39,7 +39,7 @@ msgstr "Uden navn"
 #: ../daemon/dbus/gkd-secret-change.c:89
 #, c-format
 msgid "Enter the old password for the “%s” keyring"
-msgstr "Indtast den gamle adgangskode til \"%s\"-nøgleringen"
+msgstr "Indtast den gamle adgangskode til “%s”-nøgleringen"
 
 #: ../daemon/dbus/gkd-secret-change.c:93
 #, c-format
@@ -47,7 +47,7 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
-"Et program ønsker at ændre adgangskoden for \"%s\"-nøgleringen. Indtast den "
+"Et program ønsker at ændre adgangskoden for “%s”-nøgleringen. Indtast den "
 "gamle adgangskode for den."
 
 #: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
@@ -61,7 +61,7 @@ msgstr "Fortsæt"
 #: ../daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the “%s” keyring"
-msgstr "Vælg en ny adgangskode til \"%s\"-nøgleringen"
+msgstr "Vælg en ny adgangskode til “%s”-nøgleringen"
 
 #: ../daemon/dbus/gkd-secret-change.c:129
 #, c-format
@@ -69,7 +69,7 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Et ukendt program ønsker at ændre adgangskoden for \"%s\"-nøgleringen. Vælg "
+"Et ukendt program ønsker at ændre adgangskoden for “%s”-nøgleringen. Vælg "
 "den adgangskode, du ønsker at bruge til nøgleringen."
 
 #: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
@@ -100,7 +100,7 @@ msgid ""
 "An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
-"Et ukendt program ønsker at oprette en ny nøglering med navnet \"%s\". Vælg "
+"Et ukendt program ønsker at oprette en ny nøglering med navnet “%s”. Vælg "
 "den adgangskode, du ønsker at bruge til nøgleringen."
 
 #: ../daemon/dbus/gkd-secret-create.c:84
@@ -143,17 +143,17 @@ msgstr "Logind"
 #: ../egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr "kunne ikke oprette midlertidig fil \"%s\": %s\n"
+msgstr "kunne ikke oprette midlertidig fil “%s”: %s\n"
 
 #: ../egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
-msgstr "fejl ved skrivning til \"%s\": %s\n"
+msgstr "fejl ved skrivning til “%s”: %s\n"
 
 #: ../egg/dotlock.c:782
 #, c-format
 msgid "can't create `%s': %s\n"
-msgstr "kan ikke oprette \"%s\": %s\n"
+msgstr "kan ikke oprette “%s”: %s\n"
 
 #. Note: It is unlikley that we get a race here unless a pid is
 #. reused too fast or a new process with the same pid as the one
@@ -175,7 +175,7 @@ msgstr "(baglås?) "
 #: ../egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
-msgstr "lås \"%s\" ikke oprettet: %s\n"
+msgstr "lås “%s” ikke oprettet: %s\n"
 
 #: ../egg/dotlock.c:1150
 #, c-format
@@ -380,7 +380,7 @@ msgstr "Indtast adgangskode for at låse op"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
-msgstr "Et program ønsker at tilgå nøgleringen \"%s\", men denne er låst"
+msgstr "Et program ønsker at tilgå nøgleringen “%s”, men denne er låst"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
 msgid "Automatically unlock this keyring whenever I’m logged in"
@@ -430,26 +430,25 @@ msgstr "Lås automatisk op når jeg er logget ind"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
 #, c-format
 msgid "An application wants access to the private key “%s”, but it is locked"
-msgstr "Et program ønsker at tilgå den private nøgle \"%s\", men den er låst"
+msgstr "Et program ønsker at tilgå den private nøgle “%s”, men den er låst"
 
 #. TRANSLATORS: The certificate is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:687
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
-msgstr "Et program ønsker at tilgå certifikatet \"%s\", men det er låst"
+msgstr "Et program ønsker at tilgå certifikatet “%s”, men det er låst"
 
 #. TRANSLATORS: The public key is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
-msgstr ""
-"Et program ønsker at tilgå den offentlige nøgle \"%s\", men den er låst"
+msgstr "Et program ønsker at tilgå den offentlige nøgle “%s”, men den er låst"
 
 #. TRANSLATORS: The object '%s' is locked
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
-msgstr "Et program ønsker at tilgå \"%s\" som er låst"
+msgstr "Et program ønsker at tilgå “%s” som er låst"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:764
 msgid "The unlock password was incorrect"
@@ -471,7 +470,7 @@ msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
-"Et program ønsker at tilgå certifikat/nøglelageret \"%s\", men det er låst"
+"Et program ønsker at tilgå certifikat/nøglelageret “%s”, men det er låst"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
 msgid "New Password Required"
@@ -487,7 +486,7 @@ msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"Der kræves en adgangskode For at kunne klargøre \"%s\" for at lagre "
+"Der kræves en adgangskode For at kunne klargøre “%s” for at lagre "
 "certifikater eller nøgler"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
@@ -503,7 +502,7 @@ msgstr "Oprindelig adgangskode til beskyttet lager"
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr ""
-"For at skifte adgangskode for \"%s\" er den oprindelige adgangskode påkrævet"
+"For at skifte adgangskode for “%s” er den oprindelige adgangskode påkrævet"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
 msgid "Change password for secure storage"
@@ -512,7 +511,7 @@ msgstr "Ændre adgangskode til beskyttet lager"
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
 #, c-format
 msgid "Type a new password for “%s”"
-msgstr "Indtast en ny adgangskode for \"%s\""
+msgstr "Indtast en ny adgangskode for “%s”"
 
 #: ../tool/gkr-tool.c:100
 #, c-format
@@ -529,7 +528,7 @@ msgid "          "
 msgstr "            "
 
 #~ msgid "Enter password for keyring '%s' to unlock"
-#~ msgstr "Indtast adgangskode for at låse nøgleringen \"%s\" op"
+#~ msgstr "Indtast adgangskode for at låse nøgleringen “%s” op"
 
 #~ msgid "GNOME Keyring: GPG Agent"
 #~ msgstr "GNOME-nøglering: GPG-agent"
@@ -601,4 +600,5 @@ msgstr "            "
 
 #~ msgid "_Password:"
 #~ msgstr "_Adgangskode:"
+
 
