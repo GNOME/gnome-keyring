@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-_Name=SSH Key Agent
-_Comment=GNOME Keyring: SSH Agent
+Name=SSH Key Agent
+Comment=GNOME Keyring: SSH Agent
 Exec=@bindir@/gnome-keyring-daemon --start --components=ssh
 OnlyShowIn=GNOME;Unity;MATE;
 X-GNOME-Autostart-Phase=PreDisplayServer
