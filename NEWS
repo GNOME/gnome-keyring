@@ -1,3 +1,12 @@
+Changes in version 3.27.2 are:
+ * Add support for ECDSA in ssh-agent [#641082]
+ * Wipe passwords stored by the PAM module [#781486]
+ * Fix shared key derivation between libsecret and gnome-keyring [#778357]
+ * Fix erroneous handling of partial writes in write_sync_close [#778269]
+ * Set CKF_LOGIN_REQUIRED flag in ssh-module
+ * Build and testing fixes [#774312, #781785]
+ * Updated translations
+
 Changes in version 3.20.0 are:
  * Updated translations
 
