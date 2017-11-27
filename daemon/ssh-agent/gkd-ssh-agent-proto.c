@@ -66,7 +66,9 @@ gulong
 gkd_ssh_agent_proto_keytype_to_algo (const gchar *salgo)
 {
 	g_return_val_if_fail (salgo, G_MAXULONG);
-	if (strcmp (salgo, "ssh-rsa") == 0)
+	if (strcmp (salgo, "ssh-rsa") == 0 ||
+	    strcmp (salgo, "rsa-sha2-256") == 0 ||
+	    strcmp (salgo, "rsa-sha2-512") == 0)
 		return CKK_RSA;
 	else if (strcmp (salgo, "ssh-dss") == 0)
 		return CKK_DSA;
@@ -130,9 +132,26 @@ gkd_ssh_agent_proto_curve_oid_to_hash_algo (GQuark oid)
 }
 
 const gchar*
-gkd_ssh_agent_proto_curve_oid_to_keytype (GQuark oid)
+gkd_ssh_agent_proto_dsa_algo_to_keytype (void)
 {
-	g_return_val_if_fail (oid, NULL);
+	return "ssh-dss";
+}
+
+const gchar*
+gkd_ssh_agent_proto_rsa_algo_to_keytype (GChecksumType halgo)
+{
+	if (halgo == G_CHECKSUM_SHA256)
+		return "rsa-sha2-256";
+	else if (halgo == G_CHECKSUM_SHA512)
+		return "rsa-sha2-512";
+
+	return "ssh-rsa";
+}
+
+const gchar*
+gkd_ssh_agent_proto_ecc_algo_to_keytype (GQuark oid)
+{
+	g_return_val_if_fail (oid != 0, NULL);
 
 	init_quarks ();
 
@@ -145,24 +164,6 @@ gkd_ssh_agent_proto_curve_oid_to_keytype (GQuark oid)
 
 	return NULL;
 }
-
-const gchar*
-gkd_ssh_agent_proto_algo_to_keytype (gulong algo, GQuark curve_oid)
-{
-	if (algo == CKK_RSA) {
-		g_return_val_if_fail (curve_oid == 0, NULL);
-		return "ssh-rsa";
-	} else if (algo == CKK_DSA) {
-		g_return_val_if_fail (curve_oid == 0, NULL);
-		return "ssh-dss";
-	} else if (algo == CKK_EC) {
-		g_return_val_if_fail (curve_oid != 0, NULL);
-		return gkd_ssh_agent_proto_curve_oid_to_keytype (curve_oid);
-	}
-
-	return NULL;
-}
-
 
 GQuark
 gkd_ssh_agent_proto_find_curve_oid (GckAttributes *attrs)
@@ -660,8 +661,6 @@ gboolean
 gkd_ssh_agent_proto_write_public (EggBuffer *resp, GckAttributes *attrs)
 {
 	gboolean ret = FALSE;
-	const gchar *salgo;
-	GQuark oid = 0;
 	gulong algo;
 
 	g_assert (resp);
@@ -669,15 +668,6 @@ gkd_ssh_agent_proto_write_public (EggBuffer *resp, GckAttributes *attrs)
 
 	if (!gck_attributes_find_ulong (attrs, CKA_KEY_TYPE, &algo))
 		g_return_val_if_reached (FALSE);
-	if (algo == CKK_EC) {
-		oid = gkd_ssh_agent_proto_find_curve_oid (attrs);
-		if (!oid)
-			return FALSE;
-	}
-
-	salgo = gkd_ssh_agent_proto_algo_to_keytype (algo, oid);
-	g_assert (salgo);
-	egg_buffer_add_string (resp, salgo);
 
 	switch (algo) {
 	case CKK_RSA:
@@ -704,9 +694,15 @@ gboolean
 gkd_ssh_agent_proto_write_public_rsa (EggBuffer *resp, GckAttributes *attrs)
 {
 	const GckAttribute *attr;
+	const gchar *salgo;
 
 	g_assert (resp);
 	g_assert (attrs);
+
+	/* write algorithm identification */
+	salgo = gkd_ssh_agent_proto_rsa_algo_to_keytype (G_CHECKSUM_SHA1);
+	g_assert (salgo);
+	egg_buffer_add_string (resp, salgo);
 
 	attr = gck_attributes_find (attrs, CKA_PUBLIC_EXPONENT);
 	g_return_val_if_fail (attr, FALSE);
@@ -727,9 +723,15 @@ gboolean
 gkd_ssh_agent_proto_write_public_dsa (EggBuffer *resp, GckAttributes *attrs)
 {
 	const GckAttribute *attr;
+	const gchar *salgo;
 
 	g_assert (resp);
 	g_assert (attrs);
+
+	/* write algorithm identification */
+	salgo = gkd_ssh_agent_proto_dsa_algo_to_keytype ();
+	g_assert (salgo);
+	egg_buffer_add_string (resp, salgo);
 
 	attr = gck_attributes_find (attrs, CKA_PRIME);
 	g_return_val_if_fail (attr, FALSE);
@@ -769,6 +771,7 @@ gkd_ssh_agent_proto_write_public_ecdsa (EggBuffer *resp, GckAttributes *attrs)
 	GBytes *bytes, *q;
 	gboolean rv;
 	gsize q_len;
+	const gchar *salgo;
 
 	g_assert (resp);
 	g_assert (attrs);
@@ -776,6 +779,11 @@ gkd_ssh_agent_proto_write_public_ecdsa (EggBuffer *resp, GckAttributes *attrs)
 	/* decode curve name from EC_PARAMS */
 	oid = gkd_ssh_agent_proto_find_curve_oid (attrs);
 	g_return_val_if_fail (oid, FALSE);
+
+	/* write algorithm identification */
+	salgo = gkd_ssh_agent_proto_ecc_algo_to_keytype (oid);
+	g_assert (salgo);
+	egg_buffer_add_string (resp, salgo);
 
 	curve = gkd_ssh_agent_proto_oid_to_curve (oid);
 	g_return_val_if_fail (curve != NULL, FALSE);

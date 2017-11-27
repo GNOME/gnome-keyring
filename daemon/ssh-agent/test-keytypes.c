@@ -39,15 +39,18 @@ struct alg {
 	gchar *name;
 	CK_KEY_TYPE id;
 	gchar *curve_oid;
+	GChecksumType hash;
 };
 
 /* known algorithms */
 static struct alg algs_known[] = {
-	{ "ssh-rsa", CKK_RSA, NULL },
-	{ "ssh-dss", CKK_DSA, NULL },
-	{ "ecdsa-sha2-nistp256", CKK_EC, GKD_SSH_OID_ANSI_SECP256R1 },
-	{ "ecdsa-sha2-nistp384", CKK_EC, GKD_SSH_OID_ANSI_SECP384R1 },
-	{ "ecdsa-sha2-nistp521", CKK_EC, GKD_SSH_OID_ANSI_SECP521R1 },
+	{ "ssh-rsa", CKK_RSA, NULL, 0 },
+	{ "rsa-sha2-256", CKK_RSA, NULL, G_CHECKSUM_SHA256 },
+	{ "rsa-sha2-512", CKK_RSA, NULL, G_CHECKSUM_SHA512 },
+	{ "ssh-dss", CKK_DSA, NULL, 0},
+	{ "ecdsa-sha2-nistp256", CKK_EC, GKD_SSH_OID_ANSI_SECP256R1, 0 },
+	{ "ecdsa-sha2-nistp384", CKK_EC, GKD_SSH_OID_ANSI_SECP384R1, 0 },
+	{ "ecdsa-sha2-nistp521", CKK_EC, GKD_SSH_OID_ANSI_SECP521R1, 0 },
 
 	/* terminator */
 	{ NULL, 0, 0 }
@@ -56,16 +59,14 @@ static struct alg algs_known[] = {
 /* unknown algorithms */
 static struct alg algs_parse_unknown[] = {
 	/* no certificates */
-	{ "ssh-rsa-cert-v01@openssh.com", G_MAXULONG, NULL },
-	{ "ssh-dss-cert-v01@openssh.com", G_MAXULONG, NULL },
-	{ "ecdsa-sha2-nistp256-cert-v01@openssh.com", G_MAXULONG, NULL },
-	{ "ecdsa-sha2-nistp384-cert-v01@openssh.com", G_MAXULONG, NULL },
-	{ "ecdsa-sha2-nistp521-cert-v01@openssh.com", G_MAXULONG, NULL },
+	{ "ssh-rsa-cert-v01@openssh.com", G_MAXULONG, NULL, 0 },
+	{ "ssh-dss-cert-v01@openssh.com", G_MAXULONG, NULL, 0 },
+	{ "ecdsa-sha2-nistp256-cert-v01@openssh.com", G_MAXULONG, NULL, 0 },
+	{ "ecdsa-sha2-nistp384-cert-v01@openssh.com", G_MAXULONG, NULL, 0 },
+	{ "ecdsa-sha2-nistp521-cert-v01@openssh.com", G_MAXULONG, NULL, 0 },
 	/* no new signatures/algorithms */
-	{ "rsa-sha2-256", G_MAXULONG, NULL },
-	{ "rsa-sha2-512", G_MAXULONG, NULL },
-	{ "ssh-ed25519", G_MAXULONG, NULL },
-	{ "ssh-ed25519-cert-v01@openssh.com", G_MAXULONG, NULL },
+	{ "ssh-ed25519", G_MAXULONG, NULL, 0 },
+	{ "ssh-ed25519-cert-v01@openssh.com", G_MAXULONG, NULL, 0 },
 
 	/* terminator */
 	{ NULL, 0, 0 }
@@ -128,8 +129,20 @@ test_generate (Test *test, gconstpointer unused)
 	const struct alg *a;
 
 	for (a = test->algs_known; a->name != NULL; a++) {
-		GQuark oid = g_quark_from_string (a->curve_oid);
-		const gchar *alg_name = gkd_ssh_agent_proto_algo_to_keytype (a->id, oid);
+		const gchar *alg_name = NULL;
+		GQuark oid;
+		switch (a->id) {
+		case CKK_RSA:
+			alg_name = gkd_ssh_agent_proto_rsa_algo_to_keytype (a->hash);
+			break;
+		case CKK_EC:
+			oid = g_quark_from_string (a->curve_oid);
+			alg_name = gkd_ssh_agent_proto_ecc_algo_to_keytype (oid);
+			break;
+		case CKK_DSA:
+			alg_name = gkd_ssh_agent_proto_dsa_algo_to_keytype ();
+			break;
+		}
 		g_assert_cmpstr (a->name, ==, alg_name);
 	}
 }
@@ -143,7 +156,7 @@ test_curve_from_ssh (Test *test, gconstpointer unused)
 	/* known */
 	for (a = test->curves; a->name != NULL; a++) {
 		GQuark oid = g_quark_from_string (a->curve_oid);
-		alg_name = gkd_ssh_agent_proto_curve_oid_to_keytype (oid);
+		alg_name = gkd_ssh_agent_proto_ecc_algo_to_keytype (oid);
 		g_assert_cmpstr (a->name, ==, alg_name);
 	}
 }
