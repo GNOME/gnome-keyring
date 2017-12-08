@@ -146,9 +146,6 @@ depcomp
 /pkcs11/gnome2-store/tests/check-gnome2-module
 /pkcs11/gnome2-store/tests/check-module
 
-/pkcs11/rpc-layer/gnome-keyring-module
-/pkcs11/rpc-layer/gnome-keyring.module
-
 /pkcs11/secret-store/tests/test-secret-binary
 /pkcs11/secret-store/tests/test-secret-collection
 /pkcs11/secret-store/tests/test-secret-compat

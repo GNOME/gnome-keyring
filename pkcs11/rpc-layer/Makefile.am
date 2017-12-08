@@ -45,11 +45,6 @@ gnome_keyring_pkcs11_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
 
-# This is the configuration file that p11-kit uses to load the module
-pkcs11configdir = $(P11_SYSTEM_CONFIG_MODULES)
-pkcs11config_DATA = \
-	pkcs11/rpc-layer/gnome-keyring.module
-
 # -----------------------------------------------------------------------------
 # The tests
 

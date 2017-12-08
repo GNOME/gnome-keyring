@@ -638,7 +638,6 @@ AC_SUBST(P11_TESTS_LIBS)
 
 AC_OUTPUT([
 Makefile
-pkcs11/rpc-layer/gnome-keyring.module
 po/Makefile.in
 ])
 
