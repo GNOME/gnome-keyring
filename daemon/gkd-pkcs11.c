@@ -66,7 +66,6 @@ gkd_pkcs11_initialize (void)
 	CK_FUNCTION_LIST_PTR gnome2_store;
 	CK_FUNCTION_LIST_PTR xdg_store;
 	CK_C_INITIALIZE_ARGS init_args;
-	gboolean ret;
 	CK_RV rv;
 
 	/* Secrets */

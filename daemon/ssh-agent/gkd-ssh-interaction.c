@@ -65,6 +65,30 @@ gkd_ssh_interaction_finalize (GObject *obj)
 }
 
 static void
+on_prompt_password (GObject *source_object,
+		    GAsyncResult *result,
+		    gpointer user_data)
+{
+	GTask *task = G_TASK (user_data);
+	GTlsPassword *password = g_task_get_task_data (task);
+	GcrPrompt *self = GCR_PROMPT (source_object);
+	GError *error = NULL;
+	const gchar *value;
+
+	value = gcr_prompt_password_finish (self, result, &error);
+	if (!value) {
+		g_task_return_error (task, error);
+		g_object_unref (task);
+		return;
+	}
+	g_tls_password_set_value (password, (const guchar *)value, strlen (value));
+	g_object_unref (self);
+
+	g_task_return_boolean (task, TRUE);
+	g_object_unref (task);
+}
+
+static void
 on_prompt_open (GObject *source_object,
                 GAsyncResult *result,
                 gpointer user_data)
@@ -100,6 +124,8 @@ on_prompt_open (GObject *source_object,
 
 	if (g_tls_password_get_flags (password) & G_TLS_PASSWORD_RETRY)
 		gcr_prompt_set_warning (prompt, _("The unlock password was incorrect"));
+
+	gcr_prompt_password_async (prompt, g_task_get_cancellable (task), on_prompt_password, g_object_ref (task));
 
 	g_object_unref (task);
 }

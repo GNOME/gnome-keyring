@@ -54,11 +54,8 @@ preload_free (gpointer data)
 static gchar *
 private_path_for_public (const gchar *public_path)
 {
-	gsize length;
-
-	length = strlen (public_path);
-	if (length > 4 && g_str_equal (public_path + (length - 4), ".pub"))
-		return g_strndup (public_path, length - 4);
+	if (g_str_has_suffix (public_path, ".pub"))
+		return g_strndup (public_path, strlen (public_path) - 4);
 
 	return NULL;
 }
@@ -123,8 +120,10 @@ file_load_inlock (EggFileTracker *tracker,
 		public_key = gkd_ssh_openssh_parse_public_key (public_bytes, &comment);
 		if (public_key) {
 			preload = g_new0 (Preload, 1);
-			preload->filename = g_strdup (path);
+			preload->filename = private_path;
+			private_path = NULL;
 			preload->public_key = public_key;
+			preload->private_file = private_bytes;
 			preload->comment = comment;
 			g_hash_table_replace (preloads_by_filename, preload->filename, preload);
 			g_hash_table_replace (preloads_by_key, preload->public_key, preload);
@@ -229,10 +228,8 @@ gkd_ssh_agent_preload_clear (GBytes *key)
 	preload_lock_and_update ();
 
 	preload = g_hash_table_lookup (preloads_by_key, key);
-	if (preload) {
-		g_bytes_unref (preload->private_file);
-		preload->private_file = NULL;
-	}
+	if (preload)
+		g_clear_pointer (&preload->private_file, (GDestroyNotify) g_bytes_unref);
 
 	preload_unlock ();
 }
@@ -246,12 +243,8 @@ gkd_ssh_agent_preload_clear_all (void)
 	preload_lock_and_update ();
 
 	g_hash_table_iter_init (&iter, preloads_by_key);
-	while (g_hash_table_iter_next (&iter, NULL, (gpointer *)&preload)) {
-		if (preload->private_file) {
-			g_bytes_unref (preload->private_file);
-			preload->private_file = NULL;
-		}
-	}
+	while (g_hash_table_iter_next (&iter, NULL, (gpointer *)&preload))
+		g_clear_pointer (&preload->private_file, (GDestroyNotify) g_bytes_unref);
 
 	preload_unlock ();
 }
@@ -261,17 +254,9 @@ gkd_ssh_agent_preload_cleanup (void)
 {
 	g_mutex_lock (&preload_mutex);
 
-	if (preloads_by_key)
-		g_hash_table_destroy (preloads_by_key);
-	preloads_by_key = NULL;
-
-	if (preloads_by_filename)
-		g_hash_table_destroy (preloads_by_filename);
-	preloads_by_filename = NULL;
-
-	if (file_tracker)
-		g_object_unref (file_tracker);
-	file_tracker = NULL;
+	g_clear_pointer (&preloads_by_key, (GDestroyNotify) g_hash_table_unref);
+	g_clear_pointer (&preloads_by_filename, (GDestroyNotify) g_hash_table_unref);
+	g_clear_object (&file_tracker);
 
 	g_mutex_unlock (&preload_mutex);
 }

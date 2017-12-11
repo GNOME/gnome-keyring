@@ -167,7 +167,7 @@ gkd_ssh_agent_client_connect (void)
 		source = g_timeout_add_seconds (5, agent_ready_timeout, &timedout);
 		while (started && !ssh_agent_ready && !timedout) {
 g_message ("waiting for agent: %u", (guint)timedout);
-			g_main_context_iteration (NULL, TRUE);
+			g_main_context_iteration (NULL, FALSE);
 		}
 		g_source_remove (source);
 g_message ("waited for agent");

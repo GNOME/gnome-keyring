@@ -21,3 +21,22 @@ libgkd_ssh_agent_la_SOURCES = \
 	$(NULL)
 libgkd_ssh_agent_la_CFLAGS = \
 	$(DAEMON_CFLAGS)
+
+# Tests
+
+ssh_agent_CFLAGS = \
+	$(DAEMON_CFLAGS)
+
+ssh_agent_LIBS = \
+	$(DAEMON_LIBS) \
+	libgkd-ssh-agent.la
+
+ssh_agent_TESTS = \
+	test-gkd-ssh-openssh
+
+test_gkd_ssh_openssh_SOURCES = daemon/ssh-agent/test-gkd-ssh-openssh.c
+test_gkd_ssh_openssh_CFLAGS = $(ssh_agent_CFLAGS)
+test_gkd_ssh_openssh_LDADD = $(ssh_agent_LIBS)
+
+check_PROGRAMS += $(ssh_agent_TESTS)
+TESTS += $(ssh_agent_TESTS)

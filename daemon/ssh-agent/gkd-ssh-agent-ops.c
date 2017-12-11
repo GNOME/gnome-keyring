@@ -155,6 +155,9 @@ op_request_identities (GkdSshAgentCall *call)
 	egg_buffer_set_uint32 (call->resp, 5, added + g_hash_table_size (answer));
 	g_hash_table_unref (answer);
 
+	/* Set the correct total size of the payload */
+	egg_buffer_set_uint32 (call->resp, 0, call->resp->len - 4);
+
 	return TRUE;
 }
 
@@ -208,7 +211,7 @@ op_sign_request (GkdSshAgentCall *call)
 	GBytes *key;
 
 	/* If parsing the request fails, just pass through */
-	if (egg_buffer_get_byte_array (call->resp, offset, &offset, &blob, &length)) {
+	if (egg_buffer_get_byte_array (call->req, offset, &offset, &blob, &length)) {
 		key = g_bytes_new (blob, length);
 		preload_key_if_necessary (call->ssh_agent, key);
 		g_bytes_unref (key);
