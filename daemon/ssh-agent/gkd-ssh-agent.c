@@ -138,11 +138,10 @@ gkd_ssh_agent_write_packet (gint fd,
 	return gkd_ssh_agent_write_all (fd, buffer->buf, buffer->len, "client");
 }
 
-gboolean
-gkd_ssh_agent_relay (GkdSshAgentCall *call)
+static gboolean
+agent_relay (GkdSshAgentCall *call)
 {
-	return gkd_ssh_agent_write_packet (call->ssh_agent, call->req) &&
-	       gkd_ssh_agent_read_packet (call->ssh_agent, call->resp);
+	return gkd_ssh_agent_process_call (call->process, call->req, call->resp);
 }
 
 static gpointer
@@ -164,8 +163,10 @@ run_client_thread (gpointer data)
 	call.req = &req;
 	call.resp = &resp;
 
-	call.ssh_agent = gkd_ssh_agent_client_connect ();
-	if (call.ssh_agent < 0)
+	call.process = gkd_ssh_agent_process_get_default ();
+	if (!call.process)
+		goto out;
+	if (!gkd_ssh_agent_process_connect (call.process))
 		goto out;
 
 	for (;;) {
@@ -184,7 +185,7 @@ run_client_thread (gpointer data)
 		if (op >= GKD_SSH_OP_MAX || gkd_ssh_agent_operations[op])
 			func = gkd_ssh_agent_operations[op];
 		else
-			func = gkd_ssh_agent_relay;
+			func = agent_relay;
 		if (!func (&call))
 			break;
 
@@ -287,7 +288,7 @@ gkd_ssh_agent_shutdown (void)
 	g_list_free (socket_clients);
 	socket_clients = NULL;
 
-	gkd_ssh_agent_client_cleanup ();
+	g_object_unref (gkd_ssh_agent_process_get_default ());
 }
 
 int

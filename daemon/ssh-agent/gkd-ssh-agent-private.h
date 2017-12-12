@@ -23,7 +23,7 @@
 #ifndef GKDSSHPRIVATE_H_
 #define GKDSSHPRIVATE_H_
 
-#include "gkd-ssh-agent-client.h"
+#include "gkd-ssh-agent-process.h"
 
 #include "egg/egg-buffer.h"
 
@@ -33,7 +33,7 @@ typedef struct _GkdSshAgentCall {
 	int sock;
 	EggBuffer *req;
 	EggBuffer *resp;
-	gint ssh_agent;
+	GkdSshAgentProcess *process;
 } GkdSshAgentCall;
 
 /* -----------------------------------------------------------------------------
@@ -96,8 +96,6 @@ gboolean              gkd_ssh_agent_read_packet                     (gint fd,
 
 gboolean              gkd_ssh_agent_write_packet                    (gint fd,
                                                                      EggBuffer *buffer);
-
-gboolean              gkd_ssh_agent_relay                           (GkdSshAgentCall *call);
 
 gboolean              gkd_ssh_agent_write_all                       (int fd,
                                                                      const guchar *buf,
