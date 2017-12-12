@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include "gkd-ssh-interaction.h"
+#include "gkd-ssh-agent-preload.h"
 
 #include "daemon/login/gkd-login.h"
 
@@ -34,12 +35,16 @@
 #define GKD_SSH_IS_INTERACTION_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GKD_SSH_TYPE_INTERACTION))
 #define GKD_SSH_INTERACTION_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GKD_SSH_TYPE_INTERACTION, GkdSshInteractionClass))
 
+enum {
+	PROP_0,
+	PROP_KEY
+};
+
 typedef struct _GkdSshInteractionClass GkdSshInteractionClass;
 
 struct _GkdSshInteraction {
 	GTlsInteraction interaction;
 	GBytes *key;
-	gchar *label;
 };
 
 struct _GkdSshInteractionClass {
@@ -51,7 +56,6 @@ G_DEFINE_TYPE (GkdSshInteraction, gkd_ssh_interaction, G_TYPE_TLS_INTERACTION);
 static void
 gkd_ssh_interaction_init (GkdSshInteraction *self)
 {
-	self->label = g_strdup ("XXXXX");
 }
 
 static void
@@ -59,9 +63,27 @@ gkd_ssh_interaction_finalize (GObject *obj)
 {
 	GkdSshInteraction *self = GKD_SSH_INTERACTION (obj);
 
-	g_free (self->label);
+	g_bytes_unref (self->key);
 
 	G_OBJECT_CLASS (gkd_ssh_interaction_parent_class)->finalize (obj);
+}
+
+static void
+gkd_ssh_interaction_set_property (GObject      *object,
+                                  guint         prop_id,
+                                  const GValue *value,
+                                  GParamSpec   *pspec)
+{
+	GkdSshInteraction *self = GKD_SSH_INTERACTION (object);
+
+	switch (prop_id) {
+	case PROP_KEY:
+		self->key = g_value_dup_boxed (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
 }
 
 static void
@@ -111,7 +133,7 @@ on_prompt_open (GObject *source_object,
 
 		/* TRANSLATORS: The private key is locked */
 		text = g_strdup_printf (_("An application wants access to the private key '%s', but it is locked"),
-		                        self->label);
+		                        gkd_ssh_agent_preload_comment (self->key));
 		gcr_prompt_set_description (prompt, text);
 		g_free (text);
 
@@ -176,9 +198,15 @@ gkd_ssh_interaction_class_init (GkdSshInteractionClass *klass)
 	GTlsInteractionClass *interaction_class = G_TLS_INTERACTION_CLASS (klass);
 
 	object_class->finalize = gkd_ssh_interaction_finalize;
+	object_class->set_property = gkd_ssh_interaction_set_property;
 
 	interaction_class->ask_password_async = gkd_ssh_interaction_ask_password_async;
 	interaction_class->ask_password_finish = gkd_ssh_interaction_ask_password_finish;
+
+	g_object_class_install_property (object_class, PROP_KEY,
+					 g_param_spec_boxed ("key", "Key", "Key",
+							     G_TYPE_BYTES,
+							     G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
 }
 
 GTlsInteraction *
@@ -186,7 +214,7 @@ gkd_ssh_interaction_new (GBytes *key)
 {
 	GkdSshInteraction *result;
 
-	result = g_object_new (GKD_TYPE_SSH_INTERACTION, NULL);
+	result = g_object_new (GKD_TYPE_SSH_INTERACTION, "key", key, NULL);
 
 	return G_TLS_INTERACTION (result);
 }
