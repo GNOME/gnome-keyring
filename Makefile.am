@@ -133,12 +133,12 @@ SED_SUBST = sed \
 	-e 's,[@]VERSION[@],$(VERSION),g' \
 	$(NULL)
 
-SUFFIXES = .desktop.in .desktop.in.in .service .service.in
+SUFFIXES = .desktop .desktop.in .desktop.in.in .service .service.in
 
 .service.in.service:
 	$(V_SED) ( $(SED_SUBST) $< > $@.tmp ) && mv $@.tmp $@
 
-.desktop.in.in.desktop.in:
+.desktop.in.desktop:
 	$(V_SED) ( $(SED_SUBST) $< > $@.tmp ) && mv $@.tmp $@
 
 all-local:

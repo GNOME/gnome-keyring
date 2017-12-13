@@ -44,11 +44,12 @@ desktop_in_in_files = \
 	$(NULL)
 desktop_in_files = $(desktop_in_in_files:.desktop.in.in=.desktop.in)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-$(desktop_DATA): $(desktop_in_files)
+.desktop.in.in.desktop.in:
 	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 EXTRA_DIST += \
 	$(service_in_files) \
+	$(desktop_in_files) \
 	$(desktop_in_in_files)
 
 CLEANFILES += \
