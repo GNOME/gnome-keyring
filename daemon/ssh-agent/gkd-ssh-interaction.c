@@ -93,18 +93,34 @@ on_prompt_password (GObject *source_object,
 {
 	GTask *task = G_TASK (user_data);
 	GTlsPassword *password = g_task_get_task_data (task);
-	GcrPrompt *self = GCR_PROMPT (source_object);
+	GkdSshInteraction *self = GKD_SSH_INTERACTION (g_task_get_source_object (task));
+	GcrPrompt *prompt = GCR_PROMPT (source_object);
 	GError *error = NULL;
 	const gchar *value;
 
-	value = gcr_prompt_password_finish (self, result, &error);
+	value = gcr_prompt_password_finish (prompt, result, &error);
 	if (!value) {
 		g_task_return_error (task, error);
 		g_object_unref (task);
 		return;
 	}
 	g_tls_password_set_value (password, (const guchar *)value, strlen (value));
-	g_object_unref (self);
+	if (gkd_login_available (NULL) && gcr_prompt_get_choice_chosen (prompt)) {
+		gchar *path = gkd_ssh_agent_preload_path (self->key);
+		gchar *comment = gkd_ssh_agent_preload_comment (self->key);
+		gchar *label = g_strdup_printf (_("Unlock password for: %s"), comment ? comment : _("Unnamed"));
+		gchar *unique = g_strdup_printf ("ssh-store:%s", path);
+		g_free (path);
+		g_free (comment);
+		gkd_login_store_password (NULL, value, label,
+					  GCR_UNLOCK_OPTION_ALWAYS, -1,
+					  "unique", unique,
+					  "xdg:schema", "org.freedesktop.Secret.Generic",
+					  NULL);
+		g_free (label);
+		g_free (unique);
+	}
+	g_object_unref (prompt);
 
 	g_task_return_boolean (task, TRUE);
 	g_object_unref (task);
@@ -159,20 +175,29 @@ gkd_ssh_interaction_ask_password_async (GTlsInteraction *interaction,
                                         GAsyncReadyCallback callback,
                                         gpointer user_data)
 {
+	GkdSshInteraction *self = GKD_SSH_INTERACTION (interaction);
 	GTask *task;
 
 	task = g_task_new (interaction, cancellable, callback, user_data);
 	g_task_set_task_data (task, g_object_ref (password), g_object_unref);
 
-#if 0
-	{'unique': 'ssh-store:/data/.ssh/id_rsa', 'xdg:schema': 'org.freedesktop.Secret.Generic'}
-	if (gkd_login_available() && self->keyid) {
-		xxxx = gkd_login_lookup (self->keyid);
-		g_tls_password_set_value (password, xxxx);
-
+	if (gkd_login_available (NULL)) {
+		gchar *path = gkd_ssh_agent_preload_path (self->key);
+		gchar *unique = g_strdup_printf ("ssh-store:%s", path);
+		gchar *value = gkd_login_lookup_password (NULL,
+							  "unique", unique,
+							  "xdg:schema", "org.freedesktop.Secret.Generic",
+							  NULL);
+		g_free (path);
+		g_free (unique);
+		if (value) {
+			g_tls_password_set_value (password, (const guchar *)value, strlen (value));
+			g_free (value);
+			g_task_return_boolean (task, TRUE);
+			g_object_unref (task);
+			return;
+		}
 	}
-#endif
-
 
 	gcr_system_prompt_open_async (60, cancellable, on_prompt_open,
 	                              g_object_ref (task));
