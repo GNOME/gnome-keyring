@@ -62,11 +62,8 @@ op_add_identity (GkdSshAgentCall *call)
 	ret = gkd_ssh_agent_process_call (call->process, call->req, call->resp);
 
 	if (key) {
-		/* Move the key from preloaded list to loaded list */
-		if (ret) {
-			gkd_ssh_agent_preload_clear (key);
+		if (ret)
 			gkd_ssh_agent_process_add_key (call->process, key);
-		}
 		g_bytes_unref (key);
 	}
 
@@ -196,8 +193,6 @@ load_key_if_necessary (GkdSshAgentCall *call,
 		g_message ("the %s command failed: %s", argv[0], error->message);
 
 	} else {
-		/* Move the key from preloaded list to loaded list */
-		gkd_ssh_agent_preload_clear (key);
 		gkd_ssh_agent_process_add_key (call->process, key);
 	}
 
@@ -245,10 +240,8 @@ op_remove_identity (GkdSshAgentCall *call)
 	/* If the key doesn't exist what happens here? */
 	ret = gkd_ssh_agent_process_call (call->process, call->req, call->resp);
 	if (key) {
-		if (ret) {
-			gkd_ssh_agent_preload_clear (key);
+		if (ret)
 			gkd_ssh_agent_process_remove_key (call->process, key);
-		}
 		g_bytes_unref (key);
 	}
 	return ret;
@@ -258,7 +251,6 @@ static gboolean
 op_remove_all_identities (GkdSshAgentCall *call)
 {
 	if (gkd_ssh_agent_process_call (call->process, call->req, call->resp)) {
-		gkd_ssh_agent_preload_clear_all ();
 		gkd_ssh_agent_process_clear_keys (call->process);
 		return TRUE;
 	}

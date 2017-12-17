@@ -34,10 +34,6 @@ gchar *              gkd_ssh_agent_preload_path               (GBytes *key);
 
 GBytes *             gkd_ssh_agent_preload_private            (GBytes *key);
 
-void                 gkd_ssh_agent_preload_clear              (GBytes *key);
-
-void                 gkd_ssh_agent_preload_clear_all          (void);
-
 void                 gkd_ssh_agent_preload_cleanup            (void);
 
 #endif /* __GKD_SSH_AGENT_PRELOAD_H__ */

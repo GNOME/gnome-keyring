@@ -221,35 +221,6 @@ gkd_ssh_agent_preload_path (GBytes *key)
 }
 
 void
-gkd_ssh_agent_preload_clear (GBytes *key)
-{
-	Preload *preload;
-
-	preload_lock_and_update ();
-
-	preload = g_hash_table_lookup (preloads_by_key, key);
-	if (preload)
-		g_clear_pointer (&preload->private_file, (GDestroyNotify) g_bytes_unref);
-
-	preload_unlock ();
-}
-
-void
-gkd_ssh_agent_preload_clear_all (void)
-{
-	GHashTableIter iter;
-	Preload *preload;
-
-	preload_lock_and_update ();
-
-	g_hash_table_iter_init (&iter, preloads_by_key);
-	while (g_hash_table_iter_next (&iter, NULL, (gpointer *)&preload))
-		g_clear_pointer (&preload->private_file, (GDestroyNotify) g_bytes_unref);
-
-	preload_unlock ();
-}
-
-void
 gkd_ssh_agent_preload_cleanup (void)
 {
 	g_mutex_lock (&preload_mutex);
