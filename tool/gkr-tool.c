@@ -117,10 +117,8 @@ main (int argc, char *argv[])
 	g_type_init ();
 #endif
 
-#ifdef HAVE_LOCALE_H
 	/* internationalisation */
 	setlocale (LC_ALL, "");
-#endif
 
 #ifdef HAVE_GETTEXT
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
