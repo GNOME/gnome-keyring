@@ -1,3 +1,8 @@
+Changes in version 3.27.4 are:
+ * Add support for SHA2 extension for RSA signatures in ssh-agent [#790910]
+ * Build fixes [#792278, #787387]
+ * Updated translations
+
 Changes in version 3.27.2 are:
  * Add support for ECDSA in ssh-agent [#641082]
  * Wipe passwords stored by the PAM module [#781486]
