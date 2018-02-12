@@ -119,6 +119,65 @@ gkd_ssh_agent_process_class_init (GkdSshAgentProcessClass *klass)
 							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
 }
 
+static gboolean
+read_all (int fd, guchar *buf, int len)
+{
+	int all = len;
+	int res;
+
+	while (len > 0) {
+
+		res = read (fd, buf, len);
+
+		if (res < 0) {
+			if (errno == EAGAIN || errno == EINTR)
+				continue;
+			g_warning ("couldn't read %u bytes from client: %s", all,
+			           g_strerror (errno));
+			return FALSE;
+		} else if (res == 0) {
+			return FALSE;
+		} else  {
+			len -= res;
+			buf += res;
+		}
+	}
+
+	return TRUE;
+}
+
+static gboolean
+write_all (int fd,
+	   const guchar *buf,
+	   int len,
+	   const gchar *where)
+{
+	int all = len;
+	int res;
+
+	while (len > 0) {
+
+		res = write (fd, buf, len);
+		if (res < 0) {
+			if (errno == EAGAIN || errno == EINTR)
+				continue;
+			if (errno != EPIPE) {
+				g_warning ("couldn't write %u bytes to %s: %s", all,
+				           where, g_strerror (errno));
+			}
+			return FALSE;
+		} else if (res == 0) {
+			g_warning ("couldn't write %u bytes to %s", all, where);
+			return FALSE;
+		} else  {
+			len -= res;
+			buf += res;
+		}
+	}
+
+	return TRUE;
+}
+
 static void
 on_child_watch (GPid pid,
                 gint status,
@@ -160,7 +219,7 @@ on_output_watch (gint fd,
 				g_message ("couldn't read from ssh-agent stdout: %m");
 			condition |= G_IO_ERR;
 		} else if (len > 0) {
-			gkd_ssh_agent_write_all (1, buf, len, "stdout");
+			write_all (1, buf, len, "stdout");
 		}
 	}
 
@@ -204,7 +263,7 @@ on_timeout (gpointer user_data)
 }
 
 gboolean
-gkd_ssh_agent_process_connect (GkdSshAgentProcess *self)
+gkd_ssh_agent_process_connect (GkdSshAgentProcess  *self)
 {
 	gboolean started = FALSE;
 	struct sockaddr_un addr;
@@ -214,11 +273,13 @@ gkd_ssh_agent_process_connect (GkdSshAgentProcess *self)
 
 	g_mutex_lock (&self->lock);
 
-	if (self->pid == 0 || kill (self->pid, 0) != 0)
-		started = agent_start_inlock (self);
-
-	addr.sun_family = AF_UNIX;
-	g_strlcpy (addr.sun_path, self->path, sizeof (addr.sun_path));
+	if (self->pid == 0 || kill (self->pid, 0) != 0) {
+		if (!agent_start_inlock (self)) {
+			g_mutex_unlock (&self->lock);
+			return FALSE;
+		}
+		started = TRUE;
+	}
 
 	if (started && !self->ready) {
 		source = g_timeout_add_seconds (5, on_timeout, &timedout);
@@ -227,24 +288,65 @@ gkd_ssh_agent_process_connect (GkdSshAgentProcess *self)
 		g_source_remove (source);
 	}
 
-	if (!self->ready)
+	if (!self->ready) {
+		g_mutex_unlock (&self->lock);
 		return FALSE;
+	}
 
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);
-	g_return_val_if_fail (sock >= 0, -1);
+	if (sock < 0) {
+		g_mutex_unlock (&self->lock);
+		return FALSE;
+	}
+
+	addr.sun_family = AF_UNIX;
+	g_strlcpy (addr.sun_path, self->path, sizeof (addr.sun_path));
 
 	if (connect (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
 		g_message ("couldn't connect to ssh-agent socket at: %s: %s",
 		           addr.sun_path, g_strerror (errno));
 		close (sock);
-		sock = -1;
+		g_mutex_unlock (&self->lock);
+		return FALSE;
 	}
 
 	self->socket_fd = sock;
-
 	g_mutex_unlock (&self->lock);
 
-	return sock != -1;
+	return TRUE;
+}
+
+gboolean
+gkd_ssh_agent_read_packet (gint fd,
+                           EggBuffer *buffer)
+{
+	guint32 packet_size;
+
+	egg_buffer_reset (buffer);
+	egg_buffer_resize (buffer, 4);
+	if (!read_all (fd, buffer->buf, 4))
+		return FALSE;
+
+	if (!egg_buffer_get_uint32 (buffer, 0, NULL, &packet_size) ||
+	    packet_size < 1) {
+		g_warning ("invalid packet size from client");
+		return FALSE;
+	}
+
+	egg_buffer_resize (buffer, packet_size + 4);
+	if (!read_all (fd, buffer->buf + 4, packet_size))
+		return FALSE;
+
+	return TRUE;
+}
+
+gboolean
+gkd_ssh_agent_write_packet (gint fd,
+                            EggBuffer *buffer)
+{
+	if (!egg_buffer_set_uint32 (buffer, 0, buffer->len - 4))
+		g_return_val_if_reached (FALSE);
+	return write_all (fd, buffer->buf, buffer->len, "client");
 }
 
 gboolean
