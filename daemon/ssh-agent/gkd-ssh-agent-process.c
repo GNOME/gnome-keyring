@@ -294,18 +294,7 @@ gkd_ssh_agent_process_clear_keys (GkdSshAgentProcess *self)
 }
 
 GkdSshAgentProcess *
-gkd_ssh_agent_process_get_default (void)
+gkd_ssh_agent_process_new (const gchar *path)
 {
-	static volatile gsize initialized = 0;
-	static GkdSshAgentProcess *instance = NULL;
-
-	if (g_once_init_enter (&initialized)) {
-		const gchar *directory = gkd_util_get_master_directory ();
-		gchar *path = g_build_filename (directory, "ssh-agent-real", NULL);
-		instance = g_object_new (GKD_TYPE_SSH_AGENT_PROCESS, "path", path, NULL);
-		g_free (path);
-		g_once_init_leave (&initialized, 1);
-	}
-
-	return instance;
+	return g_object_new (GKD_TYPE_SSH_AGENT_PROCESS, "path", path, NULL);
 }

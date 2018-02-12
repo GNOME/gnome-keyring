@@ -31,7 +31,7 @@
 #define GKD_TYPE_SSH_AGENT_PROCESS gkd_ssh_agent_process_get_type ()
 G_DECLARE_FINAL_TYPE(GkdSshAgentProcess, gkd_ssh_agent_process, GKD, SSH_AGENT_PROCESS, GObject)
 
-GkdSshAgentProcess *gkd_ssh_agent_process_get_default (void);
+GkdSshAgentProcess *gkd_ssh_agent_process_new         (const gchar        *path);
 gboolean            gkd_ssh_agent_process_connect     (GkdSshAgentProcess *self);
 gboolean            gkd_ssh_agent_process_call        (GkdSshAgentProcess *self,
                                                        EggBuffer          *req,

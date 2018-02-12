@@ -46,6 +46,12 @@ typedef int socklen_t;
 
 EGG_SECURE_DECLARE (ssh_agent);
 
+/* The path of the inferior ssh-agent process listening on */
+static char process_path[1024] = { 0, };
+
+/* The ssh-agent process */
+static GkdSshAgentProcess *process = NULL;
+
 static gboolean
 read_all (int fd, guchar *buf, int len)
 {
@@ -163,9 +169,7 @@ run_client_thread (gpointer data)
 	call.req = &req;
 	call.resp = &resp;
 
-	call.process = gkd_ssh_agent_process_get_default ();
-	if (!call.process)
-		goto out;
+	call.process = process;
 	if (!gkd_ssh_agent_process_connect (call.process))
 		goto out;
 
@@ -288,7 +292,8 @@ gkd_ssh_agent_shutdown (void)
 	g_list_free (socket_clients);
 	socket_clients = NULL;
 
-	g_object_unref (gkd_ssh_agent_process_get_default ());
+	g_object_unref (process);
+	process = NULL;
 }
 
 int
@@ -326,5 +331,11 @@ gkd_ssh_agent_startup (const gchar *prefix)
 	g_setenv ("SSH_AUTH_SOCK", socket_path, TRUE);
 
 	socket_fd = sock;
+
+	snprintf (process_path, sizeof (process_path), "%s/.ssh", prefix);
+	unlink (process_path);
+
+	process = gkd_ssh_agent_process_new (process_path);
+
 	return sock;
 }
