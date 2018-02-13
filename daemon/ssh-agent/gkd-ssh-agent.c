@@ -52,6 +52,9 @@ static char process_path[1024] = { 0, };
 /* The ssh-agent process */
 static GkdSshAgentProcess *process = NULL;
 
+static GHashTable *keys = NULL;
+static GMutex keys_lock;
+
 static gboolean
 agent_relay (GkdSshAgentCall *call)
 {
@@ -76,10 +79,11 @@ run_client_thread (gpointer data)
 	egg_buffer_init_full (&resp, 128, (EggBufferAllocator)g_realloc);
 	call.req = &req;
 	call.resp = &resp;
-
 	call.process = process;
 	if (!gkd_ssh_agent_process_connect (call.process))
 		goto out;
+	call.keys = keys;
+	call.lock = &keys_lock;
 
 	for (;;) {
 
@@ -202,6 +206,10 @@ gkd_ssh_agent_shutdown (void)
 
 	g_object_unref (process);
 	process = NULL;
+
+	g_mutex_clear (&keys_lock);
+	g_hash_table_unref (keys);
+	keys = NULL;
 }
 
 int
@@ -244,6 +252,9 @@ gkd_ssh_agent_startup (const gchar *prefix)
 	unlink (process_path);
 
 	process = gkd_ssh_agent_process_new (process_path);
+	keys = g_hash_table_new_full (g_bytes_hash, g_bytes_equal,
+				      (GDestroyNotify)g_bytes_unref, NULL);
+	g_mutex_init (&keys_lock);
 
 	return sock;
 }

@@ -23,8 +23,6 @@
 #include "gkd-ssh-agent-process.h"
 #include "gkd-ssh-agent-private.h"
 
-#include "daemon/gkd-util.h"
-
 #include <glib-unix.h>
 #include <glib/gstdio.h>
 
@@ -45,7 +43,6 @@ struct _GkdSshAgentProcess
 	gchar *path;
 	gint socket_fd;	  /* socket opened by the ssh-agent process */
 	gint output_fd;	  /* stdout of the ssh-agent process */
-	GHashTable *keys; /* keys actually known to the ssh-agent process */
 	GMutex lock;
 	GPid pid;
 	guint output_id;
@@ -60,8 +57,6 @@ gkd_ssh_agent_process_init (GkdSshAgentProcess *self)
 {
 	self->socket_fd = -1;
 	self->output_fd = -1;
-	self->keys = g_hash_table_new_full (g_bytes_hash, g_bytes_equal,
-					    (GDestroyNotify)g_bytes_unref, NULL);
 	g_mutex_init (&self->lock);
 }
 
@@ -80,8 +75,6 @@ gkd_ssh_agent_process_finalize (GObject *object)
 		g_source_remove (self->child_id);
 	if (self->pid)
 		kill (self->pid, SIGTERM);
-	if (self->keys)
-		g_hash_table_unref (self->keys);
 	g_unlink (self->path);
 	g_free (self->path);
 	g_mutex_clear (&self->lock);
@@ -356,43 +349,6 @@ gkd_ssh_agent_process_call (GkdSshAgentProcess *self,
 {
 	return gkd_ssh_agent_write_packet (self->socket_fd, req) &&
 	       gkd_ssh_agent_read_packet (self->socket_fd, resp);
-}
-
-gboolean
-gkd_ssh_agent_process_lookup_key (GkdSshAgentProcess *self,
-                                  GBytes             *key)
-{
-	gboolean ret;
-	g_mutex_lock (&self->lock);
-	ret = g_hash_table_contains (self->keys, key);
-	g_mutex_unlock (&self->lock);
-	return ret;
-}
-
-void
-gkd_ssh_agent_process_add_key (GkdSshAgentProcess *self,
-                               GBytes             *key)
-{
-	g_mutex_lock (&self->lock);
-	g_hash_table_add (self->keys, g_bytes_ref (key));
-	g_mutex_unlock (&self->lock);
-}
-
-void
-gkd_ssh_agent_process_remove_key (GkdSshAgentProcess *self,
-                                  GBytes             *key)
-{
-	g_mutex_lock (&self->lock);
-	g_hash_table_remove (self->keys, key);
-	g_mutex_lock (&self->lock);
-}
-
-void
-gkd_ssh_agent_process_clear_keys (GkdSshAgentProcess *self)
-{
-	g_mutex_lock (&self->lock);
-	g_hash_table_remove_all (self->keys);
-	g_mutex_unlock (&self->lock);
 }
 
 GkdSshAgentProcess *

@@ -34,6 +34,8 @@ typedef struct _GkdSshAgentCall {
 	EggBuffer *req;
 	EggBuffer *resp;
 	GkdSshAgentProcess *process;
+	GHashTable *keys;
+	GMutex *lock;
 } GkdSshAgentCall;
 
 /* -----------------------------------------------------------------------------

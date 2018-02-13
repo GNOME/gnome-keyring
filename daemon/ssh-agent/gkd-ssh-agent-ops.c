@@ -44,6 +44,43 @@ EGG_SECURE_DECLARE (ssh_agent_ops);
 /* ---------------------------------------------------------------------------- */
 
 static gboolean
+lookup_key (GkdSshAgentCall *call,
+	    GBytes *key)
+{
+	gboolean ret;
+	g_mutex_lock (call->lock);
+	ret = g_hash_table_contains (call->keys, key);
+	g_mutex_unlock (call->lock);
+	return ret;
+}
+
+static void
+add_key (GkdSshAgentCall *call,
+	 GBytes *key)
+{
+	g_mutex_lock (call->lock);
+	g_hash_table_add (call->keys, g_bytes_ref (key));
+	g_mutex_unlock (call->lock);
+}
+
+static void
+remove_key (GkdSshAgentCall *call,
+	    GBytes *key)
+{
+	g_mutex_lock (call->lock);
+	g_hash_table_remove (call->keys, key);
+	g_mutex_lock (call->lock);
+}
+
+static void
+clear_keys (GkdSshAgentCall *call)
+{
+	g_mutex_lock (call->lock);
+	g_hash_table_remove_all (call->keys);
+	g_mutex_unlock (call->lock);
+}
+
+static gboolean
 op_add_identity (GkdSshAgentCall *call)
 {
 	const guchar *blob;
@@ -53,17 +90,16 @@ op_add_identity (GkdSshAgentCall *call)
 	gboolean ret;
 
 	/* If parsing the request fails, just pass through */
-	if (egg_buffer_get_byte_array (call->req, offset, &offset, &blob, &length)) {
+	ret = egg_buffer_get_byte_array (call->req, offset, &offset, &blob, &length);
+	if (ret)
 		key = g_bytes_new (blob, length);
-	} else {
+	else
 		g_warning ("got unparseable add identity request for ssh-agent");
-	}
 
 	ret = gkd_ssh_agent_process_call (call->process, call->req, call->resp);
-
 	if (key) {
 		if (ret)
-			gkd_ssh_agent_process_add_key (call->process, key);
+			add_key (call, key);
 		g_bytes_unref (key);
 	}
 
@@ -128,7 +164,7 @@ op_request_identities (GkdSshAgentCall *call)
 
 	g_hash_table_iter_init (&iter, answer);
 	while (g_hash_table_iter_next (&iter, (gpointer *)&key, NULL))
-		gkd_ssh_agent_process_add_key (call->process, key);
+		add_key (call, key);
 
 	added = 0;
 
@@ -177,7 +213,7 @@ load_key_if_necessary (GkdSshAgentCall *call,
 	if (!filename)
 		return;
 
-	if (gkd_ssh_agent_process_lookup_key (call->process, key))
+	if (lookup_key (call, key))
 		return;
 
 	interaction = gkd_ssh_interaction_new (key);
@@ -193,7 +229,7 @@ load_key_if_necessary (GkdSshAgentCall *call,
 		g_message ("the %s command failed: %s", argv[0], error->message);
 
 	} else {
-		gkd_ssh_agent_process_add_key (call->process, key);
+		add_key (call, key);
 	}
 
 	g_clear_error (&error);
@@ -231,17 +267,17 @@ op_remove_identity (GkdSshAgentCall *call)
 	gboolean ret;
 
 	/* If parsing the request fails, just pass through */
-	if (egg_buffer_get_byte_array (call->resp, offset, &offset, &blob, &length)) {
+	ret = egg_buffer_get_byte_array (call->resp, offset, &offset, &blob, &length);
+	if (ret)
 		key = g_bytes_new (blob, length);
-	} else {
+	else
 		g_warning ("got unparseable remove request for ssh-agent");
-	}
 
 	/* If the key doesn't exist what happens here? */
 	ret = gkd_ssh_agent_process_call (call->process, call->req, call->resp);
 	if (key) {
 		if (ret)
-			gkd_ssh_agent_process_remove_key (call->process, key);
+			remove_key (call, key);
 		g_bytes_unref (key);
 	}
 	return ret;
@@ -250,12 +286,13 @@ op_remove_identity (GkdSshAgentCall *call)
 static gboolean
 op_remove_all_identities (GkdSshAgentCall *call)
 {
-	if (gkd_ssh_agent_process_call (call->process, call->req, call->resp)) {
-		gkd_ssh_agent_process_clear_keys (call->process);
-		return TRUE;
-	}
+	gboolean ret;
 
-	return FALSE;
+	ret = gkd_ssh_agent_process_call (call->process, call->req, call->resp);
+	if (ret)
+		clear_keys (call);
+
+	return ret;
 }
 
 const GkdSshAgentOperation gkd_ssh_agent_operations[GKD_SSH_OP_MAX] = {
