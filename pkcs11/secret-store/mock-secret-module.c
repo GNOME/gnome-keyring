@@ -96,6 +96,7 @@ test_secret_module_leave_and_finalize (void)
 	rv = (funcs->C_Finalize) (NULL);
 	g_return_if_fail (rv == CKR_OK);
 
+	egg_tests_remove_scratch_directory (directory);
 	g_free (directory);
 	directory = NULL;
 }
