@@ -92,7 +92,10 @@ lookup_login_session (GList *modules)
 
 	slot = gck_modules_token_for_uri (modules, "pkcs11:token=Secret%20Store", &error);
 	if (!slot) {
-		g_warning ("couldn't find secret store module: %s", egg_error_message (error));
+		if (error) {
+			g_warning ("couldn't find secret store module: %s", egg_error_message (error));
+			g_error_free (error);
+		}
 		return NULL;
 	}
 
