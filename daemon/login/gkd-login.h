@@ -48,4 +48,17 @@ gboolean          gkd_login_store_password           (GckSession *session,
 						      const gchar *field,
 						      ...) G_GNUC_NULL_TERMINATED;
 
+gchar *           gkd_login_lookup_passwordv         (GckSession *session,
+						      GHashTable *fields);
+
+void              gkd_login_clear_passwordv          (GckSession *session,
+						      GHashTable *fields);
+
+gboolean          gkd_login_store_passwordv          (GckSession *session,
+						      const gchar *password,
+						      const gchar *label,
+						      const gchar *method,
+						      gint lifetime,
+						      GHashTable *fields);
+
 #endif /* __GKD_LOGIN_H__ */
