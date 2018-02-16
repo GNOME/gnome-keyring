@@ -36,6 +36,7 @@ libegg_la_SOURCES = \
 	egg/egg-symkey.c egg/egg-symkey.h \
 	egg/egg-testing.c egg/egg-testing.h \
 	egg/egg-timegm.c egg/egg-timegm.h \
+	egg/mock-interaction.c egg/mock-interaction.h \
 	egg/egg-asn1-defs.h \
 	egg/pk.asn.h egg/pkix.asn.h \
 	$(NULL)
@@ -92,7 +93,8 @@ libegg_hex_la_LIBS = \
 	$(GLIB_LIBS)
 
 libegg_test_la_SOURCES = \
-	egg/egg-testing.c egg/egg-testing.h
+	egg/egg-testing.c egg/egg-testing.h \
+	egg/mock-interaction.c egg/mock-interaction.h
 
 libegg_test_la_CFLAGS = \
 	$(GLIB_CFLAGS)
