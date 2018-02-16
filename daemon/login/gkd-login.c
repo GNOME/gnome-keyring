@@ -454,9 +454,9 @@ gkd_login_available (GckSession *session)
 			available = TRUE;
 		}
 		g_list_free_full (objects, g_object_unref);
+		g_object_unref (session);
 	}
 
-	g_object_unref (session);
 	return available;
 }
 
