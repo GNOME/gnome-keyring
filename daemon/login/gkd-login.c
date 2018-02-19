@@ -96,6 +96,7 @@ lookup_login_session (GList *modules)
 			g_warning ("couldn't find secret store module: %s", egg_error_message (error));
 			g_error_free (error);
 		}
+		g_list_free_full (owned, g_object_unref);
 		return NULL;
 	}
 
