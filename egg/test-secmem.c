@@ -252,6 +252,30 @@ test_strclear (void)
 	egg_secure_free_full (str, 0);
 }
 
+static void
+test_strndup (void)
+{
+	gchar *str;
+
+	str = egg_secure_strndup ("secret", 6);
+	g_assert (str != NULL);
+	g_assert_cmpuint (strlen (str), ==, 6);
+
+	egg_secure_free_full (str, 0);
+
+	str = egg_secure_strndup ("secret", 10);
+	g_assert (str != NULL);
+	g_assert_cmpuint (strlen (str), ==, 6);
+
+	egg_secure_free_full (str, 0);
+
+	str = egg_secure_strndup ("long secret", 6);
+	g_assert (str != NULL);
+	g_assert_cmpuint (strlen (str), ==, 6);
+
+	egg_secure_free_full (str, 0);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -264,6 +288,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/secmem/multialloc", test_multialloc);
 	g_test_add_func ("/secmem/clear", test_clear);
 	g_test_add_func ("/secmem/strclear", test_strclear);
+	g_test_add_func ("/secmem/strndup", test_strndup);
 
 	return g_test_run ();
 }
