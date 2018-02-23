@@ -16,9 +16,9 @@ gnome_keyring_daemon_SOURCES = \
 	$(NULL)
 gnome_keyring_daemon_LDADD = \
 	libgkd-dbus.la \
-	libgkd-login.la \
 	libgkd-control.la \
 	libgkd-ssh-agent.la \
+	libgkd-login.la \
 	libgkm-wrap-layer.la \
 	libgkm-rpc-layer.la \
 	libgkm-secret-store.la \

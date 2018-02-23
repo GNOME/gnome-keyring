@@ -32,7 +32,7 @@
 #include "pkcs11/gnome2-store/gkm-gnome2-store.h"
 #include "pkcs11/xdg-store/gkm-xdg-store.h"
 
-#include "ssh-agent/gkd-ssh-agent.h"
+#include "ssh-agent/gkd-ssh-agent-service.h"
 
 #include <string.h>
 
@@ -49,7 +49,6 @@ pkcs11_daemon_cleanup (gpointer unused)
 
 	g_assert (pkcs11_roof);
 
-	gkd_ssh_agent_uninitialize ();
 	gkm_rpc_layer_uninitialize ();
 	rv = (pkcs11_roof->C_Finalize) (NULL);
 
@@ -67,7 +66,6 @@ gkd_pkcs11_initialize (void)
 	CK_FUNCTION_LIST_PTR gnome2_store;
 	CK_FUNCTION_LIST_PTR xdg_store;
 	CK_C_INITIALIZE_ARGS init_args;
-	gboolean ret;
 	CK_RV rv;
 
 	/* Secrets */
@@ -113,10 +111,7 @@ gkd_pkcs11_initialize (void)
 
 	egg_cleanup_register (pkcs11_daemon_cleanup, NULL);
 
-	ret = gkd_ssh_agent_initialize (pkcs11_roof) &&
-	      gkm_rpc_layer_initialize (pkcs11_roof);
-
-	return ret;
+	return gkm_rpc_layer_initialize (pkcs11_roof);
 }
 
 static void
@@ -153,46 +148,6 @@ gkd_pkcs11_startup_pkcs11 (void)
 	g_io_channel_unref (channel);
 
 	egg_cleanup_register (pkcs11_rpc_cleanup, NULL);
-
-	return TRUE;
-}
-
-static void
-pkcs11_ssh_cleanup (gpointer unused)
-{
-	gkd_ssh_agent_shutdown ();
-}
-
-static gboolean
-accept_ssh_client (GIOChannel *channel, GIOCondition cond, gpointer unused)
-{
-	if (cond == G_IO_IN)
-		gkd_ssh_agent_accept ();
-	return TRUE;
-}
-
-gboolean
-gkd_pkcs11_startup_ssh (void)
-{
-	GIOChannel *channel;
-	const gchar *base_dir;
-	int sock;
-
-	base_dir = gkd_util_get_master_directory ();
-	g_return_val_if_fail (base_dir, FALSE);
-
-	sock = gkd_ssh_agent_startup (base_dir);
-	if (sock == -1)
-		return FALSE;
-
-	channel = g_io_channel_unix_new (sock);
-	g_io_add_watch (channel, G_IO_IN | G_IO_HUP, accept_ssh_client, NULL);
-	g_io_channel_unref (channel);
-
-	/* gkm-ssh-agent sets the environment variable */
-	gkd_util_push_environment ("SSH_AUTH_SOCK", g_getenv ("SSH_AUTH_SOCK"));
-
-	egg_cleanup_register (pkcs11_ssh_cleanup, NULL);
 
 	return TRUE;
 }

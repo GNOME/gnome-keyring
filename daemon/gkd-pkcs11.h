@@ -29,8 +29,6 @@ gboolean               gkd_pkcs11_initialize           (void);
 
 gboolean               gkd_pkcs11_startup_pkcs11       (void);
 
-gboolean               gkd_pkcs11_startup_ssh          (void);
-
 CK_FUNCTION_LIST_PTR   gkd_pkcs11_get_functions        (void);
 
 CK_FUNCTION_LIST_PTR   gkd_pkcs11_get_base_functions   (void);

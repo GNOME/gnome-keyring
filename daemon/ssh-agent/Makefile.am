@@ -6,63 +6,73 @@ noinst_LTLIBRARIES += \
 	libgkd-ssh-agent.la
 
 libgkd_ssh_agent_la_SOURCES = \
-	daemon/ssh-agent/gkd-ssh-agent.c \
-	daemon/ssh-agent/gkd-ssh-agent.h \
 	daemon/ssh-agent/gkd-ssh-agent-interaction.c \
 	daemon/ssh-agent/gkd-ssh-agent-interaction.h \
+	daemon/ssh-agent/gkd-ssh-agent-process.h \
+	daemon/ssh-agent/gkd-ssh-agent-process.c \
+	daemon/ssh-agent/gkd-ssh-agent-preload.h \
+	daemon/ssh-agent/gkd-ssh-agent-preload.c \
 	daemon/ssh-agent/gkd-ssh-agent-private.h \
-	daemon/ssh-agent/gkd-ssh-agent-ops.c \
-	daemon/ssh-agent/gkd-ssh-agent-proto.c
+	daemon/ssh-agent/gkd-ssh-agent-service.c \
+	daemon/ssh-agent/gkd-ssh-agent-service.h \
+	daemon/ssh-agent/gkd-ssh-agent-util.c \
+	daemon/ssh-agent/gkd-ssh-agent-util.h \
+	$(NULL)
 libgkd_ssh_agent_la_CFLAGS = \
 	$(DAEMON_CFLAGS)
 
-# ------------------------------------------------------------------------------
-# Standalone binary
-
-noinst_PROGRAMS += \
-	gkd-ssh-agent-standalone
-
-gkd_ssh_agent_standalone_SOURCES = \
-	daemon/ssh-agent/gkd-ssh-agent-standalone.c
-gkd_ssh_agent_standalone_CFLAGS = \
-	$(DAEMON_CFLAGS)
-gkd_ssh_agent_standalone_LDADD = \
-	libgkd-ssh-agent.la \
-	libegg-buffer.la \
-	libegg-secure.la \
-	libgkm.la \
-	$(DAEMON_LIBS)
-
-# ------------------------------------------------------------------------------
 # Tests
 
+noinst_LTLIBRARIES += \
+	libgkd-ssh-agent-test.la
+
+libgkd_ssh_agent_test_la_SOURCES = \
+	daemon/ssh-agent/test-common.c \
+	daemon/ssh-agent/test-common.h
+
+libgkd_ssh_agent_test_la_CFLAGS = \
+	$(DAEMON_CFLAGS)
+
+libgkd_ssh_agent_test_la_LIBADD = \
+	libegg-buffer.la \
+	libgkm-wrap-layer.la \
+	$(DAEMON_LIBS)
+
 ssh_agent_CFLAGS = \
-	$(GCK_CFLAGS)
+	$(DAEMON_CFLAGS)
 
 ssh_agent_LIBS = \
 	libgkd-ssh-agent.la \
-	libgkm.la \
+	libgkd-ssh-agent-test.la \
 	libegg.la \
-	$(GLIB_LIBS) \
-	$(GCK_LIBS)
-	$(GTHREAD_LIBS)
+	$(DAEMON_LIBS)
 
 ssh_agent_TESTS = \
-	test-communication \
-	test-keytypes \
-	test-gkd-ssh-agent-interaction
+	test-gkd-ssh-agent-interaction \
+	test-gkd-ssh-agent-preload \
+	test-gkd-ssh-agent-process \
+	test-gkd-ssh-agent-service \
+	test-gkd-ssh-agent-util
 
-test_keytypes_SOURCES = daemon/ssh-agent/test-keytypes.c
-test_keytypes_CFLAGS = $(ssh_agent_CFLAGS)
-test_keytypes_LDADD = $(ssh_agent_LIBS)
+test_gkd_ssh_agent_preload_SOURCES = daemon/ssh-agent/test-gkd-ssh-agent-preload.c
+test_gkd_ssh_agent_preload_CFLAGS = $(ssh_agent_CFLAGS)
+test_gkd_ssh_agent_preload_LDADD = $(ssh_agent_LIBS)
 
-test_communication_SOURCES = daemon/ssh-agent/test-communication.c
-test_communication_CFLAGS = $(ssh_agent_CFLAGS)
-test_communication_LDADD = $(ssh_agent_LIBS)
+test_gkd_ssh_agent_process_SOURCES = daemon/ssh-agent/test-gkd-ssh-agent-process.c
+test_gkd_ssh_agent_process_CFLAGS = $(ssh_agent_CFLAGS)
+test_gkd_ssh_agent_process_LDADD = $(ssh_agent_LIBS)
+
+test_gkd_ssh_agent_service_SOURCES = daemon/ssh-agent/test-gkd-ssh-agent-service.c
+test_gkd_ssh_agent_service_CFLAGS = $(ssh_agent_CFLAGS)
+test_gkd_ssh_agent_service_LDADD = $(ssh_agent_LIBS) libgkd-login.la libgkm-wrap-layer.la
+
+test_gkd_ssh_agent_util_SOURCES = daemon/ssh-agent/test-gkd-ssh-agent-util.c
+test_gkd_ssh_agent_util_CFLAGS = $(ssh_agent_CFLAGS)
+test_gkd_ssh_agent_util_LDADD = $(ssh_agent_LIBS)
 
 test_gkd_ssh_agent_interaction_SOURCES = daemon/ssh-agent/test-gkd-ssh-agent-interaction.c
 test_gkd_ssh_agent_interaction_CFLAGS = $(ssh_agent_CFLAGS)
-test_gkd_ssh_agent_interaction_LDADD = $(ssh_agent_LIBS) libgkd-login.la libgkm-wrap-layer.la
+test_gkd_ssh_agent_interaction_LDADD = $(ssh_agent_LIBS) libgkd-login.la
 
 check_PROGRAMS += $(ssh_agent_TESTS)
 TESTS += $(ssh_agent_TESTS)
