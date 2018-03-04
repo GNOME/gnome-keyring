@@ -8,6 +8,7 @@ daemon/gnome-keyring-secrets.desktop.in.in
 daemon/gnome-keyring-ssh.desktop.in.in
 daemon/login/gkd-login.c
 daemon/ssh-agent/gkd-ssh-agent-interaction.c
+daemon/ssh-agent/gkd-ssh-agent-service.c
 egg/dotlock.c
 egg/egg-oid.c
 pkcs11/gkm/gkm-certificate.c
