@@ -347,20 +347,22 @@ AC_ARG_ENABLE([ssh-agent],
 		AC_HELP_STRING([--disable-ssh-agent],
 		[Don't include SSH agent in gnome-keyring]))
 
-AC_PATH_PROG([SSH_AGENT], [ssh-agent], [false])
-AC_DEFINE_UNQUOTED(SSH_AGENT, "$SSH_AGENT", [The path to ssh-agent])
-
-AC_PATH_PROG([SSH_ADD], [ssh-add], [false])
-AC_DEFINE_UNQUOTED(SSH_ADD, "$SSH_ADD", [The path to ssh-add])
-
-if test "$enable_ssh_agent" != "no"; then
-	if test "$SSH_AGENT" = "false" -o "$SSH_ADD" = "false"; then
-		enable_ssh_agent=no
+if test "$enable_ssh_agent" = "no"; then
+	SSH_AGENT=false
+	SSH_ADD=false
+else
+	AC_PATH_PROG([SSH_AGENT], [ssh-agent], [no])
+	AC_PATH_PROG([SSH_ADD], [ssh-add], [no])
+	if test "$SSH_AGENT" = "no" -o "$SSH_ADD" = "no"; then
+		AC_MSG_ERROR([the ssh-agent and ssh-add commands were not found])
 	else
 		enable_ssh_agent=yes
 		AC_DEFINE(WITH_SSH, 1, [Whether to build SSH agent or not])
 	fi
 fi
+
+AC_DEFINE_UNQUOTED(SSH_AGENT, "$SSH_AGENT", [The path to ssh-agent])
+AC_DEFINE_UNQUOTED(SSH_ADD, "$SSH_ADD", [The path to ssh-add])
 
 AM_CONDITIONAL(WITH_SSH, test "$enable_ssh_agent" != "no")
 ssh_status="$enable_ssh_agent"
