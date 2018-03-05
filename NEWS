@@ -1,3 +1,8 @@
+Changes in version 3.27.92 are:
+ * Wrap stock ssh-agent from OpenSSH [#775981]
+ * Stop installing p11-kit configuration file for the PKCS#11 module [#791401]
+ * Updated translations
+
 Changes in version 3.27.4 are:
  * Add support for SHA2 extension for RSA signatures in ssh-agent [#790910]
  * Build fixes [#792278, #787387]
