@@ -1,3 +1,6 @@
+Changes in version 3.28.0 are:
+ * Fix TAP test driver
+
 Changes in version 3.27.92 are:
  * Wrap stock ssh-agent from OpenSSH [#775981]
  * Stop installing p11-kit configuration file for the PKCS#11 module [#791401]
