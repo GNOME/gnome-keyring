@@ -44,7 +44,8 @@ ssh_agent_CFLAGS = \
 ssh_agent_LIBS = \
 	libgkd-ssh-agent.la \
 	libgkd-ssh-agent-test.la \
-	libegg.la \
+	libegg-buffer.la \
+	libegg-test.la \
 	$(DAEMON_LIBS)
 
 ssh_agent_TESTS = \
