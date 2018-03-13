@@ -1,5 +1,5 @@
 AC_INIT(gnome-keyring,
-        3.28.0,
+        3.28.0.1,
         [gnome-keyring-list@gnome.org],
         [gnome-keyring],
         [https://wiki.gnome.org/Projects/GnomeKeyring])
