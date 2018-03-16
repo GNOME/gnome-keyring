@@ -45,6 +45,12 @@ _gkd_ssh_agent_read_packet (GSocketConnection *connection,
 	if (!g_input_stream_read_all (stream, buffer->buf, 4, &bytes_read, cancellable, error))
 		return FALSE;
 
+	if (bytes_read < 4) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_CLOSED,
+			     "connection closed by peer");
+		return FALSE;
+	}
+
 	if (!egg_buffer_get_uint32 (buffer, 0, NULL, &packet_size) ||
 	    packet_size < 1) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,

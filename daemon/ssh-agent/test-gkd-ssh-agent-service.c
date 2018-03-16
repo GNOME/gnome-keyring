@@ -217,7 +217,7 @@ call_unparseable_add (Test *test)
 
 	prepare_add_identity (&test->req);
 	egg_buffer_set_uint32 (&test->req, 5, 0x80000000);
-	call_error_or_failure (test, G_IO_ERROR, G_IO_ERROR_FAILED);
+	call_error_or_failure (test, G_IO_ERROR, G_IO_ERROR_CONNECTION_CLOSED);
 }
 
 static void
@@ -228,7 +228,7 @@ call_unparseable_remove (Test *test)
 
 	prepare_remove_identity (&test->req);
 	egg_buffer_set_uint32 (&test->req, 5, 0x80000000);
-	call_error_or_failure (test, G_IO_ERROR, G_IO_ERROR_FAILED);
+	call_error_or_failure (test, G_IO_ERROR, G_IO_ERROR_CONNECTION_CLOSED);
 }
 
 static void
@@ -239,7 +239,7 @@ call_unparseable_sign (Test *test)
 
 	prepare_sign_request (&test->req);
 	egg_buffer_set_uint32 (&test->req, 5, 0x80000000);
-	call_error_or_failure (test, G_IO_ERROR, G_IO_ERROR_FAILED);
+	call_error_or_failure (test, G_IO_ERROR, G_IO_ERROR_CONNECTION_CLOSED);
 }
 
 static void
@@ -308,7 +308,7 @@ call_empty (Test *test)
 	error = NULL;
 	ret = _gkd_ssh_agent_read_packet (test->connection, &test->resp, NULL, &error);
 	g_assert_false (ret);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_FAILED);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_CLOSED);
 }
 
 static void

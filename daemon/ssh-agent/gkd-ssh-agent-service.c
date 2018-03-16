@@ -307,7 +307,8 @@ on_run (GThreadedSocketService *service,
 		/* Read in the request */
 		error = NULL;
 		if (!_gkd_ssh_agent_read_packet (connection, &req, self->cancellable, &error)) {
-			if (error->code != G_IO_ERROR_CANCELLED)
+			if (error->code != G_IO_ERROR_CANCELLED &&
+			    error->code != G_IO_ERROR_CONNECTION_CLOSED)
 				g_message ("couldn't read from client: %s", error->message);
 			g_error_free (error);
 			break;
