@@ -39,5 +39,6 @@ gboolean _gkd_ssh_agent_write_packet     (GSocketConnection  *connection,
 GBytes  *_gkd_ssh_agent_parse_public_key (GBytes             *input,
                                           gchar             **comment);
 
+gchar   *_gkd_ssh_agent_canon_error      (gchar *str);
 
 #endif /* __GKD_SSH_AGENT_UTIL_H__ */

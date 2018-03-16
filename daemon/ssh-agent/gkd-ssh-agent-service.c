@@ -228,6 +228,7 @@ ensure_key (GkdSshAgentService *self,
 	const gchar *label;
 	GHashTable *fields;
 	GTlsInteraction *interaction;
+	gchar *standard_error;
 
 	gchar *argv[] = {
 		SSH_ADD,
@@ -256,14 +257,15 @@ ensure_key (GkdSshAgentService *self,
 	g_object_unref (interaction);
 
 	if (!g_spawn_sync (NULL, argv, NULL,
-			   G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+			   G_SPAWN_STDOUT_TO_DEV_NULL,
 	                   gcr_ssh_askpass_child_setup, askpass,
-	                   NULL, NULL, &status, &error)) {
+	                   NULL, &standard_error, &status, &error)) {
 		g_warning ("couldn't run %s: %s", argv[0], error->message);
 		g_error_free (error);
 	} else if (!g_spawn_check_exit_status (status, &error)) {
 		g_message ("the %s command failed: %s", argv[0], error->message);
-		g_error_free (error);
+		g_printerr ("%s", _gkd_ssh_agent_canon_error (standard_error));
+		g_free (standard_error);
 	} else {
 		add_key (self, key);
 	}

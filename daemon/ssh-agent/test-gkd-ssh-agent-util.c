@@ -73,12 +73,41 @@ test_parse_public (void)
 	}
 }
 
+static void
+test_canon_error (void)
+{
+	static const gchar input[] =
+		"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\r\n"
+		"@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @\r\n"
+		"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+		"Permissions 0620 for '/home/foo/.ssh/id_rsa' are too open.\r\n"
+		"It is required that your private key files are NOT accessible by others.\r\n"
+		"This private key will be ignored.\r\n";
+	static const gchar expected[] =
+		"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+		"@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @\n"
+		"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
+		"Permissions 0620 for '/home/foo/.ssh/id_rsa' are too open.\n"
+		"It is required that your private key files are NOT accessible by others.\n"
+		"This private key will be ignored.\n";
+	gchar *p, *output;
+
+	p = g_strdup (input);
+	output = _gkd_ssh_agent_canon_error (p);
+
+	g_assert (output == p);
+	g_assert_cmpstr (expected, ==, output);
+
+	g_free (p);
+}
+
 int
 main (int argc, char **argv)
 {
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/ssh-agent/util/parse_public", test_parse_public);
+	g_test_add_func ("/ssh-agent/util/canon_error", test_canon_error);
 
 	return g_test_run ();
 }

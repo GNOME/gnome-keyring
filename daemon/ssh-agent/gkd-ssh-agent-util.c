@@ -161,3 +161,19 @@ _gkd_ssh_agent_parse_public_key (GBytes *input,
 
 	return g_bytes_new_take (decoded, n_decoded);
 }
+
+gchar *
+_gkd_ssh_agent_canon_error (gchar *str)
+{
+	gchar *start = str;
+	gchar *end = str + strlen (str) + 1;
+
+	for (;;) {
+		start = strchr (start, '\r');
+		if (!start)
+			break;
+		memmove (start, start + 1, end - (start + 1));
+	}
+
+	return str;
+}
