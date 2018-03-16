@@ -35,6 +35,7 @@ typedef struct {
 	EggBuffer req;
 	EggBuffer resp;
 	GkdSshAgentProcess *process;
+	GSocketConnection *connection;
 	GMainLoop *loop;
 } Test;
 
@@ -52,12 +53,14 @@ setup (Test *test, gconstpointer unused)
 	test->process = gkd_ssh_agent_process_new (path);
 	g_free (path);
 	g_assert_nonnull (test->process);
+	test->connection = NULL;
 }
 
 static void
 teardown (Test *test, gconstpointer unused)
 {
 	g_clear_object (&test->process);
+	g_clear_object (&test->connection);
 
 	egg_buffer_uninit (&test->req);
 	egg_buffer_uninit (&test->resp);
@@ -70,11 +73,10 @@ static void
 connect_to_process (Test *test)
 {
 	GError *error;
-	gboolean ret;
 
 	error = NULL;
-	ret = gkd_ssh_agent_process_connect (test->process, NULL, &error);
-	g_assert_true (ret);
+	test->connection = gkd_ssh_agent_process_connect (test->process, NULL, &error);
+	g_assert_nonnull (test->connection);
 	g_assert_no_error (error);
 }
 
@@ -91,7 +93,7 @@ call (Test *test)
 	gboolean ret;
 
 	error = NULL;
-	ret = gkd_ssh_agent_process_call (test->process, &test->req, &test->resp, NULL, &error);
+	ret = _gkd_ssh_agent_call (test->connection, &test->req, &test->resp, NULL, &error);
 	g_assert_true (ret);
 	g_assert_no_error (error);
 }

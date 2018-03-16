@@ -75,6 +75,17 @@ _gkd_ssh_agent_write_packet (GSocketConnection *connection,
 	return g_output_stream_write_all (stream, buffer->buf, buffer->len, &bytes_written, cancellable, error);
 }
 
+gboolean
+_gkd_ssh_agent_call (GSocketConnection *connection,
+		     EggBuffer*req,
+		     EggBuffer *resp,
+		     GCancellable *cancellable,
+		     GError **error)
+{
+	return _gkd_ssh_agent_write_packet (connection, req, cancellable, error) &&
+		_gkd_ssh_agent_read_packet (connection, resp, cancellable, error);
+}
+
 GBytes *
 _gkd_ssh_agent_parse_public_key (GBytes *input,
 				 gchar **comment)

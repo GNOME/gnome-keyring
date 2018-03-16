@@ -47,7 +47,6 @@ struct _GkdSshAgentProcess
 {
 	GObject object;
 	gchar *path;
-	GSocketConnection *connection;
 	gint output;
 	GMutex lock;
 	GPid pid;
@@ -70,7 +69,6 @@ gkd_ssh_agent_process_finalize (GObject *object)
 {
 	GkdSshAgentProcess *self = GKD_SSH_AGENT_PROCESS (object);
 
-	g_clear_object (&self->connection);
 	if (self->output != -1)
 		close (self->output);
 	if (self->output_id)
@@ -206,7 +204,7 @@ on_timeout (gpointer user_data)
 	return TRUE;
 }
 
-gboolean
+GSocketConnection *
 gkd_ssh_agent_process_connect (GkdSshAgentProcess *self,
 			       GCancellable *cancellable,
 			       GError **error)
@@ -223,7 +221,7 @@ gkd_ssh_agent_process_connect (GkdSshAgentProcess *self,
 	if (self->pid == 0) {
 		if (!agent_start_inlock (self, error)) {
 			g_mutex_unlock (&self->lock);
-			return FALSE;
+			return NULL;
 		}
 		started = TRUE;
 	}
@@ -239,7 +237,7 @@ gkd_ssh_agent_process_connect (GkdSshAgentProcess *self,
 		g_mutex_unlock (&self->lock);
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
 			     "ssh-agent process is not ready");
-		return FALSE;
+		return NULL;
 	}
 
 	address = g_unix_socket_address_new (self->path);
@@ -251,29 +249,10 @@ gkd_ssh_agent_process_connect (GkdSshAgentProcess *self,
 					      error);
 	g_object_unref (address);
 	g_object_unref (client);
-	if (!connection) {
-		g_mutex_unlock (&self->lock);
-		return FALSE;
-	}
-
-	g_clear_object (&self->connection);
-	self->connection = connection;
 
 	g_mutex_unlock (&self->lock);
 
-	return TRUE;
-}
-
-gboolean
-gkd_ssh_agent_process_call (GkdSshAgentProcess *self,
-                            EggBuffer*req,
-                            EggBuffer *resp,
-			    GCancellable *cancellable,
-			    GError **error)
-{
-	g_return_val_if_fail (self->connection != NULL, FALSE);
-	return _gkd_ssh_agent_write_packet (self->connection, req, cancellable, error) &&
-		_gkd_ssh_agent_read_packet (self->connection, resp, cancellable, error);
+	return connection;
 }
 
 GkdSshAgentProcess *

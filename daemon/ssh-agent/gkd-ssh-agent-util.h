@@ -36,6 +36,12 @@ gboolean _gkd_ssh_agent_write_packet     (GSocketConnection  *connection,
                                           GCancellable       *cancellable,
                                           GError            **error);
 
+gboolean _gkd_ssh_agent_call             (GSocketConnection  *connection,
+                                          EggBuffer          *req,
+                                          EggBuffer          *resp,
+                                          GCancellable       *cancellable,
+                                          GError            **error);
+
 GBytes  *_gkd_ssh_agent_parse_public_key (GBytes             *input,
                                           gchar             **comment);
 

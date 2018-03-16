@@ -32,12 +32,7 @@
 G_DECLARE_FINAL_TYPE(GkdSshAgentProcess, gkd_ssh_agent_process, GKD, SSH_AGENT_PROCESS, GObject)
 
 GkdSshAgentProcess *gkd_ssh_agent_process_new         (const gchar *path);
-gboolean            gkd_ssh_agent_process_connect     (GkdSshAgentProcess *self,
-                                                       GCancellable *cancellable,
-                                                       GError **error);
-gboolean            gkd_ssh_agent_process_call        (GkdSshAgentProcess *self,
-                                                       EggBuffer *req,
-                                                       EggBuffer *resp,
+GSocketConnection  *gkd_ssh_agent_process_connect     (GkdSshAgentProcess *self,
                                                        GCancellable *cancellable,
                                                        GError **error);
 GPid                gkd_ssh_agent_process_get_pid     (GkdSshAgentProcess *self);

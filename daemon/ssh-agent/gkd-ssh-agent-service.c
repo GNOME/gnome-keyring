@@ -43,7 +43,7 @@
 
 EGG_SECURE_DECLARE (ssh_agent);
 
-typedef gboolean (*GkdSshAgentOperation) (GkdSshAgentService *agent, EggBuffer *req, EggBuffer *resp, GCancellable *cancellable, GError **error);
+typedef gboolean (*GkdSshAgentOperation) (GkdSshAgentService *agent, GSocketConnection *connection, EggBuffer *req, EggBuffer *resp, GCancellable *cancellable, GError **error);
 static const GkdSshAgentOperation operations[GKD_SSH_OP_MAX];
 
 enum {
@@ -159,16 +159,18 @@ gkd_ssh_agent_service_class_init (GkdSshAgentServiceClass *klass)
 
 static gboolean
 relay_request (GkdSshAgentService *self,
+	       GSocketConnection *connection,
 	       EggBuffer *req,
 	       EggBuffer *resp,
 	       GCancellable *cancellable,
 	       GError **error)
 {
-	return gkd_ssh_agent_process_call (self->process, req, resp, cancellable, error);
+	return _gkd_ssh_agent_call (connection, req, resp, cancellable, error);
 }
 
 static gboolean
 handle_request (GkdSshAgentService *self,
+		GSocketConnection *connection,
 		EggBuffer *req,
 		EggBuffer *resp,
 		GCancellable *cancellable,
@@ -187,7 +189,7 @@ handle_request (GkdSshAgentService *self,
 	else
 		func = relay_request;
 
-	return func (self, req, resp, cancellable, error);
+	return func (self, connection, req, resp, cancellable, error);
 }
 
 static void
@@ -287,13 +289,15 @@ on_run (GThreadedSocketService *service,
 	EggBuffer req;
 	EggBuffer resp;
 	GError *error;
+	GSocketConnection *agent_connection;
 	gboolean ret;
 
 	egg_buffer_init_full (&req, 128, egg_secure_realloc);
 	egg_buffer_init_full (&resp, 128, (EggBufferAllocator)g_realloc);
 
 	error = NULL;
-	if (!gkd_ssh_agent_process_connect (self->process, self->cancellable, &error)) {
+	agent_connection = gkd_ssh_agent_process_connect (self->process, self->cancellable, &error);
+	if (!agent_connection) {
 		g_warning ("couldn't connect to ssh-agent: %s", error->message);
 		g_error_free (error);
 		goto out;
@@ -311,7 +315,7 @@ on_run (GThreadedSocketService *service,
 
 		/* Handle the request */
 		error = NULL;
-		while (!(ret = handle_request (self, &req, &resp, self->cancellable, &error))) {
+		while (!(ret = handle_request (self, agent_connection, &req, &resp, self->cancellable, &error))) {
 			if (gkd_ssh_agent_process_get_pid (self->process) != 0) {
 				if (error->code != G_IO_ERROR_CANCELLED)
 					g_message ("couldn't handle client request: %s", error->message);
@@ -320,8 +324,10 @@ on_run (GThreadedSocketService *service,
 			}
 
 			/* Reconnect to the ssh-agent */
+			g_clear_object (&agent_connection);
 			g_clear_error (&error);
-			if (!gkd_ssh_agent_process_connect (self->process, self->cancellable, &error)) {
+			agent_connection = gkd_ssh_agent_process_connect (self->process, self->cancellable, &error);
+			if (!agent_connection) {
 				if (error->code != G_IO_ERROR_CANCELLED)
 					g_message ("couldn't connect to ssh-agent: %s", error->message);
 				g_error_free (error);
@@ -343,6 +349,7 @@ on_run (GThreadedSocketService *service,
 	egg_buffer_uninit (&req);
 	egg_buffer_uninit (&resp);
 
+	g_object_unref (agent_connection);
 	g_object_unref (self);
 
 	return TRUE;
@@ -445,6 +452,7 @@ gkd_ssh_agent_service_lookup_key (GkdSshAgentService *self,
 
 static gboolean
 op_add_identity (GkdSshAgentService *self,
+		 GSocketConnection *connection,
 		 EggBuffer *req,
 		 EggBuffer *resp,
 		 GCancellable *cancellable,
@@ -463,7 +471,7 @@ op_add_identity (GkdSshAgentService *self,
 	else
 		g_message ("got unparseable add identity request for ssh-agent");
 
-	ret = relay_request (self, req, resp, cancellable, error);
+	ret = relay_request (self, connection, req, resp, cancellable, error);
 	if (key) {
 		if (ret)
 			add_key (self, key);
@@ -510,6 +518,7 @@ parse_identities_answer (EggBuffer *resp)
 
 static gboolean
 op_request_identities (GkdSshAgentService *self,
+		       GSocketConnection *connection,
 		       EggBuffer *req,
 		       EggBuffer *resp,
 		       GCancellable *cancellable,
@@ -524,7 +533,7 @@ op_request_identities (GkdSshAgentService *self,
 	GList *l;
 	GkdSshAgentPreload *preload;
 
-	if (!relay_request (self, req, resp, cancellable, error))
+	if (!relay_request (self, connection, req, resp, cancellable, error))
 		return FALSE;
 
 	/* Parse all the keys, and if it fails, just fall through */
@@ -565,6 +574,7 @@ op_request_identities (GkdSshAgentService *self,
 
 static gboolean
 op_sign_request (GkdSshAgentService *self,
+		 GSocketConnection *connection,
 		 EggBuffer *req,
 		 EggBuffer *resp,
 		 GCancellable *cancellable,
@@ -584,11 +594,12 @@ op_sign_request (GkdSshAgentService *self,
 		g_message ("got unparseable sign request for ssh-agent");
 	}
 
-	return relay_request (self, req, resp, cancellable, error);
+	return relay_request (self, connection, req, resp, cancellable, error);
 }
 
 static gboolean
 op_remove_identity (GkdSshAgentService *self,
+		    GSocketConnection *connection,
 		    EggBuffer *req,
 		    EggBuffer *resp,
 		    GCancellable *cancellable,
@@ -608,7 +619,7 @@ op_remove_identity (GkdSshAgentService *self,
 		g_message ("got unparseable remove request for ssh-agent");
 
 	/* Call out ssh-agent anyway to make sure that the key is removed */
-	ret = relay_request (self, req, resp, cancellable, error);
+	ret = relay_request (self, connection, req, resp, cancellable, error);
 	if (key) {
 		if (ret)
 			remove_key (self, key);
@@ -619,6 +630,7 @@ op_remove_identity (GkdSshAgentService *self,
 
 static gboolean
 op_remove_all_identities (GkdSshAgentService *self,
+			  GSocketConnection *connection,
 			  EggBuffer *req,
 			  EggBuffer *resp,
 			  GCancellable *cancellable,
@@ -626,7 +638,7 @@ op_remove_all_identities (GkdSshAgentService *self,
 {
 	gboolean ret;
 
-	ret = relay_request (self, req, resp, cancellable, error);
+	ret = relay_request (self, connection, req, resp, cancellable, error);
 	if (ret)
 		clear_keys (self);
 
