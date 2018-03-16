@@ -31,6 +31,9 @@
 #include "egg/egg-secure-memory.h"
 #include <string.h>
 
+static const gchar *XDG_SCHEMA = "xdg:schema";
+static const gchar *GENERIC_SCHEMA_VALUE = "org.freedesktop.Secret.Generic";
+
 enum {
 	PROP_0,
 	PROP_BASE,
@@ -46,7 +49,8 @@ struct _GkdLoginInteraction
 	GTlsInteraction *base;
 	GckSession *session;
 	gchar *label;
-	GHashTable *fields;
+	GHashTable *lookup_fields;
+	GHashTable *store_fields;
 	gboolean login_available;
 };
 
@@ -65,6 +69,19 @@ gkd_login_interaction_constructed (GObject *object)
 	GkdLoginInteraction *self = GKD_LOGIN_INTERACTION (object);
 
 	self->login_available = gkd_login_available (self->session);
+
+	if (g_hash_table_contains (self->lookup_fields, XDG_SCHEMA))
+		self->store_fields = g_hash_table_ref (self->lookup_fields);
+	else {
+		GHashTableIter iter;
+		gpointer key, value;
+
+		self->store_fields = g_hash_table_new (g_str_hash, g_str_equal);
+		g_hash_table_iter_init (&iter, self->lookup_fields);
+		while (g_hash_table_iter_next (&iter, &key, &value))
+			g_hash_table_insert (self->store_fields, key, value);
+		g_hash_table_insert (self->store_fields, XDG_SCHEMA, GENERIC_SCHEMA_VALUE);
+	}
 
 	G_OBJECT_CLASS (gkd_login_interaction_parent_class)->constructed (object);
 }
@@ -119,7 +136,7 @@ gkd_login_interaction_ask_password_async (GTlsInteraction *interaction,
 
 	/* If the login keyring is available, look for the password there */
 	if (self->login_available) {
-		gchar *value = gkd_login_lookup_passwordv (self->session, self->fields);
+		gchar *value = gkd_login_lookup_passwordv (self->session, self->lookup_fields);
 		if (value) {
 			g_tls_password_set_value_full (G_TLS_PASSWORD (login_password), (guchar *)value, strlen (value), (GDestroyNotify)egg_secure_free);
 			g_object_unref (login_password);
@@ -167,7 +184,7 @@ gkd_login_interaction_ask_password_finish (GTlsInteraction *interaction,
 					   password,
 					   self->label,
 					   GCR_UNLOCK_OPTION_ALWAYS, -1,
-					   self->fields);
+					   self->store_fields);
 		egg_secure_free (password);
 	}
 
@@ -194,7 +211,7 @@ gkd_login_interaction_set_property (GObject *object,
 		self->label = g_value_dup_string (value);
 		break;
 	case PROP_FIELDS:
-		self->fields = g_value_dup_boxed (value);
+		self->lookup_fields = g_value_dup_boxed (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -219,7 +236,8 @@ gkd_login_interaction_finalize (GObject *object)
 	GkdLoginInteraction *self = GKD_LOGIN_INTERACTION (object);
 
 	g_free (self->label);
-	g_hash_table_unref (self->fields);
+	g_hash_table_unref (self->lookup_fields);
+	g_hash_table_unref (self->store_fields);
 
 	G_OBJECT_CLASS (gkd_login_interaction_parent_class)->finalize (object);
 }
