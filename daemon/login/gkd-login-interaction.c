@@ -70,7 +70,7 @@ gkd_login_interaction_constructed (GObject *object)
 
 	self->login_available = gkd_login_available (self->session);
 
-	if (g_hash_table_contains (self->lookup_fields, XDG_SCHEMA))
+	if (g_hash_table_contains (self->lookup_fields, (gpointer) XDG_SCHEMA))
 		self->store_fields = g_hash_table_ref (self->lookup_fields);
 	else {
 		GHashTableIter iter;
@@ -80,7 +80,7 @@ gkd_login_interaction_constructed (GObject *object)
 		g_hash_table_iter_init (&iter, self->lookup_fields);
 		while (g_hash_table_iter_next (&iter, &key, &value))
 			g_hash_table_insert (self->store_fields, key, value);
-		g_hash_table_insert (self->store_fields, XDG_SCHEMA, GENERIC_SCHEMA_VALUE);
+		g_hash_table_insert (self->store_fields, (gpointer) XDG_SCHEMA, (gpointer) GENERIC_SCHEMA_VALUE);
 	}
 
 	G_OBJECT_CLASS (gkd_login_interaction_parent_class)->constructed (object);
