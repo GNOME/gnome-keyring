@@ -251,11 +251,9 @@ ensure_key (GkdSshAgentService *self,
 	unique = g_strdup_printf ("ssh-store:%s", info->filename);
 	g_hash_table_insert (fields, "unique", unique);
 
-	label = g_strdup_printf (_("Unlock password for: %s"),
-				 info->comment[0] != '\0' ? info->comment : _("Unnamed"));
+	label = info->comment[0] != '\0' ? info->comment : _("Unnamed");
 
 	interaction = gkd_login_interaction_new (self->interaction, NULL, label, fields);
-	g_free (label);
 	askpass = gcr_ssh_askpass_new (interaction);
 	g_object_unref (interaction);
 
