@@ -29,6 +29,7 @@
 #include "gkd-login.h"
 
 #include "egg/egg-secure-memory.h"
+#include <glib/gi18n.h>
 #include <string.h>
 
 static const gchar *XDG_SCHEMA = "xdg:schema";
@@ -175,17 +176,20 @@ gkd_login_interaction_ask_password_finish (GTlsInteraction *interaction,
 		const guchar *value;
 		gsize length;
 		gchar *password;
+		gchar *label;
 
 		value = g_tls_password_get_value (G_TLS_PASSWORD (login_password),
 						  &length);
 
 		password = egg_secure_strndup ((const gchar *)value, length);
+		label = g_strdup_printf (_("Unlock password for: %s"), self->label);
 		gkd_login_store_passwordv (self->session,
 					   password,
-					   self->label,
+					   label,
 					   GCR_UNLOCK_OPTION_ALWAYS, -1,
 					   self->store_fields);
 		egg_secure_free (password);
+		g_free (label);
 	}
 
 	return result;
