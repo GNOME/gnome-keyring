@@ -15,7 +15,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with the Gnome Library; see the file COPYING.LIB.  If not,
-   <http://www.gnu.org/licenses/>.
+   see <http://www.gnu.org/licenses/>.
 
    Author: Stef Walter <stef@memberwebs.com>
 */
@@ -655,8 +655,8 @@ memcpy_with_vbits (void *dest,
 
 #ifdef WITH_VALGRIND
 	if (vbits_setup == 1) {
-		VALGRIND_SET_VBITS (dest, vbits, length);
-		VALGRIND_SET_VBITS (src, vbits, length);
+		(void)VALGRIND_SET_VBITS (dest, vbits, length);
+		(void)VALGRIND_SET_VBITS (src, vbits, length);
 	}
 	free (vbits);
 #endif
@@ -1299,7 +1299,7 @@ egg_secure_records (unsigned int *count)
 			if (records == NULL)
 				break;
 
-			/* Make sure this actualy accounts for all memory */
+			/* Make sure this actually accounts for all memory */
 			ASSERT (total == block->n_words);
 		}
 
