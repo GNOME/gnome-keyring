@@ -53,6 +53,7 @@ struct _GkdLoginInteraction
 	GHashTable *lookup_fields;
 	GHashTable *store_fields;
 	gboolean login_available;
+	gboolean login_checked;
 };
 
 G_DEFINE_TYPE (GkdLoginInteraction, gkd_login_interaction, G_TYPE_TLS_INTERACTION);
@@ -137,13 +138,18 @@ gkd_login_interaction_ask_password_async (GTlsInteraction *interaction,
 
 	/* If the login keyring is available, look for the password there */
 	if (self->login_available) {
-		gchar *value = gkd_login_lookup_passwordv (self->session, self->lookup_fields);
-		if (value) {
-			g_tls_password_set_value_full (G_TLS_PASSWORD (login_password), (guchar *)value, strlen (value), (GDestroyNotify)egg_secure_free);
-			g_object_unref (login_password);
-			g_task_return_int (task, G_TLS_INTERACTION_HANDLED);
-			g_object_unref (task);
-			return;
+		if (self->login_checked)
+			g_message ("already attempted to use password from login keyring");
+		else {
+			gchar *value = gkd_login_lookup_passwordv (self->session, self->lookup_fields);
+			self->login_checked = TRUE;
+			if (value) {
+				g_tls_password_set_value_full (G_TLS_PASSWORD (login_password), (guchar *)value, strlen (value), (GDestroyNotify)egg_secure_free);
+				g_object_unref (login_password);
+				g_task_return_int (task, G_TLS_INTERACTION_HANDLED);
+				g_object_unref (task);
+				return;
+			}
 		}
 	}
 
