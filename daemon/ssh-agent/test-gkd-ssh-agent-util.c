@@ -37,7 +37,9 @@ static struct {
 	{ SRCDIR "/pkcs11/ssh-store/fixtures/id_rsa_test.pub",
 	  "AAAAB3NzaC1yc2EAAAABIwAAAQEAoD6VKqkhay6pKHSRjAGWWfFPU8xfsi2gnOwP/B1UHDoztx3czhO+py/fTlhCnSP1jsjkrVIZcnzah2fUNFFRgS4+jROBtvbgHsS72V1E6+ZogV+mBJWWAhw0iPrmQ3Kvm38D3PByo5Y7yKO5kIG2LloYLjosJ5F4sx2xh0uz2wXNtnY1b5xhe2+VEksm9OB+FXaUkZC2fQrTNo8ZGFJQSFd8kUhIfbUDJmlYuZ+vvHM+A3Lc9rHyW4IPaRyxFQciRmb+ZQqU2uSdOXAhg17lskuX/q8yCI5Hy5eDicC222oUMdJTtYgwX4dQCU8TICWhxb3x4RCV+g7D99+tkIvv+w==" },
 	{ SRCDIR "/pkcs11/ssh-store/fixtures/id_dsa_test.pub",
-	  "AAAAB3NzaC1kc3MAAACBANHNmw2YHEodUj4Ae27i8Rm8uoLnpS68QEiCJx8bv9P1o0AaD0w55sH+TBzlo7vtAEDlAzIOBY3PMpy5WarELTIeXmFPzKfHL8tuxMbOPaN/wDkDZNnJZsqlyRwlQKStPcAlvLBNuMjA53u2ndMTVghtUHXETQzwxKhXf7TmvfLBAAAAFQDnF/Y8MgFCP0PpRC5ZAQo1dyDEwwAAAIEAr4iOpTeZx8i1QgQpRl+dmbBAtHTXbPiophzNJBge9lixqF0T3egN2B9wGGnumIXmnst9RPPjuu+cHCLfxhXHzLlW8MLwoiF6ZQOx9M8WcfWIl5oiGyr2e969woRf5OcMGQPOQBdws6MEtemRqq5gu6dqDqVl3xfhSZSP9LpqAI8AAACAUjiuQ3qGErsCz++qd0qrR++QA185XGXAPZqQEHcr4iKSlO17hSUYA03kOWtDaeRtJOlxjIjl9iLo3juKGFgxUfo2StScOSO2saTWFGjA4MybHCK1+mIYXRcYrq314yK2Tmbql/UGDWpcCCGXLWpSFHTaXTbJjPd6VL+TO9/8tFk=" }
+	  "AAAAB3NzaC1kc3MAAACBANHNmw2YHEodUj4Ae27i8Rm8uoLnpS68QEiCJx8bv9P1o0AaD0w55sH+TBzlo7vtAEDlAzIOBY3PMpy5WarELTIeXmFPzKfHL8tuxMbOPaN/wDkDZNnJZsqlyRwlQKStPcAlvLBNuMjA53u2ndMTVghtUHXETQzwxKhXf7TmvfLBAAAAFQDnF/Y8MgFCP0PpRC5ZAQo1dyDEwwAAAIEAr4iOpTeZx8i1QgQpRl+dmbBAtHTXbPiophzNJBge9lixqF0T3egN2B9wGGnumIXmnst9RPPjuu+cHCLfxhXHzLlW8MLwoiF6ZQOx9M8WcfWIl5oiGyr2e969woRf5OcMGQPOQBdws6MEtemRqq5gu6dqDqVl3xfhSZSP9LpqAI8AAACAUjiuQ3qGErsCz++qd0qrR++QA185XGXAPZqQEHcr4iKSlO17hSUYA03kOWtDaeRtJOlxjIjl9iLo3juKGFgxUfo2StScOSO2saTWFGjA4MybHCK1+mIYXRcYrq314yK2Tmbql/UGDWpcCCGXLWpSFHTaXTbJjPd6VL+TO9/8tFk=" },
+	{ SRCDIR "/pkcs11/ssh-store/fixtures/identity.pub",
+	  NULL }
 };
 
 #define COMMENT "A public key comment"
@@ -60,16 +62,20 @@ test_parse_public (void)
 		input_bytes = g_bytes_new_take (data, n_data);
 		output_bytes = _gkd_ssh_agent_parse_public_key (input_bytes, &comment);
 		g_bytes_unref (input_bytes);
-		g_assert (output_bytes);
+		if (PUBLIC_FILES[i].encoded == NULL) {
+			g_assert (output_bytes == NULL);
+		} else {
+			g_assert (output_bytes);
 
-		blob = g_bytes_get_data (output_bytes, &n_data);
-		encoded = g_base64_encode (blob, n_data);
-		g_bytes_unref (output_bytes);
-		g_assert_cmpstr (encoded, ==, PUBLIC_FILES[i].encoded);
-		g_free (encoded);
+			blob = g_bytes_get_data (output_bytes, &n_data);
+			encoded = g_base64_encode (blob, n_data);
+			g_bytes_unref (output_bytes);
+			g_assert_cmpstr (encoded, ==, PUBLIC_FILES[i].encoded);
+			g_free (encoded);
 
-		g_assert_cmpstr (comment, ==, COMMENT);
-		g_free (comment);
+			g_assert_cmpstr (comment, ==, COMMENT);
+			g_free (comment);
+		}
 	}
 }
 

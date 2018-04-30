@@ -154,6 +154,12 @@ _gkd_ssh_agent_parse_public_key (GBytes *input,
 	if (at == NULL)
 		at = data + n_data;
 
+	/* Check if the chunk is the base64 key */
+	if ((at - data) % 4 != 0) {
+		g_message ("SSH public key missing key data");
+		return NULL;
+	}
+
 	/* Decode the base64 key */
 	save = state = 0;
 	decoded = g_malloc (n_data * 3 / 4);
