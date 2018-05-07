@@ -1,3 +1,6 @@
+Changes in version 3.28.2 are:
+ * Fix glitches in ssh-agent [#795699]
+
 Changes in version 3.28.0.2 are:
  * Fix glitches in ssh-agent [#794361, #794368, #794369, #794500, #794631]
 
