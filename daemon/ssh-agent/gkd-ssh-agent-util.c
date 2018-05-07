@@ -76,8 +76,11 @@ _gkd_ssh_agent_write_packet (GSocketConnection *connection,
 	gsize bytes_written;
 
 	stream = g_io_stream_get_output_stream (G_IO_STREAM (connection));
-	if (!egg_buffer_set_uint32 (buffer, 0, buffer->len - 4))
-		g_return_val_if_reached (FALSE);
+	if (!egg_buffer_set_uint32 (buffer, 0, buffer->len - 4)) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+			     "cannot read packet length");
+		return FALSE;
+	}
 	return g_output_stream_write_all (stream, buffer->buf, buffer->len, &bytes_written, cancellable, error);
 }
 
