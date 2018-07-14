@@ -106,6 +106,8 @@ _gkd_ssh_agent_parse_public_key (GBytes *input,
 	guint save;
 	const guchar *data;
 	gsize n_data;
+	const guchar *keytype;
+	gsize n_keytype;
 
 	g_return_val_if_fail (input, NULL);
 
@@ -137,12 +139,16 @@ _gkd_ssh_agent_parse_public_key (GBytes *input,
 	if (at != NULL)
 		n_data = at - data;
 
+	keytype = data;
+
 	/* Find the first space */
 	at = memchr (data, ' ', n_data);
 	if (!at) {
 		g_message ("SSH public key missing space");
 		return NULL;
 	}
+
+	n_keytype = at - data;
 
 	/* Skip more whitespace */
 	n_data -= (at - data);
@@ -169,6 +175,15 @@ _gkd_ssh_agent_parse_public_key (GBytes *input,
 	n_decoded = g_base64_decode_step ((gchar*)data, at - data, decoded, &state, &save);
 
 	if (!n_decoded) {
+		g_free (decoded);
+		return NULL;
+	}
+
+	/* Check if the key type is prefixed to the decoded blob */
+	if (!(n_decoded > n_keytype + 4 &&
+	      egg_buffer_decode_uint32 (decoded) == n_keytype &&
+	      memcmp (keytype, decoded + 4, n_keytype) == 0)) {
+		g_message ("SSH public key missing key type");
 		g_free (decoded);
 		return NULL;
 	}
