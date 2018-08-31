@@ -1,5 +1,5 @@
 
-noinst_LTLIBRARIES += libgkd-dbus.la
+noinst_LTLIBRARIES += libgkd-dbus.la libgkd-dbus-secrets.la
 
 daemon/dbus/gkd-secrets-generated.h: daemon/dbus/org.freedesktop.Secrets.xml
 	$(AM_V_GEN) gdbus-codegen --interface-prefix org.freedesktop.Secrets. \
@@ -38,22 +38,44 @@ EXTRA_DIST += \
 	daemon/dbus/org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.xml \
 	$(NULL)
 
-BUILT_SOURCES += \
+daemon_generated = \
 	daemon/dbus/gkd-daemon-generated.c \
-	daemon/dbus/gkd-daemon-generated.h \
+	daemon/dbus/gkd-daemon-generated.h
+secrets_generated = \
 	daemon/dbus/gkd-internal-generated.c \
 	daemon/dbus/gkd-internal-generated.h \
 	daemon/dbus/gkd-secrets-generated.c \
 	daemon/dbus/gkd-secrets-generated.h
 
+BUILT_SOURCES += \
+	$(daemon_generated) \
+	$(secrets_generated)
+
 libgkd_dbus_la_SOURCES = \
-	$(BUILT_SOURCES) \
+	$(daemon_generated) \
 	daemon/dbus/gkd-dbus.c \
 	daemon/dbus/gkd-dbus.h \
 	daemon/dbus/gkd-dbus-environment.c \
 	daemon/dbus/gkd-dbus-private.h \
 	daemon/dbus/gkd-dbus-secrets.c \
 	daemon/dbus/gkd-dbus-session.c \
+	$(NULL)
+
+libgkd_dbus_la_LIBADD = \
+	libgkd-dbus-secrets.la \
+	$(GIO_LIBS) \
+	$(GLIB_LIBS) \
+	$(GOBJECT_LIBS)
+
+libgkd_dbus_la_CFLAGS = \
+	-DGKD_SECRETS_HELPER=\"$(libexecdir)/gkd-secrets-helper\" \
+	$(DAEMON_CFLAGS) \
+	$(GCR_BASE_CFLAGS) \
+	$(GIO_CFLAGS) \
+	$(GOBJECT_CFLAGS)
+
+libgkd_dbus_secrets_la_SOURCES = \
+	$(secrets_generated) \
 	daemon/dbus/gkd-secret-change.c \
 	daemon/dbus/gkd-secret-change.h \
 	daemon/dbus/gkd-secret-create.c \
@@ -85,12 +107,29 @@ libgkd_dbus_la_SOURCES = \
 	daemon/dbus/gkd-secret-util.h \
 	$(NULL)
 
-libgkd_dbus_la_LIBADD = \
+libgkd_dbus_secrets_la_LIBADD = \
 	$(GIO_LIBS) \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS)
 
-libgkd_dbus_la_CFLAGS = \
+libgkd_dbus_secrets_la_CFLAGS = \
+	$(DAEMON_CFLAGS) \
+	$(GCR_BASE_CFLAGS) \
+	$(GIO_CFLAGS) \
+	$(GOBJECT_CFLAGS)
+
+libexec_PROGRAMS += gkd-secrets-helper
+
+gkd_secrets_helper_SOURCES = daemon/dbus/gkd-secrets-helper.c
+
+gkd_secrets_helper_LDADD = \
+	libgkd-dbus-secrets.la \
+	libgkm-wrap-layer.la \
+	libgkm-secret-store.la \
+	libgkm.la \
+	$(DAEMON_LIBS)
+
+gkd_secrets_helper_CFLAGS = \
 	$(DAEMON_CFLAGS) \
 	$(GCR_BASE_CFLAGS) \
 	$(GIO_CFLAGS) \

@@ -146,3 +146,20 @@ gkd_secret_util_build_path (const gchar *base, gconstpointer identifier, gssize 
 
 	return g_string_free (result, FALSE);
 }
+
+gboolean
+gkd_dbus_invocation_matches_caller (GDBusMethodInvocation *invocation,
+				    const char            *caller)
+{
+	const char *invocation_caller;
+
+	invocation_caller = g_dbus_method_invocation_get_sender (invocation);
+	if (!g_str_equal (invocation_caller, caller)) {
+		g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
+							       G_DBUS_ERROR_ACCESS_DENIED,
+							       "Invalid caller");
+		return FALSE;
+	}
+
+	return TRUE;
+}

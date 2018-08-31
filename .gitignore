@@ -72,6 +72,7 @@ ltconfig
 ltmain.sh
 missing
 mkinstalldirs
+/gkd-secrets-helper
 /gnome-keyring-ask
 /gnome-keyring-daemon
 /list-keyrings
