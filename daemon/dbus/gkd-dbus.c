@@ -282,20 +282,3 @@ gkd_dbus_setup (void)
 	egg_cleanup_register (dbus_cleanup, NULL);
 	return TRUE;
 }
-
-gboolean
-gkd_dbus_invocation_matches_caller (GDBusMethodInvocation *invocation,
-				    const char            *caller)
-{
-	const char *invocation_caller;
-
-	invocation_caller = g_dbus_method_invocation_get_sender (invocation);
-	if (!g_str_equal (invocation_caller, caller)) {
-		g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
-							       G_DBUS_ERROR_ACCESS_DENIED,
-							       "Invalid caller");
-		return FALSE;
-	}
-
-	return TRUE;
-}

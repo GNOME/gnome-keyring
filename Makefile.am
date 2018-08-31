@@ -158,6 +158,7 @@ AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)
 
 bin_PROGRAMS =
+libexec_PROGRAMS =
 BUILT_SOURCES =
 check_PROGRAMS =
 noinst_DATA =

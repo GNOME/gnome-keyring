@@ -23,7 +23,7 @@
 
 #include "gkd-secret-types.h"
 
-#include <glib.h>
+#include <gio/gio.h>
 
 gboolean          gkd_secret_util_parse_path                            (const gchar *path,
                                                                          gchar **collection,
@@ -32,5 +32,10 @@ gboolean          gkd_secret_util_parse_path                            (const g
 gchar*            gkd_secret_util_build_path                            (const gchar *base,
                                                                          gconstpointer identifier,
                                                                          gssize n_identifier);
+
+
+/* DBus utils */
+gboolean      gkd_dbus_invocation_matches_caller (GDBusMethodInvocation *invocation,
+						  const char            *caller);
 
 #endif /* __GKD_SECRET_UTIL_H__ */
