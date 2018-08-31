@@ -32,6 +32,7 @@
 #include "egg/egg-cleanup.h"
 
 #include <glib.h>
+#include <glib-unix.h>
 #include <gio/gio.h>
 
 static GDBusConnection *dbus_conn = NULL;
@@ -112,6 +113,142 @@ handle_get_control_directory (GkdExportedDaemon *skeleton,
 	return TRUE;
 }
 
+struct SecretHelperData
+{
+	GPid pid;
+	GMainLoop *loop;
+	GIOChannel *channel;
+	gchar *name;
+	guint output_id;
+	guint child_id;
+	guint timeout_id;
+};
+
+static gboolean
+on_secrets_helper_output (GIOChannel *source,
+			  GIOCondition condition,
+			  gpointer user_data)
+{
+	struct SecretHelperData *data = user_data;
+	gchar *line;
+	gsize terminator_pos;
+	GError *error = NULL;
+
+	if (g_io_channel_read_line (source, &line, NULL,
+				    &terminator_pos, &error) ==
+	    G_IO_STATUS_NORMAL) {
+		line[terminator_pos] = '\0';
+		data->name = line;
+	}
+
+	data->output_id = 0;
+	g_main_loop_quit (data->loop);
+	return FALSE;
+}
+
+static void
+on_secrets_helper_child (GPid pid,
+			 gint status,
+			 gpointer user_data)
+{
+	struct SecretHelperData *data = user_data;
+
+	g_spawn_close_pid (pid);
+	if (data->output_id > 0)
+		g_source_remove (data->output_id);
+	if (data->timeout_id > 0)
+		g_source_remove (data->timeout_id);
+
+	data->child_id = 0;
+	g_main_loop_quit (data->loop);
+}
+
+static gboolean
+on_secrets_helper_timeout (gpointer user_data)
+{
+	struct SecretHelperData *data = user_data;
+
+	kill (data->pid, SIGTERM);
+	data->timeout_id = 0;
+	g_main_loop_quit (data->loop);
+	return FALSE;
+}
+
+static void
+on_secrets_helper_peer_vanished (GDBusConnection *connection,
+				 const gchar *name,
+				 gpointer user_data)
+{
+	GPid pid = GPOINTER_TO_INT (user_data);
+	kill (pid, SIGTERM);
+}
+
+static gboolean
+handle_get_secret_service (GkdExportedDaemon *object,
+			   GDBusMethodInvocation *invocation,
+			   const gchar *arg_AppID)
+{
+	gchar *args[] = {
+		GKD_SECRETS_HELPER,
+		(gchar *) arg_AppID,
+		NULL
+	};
+	gint standard_output;
+	GError *error = NULL;
+	struct SecretHelperData data;
+	const gchar *sender;
+
+	memset (&data, 0, sizeof (data));
+
+	if (!g_spawn_async_with_pipes (NULL, args, NULL, G_SPAWN_DEFAULT, NULL,
+				       NULL, &data.pid, NULL, &standard_output, NULL, &error)) {
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		return FALSE;
+	}
+
+	data.loop = g_main_loop_new (NULL, FALSE);
+	data.channel = g_io_channel_unix_new (standard_output);
+	data.name = NULL;
+	data.output_id = g_io_add_watch (data.channel, G_IO_IN, on_secrets_helper_output, &data);
+	data.child_id = g_child_watch_add (data.pid, on_secrets_helper_child, &data);
+	data.timeout_id = g_timeout_add (10000, on_secrets_helper_timeout, &data);
+
+	g_main_loop_run (data.loop);
+
+	if (data.output_id > 0)
+		g_source_remove (data.output_id);
+	if (data.child_id > 0)
+		g_source_remove (data.child_id);
+	if (data.timeout_id > 0)
+		g_source_remove (data.timeout_id);
+
+	g_main_loop_unref (data.loop);
+	g_io_channel_unref (data.channel);
+
+	if (data.name == NULL) {
+		g_dbus_method_invocation_return_error (invocation,
+						       G_IO_ERROR,
+						       G_IO_ERROR_FAILED,
+						       "couldn't launch gkd-secrets-service");
+		return FALSE;
+	}
+
+	sender = g_dbus_method_invocation_get_sender (invocation);
+	g_bus_watch_name_on_connection (g_dbus_method_invocation_get_connection (invocation),
+					sender,
+					G_BUS_NAME_WATCHER_FLAGS_NONE,
+					NULL,
+					on_secrets_helper_peer_vanished,
+					GINT_TO_POINTER (data.pid),
+					NULL);
+
+	gkd_exported_daemon_complete_get_secret_service (object,
+							 invocation,
+							 data.name);
+	g_free (data.name);
+	return TRUE;
+}
+
 static void
 cleanup_singleton (gpointer user_data)
 {
@@ -148,6 +285,9 @@ gkd_dbus_singleton_acquire (gboolean *acquired)
 				  G_CALLBACK (handle_get_control_directory), NULL);
 		g_signal_connect (skeleton, "handle-get-environment",
 				  G_CALLBACK (handle_get_environment), NULL);
+
+		g_signal_connect (skeleton, "handle-get-secret-service",
+				  G_CALLBACK (handle_get_secret_service), NULL);
 
 		g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (skeleton), dbus_conn,
 						  GNOME_KEYRING_DAEMON_PATH, &error);
@@ -280,22 +420,5 @@ gkd_dbus_setup (void)
 	gkd_dbus_secrets_init (dbus_conn);
 
 	egg_cleanup_register (dbus_cleanup, NULL);
-	return TRUE;
-}
-
-gboolean
-gkd_dbus_invocation_matches_caller (GDBusMethodInvocation *invocation,
-				    const char            *caller)
-{
-	const char *invocation_caller;
-
-	invocation_caller = g_dbus_method_invocation_get_sender (invocation);
-	if (!g_str_equal (invocation_caller, caller)) {
-		g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
-							       G_DBUS_ERROR_ACCESS_DENIED,
-							       "Invalid caller");
-		return FALSE;
-	}
-
 	return TRUE;
 }

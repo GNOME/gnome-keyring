@@ -9,5 +9,9 @@
     <method name="GetControlDirectory">
       <arg name="ControlDirectory" type="s" direction="out"/>
     </method>
+    <method name="GetSecretService">
+      <arg name="AppID" type="s" direction="in"/>
+      <arg name="DBusName" type="s" direction="out"/>
+    </method>
   </interface>
 </node>
