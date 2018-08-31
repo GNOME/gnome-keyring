@@ -379,7 +379,7 @@ parse_arguments (GkmModule *self, const gchar *string)
 		/* Inside of quotes */
 		} else if (quote != '\0') {
 			if (*src == '\\') {
-				*at++ = *src++;
+				src++;
 				if (!*src) {
 					g_warning ("couldn't parse module argument string");
 					goto done;
