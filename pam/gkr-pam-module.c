@@ -38,6 +38,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/un.h>
 
 #include <assert.h>
 #include <ctype.h>
@@ -67,6 +68,8 @@ enum {
 };
 
 #define ENV_CONTROL             "GNOME_KEYRING_CONTROL"
+
+#define MAX_CONTROL_SIZE	(sizeof(((struct sockaddr_un *)0)->sun_path))
 
 /* read & write ends of a pipe */
 #define  READ_END   0
@@ -599,16 +602,49 @@ done:
 	return ret;
 }
 
+/* control must be at least MAX_CONTROL_SIZE */
+static int
+get_control_file (pam_handle_t *ph, char *control)
+{
+	const char *control_root;
+	const char *suffix;
+
+	control_root = get_any_env (ph, ENV_CONTROL);
+	if (control_root == NULL) {
+		control_root = get_any_env (ph, "XDG_RUNTIME_DIR");
+		if (control_root == NULL)
+			return GKD_CONTROL_RESULT_NO_DAEMON;
+		suffix = "/keyring/control";
+	} else {
+		suffix = "/control";
+	}
+
+	if (strlen (control_root) + strlen (suffix) + 1 > MAX_CONTROL_SIZE) {
+		syslog (GKR_LOG_ERR, "gkr-pam: address is too long for unix socket path: %s/%s",
+			control, suffix);
+		return GKD_CONTROL_RESULT_FAILED;
+	}
+
+	strcpy (control, control_root);
+	strcat (control, suffix);
+
+	return GKD_CONTROL_RESULT_OK;
+}
+
 static int
 stop_daemon (pam_handle_t *ph,
              struct passwd *pwd)
 {
-	const char *control;
+	char control[MAX_CONTROL_SIZE];
 	int res;
 
 	assert (pwd);
 
-	control = get_any_env (ph, ENV_CONTROL);
+	res = get_control_file(ph, control);
+	if (res != GKD_CONTROL_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: unable to locate daemon control file");
+		return PAM_SERVICE_ERR;
+	}
 
 	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_QUIT, 0, NULL);
 
@@ -631,13 +667,18 @@ unlock_keyring (pam_handle_t *ph,
                 const char *password,
                 int *need_daemon)
 {
-	const char *control;
+	char control[MAX_CONTROL_SIZE];
 	int res;
 	const char *argv[2];
 	
 	assert (pwd);
 
-	control = get_any_env (ph, ENV_CONTROL);
+	res = get_control_file(ph, control);
+	if (res != GKD_CONTROL_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: unable to locate daemon control file");
+		return PAM_SERVICE_ERR;
+	}
+
 	argv[0] = password;
 
 	res = gkr_pam_client_run_operation (pwd, control, GKD_CONTROL_OP_UNLOCK,
@@ -666,7 +707,7 @@ change_keyring_password (pam_handle_t *ph,
                          const char *original,
                          int *need_daemon)
 {
-	const char *control;
+	char control[MAX_CONTROL_SIZE];
 	const char *argv[3];
 	int res;
 
@@ -674,7 +715,12 @@ change_keyring_password (pam_handle_t *ph,
 	assert (password);
 	assert (original);
 
-	control = get_any_env (ph, ENV_CONTROL);
+	res = get_control_file(ph, control);
+	if (res != GKD_CONTROL_RESULT_OK) {
+		syslog (GKR_LOG_ERR, "gkr-pam: unable to locate daemon control file");
+		return PAM_SERVICE_ERR;
+	}
+
 	argv[0] = original;
 	argv[1] = password;
 	

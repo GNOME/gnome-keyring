@@ -148,27 +148,16 @@ lookup_daemon (struct passwd *pwd,
                struct sockaddr_un *addr)
 {
 	struct stat st;
-	const char *suffix;
 
-	if (control == NULL) {
-		control = getenv ("XDG_RUNTIME_DIR");
-		if (control == NULL)
-			return GKD_CONTROL_RESULT_NO_DAEMON;
-		suffix = "/keyring/control";
-	} else {
-		suffix = "/control";
-	}
-
-	if (strlen (control) + strlen (suffix) + 1 > sizeof (addr->sun_path)) {
-		syslog (GKR_LOG_ERR, "gkr-pam: address is too long for unix socket path: %s/%s",
-		        control, suffix);
+	if (strlen (control) + 1 > sizeof (addr->sun_path)) {
+		syslog (GKR_LOG_ERR, "gkr-pam: address is too long for unix socket path: %s",
+		        control);
 		return GKD_CONTROL_RESULT_FAILED;
 	}
 
 	memset (addr, 0, sizeof (*addr));
 	addr->sun_family = AF_UNIX;
 	strcpy (addr->sun_path, control);
-	strcat (addr->sun_path, suffix);
 
 	/* A bunch of checks to make sure nothing funny is going on */
 	if (lstat (addr->sun_path, &st) < 0) {
