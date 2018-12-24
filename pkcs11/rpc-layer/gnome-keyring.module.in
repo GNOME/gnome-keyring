@@ -1,0 +1,7 @@
+
+# The file is installed/loaded from the default module p11-kit directory
+module: gnome-keyring-pkcs11.so
+
+# And where to store and lookup trust objects
+x-trust-store: pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:XDG:DEFAULT
+x-trust-lookup: pkcs11:library-manufacturer=GNOME%20Keyring
