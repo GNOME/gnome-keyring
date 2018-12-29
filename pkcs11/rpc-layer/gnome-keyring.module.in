@@ -2,6 +2,12 @@
 # The file is installed/loaded from the default module p11-kit directory
 module: gnome-keyring-pkcs11.so
 
+# This module is obsolete and only exposed to specific programs that
+# rely on it through gcr's certificate pinning API.  In the future the
+# gcr implementation may switch to p11-kit-trust, see:
+# https://gitlab.gnome.org/GNOME/gcr/issues/6
+enable-in: geary
+
 # And where to store and lookup trust objects
 x-trust-store: pkcs11:library-manufacturer=GNOME%20Keyring;serial=1:XDG:DEFAULT
 x-trust-lookup: pkcs11:library-manufacturer=GNOME%20Keyring
