@@ -59,6 +59,8 @@ EGG_SECURE_DECLARE (armor);
 #define ARMOR_PREF_END      "-----END "
 #define ARMOR_PREF_END_L    9
 
+static const gchar * const ORDERED_HEADERS[] = { "Proc-Type", "DEK-Info", NULL };
+
 static void
 parse_header_lines (const gchar *hbeg,
                     const gchar *hend,
@@ -336,13 +338,16 @@ egg_armor_parse (GBytes *data,
 }
 
 static void
-append_each_header (gpointer key, gpointer value, gpointer user_data)
+append_each_header (gconstpointer key, gconstpointer value, gpointer user_data)
 {
 	GString *string = (GString*)user_data;
 
-	g_string_append (string, (gchar*)key);
+	if (g_strv_contains (ORDERED_HEADERS, (const gchar *) key))
+		return;
+
+	g_string_append (string, (const gchar *)key);
 	g_string_append (string, ": ");
-	g_string_append (string, (gchar*)value);
+	g_string_append (string, (const gchar *)value);
 	g_string_append_c (string, '\n');
 }
 
@@ -357,6 +362,7 @@ egg_armor_write (const guchar *data,
 	gint state, save;
 	gsize i, length;
 	gsize n_prefix, estimate;
+	gchar *value;
 
 	g_return_val_if_fail (data || !n_data, NULL);
 	g_return_val_if_fail (type, NULL);
@@ -370,9 +376,19 @@ egg_armor_write (const guchar *data,
 	g_string_append_len (string, ARMOR_SUFF, ARMOR_SUFF_L);
 	g_string_append_c (string, '\n');
 
-	/* The headers */
+	/* The headers. Some must come in a specific order. */
+	for (i = 0; ORDERED_HEADERS[i] != NULL; i++) {
+		value = g_hash_table_lookup (headers, ORDERED_HEADERS[i]);
+		if (value != NULL)
+			g_string_append_printf (string,
+			                        "%s: %s\n",
+			                        ORDERED_HEADERS[i],
+			                        value);
+	}
+
+	/* And the rest we output in any arbitrary order. */
 	if (headers && g_hash_table_size (headers) > 0) {
-		g_hash_table_foreach (headers, append_each_header, string);
+		g_hash_table_foreach (headers, (GHFunc) append_each_header, string);
 		g_string_append_c (string, '\n');
 	}
 
