@@ -244,8 +244,7 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 			attr->ulValueLen += strlen (schema_name);
 			attr->ulValueLen += 2;
 		}
-		if (keys != NULL)
-			g_list_free (keys);
+		g_list_free (keys);
 		return CKR_OK;
 	}
 
@@ -269,7 +268,6 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 
 	rv = gkm_attribute_set_data (attr, result->str, result->len);
 	g_string_free (result, TRUE);
-	if (keys != NULL)
 	g_list_free (keys);
 
 	return rv;
