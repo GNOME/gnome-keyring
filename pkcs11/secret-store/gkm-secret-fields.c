@@ -214,9 +214,9 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
                              GHashTable *fields,
                              const gchar *schema_name)
 {
-	GHashTableIter iter;
+	GList *l, *keys;
 	gboolean saw_schema = FALSE;
-	gpointer key;
+	const gchar *key;
 	gpointer value;
 	GString *result;
 	CK_RV rv;
@@ -224,10 +224,15 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 	g_assert (attr != NULL);
 	g_assert (fields != NULL);
 
+	keys = g_hash_table_get_keys (fields);
+	keys = g_list_sort (keys, (GCompareFunc) g_strcmp0);
+
 	if (!attr->pValue) {
 		attr->ulValueLen = 0;
-		g_hash_table_iter_init (&iter, fields);
-		while (g_hash_table_iter_next (&iter, &key, &value)) {
+		for (l = keys; l != NULL; l = l->next) {
+			key = (const gchar *) l->data;
+			value = g_hash_table_lookup (fields, key);
+
 			if (g_str_equal (key, GKM_SECRET_FIELD_SCHEMA))
 				saw_schema = TRUE;
 			attr->ulValueLen += strlen (key);
@@ -239,12 +244,14 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 			attr->ulValueLen += strlen (schema_name);
 			attr->ulValueLen += 2;
 		}
+		g_list_free (keys);
 		return CKR_OK;
 	}
 
 	result = g_string_sized_new (256);
-	g_hash_table_iter_init (&iter, fields);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
+	for (l = keys; l != NULL; l = l->next) {
+		key = (const gchar *) l->data;
+		value = g_hash_table_lookup (fields, key);
 		if (g_str_equal (key, GKM_SECRET_FIELD_SCHEMA))
 			saw_schema = TRUE;
 		g_string_append (result, key);
@@ -261,6 +268,7 @@ gkm_secret_fields_serialize (CK_ATTRIBUTE_PTR attr,
 
 	rv = gkm_attribute_set_data (attr, result->str, result->len);
 	g_string_free (result, TRUE);
+	g_list_free (keys);
 
 	return rv;
 }

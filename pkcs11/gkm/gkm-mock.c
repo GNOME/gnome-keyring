@@ -72,6 +72,7 @@ typedef struct _Session {
 static guint unique_identifier = 100;
 static GHashTable *the_sessions = NULL;
 static GHashTable *the_objects = NULL;
+static GSList *the_objects_list = NULL;
 static GArray *the_credential_template = NULL;
 
 enum {
@@ -102,6 +103,39 @@ lookup_object (Session *session, CK_OBJECT_HANDLE hObject)
 	return attrs;
 }
 
+typedef struct {
+	guint handle;
+	GArray *template; /* owned by the_objects */
+} ObjectData;
+
+static gint
+list_find_handle (gconstpointer l, gconstpointer r)
+{
+	guint handle;
+	ObjectData *item;
+
+	handle = GPOINTER_TO_UINT (r);
+	item = (ObjectData *) l;
+
+	if (item->handle == handle)
+		return 0;
+
+	return -1;
+}
+
+static void
+insert_template (guint handle, GArray *template)
+{
+	ObjectData *data;
+
+	data = g_new0 (ObjectData, 1);
+	data->handle = handle;
+	data->template = template;
+
+	g_hash_table_insert (the_objects, GUINT_TO_POINTER (handle), template);
+	the_objects_list = g_slist_append (the_objects_list, data);
+}
+
 CK_OBJECT_HANDLE
 gkm_mock_module_take_object (GArray *template)
 {
@@ -115,7 +149,7 @@ gkm_mock_module_take_object (GArray *template)
 		g_return_val_if_fail (token == TRUE, 0);
 	else
 		gkm_template_set_boolean (template, CKA_TOKEN, CK_TRUE);
-	g_hash_table_insert (the_objects, GUINT_TO_POINTER (handle), template);
+	insert_template (handle, template);
 	return handle;
 }
 
@@ -127,14 +161,16 @@ gkm_mock_module_enumerate_objects (CK_SESSION_HANDLE handle, GkmMockEnumerator f
 	gpointer key;
 	gpointer value;
 	Session *session;
+	ObjectData *data;
+	GSList *l = NULL;
 
 	g_assert (the_objects);
 	g_assert (func);
 
 	/* Token objects */
-	g_hash_table_iter_init (&iter, the_objects);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		if (!(func) (GPOINTER_TO_UINT (key), value, user_data))
+	for (l = the_objects_list; l != NULL; l = l->next) {
+		data = (ObjectData *) l->data;
+		if (!(func) (data->handle, data->template, user_data))
 			return;
 	}
 
@@ -267,7 +303,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	attrs = gkm_template_new (NULL, 0);
 	gkm_template_set_ulong (attrs, CKA_CLASS, CKO_DATA);
 	gkm_template_set_string (attrs, CKA_LABEL, "TEST LABEL");
-	g_hash_table_insert (the_objects, GUINT_TO_POINTER (2), attrs);
+	insert_template (2, attrs);
 
 	/* Private capitalize key */
 	value = CKM_MOCK_CAPITALIZE;
@@ -282,7 +318,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_DERIVE, CK_TRUE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique1");
-	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_CAPITALIZE), attrs);
+	insert_template (PRIVATE_KEY_CAPITALIZE, attrs);
 
 	/* Public capitalize key */
 	value = CKM_MOCK_CAPITALIZE;
@@ -294,7 +330,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_FALSE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique2");
-	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_CAPITALIZE), attrs);
+	insert_template (PUBLIC_KEY_CAPITALIZE, attrs);
 
 	/* Private prefix key */
 	value = CKM_MOCK_PREFIX;
@@ -307,7 +343,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_ALWAYS_AUTHENTICATE, CK_TRUE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique3");
-	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PRIVATE_KEY_PREFIX), attrs);
+	insert_template (PRIVATE_KEY_PREFIX, attrs);
 
 	/* Private prefix key */
 	value = CKM_MOCK_PREFIX;
@@ -319,7 +355,7 @@ gkm_mock_C_Initialize (CK_VOID_PTR pInitArgs)
 	gkm_template_set_boolean (attrs, CKA_PRIVATE, CK_FALSE);
 	gkm_template_set_string (attrs, CKA_VALUE, "value");
 	gkm_template_set_string (attrs, CKA_GNOME_UNIQUE, "unique4");
-	g_hash_table_insert (the_objects, GUINT_TO_POINTER (PUBLIC_KEY_PREFIX), attrs);
+	insert_template (PUBLIC_KEY_PREFIX, attrs);
 
 	initialized = TRUE;
 	return CKR_OK;
@@ -335,6 +371,9 @@ gkm_mock_C_Finalize (CK_VOID_PTR pReserved)
 	logged_in = FALSE;
 	g_hash_table_destroy (the_objects);
 	the_objects = NULL;
+
+	g_slist_free_full (the_objects_list, g_free);
+	the_objects_list = NULL;
 
 	g_hash_table_destroy (the_sessions);
 	the_sessions = NULL;
@@ -802,7 +841,7 @@ gkm_mock_C_CreateObject (CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate,
 
 	*phObject = ++unique_identifier;
 	if (gkm_template_find_boolean (attrs, CKA_TOKEN, &token) && token)
-		g_hash_table_insert (the_objects, GUINT_TO_POINTER (*phObject), attrs);
+		insert_template (*phObject, attrs);
 	else
 		g_hash_table_insert (session->objects, GUINT_TO_POINTER (*phObject), attrs);
 
@@ -822,6 +861,7 @@ gkm_mock_C_DestroyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject)
 {
 	GArray *attrs;
 	Session *session;
+	GSList *list;
 	gboolean priv;
 
 	session = g_hash_table_lookup (the_sessions, GUINT_TO_POINTER (hSession));
@@ -836,6 +876,13 @@ gkm_mock_C_DestroyObject (CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hObject)
 	}
 
 	g_hash_table_remove (the_objects, GUINT_TO_POINTER (hObject));
+	do {
+		list = g_slist_find_custom (the_objects_list, GUINT_TO_POINTER (hObject), list_find_handle);
+		if (list != NULL) {
+			g_free (list->data);
+			the_objects_list = g_slist_delete_link (the_objects_list, list);
+		}
+	} while (list != NULL);
 	g_hash_table_remove (session->objects, GUINT_TO_POINTER (hObject));
 
 	return CKR_OK;
