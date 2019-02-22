@@ -411,7 +411,7 @@ msgstr "Desbloca automàticament aquesta clau sempre que hagi entrat"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 msgid "Automatically unlock this certificate whenever I’m logged in"
-msgstr "Desbloca automàticament aquesta certificat sempre que hagi entrat"
+msgstr "Desbloca automàticament aquest certificat sempre que hagi entrat"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
