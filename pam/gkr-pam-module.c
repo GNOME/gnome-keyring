@@ -676,6 +676,8 @@ unlock_keyring (pam_handle_t *ph,
 	res = get_control_file(ph, control);
 	if (res != GKD_CONTROL_RESULT_OK) {
 		syslog (GKR_LOG_ERR, "gkr-pam: unable to locate daemon control file");
+		if (res == GKD_CONTROL_RESULT_NO_DAEMON && need_daemon)
+		    *need_daemon = 1;
 		return PAM_SERVICE_ERR;
 	}
 
