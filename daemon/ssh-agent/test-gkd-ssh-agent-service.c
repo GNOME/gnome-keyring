@@ -38,7 +38,8 @@ typedef struct {
 	EggBuffer req;
 	EggBuffer resp;
 	GkdSshAgentService *service;
-	GMainLoop *loop;
+	GMainContext *server_thread_context;
+	volatile gint server_thread_stop;
 	GSocketConnection *connection;
 	GThread *thread;
 	GMutex lock;
@@ -49,13 +50,9 @@ static gpointer
 server_thread (gpointer data)
 {
 	Test *test = data;
-	GMainContext *context;
 	gboolean ret;
 
-	context = g_main_context_new ();
-	test->loop = g_main_loop_new (context, FALSE);
-
-	g_main_context_push_thread_default (context);
+	g_main_context_push_thread_default (test->server_thread_context);
 
 	ret = gkd_ssh_agent_service_start (test->service);
 	g_assert_true (ret);
@@ -64,12 +61,10 @@ server_thread (gpointer data)
 	g_cond_signal (&test->cond);
 	g_mutex_unlock (&test->lock);
 
-	g_main_loop_run (test->loop);
+	while (g_atomic_int_get (&test->server_thread_stop) == 0)
+		g_main_context_iteration (test->server_thread_context, TRUE);
 
-	g_main_context_pop_thread_default (context);
-
-	g_main_context_unref (context);
-	g_main_loop_unref (test->loop);
+	g_main_context_pop_thread_default (test->server_thread_context);
 
 	return NULL;
 }
@@ -139,6 +134,7 @@ setup (Test *test, gconstpointer unused)
 
 	g_mutex_init (&test->lock);
 	g_cond_init (&test->cond);
+	test->server_thread_context = g_main_context_new ();
 
 	test->thread = g_thread_new ("ssh-agent", server_thread, test);
 
@@ -151,8 +147,11 @@ setup (Test *test, gconstpointer unused)
 static void
 teardown (Test *test, gconstpointer unused)
 {
-	g_main_loop_quit (test->loop);
+	g_atomic_int_set (&test->server_thread_stop, 1);
+	g_main_context_wakeup (test->server_thread_context);
 	g_thread_join (test->thread);
+
+	g_main_context_unref (test->server_thread_context);
 
 	g_clear_object (&test->connection);
 
