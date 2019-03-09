@@ -205,6 +205,7 @@ test_restart (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/ssh-agent/process/connect", Test, NULL, setup, test_connect, teardown);

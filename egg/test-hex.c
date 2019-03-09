@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include "egg/egg-hex.h"
+#include "egg/egg-testing.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -112,6 +113,7 @@ test_decode_fail (void)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/hex/encode", test_encode);

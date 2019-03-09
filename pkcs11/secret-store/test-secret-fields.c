@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "egg/egg-testing.h"
+
 static void
 test_new (void)
 {
@@ -478,6 +480,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/secret-store/fields/new", test_new);

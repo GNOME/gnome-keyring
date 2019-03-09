@@ -26,6 +26,8 @@
 
 #include <glib/gstdio.h>
 
+#include "egg/egg-testing.h"
+
 typedef struct {
 	int unused;
 } Test;
@@ -519,6 +521,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/gkm/transaction/transaction_empty", Test, NULL, setup, test_transaction_empty, teardown);

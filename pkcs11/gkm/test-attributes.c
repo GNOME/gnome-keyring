@@ -24,6 +24,8 @@
 
 #include "gkm/gkm-attributes.h"
 
+#include "egg/egg-testing.h"
+
 #include <glib-object.h>
 
 /* Some test data */
@@ -846,6 +848,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/gkm/attributes/attribute_equal_zero_len_null_ptr", test_attribute_equal_zero_len_null_ptr);

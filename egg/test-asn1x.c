@@ -183,6 +183,7 @@ main (int argc, char **argv)
 	gchar *name;
 	gint i;
 
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	for (i = 0; i < G_N_ELEMENTS (parse_test_fixtures); i++) {

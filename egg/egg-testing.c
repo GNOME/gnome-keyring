@@ -1,7 +1,7 @@
 /*
  * gnome-keyring
  *
- * Copyright (C) 2011 Collabora Ltd.
+ * Copyright (C) 2011-2019 Collabora Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,6 +27,8 @@
 #include <glib/gstdio.h>
 
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 static const char HEXC[] = "0123456789ABCDEF";
@@ -296,4 +298,76 @@ egg_tests_remove_scratch_directory (const gchar *directory)
 	              NULL, NULL, NULL, &rm_status, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (rm_status, ==, 0);
+}
+
+static gboolean
+fatal_timeout_cb (gpointer data)
+{
+  puts ("Bail out! Test timed out (GLib main loop timeout callback reached)");
+  fflush (stdout);
+  abort ();
+  return FALSE;
+}
+
+#ifdef G_OS_UNIX
+static void wrap_abort (int signal) G_GNUC_NORETURN;
+
+static void
+wrap_abort (int signal)
+{
+  /* We might be halfway through writing out something else, so force this
+   * onto its own line */
+  const char message [] = "\nBail out! Test timed out (SIGALRM received)\n";
+
+  if (write (STDOUT_FILENO, message, sizeof (message) - 1) <
+      (ssize_t) sizeof (message) - 1)
+    {
+      /* ignore short write - what would we do about it? */
+    }
+
+  abort ();
+}
+#endif
+
+/*
+ * Make the test fail after @sec seconds. This is intended to be a safety
+ * catch to stop tests running forever, and either blocking autobuilders
+ * or being terminated with bad logging.
+ */
+void
+egg_tests_set_fatal_timeout (guint sec)
+{
+  static guint timeout_id = 0;
+  const gchar *env_factor;
+  guint factor = 1;
+
+  if (timeout_id != 0)
+    g_source_remove (timeout_id);
+
+  env_factor = g_getenv ("TEST_FATAL_TIMEOUT_MULTIPLIER");
+
+  if (env_factor != NULL)
+    {
+      factor = g_ascii_strtoull (env_factor, NULL, 10);
+
+      if (factor == 0)
+        g_error ("Invalid TEST_FATAL_TIMEOUT_MULTIPLIER %s", env_factor);
+    }
+
+  timeout_id = g_timeout_add_seconds (sec * factor, fatal_timeout_cb, NULL);
+
+#ifdef G_OS_UNIX
+  /* In case the GLib main loop is stuck, die from SIGALRM 10 seconds
+   * later */
+  alarm  ((sec * factor) + 10);
+
+  /* Get a log message and a core dump from the SIGALRM */
+    {
+      struct sigaction act = { };
+
+      act.sa_handler = wrap_abort;
+
+      sigaction (SIGALRM, &act, NULL);
+    }
+#endif
 }

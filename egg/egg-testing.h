@@ -67,4 +67,6 @@ gchar *    egg_tests_create_scratch_directory  (const gchar *file_to_copy,
 
 void       egg_tests_remove_scratch_directory  (const gchar *directory);
 
+void       egg_tests_set_fatal_timeout         (guint sec);
+
 #endif /* EGG_TESTS_H_ */

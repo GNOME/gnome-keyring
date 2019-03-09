@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include "egg/egg-file-tracker.h"
+#include "egg/egg-testing.h"
 
 #include <glib/gstdio.h>
 
@@ -241,6 +242,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/egg/file-tracker/file_watch", Test, NULL, setup, test_file_watch, teardown);

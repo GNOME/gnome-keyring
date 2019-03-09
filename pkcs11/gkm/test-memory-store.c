@@ -30,6 +30,7 @@
 #include "mock-module.h"
 
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 #include "gkm/gkm-object.h"
 #include "gkm/gkm-memory-store.h"
 #include "gkm/gkm-transaction.h"
@@ -461,6 +462,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/gkm/memory-test->store/get_attribute_default", Test, NULL, setup, test_get_attribute_default, teardown);

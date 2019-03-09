@@ -330,6 +330,7 @@ test_hkdf_test_case_7 (void)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/hkdf/test-case-1", test_hkdf_test_case_1);

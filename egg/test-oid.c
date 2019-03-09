@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "egg/egg-oid.h"
+#include "egg/egg-testing.h"
 
 #include <glib.h>
 
@@ -45,6 +46,7 @@ test_tests (void)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/oid/tests", test_tests);
