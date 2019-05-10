@@ -34,6 +34,7 @@
 
 #include <dlfcn.h>
 #include <pthread.h>
+#include <sys/select.h>
 
 #define SOCKET_PATH "/tmp/gkm-rpc-daemon.sock"
 
