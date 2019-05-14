@@ -49,15 +49,11 @@ on_setenv_reply (GObject *source,
 	res = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
 
 	if (error != NULL) {
-		gchar *dbus_error;
-		dbus_error = g_dbus_error_get_remote_error (error);
-		if (g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN) ||
-		    g_strcmp0 (dbus_error, "org.gnome.SessionManager.NotInInitialization") == 0)
+		if (g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN))
 			g_debug ("couldn't set environment variable in session: %s", error->message);
 		else
 			g_message ("couldn't set environment variable in session: %s", error->message);
 		g_error_free (error);
-		g_free (dbus_error);
 	}
 
 	g_clear_pointer (&res, g_variant_unref);
