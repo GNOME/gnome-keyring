@@ -184,14 +184,6 @@ AC_CHECK_FUNCS(gettimeofday fsync)
 AC_CHECK_FUNCS(mlock)
 
 # --------------------------------------------------------------------
-# Prevent memory from being included in core dumps
-#
-
-AC_CHECK_DEFINE([sys/mman.h],[MADV_DONTDUMP],
-  AC_DEFINE([HAVE_MADV_DONTDUMP], [1],
-    [Define if madvise knows about MADV_DONTDUMP]))
-
-# --------------------------------------------------------------------
 # socket()
 #
 
