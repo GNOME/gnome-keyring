@@ -885,7 +885,7 @@ sec_acquire_pages (size_t *sz,
 
 	DEBUG_ALLOC ("gkr-secure-memory: new block ", *sz);
 
-#if defined(HAVE_MADV_DONTDUMP)
+#if defined(MADV_DONTDUMP)
 	if (madvise (pages, *sz, MADV_DONTDUMP) < 0) {
 		if (show_warning && egg_secure_warnings) {
 			/*
