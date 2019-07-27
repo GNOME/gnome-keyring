@@ -32,10 +32,30 @@ daemon/dbus/gkd-internal-generated.h: daemon/dbus/org.gnome.keyring.InternalUnsu
 daemon/dbus/gkd-internal-generated.c: daemon/dbus/gkd-internal-generated.h
 	@: # generated as a side-effect
 
+daemon/dbus/gkd-portal-generated.h: daemon/dbus/org.freedesktop.impl.portal.Secret.xml
+	$(AM_V_GEN) gdbus-codegen --interface-prefix org.freedesktop.impl.portal.Secret. \
+	--generate-c-code $(srcdir)/daemon/dbus/gkd-portal-generated \
+	--c-namespace Gkd \
+	--annotate "org.freedesktop.impl.portal.Secret" "org.gtk.GDBus.C.Name" ExportedPortal \
+	$(srcdir)/daemon/dbus/org.freedesktop.impl.portal.Secret.xml
+daemon/dbus/gkd-portal-generated.c: daemon/dbus/gkd-portal-generated.h
+	@: # generated as a side-effect
+
+daemon/dbus/gkd-portal-request-generated.h: daemon/dbus/org.freedesktop.impl.portal.Request.xml
+	$(AM_V_GEN) gdbus-codegen --interface-prefix org.freedesktop.impl.portal.Request. \
+	--generate-c-code $(srcdir)/daemon/dbus/gkd-portal-request-generated \
+	--c-namespace Gkd \
+	--annotate "org.freedesktop.impl.portal.Request" "org.gtk.GDBus.C.Name" ExportedPortalRequest \
+	$(srcdir)/daemon/dbus/org.freedesktop.impl.portal.Request.xml
+daemon/dbus/gkd-portal-request-generated.c: daemon/dbus/gkd-portal-request-generated.h
+	@: # generated as a side-effect
+
 EXTRA_DIST += \
 	daemon/dbus/org.freedesktop.Secrets.xml \
 	daemon/dbus/org.gnome.keyring.Daemon.xml \
 	daemon/dbus/org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface.xml \
+	daemon/dbus/org.freedesktop.impl.portal.Secret.xml \
+	daemon/dbus/org.freedesktop.impl.portal.Request.xml \
 	$(NULL)
 
 BUILT_SOURCES += \
@@ -44,7 +64,11 @@ BUILT_SOURCES += \
 	daemon/dbus/gkd-internal-generated.c \
 	daemon/dbus/gkd-internal-generated.h \
 	daemon/dbus/gkd-secrets-generated.c \
-	daemon/dbus/gkd-secrets-generated.h
+	daemon/dbus/gkd-secrets-generated.h \
+	daemon/dbus/gkd-portal-generated.c \
+	daemon/dbus/gkd-portal-generated.h \
+	daemon/dbus/gkd-portal-request-generated.c \
+	daemon/dbus/gkd-portal-request-generated.h
 
 libgkd_dbus_la_SOURCES = \
 	$(BUILT_SOURCES) \
