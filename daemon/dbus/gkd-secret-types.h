@@ -23,6 +23,9 @@
 
 #define INTERNAL_SERVICE_INTERFACE     "org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface"
 
+#define PORTAL_SERVICE_INTERFACE       "org.freedesktop.impl.portal.Secret"
+#define PORTAL_SERVICE_PATH            "/org/freedesktop/portal/desktop"
+
 #define SECRET_COLLECTION_INTERFACE    "org.freedesktop.Secret.Collection"
 #define SECRET_ITEM_INTERFACE          "org.freedesktop.Secret.Item"
 #define SECRET_PROMPT_INTERFACE        "org.freedesktop.Secret.Prompt"
