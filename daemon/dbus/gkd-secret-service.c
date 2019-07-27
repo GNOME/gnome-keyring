@@ -37,6 +37,8 @@
 
 #include "gkd-internal-generated.h"
 #include "gkd-secrets-generated.h"
+#include "gkd-portal-generated.h"
+#include "gkd-portal-request-generated.h"
 
 #include "egg/egg-error.h"
 #include "egg/egg-unix-credentials.h"
@@ -126,6 +128,7 @@ struct _GkdSecretService {
 	GDBusConnection *connection;
 	GkdExportedService *skeleton;
 	GkdExportedInternal *internal_skeleton;
+	GkdExportedPortal *portal_skeleton;
 	guint name_owner_id;
 	guint filter_id;
 
@@ -911,6 +914,141 @@ service_method_unlock_with_master_password (GkdExportedInternal *skeleton,
 	return TRUE;
 }
 
+static gboolean
+service_method_close (GkdExportedPortalRequest *skeleton,
+		      GDBusMethodInvocation *invocation,
+		      GkdSecretService *self)
+{
+	g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (skeleton));
+	return TRUE;
+}
+
+static void
+retrieve_secret_thread (GTask *task,
+			gpointer source_object,
+			gpointer task_data,
+			GCancellable *cancellable)
+{
+}
+
+static gboolean
+service_method_retrieve_secret (GkdExportedPortal *skeleton,
+				GDBusMethodInvocation *invocation,
+				GUnixFDList *fd_list,
+				const gchar *arg_handle,
+				const gchar *arg_app_id,
+				GVariant *arg_fd,
+				GVariant *arg_options,
+				GkdSecretService *self)
+{
+	GVariantBuilder attributes = G_VARIANT_BUILDER_INIT ("a{sv}");
+	GckBuilder builder = GCK_BUILDER_INIT;
+	GckObject *search;
+	GkdSecretSecret *secret;
+	int idx, fd;
+	gpointer data = NULL;
+	GError *error = NULL;
+
+	request_skeleton = gkd_exported_portal_request_skeleton_new ();
+	if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (request_skeleton),
+					       g_dbus_method_invocation_get_connection (invocation),
+					       arg_handle, &error)) {
+		g_warning ("error exporting request: %s\n", error->message);
+		g_clear_error (&error);
+	} else {
+		g_signal_connect (request_skeleton, "handle-close",
+				  G_CALLBACK (service_method_close), self);
+	}
+
+	g_variant_get (arg_fd, "h", &idx);
+	fd = g_unix_fd_list_get (fd_list, idx, NULL);
+
+	g_variant_builder_add (&attributes, "sv", "app_id", g_variant_new_string (app_id));
+	g_variant_builder_end (&attributes);
+
+	if (!gkd_secret_property_parse_fields (attributes, &builder)) {
+		gck_builder_clear (&builder);
+		g_dbus_method_invocation_return_error_literal (invocation,
+							       G_DBUS_ERROR,
+							       G_DBUS_ERROR_FAILED,
+							       "Invalid data in attributes argument");
+		return TRUE;
+	}
+	
+	/* Find items matching the collection and fields */
+	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_SEARCH);
+	gck_builder_add_boolean (&builder, CKA_TOKEN, FALSE);
+	gck_builder_add_string (&builder, CKA_G_COLLECTION, "login");
+
+	/* Create the search object */
+	search = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
+
+	if (error != NULL) {
+		g_dbus_method_invocation_return_error (invocation,
+						       G_DBUS_ERROR,
+						       G_DBUS_ERROR_FAILED,
+						       "Couldn't search for items: %s",
+						       error->message);
+		g_clear_error (&error);
+		return TRUE;
+	}
+
+	/* Get the matched item handles, and delete the search object */
+	data = gck_object_get_data (search, CKA_G_MATCHED, NULL, &n_data, &error);
+	gck_object_destroy (search, NULL, NULL);
+	g_object_unref (search);
+
+	if (error != NULL) {
+		g_dbus_method_invocation_return_error (invocation,
+						       G_DBUS_ERROR,
+						       G_DBUS_ERROR_FAILED,
+						       "Couldn't retrieve matched items: %s",
+						       error->message);
+		g_clear_error (&error);
+		return TRUE;
+	}
+
+	if (n_data > 0) {
+		/* Return the first matching item if any */
+		GList *items;
+
+		/* Build a list of object handles */
+		items = gck_objects_from_handle_array (session, data, n_data / sizeof (CK_OBJECT_HANDLE));
+		g_free (data);
+
+		secret = gkd_secret_session_get_item_secret (self->internal_session, items->data, &error);
+		if (secret == NULL) {
+			g_dbus_method_invocation_take_error (invocation, error);
+			return TRUE;
+		}
+		
+	} else {
+		/* Otherwise create a new key */
+	}
+
+	if (secret) {
+		gpointer data = secret->value;
+		gsize offset = 0;
+		while (offset < secret->n_value) {
+			if (write (fd, data + offset, secret->n_value - offset) < 0) {
+				
+			}
+		}
+	}
+
+	gkd_exported_portal_complete_retrieve_secret (skeleton,
+						      invocation,
+						      NULL,
+						      0,
+						      NULL);
+
+ cleanup:
+	g_free (data);
+	gkd_secret_secret_free (secret);
+
+	return TRUE;
+}
+
 static void
 service_name_owner_changed (GDBusConnection *connection,
 			    const gchar *sender_name,
@@ -1033,6 +1171,19 @@ gkd_secret_service_constructor (GType type,
 			  G_CALLBACK (service_method_create_with_master_password), self);
 	g_signal_connect (self->internal_skeleton, "handle-unlock-with-master-password",
 			  G_CALLBACK (service_method_unlock_with_master_password), self);
+
+	self->portal_skeleton = gkd_exported_portal_skeleton_new ();
+	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->portal_skeleton),
+					  self->connection,
+					  SECRET_SERVICE_PATH, &error);
+
+	if (error != NULL) {
+		g_warning ("could not register portal interface service on session bus: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_signal_connect (self->portal_skeleton, "handle-retrieve-secret",
+			  G_CALLBACK (service_method_retrieve_secret), self);
 
 	self->name_owner_id = g_dbus_connection_signal_subscribe (self->connection,
 								  NULL,
