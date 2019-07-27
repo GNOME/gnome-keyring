@@ -32,7 +32,8 @@ gnome_keyring_daemon_CFLAGS = \
 
 service_in_files = \
 	daemon/org.gnome.keyring.service.in \
-	daemon/org.freedesktop.secrets.service.in
+	daemon/org.freedesktop.secrets.service.in \
+	daemon/org.freedesktop.impl.portal.Secret.service.in
 servicedir = $(DBUS_SERVICES_DIR)
 service_DATA = $(service_in_files:.service.in=.service)
 
@@ -46,6 +47,9 @@ desktop_in_files = $(desktop_in_in_files:.desktop.in.in=.desktop.in)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 .desktop.in.in.desktop.in:
 	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
+
+portaldir = $(datadir)/xdg-desktop-portal/portals
+dist_portal_DATA = daemon/gnome-keyring.portal
 
 EXTRA_DIST += \
 	$(service_in_files) \
