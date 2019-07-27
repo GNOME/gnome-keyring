@@ -126,6 +126,10 @@ depcomp
 /daemon/dbus/gkd-internal-generated.h
 /daemon/dbus/gkd-secrets-generated.c
 /daemon/dbus/gkd-secrets-generated.h
+/daemon/dbus/gkd-portal-generated.c
+/daemon/dbus/gkd-portal-generated.h
+/daemon/dbus/gkd-portal-request-generated.c
+/daemon/dbus/gkd-portal-request-generated.h
 
 /pkcs11/gkm/tests/test-attributes
 /pkcs11/gkm/tests/test-certificate
