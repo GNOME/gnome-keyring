@@ -91,6 +91,7 @@ test_service_setup (TestService *test)
 
 	env = gkd_test_launch_daemon (test->directory, args, &test->pid,
 	                              "GNOME_KEYRING_TEST_SERVICE", test->bus_name,
+				      "GNOME_KEYRING_TEST_LOGIN", "test",
 	                              test->mock_prompter ? "GNOME_KEYRING_TEST_PROMPTER" : NULL, test->mock_prompter,
 	                              NULL);
 	g_strfreev (env);

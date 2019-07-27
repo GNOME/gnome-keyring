@@ -26,6 +26,7 @@
 #include "gkd-secret-error.h"
 #include "gkd-secret-lock.h"
 #include "gkd-secret-objects.h"
+#include "gkd-secret-portal.h"
 #include "gkd-secret-prompt.h"
 #include "gkd-secret-property.h"
 #include "gkd-secret-secret.h"
@@ -42,6 +43,7 @@
 #include "egg/egg-unix-credentials.h"
 
 #include <gck/gck.h>
+#include <gcrypt.h>
 
 #include "pkcs11/pkcs11i.h"
 
@@ -126,6 +128,7 @@ struct _GkdSecretService {
 	GDBusConnection *connection;
 	GkdExportedService *skeleton;
 	GkdExportedInternal *internal_skeleton;
+	GkdSecretPortal *portal;
 	guint name_owner_id;
 	guint filter_id;
 
@@ -1034,6 +1037,8 @@ gkd_secret_service_constructor (GType type,
 	g_signal_connect (self->internal_skeleton, "handle-unlock-with-master-password",
 			  G_CALLBACK (service_method_unlock_with_master_password), self);
 
+	self->portal = g_object_new (GKD_SECRET_TYPE_PORTAL, "service", self, NULL);
+
 	self->name_owner_id = g_dbus_connection_signal_subscribe (self->connection,
 								  NULL,
 								  "org.freedesktop.DBus",
@@ -1091,6 +1096,8 @@ gkd_secret_service_dispose (GObject *obj)
 		dispose_and_unref (self->internal_session);
 		self->internal_session = NULL;
 	}
+
+	g_clear_object (&self->portal);
 
 	G_OBJECT_CLASS (gkd_secret_service_parent_class)->dispose (obj);
 }
