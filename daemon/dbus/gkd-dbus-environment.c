@@ -39,35 +39,12 @@ gkd_dbus_environment_cleanup (GDBusConnection *conn)
 }
 
 static void
-on_setenv_reply (GObject *source,
-		 GAsyncResult *result,
-		 gpointer user_data)
-{
-	GError *error = NULL;
-	GVariant *res;
-
-	res = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
-
-	if (error != NULL) {
-		gchar *dbus_error;
-		dbus_error = g_dbus_error_get_remote_error (error);
-		if (g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN) ||
-		    g_strcmp0 (dbus_error, "org.gnome.SessionManager.NotInInitialization") == 0)
-			g_debug ("couldn't set environment variable in session: %s", error->message);
-		else
-			g_message ("couldn't set environment variable in session: %s", error->message);
-		g_error_free (error);
-		g_free (dbus_error);
-	}
-
-	g_clear_pointer (&res, g_variant_unref);
-}
-
-static void
 setenv_request (GDBusConnection *conn, const gchar *env)
 {
 	const gchar *value;
 	gchar *name;
+	GVariant *res;
+	GError *error = NULL;
 
 	/* Find the value part of the environment variable */
 	value = strchr (env, '=');
@@ -77,19 +54,36 @@ setenv_request (GDBusConnection *conn, const gchar *env)
 	name = g_strndup (env, value - env);
 	++value;
 
-	g_dbus_connection_call (conn,
-				SERVICE_SESSION_MANAGER,
-				PATH_SESSION_MANAGER,
-				IFACE_SESSION_MANAGER,
-				"Setenv",
-				g_variant_new ("(ss)",
-					       name,
-					       value),
-				NULL, G_DBUS_CALL_FLAGS_NONE,
-				-1, NULL,
-				on_setenv_reply, NULL);
+	/* Note: This call does not neccessarily need to be a sync call. However
+	 *       under certain conditions the process will quit immediately
+	 *       after emitting the call. This ensures that we wait long enough
+	 *       for the message to be sent out (could also be done using
+	 *       g_dbus_connection_flush() in the exit handler when called with
+	 *       --start) and also ensures that gnome-session has processed the
+	 *       DBus message before possibly thinking that the startup of
+	 *       gnome-keyring has finished and continuing with forking the
+	 *       shell. */
+	res = g_dbus_connection_call_sync (conn,
+					   SERVICE_SESSION_MANAGER,
+					   PATH_SESSION_MANAGER,
+					   IFACE_SESSION_MANAGER,
+					   "Setenv",
+					   g_variant_new ("(ss)",
+							  name,
+							  value),
+					   NULL, G_DBUS_CALL_FLAGS_NONE,
+					   -1, NULL, &error);
+
+	if (error != NULL) {
+		if (g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN))
+			g_debug ("couldn't set environment variable in session: %s", error->message);
+		else
+			g_message ("couldn't set environment variable in session: %s", error->message);
+		g_error_free (error);
+	}
 
 	g_free (name);
+	g_clear_pointer (&res, g_variant_unref);
 }
 
 static void
