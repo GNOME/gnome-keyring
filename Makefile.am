@@ -64,7 +64,7 @@ asn1-reparse:
 # Default executable tests
 LOG_DRIVER = $(srcdir)/build/tap-driver
 LOG_DRIVER_FLAGS = --format=tap
-LOG_COMPILER = $(srcdir)/build/tap-gtester
+LOG_COMPILER = sh -c 'exec "$$0" "$$@" --tap'
 
 VALGRIND_ARGS = --trace-children=no --quiet --error-exitcode=33 \
 	--suppressions=valgrind-suppressions --gen-suppressions=all \
@@ -181,7 +181,6 @@ EXTRA_DIST = \
 	HACKING \
 	$(ASN1_FILES) \
 	build/tap-driver \
-	build/tap-gtester \
 	$(VALGRIND_SUPPRESSIONS) \
 	$(NULL)
 
