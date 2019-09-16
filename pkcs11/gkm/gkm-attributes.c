@@ -538,8 +538,10 @@ gkm_attributes_find_ulong (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, CK_ATTRIBUT
 	if (attr->ulValueLen != sizeof (CK_ULONG))
 		return FALSE;
 
-	if (value != NULL)
-		*value = *((CK_ULONG*)attr->pValue);
+	if (value != NULL) {
+		CK_ULONG *ulong = attr->pValue;
+		*value = *ulong;
+	}
 
 	return TRUE;
 }
