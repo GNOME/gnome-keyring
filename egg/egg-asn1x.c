@@ -763,7 +763,7 @@ atlv_parse_length (const guchar *at,
                    const guchar *end,
                    gint *off)
 {
-	gint ans, last;
+	gint ans;
 	gint k, punt;
 	gint n_data;
 
@@ -789,19 +789,15 @@ atlv_parse_length (const guchar *at,
 		if (k) {
 			ans = 0;
 			while (punt <= k && punt < n_data) {
-				last = ans;
+				/* we wrapped around, no bignum support... */
+				if (ans > G_MAXINT / 256)
+					return -2;
 				ans = ans * 256;
 
 				/* we wrapped around, no bignum support... */
-				if (ans < last)
+				if (ans > G_MAXINT - at[punt])
 					return -2;
-
-				last = ans;
 				ans += at[punt++];
-
-				/* we wrapped around, no bignum support... */
-				if (ans < last)
-					return -2;
 			}
 
 		/* indefinite length method */
