@@ -518,8 +518,11 @@ gkm_attributes_find_boolean (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, CK_ATTRIB
 	if (attr->ulValueLen != sizeof (CK_BBOOL))
 		return FALSE;
 
-	if (value != NULL)
-		*value = *((CK_BBOOL*)attr->pValue) == CK_TRUE ? TRUE : FALSE;
+	if (value != NULL) {
+		CK_BBOOL bbool;
+		memcpy (&bbool, attr->pValue, sizeof (CK_BBOOL));
+		*value = bbool == CK_TRUE ? TRUE : FALSE;
+	}
 
 	return TRUE;
 }
@@ -538,8 +541,11 @@ gkm_attributes_find_ulong (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs, CK_ATTRIBUT
 	if (attr->ulValueLen != sizeof (CK_ULONG))
 		return FALSE;
 
-	if (value != NULL)
-		*value = *((CK_ULONG*)attr->pValue);
+	if (value != NULL) {
+		CK_ULONG ulong;
+		memcpy (&ulong, attr->pValue, sizeof (CK_ULONG));
+		*value = ulong;
+	}
 
 	return TRUE;
 }
