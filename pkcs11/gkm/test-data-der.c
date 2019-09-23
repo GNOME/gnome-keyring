@@ -32,6 +32,7 @@
 #include "egg/egg-asn1-defs.h"
 #include "egg/egg-openssl.h"
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 #include <glib.h>
 #include <gcrypt.h>
@@ -686,6 +687,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/gkm/data-der/der_rsa_public", Test, NULL, setup, test_der_rsa_public, teardown);

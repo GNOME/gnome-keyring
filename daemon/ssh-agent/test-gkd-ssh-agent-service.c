@@ -594,6 +594,7 @@ test_lock (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/ssh-agent/service/startup_shutdown", Test, NULL, setup, test_startup_shutdown, teardown);

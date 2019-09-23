@@ -186,6 +186,7 @@ test_ask_password_cancel (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/ssh-agent/interaction/ask_password_no_login", Test, NULL, setup_no_login, test_ask_password_no_login, teardown);

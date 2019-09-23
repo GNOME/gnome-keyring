@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "egg/egg-cleanup.h"
+#include "egg/egg-testing.h"
 
 #define DATA "some string"
 
@@ -156,6 +157,7 @@ test_remove (void)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/cleanup/cleanup", test_cleanup);

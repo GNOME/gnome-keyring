@@ -250,6 +250,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/wrap-layer/login-auto/specific", Test, NULL, setup, test_specific, teardown);

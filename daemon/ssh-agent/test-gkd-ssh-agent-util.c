@@ -24,6 +24,8 @@
 
 #include "gkd-ssh-agent-util.h"
 
+#include "egg/egg-testing.h"
+
 #include <glib.h>
 
 #include <stdlib.h>
@@ -110,6 +112,7 @@ test_canon_error (void)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/ssh-agent/util/parse_public", test_parse_public);

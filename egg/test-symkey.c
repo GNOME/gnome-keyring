@@ -630,6 +630,7 @@ main (int argc, char **argv)
 	gchar *name;
 	gint i;
 
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 	egg_libgcrypt_initialize ();
 

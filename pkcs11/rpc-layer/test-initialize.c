@@ -167,6 +167,7 @@ test_initialize_no_daemon (Test *test,
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/pkcs11/rpc-layer/initialize/normal", Test, NULL,

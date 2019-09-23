@@ -554,6 +554,7 @@ test_password_change_start_in_session (Test *test,
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/pam/auth-no-start", Test,

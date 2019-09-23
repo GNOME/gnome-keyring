@@ -200,6 +200,7 @@ test_pkcs7_padding_invalid_different (void)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/padding/zero_padding", test_zero_padding);

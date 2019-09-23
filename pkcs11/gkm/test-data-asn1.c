@@ -36,6 +36,7 @@
 #include "egg/egg-asn1-defs.h"
 #include "egg/egg-libgcrypt.h"
 #include "egg/egg-secure-memory.h"
+#include "egg/egg-testing.h"
 
 typedef struct _EggAsn1xDef ASN1_ARRAY_TYPE;
 typedef struct _EggAsn1xDef asn1_static_node;
@@ -287,6 +288,7 @@ main (int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
 #endif
+	egg_tests_set_fatal_timeout (300);
 	egg_libgcrypt_initialize();
 
 	g_test_init (&argc, &argv, NULL);

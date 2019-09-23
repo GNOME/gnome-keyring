@@ -212,6 +212,7 @@ test_openssl_roundtrip (Test *test, gconstpointer unused)
 int
 main (int argc, char **argv)
 {
+	egg_tests_set_fatal_timeout (300);
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add ("/openssl/parse_reference", Test, NULL, setup, test_parse_reference, teardown);
