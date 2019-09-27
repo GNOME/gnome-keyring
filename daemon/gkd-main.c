@@ -450,11 +450,11 @@ read_login_password (int fd)
 	/*
 	 * When --login is specified then the login password is passed
 	 * in on stdin. All data (including newlines) are part of the
-	 * password. A zero length password is no password.
+	 * password. A zero length password is exactly that.
 	 */
 
 	gchar *buf = egg_secure_alloc (MAX_BLOCK);
-	gchar *ret = NULL;
+	gchar *ret = egg_secure_alloc (1);
 	int r, len = 0;
 
 	for (;;) {

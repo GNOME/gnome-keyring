@@ -873,13 +873,14 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 		
 	/* Look up the password */
 	ret = pam_get_item (ph, PAM_AUTHTOK, (const void**)&password);
-	if (ret != PAM_SUCCESS || password == NULL) {
-		if (ret == PAM_SUCCESS)
-			syslog (GKR_LOG_WARN, "gkr-pam: no password is available for user");
-		else
-			syslog (GKR_LOG_WARN, "gkr-pam: no password is available for user: %s", 
-			        pam_strerror (ph, ret));
+	if (ret != PAM_SUCCESS) {
+		syslog (GKR_LOG_WARN, "gkr-pam: no password is available for user: %s",
+		        pam_strerror (ph, ret));
 		return PAM_SUCCESS;
+	}
+
+	if (password == NULL) {
+		password = "";
 	}
 
 	ret = unlock_keyring (ph, pwd, password, &need_daemon);
