@@ -1,3 +1,9 @@
+Changes in version 3.34.0 are:
+ * dbus-environment: Race fix in Setenv request to gnome-session [!19]
+ * egg: Request that secure memory not be dumped to disk [!15]
+ * Build and test fixes [!16, !20, !24, ...]
+ * Updated translations
+
 Changes in version 3.31.91 are:
  * pam: fix daemon control file detection [!11]
  * Updated translations
