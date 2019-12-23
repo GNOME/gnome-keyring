@@ -333,7 +333,7 @@ msgstr "Võta sertifikaat lukust lahti"
 msgid "Unlock public key"
 msgstr "Võta avalik võti lukust lahti"
 
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Sisesta salajase võtme luku avamise parool"
 
 msgid "Enter password to unlock the certificate"

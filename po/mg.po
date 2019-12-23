@@ -353,7 +353,7 @@ msgstr "Manafaka ilay rojom-panalahidy"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 #, fuzzy
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Soraty ny teny fanalahidy hanafahana ny rojom-panalahidy lasitra"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

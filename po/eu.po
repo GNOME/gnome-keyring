@@ -411,7 +411,7 @@ msgid "Unlock public key"
 msgstr "Desblokeatu gako publikoa"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Idatzi pasahitza gako pribatua desblokeatzeko"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

@@ -402,7 +402,7 @@ msgstr "सार्वजनिक पीजीपी कुञ्जी"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
 #, fuzzy
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "निजी कुञ्जी पासवर्ड: "
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

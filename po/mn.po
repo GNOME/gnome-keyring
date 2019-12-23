@@ -353,7 +353,7 @@ msgstr "Кейринг түгжээг тайлах"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 #, fuzzy
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Стандарт киринг түгжээг тайлах нууц үг оруул"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

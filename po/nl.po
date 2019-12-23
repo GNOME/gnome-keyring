@@ -420,7 +420,7 @@ msgid "Unlock public key"
 msgstr "Publieke sleutel ontgrendelen"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Voer uw wachtwoord in voor ontgrendelen van de privé-sleutel"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

@@ -389,7 +389,7 @@ msgid "Unlock public key"
 msgstr "공개 키 잠금 풀기"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "개인 키의 잠금을 풀 암호를 입력하십시오"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

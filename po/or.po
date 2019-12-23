@@ -450,7 +450,7 @@ msgid "Unlock public key"
 msgstr "ସାର୍ବଜନିକ କିକୁ ଅପରିବର୍ତ୍ତନୀୟ କରନ୍ତୁ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "ବ୍ୟକ୍ତିଗତ କି କୁ ଖୋଲିବା ପାଇଁ ଗୋଟିଏ ପ୍ରବଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657

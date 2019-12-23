@@ -440,7 +440,7 @@ msgid "Unlock public key"
 msgstr "ৰাজহুৱা-কি আনলক কৰক"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "ব্যক্তিগত কি আনলক কৰিবলে পাছৱাৰ্ড লিখক"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657

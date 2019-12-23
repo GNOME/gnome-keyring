@@ -439,7 +439,7 @@ msgid "Unlock public key"
 msgstr "పబ్లిక్ కీను అన్‌లాక్ చేయి"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "వ్యక్తిగత కీను అన్‌లాక్ చేయుటకు సంకేతపదమును ప్రవేశపెట్టు"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656

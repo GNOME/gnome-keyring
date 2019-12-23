@@ -435,7 +435,7 @@ msgid "Unlock public key"
 msgstr "সার্বজনীন-কি আন-লক করুন"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "গোপনীয় কি আনলক করতে পাসওয়ার্ড লিখুন"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657

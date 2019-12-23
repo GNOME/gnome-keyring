@@ -429,7 +429,7 @@ msgid "Unlock public key"
 msgstr "Otključaj javni ključ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Unesite lozinku za otključavanje tajnog ključa"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656

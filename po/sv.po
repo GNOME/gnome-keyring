@@ -391,7 +391,7 @@ msgid "Unlock public key"
 msgstr "Lås upp publik nyckel"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Ange lösenordet för att låsa upp privata nyckeln"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

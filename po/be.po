@@ -392,7 +392,7 @@ msgid "Unlock public key"
 msgstr "Разблакіраванне адкрытага ключа"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Увядзіце пароль, каб разблакіраваць закрыты ключ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

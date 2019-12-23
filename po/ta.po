@@ -439,7 +439,7 @@ msgid "Unlock public key"
 msgstr "பொது விசையின் பூட்டை திற"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "விசை வளையத்தின் பூட்டைத்திறக்க கடவுச்சொல்லை உள்ளிடவும்"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657

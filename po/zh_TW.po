@@ -380,7 +380,7 @@ msgid "Unlock public key"
 msgstr "解鎖公開金鑰"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "輸入解鎖私密金鑰的密碼"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

@@ -439,7 +439,7 @@ msgid "Unlock public key"
 msgstr "સાર્વજનિક કીનું તાળુ ખોલો"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "ખાનગી કીનું તાળુ ખોલવા માટે પાસવર્ડ દાખલ કરો"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656

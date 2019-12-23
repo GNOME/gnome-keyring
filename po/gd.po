@@ -401,7 +401,7 @@ msgid "Unlock public key"
 msgstr "Thoir a’ ghlas far na h-iuchrach phoblach"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr ""
 "Cuir a-steach am facal-faire gus a’ ghlas a thoirt far na h-iuchrach "
 "phrìobhaideach"

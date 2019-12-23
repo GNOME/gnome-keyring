@@ -393,7 +393,7 @@ msgid "Unlock public key"
 msgstr "Buka kunci publik"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Masukkan sandi untuk membuka kunci privat"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

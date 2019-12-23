@@ -150,7 +150,7 @@ msgstr "Odkleni osebni ključ"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Vnesite geslo za odklepanje osebnega ključa"
 
 #. TRANSLATORS: The private key is locked

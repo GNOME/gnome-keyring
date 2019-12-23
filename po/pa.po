@@ -441,7 +441,7 @@ msgid "Unlock public key"
 msgstr "ਅਣ-ਲਾਕ ਪਬਲਿਕ ਕੁੰਜੀ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਦਾ ਤਾਲਾ ਖੋਲ੍ਹਣ ਲਈ ਪਾਸਵਰਡ ਦਿਓ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656

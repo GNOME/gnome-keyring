@@ -368,7 +368,7 @@ msgid "Unlock public key"
 msgstr "പബ്ളിക് കീയുടെ പൂട്ടു തുറക്കുക"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "പ്രൈവറ്റ് കീയുടെ പൂട്ടു തുറക്കുന്നതിനായി അടയാളവാക്കു് നല്‍കുക"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

@@ -358,7 +358,7 @@ msgid "Unlock"
 msgstr "ལྡེ་མིག་ཕྱེ "
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "སྒེར་དོན་  ལྡེ་མིག་ཕྱེ་ནིའི་དོན་ལུ་ ཆོག་ཡིག་བཙུགས་"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

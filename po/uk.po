@@ -436,7 +436,7 @@ msgid "Unlock public key"
 msgstr "Розблокувати відкритий ключ"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Введіть пароль для розблокування закритої в'язки ключів"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656

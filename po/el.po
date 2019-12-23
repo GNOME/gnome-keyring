@@ -394,7 +394,7 @@ msgid "Unlock public key"
 msgstr "Ξεκλείδωμα δημοσίου κλειδιού"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Εισάγετε κωδικό πρόσβασης για το ξεκλείδωμα του ιδιωτικού κλειδιού"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

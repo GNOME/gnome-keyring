@@ -390,7 +390,7 @@ msgid "Unlock public key"
 msgstr "פתח מפתח ציבורי"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "יש להזין ססמה לשחרור המפתח הפרטי"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

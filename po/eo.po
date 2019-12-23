@@ -146,7 +146,7 @@ msgstr "Malŝlosi privatan ŝlosilon"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Enigi pasvorton por malŝlosi la privatan ŝlosilon"
 
 #. TRANSLATORS: The private key is locked

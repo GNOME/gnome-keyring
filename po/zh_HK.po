@@ -417,7 +417,7 @@ msgid "Unlock public key"
 msgstr "解鎖公開密碼匙"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "輸入解鎖私密密碼匙的密碼"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657

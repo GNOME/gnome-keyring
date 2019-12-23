@@ -409,7 +409,7 @@ msgid "Unlock public key"
 msgstr "Nyilvános kulcs feloldása"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Adja meg a jelszót a személyes kulcs feloldásához"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

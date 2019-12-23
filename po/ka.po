@@ -352,7 +352,7 @@ msgstr "გახსენი Keyring–ი"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 #, fuzzy
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "შეიყვანე პაროლი სტანდარტული keyring–ის გასახსნელად"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

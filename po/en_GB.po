@@ -158,8 +158,8 @@ msgstr "Unlock private key"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
-msgstr "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
+msgstr "Enter private key protection password to unlock the key"
 
 #. TRANSLATORS: The private key is locked
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104

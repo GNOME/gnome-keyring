@@ -350,7 +350,7 @@ msgstr "Keyring අගුලු අරින්න"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 #, fuzzy
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "අගුලු විවෘත කිරීම සඳහා keyring ප්‍රකෘතිය සඳහා රහස්පදය ඇතුලත් කරන්න"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

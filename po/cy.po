@@ -354,7 +354,7 @@ msgstr "Datgloi Cylch Allweddi"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
 #, fuzzy
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Rhowch gyfrinair y cylch allweddi ragosodedig er mwyn ei datgloi"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

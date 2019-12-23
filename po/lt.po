@@ -409,7 +409,7 @@ msgid "Unlock public key"
 msgstr "Atrakinti viešąjį raktą"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Įveskite slaptažodį, kad atrakintumėte privatų raktą"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

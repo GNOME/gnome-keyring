@@ -649,7 +649,7 @@ msgid "The operation was cancelled"
 msgstr "La operación encaboxose"
 
 #: ../gcr/gcr-importer.c:172 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Introduz la contraseña pa desbloquiar la clave privada"
 
 #: ../gcr/gcr-importer.c:174 ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

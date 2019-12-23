@@ -650,7 +650,7 @@ calc_unlock_object_primary (CK_OBJECT_CLASS klass)
 {
 	switch (klass) {
 	case CKO_PRIVATE_KEY:
-		return _("Enter password to unlock the private key");
+		return _("Enter private key protection password to unlock the key");
 	case CKO_CERTIFICATE:
 		return _("Enter password to unlock the certificate");
 	case CKO_PUBLIC_KEY:

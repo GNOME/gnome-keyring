@@ -409,7 +409,7 @@ msgid "Unlock public key"
 msgstr "Mở khóa công khai"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Nhập mật khẩu để mở khóa riêng"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656

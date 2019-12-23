@@ -398,7 +398,7 @@ msgid "Unlock public key"
 msgstr "Genel anahtarın kilidini kaldır"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Özel anahtarlık kilidini açmak için parola girin"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

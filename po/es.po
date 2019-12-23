@@ -412,7 +412,7 @@ msgid "Unlock public key"
 msgstr "Desbloquear la clave pública"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Introduzca la contraseña para desbloquear la clave privada"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655

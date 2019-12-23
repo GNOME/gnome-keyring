@@ -393,7 +393,7 @@ msgid "Unlock public key"
 msgstr "解锁公钥"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "输入密码以解锁私钥"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:655

@@ -352,7 +352,7 @@ msgid "Unlock"
 msgstr "Membuka"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-msgid "Enter password to unlock the private key"
+msgid "Enter private key protection password to unlock the key"
 msgstr "Masukkan katalaluan untuk dibuka kekunci peribadi"
 
 #: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:703

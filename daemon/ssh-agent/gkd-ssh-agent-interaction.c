@@ -98,7 +98,7 @@ on_prompt_open (GObject *source_object,
 	}
 
 	gcr_prompt_set_title (prompt, _("Unlock private key"));
-	gcr_prompt_set_message (prompt, _("Enter password to unlock the private key"));
+	gcr_prompt_set_message (prompt, _("Enter private key protection password to unlock the key"));
 
 	/* TRANSLATORS: The private key is locked */
 	text = g_strdup_printf (_("An application wants access to the private key “%s”, but it is locked"),
