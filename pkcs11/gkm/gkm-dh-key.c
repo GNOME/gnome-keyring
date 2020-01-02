@@ -36,7 +36,7 @@ struct _GkmDhKeyPrivate {
 	gsize n_id;
 };
 
-G_DEFINE_TYPE (GkmDhKey, gkm_dh_key, GKM_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmDhKey, gkm_dh_key, GKM_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -90,7 +90,7 @@ gkm_dh_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIBUT
 static void
 gkm_dh_key_init (GkmDhKey *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_DH_KEY, GkmDhKeyPrivate);
+	self->pv = gkm_dh_key_get_instance_private (self);
 }
 
 static void
@@ -117,13 +117,9 @@ gkm_dh_key_class_init (GkmDhKeyClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 
-	gkm_dh_key_parent_class = g_type_class_peek_parent (klass);
-
 	gobject_class->finalize = gkm_dh_key_finalize;
 
 	gkm_class->get_attribute = gkm_dh_key_real_get_attribute;
-
-	g_type_class_add_private (klass, sizeof (GkmDhKeyPrivate));
 }
 
 /* -----------------------------------------------------------------------------

@@ -48,7 +48,7 @@ struct _GkmAssertionPrivate {
 	gchar *peer;
 };
 
-G_DEFINE_TYPE (GkmAssertion, gkm_assertion, GKM_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmAssertion, gkm_assertion, GKM_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -113,7 +113,7 @@ gkm_assertion_constructor (GType type, guint n_props, GObjectConstructParam *pro
 static void
 gkm_assertion_init (GkmAssertion *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_ASSERTION, GkmAssertionPrivate);
+	self->pv = gkm_assertion_get_instance_private (self);
 }
 
 static void
@@ -216,8 +216,6 @@ gkm_assertion_class_init (GkmAssertionClass *klass)
 	g_object_class_install_property (gobject_class, PROP_PEER,
 	         g_param_spec_string ("peer", "Peer", "Optional peer this assertion applies to",
 	                              NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
-	g_type_class_add_private (klass, sizeof (GkmAssertionPrivate));
 }
 
 /* -----------------------------------------------------------------------------

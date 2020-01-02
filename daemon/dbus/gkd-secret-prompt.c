@@ -60,6 +60,7 @@ struct _GkdSecretPromptPrivate {
 
 static void gkd_secret_dispatch_iface (GkdSecretDispatchIface *iface);
 G_DEFINE_TYPE_WITH_CODE (GkdSecretPrompt, gkd_secret_prompt, GCR_TYPE_SYSTEM_PROMPT,
+			 G_ADD_PRIVATE (GkdSecretPrompt)
 			 G_IMPLEMENT_INTERFACE (GKD_SECRET_TYPE_DISPATCH, gkd_secret_dispatch_iface));
 
 static guint unique_prompt_number = 0;
@@ -213,7 +214,7 @@ gkd_secret_prompt_unexport (GkdSecretPrompt *self)
 static void
 gkd_secret_prompt_init (GkdSecretPrompt *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKD_SECRET_TYPE_PROMPT, GkdSecretPromptPrivate);
+	self->pv = gkd_secret_prompt_get_instance_private (self);
 	self->pv->cancellable = g_cancellable_new ();
 }
 
@@ -313,8 +314,6 @@ gkd_secret_prompt_class_init (GkdSecretPromptClass *klass)
 
 	klass->encode_result = gkd_secret_prompt_real_encode_result;
 	klass->prompt_ready = gkd_secret_prompt_real_prompt_ready;
-
-	g_type_class_add_private (klass, sizeof (GkdSecretPromptPrivate));
 
 	g_object_class_install_property (gobject_class, PROP_CALLER,
 		g_param_spec_string ("caller", "Caller", "DBus caller name",

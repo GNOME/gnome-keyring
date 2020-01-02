@@ -70,7 +70,7 @@ typedef struct _Finder {
 	GkmSession *session;
 } Finder;
 
-G_DEFINE_TYPE(GkmManager, gkm_manager, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmManager, gkm_manager, G_TYPE_OBJECT);
 
 /* Friend functions for GkmObject */
 void  _gkm_manager_register_object    (GkmManager *self, GkmObject *object);
@@ -646,7 +646,7 @@ find_one_for_property (GkmManager *self, const gchar *property, CK_ATTRIBUTE_PTR
 static void
 gkm_manager_init (GkmManager *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE(self, GKM_TYPE_MANAGER, GkmManagerPrivate);
+	self->pv = gkm_manager_get_instance_private (self);
 	self->pv->index_by_attribute = g_hash_table_new_full (gkm_util_ulong_hash, gkm_util_ulong_equal,
 	                                                      gkm_util_ulong_free, index_free);
 	self->pv->index_by_property = g_hash_table_new_full (g_str_hash, g_str_equal,
@@ -724,13 +724,10 @@ gkm_manager_class_init (GkmManagerClass *klass)
 	GObjectClass *gobject_class;
 	gobject_class = (GObjectClass*)klass;
 
-	gkm_manager_parent_class = g_type_class_peek_parent (klass);
 	gobject_class->dispose = gkm_manager_dispose;
 	gobject_class->get_property = gkm_manager_get_property;
 	gobject_class->set_property = gkm_manager_set_property;
 	gobject_class->finalize = gkm_manager_finalize;
-
-	g_type_class_add_private (gobject_class, sizeof (GkmManagerPrivate));
 
 	g_object_class_install_property (gobject_class, PROP_FOR_TOKEN,
 	         g_param_spec_boolean ("for-token", "For Token", "Whether this manager is for token objects or not",

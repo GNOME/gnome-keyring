@@ -37,7 +37,7 @@ struct _GkmPrivateXsaKeyPrivate {
 	GkmSexp *sexp;
 };
 
-G_DEFINE_TYPE (GkmPrivateXsaKey, gkm_private_xsa_key, GKM_TYPE_SEXP_KEY);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmPrivateXsaKey, gkm_private_xsa_key, GKM_TYPE_SEXP_KEY);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -395,7 +395,7 @@ gkm_private_xsa_key_real_acquire_crypto_sexp (GkmSexpKey *base, GkmSession *sess
 static void
 gkm_private_xsa_key_init (GkmPrivateXsaKey *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_PRIVATE_XSA_KEY, GkmPrivateXsaKeyPrivate);
+	self->pv = gkm_private_xsa_key_get_instance_private (self);
 }
 
 static void
@@ -426,9 +426,6 @@ gkm_private_xsa_key_class_init (GkmPrivateXsaKeyClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 	GkmSexpKeyClass *key_class = GKM_SEXP_KEY_CLASS (klass);
-
-	gkm_private_xsa_key_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmPrivateXsaKeyPrivate));
 
 	gobject_class->dispose = gkm_private_xsa_key_dispose;
 	gobject_class->finalize = gkm_private_xsa_key_finalize;

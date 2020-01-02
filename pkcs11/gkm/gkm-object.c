@@ -72,7 +72,7 @@ struct _GkmObjectPrivate {
 	GkmObjectTransient *transient;
 };
 
-G_DEFINE_TYPE (GkmObject, gkm_object, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmObject, gkm_object, G_TYPE_OBJECT);
 
 /* Private friend functions from the manager */
 void  _gkm_manager_register_object   (GkmManager *self, GkmObject *object);
@@ -396,7 +396,7 @@ gkm_object_constructor (GType type, guint n_props, GObjectConstructParam *props)
 static void
 gkm_object_init (GkmObject *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_OBJECT, GkmObjectPrivate);
+	self->pv = gkm_object_get_instance_private (self);
 
 }
 
@@ -538,9 +538,6 @@ static void
 gkm_object_class_init (GkmObjectClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	gkm_object_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmObjectPrivate));
 
 	gobject_class->constructor = gkm_object_constructor;
 	gobject_class->dispose = gkm_object_dispose;
