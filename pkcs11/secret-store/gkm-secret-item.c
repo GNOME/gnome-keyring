@@ -173,7 +173,7 @@ factory_create_item (GkmSession *session, GkmTransaction *transaction,
 		} else {
 			gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (item),
 			                                      FALSE, attrs, n_attrs);
-			return g_object_ref (item);
+			return GKM_OBJECT (g_object_ref (item));
 		}
 	}
 
@@ -181,7 +181,7 @@ factory_create_item (GkmSession *session, GkmTransaction *transaction,
 	item = gkm_secret_collection_create_item (collection, transaction);
 	gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (item),
 	                                      TRUE, attrs, n_attrs);
-	return g_object_ref (item);
+	return GKM_OBJECT (g_object_ref (item));
 }
 
 /* -----------------------------------------------------------------------------
