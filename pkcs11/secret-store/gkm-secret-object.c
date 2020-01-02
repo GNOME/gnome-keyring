@@ -357,13 +357,10 @@ gkm_secret_object_get_created (GkmSecretObject *self)
 void
 gkm_secret_object_set_created (GkmSecretObject *self, glong when)
 {
-	GTimeVal tv;
-
 	g_return_if_fail (GKM_IS_SECRET_OBJECT (self));
 
 	if (when < 0) {
-		g_get_current_time (&tv);
-		when = tv.tv_sec;
+		when = g_get_real_time () / G_USEC_PER_SEC;
 	}
 
 	self->pv->created = when;
@@ -373,12 +370,9 @@ gkm_secret_object_set_created (GkmSecretObject *self, glong when)
 void
 gkm_secret_object_mark_created (GkmSecretObject *self)
 {
-	GTimeVal tv;
-
 	g_return_if_fail (GKM_IS_SECRET_OBJECT (self));
 
-	g_get_current_time (&tv);
-	gkm_secret_object_set_created (self, tv.tv_sec);
+	gkm_secret_object_set_created (self, g_get_real_time () / G_USEC_PER_SEC);
 }
 
 glong
@@ -420,14 +414,11 @@ void
 gkm_secret_object_begin_modified (GkmSecretObject *self,
                                   GkmTransaction *transaction)
 {
-	GTimeVal tv;
-
 	g_return_if_fail (!gkm_transaction_get_failed (transaction));
 	gkm_transaction_add (transaction, self, complete_set_modified,
 	                     g_memdup (&self->pv->modified, sizeof (gulong)));
 
-	g_get_current_time (&tv);
-	self->pv->modified = tv.tv_sec;
+	self->pv->modified = g_get_real_time () / G_USEC_PER_SEC;
 }
 
 gboolean

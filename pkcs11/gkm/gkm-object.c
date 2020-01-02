@@ -105,7 +105,7 @@ timer_callback (GkmTimer *timer, gpointer user_data)
 	GkmObject *self = user_data;
 	glong after, idle, offset;
 	GkmObjectTransient *transient;
-	GTimeVal tv;
+	gint64 now;
 
 	g_return_if_fail (GKM_IS_OBJECT (self));
 
@@ -116,19 +116,19 @@ timer_callback (GkmTimer *timer, gpointer user_data)
 	g_return_if_fail (timer == transient->timer);
 	transient->timer = NULL;
 
-	g_get_current_time (&tv);
+	now = g_get_real_time () / G_USEC_PER_SEC;
 	idle = after = G_MAXLONG;
 
 	/* Are we supposed to be destroyed after a certain time? */
 	if (transient->timed_after) {
 		g_return_if_fail (transient->stamp_created);
-		after = (transient->stamp_created + transient->timed_after) - tv.tv_sec;
+		after = (transient->stamp_created + transient->timed_after) - now;
 	}
 
 	/* Are we supposed to be destroyed after an idle time? */
 	if (transient->timed_idle) {
 		g_return_if_fail (transient->stamp_used);
-		idle = (transient->stamp_used + transient->timed_idle) - tv.tv_sec;
+		idle = (transient->stamp_used + transient->timed_idle) - now;
 	}
 
 	/* Okay, time to destroy? */
@@ -148,16 +148,16 @@ start_callback (GkmTransaction *transaction, GObject *obj, gpointer user_data)
 {
 	GkmObject *self = GKM_OBJECT (obj);
 	GkmObjectTransient *transient;
-	GTimeVal tv;
+	gint64 now;
 
 	g_return_val_if_fail (GKM_IS_OBJECT (self), FALSE);
 	g_return_val_if_fail (self->pv->transient, FALSE);
 	transient = self->pv->transient;
 	g_return_val_if_fail (!transient->timer, FALSE);
 
-	g_get_current_time (&tv);
-	transient->stamp_created = tv.tv_sec;
-	transient->stamp_used = tv.tv_sec;
+	now = g_get_real_time () / G_USEC_PER_SEC;
+	transient->stamp_created = now;
+	transient->stamp_used = now;
 
 	/* Start the timer going */
 	timer_callback (NULL, self);
@@ -742,15 +742,13 @@ void
 gkm_object_mark_used (GkmObject *self)
 {
 	GkmObjectTransient *transient;
-	GTimeVal tv;
 
 	g_return_if_fail (GKM_IS_OBJECT (self));
 	transient = self->pv->transient;
 
 	if (transient) {
 		if (transient->timed_idle) {
-			g_get_current_time (&tv);
-			transient->stamp_used = tv.tv_sec;
+			transient->stamp_used = g_get_real_time () / G_USEC_PER_SEC;
 		}
 		if (transient->uses_remaining) {
 			--(transient->uses_remaining);
