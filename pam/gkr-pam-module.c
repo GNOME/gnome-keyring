@@ -583,6 +583,10 @@ start_daemon (pam_handle_t *ph,
 	}
 		
 	ret = foreach_line (output, setup_environment, ph);
+	if (password)
+		syslog (GKR_LOG_INFO, "gkr-pam: gnome-keyring-daemon started properly and unlocked keyring");
+	else
+		syslog (GKR_LOG_INFO, "gkr-pam: gnome-keyring-daemon started properly");
 
 done:
 	/* Restore old handler */
@@ -884,13 +888,13 @@ pam_sm_authenticate (pam_handle_t *ph, int unused, int argc, const char **argv)
 
 	ret = unlock_keyring (ph, pwd, password, &need_daemon);
 	if (ret != PAM_SUCCESS && need_daemon) {
-		/* If we started the daemon, its already unlocked, since we passed the password */
-		if (args & ARG_AUTO_START)
+		if (args & ARG_AUTO_START) {
+			/* We pass password to the daemon when starting, thus it will immediately unlock keyring */
 			ret = start_daemon (ph, pwd, true, password);
-
-		/* Otherwise start later in open session, store password */
-		else
+		} else {
 			ret = stash_password_for_session (ph, password);
+			syslog (GKR_LOG_INFO, "gkr-pam: stashed password to try later in open session");
+		}
 	}
 
 	return ret;
