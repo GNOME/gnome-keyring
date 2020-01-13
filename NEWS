@@ -1,3 +1,7 @@
+Changes in version 3.35.1 are:
+ * dbus: Implement secret portal backend [!18]
+ * Updated translations
+
 Changes in version 3.34.0 are:
  * dbus-environment: Race fix in Setenv request to gnome-session [!19]
  * egg: Request that secure memory not be dumped to disk [!15]
