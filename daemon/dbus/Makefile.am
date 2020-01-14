@@ -173,7 +173,7 @@ test_dbus_lock_LDADD = $(daemon_dbus_LIBS)
 
 test_dbus_portal_SOURCES = daemon/dbus/test-dbus-portal.c
 test_dbus_portal_LDADD = $(daemon_dbus_LIBS)
-test_dbus_portal_CFLAGS = $(daemon_dbus_CFLAGS)
+test_dbus_portal_CFLAGS = $(daemon_dbus_CFLAGS) $(GIO_CFLAGS)
 
 check_PROGRAMS += $(daemon_dbus_TESTS)
 TESTS += $(daemon_dbus_TESTS)
