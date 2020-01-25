@@ -84,7 +84,7 @@ typedef struct _Apartment {
 	CK_USER_TYPE logged_in;
 } Apartment;
 
-G_DEFINE_TYPE (GkmModule, gkm_module, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmModule, gkm_module, G_TYPE_OBJECT);
 
 /* These info blocks are used unless derived class overrides */
 
@@ -603,7 +603,7 @@ gkm_module_init (GkmModule *self)
 {
 	gkm_timer_initialize ();
 
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_MODULE, GkmModulePrivate);
+	self->pv = gkm_module_get_instance_private (self);
 	self->pv->token_manager = g_object_new (GKM_TYPE_MANAGER, "for-token", TRUE, NULL);
 	self->pv->sessions_by_handle = g_hash_table_new_full (gkm_util_ulong_hash, gkm_util_ulong_equal,
 	                                                      gkm_util_ulong_free, g_object_unref);
@@ -722,9 +722,6 @@ static void
 gkm_module_class_init (GkmModuleClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	gkm_module_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmModulePrivate));
 
 	gobject_class->constructor = gkm_module_constructor;
 	gobject_class->dispose = gkm_module_dispose;

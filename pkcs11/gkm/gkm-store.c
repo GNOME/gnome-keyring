@@ -40,7 +40,7 @@ struct _GkmStorePrivate {
 	GHashTable *schemas;
 };
 
-G_DEFINE_TYPE (GkmStore, gkm_store, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmStore, gkm_store, G_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -75,7 +75,7 @@ gkm_store_constructor (GType type, guint n_props, GObjectConstructParam *props)
 static void
 gkm_store_init (GkmStore *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_STORE, GkmStorePrivate);
+	self->pv = gkm_store_get_instance_private (self);
 	self->pv->schemas = g_hash_table_new_full (gkm_util_ulong_hash, gkm_util_ulong_equal,
 	                                           NULL, schema_free);
 }
@@ -132,8 +132,6 @@ gkm_store_class_init (GkmStoreClass *klass)
 	gobject_class->finalize = gkm_store_finalize;
 	gobject_class->set_property = gkm_store_set_property;
 	gobject_class->get_property = gkm_store_get_property;
-
-	g_type_class_add_private (klass, sizeof (GkmStorePrivate));
 }
 
 /* -----------------------------------------------------------------------------

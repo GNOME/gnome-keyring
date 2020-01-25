@@ -45,7 +45,7 @@ struct _GkmSecretObjectPrivate {
 	glong modified;
 };
 
-G_DEFINE_TYPE (GkmSecretObject, gkm_secret_object, GKM_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmSecretObject, gkm_secret_object, GKM_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -187,7 +187,7 @@ gkm_secret_object_real_is_locked (GkmSecretObject *self, GkmSession *session)
 static void
 gkm_secret_object_init (GkmSecretObject *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_SECRET_OBJECT, GkmSecretObjectPrivate);
+	self->pv = gkm_secret_object_get_instance_private (self);
 }
 
 static GObject*
@@ -282,9 +282,6 @@ gkm_secret_object_class_init (GkmSecretObjectClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 
-	gkm_secret_object_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmSecretObjectPrivate));
-
 	gobject_class->constructor = gkm_secret_object_constructor;
 	gobject_class->finalize = gkm_secret_object_finalize;
 	gobject_class->set_property = gkm_secret_object_set_property;
@@ -360,13 +357,10 @@ gkm_secret_object_get_created (GkmSecretObject *self)
 void
 gkm_secret_object_set_created (GkmSecretObject *self, glong when)
 {
-	GTimeVal tv;
-
 	g_return_if_fail (GKM_IS_SECRET_OBJECT (self));
 
 	if (when < 0) {
-		g_get_current_time (&tv);
-		when = tv.tv_sec;
+		when = g_get_real_time () / G_USEC_PER_SEC;
 	}
 
 	self->pv->created = when;
@@ -376,12 +370,9 @@ gkm_secret_object_set_created (GkmSecretObject *self, glong when)
 void
 gkm_secret_object_mark_created (GkmSecretObject *self)
 {
-	GTimeVal tv;
-
 	g_return_if_fail (GKM_IS_SECRET_OBJECT (self));
 
-	g_get_current_time (&tv);
-	gkm_secret_object_set_created (self, tv.tv_sec);
+	gkm_secret_object_set_created (self, g_get_real_time () / G_USEC_PER_SEC);
 }
 
 glong
@@ -423,14 +414,11 @@ void
 gkm_secret_object_begin_modified (GkmSecretObject *self,
                                   GkmTransaction *transaction)
 {
-	GTimeVal tv;
-
 	g_return_if_fail (!gkm_transaction_get_failed (transaction));
 	gkm_transaction_add (transaction, self, complete_set_modified,
 	                     g_memdup (&self->pv->modified, sizeof (gulong)));
 
-	g_get_current_time (&tv);
-	self->pv->modified = tv.tv_sec;
+	self->pv->modified = g_get_real_time () / G_USEC_PER_SEC;
 }
 
 gboolean

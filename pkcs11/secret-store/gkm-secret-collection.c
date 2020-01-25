@@ -291,7 +291,7 @@ factory_create_collection (GkmSession *session, GkmTransaction *transaction,
 		if (collection != NULL) {
 			gkm_session_complete_object_creation (session, transaction, GKM_OBJECT (collection),
 			                                      FALSE, attrs, n_attrs);
-			return g_object_ref (collection);
+			return GKM_OBJECT (g_object_ref (collection));
 		}
 	}
 

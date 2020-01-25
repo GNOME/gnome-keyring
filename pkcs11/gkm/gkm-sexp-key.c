@@ -42,7 +42,7 @@ struct _GkmSexpKeyPrivate {
 	GkmSexp *base_sexp;
 };
 
-G_DEFINE_TYPE (GkmSexpKey, gkm_sexp_key, GKM_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmSexpKey, gkm_sexp_key, GKM_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -123,7 +123,7 @@ gkm_sexp_key_real_get_attribute (GkmObject *base, GkmSession *session, CK_ATTRIB
 static void
 gkm_sexp_key_init (GkmSexpKey *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_SEXP_KEY, GkmSexpKeyPrivate);
+	self->pv = gkm_sexp_key_get_instance_private (self);
 }
 
 static void
@@ -178,9 +178,6 @@ gkm_sexp_key_class_init (GkmSexpKeyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
-
-	gkm_sexp_key_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmSexpKeyPrivate));
 
 	gobject_class->finalize = gkm_sexp_key_finalize;
 	gobject_class->set_property = gkm_sexp_key_set_property;

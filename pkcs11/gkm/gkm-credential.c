@@ -48,7 +48,7 @@ struct _GkmCredentialPrivate {
 	gpointer user_data;
 };
 
-G_DEFINE_TYPE (GkmCredential, gkm_credential, GKM_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmCredential, gkm_credential, GKM_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -197,7 +197,7 @@ gkm_credential_constructor (GType type, guint n_props, GObjectConstructParam *pr
 static void
 gkm_credential_init (GkmCredential *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_CREDENTIAL, GkmCredentialPrivate);
+	self->pv = gkm_credential_get_instance_private (self);
 }
 
 static void
@@ -278,9 +278,6 @@ gkm_credential_class_init (GkmCredentialClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
-
-	gkm_credential_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmCredentialPrivate));
 
 	gobject_class->constructor = gkm_credential_constructor;
 	gobject_class->dispose = gkm_credential_dispose;

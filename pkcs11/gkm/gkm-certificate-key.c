@@ -38,7 +38,7 @@ struct _GkmCertificateKeyPrivate {
 	GkmCertificate *certificate;
 };
 
-G_DEFINE_TYPE (GkmCertificateKey, gkm_certificate_key, GKM_TYPE_PUBLIC_XSA_KEY);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmCertificateKey, gkm_certificate_key, GKM_TYPE_PUBLIC_XSA_KEY);
 
 /* -----------------------------------------------------------------------------
  * OBJECT
@@ -62,7 +62,7 @@ gkm_certificate_key_get_attribute (GkmObject *base, GkmSession *session, CK_ATTR
 static void
 gkm_certificate_key_init (GkmCertificateKey *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_CERTIFICATE_KEY, GkmCertificateKeyPrivate);
+	self->pv = gkm_certificate_key_get_instance_private (self);
 }
 
 static void
@@ -123,8 +123,6 @@ gkm_certificate_key_class_init (GkmCertificateKeyClass *klass)
 	gobject_class->get_property = gkm_certificate_key_get_property;
 
 	gkm_class->get_attribute = gkm_certificate_key_get_attribute;
-
-	g_type_class_add_private (klass, sizeof (GkmCertificateKeyPrivate));
 
 	g_object_class_install_property (gobject_class, PROP_CERTIFICATE,
 	           g_param_spec_object ("certificate", "Certificate", "Certificate this key belongs to",

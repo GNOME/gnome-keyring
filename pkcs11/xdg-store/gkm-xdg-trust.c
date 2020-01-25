@@ -54,7 +54,8 @@ struct _GkmXdgTrustPrivate {
 static void gkm_xdg_trust_serializable (GkmSerializableIface *iface);
 
 G_DEFINE_TYPE_EXTENDED (GkmXdgTrust, gkm_xdg_trust, GKM_TYPE_TRUST, 0,
-                        G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_xdg_trust_serializable));
+                        G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_xdg_trust_serializable)
+						G_ADD_PRIVATE (GkmXdgTrust));
 
 static GQuark QDATA_ASSERTION_KEY = 0;
 
@@ -690,7 +691,7 @@ gkm_xdg_trust_get_level (GkmTrust *base, const gchar *purpose)
 static void
 gkm_xdg_trust_init (GkmXdgTrust *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_XDG_TYPE_TRUST, GkmXdgTrustPrivate);
+	self->pv = gkm_xdg_trust_get_instance_private (self);
 	self->pv->assertions = create_assertions ();
 }
 
@@ -727,7 +728,6 @@ gkm_xdg_trust_class_init (GkmXdgTrustClass *klass)
 	trust_class->get_trust_level = gkm_xdg_trust_get_level;
 
 	QDATA_ASSERTION_KEY = g_quark_from_static_string ("gkm-xdg-trust-assertion-key");
-	g_type_class_add_private (klass, sizeof (GkmXdgTrustPrivate));
 
 	init_quarks ();
 }

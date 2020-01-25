@@ -35,7 +35,7 @@ struct _GkmSecretKeyPrivate {
 	gsize n_id;
 };
 
-G_DEFINE_TYPE (GkmSecretKey, gkm_secret_key, GKM_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmSecretKey, gkm_secret_key, GKM_TYPE_OBJECT);
 
 /* -----------------------------------------------------------------------------
  * INTERNAL
@@ -128,7 +128,7 @@ gkm_secret_key_real_create_attributes (GkmObject *object, GkmSession *session, G
 static void
 gkm_secret_key_init (GkmSecretKey *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_SECRET_KEY, GkmSecretKeyPrivate);
+	self->pv = gkm_secret_key_get_instance_private (self);
 }
 
 static void
@@ -149,14 +149,10 @@ gkm_secret_key_class_init (GkmSecretKeyClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
 
-	gkm_secret_key_parent_class = g_type_class_peek_parent (klass);
-
 	gobject_class->finalize = gkm_secret_key_finalize;
 
 	gkm_class->get_attribute = gkm_secret_key_real_get_attribute;
 	gkm_class->create_attributes = gkm_secret_key_real_create_attributes;
-
-	g_type_class_add_private (klass, sizeof (GkmSecretKeyPrivate));
 }
 
 /* -----------------------------------------------------------------------------

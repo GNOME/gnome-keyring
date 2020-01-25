@@ -80,7 +80,7 @@ struct _GkmSessionPrivate {
 	CK_ATTRIBUTE_TYPE crypto_method;
 };
 
-G_DEFINE_TYPE (GkmSession, gkm_session, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (GkmSession, gkm_session, G_TYPE_OBJECT);
 
 static void add_object (GkmSession *self, GkmTransaction *transaction, GkmObject *object);
 static void remove_object (GkmSession *self, GkmTransaction *transaction, GkmObject *object);
@@ -377,7 +377,7 @@ gkm_session_constructor (GType type, guint n_props, GObjectConstructParam *props
 static void
 gkm_session_init (GkmSession *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_SESSION, GkmSessionPrivate);
+	self->pv = gkm_session_get_instance_private (self);
 	self->pv->objects = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, gkm_util_dispose_unref);
 	self->pv->flags = 0;
 
@@ -510,9 +510,6 @@ static void
 gkm_session_class_init (GkmSessionClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	gkm_session_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmSessionPrivate));
 
 	gobject_class->constructor = gkm_session_constructor;
 	gobject_class->dispose = gkm_session_dispose;

@@ -129,15 +129,15 @@ static void
 test_was_modified (Test *test, gconstpointer unused)
 {
 	GkmTransaction *transaction;
-	GTimeVal tv;
+	gint64 now;
 
-	g_get_current_time (&tv);
+	now = g_get_real_time () / G_USEC_PER_SEC;
 
 	transaction = gkm_transaction_new ();
 	gkm_secret_object_begin_modified (test->object, transaction);
 	g_assert_cmpuint (gkm_transaction_complete_and_unref (transaction), ==, CKR_OK);
 
-	g_assert (tv.tv_sec == gkm_secret_object_get_modified (test->object));
+	g_assert (now == gkm_secret_object_get_modified (test->object));
 }
 
 static void

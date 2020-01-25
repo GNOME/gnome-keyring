@@ -64,6 +64,7 @@ static GQuark OID_ENHANCED_USAGE;
 static void gkm_certificate_serializable (GkmSerializableIface *iface);
 
 G_DEFINE_TYPE_EXTENDED (GkmCertificate, gkm_certificate, GKM_TYPE_OBJECT, 0,
+               G_ADD_PRIVATE (GkmCertificate)
                G_IMPLEMENT_INTERFACE (GKM_TYPE_SERIALIZABLE, gkm_certificate_serializable));
 
 /* -----------------------------------------------------------------------------
@@ -281,7 +282,7 @@ gkm_certificate_constructor (GType type, guint n_props, GObjectConstructParam *p
 static void
 gkm_certificate_init (GkmCertificate *self)
 {
-	self->pv = G_TYPE_INSTANCE_GET_PRIVATE (self, GKM_TYPE_CERTIFICATE, GkmCertificatePrivate);
+	self->pv = gkm_certificate_get_instance_private (self);
 
 }
 
@@ -351,9 +352,6 @@ gkm_certificate_class_init (GkmCertificateClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GkmObjectClass *gkm_class = GKM_OBJECT_CLASS (klass);
-
-	gkm_certificate_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GkmCertificatePrivate));
 
 	gobject_class->constructor = gkm_certificate_constructor;
 	gobject_class->dispose = gkm_certificate_dispose;
