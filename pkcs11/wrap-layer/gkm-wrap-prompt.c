@@ -588,9 +588,7 @@ setup_unlock_keyring_login (GkmWrapPrompt *self)
 	prompt = GCR_PROMPT (self);
 
 	gcr_prompt_set_title (prompt, _("Unlock Login Keyring"));
-
-	text = _("Enter password to unlock your login keyring");
-	gcr_prompt_set_message (prompt, text);
+	gcr_prompt_set_message (prompt, _("Authentication required"));
 
 	if (gkm_wrap_login_did_unlock_fail ())
 		text = _("The password you use to log in to your computer no longer matches that of your login keyring.");
@@ -614,9 +612,7 @@ setup_unlock_keyring_other (GkmWrapPrompt *self,
 	prompt = GCR_PROMPT (self);
 
 	gcr_prompt_set_title (prompt, _("Unlock Keyring"));
-
-	text = _("Enter password to unlock");
-	gcr_prompt_set_message (prompt, text);
+	gcr_prompt_set_message (prompt, _("Authentication required"));
 
 	text = g_markup_printf_escaped (_("An application wants access to the keyring “%s”, but it is locked"), label);
 	gcr_prompt_set_description (prompt, text);
@@ -642,21 +638,6 @@ calc_unlock_object_title (CK_OBJECT_CLASS klass)
 		return _("Unlock public key");
 	default:
 		return _("Unlock");
-	}
-}
-
-static const gchar*
-calc_unlock_object_primary (CK_OBJECT_CLASS klass)
-{
-	switch (klass) {
-	case CKO_PRIVATE_KEY:
-		return _("Enter password to unlock the private key");
-	case CKO_CERTIFICATE:
-		return _("Enter password to unlock the certificate");
-	case CKO_PUBLIC_KEY:
-		return _("Enter password to unlock the public key");
-	default:
-		return _("Enter password to unlock");
 	}
 }
 
@@ -707,7 +688,7 @@ setup_unlock_object (GkmWrapPrompt *self,
 	prompt = GCR_PROMPT (self);
 
 	gcr_prompt_set_title (prompt, calc_unlock_object_title (klass));
-	gcr_prompt_set_message (prompt, calc_unlock_object_primary (klass));
+	gcr_prompt_set_message (prompt, _("Authentication required"));
 
 	text = calc_unlock_object_secondary (klass, label);
 	gcr_prompt_set_description (prompt, text);
@@ -783,7 +764,7 @@ setup_unlock_token (GkmWrapPrompt *self,
 
 	/* Build up the prompt */
 	gcr_prompt_set_title (prompt, _("Unlock certificate/key storage"));
-	gcr_prompt_set_message (prompt, _("Enter password to unlock the certificate/key storage"));
+	gcr_prompt_set_message (prompt, _("Authentication required"));
 
 	/* TRANSLATORS: The storage is locked, and needs unlocking before the application can use it. */
 	text = g_strdup_printf (_("An application wants access to the certificate/key storage “%s”, but it is locked"), label);
@@ -1148,7 +1129,7 @@ setup_init_token (GkmWrapPrompt *self,
 	/* Build up the prompt */
 	gcr_prompt_set_password_new (prompt, TRUE);
 	gcr_prompt_set_title (prompt, _("New Password Required"));
-	gcr_prompt_set_message (prompt, _("New password required for secure storage"));
+	gcr_prompt_set_message (prompt, _("New password required"));
 
 	text = g_strdup_printf (_("In order to prepare “%s” for storage of certificates or keys, a password is required"), label);
 	gcr_prompt_set_description (prompt, text);
@@ -1266,7 +1247,7 @@ setup_set_token_original (GkmWrapPrompt *self,
 	/* Build up the prompt */
 	gcr_prompt_set_password_new (prompt, FALSE);
 	gcr_prompt_set_title (prompt, _("Change Password"));
-	gcr_prompt_set_message (prompt, _("Original password for secure storage"));
+	gcr_prompt_set_message (prompt, _("Authentication required"));
 
 	text = g_strdup_printf (_("To change the password for “%s”, the original password is required"), label);
 	gcr_prompt_set_description (prompt, text);
@@ -1297,7 +1278,7 @@ setup_set_token_password (GkmWrapPrompt *self,
 	/* Build up the prompt */
 	gcr_prompt_set_password_new (prompt, TRUE);
 	gcr_prompt_set_title (prompt, _("Change Password"));
-	gcr_prompt_set_message (prompt, _("Change password for secure storage"));
+	gcr_prompt_set_message (prompt, _("Change password"));
 
 	text = g_strdup_printf (_("Type a new password for “%s”"), label);
 	gcr_prompt_set_description (prompt, text);
