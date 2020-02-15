@@ -1,3 +1,11 @@
+Changes in version 3.35.90 are:
+ * Use shorter strings for prompt titles [!30]
+ * pam: Provide more insight from pam_gnome_keyring about unlocking [!28]
+ * Don't use GTimeVal/g_get_current_time() [!26]
+ * Don't use g_type_class_add_private() [!26]
+ * Build fixes [!29]
+ * Updated translations
+
 Changes in version 3.35.1 are:
  * dbus: Implement secret portal backend [!18]
  * Updated translations
