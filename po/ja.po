@@ -1,5 +1,5 @@
 # gnome-keyring ja.po.
-# Copyright (C) 2003-2012 Free Software Foundation, Inc.
+# Copyright (C) 2003-2012, 2020 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2003-2009.
 # Satoru SATOH <ss@gnome.gr.jp>, 2006.
@@ -7,14 +7,15 @@
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2010.
 # Hideki Yamane <henrich@debian.org>, 2011.
 # Noriko Mizumoto <noriko@fedoraproject.org>, 2012.
+# sicklylife <translation@sicklylife.jp>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
 "POT-Creation-Date: 2020-02-15 03:08+0000\n"
-"PO-Revision-Date: 2012-09-24 11:47+0000\n"
-"Last-Translator: Noriko Mizumoto <noriko@fedoraproject.org>\n"
+"PO-Revision-Date: 2020-02-15 23:00+0000\n"
+"Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -183,12 +184,12 @@ msgstr "解除パスワードが間違っています"
 #: egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
-msgstr "一時ファイル '%s' を作成できませんでした: %s\n"
+msgstr "一時ファイル `%s' の作成に失敗しました: %s\n"
 
 #: egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
-msgstr "`%s' への書き出し中にエラー: %s\n"
+msgstr "`%s' への書き込みエラー: %s\n"
 
 #: egg/dotlock.c:782
 #, c-format
@@ -234,7 +235,7 @@ msgstr "ユーザー ID"
 
 #: egg/egg-oid.c:45
 msgid "Email Address"
-msgstr "E-メールアドレス"
+msgstr "メールアドレス"
 
 #: egg/egg-oid.c:53
 msgid "Date of Birth"
@@ -359,7 +360,7 @@ msgstr "コード署名"
 
 #: egg/egg-oid.c:109
 msgid "Email Protection"
-msgstr "E-メールの保護"
+msgstr "メールの保護"
 
 #: egg/egg-oid.c:110
 msgid "Time Stamping"
@@ -382,10 +383,8 @@ msgstr "ログインのキーリングのロック解除"
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
-#, fuzzy
-#| msgid "Server Authentication"
 msgid "Authentication required"
-msgstr "サーバー証明書"
+msgstr "認証が必要です"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
@@ -399,7 +398,7 @@ msgstr ""
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
-"コンピューターにログインする際、ログインキーリングがロックを解除しませんでし"
+"コンピューターへのログイン時に、ログインキーリングがロックを解除しませんでし"
 "た。"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
@@ -480,8 +479,6 @@ msgid "New Password Required"
 msgstr "新しいパスワードが必要です"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
-#, fuzzy
-#| msgid "New Password Required"
 msgid "New password required"
 msgstr "新しいパスワードが必要です"
 
@@ -504,8 +501,6 @@ msgid "To change the password for “%s”, the original password is required"
 msgstr "“%s”のパスワードを変更するには、元のパスワードが必要です"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
-#, fuzzy
-#| msgid "Change Password"
 msgid "Change password"
 msgstr "パスワードの変更"
 
@@ -516,7 +511,7 @@ msgstr "“%s”の新しいパスワードを入力してください"
 
 #: tool/gkr-tool.c:100
 msgid "usage: gnome-keyring command [options]\n"
-msgstr "使い方: gnome-keyring コマンド [オプション]\n"
+msgstr "用法: gnome-keyring コマンド [オプション]\n"
 
 #: tool/gkr-tool.c:102
 msgid "commands: "
