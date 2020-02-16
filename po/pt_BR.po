@@ -1,5 +1,5 @@
 # Brazilian Portuguese translation of GNOME Keyring.
-# Copyright (C) 2019 the GNOME Keyring authors.
+# Copyright (C) 2020 the GNOME Keyring authors.
 # This file is distributed under the same license as the gnome-keyring package.
 # Guilherme de S. Pastore <gpastore@gnome.org>, 2004-2005.
 # Leonardo Ferreira Fontenelle <leonardof@gnome.org>, 2006, 2008, 2009.
@@ -14,14 +14,14 @@
 # Rodrigo Padula de Oliveira <contato@rodrigopadula.com>, 2011.
 # Gabriel Speckhahn <gabspeck@gmail.com>, 2011.
 # Enrico Nicoletto <liverig@gmail.com>, 2012.
-# Rafael Fontenelle <rafaelff@gnome.org>, 2017-2019.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2017-2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2019-09-19 10:47+0000\n"
-"PO-Revision-Date: 2019-09-21 16:47-0300\n"
+"POT-Creation-Date: 2020-02-15 03:08+0000\n"
+"PO-Revision-Date: 2020-02-16 15:19-0300\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -40,7 +40,7 @@ msgstr ""
 #: daemon/ssh-agent/gkd-ssh-agent-service.c:254
 #: pkcs11/secret-store/gkm-secret-collection.c:324
 #: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:752
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "Sem nome"
 
@@ -59,9 +59,9 @@ msgstr ""
 "antiga para ele."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
-#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "Continuar"
 
@@ -155,41 +155,40 @@ msgid "Unlock password for: %s"
 msgstr "Senha de desbloqueio para: %s"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock private key"
 msgstr "Desbloquear chave privada"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
 msgid "Enter password to unlock the private key"
 msgstr "Digite a senha para desbloquear a chave privada"
 
 #. TRANSLATORS: The private key is locked
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
 #, c-format
 msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
 "Um aplicativo deseja acesso à chave privada “%s”, mas ela está bloqueada"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
 msgid "Automatically unlock this key whenever I’m logged in"
 msgstr ""
 "Desbloquear automaticamente esta chave sempre que eu estiver autenticado"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:629
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:644
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
 msgid "Unlock"
 msgstr "Desbloquear"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:764
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
 msgid "The unlock password was incorrect"
 msgstr "A senha de desbloqueio está incorreta"
 
@@ -377,7 +376,7 @@ msgstr "Proteção de e-mails"
 msgid "Time Stamping"
 msgstr "Carimbo de data/hora"
 
-#: pkcs11/gkm/gkm-certificate.c:580
+#: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
 msgstr "Certificado sem nome"
 
@@ -389,13 +388,16 @@ msgstr "Não foi possível analisar a chave pública do SSH"
 msgid "Unlock Login Keyring"
 msgstr "Desbloquear chaveiro de sessão"
 
-# Não pode exceder 50 caracteres.
-# https://gitlab.gnome.org/Teams/Translation/pt_BR/issues/9
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:592
-msgid "Enter password to unlock your login keyring"
-msgstr "Senha para desbloquear o chaveiro de sessão"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+#| msgid "Server Authentication"
+msgid "Authentication required"
+msgstr "Autenticação necessária"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -403,94 +405,76 @@ msgstr ""
 "A senha que você usa para iniciar a sessão no seu computador não corresponde "
 "mais à de seu chaveiro de sessão."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Seu chaveiro de sessão não foi desbloqueado automaticamente quando você "
 "iniciou a sessão neste computador."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
 msgstr "Desbloquear chaveiro"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:659
-msgid "Enter password to unlock"
-msgstr "Digite a senha para desbloquear"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
 msgstr "Um aplicativo quer acesso ao chaveiro “%s”, mas ele está bloqueado"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
 msgstr ""
 "Desbloquear automaticamente este chaveiro sempre que eu estiver com a sessão "
 "iniciada"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
 msgstr "Desbloquear certificado"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
 msgstr "Desbloquear chave pública"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the certificate"
-msgstr "Digite a senha para desbloquear o certificado"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:657
-msgid "Enter password to unlock the public key"
-msgstr "Digite a senha para desbloquear a chave pública"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr ""
 "Desbloquear automaticamente este certificado sempre que eu estiver iniciado "
 "a sessão"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:673
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:795
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
 msgstr "Desbloquear automaticamente sempre que eu estiver iniciado a sessão"
 
 #. TRANSLATORS: The certificate is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:687
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr ""
 "Um aplicativo deseja acesso ao certificado “%s”, mas ele está bloqueado"
 
 #. TRANSLATORS: The public key is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr ""
 "Um aplicativo deseja acesso a chave pública “%s”, mas ela está bloqueada"
 
 #. TRANSLATORS: The object '%s' is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
 msgstr "Um aplicativo deseja acesso ao “%s”, mas ele está bloqueado"
 
 #. Build up the prompt
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
 msgstr "Desbloquear o armazenamento de certificados e chaves"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:786
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Digite a senha para desbloquear o armazenamento de certificados e chaves"
-
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
@@ -499,15 +483,16 @@ msgstr ""
 "Um aplicativo deseja acesso ao armazenamento de certificados e chaves “%s”, "
 "mas ele está bloqueado"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Nova senha requerida"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
-msgid "New password required for secure storage"
-msgstr "Nova senha requerida para o armazenamento seguro"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#| msgid "New Password Required"
+msgid "New password required"
+msgstr "Nova senha necessária"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
@@ -516,25 +501,22 @@ msgstr ""
 "Para preparar “%s” para o armazenamento de certificados ou chaves, é "
 "necessária uma senha"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Alterar senha"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
-msgid "Original password for secure storage"
-msgstr "Senha original para o armazenamento seguro"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr "Para alterar a senha para “%s”, a senha original é requisitada"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
-msgid "Change password for secure storage"
-msgstr "Altere a senha requerida para o armazenamento seguro"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+#| msgid "Change Password"
+msgid "Change password"
+msgstr "Alterar senha"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for “%s”"
 msgstr "Digite uma nova senha para “%s”"
@@ -551,6 +533,33 @@ msgstr "comandos: "
 #: tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
+
+# Não pode exceder 50 caracteres.
+# https://gitlab.gnome.org/Teams/Translation/pt_BR/issues/9
+#~ msgid "Enter password to unlock your login keyring"
+#~ msgstr "Senha para desbloquear o chaveiro de sessão"
+
+#~ msgid "Enter password to unlock"
+#~ msgstr "Digite a senha para desbloquear"
+
+#~ msgid "Enter password to unlock the certificate"
+#~ msgstr "Digite a senha para desbloquear o certificado"
+
+#~ msgid "Enter password to unlock the public key"
+#~ msgstr "Digite a senha para desbloquear a chave pública"
+
+#~ msgid "Enter password to unlock the certificate/key storage"
+#~ msgstr ""
+#~ "Digite a senha para desbloquear o armazenamento de certificados e chaves"
+
+#~ msgid "New password required for secure storage"
+#~ msgstr "Nova senha requerida para o armazenamento seguro"
+
+#~ msgid "Original password for secure storage"
+#~ msgstr "Senha original para o armazenamento seguro"
+
+#~ msgid "Change password for secure storage"
+#~ msgstr "Altere a senha requerida para o armazenamento seguro"
 
 #~ msgid "Unexpected error in select() reading data from a child process (%s)"
 #~ msgstr "Erro inesperado no select() ao ler dados de processo filho (%s)"
