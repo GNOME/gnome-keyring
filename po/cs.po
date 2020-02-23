@@ -8,15 +8,14 @@
 # Kamil Páral <ripper42@gmail.com>, 2008.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009.
 # Lucas Lommer <llommer@svn.gnome.org>, 2008, 2009, 2010, 2012.
-# Marek Černocký <marek@manet.cz>, 2010, 2011, 2016.
+# Marek Černocký <marek@manet.cz>, 2010, 2011, 2016, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring 3.2\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-10-18 09:37+0000\n"
-"PO-Revision-Date: 2016-10-28 11:19+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
+"POT-Creation-Date: 2020-02-15 03:08+0000\n"
+"PO-Revision-Date: 2020-02-23 11:04+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -27,20 +26,21 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:84 ../daemon/dbus/gkd-secret-change.c:120
-#: ../daemon/dbus/gkd-secret-create.c:78
-#: ../pkcs11/secret-store/gkm-secret-collection.c:324
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:752
+#: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
+#: daemon/dbus/gkd-secret-create.c:78
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
+#: pkcs11/secret-store/gkm-secret-collection.c:324
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "Nepojmenovaná"
 
-#: ../daemon/dbus/gkd-secret-change.c:89
+#: daemon/dbus/gkd-secret-change.c:89
 #, c-format
 msgid "Enter the old password for the “%s” keyring"
 msgstr "Zadejte původní heslo pro klíčenku „%s“"
 
-#: ../daemon/dbus/gkd-secret-change.c:93
+#: daemon/dbus/gkd-secret-change.c:93
 #, c-format
 msgid ""
 "An application wants to change the password for the “%s” keyring. Enter the "
@@ -49,20 +49,19 @@ msgstr ""
 "Nějaká aplikace chce změnit heslo klíčenky „%s“. Zadejte původní heslo "
 "klíčenky."
 
-#: ../daemon/dbus/gkd-secret-change.c:99 ../daemon/dbus/gkd-secret-change.c:135
-#: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+#: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "Pokračovat"
 
-#: ../daemon/dbus/gkd-secret-change.c:125
+#: daemon/dbus/gkd-secret-change.c:125
 #, c-format
 msgid "Choose a new password for the “%s” keyring"
 msgstr "Zvolte nové heslo pro klíčenku „%s“"
 
-#: ../daemon/dbus/gkd-secret-change.c:129
+#: daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
 "An application wants to change the password for the “%s” keyring. Choose the "
@@ -71,11 +70,11 @@ msgstr ""
 "Nějaká aplikace chce změnit heslo klíčenky „%s“. Zvolte heslo, které pro ni "
 "chcete používat."
 
-#: ../daemon/dbus/gkd-secret-change.c:142 ../daemon/dbus/gkd-secret-create.c:94
+#: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Ukládat hesla nešifrovaně?"
 
-#: ../daemon/dbus/gkd-secret-change.c:144 ../daemon/dbus/gkd-secret-create.c:96
+#: daemon/dbus/gkd-secret-change.c:144 daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -84,15 +83,15 @@ msgstr ""
 "Pokud zvolíte použití prázdného hesla, vaše uložená hesla nebudou bezpečně "
 "zašifrována. Budou přístupná každému, kdo bude mít přístup k vašim souborům."
 
-#: ../daemon/dbus/gkd-secret-change.c:152
+#: daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Původní heslo není správné"
 
-#: ../daemon/dbus/gkd-secret-change.c:348
+#: daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
 msgstr "Změnit heslo klíčenky"
 
-#: ../daemon/dbus/gkd-secret-create.c:80
+#: daemon/dbus/gkd-secret-create.c:80
 #, c-format
 msgid ""
 "An application wants to create a new keyring called “%s”. Choose the "
@@ -101,54 +100,97 @@ msgstr ""
 "Nějaká aplikace chce vytvořit novou klíčenku nazvanou „%s“. Zvolite heslo, "
 "které pro ni chcete používat."
 
-#: ../daemon/dbus/gkd-secret-create.c:84
+#: daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Zvolte heslo pro novou klíčenku"
 
-#: ../daemon/dbus/gkd-secret-create.c:309
+#: daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
 msgstr "Heslo nové klíčenky"
 
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:4
 msgid "Certificate and Key Storage"
 msgstr "Odemknout certifikáty a umístění klíčů"
 
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:5
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "Klíčenka GNOME: komponenta PKCS#11"
 
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+#: daemon/gnome-keyring-secrets.desktop.in.in:4
 msgid "Secret Storage Service"
 msgstr "Služba utajení dat"
 
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+#: daemon/gnome-keyring-secrets.desktop.in.in:5
 msgid "GNOME Keyring: Secret Service"
 msgstr "Klíčenka GNOME: Služba utajení dat"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+#: daemon/gnome-keyring-ssh.desktop.in.in:4
 msgid "SSH Key Agent"
 msgstr "Agent klíčů SSH"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: daemon/gnome-keyring-ssh.desktop.in.in:5
 msgid "GNOME Keyring: SSH Agent"
 msgstr "Klíčenka GNOME: Agent SSH"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:158
+#: daemon/login/gkd-login.c:162
 msgid "Login"
 msgstr "Login"
 
-#: ../egg/dotlock.c:668
+#. Get the label ready
+#: daemon/login/gkd-login-interaction.c:191
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Odemykací heslo pro: %s"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid "Unlock private key"
+msgstr "Odemknout soukromý klíč"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
+msgid "Enter password to unlock the private key"
+msgstr "Zadejte heslo k odemknutí soukromého klíče"
+
+#. TRANSLATORS: The private key is locked
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+#, c-format
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr "Aplikace požaduje přístup k soukromému klíči „%s“, ale ten je zamčený"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr "Automaticky odemknout tento klíč vždy, když jsem přihlášen"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
+msgid "Unlock"
+msgstr "Odemknout"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
+msgid "The unlock password was incorrect"
+msgstr "Heslo k odemčení není správné"
+
+#: egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
 msgstr "selhalo vytvoření dočasného souboru „%s“: %s\n"
 
-#: ../egg/dotlock.c:718
+#: egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
 msgstr "chyba zápisu do „%s“: %s\n"
 
-#: ../egg/dotlock.c:782
+#: egg/dotlock.c:782
 #, c-format
 msgid "can't create `%s': %s\n"
 msgstr "nelze vytvořit „%s“: %s\n"
@@ -156,194 +198,192 @@ msgstr "nelze vytvořit „%s“: %s\n"
 #. Note: It is unlikley that we get a race here unless a pid is
 #. reused too fast or a new process with the same pid as the one
 #. of the stale file tries to lock right at the same time as we.
-#: ../egg/dotlock.c:1048
+#: egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
 msgstr "odstraňování starého zámku (vytvořeno pomocí %d)\n"
 
-#: ../egg/dotlock.c:1084
+#: egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
 msgstr "čeká se na zámek (patří k %d%s) %s…\n"
 
-#: ../egg/dotlock.c:1085
+#: egg/dotlock.c:1085
 msgid "(deadlock?) "
 msgstr "(uváznutí zámků?) "
 
-#: ../egg/dotlock.c:1124
+#: egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
 msgstr "zámek „%s“ nebyl vytvořen: %s\n"
 
-#: ../egg/dotlock.c:1150
+#: egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
 msgstr "čeká se na zámek %s…\n"
 
-#: ../egg/egg-oid.c:40
+#: egg/egg-oid.c:40
 msgid "Domain Component"
 msgstr "Součást domény"
 
-#: ../egg/egg-oid.c:42
+#: egg/egg-oid.c:42
 msgid "User ID"
 msgstr "ID uživatele"
 
-#: ../egg/egg-oid.c:45
+#: egg/egg-oid.c:45
 msgid "Email Address"
 msgstr "E-mailová adresa"
 
-#: ../egg/egg-oid.c:53
+#: egg/egg-oid.c:53
 msgid "Date of Birth"
 msgstr "Datum narození"
 
-#: ../egg/egg-oid.c:55
+#: egg/egg-oid.c:55
 msgid "Place of Birth"
 msgstr "Místo narození"
 
-#: ../egg/egg-oid.c:57
+#: egg/egg-oid.c:57
 msgid "Gender"
 msgstr "Pohlaví"
 
-#: ../egg/egg-oid.c:59
+#: egg/egg-oid.c:59
 msgid "Country of Citizenship"
 msgstr "Státní příslušnost"
 
-#: ../egg/egg-oid.c:61
+#: egg/egg-oid.c:61
 msgid "Country of Residence"
 msgstr "Místo pobytu"
 
-#: ../egg/egg-oid.c:64
+#: egg/egg-oid.c:64
 msgid "Common Name"
 msgstr "Běžný název"
 
-#: ../egg/egg-oid.c:66
+#: egg/egg-oid.c:66
 msgid "Surname"
 msgstr "Příjmení"
 
-#: ../egg/egg-oid.c:68
+#: egg/egg-oid.c:68
 msgid "Serial Number"
 msgstr "Sériové číslo"
 
-#: ../egg/egg-oid.c:70
+#: egg/egg-oid.c:70
 msgid "Country"
 msgstr "Země"
 
-#: ../egg/egg-oid.c:72
+#: egg/egg-oid.c:72
 msgid "Locality"
 msgstr "Lokalita"
 
-#: ../egg/egg-oid.c:74
+#: egg/egg-oid.c:74
 msgid "State"
 msgstr "Stát"
 
-#: ../egg/egg-oid.c:76
+#: egg/egg-oid.c:76
 msgid "Street"
 msgstr "Ulice"
 
-#: ../egg/egg-oid.c:78
+#: egg/egg-oid.c:78
 msgid "Organization"
 msgstr "Organizace"
 
-#: ../egg/egg-oid.c:80
+#: egg/egg-oid.c:80
 msgid "Organizational Unit"
 msgstr "Organizační jednotka"
 
-#: ../egg/egg-oid.c:82
+#: egg/egg-oid.c:82
 msgid "Title"
 msgstr "Titul"
 
-#: ../egg/egg-oid.c:84
+#: egg/egg-oid.c:84
 msgid "Telephone Number"
 msgstr "Telefonní číslo"
 
-#: ../egg/egg-oid.c:86
+#: egg/egg-oid.c:86
 msgid "Given Name"
 msgstr "Křestní jméno"
 
-#: ../egg/egg-oid.c:88
+#: egg/egg-oid.c:88
 msgid "Initials"
 msgstr "Iniciály"
 
-#: ../egg/egg-oid.c:90
+#: egg/egg-oid.c:90
 msgid "Generation Qualifier"
 msgstr "Kvalifikátor generování"
 
-#: ../egg/egg-oid.c:92
+#: egg/egg-oid.c:92
 msgid "DN Qualifier"
 msgstr "Kvalifikátor DN"
 
-#: ../egg/egg-oid.c:94
+#: egg/egg-oid.c:94
 msgid "Pseudonym"
 msgstr "Pseudonym"
 
-#: ../egg/egg-oid.c:97
+#: egg/egg-oid.c:97
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:98
+#: egg/egg-oid.c:98
 msgid "MD2 with RSA"
 msgstr "MD2 s RSA"
 
-#: ../egg/egg-oid.c:99
+#: egg/egg-oid.c:99
 msgid "MD5 with RSA"
 msgstr "MD5 s RSA"
 
-#: ../egg/egg-oid.c:100
+#: egg/egg-oid.c:100
 msgid "SHA1 with RSA"
 msgstr "SHA1 s RSA"
 
-#: ../egg/egg-oid.c:102
+#: egg/egg-oid.c:102
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:103
+#: egg/egg-oid.c:103
 msgid "SHA1 with DSA"
 msgstr "SHA1 s DSA"
 
 #. Extended Key Usages
-#: ../egg/egg-oid.c:106
+#: egg/egg-oid.c:106
 msgid "Server Authentication"
 msgstr "Autentizace serveru"
 
-#: ../egg/egg-oid.c:107
+#: egg/egg-oid.c:107
 msgid "Client Authentication"
 msgstr "Autentizace klienta"
 
-#: ../egg/egg-oid.c:108
+#: egg/egg-oid.c:108
 msgid "Code Signing"
 msgstr "Podepisování kódu"
 
-#: ../egg/egg-oid.c:109
+#: egg/egg-oid.c:109
 msgid "Email Protection"
 msgstr "Ochrana e-mailu"
 
-#: ../egg/egg-oid.c:110
+#: egg/egg-oid.c:110
 msgid "Time Stamping"
 msgstr "Časové razítko"
 
-#: ../pkcs11/gkm/gkm-certificate.c:580
+#: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
 msgstr "Nepojmenovaný certifikát"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:341
+#: pkcs11/ssh-store/gkm-ssh-private-key.c:341
 msgid "Couldn’t parse public SSH key"
 msgstr "Nezdařilo se analyzovat veřejný klíč SSH."
 
-#. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Odemykací heslo pro: %s"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Odemknout přihlašovací klíčenku"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
-msgid "Enter password to unlock your login keyring"
-msgstr "Zadejte heslo k odemčení své přihlašovací klíčenky"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Authentication required"
+msgstr "Vyžadováno ověření"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -351,118 +391,70 @@ msgstr ""
 "Heslo, které používáte k přihlášení k tomuto počítači, již nadále neodpovídá "
 "tomu, které používáte pro přihlašovací klíčenku."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Vaše přihlašovací klíčenka nebyla během vašeho přihlášení k tomuto počítači "
 "odemčena."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:629
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:644
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:766
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:798
-msgid "Unlock"
-msgstr "Odemknout"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
 msgstr "Odemknout klíčenku"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:659
-msgid "Enter password to unlock"
-msgstr "Zadejte heslo k odemknutí"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
 msgstr "Nějaká aplikace chce přístup ke klíčence „%s“, která je zamčená"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
 msgstr "Automaticky odemknout tuto klíčenku vždy, když jsem přihlášen"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:638
-msgid "Unlock private key"
-msgstr "Odemknout soukromý klíč"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
 msgstr "Odemknout certifikát"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
 msgstr "Odemknout veřejný klíč"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
-msgstr "Zadejte heslo k odemknutí soukromého klíče"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the certificate"
-msgstr "Zadejte heslo k odemknutí certifikátu"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:657
-msgid "Enter password to unlock the public key"
-msgstr "Zadejte heslo k odemknutí veřejného klíče"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:669
-msgid "Automatically unlock this key whenever I’m logged in"
-msgstr "Automaticky odemknout tento klíč vždy, když jsem přihlášen"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Automaticky odemknout tento certifikát vždy, když jsem přihlášen"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:673
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:795
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
 msgstr "Automaticky odemknout vždy, když jsem přihlášen"
 
-#. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:684
-#, c-format
-msgid "An application wants access to the private key “%s”, but it is locked"
-msgstr "Aplikace požaduje přístup k soukromému klíči „%s“, ale ten je zamčený"
-
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:687
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr "Aplikace požaduje přístup k certifikátu „%s“, ale ten je zamčený"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr "Aplikace požaduje přístup k veřejnému klíči „%s“, ale ten je zamčený"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
 msgstr "Aplikace požaduje přístup k „%s“, ale ten je zamčený"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:764
-msgid "The unlock password was incorrect"
-msgstr "Heslo k odemčení není správné"
-
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
 msgstr "Odemknout umístění certifikátů/klíčů"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Zadejte heslo k odemknutí umístění pro certifikáty/klíče"
-
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
@@ -471,15 +463,15 @@ msgstr ""
 "Aplikace požaduje přístup k úložišti certifikátů/klíčů „%s“, ale to je "
 "zamčeno"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Je vyžadováno nové heslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
-msgid "New password required for secure storage"
-msgstr "Je vyžadováno nové heslo pro zabezpečené úložiště"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New password required"
+msgstr "Je vyžadováno nové heslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
@@ -488,40 +480,58 @@ msgstr ""
 "Pokud chcete použít „%s“ jako úložiště certifikátů a klíčů, musíte zvolit "
 "heslo."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Změnit heslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
-msgid "Original password for secure storage"
-msgstr "Původní heslo zabezpečeného úložiště"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr "Ke změně hesla pro „%s“ je vyžadováno původní heslo"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
-msgid "Change password for secure storage"
-msgstr "Změnit heslo pro zabezpečené úložiště"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password"
+msgstr "Změna hesla"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for “%s”"
 msgstr "Zadejte nové heslo pro „%s“"
 
-#: ../tool/gkr-tool.c:100
-#, c-format
+#: tool/gkr-tool.c:100
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "použití: gnome-keyring PŘÍKAZ [PŘEPÍNAČE]\n"
 
-#: ../tool/gkr-tool.c:102
+#: tool/gkr-tool.c:102
 msgid "commands: "
 msgstr "příkazy: "
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:106
+#: tool/gkr-tool.c:106
 msgid "          "
 msgstr "         "
 
+#~ msgid "Enter password to unlock your login keyring"
+#~ msgstr "Zadejte heslo k odemčení své přihlašovací klíčenky"
+
+#~ msgid "Enter password to unlock"
+#~ msgstr "Zadejte heslo k odemknutí"
+
+#~ msgid "Enter password to unlock the certificate"
+#~ msgstr "Zadejte heslo k odemknutí certifikátu"
+
+#~ msgid "Enter password to unlock the public key"
+#~ msgstr "Zadejte heslo k odemknutí veřejného klíče"
+
+#~ msgid "Enter password to unlock the certificate/key storage"
+#~ msgstr "Zadejte heslo k odemknutí umístění pro certifikáty/klíče"
+
+#~ msgid "New password required for secure storage"
+#~ msgstr "Je vyžadováno nové heslo pro zabezpečené úložiště"
+
+#~ msgid "Original password for secure storage"
+#~ msgstr "Původní heslo zabezpečeného úložiště"
+
+#~ msgid "Change password for secure storage"
+#~ msgstr "Změnit heslo pro zabezpečené úložiště"
