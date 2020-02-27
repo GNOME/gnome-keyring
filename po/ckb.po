@@ -1,0 +1,516 @@
+# Kurdish (Sorani) translation for gnome-keyring
+# Copyright (c) 2019 Rosetta Contributors and Canonical Ltd 2019
+# This file is distributed under the same license as the gnome-keyring package.
+# Jwtiyar Nariman <jwtiyar@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2019-09-30 10:59+0200\n"
+"PO-Revision-Date: 2020-02-22 09:59+0300\n"
+"Last-Translator: Jwtiyar Nariman <jwtiyar@gmail.com>\n"
+"Language-Team: Kurdish (Sorani) <ckb@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2020-02-22 06:56+0000\n"
+"X-Generator: Poedit 2.3\n"
+"Language: ckb\n"
+
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
+#: daemon/dbus/gkd-secret-create.c:78
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
+#: pkcs11/secret-store/gkm-secret-collection.c:324
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:752
+msgid "Unnamed"
+msgstr "ناونەنراوە"
+
+#: daemon/dbus/gkd-secret-change.c:89
+#, c-format
+msgid "Enter the old password for the “%s” keyring"
+msgstr "وشەی تێپەڕبوونی کۆن بنووسە بۆ زنجیرەکلیلی “%s”"
+
+#: daemon/dbus/gkd-secret-change.c:93
+#, c-format
+msgid ""
+"An application wants to change the password for the “%s” keyring. Enter the "
+"old password for it."
+msgstr ""
+"داوانامەیەک دەیەوێت وشەی تێپەڕبوونی زنجیرەکلیلی “%s” بگۆڕێت. وشەی تێپەڕبوونی "
+"کۆنی بنووسە."
+
+#: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+msgid "Continue"
+msgstr "بەردەوامبوون"
+
+#: daemon/dbus/gkd-secret-change.c:125
+#, c-format
+msgid "Choose a new password for the “%s” keyring"
+msgstr "وشەی تێپەڕبوونی نوێ بنووسە بۆ زنجیرەکلیلی “%s”"
+
+#: daemon/dbus/gkd-secret-change.c:129
+#, c-format
+msgid ""
+"An application wants to change the password for the “%s” keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"داوانامەیەک دەیەوێت وشەی تێپەڕبوونی زنجیرەکلیلی “%s” بگۆڕێت. وشەی تێپەڕبوونی "
+"نوێ بنووسە بۆ ئەوەی بەکاربێت."
+
+#: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
+msgid "Store passwords unencrypted?"
+msgstr "هەڵگرتنی وشەی تێپەربوونەکان بە ناپارێزراوی؟"
+
+#: daemon/dbus/gkd-secret-change.c:144 daemon/dbus/gkd-secret-create.c:96
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+
+#: daemon/dbus/gkd-secret-change.c:152
+msgid "The original password was incorrect"
+msgstr "وشەی تێپەڕبوونی ڕەسەن هەڵەیە"
+
+#: daemon/dbus/gkd-secret-change.c:348
+msgid "Change Keyring Password"
+msgstr "گۆڕینی وشەی تێپەڕبوونی زنجیرەکلیل"
+
+#: daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called “%s”. Choose the "
+"password you want to use for it."
+msgstr ""
+"داوانامەیەک دەیەوێت زنجیرەکلیلکی نوێ درووستبکات بە ناوی “%s”. وشەی "
+"تێپەڕبوونی بنووسە."
+
+#: daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "وشەی تێپەڕبوون بنووسە بۆ زنجیرەکلیلی نوێ"
+
+#: daemon/dbus/gkd-secret-create.c:309
+msgid "New Keyring Password"
+msgstr "وشەی تێپەڕبوونی زنجیرەکلیلی نوێ"
+
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:4
+msgid "Certificate and Key Storage"
+msgstr "کۆکەرەوەی بڕوانامە و کلیل"
+
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:5
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr ""
+
+#: daemon/gnome-keyring-secrets.desktop.in.in:4
+msgid "Secret Storage Service"
+msgstr ""
+
+#: daemon/gnome-keyring-secrets.desktop.in.in:5
+msgid "GNOME Keyring: Secret Service"
+msgstr ""
+
+#: daemon/gnome-keyring-ssh.desktop.in.in:4
+msgid "SSH Key Agent"
+msgstr ""
+
+#: daemon/gnome-keyring-ssh.desktop.in.in:5
+msgid "GNOME Keyring: SSH Agent"
+msgstr ""
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: daemon/login/gkd-login.c:162
+msgid "Login"
+msgstr "چوونەژوورەوە"
+
+#. Get the label ready
+#: daemon/login/gkd-login-interaction.c:191
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "وشەی تێپەڕبوون بکەرەوە بۆ: %s"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+msgid "Unlock private key"
+msgstr "کردنەوەی کیلی تایبەت"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
+msgid "Enter password to unlock the private key"
+msgstr "وشەی تێپەڕبوون بنووسە بۆ کردنەوەی کیلی تایبەت"
+
+#. TRANSLATORS: The private key is locked
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#, c-format
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr "داوانامەیەک دەیەوێت بچیتەناو کلیلی تایبەت \"%s\"، بەڵام کلیلدراوە"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr "خۆکارانە ئەم کلیلە بکەرەوە کاتێ من دێمە ژوورەوە"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:602
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:629
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:644
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:720
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+msgid "Unlock"
+msgstr "کردنەوە"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:764
+msgid "The unlock password was incorrect"
+msgstr "تێپەڕەووشەی کردنەوە هەڵە بوو"
+
+#: egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "نەتوانرا پەڕگەی کاتیی دروستبکرێت `%s': %s\n"
+
+#: egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "هەڵە لە ناردن بۆ  `%s': %s\n"
+
+#: egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "ناتوانرێت لە دروستکردنی  `%s': %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr ""
+
+#: egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr ""
+
+#: egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(deadlock?) "
+
+#: egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr ""
+
+#: egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "چاوەڕوانیکردن بۆ کلیلکردن %s...\n"
+
+#: egg/egg-oid.c:40
+msgid "Domain Component"
+msgstr "پارچەکانی دۆمەین"
+
+#: egg/egg-oid.c:42
+msgid "User ID"
+msgstr "ناسنامەی بەکارهێنەر"
+
+#: egg/egg-oid.c:45
+msgid "Email Address"
+msgstr "پۆستی ئەلکترۆنی"
+
+#: egg/egg-oid.c:53
+msgid "Date of Birth"
+msgstr "ڕۆژی لەدایک بوون"
+
+#: egg/egg-oid.c:55
+msgid "Place of Birth"
+msgstr "شوێنی لە دایک بوون"
+
+#: egg/egg-oid.c:57
+msgid "Gender"
+msgstr "ڕەگەز"
+
+#: egg/egg-oid.c:59
+msgid "Country of Citizenship"
+msgstr "هاوڵاتی چ وڵاتێکیت"
+
+#: egg/egg-oid.c:61
+msgid "Country of Residence"
+msgstr "وڵاتی مانەوە"
+
+#: egg/egg-oid.c:64
+msgid "Common Name"
+msgstr "ناوی باو"
+
+#: egg/egg-oid.c:66
+msgid "Surname"
+msgstr "نازناو"
+
+#: egg/egg-oid.c:68
+msgid "Serial Number"
+msgstr "ژمارەی زنجیرەیی"
+
+#: egg/egg-oid.c:70
+msgid "Country"
+msgstr "وڵات"
+
+#: egg/egg-oid.c:72
+msgid "Locality"
+msgstr "ناوچە"
+
+#: egg/egg-oid.c:74
+msgid "State"
+msgstr "پارێزگا"
+
+#: egg/egg-oid.c:76
+msgid "Street"
+msgstr "شەقام"
+
+#: egg/egg-oid.c:78
+msgid "Organization"
+msgstr "دامەزراوە"
+
+#: egg/egg-oid.c:80
+msgid "Organizational Unit"
+msgstr "یەکەی دامەزراوەیی"
+
+#: egg/egg-oid.c:82
+msgid "Title"
+msgstr "ناونیشان"
+
+#: egg/egg-oid.c:84
+msgid "Telephone Number"
+msgstr "ژمارەی تەلەفۆن"
+
+#: egg/egg-oid.c:86
+msgid "Given Name"
+msgstr "ناوی دراو"
+
+#: egg/egg-oid.c:88
+msgid "Initials"
+msgstr "سەرەتایی"
+
+#: egg/egg-oid.c:90
+msgid "Generation Qualifier"
+msgstr ""
+
+#: egg/egg-oid.c:92
+msgid "DN Qualifier"
+msgstr ""
+
+#: egg/egg-oid.c:94
+msgid "Pseudonym"
+msgstr "Pseudonym"
+
+#: egg/egg-oid.c:97
+msgid "RSA"
+msgstr "RSA"
+
+#: egg/egg-oid.c:98
+msgid "MD2 with RSA"
+msgstr "MD2 لەگەڵ RSA"
+
+#: egg/egg-oid.c:99
+msgid "MD5 with RSA"
+msgstr "MD5 لەگەڵ RSA"
+
+#: egg/egg-oid.c:100
+msgid "SHA1 with RSA"
+msgstr "SHA1 لەگەڵ RSA"
+
+#: egg/egg-oid.c:102
+msgid "DSA"
+msgstr "DSA"
+
+#: egg/egg-oid.c:103
+msgid "SHA1 with DSA"
+msgstr "SHA1 لەگەڵ DSA"
+
+#. Extended Key Usages
+#: egg/egg-oid.c:106
+msgid "Server Authentication"
+msgstr "ڕێگەپێدانی ڕاژە"
+
+#: egg/egg-oid.c:107
+msgid "Client Authentication"
+msgstr "ڕێگەپێدانی ڕاژەخواز"
+
+#: egg/egg-oid.c:108
+msgid "Code Signing"
+msgstr "مۆرکردنی کۆد"
+
+#: egg/egg-oid.c:109
+msgid "Email Protection"
+msgstr "پاراستنی پۆستی ئەلکترۆنی"
+
+#: egg/egg-oid.c:110
+msgid "Time Stamping"
+msgstr "پولی کات"
+
+#: pkcs11/gkm/gkm-certificate.c:580
+msgid "Unnamed Certificate"
+msgstr "بڕوانامە ناوی نیە"
+
+#: pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn’t parse public SSH key"
+msgstr ""
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+msgid "Unlock Login Keyring"
+msgstr "کردنەوەی چوونەژورەوەی زنجیرەکلیل"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:592
+msgid "Enter password to unlock your login keyring"
+msgstr "وشەی تێپەڕبوون بنووسە بۆ کردنەوەی چوونەژورەوەی زنجیرەکلیل"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+msgid "Unlock Keyring"
+msgstr "کردنەوەی زنجیرەکلیل"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:659
+msgid "Enter password to unlock"
+msgstr "وشەی تێپەڕ بنووسە بۆ کردنەوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#, c-format
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr "داوانامەیەک دەیەوێت بچیتە ناو زنجیرە کلیلی “%s”، بەڵام کلیلدراوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr "خۆکارانە ئەم زنجیرە کلیلە بکەرەوە کاتێ من دێمە ژوورەوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+msgid "Unlock certificate"
+msgstr "کردنەوەی بڕوانامە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+msgid "Unlock public key"
+msgstr "کردنەوەی کلیلی گشتی"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:655
+msgid "Enter password to unlock the certificate"
+msgstr "وشەی تێپەڕبوون بنووسە بۆ کردنەوەی ئەم بڕوانامەیە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:657
+msgid "Enter password to unlock the public key"
+msgstr "وشەی تێپەڕبوون بنووسە بۆ کردنەوەی کلیلی گشتی"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+msgid "Automatically unlock this certificate whenever I’m logged in"
+msgstr "خۆکارانە ئەم بڕوانامەیە بکەرەوە کاتێک من دێمە ژوورەوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:673
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:795
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+msgid "Automatically unlock whenever I’m logged in"
+msgstr "خۆکارانە بیکەرەوە کاتێک من دێمە ژوورەوە"
+
+#. TRANSLATORS: The certificate is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:687
+#, c-format
+msgid "An application wants access to the certificate “%s”, but it is locked"
+msgstr "داوانامەیەک دەیەوێت بچیتە ناو ئەم بڕوانامەیەوە “%s”، بەڵام کلیل دراوە"
+
+#. TRANSLATORS: The public key is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#, c-format
+msgid "An application wants access to the public key “%s”, but it is locked"
+msgstr ""
+"داوانامەیەک دەیەوێت بچیتە ناو ئەم کلیلە گشتییەوە “%s”، بەڵام کلیل دراوە"
+
+#. TRANSLATORS: The object '%s' is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#, c-format
+msgid "An application wants access to “%s”, but it is locked"
+msgstr "داوانامەیەک دەیەوێت بچیتە ناو “%s”، بەڵام کلیل دراوە"
+
+#. Build up the prompt
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+msgid "Unlock certificate/key storage"
+msgstr "کردنەوەی کۆکەرەوەی بڕوانامە/کلیل"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+msgid "Enter password to unlock the certificate/key storage"
+msgstr "وشەی تێپەڕبوون بنووسە بۆ کردنەوەی کۆکەرەوەی بڕوانامە/کلی"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage “%s”, but it is "
+"locked"
+msgstr ""
+"داوانامەیەک دەیەوێت بچیتە ناو کۆکەرەوەی بڕوانامە/کلیل “%s”، بەڵام کلیل دراوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
+msgid "New Password Required"
+msgstr "وشەی تێپەڕبوونی نوێ داواکراوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
+msgid "New password required for secure storage"
+msgstr "وشەی تێپەڕبوونی نوێ داواکراوە بۆ پارێزراوکردنی کۆکەرەوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
+#, c-format
+msgid ""
+"In order to prepare “%s” for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
+msgid "Change Password"
+msgstr "گۆڕینی شەی تێپەڕبوون"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
+msgid "Original password for secure storage"
+msgstr "وشەی تێپەڕبوونی ڕەسەن بۆ پارێزراوکردنی کۆکەرەوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
+#, c-format
+msgid "To change the password for “%s”, the original password is required"
+msgstr "بۆ گۆڕینی وشەی تێپەربوونی “%s”، پێویستە وشەی تێپەڕبوونی ڕەسەن بنووسی"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
+msgid "Change password for secure storage"
+msgstr "گۆرینی وشەی تێپەڕبوو بۆ پارێزراوکردنی کۆکەرەوە"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
+#, c-format
+msgid "Type a new password for “%s”"
+msgstr "وشەی تێپەڕبوونی نوێ بنووسە بۆ “%s”"
+
+#: tool/gkr-tool.c:100
+msgid "usage: gnome-keyring command [options]\n"
+msgstr ""
+
+#: tool/gkr-tool.c:102
+msgid "commands: "
+msgstr "فرمانەکان: "
+
+#. Translators: keep same length as translated message "commands: "
+#: tool/gkr-tool.c:106
+msgid "          "
+msgstr "          "
