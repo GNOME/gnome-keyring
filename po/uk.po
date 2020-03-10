@@ -1,79 +1,84 @@
 # Ukrainian translation for gnome-keyring
 # Copyright (C) 2003 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-keyring package.
-# Maxim Dzumanenko <dziumanenko@gmail.com>, 2004-2008
+# Maxim Dzumanenko <dziumanenko@gmail.com>, 2004-2008.
 # Korostil Daniel <ted.korostiled@gmail.com>, 2011, 2012.
+# Yuri Chornoivan <yurchor@ukr.net>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 12:00+0200\n"
-"PO-Revision-Date: 2012-03-24 12:12+0300\n"
-"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
-"Language-Team: translation@linux.org.ua\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
+"POT-Creation-Date: 2020-02-15 03:08+0000\n"
+"PO-Revision-Date: 2020-03-05 21:06+0200\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 20.03.70\n"
 "X-Project-Style: gnome\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
-#: ../daemon/dbus/gkd-secret-change.c:85
-#: ../daemon/dbus/gkd-secret-change.c:121
-#: ../daemon/dbus/gkd-secret-create.c:79
-#: ../pkcs11/secret-store/gkm-secret-collection.c:325
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:753
+#: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
+#: daemon/dbus/gkd-secret-create.c:78
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
+#: pkcs11/secret-store/gkm-secret-collection.c:324
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "Без назви"
 
-#: ../daemon/dbus/gkd-secret-change.c:90
+#: daemon/dbus/gkd-secret-change.c:89
 #, c-format
-msgid "Enter the old password for the '%s' keyring"
+#| msgid "Enter the old password for the '%s' keyring"
+msgid "Enter the old password for the “%s” keyring"
 msgstr "Введіть старий пароль для сховища ключів «%s»"
 
-#: ../daemon/dbus/gkd-secret-change.c:94
+#: daemon/dbus/gkd-secret-change.c:93
 #, c-format
+#| msgid ""
+#| "An application wants to change the password for the '%s' keyring. Enter "
+#| "the old password for it."
 msgid ""
-"An application wants to change the password for the '%s' keyring. Enter the "
+"An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
 "Програма бажає змінити пароль сховища ключів «%s». Введіть старий пароль для "
 "цього."
 
-#: ../daemon/dbus/gkd-secret-change.c:100
-#: ../daemon/dbus/gkd-secret-change.c:136
-#: ../daemon/dbus/gkd-secret-change.c:146
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1255
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1290
+#: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "Далі"
 
-#: ../daemon/dbus/gkd-secret-change.c:126
+#: daemon/dbus/gkd-secret-change.c:125
 #, c-format
-msgid "Choose a new password for the '%s' keyring"
+#| msgid "Choose a new password for the '%s' keyring"
+msgid "Choose a new password for the “%s” keyring"
 msgstr "Виберіть пароль для в'язки ключів «%s»."
 
-#: ../daemon/dbus/gkd-secret-change.c:130
+#: daemon/dbus/gkd-secret-change.c:129
 #, c-format
+#| msgid ""
+#| "An application wants to change the password for the '%s' keyring. Choose "
+#| "the new password you want to use for it."
 msgid ""
-"An application wants to change the password for the '%s' keyring. Choose the "
+"An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
 "Програма бажає змінити пароль в'язки ключів «%s». Потрібно вибрати пароль "
 "для в'язки."
 
-#: ../daemon/dbus/gkd-secret-change.c:142
-#: ../daemon/dbus/gkd-secret-create.c:95
+#: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
 msgstr "Зберігати паролі незашифрованими?"
 
-#: ../daemon/dbus/gkd-secret-change.c:144
-#: ../daemon/dbus/gkd-secret-create.c:97
+#: daemon/dbus/gkd-secret-change.c:144 daemon/dbus/gkd-secret-create.c:96
 msgid ""
 "By choosing to use a blank password, your stored passwords will not be "
 "safely encrypted. They will be accessible by anyone with access to your "
@@ -83,107 +88,122 @@ msgstr ""
 "зашифрувати безпечним чином. Вони будуть доступні будь-кому, хто має доступ "
 "до ваших файлів."
 
-#: ../daemon/dbus/gkd-secret-change.c:152
+#: daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
 msgstr "Неправильний оригінальний пароль"
 
-#: ../daemon/dbus/gkd-secret-change.c:356
+#: daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
-msgstr "Зміна паролю в'язки ключів"
+msgstr "Зміна пароля в'язки ключів"
 
-#: ../daemon/dbus/gkd-secret-create.c:81
+#: daemon/dbus/gkd-secret-create.c:80
 #, c-format
+#| msgid ""
+#| "An application wants to create a new keyring called '%s'. Choose the "
+#| "password you want to use for it."
 msgid ""
-"An application wants to create a new keyring called '%s'. Choose the "
+"An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
 "Невідома програма бажає створити нову в'язку ключів з назвою «%s». Потрібно "
 "вибрати пароль для в'язки."
 
-#: ../daemon/dbus/gkd-secret-create.c:85
+#: daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
 msgstr "Виберіть пароль для нової в'язки ключів"
 
-#: ../daemon/dbus/gkd-secret-create.c:308
+#: daemon/dbus/gkd-secret-create.c:309
 msgid "New Keyring Password"
 msgstr "Пароль для нової в'язки ключів"
 
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:1
-msgid "GPG Password Agent"
-msgstr "Агента паролів GPG"
-
-#: ../daemon/gnome-keyring-gpg.desktop.in.in.h:2
-msgid "GNOME Keyring: GPG Agent"
-msgstr "Служба в'язки ключів GNOME: агент GPG"
-
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:1
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:4
 msgid "Certificate and Key Storage"
 msgstr "Сертифікат та сховище ключів"
 
-#: ../daemon/gnome-keyring-pkcs11.desktop.in.in.h:2
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:5
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "Служба в'язки ключів GNOME: компонент PKCS#11"
 
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:1
+#: daemon/gnome-keyring-secrets.desktop.in.in:4
 msgid "Secret Storage Service"
 msgstr "Служба шифрування дисків"
 
-#: ../daemon/gnome-keyring-secrets.desktop.in.in.h:2
+#: daemon/gnome-keyring-secrets.desktop.in.in:5
 msgid "GNOME Keyring: Secret Service"
 msgstr "Служба в'язки ключів GNOME: служба шифрування"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:1
+#: daemon/gnome-keyring-ssh.desktop.in.in:4
 msgid "SSH Key Agent"
 msgstr "Агент ключів SSH"
 
-#: ../daemon/gnome-keyring-ssh.desktop.in.in.h:2
+#: daemon/gnome-keyring-ssh.desktop.in.in:5
 msgid "GNOME Keyring: SSH Agent"
 msgstr "Служба в'язки ключів GNOME: агент SSH"
 
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:106
-msgid "Unknown"
-msgstr "Невідомо"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:203
-#, c-format
-msgid "PGP Key: %s"
-msgstr "Ключ PGP: %s"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:360
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:361
-msgid "Enter Passphrase"
-msgstr "Введіть фразу"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:365
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:630
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:645
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:721
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:799
-msgid "Unlock"
-msgstr "Розблокувати"
-
-#: ../daemon/gpg-agent/gkd-gpg-agent-ops.c:394
-msgid "Automatically unlock this key, whenever I'm logged in"
-msgstr "Автоматично розблоковувати цей ключ після входу у сеанс"
-
 #. TRANSLATORS: This is the display label for the login keyring
-#: ../daemon/login/gkd-login.c:145
+#: daemon/login/gkd-login.c:162
 msgid "Login"
 msgstr "Вхід"
 
-#: ../egg/dotlock.c:668
+#. Get the label ready
+#: daemon/login/gkd-login-interaction.c:191
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Пароль для розблокування: %s"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid "Unlock private key"
+msgstr "Розблокувати закритий ключ"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
+msgid "Enter password to unlock the private key"
+msgstr "Введіть пароль для розблокування закритої в'язки ключів"
+
+#. TRANSLATORS: The private key is locked
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+#, c-format
+#| msgid ""
+#| "An application wants access to the private key '%s', but it is locked"
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr ""
+"Програма бажає отримати доступ до закритої в'язки ключів «%s», але вона "
+"заблокована"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
+#| msgid "Automatically unlock this key whenever I'm logged in"
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr "Автоматично розблоковувати цей ключ, після входу у сеанс"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
+msgid "Unlock"
+msgstr "Розблокувати"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
+msgid "The unlock password was incorrect"
+msgstr "Некоректний пароль розблокування"
+
+#: egg/dotlock.c:668
 #, c-format
 msgid "failed to create temporary file `%s': %s\n"
 msgstr "не вдалося створити тимчасовий файл «%s»: %s\n"
 
-#: ../egg/dotlock.c:718
+#: egg/dotlock.c:718
 #, c-format
 msgid "error writing to `%s': %s\n"
 msgstr "помилка записування у «%s»: %s\n"
 
-#: ../egg/dotlock.c:782
+#: egg/dotlock.c:782
 #, c-format
 msgid "can't create `%s': %s\n"
 msgstr "неможливо створити «%s»: %s\n"
@@ -191,963 +211,340 @@ msgstr "неможливо створити «%s»: %s\n"
 #. Note: It is unlikley that we get a race here unless a pid is
 #. reused too fast or a new process with the same pid as the one
 #. of the stale file tries to lock right at the same time as we.
-#: ../egg/dotlock.c:1048
+#: egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
 msgstr "вилучення застарілого блокфайла (створив %d)\n"
 
-#: ../egg/dotlock.c:1084
+#: egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
 msgstr "очікування на блокування (утримує %d%s) %s…\n"
 
-#: ../egg/dotlock.c:1085
+#: egg/dotlock.c:1085
 msgid "(deadlock?) "
 msgstr "(застій?)"
 
-#: ../egg/dotlock.c:1124
+#: egg/dotlock.c:1124
 #, c-format
 msgid "lock `%s' not made: %s\n"
 msgstr "блокування «%s» не виконано: %s\n"
 
-#: ../egg/dotlock.c:1150
+#: egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
 msgstr "чекання на блокування %s…\n"
 
-#: ../egg/egg-oid.c:41
+#: egg/egg-oid.c:40
 msgid "Domain Component"
 msgstr "Область назв"
 
-#: ../egg/egg-oid.c:43
+#: egg/egg-oid.c:42
 msgid "User ID"
 msgstr "Ідентифікатор користувача"
 
-#: ../egg/egg-oid.c:46
+#: egg/egg-oid.c:45
 msgid "Email Address"
 msgstr "Електронна адреса"
 
-#: ../egg/egg-oid.c:54
+#: egg/egg-oid.c:53
 msgid "Date of Birth"
 msgstr "Дата народження"
 
-#: ../egg/egg-oid.c:56
+#: egg/egg-oid.c:55
 msgid "Place of Birth"
 msgstr "Місце народження"
 
-#: ../egg/egg-oid.c:58
+#: egg/egg-oid.c:57
 msgid "Gender"
 msgstr "Стать"
 
-#: ../egg/egg-oid.c:60
+#: egg/egg-oid.c:59
 msgid "Country of Citizenship"
 msgstr "Громадянство"
 
-#: ../egg/egg-oid.c:62
+#: egg/egg-oid.c:61
 msgid "Country of Residence"
 msgstr "Країна проживання"
 
-#: ../egg/egg-oid.c:65
+#: egg/egg-oid.c:64
 msgid "Common Name"
 msgstr "Звичайне ім'я"
 
-#: ../egg/egg-oid.c:67
+#: egg/egg-oid.c:66
 msgid "Surname"
 msgstr "Прізвище"
 
-#: ../egg/egg-oid.c:69
+#: egg/egg-oid.c:68
 msgid "Serial Number"
 msgstr "Серійний номер"
 
-#: ../egg/egg-oid.c:71
+#: egg/egg-oid.c:70
 msgid "Country"
 msgstr "Країна"
 
-#: ../egg/egg-oid.c:73
+#: egg/egg-oid.c:72
 msgid "Locality"
 msgstr "Місцевість"
 
-#: ../egg/egg-oid.c:75
+#: egg/egg-oid.c:74
 msgid "State"
 msgstr "Область"
 
-#: ../egg/egg-oid.c:77
+#: egg/egg-oid.c:76
 msgid "Street"
 msgstr "Вулиця"
 
-#: ../egg/egg-oid.c:79
+#: egg/egg-oid.c:78
 msgid "Organization"
 msgstr "Організація"
 
-#: ../egg/egg-oid.c:81
+#: egg/egg-oid.c:80
 msgid "Organizational Unit"
 msgstr "Підрозділ"
 
-#: ../egg/egg-oid.c:83
+#: egg/egg-oid.c:82
 msgid "Title"
 msgstr "Назва"
 
-#: ../egg/egg-oid.c:85
+#: egg/egg-oid.c:84
 msgid "Telephone Number"
 msgstr "Номер телефону"
 
-#: ../egg/egg-oid.c:87
+#: egg/egg-oid.c:86
 msgid "Given Name"
 msgstr "Ім'я"
 
-#: ../egg/egg-oid.c:89
+#: egg/egg-oid.c:88
 msgid "Initials"
 msgstr "Ініціали"
 
-#: ../egg/egg-oid.c:91
+#: egg/egg-oid.c:90
 msgid "Generation Qualifier"
 msgstr "Позначка покоління"
 
-#: ../egg/egg-oid.c:93
+#: egg/egg-oid.c:92
 msgid "DN Qualifier"
 msgstr "Позначка розрізнюваного мені"
 
-#: ../egg/egg-oid.c:95
+#: egg/egg-oid.c:94
 msgid "Pseudonym"
 msgstr "Псевдонім"
 
-#: ../egg/egg-oid.c:98
+#: egg/egg-oid.c:97
 msgid "RSA"
 msgstr "RSA"
 
-#: ../egg/egg-oid.c:99
+#: egg/egg-oid.c:98
 msgid "MD2 with RSA"
 msgstr "MD2 з ключем RSA"
 
-#: ../egg/egg-oid.c:100
+#: egg/egg-oid.c:99
 msgid "MD5 with RSA"
 msgstr "MD5 з ключем RSA"
 
-#: ../egg/egg-oid.c:101
+#: egg/egg-oid.c:100
 msgid "SHA1 with RSA"
 msgstr "SHA1 з ключем RSA"
 
-#: ../egg/egg-oid.c:103
+#: egg/egg-oid.c:102
 msgid "DSA"
 msgstr "DSA"
 
-#: ../egg/egg-oid.c:104
+#: egg/egg-oid.c:103
 msgid "SHA1 with DSA"
 msgstr "SHA1 з ключем DSA"
 
 #. Extended Key Usages
-#: ../egg/egg-oid.c:107
+#: egg/egg-oid.c:106
 msgid "Server Authentication"
 msgstr "Автентифікація сервера"
 
-#: ../egg/egg-oid.c:108
+#: egg/egg-oid.c:107
 msgid "Client Authentication"
 msgstr "Автентифікація клієнта"
 
-#: ../egg/egg-oid.c:109
+#: egg/egg-oid.c:108
 msgid "Code Signing"
 msgstr "Підписування коду"
 
-#: ../egg/egg-oid.c:110
+#: egg/egg-oid.c:109
 msgid "Email Protection"
 msgstr "Захист пошти"
 
-#: ../egg/egg-oid.c:111
+#: egg/egg-oid.c:110
 msgid "Time Stamping"
 msgstr "Часові штампи"
 
-#: ../egg/egg-spawn.c:273
-#, c-format
-msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr ""
-"Несподівана помилка у select() при читанні даних з дочірнього процесу (%s)"
-
-#: ../egg/egg-spawn.c:320
-#, c-format
-msgid "Unexpected error in waitpid() (%s)"
-msgstr "Несподівана помилка у waitpid() (%s)"
-
-#: ../pkcs11/gkm/gkm-certificate.c:572
+#: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
 msgstr "Неназваний сертифікат"
 
-#: ../pkcs11/ssh-store/gkm-ssh-private-key.c:339
-msgid "Couldn't parse public SSH key"
+#: pkcs11/ssh-store/gkm-ssh-private-key.c:341
+#| msgid "Couldn't parse public SSH key"
+msgid "Couldn’t parse public SSH key"
 msgstr "Неможливо розібрати відкритий ключ SSH"
 
-#. Get the label ready
-#: ../pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Пароль для розблокування: %s"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Розблокувати в'язку ключів для входу у систему"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:592
-msgid "Enter password to unlock your login keyring"
-msgstr "Введіть пароль для розблокування зв'язку ключів при вході в систему"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+#| msgid "Server Authentication"
+msgid "Authentication required"
+msgstr "Слід пройти розпізнавання"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
 "Пароль, який ви використовуєте для входу, більше не відповідає паролю в'язки "
-"ключів для входу у систему"
+"ключів для входу у систему."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Вашу в'язку ключів для входу у систему не було автоматично розблокована, "
 "коли ви зареєструватися у комп'ютері."
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
 msgstr "Розблокувати в'язку ключів"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:618
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
-msgid "Enter password for keyring '%s' to unlock"
-msgstr "Введіть пароль для розблокування в'язки ключів «%s»"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:622
-#, c-format
-msgid "An application wants access to the keyring '%s', but it is locked"
+#| msgid "An application wants access to the keyring '%s', but it is locked"
+msgid "An application wants access to the keyring “%s”, but it is locked"
 msgstr ""
 "Програма бажає отримати доступ до в'язки ключів «%s», але вона заблокована"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:628
-msgid "Automatically unlock this keyring whenever I'm logged in"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
+#| msgid "Automatically unlock this keyring whenever I'm logged in"
+msgid "Automatically unlock this keyring whenever I’m logged in"
 msgstr "Автоматично розблоковувати цю в'язку ключів після входу у сеанс"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:639
-msgid "Unlock private key"
-msgstr "Розблокувати закритий ключ"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:641
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
 msgstr "Розблокувати сертифікат"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:643
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
 msgstr "Розблокувати відкритий ключ"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-msgid "Enter password to unlock the private key"
-msgstr "Введіть пароль для розблокування закритої в'язки ключів"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:656
-msgid "Enter password to unlock the certificate"
-msgstr "Введіть пароль для розблокування сертифіката"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:658
-msgid "Enter password to unlock the public key"
-msgstr "Введіть пароль для розблокування відкритого ключа"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:660
-msgid "Enter password to unlock"
-msgstr "Введіть пароль для розблокування"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:670
-msgid "Automatically unlock this key whenever I'm logged in"
-msgstr "Автоматично розблоковувати цей ключ, після входу у сеанс"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:672
-msgid "Automatically unlock this certificate whenever I'm logged in"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#| msgid "Automatically unlock this certificate whenever I'm logged in"
+msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Автоматично розблоковувати цей сертифікат після входу у сеанс"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:674
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:796
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1288
-msgid "Automatically unlock whenever I'm logged in"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
+#| msgid "Automatically unlock whenever I'm logged in"
+msgid "Automatically unlock whenever I’m logged in"
 msgstr "Автоматично розблоковувати після входу у сеанс"
 
-#. TRANSLATORS: The private key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:685
-#, c-format
-msgid "An application wants access to the private key '%s', but it is locked"
-msgstr ""
-"Програма бажає отримати доступ до закритої в'язки ключів «%s», але вона "
-"заблокована"
-
 #. TRANSLATORS: The certificate is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:688
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
 #, c-format
-msgid "An application wants access to the certificate '%s', but it is locked"
+#| msgid ""
+#| "An application wants access to the certificate '%s', but it is locked"
+msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr ""
 "Програма бажає отримати доступ до сертифікату «%s», але він заблокований"
 
 #. TRANSLATORS: The public key is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 #, c-format
-msgid "An application wants access to the public key '%s', but it is locked"
+#| msgid "An application wants access to the public key '%s', but it is locked"
+msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr ""
 "Програма бажає отримати доступ до відкритої в'язки ключів «%s», але вона "
 "заблокована"
 
 #. TRANSLATORS: The object '%s' is locked
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:694
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #, c-format
-msgid "An application wants access to '%s', but it is locked"
+#| msgid "An application wants access to '%s', but it is locked"
+msgid "An application wants access to “%s”, but it is locked"
 msgstr "Програма бажає отримати доступ до «%s», але він заблокований"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:765
-msgid "The unlock password was incorrect"
-msgstr "Некоректний пароль розблокування"
-
 #. Build up the prompt
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:786
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
 msgstr "Розблокувати сертифікат/сховище ключів"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:787
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Введіть пароль для розблокування сертифікату/сховища ключів"
-
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:790
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
 #, c-format
+#| msgid ""
+#| "An application wants access to the certificate/key storage '%s', but it "
+#| "is locked"
 msgid ""
-"An application wants access to the certificate/key storage '%s', but it is "
+"An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
 "Програма бажає отримати доступ до сертифікату/сховище ключів «%s»,, але "
 "доступ заблоковано"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Потрібно вказати новий пароль"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
-msgid "New password required for secure storage"
-msgstr "Для сховища треба вказати новий пароль"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#| msgid "New Password Required"
+msgid "New password required"
+msgstr "Слід вказати новий пароль"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
+#| msgid ""
+#| "In order to prepare '%s' for storage of certificates or keys, a password "
+#| "is required"
 msgid ""
-"In order to prepare '%s' for storage of certificates or keys, a password is "
+"In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
 "Щоб підготувати «%s» для зберігання сертифікатів та ключів треба вказати "
 "пароль"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1248
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1279
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Змінити пароль"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
-msgid "Original password for secure storage"
-msgstr "Початковий пароль для безпечного зберігання"
-
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1251
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
-msgid "To change the password for '%s', the original password is required"
+#| msgid "To change the password for '%s', the original password is required"
+msgid "To change the password for “%s”, the original password is required"
 msgstr "Щоб змінити пароль для «%s», потрібно початковий пароль"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
-msgid "Change password for secure storage"
-msgstr "Змінити пароль для безпечного зберігання"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+#| msgid "Change Password"
+msgid "Change password"
+msgstr "Змінити пароль"
 
-#: ../pkcs11/wrap-layer/gkm-wrap-prompt.c:1282
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
-msgid "Type a new password for '%s'"
-msgstr "Введіть новий пароль для «%s»"
+#| msgid "Type a new password for '%s'"
+msgid "Type a new password for “%s”"
+msgstr "Введіть новий пароль до «%s»"
 
-#: ../tool/gkr-tool.c:102
-#, c-format
+#: tool/gkr-tool.c:100
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "використання: gnome-keyring команда [параметри]\n"
 
-#: ../tool/gkr-tool.c:104
+#: tool/gkr-tool.c:102
 msgid "commands: "
 msgstr "команди:"
 
 #. Translators: keep same length as translated message "commands: "
-#: ../tool/gkr-tool.c:108
+#: tool/gkr-tool.c:106
 msgid "          "
 msgstr "        "
-
-#~ msgid "Forget this password if idle for"
-#~ msgstr "Забути цей пароль, якщо він неактивний "
-
-#~ msgid "Forget this password after"
-#~ msgstr "Забути цей пароль після"
-
-#~ msgid "Forget this password when I log out"
-#~ msgstr "Забути цей пароль, коли я виходжу"
-
-#~ msgid "Certificate"
-#~ msgstr "Сертифікат"
-
-#~ msgid "Extension"
-#~ msgstr "Розширення"
-
-#~ msgid "Identifier"
-#~ msgstr "Ідентифікатор"
-
-#~ msgid "Value"
-#~ msgstr "Значення"
-
-#~ msgid "Critical"
-#~ msgstr "Критичний"
-
-#~ msgid "Yes"
-#~ msgstr "Так"
-
-#~ msgid "No"
-#~ msgstr "Ні"
-
-#~ msgid "Couldn't export the certificate."
-#~ msgstr "Неможливо експортувати сертифікат."
-
-#~ msgid "Identity"
-#~ msgstr "Профіль"
-
-#~ msgid "Verified by"
-#~ msgstr "Перевірено"
-
-#~ msgid "Expires"
-#~ msgstr "Строк дії"
-
-#~ msgid "Subject Name"
-#~ msgstr "Ім'я отримувача"
-
-#~ msgid "Issuer Name"
-#~ msgstr "Ім'я видавця"
-
-#~ msgid "Issued Certificate"
-#~ msgstr "Виданий сертифікат"
-
-#~ msgid "Version"
-#~ msgstr "Версія"
-
-#~ msgid "Not Valid Before"
-#~ msgstr "Не дійсний до"
-
-#~ msgid "Not Valid After"
-#~ msgstr "Не дійсний після"
-
-#~ msgid "Signature Algorithm"
-#~ msgstr "Алгоритм підпису"
-
-#~ msgid "Signature Parameters"
-#~ msgstr "Параметри підпису"
-
-#~ msgid "Signature"
-#~ msgstr "Підпис"
-
-#~ msgid "Public Key Info"
-#~ msgstr "Інформація про відкритий ключ"
-
-#~ msgid "Key Algorithm"
-#~ msgstr "Алгоритм ключа"
-
-#~ msgid "Key Parameters"
-#~ msgstr "Параметри ключа"
-
-#~ msgid "Key Size"
-#~ msgstr "Розмір ключа"
-
-#~ msgid "Public Key"
-#~ msgstr "Публічний ключ"
-
-#~ msgid "Fingerprints"
-#~ msgstr "Відбитки"
-
-#~ msgid "Import Certificates and Keys"
-#~ msgstr "Імпортувати сертифікати та ключі"
-
-#~ msgid "Import Into:"
-#~ msgstr "Імпортувати у:"
-
-#~ msgid "Password:"
-#~ msgstr "Пароль:"
-
-#~ msgid "Lock this keyring after"
-#~ msgstr "Блокувати в'язку ключів після"
-
-#~ msgid "Lock this keyring if idle for"
-#~ msgstr "Блокувати в'язку при простої"
-
-#~ msgid "Lock this keyring when I log out"
-#~ msgstr "Автоматично блокувати в'язку ключів при завершенні сеансу"
-
-#~ msgid "minutes"
-#~ msgstr "хвилин"
-
-#~ msgid "In order to import the private key, it must be unlocked"
-#~ msgstr "Треба розблокувати закритий ключ, щоб імпортувати його"
-
-#~ msgid "In order to import the certificate, it must be unlocked"
-#~ msgstr "Треба розблокувати сертифікат «%s», щоб імпортувати його"
-
-#~ msgid "In order to import the data, it must be unlocked"
-#~ msgstr "Треба розблокувати дані, щоб імпортувати їх"
-
-#~ msgid "In order to import the private key '%s', it must be unlocked"
-#~ msgstr "Треба розблокувати закритий ключ «%s», щоб імпортувати його"
-
-#~ msgid "In order to import the certificate '%s', it must be unlocked"
-#~ msgstr "Треба розблокувати сертифікат «%s», щоб імпортувати його"
-
-#~ msgid "In order to import '%s', it must be unlocked"
-#~ msgstr "Щоб імпортувати «%s», треба його розблокувати"
-
-#~ msgid "The operation was cancelled"
-#~ msgstr "Операцію скасовано"
-
-#~ msgid "No location available to import to"
-#~ msgstr "Немає сховища для імпортування"
-
-#~ msgid "Import Certificates/Keys"
-#~ msgstr "Імпортувати ключі/сертифікати"
-
-#~ msgid "Choose a location to store the imported certificates/keys."
-#~ msgstr "Виберіть сховище для ключів та сертифікатів."
-
-#~ msgid "Key"
-#~ msgstr "Ключ"
-
-#~ msgid "Private RSA Key"
-#~ msgstr "Закритий ключ RSA"
-
-#~ msgid "Private DSA Key"
-#~ msgstr "Закритий ключ DSA"
-
-#~ msgid "Private Key"
-#~ msgstr "Закритий ключ"
-
-#~ msgid "Public DSA Key"
-#~ msgstr "Відкритий ключ DSA"
-
-#~ msgid "%d bit"
-#~ msgid_plural "%d bits"
-#~ msgstr[0] "%d біт"
-#~ msgstr[1] "%d біти"
-#~ msgstr[2] "%d бітів"
-
-#~ msgid "Strength"
-#~ msgstr "Міцність"
-
-#~ msgid "Algorithm"
-#~ msgstr "Алгоритм"
-
-#~ msgid "Size"
-#~ msgstr "Розмір"
-
-#~ msgid "Fingerprint"
-#~ msgstr "Відбитки"
-
-#~ msgid "Unrecognized or unsupported data."
-#~ msgstr "Нерозпізнані чи непідтримувані дані."
-
-#~ msgid "Could not parse invalid or corrupted data."
-#~ msgstr "Не вдалось розібрати некоректні чи пошкоджені дані."
-
-#~ msgid "The data is locked"
-#~ msgstr "Дані заблоковано"
-
-#~ msgid "Couldn't find a place to store the pinned certificate"
-#~ msgstr "Неможливо знайти місце для збереження утриманих сертифікатів"
-
-#~ msgid "The URI has invalid syntax. The '%s' field encoding is invalid."
-#~ msgstr "URI має неправильний синтаксис. Поле кодування «%s» неправильне."
-
-#~ msgid "The URI has does not have the 'pkcs11' scheme."
-#~ msgstr "URI не має схеми «pkcs11»."
-
-#~ msgid "Insufficient memory available"
-#~ msgstr "Недостатньо пам'яті"
-
-#~ msgid "The specified slot ID is not valid"
-#~ msgstr "Вказане ідентифікатор гнізда некоректний"
-
-#~ msgid "Internal error"
-#~ msgstr "Невідома помилка"
-
-#~ msgid "The operation failed"
-#~ msgstr "Помилка при операції"
-
-#~ msgid "Invalid arguments"
-#~ msgstr "Неправильні аргументи"
-
-#~ msgid "The module cannot create needed threads"
-#~ msgstr "Модуль не може створити потрібні потоки виконання"
-
-#~ msgid "The module cannot lock data properly"
-#~ msgstr "Модуль не може заблокувати дані відповідним чином"
-
-#~ msgid "The field is read-only"
-#~ msgstr "Поле доступне лише для читання"
-
-#~ msgid "The field is sensitive and cannot be revealed"
-#~ msgstr "Поле є важливим, та не може бути розкритим"
-
-#~ msgid "The field is invalid or does not exist"
-#~ msgstr "Поле є некоректним або не існує"
-
-#~ msgid "Invalid value for field"
-#~ msgstr "Некоректне значення для поля"
-
-#~ msgid "The data is not valid or unrecognized"
-#~ msgstr "Дані некоректні або нерозпізнані"
-
-#~ msgid "The data is too long"
-#~ msgstr "Дані надто довгі"
-
-#~ msgid "An error occurred on the device"
-#~ msgstr "Помилка при роботі з пристроєм"
-
-#~ msgid "Insufficient memory available on the device"
-#~ msgstr "Недостатньо доступної пам'яті на пристрої"
-
-#~ msgid "The device was removed or unplugged"
-#~ msgstr "Пристрій вилучено або від'єднано"
-
-#~ msgid "The encrypted data is not valid or unrecognized"
-#~ msgstr "Шифровані дані є некоректними або нерозпізнаними"
-
-#~ msgid "The encrypted data is too long"
-#~ msgstr "Шифровані дані надто довгі"
-
-#~ msgid "This operation is not supported"
-#~ msgstr "Операція не підтримується"
-
-#~ msgid "The key is missing or invalid"
-#~ msgstr "Ключа нема або він некоректний"
-
-#~ msgid "The key is the wrong size"
-#~ msgstr "Ключ має неправильний розмір"
-
-#~ msgid "The key is of the wrong type"
-#~ msgstr "Ключ має неправильний тип"
-
-#~ msgid "No key is needed"
-#~ msgstr "Ключ не потрібно"
-
-#~ msgid "The key is different than before"
-#~ msgstr "Ключ відрізняється від попереднього"
-
-#~ msgid "A key is needed"
-#~ msgstr "Потрібен ключ"
-
-#~ msgid "Cannot include the key in the digest"
-#~ msgstr "Неможливо внести ключ у збірник"
-
-#~ msgid "This operation cannot be done with this key"
-#~ msgstr "Операцію неможливо завершити з цим ключем"
-
-#~ msgid "The key cannot be wrapped"
-#~ msgstr "Ключ неможливо загорнути"
-
-#~ msgid "Cannot export this key"
-#~ msgstr "Неможливо експортувати цей ключ"
-
-#~ msgid "The crypto mechanism is invalid or unrecognized"
-#~ msgstr "Механізм шифрування некоректний або нерозпізнаний"
-
-#~ msgid "The crypto mechanism has an invalid argument"
-#~ msgstr "Механізм шифрування має некоректний аргумент"
-
-#~ msgid "The object is missing or invalid"
-#~ msgstr "Об'єкта нема або він некоректний"
-
-#~ msgid "Another operation is already taking place"
-#~ msgstr "Вже виконується інша операція"
-
-#~ msgid "No operation is taking place"
-#~ msgstr "Ніяка операція не виконується"
-
-#~ msgid "The password or PIN is incorrect"
-#~ msgstr "Некоректний пароль або PIN"
-
-#~ msgid "The password or PIN is invalid"
-#~ msgstr "Неправильний пароль або PIN"
-
-#~ msgid "The password or PIN is of an invalid length"
-#~ msgstr "Неправильна довжина паролю або PIN"
-
-#~ msgid "The password or PIN has expired"
-#~ msgstr "Вийшов термін дії паролю або PIN"
-
-#~ msgid "The password or PIN is locked"
-#~ msgstr "Пароль або PIN заблоковано"
-
-#~ msgid "The session is closed"
-#~ msgstr "Сеанс закрито"
-
-#~ msgid "Too many sessions are active"
-#~ msgstr "Надто багато активних сеансів"
-
-#~ msgid "The session is invalid"
-#~ msgstr "Сеанс некоректний"
-
-#~ msgid "The session is read-only"
-#~ msgstr "Сеанс у стані лише для читання"
-
-#~ msgid "An open session exists"
-#~ msgstr "Існує відкритий сеанс"
-
-#~ msgid "A read-only session exists"
-#~ msgstr "Існує сенс лише для читання"
-
-#~ msgid "An administrator session exists"
-#~ msgstr "Існує сеанс адміністратора"
-
-#~ msgid "The signature is bad or corrupted"
-#~ msgstr "Підпис є некоректним або пошкодженим"
-
-#~ msgid "The signature is unrecognized or corrupted"
-#~ msgstr "Підпис нерозпізнаний або пошкоджений"
-
-#~ msgid "Certain required fields are missing"
-#~ msgstr "Нема деяких потрібних полів"
-
-#~ msgid "Certain fields have invalid values"
-#~ msgstr "Деякі поля мають неправильні значення"
-
-#~ msgid "The device is not present or unplugged"
-#~ msgstr "Пристрою нема або його від'єднано"
-
-#~ msgid "The device is invalid or unrecognizable"
-#~ msgstr "Пристрій некоректний або нерозпізнаний"
-
-#~ msgid "The device is write protected"
-#~ msgstr "Пристрій захищений від запису"
-
-#~ msgid "Cannot import because the key is invalid"
-#~ msgstr "Неможливо імпортувати, оскільки ключ некоректний"
-
-#~ msgid "Cannot import because the key is of the wrong size"
-#~ msgstr "Неможливо імпортувати, оскільки ключ має неправильний розмір"
-
-#~ msgid "Cannot import because the key is of the wrong type"
-#~ msgstr "Неможливо імпортувати, оскільки ключ некоректного типу"
-
-#~ msgid "You are already logged in"
-#~ msgstr "Ви вже увійшли у сеанс"
-
-#~ msgid "No user has logged in"
-#~ msgstr "Користувач вже увійшов у сеанс"
-
-#~ msgid "The user's password or PIN is not set"
-#~ msgstr "Пароль користувач або PIN не встановлено"
-
-#~ msgid "The user is of an invalid type"
-#~ msgstr "Некоректний тип користувача"
-
-#~ msgid "Another user is already logged in"
-#~ msgstr "Інший користувач вже увійшов"
-
-#~ msgid "Too many users of different types are logged in"
-#~ msgstr "Надто багато користувачів різних типів увійшло"
-
-#~ msgid "Cannot import an invalid key"
-#~ msgstr "Неможливо імпортувати некоректний ключ"
-
-#~ msgid "Cannot import a key of the wrong size"
-#~ msgstr "Неможливо імпортувати ключ неправильного розміру"
-
-#~ msgid "Cannot export because the key is invalid"
-#~ msgstr "Неможливо експортувати, оскільки ключ некоректний"
-
-#~ msgid "Cannot export because the key is of the wrong size"
-#~ msgstr "Неможливо експортувати оскільки ключ має неправильний розмір"
-
-#~ msgid "Cannot export because the key is of the wrong type"
-#~ msgstr "Неможливо експортувати оскільки ключ некоректного типу"
-
-#~ msgid "Unable to initialize the random number generator"
-#~ msgstr "Не вдалось запустити породжувача випадкових чисел"
-
-#~ msgid "No random number generator available"
-#~ msgstr "Нема породжувача випадкових чисел"
-
-#~ msgid "The crypto mechanism has an invalid parameter"
-#~ msgstr "Механізм шифрування отримав неправильний параметр"
-
-#~ msgid "Not enough space to store the result"
-#~ msgstr "Недостатньо простору для збереження результату"
-
-#~ msgid "The saved state is invalid"
-#~ msgstr "Збережений стан некоректний"
-
-#~ msgid "The information is sensitive and cannot be revealed"
-#~ msgstr "Інформація є важливою та не може бути розкрита"
-
-#~ msgid "The state cannot be saved"
-#~ msgstr "Неможливо зберегти стан"
-
-#~ msgid "The module has not been initialized"
-#~ msgstr "Модуль не запущено"
-
-#~ msgid "The module has already been initialized"
-#~ msgstr "Модуль вже запущено"
-
-#~ msgid "Cannot lock data"
-#~ msgstr "Неможливо заблокувати дані"
-
-#~ msgid "The data cannot be locked"
-#~ msgstr "Неможливо заблокувати дані"
-
-#~ msgid "The signature request was rejected by the user"
-#~ msgstr "Запит підпису відхилено користувачем"
-
-#~ msgid "Unknown error"
-#~ msgstr "Невідома помилка"
-
-#~ msgid "Use Unsafe Storage"
-#~ msgstr "Використовувати небезпечне сховище"
-
-#~ msgid "Passwords do not match."
-#~ msgstr "Паролі не збігаються."
-
-#~ msgid "Password cannot be blank"
-#~ msgstr "Пароль не може бути порожнім"
-
-#~ msgid "Keyring Access"
-#~ msgstr "Доступ в'язки ключів"
-
-#~ msgid "Unlock access to passwords and other secrets"
-#~ msgstr "Розблокувати доступ до паролів та інших секретів"
-
-#~ msgid "New password strength"
-#~ msgstr "Міцність нового паролю"
-
-#~ msgid "_Application:"
-#~ msgstr "_Програма:"
-
-#~ msgid "_Confirm:"
-#~ msgstr "П_ідтвердження:"
-
-#~ msgid "_Details:"
-#~ msgstr "_Подробиці:"
-
-#~ msgid "_Name:"
-#~ msgstr "_Назва:"
-
-#~ msgid "_Old Password:"
-#~ msgstr "_Старий пароль:"
-
-#~ msgid "_Password:"
-#~ msgstr "_Пароль:"
-
-#~ msgid ""
-#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#~ "only takes effect during startup with gnome-session, (ie: when the user "
-#~ "logs in). This setting may be overridden when certain command line "
-#~ "arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Цей параметр вмикає компонент PKCS#11 служби gnome-keyring. Він діє лише "
-#~ "якщо запускається під час старту gnome-session, (наприклад: коли "
-#~ "користувач входить у сеанс). Цей параметр можна перевизначити "
-#~ "передаванням певних аргументів команді запуску служби."
-
-#~ msgid ""
-#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
-#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
-#~ "This setting may be overridden when certain command line arguments are "
-#~ "passed to the daemon."
-#~ msgstr ""
-#~ "Цей параметр вмикає агента SSH служби gnome-keyring. Він діє лише при "
-#~ "запущеному gnome-keyring-daemon, (наприклад: коли користувач входить у "
-#~ "сеанс). Цей параметр можна перевизначити передаванням певних аргументів "
-#~ "команді запуску служби."
-
-#~ msgid ""
-#~ "This option enables the secret service component in the gnome-keyring "
-#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
-#~ "the user logs in). This setting may be overridden when certain command "
-#~ "line arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Цей параметр вмикає службу шифрування gnome-keyring. Він діє лише якщо "
-#~ "запускається під час старту gnome-session, (наприклад: коли користувач "
-#~ "входить у сеанс). Цей параметр можна перевизначити передаванням певних "
-#~ "аргументів команді запуску служби."
-
-#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-#~ msgstr "Чи увімкнено компонент PKCS#11 служби gnome-keyring."
-
-#~ msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgstr "Чи увімкнено агента SSH служби gnome-keyring."
-
-#~ msgid "Whether the gnome-keyring secret service is enabled."
-#~ msgstr "Чи увімкнено компонент шифрування служби gnome-keyring."
-
-#~ msgid "Email"
-#~ msgstr "Адреса ел.пошти"
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>не є частиною сертифікату</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>невідомо</i>"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<не частина сертифікату>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Відбитки пальців</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Джерело</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Отримувач</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>Цей сертифікат був виданий для наступного:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Дійсність</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Загальна назва (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Сертифікат отримувача пошти"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Сертифікат відправника пошти"
-
-#~ msgid "Issued On"
-#~ msgstr "Виданий"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "Відбиток MD5"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Організація (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Підрозділ (OU)"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "Відбиток SHA1"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr ""
-#~ "<span size='large' weight='bold'>Імпорт ключів та сертифікатів</span>"
-
-#~ msgid "Automatically unlock secure storage when I log in."
-#~ msgstr "Автоматично розблоковувати цей сертифікат після входу у сеанс"
-
-#~ msgid ""
-#~ "<span size=\"large\" weight=\"bold\">Enter password for keyring 'login' "
-#~ "to unlock</span>\n"
-#~ "\n"
-#~ "An application wants access to the keyring 'xxx', but it is locked."
-#~ msgstr ""
-#~ "<span size=\"large\" weight=\"bold\">Введіть пароль в'язки ключів 'login' "
-#~ "для розблокування</span>\n"
-#~ "\n"
-#~ "Програма бажає отримати доступ до в'язки ключів 'xxx', але вона "
-#~ "заблокована"
-
-#~ msgid "Prompt me for each application that accesses this keyring."
-#~ msgstr "Питати мене, перш ніж надавати програмі доступ до в'язки ключів."
