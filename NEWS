@@ -1,3 +1,6 @@
+Changes in version 3.36.0 are:
+ * Updated translations
+
 Changes in version 3.35.90 are:
  * Use shorter strings for prompt titles [!30]
  * pam: Provide more insight from pam_gnome_keyring about unlocking [!28]
