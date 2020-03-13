@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2020-02-15 03:08+0000\n"
-"PO-Revision-Date: 2020-02-15 23:00+0000\n"
+"POT-Creation-Date: 2020-02-28 07:19+0000\n"
+"PO-Revision-Date: 2020-03-13 23:00+0000\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -414,7 +414,7 @@ msgstr ""
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
-msgstr "ログイン中はいつでもこのキーリングのロックを自動的に解除"
+msgstr "ログイン中は常に、このキーリングのロックを自動的に解除する"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
