@@ -10,11 +10,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring.HEAD.ro\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-13 14:45+0000\n"
-"PO-Revision-Date: 2018-04-14 21:18+0300\n"
-"Last-Translator: Florentina Mușat <florentina.musat.28@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
+"POT-Creation-Date: 2020-02-15 03:08+0000\n"
+"PO-Revision-Date: 2020-03-18 09:22+0100\n"
+"Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
@@ -22,15 +21,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.3\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
 #: daemon/dbus/gkd-secret-create.c:78
-#: daemon/ssh-agent/gkd-ssh-agent-service.c:252
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
 #: pkcs11/secret-store/gkm-secret-collection.c:324
 #: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:752
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "Fără nume"
 
@@ -49,9 +48,9 @@ msgstr ""
 "parola veche pentru acesta."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
-#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "Continuă"
 
@@ -137,41 +136,47 @@ msgstr "Inelul de chei GNOME: Agent SSH"
 msgid "Login"
 msgstr "Autentificare"
 
+#. Get the label ready
+#: daemon/login/gkd-login-interaction.c:191
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Deblochează parola pentru: %s"
+
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock private key"
 msgstr "Deblocare cheie privată"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
 msgid "Enter password to unlock the private key"
 msgstr "Introduceți parola pentru a debloca cheia privată"
 
 #. TRANSLATORS: The private key is locked
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
 #, c-format
 msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
 "O aplicație dorește să acceseze cheia privată „%s”, dar aceasta este blocată"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
 msgid "Automatically unlock this key whenever I’m logged in"
 msgstr "Deblochează automat această cheie oricând sunt autentificat"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:629
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:644
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
 msgid "Unlock"
 msgstr "Deblochează"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:764
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
 msgid "The unlock password was incorrect"
 msgstr "Parola de deblocare nu a fost corectă"
 
@@ -358,7 +363,7 @@ msgstr "Protecție e-mail"
 msgid "Time Stamping"
 msgstr "Amprentă temporală"
 
-#: pkcs11/gkm/gkm-certificate.c:580
+#: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
 msgstr "Certificat fără nume"
 
@@ -366,21 +371,19 @@ msgstr "Certificat fără nume"
 msgid "Couldn’t parse public SSH key"
 msgstr "Nu s-a putut parsa cheia SSH publică"
 
-#. Get the label ready
-#: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "Deblochează parola pentru: %s"
-
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "Deblochează inelul de chei la autentificare"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:592
-msgid "Enter password to unlock your login keyring"
-msgstr "Introduceți parola pentru deblocarea inelului de chei de autentificare"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Authentication required"
+msgstr "Autentificare necesară"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -388,90 +391,73 @@ msgstr ""
 "Parola de utilizat pentru a vă autentifica pe calculator nu mai corespunde "
 "celei din inelul de chei de autentificare."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Inelul de chei de autentificare nu a fost deblocat automat la autentificarea "
 "dumneavoastră pe acest calculator."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
 msgstr "Deblochează inelul de chei"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:659
-msgid "Enter password to unlock"
-msgstr "Introduceți parola pentru deblocare"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
 msgstr ""
 "O aplicație dorește să acceseze inelul de chei „%s”, dar acesta este blocat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
 msgstr "Deblochează automat acest inel de chei oricând sunt autentificat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
 msgstr "Deblocare certificat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
 msgstr "Deblocarea cheie publică"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the certificate"
-msgstr "Introduceți parola pentru a debloca certificatul"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:657
-msgid "Enter password to unlock the public key"
-msgstr "Introduceți parola pentru a debloca cheia publică"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Deblochează automat acest certificat oricând sunt autentificat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:673
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:795
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
 msgstr "Deblochează automat oricând sunt autentificat"
 
 #. TRANSLATORS: The certificate is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:687
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr ""
 "O aplicație dorește să acceseze certificatul „%s”, dar acesta este blocat"
 
 #. TRANSLATORS: The public key is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr ""
 "O aplicație dorește să acceseze cheia publică „%s”, dar aceasta este blocată"
 
 #. TRANSLATORS: The object '%s' is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
 msgstr "O aplicație dorește să acceseze „%s”, dar este blocat"
 
 #. Build up the prompt
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
 msgstr "Deblochează stocarea certificatului/cheii"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:786
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Introduceți parola pentru a debloca stocarea certificatului/cheii"
-
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
@@ -480,15 +466,15 @@ msgstr ""
 "O aplicație dorește să acceseze stocarea certificatului/cheii „%s”, dar "
 "aceasta este blocată"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Necesită parolă nouă"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
-msgid "New password required for secure storage"
-msgstr "Stocarea sigură necesită parolă nouă"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New password required"
+msgstr "Necesită parolă nouă"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
@@ -497,25 +483,21 @@ msgstr ""
 "Pentru a pregătii „%s” pentru stocarea de certificate sau chei, este "
 "necesară o parolă"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Schimbă parola"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
-msgid "Original password for secure storage"
-msgstr "Parola inițială pentru stocarea sigură"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr "Pentru a modifica parola pentru „%s”, este necesară parola originală"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
-msgid "Change password for secure storage"
-msgstr "Schimbă parola pentru stocarea sigură"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password"
+msgstr "Schimbă parola"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for “%s”"
 msgstr "Tastați o parolă nouă pentru „%s”"
@@ -532,6 +514,31 @@ msgstr "comenzi: "
 #: tool/gkr-tool.c:106
 msgid "          "
 msgstr "         "
+
+#~ msgid "Enter password to unlock your login keyring"
+#~ msgstr ""
+#~ "Introduceți parola pentru deblocarea inelului de chei de autentificare"
+
+#~ msgid "Enter password to unlock"
+#~ msgstr "Introduceți parola pentru deblocare"
+
+#~ msgid "Enter password to unlock the certificate"
+#~ msgstr "Introduceți parola pentru a debloca certificatul"
+
+#~ msgid "Enter password to unlock the public key"
+#~ msgstr "Introduceți parola pentru a debloca cheia publică"
+
+#~ msgid "Enter password to unlock the certificate/key storage"
+#~ msgstr "Introduceți parola pentru a debloca stocarea certificatului/cheii"
+
+#~ msgid "New password required for secure storage"
+#~ msgstr "Stocarea sigură necesită parolă nouă"
+
+#~ msgid "Original password for secure storage"
+#~ msgstr "Parola inițială pentru stocarea sigură"
+
+#~ msgid "Change password for secure storage"
+#~ msgstr "Schimbă parola pentru stocarea sigură"
 
 #~ msgid "Unexpected error in select() reading data from a child process (%s)"
 #~ msgstr ""
