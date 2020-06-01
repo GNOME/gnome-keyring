@@ -28,6 +28,8 @@
 
 #include "wrap-layer/gkm-wrap-layer.h"
 
+#include <glib/gi18n.h>
+
 static guint secret_identifier = 8800;
 
 EGG_SECURE_DEFINE_GLIB_GLOBALS ();
