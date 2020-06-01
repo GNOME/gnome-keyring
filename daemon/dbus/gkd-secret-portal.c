@@ -32,6 +32,7 @@
 #include "gkd-secret-service.h"
 #include <gio/gunixfdlist.h>
 #include <gio/gunixoutputstream.h>
+#include <glib/gi18n.h>
 
 #define PORTAL_DEFAULT_KEY_SIZE 64
 
@@ -348,6 +349,7 @@ create_secret_value (GkdSecretPortal *self,
 	GckObject *item;
 	GckSession *session;
 	guint8 *value;
+	char *label;
 
 	value = g_new0 (guint8, PORTAL_DEFAULT_KEY_SIZE);
 	*n_value = PORTAL_DEFAULT_KEY_SIZE;
@@ -364,6 +366,10 @@ create_secret_value (GkdSecretPortal *self,
 			     "Invalid data in attributes argument");
 		return NULL;
 	}
+
+	label = g_strdup_printf (_("Application key for %s"), app_id);
+	gck_builder_add_string (&builder, CKA_LABEL, label);
+	g_free (label);
 
 	gck_builder_add_string (&builder, CKA_G_COLLECTION, self->collection);
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
