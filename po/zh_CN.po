@@ -19,10 +19,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-11-11 17:24+0000\n"
-"PO-Revision-Date: 2017-11-17 23:11+0800\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
+"POT-Creation-Date: 2020-06-26 04:32+0000\n"
+"PO-Revision-Date: 2020-08-11 13:33+0800\n"
 "Last-Translator: Wylmer Wang <wantinghard@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -30,14 +29,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
 #: daemon/dbus/gkd-secret-create.c:78
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
 #: pkcs11/secret-store/gkm-secret-collection.c:324
 #: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:752
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "未命名"
 
@@ -54,9 +54,9 @@ msgid ""
 msgstr "一个应用程序想要更改密钥环“%s”的密码，请输入它的旧密码。"
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
-#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "继续"
 
@@ -133,9 +133,52 @@ msgid "GNOME Keyring: SSH Agent"
 msgstr "GNOME 密钥环：SSH 代理"
 
 #. TRANSLATORS: This is the display label for the login keyring
-#: daemon/login/gkd-login.c:158
+#: daemon/login/gkd-login.c:162
 msgid "Login"
 msgstr "登录"
+
+#. Get the label ready
+#: daemon/login/gkd-login-interaction.c:191
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "%s 的解锁密码"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+msgid "Unlock private key"
+msgstr "解锁私钥"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
+msgid "Enter password to unlock the private key"
+msgstr "输入密码以解锁私钥"
+
+#. TRANSLATORS: The private key is locked
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+#, c-format
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr "一个应用程序想要访问名为“%s”的私钥，但它已被锁定"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr "每当我登录时都自动解锁该密钥"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
+msgid "Unlock"
+msgstr "解锁"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
+msgid "The unlock password was incorrect"
+msgstr "解锁密码错误"
 
 #: egg/dotlock.c:668
 #, c-format
@@ -320,7 +363,7 @@ msgstr "邮件防护"
 msgid "Time Stamping"
 msgstr "时间戳"
 
-#: pkcs11/gkm/gkm-certificate.c:580
+#: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
 msgstr "未命名的证书"
 
@@ -328,176 +371,122 @@ msgstr "未命名的证书"
 msgid "Couldn’t parse public SSH key"
 msgstr "无法解析 SSH 公钥"
 
-#. Get the label ready
-#: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#, c-format
-msgid "Unlock password for: %s"
-msgstr "%s 的解锁密码"
-
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
 msgstr "解锁登录密钥环"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:592
-msgid "Enter password to unlock your login keyring"
-msgstr "输入密码以解锁您的登录密钥环"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Authentication required"
+msgstr "需要认证"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr "您用来登录计算机的密码与登录密钥环里的密码不再匹配。"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr "您登录计算机时，您的登录密钥环未被解锁。"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:629
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:644
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:798
-msgid "Unlock"
-msgstr "解锁"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
 msgstr "解锁密钥环"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:659
-msgid "Enter password to unlock"
-msgstr "输入密锁以解锁"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
 msgstr "一个应用程序想要访问密钥环“%s”，但该密钥环已上锁"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
 msgstr "每当我登录时都自动解锁该密钥环"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
-msgid "Unlock private key"
-msgstr "解锁私钥"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
 msgstr "解锁证书"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
 msgstr "解锁公钥"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
-msgid "Enter password to unlock the private key"
-msgstr "输入密码以解锁私钥"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the certificate"
-msgstr "输入密码以解锁证书"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:657
-msgid "Enter password to unlock the public key"
-msgstr "输入密码以解锁公钥"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:669
-msgid "Automatically unlock this key whenever I’m logged in"
-msgstr "每当我登录时都自动解锁该密钥"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "每当我登录时都自动解锁该证书"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:673
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:795
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
 msgstr "每当我登录时都自动解锁"
 
-#. TRANSLATORS: The private key is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
-#, c-format
-msgid "An application wants access to the private key “%s”, but it is locked"
-msgstr "一个应用程序想要访问名为“%s”的私钥，但它已被锁定"
-
 #. TRANSLATORS: The certificate is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:687
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr "一个应用程序想要访问名为“%s”的证书，但它已被锁定"
 
 #. TRANSLATORS: The public key is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr "一个应用程序想要访问名为“%s”的公钥，但它已被锁定"
 
 #. TRANSLATORS: The object '%s' is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
 msgstr "一个应用程序想要访问“%s”，但它已被锁定"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:764
-msgid "The unlock password was incorrect"
-msgstr "解锁密码错误"
-
 #. Build up the prompt
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
 msgstr "解锁证书/密钥存储器"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:786
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "输入密码以解锁证书/密钥存储器"
-
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr "一个应用程序想要访问证书或密钥存储器“%s”，但它已被锁定"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "需要新密码"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
-msgid "New password required for secure storage"
-msgstr "需要新密码以进行安全存储"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New password required"
+msgstr "需要新密码"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr "需要设置一个密码，以便于准备“%s”来存储证书或密钥"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "更改密码"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
-msgid "Original password for secure storage"
-msgstr "用于安全存储的原密码"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr "需要提供原密码才能更改“%s”的密码"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
-msgid "Change password for secure storage"
-msgstr "更改安全存储的密码"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password"
+msgstr "更改密码"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for “%s”"
 msgstr "给密钥环“%s”输入一个新的密码"
@@ -514,6 +503,30 @@ msgstr "命令： "
 #: tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
+
+#~ msgid "Enter password to unlock your login keyring"
+#~ msgstr "输入密码以解锁您的登录密钥环"
+
+#~ msgid "Enter password to unlock"
+#~ msgstr "输入密锁以解锁"
+
+#~ msgid "Enter password to unlock the certificate"
+#~ msgstr "输入密码以解锁证书"
+
+#~ msgid "Enter password to unlock the public key"
+#~ msgstr "输入密码以解锁公钥"
+
+#~ msgid "Enter password to unlock the certificate/key storage"
+#~ msgstr "输入密码以解锁证书/密钥存储器"
+
+#~ msgid "New password required for secure storage"
+#~ msgstr "需要新密码以进行安全存储"
+
+#~ msgid "Original password for secure storage"
+#~ msgstr "用于安全存储的原密码"
+
+#~ msgid "Change password for secure storage"
+#~ msgstr "更改安全存储的密码"
 
 #~ msgid "GPG Password Agent"
 #~ msgstr "GPG 密码代理"
