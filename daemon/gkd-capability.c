@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gkd-capability.c - the security-critical initial phase of the daemon
  *
- * Copyright (C) 2011 Steve Grubb
+ * Copyright (C) 2011,2020 Steve Grubb
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,9 +35,10 @@
 
 /* No logging, no gettext */
 static void
-early_error (const char *err_string)
+early_error (const char *err_string, int rc)
 {
-	fprintf (stderr, "gnome-keyring-daemon: %s, aborting\n", err_string);
+	fprintf (stderr, "gnome-keyring-daemon: %s - %d, aborting\n",
+		err_string, rc);
 	exit (1);
 }
 
@@ -64,6 +65,8 @@ void
 gkd_capability_obtain_capability_and_drop_privileges (void)
 {
 #ifdef HAVE_LIBCAPNG
+	int rc;
+
 	capng_get_caps_process ();
 	switch (capng_have_capabilities (CAPNG_SELECT_CAPS))
 	{
@@ -73,32 +76,43 @@ gkd_capability_obtain_capability_and_drop_privileges (void)
 			capng_update (CAPNG_ADD,
 					CAPNG_EFFECTIVE|CAPNG_PERMITTED,
 					CAP_IPC_LOCK);
-			if (capng_change_id (getuid (), getgid (), 0))
-				early_error ("failed dropping capabilities");
+			if ((rc = capng_change_id (getuid (), getgid (),
+						   CAPNG_DROP_SUPP_GRP|
+						   CAPNG_CLEAR_BOUNDING))) {
+				early_error ("failed dropping capabilities",
+					     rc);
+			}
 			break;
 		case CAPNG_FAIL:
-			early_error ("error getting process capabilities");
+			early_error ("error getting process capabilities", 0);
 			break;
 		case CAPNG_NONE:
-			early_warning ("insufficient process capabilities, insecure memory might get used");
+			early_warning ("no process capabilities, insecure memory might get used");
 			break;
-		case CAPNG_PARTIAL: /* File system based capabilities */
-			if (!capng_have_capability (CAPNG_EFFECTIVE, CAP_IPC_LOCK)) {
+		case CAPNG_PARTIAL: { /* File system based capabilities */
+			capng_select_t set = CAPNG_SELECT_CAPS;
+			if (!capng_have_capability (CAPNG_EFFECTIVE,
+							    CAP_IPC_LOCK)) {
 				early_warning ("insufficient process capabilities, insecure memory might get used");
-				/* Drop all capabilities */
-				capng_clear (CAPNG_SELECT_BOTH);
-				capng_apply (CAPNG_SELECT_BOTH);
-				break;
 			}
 
-			/* Drop all capabilities except ipc_lock */
+			/* If we don't have CAP_SETPCAP, we can't update the
+			 * bounding set */
+			if (capng_have_capability (CAPNG_EFFECTIVE,
+								CAP_SETPCAP)) {
+				set = CAPNG_SELECT_BOTH;
+			}
+
+			 /* Drop all capabilities except ipc_lock */
 			capng_clear (CAPNG_SELECT_BOTH);
-			if (capng_update (CAPNG_ADD,
-					  CAPNG_EFFECTIVE|CAPNG_PERMITTED,
-					  CAP_IPC_LOCK) != 0)
-				early_error ("error dropping process capabilities");
-			if (capng_apply (CAPNG_SELECT_BOTH) != 0)
-				early_error ("error dropping process capabilities");
+			if ((rc = capng_update (CAPNG_ADD,
+						CAPNG_EFFECTIVE|CAPNG_PERMITTED,
+						CAP_IPC_LOCK)) != 0) {
+				early_error ("error updating process capabilities", rc);
+			}
+			if ((rc = capng_apply (set)) != 0) {
+				early_error ("error dropping process capabilities", rc);
+			}} /* Extra brace for local variable declaration */
 			break;
 	}
 #endif /* HAVE_LIBCAPNG */
