@@ -42,11 +42,12 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
-"Una aplicació vol canviar la contrasenya de l'anell de claus «%s». Introduïu-"
-"ne la contrasenya antiga."
+"Una aplicació vol canviar la contrasenya de l'anell de claus «%s». "
+"Introduïu-ne la contrasenya antiga."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
-#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: daemon/dbus/gkd-secret-change.c:146
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
@@ -60,8 +61,8 @@ msgstr "Trieu una contrasenya nova per a l'anell de claus «%s»"
 #: daemon/dbus/gkd-secret-change.c:129
 #, c-format
 msgid ""
-"An application wants to change the password for the “%s” keyring. Choose the "
-"new password you want to use for it."
+"An application wants to change the password for the “%s” keyring. Choose the"
+" new password you want to use for it."
 msgstr ""
 "Una aplicació vol canviar la contrasenya de l'anell de claus «%s». Trieu la "
 "contrasenya nova que hi vulgueu utilitzar."
@@ -76,8 +77,8 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
-"Si trieu utilitzar una contrasenya en blanc, les contrasenyes emmagatzemades "
-"no es xifraran amb seguretat. Aquestes seran accessibles per qualsevol que "
+"Si trieu utilitzar una contrasenya en blanc, les contrasenyes emmagatzemades"
+" no es xifraran amb seguretat. Aquestes seran accessibles per qualsevol que "
 "tingui accés als vostres fitxers."
 
 #: daemon/dbus/gkd-secret-change.c:152
@@ -148,7 +149,7 @@ msgstr "Desbloca la clau privada"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
 msgid "Enter password to unlock the private key"
-msgstr "Introduïu la contrasenya per desblocar la clau privada"
+msgstr "Introduïu la contrasenya per a desblocar la clau privada"
 
 #. TRANSLATORS: The private key is locked
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
@@ -175,7 +176,7 @@ msgstr "Desbloca"
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
 msgid "The unlock password was incorrect"
-msgstr "La contrasenya per desblocar era incorrecta"
+msgstr "La contrasenya per a desblocar era incorrecta"
 
 #: egg/dotlock.c:668
 #, c-format
@@ -203,7 +204,7 @@ msgstr "s'està suprimint el fitxer de blocat en desús (creat per %d)\n"
 #: egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr "s'està esperant per blocar (mantingut per %d%s) %s...\n"
+msgstr "s'està esperant per a blocar (mantingut per %d%s) %s...\n"
 
 #: egg/dotlock.c:1085
 msgid "(deadlock?) "
@@ -217,7 +218,7 @@ msgstr "no s'ha realitzat el blocat «%s»: %s\n"
 #: egg/dotlock.c:1150
 #, c-format
 msgid "waiting for lock %s...\n"
-msgstr "s'està esperant per blocar %s...\n"
+msgstr "s'està esperant per a blocar %s...\n"
 
 #: egg/egg-oid.c:40
 msgid "Domain Component"
@@ -449,7 +450,8 @@ msgstr "Una aplicació vol accedir a «%s», però està blocat"
 msgid "Unlock certificate/key storage"
 msgstr "Desbloca el magatzem de certificats/claus"
 
-#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#. TRANSLATORS: The storage is locked, and needs unlocking before the
+#. application can use it.
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
 #, c-format
 msgid ""
@@ -473,7 +475,7 @@ msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"Es necessita una contrasenya per poder preparar «%s» per al magatzem de "
+"Es necessita una contrasenya per a poder preparar «%s» per al magatzem de "
 "certificats o claus"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
@@ -484,7 +486,7 @@ msgstr "Canvia la contrasenya"
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
-msgstr "Cal la contrasenya original per canviar la contrasenya de «%s»"
+msgstr "Cal la contrasenya original per a canviar la contrasenya de «%s»"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 msgid "Change password"
