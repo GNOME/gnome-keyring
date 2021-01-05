@@ -386,7 +386,7 @@ msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
-"La contrasenya que utilitzeu per entrar a l'ordinador ja no coincideix amb "
+"La contrasenya que utilitzeu per a entrar a l'ordinador ja no coincideix amb "
 "la contrasenya de l'anell de claus d'entrada."
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
