@@ -1,0 +1,11 @@
+[Unit]
+Description=GNOME Keyring daemon
+
+[Socket]
+Priority=6
+Backlog=5
+ListenStream=%t/keyring/control
+DirectoryMode=0700
+
+[Install]
+WantedBy=sockets.target

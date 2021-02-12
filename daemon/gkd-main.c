@@ -585,6 +585,7 @@ discover_other_daemon (DiscoverFunc callback, gboolean acquire)
 		control = g_build_filename (control_env, "keyring", NULL);
 		ret = (callback) (control);
 		g_free (control);
+		g_printerr ("discover_other_daemon: %d", ret);
 		if (ret == TRUE)
 			return TRUE;
 	}

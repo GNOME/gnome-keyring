@@ -37,6 +37,20 @@ service_in_files = \
 servicedir = $(DBUS_SERVICES_DIR)
 service_DATA = $(service_in_files:.service.in=.service)
 
+if WITH_SYSTEMD
+daemon/gnome-keyring-daemon.service: daemon/gnome-keyring-daemon.service.in
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	sed 's|@bindir[@]|$(bindir)|g' $< > $@-t && \
+	mv -f $@-t $@
+
+CLEANFILES += daemon/gnome-keyring-daemon.service
+
+systemduserunit_DATA = \
+	daemon/gnome-keyring-daemon.socket \
+	daemon/gnome-keyring-daemon.service \
+	$(NULL)
+endif
+
 desktopdir = $(sysconfdir)/xdg/autostart
 desktop_in_in_files = \
 	daemon/gnome-keyring-pkcs11.desktop.in.in \

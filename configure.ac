@@ -435,6 +435,30 @@ AC_SUBST(LIBSELINUX)
 AM_CONDITIONAL([HAVE_LIBSELINUX], [test ! -z "$LIBSELINUX"])
 
 # ----------------------------------------------------------------------
+# systemd
+
+AC_ARG_WITH([systemd],
+            AS_HELP_STRING([--without-systemd],
+                           [Disable systemd socket activation]))
+
+AS_IF([test "$with_systemd" != "no"], [
+	PKG_CHECK_MODULES([LIBSYSTEMD], [libsystemd], [],
+		[with_systemd=no])
+
+	PKG_CHECK_VAR([systemduserunitdir], [systemd], [systemduserunitdir], [],
+		[with_systemd=no])
+
+	AS_IF([test "$with_systemd" != "no"], [
+		with_systemd=yes
+		AC_DEFINE_UNQUOTED(WITH_SYSTEMD, 1, [Build with systemd socket activation])
+		DAEMON_CFLAGS="$DAEMON_CFLAGS $LIBSYSTEMD_CFLAGS"
+		DAEMON_LIBS="$DAEMON_LIBS $LIBSYSTEMD_LIBS"
+	])
+])
+
+AM_CONDITIONAL(WITH_SYSTEMD, [test "$with_systemd" = "yes"])
+
+# ----------------------------------------------------------------------
 # dotlock.c support
 
 AC_DEFINE(DOTLOCK_USE_PTHREAD,1,[Define if POSIX threads are in use.])
@@ -662,6 +686,7 @@ echo "OPTIONAL DEPENDENCIES"
 echo "  PAM:                  $pam_status"
 echo "  Linux capabilities:   $libcapng_status"
 echo "  SELinux:              $selinux_status"
+echo "  systemd:              $with_systemd"
 echo
 echo "CONFIGURATION"
 echo "  SSH Agent:            $ssh_status"
