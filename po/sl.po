@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Matic Žgur <mr.zgur@gmail.com>, 2006.
-# Matej Urbančič <mateju@svn.gnome.org>, 2005–2018.
+# Matej Urbančič <mateju@svn.gnome.org>, 2005–2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"keyring&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-20 08:54+0000\n"
-"PO-Revision-Date: 2018-03-23 21:50+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
+"POT-Creation-Date: 2021-03-26 16:37+0000\n"
+"PO-Revision-Date: 2021-03-26 18:58+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -21,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
@@ -29,7 +28,7 @@ msgstr ""
 #: daemon/ssh-agent/gkd-ssh-agent-service.c:254
 #: pkcs11/secret-store/gkm-secret-collection.c:324
 #: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:752
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "Neimenovano"
 
@@ -44,13 +43,13 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
-"Program zahteva spremembo gesla za zbirko ključev »%s«. Vpisati je treba "
-"staro geslo."
+"Program želi spremeniti geslo za zbirko ključev »%s«. Vpisati je treba staro "
+"geslo."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
-#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "Nadaljuj"
 
@@ -65,12 +64,12 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Program zahtava spremembo gesla za zbirko ključev »%s«. Izbrati je treba "
-"novo geslo za to zbirko."
+"Program želi spremeniti geslo za zbirko ključev »%s«. Izbrati je treba novo "
+"geslo za to zbirko."
 
 #: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
-msgstr "Ali naj bodo gesla shranjena nešifrirana?"
+msgstr "Ali naj bodo shranjena gesla nešifrirana?"
 
 #: daemon/dbus/gkd-secret-change.c:144 daemon/dbus/gkd-secret-create.c:96
 msgid ""
@@ -96,8 +95,8 @@ msgid ""
 "An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
-"Program zahteva ustvarjanje nove zbirke ključev z imenom »%s«. Izbrati je "
-"treba geslo za novo zbirko."
+"Program želi ustvariti novo zbirko ključev z imenom »%s«. Izbrati je treba "
+"geslo za novo zbirko."
 
 #: daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
@@ -137,49 +136,48 @@ msgid "Login"
 msgstr "Prijava"
 
 #. Get the label ready
-#: daemon/login/gkd-login-interaction.c:185
+#: daemon/login/gkd-login-interaction.c:191
 #: pkcs11/wrap-layer/gkm-wrap-login.c:345
 #, c-format
 msgid "Unlock password for: %s"
 msgstr "Geslo odklepanja za: %s"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock private key"
 msgstr "Odkleni osebni ključ"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
 msgid "Enter password to unlock the private key"
 msgstr "Vnesite geslo za odklepanje osebnega ključa"
 
 #. TRANSLATORS: The private key is locked
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
 #, c-format
 msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
 "Program zahteva dostop do osebnega ključa »%s«, vendar je ta zaklenjen."
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:669
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
 msgid "Automatically unlock this key whenever I’m logged in"
-msgstr "Ob prijavi samodejno odkleni ključ"
+msgstr "Samodejno odkleni ključ ob prijavi."
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:629
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:644
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
 msgid "Unlock"
 msgstr "Odkleni"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:764
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
 msgid "The unlock password was incorrect"
-msgstr "Geslo za odklepanje je napačno"
+msgstr "Geslo za odklepanje je napačno."
 
 #: egg/dotlock.c:668
 #, c-format
@@ -230,7 +228,7 @@ msgstr "Enota domene"
 
 #: egg/egg-oid.c:42
 msgid "User ID"
-msgstr "ID uporabnika"
+msgstr "Uporabnikov ID"
 
 #: egg/egg-oid.c:45
 msgid "Email Address"
@@ -274,7 +272,7 @@ msgstr "Država"
 
 #: egg/egg-oid.c:72
 msgid "Locality"
-msgstr "Regija"
+msgstr "Krajevnost"
 
 #: egg/egg-oid.c:74
 msgid "State"
@@ -306,7 +304,7 @@ msgstr "Rojstno ime"
 
 #: egg/egg-oid.c:88
 msgid "Initials"
-msgstr "Začetnice"
+msgstr "Začetnici"
 
 #: egg/egg-oid.c:90
 msgid "Generation Qualifier"
@@ -314,7 +312,7 @@ msgstr "Red potomstva"
 
 #: egg/egg-oid.c:92
 msgid "DN Qualifier"
-msgstr "Enoznačno ime (DN)"
+msgstr "DN določilo"
 
 #: egg/egg-oid.c:94
 msgid "Pseudonym"
@@ -365,7 +363,7 @@ msgstr "Zaščita elektronskega naslova"
 msgid "Time Stamping"
 msgstr "Vstavljanje časovnega žiga"
 
-#: pkcs11/gkm/gkm-certificate.c:580
+#: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
 msgstr "Neimenovano potrdilo"
 
@@ -375,100 +373,87 @@ msgstr "Ni mogoče razčleniti javnega ključa SSH."
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:590
 msgid "Unlock Login Keyring"
-msgstr "Odklepanje prijavne zbirke ključev"
+msgstr "Odkleni prijavno zbirko ključev"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:592
-msgid "Enter password to unlock your login keyring"
-msgstr "Vnesite geslo za odklepanje prijavnih ključev"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Authentication required"
+msgstr "Zahtevana je overitev"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
-"Geslo, ki je uporabljeno za prijavo v sistem, ni skladno z geslom zbirke "
+"Geslo, ki se uporabi ob prijavi v sistem, se ne sklada z geslom zbirke "
 "ključev."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr "Prijavna zbirka ključev ob prijavi ni bila samodejno odklenjena."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
-msgstr "Odklepanje zbirke ključev"
+msgstr "Odklep zbirke ključev"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:659
-msgid "Enter password to unlock"
-msgstr "Vnesite geslo za odklepanje"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:621
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
 msgstr ""
 "Program zahteva dostop do zbirke ključev »%s«, vendar je ta zaklenjena."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:627
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
-msgstr "Ob prijavi samodejno odkleni zbirko ključev"
+msgstr "Samodejno odkleni zbirko ključev ob prijavi."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
 msgstr "Odkleni potrdilo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
 msgstr "Odkleni javni ključ"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the certificate"
-msgstr "Vnesite geslo za odklepanje potrdila"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:657
-msgid "Enter password to unlock the public key"
-msgstr "Vnesite geslo za odklepanje javnega ključa"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Automatically unlock this certificate whenever I’m logged in"
-msgstr "Ob prijavi samodejno odkleni potrdilo"
+msgstr "Samodejno odkleni potrdilo ob prijavi."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:673
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:795
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
-msgstr "Ob prijavi samodejno odkleni"
+msgstr "Samodejno odkleni ob prijavi."
 
 #. TRANSLATORS: The certificate is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:687
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr "Program zahteva dostop do potrdila »%s«, vendar je to zaklenjeno."
 
 #. TRANSLATORS: The public key is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:690
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr "Program zahteva dostop do javnega ključa »%s«, vendar je ta zaklenjen."
 
 #. TRANSLATORS: The object '%s' is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:693
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
-msgstr "Program zahteva dostop do »%s«, vendar je predmet zaklenjen."
+msgstr "Program zahteva dostop do predmeta »%s«, vendar je ta zaklenjen."
 
 #. Build up the prompt
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
 msgstr "Odkleni potrdila in ključe"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:786
-msgid "Enter password to unlock the certificate/key storage"
-msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
-
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:789
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
@@ -476,41 +461,37 @@ msgid ""
 msgstr ""
 "Program zahteva dostop do potrdila ali ključa »%s«, vendar je ta zaklenjen."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Zahtevano je novo geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
-msgid "New password required for secure storage"
-msgstr "Za varno shranjevanje je zahtevano novo geslo"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New password required"
+msgstr "Zahtevano je novo geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
 #, c-format
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
-"Za pripravo »%s« za shranjevanje potrdil in ključev mora biti določeno geslo"
+"Za pripravo »%s« za shranjevanje potrdil in ključev, mora biti določeno geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Spremeni geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
-msgid "Original password for secure storage"
-msgstr "Prvotno geslo za varno shranjevanje"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
-msgstr "Za spreminjanje gesla za »%s« je zahtevano prvotno geslo"
+msgstr "Za spreminjanje gesla za »%s«, je zahtevano prvotno geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
-msgid "Change password for secure storage"
-msgstr "Spremeni geslo za varno shranjevanje"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password"
+msgstr "Spremeni geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
 msgid "Type a new password for “%s”"
 msgstr "Vpišite novo geslo za »%s«"
@@ -554,8 +535,32 @@ msgstr "          "
 #~ msgid "Unexpected error in waitpid() (%s)"
 #~ msgstr "Nepričakovana napaka v waitpid() (%s)"
 
+#~ msgid "Enter password to unlock your login keyring"
+#~ msgstr "Vnesite geslo za odklepanje prijavnih ključev"
+
 #~ msgid "Enter password for keyring '%s' to unlock"
 #~ msgstr "Vnesite geslo za dostop do '%s' zbirke ključev."
+
+#~ msgid "Enter password to unlock the certificate"
+#~ msgstr "Vnesite geslo za odklepanje potrdila"
+
+#~ msgid "Enter password to unlock the public key"
+#~ msgstr "Vnesite geslo za odklepanje javnega ključa"
+
+#~ msgid "Enter password to unlock"
+#~ msgstr "Vnesite geslo za odklepanje"
+
+#~ msgid "Enter password to unlock the certificate/key storage"
+#~ msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
+
+#~ msgid "New password required for secure storage"
+#~ msgstr "Za varno shranjevanje je zahtevano novo geslo"
+
+#~ msgid "Original password for secure storage"
+#~ msgstr "Prvotno geslo za varno shranjevanje"
+
+#~ msgid "Change password for secure storage"
+#~ msgstr "Spremeni geslo za varno shranjevanje"
 
 #~ msgid "Forget this password if idle for"
 #~ msgstr "Pozabi geslo ob nedejavnosti"
@@ -870,9 +875,6 @@ msgstr "          "
 #, fuzzy
 #~ msgid "Certify"
 #~ msgstr "Potrdilo"
-
-#~ msgid "Authenticate"
-#~ msgstr "Overi"
 
 #~ msgid "Disabled"
 #~ msgstr "Onemogočeno"
