@@ -1,3 +1,7 @@
+Changes in version 40.0 are:
+ * Update libcap-ng capability handling [!33, !34]
+ * Updated translations
+
 Changes in version 3.36.0 are:
  * Updated translations
 
