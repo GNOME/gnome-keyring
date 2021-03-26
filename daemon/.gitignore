@@ -1,4 +1,5 @@
 /gnome-keyring-daemon
+/gnome-keyring-daemon.service
 /org.gnome.keyring.service
 /org.freedesktop.secrets.service
 /org.freedesktop.impl.portal.Secret.service

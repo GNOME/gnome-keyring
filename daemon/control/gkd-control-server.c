@@ -41,6 +41,10 @@
 #include <sys/types.h>
 #include <sys/un.h>
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
 typedef struct _ControlData {
 	EggBuffer buffer;
 	gsize position;
@@ -401,34 +405,48 @@ gkd_control_stop (void)
 gboolean
 gkd_control_listen (void)
 {
-	struct sockaddr_un addr;
 	GIOChannel *channel;
 	int sock;
 
-	control_path = g_strdup_printf ("%s/control", gkd_util_get_master_directory ());
-	egg_cleanup_register ((GDestroyNotify)gkd_control_stop, NULL);
+#ifdef WITH_SYSTEMD
+	int res;
 
-	unlink (control_path);
-
-	sock = socket (AF_UNIX, SOCK_STREAM, 0);
-	if (sock < 0) {
-		g_warning ("couldn't open socket: %s", g_strerror (errno));
+	res = sd_listen_fds (0);
+	if (res > 1) {
+		g_message ("too many file descriptors received");
 		return FALSE;
-	}
+	} else if (res == 1) {
+		sock = SD_LISTEN_FDS_START + 0;
+	} else
+#endif
+	{
+		struct sockaddr_un addr;
 
-	memset (&addr, 0, sizeof (addr));
-	addr.sun_family = AF_UNIX;
-	g_strlcpy (addr.sun_path, control_path, sizeof (addr.sun_path));
-	if (bind (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
-		g_warning ("couldn't bind to control socket: %s: %s", control_path, g_strerror (errno));
-		close (sock);
-		return FALSE;
-	}
+		control_path = g_strdup_printf ("%s/control", gkd_util_get_master_directory ());
+		egg_cleanup_register ((GDestroyNotify)gkd_control_stop, NULL);
 
-	if (listen (sock, 128) < 0) {
-		g_warning ("couldn't listen on control socket: %s: %s", control_path, g_strerror (errno));
-		close (sock);
-		return FALSE;
+		unlink (control_path);
+
+		sock = socket (AF_UNIX, SOCK_STREAM, 0);
+		if (sock < 0) {
+			g_warning ("couldn't open socket: %s", g_strerror (errno));
+			return FALSE;
+		}
+
+		memset (&addr, 0, sizeof (addr));
+		addr.sun_family = AF_UNIX;
+		g_strlcpy (addr.sun_path, control_path, sizeof (addr.sun_path));
+		if (bind (sock, (struct sockaddr*) &addr, sizeof (addr)) < 0) {
+			g_warning ("couldn't bind to control socket: %s: %s", control_path, g_strerror (errno));
+			close (sock);
+			return FALSE;
+		}
+
+		if (listen (sock, 128) < 0) {
+			g_warning ("couldn't listen on control socket: %s: %s", control_path, g_strerror (errno));
+			close (sock);
+			return FALSE;
+		}
 	}
 
 	if (egg_unix_credentials_setup (sock) < 0) {
