@@ -79,6 +79,9 @@ fedora:coverage:
 
 pages:
   stage: deploy
+  only:
+    - master
+  needs: ['fedora:coverage']
   script:
     - mkdir -p public
     - mv build/coverage public/coverage
