@@ -9,16 +9,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2018-06-10 16:56+0000\n"
-"PO-Revision-Date: 2018-10-31 12:53+0200\n"
-"Last-Translator: Cédric Valmary (totenoc.eu) <cvalmary@yahoo.fr>\n"
+"POT-Creation-Date: 2021-03-26 13:35+0000\n"
+"PO-Revision-Date: 2021-08-11 22:23+0200\n"
+"Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Poedit 3.0\n"
 "X-Launchpad-Export-Date: 2015-05-20 16:44+0000\n"
 "X-Project-Style: gnome\n"
 
@@ -28,46 +28,38 @@ msgstr ""
 #: daemon/ssh-agent/gkd-ssh-agent-service.c:254
 #: pkcs11/secret-store/gkm-secret-collection.c:324
 #: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:752
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "Sens nom"
 
 #: daemon/dbus/gkd-secret-change.c:89
-#, c-format, c-format
-#| msgid "Enter the old password for the '%s' keyring"
+#, c-format
 msgid "Enter the old password for the “%s” keyring"
 msgstr "Picatz l’ancian senhal pel trossèl de claus « %s »"
 
 #: daemon/dbus/gkd-secret-change.c:93
-#, c-format, c-format
-#| msgid ""
-#| "An application wants to change the password for the '%s' keyring. Enter "
-#| "the old password for it."
+#, c-format
 msgid ""
 "An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
-"Una aplicacion vòl modificar lo senhal del trossèl de claus « %s ». Picatz l’"
-"ancian senhal d'aqueste."
+"Una aplicacion vòl modificar lo senhal del trossèl de claus « %s ». Picatz "
+"l’ancian senhal d'aqueste."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
-#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1162
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1275
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1310
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
 msgid "Continue"
 msgstr "Contunhar"
 
 #: daemon/dbus/gkd-secret-change.c:125
-#, c-format, c-format
-#| msgid "Choose a new password for the '%s' keyring"
+#, c-format
 msgid "Choose a new password for the “%s” keyring"
 msgstr "Causissètz un novèl senhal pel trossèl de claus « %s »"
 
 #: daemon/dbus/gkd-secret-change.c:129
-#, c-format, c-format
-#| msgid ""
-#| "An application wants to change the password for the '%s' keyring. Choose "
-#| "the new password you want to use for it."
+#, c-format
 msgid ""
 "An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
@@ -98,10 +90,7 @@ msgid "Change Keyring Password"
 msgstr "Modificar lo senhal del trossèl de claus"
 
 #: daemon/dbus/gkd-secret-create.c:80
-#, c-format, c-format
-#| msgid ""
-#| "An application wants to create a new keyring called '%s'. Choose the "
-#| "password you want to use for it."
+#, c-format
 msgid ""
 "An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
@@ -154,42 +143,38 @@ msgid "Unlock password for: %s"
 msgstr "Senhal de desverrolhatge per : %s"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
 msgid "Unlock private key"
 msgstr "Desverrolhar una clau privada"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:653
 msgid "Enter password to unlock the private key"
 msgstr "Picatz lo senhal per desverrolhar la clau privada"
 
 #. TRANSLATORS: The private key is locked
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
-#, c-format, c-format
-#| msgid ""
-#| "An application wants access to the private key '%s', but it is locked"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+#, c-format
 msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr "Una aplicacion vòl accedir a la clau privada « %s », mas es verrolhada"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:669
-#| msgid "Automatically unlock this key whenever I'm logged in"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
 msgid "Automatically unlock this key whenever I’m logged in"
 msgstr "Desverrolhar automaticament aquesta clau quand soi connectat"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:602
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:629
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:644
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:720
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:798
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
 msgid "Unlock"
 msgstr "Desverrolhar"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:764
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
 msgid "The unlock password was incorrect"
 msgstr "Lo senhal de desverrolhatge es pas corrècte"
 
@@ -376,12 +361,11 @@ msgstr "Proteccion de corrièl"
 msgid "Time Stamping"
 msgstr "Orodatatge"
 
-#: pkcs11/gkm/gkm-certificate.c:580
+#: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
 msgstr "Certificat sens nom"
 
 #: pkcs11/ssh-store/gkm-ssh-private-key.c:341
-#| msgid "Couldn't parse public SSH key"
 msgid "Couldn’t parse public SSH key"
 msgstr "Impossible d’analisar la clau publica SSH"
 
@@ -389,11 +373,15 @@ msgstr "Impossible d’analisar la clau publica SSH"
 msgid "Unlock Login Keyring"
 msgstr "Desverrolhar lo trossèl de connexion"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:592
-msgid "Enter password to unlock your login keyring"
-msgstr "Picatz vòstre senhal per desverrolhar lo trossèl de connexion"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+msgid "Authentication required"
+msgstr "Autentificacion requerida"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -401,102 +389,73 @@ msgstr ""
 "Lo senhal qu'utilizatz per dobrir una session sus aquel ordenador correspond "
 "pas pus a lo de vòstre trossèl de connexion."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:598
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
 "Lo trossèl de connexion es pas estat desverrolhat al moment de vòstra "
 "connexion a aquel ordenador."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:616
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
 msgstr "Desverrolhar lo trossèl de claus"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:618
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:659
-msgid "Enter password to unlock"
-msgstr "Picatz lo senhal per desverrolhar"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:621
-#, c-format, c-format
-#| msgid "An application wants access to the keyring '%s', but it is locked"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
-msgstr "Una aplicacion vòl accedir al trossèl de claus « %s », mas es verrolhat"
+msgstr ""
+"Una aplicacion vòl accedir al trossèl de claus « %s », mas es verrolhat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:627
-#| msgid "Automatically unlock this keyring whenever I'm logged in"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
 msgstr ""
 "Desverrolhar automaticament aqueste trossèl de claus quand soi connectat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
 msgstr "Desverrolhar un certificat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:642
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
 msgstr "Desverrolhar una clau publica"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:655
-msgid "Enter password to unlock the certificate"
-msgstr "Picatz lo senhal per desverrolhar lo certificat"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:657
-msgid "Enter password to unlock the public key"
-msgstr "Picatz lo senhal per desverrolhar la clau privada"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
-#| msgid "Automatically unlock this certificate whenever I'm logged in"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Desverrolhar automaticament aqueste certificat quand soi connectat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:673
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:795
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1159
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1308
-#| msgid "Automatically unlock whenever I'm logged in"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
 msgstr "Desverrolhar automaticament quand soi connectat"
 
 #. TRANSLATORS: The certificate is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:687
-#, c-format, c-format
-#| msgid ""
-#| "An application wants access to the certificate '%s', but it is locked"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+#, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr "Una aplicacion vòl accedir al certificat « %s », mas es verrolhat"
 
 #. TRANSLATORS: The public key is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:690
-#, c-format, c-format
-#| msgid "An application wants access to the public key '%s', but it is locked"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+#, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr "Una aplicacion vòl accedir a la clau publica « %s », mas es verrolhada"
 
 #. TRANSLATORS: The object '%s' is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:693
-#, c-format, c-format
-#| msgid "An application wants access to '%s', but it is locked"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#, c-format
 msgid "An application wants access to “%s”, but it is locked"
 msgstr "Una aplicacion vòl accedir a « %s », mas es verrolhat"
 
 #. Build up the prompt
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:785
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
 msgstr "Desverrolhar l'emmagazinatge de certificats/claus"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:786
-msgid "Enter password to unlock the certificate/key storage"
-msgstr ""
-"Picatz lo senhal per desverrolhar l'espaci d'emmagazinatge de "
-"certificats/claus"
-
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:789
-#, c-format, c-format
-#| msgid ""
-#| "An application wants access to the certificate/key storage '%s', but it "
-#| "is locked"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
+#, c-format
 msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
@@ -504,19 +463,16 @@ msgstr ""
 "Una aplicacion vòl accedir a l'emmagazinatge de certificats/claus « %s », "
 "mas es verrolhat"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1150
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
 msgstr "Senhal novèl necessari"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1151
-msgid "New password required for secure storage"
-msgstr "Un senhal novèl es necessari per l'espaci d'emmagazinatge securizat"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+msgid "New password required"
+msgstr "Senhal novèl necessari"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1153
-#, c-format, c-format
-#| msgid ""
-#| "In order to prepare '%s' for storage of certificates or keys, a password "
-#| "is required"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#, c-format
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
@@ -524,28 +480,22 @@ msgstr ""
 "Un senhal es necessari per preparar « %s » a l'emmagazinatge de certificats "
 "o de claus"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1268
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1299
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
 msgstr "Modificacion del senhal"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1269
-msgid "Original password for secure storage"
-msgstr "Senhal d'origina per l'espaci d'emmagazinatge securizat"
-
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1271
-#, c-format, c-format
-#| msgid "To change the password for '%s', the original password is required"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
+#, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr "Per modificar lo senhal per « %s », lo senhal d’origina es requesit"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1300
-msgid "Change password for secure storage"
-msgstr "Modificar lo senhal per l'espaci d'emmagazinatge securizat"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+msgid "Change password"
+msgstr "Modificar lo senhal"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1302
-#, c-format, c-format
-#| msgid "Type a new password for '%s'"
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
+#, c-format
 msgid "Type a new password for “%s”"
 msgstr "Picatz un novèl senhal per « %s »"
 
@@ -561,6 +511,32 @@ msgstr "comandas : "
 #: tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
+
+#~ msgid "Enter password to unlock your login keyring"
+#~ msgstr "Picatz vòstre senhal per desverrolhar lo trossèl de connexion"
+
+#~ msgid "Enter password to unlock"
+#~ msgstr "Picatz lo senhal per desverrolhar"
+
+#~ msgid "Enter password to unlock the certificate"
+#~ msgstr "Picatz lo senhal per desverrolhar lo certificat"
+
+#~ msgid "Enter password to unlock the public key"
+#~ msgstr "Picatz lo senhal per desverrolhar la clau privada"
+
+#~ msgid "Enter password to unlock the certificate/key storage"
+#~ msgstr ""
+#~ "Picatz lo senhal per desverrolhar l'espaci d'emmagazinatge de certificats/"
+#~ "claus"
+
+#~ msgid "New password required for secure storage"
+#~ msgstr "Un senhal novèl es necessari per l'espaci d'emmagazinatge securizat"
+
+#~ msgid "Original password for secure storage"
+#~ msgstr "Senhal d'origina per l'espaci d'emmagazinatge securizat"
+
+#~ msgid "Change password for secure storage"
+#~ msgstr "Modificar lo senhal per l'espaci d'emmagazinatge securizat"
 
 #~ msgid "Enter password for keyring '%s' to unlock"
 #~ msgstr "Picatz lo senhal del trossèl de claus « %s » per lo desverrolhar"
