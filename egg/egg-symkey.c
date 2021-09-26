@@ -57,7 +57,7 @@ static GQuark OID_SHA1;
 static void
 init_quarks (void)
 {
-	static volatile gsize quarks_inited = 0;
+	static gsize quarks_inited = 0;
 
 	if (g_once_init_enter (&quarks_inited)) {
 

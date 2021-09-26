@@ -25,7 +25,7 @@
 static void
 gkd_secret_dispatch_base_init (gpointer gobject_class)
 {
-	static volatile gsize initialized = 0;
+	static gsize initialized = 0;
 	if (g_once_init_enter (&initialized)) {
 		g_once_init_leave (&initialized, 1);
 	}

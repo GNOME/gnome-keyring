@@ -62,7 +62,7 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 void
 egg_libgcrypt_initialize (void)
 {
-	static volatile gsize gcrypt_initialized = 0;
+	static gsize gcrypt_initialized = 0;
 	unsigned seed;
 
 	if (g_once_init_enter (&gcrypt_initialized)) {

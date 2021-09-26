@@ -37,9 +37,9 @@ gkm_serializable_base_init (gpointer gobject_class)
 GType
 gkm_serializable_get_type (void)
 {
-	static volatile gsize type_id__volatile = 0;
+	static gsize type_inited = 0;
 
-	if (g_once_init_enter (&type_id__volatile)) {
+	if (g_once_init_enter (&type_inited)) {
 		static const GTypeInfo info = {
 			sizeof (GkmSerializableIface),
 			gkm_serializable_base_init,               /* base init */
@@ -55,10 +55,10 @@ gkm_serializable_get_type (void)
 		GType type_id = g_type_register_static (G_TYPE_INTERFACE, "GkmSerializableIface", &info, 0);
 		g_type_interface_add_prerequisite (type_id, G_TYPE_OBJECT);
 
-		g_once_init_leave (&type_id__volatile, type_id);
+		g_once_init_leave (&type_inited, type_id);
 	}
 
-	return type_id__volatile;
+	return type_inited;
 }
 
 gboolean

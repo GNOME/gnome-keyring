@@ -39,7 +39,7 @@ typedef struct {
 	EggBuffer resp;
 	GkdSshAgentService *service;
 	GMainContext *server_thread_context;
-	volatile gint server_thread_stop;
+	gint server_thread_stop;  /* (atomic) */
 	GSocketConnection *connection;
 	GThread *thread;
 	GMutex lock;

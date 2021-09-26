@@ -124,7 +124,7 @@ compat_hash_value_as_string (const gchar *value)
 GType
 gkm_secret_fields_boxed_type (void)
 {
-	static volatile gsize type_inited = 0;
+	static gsize type_inited = 0;
 	static GType type = 0;
 
 	if (g_once_init_enter (&type_inited)) {

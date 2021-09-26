@@ -38,13 +38,13 @@ static const GDBusErrorEntry gkd_secret_error_entries[] = {
 GQuark
 gkd_secret_error_quark (void)
 {
-	static volatile gsize quark_volatile = 0;
+	static gsize quark = 0;
 
 	g_dbus_error_register_error_domain ("gkd_secret_error",
-					    &quark_volatile,
+					    &quark,
 					    gkd_secret_error_entries,
 					    G_N_ELEMENTS (gkd_secret_error_entries));
-	return quark_volatile;
+	return quark;
 }
 
 static const GDBusErrorEntry gkd_secret_daemon_error_entries[] = {
@@ -54,13 +54,13 @@ static const GDBusErrorEntry gkd_secret_daemon_error_entries[] = {
 GQuark
 gkd_secret_daemon_error_quark (void)
 {
-	static volatile gsize quark_volatile = 0;
+	static gsize quark = 0;
 
 	g_dbus_error_register_error_domain ("gkd_secret_daemon_error",
-					    &quark_volatile,
+					    &quark,
 					    gkd_secret_daemon_error_entries,
 					    G_N_ELEMENTS (gkd_secret_daemon_error_entries));
-	return quark_volatile;
+	return quark;
 }
 
 void

@@ -115,7 +115,7 @@ static OidInfo oid_info[] = {
 static OidInfo*
 find_oid_info (GQuark oid)
 {
-	static volatile gsize inited_oids = 0;
+	static gsize inited_oids = 0;
 	int i;
 	
 	g_return_val_if_fail (oid != 0, NULL);
