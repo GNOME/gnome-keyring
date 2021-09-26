@@ -1065,8 +1065,14 @@ egg_secure_alloc_full (const char *tag,
 		/* None of the current blocks have space, allocate new */
 		if (!memory) {
 			block = sec_block_create (length, tag);
-			if (block)
+			if (block) {
 				memory = sec_alloc (block, tag, length);
+
+				if (!memory && egg_secure_warnings)
+					fprintf (stderr,
+						 "internal error: memory block sized to hold %lu bytes was too small\n",
+						 (unsigned long) length);
+			}
 		}
 
 #ifdef WITH_VALGRIND
