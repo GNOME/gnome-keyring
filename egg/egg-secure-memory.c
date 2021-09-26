@@ -959,6 +959,11 @@ sec_block_create (size_t size,
 		return NULL;
 	}
 
+	/* Whatever size we were asked for, we'll need a little more space:
+	 * each allocation has an overhead of 2 words, for the guard
+	 * pointers before and after. */
+	size += (2 * sizeof (word_t));
+
 	/* The size above is a minimum, we're free to go bigger */
 	if (size < DEFAULT_BLOCK_SIZE)
 		size = DEFAULT_BLOCK_SIZE;
