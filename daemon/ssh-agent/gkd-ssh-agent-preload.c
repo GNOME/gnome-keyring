@@ -80,6 +80,7 @@ static void file_remove_inlock (EggFileTracker *tracker,
 static void
 gkd_ssh_agent_preload_init (GkdSshAgentPreload *self)
 {
+	g_mutex_init (&self->lock);
 	self->keys_by_public_filename = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	self->keys_by_public_key = g_hash_table_new_full (g_bytes_hash, g_bytes_equal, NULL, gkd_ssh_agent_key_info_free);
 }
