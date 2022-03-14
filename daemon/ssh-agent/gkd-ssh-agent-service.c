@@ -184,7 +184,7 @@ handle_request (GkdSshAgentService *self,
 
 	/* Decode the operation; on failure, just pass through */
 	if (egg_buffer_get_byte (req, 4, NULL, &op) &&
-	    op <= GKD_SSH_OP_MAX && operations[op] != NULL)
+	    op < GKD_SSH_OP_MAX && operations[op] != NULL)
 		func = operations[op];
 	else
 		func = relay_request;
