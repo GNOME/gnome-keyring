@@ -36,7 +36,7 @@
 #include <glib/gstdio.h>
 
 #include <errno.h>
-#include <sys/times.h>
+#include <sys/time.h>
 
 #include <string.h>
 
