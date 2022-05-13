@@ -61,6 +61,29 @@ enum {
 	PROP_SERVICE
 };
 
+static char *
+get_default_collection ()
+{
+	char *default_path = NULL;
+	char *contents = NULL;
+
+	default_path = g_build_filename (g_get_user_data_dir (),
+	                                 "keyrings",
+	                                 "default",
+	                                 NULL);
+	if (g_file_get_contents (default_path, &contents, NULL, NULL)) {
+		g_strstrip (contents);
+		if (!contents[0]) {
+			g_free (contents);
+			contents = NULL;
+		}
+	}
+
+	g_free (default_path);
+
+	return (contents != NULL)? contents : g_strdup ("login");
+}
+
 static void
 gkd_secret_portal_init (GkdSecretPortal *self)
 {
@@ -70,7 +93,7 @@ gkd_secret_portal_init (GkdSecretPortal *self)
 		self->collection = g_strdup (collection);
 	else
 #endif
-		self->collection = g_strdup ("login");
+		self->collection = get_default_collection ();
 	self->cancellable = g_cancellable_new ();
 }
 
