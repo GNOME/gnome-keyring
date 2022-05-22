@@ -49,6 +49,11 @@ systemduserunit_DATA = \
 	daemon/gnome-keyring-daemon.socket \
 	daemon/gnome-keyring-daemon.service \
 	$(NULL)
+
+EXTRA_DIST += \
+	daemon/gnome-keyring-daemon.socket \
+	daemon/gnome-keyring-daemon.service.in \
+	$(NULL)
 endif
 
 desktopdir = $(sysconfdir)/xdg/autostart
