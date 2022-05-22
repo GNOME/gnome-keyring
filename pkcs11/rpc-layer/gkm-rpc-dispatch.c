@@ -31,6 +31,8 @@
 #include "egg/egg-error.h"
 #include "egg/egg-unix-credentials.h"
 
+#include <glib.h>
+
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -2379,7 +2381,7 @@ gkm_rpc_layer_startup (const char *prefix)
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	unlink (pkcs11_socket_path);
-	strncpy (addr.sun_path, pkcs11_socket_path, sizeof (addr.sun_path));
+	g_strlcpy (addr.sun_path, pkcs11_socket_path, sizeof (addr.sun_path));
 	if (bind (sock, (struct sockaddr*)&addr, sizeof (addr)) < 0) {
 		gkm_rpc_warn ("couldn't bind to pkcs11 socket: %s: %s",
 		                  pkcs11_socket_path, strerror (errno));

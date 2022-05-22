@@ -29,6 +29,8 @@
 
 #include "egg/egg-unix-credentials.h"
 
+#include <glib.h>
+
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -233,7 +235,7 @@ call_connect (CallState *cs)
 	debug (("connecting to: %s", pkcs11_socket_path));
 
 	addr.sun_family = AF_UNIX;
-	strncpy (addr.sun_path, pkcs11_socket_path, sizeof (addr.sun_path));
+	g_strlcpy (addr.sun_path, pkcs11_socket_path, sizeof (addr.sun_path));
 
 	sock = socket (AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
