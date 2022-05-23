@@ -1,3 +1,6 @@
+Changes in version 42.1 are:
+ * daemon: Add files to EXTRA_DIST to fix distcheck [!51]
+
 Changes in version 42.0 are:
  * secret-portal: Properly check the default keyring [!49]
  * Build fixes [!44, !48, !50]
