@@ -4,7 +4,7 @@ Changes in version 42.0 are:
  * ssh-agent: Fix crash by uninitialized GMutex [!45]
  * fix looping off the end of the operations array [#105, !47]
  * readme: Mention libsecret instead of deprecated libgnome-keyring [!37]
- * daemon: Make it systemd-activatable through the control socket [!25]
+ * daemon: Make it systemd-activatable through the control socket [!35]
  * Updated translations
 
 Changes in version 40.0 are:
