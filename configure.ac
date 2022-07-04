@@ -294,7 +294,7 @@ AC_ARG_WITH(pkcs11-config, [
                            [directory to install PKCS#11 config])
             ])
 if test -z "$with_pkcs11_config" ; then
-	P11_SYSTEM_CONFIG_MODULES=$($PKG_CONFIG p11-kit-1 --variable=p11_system_config_modules)
+	P11_SYSTEM_CONFIG_MODULES=$($PKG_CONFIG p11-kit-1 --variable=p11_module_configs)
 else
 	P11_SYSTEM_CONFIG_MODULES="$with_pkcs11_config"
 fi
