@@ -1,22 +1,22 @@
-# Copyright (C) 2022 The Abkhazian language development fund named after Bagrat Shinkuba
-# This file is distributed under the same license as the gnome-keyring package.
-# Нанба Наала <naala-nanba@rambler.ru>, 2022.
-#
-
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
 "POT-Creation-Date: 2022-07-04 05:39+0000\n"
-"PO-Revision-Date: 2022-07-22 16:00+0000\n"
 "Last-Translator: Нанба Наала <naala-nanba@rambler.ru>\n"
-"Language-Team: Abkhazian <LL@li.org>\n"
+"Language-Team: Abkhazian <ab@li.org>\n"
 "Language: ab\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: daemon/dbus/gkd-secret-change.c:84+daemon/dbus/gkd-secret-change.c:120+daemon/dbus/gkd-secret-create.c:78+daemon/ssh-agent/gkd-ssh-agent-service.c:254+pkcs11/secret-store/gkm-secret-collection.c:324+pkcs11/wrap-layer/gkm-wrap-login.c:345+pkcs11/wrap-layer/gkm-wrap-prompt.c:733
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
+#: daemon/dbus/gkd-secret-create.c:78
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
+#: pkcs11/secret-store/gkm-secret-collection.c:324
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
 msgid "Unnamed"
 msgstr "Ихьӡыдоу"
 
@@ -137,9 +137,10 @@ msgstr ""
 msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
 
-#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111+pkcs11/wrap-layer/gkm-wrap-prompt.c:650
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
 msgid "Automatically unlock this key whenever I’m logged in"
-msgstr "Ари ацаԥха автоматикла аужьра асистема аҭалараан"
+msgstr "Ари ацаԥха автоматикла аужьра асистема аҭалара ашьҭахь"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
@@ -395,7 +396,10 @@ msgstr ""
 msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Ари асертификат автоматикла аужьра асистема аҭалараан"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654+pkcs11/wrap-layer/gkm-wrap-prompt.c:776+pkcs11/wrap-layer/gkm-wrap-prompt.c:1140+pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
 msgstr "Автоматикла аужьра асистема аҭалараан"
 
@@ -475,9 +479,4 @@ msgstr ""
 #. Translators: keep same length as translated message "commands: "
 #: tool/gkr-tool.c:106
 msgid "          "
-msgstr ""
-
-#: tool/gkr-tool.c:106
-msgctxt "tool/gkr-tool.c:106"
-msgid ""
-msgstr ""
+msgstr "          "
