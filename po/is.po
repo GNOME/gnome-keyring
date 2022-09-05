@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
 "POT-Creation-Date: 2022-08-15 20:01+0000\n"
-"PO-Revision-Date: 2022-09-05 10:46+0000\n"
+"PO-Revision-Date: 2022-09-05 11:30+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -38,6 +38,8 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
+"Forrit vill breyta lykilorðinu fyrir “%s” lyklakippuna. Settu inn gamla"
+" lykilorðið fyrir hana."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
 #: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
@@ -57,6 +59,8 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
+"Forrit vill breyta lykilorðinu fyrir “%s” lyklakippuna. Settu inn nýja"
+" lykilorðið sem þú vilt nota fyrir hana."
 
 #: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
@@ -68,6 +72,8 @@ msgid ""
 "safely encrypted. They will be accessible by anyone with access to your "
 "files."
 msgstr ""
+"Með því að velja autt lykilorð, verða geymdu lykilorðin ekki dulrituð á"
+" öruggan hátt. Þau verða aðgengileg hverjum þeim sem kemst í skrárnar þínar."
 
 #: daemon/dbus/gkd-secret-change.c:152
 msgid "The original password was incorrect"
@@ -83,6 +89,8 @@ msgid ""
 "An application wants to create a new keyring called “%s”. Choose the "
 "password you want to use for it."
 msgstr ""
+"Forrit vill búa til nýja lyklakippu með heitinu “%s”. Veldu lykilorðið sem þú"
+" vilt nota fyrir hana."
 
 #: daemon/dbus/gkd-secret-create.c:84
 msgid "Choose password for new keyring"
@@ -147,7 +155,7 @@ msgstr "Forrit vill fá aðgang að einkalyklinum “%s”, en hann er læstur"
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
 msgid "Automatically unlock this key whenever I’m logged in"
-msgstr ""
+msgstr "Aflæsa þessum lykli sjálfkrafa alltaf þegar ég er skráð/ur inn"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
@@ -185,12 +193,12 @@ msgstr "get ekki útbúið `%s': %s\n"
 #: egg/dotlock.c:1048
 #, c-format
 msgid "removing stale lockfile (created by %d)\n"
-msgstr ""
+msgstr "fjarlægi staðnaða læsiskrá (búin til af %d)\n"
 
 #: egg/dotlock.c:1084
 #, c-format
 msgid "waiting for lock (held by %d%s) %s...\n"
-msgstr ""
+msgstr "bíð eftir lás (haldið af %d%s) %s...\n"
 
 #: egg/dotlock.c:1085
 msgid "(deadlock?) "
@@ -373,11 +381,15 @@ msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
+"Lykilorðið sem þú notar til að skrá inn á tölvuna samsvarar ekki lengur"
+" lykilorðinu á innskráningarlyklakippunni þinni."
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr ""
+"Innskráningarlyklakippan aflæstist ekki þegar þú skráðir þig inn á tölvuna"
+" þína."
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
 msgid "Unlock Keyring"
@@ -386,11 +398,11 @@ msgstr "Aflæsa lyklakippu"
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
-msgstr ""
+msgstr "Forrit vill fá aðgang að lyklakippunni “%s”, en hún er læst"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
 msgid "Automatically unlock this keyring whenever I’m logged in"
-msgstr ""
+msgstr "Aflæsa þessari lyklakippu sjálfkrafa alltaf þegar ég er skráð/ur inn"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
@@ -402,37 +414,37 @@ msgstr "Aflæsa dreifilykli"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
 msgid "Automatically unlock this certificate whenever I’m logged in"
-msgstr ""
+msgstr "Aflæsa þessu skilríki sjálfkrafa alltaf þegar ég er skráð/ur inn"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
 msgid "Automatically unlock whenever I’m logged in"
-msgstr ""
+msgstr "Aflæsa sjálfkrafa þegar ég er skráð/ur inn"
 
 #. TRANSLATORS: The certificate is locked
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
-msgstr ""
+msgstr "Forrit vill fá aðgang að skilríkinu “%s”, en það er læst"
 
 #. TRANSLATORS: The public key is locked
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
-msgstr ""
+msgstr "Forrit vill fá aðgang að dreifilyklinum “%s”, en hann er læstur"
 
 #. TRANSLATORS: The object '%s' is locked
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
-msgstr ""
+msgstr "Forrit vill fá aðgang að “%s”, en það er læst"
 
 #. Build up the prompt
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
 msgid "Unlock certificate/key storage"
-msgstr ""
+msgstr "Aflæsa skilríki/lyklageymslu"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
@@ -441,6 +453,7 @@ msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
+"Forrit vill fá aðgang að skilríkinu/lyklageymslunni “%s”, en það er læst"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
 msgid "New Password Required"
@@ -457,6 +470,8 @@ msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
+"Til að undirbúa “%s” fyrir geymslu á skilríkjum eða dulritunarlyklum, er"
+" nauðsynlegt að stilla lykilorð"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
@@ -467,6 +482,7 @@ msgstr "Breyta lykilorði"
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr ""
+"Til að breyta lykilorðinu fyrir “%s” er krafist upprunalega lykilorðsins"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
 #| msgid "Change Password"
