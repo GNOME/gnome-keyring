@@ -3,9 +3,9 @@
 daemon/dbus/gkd-secret-change.c
 daemon/dbus/gkd-secret-create.c
 daemon/dbus/gkd-secret-unlock.c
-daemon/gnome-keyring-pkcs11.desktop.in.in
-daemon/gnome-keyring-secrets.desktop.in.in
-daemon/gnome-keyring-ssh.desktop.in.in
+daemon/gnome-keyring-pkcs11.desktop.in
+daemon/gnome-keyring-secrets.desktop.in
+daemon/gnome-keyring-ssh.desktop.in
 daemon/login/gkd-login.c
 daemon/login/gkd-login-interaction.c
 daemon/ssh-agent/gkd-ssh-agent-interaction.c
