@@ -1,7 +1,6 @@
 # Turkish translation of gnome-keyring.
-# Copyright (C) 2004 THE gnome-keyring'S COPYRIGHT HOLDER
+# Copyright (C) 2004-2022 gnome-keyring's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-keyring package.
-#
 #
 # Gorkem Cetin <gorkem@bahcesehir.edu.tr>, 2004.
 # Görkem Çetin <gorkem@gorkemcetin.com>, 2004.
@@ -15,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2020-02-15 03:08+0000\n"
+"POT-Creation-Date: 2022-07-25 15:35+0000\n"
 "PO-Revision-Date: 2017-03-01 18:04+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -483,8 +482,7 @@ msgstr "Yeni parola gerekli"
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
-msgstr ""
-"“%s” içinde parola ya da anahtar depolamak için parola gereklidir"
+msgstr "“%s” içinde parola ya da anahtar depolamak için parola gereklidir"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
@@ -517,98 +515,3 @@ msgstr "komutlar: "
 #: tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
-
-#~ msgid "Enter password to unlock your login keyring"
-#~ msgstr "Giriş anahtarlığınızı açmak için parolayı girin"
-
-#~ msgid "Enter password to unlock"
-#~ msgstr "Kilidini açmak için parola girin"
-
-#~ msgid "Enter password to unlock the certificate"
-#~ msgstr "Sertifikanın kilidini açmak için parola girin"
-
-#~ msgid "Enter password to unlock the public key"
-#~ msgstr "Genel anahtarlık kilidini açmak için parola girin"
-
-#~ msgid "Enter password to unlock the certificate/key storage"
-#~ msgstr "Sertifika/anahtar deposu kilidini açmak için parolanızı girin"
-
-#~ msgid "New password required for secure storage"
-#~ msgstr "Güvenli depolama için yeni parola gerekli"
-
-#~ msgid "Original password for secure storage"
-#~ msgstr "Güvenli depolama için asıl parola"
-
-#~ msgid "Change password for secure storage"
-#~ msgstr "Güvenli depolama için parolayı değiştir"
-
-#~ msgid "GPG Password Agent"
-#~ msgstr "GPG Parola Aracı"
-
-#~ msgid "GNOME Keyring: GPG Agent"
-#~ msgstr "GNOME Anahtarlığı: GPG Aracı"
-
-#~ msgid "Unknown"
-#~ msgstr "Bilinmeyen"
-
-#~ msgid "Enter Passphrase"
-#~ msgstr "Parola Metnini Girin"
-
-#~ msgid "Automatically unlock this key, whenever I'm logged in"
-#~ msgstr "Her oturum açtığımda, bu anahtarın kilidini otomatik olarak aç"
-
-#~ msgid "PGP Key: %s"
-#~ msgstr "PGP Anahtarı: %s"
-
-#~ msgid "Unexpected error in select() reading data from a child process (%s)"
-#~ msgstr "Alt süreçten bilgi okurken select()'te beklenmeyen hata oluştu (%s)"
-
-#~ msgid "Unexpected error in waitpid() (%s)"
-#~ msgstr "waitpid()'de beklenmedik hata oluştu(%s)"
-
-#~ msgid "Enter password for keyring '%s' to unlock"
-#~ msgstr "'%s' anahtarlık kilidini açmak için parola girin"
-
-#, fuzzy
-#~ msgid "Forget this password if idle for"
-#~ msgstr "Boştaysa bu şifreyi unut"
-
-#, fuzzy
-#~ msgid "Forget this password after"
-#~ msgstr "Bu şifreyi daha sonra unut"
-
-#~ msgid "Forget this password when I log out"
-#~ msgstr "Oturumumu kapattığımda bu parolayı unut"
-
-#~ msgid "Use Unsafe Storage"
-#~ msgstr "Güvenliksiz Depolama Kullan"
-
-#~ msgid "Passwords do not match."
-#~ msgstr "Parolalar eşleşmedi."
-
-#~ msgid "Password cannot be blank"
-#~ msgstr "Parola boş olamaz"
-
-#~ msgid "Keyring Access"
-#~ msgstr "Anahtarlık Erişimi"
-
-#~ msgid "New password strength"
-#~ msgstr "Yeni parola gücü"
-
-#~ msgid "_Application:"
-#~ msgstr "_Uygulama:"
-
-#~ msgid "_Confirm:"
-#~ msgstr "_Onayla:"
-
-#~ msgid "_Details:"
-#~ msgstr "_Ayrıntılar:"
-
-#~ msgid "_Name:"
-#~ msgstr "_Adı:"
-
-#~ msgid "_Old Password:"
-#~ msgstr "_Eski Parola:"
-
-#~ msgid "_Password:"
-#~ msgstr "_Parola:"
