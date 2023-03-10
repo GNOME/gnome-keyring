@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2023-01-25 18:58+0000\n"
-"PO-Revision-Date: 2023-02-20 18:44+0300\n"
+"POT-Creation-Date: 2023-02-22 11:59+0000\n"
+"PO-Revision-Date: 2023-03-06 20:26+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -347,11 +347,11 @@ msgstr "DSA ile SHA1"
 #. Extended Key Usages
 #: egg/egg-oid.c:106
 msgid "Server Authentication"
-msgstr "Sunucu Kimlik Denetimi"
+msgstr "Sunucu Kimlik Doğrulama"
 
 #: egg/egg-oid.c:107
 msgid "Client Authentication"
-msgstr "İstemci Kimlik Denetimi"
+msgstr "İstemci Kimlik Doğrulama"
 
 #: egg/egg-oid.c:108
 msgid "Code Signing"
