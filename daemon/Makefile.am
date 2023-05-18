@@ -57,13 +57,14 @@ EXTRA_DIST += \
 endif
 
 desktopdir = $(sysconfdir)/xdg/autostart
-desktop_in_files = \
-	daemon/gnome-keyring-pkcs11.desktop.in \
-	daemon/gnome-keyring-secrets.desktop.in \
-	daemon/gnome-keyring-ssh.desktop.in \
+desktop_in_in_files = \
+	daemon/gnome-keyring-pkcs11.desktop.in.in \
+	daemon/gnome-keyring-secrets.desktop.in.in \
+	daemon/gnome-keyring-ssh.desktop.in.in \
 	$(NULL)
+desktop_in_files = $(desktop_in_in_files:.desktop.in.in=.desktop.in)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-$(desktop_DATA): $(desktop_in_files)
+.desktop.in.in.desktop.in:
 	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 portaldir = $(datadir)/xdg-desktop-portal/portals
@@ -71,7 +72,8 @@ dist_portal_DATA = daemon/gnome-keyring.portal
 
 EXTRA_DIST += \
 	$(service_in_files) \
-	$(desktop_in_files)
+	$(desktop_in_files) \
+	$(desktop_in_in_files)
 
 CLEANFILES += \
 	$(service_DATA) \
