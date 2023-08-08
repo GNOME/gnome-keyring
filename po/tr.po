@@ -1,5 +1,5 @@
 # Turkish translation of gnome-keyring.
-# Copyright (C) 2004-2022 gnome-keyring's COPYRIGHT HOLDER
+# Copyright (C) 2004-2023 gnome-keyring's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-keyring package.
 #
 # Gorkem Cetin <gorkem@bahcesehir.edu.tr>, 2004.
@@ -8,16 +8,16 @@
 # Baris Cicek <baris@teamforce.name.tr>, 2008, 2009.
 # Osman Karagöz <osmank3@gmail.com>, 2013.
 # Muhammet Kara <muhammetk@gmail.com>, 2011, 2013, 2014, 2015.
-# Emin Tufan Çetin <etcetin@gmail.com, 2017.
+# Emin Tufan Çetin <etcetin@gmail.com, 2017, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2023-02-22 11:59+0000\n"
+"POT-Creation-Date: 2023-03-10 17:59+0000\n"
 "PO-Revision-Date: 2023-03-06 20:26+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
-"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
