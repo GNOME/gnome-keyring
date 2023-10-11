@@ -112,7 +112,6 @@ EGG_SECURE_DECLARE (daemon_main);
 static gchar* run_components = DEFAULT_COMPONENTS;
 static gboolean pkcs11_started = FALSE;
 static gboolean secrets_started = FALSE;
-static gboolean ssh_started = FALSE;
 static gboolean dbus_started = FALSE;
 
 static gboolean run_foreground = FALSE;
@@ -716,6 +715,8 @@ gkr_daemon_startup_steps (const gchar *components)
 	 */
 
 #ifdef WITH_SSH
+        static gboolean ssh_started = FALSE;
+
 	if (strstr (components, GKD_COMP_SSH)) {
 		if (ssh_started) {
 			g_message ("The SSH agent was already initialized");
