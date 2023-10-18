@@ -343,9 +343,14 @@ fi
 # SSH Agent support
 #
 
+AC_MSG_CHECKING([whether to build with ssh-agent])
 AC_ARG_ENABLE([ssh-agent],
-		AC_HELP_STRING([--disable-ssh-agent],
-		[Don't include SSH agent in gnome-keyring]))
+              AC_HELP_STRING([--enable-ssh-agent],
+                             [Include SSH agent in gnome-keyring]),
+              [],
+              [enable_ssh_agent=no])
+
+AC_MSG_RESULT([$enable_ssh_agent])
 
 if test "$enable_ssh_agent" = "no"; then
 	SSH_AGENT=false
