@@ -221,10 +221,10 @@ test_sign_verify (Test *test, gconstpointer unused)
 {
 	gcry_sexp_t pubkey = NULL;
 	gboolean ret;
-	guchar data[] = TEST_DATA;
-	guchar data_size = TEST_DATA_SIZE;
-	guchar signature[128];
-	gsize signature_size = 128;
+	CK_BYTE data[] = TEST_DATA;
+	CK_ULONG data_size = TEST_DATA_SIZE;
+	CK_BYTE signature[128];
+	CK_ULONG signature_size = 128;
 
 	/* RSA */
 	/* sign some data */
