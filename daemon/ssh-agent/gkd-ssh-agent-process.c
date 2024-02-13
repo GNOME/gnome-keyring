@@ -226,10 +226,13 @@ gkd_ssh_agent_process_connect (GkdSshAgentProcess *self,
 		started = TRUE;
 	}
 
-	if (started && !self->ready) {
+	if (started && self->pid && !self->ready) {
 		source = g_timeout_add_seconds (5, on_timeout, &timedout);
-		while (!self->ready && !timedout)
+		while (self->pid && !self->ready && !timedout) {
+			g_mutex_unlock (&self->lock);
 			g_main_context_iteration (NULL, FALSE);
+			g_mutex_lock (&self->lock);
+		}
 		g_source_remove (source);
 	}
 
