@@ -40,7 +40,10 @@ gnome_keyring_pkcs11_la_SOURCES = \
 	pkcs11/rpc-layer/gkm-rpc-util.c
 gnome_keyring_pkcs11_la_LIBADD = \
 	libegg-buffer.la \
-	libegg-creds.la
+	libegg-creds.la \
+	$(GLIB_LIBS)
+gnome_keyring_pkcs11_la_CFLAGS = \
+	$(GLIB_CFLAGS)
 gnome_keyring_pkcs11_la_LDFLAGS = \
 	-module -avoid-version \
 	-no-undefined -export-symbols-regex 'C_GetFunctionList'
