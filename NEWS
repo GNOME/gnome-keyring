@@ -1,3 +1,8 @@
+Changes in version 46.1 are:
+ * ssh-agent: avoid deadlock when agent process dies before we connect to it [!65]
+ * gkm: fix test-sexp with GCC 14 [!62]
+ * Updated translations
+
 Changes in version 46.0 are:
  * build: Remove build with ssh component from default build instructions [!60]
  * main: Reduce scope of ssh_started variable [!59]
