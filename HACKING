@@ -26,7 +26,7 @@ gnome-keyring-list@gnome.org
 
 An overview of the architecture and graphical outline can be found here:
 
-http://live.gnome.org/GnomeKeyring/Architecture
+https://wiki.gnome.org/Projects/GnomeKeyring/Architecture
 
 Gnome Keyring is made up of several distinct parts working on concert with 
 each other. These parts generally live in different directories:
