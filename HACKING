@@ -17,12 +17,11 @@ Build options for developers:
 PATCHES
 ----------
 
-Patches should be submitted to bugzilla:
+Patches should be submitted to:
+https://gitlab.gnome.org/GNOME/gnome-keyring/
 
-http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring
-
-The gnome-keyring mailing list is:
-gnome-keyring-list@gnome.org
+The gnome-keyring discussion and support forum is:
+https://discourse.gnome.org/tag/keyring
 
 An overview of the architecture and graphical outline can be found here:
 
