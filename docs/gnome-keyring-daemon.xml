@@ -155,7 +155,7 @@
 	<para>
 		Please send bug reports to either the distribution bug tracker
 		or the upstream bug tracker at
-		<ulink url="https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring">https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-keyring</ulink>
+		<ulink url="https://gitlab.gnome.org/GNOME/gnome-keyring/-/issues/">https://gitlab.gnome.org/GNOME/gnome-keyring/-/issues/</ulink>
 	</para>
 </refsect1>
 
