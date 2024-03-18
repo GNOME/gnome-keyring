@@ -403,62 +403,6 @@ auto_unlock_remove_token (CK_TOKEN_INFO_PTR info)
  * PROMPTING
  */
 
-static CK_ATTRIBUTE_PTR
-get_unlock_options_from_object (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
-{
-	CK_ATTRIBUTE_PTR options;
-	CK_ATTRIBUTE attr;
-	CK_ULONG i;
-	CK_RV rv;
-
-	g_assert (GKM_IS_WRAP_PROMPT (self));
-	g_assert (self->module);
-	g_assert (n_options);
-
-	*n_options = 0;
-
-	attr.type = CKA_G_CREDENTIAL_TEMPLATE;
-	attr.ulValueLen = 0;
-	attr.pValue = NULL;
-
-	/* Get the length of the entire template */
-	rv = (self->module->C_GetAttributeValue) (self->session, self->object, &attr, 1);
-	if (rv != CKR_OK) {
-		if (rv != CKR_ATTRIBUTE_TYPE_INVALID)
-			g_warning ("couldn't get credential template for prompt: %s",
-			           gkm_log_rv (rv));
-		return NULL;
-	}
-
-	/* Number of attributes, rounded down */
-	*n_options = (attr.ulValueLen / sizeof (CK_ATTRIBUTE));;
-	attr.pValue = options = pool_alloc (self, attr.ulValueLen);
-
-	/* Get the size of each value */
-	rv = (self->module->C_GetAttributeValue) (self->session, self->object, &attr, 1);
-	if (rv != CKR_OK) {
-		g_warning ("couldn't read credential template for prompt: %s",
-		           gkm_log_rv (rv));
-		return NULL;
-	}
-
-	/* Allocate memory for each value */
-	for (i = 0; i < *n_options; ++i) {
-		if (options[i].ulValueLen != (CK_ULONG)-1)
-			options[i].pValue = pool_alloc (self, options[i].ulValueLen);
-	}
-
-	/* Now get the actual values */
-	rv = (self->module->C_GetAttributeValue) (self->session, self->object, &attr, 1);
-	if (rv != CKR_OK) {
-		g_warning ("couldn't retrieve credential template for prompt: %s",
-		           gkm_log_rv (rv));
-		return NULL;
-	}
-
-	return options;
-}
-
 static void
 set_unlock_options_on_object (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR options, CK_ULONG n_options)
 {
@@ -509,16 +453,11 @@ get_unlock_options_from_prompt (GkmWrapPrompt *self, CK_ULONG_PTR n_options)
 }
 
 static void
-set_unlock_options_on_prompt (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR options, CK_ULONG n_options)
+set_unlock_options_on_prompt (GkmWrapPrompt *self)
 {
 	gboolean chosen = FALSE;
-	gboolean bval;
 
 	g_assert (GKM_IS_WRAP_PROMPT (self));
-	g_assert (options || !n_options);
-
-	if (gkm_attributes_find_boolean (options, n_options, CKA_GNOME_TRANSIENT, &bval))
-		chosen = bval;
 
 	gcr_prompt_set_choice_chosen (GCR_PROMPT (self), chosen);
 }
@@ -1030,11 +969,8 @@ gkm_wrap_prompt_do_credential (GkmWrapPrompt *self, CK_ATTRIBUTE_PTR *template,
 		setup_unlock_prompt (self, attrs, n_attrs, self->iteration == 1);
 
 		/* Now load up the unlock options into the prompt*/
-		if (self->iteration == 1) {
-			options = get_unlock_options_from_object (self, &n_options);
-			if (options != NULL)
-				set_unlock_options_on_prompt (self, options, n_options);
-		}
+		if (self->iteration == 1)
+			set_unlock_options_on_prompt (self);
 
 		++(self->iteration);
 
