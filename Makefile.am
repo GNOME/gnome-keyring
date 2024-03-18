@@ -15,6 +15,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--disable-silent-rules \
 	--with-pkcs11-modules=$(abs_srcdir)/$(top_distdir)/_inst/lib \
 	--with-pkcs11-config=$(abs_srcdir)/$(top_distdir)/_inst/etc/pkcs11 \
+	systemduserunitdir='$${prefix}/lib/systemd/user' \
 	$(NULL)
 
 DISTCLEANFILES =
