@@ -111,12 +111,11 @@ gkd_secret_secret_parse (GkdSecretService *service,
 		goto out;
 	}
 
-	secret = g_slice_new0 (GkdSecretSecret);
-	secret->session = g_object_ref (session);
-	secret->parameter = g_memdup (parameter, n_parameter);
-	secret->n_parameter = n_parameter;
-	secret->value = g_memdup (value, n_value);
-	secret->n_value = n_value;
+	secret = gkd_secret_secret_new_take_memory (session,
+	                                            g_memdup (parameter, n_parameter),
+	                                            n_parameter,
+	                                            g_memdup (value, n_value),
+	                                            n_value);
 
  out:
 	g_variant_unref (parameter_variant);
