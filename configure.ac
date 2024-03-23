@@ -227,7 +227,7 @@ AC_DEFINE(GCR_API_SUBJECT_TO_CHANGE, 1, [Nod nod])
 #
 
 AC_ARG_WITH(dbus-services,
-		  [AC_HELP_STRING([--with-dbus-services=<dir>],
+		  [AS_HELP_STRING([--with-dbus-services=<dir>],
 		  [where D-BUS session services directory is])])
 if ! test -z "$with_dbus_services" ; then
 	DBUS_SERVICES_DIR="$with_dbus_services"
@@ -241,7 +241,7 @@ AC_SUBST(DBUS_SERVICES_DIR)
 # PAM Checks
 
 AC_ARG_ENABLE(pam,
-	    AC_HELP_STRING([--disable-pam],
+	    AS_HELP_STRING([--disable-pam],
 	    [Build GNOME keyring PAM helper]))
 
 pam_status="no"
@@ -290,7 +290,7 @@ AC_SUBST(DL_LIBS)
 
 AC_MSG_CHECKING([where to put pkcs11 module configuration])
 AC_ARG_WITH(pkcs11-config, [
-            AC_HELP_STRING([--with-pkcs11-config=<dir>],
+            AS_HELP_STRING([--with-pkcs11-config=<dir>],
                            [directory to install PKCS#11 config])
             ])
 if test -z "$with_pkcs11_config" ; then
@@ -306,7 +306,7 @@ AC_SUBST(P11_SYSTEM_CONFIG_MODULES)
 
 AC_MSG_CHECKING([module path to install pkcs11 modules])
 AC_ARG_WITH(pkcs11-modules, [
-            AC_HELP_STRING([--with-pkcs11-modules=<dir>],
+            AS_HELP_STRING([--with-pkcs11-modules=<dir>],
                            [directory to install PKCS#11 modules])
             ])
 if test -z "$with_pkcs11_modules" ; then
@@ -327,7 +327,7 @@ AC_SUBST(pkcs11standalonedir)
 # PAM Module Directory
 
 AC_ARG_WITH([pam-dir],
-            [AC_HELP_STRING([--with-pam-dir=DIR],
+            [AS_HELP_STRING([--with-pam-dir=DIR],
                              [directory to install pam modules in])],
              [], [with_pam_dir='${libdir}/security'])
 PAM_DEST_DIR="$with_pam_dir"
@@ -345,7 +345,7 @@ fi
 
 AC_MSG_CHECKING([whether to build with ssh-agent])
 AC_ARG_ENABLE([ssh-agent],
-              AC_HELP_STRING([--enable-ssh-agent],
+              AS_HELP_STRING([--enable-ssh-agent],
                              [Include SSH agent in gnome-keyring]),
               [],
               [enable_ssh_agent=no])
@@ -397,7 +397,7 @@ AC_SUBST([LIBGCRYPT_LIBS])
 #
 
 AC_ARG_WITH([libcap-ng],
-            [AC_HELP_STRING([--without-libcap-ng],
+            [AS_HELP_STRING([--without-libcap-ng],
                             [build without libcap-ng (disables Linux capabilities support)])],,
             [with_libcap_ng=auto])
 
@@ -427,7 +427,7 @@ libcapng_status="$with_libcap_ng"
 LIBSELINUX=""
 selinux_status="no"
 AC_ARG_ENABLE([selinux],
-        AC_HELP_STRING([--disable-selinux],[do not use SELinux]))
+        AS_HELP_STRING([--disable-selinux],[do not use SELinux]))
 if test "x$enable_selinux" != "xno"; then
     AC_CHECK_LIB([selinux],[getfilecon],
         [AC_CHECK_LIB([selinux],[setexeccon],
@@ -475,7 +475,7 @@ AC_DEFINE_UNQUOTED(DOTLOCK_EXT_SYM_PREFIX,[_gkm_],
 # p11-tests
 
 AC_ARG_ENABLE(p11_tests,
-	AC_HELP_STRING([--disable-p11-tests],
+	AS_HELP_STRING([--disable-p11-tests],
 	[Build in p11-tests for testing PKCS#11 modules]))
 
 p11_tests_status="no"
@@ -496,7 +496,7 @@ fi
 
 AC_MSG_CHECKING([whether to build documentation])
 AC_ARG_ENABLE(doc,
-              AC_HELP_STRING([--enable-doc],
+              AS_HELP_STRING([--enable-doc],
                              [Disable building documentation])
              )
 
@@ -528,7 +528,7 @@ doc_status=$enable_doc
 
 AC_MSG_CHECKING([for debug mode])
 AC_ARG_ENABLE(debug,
-              AC_HELP_STRING([--enable-debug=no/default/yes],
+              AS_HELP_STRING([--enable-debug=no/default/yes],
               [Turn on or off debugging]))
 
 if test "$enable_debug" != "no"; then
@@ -642,7 +642,7 @@ AC_SUBST(GCOV)
 AC_SUBST(GENHTML)
 
 AC_ARG_ENABLE(valgrind,
-	AC_HELP_STRING([--enable-valgrind],
+	AS_HELP_STRING([--enable-valgrind],
 	[Run gnome-keyring-daemon using valgrind]))
 
 AC_MSG_CHECKING([valgrind])
