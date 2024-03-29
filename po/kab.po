@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues/\n"
 "POT-Creation-Date: 2024-03-25 08:49+0000\n"
-"PO-Revision-Date: 2024-03-27 05:01+0100\n"
+"PO-Revision-Date: 2024-03-29 10:19+0100\n"
 "Last-Translator: sa\n"
 "Language-Team: Kabyle <kab@li.org>\n"
 "Language: kab\n"
@@ -281,7 +281,7 @@ msgstr "Tuddsa"
 
 #: egg/egg-oid.c:80
 msgid "Organizational Unit"
-msgstr ""
+msgstr "Aferdis n tkebbanit"
 
 #: egg/egg-oid.c:82
 msgid "Title"
@@ -297,15 +297,15 @@ msgstr "Isem i d-yettunefken"
 
 #: egg/egg-oid.c:88
 msgid "Initials"
-msgstr ""
+msgstr "Imezwura"
 
 #: egg/egg-oid.c:90
 msgid "Generation Qualifier"
-msgstr ""
+msgstr "Amgaɣara n tsuta"
 
 #: egg/egg-oid.c:92
 msgid "DN Qualifier"
-msgstr ""
+msgstr "Amgaɣara DN"
 
 #: egg/egg-oid.c:94
 msgid "Pseudonym"
@@ -354,7 +354,7 @@ msgstr "Ammesten n yimayl"
 
 #: egg/egg-oid.c:110
 msgid "Time Stamping"
-msgstr ""
+msgstr "Azwil n wakud"
 
 #: pkcs11/gkm/gkm-certificate.c:578
 msgid "Unnamed Certificate"
@@ -362,7 +362,7 @@ msgstr "Aselkin warisem"
 
 #: pkcs11/ssh-store/gkm-ssh-private-key.c:341
 msgid "Couldn’t parse public SSH key"
-msgstr ""
+msgstr "Aslaḍ n tsarut tazayazt SSH d awezɣi"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:529
 msgid "Unlock Login Keyring"
@@ -381,11 +381,13 @@ msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
 msgstr ""
+"Awal n uεeddi i tesseqdaceḍ i tuqqna ɣer uselkim-ik ur yemṣada ara d wawal n "
+"uεeddi n keyring-ik n unekcum."
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:535
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
-msgstr ""
+msgstr "Ur yettusefsex ara usekkeṛ n keyring n tuqqna ɣer uselkim-ik."
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:553
 msgid "Unlock Keyring"
@@ -394,11 +396,11 @@ msgstr "Kkes asekkeṛ i Keyring"
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:556
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
-msgstr ""
+msgstr "Asnas yebɣa ad yekcem ɣer keyring \"%s\", maca isekkeṛ"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:562
 msgid "Automatically unlock this keyring whenever I’m logged in"
-msgstr ""
+msgstr "Tukksa n usekkeṛ s wudem awurman i tsarut-a mi ara kecmeɣ"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:575
 msgid "Unlock certificate"
@@ -410,32 +412,32 @@ msgstr "Kkes asekkeṛ i tsarut tazayazt"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Automatically unlock this certificate whenever I’m logged in"
-msgstr ""
+msgstr "Tukksa n usekkeṛ s wudem awurman i uselkin-a mi ara kecmeɣ"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:593
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:715
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1076
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1225
 msgid "Automatically unlock whenever I’m logged in"
-msgstr ""
+msgstr "Tukksa n usekkeṛ s wudem awurman mi ara kecmeɣ"
 
 #. TRANSLATORS: The certificate is locked
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:607
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
-msgstr ""
+msgstr "Yiwen usnas yebɣa ad yekcem ɣer uselkin \"%s\" maca isekkeṛ"
 
 #. TRANSLATORS: The public key is locked
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:610
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
-msgstr ""
+msgstr "Yiwen usnas yebɣa ad yekcem ɣer tsarut tazayazt \"%s\" masa tsekkeṛ"
 
 #. TRANSLATORS: The object '%s' is locked
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:613
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
-msgstr ""
+msgstr "Asna-a yebɣa ad yekcem ɣer \"%s\", maca isekkeṛ"
 
 #. Build up the prompt
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:705
@@ -449,6 +451,7 @@ msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
 "locked"
 msgstr ""
+"Asnas-a yebɣa ad yekcem ɣer uḥraz n uselkin/tsarut \"%s\", maca isekkeṛ"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1067
 msgid "New Password Required"
@@ -464,6 +467,8 @@ msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
 "required"
 msgstr ""
+"I wakken ad theyyiḍ \"%s\" i uḥraz n yiselkinen neɣ n tsura, yettwasra wawal "
+"n uεeddi"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1185
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1216
@@ -473,7 +478,7 @@ msgstr "Senfel awal n uɛeddi"
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1188
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
-msgstr ""
+msgstr "I usenfel n wawal n uεeddi \"%s\", yettwasra wawal n uεeddi aqbur"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1217
 msgid "Change password"
