@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2020-02-15 03:08+0000\n"
-"PO-Revision-Date: 2020-02-16 21:50+0100\n"
+"POT-Creation-Date: 2023-01-25 18:58+0000\n"
+"PO-Revision-Date: 2024-04-08 15:21+0200\n"
 "Last-Translator: Charles Monzat <charles.monzat@free.fr>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
@@ -52,7 +52,7 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Enter the "
 "old password for it."
 msgstr ""
-"Une application veut modifier le mot de passe du trousseau de clés « %s ». "
+"Une application veut changer le mot de passe du trousseau de clés « %s ». "
 "Saisissez l’ancien mot de passe de celui-ci."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
@@ -73,7 +73,7 @@ msgid ""
 "An application wants to change the password for the “%s” keyring. Choose the "
 "new password you want to use for it."
 msgstr ""
-"Une application veut modifier le mot de passe du trousseau de clés « %s ». "
+"Une application veut changer le mot de passe du trousseau de clés « %s ». "
 "Choisissez le nouveau mot de passe que vous voulez lui associer."
 
 #: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
@@ -96,7 +96,7 @@ msgstr "Le mot de passe original n’est pas correct"
 
 #: daemon/dbus/gkd-secret-change.c:348
 msgid "Change Keyring Password"
-msgstr "Modifier le mot de passe du trousseau de clés"
+msgstr "Changer le mot de passe du trousseau de clés"
 
 #: daemon/dbus/gkd-secret-create.c:80
 #, c-format
@@ -115,27 +115,27 @@ msgstr "Choisissez le mot de passe du nouveau trousseau de clés"
 msgid "New Keyring Password"
 msgstr "Mot de passe du nouveau trousseau de clés"
 
-#: daemon/gnome-keyring-pkcs11.desktop.in.in:4
+#: daemon/gnome-keyring-pkcs11.desktop.in:4
 msgid "Certificate and Key Storage"
 msgstr "Stockage de certificats et de clés"
 
-#: daemon/gnome-keyring-pkcs11.desktop.in.in:5
+#: daemon/gnome-keyring-pkcs11.desktop.in:5
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "Trousseau de clés de GNOME : composant PKCS#11"
 
-#: daemon/gnome-keyring-secrets.desktop.in.in:4
+#: daemon/gnome-keyring-secrets.desktop.in:4
 msgid "Secret Storage Service"
 msgstr "Service de stockage secret"
 
-#: daemon/gnome-keyring-secrets.desktop.in.in:5
+#: daemon/gnome-keyring-secrets.desktop.in:5
 msgid "GNOME Keyring: Secret Service"
 msgstr "Trousseau de clés de GNOME : service secret"
 
-#: daemon/gnome-keyring-ssh.desktop.in.in:4
+#: daemon/gnome-keyring-ssh.desktop.in:4
 msgid "SSH Key Agent"
 msgstr "Agent de clés SSH"
 
-#: daemon/gnome-keyring-ssh.desktop.in.in:5
+#: daemon/gnome-keyring-ssh.desktop.in:5
 msgid "GNOME Keyring: SSH Agent"
 msgstr "Trousseau de clés de GNOME : agent SSH"
 
@@ -389,7 +389,6 @@ msgstr "Déverrouiller le trousseau de connexion"
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
-#| msgid "Server Authentication"
 msgid "Authentication required"
 msgstr "Authentification nécessaire"
 
@@ -484,7 +483,6 @@ msgid "New Password Required"
 msgstr "Nouveau mot de passe nécessaire"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
-#| msgid "New Password Required"
 msgid "New password required"
 msgstr "Nouveau mot de passe nécessaire"
 
@@ -500,19 +498,18 @@ msgstr ""
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
 msgid "Change Password"
-msgstr "Modifier le mot de passe"
+msgstr "Changer le mot de passe"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr ""
-"Pour modifier le mot de passe pour « %s », le mot de passe d’origine est "
+"Pour changer le mot de passe pour « %s », le mot de passe d’origine est "
 "requis"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
-#| msgid "Change Password"
 msgid "Change password"
-msgstr "Modifier le mot de passe"
+msgstr "Changer le mot de passe"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
 #, c-format
@@ -532,30 +529,3 @@ msgstr "commandes : "
 msgid "          "
 msgstr "           "
 
-#~ msgid "Enter password to unlock your login keyring"
-#~ msgstr ""
-#~ "Saisissez votre mot de passe pour déverrouiller le trousseau de connexion"
-
-#~ msgid "Enter password to unlock"
-#~ msgstr "Saisissez le mot de passe pour déverrouiller"
-
-#~ msgid "Enter password to unlock the certificate"
-#~ msgstr "Saisissez le mot de passe pour déverrouiller le certificat"
-
-#~ msgid "Enter password to unlock the public key"
-#~ msgstr "Saisissez le mot de passe pour déverrouiller la clé publique"
-
-#~ msgid "Enter password to unlock the certificate/key storage"
-#~ msgstr ""
-#~ "Saisissez le mot de passe pour déverrouiller l’espace de stockage de "
-#~ "certificats/clés"
-
-#~ msgid "New password required for secure storage"
-#~ msgstr ""
-#~ "Un nouveau mot de passe est nécessaire pour l’espace de stockage sécurisé"
-
-#~ msgid "Original password for secure storage"
-#~ msgstr "Mot de passe d’origine pour l’espace de stockage sécurisé"
-
-#~ msgid "Change password for secure storage"
-#~ msgstr "Modifier le mot de passe pour l’espace de stockage sécurisé"
