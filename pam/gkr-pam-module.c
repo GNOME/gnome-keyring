@@ -319,7 +319,7 @@ cleanup_free_password (pam_handle_t *ph, void *data, int pam_end_status)
    with default behaviour
 */
 static void setup_selinux_context(const char *command) {
-	security_context_t fcon = NULL, newcon = NULL, execcon = NULL;
+	char *fcon = NULL, *newcon = NULL, *execcon = NULL;
 
 	if (is_selinux_enabled() != 1) return;
 
