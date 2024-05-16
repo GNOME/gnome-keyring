@@ -1,5 +1,5 @@
 <schemalist>
-	<schema id="org.gnome.crypto.cache" path="/desktop/gnome/crypto/cache/">
+	<schema id="org.gnome.crypto.cache" path="/org/gnome/desktop/crypto/cache/">
 		<key name="gpg-cache-method" type="s">
 			<default>'session'</default>
 			<summary>Cache Method</summary>
