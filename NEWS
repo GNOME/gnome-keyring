@@ -1,3 +1,11 @@
+Changes in version 46.2 are:
+ * Don't use `bool` as variable name
+ * autogoo: replace AC_HELP_STRING with AS_HELP_STRING
+ * Default "automatically unlock" checkbox to false
+ * build: Fix distcheck with systemd unit
+ * rpc-layer: Fix undefined reference to g_strlcpy
+ * Updated translations
+
 Changes in version 46.1 are:
  * ssh-agent: avoid deadlock when agent process dies before we connect to it [!65]
  * gkm: fix test-sexp with GCC 14 [!62]
