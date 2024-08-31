@@ -1052,7 +1052,7 @@ pam_chauthtok_update (pam_handle_t *ph, struct passwd *pwd, uint args)
 	 * Likely the daemon is being started later in the session if we weren't
 	 * allowed to autostart it here. Store the password for our session handler
 	 */
-	if (!(args & ARG_AUTO_START))
+	if (!(args & ARG_AUTO_START) && ret == PAM_SUCCESS)
 		stash_password_for_session (ph, password);
 
 	return ret;
