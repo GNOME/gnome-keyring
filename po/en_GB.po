@@ -3,23 +3,23 @@
 # This file is distributed under the same license as the gnome-keyring package.
 # Gareth Owen <gowen72@yahoo.com>, 2004.
 # Philip Withnall <philip@tecnocode.co.uk>, 2009, 2010.
-# Bruce Cowan <bruce@bcowan.me.uk>, 2010, 2011, 2012.
+# Bruce Cowan <bruce@bcowan.me.uk>, 2010-2024.
 # Zander Brown <zbrown@gnome.org>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2020-06-26 04:32+0000\n"
-"PO-Revision-Date: 2020-09-02 00:23+0100\n"
-"Last-Translator: Zander Brown <zbrown@gnome.org>\n"
+"POT-Creation-Date: 2023-01-25 18:58+0000\n"
+"PO-Revision-Date: 2024-08-31 11:16+0100\n"
+"Last-Translator: Bruce Cowan <bruce@bcowan.me.uk>\n"
 "Language-Team: English - United Kingdom <en_GB@li.org>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 3.36.0\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Project-Style: gnome\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
@@ -106,27 +106,27 @@ msgstr "Choose password for new keyring"
 msgid "New Keyring Password"
 msgstr "New Keyring Password"
 
-#: daemon/gnome-keyring-pkcs11.desktop.in.in:4
+#: daemon/gnome-keyring-pkcs11.desktop.in:4
 msgid "Certificate and Key Storage"
 msgstr "Certificate and Key Storage"
 
-#: daemon/gnome-keyring-pkcs11.desktop.in.in:5
+#: daemon/gnome-keyring-pkcs11.desktop.in:5
 msgid "GNOME Keyring: PKCS#11 Component"
 msgstr "GNOME Keyring: PKCS#11 Component"
 
-#: daemon/gnome-keyring-secrets.desktop.in.in:4
+#: daemon/gnome-keyring-secrets.desktop.in:4
 msgid "Secret Storage Service"
 msgstr "Secret Storage Service"
 
-#: daemon/gnome-keyring-secrets.desktop.in.in:5
+#: daemon/gnome-keyring-secrets.desktop.in:5
 msgid "GNOME Keyring: Secret Service"
 msgstr "GNOME Keyring: Secret Service"
 
-#: daemon/gnome-keyring-ssh.desktop.in.in:4
+#: daemon/gnome-keyring-ssh.desktop.in:4
 msgid "SSH Key Agent"
 msgstr "SSH Key Agent"
 
-#: daemon/gnome-keyring-ssh.desktop.in.in:5
+#: daemon/gnome-keyring-ssh.desktop.in:5
 msgid "GNOME Keyring: SSH Agent"
 msgstr "GNOME Keyring: SSH Agent"
 
@@ -230,7 +230,7 @@ msgstr "User ID"
 
 #: egg/egg-oid.c:45
 msgid "Email Address"
-msgstr "E-mail Address"
+msgstr "Email Address"
 
 #: egg/egg-oid.c:53
 msgid "Date of Birth"
@@ -355,7 +355,7 @@ msgstr "Code Signing"
 
 #: egg/egg-oid.c:109
 msgid "Email Protection"
-msgstr "E-mail Protection"
+msgstr "Email Protection"
 
 #: egg/egg-oid.c:110
 msgid "Time Stamping"
@@ -378,7 +378,6 @@ msgstr "Unlock Login Keyring"
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
-#| msgid "Server Authentication"
 msgid "Authentication required"
 msgstr "Authentication required"
 
@@ -466,7 +465,6 @@ msgid "New Password Required"
 msgstr "New Password Required"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
-#| msgid "New Password Required"
 msgid "New password required"
 msgstr "New password required"
 
@@ -490,7 +488,6 @@ msgid "To change the password for “%s”, the original password is required"
 msgstr "To change the password for “%s”, the original password is required"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
-#| msgid "Change Password"
 msgid "Change password"
 msgstr "Change password"
 
