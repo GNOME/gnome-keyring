@@ -71,7 +71,7 @@ setup_original_prompt (GkdSecretChange *self,
 	GError *error = NULL;
 	gpointer data;
 	gsize n_data;
-	gchar *label;
+	g_autofree gchar *label = NULL;
 	gchar *text;
 
 	data = gck_object_get_data (collection, CKA_LABEL, NULL, &n_data, &error);
@@ -107,7 +107,7 @@ setup_password_prompt (GkdSecretChange *self,
 	GError *error = NULL;
 	gpointer data;
 	gsize n_data;
-	gchar *label;
+	g_autofree gchar *label = NULL;
 	gchar *text;
 
 	data = gck_object_get_data (collection, CKA_LABEL, NULL, &n_data, &error);
