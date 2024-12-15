@@ -157,7 +157,7 @@ get_default_path (void)
 {
 	gchar *old_directory;
 	gchar *new_directory;
-	gchar *alias_directory = NULL;
+	g_autofree gchar *alias_directory = NULL;
 
 #if WITH_DEBUG
 	const gchar *path = g_getenv ("GNOME_KEYRING_TEST_PATH");

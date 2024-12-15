@@ -136,7 +136,7 @@ factory_create_item (GkmSession *session, GkmTransaction *transaction,
 	GkmManager *s_manager;
 	CK_ATTRIBUTE *attr;
 	gboolean is_token;
-	gchar *identifier;
+	g_autofree gchar *identifier = NULL;
 
 	g_return_val_if_fail (GKM_IS_TRANSACTION (transaction), NULL);
 	g_return_val_if_fail (attrs || !n_attrs, NULL);
