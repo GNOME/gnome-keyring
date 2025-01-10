@@ -1,9 +1,16 @@
+include:
+  - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
+    inputs:
+      dist-job-name: "build-release-tarball"
+      tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
+
 stages:
   - build
   - deploy
 
 variables:
-  DEPENDENCIES: dbus-x11 gcc gnome-common gtk-doc make openssh python redhat-rpm-config lcov libasan libubsan meson ninja-build systemd-devel
+  DEPENDENCIES: dbus-x11 gcc git gnome-common gtk-doc make openssh python redhat-rpm-config lcov libasan libubsan meson ninja-build systemd-devel
+  TARBALL_ARTIFACT_PATH: "_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
 
 .build:
   stage: build
@@ -31,6 +38,7 @@ fedora:Werror:
     paths:
       - "_build/config.h"
       - "_build/meson-logs"
+      - $TARBALL_ARTIFACT_PATH
 
 fedora:asan:
   extends: .build
@@ -92,3 +100,15 @@ fedora:coverage:
     paths:
       - "_build/config.h"
       - "_build/meson-logs"
+
+build-release-tarball:
+  extends: .build
+  stage: deploy
+  script:
+    - meson setup _build
+    - meson dist -C _build --no-tests
+  artifacts:
+    paths:
+      - $TARBALL_ARTIFACT_PATH
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED
