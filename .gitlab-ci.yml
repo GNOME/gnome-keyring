@@ -73,6 +73,7 @@ fedora:ubsan:
 fedora:coverage:
   extends: .build
   script:
+    - dnf install -y 'dnf-command(builddep)' $DEPENDENCIES lcov gcovr
     - mkdir _build
     - chown user _build
     - runuser -u user -- meson setup _build -Db_coverage=true
