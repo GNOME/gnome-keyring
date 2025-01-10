@@ -55,8 +55,11 @@ gkr_daemon = executable('gnome-keyring-daemon',
 desktop_input_files = [
   'gnome-keyring-pkcs11.desktop.in.in',
   'gnome-keyring-secrets.desktop.in.in',
-  'gnome-keyring-ssh.desktop.in.in',
 ]
+
+if get_option('ssh-agent')
+  desktop_input_files += 'gnome-keyring-ssh.desktop.in.in'
+endif
 
 autostartdir = join_paths(get_option('sysconfdir'), 'xdg', 'autostart')
 
