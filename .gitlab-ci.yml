@@ -15,18 +15,6 @@ variables:
     - dbus-uuidgen --ensure
     - useradd user
 
-fedora:autotools:
-  extends: .build
-  script:
-    - NOCONFIGURE=1 ./autogen.sh
-    - mkdir _build
-    - chown user _build
-    - cd _build
-    - runuser -u user -- ../configure --disable-dependency-tracking --enable-gtk-doc --enable-strict CFLAGS="-Wno-error=deprecated-declarations"
-    - runuser -u user -- make -j$(nproc) V=1
-    - eval `runuser -u user -- dbus-launch --sh-syntax`
-    - runuser -u user -- make -j$(nproc) V=1 distcheck
-
 fedora:Werror:
   extends: .build
   script:
