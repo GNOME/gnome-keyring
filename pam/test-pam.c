@@ -409,7 +409,7 @@ test_auth_running_unlocks (Test *test,
 	GPid pid;
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground", NULL,
+		TEST_GKR_DAEMON_BIN, "--foreground", NULL,
 	};
 
 	if (test->skipping)
@@ -444,7 +444,7 @@ test_password_changes_running (Test *test,
 	GPid pid;
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground", NULL
+		TEST_GKR_DAEMON_BIN, "--foreground", NULL
 	};
 
 	if (test->skipping)
@@ -484,7 +484,7 @@ test_password_changes_starts (Test *test,
 	GPid pid;
 
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground", NULL,
+		TEST_GKR_DAEMON_BIN, "--foreground", NULL,
 	};
 
 	if (test->skipping)

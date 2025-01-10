@@ -53,6 +53,7 @@ on_test_service_vanished (GDBusConnection *connection,
                           gpointer user_data)
 {
 	TestService *test = user_data;
+
 	if (test->available) {
 		test->available = FALSE;
 		egg_test_wait_stop ();
@@ -68,7 +69,7 @@ test_service_setup (TestService *test)
 	gchar **env;
 
 	const gchar *args[] = {
-		BUILDDIR "/gnome-keyring-daemon",
+		TEST_GKR_DAEMON_BIN,
 		"--foreground",
 		"--control-directory",
 		"/tmp/keyring-test",

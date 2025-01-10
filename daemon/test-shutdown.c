@@ -76,7 +76,7 @@ test_sigterm (Test *test,
               gconstpointer unused)
 {
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--control-directory", test->directory,
 		"--components=secrets,pkcs11", NULL
 	};
@@ -103,7 +103,7 @@ test_close_connection (Test *test,
                        gconstpointer unused)
 {
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--control-directory", test->directory,
 		"--components=secrets,pkcs11", NULL
 	};

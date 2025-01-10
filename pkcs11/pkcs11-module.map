@@ -1,0 +1,7 @@
+{
+global:
+  C_GetFunctionList;
+  g_module_check_init;
+local:
+  *;
+};

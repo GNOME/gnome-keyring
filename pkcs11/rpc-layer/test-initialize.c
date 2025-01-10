@@ -77,7 +77,7 @@ test_initialize_normal (Test *test,
                         gconstpointer unused)
 {
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--components=pkcs11", NULL
 	};
 
@@ -93,7 +93,7 @@ test_initialize_normal (Test *test,
 	g_assert_cmpstr (control, ==, NULL);
 	g_strfreev (output);
 
-	module = gck_module_initialize (BUILDDIR "/.libs/gnome-keyring-pkcs11.so",
+	module = gck_module_initialize (TEST_GKR_PKCS11_MODULE,
 	                                NULL, &error);
 	g_assert_no_error (error);
 
@@ -110,7 +110,7 @@ test_initialize_control (Test *test,
                          gconstpointer unused)
 {
 	const gchar *argv[] = {
-		BUILDDIR "/gnome-keyring-daemon", "--foreground",
+		TEST_GKR_DAEMON_BIN, "--foreground",
 		"--control-directory", test->directory,
 		"--components=pkcs11", NULL
 	};
@@ -128,7 +128,7 @@ test_initialize_control (Test *test,
 	g_setenv ("GNOME_KEYRING_CONTROL", control, TRUE);
 	g_strfreev (output);
 
-	module = gck_module_initialize (BUILDDIR "/.libs/gnome-keyring-pkcs11.so",
+	module = gck_module_initialize (TEST_GKR_PKCS11_MODULE,
 	                                NULL, &error);
 	g_assert_no_error (error);
 
@@ -152,7 +152,7 @@ test_initialize_no_daemon (Test *test,
 	g_unsetenv ("GNOME_KEYRING_CONTROL");
 	g_unsetenv ("XDG_RUNTIME_DIR");
 
-	module = gck_module_initialize (BUILDDIR "/.libs/gnome-keyring-pkcs11.so",
+	module = gck_module_initialize (TEST_GKR_PKCS11_MODULE,
 	                                NULL, &error);
 	g_assert_no_error (error);
 
