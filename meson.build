@@ -1,5 +1,5 @@
 project('gnome-keyring', 'c',
-  version: '46.2',
+  version: '48.alpha',
   meson_version: '>= 0.62',
 )
 

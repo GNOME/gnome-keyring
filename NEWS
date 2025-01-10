@@ -1,3 +1,8 @@
+Changes in version 48.alpha are:
+ * build: Switch from autootools to Meson [!25]
+ * pam: add check for stash password [!76]
+ * ssh-agent: Don't ship autostart desktop if disabled [!82]
+
 Changes in version 46.2 are:
  * Don't use `bool` as variable name
  * autogoo: replace AC_HELP_STRING with AS_HELP_STRING
