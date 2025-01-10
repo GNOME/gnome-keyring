@@ -3,7 +3,7 @@ stages:
   - deploy
 
 variables:
-  DEPENDENCIES: dbus-x11 gcc gnome-common gtk-doc make openssh python redhat-rpm-config lcov libasan libubsan systemd-devel
+  DEPENDENCIES: dbus-x11 gcc gnome-common gtk-doc make openssh python redhat-rpm-config lcov libasan libubsan meson ninja-build systemd-devel
 
 .build:
   stage: build
@@ -15,17 +15,7 @@ variables:
     - dbus-uuidgen --ensure
     - useradd user
 
-fedora:meson:
-  extends: .build
-  script:
-    - dnf install -y meson ninja-build
-    - mkdir _build
-    - chown user _build
-    - runuser -u user -- meson setup _build
-    - runuser -u user -- meson compile -C _build
-    - runuser -u user -- dbus-run-session -- meson test -C _build
-
-fedora:Werror:
+fedora:autotools:
   extends: .build
   script:
     - NOCONFIGURE=1 ./autogen.sh
@@ -37,66 +27,79 @@ fedora:Werror:
     - eval `runuser -u user -- dbus-launch --sh-syntax`
     - runuser -u user -- make -j$(nproc) V=1 distcheck
 
+fedora:Werror:
+  extends: .build
+  script:
+    - mkdir _build
+    - chown user _build
+    - runuser -u user -- meson setup _build
+    - runuser -u user -- meson compile -C _build
+    - runuser -u user -- dbus-run-session -- meson test -C _build
+  artifacts:
+    reports:
+      junit: "_build/meson-logs/testlog.junit.xml"
+    name: "gkr-werror-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
+    paths:
+      - "_build/config.h"
+      - "_build/meson-logs"
+
 fedora:asan:
   extends: .build
   tags:
     - asan # LSAN needs CAP_SYS_PTRACE
   script:
-    - NOCONFIGURE=1 ./autogen.sh
     - mkdir _build
     - chown user _build
-    - cd _build
-    - runuser -u user -- ../configure --disable-dependency-tracking CFLAGS='-fsanitize=address -g -fno-common -U_FORTIFY_SOURCE' CXXFLAGS='-fsanitize=address -g -fno-common -U_FORTIFY_SOURCE' LDFLAGS='-fsanitize=address -g -fno-common -U_FORTIFY_SOURCE' LIBS='-lasan -ldl -lpthread'
-    - runuser -u user -- make -j$(nproc) V=1
-    - eval `runuser -u user -- dbus-launch --sh-syntax`
-    - LSAN_OPTIONS=exitcode=0 runuser -u user -- make -j$(nproc) V=1 DISABLE_HARD_ERRORS=1 XFAIL_TESTS="\$(JS_TESTS) \$(PY_TESTS)" check
+    - runuser -u user -- meson setup _build -Db_sanitize=address
+    - export G_SLICE=always-malloc G_DEBUG=gc-friendly ASAN_OPTIONS=abort_on_error=1:fast_unwind_on_malloc=0
+    - runuser -u user -- meson compile -C _build
+    - runuser -u user -- dbus-run-session -- meson test -C _build
+  allow_failure: true
   artifacts:
+    reports:
+      junit: "_build/meson-logs/testlog.junit.xml"
+    name: "gkr-werror-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
     paths:
-      - _build/config.log
-      - _build/test-suite.log
+      - "_build/config.h"
+      - "_build/meson-logs"
 
 fedora:ubsan:
   extends: .build
   script:
-    - NOCONFIGURE=1 ./autogen.sh
     - mkdir _build
     - chown user _build
-    - cd _build
-    - runuser -u user -- ../configure --disable-dependency-tracking CFLAGS='-fsanitize=undefined -g -fno-common -U_FORTIFY_SOURCE' CXXFLAGS='-fsanitize=undefined -g -fno-common -U_FORTIFY_SOURCE' LDFLAGS='-fsanitize=undefined -g -fno-common -U_FORTIFY_SOURCE' LIBS='-lubsan -ldl -lpthread'
-    - runuser -u user -- make -j$(nproc) V=1
-    - eval `runuser -u user -- dbus-launch --sh-syntax`
-    - runuser -u user -- make -j$(nproc) V=1 check
+    - runuser -u user -- meson setup _build -Db_sanitize=undefined 
+    - runuser -u user -- meson compile -C _build
+    - runuser -u user -- dbus-run-session -- meson test -C _build
   artifacts:
+    reports:
+      junit: "_build/meson-logs/testlog.junit.xml"
+    name: "gkr-ubsan-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
     paths:
-      - _build/config.log
-      - _build/test-suite.log
+      - "_build/config.h"
+      - "_build/meson-logs"
 
 fedora:coverage:
   extends: .build
   script:
-    - NOCONFIGURE=1 ./autogen.sh
     - mkdir _build
     - chown user _build
-    - cd _build
-    - runuser -u user -- ../configure --disable-dependency-tracking --enable-coverage
-    - runuser -u user -- make -j$(nproc) V=1
-    - eval `runuser -u user -- dbus-launch --sh-syntax`
-    - runuser -u user -- make -j$(nproc) V=1 check
-    - runuser -u user -- make coverage
+    - runuser -u user -- meson setup _build -Db_coverage=true
+    - runuser -u user -- meson compile -C _build
+    - runuser -u user -- dbus-run-session -- meson test -C _build
+    - runuser -u user -- ninja coverage-xml -C _build
   coverage: '/^\s+lines.+:\s+([\d.]+\%)\s+/'
   artifacts:
-    name: "gnome-keyring-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    reports:
+      junit: "_build/meson-logs/testlog.junit.xml"
+      coverage_report:
+        coverage_format: cobertura
+        path: "_build/meson-logs/coverage.xml"
+    name: "gkr-coverage-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
     paths:
-      - _build/build/coverage/
-
-pages:
-  stage: deploy
-  only:
-    - master
-  needs: ['fedora:coverage']
-  script:
-    - mkdir -p public
-    - mv _build/build/coverage public/coverage
-  artifacts:
-    paths:
-      - public
+      - "_build/config.h"
+      - "_build/meson-logs"
