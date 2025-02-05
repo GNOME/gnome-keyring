@@ -172,5 +172,3 @@ build-release-tarball:
   artifacts:
     paths:
       - $TARBALL_ARTIFACT_PATH
-  rules:
-    - if: $CI_COMMIT_REF_PROTECTED
