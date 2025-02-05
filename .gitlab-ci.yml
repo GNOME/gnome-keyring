@@ -1,44 +1,83 @@
 include:
+  - remote: 'https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/145b1bc7ef1702d2bd71584010d7113c6786a506/templates/fedora.yml'
   - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
     inputs:
       dist-job-name: "build-release-tarball"
       tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
 
 stages:
+  - prepare
   - build
   - deploy
 
 variables:
-  DEPENDENCIES: >-
-    dbus-x11
-    gcc
-    gcovr
-    gcr3-devel
-    git
-    glib2-devel
-    gnome-common
-    gtk-doc
-    lcov
-    libasan
-    libgcrypt-devel
-    libselinux-devel
-    libubsan
-    meson
-    ninja-build
-    openssh
-    p11-kit-devel
-    pam-devel
-    python
-    redhat-rpm-config
-    systemd
-    systemd-devel
+  FDO_UPSTREAM_REPO: gnome/gnome-keyring
   TARBALL_ARTIFACT_PATH: "_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
+
+.fedora.container.common:
+  variables:
+    # When branching a stable release, change 'main' to the
+    # release branch name to ensure that a new image will
+    # be created, tailored for the stable branch.
+    BRANCH_NAME: 'main'
+    CONTAINER_TAG: '2025-02-05.0'
+    FEDORA_VERSION: latest
+    # Derive FDO variables from this automatically.
+    # DO NOT edit, instead change the variables above
+    FDO_REPO_SUFFIX: '${BRANCH_NAME}'
+    FDO_DISTRIBUTION_TAG: '${CONTAINER_TAG}-fedora-${FEDORA_VERSION}'
+    FDO_DISTRIBUTION_VERSION: '${FEDORA_VERSION}'
+
+#############################################
+#          Create CI Docker Images          #
+#############################################
+
+# See also https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates
+build.container.fedora@x86_64:
+  extends:
+    - '.fdo.container-build@fedora'
+    - '.fedora.container.common'
+  stage: prepare
+  variables:
+    # no need to pull the whole tree for rebuilding the image
+    GIT_STRATEGY: none
+    # Expiry sets fdo.expires on the image
+    FDO_EXPIRES_AFTER: 8w
+    FDO_DISTRIBUTION_PACKAGES: >-
+      dbus-x11
+      gcc
+      gcovr
+      gcr3-devel
+      git
+      glib2-devel
+      gnome-common
+      gtk-doc
+      lcov
+      libasan
+      libgcrypt-devel
+      libselinux-devel
+      libubsan
+      meson
+      ninja-build
+      openssh
+      p11-kit-devel
+      pam-devel
+      python
+      redhat-rpm-config
+      systemd
+      systemd-devel
+
+
+#############################################
+#               STAGE: BUILD                #
+#############################################
 
 .build:
   stage: build
-  image: fedora:latest
+  extends:
+    - '.fdo.suffixed-image@fedora'
+    - '.fedora.container.common'
   before_script:
-    - dnf install -y $DEPENDENCIES
     - dbus-uuidgen --ensure
     - useradd user
 
@@ -101,7 +140,6 @@ fedora:ubsan:
 fedora:coverage:
   extends: .build
   script:
-    - dnf install -y $DEPENDENCIES
     - mkdir _build
     - chown user _build
     - runuser -u user -- meson setup _build -Db_coverage=true
@@ -120,6 +158,10 @@ fedora:coverage:
     paths:
       - "_build/config.h"
       - "_build/meson-logs"
+
+#############################################
+#              STAGE: DEPLOY                #
+#############################################
 
 build-release-tarball:
   extends: .build
