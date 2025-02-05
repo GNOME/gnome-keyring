@@ -367,6 +367,7 @@ create_secret_value (GkdSecretPortal *self,
 		return NULL;
 	}
 
+    /* TRANSLATORS: '%s' is an application id, for example "org.gnome.Maps" */
 	label = g_strdup_printf (_("Application key for %s"), app_id);
 	gck_builder_add_string (&builder, CKA_LABEL, label);
 
