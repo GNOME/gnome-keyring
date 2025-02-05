@@ -9,15 +9,35 @@ stages:
   - deploy
 
 variables:
-  DEPENDENCIES: dbus-x11 gcc git gnome-common gtk-doc make openssh python redhat-rpm-config lcov libasan libubsan meson ninja-build systemd-devel
+  DEPENDENCIES: >-
+    dbus-x11
+    gcc
+    gcovr
+    gcr3-devel
+    git
+    glib2-devel
+    gnome-common
+    gtk-doc
+    lcov
+    libasan
+    libgcrypt-devel
+    libselinux-devel
+    libubsan
+    meson
+    ninja-build
+    openssh
+    p11-kit-devel
+    pam-devel
+    python
+    redhat-rpm-config
+    systemd
+    systemd-devel
   TARBALL_ARTIFACT_PATH: "_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
 
 .build:
   stage: build
   image: fedora:latest
   before_script:
-    - dnf install -y 'dnf-command(builddep)'
-    - dnf builddep -y gnome-keyring
     - dnf install -y $DEPENDENCIES
     - dbus-uuidgen --ensure
     - useradd user
@@ -81,7 +101,7 @@ fedora:ubsan:
 fedora:coverage:
   extends: .build
   script:
-    - dnf install -y 'dnf-command(builddep)' $DEPENDENCIES lcov gcovr
+    - dnf install -y $DEPENDENCIES
     - mkdir _build
     - chown user _build
     - runuser -u user -- meson setup _build -Db_coverage=true
