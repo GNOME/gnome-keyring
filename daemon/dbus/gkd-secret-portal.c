@@ -191,12 +191,13 @@ create_application_attributes (const char *app_id,
 			       GckBuilder *builder)
 {
 	GVariantBuilder attributes;
+	g_autoptr(GVariant) variant = NULL;
 
 	g_variant_builder_init (&attributes, G_VARIANT_TYPE ("a{ss}"));
 	g_variant_builder_add (&attributes, "{ss}", "app_id", app_id);
+	variant = g_variant_builder_end (&attributes);
 
-	return gkd_secret_property_parse_fields (g_variant_builder_end (&attributes),
-						 builder);
+	return gkd_secret_property_parse_fields (variant, builder);
 }
 
 static gboolean

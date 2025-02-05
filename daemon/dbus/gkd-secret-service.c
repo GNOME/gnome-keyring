@@ -608,6 +608,7 @@ service_method_lock (GkdExportedService *skeleton,
 	locked = (gchar **) g_ptr_array_free (array, FALSE);
 	gkd_exported_service_complete_lock (skeleton, invocation,
 					    (const gchar **) locked, "/");
+	g_free (locked);
 
 	return TRUE;
 }

@@ -788,7 +788,7 @@ collection_method_create_item (GkdExportedCollection *skeleton,
 	const gchar *base;
 	GError *error = NULL;
 	gchar *path = NULL;
-	gchar *identifier;
+	g_autofree char *identifier = NULL;
 	gboolean created = FALSE;
 	GckObject *object;
 
