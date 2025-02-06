@@ -166,14 +166,13 @@ GBytes *
 gkm_data_der_encode_ecdsa_q_str (const guchar *data, gsize data_len)
 {
 	GNode *asn = NULL;
-	GBytes *bytes, *result = NULL;
+	g_autoptr(GBytes) bytes = NULL;
+	GBytes *result = NULL;
 
 	asn = egg_asn1x_create (pk_asn1_tab, "ECKeyQ");
 	g_return_val_if_fail (asn, FALSE);
 
 	bytes = g_bytes_new_static (data, data_len);
-
-	/* "consumes" bytes */
 	if (!gkm_data_asn1_write_string (asn, bytes))
 		goto done;
 

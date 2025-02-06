@@ -231,8 +231,8 @@ ensure_collection (GkdSecretPortal *self,
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckSession *session;
-	GList *objects;
-	gpointer data;
+	GList *objects = NULL;
+	g_autofree void *data = NULL;
 	gsize n_data;
 	gboolean retval = TRUE;
 
@@ -250,27 +250,34 @@ ensure_collection (GkdSecretPortal *self,
 			     G_DBUS_ERROR_FAILED,
 			     "Collection %s doesn't exist",
 			     self->collection);
-		return FALSE;
+		retval = FALSE;
+		goto out;
 	}
 
 	/* Check if it is locked */
 	data = gck_object_get_data (objects->data, CKA_G_LOCKED,
 				    self->cancellable, &n_data, error);
-	if (data == NULL)
-		return FALSE;
+	if (data == NULL) {
+		retval = FALSE;
+		goto out;
+	}
 	if (n_data != 1) {
 		g_set_error (error,
 			     G_DBUS_ERROR,
 			     G_DBUS_ERROR_FAILED,
 			     "couldn't check if %s is locked",
 			     self->collection);
-		return FALSE;
+		retval = FALSE;
+		goto out;
 	}
 
 	/* Unlock the collection if it is locked */
 	if (*((CK_BBOOL*)data) == CK_TRUE)
 		retval = unlock_collection (self, objects->data, error);
-	gck_list_unref_free (objects);
+
+out:
+	if (objects)
+		gck_list_unref_free (objects);
 
 	return retval;
 }

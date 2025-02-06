@@ -98,15 +98,10 @@ setup (Test *test, gconstpointer unused)
 static void
 teardown (Test *test, gconstpointer unused)
 {
-	g_object_unref (test->transaction);
-	test->transaction = NULL;
-
-	gcry_sexp_release (test->rsakey);
-	test->rsakey = NULL;
-	gcry_sexp_release (test->dsakey);
-	test->dsakey = NULL;
-	gcry_sexp_release (test->ecdsakey);
-	test->ecdsakey = NULL;
+	g_clear_object (&test->transaction);
+	g_clear_pointer (&test->rsakey, gcry_sexp_release);
+	g_clear_pointer (&test->dsakey, gcry_sexp_release);
+	g_clear_pointer (&test->ecdsakey, gcry_sexp_release);
 
 	mock_module_leave_and_finalize ();
 }
@@ -410,11 +405,13 @@ test_rsa_attributes (Test *test, gconstpointer unused)
 	GkmPrivateXsaKey *key;
 	CK_ATTRIBUTE attrs[10];
 	CK_ULONG n_attrs = 0;
-	GkmSexp *sexp;
+	g_autoptr(GkmSexp) sexp = NULL;
+	g_autoptr(GkmSexp) base_sexp = NULL;
 
+	base_sexp = gkm_sexp_new (test->rsakey);
 	key = g_object_new (GKM_TYPE_PRIVATE_XSA_KEY,
-                            "base-sexp", gkm_sexp_new (test->rsakey),
-                            "module", test->module, /*"manager", NULL,*/ NULL);
+	                    "base-sexp", base_sexp,
+	                    "module", test->module, /*"manager", NULL,*/ NULL);
 	g_assert (key != NULL);
 
 	assert_get_attribute_ulong (key, CKA_KEY_TYPE, CKK_RSA, attrs, &n_attrs);
@@ -446,8 +443,9 @@ test_rsa_attributes (Test *test, gconstpointer unused)
 
 	/* gcry_sexp_dump (gkm_sexp_get (sexp)); */
 
-	gkm_sexp_unref (sexp);
 	g_clear_object (&key);
+	/* base_sexp takes ownership, so avoid a dobule free in the test teardown */
+	test->rsakey = NULL;
 }
 
 static void
@@ -456,10 +454,12 @@ test_dsa_attributes (Test *test, gconstpointer unused)
 	GkmPrivateXsaKey *key;
 	CK_ATTRIBUTE attrs[10];
 	CK_ULONG n_attrs = 0;
+	g_autoptr(GkmSexp) base_sexp = NULL;
 
+	base_sexp = gkm_sexp_new (g_steal_pointer (&test->dsakey));
 	key = g_object_new (GKM_TYPE_PRIVATE_XSA_KEY,
-                            "base-sexp", gkm_sexp_new (test->dsakey),
-                            "module", test->module, /*"manager", NULL,*/ NULL);
+	                    "base-sexp", base_sexp,
+	                    "module", test->module, /*"manager", NULL,*/ NULL);
 	g_assert (key != NULL);
 
 	assert_get_attribute_ulong (key, CKA_CLASS, CKO_PRIVATE_KEY, attrs, &n_attrs);
@@ -508,11 +508,13 @@ test_ecdsa_attributes (Test *test, gconstpointer unused)
 	GkmPrivateXsaKey *key;
 	CK_ATTRIBUTE attrs[10];
 	CK_ULONG n_attrs = 0;
-	GkmSexp *sexp;
+	g_autoptr(GkmSexp) sexp = NULL;
+	g_autoptr(GkmSexp) base_sexp = NULL;
 
+	base_sexp = gkm_sexp_new (test->ecdsakey);
 	key = g_object_new (GKM_TYPE_PRIVATE_XSA_KEY,
-                            "base-sexp", gkm_sexp_new (test->ecdsakey),
-                            "module", test->module, /*"manager", NULL,*/ NULL);
+	                    "base-sexp", base_sexp,
+	                    "module", test->module, /*"manager", NULL,*/ NULL);
 	g_assert (key != NULL);
 
 	assert_get_attribute_ulong (key, CKA_CLASS, CKO_PRIVATE_KEY, attrs, &n_attrs);
@@ -544,8 +546,10 @@ test_ecdsa_attributes (Test *test, gconstpointer unused)
 	while (n_attrs > 0)
 		g_free (attrs[--n_attrs].pValue);
 
-	gkm_sexp_unref (sexp);
 	g_clear_object (&key);
+
+	/* base_sexp takes ownership, so avoid a dobule free in the test teardown */
+	test->ecdsakey = NULL;
 }
 
 int

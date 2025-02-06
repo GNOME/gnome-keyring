@@ -66,4 +66,6 @@ gcry_sexp_t    gkm_sexp_get_childv               (gcry_sexp_t sexp,
 
 void           gkm_sexp_dump                     (gcry_sexp_t sexp);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GkmSexp, gkm_sexp_unref)
+
 #endif /* GKM_SEXP_H_ */
