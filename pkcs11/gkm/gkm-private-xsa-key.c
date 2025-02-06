@@ -74,7 +74,7 @@ gboolean
 gkm_attributes_find_ecc_q (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs,
                            CK_ATTRIBUTE_TYPE type, GBytes **value)
 {
-	GBytes *data;
+	g_autoptr(GBytes) data = NULL;
 	gboolean rv;
 
 	rv = gkm_attributes_find_bytes (attrs, n_attrs, type, &data);
