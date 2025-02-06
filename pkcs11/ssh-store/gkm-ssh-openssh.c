@@ -115,7 +115,7 @@ read_public_ecdsa (EggBuffer *req, gsize *offset, gcry_sexp_t *sexp)
 	const gchar *curve_name = NULL;
 	const guchar *q = NULL;
 	size_t q_len;
-	gchar *curve = NULL;
+	g_autofree char *curve = NULL;
 
 	if (!egg_buffer_get_string (req, *offset, offset, &curve, (EggBufferAllocator)g_realloc))
 		return FALSE;
