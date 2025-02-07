@@ -123,8 +123,8 @@ call_retrieve_secret (Test *test)
 	gint fd_index;
 	GError *error = NULL;
 	gboolean ret;
-	GVariant *reply = NULL;
-	GInputStream *stream = NULL;
+	g_autoptr(GVariant) reply = NULL;
+	g_autoptr(GInputStream) stream = NULL;
 	GVariantBuilder options;
 
 	ret = g_unix_open_pipe (fds, FD_CLOEXEC, &error);
@@ -162,8 +162,6 @@ call_retrieve_secret (Test *test)
 				       &test->bytes_read, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_true (ret);
-
-	g_object_unref (stream);
 }
 
 static void
