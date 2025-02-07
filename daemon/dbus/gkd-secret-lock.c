@@ -74,7 +74,7 @@ gkd_secret_lock_all (GckSession *session,
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GError *error = NULL;
-	GList *objects, *l;
+	GList *objects;
 
 	/* Lock all the main collections */
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_G_CREDENTIAL);
@@ -88,12 +88,13 @@ gkd_secret_lock_all (GckSession *session,
 		return FALSE;
 	}
 
-	for (l = objects; l; l = g_list_next (l)) {
+	for (GList *l = objects; l; l = g_list_next (l)) {
 		if (!gck_object_destroy (l->data, NULL, &error)) {
 			g_warning ("couldn't destroy credential object: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
+	g_clear_pointer (&objects, gck_list_unref_free);
 
 	/* Now delete all session objects */
 	gck_builder_add_ulong (&builder, CKA_CLASS, CKO_SECRET_KEY);
@@ -107,13 +108,13 @@ gkd_secret_lock_all (GckSession *session,
 		return FALSE;
 	}
 
-	for (l = objects; l; l = g_list_next (l)) {
+	for (GList *l = objects; l; l = g_list_next (l)) {
 		if (!gck_object_destroy (l->data, NULL, &error)) {
 			g_warning ("couldn't destroy session item: %s", egg_error_message (error));
 			g_clear_error (&error);
 		}
 	}
 
-	gck_list_unref_free (objects);
+	g_clear_pointer (&objects, gck_list_unref_free);
 	return TRUE;
 }
