@@ -109,7 +109,7 @@ EGG_SECURE_DECLARE (daemon_main);
 
 #define LOGIN_TIMEOUT 120
 
-static gchar* run_components = DEFAULT_COMPONENTS;
+static char *run_components = NULL;
 static gboolean pkcs11_started = FALSE;
 static gboolean secrets_started = FALSE;
 static gboolean dbus_started = FALSE;
@@ -166,11 +166,10 @@ parse_arguments (int *argc, char** argv[])
 	}
 
 	if (!run_components || !run_components[0]) {
-		run_components = DEFAULT_COMPONENTS;
-	} else {
-		run_components = g_strdup (run_components);
-		egg_cleanup_register (g_free, run_components);
+		g_free (run_components); /* Don't leak "" */
+		run_components = g_strdup (DEFAULT_COMPONENTS);
 	}
+	egg_cleanup_register (g_free, run_components);
 
 	/* Check the arguments */
 	if (run_for_login && run_for_start) {
