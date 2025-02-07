@@ -291,7 +291,7 @@ lookup_secret_value (GkdSecretPortal *self,
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckObject *search;
 	GckSession *session;
-	gpointer data;
+	g_autofree guint8 *data = NULL;
 	gsize n_data;
 
 	if (!create_application_attributes (app_id, &builder)) {
@@ -331,9 +331,8 @@ lookup_secret_value (GkdSecretPortal *self,
 
 		/* Build a list of object handles */
 		items = gck_objects_from_handle_array (session,
-						       data,
-						       n_data / sizeof (CK_OBJECT_HANDLE));
-		g_free (data);
+		                                       (gulong *) data,
+		                                       n_data / sizeof (CK_OBJECT_HANDLE));
 
 		value = gck_object_get_data (GCK_OBJECT (items->data),
 					     CKA_VALUE,
