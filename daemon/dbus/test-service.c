@@ -63,16 +63,20 @@ on_test_service_vanished (GDBusConnection *connection,
 void
 test_service_setup (TestService *test)
 {
+	g_autofree char *temp_control_dir = NULL;
 	GError *error = NULL;
 	GVariant *retval;
 	GVariant *output;
 	gchar **env;
 
+	temp_control_dir = g_dir_make_tmp ("keyring-test-XXXXXX", &error);
+	g_assert_no_error (error);
+
 	const gchar *args[] = {
 		TEST_GKR_DAEMON_BIN,
 		"--foreground",
 		"--control-directory",
-		"/tmp/keyring-test",
+		temp_control_dir,
 		"--components",
 		"secrets",
 		NULL,
