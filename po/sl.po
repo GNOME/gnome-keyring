@@ -8,19 +8,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues\n"
-"POT-Creation-Date: 2020-03-31 16:01+0000\n"
-"PO-Revision-Date: 2020-04-05 23:09+0200\n"
-"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues/\n"
+"POT-Creation-Date: 2025-02-05 11:57+0000\n"
+"PO-Revision-Date: 2025-02-05 19:31+0100\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
-"%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
+"n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #. TRANSLATORS: This is the label for an keyring created without a label
 #: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
@@ -28,7 +28,7 @@ msgstr ""
 #: daemon/ssh-agent/gkd-ssh-agent-service.c:254
 #: pkcs11/secret-store/gkm-secret-collection.c:324
 #: pkcs11/wrap-layer/gkm-wrap-login.c:345
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:733
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:672
 msgid "Unnamed"
 msgstr "Neimenovano"
 
@@ -47,9 +47,9 @@ msgstr ""
 "geslo."
 
 #: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
-#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1143
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1256
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1291
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1079
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1192
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1227
 msgid "Continue"
 msgstr "Nadaljuj"
 
@@ -106,6 +106,12 @@ msgstr "Izbor gesla za novo zbirko ključev"
 msgid "New Keyring Password"
 msgstr "Novo geslo zbirke ključev"
 
+#. TRANSLATORS: '%s' is an application id, for example "org.gnome.Maps"
+#: daemon/dbus/gkd-secret-portal.c:371
+#, c-format
+msgid "Application key for %s"
+msgstr "Ključ programa za %s"
+
 #: daemon/gnome-keyring-pkcs11.desktop.in.in:4
 msgid "Certificate and Key Storage"
 msgstr "Hranjenje potrdil in ključev"
@@ -143,7 +149,7 @@ msgid "Unlock password for: %s"
 msgstr "Geslo odklepanja za: %s"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:634
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:573
 msgid "Unlock private key"
 msgstr "Odkleni osebni ključ"
 
@@ -153,29 +159,29 @@ msgstr "Vnesite geslo za odklepanje osebnega ključa"
 
 #. TRANSLATORS: The private key is locked
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:665
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:604
 #, c-format
 msgid "An application wants access to the private key “%s”, but it is locked"
 msgstr ""
 "Program zahteva dostop do osebnega ključa »%s«, vendar je ta zaklenjen."
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:650
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:589
 msgid "Automatically unlock this key whenever I’m logged in"
 msgstr "Samodejno odkleni ključ ob prijavi."
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:600
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:625
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:539
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:564
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:579
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:701
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:747
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:779
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:718
 msgid "Unlock"
 msgstr "Odkleni"
 
 #: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:745
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
 msgid "The unlock password was incorrect"
 msgstr "Geslo za odklepanje je napačno."
 
@@ -371,19 +377,19 @@ msgstr "Neimenovano potrdilo"
 msgid "Couldn’t parse public SSH key"
 msgstr "Ni mogoče razčleniti javnega ključa SSH."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:590
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:529
 msgid "Unlock Login Keyring"
 msgstr "Odkleni prijavno zbirko ključev"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:615
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:691
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:767
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1250
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:530
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:554
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:706
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
 msgid "Authentication required"
 msgstr "Zahtevana je overitev"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:594
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:533
 msgid ""
 "The password you use to log in to your computer no longer matches that of "
 "your login keyring."
@@ -391,69 +397,69 @@ msgstr ""
 "Geslo, ki se uporabi ob prijavi v sistem, se ne sklada z geslom zbirke "
 "ključev."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:596
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:535
 msgid ""
 "The login keyring did not get unlocked when you logged into your computer."
 msgstr "Prijavna zbirka ključev ob prijavi ni bila samodejno odklenjena."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:614
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:553
 msgid "Unlock Keyring"
 msgstr "Odklep zbirke ključev"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:617
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:556
 #, c-format
 msgid "An application wants access to the keyring “%s”, but it is locked"
 msgstr ""
 "Program zahteva dostop do zbirke ključev »%s«, vendar je ta zaklenjena."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:623
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:562
 msgid "Automatically unlock this keyring whenever I’m logged in"
 msgstr "Samodejno odkleni zbirko ključev ob prijavi."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:575
 msgid "Unlock certificate"
 msgstr "Odkleni potrdilo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:577
 msgid "Unlock public key"
 msgstr "Odkleni javni ključ"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:652
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
 msgid "Automatically unlock this certificate whenever I’m logged in"
 msgstr "Samodejno odkleni potrdilo ob prijavi."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:654
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:776
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1140
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1289
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:593
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1076
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1225
 msgid "Automatically unlock whenever I’m logged in"
 msgstr "Samodejno odkleni ob prijavi."
 
 #. TRANSLATORS: The certificate is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:668
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:607
 #, c-format
 msgid "An application wants access to the certificate “%s”, but it is locked"
 msgstr "Program zahteva dostop do potrdila »%s«, vendar je to zaklenjeno."
 
 #. TRANSLATORS: The public key is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:671
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:610
 #, c-format
 msgid "An application wants access to the public key “%s”, but it is locked"
 msgstr "Program zahteva dostop do javnega ključa »%s«, vendar je ta zaklenjen."
 
 #. TRANSLATORS: The object '%s' is locked
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:674
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:613
 #, c-format
 msgid "An application wants access to “%s”, but it is locked"
 msgstr "Program zahteva dostop do predmeta »%s«, vendar je ta zaklenjen."
 
 #. Build up the prompt
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:766
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:705
 msgid "Unlock certificate/key storage"
 msgstr "Odkleni potrdila in ključe"
 
 #. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:770
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:709
 #, c-format
 msgid ""
 "An application wants access to the certificate/key storage “%s”, but it is "
@@ -461,15 +467,15 @@ msgid ""
 msgstr ""
 "Program zahteva dostop do potrdila ali ključa »%s«, vendar je ta zaklenjen."
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1131
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1067
 msgid "New Password Required"
 msgstr "Zahtevano je novo geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1132
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1068
 msgid "New password required"
 msgstr "Zahtevano je novo geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1134
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1070
 #, c-format
 msgid ""
 "In order to prepare “%s” for storage of certificates or keys, a password is "
@@ -477,21 +483,21 @@ msgid ""
 msgstr ""
 "Za pripravo »%s« za shranjevanje potrdil in ključev, mora biti določeno geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1249
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1280
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1185
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1216
 msgid "Change Password"
 msgstr "Spremeni geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1252
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1188
 #, c-format
 msgid "To change the password for “%s”, the original password is required"
 msgstr "Za spreminjanje gesla za »%s«, je zahtevano prvotno geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1281
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1217
 msgid "Change password"
 msgstr "Spremeni geslo"
 
-#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1283
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1219
 #, c-format
 msgid "Type a new password for “%s”"
 msgstr "Vpišite novo geslo za »%s«"
@@ -508,1046 +514,3 @@ msgstr "ukazi:"
 #: tool/gkr-tool.c:106
 msgid "          "
 msgstr "          "
-
-#~ msgid "GPG Password Agent"
-#~ msgstr "Agent gesel GPG"
-
-#~ msgid "GNOME Keyring: GPG Agent"
-#~ msgstr "Zbirka ključev GNOME: agent GPG"
-
-#~ msgid "Unknown"
-#~ msgstr "Neznano"
-
-#~ msgid "PGP Key: %s"
-#~ msgstr "PGP ključ: %s"
-
-#~ msgid "Enter Passphrase"
-#~ msgstr "Vnesite šifrirno geslo"
-
-#~ msgid "Automatically unlock this key, whenever I'm logged in"
-#~ msgstr "Samodejno odkleni ključ ob prijavi."
-
-#~ msgid "Unexpected error in select() reading data from a child process (%s)"
-#~ msgstr ""
-#~ "Nepričakovana napaka v select() med branjem podatkov procesa podrejenega "
-#~ "predmeta (%s)"
-
-#~ msgid "Unexpected error in waitpid() (%s)"
-#~ msgstr "Nepričakovana napaka v waitpid() (%s)"
-
-#~ msgid "Enter password to unlock your login keyring"
-#~ msgstr "Vnesite geslo za odklepanje prijavnih ključev"
-
-#~ msgid "Enter password for keyring '%s' to unlock"
-#~ msgstr "Vnesite geslo za dostop do '%s' zbirke ključev."
-
-#~ msgid "Enter password to unlock the certificate"
-#~ msgstr "Vnesite geslo za odklepanje potrdila"
-
-#~ msgid "Enter password to unlock the public key"
-#~ msgstr "Vnesite geslo za odklepanje javnega ključa"
-
-#~ msgid "Enter password to unlock"
-#~ msgstr "Vnesite geslo za odklepanje"
-
-#~ msgid "Enter password to unlock the certificate/key storage"
-#~ msgstr "Vnesite geslo za odklepanje potrdila ali ključev."
-
-#~ msgid "New password required for secure storage"
-#~ msgstr "Za varno shranjevanje je zahtevano novo geslo"
-
-#~ msgid "Original password for secure storage"
-#~ msgstr "Prvotno geslo za varno shranjevanje"
-
-#~ msgid "Change password for secure storage"
-#~ msgstr "Spremeni geslo za varno shranjevanje"
-
-#~ msgid "Forget this password if idle for"
-#~ msgstr "Pozabi geslo ob nedejavnosti"
-
-#~ msgid "Forget this password after"
-#~ msgstr "Pozabi geslo po"
-
-#~ msgid "Forget this password when I log out"
-#~ msgstr "Pozabi geslo ob odjavi"
-
-#~ msgid "Use Unsafe Storage"
-#~ msgstr "Uporabi nevarno shranjevanje"
-
-#~ msgid "Passwords do not match."
-#~ msgstr "Gesli se ne skladata."
-
-#~ msgid "Password cannot be blank"
-#~ msgstr "Geslo ne sme biti prazno."
-
-#~ msgid "New password strength"
-#~ msgstr "Varnost novega gesla"
-
-#~ msgid "_Application:"
-#~ msgstr "_Program:"
-
-#~ msgid "_Confirm:"
-#~ msgstr "_Potrdi:"
-
-#~ msgid "_Details:"
-#~ msgstr "_Podrobnosti:"
-
-#~ msgid "_Name:"
-#~ msgstr "_Ime:"
-
-#~ msgid "_Old Password:"
-#~ msgstr "_Staro geslo:"
-
-#~ msgid "_Password:"
-#~ msgstr "_Geslo:"
-
-#~ msgid "Keyring Access"
-#~ msgstr "Dostop do zbirke ključev"
-
-#~ msgid "Unlock access to passwords and other secrets"
-#~ msgstr "Varovan dostop do gesel in ostalih skritih podatkov"
-
-#~ msgid "Error loading PKCS#11 module: %s"
-#~ msgstr "Odkodirnika PKCS#11 ni mogoče naložiti: %s"
-
-#~ msgid "Invalid PKCS#11 module: %s"
-#~ msgstr "Neveljavni odkodirnik PKCS#11: %s"
-
-#~ msgid "Couldn't setup PKCS#11 module: %s"
-#~ msgstr "Odkodirnika PKCS#11 ni mogoče nastaviti: %s"
-
-#~ msgid "Couldn't initialize PKCS#11 module: %s"
-#~ msgstr "Odkodirnika PKCS#11 ni mogoče začeti: %s"
-
-#~ msgid "Couldn't initialize registered PKCS#11 modules: %s"
-#~ msgstr "Odkodirnikov PKCS#11 ni mogoče začeti: %s"
-
-#~ msgid "The stream was closed"
-#~ msgstr "Pretok je zaprt"
-
-#~ msgctxt "column"
-#~ msgid "Name"
-#~ msgstr "Ime"
-
-#~ msgctxt "column"
-#~ msgid "Issued By"
-#~ msgstr "Izdal"
-
-#~ msgctxt "column"
-#~ msgid "Expires"
-#~ msgstr "Preteče"
-
-#~ msgid "Certificate"
-#~ msgstr "Potrdilo"
-
-#~ msgid ""
-#~ "<b>A file already exists with this name.</b>\n"
-#~ "\n"
-#~ "Do you want to replace it with a new file?"
-#~ msgstr ""
-#~ "<b>Datoteka s tem imenom že obstaja.</b>\n"
-#~ "\n"
-#~ "Ali jo želite zamenjati z novo datoteko?"
-
-#~ msgid "_Replace"
-#~ msgstr "_Zamenjaj"
-
-#~ msgid "The operation was cancelled."
-#~ msgstr "Dejanje je preklicano."
-
-#~ msgid "Export certificate"
-#~ msgstr "Izvozi potrdilo"
-
-#~ msgid "Certificate files"
-#~ msgstr "Datoteke potrdila"
-
-#~ msgid "PEM files"
-#~ msgstr "Datoteke PEM"
-
-#~ msgid "Other Name"
-#~ msgstr "Drugo ime"
-
-#~ msgid "XMPP Addr"
-#~ msgstr "XMPP Addr"
-
-#~ msgid "DNS SRV"
-#~ msgstr "DNS SRV"
-
-#~ msgid "Email"
-#~ msgstr "Elektronski naslov"
-
-#~ msgid "DNS"
-#~ msgstr "DNS"
-
-#~ msgid "X400 Address"
-#~ msgstr "Naslov X400"
-
-#~ msgid "Directory Name"
-#~ msgstr "Ime mape"
-
-#~ msgid "EDI Party Name"
-#~ msgstr "Ime stranke EDI"
-
-#~ msgid "URI"
-#~ msgstr "Naslov URI"
-
-#~ msgid "IP Address"
-#~ msgstr "Naslov IP"
-
-#~ msgid "Registered ID"
-#~ msgstr "Vpisan ID"
-
-#~ msgid "Basic Constraints"
-#~ msgstr "Splošne omejitve"
-
-#~ msgid "Certificate Authority"
-#~ msgstr "Pooblastitelj potrdila"
-
-#~ msgid "Yes"
-#~ msgstr "Da"
-
-#~ msgid "No"
-#~ msgstr "Ne"
-
-#~ msgid "Max Path Length"
-#~ msgstr "Največja dolžina poti"
-
-#~ msgid "Unlimited"
-#~ msgstr "Neomejeno"
-
-#~ msgid "Extended Key Usage"
-#~ msgstr "Uporaba razširjenega ključa"
-
-#~ msgid "Allowed Purposes"
-#~ msgstr "Dovoljena uporaba"
-
-#~ msgid "Subject Key Identifier"
-#~ msgstr "Javni ključ zadeve"
-
-#~ msgid "Key Identifier"
-#~ msgstr "Določevalnik ključa"
-
-#~ msgid "Digital signature"
-#~ msgstr "Digitalni podpis"
-
-#~ msgid "Key encipherment"
-#~ msgstr "Šifriranje ključa"
-
-#~ msgid "Data encipherment"
-#~ msgstr "Šifriranje podatkov"
-
-#~ msgid "Key agreement"
-#~ msgstr "Dogovor o ključu"
-
-#~ msgid "Certificate signature"
-#~ msgstr "Podpis potrdila"
-
-#~ msgid "Revocation list signature"
-#~ msgstr "Podpis seznama preklica"
-
-#~ msgid "Key Usage"
-#~ msgstr "Uporaba ključa potrdila"
-
-#~ msgid "Usages"
-#~ msgstr "Uporaba"
-
-#~ msgid "Subject Alternative Names"
-#~ msgstr "Duga imena predmeta"
-
-#~ msgid "Extension"
-#~ msgstr "Pripona"
-
-#~ msgid "Identifier"
-#~ msgstr "Določilo"
-
-#~ msgid "Value"
-#~ msgstr "Vrednost"
-
-#~ msgid "Critical"
-#~ msgstr "Kritično"
-
-#~ msgid "Couldn't export the certificate."
-#~ msgstr "Ni mogoče izvoziti potrdil."
-
-#~ msgid "Identity"
-#~ msgstr "Istovetnost"
-
-#~ msgid "Verified by"
-#~ msgstr "Overjeno preko"
-
-#~ msgid "Expires"
-#~ msgstr "Preteče"
-
-#~ msgid "Subject Name"
-#~ msgstr "Ime predmeta"
-
-#~ msgid "Issuer Name"
-#~ msgstr "Ime izdajatelja"
-
-#~ msgid "Issued Certificate"
-#~ msgstr "Izdano potrdilo"
-
-#~ msgid "Version"
-#~ msgstr "Različica"
-
-#~ msgid "Not Valid Before"
-#~ msgstr "Neveljaven pred"
-
-#~ msgid "Not Valid After"
-#~ msgstr "Neveljaven po"
-
-#~ msgid "Certificate Fingerprints"
-#~ msgstr "Prstni odtisi potrdila"
-
-#~ msgid "Signature"
-#~ msgstr "Podpis"
-
-#~ msgid "Signature Algorithm"
-#~ msgstr "Algoritem podpisa"
-
-#~ msgid "Signature Parameters"
-#~ msgstr "Določila podpisa"
-
-#~ msgid "Public Key Info"
-#~ msgstr "Podrobnosti javnega ključa"
-
-#~ msgid "Key Algorithm"
-#~ msgstr "Algoritem ključa"
-
-#~ msgid "Key Parameters"
-#~ msgstr "Določila ključa"
-
-#~ msgid "Key Size"
-#~ msgstr "Velikost ključa"
-
-#~ msgid "Key SHA1 Fingerprint"
-#~ msgstr "Prstni odtis SHA1"
-
-#~ msgid "Public Key"
-#~ msgstr "Javni ključ"
-
-#~ msgid "_Details"
-#~ msgstr "_Podrobnosti"
-
-#~ msgid "Could not display '%s'"
-#~ msgstr "Ni mogoče prikazati '%s'"
-
-#~ msgid "Could not display file"
-#~ msgstr "Ni mogoče prikazati datoteke"
-
-#~ msgid "Reason"
-#~ msgstr "Vzrok"
-
-#~ msgid "Cannot display a file of this type."
-#~ msgstr "Ni mogoče prikazati datoteke te vrste."
-
-#~ msgid "GnuPG Keyring"
-#~ msgstr "Zbirka ključev GnuPG"
-
-#~ msgid "GnuPG Keyring: %s"
-#~ msgstr "Zbirka ključev GnuPG: %s"
-
-#~ msgid "PGP Key"
-#~ msgstr "Ključ PGP"
-
-#~ msgctxt "column"
-#~ msgid "Key ID"
-#~ msgstr "ID ključa"
-
-#~ msgid "Gnupg process exited with code: %d"
-#~ msgstr "Opravilo Gnupg je končano z napako: %d"
-
-#~ msgid "Gnupg process was terminated with signal: %d"
-#~ msgstr "Opravilo Gnupg je nepričakovano končano s signalom: %d"
-
-#~ msgid "The operation was cancelled"
-#~ msgstr "Dejanje je preklicano."
-
-#~ msgid "Elgamal"
-#~ msgstr "Elgamal"
-
-#~ msgid "Encrypt"
-#~ msgstr "Šifriraj"
-
-#~ msgid "Sign"
-#~ msgstr "Podpiši"
-
-#, fuzzy
-#~ msgid "Certify"
-#~ msgstr "Potrdilo"
-
-#~ msgid "Disabled"
-#~ msgstr "Onemogočeno"
-
-#~ msgid "Invalid"
-#~ msgstr "Neveljavno"
-
-#~ msgid "Revoked"
-#~ msgstr "Preklicano"
-
-#~ msgid "Expired"
-#~ msgstr "Potečeno"
-
-#~ msgid "Undefined trust"
-#~ msgstr "Nedoločljiva zaupljivost"
-
-#~ msgid "Distrusted"
-#~ msgstr "Nezaupljiv lastnik"
-
-#~ msgid "Marginally trusted"
-#~ msgstr "Mejna zaupljivost"
-
-#~ msgid "Fully trusted"
-#~ msgstr "Polna zaupljivost"
-
-#~ msgid "Ultimately trusted"
-#~ msgstr "Popolna zaupljivost"
-
-#~ msgid "The information in this key has not yet been verified"
-#~ msgstr "Podatki tega ključa še niso overjeni."
-
-#~ msgid "This key is invalid"
-#~ msgstr "Ključ ni veljaven"
-
-#~ msgid "This key has been disabled"
-#~ msgstr "Ključ je onemogočen"
-
-#~ msgid "This key has been revoked"
-#~ msgstr "Ta ključ je preklican"
-
-#~ msgid "This key has expired"
-#~ msgstr "Ključ je potekel"
-
-#~ msgid "This key is distrusted"
-#~ msgstr "Ta ključ ni zaupljiv"
-
-#~ msgid "This key is marginally trusted"
-#~ msgstr "Ključ je mejno zaupljiv."
-
-#~ msgid "This key is fully trusted"
-#~ msgstr "Ključ je polno zaupljiv"
-
-#~ msgid "This key is ultimately trusted"
-#~ msgstr "Ključ je popolno zaupljiv"
-
-#~ msgid "Key ID"
-#~ msgstr "ID Ključa"
-
-#~ msgid "Algorithm"
-#~ msgstr "Algoritem"
-
-#~ msgid "Created"
-#~ msgstr "Ustvarjeno"
-
-#~ msgid "Expiry"
-#~ msgstr "Pretek ključa"
-
-#~ msgid "Capabilities"
-#~ msgstr "Zmožnosti"
-
-#~ msgid "Owner trust"
-#~ msgstr "Zaupanje lastniku"
-
-#~ msgid "Name"
-#~ msgstr "Ime"
-
-#~ msgid "Comment"
-#~ msgstr "Opomba"
-
-#~ msgid "User Attribute"
-#~ msgstr "Atributi uporabnika"
-
-#~ msgid "Size"
-#~ msgstr "Velikost"
-
-#~ msgid "Signature of a binary document"
-#~ msgstr "Podpis dvojiškega dokumenta"
-
-#, fuzzy
-#~ msgid "Signature of a canonical text document"
-#~ msgstr "Ni mogoče izluščiti besedila iz dokumenta."
-
-#~ msgid "Standalone signature"
-#~ msgstr "Samostoječi podpis"
-
-#, fuzzy
-#~ msgid "Generic certification of key"
-#~ msgstr "Splošna tipkovnica s 101 tipko PC"
-
-#, fuzzy
-#~ msgid "Persona certification of key"
-#~ msgstr "Doslednost je moč"
-
-#, fuzzy
-#~ msgid "Casual certification of key"
-#~ msgstr "Doslednost je moč"
-
-#, fuzzy
-#~ msgid "Positive certification of key"
-#~ msgstr "Doslednost je moč"
-
-#, fuzzy
-#~ msgid "Subkey binding signature"
-#~ msgstr "preverjanje podpisa je spodelelo"
-
-#, fuzzy
-#~ msgid "Primary key binding signature"
-#~ msgstr "Tipkovna povezava (%s) ni veljavna (%d)"
-
-#, fuzzy
-#~ msgid "Signature directly on key"
-#~ msgstr "Dejanje ključa na imeniku"
-
-#, fuzzy
-#~ msgid "Key revocation signature"
-#~ msgstr "Podpis seznama preklica"
-
-#, fuzzy
-#~ msgid "Subkey revocation signature"
-#~ msgstr "Podpis seznama preklica"
-
-#, fuzzy
-#~ msgid "Certification revocation signature"
-#~ msgstr "Podpis seznama preklica"
-
-#, fuzzy
-#~ msgid "Timestamp signature"
-#~ msgstr "_Pot podpisa"
-
-#, fuzzy
-#~ msgid "Third-party confirmation signature"
-#~ msgstr "Viri tretje roke so onemogočeni"
-
-#~ msgid "Class"
-#~ msgstr "Razred"
-
-#~ msgid "Type"
-#~ msgstr "Vrsta"
-
-#~ msgid "Local only"
-#~ msgstr "Samo krajevno"
-
-#~ msgid "Exportable"
-#~ msgstr "Izvozljivo"
-
-#, fuzzy
-#~ msgid "Revocation Key"
-#~ msgstr "Šifrirni ključ: "
-
-#~ msgid "Fingerprint"
-#~ msgstr "Prstni odtis"
-
-#, fuzzy
-#~ msgid "Public Subkey"
-#~ msgstr "_Javni prevoz"
-
-#, fuzzy
-#~ msgid "Secret Key"
-#~ msgstr "Šifrirni ključ: "
-
-#, fuzzy
-#~ msgid "Secret Subkey"
-#~ msgstr "Stroga skrivnost"
-
-#~ msgid "Initializing..."
-#~ msgstr "Začenjanje ..."
-
-#, fuzzy
-#~ msgid "Import is in progress..."
-#~ msgstr "V teku je že drugo iskanje"
-
-#, fuzzy
-#~ msgid "Imported to: %s"
-#~ msgstr "_Pojdi na"
-
-#, fuzzy
-#~ msgid "Import to: %s"
-#~ msgstr "Uvozi v knjižnico"
-
-#, fuzzy
-#~ msgid "Cannot import because there are no compatible importers"
-#~ msgstr "Uvoz ni mogoč, ker je ključ napačne vrste."
-
-#~ msgid "No data to import"
-#~ msgstr "Ni podatkov za uvoz"
-
-#~ msgid "Key"
-#~ msgstr "Ključ"
-
-#~ msgid "Private RSA Key"
-#~ msgstr "Osebni ključ RSA"
-
-#~ msgid "Private DSA Key"
-#~ msgstr "Osebni ključ DSA"
-
-#~ msgid "Private Key"
-#~ msgstr "Osebni ključ"
-
-#~ msgid "Public DSA Key"
-#~ msgstr "Javni ključ DSA"
-
-#~ msgid "%d bit"
-#~ msgid_plural "%d bits"
-#~ msgstr[0] "%d bitov"
-#~ msgstr[1] "%d bit"
-#~ msgstr[2] "%d bita"
-#~ msgstr[3] "%d biti"
-
-#~ msgid "Strength"
-#~ msgstr "Jakost"
-
-#~ msgid "Fingerprints"
-#~ msgstr "Prstni odtisi"
-
-#~ msgid "SHA1"
-#~ msgstr "SHA1"
-
-#~ msgid "SHA256"
-#~ msgstr "SHA256"
-
-#~ msgid "Unrecognized or unsupported data."
-#~ msgstr "Neznani ali nepodprti podatki."
-
-#~ msgid "Could not parse invalid or corrupted data."
-#~ msgstr "Ni mogoče razčleniti neveljavnih ali pokvarjenih podatkov."
-
-#~ msgid "The data is locked"
-#~ msgstr "Podatki so zaklenjeni"
-
-#, fuzzy
-#~ msgid "Automatically chosen"
-#~ msgstr "Izbrani naslov"
-
-#, fuzzy
-#~ msgid "The user cancelled the operation"
-#~ msgstr "Uporabnik je prekinil opravilo."
-
-#~ msgid "<b>Import settings</b>"
-#~ msgstr "<b>Uvozi nastavitve</b>"
-
-#~ msgid "<b>Unlock</b>"
-#~ msgstr "<b>Odkleni</b>"
-
-#~ msgid "In order to import, please enter the password."
-#~ msgstr "Za uvoz  predmeta je treba vnesti geslo."
-
-#~ msgid "Label"
-#~ msgstr "Oznaka"
-
-#~ msgid "Label:"
-#~ msgstr "Naziv:"
-
-#~ msgid "Password:"
-#~ msgstr "Geslo:"
-
-#~ msgid "Token:"
-#~ msgstr "Žeton:"
-
-#~ msgid "Couldn't find a place to store the pinned certificate"
-#~ msgstr "Ni mogoče najti mesta za shranjevanje uvoženih potrdil"
-
-#~ msgid "Lock this keyring after"
-#~ msgstr "Zakleni zbirko ključev po"
-
-#~ msgid "Lock this keyring if idle for"
-#~ msgstr "Zakleni zbirko ključev ob nedejavnosti"
-
-#~ msgid "Lock this keyring when I log out"
-#~ msgstr "Samodejno zakleni zbirko ključev ob odjavi."
-
-#~ msgid "minutes"
-#~ msgstr "minut"
-
-#~ msgid "Unlock: %s"
-#~ msgstr "Odkleni: %s"
-
-#~ msgid "Password"
-#~ msgstr "Geslo"
-
-#~ msgid ""
-#~ "The contents of '%s' are locked. In order to view the contents, enter the "
-#~ "correct password."
-#~ msgstr ""
-#~ "Vsebina '%s' je zaklenjena. Za ogled vsebine je treba vnesti pravilno "
-#~ "geslo."
-
-#~ msgid ""
-#~ "The contents are locked. In order to view the contents, enter the correct "
-#~ "password."
-#~ msgstr ""
-#~ "Vsebina je zaklenjena. Za ogled vsebine je treba vnesti pravilno geslo."
-
-#~ msgid "GCR Certificate and Key Viewer"
-#~ msgstr "Potrdilo GCR in pregledovalnik datotek ključev"
-
-#~ msgid "Show the application's version"
-#~ msgstr "Pokaži različico programa"
-
-#~ msgid "[file...]"
-#~ msgstr "[datoteka ...]"
-
-#~ msgid "- View certificate and key files"
-#~ msgstr "- Pregeld potrdila in datotek ključev"
-
-#~ msgid "Certificate Viewer"
-#~ msgstr "Pregledovalnik potrdil"
-
-#~ msgid "The password was incorrect"
-#~ msgstr "Geslo je napačno."
-
-#~ msgid "Imported"
-#~ msgstr "Uvoženo"
-
-#~ msgid "Import failed"
-#~ msgstr "Uvoz je spodletel"
-
-#~ msgid "Import"
-#~ msgstr "Uvozi"
-
-#~ msgid "The URI has invalid encoding."
-#~ msgstr "Naslov URI je zapisan v neveljavnem kodnem zapisu."
-
-#~ msgid "The URI does not have the 'pkcs11' scheme."
-#~ msgstr "Naslov URI je brez ustrezne sheme 'pkcs11'."
-
-#~ msgid "The URI has bad syntax."
-#~ msgstr "Skladnja naslova URI je slaba."
-
-#~ msgid "The URI has a bad version number."
-#~ msgstr "Naslov URI vsebuje nepravilno vrednost različice."
-
-#~ msgid "Import Certificates and Keys"
-#~ msgstr "Uvozi potrdila in šifrirne ključe"
-
-#~ msgid "In order to import the private key, it must be unlocked"
-#~ msgstr "Za uvoz osebnega ključa mora biti ta odklenjen"
-
-#~ msgid "In order to import the certificate, it must be unlocked"
-#~ msgstr "Za uvoz osebnega potrdila mora biti to odklenjeno"
-
-#~ msgid "In order to import the data, it must be unlocked"
-#~ msgstr "Za uvoz podatkov morajo biti ti odklenjeni"
-
-#~ msgid "In order to import the private key '%s', it must be unlocked"
-#~ msgstr "Za uvoz osebnega ključa '%s' mora biti ta odklenjen"
-
-#~ msgid "In order to import the certificate '%s', it must be unlocked"
-#~ msgstr "Za uvoz osebnega potrdila '%s' mora biti to odklenjeno"
-
-#~ msgid "Import Certificates/Keys"
-#~ msgstr "Uvoz potrdil ali ključev"
-
-#~ msgid "Choose a location to store the imported certificates/keys."
-#~ msgstr "Izbor mesta za shranjevanje uvoženih potrdil in ključev"
-
-#~ msgid "Insufficient memory available"
-#~ msgstr "Na voljo je premalo pomnilnika"
-
-#~ msgid "The specified slot ID is not valid"
-#~ msgstr "Izbran ID ni veljaven"
-
-#~ msgid "Internal error"
-#~ msgstr "Notranja napaka"
-
-#~ msgid "Invalid arguments"
-#~ msgstr "Neveljavni argumenti"
-
-#~ msgid "The module cannot create needed threads"
-#~ msgstr "Z modulom ni mogoče ustvariti zahtevanih niti"
-
-#~ msgid "The module cannot lock data properly"
-#~ msgstr "Z modulom ni mogoče ustrezno zakleniti podatkov"
-
-#~ msgid "The field is read-only"
-#~ msgstr "Polje je le za branje"
-
-#~ msgid "The field is sensitive and cannot be revealed"
-#~ msgstr "Polje je občutljivo in ga ni mogoče odkriti"
-
-#~ msgid "The field is invalid or does not exist"
-#~ msgstr "Polje ni veljavno ali pa ne obstaja"
-
-#~ msgid "Invalid value for field"
-#~ msgstr "Neveljavna vrednost polja"
-
-#~ msgid "The data is not valid or unrecognized"
-#~ msgstr "Podatki niso veljavni ali pa jih ni mogoče prepoznati"
-
-#~ msgid "The data is too long"
-#~ msgstr "Podatki so predolgi"
-
-#~ msgid "An error occurred on the device"
-#~ msgstr "Prišlo je do napake na napravi"
-
-#~ msgid "Insufficient memory available on the device"
-#~ msgstr "Ni zadostnega pomnilnika na napravi"
-
-#~ msgid "The device was removed or unplugged"
-#~ msgstr "Naprava je bila odstranjena ali pa je bila odklopljena"
-
-#~ msgid "The encrypted data is not valid or unrecognized"
-#~ msgstr "Šifrirani podatki niso veljavni ali pa jih ni mogoče prepoznati"
-
-#~ msgid "The encrypted data is too long"
-#~ msgstr "Šifrirani podatki so predolgi"
-
-#~ msgid "This operation is not supported"
-#~ msgstr "Naloga ni podprta."
-
-#~ msgid "The key is missing or invalid"
-#~ msgstr "Ključa ni ali pa je neveljaven"
-
-#~ msgid "The key is the wrong size"
-#~ msgstr "Velikost ključa je napačna"
-
-#~ msgid "No key is needed"
-#~ msgstr "Ključ ni zahtevan"
-
-#~ msgid "The key is different than before"
-#~ msgstr "Ključ je drugačen, kot je bil prej"
-
-#~ msgid "A key is needed"
-#~ msgstr "Ključ je nujno zahtevan"
-
-#~ msgid "Cannot include the key in the digest"
-#~ msgstr "V povzetku ni mogoče vključiti ključa"
-
-#~ msgid "This operation cannot be done with this key"
-#~ msgstr "Dejanja s tem ključem ni mogoče izvesti"
-
-#~ msgid "Cannot export this key"
-#~ msgstr "Ključa ni mogoče uporabiti"
-
-#~ msgid "The crypto mechanism is invalid or unrecognized"
-#~ msgstr "Mehanizem šifriranja je neveljaven ali pa ni prepoznan"
-
-#~ msgid "The crypto mechanism has an invalid argument"
-#~ msgstr "Mehanizem šifriranja ima neveljaven argument"
-
-#~ msgid "The object is missing or invalid"
-#~ msgstr "Predmet manjka ali pa je neveljaven"
-
-#~ msgid "Another operation is already taking place"
-#~ msgstr "Trenutno teče že druga dejavnost"
-
-#~ msgid "No operation is taking place"
-#~ msgstr "Trenutno ni dejanj v izvajanju"
-
-#~ msgid "The password or PIN is incorrect"
-#~ msgstr "Uporabniško ime ali pa PIN geslo ni pravilno."
-
-#~ msgid "The password or PIN is invalid"
-#~ msgstr "Uporabniško ime ali pa PIN geslo je neveljavno."
-
-#~ msgid "The password or PIN is of an invalid length"
-#~ msgstr "Geslo ali PIN koda ni ustrezne velikosti"
-
-#~ msgid "The password or PIN is locked"
-#~ msgstr "Uporabniško ime ali pa PIN geslo je zakljenjeno."
-
-#~ msgid "Too many sessions are active"
-#~ msgstr "Dejavnih je preveč sej."
-
-#~ msgid "The session is read-only"
-#~ msgstr "Seja je le za branje"
-
-#~ msgid "An open session exists"
-#~ msgstr "Trenutno obtaja odprta seja"
-
-#~ msgid "A read-only session exists"
-#~ msgstr "Trenutno je zagnana seja le za branje "
-
-#~ msgid "An administrator session exists"
-#~ msgstr "Trenutno je zagnana skrbniška seja."
-
-#~ msgid "The signature is bad or corrupted"
-#~ msgstr "Podpis je slab ali pa je pokvarjen"
-
-#~ msgid "The signature is unrecognized or corrupted"
-#~ msgstr "Podpis ni prepoznan ali pa je pokvarjen"
-
-#~ msgid "Certain required fields are missing"
-#~ msgstr "Nekatera zahtevana polja niso izpolnjena"
-
-#~ msgid "Certain fields have invalid values"
-#~ msgstr "Nekatera polja imajo neveljavne vrednosti"
-
-#~ msgid "The device is not present or unplugged"
-#~ msgstr "Naprava ni navzoča ali pa ni ustrezno priklopljena"
-
-#~ msgid "The device is invalid or unrecognizable"
-#~ msgstr "Naprava je neveljavna ali pa je ni mogoče prepoznati"
-
-#~ msgid "The device is write protected"
-#~ msgstr "Naprava je zaščitena pred pisanjem"
-
-#~ msgid "Cannot import because the key is invalid"
-#~ msgstr "Uvoz ni mogoč, ker je ključ neveljaven"
-
-#~ msgid "Cannot import because the key is of the wrong size"
-#~ msgstr "Uvoz ni mogoč, ker je ključ napačne velikosti."
-
-#~ msgid "You are already logged in"
-#~ msgstr "Vi ste že uspešno prijavljeni."
-
-#~ msgid "No user has logged in"
-#~ msgstr "Noben uporabnik se ni logiral"
-
-#~ msgid "The user's password or PIN is not set"
-#~ msgstr "Podatek uporabniškega gesla ali PIN kode ni nastavljen."
-
-#~ msgid "The user is of an invalid type"
-#~ msgstr "Vrsta uporabnika ni veljavna"
-
-#~ msgid "Another user is already logged in"
-#~ msgstr "Drug uporabnik je že prijavljen"
-
-#~ msgid "Too many users of different types are logged in"
-#~ msgstr "Prijavljenih je preveč različnih vrst uporabnikov"
-
-#~ msgid "Cannot import an invalid key"
-#~ msgstr "Ni mogoče uvoziti neveljavnega ključa"
-
-#~ msgid "Cannot import a key of the wrong size"
-#~ msgstr "Uvoz ni mogoče, ker ima ključ napačno velikost."
-
-#~ msgid "Cannot export because the key is invalid"
-#~ msgstr "Izvoz ni mogoče, ker ključ ni veljaven."
-
-#~ msgid "Cannot export because the key is of the wrong size"
-#~ msgstr "Izvoz ni mogoče, ker ima ključ napačno velikost."
-
-#~ msgid "Cannot export because the key is of the wrong type"
-#~ msgstr "Izvoz ni mogoče, ker je ključ napačne vrste."
-
-#~ msgid "Unable to initialize the random number generator"
-#~ msgstr "Ni mogoče zagnati programa za izpis naključnih števil."
-
-#~ msgid "No random number generator available"
-#~ msgstr "Na voljo ni nobenega programa za izpis naključnih števil"
-
-#~ msgid "The crypto mechanism has an invalid parameter"
-#~ msgstr "Mehanizem šifriranja ima določene neveljavne parametre."
-
-#~ msgid "Not enough space to store the result"
-#~ msgstr "Ni dovolj prostora za shranjevanje rezultatov."
-
-#~ msgid "The saved state is invalid"
-#~ msgstr "Shranjeno stanje je neveljavno."
-
-#~ msgid "The state cannot be saved"
-#~ msgstr "Stanja ni mogoče shraniti."
-
-#~ msgid "The module has already been initialized"
-#~ msgstr "Modul je že zagnan."
-
-#~ msgid "Cannot lock data"
-#~ msgstr "Ni mogoče zakleniti podatkov."
-
-#~ msgid "The data cannot be locked"
-#~ msgstr "Podatkov ni mogoče zakleniti"
-
-#~ msgid "The signature request was rejected by the user"
-#~ msgstr "Podpisovanje je bilo zavrnjeno s strani uporabnika."
-
-#~ msgid "Unknown error"
-#~ msgstr "Neznana napaka"
-
-#~ msgid "Insufficient memory available on device"
-#~ msgstr "Ni zadostnega pomnilnika na napravi"
-
-#~ msgid "The key is different from before"
-#~ msgstr "Ključ je drugačen, kot je bil prej"
-
-#~ msgid "Cannot include the key in digest"
-#~ msgstr "V povzetku ni mogoče vključiti ključa"
-
-#~ msgid "Too many users of different types logged in"
-#~ msgstr "Prijavljenih je preveč različnih uporabnikov"
-
-#~ msgid "<i>Not Part of Certificate</i>"
-#~ msgstr "<i>Ni del potrdila</i>"
-
-#~ msgid "<i>unknown</i>"
-#~ msgstr "<i>neznano</i>"
-
-#~ msgid "<Not Part of Certificate>"
-#~ msgstr "<Ni del potrdila>"
-
-#~ msgid "<b>Fingerprints</b>"
-#~ msgstr "<b>Prstni odtisi</b>"
-
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Izdajatelj</b>"
-
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Izdano</b>"
-
-#~ msgid "<b>This certificate has been verified for the following uses:</b>"
-#~ msgstr "<b>To potrdilo je bilo preverjeno za naslednje vrste uporabe:</b>"
-
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Veljavnost</b>"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Splošno ime (CN)"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Potrdilo prejemnika elektronske pošte"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Potrdilo podpisnika elektronske pošte"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "Prstni odtis MD5"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organizacija (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Organizacijska enota (OU)"
-
-#~ msgid "<span size='large' weight='bold'>Import Certificates and Keys</span>"
-#~ msgstr "<span size='large' weight='bold'>Uvoz potrdil in ključev</span>"
-
-#~ msgid ""
-#~ "This option enables the PKCS#11 component in the gnome-keyring daemon. It "
-#~ "only takes effect during startup with gnome-session, (ie: when the user "
-#~ "logs in). This setting may be overridden when certain command line "
-#~ "arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Možnost omogoča zagon PKCS#11 enote v gnome-keyring ozadnjem programu. "
-#~ "Uporablja se le med zagonom programa gnome-session, (primer: ko se "
-#~ "uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom "
-#~ "preklicati."
-
-#~ msgid ""
-#~ "This option enables the SSH agent in the gnome-keyring daemon. It only "
-#~ "takes effect as gnome-keyring-daemon starts, (ie: when the user logs in). "
-#~ "This setting may be overridden when certain command line arguments are "
-#~ "passed to the daemon."
-#~ msgstr ""
-#~ "Možnost omogoča podporo SSH agenta v ozadnjem programu gnome-keyring. "
-#~ "Uporablja se le ob zagonu ozadnjega programa gnome-keyring-daemon, "
-#~ "(primer: ko se uporabnik prijavi). Možnost je mogoče s posebnimi "
-#~ "argumenti med zagonom preklicati."
-
-#~ msgid ""
-#~ "This option enables the secret service component in the gnome-keyring "
-#~ "daemon. It only takes effect during startup with gnome-session, (ie: when "
-#~ "the user logs in). This setting may be overridden when certain command "
-#~ "line arguments are passed to the daemon."
-#~ msgstr ""
-#~ "Možnost omogoča zagon skritih storitev v gnome-keyring ozadnjem programu. "
-#~ "Uporablja se le med zagonom programa gnome-session, (primer: ko se "
-#~ "uporabnik prijavi). Možnost je mogoče s posebnimi argumenti med zagonom "
-#~ "preklicati."
-
-#~ msgid "Whether the gnome-keyring PKCS#11 component is enabled."
-#~ msgstr "Ali je gnome-keyring PKCS#11 enota omogočena."
-
-#~ msgid "Whether the gnome-keyring SSH agent is enabled."
-#~ msgstr "Ali je gnome-keyring SSH agent omogočen."
-
-#~ msgid "Whether the gnome-keyring secret service is enabled."
-#~ msgstr "Ali je skrita storitev gnome-keyring omogočena."
