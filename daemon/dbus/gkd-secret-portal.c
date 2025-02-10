@@ -188,13 +188,17 @@ request_method_close (GkdExportedPortalRequest *skeleton,
 
 static gboolean
 create_application_attributes (const char *app_id,
-			       GckBuilder *builder)
+                               GckBuilder *builder,
+                               gboolean    add_xdg_schema)
 {
 	GVariantBuilder attributes;
 	g_autoptr(GVariant) variant = NULL;
 
 	g_variant_builder_init (&attributes, G_VARIANT_TYPE ("a{ss}"));
 	g_variant_builder_add (&attributes, "{ss}", "app_id", app_id);
+	if (add_xdg_schema) {
+		g_variant_builder_add (&attributes, "{ss}", "xdg:schema", "org.freedesktop.portal.Secret");
+	}
 	variant = g_variant_builder_end (&attributes);
 
 	return gkd_secret_property_parse_fields (variant, builder);
@@ -294,7 +298,7 @@ lookup_secret_value (GkdSecretPortal *self,
 	g_autofree guint8 *data = NULL;
 	gsize n_data;
 
-	if (!create_application_attributes (app_id, &builder)) {
+	if (!create_application_attributes (app_id, &builder, FALSE)) {
 		gck_builder_clear (&builder);
 		g_set_error (error,
 			     G_DBUS_ERROR,
@@ -364,7 +368,7 @@ create_secret_value (GkdSecretPortal *self,
 	gcry_randomize (value, *n_value, GCRY_STRONG_RANDOM);
 
 	/* Create a new item */
-	if (!create_application_attributes (app_id, &builder)) {
+	if (!create_application_attributes (app_id, &builder, TRUE)) {
 		gck_builder_clear (&builder);
 		g_free (value);
 		g_set_error (error,
