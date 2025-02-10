@@ -27,9 +27,11 @@
 #include <gcrypt.h>
 
 #include "gkd-portal-generated.h"
+#include "gkd-secret-objects.h"
 #include "gkd-portal-request-generated.h"
 #include "gkd-secret-property.h"
 #include "gkd-secret-service.h"
+#include "gkd-secret-util.h"
 #include <gio/gunixfdlist.h>
 #include <gio/gunixoutputstream.h>
 #include <glib/gi18n.h>
@@ -355,8 +357,11 @@ create_secret_value (GkdSecretPortal *self,
 	GckBuilder builder = GCK_BUILDER_INIT;
 	GckObject *item;
 	GckSession *session;
-	guint8 *value;
+	g_autofree guint8 *value = NULL;
 	g_autofree char *label = NULL;
+	g_autofree void *item_id;
+	size_t n_item_id;
+	g_autofree char *collection_path = NULL;
 
 	value = g_new0 (guint8, PORTAL_DEFAULT_KEY_SIZE);
 	*n_value = PORTAL_DEFAULT_KEY_SIZE;
@@ -388,13 +393,30 @@ create_secret_value (GkdSecretPortal *self,
 					  gck_builder_end (&builder),
 					  self->cancellable,
 					  error);
-	if (item == NULL) {
-		g_free (value);
+	if (item == NULL)
 		return NULL;
+
+	collection_path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, self->collection, -1);
+	item_id = gck_object_get_data (item, CKA_ID, NULL, &n_item_id, error);
+	if (item_id == NULL) {
+		g_warning ("Couldn't get CKA_ID for newly created portal secret");
+	} else {
+		GkdSecretObjects *secret_objects;
+		g_autofree char *item_path = NULL;
+		GckObject *collection;
+
+		item_path = gkd_secret_util_build_path (collection_path, item_id, n_item_id);
+		secret_objects = gkd_secret_service_get_objects (self->service);
+		collection = gkd_secret_objects_lookup_collection (secret_objects, NULL, collection_path);
+		if (collection != NULL) {
+			gkd_secret_objects_emit_item_created (secret_objects, collection, item_path);
+			g_object_unref (collection);
+		}
 	}
+
 	g_object_unref (item);
 
-	return value;
+	return g_steal_pointer (&value);
 }
 
 static gboolean
