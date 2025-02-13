@@ -1,6 +1,6 @@
 project('gnome-keyring', 'c',
   version: '48.alpha',
-  meson_version: '>= 0.62',
+  meson_version: '>= 1.0',
 )
 
 gnome = import('gnome')
